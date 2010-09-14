@@ -4,7 +4,7 @@
       CHARACTER*8        KTYPE, GTYPE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
+C MODIF PREPOST  DATE 14/09/2010   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -75,6 +75,10 @@ CCC         GTYPE = 'QUA9'
          GTYPE = 'PRI6'
       ELSEIF ( KTYPE .EQ. 'PENTA15' ) THEN
          ITYCA = 17
+         GTYPE = 'PR15'
+      ELSEIF ( KTYPE .EQ. 'PENTA18' ) THEN
+         ITYCA = 17
+         CALL U2MESS('I','PREPOST2_86')
          GTYPE = 'PR15'
       ELSEIF ( KTYPE .EQ. 'TETRA4'  ) THEN
          ITYCA = 23

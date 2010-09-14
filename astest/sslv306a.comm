@@ -1,4 +1,4 @@
-# MODIF  DATE 30/08/2010   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 13/09/2010   AUTEUR PELLET J.PELLET 
 # TITRE POUTRE 3D EN DEPLACEMENTS IMPOSES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -80,8 +80,7 @@ DEF=MECA_STATIQUE(    MODELE=MODELE,
 # CALCUL DES CONTRAINTES
 DEF=CALC_ELEM( reuse=DEF, RESULTAT=DEF,
 
-               EXCIT=(_F(  CHARGE = CHARGT1),
-                      _F(  CHARGE = CHARGT2),),
+
 
                OPTION='SIGM_ELNO_DEPL', )
 

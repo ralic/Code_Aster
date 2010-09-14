@@ -2,7 +2,7 @@
      &                  POSNOE,POSNOM,POSAPP)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 14/09/2010   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -71,92 +71,9 @@ C
       CHARACTER*80 ZK80
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C
-C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
+C A SUPPRIMER
 C
-      INTEGER      IFM,NIV
-      INTEGER      CFMMVD,ZAPME 
-      CHARACTER*8  NOMNOE,NOMAPP,NOMNOM,NOMMAM,VALK(2)
-      CHARACTER*24 APMEMO,APPARI
-      INTEGER      JAPMEM,JAPPAR  
-      INTEGER      CODRET
-C
-C ----------------------------------------------------------------------
-C
-      CALL JEMARQ()      
-      CALL INFDBG('CONTACT',IFM,NIV)
-C
-C --- LECTURE DES STRUCTURES DE DONNEES DE CONTACT
-C
-      APMEMO = RESOCO(1:14)//'.APMEMO'
-      APPARI = RESOCO(1:14)//'.APPARI'      
-      CALL JEVEUO(APMEMO,'E',JAPMEM)
-      CALL JEVEUO(APPARI,'E',JAPPAR)
-      ZAPME  = CFMMVD('ZAPME')
-C
-C --- AJOUT D'UNE LIAISON DANS LE CAS MAIT/ESCL
-C
-      IF (TYPAPP.EQ.2) THEN
-        ZI(JAPPAR+ILIAI)  = POSNOE
-      ENDIF 
-C
-C --- AJOUT D'UNE LIAISON DANS LE CAS NODAL
-C
-      IF (TYPAPP.EQ.1) THEN
-        ZI(JAPPAR+ILIAI)  = POSNOE       
-      ENDIF
-C
-C --- TYPE D'APPARIEMENT
-C
-      ZI(JAPMEM+ZAPME*(POSNOE-1)+1-1) = TYPAPP       
-C
-C --- POSITION DANS CONTNO DU NOEUD MAITRE LE PLUS PROCHE
-C
-      ZI(JAPMEM+ZAPME*(POSNOE-1)+2-1) = POSNOM     
-C
-C --- ENTITE APPARIEE
-C       
-      ZI(JAPMEM+ZAPME*(POSNOE-1)+3-1) = POSAPP
-C
-C --- AFFICHAGE
-C
-      IF (NIV.GE.2) THEN        
-        CALL CFNOMM(NOMA  ,DEFICO,'NOEU',POSNOE,NOMNOE,
-     &              CODRET)
-        IF (CODRET.LT.0) THEN
-          NOMNOE = 'ERREUR'
-        ENDIF 
-        VALK(1) = NOMNOE
-        IF (TYPAPP.EQ.-3) THEN
-          
-          IF (POSAPP.LT.0) THEN
-            CALL CFNOMM(NOMA  ,DEFICO,'NOEU',POSNOE,NOMAPP,
-     &                  CODRET)
-            IF (CODRET.LT.0) THEN
-              NOMAPP = 'ERREUR'
-            ENDIF
-          ELSEIF (POSAPP.GT.0) THEN
-            CALL CFNOMM(NOMA  ,DEFICO,'MAIL',POSNOE,NOMAPP,
-     &                  CODRET)
-            IF (CODRET.LT.0) THEN
-              NOMAPP = 'ERREUR'
-            ENDIF  
-          ELSE
-            NOMAPP = 'ERREUR'
-          ENDIF  
-          VALK(2) = NOMAPP  
-          CALL U2MESK('I','CONTACTDEBG_11',2,VALK)  
-        ELSEIF (TYPAPP.EQ.-2) THEN
-          CALL U2MESK('I','CONTACTDEBG_12',1,VALK)                  
-        ELSEIF (TYPAPP.EQ.-1) THEN
-          CALL U2MESK('I','CONTACTDEBG_13',1,VALK)
-        ELSEIF (TYPAPP.EQ.3) THEN
-          CALL CFNOMM(NOMA  ,DEFICO,'NOEU',POSNOM,NOMNOM,
-     &                CODRET)
-        ELSEIF (TYPAPP.EQ.2) THEN
-          CALL CFNOMM(NOMA  ,DEFICO,'MAIL',POSAPP,NOMMAM,
-     &                CODRET)          
-        ENDIF
-      ENDIF       
-C
+      CALL JEMARQ()
+      
       CALL JEDEMA()
       END

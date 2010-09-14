@@ -4,7 +4,7 @@
       REAL*8              COOPG(*), POIPG(*)
       CHARACTER*(*)       ELREFZ, FAPZ
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 20/04/2010   AUTEUR JAUBERT A.JAUBERT 
+C MODIF ELEMENTS  DATE 14/09/2010   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -267,7 +267,8 @@ C       TRAITEMENT POUR FAPG NON SHB
    50     CONTINUE
    60   CONTINUE
 C     ------------------------------------------------------------------
-      ELSE IF (ELREFA.EQ.'PE6' .OR. ELREFA.EQ.'P15') THEN
+      ELSE IF (ELREFA.EQ.'PE6' .OR. ELREFA.EQ.'P15' 
+     &         .OR. ELREFA.EQ.'P18') THEN
 
         IF (FAPG.EQ.'FPG6') THEN
           NPX = 2

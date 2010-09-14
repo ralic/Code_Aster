@@ -2,7 +2,7 @@
      &                  JEUUSU)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 09/03/2010   AUTEUR DESOZA T.DESOZA 
+C MODIF MODELISA  DATE 14/09/2010   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -59,24 +59,9 @@ C
       CHARACTER*80 ZK80
       COMMON /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C
-C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
+C A SUPPRIMER
 C
-      INTEGER      NCMPU
-      PARAMETER    (NCMPU=1)
-C      
-      CHARACTER*19 USUFIX
-      INTEGER      JVALEX      
-C
-C ----------------------------------------------------------------------
-C
-      CALL JEMARQ() 
-C
-C --- CALCUL DE L'USURE      
-C      
-      USUFIX = RESOCO(1:14)//'.USUF'
-      CALL JEVEUO(USUFIX(1:19)//'.VALE','L',JVALEX)
-      JVALEX = JVALEX + (NCMPMX-NCMPU)*(IPC-1)*IMA
-      JEUUSU = - ABS(ZR(JVALEX+(NBPC*(IMA-1)+IPC-1)))    
-C      
+      CALL JEMARQ()
+      
       CALL JEDEMA()
       END

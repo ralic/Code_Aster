@@ -1,4 +1,4 @@
-%& MODIF COMPELEM  DATE 16/06/2010   AUTEUR CARON A.CARON 
+%& MODIF COMPELEM  DATE 14/09/2010   AUTEUR REZETTE C.REZETTE 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -242,6 +242,16 @@ MAILLE__ PENTA15    15      DIM__  3   CODE__  'P15'
          FAMILLE__ FPG21       21
          FAMILLE__ XFEM270     270
          FAMILLE__ SHB15       15
+
+MAILLE__ PENTA18    18      DIM__  3   CODE__  'P18'
+   ELREFE__ P18
+         FAMILLE__ NOEU        18
+         FAMILLE__ NOEU_S      6
+         FAMILLE__ FPG1        1
+         FAMILLE__ FPG6        6
+         FAMILLE__ FPG6NOS     12
+         FAMILLE__ FPG8        8
+         FAMILLE__ FPG21       21
 
 MAILLE__ PYRAM5     5       DIM__  3   CODE__  'PY5'
    ELREFE__ PY5

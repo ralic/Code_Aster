@@ -1,4 +1,4 @@
-#@ MODIF contact2 Messages  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
+#@ MODIF contact2 Messages  DATE 14/09/2010   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -29,6 +29,11 @@ cata_msg={
 
 2 : _("""
    Echec : la matrice de contact est singulière.
+"""),
+
+3 : _("""
+  Toutes vos zones de contact sont en mode RESOLUTION='NON'.
+  Le mode REAC_GEOM = 'SANS' est forcé. 
 """),
 
 11 : _("""

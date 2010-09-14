@@ -1,4 +1,4 @@
-# MODIF  DATE 30/08/2010   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 13/09/2010   AUTEUR PELLET J.PELLET 
 # TITRE CYLINDRE EN INCOMPRESSIBLE (TRIA6 QUAD8) AXISYM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -87,10 +87,8 @@ EVOL=CALC_ELEM(reuse =EVOL,
 
                RESULTAT=EVOL,
                OPTION=('EPSI_ELNO_DEPL','SIEF_ELNO_ELGA','EQUI_ELNO_SIGM','EQUI_ELNO_EPSI',),
-               EXCIT=(
-               _F(CHARGE=CLIM,),
-               _F(CHARGE=CH,
-                  FONC_MULT=RAMPE,),),);
+
+);
 
 EVOL=CALC_NO(reuse =EVOL,
              RESULTAT=EVOL,

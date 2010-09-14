@@ -1,7 +1,7 @@
       SUBROUTINE XAPPAR(PREMIE,NOMA  ,MODELE,DEFICO,RESOCO)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 14/09/2010   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -91,7 +91,13 @@ C
 C ----------------------------------------------------------------------
 C
       CALL JEMARQ()
-      CALL INFDBG('XFEM',IFM,NIV)         
+      CALL INFDBG('XFEM',IFM,NIV) 
+C
+C --- AFFICHAGE
+C
+      IF (NIV.GE.2) THEN
+        WRITE (IFM,*) '<XFEM> ... APPARIEMENT' 
+      ENDIF               
 C      
 C --- RECUPERATION DE QUELQUES DONNEES      
 C

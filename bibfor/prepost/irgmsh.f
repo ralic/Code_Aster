@@ -11,7 +11,7 @@
       CHARACTER*8       TYCHA
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
+C MODIF PREPOST  DATE 14/09/2010   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -78,7 +78,7 @@ C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
 C
 C     --- TABLEAU DE DECOUPAGE
       INTEGER    NTYELE
-      PARAMETER (NTYELE = 27)
+      PARAMETER (NTYELE = 28)
 C     NBRE, NOM D'OBJET POUR CHAQUE TYPE D'ELEMENT
       INTEGER      NBEL(NTYELE)
       CHARACTER*24 NOBJ(NTYELE)

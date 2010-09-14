@@ -2,7 +2,7 @@
      &                  MATRIG)
 C     
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 14/09/2010   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -64,7 +64,7 @@ C
       INTEGER      NBMAT
       CHARACTER*19 MERIGI,MEDIRI,MEELTC,MEELTF
       CHARACTER*19 TLIMAT(8)
-      LOGICAL      ISFONC,LELTC,LELTF               
+      LOGICAL      ISFONC,LELTC,LELTF,LALLV          
 C
 C ----------------------------------------------------------------------
 C
@@ -77,7 +77,8 @@ C
 C --- FONCTIONNALITES ACTIVEES
 C 
       LELTC  = ISFONC(FONACT,'ELT_CONTACT')
-      LELTF  = ISFONC(FONACT,'ELT_FROTTEMENT')   
+      LELTF  = ISFONC(FONACT,'ELT_FROTTEMENT')  
+      LALLV  = ISFONC(FONACT,'CONT_ALL_VERIF')  
 C
 C --- MATR_ELEM RIGIDITE
 C
@@ -94,14 +95,16 @@ C
 C --- MATR_ELEM DE CONTACT/FROTTEMENT 
 C
       IF (LELTC) THEN
-        CALL NMCHEX(MEELEM,'MEELEM','MEELTC',MEELTC)  
-        NBMAT         = NBMAT + 1  
-        TLIMAT(NBMAT) = MEELTC   
-        IF (LELTF) THEN
-          CALL NMCHEX(MEELEM,'MEELEM','MEELTF',MEELTF)  
-          NBMAT         = NBMAT + 1    
-          TLIMAT(NBMAT) = MEELTF    
-        ENDIF                
+        IF (.NOT.LALLV) THEN
+          CALL NMCHEX(MEELEM,'MEELEM','MEELTC',MEELTC)  
+          NBMAT         = NBMAT + 1  
+          TLIMAT(NBMAT) = MEELTC   
+          IF (LELTF) THEN
+            CALL NMCHEX(MEELEM,'MEELEM','MEELTF',MEELTF)  
+            NBMAT         = NBMAT + 1    
+            TLIMAT(NBMAT) = MEELTF    
+          ENDIF 
+        ENDIF                 
       ENDIF  
 C
       IF (NBMAT.GT.8) THEN

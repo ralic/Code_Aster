@@ -11,7 +11,7 @@ C
       LOGICAL       LRESU
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 02/02/2010   AUTEUR SELLENET N.SELLENET 
+C MODIF PREPOST  DATE 14/09/2010   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -378,6 +378,7 @@ C
 C
             NPCALC = NSCAL / NCMPP
             IF (KTYPE.EQ.'QUAD9'.OR.KTYPE.EQ.'TRIA7') NPCALC = NPCALC-1
+            IF (KTYPE.EQ.'PENTA18') NPCALC = NPCALC-3
             IF (KTYPE.EQ.'SEG4') NPCALC = NPCALC-2
 C
             IF (FIRST) THEN
@@ -408,7 +409,10 @@ C
                 LNOCEN=.TRUE.
              ENDIF
              IF (KTYPE.EQ.'SEG4') NNOE = NNOE-2
-
+             IF (KTYPE.EQ.'PENTA18')THEN
+                NNOE = NNOE-3
+                LNOCEN=.TRUE.
+             ENDIF
              IF(NPCALC.NE.NNOE) THEN
                CALL U2MESS('F','PREPOST_79')
              ENDIF

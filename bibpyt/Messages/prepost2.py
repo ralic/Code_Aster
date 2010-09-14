@@ -1,4 +1,4 @@
-#@ MODIF prepost2 Messages  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
+#@ MODIF prepost2 Messages  DATE 14/09/2010   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -300,6 +300,14 @@ On ne sait pas ecrire des champs par element aux points de gauss au format CASTE
  contenant des %(k2)s
  Or l'impression de ce type de champ n'est pas encore possible au format MED
  On n'imprimera donc pas ce champ dans le fichier MED
+"""),
+
+85 : _("""
+ L'élément PENTA18 est inexistant dans ideas, il est converti en PENTA15.
+"""),
+
+86 : _("""
+ L'élément PENTA18 est inexistant dans castem, il est converti en PENTA15.
 """),
 
 93 : _("""

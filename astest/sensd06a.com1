@@ -102,7 +102,6 @@ for i in range(n):
 
                  RESULTAT = DYTD[i],
 
-                 EXCIT=(_F(FONC_MULT=FC,CHARGE=CHD[i]),),
                  OPTION = 'SIGM_ELNO_DEPL',
                  );
 
@@ -185,7 +184,6 @@ DYTFX = CALC_ELEM(
 
                  RESULTAT = DYTFX,
 
-                 EXCIT=( _F(FONC_MULT=FC,CHARGE=CHS_2),),
                  OPTION = 'SIGM_ELNO_DEPL',
                  );
 
@@ -200,7 +198,6 @@ DYTFY = CALC_ELEM(
 
                  RESULTAT = DYTFY,
 
-                 EXCIT=( _F(FONC_MULT=FC,CHARGE=CHS_3),),
                  OPTION = 'SIGM_ELNO_DEPL',
                  );
 

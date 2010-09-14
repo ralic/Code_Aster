@@ -1,4 +1,4 @@
-# MODIF  DATE 19/10/2009   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 13/09/2010   AUTEUR PELLET J.PELLET 
 # RESPONSABLE GNICOLAS G.NICOLAS
 # TITRE INDICATEUR D'ERREUR MAILLES VOLUMIQUES ET FONCTIONS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -159,7 +159,8 @@ SOLUPR=CALC_ELEM(reuse =SOLUPR,
                  RESULTAT=SOLUPR,
                  TYPE_OPTION='INDI_ERREUR',
                  OPTION=('ERRE_ELEM_SIGM','ERRE_ELNO_ELEM',),
-                 EXCIT=_F(CHARGE=CHAR,),);
+
+);
 
 SOLUPR=CALC_NO(reuse =SOLUPR,
                RESULTAT=SOLUPR,
@@ -221,7 +222,8 @@ SOLUDU=CALC_ELEM(reuse =SOLUDU,
                  RESULTAT=SOLUDU,
                  TYPE_OPTION='INDI_ERREUR',
                  OPTION=('ERRE_ELEM_SIGM','ERRE_ELNO_ELEM',),
-                 EXCIT=_F(CHARGE=CHARDU,),);
+
+);
 
 SOLUDU=CALC_NO(reuse =SOLUDU,
                RESULTAT=SOLUDU,
@@ -381,7 +383,8 @@ SOLUPR=CALC_ELEM(reuse =SOLUPR,
                  RESULTAT=SOLUPR,
                  TYPE_OPTION='INDI_ERREUR',
                  OPTION=('ERRE_ELEM_SIGM','ERRE_ELNO_ELEM',),
-                 EXCIT=_F(CHARGE=CHAR,),);
+
+);
 
 SOLUPR=CALC_NO(reuse =SOLUPR,
                RESULTAT=SOLUPR,
@@ -428,7 +431,8 @@ SOLUDU=CALC_ELEM(reuse =SOLUDU,
                  RESULTAT=SOLUDU,
                  TYPE_OPTION='INDI_ERREUR',
                  OPTION=('ERRE_ELEM_SIGM','ERRE_ELNO_ELEM',),
-                 EXCIT=_F(CHARGE=CHARDU,),);
+
+);
 
 SOLUDU=CALC_NO(reuse =SOLUDU,
                RESULTAT=SOLUDU,

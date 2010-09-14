@@ -1,7 +1,7 @@
-      SUBROUTINE CFTYLI(RESOCO, POSIT, TYPE0)
-C ======================================================================
+      SUBROUTINE CFTYLI(RESOCO,ILIAC ,TYPE0 )
+C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 07/05/2003   AUTEUR PABHHHH N.TARDIEU 
+C MODIF ALGORITH  DATE 14/09/2010   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -18,63 +18,80 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
-C ======================================================================
+C
       IMPLICIT      NONE
-      INTEGER       POSIT, TYPE0
+      INTEGER       ILIAC, TYPE0
       CHARACTER*24  RESOCO
-C ======================================================================
+C      
 C ----------------------------------------------------------------------
-C --- BUT : TYPE DE LA LIAISON -----------------------------------------
+C
+C ROUTINE CONTACT (METHODES DISCRETES - UTILITAIRE)
+C
+C RETOURNE LE TYPE DE LA LIAISON SELON UN ENTIER 
+C
 C ----------------------------------------------------------------------
-C ======================================================================
-C --------------- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------
-C ======================================================================
-      CHARACTER*32       JEXNUM , JEXNOM
-      INTEGER            ZI
-      COMMON  / IVARJE / ZI(1)
-      REAL*8             ZR
-      COMMON  / RVARJE / ZR(1)
-      COMPLEX*16         ZC
-      COMMON  / CVARJE / ZC(1)
-      LOGICAL            ZL
-      COMMON  / LVARJE / ZL(1)
-      CHARACTER*8        ZK8
-      CHARACTER*16                ZK16
-      CHARACTER*24                          ZK24
-      CHARACTER*32                                    ZK32
-      CHARACTER*80                                              ZK80
-      COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
-C ======================================================================
-C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
-C ======================================================================
-      INTEGER      JVECC
+C
+C
+C IN  RESOCO : SD DE TRAITEMENT NUMERIQUE DU CONTACT
+C IN  ILIAC  : NUMERO DE LA LIAISON ACTIVE
+C OUT TYPE0  : TYPE DE LA LIAISON
+C               1  CONTACT
+C               2  FROTTEMENT (2D)
+C               3  FROTTEMENT - DIRECTION 1 (3D)
+C               4  FROTTEMENT - DIRECTION 2 (3D)
+C
+C -------------- DEBUT DECLARATIONS NORMALISEES JEVEUX -----------------
+C
+      INTEGER ZI
+      COMMON /IVARJE/ ZI(1)
+      REAL*8 ZR
+      COMMON /RVARJE/ ZR(1)
+      COMPLEX*16 ZC
+      COMMON /CVARJE/ ZC(1)
+      LOGICAL ZL
+      COMMON /LVARJE/ ZL(1)
+      CHARACTER*8 ZK8
+      CHARACTER*16 ZK16
+      CHARACTER*24 ZK24
+      CHARACTER*32 ZK32
+      CHARACTER*80 ZK80
+      COMMON /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
+C
+C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
+C
+      INTEGER      JTYPL
       CHARACTER*2  TYPEC0, TYPEF0, TYPEF1, TYPEF2
-      CHARACTER*19 CONVEC
-C ======================================================================
-      CALL JEMARQ ()
-C ======================================================================
-      CONVEC = RESOCO(1:14)//'.CONVEC'
-      CALL JEVEUO (CONVEC,'L',JVECC )
-C ======================================================================
-C --- TYPE D'INITIALISATIONS POUR LE CONTACT-FROTTEMENT ----------------
-C ======================================================================
+      CHARACTER*19 TYPL
+C
+C ----------------------------------------------------------------------
+C
+      CALL JEMARQ()
+C
+C --- ACCES SD CONTACT
+C
+      TYPL   = RESOCO(1:14)//'.TYPL'
+      CALL JEVEUO(TYPL  ,'L',JTYPL )
+C 
+C --- INITIALISATIONS
+C 
       TYPEC0 = 'C0'
       TYPEF0 = 'F0'
       TYPEF1 = 'F1'
       TYPEF2 = 'F2'
-C ======================================================================
-C --- IDENTIFICATION DE LA LIAISON -------------------------------------
-C ======================================================================
-      IF ( ZK8(JVECC-1+POSIT).EQ.TYPEC0 ) THEN
+C 
+C --- IDENTIFICATION DE LA LIAISON 
+C 
+      IF ( ZK8(JTYPL-1+ILIAC).EQ.TYPEC0 ) THEN
          TYPE0 = 1
-      ELSE IF ( ZK8(JVECC-1+POSIT).EQ.TYPEF0 ) THEN
+      ELSE IF ( ZK8(JTYPL-1+ILIAC).EQ.TYPEF0 ) THEN
          TYPE0 = 2
-      ELSE IF ( ZK8(JVECC-1+POSIT).EQ.TYPEF1 ) THEN
+      ELSE IF ( ZK8(JTYPL-1+ILIAC).EQ.TYPEF1 ) THEN
          TYPE0 = 3
-      ELSE IF ( ZK8(JVECC-1+POSIT).EQ.TYPEF2 ) THEN
+      ELSE IF ( ZK8(JTYPL-1+ILIAC).EQ.TYPEF2 ) THEN
          TYPE0 = 4
+      ELSE
+        CALL ASSERT(.FALSE.)   
       ENDIF
-C ======================================================================
       CALL JEDEMA ()
-C ======================================================================
+C 
       END

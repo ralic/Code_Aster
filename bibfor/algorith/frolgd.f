@@ -2,7 +2,7 @@
      &                  RESU  ,RESIGR,DEPDEL,CTCCVG)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 09/03/2010   AUTEUR DESOZA T.DESOZA 
+C MODIF ALGORITH  DATE 14/09/2010   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -105,7 +105,7 @@ C
       INTEGER      CFDISI,CFDISD
       LOGICAL      TROUAC,DELPOS,GLISS1,GLISS2,LELPIV,LELPI1,LELPI2
       LOGICAL      REAPRE
-      INTEGER      JJC,JDEPDE,LLF,NTNOE,LFMIN
+      INTEGER      JJC,JDEPDE,LLF,NESMAX,LFMIN
       INTEGER      IBID,IER,NDECI,ISINGU,NPVNEG,LFMIN2
       INTEGER      ILIAI,JJ,KK,LL,ILIAC,NUMIN,ILIDEB,ILIFIN
       INTEGER      JRESU,JMU,JATMU
@@ -117,7 +117,7 @@ C
       INTEGER      JAPCOF,JAFMU,LMAF1,JFRO11,JFRO12,JFRO2
       INTEGER      LFMIN1,JGLI1,JGLI2,JADHR
       INTEGER      ITER,ITEMAX,ITEMUL,ISTO,INCR
-      INTEGER      INDFAC,POSIT,BTOTAL,JVECC,COMPT0
+      INTEGER      INDFAC,POSIT,BTOTAL,JTYPL,COMPT0
       REAL*8       R8MAEM,R8PREM,AJEU,RHO,RHORHO,AADELT,AJEUFY
       REAL*8       X1,VAL,XX
       REAL*8       AJEUFX,XK,XMU,R8BID
@@ -125,10 +125,10 @@ C
       COMPLEX*16   CBID
       CHARACTER*1  TYPEAJ
       CHARACTER*2  TYPEC0, TYPEF0, TYPEF1, TYPEF2
-      CHARACTER*14 NUMEDD
+      CHARACTER*14 NUMEDD,NUMEF1,NUMEF2,NUFROT
       CHARACTER*16 NMGLI1,NMGLI2, NMADHR
       CHARACTER*19 AFMU,MAT,FRO1,FRO2,MAF1,MAF2,MAFROT
-      CHARACTER*19 LIAC,MU,ATMU,DELT0,DELTA,CONVEC
+      CHARACTER*19 LIAC,MU,ATMU,DELT0,DELTA,TYPL
       CHARACTER*24 APPOIN,APCOEF,APJEU,APDDL
       CHARACTER*24 APCOFR
       CHARACTER*24 TACFIN,CLREAC
@@ -170,7 +170,7 @@ C
       ATMU     = RESOCO(1:14)//'.ATMU'
       FRO1     = RESOCO(1:14)//'.FRO1'
       FRO2     = RESOCO(1:14)//'.FRO2'
-      CONVEC   = RESOCO(1:14)//'.CONVEC'
+      TYPL     = RESOCO(1:14)//'.TYPL'
       DELT0    = RESOCO(1:14)//'.DEL0'
       DELTA    = RESOCO(1:14)//'.DELT'
       LIAC     = RESOCO(1:14)//'.LIAC'
@@ -187,7 +187,7 @@ C
       CALL JEVEUO(APJEU, 'E',JAPJEU)
       CALL JEVEUO(APDDL, 'L',JAPDDL)
       CALL JEVEUO(LIAC,  'E',JLIAC)
-      CALL JEVEUO(CONVEC,'L',JVECC)
+      CALL JEVEUO(TYPL  ,'L',JTYPL)
       CALL JEVEUO(MU,    'E',JMU)
       CALL JEVEUO(ATMU,  'E',JATMU)
       CALL JEVEUO(AFMU , 'E',JAFMU )
@@ -209,9 +209,8 @@ C              D'ITERATIONS DANS L'ALGO ITEMAX=ITEMUL*NBLIAI
 C --- ISTO   : ACTION STOP_SINGULIER='OUI' OU 'NON'
 C --- ITEMAX : NOMBRE D'ITERATIONS DE CONTACT DANS L'ALGO
 C --- XJVMAX : VALEUR MAXI DU PIVOT DE LA MATRICE DE CONTACT
-C --- NTNOE : NOMBRE MAXI DE NOEUDS ESCLAVES
+C --- NESMAX : NOMBRE MAXI DE NOEUDS ESCLAVES
 C              SERT AU DECALAGE DANS LES ROUTINES DE FROTTEMENT 3D
-C              (VAUT DONC ZERO SI SANS FROTTEMENT OU FROTTEMENT 2D)
 C --- INDFAC : INDICE DE DEBUT DE LA FACTORISATION
 C --- INDIC  : 0  INITIALISATION,
 C             +1 ON A RAJOUTE UNE LIAISON
@@ -234,7 +233,7 @@ C ======================================================================
       NBLIAI = CFDISD(RESOCO,'NBLIAI')
       NEQ    = CFDISD(RESOCO,'NEQ'   )
       NDIM   = CFDISD(RESOCO,'NDIM'  )
-      NTNOE  = CFDISI(DEFICO,'NTNOE' )      
+      NESMAX = CFDISD(RESOCO,'NESMAX') 
       ITEMUL = CFDISI(DEFICO,'ITER_CONT_MULT')
       ITEMAX = ITEMUL*NBLIAI
       ISTO   = CFDISI(DEFICO,'STOP_SINGULIER')
@@ -259,7 +258,7 @@ C ======================================================================
       INDFAC = 1
       ITER   = 0
       TROUAC = .TRUE. 
-      XMUL   = ZR(JMU+6*NTNOE-1)
+      XMUL   = ZR(JMU+6*NESMAX-1)
 C
       IF ( NIV .GE. 2 ) THEN
         WRITE(IFM,1001) ITEMAX
@@ -301,7 +300,7 @@ C
 C --- CALCUL DE -A.C-1.AT COLONNE PAR COLONNE (A PARTIR DE INDFAC)
 C
          CALL CFACAT(NDIM  ,INDIC ,NBLIAC,AJLIAI,SPLIAI,
-     &               LLF   ,LLF1  ,LLF2  ,INDFAC,NTNOE,
+     &               LLF   ,LLF1  ,LLF2  ,INDFAC,NESMAX,
      &               DEFICO,RESOCO,LMAT  ,NBLIAI,XJVMAX)
 C
 C --- DETECTION DES PIVOTS NULS
@@ -358,7 +357,7 @@ C ======================================================================
 C --- APPEL DE LA ROUTINE DE CALCUL DU SECOND MEMBRE
 C ======================================================================
          CALL CFADU (RESOCO,DEPDEL,NEQ   ,NDIM  ,NBLIAC,
-     &               LLF   ,LLF1  ,LLF2  ,NTNOE )
+     &               LLF   ,LLF1  ,LLF2  ,NESMAX)
 C ======================================================================
 C --- RESOLUTION POUR OBTENIR MU : -A.C-1.AT.MU = JEU(DEPTOT) - A.DELT0
 C --- ON TRUANDE LA SD MATR_ASSE POUR NE RESOUDRE LE SYSTEME QUE
@@ -564,7 +563,7 @@ C ======================================================================
          CALL WKVECT ( NMADHR, 'V V I', NBLIAC, JADHR )
          BTOTAL = NBLIAC + LLF + LLF1 + LLF2
          DO 156 ILIAI = 1, BTOTAL
-            IF (ZK8(JVECC-1+ILIAI).EQ.TYPEC0) THEN
+            IF (ZK8(JTYPL-1+ILIAI).EQ.TYPEC0) THEN
                COMPT0 = COMPT0 + 1
                AJEUFX = 0.0D0
                AJEUFY = 0.0D0
@@ -591,7 +590,7 @@ C ======================================================================
 C --- LA LIAISON EST A PIVOT NUL SUIVANT LA PREMIERE DIRECTION ---------
 C ======================================================================
                IF (.NOT.GLISS2) THEN
-                  CALL CALADU (NEQ,NBDDL,ZR(JAPCOF+JDECAL+30*NTNOE),
+                  CALL CALADU (NEQ,NBDDL,ZR(JAPCOF+JDECAL+30*NESMAX),
      &                         ZI(JAPDDL+JDECAL),ZR(JDELTA),VAL)
                   AJEUFY = VAL
                ENDIF
@@ -693,7 +692,7 @@ C ======================================================================
             IF (XVAL.LT.(1.0D0/R8PREM())) THEN
                XMUL = XMUL*SQRT(10.D0)
             ENDIF
-            ZR(JMU+6*NTNOE-1) = XMUL
+            ZR(JMU+6*NESMAX-1) = XMUL
             GOTO 100
          ENDIF
          CALL JEDETR(NMGLI1)
@@ -712,7 +711,7 @@ C ======================================================================
 C ======================================================================
 C --- CALCUL DES FORCES DE CONTACT (AT.MU)
 C ======================================================================
-      CALL CFATMU(NEQ   ,NTNOE ,NDIM  ,NBLIAC,1     ,
+      CALL CFATMU(NEQ   ,NESMAX,NDIM  ,NBLIAC,1     ,
      &            LLF   ,LLF1  ,LLF2  ,RESOCO)
 C
 C ======================================================================
@@ -729,7 +728,7 @@ C ======================================================================
          COMPT0 = 0
          DO 203 JJ = 1, NBLIAC + LLF + LLF1 + LLF2
             LLJAC = ZI(JLIAC-1+JJ)
-            IF (ZK8(JVECC-1+JJ).EQ.TYPEC0) THEN
+            IF (ZK8(JTYPL-1+JJ).EQ.TYPEC0) THEN
                COMPT0 = COMPT0 + 1
             ENDIF
             IF (LLJAC.EQ.LLIAC) THEN
@@ -777,7 +776,7 @@ C ======================================================================
                DO 219 LL = 1, NDLMAX
                   ZR(JFRO12-1+LL) = 0.0D0
  219           CONTINUE
-               CALL CALADU (NEQ,NBDDL,ZR(JAPCOF+JDECAL+30*NTNOE),
+               CALL CALADU (NEQ,NBDDL,ZR(JAPCOF+JDECAL+30*NESMAX),
      &                                 ZI(JAPDDL+JDECAL),ZR(JDELTA),VAL)
                AJEUFY = VAL
             ENDIF
@@ -793,7 +792,7 @@ C ======================================================================
             ENDIF
             IF (.NOT.GLISS2) THEN
                CALL DAXPY(NBDDL,XMU,
-     &                    ZR(JAPCOF+JDECAL+30*NTNOE),1,ZR(JFRO12),1)
+     &                    ZR(JAPCOF+JDECAL+30*NESMAX),1,ZR(JFRO12),1)
             ENDIF
          ELSE
             DO 2091 LL = 1, NDLMAX
@@ -808,8 +807,9 @@ C ======================================================================
 C --- CREATION DE LA MATRICE ATA
 C ======================================================================
       NMULT = NDIM - 1
-      CALL ATASMO(NEQ,FRO1,ZI(JAPDDL),
-     &                     ZI(JAPPTR),NUMEDD,MAF1,'V',NBLIAI,NMULT)
+      NUMEF1 = '&&FROLGD.NUF1'
+      CALL ATASMO(NEQ   ,FRO1  ,ZI(JAPDDL),ZI(JAPPTR),NUMEDD,MAF1  ,'V',
+     &            NBLIAI,NMULT ,NUMEF1)
 C ======================================================================
 C --- CREATION DU VECTEUR DE CISAILLEMENT
 C --- MATF*((ZR(JDEPDE-1+NUM1)+ZR(JDELT0-1+NUM1))
@@ -826,7 +826,7 @@ C ======================================================================
          LLIAC = ILIAI
          COMPT0 = 0
          DO 301 JJ = 1, NBLIAC + LLF + LLF1 + LLF2
-            IF (ZK8(JVECC-1+JJ).EQ.TYPEC0) THEN
+            IF (ZK8(JTYPL-1+JJ).EQ.TYPEC0) THEN
                COMPT0 = COMPT0 + 1
             ENDIF
             LLJAC = ZI(JLIAC-1+JJ)
@@ -871,7 +871,7 @@ C ======================================================================
             CALL CFELPV(LLIAC, TYPEF2, RESOCO, NBLIAI, GLISS2)
 C ======================================================================
             IF (.NOT.GLISS2) THEN
-               CALL CALADU (NEQ,NBDDL,ZR(JAPCOF+JDECAL+30*NTNOE),
+               CALL CALADU (NEQ,NBDDL,ZR(JAPCOF+JDECAL+30*NESMAX),
      &                                 ZI(JAPDDL+JDECAL),ZR(JDELTA),VAL)
                AJEUFY = VAL
             ENDIF
@@ -902,12 +902,14 @@ C ======================================================================
 C --- CREATION DE LA MATRICE DE FROTTEMENT - SECONDE PARTIE (MAF2)
 C ======================================================================
       NMULT = 1
-      CALL ATASMO(NEQ,FRO2,ZI(JAPDDL),
-     &                     ZI(JAPPTR),NUMEDD,MAF2,'V',NBLIAI,NMULT)
+      NUMEF2 = '&&FROLGD.NUF2'
+      CALL ATASMO(NEQ   ,FRO2  ,ZI(JAPDDL),ZI(JAPPTR),NUMEDD,MAF2  ,'V',
+     &            NBLIAI,NMULT ,NUMEF2)
 C ======================================================================
 C --- CALCUL DE LA MATRICE TANGENTE AVEC FROTTEMENT
 C ======================================================================
-      CALL CFFROT(MAF1,'-',MAF2,MAFROT)
+      NUFROT = '&&FROLGD.NUFR'
+      CALL CFFROT(MAF1,'-',MAF2,MAFROT,NUFROT)
 C ======================================================================
  999  CONTINUE
 C

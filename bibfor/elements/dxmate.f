@@ -24,7 +24,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C     ------------------------------------------------------------------
-C MODIF ELEMENTS  DATE 14/10/2008   AUTEUR REZETTE C.REZETTE 
+C MODIF ELEMENTS  DATE 13/09/2010   AUTEUR DESROCHES X.DESROCHES 
 C TOLE CRP_20
 C     ------------------------------------------------------------------
 C     CALCUL DES MATRICES DE RIGIDITE DE FLEXION, MEMBRANE , COUPLAGE
@@ -588,11 +588,11 @@ C
 C        --- CALCUL DE LA MATRICE DE COUPLAGE MEMBRANE-FLEXION --------
 C        --- REACTUALISATION DE LA MATRICE DE FLEXION          --------
 C        --- DANS LE CAS D'UN EXCENTREMENT                     --------
-          DO 100 I = 1, 3
+        DO 100 I = 1, 3
           DO 100 J = 1, 3
             DF(I,J) = DF(I,J)+DEUX*EXCENT*DMF(I,J)+EXCENT*EXCENT*DM(I,J)
             DMF(I,J)= DMF(I,J)                    +EXCENT*DM(I,J)
-  100     CONTINUE
+  100   CONTINUE
 C
 C        ----------- MATRICES DANS LE REPERE INTRINSEQUE DE L'ELEMENT --
         CALL UTBTAB('ZERO',3,3, DM,T1VE,XAB1, DM)
@@ -605,8 +605,10 @@ C
 C
       END IF
 C
-      DO 110 K = 1,9
-          IF (ABS(DMF(K,1)).GT.1.D-10) MULTIC = 2
-  110 CONTINUE
+      IF (FAMI.EQ.'RIGI') THEN
+        DO 110 K = 1,9
+          IF (ABS(DMF(K,1)).GT.1.D-10) MULTIC = 2 
+ 110    CONTINUE
+      END IF
 C
       END

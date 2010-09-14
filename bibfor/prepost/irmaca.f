@@ -7,7 +7,7 @@
       LOGICAL      LMOD
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 08/11/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF PREPOST  DATE 14/09/2010   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -524,6 +524,7 @@ C
                 IPOIN = POINT(IMA)
                 NNOE  = POINT(IMA+1) -IPOIN
                 IF (KTYPE.EQ.'QUAD9' .OR. KTYPE.EQ.'TRIA7') NNOE=NNOE-1
+                IF (KTYPE.EQ.'PENTA18')NNOE=NNOE-3
                 IF (KTYPE.EQ.'SEG4') NNOE=NNOE-2
                 DO 308 J = 1,NNOE
                   IJ = ZI(IACORR-1+J)

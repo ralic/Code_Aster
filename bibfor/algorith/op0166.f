@@ -1,7 +1,7 @@
       SUBROUTINE OP0166()
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 12/07/2010   AUTEUR BERARD A.BERARD 
+C MODIF ALGORITH  DATE 14/09/2010   AUTEUR BERARD A.BERARD 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -52,7 +52,7 @@ C
       INTEGER IAUX,JAUX,IRET
       INTEGER IE,IBID,N1,N2,N3
       INTEGER NRPASS,NBPASS
-      INTEGER ADRECG,I
+      INTEGER ADRECG,I,NBMA,IER
       LOGICAL ISOLE
       LOGICAL LNOEU,LELNO,LELEM,LELGA
       CHARACTER*4 TYCHV
@@ -92,7 +92,6 @@ C        RESUIN : NOM DE LA SD_RESULTAT A PROJETER (SI .NOT.ISOLE)
         CALL ASSERT(N3.EQ.1)
         RESUIN=' '
       ENDIF
-
 
 
 
@@ -150,7 +149,6 @@ C          ELLE COMPORTE PJEF_EL (TABLEAU AUXILIAIRE)
      &            RESUIN,CHAM1,
      &            MOA1,MOA2,
      &            NOMA1,NOMA2,CNREF)
-
 
 
 
@@ -277,7 +275,8 @@ C       ------  LES MOTS-CLES 'MODELE_1' ET 'MODELE_2' SONT OBLIGATOIRES
               ENDIF
               LIGRE1 = NOMO1//'.MODELE'
               LIGRE2 = NOMO2//'.MODELE'
-              CALL PJELGA(CHAM1,LIGRE1,PROL0,
+
+              CALL PJELGA(NOMO2,CHAM1,LIGRE1,PROL0,
      &             LCORRE(2),LERES1,LIGRE2,IRET)
               CALL ASSERT(IRET.EQ.0)
 

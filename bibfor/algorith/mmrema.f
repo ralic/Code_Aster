@@ -4,7 +4,7 @@
      &                  KSI1  ,KSI2  ,PROJIN,DISTME)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/07/2010   AUTEUR DESOZA T.DESOZA 
+C MODIF ALGORITH  DATE 14/09/2010   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -75,25 +75,9 @@ C              .FALSE. S'IL Y A EU RABATTEMENT PARCE QU'ELLE SERAIT
 C              TOMBEEE HORS DE LA MAILLE MAITRE (A LA TOLERANCE PRES)
 C OUT DISTME : VECTEUR E->M
 C
-C ----------------------------------------------------------------------
+C A SUPPRIMER
 C
-      LOGICAL      LDIST
-C
-C ----------------------------------------------------------------------
-C
-C
-C --- PROJECTION SUR LA MAILLE MAITRE
-C --- CALCUL DU JEU MINIMUM, DES COORDONNEES DU POINT PROJETE
-C --- ET DES DEUX VECTEURS TANGENTS
-C
-      CALL CFPROJ(NOMA  ,DEFICO,NEWGEO,POSNOM,ITEMAX,
-     &            EPSMAX,TOLEOU,DIRAPP,DIR   ,COORPT,
-     &            POSMAM,NUMMAM,JEU   ,KSI1  ,KSI2  ,
-     &            TAU1M ,TAU2M ,LDIST ,DISTME)
-C
-C --- TRAITEMENT DU CAS DU RABATTEMENT
-C
-      PROJIN = .TRUE.
-      IF (.NOT.LDIST)      PROJIN = .FALSE.
-      IF (DIRAPP)          PROJIN = .TRUE.
+      CALL JEMARQ()
+      
+      CALL JEDEMA()
       END

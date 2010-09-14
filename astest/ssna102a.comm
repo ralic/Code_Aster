@@ -1,4 +1,4 @@
-# MODIF  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 14/09/2010   AUTEUR ABBAS M.ABBAS 
 #
 # TITRE CONTACT MULTICORPS ELASTIQUES
 # ssna102a.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
@@ -25,7 +25,11 @@
 #########################################
 
 
-DEBUT(CODE=_F(NOM='SSNA102A',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NOM='SSNA102A',NIV_PUB_WEB='INTERNET'),
+DEBUG=_F(SDVERI='OUI'),
+IGNORE_ALARM=('CONTACT_93'))
+
+# Test de la methode RESOLUTION='NON'. Interpenetration donc alarme CONTACT_93 ignoree
 
 # --------------------------------------------------------------------
 #       LECTURE DU MAILLAGE ET CREATION DE GROUPES DE NOEUDS
@@ -135,6 +139,21 @@ CONT = DEFI_CONTACT(MODELE      = MOD,
                     ZONE=(
                                _F(  GROUP_MA_MAIT = 'LAB1',
                                     GROUP_MA_ESCL = 'CEP2',
+                                    SANS_GROUP_NO = ('PA1', 'PP2',),),
+                               _F(  GROUP_MA_MAIT = 'CME2',
+                                    GROUP_MA_ESCL = 'CEP3',),
+                               _F(  GROUP_MA_MAIT = 'CME3',
+                                    GROUP_MA_ESCL = 'LCD4',
+                                    SANS_GROUP_NO = ('PM3', 'PD4',)),
+                          ),
+                     );
+
+CONT2 = DEFI_CONTACT(MODELE      = MOD,
+                    FORMULATION = 'DISCRETE',
+                    ZONE=(
+                               _F(  GROUP_MA_MAIT = 'LAB1',
+                                    GROUP_MA_ESCL = 'CEP2',
+                                    RESOLUTION    = 'NON',
                                     SANS_GROUP_NO = ('PA1', 'PP2',),),
                                _F(  GROUP_MA_MAIT = 'CME2',
                                     GROUP_MA_ESCL = 'CEP3',),
@@ -298,6 +317,62 @@ TEST_TABLE(     TABLE=REACENC,
                 CRITERE='RELATIF' )
 
 
+#
+# --------------------------------------------------------------------
+#                            CALCUL NON LINEAIRE - MODE MIXTE
+# --------------------------------------------------------------------
+#
+
+RESU2=STAT_NON_LINE(
+                          SOLVEUR=_F(SYME='OUI',),
+                          MODELE=MOD,
+                          CHAM_MATER=CHMAT,EXCIT=(
+                          _F(  CHARGE = BLOQ),
+                                _F(  CHARGE = DEPL,   FONC_MULT = FONC),
+                                _F(  CHARGE = LIAI),),
+                          CONTACT  = CONT2,      
+                          COMP_ELAS=_F(  RELATION = 'ELAS'),
+                          NEWTON=_F(  MATRICE = 'ELASTIQUE'),
+                          INCREMENT=_F(  LIST_INST = LINST),
+                          CONVERGENCE=_F(
+                                        RESI_GLOB_MAXI = 1.E-6,
+                                        ITER_GLOB_MAXI = 50,
+                                        ARRET = 'OUI'),
+                          INFO=1
+                       )
+
+TAB_VC3=POST_RELEVE_T(ACTION=_F(OPERATION='MOYENNE',
+                               INTITULE='JEU METHODE VERIF ',
+                               RESULTAT=RESU2,
+                               NOM_CHAM='VALE_CONT',
+                               GROUP_NO='CEP2',
+                               NOM_CMP=('CONT','JEU',),),);
+
+IMPR_TABLE(TABLE=TAB_VC3);
+
+TEST_TABLE(TABLE=TAB_VC3,
+           FILTRE=(_F(NOM_PARA='QUANTITE',
+                      VALE_K='MINIMUM',),
+                   _F(NOM_PARA='INST',
+                      VALE=1.0,),),
+           NOM_PARA='JEU',
+           PRECISION=1.E-8,
+           VALE=-1.7485414747862,
+                             REFERENCE = 'NON_REGRESSION',
+                  VERSION   = '10.2.14',
+                  );
+
+TEST_TABLE(TABLE=TAB_VC3,
+           FILTRE=(_F(NOM_PARA='QUANTITE',
+                      VALE_K='MAXIMUM',),
+                   _F(NOM_PARA='INST',
+                      VALE=1.0,),),
+           NOM_PARA='JEU',
+           PRECISION=1.E-8,
+           VALE=3.2799451080147,
+                             REFERENCE = 'NON_REGRESSION',
+                  VERSION   = '10.2.14',
+                  );
 
 FIN()
 #

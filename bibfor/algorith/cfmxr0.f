@@ -1,7 +1,7 @@
-      SUBROUTINE CFMXR0(DEFICO,RESOCO,NOMA  ,FONACT)
+      SUBROUTINE CFMXR0(DEFICO,RESOCO,NOMA  )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 14/09/2010   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -23,20 +23,19 @@ C
       IMPLICIT     NONE
       CHARACTER*24 DEFICO,RESOCO
       CHARACTER*8  NOMA
-      INTEGER      FONACT(*)
 C      
 C ----------------------------------------------------------------------
 C
 C ROUTINE CONTACT (TOUTES METHODES - POST-TRAITEMENT)
 C
-C CREER LE CHAM_NO_S POUR L ARCHIVAGE DU CONTACT 
+C CREER LE VALE_CONT POUR L'ARCHIVAGE DU CONTACT 
 C
 C ----------------------------------------------------------------------
 C
 C
+C IN  DEFICO : SD DE DEFINITION DU CONTACT
 C IN  RESOCO : SD DE TRAITEMENT NUMERIQUE DU CONTACT
 C IN  NOMA   : NOM DU MAILLAGE
-C IN  FONACT : FONCTIONNALITES ACTIVEES (VOIR NMFONC)
 C
 C ------------- DEBUT DECLARATIONS NORMALISEES JEVEUX -----------------
 C
@@ -57,26 +56,23 @@ C
 C
 C --------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------
 C 
-      INTEGER      NBCMP,NBCMX
-      PARAMETER    (NBCMP = 24,NBCMX = 27)
-      CHARACTER*8  NOMCMP(NBCMP),NOMCMX(NBCMX)
+      INTEGER      NBCMP
+      PARAMETER    (NBCMP = 27)
+      CHARACTER*8  NOMCMP(NBCMP)
       INTEGER      NBPER
       PARAMETER    (NBPER = 4)
       CHARACTER*8  NOMPER(NBPER)            
 C
-      INTEGER      CFMMVD,ZRESU,ZPERC,ZRESX,CFDISD
+      INTEGER      CFMMVD,ZRESU,ZPERC
       INTEGER      IFM,NIV
-      INTEGER      IZONE,ISURF,ILIAI,ICMP,IRET,IER
-      INTEGER      NBLIAI,JDECNO,NBNOE,POSNOE,NUMNOE,NBNO
+      INTEGER      IZONE,ICMP,INOE
+      INTEGER      NBNOE,POSNOE,NUMNOE
       INTEGER      CFDISI,NZOCO
-      CHARACTER*24 CONTNO
-      INTEGER      JNOCO
       INTEGER      JCNSVR,JCNSLR
       CHARACTER*19 CNSINR
       INTEGER      JCNSVP,JCNSLP
-      CHARACTER*8  K8BID
-      LOGICAL      ISFONC,LCTCC,LCTCD,LXFCM
-      
+      INTEGER      MMINFI,JDECNE
+      LOGICAL      CFDISL,LCTCC,LCTCD,LMAIL
       CHARACTER*19 CNSPER      
 C ----------------------------------------------------------------------
       DATA NOMCMP
@@ -87,18 +83,8 @@ C ----------------------------------------------------------------------
      &     'RTGX','RTGY','RTGZ',
      &     'RX'  ,'RY'  ,'RZ'  ,
      &     'R'   ,'HN'  ,'I'   ,
-     &     'IX'  ,'IY'  ,'IZ'  /
-C ----------------------------------------------------------------------
-      DATA NOMCMX
-     &   / 'CONT','JEU' ,'RN'  ,
-     &     'RNX' ,'RNY' ,'RNZ' ,
-     &     'GLIX','GLIY','GLI' ,
-     &     'RTAX','RTAY','RTAZ',
-     &     'RTGX','RTGY','RTGZ',
-     &     'RX'  ,'RY'  ,'RZ'  ,
-     &     'R'   ,'HN'  ,'I'   ,
      &     'IX'  ,'IY'  ,'IZ'  ,
-     &     'PT_X','PT_Y','PT_Z'/     
+     &     'PT_X','PT_Y','PT_Z'/   
 C ----------------------------------------------------------------------
       DATA NOMPER
      &   / 'V1','V2','V3','V4'/     
@@ -106,67 +92,46 @@ C
 C ----------------------------------------------------------------------
 C
       CALL JEMARQ()
-      CALL INFNIV(IFM,NIV)
+      CALL INFDBG('CONTACT',IFM,NIV)
+C
+C --- INITIALISATIONS
+C      
+      NZOCO  = CFDISI(DEFICO,'NZOCO' )
 C
 C --- ACCES SD CONTACT
 C    
-      CALL DISMOI('F','NB_NO_MAILLA',NOMA,'MAILLAGE',NBNO,K8BID,IER)
       CNSINR = RESOCO(1:14)//'.VALE'
       CNSPER = RESOCO(1:14)//'.PERC'    
       ZRESU  = CFMMVD('ZRESU')
       ZPERC  = CFMMVD('ZPERC')
-      ZRESX  = CFMMVD('ZRESX')
       IF (ZRESU.NE.NBCMP) THEN
         CALL ASSERT(.FALSE.)
-      ENDIF
-      IF (ZRESX.NE.NBCMX) THEN
-        CALL ASSERT(.FALSE.)
-      ENDIF      
+      ENDIF    
       IF (ZPERC.NE.NBPER) THEN
         CALL ASSERT(.FALSE.)
       ENDIF   
-C       
-      LCTCC  = ISFONC(FONACT,'CONT_CONTINU')
-      LCTCD  = ISFONC(FONACT,'CONT_DISCRET')
-      LXFCM  = ISFONC(FONACT,'CONT_XFEM')               
 C
-C -- LONGUEUR DU CHAM_NO_S VALE_CONT 
-C      
-      IF (LCTCD) THEN
-        NBLIAI = CFDISD(RESOCO,'NBLIAI')
-        NZOCO  = CFDISI(DEFICO,'NZOCO')
-        CONTNO = DEFICO(1:16)//'.NOEUCO'
-        CALL JEVEUO(CONTNO,'L',JNOCO )
-      ELSEIF (LCTCC) THEN  
-        NBLIAI = NBNO
-      ENDIF                  
+C --- TYPE DE CONTACT
+C       
+      LCTCC  = CFDISL(DEFICO,'FORMUL_CONTINUE')
+      LCTCD  = CFDISL(DEFICO,'FORMUL_DISCRETE')
+      LMAIL  = LCTCC.OR.LCTCD               
 C
 C --- CREATION DU CHAM_NO_S VALE_CONT
 C
-      IF (LXFCM) THEN
-        CALL JEEXIN(CNSINR(1:19)//'.CNSV',IRET)
-        IF (IRET.EQ.0) THEN
-          CALL CNSCRE(NOMA,'INFC_R',ZRESX,NOMCMX,'V',CNSINR)
-        ENDIF       
-      ELSEIF (LCTCC.OR.LCTCD) THEN
-        CALL JEEXIN(CNSINR(1:19)//'.CNSV',IRET)
-        IF (IRET.EQ.0) THEN
-          CALL CNSCRE(NOMA,'INFC_R',ZRESU,NOMCMP,'V',CNSINR)
-        ENDIF  
+      CALL CNSCRE(NOMA  ,'INFC_R',ZRESU ,NOMCMP,'V',CNSINR)
+C
+C --- INITIALISATION DU CHAM_NO_S VALE_CONT 
+C
+      IF (LMAIL) THEN
         CALL JEVEUO(CNSINR(1:19)//'.CNSV','E',JCNSVR)
         CALL JEVEUO(CNSINR(1:19)//'.CNSL','E',JCNSLR)
-      ELSE
-        CALL ASSERT(.FALSE.)
-      ENDIF
-C
-C --- INITIALISATION DU CHAM_NO_S VALE_CONT - CAS DISCRET
-C
-      IF (LCTCD) THEN
         DO 10 IZONE = 1,NZOCO
-          CALL CFZONE(DEFICO,IZONE,'ESCL',ISURF)
-          CALL CFNBSF(DEFICO,ISURF,'NOEU',NBNOE,JDECNO)
-          DO 11 POSNOE = 1,NBNOE
-            NUMNOE = ZI(JNOCO-1+JDECNO+POSNOE)
+          JDECNE = MMINFI(DEFICO,'JDECNE',IZONE )
+          NBNOE  = MMINFI(DEFICO,'NBNOE' ,IZONE )
+          DO 11 INOE = 1,NBNOE
+            POSNOE = INOE + JDECNE
+            CALL CFNUMN(DEFICO,1     ,POSNOE,NUMNOE)
             DO 12 ICMP = 1,ZRESU
               ZR(JCNSVR-1+ZRESU*(NUMNOE-1)+ICMP) = 0.D0
               ZL(JCNSLR-1+ZRESU*(NUMNOE-1)+ICMP) = .TRUE.
@@ -175,55 +140,30 @@ C
  10     CONTINUE
       ENDIF
 C
-C --- INITIALISATION DU CHAM_NO_S VALE_CONT - CAS CONTINU
-C
-      IF (LCTCC) THEN
-        DO 20 ILIAI = 1,NBLIAI
-          DO 21 ICMP = 1,ZRESU
-            ZR(JCNSVR-1+ZRESU*(ILIAI-1)+ICMP) = 0.D0
-            ZL(JCNSLR-1+ZRESU*(ILIAI-1)+ICMP) = .TRUE.
- 21       CONTINUE
-          ZR(JCNSVR-1+ZRESU*(ILIAI-1)+2 ) = 0.0D0
- 20     CONTINUE
-      ENDIF
-C
 C --- CREATION DU CHAM_NO_S PERCUSSION
 C 
-      CALL JEEXIN(CNSPER(1:19)//'.CNSV',IRET)
-      IF (IRET.EQ.0) THEN
-        CALL CNSCRE(NOMA,'VARI_R',ZPERC,NOMPER,'V',CNSPER)
-      ENDIF  
-      CALL JEVEUO(CNSPER(1:19)//'.CNSV','E',JCNSVP)
-      CALL JEVEUO(CNSPER(1:19)//'.CNSL','E',JCNSLP)   
+      IF (LMAIL) THEN
+        CALL CNSCRE(NOMA  ,'VARI_R',ZPERC,NOMPER,'V',CNSPER)
+      ENDIF   
 C
 C --- INITIALISATION DU CHAM_NO_S PERCUSSION
 C --- ON NE REMET PAS A ZERO D'UN PAS A L'AUTRE
 C
-      IF (LCTCD) THEN
-        IF (IRET.EQ.0) THEN    
-          DO 1 IZONE = 1,NZOCO
-            CALL CFZONE(DEFICO,IZONE,'ESCL',ISURF)
-            CALL CFNBSF(DEFICO,ISURF,'NOEU',NBNOE,JDECNO)
-            DO 2 POSNOE = 1,NBNOE
-              NUMNOE = ZI(JNOCO-1+JDECNO+POSNOE)
-              DO 3 ICMP = 1,ZPERC
-                ZR(JCNSVP-1+ZPERC*(NUMNOE-1)+ICMP) = 0.D0
-                ZL(JCNSLP-1+ZPERC*(NUMNOE-1)+ICMP) = .FALSE.
- 3            CONTINUE
- 2          CONTINUE
- 1        CONTINUE
-        ENDIF
-      ENDIF
-
-      IF (LCTCC) THEN
-        IF (IRET.EQ.0) THEN    
-          DO 4 ILIAI = 1,NBLIAI     
-            DO 5 ICMP = 1,ZPERC
-              ZR(JCNSVP-1+ZPERC*(ILIAI-1)+ICMP) = 0.D0
-              ZL(JCNSLP-1+ZPERC*(ILIAI-1)+ICMP) = .FALSE.
- 5          CONTINUE
- 4        CONTINUE
-        ENDIF
+      IF (LMAIL) THEN
+        CALL JEVEUO(CNSPER(1:19)//'.CNSV','E',JCNSVP)
+        CALL JEVEUO(CNSPER(1:19)//'.CNSL','E',JCNSLP)      
+        DO 1 IZONE = 1,NZOCO
+          JDECNE = MMINFI(DEFICO,'JDECNE',IZONE )
+          NBNOE  = MMINFI(DEFICO,'NBNOE' ,IZONE )
+          DO 2 INOE = 1,NBNOE
+            POSNOE = INOE + JDECNE
+            CALL CFNUMN(DEFICO,1     ,POSNOE,NUMNOE)
+            DO 3 ICMP = 1,ZPERC
+              ZR(JCNSVP-1+ZPERC*(NUMNOE-1)+ICMP) = 0.D0
+              ZL(JCNSLP-1+ZPERC*(NUMNOE-1)+ICMP) = .FALSE.
+ 3          CONTINUE
+ 2        CONTINUE
+ 1      CONTINUE
       ENDIF
 C
       CALL JEDEMA()

@@ -5,7 +5,7 @@
       CHARACTER*(*) ELREFZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 06/10/2009   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ELEMENTS  DATE 14/09/2010   AUTEUR REZETTE C.REZETTE 
 C RESPONSABLE VABHHTS J.PELLET
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -43,7 +43,7 @@ C   -------------------------------------------------------------------
       REAL*8 ZERO,UNDEMI,UN,DEUX,TROIS,QUATRE,UNS4,UNS8
       REAL*8 X0,Y0,Z0,AL,X1,X2,X3,X4,D1,D2,D3,D4
       REAL*8 PFACE1,PFACE2,PFACE3,PFACE4,Z01,Z02,Z04
-      REAL*8 PMILI1,PMILI2,PMILI3,PMILI4
+      REAL*8 PMILI1,PMILI2,PMILI3,PMILI4,HUIT
       REAL*8 U,AL31,AL32,AL33,DAL31,DAL32,DAL33
       REAL*8 R,R1,R2,A,B,C,D,E,F,G,H,O,P,Q,S,T
 
@@ -63,8 +63,9 @@ C DEB ------------------------------------------------------------------
       DEUX   = 2.0D0
       TROIS  = 3.0D0
       QUATRE = 4.0D0
+      HUIT   = 8.0D0
       UNS4   = UN/QUATRE
-      UNS8   = UN/8.0D0
+      UNS8   = UN/HUIT
 
 C     ------------------------------------------------------------------
       IF (ELREFE.EQ.'HE8') THEN
@@ -705,6 +706,70 @@ C     ------------------------------------------------------------------
         DFF(1,15) = DEUX*Y0*AL
         DFF(2,15) = (DEUX*AL-DEUX*Y0)* (UN+X0)
         DFF(3,15) = -DEUX*Y0* (UN+X0)
+
+C     ------------------------------------------------------------------
+      ELSE IF (ELREFE.EQ.'P18') THEN
+
+        X0 = X(1)
+        Y0 = X(2)
+        Z0 = X(3)
+        NNO = 18
+        NDIM = 3
+
+        DFF(1,1) = Y0*(DEUX*X0-UN)*(DEUX*Y0-UN)/DEUX
+        DFF(2,1) = X0*(X0-UN)*(QUATRE*Y0-UN)/DEUX
+        DFF(3,1) = ZERO
+        DFF(1,2) = Z0*(DEUX*X0-UN)*(DEUX*Z0-UN)/DEUX
+        DFF(2,2) = ZERO
+        DFF(3,2) = X0*(X0-UN)*(QUATRE*Z0-UN)/DEUX
+        DFF(1,3) = (DEUX*X0-UN)*(Z0+Y0-UN)*(DEUX*Z0+DEUX*Y0-UN)/DEUX
+        DFF(2,3) = X0*(X0-UN)*(QUATRE*Z0+QUATRE*Y0-TROIS)/DEUX
+        DFF(3,3) = X0*(X0-UN)*(QUATRE*Z0+QUATRE*Y0-TROIS)/DEUX
+        DFF(1,4) = Y0*(DEUX*X0+UN)*(DEUX*Y0-UN)/DEUX
+        DFF(2,4) = X0*(X0+UN)*(QUATRE*Y0-UN)/DEUX
+        DFF(3,4) = ZERO
+        DFF(1,5) = Z0*(DEUX*X0+UN)*(DEUX*Z0-UN)/DEUX
+        DFF(2,5) = ZERO
+        DFF(3,5) = X0*(X0+UN)*(QUATRE*Z0-UN)/DEUX
+        DFF(1,6) = (DEUX*X0+UN)*(Z0+Y0-UN)*(DEUX*Z0+DEUX*Y0-UN)/DEUX
+        DFF(2,6) = X0*(X0+UN)*(QUATRE*Z0+QUATRE*Y0-TROIS)/DEUX
+        DFF(3,6) = X0*(X0+UN)*(QUATRE*Z0+QUATRE*Y0-TROIS)/DEUX
+        DFF(1,7) = DEUX*Y0*Z0*(DEUX*X0-UN)
+        DFF(2,7) = DEUX*X0*Z0*(X0-UN)
+        DFF(3,7) = DEUX*X0*Y0*(X0-UN)
+        DFF(1,8) = -DEUX*Z0*(DEUX*X0-UN)*(Z0+Y0-UN)
+        DFF(2,8) = -DEUX*X0*Z0*(X0-UN)
+        DFF(3,8) = -DEUX*X0*(X0-UN)*(DEUX*Z0+Y0-UN)
+        DFF(1,9) = -DEUX*Y0*(DEUX*X0-UN)*(Z0+Y0-UN)
+        DFF(2,9) = -DEUX*X0*(X0-UN)*(DEUX*Y0+Z0-UN)
+        DFF(3,9) = -DEUX*X0*Y0*(X0-UN)
+        DFF(1,10) = -DEUX*X0*Y0*(DEUX*Y0-UN)
+        DFF(2,10) = -(X0-UN)*(X0+UN)*(QUATRE*Y0-UN)
+        DFF(3,10) = ZERO
+        DFF(1,11) = -DEUX*X0*Z0*(DEUX*Z0-UN)
+        DFF(2,11) = ZERO
+        DFF(3,11) = -(X0-UN)*(X0+UN)*(QUATRE*Z0-UN)
+        DFF(1,12) = -DEUX*X0*(Z0+Y0-UN)*(DEUX*Z0+DEUX*Y0-UN)
+        DFF(2,12) = -(X0-UN)*(X0+UN)*(QUATRE*Z0+QUATRE*Y0-TROIS)
+        DFF(3,12) = -(X0-UN)*(X0+UN)*(QUATRE*Z0+QUATRE*Y0-TROIS)
+        DFF(1,13) = DEUX*Y0*Z0*(DEUX*X0+UN)
+        DFF(2,13) = DEUX*X0*Z0*(X0+UN)
+        DFF(3,13) = DEUX*X0*Y0*(X0+UN)
+        DFF(1,14) = -DEUX*Z0*(DEUX*X0+UN)*(Z0+Y0-UN)
+        DFF(2,14) = -DEUX*X0*Z0*(X0+UN)
+        DFF(3,14) = -DEUX*X0*(X0+UN)*(DEUX*Z0+Y0-UN)
+        DFF(1,15) = -DEUX*Y0*(DEUX*X0+UN)*(Z0+Y0-UN)
+        DFF(2,15) = -DEUX*X0*(X0+UN)*(DEUX*Y0+Z0-UN)
+        DFF(3,15) = -DEUX*X0*Y0*(X0+UN)
+        DFF(1,16) = -HUIT*X0*Y0*Z0
+        DFF(2,16) = -QUATRE*Z0*(X0-UN)*(X0+UN)
+        DFF(3,16) = -QUATRE*Y0*(X0-UN)*(X0+UN)
+        DFF(1,17) = HUIT*X0*Z0*(Z0+Y0-UN)
+        DFF(2,17) = QUATRE*Z0*(X0-UN)*(X0+UN)
+        DFF(3,17) = QUATRE*(X0-UN)*(X0+UN)*(DEUX*Z0+Y0-UN)
+        DFF(1,18) = HUIT*X0*Y0*(Z0+Y0-UN)
+        DFF(2,18) = QUATRE*(X0-UN)*(X0+UN)*(DEUX*Y0+Z0-UN)
+        DFF(3,18) = QUATRE*Y0*(X0-UN)*(X0+UN)
 
 C     ------------------------------------------------------------------
       ELSE IF (ELREFE.EQ.'TE4') THEN

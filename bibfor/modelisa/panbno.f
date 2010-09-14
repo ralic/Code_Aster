@@ -3,7 +3,7 @@
       INTEGER           ITYP,NBNOTT(3)
 C---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 06/10/2009   AUTEUR GENIAUT S.GENIAUT 
+C MODIF MODELISA  DATE 14/09/2010   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -72,6 +72,7 @@ C --- DEBUT
       ELSE IF (NOMTM(1:5).EQ.'PENTA') THEN
         NBNOTT(1) = 6
         IF (NBNTOT.EQ.15) NBNOTT(2) = 9
+        IF (NBNTOT.EQ.18) NBNOTT(3) = 3
       ELSE IF (NOMTM(1:5).EQ.'PYRAM') THEN
         NBNOTT(1) = 5
         IF (NBNTOT.EQ.13) NBNOTT(2) = 8

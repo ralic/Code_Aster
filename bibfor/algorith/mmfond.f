@@ -1,7 +1,7 @@
       SUBROUTINE MMFOND(NOMA  ,DEFICO,IZONE ,POSMAE,TYPBAR)
 C     
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 14/09/2010   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -77,12 +77,11 @@ C
 C
 C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
 C
-      CHARACTER*24 CONTNO
-      INTEGER      JNOCO
-      INTEGER      IBID,IMABAR,N1,N2,INOE,CODRET
+      INTEGER      IBID,IMABAR,N1,N2,INOE
       CHARACTER*24 PBARS,BARSMA,PBARM
       CHARACTER*8  ALIAS,ELTCTC,NOMMAI,NOMNOE
-      INTEGER      NBNOE,POSNOE,NUMNOE,POSNNO(9)
+      INTEGER      NNOMAE,NUMNOE
+      INTEGER      POSNNO(9),NUMNNO(9)
       INTEGER      NUMMAE
       LOGICAL      BARSO1,BARSO2
       INTEGER      NUNOBA(2)
@@ -95,11 +94,9 @@ C
 C 
 C --- LECTURE DES STRUCTURES DE DONNEES DE CONTACT
 C      
-      CONTNO = DEFICO(1:16)//'.NOEUCO' 
       PBARS  = DEFICO(1:16)//'.PBANOCO'
       BARSMA = DEFICO(1:16)//'.BAMACO'
-      PBARM  = DEFICO(1:16)//'.PBAMACO'                       
-      CALL JEVEUO(CONTNO,'L',JNOCO)           
+      PBARM  = DEFICO(1:16)//'.PBAMACO'         
       CALL JEVEUO(PBARS ,'L',JPBARS)
       CALL JEVEUO(BARSMA,'L',JBARM)
       CALL JEVEUO(PBARM ,'L',JPBARM) 
@@ -115,13 +112,12 @@ C
 C
 C --- INFOS SUR LA MAILLE DE CONTACT   
 C  
-      CALL CFPOSM(NOMA  ,DEFICO,'MAIL',1     ,POSMAE,
-     &            NUMMAE,CODRET) 
-      IF (CODRET.LT.0) THEN
-        CALL ASSERT(.FALSE.)
-      ENDIF       
-      CALL MMELTY(NOMA  ,NUMMAE,ELTCTC,IBID  ,IBID  )  
-      CALL CFPOSN(NOMA  ,DEFICO,POSMAE,POSNNO,NBNOE )
+      CALL CFNUMM(DEFICO,1     ,POSMAE,NUMMAE)
+      CALL MMELTY(NOMA  ,NUMMAE,ELTCTC,IBID  ,IBID  )
+      CALL CFPOSN(DEFICO,POSMAE,POSNNO,NNOMAE)
+      CALL ASSERT(NNOMAE.LE.9)
+      CALL CFNUMN(DEFICO,NNOMAE,POSNNO,NUMNNO)
+      
       CALL JENUNO(JEXNUM(NOMA//'.NOMMAI',NUMMAE),NOMMAI)
 C          
       MBARS  = ZI(JPBARM+IZONE) - ZI(JPBARM+IZONE-1) 
@@ -141,14 +137,12 @@ C --- TRAITEMENT DES "POI1" EN FOND DE FISSURE (2D)
 C         
         IF (ALIAS.EQ.'PO1') THEN
           N1     = ZI(ICONEX+ZI(ILONG-1+NUBAR)-2+1)
-          POSNOE = POSNNO(1)
-          NUMNOE = ZI(JNOCO+POSNOE-1)
+          NUMNOE = NUMNNO(1)
           IF (NUMNOE .EQ. N1) THEN
             TYPBAR    = 5
             GOTO 33
           END IF   
-          POSNOE = POSNNO(2)
-          NUMNOE = ZI(JNOCO+POSNOE-1)                 
+          NUMNOE = NUMNNO(2)                 
           IF (NUMNOE .EQ. N1) THEN
             TYPBAR    = 6
             GOTO 33
@@ -162,9 +156,8 @@ C
           N2 = ZI(ICONEX+ZI(ILONG-1+NUBAR)-2+2)
           BARSO1 = .FALSE.
           BARSO2 = .FALSE.
-          DO 55 INOE = 1,NBNOE
-            POSNOE = POSNNO(INOE)
-            NUMNOE = ZI(JNOCO+POSNOE-1)          
+          DO 55 INOE = 1,NNOMAE
+            NUMNOE = NUMNNO(INOE)          
             IF (NUMNOE .EQ. N1) THEN
               BARSO1 = .TRUE.
               NUNOBA(1) = INOE 
@@ -219,17 +212,14 @@ C
        NBARS = ZI(JPBARS+IZONE) - ZI(JPBARS+IZONE-1) 
        IF (NBARS .NE. 0) THEN  
         IF (ELTCTC(1:2).EQ.'SE') THEN
-                
-          POSNOE = POSNNO(1)
-          NUMNOE = ZI(JNOCO+POSNOE-1)   
+          NUMNOE = NUMNNO(1)
           CALL JENUNO(JEXNUM(NOMA//'.NOMNOE',NUMNOE),NOMNOE)        
           CALL CFMMEX(DEFICO,'FOND',IZONE ,NUMNOE,SUPPOK)
           IF (SUPPOK .EQ. 1) THEN
             TYPBAR    = 5         
             GOTO 56
           END IF
-          POSNOE = POSNNO(2)
-          NUMNOE = ZI(JNOCO+POSNOE-1)
+          NUMNOE = NUMNNO(2)
           CALL JENUNO(JEXNUM(NOMA//'.NOMNOE',NUMNOE),NOMNOE)       
           CALL CFMMEX(DEFICO,'FOND',IZONE ,NUMNOE,SUPPOK)
           IF (SUPPOK .EQ. 1) THEN

@@ -1,7 +1,7 @@
       SUBROUTINE CFVERD(NOMA  ,NUMEDD,DEFICO)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 14/09/2010   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -60,7 +60,7 @@ C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
 C
       CHARACTER*8  NOMNO
       INTEGER      CFDISI,NNOCO
-      INTEGER      INO,CODRET,JBID,VERDIM
+      INTEGER      INO,JBID,VERDIM,POSNO
 C
 C ----------------------------------------------------------------------
 C
@@ -71,17 +71,13 @@ C
       NNOCO  = CFDISI(DEFICO,'NNOCO')
 
       DO 10 INO = 1,NNOCO
-        CALL CFNOMM(NOMA  ,DEFICO,'NOEU',INO   ,NOMNO ,
-     &              CODRET)
-        IF (CODRET.GE.0) THEN
-          CALL POSDDL('NUME_DDL',NUMEDD,NOMNO,'DZ',JBID,
-     &                VERDIM)
-          IF (VERDIM.NE.0) THEN
-             CALL U2MESS('F','CONTACT_85')
-           ENDIF
-        ELSE
-          CALL ASSERT(.FALSE.)  
-        ENDIF 
+        POSNO = INO
+        CALL CFNOMM(NOMA  ,DEFICO,'NOEU',POSNO,NOMNO )
+        CALL POSDDL('NUME_DDL',NUMEDD,NOMNO,'DZ',JBID,
+     &              VERDIM)
+        IF (VERDIM.NE.0) THEN
+          CALL U2MESS('F','CONTACT_85')
+        ENDIF
  10   CONTINUE
 C
       CALL JEDEMA()

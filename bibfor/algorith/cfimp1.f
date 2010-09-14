@@ -1,7 +1,7 @@
       SUBROUTINE CFIMP1(NOMA  ,DEFICO,RESOCO,IFM   )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 14/09/2010   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -59,96 +59,73 @@ C
 C
 C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
 C
-      INTEGER      CFMMVD,ZAPME
-      INTEGER      POSNOE,POSAPP,ILIAC,ILIAI,ACTIF
-      CHARACTER*8  NOMNOE,NOMMAI,NOMENT
+      INTEGER      ILIAC,ILIAI,ACTIF,IZONE,IP
+      CHARACTER*8  NOMAPP
+      CHARACTER*16 NOMNOE
       INTEGER      CFDISD
-      INTEGER      CODRET
       CHARACTER*14 CHAIAC
       CHARACTER*4  TYPE2
       CHARACTER*2  TYPLIA
       REAL*8       JEU
       CHARACTER*10 TYPLI
-      CHARACTER*24 APPARI,APJEU,APMEMO
-      INTEGER      JAPPAR,JAPJEU,JAPMEM
-      CHARACTER*19 LIAC,CONVEC
-      INTEGER      JLIAC,JVECC
-      INTEGER      BTOTAL,NDIM,NBLIAI
+      CHARACTER*24 APJEU
+      INTEGER      JAPJEU 
+      CHARACTER*19 LIAC,TYPL 
+      INTEGER      JLIAC,JTYPL
+      CHARACTER*24 NUMLIA
+      INTEGER      JNUMLI     
+      CHARACTER*19 SDAPPA
+      INTEGER      TYPAPP,ENTAPP 
+      INTEGER      BTOTAL,NDIMG,NBLIAI
 C
 C ----------------------------------------------------------------------
 C
       CALL JEMARQ ()
 C
 C --- ACCES SD CONTACT
-C
-      APPARI = RESOCO(1:14)//'.APPARI'
-      APMEMO = RESOCO(1:14)//'.APMEMO'      
+C  
       LIAC   = RESOCO(1:14)//'.LIAC'
-      CONVEC = RESOCO(1:14)//'.CONVEC'
+      TYPL   = RESOCO(1:14)//'.TYPL'
       APJEU  = RESOCO(1:14)//'.APJEU'
+      NUMLIA = RESOCO(1:14)//'.NUMLIA'
 C
-      CALL JEVEUO(APPARI,'L',JAPPAR)
       CALL JEVEUO(LIAC  ,'L',JLIAC)
-      CALL JEVEUO(APJEU ,'L',JAPJEU)
-      CALL JEVEUO(APMEMO,'L',JAPMEM)          
-      CALL JEVEUO(CONVEC,'L',JVECC) 
+      CALL JEVEUO(APJEU ,'L',JAPJEU)         
+      CALL JEVEUO(TYPL  ,'L',JTYPL)   
+      CALL JEVEUO(NUMLIA,'L',JNUMLI)     
 C
-      ZAPME  = CFMMVD('ZAPME')      
+C --- SD APPARIEMENT
+C
+      SDAPPA = RESOCO(1:14)//'.APPA'
 C
 C --- INFORMATIONS SUR CONTACT
 C  
-      NDIM   = CFDISD(RESOCO,'NDIM'  )
+      NDIMG  = CFDISD(RESOCO,'NDIM'  )
       NBLIAI = CFDISD(RESOCO,'NBLIAI')
-      BTOTAL = CFDISD(RESOCO,'BTOTAL')                 
+      BTOTAL = CFDISD(RESOCO,'BTOTAL')                  
 C
 C --- BOUCLE SUR LES LIAISONS
 C
       DO 500 ILIAI = 1,NBLIAI
 C
-C --- REPERAGE DE L'ESCLAVE
+C ----- POINT DE CONTACT
+C      
+        IP     = ZI(JNUMLI+3*(ILIAI-1)+1-1)
 C
-        POSNOE = ZI(JAPPAR+ILIAI)
+C ----- INFOS APPARIEMENT
 C
-C --- NOM ET TYPE DU NOEUD ESCLAVE
+        CALL APINFI(SDAPPA,'APPARI_TYPE'  ,IP    ,TYPAPP )
+        CALL APINFI(SDAPPA,'APPARI_ENTITE',IP    ,ENTAPP )
+        CALL APINFI(SDAPPA,'APPARI_ZONE'  ,IP    ,IZONE  )       
 C
-        CALL CFNOMM(NOMA  ,DEFICO,'NOEU',POSNOE,NOMENT,
-     &              CODRET)        
-        IF (CODRET.EQ.-1) THEN
-          NOMNOE = 'ERREUR'
-        ELSE  
-          NOMNOE = NOMENT
-        ENDIF
+C ----- NOM DU NOEUD ESCLAVE
 C
-C --- REPERAGE DU MAITRE APPARIE
+        CALL APNOMP(SDAPPA,IP    ,NOMNOE)
 C
-        POSAPP = ZI(JAPMEM+ZAPME*(POSNOE-1)+3-1)     
+C ----- NOM ET TYPE DU MAITRE
 C
-C --- NOM ET TYPE (MAILLE OU NOEUD) DU MAITRE
-C
-        IF (POSAPP.LT.0) THEN
-          CALL CFNOMM(NOMA  ,DEFICO,'NOEU',POSAPP,NOMENT,
-     &                CODRET)
-          IF (CODRET.LT.0) THEN
-            TYPE2  = ' '
-            NOMMAI = 'ERREUR'          
-          ELSE   
-            TYPE2  = '/ND '
-            NOMMAI = NOMENT   
-          ENDIF         
-        ELSEIF (POSAPP.GT.0) THEN
-          CALL CFNOMM(NOMA  ,DEFICO,'MAIL',POSAPP,NOMENT,
-     &                CODRET)
-          IF (CODRET.LT.0) THEN
-            TYPE2  = ' '
-            NOMMAI = 'ERREUR'          
-          ELSE
-            TYPE2  = '/EL '
-            NOMMAI = NOMENT   
-          ENDIF    
-        ELSE  
-          TYPE2  = ' NON'
-        NOMMAI = ' APPARIE'               
-        ENDIF
+        CALL CFNOAP(NOMA  ,DEFICO,TYPAPP,ENTAPP,NOMAPP,
+     &              TYPE2 )      
 C
 C --- JEU
 C
@@ -165,11 +142,11 @@ C
 C --- TYPE LIAISON
 C
             TYPLI  = 'CONT.     ' 
-            TYPLIA = ZK8(JVECC-1+ILIAC)(1:2)
+            TYPLIA = ZK8(JTYPL-1+ILIAC)(1:2)
             IF (TYPLIA.EQ.'C0') THEN
               TYPLI = 'CONT.     '
             ELSE IF (TYPLIA.EQ.'F0') THEN
-              IF (NDIM.EQ.3) THEN
+              IF (NDIMG.EQ.3) THEN
                 TYPLI = 'FROT. 1&2 '
               ELSE
                 TYPLI = 'FROT.     '
@@ -189,20 +166,20 @@ C
         IF (ACTIF.EQ.1) THEN
           CHAIAC = ' ACTIVE (JEU: '
         
-          WRITE (IFM,1000) ILIAI,'(',NOMNOE,TYPE2,NOMMAI,'): ',
+          WRITE (IFM,1000) ILIAI,'(',NOMNOE,TYPE2,NOMAPP,'): ',
      &                     CHAIAC,JEU,',TYPE: ',TYPLI,')'
         ELSE
           CHAIAC = ' LIBRE  (JEU: '
-          WRITE (IFM,1010) ILIAI,'(',NOMNOE,TYPE2,NOMMAI,'): ',
+          WRITE (IFM,1010) ILIAI,'(',NOMNOE,TYPE2,NOMAPP,'): ',
      &                     CHAIAC,JEU,')'
 
         ENDIF
   500 CONTINUE
    
- 1000 FORMAT (' <CONTACT> <> LIAISON ',I5,A1,A8,A4,A8,A3,A14,E10.3,
+ 1000 FORMAT (' <CONTACT> <> LIAISON ',I5,A1,A16,A4,A8,A3,A14,E10.3,
      &         A7,A10,A1)
 
- 1010 FORMAT (' <CONTACT> <> LIAISON ',I5,A1,A8,A4,A8,A3,A14,E10.3,
+ 1010 FORMAT (' <CONTACT> <> LIAISON ',I5,A1,A16,A4,A8,A3,A14,E10.3,
      &         A1)
 C
       CALL JEDEMA()

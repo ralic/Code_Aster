@@ -1,4 +1,4 @@
-# MODIF  DATE 30/08/2010   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 13/09/2010   AUTEUR PELLET J.PELLET 
 # RESPONSABLE GNICOLAS G.NICOLAS
 # TITRE TEST DE HOMARD AVEC DES QUADRANGLES
 # zzzz121d.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test S
@@ -199,9 +199,8 @@ RESU_0=CALC_ELEM(reuse =RESU_0,
 
                  RESULTAT=RESU_0,
                  OPTION=('SIGM_ELNO_DEPL','ERRE_ELEM_SIGM',),
-                 EXCIT=(
-                 _F(CHARGE=CH1_0,),
-                 _F(CHARGE=CH2_0,),),);
+
+);
 #
 # 3.6. Calcul de la contrainte a comparer
 
@@ -279,9 +278,8 @@ RESU_1=CALC_ELEM(reuse =RESU_1,
 
                  RESULTAT=RESU_1,
                  OPTION=('SIGM_ELNO_DEPL','ERRE_ELEM_SIGM',),
-                 EXCIT=(
-                 _F(CHARGE=CH1_1,),
-                 _F(CHARGE=CH2_1,),),);
+
+);
 #
 # 5.6. Calcul de la contrainte a comparer
 
@@ -365,9 +363,8 @@ RESU_2=CALC_ELEM(reuse =RESU_2,
 
                  RESULTAT=RESU_2,
                  OPTION=('SIGM_ELNO_DEPL','ERRE_ELEM_SIGM',),
-                 EXCIT=(
-                 _F(CHARGE=CH1_2,),
-                 _F(CHARGE=CH2_2,),),);
+
+);
 #
 # 7.6. Calcul de la contrainte a comparer
 
@@ -444,9 +441,8 @@ RESU_3=CALC_ELEM(reuse =RESU_3,
 
                  RESULTAT=RESU_3,
                  OPTION='SIGM_ELNO_DEPL',
-                 EXCIT=(
-                 _F(CHARGE=CH1_3,),
-                 _F(CHARGE=CH2_3,),),);
+
+);
 #
 # 9.6. Calcul de la contrainte a comparer
 

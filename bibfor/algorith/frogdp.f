@@ -2,7 +2,7 @@
      &                  DEPDEL)
 C 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 14/09/2010   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -101,13 +101,13 @@ C
       INTEGER      JDEPDE,JDELT0,JDELTA,JLIAC
       INTEGER      NEQ,NBLIAC,NBLIAI,NBDDL
       INTEGER      LLIAC,JDECAL
-      INTEGER      CFDISI,CFDISD
+      INTEGER      CFDISD
       INTEGER      JAPPTR,JAPCOE,JAPDDL,JNOCO,JMACO
       INTEGER      JAPCOF,JAFMU,LMAF1,JENAT,JFRO2,ITER
-      INTEGER      NTNOE
+      INTEGER      NESMAX
       REAL*8       AJEUFX,AJEUFY,XF,XX,XK,XMU,VAL,XMU1
       REAL*8       BETA,VAL1,VAL2,R8BID,AJEU
-      CHARACTER*14 NUMEDD
+      CHARACTER*14 NUMEDD,NUMACT,NUMAF1,NUMAF2,NUTEMP,NUFROT
       CHARACTER*19 AFMU,MAT,ENAT,FRO1,FRO2,MACT,MAF1,MAF2,MAFROT,MATEMP
       CHARACTER*19 LIAC,MU,ATMU,DELT0,DELTA
       CHARACTER*24 APJEFX,APJEFY,APJEU
@@ -162,10 +162,10 @@ C ======================================================================
       FRO1   = RESOCO(1:14)//'.FRO1'
       FRO2   = RESOCO(1:14)//'.FRO2'
       MAFROT = RESOCO(1:14)//'.MAFR'
-      MACT   = '&&FROPGD.MACT'
-      MAF1   = '&&FROPGD.MAF1'
-      MAF2   = '&&FROPGD.MAF2'
-      MATEMP = '&&FROPGD.MATP'
+      MACT   = '&&FROGDP.MACT'
+      MAF1   = '&&FROGDP.MAF1'
+      MAF2   = '&&FROGDP.MAF2'
+      MATEMP = '&&FROGDP.MATP'
       TACFIN = RESOCO(1:14)//'.TACFIN' 
       MAT      = ZK24(ZI(LMAT+1))(1:19)
 C ======================================================================
@@ -195,9 +195,8 @@ C --- NBLIAI : NOMBRE DE LIAISONS DE CONTACT
 C --- NBLIAC : NOMBRE DE LIAISONS ACTIVES
 C --- NEQ    : NOMBRE D'EQUATIONS DU MODELE
 C --- ITEMAX : NOMBRE D'ITERATIONS DE CONTACT MAXI
-C --- NTNOE : NOMBRE MAXI DE NOEUDS ESCLAVES
+C --- NESMAX : NOMBRE MAXI DE NOEUDS ESCLAVES
 C              SERT AU DECALAGE DANS LES ROUTINES DE FROTTEMENT 3D
-C              (VAUT DONC ZERO SI SANS FROTTEMENT OU FROTTEMENT 2D)
 C --- INDFAC : INDICE DE DEBUT DE LA FACTORISATION
 C --- INDIC  : 0  INITIALISATION,
 C             +1 ON A RAJOUTE UNE LIAISON
@@ -218,7 +217,7 @@ C ======================================================================
       NBLIAI = CFDISD(RESOCO,'NBLIAI')
       NEQ    = CFDISD(RESOCO,'NEQ'   )
       NDIM   = CFDISD(RESOCO,'NDIM'  )
-      NTNOE  = CFDISI(DEFICO,'NTNOE' )
+      NESMAX = CFDISD(RESOCO,'NESMAX')
       NBLIAC = CFDISD(RESOCO,'NBLIAC')   
       ITER   = 0
 C ======================================================================
@@ -271,9 +270,9 @@ C
          VAL    = VAL1 + VAL2
          AJEUFX = ZR(JAPJFX-1+LLIAC) - VAL
          IF (NDIM.EQ.3) THEN
-           CALL CALADU(NEQ,NBDDL,ZR(JAPCOF+JDECAL+30*NTNOE),
+           CALL CALADU(NEQ,NBDDL,ZR(JAPCOF+JDECAL+30*NESMAX),
      &                 ZI(JAPDDL+JDECAL),ZR(JDELT0),VAL1)
-           CALL CALADU(NEQ,NBDDL,ZR(JAPCOF+JDECAL+30*NTNOE),
+           CALL CALADU(NEQ,NBDDL,ZR(JAPCOF+JDECAL+30*NESMAX),
      &                 ZI(JAPDDL+JDECAL),ZR(JDEPDE),VAL2)
            VAL = VAL1 + VAL2
            AJEUFY = ZR(JAPJFY-1+LLIAC) - VAL
@@ -330,8 +329,9 @@ C --- CETTE MATRICE NE SERT QU'AU CALCUL DU SECOND MEMBRE
 C ======================================================================
 C
       NMULT = 1
-      CALL ATASMO(NEQ,ENAT,ZI(JAPDDL),
-     &                     ZI(JAPPTR),NUMEDD,MACT,'V',NBLIAI,NMULT)
+      NUMACT = '&&FROGDP.NUCT'
+      CALL ATASMO(NEQ   ,ENAT  ,ZI(JAPDDL),ZI(JAPPTR),NUMEDD,MACT  ,'V',
+     &            NBLIAI,NMULT ,NUMACT)
 C
 C ======================================================================
 C --- CREATION DE LA MATRICE FRO1 = E_N*AT
@@ -351,7 +351,7 @@ C
               NBDDL  = ZI(JAPPTR+ILIAI)   - ZI(JAPPTR+ILIAI-1)
               XMU    = ZR(JMU-1+3*NBLIAI+ILIAI)
               CALL DAXPY(NBDDL,XMU,ZR(JAPCOF+JDECAL),1,ZR(JFRO11),1)
-              CALL DAXPY(NBDDL,XMU,ZR(JAPCOF+JDECAL+30*NTNOE),
+              CALL DAXPY(NBDDL,XMU,ZR(JAPCOF+JDECAL+30*NESMAX),
      &                           1,ZR(JFRO12),1)
             ENDIF
             CALL JELIBE(JEXNUM(FRO1,ILIAI)       )
@@ -380,8 +380,9 @@ C --- CREATION DE LA MATRICE MAF1 = E_N*AT*A
 C ======================================================================
 C
       NMULT = NDIM - 1
-      CALL ATASMO(NEQ,FRO1,ZI(JAPDDL),
-     &                     ZI(JAPPTR),NUMEDD,MAF1,'V',NBLIAI,NMULT)
+      NUMAF1 = '&&FROGDP.NUF1'
+      CALL ATASMO(NEQ   ,FRO1  ,ZI(JAPDDL),ZI(JAPPTR),NUMEDD,MAF1  ,'V',
+     &            NBLIAI,NMULT ,NUMAF1)
 C
 C ======================================================================
 C --- RECUPERATION DU SECOND MEMBRE
@@ -414,9 +415,9 @@ C
              VAL = VAL1 + VAL2
              AJEUFX = ZR(JAPJFX-1+ILIAI)-VAL
              IF (NDIM.EQ.3) THEN
-               CALL CALADU (NEQ,NBDDL,ZR(JAPCOF+JDECAL+30*NTNOE ),
+               CALL CALADU (NEQ,NBDDL,ZR(JAPCOF+JDECAL+30*NESMAX),
      &                      ZI(JAPDDL+JDECAL),ZR(JDELT0),VAL1)
-               CALL CALADU (NEQ,NBDDL,ZR(JAPCOF+JDECAL+30*NTNOE ),
+               CALL CALADU (NEQ,NBDDL,ZR(JAPCOF+JDECAL+30*NESMAX),
      &                   ZI(JAPDDL+JDECAL),ZR(JDEPDE),VAL2)
                VAL = VAL1 + VAL2
                AJEUFY = ZR(JAPJFY-1+ILIAI)-VAL
@@ -468,15 +469,18 @@ C --- CREATION DE LA SECONDE PARTIE DE LA MATRICE DE FROTTEMENT MAF2
 C ======================================================================
 C
       NMULT = 1
-      CALL ATASMO(NEQ,FRO2,ZI(JAPDDL),
-     &                     ZI(JAPPTR),NUMEDD,MAF2,'V',NBLIAI,NMULT)
+      NUMAF2 = '&&FROGDP.NUF2'
+      CALL ATASMO(NEQ   ,FRO2  ,ZI(JAPDDL),ZI(JAPPTR),NUMEDD,MAF2  ,'V',
+     &            NBLIAI,NMULT ,NUMAF2)
 C
 C ======================================================================
 C --- CALCUL DE LA MATRICE TANGENTE MAFROT = MACT+MAF1+MAF2
 C ======================================================================
 C
-      CALL CFFROT(MAF1,'-',MAF2  ,MATEMP)
-      CALL CFFROT(MACT,'+',MATEMP,MAFROT)
+      NUTEMP = '&&FROGDP.NUTP'
+      NUFROT = '&&FROGDP.NUFR'
+      CALL CFFROT(MAF1,'-',MAF2  ,MATEMP,NUTEMP)
+      CALL CFFROT(MACT,'+',MATEMP,MAFROT,NUFROT)
 C ======================================================================
 C --- CALCUL DES FORCES DE CONTACT (AT.MU) ET FROTTEMENT (AF.MU)
 C ======================================================================

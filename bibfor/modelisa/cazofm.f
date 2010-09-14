@@ -1,7 +1,7 @@
       SUBROUTINE CAZOFM(CHAR  ,MOTFAC,IFORM ,NZOCO )
 C      
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
+C MODIF MODELISA  DATE 14/09/2010   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -151,10 +151,7 @@ C
           IFROT  = 0
           
           IF (ALGOC(1:3) .EQ. 'GCP') THEN
-            ICONT  = 2     
-               
-          ELSEIF (ALGOC(1:5) .EQ. 'VERIF') THEN
-            ICONT  = 3
+            ICONT  = 2
 
           ELSEIF (ALGOC(1:8) .EQ. 'CONTRAIN') THEN
             ICONT  = 1

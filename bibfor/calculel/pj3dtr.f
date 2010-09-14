@@ -1,6 +1,6 @@
       SUBROUTINE PJ3DTR(CORTR3,CORRES,NUTM3D,ELRF3D,GEOM1,GEOM2)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 12/07/2010   AUTEUR BERARD A.BERARD 
+C MODIF CALCULEL  DATE 14/09/2010   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,8 +20,8 @@ C ======================================================================
 C TOLE CRP_20
       IMPLICIT NONE
       CHARACTER*16 CORRES,CORTR3
-      CHARACTER*8  ELRF3D(9)
-      INTEGER      NUTM3D(9)
+      CHARACTER*8  ELRF3D(10)
+      INTEGER      NUTM3D(10)
       REAL*8  GEOM1(*),GEOM2(*)
 C ----------------------------------------------------------------------
 C     BUT :
@@ -30,8 +30,8 @@ C       DES MAILLES DU MAILLAGE1 (EN 3D ISOPARAMETRIQUE)
 C
 C  IN/JXIN   CORTR3   K16 : NOM DU CORRESP_2_MAILLA FAIT AVEC LES TETR4
 C  IN/JXOUT  CORRES   K16 : NOM DU CORRESP_2_MAILLA FINAL
-C  IN        NUTM3D(5) I  : NUMEROS DES 9 TYPES DE MAILLES 3D
-C  IN        ELRF3D(5) K8 : NOMS DES 9 TYPES DE MAILLES 3D
+C  IN        NUTM3D(5) I  : NUMEROS DES 10 TYPES DE MAILLES 3D
+C  IN        ELRF3D(5) K8 : NOMS DES 10 TYPES DE MAILLES 3D
 C ----------------------------------------------------------------------
 C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
 C
@@ -205,7 +205,7 @@ C       IMA1 : MAILLE DE M1 ASSOCIE AU TETR4 ITR
         IMA1 = ZI(IATR3+6*(ITR-1)+5)
 C       ITYPM : TYPE DE LA MAILLE IMA1
         ITYPM = ZI(IATYMA-1+IMA1)
-        NUTM   = INDIIS(NUTM3D,ITYPM,1,9)
+        NUTM   = INDIIS(NUTM3D,ITYPM,1,10)
         ELREFA = ELRF3D(NUTM)
         ITYP   = ZI(IATR3+6*(ITR-1)+6)
         NBNO   = ZI(ILCNX1+IMA1)-ZI(ILCNX1-1+IMA1)
@@ -231,7 +231,8 @@ C     -----------------------------------------------------------
             DZETA = DZETA + ZR(I1COCF-1+IDECA1+KK)*X3
 771       CONTINUE
 
-        ELSE IF (ELREFA.EQ.'PE6' .OR. ELREFA.EQ.'P15') THEN
+        ELSE IF (ELREFA.EQ.'PE6' .OR. ELREFA.EQ.'P15'.OR.
+     &                                ELREFA.EQ.'P18' ) THEN
           DO 772,KK=1,4
             X1 = CRREFE(NDIM*(CNPENT(KK,ITYP)-1)+1)
             X2 = CRREFE(NDIM*(CNPENT(KK,ITYP)-1)+2)

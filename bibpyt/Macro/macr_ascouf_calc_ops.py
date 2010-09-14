@@ -1,4 +1,4 @@
-#@ MODIF macr_ascouf_calc_ops Macro  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
+#@ MODIF macr_ascouf_calc_ops Macro  DATE 14/09/2010   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -316,11 +316,11 @@ def macr_ascouf_calc_ops(self,TYPE_MAILLAGE,CL_BOL_P2_GV,MAILLAGE,MODELE,CHAM_MA
   if TYPE_MAILLAGE in ('FISS_COUDE','FISS_AXIS_DEB'):
     _chcont = DEFI_CONTACT( MODELE      = modele ,
                             FORMULATION = 'DISCRETE',
-                            TOLE_INTERP = -1.E-6,
                             ZONE =_F(GROUP_MA_MAIT = 'FACE1',
                                      GROUP_MA_ESCL = 'FACE2',
-                                     ALGO_CONT     = 'VERIF',
-                                     GROUP_MA_FOND = 'FONDFISS'),)
+                                     RESOLUTION    = 'NON',
+                                     TOLE_INTERP   = -1.E-6,
+                                     SANS_GROUP_MA = 'FONDFISS'),)
 #
 #     --- commande STAT_NON_LINE ---
 #
@@ -403,7 +403,6 @@ def macr_ascouf_calc_ops(self,TYPE_MAILLAGE,CL_BOL_P2_GV,MAILLAGE,MODELE,CHAM_MA
 #
   nomres = CALC_ELEM( reuse      = nomres,
                       RESULTAT   = nomres ,
-                      MODELE     = modele ,
                       TOUT_ORDRE = 'OUI'  ,
                       OPTION     = ('SIEF_ELNO_ELGA','EQUI_ELNO_SIGM') ,
                       INFO       = INFO   ,)

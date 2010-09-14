@@ -3,7 +3,7 @@
       CHARACTER*16        OPTION, NOMTE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 22/02/2010   AUTEUR DESOZA T.DESOZA 
+C MODIF ELEMENTS  DATE 14/09/2010   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -52,29 +52,29 @@ C
       INTEGER      NNE,NNM,NNL
       INTEGER      NDDL,NDIM,NBCPS,NBDM
       INTEGER      INDCO,INADH,INDASP
-      INTEGER      IFROTT,IFORM,ICOMPL,IUSURE 
+      INTEGER      IFROTT,IFORM,ICOMPL,IUSURE
       INTEGER      JPCF,JGEOM,JDEPM,JDEPDE
       INTEGER      JACCM,JVITM,JVITP,JUSUP
       INTEGER      JVECT
       INTEGER      TYPBAR,TYPRAC,NDEXFR
       REAL*8       TAU1(3),TAU2(3)
       REAL*8       NORM(3),MPROJN(3,3),MPROJT(3,3)
-      REAL*8       RESE(3),NRESE            
-      REAL*8       XPR,YPR,XPC,YPC,HPG,JACOBI   
-      REAL*8       VTMP(81)  
+      REAL*8       RESE(3),NRESE
+      REAL*8       XPR,YPR,XPC,YPC,HPG,JACOBI
+      REAL*8       VTMP(81)
       REAL*8       COEFFF,LAMBDA
       REAL*8       COEFCS,COEFCP,COEFCR
       REAL*8       COEFFR,COEFFS,COEFFP
       REAL*8       JEU,JEUSUP
-      REAL*8       DELTAT,BETA,GAMMA 
-      REAL*8       GEOMAE(9,3),GEOMAM(9,3)       
+      REAL*8       DELTAT,BETA,GAMMA
+      REAL*8       GEOMAE(9,3),GEOMAM(9,3)
       REAL*8       GEOMM(3),GEOME(3)
       REAL*8       DLAGRC,DLAGRF(2)
       REAL*8       DDEPLE(3),DDEPLM(3)
-      REAL*8       DEPLME(3),DEPLMM(3)      
+      REAL*8       DEPLME(3),DEPLMM(3)
       REAL*8       ACCME(3),VITME(3),ACCMM(3),VITMM(3)
-      REAL*8       VITPE(3),VITPM(3)      
-      REAL*8       KAPPAN,KAPPAV,ASPERI                          
+      REAL*8       VITPE(3),VITPM(3)
+      REAL*8       KAPPAN,KAPPAV,ASPERI
       REAL*8       JEUVIT,JEVITP
       REAL*8       PRFUSU
       CHARACTER*8  NOMMAE,NOMMAM
@@ -82,17 +82,17 @@ C
       LOGICAL      LSTABC,LSTABF,LPENAC,LPENAF
       LOGICAL      LADHER,LGLISS
       LOGICAL      DEBUG
-      REAL*8       FFE(9),DFFE(2,9),DDFFE(3,9)       
-      REAL*8       FFM(9),DFFM(2,9),DDFFM(3,9)   
-      REAL*8       FFL(9),DFFL(2,9),DDFFL(3,9)         
-C           
+      REAL*8       FFE(9),DFFE(2,9),DDFFE(3,9)
+      REAL*8       FFM(9),DFFM(2,9),DDFFM(3,9)
+      REAL*8       FFL(9),DFFL(2,9),DDFFL(3,9)
+C
       REAL*8       VECTCC(9)
-      REAL*8       VECTFF(18)    
-      REAL*8       VECTEE(27),VECTMM(27)  
+      REAL*8       VECTFF(18)
+      REAL*8       VECTEE(27),VECTMM(27)
 C
 C ----------------------------------------------------------------------
 C
-      CALL JEMARQ()         
+      CALL JEMARQ()
 C
 C --- INITIALISATIONS
 C
@@ -140,9 +140,9 @@ C
       KAPPAV   =      ZR(JPCF-1+28)
       IUSURE   = NINT(ZR(JPCF-1+29))
       JEUSUP   =      ZR(JPCF-1+32)
-      DELTAT   =      ZR(JPCF-1+33)     
+      DELTAT   =      ZR(JPCF-1+33)
       BETA     =      ZR(JPCF-1+34)
-      GAMMA    =      ZR(JPCF-1+35)   
+      GAMMA    =      ZR(JPCF-1+35)
       INDCO    = NINT(ZR(JPCF-1+37))
       INDASP   = NINT(ZR(JPCF-1+38))
       LCOMPL   = ICOMPL.EQ.1
@@ -169,21 +169,16 @@ C
         CALL JEVECH('PVITE_P','L',JVITP )
         CALL JEVECH('PVITE_M','L',JVITM )
         CALL JEVECH('PACCE_M','L',JACCM )
-      ENDIF  
+      ENDIF
 C
 C --- INFOS SUR LA MAILLE DE CONTACT
 C
       LFROTT = IFROTT.EQ.3
       CALL MMELEM(NOMTE ,LFROTT,NDIM  ,NDDL  ,NOMMAE,
      &            NNE   ,NOMMAM,NNM   ,NNL   ,NBCPS ,
-     &            NBDM  ,LAXIS )        
+     &            NBDM  ,LAXIS )
 C
-C --- REACTUALISATION DE LA GEOMETRIE (MAILLAGE+DEPMOI)
-C
-      CALL MMREAC(NBDM  ,NDIM  ,NNE   ,NNM   ,JGEOM ,
-     &            JDEPM ,GEOMAE,GEOMAM)   
-C
-C --- FONCTIONS DE FORMES ET DERIVEES 
+C --- FONCTIONS DE FORMES ET DERIVEES
 C
       CALL MMFORM(NDIM  ,NOMMAE,NOMMAM,NNE   ,NNM   ,
      &            XPC   ,YPC   ,XPR   ,YPR   ,FFE   ,
@@ -198,52 +193,57 @@ C
         CALL MMMFFM(NOMMAM,XPR   ,YPR   ,TYPBAR,FFM   ,
      &              DFFM  )
         CALL MMMFFM(NOMMAE,XPC   ,YPC   ,TYPBAR,FFL   ,
-     &              DFFL  )     
-      ENDIF      
+     &              DFFL  )
+      ENDIF
 C
-C --- JACOBIEN POUR LE POINT DE CONTACT 
+C --- JACOBIEN POUR LE POINT DE CONTACT
 C
-      CALL MMMJAC(NOMMAE,GEOMAE,FFE   ,DFFE  ,LAXIS ,
-     &            NDIM  ,JACOBI)     
+      CALL MMMJAC(NOMMAE,JGEOM ,FFE   ,DFFE  ,LAXIS ,
+     &            NNE   ,NDIM  ,JACOBI)
 C
 C --- CALCUL DE LA NORMALE ET DES MATRICES DE PROJECTION
-C  
+C
       CALL MMCALN(NDIM  ,TAU1  ,TAU2  ,NORM  ,MPROJN,
-     &            MPROJT)  
+     &            MPROJT)
+C
+C --- REACTUALISATION DE LA GEOMETRIE (MAILLAGE+DEPMOI)
+C
+      CALL MMREAC(NBDM  ,NDIM  ,NNE   ,NNM   ,JGEOM ,
+     &            JDEPM ,GEOMAE,GEOMAM)
 C
 C --- CALCUL DES COORDONNEES ACTUALISEES
-C 
+C
       CALL MMGEOM(NDIM  ,NNE   ,NNM   ,FFE   ,FFM   ,
-     &            GEOMAE,GEOMAM,GEOME ,GEOMM ) 
+     &            GEOMAE,GEOMAM,GEOME ,GEOMM )
 C
 C --- CALCUL DES INCREMENTS - LAGRANGE DE CONTACT ET FROTTEMENT
-C       
+C
       CALL MMLAGM(NBDM  ,NDIM  ,NNL   ,JDEPDE,FFL   ,
-     &            DLAGRC,DLAGRF) 
+     &            DLAGRC,DLAGRF)
 C
 C --- MODIF. RACCORD/BARSOUM
 C
       CALL MMLAG2(NDIM  ,NBDM  ,NNL   ,JDEPDE,TYPBAR,
-     &            TYPRAC,DLAGRC)           
+     &            TYPRAC,DLAGRC)
 C
 C --- MISE A JOUR DES CHAMPS INCONNUS INCREMENTAUX - DEPLACEMENTS
-C 
+C
       CALL MMDEPM(NBDM  ,NDIM  ,NNE   ,NNM   ,JDEPM ,
      &            JDEPDE,FFE   ,FFM   ,DDEPLE,DDEPLM ,
      &            DEPLME,DEPLMM)
 C
-C --- CALCUL DES VITESSES/ACCELERATIONS 
+C --- CALCUL DES VITESSES/ACCELERATIONS
 C
       IF (IFORM.EQ.2) THEN
         CALL MMVITM(NBDM  ,NDIM  ,NNE   ,NNM   ,FFE   ,
      &              FFM   ,JVITM ,JACCM ,JVITP ,VITME ,
      &              VITMM ,VITPE ,VITPM ,ACCME ,ACCMM )
       ENDIF
-C 
+C
 C --- CALCUL USURE
-C 
+C
       IF (IUSURE .EQ. 1) THEN
-        PRFUSU = ZR(JUSUP-1+1)   
+        PRFUSU = ZR(JUSUP-1+1)
       ELSE
         PRFUSU = 0.D0
       END IF
@@ -264,7 +264,7 @@ C
         CALL MMMJEC(NDIM  ,NORM  ,BETA  ,GAMMA ,DELTAT,
      &              DDEPLE,DDEPLM,DEPLME,DEPLMM,VITME ,
      &              VITMM ,ACCME ,ACCMM ,JEVITP)
-      ENDIF       
+      ENDIF
 C
 C --- CALCUL DES SECONDS MEMBRES DE CONTACT/FROTTEMENT
 C
@@ -307,7 +307,7 @@ C
      &                LAMBDA,RESE  ,NRESE ,TYPBAR,TYPRAC,
      &                NDEXFR,ASPERI,KAPPAN,KAPPAV,DLAGRC,
      &                DLAGRF,DDEPLE,DDEPLM,JEVITP,VECTEE,
-     &                VECTMM,VECTCC,VECTFF)          
+     &                VECTMM,VECTCC,VECTFF)
             ELSEIF (INDCO.EQ.1) THEN
               CALL MMMVEC('CONT',
      &                LSTABC,LPENAC,LCOMPL,LFROTT,LSTABF,
@@ -319,22 +319,22 @@ C
      &                LAMBDA,RESE  ,NRESE ,TYPBAR,TYPRAC,
      &                NDEXFR,ASPERI,KAPPAN,KAPPAV,DLAGRC,
      &                DLAGRF,DDEPLE,DDEPLM,JEVITP,VECTEE,
-     &                VECTMM,VECTCC,VECTFF)           
+     &                VECTMM,VECTCC,VECTFF)
             ELSE
               CALL ASSERT(.FALSE.)
-            ENDIF 
+            ENDIF
           ELSE
-            CALL ASSERT(.FALSE.)        
+            CALL ASSERT(.FALSE.)
           ENDIF
-        ENDIF   
+        ENDIF
       ELSE IF (OPTION.EQ.'CHAR_MECA_FROT') THEN
-      
+
         IF (COEFFF.EQ.0.D0) INDCO = 0
         IF (LAMBDA.EQ.0.D0) INDCO = 0
         IF (.NOT.LFROTT)    INDCO = 0
         TYPBAR = 0
         TYPRAC = 0
-        NDEXFR = 0    
+        NDEXFR = 0
         IF (INDCO.EQ.0) THEN
           CALL MMMVEC('SANS',
      &                LSTABC,LPENAC,LCOMPL,LFROTT,LSTABF,
@@ -352,7 +352,7 @@ C
      &                TAU1  ,TAU2  ,MPROJT,INADH ,RESE  ,
      &                NRESE ,COEFFP,LPENAF)
           LADHER = INADH.EQ.1
-          LGLISS = INADH.EQ.0       
+          LGLISS = INADH.EQ.0
           CALL MMMVEC('FROT',
      &                LSTABC,LPENAC,LCOMPL,LFROTT,LSTABF,
      &                LPENAF,LADHER,LGLISS,NDIM  ,NNE   ,
@@ -368,14 +368,14 @@ C
           CALL ASSERT(.FALSE.)
         END IF
       ELSE
-        CALL ASSERT(.FALSE.) 
+        CALL ASSERT(.FALSE.)
       END IF
 C
 C --- ASSEMBLAGE FINAL
 C
       CALL MMMVAS(NDIM  ,NNE   ,NNM   ,NNL   ,NBDM  ,
      &            NBCPS ,VECTEE,VECTMM,VECTCC,VECTFF,
-     &            VTMP)     
+     &            VTMP)
 C
 C --- RECUPERATION DES VECTEURS 'OUT' (A REMPLIR => MODE ECRITURE)
 C
@@ -389,7 +389,7 @@ C
           IF (VTMP(I).NE.0.D0) THEN
             WRITE(6,*) 'TE0365: ',I,VTMP(I)
           ENDIF
-        ENDIF    
+        ENDIF
 60    CONTINUE
 C
       CALL JEDEMA()

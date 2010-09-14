@@ -8,7 +8,7 @@
       CHARACTER*8 ELRF(NBTMX)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 14/12/2009   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 14/09/2010   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -161,26 +161,28 @@ C     ----------------------------------
         ELRF(5)='QU8'
         ELRF(6)='QU9'
       ELSEIF (DIM.EQ.'3D') THEN
-        NBTM=9
+        NBTM=10
         NOTM(1)='TETRA4'
         NOTM(2)='TETRA10'
         NOTM(3)='PENTA6'
         NOTM(4)='PENTA15'
-        NOTM(5)='HEXA8'
-        NOTM(6)='HEXA20'
-        NOTM(7)='HEXA27'
-        NOTM(8)='PYRAM5'
-        NOTM(9)='PYRAM13'
+        NOTM(5)='PENTA18'
+        NOTM(6)='HEXA8'
+        NOTM(7)='HEXA20'
+        NOTM(8)='HEXA27'
+        NOTM(9)='PYRAM5'
+        NOTM(10)='PYRAM13'
 
         ELRF(1)='TE4'
         ELRF(2)='T10'
         ELRF(3)='PE6'
         ELRF(4)='P15'
-        ELRF(5)='HE8'
-        ELRF(6)='H20'
-        ELRF(7)='H27'
-        ELRF(8)='PY5'
-        ELRF(9)='P13'
+        ELRF(5)='P18'
+        ELRF(6)='HE8'
+        ELRF(7)='H20'
+        ELRF(8)='H27'
+        ELRF(9)='PY5'
+        ELRF(10)='P13'
       ELSE
         CALL ASSERT(.FALSE.)
       ENDIF

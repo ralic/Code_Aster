@@ -1,4 +1,4 @@
-# MODIF  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 14/09/2010   AUTEUR ABBAS M.ABBAS 
 # TITRE CONTACT DE DEUX PLAQUES
 # ssnp121h.para = tps_job 60 mem_job 100Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -156,10 +156,6 @@ SIELNO=CREA_CHAMP(  OPERATION='EXTR',
                     RESULTAT=RESU,
                     NUME_ORDRE=1
                        );
-IMPR_RESU(FORMAT='CASTEM',
-          RESU=_F(MAILLAGE=MA,
-                  RESULTAT=RESU,
-                  NOM_CHAM=('DEPL','VALE_CONT',),),);
 #
 TEST_RESU(   RESU=_F(  RESULTAT = RESU,
                      NUME_ORDRE = 1,

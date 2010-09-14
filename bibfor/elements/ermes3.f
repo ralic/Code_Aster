@@ -3,7 +3,7 @@
      &                  DSG11,DSG22,DSG33,DSG12,DSG13,DSG23)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/09/2009   AUTEUR GNICOLAS G.NICOLAS 
+C MODIF ELEMENTS  DATE 14/09/2010   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -108,6 +108,8 @@ C
         NBNOVO=6
       ELSE IF (TYPMAV.EQ.'PENTA15') THEN
         NBNOVO=15
+      ELSE IF (TYPMAV.EQ.'PENTA18') THEN
+        NBNOVO=18
       ELSE IF (TYPMAV.EQ.'TETRA4') THEN
         NBNOVO=4
       ELSE IF (TYPMAV.EQ.'TETRA10') THEN

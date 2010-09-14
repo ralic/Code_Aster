@@ -1,4 +1,4 @@
-# MODIF  DATE 30/08/2010   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 13/09/2010   AUTEUR PELLET J.PELLET 
 # TITRE PLAQUE TRAPEZOIDALE SOUS POIDS PROPRE (PESANTEUR)
 # sslp301a.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test V
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -74,7 +74,7 @@ NOM_CHAM='DEPL', RESULTAT=DEF,
 
 DEF=CALC_ELEM( reuse= DEF ,RESULTAT= DEF ,
 
-                              EXCIT=_F(CHARGE=CHARGT),
+
                               OPTION=('SIGM_ELNO_DEPL',),
                 )
 

@@ -2,7 +2,7 @@
      &                   DEPDEL,RESU  ,CTCCVG)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 14/09/2010   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -104,7 +104,7 @@ C
       INTEGER      JRESU,NDIM,NEQMAX,ITER
       INTEGER      NEQ,NBLIAC,NBLIAI,INDIC,INDFAC
       INTEGER      LLIAC,JDECAL,NBDDL
-      INTEGER      LLF1,LLF2,NTNOE,BTOTAL
+      INTEGER      LLF1,LLF2,NESMAX,BTOTAL
       INTEGER      LLF,LFMIN
       INTEGER      AJLIAI,SPLIAI,POSIT,COMPT0
       REAL*8       R8MAEM,R8PREM,R8MIEM,AJEU,RHO,RHORHO,AADELT
@@ -113,8 +113,8 @@ C
       COMPLEX*16   CBID
       CHARACTER*1  TYPEAJ
       CHARACTER*2  TYPEC0, TYPEF0
-      CHARACTER*19 LIAC,LIOT,MU,DELT0,DELTA,AFMU,CONVEC
-      INTEGER      JLIAC,JLIOT,JMU,JDELT0,JDELTA,JAFMU,JVECC
+      CHARACTER*19 LIAC,LIOT,MU,DELT0,DELTA,AFMU,TYPL
+      INTEGER      JLIAC,JLIOT,JMU,JDELT0,JDELTA,JAFMU,JTYPL
       CHARACTER*24 APPOIN,APCOEF,APJEU,APDDL
       CHARACTER*24 APCOFR,APJEFX
       INTEGER      JAPPTR,JAPCOE,JAPJEU,JAPDDL
@@ -160,7 +160,7 @@ C
       AFMU     = RESOCO(1:14)//'.AFMU'
       DELT0    = RESOCO(1:14)//'.DEL0'
       DELTA    = RESOCO(1:14)//'.DELT'
-      CONVEC   = RESOCO(1:14)//'.CONVEC'
+      TYPL     = RESOCO(1:14)//'.TYPL'
       TACFIN   = RESOCO(1:14)//'.TACFIN'       
       CALL JEVEUO(APPOIN,'L',JAPPTR)
       CALL JEVEUO(APCOEF,'L',JAPCOE)
@@ -168,7 +168,7 @@ C
       CALL JEVEUO(APJEU, 'E',JAPJEU)
       CALL JEVEUO(APJEFX,'E',JAPJFX)
       CALL JEVEUO(APDDL, 'L',JAPDDL)
-      CALL JEVEUO(CONVEC,'L',JVECC)
+      CALL JEVEUO(TYPL  ,'L',JTYPL)
       CALL JEVEUO(LIAC,  'E',JLIAC)
       CALL JEVEUO(LIOT,  'E',JLIOT)
       CALL JEVEUO(MU,    'E',JMU)
@@ -188,9 +188,8 @@ C              D'ITERATIONS DANS L'ALGO ITEMAX=ITEMUL*NBLIAI
 C --- ISTO   : ACTION STOP_SINGULIER='OUI' OU 'NON'
 C --- ITEMAX : NOMBRE D'ITERATIONS DE CONTACT DANS L'ALGO
 C --- XJVMAX : VALEUR MAXI DU PIVOT DE LA MATRICE DE CONTACT
-C --- NTNOE : NOMBRE MAXI DE NOEUDS ESCLAVES
+C --- NESMAX : NOMBRE MAXI DE NOEUDS ESCLAVES
 C              SERT AU DECALAGE DANS LES ROUTINES DE FROTTEMENT 3D
-C              (VAUT DONC ZERO SI SANS FROTTEMENT OU FROTTEMENT 2D)
 C --- INDFAC : INDICE DE DEBUT DE LA FACTORISATION
 C --- INDIC  : 0  INITIALISATION,
 C             +1 ON A RAJOUTE UNE LIAISON
@@ -214,7 +213,7 @@ C ======================================================================
       ITEMUL = CFDISI(DEFICO,'ITER_CONT_MULT')
       ITEMAX = ITEMUL*NBLIAI
       ISTO   = CFDISI(DEFICO,'STOP_SINGULIER')
-      NTNOE  = CFDISI(DEFICO,'NTNOE' )
+      NESMAX = CFDISD(RESOCO,'NESMAX')
       NBLIAC = CFDISD(RESOCO,'NBLIAC')      
       LLF    = CFDISD(RESOCO,'LLF'   )
       LLF1   = CFDISD(RESOCO,'LLF1'  )
@@ -272,7 +271,7 @@ C
 C --- CALCUL DE -A.C-1.AT COLONNE PAR COLONNE (A PARTIR DE INDFAC)
 C
         CALL CFACAT(NDIM  ,INDIC ,NBLIAC,AJLIAI,SPLIAI,
-     &              LLF   ,LLF1  ,LLF2  ,INDFAC,NTNOE ,
+     &              LLF   ,LLF1  ,LLF2  ,INDFAC,NESMAX,
      &              DEFICO,RESOCO,LMAT  ,NBLIAI,XJVMAX)
 C
 C --- ELIMINATION DES PIVOTS NULS
@@ -329,7 +328,7 @@ C ======================================================================
 C --- APPEL DE LA ROUTINE DE CALCUL DU SECOND MEMBRE
 C ======================================================================
          CALL CFADU (RESOCO,DEPDEL,NEQ   ,NDIM  ,NBLIAC,
-     &               LLF   ,LLF1  ,LLF2  ,NTNOE )
+     &               LLF   ,LLF1  ,LLF2  ,NESMAX)
 C ======================================================================
 C --- RESOLUTION POUR OBTENIR MU : -A.C-1.AT.MU = JEU(DEPTOT) - A.DELT0
 C --- ON TRUANDE LA SD MATR_ASSE POUR NE RESOUDRE LE SYSTEME QUE
@@ -358,7 +357,7 @@ C ======================================================================
             BTOTAL = NBLIAC + LLF
             DO 710 ILIAI = 1, BTOTAL
                LLIAC  = ZI(JLIAC-1+ILIAI)
-               IF (ZK8(JVECC-1+ILIAI).EQ.TYPEC0) THEN
+               IF (ZK8(JTYPL-1+ILIAI).EQ.TYPEC0) THEN
                   DO 720 JJ = ILIAI+1, BTOTAL
                      IF (ZI(JLIAC-1+JJ).EQ.LLIAC) THEN
                         GOTO 710
@@ -553,14 +552,14 @@ C ======================================================================
 C ======================================================================
 C --- CALCUL DES FORCES DE CONTACT (AT.MU)
 C ======================================================================
-      CALL CFATMU(NEQ   ,NTNOE ,NDIM  ,NBLIAC,1     ,
+      CALL CFATMU(NEQ   ,NESMAX,NDIM  ,NBLIAC,1     ,
      &            LLF   ,LLF1  ,LLF2  ,RESOCO)
 C ======================================================================
 C --- CALCUL DES FORCES DE FROTTEMENT (AF.MU)
 C ======================================================================
       COMPT0 = 0
       DO 140 ILIAC = 1, NBLIAC + LLF
-         IF (ZK8(JVECC-1+ILIAC).EQ.TYPEC0) THEN
+         IF (ZK8(JTYPL-1+ILIAC).EQ.TYPEC0) THEN
             COMPT0 = COMPT0 + 1
             LLIAC  = ZI(JLIAC-1+ILIAC)
             JDECAL = ZI(JAPPTR+LLIAC-1)

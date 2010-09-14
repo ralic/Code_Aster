@@ -1,6 +1,6 @@
       SUBROUTINE CMQLQL ( MAIN, MAOUT, NBMA, LIMA)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
+C MODIF PREPOST  DATE 14/09/2010   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,13 +23,13 @@ C ======================================================================
 C ----------------------------------------------------------------------
 C         TRANSFORMATION DES MAILLES QUADRATIQUES -> LINEAIRE
 C-----------------------------------------------------------------------
-C               SEG3          --> SEG2
-C               TRIA6         --> TRIA3,
-C               QUAD8,QUAD9   --> QUAD4,
-C               TETRA10       --> TETRA4
-C               PYRAM13       --> PYRMA5
-C               PENTA15       --> PENTA6
-C               HEXA20,HEXA27 --> HEWA8
+C               SEG3            --> SEG2
+C               TRIA6           --> TRIA3,
+C               QUAD8,QUAD9     --> QUAD4,
+C               TETRA10         --> TETRA4
+C               PYRAM13         --> PYRMA5
+C               PENTA15,PENTA18 --> PENTA6
+C               HEXA20,HEXA27   --> HEWA8
 C ----------------------------------------------------------------------
 C IN        MAIN   K8  NOM DU MAILLAGE INITIAL
 C IN/JXOUT  MAOUT  K8  NOM DU MAILLAGE TRANSFORME
@@ -56,7 +56,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 
       INTEGER NBTYMA
-      PARAMETER (NBTYMA=26)
+      PARAMETER (NBTYMA=27)
       INTEGER I,JNOM,JMQ,ICOUNT,JNNMPM,JPPNM,ITYP,JNUM,
      &        NBTNM,JNMPM,JNON,NBTNMM,JNM,JDIM,IRET,TYMAQ(NBTYMA),
      &        NBTNO,NBNM,JREFE,NBNOMX,JTYP,NBTGNO
@@ -68,14 +68,14 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 
 C     TYMAQ: TYPE DES MAILLES QUADRATIQUES (CF. CATALOGUE TYPE_MAILLE__)
 C     NOMAST: NOM DES TYPES DE MAILLES     (CF. CATALOGUE TYPE_MAILLE__)
-      DATA TYMAQ   /3*0,4,4*0,9,4*0,14,0,16,2*0,19,0,21,0,23,0,25,26/
+      DATA TYMAQ   /3*0,4,4*0,9,4*0,14,0,16,2*0,19,0,21,22,0,24,0,26,27/
       DATA NOMAST / 'POI1    ', 'SEG2    ', 'SEG22   ', 'SEG3    ',
      &              'SEG33   ', 'SEG4    ', 'TRIA3   ', 'TRIA33  ',
      &              'TRIA6   ', 'TRIA66  ', 'TRIA7   ', 'QUAD4   ',
      &              'QUAD44  ', 'QUAD8   ', 'QUAD88  ', 'QUAD9   ',
      &              'QUAD99  ', 'TETRA4  ', 'TETRA10 ', 'PENTA6  ',
-     &              'PENTA15 ', 'PYRAM5  ', 'PYRAM13 ', 'HEXA8   ',
-     &              'HEXA20  ', 'HEXA27  '/
+     &              'PENTA15 ', 'PENTA18 ', 'PYRAM5  ', 'PYRAM13 ',
+     &              'HEXA8   ', 'HEXA20  ', 'HEXA27  '/
 C     ------------------------------------------------------------------
       CALL JEMARQ()
 

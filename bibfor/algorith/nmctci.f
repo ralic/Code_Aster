@@ -1,7 +1,7 @@
-      SUBROUTINE NMCTCI(RESOCO,SDDYNA,VALINC)
+      SUBROUTINE NMCTCI(DEFICO,RESOCO,SDDYNA,VALINC)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 14/09/2010   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -23,7 +23,7 @@ C
       IMPLICIT NONE
       CHARACTER*19 VALINC(*)
       CHARACTER*19 SDDYNA
-      CHARACTER*24 RESOCO
+      CHARACTER*24 DEFICO,RESOCO
 C      
 C ----------------------------------------------------------------------
 C
@@ -34,6 +34,7 @@ C
 C ----------------------------------------------------------------------
 C 
 C 
+C IN  DEFICO : SD POUR LA DEFINITION DE CONTACT
 C IN  RESOCO : SD POUR LA RESOLUTION DE CONTACT
 C IN  SDDYNA : SD DEDIEE A LA DYNAMIQUE
 C IN  VALINC : VARIABLE CHAPEAU POUR INCREMENTS VARIABLES
@@ -58,20 +59,32 @@ C
 C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
 C
       INTEGER      IFM,NIV
+      LOGICAL      CFDISL,LCTCC,LCTCD,LXFCM
 C      
 C ----------------------------------------------------------------------
 C
       CALL JEMARQ()
       CALL INFDBG('MECANONLINE',IFM,NIV) 
 C
-C --- AFFICHAGE
+C --- TYPE DE CONTACT
+C      
+      LCTCC  = CFDISL(DEFICO,'FORMUL_CONTINUE') 
+      LCTCD  = CFDISL(DEFICO,'FORMUL_DISCRETE') 
+      LXFCM  = CFDISL(DEFICO,'FORMUL_XFEM')              
 C
-      IF (NIV.GE.2) THEN
-        WRITE (IFM,*) '<CONTACT> INITIALISATION'//
-     &        ' DES BOUCLES POUR LE CONTACT' 
-      ENDIF
-C        
-      CALL MMINIT(RESOCO,SDDYNA,VALINC)
+      IF (LCTCC.OR.LXFCM) THEN
+C
+        IF (NIV.GE.2) THEN
+          WRITE (IFM,*) '<CONTACT> INITIALISATION'//
+     &          ' DES BOUCLES POUR LE CONTACT' 
+        ENDIF
+C
+        CALL MMINIT(RESOCO,SDDYNA,VALINC)
+      ELSEIF (LCTCD) THEN
+C      
+      ELSE
+        CALL ASSERT(.FALSE.)
+      ENDIF       
 C
       CALL JEDEMA()
       END

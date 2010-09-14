@@ -4,7 +4,7 @@
      &                     NIVERR)
 C     
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/06/2009   AUTEUR DESOZA T.DESOZA 
+C MODIF ALGORITH  DATE 14/09/2010   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -41,7 +41,7 @@ C
 C      
 C ----------------------------------------------------------------------
 C
-C ROUTINE CONTACT (TOUTES METHODES - APPARIEMENT)
+C ROUTINE APPARIEMENT
 C
 C FAIRE LA PROJECTION D'UN POINT SUR UNE MAILLE DONNEE
 C      

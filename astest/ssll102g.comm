@@ -1,4 +1,4 @@
-# MODIF  DATE 15/12/2009   AUTEUR CAO B.CAO 
+# MODIF  DATE 13/09/2010   AUTEUR PELLET J.PELLET 
 # TITRE POUTRE DROITE APPUYEE EN SES DEUX EXTREMITES SOUMISE A UN
 # ssll102g.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -107,9 +107,7 @@ MEST1=MECA_STATIQUE(        MODELE=MO,
 
 #
 MEST1=CALC_ELEM( reuse=MEST1,
-                         RESULTAT=MEST1,EXCIT=(
-                            _F( CHARGE = CHARG1),
-                                  _F( CHARGE = CHARG2)),
+                         RESULTAT=MEST1,
                            OPTION=('EFGE_ELNO_DEPL',
                                   # 'SIGM_ELNO_DEPL'
                                    )

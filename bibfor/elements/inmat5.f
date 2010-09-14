@@ -6,7 +6,7 @@
       CHARACTER*8 ELREFA
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 18/03/2008   AUTEUR CNGUYEN C.NGUYEN 
+C MODIF ELEMENTS  DATE 14/09/2010   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -145,7 +145,7 @@ C     1.2) LES NOEUDS MILIEUX SE DEDUISENT DES SOMMETS :
         END IF
 
 
-      ELSE IF (ELREFA.EQ.'P15') THEN
+      ELSE IF ((ELREFA.EQ.'P15').OR.(ELREFA.EQ.'P18')) THEN
         CALL ASSERT(NNOS.EQ.6)
         NOSOM(7,1) = DEMI
         NOSOM(7,2) = DEMI
@@ -166,6 +166,24 @@ C     1.2) LES NOEUDS MILIEUX SE DEDUISENT DES SOMMETS :
         NOSOM(15,4) = DEMI
         NOSOM(15,6) = DEMI
 
+        IF (ELREFA.EQ.'P18') THEN
+
+          NOSOM(16,2) = DEMI/2
+          NOSOM(16,1) = DEMI/2
+          NOSOM(16,4) = DEMI/2
+          NOSOM(16,5) = DEMI/2
+
+          NOSOM(17,2) = DEMI/2
+          NOSOM(17,5) = DEMI/2
+          NOSOM(17,6) = DEMI/2
+          NOSOM(17,3) = DEMI/2
+
+          NOSOM(18,1) = DEMI/2
+          NOSOM(18,3) = DEMI/2
+          NOSOM(18,6) = DEMI/2
+          NOSOM(18,4) = DEMI/2
+
+        END IF
 
       ELSE IF (ELREFA.EQ.'T10') THEN
         CALL ASSERT(NNOS.EQ.4)

@@ -8,7 +8,7 @@
       CHARACTER*19 CHPGS
       LOGICAL      TOUCMP
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 28/06/2010   AUTEUR FLEJOU J-L.FLEJOU 
+C MODIF UTILITAI  DATE 14/09/2010   AUTEUR SFAYOLLE S.FAYOLLE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -91,7 +91,7 @@ C     ----------------------------------------------------
           NBPARA=NBPARA+1
       ENDIF
       IF(NDIM.EQ.3)THEN
-          NBPARA=NBPARA+1
+          NBPARA=NBPARA+2
       ENDIF
       N=NBCMP
       CALL JEVEUO(NKCHA,'L',JKCHA)
@@ -166,29 +166,29 @@ C     ------------------------------------------------------------------
       ENDIF
 
       ZK16(JPARAK+KK)='COOR_X'
-      ZK8(JTYPEK+KK)='R8'
+      ZK8(JTYPEK+KK)='R'
       KK=KK+1
-      IF(NDIM.EQ.2)THEN
+      IF(NDIM.GE.2)THEN
          ZK16(JPARAK+KK)='COOR_Y'
-         ZK8(JTYPEK+KK)='R8'
+         ZK8(JTYPEK+KK)='R'
          KK=KK+1
       ENDIF
       IF(NDIM.EQ.3)THEN
          ZK16(JPARAK+KK)='COOR_Z'
-         ZK8(JTYPEK+KK)='R8'
+         ZK8(JTYPEK+KK)='R'
          KK=KK+1
       ENDIF
       IF(TOUCMP)THEN
           IF(TYCH.EQ.'NOEU')THEN
              DO 90 J=1,N
                 ZK16(JPARAK+KK)=ZK8(JCNSC+J-1)
-                ZK8(JTYPEK+KK)='R8'
+                ZK8(JTYPEK+KK)='R'
                 KK=KK+1
  90          CONTINUE
           ELSE IF(TYCH(1:2).EQ.'EL')THEN
              DO 91 J=1,N
                 ZK16(JPARAK+KK)=ZK8(JCESC+J-1)
-                ZK8(JTYPEK+KK)='R8'
+                ZK8(JTYPEK+KK)='R'
 
                 KK=KK+1
  91          CONTINUE
@@ -196,7 +196,7 @@ C     ------------------------------------------------------------------
       ELSE
           DO 95 J=1,N
               ZK16(JPARAK+KK)=ZK8(JCMP+J-1)
-              ZK8(JTYPEK+KK)='R8'
+              ZK8(JTYPEK+KK)='R'
               KK=KK+1
  95       CONTINUE
       ENDIF

@@ -3,7 +3,7 @@
      &                   LLF1  ,LLF2  )
 C 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 14/09/2010   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -86,8 +86,8 @@ C
       REAL*8       XK, XCOMP, XQUOT, XCOS
       CHARACTER*1  TYPESP
       CHARACTER*2  TYPEC0, TYPEF0, TYPEF1, TYPEF2, TYPLIA
-      CHARACTER*19 LIAC,CONVEC,MU
-      INTEGER      JLIAC,JVECC,JMU
+      CHARACTER*19 LIAC,TYPL,MU
+      INTEGER      JLIAC,JTYPL,JMU
       CHARACTER*24 TACFIN
       INTEGER      JTACF
       INTEGER      CFMMVD,ZTACF      
@@ -101,11 +101,11 @@ C ======================================================================
 C --- LECTURE DES STRUCTURES DE DONNEES DE CONTACT
 C ======================================================================
       LIAC   = RESOCO(1:14)//'.LIAC'
-      CONVEC = RESOCO(1:14)//'.CONVEC'
+      TYPL   = RESOCO(1:14)//'.TYPL'
       MU     = RESOCO(1:14)//'.MU'
       TACFIN = RESOCO(1:14)//'.TACFIN'      
       CALL JEVEUO(LIAC,  'L',JLIAC )
-      CALL JEVEUO(CONVEC,'L',JVECC )
+      CALL JEVEUO(TYPL  ,'L',JTYPL )
       CALL JEVEUO(MU,    'E',JMU   )
       CALL JEVEUO(TACFIN,'L',JTACF )
       ZTACF  = CFMMVD('ZTACF')       
@@ -133,13 +133,13 @@ C ======================================================================
 C --- CAS D'UNE LIAISON DE FROTTEMENT SUIVANT LES DEUX DIRECTIONS
 C ======================================================================
         DO 20 JJ = 1, NBLIAC + LLF + LLF1 + LLF2
-          IF (ZK8(JVECC-1+JJ).EQ.TYPEF0) THEN
+          IF (ZK8(JTYPL-1+JJ).EQ.TYPEF0) THEN
             COMPTN = 0
             COMPT0 = COMPT0 + 1
             LLJAC  = ZI(JLIAC-1+JJ)
             DO 30 II = 1, JJ-1
               LLIAC = ZI(JLIAC-1+II)
-              IF ( ZK8(JVECC-1+II).EQ.TYPEC0 ) THEN
+              IF ( ZK8(JTYPL-1+II).EQ.TYPEC0 ) THEN
                  COMPTN = COMPTN + 1
               ENDIF
               IF ( LLIAC.EQ.LLJAC ) THEN
@@ -168,13 +168,13 @@ C ======================================================================
                  GOTO 20
               ENDIF
  30         CONTINUE
-          ELSE IF (ZK8(JVECC-1+JJ).EQ.TYPEF1) THEN
+          ELSE IF (ZK8(JTYPL-1+JJ).EQ.TYPEF1) THEN
             COMPTN = 0
             COMPT1 = COMPT1 + 1
             LLJAC  = ZI(JLIAC-1+JJ)
             DO 40 II = 1, JJ-1
                LLIAC = ZI(JLIAC-1+II)
-               IF ( ZK8(JVECC-1+II).EQ.TYPEC0 ) THEN
+               IF ( ZK8(JTYPL-1+II).EQ.TYPEC0 ) THEN
                   COMPTN = COMPTN + 1
                ENDIF
                IF ( LLIAC.EQ.LLJAC ) THEN
@@ -200,13 +200,13 @@ C ======================================================================
                   GOTO 20
                 ENDIF
  40         CONTINUE
-          ELSE IF (ZK8(JVECC-1+JJ).EQ.TYPEF2) THEN
+          ELSE IF (ZK8(JTYPL-1+JJ).EQ.TYPEF2) THEN
             COMPTN = 0
             COMPT2 = COMPT2 + 1
             LLJAC  = ZI(JLIAC-1+JJ)
             DO 50 II = 1, JJ-1
                LLIAC = ZI(JLIAC-1+II)
-               IF ( ZK8(JVECC-1+II).EQ.TYPEC0 ) THEN
+               IF ( ZK8(JTYPL-1+II).EQ.TYPEC0 ) THEN
                   COMPTN = COMPTN + 1
                ENDIF
                IF ( LLIAC.EQ.LLJAC ) THEN
@@ -240,7 +240,7 @@ C ======================================================================
             II     = COMPTS + COMPTU + COMPTV - JJ + 1
             POSIT  = ZI(JSPLF0-1+II)
             LIAISO = ZI(JLIAC-1+POSIT)
-            TYPLIA = ZK8(JVECC-1+POSIT)(1:2)
+            TYPLIA = ZK8(JTYPL-1+POSIT)(1:2)
             CALL CFTABL(INDIC,NBLIAC,AJLIAI,SPLIAI,
      &            LLF,LLF1,LLF2,RESOCO,TYPESP,POSIT,LIAISO,TYPLIA)
             IF (NIV.GE.2) THEN
@@ -273,13 +273,13 @@ C ======================================================================
 C ======================================================================
 C --- CAS D'UNE LIAISON DE FROTTEMENT CAS GENERAL EN 2D
 C ======================================================================
-          IF (ZK8(JVECC-1+II).EQ.TYPEF0) THEN
+          IF (ZK8(JTYPL-1+II).EQ.TYPEF0) THEN
             COMPT0 = COMPT0 + 1
              LLIAC  = ZI(JLIAC-1+II)
              XK     = ZR(JTACF+ZTACF*(LLIAC-1)+0)
              XCOMP  = ABS( ZR(JMU-1+NBLIAC+COMPT0) )
              DO 310 JJ = 1, II - 1
-               IF (ZK8(JVECC-1+JJ).EQ.TYPEC0) THEN
+               IF (ZK8(JTYPL-1+JJ).EQ.TYPEC0) THEN
                   COMPTN = COMPTN + 1
                   LLJAC  = ZI(JLIAC-1+JJ)
                   IF (LLJAC.EQ.LLIAC) THEN
@@ -310,7 +310,7 @@ C ======================================================================
           II     = COMPTS - JJ + 1
           POSIT  = ZI(JSPLF0-1+II)
           LIAISO = ZI(JLIAC-1+POSIT)
-          TYPLIA = ZK8(JVECC-1+POSIT)(1:2)
+          TYPLIA = ZK8(JTYPL-1+POSIT)(1:2)
           CALL CFTABL(INDIC,NBLIAC,AJLIAI,SPLIAI,
      &             LLF,LLF1,LLF2,RESOCO,TYPESP,POSIT,LIAISO,TYPLIA)
           IF (NIV.GE.2) THEN

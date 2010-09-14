@@ -1,23 +1,23 @@
-# MODIF  DATE 12/07/2010   AUTEUR BERARD A.BERARD 
+# MODIF  DATE 13/09/2010   AUTEUR PELLET J.PELLET 
 # ======================================================================
 # TITRE : RESATURATION D UNE ALVEOLE TEST THH2D, 2D ,
 # wtnp113d.para = tps_job 3200 mem_job 256Mo ncpus 1 liste_test L
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 #         MODELISATION THMC=LIQU_AD_GAZ_VAPE
 # ======================================================================
@@ -51,7 +51,7 @@ MAIL=DEFI_GROUP( reuse=MAIL,  MAILLAGE=MAIL,
                      _F( GROUP_MA = 'DROIT'),
                      _F(GROUP_MA='BAS',),
                      _F(GROUP_MA='HAUT',),
-                     _F( GROUP_MA = 'INT_ALV'), 
+                     _F( GROUP_MA = 'INT_ALV'),
                      _F(NOM='INT_ALVS',
                                  CRIT_NOEUD='SOMMET',
                                  GROUP_MA='INT_ALV'),
@@ -64,7 +64,7 @@ MAIL=DEFI_GROUP( reuse=MAIL,  MAILLAGE=MAIL,
                                   _F(NOM='ROCHES',
                                  CRIT_NOEUD='SOMMET',
                                  GROUP_MA='ROCHE'),
-                               
+
                      _F(DIFFE=('BASS','A'),
                         NOM='BAS1',),
                      _F(DIFFE=('BAS1','B'),
@@ -77,7 +77,7 @@ MAIL=DEFI_GROUP( reuse=MAIL,  MAILLAGE=MAIL,
                      )
 
 MODELE=AFFE_MODELE(   MAILLAGE=MAIL,
-                        AFFE=_F(  TOUT = 'OUI', 
+                        AFFE=_F(  TOUT = 'OUI',
                       PHENOMENE = 'MECANIQUE',
                       MODELISATION = 'D_PLAN_THH2S')
                      )
@@ -120,7 +120,7 @@ DVISCOL=DEFI_CONSTANTE(VALE=0.0,);
 
 DVISCOG=DEFI_CONSTANTE(VALE=0.0,);
 
-####                             
+####
 UN=DEFI_CONSTANTE(    VALE=1.,);
 
 ZERO=DEFI_CONSTANTE(    VALE=0.,);
@@ -175,31 +175,31 @@ DPERML=CALC_FONC_INTERP(FONCTION=DPL,
                        PROL_GAUCHE='CONSTANT',
                        INFO=2,);
 
-BG=DEFI_MATERIAU(  
-   THM_LIQU=_F(  
+BG=DEFI_MATERIAU(
+   THM_LIQU=_F(
          RHO = 1000.,
          UN_SUR_K = 1.E-10,
          CP=1000.0,
          ALPHA = 1.E-4,
-         VISC = VISCOL, 
+         VISC = VISCOL,
          D_VISC_TEMP = ZERO,),
    COMP_THM = 'LIQU_AD_GAZ_VAPE',
    THM_AIR_DISS=_F(
                    CP=0.,
                    COEF_HENRY=KH_INF,
                    ),
-   THM_GAZ=_F( 
+   THM_GAZ=_F(
          MASS_MOL = 28.96E-3,
          CP=1000.0,
          VISC = UN,
-         D_VISC_TEMP = ZERO,),                  
-   THM_VAPE_GAZ    =_F(                                 
+         D_VISC_TEMP = ZERO,),
+   THM_VAPE_GAZ    =_F(
           MASS_MOL         = 18.E-3    ,
           CP               = 0.     ,
           VISC             = UN  ,
           D_VISC_TEMP      = ZERO      ,
                                      ),
-    THM_DIFFU=_F( 
+    THM_DIFFU=_F(
         R_GAZ = 8.315,
         RHO = 1.6E3,
         CP=1000.0,
@@ -220,7 +220,7 @@ BG=DEFI_MATERIAU(
         LAMB_T=ZERO,
         EMMAG = 4.E-10 ,
         ),
-        THM_INIT=_F( 
+        THM_INIT=_F(
          TEMP = 293.,
          PRE1 = 0.,
          PRE2 = 1.E5,
@@ -236,7 +236,7 @@ CHMAT0=AFFE_MATERIAU(MAILLAGE=MAIL,
 #################################
 
 CHAMNO=CREA_CHAMP(MAILLAGE=MAIL,
-                    OPERATION='AFFE', 
+                    OPERATION='AFFE',
                     TYPE_CHAM='NOEU_DEPL_R',
                     AFFE=(
                            _F(TOUT='OUI',
@@ -260,7 +260,7 @@ CALTEMP=AFFE_CHAR_MECA(MODELE=MODELE,
                        DDL_IMPO=_F(GROUP_NO='ROCHES',
                                    TEMP=0.,),);
 
-RESU0=STAT_NON_LINE( 
+RESU0=STAT_NON_LINE(
                 MODELE=MODELE,
                 CHAM_MATER=CHMAT0,
                 EXCIT=(
@@ -271,11 +271,11 @@ RESU0=STAT_NON_LINE(
                         _F(CHARGE=CALGAZ,),),
                  ETAT_INIT=_F(DEPL=CHAMNO,
                               ),
-                COMP_INCR=_F( 
+                COMP_INCR=_F(
                 RELATION = 'KIT_THH',
                 RELATION_KIT = ('LIQU_AD_GAZ_VAPE','HYDR_UTIL')),
                 RECH_LINEAIRE =_F(METHODE='MIXTE',
-                                  RESI_LINE_RELA = 1.E-3  , 
+                                  RESI_LINE_RELA = 1.E-3  ,
                                   RHO_MIN = 0.3,
                                   RHO_MAX = 1.1,
                                   ITER_LINE_MAXI = 3,),
@@ -293,23 +293,23 @@ RESU0=STAT_NON_LINE(
 # Recuperation des valeurs pour l initialisation
 
 
-SIG1=CREA_CHAMP(OPERATION='EXTR', 
+SIG1=CREA_CHAMP(OPERATION='EXTR',
                     TYPE_CHAM='ELGA_SIEF_R',
                     NOM_CHAM='SIEF_ELGA',
                     RESULTAT=RESU0,
                     INST=473040000.,);
-VARI1=CREA_CHAMP(OPERATION='EXTR', 
+VARI1=CREA_CHAMP(OPERATION='EXTR',
                     TYPE_CHAM='ELGA_VARI_R',
                     NOM_CHAM='VARI_ELGA',
                     RESULTAT=RESU0,
                     INST=473040000.,);
-DEP0=CREA_CHAMP(OPERATION='EXTR', 
+DEP0=CREA_CHAMP(OPERATION='EXTR',
                     TYPE_CHAM='NOEU_DEPL_R',
                     NOM_CHAM='DEPL',
                     RESULTAT=RESU0,
                     INST=473040000.,);
 INID=CREA_CHAMP(MAILLAGE=MAIL,
-                    OPERATION='AFFE', 
+                    OPERATION='AFFE',
                     TYPE_CHAM='NOEU_DEPL_R',
                     AFFE=(
                            _F(GROUP_NO='INT_ALV',
@@ -317,7 +317,7 @@ INID=CREA_CHAMP(MAILLAGE=MAIL,
                              VALE=3015.E4,),
                              ),);
 DEP1=CREA_CHAMP(MAILLAGE=MAIL,
-                 OPERATION='ASSE', 
+                 OPERATION='ASSE',
                  TYPE_CHAM='NOEU_DEPL_R',
                  ASSE=( _F(CHAM_GD=DEP0,TOUT='OUI',),
                         _F(CHAM_GD=INID,GROUP_NO='INT_ALV',),
@@ -331,12 +331,12 @@ RESU0=STAT_NON_LINE(reuse=RESU0,
                         _F(CHARGE=CALBAS,),
                         _F(CHARGE=CALTEMP,),
                         _F(CHARGE=CALGAZ,),),
-                COMP_INCR=_F( 
+                COMP_INCR=_F(
                  RELATION = 'KIT_THH',
                  RELATION_KIT = ('LIQU_AD_GAZ_VAPE','HYDR_UTIL')),
                 INCREMENT=_F( LIST_INST = LI,
                               ),
-                RECH_LINEAIRE =_F(RESI_LINE_RELA = 1.E-3  , 
+                RECH_LINEAIRE =_F(RESI_LINE_RELA = 1.E-3  ,
                                   RHO_MIN = 0.3,
                                   RHO_MAX = 1.1,
                                   ITER_LINE_MAXI = 3,),
@@ -350,18 +350,18 @@ RESU0=STAT_NON_LINE(reuse=RESU0,
               );
 
 RESU0=CALC_ELEM(reuse =RESU0,
-             MODELE=MODELE,
-             CHAM_MATER=CHMAT0,
+
+
              TOUT_ORDRE='OUI',
              OPTION=('SIEF_ELNO_ELGA','VARI_ELNO_ELGA'),
              RESULTAT=RESU0,);
-             
-RESU0=CALC_NO(reuse=RESU0,  
+
+RESU0=CALC_NO(reuse=RESU0,
         OPTION=( 'VARI_NOEU_ELGA'),
         RESULTAT=RESU0,);
 
 MODELIN=AFFE_MODELE(   MAILLAGE=MAILIN,
-                        AFFE=_F(  TOUT = 'OUI', 
+                        AFFE=_F(  TOUT = 'OUI',
                       PHENOMENE = 'MECANIQUE',
                       MODELISATION = 'D_PLAN')
                      )
@@ -395,7 +395,7 @@ TRV=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL',
                   NUME_ORDRE=(1,2,5,7,9,14,24,34),
                             NOM_CMP=('V3'),
                             OPERATION='EXTRACTION',),);
-                            
+
 #IMPR_TABLE(TABLE=TRB,
 #           FORMAT='AGRAF',
 #           PAGINATION='INST',
@@ -447,7 +447,7 @@ TEST_RESU(RESU=_F(RESULTAT=RESU0,
                   VALE=2.9E7,
                   CRITERE='RELATIF',
                   PRECISION=2.E-1,
-                  REFERENCE='SOURCE_EXTERNE',),);   
+                  REFERENCE='SOURCE_EXTERNE',),);
 
 TEST_RESU(RESU=_F(RESULTAT=RESU0,
                   NUME_ORDRE=34,  #10000 ans
@@ -457,7 +457,7 @@ TEST_RESU(RESU=_F(RESULTAT=RESU0,
                   VALE=4.35E6,
                   CRITERE='RELATIF',
                   PRECISION=2.E-1,
-                  REFERENCE='SOURCE_EXTERNE',),);   
+                  REFERENCE='SOURCE_EXTERNE',),);
 
 TEST_RESU(RESU=_F(RESULTAT=RESU0,
                   NUME_ORDRE=3,  #50 ans
@@ -467,7 +467,7 @@ TEST_RESU(RESU=_F(RESULTAT=RESU0,
                   VALE=3.6E6,
                   CRITERE='RELATIF',
                   PRECISION=2.E-1,
-                  REFERENCE='SOURCE_EXTERNE',),);   
+                  REFERENCE='SOURCE_EXTERNE',),);
 
 TEST_RESU(RESU=_F(RESULTAT=RESU0,
                   NUME_ORDRE=34,  #10000 ans
@@ -477,7 +477,7 @@ TEST_RESU(RESU=_F(RESULTAT=RESU0,
                   VALE=4.35E6,
                   CRITERE='RELATIF',
                   PRECISION=2.E-1,
-                  REFERENCE='SOURCE_EXTERNE',),);   
+                  REFERENCE='SOURCE_EXTERNE',),);
 
 TEST_RESU(RESU=_F(RESULTAT=RESU0,
                   NUME_ORDRE=3,  #50 ans
@@ -487,7 +487,7 @@ TEST_RESU(RESU=_F(RESULTAT=RESU0,
                   VALE=0.7,
                   CRITERE='RELATIF',
                   PRECISION=2.E-1,
-                  REFERENCE='SOURCE_EXTERNE',),);   
+                  REFERENCE='SOURCE_EXTERNE',),);
 
 
 TEST_RESU(RESU=_F(RESULTAT=RESU0,
@@ -498,5 +498,5 @@ TEST_RESU(RESU=_F(RESULTAT=RESU0,
                   VALE=4.171E+06,
                   CRITERE='RELATIF',
                   PRECISION=1.E-3,
-                  REFERENCE='NON_REGRESSION',),);   
+                  REFERENCE='NON_REGRESSION',),);
 FIN();

@@ -3,7 +3,7 @@
       CHARACTER*16         OPTION, NOMTE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 27/07/2010   AUTEUR DESOZA T.DESOZA 
+C MODIF ELEMENTS  DATE 14/09/2010   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -53,13 +53,13 @@ C
       INTEGER      I,J,IJ
       INTEGER      NNE,NNM,NNL
       INTEGER      NDDL,NDIM,NBCPS,NBDM
-      INTEGER      INDCO,INADH,INDASP,ICOMPL 
+      INTEGER      INDCO,INADH,INDASP,ICOMPL
       INTEGER      IFROTT,IFORM,IUSURE
       INTEGER      TYPBAR,TYPRAC
       INTEGER      NDEXFR
       REAL*8       COEFFF,LAMBDA
       REAL*8       COEFCR,COEFCS,COEFCP
-      REAL*8       COEFFR,COEFFS,COEFFP      
+      REAL*8       COEFFR,COEFFS,COEFFP
       REAL*8       XPR,YPR,XPC,YPC,HPG,JACOBI
       REAL*8       MMAT(81,81)
       REAL*8       TAU1(3),TAU2(3)
@@ -67,7 +67,7 @@ C
       REAL*8       RESE(3),NRESE
       REAL*8       JEU,JEUSUP
       REAL*8       DELTAT,BETA,GAMMA,THETA
-      REAL*8       GEOMAE(9,3),GEOMAM(9,3)      
+      REAL*8       GEOMAE(9,3),GEOMAM(9,3)
       REAL*8       GEOMM(3),GEOME(3)
       REAL*8       DLAGRC,DLAGRF(2)
       REAL*8       DDEPLE(3),DDEPLM(3)
@@ -84,15 +84,15 @@ C
       INTEGER      JPCF,JGEOM,JDEPM,JDEPDE
       INTEGER      JMATT
       REAL*8       DELUSU(3),DISSIP,PRFUSU
-C           
+C
       REAL*8       MATRCC(9,9)
       REAL*8       MATREE(27,27),MATRMM(27,27)
       REAL*8       MATREM(27,27),MATRME(27,27)
-      REAL*8       MATRCE(9,27) ,MATRCM(9,27)  
+      REAL*8       MATRCE(9,27) ,MATRCM(9,27)
       REAL*8       MATRMC(27,9) ,MATREC(27,9)
-      REAL*8       MATRFF(18,18)   
-      REAL*8       MATRFE(18,27),MATRFM(18,27)  
-      REAL*8       MATRMF(27,18),MATREF(27,18)         
+      REAL*8       MATRFF(18,18)
+      REAL*8       MATRFE(18,27),MATRFM(18,27)
+      REAL*8       MATRMF(27,18),MATREF(27,18)
 C
 C ----------------------------------------------------------------------
 C
@@ -117,8 +117,8 @@ C
       CALL MATINI(27,18,0.D0,MATRMF)
       LUSURE = .FALSE.
       LADHER = .FALSE.
-      LGLISS = .FALSE. 
-      DEBUG  = .FALSE.  
+      LGLISS = .FALSE.
+      DEBUG  = .FALSE.
       INDASP = 0
       INDCO  = 0
 C
@@ -148,7 +148,7 @@ C
       COEFFF   =      ZR(JPCF-1+21)
       COEFFR   =      ZR(JPCF-1+22)
       COEFFS   =      ZR(JPCF-1+23)
-      COEFFP   =      ZR(JPCF-1+24) 
+      COEFFP   =      ZR(JPCF-1+24)
       ICOMPL   = NINT(ZR(JPCF-1+25))
       ASPERI   =      ZR(JPCF-1+26)
       KAPPAN   =      ZR(JPCF-1+27)
@@ -157,10 +157,10 @@ C
       KW       =      ZR(JPCF-1+30)
       HW       =      ZR(JPCF-1+31)
       JEUSUP   =      ZR(JPCF-1+32)
-      DELTAT   =      ZR(JPCF-1+33)     
+      DELTAT   =      ZR(JPCF-1+33)
       BETA     =      ZR(JPCF-1+34)
       GAMMA    =      ZR(JPCF-1+35)
-      THETA    =      ZR(JPCF-1+36)    
+      THETA    =      ZR(JPCF-1+36)
       INDCO    = NINT(ZR(JPCF-1+37))
       INDASP   = NINT(ZR(JPCF-1+38))
       IF (HW.NE.0.D0) THEN
@@ -191,17 +191,12 @@ C
 C --- INFOS SUR LA MAILLE DE CONTACT
 C
       LFROTT = IFROTT.EQ.3
-      
+
       CALL MMELEM(NOMTE ,LFROTT,NDIM  ,NDDL  ,NOMMAE,
      &            NNE   ,NOMMAM,NNM   ,NNL   ,NBCPS ,
      &            NBDM  ,LAXIS )
 C
-C --- REACTUALISATION DE LA GEOMETRIE (MAILLAGE+DEPMOI)
-C
-      CALL MMREAC(NBDM  ,NDIM  ,NNE   ,NNM   ,JGEOM ,
-     &            JDEPM ,GEOMAE,GEOMAM)   
-C
-C --- FONCTIONS DE FORMES ET DERIVEES 
+C --- FONCTIONS DE FORMES ET DERIVEES
 C
       CALL MMFORM(NDIM  ,NOMMAE,NOMMAM,NNE   ,NNM   ,
      &            XPC   ,YPC   ,XPR   ,YPR   ,FFE   ,
@@ -216,43 +211,48 @@ C
         CALL MMMFFM(NOMMAM,XPR   ,YPR   ,TYPBAR,FFM   ,
      &              DFFM  )
         CALL MMMFFM(NOMMAE,XPC   ,YPC   ,TYPBAR,FFL   ,
-     &              DFFL  ) 
-                    
+     &              DFFL  )
+
       ENDIF
 C
-C --- JACOBIEN POUR LE POINT DE CONTACT 
+C --- JACOBIEN POUR LE POINT DE CONTACT
 C
-      CALL MMMJAC(NOMMAE,GEOMAE,FFE   ,DFFE  ,LAXIS ,
-     &            NDIM  ,JACOBI)
+      CALL MMMJAC(NOMMAE,JGEOM ,FFE   ,DFFE  ,LAXIS ,
+     &            NNE   ,NDIM  ,JACOBI)
 C
 C --- CALCUL DE LA NORMALE ET DES MATRICES DE PROJECTION
-C  
+C
       CALL MMCALN(NDIM  ,TAU1  ,TAU2  ,NORM  ,MPROJN,
      &            MPROJT)
 C
+C --- REACTUALISATION DE LA GEOMETRIE (MAILLAGE+DEPMOI)
+C
+      CALL MMREAC(NBDM  ,NDIM  ,NNE   ,NNM   ,JGEOM ,
+     &            JDEPM ,GEOMAE,GEOMAM)
+C
 C --- CALCUL DES COORDONNEES ACTUALISEES
-C 
+C
       CALL MMGEOM(NDIM  ,NNE   ,NNM   ,FFE   ,FFM   ,
      &            GEOMAE,GEOMAM,GEOME ,GEOMM )
 C
 C --- CALCUL DES INCREMENTS - LAGRANGE DE CONTACT ET FROTTEMENT
-C       
+C
       CALL MMLAGM(NBDM  ,NDIM  ,NNL   ,JDEPDE,FFL   ,
      &            DLAGRC,DLAGRF)
 C
 C --- MISE A JOUR DES CHAMPS INCONNUS INCREMENTAUX - DEPLACEMENTS
-C 
+C
       CALL MMDEPM(NBDM  ,NDIM  ,NNE   ,NNM   ,JDEPM ,
      &            JDEPDE,FFE   ,FFM   ,DDEPLE,DDEPLM ,
      &            DEPLME,DEPLMM)
-C 
+C
 C --- CALCUL USURE
-C 
+C
       IF (IUSURE .EQ. 1) THEN
         CALL MMUSUM(NDIM  ,MPROJT,DDEPLE,DDEPLM,PRFUSU,
      &              DELUSU,DISSIP)
         LUSURE = DISSIP.NE.0.D0
-      ENDIF  
+      ENDIF
 C
 C --- CALCUL DU JEU
 C
@@ -336,11 +336,11 @@ C
      &                  MATRFF)
             ELSE
               CALL ASSERT(.FALSE.)
-            ENDIF 
+            ENDIF
           ELSE
-            CALL ASSERT(.FALSE.)        
+            CALL ASSERT(.FALSE.)
           ENDIF
-        ENDIF  
+        ENDIF
       ELSE IF (OPTION.EQ.'RIGI_FROT') THEN
 
         IF (COEFFF.EQ.0.D0) INDCO = 0
@@ -388,7 +388,7 @@ C
         END IF
       ELSE
         CALL ASSERT(.FALSE.)
-      END IF          
+      END IF
 C
 C --- ASSEMBLAGE FINAL
 C
@@ -413,10 +413,10 @@ C
              ZR(JMATT+IJ-1) = MMAT(I,J)
              IF (DEBUG) THEN
                CALL MMMTDB(MMAT(I,J),'IJ',I,J)
-             ENDIF    
+             ENDIF
  750       CONTINUE
  760    CONTINUE
-      ELSE 
+      ELSE
 C
 C --- RECUPERATION DE LA MATRICE 'OUT' SYMETRIQUE
 C
@@ -430,9 +430,9 @@ C
              ZR(JMATT+IJ-1) = MMAT(I,J)
              IF (DEBUG) THEN
                CALL MMMTDB(MMAT(I,J),'IJ',I,J)
-             ENDIF    
+             ENDIF
  751       CONTINUE
- 761    CONTINUE 
+ 761    CONTINUE
 C
       ENDIF
 

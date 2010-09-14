@@ -1,4 +1,4 @@
-%& MODIF COMPELEM  DATE 10/08/2010   AUTEUR MEUNIER S.MEUNIER 
+%& MODIF COMPELEM  DATE 14/09/2010   AUTEUR REZETTE C.REZETTE 
 % ======================================================================
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
@@ -266,6 +266,7 @@ PHENOMENE_MODELISATION__
               MAILLE__ HEXA27    ELEMENT__ MECA_HEXA27
               MAILLE__ HEXA20    ELEMENT__ MECA_HEXA20
               MAILLE__ PENTA15   ELEMENT__ MECA_PENTA15
+              MAILLE__ PENTA18   ELEMENT__ MECA_PENTA18
               MAILLE__ TETRA10   ELEMENT__ MECA_TETRA10
               MAILLE__ QUAD9     ELEMENT__ MECA_FACE9
               MAILLE__ QUAD8     ELEMENT__ MECA_FACE8

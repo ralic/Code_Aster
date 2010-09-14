@@ -1,7 +1,7 @@
       SUBROUTINE ALGOCP(RESOCO,LMAT  ,RESU  )
 C     
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 14/09/2010   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -98,7 +98,7 @@ C
       INTEGER      IBID,ILIAI,IER,IRET,KK,ITER,ILIAC
       INTEGER      CFDISD
       CHARACTER*19 MAT
-      CHARACTER*14 NUMEDD,NUMEDF
+      CHARACTER*14 NUMEDD,NUFROT
       INTEGER      JRESU
       INTEGER      JDECAL
       REAL*8       XMU,R8BID,AJEU
@@ -239,15 +239,16 @@ C --- DESTRUCTION ANCIENNE MATRICE MAFROT
 C
       CALL EXISD('MATR_ASSE',MAFROT,IRET)
       IF (IRET.NE.0) THEN
-         CALL DISMOI('F','NOM_NUME_DDL',MAFROT,'MATR_ASSE',IBID,NUMEDF,
-     &                                                          IER)
-         CALL DETRSD('NUME_DDL' ,NUMEDF)
+         CALL DISMOI('F','NOM_NUME_DDL',MAFROT,'MATR_ASSE',IBID,NUFROT,
+     &               IER)
+         CALL DETRSD('NUME_DDL' ,NUFROT)
          CALL DETRSD('MATR_ASSE',MAFROT)
       ENDIF
 C
+      NUFROT = '&&ALGOCP.NUFR'
       NMULT = 1
-      CALL ATASMO(NEQ,ENAT,ZI(JAPDDL),
-     &                     ZI(JAPPTR),NUMEDD,MAFROT,'V',NBLIAI,NMULT)
+      CALL ATASMO(NEQ   ,ENAT  ,ZI(JAPDDL),ZI(JAPPTR),NUMEDD,MAFROT,'V',
+     &            NBLIAI,NMULT ,NUFROT)
 C ======================================================================
 C --- CALCUL DES FORCES DE CONTACT (AT.MU)
 C ======================================================================

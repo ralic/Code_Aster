@@ -5,7 +5,7 @@
       CHARACTER*(*) ELREFZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
+C MODIF ELEMENTS  DATE 14/09/2010   AUTEUR REZETTE C.REZETTE 
 C RESPONSABLE VABHHTS J.PELLET
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -41,7 +41,7 @@ C   -------------------------------------------------------------------
       INTEGER I,NDIM,NNOS,NBFPG,NBPG(10)
       REAL*8 AL31,AL32,AL33,U,X0,Y0,Z0,AL,Z01,Z02,Z04,PFACE1,PFACE2
       REAL*8 PFACE3,PFACE4,PMILI1,PMILI2,PMILI3,PMILI4
-      REAL*8 X1,X2,X3,X4,D1,D2,D3,D4,XBID(3*27)
+      REAL*8 X1,X2,X3,X4,D1,D2,D3,D4
       REAL*8 ZERO,UNDEMI,UN,DEUX,QUATRE,UNS4,UNS8
 
 C -----  FONCTIONS FORMULES
@@ -183,6 +183,37 @@ C     ------------------------------------------------------------------
         FF(13) = DEUX*Y0*Z0* (UN+X0)
         FF(14) = DEUX*Z0*AL* (UN+X0)
         FF(15) = DEUX*Y0*AL* (UN+X0)
+
+C     ------------------------------------------------------------------
+      ELSE IF (ELREFE.EQ.'P18') THEN
+
+        X0 = X(1)
+        Y0 = X(2)
+        Z0 = X(3)
+        NNO = 18
+
+        FF(1) = X0*Y0*(X0-UN)*(DEUX*Y0-UN)/DEUX
+        FF(2) = X0*Z0*(X0-UN)*(DEUX*Z0-UN)/DEUX
+        FF(3) = X0*(X0-UN)*(Z0+Y0-UN)*(DEUX*Z0+DEUX*Y0-UN)/DEUX
+        FF(4) = X0*Y0*(X0+UN)*(DEUX*Y0-UN)/DEUX
+        FF(5) = X0*Z0*(X0+UN)*(DEUX*Z0-UN)/DEUX
+        FF(6) = X0*(X0+UN)*(Z0+Y0-UN)*(DEUX*Z0+DEUX*Y0-UN)/DEUX
+
+        FF(7) = DEUX*X0*Y0*Z0*(X0-UN)
+        FF(8) = -DEUX*X0*Z0*(X0-UN)*(Z0+Y0-UN)
+        FF(9) = -DEUX*X0*Y0*(X0-UN)*(Z0+Y0-UN)
+
+        FF(10) = -Y0*(X0-UN)*(X0+UN)*(DEUX*Y0-UN)
+        FF(11) = -Z0*(X0-UN)*(X0+UN)*(DEUX*Z0-UN)
+        FF(12) = -(X0-UN)*(X0+UN)*(Z0+Y0-UN)*(DEUX*Z0+DEUX*Y0-UN)
+
+        FF(13) = DEUX*X0*Y0*Z0*(X0+UN)
+        FF(14) = -DEUX*X0*Z0*(X0+UN)*(Z0+Y0-UN)
+        FF(15) = -DEUX*X0*Y0*(X0+UN)*(Z0+Y0-UN)
+
+        FF(16) = -QUATRE*Y0*Z0*(X0-UN)*(X0+UN)
+        FF(17) = QUATRE*Z0*(X0-UN)*(X0+UN)*(Z0+Y0-UN)
+        FF(18) = QUATRE*Y0*(X0-UN)*(X0+UN)*(Z0+Y0-UN)
 
 C     ------------------------------------------------------------------
       ELSE IF (ELREFE.EQ.'TE4') THEN

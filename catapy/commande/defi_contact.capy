@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 27/04/2010   AUTEUR DESOZA T.DESOZA 
+#& MODIF COMMANDE  DATE 14/09/2010   AUTEUR ABBAS M.ABBAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -38,24 +38,24 @@ DEFI_CONTACT=OPER(nom       = "DEFI_CONTACT",
                                defaut="DISCRETE",
                                into=("DISCRETE","CONTINUE","XFEM","LIAISON_UNIL",),),
 
-# PARAMETRE GENERAL: FROTTEMENT (A TERME DEVRA ETRE AU NIVEAU ZONE)
+# PARAMETRE GENERAL: FROTTEMENT
 
-           FROTTEMENT      =SIMP(statut='f',
-                                 typ='TXM',
-                                 position='global',
-                                 defaut="SANS",
-                                 into=("COULOMB","SANS",)),
+         FROTTEMENT      =SIMP(statut='f',
+                               typ='TXM',
+                               position='global',
+                               defaut="SANS",
+                               into=("COULOMB","SANS",)),
+                               
+### PARAMETRES GENERAUX (UNIQUEMENT POUR LE CONTACT MAILLE, NE DEPENDENT PAS DE LA ZONE DE CONTACT)
 
+         b_contact_mail=BLOC(condition = "((FORMULATION == 'CONTINUE') or (FORMULATION == 'DISCRETE'))",
+           STOP_INTERP   = SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON")), 
+           LISSAGE       = SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON")),    
+         ),                            
+                               
 ### PARAMETRES GENERAUX (UNIQUEMENT POUR LE CONTACT, NE DEPENDENT PAS DE LA ZONE DE CONTACT)
 
          b_contact=BLOC(condition = "FORMULATION != 'LIAISON_UNIL' ",
-
-# PARAMETRE GENERAL: APPARIEMENT
-
-           LISSAGE         =SIMP(statut='f',
-                                 typ='TXM',
-                                 defaut="NON",
-                                 into=("OUI","NON"),),
 
 # PARAMETRE GENERAL: VERIFICATION DE L'ORIENTATION ET DE LA COHERENCE DES NORMALES
 
@@ -111,7 +111,6 @@ DEFI_CONTACT=OPER(nom       = "DEFI_CONTACT",
                                    ),
                                  ),
 
-
 # PARAMETRE GENERAL: BOUCLE SUR CONTACT
 
            b_bouc_cont_disc=BLOC(condition = "FORMULATION == 'DISCRETE' ",
@@ -162,9 +161,6 @@ DEFI_CONTACT=OPER(nom       = "DEFI_CONTACT",
                                   STOP_SINGULIER= SIMP(statut='f',typ='TXM',defaut="OUI",
                                                        into=("OUI","NON")),
                                   NB_RESOL      = SIMP(statut='f',typ='I', defaut=10 ),
-                                  STOP_INTERP   = SIMP(statut='f',typ='TXM',defaut="NON",
-                                                       into=("OUI","NON")),
-                                  TOLE_INTERP   = SIMP(statut='f',typ='R',defaut = 0.),
                                   RESI_ABSO     = SIMP(statut='f',typ='R',
                                   fr="Critere de convergence (niveau d'interpenetration autorise)"),
                                   REAC_ITER     = SIMP(statut='f',typ='I',defaut=3,
@@ -183,7 +179,7 @@ DEFI_CONTACT=OPER(nom       = "DEFI_CONTACT",
                                                  fr="Autorise-t-on de sortir du domaine admissible lors de la recherche lineaire",),
                                   ),
            ), #fin bloc b_contact
-
+                                              
 ## AFFECTATIONS (ZONES PAR ZONES)
 
 # AFFECTATION - CAS LIAISON_UNILATERALE
@@ -206,6 +202,7 @@ DEFI_CONTACT=OPER(nom       = "DEFI_CONTACT",
 # -- Incompatibilité avec CL
                                             SANS_NOEUD      =SIMP(statut='f',typ=no   ,validators=NoRepeat(),max='**'),
                                             SANS_GROUP_NO   =SIMP(statut='f',typ=grno ,validators=NoRepeat(),max='**'),
+                                            
 
                                             ),
                                   ), #fin bloc b_affe_unil
@@ -274,10 +271,18 @@ DEFI_CONTACT=OPER(nom       = "DEFI_CONTACT",
 # -- Incompatibilité avec CL
                                             SANS_NOEUD      =SIMP(statut='f',typ=no   ,validators=NoRepeat(),max='**'),
                                             SANS_GROUP_NO   =SIMP(statut='f',typ=grno ,validators=NoRepeat(),max='**'),
+                                            SANS_MAILLE     =SIMP(statut='f',typ=ma   ,validators=NoRepeat(),max='**'),
+                                            SANS_GROUP_MA   =SIMP(statut='f',typ=grma ,validators=NoRepeat(),max='**'),
+
+# -- Mode sans calcul
+                                            RESOLUTION      =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON")),
+                                            b_verif=BLOC(condition = "RESOLUTION == 'NON' ",
+                                               TOLE_INTERP   = SIMP(statut='f',typ='R',defaut = 0.),
+                                            ),   
 
 # -- Résolution
                                             ALGO_CONT       =SIMP(statut='o',typ='TXM',defaut="CONTRAINTE",
-                                                                  into=("CONTRAINTE","LAGRANGIEN","PENALISATION","VERIF","GCP"),),
+                                                                  into=("CONTRAINTE","LAGRANGIEN","PENALISATION","GCP"),),
 
                                             b_active=BLOC(condition = "ALGO_CONT == 'CONTRAINTE' ",
                                                          fr="Paramètres de la méthode des contraintes actives (contact uniquement)",
@@ -287,10 +292,6 @@ DEFI_CONTACT=OPER(nom       = "DEFI_CONTACT",
                                                 ),
                                               ),
 
-                                            b_verif=BLOC(condition = "ALGO_CONT == 'VERIF' ",
-                                                         fr="Paramètres de la méthode sans calcul de contact",
-                                              GROUP_MA_FOND =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
-                                              ),
 
                                             b_penal_contact=BLOC(condition = "ALGO_CONT == 'PENALISATION' ",
                                                                  fr="Paramètres de la méthode pénalisée (contact)",
@@ -378,7 +379,9 @@ DEFI_CONTACT=OPER(nom       = "DEFI_CONTACT",
 
                                             SANS_NOEUD      =SIMP(statut='f',typ=no   ,validators=NoRepeat(),max='**'),
                                             SANS_GROUP_NO   =SIMP(statut='f',typ=grno ,validators=NoRepeat(),max='**'),
-
+                                            SANS_MAILLE     =SIMP(statut='f',typ=ma   ,validators=NoRepeat(),max='**'),
+                                            SANS_GROUP_MA   =SIMP(statut='f',typ=grma ,validators=NoRepeat(),max='**'),
+                                            
                                             FOND_FISSURE    =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON"),),
                                             b_fond_fissure =BLOC(condition = "FOND_FISSURE == 'OUI' ",
                                                                  fr="Traitement en fond de fissure",
@@ -398,6 +401,12 @@ DEFI_CONTACT=OPER(nom       = "DEFI_CONTACT",
                                               ),
 
                                             EXCLUSION_PIV_NUL=SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON",),),
+
+# -- Mode sans calcul
+                                            RESOLUTION      =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON")),
+                                            b_verif=BLOC(condition = "RESOLUTION == 'NON' ",
+                                               TOLE_INTERP   = SIMP(statut='f',typ='R',defaut = 0.),
+                                            ),  
 
 # -- Fonctionnalités spécifiques 'CONTINUE'
                                             INTEGRATION     =SIMP(statut='f',typ='TXM',defaut="NOEUD",

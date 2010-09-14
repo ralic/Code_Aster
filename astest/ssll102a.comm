@@ -1,4 +1,4 @@
-# MODIF  DATE 30/08/2010   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 13/09/2010   AUTEUR PELLET J.PELLET 
 # TITRE POUTRE ENCASTREE A UNE EXTREMITE ET CHARGEE PAR DES FORCES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -137,11 +137,11 @@ TEST_RESU(RESU=(
             )
 
 CALC_ELEM( reuse=MEST1,
-                      RESULTAT=MEST1, EXCIT=_F(  CHARGE = CHARG1),
+                      RESULTAT=MEST1,
                       OPTION=('EFGE_ELNO_DEPL', 'SIGM_ELNO_DEPL',))
 
 CALC_ELEM( reuse=MEST1,
-                     RESULTAT=MEST1, EXCIT=_F(  CHARGE = CHARG1),
+                     RESULTAT=MEST1,
                        OPTION='EFGE_ELNO_CART'    )
 
 TEST_RESU(RESU=(
@@ -297,7 +297,7 @@ TEST_RESU(RESU=(
           )
 
 CALC_ELEM( reuse=MEST2,
-                      RESULTAT=MEST2, EXCIT=_F(  CHARGE = CHARG2),
+                      RESULTAT=MEST2,
                       OPTION=('EFGE_ELNO_DEPL', 'SIGM_ELNO_DEPL',))
 
 TEST_RESU(RESU=(
@@ -406,7 +406,7 @@ NOEUD = 'C3', NOM_CMP = 'DRZ', VALE = 0.0,     PRECISION = 1.E-13, CRITERE = 'AB
             )
 
 CALC_ELEM( reuse=MEST3,
-                      RESULTAT=MEST3, EXCIT=_F( CHARGE = CHARG3),
+                      RESULTAT=MEST3,
                       OPTION=('EFGE_ELNO_DEPL', 'SIGM_ELNO_DEPL',))
 
 TEST_RESU(RESU=(
@@ -510,7 +510,7 @@ NOEUD = 'C3', NOM_CMP = 'DRZ', VALE = 9.5563593E-08,
             )
 
 CALC_ELEM( reuse=MEST4,
-                      RESULTAT=MEST4, EXCIT=_F( CHARGE = CHARG4),
+                      RESULTAT=MEST4,
                       OPTION=('EFGE_ELNO_DEPL', 'SIGM_ELNO_DEPL',))
 
 TEST_RESU(RESU=(
@@ -617,7 +617,7 @@ NOEUD = 'C3', NOM_CMP = 'DRZ', VALE = 0.0,     PRECISION = 1.E-13, CRITERE = 'AB
             )
 
 CALC_ELEM( reuse=MEST5,
-                      RESULTAT=MEST5, EXCIT=_F( CHARGE = CHARG5),
+                      RESULTAT=MEST5,
                       OPTION=('EFGE_ELNO_DEPL', 'SIGM_ELNO_DEPL',))
 
 TEST_RESU(RESU=(
@@ -713,7 +713,7 @@ NOEUD = 'C3', NOM_CMP = 'DRZ', VALE = 1.0395957E-07,
             )
 
 CALC_ELEM( reuse=MEST6,
-                      RESULTAT=MEST6, EXCIT=_F( CHARGE = CHARG6),
+                      RESULTAT=MEST6,
                       OPTION=('EFGE_ELNO_DEPL', 'SIGM_ELNO_DEPL',))
 
 TEST_RESU(RESU=(
@@ -754,7 +754,7 @@ MEST7=MECA_STATIQUE(        MODELE=MO,    CHAM_MATER=CHMAT,
             CARA_ELEM=CAREL, EXCIT=_F( CHARGE = CHARG7)   )
 
 CALC_ELEM( reuse=MEST7,
-                      RESULTAT=MEST7, EXCIT=_F( CHARGE = CHARG7),
+                      RESULTAT=MEST7,
                       OPTION=('EFGE_ELNO_DEPL', 'SIGM_ELNO_DEPL',))
 
 TEST_RESU(RESU=(
@@ -800,7 +800,7 @@ MEST8=MECA_STATIQUE(        MODELE=MO,    CHAM_MATER=CHMAT,
             CARA_ELEM=CAREL, EXCIT=_F( CHARGE = CHARG8)   )
 
 CALC_ELEM( reuse=MEST8,
-                      RESULTAT=MEST8, EXCIT=_F( CHARGE = CHARG8),
+                      RESULTAT=MEST8,
                       OPTION=('EFGE_ELNO_DEPL','SIGM_ELNO_DEPL','SIPO_ELNO_DEPL'))
 
 TEST_RESU(RESU=(
@@ -851,7 +851,7 @@ TEST_RESU(RESU=(
 # TEST DE SIPO_ELNO_DEPL
 
 CALC_ELEM( reuse=MEST7,
-                      RESULTAT=MEST7, EXCIT=_F( CHARGE = CHARG7),
+                      RESULTAT=MEST7,
                       OPTION='SIPO_ELNO_DEPL' )
 
 TEST_RESU(RESU=(

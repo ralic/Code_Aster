@@ -1,7 +1,7 @@
       SUBROUTINE OP0070()
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 24/08/2010   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 14/09/2010   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -50,7 +50,7 @@ C
       LOGICAL      MAXREL,ERROR
       LOGICAL      MTCPUI,MTCPUP
       LOGICAL      ITEMAX,CONVER,FINPAS
-      INTEGER      ACTION
+      INTEGER      ACTION      
 C      
       LOGICAL      FORCE ,INCR  ,LBID
       LOGICAL      LNOPRE
@@ -83,8 +83,8 @@ C
 C
 C --- FONCTIONNALITES ACTIVEES
 C
-      LOGICAL      LSENS,LERRT,LELTC,LCTCD   
-      LOGICAL      LEXPL,LMPAS,LIMPEX
+      LOGICAL      LSENS,LERRT,LBOUCL   
+      LOGICAL      LEXPL,LMPAS,LIMPEX,LCONT
 C
 C --- FONCTIONS
 C
@@ -180,14 +180,14 @@ C
       INCRUN = 1    
 C
 C --- QUELQUES FONCTIONNALITES ACTIVEES
-C
-      LELTC  = ISFONC(FONACT,'ELT_CONTACT')
-      LCTCD  = ISFONC(FONACT,'CONT_DISCRET')      
+C     
       LSENS  = ISFONC(FONACT,'SENSIBILITE')
       LERRT  = ISFONC(FONACT,'ERRE_TEMPS')
       LIMPEX = ISFONC(FONACT,'IMPL_EX')
       LEXPL  = NDYNLO(SDDYNA,'EXPLICITE')
-      LMPAS  = NDYNLO(SDDYNA,'MULTI_PAS')           
+      LMPAS  = NDYNLO(SDDYNA,'MULTI_PAS') 
+      LCONT  = ISFONC(FONACT,'CONTACT')
+      LBOUCL = ISFONC(FONACT,'BOUCLE_EXTERNE')
 C
 C ======================================================================
 C     BOUCLE SUR LES PAS DE TEMPS
@@ -222,10 +222,8 @@ C ======================================================================
 C    BOUCLE POUR CONTACT 
 C ======================================================================
 C  
-      IF (LELTC) THEN
-        NIVEAU = 4
-      ELSEIF (LCTCD) THEN
-        NIVEAU = 3               
+      IF (LBOUCL) THEN
+        NIVEAU = 4        
       ELSE
         NIVEAU = -1
       ENDIF
@@ -237,7 +235,7 @@ C
       CALL NMIBLE(NIVEAU,
      &            NUMINS,MODELE,MAILLA,DEFICO,RESOCO,
      &            FONACT,NUMEDD,SDDYNA,SDDISC,ITERAT,
-     &            VALINC,SOLALG,LNOPRE)    
+     &            VALINC,SOLALG,LNOPRE)  
 C
 C --- ON SAUTE LA PREDICTION
 C     
@@ -252,7 +250,7 @@ C
      &            PARMET,CARCRI,SDDISC,SDTIME,NUMINS,
      &            VALINC,SOLALG,LICCVG,MATASS,MAPREC,
      &            DEFICO,RESOCO,RESOCU,SDDYNA,CODERE,
-     &            MEELEM,MEASSE,VEELEM,VEASSE)
+     &            MEELEM,MEASSE,VEELEM,VEASSE) 
 C
 C --- PREMIER INSTANT PASSE
 C
@@ -276,7 +274,7 @@ C
      &            SDDISC,SDDYNA,SDNURO,SDPILO,SDTIME,
      &            DEFICO,RESOCO,DEFICU,RESOCU,VALINC,
      &            SOLALG,VEELEM,VEASSE,ETA   ,LICCVG,
-     &            CONV  )
+     &            CONV  )  
 C
 C --- SI ECHEC DU PILOTAGE
 C        
@@ -313,7 +311,7 @@ C
      &            PARMET,COMREF,MATASS,NUMINS,ITERAT,
      &            CONV  ,ETA   ,PARCRI,DEFICO,RESOCO,
      &            LICCVG,VALINC,SOLALG,MEASSE,VEASSE,
-     &            ITEMAX,CONVER,ERROR ,FINPAS,MAXREL)
+     &            ITEMAX,CONVER,ERROR ,FINPAS,MAXREL) 
 C
 C --- ON A CONVERGE ON FINIT LE PAS DE TEMPS
 C
@@ -340,13 +338,13 @@ C
      &            MEELEM,MEASSE,VEASSE,VEELEM)
 C
       CALL NMTIME('FIN','ITE',SDTIME,LBID  ,R8BID )   
-      ITERAT = ITERAT + 1         
+      ITERAT = ITERAT + 1
 C
 C --- VERIFICATION SI INTERRUPTION DEMANDEE PAR SIGNAL USR1
 C
       IF ( ETAUSR().EQ.1 ) THEN
          GOTO 1000
-      ENDIF
+      ENDIF    
 C
 C --- TEMPS DISPONIBLE POUR FAIRE UNE NOUVELLE ITERATION DE NEWTON ?
 C
@@ -397,7 +395,7 @@ C ======================================================================
 
       CALL NMTBLE(NIVEAU, 
      &            MODELE,MAILLA,MATE  ,DEFICO,RESOCO,FONACT,
-     &            MAXREL,SDIMPR,SDDYNA,VALINC)
+     &            MAXREL,SDIMPR,SDDYNA,VALINC)  
 
       IF (NIVEAU.GT.0) THEN
         GOTO 101
@@ -415,10 +413,12 @@ C
      &              VALINC)
       ENDIF
 C
-C --- ECRITURE DES NOEUDS EN CONTACT
+C --- POST_TRAITEMENT DU CONTACT
 C
-      CALL CFMXRE(MAILLA,MODELE,DEFICO,RESOCO,FONACT,
-     &            MATASS,NUMINS,SDDISC,SOLALG,VEASSE)
+      IF (LCONT) THEN
+        CALL CFMXPO(MAILLA,MODELE,DEFICO,RESOCO,NUMINS,
+     &              SDDISC,SOLALG,VALINC,VEASSE)
+      ENDIF
 C   
 C --- FIN MESURE TEMPS PAS DE TEMPS
 C        
@@ -496,7 +496,7 @@ C --- VERIFICATION SI INTERRUPTION DEMANDEE PAR SIGNAL USR1
 C
       IF ( ETAUSR().EQ.1 ) THEN
          GOTO 1000
-      ENDIF
+      ENDIF      
 C      
 C --- PLUS ASSEZ DE TEMPS -> ON SORT PROPREMENT
 C

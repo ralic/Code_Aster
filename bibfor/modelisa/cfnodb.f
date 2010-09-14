@@ -1,7 +1,7 @@
-      SUBROUTINE CFNODB(DEFICO,NZOCO,NNOCO,IFORM)
+      SUBROUTINE CFNODB(CHAR  )
 C      
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
+C MODIF MODELISA  DATE 14/09/2010   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -20,8 +20,7 @@ C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C
       IMPLICIT     NONE
-      INTEGER      NZOCO,NNOCO,IFORM
-      CHARACTER*24 DEFICO
+      CHARACTER*8  CHAR
 C
 C ----------------------------------------------------------------------
 C
@@ -32,10 +31,7 @@ C
 C ----------------------------------------------------------------------
 C
 C
-C IN  DEFICO : NOM SD CONTACT DEFINITION
-C IN  NBZOC  : NOMBRE DE ZONES DE CONTACT
-C IN  NNOCO  : NOMBRE DE NOEUDS DE CONTACT
-C IN  IFORM   : FORMULATION DISCRETE(1) OU CONTINUE(2)
+C IN  CHAR   : NOM UTILISATEUR DU CONCEPT DE CHARGE
 C
 C -------------- DEBUT DECLARATIONS NORMALISEES JEVEUX -----------------
 C
@@ -59,21 +55,29 @@ C
       CHARACTER*24 NODBL ,CONTNO,SANSNO,PSANS ,PBARS ,PBARM
       INTEGER      JNODBL,JNOCO ,JSANS ,JPSANS,JPBARS,JPBARM
       INTEGER      IZONE,IBID,NVDBL
-      INTEGER      ISURFE,NBNOE,JDECE
-      INTEGER      ISURFM,NBNOM,JDECM
+      INTEGER      NBNOE,JDECNE
+      INTEGER      NBNOM,JDECNM
       INTEGER      NDOUBL,NSANS,JDECS
       INTEGER      NBARS,NBARM
-      LOGICAL      CFDISL,LVERIF
+      INTEGER      CFDISI,MMINFI,NZOCO,NNOCO
+      INTEGER      IFORM
+      CHARACTER*24 DEFICO   
 C
 C ----------------------------------------------------------------------
 C
       CALL JEMARQ()
 C
+C --- INITIALISATIONS
+C      
+      DEFICO = CHAR(1:8)//'.CONTACT' 
+      NZOCO  = CFDISI(DEFICO,'NZOCO' )
+      NNOCO  = CFDISI(DEFICO,'NNOCO' )
+      IFORM  = CFDISI(DEFICO,'FORMULATION')
+C
 C --- OBJETS TEMPORAIRES
 C
       NODBL = '&&CFNODB.NODBL'
-      CALL WKVECT(NODBL,'V V I',NNOCO,JNODBL)
-      LVERIF = CFDISL(DEFICO,'CONT_VERIF')
+      CALL WKVECT(NODBL,'V V I',NNOCO,JNODBL)      
 C
 C --- ACCES AU TABLEAU DES NOEUDS DE CONTACT
 C
@@ -83,7 +87,7 @@ C
       CALL JEVEUO(SANSNO,'L',JSANS)
       PSANS  = DEFICO(1:16)//'.PSSNOCO'
       CALL JEVEUO(PSANS ,'L',JPSANS) 
-
+C
       IF (IFORM.EQ.2) THEN
         PBARS  = DEFICO(1:16)//'.PBANOCO'
         CALL JEVEUO(PBARS,'L',JPBARS)
@@ -94,31 +98,31 @@ C
 C --- PARCOURS DES ZONES
 C
       DO 100 IZONE = 1,NZOCO
-        CALL CFZONE(DEFICO,IZONE ,'ESCL',ISURFE)
-        CALL CFNBSF(DEFICO,ISURFE,'NOEU',NBNOE ,JDECE)
-        CALL CFZONE(DEFICO,IZONE ,'MAIT',ISURFM)
-        CALL CFNBSF(DEFICO,ISURFM,'NOEU',NBNOM ,JDECM)
-        CALL UTLISI('INTER',ZI(JNOCO+JDECE),NBNOE,
-     &              ZI(JNOCO+JDECM),NBNOM,ZI(JNODBL),NNOCO,NDOUBL)
+        NBNOE  = MMINFI(DEFICO,'NBNOE' ,IZONE )
+        NBNOM  = MMINFI(DEFICO,'NBNOM' ,IZONE )
+        JDECNE = MMINFI(DEFICO,'JDECNE',IZONE )
+        JDECNM = MMINFI(DEFICO,'JDECNM',IZONE )
+        CALL UTLISI('INTER',ZI(JNOCO+JDECNE),NBNOE ,
+     &                      ZI(JNOCO+JDECNM),NBNOM ,
+     &                      ZI(JNODBL)      ,NNOCO ,
+     &                      NDOUBL)
         IF (NDOUBL.NE.0) THEN
           IF (NDOUBL.GT.0) THEN
+C --------- LE NOEUD COMMUN EST-IL EXCLU PAR SANS_NOEUD ?          
             NSANS = ZI(JPSANS+IZONE) - ZI(JPSANS+IZONE-1)
             JDECS = ZI(JPSANS+IZONE-1)
-            CALL UTLISI('DIFFE',ZI(JNODBL),NDOUBL,
-     &                          ZI(JSANS+JDECS),NSANS,IBID,1,NVDBL)
+            CALL UTLISI('DIFFE',ZI(JNODBL)     ,NDOUBL,
+     &                          ZI(JSANS+JDECS),NSANS ,
+     &                          IBID           ,1     ,
+     &                          NVDBL)
+C --------- NON !
             IF (NVDBL.NE.0) THEN
-              IF (IFORM.EQ.1) THEN
-                IF (.NOT.LVERIF) THEN
-                  CALL U2MESS('F','CONTACT2_13')
-                ENDIF
-              ELSEIF (IFORM.EQ.2) THEN
-                NBARS = ZI(JPBARS+IZONE) - ZI(JPBARS+IZONE-1)
-                NBARM = ZI(JPBARM+IZONE) - ZI(JPBARM+IZONE-1)
-                IF (NBARS.EQ.0.AND.NBARM.EQ.0) THEN
-                  CALL U2MESS('F','CONTACT2_13')
-                ENDIF
-              ELSE
-                CALL ASSERT(.FALSE.)
+              IF (IFORM.EQ.2) THEN
+                 NBARS = ZI(JPBARS+IZONE) - ZI(JPBARS+IZONE-1)
+                 NBARM = ZI(JPBARM+IZONE) - ZI(JPBARM+IZONE-1)
+                 IF (NBARS.EQ.0.AND.NBARM.EQ.0) THEN
+                   CALL U2MESS('F','CONTACT2_13')
+                 ENDIF 
               ENDIF
             ENDIF
           ELSE

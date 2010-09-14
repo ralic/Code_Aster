@@ -1,6 +1,6 @@
       SUBROUTINE OP0033()
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 24/08/2010   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 13/09/2010   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -65,10 +65,6 @@ C    DIMANV = DIMENSION MAX DE LA LISTE DU NOMBRE DE VAR INT EN THM
       LOGICAL      FINPAS,DIDERN,ITEMAX,ECHLDC,ECHGAU
       DATA SDDISC            /'&&OP0033.SDDISC'/
       DATA SDCRIT            /'&&OP0033.SDCRIT'/
-      DATA FINPAS            /.FALSE./  
-      DATA ITEMAX            /.FALSE./  
-      DATA ECHLDC            /.FALSE./  
-      DATA ECHGAU            /.FALSE./  
 
 C ======================================================================
 C --- RECUPERATION DES ARGUMENTS  DE LA COMMANDE
@@ -82,6 +78,10 @@ C ======================================================================
       K19B=' '
       ITER = 0
       ACTION=1
+      FINPAS=.FALSE.
+      ITEMAX=.FALSE.
+      ECHLDC=.FALSE.
+      ECHGAU=.FALSE.
       
 C     RECUPERATION DES OPTIONS DEMANDEES
 C     ----------------------------------
@@ -157,7 +157,12 @@ C        6 CMP DE EPSI DONNEES : PAS BESOIN DE NEWTON
             ELSE
                CALL ASSERT(.FALSE.)
             ENDIF
-            IF(IRET.NE.0) GOTO 500
+            CALL PMIMPR(0,INSTAP,INDIMP,FONIMP,VALIMP,0,EPSM,SIGM,
+     &               VIM,NBVARI,R,R8B,R8B)
+            IF(IRET.NE.0) THEN
+               ECHLDC=.TRUE.
+               GOTO 500
+            ENDIF
             GOTO 550
          ENDIF
          
@@ -191,8 +196,8 @@ C        INITIALISATION DE L'ALGO DE NEWTON
          ENDIF
 C        SAUVEGARDE DE R(DY0) POUR TEST DE CONVERGENCE
          CALL DCOPY(12,R,1,RINI,1)
-         CALL PMIMPR(0,INSTAP,FONIMP,VALIMP,0,EPSM,SIGM,VIM,NBVARI,R,
-     &   R8B,R8B)
+         CALL PMIMPR(0,INSTAP,INDIMP,FONIMP,VALIMP,0,EPSM,SIGM,
+     &               VIM,NBVARI,R,R8B,R8B)
          
          ITER = 0
          
@@ -233,8 +238,8 @@ C           CALCUL DU RESIDU
      &           CARCRI,OPTION,EPS,SIGP,VIP,DSIDEP,IRET)
             ENDIF
             
-            CALL PMIMPR(1,INSTAP,FONIMP,VALIMP,ITER,DEPS,SIGP,VIP,
-     &                  NBVARI,R,R8B,R8B)
+            CALL PMIMPR(1,INSTAP,INDIMP,FONIMP,VALIMP,ITER,DEPS,SIGP,
+     &                  VIP,NBVARI,R,R8B,R8B)
             IF(IRET.NE.0) THEN
                ECHLDC=.TRUE.
                GOTO 500
@@ -256,7 +261,7 @@ C           CALCUL EVENTUEL DE LA MATRICE TGTE PAR PERTURBATION
             ENDIF    
             
 C           VERIFICATION DE LA CONVERGENCE EN DY  ET RE-INTEGRATION ?
-            CALL PMCONV(R,RINI,R1,INSTAP,SIGP,COEF,ITER,
+            CALL PMCONV(R,RINI,R1,INSTAP,SIGP,COEF,ITER,INDIMP,
      &                  PARCRI,IRET,ITEMAX)
 
 C           ENREGISTRE LES ERREURS A CETTE ITERATION
@@ -307,8 +312,8 @@ C
 C        ---------------------------------------------------------------
 C        CONVERGENCE => MISE A JOUR DE SIGM,VIM, TABLE
 C        ---------------------------------------------------------------
-         CALL PMIMPR(2,INSTAP,FONIMP,VALIMP,ITER,DEPS,SIGP,VIP,NBVARI,R,
-     &    R8B,R8B)
+         CALL PMIMPR(2,INSTAP,INDIMP,FONIMP,VALIMP,ITER,DEPS,SIGP,
+     &               VIP,NBVARI,R,R8B,R8B)
          CALL DCOPY(6,SIGP,1,SIGM,1)
          CALL DCOPY(6,SIGP,1,VR(8),1)
          CALL DSCAL(3,1.D0/RAC2,VR(11),1)

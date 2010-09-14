@@ -2,7 +2,7 @@
      &                  ILIDEB,NZLIAI)
 C     
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 14/09/2010   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -69,30 +69,9 @@ C
       CHARACTER*80                                              ZK80
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C
-C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
+C A SUPPRIMER
 C
-      INTEGER      IFM,NIV      
-C
-C ----------------------------------------------------------------------
-C
-      CALL JEMARQ()      
-      CALL INFDBG('CONTACT',IFM,NIV) 
-C   
-C --- AFFICHAGE
-C 
-      IF (NIV.GE.2) THEN
-        WRITE (IFM,*) '<CONTACT> APPARIEMENT MAIT./ESCL. POUR ZONE ',
-     &                 IZONE 
-      ENDIF           
-C
-C --- RECHERCHE DU NOEUD MAITRE LE PLUS PROCHE
-C
-      CALL RECHMN(NOMA  ,NEWGEO,DEFICO,RESOCO,IZONE )
-C
-C --- RECHERCHE DE LA MAILLE MAITRE LA PLUS PROCHE
-C
-      CALL CHMANO(NOMA  ,IZONE ,NEWGEO,DEFICO,RESOCO,
-     &            ILIDEB,NZLIAI)
-C     
-      CALL JEDEMA ()
+      CALL JEMARQ()
+      
+      CALL JEDEMA()
       END

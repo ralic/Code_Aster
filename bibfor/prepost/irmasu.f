@@ -3,7 +3,7 @@
      &            NOMA,NBGRN,NOGN,NBGRM,NOGM,
      &                  LMASU,NOMAI,NONOE,VERSIO)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 04/08/2008   AUTEUR REZETTE C.REZETTE 
+C MODIF PREPOST  DATE 14/09/2010   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -72,16 +72,17 @@ C     ------------------------------------------------------------------
       INTEGER CONNEX(*),TYPMA(*),POINT(*),TYPEL(*)
       INTEGER NODSUP(32),NODAST(32),PERMUT(MAXNOD,*),CODGRA(*),CODPHY(*)
       INTEGER ICODNO,ICODMA,VERSIO,CODPHD(*)
-      INTEGER ITRI7, IQUA9, ISEG4, IHEX27
+      INTEGER ITRI7, IQUA9, ISEG4, IHEX27, IPEN18
       LOGICAL LMASU,LPOUT,LMOD
       CHARACTER*8 KBID
 C ---------------------------------------------------------------------
       CALL JEMARQ()
       LPOUT=.FALSE.
-      ITRI7 = 0
-      IQUA9 = 0
-      ISEG4 = 0
+      ITRI7  = 0
+      IQUA9  = 0
+      ISEG4  = 0
       IHEX27 = 0
+      IPEN18 = 0
 C
 C     RECHERCHE DE LA PRESENCE DE POUTRES
 C
@@ -196,6 +197,10 @@ CCC
            IF (ITRI7.EQ.0) CALL U2MESS('I','PREPOST2_79')
            ITRI7 = 1
            NNOE = NNOE - 1
+        ELSE IF ( NOMTM .EQ. 'PENTA18' ) THEN
+           IF (IPEN18.EQ.0) CALL U2MESS('I','PREPOST2_85')
+           IPEN18 = 1
+           NNOE = NNOE - 3
         ELSEIF ( NOMTM .EQ. 'QUAD9' ) THEN
            IF (IQUA9.EQ.0) CALL U2MESS('I','PREPOST2_80')
            IQUA9 = 1

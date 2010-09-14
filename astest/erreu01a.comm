@@ -1,4 +1,4 @@
-# MODIF  DATE 20/07/2010   AUTEUR MAHFOUZ D.MAHFOUZ 
+# MODIF  DATE 13/09/2010   AUTEUR COURTOIS M.COURTOIS 
 # TITRE POUR TESTER DES EMISSIONS DE MESSAGES D'ERREUR
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -76,7 +76,7 @@ try :
 except aster.error,err:
    print fmt_raison % str(err)
    # on verifie que l'erreur fatale est bien celle que l'on attendait :
-   if re.search("CALCULEL_30", str(err))<>None :
+   if err.id_message == "CALCULEL_30":
       is_ok = 1
 
 # TEST_RESU
@@ -104,7 +104,7 @@ try :
 except aster.error,err:
    print fmt_raison % str(err)
    # on verifie que l'erreur fatale est bien celle que l'on attendait :
-   if re.search("FACTOR_21", str(err))<>None :
+   if err.id_message == "FACTOR_21":
       is_ok = 1
 
 # TEST_RESU

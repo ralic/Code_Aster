@@ -1,4 +1,4 @@
-#@ MODIF macr_cara_poutre_ops Macro  DATE 30/06/2008   AUTEUR FLEJOU J-L.FLEJOU 
+#@ MODIF macr_cara_poutre_ops Macro  DATE 13/09/2010   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -316,8 +316,6 @@ def macr_cara_poutre_ops(self,MAILLAGE,SYME_X,SYME_Y,GROUP_MA_BORD,
 
      __tempe1=CALC_ELEM(reuse=__tempe1,
                        RESULTAT=__tempe1,
-                       MODELE=__nomoth,
-                       CHAM_MATER=__chmath,
                        TOUT_ORDRE='OUI',
                        OPTION='FLUX_ELNO_TEMP',
                       )
@@ -763,8 +761,6 @@ def macr_cara_poutre_ops(self,MAILLAGE,SYME_X,SYME_Y,GROUP_MA_BORD,
 
         __tempe1=CALC_ELEM(reuse=__tempe1,
                             RESULTAT=__tempe1,
-                            MODELE=__nomoth,
-                            CHAM_MATER=__chmath,
                             TOUT_ORDRE='OUI',
                             OPTION='FLUX_ELNO_TEMP',
                            )

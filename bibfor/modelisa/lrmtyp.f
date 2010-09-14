@@ -2,7 +2,7 @@
      &                    MODNUM, NUANOM, NUMNOA )
 C_____________________________________________________________________
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 12/05/2009   AUTEUR MAZET S.MAZET 
+C MODIF MODELISA  DATE 14/09/2010   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -39,7 +39,7 @@ C ---------------------------------------------------------------------
       IMPLICIT NONE
 C
       INTEGER NTYMAX
-      PARAMETER (NTYMAX = 53)
+      PARAMETER (NTYMAX = 54)
       INTEGER NNOMAX
       PARAMETER (NNOMAX=27)
 C
@@ -90,28 +90,30 @@ C     (LIE A LORDRE DEFINI DANS LE CATALOGUE TYPE_MAILLE.CATA)
      &              'TRIA66  ','TRIA7   ','QUAD4   ','QUAD44  ',
      &              'QUAD8   ','QUAD88  ','QUAD9   ','QUAD99  ',
      &              'TETRA4  ','TETRA10 ','PENTA6  ','PENTA15 ',
-     &              'PYRAM5  ','PYRAM13 ','HEXA8   ','HEXA20  ',
-     &              'HEXA27  ','TR3QU4  ','QU4TR3  ','TR6TR3  ',
-     &              'TR3TR6  ','TR6QU4  ','QU4TR6  ','TR6QU8  ',
-     &              'QU8TR6  ','TR6QU9  ','QU9TR6  ','QU8TR3  ',
-     &              'TR3QU8  ','QU8QU4  ','QU4QU8  ','QU8QU9  ',
-     &              'QU9QU8  ','QU9QU4  ','QU4QU9  ','QU9TR3  ',
-     &              'TR3QU9  ','SEG32   ','SEG23   ','QU4QU4  ',
-     &              'TR3TR3  ','HE8HE8  ','PE6PE6  ','TE4TE4  '/
+     &              'PENTA18 ','PYRAM5  ','PYRAM13 ','HEXA8   ',
+     &              'HEXA20  ','HEXA27  ','TR3QU4  ','QU4TR3  ',
+     &              'TR6TR3  ','TR3TR6  ','TR6QU4  ','QU4TR6  ',
+     &              'TR6QU8  ','QU8TR6  ','TR6QU9  ','QU9TR6  ',
+     &              'QU8TR3  ','TR3QU8  ','QU8QU4  ','QU4QU8  ',
+     &              'QU8QU9  ','QU9QU8  ','QU9QU4  ','QU4QU9  ',
+     &              'QU9TR3  ','TR3QU9  ','SEG32   ','SEG23   ',
+     &              'QU4QU4  ','TR3TR3  ','HE8HE8  ','PE6PE6  ',
+     &              'TE4TE4  '/
       DATA NUMMED  /1,         102,       0,         103,
      &              0,         0,
      &                         203,       0,         206,
      &              0,         0,         204,       0,
      &              208,       0,         0,         0,
      &              304,       310,       306,       315,
-     &              305,       313,       308,       320,
+     &              0,         305,       313,       308,
+     &              320,       0,         0,         0,
      &              0,         0,         0,         0,
      &              0,         0,         0,         0,
      &              0,         0,         0,         0,
      &              0,         0,         0,         0,
      &              0,         0,         0,         0,
      &              0,         0,         0,         0,
-     &              0,         0,         0,         0/
+     &              0/
 C     ------------------------------------------------------------------
       CALL JEMARQ ( )
 C
@@ -267,20 +269,6 @@ C
 C 3.4. ==> MODIFICATIONS POUR LES PYRAMIDES
 C       ------ PYRAM5 -------
 C
-      MODNUM(22)=1
-C
-      NUANOM(22,1)=1
-      NUMNOA(22,1)=1
-      NUANOM(22,2)=4
-      NUMNOA(22,2)=4
-      NUANOM(22,3)=3
-      NUMNOA(22,3)=3
-      NUANOM(22,4)=2
-      NUMNOA(22,4)=2
-      NUANOM(22,5)=5
-      NUMNOA(22,5)=5
-
-C       ------ PYRAM13 -------
       MODNUM(23)=1
 C
       NUANOM(23,1)=1
@@ -293,28 +281,8 @@ C
       NUMNOA(23,4)=2
       NUANOM(23,5)=5
       NUMNOA(23,5)=5
-      NUANOM(23,6)=9
-      NUMNOA(23,6)=9
-      NUANOM(23,7)=8
-      NUMNOA(23,7)=8
-      NUANOM(23,8)=7
-      NUMNOA(23,8)=7
-      NUANOM(23,9)=6
-      NUMNOA(23,9)=6
-      NUANOM(23,10)=10
-      NUMNOA(23,10)=10
-      NUANOM(23,11)=13
-      NUMNOA(23,11)=13
-      NUANOM(23,12)=12
-      NUMNOA(23,12)=12
-      NUANOM(23,13)=11
-      NUMNOA(23,13)=11
-C
-C
-C 3.2. ==> MODIFICATIONS POUR LES HEXAEDRES
-C
-C       ------ HEXA8 -------
-C
+
+C       ------ PYRAM13 -------
       MODNUM(24)=1
 C
       NUANOM(24,1)=1
@@ -327,14 +295,27 @@ C
       NUMNOA(24,4)=2
       NUANOM(24,5)=5
       NUMNOA(24,5)=5
-      NUANOM(24,6)=8
-      NUMNOA(24,6)=8
-      NUANOM(24,7)=7
-      NUMNOA(24,7)=7
-      NUANOM(24,8)=6
-      NUMNOA(24,8)=6
+      NUANOM(24,6)=9
+      NUMNOA(24,6)=9
+      NUANOM(24,7)=8
+      NUMNOA(24,7)=8
+      NUANOM(24,8)=7
+      NUMNOA(24,8)=7
+      NUANOM(24,9)=6
+      NUMNOA(24,9)=6
+      NUANOM(24,10)=10
+      NUMNOA(24,10)=10
+      NUANOM(24,11)=13
+      NUMNOA(24,11)=13
+      NUANOM(24,12)=12
+      NUMNOA(24,12)=12
+      NUANOM(24,13)=11
+      NUMNOA(24,13)=11
 C
-C       ------ HEXA20 -------
+C
+C 3.2. ==> MODIFICATIONS POUR LES HEXAEDRES
+C
+C       ------ HEXA8 -------
 C
       MODNUM(25)=1
 C
@@ -354,30 +335,51 @@ C
       NUMNOA(25,7)=7
       NUANOM(25,8)=6
       NUMNOA(25,8)=6
-      NUANOM(25,9)=12
-      NUMNOA(25,9)=12
-      NUANOM(25,10)=11
-      NUMNOA(25,10)=11
-      NUANOM(25,11)=10
-      NUMNOA(25,11)=10
-      NUANOM(25,12)=9
-      NUMNOA(25,12)=9
-      NUANOM(25,13)=20
-      NUMNOA(25,13)=17
-      NUANOM(25,14)=19
-      NUMNOA(25,14)=20
-      NUANOM(25,15)=18
-      NUMNOA(25,15)=19
-      NUANOM(25,16)=17
-      NUMNOA(25,16)=18
-      NUANOM(25,17)=13
-      NUMNOA(25,17)=16
-      NUANOM(25,18)=16
-      NUMNOA(25,18)=15
-      NUANOM(25,19)=15
-      NUMNOA(25,19)=14
-      NUANOM(25,20)=14
-      NUMNOA(25,20)=13
+C
+C       ------ HEXA20 -------
+C
+      MODNUM(26)=1
+C
+      NUANOM(26,1)=1
+      NUMNOA(26,1)=1
+      NUANOM(26,2)=4
+      NUMNOA(26,2)=4
+      NUANOM(26,3)=3
+      NUMNOA(26,3)=3
+      NUANOM(26,4)=2
+      NUMNOA(26,4)=2
+      NUANOM(26,5)=5
+      NUMNOA(26,5)=5
+      NUANOM(26,6)=8
+      NUMNOA(26,6)=8
+      NUANOM(26,7)=7
+      NUMNOA(26,7)=7
+      NUANOM(26,8)=6
+      NUMNOA(26,8)=6
+      NUANOM(26,9)=12
+      NUMNOA(26,9)=12
+      NUANOM(26,10)=11
+      NUMNOA(26,10)=11
+      NUANOM(26,11)=10
+      NUMNOA(26,11)=10
+      NUANOM(26,12)=9
+      NUMNOA(26,12)=9
+      NUANOM(26,13)=20
+      NUMNOA(26,13)=17
+      NUANOM(26,14)=19
+      NUMNOA(26,14)=20
+      NUANOM(26,15)=18
+      NUMNOA(26,15)=19
+      NUANOM(26,16)=17
+      NUMNOA(26,16)=18
+      NUANOM(26,17)=13
+      NUMNOA(26,17)=16
+      NUANOM(26,18)=16
+      NUMNOA(26,18)=15
+      NUANOM(26,19)=15
+      NUMNOA(26,19)=14
+      NUANOM(26,20)=14
+      NUMNOA(26,20)=13
 C
       CALL JEDEMA ( )
 C

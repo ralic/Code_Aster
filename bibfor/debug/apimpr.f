@@ -1,0 +1,188 @@
+      SUBROUTINE APIMPR(SDAPPA,IFM   )
+C
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF DEBUG  DATE 14/09/2010   AUTEUR ABBAS M.ABBAS 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C ======================================================================
+C RESPONSABLE ABBAS M.ABBAS
+C
+      IMPLICIT     NONE
+      CHARACTER*19 SDAPPA
+      INTEGER      IFM
+C      
+C ----------------------------------------------------------------------
+C
+C ROUTINE APPARIEMENT (UTILITAIRE)
+C
+C IMPRESSION DES INFOS DETAILLES DE L'APPARIEMENT
+C
+C ----------------------------------------------------------------------
+C
+C
+C IN  SDAPPA : NOM DE LA SD APPARIEMENT
+C IN  IFM    : UNITE D'IMPRESSION DU MESSAGE
+C
+C -------------- DEBUT DECLARATIONS NORMALISEES JEVEUX -----------------
+C
+      CHARACTER*32   JEXNUM
+      INTEGER ZI
+      COMMON /IVARJE/ZI(1)
+      REAL*8 ZR
+      COMMON /RVARJE/ZR(1)
+      COMPLEX*16 ZC
+      COMMON /CVARJE/ZC(1)
+      LOGICAL ZL
+      COMMON /LVARJE/ZL(1)
+      CHARACTER*8 ZK8
+      CHARACTER*16 ZK16
+      CHARACTER*24 ZK24
+      CHARACTER*32 ZK32
+      CHARACTER*80 ZK80
+      COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
+C
+C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
+C
+      CHARACTER*24 RNOMSD       
+      INTEGER      NBZONE,NTPT,NBPT
+      INTEGER      TYPAPP,ENTAPP
+      REAL*8       COORPT(3)
+      REAL*8       DIST,KSI1,KSI2,TAU1(3),TAU2(3)
+      CHARACTER*16 NOMPT
+      INTEGER      IZONE,IP,K,I
+      INTEGER      NUMNOM,NUMMAM
+      INTEGER      POSNOM,POSMAM
+      CHARACTER*8  NOMA,NOMNOM,NOMMAM
+C
+C ----------------------------------------------------------------------
+C
+      CALL JEMARQ()
+C
+C --- NOM SD MAILLAGE
+C
+      CALL APNOMK(SDAPPA,'NOMA'  ,RNOMSD)
+      NOMA   = RNOMSD(1:8)   
+C
+C --- INITIALISATIONS
+C
+      IP     = 1
+      CALL APPARI(SDAPPA,'APPARI_NBZONE',NBZONE)
+      CALL APPARI(SDAPPA,'APPARI_NTPT'  ,NTPT  )           
+C
+C ----------------------------------------------------------------------
+C --- INFOS SUR LES ZONES
+C ----------------------------------------------------------------------
+C
+      WRITE(IFM,*) '<APPARIEMENT> ------ ZONES ------ '
+
+      WRITE(IFM,1000) NBZONE
+      WRITE(IFM,1001) NTPT
+C
+1000  FORMAT (' <APPARIEMENT> NOMBRE DE ZONES                   : ',I6)
+1001  FORMAT (' <APPARIEMENT> NOMBRE MAX. DE POINTS A APPARIER  : ',I6)
+C
+C --- BOUCLE SUR LES ZONES
+C
+      DO 10 IZONE = 1,NBZONE  
+C
+C ----- INFORMATION SUR LA ZONE 
+C   
+        CALL APZONI(SDAPPA,IZONE ,'NBPT'  ,NBPT  )     
+C
+C ----- BOUCLE SUR LES POINTS
+C
+        DO 20 I = 1,NBPT
+C
+C ------- INFOS SUR LE POINT    
+C
+          CALL APNOMP(SDAPPA,IP    ,NOMPT)
+          WRITE(IFM,4000) IP,NOMPT
+          CALL APCOPT(SDAPPA,IP    ,COORPT)
+
+C
+C ------- INFOS APPARIEMENT
+C
+          CALL APINFI(SDAPPA,'APPARI_TYPE'     ,IP    ,TYPAPP )
+          CALL APINFI(SDAPPA,'APPARI_ENTITE'   ,IP    ,ENTAPP )
+          CALL APINFR(SDAPPA,'APPARI_PROJ_KSI1',IP    ,KSI1   )
+          CALL APINFR(SDAPPA,'APPARI_PROJ_KSI2',IP    ,KSI2   )
+          CALL APINFR(SDAPPA,'APPARI_DIST'     ,IP    ,DIST   )
+          CALL APVECT(SDAPPA,'APPARI_TAU1'     ,IP    ,TAU1   )
+          CALL APVECT(SDAPPA,'APPARI_TAU2'     ,IP    ,TAU2   )
+C  
+          IF (TYPAPP.EQ.-1) THEN
+            WRITE(IFM,5001)
+          ELSEIF (TYPAPP.EQ.-2) THEN
+            WRITE(IFM,5002)          
+          ELSEIF (TYPAPP.EQ.-3) THEN
+            WRITE(IFM,5003)
+          ELSEIF (TYPAPP.EQ.0) THEN
+            WRITE(IFM,5004)                    
+          ELSEIF (TYPAPP.EQ.1) THEN
+            WRITE(IFM,4001) COORPT(1),COORPT(2),COORPT(3)          
+            POSNOM = ENTAPP
+            CALL APNUMN(SDAPPA,POSNOM,NUMNOM)
+            CALL JENUNO(JEXNUM(NOMA//'.NOMNOE',NUMNOM),NOMNOM)
+            WRITE(IFM,6001) NOMNOM
+            WRITE(IFM,8001) DIST
+            
+            
+          ELSEIF (TYPAPP.EQ.2) THEN
+            WRITE(IFM,4001) COORPT(1),COORPT(2),COORPT(3)          
+            POSMAM = ENTAPP
+            CALL APNUMM(SDAPPA,POSMAM,NUMMAM)
+            CALL JENUNO(JEXNUM(NOMA//'.NOMMAI',NUMMAM),NOMMAM)
+            WRITE(IFM,6002) NOMMAM
+            
+            WRITE(IFM,7001) KSI1,KSI2
+            WRITE(IFM,8001) DIST
+            WRITE(IFM,9001) (TAU1(K),K=1,3)
+            WRITE(IFM,9002) (TAU2(K),K=1,3)
+          ELSE
+            WRITE(IFM,5004)  
+          ENDIF        
+C
+C ------- POINT SUIVANT
+C
+          IP     = IP + 1
+  20    CONTINUE
+  10  CONTINUE    
+C 
+4000  FORMAT (' <APPARIEMENT> POINT            ',I6,' (',
+     &        A16,')')  
+4001  FORMAT (' <APPARIEMENT> ** DE COORDONNEES ',1PE15.8,
+     &        1PE15.8,1PE15.8)      
+     
+5001  FORMAT (' <APPARIEMENT> -> EXCLU - PAR SANS_NOEUD')
+5002  FORMAT (' <APPARIEMENT> -> EXCLU - PAR TOLE_APPA')
+5003  FORMAT (' <APPARIEMENT> -> EXCLU - PAR TOLE_PROJ_EXT')
+5004  FORMAT (' <APPARIEMENT> -> NON APPARIE (ERREUR)')
+
+
+6001  FORMAT (' <APPARIEMENT> -> APPARIEMENT AVEC NOEUD  ',A8)
+6002  FORMAT (' <APPARIEMENT> -> APPARIEMENT AVEC MAILLE ',A8)
+
+7001  FORMAT (' <APPARIEMENT>      SUR POINT KSI1,KSI2: ',
+     &          1PE15.8,1PE15.8)
+8001  FORMAT (' <APPARIEMENT>      DISTANCE: ',1PE15.8)
+9001  FORMAT (' <APPARIEMENT>      TANGENTE DIRECTION 1   : ',
+     &         3(1PE15.8,2X))
+9002  FORMAT (' <APPARIEMENT>      TANGENTE DIRECTION 2   : ',
+     &         3(1PE15.8,2X))          
+C
+      CALL JEDEMA()
+C
+      END

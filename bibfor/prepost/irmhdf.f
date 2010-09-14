@@ -4,7 +4,7 @@
      &                    INFMED )
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 22/06/2010   AUTEUR SELLENET N.SELLENET 
+C MODIF PREPOST  DATE 14/09/2010   AUTEUR REZETTE C.REZETTE 
 C RESPONSABLE GNICOLAS G.NICOLAS
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -66,7 +66,7 @@ C
       PARAMETER ( NOMPRO = 'IRMHDF' )
 C
       INTEGER NTYMAX
-      PARAMETER (NTYMAX = 53)
+      PARAMETER (NTYMAX = 54)
       INTEGER NNOMAX
       PARAMETER (NNOMAX=27)
       INTEGER EDLECT

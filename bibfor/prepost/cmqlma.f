@@ -1,6 +1,6 @@
        SUBROUTINE CMQLMA(MAIN,MAOUT,NBMA,MAILQ)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 21/03/2005   AUTEUR LAVERNE J.LAVERNE 
+C MODIF PREPOST  DATE 14/09/2010   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -46,9 +46,10 @@ C  QUAD8                    12                       4
 C  QUAD9                    12                       4
 C  TETRA10                  18                       4
 C  PENTA15                  20                       6
-C  PYRAM13                  22                       5
-C  HEXA20                   24                       8
-C  HEXA27                   24                       8
+C  PENTA18                  20                       6
+C  PYRAM13                  23                       5
+C  HEXA20                   25                       8
+C  HEXA27                   25                       8
 C
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER ZI
@@ -68,17 +69,19 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32 JEXNUM,JEXNOM
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
-      INTEGER JDIM,I,NBTMA,JMA,JTYPM1,JTYPM2,JCONN1,JCONN2,TYMAL(26),
-     &     JNOMM,NUM1,NUM2,NBNOL(26),JNOMTM,ITYP,J,INOM,JJ,NBNOMX,IRET,
-     &     NDIM,IJ,K
+      INTEGER NBTYMA
+      PARAMETER(NBTYMA=27)
+      INTEGER JDIM,I,NBTMA,JMA,JTYPM1,JTYPM2,JCONN1,JCONN2,
+     &     TYMAL(NBTYMA),JNOMM,NUM1,NUM2,NBNOL(NBTYMA),JNOMTM,
+     &     ITYP,J,INOM,JJ,NBNOMX,IRET,NDIM,IJ,K
       CHARACTER*1 KBID
       CHARACTER*8 NOM,NOMMA,NOMNOI
       CHARACTER*24 CONNEX,TYPMA
 C     
 C     TYMAL: TYPE DES MAILLES APRES LINEARISATION (CF. CI-DESSUS)
 C     NBNOL: NOMBRE DE NOEUDS APRES LINEARISATION (CF. CI-DESSUS)
-      DATA TYMAL   /3*0,2,4*0,7,4*0,12,0,12,2*0,18,0,20,0,22,0,24,24/
-      DATA NBNOL   /3*0,2,4*0,3,4*0,4,0,4,2*0,4,0,6,0,5,0,8,8/
+      DATA TYMAL   /3*0,2,4*0,7,4*0,12,0,12,2*0,18,0,20,20,0,23,0,25,25/
+      DATA NBNOL   /3*0,2,4*0,3,4*0,4 ,0,4 ,2*0,4 ,0,6 ,6, 0,5 ,0,8, 8/
       
       CALL JEMARQ()
 C

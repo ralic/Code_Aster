@@ -1,8 +1,7 @@
-      SUBROUTINE CFNOMM(NOMA  ,DEFICO,TYPENT,POSENT,NOMENT,
-     &                  CODRET)
+      SUBROUTINE CFNOMM(NOMA  ,DEFICO,TYPENT,POSENT,NOMENT)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 23/09/2008   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 14/09/2010   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -27,11 +26,10 @@ C
       INTEGER      POSENT
       CHARACTER*8  NOMENT
       CHARACTER*4  TYPENT
-      INTEGER      CODRET
 C      
 C ----------------------------------------------------------------------
 C
-C ROUTINE CONTACT (TOUTES METHODES - UTILITAIRE)
+C ROUTINE CONTACT (METHODES MAILLEES - UTILITAIRE)
 C
 C DONNE LE NOM DE L'ENTITE A PARTIR DE SON NUMERO
 C
@@ -45,8 +43,6 @@ C IN  TYPENT : TYPE D'ENTITE
 C                <MAIL>  MAILLE
 C                <NOEU>  NOEUD
 C OUT NOMENT : NOM DE L'ENTITE
-C OUT CODRET : CODE RETOUR
-C                -1 ERREUR
 C
 C -------------- DEBUT DECLARATIONS NORMALISEES JEVEUX -----------------
 C
@@ -70,9 +66,6 @@ C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
 C
       INTEGER      NUMMAI,NUMNOE
       INTEGER      POSMAI,POSNOE
-      INTEGER      NBNOEU,NBMAIL
-      INTEGER      IRET,CODRE2
-      CHARACTER*8  K8BID
 C
 C ----------------------------------------------------------------------
 C
@@ -80,54 +73,23 @@ C
 C
 C --- INITIALISATIONS
 C
-      NOMENT = ' '
-      CODRET = 0      
-C
-C --- DIMENSIONS MAILLAGE
-C 
-      CALL DISMOI('F'   ,'NB_NO_MAILLA',NOMA ,'MAILLAGE' ,NBNOEU,
-     &            K8BID ,IRET)
-      CALL DISMOI('F'   ,'NB_MA_MAILLA',NOMA ,'MAILLAGE' ,NBMAIL,
-     &            K8BID ,IRET)        
+      NOMENT = ' '           
 C
 C --- PREPARATION DES CHAINES POUR LES NOMS
 C
       IF (TYPENT.EQ.'MAIL') THEN  
         POSMAI = POSENT
-        CALL CFPOSM(NOMA  ,DEFICO,TYPENT,1     ,POSMAI,
-     &              NUMMAI,CODRE2)
-        IF (CODRE2.EQ.-1) THEN
-          CODRET = -1
-          GOTO 999
-        ELSE
-          IF ((NUMMAI.GT.NBMAIL).OR.(NUMMAI.LE.0)) THEN
-            CODRET = -1
-            GOTO 999
-          ELSE  
-            CALL JENUNO(JEXNUM(NOMA//'.NOMMAI',NUMMAI),NOMENT)
-          ENDIF 
-        ENDIF
+        CALL CFNUMM(DEFICO,1     ,POSMAI,NUMMAI)
+        CALL JENUNO(JEXNUM(NOMA//'.NOMMAI',NUMMAI),NOMENT)
             
       ELSE IF (TYPENT.EQ.'NOEU') THEN    
         POSNOE = ABS(POSENT)
-        CALL CFPOSM(NOMA  ,DEFICO,TYPENT,1     ,POSNOE,
-     &              NUMNOE,CODRE2)
-        IF (CODRE2.EQ.-1) THEN
-          CODRET = -1
-          GOTO 999
-        ELSE
-          IF ((NUMNOE.GT.NBNOEU).OR.(NUMNOE.LE.0)) THEN
-            CODRET = -1
-            GOTO 999
-          ELSE  
-            CALL JENUNO(JEXNUM(NOMA//'.NOMNOE',NUMNOE),NOMENT)
-          ENDIF 
-        ENDIF  
+        CALL CFNUMN(DEFICO,1     ,POSNOE,NUMNOE)
+        CALL JENUNO(JEXNUM(NOMA//'.NOMNOE',NUMNOE),NOMENT) 
       ELSE 
-        CODRET = -1
+        CALL ASSERT(.FALSE.)
       ENDIF
-C
-  999 CONTINUE      
+      
 C
       CALL JEDEMA()
 C

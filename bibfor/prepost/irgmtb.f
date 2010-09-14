@@ -1,7 +1,7 @@
       SUBROUTINE IRGMTB ( TDEC, TYPD, VERS )
       IMPLICIT   NONE
       INTEGER    NTYELE,MAXEL,MAXNO
-      PARAMETER (NTYELE = 27)
+      PARAMETER (NTYELE = 28)
       PARAMETER (MAXEL  = 48)
       PARAMETER (MAXNO  =  8)
 C
@@ -10,7 +10,7 @@ C
       INTEGER                          VERS
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
+C MODIF PREPOST  DATE 14/09/2010   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -408,6 +408,108 @@ C --- ECLATEMENT PENTA15 EN 16 TETRA4
       TDEC(IND,16,2) = 13
       TDEC(IND,16,3) = 15
       TDEC(IND,16,4) = 9
+
+C --- ECLATEMENT PENTA18 EN 8 PENTA6 24 TETRA4
+      CALL JENONU(JEXNOM('&CATA.TM.NOMTM','PENTA18'),IND)
+      IF(IND.GT.NTYELE) GOTO 999
+      TYPD(IND,1)=TYPTET
+      TYPD(IND,2)=24
+      TDEC(IND,1,1) = 1
+      TDEC(IND,1,2) = 7
+      TDEC(IND,1,3) = 9
+      TDEC(IND,1,4) = 16
+      TDEC(IND,2,1) = 1
+      TDEC(IND,2,2) = 9
+      TDEC(IND,2,3) = 18
+      TDEC(IND,2,4) = 16
+      TDEC(IND,3,1) = 1
+      TDEC(IND,3,2) = 18
+      TDEC(IND,3,3) = 10
+      TDEC(IND,3,4) = 16
+      TDEC(IND,4,1) = 7
+      TDEC(IND,4,2) = 8
+      TDEC(IND,4,3) = 9
+      TDEC(IND,4,4) = 17
+      TDEC(IND,5,1) = 7
+      TDEC(IND,5,2) = 9
+      TDEC(IND,5,3) = 18
+      TDEC(IND,5,4) = 17
+      TDEC(IND,6,1) = 7
+      TDEC(IND,6,2) = 18
+      TDEC(IND,6,3) = 16
+      TDEC(IND,6,4) = 17
+      TDEC(IND,7,1) = 9
+      TDEC(IND,7,2) = 8
+      TDEC(IND,7,3) = 3
+      TDEC(IND,7,4) = 17
+      TDEC(IND,8,1) = 9
+      TDEC(IND,8,2) = 3
+      TDEC(IND,8,3) = 12
+      TDEC(IND,8,4) = 17
+      TDEC(IND,9,1) = 9
+      TDEC(IND,9,2) = 12
+      TDEC(IND,9,3) = 18
+      TDEC(IND,9,4) = 17
+      TDEC(IND,10,1) = 7
+      TDEC(IND,10,2) = 2
+      TDEC(IND,10,3) = 8
+      TDEC(IND,10,4) = 11
+      TDEC(IND,11,1) = 7
+      TDEC(IND,11,2) = 8
+      TDEC(IND,11,3) = 17
+      TDEC(IND,11,4) = 11
+      TDEC(IND,12,1) = 7
+      TDEC(IND,12,2) = 17
+      TDEC(IND,12,3) = 16
+      TDEC(IND,12,4) = 11
+      TDEC(IND,13,1) = 10
+      TDEC(IND,13,2) = 16
+      TDEC(IND,13,3) = 18
+      TDEC(IND,13,4) = 13
+      TDEC(IND,14,1) = 10
+      TDEC(IND,14,2) = 18
+      TDEC(IND,14,3) = 15
+      TDEC(IND,14,4) = 13
+      TDEC(IND,15,1) = 10
+      TDEC(IND,15,2) = 15
+      TDEC(IND,15,3) = 4
+      TDEC(IND,15,4) = 13
+      TDEC(IND,16,1) = 16
+      TDEC(IND,16,2) = 17
+      TDEC(IND,16,3) = 18
+      TDEC(IND,16,4) = 14
+      TDEC(IND,17,1) = 16
+      TDEC(IND,17,2) = 18
+      TDEC(IND,17,3) = 15
+      TDEC(IND,17,4) = 14
+      TDEC(IND,18,1) = 16
+      TDEC(IND,18,2) = 15
+      TDEC(IND,18,3) = 13
+      TDEC(IND,18,4) = 14
+      TDEC(IND,19,1) = 18
+      TDEC(IND,19,2) = 17
+      TDEC(IND,19,3) = 12
+      TDEC(IND,19,4) = 14
+      TDEC(IND,20,1) = 18
+      TDEC(IND,20,2) = 12
+      TDEC(IND,20,3) = 6
+      TDEC(IND,20,4) = 14
+      TDEC(IND,21,1) = 18
+      TDEC(IND,21,2) = 6
+      TDEC(IND,21,3) = 15
+      TDEC(IND,21,4) = 14
+      TDEC(IND,22,1) = 16
+      TDEC(IND,22,2) = 11
+      TDEC(IND,22,3) = 17
+      TDEC(IND,22,4) = 5
+      TDEC(IND,23,1) = 16
+      TDEC(IND,23,2) = 17
+      TDEC(IND,23,3) = 14
+      TDEC(IND,23,4) = 5
+      TDEC(IND,24,1) = 16
+      TDEC(IND,24,2) = 14
+      TDEC(IND,24,3) = 13
+      TDEC(IND,24,4) = 5
 C
 C --- ECLATEMENT PYRAM5 EN 2 TETRA4
 C     OU NON DECOUPE

@@ -1,7 +1,7 @@
       SUBROUTINE MMUSUC(NOMA  ,DEFICO,RESOCO)
 C     
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 09/03/2010   AUTEUR DESOZA T.DESOZA 
+C MODIF ALGORITH  DATE 14/09/2010   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -60,44 +60,39 @@ C
 C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
 C
       INTEGER      IFM,NIV
-      INTEGER      CFDISI,CFMMVD,ZMAES      
-      CHARACTER*24 MAESCL
-      INTEGER      JMAESC
-      INTEGER      NTMAE,NTPC
+      INTEGER      CFDISI,MMINFI 
+      INTEGER      NBMAE,NPTM
       CHARACTER*19 USUMOI,USUPLU,USUFIX,USUINI
       INTEGER      JNCMPM,JNCMPP,JNCMPI,JNCMPX
       INTEGER      JVALVM,JVALVP,JVALVI,JVALVX
       CHARACTER*24 NOSDCO
       INTEGER      JNOSDC      
-      INTEGER      ICMP,IMAE,IPC
+      INTEGER      ICMP,IMAE,IPTM,ITPC
+      INTEGER      JDECME,POSMAE
       CHARACTER*2  CH2
       CHARACTER*8  K8BID
       CHARACTER*19 LIGRCF
-      INTEGER      NCMPU,NBPC
+      INTEGER      NCMPU
       PARAMETER    (NCMPU=1)
-      LOGICAL      MMINFL,LUSURE
+      LOGICAL      MMINFL,CFDISL,LUSURE,LVERI
       INTEGER      IZONE,NZOCO
 C
 C ----------------------------------------------------------------------
 C
       CALL JEMARQ()
-      CALL INFNIV(IFM,NIV)
+      CALL INFDBG('CONTACT',IFM,NIV) 
 C
 C --- USURE ?      
 C      
-      LUSURE = .FALSE.
-      NZOCO  = CFDISI(DEFICO,'NZOCO')
-      DO 10 IZONE = 1, NZOCO
-        LUSURE = MMINFL(DEFICO,'USURE',IZONE )
-        IF (LUSURE) THEN
-          GOTO 15
-        ENDIF
-   10 CONTINUE   
+      LUSURE = CFDISL(DEFICO,'EXIS_USURE')
 C
-  15  CONTINUE
       IF (.NOT. LUSURE) THEN
         GOTO 999
       END IF
+C
+C --- INITIALISATIONS
+C
+      NZOCO  = CFDISI(DEFICO,'NZOCO')
 C
 C --- NBRE COMPOSANTES CARTE USURE
 C      
@@ -116,18 +111,7 @@ C --- LIGREL DES ELEMENTS TARDIFS DE CONTACT/FROTTEMENT
 C
       NOSDCO = RESOCO(1:14)//'.NOSDCO'
       CALL JEVEUO(NOSDCO,'L',JNOSDC)
-      LIGRCF = ZK24(JNOSDC+2-1)(1:19)
-C      
-C --- RECUPERATION DE QUELQUES DONNEES      
-C
-      MAESCL = DEFICO(1:16)//'.MAESCL'
-      CALL JEVEUO(MAESCL,'L',JMAESC)
-C
-C --- INITIALISATIONS
-C
-      NTMAE  = CFDISI(DEFICO,'NTMAE')
-      NTPC   = 0
-      ZMAES  = CFMMVD('ZMAES')          
+      LIGRCF = ZK24(JNOSDC+2-1)(1:19)    
 C      
 C --- NOM DES CARTES D'USURE      
 C
@@ -164,26 +148,53 @@ C
         ZK8(JNCMPX-1+ICMP) = 'X'//CH2  
   101 CONTINUE
 C
-C --- VALEURS
+C --- BOUCLE SUR LES ZONES
+C
+      ITPC   = 1
+      DO 10 IZONE = 1,NZOCO
+        NBMAE  = MMINFI(DEFICO,'NBMAE' ,IZONE )
+        JDECME = MMINFI(DEFICO,'JDECME',IZONE )      
 C 
-      DO 21 IMAE = 1,NTMAE       
-        NBPC  = ZI(JMAESC+ZMAES*(IMAE-1)+3-1)    
-        DO 11 IPC = 1,NBPC
-          ZR(JVALVM-1+1) = 0.D0         
-          CALL NOCART(USUMOI,-3         ,K8BID ,'NUM',1,
-     &                K8BID ,-(NTPC+IPC),LIGRCF,NCMPU)
-          ZR(JVALVP-1+1) = 0.D0
-          CALL NOCART(USUPLU,-3         ,K8BID ,'NUM',1,
-     &                K8BID ,-(NTPC+IPC),LIGRCF,NCMPU)
-          ZR(JVALVI-1+1) = 0.D0
-          CALL NOCART(USUINI,-3         ,K8BID ,'NUM',1,
-     &                K8BID ,-(NTPC+IPC),LIGRCF,NCMPU)
-          ZR(JVALVX-1+1) = 0.D0
-          CALL NOCART(USUFIX,-3         ,K8BID ,'NUM',1,
-     &                K8BID ,-(NTPC+IPC),LIGRCF,NCMPU)
- 11     CONTINUE        
-        NTPC = NTPC + NBPC
- 21   CONTINUE 
+C ----- MODE VERIF: ON SAUTE LES POINTS
+C  
+        LVERI  = MMINFL(DEFICO,'VERIF' ,IZONE )
+        IF (LVERI) THEN
+          GOTO 25
+        ENDIF      
+      
+        DO 20 IMAE = 1,NBMAE       
+C
+C ------- POSITION DE LA MAILLE ESCLAVE
+C
+          POSMAE = JDECME + IMAE
+C
+C ------- NOMBRE DE POINTS SUR LA MAILLE ESCLAVE
+C            
+          CALL MMINFM(POSMAE,DEFICO,'NPTM',NPTM  )       
+C
+C ------- BOUCLE SUR LES POINTS
+C      
+          DO 30 IPTM = 1,NPTM
+            ZR(JVALVM-1+1) = 0.D0         
+            CALL NOCART(USUMOI,-3         ,K8BID ,'NUM',1,
+     &                  K8BID ,-(ITPC),LIGRCF,NCMPU)
+            ZR(JVALVP-1+1) = 0.D0
+            CALL NOCART(USUPLU,-3         ,K8BID ,'NUM',1,
+     &                  K8BID ,-(ITPC),LIGRCF,NCMPU)
+            ZR(JVALVI-1+1) = 0.D0
+            CALL NOCART(USUINI,-3         ,K8BID ,'NUM',1,
+     &                  K8BID ,-(ITPC),LIGRCF,NCMPU)
+            ZR(JVALVX-1+1) = 0.D0
+            CALL NOCART(USUFIX,-3         ,K8BID ,'NUM',1,
+     &                  K8BID ,-(ITPC),LIGRCF,NCMPU)
+C
+C --------- LIAISON DE CONTACT SUIVANTE
+C
+            ITPC   = ITPC + 1 
+  30      CONTINUE
+  20    CONTINUE
+  25    CONTINUE
+  10  CONTINUE   
 C
       IF (NIV.GE.2) THEN
         WRITE (IFM,*) '<CONTACT> ... USURE MOINS'

@@ -1,7 +1,7 @@
       SUBROUTINE ALGOGL(DEFICO,RESOCO,LMAT  ,LDSCON,NOMA  ,
      &                  RESU  ,CTCCVG)
 C
-C MODIF ALGORITH  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 14/09/2010   AUTEUR ABBAS M.ABBAS 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
 C COPYRIGHT (C) 2005 IFP - MARTIN GUITTON         WWW.CODE-ASTER.ORG
@@ -100,7 +100,7 @@ C
       INTEGER      INDIC,LLMIN
       INTEGER      JDECAL,LLF,LLF1,LLF2
       INTEGER      INDFAC,AJLIAI,SPLIAI,POSIT,SPAVAN
-      INTEGER      NEQ,NBLIAC,NBLIAI,NBDDL,NDIM,NTNOE
+      INTEGER      NEQ,NBLIAC,NBLIAI,NBDDL,NDIM,NESMAX
       REAL*8       R8MAEM,AJEU,RHO,RHORHO,AADELT,VAL,R8PREM
       REAL*8       XJVMAX,X1,R8BID
       CHARACTER*1  TYPEAJ
@@ -169,7 +169,7 @@ C              D'ITERATIONS DANS L'ALGO ITEMAX=ITEMUL*NBLIAI
 C                   <!> FIXE A 2 PAR RESULTAT THEORIQUE <!>
 C --- ISTO   : ACTION STOP_SINGULIER='OUI' OU 'NON'
 C --- ITEMAX : NOMBRE D'ITERATIONS DE CONTACT DANS L'ALGO
-C --- NTNOE : NOMBRE MAXI DE NOEUDS ESCLAVES
+C --- NESMAX : NOMBRE MAXI DE NOEUDS ESCLAVES
 C              SERT AU DECALAGE DANS LES ROUTINES DE FROTTEMENT 3D
 C              (VAUT DONC ZERO SI SANS FROTTEMENT OU FROTTEMENT 2D)
 C --- INDFAC : INDICE DE DEBUT DE LA FACTORISATION
@@ -198,7 +198,7 @@ C ======================================================================
       ITEMUL = 2
       ITEMAX = ITEMUL*NBLIAI
       ISTO   = CFDISI(DEFICO,'STOP_SINGULIER')
-      NTNOE  = CFDISI(DEFICO,'NTNOE' )
+      NESMAX = CFDISD(RESOCO,'NESMAX')
       NBLIAC = CFDISD(RESOCO,'NBLIAC')      
       LLF    = CFDISD(RESOCO,'LLF'   )
       LLF1   = CFDISD(RESOCO,'LLF1'  )
@@ -257,7 +257,7 @@ C
 C --- CALCUL DE -A.C-1.AT COLONNE PAR COLONNE (A PARTIR DE INDFAC)
 C
         CALL CFACAT(NDIM  ,INDIC ,NBLIAC,AJLIAI,SPLIAI,
-     &              LLF   ,LLF1  ,LLF2  ,INDFAC,NTNOE ,
+     &              LLF   ,LLF1  ,LLF2  ,INDFAC,NESMAX,
      &              DEFICO,RESOCO,LMAT  ,NBLIAI,XJVMAX)
 C 
 C --- ELIMINATION DES PIVOTS NULS
@@ -306,7 +306,7 @@ C ======================================================================
 C --- SECOND MEMBRE : ON MET JEU(DEPTOT) - A.DELT0 DANS MU
 C ======================================================================
         CALL CFADU(RESOCO,K24BLA,NEQ   ,NDIM  ,NBLIAC,
-     &             LLF   ,LLF1  ,LLF2  ,NTNOE)
+     &             LLF   ,LLF1  ,LLF2  ,NESMAX)
 C ======================================================================
 C --- RESOLUTION POUR OBTENIR MU : -A.C-1.AT.MU = JEU(DEPTOT) - A.DELT0
 C --- ON TRUANDE LA SD MATR_ASSE POUR NE RESOUDRE LE SYSTEME QUE
@@ -461,7 +461,7 @@ C ======================================================================
 C 
 C --- CALCUL DES FORCES DE CONTACT (AT.MU)
 C 
-      CALL CFATMU(NEQ   ,NTNOE ,NDIM  ,NBLIAC,0     ,
+      CALL CFATMU(NEQ   ,NESMAX,NDIM  ,NBLIAC,0     ,
      &            LLF   ,LLF1  ,LLF2  ,RESOCO)
 C
 C --- VALEUR DES VARIABLES DE CONVERGENCE

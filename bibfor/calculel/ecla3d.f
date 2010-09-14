@@ -11,7 +11,7 @@
       CHARACTER*8  ELREFA, FAPG
 C ---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 06/09/2010   AUTEUR BERARD A.BERARD 
+C MODIF CALCULEL  DATE 14/09/2010   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -43,7 +43,7 @@ C       FPG1  :  4 NOEUDS,  1 TETRA4
 C       FPG4  : 15 NOEUDS,  4 HEXA8
 C       FPG15 : 32 NOEUDS, 10 HEXA8 ET 4 PENTA6 ET 1 TETRA4
 C
-C     DECOUPAGE DU PE6, P15 :
+C     DECOUPAGE DU PE6, P15, P18 :
 C       FPG1  :  6 NOEUDS,  1 PENTA6
 C       FPG6  : 12 NOEUDS,  6 PENTA6
 C       FPG21 : 48 NOEUDS, 18 HEXA8 ET 3 PENTA6
@@ -723,7 +723,8 @@ C     -----------------------------------------------------------------
 C     PENTAEDRES
 C     -----------------------------------------------------------------
       ELSEIF ( ELREFA .EQ. 'PE6' .OR.
-     +         ELREFA .EQ. 'P15' ) THEN
+     &         ELREFA .EQ. 'P15' .OR.
+     &         ELREFA .EQ. 'P18') THEN
 C
        IF ( FAPG .EQ. 'FPG1' ) THEN
 C           -----------------

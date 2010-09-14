@@ -3,7 +3,7 @@
       CHARACTER*8 MODELE
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 29/03/2010   AUTEUR PELLET J.PELLET 
+C MODIF PREPOST  DATE 14/09/2010   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -53,7 +53,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX --------------------------
       INTEGER EDLECT
       PARAMETER (EDLECT=0)
       INTEGER NTYMAX
-      PARAMETER (NTYMAX = 48)
+      PARAMETER (NTYMAX = 49)
       INTEGER EDCONN
       PARAMETER (EDCONN=1)
       INTEGER EDMAIL
@@ -79,26 +79,27 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX --------------------------
      &              'TRIA66  ','TRIA7   ','QUAD4   ','QUAD44  ',
      &              'QUAD8   ','QUAD88  ','QUAD9   ','QUAD99  ',
      &              'TETRA4  ','TETRA10 ','PENTA6  ','PENTA15 ',
-     &              'PYRAM5  ','PYRAM13 ','HEXA8   ','HEXA20  ',
-     &              'HEXA27  ','TR3QU4  ','QU4TR3  ','TR6TR3  ',
-     &              'TR3TR6  ','TR6QU4  ','QU4TR6  ','TR6QU8  ',
-     &              'QU8TR6  ','TR6QU9  ','QU9TR6  ','QU8TR3  ',
-     &              'TR3QU8  ','QU8QU4  ','QU4QU8  ','QU8QU9  ',
-     &              'QU9QU8  ','QU9QU4  ','QU4QU9  ','QU9TR3  ',
-     &              'TR3QU9  ','SEG32   ','SEG23   '/
+     &              'PENTA18 ','PYRAM5  ','PYRAM13 ','HEXA8   ',
+     &              'HEXA20  ','HEXA27  ','TR3QU4  ','QU4TR3  ',
+     &              'TR6TR3  ','TR3TR6  ','TR6QU4  ','QU4TR6  ',
+     &              'TR6QU8  ','QU8TR6  ','TR6QU9  ','QU9TR6  ',
+     &              'QU8TR3  ','TR3QU8  ','QU8QU4  ','QU4QU8  ',
+     &              'QU8QU9  ','QU9QU8  ','QU9QU4  ','QU4QU9  ',
+     &              'QU9TR3  ','TR3QU9  ','SEG32   ','SEG23   '/
+
       DATA NUMMED  /1,         102,       0,         103,
      &              0,         0,
      &                         203,       0,         206,
      &              0,         0,         204,       0,
      &              208,       0,         0,         0,
      &              304,       310,       306,       315,
-     &              305,       313,       308,       320,
+     &              0,         305,       313,       308,
+     &              320,       0,         0,         0,
      &              0,         0,         0,         0,
      &              0,         0,         0,         0,
      &              0,         0,         0,         0,
      &              0,         0,         0,         0,
-     &              0,         0,         0,         0,
-     &              0,         0,         0/
+     &              0,         0,         0,         0/
 C-----------------------------------------------------------------------
 
       CALL JEMARQ()

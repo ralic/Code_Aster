@@ -6,7 +6,7 @@
      &                  ITEMAX,CONVER,ERROR ,FINPAS,MAXREL)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 05/07/2010   AUTEUR KAZYMYRENKO K.KAZYMYRENKO 
+C MODIF ALGORITH  DATE 14/09/2010   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -139,7 +139,7 @@ C
 C
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 C
-      LOGICAL      LCTCD,LCTCV,LTABL,LEXPL
+      LOGICAL      LCTCD,LALLV,LTABL,LEXPL
       LOGICAL      ISFONC,NDYNLO,CFDISL
       INTEGER      IBID,IRET,MMITGO
       REAL*8       R8VIDE,R8BID,PASMIN
@@ -342,8 +342,10 @@ C
 C --- CONVERGENCE ADAPTEE AU CONTACT DISCRET
 C 
       IF (LCTCD) THEN
-        LCTCV  = CFDISL(DEFICO,'CONT_VERIF')
-        IF (.NOT.LCTCV) THEN
+        LALLV  = CFDISL(DEFICO,'ALL_VERIF')
+        IF (LALLV) THEN
+          CTCCVG = .TRUE.
+        ELSE
 C
 C --- ATTENTE POINT FIXE ?
 C
@@ -378,8 +380,6 @@ C
             CTCCVG = .FALSE.           
           ENDIF    
           CTCCVG = CTCCVG.AND.CTCGEO
-        ELSE
-          CTCCVG = .TRUE.
         ENDIF
       ELSE 
         CTCCVG = .TRUE.         
@@ -416,8 +416,8 @@ C
           LTABL = .TRUE.
         ENDIF         
       ELSEIF (LCTCD) THEN
-        LCTCV  = CFDISL(DEFICO,'CONT_VERIF')
-        IF (LCTCV) THEN
+        LALLV  = CFDISL(DEFICO,'ALL_VERIF')
+        IF (LALLV) THEN
           LTABL = .TRUE.
         ELSE
           IF (CONVER) THEN
@@ -445,8 +445,8 @@ C
       ENDIF    
 C      
       IF (LCTCD) THEN
-        LCTCV  = CFDISL(DEFICO,'CONT_VERIF')
-        IF (.NOT.LCTCV) THEN
+        LALLV  = CFDISL(DEFICO,'ALL_VERIF')
+        IF (.NOT.LALLV) THEN
           IF (CVNEWT.AND.BORCVG.AND.(.NOT.CTCFIX).AND.
      &        (.NOT.CTCGEO)) THEN
             CALL MMBOUC(RESOCO,'GEOM','INCR',MMITGO)

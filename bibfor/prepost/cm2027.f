@@ -1,7 +1,7 @@
       SUBROUTINE CM2027 ( MAIN, MAOUT, NBMA, LIMA, PREFIX, NDINIT)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 13/11/2007   AUTEUR SALMONA L.SALMONA 
+C MODIF PREPOST  DATE 14/09/2010   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -54,7 +54,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 
       INTEGER      NBTYMA, ITYP, JNOEU, NFMAX
-      PARAMETER    ( NBTYMA = 26, NFMAX = 24 )
+      PARAMETER    ( NBTYMA = 27, NFMAX = 24 )
       INTEGER JNOMIM, JNOMIP, JMILIE, JDIM, NBNO, MXAR, IRET, NBMAT
       INTEGER NBNOMI, NBNOHE, NBTOT, NO, JCOOR, NBNOMX, NBMATO
       INTEGER      DEFFAC(8,0:6,NBTYMA),JTYPMA,JREFE,
@@ -71,8 +71,8 @@ C
      &              'TRIA6   ', 'TRIA66  ', 'TRIA7   ', 'QUAD4   ',
      &              'QUAD44  ', 'QUAD8   ', 'QUAD88  ', 'QUAD9   ',
      &              'QUAD99  ', 'TETRA4  ', 'TETRA10 ', 'PENTA6  ',
-     &              'PENTA15 ', 'PYRAM5  ', 'PYRAM13 ', 'HEXA8   ',
-     &              'HEXA20  ', 'HEXA27  '/
+     &              'PENTA15 ', 'PENTA18 ', 'PYRAM5  ', 'PYRAM13 ',
+     &              'HEXA8   ', 'HEXA20  ', 'HEXA27  '/
 
 C     A PARTIR DU CATALOGUE TYPE_MAILLE__  :
 C     REFERENCE     -->  NOUVEAU TYPE              NB DE NOEUDS
@@ -100,14 +100,15 @@ C     18  TETRA4    -->  18   ( TETRA4 EN TETRA10 )     10
 C     19  TETRA10   -->  19                             10
 C     20  PENTA6    -->  20   ( PENTA6 EN PENTA15 )     15
 C     21  PENTA15   -->  21                             15
-C     22  PYRAM5    -->  22   ( PYRAM5 EN PYRAM13 )     13
-C     23  PYRAM13   -->  23                             13
-C     24  HEXA8     -->  24   ( HEXA8 EN HEXA20 )       20
-C     25  HEXA20    -->  26                             20
-C     26  HEXA27    -->  26                             27
+C     22  PENTA18   -->  22                             18
+C     23  PYRAM5    -->  23   ( PYRAM5 EN PYRAM13 )     13
+C     24  PYRAM13   -->  24                             13
+C     25  HEXA8     -->  25   ( HEXA8 EN HEXA20 )       20
+C     26  HEXA20    -->  27                             20
+C     27  HEXA27    -->  27                             27
 C
       DATA REFTYP /1,2,3,4,5,6,7,8,9,10,11,12,13,16,15,16,17,18,19,20,
-     &             21,22,23,24,26,26/
+     &             21,22,23,24,25,27,27/
 
 C --- EXPLICATIONS DU DATA DEFFAC
 C
@@ -115,7 +116,7 @@ C       POI1   SEG2           SEG22   SEG3   SEG33   SEG4
 C       TRIA3                  TRIA33   TRIA6   TRIA66   TRIA7
 C       QUAD4,                    QUAD44  QUAD8  QUAD88  QUAD9  QUAD99
 C       TETRA4                             TETRA10
-C       PENTA6                                        PENTA15
+C       PENTA6                                        PENTA15 PENTA18
 C       PYRAM5                                    PYRAM13
 C       HEXA8
 C       HEXA20  HEXA27
@@ -125,7 +126,7 @@ C       HEXA20  HEXA27
      &  56*0, 56*0,  56*0,   56*0,  56*0,
      &  56*0, 56*0,  1,7*0,1,2,3,4,5,6,7,8,40*0,   56*0,  56*0,   56*0,
      &  56*0,  56*0,
-     &  56*0,  56*0,
+     &  56*0,  56*0, 56*0,
      &  56*0,  56*0,
      &  56*0,
      &  6,7*0,1,2,3,4,9,10,11,12,     1,5,6,2,13,17,14,9,    

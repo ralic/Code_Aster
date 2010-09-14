@@ -1,4 +1,4 @@
-#@ MODIF mail0 Messages  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
+#@ MODIF mail0 Messages  DATE 14/09/2010   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -32,15 +32,15 @@ Risque & conseils :
 """),
 
 12 : _("""
- L'option HEXA20_27 ne traite pas les macros mailles
+ L'option %(k1)s ne traite pas les macros mailles
 """),
 
 13 : _("""
- L'option HEXA20_27 ne traite pas les absc_curv
+ L'option %(k1)s ne traite pas les absc_curv
 """),
 
 14 : _("""
- Le mot-cle MAILLAGE est obligatoire avec le mot-cle HEXA20_27.
+ Le mot-cle MAILLAGE est obligatoire avec le mot-cle %(k1)s.
 """),
 
 }

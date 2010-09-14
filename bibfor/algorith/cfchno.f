@@ -4,7 +4,7 @@
      &                  TAU2)
 C     
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 14/09/2010   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -85,7 +85,7 @@ C
 C
 C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
 C
-      INTEGER      I,NIVERR,CODRET
+      INTEGER      I,NIVERR
       CHARACTER*24 VALK(2)
       REAL*8       NOOR,R8PREM
       REAL*8       ENORM(3),MNORM(3),NORM(3)   
@@ -110,11 +110,7 @@ C
       IF (POSNOE.LE.0) THEN
         NOMNOE = 'PT CONT.'
       ELSE
-        CALL CFNOMM(NOMA  ,DEFICO,'NOEU',POSNOE,NOMNOE,
-     &              CODRET)  
-        IF (CODRET.LT.0) THEN
-          CALL ASSERT(.FALSE.)
-        ENDIF  
+        CALL CFNOMM(NOMA  ,DEFICO,'NOEU',POSNOE,NOMNOE)  
       ENDIF 
       VALK(1) = NOMNOE
       VALK(2) = NOMENM                                        

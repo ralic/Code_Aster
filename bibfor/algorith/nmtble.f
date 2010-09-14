@@ -1,9 +1,9 @@
       SUBROUTINE NMTBLE(NIVEAU, 
-     &                  MODELE,NOMA  ,MATE  ,DEFICO,RESOCO,FONACT,
-     &                  MAXREL,SDIMPR,SDDYNA,VALINC)
+     &                  MODELE,NOMA  ,MATE  ,DEFICO,RESOCO,
+     &                  FONACT,MAXREL,SDIMPR,SDDYNA,VALINC)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 27/07/2010   AUTEUR DESOZA T.DESOZA 
+C MODIF ALGORITH  DATE 14/09/2010   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -89,127 +89,100 @@ C
 C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
 C 
       LOGICAL      MMCVCA,MMCVFR,MMCVGO
-      LOGICAL      CTCGEO
       REAL*8       R8BID
       INTEGER      INCR
       CHARACTER*16 K16BLA
-      CHARACTER*24 CLREAC
-      INTEGER      JCLREA
-      LOGICAL      ISFONC,CFDISL,LCTCD,LCTCV,LELTC,LELTF,LBOUCF
+      LOGICAL      ISFONC,LBOUCF,LBOUCG,LBOUCC 
 C
 C ----------------------------------------------------------------------
-C     
+C         
+      CALL JEMARQ()         
+C
+C --- INITIALISATIONS
+C          
       INCR   = 1  
-      K16BLA = ' '  
+      K16BLA = ' '
+      MMCVCA = .FALSE.
+      MMCVFR = .FALSE.
+      MMCVGO = .FALSE.
 C       
       IF (NIVEAU.LT.0) THEN 
         GOTO 9999
       ENDIF
 C
-C --- INFOS SUR LE CONTACT
+C --- INFOS SUR LES BOUCLES
 C
-      LCTCD  = ISFONC(FONACT,'CONT_DISCRET')
-      LCTCV  = CFDISL(DEFICO,'CONT_VERIF')
-      LELTC  = ISFONC(FONACT,'ELT_CONTACT') 
-      LELTF  = ISFONC(FONACT,'ELT_FROTTEMENT')
-      LBOUCF = ISFONC(FONACT,'BOUCLE_EXT_FROT')       
+      LBOUCF = ISFONC(FONACT,'BOUCLE_EXT_FROT')   
+      LBOUCG = ISFONC(FONACT,'BOUCLE_EXT_GEOM')
+      LBOUCC = ISFONC(FONACT,'BOUCLE_EXT_CONT')
 C      
       GO TO (101,102,103) NIVEAU
 C
-C --- NIVEAU: 1   BOUCLE CONTACT METHODE CONTINUE
-C ---             BOUCLE CONTRAINTES ACTIVES
-C
+C --- NIVEAU: 1   BOUCLE CONTRAINTES ACTIVES
+C 
  101  CONTINUE
 C
-C --- CALCUL STATUTS DU CONTACT
+C --- EVALUATION STATUTS DU CONTACT
 C
-      IF (LELTC) THEN
-        CALL NMCTCC(NOMA  ,MODELE,FONACT,SDDYNA,DEFICO,
+      IF (LBOUCC) THEN
+        NIVEAU = 1
+        CALL NMCTCC(NOMA  ,MODELE,SDDYNA,SDIMPR,DEFICO,
      &              RESOCO,VALINC,MMCVCA)
+        CALL CFITER(RESOCO,'E','CONT',INCR  ,R8BID)
       ELSE
         CALL ASSERT(.FALSE.)
-      ENDIF
+      ENDIF     
 C
-      CALL CFITER(RESOCO,'E','CONT',INCR  ,R8BID)
-      CALL MMCONV(NIVEAU,NOMA  ,DEFICO,RESOCO,LELTF ,
-     &            SDIMPR,VALINC,MAXREL,MMCVCA,MMCVFR,
-     &            MMCVGO)
-     
+C --- ON CONTINUE LA BOUCLE
+C
       IF (.NOT.MMCVCA) THEN
         NIVEAU = 1
         GOTO 999      
       ENDIF      
 C
-C --- NIVEAU: 2   BOUCLE CONTACT METHODE CONTINUE
-C ---             BOUCLE SEUILS DE FROTTEMENT
+C --- NIVEAU: 2   BOUCLE SEUILS DE FROTTEMENT
 C
  102  CONTINUE
 C
-C --- SI PAS DE FROTTEMENT -> PAS DE BOUCLE SUR SEUIL DE FROTTEMENT
-C      
-      IF (.NOT.LBOUCF) THEN 
-        GOTO 103
-      ENDIF       
-      NIVEAU = 2
-C
 C --- CALCUL SEUILS DE FROTTEMENT
 C
-      IF (LELTF) THEN
-        CALL NMCTCF(NOMA  ,MODELE,MATE  ,FONACT,DEFICO,RESOCO,
-     &              VALINC)
-      ELSE
-        CALL ASSERT(.FALSE.)
-      ENDIF
-C     
-      CALL CFITER(RESOCO,'E','FROT',INCR  ,R8BID)  
-      CALL MMCONV(NIVEAU,NOMA  ,DEFICO,RESOCO,LELTF ,
-     &            SDIMPR,VALINC,MAXREL,MMCVCA,MMCVFR,
-     &            MMCVGO)
-C       
-      IF (.NOT.MMCVFR) THEN   
+      IF (LBOUCF) THEN
         NIVEAU = 2
-        GOTO 999      
+        CALL NMCTCF(NOMA  ,MODELE,MATE  ,SDIMPR,DEFICO,
+     &              RESOCO,VALINC,MMCVFR)
+        CALL CFITER(RESOCO,'E','FROT',INCR  ,R8BID)
+C  
+C ----- ON CONTINUE LA BOUCLE
+C
+        IF (.NOT.MMCVFR) THEN   
+          NIVEAU = 2
+          GOTO 999      
+        ENDIF      
       ENDIF     
 C
-C --- NIVEAU: 3   BOUCLE CONTACT METHODE CONTINUE
-C ---             BOUCLE GEOMETRIE
-C
+C --- NIVEAU: 3   BOUCLE GEOMETRIE
+C 
  103  CONTINUE
 C
-      NIVEAU = 3
+C --- CALCUL SEUILS DE GEOMETRIE
 C
-      IF (LELTC) THEN 
-        CALL MMCONV(NIVEAU,NOMA  ,DEFICO,RESOCO,LELTF ,
-     &              SDIMPR,VALINC,MAXREL,MMCVCA,MMCVFR,
-     &              MMCVGO)
-        IF (MMCVGO) THEN 
-          NIVEAU = 0
-          GOTO 9999     
-        ELSE 
-          NIVEAU = 3     
-        ENDIF      
-      ELSEIF (LCTCV) THEN
-        NIVEAU = 0
-        GOTO 9999
-      ELSEIF (LCTCD) THEN  
-        CLREAC = RESOCO(1:14)//'.REAL'             
-        CALL JEVEUO(CLREAC,'L',JCLREA)      
-        CTCGEO = ZL(JCLREA+1-1)           
-        IF (.NOT.CTCGEO) THEN        
-          NIVEAU = 0
-          CALL NMIMPR('IMPR','CNV_GEOME',K16BLA,0.D0,0)
-          IF (MAXREL) THEN
-            CALL NMCVGI('CVG_MX') 
-          ELSE
-            CALL NMCVGI('CVG_OK') 
-          ENDIF
-          GOTO 9999     
-        ELSE  
+      IF (LBOUCG) THEN
+        NIVEAU = 3
+        CALL NMCTGO(NOMA  ,SDIMPR,DEFICO,RESOCO,MAXREL,
+     &              VALINC,MMCVGO)   
+C  
+C ----- ON CONTINUE LA BOUCLE (OU PAS)
+C
+        IF (.NOT.MMCVGO) THEN   
           NIVEAU = 3
+          GOTO 999
+        ELSE
+          NIVEAU = 0  
+          GOTO 9999      
         ENDIF
       ELSE
-        CALL ASSERT(.FALSE.)      
-      ENDIF     
+        NIVEAU = 0  
+      ENDIF   
 C
  999  CONTINUE  
 C
@@ -219,7 +192,7 @@ C
       CALL NMIMPR('IMPR','LIGN_TABL',K16BLA,0.D0,0)    
       CALL NMIMPR('IMPR','LIGNE    ',K16BLA,0.D0,0)     
 C
- 9999 CONTINUE     
+ 9999 CONTINUE
 C
-
+      CALL JEDEMA()     
       END

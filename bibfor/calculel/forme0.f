@@ -5,7 +5,7 @@
       REAL*8       M(*), W(*)
       INTEGER      NNO
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 01/09/2008   AUTEUR MEUNIER S.MEUNIER 
+C MODIF CALCULEL  DATE 14/09/2010   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -99,6 +99,9 @@ C ---------------------------------------------------------------------
 
       ELSEIF (TYPEMA(1:7).EQ.'PENTA15') THEN
          CALL ELRFVF ( 'P15', M, 15, W, NNO )
+
+      ELSEIF (TYPEMA(1:7).EQ.'PENTA18') THEN
+         CALL ELRFVF ( 'P18', M, 18, W, NNO )
 
       ELSEIF (TYPEMA(1:6).EQ.'PENTH6') THEN
          VALK = TYPEMA

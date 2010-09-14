@@ -1,7 +1,7 @@
       FUNCTION CFDISL(DEFICZ,QUESTZ)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/07/2010   AUTEUR MASSIN P.MASSIN 
+C MODIF ALGORITH  DATE 14/09/2010   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -58,7 +58,7 @@ C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
 C
       CHARACTER*24 DEFICO,QUESTI    
       INTEGER      CFDISI,IFORM
-      INTEGER      ICONT,IFROT,NDIM,IZONE  
+      INTEGER      ICONT,IFROT,NDIMG,IZONE
       LOGICAL      MMINFL
 C
 C ----------------------------------------------------------------------
@@ -77,13 +77,13 @@ C
         IF (IFORM.EQ.1) THEN  
           ICONT  = CFDISI(DEFICO,'ALGO_CONT')
           IFROT  = CFDISI(DEFICO,'ALGO_FROT')
-          NDIM   = CFDISI(DEFICO,'NDIM')
+          NDIMG  = CFDISI(DEFICO,'NDIM')
           IF (ICONT.EQ.4) THEN
             CFDISL = .TRUE.
           ENDIF
           IF (IFROT.NE.0) THEN
             IF (IFROT.EQ.2) THEN
-              IF (NDIM.EQ.2) THEN
+              IF (NDIMG.EQ.2) THEN
                 CFDISL = .FALSE.
               ELSE
                 CFDISL = .TRUE.
@@ -107,12 +107,36 @@ C
         
       ELSEIF (QUESTI .EQ.'CONT_XFEM_GG')   THEN
         CFDISL = CFDISI(DEFICO,'CONT_XFEM_GG').EQ.1 
+   
+      ELSEIF (QUESTI .EQ.'EXIS_USURE')   THEN
+        CFDISL = CFDISI(DEFICO,'EXIS_USURE').EQ.1         
+  
+      ELSEIF (QUESTI .EQ.'EXIS_XFEM_CZM')   THEN
+        CFDISL = CFDISI(DEFICO,'EXIS_XFEM_CZM').EQ.1 
         
+      ELSEIF (QUESTI .EQ.'EXIS_PENA')   THEN
+        CFDISL = CFDISI(DEFICO,'EXIS_PENA').EQ.1 
+                        
+      ELSEIF (QUESTI .EQ.'ALL_VERIF')   THEN
+        CFDISL = CFDISI(DEFICO,'ALL_VERIF').EQ.1 
+        
+      ELSEIF (QUESTI .EQ.'EXIS_VERIF')   THEN
+        CFDISL = CFDISI(DEFICO,'EXIS_VERIF').EQ.1 
+         
+      ELSEIF (QUESTI .EQ.'EXIS_GLISSIERE')   THEN
+        CFDISL = CFDISI(DEFICO,'EXIS_GLISSIERE').EQ.1 
+                
+      ELSEIF (QUESTI .EQ.'ALL_INTEG_NOEUD')   THEN
+        CFDISL = CFDISI(DEFICO,'ALL_INTEG_NOEUD').EQ.1  
+        
+      ELSEIF (QUESTI .EQ.'STOP_INTERP')   THEN
+        CFDISL = CFDISI(DEFICO,'STOP_INTERP').EQ.1                      
+                
       ELSEIF (QUESTI .EQ.'FORMUL_MAILLEE')   THEN
         IFORM  = CFDISI(DEFICO,'FORMULATION')
         CFDISL = (IFORM.EQ.1).OR.(IFORM.EQ.2)
 
-      ELSEIF (QUESTI .EQ.'FORMUL_DISCRET')   THEN
+      ELSEIF (QUESTI .EQ.'FORMUL_DISCRETE')   THEN
         IFORM  = CFDISI(DEFICO,'FORMULATION')
         CFDISL = (IFORM.EQ.1)
 
@@ -146,8 +170,8 @@ C
       ELSEIF (QUESTI.EQ.'FROT_LAGR_2D') THEN
         ICONT  = CFDISI(DEFICO,'ALGO_CONT')
         IFROT  = CFDISI(DEFICO,'ALGO_FROT')
-        NDIM   = CFDISI(DEFICO,'NDIM'     )
-        IF ((ICONT.EQ.5).AND.(IFROT.EQ.2).AND.(NDIM.EQ.2)) THEN
+        NDIMG  = CFDISI(DEFICO,'NDIM'    )
+        IF ((ICONT.EQ.5).AND.(IFROT.EQ.2).AND.(NDIMG.EQ.2)) THEN
           CFDISL = .TRUE.
         ELSE
           CFDISL = .FALSE.
@@ -163,11 +187,7 @@ C
 
       ELSEIF (QUESTI.EQ.'CONT_ACTI') THEN
         ICONT  = CFDISI(DEFICO,'ALGO_CONT')
-        CFDISL = ICONT.EQ.1 
-        
-      ELSEIF (QUESTI.EQ.'CONT_VERIF') THEN
-        ICONT  = CFDISI(DEFICO,'ALGO_CONT')
-        CFDISL = ICONT.EQ.3                      
+        CFDISL = ICONT.EQ.1             
 
       ELSEIF (QUESTI.EQ.'CONT_GCP') THEN
         ICONT  = CFDISI(DEFICO,'ALGO_CONT')
@@ -175,11 +195,11 @@ C
 
       ELSEIF (QUESTI.EQ.'FROT_3D') THEN
         IFROT  = CFDISI(DEFICO,'ALGO_FROT')
-        NDIM   = CFDISI(DEFICO,'NDIM'     )    
+        NDIMG  = CFDISI(DEFICO,'NDIM'     )    
         IF (IFROT.EQ.1) THEN
           CFDISL = .TRUE.
         ELSEIF (IFROT.EQ.2) THEN
-          CFDISL = NDIM.EQ.3
+          CFDISL = NDIMG.EQ.3
         ELSEIF (IFROT.EQ.0) THEN
           CFDISL = .FALSE.
         ELSE
@@ -206,10 +226,7 @@ C
 
       ELSEIF (QUESTI.EQ.'REAC_FROT_AUTO') THEN
         CFDISL = CFDISI(DEFICO,'NB_ITER_FROT').LT.0 
-
-      ELSEIF (QUESTI.EQ.'PENA_CONTINUE') THEN
-        CFDISL = CFDISI(DEFICO,'PENA_CONTINUE').EQ.1
-                        
+                          
       ELSE
         CALL ASSERT(.FALSE.)
       ENDIF

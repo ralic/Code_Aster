@@ -1,14 +1,14 @@
       SUBROUTINE IRGMOR ( TORD, VERS )
       IMPLICIT   NONE
       INTEGER    NTYELE,NELETR
-      PARAMETER (NTYELE = 27)
+      PARAMETER (NTYELE = 28)
       PARAMETER (NELETR =  8)
 C
       INTEGER             TORD(NTYELE)
       INTEGER                          VERS
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
+C MODIF PREPOST  DATE 14/09/2010   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

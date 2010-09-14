@@ -5,7 +5,7 @@
 
 C TOLE CRP_21
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 12/07/2010   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 13/09/2010   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -45,11 +45,11 @@ C     ----------------------------------------------------------------
       DCDALS=0.D0
       IF (ALPHA.GT.0.D0) THEN
          OMEGAT=0.D0
-         IF (ALPHAP(I).GT.0.D0) THEN
             DO 10 I=1,12
-               OMEGAT=OMEGAT+ALPHAP(I)
+               IF (ALPHAP(I).GT.0.D0) THEN
+                  OMEGAT=OMEGAT+ALPHAP(I)
+               ENDIF
  10         CONTINUE
-         ENDIF
 C        PARTIE POSITIVE
          IF (OMEGAT.GT.0.D0) THEN
             CEFF=0.2D0+0.8D0*LOG(ALPHA*SQRT(OMEGAT))/

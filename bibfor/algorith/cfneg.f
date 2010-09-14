@@ -3,7 +3,7 @@
      &                  LLF1  ,LLF2)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 23/09/2008   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 14/09/2010   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -43,7 +43,7 @@ C
 C IN  DEFICO : SD DE DEFINITION DU CONTACT (ISSUE D'AFFE_CHAR_MECA)
 C IN  RESOCO : SD DE TRAITEMENT NUMERIQUE DU CONTACT
 C                'E': RESOCO(1:14)//'.LIAC'
-C                'E': RESOCO(1:14)//'.CONVEC'
+C                'E': RESOCO(1:14)//'.TYPL'
 C                'E': RESOCO(1:14)//'.MU'
 C IN  NOMA   : NOM DU MAILLAGE
 C IN  NDIM   : DIMENSION DU PROBLEME
@@ -92,8 +92,8 @@ C
       REAL*8       LAMBDA
       CHARACTER*1  TYPESP
       CHARACTER*2  TYPEC0, TYPEF0, TYPEF1, TYPEF2
-      CHARACTER*19 LIAC,MU,CONVEC
-      INTEGER      JLIAC,JMU,JVECC
+      CHARACTER*19 LIAC,MU,TYPL
+      INTEGER      JLIAC,JMU,JTYPL
 C
 C ======================================================================
 C
@@ -107,11 +107,11 @@ C ======================================================================
 C --- LECTURE DES STRUCTURES DE DONNEES DE CONTACT
 C ======================================================================
       LIAC   = RESOCO(1:14)//'.LIAC'
-      CONVEC = RESOCO(1:14)//'.CONVEC'
+      TYPL   = RESOCO(1:14)//'.TYPL'
       MU     = RESOCO(1:14)//'.MU'
 C ======================================================================
       CALL JEVEUO(LIAC,  'E',JLIAC )
-      CALL JEVEUO(CONVEC,'E',JVECC)
+      CALL JEVEUO(TYPL  ,'E',JTYPL )
       CALL JEVEUO(MU,    'E',JMU   )
 C ======================================================================
 C --- INITIALISATION DES VARIABLES
@@ -150,7 +150,7 @@ C ======================================================================
          IF ( LAMBDA.LT.0.0D0 ) THEN
             DEKLN = DEKLN + 1
             DO 20 JJ = NBINI, NBLIAC + LLF + LLF1 + LLF2
-               IF (ZK8(JVECC-1+JJ).EQ.TYPEC0) THEN
+               IF (ZK8(JTYPL-1+JJ).EQ.TYPEC0) THEN
                   DEKLAG = DEKLAG + 1
                   IF (DEKLAG.EQ.ILIAC) THEN
                      ZI(JSPNBL-1+DEKLN) = ILIAC
@@ -162,15 +162,15 @@ C ======================================================================
                      COMPT2 = 0
                      DO 30 KK = 1, NBLIAC + LLF + LLF1 + LLF2
                         LLJAC = ZI(JLIAC-1+KK)
-                        IF (ZK8(JVECC-1+KK).EQ.TYPEC0) THEN
+                        IF (ZK8(JTYPL-1+KK).EQ.TYPEC0) THEN
                            GOTO 30
-                        ELSE IF (ZK8(JVECC-1+KK).EQ.TYPEF0) THEN
+                        ELSE IF (ZK8(JTYPL-1+KK).EQ.TYPEF0) THEN
                            COMPT0 = COMPT0 + 1
                            POSIT  = 2
-                        ELSE IF (ZK8(JVECC-1+KK).EQ.TYPEF1) THEN
+                        ELSE IF (ZK8(JTYPL-1+KK).EQ.TYPEF1) THEN
                            COMPT1 = COMPT1 + 1
                            POSIT  = 3
-                        ELSE IF (ZK8(JVECC-1+KK).EQ.TYPEF2) THEN
+                        ELSE IF (ZK8(JTYPL-1+KK).EQ.TYPEF2) THEN
                            COMPT2 = COMPT2 + 1
                            POSIT = 4
                         ENDIF

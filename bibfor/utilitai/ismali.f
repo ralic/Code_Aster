@@ -4,7 +4,7 @@
       LOGICAL      ISMALI
       CHARACTER*8  TYPMA
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 16/06/2010   AUTEUR CARON A.CARON 
+C MODIF UTILITAI  DATE 14/09/2010   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -68,9 +68,8 @@ C OUT  ISMALI : TRUE SI LE TYPE DE MAILLE EST LINEAIRE
      &        TYPMA.EQ.'QU9'    .OR.
      &        TYPMA.EQ.'T10'    .OR.
      &        TYPMA.EQ.'P13'    .OR.
-     &        TYPMA.EQ.'P15'    .OR.
-     &        TYPMA.EQ.'H20'    .OR.
-     &        TYPMA.EQ.'H27') THEN
+     &        TYPMA.EQ.'P15' .OR. TYPMA.EQ.'P18'  .OR.
+     &        TYPMA.EQ.'H20' .OR. TYPMA.EQ.'H27') THEN
 
         ISMALI=.FALSE.
 

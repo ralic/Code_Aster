@@ -1,7 +1,7 @@
       SUBROUTINE CFINIG(RESOCO,ITERAT,LNOPRE)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 14/09/2010   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -57,7 +57,8 @@ C
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C
 C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
-C
+C      
+      INTEGER      IFM,NIV
       CHARACTER*24 CLREAC
       INTEGER      JCLREA 
       LOGICAL      REAGEO,REAPRE
@@ -66,6 +67,13 @@ C
 C ----------------------------------------------------------------------
 C
       CALL JEMARQ() 
+      CALL INFDBG('MECANONLINE',IFM,NIV)       
+C
+C --- AFFICHAGE
+C      
+      IF (NIV.GE.2) THEN
+        WRITE (IFM,*) '<CONTACT> ... INITIALISATION INFOS'
+      ENDIF          
 C
 C --- ACCES OBJETS
 C

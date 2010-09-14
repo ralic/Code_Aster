@@ -1,4 +1,4 @@
-# MODIF  DATE 26/05/2010   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 13/09/2010   AUTEUR COURTOIS M.COURTOIS 
 # TITRE  VALIDATION DE STAT_NON_LINE / ETAT_INIT (ERREURS ET ALARMES)
 # erreu07a.para = tps_job 60 mem_job 128Mo mem_aster 50 ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -131,7 +131,7 @@ try :
 except aster.error,err:
    print fmt_raison % str(err)
    # on verifie que l'erreur fatale est bien celle que l'on attendait :
-   if re.search("CALCULEL5_42", str(err))<>None :
+   if err.id_message == "CALCULEL5_42" :
       is_ok = 1
 
 # TEST_RESU
@@ -171,7 +171,7 @@ try :
 except aster.error,err:
    print fmt_raison % str(err)
    # on verifie que l'erreur fatale est bien celle que l'on attendait :
-   if re.search("CALCULEL3_49", str(err))<>None :
+   if err.id_message == "CALCULEL3_49":
       is_ok = 1
 
 # TEST_RESU

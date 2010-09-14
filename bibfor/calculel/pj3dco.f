@@ -8,7 +8,7 @@
       INTEGER NBMA1,LIMA1(*),NBNO2,LINO2(*),INO2M
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 12/07/2010   AUTEUR BERARD A.BERARD 
+C MODIF CALCULEL  DATE 14/09/2010   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -129,14 +129,15 @@ C       -- TETRA :
         IF ((ITYPM.EQ.NUTM(1)).OR.(ITYPM.EQ.NUTM(2))) THEN
           ICO=ICO+1
 C       -- PENTA :
-        ELSE IF ((ITYPM.EQ.NUTM(3)).OR.(ITYPM.EQ.NUTM(4))) THEN
+        ELSE IF ((ITYPM.EQ.NUTM(3)).OR.(ITYPM.EQ.NUTM(4)).OR.
+     &           (ITYPM.EQ.NUTM(5))) THEN
           ICO=ICO+3
 C       -- HEXA :
-        ELSE IF ((ITYPM.EQ.NUTM(5)).OR.(ITYPM.EQ.NUTM(6)).OR.
-     &           (ITYPM.EQ.NUTM(7))) THEN
+        ELSE IF ((ITYPM.EQ.NUTM(6)).OR.(ITYPM.EQ.NUTM(7)).OR.
+     &           (ITYPM.EQ.NUTM(8))) THEN
           ICO=ICO+6
 C       -- PYRA :
-        ELSE IF ((ITYPM.EQ.NUTM(8)).OR.(ITYPM.EQ.NUTM(9))) THEN
+        ELSE IF ((ITYPM.EQ.NUTM(9)).OR.(ITYPM.EQ.NUTM(10))) THEN
           ICO=ICO+2
         ELSE
           CALL ASSERT(.FALSE.)
@@ -165,7 +166,8 @@ C       -- TETRA :
           ZI(IATR3+(ICO-1)*6+4)=ZI(IACNX1+ ZI(ILCNX1-1+IMA)-2+4)
 
 C       -- PENTA :
-        ELSE IF ((ITYPM.EQ.NUTM(3)).OR.(ITYPM.EQ.NUTM(4))) THEN
+        ELSE IF ((ITYPM.EQ.NUTM(3)).OR.(ITYPM.EQ.NUTM(4)).OR.
+     &           (ITYPM.EQ.NUTM(5))) THEN
           ICO=ICO+1
           ZI(IATR3+(ICO-1)*6+5)=IMA
           ZI(IATR3+(ICO-1)*6+6)=1
@@ -189,8 +191,8 @@ C       -- PENTA :
           ZI(IATR3+(ICO-1)*6+4)=ZI(IACNX1+ ZI(ILCNX1-1+IMA)-2+2)
 
 C       -- HEXA :
-        ELSE IF ((ITYPM.EQ.NUTM(5)).OR.(ITYPM.EQ.NUTM(6)).OR.
-     &           (ITYPM.EQ.NUTM(7))) THEN
+        ELSE IF ((ITYPM.EQ.NUTM(6)).OR.(ITYPM.EQ.NUTM(7)).OR.
+     &           (ITYPM.EQ.NUTM(8))) THEN
           ICO=ICO+1
           ZI(IATR3+(ICO-1)*6+5)=IMA
           ZI(IATR3+(ICO-1)*6+6)=1
@@ -236,7 +238,7 @@ C       -- HEXA :
           ZI(IATR3+(ICO-1)*6+4)=ZI(IACNX1+ ZI(ILCNX1-1+IMA)-2+3)
 
 C       -- PYRA :
-        ELSE IF ((ITYPM.EQ.NUTM(8)).OR.(ITYPM.EQ.NUTM(9))) THEN
+        ELSE IF ((ITYPM.EQ.NUTM(9)).OR.(ITYPM.EQ.NUTM(10))) THEN
           ICO=ICO+1
           ZI(IATR3+(ICO-1)*6+5)=IMA
           ZI(IATR3+(ICO-1)*6+6)=1

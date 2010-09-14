@@ -1,4 +1,4 @@
-# MODIF  DATE 25/03/2008   AUTEUR LEBOUVIER F.LEBOUVIER 
+# MODIF  DATE 13/09/2010   AUTEUR PELLET J.PELLET 
 # TITRE POUTRE DROITE APPUYEE EN SES DEUX EXTREMITES SOUMISE A UN
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -104,9 +104,7 @@ MEST1=MECA_STATIQUE(        MODELE=MO,
 
 #
 MEST1=CALC_ELEM( reuse=MEST1,
-                         RESULTAT=MEST1,EXCIT=(
-                            _F( CHARGE = CHARG1),
-                                  _F( CHARGE = CHARG2)),
+                         RESULTAT=MEST1,
                            OPTION=('EFGE_ELNO_DEPL',
                                    'SIGM_ELNO_DEPL',
                                    )

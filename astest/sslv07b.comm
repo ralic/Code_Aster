@@ -1,4 +1,4 @@
-# MODIF  DATE 30/08/2010   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 13/09/2010   AUTEUR PELLET J.PELLET 
 # TITRE PARALLELIPIPEDE SOUS SON PROPRE POIDS (HEXA8 FIN)
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -64,9 +64,7 @@ DEP1=MECA_STATIQUE(    MODELE=MO,     CHAM_MATER=CHMAT,EXCIT=(
 
                        )
 
-CALC_ELEM( reuse= DEP1 ,RESULTAT= DEP1 ,          EXCIT=(
-                          _F(  CHARGE = CH1),
-                                _F(  CHARGE = CH2)),
+CALC_ELEM( reuse= DEP1 ,RESULTAT= DEP1 ,
                           OPTION=( 'SIGM_ELNO_DEPL', 'EPOT_ELEM_DEPL',)
                        )
 
@@ -82,8 +80,7 @@ DEP2=MECA_STATIQUE(     MODELE=MO,     CHAM_MATER=CHMAT,EXCIT=(
 
 CALC_ELEM(     reuse=DEP2,
                          RESULTAT=DEP2,        NUME_ORDRE=1,
-               EXCIT=(_F(  CHARGE = CH1),
-                      _F(  CHARGE = CH2)),
+
    OPTION=( 'EPOT_ELEM_DEPL', 'SIGM_ELNO_DEPL',   'ERRE_ELEM_SIGM',
                                                 'ERRE_ELNO_ELEM',))
 

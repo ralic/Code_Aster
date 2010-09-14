@@ -1,4 +1,4 @@
-# MODIF  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 13/09/2010   AUTEUR PELLET J.PELLET 
 # TITRE (NON REGRESSION SUR QUART DE VIROLE CYLINDRIQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -87,10 +87,7 @@ RESP=MECA_STATIQUE(         MODELE=MO,    CHAM_MATER=CM,EXCIT=(
 
                         )
 
-CALC_ELEM( reuse= RESP ,RESULTAT= RESP ,              EXCIT=(
-                            _F(  CHARGE = CH),
-                            _F(  CHARGE = CHP),
-                            _F(  CHARGE = CHP_F)),
+CALC_ELEM( reuse= RESP ,RESULTAT= RESP ,
                            OPTION='SIGM_ELNO_DEPL'
                         )
 
@@ -248,9 +245,7 @@ RESQ=MECA_STATIQUE(    MODELE=MO,        CHAM_MATER=CM,EXCIT=(
 
                         )
 
-CALC_ELEM( reuse= RESQ ,RESULTAT= RESQ ,             EXCIT=(
-                            _F(  CHARGE = CH),
-                                  _F(  CHARGE = CHQ)),
+CALC_ELEM( reuse= RESQ ,RESULTAT= RESQ ,
                             OPTION=('EPSI_ELNO_DEPL', 'SIGM_ELNO_DEPL',)
                         )
 

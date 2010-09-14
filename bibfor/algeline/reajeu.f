@@ -1,7 +1,7 @@
       SUBROUTINE REAJEU(RESOCO)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGELINE  DATE 14/09/2010   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -75,5 +75,5 @@ C
  10   CONTINUE
 C
       CALL JEDEMA ()
-C ----------------------------------------------------------------------
+C 
       END

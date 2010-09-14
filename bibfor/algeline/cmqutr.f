@@ -6,7 +6,7 @@
       CHARACTER*(*)       BASZ
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGELINE  DATE 14/09/2010   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -62,7 +62,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       PARAMETER ( VERSIO = 1 )
 C  --- TABLEAU DE DECOUPAGE
       INTEGER    NTYELE,MAXEL,MAXNO
-      PARAMETER (NTYELE = 27)
+      PARAMETER (NTYELE = 28)
       PARAMETER (MAXEL  = 48)
       PARAMETER (MAXNO  =  8)
       INTEGER             TDEC(NTYELE,MAXEL,MAXNO)

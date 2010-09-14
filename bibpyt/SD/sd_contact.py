@@ -1,4 +1,4 @@
-#@ MODIF sd_contact SD  DATE 13/07/2010   AUTEUR MASSIN P.MASSIN 
+#@ MODIF sd_contact SD  DATE 14/09/2010   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -32,18 +32,20 @@ class sd_contact(AsBase):
     
 
     # Recap longueurs vecteurs (voir CFMMVD.F)    
-    zdime = 12
-    zpari = 26
+    zdime = 18
+    zpari = 27
     zparr = 5
     zdirn = 6
     zcmdf = 6
-    zcmcf = 27
-    zcmxf = 16
+    zcmcf = 29
+    zcmxf = 18
     zexcl = 6
-    ztypn = 1
+    ztypn = 2
     ztypm = 2 
     zmaes = 6 
-    zmesx = 5        
+    zmesx = 5  
+    zmeth = 23   
+    ztole = 3   
 
     MODELE = AsVK8(SDNom(nomj='.CHME.MODEL.NOMO'),lonmax=1, )
     PARACI = AsVI (SDNom(nomj='.CONTACT.PARACI') ,lonmax=zpari,)
@@ -76,24 +78,22 @@ class sd_contact(AsBase):
         nsuco  = para[2]
         nmaco  = para[3]
         nnoco  = para[4]
-        nmano  = para[5]
-        nnoma  = para[6]
-        ntnoe  = para[8]
-        ntmae  = para[9]
-        ntpc   = para[10] 
-        ntelno = para[11]
-      return nzoco,nsuco,nmaco,nnoco,nmano,nnoma,ntnoe,ntmae,ntpc,ntelno
+        ntnoe  = para[7]
+        ntmae  = para[8]
+        ntpt   = para[15] 
+        ntelno = para[17]
+      return nzoco,nsuco,nmaco,nnoco,ntnoe,ntmae,ntpt,ntelno
 
     
     def check_para(self,checker):
       iform = self.type_form()
       if (iform==1) or (iform==2) or (iform==3) :
-        nzoco,nsuco,nmaco,nnoco,nmano,nnoma,ntnoe,ntmae,ntpc,ntelno  = self.dimeC()
+        nzoco,nsuco,nmaco,nnoco,ntnoe,ntmae,ntpt,ntelno  = self.dimeC()
         lldime = self.NDIMCO.lonmax 
         llmeth = self.METHCO.lonmax
         lltole = self.TOLECO.lonmax
-        assert llmeth == nzoco*10 
-        assert lltole == nzoco*2
+        assert llmeth == nzoco*self.zmeth 
+        assert lltole == nzoco*self.ztole
         assert lldime == self.zdime
       if (iform==4) :
         lldime = self.NDIMCU.lonmax 
@@ -114,7 +114,6 @@ class sd_contact(AsBase):
     CONTMA = Facultatif(AsVI(SDNom(nomj='.CONTACT.MAILCO') ))
     CONTNO = Facultatif(AsVI(SDNom(nomj='.CONTACT.NOEUCO') ))
     
-    NOZOCO = Facultatif(AsVI(SDNom(nomj='.CONTACT.NOZOCO') ))  
     MANOCO = Facultatif(AsVI(SDNom(nomj='.CONTACT.MANOCO') ))
     NOMACO = Facultatif(AsVI(SDNom(nomj='.CONTACT.NOMACO') ))
     
@@ -135,7 +134,7 @@ class sd_contact(AsBase):
     def check_mail(self,checker):    
       iform = self.type_form()
       if (iform==2) or (iform==1) :
-        nzoco,nsuco,nmaco,nnoco,nmano,nnoma,ntnoe,ntmae,ntpc,ntelno = self.dimeC()
+        nzoco,nsuco,nmaco,nnoco,ntnoe,ntmae,ntpt,ntelno = self.dimeC()
         assert self.JEUFO1.lonmax == nzoco
         assert self.JEUFO2.lonmax == nzoco
         assert self.DIRAPP.lonmax == 3*nzoco
@@ -148,10 +147,6 @@ class sd_contact(AsBase):
         assert self.PSURNO.lonmax == nsuco+1        
         assert self.CONTMA.lonuti == nmaco
         assert self.CONTNO.lonuti == nnoco
-        
-        assert self.NOZOCO.lonmax == nnoco
-        assert self.MANOCO.lonuti == nmano
-        assert self.NOMACO.lonuti == nnoma
 
         assert self.MANOCO.lonmax == 20*max(nnoco,nmaco)
         assert self.NOMACO.lonmax == 20*max(nnoco,nmaco) 
@@ -173,9 +168,9 @@ class sd_contact(AsBase):
     def check_form_disc(self,checker):    
       iform = self.type_form()
       if (iform==1) :
-        nzoco,nsuco,nmaco,nnoco,nmano,nnoma,ntnoe,ntmae,ntpc,ntelno = self.dimeC()
+        nzoco,nsuco,nmaco,nnoco,ntnoe,ntmae,ntpt,ntelno = self.dimeC()
         assert self.CARADF.lonmax == self.zcmdf*nzoco
-        assert ntnoe == ntpc
+        assert ntnoe == ntpt
       return      
     
     CARACF = Facultatif(AsVR(SDNom(nomj='.CONTACT.CARACF') ))  
@@ -196,7 +191,7 @@ class sd_contact(AsBase):
     def check_form_cont(self,checker):
       iform = self.type_form()
       if (iform==2) :
-        nzoco,nsuco,nmaco,nnoco,nmano,nnoma,ntnoe,ntmae,ntpc,ntelno = self.dimeC()
+        nzoco,nsuco,nmaco,nnoco,ntnoe,ntmae,ntpt,ntelno = self.dimeC()
         assert self.CARACF.lonmax == self.zcmcf*nzoco
         assert self.EXCLFR.lonmax == self.zexcl*nzoco       
         
@@ -235,7 +230,7 @@ class sd_contact(AsBase):
     def check_form_xfem(self,checker):
       iform = self.type_form()
       if (iform==3) :
-        nzoco,nsuco,nmaco,nnoco,nmano,nnoma,ntnoe,ntmae,ntpc,ntelno = self.dimeC()
+        nzoco,nsuco,nmaco,nnoco,ntnoe,ntmae,ntpt,ntelno = self.dimeC()
         paraci = self.PARACI.get()
         if (paraci[0]!=0) :
           assert self.MAESCX.lonuti == self.zmesx*ntmae      

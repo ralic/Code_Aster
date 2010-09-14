@@ -1,4 +1,4 @@
-# MODIF  DATE 30/08/2010   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 13/09/2010   AUTEUR PELLET J.PELLET 
 # TITRE CYLINDRE CREUX ORTHOTROPE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -150,9 +150,8 @@ TEMPE=CALC_ELEM(reuse =TEMPE,
                 RESULTAT=TEMPE,
                 NUME_ORDRE=0,
                 OPTION='FLUX_ELNO_TEMP',
-                EXCIT=(
-                _F(CHARGE=CHTH,),
-                _F(CHARGE=CHTH1,),),);
+
+);
 
 TEMPE=CALC_NO(reuse =TEMPE,
               RESULTAT=TEMPE,

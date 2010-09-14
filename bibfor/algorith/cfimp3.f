@@ -2,7 +2,7 @@
      &                  INSTAP,NBLIAI,NBLIAC,JCNSVR)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 14/09/2010   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -69,29 +69,35 @@ C
 C
 C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
 C
-      INTEGER      CFMMVD,ZRESU,ZAPME
-      INTEGER      ILIAI,POSNOE,POSAPP
-      CHARACTER*8  NOMNOE,NOMMAI,NOMENT
-      INTEGER      CODRET,NUMNOE    
+      CHARACTER*24 NUMLIA
+      INTEGER      JNUMLI
+      INTEGER      CFMMVD,ZRESU
+      INTEGER      ILIAI,IZONE,IP
+      INTEGER      ENTAPP
+      CHARACTER*8  NOMAPP
+      INTEGER      NUMNOE,TYPAPP 
       CHARACTER*4  TYPE2
-      CHARACTER*24 APPARI,APJEU,APMEMO
-      INTEGER      JAPPAR,JAPJEU,JAPMEM
+      CHARACTER*24 APJEU
+      INTEGER      JAPJEU
+      CHARACTER*16 NOMPT
       REAL*8       RN,R,COE,PROD,VARC,AJEUFT
+      CHARACTER*19 SDAPPA
 C
 C ----------------------------------------------------------------------
 C
       CALL JEMARQ ()
 C
 C --- ACCES SD CONTACT
-C
-      APPARI = RESOCO(1:14)//'.APPARI'
-      APMEMO = RESOCO(1:14)//'.APMEMO'      
-      APJEU  = RESOCO(1:14)//'.APJEU'
-      CALL JEVEUO(APPARI,'L',JAPPAR)
-      CALL JEVEUO(APMEMO,'L',JAPMEM)      
+C      
+      APJEU  = RESOCO(1:14)//'.APJEU'    
       CALL JEVEUO(APJEU, 'L',JAPJEU)
-      ZRESU  = CFMMVD('ZRESU')
-      ZAPME  = CFMMVD('ZAPME')       
+      ZRESU  = CFMMVD('ZRESU')     
+C
+C --- ACCES SD CONTACT
+C
+      NUMLIA = RESOCO(1:14)//'.NUMLIA' 
+      CALL JEVEUO(NUMLIA,'L',JNUMLI)
+
 C 
 C --- PREMIERS AFFICHAGES      
 C  
@@ -101,65 +107,38 @@ C
       WRITE(IFM,1003) NBLIAI
       WRITE(IFM,1004) NBLIAC
 C
+C --- SD APPARIEMENT
+C
+      SDAPPA = RESOCO(1:14)//'.APPA'          
+C
 C --- BOUCLE SUR LES LIAISONS
 C
       DO 120 ILIAI = 1,NBLIAI
 C
-C --- REPERAGE DE L'ESCLAVE
-C
-        POSNOE = ZI(JAPPAR+ILIAI)
-C
-C --- NOM DU NOEUD ESCLAVE
+C ----- POINT DE CONTACT
 C      
-        CALL CFNOMM(NOMA  ,DEFICO,'NOEU',POSNOE,NOMENT,
-     &              CODRET)       
-        IF (CODRET.GE.0) THEN
-          NOMNOE = NOMENT
-        ELSE
-          NOMNOE = 'ERREUR'
-        ENDIF        
+        IP     = ZI(JNUMLI+3*(ILIAI-1)+1-1)
 C
-C --- NUMERO ABSOLU DU NOEUD ESCLAVE
-C                
-        CALL CFPOSM(NOMA  ,DEFICO,'NOEU',1     ,POSNOE,
-     &              NUMNOE,CODRET)  
-        IF (CODRET.LT.0) THEN
-          WRITE (IFM,2002)
-          GOTO 999 
-        ENDIF    
+C ----- NOEUS ESCLAVE
+C      
+        NUMNOE = ZI(JNUMLI+3*(ILIAI-1)+3-1)
 C
-C --- REPERAGE DU MAITRE
+C ----- NOM DU NOEUD ESCLAVE
 C
-        POSAPP = ZI(JAPMEM+ZAPME*(POSNOE-1)+3-1)
+        CALL APNOMP(SDAPPA,IP    ,NOMPT )
 C
-C --- NOM ET TYPE DU MAITRE
+C ----- INFOS APPARIEMENT
 C
-        IF (POSAPP.LT.0) THEN
-          CALL CFNOMM(NOMA  ,DEFICO,'NOEU',POSAPP,NOMENT,
-     &                CODRET)
-          IF (CODRET.LT.0) THEN
-            TYPE2  = ' '
-            NOMMAI = 'ERREUR'          
-          ELSE   
-            TYPE2  = '/ND '
-            NOMMAI = NOMENT   
-          ENDIF         
-        ELSEIF (POSAPP.GT.0) THEN
-          CALL CFNOMM(NOMA  ,DEFICO,'MAIL',POSAPP,NOMENT,
-     &                CODRET)
-          IF (CODRET.LT.0) THEN
-            TYPE2  = ' '
-            NOMMAI = 'ERREUR'          
-          ELSE
-            TYPE2  = '/EL '
-            NOMMAI = NOMENT   
-          ENDIF    
-        ELSE  
-          TYPE2  = ' NON'
-          NOMMAI = ' APPARIE'               
-        ENDIF 
+        CALL APINFI(SDAPPA,'APPARI_TYPE'  ,IP    ,TYPAPP )
+        CALL APINFI(SDAPPA,'APPARI_ENTITE',IP    ,ENTAPP )
+        CALL APINFI(SDAPPA,'APPARI_ZONE'  ,IP    ,IZONE  )
 C
-C --- VALEURS
+C ----- NOM ET TYPE DU MAITRE
+C
+        CALL CFNOAP(NOMA  ,DEFICO,TYPAPP,ENTAPP,
+     &              NOMAPP,TYPE2 )
+C
+C ----- VALEURS
 C
         RN = ZR(JCNSVR-1+(NUMNOE-1)*ZRESU+3 )
         R  = ZR(JCNSVR-1+(NUMNOE-1)*ZRESU+19)
@@ -173,35 +152,31 @@ C
         VARC   = ZR(JCNSVR-1+ (NUMNOE-1)*ZRESU+1 )
         AJEUFT = ZR(JCNSVR-1+ (NUMNOE-1)*ZRESU+9 )
         IF (VARC.NE.0.0D0) THEN
-          WRITE (IFM,2000) ILIAI,' (ND ',NOMNOE,TYPE2,NOMMAI,
-     &                     ') * JEU:',ZR(JAPJEU+ILIAI-1),' * RN:',RN,
-     &                     ' * GLI:',AJEUFT,' * R:',R,
-     &                     ' * RT/RN:',COE
+          WRITE (IFM,2000) ILIAI,' (   ',NOMPT ,TYPE2,NOMAPP,
+     &                   ') * JEU:',ZR(JAPJEU+ILIAI-1),' * RN:',RN,
+     &                   ' * GLI:',AJEUFT,' * R:',R,
+     &                   ' * RT/RN:',COE
         ELSE
-          WRITE (IFM,2001) ILIAI,' (   ',NOMNOE,TYPE2,NOMMAI,
-     &                     ') * JEU:',ZR(JAPJEU+ILIAI-1),' * RN:',RN,
-     &                     ' * GLI:',AJEUFT,' * R:',R,
-     &                     ' * RT/RN:',COE
+          WRITE (IFM,2001) ILIAI,' (   ',NOMPT ,TYPE2,NOMAPP,
+     &                   ') * JEU:',ZR(JAPJEU+ILIAI-1),' * RN:',RN,
+     &                   ' * GLI:',AJEUFT,' * R:',R,
+     &                   ' * RT/RN:',COE
         ENDIF
  120  CONTINUE
-
- 999  CONTINUE
- 
-      
+C    
 1000  FORMAT (' <CONTACT> LISTE DES LIAISONS DE CONTACT')
 1001  FORMAT (' <CONTACT>   NUMERO D''ORDRE  : ',I6)
 1002  FORMAT (' <CONTACT>   INSTANT          : ',1PE12.5)
 1003  FORMAT (' <CONTACT>   LIAISONS         : ',I6)
 1004  FORMAT (' <CONTACT>   LIAISONS ACTIVES : ',I6)
-2000  FORMAT (' <CONTACT>   * LIAISON ACTIVE   ',I6,A5,A8,A4,A8,
+2000  FORMAT (' <CONTACT>   * LIAISON ACTIVE   ',I6,A5,A16,A4,A8,
      &        A8,1PE12.5,A6,1PE12.5,
      &        A7,1PE12.5,A5,1PE12.5,
      &        A9,1PE12.5)
-2001  FORMAT (' <CONTACT>   * LIAISON INACTIVE ',I6,A5,A8,A4,A8,
+2001  FORMAT (' <CONTACT>   * LIAISON INACTIVE ',I6,A5,A16,A4,A8,
      &        A8,1PE12.5,A6,1PE12.5,
      &        A7,1PE12.5,A5,1PE12.5,
-     &        A9,1PE12.5)
-2002  FORMAT (' <CONTACT>   * LIAISON INCONNUE ')     
+     &        A9,1PE12.5)     
 C
       CALL JEDEMA()
       END

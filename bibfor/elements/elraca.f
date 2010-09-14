@@ -8,7 +8,7 @@
       CHARACTER*(*) ELREFZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 20/04/2010   AUTEUR JAUBERT A.JAUBERT 
+C MODIF ELEMENTS  DATE 14/09/2010   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -399,7 +399,56 @@ C     ------------------------------------------------------------------
         FAPG(7) = 'FPG6NOS'
         FAPG(8) = 'SHB15'
 
-        DO 80 I = 1,15
+        DO 70 I = 1,15
+          XIN(I) = 0.D0
+          YIN(I) = 0.D0
+          ZIN(I) = 0.D0
+   70   CONTINUE
+        DO 72 I = 1,3
+          XIN(I)    = -1.D0
+          XIN(I+6)  = -1.D0
+          XIN(I+3)  = +1.D0
+          XIN(I+12) = +1.D0
+   72   CONTINUE
+        YIN(1)  = +1.D0
+        YIN(4)  = +1.D0
+        YIN(10) = +1.D0
+        ZIN(2)  = +1.D0
+        ZIN(5)  = +1.D0
+        ZIN(11) = +1.D0
+        DO 74 I = 1,2
+          DO 76 J = 1,2
+            YIN(6*I+2*J-1) = +0.5D0
+            ZIN(6*I+J)     = +0.5D0
+   76     CONTINUE
+   74   CONTINUE
+
+C     ------------------------------------------------------------------
+      ELSE IF (ELREFA.EQ.'P18') THEN
+        NDIM = 3
+        NNO = 18
+        NNOS = 6
+        VOL = 1.D0
+
+        NBFPG = 7
+
+        NBPG(1) = NNO
+        NBPG(2) = NNOS
+        NBPG(3) = 1
+        NBPG(4) = 6
+        NBPG(5) = 8
+        NBPG(6) = 21
+        NBPG(7) = 12
+
+        FAPG(1) = 'NOEU'
+        FAPG(2) = 'NOEU_S'
+        FAPG(3) = 'FPG1'
+        FAPG(4) = 'FPG6'
+        FAPG(5) = 'FPG8'
+        FAPG(6) = 'FPG21'
+        FAPG(7) = 'FPG6NOS'
+
+        DO 80 I = 1,18
           XIN(I) = 0.D0
           YIN(I) = 0.D0
           ZIN(I) = 0.D0
@@ -422,6 +471,10 @@ C     ------------------------------------------------------------------
             ZIN(6*I+J)     = +0.5D0
    86     CONTINUE
    84   CONTINUE
+        DO 87 J = 1,2
+            YIN(15+2*J-1) = +0.5D0
+            ZIN(15+J)     = +0.5D0
+   87   CONTINUE
 
 C     ------------------------------------------------------------------
       ELSE IF (ELREFA.EQ.'PY5') THEN

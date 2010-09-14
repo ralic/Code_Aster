@@ -1,0 +1,264 @@
+# AJOUT
+# RESPONSABLE KHAM M.KHAM
+# TITRE CONSTRUCTION PAR COUCHES EN HYDROMECANIQUE DRAINE AVEC LA LOI DE HUJEUX (POURSUITE)
+#
+#                    POST-TRAITEMENT ET VALIDATION
+#                    =============================
+
+# ATTENTION:
+# =========
+#
+# on ne garantit pas la transposabilite de ce post-traitement
+# a un autre maillage.
+
+
+POURSUITE(CODE=_F(NOM='WTNV132B'),PAR_LOT='NON')
+
+#       ---------------
+# FIN-  Post-traitement
+#       ---------------
+
+#    ----------------------------------------------------
+# 1- On cherche d'abord à créer une table de la forme:
+#
+#                    temps noeu_1  noeu_2   ....   noeu_n
+#                t1
+#                t2
+#  noeu_depl =    .
+#                 .
+#                 .
+#                tn
+#    ----------------------------------------------------
+
+
+n_pas_temps_max    = 10000
+n_pas_incr         = 1
+noeu_depl          = dict();
+noeu_depl['TEMPS'] = [0.0]
+cle                = [ ]
+list_pas_temps     = [ ]
+noeu_tass_0        = [ ]
+
+# -->20: début boucle for
+for n in range(nbcouche):
+
+  cle.append('ELEMEN'+str(n));
+  noeu_depl[cle[n]] = [0.0]*n_pas_temps_max
+
+  v = RECU_FONCTION(TABLE  = T_DEP[n],
+                    PARA_X = 'INST',
+                    PARA_Y = 'DY');
+                 
+  t,dz         = v.Valeurs();
+
+  n_pas_temps  = int(len(t)/(n+1));
+  
+  n_pas_incr_0 = n_pas_incr
+  n_pas_incr  += n_pas_temps
+  
+  list_pas_temps.append(n_pas_incr-2);
+  
+  noeu_depl['TEMPS'] += t[::n+1]
+  noeu_tass_0.append(dz[(n+1)*n_pas_temps-1]);
+
+  # -->30: début boucle for
+  for m in range(n+1):
+  
+    noeu_depl[cle[m]][n_pas_incr_0:n_pas_incr] = dz[m::n+1]
+      
+  # <--30: fin boucle for
+  
+  DETRUIRE(CONCEPT=_F(NOM=(v)));
+  
+# <--20: fin boucle for
+
+
+# -->50: début boucle for
+for n in range(nbcouche):
+
+  del(noeu_depl[cle[n]][n_pas_incr:]);
+
+# <--50: fin boucle for
+
+
+#    -------------------------------------------------
+# 2- On calcule le tassement
+#
+#                    temps_1  temps_2   ....   temps_n
+#                H1
+#                H2
+#  noeu_tass =    .
+#                 .
+#                 .
+#                Hn
+#    -------------------------------------------------
+
+
+n_pas_temps = len(noeu_depl['TEMPS']);
+noeu_tass   = dict();
+
+# -->100: début boucle for
+for n in range(n_pas_temps-1):
+  
+  noeu_tass['TEMPS'+str(n)] = [ ]
+
+# <--100: fin boucle for
+
+
+# -->300: début boucle for
+for n in range(n_pas_temps-1):
+  
+  # -->40: début boucle for
+  for m in range(nbcouche):
+  
+    tass_value = 0.
+    if noeu_depl[cle[m]][n+1] != 0. : tass_value = noeu_depl[cle[m]][n+1] - noeu_tass_0[m]
+
+    noeu_tass['TEMPS'+str(n)].append(tass_value);
+    
+  # <--40: fin boucle for
+
+# <--300: fin boucle for
+
+
+#    ----------------------------
+# 3- Impression au format XMGRACE
+#    ----------------------------
+
+
+tass       = [0.]*n_pas_temps
+COURBE     = []
+n_pas_temps= len(list_pas_temps);
+
+# -->200: début boucle for
+for n in range(n_pas_temps):
+  
+  def_courbe={'ABSCISSE': noeu_tass['TEMPS'+str(list_pas_temps[n])]}
+  def_courbe['ORDONNEE'] = range(1,nbcouche+1)
+  def_courbe['LEGENDE' ] = 'TEMPS'+str(list_pas_temps[n]);
+  def_courbe['COULEUR' ] = list_pas_temps[n]+1
+  def_courbe['MARQUEUR'] = list_pas_temps[n]+1
+  
+  COURBE.append(def_courbe);
+  
+  l_cote=DEFI_LIST_REEL(TITRE = 'COTE',
+                        VALE  = def_courbe['ORDONNEE']);
+                            
+  l_tass=DEFI_LIST_REEL(TITRE = 'TASSEMENT',
+                        VALE  = def_courbe['ABSCISSE']);
+                        
+  tass[n]=DEFI_FONCTION(NOM_PARA  = 'Z',
+                        NOM_RESU  = 'TASSEMENT',
+                        VALE_PARA = l_cote,
+                        VALE_FONC = l_tass);
+  
+  IMPR_FONCTION(FORMAT ='TABLEAU',
+                UNITE  =8,
+                COURBE =_F(FONCTION=tass[n]));
+  
+  del(def_courbe);
+  DETRUIRE(CONCEPT=_F(NOM=(l_cote,l_tass)));
+  
+# <--200: fin boucle for
+
+IMPR_FONCTION(FORMAT='XMGRACE',
+              UNITE=25,
+              COURBE=COURBE);
+
+
+#              ------------------------------------
+# VALIDATION-  Comparaison des valeurs de tassement
+#              par rapport à GEFDYN (ECP)
+#              ------------------------------------
+
+
+# tassement de la première couche
+TEST_FONCTION(VALEUR=(
+ _F(FONCTION=tass[2],VALE_PARA=2.,VALE_REFE=-4.648E-3,PRECISION= 3.E-2,CRITERE='RELATIF',REFERENCE='SOURCE_EXTERNE'),
+ _F(FONCTION=tass[3],VALE_PARA=2.,VALE_REFE=-8.391E-3,PRECISION= 3.E-2,CRITERE='RELATIF',REFERENCE='SOURCE_EXTERNE'),
+ _F(FONCTION=tass[4],VALE_PARA=2.,VALE_REFE=-1.194E-2,PRECISION= 3.E-2,CRITERE='RELATIF',REFERENCE='SOURCE_EXTERNE'),
+ _F(FONCTION=tass[5],VALE_PARA=2.,VALE_REFE=-1.544E-2,PRECISION= 2.E-2,CRITERE='RELATIF',REFERENCE='SOURCE_EXTERNE'),
+ _F(FONCTION=tass[6],VALE_PARA=2.,VALE_REFE=-1.898E-2,PRECISION= 2.E-2,CRITERE='RELATIF',REFERENCE='SOURCE_EXTERNE'),
+ _F(FONCTION=tass[7],VALE_PARA=2.,VALE_REFE=-2.265E-2,PRECISION= 1.E-2,CRITERE='RELATIF',REFERENCE='SOURCE_EXTERNE'),
+ _F(FONCTION=tass[8],VALE_PARA=2.,VALE_REFE=-2.647E-2,PRECISION= 1.E-2,CRITERE='RELATIF',REFERENCE='SOURCE_EXTERNE'),
+ _F(FONCTION=tass[9],VALE_PARA=2.,VALE_REFE=-3.049E-2,PRECISION= 2.E-2,CRITERE='RELATIF',REFERENCE='SOURCE_EXTERNE'),
+ _F(FONCTION=tass[10],VALE_PARA=2.,VALE_REFE=-3.473E-2,PRECISION=2.E-2,CRITERE='RELATIF',REFERENCE='SOURCE_EXTERNE'),
+             ));
+    
+
+# tassement de la deuxième couche
+TEST_FONCTION(VALEUR=(
+ _F(FONCTION=tass[3],VALE_PARA=3.,VALE_REFE=-8.409E-3,PRECISION= 9.E-2,CRITERE='RELATIF',REFERENCE='SOURCE_EXTERNE'),
+ _F(FONCTION=tass[4],VALE_PARA=3.,VALE_REFE=-1.572E-2,PRECISION= 5.E-2,CRITERE='RELATIF',REFERENCE='SOURCE_EXTERNE'),
+ _F(FONCTION=tass[5],VALE_PARA=3.,VALE_REFE=-2.278E-2,PRECISION= 4.E-2,CRITERE='RELATIF',REFERENCE='SOURCE_EXTERNE'),
+ _F(FONCTION=tass[6],VALE_PARA=3.,VALE_REFE=-2.983E-2,PRECISION= 4.E-2,CRITERE='RELATIF',REFERENCE='SOURCE_EXTERNE'),
+ _F(FONCTION=tass[7],VALE_PARA=3.,VALE_REFE=-3.703E-2,PRECISION= 3.E-2,CRITERE='RELATIF',REFERENCE='SOURCE_EXTERNE'),
+ _F(FONCTION=tass[8],VALE_PARA=3.,VALE_REFE=-4.451E-2,PRECISION= 3.E-2,CRITERE='RELATIF',REFERENCE='SOURCE_EXTERNE'),
+ _F(FONCTION=tass[9],VALE_PARA=3.,VALE_REFE=-5.236E-2,PRECISION= 2.E-2,CRITERE='RELATIF',REFERENCE='SOURCE_EXTERNE'),
+ _F(FONCTION=tass[10],VALE_PARA=3.,VALE_REFE=-6.061E-2,PRECISION=2.E-2,CRITERE='RELATIF',REFERENCE='SOURCE_EXTERNE'),
+             ));
+
+
+# tassement de la troixième couche
+TEST_FONCTION(VALEUR=(
+ _F(FONCTION=tass[4],VALE_PARA=4.,VALE_REFE=-1.198E-2,PRECISION= 12.E-2,CRITERE='RELATIF',REFERENCE='SOURCE_EXTERNE'),
+ _F(FONCTION=tass[5],VALE_PARA=4.,VALE_REFE=-2.280E-2,PRECISION= 7.E-2,CRITERE='RELATIF',REFERENCE='SOURCE_EXTERNE'),
+ _F(FONCTION=tass[6],VALE_PARA=4.,VALE_REFE=-3.341E-2,PRECISION= 6.E-2,CRITERE='RELATIF',REFERENCE='SOURCE_EXTERNE'),
+ _F(FONCTION=tass[7],VALE_PARA=4.,VALE_REFE=-4.412E-2,PRECISION= 5.E-2,CRITERE='RELATIF',REFERENCE='SOURCE_EXTERNE'),
+ _F(FONCTION=tass[8],VALE_PARA=4.,VALE_REFE=-5.515E-2,PRECISION= 4.E-2,CRITERE='RELATIF',REFERENCE='SOURCE_EXTERNE'),
+ _F(FONCTION=tass[9],VALE_PARA=4.,VALE_REFE=-6.665E-2,PRECISION= 2.E-2,CRITERE='RELATIF',REFERENCE='SOURCE_EXTERNE'),
+ _F(FONCTION=tass[10],VALE_PARA=4.,VALE_REFE=-7.873E-2,PRECISION=2.E-2,CRITERE='RELATIF',REFERENCE='SOURCE_EXTERNE'),
+             ));
+
+
+# tassement de la quatrième couche
+TEST_FONCTION(VALEUR=(
+ _F(FONCTION=tass[5],VALE_PARA=5.,VALE_REFE=-1.547E-2,PRECISION= 9.E-2,CRITERE='RELATIF',REFERENCE='SOURCE_EXTERNE'),
+ _F(FONCTION=tass[6],VALE_PARA=5.,VALE_REFE=-2.984E-2,PRECISION= 5.E-2,CRITERE='RELATIF',REFERENCE='SOURCE_EXTERNE'),
+ _F(FONCTION=tass[7],VALE_PARA=5.,VALE_REFE=-4.411E-2,PRECISION= 4.E-2,CRITERE='RELATIF',REFERENCE='SOURCE_EXTERNE'),
+ _F(FONCTION=tass[8],VALE_PARA=5.,VALE_REFE=-5.865E-2,PRECISION= 3.E-2,CRITERE='RELATIF',REFERENCE='SOURCE_EXTERNE'),
+ _F(FONCTION=tass[9],VALE_PARA=5.,VALE_REFE=-7.369E-2,PRECISION= 2.E-2,CRITERE='RELATIF',REFERENCE='SOURCE_EXTERNE'),
+ _F(FONCTION=tass[10],VALE_PARA=5.,VALE_REFE=-8.943E-2,PRECISION=2.E-2,CRITERE='RELATIF',REFERENCE='SOURCE_EXTERNE'),
+             ));
+
+
+# tassement de la cinquième couche
+TEST_FONCTION(VALEUR=(
+ _F(FONCTION=tass[6],VALE_PARA=6.,VALE_REFE=-1.902E-2,PRECISION= 6.E-2,CRITERE='RELATIF',REFERENCE='SOURCE_EXTERNE'),
+ _F(FONCTION=tass[7],VALE_PARA=6.,VALE_REFE=-3.705E-2,PRECISION= 4.E-2,CRITERE='RELATIF',REFERENCE='SOURCE_EXTERNE'),
+ _F(FONCTION=tass[8],VALE_PARA=6.,VALE_REFE=-5.515E-2,PRECISION= 3.E-2,CRITERE='RELATIF',REFERENCE='SOURCE_EXTERNE'),
+ _F(FONCTION=tass[9],VALE_PARA=6.,VALE_REFE=-7.370E-2,PRECISION= 2.E-2,CRITERE='RELATIF',REFERENCE='SOURCE_EXTERNE'),
+ _F(FONCTION=tass[10],VALE_PARA=6.,VALE_REFE=-9.298E-2,PRECISION=1.E-2,CRITERE='RELATIF',REFERENCE='SOURCE_EXTERNE'),
+             ));
+
+
+# tassement de la sixième couche
+TEST_FONCTION(VALEUR=(
+ _F(FONCTION=tass[7],VALE_PARA=7.,VALE_REFE=-2.268E-2,PRECISION= 6.E-2,CRITERE='RELATIF',REFERENCE='SOURCE_EXTERNE'),
+ _F(FONCTION=tass[8],VALE_PARA=7.,VALE_REFE=-4.454E-2,PRECISION= 3.E-2,CRITERE='RELATIF',REFERENCE='SOURCE_EXTERNE'),
+ _F(FONCTION=tass[9],VALE_PARA=7.,VALE_REFE=-6.665E-2,PRECISION= 2.E-2,CRITERE='RELATIF',REFERENCE='SOURCE_EXTERNE'),
+ _F(FONCTION=tass[10],VALE_PARA=7.,VALE_REFE=-8.944E-2,PRECISION=2.E-2,CRITERE='RELATIF',REFERENCE='SOURCE_EXTERNE'),
+             ));
+
+
+# tassement de la septième couche
+TEST_FONCTION(VALEUR=(
+ _F(FONCTION=tass[8],VALE_PARA=8.,VALE_REFE=-2.650E-2,PRECISION= 5.E-2,CRITERE='RELATIF',REFERENCE='SOURCE_EXTERNE'),
+ _F(FONCTION=tass[9],VALE_PARA=8.,VALE_REFE=-5.238E-2,PRECISION= 3.E-2,CRITERE='RELATIF',REFERENCE='SOURCE_EXTERNE'),
+ _F(FONCTION=tass[10],VALE_PARA=8.,VALE_REFE=-7.872E-2,PRECISION=2.E-2,CRITERE='RELATIF',REFERENCE='SOURCE_EXTERNE'),
+             ));
+
+
+# tassement de la huitième couche
+TEST_FONCTION(VALEUR=(
+ _F(FONCTION=tass[9],VALE_PARA=9.,VALE_REFE=-3.052E-2,PRECISION= 3.E-2,CRITERE='RELATIF',REFERENCE='SOURCE_EXTERNE'),
+ _F(FONCTION=tass[10],VALE_PARA=9.,VALE_REFE=-6.063E-2,PRECISION=2.E-2,CRITERE='RELATIF',REFERENCE='SOURCE_EXTERNE'),
+             ));
+
+
+# tassement de la neuvième couche
+TEST_FONCTION(VALEUR=
+ _F(FONCTION=tass[10],VALE_PARA=10.,VALE_REFE=-3.475E-2,PRECISION=2.5E-2,CRITERE='RELATIF',REFERENCE='SOURCE_EXTERNE'),
+             );
+
+FIN();

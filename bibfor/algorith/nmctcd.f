@@ -5,7 +5,7 @@
      &                  VEASSE,MEASSE)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 12/04/2010   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 14/09/2010   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -96,7 +96,7 @@ C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
 C
       INTEGER      IFM,NIV   
       INTEGER      NBVECT,NRPASE   
-      LOGICAL      ISFONC,LUNIL,LCTCD,LSENS,LCTFD
+      LOGICAL      ISFONC,LUNIL,LCTCD,LSENS,LCTFD,LALLV
       LOGICAL      CFDISL,LPENAC
       CHARACTER*6  LTYPVE(20)
       CHARACTER*16 LOPTVE(20)
@@ -106,6 +106,13 @@ C ----------------------------------------------------------------------
 C
       CALL JEMARQ()
       CALL INFDBG('MECA_NON_LINE',IFM,NIV)
+C
+C --- ALL VERIF ?
+C     
+      LALLV  = CFDISL(DEFICO,'ALL_VERIF')
+      IF (LALLV) THEN  
+        GOTO 99
+      ENDIF  
 C
 C --- AFFICHAGE
 C
@@ -155,7 +162,9 @@ C
      &            LISCHA,COMREF,DEFICO,RESOCO,RESOCU,
      &            NUMEDD,PARCON,SDSENS,LSENS ,NRPASE,
      &            VEELEM,VEASSE,MEASSE,NBVECT,LTYPVE,
-     &            LCALVE,LOPTVE,LASSVE)       
+     &            LCALVE,LOPTVE,LASSVE)   
+C
+  99  CONTINUE         
 C
       CALL JEDEMA()
       END

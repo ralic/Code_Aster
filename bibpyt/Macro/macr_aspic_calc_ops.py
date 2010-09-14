@@ -1,4 +1,4 @@
-#@ MODIF macr_aspic_calc_ops Macro  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
+#@ MODIF macr_aspic_calc_ops Macro  DATE 14/09/2010   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -303,11 +303,12 @@ def macr_aspic_calc_ops(self,TYPE_MAILLAGE,TUBULURE,MAILLAGE,MODELE,CHAM_MATER,C
        mcfond = ('FONDFISS')
        _chcont = DEFI_CONTACT( MODELE      = modele ,
                             FORMULATION = 'DISCRETE',
-                            TOLE_INTERP = -1.E-6,
+                            
                             ZONE =_F(GROUP_MA_MAIT = 'LEVRCORP',
                                      GROUP_MA_ESCL = 'LEVRTUBU',
-                                     ALGO_CONT     = 'VERIF',
-                                     GROUP_MA_FOND = mcfond,),)
+                                     TOLE_INTERP   = -1.E-6,
+                                     RESOLUTION    = 'NON',
+                                     SANS_GROUP_MA = mcfond,),)
 
 #
 #     --- commande STAT_NON_LINE ---

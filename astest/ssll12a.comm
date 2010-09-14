@@ -1,4 +1,4 @@
-# MODIF  DATE 15/12/2009   AUTEUR CAO B.CAO 
+# MODIF  DATE 13/09/2010   AUTEUR PELLET J.PELLET 
 # TITRE TREILLIS DE BARRES SOUS TROIS SOLLICITATIONS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -85,7 +85,7 @@ STATIQU1=MECA_STATIQUE(  MODELE=MODELE,
                               CHAM_MATER=CH_MATM,  CARA_ELEM=CARA_ELE)
 
 STATIQU1=CALC_ELEM(reuse=STATIQU1,    OPTION='EFGE_ELNO_DEPL',
-                         EXCIT=_F( CHARGE = CHARGE_1),  RESULTAT=STATIQU1)
+                           RESULTAT=STATIQU1)
 
 ###------------------------------------------------------------------###
 ###             CHARGEMENT : FORCES PONCTUELLES                      ###
@@ -106,7 +106,7 @@ STATIQU2=MECA_STATIQUE(  MODELE=MODELE,
                               CHAM_MATER=CH_MATER,  CARA_ELEM=CARA_ELE)
 
 STATIQU2=CALC_ELEM(reuse=STATIQU2,    OPTION='EFGE_ELNO_DEPL',
-                         EXCIT=_F( CHARGE = CHARGE_2),  RESULTAT=STATIQU2)
+                           RESULTAT=STATIQU2)
 
 STATIQU2=CALC_NO(reuse=STATIQU2,  OPTION='FORC_NODA',
                           RESULTAT=STATIQU2)
@@ -128,7 +128,7 @@ STATIQU3=MECA_STATIQUE(  MODELE=MODELE,
                               CHAM_MATER=CH_MATER,  CARA_ELEM=CARA_ELE)
 
 STATIQU3=CALC_ELEM(reuse=STATIQU3,    OPTION='EFGE_ELNO_DEPL',
-                         EXCIT=_F( CHARGE = CHARGE_3),  RESULTAT=STATIQU3)
+                           RESULTAT=STATIQU3)
 
 ###------------------------------------------------------------------###
 ###             CHARGEMENT : DILATATION, FORCES, DEPLACEMENTS        ###
@@ -150,7 +150,7 @@ STATIQU4=MECA_STATIQUE(  MODELE=MODELE,
                               CHAM_MATER=CH_MATM,  CARA_ELEM=CARA_ELE)
 
 STATIQU4=CALC_ELEM( reuse=STATIQU4,    OPTION='EFGE_ELNO_DEPL',
-                          EXCIT=_F( CHARGE = CHARGE_4),  RESULTAT=STATIQU4)
+                            RESULTAT=STATIQU4)
 
 #----------------------------------------------------------------------#
 IMPR_RESU ( RESU=_F( RESULTAT=STATIQU1, NUME_ORDRE=1,NOEUD='N01',

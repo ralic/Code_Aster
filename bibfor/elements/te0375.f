@@ -1,7 +1,7 @@
       SUBROUTINE TE0375(OPTION,NOMTE)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/09/2009   AUTEUR GNICOLAS G.NICOLAS 
+C MODIF ELEMENTS  DATE 14/09/2010   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -108,7 +108,7 @@ C     NOE (IN,IFA,TYMVOL) : IN     : NUMERO DU NOEUD DANS LA FACE
 C                           IFA    : NUMERO DE LA FACE
 C                           TYMVOL : TYPE DE LA MAILLE VOLUMIQUE
 C                                    1 : HEXAEDRE A 8,20 ET 27 NOEUDS
-C                                    2 : PENTAEDRE A 6 ET 15 NOEUDS
+C                                    2 : PENTAEDRE A 6,15 ET 18 NOEUDS
 C                                    3 : TETRAEDRE A 4 ET 10 NOEUDS
 C                                    4 : PYRAMIDE A 5 ET 13 NOEUDS
 C     VOIR TE003 POUR LES EXPLICATIONS DETAILLEES
@@ -117,8 +117,8 @@ C
      >         2,3,7,6,10,15,18,14,23, 3,4,8,7,11,16,19,15,24,
      >         4,1,5,8,12,13,20,16,25, 5,6,7,8,17,18,19,20,26,
      >         1,3,2,9,8,7, 3*0,       4,5,6,13,14,15, 3*0,
-     >         1,2,5,4, 7,11,13,10, 0, 2,3,6,5,8,12,14,11,0,
-     >         1,4,6,3,10,15,12, 9, 0,  9*0,
+     >         1,2,5,4, 7,11,13,10,16, 2,3,6,5,8,12,14,11,17,
+     >         1,4,6,3,10,15,12, 9,18, 9*0,
      >         1,3,2,7,6, 5, 3*0,      2,3,4,6,10,9, 3*0,
      >         3,1,4,7,8,10, 3*0,      1,2,4,5, 9,8, 3*0,
      >         9*0,                    9*0,

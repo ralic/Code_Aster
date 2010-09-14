@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 30/06/2008   AUTEUR PELLET J.PELLET 
+#& MODIF COMMANDE  DATE 14/09/2010   AUTEUR REZETTE C.REZETTE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,7 +22,7 @@ CREA_MAILLAGE=OPER(nom="CREA_MAILLAGE",op= 167,sd_prod=maillage_sdaster,
             UIinfo={"groupes":("Maillage",)},
          regles=(EXCLUS('COQU_VOLU', 'CREA_FISS', 'CREA_GROUP_MA', 'CREA_MAILLE', 'CREA_POI1',
                         'DETR_GROUP_MA', 'ECLA_PG', 'HEXA20_27', 'LINE_QUAD', 'MODI_MAILLE',
-                        'QUAD_LINE', 'REPERE','RESTREINT'),),
+                        'QUAD_LINE', 'REPERE','RESTREINT','PENTA15_18',),),
 
 
 
@@ -113,6 +113,14 @@ CREA_MAILLAGE=OPER(nom="CREA_MAILLAGE",op= 167,sd_prod=maillage_sdaster,
            PREF_NUME       =SIMP(statut='f',typ='I',defaut= 1 ),
          ),
          HEXA20_27     =FACT(statut='f',fr="Passage HEXA20 -> HEXA27",
+           regles=(AU_MOINS_UN('TOUT','MAILLE','GROUP_MA' ),),
+           TOUT            =SIMP(statut='f',typ='TXM',into=("OUI",) ),
+           MAILLE          =SIMP(statut='f',typ=ma,validators=NoRepeat(),max='**'),
+           GROUP_MA        =SIMP(statut='f',typ=grma  ,validators=NoRepeat(),max='**'),
+           PREF_NOEUD      =SIMP(statut='f',typ='TXM',defaut="NS"),
+           PREF_NUME       =SIMP(statut='f',typ='I',defaut= 1 ),
+         ),
+         PENTA15_18     =FACT(statut='f',fr="Passage PENTA15 -> PENTA18",
            regles=(AU_MOINS_UN('TOUT','MAILLE','GROUP_MA' ),),
            TOUT            =SIMP(statut='f',typ='TXM',into=("OUI",) ),
            MAILLE          =SIMP(statut='f',typ=ma,validators=NoRepeat(),max='**'),

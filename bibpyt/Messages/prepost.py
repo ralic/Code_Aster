@@ -1,4 +1,4 @@
-#@ MODIF prepost Messages  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
+#@ MODIF prepost Messages  DATE 14/09/2010   AUTEUR REZETTE C.REZETTE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -199,8 +199,8 @@ cata_msg = {
 """),
 
 86 : _("""
- on traite les TRIA7 QUAD9 HEXA27 en oubliant le noeud centre
- et les SEG4 en oubliant les 2 noeuds centraux.
+ on traite les TRIA7 QUAD9 PENTA18 HEXA27 en oubliant le(s) noeud(s)
+ au centre et les SEG4 en oubliant les 2 noeuds centraux.
 """),
 
 87 : _("""

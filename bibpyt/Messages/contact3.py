@@ -1,4 +1,4 @@
-#@ MODIF contact3 Messages  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
+#@ MODIF contact3 Messages  DATE 14/09/2010   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -81,6 +81,11 @@ sur la maille %(k1)s,
 Erreur de définition de la maille ou projection difficile. Contactez l'assistance dans ce dernier cas.
 """),
 
+24 : _("""
+Le vecteur normal est nul sur la maille %(k1)s, 
+Erreur de définition de la maille ou projection difficile. Contactez l'assistance dans ce dernier cas.
+"""),
+
 26 : _("""
 Le vecteur normal est nul au niveau du noeud %(k1)s.
 """),
@@ -96,15 +101,6 @@ Présence de flip-flop.
 
 29 : _("""
 Nom de la maille : %(k1)s 
-"""),
-
-30 : _("""
-Le couple de surfaces de contact %(i1)s pour l'appariement nodal est mal défini.
-Il faut moins de noeuds esclaves que de noeuds maitres pour respecter l'injectivité.
-Or ici:
-Nombre de noeuds maitres : %(i2)s
-Nombre de noeuds esclaves: %(i3)s
-Conseil: intervertissez les deux surfaces maitres et esclaves
 """),
 
 31 : _("""
@@ -123,30 +119,18 @@ L'erreur suivante est arrivée lors du pré-calcul des normales aux noeuds activée
 - NORMALE = 'MAIT_ESCL'
 """),
 
-34 : _("""
-Echec de l'orthogonalisation du repère tangent construit au niveau du projeté du point de contact de coordonnées
-  (%(r1)s,%(r2)s,%(r3)s) 
-sur la maille %(k1)s, 
-Erreur de définition de la maille ou projection difficile. Contactez l'assistance dans ce dernier cas.
-"""),
+
 
 35 : _("""
 Les vecteurs tangents sont nuls au niveau quand on projette le noeud esclave
 %(k1)s sur la noeud maitre %(k2)s
 """),
 
-36 : _("""
-La maille %(k1)s est de type 'POI1', ce n'est pas autorisé sur une maille maitre. 
-"""),
 
 37: _("""
  La section de la poutre n'est pas constante sur l'élément. On prend la moyenne.
  """),
 
-38 : _("""
-La maille %(k1)s est de type poutre et sa tangente est nulle.
-Vérifiez votre maillage.
-"""),
 
 39: _("""
 Problème pour récupérer l'épaisseur de la coque pour la maille  %(k1)s

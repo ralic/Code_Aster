@@ -2,7 +2,7 @@
      >                    TYMVOL, NDEGRE, NBF, ELREF1, ELREF2 )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/09/2009   AUTEUR GNICOLAS G.NICOLAS 
+C MODIF ELEMENTS  DATE 14/09/2010   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -40,7 +40,7 @@ C IN   ELREFV : DENOMINATION DE LA MAILLE VOLUMIQUE
 C               'QU4', 'QU8', 'QU9'
 C               'TR3', 'TR6', 'TR7'
 C               'HE8', 'H20', 'H27'
-C               'PE6', 'P15'
+C               'PE6', 'P15', 'P18'  
 C               'TE4', 'T10'
 C               'PY5', 'P13'
 C
@@ -146,6 +146,13 @@ C
         NBF = 5
         ELREF1 = 'TR6'
         ELREF2 = 'QU8'
+
+      ELSE IF ( ELREFV(1:3).EQ.'P18' ) THEN
+        TYMVOL = 2
+        NDEGRE = 2
+        NBF = 5
+        ELREF1 = 'TR6'
+        ELREF2 = 'QU9'
 C
 C 2.3. ==> TETRAEDRES
 C

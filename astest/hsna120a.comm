@@ -1,34 +1,34 @@
-# MODIF  DATE 11/05/2010   AUTEUR COURTOIS M.COURTOIS 
-# TITRE Propagation d'un reseau de fissures en fatigue thermomecanique 
+# MODIF  DATE 13/09/2010   AUTEUR PELLET J.PELLET 
+# TITRE Propagation d'un reseau de fissures en fatigue thermomecanique
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
 #############################################################################
 #       Test de modelisation de la propagation d'un reseau de fissures
-#       en fatigue thermomecanique  
-#       Les longueurs initiales des fissures : 
+#       en fatigue thermomecanique
+#       Les longueurs initiales des fissures :
 #           F1=0.98, F2=0.70, F3=0.08, F4=0.69
 #       M.SEYEDI    15/04/03
-#       Calcul de KI se fait en utilisant la methode d'extrapolation de 
+#       Calcul de KI se fait en utilisant la methode d'extrapolation de
 #       sauts de deplacements (la commande POST_K1_K2_K3)
 #       Chargement thermique : T varie entre 20 et 120 C
 #       Contrainte moyenne : 60 MPa, constante dans l'epaisseur
-#        
+#
 
 DEBUT ( CODE=_F( NOM = 'HSNA120A',
         NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),
@@ -85,7 +85,7 @@ TEMP_F=CALC_FONC_INTERP(FONCTION=TEP_F,    LIST_PARA=LIST,
                            NOM_PARA='INST',
                            NOM_RESU='TEMP',
                            PROL_GAUCHE='EXCLU',  PROL_DROITE='EXCLU',
-                           INTERPOL='LIN', 
+                           INTERPOL='LIN',
                                )
 
 #
@@ -160,9 +160,9 @@ Kmin   =NP.zeros([nb_de_fissures_plus_1,nb_calc_total_plus_1])
 Kmax   =NP.zeros([nb_de_fissures_plus_1,nb_calc_total_plus_1])
 gdr    =NP.zeros([nb_de_fissures_plus_1,nb_calc_total_plus_1])
 KEFF   =NP.zeros([nb_de_fissures_plus_1,nb_calc_total_plus_1])
-#       
+#
 #############################################################################
-#       
+#
 # 2. Definitions generales
 #
 #
@@ -176,7 +176,7 @@ LIST_BD=DEFI_LIST_REEL(INTERVALLE=_F(JUSQU_A=1.0,
 #              Proprietes thermiques
 # rho=8E-6 Kg/mm3
 
-AC_THER = DEFI_MATERIAU ( THER      = _F( RHO_CP     = 1.8E-3, 
+AC_THER = DEFI_MATERIAU ( THER      = _F( RHO_CP     = 1.8E-3,
                                      LAMBDA = 14.0E-3,),);    # W/mm C
 
 ACIER=DEFI_MATERIAU(ELAS=_F(NU=0.3,
@@ -203,7 +203,7 @@ lnga = [0., 0.68, 0.70, 0.08, 0.69]
 
 
 #############################################################################
-# 3. Boucle avec l indice num_calc sur les nb_aclc_total qui montre 
+# 3. Boucle avec l indice num_calc sur les nb_aclc_total qui montre
 #   le nombre total des etapes de calcul
 #############################################################################
 cycle_passe = 0
@@ -225,7 +225,7 @@ for num_calc in range(1,nb_calc_total_plus_1) :
 
 #
 #              Definition des groupes de noeuds
-#                                  
+#
    MAIL[num_calc]=DEFI_GROUP(reuse =MAIL[num_calc],
                 CREA_GROUP_NO=(_F(GROUP_MA='GM61',
                                   NOM='F1',),
@@ -242,7 +242,7 @@ for num_calc in range(1,nb_calc_total_plus_1) :
 #
 #
 #              Definition des groupes de mailles
-#                                  
+#
 
    MAIL[num_calc]=DEFI_GROUP(reuse =MAIL[num_calc],
                 CREA_GROUP_MA=(_F(GROUP_MA='GM84',
@@ -259,23 +259,23 @@ for num_calc in range(1,nb_calc_total_plus_1) :
 
 #
 #             Definition des levres des fissures
-#                                  
+#
 
    MAIL[num_calc]=DEFI_GROUP(reuse =MAIL[num_calc],
 #
-#              La levre superieure des fissures 
-#                                  
+#              La levre superieure des fissures
+#
                 CREA_GROUP_MA=(_F(GROUP_MA='GM35',
                                   NOM='levt1',),
-                               _F(GROUP_MA='GM41', 
+                               _F(GROUP_MA='GM41',
                                   NOM='levt2',),
-                               _F(GROUP_MA='GM46', 
+                               _F(GROUP_MA='GM46',
                                   NOM='levt3',),
                                _F(GROUP_MA='GM51',
                                   NOM='levt4',),
 #
-#              La levre inferieure des fissures 
-#                                  
+#              La levre inferieure des fissures
+#
                                _F(GROUP_MA='GM44',
                                   NOM='levb1',),
                                _F(GROUP_MA='GM49',
@@ -322,11 +322,11 @@ for num_calc in range(1,nb_calc_total_plus_1) :
    TEMPT[num_calc]=THER_LINEAIRE(   MODELE = MOTH[num_calc],
                      CHAM_MATER = CMTH[num_calc],
                      EXCIT = _F(CHARGE = CHTH[num_calc],),
-                     ETAT_INIT = _F( VALE = 20.,),                               
+                     ETAT_INIT = _F( VALE = 20.,),
                      INCREMENT = _F( LIST_INST = LIST, NUME_INST_FIN = 100),
                      );
-                     
-                     
+
+
 # -------------------------------------------------------------- #
 #                       FIN DU THERMIQUE                         #
 # -------------------------------------------------------------- #
@@ -413,7 +413,7 @@ for num_calc in range(1,nb_calc_total_plus_1) :
                              MATRICE='TANGENTE',),
                    EXCIT=(_F(CHARGE=CHAR1[num_calc],),
                           _F(CHARGE=CHARM[num_calc],),),
-                   CONTACT = CONT[num_calc],    
+                   CONTACT = CONT[num_calc],
                    ARCHIVAGE=_F(INST=(90,95,100)),
                            );
 #
@@ -421,8 +421,8 @@ for num_calc in range(1,nb_calc_total_plus_1) :
 #
    RESU[num_calc]=CALC_ELEM(reuse =RESU[num_calc],
                RESULTAT=RESU[num_calc],
-               CHAM_MATER=MATER[num_calc],
-               MODELE=MOD_G[num_calc],
+
+
                OPTION=('SIEF_ELNO_ELGA','EQUI_ELNO_SIGM'),
                TOUT_ORDRE='OUI',);
 #
@@ -432,13 +432,13 @@ for num_calc in range(1,nb_calc_total_plus_1) :
              OPTION=('SIEF_NOEU_ELGA'),
              TOUT_ORDRE='OUI',);
 
-#      
+#
 # 4. CALCUL DE LA FISSURE
 #
 # 4.1. On boucle sur toutes les fissures pour trouver la valeur de Netape
 #
 #     On met le nombre total des Cycles pour Netape et on compare Ncycle chaque fissure
-#     avec Netape et on cherche le minimum de Ncycle       
+#     avec Netape et on cherche le minimum de Ncycle
    NETAP[num_calc]=nb_cycles_total
 
    for num_fiss in range(1,nb_de_fissures_plus_1) :
@@ -520,10 +520,10 @@ for num_calc in range(1,nb_calc_total_plus_1) :
 
 #
 #     On met zero pour toutes les valeurs negatives de K1
-#    
+#
       if KI1[num_fiss,num_calc] < 0. :
-         KI1[num_fiss,num_calc]=0.    
-   
+         KI1[num_fiss,num_calc]=0.
+
       AK2[I]=POST_K1_K2_K3(  MODELISATION='AXIS',
                        INST = 100.,
                        MATER=ACIER,
@@ -532,7 +532,7 @@ for num_calc in range(1,nb_calc_total_plus_1) :
                        ABSC_CURV_MAXI = 0.1,
                        VECT_K1        = ( 0., 1., 0., )
                        )
-   
+
       K2_min[num_fiss,num_calc]=AK2[I]['K1_MIN',1]/((1000.)**.5)
       K2_max[num_fiss,num_calc]=AK2[I]['K1_MAX',1]/((1000.)**.5)
       KI2[num_fiss,num_calc]=(K2_min[num_fiss,num_calc]+K2_max[num_fiss,num_calc])/2.
@@ -558,12 +558,12 @@ for num_calc in range(1,nb_calc_total_plus_1) :
            FORMAT='AGRAF', UNITE=8, );
 #
 #     On met zero pour toutes les valeurs negatives de K1
-#    
+#
       if KI2[num_fiss,num_calc] < 0. :
          KI2[num_fiss,num_calc]=0.
 #
 #     On calcul la valeur de DeltaK1 pour la fissure i
-#    
+#
       DELTAK[num_fiss,num_calc]=(abs(KI1[num_fiss,num_calc]-KI2[num_fiss,num_calc]))
 #
       print "delta KI"
@@ -571,48 +571,48 @@ for num_calc in range(1,nb_calc_total_plus_1) :
 
 #
 #     On calcule la valeur de "R" pour la fissure i
-#    
+#
       if KI1[num_fiss,num_calc] < KI2[num_fiss,num_calc] :
          Kmin[num_fiss,num_calc]=KI1[num_fiss,num_calc]
          Kmax[num_fiss,num_calc]=KI2[num_fiss,num_calc]
       else :
          Kmin[num_fiss,num_calc]=KI2[num_fiss,num_calc]
          Kmax[num_fiss,num_calc]=KI1[num_fiss,num_calc]
-         
+
       if Kmin[num_fiss,num_calc] == 0.0 :
          R[num_fiss,num_calc]=0.0
       else :
          R[num_fiss,num_calc]=Kmin[num_fiss,num_calc]/Kmax[num_fiss,num_calc]
-      
+
       if R[num_fiss,num_calc] >= 1.0 :
          R[num_fiss,num_calc]=1.0/R[num_fiss,num_calc]
-         
+
       print '===================="R"========================='
       print R[num_fiss,num_calc]
       print '===================="R"========================='
-      
+
 
 #     Calcul de de fonction g(R) [gdr] et Keff
-#    
+#
       gdr[num_fiss,num_calc]=(1-R[num_fiss,num_calc])/(1-MR*R[num_fiss,num_calc])
       KEFF[num_fiss,num_calc]=((Kmax[num_fiss,num_calc]*gdr[num_fiss,num_calc])-KTH)/(KIC-(KTH/gdr[num_fiss,num_calc]))
 
 #     Calcul de Netape pour la fissure i
-#    
+#
       if KEFF[num_fiss,num_calc] <= 0.0 :
          KEFF[num_fiss,num_calc]=0.
          NCYCL[num_fiss,num_calc]= 1.E12
-      else :   
+      else :
          NCYCL[num_fiss,num_calc]=DELTA0/(COEFC*((KEFF[num_fiss,num_calc])**COEFM))
       if NCYCL[num_fiss,num_calc] < NETAP[num_calc] :
          NETAP[num_calc]=NCYCL[num_fiss,num_calc]
 
       print "Ncycle"
       print NCYCL[num_fiss,num_calc]
-    
+
       print "Netape"
       print NETAP[num_calc]
-    
+
 #
       results.write('===================================================\n')
       results.write('Numero de fissure :%i\n'%num_fiss)
@@ -626,8 +626,8 @@ for num_calc in range(1,nb_calc_total_plus_1) :
       results.write('Ncycle=%.2f\n'%NCYCL[num_fiss,num_calc])
       results.write('Netape=%.2f\n'%NETAP[num_calc])
 
-   
-#        fin de boucle    
+
+#        fin de boucle
 #
 # 4.2 On boucle sur toutes les fissures pour calculer l'extension de chaque fissure
 #
@@ -649,7 +649,7 @@ for num_calc in range(1,nb_calc_total_plus_1) :
 
 #            On cherche pour la longuour correspondante
 
-      i = 0 
+      i = 0
       while (string.find(file[i],'lf_'+str(num_fiss)) == -1) :
          i = i+1
       file[i] = 'lf_' + str(num_fiss) + '=' + str(lnga[num_fiss]) + ';  \012'
@@ -660,12 +660,12 @@ for num_calc in range(1,nb_calc_total_plus_1) :
 #      print file[i]
       new.write(file[i])
    new.close()
-    
-    
-#        fin de boucle    
+
+
+#        fin de boucle
 #
 #    5. Remaillage avec GMSH
-#           
+#
 # 5.1 On relance GMSH afin de refaire le maillage pour les nouvelles positions des fonds des fissuress
    DEFI_FICHIER(ACTION='LIBERER',UNITE=19,)
    DEFI_FICHIER(ACTION='LIBERER',UNITE=20,)
@@ -676,8 +676,8 @@ for num_calc in range(1,nb_calc_total_plus_1) :
    print '================================================'
    os.system ('cat mail.geo')
    print '================================================'
-   
-   
+
+
    os.system (gmsh+' -2  -algo aniso mail.geo -o fort.19')
 
    print 'GMSH est fini'
@@ -688,15 +688,15 @@ for num_calc in range(1,nb_calc_total_plus_1) :
 #
    num_calc_avant = num_calc
    cycle_passe=cycle_passe+NETAP[num_calc]
-   
+
    print 'cycle_passe ='
    print cycle_passe
 
    results.write('         ***         \n')
    results.write('Nombre de cycles passes=%.2f\n'%cycle_passe)
    results.write('         ***         \n')
- 
-    
+
+
    if cycle_passe >=  nb_cycles_total :
        num_calc=nb_calc_total_plus_1
        print '================================================'
@@ -710,7 +710,7 @@ for num_calc in range(1,nb_calc_total_plus_1) :
 
 #
 #
-#        On teste les valeurs calculees de keff et da pour 
+#        On teste les valeurs calculees de keff et da pour
 #        la fissure F1
 #
 
@@ -722,16 +722,16 @@ KEFF=DEFI_FONCTION(    NOM_PARA='X',   NOM_RESU='keff',
 
 TEST_FONCTION(VALEUR=( _F(  FONCTION = KEFF,   VALE_PARA = 1,
                     REFERENCE = 'NON_REGRESSION',
-                          VALE_REFE = 0.0513,  
-                    PRECISION = .01),  
+                          VALE_REFE = 0.0513,
+                    PRECISION = .01),
     _F(  FONCTION = KEFF,   VALE_PARA = 2,
                     REFERENCE = 'NON_REGRESSION',
-                          VALE_REFE = .0550,  
-                    PRECISION = .015),       
+                          VALE_REFE = .0550,
+                    PRECISION = .015),
     _F(  FONCTION = KEFF,   VALE_PARA = 3,
                     REFERENCE = 'NON_REGRESSION',
-                          VALE_REFE = .0613,  
-                    PRECISION = .015), 
+                          VALE_REFE = .0613,
+                    PRECISION = .015),
                ));
 
 NETAP=DEFI_FONCTION(    NOM_PARA='X',   NOM_RESU='netap',
@@ -742,16 +742,16 @@ NETAP=DEFI_FONCTION(    NOM_PARA='X',   NOM_RESU='netap',
 
 TEST_FONCTION(VALEUR=( _F(  FONCTION = NETAP,   VALE_PARA = 1,
                     REFERENCE = 'NON_REGRESSION',
-                          VALE_REFE = 212900.,  
-                    PRECISION = 100.0),  
+                          VALE_REFE = 212900.,
+                    PRECISION = 100.0),
     _F(  FONCTION = NETAP,   VALE_PARA = 2,
                     REFERENCE = 'NON_REGRESSION',
-                          VALE_REFE = 178574.,  
-                    PRECISION = 100.0),       
+                          VALE_REFE = 178574.,
+                    PRECISION = 100.0),
     _F(  FONCTION = NETAP,   VALE_PARA = 3,
                     REFERENCE = 'NON_REGRESSION',
-                          VALE_REFE = 135107.,  
-                    PRECISION = 100), 
+                          VALE_REFE = 135107.,
+                    PRECISION = 100),
                ));
 
 

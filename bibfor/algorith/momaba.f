@@ -3,7 +3,7 @@
       CHARACTER*8 MAILLA
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 30/08/2010   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 14/09/2010   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -202,8 +202,8 @@ C --------- TETRA10
               ENDIF
    60       CONTINUE
 C
-C --------- PENTA15
-          ELSEIF (TYPE.EQ.'PENTA15') THEN
+C --------- PENTA15 , PENTA18
+          ELSEIF (TYPE.EQ.'PENTA15' .OR. TYPE.EQ.'PENTA18') THEN
             NBNO=6
             CALL JEVEUO(JEXNUM(CONNEX,J),'L',JPOIN)
             DO 80 I1=1,NBNO

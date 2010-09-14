@@ -2,7 +2,7 @@
      &                  RESU  ,RESIGR,DEPDEL,CTCCVG,CTCFIX)
 C   
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/05/2010   AUTEUR DESOZA T.DESOZA 
+C MODIF ALGORITH  DATE 14/09/2010   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -107,7 +107,7 @@ C
       INTEGER      IBID,IER,ILIAI,JJ,KK,JJC,LL
       INTEGER      NDECI,ISINGU,NPVNEG,ISTO,ILIDEB,ILIFIN
       INTEGER      NEQ,NBLIAC,NBLIAI,NDIM
-      INTEGER      NBDDL,NEQMAX,NBLCIN,NTNOE
+      INTEGER      NBDDL,NEQMAX,NBLCIN,NESMAX
       INTEGER      ILIAC,LLIAC,JDECAL
       INTEGER      INDFAC,POSIT,SPAVAN,INDIC,NUMIN
       INTEGER      ITEMUL
@@ -120,7 +120,7 @@ C
       COMPLEX*16   CBID
       CHARACTER*1  TYPEAJ
       CHARACTER*2  TYPEC0
-      CHARACTER*14 NUMEDD
+      CHARACTER*14 NUMEDD,NUMEF1,NUMEF2,NUFROT
       CHARACTER*19 MAT,MAF2,MAFROT
       INTEGER      JRESU,JDEPDE
       CHARACTER*19 AFMU,MAF1,FRO1,FRO2
@@ -204,9 +204,8 @@ C ======================================================================
 C ======================================================================
 C --- INITIALISATION DE VARIABLES
 C --- NBLIAI : NOMBRE DE LIAISONS DE CONTACT
-C --- NTNOE : NOMBRE MAXI DE NOEUDS ESCLAVES
+C --- NESMAX : NOMBRE MAXI DE NOEUDS ESCLAVES
 C              SERT AU DECALAGE DANS LES ROUTINES DE FROTTEMENT 3D
-C              (VAUT DONC ZERO SI SANS FROTTEMENT OU FROTTEMENT 2D)
 C --- ITEMUL : NOMBRE PAR LEQUEL IL FAUT MULTIPLIER LE NOMBRE DE
 C              LIAISONS DE CONTACT POUR OBTENIR LE NOMBRE MAXI
 C              D'ITERATIONS DANS L'ALGO ITEMAX=ITEMUL*NBLIAI
@@ -237,7 +236,7 @@ C ======================================================================
       ITEMUL = CFDISI(DEFICO,'ITER_CONT_MULT')
       ITEMAX = ITEMUL*NBLIAI
       ISTO   = CFDISI(DEFICO,'STOP_SINGULIER')
-      NTNOE  = CFDISI(DEFICO,'NTNOE' )
+      NESMAX = CFDISD(RESOCO,'NESMAX')
       NBLIAC = CFDISD(RESOCO,'NBLIAC')      
       LLF    = CFDISD(RESOCO,'LLF'   )
       LLF1   = CFDISD(RESOCO,'LLF1'  )
@@ -289,7 +288,7 @@ C --- CALCUL DE -A.C-1.AT COLONNE PAR COLONNE (A PARTIR DE INDFAC)
 C
          SPAVAN = SPLIAI
          CALL CFACAT(NDIM  ,INDIC ,NBLIAC,AJLIAI,SPLIAI,
-     &               LLF   ,LLF1  ,LLF2  ,INDFAC,NTNOE,
+     &               LLF   ,LLF1  ,LLF2  ,INDFAC,NESMAX,
      &               DEFICO,RESOCO,LMAT  ,NBLIAI,XJVMAX)
 C
 C --- ELIMINATION DES PIVOTS NULS
@@ -345,7 +344,7 @@ C ======================================================================
 C --- APPEL DE LA ROUTINE DE CALCUL DU SECOND MEMBRE -------------------
 C ======================================================================
          CALL CFADU (RESOCO,DEPDEL,NEQ   ,NDIM  ,NBLIAC,
-     &               LLF   ,LLF1  ,LLF2  ,NTNOE )
+     &               LLF   ,LLF1  ,LLF2  ,NESMAX)
 C ======================================================================
 C --- RESOLUTION POUR OBTENIR MU : -A.C-1.AT.MU = JEU(DEPTOT) - A.DELT0
 C --- ON TRUANDE LA SD MATR_ASSE POUR NE RESOUDRE LE SYSTEME QUE
@@ -499,7 +498,7 @@ C ======================================================================
 C ======================================================================
 C --- CALCUL DES FORCES DE CONTACT (AT.MU)
 C ======================================================================
-      CALL CFATMU(NEQ   ,NTNOE ,NDIM  ,NBLIAC,1     ,
+      CALL CFATMU(NEQ   ,NESMAX,NDIM  ,NBLIAC,1     ,
      &            LLF   ,LLF1  ,LLF2  ,RESOCO)           
 C ======================================================================
 C ---            TRAITEMENT DU FROTTEMENT
@@ -524,7 +523,7 @@ C
      &              ZR(JDELTA),VAL)
         AJEUFX = ZR(JAPJFX-1+LLIAC) - VAL
         IF (NDIM.EQ.3) THEN
-          CALL CALADU(NEQ,NBDDL,ZR(JAPCOF+JDECAL+30*NTNOE),
+          CALL CALADU(NEQ,NBDDL,ZR(JAPCOF+JDECAL+30*NESMAX),
      &                ZI(JAPDDL+JDECAL),ZR(JDELTA),VAL)
           AJEUFY = ZR(JAPJFY-1+LLIAC) - VAL
         END IF
@@ -551,7 +550,7 @@ C --- ON RECUPERE DES GLISSEMENTS DE LA LIAISON
      &              ZR(JDELTA),VAL)
         AJEUFX = ZR(JAPJFX-1+LLIAC) - VAL
         IF (NDIM.EQ.3) THEN
-          CALL CALADU(NEQ,NBDDL,ZR(JAPCOF+JDECAL+30*NTNOE),
+          CALL CALADU(NEQ,NBDDL,ZR(JAPCOF+JDECAL+30*NESMAX),
      &                ZI(JAPDDL+JDECAL),ZR(JDELTA),VAL)
           AJEUFY = ZR(JAPJFY-1+LLIAC) - VAL
         END IF
@@ -603,7 +602,7 @@ C --- A LA LIAISON
           XMU = ZR(JMU-1+3*NBLIAI+LLIAC)
           IF (ILIAI.GT.NBLIAI) THEN
             CALL DAXPY(NBDDL,XMU,
-     &                 ZR(JAPCOF+JDECAL+30*NTNOE ),1,ZR(JFRO1),1)
+     &                 ZR(JAPCOF+JDECAL+30*NESMAX),1,ZR(JFRO1),1)
           ELSE
             CALL DAXPY(NBDDL,XMU,ZR(JAPCOF+JDECAL),1,ZR(JFRO1),1)
           END IF
@@ -615,8 +614,9 @@ C ======================================================================
 C --- CALCUL DE KF STOCKE DANS MAF1 = FRO1T*FRO1
 C ======================================================================
       NMULT = NDIM - 1
-      CALL ATASMO(NEQ,FRO1,ZI(JAPDDL),
-     &                     ZI(JAPPTR),NUMEDD,MAF1,'V',NBLIAI,NMULT)
+      NUMEF1 = '&&FROPGD.NUF1'
+      CALL ATASMO(NEQ   ,FRO1  ,ZI(JAPDDL),ZI(JAPPTR),NUMEDD,MAF1  ,'V',
+     &            NBLIAI,NMULT ,NUMEF1)
 C ======================================================================
 C --- CREATION DU VECTEUR DE CISAILLEMENT (PARTIE SYMETRIQUE DE KFR)
 C ---   KF*(ZR(JDEPDE-1+NUM1) + ZR(JDELTA-1+NUM1))
@@ -655,7 +655,7 @@ C --- ON EFFECTUE LE CALCUL DE FRO2 SUR LES LIAISONS ACTIVES
      &                ZR(JDELTA),VAL)
           AJEUFX = ZR(JAPJFX-1+LLIAC) - VAL
           IF (NDIM.EQ.3) THEN
-            CALL CALADU(NEQ,NBDDL,ZR(JAPCOF+JDECAL+30*NTNOE),
+            CALL CALADU(NEQ,NBDDL,ZR(JAPCOF+JDECAL+30*NESMAX),
      &                  ZI(JAPDDL+JDECAL),ZR(JDELTA),VAL)
             AJEUFY = ZR(JAPJFY-1+LLIAC) - VAL
           END IF
@@ -695,12 +695,14 @@ C ======================================================================
 C --- CREATION DE LA MATRICE DE FROTTEMENT - SECONDE PARTIE (MAF2)
 C ======================================================================
       NMULT = 1
-      CALL ATASMO(NEQ,FRO2,ZI(JAPDDL),
-     &                     ZI(JAPPTR),NUMEDD,MAF2,'V',NBLIAI,NMULT)
+      NUMEF2 = '&&FROPGD.NUF2'
+      CALL ATASMO(NEQ   ,FRO2  ,ZI(JAPDDL),ZI(JAPPTR),NUMEDD,MAF2  ,'V',
+     &            NBLIAI,NMULT ,NUMEF2)
 C ======================================================================
 C --- CALCUL DE LA MATRICE TANGENTE AVEC FROTTEMENT
 C ======================================================================
-      CALL CFFROT(MAF1,'-',MAF2,MAFROT)
+      NUFROT = '&&FROPGD.NUFR'
+      CALL CFFROT(MAF1,'-',MAF2,MAFROT,NUFROT)
 C
 C --- ATTENTE POINT FIXE
 C

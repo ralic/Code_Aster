@@ -2,7 +2,7 @@
      &                  DIRAPP,DIR   ,POSMIN,PRTOLE)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 12/01/2010   AUTEUR DESOZA T.DESOZA 
+C MODIF ALGORITH  DATE 14/09/2010   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -71,72 +71,9 @@ C
       CHARACTER*80 ZK80
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C
-C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
-C
-      INTEGER      NBNOM,JDEC,INOM
-      INTEGER      POSNOM,NUMNOM
-      INTEGER      IFM,NIV
-      INTEGER      JCOOR
-      REAL*8       COOR2(3),DMIN,DIST,NORMD,NORMV,R8GAEM
-      CHARACTER*24 CONTNO
-      INTEGER      JNOCO
-C
-C ----------------------------------------------------------------------
+C A SUPPRIMER
 C
       CALL JEMARQ()
-      CALL INFDBG('CONTACT',IFM,NIV)
-C
-C --- RECUPERATION DE QUELQUES DONNEES
-C
-      CONTNO = DEFICO(1:16)//'.NOEUCO'
-      CALL JEVEUO(CONTNO,'L',JNOCO)
-      CALL JEVEUO(NEWGEO(1:19)//'.VALE','L',JCOOR)
-C
-C --- INFOS SUR LA SURFACE MAITRE
-C
-      CALL CFNBSF(DEFICO,ISURF ,'NOEU',NBNOM ,JDEC  )
-C
-C --- RECHERCHE BRUTE: BOUCLE SUR LES NOEUDS
-C
-      DMIN   = R8GAEM()
-      POSMIN = 0
-      PRTOLE = .FALSE.
-      DO 10 INOM = 1,NBNOM
-        POSNOM   = JDEC + INOM
-        NUMNOM   = ZI(JNOCO+POSNOM-1)
-        COOR2(1) = ZR(JCOOR+3*(NUMNOM-1))
-        COOR2(2) = ZR(JCOOR+3*(NUMNOM-1)+1)
-        COOR2(3) = ZR(JCOOR+3*(NUMNOM-1)+2)
-        IF (DIRAPP) THEN
-          NORMD    = SQRT(DIR(1)*DIR(1)+DIR(2)*DIR(2)+DIR(3)*DIR(3))
-          NORMV    = SQRT((COORPT(1)-COOR2(1))**2+
-     &                    (COORPT(2)-COOR2(2))**2+
-     &                    (COORPT(3)-COOR2(3))**2)
-          IF (NORMV.EQ.0.D0) THEN
-            DIST = 1.D0
-          ELSE
-            DIST = ABS((COORPT(1)-COOR2(1))*DIR(1)+
-     &                 (COORPT(2)-COOR2(2))*DIR(2)+
-     &                 (COORPT(3)-COOR2(3))*DIR(3))/(NORMD*NORMV)
-          ENDIF
-        ELSE
-          DIST = SQRT((COORPT(1)-COOR2(1))**2+
-     &                (COORPT(2)-COOR2(2))**2+
-     &                (COORPT(3)-COOR2(3))**2)
-        ENDIF
-C
-        IF (DIST.LT.DMIN) THEN
-          POSMIN = POSNOM
-          DMIN   = DIST
-          IF (TOLEAP.GT.0.D0) THEN
-            IF (DIST.LE.TOLEAP) THEN
-              PRTOLE = .TRUE.
-            ENDIF
-          ELSE
-            PRTOLE = .TRUE.
-          ENDIF
-        END IF
-   10 CONTINUE
-
+      
       CALL JEDEMA()
       END

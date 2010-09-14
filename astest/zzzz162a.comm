@@ -1,4 +1,4 @@
-# MODIF  DATE 30/08/2010   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 14/09/2010   AUTEUR SFAYOLLE S.FAYOLLE 
 # TITRE VALIDATION LIRE_RESU AU FORMAT MED
 # zzzz162a.para = tps_job 60 mem_job 100Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -311,6 +311,15 @@ TEST_RESU ( RESU=(
 TB01=CREA_TABLE(
    RESU=_F(RESULTAT=TEMP0, TOUT='OUI', TOUT_CMP='OUI', NOM_CHAM='TEMP',),
 )
+
+NORM = FORMULE(VALE='(COOR_X*COOR_X+COOR_Y*COOR_Y)**0.5',
+               NOM_PARA=('COOR_X','COOR_Y',),);
+
+TB01=CALC_TABLE(reuse=TB01,
+                TABLE=TB01,
+                ACTION=(_F(OPERATION='OPER',
+                           FORMULE=NORM,
+                           NOM_PARA='NORM',),),);
 
 PourTest = [
    [ 1, 'N1', 1.0, 0.0, 85.0],

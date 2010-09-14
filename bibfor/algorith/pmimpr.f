@@ -1,7 +1,7 @@
-      SUBROUTINE PMIMPR(IND,INST,FONIMP,VALIMP,ITER,EPS,SIG,VI,NBVARI,
-     &                  R,EE,EINI)
+      SUBROUTINE PMIMPR(IND,INST,INDIMP,FONIMP,VALIMP,ITER,EPS,SIG,
+     &                  VI,NBVARI,R,EE,EINI)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 23/03/2010   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 13/09/2010   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -40,9 +40,12 @@ C IN  EE     : ERREUR
 C IN  EINI   : ERREUR INITIALE
 C-----------------------------------------------------------------------
       IMPLICIT NONE
-      INTEGER  NBVARI,NIV,IFM,IND,I,ITER,IDBG
+      INTEGER  NBVARI,NIV,IFM,IND,I,ITER,IDBG,INDIMP(6)
       REAL*8 INST,VALIMP(6),EPS(6),SIG(6),VI(NBVARI),R(12),EE,EINI
       CHARACTER*8  FONIMP(6)
+      CHARACTER*4  NOMEPS(6),NOMSIG(6)
+      DATA NOMEPS/'EPXX','EPYY','EPZZ','EPXY','EPXZ','EPYZ'/
+      DATA NOMSIG/'SIXX','SIYY','SIZZ','SIXY','SIXZ','SIYZ'/
 C-----------------------------------------------------------------------
       CALL INFMAJ
       CALL INFNIV(IFM,NIV)
@@ -53,9 +56,14 @@ C-----------------------------------------------------------------------
       IF (IND.EQ.0) THEN
          WRITE(IFM,*) ' '
          WRITE(IFM,*) ' ==============================================='
+         WRITE(IFM,*) 'INST',INST
          DO 151 I=1,6
          IF (VALIMP(I).NE.0.D0) THEN
-           WRITE(IFM,*) 'INST,FONC,VALEUR',INST,FONIMP(I),VALIMP(I)
+            IF (INDIMP(I).EQ.0) THEN
+               WRITE(IFM,*) NOMSIG(I),' IMPOSEE =',VALIMP(I)
+            ELSEIF (INDIMP(I).EQ.1) THEN
+               WRITE(IFM,*) NOMEPS(I),' IMPOSEE =',VALIMP(I)
+            ENDIF
          ENDIF
   151    CONTINUE
          IF (IDBG.EQ.1) THEN

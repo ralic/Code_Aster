@@ -1,6 +1,6 @@
       SUBROUTINE CFBORD(CHAR  ,NOMA  )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 04/05/2010   AUTEUR DESOZA T.DESOZA 
+C MODIF MODELISA  DATE 14/09/2010   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -54,15 +54,14 @@ C
       CHARACTER*32 ZK32
       CHARACTER*80 ZK80
       COMMON /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
-      CHARACTER*32 JEXNUM
 C
 C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
 C
       CHARACTER*24 DEFICO,CONTMA
       INTEGER      IATYMA,JMACO ,JTMDIM
       INTEGER      CFDISI
-      INTEGER      NDIM  ,NMACO ,VALI(2)
-      INTEGER      IMA   ,NUMA  ,NUTYP ,NDIMMA
+      INTEGER      NDIMG ,NMACO ,VALI(2)
+      INTEGER      IMA   ,NUMMAI,NUTYP ,NDIMMA
 C
 C ----------------------------------------------------------------------
 C
@@ -81,19 +80,19 @@ C
 C
 C --- INFO SUR LE CONTACT
 C
-      NDIM    = CFDISI(DEFICO,'NDIM' )
+      NDIMG   = CFDISI(DEFICO,'NDIM' )
       NMACO   = CFDISI(DEFICO,'NMACO' )
 C
 C --- VERIFICATION DE LA COHERENCE DES DIMENSIONS
 C
       DO 10 IMA = 1, NMACO
-         NUMA   = ZI(JMACO  -1 + IMA)
-         NUTYP  = ZI(IATYMA -1 + NUMA)
+         NUMMAI = ZI(JMACO  -1 + IMA)
+         NUTYP  = ZI(IATYMA -1 + NUMMAI)
          NDIMMA = ZI(JTMDIM -1 + NUTYP)
-         IF (NDIMMA.GT.(NDIM-1)) THEN
-            VALI(1) = NDIMMA
-            VALI(2) = NDIM
-            CALL U2MESI('F','CONTACT2_11',2,VALI)
+         IF (NDIMMA.GT.(NDIMG-1)) THEN
+           VALI(1) = NDIMMA
+           VALI(2) = NDIMG
+           CALL U2MESI('F','CONTACT2_11',2,VALI)
          ENDIF
  10   CONTINUE
 

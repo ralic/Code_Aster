@@ -1,4 +1,4 @@
-# MODIF  DATE 30/08/2010   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 13/09/2010   AUTEUR PELLET J.PELLET 
 # TITRE CYLINDRE MINCE SOUS SON POIDS PROPRE (AXIS) - ANCIEN SSLP09b
 # ssls09b.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -86,8 +86,8 @@ DEF=CALC_ELEM(reuse =DEF,
 
               RESULTAT=DEF,
               OPTION='SIGM_ELNO_DEPL',
-              EXCIT=(_F(CHARGE=CHARGT,),
-                     _F(CHARGE=CLIM),),);
+
+);
 #
 # TEST_RESU DEPLACEMENTS
 #
@@ -188,12 +188,6 @@ DEF_PESA=STAT_NON_LINE(MODELE=MODELE,
                     );
 
 DEF_PESA=CALC_ELEM(reuse =DEF_PESA,
-
-
-               EXCIT=(_F(CHARGE=CLIM,),
-                      _F(CHARGE=CH_PESA,
-                         FONC_MULT=RAMPE,),
-                      ),
                RESULTAT=DEF_PESA,
                OPTION=('SIEF_ELNO_ELGA',
                        'ERRE_ELEM_SIGM',

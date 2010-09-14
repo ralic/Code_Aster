@@ -1,8 +1,7 @@
-      SUBROUTINE CFPOSM(NOMA  ,DEFICO,TYPENT,NBRENT,POSENT,
-     &                  NUMENT,CODRET)
+      SUBROUTINE CFPOSM(DEFICO)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 23/09/2008   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 14/09/2010   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -22,13 +21,7 @@ C ======================================================================
 C RESPONSABLE ABBAS M.ABBAS
 C
       IMPLICIT     NONE
-      CHARACTER*8  NOMA
       CHARACTER*24 DEFICO
-      INTEGER      NBRENT
-      CHARACTER*4  TYPENT      
-      INTEGER      POSENT(NBRENT)
-      INTEGER      NUMENT(NBRENT)
-      INTEGER      CODRET 
 C      
 C ----------------------------------------------------------------------
 C
@@ -39,7 +32,6 @@ C
 C ----------------------------------------------------------------------
 C
 C
-C IN  NOMA   : NOM DU MAILLAGE
 C IN  DEFICO : SD DE DEFINITION DU CONTACT (ISSUE D'AFFE_CHAR_MECA)
 C IN  POSENT : POSITION DE L'ENTITE DANS LES SD CONTACT
 C IN  TYPENT : TYPE D'ENTITE
@@ -69,59 +61,14 @@ C
 C
 C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
 C
-      INTEGER      POSMAI,POSNOE
-      CHARACTER*24 CONTNO,CONTMA
-      INTEGER      JNOCO,JMACO
-      INTEGER      NBMAXM,NBMAXN
-      CHARACTER*8  K8BID
-      INTEGER      IENT
+
 C
 C ----------------------------------------------------------------------
 C
       CALL JEMARQ () 
-C
-C --- INITIALISATIONS
-C
-      CODRET = 0        
-C
-C --- ACCES SD CONTACT
-C
-      CONTNO = DEFICO(1:16)//'.NOEUCO'
-      CONTMA = DEFICO(1:16)//'.MAILCO'
-      CALL JEVEUO(CONTNO,'L',JNOCO)
-      CALL JEVEUO(CONTMA,'L',JMACO)
-      CALL JELIRA(CONTMA,'LONMAX',NBMAXM,K8BID)
-      CALL JELIRA(CONTNO,'LONMAX',NBMAXN,K8BID)       
-C
-C --- PREPARATION DES CHAINES POUR LES NOMS
-C
-      DO 10 IENT = 1,NBRENT    
-        IF (TYPENT.EQ.'MAIL') THEN
-          POSMAI = POSENT(IENT)
-          IF ((POSMAI.GT.NBMAXM).OR.(POSMAI.LE.0)) THEN
-            NUMENT(IENT) = -1
-            CODRET = -1
-            GOTO 999
-          ELSE
-            NUMENT(IENT) = ZI(JMACO+POSMAI-1)
-          ENDIF
-        ELSE IF (TYPENT.EQ.'NOEU') THEN      
-          POSNOE = ABS(POSENT(IENT))
-          IF ((POSNOE.GT.NBMAXN).OR.(POSNOE.LE.0)) THEN
-            NUMENT(IENT) = -1
-            CODRET = -1
-            GOTO 999
-          ELSE
-            NUMENT(IENT) = ZI(JNOCO+POSNOE-1)
-          ENDIF  
-        ELSE 
-          CODRET = -1
-          NUMENT(IENT) = -1
-          GOTO 999
-        ENDIF
-  10  CONTINUE  
-C
-  999 CONTINUE    
+      
+      
+      CALL ASSERT(.FALSE.)
 C
       CALL JEDEMA()
 C

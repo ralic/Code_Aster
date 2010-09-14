@@ -1,4 +1,4 @@
-# MODIF  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 14/09/2010   AUTEUR ABBAS M.ABBAS 
 # TITRE CYLINDRE DANS UN ALESAGE AVEC CONTACT ET FROTTEMENT
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -419,7 +419,7 @@ TEST_TABLE(TABLE=TCONT,
                    _F(NOM_PARA='NOEUD',
                       VALE_K='N787',),),
            NOM_PARA='CONT',
-           VALE=2.,
+           VALE=1.,
            PRECISION=1.E-5,
            REFERENCE='NON_REGRESSION',
            VERSION='V6.3.22',);

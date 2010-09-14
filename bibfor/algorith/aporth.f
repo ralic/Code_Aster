@@ -1,0 +1,110 @@
+      SUBROUTINE APORTH(SDAPPA,NDIMG ,POSMAM,COORPT,TAU1M ,
+     &                  TAU2M )
+C     
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ALGORITH  DATE 14/09/2010   AUTEUR ABBAS M.ABBAS 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C ======================================================================
+C RESPONSABLE ABBAS M.ABBAS
+C
+      IMPLICIT     NONE
+      CHARACTER*19 SDAPPA
+      INTEGER      NDIMG
+      INTEGER      POSMAM
+      REAL*8       COORPT(3)
+      REAL*8       TAU1M(3),TAU2M(3)
+C      
+C ----------------------------------------------------------------------
+C
+C ROUTINE APPARIEMENT (UTILITAIRE)
+C
+C ORTHOGONALISATION DES VECTEURS TANGENTS
+C
+C ----------------------------------------------------------------------
+C
+C
+C IN  SDAPPA : NOM DE LA SD APPARIEMENT
+C IN  NDIMG  : DISMENSION DE L'ESPACE
+C IN  POSMAM : POSITION MAILLE MAITRE
+C IN  COORPT : COORDONNEES DU POINT A PROJETER SUR LA MAILLE
+C I/O TAU1M  : VALEUR DE LA PREMIERE TANGENTE AU POINT PROJETE
+C I/O TAU2M  : VALEUR DE LA SECONDE TANGENTE AU POINT PROJETE
+C
+C -------------- DEBUT DECLARATIONS NORMALISEES JEVEUX -----------------
+C
+      INTEGER            ZI
+      COMMON  / IVARJE / ZI(1)
+      REAL*8             ZR
+      COMMON  / RVARJE / ZR(1)
+      COMPLEX*16         ZC
+      COMMON  / CVARJE / ZC(1)
+      LOGICAL            ZL
+      COMMON  / LVARJE / ZL(1)
+      CHARACTER*8        ZK8
+      CHARACTER*16                ZK16
+      CHARACTER*24                          ZK24
+      CHARACTER*32                                    ZK32
+      CHARACTER*80                                              ZK80
+      COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
+C
+C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
+C
+      LOGICAL      LPOUTR
+      CHARACTER*8  ALIASM
+      CHARACTER*8  NOMMAM
+      REAL*8       NOOR,R8PREM
+      INTEGER      NIVERR,NDIM
+      INTEGER      NUMMAM,NNOSDM
+C
+C ----------------------------------------------------------------------
+C
+      CALL JEMARQ()
+C
+C --- POINT NON PROJETE
+C           
+      CALL ASSERT(POSMAM.NE.0)      
+C
+C --- NOMBRE DE NOEUDS DE LA MAILLE
+C
+      CALL APNNDM(SDAPPA,POSMAM,NNOSDM)
+C    
+C --- CARACTERISTIQUES MAILLE MAITRE 
+C
+      CALL APNUMM(SDAPPA,POSMAM,NUMMAM)
+      CALL APTYPM(SDAPPA,NUMMAM,NDIM  ,NNOSDM,ALIASM,
+     &            NOMMAM) 
+      LPOUTR = (ALIASM(1:2).EQ.'SE').AND.(NDIMG.EQ.3)
+C
+C --- ORTHOGONALISATION VECTEURS TANGENTS
+C
+      IF (LPOUTR) THEN
+        CALL NORMEV(TAU1M  ,NOOR  )
+        IF (NOOR.LE.R8PREM()) THEN
+          CALL U2MESK('F','APPARIEMENT_38',1,NOMMAM)
+        ENDIF
+      ELSE
+        CALL CFORTH(NDIMG ,TAU1M ,TAU2M ,NIVERR)
+        IF (NIVERR.EQ.1) THEN
+          CALL U2MESG('F','APPARIEMENT_14',1,NOMMAM,0,0,3,COORPT)
+        ELSEIF (NIVERR.EQ.2) THEN
+          CALL U2MESG('F','APPARIEMENT_34',1,NOMMAM,0,0,3,COORPT)
+        ENDIF
+      ENDIF
+C
+      CALL JEDEMA()
+C 
+      END

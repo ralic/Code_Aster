@@ -1,7 +1,7 @@
-      SUBROUTINE CHPVER(KSTOP,NOCHAM,LOCHAM,GDCHAM,IER)
+      SUBROUTINE CHPVER(ARRET,NOCHAM,LOCHAM,GDCHAM,IER)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 03/04/2007   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 13/09/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,18 +21,19 @@ C ======================================================================
 C ======================================================================
 C     VERIFICATIONS DE LA GRANDEUR ET DE LA LOCALISATION DES CHAMPS.
 C
-C  IN  KSTOP  : TYPE DE MESSAGE  (A/F)
+C  IN  ARRET  : 'F' : ERREUR FATALE SI IER /=0
+C               'C' : ON CONTINUE MEME SI IER /=0
 C  IN  NOCHAM : NOM DU CHAMP
 C  IN  LOCHAM : LOCALISATION DU CHAMP (*/CART/NOEU/ELGA/ELNO/ELEM/ELXX)
 C               SI LOCHAM='*' : ON LEVE CETTE VERIFICATION
 C  IN  GDCHAM : GRANDEUR DU CHAMP (*/DEPL_R/TEMP_R/...)
 C               SI GDCHAM='*' : ON LEVE CETTE VERIFICATION
-C  OUT   IERD  : CODE RETOUR  (0--> OK, 1--> PB )
+C  OUT   IER  : CODE RETOUR  (0--> OK, 1--> PB )
 C ======================================================================
       IMPLICIT NONE
 C
       INTEGER IER
-      CHARACTER*1 KSTOP
+      CHARACTER*1 ARRET
       CHARACTER*(*) NOCHAM,LOCHAM,GDCHAM
 C
       INTEGER IBID
@@ -44,32 +45,36 @@ C
       CALL JEMARQ()
 
       NOCH=NOCHAM
-      CALL ASSERT(KSTOP.EQ.'A'.OR.KSTOP.EQ.'F')
+      CALL ASSERT(ARRET.EQ.'F'.OR.ARRET.EQ.'C')
 
 C     VERIFICATION DU TYPE
       IF(LOCHAM(1:1).NE.'*')THEN
          LOCH=LOCHAM
-         CALL DISMOI(KSTOP,'TYPE_CHAMP',NOCH,'CHAMP',IBID,TYCH,IER)
+         CALL DISMOI(ARRET,'TYPE_CHAMP',NOCH,'CHAMP',IBID,TYCH,IER)
          IF( (LOCH(3:4).NE.'XX'  .AND.   LOCH.NE.TYCH ) .OR.
      &       (LOCH(3:4).EQ.'XX'  .AND.   LOCH(1:2).NE.TYCH(1:2)))THEN
             IER=1
-            VALK (1) = NOCH
-            VALK (2) = LOCH
-            VALK (3) = TYCH
-            CALL U2MESG(KSTOP, 'ELEMENTS_10',3,VALK,0,0,0,0.D0)
+            IF (ARRET.EQ.'F') THEN
+              VALK (1) = NOCH
+              VALK (2) = LOCH
+              VALK (3) = TYCH
+              CALL U2MESG('F', 'ELEMENTS_10',3,VALK,0,0,0,0.D0)
+            ENDIF
          ENDIF
       ENDIF
 
 C     VERIFICATION DE LA GRANDEUR
       IF(GDCHAM(1:1).NE.'*')THEN
          GDCH=GDCHAM
-         CALL DISMOI(KSTOP,'NOM_GD',NOCH,'CHAMP',IBID,NOMGD,IER)
+         CALL DISMOI(ARRET,'NOM_GD',NOCH,'CHAMP',IBID,NOMGD,IER)
          IF(GDCH.NE.NOMGD)THEN
             IER=1
-            VALK (1) = NOCH
-            VALK (2) = GDCH
-            VALK (3) = NOMGD
-            CALL U2MESG(KSTOP, 'ELEMENTS_37',3,VALK,0,0,0,0.D0)
+            IF (ARRET.EQ.'F') THEN
+              VALK (1) = NOCH
+              VALK (2) = GDCH
+              VALK (3) = NOMGD
+              CALL U2MESG('F', 'ELEMENTS_37',3,VALK,0,0,0,0.D0)
+            ENDIF
          ENDIF
       ENDIF
 

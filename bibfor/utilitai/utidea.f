@@ -4,7 +4,7 @@
       CHARACTER*(*)       NOM
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 30/06/2008   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 14/09/2010   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -83,6 +83,8 @@ C
       ELSEIF ( NOMMAI .EQ. 'PENTA6'  ) THEN
         ITYPE = 112
       ELSEIF ( NOMMAI .EQ. 'PENTA15' ) THEN
+        ITYPE = 113
+      ELSEIF ( NOMMAI .EQ. 'PENTA18' ) THEN
         ITYPE = 113
       ELSEIF ( NOMMAI .EQ. 'HEXA8'   ) THEN
         ITYPE = 115

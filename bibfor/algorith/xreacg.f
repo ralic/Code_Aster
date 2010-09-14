@@ -1,7 +1,7 @@
       SUBROUTINE XREACG(NOMO,NOMA  ,DEFICO,RESOCO)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 14/09/2010   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -37,7 +37,7 @@ C TRAVAIL EFFECTUE EN COLLABORATION AVEC I.F.P.
 C ----------------------------------------------------------------------
 C
 C IN  NOMA   : NOM DU MAILLAGE
-C IN  NOMO : NOM DU NOMO
+C IN  NOMO   : NOM DU MODELE
 C IN  DEFICO : SD POUR LA DEFINITION DE CONTACT
 C IN  RESOCO : SD POUR LA RESOLUTION DE CONTACT
 C
@@ -69,10 +69,19 @@ C
       CHARACTER*8   KBID
       CHARACTER*19  CHGEOM, GEOMFI,DEPLA,CHS
       CHARACTER*24  NOMNU
+      INTEGER       IFM,NIV
 C      
 C ----------------------------------------------------------------------
 C
       CALL JEMARQ()
+      CALL INFDBG('XFEM',IFM,NIV) 
+C
+C --- AFFICHAGE
+C
+      IF (NIV.GE.2) THEN
+        WRITE (IFM,*) '<XFEM> ... REACTUALISATION DES FACETTES DE '//
+     &                 'CONTACT'
+      ENDIF       
 C
 C --- INITIALISATIONS
 C   

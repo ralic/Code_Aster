@@ -1,4 +1,4 @@
-#@ MODIF assembla Messages  DATE 27/07/2010   AUTEUR DESOZA T.DESOZA 
+#@ MODIF assembla Messages  DATE 14/09/2010   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -96,11 +96,13 @@ cata_msg = {
 """),
 
 18 : _("""
- incohérence des MATR_ELEM
+ Erreur développeur dans l'assemblage.
+ Les vecteurs élémentaires ou les matrices élémentaires sont incohérentes: ils ne portent pas sur le même modèle ou ils ne calculent pas la même option.
 """),
 
 19 : _("""
- MATR_ELEM sans SSS et sans LISTE_RESU
+ Erreur développeur dans l'assemblage.
+ Les vecteurs élémentaires ou les matrices élémentaires ne contiennent ni sous-structures, ni objet LSITE_RESU.
 """),
 
 20 : _("""

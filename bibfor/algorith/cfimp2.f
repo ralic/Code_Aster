@@ -2,7 +2,7 @@
      &                  TYPLIA,TYPOPE,TYPEOU,JEU)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 14/09/2010   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -40,7 +40,7 @@ C
 C ----------------------------------------------------------------------
 C
 C
-C IN  DEFICO : SD DE DEFINITION DU CONTACT (ISSUE D'AFFE_CHAR_MECA)
+C IN  DEFICO : SD DE DEFINITION DU CONTACT
 C IN  RESOCO : SD DE TRAITEMENT NUMERIQUE DU CONTACT
 C IN  NOMA   : NOM DU MAILLAGE
 C IN  ILIAI  : NUMERO DE LA LIAISON (INDICE DANS LE TABLEAU GLOBAL DE
@@ -89,15 +89,17 @@ C
 C
 C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
 C
-      CHARACTER*24 APPARI,APMEMO
-      INTEGER      JAPPAR,JAPMEM
-      INTEGER      CFMMVD,ZAPME
-      INTEGER      POSNOE,POSAPP
-      CHARACTER*8  NOMENT,NOMNOE,NOMMAI
-      INTEGER      CODRET
+      CHARACTER*24 NUMLIA
+      INTEGER      JNUMLI 
+      INTEGER      IP    ,IZONE
+      INTEGER      ENTAPP
+      CHARACTER*8  NOMAPP
+      CHARACTER*16 NOMNOE
+      INTEGER      TYPAPP
       CHARACTER*40 CHAIAC
       CHARACTER*10 TYPLI
-      CHARACTER*4  TYPE2
+      CHARACTER*4  TYPE2      
+      CHARACTER*19 SDAPPA
 C
 C ----------------------------------------------------------------------
 C
@@ -105,56 +107,31 @@ C
 C
 C --- ACCES SD CONTACT
 C
-      APPARI = RESOCO(1:14)//'.APPARI'
-      APMEMO = RESOCO(1:14)//'.APMEMO'       
-      CALL JEVEUO(APPARI,'L',JAPPAR)
-      CALL JEVEUO(APMEMO,'L',JAPMEM)       
-      ZAPME  = CFMMVD('ZAPME')
+      NUMLIA = RESOCO(1:14)//'.NUMLIA' 
+      CALL JEVEUO(NUMLIA,'L',JNUMLI)
 C
-C --- REPERAGE DE L'ESCLAVE
+C --- SD APPARIEMENT
 C
-      POSNOE = ZI(JAPPAR+ILIAI)
+      SDAPPA = RESOCO(1:14)//'.APPA'
+C
+C --- POINT DE CONTACT
+C      
+      IP     = ZI(JNUMLI+3*(ILIAI-1)+1-1)
 C
 C --- NOM DU NOEUD ESCLAVE
 C
-      CALL CFNOMM(NOMA  ,DEFICO,'NOEU',POSNOE,NOMENT,
-     &            CODRET)        
-      IF (CODRET.EQ.-1) THEN
-        NOMNOE = 'ERREUR'
-      ELSE  
-        NOMNOE = NOMENT
-      ENDIF           
+      CALL APNOMP(SDAPPA,IP    ,NOMNOE)          
 C
-C --- REPERAGE DU MAITRE
+C --- INFOS APPARIEMENT
 C
-      POSAPP = ZI(JAPMEM+ZAPME*(POSNOE-1)+3-1)     
+      CALL APINFI(SDAPPA,'APPARI_TYPE'  ,IP    ,TYPAPP )
+      CALL APINFI(SDAPPA,'APPARI_ENTITE',IP    ,ENTAPP )
+      CALL APINFI(SDAPPA,'APPARI_ZONE'  ,IP    ,IZONE  )    
 C
 C --- NOM ET TYPE DU MAITRE
 C
-      IF (POSAPP.LT.0) THEN
-        CALL CFNOMM(NOMA  ,DEFICO,'NOEU',POSAPP,NOMENT,
-     &              CODRET)
-        IF (CODRET.LT.0) THEN
-          TYPE2  = ' '
-          NOMMAI = 'ERREUR'          
-        ELSE   
-          TYPE2  = '/ND '
-          NOMMAI = NOMENT   
-        ENDIF         
-      ELSEIF (POSAPP.GT.0) THEN
-        CALL CFNOMM(NOMA  ,DEFICO,'MAIL',POSAPP,NOMENT,
-     &              CODRET)
-        IF (CODRET.LT.0) THEN
-          TYPE2  = ' '
-          NOMMAI = 'ERREUR'          
-        ELSE
-          TYPE2  = '/EL '
-          NOMMAI = NOMENT   
-        ENDIF    
-      ELSE  
-        TYPE2  = ' NON'
-        NOMMAI = ' APPARIE'               
-      ENDIF         
+      CALL CFNOAP(NOMA  ,DEFICO,TYPAPP,ENTAPP,NOMAPP,
+     &            TYPE2 )
 C
 C --- ETAT DE LA LIAISON
 C
@@ -185,41 +162,41 @@ C
 C --- AFFICHAGE LIAISON
 C
       IF (TYPEOU.EQ.'ALG') THEN
-        WRITE (IFM,1000) ILIAI,'(',NOMNOE,TYPE2,NOMMAI,'): ',
+        WRITE (IFM,1000) ILIAI,'(',NOMNOE,TYPE2,NOMAPP,'): ',
      &                   CHAIAC,JEU,',TYPE: ',TYPLI,
      &                   ')'
       ELSE IF (TYPEOU.EQ.'PRE') THEN
         CHAIAC = ' PRES. NEGATIVE (MU:'
-        WRITE (IFM,1000) ILIAI,'(',NOMNOE,TYPE2,NOMMAI,'): ',
+        WRITE (IFM,1000) ILIAI,'(',NOMNOE,TYPE2,NOMAPP,'): ',
      &                   CHAIAC,JEU,',TYPE: ',TYPLI,
      &                   ')'
       ELSE IF (TYPEOU.EQ.'NEG') THEN
         CHAIAC = ' PRES. NEGATIVE (MU:'
-        WRITE (IFM,1000) ILIAI,'(',NOMNOE,TYPE2,NOMMAI,'): ',
+        WRITE (IFM,1000) ILIAI,'(',NOMNOE,TYPE2,NOMAPP,'): ',
      &                   CHAIAC,JEU,',TYPE: ',TYPLI,
      &                   ')'     
       ELSE IF (TYPEOU.EQ.'PIV') THEN
         CHAIAC = ' PIVOT NUL         ('
-        WRITE (IFM,1001) ILIAI,'(',NOMNOE,TYPE2,NOMMAI,'): ',
+        WRITE (IFM,1001) ILIAI,'(',NOMNOE,TYPE2,NOMAPP,'): ',
      &                   CHAIAC,' TYPE: ',TYPLI,
      &                   ')'
       ELSE IF (TYPEOU.EQ.'GLI') THEN
         CHAIAC = ' GLISSANTE - SUPP. ('
-        WRITE (IFM,1001) ILIAI,'(',NOMNOE,TYPE2,NOMMAI,'): ',
+        WRITE (IFM,1001) ILIAI,'(',NOMNOE,TYPE2,NOMAPP,'): ',
      &                   CHAIAC,' TYPE: ',TYPLI,
      &                   ')'
       ELSE IF (TYPEOU.EQ.'ADH') THEN
         CHAIAC = ' ADHERENTE - ADD.  ('
-        WRITE (IFM,1001) ILIAI,'(',NOMNOE,TYPE2,NOMMAI,'): ',
+        WRITE (IFM,1001) ILIAI,'(',NOMNOE,TYPE2,NOMAPP,'): ',
      &                   CHAIAC,' TYPE: ',TYPLI,
      &                   ')'
       ELSE IF (TYPEOU.EQ.'ALJ') THEN
         CHAIAC = ' DECOLLE DU JEU     '
-        WRITE (IFM,1002) ILIAI,'(',NOMNOE,TYPE2,NOMMAI,'): ',
+        WRITE (IFM,1002) ILIAI,'(',NOMNOE,TYPE2,NOMAPP,'): ',
      &                   CHAIAC,JEU
       ELSE IF (TYPEOU.EQ.'SIN') THEN
         CHAIAC = ' PIVOT NUL         ('
-        WRITE (IFM,1001) ILIAI,'(',NOMNOE,TYPE2,NOMMAI,'): ',
+        WRITE (IFM,1001) ILIAI,'(',NOMNOE,TYPE2,NOMAPP,'): ',
      &                   CHAIAC,' TYPE: ',TYPLI,
      &                   ')'
       ELSE IF (TYPEOU.EQ.'AGC') THEN
@@ -230,12 +207,12 @@ C
 
 
     
- 1000 FORMAT (' <CONTACT> <> LIAISON ',I5,A1,A8,A4,A8,A3,A20,E10.3,
+ 1000 FORMAT (' <CONTACT> <> LIAISON ',I5,A1,A16,A4,A8,A3,A20,E10.3,
      &         A7,A10,A1)
- 1001 FORMAT (' <CONTACT> <> LIAISON ',I5,A1,A8,A4,A8,A3,A20,
+ 1001 FORMAT (' <CONTACT> <> LIAISON ',I5,A1,A16,A4,A8,A3,A20,
      &         A7,A10,A1)
- 1002 FORMAT (' <CONTACT> <> LIAISON ',I5,A1,A8,A4,A8,A3,A20,E10.3)
- 1003 FORMAT (' <CONTACT> <> LA LIAISON ',I5,A8,A8,A38,E10.3)
+ 1002 FORMAT (' <CONTACT> <> LIAISON ',I5,A1,A16,A4,A8,A3,A20,E10.3)
+ 1003 FORMAT (' <CONTACT> <> LA LIAISON ',I5,A16,A8,A38,E10.3)
 C
       CALL JEDEMA()     
 C      

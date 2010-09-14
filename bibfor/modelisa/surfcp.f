@@ -1,7 +1,7 @@
       SUBROUTINE SURFCP(CHAR  ,IFM   )
 C      
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
+C MODIF MODELISA  DATE 14/09/2010   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -26,7 +26,7 @@ C
 C      
 C ----------------------------------------------------------------------
 C
-C ROUTINE CONTACT (METHODE DISCRETE - AFFICHAGE DONNEES)
+C ROUTINE CONTACT (TOUTES METHODES - AFFICHAGE DONNEES)
 C
 C AFFICHAGE LES INFOS CONTENUES DANS LA SD CONTACT POUR TOUTES LES
 C FORMULATIONS
@@ -61,6 +61,7 @@ C
       INTEGER      REACCA,REACBS,REACBG,ILISS,REACMX
       INTEGER      NBREAG,NBREAF
       REAL*8       CFDISR,RESIGE,RESIFR
+      LOGICAL      CFDISL,LMAIL,LSTOP
 C
 C ----------------------------------------------------------------------
 C
@@ -75,6 +76,8 @@ C
       IFORM  = CFDISI(DEFICO,'FORMULATION')
       ICONT  = CFDISI(DEFICO,'ALGO_CONT')
       IFROT  = CFDISI(DEFICO,'ALGO_FROT')
+      LMAIL  = CFDISL(DEFICO,'FORMUL_MAILLEE')
+      LSTOP  = CFDISL(DEFICO,'STOP_INTERP')
 C      
       NBREAG = CFDISI(DEFICO,'NB_ITER_GEOM')
       REACBG = CFDISI(DEFICO,'ITER_GEOM_MAXI') 
@@ -108,6 +111,17 @@ C
  
       WRITE (IFM,1070) 'ALGO_CONT       ',ICONT     
       WRITE (IFM,1070) 'ALGO_FROT       ',IFROT
+      
+      IF (LMAIL) THEN
+        IF (LSTOP) THEN
+          WRITE (IFM,*) '<CONTACT> ...... STOP SI MODE VERIF ET'//
+     &                  ' INTERPENETRATION'
+        ELSE
+          WRITE (IFM,*) '<CONTACT> ...... ALARME SI MODE VERIF ET'//
+     &                  ' INTERPENETRATION'
+        ENDIF
+      ENDIF
+      
       
       IF (NBREAG.EQ.0) THEN
         WRITE (IFM,*) '<CONTACT> ...... PAS DE REAC. GEOM.'

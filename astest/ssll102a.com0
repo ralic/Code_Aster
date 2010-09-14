@@ -25,7 +25,7 @@ MEST1B=MECA_STATIQUE(  MODELE=MO,
                        EXCIT=_F( CHARGE = CHARG1B)   )
 
 MEST1B=CALC_ELEM( reuse=MEST1B,
-                      RESULTAT=MEST1B, EXCIT=_F(  CHARGE = CHARG1B),
+                      RESULTAT=MEST1B,
                       OPTION=('EFGE_ELNO_DEPL', 'SIGM_ELNO_DEPL',))
 
 TEST_RESU(RESU=(
@@ -94,7 +94,7 @@ MEST1T=MECA_STATIQUE(  MODELE=MO,
                        EXCIT=_F( CHARGE = CHARG1T)   )
 
 MEST1T=CALC_ELEM( reuse=MEST1T,
-                      RESULTAT=MEST1T, EXCIT=_F(  CHARGE = CHARG1T),
+                      RESULTAT=MEST1T,
                       OPTION=('EFGE_ELNO_DEPL', 'SIGM_ELNO_DEPL',))
 
 TEST_RESU(RESU=(

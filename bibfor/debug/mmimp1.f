@@ -1,7 +1,7 @@
       SUBROUTINE MMIMP1(IFM   ,NOMA  ,DEFICO,RESOCO)
 C      
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF DEBUG  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
+C MODIF DEBUG  DATE 14/09/2010   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -59,17 +59,19 @@ C
 C
 C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
 C
-      INTEGER      CFMMVD,ZTABF,ZMAES
-      INTEGER      NUMMAE,NUMMAM,NUMNOE
+      INTEGER      CFMMVD,ZTABF
+      INTEGER      POSMAE,NUMMAE,NUMMAM,NUMNOE,JDECME
       CHARACTER*8  NOMMAE,NOMMAM,NOMNOE 
       REAL*8       KSIPC1,KSIPC2,KSIPR1,KSIPR2,WPC,R8BID,SEUILI
       INTEGER      XA,XS,TYPBAR,TYPRAC
       REAL*8       TAU1(3),TAU2(3),NORM(3)
-      CHARACTER*24 MAESCL,TABFIN
-      INTEGER      JMAESC,JTABF
-      INTEGER      NTPC,NBPC,IPC,IMAE,INOE
-      INTEGER      CFDISI,IZONE,NDIM,NTMAE,NBNOE
-      INTEGER      IACNX1,ILCNX1      
+      CHARACTER*24 TABFIN
+      INTEGER      JTABF
+      INTEGER      CFDISI,MMINFI
+      INTEGER      IPTM,IZONE,IMAE,INOE,IPTC
+      INTEGER      NDIMG,NZOCO,NNOE,NPTM,NBMAE
+      INTEGER      IACNX1,ILCNX1
+      LOGICAL      MMINFL,LVERI
 C
 C ----------------------------------------------------------------------
 C
@@ -78,155 +80,171 @@ C
 C
 C --- INITIALISATIONS
 C
-      NTPC   = 0
-      NTMAE  = CFDISI(DEFICO,'NTMAE') 
-      NDIM   = CFDISI(DEFICO,'NDIM' )           
+      NDIMG  = CFDISI(DEFICO,'NDIM' )   
+      NZOCO  = CFDISI(DEFICO,'NZOCO')    
 C      
 C --- RECUPERATION DE QUELQUES DONNEES      
 C
-      MAESCL = DEFICO(1:16)//'.MAESCL'
       TABFIN = RESOCO(1:14)//'.TABFIN'
-      CALL JEVEUO(MAESCL,'L',JMAESC)
       CALL JEVEUO(TABFIN,'L',JTABF)
-      ZTABF = CFMMVD('ZTABF')     
-      ZMAES = CFMMVD('ZMAES')    
+      ZTABF  = CFMMVD('ZTABF')
 C
 C --- ACCES MAILLAGE
 C      
       CALL JEVEUO(NOMA//'.CONNEX','L',IACNX1)
-      CALL JEVEUO(JEXATR(NOMA//'.CONNEX','LONCUM'),'L',ILCNX1)
+      CALL JEVEUO(JEXATR(NOMA//'.CONNEX','LONCUM'),'L',ILCNX1) 
+C
+C --- BOUCLE SUR LES ZONES
+C
+      IPTC   = 1     
+      DO 10 IZONE = 1,NZOCO
+C 
+C ----- MODE VERIF: ON SAUTE LES POINTS
+C  
+        LVERI  = MMINFL(DEFICO,'VERIF' ,IZONE )
+        IF (LVERI) THEN
+          GOTO 25
+        ENDIF            
+C
+C ----- INFORMATION SUR LA ZONE 
+C         
+        JDECME = MMINFI(DEFICO,'JDECME',IZONE )
+        NBMAE  = MMINFI(DEFICO,'NBMAE' ,IZONE )      
 C    
-C --- BOUCLE SUR LES MAILLES ESCLAVES
+C ----- BOUCLE SUR LES MAILLES ESCLAVES
 C
-      DO 20 IMAE = 1,NTMAE
-        IZONE  = ZI(JMAESC+ZMAES*(IMAE-1)+2-1)
-        NBPC   = ZI(JMAESC+ZMAES*(IMAE-1)+3-1)
-        IPC    = 1
+        DO 20 IMAE = 1,NBMAE
+          POSMAE = JDECME + IMAE
 C
-C --- REPERAGE MAILLE ESCLAVE
+C ------- NOMBRE DE POINTS DE CONTACT
+C          
+          CALL MMINFM(POSMAE,DEFICO,'NPTM',NPTM  )
 C
-        NUMMAE = NINT(ZR(JTABF+ZTABF*NTPC+ZTABF*(IPC-1)+1))
-        CALL JENUNO(JEXNUM(NOMA//'.NOMMAI',NUMMAE),NOMMAE)
-        NBNOE  = ZI(ILCNX1+NUMMAE) - ZI(ILCNX1-1+NUMMAE)
+C ------- REPERAGE MAILLE ESCLAVE
 C
-C --- INFOS SUR MAILLE ESCLAVE
+          NUMMAE = NINT(ZR(JTABF+ZTABF*(IPTC-1)+1))
+          CALL JENUNO(JEXNUM(NOMA//'.NOMMAI',NUMMAE),NOMMAE)
+          NNOE   = ZI(ILCNX1+NUMMAE) - ZI(ILCNX1-1+NUMMAE)
+C
+C ------- INFOS SUR MAILLE ESCLAVE
 C        
-        WRITE (IFM,1000) NOMMAE,IZONE,NBNOE,NBPC      
- 1000   FORMAT (' <CONTACT>     * MAILLE ESCLAVE ',A8,' ( ZONE ',
+          WRITE (IFM,1000) NOMMAE,IZONE,NNOE,NPTM      
+ 1000     FORMAT (' <CONTACT>     * MAILLE ESCLAVE ',A8,' ( ZONE ',
      &           I5,') - (',
      &           I5,' NOEUDS ) - (',
      &           I5,' POINTS DE CONTACT )' )
-        DO 21 INOE = 1,NBNOE
-          NUMNOE = ZI(IACNX1+ZI(ILCNX1-1+NUMMAE)-2+INOE)
-          CALL JENUNO(JEXNUM(NOMA//'.NOMNOE',NUMNOE),NOMNOE)
-          WRITE (IFM,1001) NOMNOE
-  21    CONTINUE        
- 1001   FORMAT (' <CONTACT>        NOEUD :',A8)
-     
-C  
-C --- BOUCLE SUR LES POINTS DE CONTACT
-C              
-        DO 10 IPC = 1,NBPC      
-          WRITE(IFM,2000) IPC
+          DO 21 INOE = 1,NNOE
+            NUMNOE = ZI(IACNX1+ZI(ILCNX1-1+NUMMAE)-2+INOE)
+            CALL JENUNO(JEXNUM(NOMA//'.NOMNOE',NUMNOE),NOMNOE)
+            WRITE (IFM,1001) NOMNOE
+  21      CONTINUE        
+ 1001     FORMAT (' <CONTACT>        NOEUD :',A8)
 C
-C --- POINT DE CONTACT EN COURS
+C ------- BOUCLE SUR LES POINTS
+C      
+          DO 30 IPTM = 1,NPTM      
 C
-          KSIPC1 = ZR(JTABF+ZTABF*NTPC+ZTABF*(IPC-1)+3)       
-          KSIPC2 = ZR(JTABF+ZTABF*NTPC+ZTABF*(IPC-1)+4)      
-          WPC    = ZR(JTABF+ZTABF*NTPC+ZTABF*(IPC-1)+14) 
-          WRITE(IFM,3000) KSIPC1,KSIPC2,WPC           
+C --------- POINT DE CONTACT EN COURS
+C     
+            WRITE(IFM,2000) IPTM
+            KSIPC1 = ZR(JTABF+ZTABF*(IPTC-1)+3)       
+            KSIPC2 = ZR(JTABF+ZTABF*(IPTC-1)+4)      
+            WPC    = ZR(JTABF+ZTABF*(IPTC-1)+14) 
+            WRITE(IFM,3000) KSIPC1,KSIPC2,WPC           
  2000 FORMAT (' <CONTACT>     ** POINT DE CONTACT ',I3)
  3000 FORMAT (' <CONTACT>        SITUE EN  : <',
-     &         E10.3,',',E10.3,'> - POIDS INTEGRATION: ',E10.3)
-     
+     &         E10.3,',',E10.3,'> - POIDS INTEGRATION: ',E10.3)     
 C
-C --- REPERAGE MAILLE MAITRE
+C --------- REPERAGE MAILLE MAITRE
 C
-          NUMMAM = NINT(ZR(JTABF+ZTABF*NTPC+ZTABF*(IPC-1)+2))
-          CALL JENUNO(JEXNUM(NOMA//'.NOMMAI',NUMMAM),NOMMAM)       
+            NUMMAM = NINT(ZR(JTABF+ZTABF*(IPTC-1)+2))
+            CALL JENUNO(JEXNUM(NOMA//'.NOMMAI',NUMMAM),NOMMAM)       
 C
-C --- ETAT DU NOEUD
+C --------- ETAT DU NOEUD
 C
-          KSIPR1 = ZR(JTABF+ZTABF*NTPC+ZTABF*(IPC-1)+5)
-          KSIPR2 = ZR(JTABF+ZTABF*NTPC+ZTABF*(IPC-1)+6)
-          IF (ZR(JTABF+ZTABF*NTPC+ZTABF*(IPC-1)+18).EQ.1.D0) THEN
-            WRITE(IFM,*) '<CONTACT>        EXCLUS CONTACT    '
-          ELSEIF (ZR(JTABF+ZTABF*NTPC+ZTABF*(IPC-1)+19).GE.1.D0) THEN
-            WRITE(IFM,*) '<CONTACT>        EXCLUS FROTTEMENT '
-          ELSE
-            WRITE(IFM,2003) NOMMAM,KSIPR1,KSIPR2             
-          ENDIF  
+            KSIPR1 = ZR(JTABF+ZTABF*(IPTC-1)+5)
+            KSIPR2 = ZR(JTABF+ZTABF*(IPTC-1)+6)
+            IF (ZR(JTABF+ZTABF*(IPTC-1)+18).EQ.1.D0) THEN
+              WRITE(IFM,*) '<CONTACT>        EXCLUS CONTACT    '
+            ELSEIF (ZR(JTABF+ZTABF*(IPTC-1)+19).GE.1.D0) THEN
+              WRITE(IFM,*) '<CONTACT>        EXCLUS FROTTEMENT '
+            ELSE
+              WRITE(IFM,2003) NOMMAM,KSIPR1,KSIPR2             
+            ENDIF  
  2003 FORMAT (' <CONTACT>        SE PROJETTE SUR LA MAILLE MAITRE ',
      &        A8,' EN  <',E10.3,',',E10.3,'>')
      
-          TYPBAR  = NINT(ZR(JTABF+ZTABF*NTPC+ZTABF*(IPC-1)+20))
-          TYPRAC  = NINT(ZR(JTABF+ZTABF*NTPC+ZTABF*(IPC-1)+21))
+            TYPBAR  = NINT(ZR(JTABF+ZTABF*(IPTC-1)+20))
+            TYPRAC  = NINT(ZR(JTABF+ZTABF*(IPTC-1)+21))
           
-          IF (TYPBAR.NE.0) THEN
-            WRITE(IFM,5000) TYPBAR
-          ENDIF
-          IF (TYPRAC.NE.0) THEN
-            WRITE(IFM,5001) TYPRAC
-          ENDIF          
+            IF (TYPBAR.NE.0) THEN
+              WRITE(IFM,5000) TYPBAR
+            ENDIF
+            IF (TYPRAC.NE.0) THEN
+              WRITE(IFM,5001) TYPRAC
+            ENDIF          
  5000 FORMAT (' <CONTACT>        MAILLE EN FOND_FISSURE  : <',
      &        I5,'>')
  5001 FORMAT (' <CONTACT>        MAILLE POUR RACCORD     : <',
-     &        I5,'>')
-               
+     &        I5,'>')              
 C
-C --- REPERE LOCAL
+C --------- REPERE LOCAL
 C      
-          TAU1(1) = ZR(JTABF+ZTABF*NTPC+ZTABF*(IPC-1)+7 )
-          TAU1(2) = ZR(JTABF+ZTABF*NTPC+ZTABF*(IPC-1)+8 )
-          TAU1(3) = ZR(JTABF+ZTABF*NTPC+ZTABF*(IPC-1)+9 )
-          TAU2(1) = ZR(JTABF+ZTABF*NTPC+ZTABF*(IPC-1)+10)
-          TAU2(2) = ZR(JTABF+ZTABF*NTPC+ZTABF*(IPC-1)+11)
-          TAU2(3) = ZR(JTABF+ZTABF*NTPC+ZTABF*(IPC-1)+12)
-          WRITE(IFM,2002) TAU1(1),TAU1(2),TAU1(3),
+            TAU1(1) = ZR(JTABF+ZTABF*(IPTC-1)+7 )
+            TAU1(2) = ZR(JTABF+ZTABF*(IPTC-1)+8 )
+            TAU1(3) = ZR(JTABF+ZTABF*(IPTC-1)+9 )
+            TAU2(1) = ZR(JTABF+ZTABF*(IPTC-1)+10)
+            TAU2(2) = ZR(JTABF+ZTABF*(IPTC-1)+11)
+            TAU2(3) = ZR(JTABF+ZTABF*(IPTC-1)+12)
+            WRITE(IFM,2002) TAU1(1),TAU1(2),TAU1(3),
      &                    TAU2(1),TAU2(2),TAU2(3)           
  2002 FORMAT (' <CONTACT>        TANGENTES : <',
      &         E10.3,',',E10.3,',',E10.3,'> <',
      &         E10.3,',',E10.3,',',E10.3,'>')  
       
-          CALL MMNORM(NDIM ,TAU1,TAU2,NORM,R8BID)
-          WRITE(IFM,2001) NORM(1),NORM(2),NORM(3)
+            CALL MMNORM(NDIMG,TAU1,TAU2,NORM,R8BID)
+            WRITE(IFM,2001) NORM(1),NORM(2),NORM(3)
           
  2001 FORMAT (' <CONTACT>        NORMALE   : <',
      &         E10.3,',',E10.3,',',E10.3,'>')  
 C
-C --- ETAT DE CONTACT
+C --------- ETAT DE CONTACT
 C
-          XS     = NINT(ZR(JTABF+ZTABF*NTPC+ZTABF*(IPC-1)+22))
-          XA     = NINT(ZR(JTABF+ZTABF*NTPC+ZTABF*(IPC-1)+23))
-          IF (XS.EQ.0) THEN
-            IF (XA.EQ.0) THEN
-              WRITE(IFM,7000)
-            ELSEIF (XA.EQ.1) THEN
-              WRITE(IFM,7001)
+            XS     = NINT(ZR(JTABF+ZTABF*(IPTC-1)+22))
+            XA     = NINT(ZR(JTABF+ZTABF*(IPTC-1)+23))
+            IF (XS.EQ.0) THEN
+              IF (XA.EQ.0) THEN
+                WRITE(IFM,7000)
+              ELSEIF (XA.EQ.1) THEN
+                WRITE(IFM,7001)
+              ELSE
+                CALL ASSERT(.FALSE.)
+              ENDIF          
+            ELSEIF (XS.EQ.1) THEN
+              IF (XA.EQ.1) THEN
+                WRITE(IFM,7002)
+              ENDIF
             ELSE
               CALL ASSERT(.FALSE.)
-            ENDIF          
-          ELSEIF (XS.EQ.1) THEN
-            IF (XA.EQ.1) THEN
-              WRITE(IFM,7002)
             ENDIF
-          ELSE
-            CALL ASSERT(.FALSE.)
-          ENDIF
  7000 FORMAT (' <CONTACT>        ETAT : EN CONTACT') 
  7001 FORMAT (' <CONTACT>        ETAT : PAS EN CONTACT')
- 7002 FORMAT (' <CONTACT>        ETAT : EN CONTACT ')
-     
+ 7002 FORMAT (' <CONTACT>        ETAT : EN CONTACT ')     
 C
-C --- AUTRES INFOS
+C --------- AUTRES INFOS
 C     
-          SEUILI = ZR(JTABF+ZTABF*NTPC+ZTABF*(IPC-1)+16)
-          WRITE(IFM,4002) SEUILI
-          
- 4002 FORMAT (' <CONTACT>        SEUIL_INIT : <',E10.3,'>')
- 10     CONTINUE
-        NTPC = NTPC + NBPC
- 20   CONTINUE                            
+            SEUILI = ZR(JTABF+ZTABF*(IPTC-1)+16)
+            WRITE(IFM,4002) SEUILI
+ 4002 FORMAT (' <CONTACT>        SEUIL_INIT : <',E10.3,'>')      
+C
+C --------- LIAISON SUIVANTE
+C
+            IPTC   = IPTC + 1             
+            
+  30      CONTINUE
+  20    CONTINUE
+  25    CONTINUE
+  10  CONTINUE
 C
       CALL JEDEMA()
            

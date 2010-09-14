@@ -10,7 +10,7 @@
       CHARACTER*24 NKCHA,NKCMP,MESMAI,NIVAL,NRVAL,NIORD
       LOGICAL      TOUCMP
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 28/06/2010   AUTEUR FLEJOU J-L.FLEJOU 
+C MODIF UTILITAI  DATE 14/09/2010   AUTEUR SFAYOLLE S.FAYOLLE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -323,7 +323,7 @@ C                   TABLEAU DES NOMS DE PARAMETRES DE LA TABLE
                     ENDIF
                     ZK16(JPARAK+KK)='COOR_X'
                     KK=KK+1
-                    IF(NDIM.EQ.2)THEN
+                    IF(NDIM.GE.2)THEN
                        ZK16(JPARAK+KK)='COOR_Y'
                        KK=KK+1
                     ENDIF

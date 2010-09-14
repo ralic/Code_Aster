@@ -1,4 +1,4 @@
-# MODIF  DATE 30/08/2010   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 13/09/2010   AUTEUR PELLET J.PELLET 
 # TITRE  : VALIDATION DE  CRIT_ELNO_RUPT DE CALC_ELEM
 # ssls128a.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -151,7 +151,7 @@ RESU1=CALC_ELEM(reuse=RESU1, RESULTAT=RESU1,
 
 
                OPTION='CRIT_ELNO_RUPT',
-               EXCIT=_F(CHARGE=CONDLIM,),
+
                REPE_COQUE =_F( NUME_COUCHE=1,
                                NIVE_COUCHE='INF',),);
 
@@ -227,7 +227,7 @@ RESU2=CALC_ELEM( reuse=RESU2, RESULTAT=RESU2,
 
 
                  OPTION='CRIT_ELNO_RUPT',
-                 EXCIT=_F(CHARGE=CONDLIM,),
+
                  REPE_COQUE =_F( NUME_COUCHE=2,
                                  NIVE_COUCHE='INF',),);
 

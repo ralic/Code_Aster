@@ -11,7 +11,7 @@ C
       LOGICAL       LMASU
 C--------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 23/10/2007   AUTEUR COURTOIS M.COURTOIS 
+C MODIF PREPOST  DATE 14/09/2010   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -294,6 +294,12 @@ C
                   LNOCEN=.TRUE.
                ELSEIF ( KTYPE .EQ. 'QUAD9' ) THEN
                   NNOE = NNOE - 1
+                  LNOCEN=.TRUE.
+               ELSEIF ( KTYPE .EQ. 'PENTA18' ) THEN
+                  NNOE = NNOE - 3
+                  LNOCEN=.TRUE.
+               ELSEIF ( KTYPE .EQ. 'HEXA27' ) THEN
+                  NNOE = NNOE - 7
                   LNOCEN=.TRUE.
                ELSEIF ( KTYPE .EQ. 'SEG4' ) THEN
                   NNOE = NNOE - 2

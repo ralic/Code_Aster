@@ -1,7 +1,7 @@
       SUBROUTINE SURFC2(CHAR,NOMA,IFM)
 C      
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
+C MODIF MODELISA  DATE 14/09/2010   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -59,15 +59,17 @@ C
 C
 C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
 C
-      INTEGER      CFMMVD,ZCMCF
-      INTEGER      CFDISI,NZOCO,NNOCO,NMACO
+      INTEGER      CFDISI,MMINFI,NZOCO,NNOCO,NMACO
+      REAL*8       MMINFR,TOLINT
+      LOGICAL      MMINFL,LVERI
       INTEGER      IZONE   
       CHARACTER*24 NOEUMA,MAILMA,DEFICO
       INTEGER      INO,IMA,JDEC,JNOMNO,JNOMMA
       INTEGER      NUMRAC,NRACC,NUMFON,NFOND 
       CHARACTER*8  NOMMAE
-      INTEGER      NUMMAE,POSMAE,IMAE,TYPBAR,TYPRAC,JDECME,ISUMAE
-      INTEGER      INDMAE,NBMAE,CODRET
+      INTEGER      NUMMAE,POSMAE,IMAE,TYPBAR,TYPRAC,JDECME
+      INTEGER      NBMAE
+      INTEGER      NDEXFR,NPTM
 C
       CHARACTER*24 PARACR,PARACI
       INTEGER      JPARCR,JPARCI 
@@ -76,10 +78,8 @@ C
       CHARACTER*24 CONTNO,CONTMA
       INTEGER      JNOCO,JMACO
       CHARACTER*24 BARSNO,PBARS ,BARSMA,PBARM ,RACCNO,PRACC  
-      INTEGER      JBARS ,JPBARS,JBARM ,JPBARM,JRACC ,JPRACC 
-      CHARACTER*24 MAESCL
-      INTEGER      JMAESC
-      INTEGER      ZMAES   
+      INTEGER      JBARS ,JPBARS,JBARM ,JPBARM,JRACC ,JPRACC      
+      INTEGER      CFMMVD,ZCMCF
 C
 C ----------------------------------------------------------------------
 C
@@ -105,8 +105,8 @@ C --- COMMUNS AVEC FORM. MAILLEES (DISCRET ET CONTINUE MAIS PAS XFEM)
 C  
       CONTNO = DEFICO(1:16)//'.NOEUCO' 
       CONTMA = DEFICO(1:16)//'.MAILCO'
-      CALL JEVEUO(CONTNO,'L',JNOCO)  
-      CALL JEVEUO(CONTMA,'L',JMACO)
+      CALL JEVEUO(CONTNO,'L',JNOCO )  
+      CALL JEVEUO(CONTMA,'L',JMACO )     
 C   
 C --- SPECIFIQUES FORMULATION CONTINUE
 C      
@@ -126,17 +126,13 @@ C
       CALL JEVEUO(PRACC ,'L',JPRACC)  
       CALL JEVEUO(CARACF,'L',JCMCF)
 C
-      ZCMCF = CFMMVD('ZCMCF')
-C           
-      MAESCL = DEFICO(1:16)//'.MAESCL'  
-      CALL JEVEUO(MAESCL,'L',JMAESC)      
-      ZMAES  = CFMMVD('ZMAES')         
+      ZCMCF = CFMMVD('ZCMCF')     
 C
 C --- INITIALISATIONS
 C    
       NZOCO  = CFDISI(DEFICO,'NZOCO') 
       NMACO  = CFDISI(DEFICO,'NMACO') 
-      NNOCO  = CFDISI(DEFICO,'NNOCO')
+      NNOCO  = CFDISI(DEFICO,'NNOCO')     
 C
 C --- CREATION VECTEURS TEMPORAIRES
 C      
@@ -165,33 +161,65 @@ C
       WRITE (IFM,*) '<CONTACT> ... PARAMETRES VARIABLES SUIVANT '//
      &              ' LES ZONES' 
       DO 320 IZONE = 1,NZOCO
-        WRITE (IFM,*) '<CONTACT> ...... ZONE : ',IZONE          
-      WRITE (IFM,1071) 'INTEGRATION     ',ZR(JCMCF+ZCMCF*(IZONE-1)+1-1)
-      WRITE (IFM,1071) 'COEF_REGU_CONT  ',ZR(JCMCF+ZCMCF*(IZONE-1)+2-1)
-      WRITE (IFM,1071) 'COEF_REGU_FROT  ',ZR(JCMCF+ZCMCF*(IZONE-1)+3-1)
-      WRITE (IFM,1071) 'COULOMB         ',ZR(JCMCF+ZCMCF*(IZONE-1)+4-1)
-      WRITE (IFM,1071) 'FROTTEMENT      ',ZR(JCMCF+ZCMCF*(IZONE-1)+5-1)
-      WRITE (IFM,1071) 'SEUIL_INIT      ',ZR(JCMCF+ZCMCF*(IZONE-1)+6-1)
-      WRITE (IFM,1071) 'COMPLIANCE      ',ZR(JCMCF+ZCMCF*(IZONE-1)+7-1)
-      WRITE (IFM,1071) 'ASPERITE        ',ZR(JCMCF+ZCMCF*(IZONE-1)+8-1)
-      WRITE (IFM,1071) 'E_N             ',ZR(JCMCF+ZCMCF*(IZONE-1)+9-1)
-      WRITE (IFM,1071) 'E_V             ',ZR(JCMCF+ZCMCF*(IZONE-1)+10-1)
-      WRITE (IFM,1071) 'FOND_FISSURE    ',ZR(JCMCF+ZCMCF*(IZONE-1)+11-1)
-      WRITE (IFM,1071) 'RACCORD_LINE_QUA',ZR(JCMCF+ZCMCF*(IZONE-1)+12-1)
-      WRITE (IFM,1071) 'USURE           ',ZR(JCMCF+ZCMCF*(IZONE-1)+13-1)
-      WRITE (IFM,1071) 'K               ',ZR(JCMCF+ZCMCF*(IZONE-1)+14-1)
-      WRITE (IFM,1071) 'H               ',ZR(JCMCF+ZCMCF*(IZONE-1)+15-1)
-      WRITE (IFM,1071) 'COEF_STAB_CONT  ',ZR(JCMCF+ZCMCF*(IZONE-1)+17-1)
-      WRITE (IFM,1071) 'COEF_PENA_CONT  ',ZR(JCMCF+ZCMCF*(IZONE-1)+18-1)
-      WRITE (IFM,1071) 'COEF_STAB_FROT  ',ZR(JCMCF+ZCMCF*(IZONE-1)+20-1)
-      WRITE (IFM,1071) 'COEF_PENA_CONT  ',ZR(JCMCF+ZCMCF*(IZONE-1)+21-1)
-      WRITE (IFM,1071) 'EXCLUSION_PIV_NU',ZR(JCMCF+ZCMCF*(IZONE-1)+22-1)
-      WRITE (IFM,1071) 'SANS_NOEUD      ',ZR(JCMCF+ZCMCF*(IZONE-1)+23-1)
-      WRITE (IFM,1071) 'SANS_NOEUD_FR   ',ZR(JCMCF+ZCMCF*(IZONE-1)+24-1)
-      WRITE (IFM,1071) 'EXCL_FROT_x     ',ZR(JCMCF+ZCMCF*(IZONE-1)+25-1)
-      WRITE (IFM,1071) 'CONTACT_INIT    ',ZR(JCMCF+ZCMCF*(IZONE-1)+26-1)
-      WRITE (IFM,1071) 'GLISSIERE       ',ZR(JCMCF+ZCMCF*(IZONE-1)+27-1)
-      
+        WRITE (IFM,*) '<CONTACT> ...... ZONE : ',IZONE 
+        LVERI  = MMINFL(DEFICO,'VERIF',IZONE )
+        IF (LVERI) THEN
+          WRITE (IFM,*) '<CONTACT> ...... ZONE DE VERIFICATION'
+          TOLINT = MMINFR(DEFICO,'TOLE_INTERP',IZONE)           
+          WRITE (IFM,1071) 'TOLE_INTERP     ',TOLINT          
+        ELSE
+          WRITE (IFM,*) '<CONTACT> ...... ZONE DE CALCUL'       
+          WRITE (IFM,1071) 'INTEGRATION     ',
+     &                      ZR(JCMCF+ZCMCF*(IZONE-1)+1-1)
+          WRITE (IFM,1071) 'COEF_REGU_CONT  ',
+     &                      ZR(JCMCF+ZCMCF*(IZONE-1)+2-1)
+          WRITE (IFM,1071) 'COEF_REGU_FROT  ',
+     &                      ZR(JCMCF+ZCMCF*(IZONE-1)+3-1)
+          WRITE (IFM,1071) 'COULOMB         ',
+     &                      ZR(JCMCF+ZCMCF*(IZONE-1)+4-1)
+          WRITE (IFM,1071) 'FROTTEMENT      ',
+     &                      ZR(JCMCF+ZCMCF*(IZONE-1)+5-1)
+          WRITE (IFM,1071) 'SEUIL_INIT      ',
+     &                      ZR(JCMCF+ZCMCF*(IZONE-1)+6-1)
+          WRITE (IFM,1071) 'COMPLIANCE      ',
+     &                      ZR(JCMCF+ZCMCF*(IZONE-1)+7-1)
+          WRITE (IFM,1071) 'ASPERITE        ',
+     &                      ZR(JCMCF+ZCMCF*(IZONE-1)+8-1)
+          WRITE (IFM,1071) 'E_N             ',
+     &                      ZR(JCMCF+ZCMCF*(IZONE-1)+9-1)
+          WRITE (IFM,1071) 'E_V             ',
+     &                      ZR(JCMCF+ZCMCF*(IZONE-1)+10-1)
+          WRITE (IFM,1071) 'FOND_FISSURE    ',
+     &                      ZR(JCMCF+ZCMCF*(IZONE-1)+11-1)
+          WRITE (IFM,1071) 'RACCORD_LINE_QUA',
+     &                      ZR(JCMCF+ZCMCF*(IZONE-1)+12-1)
+          WRITE (IFM,1071) 'USURE           ',
+     &                      ZR(JCMCF+ZCMCF*(IZONE-1)+13-1)
+          WRITE (IFM,1071) 'K               ',
+     &                      ZR(JCMCF+ZCMCF*(IZONE-1)+14-1)
+          WRITE (IFM,1071) 'H               ',
+     &                      ZR(JCMCF+ZCMCF*(IZONE-1)+15-1)
+          WRITE (IFM,1071) 'COEF_STAB_CONT  ',
+     &                      ZR(JCMCF+ZCMCF*(IZONE-1)+17-1)
+          WRITE (IFM,1071) 'COEF_PENA_CONT  ',
+     &                      ZR(JCMCF+ZCMCF*(IZONE-1)+18-1)
+          WRITE (IFM,1071) 'COEF_STAB_FROT  ',
+     &                      ZR(JCMCF+ZCMCF*(IZONE-1)+20-1)
+          WRITE (IFM,1071) 'COEF_PENA_CONT  ',
+     &                      ZR(JCMCF+ZCMCF*(IZONE-1)+21-1)
+          WRITE (IFM,1071) 'EXCLUSION_PIV_NU',
+     &                      ZR(JCMCF+ZCMCF*(IZONE-1)+22-1)
+          WRITE (IFM,1071) 'SANS_NOEUD      ',
+     &                      ZR(JCMCF+ZCMCF*(IZONE-1)+23-1)
+          WRITE (IFM,1071) 'SANS_NOEUD_FR   ',
+     &                      ZR(JCMCF+ZCMCF*(IZONE-1)+24-1)
+          WRITE (IFM,1071) 'EXCL_FROT_x     ',
+     &                      ZR(JCMCF+ZCMCF*(IZONE-1)+25-1)
+          WRITE (IFM,1071) 'CONTACT_INIT    ',
+     &                      ZR(JCMCF+ZCMCF*(IZONE-1)+26-1)
+          WRITE (IFM,1071) 'GLISSIERE       ',
+     &                      ZR(JCMCF+ZCMCF*(IZONE-1)+27-1)
+        ENDIF
       
  320  CONTINUE  
 C
@@ -264,27 +292,24 @@ C
 C ---  MAILLES ESCLAVES SPECIFIQUES
 C
       WRITE (IFM,*) '<CONTACT> ... INFORMATIONS SUR MAILLES ESCLAVES' 
-      INDMAE = 0
+C
       DO 900 IZONE = 1,NZOCO
-        WRITE (IFM,*) '<CONTACT> ...... ZONE : ',IZONE 
-        CALL CFZONE(DEFICO,IZONE ,'ESCL',ISUMAE)
-        CALL CFNBSF(DEFICO,ISUMAE,'MAIL',NBMAE ,JDECME)        
+        WRITE (IFM,*) '<CONTACT> ...... ZONE : ',IZONE    
+        JDECME = MMINFI(DEFICO,'JDECME',IZONE )
+        NBMAE  = MMINFI(DEFICO,'NBMAE' ,IZONE )
         DO 901 IMAE = 1,NBMAE
-
-          POSMAE = JDECME + IMAE 
-          INDMAE = INDMAE + 1
-          CALL CFPOSM(NOMA  ,DEFICO,'MAIL',1     ,POSMAE,
-     &                NUMMAE,CODRET)          
+          POSMAE = JDECME + IMAE
+          
+          CALL MMINFM(POSMAE,DEFICO,'NPTM',NPTM  )
+          CALL CFNUMM(DEFICO,1     ,POSMAE,NUMMAE)          
           CALL JENUNO(JEXNUM(MAILMA,NUMMAE),NOMMAE)
           WRITE (IFM,1080) NOMMAE
           
-          TYPBAR = ZI(JMAESC+ZMAES*(INDMAE-1)+4-1)
-        
+          WRITE (IFM,1070) 'ZONE            ',IZONE
+          WRITE (IFM,1070) 'NB. PTS. INT.   ',NPTM
           
-          WRITE (IFM,1070) 'ZONE            ',
-     &         ZI(JMAESC+ZMAES*(INDMAE-1)+2-1)
-          WRITE (IFM,1070) 'NB. PTS. INT.   ',          
-     &         ZI(JMAESC+ZMAES*(INDMAE-1)+3-1)
+          CALL MMINFM(POSMAE,DEFICO,'TYPBAR',TYPBAR) 
+          
           IF (TYPBAR.EQ.0) THEN
             WRITE (IFM,1040) 'PAS DE FOND. FISS.'
           ELSEIF (TYPBAR.EQ.1) THEN
@@ -303,7 +328,7 @@ C
             CALL ASSERT(.FALSE.)
           ENDIF   
                
-          TYPRAC = ZI(JMAESC+ZMAES*(INDMAE-1)+6-1)           
+          CALL MMINFM(POSMAE,DEFICO,'TYPRAC',TYPRAC)
           
           IF (TYPRAC.EQ.0) THEN
             WRITE (IFM,1040) 'PAS RACC. LINE. QUAD.'
@@ -319,8 +344,9 @@ C
             CALL ASSERT(.FALSE.)
           ENDIF 
           
-          WRITE (IFM,1070) 'NDEXFR          ',
-     &         ZI(JMAESC+ZMAES*(INDMAE-1)+5-1)           
+          CALL MMINFM(POSMAE,DEFICO,'NDEXFR',NDEXFR)
+          
+          WRITE (IFM,1070) 'NDEXFR          ',NDEXFR          
 
           
  901    CONTINUE

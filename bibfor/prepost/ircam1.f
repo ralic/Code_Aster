@@ -7,7 +7,7 @@
      &                    NOMAMD, NOMTYP, MODNUM, NUANOM,
      &                    CODRET )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 22/06/2010   AUTEUR SELLENET N.SELLENET 
+C MODIF PREPOST  DATE 14/09/2010   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -71,7 +71,7 @@ C
       IMPLICIT NONE
 C
       INTEGER NTYMAX
-      PARAMETER (NTYMAX = 53)
+      PARAMETER (NTYMAX = 54)
 C
 C 0.1. ==> ARGUMENTS
 C
@@ -247,13 +247,15 @@ C
           ELSE
             NBPG = CAIMPI(2,NRIMPR)
             NBSP = CAIMPI(3,NRIMPR)
-            IF ( ((NBPG.EQ.27).OR.(NBPG.EQ.9).OR.(NBPG.EQ.7)).AND.
-     &           (TYPECH.EQ.'ELNO    ') ) THEN
+            IF ( ((NBPG.EQ.27).OR.(NBPG.EQ.18).OR.(NBPG.EQ.9).OR.
+     &            (NBPG.EQ.7)).AND. (TYPECH.EQ.'ELNO    ') ) THEN
               NOMPB(1) = NOCHMD(9:22)
               IF (NBPG.EQ.27) THEN
                 NOMPB(2) = 'HEXA27'
               ELSEIF (NBPG.EQ.9) THEN
                 NOMPB(2) = 'QUAD9'
+              ELSEIF (NBPG.EQ.18) THEN
+                NOMPB(2) = 'PENTA18'
               ELSEIF (NBPG.EQ.7) THEN
                 NOMPB(2) = 'TRIA7'
               ENDIF

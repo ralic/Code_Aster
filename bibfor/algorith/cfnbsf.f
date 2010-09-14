@@ -1,7 +1,7 @@
       SUBROUTINE CFNBSF(DEFICO,ISURF ,TYPENT,NBENT ,JDEC  )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 14/09/2010   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -20,8 +20,7 @@ C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C RESPONSABLE ABBAS M.ABBAS
 C
-      IMPLICIT     NONE
-      
+      IMPLICIT     NONE    
       CHARACTER*24 DEFICO
       CHARACTER*4  TYPENT
       INTEGER      ISURF,JDEC
@@ -29,7 +28,7 @@ C
 C      
 C ----------------------------------------------------------------------
 C
-C ROUTINE CONTACT (TOUTES METHODES - UTILITAIRE)
+C ROUTINE CONTACT (METHODES MAILLEES - UTILITAIRE)
 C
 C ACCES AUX NOEUDS/MAILLES D'UNE ZONE DONNEE
 C
@@ -65,8 +64,8 @@ C
 C
 C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
 C
-      CHARACTER*24 PSURNO,PSURMA,PNOQUA
-      INTEGER      JSUNO,JSUMA,JNOQUA
+      CHARACTER*24 PSURNO,PSURMA
+      INTEGER      JSUNO,JSUMA
 C
 C ----------------------------------------------------------------------
 C
@@ -76,7 +75,6 @@ C --- RECUPERATION DE QUELQUES DONNEES
 C
       PSURNO = DEFICO(1:16)//'.PSUNOCO'
       PSURMA = DEFICO(1:16)//'.PSUMACO'
-      PNOQUA = DEFICO(1:16)//'.PNOEUQU'
       CALL JEVEUO(PSURNO,'L',JSUNO )
       CALL JEVEUO(PSURMA,'L',JSUMA )     
 C
@@ -87,11 +85,7 @@ C
         JDEC   = ZI(JSUNO+ISURF-1)
       ELSEIF (TYPENT.EQ.'MAIL') THEN
         NBENT  = ZI(JSUMA+ISURF) - ZI(JSUMA+ISURF-1)
-        JDEC   = ZI(JSUMA+ISURF-1)
-      ELSEIF (TYPENT.EQ.'NOQU') THEN
-        CALL JEVEUO(PNOQUA,'L',JNOQUA )
-        NBENT  = ZI(JNOQUA+ISURF) - ZI(JNOQUA+ISURF-1)
-        JDEC   = ZI(JNOQUA+ISURF-1)        
+        JDEC   = ZI(JSUMA+ISURF-1)       
       ELSE    
         CALL ASSERT(.FALSE.)
       ENDIF

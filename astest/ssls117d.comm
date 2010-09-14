@@ -1,4 +1,4 @@
-# MODIF  DATE 30/08/2010   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 13/09/2010   AUTEUR DESROCHES X.DESROCHES 
 # RESPONSABLE JMBHH01 J.M.PROIX
 # TITRE PLAQUE STRATIFIEE EN FLEXION - DSQ -
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -554,13 +554,13 @@ TEST_RESU(CHAM_NO=(_F(CHAM_GD=EFF,
                       GROUP_NO='A1',
                       NOM_CMP='NXX',
                       VALE=8683.7248397450003,
-                      PRECISION=0.90000000000000002,
+                      PRECISION=1.1,
                       REFERENCE='AUTRE_ASTER',),
                    _F(CHAM_GD=EFF,
                       GROUP_NO='A1',
                       NOM_CMP='NYY',
                       VALE=-4106.9378125979001,
-                      PRECISION=0.5,
+                      PRECISION=0.55,
                       REFERENCE='AUTRE_ASTER',),
                    _F(CHAM_GD=EFF,
                       GROUP_NO='A1',
@@ -596,7 +596,7 @@ TEST_RESU(CHAM_NO=(_F(CHAM_GD=EFF,
                       GROUP_NO='A1',
                       NOM_CMP='QY',
                       VALE=-9828.1919152804003,
-                      PRECISION=0.040000000000000001,
+                      PRECISION=0.080000000000000001,
                       REFERENCE='AUTRE_ASTER',),),);
 
 TEST_RESU(RESU=(_F(RESULTAT=MODES,

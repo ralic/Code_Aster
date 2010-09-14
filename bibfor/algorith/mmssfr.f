@@ -1,7 +1,7 @@
-      SUBROUTINE MMSSFR(NOMA  ,DEFICO,POSMAE,NDEXFR)
+      SUBROUTINE MMSSFR(DEFICO,IZONE ,POSMAE,NDEXFR)
 C     
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 14/09/2010   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -21,10 +21,9 @@ C ======================================================================
 C RESPONSABLE ABBAS M.ABBAS
 C
       IMPLICIT NONE
-      CHARACTER*8  NOMA
       CHARACTER*24 DEFICO
       INTEGER      POSMAE
-      INTEGER      NDEXFR 
+      INTEGER      NDEXFR,IZONE 
 C      
 C ----------------------------------------------------------------------
 C
@@ -37,7 +36,7 @@ C ----------------------------------------------------------------------
 C
 C
 C IN  DEFICO : SD POUR LA DEFINITION DU CONTACT
-C IN  NOMA   : NOM DU MAILLAGE
+C IN  IZONE  : NUMEOR DE LA ZONE DE CONTACT
 C IN  POSMAE : NUMERO DE LA MAILLE ESCLAVE
 C OUT NDEXFR : ENTIER CODE DES NOEUDS EXCLUS
 C
@@ -60,22 +59,14 @@ C
 C
 C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
 C
-      INTEGER      POSNO,NUMNO,NBNO,POSNNO(9)
-      CHARACTER*24 CONTNO,NOZOCO
-      INTEGER      JNOCO,JZOCO
-      INTEGER      SUPPOK,INO,IZONE
+      INTEGER      NUMNO
+      INTEGER      NNOMAI,POSNNO(9),NUMNNO(9)
+      INTEGER      SUPPOK,INO
       INTEGER      NDEXCL(9),NBEXFR
 C
 C ----------------------------------------------------------------------
 C
       CALL JEMARQ() 
-C
-C --- ACCES OBJETS
-C 
-      NOZOCO = DEFICO(1:16)//'.NOZOCO'
-      CONTNO = DEFICO(1:16)//'.NOEUCO'
-      CALL JEVEUO(NOZOCO,'L',JZOCO)
-      CALL JEVEUO(CONTNO,'L',JNOCO)
 C
 C --- INITIALISATIONS 
 C
@@ -87,14 +78,14 @@ C
 C
 C --- NUMEROS DES NOEUDS DE LA MAILLE DANS SD CONTACT   
 C    
-      CALL CFPOSN(NOMA  ,DEFICO,POSMAE,POSNNO,NBNO  )         
+      CALL CFPOSN(DEFICO,POSMAE,POSNNO,NNOMAI)
+      CALL CFNUMN(DEFICO,NNOMAI,POSNNO,NUMNNO)
+      CALL ASSERT(NNOMAI.LE.9)      
 C     
 C --- REPERAGE SI LE NOEUD EST UN NOEUD A EXCLURE 
 C
-      DO 50 INO = 1,NBNO
-        POSNO  = POSNNO(INO)
-        NUMNO  = ZI(JNOCO+POSNO-1) 
-        IZONE  = ZI(JZOCO+POSNO-1)       
+      DO 50 INO = 1,NNOMAI
+        NUMNO  = NUMNNO(INO) 
         CALL CFMMEX(DEFICO,'FROT',IZONE ,NUMNO ,SUPPOK)
         IF (SUPPOK .EQ. 1) THEN
           NBEXFR  = NBEXFR + 1

@@ -2,7 +2,7 @@
      &                  SOLALG,CTCGEO)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 02/02/2010   AUTEUR DESOZA T.DESOZA 
+C MODIF ALGORITH  DATE 14/09/2010   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -31,7 +31,7 @@ C ----------------------------------------------------------------------
 C
 C ROUTINE CONTACT (METHODES DISCRETES)
 C
-C CONVERGENCE LIEE A LA REACTUALISATION GEOMETRIQUE DU CONTACT
+C CONVERGENCE LIEE AU CONTACT DISCRET
 C
 C ----------------------------------------------------------------------
 C

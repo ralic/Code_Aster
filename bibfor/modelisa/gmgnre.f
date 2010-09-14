@@ -1,7 +1,7 @@
       SUBROUTINE GMGNRE(NOMA,NBNOTO,LITRAV,LISTMA,NBMA,LISTNO,
      &                  NBNO,SELEZ)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 14/09/2010   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -63,16 +63,16 @@ C---------------- COMMUNS NORMALISES  JEVEUX  --------------------------
 C ---------------- FIN COMMUNS NORMALISES  JEVEUX  --------------------
 C     VARIABLES LOCALES:
 C     ------------------
-      CHARACTER*8  K8BID,NOMMA,NOMNO, TYPM, NOTYMA(18)
+      CHARACTER*8  K8BID,NOMMA,NOMNO, TYPM, NOTYMA(19)
       INTEGER      POSINI, POSFIN, JTYPM, SEL, NUTYMA
-      INTEGER      PINI(3,18), PFIN(3,18)
+      INTEGER      PINI(3,19), PFIN(3,19)
 
       DATA NOTYMA / 'POI1'  ,
      &              'SEG2'  , 'SEG3'   ,
      &              'TRIA3' , 'TRIA6'  , 'TRIA7',
      &              'QUAD4' , 'QUAD8'  , 'QUAD9',
      &              'TETRA4', 'TETRA10',
-     &              'PENTA6', 'PENTA15',
+     &              'PENTA6', 'PENTA15','PENTA18',
      &              'PYRAM5', 'PYRAM13',
      &              'HEXA8' , 'HEXA20' , 'HEXA27' /
 
@@ -92,6 +92,7 @@ C     ------------------
      &            1, 5, 0,
      &            1, 0, 0,
      &            1, 7, 0,
+     &            1, 7, 16,
      &            1, 0, 0,
      &            1, 6, 0,
      &            1, 0, 0,
@@ -111,6 +112,7 @@ C     ------------------
      &            4, 10,0,
      &            6, 0, 0,
      &            6, 15,0,
+     &            6, 15,18,
      &            5, 0, 0,
      &            5, 13,0,
      &            8, 0, 0,

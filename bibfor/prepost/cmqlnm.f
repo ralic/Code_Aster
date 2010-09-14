@@ -1,6 +1,6 @@
       SUBROUTINE CMQLNM(MAIN,NBTNO,NBMA,NUMMAQ,NUNOMI,NBNM)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
+C MODIF PREPOST  DATE 14/09/2010   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -49,9 +49,10 @@ C  QUAD8       14             4                    5
 C  QUAD9       16             5                    5
 C  TETRA10     19             6                    5
 C  PENTA15     21             9                    7
-C  PYRAM13     23             8                    6
-C  HEXA20      25            12                    9
-C  HEXA27      26            19                    9
+C  PENTA18     22            12                    7
+C  PYRAM13     24             8                    6
+C  HEXA20      26            12                    9
+C  HEXA27      27            19                    9
 
 
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
@@ -71,8 +72,9 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
       CHARACTER*32 JEXNUM,JEXATR
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
-      INTEGER JNNMPM,JPPNM,NBTNMM,I,J,K,JNMPM,ICOUNT
-      INTEGER NBNMTM(26),PPNM(26),NBTMA,NBNMA,JMACO,JCO
+      INTEGER JNNMPM,JPPNM,NBTNMM,I,J,K,JNMPM,ICOUNT,NBTYMA
+      PARAMETER(NBTYMA=27)
+      INTEGER NBNMTM(NBTYMA),PPNM(NBTYMA),NBTMA,NBNMA,JMACO,JCO
       INTEGER NBNPM,NBMPN,NBNM,JNM,JDIM,JTYP,IACNX1,ILCNX1
       INTEGER IACNX2,ILCNX2,II,JJ,NBM1
       CHARACTER*24 VALK(2)
@@ -81,8 +83,8 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C     NBNMTM: NOMBRE DE NOEUDS MILIEU PAR TYPE DE MAILLE
 C     PPNM:   POSITION DU PREMIER NOEUD MILIEU PAR TYPE DE MAILLE
 
-      DATA NBNMTM /3*0,1,4*0,3,4*0, 4,0, 5,2*0, 6,0, 9,0, 8,0,12,19/
-      DATA PPNM   /3*0,3,4*0,4,4*0, 5,0, 5,2*0, 5,0, 7,0, 6,0, 9, 9/
+      DATA NBNMTM /3*0,1,4*0,3,4*0,4,0,5,2*0, 6,0,9,12,0,8,0,12,19/
+      DATA PPNM   /3*0,3,4*0,4,4*0,5,0,5,2*0, 5,0,7,7, 0,6,0,9, 9/
 
       CALL JEMARQ()
 

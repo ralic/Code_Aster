@@ -2,7 +2,7 @@
      &                  DEFICO,RESOCO)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 14/09/2010   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -64,7 +64,7 @@ C
 C
 C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
 C 
-      LOGICAL      ISFONC,LCTCD,LCTCV,LCONT,LELTC
+      LOGICAL      ISFONC,LCTCD,LALLV,LCONT,LELTC
       LOGICAL      LBID,CFDISL,LCTCG
       INTEGER      IBID
       REAL*8       R8BID
@@ -124,8 +124,8 @@ C
       ITERAT = NINT(R8BID)  
       
       IF (LCTCD) THEN
-        LCTCV  = CFDISL(DEFICO,'CONT_VERIF')
-        IF (.NOT.LCTCV) THEN
+        LALLV  = CFDISL(DEFICO,'ALL_VERIF')
+        IF (.NOT.LALLV) THEN
           CALL CFITER(RESOCO,'L','TIMG',IBID  ,TPSCOG)
           CALL CFITER(RESOCO,'L','TIMA',IBID  ,TPSCOA)
           TPSCTC = TPSCOG + TPSCOA
@@ -135,15 +135,18 @@ C
           CALL CFITER(RESOCO,'L','LIAF',CTCCLF,R8BID )
         ENDIF
       ELSEIF (LELTC) THEN 
-        CALL CFITER(RESOCO,'L','CONC',CTCCIT,R8BID )   
-        CALL CFITER(RESOCO,'L','FROT',CTCFRO,R8BID )
-        VALI(1) = CTCCIT    
-        VALI(2) = CTCFRO 
-        LCTCG  = CFDISL(DEFICO,'GEOM_BOUCLE')
-        IF (LCTCG) THEN
-          CALL MMBOUC(RESOCO,'GEOM','READ',CTCGEO)
-          VALI(3) = CTCGEO
-        ENDIF     
+        LALLV  = CFDISL(DEFICO,'ALL_VERIF')
+        IF (.NOT.LALLV) THEN      
+          CALL CFITER(RESOCO,'L','CONC',CTCCIT,R8BID )   
+          CALL CFITER(RESOCO,'L','FROT',CTCFRO,R8BID )
+          VALI(1) = CTCCIT    
+          VALI(2) = CTCFRO 
+          LCTCG  = CFDISL(DEFICO,'GEOM_BOUCLE')
+          IF (LCTCG) THEN
+            CALL MMBOUC(RESOCO,'GEOM','READ',CTCGEO)
+            VALI(3) = CTCGEO
+          ENDIF
+        ENDIF   
       ELSE
         TPSCTC = 0.D0 
         CTCCIT = 0         
@@ -198,8 +201,8 @@ C
 C --- STAT POUR CONTACT DISCRET
 C        
         IF (LCTCD) THEN   
-          LCTCV  = CFDISL(DEFICO,'CONT_VERIF')
-          IF (.NOT.LCTCV) THEN
+          LALLV  = CFDISL(DEFICO,'ALL_VERIF')
+          IF (.NOT.LALLV) THEN
             VALR(1) = TPSCOG
             VALR(2) = TPSCOA
             VALI(1) = CTCCIT 
@@ -219,20 +222,23 @@ C
 C
 C --- STAT POUR CONTACT CONTINU
 C      
-        IF (LELTC) THEN  
-          VALI(1) = CTCCIT    
-          VALI(2) = CTCFRO
-          IF (LCTCG) THEN
-            VALI(3) = CTCGEO
-          ENDIF            
-          CALL NMIMPR('    ','STAT_CTCC',' ',R8BID,VALI)  
-          R8BID  = DBLE(CTCCIT)
-          CALL NMTIME('SFI','CTA',SDTIME,LBID  ,R8BID )
-          R8BID  = DBLE(CTCGEO)
-          CALL NMTIME('SFI','CTG',SDTIME,LBID  ,R8BID )
-          R8BID  = DBLE(CTCFRO)
-          CALL NMTIME('SFI','CTF',SDTIME,LBID  ,R8BID )
-          CALL MMBOUC(RESOCO,'GEOM','INIT',IBID)  
+        IF (LELTC) THEN 
+          LALLV  = CFDISL(DEFICO,'ALL_VERIF')
+          IF (.NOT.LALLV) THEN         
+            VALI(1) = CTCCIT    
+            VALI(2) = CTCFRO
+            IF (LCTCG) THEN
+              VALI(3) = CTCGEO
+            ENDIF            
+            CALL NMIMPR('    ','STAT_CTCC',' ',R8BID,VALI)  
+            R8BID  = DBLE(CTCCIT)
+            CALL NMTIME('SFI','CTA',SDTIME,LBID  ,R8BID )
+            R8BID  = DBLE(CTCGEO)
+            CALL NMTIME('SFI','CTG',SDTIME,LBID  ,R8BID )
+            R8BID  = DBLE(CTCFRO)
+            CALL NMTIME('SFI','CTF',SDTIME,LBID  ,R8BID )
+            CALL MMBOUC(RESOCO,'GEOM','INIT',IBID) 
+          ENDIF 
         ENDIF      
 C
 C --- PREPARATION STAT POUR TOUT LE STAT_NON_LINE

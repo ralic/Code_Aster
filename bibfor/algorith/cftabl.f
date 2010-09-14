@@ -3,7 +3,7 @@
      &                  ILIAI,TYPLIA)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 14/09/2010   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -97,17 +97,17 @@ C
       INTEGER       II,LIAISP,POSIT2
       CHARACTER*1   TYPEAJ,TYPESP
       CHARACTER*2   TYPEC0,TYPEF0,TYPEF1,TYPEF2
-      CHARACTER*19  LIAC,CONVEC
-      INTEGER       JLIAC,JVECC
+      CHARACTER*19  LIAC,TYPL
+      INTEGER       JLIAC,JTYPL
 C ======================================================================
       CALL JEMARQ ()
 C ======================================================================
 C --- APPEL JEVEUX POUR LA MISE A JOUR DES VECTEURS DE LIAISONS --------
 C ======================================================================
       LIAC   = RESOCO(1:14)//'.LIAC'
-      CONVEC = RESOCO(1:14)//'.CONVEC'
+      TYPL   = RESOCO(1:14)//'.TYPL'
       CALL JEVEUO(LIAC,  'E',JLIAC )
-      CALL JEVEUO(CONVEC,'E',JVECC )
+      CALL JEVEUO(TYPL  ,'E',JTYPL )
 C ======================================================================
 C --- INITIALISATION DES VARIABLES TYPE DE CONTACT ---------------------
 C ======================================================================
@@ -123,7 +123,7 @@ C ======================================================================
 C --- ON AJOUTE UNE LIAISON --------------------------------------------
 C ======================================================================
          INDIC  = 1
-         ZK8(JVECC-1+POSIT) = TYPLIA
+         ZK8(JTYPL-1+POSIT) = TYPLIA
          ZI (JLIAC-1+POSIT) = ILIAI
          IF (TYPLIA.EQ.TYPEC0) THEN
 C ======================================================================
@@ -171,17 +171,17 @@ C ======================================================================
                   AJLIAI = AJLIAI - 1
                   POSIT2 = II
                   LIAISP = 1
-                  IF (ZK8(JVECC-1+II).EQ.TYPEF0) THEN
+                  IF (ZK8(JTYPL-1+II).EQ.TYPEF0) THEN
 C ======================================================================
 C --- LA LIAISON ASSOCIEE EST UNE LIAISON DE TYPE LLF ------------------
 C ======================================================================
                      LLF  = LLF  - 1
-                  ELSE IF (ZK8(JVECC-1+II).EQ.TYPEF1) THEN
+                  ELSE IF (ZK8(JTYPL-1+II).EQ.TYPEF1) THEN
 C ======================================================================
 C --- LA LIAISON ASSOCIEE EST UNE LIAISON DE TYPE LLF1 -----------------
 C ======================================================================
                      LLF1 = LLF1 - 1
-                  ELSE IF (ZK8(JVECC-1+II).EQ.TYPEF2) THEN
+                  ELSE IF (ZK8(JTYPL-1+II).EQ.TYPEF2) THEN
 C ======================================================================
 C --- LA LIAISON ASSOCIEE EST UNE LIAISON DE TYPE LLF2 -----------------
 C ======================================================================
@@ -193,11 +193,11 @@ C ======================================================================
  20         CONTINUE
             DO 30 II = POSIT, (POSIT2-1) - 1
                ZI (JLIAC-1+II) = ZI (JLIAC-1+II+1)
-               ZK8(JVECC-1+II) = ZK8(JVECC-1+II+1)
+               ZK8(JTYPL-1+II) = ZK8(JTYPL-1+II+1)
  30         CONTINUE
             DO 40 II = POSIT2 - 1, NBLIAC + LLF + LLF1 + LLF2
                ZI (JLIAC-1+II) = ZI (JLIAC-1+II+1+LIAISP)
-               ZK8(JVECC-1+II) = ZK8(JVECC-1+II+1+LIAISP)
+               ZK8(JTYPL-1+II) = ZK8(JTYPL-1+II+1+LIAISP)
  40         CONTINUE
          ELSE
             AJLIAI = AJLIAI - 1
@@ -219,7 +219,7 @@ C ======================================================================
             ENDIF
             DO 50 II = POSIT, NBLIAC + LLF + LLF1 + LLF2
                ZI (JLIAC-1+II) = ZI (JLIAC-1+II+1)
-               ZK8(JVECC-1+II) = ZK8(JVECC-1+II+1)
+               ZK8(JTYPL-1+II) = ZK8(JTYPL-1+II+1)
  50         CONTINUE
          ENDIF
       ENDIF

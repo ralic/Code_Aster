@@ -1,4 +1,4 @@
-# MODIF  DATE 27/07/2009   AUTEUR DESROCHES X.DESROCHES 
+# MODIF  DATE 13/09/2010   AUTEUR PELLET J.PELLET 
 # TITRE (NON REGRESSION SUR QUART DE VIROLE CYLINDRIQUE - COQUE_3D TRIA7
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -219,9 +219,7 @@ RESF=MECA_STATIQUE(    MODELE=MO,           CHAM_MATER=CM,EXCIT=(
 
                         )
 
-CALC_ELEM( reuse= RESF ,RESULTAT= RESF ,                EXCIT=(
-                            _F(  CHARGE = CH),
-                                  _F(  CHARGE = CHF)),
+CALC_ELEM( reuse= RESF ,RESULTAT= RESF ,
                                OPTION='SIGM_ELNO_DEPL'
                         )
 

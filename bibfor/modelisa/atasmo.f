@@ -1,6 +1,7 @@
-      SUBROUTINE ATASMO(NEQ,AZ,APDDL,APPTR,NUMEDZ,ATAZ,BASEZ,NBLIA,NMUL)
+      SUBROUTINE ATASMO(NEQ,AZ,APDDL,APPTR,NUMEDZ,ATAZ,BASEZ,NBLIA,NMUL,
+     &                  NUMATZ)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 29/03/2010   AUTEUR BOITEAU O.BOITEAU 
+C MODIF MODELISA  DATE 14/09/2010   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -41,6 +42,8 @@ C                                 RECTANGULAIRE POUR LAQUELLE ON VA
 C                                 CALCULER LE PRODUIT AZ_T*AZ).
 C    NUMEDZ         IN    K*      NOM DU NUME_DDL DECRIVANT LES
 C                                 LIGNES DE LA MATRICE AZ
+C    BASEZ           IN    K*     NOM DE LA BASE SUR LAQUELLE ON
+C                                 CREE LA MATR_ASSE.
 C    ATAZ           OUT    K*     NOM DE LA MATR_ASSE SYMETRIQUE
 C                                 A VALMURS REELLES DONT LE .VALM
 C                                 CONTIENT LE PRODUIT AT*A.
@@ -48,8 +51,8 @@ C                                 LE PROFIL DE CETTE MATRICE EST
 C                                 EN LIGNE DE CIEL.
 C                                 CE PROFIL EST DETERMINE DANS LA
 C                                 ROUTINE.
-C    BASEZ           IN    K*     NOM DE LA BASE SUR LAQUELLE ON
-C                                 CREE LA MATR_ASSE.
+C    NUMATZ         OUT    K*     NOM DU NUME_DDL A CREER POUR ATAZ
+C                                 ON LE DETRUIT S'Il EXISTE DEJA
 C.========================= DEBUT DES DECLARATIONS ====================
 C ----- COMMUNS NORMALISES  JEVEUX
       INTEGER*4 ZI4
@@ -70,7 +73,7 @@ C ----- COMMUNS NORMALISES  JEVEUX
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
       CHARACTER*32 JEXNUM
 C -----  ARGUMENTS
-      CHARACTER*(*) AZ,NUMEDZ,ATAZ,BASEZ
+      CHARACTER*(*) AZ,NUMEDZ,ATAZ,BASEZ,NUMATZ
       INTEGER       NEQ,NBLIA,NMUL
       INTEGER       APDDL(*),APPTR(*)
 C -----  VARIABLES LOCALES
@@ -96,7 +99,7 @@ C     ---------------------
       ATA = ATAZ
       NUMEDD = NUMEDZ
       NBLIG = NBLIA*NMUL
-      CALL GCNCON('_',NUMDDL)
+      NUMDDL = NUMATZ
       CALL DETRSD('MATR_ASSE',ATA)
       CALL DETRSD('NUME_DDL',NUMDDL)
       CALL COPISD('NUME_EQUA',BASE,NUMEDD//'.NUME',NUMDDL//'.NUME')
