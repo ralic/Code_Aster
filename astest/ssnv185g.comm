@@ -1,4 +1,4 @@
-# MODIF  DATE 10/08/2010   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 21/09/2010   AUTEUR REZETTE C.REZETTE 
 # TITRE FISSURE DEBOUCHANTE DANS UNE PLAQUE 3D DE LARGEUR FINIE AVEC X-FEM
 # ssnv185g.para = tps_job 310 mem_job 1024Mo mem_aster 70 ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -70,7 +70,6 @@ LT=FORMULE(NOM_PARA=('X','Y','Z'),VALE='-Y+a');
 
 FISS=DEFI_FISS_XFEM(MODELE=MODELEIN,
                     DEFI_FISS=_F(FONC_LT=LT,FONC_LN=LN,),
-                    GROUP_MA_ENRI='VOL',
                     ORIE_FOND=_F(PFON_INI= (0. ,a ,h ),
                                  VECT_ORIE=(0. ,0. ,1. ),
                                  POINT_ORIG=(0. ,20. ,h ),),

@@ -1,4 +1,4 @@
-# MODIF  DATE 29/12/2009   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 20/09/2010   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 # TITRE CONTACT DE HERTZ ENTRE 2 DEMI-SPHERES
 # perf005c.para = tps_job 18000 mem_job 1300Mo ncpus 1 liste_test P
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -20,11 +20,15 @@
 # ======================================================================
 #       INTERET : MESURER LES PERFORMANCES D'UN CALCUL DE CONTACT 3D
 #       (ISSU DE SSNV104I)
-#---------------------------------------------------------------------------
+#-----------------------------------------------------------------------
 
 DEBUT(CODE=_F(NOM='PERF005C',NIV_PUB_WEB='INTERNET'),
-      IGNORE_ALARM='TEST0_9')
-
+      IGNORE_ALARM=('TEST0_9','SUPERVIS_94'))
+#
+# LE TEST EST VOLONTAIREMENT LIMITE EN TERME DE MEMOIRE, AUSSI LE TEMPS
+# CPU SYSTEME EST RELATIVEMENT IMPORTANT, D'OU LA PRESENCE D'UNE ALARME
+# SUPERVIS_94
+#
 MA=LIRE_MAILLAGE(FORMAT='MED')
 
 #_____________________________________________________________________

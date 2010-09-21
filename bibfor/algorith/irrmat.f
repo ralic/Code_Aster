@@ -1,8 +1,8 @@
-      SUBROUTINE IRRMAT ( FAMI,KPG,KSP,MOD,IMAT,NMAT,ITMAX,RELA,VIND,
-     &                    MATERD,MATERF,MATCST,NDT,NDI,NR,NVI)
+      SUBROUTINE IRRMAT(FAMI,KPG,KSP,MODEL,IMAT,NMAT,ITMAX,RELA,VIND,
+     &                  MATERD,MATERF,MATCST,NDT,NDI,NR,NVI)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 18/11/2008   AUTEUR FLEJOU J-L.FLEJOU 
+C MODIF ALGORITH  DATE 20/09/2010   AUTEUR FLEJOU J-L.FLEJOU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,7 +21,7 @@ C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C RESPONSABLE FLEJOU J-L.FLEJOU
       IMPLICIT NONE
-      CHARACTER*8   MOD
+      CHARACTER*8   MODEL
       CHARACTER*3   MATCST
       CHARACTER*(*) FAMI
       INTEGER IMAT,NMAT,NDT,NDI,NR,NVI,KPG,KSP,IRET,ITMAX
@@ -36,7 +36,7 @@ C     ----------------------------------------------------------------
 C     IN  FAMI   :  FAMILLE DE POINT DE GAUSS (RIGI,MASS,...)
 C         KPG,KSP:  NUMERO DU (SOUS)POINT DE GAUSS
 C         IMAT   :  ADRESSE DU MATERIAU CODE
-C         MOD    :  TYPE DE MODELISATION
+C         MODEL  :  TYPE DE MODELISATION
 C         NMAT   :  DIMENSION  DE MATER
 C         ITMAX  :  NOMBRE D ITERATION MAX
 C         RELA   :  TOLERANCE RELATIVE DES VALEURS MATERIAUX
@@ -50,7 +50,7 @@ C                   'NON' SINON
 C         NDT    :  NB TOTAL DE COMPOSANTES TENSEURS
 C         NDI    :  NB DE COMPOSANTES DIRECTES  TENSEURS
 C         NR     :  NB DE COMPOSANTES SYSTEME NL
-C         NVI    :  NB DE VARIABLES INTERNES
+C         NVI    :  NB DE VARIABLES INTERNES, DANS LE SYSTEME NL
 C     ----------------------------------------------------------------
       INTEGER     ITERAT,NBCARA
 C     NOMBRE DE PARAMETRES DE LA LOI : NBCARA
@@ -99,14 +99,14 @@ C     ZETAG             MATERD(17,2)                  MATERF(17,2)
 
 C     IRRADIATION       MATERD(18,2)                  MATERF(18,2)
 C     AGINT             MATERD(19,2)                  MATERF(19,2)
-C     AGINT             MATERD(19,2)                  MATERF(19,2)
 
 C     TOLER SUR SEUIL   MATERD(20,2)                  MATERF(20,2)
 C     ERREUR SUR SEUIL  MATERD(21,2)                  MATERF(21,2)
 
+C     TEMPERATURE       MATERD(22,2)                  MATERF(22,2)
+
 C -   NB DE COMPOSANTES / VARIABLES INTERNES -------------------------
-      CALL IRRNVI ( MOD , NDT , NDI, NR )
-      NVI = 5
+      CALL IRRNVI ( MODEL, NDT, NDI, NR, NVI )
 
 C === ================================================
 C
@@ -279,6 +279,8 @@ C     VALEUR DE AG DEJA INTEGRE
 C     TOLERENCE ET ERREUR SUR LE FRANCHISSEMENT DU SEUIL
       MATERD(20,2) = MAT(12)
       MATERD(21,2) = 0.0D0
+C     TEMPERATURE
+      MATERD(22,2) = TEMPD
 
 C === ================================================
 C
@@ -463,6 +465,8 @@ C     VALEUR DE AG DEJA INTEGRE
 C     TOLERENCE ET ERREUR SUR LE FRANCHISSEMENT DU SEUIL
       MATERF(20,2) = MAT(12)
       MATERF(21,2) = 0.0D0
+C     TEMPERATURE
+      MATERF(22,2) = TEMPF
 
 C -   MATERIAU CONSTANT ?
 C -   ON NE PEUT PAS SAVOIR A L AVANCE DONC NON

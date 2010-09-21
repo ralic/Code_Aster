@@ -3,7 +3,7 @@
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
+C MODIF SUPERVIS  DATE 20/09/2010   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -28,7 +28,7 @@ C      /= 0 ==> PROBLEME A LA DEFINITION  DES UNITES LOGIQUES
 C     ------------------------------------------------------------------
 C
 C     --- VARIABLES LOCALES --------------------------------------------
-      PARAMETER   ( MXIMPR = 5)
+      PARAMETER   ( MXIMPR = 4)
       CHARACTER*16    MOTFAC, NOMRES, CONCEP, NOMCMD
       CHARACTER*16    PRNOM (MXIMPR)
       INTEGER         PRUNIT, PLACE, PASSE
@@ -40,13 +40,13 @@ C     ------------------------------------------------------------------
       INTEGER VALI
       INTEGER       UNITPR (MXIMPR)   , PRESPR(MXIMPR)
       DATA          NOMPR  /'VIGILE'  , 'MESSAGE'   , 'RESULTAT',
-     &                      'ERREUR'  ,  'MED'      /
+     &                      'ERREUR'  /
       DATA          UNITPR /    0     ,      6      ,     8     ,
-     &                          9     ,    80       /
+     &                          9     /
       DATA          TYPPR /    'A'    ,    'A'      ,    'A'    ,
-     &                         'A'    ,    'B'      /
+     &                         'A'    /
       DATA          AUTPR /    'N'    ,    'N'      ,    'O'    ,
-     &                         'N'    ,    'O'      /
+     &                         'N'    /
       DATA          PASSE  /    0     /
 C     ------------------------------------------------------------------
       IER = 0

@@ -1,4 +1,4 @@
-#& MODIF COMMUN  DATE 19/07/2010   AUTEUR TARDIEU N.TARDIEU 
+#& MODIF COMMUN  DATE 20/09/2010   AUTEUR TARDIEU N.TARDIEU 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,17 +19,21 @@
 # RESPONSABLE REZETTE C.REZETTE
 def C_SOLVEUR() : return FACT(statut='d',
            METHODE=SIMP(statut='f',typ='TXM',defaut="MULT_FRONT",into=("MULT_FRONT","LDLT","GCPC","MUMPS","FETI","PETSC") ),
+# --------------------------------------------------------------------------------------------------------------------------------
            b_mult_front    =BLOC(condition = "METHODE == 'MULT_FRONT' ",fr="Paramètres de la méthode multi frontale",
              RENUM           =SIMP(statut='f',typ='TXM',defaut="METIS",into=("MD","MDA","METIS") ),
            ),
+# --------------------------------------------------------------------------------------------------------------------------------
            b_ldlt         =BLOC(condition = "METHODE == 'LDLT' ",fr="Paramètres de la méthode LDLT",
              RENUM           =SIMP(statut='f',typ='TXM',defaut="RCMK",into=("RCMK","SANS") ),
            ),
+# --------------------------------------------------------------------------------------------------------------------------------
            b_direct_hybride =BLOC( condition = "METHODE=='LDLT' or METHODE=='MULT_FRONT' or METHODE=='MUMPS' or METHODE=='FETI' ",
                                    fr="Paramètres relatifs à la non inversibilité de la matrice à factoriser",
              NPREC           =SIMP(statut='f',typ='I',defaut= 8 ),
              STOP_SINGULIER  =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON","DECOUPE") ),
            ),
+# --------------------------------------------------------------------------------------------------------------------------------
            b_gcpc         =BLOC(condition = "METHODE == 'GCPC' ", fr="Paramètres de la méthode du gradient conjugué",
              PRE_COND        =SIMP(statut='f',typ='TXM',into=("LDLT_INC","LDLT_SP"),defaut="LDLT_INC" ),
              b_ldltinc       =BLOC(condition = "PRE_COND == 'LDLT_INC' ", fr="Paramètres de la factorisation incomplète",
@@ -42,6 +46,7 @@ def C_SOLVEUR() : return FACT(statut='d',
              RESI_RELA       =SIMP(statut='f',typ='R',defaut= 1.E-6 ),
              NMAX_ITER       =SIMP(statut='f',typ='I',defaut= 0 ),
            ),
+# --------------------------------------------------------------------------------------------------------------------------------
            b_mumps        =BLOC(condition = "METHODE == 'MUMPS' ",fr="Paramètres de la méthode MUMPS",
              TYPE_RESOL      =SIMP(statut='f',typ='TXM',defaut="AUTO",into=("NONSYM","SYMGEN","SYMDEF","AUTO")),
              PRETRAITEMENTS  =SIMP(statut='f',typ='TXM',defaut="AUTO",into=("SANS","AUTO")),
@@ -55,6 +60,7 @@ def C_SOLVEUR() : return FACT(statut='d',
              MIXER_PRECISION =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON")),
              MATR_DISTRIBUEE =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON")),
              ),
+# --------------------------------------------------------------------------------------------------------------------------------
            b_feti          =BLOC(condition = "METHODE == 'FETI' ",fr="Paramètres de la méthode FETI 1",
              PARTITION       =SIMP(statut='o',typ=sd_feti_sdaster),
              RENUM           =SIMP(statut='f',typ='TXM',defaut="METIS",into=("MD","MDA","METIS") ),
@@ -73,22 +79,26 @@ def C_SOLVEUR() : return FACT(statut='d',
              NB_SD_PROC0     =SIMP(statut='f',typ='I',defaut=0,val_min=0),
              ACCELERATION_SM =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON") ),
            ),
+# --------------------------------------------------------------------------------------------------------------------------------
            b_petsc          =BLOC(condition = "METHODE == 'PETSC' ",fr="Paramètres de la méthode PETSC",
              ALGORITHME      =SIMP(statut='f',typ='TXM',into=("BCGS","BICG","CG","CR","GMRES","TFQMR",),defaut="CG" ),
              PRE_COND        =SIMP(statut='f',typ='TXM',into=("LDLT_INC","JACOBI","SOR","LDLT_SP"),defaut="LDLT_INC" ),
-             b_petsc_ilu     =BLOC(condition = "PRE_COND == 'LDLT_INC' ",
+             b_ldlt_inc     =BLOC(condition = "PRE_COND == 'LDLT_INC' ",
                NIVE_REMPLISSAGE = SIMP(statut='f',typ='I',defaut= 0 ),
                REMPLISSAGE      = SIMP(statut='f',typ='R',defaut= 1.0),
                RENUM            =SIMP(statut='f',typ='TXM',defaut="RCMK",into=("SANS","RCMK") ),
-             ),             
-             b_simple        =BLOC(condition = "PRE_COND == 'LDLT_SP' ", fr="Paramètres de la factorisation simple précision",
+             ),
+             b_ldlt_sp      =BLOC(condition = "PRE_COND == 'LDLT_SP' ", fr="Paramètres de la factorisation simple précision",
                REAC_PRECOND        =SIMP(statut='f',typ='I',defaut=5, ),
-               RENUM              =SIMP(statut='f',typ='TXM',defaut="SANS",into=("SANS","RCMK") ),
-               ),
-             RESI_RELA       =SIMP(statut='f',typ='R',defaut= 1.E-6),
+               RENUM               =SIMP(statut='f',typ='TXM',defaut="SANS",into=("SANS","RCMK") ),
+             ),
+             b_jacobi_sor   =BLOC(condition = "PRE_COND == 'JACOBI' or PRE_COND == 'SOR'", 
+                                                                         fr="Paramètres des préconditionneurs JACOBI et SOR",
+               RENUM               =SIMP(statut='f',typ='TXM',defaut="SANS",into=("SANS","RCMK") ),
+             ),
+             RESI_RELA       =SIMP(statut='f',typ='R',defaut= 1.E-6 ),
              NMAX_ITER       =SIMP(statut='f',typ='I',defaut= -1 ),
            ),
-
-
+# --------------------------------------------------------------------------------------------------------------------------------
            SYME            =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON") ),
          );

@@ -1,4 +1,4 @@
-# MODIF  DATE 10/08/2010   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 21/09/2010   AUTEUR REZETTE C.REZETTE 
 # TITRE  FISSURE SEMI-ELLIPTIQUE AVEC MILIEU INFINI
 # sslv110f.para = tps_job 450 mem_job 1200Mo mem_aster 40 ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -72,7 +72,6 @@ FISS=DEFI_FISS_XFEM(MODELE=MODELEIN,
                                  VECT_X         = (0. , 1. , 0. ),
                                  VECT_Y         = (1., 0. , 0. ),
                                  ),
-                    GROUP_MA_ENRI='TUBE',
                     ORIE_FOND=_F(PFON_INI  = (x0, yi, z0),
                                  VECT_ORIE = (0. , 0. , 1. ),
                                  POINT_ORIG = (0., 0., 0.),),

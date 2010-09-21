@@ -1,4 +1,4 @@
-# MODIF  DATE 10/08/2010   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 21/09/2010   AUTEUR REZETTE C.REZETTE 
 # TITRE PROPAGATION DE FISSURE DEBOUCHANTE DANS UNE PLAQUE 3D DE LARGEUR FINIE AVEC X-FEM
 # sslv315b.para = tps_job 260 mem_job 1024Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -102,7 +102,6 @@ for i in range(nbcalc) :
                                
    FF[i]=DEFI_FISS_XFEM(DEFI_FISS=_F(GROUP_MA_FISS='FISS_'+str(i),
                                  GROUP_MA_FOND='FOND_'+str(i)),
-                   GROUP_MA_ENRI='VOL',
                     ORIE_FOND=_F(PFON_INI  = (0., 2., 8.),
                                  VECT_ORIE = (0. , 0. , -1. ),
                                  POINT_ORIG = (0.5, 0., 0.),),

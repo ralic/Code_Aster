@@ -2,7 +2,7 @@
      &                  NNE   ,NDIM  ,JACOBI)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 14/09/2010   AUTEUR ABBAS M.ABBAS 
+C MODIF ELEMENTS  DATE 20/09/2010   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -110,6 +110,7 @@ C
 7         CONTINUE
           IF (XX.EQ.0.D0) THEN
             XX=0.01D-5
+            CALL U2MESS('A','CONTACT2_14')
           ENDIF
           JACOBI = SQRT(DXDS**2+DYDS**2)*ABS(XX)
         ELSE
@@ -127,6 +128,7 @@ C
 3          CONTINUE
            IF (XX.EQ.0.D0) THEN
              XX=0.01D-5
+             CALL U2MESS('A','CONTACT2_14')
            ENDIF
            JACOBI = SQRT(DXDS**2+DYDS**2)*ABS(XX)
          ELSE

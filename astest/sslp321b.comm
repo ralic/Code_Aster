@@ -1,4 +1,4 @@
-# MODIF  DATE 10/08/2010   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 21/09/2010   AUTEUR REZETTE C.REZETTE 
 # TITRE PROPAGATION D'UNE FISSURE X-FEM DANS UNE PLAQUE EN FLEXION 3 POINTS
 # sslp321b.para = tps_job 350 mem_job 150Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -80,7 +80,6 @@ FISS = [None]*(NPAS+2)
 
 FISS[0]=DEFI_FISS_XFEM(MODELE=MODEL,
                        DEFI_FISS=_F(FONC_LT=LT,FONC_LN=LN,),
-                       GROUP_MA_ENRI='Surface',
 #                        TYPE_ENRI_FOND = 'GEOMETRIQUE',
 #                        RAYON_ENRI = 0.2,
                        );

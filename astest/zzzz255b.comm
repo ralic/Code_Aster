@@ -1,4 +1,4 @@
-# MODIF  DATE 22/02/2010   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 21/09/2010   AUTEUR REZETTE C.REZETTE 
 # TITRE VALIDATION DE L'OPTION TEST_MAIL DANS PROPA_FISS
 # zzzz255b.para = tps_job 250 mem_job 512Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -50,8 +50,7 @@ Fiss[0] = DEFI_FISS_XFEM(MODELE=plate,
                                       DEMI_PETIT_AXE = rayon,
                                       CENTRE         = (0., 0., 0.),
                                       VECT_X         = (1. , 0. , 0. ),
-                                      VECT_Y         = (0., 1. , 0. ),),
-                         GROUP_MA_ENRI='ALL',);
+                                      VECT_Y         = (0., 1. , 0. ),),);
 
 
 #****************************

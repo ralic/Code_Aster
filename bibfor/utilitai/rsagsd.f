@@ -4,7 +4,7 @@
       CHARACTER*(*) NOMSD
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 20/09/2010   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -24,6 +24,8 @@ C ======================================================================
 C RESPONSABLE VABHHTS J.PELLET
 C       REDIMENSIONNEMENT D'UNE STRUCTURE DE DONNEES "RESULTAT-COMPOSE"
 C       (LA TAILLE EST DOUBLEE SI LA LONGEUR VAUT 0)
+C       LA SD RESTE INCHANGEE SI ELLE EXISTE ET SI LA TAILLE DEMANDEE 
+C       EST INFERIEURE OU EGALE A L'ACTUELLE
 C ----------------------------------------------------------------------
 C IN  : NOMSD  : NOM DE LA STRUCTURE "RESULTAT" A AGRANDIR
 C IN  : ILONG  : NOUVELLE LONGUEUR DE LA S.D.
@@ -76,7 +78,7 @@ C ----------------------------------------------------------------------
       ELSE
         NEWNB = ILONG
       END IF
-      CALL ASSERT(NEWNB.GT.NBORDR)
+      IF ( NEWNB.LE.NBORDR ) GOTO 9999
       NEWORD = MIN(NEWNB,NBORDR)
       NEWORL = MIN(NEWNB,NBORLU)
 
@@ -216,6 +218,8 @@ C+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
         CALL JUVECA(NOMOBJ,N2*NEWNB)
       ENDIF
 
+ 9999 CONTINUE
 
       CALL JEDEMA()
+
       END

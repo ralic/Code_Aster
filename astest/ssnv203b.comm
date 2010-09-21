@@ -1,4 +1,4 @@
-# MODIF  DATE 10/08/2010   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 21/09/2010   AUTEUR REZETTE C.REZETTE 
 # TITRE : APPLICATION D'UNE PRESSION SUR LES LEVRES D'UNE FISSURE AVEC X-FEM EN 3D
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -59,8 +59,7 @@ LN=FORMULE(NOM_PARA=('X','Y','Z'),VALE='Z-0.5');
 
 FISS=DEFI_FISS_XFEM(MODELE=MO,
                     TYPE_DISCONTINUITE='INTERFACE',
-                    DEFI_FISS=_F(FONC_LN=LN,),
-                    GROUP_MA_ENRI='VOL',);
+                    DEFI_FISS=_F(FONC_LN=LN,),);
 
 MODELEK=MODI_MODELE_XFEM(MODELE_IN=MO,
                          FISSURE=FISS,

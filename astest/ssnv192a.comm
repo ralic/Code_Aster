@@ -1,4 +1,4 @@
-# MODIF  DATE 10/08/2010   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 21/09/2010   AUTEUR REZETTE C.REZETTE 
 # TITRE EPROUVETTE AVEC FISSURE CENTRALE XFEM
 # ssnv192a.para = tps_job 130 mem_job 512Mo mem_aster 50 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -191,7 +191,6 @@ ZVECT = cos(ALPHA) ;
 FISS=DEFI_FISS_XFEM(MODELE=MODELEIN,
                     DEFI_FISS=_F(FONC_LT=LT,
                                  FONC_LN=LN,),
-                    GROUP_MA_ENRI='VOL',
                     ORIE_FOND=_F(PFON_INI=(XFONI, YFONI, ZFONI,),
                                  VECT_ORIE=(XVECT, YVECT, ZVECT,),
                                  POINT_ORIG=(XORI, YORI, ZORI,),),

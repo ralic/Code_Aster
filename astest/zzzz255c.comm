@@ -1,4 +1,4 @@
-# MODIF  DATE 22/02/2010   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 21/09/2010   AUTEUR REZETTE C.REZETTE 
 # TITRE VALIDATION DE L'OPTION INITIALISATION/ELLIPSE DANS PROPA_FISS
 # zzzz255c.para = tps_job 250 mem_job 512Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -85,7 +85,6 @@ for i in range(0,(nbcalc-1)) :
                             
  FF[i]=DEFI_FISS_XFEM(DEFI_FISS=_F(GROUP_MA_FISS='FISS_'+str(i),
                               GROUP_MA_FOND='FOND_'+str(i),),
-                 GROUP_MA_ENRI='ALL',
                  ORIE_FOND=_F(PFON_INI  = (-500., rayon, 0.),
                               VECT_ORIE = (0. , 0. , 1. ),
                               POINT_ORIG = (0., 0., 0.),),

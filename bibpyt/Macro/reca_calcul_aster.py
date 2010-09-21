@@ -1,4 +1,4 @@
-#@ MODIF reca_calcul_aster Macro  DATE 11/05/2010   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF reca_calcul_aster Macro  DATE 21/09/2010   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE ASSIRE A.ASSIRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -299,6 +299,19 @@ class CALCUL_ASTER:
       if self.vector_output: return self.erreur
       else:                  return self.norme
 
+
+  # ------------------------------------------------------------------------------
+  def verif_borne_gradient(self, val, dX):
+      """
+         Verification que les parametres perturbes sont bien dans l'intervalle defini par l'utilisateur
+         Sinon, on colle le parametre a la borne
+      """
+      print self.para
+      print self.LIST_PARA
+      for i in range(len(val)):
+         print i, val[i], dX[i]
+         # min
+      sys.exit()
 
   # ------------------------------------------------------------------------------
   def calcul_FG(self, val):

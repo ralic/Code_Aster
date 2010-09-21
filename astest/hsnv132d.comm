@@ -1,4 +1,4 @@
-# MODIF  DATE 10/08/2010   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 21/09/2010   AUTEUR REZETTE C.REZETTE 
 # TITRE : FISSURE X-FEM EN THERMO-ELASTICITE 3D 
 # hsnv132d.para = tps_job 100 mem_job 500Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -81,7 +81,6 @@ LT=FORMULE(NOM_PARA=('X','Y'),VALE='-X+0.5');
 
 FISS=DEFI_FISS_XFEM(MODELE=MODELE,  
                     DEFI_FISS=_F(FONC_LT=LT,FONC_LN=LN,),
-                    GROUP_MA_ENRI='VOL',
                     ORIE_FOND=_F(PFON_INI= (0.5 ,0.5 ,0. ),
                                  VECT_ORIE=(0.  ,-1.  ,0. ),
                                  POINT_ORIG=(0.  ,0.  ,0. ),),

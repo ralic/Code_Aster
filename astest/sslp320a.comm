@@ -1,4 +1,4 @@
-# MODIF  DATE 10/08/2010   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 21/09/2010   AUTEUR REZETTE C.REZETTE 
 # TITRE PROPAGATION D UNE FISSURE X-FEM DEBOUCHANTE SOLLICITEE EN MODE I
 # sslp320a.para = tps_job 150 mem_job 150Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -131,7 +131,6 @@ for i in range(NPAS+1) :
                                                                        
     FISS[i]=DEFI_FISS_XFEM(DEFI_FISS=_F(GROUP_MA_FISS='FISS_'+str(i),
                                     GROUP_MA_FOND='FOND_'+str(i),),
-                   GROUP_MA_ENRI='Surface',
                    MODELE=MODEL[i],                         
          #          TYPE_ENRI_FOND = 'GEOMETRIQUE',
          #           TYPE_ENRI_FOND = 'TOPOLOGIQUE',

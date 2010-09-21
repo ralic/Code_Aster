@@ -1,4 +1,4 @@
-# MODIF  DATE 10/08/2010   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 21/09/2010   AUTEUR REZETTE C.REZETTE 
 # TITRE PROPAGATION D UNE FISSURE XFEM NON DEBOUCHANTE SOLLICITE EN MODE I
 # sslp318b.para = tps_job 250 mem_job 512Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -97,8 +97,7 @@ Fiss = [None]*NPS
 
 Fiss[1]=DEFI_FISS_XFEM(MODELE=plate,
                        DEFI_FISS=_F(FONC_LT=LT,
-                                    FONC_LN=LN,),
-                       GROUP_MA_ENRI='All',);
+                                    FONC_LN=LN,),);
 
 # FUNCTION POUR AJOUTER LA COLONNE NUME_ORDRE
 # A LA TABLE ISSUE PAR CALC_G

@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 14/09/2010   AUTEUR REZETTE C.REZETTE 
+C MODIF ALGELINE  DATE 21/09/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -310,7 +310,7 @@ C ----------------------------------------------------------------------
         IF (NN1.EQ.0) THEN
           CALL U2MESS('F','ALGELINE2_98')
         ENDIF
-        CALL RDTMAI(NOMAIN,NOMAOU,'G',' ',' ')
+        CALL RDTMAI(NOMAIN,NOMAOU,'G',' ',' ',0,0)
 C ---    VERIFICATIONS DU MAILLAGE
         CALL CHCKMA(NOMAOU,NOMCMD,1.0D-03)
         GOTO 350

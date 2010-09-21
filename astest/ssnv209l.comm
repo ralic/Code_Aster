@@ -1,4 +1,4 @@
-# MODIF  DATE 10/08/2010   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 21/09/2010   AUTEUR REZETTE C.REZETTE 
 # TITRE INTERFACE EN CONTACT FROTTANT AVEC X-FEM
 # ssnv209l.para = tps_job 600 mem_job 800Mo mem_aster 80 ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -134,8 +134,7 @@ LN=FORMULE(NOM_PARA=('X','Y','Z'),VALE='Y');
 
 FISS=DEFI_FISS_XFEM(MODELE=MODELEIN,
                     TYPE_DISCONTINUITE='INTERFACE',
-                    DEFI_FISS=_F(FONC_LN=LN),
-                    GROUP_MA_ENRI='VOLU',)
+                    DEFI_FISS=_F(FONC_LN=LN),)
                     
 MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,
                          FISSURE=FISS,

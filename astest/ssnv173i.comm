@@ -1,4 +1,4 @@
-# MODIF  DATE 10/08/2010   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 21/09/2010   AUTEUR REZETTE C.REZETTE 
 # TITRE BARREAU FISSURE AVEC X-FEM
 # ssnv173i.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -38,7 +38,6 @@ LT=FORMULE(NOM_PARA=('X','Y','Z'),VALE='X-10. ');
 FISS=DEFI_FISS_XFEM(MODELE=MODELEIN,
                     TYPE_DISCONTINUITE='INTERFACE',
                     DEFI_FISS=_F(FONC_LN=LN,),
-                    GROUP_MA_ENRI='VOL',
                     INFO=3,
                     );
 

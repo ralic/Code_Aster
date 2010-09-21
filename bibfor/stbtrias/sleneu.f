@@ -1,7 +1,7 @@
       SUBROUTINE SLENEU(IUNV,NBNODE,AMA,BMA,CMA,AMI,BMI,CMI,MIX,
      &                  MAN,ITES,DATSET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF STBTRIAS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF STBTRIAS  DATE 16/09/2010   AUTEUR CORUS M.CORUS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -117,7 +117,19 @@ C
       CALL JEEXIN ( '&&PRESUP.COOR.NOEUDS', IRE2 )
       IF ( IRE2 .NE. 0 ) CALL JEDETR( '&&PRESUP.COOR.NOEUDS' )
       CALL WKVECT('&&PRESUP.COOR.NOEUDS','V V R',3*NTAIL,JCOOR)
-  1   CONTINUE
+C
+C -->  GESTION DES SYSTEMES DE COORDONNEES - PREMIERE PARTIE
+C -->  ON TESTE L'EXISTENCE D'UN SYSTEME DE COORDONNEES (DATASET 2420)
+C
+      CALL JEEXIN('&&IDEAS.SYST',IRET)
+      IF (IRET.EQ.0) THEN
+        CALL U2MESS('I','STBTRIAS_9')
+C     Il n'y a pas de sys de coord defini dans le fichier, pour ne pas
+C     planter on en cree un bidon ici qu'on declare comme cartesien
+         ISYST = 0
+      ENDIF
+
+  1   CONTINUE  
       DO 10 ITER=1,NITER
         READ (IUNV,'(A)') CBUF
         READ (UNIT=CBUF,FMT='(4X,I2)') IND
@@ -132,16 +144,13 @@ C
           READ (CBUF,'(4I10)') NODE,I,J,ICNODE
           READ (IUNV,'(3E25.16)') X,Y,Z
         ENDIF
+        
 C
-C -->  GESTION DES SYSTEMES DE COORDONNEES
+C -->  GESTION DES SYSTEMES DE COORDONNEES - BIS
+C -->  SI UN SYSTEME EST DEFINI, ON LE RECUPERE
 C
         CALL JEEXIN('&&IDEAS.SYST',IRET)
-        IF (IRET.EQ.0) THEN
-          CALL U2MESS('I','STBTRIAS_9')
-C     Il n'y a pas de sys de coord defini dans le fichier, pour ne pas
-C     planter on en cree un bidon ici qu'on declare comme cartesien
-           ISYST = 0
-        ELSE
+        IF (IRET.NE.0) THEN
            CALL JEVEUO('&&IDEAS.SYST','L',JSYS)
            ISYST = ZI(JSYS-1+I)
         ENDIF

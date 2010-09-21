@@ -1,4 +1,4 @@
-# MODIF  DATE 10/08/2010   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 21/09/2010   AUTEUR REZETTE C.REZETTE 
 # TITRE PROPAGATION D UNE FISSURE XFEM EN 2D DANS UNE PLAQUE TROUEE EN FLEXION 3 POINTS
 # sslp315e.para = tps_job 250 mem_job 512Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -86,7 +86,6 @@ LT = FORMULE(VALE='Y-YFiss',
 fiss[0] = DEFI_FISS_XFEM(MODELE=mod,
                          DEFI_FISS=_F(FONC_LT=LT,
                                       FONC_LN=LN,),
-                         GROUP_MA_ENRI='All',
                          );
 
 # *********************************************
@@ -105,7 +104,6 @@ modlvs=AFFE_MODELE(MAILLAGE=mailvs,
 fislvt = DEFI_FISS_XFEM(MODELE=modlvs,
                         DEFI_FISS=_F(FONC_LT=LT,
                                      FONC_LN=LN,),
-                        GROUP_MA_ENRI='All',
                          );
 
 modXlvt=MODI_MODELE_XFEM(MODELE_IN=modlvs,

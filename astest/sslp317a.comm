@@ -1,4 +1,4 @@
-# MODIF  DATE 10/08/2010   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 21/09/2010   AUTEUR REZETTE C.REZETTE 
 # TITRE VALIDATION DE LA MACRO-COMMANDE RAFF_XFEM SUR UNE PLAQUE MULTI-FISSUREE
 # sslp317a.para = tps_job 60 mem_job 100Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -80,21 +80,17 @@ for num_calc in range(0,nb_raff+1) :
                                      MODELISATION='D_PLAN',),),);
 
    FISS1[num_calc]=DEFI_FISS_XFEM(MODELE=MO[num_calc],  
-                                  DEFI_FISS=_F(FONC_LT=LT1,FONC_LN=LN1,),
-                                  GROUP_MA_ENRI='SURF');
+                                  DEFI_FISS=_F(FONC_LT=LT1,FONC_LN=LN1,),);
 
    FISS2[num_calc]=DEFI_FISS_XFEM(MODELE=MO[num_calc],  
                                   DEFI_FISS=_F(FONC_LN=LN2,),
-                                  TYPE_DISCONTINUITE='INTERFACE',
-                                  GROUP_MA_ENRI='SURF')
+                                  TYPE_DISCONTINUITE='INTERFACE',)
 
    FISS3[num_calc]=DEFI_FISS_XFEM(MODELE=MO[num_calc],  
-                                  DEFI_FISS=_F(FONC_LT=LT3,FONC_LN=LN3,),
-                                  GROUP_MA_ENRI='SURF');
+                                  DEFI_FISS=_F(FONC_LT=LT3,FONC_LN=LN3,),);
 
    FISS4[num_calc]=DEFI_FISS_XFEM(MODELE=MO[num_calc],  
-                                  DEFI_FISS=_F(FONC_LT=LT4,FONC_LN=LN4,),
-                                  GROUP_MA_ENRI='SURF');
+                                  DEFI_FISS=_F(FONC_LT=LT4,FONC_LN=LN4,),);
 
    # on ne raffine pas la derniere iteration
    if num_calc < nb_raff :

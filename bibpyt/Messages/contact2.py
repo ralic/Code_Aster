@@ -1,4 +1,4 @@
-#@ MODIF contact2 Messages  DATE 14/09/2010   AUTEUR ABBAS M.ABBAS 
+#@ MODIF contact2 Messages  DATE 20/09/2010   AUTEUR DESOZA T.DESOZA 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -57,6 +57,16 @@ Vérifiez votre AFFE_MODELE et le type de vos mailles dans la définition des surf
 Contact méthodes maillées. Il existe une zone de contact dans laquelle un noeud est commun aux surfaces maîtres et
 esclaves. Vérifiez la définition de vos surfaces de contact ou bien renseignez le mot-clé SANS_GROUP_NO.
 """),
+
+14 : _("""
+Contact méthode continue. 
+  -> Une zone de contact est définie sur une modélisation axisymétrique. Le Jacobien
+     est nul car un noeud de la surface de contact esclave appartient à l'axe.
+     La pression de contact (degré de liberté LAGS_C) risque d'être erronée.
+  -> Conseil :
+     Il faut changer de schéma d'intégration et utiliser 'GAUSS'.
+"""),
+
 
 }
 

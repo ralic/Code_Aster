@@ -4,7 +4,7 @@
      &                  LISCH2,SDDYNA)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 14/09/2010   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 20/09/2010   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -97,8 +97,9 @@ C
       REAL*8       DIINST,THETA
       LOGICAL      DIINCL,NDYNLO,ISFONC,CFDISL,LNOEU
       LOGICAL      LDYNA ,LCONT ,LERRT,LTHM
-      LOGICAL      LXFFM ,LXFCM ,LXCZM
-      CHARACTER*19 CNSINR
+      LOGICAL      LXFFM ,LXFCM ,LXCZM,LSPRNO
+      CHARACTER*19 CNSINR,PRNO,CFPRNO
+      INTEGER      JCFPRN
       CHARACTER*19 XCOHES,XINDCO,XSEUCO
 C
 C ----------------------------------------------------------------------
@@ -190,10 +191,25 @@ C
           IF (LNOEU) THEN
             CALL RSEXCH(RESULT,'VALE_CONT',NUMARC,CHAMP ,IRET)
             IF (IRET.LE.100) THEN
-              CNSINR = RESOCO(1:14)//'.VALE'        
-              CALL CNSCNO(CNSINR,' ','NON','G',CHAMP ,'F',IBID)
+              CNSINR = RESOCO(1:14)//'.VALE'
+              CFPRNO = RESOCO(1:14)//'.PRNO'
+              CALL JEVEUO(CFPRNO,'E',JCFPRN)
+              PRNO   = ZK24(JCFPRN)(1:19)
+              IF (PRNO.EQ.' ') THEN
+               LSPRNO = .TRUE.
+              ELSE  
+               LSPRNO = .FALSE.
+              ENDIF
+              CALL CNSCNO(CNSINR,PRNO,'NON','G',CHAMP ,'F',IBID)
+              CALL DISMOI('F','PROF_CHNO',CHAMP, 'CHAM_NO' ,
+     &                 IBID,PRNO,IRET)
               CALL RSNOCH(RESULT,'VALE_CONT',NUMARC,' ')
               CALL NMIMPR('IMPR','ARCHIVAGE','VALE_CONT',INSTAP,NUMARC)
+              IF (LSPRNO) THEN
+                CALL DISMOI('F','PROF_CHNO',CHAMP, 'CHAM_NO' ,
+     &                      IBID,PRNO,IRET)
+                ZK24(JCFPRN) = PRNO
+              ENDIF
             ENDIF
           ENDIF
         END IF

@@ -2,7 +2,7 @@
      &                  IFMUMP,ELI2LG,RSOLU,CSOLU,VCINE)
       IMPLICIT NONE
 !           CONFIGURATION MANAGEMENT OF EDF VERSION
-!& MODIF AMUMPP MUMPS  DATE 22/06/2010   AUTEUR SELLENET N.SELLENET 
+!& MODIF AMUMPP MUMPS  DATE 21/09/2010   AUTEUR PELLET J.PELLET 
 ! ==================================================================
 ! COPYRIGHT (C) 1991 - 2008  EDF R&D              WWW.CODE-ASTER.ORG
 !
@@ -69,7 +69,7 @@ C============================================================
       TYPE (DMUMPS_STRUC) , POINTER :: DMPSK
       TYPE (ZMUMPS_STRUC) , POINTER :: ZMPSK
       INTEGER      N,NNBSOL,RANG,LMAT,I,IERD,IDVALC,IBID,
-     &             JDELG,K,IFM,NIV,ISLVK
+     &             JDELG,K,IFM,NIV,ISLVK,JDLG2,JJ
       INTEGER*4    N4
       CHARACTER*1  ROUCS(NMXINS),ROUC,PRECS(NMXINS)
       CHARACTER*4  ETAMS(NMXINS),ETAM
@@ -313,20 +313,32 @@ C       ------------------------------------------------
 
           IF (ELI2LG) THEN
 C           -- PRISE EN COMPTE DES LAGRANGES "2" :
+C           -- EN SORTIE DE RESOLUTION AVEC ELIM_LAGR2 ON A :
+C           -- LAGR1 = LAGR1 + LAGR2, ON DOIT RECTIFIER CELA :
+C           -- LAGR1 = LAGR1/2 PUIS LAGR2 = LAGR1
 C           -- VALIDE QUE SUR PROC 0, MAIS C'EST OK CAR ON
 C           -- BROADCAST LA SOLUTION APRES
             CALL JEVEUO(NONU//'.NUME.DELG','L',JDELG)
+            CALL NUDLG2(NONU)            
+            CALL JEVEUO(NONU//'.NUME.DLG2','L',JDLG2)
             IF (LTYPR) THEN
               DO I=1,NBSOL
                 DO K=1,N
-                  IF (ZI(JDELG-1+K).EQ.-2) RSOLU((I-1)*N+K)=0.D0
+                  IF (ZI(JDELG-1+K).EQ.-1) THEN
+                    RSOLU((I-1)*N+K)= 0.5D0 * RSOLU((I-1)*N+K)
+                    JJ = ZI(JDLG2-1+K)
+                    RSOLU((I-1)*N+JJ) = RSOLU((I-1)*N+K)
+                  ENDIF
                 ENDDO
               ENDDO
             ELSE
               DO I=1,NBSOL
                 DO K=1,N
-                  IF (ZI(JDELG-1+K).EQ.-2)
-     &              CSOLU((I-1)*N+K)=DCMPLX(0.D0,0.D0)
+                  IF (ZI(JDELG-1+K).EQ.-1) THEN
+                    CSOLU((I-1)*N+K) = 0.5D0*CSOLU((I-1)*N+K)
+                    JJ = ZI(JDLG2-1+K)
+                    CSOLU((I-1)*N+JJ) = CSOLU((I-1)*N+K)
+                  ENDIF
                 ENDDO
               ENDDO
             ENDIF

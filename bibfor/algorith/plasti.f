@@ -5,7 +5,7 @@
         IMPLICIT NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 12/07/2010   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 20/09/2010   AUTEUR FLEJOU J-L.FLEJOU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -75,7 +75,7 @@ C               OPT     OPTION DE CALCUL A FAIRE
 C                               'RIGI_MECA_TANG'> DSDE(T)
 C                               'FULL_MECA'     > DSDE(T+DT) , SIG(T+DT)
 C                               'RAPH_MECA'     > SIG(T+DT)
-C               ANGMAS  : LES TROIS ANGLES DU MOT_CLEF MASSIF 
+C               ANGMAS  : LES TROIS ANGLES DU MOT_CLEF MASSIF
 C                         (AFFE_CARA_ELEM),
 C               + UN REEL QUI VAUT 0 SI NAUTIQUIES OU 2 SI EULER
 C               + LES 3 ANGLES D'EULER
@@ -237,123 +237,110 @@ C       ----------------------------------------------------------------
 C
 C --    INITIALISATION DES PARAMETRES DE CONVERGENCE ET ITERATIONS
 C
-        IRTETI = 0
-        IRTET = 0
-        ITMAX    = INT(CRIT(1))
-        TOLER    =     CRIT(3)
-        THETA    =     CRIT(4)
-        LOI      = COMP(1)
-        MOD      = TYPMOD(1)
-        DT = TIMEF - TIMED
+      IRTETI   = 0
+      IRTET    = 0
+      ITMAX    = INT(CRIT(1))
+      TOLER    =     CRIT(3)
+      THETA    =     CRIT(4)
+      LOI      = COMP(1)
+      MOD      = TYPMOD(1)
+      DT       = TIMEF - TIMED
 C
-C --    OPTION SUPPRIMEE CAR TYPMA EST IMPOSE SUIVANT QUE L'ON EST EN
-C --    PLASTCITE OU VISCOPLASTICITE. TYPMA EST DEFINI DANS LCMATE
-C --    POUR LES MODELE VISCO-PLASTIQUES A LA VALEUR 'COHERENT'.
-C          IF ( INT(CRIT(2)) .EQ. 0 ) THEN
-C          TYPMA = 'VITESSE '
-C          ELSE
-C          TYPMA = 'COHERENT'
-C          ENDIF
+C --  OPTION SUPPRIMEE CAR TYPMA EST IMPOSE SUIVANT QUE L'ON EST EN
+C --  PLASTCITE OU VISCOPLASTICITE. TYPMA EST DEFINI DANS LCMATE
+C --  POUR LES MODELE VISCO-PLASTIQUES A LA VALEUR 'COHERENT'.
+C      IF ( INT(CRIT(2)) .EQ. 0 ) THEN
+C        TYPMA = 'VITESSE '
+C      ELSE
+C        TYPMA = 'COHERENT'
+C      ENDIF
 C
-          TYPMA = 'VITESSE '
+      TYPMA = 'VITESSE '
 C
-          IF ( ITMAX .LE. 0 )ITMAX = -ITMAX
+      IF ( ITMAX .LE. 0 )ITMAX = -ITMAX
 C
-C --    RECUPERATION COEF(TEMP(T))) LOI ELASTO-PLASTIQUE A T ET/OU T+DT
-C                    NB DE CMP DIRECTES/CISAILLEMENT + NB VAR. INTERNES
+C --  RECUPERATION COEF(TEMP(T))) LOI ELASTO-PLASTIQUE A T ET/OU T+DT
+C     NB DE CMP DIRECTES/CISAILLEMENT + NB VAR. INTERNES
 C
-        CALL LCMATE ( FAMI,KPG,KSP,COMP,MOD,IMAT,NMAT,TEMPD,TEMPF,0,
-     &                TYPMA,HSR,MATERD,MATERF,MATCST,NBCOMM,CPMONO,
-     &                ANGMAS,PGL,ITMAX,TOLER,NDT,NDI,NR,NVI,VIND,TOUTMS)
-        IF (LOI(1:11).EQ.'MONOCRISTAL') THEN
-           IF(MOD.NE.'3D') THEN
-              SIGD(5)=0.D0
-              SIGD(6)=0.D0
-              EPSDT(5)=0.D0
-              EPSDT(6)=0.D0
-              DEPST(5)=0.D0
-              DEPST(6)=0.D0
-           ENDIF
-        ENDIF
+      CALL LCMATE( FAMI,KPG,KSP,COMP,MOD,IMAT,NMAT,TEMPD,TEMPF,0,
+     &             TYPMA,HSR,MATERD,MATERF,MATCST,NBCOMM,CPMONO,
+     &             ANGMAS,PGL,ITMAX,TOLER,NDT,NDI,NR,NVI,VIND,TOUTMS)
+      IF (LOI(1:11).EQ.'MONOCRISTAL') THEN
+         IF(MOD.NE.'3D') THEN
+            SIGD(5)=0.D0
+            SIGD(6)=0.D0
+            EPSDT(5)=0.D0
+            EPSDT(6)=0.D0
+            DEPST(5)=0.D0
+            DEPST(6)=0.D0
+         ENDIF
+      ENDIF
 
-C --    RETRAIT INCREMENT DE DEFORMATION DUE A LA DILATATION THERMIQUE
+C --  RETRAIT INCREMENT DE DEFORMATION DUE A LA DILATATION THERMIQUE
+      CALL LCDEDI(FAMI,KPG,KSP, NMAT,  MATERD, MATERF,
+     &            TEMPD, TEMPF,TREF,DEPST, EPSDT, DEPS, EPSD )
 C
-        CALL LCDEDI ( FAMI,KPG,KSP, NMAT,  MATERD, MATERF,
-     &                TEMPD, TEMPF,TREF,DEPST, EPSDT, DEPS, EPSD )
-C
-C --    RETRAIT ENDOGENNE ET RETRAIT DE DESSICCATION
-C
-        CALL LCDEHY ( FAMI, KPG, KSP, NMAT, MATERD, MATERF,
-     &                DEPS, EPSD )
+C --  RETRAIT ENDOGENNE ET RETRAIT DE DESSICCATION
+      CALL LCDEHY(FAMI, KPG, KSP, NMAT, MATERD, MATERF,
+     &            DEPS, EPSD )
 C
 C --    SEUIL A T > ETAT ELASTIQUE OU PLASTIQUE A T
-C
-        IF  ( ABS(VIND (NVI)) .LE. EPSI ) THEN
-           ETATD = 'ELASTIC'
-        ELSE
-           ETATD = 'PLASTIC'
-        ENDIF
-C
+      IF  ( ABS(VIND (NVI)) .LE. EPSI ) THEN
+         ETATD = 'ELASTIC'
+      ELSE
+         ETATD = 'PLASTIC'
+      ENDIF
 C
 C --> REDECOUPAGE IMPOSE
-        IF ( ICOMP .EQ. -1 .AND. OPT .NE. 'RIGI_MECA_TANG') THEN
-            IRTETI = 0
-            GOTO 9999
-        ENDIF
+      IF ( ICOMP .EQ. -1 .AND. OPT .NE. 'RIGI_MECA_TANG') THEN
+         IRTETI = 0
+         GOTO 9999
+      ENDIF
 C
-C       ----------------------------------------------------------------
-C       OPTIONS 'FULL_MECA' ET 'RAPH_MECA' = CALCUL DE SIG(T+DT)
-C       ----------------------------------------------------------------
+C     ----------------------------------------------------------------
+C     OPTIONS 'FULL_MECA' ET 'RAPH_MECA' = CALCUL DE SIG(T+DT)
+C     ----------------------------------------------------------------
 C
-        IF ( OPT .EQ. 'RAPH_MECA' .OR. OPT .EQ. 'FULL_MECA' ) THEN
-C
-C --    INTEGRATION ELASTIQUE SUR DT
-C
-        CALL LCELAS ( LOI  ,MOD , NMAT, MATERD, MATERF, MATCST,
-     1                NVI,  DEPS,
-     2                SIGD ,VIND,  SIGF,  VINF, THETA )
+      IF ( OPT .EQ. 'RAPH_MECA' .OR. OPT .EQ. 'FULL_MECA' ) THEN
+C --     INTEGRATION ELASTIQUE SUR DT
+         CALL LCELAS(LOI, MOD , NMAT, MATERD, MATERF, MATCST,
+     &               NVI, DEPS, SIGD, VIND,   SIGF,   VINF,
+     &               THETA)
 
+C --     PREDICTION ETAT ELASTIQUE A T+DT : F(SIG(T+DT),VIN(T)) = 0 ?
+         CALL LCCNVX(FAMI, KPG, KSP, LOI, IMAT, NMAT, MATERF,
+     &               SIGF, VIND,COMP, NBCOMM, CPMONO, PGL, NR, NVI,
+     &               VP,VECP, HSR, TOUTMS, TIMED,TIMEF, SEUIL)
 C
-C --    PREDICTION ETAT ELASTIQUE A T+DT : F(SIG(T+DT),VIN(T)) = 0 ?
+         IF ( SEUIL .GE. 0.D0 ) THEN
+C --        PREDICTION INCORRECTE > INTEGRATION ELASTO-PLASTIQUE SUR DT
+            ETATF = 'PLASTIC'
 C
-        CALL LCCNVX ( FAMI, KPG, KSP, LOI, IMAT, NMAT, MATERF,
-     &      SIGF, VIND,COMP, NBCOMM, CPMONO, PGL, NR, NVI,
-     &      VP,VECP, HSR, TOUTMS, TIMED,TIMEF, SEUIL)
-
+            CALL LCPLAS(FAMI,KPG,KSP,LOI,TOLER,ITMAX,MOD,IMAT,NMAT,
+     &                  MATERD,MATERF, NR, NVI,
+     &                  TIMED,TIMEF, DEPS, EPSD, SIGD ,VIND, SIGF,
+     &                  VINF,COMP,NBCOMM, CPMONO, PGL,TOUTMS,HSR,
+     &                  ICOMP, IRTET, THETA,VP,VECP,SEUIL, DEVG,
+     &                  DEVGII,DRDY,TAMPON,CRIT)
 C
-          IF ( SEUIL .GE. 0.D0 ) THEN
+            IF ( IRTET.GT.0 ) GOTO (1,2), IRTET
+         ELSE
+C --        PREDICTION CORRECTE > INTEGRATION ELASTIQUE FAITE
+            ETATF = 'ELASTIC'
+C ---       MISE A JOUR DE VINF EN FONCTION DE LA LOI
+C           ET POST-TRAITEMENTS POUR DES LOIS PARTICULIERES
+            CALL LCELPL(LOI,NMAT,MATERF,NVI,VIND,VINF)
+         ENDIF
 C
-C --      PREDICTION INCORRECTE > INTEGRATION ELASTO-PLASTIQUE SUR DT
+         IF ( LOI(1:6) .EQ. 'LAIGLE') THEN
+            CALL LGLDCM( NMAT, MATERF, SIGF, VINF )
+         ENDIF
+10       CONTINUE
 C
-          ETATF = 'PLASTIC'
+C --     CONTRAINTES PLANES
+         IF ( MOD(1:6) .EQ. 'C_PLAN' ) SIGF(3) = 0.D0
 C
-          CALL LCPLAS ( FAMI,KPG,KSP,LOI, TOLER, ITMAX, MOD, IMAT, NMAT,
-     1                  MATERD,MATERF, NR, NVI,
-     2                  TIMED,TIMEF, DEPS,   EPSD,  SIGD ,VIND, SIGF,
-     3                  VINF,COMP,NBCOMM, CPMONO, PGL,TOUTMS,HSR,
-     3          ICOMP, IRTET, THETA,VP,VECP,SEUIL, DEVG, DEVGII,DRDY,
-     4          TAMPON,CRIT)
-
-C
-          IF ( IRTET.GT.0 ) GOTO (1,2), IRTET
-          ELSE
-C
-C --      PREDICTION CORRECTE > INTEGRATION ELASTIQUE FAITE
-C
-          ETATF = 'ELASTIC'
-               VINF(NVI)=0.D0
-          ENDIF
-C
-       IF ( LOI(1:6) .EQ. 'LAIGLE') THEN
-          CALL LGLDCM( NMAT, MATERF, SIGF, VINF )
-       ENDIF
-   10  CONTINUE
-C
-C --    CONTRAINTES PLANES
-C
-        IF ( MOD(1:6) .EQ. 'C_PLAN' ) SIGF(3) = 0.D0
-C
-        ENDIF
+      ENDIF
 C
 C       ----------------------------------------------------------------
 C       OPTIONS 'FULL_MECA' ET 'RIGI_MECA_TANG' = CALCUL DE DSDE
@@ -362,88 +349,87 @@ C       EVALUATION DU JACOBIEN DSDE A (T+DT) POUR 'FULL_MECA'
 C       ET CALCUL ELASTIQUE    ET   A (T)    POUR 'RIGI_MECA_TANG'
 C       ----------------------------------------------------------------
 C
-        IF ( OPT .EQ. 'RIGI_MECA_TANG' .OR. OPT .EQ. 'FULL_MECA' ) THEN
-          IF ( OPT .EQ. 'RIGI_MECA_TANG' ) THEN
-          IF (ETATD.EQ.'ELASTIC'.OR.LOI.EQ.'LAIGLE') THEN
-            CALL LCJELA ( LOI  , MOD , NMAT, MATERD, VIND, DSDE)
+      IF ( OPT .EQ. 'RIGI_MECA_TANG' .OR. OPT .EQ. 'FULL_MECA' ) THEN
+         IF ( OPT .EQ. 'RIGI_MECA_TANG' ) THEN
+            IF (ETATD.EQ.'ELASTIC'.OR.LOI.EQ.'LAIGLE') THEN
+               CALL LCJELA ( LOI  , MOD , NMAT, MATERD, VIND, DSDE)
             ELSEIF ( ETATD .EQ. 'PLASTIC') THEN
-C   ------> ELASTOPLASTICITE ==> TYPMA = 'VITESSE '
-C   ------> VISCOPLASTICITE  ==> TYPMA = 'COHERENT '==> CALCUL ELASTIQUE
-                IF( TYPMA .EQ. 'COHERENT' ) THEN
+C   ------>    ELASTOPLASTICITE ==> TYPMA = 'VITESSE '
+C   ------>    VISCOPLASTICITE  ==> TYPMA = 'COHERENT '==> ELASTIQUE
+               IF( TYPMA .EQ. 'COHERENT' ) THEN
                   IF (LOI(1:11).EQ.'MONOCRISTAL') THEN
-                    CALL LCJPLC ( FAMI,KPG,KSP,LOI,MOD,NMAT,MATERF,
-     &              TIMED, TIMEF, COMP,NBCOMM, CPMONO, PGL,TOUTMS,HSR,
-     &              NR,NVI,EPSD,DEPS,ITMAX,TOLER,SIGD,VIND,SIGD,VIND,
-     &                   DSDE,DRDY,OPT, IRET )
-                    IF (IRET.NE.0) GOTO 1
+                     CALL LCJPLC(FAMI,KPG,KSP,LOI,MOD,NMAT,MATERF,
+     &                           TIMED,TIMEF,COMP,NBCOMM,CPMONO,
+     &                           PGL,TOUTMS,HSR,NR,NVI,EPSD,DEPS,
+     &                           ITMAX,TOLER,SIGD,VIND,SIGD,VIND,
+     &                           DSDE,DRDY,OPT,IRET)
+                     IF (IRET.NE.0) GOTO 1
                   ELSE
-                  CALL LCJELA ( LOI  , MOD , NMAT, MATERD,  VIND, DSDE)
+                     CALL LCJELA(LOI,MOD,NMAT,MATERD,VIND,DSDE)
                   ENDIF
-                ELSEIF ( TYPMA .EQ. 'VITESSE ' ) THEN
-C ------------ HOEK-BROWN : CALCUL DES VALEURS ET VECTEURS PROPRES DU --
-C ------------ DEVIATEUR ELASTIQUE -------------------------------------
-               IF ((LOI(1:10).EQ.'HOEK_BROWN').OR.
-     1            (LOI(1:14).EQ.'HOEK_BROWN_EFF')) THEN
-                  CALL LCHBVP(SIGD,VP,VECP)
+               ELSEIF ( TYPMA .EQ. 'VITESSE ' ) THEN
+C ---             HOEK-BROWN : CALCUL DES VALEURS ET VECTEURS PROPRES
+C ---                          DU DEVIATEUR ELASTIQUE
+                  IF ((LOI(1:10).EQ.'HOEK_BROWN').OR.
+     &                (LOI(1:14).EQ.'HOEK_BROWN_EFF')) THEN
+                     CALL LCHBVP(SIGD,VP,VECP)
+                  ENDIF
+                  CALL LCJPLA(FAMI,KPG,KSP,LOI,MOD,NR,IMAT,NMAT,MATERD,
+     &                        NVI,DEPS,SIGD,VIND,DSDE,SIGD,VIND,VP,VECP,
+     &                        THETA,DT,DEVG,DEVGII,CODRET)
+                  IF (CODRET.EQ.2) GOTO 2
                ENDIF
-               CALL LCJPLA (FAMI,KPG,KSP,LOI,MOD,NR,IMAT,NMAT,MATERD,
-     2              NVI,DEPS,SIGD,VIND,DSDE,SIGD,VIND,VP,VECP,
-     3              THETA, DT, DEVG, DEVGII, CODRET)
-                IF (CODRET.EQ.2) GOTO 2
-                ENDIF
             ENDIF
 C
-          ELSEIF ( OPT .EQ . 'FULL_MECA' ) THEN
-                IF  ( ETATF .EQ. 'ELASTIC' ) THEN
-            CALL LCJELA ( LOI  , MOD , NMAT, MATERF, VINF, DSDE)
+         ELSEIF ( OPT .EQ . 'FULL_MECA' ) THEN
+            IF  ( ETATF .EQ. 'ELASTIC' ) THEN
+               CALL LCJELA ( LOI  , MOD , NMAT, MATERF, VINF, DSDE)
             ELSEIF ( ETATF .EQ. 'PLASTIC' ) THEN
-C   ------> ELASTOPLASTICITE ==>  TYPMA = 'VITESSE '
-C   ------> VISCOPLASTICITE  ==>  TYPMA = 'COHERENT '
-                IF     ( TYPMA .EQ. 'COHERENT' ) THEN
-
-                CALL LCJPLC ( FAMI,KPG,KSP,LOI,MOD,NMAT,MATERF,
-     &            TIMED, TIMEF, COMP,NBCOMM, CPMONO, PGL,TOUTMS,HSR,
-     &            NR,NVI,EPSD,DEPS,ITMAX,TOLER,SIGF,VINF,SIGD,VIND,
-     &                   DSDE ,DRDY,OPT, IRET)
-                IF (IRET.NE.0) GOTO 1
-
-                ELSEIF ( TYPMA .EQ. 'VITESSE ' ) THEN
-               CALL LCJPLA (FAMI,KPG,KSP,LOI,MOD,NR,IMAT,NMAT,MATERD,
-     2              NVI,DEPS,SIGF,VINF,DSDE,SIGD,VIND,VP,VECP,
-     3              THETA, DT, DEVG, DEVGII,CODRET)
-                     IF (CODRET.EQ.2) GOTO 2
-                ENDIF
+C   ------>    ELASTOPLASTICITE ==>  TYPMA = 'VITESSE '
+C   ------>    VISCOPLASTICITE  ==>  TYPMA = 'COHERENT '
+               IF     ( TYPMA .EQ. 'COHERENT' ) THEN
+                  CALL LCJPLC(FAMI,KPG,KSP,LOI,MOD,NMAT,MATERF,
+     &                        TIMED,TIMEF, COMP,NBCOMM,CPMONO,
+     &                        PGL,TOUTMS,HSR,NR,NVI,EPSD,DEPS,
+     &                        ITMAX,TOLER,SIGF,VINF,SIGD,VIND,
+     &                        DSDE,DRDY,OPT,IRET)
+                  IF (IRET.NE.0) GOTO 1
+               ELSEIF ( TYPMA .EQ. 'VITESSE ' ) THEN
+                  CALL LCJPLA(FAMI,KPG,KSP,LOI,MOD,NR,IMAT,NMAT,MATERD,
+     &                        NVI,DEPS,SIGF,VINF,DSDE,SIGD,VIND,VP,VECP,
+     &                        THETA,DT,DEVG, DEVGII,CODRET)
+                  IF (CODRET.EQ.2) GOTO 2
+               ENDIF
             ENDIF
 C
-          ENDIF
+         ENDIF
 C
 C -      MODIFICATION EN CONTRAINTE PLANES POUR TENIR COMPTE DE
 C        SIG3=0 ET DE LA CONSERVATION DE L'ENERGIE
-C
          IF ( MOD(1:6).EQ.'C_PLAN' )THEN
-          DO 136 K=1,NDT
-            IF (K.EQ.3) GO TO 136
-            DO 137 L=1,NDT
-              IF (L.EQ.3) GO TO 137
-              DSDE(K,L)=DSDE(K,L)
-     +          - 1.D0/DSDE(3,3)*DSDE(K,3)*DSDE(3,L)
- 137        CONTINUE
- 136      CONTINUE
+            DO 136 K=1,NDT
+               IF (K.EQ.3) GO TO 136
+               DO 137 L=1,NDT
+                  IF (L.EQ.3) GO TO 137
+                  DSDE(K,L) = DSDE(K,L)
+     &                      - 1.D0/DSDE(3,3)*DSDE(K,3)*DSDE(3,L)
+ 137           CONTINUE
+ 136        CONTINUE
          ENDIF
-        ENDIF
+      ENDIF
 C
 C       ----------------------------------------------------------------
 C
-        IRTETI = 0
-        GOTO 9999
- 1      CONTINUE
-        IRTETI = 1
-        GOTO 9999
+      IRTETI = 0
+      GOTO 9999
+1      CONTINUE
+      IRTETI = 1
+      GOTO 9999
 C
- 2      CONTINUE
-        IRTETI = 2
-        GOTO 9999
+2      CONTINUE
+      IRTETI = 2
+      GOTO 9999
 C
- 9999   CONTINUE
+9999   CONTINUE
 
-        END
+      END

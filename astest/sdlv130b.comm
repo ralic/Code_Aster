@@ -1,4 +1,4 @@
-# MODIF  DATE 10/08/2010   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 21/09/2010   AUTEUR REZETTE C.REZETTE 
 # TITRE PLAQUE 3D FISSUREE SOUMISE A UN CHARGEMENT EN MODE I.
 # sdlv130b.para = tps_job 120 mem_job 512Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -66,7 +66,6 @@ FISS=DEFI_FISS_XFEM(MODELE=MODELEIN,
                                  PFON=(0.,5.,15.,),
                                  NORMALE=(0.,0.,1.,),
                                  DTAN=(0.,-1.,0.,),),
-                    GROUP_MA_ENRI='VOL',
                     INFO=1,);
 
 MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,

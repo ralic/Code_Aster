@@ -6,7 +6,7 @@
      &                    TYPENT, TYPGEO,
      &                    CODRET )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 06/05/2008   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF PREPOST  DATE 15/09/2010   AUTEUR GNICOLAS G.NICOLAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -77,6 +77,9 @@ C
 C 0.3. ==> VARIABLES LOCALES
 C
 C
+      CHARACTER*6 NOMPRO
+      PARAMETER ( NOMPRO = 'IRCMEC' )
+C
       CHARACTER*32 EDNOPF
 C                         12345678901234567890123456789012
       PARAMETER ( EDNOPF='                                ' )
@@ -111,6 +114,8 @@ C
 C 1.2. ==> INFORMATION
 C
       IF ( NIVINF.GT.1 ) THEN
+        WRITE (IFM,1001) 'DEBUT DE '//NOMPRO
+ 1001 FORMAT(/,4X,10('='),A,10('='),/)
         CALL U2MESS('I','MED_49')
         WRITE (IFM,13001) NBREPG, TYPENT, TYPGEO
         DO 13 , IAUX = 1 , NCMPVE
@@ -153,7 +158,7 @@ C                  12345678901235
          SAUX14 = '. ECRITURE DES'
 C                  12345678901234567890123456789012345
          SAUX35 = ' VALEURS POUR LE NUMERO D''ORDRE : '
-      
+C
          IF ( NBREPG.EQ.EDNOPG ) THEN
            WRITE (IFM,20001) SAUX14, NCMPVE, NVALEC, SAUX35, NUMORD
          ELSE
@@ -193,14 +198,18 @@ C
 C
 C 2.3. ==> ECRITURE VRAIE
 C
-        CALL EFCHRE ( IDFIMD, NOMAMD, NOCHMD, VAL,
+      CALL EFCHRE ( IDFIMD, NOMAMD, NOCHMD, VAL,
      &              EDFUIN, IAUX,   NOLOPG, EDALL,
-     &              NOMPRF, EDCOMP, TYPENT, TYPGEO, NUMPT, UNIINS,
-     &              INSTAN, NUMORD, CODRET )
+     &              NOMPRF, EDCOMP, TYPENT, TYPGEO,
+     &              NUMPT, UNIINS, INSTAN, NUMORD, CODRET )
 C
       IF ( CODRET.NE.0 ) THEN
         SAUX08='EFCHRE  '
         CALL U2MESG('F','DVP_97',1,SAUX08,1,CODRET,0,0.D0)
+      ENDIF
+C
+      IF ( NIVINF.GT.1 ) THEN
+        WRITE (IFM,1001) 'FIN DE '//NOMPRO
       ENDIF
 C
       END

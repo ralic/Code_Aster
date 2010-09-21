@@ -1,4 +1,4 @@
-#@ MODIF recal0 Messages  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
+#@ MODIF recal0 Messages  DATE 21/09/2010   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -191,7 +191,9 @@ Valeur à interpoler              :  %(k1)s
 Domaine couvert par l'experience : [%(k2)s : %(k3)s]
 """),
 
-#49 : _(""" """),
+49 : _("""Erreur dans le calcul esclave: 
+   %(k1)s
+"""),
 
 50 : _("""
 --> Critere d'arret sur le residu atteint, la valeur du residu est : %(r1)s <--
@@ -315,9 +317,35 @@ Gradient au point X0:
 Calcul numero:  %(k1)s - Diagnostic: %(k2)s
 """),
 
-#75 : _(""" """),
+75 : _("""
+                                    ----------------
+                                      Informations 
 
-#76 : _(""" """),
+    Lors du calcul du gradient par différences finies, un paramètre perturbé sort de l'intervalle de validité :
+        Paramètre                   : %(k1)s
+        Paramètre perturbée         : %(k2)s
+        Valeur minimale autorisée   : %(k3)s
+        Valeur maximale autorisée   : %(k4)s
+
+    --> On continue avec ce paramètre, mais l'étude esclave peut avoir des soucis.
+
+    Pour information, voici le paramètre de perturbation (mot-clé PARA_DIFF_FINI), vérifier qu'il est suffisament petit
+    pour un calcul de gradient par différences finies :
+        Paramètre de perturbation   : %(k5)s
+
+                                    ----------------
+
+"""),
+
+
+76 : _("""
+Le paramètre de perturbation (mot-clé PARA_DIFF_FINI) a pour valeur : %(k1)s
+
+Vérifier qu'il est suffisament petit pour un calcul de gradient par différences finies
+
+--> On continue avec ce paramètre mais le calcul du gradient pourrait être faux.
+
+"""),
 
 #77 : _(""" """),
 

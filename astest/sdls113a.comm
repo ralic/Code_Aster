@@ -1,6 +1,6 @@
-# MODIF  DATE 30/08/2010   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 20/09/2010   AUTEUR NISTOR I.NISTOR 
 # TITRE PLAQUE SOUS PRESSION SINUS COMPARAISON ENTRE TRANSITOIRE ET HARMONIQUE
-# sdls113a.para = tps_job 120 mem_job 1024Mo ncpus 1 liste_test R
+# sdls113a.para = tps_job 150 mem_job 1024Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG

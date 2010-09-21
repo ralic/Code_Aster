@@ -1,4 +1,4 @@
-# MODIF  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 21/09/2010   AUTEUR REZETTE C.REZETTE 
 # TITRE CALCUL DES FACTEURS D INTENSITE DES CONTRAINTES 
 # sdls114b.para = tps_job 210 mem_job 256Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -154,7 +154,6 @@ FF2=DEFI_FISS_XFEM(MODELE=MO,
                                 GROUP_MA_FISS='LEV_SUP',
                                 GROUP_MA_FOND='FN_FS',               
                                 ),
-                   GROUP_MA_ENRI='VVOLTOT',
                    ORIE_FOND=_F(PFON_INI=(-0.005, 0.0, 0.0),
                                 VECT_ORIE=(0.0, 1.0, 0.0),
                                 POINT_ORIG=(0.0, 0.0, 0.0),),

@@ -4,7 +4,7 @@
      &                    MODNUM, NUANOM,
      &                    CODRET )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 14/09/2010   AUTEUR REZETTE C.REZETTE 
+C MODIF PREPOST  DATE 15/09/2010   AUTEUR GNICOLAS G.NICOLAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -29,7 +29,7 @@ C_______________________________________________________________________
 C     ENTREES :
 C       NOFIMD : NOM DU FICHIER MED
 C       CHANOM : NOM ASTER DU CHAMP
-C       TYPECH : TYPE DU CHAMP ('NOEU', 'ELNO', 'ELGA')
+C       TYPECH : TYPE DU CHAMP ('ELEM', 'ELGA')
 C       NOMTYP : NOM DES TYPES DE MAILLES ASTER
 C       NBIMPR : NOMBRE D'IMPRESSIONS
 C         CAIMPI : ENTIERS POUR CHAQUE IMPRESSION
@@ -113,13 +113,6 @@ C
 C
       CHARACTER*16 NOMTEF, NOMFPG
       CHARACTER*32 NOLOPG
-C
-C     DIRE A MED QUE C'EST UN CHAMP ELNO AVEC UN NOM
-C     DE LOCALISATION RESERVE
-C     (CF. DOC R. MED DE EFCHAE)
-      CHARACTER*32 MDELNO
-      PARAMETER ( MDELNO='MED_GAUSS_ELNO                  ' )
-C                         12345678901234567890123456789012
 C
 C====
 C 1. PREALABLES
@@ -285,25 +278,13 @@ C 2.2. ==> ON ECRIT LA LOCALISATION
 C
           IF ( CODRET.EQ.0 ) THEN
 C
-            IF ( TYPECH(1:4) .NE. 'ELNO' ) THEN
+           CALL IRMPG1 ( NOFIMD,
+     &                   NOMFPG, NBNOTO, NBREPG, NBSP, NDIM, TYGEOM,
+     &                   REFCOO, GSCOO, WG,
+     &                   RAUX1, RAUX2, RAUX3,
+     &                   NOLOPG, CODRET )
 C
-               CALL IRMPG1 ( NOFIMD,
-     &                       NOMFPG, NBNOTO, NBREPG, NBSP, NDIM, TYGEOM,
-     &                       REFCOO, GSCOO, WG,
-     &                       RAUX1, RAUX2, RAUX3,
-     &                       NOLOPG, CODRET )
-C
-               CAIMPK(1,NRIMPR) = NOLOPG
-            ELSE
-C
-C              POUR ELNO, ON ECRIT LA NON-LOCALISATION MED_GAUSS_ELNO
-               CAIMPK(1,NRIMPR) = MDELNO
-               IF ( NIVINF.GT.1 ) THEN
-                  WRITE (IFM,2200) CAIMPK(1,NRIMPR)
-               ENDIF
- 2200 FORMAT(2X,'. PAS DE LOCALISATION POUR LE CHAMP ELNO : ',A)
-C
-           ENDIF
+           CAIMPK(1,NRIMPR) = NOLOPG
 C
           ENDIF
 C

@@ -7,7 +7,7 @@
      &                    NOMAMD, NOMTYP, MODNUM, NUANOM,
      &                    CODRET )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 14/09/2010   AUTEUR REZETTE C.REZETTE 
+C MODIF PREPOST  DATE 15/09/2010   AUTEUR GNICOLAS G.NICOLAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -160,6 +160,7 @@ C
 C
       IF ( NIVINF.GT.1 ) THEN
         WRITE (IFM,1001) 'DEBUT DE '//NOMPRO
+        WRITE (IFM,*) 'ECRITURE DE '//NOCHMD
       ENDIF
  1001 FORMAT(/,4X,10('='),A,10('='),/)
 C
@@ -216,9 +217,10 @@ C
 C
         IF ( CODRET.EQ.0 ) THEN
 C
-CGN          PRINT *,'CAIMPI : ',(CAIMPI(IAUX,NRIMPR),IAUX = 1 , 7)
-CGN          PRINT *,'CAIMPK (LOCA GAUSS) : ',CAIMPK(1,NRIMPR)
-CGN          PRINT *,'CAIMPK (PROFIL)     : ',CAIMPK(2,NRIMPR)
+CGN        PRINT *,'IMPRESSION NUMERO ',NRIMPR
+CGN        PRINT *,'CAIMPI : ',(CAIMPI(IAUX,NRIMPR),IAUX = 1 , 7)
+CGN        PRINT *,'CAIMPK (LOCA GAUSS) : ',CAIMPK(1,NRIMPR)
+CGN        PRINT *,'CAIMPK (PROFIL)     : ',CAIMPK(2,NRIMPR)
 C 4.0. ==> NOMBRE DE VALEURS A ECRIRE
 C
         NVALEC = CAIMPI(4,NRIMPR)
@@ -252,10 +254,10 @@ C
               NOMPB(1) = NOCHMD(9:22)
               IF (NBPG.EQ.27) THEN
                 NOMPB(2) = 'HEXA27'
-              ELSEIF (NBPG.EQ.9) THEN
-                NOMPB(2) = 'QUAD9'
               ELSEIF (NBPG.EQ.18) THEN
                 NOMPB(2) = 'PENTA18'
+              ELSEIF (NBPG.EQ.9) THEN
+                NOMPB(2) = 'QUAD9'
               ELSEIF (NBPG.EQ.7) THEN
                 NOMPB(2) = 'TRIA7'
               ENDIF
@@ -305,12 +307,12 @@ C
           NBREPG = EDNOPG
           IF ( TYGEOM.EQ.TYPNOE ) THEN
             TYPENT = EDNOEU
-          ELSE 
+          ELSE
             IF ( NBPG*NBSP .NE.1 ) THEN
-                NBREPG =  NBPG*NBSP
+              NBREPG = NBPG*NBSP
             ENDIF
-            IF(TYPECH.EQ.'ELNO')THEN
-               TYPENT = EDNOMA
+            IF ( TYPECH.EQ.'ELNO' )THEN
+              TYPENT = EDNOMA
             ELSE
               TYPENT = EDMAIL
             ENDIF

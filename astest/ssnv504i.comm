@@ -1,4 +1,4 @@
-# MODIF  DATE 12/01/2010   AUTEUR GRANET S.GRANET 
+# MODIF  DATE 20/09/2010   AUTEUR DESOZA T.DESOZA 
 # TITRE EXTRUSION D'UN LOPIN CONTACT GLISSIERE
 # ssnv504i.para = tps_job 190 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -27,7 +27,7 @@
 #
 #
 
-DEBUT(CODE=_F(NOM='SSNV504I',NIV_PUB_WEB='INTERNET'),);
+DEBUT(CODE=_F(NOM='SSNV504I',NIV_PUB_WEB='INTERNET'),IGNORE_ALARM=('CONTACT3_16',),);
 
 #
 #  CALCUL VALIDATION DU PASSAGE DES SINGULARITES GEOMETRIQUES
@@ -144,6 +144,7 @@ CH2  = DEFI_CONTACT(MODELE         = MO,
                              GROUP_MA_MAIT = 'SMAI2',
                              GROUP_MA_ESCL = 'SESC2',
                              APPARIEMENT   = 'MAIT_ESCL',
+                             INTEGRATION='GAUSS',
                              ),  
                           ),
                    );

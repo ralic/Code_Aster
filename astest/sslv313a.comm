@@ -1,4 +1,4 @@
-# MODIF  DATE 28/07/2008   AUTEUR LAVERNE J.LAVERNE 
+# MODIF  DATE 21/09/2010   AUTEUR REZETTE C.REZETTE 
 # TITRE TUBE SOUS PRESSION FISSURE - VALIDATION DE LA METHODE X-FEM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -83,7 +83,6 @@ FISS=DEFI_FOND_FISS(    MAILLAGE=MA,
 FFX=DEFI_FISS_XFEM(MODELE=MO,
                    DEFI_FISS=_F(GROUP_MA_FISS='LEV_SUP',
                                 GROUP_MA_FOND='FOND',),
-                   GROUP_MA_ENRI='VTOT',
                    ORIE_FOND=_F(PFON_INI=(1., -0.3, 0.),
                                 VECT_ORIE=(0.0,1.0,0.0,),
                                 POINT_ORIG=(0, 0., 0.,),),

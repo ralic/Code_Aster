@@ -1,4 +1,4 @@
-# MODIF  DATE 10/08/2010   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 21/09/2010   AUTEUR REZETTE C.REZETTE 
 # TITRE CONTACT EN GRANDS GLISSEMENTS AVEC X-FEM POUR DES FISSURES
 # ssnp504f.para = tps_job 500 mem_job 64Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -57,13 +57,11 @@ LN2=FORMULE(NOM_PARA=('X','Y'),VALE='-Y+0.25*X+6.0625');
 
 FISS1=DEFI_FISS_XFEM(MODELE=MODELEIN,  
                      TYPE_DISCONTINUITE='INTERFACE',
-                     DEFI_FISS=_F(FONC_LN=LN1,),
-                     GROUP_MA_ENRI='SURF');
+                     DEFI_FISS=_F(FONC_LN=LN1,),);
 
 FISS2=DEFI_FISS_XFEM(MODELE=MODELEIN,  
                      TYPE_DISCONTINUITE='INTERFACE',
-                     DEFI_FISS=_F(FONC_LN=LN2,),
-                     GROUP_MA_ENRI='SURF');
+                     DEFI_FISS=_F(FONC_LN=LN2,),);
                     
 MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,
                          FISSURE=(FISS1,FISS2),

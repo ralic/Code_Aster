@@ -5,7 +5,7 @@
         IMPLICIT REAL*8 (A-H,O-Z)
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
+C MODIF ALGORITH  DATE 20/09/2010   AUTEUR FLEJOU J-L.FLEJOU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -181,7 +181,7 @@ C
 C
         REAL*8          CRIT(*)
         REAL*8          VIND(*),     VINF(*)
-        REAL*8          TEMPD,    TEMPF  
+        REAL*8          TEMPD,    TEMPF
         REAL*8          ELGEOM(*)
         REAL*8          EPSD(6),     DEPS(6),   EPSF(6)
         REAL*8          EPSDT(6),    DEPST(6)
@@ -287,7 +287,10 @@ C       CALL LCELAS ( LOI  ,MOD ,  IMAT,  NMAT, MATERD, MATERF, MATCST,
 C    1                NVI,  TEMPD, TEMPF, TIMED,TIMEF,  DEPS,   EPSD,
 C    2                SIGD ,VIND,  SIGE,  VINF )
         CALL LCELIN ( MOD ,  NMAT, MATERD, MATERF,
-     &                NVI,   DEPS,  SIGD, VIND,   SIGE,   VINF )
+     &                DEPS,  SIGD, SIGE)
+        CALL LCEQVN  ( NVI-1, VIND , VINF )
+        VINF(NVI)    = 0.D0
+
         VINF(3) = TEMPF
         IF (IISNAN(TEMPF).EQ.0) THEN
           IF(TEMPF.LT.TMPMX) VINF(3) = TMPMX

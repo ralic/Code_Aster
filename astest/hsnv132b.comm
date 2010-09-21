@@ -1,4 +1,4 @@
-# MODIF  DATE 10/08/2010   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 21/09/2010   AUTEUR REZETTE C.REZETTE 
 # TITRE : FISSURE X-FEM EN THERMO-ELASTICITE 2D 
 # hsnv132b.para = tps_job 50 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -88,7 +88,6 @@ LT=FORMULE(NOM_PARA=('X','Y'),VALE='-X+0.5');
 
 FISS=DEFI_FISS_XFEM(MODELE=MODELE,  
                     DEFI_FISS=_F(FONC_LT=LT,FONC_LN=LN,),
-                    GROUP_MA_ENRI='SURF',
                     INFO=1,
                     );
 

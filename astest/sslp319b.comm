@@ -1,4 +1,4 @@
-# MODIF  DATE 10/08/2010   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 21/09/2010   AUTEUR REZETTE C.REZETTE 
 # TITRE PROPAGATION DE DEUX FISSURES XFEM DEBOUCHANTES SOLLICITEE EN MODE I
 # sslp319b.para = tps_job 250 mem_job 512Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -100,13 +100,11 @@ FissL = [None]*NPS
 
 FissR[1]=DEFI_FISS_XFEM(MODELE=plate,
                         DEFI_FISS=_F(FONC_LT=LTR,
-                                     FONC_LN=LNR,),
-                        GROUP_MA_ENRI='All',);
+                                     FONC_LN=LNR,),);
 
 FissL[1]=DEFI_FISS_XFEM(MODELE=plate,
                         DEFI_FISS=_F(FONC_LT=LTL,
-                                     FONC_LN=LNL,),
-                        GROUP_MA_ENRI='All',);
+                                     FONC_LN=LNL,),);
 
 #****************************
 # PROPAGATION DES FISSURES

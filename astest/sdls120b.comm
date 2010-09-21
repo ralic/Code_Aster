@@ -1,4 +1,4 @@
-# MODIF  DATE 10/08/2010   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 21/09/2010   AUTEUR REZETTE C.REZETTE 
 # TITRE PLAQUE 2D FISSUREE SOUMISE A UN CHARGEMENT EN MODE I.
 # sdls120b.para = tps_job 30 mem_job 48Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -65,7 +65,6 @@ FISS=DEFI_FISS_XFEM(MODELE=MODELEIN,
                     DEFI_FISS=_F(FORM_FISS='SEGMENT',
                                  PFON_ORIG=(5.,15.,0.0,),
                                  PFON_EXTR=(-0.001,15.,0.0,),),
-                    GROUP_MA_ENRI='SURF',
                     INFO=1,);
 
 MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,

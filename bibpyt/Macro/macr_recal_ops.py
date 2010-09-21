@@ -1,4 +1,4 @@
-#@ MODIF macr_recal_ops Macro  DATE 14/06/2010   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF macr_recal_ops Macro  DATE 21/09/2010   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -233,7 +233,7 @@ def macr_recal(self, UNITE_ESCL, RESU_EXP, POIDS, LIST_PARA, RESU_CALC,
 
    #_____________________________________________
    #
-   # VERIFICATION PREALABLE SUR MEM_ASTER
+   # VERIFICATIONS PREALABLES
    #_____________________________________________
 
    if LANCEMENT == 'DISTRIBUTION':
@@ -269,6 +269,8 @@ def macr_recal(self, UNITE_ESCL, RESU_EXP, POIDS, LIST_PARA, RESU_CALC,
            else:                        classe = ' -auto- '
            UTMESS('I','RECAL0_69', valk=( str(CALCUL_ESCLAVE['TEMPS']), str(CALCUL_ESCLAVE['MEMOIRE']), classe ) )
 
+   if float(PARA_DIFF_FINI) > 0.1:
+      UTMESS('A','RECAL0_76', valk=( str(PARA_DIFF_FINI) ) )
 
    #_____________________________________________
    #

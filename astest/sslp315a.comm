@@ -1,4 +1,4 @@
-# MODIF  DATE 11/05/2010   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 21/09/2010   AUTEUR REZETTE C.REZETTE 
 # TITRE PROPAGATION DE FISSURE DEBOUCHANTE DANS UNE PLAQUE TROUEE 2D DE LARGEUR FINIE AVEC X-FEM
 # sslp315a.para = tps_job 60 mem_job 500Mo mem_aster 50 ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -75,8 +75,7 @@ for i in range(0,nb_pas) :
 
    FISS[i]=DEFI_FISS_XFEM(MODELE=MO[i],  
                        DEFI_FISS=_F(GROUP_MA_FISS='FISS_'+str(i),
-                                    GROUP_MA_FOND='FOND_'+str(i),),
-                       GROUP_MA_ENRI='MSURF',);
+                                    GROUP_MA_FOND='FOND_'+str(i),),);
 
    MOX[i]=MODI_MODELE_XFEM(MODELE_IN=MO[i],FISSURE=FISS[i]);
 

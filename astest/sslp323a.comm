@@ -1,4 +1,4 @@
-# MODIF  DATE 20/07/2010   AUTEUR MAHFOUZ D.MAHFOUZ 
+# MODIF  DATE 21/09/2010   AUTEUR REZETTE C.REZETTE 
 # TITRE PROPAGATION DE FISSURE RADIALE DEBOUCHANTE DANS UN DISQUE EN ROTATION
 # sslp323a.para = tps_job 250 mem_job 512Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -87,8 +87,7 @@ Fiss = [None]*NPS
 
 Fiss[1]=DEFI_FISS_XFEM(MODELE=MO,
                         DEFI_FISS=_F(FONC_LT=LT,
-                                     FONC_LN=LN,),
-                        GROUP_MA_ENRI='PLAQUE',);
+                                     FONC_LN=LN,),);
 
 #****************************
 # PROPAGATION DES FISSURES

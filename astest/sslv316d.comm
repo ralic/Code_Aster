@@ -1,4 +1,4 @@
-# MODIF  DATE 10/08/2010   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 21/09/2010   AUTEUR REZETTE C.REZETTE 
 # TITRE FISSURATION A PROPAGATION IMPOSEE AVEC XFEM
 # sslv316d.para = tps_job 250 mem_job 512Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -86,7 +86,6 @@ FISS[0]=DEFI_FISS_XFEM(MODELE=MODELE,
                                  PFON      =(0. , 2. ,9.),
                                  NORMALE   =(0. , 0 , 1.),
                                  DTAN      =(0. , 1. , 0.)),
-                       GROUP_MA_ENRI='VOL',
                        );
 
 #----------------------------------------------
@@ -107,7 +106,6 @@ FissGril=DEFI_FISS_XFEM(MODELE=Grille,
                                     PFON      =(0. , 2. ,9.),
                                     NORMALE   =(0. , 0 , 1.),
                                     DTAN      =(0. , 1. , 0.)),
-                        GROUP_MA_ENRI='VOL',
                        );
 
 GriAux=MODI_MODELE_XFEM(MODELE_IN=Grille,FISSURE=FissGril,INFO=1,);

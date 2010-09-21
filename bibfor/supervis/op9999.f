@@ -3,7 +3,7 @@
       INTEGER            ICOND , IER , IFIN
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 24/08/2010   AUTEUR COURTOIS M.COURTOIS 
+C MODIF SUPERVIS  DATE 20/09/2010   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -46,12 +46,13 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*8  K8B, OUINON, TYPRES
       CHARACTER*16 FCHIER,FHDF
       CHARACTER*80 FICH
+      REAL*8       RVAL(9)
 C     ------------------------------------------------------------------
 C
       CALL JEMARQ()
       IFIN = 1
       INFO = 1
-
+      
 C     LIBERE TOUS LES COMPOSANTS CHARGES DYNAMIQUEMENT
       CALL DLLCLS()
 
@@ -119,6 +120,8 @@ C     --- SAUVEGARDE DE LA GLOBALE AU FORMAT HDF
 C
 C     --- APPEL JXVERI POUR VERIFIER LA BONNE FIN D'EXECUTION
       CALL JXVERI(' ',' ')
+
+      CALL JEINFO(RVAL)
 C
 C     --- CLOTURE DES FICHIERS ---
       CALL JELIBF( 'SAUVE' , 'G' , INFO)
@@ -138,6 +141,18 @@ C     --- RETASSAGE EFFECTIF ----
          IF (IUNRES.GT.0) WRITE(IUNRES,'(A,I2,A)')
      +   ' <I> <FIN> RETASSAGE DE LA BASE "GLOBALE" EFFECTUEE,', NBEXT,
      +   ' FICHIER(S) UTILISE(S).'
+      ENDIF
+C
+C     --- IMPRESSION DES CONSOMMATIONS MEMOIRE ---
+      IF (IUNRES.GT.0) THEN 
+         WRITE(IUNRES,'(2A,F11.2,A)') 
+     +        ' <I> <FIN> MEMOIRE JEVEUX MINIMALE REQUISE POUR ',
+     +        'L''EXECUTION :              ',RVAL(2),' Mo'
+         IF (RVAL(9).GT.0) THEN 
+           WRITE(IUNRES,'(2A,F11.2,A)') 
+     +        ' <I> <FIN> MAXIMUM DE MEMOIRE UTILISEE PAR LE PROCESSUS'
+     +        ,' LORS DE L''EXECUTION :',RVAL(9)/1024,' Mo'
+         ENDIF
       ENDIF
 C
 C     --- IMPRESSION DES STATISTIQUES ( AVANT CLOTURE DE JEVEUX ) ---

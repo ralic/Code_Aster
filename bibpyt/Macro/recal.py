@@ -1,4 +1,4 @@
-#@ MODIF recal Macro  DATE 14/06/2010   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF recal Macro  DATE 21/09/2010   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -466,10 +466,17 @@ class CALCULS_ASTER:
             for n in range(1,len(dX)+1):
                l = [0] * len(dX)
                l[n-1] = dX[n-1]
-               X = [ X0[i] * (1+l[i]) for i in range(len(dX)) ]
+#               X = [ X0[i] * (1+l[i]) for i in range(len(dX)) ]
+               X = []
+               for i in range(len(dX)):
+                  new_Xi = X0[i] * (1+l[i])
+                  if new_Xi > self.parametres[i][3]:
+                     UTMESS('I', 'RECAL0_75', valk=( str(self.parametres[i][0]), str(new_Xi), str(self.parametres[i][2]), str(self.parametres[i][3]), str(l[i]) ) )
+#                     new_Xi = X0[i] * (1-l[i])  # diff finie a gauche marche pas fort
+                  X.append( new_Xi )
+               #print 'X=', X
                dic = dict( zip( list_params, X ) )
                list_val.append( dic )
-
 
         # ----------------------------------------------------------------------------
         # Aiguillage vers INCLUDE
@@ -508,16 +515,6 @@ class CALCULS_ASTER:
      """  Module permettant de lancer N+1 calculs via un mecanisme d'include
      """
 
-#      # Importation de commandes Aster
-#      try:
-#         import aster
-#         import Macro
-#         from Accas import _F
-#         from Cata import cata
-#         from Cata.cata import *
-#      except ImportError:
-#         raise "Simu_point_mat doit etre lance depuis Aster"
-
      try:
          import aster
          import Macro
@@ -527,13 +524,7 @@ class CALCULS_ASTER:
     
          # Declaration de toutes les commandes Aster
          import cata
-         for k,v in cata.__dict__.items() :
-           #print k,v
-           if isinstance(v, (OPER, MACRO)):
-             #print k,v
-             #self.jdc.current_context[k]= v
-             exec("from Cata.cata import %s" % k)
-         #self.jdc.current_context['_F']=cata.__dict__['_F']
+         from Cata.cata import *
      except Exception, e:
          raise "Le mode INCLUDE doit etre lance depuis Aster : \nErreur : " % e
 
@@ -578,7 +569,10 @@ class CALCULS_ASTER:
          # Lancement du calcul (par un include)
          # ----------------------------------------------------------------------------
          new = "fort.%s.new" % self.UNITE_INCLUDE
-         execfile(new)
+         try:
+            execfile(new)
+         except Exception, e:
+            UTMESS('F', 'RECAL0_49', valk=str(e))
 
 
          # ----------------------------------------------------------------------------
@@ -700,7 +694,7 @@ class CALCULS_ASTER:
         # ----------------------------------------------------------------------------
         sys.argv = ['']
         run = AsRunFactory()
-        run.options['debug_stderr'] = True  # pas d'output d'executions des esclaves dans k'output maitre
+        run.options['debug_stderr'] = True  # pas d'output d'executions des esclaves dans l'output maitre
 
         # Master profile
         prof = ASTER_PROFIL(filename=export)
@@ -1043,8 +1037,7 @@ class CALC_ERROR:
 
        if info>=3: self.debug = True
        else:       self.debug = False
-       #if debug: self.debug = True
-       self.debug = True
+       if debug: self.debug = True
 
 
    # ---------------------------------------------------------------------------

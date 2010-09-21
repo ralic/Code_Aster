@@ -1,4 +1,4 @@
-# MODIF  DATE 10/08/2010   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 21/09/2010   AUTEUR REZETTE C.REZETTE 
 # TITRE FISSURE DEBOUCHANTE DANS UNE PLAQUE 3D DE LARGEUR FINIE AVEC X-FEM
 # ssnv185p.para = tps_job 270 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -69,8 +69,7 @@ FISS=DEFI_FISS_XFEM(MODELE=MODELEIN,
                                  FORM_FISS = 'DEMI_PLAN',
                                  PFON      =(0. , 5. ,15.),
                                  NORMALE   =(0. , 0. , 1.),
-                                 DTAN      =(0. ,-1. , 0.)),
-                    GROUP_MA_ENRI='VOL');
+                                 DTAN      =(0. ,-1. , 0.)),);
                    
 MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,FISSURE=FISS,INFO=1,);
 

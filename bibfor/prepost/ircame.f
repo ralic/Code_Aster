@@ -6,7 +6,7 @@
      &                    CODRET )
 C_______________________________________________________________________
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 14/09/2010   AUTEUR REZETTE C.REZETTE 
+C MODIF PREPOST  DATE 15/09/2010   AUTEUR GNICOLAS G.NICOLAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -246,7 +246,7 @@ C
 C
 C 3.4. ==> CARACTERISATION DES SUPPORTS QUAND CE NE SONT PAS DES NOEUDS
 C
-      IF ( TYPECH(1:2).EQ.'EL' ) THEN
+      IF ( TYPECH(1:4).EQ.'ELGA' .OR. TYPECH(1:4).EQ.'ELEM' ) THEN
 C
         CALL IRMPGA ( NOFIMD,
      &                CHANOM, TYPECH, NOMTYP,
