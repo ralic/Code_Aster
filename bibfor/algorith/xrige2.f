@@ -15,7 +15,7 @@
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/06/2010   AUTEUR CARON A.CARON 
+C MODIF ALGORITH  DATE 28/09/2010   AUTEUR MASSIN P.MASSIN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -37,7 +37,7 @@ C TOLE CRP_21
 
 C.......................................................................
 C
-C     BUT:  CALCUL  DE l'OPTION RIGI_MECA_GE AVEC X-FEM EN 2D
+C     BUT:  CALCUL  DE L'OPTION RIGI_MECA_GE AVEC X-FEM EN 2D
 C.......................................................................
 C IN  ELREFP  : ELEMENT DE REFERENCE PARENT
 C IN  NDIM    : DIMENSION DE L'ESPACE
@@ -79,14 +79,14 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 
 
-      INTEGER  KPG,KK,N,I,M,J,J1,KKD,INO,IG,IRET
-      INTEGER  NNO,NNOS,NPGBIS,DDLS,DDLD,CPT,CPT1,NDIMB,IPG
+      INTEGER  KPG,KK,N,I,M,J,J1,KKD,INO,IG,IRET,IJ
+      INTEGER  NNO,NNOS,NPGBIS,DDLS,DDLD,DDLDN,CPT,CPT1,NDIMB,IPG
       INTEGER  JCOOPG,JDFD2,JGANO,JCOORS,IDFDE,IVF,IPOIDS
       REAL*8   F(3,3),EPS(6)
       REAL*8   POIDS,TEMP,TMP1,FE(4),BASLOG(6)
       REAL*8   XG(NDIM),XE(NDIM),FF(NNOP),JAC,LSNG,LSTG
       REAL*8   RBID1(4),RBID2(4)
-      REAL*8   DFDI(NNOP,NDIM),PFF(24,NNOP,NNOP),DGDGL(4,3)
+      REAL*8   DFDI(NNOP,NDIM),PFF(6,NNOP,NDIM),DGDGL(4,3)
       REAL*8   ENR(NNOP,NDIM+DDLH+NDIM*NFE),GRAD(3,3)
       REAL*8   RAC2,RHO
       INTEGER  DDLN,DDLMM,NNON,NNOM,INDENN,INDENM,NNOPS
@@ -100,6 +100,7 @@ C--------------------------------------------------------------------
 
 C     NOMBRE DE DDL DE DEPLACEMENT À CHAQUE NOEUD SOMMET
       DDLD=NDIM+DDLH+NDIM*NFE
+      DDLDN = DDLD/NDIM
 
 C     NOMBRE DE DDL TOTAL (DEPL+CONTACT) À CHAQUE NOEUD SOMMET
       DDLS=DDLD+DDLC
@@ -114,9 +115,9 @@ C
      &                  IDFDE,JDFD2,JGANO)
       CALL ASSERT(NPG.EQ.NPGBIS.AND.NDIM.EQ.NDIMB)
 
-
-C - CALCUL POUR CHAQUE POINT DE GAUSS
-      DO 10 KPG=1,NPG
+C-----------------------------------------------------------------------
+C     BOUCLE SUR LES POINTS DE GAUSS DU SOUS-TÉTRA
+      DO 100 KPG=1,NPG
 
 C       COORDONNEES DU PT DE GAUSS DANS LE REPERE REEL : XG
         CALL VECINI(NDIM,0.D0,XG)
@@ -128,8 +129,8 @@ C       COORDONNEES DU PT DE GAUSS DANS LE REPERE REEL : XG
  
 C       JUSTE POUR CALCULER LES FF
         CALL REEREF(ELREFP,NNOP,NNOPS,IGEOM,XG,IBID,.FALSE.,NDIM,HE,
-     &       DDLH,NFE,DDLS,DDLM,FE,DGDGL,'NON',XE,FF,DFDI,RBID,RBID,
-     &       RBID)
+     &              IBID,IBID,DDLH,NFE,DDLS,DDLM,FE,DGDGL,'NON',
+     &              XE,FF,DFDI,RBID,RBID,RBID)
 
         IF (NFE.GT.0) THEN
 C         BASE LOCALE AU POINT DE GAUSS
@@ -156,8 +157,8 @@ C       COORDONNÉES DU POINT DE GAUSS DANS L'ELEMENT DE REF PARENT : XE
 C       ET CALCUL DE FF, DFDI, ET EPS
 
         CALL REEREF(ELREFP,NNOP,NNOPS,IGEOM,XG,IBID,.FALSE.,NDIM,HE,
-     &       DDLH,NFE,DDLS,DDLM,FE,DGDGL,'DFF',XE,FF,DFDI,RBID,RBID,
-     &       RBID)
+     &              IBID,IBID,DDLH,NFE,DDLS,DDLM,FE,DGDGL,'DFF',
+     &              XE,FF,DFDI,RBID,RBID,RBID)
 
 
 C       POUR CALCULER LE JACOBIEN DE LA TRANSFO SSTET->SSTET REF
@@ -167,112 +168,53 @@ C       ON ENVOIE DFDM2D AVEC LES COORD DU SS-ELT
 
 C--------CALCUL DES FONCTIONS ENRICHIES--------------------------
 
-        DO 126 N=1,NNOP
-          CPT=0
-          DO 127 M=1,N
-C----------LA PARTIE CORRESPONDANTE AU FF CLASSIQUES
-              PFF(1,N,M) =  DFDI(N,1)*DFDI(M,1)
-              PFF(2,N,M) =  DFDI(N,2)*DFDI(M,2)
-              PFF(3,N,M) = 0.D0
-              PFF(4,N,M) =(DFDI(N,1)*DFDI(M,2)+DFDI(N,2)*DFDI(M,1))/RAC2
- 
+        DO 127 I=1,NDIM
+          DO 128 N=1,NNOP
+C----------LA PARTIE CORRESPOINDANTE AU FF CLASSIQUES
+            CPT= 1
+            PFF(CPT,N,I) =  DFDI(N,I)
 C----------LA PARTIE CORRESPONDANTE A L'ENRICHEMENT HEAVISIDE
-              CPT=4
-              IF(DDLH.NE.0) THEN
-                PFF(CPT+1,N,M) =  DFDI(N,1)*DFDI(M,1)
-                PFF(CPT+2,N,M) =  DFDI(N,2)*DFDI(M,2)
-                PFF(CPT+3,N,M) =  0.D0             
-                PFF(CPT+4,N,M) =(DFDI(N,1)*DFDI(M,2)+
-     &                               DFDI(N,2)*DFDI(M,1))/RAC2
-   
-                CPT=8
-              ENDIF
+            IF (DDLH.EQ.NDIM) THEN
+              CPT = 2
+              PFF(CPT,N,I) =  DFDI(N,I)*HE
+            ENDIF
 C----------LA PARTIE CORRESPONDANTE A L'ENRICHEMENT CRACK-TIP
-              DO 128 IG=1,NFE
-
-                PFF(CPT+4*(IG-1)+1,N,M) =  (DFDI(N,1)*FE(IG)+
-     &                            FF(N)*DGDGL(IG,1))*(DFDI(M,1)*FE(IG)+
-     &                                           FF(M)*DGDGL(IG,1))
-                PFF(CPT+4*(IG-1)+2,N,M) =  (DFDI(N,2)*FE(IG)+
-     &                            FF(N)*DGDGL(IG,2))*(DFDI(M,2)*FE(IG)+
-     &                                           FF(M)*DGDGL(IG,2))
-                PFF(CPT+4*(IG-1)+3,N,M) =0.D0  
-
-                PFF(CPT+4*(IG-1)+4,N,M) =((DFDI(N,1)*FE(IG)+
-     &                            FF(N)*DGDGL(IG,1))*(DFDI(M,2)*FE(IG)+
-     &                                         FF(M)*DGDGL(IG,2))+
-     &                                    (DFDI(N,2)*FE(IG)+
-     &                            FF(N)*DGDGL(IG,2))*(DFDI(M,1)*FE(IG)+
-     &                                         FF(M)*DGDGL(IG,1)))/RAC2
-  
-
- 128         CONTINUE
- 127      CONTINUE
- 126    CONTINUE
-
-        DO 230 N=1,NNOP
-          CPT1=0
-          IF (N.LE.NNOPS) THEN
-            NNON=0
-            DDLN=DDLS
-          ELSEIF (N.GT.NNOPS) THEN
-            NNON=NNOPS
-            DDLN=DDLM
-          ENDIF
-          INDENN = DDLS*NNON+DDLN*(N-NNON-1)
-
-          DO 231 I=1,DDLD
-            KKD = (INDENN+I-1) * (INDENN+I) /2
-            DO 240 J=1,DDLD
-              DO 241 M=1,N
-                IF (M.LE.NNOPS) THEN
-                  NNOM=0
-                  DDLMM=DDLS
-                ELSEIF (M.GT.NNOPS) THEN
-                  NNOM=NNOPS
-                  DDLMM=DDLM
-                ENDIF
-                INDENM = DDLS*NNOM+DDLMM*(M-NNOM-1)
-
+            DO 126 IG = 1,NFE
+              CPT =CPT+1
+              PFF(CPT,N,I) = DFDI(N,I)*FE(IG)+FF(N)*DGDGL(IG,I)
+ 126        CONTINUE
+            CALL ASSERT(CPT.EQ.DDLDN)
+ 128      CONTINUE
+ 127    CONTINUE
+C
+        DO 240 N=1,NNOP
+          DO 241 M=1,N
+            DO 242 I=1,DDLDN
+              DO 243 J=1,DDLDN
+                TMP1 = SIG((KPG-1)*4+1)*PFF(I,N,1)*PFF(J,M,1)
+     &                + SIG((KPG-1)*4+2)*PFF(I,N,2)*PFF(J,M,2)
+     &                + SIG((KPG-1)*4+4)*(PFF(I,N,1)*PFF(J,M,2)
+     &                           +PFF(I,N,2)*PFF(J,M,1))/RAC2
+C              STOCKAGE EN TENANT COMPTE DE LA SYMETRIE
                 IF (M.EQ.N) THEN
                   J1 = I
                 ELSE
-                  J1 = DDLD
+                  J1 = DDLDN
                 ENDIF
-                TMP1 = 0.D0
-
-                TMP1 = TMP1+PFF(1,N,M)*SIG((KPG-1)*4+1)
-                TMP1 = TMP1+PFF(2,N,M)*SIG((KPG-1)*4+2)
-                TMP1 = TMP1+PFF(3,N,M)*SIG((KPG-1)*4+3)
-                TMP1 = TMP1+PFF(4,N,M)*SIG((KPG-1)*4+4)
-                CPT1=4
-                IF(DDLH.NE.0) THEN
-                  TMP1 = TMP1+PFF(CPT1+1,N,M)*SIG((KPG-1)*4+1)
-                  TMP1 = TMP1+PFF(CPT1+2,N,M)*SIG((KPG-1)*4+2)
-                  TMP1 = TMP1+PFF(CPT1+3,N,M)*SIG((KPG-1)*4+3)
-                  TMP1 = TMP1+PFF(CPT1+4,N,M)*SIG((KPG-1)*4+4)
-                CPT1=8
-                ENDIF
-                DO 242 IG=1,NFE
-                  TMP1 = TMP1+PFF(CPT1+4*(IG-1)+1,N,M)*SIG((KPG-1)*4+1) 
-                  TMP1 = TMP1+PFF(CPT1+4*(IG-1)+2,N,M)*SIG((KPG-1)*4+2)
-                  TMP1 = TMP1+PFF(CPT1+4*(IG-1)+3,N,M)*SIG((KPG-1)*4+3)
-                  TMP1 = TMP1+PFF(CPT1+4*(IG-1)+4,N,M)*SIG((KPG-1)*4+4) 
-
- 242            CONTINUE
-C
                 IF (J.LE.J1) THEN
-                  KK = KKD + INDENM + J
-                  MATUU(KK)= MATUU(KK)+TMP1*JAC
+                  DO 244 IJ = 1,NDIM
+                    KKD = (DDLS*(N-1)+(I-1)*NDIM+IJ-1)
+     &                   * (DDLS*(N-1)+(I-1)*NDIM+IJ) /2
+                    KK = KKD + DDLS*(M-1)+(J-1)*NDIM+IJ
+                    MATUU(KK) = MATUU(KK) + TMP1*JAC
+ 244              CONTINUE
                 END IF
 C  
- 241          CONTINUE
- 240        CONTINUE
- 231      CONTINUE
- 230    CONTINUE
+ 243          CONTINUE
+ 242        CONTINUE
+ 241      CONTINUE
+ 240    CONTINUE
 
- 
- 
- 10   CONTINUE
+ 100   CONTINUE
 
       END

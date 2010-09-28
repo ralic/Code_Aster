@@ -1,4 +1,4 @@
-# MODIF  DATE 21/09/2010   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 28/09/2010   AUTEUR MASSIN P.MASSIN 
 # TITRE CONTACT EN GRANDS GLISSEMENTS AVEC X-FEM POUR DES FISSURES
 # ssnp503l.para = tps_job 600 mem_job 128Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -208,8 +208,7 @@ vale = [[0.0,-7.2384991E+03,-6.4285635E+03,-5.4975876E+03,-9.8231384E+02],
         [0.0,0.0,-4.4286909E+04,-2.2460135E+04,-3.1664811E+03]]
 
 
-noeud= ['NP29','NP328','NP696','NP1064','NP1432']
-        
+noeud= ['NM33','NM394','NM842','NM1290','NM1738']
 for i in [1,2,3,4]: #Boucle sur les increments
    LAG[i]=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
                                    GROUP_NO=('NFISSU',),
@@ -224,7 +223,7 @@ for i in [1,2,3,4]: #Boucle sur les increments
                      ACTION = (_F(OPERATION = 'FILTRE',
                                   NOM_PARA  = 'NOEUD',
                                   CRIT_COMP = 'REGEXP',
-                                  VALE_K    = 'N[^M]',),
+                                  VALE_K    = 'N[^P]',),
                                _F(OPERATION = 'FILTRE',
                                   NOM_PARA  = 'COOR_Y',
                                   CRIT_COMP = 'EQ',
@@ -238,7 +237,7 @@ for i in [1,2,3,4]: #Boucle sur les increments
               IMPR_FONCTION='NON',
               TRI=_F(NOM_PARA=('COOR_X',),
                      ORDRE='CROISSANT',),);
-  
+
    for j in [0,1,2,3]: #Boucle sur les positions testees
       if (vale[i-1] [j] == 0.0):
         precision = 1.0E-12

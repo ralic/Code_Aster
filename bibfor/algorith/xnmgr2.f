@@ -1,11 +1,11 @@
-      SUBROUTINE  XNMGR2(ELREFP,NDIM,COORSE,IGEOM,HE,DDLH,DDLC,NFE,
+      SUBROUTINE  XNMGR2(ELREFP,NDIM,COORSE,IGEOM,HE,NFH,DDLC,NFE,
      &                   INSTAM,INSTAP,DEPLP,SIGM,VIP,
      &                   BASLOC,NNOP,NPG,TYPMOD,OPTION,IMATE,COMPOR,
-     &                   LGPG,CRIT,DEPLM,LSN,LST,
+     &                   LGPG,CRIT,DEPLM,LSN,LST,NFISS,FISNO,
      &                   SIGP,VI,MATUU,VECTU,CODRET)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/07/2010   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 28/09/2010   AUTEUR MASSIN P.MASSIN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -22,7 +22,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
-C RESPONSABLE PROIX J-M.PROIX
+C RESPONSABLE MASSIN P.MASSIN
 C TOLE CRP_21
 C
 C.......................................................................
@@ -34,16 +34,17 @@ C     TRAVAIL EFFECTUE EN COLLABORATION AVEC I.F.P.
 C.......................................................................
 C
       IMPLICIT NONE
-      INTEGER       NDIM,IGEOM,IMATE,LGPG,CODRET,NNOP,NPG,DDLH,DDLC,NFE
+      INTEGER       NDIM,IGEOM,IMATE,LGPG,CODRET,NNOP,NPG,NFH,DDLC,NFE
+      INTEGER       NFISS,FISNO(NNOP,NFISS)
       CHARACTER*8   ELREFP,TYPMOD(*)
       CHARACTER*16  OPTION,COMPOR(4)
       CHARACTER*24  COORSE
-      REAL*8        BASLOC(6*NNOP),CRIT(3),HE
-      REAL*8        DEPLM(NDIM+DDLH+NDIM*NFE+DDLC,NNOP)
-      REAL*8        DEPLP(NDIM+DDLH+NDIM*NFE+DDLC,NNOP)
+      REAL*8        BASLOC(6*NNOP),CRIT(3),HE(NFISS)
+      REAL*8        DEPLM(NDIM*(1+NFH+NFE)+DDLC,NNOP)
+      REAL*8        DEPLP(NDIM*(1+NFH+NFE)+DDLC,NNOP)
       REAL*8        LSN(NNOP),LST(NNOP)
       REAL*8        VI(LGPG,NPG),VIP(LGPG,NPG),SIGP(4,NPG),MATUU(*)
-      REAL*8        VECTU(NDIM+DDLH+NDIM*NFE+DDLC,NNOP)
+      REAL*8        VECTU(NDIM*(1+NFH+NFE)+DDLC,NNOP)
       REAL*8        INSTAM,INSTAP,SIGM(4,NPG),SIGN(6)
 
 C IN  ELREFP  : ELEMENT DE REFERENCE PARENT
@@ -51,7 +52,7 @@ C IN  NDIM    : DIMENSION DE L'ESPACE
 C IN  COORSE  : COORDONNEES DES SOMMETS DU SOUS-ELEMENT
 C IN  IGEOM   : COORDONNEES DES NOEUDS DE L'ELEMENT PARENT
 C IN  HE      : VALEUR DE LA FONCTION HEAVISIDE SUR LE SOUS-ELT
-C IN  DDLH    : NOMBRE DE DDL HEAVYSIDE (PAR NOEUD)
+C IN  NFH    : NOMBRE DE DDL HEAVYSIDE (PAR NOEUD)
 C IN  DDLC    : NOMBRE DE DDL DE CONTACT (PAR NOEUD)
 C IN  NFE     : NOMBRE DE FONCTIONS SINGULIÈRES D'ENRICHISSEMENT
 C IN  BASLOC  : BASE LOCALE AU FOND DE FISSURE AUX NOEUDS
@@ -93,8 +94,8 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 
-      INTEGER  KPG,KK,N,I,M,J,J1,KL,PQ,KKD,INO,IG,IRET
-      INTEGER  NNO,NNOS,NPGBIS,DDLT,DDLD,CPT,NDIMB
+      INTEGER  KPG,KK,N,I,M,J,J1,KL,PQ,KKD,INO,IG,IRET,IJ
+      INTEGER  NNO,NNOS,NPGBIS,DDLT,DDLD,DDLDN,CPT,NDIMB
       INTEGER  JCOOPG,JDFD2,JGANO,JCOORS,IDFDE,IVF,IPOIDS
       LOGICAL  GRDEPL,AXI,CPLAN,RESI,RIGI
       REAL*8   F(3,3),FM(3,3),FR(3,3),EPSM(6),EPSP(6),DEPS(6)
@@ -102,8 +103,8 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       REAL*8   TMP1,TMP2,SIG(6),FE(4),BASLOG(6)
       REAL*8   XG(NDIM),XE(NDIM),FF(NNOP),JAC,LSNG,LSTG
       REAL*8   RBID1(4),RBID2(4)
-      REAL*8   DFDI(NNOP,NDIM),PFF(6,NNOP,NNOP),DGDGL(4,3)
-      REAL*8   DEF(6,NNOP,NDIM+DDLH+NDIM*NFE),GRAD(3,3),ANGMAS(3)
+      REAL*8   DFDI(NNOP,NDIM),PFF(6,NNOP,NDIM),DGDGL(4,3)
+      REAL*8   DEF(6,NNOP,NDIM*(1+NFH+NFE)),GRAD(3,3),ANGMAS(3)
       REAL*8   ELGEOM(10,27),DFDIB(27,3)
       REAL*8   FMM(3,3),RIND1(4),DEPLB1(3,27),DEPLB2(3,27)
 
@@ -118,7 +119,8 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C--------------------------------------------------------------------
 
 C     NOMBRE DE DDL DE DEPLACEMENT À CHAQUE NOEUD SOMMET
-      DDLD=NDIM+DDLH+NDIM*NFE
+      DDLD=NDIM*(1+NFH+NFE)
+      DDLDN = DDLD/NDIM
 
 C     NOMBRE DE DDL TOTAL (DEPL+CONTACT) À CHAQUE NOEUD SOMMET
       DDLT=DDLD+DDLC
@@ -163,8 +165,9 @@ C       COORDONNEES DU PT DE GAUSS DANS LE REPERE REEL : XG
 
         IF (NFE.GT.0) THEN
 C         JUSTE POUR CALCULER LES FF
-          CALL REERE3(ELREFP,NNOP,IGEOM,XG,DEPLM,GRDEPL,NDIM,HE,DDLH,
-     &                NFE,DDLT,FE,DGDGL,'NON',XE,FF,DFDI,FM,EPSM,GRAD)
+          CALL REERE3(ELREFP,NNOP,IGEOM,XG,DEPLM,GRDEPL,NDIM,HE,
+     &                FISNO,NFISS,NFH,NFE,DDLT,FE,DGDGL,'NON',
+     &                XE,FF,DFDI,FM,EPSM,GRAD)
 C         BASE LOCALE AU POINT DE GAUSS
           CALL VECINI(6,0.D0,BASLOG)
           LSNG = 0.D0
@@ -187,11 +190,13 @@ C
 C       COORDONNÉES DU POINT DE GAUSS DANS L'ELEMENT DE REF PARENT : XE
 C       ET CALCUL DE FF, DFDI, EPSM ET EPSP
 C       CALCUL EN T-
-        CALL REERE3(ELREFP,NNOP,IGEOM,XG,DEPLM,GRDEPL,NDIM,HE,DDLH,NFE,
-     &              DDLT,FE,DGDGL,'OUI',XE,FF,DFDI,FM,EPSM,GRAD)
+        CALL REERE3(ELREFP,NNOP,IGEOM,XG,DEPLM,GRDEPL,NDIM,HE,
+     &              FISNO,NFISS,NFH,NFE,DDLT,FE,DGDGL,'OUI',
+     &              XE,FF,DFDI,FM,EPSM,GRAD)
 C       CALCUL EN T+
-        CALL REERE3(ELREFP,NNOP,IGEOM,XG,DEPLP,GRDEPL,NDIM,HE,DDLH,NFE,
-     &              DDLT,FE,DGDGL,'OUI',XE,FF,DFDI,F,EPSP,GRAD)
+        CALL REERE3(ELREFP,NNOP,IGEOM,XG,DEPLP,GRDEPL,NDIM,HE,
+     &              FISNO,NFISS,NFH,NFE,DDLT,FE,DGDGL,'OUI',
+     &              XE,FF,DFDI,F,EPSP,GRAD)
 C - CALCUL DE DEPS POUR LDC
         DO 25 I = 1,6
           DEPS(I)=EPSP(I)-EPSM(I)
@@ -221,17 +226,19 @@ C         FONCTIONS DE FORME CLASSIQUES
             DEF(4,N,I) = (FR(I,1)*DFDI(N,2) + FR(I,2)*DFDI(N,1))/RAC2
  121      CONTINUE
 C         ENRICHISSEMENT PAR HEAVYSIDE
-          DO 122 I=1,DDLH
-            CPT=NDIM+I
-            DEF(1,N,CPT) =  DEF(1,N,I) * HE
-            DEF(2,N,CPT) =  DEF(2,N,I) * HE
-            DEF(3,N,CPT) =  0.D0
-            DEF(4,N,CPT) =  DEF(4,N,I) * HE
+          DO 122 IG=1,NFH
+            DO 123 I=1,2
+              CPT=NDIM*(1+IG-1)+I
+              DEF(1,N,CPT) =  DEF(1,N,I) * HE(FISNO(N,IG))
+              DEF(2,N,CPT) =  DEF(2,N,I) * HE(FISNO(N,IG))
+              DEF(3,N,CPT) =  0.D0
+              DEF(4,N,CPT) =  DEF(4,N,I) * HE(FISNO(N,IG))
+ 123        CONTINUE
  122      CONTINUE
 C         ENRICHISSEMENT PAR LES NFE FONTIONS SINGULIERES
           DO 124 IG=1,NFE
             DO 125 I=1,2
-              CPT = NDIM+DDLH+NDIM*(IG-1)+I
+              CPT = NDIM*(1+NFH+IG-1)+I
               DEF(1,N,CPT) =  FR(I,1) *
      &             (DFDI(N,1) * FE(IG) + FF(N)*DGDGL(IG,1))
 
@@ -255,16 +262,21 @@ C       ON ENVOIE DFDM2D AVEC LES COORD DU SS-ELT
 
 C      CALCUL DES PRODUITS DE FONCTIONS DE FORMES (ET DERIVEES)
         IF (RIGI) THEN
-          DO 123 N=1,NNOP
-            DO 126 M=1,N
-              PFF(1,N,M) =  DFDI(N,1)*DFDI(M,1)
-              PFF(2,N,M) =  DFDI(N,2)*DFDI(M,2)
-              PFF(3,N,M) = 0.D0
-              PFF(4,N,M) =(DFDI(N,1)*DFDI(M,2)+DFDI(N,2)*DFDI(M,1))/RAC2
-C       ATTETION, IL FAUDRA AJOUTER LES PRODUIT DES DERIVéS DES FF 
-C       SINGULIERE ENTRE ELLES ET CLASIQUES   
- 126        CONTINUE
- 123      CONTINUE
+          DO 127 I=1,NDIM
+            DO 128 N=1,NNOP
+              CPT = 1
+              PFF(CPT,N,I) =  DFDI(N,I)
+              DO 129 IG = 1,NFH
+                CPT = CPT+1
+                PFF(CPT,N,I) = DFDI(N,I)*HE(FISNO(N,IG))
+ 129          CONTINUE
+              DO 132 IG = 1,NFE
+                CPT = CPT+1
+                PFF(CPT,N,I) = DFDI(N,I)*FE(IG)+FF(N)*DGDGL(IG,I)
+ 132          CONTINUE
+              CALL ASSERT(CPT.EQ.DDLDN)
+ 128        CONTINUE
+ 127      CONTINUE
         ENDIF
 C       LOI DE COMPORTEMENT
 C       CONTRAINTE CAUCHY -> CONTRAINTE LAGRANGE POUR LDC EN T-
@@ -295,8 +307,43 @@ C       INTEGRATION
      &              SIGMA,VIP(1,KPG),DSIDEP,CODRET)
 
 C - CALCUL DE LA MATRICE DE RIGIDITE
-
         IF (RIGI) THEN
+C          RIGIDITÉ GEOMETRIQUE
+          DO 240 N=1,NNOP
+            DO 241 M=1,N
+              DO 242 I=1,DDLDN
+                DO 243 J=1,DDLDN
+                  TMP1 = 0.D0
+                  IF (OPTION(1:4).EQ.'RIGI') THEN
+                    TMP1 = SIGN(1)*PFF(I,N,1)*PFF(J,M,1)
+     &                    + SIGN(2)*PFF(I,N,2)*PFF(J,M,2)
+     &                    + SIGN(4)*(PFF(I,N,1)*PFF(J,M,2)
+     &                               +PFF(I,N,2)*PFF(J,M,1))/RAC2
+                  ELSE
+                    TMP1 = SIGMA(1)*PFF(I,N,1)*PFF(J,M,1)
+     &                    + SIGMA(2)*PFF(I,N,2)*PFF(J,M,2)
+     &                    + SIGMA(4)*(PFF(I,N,1)*PFF(J,M,2)
+     &                               +PFF(I,N,2)*PFF(J,M,1))/RAC2
+                  ENDIF
+C                STOCKAGE EN TENANT COMPTE DE LA SYMETRIE
+                  IF (M.EQ.N) THEN
+                    J1 = I
+                  ELSE
+                    J1 = DDLDN
+                  ENDIF
+                  IF (J.LE.J1) THEN
+                    DO 244 IJ = 1,NDIM
+                      KKD = (DDLT*(N-1)+(I-1)*NDIM+IJ-1)
+     &                     * (DDLT*(N-1)+(I-1)*NDIM+IJ) /2
+                      KK = KKD + DDLT*(M-1)+(J-1)*NDIM+IJ
+                      MATUU(KK) = MATUU(KK) + TMP1*JAC
+ 244                CONTINUE
+                  ENDIF
+ 243            CONTINUE
+ 242          CONTINUE
+ 241        CONTINUE
+ 240      CONTINUE
+C          RIGIDITE ELASTIQUE
           DO 140 N=1,NNOP
             DO 141 I=1,DDLD
               DO 142,KL=1,4
@@ -307,28 +354,6 @@ C - CALCUL DE LA MATRICE DE RIGIDITE
  142          CONTINUE
               DO 143 J=1,DDLD
                 DO 144 M=1,N
-
-C                 RIGIDITE GEOMETRIQUE
-                  TMP1 = 0.D0
-                  IF ((I.EQ.J).OR.(ABS(I-J).EQ.NDIM)) THEN
-C       ATTENTION, IL FAUDRA DEVELOPPER ICI POUR LES FF SINGULIERES
-                    IF (OPTION(1:4).EQ.'RIGI') THEN
-                      TMP1 = PFF(1,N,M)*SIGN(1)
-     &                      + PFF(2,N,M)*SIGN(2)
-     &                      + PFF(3,N,M)*SIGN(3)
-     &                      + PFF(4,N,M)*SIGN(4)
-                    ELSE
-                      TMP1 = PFF(1,N,M)*SIGMA(1)
-     &                      + PFF(2,N,M)*SIGMA(2)
-     &                      + PFF(3,N,M)*SIGMA(3)
-     &                      + PFF(4,N,M)*SIGMA(4)
-                    ENDIF
-                    IF (I.GT.NDIM) TMP1 = TMP1*HE
-                    IF (J.GT.NDIM) TMP1 = TMP1*HE
-                  ENDIF
-
-C                RIGIDITE ELASTIQUE
-
                   TMP2 = SIG(1)*DEF(1,M,J)
      &                  + SIG(2)*DEF(2,M,J)
      &                  + SIG(3)*DEF(3,M,J)
@@ -343,7 +368,7 @@ C                STOCKAGE EN TENANT COMPTE DE LA SYMETRIE
                   IF (J.LE.J1) THEN
                     KKD = (DDLT*(N-1)+I-1) * (DDLT*(N-1)+I) /2
                     KK = KKD + DDLT*(M-1)+J
-                    MATUU(KK) = MATUU(KK) + (TMP1+TMP2)*JAC
+                    MATUU(KK) = MATUU(KK) + TMP2*JAC
                   END IF
  144            CONTINUE
  143          CONTINUE
@@ -376,7 +401,6 @@ C    CALCUL DES CONTRAINTES DE CAUCHY, CONVERSION LAGRANGE -> CAUCHY
  200        CONTINUE
             SIGP(PQ,KPG) = SIGP(PQ,KPG)/DETF
  190      CONTINUE
-C          SIGP(4,KPG) = SIGP(4,KPG)/RAC2
         ENDIF
 
  10   CONTINUE

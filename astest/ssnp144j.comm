@@ -1,4 +1,4 @@
-# MODIF  DATE 21/09/2010   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 28/09/2010   AUTEUR MASSIN P.MASSIN 
 # TITRE ZONE COHESIVE CZM_EXP_REG AVEC X-FEM
 # ssnp144j.para = tps_job 300 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -320,12 +320,6 @@ for i in range(1,nbc) :
 MA_XFEM=POST_MAIL_XFEM(MODELE=MODELEK,
                        MAILLAGE_SAIN=MAILLAG1,);
 
-MA_XFEM=DEFI_GROUP(reuse =MA_XFEM,
-                   MAILLAGE=MA_XFEM,
-                   CREA_GROUP_NO=(_F(GROUP_MA='SURF',),
-                                 _F(NOM='INTERF',
-                                  NOEUD=('NP6','NP7','NP8','NP9',),),),);
-
 MOD_VISU=AFFE_MODELE(MAILLAGE=MA_XFEM,
                      AFFE=_F(TOUT='OUI',
                              PHENOMENE='MECANIQUE',
@@ -377,12 +371,19 @@ TAB4 = [None]*nbc
 for i in range(0,nbc) :
 
    TAB1[i]=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
-                                   GROUP_NO=('INTERF',),
+                                   GROUP_NO=('NFISSU',),
                                    RESULTAT=RESXFEM1,
                                    NOM_CHAM='DEPL',
                                    INST=LINST[i],
                                    TOUT_CMP='OUI',
                                    OPERATION='EXTRACTION',),);
+   TAB1[i]=CALC_TABLE(reuse = TAB1[i],
+                      TABLE = TAB1[i],
+                      ACTION = (_F(OPERATION = 'FILTRE',
+                                   NOM_PARA  = 'NOEUD',
+                                   CRIT_COMP = 'REGEXP',
+                                   VALE_K    = 'N[^P]',),),);
+
    TAB2[i]=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
                                    GROUP_NO=('NINF',),
                                    RESULTAT=UTOT1,
@@ -429,12 +430,19 @@ for i in range(0,nbc) :
 for i in range(0,nbc) :
 
    TAB3[i]=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
-                                   GROUP_NO=('INTERF',),
+                                   GROUP_NO=('NFISSU',),
                                    RESULTAT=RESXFEM2,
                                    NOM_CHAM='DEPL',
                                    INST=LINST[i],
                                    TOUT_CMP='OUI',
                                    OPERATION='EXTRACTION',),);
+   TAB3[i]=CALC_TABLE(reuse = TAB3[i],
+                      TABLE = TAB3[i],
+                      ACTION = (_F(OPERATION = 'FILTRE',
+                                   NOM_PARA  = 'NOEUD',
+                                   CRIT_COMP = 'REGEXP',
+                                   VALE_K    = 'N[^P]',),),);
+
    TAB4[i]=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
                                    GROUP_NO=('NINF',),
                                    RESULTAT=UTOT2,

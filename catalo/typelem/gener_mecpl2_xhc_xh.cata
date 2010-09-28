@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 19/07/2010   AUTEUR PELLET J.PELLET 
+%& MODIF TYPELEM  DATE 28/09/2010   AUTEUR MASSIN P.MASSIN 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -128,7 +128,7 @@ MODE_LOCAL__
 
     N1NEUT_R = NEUT_R   ELNO__ IDEN__  (X1       )
     N2NEUT_R = NEUT_R   ELNO__ IDEN__  (X1       X2       )
-    STANO_I  = NEUT_I   ELNO__ IDEN__  (X1       )
+    STANO_I  = NEUT_I   ELEM__         (X[8]    )
 
 VECTEUR__
     MVECTUR = VDEP_R DDL_MECA

@@ -2,7 +2,7 @@
      &                  CHELEM)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 14/09/2010   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 28/09/2010   AUTEUR MASSIN P.MASSIN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -62,6 +62,7 @@ C
       CHARACTER*32                                    ZK32
       CHARACTER*80                                              ZK80
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
+      CHARACTER*32 JEXNUM
 C
 C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
 C
@@ -81,6 +82,8 @@ C
       REAL*8        COCAUS,COFAUS,COCAUP,COFAUP,RELATI
       CHARACTER*19  VALK(2)
       INTEGER       VALI(1)
+      INTEGER      JMAIL,ITYELE
+      CHARACTER*16  TYPELE
 C
       DATA LICMP    /'RHON','MU','RHOTK','INTEG','COECH',
      &         'COSTCO','COSTFR','COPECO','COPEFR','RELA'/
@@ -114,6 +117,9 @@ C
 C --- ACCES AUX FISSURES
 C
       CALL JEVEUO(MODELE//'.FISS','L',JMOFIS)
+
+C --- RECUPERATION DES MAILLES DU MODELE
+      CALL JEVEUO(MODELE//'.MAILLE','L',JMAIL)
 C
 C --- ENRICHISSEMENT DU CHAM_ELEM POUR LA MULTIFISSURATION
 C
@@ -160,6 +166,24 @@ C
             NMAENR = ZI(JINDIC-1+2*IGRP)
             DO 120 I = 1,NMAENR
               IMA = ZI(JGRP-1+I)
+C
+C --- ON NE TRAITE QUE LES MAILLES DE CONTACT
+C
+               ITYELE=ZI(JMAIL-1+IMA)
+               CALL JENUNO(JEXNUM('&CATA.TE.NOMTE',ITYELE),TYPELE)
+               IF (IGRP.EQ.1) THEN
+                 IF (TYPELE(9:11).NE.'XHC'.AND.
+     &                TYPELE(6:8).NE.'XHC') GOTO 120
+               ELSEIF (IGRP.EQ.2) THEN
+                 IF (TYPELE(9:11).NE.'XTC'.AND.
+     &                TYPELE(6:8).NE.'XTC') GOTO 120
+               ELSEIF (IGRP.EQ.3) THEN
+                 IF(TYPELE(9:12).NE.'XHTC'.AND.
+     &                TYPELE(6:9).NE.'XHTC')GOTO 120
+               ELSE
+                 CALL ASSERT(.FALSE.)
+               ENDIF
+
 C
               CALL CESEXI('C',JCESD,JCESL,IMA,1,1,1,IAD)
               IF (IAD.GE.0) THEN

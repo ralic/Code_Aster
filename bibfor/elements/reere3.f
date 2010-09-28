@@ -1,10 +1,11 @@
-      SUBROUTINE REERE3(ELREFP,NNOP  ,IGEOM  ,XG   ,DEPL  ,
-     &                  GRAND ,NDIM  ,HE     ,DDLH ,NFE   ,
+      SUBROUTINE REERE3(ELREFP,NNOP  ,IGEOM ,XG    ,DEPL  ,
+     &                  GRAND ,NDIM  ,HE    ,FISNO ,NFISS ,
+     &                  NFH   ,NFE   ,
      &                  DDLT  ,FE    ,DGDGL  ,CINEM,XE    ,
      &                  FF    ,DFDI  ,F      ,EPS  ,GRAD)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 16/06/2010   AUTEUR CARON A.CARON 
+C MODIF ELEMENTS  DATE 28/09/2010   AUTEUR MASSIN P.MASSIN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -21,14 +22,15 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
-C
+C TOLE CRP_21
       IMPLICIT NONE
       CHARACTER*3  CINEM
       CHARACTER*8  ELREFP
-      INTEGER      IGEOM,NNOP,NDIM,DDLH,NFE,DDLT
-      REAL*8       XG(NDIM),DEPL(DDLT,NNOP),HE,FE(4),DGDGL(4,NDIM)
+      INTEGER      IGEOM,NNOP,NDIM,NFH,NFE,DDLT
+      INTEGER      NFISS,FISNO(NNOP,NFISS)
+      REAL*8       XG(NDIM),DEPL(DDLT,NNOP),FE(4),DGDGL(4,NDIM)
       REAL*8       XE(NDIM),FF(NNOP),DFDI(NNOP,NDIM),F(3,3)
-      REAL*8       EPS(6),GRAD(NDIM,NDIM)
+      REAL*8       EPS(6),GRAD(NDIM,NDIM),HE(NFISS)
       LOGICAL      GRAND
 C
 C......................................................................
@@ -170,24 +172,25 @@ C -- DDLS CLASSIQUES
  404      CONTINUE
  403    CONTINUE
 C -- DDLS HEAVISIDE
-        DO 405 I=1,DDLH
-          CPT = CPT+1
-          DO 406 J=1,NDIM
-            GRAD(I,J) = GRAD(I,J) + HE * DFDI(N,J) *  DEPL(CPT,N)
+        DO 405 IG=1,NFH
+          DO 406 I=1,NDIM
+            CPT = CPT+1
+            DO 407 J=1,NDIM
+              GRAD(I,J)=GRAD(I,J)+HE(FISNO(N,IG))*DFDI(N,J)*DEPL(CPT,N)
+ 407        CONTINUE
  406      CONTINUE
  405    CONTINUE
 C -- DDL ENRICHIS EN FOND DE FISSURE
-        DO 407 IG=1,NFE
-          DO 408 I=1,NDIM
+        DO 408 IG=1,NFE
+          DO 409 I=1,NDIM
             CPT = CPT+1
-            DO 409 J=1,NDIM
+            DO 410 J=1,NDIM
               GRAD(I,J) = GRAD(I,J) + DEPL(CPT,N) *
      &                    (DFDI(N,J) * FE(IG) + FF(N) * DGDGL(IG,J))
- 409        CONTINUE
- 408      CONTINUE
- 407    CONTINUE
+ 410        CONTINUE
+ 409      CONTINUE
+ 408    CONTINUE
  402  CONTINUE
-
       IF (GRAND) THEN
         DO 420 I=1,NDIM
           DO 421 J=1,NDIM

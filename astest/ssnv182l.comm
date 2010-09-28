@@ -1,4 +1,4 @@
-# MODIF  DATE 21/09/2010   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 28/09/2010   AUTEUR MASSIN P.MASSIN 
 # TITRE BLOC AVEC INTERFACE EN CONTACT FROTTANT AVEC X-FEM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -45,7 +45,7 @@ MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAG1,
                               MODELISATION='C_PLAN',),),);
 
 
-THETA=-20./180.*pi
+THETA=-30./180.*pi
 LN=FORMULE(NOM_PARA=('X','Y'),VALE='(Y-10)*cos(THETA)-sin(THETA)*(X-10)');
 
 FISS=DEFI_FISS_XFEM(MODELE=MODELEIN,
@@ -126,7 +126,7 @@ UTOT1=STAT_NON_LINE(MODELE=MODELEK,
                    CONVERGENCE=(_F(ARRET='OUI',
                                   RESI_GLOB_RELA=1E-9)),
                    SOLVEUR=_F(METHODE='MUMPS',PCENT_PIVOT=10,
-                              ),
+                              NPREC=-1),
                    NEWTON=_F(REAC_ITER=1,),
                    ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA',),
                    INFO=1,);
@@ -158,7 +158,7 @@ TEST_TABLE(TABLE=LAG,
            NOM_PARA='LAGS_C',
            TYPE_TEST='MAX',
            VALE=NUL,
-           CRITERE='RELATIF',
+           CRITERE='ABSOLU',
            PRECISION=1.E-4,
            REFERENCE='ANALYTIQUE',);
 
@@ -182,7 +182,7 @@ TEST_TABLE(TABLE=LAG,
            NOM_PARA='LAGS_F1',
            TYPE_TEST='MIN',
            VALE=LA1REF,
-           CRITERE='ABSOLU',
+           CRITERE='RELATIF',
            PRECISION=1.E-4,
            REFERENCE='ANALYTIQUE',);
 
@@ -190,8 +190,7 @@ TEST_TABLE(TABLE=LAG,
 #            POST-TRAITEMENT POUR LA VISUALISATION X-FEM   
 # -------------------------------------------------------------   
 
-MA_XFEM=POST_MAIL_XFEM(
-                       MODELE        = MODELEK,
+MA_XFEM=POST_MAIL_XFEM(MODELE        = MODELEK,
                        INFO          = 2)
 
 MOD_VISU=AFFE_MODELE(MAILLAGE=MA_XFEM,
@@ -201,10 +200,31 @@ MOD_VISU=AFFE_MODELE(MAILLAGE=MA_XFEM,
 
 RES_XFEM=POST_CHAM_XFEM(MODELE_VISU   = MOD_VISU,
                         RESULTAT      = UTOT1,
-                        
                         INFO          = 2)
 
 IMPR_RESU(FORMAT='MED',UNITE=80,RESU=_F(RESULTAT=RES_XFEM));
+
+
+
+TEST_RESU(RESU=(_F(  RESULTAT=RES_XFEM,NUME_ORDRE=1,
+                     NOM_CHAM='DEPL',NOM_CMP='DX',
+                     TYPE_TEST='SOMM_ABS',
+                     CRITERE = 'ABSOLU',
+                     VALE = 0.0,
+                     PRECISION=1.E-8,
+                     REFERENCE = 'NON_REGRESSION',
+                     VERSION = '10.2.12'),
+                _F(  RESULTAT=RES_XFEM,NUME_ORDRE=1,
+                     NOM_CHAM='DEPL',NOM_CMP='DY',
+                     TYPE_TEST='SOMM_ABS',
+                     CRITERE = 'RELATIF',
+                     VALE = 1.0991200961895E-03,
+                     PRECISION=1.E-8,
+                     REFERENCE = 'NON_REGRESSION',
+                     VERSION = '10.2.12'),
+                ),
+         );
+
 
 
 FIN();

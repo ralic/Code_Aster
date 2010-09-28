@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 16/06/2010   AUTEUR CARON A.CARON 
+C MODIF ELEMENTS  DATE 28/09/2010   AUTEUR MASSIN P.MASSIN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -58,7 +58,7 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       INTEGER      JINDCO,JDONCO,JLST,IPOIDS,IVF,IDFDE,JGANO,IGEOM
       INTEGER      IDEPM,IDEPL,IMATT,JSTANO,JPTINT,JAINT,JCFACE,JLONCH
       INTEGER      IPOIDF,IVFF,IDFDEF,IADZI,IAZK24,IBID,IVECT,JBASEC
-      INTEGER      NDIM,DDLH,DDLC,DDLS,NDDL,NNO,NNOS,NNOM,NNOF,DDLM
+      INTEGER      NDIM,NFH,DDLC,DDLS,NDDL,NNO,NNOS,NNOM,NNOF,DDLM
       INTEGER      NPG,NPGF,XOULA,FAC(6,4),NBF,JSEUIL
       INTEGER      INDCO(60),NINTER,NFACE,CFACE(5,3),IBID2(12,3),CPT
       INTEGER      INTEG,NFE,SINGU,JSTNO,NVIT
@@ -88,7 +88,7 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       CHARACTER*8 NOMRES(3)
       CHARACTER*16 OPTIO2,ENR
       REAL*8       AM2D(2),DAM2D(2),DSID2D(2,2),TAU11(3),TAU22(3)
-      INTEGER      NPTF
+      INTEGER      NPTF,NFISS,JFISNO
 
 C.......................................................................
 
@@ -102,7 +102,7 @@ C-----------------------------------------------------------------------
       CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO)
 C
 C     INITIALISATION DES DIMENSIONS DES DDLS X-FEM
-      CALL XTEINI(NOMTE,DDLH,NFE,SINGU,DDLC,NNOM,DDLS,NDDL,DDLM)
+      CALL XTEINI(NOMTE,NFH,NFE,SINGU,DDLC,NNOM,DDLS,NDDL,DDLM,NFISS)
 C
       CALL TECAEL(IADZI,IAZK24)
       TYPMA=ZK24(IAZK24-1+3+ZI(IADZI-1+2)+3)
@@ -265,7 +265,7 @@ C       NOMBRE DE LAMBDAS ET LEUR PLACE DANS LA MATRICE
           IF (NCONTA.EQ.1) NNOL=NNO
           IF (NCONTA.EQ.3) NNOL=NNOS
           DO 15 I=1,NNOL
-            CALL XPLMAT(NDIM,DDLH,NFE,DDLC,DDLM,NNO,NNOM,I,PLI)
+            CALL XPLMAT(NDIM,NFH,NFE,DDLC,DDLM,NNO,NNOM,I,PLI)
             PLA(I)=PLI
  15       CONTINUE
         ELSE
@@ -274,7 +274,7 @@ C       NOMBRE DE LAMBDAS ET LEUR PLACE DANS LA MATRICE
 C           XOULA  : RENVOIE LE NUMERO DU NOEUD PORTANT CE LAMBDA
             NI=XOULA(CFACE,IFA,I,JAINT,TYPMA)
 C           PLACE DU LAMBDA DANS LA MATRICE
-            CALL XPLMAT(NDIM,DDLH,NFE,DDLC,DDLM,NNO,NNOM,NI,PLI)
+            CALL XPLMAT(NDIM,NFH,NFE,DDLC,DDLM,NNO,NNOM,NI,PLI)
             PLA(I)=PLI
  16       CONTINUE
         ENDIF
@@ -407,15 +407,15 @@ C             CALCUL DU SAUT ET DE DN EN CE PG (DEPMOI + DEPDEL)
               DO 140 I = 1,NNO
                 CALL INDENT(I,DDLS,DDLM,NNOS,IN)
 
-                DO 141 J = 1,DDLH
+                DO 141 J = 1,NFH*NDIM
                   SAUT(J) = SAUT(J) - 2.D0 * FFP(I) *
      &                             (   ZR(IDEPM-1+IN+NDIM+J)
      &                               + ZR(IDEPL-1+IN+NDIM+J) )
  141            CONTINUE
                 DO 142 J = 1,SINGU*NDIM
                   SAUT(J) = SAUT(J) - 2.D0 * FFP(I) * RR *
-     &                          (   ZR(IDEPM-1+IN+NDIM+DDLH+J)
-     &                            + ZR(IDEPL-1+IN+NDIM+DDLH+J) )
+     &                          (   ZR(IDEPM-1+IN+NDIM*(1+NFH)+J)
+     &                            + ZR(IDEPL-1+IN+NDIM*(1+NFH)+J) )
  142            CONTINUE
  140          CONTINUE
               DN = 0.D0
@@ -429,14 +429,14 @@ C               PENALISATION DU CONTACT
                 DO 153 I = 1,NNO
                   CALL INDENT(I,DDLS,DDLM,NNOS,IN)
 
-                  DO 154 J = 1,DDLH
+                  DO 154 J = 1,NFH*NDIM
                     VTMP(IN+NDIM+J) =
      &              VTMP(IN+NDIM+J) -
      &              (CPENCO*DN)*2.D0*FFP(I)*ND(J)*JAC
  154              CONTINUE
                   DO 155 J = 1,SINGU*NDIM
-                    VTMP(IN+NDIM+DDLH+J) =
-     &              VTMP(IN+NDIM+DDLH+J) -
+                    VTMP(IN+NDIM*(1+NFH)+J) =
+     &              VTMP(IN+NDIM*(1+NFH)+J) -
      &              (CPENCO*DN)*2.D0*FFP(I)*RR*ND(J)*JAC
  155              CONTINUE
  153            CONTINUE
@@ -444,14 +444,14 @@ C               PENALISATION DU CONTACT
                 DO 150 I = 1,NNO
                   CALL INDENT(I,DDLS,DDLM,NNOS,IN)
 
-                  DO 151 J = 1,DDLH
+                  DO 151 J = 1,NFH*NDIM
                     VTMP(IN+NDIM+J) =
      &              VTMP(IN+NDIM+J) +
      &              (REAC-CPENCO*DN)*2.D0*FFP(I)*ND(J)*JAC
  151              CONTINUE
                   DO 152 J = 1,SINGU*NDIM
-                    VTMP(IN+NDIM+DDLH+J) =
-     &              VTMP(IN+NDIM+DDLH+J) +
+                    VTMP(IN+NDIM*(1+NFH)+J) =
+     &              VTMP(IN+NDIM*(1+NFH)+J) +
      &              (REAC-CPENCO*DN)*2.D0*FFP(I)*RR*ND(J)*JAC
  152              CONTINUE
  150            CONTINUE
@@ -496,15 +496,15 @@ C           II.1. SI PAS DE CONTACT POUR CE PG : ON REMPLIT QUE LN3
                 DO 161 I = 1,NNO
                   CALL INDENT(I,DDLS,DDLM,NNOS,IN)
 
-                  DO 162 J = 1,DDLH
+                  DO 162 J = 1,NFH*NDIM
                     SAUT(J) = SAUT(J) - 2.D0 * FFP(I) *
      &                       (   ZR(IDEPM-1+IN+NDIM+J)
      &                       + ZR(IDEPL-1+IN+NDIM+J) )
  162              CONTINUE
                   DO 163 J = 1,SINGU*NDIM
                     SAUT(J) = SAUT(J) - 2.D0 * FFP(I) * RR *
-     &                       (   ZR(IDEPM-1+IN+NDIM+DDLH+J)
-     &                       + ZR(IDEPL-1+IN+NDIM+DDLH+J) )
+     &                       (   ZR(IDEPM-1+IN+NDIM*(1+NFH)+J)
+     &                       + ZR(IDEPL-1+IN+NDIM*(1+NFH)+J) )
  163              CONTINUE
  161            CONTINUE
 
@@ -555,7 +555,7 @@ C
                 BETASQ=BETA*BETA
                 ALPHA0=(GC/SIGMC)*PENADH
 C
-C           II.2.2. CALCUL DU SAUT DE DEPLACEMENT EQUIVALENT [[Ueg]]
+C           II.2.2. CALCUL DU SAUT DE DEPLACEMENT EQUIVALENT [[UEG]]
 
                 DEPEQI=0.0D0
                 CALL MATINI(3,3,0.D0,DSIDEP)
@@ -566,15 +566,15 @@ C           II.2.2. CALCUL DU SAUT DE DEPLACEMENT EQUIVALENT [[Ueg]]
                 CALL VECINI(3,0.D0,TAU22)
 C              
                 DO 204 I=1,NNO
-                  DO 205 J=1,DDLH
+                  DO 205 J=1,NFH*NDIM
                     SAUT(J) = SAUT(J) - 2.D0 * FFP(I) *
      &                             (   ZR(IDEPM-1+DDLS*(I-1)+NDIM+J)
      &                               + ZR(IDEPL-1+DDLS*(I-1)+NDIM+J) )
  205              CONTINUE
                   DO 206 J = 1,SINGU*NDIM
                     SAUT(J) = SAUT(J) - 2.D0 * FFP(I) * RR *
-     &                          (   ZR(IDEPM-1+DDLS*(I-1)+NDIM+DDLH+J)
-     &                            + ZR(IDEPL-1+DDLS*(I-1)+NDIM+DDLH+J) )
+     &                          (  ZR(IDEPM-1+DDLS*(I-1)+NDIM*(1+NFH)+J)
+     &                          + ZR(IDEPL-1+DDLS*(I-1)+NDIM*(1+NFH)+J))
     
  206              CONTINUE
  204            CONTINUE 
@@ -711,7 +711,7 @@ C                   ALPHA NE CORRESPOND A AUCUN CAS
  248              CONTINUE                 
 
                   DO 450 I = 1,NNO
-                    DO 451 J = 1,DDLH 
+                    DO 451 J = 1,NFH*NDIM 
                       VTMP(DDLS*(I-1)+NDIM+J) =
      &                VTMP(DDLS*(I-1)+NDIM+J)- 
      &                 (2.D0*TSELAS*PPTG(J)*FFP(I)*JAC)-
@@ -719,8 +719,8 @@ C                   ALPHA NE CORRESPOND A AUCUN CAS
 
  451                CONTINUE
                     DO 452 J = 1,SINGU*NDIM
-                        VTMP(DDLS*(I-1)+NDIM+DDLH+J) =
-     &                  VTMP(DDLS*(I-1)+NDIM+DDLH+J)- 
+                        VTMP(DDLS*(I-1)+NDIM*(1+NFH)+J) =
+     &                  VTMP(DDLS*(I-1)+NDIM*(1+NFH)+J)- 
      &                 (2.D0*TSELAS*PPTG(J)*FFP(I)*JAC*RR)-
      &                 (2.D0*BETASQ*TSELAS*PTPG(J)*FFP(I)*JAC*RR)
  
@@ -779,13 +779,13 @@ C             PBOUL SELON L'ÉTAT D'ADHERENCE DU PG (AVEC DEPDEL)
               DO 175 INO=1,NNO
                 CALL INDENT(INO,DDLS,DDLM,NNOS,IN)
 
-                DO 176 J=1,DDLH
+                DO 176 J=1,NFH*NDIM
                   SAUT(J) = SAUT(J) - 2.D0 * FFP(INO) *
      &                                ZR(IDEPL-1+IN+NDIM+J)
  176            CONTINUE
                 DO 177 J = 1,SINGU*NDIM
                   SAUT(J) = SAUT(J) - 2.D0 * FFP(INO) * RR *
-     &                              ZR(IDEPL-1+IN+NDIM+DDLH+J)
+     &                              ZR(IDEPL-1+IN+NDIM*(1+NFH)+J)
 
  177            CONTINUE
  175          CONTINUE
@@ -823,14 +823,14 @@ C               CALCUL DE PT.PBOUL
               DO 185 I = 1,NNO
                 CALL INDENT(I,DDLS,DDLM,NNOS,IN)
 
-                DO 186 J = 1,DDLH
+                DO 186 J = 1,NFH*NDIM
                   VTMP(IN+NDIM+J) =
      &            VTMP(IN+NDIM+J) +
      &            2.D0*MU*SEUIL(ISSPG)* PTPB(J)*FFP(I)*JAC
  186            CONTINUE
                 DO 187 J = 1,SINGU*NDIM
-                  VTMP(IN+NDIM+DDLH+J) =
-     &            VTMP(IN+NDIM+DDLH+J) +
+                  VTMP(IN+NDIM*(1+NFH)+J) =
+     &            VTMP(IN+NDIM*(1+NFH)+J) +
      &            2.D0*RR*MU*SEUIL(ISSPG)* PTPB(J)*FFP(I)*JAC
  187            CONTINUE
  185          CONTINUE
@@ -896,15 +896,17 @@ C
         NNO = NNOS
       ENDIF
 C     SUPPRESSION DES DDLS DE DEPLACEMENT SEULEMENT POUR LES XHTC
-      IF (DDLH*NFE.NE.0) THEN
+      IF (NFH*NFE.NE.0) THEN
         CALL JEVECH('PSTANO' ,'L',JSTNO)
-        CALL XTEDDL(NDIM,DDLH,NFE,DDLS,NDDL,NNOS,NNOS,ZI(JSTNO),
-     &              .FALSE.,LBID,OPTION,NOMTE,RBID,ZR(IVECT),DDLM)
+        CALL XTEDDL(NDIM,NFH,NFE,DDLS,NDDL,NNOS,NNOS,ZI(JSTNO),
+     &              .FALSE.,LBID,OPTION,NOMTE,RBID,ZR(IVECT),DDLM,
+     &              NFISS,JFISNO)
       ENDIF
 C     SUPPRESSION DES DDLS DE CONTACT
       IF (MALIN.AND.NLACT.LT.NNO) THEN
-        CALL XTEDDL(NDIM,DDLH,NFE,DDLS,NDDL,NNO,NNOS,LACT,
-     &              .TRUE.,.TRUE.,OPTION,NOMTE,RBID,ZR(IVECT),DDLM)
+        CALL XTEDDL(NDIM,NFH,NFE,DDLS,NDDL,NNO,NNOS,LACT,
+     &              .TRUE.,.TRUE.,OPTION,NOMTE,RBID,ZR(IVECT),DDLM,
+     &              NFISS,JFISNO)
       ENDIF
 
       CALL JEDEMA()

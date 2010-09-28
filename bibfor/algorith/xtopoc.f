@@ -1,7 +1,7 @@
-      SUBROUTINE XTOPOC(MODELE,FISS)
+      SUBROUTINE XTOPOC(MODELE)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/04/2010   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 28/09/2010   AUTEUR MASSIN P.MASSIN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -21,7 +21,7 @@ C ======================================================================
 C RESPONSABLE GENIAUT S.GENIAUT
 C
       IMPLICIT NONE 
-      CHARACTER*8   MODELE,FISS
+      CHARACTER*8   MODELE
 C     
 C ----------------------------------------------------------------------
 C
@@ -34,7 +34,6 @@ C ----------------------------------------------------------------------
 C
 C
 C  IN  MODELE : NOM DE L'OBJET MODELE	 
-C  I/O FISS   : NOM DE LA SD FISS_XFEM
 C
 C
 C -------------- DEBUT DECLARATIONS NORMALISEES JEVEUX -----------------
@@ -94,18 +93,18 @@ C
 C
 C --- RECUPERATION DES DONNEES XFEM
 C
-      LNNO   = FISS(1:8)//'.LNNO'     
-      LTNO   = FISS(1:8)//'.LTNO'
-      GRLNNO = FISS(1:8)//'.GRLNNO'     
-      GRLTNO = FISS(1:8)//'.GRLTNO'      
-      PINTER = FISS(1:8)//'.TOPOFAC.PI'
-      AINTER = FISS(1:8)//'.TOPOFAC.AI'
-      CFACE  = FISS(1:8)//'.TOPOFAC.CF'
-      FACLON = FISS(1:8)//'.TOPOFAC.LO'
-      BASECO = FISS(1:8)//'.TOPOFAC.BA'
-      GESCLA = FISS(1:8)//'.TOPOFAC.GE'
-      GMAITR = FISS(1:8)//'.TOPOFAC.GM'
-      GESCLO = FISS(1:8)//'.TOPOFAC.OE'
+      LNNO   = MODELE(1:8)//'.LNNO'
+      LTNO   = MODELE(1:8)//'.LTNO'
+      GRLNNO = MODELE(1:8)//'.GRLNNO'
+      GRLTNO = MODELE(1:8)//'.GRLTNO'
+      PINTER = MODELE(1:8)//'.TOPOFAC.PI'
+      AINTER = MODELE(1:8)//'.TOPOFAC.AI'
+      CFACE  = MODELE(1:8)//'.TOPOFAC.CF'
+      FACLON = MODELE(1:8)//'.TOPOFAC.LO'
+      BASECO = MODELE(1:8)//'.TOPOFAC.BA'
+      GESCLA = MODELE(1:8)//'.TOPOFAC.GE'
+      GMAITR = MODELE(1:8)//'.TOPOFAC.GM'
+      GESCLO = MODELE(1:8)//'.TOPOFAC.OE'
 C       
 C --- CREATION DES LISTES DES CHAMPS IN
 C
@@ -144,9 +143,9 @@ C
       ENDIF 
 C  
       CALL CALCUL('C',OPTION,LIGREL,NBIN  ,LCHIN ,LPAIN,
-     &                              NBOUT ,LCHOUT,LPAOUT,'V') 
+     &                              NBOUT ,LCHOUT,LPAOUT,'G') 
 C
-      CALL COPISD('CHAMP_GD','V',LCHOUT(6),GESCLO)
+      CALL COPISD('CHAMP_GD','G',LCHOUT(6),GESCLO)
   
       CALL JEDEMA()
       END

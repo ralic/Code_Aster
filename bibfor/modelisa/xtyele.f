@@ -1,6 +1,6 @@
-      SUBROUTINE XTYELE(NOMA,MODELX,TRAV,NFISS,FISS,CONTAC,NDIM)
+      SUBROUTINE XTYELE(NOMA,MODELX,TRAV,NFISS,FISS,CONTAC,NDIM,LINTER)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 16/06/2010   AUTEUR CARON A.CARON 
+C MODIF MODELISA  DATE 28/09/2010   AUTEUR MASSIN P.MASSIN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -24,6 +24,7 @@ C RESPONSABLE PELLET J.PELLET
       INTEGER     NFISS
       CHARACTER*8  FISS(NFISS)
       INTEGER     CONTAC,NDIM
+      LOGICAL     LINTER
 C      
 C ----------------------------------------------------------------------
 C
@@ -59,15 +60,15 @@ C
       REAL*8      A(NDIM),B(NDIM),AB(NDIM),C(NDIM),AC(NDIM)
       INTEGER     NMAENR,JINDIC,KK,JGRP,JCOOR,NBMA,JVALV,JNCMP
       INTEGER     JLSN,JLST,JMASUP,JTMDIM,JTYPMA,JCONX1,JCONX2
-      INTEGER     NBCOUP,NBCOU2,IBID,IFISS,ITYPMA,JTAB
-      INTEGER     NMASUP,NDIME,NBAR
+      INTEGER     NBCOUP,NBCOU2,IBID,IFISS,ITYPMA,JTAB,JNBPT,JNBPT2
+      INTEGER     NMASUP,NDIME,NBAR,NBHEAV
       INTEGER     INO,INO2,NNGL,NNOT(3),NNO,NNO2,IMA,IMA2
       INTEGER     I,J,K
       INTEGER     AR(12,3),IA,NUNOA,NUNOB
-      CHARACTER*8  TYPMA,K8BID
+      CHARACTER*8  TYPMA,K8BID,NOMAIL
       CHARACTER*19 CARTE,CLSN,CLST,CNXINV
       CHARACTER*24 XINDIC,GRP(3)
-      LOGICAL     LCONT
+      LOGICAL     LCONT,ISMALI
 C
 C ----------------------------------------------------------------------
 C
@@ -75,6 +76,7 @@ C
 C
 C --- INITIALISATION
 C
+      LINTER = .FALSE.
       CLSN = '&&XTYELE.LSN'
       CLST = '&&XTYELE.LST'
       CALL JEVEUO(NOMA(1:8)//'.COORDO    .VALE','L',JCOOR)
@@ -95,6 +97,13 @@ C     CREATION D'UNE CARTE CONTENANT LES NOMS DES SD FISS_XFEM
       ZK8(JNCMP)   = 'Z1'
 C     RECUPERATION DE L'ADRESSE DU TABLEAU DE TRAVAIL
       CALL JEVEUO(TRAV,'E',JTAB)
+C --- CREATION DE L'OBJET CONTENANT LE NOMBRE DE FISSURE VUE PAR MAILLE,
+C --- CORRESPOND AU NOMBRE DE SOUS POINTS POUR LA CREATION DES SD XCONNO
+      CALL WKVECT('&&XTYELE.NBSP' ,'V V I',NBMA,JNBPT)
+C --- CREATION DE L'OBJET CONTENANT LE NOMBRE DE FONCTIONS HEAVISIDES
+C --- PAR MAILLES POUR LES MAILLES QUI VOIENT PLUS DE 2 FISSURES
+C --- CORRESPOND AU NOMBRE DE SOUS POINTS POUR LA SD FISSNO
+      CALL WKVECT('&&XTYELE.NBSP2' ,'V V I',NBMA,JNBPT2)
 C
 C --- BOUCLE SUR NOMBRE OCCURRENCES FISSURES
 C
@@ -121,6 +130,32 @@ C
             DO 30 I = 1,NMAENR
               IMA = ZI(JGRP-1+I)
 C
+              ZI(JNBPT-1+IMA) = ZI(JNBPT-1+IMA)+1
+              ITYPMA=ZI(JTYPMA-1+IMA)
+
+              IF (ZI(JTAB-1+5*(IMA-1)+4).EQ.0) THEN
+C --- BLINDAGE DANS LE CAS DU MULTI-HEAVISIDE
+                CALL JENUNO(JEXNUM(NOMA//'.NOMMAI',IMA),NOMAIL)
+                IF (NDIM.EQ.3) THEN
+                  CALL U2MESK('F','XFEM_40', 1 ,NOMAIL)
+                ELSE
+                  IF (ZI(JNBPT-1+IMA).EQ.2) THEN
+                    CALL JENUNO(JEXNUM('&CATA.TM.NOMTM',ITYPMA),TYPMA)
+                    IF (.NOT.ISMALI(TYPMA)) THEN
+                      CALL U2MESK('F','XFEM_41', 1 ,NOMAIL)
+                    ENDIF
+                  ELSEIF (ZI(JNBPT-1+IMA).EQ.3) THEN
+                    CALL U2MESK('F','XFEM_42', 1 ,NOMAIL)
+                  ELSE
+                    CALL ASSERT(.FALSE.)
+                  ENDIF
+                ENDIF
+              ENDIF
+
+C --- ON RECUPERE LE NB DE NOEUDS SOMMETS DE LA MAILLE
+              CALL PANBNO(ITYPMA,NNOT)
+              NNO = NNOT(1)
+C
 C --- ON DETERMINE S'IL S'AGIT D'UNE MAILLE DE CONTACT OU PAS
               LCONT = .FALSE.
 C
@@ -128,12 +163,9 @@ C --- SI LE CONTACT EST DECLARÉ DANS LE MODELE
 C
               IF (CONTAC.GE.1) THEN
 C --- PAS DE CONTACT POUR LES MAILLE DE BORD
-                ITYPMA=ZI(JTYPMA-1+IMA)
                 NDIME= ZI(JTMDIM-1+ITYPMA)
                 IF (NDIME.NE.NDIM) GOTO 110
-C --- ON RECUPERE LE NB DE NOEUDS SOMMETS DE LA MAILLE
-                CALL PANBNO(ITYPMA,NNOT)
-                NNO = NNOT(1)
+
                 MAXLSN=-1*R8MAEM()
                 MINLSN=R8MAEM()
 C --- BOUCLE SUR LES NOEUDS DE LA MAILLE
@@ -249,21 +281,50 @@ C
               IF (ZI(JTAB-1+5*(IMA-1)+4).EQ.1) THEN
                 IF (LCONT) THEN
                   ZI(JTAB-1+5*(IMA-1)+KK) = 1
+                  ZK8(JVALV) = FISS(IFISS)
+                  CALL NOCART ( CARTE,3,' ','NUM',1,' ',IMA,' ',1)
                 ELSE
                   ZI(JTAB-1+5*(IMA-1)+KK) = -1
                 ENDIF
                 ZI(JTAB-1+5*(IMA-1)+4)  = 0
+              ELSEIF (ZI(JTAB-1+5*(IMA-1)+4).EQ.0) THEN
+C --- SI LA MAILLE EST VUE UNE DEUXIEME FOIS,
+C
+                IF (CONTAC.GT.1) CALL U2MESK('F','XFEM_43', 1 ,NOMAIL)
+C --- SI CONTACT AUTRE QUE P1P1
+                  
+                IF (KK.GT.1.OR.ZI(JTAB-1+5*(IMA-1)+2).EQ.1
+     &                      .OR.ZI(JTAB-1+5*(IMA-1)+3).EQ.1) THEN
+C --- SI UNE DES MAILLES CONTIENT DU CRACK-TIP
+                  CALL U2MESK('F','XFEM_44', 1 ,NOMAIL)
+                ENDIF
+                IF (LCONT) THEN
+                  ZK8(JVALV) = FISS(IFISS)
+                  CALL NOCART ( CARTE,3,' ','NUM',1,' ',IMA,' ',1)
+                ENDIF
+C
+C --- CALCUL DU NOMBRE DE FONCTIONS HEAVISIDE
+                CALL XTYHEA(FISS,NFISS,IFISS,IMA,NNO,JCONX1,JCONX2,
+     &                                                   NBHEAV)
+                ZI(JNBPT2-1+IMA) = NBHEAV
+                IF (ZI(JTAB-1+5*(IMA-1)+1).GT.0.NEQV.LCONT) THEN
+C --- SI SEULEMENT UNE DES 2 MAILLES A DU CONTACT
+                  LCONT = .TRUE.
+                ELSEIF (ZI(JTAB-1+5*(IMA-1)+1).GT.0.AND.LCONT) THEN
+C --- SI LES 2 MAILLES ONT DU CONTACT, IL S'AGIT D'UUNE MAILLE COUPÉE 2X
+C --- JE LAISSE CETTE LIGNE QUI SERA UTILE PLUS TARD
+                ENDIF
+                IF (LCONT) THEN
+C --- CONTACT DÉSACTIVÉ SUR LA MAILLE, ON PREVIENT L'UTILISATEUR
+                  CALL U2MESK('A','XFEM_45', 1 ,NOMAIL)
+                  ZI(JTAB-1+5*(IMA-1)+KK) = NBHEAV
+                ELSE
+                  ZI(JTAB-1+5*(IMA-1)+KK) = -1*NBHEAV
+                ENDIF
+                LINTER = .TRUE.
               ELSE
-C --- SI LA MAILLE EST VUE UNE DEUXIEME FOIS, LES FISSURES SONT TROP
-C --- PROCHES, ERREUR CAR L'INTERSECTION N'EST PAS IMPLEMENTE
-                CALL U2MESS('F','XFEM_1')
-C --- ON DETECTERA ICI LES MAILLES SPECIFIQUES A L'INTERSECTION
-C                ZI(JTAB-1+5*(IMA-1)+1) = 0
-C                ZI(JTAB-1+5*(IMA-1)+2) = 0
-C                ZI(JTAB-1+5*(IMA-1)+3) = 0
+                CALL ASSERT(.FALSE.)
               ENDIF
-              ZK8(JVALV) = FISS(IFISS)
-              CALL NOCART ( CARTE,3,' ','NUM',1,' ',IMA,' ',1)
  30         CONTINUE
           ENDIF
  20     CONTINUE

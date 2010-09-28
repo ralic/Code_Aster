@@ -1,4 +1,4 @@
-%& MODIF COMPELEM  DATE 14/09/2010   AUTEUR REZETTE C.REZETTE 
+%& MODIF COMPELEM  DATE 28/09/2010   AUTEUR MASSIN P.MASSIN 
 % ======================================================================
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
@@ -684,6 +684,13 @@ PHENOMENE_MODELISATION__
               MAILLE__ TRIA6     ELEMENT__ MEDPTR6_XHTC_X
               MAILLE__ QUAD4     ELEMENT__ MEDPQU4_XHTC
               MAILLE__ QUAD8     ELEMENT__ MEDPQU8_XHTC_X
+
+       MODELISATION__ 'D_PLAN_XHH'         DIM__ 2 2   CODE__ 'XI1'
+              ATTRIBUT__  NBSIGM=X4 D_PLAN=OUI  TYPMOD=D_PLAN
+              MAILLE__ TRIA3     ELEMENT__ MEDPTR3_XH1
+              MAILLE__ QUAD4     ELEMENT__ MEDPQU4_XH1
+              MAILLE__ TRIA3     ELEMENT__ MEDPTR3_XH2
+              MAILLE__ QUAD4     ELEMENT__ MEDPQU4_XH2
 
 %-------------------------------------------------------------------
 

@@ -1,4 +1,4 @@
-# MODIF  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
+# MODIF  DATE 27/09/2010   AUTEUR BOITEAU O.BOITEAU 
 # TITRE RUINE ELASTO-PLASTIQUE DU PORTIQUE DE LEE
 # ssnl136b.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -20,6 +20,12 @@
 # ======================================================================
 
 DEBUT(CODE=_F( NOM = 'SSNL136B',NIV_PUB_WEB='INTERNET',VISU_EFICAS='OUI'));
+
+#========================================================================
+# CE CAS-TEST PRESENTE LA PARTICULARITE DE COMPARER LA FONCTIONNALITE
+# SOLVEUR/STOP_SINGULIER='DECOUPE' DE STAT_NON_LINE EN VARIANT LE TYPE DE
+# DETECTION DE SINGULARITE (MULT_FRONT/LDLT VERSUS MUMPS).
+#========================================================================
 
 PRE_GIBI(UNITE_GIBI=17,
          UNITE_MAILLAGE=20,);
@@ -78,6 +84,9 @@ DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = TEMPS),
                         ECHEC=_F(SUBD_METHODE='UNIFORME',
                                  SUBD_PAS=4,
                                  SUBD_PAS_MINI = 1e-6),)
+
+# DETECTION DE SINGULARITE ET REDECOUPAGE DU PAS DE TEMPS AVEC
+# LE SOLVEUR LINEAIRE MULT_FRONT
 RESO=STAT_NON_LINE(MODELE=MO,
                    CHAM_MATER=MAT,
                    CARA_ELEM=CARA,
@@ -91,7 +100,10 @@ RESO=STAT_NON_LINE(MODELE=MO,
                              REAC_ITER=1,),
                    CONVERGENCE=_F(RESI_GLOB_RELA=1.0E-6,
                                   ITER_GLOB_MAXI=50,),
-                   SOLVEUR=_F(STOP_SINGULIER='DECOUPE',),);
+                   SOLVEUR=_F(STOP_SINGULIER='DECOUPE',
+                              METHODE='MULT_FRONT',
+                   ),);
+
 
 DEPZ=RECU_FONCTION(RESULTAT=RESO,
                    TOUT_ORDRE='OUI',
@@ -226,5 +238,132 @@ TEST_FONCTION(VALEUR=(_F(FONCTION=COOR_X,
                          CRITERE='RELATIF',
                          REFERENCE='NON_REGRESSION',
                          VERSION='8.3.2',),),);
+
+# DETECTION DE SINGULARITE ET REDECOUPAGE DU PAS DE TEMPS AVEC
+# LE SOLVEUR LINEAIRE MUMPS
+RESOM=STAT_NON_LINE(MODELE=MO,
+                   CHAM_MATER=MAT,
+                   CARA_ELEM=CARA,
+                   EXCIT=(_F(CHARGE=CL,),
+                          _F(CHARGE=FORCE,
+                             FONC_MULT=F_FORCE,),),
+                   COMP_ELAS=_F(RELATION='ELAS_POUTRE_GR',
+                                DEFORMATION='GROT_GDEP',),
+                   INCREMENT=_F(LIST_INST=DEFLIST,),
+                   NEWTON=_F(MATRICE='TANGENTE',
+                             REAC_ITER=1,),
+                   CONVERGENCE=_F(RESI_GLOB_RELA=1.0E-6,
+                                  ITER_GLOB_MAXI=50,),
+                   SOLVEUR=_F(STOP_SINGULIER='DECOUPE',
+                              METHODE='MUMPS',
+                   ),);
+
+
+DEPZM=RECU_FONCTION(RESULTAT=RESOM,
+                   TOUT_ORDRE='OUI',
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DZ',
+                   GROUP_NO='PB',);
+
+TAB_DEPM=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLA',
+                                 GROUP_NO='PB',
+                                 RESULTAT=RESOM,
+                                 NOM_CHAM='DEPL',
+                                 TOUT_ORDRE='OUI',
+                                 NOM_CMP=('DX','DY','DZ',),
+                                 OPERATION='EXTRACTION',),);
+
+
+TAB_DEPM=CALC_TABLE(reuse=TAB_DEPM,
+                    TABLE=TAB_DEPM,
+            ACTION=(_F(OPERATION='OPER', FORMULE=GEOM_DX, NOM_PARA='X_FINAL'),
+                _F(OPERATION='OPER', FORMULE=GEOM_DY, NOM_PARA='Y_FINAL'),),)
+
+COOR_XM=RECU_FONCTION(TABLE=TAB_DEPM,
+                     PARA_X='INST',
+                     PARA_Y='X_FINAL',);
+
+COOR_YM=RECU_FONCTION(TABLE=TAB_DEPM,
+                     PARA_X='INST',
+                     PARA_Y='Y_FINAL',);
+
+TEST_FONCTION(VALEUR=(_F(FONCTION=COOR_XM,
+                         VALE_PARA=0.5,
+                         VALE_REFE=22.28,
+                         CRITERE='RELATIF',
+                         PRECISION=0.016,
+                         REFERENCE='SOURCE_EXTERNE',),
+                      _F(FONCTION=COOR_Y,
+                         VALE_PARA=0.5,
+                         VALE_REFE=58.74,
+                         CRITERE='RELATIF',
+                         PRECISION=0.015,
+                         REFERENCE='SOURCE_EXTERNE',),
+                      _F(FONCTION=DEPZM,
+                         VALE_PARA=0.5,
+                         VALE_REFE=40.12,
+                         CRITERE='RELATIF',
+                         PRECISION=0.021,
+                         REFERENCE='SOURCE_EXTERNE',),),);
+
+TEST_FONCTION(VALEUR=(_F(FONCTION=COOR_XM,
+                         VALE_PARA=1.0,
+                         VALE_REFE=15.67,
+                         CRITERE='RELATIF',
+                         PRECISION=0.03,
+                         REFERENCE='SOURCE_EXTERNE',),
+                      _F(FONCTION=COOR_YM,
+                         VALE_PARA=1.0,
+                         VALE_REFE=46.99,
+                         CRITERE='RELATIF',
+                         PRECISION=0.021,
+                         REFERENCE='SOURCE_EXTERNE',),
+                      _F(FONCTION=DEPZM,
+                         VALE_PARA=1.0,
+                         VALE_REFE=53.52,
+                         CRITERE='RELATIF',
+                         PRECISION=0.015,
+                         REFERENCE='SOURCE_EXTERNE',),),);
+
+# -------------- TESTS DE NON REGRESSION ----------------------
+
+TEST_FONCTION(VALEUR=(_F(FONCTION=COOR_XM,
+                         VALE_PARA=0.5,
+                         VALE_REFE=2.2618510848408E+01,
+                         CRITERE='RELATIF',
+                         REFERENCE='NON_REGRESSION',
+                         VERSION='8.3.2',),
+                      _F(FONCTION=COOR_YM,
+                         VALE_PARA=0.5,
+                         VALE_REFE=5.9519562513556E+01,
+                         CRITERE='RELATIF',
+                         REFERENCE='NON_REGRESSION',
+                         VERSION='8.3.2',),
+                      _F(FONCTION=DEPZM,
+                         VALE_PARA=0.5,
+                         VALE_REFE=3.9289567130315E+01,
+                         CRITERE='RELATIF',
+                         REFERENCE='NON_REGRESSION',
+                         VERSION='8.3.2',),),);
+
+TEST_FONCTION(VALEUR=(_F(FONCTION=COOR_XM,
+                         VALE_PARA=1.0,
+                         VALE_REFE=1.6059366042098E+01,
+                         CRITERE='RELATIF',
+                         REFERENCE='NON_REGRESSION',
+                         VERSION='8.3.2',),
+                      _F(FONCTION=COOR_YM,
+                         VALE_PARA=1.0,
+                         VALE_REFE=4.7966387615236E+01,
+                         CRITERE='RELATIF',
+                         REFERENCE='NON_REGRESSION',
+                         VERSION='8.3.2',),
+                      _F(FONCTION=DEPZM,
+                         VALE_PARA=1.0,
+                         VALE_REFE=5.3015038396901E+01,
+                         CRITERE='RELATIF',
+                         REFERENCE='NON_REGRESSION',
+                         VERSION='8.3.2',),),);
+
 
 FIN();

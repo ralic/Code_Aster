@@ -1,4 +1,4 @@
-%& MODIF OPTIONS  DATE 16/06/2010   AUTEUR CARON A.CARON 
+%& MODIF OPTIONS  DATE 28/09/2010   AUTEUR MASSIN P.MASSIN 
 % RESPONSABLE PELLET
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
@@ -43,7 +43,7 @@ OPTION__
 % que lineaire : modelisation 3D_FAISCEAU
         PCAPOUF  CAPOUF
         PCINFDI  CINFDI  <<  PCINFDI : INFORMATIONS SUR LES DISCRETS, PAR AFFE_CARA_ELEM  >>
-%parametres spécifiques X-FEM
+%parametres spécifiques X-FEM dans MODI_MODELE_XFEM
         PSTANO   NEUT_I
         PPINTTO  NEUT_R
         PCNSETO  NEUT_I
@@ -52,7 +52,8 @@ OPTION__
         PBASLOR  NEUT_R
         PLSN     NEUT_R
         PLST     NEUT_R
-        PPMILTO  NEUT_R 
+        PPMILTO  NEUT_R
+        PFISNO   NEUT_I  << PFISNO : CONNECTIVITE DES FISSURES ET DES DDL HEAVISIDE >>
 %fin de paramèetres spécifiques X-FEM
    OUT__
         PMATUUR  MDEP_R  RESL__

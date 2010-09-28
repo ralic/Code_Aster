@@ -1,7 +1,7 @@
       SUBROUTINE SIGTMC (FAMI,NNO,NDIM,NBSIG,NPG,NI,XYZ,
      +                   INSTAN,MATER,REPERE,OPTION,SIGMA)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 24/09/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF ELEMENTS  DATE 27/09/2010   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -49,8 +49,8 @@ C -----  ARGUMENTS
            REAL*8       INSTAN
            CHARACTER*(*) FAMI
 C -----  VARIABLES LOCALES
-           REAL*8       D(36), XYZGAU(3), EPSTH(6)
-           INTEGER      IRET
+           REAL*8       D(36), XYZGAU(3), EPSTH(6), R8MIEM
+           INTEGER      IEPSV
            CHARACTER*2  K2BID
            LOGICAL      LTEATT
 C.========================= DEBUT DU CODE EXECUTABLE ==================
@@ -96,8 +96,15 @@ C  --      AU POINT D'INTEGRATION COURANT
 C          ------------------------------
           CALL EPSTMC(FAMI, NDIM,INSTAN,'+',IGAU,1,
      &                XYZGAU,REPERE,MATER, OPTION, EPSTH)
-
-
+     
+C TEST DE LA NULLITE DES DEFORMATIONS DUES AUX VARIABLES DE COMMANDE
+          IEPSV=0
+          DO 90 I = 1, 6
+             IF ( ABS(EPSTH(I)).GT.R8MIEM() ) IEPSV=1
+ 90       CONTINUE
+C TOUTES DES COMPOSANTES SONT NULLES. ON EVITE LE CALCUL DE D ET SIGMA
+          IF (IEPSV.EQ.0) GOTO 20
+          
 C         PASSAGE DES COMPOSANTES DE CISAILLEMENTS EN CONFORMITE
 C         ( DMATMC RETOURNE UNE MATRICE DE HOOKE EN SUPPOSANT
 C           UN DEUX SUR LES DEFORMATIONS DE CISAILLEMENT )
@@ -120,6 +127,8 @@ C          ------------------------------------------------------
      +                                    D(J+(I-1)*NBSIG)*EPSTH(J)
   70         CONTINUE
   60      CONTINUE
+  
+  
 C
   20  CONTINUE
 C

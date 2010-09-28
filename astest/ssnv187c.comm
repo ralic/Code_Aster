@@ -1,4 +1,4 @@
-# MODIF  DATE 06/07/2010   AUTEUR DESOZA T.DESOZA 
+# MODIF  DATE 27/09/2010   AUTEUR PROIX J-M.PROIX 
 # TITRE VALIDATION DE LA LOI HYPER-ELASTIQUE SUR UN CUBE - 3D
 # ssnv187c.para = tps_job 300 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -102,12 +102,33 @@ RUBBER1=DEFI_MATERIAU(ELAS_HYPER=_F(C10=C10,
                                    C20=C20,
                                    K=K,
                                    RHO=1000.0),);
-                                   
-                                   
+
+# temperature non prise en compte par ELAS_HYPER
+# ici pour valider que le code ne plante pas.
+                                
+CHT10=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
+                    OPERATION='AFFE',
+                    MAILLAGE=MAIL,
+                    AFFE=_F(TOUT='OUI',
+                            NOM_CMP='TEMP',
+                            VALE=10.,),);
+
+RTEMP=CREA_RESU(OPERATION='AFFE',
+                TYPE_RESU='EVOL_THER',
+                NOM_CHAM='TEMP',
+                AFFE=(
+                _F(CHAM_GD=CHT10,INST=0.,),
+                _F(CHAM_GD=CHT10,INST=1.,),
+                ));
+
 CHMAT1=AFFE_MATERIAU(MAILLAGE=MAIL,
                     MODELE=MODELE,
                     AFFE=_F(TOUT='OUI',
-                            MATER=RUBBER1,),);
+                            MATER=RUBBER1,),
+                    AFFE_VARC=_F(TOUT='OUI',
+                                   EVOL=RTEMP,
+                                   NOM_VARC='TEMP',
+                                   VALE_REF=10.,),);
 
 RESU1=STAT_NON_LINE(MODELE=MODELE,
                    CHAM_MATER=CHMAT1,
@@ -176,6 +197,7 @@ RESU2=STAT_NON_LINE(MODELE=MODELE,
                           _F(CHARGE=DEPL,),),
                    NEWTON=(_F(REAC_INCR=1,
                               MATRICE='TANGENTE',
+                              PREDICTION='ELASTIQUE',
                               REAC_ITER=1,)),                   
                    COMP_INCR=_F(RELATION='ELAS_HYPER',
                                 DEFORMATION = 'GROT_GDEP',
@@ -203,7 +225,7 @@ TEST_RESU(RESU=_F(RESULTAT=RESU2,
                   CRITERE='RELATIF',
                   REFERENCE='NON_REGRESSION',
                   VERSION = '10.2.6',
-                  VALE = -0.0783308779,
+                  VALE = -0.078330830948145 ,
                   PRECISION  = 1E-8,),)           
                   
 

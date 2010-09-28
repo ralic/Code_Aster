@@ -1,4 +1,4 @@
-# MODIF  DATE 21/09/2010   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 28/09/2010   AUTEUR MASSIN P.MASSIN 
 # TITRE BLOC AVEC INTERFACE EN CONTACT FROTTANT AVEC X-FEM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -203,24 +203,24 @@ RES_XFEM=POST_CHAM_XFEM(MODELE_VISU   = MOD_VISU,
 
 IMPR_RESU(FORMAT='MED',UNITE=81,RESU=_F(RESULTAT=RES_XFEM));
 
-#TEST_RESU(RESU=(_F(  RESULTAT=RES_XFEM,NUME_ORDRE=1,
-#                     NOM_CHAM='DEPL',NOM_CMP='DX',
-#                     TYPE_TEST='SOMM_ABS',
-#                     CRITERE = 'ABSOLU',
-#                     VALE = 0.0,
-#                     PRECISION=1.E-8,
-#                     REFERENCE = 'NON_REGRESSION',
-#                     VERSION = '8.2.13'),
-#                _F(  RESULTAT=RES_XFEM,NUME_ORDRE=1,
-#                     NOM_CHAM='DEPL',NOM_CMP='DY',
-#                     TYPE_TEST='SOMM_ABS',
-#                     CRITERE = 'RELATIF',
-#                     VALE = 4.10E-04,
-#                     PRECISION=1.E-6,
-#                     REFERENCE = 'NON_REGRESSION',
-#                     VERSION = '9.0.21'),
-#                ),
-#         );
+TEST_RESU(RESU=(_F(  RESULTAT=RES_XFEM,NUME_ORDRE=1,
+                     NOM_CHAM='DEPL',NOM_CMP='DX',
+                     TYPE_TEST='SOMM_ABS',
+                     CRITERE = 'ABSOLU',
+                     VALE = 0.0,
+                     PRECISION=1.E-8,
+                     REFERENCE = 'NON_REGRESSION',
+                     VERSION = '10.2.12'),
+                _F(  RESULTAT=RES_XFEM,NUME_ORDRE=1,
+                     NOM_CHAM='DEPL',NOM_CMP='DY',
+                     TYPE_TEST='SOMM_ABS',
+                     CRITERE = 'RELATIF',
+                     VALE = 7.79E-04,
+                     PRECISION=1.E-8,
+                     REFERENCE = 'NON_REGRESSION',
+                     VERSION = '10.2.12'),
+                ),
+         );
 
 
 FIN();

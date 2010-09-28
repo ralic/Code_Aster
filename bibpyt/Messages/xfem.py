@@ -1,4 +1,4 @@
-#@ MODIF xfem Messages  DATE 10/08/2010   AUTEUR GENIAUT S.GENIAUT 
+#@ MODIF xfem Messages  DATE 28/09/2010   AUTEUR MASSIN P.MASSIN 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -281,6 +281,56 @@ cata_msg={
      - le modèle renseigné sous MODELE_IN est %(k3)s.
      Conseil :
      Veuillez revoir la définition de la fissure %(k1)s ou bien changer MODELE_IN.
+"""),
+
+40: _("""
+      Le modèle est 3D et la maille %(k1)s est connectée à 2 fissures,
+      le multi-Heaviside n'a pas été généralisé en 3D.
+      Pour ne pas activer le multi-Heaviside, les fissures doivent être séparées de 2 mailles 
+      minimum. Veuillez raffiner le maillage entre les fissures (ou écarter les fissures).
+ """),
+
+
+41: _("""
+      La maille %(k1)s est quadratique et elle est connectée à 2 fissures,
+      le multi-Heaviside n'a été généralisé en quadratique.
+      Pour ne pas activer le multi-Heaviside, les fissures doivent être séparées de 2 mailles 
+      minimum. Veuillez raffiner le maillage entre les fissures (ou écarter les fissures).
+"""),
+
+42: _("""
+      La maille %(k1)s est connectée à 3 fissures,
+      le multi-Heaviside n'a pas été généralisé à plus de 2 fissures.  
+      Pour ne pas activer le multi-Heaviside, les fissures doivent être séparées de 2 mailles 
+      minimum. Veuillez raffiner le maillage entre les fissures (ou écarter les fissures).
+"""),
+
+43: _("""
+      Le contact autre que P1P1 est actif et la maille %(k1)s est connectée à 2 fissures,
+      le multi-Heaviside ne peut pas être pris en compte si le contact autre que P1P1 est utilisé.
+      Pour ne pas activer le multi-Heaviside, les fissures doivent être séparées de 2 mailles 
+      minimum. Veuillez raffiner le maillage entre les fissures (ou écarter les fissures).
+"""),
+
+44: _("""
+      La maille %(k1)s est connectée à 2 fissures, or il s'agit d'une maille possédant des
+      enrichissements de fond de fissure.
+      Le multi-Heaviside ne peut pas être pris en compte en fond de fissure.
+      Pour ne pas activer le multi-Heaviside, les fissures doivent être séparées de 2 mailles 
+      minimum. Veuillez raffiner le maillage entre les fissures (ou écarter les fissures).
+"""),
+
+45: _("""
+      Le contact est normalement actif sur la maille %(k1)s, or cette maille est connectée à
+       2 fissures. Le multi-Heaviside n'a pas été généralisé au contact.
+      On désactive le contact sur cette maille, ce qui peut conduire à des résultats faux.
+      Pour ne pas activer le multi-Heaviside, les fissures doivent être séparées de 2 mailles 
+      minimum. Veuillez raffiner le maillage entre les fissures (ou écarter les fissures).
+"""),
+
+46: _("""
+      Un sous-élément de la maille %(k1)s est découpé par 2 fissures différentes,
+      L'intersection entre 2 fissures n'a pas encore été programmé.
 """),
 
 57: _("""

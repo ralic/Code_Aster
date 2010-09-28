@@ -4,7 +4,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 13/04/2010   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 28/09/2010   AUTEUR MASSIN P.MASSIN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -87,14 +87,16 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 
-      INTEGER IBID,IER
+      INTEGER IBID,IER,JNOXFL,JNOXFV
       CHARACTER*16 OPER
       CHARACTER*8  K8B
       CHARACTER*4  FONRE1,FONRE2,TYPCOE
       CHARACTER*2  TYPLAG
       REAL*8       COEF,RBID(3)
       COMPLEX*16   CUN
-      LOGICAL      LXFEM, LENRI
+      LOGICAL      LXFEM
+      CHARACTER*19  NOXFEM
+
 C-----------------------------------------------------------------------
 
       CALL GETRES(K8B,K8B,OPER)
@@ -113,16 +115,28 @@ C    --------------------------------------------------------
         LXFEM = .FALSE.
       ELSE
         LXFEM = .TRUE.
+        NOXFEM = '&&AFDDLI.NOXFEM'
+        CALL CNOCNS(MOD//'.NOXFEM','V',NOXFEM)
+        CALL JEVEUO(NOXFEM//'.CNSL','L',JNOXFL)
+        CALL JEVEUO(NOXFEM//'.CNSV','L',JNOXFV)
       ENDIF
 
 C --- AFFECTATION DU BLOCAGE A LA LISTE DE RELATIONS LISREL :
 C     -----------------------------------------------------
       DO 30 J = 1,NDDLA
+
+C       -- SI LA CMP N'EXISTE PAS SUR LE NOEUD, ON SAUTE :
+        ICMP = INDIK8(NOMCMP,MOTCLE(J)(1:8),1,NBCMP)
+        CALL ASSERT(ICMP.GT.0)
+        IF (.NOT.EXISDG(PRNM,ICMP)) GOTO 30
+
         IF (LXFEM) THEN
-          CALL XDDLIM(MOD,MOTCLE(J)(1:8),NOMCMP,NBCMP,NOMN,INO,
-     &                VALIMR(J),VALIMC(J),VALIMF(J),PRNM,FONREE,
-     &                ICOMPT(J),LISREL,IBID,RBID,LENRI)
-          IF (LENRI) GOTO 30
+          IF (ZL(JNOXFL-1+2*INO).AND.MOTCLE(J)(1:1).EQ.'D') THEN
+            CALL XDDLIM(MOD,MOTCLE(J)(1:8),NOMCMP,NBCMP,NOMN,INO,
+     &                   VALIMR(J),VALIMC(J),VALIMF(J),PRNM,FONREE,
+     &                   ICOMPT(J),LISREL,IBID,RBID,JNOXFV)
+            GOTO 30
+          ENDIF
         ENDIF
 
 C       -- SI LA CMP N'EXISTE PAS SUR LE NOEUD, ON SAUTE :
@@ -164,5 +178,9 @@ C       --------------------------------------
           END IF
         END IF
    30 CONTINUE
+
+      IF (LXFEM) THEN
+        CALL JEDETR(NOXFEM)
+      ENDIF
 
       END

@@ -3,7 +3,7 @@
       CHARACTER*4         FONREE
       CHARACTER*8                 CHAR
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 19/07/2010   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 28/09/2010   AUTEUR MASSIN P.MASSIN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -52,7 +52,7 @@ C---------------- FIN COMMUNS NORMALISES  JEVEUX  ----------------------
       INTEGER VALI(2)
       PARAMETER (NMOCL=300)
 
-      INTEGER I,J,K,N,JLISTI
+      INTEGER I,J,K,N,JLISTI,JNOXFL,JNOXFV
       INTEGER NBNOEU,JVAL,NDDLA,JDIREC,NBNO
       INTEGER IDIM,IN,JNORM,JTANG,JNONO,NFACI
       INTEGER IBID,JNOMA,IER,NDIM,NBMA2,JCOMPT
@@ -73,8 +73,8 @@ C---------------- FIN COMMUNS NORMALISES  JEVEUX  ----------------------
       CHARACTER*16 MOCLM2(2),MOCLM3(2),TYPMC3(2)
       CHARACTER*24 MESMAI,MESMA2,LNOEU2,LNOEU1,MESNO3
       CHARACTER*19 LIGRMO
-      CHARACTER*19 LISREL
-      LOGICAL EXISDG,LXFEM,LENRI
+      CHARACTER*19 LISREL,NOXFEM
+      LOGICAL EXISDG,LXFEM
 
       CALL JEMARQ()
       CALL GETFAC('FACE_IMPO',NFACI)
@@ -162,6 +162,10 @@ C    --------------------------------------------------------
         LXFEM = .FALSE.
       ELSE
         LXFEM = .TRUE.
+        NOXFEM = '&&CAFACI.NOXFEM'
+        CALL CNOCNS(MOD//'.NOXFEM','V',NOXFEM)
+        CALL JEVEUO(NOXFEM//'.CNSL','L',JNOXFL)
+        CALL JEVEUO(NOXFEM//'.CNSV','L',JNOXFV)
       ENDIF
 
       DO 210 I = 1,NFACI
@@ -271,10 +275,10 @@ C              LISTE DES NOMS DES NOEUDS DES MAILLES EXCLUES
             IF (NBNO3.NE.0) THEN
 C              LISTE DES NOMS DES NOEUDS EXCLUS : SANS_(NOEUD,GROUP_NO)
                CALL JEVEUO ( MESNO3, 'L', JLIST3 )
-C              Si NBMA2<>0
-C                 AGRANDIR LNOEU2 de NBNO3 et ajouter MESNO3
-C              Sinon
-C                 CREER LNOEU2 et copier MESNO3
+C              SI NBMA2<>0
+C                 AGRANDIR LNOEU2 DE NBNO3 ET AJOUTER MESNO3
+C              SINON
+C                 CREER LNOEU2 ET COPIER MESNO3
                IF ( NBMA2.NE.0 ) THEN
                   CALL JUVECA(LNOEU2,NBNO2+NBNO3)
                   CALL JEVEUO(LNOEU2,'E',JLINO2)
@@ -353,11 +357,13 @@ C   ----------------------
   100         CONTINUE
 
               IF (LXFEM) THEN
-                CALL XDDLIM(MOD,DDL,ZK8(INOM),NBCMP,NOMNOE,IN,
-     &                      VALIMR(NDDLA+1),VALIMC(J),VALIMF(J),
-     &                      ZI(JPRNM-1+(IN-1)*NBEC+1),FONREE,
-     &                      IBID,LISREL,NDIM,DIRECT,LENRI)
-                IF (LENRI) GOTO 105
+                IF (ZL(JNOXFL-1+2*IN)) THEN
+                  CALL XDDLIM(MOD,DDL,ZK8(INOM),NBCMP,NOMNOE,IN,
+     &                        VALIMR(NDDLA+1),VALIMC(J),VALIMF(J),
+     &                        ZI(JPRNM-1+(IN-1)*NBEC+1),FONREE,
+     &                        IBID,LISREL,NDIM,DIRECT,JNOXFV)
+                  GOTO 105
+                ENDIF
               ENDIF
 
               CALL AFRELA(COEF,COEFC,DDL,NOMNOE,NDIM,DIRECT,1,
@@ -375,11 +381,13 @@ C   ----------------------
   110         CONTINUE
 
               IF (LXFEM) THEN
-                CALL XDDLIM(MOD,DDL,ZK8(INOM),NBCMP,NOMNOE,IN,
-     &                      VALIMR(NDDLA+2),VALIMC(J),VALIMF(J),
-     &                      ZI(JPRNM-1+(IN-1)*NBEC+1),FONREE,
-     &                      IBID,LISREL,NDIM,DIRECT,LENRI)
-                IF (LENRI) GOTO 120
+                IF (ZL(JNOXFL-1+2*IN)) THEN
+                  CALL XDDLIM(MOD,DDL,ZK8(INOM),NBCMP,NOMNOE,IN,
+     &                        VALIMR(NDDLA+2),VALIMC(J),VALIMF(J),
+     &                        ZI(JPRNM-1+(IN-1)*NBEC+1),FONREE,
+     &                        IBID,LISREL,NDIM,DIRECT,JNOXFV)
+                  GOTO 120
+                ENDIF
               ENDIF
 
               CALL AFRELA(COEF,COEFC,DDL,NOMNOE,NDIM,DIRECT,1,
@@ -455,6 +463,9 @@ C        -------------------------------------
       CALL JEDETR('&&NBNLMA.NBN')
       CALL JEDETR('&&CANORT.NORMALE')
       CALL JEDETR('&&CANORT.TANGENT')
+      IF (LXFEM) THEN
+        CALL JEDETR(NOXFEM)
+      ENDIF
 
       CALL JEDEMA()
       END

@@ -1,4 +1,4 @@
-# MODIF  DATE 21/09/2010   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 28/09/2010   AUTEUR MASSIN P.MASSIN 
 # TITRE BLOC AVEC INTERFACE EN CONTACT FROTTANT AVEC X-FEM
 # ssnv182d.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -215,10 +215,10 @@ TEST_RESU(RESU=(_F(  RESULTAT=RES_XFEM,NUME_ORDRE=1,
                      NOM_CHAM='DEPL',NOM_CMP='DY',
                      TYPE_TEST='SOMM_ABS',
                      CRITERE = 'RELATIF',
-                     VALE = 4.10E-04,
+                     VALE = 2.9E-04,
                      PRECISION=1.E-6,
                      REFERENCE = 'NON_REGRESSION',
-                     VERSION = '9.0.21'),
+                     VERSION = '10.2.17'),
                 ),
          );
 

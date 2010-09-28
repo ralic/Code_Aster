@@ -1,17 +1,16 @@
       SUBROUTINE XDDLIM(MODELE,MOTCLE,NOMCMP,NBCMP,NOMN,INO,VALIMR,
      &                  VALIMC,VALIMF,PRNM,FONREE,ICOMPT,LISREL,
-     &                  NDIM,DIRECT,LENRI)
+     &                  NDIM,DIRECT,JNOXFV)
       IMPLICIT NONE
 
-      INTEGER      INO,ICOMPT,NBCMP,PRNM(*),NDIM
+      INTEGER      INO,ICOMPT,NBCMP,PRNM(*),NDIM,JNOXFV
       REAL*8       VALIMR,DIRECT(3)
       CHARACTER*4  FONREE
       CHARACTER*8  MODELE,NOMN,VALIMF,NOMCMP(*),MOTCLE
       CHARACTER*19 LISREL
-      LOGICAL     LENRI
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 18/05/2010   AUTEUR JAUBERT A.JAUBERT 
+C MODIF MODELISA  DATE 28/09/2010   AUTEUR MASSIN P.MASSIN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -49,7 +48,6 @@ C IN  NDIM
 C IN/OUT
 C     ICOMPT : "COMPTEUR" DES DDLS AFFECTES REELLEMENT
 C     LISREL : LISTE DE RELATIONS AFFECTEE PAR LA ROUTINE
-C     LENRI  : VRAI SI LE NOEUD A ÈTÈ TRAITÈ
 C
 C -------------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ----------------
 C
@@ -73,132 +71,164 @@ C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
 C
       INTEGER     NBXCMP
       PARAMETER  (NBXCMP=18)
-      INTEGER     IER,STANO,JSTANO,JLSN,JLST,NREL
-      INTEGER     ICMP,INDIK8,I,J,NTERM,IREL,DIMENS(NBXCMP)
+      INTEGER     IER,STANO(4),JSTNOL,JSTNOV,JSTNOD,NREL
+      INTEGER     JLSNV,JLSNL,JLSND,JLSTV,JLSTL,JLSTD
+      INTEGER     JFISNV,JFISNL,JFISND,JFISNO,NFH,IFH
+      INTEGER     ICMP,INDIK8,I,J,NTERM,IREL,DIMENS(NBXCMP),IFISS,NFISS
       INTEGER     IALINO,NBNO,NBMANO,ADRMA,IMA,NUMA,NBNOMA,NUNO,NUNO2
-      INTEGER     JCONX1,JCONX2,IDNOMA,IBID
-      REAL*8      LSN,LST,R,THETA(2),R8PI,HE(2),T,COEF(NBXCMP),SIGN
-      REAL*8      MINLSN,MAXLSN,RBID,R8MAEM,LSN2
+      INTEGER     JCONX1,JCONX2,IDNOMA,IBID,IAD,FISNO(4)
+      REAL*8      R,THETA(2),R8PI,HE(2,4),T,COEF(NBXCMP),SIGN
+      REAL*8      LSN(4),LST(4),MINLSN,MAXLSN,RBID,R8MAEM,LSN2
       CHARACTER*8 DDL(NBXCMP),NOEUD(NBXCMP),VALK(2),AXES(3),K8BID,NOMA
-      CHARACTER*19 CH1,CH2,CH3,CNXINV
+      CHARACTER*19 CH1,CH2,CH3,CH4,CNXINV
       COMPLEX*16  CBID,VALIMC
       LOGICAL     EXISDG
+      CHARACTER*1   CH
       DATA        AXES /'X','Y','Z'/
 
 C ----------------------------------------------------------------------
 C
       CALL JEMARQ()
+
+C --- RECUP DU NUMERO LOCAL NUMO DU NOEUD INO DANS LA MAILLE X-FEM NUMA
+      NUMA = ZI(JNOXFV-1+2*(INO-1)+1)
+      NUNO = ZI(JNOXFV-1+2*(INO-1)+2)
+
+C     STATUT DU NOEUD ET LEVEL SETS
+      CH1 = '&&XDDLIM.CHS1'
+      CH2 = '&&XDDLIM.CHS2'
+      CH3 = '&&XDDLIM.CHS3'
+      CH4 = '&&XDDLIM.CHS4'
+      CALL CELCES(MODELE//'.STNO','V',CH1)
+      CALL CELCES(MODELE//'.LNNO','V',CH2)
+      CALL CELCES(MODELE//'.LTNO','V',CH3)
+C
 C       REMARQUE : FAIRE DES CALL JEVEUO AU COEUR DE LA BOUCLE SUR
 C      LES NOEUDS ET SUR LES DDLS BLOQUES N'EST PAS OPTIMAL DU POINT
 C      DE VUE DES PERFORMANCES, MAIS A PRIORI, CA NE DEVRAIT PAS ETRE
 C      POUR BEAUCOUP DE NOEUDS
-      LENRI = .FALSE.
-      IF (MOTCLE.EQ.'DX'.OR.MOTCLE.EQ.'DY'.OR.MOTCLE.EQ.'DZ'
-     &    .OR.MOTCLE(1:8).EQ.'DEPL    ' ) THEN
-C ---   LE NOEUD EST T-IL ENRICHI ?
-        ICMP = INDIK8(NOMCMP,'H1X',1,NBCMP)
-        IF (EXISDG(PRNM,ICMP)) LENRI = .TRUE.
-        ICMP = INDIK8(NOMCMP,'E1X',1,NBCMP)
-        IF (EXISDG(PRNM,ICMP)) LENRI = .TRUE.
-        IF (LENRI) THEN
-          CH1 = '&&XDDLIM.CHS1'
-          CALL CNOCNS(MODELE//'.STNO','V',CH1)
-          CALL JEVEUO(CH1//'.CNSV','L',JSTANO)
-          STANO=ZI(JSTANO-1+INO)
-          IF (STANO.EQ.0) THEN
-            LENRI = .FALSE.
-          ENDIF
-          CALL DETRSD('CHAM_NO_S',CH1)
-        ENDIF
+      CALL JEVEUO(CH1//'.CESV','L',JSTNOV)
+      CALL JEVEUO(CH1//'.CESL','L',JSTNOL)
+      CALL JEVEUO(CH1//'.CESD','L',JSTNOD)
+      CALL JEVEUO(CH2//'.CESV','L',JLSNV)
+      CALL JEVEUO(CH2//'.CESL','L',JLSNL)
+      CALL JEVEUO(CH2//'.CESD','L',JLSND)
+      CALL JEVEUO(CH3//'.CESV','L',JLSTV)
+      CALL JEVEUO(CH3//'.CESL','L',JLSTL)
+      CALL JEVEUO(CH3//'.CESD','L',JLSTD)
+C
+C --- NOMBRE DE FISSURES VUES PAR LA MAILLE
+      NFISS = ZI(JSTNOD-1+5+4*(NUMA-1)+2)
+C
+      IF (NFISS.GT.1) THEN
+        CALL CELCES(MODELE//'.FISSNO','V',CH4)
+        CALL JEVEUO(CH4//'.CESV','L',JFISNV)
+        CALL JEVEUO(CH4//'.CESL','L',JFISNL)
+        CALL JEVEUO(CH4//'.CESD','L',JFISND)
+C --- NOMBRE DE DDLS HEAVISIDES DANS LA MAILLE
+        NFH = ZI(JFISND-1+5+4*(NUMA-1)+2)
+        DO 40 I = 1,NFH
+          CALL CESEXI('S',JFISND,JFISNL,NUMA,NUNO,I,1,IAD)
+          FISNO(I) = ZI(JFISNV-1+IAD)
+ 40     CONTINUE
       ENDIF
-C --- LE NOEUD N'EST PAS ENRICHI, ON SORT
-      IF (.NOT.LENRI) GOTO 999
+      DO 70 IFISS=1,NFISS
+        CALL CESEXI('S',JSTNOD,JSTNOL,NUMA,NUNO,IFISS,1,IAD)
+        STANO(IFISS)=ZI(JSTNOV-1+IAD)
+        CALL CESEXI('S',JLSND,JLSNL,NUMA,NUNO,IFISS,1,IAD)
+        LSN(IFISS) = ZR(JLSNV-1+IAD)
+        CALL CESEXI('S',JLSTD,JLSTL,NUMA,NUNO,IFISS,1,IAD)
+        LST(IFISS) = ZR(JLSTV-1+IAD)
+ 70   CONTINUE
 
-C     LEVEL SETS AU NOEUD
-      CH2 = '&&XDDLIM.CHS2'
-      CH3 = '&&XDDLIM.CHS3'
-      CALL CNOCNS(MODELE//'.LNNO','V',CH2)
-      CALL CNOCNS(MODELE//'.LTNO','V',CH3)
-      CALL JEVEUO(CH2//'.CNSV','L',JLSN)
-      CALL JEVEUO(CH3//'.CNSV','L',JLST)
-      LSN = ZR(JLSN-1+INO)
-      LST = ZR(JLST-1+INO)
       CNXINV='&&XDDLIM.CNXINV'
 
+      
 C --- IDENTIFICATIOND DES CAS A TRAITER :
-C --- SI NOEUD SUR LES LEVRES ET CONNECTÈ ‡ DES NOEUDS (APPARTENANT AU
-C --- GROUPE AFFECTÈ) DE PART ET D'AUTRE DE LA LEVRE : 2 RELATIONS
-C --- SINON IL FAUT IMPOSER QUE D'UN SEUL COTÈ        : 1 RELATION
-      IF (LSN.EQ.0.D0.AND.LST.LT.0.D0) THEN
-        MINLSN = R8MAEM()
-        MAXLSN = -1.D0*R8MAEM()
-C ---   RECUPERATION DE LA LISTE DES NOEUDS AFFECT…S PAR LA CONDITION
-        CALL JEEXIN('&&CADDLI.NUNOTMP',IER)
-        IF (IER.NE.0) THEN
-          CALL JEVEUO('&&CADDLI.NUNOTMP','L',IALINO)
-          CALL JELIRA('&&CADDLI.NUNOTMP','LONMAX',NBNO,K8BID)
+C --- SI NOEUD SUR LES LEVRES ET CONNECT… ¿ DES NOEUDS (APPARTENANT AU
+C --- GROUPE AFFECT…) DE PART ET D'AUTRE DE LA LEVRE : 2 RELATIONS
+C --- SINON IL FAUT IMPOSER QUE D'UN SEUL COT…        : 1 RELATION
+      IF (NFISS.EQ.1) THEN
+        IF (LSN(1).EQ.0.D0.AND.LST(1).LT.0.D0) THEN
+          MINLSN = R8MAEM()
+          MAXLSN = -1*R8MAEM()
+C ---     RECUPERATION DE LA LISTE DES NOEUDS AFFECT…S PAR LA CONDITION
+          CALL JEEXIN('&&CADDLI.NUNOTMP',IER)
+          IF (IER.NE.0) THEN
+            CALL JEVEUO('&&CADDLI.NUNOTMP','L',IALINO)
+            CALL JELIRA('&&CADDLI.NUNOTMP','LONMAX',NBNO,K8BID)
+          ELSE
+C ---       ON ZAPPE SI ON EST PAS EN MODE DDL_IMPO
+            NBNO=0
+          ENDIF
+C ---     RECUPERATION DU NOM DU MAILLAGE :
+          CALL JEVEUO(MODELE//'.MODELE    .LGRF','L',IDNOMA)
+          NOMA = ZK8(IDNOMA)
+C ---     RECUPERATION DES MAILLES CONTENANT LE NOEUD
+          CALL JEVEUO(NOMA//'.CONNEX','L',JCONX1)
+          CALL JEVEUO(JEXATR(NOMA//'.CONNEX','LONCUM'),'L',JCONX2)
+          CALL CNCINV(NOMA,IBID,0,'V',CNXINV)
+          CALL JELIRA(JEXNUM(CNXINV,INO),'LONMAX',NBMANO,K8BID)
+          CALL JEVEUO(JEXNUM(CNXINV,INO),'L',ADRMA)
+C ---     BOUCLE SUR LES MAILLES CONTENANT LE NOEUD
+          DO 100 IMA=1,NBMANO
+            NUMA = ZI(ADRMA-1 + IMA)
+            NBNOMA = ZI(JCONX2+NUMA) - ZI(JCONX2+NUMA-1)
+C ---       BOUCLE SUR LES NOEUDS DE LA MAILLE
+C ---       ATTENTION ON NE PREND EN COMPTE QUE LES MAILLES LINEAIRES !
+            DO 110 I=1,NBNOMA
+              NUNO  = ZI(JCONX1-1+ZI(JCONX2+NUMA-1)+I-1)
+C ---         ON REGARDE SI LE NOEUD APPARTIENT AU GRP DE NOEUD AFFECT…
+              DO 120 J=1,NBNO
+                NUNO2 = ZI(IALINO-1+J)
+                IF (NUNO2.EQ.NUNO) THEN
+                  CALL CESEXI('C',JLSND,JLSNL,NUMA,I,1,1,IAD)
+                  IF (IAD.LE.0) GOTO 110
+                  LSN2 = ZR(JLSNV-1+IAD)
+C                  LSN2 = ZR(JLSN-1+NUNO)
+                  IF (LSN2.LT.MINLSN) MINLSN=LSN2
+                  IF (LSN2.GT.MAXLSN) MAXLSN=LSN2
+                  GOTO 110
+                ENDIF
+ 120          CONTINUE
+ 110        CONTINUE
+ 100      CONTINUE
+          CALL JEDETR(CNXINV)
+          IF ((MINLSN.EQ.0.D0).AND.(MAXLSN.GT.0.D0)) THEN
+C ---       ON AFFECTE LA RELATION UNIQUEMENT SUR LA PARTIE MAITRE
+            NREL = 1
+            THETA(1) =  R8PI()
+            HE(1,1)    =  1.D0
+          ELSEIF ((MINLSN.LT.0.D0).AND.(MAXLSN.EQ.0.D0)) THEN
+C ---       ON AFFECTE LA RELATION UNIQUEMENT SUR LA PARTIE ESCLAVE
+            NREL = 1
+            THETA(1) =  R8PI()
+            HE(1,1)    =  -1.D0
+          ELSEIF (((MINLSN.LT.0.D0).AND.(MAXLSN.GT.0.D0))
+     &              .OR.(NBNO.EQ.0)) THEN
+C ---       ON AFFECTE LA RELATION SUR LES DEUX PARTIES
+            NREL = 2
+            THETA(1) =  R8PI()
+            THETA(2) = -R8PI()
+            HE(1,1)    =  1.D0
+            HE(2,1)    = -1.D0
+          ELSE
+C ---       SI NOEUD ISOLE, ON AFFECTE RIEN POUR L'INSTANT
+            GOTO 888
+          ENDIF
         ELSE
-C ---     ON ZAPPE SI ON EST PAS EN MODE DDL_IMPO
-          NBNO=0
-        ENDIF
-C ---   RECUPERATION DU NOM DU MAILLAGE :
-        CALL JEVEUO(MODELE//'.MODELE    .LGRF','L',IDNOMA)
-        NOMA = ZK8(IDNOMA)
-C ---   RECUPERATION DES MAILLES CONTENANT LE NOEUD
-        CALL JEVEUO(NOMA//'.CONNEX','L',JCONX1)
-        CALL JEVEUO(JEXATR(NOMA//'.CONNEX','LONCUM'),'L',JCONX2)
-        CALL CNCINV(NOMA,IBID,0,'V',CNXINV)
-        CALL JELIRA(JEXNUM(CNXINV,INO),'LONMAX',NBMANO,K8BID)
-        CALL JEVEUO(JEXNUM(CNXINV,INO),'L',ADRMA)
-C ---   BOUCLE SUR LES MAILLES CONTENANT LE NOEUD
-        DO 100 IMA=1,NBMANO
-          NUMA = ZI(ADRMA-1 + IMA)
-          NBNOMA = ZI(JCONX2+NUMA) - ZI(JCONX2+NUMA-1)
-C ---     BOUCLE SUR LES NOEUDS DE LA MAILLE
-C ---     ATTENTION ON NE PREND EN COMPTE QUE LES MAILLES LINEAIRES !!!
-          DO 110 I=1,NBNOMA
-            NUNO  = ZI(JCONX1-1+ZI(JCONX2+NUMA-1)+I-1)
-C ---       ON REGARDE SI LE NOEUD APPARTIENT AU GROUPE DE NOEUD AFFECTÈ
-            DO 120 J=1,NBNO
-              NUNO2 = ZI(IALINO-1+J)
-              IF (NUNO2.EQ.NUNO) THEN
-                LSN2 = ZR(JLSN-1+NUNO)
-                IF (LSN2.LT.MINLSN) MINLSN=LSN2
-                IF (LSN2.GT.MAXLSN) MAXLSN=LSN2
-                GOTO 110
-              ENDIF
- 120        CONTINUE
- 110      CONTINUE
- 100    CONTINUE
-        CALL JEDETR(CNXINV)
-        IF ((MINLSN.EQ.0.D0).AND.(MAXLSN.GT.0.D0)) THEN
-C ---     ON AFFECTE LA RELATION UNIQUEMENT SUR LA PARTIE MAITRE
           NREL = 1
-          THETA(1) =  R8PI()
-          HE(1)    =  1.D0
-        ELSEIF ((MINLSN.LT.0.D0).AND.(MAXLSN.EQ.0.D0)) THEN
-C ---     ON AFFECTE LA RELATION UNIQUEMENT SUR LA PARTIE ESCLAVE
-          NREL = 1
-          THETA(1) =  R8PI()
-          HE(1)    =  -1.D0
-        ELSEIF (((MINLSN.LT.0.D0).AND.(MAXLSN.GT.0.D0))
-     &            .OR.(NBNO.EQ.0)) THEN
-C ---     ON AFFECTE LA RELATION SUR LES DEUX PARTIES
-          NREL = 2
-          THETA(1) =  R8PI()
-          THETA(2) = -R8PI()
-          HE(1)    =  1.D0
-          HE(2)    = -1.D0
-        ELSE
-C ---     SI NOEUD ISOLE, ON AFFECTE RIEN POUR L'INSTANT
-          GOTO 888
+          HE(1,1)    = SIGN(1.D0,LSN(1))
+          THETA(1) = HE(1,1)*ABS(ATAN2(LSN(1),LST(1)))
         ENDIF
       ELSE
         NREL = 1
-        HE(1)    = SIGN(1.D0,LSN)
-        THETA(1) = HE(1)*ABS(ATAN2(LSN,LST))
+        DO 50 IFH = 1,NFH
+C --- ON NE PREND PAS ENCORE EN COMPTE LE CAS OU ON PASSE PAR UN NOEUD
+          IF (LSN(FISNO(IFH)).EQ.0) GOTO 888
+          HE(1,IFH) = SIGN(1.D0,LSN(FISNO(IFH)))
+ 50     CONTINUE
       ENDIF
-C
       DO 5 I=1,NBXCMP
         DIMENS(I)= 0
         NOEUD(I) = NOMN
@@ -208,7 +238,7 @@ C     BOUCLE SUR LES RELATIONS
       DO 10 IREL=1,NREL
 
 C       CALCUL DES COORDONN…ES POLAIRES DU NOEUD (R,T)
-        R = SQRT(LSN**2+LST**2)
+        R = SQRT(LSN(1)**2+LST(1)**2)
         T = THETA(IREL)
 
 C       CAS FACE_IMPO DNOR OU DTAN
@@ -222,27 +252,37 @@ C           COEFFICIENTS ET DDLS DE LA RELATION
             DDL(I) = 'D'//AXES(J)
             COEF(I)=DIRECT(J)
 
-            IF (STANO.EQ.1.OR.STANO.EQ.3) THEN
-              I = I+1
-              DDL(I) = 'H1'//AXES(J)
-              COEF(I)=HE(IREL)*DIRECT(J)
-            ENDIF
+            IF (NFISS.EQ.1) THEN
+              IF (STANO(1).EQ.1.OR.STANO(1).EQ.3) THEN
+                I = I+1
+                DDL(I) = 'H1'//AXES(J)
+                COEF(I)=HE(IREL,1)*DIRECT(J)
+              ENDIF
 
-            IF (STANO.EQ.2.OR.STANO.EQ.3) THEN
-              I = I+1
-              DDL(I) = 'E1'//AXES(J)
-              COEF(I)=SQRT(R)*SIN(T/2.D0)*DIRECT(J)
-              I = I+1
-              DDL(I) = 'E2'//AXES(J)
-              COEF(I)=SQRT(R)*COS(T/2.D0)*DIRECT(J)
-              I = I+1
-              DDL(I) = 'E3'//AXES(J)
-              COEF(I)=SQRT(R)*SIN(T/2.D0)*SIN(T)*DIRECT(J)
-              I = I+1
-              DDL(I) = 'E4'//AXES(J)
-              COEF(I)=SQRT(R)*COS(T/2.D0)*SIN(T)*DIRECT(J)
+              IF (STANO(1).EQ.2.OR.STANO(1).EQ.3) THEN
+                I = I+1
+                DDL(I) = 'E1'//AXES(J)
+                COEF(I)=SQRT(R)*SIN(T/2.D0)*DIRECT(J)
+                I = I+1
+                DDL(I) = 'E2'//AXES(J)
+                COEF(I)=SQRT(R)*COS(T/2.D0)*DIRECT(J)
+                I = I+1
+                DDL(I) = 'E3'//AXES(J)
+                COEF(I)=SQRT(R)*SIN(T/2.D0)*SIN(T)*DIRECT(J)
+                I = I+1
+                DDL(I) = 'E4'//AXES(J)
+                COEF(I)=SQRT(R)*COS(T/2.D0)*SIN(T)*DIRECT(J)
+              ENDIF
+            ELSE
+              DO 80 IFH = 1,NFH
+                IF (STANO(FISNO(IFH)).EQ.1) THEN
+                  I = I+1
+                  CALL CODENT(IFH,'G',CH)
+                  DDL(I) = 'H'//CH//AXES(J)
+                  COEF(I)=HE(IREL,IFH)*DIRECT(J)
+                ENDIF
+ 80           CONTINUE
             ENDIF
-
  20       CONTINUE
 
 C       CAS DDL_IMPO DX DY DZ
@@ -252,24 +292,35 @@ C         COEFFICIENTS ET DDLS DE LA RELATION
           DDL(1) = 'D'//MOTCLE(2:2)
           COEF(1)=1.D0
           I = 1
-          IF (STANO.EQ.1.OR.STANO.EQ.3) THEN
-            I = I+1
-            DDL(I) = 'H1'//MOTCLE(2:2)
-            COEF(I)=HE(IREL)
-          ENDIF
-          IF (STANO.EQ.2.OR.STANO.EQ.3) THEN
-            I = I+1
-            DDL(I) = 'E1'//MOTCLE(2:2)
-            COEF(I)=SQRT(R)*SIN(T/2.D0)
-            I = I+1
-            DDL(I) = 'E2'//MOTCLE(2:2)
-            COEF(I)=SQRT(R)*COS(T/2.D0)
-            I = I+1
-            DDL(I) = 'E3'//MOTCLE(2:2)
-            COEF(I)=SQRT(R)*SIN(T/2.D0)*SIN(T)
-            I = I+1
-            DDL(I) = 'E4'//MOTCLE(2:2)
-            COEF(I)=SQRT(R)*COS(T/2.D0)*SIN(T)
+          IF (NFISS.EQ.1) THEN
+            IF (STANO(1).EQ.1.OR.STANO(1).EQ.3) THEN
+              I = I+1
+              DDL(I) = 'H1'//MOTCLE(2:2)
+              COEF(I)=HE(IREL,1)
+            ENDIF
+            IF (STANO(1).EQ.2.OR.STANO(1).EQ.3) THEN
+              I = I+1
+              DDL(I) = 'E1'//MOTCLE(2:2)
+              COEF(I)=SQRT(R)*SIN(T/2.D0)
+              I = I+1
+              DDL(I) = 'E2'//MOTCLE(2:2)
+              COEF(I)=SQRT(R)*COS(T/2.D0)
+              I = I+1
+              DDL(I) = 'E3'//MOTCLE(2:2)
+              COEF(I)=SQRT(R)*SIN(T/2.D0)*SIN(T)
+              I = I+1
+              DDL(I) = 'E4'//MOTCLE(2:2)
+              COEF(I)=SQRT(R)*COS(T/2.D0)*SIN(T)
+            ENDIF
+          ELSE
+            DO 60 IFH = 1,NFH
+              IF (STANO(FISNO(IFH)).EQ.1) THEN
+                I = I+1
+                CALL CODENT(IFH,'G',CH)
+                DDL(I) = 'H'//CH//MOTCLE(2:2)
+                COEF(I)=HE(IREL,IFH)
+              ENDIF
+ 60         CONTINUE
           ENDIF
         ENDIF
         NTERM = I
@@ -282,10 +333,10 @@ C         COEFFICIENTS ET DDLS DE LA RELATION
 
 888   CONTINUE
 
-      CALL DETRSD('CHAM_NO_S',CH2)
-      CALL DETRSD('CHAM_NO_S',CH3)
-
- 999  CONTINUE
+      CALL DETRSD('CHAM_ELEM_S',CH1)
+      CALL DETRSD('CHAM_ELEM_S',CH2)
+      CALL DETRSD('CHAM_ELEM_S',CH3)
+      IF (NFISS.GT.1) CALL DETRSD('CHAM_ELEM_S',CH4)
 
       CALL JEDEMA()
       END

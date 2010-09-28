@@ -1,6 +1,6 @@
       SUBROUTINE DMATCP(FAMI,MATER,INSTAN,POUM,IGAU,ISGAU,REPERE,D)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 03/08/2009   AUTEUR MEUNIER S.MEUNIER 
+C MODIF ELEMENTS  DATE 27/09/2010   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -52,7 +52,7 @@ C -----  VARIABLES LOCALES
 
       REAL*8 VALRES(NBRES),ZERO,UNDEMI,UN,VALPAR
       REAL*8 PASSAG(4,4),DORTH(4,4),WORK(4,4),E,NU
-      REAL*8 E1,E2,NU12,NU21,C1,DELTA,G12
+      REAL*8 E1,E2,NU12,NU21,C1,DELTA,G12,C10,C01,C20,K
 C.========================= DEBUT DU CODE EXECUTABLE ==================
 
 C ---- INITIALISATIONS
@@ -97,6 +97,25 @@ C        -----------
 
          D(4,4) = UNDEMI*E/ (UN+NU)
 
+C      ------------
+C ---- CAS ELAS_HYPER
+C      ------------
+      ELSEIF (PHENOM.EQ.'ELAS_HYPER') THEN
+
+
+         CALL HYPMAT(FAMI,IGAU,ISGAU,POUM,MATER,C10,C01,C20,K)
+
+         E  = 6.D0*(C10+C01)
+         NU = 0.5D0-E/K/6.D0
+
+         
+         D(1,1) = E/ (UN-NU*NU)
+         D(1,2) = D(1,1)*NU
+
+         D(2,1) = D(1,2)
+         D(2,2) = D(1,1)
+
+         D(4,4) = UNDEMI*E/ (UN+NU)
 
 C      --------------
 C ---- CAS ORTHOTROPE

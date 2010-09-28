@@ -1,7 +1,7 @@
-      SUBROUTINE XCONNO(MOX,CHFIS,BASE,CHGLO)
+      SUBROUTINE XCONNO(MOX,CHFIS,BASE,OPT,PARAM,CHGLO)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 05/05/2008   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ALGORITH  DATE 28/09/2010   AUTEUR MASSIN P.MASSIN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,6 +20,7 @@ C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 
       IMPLICIT NONE
+      CHARACTER*(*) OPT,PARAM
       CHARACTER*1   BASE
       CHARACTER*19  CHGLO
       CHARACTER*11  CHFIS
@@ -27,7 +28,7 @@ C ======================================================================
 
 C----------------------------------------------------------------------
 C  BUT: CONCATENER LES CHAMPS NODAUX DES SD FISS_XFEM
-C       DANS UN CHAMP GLOBAL AFFECTE AU MODELE
+C       DANS UN CHAMP GLOBAL ELNO AFFECTE AU MODELE
 C
 C----------------------------------------------------------------------
 C
@@ -56,22 +57,24 @@ C
 C
 C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
 C
-      INTEGER NFIS,IFIS,JJ,INO,II
+      INTEGER NFIS,IFIS,JJ,INO,II,KK
       INTEGER IMA,ICMP,NBNOM,JMACNX,JLCNX
       INTEGER IBID,JINDIC,JG,NMAENR,I
-      INTEGER JNFIS,JCNSFD,JCNSFC,JCNSFV,JCNSFK,JCNSFL
-      INTEGER NCMP1,JMOFIS,JCNSC,JCNSV,JCNSL
+      INTEGER JNFIS,JCNSD,JCNSC,JCNSV,JCNSK,JCNSL,JCNSV2,JCNSL2
+      INTEGER NCMP1,JMOFIS,JCESD,JCESV,JCESL,IAD,JNBSP,NNCP
       CHARACTER*3  TSCA
-      CHARACTER*19  CNS, CNSF
+      CHARACTER*19  CES, CNS,LIGREL,CNS2,NOXFEM
       CHARACTER*24  INDIC,GRP(3)
       CHARACTER*32  JEXATR
-      LOGICAL       COMPCH
-      CHARACTER*8   MA,NOMGD,NOMFIS
+      LOGICAL       COMPCH,LSTNO
+      CHARACTER*8   MA,NOMGD,NOMFIS,LICMP(2)
 C     ------------------------------------------------------------------
 
       CALL JEMARQ()
-      CNS  = '&&XCONNO.CNS'
-      CNSF = '&&XCONNO.CNSF'
+      CES = '&&XCONNO.CES'
+      CNS = '&&XCONNO.CNS'
+      LIGREL = MOX(1:8)//'.MODELE'
+      LSTNO = CHFIS.EQ.'.STNO'
 
 C     1.RECUPERATION D'INFORMATIONS DANS MOX
 
@@ -81,42 +84,60 @@ C     1.RECUPERATION D'INFORMATIONS DANS MOX
       CALL JEVEUO(MOX//'.FISS','L',JMOFIS)
       NOMFIS = ZK8(JMOFIS)
 
-      CALL CNOCNS(NOMFIS//CHFIS,'V',CNSF)
+      CALL CNOCNS(NOMFIS//CHFIS,'V',CNS)
 
-      CALL JEVEUO(CNSF//'.CNSK','L',JCNSFK)
-      CALL JEVEUO(CNSF//'.CNSD','L',JCNSFD)
-      CALL JEVEUO(CNSF//'.CNSC','L',JCNSFC)
-      CALL JEVEUO(CNSF//'.CNSV','L',JCNSFV)
-      CALL JEVEUO(CNSF//'.CNSL','L',JCNSFL)
+      CALL JEVEUO(CNS//'.CNSK','L',JCNSK)
+      CALL JEVEUO(CNS//'.CNSD','L',JCNSD)
+      CALL JEVEUO(CNS//'.CNSC','L',JCNSC)
+      CALL JEVEUO(CNS//'.CNSV','L',JCNSV)
+      CALL JEVEUO(CNS//'.CNSL','L',JCNSL)
 
-      MA = ZK8(JCNSFK-1+1)
-      NOMGD = ZK8(JCNSFK-1+2)
-      NBNOM = ZI(JCNSFD-1+1)
-      NCMP1 = ZI(JCNSFD-1+2)
+      MA = ZK8(JCNSK-1+1)
+      NOMGD = ZK8(JCNSK-1+2)
+C      NBNOM = ZI(JCNSD-1+1)
+      NCMP1 = ZI(JCNSD-1+2)
 
       CALL JEVEUO(MA//'.CONNEX','L',JMACNX)
       CALL JEVEUO(JEXATR(MA//'.CONNEX','LONCUM'),'L',JLCNX)
 
       CALL DISMOI('F','TYPE_SCA',NOMGD,'GRANDEUR',IBID,TSCA,IBID)
-
-      CALL CNSCRE(MA,NOMGD,NCMP1,ZK8(JCNSFC),'V',CNS)
-
-      CALL JEVEUO(CNS//'.CNSC','L',JCNSC)
-      CALL JEVEUO(CNS//'.CNSV','E',JCNSV)
-      CALL JEVEUO(CNS//'.CNSL','E',JCNSL)
-
+C
+C --- RECUPERATION DU NOMBRE DE SOUS POINT (NBRE DE FISSURES VUES)
+C
+      CALL JEVEUO('&&XTYELE.NBSP','L',JNBSP)
+C
+C --- CREATION DE LA SD ELNO
+C
+      CALL CESCRE('V',CES,'ELNO',MA,NOMGD,NCMP1,ZK8(JCNSC),
+     &              IBID,ZI(JNBSP),-NCMP1)
+C
+      CALL JEVEUO(CES//'.CESD','L',JCESD)
+      CALL JEVEUO(CES//'.CESV','E',JCESV)
+      CALL JEVEUO(CES//'.CESL','E',JCESL)
+C
+C --- ON CREE LA SD MODELE.NOXFEM EN MEME TEMPS QUE MODELE.STNO
+C
+      IF (LSTNO) THEN
+        CNS2 = '&&XCONNO.CNS2'
+        LICMP(1) = 'X1'
+        LICMP(2) = 'X2'
+        CALL CNSCRE(MA,'NEUT_I',2,LICMP,'V',CNS2)
+        CALL JEVEUO(CNS2//'.CNSV','E',JCNSV2)
+        CALL JEVEUO(CNS2//'.CNSL','E',JCNSL2)
+      ENDIF
+C
       DO 20 IFIS = 1,NFIS
 
         CALL JEVEUO(MOX//'.FISS','L',JMOFIS)
         NOMFIS = ZK8(JMOFIS-1 + IFIS)
-        CALL CNOCNS(NOMFIS//CHFIS,'V',CNSF)
+        CALL CNOCNS(NOMFIS//CHFIS,'V',CNS)
 
         GRP(1)=NOMFIS//'.MAILFISS  .HEAV'
         GRP(2)=NOMFIS//'.MAILFISS  .CTIP'
         GRP(3)=NOMFIS//'.MAILFISS  .HECT'
 
-        CALL JEVEUO(CNSF//'.CNSV','L',JCNSFV)
-        CALL JEVEUO(CNSF//'.CNSL','L',JCNSFL)
+        CALL JEVEUO(CNS//'.CNSV','L',JCNSV)
+        CALL JEVEUO(CNS//'.CNSL','L',JCNSL)
 
         INDIC=NOMFIS//'.MAILFISS .INDIC'
         CALL JEVEUO(INDIC,'L',JINDIC)
@@ -135,49 +156,35 @@ C--COPIER LE CHAMP 'CHFIS' POUR LES MAILLES '.HEAV','.CTIP' ET '.HECT'
                 DO 1220, ICMP = 1,NCMP1
 
 C                 POUR CHAQUE TYPE 'R', I', 'L', 'K8', SI LE CHAM_NO
-C                 A DEJE ETE REMPLI, ON VERIFIE QUE C'EST AVEC LA MEME
-C                 VALEUR ET ON S'ARRETE AU CAS OU, SINON, ON LE REMPLIT
-
+C                 A DEJE ETE REMPLI, ON INCREMENTE LE SOUS POINT
+C                 4 FISSURES AU MAXIMUM POUR L'INSTANT, SINON ERREUR
+                  DO 100 KK=1,4
+                    CALL CESEXI('S',JCESD,JCESL,IMA,JJ,KK,ICMP,IAD)
+                    IF (IAD.LT.0) GOTO 110
+ 100              CONTINUE
+                  CALL U2MESS('F','XFEM_1')
+ 110              CONTINUE
                   IF (TSCA.EQ.'R') THEN
-                    IF(ZL(JCNSL-1+(INO-1)*NCMP1+ICMP)) THEN 
-                      COMPCH = ZR(JCNSV -1 + (INO-1)*NCMP1+ICMP) .EQ.
-     &                         ZR(JCNSFV-1 + (INO-1)*NCMP1+ICMP)
-                      IF(.NOT. COMPCH ) CALL U2MESS('F','XFEM_1')
-                    ELSE
-                      ZR(JCNSV-1+ (INO-1)*NCMP1+ICMP) = ZR(JCNSFV-1+
-     &                  (INO-1)*NCMP1+ICMP)
-                      ZL(JCNSL-1 + (INO-1)*NCMP1+ICMP) = .TRUE.
-                    ENDIF
+                    ZL(JCESL-1-IAD) = .TRUE.
+                    ZR(JCESV-1-IAD) = ZR(JCNSV-1+(INO-1)*NCMP1+ICMP)
                   ELSE IF (TSCA.EQ.'I') THEN
-                    IF(ZL(JCNSL-1+(INO-1)*NCMP1+ICMP)) THEN 
-                      COMPCH = ZI(JCNSV -1 + (INO-1)*NCMP1+ICMP) .EQ.
-     &                         ZI(JCNSFV-1 + (INO-1)*NCMP1+ICMP)
-                      IF(.NOT. COMPCH ) CALL U2MESS('F','XFEM_1')
-                    ELSE
-                      ZI(JCNSV-1+ (INO-1)*NCMP1+ICMP) = ZI(JCNSFV-1+
-     &                  (INO-1)*NCMP1+ICMP)
-                      ZL(JCNSL-1 + (INO-1)*NCMP1+ICMP) = .TRUE.
+                    ZL(JCESL-1-IAD) = .TRUE.
+                    ZI(JCESV-1-IAD) = ZI(JCNSV-1+(INO-1)*NCMP1+ICMP)
+                    IF (LSTNO) THEN
+                      IF ((.NOT.ZL(JCNSL2-1+(INO-1)*2+1)).AND.
+     &                            ZI(JCESV-1-IAD).GT.0) THEN
+                        ZL(JCNSL2-1+(INO-1)*2+1) = .TRUE.
+                        ZL(JCNSL2-1+(INO-1)*2+2) = .TRUE.
+                        ZI(JCNSV2-1+(INO-1)*2+1) = IMA
+                        ZI(JCNSV2-1+(INO-1)*2+2) = JJ
+                      ENDIF
                     ENDIF
                   ELSE IF (TSCA.EQ.'L') THEN
-                    IF(ZL(JCNSL-1+(INO-1)*NCMP1+ICMP)) THEN 
-                      COMPCH = ZL(JCNSV -1 + (INO-1)*NCMP1+ICMP) .EQV.
-     &                         ZL(JCNSFV-1 + (INO-1)*NCMP1+ICMP)
-                      IF(.NOT. COMPCH ) CALL U2MESS('F','XFEM_1')
-                    ELSE
-                      ZL(JCNSV-1+ (INO-1)*NCMP1+ICMP) = ZL(JCNSFV-1+
-     &                  (INO-1)*NCMP1+ICMP)
-                      ZL(JCNSL-1 + (INO-1)*NCMP1+ICMP) = .TRUE.
-                    ENDIF
+                    ZL(JCESL-1-IAD) = .TRUE.
+                    ZL(JCESV-1-IAD) = ZL(JCNSV-1+(INO-1)*NCMP1+ICMP)
                   ELSE IF (TSCA.EQ.'K8') THEN
-                    IF(ZL(JCNSL-1+(INO-1)*NCMP1+ICMP)) THEN 
-                      COMPCH = ZK8(JCNSV -1 + (INO-1)*NCMP1+ICMP) .EQ.
-     &                         ZK8(JCNSFV-1 + (INO-1)*NCMP1+ICMP)
-                      IF(.NOT. COMPCH ) CALL U2MESS('F','XFEM_1')
-                    ELSE
-                      ZK8(JCNSV-1+ (INO-1)*NCMP1+ICMP) = ZK8(JCNSFV-1+
-     &                  (INO-1)*NCMP1+ICMP)
-                      ZL(JCNSL-1 + (INO-1)*NCMP1+ICMP) = .TRUE.
-                    ENDIF
+                    ZL(JCESL-1-IAD) = .TRUE.
+                    ZK8(JCESV-1-IAD)= ZK8(JCNSV-1+(INO-1)*NCMP1+ICMP)
                   ELSE
                     CALL ASSERT(.FALSE.)
                   END IF
@@ -189,10 +196,20 @@ C                 VALEUR ET ON S'ARRETE AU CAS OU, SINON, ON LE REMPLIT
           ENDIF
  1000   CONTINUE
 
-        CALL DETRSD('CHAM_NO_S',CNSF)
+        CALL DETRSD('CHAM_NO_S',CNS)
  20   CONTINUE
-
-      CALL CNSCNO(CNS,' ','OUI',BASE,CHGLO,'F',IBID)
-      CALL DETRSD('CHAM_NO_S',CNS)
+C
+C --- CONVERSION CHAM_ELEM_S -> CHAM_ELEM
+C
+      CALL CESCEL(CES,LIGREL,OPT,PARAM,'OUI',NNCP,BASE,CHGLO,'F',IBID)
+      CALL DETRSD('CHAM_ELEM_S',CES)
+C
+C --- CONVERSION CHAM_NO_S -> CHAM_NO POUR MODELE.NOXFEM
+C
+      IF (LSTNO) THEN
+        NOXFEM = MOX//'.NOXFEM'
+        CALL CNSCNO(CNS2,' ','OUI','G',NOXFEM,'F',IBID)
+        CALL DETRSD('CHAM_NO_S',CNS2)
+      ENDIF
       CALL JEDEMA()
       END

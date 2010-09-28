@@ -1,4 +1,4 @@
-# MODIF  DATE 21/09/2010   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 28/09/2010   AUTEUR MASSIN P.MASSIN 
 # TITRE INTERFACE EN CONTACT FROTTANT AVEC X-FEM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -345,12 +345,18 @@ DEP_PPA=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
                                 INST=1.0,
                                 TOUT_CMP='OUI',
                                 OPERATION='EXTRACTION',),);
+LAG_PPA = CALC_TABLE(TABLE = DEP_PPA,
+                     ACTION = (_F(OPERATION = 'FILTRE',
+                                  NOM_PARA  = 'NOEUD',
+                                  CRIT_COMP = 'REGEXP',
+                                  VALE_K    = 'N[^P]',),),);
 DEP_PPA = CALC_TABLE(reuse = DEP_PPA,
                      TABLE = DEP_PPA,
                      ACTION = (_F(OPERATION = 'FILTRE',
                                   NOM_PARA  = 'NOEUD',
                                   CRIT_COMP = 'REGEXP',
                                   VALE_K    = 'N[^M]',),),);
+
 
 DEP_PPB=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
                                 GROUP_NO=('PPB',),
@@ -359,12 +365,18 @@ DEP_PPB=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
                                 INST=1.0,
                                 TOUT_CMP='OUI',
                                 OPERATION='EXTRACTION',),);
+LAG_PPB = CALC_TABLE(TABLE = DEP_PPB,
+                     ACTION = (_F(OPERATION = 'FILTRE',
+                                  NOM_PARA  = 'NOEUD',
+                                  CRIT_COMP = 'REGEXP',
+                                  VALE_K    = 'N[^P]',),),);
 DEP_PPB = CALC_TABLE(reuse = DEP_PPB,
                      TABLE = DEP_PPB,
                      ACTION = (_F(OPERATION = 'FILTRE',
                                   NOM_PARA  = 'NOEUD',
                                   CRIT_COMP = 'REGEXP',
                                   VALE_K    = 'N[^M]',),),);
+
 
 DEP_PPC=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
                                 GROUP_NO=('PPC',),
@@ -373,6 +385,11 @@ DEP_PPC=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
                                 INST=1.0,
                                 TOUT_CMP='OUI',
                                 OPERATION='EXTRACTION',),);
+LAG_PPC = CALC_TABLE(TABLE = DEP_PPC,
+                     ACTION = (_F(OPERATION = 'FILTRE',
+                                  NOM_PARA  = 'NOEUD',
+                                  CRIT_COMP = 'REGEXP',
+                                  VALE_K    = 'N[^P]',),),);
 DEP_PPC = CALC_TABLE(reuse = DEP_PPC,
                      TABLE = DEP_PPC,
                      ACTION = (_F(OPERATION = 'FILTRE',
@@ -387,6 +404,11 @@ DEP_PPD=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
                                 INST=1.0,
                                 TOUT_CMP='OUI',
                                 OPERATION='EXTRACTION',),);
+LAG_PPD = CALC_TABLE(TABLE = DEP_PPD,
+                     ACTION = (_F(OPERATION = 'FILTRE',
+                                  NOM_PARA  = 'NOEUD',
+                                  CRIT_COMP = 'REGEXP',
+                                  VALE_K    = 'N[^P]',),),);
 DEP_PPD = CALC_TABLE(reuse = DEP_PPD,
                      TABLE = DEP_PPD,
                      ACTION = (_F(OPERATION = 'FILTRE',
@@ -401,6 +423,11 @@ DEP_PPE=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
                                 INST=1.0,
                                 TOUT_CMP='OUI',
                                 OPERATION='EXTRACTION',),);
+LAG_PPE = CALC_TABLE(TABLE = DEP_PPE,
+                     ACTION = (_F(OPERATION = 'FILTRE',
+                                  NOM_PARA  = 'NOEUD',
+                                  CRIT_COMP = 'REGEXP',
+                                  VALE_K    = 'N[^P]',),),);
 DEP_PPE = CALC_TABLE(reuse = DEP_PPE,
                      TABLE = DEP_PPE,
                      ACTION = (_F(OPERATION = 'FILTRE',
@@ -510,7 +537,7 @@ TEST_TABLE(TABLE=DEP_PPE,
            PRECISION=preci,
            REFERENCE='AUTRE_ASTER',);
 
-TEST_TABLE(TABLE=DEP_PPA,
+TEST_TABLE(TABLE=LAG_PPA,
            NOM_PARA='LAGS_C',
            TYPE_TEST='MAX',
            VALE=0.,
@@ -518,7 +545,7 @@ TEST_TABLE(TABLE=DEP_PPA,
            PRECISION=preci,
            REFERENCE='AUTRE_ASTER',);
 
-TEST_TABLE(TABLE=DEP_PPA,
+TEST_TABLE(TABLE=LAG_PPA,
            NOM_PARA='LAGS_C',
            TYPE_TEST='MIN',
            VALE=0.,
@@ -526,7 +553,7 @@ TEST_TABLE(TABLE=DEP_PPA,
            PRECISION=preci,
            REFERENCE='AUTRE_ASTER',);
 
-TEST_TABLE(TABLE=DEP_PPB,
+TEST_TABLE(TABLE=LAG_PPB,
            NOM_PARA='LAGS_C',
            TYPE_TEST='MAX',
            VALE=0.,
@@ -534,7 +561,7 @@ TEST_TABLE(TABLE=DEP_PPB,
            PRECISION=preci,
            REFERENCE='AUTRE_ASTER',);
 
-TEST_TABLE(TABLE=DEP_PPB,
+TEST_TABLE(TABLE=LAG_PPB,
            NOM_PARA='LAGS_C',
            TYPE_TEST='MIN',
            VALE=0.,
@@ -542,7 +569,15 @@ TEST_TABLE(TABLE=DEP_PPB,
            PRECISION=preci,
            REFERENCE='AUTRE_ASTER',);
 
-TEST_TABLE(TABLE=DEP_PPC,
+TEST_TABLE(TABLE=LAG_PPC,
+           NOM_PARA='LAGS_C',
+           TYPE_TEST='MAX',
+           VALE=-1.4724675280627E+07,
+           CRITERE='RELATIF',
+           PRECISION=5.E-2,
+           REFERENCE='AUTRE_ASTER',);
+
+TEST_TABLE(TABLE=LAG_PPC,
            NOM_PARA='LAGS_C',
            TYPE_TEST='MIN',
            VALE=-1.4724675280627E+07,
@@ -550,7 +585,15 @@ TEST_TABLE(TABLE=DEP_PPC,
            PRECISION=5.E-2,
            REFERENCE='AUTRE_ASTER',);
 
-TEST_TABLE(TABLE=DEP_PPD,
+TEST_TABLE(TABLE=LAG_PPD,
+           NOM_PARA='LAGS_C',
+           TYPE_TEST='MAX',
+           VALE=-2.4583481034903E+07,
+           CRITERE='RELATIF',
+           PRECISION=preci,
+           REFERENCE='AUTRE_ASTER',);
+
+TEST_TABLE(TABLE=LAG_PPD,
            NOM_PARA='LAGS_C',
            TYPE_TEST='MIN',
            VALE=-2.4583481034903E+07,
@@ -558,12 +601,19 @@ TEST_TABLE(TABLE=DEP_PPD,
            PRECISION=preci,
            REFERENCE='AUTRE_ASTER',);
 
-TEST_TABLE(TABLE=DEP_PPE,
+TEST_TABLE(TABLE=LAG_PPE,
+           NOM_PARA='LAGS_C',
+           TYPE_TEST='MAX',
+           VALE=-3.4650090742044E+07,
+           CRITERE='RELATIF',
+           PRECISION=preci,
+           REFERENCE='AUTRE_ASTER',);
+
+TEST_TABLE(TABLE=LAG_PPE,
            NOM_PARA='LAGS_C',
            TYPE_TEST='MIN',
            VALE=-3.4650090742044E+07,
            CRITERE='RELATIF',
            PRECISION=preci,
            REFERENCE='AUTRE_ASTER',);
-
 FIN();

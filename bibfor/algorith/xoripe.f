@@ -1,11 +1,11 @@
-      SUBROUTINE XORIPE(MODELE,FISS)
+      SUBROUTINE XORIPE(MODELE)
       IMPLICIT NONE
 
-      CHARACTER*8   MODELE,FISS
+      CHARACTER*8   MODELE
 
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/06/2010   AUTEUR CARON A.CARON 
+C MODIF ALGORITH  DATE 28/09/2010   AUTEUR MASSIN P.MASSIN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -27,8 +27,8 @@ C
 C        ORIENTER LES SOUS-ELEMENTS DE PEAU DES ELEMENTS X-FEM
 C      (ET CALCUL DE HEAV SUR LES BORDS COINCIDANT AVEC INTERACE)
 C
-C  IN         MODELE    : NOM DE L'OBJET MODELE
-C  IN/OUT     FISS      : NOM DE LA SD FISS_XFEM
+C  IN/OUT         MODELE    : NOM DE L'OBJET MODELE
+C
 C     ------------------------------------------------------------------
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER          ZI
@@ -51,15 +51,15 @@ C
       REAL*8        R8B,ARMIN,PREC,G1(3),GBO(3),GPR(3),NEXT(3),NORME,LSN
       REAL*8        CO(3,3),AB(3),AC(3),N2D(3),DDOT,A(3),B(3),C(3)
       COMPLEX*16    CBID
-      INTEGER       IMA,NBMA,J,IER,KK,I
+      INTEGER       IMA,NBMA,J,IER,KK,I,JMOFIS,IFIS,JNFIS,NFIS,IAD2
       INTEGER       JMAIL,CPT,NBMAIL,IRET,NBPAR,JCOOR,JM3D,IBID,JVECNO
       INTEGER       NUMAPR,NUMAB,NUMA1D,NBNOPR,NBNOBO,NBNOM1,NBNOTT(3)
       INTEGER       JCONX1,JCONX2,INO,NUNO,NORIEG,NTRAIT,JTYPMA,JTMDIM
       INTEGER       ICH,JCESD(5),JCESV(5),JCESL(5),IAD,NIT,IT,NSE,ISE,IN
       INTEGER       NDIME,ICMP,NDIM,ID(3),INTEMP,NSEORI,IFM,NIV,NNCP
-      INTEGER       JDIM,S1,S2,JGRP,NMAENR,JINDIC,ZERO,JLSN,JMA
-      INTEGER       NSIGNP,NSIGNM,NSIGNZ,IHE,NSEMAX(3),HE,ITYPMA
-      CHARACTER*8   NOMA,K8BID,K8B,TYPBO
+      INTEGER       JDIM,S1,S2,JGRP,NMAENR,JINDIC,ZERO,JLSNV,JLSND,JLSNL
+      INTEGER       NSIGNP,NSIGNM,NSIGNZ,IHE,NSEMAX(3),HE,ITYPMA,JMA
+      CHARACTER*8   NOMA,K8BID,K8B,TYPBO,FISS
       CHARACTER*2   KDIM
       CHARACTER*19  LIGREL,NOMT19,CHS(5),CHLSN
       CHARACTER*24  MAMOD,GRMAPE,NOMOB,PARA,VECNOR,GRP(3),XINDIC
@@ -77,6 +77,12 @@ C     INITIALISATION DU NOMBRE DE SOUS-ELEMENTS RE-ORIENTES
       NSEORI=0
 
       LIGREL = MODELE//'.MODELE'
+
+C     1.RECUPERATION D'INFORMATIONS DANS MODELE
+
+      CALL JEVEUO(MODELE//'.NFIS','L',JNFIS)
+      NFIS = ZI(JNFIS)
+      CALL JEVEUO(MODELE//'.FISS','L',JMOFIS)
 
 C     RECUPERATION DU MAILLAGE ASSOCIE AU MODELE :
       CALL DISMOI('F','NOM_MAILLA',MODELE,'MODELE',IBID,NOMA,IER)
@@ -109,8 +115,10 @@ C     RECUPERATION DE L'ARETE MINIMUM DU MAILLAGE :
       ENDIF
 
       CHLSN = '&&XORIPE.CHLSN'
-      CALL CNOCNS(FISS(1:8)//'.LNNO','V',CHLSN)
-      CALL JEVEUO(CHLSN//'.CNSV','L',JLSN)
+      CALL CELCES(MODELE//'.LNNO','V',CHLSN)
+      CALL JEVEUO(CHLSN//'.CESL','L',JLSNL)
+      CALL JEVEUO(CHLSN//'.CESD','L',JLSND)
+      CALL JEVEUO(CHLSN//'.CESV','L',JLSNV)
 
 C     ------------------------------------------------------------------
 C     I°) CREATION DE LA LISTE DES NUMEROS DES MAILLES DE PEAU ENRICHIES
@@ -122,35 +130,40 @@ C     ------------------------------------------------------------------
 C     INITIALISATION DU NOMBRE DE MAILLES DE LA LISTE
       NBMAIL=0
 
-C     REMPLISSAGE DE LA LISTE
-      GRP(1) = FISS//'.MAILFISS  .HEAV'
-      GRP(2) = FISS//'.MAILFISS  .CTIP'
-      GRP(3) = FISS//'.MAILFISS  .HECT'
-      XINDIC = FISS//'.MAILFISS .INDIC'
+      DO 20 IFIS = 1,NFIS
 
-      CALL JEVEUO(XINDIC,'L',JINDIC)
+        FISS = ZK8(JMOFIS-1 + IFIS)
 
-C     BOUCLE SUR LES 3 GROUPES : HEAV, CTIP ET HECT
-      DO 100 KK = 1,3
+C       REMPLISSAGE DE LA LISTE
+        GRP(1) = FISS//'.MAILFISS  .HEAV'
+        GRP(2) = FISS//'.MAILFISS  .CTIP'
+        GRP(3) = FISS//'.MAILFISS  .HECT'
+        XINDIC = FISS//'.MAILFISS .INDIC'
 
-        IF (ZI(JINDIC-1+2*(KK-1)+1).EQ.1) THEN
-          CALL JEVEUO(GRP(KK),'L',JGRP)
-          NMAENR = ZI(JINDIC-1+2*KK)
+        CALL JEVEUO(XINDIC,'L',JINDIC)
 
-C         BOUCLE SUR LES MAILLES DE CHAQUE GROUPE
-          DO 120 I = 1,NMAENR
-            IMA = ZI(JGRP-1+I)
-C           NDIME : DIMENSION TOPOLOGIQUE DE LA MAILLE
-            NDIME= ZI(JTMDIM-1+ZI(JTYPMA-1+IMA))
-            IF (NDIM.EQ.NDIME+1) THEN
-              NBMAIL=NBMAIL+1
-              ZI(JMAIL-1+NBMAIL)=IMA
-            ENDIF
- 120      CONTINUE
+C         BOUCLE SUR LES 3 GROUPES : HEAV, CTIP ET HECT
+        DO 100 KK = 1,3
+     
+          IF (ZI(JINDIC-1+2*(KK-1)+1).EQ.1) THEN
+            CALL JEVEUO(GRP(KK),'L',JGRP)
+            NMAENR = ZI(JINDIC-1+2*KK)
+     
+C           BOUCLE SUR LES MAILLES DE CHAQUE GROUPE
+            DO 120 I = 1,NMAENR
+              IMA = ZI(JGRP-1+I)
+C             NDIME : DIMENSION TOPOLOGIQUE DE LA MAILLE
+              NDIME= ZI(JTMDIM-1+ZI(JTYPMA-1+IMA))
+              IF (NDIM.EQ.NDIME+1) THEN
+                NBMAIL=NBMAIL+1
+                ZI(JMAIL-1+NBMAIL)=IMA
+              ENDIF
+ 120        CONTINUE
 
-        ENDIF
- 100  CONTINUE
+          ENDIF
+ 100    CONTINUE
 
+ 20   CONTINUE
       IF (NBMAIL.EQ.0) GOTO 999
 
 C     ------------------------------------------------------------------
@@ -161,8 +174,8 @@ C     ------------------------------------------------------------------
       NOMOB = '&&XORIPE.NU_MAILLE_3D'
       ZERO=0
 
-      CALL UTMASU (NOMA, KDIM, NBMAIL, ZI(JMAIL), NOMOB,PREC,ZR(JCOOR),
-     &              ZERO,IBID )
+      CALL UTMASU(NOMA, KDIM, NBMAIL, ZI(JMAIL), NOMOB,PREC,ZR(JCOOR),
+     &             ZERO,IBID)
       CALL JEVEUO (NOMOB,'L',JM3D)
 
 C     ------------------------------------------------------------------
@@ -171,7 +184,7 @@ C     ------------------------------------------------------------------
 
       VECNOR='&&XORIPE.VECNOR'
       CALL WKVECT(VECNOR,'V V R',NBMAIL*NDIM,JVECNO)
-
+   
       DO 300 IMA=1,NBMAIL
 C       NUMEROS DES MAILLES PRINCIPALE ET DE BORD
         NUMAB=ZI(JMAIL-1+IMA)
@@ -180,7 +193,7 @@ C       NUMEROS DES MAILLES PRINCIPALE ET DE BORD
 C       NOMBRES DE NOEUDS DES MAILLES PRINCIPALE ET DE BORD
         NBNOBO=ZI(JCONX2+NUMAB) - ZI(JCONX2+NUMAB-1)
         NBNOPR=ZI(JCONX2+NUMAPR) - ZI(JCONX2+NUMAPR-1)
-
+   
 C       GBO : CENTRE DE GRAVITÉ DE LA MAILLE DE BORD
         CALL VECINI(3,0.D0,GBO)
         DO 310 INO=1,NBNOBO
@@ -190,7 +203,7 @@ C       GBO : CENTRE DE GRAVITÉ DE LA MAILLE DE BORD
  311      CONTINUE
  310    CONTINUE
 
-C       GPR : CENTRE DE GRAVITÉ DE LA MAILLE PRICIPALE
+C     GPR : CENTRE DE GRAVITÉ DE LA MAILLE PRICIPALE
         CALL VECINI(3,0.D0,GPR)
         DO 320 INO=1,NBNOPR
           NUNO=ZI(JCONX1-1+ZI(JCONX2+NUMAPR-1)+INO-1)
@@ -199,7 +212,7 @@ C       GPR : CENTRE DE GRAVITÉ DE LA MAILLE PRICIPALE
  321      CONTINUE
  320    CONTINUE
 
-C       NORMALE EXTERIEURE : Next = GBO - GPR
+C       NORMALE EXTERIEURE : NEXT = GBO - GPR
         CALL VECINI(3,0.D0,NEXT)
         CALL VDIFF(3,GBO,GPR,NEXT)
         CALL NORMEV(NEXT,NORME)
@@ -211,6 +224,8 @@ C       NORMALE EXTERIEURE : Next = GBO - GPR
  300  CONTINUE
 
 
+
+
 C     ------------------------------------------------------------------
 C     IV°) ORIENTATION DES SOUS-ELEMENTS
 C     ------------------------------------------------------------------
@@ -220,10 +235,10 @@ C     ------------------------------------------------------------------
       CHS(3)  = '&&XORIPE.LONCHA'
       CHS(4)  = '&&XORIPE.HEAV'
 
-      PINTTO = FISS(1:8)//'.TOPOSE.PIN'
-      CNSETO = FISS(1:8)//'.TOPOSE.CNS'
-      LONCHA = FISS(1:8)//'.TOPOSE.LON'
-      HEAV   = FISS(1:8)//'.TOPOSE.HEA'
+      PINTTO = MODELE//'.TOPOSE.PIN'
+      CNSETO = MODELE//'.TOPOSE.CNS'
+      LONCHA = MODELE//'.TOPOSE.LON'
+      HEAV   = MODELE//'.TOPOSE.HEA'
 
       CALL CELCES(PINTTO,'V',CHS(1))
       CALL CELCES(CNSETO,'V',CHS(2))
@@ -235,7 +250,6 @@ C     ------------------------------------------------------------------
         CALL JEVEUO(CHS(ICH)//'.CESV','E',JCESV(ICH))
         CALL JEVEUO(CHS(ICH)//'.CESL','L',JCESL(ICH))
  40   CONTINUE
-
 
       DO 400 IMA=1,NBMAIL
 
@@ -285,7 +299,7 @@ C         BOUCLE SUR LES NSE SOUS-ELEMENTS
 
             CPT=CPT+1
 
-C           CO(J,IN) : Jeme COORDONNEE DU INeme SOMMET DU SOUS-ELEMENT
+C           CO(J,IN) : JEME COORDONNEE DU INEME SOMMET DU SOUS-ELEMENT
             DO 421 IN=1,NDIM
               ICMP=NBNOBO*(CPT-1)+IN
               CALL CESEXI('S',JCESD(2),JCESL(2),NUMAB,1,1,ICMP,ID(IN))
@@ -340,7 +354,6 @@ C             (ON INVERSE 1 ET 2 EN 2D
 C              ON INVERSE 2 ET 3 EN 3D)
               NSEORI=NSEORI+1
               INTEMP=ZI(JCESV(2)-1+ID(S1))
-
               ZI(JCESV(2)-1+ID(S1))=ZI(JCESV(2)-1+ID(S2))
               ZI(JCESV(2)-1+ID(S2))=INTEMP
             ENDIF
@@ -361,8 +374,9 @@ C             SIGNE LEVEL SET SUR LA MAILLE PRINCIPALE
               NSIGNZ=0
 C             LSN SUR LES NOEUDS SOMMETS DE LA MAILLE PRINCIPALE
               DO 440 INO=1,NBNOTT(1)
-                NUNO=ZI(JCONX1-1+ZI(JCONX2+NUMAPR-1)+INO-1)
-                LSN = ZR(JLSN-1+NUNO)
+                CALL CESEXI('S',JLSND,JLSNL,NUMAB,INO,1,1,IAD2)
+C                NUNO=ZI(JCONX1-1+ZI(JCONX2+NUMAPR-1)+INO-1)
+                LSN = ZR(JLSNV-1+IAD2)
                 IF (LSN.GT.0.D0) NSIGNP = NSIGNP +1
                 IF (LSN.EQ.0.D0) NSIGNZ = NSIGNZ +1
                 IF (LSN.LT.0.D0) NSIGNM = NSIGNM +1
@@ -384,9 +398,9 @@ C             ON ECRIT HE
  400  CONTINUE
 
 C     ON SAUVE LES NOUVEAUX CHAM_ELEM MODIFIES A LA PLACE DES ANCIENS
-      CALL CESCEL(CHS(2),LIGREL,'TOPOSE','PCNSETO','OUI',NNCP,'V',
+      CALL CESCEL(CHS(2),LIGREL,'TOPOSE','PCNSETO','OUI',NNCP,'G',
      &            CNSETO,'F',IBID)
-      CALL CESCEL(CHS(4),LIGREL,'TOPOSE','PHEAVTO','OUI',NNCP,'V',
+      CALL CESCEL(CHS(4),LIGREL,'TOPOSE','PHEAVTO','OUI',NNCP,'G',
      &            HEAV,'F',IBID)
 C     ------------------------------------------------------------------
 C     FIN

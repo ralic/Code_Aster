@@ -1,7 +1,7 @@
       SUBROUTINE DFPDF (DIM,F,DSIDEP)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 04/10/2004   AUTEUR GODARD V.GODARD 
+C MODIF UTILITAI  DATE 28/09/2010   AUTEUR IDOUX L.IDOUX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -23,6 +23,7 @@ C ======================================================================
  
       INTEGER            DIM
       REAL*8             F(DIM),DSIDEP(DIM,DIM)
+
 C ----------------------------------------------------------------------
 C    CALCUL DE LA DERIVEE DE LA PARTIE POSITIVE D UN TENSEUR SYMETRIQUE
 C    PAR RAPPORT A CE TENSEUR
@@ -50,15 +51,12 @@ C    IN F     : VECTEUR (=TENSEUR)
 C    OUT      : DFP/DF
 C
 C ----------------------------------------------------------------------
-      INTEGER I,J,K,L,M,N,T(3,3),T2(2,2)
+      INTEGER I,J,K,L,M,N,T(3,3),T2(2,2),ORDRE(2)
       REAL*8  RTEMP,RTEMP2,DSPDEP(3,3),EPSP(3),VECP(3,3),RIGMIN,SIGP(3)
       REAL*8  DSPDEB(2,2),EPSP2(2),VECP2(2,2),SIGP2(2)
       REAL*8  RTEMP3,RTEMP4,RAC2
-      LOGICAL MTG
+      LOGICAL MTG,TEST
       PARAMETER  (RIGMIN = 1.D-6)
-
-
-
 
       T(1,1)=1
       T(1,2)=4
@@ -70,7 +68,6 @@ C ----------------------------------------------------------------------
       T(3,2)=6
       T(3,3)=3
 
-
       T2(1,1)=1
       T2(1,2)=3
       T2(2,1)=3
@@ -78,23 +75,47 @@ C ----------------------------------------------------------------------
 
       RAC2=SQRT(2.D0)
 
-
       CALL R8INIR(DIM*DIM, 0.D0, DSIDEP, 1)
-
-
 
       IF (DIM.EQ.6) THEN
 
       CALL DIAGO3(F,VECP,EPSP)
       MTG = .TRUE.
       RTEMP=ABS(EPSP(1))
-           
+C TEST = .TRUE. PAR DEFAUT : SIGNIFIE QUE LA MATRICE EN ENTREE 
+C EST DEJA DIAGONALE. LA PROCEDURE UTILISEE EST DE COMPARER CHAQUE
+C VALEUR PROPRE AU TERME DIAGONAL CORRESPONDANT DE LA MATRICE EN
+C ENTREE. SI AU MOINS L'UNE DES VALEURS PROPRES DIFFERE DE LA VALEUR
+C DE LA DIAGONALE, ALORS TEST=.FALSE. ET ON NE CORRIGE PAS LES VECTEURS
+C PROPRES
+      TEST=.TRUE.
+      DO 30 I=1,3
+        IF (EPSP(I).NE.0.D0) THEN
+          IF (ABS(F(I)-EPSP(I))/ABS(EPSP(I)).GT.1.D-12) THEN
+            TEST=.FALSE.
+          ENDIF
+        ELSE 
+          IF (ABS(F(I)-EPSP(I)).GT.1.D-12) THEN
+            TEST=.FALSE.
+          ENDIF
+        ENDIF
+30    CONTINUE
+C SI TEST = .TRUE. : CORRECTION DES VECTEURS PROPRES      
+      IF (TEST) THEN
+        DO 31 I=1,3
+          DO 32 J=1,3
+            VECP(I,J)=0.D0
+32        CONTINUE
+          VECP(I,I)=1.D0
+31      CONTINUE
+      ENDIF
+C FIN CORRECTION DES VALEURS PROPRES
       IF (ABS(EPSP(2)).GT.RTEMP) RTEMP=ABS(EPSP(2))
       IF (ABS(EPSP(3)).GT.RTEMP) RTEMP=ABS(EPSP(3))
           DO 500 I=1,2
             DO 501 J=(I+1),3
           IF (ABS(EPSP(I)-EPSP(J)).LT.1D-12) THEN
-           EPSP(I)=EPSP(I)+RIGMIN*RTEMP
+            EPSP(I)=EPSP(I)+RIGMIN*RTEMP
             EPSP(J)=EPSP(J)-RIGMIN*RTEMP
           ENDIF
 501     CONTINUE
@@ -108,6 +129,7 @@ C ----------------------------------------------------------------------
 600   CONTINUE
       MTG = .TRUE.
       CALL R8INIR(9, 0.D0, DSPDEP, 1)
+      CALL R8INIR(36, 0.D0, DSIDEP, 1)
       DO 120 K = 1,3
         IF (EPSP(K).GT.0.D0) THEN
           DSPDEP(K,K)=1.D0
@@ -152,7 +174,7 @@ C ----------------------------------------------------------------------
 22          CONTINUE
 21        CONTINUE
 20      CONTINUE
-C       GOTO 999
+       
        IF (.NOT.MTG) THEN
          DO 70 K=1,6
            DO 71 L=1,6
@@ -168,13 +190,55 @@ C       GOTO 999
        ENDIF
 
        ELSEIF (DIM.EQ.3) THEN
-
-
       
       CALL DIAGO2(F,VECP2,EPSP2)
       MTG = .TRUE.
       RTEMP=ABS(EPSP2(1))
-           
+C VERIFICATION DE L'ORDRE DES VALEURS PROPRES, UTILE LORSQUE
+C LA MATRICE EN ENTREE EST DEJA DIAGONALE AFIN D'IMPOSER LES
+C VECTEURS PROPRES A (1 0 , 0 1) OU (0 -1 , 1 0) SELON L'ORDRE
+C DES VALEURS PROPRES CALCULEES PAR DIAGO2      
+      ORDRE(1)=1
+      ORDRE(2)=2
+      IF (F(2).GT.F(1)) THEN
+        ORDRE(1)=2
+        ORDRE(2)=1
+      ENDIF   
+C TEST = .TRUE. PAR DEFAUT : SIGNIFIE QUE LA MATRICE EN ENTREE 
+C EST DEJA DIAGONALE. LA PROCEDURE UTILISEE EST DE COMPARER CHAQUE
+C VALEUR PROPRE AU TERME DIAGONAL CORRESPONDANT DE LA MATRICE EN
+C ENTREE. SI AU MOINS L'UNE DES VALEURS PROPRES DIFFERE DE LA VALEUR
+C DE LA DIAGONALE, ALORS TEST=.FALSE. ET ON NE CORRIGE PAS LES VECTEURS
+C PROPRES
+      TEST=.TRUE.
+      DO 40 I=1,2
+        IF (EPSP2(I).NE.0.D0) THEN
+          IF (ABS(F(ORDRE(I))-EPSP2(I))/ABS(EPSP2(I)).GT.1.D-12) THEN
+            TEST=.FALSE.
+          ENDIF
+        ELSE 
+          IF (ABS(F(ORDRE(I))-EPSP2(I)).GT.1.D-12) THEN
+            TEST=.FALSE.
+          ENDIF
+        ENDIF
+40    CONTINUE
+C SI TEST = .TRUE. : CORRECTION DES VECTEURS PROPRES
+      IF (TEST) THEN
+        IF (ORDRE(1).EQ.1) THEN
+          DO 41 I=1,2
+            DO 42 J=1,2
+              VECP2(I,J)=0.D0
+42          CONTINUE
+            VECP2(I,I)=1.D0
+41        CONTINUE
+        ELSE
+          VECP2(1,1)=0.D0
+          VECP2(1,2)=1.D0
+          VECP2(2,1)=-1.D0
+          VECP2(2,2)=0.D0
+        ENDIF
+      ENDIF 
+C FIN CORRECTION DES VALEURS PROPRES
       IF (ABS(EPSP2(2)).GT.RTEMP) RTEMP=ABS(EPSP2(2))
           IF (ABS(EPSP2(1)-EPSP2(2)).LT.1D-12) THEN
            EPSP2(1)=EPSP2(1)+RIGMIN*RTEMP
@@ -241,7 +305,6 @@ C       GOTO 999
          DSIDEP(3,3)=1.D0
        ENDIF
 
-
        ELSEIF (DIM.EQ.1) THEN
        
          IF (F(1).GT.0.D0) THEN 
@@ -250,9 +313,6 @@ C       GOTO 999
            DSIDEP(1,1)=0.D0
          ENDIF
 
-
-
        ENDIF
-
 
       END

@@ -3,7 +3,7 @@
      &                  PARTPS,CARCRI,CHVARC,LIGREZ,LISCHA,
      &                  OPTION)
 C
-C MODIF ALGORITH  DATE 16/06/2010   AUTEUR CARON A.CARON 
+C MODIF ALGORITH  DATE 28/09/2010   AUTEUR MASSIN P.MASSIN 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -79,7 +79,7 @@ C
 C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
 C
       INTEGER      NBOUT,NBIN
-      PARAMETER    (NBOUT=1, NBIN=31)
+      PARAMETER    (NBOUT=1, NBIN=32)
       CHARACTER*8  LPAOUT(NBOUT),LPAIN(NBIN)
       CHARACTER*19 LCHOUT(NBOUT),LCHIN(NBIN)
 C
@@ -95,7 +95,7 @@ C
       REAL*8       INSTM,INSTP,RBID
       COMPLEX*16   CBID
       CHARACTER*19 PINTTO,CNSETO,HEAVTO,LONCHA,BASLOC,LSN,LST,STANO
-      CHARACTER*19 PMILTO
+      CHARACTER*19 PMILTO,FISSNO
       LOGICAL      DEBUG
       INTEGER      IFMDBG,NIVDBG
 C
@@ -223,7 +223,8 @@ C
         BASLOC =MODELE(1:8)//'.BASLOC'
         LSN    =MODELE(1:8)//'.LNNO'
         LST    =MODELE(1:8)//'.LTNO'
-        STANO = MODELE(1:8)//'.STNO'
+        STANO  = MODELE(1:8)//'.STNO'
+        FISSNO = MODELE(1:8)//'.FISSNO'  
       ELSE
         PINTTO = '&&VEFNME.PINTTO.BID'
         CNSETO = '&&VEFNME.CNSETO.BID'
@@ -234,6 +235,7 @@ C
         LSN    = '&&VEFNME.LNNO.BID'
         LST    = '&&VEFNME.LTNO.BID'
         STANO  = '&&VEFNME.STNO.BID'
+        FISSNO = '&&VEFNME.FISSNO.BID'
       ENDIF
 
       LPAIN(22) = 'PPINTTO'
@@ -256,7 +258,8 @@ C
       LCHIN(30) = CHCARA(15)
       LPAIN(31) = 'PPMILTO'
       LCHIN(31) = PMILTO
-
+      LPAIN(32) = 'PFISNO'
+      LCHIN(32) = FISSNO
 C
 C --- CREATION DES LISTES DES CHAMPS OUT
 C

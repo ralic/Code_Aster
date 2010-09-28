@@ -5,7 +5,7 @@
      &   DDLEXC, NFREQ, LMASSE, LRAIDE, LAMOR, NUMEDD, SIGMA,
      &   ICSCAL, IVSCAL, IISCAL, IBSCAL)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 29/03/2010   AUTEUR BOITEAU O.BOITEAU 
+C MODIF ALGELINE  DATE 27/09/2010   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -50,8 +50,6 @@ C IN  TYPEQZ : K  : TYPE DE METHODE : QR, QZ_SIMPLE OU QZ_EQUI.
 C IN  QRN    : IS : DIMENSION DU SYSTEME
 C IN  IQRN   : IS : ADRESSE JEVEUX DE LA MATRICE A PLEINE (R/C)
 C IN  LQRN   : IS : ADRESSE JEVEUX DE LA MATRICE B PLEINE (R/C)
-C IN  IADIA  : IS : .SMDI POUR LA STRUCTURE DE DONNEES NUME_DDL
-C IN  IHCOL  : IS : .SMHC POUR LA STRUCTURE DE DONNEES NUME_DDL
 C IN  QRAR   : IS : ADRESSE JEVEUX DE RE(ALPHA) (SI K E R)
 C                   OU ALPHA E C (SI K E C)
 C IN  QRAI   : IS : ADRESSE JEVEUX DE IM(ALPHA)
@@ -133,7 +131,7 @@ C DECLARATION VARIABLES LOCALES
      &             AAUX1,BAUX1,CAUX1,ABNORM,PREC1,RMOY1,RMIN1,RMAX1
       COMPLEX*16   CUN,CZERO,CAUXM,CAUXR,CAUXA,CAUXM2,FREQ,FREQ2,CAUXA1,
      &             CAUXM1,CAUXR1
-      CHARACTER*1  KBAL,KSENS
+      CHARACTER*1  KBAL,KSENS,VALK
       CHARACTER*24 NOMRAI,NOMMAS,NOMAMO
       CHARACTER*32 JEXNUM
       LOGICAL      LKR,LTEST,LC,TROUVE,LDEBUG,LCONJ,LNSA,LNSR,
@@ -150,8 +148,8 @@ C------
 C INITS
 C------
 C------
-C     PRECISION MACHINE COMME DANS ARPACK
-      PREC=(R8PREM()*0.5D0)**(2.0D+0/3.0D+0)
+C     PRECISIONS MACHINE
+      PREC=R8PREM()*2.D0
       PREC1=R8MIEM()*10.D0
 C     PARAMETRES (EMPIRIQUES !) POUR SELECTIONNER LES VPS AVEC QZ_QR
       PREC2=R8MAEM()*0.5D0
@@ -188,6 +186,7 @@ C ---- QRN DOIT ETRE PAIRE EN QUADRATIQUE
         LC=.FALSE.
         IMULT=1
       ENDIF
+      VALK=' '
       CUN=DCMPLX(1.D0,0.D0)
       CZERO=DCMPLX(0.D0,0.D0)
       RUN=1.D0
@@ -320,31 +319,35 @@ C ---       PARTIE TRIANGULAIRE SUP
             BAUX=ABS(ZR(IVALM+IM1))
             CAUX=ABS(ZR(IVALA+IM1))
 C ---       PARTIE TRIANGULAIRE INF
-            IF (LNSR.AND.(IAUXH.NE.J)) THEN
-              IF (LKR) THEN
-                AAUX1=ABS(ZR(IVALR1+IM1))
+            IF (IAUXH.NE.J) THEN            
+              IF (LNSR) THEN
+                IF (LKR) THEN
+                  AAUX1=ABS(ZR(IVALR1+IM1))
+                ELSE
+                  AAUX1=ABS(ZC(IVALR1+IM1))
+                ENDIF
               ELSE
-                AAUX1=ABS(ZC(IVALR1+IM1))
+                AAUX1=AAUX
               ENDIF
-            ELSE
-              AAUX1=AAUX
-            ENDIF
-            IF (LNSM.AND.(IAUXH.NE.J)) THEN
-              BAUX1=ABS(ZR(IVALM1+IM1))
-            ELSE
-              BAUX1=BAUX
-            ENDIF
-            IF (LNSA.AND.(IAUXH.NE.J)) THEN
-              CAUX1=ABS(ZR(IVALA1+IM1))
-            ELSE
-              CAUX1=CAUX
+              IF (LNSM) THEN
+                BAUX1=ABS(ZR(IVALM1+IM1))
+              ELSE
+                BAUX1=BAUX
+              ENDIF
+              IF (LNSA) THEN
+                CAUX1=ABS(ZR(IVALA1+IM1))
+              ELSE
+                CAUX1=CAUX
+              ENDIF
             ENDIF
             ZR(LVECN+JM1)        =ZR(LVECN+JM1)      +AAUX
             ZR(LVECN+JM1+QRNS2)  =ZR(LVECN+JM1+QRNS2)+BAUX
             ZR(LVECN+JM1+QRN)    =ZR(LVECN+JM1+QRN)  +CAUX
-            ZR(LVECN+IAUXH1)      =ZR(LVECN+IAUXH1)      +AAUX1
-            ZR(LVECN+IAUXH1+QRNS2)=ZR(LVECN+IAUXH1+QRNS2)+BAUX1
-            ZR(LVECN+IAUXH1+QRN)  =ZR(LVECN+IAUXH1+QRN)  +CAUX1       
+            IF (IAUXH.NE.J) THEN
+              ZR(LVECN+IAUXH1)      =ZR(LVECN+IAUXH1)      +AAUX1
+              ZR(LVECN+IAUXH1+QRNS2)=ZR(LVECN+IAUXH1+QRNS2)+BAUX1
+              ZR(LVECN+IAUXH1+QRN)  =ZR(LVECN+IAUXH1+QRN)  +CAUX1
+            ENDIF       
    38     CONTINUE
           IDEB = IFIN+1
    39   CONTINUE
@@ -362,13 +365,14 @@ C ---- ERREUR DONNEES OU CALCUL
 C        IF (ANORM*BNORM*CNORM.EQ.0.D0) CALL ASSERT(.FALSE.)
 C ---- COEF MULTIPLICATEUR (EQUILIBRAGE) POUR LA LINEARISATION PB QUAD
         COEFN=(ANORM+BNORM+CNORM)/(3*QRNS2)
+
         IF (NIV.GE.2) THEN
           WRITE(IFM,140)ANORM,BNORM,CNORM
           WRITE(IFM,141)COEFN
           WRITE(IFM,*)
-  140     FORMAT('METHODE QZ, NORME L1 DE K/M/C: ',1PD10.2,' / ',
-     &          1PD10.2,' / ',1PD10.2)
-  141     FORMAT('COEF MULTIPLICATEUR DU PB LINEARISE: ',1PD10.2)
+  140     FORMAT('METHODE QZ, NORME L1 DE K/M/C: ',1PD12.4,' / ',
+     &          1PD12.4,' / ',1PD12.4)
+  141     FORMAT('COEF MULTIPLICATEUR DU PB LINEARISE: ',1PD12.4)
         ENDIF
 C ---- ON PASSE EN COMPLEXE MEME SI K EST REELLE, POUR PLUS DE
 C      ROBUSTESSE. ON PROPOSE DEUX TYPES DE LINEARISATION. ON PREND LA
@@ -388,6 +392,7 @@ C           IAUXH NUMERO DE LIGNE
             IAUXH1=IAUXH-1
             IAUXH2=IAUXH+QRNS2
             IAUX21=IAUXH2-1
+
 C --- MATRICE A ET B TRIANGULAIRE SUP
             IF (LKR) THEN
               CAUXR=ZR(IVALR+IM1)*CUN
@@ -396,11 +401,8 @@ C --- MATRICE A ET B TRIANGULAIRE SUP
             ENDIF
             CAUXM=ZR(IVALM+IM1)*CUN
             CAUXA=ZR(IVALA+IM1)*CUN
-            IF (J.EQ.IAUXH) THEN
-              CAUXM2=COEFN*CUN
-            ELSE
-              CAUXM2=CZERO
-            ENDIF
+            CAUXM2=COEFN*CUN
+
 C ------ MATRICE A ET B TRIANGULAIRE INF
             IF (LNSR.AND.(IAUXH.NE.J)) THEN
               IF (LKR) THEN
@@ -424,20 +426,23 @@ C ------ MATRICE A ET B TRIANGULAIRE INF
 
             IF (TYPLIN.EQ.2) THEN
 C MATRICE COMPAGNON A
-              ZC(IQRN+JM1*QRN+IAUXH1)     =  -CAUXR
-              ZC(IQRN+J2M1*QRN+IAUX21)   =  CAUXM2           
+              ZC(IQRN+JM1*QRN+IAUXH1)     = -CAUXR
               ZC(IQRN+QRN*IAUXH1+JM1)     = -CAUXR1
-              ZC(IQRN+QRN*IAUX21+J2M1)    =  CAUXM2
+              IF (J.EQ.IAUXH)
+     &          ZC(IQRN+J2M1*QRN+IAUX21)  =  CAUXM2
+
 C MATRICE COMPAGNON B
-              ZC(LQRN+JM1*QRN+IAUXH1)     =   CAUXA
-              ZC(LQRN+JM1*QRN+IAUX21)     =  CAUXM2
-              ZC(LQRN+J2M1*QRN+IAUXH1)    =   CAUXM           
+              ZC(LQRN+JM1*QRN+IAUXH1)     =  CAUXA
               ZC(LQRN+QRN*IAUXH1+JM1)     =  CAUXA1
-              ZC(LQRN+QRN*IAUXH1+J2M1)    =  CAUXM2
+              ZC(LQRN+J2M1*QRN+IAUXH1)    =  CAUXM           
               ZC(LQRN+QRN*IAUX21+JM1)     =  CAUXM1
+              IF (J.EQ.IAUXH)
+     &          ZC(LQRN+JM1*QRN+IAUX21)   =  CAUXM2
+
+
             ELSE IF (TYPLIN.EQ.1) THEN
 C MATRICE COMPAGNON A
-              ZC(IQRN+JM1*QRN+IAUX21)     =  -CAUXR
+              ZC(IQRN+JM1*QRN+IAUX21)     = -CAUXR
               ZC(IQRN+QRN*IAUXH1+J2M1)    = -CAUXR1           
               ZC(IQRN+J2M1*QRN+IAUXH1)    =  CAUXM2
               ZC(IQRN+QRN*IAUX21+JM1)     =  CAUXM2
@@ -455,6 +460,7 @@ C MATRICE COMPAGNON B
           IDEB = IFIN+1
    37   CONTINUE
       ENDIF
+
 C ---- TESTS UNITAIRES SI LTEST=.TRUE.
       IF (LTEST) THEN
         IF (LKR.AND.(.NOT.LC).AND.(.NOT.LNSM).AND.(.NOT.LNSR)) THEN
@@ -480,7 +486,42 @@ C ---- TESTS UNITAIRES SI LTEST=.TRUE.
             ZC(LQRN-1+(I-1)*QRN+I)=CUN
    65     CONTINUE
         ENDIF
-      ENDIF      
+      ENDIF
+
+C ---- FILTRAGE DES TERMES TROP PETITS POUR EVITER L'APPARITION
+C ---- DE MODES FANTOMES DS LAPACK DUS AUX ERREURS D'ARRONDIS
+C      IF ((LKR).AND.(.NOT.LC).AND.(.NOT.LNSR).AND.(.NOT.LNSM)) THEN
+C        DO 77 J=1,QRN
+C         JM1=J-1
+C          DO 76 I=1,QRN
+C           IM1=I-1
+C           AAUX=ZR(IQRN+JM1*QRN+IM1)
+C           BAUX=ZR(LQRN+JM1*QRN+IM1)
+C           IF (ABS(ABS(AAUX).LT.PREC)) ZR(IQRN+JM1*QRN+IM1)=RZERO
+C           IF (ABS(ABS(BAUX).LT.PREC)) ZR(LQRN+JM1*QRN+IM1)=RZERO
+C   76     CONTINUE
+C C  77   CONTINUE
+C      ELSE
+C        DO 79 J=1,QRN
+C         JM1=J-1
+C          DO 78 I=1,QRN
+C           IM1=I-1
+C           CAUXA=ZC(IQRN+JM1*QRN+IM1)
+C           CAUXA1=ZC(LQRN+JM1*QRN+IM1)
+C           F1=DBLE(CAUXA)
+C           F2=DIMAG(CAUXA)
+C           IF (ABS(F1).LT.PREC) F1=RZERO
+C           IF (ABS(F2).LT.PREC) F2=RZERO
+C           ZC(IQRN+JM1*QRN+IM1)=DCMPLX(F1,F2)
+C           F1=DBLE(CAUXA1)
+C           F2=DIMAG(CAUXA1)
+C           IF (ABS(F1).LT.PREC) F1=RZERO
+C           IF (ABS(F2).LT.PREC) F2=RZERO
+C           ZC(LQRN+JM1*QRN+IM1)=DCMPLX(F1,F2)
+C   78     CONTINUE
+C   79   CONTINUE
+C      ENDIF
+      
 C ---- CALCUL DE LA NORME INFINIE DE A ET B 
       ANORM=0.D0
       BNORM=0.D0
@@ -537,6 +578,17 @@ C ---- ERREUR DONNEES OU CALCUL
   450   FORMAT('METHODE QZ, NORME L1   DE A/B: ',1PD10.2,' / ',1PD10.2)
       ENDIF
 
+C --- POUR SORTIE FICHIER FORT.17
+C      WRITE(17,*)QRN
+C      WRITE(17,*)ANORM,BNORM
+C      DO J=1,QRN
+C        DO I=1,QRN
+C         CAUXR=ZC(IQRN+(J-1)*QRN+I-1)
+C         CAUXM=ZC(LQRN+(J-1)*QRN+I-1)
+C         WRITE(17,'(I4,1X,I4,1X,E17.8,1X,E17.8)')
+C     &     I,J,DBLE(CAUXR),DBLE(CAUXM)          
+C       ENDDO
+C      ENDDO
 C-------------------------------------------------------------------
 C-------------------------------------------------------------------
 C RESOLUTION LAPACK PROPREMENT DITE, EN 2 PASSES
@@ -905,7 +957,7 @@ C-------------------------------------
         ELSE
           KMSG='I'
         ENDIF
-        CALL U2MESG(KMSG,'ALGELINE5_62',0,' ',2,VALI,0,VALR)
+        CALL U2MESG(KMSG,'ALGELINE5_62',0,VALK,2,VALI,0,VALR)
       ENDIF
 
 C------------------------------------------------------------------

@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 13/04/2010   AUTEUR PELLET J.PELLET 
+%& MODIF TYPELEM  DATE 28/09/2010   AUTEUR MASSIN P.MASSIN 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -80,3 +80,5 @@ OPTION__
                               OUT__  EPRESNO  PPRES_R
     TOU_INI_ELEM        99    IN__   NGEOMER  PGEOMER
                               OUT__  CPRES_R  PPRES_R
+    FULL_MECA           99    IN__   N1NEUT_R PLSN     N1NEUT_R PLST     STANO_I  PSTANO
+                              OUT__  MVECTUR  PVECTUR

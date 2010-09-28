@@ -1,13 +1,14 @@
-      SUBROUTINE XDECOV(IT,CONNEC,LSN,IGEOM,PINTER,NINTER,NPTS,
-     &                                    AINTER,NSE,CNSE,COORSE,HEAV)
+      SUBROUTINE XDECOV(IT,CONNEC,LSN,IGEOM,NFISS,
+     &                 PINTER,NINTER,NPTS,AINTER,NSE,CNSE,HEAV)
       IMPLICIT NONE
 
       REAL*8        LSN(*)
       INTEGER       IT,CONNEC(6,6),IGEOM,NINTER,NPTS,NSE,CNSE(6,6)
-      CHARACTER*24  PINTER,AINTER,COORSE,HEAV
+      INTEGER       NFISS
+      CHARACTER*24  PINTER,AINTER,HEAV
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/06/2010   AUTEUR CARON A.CARON 
+C MODIF ALGORITH  DATE 28/09/2010   AUTEUR MASSIN P.MASSIN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -40,7 +41,6 @@ C
 C     SORTIE
 C       NSE      : NOMBRE DE SOUS-ELTS (TETRAS)
 C       CNSE     : CONNECTIVITE DES SOUS-ÉLÉMENTS (TETRAS)
-C       COORSE   : COORDONNEES DES NOEUDS DES SOUS-ELTS
 C       HEAV     : FONCTION HEAVYSIDE CONSTANTE SUR CHAQUE SOUS-ELT
 C     ------------------------------------------------------------------
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
@@ -61,13 +61,14 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
       REAL*8          XYZ(4,3),AB(3),AC(3),AD(3),VN(3),PS
-      INTEGER         JPTINT,JAINT,JCOSE,JHEAV
+      REAL*8          LSNC,ALPHA,CRILSN
+      INTEGER         JPTINT,JAINT,JHEAV
       INTEGER         IN,INH,I,J,AR(12,3),NBAR,ISE,NDIM,IBID
       INTEGER         A1,A2,A3,A4,A,B,C,IADZI,IAZK24,NDIME
       CHARACTER*8     TYPMA,NOMA,ELRESE(3),KBID
-      INTEGER         ZXAIN,XXMMVD,NSEMAX(3),IRET
+      INTEGER         ZXAIN,XXMMVD,IRET,IFISS
+      PARAMETER       (CRILSN = 1.D-4)
       DATA            ELRESE /'SEG2','TRIA3','TETRA4'/
-      DATA            NSEMAX / 2 , 3 , 6 /
 C ----------------------------------------------------------------------
 
       CALL JEMARQ()
@@ -85,7 +86,6 @@ C     NDIME = 2 ALORS QUE NDIM = 3
 
       CALL JEVEUO(PINTER,'L',JPTINT)
       CALL JEVEUO(AINTER,'L',JAINT)
-      CALL WKVECT(COORSE,'V V R',NDIM*NSEMAX(NDIME)*(NDIM+1),JCOSE)
 
       DO 10 IN=1,6
         DO 20 J=1,6
@@ -221,7 +221,6 @@ C         TROP DE POINTS D'INTERSECTION
 
       ELSEIF (NDIME.EQ.3) THEN
 
-
         IF (NINTER.LT.3) THEN
 
 C       1°) AVEC MOINS DE TROIS POINTS D'INTERSECTION
@@ -254,14 +253,22 @@ C           ON A UN SEUL ELEMENT
 C           ON A DEUX SOUS-ELEMENTS
             NSE=2
             CALL ASSERT(A1.EQ.0.AND.A2.EQ.0)
+            CALL ASSERT(NINT(ZR(JAINT-1+2)).GT.0.AND.
+     &                  NINT(ZR(JAINT-1+ZXAIN+2)).GT.0)
+
 C           CONNECTIVITE DES NSE PAR RAPPORT AU NUM DE NOEUDS DU PARENT
 C           AVEC 101, 102 ET 103 LES 3 PTS D'INTERSECTION
-            CNSE(1,1)=101
-            CNSE(1,2)=102
+C           ON REMPLACE 101 ET 102 PAR LES NUMEROS DES NOEUDS COUP�S
+C            CNSE(1,1)=101
+C            CNSE(1,2)=102
+            CNSE(1,1)=NINT(ZR(JAINT-1+2))
+            CNSE(1,2)=NINT(ZR(JAINT-1+ZXAIN+2))
             CNSE(1,3)=103
             CNSE(1,4)=CONNEC(IT,AR(A3,1))
-            CNSE(2,1)=101
-            CNSE(2,2)=102
+C            CNSE(2,1)=101
+C            CNSE(2,2)=102
+            CNSE(2,1)=NINT(ZR(JAINT-1+2))
+            CNSE(2,2)=NINT(ZR(JAINT-1+ZXAIN+2))
             CNSE(2,3)=103
             CNSE(2,4)=CONNEC(IT,AR(A3,2))
 
@@ -269,6 +276,7 @@ C           AVEC 101, 102 ET 103 LES 3 PTS D'INTERSECTION
 C           ON A TROIS SOUS-ELEMENTS
             NSE=3
             CALL ASSERT(A1.EQ.0.AND.A2.NE.0)
+            CALL ASSERT(NINT(ZR(JAINT-1+2)).GT.0)
 C           ON SE PLACE DANS LA CONF DE REF (VOIR ALGO)
             DO 30 I=1,2
               DO 40 J=1,2
@@ -279,15 +287,19 @@ C           ON SE PLACE DANS LA CONF DE REF (VOIR ALGO)
                 ENDIF
  40           CONTINUE
  30         CONTINUE
-            CNSE(1,1)=101
+C           ON REMPLACE 101 PAR LE NUMERO DU NOEUD COUP�
+C            CNSE(1,1)=101
+            CNSE(1,1)=NINT(ZR(JAINT-1+2))
             CNSE(1,2)=102
             CNSE(1,3)=103
             CNSE(1,4)=CONNEC(IT,A)
-            CNSE(2,1)=101
+C            CNSE(2,1)=101
+            CNSE(2,1)=NINT(ZR(JAINT-1+2))
             CNSE(2,2)=102
             CNSE(2,3)=103
             CNSE(2,4)=CONNEC(IT,C)
-            CNSE(3,1)=101
+C            CNSE(3,1)=101
+            CNSE(3,1)=NINT(ZR(JAINT-1+2))
             CNSE(3,2)=102
             CNSE(3,3)=CONNEC(IT,B)
             CNSE(3,4)=CONNEC(IT,C)
@@ -415,27 +427,38 @@ C             MATRICE DES COORDONNÉES ET FONCTION HEAVYSIDE
 C             ALGO BOOK III (28/04/04)
 C-----------------------------------------------------------------------
 
-      CALL WKVECT(HEAV,'V V R',NSE,JHEAV)
+      CALL WKVECT(HEAV,'V V R',NSE*NFISS,JHEAV)
 
       DO 300 ISE=1,NSE
-
-        ZR(JHEAV-1+ISE)=1.D0
         DO 310 IN=1,NDIME+1
           INH=CNSE(ISE,IN)
           IF (INH.LT.100) THEN
-            DO 320 J=1,NDIM
-              ZR(JCOSE-1+NDIM*(NDIM+1)*(ISE-1)+NDIM*(IN-1)+J)=
-     &         ZR(IGEOM-1+NDIM*(INH-1)+J)
- 320        CONTINUE
-            IF (LSN(INH).LT.0.D0) ZR(JHEAV-1+ISE)=-1.D0
-          ELSE
-            DO 330 J=1,NDIM
-              ZR(JCOSE-1+NDIM*(NDIM+1)*(ISE-1)+NDIM*(IN-1)+J)=
-     &        ZR(JPTINT-1+NDIM*(INH-100-1)+J)
+            DO 330 IFISS=1,NFISS
+              IF (LSN((INH-1)*NFISS+IFISS).LT.0.D0) THEN
+                ZR(JHEAV-1+NFISS*(ISE-1)+IFISS)= -1.D0
+              ELSEIF (LSN((INH-1)*NFISS+IFISS).GT.0.D0) THEN
+                ZR(JHEAV-1+NFISS*(ISE-1)+IFISS)= +1.D0
+              ENDIF
  330        CONTINUE
+          ELSE
+            IF (NFISS.GT.1) THEN
+              A1 = NINT(ZR(JAINT-1+ZXAIN*(INH-101)+1))
+              ALPHA = ZR(JAINT-1+ZXAIN*(INH-101)+4)
+     &                  /ZR(JAINT-1+ZXAIN*(INH-101)+3)
+              DO 350 IFISS=1,NFISS
+                LSNC = ALPHA*LSN((CONNEC(IT,AR(A1,2))-1)*NFISS+IFISS)
+     &            + (1-ALPHA)*LSN((CONNEC(IT,AR(A1,1))-1)*NFISS+IFISS)
+                IF (LSNC.LT.-1*CRILSN) THEN
+                  CALL ASSERT(ZR(JHEAV-1+NFISS*(ISE-1)+IFISS).NE.1)
+                  ZR(JHEAV-1+NFISS*(ISE-1)+IFISS)= -1.D0
+                ELSEIF (LSNC.GT.CRILSN) THEN
+                  CALL ASSERT(ZR(JHEAV-1+NFISS*(ISE-1)+IFISS).NE.-1)
+                  ZR(JHEAV-1+NFISS*(ISE-1)+IFISS)= +1.D0
+                ENDIF
+ 350          CONTINUE
+            ENDIF
           ENDIF
  310    CONTINUE
-
  300  CONTINUE
 
 C     REMARQUE IMPORTANTE :

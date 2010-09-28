@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 20/07/2010   AUTEUR MAHFOUZ D.MAHFOUZ 
+#& MODIF COMMANDE  DATE 28/09/2010   AUTEUR MASSIN P.MASSIN 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -65,7 +65,7 @@ AFFE_CHAR_MECA=OPER(nom="AFFE_CHAR_MECA",op=   7,sd_prod=char_meca,
                                  'UO3','VO2','VO3','WO2','WO3','UI4','UI5','VI4','VI5','WI4',
                                  'WI5','UO4','UO5','VO4','VO5','WO4','WO5','UI6','UO6','VI6',
                                  'VO6','WI6','WO6','WO','WI1','WO1','GONF','LIAISON',
-                                 'H1X','H1Y','H1Z','E1X','E1Y','E1Z','E2X','E2Y','E2Z',
+                                 'H1X','H1Y','H1Z','H2X','H2Y','H2Z','E1X','E1Y','E1Z','E2X','E2Y','E2Z',
                                  'E3X','E3Y','E3Z','E4X','E4Y','E4Z','LAGS_C','V11','V12','V13','V21','V22',
                                  'V23','V31','V32','V33','PRES11','PRES12','PRES13','PRES21','PRES22','PRES23',
                                  'PRES31','PRES32','PRES33',),),
@@ -124,6 +124,9 @@ AFFE_CHAR_MECA=OPER(nom="AFFE_CHAR_MECA",op=   7,sd_prod=char_meca,
              H1X             =SIMP(statut='f',typ='R' ),
              H1Y             =SIMP(statut='f',typ='R' ),
              H1Z             =SIMP(statut='f',typ='R' ),
+             H2X             =SIMP(statut='f',typ='R' ),
+             H2Y             =SIMP(statut='f',typ='R' ),
+             H2Z             =SIMP(statut='f',typ='R' ),           
              E1X             =SIMP(statut='f',typ='R' ),
              E1Y             =SIMP(statut='f',typ='R' ),
              E1Z             =SIMP(statut='f',typ='R' ),

@@ -1,9 +1,9 @@
-      SUBROUTINE XTEDDL(NDIM,DDLH,NFE,DDLS,NDDL,NNO,NNOS,STANO,
+      SUBROUTINE XTEDDL(NDIM,NFH,NFE,DDLS,NDDL,NNO,NNOS,STANO,
      &                  LCONTX,MATSYM,OPTION,NOMTE,
-     &                  MAT,VECT,DDLM)
+     &                  MAT,VECT,DDLM,NFISS,JFISNO)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 12/07/2010   AUTEUR LAVERNE J.LAVERNE 
+C MODIF ELEMENTS  DATE 28/09/2010   AUTEUR MASSIN P.MASSIN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -23,16 +23,16 @@ C ======================================================================
 C RESPONSABLE GENIAUT S.GENIAUT
 
       IMPLICIT NONE
-      INTEGER      NDIM,DDLH,NFE,DDLS,NDDL,NNO,NNOS,STANO(*)
+      INTEGER      NDIM,NFH,NFE,DDLS,NDDL,NNO,NNOS,STANO(*)
       LOGICAL      MATSYM,LCONTX
       CHARACTER*16 OPTION,NOMTE
       REAL*8       MAT(*),VECT(*)
-      INTEGER      DDLM
+      INTEGER      DDLM,NFISS,JFISNO
 C     BUT: SUPPRIMER LES DDLS "EN TROP" (VOIR BOOK III 09/06/04
 C                                         ET  BOOK IV  30/07/07)
 
 C IN   NDIM   : DIMENSION DE L'ESPACE
-C OUT  DDLH   : NOMBRE DE DDL HEAVYSIDE (PAR NOEUD)
+C OUT  NFH    : NOMBRE DE FONCTIONS HEAVYSIDE
 C OUT  NFE    : NOMBRE DE FONCTIONS SINGULIÈRES D'ENRICHISSEMENT
 C IN   DDLS   : NOMBRE DE DDL (DEPL+CONTACT) À CHAQUE NOEUD SOMMET
 C IN   NDDL   : NOMBRE DE DDL TOTAL DE L'ÉLÉMENT
@@ -43,6 +43,8 @@ C IN   LCONTX : ON S'OCCUPE DES DDLS DE CONTACT
 C IN   MATSYM : STOCKAGE DE LA MATRICE SYMÉTRIQUE ?
 C IN   OPTION : OPTION DE CALCUL DU TE
 C IN   NOMTE  : NOM DU TYPE ELEMENT
+C IN   NFISS  : NOMBRE DE FISSURES "VUES" PAR L'ÉLÉMENT
+C IN   JFISNO : POINTEUR DE CONNECTIVITÉ FISSURE/HEAVISIDE
 
 C IN/OUT :   MAT   : MATRICE DE RIGIDITÉ
 C IN/OUT :   VECT  : VECTEUR SECOND MEMBRE
@@ -69,6 +71,7 @@ C-----------------------------------------------------------------------
 C---------------- DECLARATION DES VARIABLES LOCALES  -------------------
 
        INTEGER      JPOS,IER,ISTATU,INO,K,I,J,IELIM,IN
+       INTEGER      IFH,FISNO(NNO,NFISS)
        CHARACTER*8  TYENEL
        CHARACTER*19 POSDDL
        LOGICAL      LELIM
@@ -77,10 +80,24 @@ C
 C-------------------------------------------------------------
 
       CALL JEMARQ()
-
+C
+C --- CONECTIVITÉ DES FISSURE ET DES DDL HEAVISIDES
+C
+      IF (NFISS.EQ.1) THEN
+        DO 300 INO = 1, NNO
+          FISNO(INO,1) = 1
+ 300    CONTINUE
+      ELSE
+        DO 310 IFH = 1, NFH
+          DO 320 INO = 1, NNO
+            FISNO(INO,IFH) = ZI(JFISNO-1+(INO-1)*NFH+IFH)
+ 320      CONTINUE
+ 310    CONTINUE
+      ENDIF  
 C     TYPE D'ENRICHISSEMENT DE L'ELEMENT ET TYPE D'ELIMINATION
       CALL TEATTR (NOMTE,'S','XFEM',TYENEL,IER)
-      IF (TYENEL.EQ.'XH'.OR.TYENEL.EQ.'XHC') THEN
+      IF (TYENEL.EQ.'XH'.OR.TYENEL.EQ.'XHC'.
+     &  OR.TYENEL.EQ.'XH1'.OR.TYENEL.EQ.'XH2') THEN
         IELIM=1
       ELSEIF (TYENEL.EQ.'XT'.OR.TYENEL.EQ.'XTC') THEN
         IELIM=2
@@ -99,38 +116,37 @@ C     VRAI SI ON ELIMINE LES DDLS D'AU MOINS UN NOEUD
       DO 100 INO = 1,NNO
         CALL INDENT(INO,DDLS,DDLM,NNOS,IN)
 C       ENRICHISSEMENT DU NOEUD
-        ISTATU = STANO(INO)
-
         IF (IELIM.EQ.1) THEN
 
 C         1) CAS DES MAILLES 'ROND'
 C         -------------------------
 
 C         PB DE STATUT DES NOEUDS ENRICHIS
-          CALL ASSERT(ISTATU.LE.1) 
-          IF (ISTATU.EQ.1) THEN
-C           ON NE SUPPRIME AUCUN DDL
-          ELSE IF (ISTATU.EQ.0) THEN
+          DO 330 IFH = 1,NFH
+            ISTATU = STANO((INO-1)*NFISS+FISNO(INO,IFH))
+            CALL ASSERT(ISTATU.LE.1)
+            IF (ISTATU.EQ.0) THEN
 C           ON SUPPRIME LES DDL H
-            DO 10 K = 1,NDIM
-              ZI(JPOS-1+IN+NDIM+K)=1
-   10       CONTINUE
-            LELIM=.TRUE.
-          END IF
-
+              DO 10 K = 1,NDIM
+                ZI(JPOS-1+IN+NDIM*IFH+K)=1
+   10         CONTINUE
+              LELIM=.TRUE.
+            ENDIF
+ 330      CONTINUE
         ELSEIF (IELIM.EQ.2) THEN
 
 C         2) CAS DES MAILLES 'CARRÉ'
 C         --------------------------
 
 C         PB DE STATUT DES NOEUDS ENRICHIS
+          ISTATU = STANO(INO)
           CALL ASSERT(ISTATU.LE.2 .AND. ISTATU.NE.1) 
           IF (ISTATU.EQ.2) THEN
 C           ON NE SUPPRIME AUCUN DDL
           ELSE IF (ISTATU.EQ.0) THEN
 C           ON SUPPRIME LES DDL E
             DO 20 K = 1,NFE*NDIM
-              ZI(JPOS-1+IN+NDIM+DDLH+K)=1
+              ZI(JPOS-1+IN+NDIM*(1+NFH)+K)=1
    20       CONTINUE
             LELIM=.TRUE.
           END IF
@@ -141,6 +157,7 @@ C         3) CAS DES MAILLES 'ROND-CARRÉ'
 C         ------------------------------
 
 C         PB DE STATUT DES NOEUDS ENRICHIS
+          ISTATU = STANO(INO)
           CALL ASSERT(ISTATU.LE.3) 
           IF (ISTATU.EQ.3) THEN
 C           ON NE SUPPRIME AUCUN DDL
@@ -153,7 +170,7 @@ C           ON SUPPRIME LES DDL H
           ELSE IF (ISTATU.EQ.1) THEN
 C           ON SUPPRIME LES DDL E
             DO 40 K = 1,NFE*NDIM
-              ZI(JPOS-1+IN+NDIM+DDLH+K)=1
+              ZI(JPOS-1+IN+NDIM*(1+NFH)+K)=1
    40       CONTINUE
             LELIM=.TRUE.
           ELSE IF (ISTATU.EQ.0) THEN
@@ -162,7 +179,7 @@ C           ON SUPPRIME LES DDLS H ET E
               ZI(JPOS-1+IN+NDIM+K)=1
    50       CONTINUE
             DO 60 K = 1,NFE*NDIM
-              ZI(JPOS-1+IN+NDIM+DDLH+K)=1
+              ZI(JPOS-1+IN+NDIM*(1+NFH)+K)=1
    60       CONTINUE
             LELIM=.TRUE.
           END IF
@@ -171,10 +188,11 @@ C           ON SUPPRIME LES DDLS H ET E
 C         4) CAS DU CONTACT
 C         ------------------------------
           IF (INO.LE.NNOS) THEN
+            ISTATU = STANO(INO)
             IF (ISTATU.EQ.0) THEN
 C           ON SUPPRIME LES DDLS LAGS_C, LAGS_F1 ET LAGS_F2
               DO 70 K = 1,NDIM
-                ZI(JPOS-1+IN+NDIM+DDLH+NFE*NDIM+K)=1
+                ZI(JPOS-1+IN+NDIM*(1+NFH+NFE)+K)=1
    70         CONTINUE
               LELIM=.TRUE.
             ENDIF

@@ -4,7 +4,7 @@
       CHARACTER*1         TYPE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 13/04/2010   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 28/09/2010   AUTEUR MASSIN P.MASSIN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -55,11 +55,11 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
      +              IOC, JCNSV, JCNSL, IDINO, NBOBM, JDDL, JTYP, N,
      +              IDNDDL, IDVDDL, NBDDL, IDDL, I, IDPROL, JAFCK,
      +              ILA, INDIK8, NBCMP, JCMP, NOC, N1, IORD,IRET,
-     +              JSTNOV,JSTNOL
+     +              JNOXFL
       CHARACTER*2   TYP
       CHARACTER*8   K8B, MA, MCLE, NOMGD, NOGDSI, GDCNS,EVOIM
       CHARACTER*16  MFAC, K16B, MOTCLE(5), PHENOM,TYPCO
-      CHARACTER*19  CHCI, CNS, DEPLA, STNO
+      CHARACTER*19  CHCI, CNS, DEPLA, NOXFEM
       CHARACTER*24  CINO, CNUDDL, CVLDDL, NPROL
       CHARACTER*80  TITRE
       LOGICAL       LXFEM, LENRI
@@ -90,12 +90,9 @@ C    --------------------------------------------------------
         LXFEM = .FALSE.
       ELSE
         LXFEM = .TRUE.
-      ENDIF
-      IF (LXFEM) THEN
-        STNO = '&&CHARCI.STNO'
-        CALL CNOCNS(MO(1:8)//'.STNO','V',STNO)
-        CALL JEVEUO(STNO//'.CNSL','L',JSTNOL)
-        CALL JEVEUO(STNO//'.CNSV','L',JSTNOV)
+        NOXFEM = '&&CHARCI.NOXFEM'
+        CALL CNOCNS(MO(1:8)//'.NOXFEM','V',NOXFEM)
+        CALL JEVEUO(NOXFEM//'.CNSL','L',JNOXFL)
       ENDIF
 
 C     -- CAS DE EVOL_IMPO : ON IMPOSE TOUS LES DDLS DU 1ER CHAMP
@@ -203,9 +200,7 @@ C ------- VERIFICATION DE LA COMPOSANTE SUR LES NOEUDS XFEM
             IF (K16B(1:1).EQ.'D') THEN
               DO 113 INO = 1,NBNO
                 NUNO = ZI(IDINO-1+INO)
-                IF (ZL(JSTNOL-1+NUNO)) THEN
-                  CALL ASSERT(ZI(JSTNOV-1+NUNO).EQ.0)
-                ENDIF
+                CALL ASSERT(.NOT.ZL(JNOXFL-1+2*NUNO))
  113          CONTINUE
             ENDIF
           ENDIF
@@ -295,7 +290,7 @@ C     -- SI EVOL_IMPO : IL NE FAUT PAS UTILISER LES VALEURS DE CHCI :
       IF (EVOIM.NE.' ') CALL JEDETR(CHCI//'.AFCV')
 
       IF (LXFEM) THEN
-        CALL JEDETR(STNO)
+        CALL JEDETR(NOXFEM)
       ENDIF
 C
       CALL JEDEMA()

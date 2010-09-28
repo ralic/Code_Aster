@@ -1,6 +1,6 @@
       SUBROUTINE DMATDP(FAMI,MATER,INSTAN,POUM,IGAU,ISGAU,REPERE,D)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 03/08/2009   AUTEUR MEUNIER S.MEUNIER 
+C MODIF ELEMENTS  DATE 27/09/2010   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -55,7 +55,7 @@ C -----  VARIABLES LOCALES
       REAL*8 VALRES(NBRES),VALPAR
       REAL*8 PASSAG(4,4),DORTH(4,4),WORK(4,4)
       REAL*8 NU,NU12,NU21,NU13,NU23,NU31,NU32
-      REAL*8 ZERO,UNDEMI,UN,DEUX
+      REAL*8 ZERO,UNDEMI,UN,DEUX,C10,C01,C20,K
       REAL*8 E,E1,E2,E3,COEF,COEF1,COEF2,COEF3,C1,DELTA,G
 C.========================= DEBUT DU CODE EXECUTABLE ==================
 
@@ -93,6 +93,37 @@ C        -----------
 
          E  = VALRES(1)
          NU = VALRES(2)
+
+         COEF = UN/ ((UN+NU)* (UN-DEUX*NU))
+         COEF1 = E* (UN-NU)*COEF
+         COEF2 = E*NU*COEF
+         COEF3 = UNDEMI*E/ (UN+NU)
+
+         D(1,1) = COEF1
+         D(1,2) = COEF2
+         D(1,3) = COEF2
+
+         D(2,1) = COEF2
+         D(2,2) = COEF1
+         D(2,3) = COEF2
+
+         D(3,1) = COEF2
+         D(3,2) = COEF2
+         D(3,3) = COEF1
+
+         D(4,4) = COEF3
+
+
+C      ------------
+C ---- CAS ELAS_HYPER
+C      ------------
+      ELSEIF (PHENOM.EQ.'ELAS_HYPER') THEN
+
+
+         CALL HYPMAT(FAMI,IGAU,ISGAU,POUM,MATER,C10,C01,C20,K)
+
+         E  = 6.D0*(C10+C01)
+         NU = 0.5D0-E/K/6.D0
 
          COEF = UN/ ((UN+NU)* (UN-DEUX*NU))
          COEF1 = E* (UN-NU)*COEF

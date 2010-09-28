@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/07/2010   AUTEUR MASSIN P.MASSIN 
+C MODIF ELEMENTS  DATE 28/09/2010   AUTEUR MASSIN P.MASSIN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -58,7 +58,7 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX --------------------
       INTEGER      JINDCO,JDONCO,JLSN,IPOIDS,IVF,IDFDE,JGANO,IGEOM
       INTEGER      IDEPM,IDEPD,IMATT,JLST,JPTINT,JAINT,JCFACE,JLONCH
       INTEGER      IPOIDF,IVFF,IDFDEF,IADZI,IAZK24,IBID,JBASEC,JSEUIL
-      INTEGER      NDIM,DDLH,DDLC,DDLS,NDDL,NNO,NNOS,NNOM,NNOF,DDLM
+      INTEGER      NDIM,NFH,DDLC,DDLS,NDDL,NNO,NNOS,NNOM,NNOF,DDLM
       INTEGER      NPG,NPGF,XOULA,FAC(6,4),NBF
       INTEGER      INDCO(60),NINTER,NFACE,CFACE(5,3),IBID2(12,3),CPT
       INTEGER      INTEG,NFE,SINGU,JSTNO,NVIT
@@ -91,7 +91,7 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX --------------------
       REAL*8       DEPEQI,SQRNOR,SQRTAN,DTANG(3),DNOR(3)
       REAL*8       BETA,BETASQ, GC,SIGMC,ALPHA0,ALPHA
       REAL*8       DDT1(3,3),DDT2(3,3),DDT3(3,3),DDT4(3,3),COHES(60)
-      INTEGER      NPTF
+      INTEGER      NPTF,NFISS,JFISNO
 C......................................................................
 
       CALL JEMARQ()
@@ -105,7 +105,7 @@ C
       CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO)
 C
 C     INITIALISATION DES DIMENSIONS DES DDLS X-FEM
-      CALL XTEINI(NOMTE,DDLH,NFE,SINGU,DDLC,NNOM,DDLS,NDDL,DDLM)
+      CALL XTEINI(NOMTE,NFH,NFE,SINGU,DDLC,NNOM,DDLS,NDDL,DDLM,NFISS)
 C
       CALL TECAEL(IADZI,IAZK24)
       TYPMA=ZK24(IAZK24-1+3+ZI(IADZI-1+2)+3)
@@ -269,7 +269,7 @@ C       NOMBRE DE LAMBDAS ET LEUR PLACE DANS LA MATRICE
           IF (NCONTA.EQ.1) NNOL=NNO
           IF (NCONTA.EQ.3) NNOL=NNOS
           DO 15 I=1,NNOL
-            CALL XPLMAT(NDIM,DDLH,NFE,DDLC,DDLM,NNO,NNOM,I,PLI)
+            CALL XPLMAT(NDIM,NFH,NFE,DDLC,DDLM,NNO,NNOM,I,PLI)
             PLA(I)=PLI
  15       CONTINUE
         ELSE
@@ -278,7 +278,7 @@ C       NOMBRE DE LAMBDAS ET LEUR PLACE DANS LA MATRICE
 C           XOULA  : RENVOIE LE NUMERO DU NOEUD PORTANT CE LAMBDA
             NI=XOULA(CFACE,IFA,I,JAINT,TYPMA)
 C           PLACE DU LAMBDA DANS LA MATRICE
-            CALL XPLMAT(NDIM,DDLH,NFE,DDLC,DDLM,NNO,NNOM,NI,PLI)
+            CALL XPLMAT(NDIM,NFH,NFE,DDLC,DDLM,NNO,NNOM,NI,PLI)
             PLA(I)=PLI
  16       CONTINUE
         ENDIF
@@ -404,7 +404,7 @@ C             I.1. CALCUL DE A ET DE AT
                 DO 131 J = 1,NNO
                   CALL INDENT(J,DDLS,DDLM,NNOS,JN)
 
-                  DO 132 L = 1,DDLH
+                  DO 132 L = 1,NFH*NDIM
                     MMAT(PLI,JN+NDIM+L)=
      &              MMAT(PLI,JN+NDIM+L)+
      &              2.D0 * FFI * FFP(J) * ND(L) * JAC * E
@@ -417,13 +417,13 @@ C
  132              CONTINUE
 C
                   DO 133 L = 1,SINGU*NDIM
-                    MMAT(PLI,JN+NDIM+DDLH+L)=
-     &              MMAT(PLI,JN+NDIM+DDLH+L)+
+                    MMAT(PLI,JN+NDIM*(1+NFH)+L)=
+     &              MMAT(PLI,JN+NDIM*(1+NFH)+L)+
      &              2.D0 * FFI * FFP(J) * RR * ND(L) * JAC * E
 C
                     IF(.NOT.LPENAC)THEN
-                      MMAT(JN+NDIM+DDLH+L,PLI)=
-     &                MMAT(JN+NDIM+DDLH+L,PLI)+
+                      MMAT(JN+NDIM*(1+NFH)+L,PLI)=
+     &                MMAT(JN+NDIM*(1+NFH)+L,PLI)+
      &                2.D0 * FFI * FFP(J) * RR * ND(L) * JAC * E
                     ENDIF
  133              CONTINUE
@@ -439,31 +439,31 @@ C             I.2. CALCUL DE A_U
                 DO 141 J = 1,NNO
                   CALL INDENT(J,DDLS,DDLM,NNOS,JN)
 
-                  DO 142 K = 1,DDLH
-                    DO 143 L = 1,DDLH
+                  DO 142 K = 1,NFH*NDIM
+                    DO 143 L = 1,NFH*NDIM
                       MMAT(IN+NDIM+K,JN+NDIM+L) =
      &                  MMAT(IN+NDIM+K,JN+NDIM+L) +
      &                  4.D0*CPENCO*FFP(I)*FFP(J)*ND(K)*ND(L)*JAC
  143                CONTINUE
 C
                     DO 144 L = 1,SINGU*NDIM
-                      MMAT(IN+NDIM+K,JN+NDIM+DDLH+L) =
-     &                  MMAT(IN+NDIM+K,JN+NDIM+DDLH+L) +
+                      MMAT(IN+NDIM+K,JN+NDIM*(1+NFH)+L) =
+     &                  MMAT(IN+NDIM+K,JN+NDIM*(1+NFH)+L) +
      &                  4.D0*CPENCO*FFP(I)*FFP(J)*RR*ND(K)*ND(L)*JAC
  144                CONTINUE
 C
  142              CONTINUE
 
                   DO 145 K = 1,SINGU*NDIM
-                    DO 146 L = 1,DDLH
-                      MMAT(IN+NDIM+DDLH+K,JN+NDIM+L) =
-     &                  MMAT(IN+NDIM+DDLH+K,JN+NDIM+L) +
+                    DO 146 L = 1,NFH*NDIM
+                      MMAT(IN+NDIM*(1+NFH)+K,JN+NDIM+L) =
+     &                  MMAT(IN+NDIM*(1+NFH)+K,JN+NDIM+L) +
      &                  4.D0*CPENCO*FFP(I)*FFP(J)*RR*ND(K)*ND(L)*JAC
  146                CONTINUE
 C
                     DO 147 L = 1,SINGU*NDIM
-                      MMAT(IN+NDIM+DDLH+K,JN+NDIM+DDLH+L) =
-     &                  MMAT(IN+NDIM+DDLH+K,JN+NDIM+DDLH+L) +
+                      MMAT(IN+NDIM*(1+NFH)+K,JN+NDIM*(1+NFH)+L) =
+     &                  MMAT(IN+NDIM*(1+NFH)+K,JN+NDIM*(1+NFH)+L) +
      &                  4.D0*CPENCO*FFP(I)*FFP(J)*RR*RR*ND(K)*ND(L)
      &                                                    *JAC
  147                CONTINUE
@@ -580,7 +580,7 @@ C        ..............................
               BETASQ=BETA*BETA
               ALPHA0=(GC/SIGMC)*PENADH
 C
-C           II.2.2. CALCUL DU SAUT DE DEPLACEMENT EQUIVALENT [[Ueg]]
+C           II.2.2. CALCUL DU SAUT DE DEPLACEMENT EQUIVALENT [[UEG]]
 C        .............................. 
               DEPEQI=0.0D0
               CALL MATINI(3,3,0.D0,DSIDEP)
@@ -602,17 +602,15 @@ C             P : OPERATEUR DE PROJECTION 3D
               CALL VECINI(3,0.D0,SAUT)
 C 
               DO 204 INO=1,NNO
-                DO 205 J=1,DDLH
-                       SAUT(J) = SAUT(J) - 2.D0 * FFP(INO) *
-     &                           (ZR(IDEPD-1+DDLS*(INO-1)+NDIM+J)
-     &                          +ZR(IDEPM-1+DDLS*(INO-1)+NDIM+J)
-     &                           )
+                DO 205 J=1,NFH*NDIM
+                  SAUT(J) = SAUT(J) - 2.D0 * FFP(INO) *
+     &                       (ZR(IDEPD-1+DDLS*(INO-1)+NDIM+J)
+     &                       +ZR(IDEPM-1+DDLS*(INO-1)+NDIM+J))
  205            CONTINUE                            
                 DO 206 J = 1,SINGU*NDIM
-                       SAUT(J) = SAUT(J) - 2.D0 * FFP(INO) * RR *
-     &                           (ZR(IDEPD-1+DDLS*(INO-1)+NDIM+DDLH+J)
-     &                          +ZR(IDEPM-1+DDLS*(INO-1)+NDIM+DDLH+J)
-     &                           )
+                  SAUT(J) = SAUT(J) - 2.D0 * FFP(INO) * RR *
+     &                       (ZR(IDEPD-1+DDLS*(INO-1)+NDIM*(1+NFH)+J)
+     &                       +ZR(IDEPM-1+DDLS*(INO-1)+NDIM*(1+NFH)+J))
  206            CONTINUE
  204          CONTINUE
               DO 310 I = 1,NNOL
@@ -770,14 +768,14 @@ C                ALPHA NE CORRESPOND A AUCUN CAS
                 ENDIF
 
                 CALL MATCOX(NDIM,PP,DDT1,DDT2,DDT3,DDT4,P,
-     &                  NNO,DDLH,DDLS,JAC,FFP,SINGU,RR,
+     &                  NNO,NFH*NDIM,DDLS,JAC,FFP,SINGU,RR,
      &                  MMAT)  
               ENDIF
 C 
  53           CONTINUE
 
 
-C           II.3. SI CONTACT POUR CE PG : ON REMPLIT B, BT, B_U et F
+C           II.3. SI CONTACT POUR CE PG : ON REMPLIT B, BT, B_U ET F
             ELSE IF (INDCO(ISSPG).EQ.1) THEN
 
 C             INITIALISATIONS DES MATRICES DE TRAVAIL 3X3, EN 2D ET 3D
@@ -796,13 +794,13 @@ C             ON TESTE L'ETAT D'ADHERENCE DU PG (AVEC DEPDEL)
               DO 154 INO=1,NNO
                 CALL INDENT(INO,DDLS,DDLM,NNOS,IN)
 
-                DO 155 J=1,DDLH
+                DO 155 J=1,NFH*NDIM
                   SAUT(J) = SAUT(J) - 2.D0 * FFP(INO) *
      &             ZR(IDEPD-1+IN+NDIM+J)
  155            CONTINUE
                 DO 156 J = 1,SINGU*NDIM
                   SAUT(J) = SAUT(J) - 2.D0 * FFP(INO) * RR *
-     &             ZR(IDEPD-1+IN+NDIM+DDLH+J)
+     &             ZR(IDEPD-1+IN+NDIM*(1+NFH)+J)
 
  156            CONTINUE
  154          CONTINUE
@@ -868,7 +866,7 @@ C               CALCUL DE TAU.KN.P
                 DO 165 J = 1,NNO
                   CALL INDENT(J,DDLS,DDLM,NNOS,JN)
                   DO 166 K = 1,NDIM-1
-                    DO 167 L = 1,DDLH
+                    DO 167 L = 1,NFH*NDIM
                       MMAT(PLI+K,JN+NDIM+L) =
      &                MMAT(PLI+K,JN+NDIM+L) +
      &              2.D0*MU*SEUIL(ISSPG)*FFI*FFP(J)*TAUKNP(K,L)*JAC
@@ -883,13 +881,13 @@ C
 C
                     DO 168 L = 1,SINGU*NDIM
 C
-                      MMAT(PLI+K,JN+NDIM+DDLH+L) =
-     &                MMAT(PLI+K,JN+NDIM+DDLH+L) +
+                      MMAT(PLI+K,JN+NDIM*(1+NFH)+L) =
+     &                MMAT(PLI+K,JN+NDIM*(1+NFH)+L) +
      &           2.D0*RR*MU*SEUIL(ISSPG)*FFI*FFP(J)*TAUKNP(K,L)*JAC
 C
                       IF(.NOT.LPENAF)THEN
-                        MMAT(JN+NDIM+DDLH+L,PLI+K) =
-     &                  MMAT(JN+NDIM+DDLH+L,PLI+K) +
+                        MMAT(JN+NDIM*(1+NFH)+L,PLI+K) =
+     &                  MMAT(JN+NDIM*(1+NFH)+L,PLI+K) +
      &           2.D0*RR*MU*SEUIL(ISSPG)*FFI*FFP(J)*TAUKNP(K,L)*JAC
                       ENDIF
 C
@@ -924,8 +922,8 @@ C                 CAS GLISSANT
                 DO 171 J = 1,NNO
                   CALL INDENT(J,DDLS,DDLM,NNOS,JN)
 
-                  DO 172 K = 1,DDLH
-                    DO 173 L = 1,DDLH
+                  DO 172 K = 1,NFH*NDIM
+                    DO 173 L = 1,NFH*NDIM
 C
                       MMAT(IN+NDIM+K,JN+NDIM+L) =
      &                MMAT(IN+NDIM+K,JN+NDIM+L) -
@@ -936,8 +934,8 @@ C
 C
                     DO 174 L = 1,SINGU*NDIM
 C
-                      MMAT(IN+NDIM+K,JN+NDIM+DDLH+L) =
-     &                MMAT(IN+NDIM+K,JN+NDIM+DDLH+L) -
+                      MMAT(IN+NDIM+K,JN+NDIM*(1+NFH)+L) =
+     &                MMAT(IN+NDIM+K,JN+NDIM*(1+NFH)+L) -
      &                4.D0*RR*MU*SEUIL(ISSPG)*COEFBU*FFP(I)*FFP(J)*
      &                                          PTKNP(K,L)*JAC
 C
@@ -945,18 +943,18 @@ C
  172              CONTINUE
 
                   DO 175 K = 1,SINGU*NDIM
-                    DO 176 L = 1,DDLH
+                    DO 176 L = 1,NFH*NDIM
 C
-                      MMAT(IN+NDIM+DDLH+K,JN+NDIM+L) =
-     &                MMAT(IN+NDIM+DDLH+K,JN+NDIM+L) -
+                      MMAT(IN+NDIM*(1+NFH)+K,JN+NDIM+L) =
+     &                MMAT(IN+NDIM*(1+NFH)+K,JN+NDIM+L) -
      &                4.D0*RR*MU*SEUIL(ISSPG)*COEFBU*FFP(I)*FFP(J)*
      &                                        PTKNP(K,L)*JAC
 C
  176                CONTINUE
                     DO 177 L = 1,SINGU*NDIM
 C
-                     MMAT(IN+NDIM+DDLH+K,JN+NDIM+DDLH+L)
-     &            =  MMAT(IN+NDIM+DDLH+K,JN+NDIM+DDLH+L)
+                     MMAT(IN+NDIM*(1+NFH)+K,JN+NDIM*(1+NFH)+L)
+     &            =  MMAT(IN+NDIM*(1+NFH)+K,JN+NDIM*(1+NFH)+L)
      &            -  4.D0*RR*RR*MU*SEUIL(ISSPG)*COEFBU*FFP(I)*FFP(J)*
      &                                       PTKNP(K,L)*JAC
 C
@@ -1070,15 +1068,17 @@ C --- RECUPERATION DE LA MATRICE 'OUT' SYMETRIQUE
         NNO = NNOS
       ENDIF
 C     SUPPRESSION DES DDLS DE DEPLACEMENT SEULEMENT POUR LES XHTC
-      IF (DDLH*NFE.NE.0) THEN
+      IF (NFH*NFE.NE.0) THEN
         CALL JEVECH('PSTANO' ,'L',JSTNO)
-        CALL XTEDDL(NDIM,DDLH,NFE,DDLS,NDDL,NNO,NNOS,ZI(JSTNO),
-     &              .FALSE.,.TRUE.,OPTION,NOMTE,ZR(IMATT),RBID,DDLM)
+        CALL XTEDDL(NDIM,NFH,NFE,DDLS,NDDL,NNO,NNOS,ZI(JSTNO),
+     &              .FALSE.,.TRUE.,OPTION,NOMTE,ZR(IMATT),RBID,DDLM,
+     &              NFISS,JFISNO)
       ENDIF
 C     SUPPRESSION DES DDLS DE CONTACT
       IF (MALIN.AND.NLACT.LT.NNO) THEN
-        CALL XTEDDL(NDIM,DDLH,NFE,DDLS,NDDL,NNO,NNOS,LACT,
-     &              .TRUE.,.TRUE.,OPTION,NOMTE,ZR(IMATT),RBID,DDLM)
+        CALL XTEDDL(NDIM,NFH,NFE,DDLS,NDDL,NNO,NNOS,LACT,
+     &              .TRUE.,.TRUE.,OPTION,NOMTE,ZR(IMATT),RBID,DDLM,
+     &              NFISS,JFISNO)
       ENDIF
 
       CALL JEDEMA()
