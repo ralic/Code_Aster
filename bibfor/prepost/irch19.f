@@ -6,7 +6,7 @@
      &                    LRESU,FORMR,NIVE )
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
+C MODIF PREPOST  DATE 04/10/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -91,8 +91,7 @@ C
       CHARACTER*16  NOSY16
       CHARACTER*19  CH19
       CHARACTER*24 VALK(2), TYRES
-      INTEGER       LGNOGD,LGCH16,IBID,IERD,IFI,LXLGUT,
-     &              NUMCMP(100)
+      INTEGER       LGNOGD,LGCH16,IBID,IERD,IFI,LXLGUT,NUMCMP(NBCMP)
 C
 C     PASSAGE DANS DES VARIABLES FIXES
 C
@@ -113,7 +112,7 @@ C     --- TYPE DU CHAMP A IMPRIMER (CHAM_NO OU CHAM_ELEM)
       ELSE
           VALK(1) = TYCH
           VALK(2) = CH19
-          IF(TYRES(1:9) .EQ. 'MODE_GENE'  .OR. 
+          IF(TYRES(1:9) .EQ. 'MODE_GENE'  .OR.
      &       TYRES(1:9) .EQ. 'HARM_GENE')THEN
              CALL U2MESK('A+','PREPOST_87', 2 ,VALK)
              CALL U2MESS('A' ,'PREPOST6_36')

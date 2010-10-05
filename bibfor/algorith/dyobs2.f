@@ -1,8 +1,8 @@
       SUBROUTINE DYOBS2(MOTFAC,MAILLA,NBOCC ,LSUIVI,NTOBS,
      &                  NBSUIV,SDOBSE,SDSUIV)
-C 
-C            CONFIGURATION MANAGEMENT OF EDF VERSION 
-C MODIF ALGORITH  DATE 06/07/2009   AUTEUR COURTOIS M.COURTOIS 
+C
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ALGORITH  DATE 04/10/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,7 +22,7 @@ C ======================================================================
 C RESPONSABLE ABBAS M.ABBAS
 C
       IMPLICIT     NONE
-      CHARACTER*16 MOTFAC       
+      CHARACTER*16 MOTFAC
       CHARACTER*8  MAILLA
       CHARACTER*24 SDSUIV
       CHARACTER*14 SDOBSE
@@ -43,7 +43,7 @@ C IN  MOTFAC : MOT-CLEF FACTEUR POUR OBSERVATION
 C IN  MAILLA : NOM DU MAILLAGE
 C IN  NBOCC  : NOMBRE D'OCCURENCES DU MOT-CLEF FACTEUR OBSERVATION
 C IN  LSUIVI : POUR CHAQUE OBSERVATION DIT SI C'EST UN SUIVI_DDL OU PAS
-C IN  NBSUIV : NOMBRE D'OBSERVATION EN MODE SUIVI_DDL 
+C IN  NBSUIV : NOMBRE D'OBSERVATION EN MODE SUIVI_DDL
 C IN  NBOCC  : NOMBRE D'OCCURENCES DU MOT-CLEF FACTEUR OBSERVATION
 C IN  NTOBS  : NOMBRE D'OBSERVATIONS PAR INSTANT D'OBSERVATION
 C
@@ -67,15 +67,15 @@ C
 C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
 C
       INTEGER      N1, N2, N4, N5, N6, N7, I, J, K, L, N8, N9, N10
-      INTEGER      IOCC, IOBS, KNBNC, IBID, NTCMP
-      INTEGER      NCHP, NCMP, NBNC, NBNO, NBMA,NBPO
+      INTEGER      IOCC, IOBS, KNBNC, IBID
+      INTEGER      NCHP, NCMP, NBNO, NBMA,NBPO
       INTEGER      JNOE,JMAI, JPOI, KNCMP, KNCHP
       INTEGER      KKKMA, KCHAM, KCOMP, KNUCM, KNOEU, KMAIL, KPOIN
       INTEGER      JCHAM, JCOMP, JNUCM, JNOEU, JMAIL, JPOIN, JEXTR
       INTEGER      IICHAM, IICOMP, IINUCM, IINOEU, IIMAIL, IIPOIN
       INTEGER      JSUINB, JSUIMA, IOBS1, IOBS2
       CHARACTER*8  K8B, NOMGD
-      LOGICAL      CHAMES,CHAMEV      
+      LOGICAL      CHAMES,CHAMEV
 C
 C ----------------------------------------------------------------------
 C
@@ -130,7 +130,7 @@ C
            IOBS=IOBS1
          ENDIF
 C
-C --- LES CHAMPS 
+C --- LES CHAMPS
 C
          CALL GETVTX (MOTFAC,'NOM_CHAM',IOCC,1,0,K8B,N1)
          NCHP = -N1
@@ -138,7 +138,7 @@ C
          CALL GETVTX (MOTFAC,'NOM_CHAM',IOCC,1,NCHP,
      &                ZK16(KNCHP),N1)
          CHAMES = .FALSE.
-         CHAMEV = .FALSE.     
+         CHAMEV = .FALSE.
          DO 12 I = 1 , NCHP
             IF ( ZK16(KNCHP+I-1)(1:4) .EQ. 'DEPL' ) THEN
                NOMGD  = 'DEPL_R'
@@ -155,26 +155,24 @@ C
                NOMGD  = 'VARI_R'
                CHAMES = .TRUE.
             ELSEIF ( ZK16(KNCHP+I-1)(1:4) .EQ. 'TEMP' ) THEN
-               NOMGD = 'TEMP_R'                
-            ELSEIF (LSUIVI(IOCC) .AND. 
+               NOMGD = 'TEMP_R'
+            ELSEIF (LSUIVI(IOCC) .AND.
      &              ZK16(KNCHP+I-1)(1:9) .EQ. 'FORC_NODA' ) THEN
                NOMGD = 'FORC_R'
             ENDIF
  12      CONTINUE
 C
-C --- LES COMPOSANTES 
+C --- LES COMPOSANTES
 C
-         NBNC = 0
          CALL GETVTX (MOTFAC,'NOM_CMP',IOCC,1,0,K8B,N2)
          NCMP = -N2
 
-         NTCMP = NCMP * MAX(1,NBNC)
-         CALL WKVECT ('&&DYOBS2.NOM_CMP' ,'V V K8',NTCMP,KNCMP)
-         CALL WKVECT ('&&DYOBS2.NUME_CMP','V V I' ,NTCMP,KNBNC)
-         CALL UTCMP2 (NOMGD,'OBSERVATION',IOCC,ZK8(KNCMP),NCMP,
-     &                ZI(KNBNC),NBNC)
+         CALL WKVECT ('&&DYOBS2.NOM_CMP' ,'V V K8',NCMP,KNCMP)
+         CALL WKVECT ('&&DYOBS2.NUME_CMP','V V I' ,NCMP,KNBNC)
+         CALL UTCMP2 (NOMGD,'OBSERVATION',IOCC,NCMP,ZK8(KNCMP),
+     &                ZI(KNBNC),IBID)
 C
-C --- LES NOEUDS ET MAILLES 
+C --- LES NOEUDS ET MAILLES
 C
          CALL GETVTX (MOTFAC,'NOEUD'   , IOCC,1,0, K8B ,N4 )
          CALL GETVTX (MOTFAC,'GROUP_NO', IOCC,1,0, K8B ,N5 )
@@ -190,7 +188,7 @@ C
            CALL GETVTX(MOTFAC,'GROUP_MA', IOCC,1,0, K8B ,N8 )
            CALL GETVTX(MOTFAC,'VALE_MAX' ,IOCC,1,0,K8B ,N9 )
            CALL GETVTX(MOTFAC,'VALE_MIN' ,IOCC,1,0,K8B ,N10 )
-         ENDIF                  
+         ENDIF
 C
          IF ( N4 .NE. 0 ) THEN
             NBNO = -N4
@@ -225,7 +223,7 @@ C
            ENDIF
          ENDIF
 C
-C --- ON STOCKE 
+C --- ON STOCKE
 C
          DO 100 I = 1 , NCHP
             DO 110 J = 1 , NCMP
@@ -233,7 +231,7 @@ C
      &                  ZK16(KNCHP+I-1)(1:4) .EQ. 'VITE'      .OR.
      &                  ZK16(KNCHP+I-1)(1:4) .EQ. 'ACCE'      .OR.
      &                  ZK16(KNCHP+I-1)(1:9) .EQ. 'VALE_CONT' .OR.
-     &                  ZK16(KNCHP+I-1)(1:4) .EQ. 'TEMP'      .OR.     
+     &                  ZK16(KNCHP+I-1)(1:4) .EQ. 'TEMP'      .OR.
      &                 (ZK16(KNCHP+I-1)(1:9) .EQ. 'FORC_NODA'
      &                        .AND. LSUIVI(IOCC))          ) THEN
 C

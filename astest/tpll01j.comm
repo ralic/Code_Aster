@@ -1,4 +1,4 @@
-# MODIF  DATE 29/09/2009   AUTEUR GNICOLAS G.NICOLAS 
+# MODIF  DATE 04/10/2010   AUTEUR GNICOLAS G.NICOLAS 
 # TITRE Calcul d'indicateur d'erreur en thermique lineaire
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -90,9 +90,9 @@ for k in range(1,nbcalc):
                      MAILLAGE_N = M[k],
                      MAILLAGE_NP1 = M[k+1],
                      RESULTAT_N = RESU[k],
-                     INDICATEUR = 'ERRE_ELEM_TEMP',
+                     NOM_CHAM = 'ERRE_ELEM_TEMP',
                      NUME_ORDRE = 0,
-                     NOM_CMP_INDICA = 'ERTABS',
+                     NOM_CMP = 'ERTABS',
                      CRIT_RAFF_PE = 0.05,
                      NIVE_MAX = 5,
                      QUALITE='OUI' )

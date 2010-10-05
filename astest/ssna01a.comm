@@ -1,4 +1,4 @@
-# MODIF  DATE 19/02/2008   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 05/10/2010   AUTEUR ABBAS M.ABBAS 
 # RESPONSABLE F6BHHBO P.DEBONNIERES
 # TITRE CYLINDRE INFINI SOUS PRESSION (VISCOELASTICITE)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -322,15 +322,7 @@ TEST_RESU(RESU=(
            _F(  RESULTAT = U,              INST = 60.,
              CRITERE = 'ABSOLU',         PRECISION = 5.,
              PARA = 'ITER_GLOB',        VALE_I = 0),
-           _F(  RESULTAT = U,              INST = 60.,
-             CRITERE = 'ABSOLU',        PRECISION = 1.E-7,
-             PARA = 'RESI_GLOB_RELA',   VALE = 0.),
-           _F(  RESULTAT = U,              INST = 60.,
-             CRITERE = 'ABSOLU',        PRECISION = 1.E-7,
-             PARA = 'RESI_GLOB',        VALE = 0.),
-           _F(  RESULTAT = U,              INST = 60.,
-             CRITERE = 'ABSOLU',         PRECISION = 2.,
-             PARA = 'ITER_LINE',        VALE_I = 0))
+           )
            )
 
 U=CALC_ELEM(reuse=U,         RESULTAT=U,

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 21/09/2010   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 04/10/2010   AUTEUR GREFFET N.GREFFET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -24,7 +24,6 @@ POST_DECOLLEMENT=MACRO(nom="POST_DECOLLEMENT",op=post_decollement_ops,sd_prod=ta
                      fr="calcul du rapport de surfaces de contact radier/sol",
                      reentrant='n',
             UIinfo={"groupes":("Post traitements",)},
-         MAILLAGE   =SIMP(statut='o',typ=maillage_sdaster),
          RESULTAT   =SIMP(statut='o',typ=(evol_noli) ),
          NOM_CHAM   =SIMP(statut='f',typ='TXM',defaut='DEPL',into=C_NOM_CHAM_INTO(),max=1),
          NOM_CMP    =SIMP(statut='f',typ='TXM',defaut='DZ',max=1),

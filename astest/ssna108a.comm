@@ -1,4 +1,4 @@
-# MODIF  DATE 09/08/2010   AUTEUR BARGELLINI R.BARGELLINI 
+# MODIF  DATE 05/10/2010   AUTEUR ABBAS M.ABBAS 
 # TITRE DEPOUILLEMENT WEIBULL EPROUVETTE AE2 M=8 OPTION GAUSS
 # ssna108a.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -118,15 +118,7 @@ TEST_RESU(RESU=(
            _F(  RESULTAT = U,              NUME_ORDRE = 10,
              PARA = 'ITER_GLOB',        VALE_I = 0,
              CRITERE = 'ABSOLU',         PRECISION = 7.),
-           _F(  RESULTAT = U,              NUME_ORDRE = 10,
-             CRITERE = 'ABSOLU',         
-             PARA = 'RESI_GLOB_RELA',   VALE = 0.),
-           _F(  RESULTAT = U,              NUME_ORDRE = 10,
-             CRITERE = 'ABSOLU',        PRECISION = 5.,  
-             PARA = 'RESI_GLOB',        VALE = 0.),
-           _F(  RESULTAT = U,              NUME_ORDRE = 10,
-             CRITERE = 'ABSOLU',         PRECISION = 2.,
-             PARA = 'ITER_LINE',        VALE_I = 0))
+          )
            )
 
 AE2=POST_ELEM(        

@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SOUSTRUC  DATE 30/08/2010   AUTEUR PELLET J.PELLET 
+C MODIF SOUSTRUC  DATE 29/09/2010   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -79,7 +79,9 @@ C     -----------------------------------
         CALL GETVTX('CREA_GROUP_MA','NOM',IOCC,1,1,NOGMA,N1)
 
         CALL JENONU(JEXNOM(MA//'.GROUPEMA',NOGMA),IBID)
-        IF (IBID.GT.0) CALL U2MESK('A','ALGELINE3_7',1,NOGMA)
+        IF (IBID.GT.0) THEN
+            CALL U2MESK('F','ALGELINE3_7',1,NOGMA)
+        ENDIF
 
         CALL GETVEM(MA,'MAILLE','CREA_GROUP_MA','MAILLE',IOCC,1,0,KBID,
      &              N2)
@@ -446,7 +448,6 @@ C       ----------------------------------
         CALL JEDETR(LISMA)
 
   210 CONTINUE
-
 
 C     IMPRESSIONS NIVEAUX 1 ET 2
 C     --------------------------

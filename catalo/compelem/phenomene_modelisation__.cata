@@ -1,4 +1,4 @@
-%& MODIF COMPELEM  DATE 28/09/2010   AUTEUR MASSIN P.MASSIN 
+%& MODIF COMPELEM  DATE 05/10/2010   AUTEUR MAHFOUZ D.MAHFOUZ 
 % ======================================================================
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
@@ -118,6 +118,11 @@ PHENOMENE_MODELISATION__
 %
 %  XFEM = 'XH','XT','XHT'     : élément XFEM de type Heaviside, cracktip, ou mixte
 %         'XHC',XTC','XHTC'   : élément XFEM de type Heaviside, cracktip, ou mixte, avec du contact
+%
+%  XFEM_E = 'H','T','CT'      : élément XFEM maille esclave de type Heaviside, cracktip, ou mixte
+%
+%  XFEM_M = 'XH','XT','XHT'   : élément XFEM maille maitre de type Heaviside, cracktip, ou mixte
+%
 %
 %  NBSIGM =  /X4/X6/...
 %        remarque : on est obligé de mettre une lettre (j'ai choisi "X" sans raison particulière)

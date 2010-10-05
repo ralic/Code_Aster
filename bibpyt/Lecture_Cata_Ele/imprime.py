@@ -1,4 +1,4 @@
-#@ MODIF imprime Lecture_Cata_Ele  DATE 02/06/2008   AUTEUR MEUNIER S.MEUNIER 
+#@ MODIF imprime Lecture_Cata_Ele  DATE 05/10/2010   AUTEUR SELLENET N.SELLENET 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE VABHHTS J.PELLET
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -164,9 +164,10 @@ def imprime_cata(file2,capy,seq,format):
            if comlibr : file.write( comlibr +"\n")
            file.write( "OPTION__\n")
            file.write( "  IN__  " +"\n")
-           for (para,nogd,comlibr) in lchin :
+           for (para,nogd,localis,comlibr) in lchin :
               if not comlibr : comlibr=" "
-              file.write( "    %-10s %-10s   %s\n" %(para,nogd,comlibr))
+              if not localis: localis=" "
+              file.write( "    %-10s %-10s   %s %s\n" %(para,nogd,localis,comlibr))
            file.write( "   OUT__ " +"\n")
            for (para,nogd,typout,comlibr) in lchou :
               if not comlibr : comlibr=" "
@@ -412,6 +413,9 @@ def imprime_ojb(file,capy):
          nblig=0
       return (nblig,indice+1)
 
+   def split_localisation(chaineDependance):
+      return chaineDependance[1:-1].split("!")
+
    def elrefe_npg(cata_tm,NOFPG,elrf,f):
      # retourne le nombre de points de la famille f de l'elrefe elrf et le numéro de la famille
      for tm in cata_tm.ltm :
@@ -559,6 +563,7 @@ def imprime_ojb(file,capy):
    NOMOP=ut.cree_pn(d,nom='&CATA.OP.NOMOPT',tsca='K16')
    DESCOPT=ut.cree_co(d,nom='&CATA.OP.DESCOPT',tsca='I',tsca_pn='K16',contig='CONTIG',acces='NU',longv=0)
    OPTPARA=ut.cree_co(d,nom='&CATA.OP.OPTPARA',tsca='K8',tsca_pn='K16',contig='CONTIG',acces='NU',longv=0)
+   LOCALIS=ut.cree_co(d,nom='&CATA.OP.LOCALIS',tsca='K24',tsca_pn='K16',contig='CONTIG',acces='NU',longv=0)
 
 
    for cata in capy.op:
@@ -570,6 +575,7 @@ def imprime_ojb(file,capy):
        NOMOP.ajout_nom(nom)
        DESCOPT.cree_oc(nom=nom,long=6+3*(nbin+nbou))
        OPTPARA.cree_oc(nom=nom,long=nbin+2*nbou)
+       LOCALIS.cree_oc(nom=nom,long=3*nbin)
 
        DESCOPT.ecri_co(nom=nom,indice=2,valeur=nbin)
        DESCOPT.ecri_co(nom=nom,indice=3,valeur=nbou)
@@ -578,11 +584,23 @@ def imprime_ojb(file,capy):
        DESCOPT.ecri_co(nom=nom,indice=4+nbin+nbou+2,valeur=indcom)
 
        k=0
-       for (para,nogd,comlibr) in lchin :
+       for (para,nogd,localis,comlibr) in lchin :
            k=k+1
            igd=NOMGD.jenonu(nogd)
            DESCOPT.ecri_co(nom=nom,indice=4+k,valeur=igd)
            OPTPARA.ecri_co(nom=nom,indice=k,valeur=para)
+           if localis != None:
+              tabDep = split_localisation(localis)
+              LOCALIS.ecri_co(nom=nom,indice=3*k-2,valeur=tabDep[0])
+              LOCALIS.ecri_co(nom=nom,indice=3*k-1,valeur=tabDep[1])
+              if len(tabDep) == 3:
+                 LOCALIS.ecri_co(nom=nom,indice=3*k,valeur=tabDep[2])
+              else:
+                 LOCALIS.ecri_co(nom=nom,indice=3*k,valeur="NSP")
+           else:
+              LOCALIS.ecri_co(nom=nom,indice=3*k-2,valeur="VIDE")
+              LOCALIS.ecri_co(nom=nom,indice=3*k-1,valeur="VIDE")
+              LOCALIS.ecri_co(nom=nom,indice=3*k,valeur="VIDE")
            (nblcom,indcom)=split_comlibr(TOUCOMLIBR,comlibr)
            DESCOPT.ecri_co(nom=nom,indice=6+nbin+nbou+2*(k-1)+1,valeur=nblcom)
            DESCOPT.ecri_co(nom=nom,indice=6+nbin+nbou+2*(k-1)+2,valeur=indcom)

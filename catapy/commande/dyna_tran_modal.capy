@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 19/04/2010   AUTEUR GREFFET N.GREFFET 
+#& MODIF COMMANDE  DATE 04/10/2010   AUTEUR GREFFET N.GREFFET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -67,6 +67,7 @@ DYNA_TRAN_MODAL=OPER(nom="DYNA_TRAN_MODAL",op=  74,sd_prod=tran_gene,
            NB_POIN_PERIODE =SIMP(statut='f',typ='I',defaut= 50 ),
            NMAX_ITER_PAS   =SIMP(statut='f',typ='I',defaut= 16 ),
            PAS_MAXI         =SIMP(statut='f',typ='R' ),
+           PAS_MINI         =SIMP(statut='f',typ='R' ),
          ),
          ARCHIVAGE       =FACT(statut='f',
            regles=(UN_PARMI('LIST_ARCH','PAS_ARCH'),),

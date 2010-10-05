@@ -3,7 +3,7 @@
      &                  MAXREL,MAXNOD)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 12/01/2010   AUTEUR GRANET S.GRANET 
+C MODIF ALGORITH  DATE 05/10/2010   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -79,7 +79,7 @@ C
 C
       CHARACTER*24 IMPCNA,CRITPL,CRITCR
       INTEGER      JIMPCA,JCRP,JCRR
-      REAL*8       R8PREM
+      REAL*8       R8PREM,VALR(2),DETECT
       REAL*8       CHMINI,RESIEQ,RESDEF,VRESI1
       INTEGER      PLATIT,IRESI
       REAL*8       PLATRE
@@ -125,7 +125,7 @@ C
       LRELA    = ZL(JIMPCA-1+1)
       LMAXI    = ZL(JIMPCA-1+2)
       LREFE    = ZL(JIMPCA-1+3) 
-      LCMP    = ZL(JIMPCA-1+4) 
+      LCMP     = ZL(JIMPCA-1+4) 
       RESI(1)  = VRELA
       RESI(2)  = VMAXI
       RESI(3)  = VREFE
@@ -163,14 +163,17 @@ C --- SI CRITERE RESI_GLOB_RELA ET CHARGEMENT = 0,
 C --- ON UTILISE RESI_GLOB_MAXI
 C 
       IF (LRELA) THEN
-        IF (VCHAR .LT. (1.D-6 * CHMINI )) THEN
+        DETECT  = 1.D-6 * CHMINI
+        VALR(1) = DETECT
+        VALR(2) = RESIEQ
+        IF (VCHAR .LT. DETECT) THEN
+          CALL U2MESR('I','MECANONLINE2_98',2,VALR  )
           IF (NUMINS.GT.1) THEN
             CONVOK(1) = .FALSE.
             IF ((VRESI.LT.RESIEQ).OR. 
      &          (VRESI.LT.R8PREM())) THEN
               CONVOK(1) = .TRUE.
               MAXREL    = .TRUE.
-              CALL U2MESS('I','MECANONLINE2_98')
             ENDIF
           ENDIF
         ENDIF

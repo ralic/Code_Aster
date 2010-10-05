@@ -2,7 +2,7 @@
      &                  INCEST,DEPEST)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 19/04/2010   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 04/10/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -24,16 +24,16 @@ C
       IMPLICIT NONE
       CHARACTER*16 METHOD(*)
       CHARACTER*19 DEPMOI,DEPEST
-      CHARACTER*24 NUMEDD 
+      CHARACTER*24 NUMEDD
       CHARACTER*19 SDDISC,INCEST
-      INTEGER      NUMINS      
-C 
+      INTEGER      NUMINS
+C
 C ----------------------------------------------------------------------
 C
 C ROUTINE MECA_NON_LINE (ALGORITHME - PREDICTION)
 C
 C PREDICTION PAR DEPLACEMENT CALCULE
-C      
+C
 C ----------------------------------------------------------------------
 C
 C
@@ -68,7 +68,7 @@ C
       INTEGER      JDEPES,JDEPM,JINCES,NEQ
       INTEGER      IRET
       REAL*8       DIINST,INSTAN
-      CHARACTER*8  K8BID   
+      CHARACTER*8  K8BID
       CHARACTER*19 DEPLU
 C
 C ----------------------------------------------------------------------
@@ -79,8 +79,8 @@ C
 C --- AFFICHAGE
 C
       IF (NIV.GE.2) THEN
-        WRITE (IFM,*) '<MECANONLINE> ... PAR DEPL. CALCULE' 
-      ENDIF       
+        WRITE (IFM,*) '<MECANONLINE> ... PAR DEPL. CALCULE'
+      ENDIF
 C
 C --- INITIALISATIONS
 C
@@ -89,7 +89,7 @@ C
 C
 C --- INITIALISATIONS
 C
-      DEPLU     = '&&NMPRDC.DEPEST'          
+      DEPLU     = '&&NMPRDC.DEPEST'
 C
 C --- LECTURE DANS LE CONCEPT EVOL_NOLI
 C
@@ -97,11 +97,11 @@ C
      &            'CONSTANT', 'CONSTANT',0,'V',IRET)
       IF (IRET.GE.10) THEN
         CALL U2MESS('F','MECANONLINE2_27')
-      ENDIF      
+      ENDIF
 C
 C --- COPIE DU DEPLACEMENT ESTIME
 C
-      CALL VTCOPY(DEPLU ,DEPEST,IRET)
+      CALL VTCOPY(DEPLU ,DEPEST)
       CALL JEVEUO(DEPEST(1:19)//'.VALE','L',JDEPES)
       CALL JEVEUO(DEPMOI(1:19)//'.VALE','L',JDEPM )
 C

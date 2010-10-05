@@ -4,7 +4,7 @@
      &                    NRPASE, INPSCO )
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 15/05/2007   AUTEUR GNICOLAS G.NICOLAS 
+C MODIF ALGORITH  DATE 04/10/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -176,7 +176,7 @@ C
             CHAM2 = BASENO//'.DEPINI'
             IF (NRPASE.EQ.0) THEN
               CALL VTCREB (CHAM2, NUMEDD, 'V', 'R', NEQ)
-              CALL VTCOPY(CHAMP,CHAM2,IRET)
+              CALL VTCOPY(CHAMP,CHAM2)
               CALL JEVEUO(CHAM2//'.VALE','L',JVALE)
             ELSE
               CALL JEVEUO(CHAM2//'.VALE','E',JVALE)
@@ -197,7 +197,7 @@ C
             CHAM2 = BASENO//'.VITINI'
             IF (NRPASE.EQ.0) THEN
               CALL VTCREB (CHAM2, NUMEDD, 'V', 'R', NEQ)
-              CALL VTCOPY(CHAMP,CHAM2,IRET)
+              CALL VTCOPY(CHAMP,CHAM2)
               CALL JEVEUO(CHAM2//'.VALE','L',JVALE)
             ELSE
               CALL JEVEUO(CHAM2//'.VALE','E',JVALE)
@@ -217,7 +217,7 @@ C
               INCHAC = 0
               CHAM2 = BASENO//'.ACCINI'
               CALL VTCREB (CHAM2, NUMEDD, 'V', 'R', NEQ)
-              CALL VTCOPY(CHAMP,CHAM2,IRET)
+              CALL VTCOPY(CHAMP,CHAM2)
               CALL JEVEUO(CHAM2//'.VALE','L',JVALE)
               CALL DCOPY(NEQ,ZR(JVALE),1,ACCINI,1)
          ENDIF

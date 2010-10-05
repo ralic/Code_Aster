@@ -1,4 +1,4 @@
-# MODIF  DATE 08/11/2007   AUTEUR SALMONA L.SALMONA 
+# MODIF  DATE 05/10/2010   AUTEUR ABBAS M.ABBAS 
 # TITRE THERMO_METALLO_MECANIQUE EN DEFORMATIONS PLANES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -282,15 +282,7 @@ TEST_RESU(RESU=(
            _F(  RESULTAT = U,              NUME_ORDRE = 176,
              PARA = 'ITER_GLOB',        VALE_I = 0,
              CRITERE = 'ABSOLU',         PRECISION = 2.E+00),
-           _F(  RESULTAT = U,              NUME_ORDRE = 176,
-             CRITERE = 'ABSOLU',        PRECISION = 1.E-07,
-             PARA = 'RESI_GLOB_RELA',   VALE = 0.),
-           _F(  RESULTAT = U,              NUME_ORDRE = 176,
-             CRITERE = 'ABSOLU',        PRECISION = 3.E-07,
-             PARA = 'RESI_GLOB',        VALE = 0.),
-           _F(  RESULTAT = U,              NUME_ORDRE = 176,
-             PARA = 'ITER_LINE',        VALE_I = 0,
-             CRITERE = 'ABSOLU',         PRECISION = 2.E+00),
+           
 
            _F(  RESULTAT = U,  NOM_CHAM = 'VARI_ELNO_ELGA',  INST = 16.,
              CRITERE = 'RELATIF', PRECISION = 1.E-5,

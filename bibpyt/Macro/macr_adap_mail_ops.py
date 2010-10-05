@@ -1,4 +1,4 @@
-#@ MODIF macr_adap_mail_ops Macro  DATE 15/03/2010   AUTEUR GNICOLAS G.NICOLAS 
+#@ MODIF macr_adap_mail_ops Macro  DATE 04/10/2010   AUTEUR GNICOLAS G.NICOLAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -22,7 +22,7 @@
 """
 Traitement des macros MACR_ADAP_MAIL/MACR_INFO_MAIL
 """
-__revision__ = "V1.3"
+__revision__ = "V1.4"
 #
 def macr_adap_mail_ops ( self,
                          INFO, VERSION_HOMARD, MAILLAGE_FRONTIERE,
@@ -195,7 +195,7 @@ def macr_adap_mail_ops ( self,
         lresu = 1
         dico["RESULTAT"]   = args["RESULTAT_N"]
         noresu = dico["RESULTAT"].nom
-        dico["NOM_CHAM"]   = args["INDICATEUR"]
+        dico["NOM_CHAM"]   = args["NOM_CHAM"]
         nomsym = dico["NOM_CHAM"]
         if ( args["NUME_ORDRE"] != None ) :
           dico["NUME_ORDRE"] = args["NUME_ORDRE"]
@@ -221,13 +221,13 @@ def macr_adap_mail_ops ( self,
       dico["NOM_MED"] = aster.mdnoch ( lresu, noresu, nomsym, nopase )
 #gn      print "==> dico[\"NOM_MED\"] = ", dico["NOM_MED"]
 #
-      if args.has_key("NOM_CMP_INDICA") :
-        if args["NOM_CMP_INDICA"] is not None :
-          if not type(args["NOM_CMP_INDICA"]) in EnumTypes :
-            l_aux = [args["NOM_CMP_INDICA"]]
+      if args.has_key("NOM_CMP") :
+        if args["NOM_CMP"] is not None :
+          if not type(args["NOM_CMP"]) in EnumTypes :
+            l_aux = [args["NOM_CMP"]]
           else :
             l_aux = []
-            les_composantes = args["NOM_CMP_INDICA"]
+            les_composantes = args["NOM_CMP"]
             for composante in les_composantes :
               l_aux.append(composante)
           dico["COMPOSANTE"] = l_aux
@@ -557,7 +557,7 @@ def macr_adap_mail_ops ( self,
                   **motscfa )
 #
 # 4.4. Le(s) champ(s)
-#        Attention : il se peut que l'on demande la mise à jour du champ qui a servi comme
+#        Attention : il se peut que l'on demande la mise a jour du champ qui a servi comme
 #                    indicateur d'erreur. Si c'est le cas, il ne faut pas demander son
 #                    impression sinon il y a plantage d'IMPR_RESU qui ne sait pas substituer
 #                    deux champs. D'ailleurs, c'est plus economique ainsi !
@@ -707,7 +707,9 @@ def macr_adap_mail_ops ( self,
   for dico in liste_champs :
     dico_aux = {}
     if ( dico["Type_Champ"] == "INDICATEUR" ) :
-      l_aux = [ "NOM_MED", "COMPOSANTE" ]
+      l_aux = [ "NOM_MED" ]
+      if dico.has_key("COMPOSANTE") :
+        l_aux.append("COMPOSANTE")
       if dico.has_key("NUME_ORDRE") :
         l_aux.append("NUME_ORDRE")
       for cle in l_aux :

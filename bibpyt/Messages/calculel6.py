@@ -1,4 +1,4 @@
-#@ MODIF calculel6 Messages  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
+#@ MODIF calculel6 Messages  DATE 04/10/2010   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -148,9 +148,6 @@ Solution :
 
 
 
-51: _("""
- erreurs donnees composante inconnue  %(k1)s
-"""),
 
 52: _("""
  Erreur Utilisateur :

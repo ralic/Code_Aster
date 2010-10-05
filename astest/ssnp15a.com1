@@ -20,9 +20,6 @@ mo = list(smo)[0]
 assert mo.strip() == 'MO', "valeur inattendue : %s" % mo
 assert len(mo) == 8, "longueur inattendue : %d" % len(mo)
 
-# test parametre de type I
-iter_line = para['ITER_LINE']
-assert sum(iter_line) < nbord, iter_line  # pas a tous les pas de temps
 
 # test parametre de type R
 val_inst = NP.array(para['INST'])

@@ -1,4 +1,4 @@
-# MODIF  DATE 25/05/2010   AUTEUR GNICOLAS G.NICOLAS 
+# MODIF  DATE 04/10/2010   AUTEUR GNICOLAS G.NICOLAS 
 # RESPONSABLE GNICOLAS G.NICOLAS
 # TITRE COUPLAGE ASTER-HOMARD SUR UN CALCUL STAT_NON_LINE
 # zzzz175a.para = tps_job 100 mem_job 300Mo ncpus 1 liste_test S
@@ -187,8 +187,8 @@ for num_calc in range(nbre_calcul):
                     MAILLAGE_N = Mad2[num_calc],
                     MAILLAGE_NP1 = Mad2[num_calc+1],
                     RESULTAT_N = resu[num_calc],
-                    INDICATEUR = 'ERRE_ELEM_SIGM',
-                    NOM_CMP_INDICA = 'ERREST' ,
+                    NOM_CHAM = 'ERRE_ELEM_SIGM',
+                    NOM_CMP = 'ERREST' ,
                     INST=inst_fin,
                     CRIT_RAFF_PE = 0.03,
                     MAILLAGE_FRONTIERE = maill_fr,

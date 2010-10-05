@@ -1,4 +1,4 @@
-#@ MODIF elements2 Messages  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
+#@ MODIF elements2 Messages  DATE 04/10/2010   AUTEUR PROIX J-M.PROIX 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -163,7 +163,7 @@ cata_msg = {
      grandes rotations ne sont pas modélisées correctement.
   -> Risque & Conseil :
      En présence de grands déplacements et grandes rotations, il est préférable
-     d'utiliser la modélisation COQUE_3D, avec DEFORMATION='GREEN_GR'
+     d'utiliser la modélisation COQUE_3D, avec DEFORMATION='GROT_GDEP'
 """),
 
 73 : _("""

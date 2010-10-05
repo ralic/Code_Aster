@@ -1,4 +1,4 @@
-#@ MODIF miss_utils Miss  DATE 16/02/2010   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF miss_utils Miss  DATE 29/09/2010   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -63,6 +63,7 @@ class MISS_PARAMETER(object):
         """Enregistrement des valeurs des mots-clés."""
         self._defaults = {
             'REPERTOIRE' : None,
+            'PROJET'     : 'MODEL',
             '_INIDIR'    : initial_dir,
             '_WRKDIR'    : os.path.join(initial_dir, 'tmp_miss3d'),
         }
@@ -79,7 +80,6 @@ class MISS_PARAMETER(object):
             self._keywords[key] = kwargs.get(key) or self._defaults[key]
         # vérification des règles impossible à écrire dans le .capy
         ASSERT(self['LFREQ_NB'] is None or len(self['LFREQ_LISTE']) == self['LFREQ_NB'])
-        ASSERT(self['CONTR_NB'] is None or len(self['CONTR_LISTE']) == 3*self['CONTR_NB'])
 
 
     def __getitem__(self, key):

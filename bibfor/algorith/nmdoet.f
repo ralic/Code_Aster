@@ -2,7 +2,7 @@
      &                  SDSENS,SDPILO,SDDYNA,RESOCO,SOLALG,
      &                  LACC0 ,INSTIN)
 C
-C MODIF ALGORITH  DATE 14/09/2010   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 04/10/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -217,7 +217,7 @@ C --- LECTURE DES DEPLACEMENTS (OU DERIVE)
 C
           CALL RSEXCH(STRUCT,'DEPL',NUME  ,CHAMP ,IRET  )
           IF (IRET.EQ.0) THEN
-            CALL VTCOPY(CHAMP,DEPMOI,IRET)
+            CALL VTCOPY(CHAMP,DEPMOI)
           ELSE
             CALL U2MESK('F','MECANONLINE4_41',1,STRUCT)
           ENDIF
@@ -229,8 +229,8 @@ C
             IF (IRET.NE.0) THEN
               CALL U2MESK('F','MECANONLINE_77',1,STRUCT)
             ENDIF
-            CALL VTCOPY(CHAMP,DEP1,IRET)
-            CALL VTCOPY(CHAMP2,DEP2,IRET)
+            CALL VTCOPY(CHAMP,DEP1)
+            CALL VTCOPY(CHAMP2,DEP2)
             CALL JEVEUO(DEP1(1:19)//'.VALE','L',JDEP1)
             CALL JEVEUO(DEP2(1:19)//'.VALE','L',JDEP2)
             CALL JEVEUO(DEPOLD(1:19)//'.VALE','E',JDEPOL)
@@ -293,7 +293,7 @@ C
               CALL U2MESK('I','MECANONLINE4_43',1,EVOL)
               CALL NULVEC(VITMOI)
             ELSE
-              CALL VTCOPY(CHAMP,VITMOI,IERR)
+              CALL VTCOPY(CHAMP,VITMOI)
             END IF
           ENDIF
 C
@@ -309,7 +309,7 @@ C
                 CALL U2MESK('F','MECANONLINE4_45',1,STRUCT)
               END IF
             ELSE
-              CALL VTCOPY(CHAMP,ACCMOI,IERR)
+              CALL VTCOPY(CHAMP,ACCMOI)
             END IF
           ENDIF
 C
@@ -358,7 +358,7 @@ C
           CALL GETVID('ETAT_INIT','DEPL',1,1,1,CHAMP,NOCC)
           IF (NOCC.NE.0) THEN
             CALL CHPVER('F',CHAMP(1:19),'NOEU','DEPL_R',IER)
-            CALL VTCOPY(CHAMP,DEPMOI,IRET)
+            CALL VTCOPY(CHAMP,DEPMOI)
             IF (LPIARC) THEN
               CALL U2MESK('F','MECANONLINE_77',1,STRUCT)
             ENDIF
@@ -443,7 +443,7 @@ C
             LNOCC=(LNOCC.OR.(NOCC.NE.0))
             IF (NOCC.NE.0) THEN
               CALL CHPVER('F',CHAMP(1:19),'NOEU','DEPL_R',IERR)
-              CALL VTCOPY(CHAMP,VITMOI,IERR)
+              CALL VTCOPY(CHAMP,VITMOI)
             ELSE
               CALL U2MESS('I','MECANONLINE_22')
               CALL NULVEC(VITMOI)
@@ -456,7 +456,7 @@ C
             CALL GETVID('ETAT_INIT','ACCE',1,1,1,CHAMP,NOCC)
             IF (NOCC.NE.0) THEN
               CALL CHPVER('F',CHAMP(1:19),'NOEU','DEPL_R',IERR)
-              CALL VTCOPY(CHAMP,ACCMOI,IERR)
+              CALL VTCOPY(CHAMP,ACCMOI)
             ELSE
               LACC0 = .TRUE.
             END IF

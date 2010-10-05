@@ -1,4 +1,4 @@
-#@ MODIF mecanonline5 Messages  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
+#@ MODIF mecanonline5 Messages  DATE 04/10/2010   AUTEUR GREFFET N.GREFFET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -116,11 +116,6 @@ qu'en faibles rotations.
 25 : _("""
 Dynamique non-linéaire
 Le pilotage n'est pas possible.
-"""),
-
-26 : _("""
-Dynamique non-linéaire
-La recherche linéaire n'est pas possible.
 """),
 
 27 : _("""

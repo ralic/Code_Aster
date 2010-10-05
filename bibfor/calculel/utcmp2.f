@@ -1,11 +1,10 @@
-      SUBROUTINE UTCMP2 ( NOMGD, MCFAC, IOCC, NOMCMP, NBNOCP,
-     &                                        NUMCMP, NBNUCP )
+      SUBROUTINE UTCMP2(NOMGD,MCFAC,IOCC,DIM,NOMCMP,NUMCMP,NBCMP)
       IMPLICIT   NONE
-      INTEGER             IOCC, NBNOCP, NUMCMP(*), NBNUCP
-      CHARACTER*(*)       NOMGD, MCFAC, NOMCMP(*)
+      INTEGER IOCC,DIM,NBCMP,NUMCMP(*)
+      CHARACTER*(*) NOMGD,MCFAC,NOMCMP(*)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 04/10/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,102 +21,75 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
+C BUT :  SCRUTER LE MOT CLE MFAC/NOM_CMP ET RENDRE LA LISTE DES CMPS
+C -----
+C  ARGUMENTS :
+C  -----------
+C  NOMGD  IN  K8 : NOM DE LA GRANDEUR CONCERNEE
+C  MCFAC  IN  K* : NOM DU MOT CLE FACTEUR A SCRUTER
+C  IOCC   IN  I  : NUMERO DE L'OCCURRENCE DE MCFAC
+C  DIM    IN  I  : LONGUEUR DES TABLEAUX NOMCMP ET NUMCMP
+
+C  NOMCMP(*) OUT K8 : NOMS DES COMPOSANTES TROUVEES
+C  NUMCMP(*) OUT I  : NUMEROS DES COMPOSANTES TROUVEES (SI VARI_R)
+C  NBCMP     OUT I  : NOMBRE DE CMPS TROUVEES
 C
 C ----------------------------------------------------------------------
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
-      INTEGER           ZI
-      COMMON / IVARJE / ZI(1)
-      REAL*8            ZR
-      COMMON / RVARJE / ZR(1)
-      COMPLEX*16        ZC
-      COMMON / CVARJE / ZC(1)
-      LOGICAL           ZL
-      COMMON / LVARJE / ZL(1)
-      CHARACTER*8       ZK8
-      CHARACTER*16              ZK16
-      CHARACTER*24                       ZK24
-      CHARACTER*32                                ZK32
-      CHARACTER*80                                         ZK80
-      COMMON / KVARJE / ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
-      CHARACTER*32      JEXNOM, JEXNUM
+      INTEGER ZI
+      COMMON /IVARJE/ZI(1)
+      REAL*8 ZR
+      COMMON /RVARJE/ZR(1)
+      COMPLEX*16 ZC
+      COMMON /CVARJE/ZC(1)
+      LOGICAL ZL
+      COMMON /LVARJE/ZL(1)
+      CHARACTER*8 ZK8
+      CHARACTER*16 ZK16
+      CHARACTER*24 ZK24
+      CHARACTER*32 ZK32
+      CHARACTER*80 ZK80
+      COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
+      CHARACTER*32 JEXNOM,JEXNUM
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
-      INTEGER      IBID, N2, JNOCP, I, J, II, NBCPT, JNUC2,
-     &             JNOC2, IVAL, IRET, IANCMP, LGNCMP
-      LOGICAL      MULT
-      CHARACTER*8  K8B
+      INTEGER IBID,N2,JNOCP,I,J,II,NUCMP,IRET,JNOCMP,LGNCMP
+      CHARACTER*8 K8B,NOCMP
       CHARACTER*24 VALK(2)
       CHARACTER*16 NOMCMD
 C     ------------------------------------------------------------------
 C
       CALL JEMARQ()
-      CALL GETRES ( K8B, K8B, NOMCMD )
-C
-      NBNUCP = 0
-C
-      NBNOCP = 0
-      CALL GETVTX (MCFAC, 'NOM_CMP', IOCC,1,0, K8B, N2 )
-      NBNOCP = -N2
-      CALL WKVECT ('&&UTCMP2.NOM_CMP', 'V V K8',MAX(NBNOCP,1),JNOCP)
-      CALL GETVTX (MCFAC,'NOM_CMP',IOCC,1,NBNOCP,ZK8(JNOCP),N2)
+      CALL GETRES(K8B,K8B,NOMCMD)
 
-      IF ( NOMGD(1:6) .EQ. 'VARI_R' ) THEN
-         MULT = .FALSE.
-         NBCPT = NBNOCP
-         CALL WKVECT ('&&UTCMP2.NUME_CMP2', 'V V I' , NBCPT, JNUC2 )
-         CALL WKVECT ('&&UTCMP2.NOM_CMP2' , 'V V K8', NBCPT, JNOC2 )
-         II = 0
-         DO 10 I = 1 , NBNOCP
-            IF ( ZK8(JNOCP+I-1)(1:5) .EQ. 'VARI_' ) THEN
-               K8B = ZK8(JNOCP+I-1)(6:8)//'     '
-            ELSEIF ( ZK8(JNOCP+I-1)(1:4) .EQ. 'VARI' ) THEN
-               IF ( MULT ) GOTO 22
-               IF ( NBNUCP .EQ. 0 )  IVAL = 1
-               GOTO 12
-            ELSEIF ( ZK8(JNOCP+I-1)(1:1) .EQ. 'V' ) THEN
-               K8B = ZK8(JNOCP+I-1)(2:8)//' '
-            ELSE
-               VALK (1) = ZK8(JNOCP+I-1)
-               VALK (2) = 'VARI_R'
-               CALL U2MESG('F', 'CALCULEL6_49',2,VALK,0,0,0,0.D0)
-            ENDIF
-            CALL LXLIIS ( K8B, IVAL, IRET )
-            IF ( IRET .NE. 0 ) THEN
-               VALK (1) = ZK8(JNOCP+I-1)
-               CALL U2MESG('F', 'CALCULEL6_51',1,VALK,0,0,0,0.D0)
-            ENDIF
- 12         CONTINUE
-            K8B = 'V'//'       '
-            CALL CODENT( IVAL , 'G' , K8B(2:8)  )
-            II = II + 1
-            ZK8(JNOC2+II-1) = K8B
-            ZI (JNUC2+II-1) = IVAL
- 10      CONTINUE
- 22      CONTINUE
-C
-         NBNUCP = II
-         NBNOCP = II
-C
-         DO 30 I = 1 , NBNOCP
-            NOMCMP(I) = ZK8(JNOC2+I-1)
-            NUMCMP(I) = ZI (JNUC2+I-1)
- 30      CONTINUE
-         CALL JEDETR ( '&&UTCMP2.NUME_CMP2' )
-         CALL JEDETR ( '&&UTCMP2.NOM_CMP2'  )
+
+      CALL GETVTX(MCFAC,'NOM_CMP',IOCC,1,0,K8B,N2)
+      NBCMP=-N2
+      CALL ASSERT(DIM.GE.NBCMP)
+
+      CALL GETVTX(MCFAC,'NOM_CMP',IOCC,1,NBCMP,NOMCMP,N2)
+
+
+      IF (NOMGD(1:6).EQ.'VARI_R') THEN
+C     -----------------------------------------
+        DO 10 I=1,NBCMP
+          NOCMP=NOMCMP(I)
+          CALL ASSERT(NOCMP(1:1).EQ.'V')
+          CALL LXLIIS(NOCMP(2:8),NUCMP,IRET)
+          CALL ASSERT(IRET.EQ.0)
+          NUMCMP(I)=NUCMP
+   10   CONTINUE
+
+
+C     -- CAS NOMGD /= VARI_R
+C     -----------------------
       ELSE
-C
-         DO 40 I = 1 , NBNOCP
-            NOMCMP(I) = ZK8(JNOCP+I-1)
- 40      CONTINUE
-C
-         CALL JEVEUO(JEXNOM('&CATA.GD.NOMCMP',NOMGD),'L',IANCMP)
+        CALL JEVEUO(JEXNOM('&CATA.GD.NOMCMP',NOMGD),'L',JNOCMP)
         CALL JELIRA(JEXNOM('&CATA.GD.NOMCMP',NOMGD),'LONMAX',LGNCMP,K8B)
-         CALL KNINCL ( 8, NOMCMP, NBNOCP, ZK8(IANCMP), LGNCMP, IRET )
+        CALL KNINCL(8,NOMCMP,NBCMP,ZK8(JNOCMP),LGNCMP,IRET)
+        IF (IRET.NE.0) CALL U2MESK('F','CALCULEL5_6',1,NOMGD)
       ENDIF
-C
-      IF ( NBNOCP .GT. 50 )  CALL U2MESS('F','CALCULEL5_10')
-C
-      CALL JEDETR ( '&&UTCMP2.NUME_CMP' )
-      CALL JEDETR ( '&&UTCMP2.NOM_CMP' )
-C
+
+
+
       CALL JEDEMA()
       END

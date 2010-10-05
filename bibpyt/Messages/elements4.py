@@ -1,4 +1,4 @@
-#@ MODIF elements4 Messages  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
+#@ MODIF elements4 Messages  DATE 04/10/2010   AUTEUR PROIX J-M.PROIX 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -60,7 +60,7 @@ cata_msg = {
  """),
 
 15 : _("""
-  deformation :  %(k1)s non implantée sur les éléments "pou_d_tgm" : utiliser PETIT ou REAC_GEOM
+  deformation :  %(k1)s non implantée sur les éléments "pou_d_tgm" : utiliser PETIT ou GROT_GDEP
 """),
 
 16 : _("""

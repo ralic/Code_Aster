@@ -1,7 +1,7 @@
       SUBROUTINE OP0171()
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 24/08/2010   AUTEUR COURTOIS M.COURTOIS 
+C MODIF CALCULEL  DATE 04/10/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -187,7 +187,7 @@ C
            CALL U2MESS('F','CALCULEL4_42')
            END IF
         END IF
-        CALL VTCOPY (TEMPIN, VTEMP, IERR)
+        CALL VTCOPY (TEMPIN, VTEMP)
        END IF
 C ======================================================================
 C

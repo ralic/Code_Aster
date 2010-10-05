@@ -1,28 +1,27 @@
-# MODIF  DATE 17/02/2009   AUTEUR SELLENET N.SELLENET 
-# ======================================================================
-# TITRE TEST HHM 2D, CALCUL DECOUPLE (S=0.5, DSDP=0)
+# MODIF  DATE 04/10/2010   AUTEUR LEBOUVIER F.LEBOUVIER 
+# TITRE TEST HHMD, CALCUL DECOUPLE (S=0.5, DSDP=0)
 # wtnv112e.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-# (AT YOUR OPTION) ANY LATER VERSION.
-#
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
-#
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
-# ======================================================================
+# COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
 
-DEBUT(CODE=_F(NOM='WTNV112E', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NOM='WTNV112E',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
+#
 ####################################
 #   OPERATIONS SUR LE MAILLAGE
 #
@@ -32,7 +31,7 @@ MAIL=LIRE_MAILLAGE()
 MODELE=AFFE_MODELE(   MAILLAGE=MAIL,
                         AFFE=_F(  TOUT = 'OUI',
                       PHENOMENE = 'MECANIQUE',
-                      MODELISATION = 'D_PLAN_HHMS')
+                      MODELISATION = 'D_PLAN_HHMD')
                      )
 
 ####################################
@@ -182,10 +181,8 @@ RESU0=STAT_NON_LINE(
                 CHARGE = CHARHO),
                          COMP_INCR=_F( PARM_THETA=1.,
                 RELATION = 'KIT_HHM',
-                ITER_INTE_MAXI = 5,
-                RELATION_KIT = (
-                  'ELAS',       'LIQU_GAZ',
-                  'HYDR_UTIL',  )),
+                RELATION_KIT = ('ELAS','LIQU_GAZ','HYDR_UTIL'),
+                ITER_INTE_MAXI = 5),
                          INCREMENT=_F(
                 LIST_INST = LI),
                             NEWTON=_F(
@@ -197,15 +194,14 @@ RESU0=STAT_NON_LINE(
                          ARCHIVAGE=_F(
                 LIST_INST = ARCHI)
               )
+
 TEST_RESU(
            RESU=_F(  RESULTAT = RESU0,         NUME_ORDRE = 1,
              NOM_CHAM = 'DEPL',
              NOM_CMP = 'PRE1',
              NOEUD = 'N1',
-             VALE = -2.8549E-3,
-             CRITERE = 'ABSOLU',
-             REFERENCE='NON_REGRESSION',
-             VERSION='8.1.10',
+             VALE = -2.85486E-3,
+             CRITERE = 'ABSOLU', REFERENCE = 'NON_REGRESSION', VERSION = '9.2.18',
              PRECISION = 1.E-4)
            )
 
@@ -214,10 +210,8 @@ TEST_RESU(
              NOM_CHAM = 'DEPL',
              NOM_CMP = 'PRE2',
              NOEUD = 'N1',
-             VALE = 2.2656E-6,
-             CRITERE = 'ABSOLU',
-             REFERENCE='NON_REGRESSION',
-             VERSION='8.1.10',
+             VALE = 2.26558E-6,
+             CRITERE = 'ABSOLU', REFERENCE = 'NON_REGRESSION', VERSION = '9.2.18',
              PRECISION = 1.E-4)
            )
 
@@ -226,10 +220,8 @@ TEST_RESU(
              NOM_CHAM = 'DEPL',
              NOM_CMP = 'PRE1',
              NOEUD = 'N3',
-             VALE = 2.8549E-3,
-             CRITERE = 'ABSOLU',
-             REFERENCE='NON_REGRESSION',
-             VERSION='8.1.10',
+             VALE = 2.85488E-3,
+             CRITERE = 'ABSOLU', REFERENCE = 'NON_REGRESSION', VERSION = '9.2.18',
              PRECISION = 1.E-4)
            )
 
@@ -238,10 +230,8 @@ TEST_RESU(
              NOM_CHAM = 'DEPL',
              NOM_CMP = 'PRE2',
              NOEUD = 'N3',
-             VALE = -2.2656E-6,
-             CRITERE = 'ABSOLU',
-             REFERENCE='NON_REGRESSION',
-             VERSION='8.1.10',
+             VALE = -2.26557E-6,
+             CRITERE = 'ABSOLU', REFERENCE = 'NON_REGRESSION', VERSION = '9.2.18',
              PRECISION = 1.E-4)
            )
 
@@ -250,10 +240,8 @@ TEST_RESU(
              NOM_CHAM = 'DEPL',
              NOM_CMP = 'PRE1',
              NOEUD = 'N1',
-             VALE = -1.427E-2,
-             CRITERE = 'ABSOLU',
-             REFERENCE='NON_REGRESSION',
-             VERSION='8.1.10',
+             VALE = -1.42743E-2,
+             CRITERE = 'ABSOLU', REFERENCE = 'NON_REGRESSION', VERSION = '9.2.18',
              PRECISION = 1.E-4)
            )
 
@@ -262,10 +250,8 @@ TEST_RESU(
              NOM_CHAM = 'DEPL',
              NOM_CMP = 'PRE2',
              NOEUD = 'N1',
-             VALE = 1.1328E-5,
-             CRITERE = 'ABSOLU',
-             REFERENCE='NON_REGRESSION',
-             VERSION='8.1.10',
+             VALE = 1.13279E-5,
+             CRITERE = 'ABSOLU', REFERENCE = 'NON_REGRESSION', VERSION = '9.2.18',
              PRECISION = 1.E-4)
            )
 
@@ -274,10 +260,8 @@ TEST_RESU(
              NOM_CHAM = 'DEPL',
              NOM_CMP = 'PRE1',
              NOEUD = 'N3',
-             VALE = 1.427E-2,
-             CRITERE = 'ABSOLU',
-             REFERENCE='NON_REGRESSION',
-             VERSION='8.1.10',
+             VALE = 1.42743E-2,
+             CRITERE = 'ABSOLU', REFERENCE = 'NON_REGRESSION', VERSION = '9.2.18',
              PRECISION = 1.E-4)
            )
 
@@ -286,10 +270,8 @@ TEST_RESU(
              NOM_CHAM = 'DEPL',
              NOM_CMP = 'PRE2',
              NOEUD = 'N3',
-             VALE = -1.1328E-5,
-             CRITERE = 'ABSOLU',
-             REFERENCE='NON_REGRESSION',
-             VERSION='8.1.10',
+             VALE = -1.13279E-5,
+             CRITERE = 'ABSOLU', REFERENCE = 'NON_REGRESSION', VERSION = '9.2.18',
              PRECISION = 1.E-4)
            )
 
@@ -298,10 +280,8 @@ TEST_RESU(
              NOM_CHAM = 'DEPL',
              NOM_CMP = 'PRE1',
              NOEUD = 'N1',
-             VALE = -2.8549E-2,
-             CRITERE = 'ABSOLU',
-             REFERENCE='NON_REGRESSION',
-             VERSION='8.1.10',
+             VALE = -2.85487E-2,
+             CRITERE = 'ABSOLU', REFERENCE = 'NON_REGRESSION', VERSION = '9.2.18',
              PRECISION = 1.E-4)
            )
 
@@ -310,10 +290,8 @@ TEST_RESU(
              NOM_CHAM = 'DEPL',
              NOM_CMP = 'PRE2',
              NOEUD = 'N1',
-             VALE = 2.2656E-5,
-             CRITERE = 'ABSOLU',
-             REFERENCE='NON_REGRESSION',
-             VERSION='8.1.10',
+             VALE = 2.26557E-5,
+             CRITERE = 'ABSOLU', REFERENCE = 'NON_REGRESSION', VERSION = '9.2.18',
              PRECISION = 1.E-4)
            )
 
@@ -322,10 +300,8 @@ TEST_RESU(
              NOM_CHAM = 'DEPL',
              NOM_CMP = 'PRE1',
              NOEUD = 'N3',
-             VALE = 2.8549E-2,
-             CRITERE = 'ABSOLU',
-             REFERENCE='NON_REGRESSION',
-             VERSION='8.1.10',
+             VALE = 2.85487E-2,
+             CRITERE = 'ABSOLU', REFERENCE = 'NON_REGRESSION', VERSION = '9.2.18',
              PRECISION = 1.E-4)
            )
 
@@ -334,10 +310,8 @@ TEST_RESU(
              NOM_CHAM = 'DEPL',
              NOM_CMP = 'PRE2',
              NOEUD = 'N3',
-             VALE = -2.2656E-5,
-             CRITERE = 'ABSOLU',
-             REFERENCE='NON_REGRESSION',
-             VERSION='8.1.10',
+             VALE = -2.26557E-5,
+             CRITERE = 'ABSOLU', REFERENCE = 'NON_REGRESSION', VERSION = '9.2.18',
              PRECISION = 1.E-4)
            )
 
@@ -346,11 +320,9 @@ TEST_RESU(
              NOM_CHAM = 'DEPL',
              NOM_CMP = 'PRE1',
              NOEUD = 'N1',
-             VALE = -1.427E-1,
-             CRITERE = 'RELATIF',
-             REFERENCE='NON_REGRESSION',
-             VERSION='8.1.10',
-             PRECISION = 1.E-2)
+             VALE = -1.42740E-1,
+             CRITERE = 'RELATIF', REFERENCE = 'NON_REGRESSION', VERSION = '9.2.18',
+             PRECISION = 1.E-4)
            )
 
 TEST_RESU(
@@ -358,10 +330,8 @@ TEST_RESU(
              NOM_CHAM = 'DEPL',
              NOM_CMP = 'PRE2',
              NOEUD = 'N1',
-             VALE = 1.133E-4,
-             CRITERE = 'ABSOLU',
-             REFERENCE='NON_REGRESSION',
-             VERSION='8.1.10',
+             VALE = 1.132764E-4,
+             CRITERE = 'ABSOLU', REFERENCE = 'NON_REGRESSION', VERSION = '9.2.18',
              PRECISION = 1.E-4)
            )
 
@@ -370,11 +340,9 @@ TEST_RESU(
              NOM_CHAM = 'DEPL',
              NOM_CMP = 'PRE1',
              NOEUD = 'N3',
-             VALE = 1.427E-1,
-             CRITERE = 'RELATIF',
-             REFERENCE='NON_REGRESSION',
-             VERSION='8.1.10',
-             PRECISION = 1.E-2)
+             VALE = 1.42740E-1,
+             CRITERE = 'RELATIF', REFERENCE = 'NON_REGRESSION', VERSION = '9.2.18',
+             PRECISION = 1.E-4)
            )
 
 TEST_RESU(
@@ -382,10 +350,8 @@ TEST_RESU(
              NOM_CHAM = 'DEPL',
              NOM_CMP = 'PRE2',
              NOEUD = 'N3',
-             VALE = -1.133E-4,
-             CRITERE = 'ABSOLU',
-             REFERENCE='NON_REGRESSION',
-             VERSION='8.1.10',
+             VALE = -1.13276E-4,
+             CRITERE = 'ABSOLU', REFERENCE = 'NON_REGRESSION', VERSION = '9.2.18',
              PRECISION = 1.E-4)
            )
 
@@ -394,11 +360,9 @@ TEST_RESU(
              NOM_CHAM = 'DEPL',
              NOM_CMP = 'PRE1',
              NOEUD = 'N1',
-             VALE = -1.424E+1,
-             CRITERE = 'RELATIF',
-             REFERENCE='NON_REGRESSION',
-             VERSION='8.1.10',
-             PRECISION = 1.E-2)
+             VALE = -1.42406E+1,
+             CRITERE = 'RELATIF', REFERENCE = 'NON_REGRESSION', VERSION = '9.2.18',
+             PRECISION = 1.E-4)
            )
 
 TEST_RESU(
@@ -406,10 +370,8 @@ TEST_RESU(
              NOM_CHAM = 'DEPL',
              NOM_CMP = 'PRE2',
              NOEUD = 'N1',
-             VALE = 1.130E-2,
-             CRITERE = 'ABSOLU',
-             REFERENCE='NON_REGRESSION',
-             VERSION='8.1.10',
+             VALE = 1.13012E-2,
+             CRITERE = 'ABSOLU', REFERENCE = 'NON_REGRESSION', VERSION = '9.2.18',
              PRECISION = 1.E-4)
            )
 
@@ -418,11 +380,9 @@ TEST_RESU(
              NOM_CHAM = 'DEPL',
              NOM_CMP = 'PRE1',
              NOEUD = 'N3',
-             VALE = 1.424E+1,
-             CRITERE = 'RELATIF',
-             REFERENCE='NON_REGRESSION',
-             VERSION='8.1.10',
-             PRECISION = 1.E-2)
+             VALE = 1.42407E+1,
+             CRITERE = 'RELATIF', REFERENCE = 'NON_REGRESSION', VERSION = '9.2.18',
+             PRECISION = 1.E-4)
            )
 
 TEST_RESU(
@@ -430,10 +390,8 @@ TEST_RESU(
              NOM_CHAM = 'DEPL',
              NOM_CMP = 'PRE2',
              NOEUD = 'N3',
-             VALE = -1.130E-2,
-             CRITERE = 'ABSOLU',
-             REFERENCE='NON_REGRESSION',
-             VERSION='8.1.10',
+             VALE = -1.13012E-2,
+             CRITERE = 'ABSOLU', REFERENCE = 'NON_REGRESSION', VERSION = '9.2.18',
              PRECISION = 1.E-4)
            )
 
@@ -442,11 +400,9 @@ TEST_RESU(
              NOM_CHAM = 'DEPL',
              NOM_CMP = 'PRE1',
              NOEUD = 'N1',
-             VALE = -4.995E3,
-             CRITERE = 'RELATIF',
-             REFERENCE='NON_REGRESSION',
-             VERSION='8.1.10',
-             PRECISION = 1.E-2)
+             VALE = -4.99506E3,
+             CRITERE = 'RELATIF', REFERENCE = 'NON_REGRESSION', VERSION = '9.2.18',
+             PRECISION = 1.E-4)
            )
 
 TEST_RESU(
@@ -454,11 +410,9 @@ TEST_RESU(
              NOM_CHAM = 'DEPL',
              NOM_CMP = 'PRE2',
              NOEUD = 'N1',
-             VALE = 3.9647,
-             CRITERE = 'ABSOLU',
-             REFERENCE='NON_REGRESSION',
-             VERSION='8.1.10',
-             PRECISION = 1.E-3)
+             VALE = 3.96473,
+             CRITERE = 'ABSOLU', REFERENCE = 'NON_REGRESSION', VERSION = '9.2.18',
+             PRECISION = 1.E-4)
            )
 
 TEST_RESU(
@@ -466,11 +420,9 @@ TEST_RESU(
              NOM_CHAM = 'DEPL',
              NOM_CMP = 'PRE1',
              NOEUD = 'N3',
-             VALE = 4.997E3,
-             CRITERE = 'RELATIF',
-             REFERENCE='NON_REGRESSION',
-             VERSION='8.1.10',
-             PRECISION = 1.E-2)
+             VALE = 4.99693E3,
+             CRITERE = 'RELATIF', REFERENCE = 'NON_REGRESSION', VERSION = '9.2.18',
+             PRECISION = 1.E-4)
            )
 
 TEST_RESU(
@@ -478,11 +430,9 @@ TEST_RESU(
              NOM_CHAM = 'DEPL',
              NOM_CMP = 'PRE2',
              NOEUD = 'N3',
-             VALE = -3.9647,
-             CRITERE = 'ABSOLU',
-             REFERENCE='NON_REGRESSION',
-             VERSION='8.1.10',
-             PRECISION = 1.E-3)
+             VALE = -3.96473,
+             CRITERE = 'ABSOLU', REFERENCE = 'NON_REGRESSION', VERSION = '9.2.18',
+             PRECISION = 1.E-4)
            )
 
 FIN()

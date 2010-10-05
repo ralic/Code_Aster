@@ -1,4 +1,4 @@
-#@ MODIF modelisa9 Messages  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
+#@ MODIF modelisa9 Messages  DATE 29/09/2010   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -80,7 +80,7 @@ Erreur :
 
 9 : _("""
 Erreur utilisateur :
-   Pour le materiau : %(k1), on cherche à redéfinir un mot clé déjà défini : %(k2)
+   Pour le materiau : %(k1)s, on cherche à redéfinir un mot clé déjà défini : %(k2)s
 """),
 
 10 : _("""

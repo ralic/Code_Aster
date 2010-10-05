@@ -1,7 +1,7 @@
       SUBROUTINE NMCRCV(SDCRIT)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 12/01/2010   AUTEUR GRANET S.GRANET 
+C MODIF ALGORITH  DATE 05/10/2010   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -63,9 +63,9 @@ C
       INTEGER      NRESI
       PARAMETER    (NRESI=4)
 C
-      INTEGER JCRR,JCRK,JCRP
-      REAL*8  R8MAEM
-      INTEGER IRESI
+      INTEGER      JCRR,JCRK,JCRP
+      REAL*8       R8MAEM
+      INTEGER      IRESI
 C
 C ----------------------------------------------------------------------
 C
@@ -73,17 +73,17 @@ C
 C
 C --- CREATION
 C
-      CALL WKVECT(SDCRIT(1:19)//'.CRTR','V V R8' ,9      ,JCRR)
-      CALL WKVECT(SDCRIT(1:19)//'.CRDE','V V K16',9      ,JCRK)
-      ZK16(JCRK+1-1) = 'ITER_GLOB'
-      ZK16(JCRK+2-1) = 'ITER_LINE'
-      ZK16(JCRK+3-1) = 'RESI_GLOB_RELA'
-      ZK16(JCRK+4-1) = 'RESI_GLOB'
-      ZK16(JCRK+5-1) = 'ETA_PILOTAGE'
-      ZK16(JCRK+6-1) = 'CHAR_MINI'
-      ZK16(JCRK+7-1) = 'RESI_GLOB_MOINS'
-      ZK16(JCRK+8-1) = 'RESI_REFE'
-      ZK16(JCRK+9-1) = 'RESI_COMP'
+      CALL WKVECT(SDCRIT(1:19)//'.CRTR','V V R8' ,9    ,JCRR)
+      CALL WKVECT(SDCRIT(1:19)//'.CRDE','V V K16',9    ,JCRK)
+      ZK16(JCRK+1-1)  = 'ITER_GLOB'
+      ZK16(JCRK+2-1)  = 'ITER_LINE'
+      ZK16(JCRK+3-1)  = 'RESI_GLOB_RELA'
+      ZK16(JCRK+4-1)  = 'RESI_GLOB'
+      ZK16(JCRK+5-1)  = 'ETA_PILOTAGE'
+      ZK16(JCRK+6-1)  = 'CHAR_MINI'
+      ZK16(JCRK+7-1)  = 'RESI_GLOB_MOINS'
+      ZK16(JCRK+8-1)  = 'RESI_REFE'
+      ZK16(JCRK+9-1)  = 'RESI_COMP'    
 C     
 C --- SD POUR TYPE DE CONVERGENCE EN PLATEAU
 C  
@@ -93,7 +93,7 @@ C
         ZR(JCRP+4*(IRESI-1)+2-1) = -R8MAEM() 
         ZR(JCRP+4*(IRESI-1)+3-1) = 0.D0
         ZR(JCRP+4*(IRESI-1)+4-1) = 0.D0
- 15   CONTINUE    
+ 15   CONTINUE 
 C
       CALL JEDEMA()
 

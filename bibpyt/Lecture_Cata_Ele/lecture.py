@@ -1,4 +1,4 @@
-#@ MODIF lecture Lecture_Cata_Ele  DATE 08/06/2009   AUTEUR DELMAS J.DELMAS 
+#@ MODIF lecture Lecture_Cata_Ele  DATE 05/10/2010   AUTEUR SELLENET N.SELLENET 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE VABHHTS J.PELLET
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -152,7 +152,7 @@ class MonScanner(GenericScanner):
         pass
 
     def t_chaine(self, s):
-        r'\'[a-z0-9_ ]*\''
+        r'\'[a-z0-9_ \.!&]*\''
         t = Token(type="chaine", lineno=self.lineno, attr=string.upper(s))
         self.rv.append(t)
 
@@ -292,7 +292,9 @@ class MonParser(GenericASTBuilder):
         l_opou1    ::= opou1
 
         opin1      ::= ident   ident
+        opin1      ::= ident   ident   chaine
         opin1      ::= ident   ident   comlibr
+        opin1      ::= ident   ident   chaine   comlibr
         opou1      ::= ident   ident   typ_out
         opou1      ::= ident   ident   typ_out  comlibr
         typ_out    ::= ELEM__
@@ -740,11 +742,19 @@ class creer_capy(GenericASTTraversal):
         node.typ_out=node[0].type
 
     def n_opin1(self, node):
-#                          0      1      2
+#                           0      1       2       3
 #         opin1      ::= ident   ident
+#         opin1      ::= ident   ident   chaine
 #         opin1      ::= ident   ident   comlibr
-        if len(node)   == 2 :  node.opin1=(node[0].attr,node[1].attr,None)
-        elif len(node) == 3 :  node.opin1=(node[0].attr,node[1].attr,node[2].attr)
+#         opin1      ::= ident   ident   chaine   comlibr
+        if len(node)   == 2 :  node.opin1=(node[0].attr,node[1].attr,None,None)
+        elif len(node) == 3 :
+            if node[2].attr[0] == "'":
+               node.opin1=(node[0].attr,node[1].attr,node[2].attr,None)
+            elif node[2].attr[0] == "<":
+               node.opin1=(node[0].attr,node[1].attr,None,node[2].attr)
+        elif len(node) == 4 :  node.opin1=(node[0].attr,node[1].attr,
+                                           node[2].attr,node[3].attr)
 
     def n_opou1(self, node):
 #                          0      1      2        3

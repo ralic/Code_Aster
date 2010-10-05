@@ -1,7 +1,7 @@
       SUBROUTINE MMMRES(NOMA  ,INST  ,DEFICO,RESOCO,DEPPLU,
      &                  DEPDEL,VEASSE,CNSINR,CNSPER)
 C
-C MODIF ALGORITH  DATE 14/09/2010   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 05/10/2010   AUTEUR ABBAS M.ABBAS 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -400,6 +400,10 @@ C
               ZR(JCNSVR+ZRESU*(NUMNOE-1)+17-1) = RY
               ZR(JCNSVR+ZRESU*(NUMNOE-1)+18-1) = RZ
               ZR(JCNSVR+ZRESU*(NUMNOE-1)+19-1) = R 
+              ZR(JCNSVR+ZRESU*(NUMNOE-1)+21-1) = IMP
+              ZR(JCNSVR+ZRESU*(NUMNOE-1)+22-1) = IMPX
+              ZR(JCNSVR+ZRESU*(NUMNOE-1)+23-1) = IMPY  
+              ZR(JCNSVR+ZRESU*(NUMNOE-1)+24-1) = IMPZ
               ZL(JCNSLR+ZRESU*(NUMNOE-1)+3 -1) = .TRUE.
               ZL(JCNSLR+ZRESU*(NUMNOE-1)+4 -1) = .TRUE.
               ZL(JCNSLR+ZRESU*(NUMNOE-1)+5 -1) = .TRUE.
@@ -417,8 +421,11 @@ C
               ZL(JCNSLR+ZRESU*(NUMNOE-1)+17-1) = .TRUE.
               ZL(JCNSLR+ZRESU*(NUMNOE-1)+18-1) = .TRUE.
               ZL(JCNSLR+ZRESU*(NUMNOE-1)+19-1) = .TRUE.
+              ZL(JCNSLR+ZRESU*(NUMNOE-1)+21-1) = .TRUE.
+              ZL(JCNSLR+ZRESU*(NUMNOE-1)+22-1) = .TRUE.
+              ZL(JCNSLR+ZRESU*(NUMNOE-1)+23-1) = .TRUE.
+              ZL(JCNSLR+ZRESU*(NUMNOE-1)+24-1) = .TRUE.
             ELSEIF (NDIMG.EQ.2) THEN
-
               ZR(JCNSVR+ZRESU*(NUMNOE-1)+3 -1) = RN
               ZR(JCNSVR+ZRESU*(NUMNOE-1)+4 -1) = RNX
               ZR(JCNSVR+ZRESU*(NUMNOE-1)+5 -1) = RNY
@@ -431,6 +438,9 @@ C
               ZR(JCNSVR+ZRESU*(NUMNOE-1)+16-1) = RX
               ZR(JCNSVR+ZRESU*(NUMNOE-1)+17-1) = RY
               ZR(JCNSVR+ZRESU*(NUMNOE-1)+19-1) = R 
+              ZR(JCNSVR+ZRESU*(NUMNOE-1)+21-1) = IMP
+              ZR(JCNSVR+ZRESU*(NUMNOE-1)+22-1) = IMPX
+              ZR(JCNSVR+ZRESU*(NUMNOE-1)+23-1) = IMPY              
               ZL(JCNSLR+ZRESU*(NUMNOE-1)+3 -1) = .TRUE.
               ZL(JCNSLR+ZRESU*(NUMNOE-1)+4 -1) = .TRUE.
               ZL(JCNSLR+ZRESU*(NUMNOE-1)+5 -1) = .TRUE.
@@ -442,7 +452,10 @@ C
               ZL(JCNSLR+ZRESU*(NUMNOE-1)+14-1) = .TRUE.
               ZL(JCNSLR+ZRESU*(NUMNOE-1)+16-1) = .TRUE.
               ZL(JCNSLR+ZRESU*(NUMNOE-1)+17-1) = .TRUE.
-              ZL(JCNSLR+ZRESU*(NUMNOE-1)+19-1) = .TRUE.     
+              ZL(JCNSLR+ZRESU*(NUMNOE-1)+19-1) = .TRUE. 
+              ZL(JCNSLR+ZRESU*(NUMNOE-1)+21-1) = .TRUE.
+              ZL(JCNSLR+ZRESU*(NUMNOE-1)+22-1) = .TRUE.
+              ZL(JCNSLR+ZRESU*(NUMNOE-1)+23-1) = .TRUE.
             ELSE
               CALL ASSERT(.FALSE.)
             ENDIF

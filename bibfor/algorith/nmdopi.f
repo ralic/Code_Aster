@@ -1,7 +1,7 @@
-      SUBROUTINE NMDOPI(MODELZ,NUMEDD,SDPILO)
+      SUBROUTINE NMDOPI(MODELZ,NUMEDD,METHOD,LRELI ,SDPILO)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/03/2010   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 05/10/2010   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,7 +23,9 @@ C
       IMPLICIT NONE
       CHARACTER*(*)      MODELZ
       CHARACTER*24       NUMEDD
+      CHARACTER*16       METHOD(*)
       CHARACTER*19       SDPILO
+      LOGICAL            LRELI
 C
 C ----------------------------------------------------------------------
 C
@@ -36,6 +38,8 @@ C
 C
 C IN  MODELE : MODELE
 C IN  NUMEDD : NUME_DDL
+C IN  METHOD : DESCRIPTION DE LA METHODE DE RESOLUTION
+C IN  LRELI  : .TRUE. SI RECHERCHE LINEAIRE 
 C OUT SDPILO : SD PILOTAGE
 C               .PLTK
 C                (1) = TYPE DE PILOTAGE
@@ -75,7 +79,7 @@ C
 C
 C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
 C
-      INTEGER       NOCC, NBG,JVALE,NBNO,NUMNOE, NUMEQU, NDDL, I, N
+      INTEGER       NBG,JVALE,NBNO,NUMNOE, NUMEQU, NDDL, I, N
       INTEGER       JGRO, JLICMP, JDDL, JEQU, JPLIR, JPLTK
       INTEGER       IBID, IER, N1, N2, NEQ
       REAL*8        COEF, R8BID, LM(2)
@@ -83,6 +87,7 @@ C
       COMPLEX*16    C16BID
       CHARACTER*8   K8BID,NOMA,NOMNOE,NOMDDL,NOMGRP,LBORN(2)
       CHARACTER*8   MODELE
+      CHARACTER*16  RELMET
       CHARACTER*24  GRNO  ,LISCMP,LISDDL,LISEQU
       CHARACTER*24  TYPPIL,PROJBO,TYPSEL,EVOLPA
       CHARACTER*19  CHAPIL,LIGRMO,LIGRPI
@@ -99,15 +104,10 @@ C --- INITIALISATIONS
 C
       MODELE = MODELZ
 C
-C --- PAS DE PILOTAGE
-C
-      CALL GETFAC('PILOTAGE',NOCC)
-      IF (NOCC .EQ. 0) THEN
-        GOTO 9999
-      ELSE
-        IF (NIV.GE.2) THEN
-          WRITE (IFM,*) '<MECANONLINE> ... CREATION SD PILOTAGE'
-        ENDIF
+C --- AFFICHAGE 
+C      
+      IF (NIV.GE.2) THEN
+        WRITE (IFM,*) '<MECANONLINE> ... CREATION SD PILOTAGE'
       ENDIF
 C
 C --- LECTURE DU TYPE ET DE LA ZONE
@@ -184,8 +184,6 @@ C ======================================================================
      &              2     ,LBORN ,IBID    ,LM    ,C16BID  ,
      &              K8BID)
         ZK24(JPLTK+3) = CARETA
-
-        GOTO 9999
 
 
 
@@ -293,7 +291,17 @@ C ======================================================================
         CALL JEDETR(LISEQU)
 
       ENDIF
+C
+C --- GESTION RECHERCHE LINEAIRE
+C
+      IF (LRELI) THEN
+        RELMET = METHOD(7)
+        IF (TYPPIL .NE. 'DDL_IMPO' ) THEN
+          IF (RELMET.NE.'PILOTAGE') THEN
+            CALL U2MESS('F','PILOTAGE_4')
+          ENDIF
+        ENDIF    
+      ENDIF
 
- 9999 CONTINUE
       CALL JEDEMA()
       END

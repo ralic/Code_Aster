@@ -1,4 +1,4 @@
-#@ MODIF calculel5 Messages  DATE 12/07/2010   AUTEUR BERARD A.BERARD 
+#@ MODIF calculel5 Messages  DATE 04/10/2010   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -55,6 +55,12 @@ Risques & conseils :
   modélisation 'DKT' le peut.
 """),
 
+6 : _("""
+Erreur utilisateur :
+ Vous utilisez le mot clé NOM_CMP, mais l'une (au moins) des composantes indiquees
+ n'appartient pas à la grandeur : %(k1)s
+"""),
+
 
 
 
@@ -70,9 +76,9 @@ Risques & conseils :
  il faut renseigner le mot clé MAILLE
 """),
 
-10 : _("""
- nbnocp est trop grand, contacter l'assistance
-"""),
+
+
+
 
 11 : _("""
  le parametre est a valeurs de type  " %(k1)s "  et la valeur de reference de type  " %(k2)s ".
@@ -340,14 +346,14 @@ PROJ_CHAMP (ou LIAISON_MAILLE) :
 """),
 
 76 : _("""
- Il n'est pas encore possible de découper le type_element :  %(k1)s  en sous-éléments 
+ Il n'est pas encore possible de découper le type_element :  %(k1)s  en sous-éléments
     elrefa  :  %(k2)s ;
     famille :  %(k3)s.
  Faites une demande d'évolution.
 """),
 
 78 : _("""
- Il n'est pas encore possible de découper le type_element :  %(k1)s  en sous-éléments 
+ Il n'est pas encore possible de découper le type_element :  %(k1)s  en sous-éléments
     elrefa :  %(k2)s.
  Faites une demande d'évolution.
 """),

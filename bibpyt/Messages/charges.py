@@ -1,4 +1,4 @@
-#@ MODIF charges Messages  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
+#@ MODIF charges Messages  DATE 05/10/2010   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -72,7 +72,6 @@ On ne peut pas piloter en l'absence de forces de type "FIXE_PILO"
 """),
 
 40 : _("""
-On ne peut piloter plus d'une charge"
+On ne peut piloter plus d'une charge.
 """),
-
 }

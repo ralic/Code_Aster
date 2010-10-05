@@ -1,4 +1,4 @@
-#@ MODIF calc_miss_ops Macro  DATE 30/08/2010   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF calc_miss_ops Macro  DATE 29/09/2010   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -39,9 +39,7 @@ def calc_miss_ops(self, OPTION, **kwargs):
     param = MISS_PARAMETER(initial_dir=os.getcwd(), **kwargs)
     
     # création de l'objet CALCUL_MISS_xxx
-    option_calcul = "TOUT"
-    if OPTION["TOUT"] != "OUI":
-        option_calcul = OPTION["MODULE"]
+    option_calcul = OPTION["MODULE"]
     calcul = CalculMissFactory(option_calcul, self, param)
 
     try:

@@ -1,4 +1,4 @@
-# MODIF  DATE 17/02/2009   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 04/10/2010   AUTEUR GNICOLAS G.NICOLAS 
 # TITRE DEMONSTRATION DE LA JOURNE ASTER LIBRE DU 14 OCTOBRE 2003
 # demo001a.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -96,8 +96,8 @@ for k in range(3):
                    MAILLAGE_N = MAIL[k],
                    MAILLAGE_NP1 = MAIL[k+1],
                    RESULTAT_N = RESUELAS,
-                   INDICATEUR = 'ERRE_ELEM_SIGM',
-                   NOM_CMP_INDICA = 'ERREST' ,
+                   NOM_CHAM = 'ERRE_ELEM_SIGM',
+                   NOM_CMP = 'ERREST' ,
                    CRIT_RAFF_PE = 0.08,
                 MAILLAGE_FRONTIERE = MAILFRON,
                 QUALITE='OUI',

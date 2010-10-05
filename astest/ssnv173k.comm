@@ -1,4 +1,4 @@
-# MODIF  DATE 21/09/2010   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 04/10/2010   AUTEUR GNICOLAS G.NICOLAS 
 # TITRE BARREAU FISSURE AVEC X-FEM
 # ssnv173k.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -50,7 +50,6 @@ MACR_ADAP_MAIL(ADAPTATION='RAFFINEMENT',
                CHAM_GD = CHERR,
                CRIT_RAFF_PE = 0.05,
                TYPE_VALEUR_INDICA='V_RELATIVE',
-               NOM_CMP_INDICA = 'X1',
                MAILLAGE_N = MA0,
                MAILLAGE_NP1 = MA1,
 #                 VERSION_HOMARD='V9_N',

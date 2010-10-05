@@ -1,4 +1,4 @@
-# MODIF  DATE 27/09/2010   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 04/10/2010   AUTEUR GNICOLAS G.NICOLAS 
 # TITRE PROPAGATION MIXTE D'UNE FISSURE 3D AVEC X-FEM ET RAFFINEMENT ADAPTATIF
 # sslv317a.para = tps_job 180 mem_job 512Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -221,7 +221,6 @@ for i_propa in xrange(pas_debut,nb_pas) :
                      CHAM_GD = CHERR[i_raff],
                      TYPE_VALEUR_INDICA='V_ABSOLUE',
                      CRIT_RAFF_ABS =val[i_raff],
-                     NOM_CMP_INDICA = 'X1',
                      MAILLAGE_N   = MA[i_raff],
                      MAILLAGE_NP1 = MA[i_raff+1],
                      MAJ_CHAM=(_F(TYPE_CHAM='NOEU_NEUT_R',

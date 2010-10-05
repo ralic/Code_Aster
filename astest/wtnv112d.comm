@@ -1,9 +1,10 @@
-# MODIF  DATE 17/02/2009   AUTEUR SELLENET N.SELLENET 
-# TITRE TEST HHM 2D (HHM_DPTR3),CALCUL DECOUPLE (S=0.5, DSDP=0)
-# wtnv112d.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
+# MODIF  DATE 04/10/2010   AUTEUR LEBOUVIER F.LEBOUVIER 
+# ======================================================================
+# TITRE TEST HHM 2D, CALCUL DECOUPLE (S=0.5, DSDP=0)
+# wtnv112d.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -18,25 +19,20 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-DEBUT(CODE=_F(NOM='WTNV112D',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+# ======================================================================
 
-#
+DEBUT(CODE=_F(NOM='WTNV112D', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
+
 ####################################
 #   OPERATIONS SUR LE MAILLAGE
 #
 ####################################
-MAILIN=LIRE_MAILLAGE();
-
-MAIL = CREA_MAILLAGE(
-                         MAILLAGE  = MAILIN,
-                         LINE_QUAD = _F(TOUT = 'OUI'),
-                       )
-
+MAIL=LIRE_MAILLAGE()
 
 MODELE=AFFE_MODELE(   MAILLAGE=MAIL,
                         AFFE=_F(  TOUT = 'OUI',
                       PHENOMENE = 'MECANIQUE',
-                      MODELISATION = 'D_PLAN_HHM')
+                      MODELISATION = 'D_PLAN_HHMS')
                      )
 
 ####################################
@@ -144,7 +140,9 @@ MATERIAU=DEFI_MATERIAU(     THM_LIQU=_F(
    PESA_X = 0.,
    PESA_Y = -10.,
    PESA_Z = 0.,
-   PERM_IN = KINT,
+   PERMIN_X = KINT,
+   PERMIN_Y = KINT,
+   PERMIN_Z = KINT,
    PERM_LIQU = UN,
    D_PERM_LIQU_SATU = ZERO,
    PERM_GAZ = UN,
@@ -157,14 +155,14 @@ MATERIAU=DEFI_MATERIAU(     THM_LIQU=_F(
    PORO = 0.14,
    PRES_VAPE = 2269.8,
    DEGR_SATU = 0.5),
-          COMP_THM = 'LIQU_GAZ',
+    COMP_THM = 'LIQU_GAZ',
                                      ELAS=_F(
    E = 40.E9,
    NU = 0.,
    RHO = 2000.,
    ALPHA = 8.E-6)
    )
-
+IMPR_CO(CONCEPT=_F(NOM=MATERIAU)),
 CHMAT0=AFFE_MATERIAU(   MAILLAGE=MAIL,
                           AFFE=_F( TOUT = 'OUI',
                         MATER = MATERIAU))
@@ -175,29 +173,39 @@ CHARHO=AFFE_CHAR_MECA(   MODELE=MODELE,
                         DY = 0.)
                                   )
 
-RESU0=STAT_NON_LINE(   MODELE=MODELE,
-            SOLVEUR=_F( METHODE = 'LDLT'),
-                          CHAM_MATER=CHMAT0,
-                          EXCIT=_F( CHARGE = CHARHO),
-                          COMP_INCR=_F( RELATION = 'KIT_HHM',PARM_THETA=1.,
-                          RELATION_KIT = ('ELAS', 'LIQU_GAZ', 'HYDR_UTIL',),
-                          ITER_INTE_MAXI = 5),
-                          INCREMENT=_F( LIST_INST = LI),
-                          NEWTON=_F( MATRICE = 'TANGENTE',
-                                  REAC_ITER = 121),
-                         CONVERGENCE=_F(
-                                     ITER_GLOB_MAXI = 120,
-                                     RESI_GLOB_RELA = 1.E-6),
-                          ARCHIVAGE=_F(  LIST_INST = ARCHI)
-                        )
-
+RESU0=STAT_NON_LINE(
+                            MODELE=MODELE,
+                           SOLVEUR=_F(
+                METHODE = 'LDLT'),
+                        CHAM_MATER=CHMAT0,
+                             EXCIT=_F(
+                CHARGE = CHARHO),
+                         COMP_INCR=_F( PARM_THETA=1.,
+                RELATION = 'KIT_HHM',
+                ITER_INTE_MAXI = 5,
+                RELATION_KIT = (
+                  'ELAS',       'LIQU_GAZ',
+                  'HYDR_UTIL',  )),
+                         INCREMENT=_F(
+                LIST_INST = LI),
+                            NEWTON=_F(
+                MATRICE = 'TANGENTE',
+                REAC_ITER = 121),
+                       CONVERGENCE=_F(
+                RESI_GLOB_RELA = 1.E-6,
+                ITER_GLOB_MAXI = 120),
+                         ARCHIVAGE=_F(
+                LIST_INST = ARCHI)
+              )
 TEST_RESU(
            RESU=_F(  RESULTAT = RESU0,         NUME_ORDRE = 1,
              NOM_CHAM = 'DEPL',
              NOM_CMP = 'PRE1',
              NOEUD = 'N1',
-             VALE = -8.5646E-3,
+             VALE = -2.8549E-3,
              CRITERE = 'ABSOLU',
+             REFERENCE='NON_REGRESSION',
+             VERSION='8.1.10',
              PRECISION = 1.E-4)
            )
 
@@ -206,8 +214,10 @@ TEST_RESU(
              NOM_CHAM = 'DEPL',
              NOM_CMP = 'PRE2',
              NOEUD = 'N1',
-             VALE = 6.7963E-6,
+             VALE = 2.2656E-6,
              CRITERE = 'ABSOLU',
+             REFERENCE='NON_REGRESSION',
+             VERSION='8.1.10',
              PRECISION = 1.E-4)
            )
 
@@ -216,8 +226,10 @@ TEST_RESU(
              NOM_CHAM = 'DEPL',
              NOM_CMP = 'PRE1',
              NOEUD = 'N3',
-             VALE = 8.5646E-3,
+             VALE = 2.8549E-3,
              CRITERE = 'ABSOLU',
+             REFERENCE='NON_REGRESSION',
+             VERSION='8.1.10',
              PRECISION = 1.E-4)
            )
 
@@ -226,8 +238,10 @@ TEST_RESU(
              NOM_CHAM = 'DEPL',
              NOM_CMP = 'PRE2',
              NOEUD = 'N3',
-             VALE = -6.7963E-6,
+             VALE = -2.2656E-6,
              CRITERE = 'ABSOLU',
+             REFERENCE='NON_REGRESSION',
+             VERSION='8.1.10',
              PRECISION = 1.E-4)
            )
 
@@ -236,8 +250,10 @@ TEST_RESU(
              NOM_CHAM = 'DEPL',
              NOM_CMP = 'PRE1',
              NOEUD = 'N1',
-             VALE = -4.282E-2,
+             VALE = -1.427E-2,
              CRITERE = 'ABSOLU',
+             REFERENCE='NON_REGRESSION',
+             VERSION='8.1.10',
              PRECISION = 1.E-4)
            )
 
@@ -246,8 +262,10 @@ TEST_RESU(
              NOM_CHAM = 'DEPL',
              NOM_CMP = 'PRE2',
              NOEUD = 'N1',
-             VALE = 3.3981E-5,
+             VALE = 1.1328E-5,
              CRITERE = 'ABSOLU',
+             REFERENCE='NON_REGRESSION',
+             VERSION='8.1.10',
              PRECISION = 1.E-4)
            )
 
@@ -256,8 +274,10 @@ TEST_RESU(
              NOM_CHAM = 'DEPL',
              NOM_CMP = 'PRE1',
              NOEUD = 'N3',
-             VALE = 4.282E-2,
+             VALE = 1.427E-2,
              CRITERE = 'ABSOLU',
+             REFERENCE='NON_REGRESSION',
+             VERSION='8.1.10',
              PRECISION = 1.E-4)
            )
 
@@ -266,8 +286,10 @@ TEST_RESU(
              NOM_CHAM = 'DEPL',
              NOM_CMP = 'PRE2',
              NOEUD = 'N3',
-             VALE = -3.3981E-5,
+             VALE = -1.1328E-5,
              CRITERE = 'ABSOLU',
+             REFERENCE='NON_REGRESSION',
+             VERSION='8.1.10',
              PRECISION = 1.E-4)
            )
 
@@ -276,8 +298,10 @@ TEST_RESU(
              NOM_CHAM = 'DEPL',
              NOM_CMP = 'PRE1',
              NOEUD = 'N1',
-             VALE = -8.5646E-2,
+             VALE = -2.8549E-2,
              CRITERE = 'ABSOLU',
+             REFERENCE='NON_REGRESSION',
+             VERSION='8.1.10',
              PRECISION = 1.E-4)
            )
 
@@ -286,8 +310,10 @@ TEST_RESU(
              NOM_CHAM = 'DEPL',
              NOM_CMP = 'PRE2',
              NOEUD = 'N1',
-             VALE = 6.7962E-5,
+             VALE = 2.2656E-5,
              CRITERE = 'ABSOLU',
+             REFERENCE='NON_REGRESSION',
+             VERSION='8.1.10',
              PRECISION = 1.E-4)
            )
 
@@ -296,8 +322,10 @@ TEST_RESU(
              NOM_CHAM = 'DEPL',
              NOM_CMP = 'PRE1',
              NOEUD = 'N3',
-             VALE = 8.5646E-2,
+             VALE = 2.8549E-2,
              CRITERE = 'ABSOLU',
+             REFERENCE='NON_REGRESSION',
+             VERSION='8.1.10',
              PRECISION = 1.E-4)
            )
 
@@ -306,8 +334,10 @@ TEST_RESU(
              NOM_CHAM = 'DEPL',
              NOM_CMP = 'PRE2',
              NOEUD = 'N3',
-             VALE = -6.7962E-5,
+             VALE = -2.2656E-5,
              CRITERE = 'ABSOLU',
+             REFERENCE='NON_REGRESSION',
+             VERSION='8.1.10',
              PRECISION = 1.E-4)
            )
 
@@ -316,8 +346,10 @@ TEST_RESU(
              NOM_CHAM = 'DEPL',
              NOM_CMP = 'PRE1',
              NOEUD = 'N1',
-             VALE = -4.282E-1,
+             VALE = -1.427E-1,
              CRITERE = 'RELATIF',
+             REFERENCE='NON_REGRESSION',
+             VERSION='8.1.10',
              PRECISION = 1.E-2)
            )
 
@@ -326,8 +358,10 @@ TEST_RESU(
              NOM_CHAM = 'DEPL',
              NOM_CMP = 'PRE2',
              NOEUD = 'N1',
-             VALE = 3.398E-4,
+             VALE = 1.133E-4,
              CRITERE = 'ABSOLU',
+             REFERENCE='NON_REGRESSION',
+             VERSION='8.1.10',
              PRECISION = 1.E-4)
            )
 
@@ -336,8 +370,10 @@ TEST_RESU(
              NOM_CHAM = 'DEPL',
              NOM_CMP = 'PRE1',
              NOEUD = 'N3',
-             VALE = 4.282E-1,
+             VALE = 1.427E-1,
              CRITERE = 'RELATIF',
+             REFERENCE='NON_REGRESSION',
+             VERSION='8.1.10',
              PRECISION = 1.E-2)
            )
 
@@ -346,8 +382,10 @@ TEST_RESU(
              NOM_CHAM = 'DEPL',
              NOM_CMP = 'PRE2',
              NOEUD = 'N3',
-             VALE = -3.398E-4,
+             VALE = -1.133E-4,
              CRITERE = 'ABSOLU',
+             REFERENCE='NON_REGRESSION',
+             VERSION='8.1.10',
              PRECISION = 1.E-4)
            )
 
@@ -356,8 +394,10 @@ TEST_RESU(
              NOM_CHAM = 'DEPL',
              NOM_CMP = 'PRE1',
              NOEUD = 'N1',
-             VALE = -4.26E+1,
+             VALE = -1.424E+1,
              CRITERE = 'RELATIF',
+             REFERENCE='NON_REGRESSION',
+             VERSION='8.1.10',
              PRECISION = 1.E-2)
            )
 
@@ -366,8 +406,10 @@ TEST_RESU(
              NOM_CHAM = 'DEPL',
              NOM_CMP = 'PRE2',
              NOEUD = 'N1',
-             VALE = 3.384E-2,
+             VALE = 1.130E-2,
              CRITERE = 'ABSOLU',
+             REFERENCE='NON_REGRESSION',
+             VERSION='8.1.10',
              PRECISION = 1.E-4)
            )
 
@@ -376,8 +418,10 @@ TEST_RESU(
              NOM_CHAM = 'DEPL',
              NOM_CMP = 'PRE1',
              NOEUD = 'N3',
-             VALE = 4.26E+1,
+             VALE = 1.424E+1,
              CRITERE = 'RELATIF',
+             REFERENCE='NON_REGRESSION',
+             VERSION='8.1.10',
              PRECISION = 1.E-2)
            )
 
@@ -386,8 +430,10 @@ TEST_RESU(
              NOM_CHAM = 'DEPL',
              NOM_CMP = 'PRE2',
              NOEUD = 'N3',
-             VALE = -3.384E-2,
+             VALE = -1.130E-2,
              CRITERE = 'ABSOLU',
+             REFERENCE='NON_REGRESSION',
+             VERSION='8.1.10',
              PRECISION = 1.E-4)
            )
 
@@ -396,8 +442,10 @@ TEST_RESU(
              NOM_CHAM = 'DEPL',
              NOM_CMP = 'PRE1',
              NOEUD = 'N1',
-             VALE = -4.996E3,
+             VALE = -4.995E3,
              CRITERE = 'RELATIF',
+             REFERENCE='NON_REGRESSION',
+             VERSION='8.1.10',
              PRECISION = 1.E-2)
            )
 
@@ -406,8 +454,10 @@ TEST_RESU(
              NOM_CHAM = 'DEPL',
              NOM_CMP = 'PRE2',
              NOEUD = 'N1',
-             VALE = 3.9645,
+             VALE = 3.9647,
              CRITERE = 'ABSOLU',
+             REFERENCE='NON_REGRESSION',
+             VERSION='8.1.10',
              PRECISION = 1.E-3)
            )
 
@@ -416,8 +466,10 @@ TEST_RESU(
              NOM_CHAM = 'DEPL',
              NOM_CMP = 'PRE1',
              NOEUD = 'N3',
-             VALE = 4.996E3,
+             VALE = 4.997E3,
              CRITERE = 'RELATIF',
+             REFERENCE='NON_REGRESSION',
+             VERSION='8.1.10',
              PRECISION = 1.E-2)
            )
 
@@ -426,8 +478,10 @@ TEST_RESU(
              NOM_CHAM = 'DEPL',
              NOM_CMP = 'PRE2',
              NOEUD = 'N3',
-             VALE = -3.9645,
+             VALE = -3.9647,
              CRITERE = 'ABSOLU',
+             REFERENCE='NON_REGRESSION',
+             VERSION='8.1.10',
              PRECISION = 1.E-3)
            )
 

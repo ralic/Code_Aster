@@ -1,4 +1,4 @@
-# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 05/10/2010   AUTEUR ABBAS M.ABBAS 
 # TITRE LOIS NON LOCALES A DEFO REGULARISEES SUR BARREAU 2D CPLAN
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -105,7 +105,7 @@ EVOL1=STAT_NON_LINE(reuse=EVOL1,
                               PAS_MINI_ELAS=1.E-06,
                               MATRICE='TANGENTE',
                               REAC_INCR=1,),
-                      RECH_LINEAIRE=_F(ITER_LINE_MAXI=0,),
+                      RECH_LINEAIRE=_F(METHODE = 'PILOTAGE',ITER_LINE_MAXI=0,),
                        PILOTAGE=_F(TYPE='DEFORMATION',
                                  GROUP_MA = ('GMA10',),
                                  COEF_MULT=6000,),

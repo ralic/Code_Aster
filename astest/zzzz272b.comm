@@ -1,0 +1,496 @@
+# MODIF  DATE 04/10/2010   AUTEUR MEUNIER S.MEUNIER 
+# TITRE VALIDATION DE EVOL_CHAR EN THM
+# zzzz272b.para = tps_job 300 mem_job 300Mo ncpus 1 liste_test S
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+##############################################
+# On resout un probleme inspire de la these
+# de s. meunier
+# p.78 avec biot=1 et un chargement mecanique
+# defini par evol_char
+##############################################
+# RESPONSABLE MEUNIER S.MEUNIER
+#
+#Validation de EVOL_CHAR en HM en 3D
+
+import numpy
+
+DEBUT(CODE=_F(NOM='ZZZZ272B',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON',),);
+
+######################
+# Parametres physiques
+######################
+
+P_KAPPA = 0.05;
+
+P_BIOT = 1.;
+
+P_NU = 0.25;
+
+P_E = 2.5;
+
+P_LAMBDA = ((P_E * P_NU) / ((1 + P_NU) * (1 - (2 * P_NU))));
+
+P_MU = (P_E / (2 * (1 + P_NU)));
+
+########################################
+# Ces parametres n ont aucune importance
+########################################
+
+P_PORO = 1.;
+
+P_RHO_S = 1.0;
+
+P_RHO_L = 1.0;
+
+P_RHO_H = (((1.0 - P_PORO) * P_RHO_S) + (P_PORO * P_RHO_L));
+
+P_COEF = 3.0 * pi * pi * P_KAPPA;
+
+PERMIN=DEFI_CONSTANTE(VALE=P_KAPPA,);
+
+ZERO=DEFI_CONSTANTE(VALE=0.,);
+
+UN=DEFI_CONSTANTE(VALE=1.,);
+
+###############
+# Instant final
+###############
+
+p_npas = 4;
+
+P_T1 = 0.01;
+
+linsta=P_T1*numpy.arange(p_npas+1)/p_npas;
+linst=list(linsta);
+
+LISTINST=DEFI_LIST_REEL(VALE=list(linst));
+
+######################################
+# Definition de la solution analytique
+# => pour les deplacements generalises
+# => pour les contraintes generalisees
+######################################
+
+
+AMORT = FORMULE(VALE='exp(-P_COEF*INST)',
+                NOM_PARA='INST',);
+
+DEPL_X = FORMULE(VALE='-AMORT(INST)*cos(pi*X)*sin(pi*Y)*sin(pi*Z)/(3.*pi)',
+                 NOM_PARA=('INST','X','Y','Z',),);
+
+DEPL_Y = FORMULE(VALE='-AMORT(INST)*sin(pi*X)*cos(pi*Y)*sin(pi*Z)/(3.*pi)',
+                 NOM_PARA=('INST','X','Y','Z',),);
+
+DEPL_Z = FORMULE(VALE='-AMORT(INST)*sin(pi*X)*sin(pi*Y)*cos(pi*Z)/(3.*pi)',
+                 NOM_PARA=('INST','X','Y','Z',),);
+
+PRESSION = FORMULE(VALE='AMORT(INST)*sin(pi*X)*sin(pi*Y)*sin(pi*Z)',
+                   NOM_PARA=('INST','X','Y','Z',),);
+
+SIGXX = FORMULE(VALE='5./3.*AMORT(INST)*sin(pi*X)*sin(pi*Y)*sin(pi*Z)',
+                NOM_PARA=('INST','X','Y','Z',),);
+
+SIGXY = FORMULE(VALE='-2./3.*AMORT(INST)*cos(pi*X)*cos(pi*Y)*sin(pi*Z)',
+                NOM_PARA=('INST','X','Y','Z',),);
+
+SIGXZ = FORMULE(VALE='-2./3.*AMORT(INST)*cos(pi*X)*sin(pi*Y)*cos(pi*Z)',
+                NOM_PARA=('INST','X','Y','Z',),);
+
+SIGYZ = FORMULE(VALE='-2./3.*AMORT(INST)*sin(pi*X)*cos(pi*Y)*cos(pi*Z)',
+                NOM_PARA=('INST','X','Y','Z',),);
+
+SIGPRE = FORMULE(VALE='-P_BIOT*AMORT(INST)*sin(pi*X)*sin(pi*Y)*sin(pi*Z)',
+                 NOM_PARA=('INST','X','Y','Z',),);
+
+FLUHX = FORMULE(VALE='-P_KAPPA*P_RHO_L*pi*AMORT(INST)*cos(pi*X)*sin(pi*Y)*sin(pi*Z)',
+                NOM_PARA=('INST','X','Y','Z',),);
+
+FLUHY = FORMULE(VALE='-P_KAPPA*P_RHO_L*pi*AMORT(INST)*sin(pi*X)*cos(pi*Y)*sin(pi*Z)',
+                NOM_PARA=('INST','X','Y','Z',),);
+
+FLUHZ = FORMULE(VALE='-P_KAPPA*P_RHO_L*pi*AMORT(INST)*sin(pi*X)*sin(pi*Y)*cos(pi*Z)',
+                NOM_PARA=('INST','X','Y','Z',),);
+
+####################################
+# Definition du chargement mecanique
+####################################
+
+FXME = FORMULE(VALE='pi*(-(P_LAMBDA+2.*P_MU)+P_BIOT)*AMORT(INST)*cos(pi*X)*sin(pi*Y)*sin(pi*Z)',
+               NOM_PARA=('INST','X','Y','Z',),);
+
+FYME = FORMULE(VALE='pi*(-(P_LAMBDA+2.*P_MU)+P_BIOT)*AMORT(INST)*sin(pi*X)*cos(pi*Y)*sin(pi*Z)',
+               NOM_PARA=('INST','X','Y','Z',),);
+
+FZME = FORMULE(VALE='pi*(-(P_LAMBDA+2.*P_MU)+P_BIOT)*AMORT(INST)*sin(pi*X)*sin(pi*Y)*cos(pi*Z)',
+               NOM_PARA=('INST','X','Y','Z',),);
+
+#####################################################
+# Conditions initiales en deplacements et en pression
+# Elles sont deduites des formules generales
+#####################################################
+
+UX0 = FORMULE(VALE='DEPL_X(0.,X,Y,Z)',
+              NOM_PARA=('X','Y','Z',),);
+
+UY0 = FORMULE(VALE='DEPL_Y(0.,X,Y,Z)',
+              NOM_PARA=('X','Y','Z',),);
+
+UZ0 = FORMULE(VALE='DEPL_Z(0.,X,Y,Z)',
+              NOM_PARA=('X','Y','Z',),);
+
+P0 = FORMULE(VALE='PRESSION(0.,X,Y,Z)',
+             NOM_PARA=('X','Y','Z',),);
+
+SIGXX0 = FORMULE(VALE='SIGXX(0.,X,Y,Z)',
+                 NOM_PARA=('X','Y','Z',),);
+
+SIGXY0 = FORMULE(VALE='SIGXY(0.,X,Y,Z)',
+                 NOM_PARA=('X','Y','Z',),);
+
+SIGXZ0 = FORMULE(VALE='SIGXZ(0.,X,Y,Z)',
+                 NOM_PARA=('X','Y','Z',),);
+
+SIGYZ0 = FORMULE(VALE='SIGYZ(0.,X,Y,Z)',
+                 NOM_PARA=('X','Y','Z',),);
+
+SIGPRE0 = FORMULE(VALE='SIGPRE(0.,X,Y,Z)',
+                  NOM_PARA=('X','Y','Z',),);
+
+FLUHX0 = FORMULE(VALE='FLUHX(0.,X,Y,Z)',
+                 NOM_PARA=('X','Y','Z',),);
+
+FLUHY0 = FORMULE(VALE='FLUHY(0.,X,Y,Z)',
+                 NOM_PARA=('X','Y','Z',),);
+
+FLUHZ0 = FORMULE(VALE='FLUHZ(0.,X,Y,Z)',
+                 NOM_PARA=('X','Y','Z',),);
+
+#####################
+# Lecture du maillage
+#####################
+
+MAILL_00=LIRE_MAILLAGE(UNITE=20,
+                       FORMAT='MED',);
+
+###############################
+# Champ de deplacements initial
+# On affecte tous les noeuds
+###############################
+
+DEP_00=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_F',
+                  OPERATION='AFFE',
+                  MAILLAGE=MAILL_00,
+                  AFFE=_F(TOUT='OUI',
+                          NOM_CMP=('DX','DY','DZ','PRE1',),
+                          VALE_F=(UX0,UY0,UZ0,P0,),),);
+
+DEP_INIB=CREA_RESU(OPERATION='AFFE',
+                   TYPE_RESU='EVOL_NOLI',
+                   NOM_CHAM='DEPL',
+                   AFFE=_F(CHAM_GD=DEP_00,
+                           INST=0.,),);
+
+DEPL_INI=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
+                    OPERATION='EXTR',
+                    RESULTAT=DEP_INIB,
+                    NOM_CHAM='DEPL',);
+
+######################################
+# Affectation du modele et du materiau
+######################################
+
+MODE_00=AFFE_MODELE(MAILLAGE=MAILL_00,
+                    AFFE=_F(TOUT='OUI',
+                            PHENOMENE='MECANIQUE',
+                            MODELISATION='3D_HMS',),);
+
+###########################################
+# On cree un champ de contraintes initiales
+###########################################
+
+CHXN=CREA_CHAMP(TYPE_CHAM='NOEU_GEOM_R',
+                OPERATION='EXTR',
+                MAILLAGE=MAILL_00,
+                NOM_CHAM='GEOMETRIE',);
+
+CHXG=CREA_CHAMP(TYPE_CHAM='ELGA_GEOM_R',
+                OPERATION='DISC',
+                MODELE=MODE_00,
+                CHAM_GD=CHXN,);
+
+SIEFINI1=CREA_CHAMP(TYPE_CHAM='ELGA_NEUT_F',
+                    OPERATION='AFFE',
+                    MODELE=MODE_00,
+                    PROL_ZERO='OUI',
+                    AFFE=_F(TOUT='OUI',
+                            NOM_CMP=('X1','X2','X3','X4','X5','X6','X7','X8','X9','X10',),
+                            VALE_F=(SIGXX0,SIGXX0,SIGXX0,SIGXY0,SIGXZ0,SIGYZ0,SIGPRE0,FLUHX0,FLUHY0,FLUHZ0,),),);
+
+SIEFINI2=CREA_CHAMP(TYPE_CHAM='ELGA_NEUT_R',
+                    OPERATION='EVAL',
+                    CHAM_F=SIEFINI1,
+                    CHAM_PARA=CHXG,);
+
+SIEF_INI=CREA_CHAMP(TYPE_CHAM='ELGA_SIEF_R',
+                    OPERATION='ASSE',
+                    MODELE=MODE_00,
+                    PROL_ZERO='OUI',
+                    ASSE=_F(TOUT='OUI',
+                            CHAM_GD=SIEFINI2,
+                            NOM_CMP=('X1','X2','X3','X4','X5','X6','X7','X8','X9','X10',),
+                            NOM_CMP_RESU=('SIXX','SIYY','SIZZ','SIXY','SIXZ','SIYZ','SIP','FH11X','FH11Y','FH11Z',),),);
+
+MATERIAU=DEFI_MATERIAU(ELAS=_F(E=P_E,
+                               NU=P_NU,
+                               RHO=P_RHO_S,
+                               ALPHA=0.0,),
+                       COMP_THM='LIQU_SATU',
+                       THM_INIT=_F(PRE1=0.0,
+                                   PORO=P_PORO,),
+                       THM_DIFFU=_F(RHO=P_RHO_H,
+                                    BIOT_COEF=P_BIOT,
+                                    PESA_X=0.0,
+                                    PESA_Y=0.0,
+                                    PESA_Z=0.0,
+                                    PERM_IN=PERMIN,),
+                       THM_LIQU=_F(RHO=P_RHO_L,
+                                   UN_SUR_K=0.0,
+                                   VISC=UN,
+                                   D_VISC_TEMP=ZERO,),);
+
+###############################################################
+# Le chargement sur les bords est egal a la solution analytique
+###############################################################
+
+CHAR_00=AFFE_CHAR_CINE_F(MODELE=MODE_00,
+                         MECA_IMPO=_F(GROUP_MA=('F1','F2','F3','F4','F5','F6',),
+                                      DX=DEPL_X,
+                                      DY=DEPL_Y,
+                                      DZ=DEPL_Z,
+                                      PRE1=PRESSION,),);
+
+FMX   = [None]*(p_npas+1)
+FMY   = [None]*(p_npas+1)
+FMZ   = [None]*(p_npas+1)
+FORF  = [None]*(p_npas+1)
+instant  = [None]*(p_npas+1)
+
+##########################################################################
+# On construit le chargement mecanique pour obtenir la solution analytique
+# C'est un EVOL_CHAR
+##########################################################################
+
+for k in range(p_npas+1) :
+
+  instant = str(eval('linst[k]'));
+
+  FMX = FORMULE(VALE='FXME('+instant+',X,Y,Z)',
+                NOM_PARA=('X','Y','Z',),);
+
+  FMY = FORMULE(VALE='FYME('+instant+',X,Y,Z)',
+               NOM_PARA=('X','Y','Z',),);
+
+  FMZ = FORMULE(VALE='FZME('+instant+',X,Y,Z)',
+               NOM_PARA=('X','Y','Z',),);
+
+  FORF=CREA_CHAMP(TYPE_CHAM='NOEU_FORC_F',
+                 OPERATION='AFFE',
+                 MODELE=MODE_00,
+                 AFFE=_F(TOUT='OUI',
+                         NOM_CMP=('FX','FY','FZ',),
+                         VALE_F=(FMX,FMY,FMZ,),),);
+  if (k == 0) :
+
+    CHAME=CREA_RESU(OPERATION='AFFE',
+                    TYPE_RESU='EVOL_CHAR',
+                    NOM_CHAM='FVOL_3D',
+                    AFFE=_F(CHAM_GD=FORF,
+                            INST=eval(instant),),);
+  else :
+    CHAME=CREA_RESU(reuse=CHAME,
+                    OPERATION='AFFE',
+                    TYPE_RESU='EVOL_CHAR',
+                    NOM_CHAM='FVOL_3D',
+                    AFFE=_F(CHAM_GD=FORF,
+                            INST=eval(instant),),);
+
+  DETRUIRE(CONCEPT=_F(NOM=(FMX,FMY,FMZ,FORF,),),);
+
+CHARME=AFFE_CHAR_MECA(MODELE=MODE_00,
+                      EVOL_CHAR=CHAME,);
+
+MATE_00=AFFE_MATERIAU(MAILLAGE=MAILL_00,
+                      AFFE=_F(TOUT='OUI',
+                              MATER=MATERIAU,),);
+########################
+# Resolution du probleme
+########################
+
+RESU_00=STAT_NON_LINE(MODELE=MODE_00,
+                      CHAM_MATER=MATE_00,
+                      EXCIT=(_F(CHARGE=CHAR_00,),
+                             _F(CHARGE=CHARME,),),
+                      COMP_INCR=_F(RELATION='KIT_HM',
+                                   RELATION_KIT=('ELAS','LIQU_SATU','HYDR_UTIL',),),
+                      ETAT_INIT=_F(DEPL=DEPL_INI,
+                                   SIGM=SIEF_INI,),
+                      SOLVEUR = _F(METHODE = 'MUMPS',PCENT_PIVOT=200,),
+                      INCREMENT=_F(LIST_INST=LISTINST,),);
+
+########################################
+# On teste la solution a l'instant final
+# en 3 points du maillage :
+# p_no1, p_no2 et p_no3
+########################################
+
+p_no1 = 'N1948' ;
+
+p_x1 = 0.8 ;
+
+p_y1 = 0.2 ;
+
+p_z1 = 0.2 ;
+
+p_no2 = 'N1900' ;
+
+p_x2 = 0.2 ;
+
+p_y2 = 0.8 ;
+
+p_z2 = 0.2 ;
+
+p_no3 = 'N2380' ;
+
+p_x3 = 0.2 ;
+
+p_y3 = 0.2 ;
+
+p_z3 = 0.8 ;
+
+TEST_RESU(RESU=(_F(RESULTAT=RESU_00,
+                  INST=P_T1,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='PRE1',
+                  NOEUD=p_no1,
+                  VALE=PRESSION(P_T1,p_x1,p_y1,p_z1),
+                  CRITERE='RELATIF',
+                  PRECISION=1.2E-2,
+                  REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=RESU_00,
+                  INST=P_T1,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DX',
+                  NOEUD=p_no1,
+                  VALE=DEPL_X(P_T1,p_x1,p_y1,p_z1),
+                  CRITERE='RELATIF',
+                  PRECISION=2.E-3,
+                  REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=RESU_00,
+                  INST=P_T1,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DY',
+                  NOEUD=p_no1,
+                  VALE=DEPL_Y(P_T1,p_x1,p_y1,p_z1),
+                  CRITERE='RELATIF',
+                  PRECISION=2.E-3,
+                  REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=RESU_00,
+                  INST=P_T1,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DZ',
+                  NOEUD=p_no1,
+                  VALE=DEPL_Z(P_T1,p_x1,p_y1,p_z1),
+                  CRITERE='RELATIF',
+                  PRECISION=2.E-3,
+                  REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=RESU_00,
+                  INST=P_T1,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='PRE1',
+                  NOEUD=p_no2,
+                  VALE=PRESSION(P_T1,p_x2,p_y2,p_z2),
+                  CRITERE='RELATIF',
+                  PRECISION=1.2E-2,
+                  REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=RESU_00,
+                  INST=P_T1,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DX',
+                  NOEUD=p_no2,
+                  VALE=DEPL_X(P_T1,p_x2,p_y2,p_z2),
+                  CRITERE='RELATIF',
+                  PRECISION=2.E-3,
+                  REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=RESU_00,
+                  INST=P_T1,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DY',
+                  NOEUD=p_no2,
+                  VALE=DEPL_Y(P_T1,p_x2,p_y2,p_z2),
+                  CRITERE='RELATIF',
+                  PRECISION=2.E-3,
+                  REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=RESU_00,
+                  INST=P_T1,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DZ',
+                  NOEUD=p_no2,
+                  VALE=DEPL_Z(P_T1,p_x2,p_y2,p_z2),
+                  CRITERE='RELATIF',
+                  PRECISION=2.E-3,
+                  REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=RESU_00,
+                  INST=P_T1,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='PRE1',
+                  NOEUD=p_no3,
+                  VALE=PRESSION(P_T1,p_x3,p_y3,p_z3),
+                  CRITERE='RELATIF',
+                  PRECISION=1.2E-2,
+                  REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=RESU_00,
+                  INST=P_T1,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DX',
+                  NOEUD=p_no3,
+                  VALE=DEPL_X(P_T1,p_x3,p_y3,p_z3),
+                  CRITERE='RELATIF',
+                  PRECISION=2.E-3,
+                  REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=RESU_00,
+                  INST=P_T1,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DY',
+                  NOEUD=p_no3,
+                  VALE=DEPL_Y(P_T1,p_x3,p_y3,p_z3),
+                  CRITERE='RELATIF',
+                  PRECISION=2.E-3,
+                  REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=RESU_00,
+                  INST=P_T1,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DZ',
+                  NOEUD=p_no3,
+                  VALE=DEPL_Z(P_T1,p_x3,p_y3,p_z3),
+                  CRITERE='RELATIF',
+                  PRECISION=2.E-3,
+                  REFERENCE='ANALYTIQUE',),),);
+
+FIN();
+

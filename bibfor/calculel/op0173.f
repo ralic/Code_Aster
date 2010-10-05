@@ -1,8 +1,8 @@
       SUBROUTINE OP0173()
-      IMPLICIT   NONE        
+      IMPLICIT   NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
+C MODIF CALCULEL  DATE 04/10/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -92,8 +92,11 @@ C
 C          ------------------------------
          CALL COPISD ( 'VECT_ELEM', 'G', VALK, NOMRES )
 C
-      ELSEIF ( TYPESD .EQ. 'CHAM_GD_SDASTER' ) THEN
-C          ------------------------------
+      ELSEIF ( TYPESD .EQ. 'CHAM_GD_SDASTER'  .OR.
+     &         TYPESD .EQ. 'CHAM_NO_SDASTER'  .OR.
+     &         TYPESD .EQ. 'CARTE_SDASTER'    .OR.
+     &         TYPESD .EQ. 'CHAM_ELEM' ) THEN
+C          ----------------------------------------
          CALL COPISD ( 'CHAMP_GD', 'G', VALK, NOMRES )
 C
       ELSEIF ( TYPESD .EQ. 'MODE_MECA' ) THEN

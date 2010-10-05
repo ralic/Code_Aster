@@ -1,4 +1,4 @@
-# MODIF  DATE 12/07/2010   AUTEUR BERARD A.BERARD 
+# MODIF  DATE 04/10/2010   AUTEUR GNICOLAS G.NICOLAS 
 # TITRE COUPLAGE ASTER_HOMARD - CAS BIDIMENSIONNEL EN TRANSITOIRE
 # zzzz121c.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -161,8 +161,8 @@ MACR_ADAP_MAIL(INFO=1,
                MAILLAGE_NP1 = CO("MUN_2"),
                MAILLAGE_NP1_ANNEXE = CO("MUN_1"),
                RESULTAT_N = REMEZERO,
-               INDICATEUR = 'ERRE_ELEM_SIGM',
-               NOM_CMP_INDICA = 'ERREST' ,
+               NOM_CHAM = 'ERRE_ELEM_SIGM',
+               NOM_CMP = 'ERREST' ,
                NUME_ORDRE = 3,
                CRIT_RAFF_PE = 0.10,
                MAJ_CHAM=_F(RESULTAT   = TZERO_2,
@@ -423,8 +423,8 @@ MACR_ADAP_MAIL(INFO=1,
                MAILLAGE_NP1 = CO("MTROI_2"),
                MAILLAGE_NP1_ANNEXE = CO("MTROI_1"),
                RESULTAT_N = REMEDEUX,
-               INDICATEUR = 'SIEF_ELGA_DEPL',
-               NOM_CMP_INDICA = 'SIZZ' ,
+               NOM_CHAM = 'SIEF_ELGA_DEPL',
+               NOM_CMP = 'SIZZ' ,
                NUME_ORDRE = 3,
                TYPE_OPER_INDICA = 'SAUT',
                CRIT_RAFF_PE = 0.02,

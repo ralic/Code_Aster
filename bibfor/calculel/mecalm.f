@@ -3,7 +3,7 @@
      &   MODELE,MATE,CARA,NCHAR,CTYP)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 27/04/2010   AUTEUR DESROCHES X.DESROCHES 
+C MODIF CALCULEL  DATE 05/10/2010   AUTEUR SELLENET N.SELLENET 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -455,6 +455,14 @@ C
           CODSEN=0
 C
           CALL JEVEUO(KNUM,'L',JORDR)
+          
+C         PASSAGE CALC_CHAMP
+          IF (NOPASE.EQ.' ') THEN
+            CALL CALCOP(OPTION,RESUCO,RESUC1,NBORDR,ZI(JORDR),KCHA,
+     &                  NCHAR,CTYP,TYSD,NBCHRE,IOCC,SOP,IRET)
+            IF ( IRET.EQ.0 ) GO TO 440
+          ENDIF
+          
           NUORD = ZI(JORDR)
           CALL MEDOM2(MODELE,MATE,CARA,KCHA,NCHAR,CTYP,RESUCO,NUORD,
      &                    NBORDR,NPASS,LIGREL)

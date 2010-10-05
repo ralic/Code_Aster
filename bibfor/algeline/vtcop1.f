@@ -1,11 +1,10 @@
-      SUBROUTINE VTCOP1 ( CHIN, CHOUT, IER )
+      SUBROUTINE VTCOP1(CHIN,CHOUT)
       IMPLICIT NONE
       CHARACTER*(*)       CHIN,CHOUT
-      INTEGER                          IER
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 16/11/2009   AUTEUR PELLET J.PELLET 
+C MODIF ALGELINE  DATE 04/10/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -24,20 +23,13 @@ C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C     APPELLE PAR LA ROUTINE CHAPEAU VTCOPY
 C     RECOPIE LES VALEURS DU CHAM_NO CHIN DANS LE CHAM_NO CHOUT
+C     CETTE ROUTINE PERMET DE CHANGER LA NUMEROTATION D'UN CHAM_NO
 C
 C     PRECAUTIONS D'EMPLOI :
 C     - LES CHAM_NOS DOIVENT EXISTER.
-C     - LES DDLS DE "LAGRANGE" NE SONT PAS TRAITES SI LES NUMEROTATIONS
-C       DES 2 CHAMPS SONT DIFFERENTES.
-C     - LES CHAMPS A "REPRESENTATION CONSTANTE" SONT MAL TRAITES.
-
-C     SI LES .REFE DES CHAM_NOS SONT IDENTIQUES, ON RECOPIE
-C                  LE .VALE DE "CHIN" DANS "CHOUT"
-C     SINON
-C        LE "CHOUT" DOIT ETRE CONSTRUIT A PARTIR D'UN NUME_DDL.
+C     - LES DDLS DE "LAGRANGE" SONT MIS A ZERO DANS CHOUT.
 C
 C     ------------------------------------------------------------------
-C
 C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
 C
       CHARACTER*32       JEXNUM , JEXNOM , JEXR8 , JEXATR
@@ -60,15 +52,14 @@ C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 C
       INTEGER        IBID, IRET, IEQ1, IEQ2, NEQ1, JLAGR, JVALE1, JVALE2
       INTEGER      NUNOE,NEQ2,JDESC1,JDESC2,JREFE1,JREFE2,JDEEQ1,JDEEQ2
-      INTEGER      NNOMX,NCPMX,JTRAV1,NUNO2,NUCP2,NUNO1,NUCP1
+      INTEGER      NNOMX,NCPMX,JTRAV1,NUNO2,NUCP2,NUNO1,NUCP1,JDEEQ
       CHARACTER*1    K1B, TYP1, TYP2
       CHARACTER*24 VALK(4)
-      CHARACTER*19   CH1, CH2
+      CHARACTER*19   CH1, CH2,PFCHNO
 
 C     ------------------------------------------------------------------
 C
       CALL JEMARQ ( )
-      IER = 0
       CH1  = CHIN
       CH2 = CHOUT
 C
@@ -83,14 +74,24 @@ C     -------------------------------------------------
         CALL JEVEUO(CH1//'.VALE','L',JVALE1)
         CALL JELIRA(CH2//'.VALE','TYPE',IBID,TYP2)
         CALL JEVEUO(CH2//'.VALE','E',JVALE2)
+        CALL DISMOI('F','PROF_CHNO',CH2,'CHAM_NO',IBID,PFCHNO,IBID)
+        CALL JEVEUO(PFCHNO//'.DEEQ','L',JDEEQ)
         IF ( TYP1 .EQ. TYP2 ) THEN
            IF ( TYP1 .EQ. 'R' ) THEN
               DO 10 IEQ1 = 0 , NEQ1-1
-                 ZR(JVALE2+IEQ1) = ZR(JVALE1+IEQ1)
+                 IF (ZI(JDEEQ-1+2*IEQ1+2).LE.0) THEN
+                   ZR(JVALE2+IEQ1) = 0.D0
+                 ELSE
+                   ZR(JVALE2+IEQ1) = ZR(JVALE1+IEQ1)
+                 ENDIF
  10           CONTINUE
            ELSEIF ( TYP1 .EQ. 'C' ) THEN
               DO 12 IEQ1 = 0 , NEQ1-1
-                 ZC(JVALE2+IEQ1) = ZC(JVALE1+IEQ1)
+                 IF (ZI(JDEEQ-1+2*IEQ1+2).LE.0) THEN
+                   ZC(JVALE2+IEQ1) = DCMPLX(0.D0,0.D0)
+                 ELSE
+                   ZC(JVALE2+IEQ1) = ZC(JVALE1+IEQ1)
+                 ENDIF
  12           CONTINUE
            ELSE
                VALK(1) = CH1
@@ -101,7 +102,11 @@ C     -------------------------------------------------
         ELSE
            IF ( TYP1 .EQ. 'R' .AND.  TYP2 .EQ. 'C' ) THEN
               DO 14 IEQ1 = 0 , NEQ1-1
-                 ZC(JVALE2+IEQ1) = ZR(JVALE1+IEQ1)
+                 IF (ZI(JDEEQ-1+2*IEQ1+2).LE.0) THEN
+                   ZC(JVALE2+IEQ1) = DCMPLX(0.D0,0.D0)
+                 ELSE
+                   ZC(JVALE2+IEQ1) = ZR(JVALE1+IEQ1)
+                 ENDIF
  14           CONTINUE
            ELSE
                VALK(1) = CH1

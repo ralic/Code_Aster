@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 15/03/2010   AUTEUR GNICOLAS G.NICOLAS 
+#& MODIF COMMANDE  DATE 04/10/2010   AUTEUR GNICOLAS G.NICOLAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -126,7 +126,7 @@ MACR_ADAP_MAIL=MACRO(nom="MACR_ADAP_MAIL",op=macr_adap_mail_ops,sd_prod=macr_ada
                       ang="The Code_Aster result with error indicator" ),
 #
     b_champ_indicateur = BLOC(condition="(RESULTAT_N != None)",
-      INDICATEUR = SIMP(statut='o',typ='TXM',
+      NOM_CHAM = SIMP(statut='o',typ='TXM',into=C_NOM_CHAM_INTO(),
                         fr="Champ de l'indicateur d'erreur dans le résultat",
                         ang="The error indicator field in the result structure" ),
     ),
@@ -149,7 +149,7 @@ MACR_ADAP_MAIL=MACRO(nom="MACR_ADAP_MAIL",op=macr_adap_mail_ops,sd_prod=macr_ada
                         fr="Choix de la composante ou des composantes pour l'indicateur",
                         ang="Selection of the component(s) for the error indicator",
 #
-      NOM_CMP_INDICA = SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**',
+      NOM_CMP = SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**',
                             fr="Liste des composante(s) retenue(s) pour l'indicateur d'erreur.",
                             ang="List of the selected component(s) for the error indicator." ),
 #
@@ -565,7 +565,7 @@ MACR_ADAP_MAIL=MACRO(nom="MACR_ADAP_MAIL",op=macr_adap_mail_ops,sd_prod=macr_ada
                           fr="Choix éventuel du nom du champ à interpoler",
                           ang="Selection for the name of the field (option)",
 #
-      NOM_CHAM = SIMP(statut='o',typ='TXM',
+      NOM_CHAM = SIMP(statut='o',typ='TXM',into=C_NOM_CHAM_INTO(),
                       fr="Nom du champ à mettre à jour",
                       ang="Name of the field to be updated" ),
 #

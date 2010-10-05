@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2010   AUTEUR IDOUX L.IDOUX 
+# MODIF  DATE 05/10/2010   AUTEUR ABBAS M.ABBAS 
 # TITRE PILOTAGE DU CHARGEMENT EN NON LINEAIRE
 # ssnx101a.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -282,7 +282,7 @@ PHASE_2B=STAT_NON_LINE(MODELE=MO,
                                     INST_INIT=1.,),
                        NEWTON=_F(MATRICE='TANGENTE',
                                  REAC_ITER=1,),
-                       RECH_LINEAIRE=_F(ITER_LINE_MAXI=5,),
+                       RECH_LINEAIRE=_F(METHODE = 'PILOTAGE',ITER_LINE_MAXI=5,),
                        PILOTAGE=_F(TYPE='LONG_ARC',
                                    COEF_MULT=2.E-3,
                                    ETA_PILO_MAX=407.,

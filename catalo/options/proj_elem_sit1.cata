@@ -1,4 +1,4 @@
-%& MODIF OPTIONS  DATE 12/01/2010   AUTEUR LEBOUVIER F.LEBOUVIER 
+%& MODIF OPTIONS  DATE 05/10/2010   AUTEUR SELLENET N.SELLENET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,7 +19,7 @@
 PROJ_ELEM_SIT1
 OPTION__
    IN__     
-         PSIG3D   SIEF_R
-         PGEOMER  GEOM_R
+         PSIG3D   SIEF_R 'VOLA!&&MECALM.CHAM_SI2D'
+         PGEOMER  GEOM_R 'MAIL!.COORDO'
    OUT__   
 PPJSIT1  SIEF_R   ELEM__

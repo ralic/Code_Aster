@@ -2,7 +2,7 @@
       IMPLICIT  NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
+C MODIF ALGELINE  DATE 04/10/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -89,14 +89,14 @@ C
       IF ( IRET .EQ. 0 ) THEN
          CHAMN2 = '&&OP0156.CHAM_NO'
          CALL VTCREB ( CHAMN2, NUMEM, 'V', TYPRES, NEQ )
-         CALL VTCOPY ( CHAMNO, CHAMN2, IRET )
+         CALL VTCOPY ( CHAMNO, CHAMN2)
          CHAMNO = CHAMN2
       ENDIF
       CALL DISMOI('F','PROF_CHNO',CHAMNO,'CHAM_NO',IBID,PFCHN2,IRET)
       IF ( PFCHN1 .NE. PFCHN2 ) THEN
          CHAMN2 = '&&OP0156.CHAM_NO'
          CALL VTCREB ( CHAMN2, NUMEM, 'V', TYPRES, NEQ )
-         CALL VTCOPY ( CHAMNO, CHAMN2, IRET )
+         CALL VTCOPY ( CHAMNO, CHAMN2)
          CHAMNO = CHAMN2
       ENDIF
       CALL JEVEUO ( CHAMNO//'.VALE', 'L', JCHIN )

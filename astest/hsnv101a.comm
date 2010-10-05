@@ -1,4 +1,4 @@
-# MODIF  DATE 08/11/2007   AUTEUR SALMONA L.SALMONA 
+# MODIF  DATE 05/10/2010   AUTEUR ABBAS M.ABBAS 
 # TITRE THERMO_METALLO_MECANIQUE DECOUPLEE EN TRACTION SIMPLE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -292,15 +292,7 @@ TEST_RESU(RESU=(
            _F(  RESULTAT = U,              NUME_ORDRE = 70,
              PARA = 'ITER_GLOB',        VALE_I = 0,
              CRITERE = 'ABSOLU',        PRECISION = 4.E+00),
-           _F(  RESULTAT = U,              NUME_ORDRE = 70,
-             CRITERE = 'ABSOLU',        PRECISION = 1.E-07,
-             PARA = 'RESI_GLOB_RELA',   VALE = 0.),
-           _F(  RESULTAT = U,              NUME_ORDRE = 70,
-             CRITERE = 'ABSOLU',        PRECISION = 0.70,
-             PARA = 'RESI_GLOB',        VALE = 0.),
-           _F(  RESULTAT = U,              NUME_ORDRE = 70,
-             PARA = 'ITER_LINE',        VALE_I = 0,
-             CRITERE = 'ABSOLU',         PRECISION = 2.E+00))
+           )
            )
 
 U=CALC_ELEM( reuse=U,       

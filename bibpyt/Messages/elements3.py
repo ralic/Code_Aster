@@ -1,4 +1,4 @@
-#@ MODIF elements3 Messages  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
+#@ MODIF elements3 Messages  DATE 04/10/2010   AUTEUR PROIX J-M.PROIX 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -167,9 +167,9 @@ cata_msg = {
   -> Risque & Conseil :
      En présence de grands déplacements et grandes rotations, avec une loi de comportement
      non linéaire, il est préférable  d'utiliser la modélisation POU_D_TGM
-     (poutre multi-fibres) avec DEFORMATION=REAC_GEOM. Si le comportement reste
+     (poutre multi-fibres) avec DEFORMATION=GROT_GDEP. Si le comportement reste
      élastique, il est également possible d'utiliser la modélisation POU_D_T_GD avec
-     DEFORMATION='GREEN_GR'.
+     DEFORMATION='GROT_GDEP'.
 """),
 
 59 : _("""
@@ -242,7 +242,7 @@ cata_msg = {
 """),
 
 91 : _("""
-  calcul de la masse non implanté pour les éléments COQUE_3D en grandes rotations, deformation : GREEN_GR
+  calcul de la masse non implanté pour les éléments COQUE_3D en grandes rotations, deformation : GROT_GDEP
 """),
 
 92 : _("""
@@ -251,7 +251,7 @@ cata_msg = {
 
 93 : _("""
   déformation :  %(k1)s  non implantée sur les éléments COQUE_3D en grandes rotations
-  déformation : GREEN_GR obligatoirement 
+  déformation : GROT_GDEP obligatoirement 
 """),
 
 94 : _("""
@@ -262,7 +262,7 @@ cata_msg = {
      approximation des hypothèses des grands déplacements. Elle nécessite
      d'effectuer de très petits incréments de chargement. Pour prendre en
      compte correctement les grands déplacements et surtout les grandes
-     rotations, il est recommandé d'utiliser DEFORMATION='GREEN_GR'.
+     rotations, il est recommandé d'utiliser DEFORMATION='GROT_GDEP'.
 
 """),
 

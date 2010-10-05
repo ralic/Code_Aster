@@ -1,4 +1,4 @@
-# MODIF  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 05/10/2010   AUTEUR ABBAS M.ABBAS 
 # TITRE  ESSAI DE TRACTION-CISAILLEMENT 3D (ROUSSELIER_FO)
 # ssnv103a.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -412,15 +412,7 @@ TEST_RESU(RESU=(
            _F(  RESULTAT = SOLNL,          NUME_ORDRE = 8,
              CRITERE = 'ABSOLU',         PRECISION = 6.,
              PARA = 'ITER_GLOB',        VALE_I = 0),
-           _F(  RESULTAT = SOLNL,          NUME_ORDRE = 8,
-             CRITERE = 'ABSOLU',        PRECISION = 1.E-03,
-             PARA = 'RESI_GLOB_RELA',   VALE = 0.),
-           _F(  RESULTAT = SOLNL,          NUME_ORDRE = 8,
-             CRITERE = 'ABSOLU',        PRECISION = 1.E-01,
-             PARA = 'RESI_GLOB',        VALE = 0.),
-           _F(  RESULTAT = SOLNL,          NUME_ORDRE = 8,
-             CRITERE = 'ABSOLU',         PRECISION = 2.,
-             PARA = 'ITER_LINE',        VALE_I = 0))
+          )
            )
 
 SOLNL=CALC_ELEM(  reuse=SOLNL,

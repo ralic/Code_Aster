@@ -1,4 +1,4 @@
-#& MODIF COMMUN  DATE 07/07/2009   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMUN  DATE 05/10/2010   AUTEUR ABBAS M.ABBAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,7 +18,7 @@
 # ======================================================================
 # RESPONSABLE REZETTE C.REZETTE
 def C_RECH_LINEAIRE() : return FACT(statut='f',
-           METHODE         =SIMP(statut='f',typ='TXM',defaut="CORDE",into=("CORDE","MIXTE") ),
+           METHODE         =SIMP(statut='f',typ='TXM',defaut="CORDE",into=("CORDE","MIXTE","PILOTAGE") ),
            RESI_LINE_RELA  =SIMP(statut='f',typ='R',defaut= 1.0E-1 ),
            ITER_LINE_MAXI  =SIMP(statut='f',typ='I',defaut= 3,val_max=999),
            ITER_LINE_CRIT  =SIMP(statut='f',typ='I',defaut= 20),

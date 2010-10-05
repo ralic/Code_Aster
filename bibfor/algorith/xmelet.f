@@ -1,9 +1,9 @@
-      SUBROUTINE XMELET(NOMTE ,TYPMAI,TYPMAE,TYPMAM,TYPMAC,
+      SUBROUTINE XMELET (NOMTE ,TYPMAI,TYPMAE,TYPMAM,TYPMAC,
      &                  NDIM  ,NDDL  ,NNE   ,NNM   ,NNC   ,
      &                  LMALIN,NNES  ,NDDLSE,NSINGE,NSINGM)
-     
+
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 12/01/2010   AUTEUR GRANET S.GRANET 
+C MODIF ALGORITH  DATE 05/10/2010   AUTEUR MAHFOUZ D.MAHFOUZ 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,9 +20,9 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C
+C    
       IMPLICIT NONE
-      CHARACTER*16 NOMTE   
+      CHARACTER*16 NOMTE
       CHARACTER*8  TYPMAI,TYPMAE,TYPMAM,TYPMAC
       INTEGER      NDIM,NDDL,NDDLSE,NNE,NNM,NNC,NNES
       INTEGER      NSINGE,NSINGM
@@ -58,135 +58,120 @@ C OUT NSINGM : NOMBRE DE FONCTIONS SINGULIERE MAITRES
 C OUT NDDLSE : NOMBRE DE DDLS D'UN NOEUD SOMMET ESCLAVE
 C
 C ----------------------------------------------------------------------
-C
-C
-C --- RECUPERATION DE LA DIMENSION DU PROBLEME ET DU TYPE DE MAILLE
-C --- CONTACT
-C    
-      IF (NOMTE(3:4).EQ.'CP'.OR.NOMTE(3:4).EQ.'DP') THEN
-        NDIM    = 2
-        NNC     = 2
-        TYPMAC  = 'SE2'
-      ELSEIF (NOMTE(3:4).EQ.'3D') THEN
-        NDIM    = 3
-        NNC     = 3
-        TYPMAC  = 'TR3' 
-      ELSE
-        CALL U2MESK('F','DVP_4',1,NOMTE)
-      ENDIF
-C
-C --- RECUPERATION DES INFOS DE L'ELEMENT ESCLAVE
-C
-      IF (NOMTE(5:6).EQ.'T3') THEN
-        TYPMAI = 'TRIA3'
-        TYPMAE = 'TR3'
-        NNE    = 3
-        LMALIN = .TRUE.
-      ELSEIF (NOMTE(5:6).EQ.'T6') THEN
-        TYPMAI = 'TRIA6'
-        TYPMAE = 'TR3'
-        NNE    = 6
-        LMALIN = .FALSE.
-      ELSEIF (NOMTE(5:6).EQ.'Q4') THEN
-        TYPMAI = 'QUAD4'
-        TYPMAE = 'QU4'
-        NNE    = 4
-        LMALIN = .TRUE.
-      ELSEIF (NOMTE(5:6).EQ.'Q8') THEN
-        TYPMAI = 'QUAD8'
-        TYPMAE = 'QU4'
-        NNE    = 8
-        LMALIN = .FALSE.
-      ELSEIF (NOMTE(5:6).EQ.'T4') THEN
-        TYPMAI = 'TETRA4'
-        TYPMAE = 'TE4'
-        NNE    = 4
-        LMALIN = .TRUE.
-      ELSEIF (NOMTE(5:6).EQ.'P6') THEN
-        TYPMAI = 'PENTA6'
-        TYPMAE = 'PE6'
-        NNE    = 6
-        LMALIN = .TRUE.
-      ELSEIF (NOMTE(5:6).EQ.'H8') THEN
-        TYPMAI = 'HEXA8'
-        TYPMAE = 'HE8'
-        NNE    = 8
-        LMALIN = .TRUE.
-      ELSE
-        CALL U2MESK('F','DVP_4',1,NOMTE)
-      ENDIF
-C
-C --- RECUPERATION DES INFOS DE L'ELEMENT MAITRE
-C
-      IF (NOMTE(8:9).EQ.'T3') THEN
-        TYPMAM = 'TR3'
-        NNM    = 3
-      ELSEIF (NOMTE(8:9).EQ.'Q4') THEN
-        TYPMAM = 'QU4'
-        NNM    = 4
-      ELSEIF (NOMTE(8:9).EQ.'T4') THEN
-        TYPMAM = 'TE4'
-        NNM    = 4
-      ELSEIF (NOMTE(8:9).EQ.'P6') THEN
-        TYPMAM = 'PE6'
-        NNM    = 6
-      ELSEIF (NOMTE(8:9).EQ.'H8') THEN
-        TYPMAM = 'HE8'
-        NNM    = 8
-      ELSEIF (NOMTE(7:7).EQ.'T') THEN
-        NNM    = 0        
-      ELSE
-        CALL U2MESK('F','DVP_4',1,NOMTE)
-      ENDIF
+C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
+      INTEGER          ZI
+      COMMON  /IVARJE/ ZI(1)
+      REAL*8           ZR
+      COMMON  /RVARJE/ ZR(1)
+      COMPLEX*16       ZC
+      COMMON  /CVARJE/ ZC(1)
+      LOGICAL          ZL
+      COMMON  /LVARJE/ ZL(1)
+      CHARACTER*8      ZK8
+      CHARACTER*16             ZK16
+      CHARACTER*24                      ZK24
+      CHARACTER*32                               ZK32
+      CHARACTER*80                                        ZK80
+      COMMON  /KVARJE/ ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
+C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
+
+
+      CHARACTER*8 ELREFP, ENRE, ENRM, TYPMA
+      CHARACTER*8 LIELRF(10)
+      INTEGER NTROU, ILIE, NDIMD, NNOD, NNOSD, IBID , IER
+      INTEGER IADZI,IAZK24
+      LOGICAL ISMALI
+
+      CALL ELREF1(ELREFP)
+      IF (ELREFP .EQ. 'HE8') TYPMAI = 'HEXA8'
+      IF (ELREFP .EQ. 'PE6') TYPMAI = 'PENTA6'
+      IF (ELREFP .EQ. 'TE4') TYPMAI = 'TETRA4'
+      IF (ELREFP .EQ. 'QU4') TYPMAI = 'QUAD4'
+      IF (ELREFP .EQ. 'QU8') TYPMAI = 'QUAD8'
+      IF (ELREFP .EQ. 'TR3') TYPMAI = 'TRIA3'
+      IF (ELREFP .EQ. 'TR6') TYPMAI = 'TRIA6'
+     
+      CALL TEATTR (NOMTE,'S','XFEM_E',ENRE,IER)
+      CALL TEATTR (NOMTE,'S','XFEM_M',ENRM,IER)
 C
 C --- NOMBRE DE FONCTIONS SINGULIERES    
 C
-      IF (NOMTE(10:10).EQ.'H'.OR.NOMTE(7:7).EQ.'T') THEN
-        NSINGM = 0
-      ELSEIF (NOMTE(10:10).EQ.'C') THEN
-        NSINGM = 1
+      IF (ENRE.EQ.'H') THEN
+        NSINGE = 0
+      ELSEIF ((ENRE.EQ.'C').OR.(ENRE.EQ.'T')) THEN
+        NSINGE = 1
       ELSE
         CALL U2MESK('F','DVP_4',1,NOMTE)
       ENDIF
 C       
-      IF (NOMTE(7:7).EQ.'H') THEN
-        NSINGE = 0
-      ELSEIF (NOMTE(7:7).EQ.'C') THEN
-        NSINGE = 1
-      ELSEIF (NOMTE(7:7).EQ.'T') THEN
-        NSINGE = 1
+      IF (ENRM.EQ.'C') THEN
+        NSINGM = 1
+      ELSEIF ((ENRM.EQ.'H').OR.(ENRM.EQ.'T')) THEN
+        NSINGM = 0
       ELSE
         CALL U2MESK('F','DVP_4',1,NOMTE)
-      ENDIF   
+      ENDIF
+
+      CALL ELREF2(NOMTE,10,LIELRF,NTROU)
+       
+      DO 190 ILIE = 1, NTROU
+        CALL ELREF4(LIELRF(ILIE),'NOEU',NDIMD,NNOD,NNOSD,IBID,
+     &               IBID,IBID,IBID,IBID)
+        IF ( ILIE.EQ.1 ) THEN
+         NDIM = NDIMD
+         NNE  = NNOD
+         NNES = NNOSD
+         TYPMAE = LIELRF(ILIE)
+         LMALIN = ISMALI(TYPMAE)
+        ENDIF
+
+        IF ( ILIE.EQ.2 .AND. NTROU.EQ.3 ) THEN
+         NNM  = NNOD
+         TYPMAM = LIELRF(ILIE)
+        ENDIF
+
+        IF ( ILIE.EQ.2 .AND. NTROU.EQ.2 ) THEN 
+         NNM  = NNE
+         TYPMAM = TYPMAE
+         NNC  = NNOD
+         TYPMAC = LIELRF(ILIE)
+        ENDIF
+
+        IF ( ILIE.EQ.3 .AND. NTROU.EQ.3 ) THEN
+         NNC  = NNOD
+         TYPMAC = LIELRF(ILIE)
+        ENDIF
+ 190  CONTINUE
+
+      CALL TECAEL(IADZI,IAZK24)
+      TYPMA=ZK24(IAZK24-1+3+ZI(IADZI-1+2)+3)
+      IF (TYPMA(1:2).EQ.TYPMA(4:5)) THEN
+        TYPMAE = TYPMAM
+      ENDIF
+
+      IF (ENRE.EQ.'T') THEN
+        NNM  = 0
+        TYPMAM = '  '
+      ENDIF     
 C
 C --- NOMBRE DE DDLS D'UN NOEUD SOMMET ESCLAVE    
 C
-      IF (NOMTE(7:7).EQ.'T') THEN
+      IF (ENRE.EQ.'T') THEN
         NDDLSE  = 2*NDIM
       ELSE
         NDDLSE  = NDIM *(3+NSINGE)
-      ENDIF                  
+      ENDIF
 C
 C --- CALCUL DU NOMBRE TOTAL DE DDL
 C
-      IF (NOMTE(7:7).EQ.'T') THEN
+      IF (ENRE.EQ.'T') THEN
         NDDL   = NDDLSE*NNE
       ELSE
         IF (LMALIN) THEN
-          NDDL = NDIM * (NNE*(3+NSINGE) + NNM*(2+NSINGM)) 
+          NDDL = NDIM * (NNE*(3+NSINGE) + NNM*(2+NSINGM))
         ELSE
           NDDL = NDIM * (NNE + 4*NNM)
         ENDIF
       ENDIF
-C
-C --- NOMBRE DE NOEUDS ESCLAVES SOMMETS
-C
-      IF (LMALIN) THEN
-C --- ON EST EN LINEAIRE
-        NNES  = NNE
-      ELSE
-C --- ON EST EN QUADRATIQUE
-        NNES  = NNE/2
-      ENDIF        
       
       END

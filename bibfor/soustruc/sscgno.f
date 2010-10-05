@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SOUSTRUC  DATE 02/02/2010   AUTEUR PELLET J.PELLET 
+C MODIF SOUSTRUC  DATE 29/09/2010   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -118,10 +118,7 @@ C ----------------------------------------------------------------------
         CALL GETVTX ( MOTFAC, 'NOM', IOCC,1,1, NOGNO, N1 )
         CALL JENONU ( JEXNOM(GRPNOE,NOGNO), IRET )
         IF (IRET.GT.0) THEN
-            IF (ALARM.EQ.'OUI') THEN
-              CALL U2MESK('A','SOUSTRUC_37',1,NOGNO)
-            END IF
-          GO TO 100
+          CALL U2MESK('F','SOUSTRUC_37',1,NOGNO)
         END IF
 
         N2 = -N2

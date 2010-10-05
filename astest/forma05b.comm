@@ -1,4 +1,4 @@
-# MODIF  DATE 13/09/2010   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 04/10/2010   AUTEUR GNICOLAS G.NICOLAS 
 # RESPONSABLE GNICOLAS G.NICOLAS
 # TITRE Maillage adaptatif thermo-mecanique sur une culasse fissuree
 # forma05b.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
@@ -312,8 +312,8 @@ for num_calc in range(0,nb_calc1) :
               MAILLAGE_N = MAT[num_calc],
               MAILLAGE_NP1 = MAT[num_calc1],
               RESULTAT_N=TEMP[num_calc],
-              INDICATEUR='ERRE_ELEM_TEMP',
-              NOM_CMP_INDICA='ERTREL',
+              NOM_CHAM='ERRE_ELEM_TEMP',
+              NOM_CMP='ERTREL',
               CRIT_RAFF_PE=0.2,
               CRIT_DERA_PE=0.1,
               QUALITE='OUI',
@@ -331,8 +331,8 @@ for num_calc in range(0,nb_calc1) :
               MAILLAGE_N = MAM[num_calc],
               MAILLAGE_NP1 = MAM[num_calc1],
               RESULTAT_N=DEPLA[num_calc],
-              INDICATEUR='ERRE_ELEM_SIGM',
-              NOM_CMP_INDICA='NUEST',
+              NOM_CHAM='ERRE_ELEM_SIGM',
+              NOM_CMP='NUEST',
               CRIT_RAFF_PE=0.2,
               CRIT_DERA_PE=0.1,
               QUALITE='OUI',

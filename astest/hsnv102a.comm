@@ -1,4 +1,4 @@
-# MODIF  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 05/10/2010   AUTEUR ABBAS M.ABBAS 
 # TITRE THERMO_METALLO_MECANIQUE COUPLEE EN TRACTION SIMPLE
 # hsnv102a.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -343,15 +343,7 @@ TEST_RESU(RESU=(
            _F(  RESULTAT = U,              NUME_ORDRE = 27,
              PARA = 'ITER_GLOB',        VALE_I = 0,
              CRITERE = 'ABSOLU',         PRECISION = 2.E0),
-           _F(  RESULTAT = U,              NUME_ORDRE = 27,
-             CRITERE = 'ABSOLU',        PRECISION = 1.E-07,
-             PARA = 'RESI_GLOB_RELA',   VALE = 0.),
-           _F(  RESULTAT = U,              NUME_ORDRE = 27,
-             CRITERE = 'ABSOLU',        PRECISION = 0.12,
-             PARA = 'RESI_GLOB',        VALE = 0.),
-           _F(  RESULTAT = U,              NUME_ORDRE = 27,
-             PARA = 'ITER_LINE',        VALE_I = 0,
-             CRITERE = 'ABSOLU',         PRECISION = 2.E+00))
+           )
            )
 
 U=CALC_ELEM( reuse=U,

@@ -1,6 +1,6 @@
-# MODIF  DATE 17/02/2009   AUTEUR SELLENET N.SELLENET 
-# TITRE TEST HHM 2D (HHM_DPQ4),CALCUL DECOUPLE (S=0.5, DSDP=0)
-# wtnv112c.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
+# MODIF  DATE 04/10/2010   AUTEUR LEBOUVIER F.LEBOUVIER 
+# TITRE TEST HHM 2D (HHM_DPTR3),CALCUL DECOUPLE (S=0.5, DSDP=0)
+# wtnv112c.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,7 +18,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-DEBUT(CODE=_F(NOM='WTNV112C', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NOM='WTNV112C',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 #
 ####################################
@@ -107,6 +107,7 @@ DPERGSA=DEFI_CONSTANTE(    VALE=0.)
 
 DPERGPG=DEFI_CONSTANTE(    VALE=0.)
 
+
 #
 #
 UN=DEFI_CONSTANTE(    VALE=1.)
@@ -156,7 +157,7 @@ MATERIAU=DEFI_MATERIAU(     THM_LIQU=_F(
    PORO = 0.14,
    PRES_VAPE = 2269.8,
    DEGR_SATU = 0.5),
-            COMP_THM = 'LIQU_GAZ',
+          COMP_THM = 'LIQU_GAZ',
                                      ELAS=_F(
    E = 40.E9,
    NU = 0.,
@@ -185,8 +186,8 @@ RESU0=STAT_NON_LINE(   MODELE=MODELE,
                           NEWTON=_F( MATRICE = 'TANGENTE',
                                   REAC_ITER = 121),
                          CONVERGENCE=_F(
-                                     RESI_GLOB_RELA = 1.E-6,
-                                     ITER_GLOB_MAXI = 10),
+                                     ITER_GLOB_MAXI = 120,
+                                     RESI_GLOB_RELA = 1.E-6),
                           ARCHIVAGE=_F(  LIST_INST = ARCHI)
                         )
 

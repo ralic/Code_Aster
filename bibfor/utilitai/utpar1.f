@@ -5,7 +5,7 @@
       CHARACTER*32 LIPARA(NBPAMX)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 12/01/2010   AUTEUR GRANET S.GRANET 
+C MODIF UTILITAI  DATE 05/10/2010   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -190,13 +190,25 @@ C     --------------------------------
       ELSEIF (TYPSD.EQ.'EVOL_NOLI') THEN
 C     --------------------------------
         ICO=ICO+1
+        LIPARA(ICO)='INST#A#R'
+        ICO=ICO+1
+C       -- FREQ ET CHAR_CRIT NE PEUTVENT  PAS ETRE UNE VARIABLE D'ACCES 
+C       A CAUSE DE LRIDEA.F (TEST ZZZZ165A)
+        LIPARA(ICO)='FREQ#P#R'
+        ICO=ICO+1
+        LIPARA(ICO)='CHAR_CRIT#P#R'
+C
+        ICO=ICO+1
         LIPARA(ICO)='CARAELEM#P#K8'
         ICO=ICO+1
         LIPARA(ICO)='CHAMPMAT#P#K8'
         ICO=ICO+1
-        LIPARA(ICO)='CHAR_CRIT#P#R'
+        LIPARA(ICO)='MODELE#P#K8'
         ICO=ICO+1
-        LIPARA(ICO)='CHAR_MINI#P#R'
+        LIPARA(ICO)='PARM_THETA#P#R'
+        ICO=ICO+1
+        LIPARA(ICO)='EXCIT#P#K24'
+C
         ICO=ICO+1
         LIPARA(ICO)='ERRE_HYD_D#P#R'
         ICO=ICO+1
@@ -234,49 +246,9 @@ C     --------------------------------
         ICO=ICO+1
         LIPARA(ICO)='ETA_PILOTAGE#P#R'
         ICO=ICO+1
-        LIPARA(ICO)='EXCIT#P#K24'
-        ICO=ICO+1
-C       -- FREQ NE PEUT PAS ETRE UNE VARIABLE D'ACCES A CAUSE DE
-C          LRIDEA.F (TEST ZZZZ165A)
-        LIPARA(ICO)='FREQ#P#R'
-        ICO=ICO+1
-        LIPARA(ICO)='GFITER#P#I'
-        ICO=ICO+1
-        LIPARA(ICO)='GFUA#P#R'
-        ICO=ICO+1
-        LIPARA(ICO)='GFUI#P#R'
-        ICO=ICO+1
-        LIPARA(ICO)='GFUM#P#R'
-        ICO=ICO+1
-        LIPARA(ICO)='GFUML#P#R'
-        ICO=ICO+1
-        LIPARA(ICO)='GFVAD#P#R'
-        ICO=ICO+1
-        LIPARA(ICO)='GFVAG#P#R'
-        ICO=ICO+1
-        LIPARA(ICO)='GFVFD#P#R'
-        ICO=ICO+1
-        LIPARA(ICO)='INST#A#R'
-        ICO=ICO+1
-        LIPARA(ICO)='ITER_DASHPOT#P#I'
-        ICO=ICO+1
         LIPARA(ICO)='ITER_GLOB#P#I'
         ICO=ICO+1
-        LIPARA(ICO)='ITER_LINE#P#I'
-        ICO=ICO+1
-        LIPARA(ICO)='MODELE#P#K8'
-        ICO=ICO+1
-        LIPARA(ICO)='PARM_THETA#P#R'
-        ICO=ICO+1
-        LIPARA(ICO)='RESI_GLOB#P#R'
-        ICO=ICO+1
-        LIPARA(ICO)='RESI_GLOB_MOINS#P#R'
-        ICO=ICO+1
-        LIPARA(ICO)='RESI_GLOB_RELA#P#R'
-        ICO=ICO+1
-        LIPARA(ICO)='RESI_REFE#P#R'
-        ICO=ICO+1
-        LIPARA(ICO)='RESI_COMP#P#R'
+        LIPARA(ICO)='CHAR_MINI#P#R'       
         ICO=ICO+1
         LIPARA(ICO)='TRAN_GENE_NOLI#P#K24'
         NBPARA=ICO

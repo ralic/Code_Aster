@@ -1,4 +1,4 @@
-# MODIF  DATE 15/03/2010   AUTEUR GNICOLAS G.NICOLAS 
+# MODIF  DATE 04/10/2010   AUTEUR GNICOLAS G.NICOLAS 
 # TITRE COUPLAGE ASTER_HOMARD - CAS 3D EN HEXAEDRES
 # zzzz121e.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -178,8 +178,8 @@ MACR_ADAP_MAIL(MAILLAGE_N=M00,
                MAILLAGE_NP1=CO('M01'),
                ADAPTATION='RAFFINEMENT',
                RESULTAT_N=RESU00,
-               INDICATEUR='ERRE_ELEM_SIGM',
-               NOM_CMP_INDICA='ERREST',
+               NOM_CHAM='ERRE_ELEM_SIGM',
+               NOM_CMP='ERREST',
                CRIT_RAFF_PE=0.1,
                QUALITE='OUI',
                CONNEXITE='OUI',

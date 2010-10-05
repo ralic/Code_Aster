@@ -1,4 +1,4 @@
-#@ MODIF soustruc Messages  DATE 19/07/2010   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+#@ MODIF soustruc Messages  DATE 29/09/2010   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -185,8 +185,13 @@ cata_msg={
 """),
 
 37: _("""
- le group_no : %(k1)s  existe deja, on ne le modifie pas.
+ Le groupe de noeuds '%(k1)s' existe déjà.
+ 
+ Conseil :
+    Si vous souhaitez utiliser un nom de groupe existant, il suffit
+    de le détruire avec DEFI_GROUP / DETR_GROUP_NO.
 """),
+
 
 38: _("""
  le group_no : %(k1)s  est vide, on ne le cree pas.

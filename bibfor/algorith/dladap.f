@@ -6,7 +6,7 @@
      &                  CHARGE,INFOCH,FOMULT,NUMEDD,NUME,INPSCO,NBPASE)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 24/08/2010   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 04/10/2010   AUTEUR GREFFET N.GREFFET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -121,10 +121,10 @@ C     ----- FIN COMMUNS NORMALISES  JEVEUX  ---------------------------
       CHARACTER*24  SOP
       CHARACTER*24  NDEEQ
       REAL*8        TPS1(4),TFIN
-      REAL*8        CMP,CDP,CPMIN,ERR,DTI,DT1,DT2,DTMIN,PAS1
+      REAL*8        CMP,CDP,ERR,DTI,DT1,DT2,DTMIN,PAS1
       REAL*8        TEMPS,TEMP2,DTMAX
       REAL*8        DTARCH,TARCH,TARCHI
-      REAL*8        EPSI,R8VAL,FREQ
+      REAL*8        EPSI,R8VAL,FREQ,RTMP
       REAL*8        TJOB
       REAL*8 PAS2
       REAL*8 VALR(3)
@@ -186,8 +186,8 @@ C
      &   CALL U2MESS('F','ALGORITH3_11')
       IF (DTI.EQ.0.D0)
      &   CALL U2MESS('F','ALGORITH3_12')
-      CALL RECPAR(NEQ,DTMAX,ZR(JVMIN),VVAR,CMP,CDP,CPMIN,NPER,NRMAX)
-      DTMIN = DTI * CPMIN
+      CALL RECPAR(NEQ,DTI,DTMAX,ZR(JVMIN),VVAR,CMP,CDP,
+     &            DTMIN,NPER,NRMAX)
       NBORDR = INT((TFIN-TINIT)/DTI)+2
       NBIPAS = INT((TFIN-TINIT)/DTI)+1
 C
@@ -387,8 +387,8 @@ C
 C        --- CALCUL DE VMIN ---
           IF (VVAR(1:4) .EQ. 'MAXI') THEN
             DO 109 IV = 0,NEQ-1
-              ZR(JVMIN+IV) = MAX(ZR(JVMIN+IV),
-     &                ABS(ZR(JVITE+IV)*1.D-02))
+              RTMP = ABS(ZR(JVITE+IV)*1.D-02)
+              ZR(JVMIN+IV) = MAX(ZR(JVMIN+IV),RTMP)
  109        CONTINUE
           ELSEIF (VVAR(1:4) .EQ. 'NORM') THEN
             DO 110 IV = 0,NEQ-1
@@ -396,8 +396,8 @@ C        --- CALCUL DE VMIN ---
                ZR(JVMIN1+IV)=1.D-02*ZR(JVIT2+(ZI(JIND1+IV)-1))
                ZR(JVMIN2+IV)=1.D-02*ZR(JVIT2+(ZI(JIND2+IV)-1))
               ENDIF
-              ZR(JVMIN+IV)=MAX(1.D-15,ZR(JVMIN1+IV),
-     &                    ZR(JVMIN2+IV))
+              RTMP = 1.D-15
+              ZR(JVMIN+IV)=MAX(RTMP,ZR(JVMIN1+IV),ZR(JVMIN2+IV))
  110        CONTINUE
           ENDIF
 C

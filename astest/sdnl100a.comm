@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2010   AUTEUR IDOUX L.IDOUX 
+# MODIF  DATE 05/10/2010   AUTEUR ABBAS M.ABBAS 
 # TITRE PENDULE SIMPLE EN GRANDE OSCILLATION
 # sdnl100a.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -100,15 +100,6 @@ TEST_RESU(RESU=(
             _F(  RESULTAT = RESU,           NUME_ORDRE = 10,
               PARA = 'ITER_GLOB',        VALE_I = 0,
               CRITERE = 'ABSOLU',         PRECISION = 9.E+00),
-            _F(  RESULTAT = RESU,           NUME_ORDRE = 10,
-              PARA = 'ITER_LINE',        VALE_I = 0,
-              CRITERE = 'ABSOLU',         PRECISION = 2.E+00),
-            _F(  RESULTAT = RESU,           NUME_ORDRE = 10,
-              CRITERE = 'ABSOLU',        PRECISION = 1.E-02,
-              PARA = 'RESI_GLOB_RELA',   VALE = 0.),
-            _F(  RESULTAT = RESU,           NUME_ORDRE = 10,
-              CRITERE = 'ABSOLU',        PRECISION = 1.,
-              PARA = 'RESI_GLOB',        VALE = 0.),
 #
             _F(  RESULTAT = RESU,       INST = 0.8372,        NOM_CHAM = 'DEPL',
               CRITERE = 'RELATIF',  PRECISION = 0.01E-2,
@@ -122,15 +113,6 @@ TEST_RESU(RESU=(
             _F(  RESULTAT = RESU,           NUME_ORDRE = 15,
               PARA = 'ITER_GLOB',        VALE_I = 0,
               CRITERE = 'ABSOLU',         PRECISION = 6.E0),
-            _F(  RESULTAT = RESU,           NUME_ORDRE = 15,
-              PARA = 'ITER_LINE',        VALE_I = 0,
-              CRITERE = 'ABSOLU',         PRECISION = 2.E0),
-            _F(  RESULTAT = RESU,           NUME_ORDRE = 15,
-              CRITERE = 'ABSOLU',
-              PARA = 'RESI_GLOB_RELA',   VALE = 0.),
-            _F(  RESULTAT = RESU,           NUME_ORDRE = 15,
-              CRITERE = 'ABSOLU',        PRECISION = 1.E-02,
-              PARA = 'RESI_GLOB',        VALE = 0.),
 #
             _F(  RESULTAT = RESU,
              INST = 1.2558,
@@ -153,15 +135,7 @@ TEST_RESU(RESU=(
             _F(  RESULTAT = RESU,           NUME_ORDRE = 19,
               PARA = 'ITER_GLOB',        VALE_I = 0,
               CRITERE = 'ABSOLU',         PRECISION = 8.E+00),
-            _F(  RESULTAT = RESU,           NUME_ORDRE = 19,
-              PARA = 'ITER_LINE',        VALE_I = 0,
-              CRITERE = 'ABSOLU',         PRECISION = 2.E+00),
-            _F(  RESULTAT = RESU,           NUME_ORDRE = 19,
-              CRITERE = 'ABSOLU',        PRECISION = 1.E-05,
-              PARA = 'RESI_GLOB_RELA',   VALE = 0.),
-            _F(  RESULTAT = RESU,           NUME_ORDRE = 19,
-              CRITERE = 'ABSOLU',        PRECISION = 1.E-04,
-              PARA = 'RESI_GLOB',        VALE = 0.))
+           )
 #
                )
 

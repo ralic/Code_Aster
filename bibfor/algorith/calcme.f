@@ -8,7 +8,7 @@
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 28/06/2010   AUTEUR MEUNIER S.MEUNIER 
+C MODIF ALGORITH  DATE 04/10/2010   AUTEUR FOUCAULT A.FOUCAULT 
 C RESPONSABLE UFBHHLL C.CHAVANT
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -89,9 +89,7 @@ C
 C ======================================================================
 C --- RECUPERATION DES DONNEES MATERIAU DANS DEFI_MATERIAU -------------
 C ======================================================================
-      IF (  (MECA.EQ.'ELAS')            .OR.
-     &      (MECA.EQ.'CJS')             .OR.
-     &      (MECA.EQ.'HUJEUX')             .OR.
+      IF (  (MECA.EQ.'CJS')             .OR.
      &      (MECA.EQ.'CAM_CLAY')        .OR.
      &      (MECA.EQ.'BARCELONE')       .OR.
      &      (MECA.EQ.'LAIGLE')          .OR.
@@ -102,21 +100,12 @@ C ======================================================================
          IF ( OPTION(10:14).EQ.'_ELAS' ) THEN
             CALL U2MESS('F','ALGORITH_67')
          ENDIF
-         CALL RCVALA(IMATE,' ','ELAS',1,'TEMP', T,3,
-     &                                 NCRA1(1),ELAS(1),CODRET,'FM')
-         YOUNG  = ELAS(1)
-         NU     = ELAS(2)
-         ALPHA0 = ELAS(3)
       ENDIF
-      IF (( MECA.EQ.'DRUCK_PRAGER' ).OR.(MECA.EQ.'VISC_DRUC_PRAG').OR.
-     &    (MECA.EQ.'LETK').OR.(MECA.EQ.'ELAS_GONF').OR.
-     &    (MECA.EQ.'DRUCK_PRAG_N_A')) THEN
-         CALL RCVALA(IMATE,' ','ELAS',0,' ',0.D0,NELAS,
-     &                                           NCRA1,ELAS,CODRET,'FM')
-         YOUNG  = ELAS(1)
-         NU     = ELAS(2)
-         ALPHA0 = ELAS(3)
-      ENDIF
+      CALL RCVALA(IMATE,' ','ELAS',1,'TEMP', T,3,
+     &            NCRA1(1),ELAS(1),CODRET,'FM')
+      YOUNG  = ELAS(1)
+      NU     = ELAS(2)
+      ALPHA0 = ELAS(3)
 C ======================================================================
 C --- RECUPERATION OU NON DE LA PRESSION DE GAZ
 C ======================================================================
@@ -132,7 +121,7 @@ C ======================================================================
 C --- LOI ELASTIQUE ----------------------------------------------------
 C ======================================================================
       IF ((MECA.EQ.'ELAS')) THEN
-         IF ((OPTION(1:16).EQ.'RIGI_MECA_TANG').OR.
+         IF ((OPTION(1:9).EQ.'RIGI_MECA').OR.
      &      (OPTION(1:9).EQ.'FULL_MECA')) THEN
            DO 101 I=1,3
              DO 301 J=1,3
@@ -152,7 +141,7 @@ C
             ENDIF
 C
           DO 102 I=1,6
-            IF ((OPTION(1:16).EQ.'RIGI_MECA_TANG').OR.
+            IF ((OPTION(1:9).EQ.'RIGI_MECA').OR.
      &         (OPTION(1:9).EQ.'FULL_MECA')) THEN
                DSDE(ADCOME-1+I,ADDEME+NDIM-1+I)=
      &             DSDE(ADCOME-1+I,ADDEME+NDIM-1+I)+YOUNG/(1.D0+NU)
@@ -165,7 +154,7 @@ C
  102     CONTINUE
          IF (YATE.EQ.1) THEN
             DO 103 I=1,3
-               IF ((OPTION(1:16).EQ.'RIGI_MECA_TANG').OR.
+               IF ((OPTION(1:9).EQ.'RIGI_MECA').OR.
      &            (OPTION(1:9).EQ.'FULL_MECA')) THEN
                   DSDE(ADCOME-1+I,ADDETE)=DSDE(ADCOME-1+I,ADDETE)
      &                           -YOUNG*ALPHA0/(1.D0-2.D0*NU)

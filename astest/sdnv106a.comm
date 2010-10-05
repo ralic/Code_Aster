@@ -1,5 +1,6 @@
-# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 04/10/2010   AUTEUR GREFFET N.GREFFET 
 # TITRE ANALYSE AUX VALEURS PROPRES DANS DYNA_NON_LINE
+# sdnv106a.para = tps_job 300 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -148,6 +149,7 @@ REPONSE=DYNA_NON_LINE( reuse=REPONSE,
                 CRIT_FLAMB = _F(NB_FREQ=1,CHAR_CRIT=(-100.0,100.),),
                 MODE_VIBR = _F(NB_FREQ=3,MATR_RIGI='TANGENTE',),
                 ARCHIVAGE = _F(LIST_INST=L_ARCH,),
+                RECH_LINEAIRE=_F(METHODE='MIXTE',),
              );
 #
 REPONSE=DYNA_NON_LINE( reuse=REPONSE,
@@ -166,6 +168,7 @@ REPONSE=DYNA_NON_LINE( reuse=REPONSE,
                 CRIT_FLAMB = _F(NB_FREQ=1,
                                 CHAR_CRIT=(-100.0,100.),),
                 MODE_VIBR = _F(BANDE=(0.1,0.5),MATR_RIGI='ELASTIQUE',),
+                RECH_LINEAIRE=_F(METHODE='MIXTE',),
              );
 #
 #  Frequence du premier mode pour le materiau elastique raide

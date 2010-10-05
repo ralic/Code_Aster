@@ -4,7 +4,7 @@
 C =====================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C =====================================================================
-C MODIF ELEMENTS  DATE 18/05/2010   AUTEUR MEUNIER S.MEUNIER 
+C MODIF ELEMENTS  DATE 04/10/2010   AUTEUR MEUNIER S.MEUNIER 
 C RESPONSABLE UFBHHLL C.CHAVANT
 C =====================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,16 +22,13 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C =====================================================================
-C TOLE CRP_20
-C TOLE CRP_21
-C =====================================================================
 C    - FONCTION REALISEE:  CALCUL DES OPTIONS NON-LINEAIRES MECANIQUES
 C                          ELEMENTS THHM, HM ET HH
 C    - ARGUMENTS:
 C        DONNEES:      OPTION       -->  OPTION DE CALCUL
 C                      NOMTE        -->  NOM DU TYPE ELEMENT
 C =====================================================================
-      INTEGER JGANO,NNO,IMATUU,NDIM,IMATE,IINSTM,IFORC,JCRET
+      INTEGER JGANO,NNO,IMATUU,NDIM,IMATE,IINSTM,JCRET
       INTEGER IPOID2,IVF2
       INTEGER IDFDE2,NPI,NPG,NVIM
 C
@@ -61,8 +58,7 @@ C =====================================================================
       INTEGER DIMDEP,DIMDEF,DIMCON,NBVARI,NDDLS,NDDLM,II,INO
       INTEGER NMEC,NP1,NP2,I,NCMP,NNOS,ICHG,ICHN
       INTEGER JTAB(7),IGAU,ISIG,NNOM
-      REAL*8 DEFGEP(21),DEFGEM(21)
-      REAL*8 DFDX(27),DFDY(27),DFDZ(27),POIDS
+      REAL*8 DEFGEP(21),DEFGEM(21),DFDBID(27),POIDS
       REAL*8 DFDI(20,3),DFDI2(20,3),B(21,120),EPSM(405),EPSNO(405)
       REAL*8 DRDS(22,31),DRDSR(21,31),DSDE(31,21)
       REAL*8 R(22),SIGBAR(21),C(21),CK(21),CS(21)
@@ -247,7 +243,7 @@ C =====================================================================
             DO 70 KP = 1,NPG
                L = (KP-1)*NNO
                CALL DFDM3D ( NNO, KP, IPOIDS, IDFDE,
-     +                             ZR(IGEOM), DFDX, DFDY, DFDZ, POIDS )
+     &                     ZR(IGEOM), DFDBID, DFDBID, DFDBID, POIDS )
                COEF = RHO*POIDS*ZR(IPESA)
                DO 60 I = 1,NNOS
                   II = NDDLS* (I-1)
@@ -270,22 +266,20 @@ C --- CAS 2D ----------------------------------------------------------
 C =====================================================================
             DO 110 KP = 1,NPG
                K = (KP-1)*NNO
-               CALL DFDM2D(NNO,KP,IPOIDS,IDFDE,ZR(IGEOM),DFDX,DFDY,
+               CALL DFDM2D(NNO,KP,IPOIDS,IDFDE,ZR(IGEOM),DFDBID,DFDBID,
      +                                                           POIDS)
                POIDS = POIDS*RHO*ZR(IPESA)
-               IF (TYPMOD(1).EQ.'AXIS    ') THEN
+               IF (AXI) THEN
                   RX = 0.D0
                   DO 80 I = 1,NNO
                      RX = RX + ZR(IGEOM+2*I-2)*ZR(IVF+K+I-1)
  80               CONTINUE
                   POIDS = POIDS*RX
                   DO 90 I = 1,NNOS
-                     K = (KP-1)*NNO
                      ZR(IVECTU+NDDLS*(I-1)+1)=ZR(IVECTU+NDDLS*(I-1)+1)
      +                                +POIDS*ZR(IPESA+2)*ZR(IVF+K+I-1)
  90               CONTINUE
                   DO 95 I = 1,NNOM
-                     K = (KP-1)*NNO
                      ZR(IVECTU+NDDLS*NNOS+NDDLM*(I-1)+1) =
      +               ZR(IVECTU+NDDLS*NNOS+NDDLM*(I-1)+1) +
      +                            POIDS*ZR(IPESA+2)*ZR(IVF+K+I+NNOS-1)
@@ -293,14 +287,12 @@ C =====================================================================
                ELSE
 
                   DO 100 I = 1,NNOS
-                     K = (KP-1)*NNO
                      ZR(IVECTU+NDDLS*(I-1)) = ZR(IVECTU+NDDLS*(I-1))
      +                                +POIDS*ZR(IPESA+1)*ZR(IVF+K+I-1)
                      ZR(IVECTU+NDDLS*(I-1)+1)=ZR(IVECTU+NDDLS*(I-1)+1)
      +                                +POIDS*ZR(IPESA+2)*ZR(IVF+K+I-1)
  100              CONTINUE
                   DO 400 I = 1,NNOM
-                     K = (KP-1)*NNO
                      ZR(IVECTU+NDDLS*NNOS+NDDLM*(I-1))=
      +               ZR(IVECTU+NDDLS*NNOS+NDDLM*(I-1)) +
      +                            POIDS*ZR(IPESA+1)*ZR(IVF+K+I+NNOS-1)
@@ -312,79 +304,17 @@ C =====================================================================
   110       CONTINUE
          END IF
       END IF
-C =====================================================================
-C --- 4. OPTION : CHAR_MECA_FR3D3D ------------------------------------
-C =====================================================================
-      IF (OPTION.EQ.'CHAR_MECA_FR3D3D') THEN
-         CALL JEVECH('PGEOMER','L',IGEOM)
-         CALL JEVECH('PVECTUR','E',IVECTU)
-         CALL JEVECH('PFR3D3D','L',IFORC)
-         DO 120 I = 1,DIMUEL
-            ZR(IVECTU+I-1) = 0.0D0
- 120     CONTINUE
-C ======================================================================
-C --- BOUCLE SUR LES POINTS DE GAUSS -----------------------------------
-C ======================================================================
-         DO 150 KP = 1,NPG
-            L = (KP-1)*NNO
-            CALL DFDM3D(NNO,KP,IPOIDS,IDFDE,ZR(IGEOM),DFDX,DFDY,DFDZ,
-     +                                                            POIDS)
-            DO 140 I = 1,NNOS
-               II = NDDLS* (I-1)
-               DO 130 J = 1,3
-                  ZR(IVECTU+II+J-1) = ZR(IVECTU+II+J-1) +
-     +                                 POIDS*ZR(IVF+L+I-1)*ZR(IFORC+J-1)
- 130           CONTINUE
- 140        CONTINUE
-             DO 145 I = 1,NNOM
-               II = NNOS*NDDLS+NDDLS*(I-1)
-               DO 135 J = 1,3
-                  ZR(IVECTU+II+J-1) = ZR(IVECTU+II+J-1) +
-     +                            POIDS*ZR(IVF+L+I+NNOS-1)*ZR(IFORC+J-1)
- 135           CONTINUE
- 145        CONTINUE
- 150     CONTINUE
-      END IF
-C ======================================================================
-C --- 5. OPTION : CHAR_MECA_FR2D2D -------------------------------------
-C ======================================================================
-      IF (OPTION.EQ.'CHAR_MECA_FR2D2D') THEN
-         CALL JEVECH('PGEOMER','L',IGEOM)
-         CALL JEVECH('PFR2D2D','L',IFORC)
-         CALL JEVECH('PVECTUR','E',IVECTU)
 
-         DO 180 KP = 1,NPG
-            K = (KP-1)*NNO
-            CALL DFDM2D(NNO,KP,IPOIDS,IDFDE,ZR(IGEOM),DFDX,DFDY,POIDS)
-            IF (TYPMOD(1).EQ.'AXIS    ') THEN
-               RX = 0.D0
-               DO 160 I = 1,NNO
-                  RX = RX + ZR(IGEOM+2*(I-1))*ZR(IVF+K+I-1)
- 160           CONTINUE
-               POIDS = POIDS*RX
-            END IF
-            DO 170 I = 1,NNOS
-               K = (KP-1)*NNO
-               L = (KP-1)*2
-               ZR(IVECTU+NDDLS*(I-1)) = ZR(IVECTU+NDDLS*(I-1)) +
-     +                                   POIDS*ZR(IFORC+L)*ZR(IVF+K+I-1)
-               ZR(IVECTU+NDDLS*(I-1)+1) = ZR(IVECTU+NDDLS*(I-1)+1) +
-     +                                 POIDS*ZR(IFORC+L+1)*ZR(IVF+K+I-1)
- 170        CONTINUE
-            DO 171 I = 1,NNOM
-               K = (KP-1)*NNO
-               L = (KP-1)*2
-               ZR(IVECTU+NDDLS*NNOS+NDDLM*(I-1))=
-     +         ZR(IVECTU+NDDLS*NNOS+NDDLM*(I-1)) +
-     +                              POIDS*ZR(IFORC+L)*ZR(IVF+K+I+NNOS-1)
-               ZR(IVECTU+NDDLS*NNOS+NDDLM*(I-1)+1) =
-     +         ZR(IVECTU+NDDLS*NNOS+NDDLM*(I-1)+1) +
-     +                            POIDS*ZR(IFORC+L+1)*ZR(IVF+K+I+NNOS-1)
- 171        CONTINUE
- 180     CONTINUE
-      END IF
+C =====================================================================
+C --- 4. OPTIONS : CHAR_MECA_FR2D2D OU CHAR_MECA_FR3D3D ---------------
+C =====================================================================
+
+      CALL THMEVC(OPTION,NOMTE,AXI  ,NNO,NPG,IPOIDS,
+     &            IVF   ,IDFDE,NDDLS,
+     &            NNOS  ,NDDLM,NNOM  )
+
 C ======================================================================
-C --- 6. OPTION : FORC_NODA --------------------------------------------
+C --- 5. OPTION : FORC_NODA --------------------------------------------
 C ======================================================================
       IF (OPTION.EQ.'FORC_NODA') THEN
 C ======================================================================
@@ -419,7 +349,7 @@ C ======================================================================
      +              NMEC,NP1,NP2,NDIM,AXI)
       END IF
 C ======================================================================
-C --- 7. OPTION : REFE_FORC_NODA ---------------------------------------
+C --- 6. OPTION : REFE_FORC_NODA ---------------------------------------
 C ======================================================================
       IF (OPTION.EQ.'REFE_FORC_NODA') THEN
 C ======================================================================
@@ -454,7 +384,7 @@ C ======================================================================
      &              ZR(ICONTM))
       END IF
 C ======================================================================
-C --- 8. OPTION : SIEF_ELNO_ELGA ---------------------------------------
+C --- 7. OPTION : SIEF_ELNO_ELGA ---------------------------------------
 C ======================================================================
       IF (OPTION.EQ.'SIEF_ELNO_ELGA  ') THEN
          NCMP = DIMCON
@@ -464,7 +394,7 @@ C ======================================================================
          CALL POSTHM(OPTION,MODINT,JGANO,NCMP,NVIM,ZR(ICHG),ZR(ICHN))
       ENDIF
 C ======================================================================
-C --- 9. OPTION : VARI_ELNO_ELGA ---------------------------------------
+C --- 8. OPTION : VARI_ELNO_ELGA ---------------------------------------
 C ======================================================================
       IF (OPTION.EQ.'VARI_ELNO_ELGA  ') THEN
          CALL JEVECH('PVARIGR','L',ICHG)
@@ -478,7 +408,7 @@ C ======================================================================
          CALL POSTHM(OPTION,MODINT,JGANO,NCMP,NVIM,ZR(ICHG),ZR(ICHN))
       END IF
 C ======================================================================
-C --- 10. OPTION : EPSI_ELGA_DEPL OU EPSI_ELNO_DEPL --------------------
+C --- 9. OPTION : EPSI_ELGA_DEPL OU EPSI_ELNO_DEPL ---------------------
 C ======================================================================
       IF ((OPTION.EQ.'EPSI_ELGA_DEPL') .OR.
      &    (OPTION.EQ.'EPSI_ELNO_DEPL')) THEN

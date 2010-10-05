@@ -1,4 +1,4 @@
-# MODIF  DATE 21/09/2010   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 04/10/2010   AUTEUR GNICOLAS G.NICOLAS 
 # TITRE VALIDATION DE LA MACRO-COMMANDE RAFF_XFEM SUR UNE PLAQUE MULTI-FISSUREE
 # sslp317a.para = tps_job 60 mem_job 100Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -107,7 +107,6 @@ for num_calc in range(0,nb_raff+1) :
                   CHAM_GD = CHERR[num_calc],
                   CRIT_RAFF_PE = 0.10,
                   TYPE_VALEUR_INDICA='V_RELATIVE',
-                  NOM_CMP_INDICA = 'X1',
                   MAILLAGE_N = MA[num_calc],
                   MAILLAGE_NP1 = MA[num_calc+1],
                   ELEMENTS_NON_HOMARD='IGNORER')

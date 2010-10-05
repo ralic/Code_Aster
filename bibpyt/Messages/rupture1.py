@@ -1,4 +1,4 @@
-#@ MODIF rupture1 Messages  DATE 09/08/2010   AUTEUR BARGELLINI R.BARGELLINI 
+#@ MODIF rupture1 Messages  DATE 04/10/2010   AUTEUR PROIX J-M.PROIX 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -140,7 +140,7 @@ plus petites que le rayon du fond de fissure.
 
 24: _("""
 L'option CALC_K_G est incompatible avec les comportements incrémentaux,
-avec les comportements non linéaires et avec la déformation GREEN.
+avec les comportements non linéaires et avec la déformation GROT_GDEP.
 """),
 
 25: _("""
@@ -160,7 +160,7 @@ DEFI_MATERIAU.
 
 27: _("""
 L'option est incompatible avec les comportements incrémentaux ainsi
-qu'avec la déformation Green.
+qu'avec la déformation GROT_GDEP.
 """),
 
 28: _("""

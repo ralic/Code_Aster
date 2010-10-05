@@ -3,7 +3,7 @@
       IMPLICIT NONE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 28/06/2010   AUTEUR PELLET J.PELLET 
+C MODIF ASSEMBLA  DATE 04/10/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -1008,8 +1008,7 @@ C     ----------------------------------------------------------
             C19='&&ASSVEC.CHAMNO'
             CALL VTCREB(C19,NU,'V',KTYP,NEQUA)
 
-            CALL VTCOPY(B19,C19,IER)
-            CALL ASSERT(IER.EQ.0)
+            CALL VTCOPY(B19,C19)
             CALL JEVEUO(C19//'.VALE','L',JVALE2)
             DO 13,J=1,NEQUA
               ZR(JVALE1-1+J)=ZR(JVALE1-1+J)+ZR(JVALE2-1+J)

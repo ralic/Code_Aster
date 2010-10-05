@@ -1,4 +1,4 @@
-#@ MODIF jeveux1 Messages  DATE 07/09/2010   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+#@ MODIF jeveux1 Messages  DATE 29/09/2010   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -97,7 +97,8 @@ cata_msg = {
 
 13 : _("""
 
- Le répertoire de noms %(k1)s contient %(i1)d points d'entrée, la requête JENUNO sur le numéro (%i2)d est invalide.
+ Le répertoire de noms %(k1)s contient %(i1)d points d'entrée, la requête JENUNO
+ sur le numéro %(i2)d est invalide.
 
 """),
 
@@ -261,19 +262,21 @@ cata_msg = {
 
 40 : _("""
 
- La longueur du type caractère vaut (%i1)d, elle doit être comprise entre 1 et 512 .
+ La longueur du type caractère vaut %(i1)d, elle doit être comprise entre 1 et 512 .
  
 """),
 
 41 : _("""
 
- Pour un objet de genre N (répertoire de noms), la longueur du type caractère vaut (%i1)d, elle n'est pas un multiple de 8.
+ Pour un objet de genre N (répertoire de noms), la longueur du type caractère
+ vaut %(i1)d, elle n'est pas un multiple de 8.
  
 """),
 
 42 : _("""
 
- Pour un objet de genre N (répertoire de noms), la longueur du type caractère vaut (%i1)d, elle ne peut être supérieure à 24.
+ Pour un objet de genre N (répertoire de noms), la longueur du type caractère
+ vaut %(i1)d, elle ne peut être supérieure à 24.
  
 """),
 
@@ -357,19 +360,19 @@ cata_msg = {
 
 56 : _("""
 
-  La structure du nom de l'objet est invalide au-delà des 24 premiers caractères, elle vaut (%k1)s. 
+  La structure du nom de l'objet est invalide au-delà des 24 premiers caractères, elle vaut %(k1)s. 
  
 """),
 
 57 : _("""
 
-  La structure du nom de l'objet est invalide, elle vaut (%k1)s. 
+  La structure du nom de l'objet est invalide, elle vaut %(k1)s. 
  
 """),
 
 58 : _("""
 
-  La structure du nom de l'objet est invalide, le caractère (%k1)s est illicite. 
+  La structure du nom de l'objet est invalide, le caractère %(k1)s est illicite. 
  
 """),
 

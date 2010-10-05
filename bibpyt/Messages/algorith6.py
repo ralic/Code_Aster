@@ -1,4 +1,4 @@
-#@ MODIF algorith6 Messages  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
+#@ MODIF algorith6 Messages  DATE 04/10/2010   AUTEUR PROIX J-M.PROIX 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -247,7 +247,7 @@ cata_msg = {
 """),
 
 96 : _("""
- GREEN deformation required for ELAS_HYPER material
+ GROT_GDEP deformation required for ELAS_HYPER material
 """),
 
 }

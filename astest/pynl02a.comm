@@ -1,22 +1,22 @@
-# MODIF  DATE 10/08/2010   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 04/10/2010   AUTEUR PELLET J.PELLET 
 # TITRE STAT_NON_LINE EN COMMANDES ECLATEES POUR UN CALCUL ELASTO-PLASTIQUE
 # pynl02a.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
 DEBUT(CODE=_F(NOM='PYNL02A',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'),PAR_LOT='NON')
@@ -70,7 +70,7 @@ FTRACTUB=DEFI_FONCTION(NOM_PARA='EPSI',
                              1.923300E-02,  382.21,),
                        PROL_DROITE='LINEAIRE',
                        PROL_GAUCHE='LINEAIRE',);
-                       
+
 MAT=DEFI_MATERIAU(ELAS=_F(E=2.213E5,NU=0.3,),
                   TRACTION=_F(SIGM=FTRACTUB,),
                   PRAGER  =_F(C=2200,),);
@@ -112,7 +112,7 @@ SOLUT=STAT_NON_LINE(MODELE=MO,
 # boucle sur les pas de temps
 pred = 'elastique'
 l_inst = LIST.Valeurs()
-for i_inst in range(1,len(l_inst)) : 
+for i_inst in range(1,len(l_inst)) :
    inst = l_inst[i_inst]
    print ' '
    print '        ####################################'
@@ -153,16 +153,16 @@ for i_inst in range(1,len(l_inst)) :
 #                            NOM_CMP=('DX','DY','DZ'),
 #                            VALE=(0.,0.,0.),
 #                            ),);
-# 
+#
 #       U=CREA_CHAMP(OPERATION='COMB',
 #                    TYPE_CHAM='NOEU_DEPL_R',
 #                    COMB=(_F(CHAM_GD=DU, COEF_R=0.),
 #                          _F(CHAM_GD=DU,   COEF_R=0.),),)
 
-#     EN FAIT, ON NE PEUT PAS CREER LE CHAMP U ICI CAR SON PROFIL SERAIT MAUVAIS                   
-#     ON LE FERA APRES LA PREDICTION DU 1ER PAS DE TEMPS                   
-                   
-                   
+#     EN FAIT, ON NE PEUT PAS CREER LE CHAMP U ICI CAR SON PROFIL SERAIT MAUVAIS
+#     ON LE FERA APRES LA PREDICTION DU 1ER PAS DE TEMPS
+
+
       SIGMA=CREA_CHAMP(TYPE_CHAM='ELGA_SIEF_R',
                       OPERATION='AFFE',
                       MODELE=MO,
@@ -222,7 +222,7 @@ for i_inst in range(1,len(l_inst)) :
                        NOM_PARA='NOM_SD',
                        FILTRE=_F(NOM_PARA='NOM_OBJET',
                                  VALE_K='VARI_ELGA'),)
-                      
+
       VARI=CREA_CHAMP(TYPE_CHAM='ELGA_VARI_R',
                       OPERATION='ASSE',
                       MODELE   =MO,
@@ -230,7 +230,7 @@ for i_inst in range(1,len(l_inst)) :
                       ASSE  = _F(TOUT       ='OUI',
                                  CHAM_GD    =VAR_TEMP));
 
-      DETRUIRE(CONCEPT=_F(NOM=(SIG_TEMP,VAR_TEMP),),INFO=1)   
+      DETRUIRE(CONCEPT=_F(NOM=(SIG_TEMP,VAR_TEMP),),INFO=1)
 
 
       # STOCKAGE DE LA CHARGE DU PAS DE TEMPS PRECEDENT
@@ -275,14 +275,14 @@ for i_inst in range(1,len(l_inst)) :
                        OPERATION='COMB',
                        TYPE_CHAM='NOEU_DEPL_R',
                        COMB=_F(CHAM_GD=CHARB_AS, COEF_R=RAMPE(inst)))
-                         
+
    # construction du second membre
    if i_inst == 1 :
       F_AS=CREA_CHAMP(OPERATION='COMB',
                       TYPE_CHAM='NOEU_DEPL_R',
                       COMB=_F(CHAM_GD=CHARB_AS, COEF_R=1.),)
    else :
-                            
+
       DETRUIRE(CONCEPT=_F(NOM=(F_AS),),INFO=1)
       F_AS=CREA_CHAMP(OPERATION='COMB',
                       TYPE_CHAM='NOEU_DEPL_R',
@@ -326,7 +326,7 @@ for i_inst in range(1,len(l_inst)) :
    ResiduX = NP.zeros(NbIterNewtonMax+1)
    Conv    = NP.zeros(NbIterNewtonMax+1)
 
-   for IterNewton in range(1,NbIterNewtonMax+1) : 
+   for IterNewton in range(1,NbIterNewtonMax+1) :
 
 
       #=========================================================
@@ -354,17 +354,15 @@ for i_inst in range(1,len(l_inst)) :
       #   VERIFICTION DU CODE RETOUR DE L'INTEGRATION DE LA LC
       #=========================================================
 
-      CODE=EXTR_TABLE(TYPE_RESU='CHAM_GD_SDASTER',
+      CODE=EXTR_TABLE(TYPE_RESU='CHAM_ELEM',
                        TABLE=CONT,
                        NOM_PARA='NOM_SD',
                        FILTRE=_F(NOM_PARA='NOM_OBJET',
                                  VALE_K='CODE_RETOUR'),)
-
-      # A REMPLACE SUITE A LA FICHE 15396
-      cod = aster.getvectjev("CODE               .CELV        ")
-      if max(cod) > 0 :
+      if max(CODE.EXTR_COMP("IRET",[]).valeurs) > 0 :
          print 'echec d integration de la loi de comportement'
          FIN()
+
 
       DETRUIRE(CONCEPT=_F(NOM=CODE),INFO=1)
 
@@ -430,7 +428,7 @@ for i_inst in range(1,len(l_inst)) :
                       TYPE_CHAM='NOEU_DEPL_R',
                       COMB=(_F(CHAM_GD=FORIN_AS, COEF_R=-1.),
                             _F(CHAM_GD=BTLA_AS,  COEF_R=-1.),),)
-      
+
       RESB=CREA_CHAMP(OPERATION='COMB',
                       TYPE_CHAM='NOEU_DEPL_R',
                       COMB=(_F(CHAM_GD=CHARB_AS, COEF_R= 1.),
@@ -480,10 +478,10 @@ for i_inst in range(1,len(l_inst)) :
 
    print 'instant ',inst
    print 'IterNewton | Resi_Glob_rela   | Resi_Glob_Maxi  | Convergence'
-   for i in range(0,IterNewton) : 
+   for i in range(0,IterNewton) :
        print '     %d     |   %e   |   %e  |    %d ' %(i,Residu[i],ResiduX[i],Conv[i])
-     
-   if Conv[IterNewton-1] != 1 : 
+
+   if Conv[IterNewton-1] != 1 :
       print 'echec de la convergence des iteration de Newton'
       FIN()
 
@@ -531,7 +529,7 @@ VAR_TEMP=EXTR_TABLE(TYPE_RESU='CHAM_GD_SDASTER',
                  NOM_PARA='NOM_SD',
                  FILTRE=_F(NOM_PARA='NOM_OBJET',
                            VALE_K='VARI_ELGA'),)
-                
+
 VARI=CREA_CHAMP(TYPE_CHAM='ELGA_VARI_R',
                 OPERATION='ASSE',
                 MODELE   =MO,
@@ -539,7 +537,7 @@ VARI=CREA_CHAMP(TYPE_CHAM='ELGA_VARI_R',
                 ASSE  = _F(TOUT       ='OUI',
                            CHAM_GD    =VAR_TEMP));
 
-DETRUIRE(CONCEPT=_F(NOM=(SIG_TEMP,VAR_TEMP),),INFO=1)   
+DETRUIRE(CONCEPT=_F(NOM=(SIG_TEMP,VAR_TEMP),),INFO=1)
 
 #=========================================================
 #            REALISATION DES TESTS

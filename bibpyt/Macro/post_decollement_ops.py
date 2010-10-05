@@ -1,4 +1,4 @@
-#@ MODIF post_decollement_ops Macro  DATE 21/09/2010   AUTEUR REZETTE C.REZETTE 
+#@ MODIF post_decollement_ops Macro  DATE 04/10/2010   AUTEUR GREFFET N.GREFFET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -28,7 +28,7 @@ def fctZeroUn(listIN):
       else: listOUT.append(0);
    return listOUT;
 
-def post_decollement_ops(self,MAILLAGE,RESULTAT,NOM_CHAM,NOM_CMP,GROUP_MA,INFO,**args):
+def post_decollement_ops(self,RESULTAT,NOM_CHAM,NOM_CMP,GROUP_MA,INFO,**args):
   """
      Corps de la macro POST_DECOLLEMENT
   """
@@ -55,6 +55,11 @@ def post_decollement_ops(self,MAILLAGE,RESULTAT,NOM_CHAM,NOM_CMP,GROUP_MA,INFO,*
   self.set_icmd(1)
   self.DeclareOut('C_out',self.sd)
   
+  ### on recupere le concept maillage 
+  iret,ibid,nom_mo = aster.dismoi('F','MODELE',RESULTAT.nom,'RESULTAT')
+  iret,ibid,nom_ma = aster.dismoi('F','NOM_MAILLA',nom_mo.strip(),'MODELE')
+  MAILLAGE = self.get_concept(nom_ma.strip())
+ 
   ### Creation du groupe de noeuds 'PDECOL'
   DEFI_GROUP(reuse=MAILLAGE,MAILLAGE=MAILLAGE,
              DETR_GROUP_NO= _F(NOM='PDECOL',),

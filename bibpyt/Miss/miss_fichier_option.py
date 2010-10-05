@@ -1,4 +1,4 @@
-#@ MODIF miss_fichier_option Miss  DATE 16/02/2010   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF miss_fichier_option Miss  DATE 29/09/2010   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -54,11 +54,6 @@ def fichier_option(param):
     # RFIC
     if param['RFIC'] != 0.:
         content.append(("RFIC" + sfmt) % param['RFIC'])
-    # DIRE_ONDE
-    if param['DIRE_ONDE']:
-        content.append("DIRE ONDE")
-        fmt = (sfmt * len(param['DIRE_ONDE'])).strip()
-        content.append(fmt % tuple(param['DIRE_ONDE']))
     # terminer le fichier par un retour chariot
     content.append("")
     return os.linesep.join(content)

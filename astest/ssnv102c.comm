@@ -1,4 +1,4 @@
-# MODIF  DATE 19/11/2007   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 05/10/2010   AUTEUR ABBAS M.ABBAS 
 # TITRE  ESSAI DE TRACTION-CISAILLEMENT 3D (VISC_TAHERI)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -193,15 +193,7 @@ TEST_RESU(RESU=(
            _F(  RESULTAT = SOLNL,          NUME_ORDRE = 6,
              PARA = 'ITER_GLOB',        VALE_I = 0,
              CRITERE = 'ABSOLU',         PRECISION = 12.),
-           _F(  RESULTAT = SOLNL,          NUME_ORDRE = 6,
-             CRITERE = 'ABSOLU',        PRECISION = 1.E-06,
-             PARA = 'RESI_GLOB_RELA',   VALE = 0.),
-           _F(  RESULTAT = SOLNL,          NUME_ORDRE = 6,
-             CRITERE = 'ABSOLU',        PRECISION = 1.E-04,
-             PARA = 'RESI_GLOB',        VALE = 0.),
-           _F(  RESULTAT = SOLNL,          NUME_ORDRE = 6,
-             PARA = 'ITER_LINE',        VALE_I = 0,
-             CRITERE = 'ABSOLU',         PRECISION = 2.))
+           )
            )
 
 SOLNL=CALC_ELEM( reuse=SOLNL,

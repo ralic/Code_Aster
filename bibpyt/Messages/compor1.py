@@ -1,4 +1,4 @@
-#@ MODIF compor1 Messages  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
+#@ MODIF compor1 Messages  DATE 29/09/2010   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -343,7 +343,7 @@ Couplage: on fait dependre E, MU et ALPHA de la temperature maximale Tmax, comme
 
 65 : _("""
    Attention dans la routine majpad la pression d'air dissous devient 
-   negative a la maille %(k1)f
+   négative à la maille %(k1)s.
 """),
 
 66 : _("""

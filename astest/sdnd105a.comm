@@ -1,4 +1,4 @@
-# MODIF  DATE 24/08/2010   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 04/10/2010   AUTEUR GREFFET N.GREFFET 
 # TITRE CHOC D'UNE MASSE SUR UNE PAROI AU COMPORTEMENT FLAMBAGE
 # sdnd105a.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -152,7 +152,8 @@ TRAN_GEN=DYNA_TRAN_MODAL(reuse=TRAN_GEN,  MASS_GENE=MASS_GEN,   RIGI_GENE=RIGI_G
                                  RIGI_NOR_POST_FL = 0.5),
 
                       INCREMENT=_F(
-                                 INST_FIN = 1.,  PAS = 0.0002,PAS_MAXI = 0.001)
+                                 INST_FIN = 1.,  PAS = 0.0002,PAS_MAXI = 0.001,
+                                 PAS_MINI = 2.E-8,)
                             )
 
 TRAN_GEN=DYNA_TRAN_MODAL(reuse=TRAN_GEN,  MASS_GENE=MASS_GEN,   RIGI_GENE=RIGI_GEN,

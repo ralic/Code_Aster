@@ -5,7 +5,7 @@ C
 C
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 03/04/2007   AUTEUR VIVAN L.VIVAN 
+C MODIF POSTRELE  DATE 04/10/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -213,8 +213,8 @@ C           /* MOT-CLE (NOM_CMP) OU (RESULTANTE ET/OU MOMENT) */
      &                        N2,ZK8(ANCPU1+N1),N2)
                ENDIF
                IF (TYPECH.EQ.'ELNO' .AND. GRANCH.EQ.'VARI_R') THEN
-                  CALL UTCMP2 ( GRANCH, 'ACTION', IOCC, NOMCP, NBCMP,
-     &                                                  NUMECP, NBNC )
+                  CALL UTCMP2 ( GRANCH,'ACTION',IOCC,50,NOMCP,
+     &                          NUMECP,NBNC)
                   CALL JEECRA(JEXNUM(NXDVAR,IOCC),'LONMAX',NBNC,' ')
                   CALL JEECRA(JEXNUM(NXDVAR,IOCC),'LONUTI',NBNC,' ')
                   CALL JEVEUO(JEXNUM(NXDVAR,IOCC),'E',JXVAR)

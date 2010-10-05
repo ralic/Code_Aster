@@ -1,4 +1,4 @@
-#@ MODIF pilotage Messages  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
+#@ MODIF pilotage Messages  DATE 05/10/2010   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -33,6 +33,10 @@ cata_msg = {
 
 3  : _("""
  Le paramètre COEF_MULT pour le pilotage ne doit pas valoir zéro.
+"""),
+
+4  : _("""
+ La recherche linéaire en pilotage n'est possible qu'avec l'option PILOTAGE dans RECH_LINEAIRE  (sauf pour le cas DDL_IMPO).
 """),
 
 48 : _("""

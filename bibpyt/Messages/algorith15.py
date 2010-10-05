@@ -1,4 +1,4 @@
-#@ MODIF algorith15 Messages  DATE 30/08/2010   AUTEUR NISTOR I.NISTOR 
+#@ MODIF algorith15 Messages  DATE 04/10/2010   AUTEUR GREFFET N.GREFFET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -284,7 +284,7 @@ cata_msg = {
  nombre de points pas période             :  %(i1)d 
  coefficient de remontee du pas de temps  :  %(r1)f 
  coefficient de division du pas de temps  :  %(r2)f 
- coeff déterminant DT MIN (=DT INIT*COEFF):  %(r3)f 
+ pas de temps minimal                     :  %(r3)f 
  pas de temps maximal                     :  %(r4)f 
  nombre maximal de réductions du pas      :  %(i2)d 
  vitesse minimale variable                :  %(k1)s 

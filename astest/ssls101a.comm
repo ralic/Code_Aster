@@ -1,4 +1,4 @@
-# MODIF  DATE 30/08/2010   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 05/10/2010   AUTEUR ABBAS M.ABBAS 
 # TITRE PLAQUE CIRCULAIRE POSEE     SOUS PRESSION DKT    50 N - 76 TRIA3
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -435,15 +435,7 @@ TEST_RESU(RESU=(
            _F(  RESULTAT = U3,             NUME_ORDRE = 3,
              PARA = 'ITER_GLOB',        VALE_I = 0,
              CRITERE = 'ABSOLU', REFERENCE = 'NON_REGRESSION', PRECISION = 2.E+00),
-           _F(  RESULTAT = U3,             NUME_ORDRE = 3,
-             CRITERE = 'ABSOLU', REFERENCE = 'NON_REGRESSION', PRECISION = 1.E-05,
-             PARA = 'RESI_GLOB_RELA',   VALE = 0.),
-           _F(  RESULTAT = U3,             NUME_ORDRE = 3,
-             CRITERE = 'ABSOLU', REFERENCE = 'NON_REGRESSION', PRECISION = 1.E-07,
-             PARA = 'RESI_GLOB',        VALE = 0.),
-           _F(  RESULTAT = U3,             NUME_ORDRE = 3,
-             PARA = 'ITER_LINE',        VALE_I = 0,
-             CRITERE = 'ABSOLU', REFERENCE = 'NON_REGRESSION', PRECISION = 2.E+00))
+           )
            )
 
 STAT_NON_LINE( reuse=U3,
@@ -502,15 +494,7 @@ TEST_RESU(RESU=(
            _F(  RESULTAT = U3, REFERENCE = 'NON_REGRESSION', NUME_ORDRE = 4,
              PARA = 'ITER_GLOB',        VALE_I = 0,
              CRITERE = 'ABSOLU',        PRECISION = 2.E+00),
-           _F(  RESULTAT = U3, REFERENCE = 'NON_REGRESSION', NUME_ORDRE = 4,
-             CRITERE = 'ABSOLU',        PRECISION = 1.E-07,
-             PARA = 'RESI_GLOB_RELA',   VALE = 0.),
-           _F(  RESULTAT = U3, REFERENCE = 'NON_REGRESSION', NUME_ORDRE = 4,
-             CRITERE = 'ABSOLU',        PRECISION = 1.E-07,
-             PARA = 'RESI_GLOB',        VALE = 0.),
-           _F(  RESULTAT = U3, REFERENCE = 'NON_REGRESSION', NUME_ORDRE = 4,
-             PARA = 'ITER_LINE',        VALE_I = 0,
-             CRITERE = 'ABSOLU',        PRECISION = 2.E+00))
+           )
            )
 
 TEST_RESU(RESU=(

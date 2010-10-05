@@ -1,4 +1,4 @@
-# MODIF  DATE 14/09/2010   AUTEUR SFAYOLLE S.FAYOLLE 
+# MODIF  DATE 05/10/2010   AUTEUR ABBAS M.ABBAS 
 # TITRE ESSAI DE TRACTION-CISAILLEMENT 3D (CHABOCHE_FO)
 # ssnv101a.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -101,18 +101,8 @@ DETRUIRE(CONCEPT=_F(NOM=TB01))
 TEST_RESU(RESU=(
            _F(  RESULTAT = SOLNL,          NUME_ORDRE = 13,
              PARA = 'INST',             VALE = 1.43500E+00),
-           _F(  RESULTAT = SOLNL,          NUME_ORDRE = 13,
-             PARA = 'ITER_GLOB',        VALE_I = 0,
-             CRITERE = 'ABSOLU',         PRECISION = 7.),
-           _F(  RESULTAT = SOLNL,          NUME_ORDRE = 13,
-             CRITERE = 'ABSOLU',        PRECISION = 1.E-06,
-             PARA = 'RESI_GLOB_RELA',   VALE = 0.),
-           _F(  RESULTAT = SOLNL,          NUME_ORDRE = 13,
-             CRITERE = 'ABSOLU',        PRECISION = 1.E-04,
-             PARA = 'RESI_GLOB',        VALE = 0.),
-           _F(  RESULTAT = SOLNL,          NUME_ORDRE = 13,
-             CRITERE = 'ABSOLU',         PRECISION = 2.,
-             PARA = 'ITER_LINE',        VALE_I = 0))
+           
+           )
            )
 
 SOLNL=CALC_ELEM( reuse=SOLNL,

@@ -1,6 +1,6 @@
       SUBROUTINE TE0492 ( OPTION , NOMTE )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 01/02/2010   AUTEUR MEUNIER S.MEUNIER 
+C MODIF ELEMENTS  DATE 04/10/2010   AUTEUR MEUNIER S.MEUNIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -103,15 +103,14 @@ C      -------------------------
       CALL TECACH('ONN','PTEMPSR',1,ITEMPS,IRET)
       IF (ITEMPS.NE.0) INSTAN = ZR(ITEMPS)
 C
-C ---- CALCUL DES CONTRAINTES HYDRIQUES AUX POINTS D'INTEGRATION
-C ---- DE L'ELEMENT :
-C      ------------
+C ---- CALCUL DES CONTRAINTES AUX POINTS D'INTEGRATION DE L'ELEMENT
+C      ------------------------------------------------------------
       CALL SIGTMC(FAMI,NNO,NDIM,NBSIG,NPG,ZR(IVF),
      +            ZR(IGEOM),
      +            INSTAN,ZI(IMATE),REPERE,OPTION,SIGTH)
 C
-C ---- CALCUL DU VECTEUR DES FORCES D'ORIGINE HYDRIQUE (BT*SIGTH)
-C      ----------------------------------------------------------
+C ---- CALCUL DU VECTEUR DES FORCES (BT*SIGTH)
+C      ---------------------------------------
       CALL BSIGMC ( NNO,NDIM,NBSIG,NPG, IPOIDS, IVF, IDFDE,
      +              ZR(IGEOM), NHARM, SIGTH, BSIGMA )
 C

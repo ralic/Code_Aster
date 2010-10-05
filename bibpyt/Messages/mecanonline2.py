@@ -1,4 +1,4 @@
-#@ MODIF mecanonline2 Messages  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
+#@ MODIF mecanonline2 Messages  DATE 05/10/2010   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -91,15 +91,14 @@ cata_msg = {
 """),
 
 98 : _("""
-  -> Le chargement extérieur est nul (à la précision près).
+  -> Les forces extérieures (chargement imposé et réactions d'appui) sont détectées comme quasiment nulles (%(r1)g).
      Or vous avez demandé une convergence avec le critère relatif (RESI_GLOB_RELA). 
      Pour éviter une division par zéro, le code est passé automatiquement en mode de convergence
-     de type absolu (RESI_GLOB_MAXI)
-  -> Risque & Conseil : Vérifier bien que votre chargement doit etre nul à cet instant 
+     de type absolu (RESI_GLOB_MAXI).
+     On a choisi un RESI_GLOB_MAXI de manière automatique et de valeur %(r2)g.
+  -> Risque & Conseil : Vérifier bien que votre chargement doit etre nul (ainsi que les réactions d'appui) à cet instant 
      Dans le cas des problèmes de type THM, penser à utiliser éventuellement un 
      critère de type référence (RESI_REFE_RELA).
-     La valeur automatique prise pour RESI_GLOB_MAXI est égale à 1E-6 fois la dernière valeur
-     de résidu maximum à l'instant précédent. 
 """),
 
 }
