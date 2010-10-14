@@ -3,7 +3,7 @@
       IMPLICIT REAL*8  (A-H,O-Z)
 C---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 13/10/2010   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -284,7 +284,7 @@ C----ON RESOUT L EQUATION DE LAPLACE
 
            CALL JEVEUO(CHFLU//'.VALE','E',JCHFLU)
            CALL RESOUD(MA,' ',' ',SOLVEU,' ',' ',' ',
-     &                  ' ',1,ZR(JCHFLU),CBID)
+     &                  ' ',1,ZR(JCHFLU),CBID,.TRUE.)
 
 
 C--------ON REPLONGE LA PRESSION SUR L INTERFACE

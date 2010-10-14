@@ -2,7 +2,7 @@
      &                NITER,EPSI,CRITER,
      &                SOLVEU,MATAS,SMBR,VCINE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 14/06/2010   AUTEUR TARDIEU N.TARDIEU 
+C MODIF ALGELINE  DATE 13/10/2010   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -44,10 +44,6 @@ C                           1  XP INITIAL DONNEE DE GCPC
 C     ----------------- ------------------------------------------------
 C     - PRECAUTIONS D'EMPLOI:  XP PEUT ETRE EVENTUELLEMENT CONFONDU
 C                              AVEC BF SI MEME ARGUMENT
-C   -------------------------------------------------------------------
-C     ASTER INFORMATIONS:
-C       07/03/03 (OB): MODIF. CALCUL DE RAU, TOILETTAGE FORTRAN (IMPLI
-C         CIT NONE...), MODIFS. AFFICHAGE, DESACTIVATION PREC.
 C     ----------------- ------------------------------------------------
 C CORPS DU PROGRAMME
       IMPLICIT NONE
@@ -175,7 +171,8 @@ C                                                  ZK <--- RR()
     1     CONTINUE
           SOLVBD=ZK24(ISLVK-1+3)
 C         ON PASSE ' ' AU LIEU DE VCINE, DEJA PRIS EN COMPTE DANS RESGRA
-          CALL AMUMPH('RESOUD',SOLVBD,MATAS,ZR(JSMBR),CBID,' ',1,IRET)
+          CALL AMUMPH('RESOUD',SOLVBD,MATAS,ZR(JSMBR),CBID,' ',1,IRET,
+     &                .TRUE.)
           CALL JEVEUO(SMBR//'.VALE','L',JSMBR)
           DO 2 I=1,M
             RR(I)=ZR(JSMBR-1+I)

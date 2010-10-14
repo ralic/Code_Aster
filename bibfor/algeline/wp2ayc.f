@@ -1,13 +1,14 @@
       SUBROUTINE WP2AYC(LMATRA,LMASSE,LAMOR,SIGMA,LBLOQ,YH,YB,
-     +                                      ZH,ZB,U1,U2,U3,N)
+     +                                      ZH,ZB,U1,U2,U3,N,SOLVEU)
       IMPLICIT REAL*8 (A-H,O-Z)
       COMPLEX*16  SIGMA, U1(*),U2(*),U3(*),YH(*),YB(*),
      +            ZH(*),ZB(*)
       INTEGER     LMATRA,LMASSE,LAMOR,N,LBLOQ(*)
+      CHARACTER*19 SOLVEU
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 18/11/2003   AUTEUR NICOLAS O.NICOLAS 
+C MODIF ALGELINE  DATE 13/10/2010   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -45,11 +46,36 @@ C VAR U1     : C : VECTEUR DE TRAVAIL, EN SORTIE VAUT AMOR *YH
 C VAR U2     : C : VECTEUR DE TRAVAIL, EN SORTIE VAUT MASSE*YB
 C VAR U3     : C : VECTEUR DE TRAVAIL, EN SORTIE VAUT MASSE*YH
 C VAR V      : C : VECTEUR DE TRAVAIL
+C IN  SOLVEU : K19 : SD SOLVEUR POUR PARAMETRER LE SOLVEUR LINEAIRE
 C     ------------------------------------------------------------------
-      INTEGER   I
-      REAL*8    RBID
+
+C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
+      INTEGER ZI
+      COMMON /IVARJE/ZI(1)
+      REAL*8 ZR
+      COMMON /RVARJE/ZR(1)
+      COMPLEX*16 ZC
+      COMMON /CVARJE/ZC(1)
+      CHARACTER*8 ZK8
+      CHARACTER*16 ZK16
+      CHARACTER*24 ZK24
+      CHARACTER*32 ZK32
+      CHARACTER*80 ZK80
+      COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
+C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
+
+      INTEGER      I
+      REAL*8       RBID
+      CHARACTER*1  KBID
+      CHARACTER*19 K19BID,MATASS,CHCINE,CRITER
 C     ------------------------------------------------------------------
 C
+C INIT. OBJETS ASTER
+      MATASS=ZK24(ZI(LMATRA+1))
+      CHCINE=' '
+      CRITER=' '
+      K19BID=' '
+
       CALL MCMULT('ZERO',LAMOR,YH,'C',U1,1)
       CALL MCMULT('ZERO',LMASSE,YB,'C',U2,1)
       CALL MCMULT('ZERO',LMASSE,YH,'C',U3,1)
@@ -65,7 +91,8 @@ C-RM-FIN
       DO 10, I = 1, N, 1
          U1(I) = U1(I) + SIGMA*U3(I) + U2(I)
 10    CONTINUE
-      CALL RLDLGG(LMATRA,RBID,U1,1)
+      CALL RESOUD(MATASS,K19BID,K19BID,SOLVEU,CHCINE,KBID,K19BID,
+     &            CRITER,1,RBID,U1,.FALSE.)
       DO 20, I = 1, N, 1
          ZH(I) = - U1(I)
          ZB(I) = (YH(I) - SIGMA*U1(I))*LBLOQ(I)

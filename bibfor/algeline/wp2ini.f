@@ -1,6 +1,6 @@
       SUBROUTINE WP2INI(APPR,LMASSE,LAMOR,LRAIDE,LMATRA,LMTPSC,SIGMA,
      +                  XH,XB,OPTIOF,PRORTO,NBORTO,NBVECT,NEQ,LBLOQ,
-     +                  LDDL,ALPHA,BETA,SIGNE,YH,YB)
+     +                  LDDL,ALPHA,BETA,SIGNE,YH,YB,SOLVEU)
       IMPLICIT REAL*8 (A-H,O-Z)
       CHARACTER*1       APPR
       INTEGER           LMASSE,LAMOR,LRAIDE,LMATRA,LMTPSC
@@ -10,9 +10,10 @@
       INTEGER           NBORTO,NBVECT,NEQ,LBLOQ(*),LDDL(*)
       REAL*8            PRORTO
       REAL*8            ALPHA(*),BETA(*),SIGNE(*),YH(NEQ,*),YB(NEQ,*)
+      CHARACTER*19      SOLVEU
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF ALGELINE  DATE 13/10/2010   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -71,6 +72,7 @@ C OUT BETA   : R : SUR-DIAGONALE DE LA TRIDIAGONALE
 C OUT SIGNE  : R : SIGNE DES TERMES DE LA SOUS-DIAGONALE
 C OUT YH     : R : PARTIE SUPERIEURE DES VECTEURS DE LANCZOS (P)
 C OUT YB     : R : PARTIE INFERIEURE DES VECTEURS DE LANCZOS (Q)
+C IN  SOLVEU : K19: SD SOLVEUR POUR PARAMETRER LE SOLVEUR LINEAIRE
 C     ------------------------------------------------------------------
 C
 C     ----------- DECLARATION DES COMMUNS NORMALISES JEVEUX -----------
@@ -152,7 +154,7 @@ C
 C     --- 1.1. DIRECTION
       CALL WP2AYL(APPR,LMATRA,LMASSE,LAMOR,SIGMA,LBLOQ,XH,XB,
      +            YH(1,1),YB(1,1),
-     +            ZR(AU1),ZR(AU2),ZR(AU3),ZR(AU4),ZC(AV),NEQ)
+     +            ZR(AU1),ZR(AU2),ZR(AU3),ZR(AU4),ZC(AV),NEQ,SOLVEU)
 C
       DO 100 I = 1, NEQ
          ZR(ABAYH + I-1) = -ZR(AU1 + I-1) - ZR(AU2 + I-1)
@@ -201,7 +203,7 @@ C        --- 2.1. DIRECTION
          CALL WP2AYL(APPR,LMATRA,LMASSE,LAMOR,SIGMA,LBLOQ,
      +               YH(1,J-1),YB(1,J-1),
      +               YH(1,J),YB(1,J),
-     +               ZR(AU1),ZR(AU2),ZR(AU3),ZR(AU4),ZC(AV),NEQ)
+     +               ZR(AU1),ZR(AU2),ZR(AU3),ZR(AU4),ZC(AV),NEQ,SOLVEU)
 C
          DO 210 I = 1, NEQ
             ZR(ABAYH + I-1) = -ZR(AU1 + I-1) - ZR(AU2 + I-1)
@@ -242,7 +244,7 @@ C        --- 2.2. NORMALISATION
          IF ( APPR .EQ. 'R' ) THEN
             CALL WP2BRY(LMTPSC,LMASSE,LAMOR,LRAIDE,SR,SI2,
      +                  YH(1,J),YB(1,J),ZR(ABYH),ZR(ABYB),
-     +                  ZR(AU1),ZR(AU2),ZR(AU3),ZR(AU4),NEQ)
+     +                  ZR(AU1),ZR(AU2),ZR(AU3),ZR(AU4),NEQ,SOLVEU)
          ELSE
             CALL WP2BIY(LMASSE,LAMOR,LRAIDE,MODS2,DEUXSR,INVSI,
      +                  YH(1,J),YB(1,J),ZR(ABYH),ZR(ABYB),LBLOQ,
@@ -319,7 +321,7 @@ C        --- 2.4. REACTUALISATION
             IF ( APPR .EQ. 'R' ) THEN
                CALL WP2BRY(LMTPSC,LMASSE,LAMOR,LRAIDE,SR,SI2,
      +                     YH(1,J),YB(1,J),ZR(ABYH),ZR(ABYB),
-     +                     ZR(AU1),ZR(AU2),ZR(AU3),ZR(AU4),NEQ)
+     +                     ZR(AU1),ZR(AU2),ZR(AU3),ZR(AU4),NEQ,SOLVEU)
             ELSE
                CALL WP2BIY(LMASSE,LAMOR,LRAIDE,MODS2,DEUXSR,INVSI,
      +                     YH(1,J),YB(1,J),ZR(ABYH),ZR(ABYB),LBLOQ,

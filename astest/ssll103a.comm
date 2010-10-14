@@ -1,4 +1,4 @@
-# MODIF  DATE 23/10/2006   AUTEUR VABHHTS J.PELLET 
+# MODIF  DATE 14/10/2010   AUTEUR BOYERE E.BOYERE 
 # TITRE FLAMBEMENT D'UNE CORNIERE ELASTIQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -39,7 +39,7 @@ CARAC=AFFE_CARA_ELEM( MODELE=MO,POUTRE=(
                 'EZ',        'JX',           'JG',
                 'IYR2',      'IZR2',                          ),
         VALE = (1856.,       4167339.,       1045547.,
-                 0.,       0.,             41.012,
+                 1.,       1.,             41.012,
                  0.,       39595.,         44398819.,
               84948392.,   0.,                                ), ),
          _F( MAILLE = ( 'S5', 'S6', 'S7', 'S8', ),
@@ -53,11 +53,11 @@ CARAC=AFFE_CARA_ELEM( MODELE=MO,POUTRE=(
                 'EZ2',       'JX2',          'JG2',
                 'IYR22',     'IZR22',                         ),
         VALE = (1856.,       4167339.,       1045547.,
-                 0.,       0.,             41.012,
+                 1.,       1.,             41.012,
                  0.,       39595.,         44398819.,
               84948392.,   0.,
               1856.,       4167339.,       1045547.,
-                 0.,       0.,             41.012,
+                 1.,       1.,             41.012,
                  0.,       39595.,         44398819.,
               84948392.,   0.,                                ), ))
       )
@@ -137,11 +137,11 @@ MOD_1=MODE_ITER_SIMULT(   MATR_A=RIGAS,
 
 TEST_RESU(RESU=(
    _F( RESULTAT = MOD_1, NUME_MODE = 20,  PARA = 'CHAR_CRIT', VALE = -6.9253171E5,
-    PRECISION = 1.E-5,),
+    PRECISION = 3.E-3,),
    _F( RESULTAT = MOD_1, NUME_MODE = 13,  PARA = 'CHAR_CRIT', VALE = -1.5048739E6,
-    PRECISION = 4.E-5,),
+    PRECISION = 1.E-2,),
    _F( RESULTAT = MOD_1, NUME_MODE = 2,  PARA = 'CHAR_CRIT', VALE = -1.0058989E7,
-    PRECISION = 4.E-5,)))
+    PRECISION = 4.E-2,)))
 
 # FLAMBEMENT CAS 2  (FORCE EN C)
 # ------------------------------
@@ -190,11 +190,11 @@ MOD_2=MODE_ITER_SIMULT(   MATR_A=RIGAS,
 
 TEST_RESU(RESU=(
    _F( RESULTAT = MOD_2, NUME_MODE = 4,  PARA = 'CHAR_CRIT', VALE = -1.5048739E6,
-    PRECISION = 4.E-5,),
+    PRECISION = 1.E-2,),
    _F( RESULTAT = MOD_2, NUME_MODE = 3,  PARA = 'CHAR_CRIT', VALE = -5.9981232E6,
-    PRECISION = 4.E-5,),
+    PRECISION = 4.E-2,),
    _F( RESULTAT = MOD_2, NUME_MODE = 5,  PARA = 'CHAR_CRIT', VALE = +1.4790446E6,
-    PRECISION = 4.E-5,)))
+    PRECISION = 1.E-6,)))
 
 # FLAMBEMENT CAS 3  (FORCE EN A)
 # ------------------------------
@@ -242,11 +242,11 @@ MOD_3=MODE_ITER_SIMULT(   MATR_A=RIGAS,
 
 TEST_RESU(RESU=(
    _F( RESULTAT = MOD_3, NUME_MODE = 20, PARA = 'CHAR_CRIT', VALE = -5.7226082E5,
-    PRECISION = 2.E-5,),
+    PRECISION = 4.E-3,),
    _F( RESULTAT = MOD_3, NUME_MODE = 11, PARA = 'CHAR_CRIT', VALE = -2.4595077E6,
-    PRECISION = 4.E-5,),
+    PRECISION = 2.E-2,),
    _F( RESULTAT = MOD_3, NUME_MODE = 2, PARA = 'CHAR_CRIT', VALE = -1.8567372E7,
-    PRECISION = 4.E-5,)))
+    PRECISION = 5.E-2,)))
 
 # FLAMBEMENT CAS 4  (MOMENT SUIVANT OY)
 # -------------------------------------
@@ -298,7 +298,7 @@ MOD_5=MODE_ITER_INV(   MATR_A=RIGAS,
 
 TEST_RESU(
    RESU=_F( RESULTAT = MOD_4, NUME_MODE = 3,  PARA = 'CHAR_CRIT', VALE = +7.0063121E7,
-    PRECISION = 4.E-5,))
+    PRECISION = 5.E-3,))
 
 IMPR_RESU(  RESU=_F(  RESULTAT = MOD_4,
                       TOUT_PARA = 'OUI',    )  )
@@ -313,7 +313,7 @@ IMPR_RESU(  RESU=_F(  RESULTAT = MOD_4,
 
 TEST_RESU(
    RESU=_F( RESULTAT = MOD_4, NUME_MODE = 3,  PARA = 'CHAR_CRIT', VALE = +7.0063121E7,
-    PRECISION = 4.E-5,))
+    PRECISION = 5.E-3,))
 
 # --------------------------------------------------------------------
 FIN()

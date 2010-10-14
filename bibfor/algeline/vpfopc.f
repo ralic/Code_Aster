@@ -1,15 +1,16 @@
       SUBROUTINE VPFOPC( LMASSE, LRAIDE, FMIN,
-     &                   SIGMA, MATOPA, RAIDE, NPREC, LQZ)
+     &                   SIGMA, MATOPA, RAIDE, LQZ, SOLVEU)
       IMPLICIT REAL*8 (A-H,O-Z)
       CHARACTER*(*)       MATOPA, RAIDE
-      INTEGER             LMASSE, LRAIDE, NPREC
+      INTEGER             LMASSE, LRAIDE
       REAL*8              FMIN
       COMPLEX*16          SIGMA
       LOGICAL             LQZ
+      CHARACTER*19        SOLVEU
 
 C     -----------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 16/09/2008   AUTEUR PELLET J.PELLET 
+C MODIF ALGELINE  DATE 13/10/2010   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -33,6 +34,7 @@ C OUT LDYNAM  : IS : POINTEUR SUR LA FACTORISEE DE LA MATRICE DYNAMIQUE
 C                    INDUITE PAR L'OPTION
 C OUT SIGMA   : C16: SHIFT
 C IN  LQZ     : METHODE QZ OU NON
+C IN  SOLVEU : K19 : SD SOLVEUR POUR PARAMETRER LE SOLVEUR LINEAIRE
 C     ------------------------------------------------------------------
 C
 C     ------ DEBUT DECLARATIONS NORMALISEES  JEVEUX --------------------
@@ -53,17 +55,20 @@ C     ------ DEBUT DECLARATIONS NORMALISEES  JEVEUX --------------------
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
-      INTEGER      LMAT(2), LMATRA,IBID,IERX,ISINGU,NPVNEG,NDECI
+      INTEGER      LMAT(2),LMATRA,IBID
       CHARACTER*24 NMAT(2),NMATRA
-      REAL*8       ASHIFT, R8DEPI, CONSTC(3),FSHIFT
-      REAL*8 VALR(2)
+      REAL*8       ASHIFT, R8DEPI, CONSTC(3),FSHIFT,VALR(2)
       CHARACTER*1  TYPCST(2)
       CHARACTER*8  NAMDDL
+      CHARACTER*19 MATASS,MATPRE     
+
 C     ------------------------------------------------------------------
       DATA NAMDDL/'        '/
 C     ------------------------------------------------------------------
 C
       CALL JEMARQ()
+     
+      MATPRE=' '
       LMAT(1) = LMASSE
       NMAT(1) = ZK24(ZI(LMAT(1)+1))
       LMAT(2) = LRAIDE
@@ -75,10 +80,10 @@ C
       CALL GETVR8('CALC_FREQ','AMOR_REDUIT',1,1,1,ASHIFT,IBID)
 C
       IF (ABS(ASHIFT).GE.1.D0) THEN
-         ASHIFT = 0.95D0
-         VALR (1) = 1.D0
-         VALR (2) = 0.95D0
-         CALL U2MESG('I', 'ALGELINE4_75',0,' ',0,0,2,VALR)
+        ASHIFT = 0.95D0
+        VALR (1) = 1.D0
+        VALR (2) = 0.95D0
+        CALL U2MESG('I', 'ALGELINE4_75',0,' ',0,0,2,VALR)
       ENDIF
 
       ASHIFT = (ASHIFT*FSHIFT) / 2.0D0
@@ -86,21 +91,22 @@ C
 
 C --- POUR QZ CALCUL DE LA MATRICE SHIFTEE ET DE SA FACTORISEE INUTILE
       IF (LQZ) GOTO 999
-C
+
 C        --- DECALAGE COMPLEXE ---
-         CALL MTDEFS(MATOPA,RAIDE,'V','C')
-         CALL MTDSCR(MATOPA)
-         NMATRA=MATOPA(1:19)//'.&INT'
-         CALL JEVEUO(MATOPA(1:19)//'.&INT','E',LMATRA)
-         TYPCST(1) = 'C'
-         TYPCST(2) = 'R'
-         CONSTC(1) = -DBLE(SIGMA)
-         CONSTC(2) = -DIMAG(SIGMA)
-         CONSTC(3) = 1.D0
-         CALL MTCMBL(2,TYPCST,CONSTC,NMAT,NMATRA,NAMDDL,' ','ELIM=')
+      CALL MTDEFS(MATOPA,RAIDE,'V','C')
+      CALL MTDSCR(MATOPA)
+      NMATRA=MATOPA(1:19)//'.&INT'
+      CALL JEVEUO(MATOPA(1:19)//'.&INT','E',LMATRA)
+      TYPCST(1) = 'C'
+      TYPCST(2) = 'R'
+      CONSTC(1) = -DBLE(SIGMA)
+      CONSTC(2) = -DIMAG(SIGMA)
+      CONSTC(3) = 1.D0
+      CALL MTCMBL(2,TYPCST,CONSTC,NMAT,NMATRA,NAMDDL,' ','ELIM=')
+      
 C     --- FACTORISATION DES MATRICES ---
-C
-      CALL TLDLGG(2,LMATRA,1,0,NPREC,NDECI,ISINGU,NPVNEG,IERX)
+      MATASS=ZK24(ZI(LMATRA+1))
+      CALL PRERES(SOLVEU,'V',IBID,MATPRE,MATASS,IBID,2)
 
   999 CONTINUE
       CALL JEDEMA()

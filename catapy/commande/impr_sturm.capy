@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 05/05/2008   AUTEUR NISTOR I.NISTOR 
+#& MODIF COMMANDE  DATE 13/10/2010   AUTEUR BOITEAU O.BOITEAU 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -34,9 +34,31 @@ IMPR_STURM=PROC(nom="IMPR_STURM",op=32,fr="Calculer et imprimer le nombre de val
              CHAR_CRIT_MIN   =SIMP(statut='o',typ='R',fr="Borne inférieure de l intervalle" ),
              CHAR_CRIT_MAX   =SIMP(statut='o',typ='R',fr="Borne supérieure de l intervalle" ),
          ),
-         NPREC_SOLVEUR   =SIMP(statut='f',typ='I',defaut= 8 ),
          NMAX_ITER_SHIFT =SIMP(statut='f',typ='I',defaut= 5 ),
          UNITE           =SIMP(statut='f',typ='I',defaut=8),  
          PREC_SHIFT      =SIMP(statut='f',typ='R',defaut= 1.E-2 ),
          SEUIL_FREQ      =SIMP(statut='f',typ='R',defaut= 1.E-2 ),
+
+         SOLVEUR         =FACT(statut='d',
+           METHODE         =SIMP(statut='f',typ='TXM',defaut="MULT_FRONT",into=("MULT_FRONT","LDLT","MUMPS")),
+             b_mult_front    =BLOC(condition = "METHODE == 'MULT_FRONT' ",fr="Paramètres de la méthode multi frontale",
+               RENUM           =SIMP(statut='f',typ='TXM',defaut="METIS",into=("MD","MDA","METIS") ),
+             ),
+             b_ldlt          =BLOC(condition = "METHODE == 'LDLT' ",fr="Paramètres de la méthode LDLT",
+               RENUM           =SIMP(statut='f',typ='TXM',defaut="SANS",into=("SANS","SANS") ),
+             ),
+             b_direct_hybride =BLOC( condition = "METHODE=='LDLT' or METHODE=='MULT_FRONT' or METHODE=='MUMPS' ",
+                                   fr="Paramètres relatifs à la non inversibilité de la matrice à factoriser",
+               NPREC           =SIMP(statut='f',typ='I',defaut= 8, val_min=0),
+             ),
+             b_mumps        =BLOC(condition = "METHODE == 'MUMPS' ",fr="Paramètres de la méthode MUMPS",
+               TYPE_RESOL      =SIMP(statut='f',typ='TXM',defaut="AUTO",into=("NONSYM","SYMGEN","SYMDEF","AUTO")),
+               PRETRAITEMENTS  =SIMP(statut='f',typ='TXM',defaut="AUTO",into=("SANS","AUTO")),
+               RENUM           =SIMP(statut='f',typ='TXM',defaut="AUTO",into=("AMD","AMF","PORD","METIS","QAMD","AUTO")),
+               ELIM_LAGR2      =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON")),
+               PCENT_PIVOT     =SIMP(statut='f',typ='I',defaut=10,),
+               OUT_OF_CORE     =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON")),
+             ),
+           ),    
+
 )  ;

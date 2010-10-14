@@ -2,7 +2,7 @@
      &                  MAPREC,MATASS,DEPSO1,DEPSO2)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 13/10/2010   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -121,14 +121,14 @@ C --- INVERSION DE LA PARTIE FIXE
 C
       CALL RESOUD(MATASS,MAPREC,CNDONN,SOLVEU,CNCINE,
      &            'V'   ,DEPSO1,CRGC  ,0     ,R8BID ,
-     &            C16BID)
+     &            C16BID,.TRUE.)
 C  
 C --- INVERSION DE LA PARTIE PILOTEE
 C         
       IF (LPILO) THEN
         CALL RESOUD(MATASS,MAPREC,CNPILO,SOLVEU,CNCINE,
      &              'V'   ,DEPSO2,CRGC  ,0     ,R8BID ,
-     &              C16BID)      
+     &              C16BID,.TRUE.)      
       END IF
 C 
 C --- AFFICHAGE DES SOLUTIONS

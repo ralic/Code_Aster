@@ -16,7 +16,7 @@ C
       IMPLICIT     REAL*8 (A-H,O-Z)
 C
       INTEGER      IORSTO(*),IREDST(*),ITEMAX,DESCMM,DESCMR,DESCMA,
-     &             IPARCH(*),LOGCHO(NBCHOC,*),ICHOST(*)
+     &             IPARCH(*),LOGCHO(NBCHOC,*),ICHOST(*),IBID
       REAL*8       PULSAT(*),PULSA2(*),MASGEN(*),RIGGEN(*),AMOGEN(*),
      &             PARCHO(*),PARRED(*),DEPSTO(*),VITSTO(*),ACCSTO(*),
      &             TEMSTO(*),FCHOST(*),DCHOST(*),VCHOST(*),DREDST(*),
@@ -36,7 +36,7 @@ C
 C
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 24/08/2010   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 13/10/2010   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -179,7 +179,7 @@ C
       ELSEIF (TYPBAS.EQ.'MODELE_GENE     ') THEN
         MATPRE='&&MDEUL1.MATPRE'
         MATASM=ZK24(ZI(DESCMM+1))
-        CALL PRERES(' ','V',IRET,MATPRE,MATASM)
+        CALL PRERES(' ','V',IRET,MATPRE,MATASM,IBID,-9999)
       ELSE
         CALL WKVECT('&&MDEUL1.MASS','V V R8',NEQGEN,JMASS)
         CALL DCOPY(NEQGEN,MASGEN,1,ZR(JMASS),1)

@@ -1,4 +1,4 @@
-# MODIF  DATE 13/09/2010   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 14/10/2010   AUTEUR BOYERE E.BOYERE 
 # TITRE POUTRE DROITE APPUYEE EN SES DEUX EXTREMITES SOUMISE A UN
 # ssll102g.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -64,7 +64,7 @@ CAREL=AFFE_CARA_ELEM(    MODELE=MO,
                                     VALE = ( 3.14159E-2, 7.85398E-5,
                                                 7.85398E-5, 1.57080E-4,
                                                 0.100,   0.100,   0.100,
-                                                10., 0., 0.,
+                                                10., 10./9., 10./9.,
                                               ))
                        )
 
@@ -119,9 +119,9 @@ TEST_RESU(   RESU=_F( RESULTAT = MEST1,
                     NUME_ORDRE = 1,
                     NOEUD = 'N7',
                     NOM_CMP = 'DY',
-                    VALE = 0.003228713,
+                    VALE =  3.2349906316045E-03,
                     PRECISION = 1.E-6,
-                    CRITERE = 'RELATIF', REFERENCE = 'ANALYTIQUE')
+                    CRITERE = 'RELATIF', REFERENCE = 'NON_REGRESSION')
           )
 
 #

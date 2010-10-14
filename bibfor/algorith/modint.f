@@ -3,7 +3,7 @@
      &                  VEFREQ)
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 21/06/2010   AUTEUR CORUS M.CORUS 
+C MODIF ALGORITH  DATE 13/10/2010   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -235,7 +235,7 @@ C-- REMPLISSAGE DE LA MATRICE DE HESSENBERG ET DU SE DE KRYLOV ASSOCIE
 
           CALL MRMULT('ZERO',LMATMA,ZR(LVTEMP),'R',ZR(LVTMP2),1)
           CALL RESOUD(IMPED,' ',' ',SOLVEU,' ',' ',' ',
-     &                      ' ',1,ZR(LVTMP2),CBID)
+     &                      ' ',1,ZR(LVTMP2),CBID,.TRUE.)
           DO 120 J1=1,K1-1
             NORM=DDOT(6*NNOINT,ZR(LVTMP2),1,
      &                ZR(LKRYL+(J1-1)*6*NNOINT),1)
@@ -314,7 +314,7 @@ C-- CONSTRUCTION DU SOUS ESPACE POUR LE PROBLEME COMPLET
 C-- RELEVE STATIQUE DU SOUS ESPACE DE KRYLOV SUR LE MODELE COMPLET
       CALL DISMOI('F','SOLVEUR',RAIDE,'MATR_ASSE',IBID,SOLVEU,IBID)
       CALL RESOUD(RAIDE,'&&MOIN93.MATPRE',' ',SOLVEU,' ',' ',' ',
-     &            ' ',NSEKRY,ZR(LMAKRY),CBID)
+     &            ' ',NSEKRY,ZR(LMAKRY),CBID,.TRUE.)
 
 C---------------------------------------------C
 C--                                         --C

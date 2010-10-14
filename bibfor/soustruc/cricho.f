@@ -4,7 +4,7 @@
       IMPLICIT  REAL*8  (A-H,O-Z)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SOUSTRUC  DATE 18/01/2010   AUTEUR MACOCCO K.MACOCCO 
+C MODIF SOUSTRUC  DATE 13/10/2010   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -51,7 +51,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
 
-      INTEGER            NBCHOC, INFO, NBMODE,IRIGI,INDIC(NBMODE)
+      INTEGER            NBCHOC, INFO, NBMODE,IRIGI,INDIC(NBMODE),IBID
       INTEGER VALI
       INTEGER            NEQ,NBNLI,NDECI,ISINGU,ISTOAV,IRET, ISTOP,IFAC
       INTEGER            JSLVI
@@ -144,7 +144,7 @@ C             DE MATRICE SINGULIERE (MODES STATIQUES)
               CALL JEVEUO(SOLVEU//'.SLVI','E',JSLVI)
               ISTOAV=ZI(JSLVI-1+3)
               ZI(JSLVI-1+3)=2
-              CALL PRERES(SOLVEU,'V',IRET,MATPRE,MARIG)
+              CALL PRERES(SOLVEU,'V',IRET,MATPRE,MARIG,IBID,-9999)
 C             -- ON RETABLIT ISTOP
               ZI(JSLVI-1+3)=ISTOAV
               IF (IRET.EQ.2) THEN

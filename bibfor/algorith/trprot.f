@@ -6,7 +6,7 @@
 
 C---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/11/2009   AUTEUR REZETTE C.REZETTE 
+C MODIF ALGORITH  DATE 13/10/2010   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -518,7 +518,7 @@ C-----LE FLUX FLUIDE TOTAL.....
 C----ON RESOUT L EQUATION DE LAPLACE
 
            CALL RESOUD(MA,MAPREC,CHFLU,SOLVEU,' ','V',CHSOL,
-     &                 CRITER,0,RBID,CBID)
+     &                 CRITER,0,RBID,CBID,.TRUE.)
            CALL JEDUPC('V',CHSOL(1:19),1,'V',CHFLU(1:19),.FALSE.)
            CALL JEDETC('V',CHSOL,1)
 

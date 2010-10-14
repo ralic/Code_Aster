@@ -6,7 +6,7 @@
 
 C---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 03/04/2007   AUTEUR DURAND C.DURAND 
+C MODIF ALGORITH  DATE 13/10/2010   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -100,7 +100,7 @@ C---------------- ASSEMBLAGE
 
 C------- FACTORISATION LDLT DE LA MATRICE DE RAIDEUR
 
-      CALL PRERES (SOLVEU,'V',IERR,MAPREC,MA)
+      CALL PRERES(SOLVEU,'V',IERR,MAPREC,MA,IBID,-9999)
 
 
 C-----------------------------------------------------

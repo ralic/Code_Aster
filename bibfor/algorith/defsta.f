@@ -2,7 +2,7 @@
      &                  NBDEF,TYDEF,INORD)
       IMPLICIT REAL*8 (A-H,O-Z)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 11/05/2009   AUTEUR NISTOR I.NISTOR 
+C MODIF ALGORITH  DATE 13/10/2010   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -139,7 +139,7 @@ C
         MATPRE='&&OP0099.MATPRE'
         SOLVEU='&&OP0099.SOLVEUR'
         CALL RESOUD(RAILDL,MATPRE,' ',SOLVEU,' ',' ',' ',
-     &                  ' ',1,ZR(LTCHAM),CBID)
+     &                  ' ',1,ZR(LTCHAM),CBID,.TRUE.)
 C
 C ----- CONVERSION NUMEROTATION
 C

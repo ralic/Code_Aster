@@ -1,4 +1,4 @@
-# MODIF  DATE 13/09/2010   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 14/10/2010   AUTEUR BOYERE E.BOYERE 
 # TITRE POUTRE DROITE APPUYEE EN SES DEUX EXTREMITES SOUMISE A UN
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -73,7 +73,7 @@ CAREL=AFFE_CARA_ELEM(MODELE=MO,
                      POUTRE=_F(GROUP_MA='TOUT',
                                SECTION='GENERALE',
                                CARA=('A','IY','IZ','JX','RY','RZ','RT','JG','AY','AZ',),
-                               VALE=(3.14159E-2,7.85398E-5,7.85398E-5,1.57080E-4,0.100,0.100,0.100,10.,0.,0.,),),
+                               VALE=(3.14159E-2,7.85398E-5,7.85398E-5,1.57080E-4,0.100,0.100,0.100,10.,10./9.,10./9.,),),
                      GEOM_FIBRE=GF,
                      MULTIFIBRE=_F(GROUP_MA='TOUT',
                                    GROUP_FIBRE='SEC1',),);

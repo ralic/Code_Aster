@@ -1,6 +1,6 @@
       SUBROUTINE VPINTE(OPTION,NFREQ,VALP,DET,IDET,IEME,NPAS,
-     +                  TOLF, NITF, LRAIDE, LMASSE, LDYNAM, NPREC,
-     +                  RESUFI, RESUFR, NFREQB )
+     +                  TOLF, NITF, LRAIDE, LMASSE, LDYNAM,
+     +                  RESUFI, RESUFR, NFREQB, SOLVEU)
       IMPLICIT REAL*8 (A-H,O-Z)
       CHARACTER*16      OPTION
       INTEGER                                 IDET(*),IEME(*),NPAS(*)
@@ -8,9 +8,10 @@
       INTEGER           LRAIDE,LMASSE,LDYNAM,RESUFI(NFREQB,*)
       INTEGER                                          NFREQB
       REAL*8                     VALP(*),DET(*),RESUFR(NFREQB,*)
+      CHARACTER*19      SOLVEU
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 18/04/2000   AUTEUR D6BHHBQ B.QUINNEZ 
+C MODIF ALGELINE  DATE 13/10/2010   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -34,8 +35,7 @@ C          SEPARE ==> ON PREND LE MILIEU DE L'INTERVALLE
 C          AJUSTE ==> ON EFFECTUE DES ITERATIONS DE TYPE SECANTE
 C IN TOLF    : R8  : TOLERANCE POUR L'AJUSTEMENT DE FREQUENCE
 C IN NITF    : R8  : NOMBRE MAXIMUM D'ITERATION DE LA METHODE
-C IN  NPREC  : IS : NOMBRE DE DECIMALES AUTORISEES LORS
-C                   DE LA FACTORISATION
+C IN  SOLVEU : K19 : SD SOLVEUR POUR PARAMETRER LE SOLVEUR LINEAIRE
 C     ------------------------------------------------------------------
 C     METHODE D'INTERPOLATION DE DEGRE 1 (A DEUX POINTS)
 C
@@ -100,8 +100,8 @@ C                    --- CONTROLE DE NON SORTIE DES BORNES ---
                      IF (OM.GT.F2-FTOL) OM = F2 - FTOL
                   ENDIF
  25               CONTINUE
-                  CALL VPSTUR(LRAIDE,OM,LMASSE,LDYNAM,NPREC,
-     +                        DET0,IDET0,IEME0,IER)
+                  CALL VPSTUR(LRAIDE,OM,LMASSE,LDYNAM,
+     +                        DET0,IDET0,IEME0,IER,SOLVEU)
                   PRECI = ABS(OM0-OM)/OM0
                   IF (PRECI.LE.TOLF.OR. IER.NE.0 ) THEN
                      NBITER = NITER

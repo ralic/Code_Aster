@@ -1,5 +1,6 @@
-# MODIF  DATE 11/02/2008   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 13/10/2010   AUTEUR BOITEAU O.BOITEAU 
 # TITRE RACCORD POUTRE-3D : PROBLEME DE SAINT-VENANT -
+# sslx200a.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -113,10 +114,11 @@ MATASM=ASSE_MATRICE(    MATR_ELEM=MATRM,
 
 MODES=MODE_ITER_SIMULT(   MATR_A=MATASS,
                           MATR_B=MATASM,
+                          SOLVEUR=_F(METHODE='MUMPS'),
 ###CDURAND###     CALC_FREQ=_F( FREQ = (0., 2.,))
                        )
 
-RESU=MECA_STATIQUE(MODELE=MOD,  SOLVEUR=_F(METHODE='LDLT',RENUM='RCMK',),
+RESU=MECA_STATIQUE(MODELE=MOD,  SOLVEUR=_F(METHODE='MUMPS'),
                    CHAM_MATER=CHMAT,
                    CARA_ELEM=CELEM,
                    EXCIT=_F(CHARGE=CH,),

@@ -1,4 +1,4 @@
-#@ MODIF macro_mode_meca_ops Macro  DATE 06/07/2009   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF macro_mode_meca_ops Macro  DATE 13/10/2010   AUTEUR BOITEAU O.BOITEAU 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -65,7 +65,6 @@ def macro_mode_meca_ops(self,MATR_A,MATR_B,INFO,METHODE,OPTION,CALC_FREQ,
         motscfa['FREQ']=(lborne[i],lborne[i+1])
      motscit['CALC_FREQ']=_F(OPTION          ='BANDE',
                              SEUIL_FREQ      =CALC_FREQ['SEUIL_FREQ'],
-                             NPREC_SOLVEUR   =CALC_FREQ['NPREC_SOLVEUR'],
                              NMAX_ITER_SHIFT =CALC_FREQ['NMAX_ITER_SHIFT'],
                              PREC_SHIFT      =CALC_FREQ['PREC_SHIFT'],
                              **motscfa)

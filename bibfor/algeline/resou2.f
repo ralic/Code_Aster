@@ -1,6 +1,6 @@
       SUBROUTINE RESOU2(MATR,LMAT,NSECM,RSOLU,CSOLU)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 30/06/2008   AUTEUR PELLET J.PELLET 
+C MODIF ALGELINE  DATE 13/10/2010   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -73,5 +73,5 @@ C ----------------------------------------------------------------------
       CALL ASSERT(MATR2.NE.' ')
 
       CALL RESOUD(MATR2,' ',' ',' ',' ',' ',' ',
-     &                  ' ',NSECM,RSOLU,CSOLU)
+     &                  ' ',NSECM,RSOLU,CSOLU,.TRUE.)
       END

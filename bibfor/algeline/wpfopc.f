@@ -1,8 +1,9 @@
       SUBROUTINE WPFOPC( LMASSE, LAMOR, LRAIDE, FMIN,
-     &                   SIGMA, MATOPA, RAIDE, NPREC, LQZ)
+     &                   SIGMA, MATOPA, RAIDE, LQZ, SOLVEU)
       IMPLICIT REAL*8 (A-H,O-Z)
-      CHARACTER*(*)       MATOPA, RAIDE
-      INTEGER             LMASSE, LAMOR, LRAIDE
+      CHARACTER*(*)       MATOPA,RAIDE
+      CHARACTER*19        SOLVEU
+      INTEGER             LMASSE,LAMOR,LRAIDE
       REAL*8              FMIN
       COMPLEX*16          SIGMA
       LOGICAL             LQZ
@@ -10,7 +11,7 @@
 C     -----------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 16/09/2008   AUTEUR PELLET J.PELLET 
+C MODIF ALGELINE  DATE 13/10/2010   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -35,6 +36,7 @@ C OUT LDYNAM  : IS : POINTEUR SUR LA FACTORISEE DE LA MATRICE DYNAMIQUE
 C                    INDUITE PAR L'OPTION
 C OUT SIGMA   : C16: SHIFT
 C IN  LQZ     : METHODE QZ OU NON
+C IN  SOLVEU : K19 : SD SOLVEUR POUR PARAMETRER LE SOLVEUR LINEAIRE
 C     ------------------------------------------------------------------
 C
 C     ------ DEBUT DECLARATIONS NORMALISEES  JEVEUX --------------------
@@ -55,13 +57,13 @@ C     ------ DEBUT DECLARATIONS NORMALISEES  JEVEUX --------------------
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
-      INTEGER      LMAT(3), LMATRA
-      CHARACTER*24 NMAT(3),NMATRA
-      REAL*8       ASHIFT, R8DEPI, CONSTC(6)
-      REAL*8 VALR(2)
-      CHARACTER*1  TYPCST(3)
-
+      INTEGER      LMAT(3),LMATRA,IBID
+      REAL*8       ASHIFT, R8DEPI,CONSTC(6),VALR(2)
+      CHARACTER*1  TYPCST(3),BASE
       CHARACTER*8  NAMDDL
+      CHARACTER*19 MATPRE,MATASS
+      CHARACTER*24 NMAT(3),NMATRA
+
 C     ------------------------------------------------------------------
       DATA NAMDDL/'        '/
 C     ------------------------------------------------------------------
@@ -109,7 +111,10 @@ C     --- DECALAGE COMPLEXE ---
       CALL MTCMBL(3,TYPCST,CONSTC,NMAT,NMATRA,NAMDDL,' ','ELIM=')
 C     --- FACTORISATION DES MATRICES ---
 C
-      CALL TLDLGG(1,LMATRA,1,0,NPREC,NDECI,ISINGU,NPVNEG,IERX)
+      BASE='V'
+      MATPRE=' '
+      MATASS=ZK24(ZI(LMATRA+1))
+      CALL PRERES(SOLVEU,BASE,IBID,MATPRE,MATASS,IBID,1)
 C
   999 CONTINUE
       CALL JEDEMA()

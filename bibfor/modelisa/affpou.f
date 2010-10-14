@@ -8,7 +8,7 @@
       CHARACTER*24      TMP,TMPF
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 14/10/2010   AUTEUR BOYERE E.BOYERE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -66,7 +66,9 @@ C     ------ DEBUT COMMUNS NORMALISES  JEVEUX  ------------------------
       CHARACTER*32       JEXNOM,  JEXNUM
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  ------------------------
       CHARACTER*24 VALK(2)
-      REAL*8        R8MAEM, TST
+      CHARACTER*8  VALKM
+      INTEGER      VALIM
+      REAL*8       R8MAEM, TST, VALRM
 C     ------------------------------------------------------------------
 C
       CALL JEMARQ()
@@ -99,6 +101,17 @@ C
             ZR(JDGE+I-1) = TST
  5       CONTINUE
       ENDIF
+
+C --- VERIFICATION QUE LES AY, AZ SONT >= 1
+      DO 7 I = 1 , NCAR
+         IF ( (CAR(I)(1:2).EQ.'AY').OR.(CAR(I)(1:2).EQ.'AZ')) THEN
+            IF ( VAL(I) .LT. 1.0D0 ) THEN
+               VALKM = CAR(I)
+               VALRM = VAL(I)
+               CALL U2MESG('F','MODELISA_23',1,VALKM,0,VALIM,1,VALRM)
+            ENDIF
+         ENDIF
+7     CONTINUE
 
 C     --- NOM DE LA FONCTION DU CX
       CALL JENONU(JEXNOM(TMPF,NOM),NUM)

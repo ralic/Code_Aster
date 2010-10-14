@@ -1,10 +1,10 @@
       SUBROUTINE VPCNTL
      &  (CTY, MODE, OPTION, OMEMIN, OMEMAX, SEUIL, NFREQ, IPOS, LMAT,
-     &   OMECOR, PRECDC, IER, VPINF, VPMAX, NPREC, FREQ, ERR, CHARGE,
-     &   TYPRES, STURM, NBLAGR)
+     &   OMECOR, PRECDC, IER, VPINF, VPMAX, FREQ, ERR, CHARGE,
+     &   TYPRES, STURM, NBLAGR,SOLVEU)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 19/06/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF ALGELINE  DATE 13/10/2010   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -31,24 +31,15 @@ C            LMAT(3)  : RESULTAT DE LA MATRICE SHIFTEE FACTORISEE
 C OUT IER  : I : CODE RETOUR
 C            0 TOUT C'EST BIEN PASSE
 C            > 0 NOMBRE D'ERREURS TROUVEES
-C     ------------------------------------------------------------------
-C     SUBROUTINES APPELLEES:
-C        INFNIV, OMEGA2,VPSTUR,
-C     FONCTIONS INTRINSEQUES:
-C        ABS, SIGN
-C     ------------------------------------------------------------------
-C     ASTER INFORMATIONS:
-C      24/01/2000 TOILETTAGE FORTRAN, IMPLICIT NONE,
-C                 MOFIFICATION DES (1.D0-PRECDC) AVEC SIGN.
-C                 NOUVEAUX PARAMETRES STURM ET NBLAGR,
-C                 INTRODUCTION DE LA VERIFICATION DE STURM ETENDUE.
+C IN  SOLVEU : K19 : SD SOLVEUR POUR PARAMETRER LE SOLVEUR LINEAIRE
 C-----------------------------------------------------------------------
 C
       IMPLICIT NONE
 C
       CHARACTER*1  CTY
       CHARACTER*(*) MODE, OPTION, TYPRES
-      INTEGER      NFREQ, IPOS(*), LMAT(3), IER, NBLAGR, NPREC
+      CHARACTER*19  SOLVEU
+      INTEGER      NFREQ, IPOS(*), LMAT(3), IER, NBLAGR
       REAL*8       VPINF, VPMAX, OMEMIN, OMEMAX, SEUIL, PRECDC, OMECOR,
      &             CHARGE(NFREQ), FREQ(NFREQ), ERR(NFREQ)
 
@@ -87,7 +78,11 @@ C
         WRITE(IFM,1100)
         WRITE(IFM,1200)
       ENDIF
-C
+
+C --- POUR NE PAS DECLANCHER INUTILEMENT LE CALCUL DU DETERMINANT DANS
+C     VPSTUR
+      EXPO=-9999
+
 C     ------------------------------------------------------------------
 C     ------------------ CONTROLE DES NORMES D'ERREURS -----------------
 C     ------------------------------------------------------------------
@@ -159,11 +154,11 @@ C        --- RECHERCHE DE LA PLUS PETITE ET DE LA PLUS GRANDE FREQUENCES
       IF ( OPTION .NE. '  ' ) THEN
 
          XFMAX = VPMAX
-         CALL VPSTUR(LMAT(1),XFMAX,LMAT(2),LMAT(3),NPREC,MANTIS,EXPO,
-     +               NBMAX,IR)
+         CALL VPSTUR(LMAT(1),XFMAX,LMAT(2),LMAT(3),MANTIS,EXPO,
+     +               NBMAX,IR,SOLVEU)
          XFMIN = VPINF
-         CALL VPSTUR(LMAT(1),XFMIN,LMAT(2),LMAT(3),NPREC,MANTIS,EXPO,
-     +               NBMIN,IR)
+         CALL VPSTUR(LMAT(1),XFMIN,LMAT(2),LMAT(3),MANTIS,EXPO,
+     +               NBMIN,IR,SOLVEU)
 C
 C REGLES DE STURM ETENDUE
          IF (.NOT.STURM) THEN

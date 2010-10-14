@@ -1,7 +1,7 @@
       SUBROUTINE OP0093 ()
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
+C MODIF ALGELINE  DATE 13/10/2010   AUTEUR BOITEAU O.BOITEAU 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -101,6 +101,7 @@ C---------------------------------------------C
 C     -- CREATION DU SOLVEUR :
       SOLVEU='&&OP0093.SOLVEUR'
       CALL CRESOL(SOLVEU,' ')
+
       
 C     --- COMPATIBILITE DES MODES (DONNEES ALTEREES) ---
       CALL EXISD('MATR_ASSE',RAIDE,IBID)
@@ -126,7 +127,7 @@ C-- FACTORISATION DE LA MATRICE DE RAIDEUR
       CALL MTCOPY(RAIDE,RAIDFA,IRET)
       CALL MTDSCR(RAIDFA)
       CALL JEVEUO(RAIDFA(1:19)//'.&INT','E',LMATR)
-      CALL PRERES(SOLVEU,'V',IRET,MATPRE,RAIDFA)
+      CALL PRERES(SOLVEU,'V',IRET,MATPRE,RAIDFA,IBID,-9999)
       IF (IRET.EQ.2) THEN
          VALK = RAIDE
          CALL U2MESK('F', 'ALGELINE4_37',1,VALK)

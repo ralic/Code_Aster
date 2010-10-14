@@ -1,4 +1,4 @@
-# MODIF  DATE 20/07/2010   AUTEUR MAHFOUZ D.MAHFOUZ 
+# MODIF  DATE 13/10/2010   AUTEUR BOITEAU O.BOITEAU 
 # TITRE VIBRATIONS D UN PENDULE EN ROTATION
 # RESPONSABLE VABHHTS J.PELLET
 # sdll403a.para = tps_job 60 mem_job 130Mo ncpus 1 liste_test S
@@ -164,9 +164,10 @@ M_ASSE=ASSE_MATRICE(MATR_ELEM=M_ELEM,
 MODE_1=MODE_ITER_SIMULT(MATR_A=K_MODAL,
                         MATR_B=M_ASSE,
                         CALC_FREQ=_F(OPTION='PLUS_PETITE',
-                                     NMAX_FREQ=20,
-                                     NPREC_SOLVEUR=9,),
-                        VERI_MODE=_F(SEUIL=0.0001,),);
+                                     NMAX_FREQ=20,),
+                        VERI_MODE=_F(SEUIL=0.0001,),
+                        SOLVEUR=_F(NPREC=9),
+                        );
 #----------------------------------------------------------------------
 # pour tester la possibilite d'imprimer un MODE_MECA au format 'IDEAS'
 # et de poursuivre la calcul apres l'avoir relu :

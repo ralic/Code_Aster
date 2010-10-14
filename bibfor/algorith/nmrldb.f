@@ -1,7 +1,7 @@
       SUBROUTINE NMRLDB(LMAT,RESU,NBSM,CNCINE)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 23/09/2008   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 13/10/2010   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -68,7 +68,7 @@ C
 
       CALL RESOUD(MATR  ,' ',' ',SOLVEU,CNCINE,
      &            'V'   ,' ',' ',NBSM  ,RESU  ,
-     &            C16BID)
+     &            C16BID,.TRUE.)
 C 
       CALL JEDEMA()
 

@@ -1,0 +1,497 @@
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR boiteau      BOITEAU Olivier        DATE 10/13/2010 - 08:54:02
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011662 DU 2008-01-22 11:57:36
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+    SV00 - Rendre compatible CRIT_FLAMB avec le solveur MUMPS
+FONCTIONNALITE
+   Voir fiche 12244
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    informatique, non-regression
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012244 DU 2008-06-27 09:52:04
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+    SV00 - Pouvoir utiliser d'autres solveurs que LDLT et MULT-FRONT dans les calculs modaux.
+FONCTIONNALITE
+   PROBLEME
+   =========
+     1/Actuellement, un certain nombre de fonctionnalites utilisant des solveurs lineaires ne
+     permettent pas a l'utilisateur d'acceder a tous les outils disponibles (par ex.
+     le solveur performant et robuste MUMPS). On pense en paticulier aux commandes de calcul
+     modal et au flambement.
+        --> Performance et robustesse peuvent etre ameliorees (par ex. le //),
+        --> Intercomparaison et validation croisee,
+        --> Homogeneite/lisibilite/completude du perimetre du code.
+   
+     2/Ce parametrage de solveur est d'ailleurs souvent cache ou peu clair pour l'utilisateur
+     (Lequel on prend, celui attache aux matrices via NUME_DDL, a l'operateur lorsqu'il en
+      propose un, a un panachage des 2 ?).
+        --> Clarifier la situation pour l'utilisateur.
+   
+     3/Le codage de ces appels ne passe souvent pas par les routines regaliennes (PRERES et
+     RESOUD). Il appelle souvent des routines de plus bas niveau (c'est mal !).
+        --> Permet de deployer des stategies de verification (verif SD JEVEUX),
+        --> Idem avec la traque des RESULTATS FAUX en // distribue (donnees incomplete),
+        --> Ameliore la lisibilite/maintenabilite/robustesse.
+   
+   RECOMMANDATION
+   ==============
+      Amis developpeurs, lorsque vous voulez resoudre un systeme lineaire, appelez PRERES et 
+     RESOUD et non TLDL.... ou RLDL...
+     Apres cette resit, il ne reste normalement qqes cas-particuliers a instruire
+     (lorsque c'est numeriquement ou informatiquement possible) :
+          - commandes eclatees FACTORISER/RESOUDRE,
+          - Sous-structuration statique, dynamique ?
+          - Contact-frottement discret,
+          - op MODE_STATIQUE,
+          - recherche de modes rigides via TLDLG2 (FETI, modal).
+   
+   COMMANDES OU FONCTIONNALITES IMPACTEES
+   =======================================
+         MODE_ITER_SIMULT
+         MODE_ITER_INV
+         Leurs macros: CALC_MODAL et MACRO_MODE_MECA
+         IMPR_STURM
+         STAT/DYNA_NON_LINE + CRIT_FLAMB/MODE_VIBR
+   
+   MODIFICATION DE SYNTAXE
+   =======================
+          Dans toutes ces cmdes on a rajoute un bloc SOLVEUR pour choisir et parametrer le
+          solveur lineaire. Comme on a besoin de detecter les singularites et de calculer le
+          nbre de termes negatifs de la fctorisee, on n'a acces qu'aux 3 solveurs directs:
+                   LDLT, MULT_FRONT et MUMPS.
+   
+          Par ex (extrait de SDLX201A)
+   
+          MOC0M=MODE_ITER_SIMULT(  MATR_A=RIGAS,   MATR_B=MASAS,
+                       MATR_C=AMORT,
+                    METHODE='SORENSEN',SOLVEUR=_F(METHODE='MUMPS'),
+                     OPTION='SANS',
+                   CALC_FREQ=_F(  APPROCHE = 'REEL', FREQ = (0.1,),
+                    ....
+                   
+          On a epure le parametrage par rapport a celui des op quasi-statique:
+             - on a pas besoin de parametres qui correspondent a des fonctionnalites non encore
+              codees
+                       FILTRAGE_MATRICE, MIXER_PRECISION, MATR_DISTRIBUEE
+             - IMPR_STURM n'a pas besoin de PRETTRAITEMENTS/RESI_RELA.
+   
+          On met les memes valeurs par defaut que pour les autres op.
+   
+   
+          RQ1. J'ai enleve le parametre NPREC_SOLVEUR qui etait redondant avec celui, NPREC,
+               commun des solveurs lineaires.
+          RQ2. MUMPS ne calculant pas encore le determinant d'une matrice, son emploi est
+          limite a l'option PROCHE de MODE_ITER_INV (pas SEPARE, pas AJUSTE sinon UTMESS_F).
+          
+          RQ3. Bien que l'algo modal QZ n'utilise pas de factorisee, il a besoin du parametre
+               solveur lineaire pour le test de Sturm (en GEP sym reel).
+   
+          RQ4. LDLT et MF calculent automatiquement les eventuelles singularites d'une matrice,
+              avec MUMPS, on peut debrancher cette fonctionnalite. Ici, on a interdit cette
+             alternative des le catalogue.
+     
+          RQ5. Pour CRIT_FLAMB, le solveur lineaire du modal est commun a celui de l'etude non
+               lineaire.
+   
+          RQ6. Cas particulier de matrices s'appuyant sur un NUME_DDL_GENE. On ne peut utiliser
+               que LDLT (voire MUMPS, a tester). Dans ce cas, si l'utilisateur a choisi un autre
+               solveur, on l'informe (UTMESS_I) de l'imposition de LDLT et on change manu-
+               militari les parametres de la SD_SOLVEUR (via CRSVL2 ds op0032/44/45).
+   
+          RQ7. Les macros CALC_MODAL et MACRO_MODE_MECA ne s'embarrassent pas des potards lies
+               aux solveurs lineaires. Elles prennent ceux par defaut des cmdes modales.
+   
+   DETAILS DEVELOPPEUR
+   ====================
+      Dans ces op. on ne resoud plus les systemes lineaires en s'appuyant sur la SD_SOLVEUR des
+      matrices (ou avec un parametrage en dur), on prend celui cree par la cmde (en base V) et
+     parametree par la lecture du catalogue. Le nom de la SD_SOLVEUR est par 
+     ex. '&&OP0045.SOLVEUR'.
+   
+     En fin d'op. modal, on detruit explicitement les occurences MUMPS car ce n'est pas fait
+     automatiquement par la destruction des matrices (comme ds les autres op).
+   
+   VALIDATION
+   ===========
+    
+     NON-REGRESSION
+     --------------
+     Sur Bull seq nodebug passage des
+          357 cas_tests utilisant MODE_ITER_SIMULT
+           77                     MODE_ITER_INV
+          22                      MACRO_MODE_MECA
+          7                       CALC_MODAL
+          4                       IMPR_STURM
+          6                       CRIT_FLAMB
+          2                       MODE_VIBR
+   
+      ADHERENCE
+      ----------
+      Modif des cas-tests suivants pour coherence des parametres (NPREC_SOLVEUR)ou sensibilite 
+      numerique (matrice quasi-singuliere non factorisable avec un solveur et OK avec l'autre)   
+       sdll403a
+       sdll505a
+       sdlx301a
+       sslx200a
+       sdll121a
+   
+      VALIDATION FONCTIONNELLE/INFORMATIQUE/NUMERIQUE/INTER-OPERABILITE
+      -----------------------------------------------------------------
+      Cas-tests de validation:
+      
+       - MODE_ITER_SIMULT/INV/IMPR_STURM:   SDLX201A
+           
+            38 calculs modaux ou on croise les solveurs modaux 
+                (SORENSEN,TRI_DIAG_JACOBI,QZ_SIMPLE,QZ_EXPERT,PROCHE,SEPARE...)
+                                    X 
+                 les solveurs lineaires (LDLT,MUMPS,MF)
+                                    X
+                 les cas de figures: GEP et QEP symetriques reels
+   
+      - STAT_NON_LINE + CRIT_FLAMB:    SSLL105D
+   
+             3 fois le meme calcul en changeant de solveur linéaire: LDLT, MF et MUMPS.
+   
+     - DYNA_NON_LINE + MODE_VIBR:    SDNV106A
+   
+             3 fois le meme calcul (1ere partie) en changeant de solveur linéaire: 
+               LDLT, MF et MUMPS.
+   
+   
+   PERSPECTIVES
+   =============
+      - Continuer a muscler les cas-tests seq validant l'inter-operabilite SOLVEUR
+                  MODAUX/SOLVEURS LINEAIRES.
+      - Jauger les aspects perfs et fournir cas-tests,
+      - Jauger les aspects // et fournir cas-tests,
+      - Tester MUMPS avec NUME_DDL_GENE,
+      - Upgrader MUMPS + calcul de determinant.
+   
+   SOURCES MODIFIEES/RAJOUTEES
+   ============================
+   SRC:
+   algocg.f  dlnew0.f  majou.f   modsta.f  nmrldb.f  nxpred.f  op0093.f  preres.f  sspace.f  
+   vpcntl.f  vpsorc.f  wp2ayc.f  wpsorc.f
+   cricho.f  dlnewi.f  mdadap.f  nmcoma.f  ntreso.f  op0015.f  op0186.f  resldl.f  tldlg3.f  
+   vpdich.f  vpsorn.f  wp2ayl.f  wpsorn.f
+   crsvl2.f  dltali.f  mdeul1.f  nmop45.f  nttain.f  op0032.f  pcmump.f  resou2.f  trprot.f  
+   vpfopc.f  vpstur.f  wp2bry.f
+   crsvmu.f  exfonc.f  meacmv.f  nmprac.f  nttcmv.f  op0044.f  phi152.f  resoud.f  vp1ite.f  
+   vpfopr.f  wp1inv.f  wp2ini.f
+   defsta.f  facmtr.f  mereso.f  nmprma.f  nxacmv.f  op0045.f  phi199.f  rigflu.f  vp1pro.f  
+   vpinte.f  wp1mul.f  wpfopc.f
+   detrsd.f  gcpc.f    modint.f  nmreso.f  nxnewt.f  op0060.f  pregcp.f  sinoz1.f  vp2ini.f  
+   vpsor1.f  wp2ay1.f  wpfopr.f
+   
+   SRC90:
+   amumpc.F  amumpd.F  amumph.F  amumpp.F  amumps.F  amumpz.F  ldsp2.F
+   
+   CATAPY:
+   calc_modal.capy  impr_sturm.capy  macro_mode_meca.capy  mode_iter_inv.capy  
+   mode_iter_simult.capy
+   
+   PY:
+   algeline5.py  calc_modal_ops.py  macro_mode_meca_ops.py
+   
+   TEST:
+   sdll121a.comm  sdll403a.comm  sdll505a.comm  sdlx201a.comm  sdlx301a.comm  ssll105d.comm  
+   sslx200a.comm  sdnv106a.comm
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : R5.01.02, R5.01.01, R6.02.03,U4.51.03,U4.52.03,U4.52.04,U4.52.02,U4.52.10,U4.52.01,U4.50.01,U2.08.03
+VALIDATION
+    informatique, non-regression, fonctionnelle, numerique
+NB_JOURS_TRAV  : 25.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR boyere       BOYERE Emmanuel        DATE 10/14/2010 - 09:27:18
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 015547 DU 2010-09-15 16:50:03
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+    Verifier que l'inverse du coefficient de cisaillement des POU_D_T dans AFFE_CARA_ELEM est plus grand que 1
+FONCTIONNALITE
+   Je poursuis la fiche que j'ai essayé de présenter la semaine dernière. Depuis Thomas m'a
+   donné des éléments intéressants. Il m'a montré que dans la programmation de Code_Aster une
+   poutre de Timoshenko dont les coefficients de cisaillement sont nuls est strictement
+   équivalente à une poutre d'Euler (POU_D_E). C'est une astuce utilisée parfois pour
+   retrouver les valeurs de POU_D_E avec une modélisation POU_D_T. Mais on ne peut pas donner
+   de sens clair à autre chose que Ay=Az=0. Le seul cas où clairement l'astuce a été employée
+   dans ce cadre est FORMA11d.
+   La tentation de mettre les coefficients de cisaillement à zéro est aussi rencontrée dans
+   le cadre des modélisations POU_C_T (poutres courbes), POU_D_TG (poutres de Timoshenko avec
+   gauchissement) et POU_D_T_GD (grandes déformations). On cherche alors à se rapprocher de
+   la modélisation d'Euler tout en enrichissant grandement la description ou la cinétique de
+   ce type de poutre. Thomas semblait d'accord avec moi pour dire que cela n'apporte pas
+   beaucoup de cohérence à vouloir à la fois sophistiquer et appauvrir la modélisation. 
+   
+   Je maintiens donc ma proposition d'évolution et reprends le texte de la semaine dernière.
+   
+   
+   Lorsqu'on entre directement les caractéristiques d'inertie de la poutre dans
+   AFFE_CARA_ELEM (plutôt que de faire confiance à l'opérateur pour les géométries simples ou
+   que de passer par MACR_CARA_POUTRE), on peut facilement confondre l'inverse du coefficient
+   de cisaillement Ay (resp. Az), demandé par Code_Aster, avec son inverse ky (resp. kz),
+   couramment cité dans la littérature. 
+   
+   La doc U4.42.01 [AFFE_CARA_ELEM] est claire sur ce point. Elle donne l'expression de
+   l'aire réduite de cisaillement :
+   Ay'= ky.A avec ky=1/Ay, nombre adimensionnel systématiquement inférieur à l'unité.
+   
+   Or confondre ky et Ay peut conduire à des erreurs importantes. Par exemple, pour un calcul
+   de poutre rectangulaire peu élancée entrer 5/6 (coefficient de cisaillement classique pour
+   une poutre rectangulaire) au lieu de 1.2 peut donner une erreur supérieure à 10% sur
+   certaines fréquences propres.
+   
+   On introduit donc une sécurité dans le fortran pour arrêter l'utilisateur s'il spécifie un
+   Ay ou un Az inférieur à 1.
+   L'idéal aurait été de le faire dans le catalogue d'AFFE_CHAR_MECA. Mais ce n'est pas
+   possible avec les règles actuelles.
+   
+   En revanche, en suivant les consignes de Jean-Luc, le garde-fou est très facile à faire,
+   dans affpou :
+   
+   C --- VERIFICATION QUE LES AY, AZ SONT >= 1
+         DO 7 I = 1 , NCAR
+            IF ( (CAR(I)(1:2).EQ.'AY').OR.(CAR(I)(1:2).EQ.'AZ')) THEN
+               IF ( VAL(I) .LT. 1.0D0 ) THEN
+                  VALKM = CAR(I)
+                  VALRM = VAL(I)
+                  CALL U2MESG('F','MODELISA_23',1,VALKM,0,VALIM,1,VALRM)
+               ENDIF
+            ENDIF
+   7     CONTINUE
+   
+   et le message qui va avec :
+   
+   23 : _("""
+    AFFE_CARA_ELEM :
+    La caractéristique %(k1)s, coefficient de cisaillement, pour les poutres doit toujours
+   être >=1.0
+      Valeur donnée : %(r1)f
+   """),
+   
+   Il y a un léger impact sur les cas tests, car dans quelques fichiers de commandes, les
+   coefficients de cisaillement ne respectaient pas la nouvelle règle. Globalement l'effet
+   est faible car les valeurs testées ne dépendent que peu des coefficients de cisaillement.
+   
+   FORMA11d (calcul modal d'une cuve de réacteur) : on remplace Ay=Az=0 par une modélisation
+   en POU_D_E => pas de modif des résultats
+   
+   SSLL102g et SSLL102k (flexion d'une poutre) : on remplace Ay=Az=0 par Ay=Az=10/9 (poutre
+   circulaire pleine) => légère modification de la flèche, contraintes quasi-inchangées
+   
+   MISS02a : Ay=Az=0.93 remplacé par Ay=Az=1 => pas d'impact sur les résultats.
+   MISS04a : idem
+   
+   SDLL102a (portique soumis à des efforts électrodynamiques) : on remplace Ay=Az=0 par
+   Ay=Az=1 => légère modification des valeurs de non-régression mais l'écart avec les
+   résultats d'essai reste inchangé
+   
+   SDLL400a (poutre excentrée) : le calcul était fait en POU_D_E, les coefs Ay et Az
+   n'étaient pas pris en compte => pas de modif
+   
+   SDLX02c (calcul de tuyauterie) : on met Ay=Az=2 => on ajuste les tolérances (données par
+   une moyenne de codes de calcul)
+   
+   SSLL103a etSSLL103b (flambement d'une cornière) :  on remplace Ay=Az=0 par Ay=Az=1 => on
+   fait passer les tolérances de quelques résultats par rapport aux calculs analytiques de 1%
+   à 5%
+   
+   SSNL103a (poutre cantilever en grande rotation) : on fait passer Ay=Az=1/4 à Ay=Az=4 =>
+   pas de modif des résultats (On fait passer le nombre d'itérations de 6 à 9.)
+   
+   
+   SSNL502c (poutre en flambement) : on remplace Ay=Az=0 par Ay=Az=1 => on ajuste les
+   tolérances par rapport à la solution analytique
+   
+   SDLL23b (poutre soumise à un séisme) :  on fait passer Ay=Az=.8333 à Ay=Az=1.2 => pas
+   d'effet sur les résultats testés.
+   NB : ce test doit être complété (cf fiche 11812) pour tester les réactions nodales. Sur
+   ces résultats l'influence est grande (20% d'écart). C'est le cas d'une poutre peu élancée.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : v2.08.011, v3.01.102, v1.10.121, v1.10.123, v2.02.102, v2.02.400, v2.05.02, v3.02.103, v6.02.103, v6.02.502, v2.02.023
+VALIDATION
+    astout + test local
+NB_JOURS_TRAV  : 4.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 015693 DU 2010-10-07 15:03:34
+TYPE express concernant Code_Aster (VERSION 7.0)
+TITRE
+    variable non initialisee dans CAFACI
+FONCTIONNALITE
+   Dans la v10.2.17 on a introduit la gestion de nouveaux concepts XFEM dans CAFACI (routine
+   liée à AFFE_CHAR_MECA).
+   Ces opérations ne devraient avoir lieu que s'il y a modélisation XFEM.
+   Malheureusement le logique LXFEM qui déclenchait la manipulation des objets XFEM n'était
+   initialisé que dans un seul cas de chargement. J'ai eu la (mal)chance de créer une étude
+   un peu compliquée qui initialisait cette variable de façon erratique.
+   
+   Je corrige en mettant en en-tête LXFEM=.FALSE.
+   Il me semble que ça doit être le comportement correct.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    evidente
+NB_JOURS_TRAV  : 2.0
+--------------------------------------------------------------------------------
+
+
+
+========================================================================
+=== Recapitulation des operations demandees pour toutes les restitutions
+========================================================================
+
+
+    TYPE Action    unite                      user      Auteur         nblg  ajout suppr.
+
+ CASTEST MODIF forma11d                       boyere E.BOYERE           182      4      5
+ CASTEST MODIF miss02a                        boyere E.BOYERE           530      3      3
+ CASTEST MODIF miss04a                        boyere E.BOYERE           360      6      3
+ CASTEST MODIF sdll102b                       boyere E.BOYERE           262     59     27
+ CASTEST MODIF sdll121a                      boiteau O.BOITEAU          515      4      3
+ CASTEST MODIF sdll23b                        boyere E.BOYERE           125      2      2
+ CASTEST MODIF sdll400a                       boyere E.BOYERE           240      1      3
+ CASTEST MODIF sdll403a                      boiteau O.BOITEAU          238      5      4
+ CASTEST MODIF sdll505a                      boiteau O.BOITEAU          411      2      2
+ CASTEST MODIF sdlx02c                        boyere E.BOYERE           121     16     17
+ CASTEST MODIF sdlx201a                      boiteau O.BOITEAU         1157    606    118
+ CASTEST MODIF sdlx301a                      boiteau O.BOITEAU         4890      2      2
+ CASTEST MODIF sdnv106a                      boiteau O.BOITEAU          624    256      2
+ CASTEST MODIF ssll102g                       boyere E.BOYERE           166      4      4
+ CASTEST MODIF ssll102k                       boyere E.BOYERE           155      2      2
+ CASTEST MODIF ssll103a                       boyere E.BOYERE           320     15     15
+ CASTEST MODIF ssll103b                       boyere E.BOYERE           265     10     12
+ CASTEST MODIF ssll105d                      boiteau O.BOITEAU          159     46      3
+ CASTEST MODIF sslx200a                      boiteau O.BOITEAU          225      4      2
+ CASTEST MODIF ssnl103a                       boyere E.BOYERE           121      3      3
+ CASTEST MODIF ssnl502c                       boyere E.BOYERE           423      6      6
+CATALOPY MODIF commande/calc_modal           boiteau O.BOITEAU          103      1     10
+CATALOPY MODIF commande/impr_sturm           boiteau O.BOITEAU           64     24      2
+CATALOPY MODIF commande/macro_mode_meca      boiteau O.BOITEAU           90      1      2
+CATALOPY MODIF commande/mode_iter_inv        boiteau O.BOITEAU          143     49      3
+CATALOPY MODIF commande/mode_iter_simult     boiteau O.BOITEAU          195     48      3
+FORTRAN90 MODIF mumps/amumpc                  boiteau O.BOITEAU          403      9      4
+FORTRAN90 MODIF mumps/amumpd                  boiteau O.BOITEAU          404      9      4
+FORTRAN90 MODIF mumps/amumph                  boiteau O.BOITEAU          410     29     11
+FORTRAN90 MODIF mumps/amumpp                  boiteau O.BOITEAU          395     11      6
+FORTRAN90 MODIF mumps/amumps                  boiteau O.BOITEAU          401      9      4
+FORTRAN90 MODIF mumps/amumpz                  boiteau O.BOITEAU          404      9      4
+FORTRAN90 MODIF petsc/ldsp2                   boiteau O.BOITEAU           85      3      2
+ FORTRAN AJOUT algorith/crsvl2               boiteau O.BOITEAU          100    100      0
+ FORTRAN MODIF algeline/gcpc                 boiteau O.BOITEAU          272      3      6
+ FORTRAN MODIF algeline/modsta               boiteau O.BOITEAU          137      3      3
+ FORTRAN MODIF algeline/nmop45               boiteau O.BOITEAU          444     20     16
+ FORTRAN MODIF algeline/op0015               boiteau O.BOITEAU          118      2      2
+ FORTRAN MODIF algeline/op0032               boiteau O.BOITEAU          253     53     22
+ FORTRAN MODIF algeline/op0044               boiteau O.BOITEAU          770     50     46
+ FORTRAN MODIF algeline/op0045               boiteau O.BOITEAU         1202     59     27
+ FORTRAN MODIF algeline/op0093               boiteau O.BOITEAU          219      3      2
+ FORTRAN MODIF algeline/pcmump               boiteau O.BOITEAU           99      5      3
+ FORTRAN MODIF algeline/preres               boiteau O.BOITEAU          277     39     17
+ FORTRAN MODIF algeline/resldl               boiteau O.BOITEAU          142     18      5
+ FORTRAN MODIF algeline/resou2               boiteau O.BOITEAU           77      2      2
+ FORTRAN MODIF algeline/resoud               boiteau O.BOITEAU          293     20     13
+ FORTRAN MODIF algeline/sspace               boiteau O.BOITEAU          282     15      3
+ FORTRAN MODIF algeline/tldlg3               boiteau O.BOITEAU          492     41     35
+ FORTRAN MODIF algeline/vp1ite               boiteau O.BOITEAU          183     36      5
+ FORTRAN MODIF algeline/vp1pro               boiteau O.BOITEAU          243     13     13
+ FORTRAN MODIF algeline/vp2ini               boiteau O.BOITEAU          300     17      5
+ FORTRAN MODIF algeline/vpcntl               boiteau O.BOITEAU          210     15     20
+ FORTRAN MODIF algeline/vpdich               boiteau O.BOITEAU          143      9      9
+ FORTRAN MODIF algeline/vpfopc               boiteau O.BOITEAU          113     15      9
+ FORTRAN MODIF algeline/vpfopr               boiteau O.BOITEAU          355     28     32
+ FORTRAN MODIF algeline/vpinte               boiteau O.BOITEAU          212      7      7
+ FORTRAN MODIF algeline/vpsor1               boiteau O.BOITEAU          382     35     38
+ FORTRAN MODIF algeline/vpsorc               boiteau O.BOITEAU          335     37     36
+ FORTRAN MODIF algeline/vpsorn               boiteau O.BOITEAU          366     37     39
+ FORTRAN MODIF algeline/vpstur               boiteau O.BOITEAU           98     27     19
+ FORTRAN MODIF algeline/wp1inv               boiteau O.BOITEAU          234     17      8
+ FORTRAN MODIF algeline/wp1mul               boiteau O.BOITEAU          196     14     15
+ FORTRAN MODIF algeline/wp2ay1               boiteau O.BOITEAU          125     32      5
+ FORTRAN MODIF algeline/wp2ayc               boiteau O.BOITEAU          100     30      3
+ FORTRAN MODIF algeline/wp2ayl               boiteau O.BOITEAU          123     32      5
+ FORTRAN MODIF algeline/wp2bry               boiteau O.BOITEAU          120     29      3
+ FORTRAN MODIF algeline/wp2ini               boiteau O.BOITEAU          372      8      6
+ FORTRAN MODIF algeline/wpfopc               boiteau O.BOITEAU          121     15     10
+ FORTRAN MODIF algeline/wpfopr               boiteau O.BOITEAU          197     20     13
+ FORTRAN MODIF algeline/wpsorc               boiteau O.BOITEAU          353      7     29
+ FORTRAN MODIF algeline/wpsorn               boiteau O.BOITEAU          386      7     32
+ FORTRAN MODIF algorith/algocg               boiteau O.BOITEAU          605      4      4
+ FORTRAN MODIF algorith/crsvmu               boiteau O.BOITEAU          197     16      2
+ FORTRAN MODIF algorith/defsta               boiteau O.BOITEAU          186      2      2
+ FORTRAN MODIF algorith/dlnew0               boiteau O.BOITEAU          483      2      2
+ FORTRAN MODIF algorith/dlnewi               boiteau O.BOITEAU          625      2      2
+ FORTRAN MODIF algorith/dltali               boiteau O.BOITEAU          252      4      4
+ FORTRAN MODIF algorith/exfonc               boiteau O.BOITEAU          264      3      5
+ FORTRAN MODIF algorith/facmtr               boiteau O.BOITEAU          106      3      2
+ FORTRAN MODIF algorith/majou                boiteau O.BOITEAU          378      2      2
+ FORTRAN MODIF algorith/mdadap               boiteau O.BOITEAU          719      3      3
+ FORTRAN MODIF algorith/mdeul1               boiteau O.BOITEAU          520      3      3
+ FORTRAN MODIF algorith/meacmv               boiteau O.BOITEAU          464      3      8
+ FORTRAN MODIF algorith/mereso               boiteau O.BOITEAU          261      2      2
+ FORTRAN MODIF algorith/modint               boiteau O.BOITEAU          482      3      3
+ FORTRAN MODIF algorith/nmcoma               boiteau O.BOITEAU          273      3      3
+ FORTRAN MODIF algorith/nmprac               boiteau O.BOITEAU          185      2      2
+ FORTRAN MODIF algorith/nmprma               boiteau O.BOITEAU          260      3      3
+ FORTRAN MODIF algorith/nmreso               boiteau O.BOITEAU          167      3      3
+ FORTRAN MODIF algorith/nmrldb               boiteau O.BOITEAU           75      2      2
+ FORTRAN MODIF algorith/ntreso               boiteau O.BOITEAU          253      2      2
+ FORTRAN MODIF algorith/nxacmv               boiteau O.BOITEAU          576      2      2
+ FORTRAN MODIF algorith/nxnewt               boiteau O.BOITEAU          199      4      4
+ FORTRAN MODIF algorith/nxpred               boiteau O.BOITEAU          170      3      3
+ FORTRAN MODIF algorith/op0060               boiteau O.BOITEAU          740      4      4
+ FORTRAN MODIF algorith/op0186               boiteau O.BOITEAU          662      2      2
+ FORTRAN MODIF algorith/phi152               boiteau O.BOITEAU          260      5      5
+ FORTRAN MODIF algorith/phi199               boiteau O.BOITEAU          276      2      2
+ FORTRAN MODIF algorith/pregcp               boiteau O.BOITEAU          266      2      2
+ FORTRAN MODIF algorith/rigflu               boiteau O.BOITEAU          108      2      2
+ FORTRAN MODIF algorith/trprot               boiteau O.BOITEAU          561      2      2
+ FORTRAN MODIF calculel/nttain               boiteau O.BOITEAU          149      2      2
+ FORTRAN MODIF calculel/nttcmv               boiteau O.BOITEAU          207      2      2
+ FORTRAN MODIF calculel/sinoz1               boiteau O.BOITEAU          166     10     12
+ FORTRAN MODIF modelisa/affpou                boyere E.BOYERE           163     15      2
+ FORTRAN MODIF modelisa/cafaci                boyere E.BOYERE           472      3      2
+ FORTRAN MODIF soustruc/cricho               boiteau O.BOITEAU          343      3      3
+ FORTRAN MODIF utilitai/detrsd               boiteau O.BOITEAU          661      3      3
+  PYTHON MODIF Macro/calc_modal_ops          boiteau O.BOITEAU          157      3      8
+  PYTHON MODIF Macro/macro_mode_meca_ops     boiteau O.BOITEAU          134      1      2
+  PYTHON MODIF Messages/algeline5            boiteau O.BOITEAU          421     30      2
+  PYTHON MODIF Messages/modelisa              boyere E.BOYERE           530      7      8
+
+
+        nb unites  nb lignes  ajouts  suppr.  difference
+ AJOUT :    1         100       100              +100
+ MODIF :  112       38906      2252     989     +1263
+ SUPPR :    0           0                 0        +0
+ DEPLA :    0           0 
+         ----      ------     ------  ------   ------
+ TOTAL :  113       39006      2352     989     +1363 

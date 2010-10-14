@@ -1,4 +1,4 @@
-#@ MODIF algeline5 Messages  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
+#@ MODIF algeline5 Messages  DATE 13/10/2010   AUTEUR BOITEAU O.BOITEAU 
 # -*- coding: iso-8859-1 -*-
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -388,6 +388,34 @@ cata_msg={
     Pour l'instant, ce cas n'a pas été pris en compte.
 """),
 71: _("""
-    Les deux bases ne sont pas du même type (Complexe/Réel) !
+    Cette fonctionnalité requiert un solveur linéaire permettant de détecter les
+    éventuelles singularités des matrices.
+    Conseil:
+    ========
+    Changer de solveur linéaire (mot-clé SOLVEUR), utiliser MULT_FRONT ou MUMPS.
+"""),
+72: _("""
+    Les matrices utilisées ne s'appuient pas sur des données issues d'un maillage.
+    Dans ce cas on doit utiliser uniquement le solveur linéaire LDLT. On a donc 
+    changé le paramétrage pour vous et selectionné ce solveur linéaire.
+    Conseil:
+    ========
+    La prochaine fois, dans une telle situation (NUME_DDL_GENE...), paramétrer
+    explicitement SOLVEUR/METHODE='LDLT'.
+"""),
+73: _("""
+    On a besoin d'effectuer un calcul de déterminant. Pour l'instant seuls les
+    solveurs linéaires directs 'MULT_FRONT' et 'LDLT' l'effectuent. Veuillez chan
+    ger le paramétrage du mot-clé SOLVEUR/METHODE pour prendre en compte un de
+    ces deux solveurs. De préférence utilisez 'MULT_FRONT' qui est plus efficace
+    que 'LDLT'.
+"""),
+74: _("""
+    Lors d'un calcul modal (MODE_ITER_SIMULT/INV, CRIT_FLAMB...) utilisant le
+    solveur linéaire MUMPS (SOLVEUR/METHODE='MUMPS'), il ne faut pas débrancher
+    la détection de singularité.
+    Conseil:
+    ========
+    Relancer le calcul avec SOLVEUR/NPREC>0 (par exemple 8).
 """),
 }

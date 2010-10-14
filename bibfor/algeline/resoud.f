@@ -1,8 +1,8 @@
       SUBROUTINE RESOUD(MATASS,MATPRE,CHSECM,SOLVEU,CHCINE,BASE,CHSOLU,
-     &                  CRITER,NSECM,RSOLU,CSOLU)
+     &                  CRITER,NSECM,RSOLU,CSOLU,PREPOS)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 18/01/2010   AUTEUR TARDIEU N.TARDIEU 
+C MODIF ALGELINE  DATE 13/10/2010   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -52,14 +52,20 @@ C IN/OUT   R   RSOLU(*,NSECM)  :
 C        EN ENTREE : VECTEUR DE REELS CONTENANT LES SECONDS MEMBRES
 C        EN SORTIE : VECTEUR DE REELS CONTENANT LES SOLUTIONS
 C IN/OUT   C   CSOLU(*,NSECM)  : IDEM RSOLU POUR LES COMPLEXES.
+C IN      LOG  PREPOS : SI .TRUE. ON FAIT LES PRE ET POSTTRAITEMENTS DE
+C           MISE A L'ECHELLE DU RHS ET DE LA SOLUTION (MRCONL) ET DE LA
+C           PRISE EN COMPTE DES AFFE_CHAR_CINE (CSMBGG).
+C           SI .FALSE. ON NE LES FAIT PAS (PAR EXEMPLE EN MODAL).
+C           FONCTIONNALITE BRANCHEE QUE POUR LES SOLVEURS DIRECTS
 C-----------------------------------------------------------------------
       IMPLICIT NONE
 
       CHARACTER*(*) BASE,CHSECM,CHCINE,MATASS,MATPRE,CHSOLU
       CHARACTER*(*) CRITER,SOLVEU
-      INTEGER NSECM
-      REAL*8 RSOLU(*)
-      COMPLEX*16 CSOLU(*)
+      INTEGER       NSECM
+      REAL*8        RSOLU(*)
+      COMPLEX*16    CSOLU(*)
+      LOGICAL       PREPOS
 
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       INTEGER ZI
@@ -76,21 +82,22 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 
-      INTEGER IBID,IFM,NIV
+      INTEGER      IBID,IFM,NIV
       CHARACTER*24 METRES
-      CHARACTER*3 KMPIC,TYPE,TYP1,KBID
+      CHARACTER*3  KMPIC,TYPE,TYP1,KBID
       CHARACTER*19 MATR19,MPRE19,CSOL19
       CHARACTER*19 CINE19,SECM19,SOLV19,CRIT19
 
-      INTEGER JSLVK,JSLVR,JSLVI,IDBGAV,NEQ,NEQ1
-      INTEGER IRET,NITER,LMAT,JVALS,JTRAV,JVAL2,IMD,JREFA
-      REAL*8 EPSI,RBID
-      LOGICAL DBG
-      CHARACTER*1 FTYPE(2)
+      INTEGER      JSLVK,JSLVR,JSLVI,IDBGAV,NEQ,NEQ1,IRET,NITER,LMAT,
+     &             JVALS,JTRAV,JVAL2,IMD,JREFA
+      REAL*8       EPSI,RBID
+      LOGICAL      DBG,PREPOZ
+      CHARACTER*1  FTYPE(2)
       DATA FTYPE/'R','C'/
 C ----------------------------------------------------------------------
       DBG=.TRUE.
       DBG=.FALSE.
+      PREPOZ=PREPOS
 
       CALL JEMARQ()
       CALL JEDBG2(IDBGAV,0)
@@ -194,12 +201,12 @@ C     -- SI 'FETI', ON NE PEUT PAS APPELER MTDSCR :
       IF (METRES.EQ.'LDLT' .OR. METRES.EQ.'MULT_FRO') THEN
 C     ----------------------------------------------------
         IF (NSECM.GT.0) THEN
-          CALL RESLDL(SOLV19,MATR19,CINE19,NSECM,RSOLU,CSOLU)
+          CALL RESLDL(SOLV19,MATR19,CINE19,NSECM,RSOLU,CSOLU,PREPOZ)
         ELSE
           IF (TYPE.EQ.'R') THEN
-            CALL RESLDL(SOLV19,MATR19,CINE19,1,ZR(JTRAV),CBID)
+            CALL RESLDL(SOLV19,MATR19,CINE19,1,ZR(JTRAV),CBID,PREPOZ)
           ELSE
-            CALL RESLDL(SOLV19,MATR19,CINE19,1,RBID,ZC(JTRAV))
+            CALL RESLDL(SOLV19,MATR19,CINE19,1,RBID,ZC(JTRAV),PREPOZ)
           ENDIF
         ENDIF
 
@@ -209,14 +216,14 @@ C     ----------------------------------------------------
 C     ----------------------------------------------------
         IF (NSECM.GT.0) THEN
           CALL AMUMPH('RESOUD',SOLV19,MATR19,RSOLU,CSOLU,
-     &                 CINE19,NSECM,IRET)
+     &                 CINE19,NSECM,IRET,PREPOZ)
         ELSE
           IF (TYPE.EQ.'R') THEN
             CALL AMUMPH('RESOUD',SOLV19,MATR19,ZR(JTRAV),CBID,
-     &                 CINE19,1,IRET)
+     &                 CINE19,1,IRET,PREPOZ)
           ELSE
             CALL AMUMPH('RESOUD',SOLV19,MATR19,RBID,ZC(JTRAV),
-     &                 CINE19,1,IRET)
+     &                 CINE19,1,IRET,PREPOZ)
           ENDIF
         ENDIF
         CALL ASSERT(IRET.EQ.0)
@@ -236,10 +243,10 @@ C     ----------------------------------
         CALL ASSERT(TYPE.EQ.'R')
         IF (NSECM.GT.0) THEN
           CALL RESGRA(MATR19,MPRE19,CINE19,NITER,EPSI,CRIT19,NSECM,
-     &                RSOLU,SOLV19 )
+     &                RSOLU,SOLV19)
         ELSE
           CALL RESGRA(MATR19,MPRE19,CINE19,NITER,EPSI,CRIT19,1,
-     &                ZR(JTRAV),SOLV19 )
+     &                ZR(JTRAV),SOLV19)
         ENDIF
 
 

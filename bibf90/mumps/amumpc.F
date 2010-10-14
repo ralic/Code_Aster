@@ -1,8 +1,8 @@
       SUBROUTINE AMUMPC(ACTION,KXMPS,CSOLU,VCINE,NBSOL,IRET,
-     &                  IMPR,IFMUMP)
+     &                  IMPR,IFMUMP,PREPOS)
       IMPLICIT NONE
 !           CONFIGURATION MANAGEMENT OF EDF VERSION
-!& MODIF AMUMPC MUMPS  DATE 29/03/2010   AUTEUR BOITEAU O.BOITEAU 
+!& MODIF AMUMPC MUMPS  DATE 13/10/2010   AUTEUR BOITEAU O.BOITEAU 
 ! ==================================================================
 ! COPYRIGHT (C) 1991 - 2005  EDF R&D              WWW.CODE-ASTER.ORG
 !
@@ -40,6 +40,10 @@ C            0 : OK
 C            2 : MATRICE NUMERIQUEMENT SINGULIERE
 C IN  : NBSOL  : NBRE DE SYSTEMES A RESOUDRE
 C IN  : IMPR,IFMUMP : PARAMETRES POUR SORTIE FICHIER MATRICE CF AMUMPH
+C IN : PREPOS (LOG) : SI .TRUE. ON FAIT LES PRE ET POSTTRAITEMENTS DE
+C           MISE A L'ECHELLE DU RHS ET DE LA SOLUTION (MRCONL) ET DE LA
+C           PRISE EN COMPTE DES AFFE_CHAR_CINE (CSMBGG).
+C           SI .FALSE. ON NE LES FAIT PAS (PAR EXEMPLE EN MODAL).
 C---------------------------------------------------------------
 C RESPONSABLE BOITEAU
 
@@ -48,6 +52,7 @@ C RESPONSABLE BOITEAU
       CHARACTER*19  VCINE,NOSOLV
       INTEGER       IRET,NBSOL,KXMPS,IFMUMP
       COMPLEX*16    CSOLU(*)
+      LOGICAL       PREPOS
 
 #ifdef _HAVE_MUMPS
 
@@ -261,7 +266,7 @@ C       ------------------------------------------------
           ELSE
             N=CMPSK%N
             CALL WKVECT(KPIV,'V V I',N+2,IPIV)
-	    IF (LRESOL) THEN
+            IF (LRESOL) THEN
 C --- KPIV(1)= NOMBRE DE PIVOTS QUASI NULS  (TOUS LE PROCS)
               IF (CMPSK%INFOG(28).GT.N) CALL ASSERT(.FALSE.)
               ZI(IPIV)=CMPSK%INFOG(28)
@@ -276,7 +281,7 @@ C --- KPIV(3..) LES PIVOTS QUASI NULS (ONLY PROC 0)
               ENDIF
 C --- BCAST POUR COMMUNIQUER L'INFO AUX AUTRES PROCS
               CALL MPICM2('BCAST',KPIV)
-	    ENDIF
+            ENDIF
           ENDIF
         ENDIF
         
@@ -306,7 +311,7 @@ C       ------------------------------------------------
         CALL AMUMPT(7,KMONIT,TEMPS,RANG,NBPROC,KXMPS,LQUALI,RDESQ,TYPE,
      &              IETDEB,IETRAT,RCTDEB,LDIST)
         CALL AMUMPP(0,NBSOL,KXMPS,LDIST,TYPE,IMPR,IFMUMP,ELI2LG,
-     &              RBID,CSOLU,VCINE)
+     &              RBID,CSOLU,VCINE,PREPOS)
 
 C       ------------------------------------------------
 C        RESOLUTION MUMPS :
@@ -347,7 +352,7 @@ C       ------------------------------------------------
 C        POST-TRAITEMENTS ASTER DE/DES (LA) SOLUTION(S) :
 C       ------------------------------------------------
         CALL AMUMPP(2,NBSOL,KXMPS,LDIST,TYPE,IMPR,IFMUMP,ELI2LG,
-     &              RBID,CSOLU,VCINE)
+     &              RBID,CSOLU,VCINE,PREPOS)
 
 C       ------------------------------------------------
 C        AFFICHAGE DU MONITORING :

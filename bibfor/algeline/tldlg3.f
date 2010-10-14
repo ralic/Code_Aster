@@ -2,7 +2,7 @@
      &                  NDECI,ISINGU,NPVNEG,IRET,SOLVOP)
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 13/04/2010   AUTEUR BOITEAU O.BOITEAU 
+C MODIF ALGELINE  DATE 13/10/2010   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -35,7 +35,6 @@ C                        ET N'IMPRIME AUCUN MESSAGE.
 C     IN  LMAT  : DESCRIPTEUR DE LA MATRICE A FACTORISER
 C     IN  ILDEB : NUMERO DE LA LIGNE DE DEPART DE FACTORISATION
 C     IN  ILFIN : NUMERO DE LA LIGNE DE FIN    DE FACTORISITION
-
 C    OUT  IRET : CODE RETOUR :
 C                  /0 -> OK
 C                  /1 -> LE NOMBRE DE DECIMALES PERDUES SUR LE
@@ -91,8 +90,8 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*8 NOMNO,NOMCMP,TARDIF,METRES
       CHARACTER*24 KPIV
       CHARACTER*40 INFOBL,VALK(4)
-      INTEGER ISTOP,LMAT,ILDEB,ILFIN,NDIGIT,NDIGI2,IRET,NPVNEG
-      INTEGER IFM,NIV,JREFA,NOM,NEQ,ISCBL,ISCDI,LLIAI,IRETP
+      INTEGER ISTOP,LMAT,ILDEB,ILFIN,NDIGIT,NDIGI2,IRET,NPVNEG,IRETZ
+      INTEGER IFM,NIV,JREFA,NOM,NEQ,ISCBL,ISCDI,LLIAI,IRETP,NPVNEZ
       INTEGER TYPVAR,TYPSYM,NBBLOC,ILFIN1,IBID
       INTEGER IEQ3,ISINGU,ISCHC,IEQ,NDECI,JDIGS,NPIVOT
       INTEGER NDECI1,NDECI2,IEQ4,NZERO,VALI(2),IPIV
@@ -157,7 +156,7 @@ C     LA DIAGONALE "AVANT" ET LA DIAGONALE "APRES" :
       IF (METRES.NE.'MUMPS') 
      &  CALL DIAGAV(NOMA19,NEQ,ILFIN1,TYPVAR,EPS)
 
-      IRET = 0
+      IRETZ = 0
 
       CALL ASSERT(ZK24(JREFA-1+2)(1:14).EQ.NU)
       STOLCI=NU//'.SLCS'
@@ -209,12 +208,13 @@ C     ---------------------------------------
       ELSE IF (METRES.EQ.'MUMPS') THEN
 C     ---------------------------------------
         LMUMPS=.TRUE. 
-        CALL AMUMPH('DETR_OCC',SOLVOP,NOMA19,RBID,CBID,' ',0,IRET)
-        CALL AMUMPH('PRERES',SOLVOP,NOMA19,RBID,CBID,' ',0,IRET)
+        CALL AMUMPH('DETR_OCC',SOLVOP,NOMA19,RBID,CBID,' ',0,IRETZ,
+     &              .TRUE.)
+        CALL AMUMPH('PRERES',SOLVOP,NOMA19,RBID,CBID,' ',0,IRETZ,.TRUE.)
         NZERO=-9999
         IRETP=0
         KPIV='&&AMUMP.PIVNUL'
-        IF (IRET.EQ.2) THEN
+        IF (IRETZ.EQ.2) THEN
 C     -- LA FACTORISATION S'EST PAS BIEN PASSEE. PEUT IMPORTE LA VALEUR
 C        NPREC ET L'ACTIVATION OU NON DE LA RECHERCHE DE SINGULARITE.
 C        MATRICE SINGULIERE NUMERIQUEMENT OU EN STRUCTURE (DETECTE EN
@@ -226,7 +226,7 @@ C        MF/LDLT. ON MET ISINGU=1 ARBITRAIREMENT)
         ELSE
           IF (NDIGI2.GT.0) THEN
 C     -- ON RECUPERE LE TABLEAU DONNANT SUR LA LISTE DES PIVOTS NON-NULS
-C        IL N'EXISTE QUE SI NPREC>=0 ET SI IRET=0 
+C        IL N'EXISTE QUE SI NPREC>=0 ET SI IRETZ=0 
             CALL JEEXIN(KPIV,IRETP)
             IF (IRETP.NE.0) THEN
               CALL JEVEUO(KPIV,'L',IPIV)
@@ -236,7 +236,7 @@ C        IL N'EXISTE QUE SI NPREC>=0 ET SI IRET=0
 C    -- LE PREMIER ELEMENT DU TABLEAU CORRESPOND A INFOG(28) 
 C    -- IL INDIQUE LE NOMBRE DE PIVOTS INFERIEUR A UN CERTAIN SEUIL 
 C       DEFINI DANS AMUMPR
-C    -- SI INFOG(28) > 0 ALORS IRET=1 ( LE NOMBRE DE DECIMALES PERDUES 
+C    -- SI INFOG(28) > 0 ALORS IRETZ=1 ( LE NOMBRE DE DECIMALES PERDUES 
 C         SUR LE TERME DIAGONAL DE L'EQUATION ISINGU > A NDIGIT)
 C    -- ATTENTION ON N'EST PAS RIGOUREUSEMENT IDENTIQUE AU CRITERE 
 C       HABITUEL EMPLOYE AVEC MF ET LDLT. AVEC MUMPS, LE CRITERE
@@ -245,19 +245,19 @@ C            DU PIVOT ET NON PAS EXPLICITEMENT LE RAPPORT DE TERMES
 C            DIAGONAUX
 C          - EST GLOBAL A TOUTE LA MATRICE ET NON LOCAL PAR LIGNE
 C          - ON NE DETECTE PAS LE NUMERO DE LIGNE DE PIVOT VRAIMENT NUL
-C            (CAS IRET=2 PAS EXPLOIE ICI MAIS DIRECTEMENT DS AMUMPR/C
+C            (CAS IRETZ=2 PAS EXPLOIE ICI MAIS DIRECTEMENT DS AMUMPR/C
 C             AVEC LES ERREURS MUMPS INFO(1)=-10)
 
 C     -- LA FACTORISATION S'EST BIEN PASSEE. ON CHERCHE LES SINGULARITES
             IF (ZI(IPIV).EQ.0) THEN
 C     -- PAS DE SINGULARITE       
-              IRET=0
+              IRETZ=0
               NDECI=0
               ISINGU=0
               NPIVOT=-ZI(IPIV+1)
             ELSE IF (ZI(IPIV).GT.0) THEN
 C     -- AU MOINS UNE SINGULARITE         
-              IRET=1
+              IRETZ=1
               NDECI=NDIGI2
               ISINGU=ZI(IPIV+2)
               NPIVOT=-ZI(IPIV+1)
@@ -279,54 +279,56 @@ C        EVENTUELLES SINGULARITES
 C     -- CALCUL DE NPVNEG :
 C     ---------------------
       IF (NPIVOT.LT.0) THEN
-        NPVNEG = NPIVOT
+        NPVNEZ = NPIVOT
       ELSE
-        NPVNEG = 0
-      END IF
+        NPVNEZ = 0
+      ENDIF
 
 
-C     -- CALCUL DU CODE RETOUR: IRET,NDECI ET ISINGU :
+C     -- CALCUL DU CODE RETOUR: IRETZ,NDECI ET ISINGU :
 C     ------------------------------------------------
-      IF ((NPIVOT.GT.0).AND.(METRES.NE.'MUMPS')) THEN
-        IRET = 2
-        NDECI = -9999
-        ISINGU = NPIVOT
-      ELSE IF (METRES.NE.'MUMPS') THEN
+      IF (METRES(1:5).NE.'MUMPS') THEN
+        IF (NPIVOT.GT.0) THEN
+          IRETZ = 2
+          NDECI = -9999
+          ISINGU = NPIVOT
+        ELSE
 
 C     -- ON REGARDE CE QUE SONT DEVENUS LES TERMES DIAGONAUX :
 C     -------------------------------------------------------
-        CALL JEVEUO(NOMA19//'.DIGS','L',JDIGS)
-        DMAX = 0.D0
-        DMIN = R8MAEM()
-        NZERO=0
-        DO 10 IEQ = ILDEB,ILFIN1
-          IF (TYPVAR.EQ.1) THEN
-            D1 = ABS(ZR(JDIGS-1+IEQ)/ZR(JDIGS+NEQ-1+IEQ))
-          ELSE
-            D1 = ABS(ZC(JDIGS-1+IEQ)/ZC(JDIGS+NEQ-1+IEQ))
-          ENDIF
-          IF (D1.GT.DMAX) THEN
-            DMAX = D1
-            IEQ3 = IEQ
-          ENDIF
-          IF (D1.EQ.0.D0) THEN
-            NZERO=NZERO+1
-          ELSE
-            IF (D1.LT.DMIN) THEN
-              DMIN = D1
-              IEQ4 = IEQ
+          CALL JEVEUO(NOMA19//'.DIGS','L',JDIGS)
+          DMAX = 0.D0
+          DMIN = R8MAEM()
+          NZERO=0
+          DO 10 IEQ = ILDEB,ILFIN1
+            IF (TYPVAR.EQ.1) THEN
+              D1 = ABS(ZR(JDIGS-1+IEQ)/ZR(JDIGS+NEQ-1+IEQ))
+            ELSE
+              D1 = ABS(ZC(JDIGS-1+IEQ)/ZC(JDIGS+NEQ-1+IEQ))
             ENDIF
+            IF (D1.GT.DMAX) THEN
+              DMAX = D1
+              IEQ3 = IEQ
+            ENDIF
+            IF (D1.EQ.0.D0) THEN
+              NZERO=NZERO+1
+            ELSE
+              IF (D1.LT.DMIN) THEN
+                DMIN = D1
+                IEQ4 = IEQ
+              ENDIF
+            ENDIF
+   10     CONTINUE
+          CALL ASSERT(DMAX.GT.0)
+          NDECI1 = INT(LOG10(DMAX))
+          NDECI2 = INT(LOG10(1.D0/DMIN))
+          NDECI=NDECI1
+          ISINGU = IEQ3
+          IF (NDECI.GE.NDIGI2) THEN
+            IRETZ = 1
+          ELSE
+            IRETZ = 0
           ENDIF
-   10   CONTINUE
-        CALL ASSERT(DMAX.GT.0)
-        NDECI1 = INT(LOG10(DMAX))
-        NDECI2 = INT(LOG10(1.D0/DMIN))
-        NDECI=NDECI1
-        ISINGU = IEQ3
-        IF (NDECI.GE.NDIGI2) THEN
-          IRET = 1
-        ELSE
-          IRET = 0
         ENDIF
       ENDIF
 
@@ -337,12 +339,12 @@ C     ----------------------------------------------
       IF ((NDIGI2.LT.0).AND.(METRES.EQ.'MUMPS')) GOTO 21 
       IF (ISTOP.EQ.2) THEN
         GOTO 20
-      ELSE IF (IRET.EQ.0) THEN
+      ELSE IF (IRETZ.EQ.0) THEN
         GOTO 20
       ELSE IF (ISTOP.EQ.1) THEN
-        IF (IRET.EQ.1) THEN
+        IF (IRETZ.EQ.1) THEN
           CODMES = 'A'
-        ELSE IF (IRET.EQ.2) THEN
+        ELSE IF (IRETZ.EQ.2) THEN
           CODMES = 'F'
         ELSE
           CALL ASSERT(.FALSE.)
@@ -354,13 +356,13 @@ C     ----------------------------------------------
       VALI(1)= ISINGU
       VALI(2)= NDECI
       IF (NU.EQ.' ') THEN
-        IF (IRET.EQ.1) THEN
+        IF (IRETZ.EQ.1) THEN
           IF (LMUMPS) THEN
             CALL U2MESG(CODMES,'FACTOR_75',0,VALK,2,VALI,0,0.D0)
           ELSE
             CALL U2MESG(CODMES,'FACTOR_10',0,VALK,2,VALI,0,0.D0)
           ENDIF
-        ELSE IF (IRET.EQ.2) THEN
+        ELSE IF (IRETZ.EQ.2) THEN
           IF (LMUMPS) THEN
             CALL U2MESG(CODMES,'FACTOR_76',0,VALK,1,VALI,0,0.D0)
           ELSE
@@ -383,7 +385,7 @@ C     ----------------------------------------------
         ENDIF
 
         IF (TARDIF(1:4).EQ.'    ') THEN
-          IF (IRET.EQ.1) THEN
+          IF (IRETZ.EQ.1) THEN
             IF (.NOT.LXFEM) THEN
               IF (LMUMPS) THEN
                 CALL U2MESG(CODMES,'FACTOR_77',4,VALK,2,VALI,0,0.D0)
@@ -397,7 +399,7 @@ C     ----------------------------------------------
                 CALL U2MESG(CODMES,'FACTOR_22',4,VALK,2,VALI,0,0.D0)
               ENDIF
             ENDIF
-          ELSE IF (IRET.EQ.2) THEN
+          ELSE IF (IRETZ.EQ.2) THEN
             IF (LMUMPS) THEN
               CALL U2MESG(CODMES,'FACTOR_76',4,VALK,1,VALI,0,0.D0)
             ELSE
@@ -412,13 +414,13 @@ C            ON IMPRIME LES NOEUDS CONCERNES PAR LA LIAISON :
           LLIAI= INDEX(INFOBL,'LIAISON_DDL')
           IF (LLIAI.GT.0) THEN
              CALL IMPPIV(NU,ISINGU)
-             IF (IRET.EQ.1) THEN
+             IF (IRETZ.EQ.1) THEN
                IF (LMUMPS) THEN
                  CALL U2MESG(CODMES,'FACTOR_78',4,VALK,2,VALI,0,0.D0)
                ELSE
                  CALL U2MESG(CODMES,'FACTOR_30',4,VALK,2,VALI,0,0.D0)
                ENDIF
-             ELSE IF (IRET.EQ.2) THEN
+             ELSE IF (IRETZ.EQ.2) THEN
                IF (LMUMPS) THEN
                  CALL U2MESG(CODMES,'FACTOR_76',4,VALK,1,VALI,0,0.D0)
                ELSE
@@ -426,13 +428,13 @@ C            ON IMPRIME LES NOEUDS CONCERNES PAR LA LIAISON :
                ENDIF
              ENDIF
           ELSE
-             IF (IRET.EQ.1) THEN
+             IF (IRETZ.EQ.1) THEN
                IF (LMUMPS) THEN
                  CALL U2MESG(CODMES,'FACTOR_79',4,VALK,2,VALI,0,0.D0)
                ELSE
                  CALL U2MESG(CODMES,'FACTOR_40',4,VALK,2,VALI,0,0.D0)
                ENDIF
-             ELSE IF (IRET.EQ.2) THEN
+             ELSE IF (IRETZ.EQ.2) THEN
                IF (LMUMPS) THEN
                  CALL U2MESG(CODMES,'FACTOR_76',4,VALK,1,VALI,0,0.D0)
                ELSE
@@ -458,9 +460,9 @@ C     ------------------------
         WRITE (IFM,*) '<FACTOR>  NB MAX. DECIMALES A PERDRE :',NDIGI2
         WRITE (IFM,*) '<FACTOR>  NB DECIMALES PERDUES       :',NDECI
         WRITE (IFM,*) '<FACTOR>  NUM. EQUATION LA PIRE      :',ISINGU
-        WRITE (IFM,*) '<FACTOR>  NOMBRE PIVOTS NEGATIFS     :',-NPVNEG
+        WRITE (IFM,*) '<FACTOR>  NOMBRE PIVOTS NEGATIFS     :',-NPVNEZ
         WRITE (IFM,*) '<FACTOR>  CODE ARRET (ISTOP)         :',ISTOP
-        WRITE (IFM,*) '<FACTOR>  CODE RETOUR (IRET)         :',IRET
+        WRITE (IFM,*) '<FACTOR>  CODE RETOUR (IRET)         :',IRETZ
 
 C     -- ALARME EVENTUELLE SI LE PIVOT DEVIENT TROP GRAND :
         IF ((NDECI2.GE.NDIGI2).AND.(METRES.NE.'MUMPS')) THEN
@@ -481,6 +483,10 @@ C     -- ALARME EVENTUELLE SI LE PIVOT DEVIENT TROP GRAND :
       ENDIF
    21 CONTINUE
 
+C     -- AFFECTATION DES VARIABLES OUTPUT
+C     -----------------------------------
+      IRET=IRETZ
+      NPVNEG=NPVNEZ
       CALL JEDEMA()
 
       END

@@ -1,9 +1,9 @@
       SUBROUTINE  AMUMPH(ACTION,SOLVEZ,MATASZ,RSOLU,CSOLU,VCINEZ,
-     &                   NBSOL,IRET)
+     &                   NBSOL,IRET,PREPOS)
       IMPLICIT NONE
 !           CONFIGURATION MANAGEMENT OF EDF VERSION
 !&           CONFIGURATION MANAGEMENT OF EDF VERSION                   
-!& MODIF AMUMPH MUMPS  DATE 22/06/2010   AUTEUR SELLENET N.SELLENET 
+!& MODIF AMUMPH MUMPS  DATE 13/10/2010   AUTEUR BOITEAU O.BOITEAU 
 ! ==================================================================
 ! COPYRIGHT (C) 1991 - 2005  EDF R&D              WWW.CODE-ASTER.ORG
 !
@@ -58,15 +58,19 @@ C OUT : IRET (I) : CODE_RETOUR :
 C            0 : OK
 C            2 : MATRICE NUMERIQUEMENT SINGULIERE 
 C               (POUR PRERES/TLDLG3 OU OP0014/TLDLGG/TLDLG3)
-C
-C---------------------------------------------------------------
+C IN : PREPOS (LOG) : SI .TRUE. ON FAIT LES PRE ET POSTTRAITEMENTS DE
+C           MISE A L'ECHELLE DU RHS ET DE LA SOLUTION (MRCONL) ET DE LA
+C           PRISE EN COMPTE DES AFFE_CHAR_CINE (CSMBGG).
+C           SI .FALSE. ON NE LES FAIT PAS (PAR EXEMPLE EN MODAL).
+C----------------------------------------------------------------------
 C RESPONSABLE BOITEAU
 
       CHARACTER*(*) ACTION,MATASZ,VCINEZ,SOLVEZ
-      INTEGER IRET,NBSOL
-      REAL*8 RSOLU(*)
-      COMPLEX*16 CSOLU(*)
-
+      INTEGER       IRET,NBSOL
+      REAL*8        RSOLU(*)
+      COMPLEX*16    CSOLU(*)
+      LOGICAL       PREPOS
+      
 #ifdef _HAVE_MUMPS
 
 C============================================================
@@ -88,7 +92,7 @@ C============================================================
       TYPE (DMUMPS_STRUC) , POINTER :: DMPSK
       TYPE (ZMUMPS_STRUC) , POINTER :: ZMPSK
       INTEGER      K,IERD,IBID,KXMPS,JREFA,N,NSMDI,IFM,NIV,IFMUMP,
-     &             IMD,JSLVK,JSLVI,NPREC
+     &             IMD,JSLVK,JSLVI,NPREC,IRETZ
       INTEGER*4    K4
       CHARACTER*1  ROUCS(NMXINS),ROUC,PREC,PRECS(NMXINS)
       CHARACTER*4  ETAMAT,KBID,ETAMS(NMXINS),ETAM
@@ -121,6 +125,8 @@ C----------------------------------------------------------------
       DATA  IPREM /0/
 C----------------------------------------------------------------
       CALL JEMARQ()
+      
+      IRETZ=0
       CALL INFNIV(IFM,NIV)
       IF ((ACTION(1:6).NE.'PRERES').AND.(ACTION(1:6).NE.'RESOUD').AND.
      &    (ACTION(1:8).NE.'DETR_OCC').AND.(ACTION(1:8).NE.'DETR_MAT'))
@@ -190,6 +196,7 @@ C        Y-A-T-IL DEJA UNE INSTANCE EN MEMOIRE POUR MATAS ?
 
 C     ON TEST LE NOM DE LA MATRICE, CELUI DU NUME_DDL, LE TYPE ET
 C     LA TAILLE DU PB ASTER ET DU PB MUMPS ASSOCIE
+
       CALL DISMOI('F','NOM_NUME_DDL',MATAS,'MATR_ASSE',IBID,NU,IERD)
       CALL JELIRA(MATAS//'.VALM','TYPE',IBID,ROUC)
       CALL JELIRA(NU//'.SMOS.SMDI','LONMAX',NSMDI,KBID)
@@ -349,17 +356,21 @@ C        --- PARAMETRE NPREC
 
       IF (ROUC.EQ.'R') THEN
         IF (PREC.EQ.'S') THEN
-          CALL AMUMPS(ACTION,KXMPS,RSOLU,VCINE,NBSOL,IRET,IMPR,IFMUMP)
+          CALL AMUMPS(ACTION,KXMPS,RSOLU,VCINE,NBSOL,IRETZ,IMPR,IFMUMP,
+     &                PREPOS)
         ELSE IF (PREC.EQ.'D') THEN
-          CALL AMUMPD(ACTION,KXMPS,RSOLU,VCINE,NBSOL,IRET,IMPR,IFMUMP)
+          CALL AMUMPD(ACTION,KXMPS,RSOLU,VCINE,NBSOL,IRETZ,IMPR,IFMUMP,
+     &                PREPOS)
         ELSE
           CALL ASSERT(.FALSE.)
         ENDIF
       ELSE IF (ROUC.EQ.'C') THEN
         IF (PREC.EQ.'S') THEN
-          CALL AMUMPC(ACTION,KXMPS,CSOLU,VCINE,NBSOL,IRET,IMPR,IFMUMP)
+          CALL AMUMPC(ACTION,KXMPS,CSOLU,VCINE,NBSOL,IRETZ,IMPR,IFMUMP,
+     &                PREPOS)
         ELSE IF (PREC.EQ.'D') THEN
-          CALL AMUMPZ(ACTION,KXMPS,CSOLU,VCINE,NBSOL,IRET,IMPR,IFMUMP)
+          CALL AMUMPZ(ACTION,KXMPS,CSOLU,VCINE,NBSOL,IRETZ,IMPR,IFMUMP,
+     &                PREPOS)
         ELSE
           CALL ASSERT(.FALSE.)
         ENDIF
@@ -368,8 +379,8 @@ C        --- PARAMETRE NPREC
       ENDIF
 
       IF (ACTION(1:6).EQ.'PRERES') THEN
-        CALL ASSERT((IRET.EQ.0).OR.(IRET.EQ.2))
-        IF (IRET.EQ.2) THEN
+        CALL ASSERT((IRETZ.EQ.0).OR.(IRETZ.EQ.2))
+        IF (IRETZ.EQ.2) THEN
           IF (NPREC.LT.0) THEN
 C --- FONCTIONNALITE DE DETECTION DE SINGULARITE NON ACTIVEE: 
 C                                               STOP EN UTMESS_F
@@ -383,6 +394,13 @@ C                                    ALARME + GESTION DU PB VIA TLDLG3
       ENDIF
 
 9999  CONTINUE
+      IF ((IRETZ.NE.0).AND.(IRETZ.NE.2)) THEN
+C --- VALEUR ILLICITE
+        CALL ASSERT(.FALSE.)
+      ELSE
+C --- ON PEUT FOURNIR L'OUTPUT
+        IRET=IRETZ
+      ENDIF
       CALL JEDEMA()
 
 #else

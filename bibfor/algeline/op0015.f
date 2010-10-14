@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 19/07/2010   AUTEUR TARDIEU N.TARDIEU 
+C MODIF ALGELINE  DATE 13/10/2010   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -105,7 +105,7 @@ C     -- MODIFICATION DU SOLVEUR DU FAIT DE CERTAINS MOTS CLES :
 
 C     -- APPEL A LA ROUTINE RESOUD :
       CALL RESOUD(MATR,MATF,SECMBR,SOLVE2,VCINE,'G',XSOL,
-     &                  ' ',0,RBID,CBID)
+     &                  ' ',0,RBID,CBID,.TRUE.)
 
       IF (METRES.NE.'MUMPS' .AND. METRES.NE.'PETSC') THEN
          CALL DETRSD('SOLVEUR',SOLVE2)

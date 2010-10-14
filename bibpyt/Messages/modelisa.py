@@ -1,4 +1,4 @@
-#@ MODIF modelisa Messages  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
+#@ MODIF modelisa Messages  DATE 14/10/2010   AUTEUR BOYERE E.BOYERE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -116,13 +116,12 @@ cata_msg = {
  La température de référence doit être comprise entre %(r1)f et %(r2)f.
 """),
 
-
-
-
-
-
-
-
+23 : _("""
+ AFFE_CARA_ELEM :
+ La caractéristique %(k1)s, coefficient de cisaillement, pour les poutres doit toujours
+être >=1.0
+   Valeur donnée : %(r1)f
+"""),
 
 24 : _("""
   GENE_TUYAU : préciser un seul noeud par tuyau

@@ -1,4 +1,4 @@
-# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 14/10/2010   AUTEUR BOYERE E.BOYERE 
 # TITRE PROBLEME DE HOVGAARD: CALCUL MODAL ET CALCUL SPECTRAL
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -57,8 +57,7 @@ CARA_ELE=AFFE_CARA_ELEM(  MODELE=MODELE,POUTRE=(
                            CARA = ( 'A',  'IZ', 'IY', 'AY', 'AZ', 'JX',
                                   'EZ', 'EY', 'RY', 'RZ', 'RT',      ),
                            VALE = ( 3.4390E-03, 5.8870E-06, 5.8870E-06,
-                                # 2.0 , 2.0 , 2.7540E-05 , 0.0 , 0.0
-                                  0.0,  0.0,  2.7540E-05,  0.0,  0.0,
+                                  2.0,  2.0,  2.7540E-05,  0.0,  0.0,
                                   1.0,  1.0,  1.0,        ))),DEFI_ARC=(
              _F(  GROUP_MA = 'COUDE1', CENTRE = (0., -1.828, -0.922,)),
              _F(  GROUP_MA = 'COUDE2', CENTRE = (0.922, -0.922, 0., )))
@@ -74,21 +73,21 @@ MODE=MODE_ITER_SIMULT(  MATR_A=RIGIDITE,   MATR_B=MASSE,
                   CALC_FREQ=_F(  NMAX_FREQ = 8) )
 
 TEST_RESU(RESU=(
-       _F( RESULTAT = MODE,      NUME_MODE = 1,  PRECISION = 0.002,
+       _F( RESULTAT = MODE,      NUME_MODE = 1,  PRECISION = 0.001,
                              PARA = 'FREQ',  VALE = 10.39),
-       _F( RESULTAT = MODE,      NUME_MODE = 2,  PRECISION = 0.001,
+       _F( RESULTAT = MODE,      NUME_MODE = 2,  PRECISION = 0.004,
                              PARA = 'FREQ',  VALE = 20.02),
-       _F( RESULTAT = MODE,      NUME_MODE = 3,  PRECISION = 0.003,
+       _F( RESULTAT = MODE,      NUME_MODE = 3,  PRECISION = 0.002,
                              PARA = 'FREQ',  VALE = 25.45),
        _F( RESULTAT = MODE,      NUME_MODE = 4,  PRECISION = 0.004,
                              PARA = 'FREQ',  VALE = 48.32),
-       _F( RESULTAT = MODE,      NUME_MODE = 5,  PRECISION = 0.002,
+       _F( RESULTAT = MODE,      NUME_MODE = 5,  PRECISION = 0.004,
                              PARA = 'FREQ',  VALE = 52.60),
-       _F( RESULTAT = MODE,      NUME_MODE = 6,  PRECISION = 0.002,
+       _F( RESULTAT = MODE,      NUME_MODE = 6,  PRECISION = 0.009,
                              PARA = 'FREQ',  VALE = 84.81),
-       _F( RESULTAT = MODE,      NUME_MODE = 7,  PRECISION = 0.002,
+       _F( RESULTAT = MODE,      NUME_MODE = 7,  PRECISION = 0.009,
                              PARA = 'FREQ',  VALE = 87.16),
-       _F( RESULTAT = MODE,      NUME_MODE = 8,  PRECISION = 0.008,
+       _F( RESULTAT = MODE,      NUME_MODE = 8,  PRECISION = 0.003,
                              PARA = 'FREQ',  VALE = 129.31)) )
 
 MACRO_MATR_ASSE(MODELE=MODELE,  CHARGE=COND_LIM,
@@ -103,19 +102,19 @@ MODE_DIA=MODE_ITER_SIMULT(  MATR_A=RIGIDITD,   MATR_B=MASSED,
 TEST_RESU(RESU=(
        _F( RESULTAT = MODE_DIA, NUME_MODE = 1,  PRECISION = 0.001,
                             PARA = 'FREQ',  VALE = 10.39),
-       _F( RESULTAT = MODE_DIA, NUME_MODE = 2,  PRECISION = 0.001,
+       _F( RESULTAT = MODE_DIA, NUME_MODE = 2,  PRECISION = 0.005,
                             PARA = 'FREQ',  VALE = 20.02),
-       _F( RESULTAT = MODE_DIA, NUME_MODE = 3,  PRECISION = 0.003,
+       _F( RESULTAT = MODE_DIA, NUME_MODE = 3,  PRECISION = 0.002,
                             PARA = 'FREQ',  VALE = 25.45),
-       _F( RESULTAT = MODE_DIA, NUME_MODE = 4,  PRECISION = 0.004,
+       _F( RESULTAT = MODE_DIA, NUME_MODE = 4,  PRECISION = 0.002,
                             PARA = 'FREQ',  VALE = 48.32),
-       _F( RESULTAT = MODE_DIA, NUME_MODE = 5,  PRECISION = 0.002,
+       _F( RESULTAT = MODE_DIA, NUME_MODE = 5,  PRECISION = 0.004,
                             PARA = 'FREQ',  VALE = 52.60),
-       _F( RESULTAT = MODE_DIA, NUME_MODE = 6,  PRECISION = 0.003,
+       _F( RESULTAT = MODE_DIA, NUME_MODE = 6,  PRECISION = 0.012,
                             PARA = 'FREQ',  VALE = 84.81),
-       _F( RESULTAT = MODE_DIA, NUME_MODE = 7,  PRECISION = 0.001,
+       _F( RESULTAT = MODE_DIA, NUME_MODE = 7,  PRECISION = 0.01,
                             PARA = 'FREQ',  VALE = 87.16),
-       _F( RESULTAT = MODE_DIA, NUME_MODE = 8,  PRECISION = 0.004,
+       _F( RESULTAT = MODE_DIA, NUME_MODE = 8,  PRECISION = 0.007,
                              PARA = 'FREQ',  VALE = 129.31)) )
 
 FIN( )

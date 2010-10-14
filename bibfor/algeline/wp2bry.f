@@ -1,11 +1,12 @@
       SUBROUTINE WP2BRY(LDRF,LMASSE,LAMOR,LRAIDE,SR,SI2,YH,YB,ZH,ZB,
-     +                  U1,U2,U3,U4,N)
+     +                  U1,U2,U3,U4,N,SOLVEU)
       IMPLICIT REAL*8 (A-H,O-Z)
       REAL*8      U1(*),U2(*),U3(*),U4(*),YH(*),YB(*),ZH(*),ZB(*),SR,SI2
       INTEGER     LDRF,LMASSE,LAMOR,LRAIDE,N
+      CHARACTER*19 SOLVEU
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 11/09/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGELINE  DATE 13/10/2010   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -43,11 +44,35 @@ C VAR U1   : R : VECTEUR DE TRAVAIL, EN SORTIE VAUT C*YH
 C VAR U2   : R : VECTEUR DE TRAVAIL, EN SORTIE VAUT M*YB
 C VAR U3   : R : VECTEUR DE TRAVAIL, EN SORTIE VAUT M*YH
 C VAR U4   : R : VECTEUR DE TRAVAIL
+C IN  SOLVEU : K19: SD SOLVEUR POUR PARAMETRER LE SOLVEUR LINEAIRE
 C     ------------------------------------------------------------------
+
+C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
+      INTEGER ZI
+      COMMON /IVARJE/ZI(1)
+      REAL*8 ZR
+      COMMON /RVARJE/ZR(1)
+      COMPLEX*16 ZC
+      COMMON /CVARJE/ZC(1)
+      CHARACTER*8 ZK8
+      CHARACTER*16 ZK16
+      CHARACTER*24 ZK24
+      CHARACTER*32 ZK32
+      CHARACTER*80 ZK80
+      COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
+C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
+
       INTEGER I
       REAL*8  ZERO
       COMPLEX*16  CBID
+      CHARACTER*1  KBID
+      CHARACTER*19 K19BID,MATASS,CHCINE,CRITER
 C     -----------------------------------------------------------------
+C INIT. OBJETS ASTER
+      MATASS=ZK24(ZI(LDRF+1))
+      CHCINE=' '
+      CRITER=' '
+      K19BID=' '
       ZERO = 0.0D0
       IF ( SI2 .EQ. ZERO ) THEN
 C        --- DECALAGE REEL ---
@@ -80,7 +105,8 @@ C        --- DECALAGE COMPLEXE ---
             U4(I) = U1(I) + SR*U3(I) + U2(I)
 30       CONTINUE
 C
-         CALL RLDLGG(LDRF,U4,CBID,1)
+         CALL RESOUD(MATASS,K19BID,K19BID,SOLVEU,CHCINE,KBID,K19BID,
+     &               CRITER,1,U4,CBID,.FALSE.)
          CALL MRMULT('ZERO',LAMOR ,U4,'R',ZH,1)
          CALL MRMULT('ZERO',LMASSE,U4,'R',ZB,1)
 C

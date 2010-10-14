@@ -1,4 +1,4 @@
-# MODIF  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 14/10/2010   AUTEUR BOYERE E.BOYERE 
 # TITRE MODES PROPRES D'UNE POUTRE DROITE AVEC EXCENTRICITE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -54,11 +54,9 @@ CAREL=AFFE_CARA_ELEM(    MODELE=MO,
                                    SECTION = 'GENERALE',
                                    CARA = ('A',  'IY', 'IZ',
                                               'EY', 'EZ', 'JX',
-                                              'AY', 'AZ',
                                              ),
                                    VALE = (6.117E-3, 5.022E-5, 5.022E-5,
                                               0.E0,     -0.2215E0, 1.28E-7,
-                                              3.65E0,   0.E0,
                                               ))
                        )
 

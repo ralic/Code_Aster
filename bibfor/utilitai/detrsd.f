@@ -3,7 +3,7 @@
       CHARACTER*(*) TYPESD,NOMSD
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 22/06/2010   AUTEUR SELLENET N.SELLENET 
+C MODIF UTILITAI  DATE 13/10/2010   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -78,7 +78,7 @@ C     ----- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       CHARACTER*19 CHAMP,MATAS,TABLE,SOLVEU,CNS,CES,CNO,CEL,FNC,RESU
       CHARACTER*19 LIGREL,CARTE,NUAGE,LIGRET,MLTF,STOCK,K19,MATEL
       CHARACTER*24 K24B,TYPOBJ,KNOMSD
-      LOGICAL LFETI
+      LOGICAL LFETI,LBID
 
 C -DEB------------------------------------------------------------------
 
@@ -335,7 +335,7 @@ C       -- DESTRUCTION DE L'EVENTUELLE INSTANCE MUMPS OU PETSC :
           CALL DISMOI('F','METH_RESO',MATAS,'MATR_ASSE',IBID,METRES
      &                                                      ,IBID)
           IF (METRES.EQ.'MUMPS') THEN
-            CALL AMUMPH('DETR_MAT',' ',MATAS,RBID,CBID,' ',0,IBID)
+            CALL AMUMPH('DETR_MAT',' ',MATAS,RBID,CBID,' ',0,IBID,LBID)
           ELSE IF(METRES.EQ.'PETSC') THEN
             CALL APETSC('DETR_MAT',' ',MATAS,RBID,' ',0,IBID)
           END IF

@@ -1,4 +1,4 @@
-# MODIF  DATE 05/10/2010   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 14/10/2010   AUTEUR BOYERE E.BOYERE 
 # TITRE POUTRE CANTILEVER EN GRANDE ROTATION SOUMISE A UN MOMENT
 # ssnl103a.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -57,7 +57,7 @@ CARA1=AFFE_CARA_ELEM(   MODELE=MO1,
        GROUP_MA = 'TOUT',
  SECTION = 'GENERALE',
                 CARA = ( 'A',   'IY',    'IZ',    'AY',    'AZ',    'JX', ),
-                VALE = (  1.,    2.,      2.,      0.25,    0.25,    4.,  ))
+                VALE = (  1.,    2.,      2.,      4.0,    4.0,    4.,  ))
                         )
 
 L_INST=DEFI_LIST_REEL(   DEBUT=0.0,
@@ -96,7 +96,7 @@ TEST_RESU(RESU=(
            _F(  RESULTAT = RESU,           NUME_ORDRE = 1,
              PARA = 'INST',             VALE = 1.00000E+00),
            _F(  RESULTAT = RESU,           NUME_ORDRE = 1,
-             PARA = 'ITER_GLOB',        VALE_I = 6,
+             PARA = 'ITER_GLOB',        VALE_I = 9,
              CRITERE = 'ABSOLU',         PRECISION = 2.),
            )
            )

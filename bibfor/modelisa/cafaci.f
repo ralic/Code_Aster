@@ -3,7 +3,7 @@
       CHARACTER*4         FONREE
       CHARACTER*8                 CHAR
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 28/09/2010   AUTEUR MASSIN P.MASSIN 
+C MODIF MODELISA  DATE 14/10/2010   AUTEUR BOYERE E.BOYERE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -78,7 +78,7 @@ C---------------- FIN COMMUNS NORMALISES  JEVEUX  ----------------------
 
       CALL JEMARQ()
       CALL GETFAC('FACE_IMPO',NFACI)
-      IF (NFACI.EQ.0) GO TO 220
+      IF (NFACI.EQ.0) GO TO 999
       CALL GETRES(K8B,K8B,NOMCMD)
 
       LISREL = '&&CAFACI.RLLISTE'
@@ -467,5 +467,6 @@ C        -------------------------------------
         CALL JEDETR(NOXFEM)
       ENDIF
 
+  999 CONTINUE
       CALL JEDEMA()
       END

@@ -2,7 +2,7 @@
      &                  CTCCVG)
 C     
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 14/09/2010   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 13/10/2010   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -273,7 +273,7 @@ C        F = A' MU
 C        K DELTA = F
         CALL DCOPY(NEQ,ZR(JDELTA),1,ZR(JSECMB),1)
         CALL RESOUD(MATASS,KBID,SECMBR,SOLVEU, VEZERO, 'V',
-     &              DELTAU, KBID,0,R8BID,C16BID)      
+     &              DELTAU, KBID,0,R8BID,C16BID,.TRUE.)      
 C        U = U + (-DELTA)
         CALL JEVEUO(DELTAU(1:19)//'.VALE','E',JDELTA)
         CALL DAXPY(NEQ,-1.D0,ZR(JDELTA),1,ZR(JRESU),1)
@@ -404,7 +404,7 @@ C     F = A' DIRECT
 C     K DELTA = F
       CALL DCOPY(NEQ,ZR(JDELTA),1,ZR(JSECMB),1)
       CALL RESOUD(MATASS,KBID,SECMBR,SOLVEU, VEZERO, 'V',
-     &            DELTAU, KBID,0,R8BID,C16BID)      
+     &            DELTAU, KBID,0,R8BID,C16BID,.TRUE.)      
       CALL JEVEUO(DELTAU(1:19)//'.VALE','E',JDELTA)
       
       
@@ -469,7 +469,7 @@ C       F = A' MU
         CALL DCOPY(NEQ,ZR(JDELTA),1,ZR(JSECMB),1)
 C       K DELTA = F
         CALL RESOUD(MATASS,KBID,SECMBR,SOLVEU, VEZERO, 'V',
-     &              DELTAU, KBID,0,R8BID,C16BID) 
+     &              DELTAU, KBID,0,R8BID,C16BID,.TRUE.) 
 C       U = U0 + (-DELTA)
         CALL JEVEUO(DELTAU(1:19)//'.VALE','E',JDELTA)
         CALL DCOPY(NEQ,ZR(JRESU0),1,ZR(JRESU),1)

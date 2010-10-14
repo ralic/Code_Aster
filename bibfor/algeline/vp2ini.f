@@ -1,14 +1,15 @@
       SUBROUTINE VP2INI(LDYNAM,LMASSE,LDYNFA,NEQ,NBVECT,NBORTO,PRORTO,
      &                  DDLEXC,DDLLAG,ALPHA,BETA,SIGNES,VECT,PRSUDG,
-     &                  NSTOC,OMESHI)
+     &                  NSTOC,OMESHI,SOLVEU)
       IMPLICIT NONE
       INTEGER LDYNAM,LMASSE,LDYNFA,NEQ,NBVECT,NBORTO,DDLEXC(*),
      &        DDLLAG(*),NSTOC
       REAL*8 PRSUDG,PRORTO,OMESHI
       REAL*8 ALPHA(*),BETA(*),SIGNES(*),VECT(NEQ,*)
+      CHARACTER*19 SOLVEU
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF ALGELINE  DATE 13/10/2010   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -43,6 +44,7 @@ C OUT ALPHA  : R8 : TERME DIAGONAL DE LA MATRICE TRIDIAGONALE
 C OUT BETA   : R8 : TERME SURDIAGONAL DE LA MATRICE TRIDIAGONALE
 C OUT SIGNES : R8 : (+/- 1)  SIGNE DU TERME SOUS-DIAGONAL
 C OUT VECT   : R8 : VECT(1..NEQ,1..NBVECT) VECTEURS DE LANCZOS
+C IN  SOLVEU : K19: SD SOLVEUR POUR PARAMETRER LE SOLVEUR LINEAIRE
 C     ------------------------------------------------------------------
 C       ON A DEJA CALCULE DYNAM = RAIDEUR - SHIFT * MASSE
 C       PRENDRE  V(1)  ALEATOIRE
@@ -85,7 +87,9 @@ C     -----------------------------------------------------------------
       INTEGER JSMDI
       INTEGER LX,LMX,LKX,IRDIAK,IVECD,ISTO,LKXSTO,IEQ
       INTEGER IL,IAA,JJ,LKX1,IVEC,IVECP1,IVECM1,LKXP1,JVEC
+      CHARACTER*1  KBID
       CHARACTER*24 VALE
+      CHARACTER*19 K19BID,MATASS,CHCINE,CRITER
 C     -----------------------------------------------------------------
       CHARACTER*24 WORK(5)
       DATA WORK(1)/'&&VP2INI.VECTEUR_INITIAL'/
@@ -95,6 +99,11 @@ C     -----------------------------------------------------------------
       DATA VALE/'                   .VALM'/
 C     -----------------------------------------------------------------
 
+C INIT. OBJETS ASTER
+      MATASS=ZK24(ZI(LDYNFA+1))
+      CHCINE=' '
+      CRITER=' '
+      K19BID=' '
 C     -----------------------------------------------------------------
 C     ---------------- ALLOCATION DES ZONES DE TRAVAIL ----------------
 C     -----------------------------------------------------------------
@@ -152,7 +161,8 @@ C     --- VECTEUR INITIAL : ALEATOIRE ---
       DO 70 IEQ = 1,NEQ
         ZR(LX+IEQ-1) = ZR(LX+IEQ-1)*DDLLAG(IEQ)*ZR(IRDIAK+IEQ-1)
    70 CONTINUE
-      CALL RLDLGG(LDYNFA,ZR(LX),CBID,1)
+      CALL RESOUD(MATASS,K19BID,K19BID,SOLVEU,CHCINE,KBID,K19BID,
+     &              CRITER,1,ZR(LX),CBID,.FALSE.)
       DO 80 IEQ = 1,NEQ
         ZR(LX+IEQ-1) = ZR(LX+IEQ-1)*DDLLAG(IEQ)
    80 CONTINUE
@@ -165,7 +175,8 @@ C     --- CALCUL DE (LDYNAM**-1)*MASSE * X0 ---
       DO 90 IEQ = 1,NEQ
         VECT(IEQ,IVECD) = ZR(LMX+IEQ-1)*DDLEXC(IEQ)
    90 CONTINUE
-      CALL RLDLGG(LDYNFA,VECT(1,IVECD),CBID,1)
+      CALL RESOUD(MATASS,K19BID,K19BID,SOLVEU,CHCINE,KBID,K19BID,
+     &              CRITER,1,VECT(1,IVECD),CBID,.FALSE.)
 
 C     --- K-ORTHONORMALISATION DU 1-ER VECTEUR ---
 
@@ -215,7 +226,8 @@ C     -----------------------------------------------------------------
         DO 140 IEQ = 1,NEQ
           VECT(IEQ,IVECP1) = ZR(LMX+IEQ-1)*DDLEXC(IEQ)
   140   CONTINUE
-        CALL RLDLGG(LDYNFA,VECT(1,IVECP1),CBID,1)
+        CALL RESOUD(MATASS,K19BID,K19BID,SOLVEU,CHCINE,KBID,K19BID,
+     &              CRITER,1,VECT(1,IVECP1),CBID,.FALSE.)
 
         IF (IVECM1.EQ. (IVECD-1)) THEN
           DO 150 IEQ = 1,NEQ

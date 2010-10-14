@@ -1,14 +1,15 @@
       SUBROUTINE WP1INV(LMASSE,LAMOR,LRAIDE,TOLF,NITF,MXRESF,NBFREQ,NEQ,
-     &                  NPREC,RESUFI,RESUFR,RESUFK,VECPRO)
+     &                  RESUFI,RESUFR,RESUFK,VECPRO,SOLVEU)
       IMPLICIT REAL*8 (A-H,O-Z)
       INTEGER           LMASSE,LAMOR,LRAIDE,NITF,NBFREQ,NEQ
       INTEGER           RESUFI(MXRESF,*)
       COMPLEX*16        VECPRO(NEQ,*)
       REAL*8            TOLF,RESUFR(MXRESF,*)
       CHARACTER*(*)     RESUFK(MXRESF,*)
+      CHARACTER*19      SOLVEU
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGELINE  DATE 13/10/2010   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -48,21 +49,27 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON  /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C     -----------------------------------------------------------------
-      INTEGER       LMAT(3)
-      CHARACTER*1   TYPCST(3)
+      INTEGER       LMAT(3),IBID
+      CHARACTER*1   TYPCST(3),KBID
       CHARACTER*8   NOMDDL
-      CHARACTER*19  MATDYN
+      CHARACTER*19  MATDYN,K19BID,MATASS,CHCINE,CRITER,MATPRE
       CHARACTER*24  NDYNAM,NMAT(3)
       COMPLEX*16    RP1,RP,RNORM,RNOR1,RNOR2,RPP
       COMPLEX*16    CZERO, CUN
       COMPLEX*16    RMASSE, RAMOR, RRAIDE
-      REAL*8        CONST(6), FREQOM
+      REAL*8        CONST(6),FREQOM,RBID
 C     -----------------------------------------------------------------
       DATA          NOMDDL /'        '/
 C     -----------------------------------------------------------------
       CALL JEMARQ()
       CZERO =  DCMPLX(0.D0 , 0.D0)
       CUN   =  DCMPLX(1.D0 , 0.D0)
+
+C     INIT. OBJETS ASTER
+      CHCINE=' '
+      CRITER=' '
+      MATPRE=' '
+      K19BID=' '
 C
 C     --- CREATION DES VECTEURS DE TRAVAIL ---
       CALL WKVECT('&&WP1INV.YN_ASSOCIE_A_XN','V V C',NEQ,LYN)
@@ -77,6 +84,7 @@ C     --- CREATION DE LA MATRICE DYNAMIQUE A VALEUR COMPLEXE ---
       CALL MTDSCR(MATDYN)
       NDYNAM=MATDYN(1:19)//'.&INT'
       CALL JEVEUO(NDYNAM,'E',LDYNAM)
+      MATASS=ZK24(ZI(LDYNAM+1))
 C
 C      --- DEFINITION DES TYPES DE CONSTANTES ET DES MATRICES ---
       LMAT(1) = LMASSE
@@ -102,7 +110,7 @@ C        --- FACTORISATION DE LA MATRICE DYNAMIQUE ---
          CONST(3) = DBLE(- RP)
          CONST(4) = DIMAG(- RP)
          CALL MTCMBL(3,TYPCST,CONST,NMAT,NDYNAM,NOMDDL,' ','ELIM=')
-         CALL TLDLGG(2,LDYNAM,1,NEQ,NPREC,NDECI,ISINGU,NPVNEG,IER)
+         CALL PRERES(SOLVEU,'V',IBID,MATPRE,MATASS,IBID,2)
 C
 C        --- CHOIX D'UN VECTEUR INITIAL POUR LA METHODE ---
          DSEED = 123457.D0
@@ -140,7 +148,8 @@ C           --- CONSTITUTION DU SECOND MEMBRE POUR CALCULER XN ---
             CALL MCMULT('CUMU',LMASSE,ZC(LYN)  ,'C',ZC(LACC2),1)
 C
 C           --- RESOLUTION ---
-            CALL RLDLGG(LDYNAM,RBID,ZC(LACC2),1)
+            CALL RESOUD(MATASS,K19BID,K19BID,SOLVEU,CHCINE,KBID,K19BID,
+     &              CRITER,1,RBID,ZC(LACC2),.FALSE.)
 C
 CCC         --- ORTHOGONALISATION DU VECTEUR AVEC LES PRECEDENTS ---
 CCC         CALL WP1ORT(NEQ,VECPRO,ZC(LACC2),ZC(LMORTH),IMODE)

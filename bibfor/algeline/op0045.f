@@ -1,7 +1,7 @@
       SUBROUTINE OP0045()
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
+C MODIF ALGELINE  DATE 13/10/2010   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -70,17 +70,17 @@ C VARIABLES LOCALES
      &             IADRB,IADZ,IER1,IFM,ITEMAX,IADRH,IBID,IERD,IFREQ
       INTEGER      LMAT(3),LSELEC,LRESID,LDSOR,LAMOR,LBRSS,LMASSE,
      &             LMTPSC,LRESUR,LTYPRI,LWORKD,LAUX,LRAIDE,LSIGN,LVALPR,
-     &             LWORKL,LBORCR,LDIAGR,LPR,LRESUI,LSURDR,LVEC,LWORKV,
+     &             LWORKL,LBORCR,LDIAGR,LRESUI,LSURDR,LVEC,LWORKV,
      &             L,LBORFR,LMF,LPROD,LRESUK,LTYPRE,LXRIG,KQRNR,
      &             LDDL,LMATRA,LONWL,LMET,ITYP,IORDRE,NBVEC2,ICOEF
       INTEGER      NPIVOT,NBVECT,PRIRAM(8),MAXITR,NEQACT,MFREQ,
      &             NBORTO,NFREQ,NITV,NPARR,NBCINE,NEQ,NITQRM,
      &             NBRSS,NITBAT,NIV,NNCRIT,MXRESF,NBLAGR,NPERM,
-     &             NITJAC,NNFREQ,NPREC,N1,NSTOC,NCONV,IEXIN,LWORKR,LAUR,
+     &             NITJAC,NNFREQ,N1,NSTOC,NCONV,IEXIN,LWORKR,LAUR,
      &             QRN,QRLWOR,IQRN,LQRN,QRAR,QRAI,QRBA,QRVL,KQRN,
      &             QRN2,ILSCAL,IRSCAL,LAUC,LAUL,IHCOL,IADIA,IFIN,
-     &             IDEB,J,ICSCAL,IVSCAL,IISCAL,IBSCAL,
-     &             JVALMA,JVALMM
+     &             IDEB,J,ICSCAL,IVSCAL,IISCAL,IBSCAL,JREFA,
+     &             JVALMA,JVALMM,ISLVI,NPREC,ISLVK
       REAL*8       PRORTO,OMEGA2,FMIN,FMAX,RAUX,ALPHA,TOLSOR,
      &             UNDF,R8VIDE,FREQOM,R8PREM,OMEMIN,OMEMAX,OMESHI,
      &             OMECOR,FCORIG,PRECDC,SEUIL,VPINF,PRECSH,TOL,VPMAX,
@@ -89,8 +89,8 @@ C VARIABLES LOCALES
       CHARACTER*1  CTYP,APPR,KTYP,KBID
       CHARACTER*8  MODES,KNEGA,METHOD,ARRET,K8BID
       CHARACTER*16 MODRIG,TYPCON,NOMCMD,OPTIOF,OPTIOV,TYPRES,TYPEQZ
-      CHARACTER*19 MASSE,RAIDE,AMOR,MATPSC,MATOPA,VECRIG,NUMEDD
-      CHARACTER*24 CBORFR,CBORCR,VALK(2),NOPARA(NBPARA)
+      CHARACTER*19 MASSE,RAIDE,AMOR,MATPSC,MATOPA,VECRIG,NUMEDD,SOLVEU
+      CHARACTER*24 CBORFR,CBORCR,VALK(2),NOPARA(NBPARA),METRES
       CHARACTER*32 JEXNUM
       LOGICAL      STURM,FLAGE,LQZ,LKR,LC,LTESTQ,LNS,LNSC,LNSK,LNSM
 
@@ -180,9 +180,6 @@ C     --- OPTION DEMANDEE : BANDE OU PLUS_PETITE OU CENTRE OU TOUT ---
 C     OPTIOF : 'BANDE' OU 'CENTRE' OU 'PLUS_PETITE' OU 'TOUT'
       CALL GETVTX('CALC_FREQ','OPTION',1,1,1,OPTIOF,LMF)
 
-C     --- RECUPERATION DES ARGUMENTS CONCERNANT LA FACTORISATION ---
-      CALL GETVIS('CALC_FREQ','NPREC_SOLVEUR',1,1,1,NPREC,LPR)
-
 C     --- RECUPERATION DES ARGUMENTS CONCERNANT LE NOMBRE DE SHIFT ---
       CALL GETVIS('CALC_FREQ','NMAX_ITER_SHIFT',1,1,1,NBRSS,LBRSS)
 
@@ -265,7 +262,8 @@ C     --- CONTROLE DE LA COHERENCE OPTION/FREQ OU CHAR_CRIT ---
       ELSE
         CALL VPVOPT(OPTIOF,TYPRES,NNCRIT,ZR(LBORCR),IERX)
       ENDIF
-
+ 
+          
 C     ------------------------------------------------------------------
 C     --------------------  REGLES D'EXCLUSION   -----------------------
 C     ------------------------------------------------------------------
@@ -380,6 +378,34 @@ C       -- TRAITEMENTS PARTICULIERS PROPRES A QZ
         IF ((TYPEQZ(1:5).EQ.'QZ_QR').AND.((NBLAGR.NE.0).OR.LNS))
      &    CALL U2MESS('F','ALGELINE5_60')
       ENDIF
+
+C     ------------------------------------------------------------------
+C     ----------- LECTURE/TRAITEMENT SD SOLVEUR LINEAIRE  -----------
+C     ------------------------------------------------------------------
+C     -- LECTURE DES PARAMETRES SOLVEURS LINEAIRES ET CREATION DE 
+C        LA SD SOLVEUR ASSOCIEE. CETTE SD SOLVEUR EST LOCALE A L'OPERA
+C        TEUR. POUR CE CALCUL, C'EST ELLE QUI EST UTILISEE POUR PARAME
+C        TREE LE SOLVEUR LINEAIRE, ET NON PAS LA SD SOLVEUR CREE PAR LA
+C        CMDE ECLATEE NUME_DDL LORS DE LA CONSTITUTION DES MATRICES.
+      CALL JEVEUO(RAIDE//'.REFA','L',JREFA)
+      SOLVEU='&&OP0045.SOLVEUR'
+      CALL CRESOL(SOLVEU,' ')
+      CALL JEVEUO(SOLVEU//'.SLVK','L',ISLVK)
+      CALL JEVEUO(SOLVEU//'.SLVI','L',ISLVI)
+      NPREC=ZI(ISLVI)
+      METRES=ZK24(ISLVK)
+      IF ((METRES(1:4).NE.'LDLT').AND.(METRES(1:8).NE.'MULT_FRO').AND.
+     &    (METRES(1:5).NE.'MUMPS')) CALL U2MESS('F','ALGELINE5_71')
+
+C     -- CAS PARTICULIER 1: NUME_DDL_GENE, ON IMPOSE METRES=LDLT + 
+C                           RENUM='SANS'    
+      IF ((ZK24(JREFA+9)(1:4).NE.'NOEU').AND.(METRES(1:4).NE.'LDLT')) 
+     &  THEN
+        CALL U2MESS('I','ALGELINE5_72')
+        CALL CRSVL2(SOLVEU,NPREC,1)
+      ENDIF
+      NPREC=ZI(ISLVI)
+      METRES=ZK24(ISLVK)      
 C     ------------------------------------------------------------------
 C     ------------  CONSTRUCTION DE LA MATRICE SHIFTEE   ---------------
 C     ------------------------------------------------------------------
@@ -453,8 +479,7 @@ C     --- PROBLEME GENERALISE REEL SYMETRIQUE ---
           CALL MTDSCR(MATOPA)
           CALL JEVEUO(MATOPA(1:19)//'.&INT','E',LMATRA)
           CALL VPFOPR(OPTIOF,TYPRES,LMASSE,LRAIDE,LMATRA,OMEMIN,OMEMAX,
-     &               OMESHI,NFREQ,NPIVOT,OMECOR,PRECSH,NPREC,NBRSS,
-     &               NBLAGR)
+     &            OMESHI,NFREQ,NPIVOT,OMECOR,PRECSH,NBRSS,NBLAGR,SOLVEU)
           IF (NFREQ.LE.0) THEN
             IF ( ARRET(1:3) .EQ. 'OUI' ) THEN
               CALL UTEXCP(24,'MODAL_1')
@@ -467,8 +492,7 @@ C     --- PROBLEME GENERALISE REEL SYMETRIQUE ---
           CALL VPSHIF(LRAIDE,OMESHI,LMASSE,LMTPSC)
         ELSE
 C     --- PROBLEME GENERALISE COMPLEXE OU REEL NON SYM ---
-          CALL VPFOPC(LMASSE,LRAIDE,FMIN,SIGMA,
-     &                MATOPA,RAIDE,NPREC,LQZ)
+          CALL VPFOPC(LMASSE,LRAIDE,FMIN,SIGMA,MATOPA,RAIDE,LQZ,SOLVEU)
           IF (.NOT.LQZ)
      &      CALL JEVEUO(MATOPA(1:19)//'.&INT','L',LMATRA)
         ENDIF
@@ -478,7 +502,7 @@ C     --- PROBLEME GENERALISE COMPLEXE OU REEL NON SYM ---
 C     --- PROBLEME QUADRATIQUE REEL SYM OU NON SYM---
         IF (LKR) THEN
           CALL WPFOPR(LMASSE,LAMOR,LRAIDE,APPR,FMIN,SIGMA,
-     &                MATOPA,MATPSC,RAIDE,NPREC,LQZ)
+     &                MATOPA,MATPSC,RAIDE,LQZ,SOLVEU)
           IF (.NOT.LQZ) THEN
             CALL JEVEUO(MATOPA(1:19)//'.&INT','L',LMATRA)
             CALL JEEXIN(MATPSC(1:19)//'.&INT',IEXIN)
@@ -491,7 +515,7 @@ C     --- PROBLEME QUADRATIQUE REEL SYM OU NON SYM---
         ELSE
 C     --- PROBLEME QUADRATIQUE COMPLEXE SYM ---
           CALL WPFOPC(LMASSE,LAMOR,LRAIDE,FMIN,SIGMA,
-     &                MATOPA,RAIDE,NPREC,LQZ)
+     &                MATOPA,RAIDE,LQZ,SOLVEU)
           IF (.NOT.LQZ) THEN
             CALL JEVEUO(MATOPA(1:19)//'.&INT','L',LMATRA)
             CALL JEEXIN(MATPSC(1:19)//'.&INT',IEXIN)
@@ -592,7 +616,7 @@ C     ------------------------------------------------------------------
 
       MXRESF = NFREQ
       CALL WKVECT('&&OP0045.RESU_I','V V I'  ,NBPARI*NBVECT, LRESUI)
-      CALL WKVECT('&&OP0045.RESU_R','V V R'  ,NBPARR*NBVECT, LRESUR)
+      CALL WKVECT('&&OP0045.RESU_','V V R'  ,NBPARR*NBVECT, LRESUR)
       CALL WKVECT('&&OP0045.RESU_K','V V K24',NBPARK*NBVECT, LRESUK)
 
 C     --- INITIALISATION A UNDEF DE LA STRUCTURE DE DONNEES RESUF ---
@@ -777,7 +801,7 @@ C     ------------------------------------------------------------------
      &         ZR(LVEC), ZR(LRESID), ZR(LWORKD), ZR(LWORKL), LONWL,
      &         ZL(LSELEC), ZR(LDSOR), OMESHI, ZR(LAUX), ZR(LWORKV),
      &         ZI(LPROD), ZI(LDDL), NEQACT, MAXITR, IFM, NIV, PRIRAM,
-     &         ALPHA, OMECOR, NCONV, FLAGE)
+     &         ALPHA, OMECOR, NCONV, FLAGE, SOLVEU)
           CALL RECTFR(NCONV, NCONV, OMESHI, NPIVOT, NBLAGR,
      &         ZR(LDSOR), NFREQ+1, ZI(LRESUI), ZR(LRESUR), NFREQ)
           CALL VPBOST (TYPRES, NCONV, NCONV, OMESHI, ZR(LDSOR),
@@ -808,7 +832,7 @@ C     ------------------------------------------------------------------
      &       ZL(LSELEC), ZC(LDSOR), SIGMA,
      &       ZC(LAUX), ZC(LWORKV), ZR(LWORKR),
      &       ZI(LPROD), ZI(LDDL), NEQACT, MAXITR, IFM, NIV, PRIRAM,
-     &       ALPHA, NCONV, FLAGE)
+     &       ALPHA, NCONV, FLAGE, SOLVEU)
           NPIVOT = NBLAGR
           CALL RECTFC(NCONV, NCONV, SIGMA, NPIVOT, NBLAGR,
      &       ZC(LDSOR), NFREQ+1, ZI(LRESUI), ZR(LRESUR), NFREQ)
@@ -881,7 +905,7 @@ C     -------  JACOBI PB GENERALISE REEL   --------
 C     ------------------------------------------------------------------
           CALL SSPACE(LMTPSC,LMATRA,LMASSE,NEQ,NBVECT,NFREQ,ZI(LPROD),
      &             ITEMAX,NPERM,TOL,TOLDYN,ZR(LVEC),ZR(LVALPR),
-     &             NITJAC,NITBAT)
+     &             NITJAC,NITBAT,SOLVEU)
           CALL RECTFR(NFREQ,NBVECT,OMESHI,NPIVOT,NBLAGR,
      &                  ZR(LVALPR),NBVECT,ZI(LRESUI),ZR(LRESUR),NFREQ)
           CALL VPBOST(TYPRES,NFREQ,NBVECT,OMESHI,ZR(LVALPR),NBVECT,
@@ -916,7 +940,7 @@ C     ------------------------------------------------------------------
           ENDIF
           CALL VP2INI(LMTPSC,LMASSE,LMATRA,NEQ,NBVECT,NBORTO,PRORTO,
      &                  ZI(LPROD),ZI(LDDL),ZR(LDIAGR),ZR(LSURDR),
-     &                  ZR(LSIGN),ZR(LVEC),PRSUDG,NSTOC,OMESHI)
+     &                  ZR(LSIGN),ZR(LVEC),PRSUDG,NSTOC,OMESHI,SOLVEU)
           CALL VP2TRD('G',NBVECT,ZR(LDIAGR),ZR(LSURDR),ZR(LSIGN),
      &                  ZR(IADZ),NITV,NITQRM)
           CALL VPRECO(NBVECT,NEQ,ZR(IADZ),ZR(LVEC))
@@ -957,7 +981,7 @@ C     ------------------------------------------------------------------
           CALL WP2INI(APPR,LMASSE,LAMOR,LRAIDE,LMATRA,LMTPSC,SIGMA,
      &                  ZR(IADRH),ZR(IADRB),OPTIOF,PRORTO,NBORTO,NBVECT,
      &                  NEQ,ZI(LPROD),ZI(LDDL),ZR(LDIAGR),ZR(LSURDR),
-     &                  ZR(LSIGN),ZR(IADX),ZR(IADY))
+     &                  ZR(LSIGN),ZR(IADX),ZR(IADY),SOLVEU)
           CALL VP2TRD('Q',NBVECT,ZR(LDIAGR),ZR(LSURDR),ZR(LSIGN),
      &                  ZR(IADZ),NITV,NITQRM)
           NPIVOT = NBLAGR
@@ -1004,7 +1028,7 @@ C     ------------------------------------------------------------------
      &           ZR(LSURDR),ZR(LDIAGR),
      &           SIGMA, ZR(LAUX), ZR(LWORKV), ZI(LPROD), ZI(LDDL),
      &           NEQACT,MAXITR, IFM, NIV, PRIRAM, ALPHA, NCONV, FLAGE,
-     &           ZR(LAUR), ZC(LAUC), ZC(LAUL))
+     &           ZR(LAUR), ZC(LAUC), ZC(LAUL),SOLVEU)
               NFREQ = NCONV / 2
               CALL WP3VEC(APPR,OPTIOF,NFREQ,NCONV,NEQ,SIGMA,
      &          ZR(LSURDR),ZR(LDIAGR),ZC(LVEC),MXRESF,
@@ -1019,7 +1043,7 @@ C     ------------------------------------------------------------------
      &           ZC(LWORKD), ZC(LWORKL), LONWL, ZL(LSELEC), ZC(LDSOR),
      &           SIGMA, ZC(LAUX), ZC(LWORKV), ZI(LPROD), ZI(LDDL),
      &           NEQACT,MAXITR, IFM, NIV, PRIRAM, ALPHA, NCONV, FLAGE,
-     &           ZC(LAUC),ZR(LAUR))
+     &           ZC(LAUC),ZR(LAUR),SOLVEU)
               NFREQ = NCONV / 2
               CALL WP4VEC(NFREQ,NCONV,NEQ,SIGMA,
      &           ZC(LDSOR),ZC(LVEC),MXRESF,
@@ -1041,7 +1065,7 @@ C     ------------------------------------------------------------------
      &         ZC(LWORKD), ZC(LWORKL), LONWL, ZL(LSELEC), ZC(LDSOR),
      &         SIGMA, ZC(LAUX), ZC(LWORKV), ZI(LPROD), ZI(LDDL),
      &         NEQACT,MAXITR, IFM, NIV, PRIRAM, ALPHA, NCONV, FLAGE,
-     &         ZC(LAUC),ZR(LAUR))
+     &         ZC(LAUC),ZR(LAUR),SOLVEU)
             NFREQ = NCONV / 2
             CALL WP5VEC(OPTIOF,NFREQ,NCONV,NEQ,ZC(LDSOR),ZC(LVEC),
      &         MXRESF,ZI(LRESUI),ZR(LRESUR),ZC(LAUC))
@@ -1129,8 +1153,9 @@ C --- POUR DEBRANCHER LE TEST DE STURM DANS VPCNTL
       LMAT(3) = LMTPSC
       CALL VPCNTL
      &  (CTYP, MODES, OPTIOV, OMEMIN, OMEMAX, SEUIL, NCONV, ZI(LRESUI),
-     &   LMAT, OMECOR, PRECDC, IERX, VPINF, VPMAX, NPREC, ZR(LRESUR),
-     &   ZR(LRESUR+3*MXRESF), ZR(LRESUR+MXRESF), TYPRES, STURM, NBLAGR)
+     &   LMAT, OMECOR, PRECDC, IERX, VPINF, VPMAX, ZR(LRESUR),
+     &   ZR(LRESUR+3*MXRESF), ZR(LRESUR+MXRESF), TYPRES, STURM, NBLAGR,
+     &   SOLVEU)
       CALL GETVTX('VERI_MODE','STOP_ERREUR',1,1,1,OPTIOV,LMF)
 
       IF ((OPTIOV.EQ.'OUI').AND.(IERX.NE.0))
@@ -1163,6 +1188,13 @@ C     DE LA SENSIBILITE
 C     ------------------------------------------------------------------
 
  9999 CONTINUE
+C     --- DESTRUCTION DE L'OCCURENCE MUMPS SI NECESSAIRE
+      IF (METRES(1:5).EQ.'MUMPS') THEN
+        IF (LMATRA.NE.0) CALL AMUMPH('DETR_OCC',SOLVEU,MATOPA,RBID,
+     &                               CBID,' ',0,IBID,.TRUE.)
+        IF (LMTPSC.NE.0) CALL AMUMPH('DETR_OCC',SOLVEU,MATPSC,RBID,
+     &                               CBID,' ',0,IBID,.TRUE.)
+      ENDIF
       CALL JEDEMA()
 C
 C     FIN DE OP0045

@@ -1,7 +1,7 @@
       SUBROUTINE LDSP2(pc,x,y,ierr)
       IMPLICIT NONE
 !           CONFIGURATION MANAGEMENT OF EDF VERSION                  
-!& MODIF LDSP2 PETSC  DATE 23/08/2010   AUTEUR TARDIEU N.TARDIEU 
+!& MODIF LDSP2 PETSC  DATE 13/10/2010   AUTEUR BOITEAU O.BOITEAU 
 ! ================================================================== 
 ! COPYRIGHT (C) 1991 - 2010  EDF R&D              WWW.CODE-ASTER.ORG 
 !                                                                    
@@ -59,7 +59,8 @@
       CALL ASSERT(ierr.EQ.0)
 
 ! -- APPEL A LA ROUTINE DE PRECONDITIONNEMENT (DESCENTE/REMONTEE)
-      CALL AMUMPH('RESOUD',SOLVBD,NOMAT,XX(xidx+1),CBID,' ',1,IRET)
+      CALL AMUMPH('RESOUD',SOLVBD,NOMAT,XX(xidx+1),CBID,' ',1,IRET,
+     &            .TRUE.)
 
 ! -- ENVOI DES VALEURS DU VECTEUR SUR LES DIFFERENTS PROCS
       call VecRestoreArray(xglobal,XX,xidx,ierr)

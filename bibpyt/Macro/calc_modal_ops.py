@@ -1,4 +1,4 @@
-#@ MODIF calc_modal_ops Macro  DATE 27/04/2009   AUTEUR NISTOR I.NISTOR 
+#@ MODIF calc_modal_ops Macro  DATE 13/10/2010   AUTEUR BOITEAU O.BOITEAU 
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -21,7 +21,7 @@
 
 
 def calc_modal_ops(self,MODELE,CHAM_MATER,CARA_ELEM,AMORTISSEMENT,
-                        SOLVEUR,CHARGE,INST,METHODE,CALC_FREQ, MODE_RIGIDE,
+                        CHARGE,INST,METHODE,CALC_FREQ, MODE_RIGIDE,
                         VERI_MODE,INFO,**args):
   """
      Ecriture de la macro CALC_MODAL
@@ -58,12 +58,8 @@ def calc_modal_ops(self,MODELE,CHAM_MATER,CARA_ELEM,AMORTISSEMENT,
                        RIGI_MECA=_a, MASS_MECA=_b,**motsclece)
 
   #on produit en local le concept NUME_DDL, il n'est pas visible pour l'utilisateur
-  
-  # Les mots cles simples sous SOLVEUR sont par defaut MULT_FRONT/METIS
-  methode=SOLVEUR['METHODE']
-  renum=SOLVEUR['RENUM'] 
 
-  _num=NUME_DDL(MATR_RIGI=_a,METHODE=methode,RENUM=renum,INFO=INFO)
+  _num=NUME_DDL(MATR_RIGI=_a,INFO=INFO)
   
   #assemblages des matrices 
   _rigas=ASSE_MATRICE(MATR_ELEM=_a,NUME_DDL=_num)
@@ -122,7 +118,6 @@ def calc_modal_ops(self,MODELE,CHAM_MATER,CARA_ELEM,AMORTISSEMENT,
      
   motscit['CALC_FREQ'] = _F(OPTION          =CALC_FREQ['OPTION'],
                             SEUIL_FREQ      =CALC_FREQ['SEUIL_FREQ'],
-                            NPREC_SOLVEUR   =CALC_FREQ['NPREC_SOLVEUR'],
                             NMAX_ITER_SHIFT =CALC_FREQ['NMAX_ITER_SHIFT'],
                             PREC_SHIFT      =CALC_FREQ['PREC_SHIFT'],
                             APPROCHE        =CALC_FREQ['APPROCHE'],

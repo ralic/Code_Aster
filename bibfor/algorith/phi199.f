@@ -7,7 +7,7 @@
       CHARACTER*(*)       MATE, SOLVEZ
 C---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 30/06/2008   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 13/10/2010   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -247,7 +247,7 @@ C
 C------------- RESOLUTION  DU LAPLACIEN EN 2D-----------------------
 
         CALL RESOUD(MA,MAPREC,VECSO1,SOLVEU,' ','V',CHSOL,CRITER,0,RBID,
-     &              CBID)
+     &              CBID,.TRUE.)
         CALL JEDUPC('V',CHSOL(1:19),1,'V',VECSO1(1:19),.FALSE.)
         CALL JEDETC('V',CHSOL,1)
 

@@ -1,5 +1,6 @@
-# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 13/10/2010   AUTEUR BOITEAU O.BOITEAU 
 # TITRE FLAMBEMENT NON LINEAIRE POUTRE EN L
+# ssll105d.para = tps_job 200 mem_job 100Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -17,6 +18,9 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
+
+# ON VERIFIE AUSSI L'INTER-OPERABILITE DU CALCUL MODAL DE CRIT_FLAMB
+# AVEC LES TROIS SOLVEURS DIRECTS DISPONIBLES: LDLT, MULT_FRONT ET MUMPS
 
 DEBUT(CODE=_F(NOM='SSLL105D', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 
@@ -90,7 +94,7 @@ effort2=AFFE_CHAR_MECA(MODELE=modele,
                       FORCE_NODALE=_F(GROUP_NO='C',
                                       FX=-1,),);
 
-res2=STAT_NON_LINE(MODELE=modele,
+res2L=STAT_NON_LINE(MODELE=modele,
                   CHAM_MATER=ch_mat,
                   CARA_ELEM=cara_pou,
                   EXCIT=(_F(CHARGE=encast,),
@@ -100,11 +104,50 @@ res2=STAT_NON_LINE(MODELE=modele,
                                DEFORMATION='PETIT',),
                   INCREMENT=_F(LIST_INST=list,),
                   NEWTON=_F(MATRICE='TANGENTE',),
+                  SOLVEUR=_F(METHODE='LDLT'),
                   CRIT_FLAMB=_F(CHAR_CRIT=(-1., 0.),),
                   );
 
+res2F=STAT_NON_LINE(MODELE=modele,
+                  CHAM_MATER=ch_mat,
+                  CARA_ELEM=cara_pou,
+                  EXCIT=(_F(CHARGE=encast,),
+                         _F(CHARGE=effort2,
+                            FONC_MULT=fonc,),),
+                  COMP_INCR=_F(RELATION='ELAS',
+                               DEFORMATION='PETIT',),
+                  INCREMENT=_F(LIST_INST=list,),
+                  NEWTON=_F(MATRICE='TANGENTE',),
+                  SOLVEUR=_F(METHODE='MULT_FRONT'),
+                  CRIT_FLAMB=_F(CHAR_CRIT=(-1., 0.),),
+                  );
+res2M=STAT_NON_LINE(MODELE=modele,
+                  CHAM_MATER=ch_mat,
+                  CARA_ELEM=cara_pou,
+                  EXCIT=(_F(CHARGE=encast,),
+                         _F(CHARGE=effort2,
+                            FONC_MULT=fonc,),),
+                  COMP_INCR=_F(RELATION='ELAS',
+                               DEFORMATION='PETIT',),
+                  INCREMENT=_F(LIST_INST=list,),
+                  NEWTON=_F(MATRICE='TANGENTE',),
+                  SOLVEUR=_F(METHODE='MUMPS'),
+                  CRIT_FLAMB=_F(CHAR_CRIT=(-1., 0.),),
+                  );
 TEST_RESU(RESU=(
-                 _F(RESULTAT=res2,
+                 _F(RESULTAT=res2L,
+                   INST=1.,
+                   PARA='CHAR_CRIT',
+                   VALE=-0.68,
+                   PRECISION=0.02,
+                   REFERENCE='ANALYTIQUE',),
+                 _F(RESULTAT=res2F,
+                   INST=1.,
+                   PARA='CHAR_CRIT',
+                   VALE=-0.68,
+                   PRECISION=0.02,
+                   REFERENCE='ANALYTIQUE',),
+                 _F(RESULTAT=res2M,
                    INST=1.,
                    PARA='CHAR_CRIT',
                    VALE=-0.68,

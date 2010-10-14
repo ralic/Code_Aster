@@ -1,6 +1,6 @@
       SUBROUTINE FACMTR (MATIN,MATOUT,IER)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/07/2008   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 13/10/2010   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -55,6 +55,7 @@ C
       CHARACTER*19 MATIN,MATOUT,MATPRE,SOLVEU
       CHARACTER*24 VALK
       LOGICAL HPLOG
+      INTEGER IBID
 C
 C-----------------------------------------------------------------------
 C-----------------------------------------------------------------------
@@ -89,7 +90,7 @@ C
 C     -- FACTORISATION EN PLACE DE LA MATRICE DUPLIQUEE :
       SOLVEU='&&OP0099.SOLVEUR'
       MATPRE='&&OP0099.MATPRE'
-      CALL PRERES(SOLVEU,'V',IRE,MATPRE,MATOUT)
+      CALL PRERES(SOLVEU,'V',IRE,MATPRE,MATOUT,IBID,-9999)
 
 
 

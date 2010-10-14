@@ -1,9 +1,9 @@
       SUBROUTINE VPFOPR( OPTION, TYPRES, LMASSE, LRAIDE, LDYNAM, OMEMIN,
      &                   OMEMAX, OMESHI, NBFREQ , NPIVOT, OMECOR,
-     &                   PRECDC, NPREC, NBRSSA, NBLAGR)
+     &                   PRECDC, NBRSSA, NBLAGR, SOLVEU)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 21/04/2008   AUTEUR BOITEAU O.BOITEAU 
+C MODIF ALGELINE  DATE 13/10/2010   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -43,17 +43,9 @@ C IN  OMECOR : R8 : VALEUR DE LA PULSATION AU CARRE DEFINISSANT LES
 C                   MODES DE CORPS RIGIDE
 C IN  PRECDC : R8 : VALEUR DU DECALAGE DES SHIFTS QUAND LA MATRICE EST
 C                   NON INVERSIBLE
-C IN  NPREC : IS : NOMBRE MAXIMAL DE DECIMALES PERDUES AUTORISE LORS DE
-C                  LA FACTORISATION
 C IN  NBRSSA : IS : NOMBRE DE DECALAGES DE SHIFTS AUTORISES
 C IN  NBLAGR : IS : NOMBRE DE DDLS DE LAGRANGE
-C   -------------------------------------------------------------------
-C     ASTER INFORMATIONS:
-C      13/04/200 RAJOUT DE LA POSSIBLITE D'AVOIR EN ENTREE DES CHARGES
-C                CRITIQUES NEGATIVES (MODIFICATION DE VPECST)
-C      29/01/2001 CORRECTION DU BUG EN OPTION 'BANDE'
-C                IF (OMGMIN .GE. 0.D0) THEN PLUTOT QUE OMEMIN,
-C                TOILETTAGE FORTRAN.
+C IN  SOLVEU : K19 : SD SOLVEUR POUR PARAMETRER LE SOLVEUR LINEAIRE
 C----------------------------------------------------------------------
 C
       IMPLICIT NONE
@@ -61,7 +53,8 @@ C
 C PARAMETRES D'APPEL
       CHARACTER*(*)              OPTION
       CHARACTER*16               TYPRES
-      INTEGER                    LMASSE, LRAIDE, LDYNAM, NPREC,  NBRSSA
+      CHARACTER*19               SOLVEU
+      INTEGER                    LMASSE, LRAIDE, LDYNAM,  NBRSSA
       REAL*8                     OMEMIN, OMEMAX, OMESHI, OMECOR, PRECDC
       INTEGER                    NBFREQ, NPIVOT, NIV,    IFM,    NBLAGR
 
@@ -94,8 +87,11 @@ C VARIABLES LOCALES
 C     ------------------------------------------------------------------
 C     ------------------------ OPTION CENTRE ---------------------------
 C     ------------------------------------------------------------------
-
+ 
       CALL INFNIV(IFM,NIV)
+C --- POUR NE PAS DECLANCHER INUTILEMENT LE CALCUL DU DETERMINANT DANS
+C     VPSTUR
+      IDET=-9999
       WRITE(IFM,900) OPTION
       IF ( OPTION .EQ. 'CENTRE'  ) THEN
 
@@ -104,8 +100,8 @@ C     ------------------------------------------------------------------
 
  10      CONTINUE
 
-         CALL VPSTUR(LRAIDE,OMGSHI,LMASSE,LDYNAM,NPREC,DET,
-     &               IDET,NPIVOT,IER)
+         CALL VPSTUR(LRAIDE,OMGSHI,LMASSE,LDYNAM,DET,
+     &               IDET,NPIVOT,IER,SOLVEU)
          IF (IER .NE. 0 ) THEN
             IF (ABS(OMGSHI) .LT. OMECOR) THEN
                OMGSHI = OMECOR
@@ -128,8 +124,8 @@ C     ------------------------------------------------------------------
                GOTO 10
             ELSE
                CALL U2MESS('F','ALGELINE3_65')
-               CALL VPSTUR(LRAIDE,OMGSHI,LMASSE,LDYNAM,NPREC,DET,IDET,
-     &                     NPIVOT,IER)
+               CALL VPSTUR(LRAIDE,OMGSHI,LMASSE,LDYNAM,DET,IDET,
+     &                     NPIVOT,IER,SOLVEU)
             ENDIF
          ENDIF
          OMESHI = OMGSHI
@@ -152,8 +148,8 @@ C     ------------------------------------------------------------------
 
  21      CONTINUE
 
-         CALL VPSTUR( LRAIDE,OMGMIN,LMASSE,LDYNAM,NPREC,DET,
-     &                IDET,NBFMIN,IER)
+         CALL VPSTUR( LRAIDE,OMGMIN,LMASSE,LDYNAM,DET,
+     &                IDET,NBFMIN,IER,SOLVEU)
          IF (IER .NE. 0) THEN
             IF (ABS(OMGMIN) .LT. OMECOR) THEN
                OMGMIN = - OMECOR
@@ -175,8 +171,8 @@ C     ------------------------------------------------------------------
                GOTO 21
             ELSE
                CALL U2MESS('A','ALGELINE3_66')
-               CALL VPSTUR(LRAIDE,OMGMIN,LMASSE,LDYNAM,NPREC,DET,IDET,
-     &                     NBFMIN,IER)
+               CALL VPSTUR(LRAIDE,OMGMIN,LMASSE,LDYNAM,DET,IDET,
+     &                     NBFMIN,IER,SOLVEU)
             ENDIF
          ENDIF
          OMEMIN = OMGMIN
@@ -185,8 +181,8 @@ C     ------------------------------------------------------------------
 
  22      CONTINUE
 
-         CALL VPSTUR( LRAIDE,OMGMAX,LMASSE,LDYNAM,NPREC,DET,
-     &                IDET,NBFMAX,IER)
+         CALL VPSTUR( LRAIDE,OMGMAX,LMASSE,LDYNAM,DET,
+     &                IDET,NBFMAX,IER,SOLVEU)
          IF (IER .NE. 0) THEN
             IF (ABS(OMGMAX) .LT. OMECOR) THEN
                OMGMAX = OMECOR
@@ -208,8 +204,8 @@ C     ------------------------------------------------------------------
                GOTO 22
             ELSE
                CALL U2MESS('A','ALGELINE3_67')
-               CALL VPSTUR(LRAIDE,OMGMAX,LMASSE,LDYNAM,NPREC,DET,IDET,
-     &                    NBFMAX,IER)
+               CALL VPSTUR(LRAIDE,OMGMAX,LMASSE,LDYNAM,DET,IDET,
+     &                    NBFMAX,IER,SOLVEU)
             ENDIF
          ENDIF
          OMEMAX = OMGMAX
@@ -224,8 +220,8 @@ C        --- CENTRAGE DE L INTERVALLE ---
 
  23      CONTINUE
 
-         CALL VPSTUR(LRAIDE,OMGSHI,LMASSE,LDYNAM,NPREC,DET,
-     &               IDET,NPIVOT,IER)
+         CALL VPSTUR(LRAIDE,OMGSHI,LMASSE,LDYNAM,DET,
+     &               IDET,NPIVOT,IER,SOLVEU)
          IF (IER .NE. 0) THEN
             IF (ABS(OMGSHI) .LT. OMECOR) THEN
                OMGSHI = OMECOR
@@ -247,8 +243,8 @@ C        --- CENTRAGE DE L INTERVALLE ---
                GOTO 23
             ELSE
                CALL U2MESS('F','ALGELINE3_65')
-               CALL VPSTUR(LRAIDE,OMGSHI,LMASSE,LDYNAM,NPREC,DET,IDET,
-     &                     NPIVOT,IER)
+               CALL VPSTUR(LRAIDE,OMGSHI,LMASSE,LDYNAM,DET,IDET,
+     &                     NPIVOT,IER,SOLVEU)
             ENDIF
          ENDIF
          OMESHI = OMGSHI
@@ -275,8 +271,8 @@ C     ------------------------------------------------------------------
 
  30      CONTINUE
 
-         CALL VPSTUR(LRAIDE,OMGSHI,LMASSE,LDYNAM,NPREC,DET,
-     &               IDET,NPIVOT,IER)
+         CALL VPSTUR(LRAIDE,OMGSHI,LMASSE,LDYNAM,DET,
+     &               IDET,NPIVOT,IER,SOLVEU)
          IF (IER .NE. 0) THEN
             IF (ABS(OMGSHI) .LT. OMECOR) THEN
                OMGSHI = - OMECOR
@@ -298,8 +294,8 @@ C     ------------------------------------------------------------------
                GOTO 30
             ELSE
                CALL U2MESS('F','ALGELINE3_68')
-               CALL VPSTUR(LRAIDE,OMGSHI,LMASSE,LDYNAM,NPREC,DET,IDET,
-     &                     NPIVOT,IER)
+               CALL VPSTUR(LRAIDE,OMGSHI,LMASSE,LDYNAM,DET,IDET,
+     &                     NPIVOT,IER,SOLVEU)
             ENDIF
          ENDIF
          OMESHI = OMGSHI

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 05/05/2008   AUTEUR NISTOR I.NISTOR 
+#& MODIF COMMANDE  DATE 13/10/2010   AUTEUR BOITEAU O.BOITEAU 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -59,7 +59,6 @@ MACRO_MODE_MECA=MACRO(nom="MACRO_MODE_MECA",op=macro_mode_meca_ops,sd_prod=mode_
            NB_BLOC_FREQ    =SIMP(statut='f',typ='I' ),  
            DIM_SOUS_ESPACE =SIMP(statut='f',typ='I' ),  
            COEF_DIM_ESPACE =SIMP(statut='f',typ='I' ),
-           NPREC_SOLVEUR   =SIMP(statut='f',typ='I',defaut= 8 ),  
            NMAX_ITER_SHIFT =SIMP(statut='f',typ='I',defaut= 5 ),  
            PREC_SHIFT      =SIMP(statut='f',typ='R',defaut= 5.E-2 ),  
            SEUIL_FREQ      =SIMP(statut='f',typ='R' ,defaut= 1.E-2 ),  

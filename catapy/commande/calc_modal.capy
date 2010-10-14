@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 27/04/2009   AUTEUR NISTOR I.NISTOR 
+#& MODIF COMMANDE  DATE 13/10/2010   AUTEUR BOITEAU O.BOITEAU 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -36,15 +36,7 @@ CALC_MODAL=MACRO(nom="CALC_MODAL",op=calc_modal_ops,
          CHAM_MATER      =SIMP(statut='o',typ=cham_mater),
          INST            =SIMP(statut='f',typ='R',defaut=0.),
          CARA_ELEM       =SIMP(statut='f',typ=cara_elem),
-         CHARGE          =SIMP(statut='f',typ=char_meca,validators=NoRepeat(),max='**'),  
-         SOLVEUR         =FACT(statut='d',
-           METHODE         =SIMP(statut='f',typ='TXM',defaut="MULT_FRONT",into=("MULT_FRONT","LDLT") ),
-         b_mult_front    =BLOC(condition="METHODE=='MULT_FRONT'",fr="Paramètres associés à la méthode multifrontale",
-           RENUM           =SIMP(statut='f',typ='TXM',into=("MD","MDA","METIS"),defaut="METIS" ),
-         ),
-         b_ldlt          =BLOC(condition="METHODE=='LDLT'",fr="Paramètres associés à la méthode LDLT",
-           RENUM           =SIMP(statut='f',typ='TXM',into=("RCMK","SANS"),defaut="RCMK"  ),
-         ),),
+         CHARGE          =SIMP(statut='f',typ=char_meca,validators=NoRepeat(),max='**'),
          METHODE         =SIMP(statut='f',typ='TXM',defaut="SORENSEN",
                                into=("TRI_DIAG","JACOBI","SORENSEN","QZ") ),
          b_tri_diag =BLOC(condition = "METHODE == 'TRI_DIAG'",
@@ -92,7 +84,6 @@ CALC_MODAL=MACRO(nom="CALC_MODAL",op=calc_modal_ops,
              regles=(EXCLUS('DIM_SOUS_ESPACE','COEF_DIM_ESPACE'),),
              DIM_SOUS_ESPACE =SIMP(statut='f',typ='I' ),
              COEF_DIM_ESPACE =SIMP(statut='f',typ='I' ),
-             NPREC_SOLVEUR   =SIMP(statut='f',typ='I',defaut= 8,val_min=0 ),
              NMAX_ITER_SHIFT =SIMP(statut='f',typ='I',defaut= 5,val_min=0 ),
              PREC_SHIFT      =SIMP(statut='f',typ='R',defaut= 5.E-2,val_min=0.E+0 ),
              SEUIL_FREQ      =SIMP(statut='f',typ='R',defaut= 1.E-2,val_min=0.E+0 ),
