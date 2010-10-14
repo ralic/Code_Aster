@@ -1,4 +1,4 @@
-#@ MODIF utilitai5 Messages  DATE 19/07/2010   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+#@ MODIF utilitai5 Messages  DATE 11/10/2010   AUTEUR DELMAS J.DELMAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -175,11 +175,6 @@ cata_msg = {
  determination de la localisation des points de gauss
 """),
 
-40 : _("""
- La commande LIRE_RESU ne sait pas lire les structures de données
- de type %(k1) s.
-"""),
-
 41 : _("""
  xous :  %(k1)s  non prevu.
 """),
@@ -304,4 +299,7 @@ Erreur Programmeur / UTTCPU  :
  veuillez consulter la doc U correspondante
 """),
 
+98 : _("""
+ Pour une SD résultat de type %(k1)s, le modèle ne sera pas stocké.
+"""),
 }

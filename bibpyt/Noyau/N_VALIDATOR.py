@@ -1,4 +1,4 @@
-#@ MODIF N_VALIDATOR Noyau  DATE 11/05/2010   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF N_VALIDATOR Noyau  DATE 11/10/2010   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -128,6 +128,11 @@ class TypeProtocol(PProtocol):
                 if is_str(obj): return obj
             elif type_permis == 'shell':
                 if is_str(obj): return obj
+            elif type_permis == 'Fichier' :
+                 import os
+                 if (len(typ) > 2 and typ[2] == "Sauvegarde") or os.path.isfile(obj):
+                     return obj
+                 else : raise ValError("%s n'est pas un fichier valide" % repr(obj))
             elif type(type_permis) == types.ClassType or isinstance(type_permis,type):
                 try:
                     if self.is_object_from(obj,type_permis): return obj
@@ -760,6 +765,10 @@ class AndVal(Valid):
                  self.validators.append(FunctionVal(validator))
               else:
                  self.validators.append(validator)
+              if hasattr(validator,'fonctions'):
+                 for fonction in validator.fonctions :
+                    f=getattr(validator,fonction)
+                    setattr(self,fonction,f)
           self.cata_info=""
 
       def info(self):
@@ -1221,4 +1230,112 @@ class InstanceVal(ListVal):
       def verif_item(self,valeur):
           if not isinstance(valeur,self.aClass): return 0
           return 1
+
+class VerifTypeTuple(Valid,ListVal) :
+      def __init__(self,typeDesTuples):
+          self.typeDesTuples=typeDesTuples
+          Valid.__init__(self)
+          self.cata_info=""
+
+      def info(self):
+          return ": verifie les types dans un tuple"
+
+      def info_erreur_liste(self):
+          return "Les types entres  ne sont pas permis"
+
+      def default(self,valeur):
+          #if valeur in self.liste : raise ValError("%s est un doublon" % valeur)
+          return valeur
+
+      def is_list(self) :
+          return 1
+
+      def convert_item(self,valeur):
+          if len(valeur) != len(self.typeDesTuples):
+             raise ValError("%s devrait etre de type  %s " %(valeur,self.typeDesTuples))
+          for i in range(len(valeur)) :
+              ok=self.verifType(valeur[i],self.typeDesTuples[i])
+              if ok!=1 : 
+                 raise ValError("%s devrait etre de type  %s " %(valeur,self.typeDesTuples))
+          return valeur
+
+      def verif_item(self,valeur):
+          try :
+             if len(valeur) != len(self.typeDesTuples):
+                return 0
+             for i in range(len(valeur)) :
+                ok=self.verifType(valeur[i],self.typeDesTuples[i])
+                if ok!=1:
+                   return 0
+          except :
+             return 0
+          return 1
+
+      def verifType(self,valeur,type_permis):
+          if type_permis == 'R':
+             if type(valeur) in (types.IntType,types.FloatType,types.LongType):return 1
+          elif type_permis == 'I':
+             if type(valeur) in (types.IntType,types.LongType):return 1
+          elif type_permis == 'C':
+             if self.is_complexe(valeur):return 1
+          elif type_permis == 'TXM':
+             if type(valeur)==types.StringType:return 1
+          return 0
+
+      def verif(self,valeur):
+          if type(valeur) in (types.ListType,types.TupleType):
+             liste=list(valeur)
+             for val in liste:
+                if self.verif_item(val)!=1 : return 0
+             return 1
+ 
+class VerifExiste(ListVal) :
+      """
+         fonctionne avec into
+         Met une liste à jour selon les mot clefs existant
+         exemple si into = ("A","B","C")
+         si au niveau N du JDC les objets "A" et "C" existe
+         alors la liste des into deviendra ( "A","C")
+
+         niveauVerif est le niveau du JDC dans lequel va s effectuer la verification
+         niveauVerif est defini par rapport au Noeud :
+         exemple niveauVerif = 1 : on verifie les freres
+                 niveauVerif = 2 : on verifie les oncles..
+      """
+      def __init__(self,niveauVerif):
+          ListVal.__init__(self)
+          self.niveauVerif=niveauVerif
+          self.MCSimp=None
+          self.listeDesFreres=()
+          self.fonctions=('verifie_liste','set_MCSimp')
+
+      def is_list(self):
+          return 1
+
+      def verifie_liste(self,liste):
+          self.set_MCSimp(self.MCSimp)
+          for item in liste :
+            if not( item in self.listeDesFreres) : return 0
+          return 1
+
+      def verif_item(self,valeur):
+          self.set_MCSimp(self.MCSimp)
+          if valeur in self.listeDesFreres : return 1
+          return 0
+
+      def set_MCSimp(self, MCSimp) :
+          self.MCSimp=MCSimp
+          k=self.niveauVerif
+          mc=MCSimp
+          while (k != 0) :
+             parent=mc.parent
+             mc=parent
+             k=k-1
+         #on met la liste à jour
+          parent.forceRecalcul=self.niveauVerif
+          self.listeDesFreres=parent.liste_mc_presents()
+
+      def convert_item(self,valeur):
+          if valeur in self.listeDesFreres : return valeur
+          raise ValError(str(valeur)+" n est pas dans " + str(self.listeDesFreres))
 

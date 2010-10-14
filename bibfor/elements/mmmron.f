@@ -1,7 +1,7 @@
       SUBROUTINE MMMRON(NDIM  ,NORM  ,TAU1  ,TAU2  )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 01/04/2008   AUTEUR ABBAS M.ABBAS 
+C MODIF ELEMENTS  DATE 11/10/2010   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -58,8 +58,8 @@ C
       CMPY   = NORM(2)
       CMPZ   = NORM(3)        
       IF (NDIM.EQ. 2) THEN
-        TAU1(1) = -CMPY
-        TAU1(2) = CMPX
+        TAU1(1) = CMPY
+        TAU1(2) = -CMPX
         TAU1(3) = 0.D0
         TAU2(1) = 0.D0
         TAU2(2) = 0.D0

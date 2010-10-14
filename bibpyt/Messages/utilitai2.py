@@ -1,4 +1,4 @@
-#@ MODIF utilitai2 Messages  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
+#@ MODIF utilitai2 Messages  DATE 11/10/2010   AUTEUR DELMAS J.DELMAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -242,28 +242,20 @@ cata_msg = {
 """),
 
 88 : _("""
-  le mot clé MODELE est obligatoire pour un champ de type CHAM_ELEM
+  Pour le format ENSIGHT, le mot-clé MODELE est obligatoire.
 """),
 
 89 : _("""
-  le format ENSIGHT n'accepte que le champ PRES
-"""),
-
-90 : _("""
- nflag etant egal a 0, on ne peut pas avoir plus d'un instant.
+  Le format ENSIGHT n'accepte que le champ de type PRES.
 """),
 
 91 : _("""
- element non prevu  %(k1)s
-"""),
-
-93 : _("""
- evol_ther - champ temp uniquement
+  Le type d'élément %(k1)s n'est pas prevu.
 """),
 
 94 : _("""
- Le champ %(k1)s n'est pas prévu.
- Vous pouvez demander l'évolution.
+  Le champ %(k1)s n'est pas prévu.
+  Vous pouvez demander l'évolution.
 """),
 
 95 : _("""
@@ -279,10 +271,6 @@ Risques & Conseils :
   Si le fichier lu est au format Ideas, et si la commande est LIRE_RESU,
   le problème vient peut-etre d'une mauvaise utilisation (ou d'une abscence d'utilisation)
   du mot clé FORMAT_IDEAS. Il faut examiner les "entetes" des DATASET du fichier à lire.
-"""),
-
-98 : _("""
- on n'a pas lu tous les champs.
 """),
 
 }

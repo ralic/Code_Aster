@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 28/06/2010   AUTEUR FLEJOU J-L.FLEJOU 
+%& MODIF TYPELEM  DATE 11/10/2010   AUTEUR FLEJOU J-L.FLEJOU 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -45,6 +45,7 @@ MODE_LOCAL__
     CFORCER  = FORC_R   ELEM__         (FX       FY       FZ       REP      )
     CFREQR   = FREQ_R   ELEM__         (FREQ     )
     NGEOMER  = GEOM_R   ELNO__ IDEN__  (X        Y        Z        )
+    EGGEOM_R = GEOM_R   ELGA__ RIGI    (X        Y        Z        )
     EGGEOP_R = GEOM_R   ELGA__ RIGI    (X        Y        Z        W        )
     CTEMPSR  = INST_R   ELEM__         (INST     )
     EMASSINE = MASS_R   ELEM__         (M        CDGX     CDGY     CDGZ     IXX      IYY
@@ -61,6 +62,9 @@ MODE_LOCAL__
     ZVARIPG  = VARI_R   ELGA__ RIGI   (VARI     )
     CVENTCX  = VENTCX_F ELEM__         (FCXP     )
     EREFCO   = PREC     ELEM__         (EFFORT   )
+    EGINST_R = INST_R   ELGA__ RIGI    (INST     )
+    EGNEUT_F = NEUT_F   ELGA__ RIGI    (X[30]    )
+    EGNEUT_R = NEUT_R   ELGA__ RIGI    (X[30]    )
 
 VECTEUR__
     MVECTUR = VDEP_R DDL_MECA
@@ -219,7 +223,8 @@ OPTION__
                               OUT__  ECONTNO  PCONTRR
                                      ECONTNC  PCONTRC
     TOU_INI_ELGA        99    IN__   NGEOMER  PGEOMER
-                              OUT__  EEFGEGA  PSIEF_R  ZVARIPG  PVARI_R
+                              OUT__  EEFGEGA  PSIEF_R  ZVARIPG  PVARI_R  EGGEOM_R PGEOM_R  EGINST_R PINST_R
+                                     EGNEUT_F PNEUT_F  EGNEUT_R PNEUT_R  
     VARI_ELNO_ELGA      -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
     WEIBULL             -1    IN__   XXXXXX   XXXXXX

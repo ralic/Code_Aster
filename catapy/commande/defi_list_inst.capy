@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 10/08/2010   AUTEUR GENIAUT S.GENIAUT 
+#& MODIF COMMANDE  DATE 12/10/2010   AUTEUR GENIAUT S.GENIAUT 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -55,7 +55,15 @@ DEFI_LIST_INST=OPER(nom="DEFI_LIST_INST",op=  28,sd_prod=list_inst,reentrant='n'
 
     ECHEC  =FACT(statut='d',max='**',
 
-      EVENEMENT     =SIMP(statut='f',typ='TXM',into=("DIVERGENCE",),defaut="DIVERGENCE",max=1 ),
+      EVENEMENT     =SIMP(statut='f',typ='TXM',into=("ERREUR","DELTA_GRANDEUR"),defaut="ERREUR",max=1 ),
+
+         b_edelta           =BLOC(condition = "EVENEMENT == 'DELTA_GRANDEUR' ",fr=" ",           
+#      event-driven : on sous-decoupe si l'increment d'une composante d'un champ depasse le seuil
+      VALE_REF          =SIMP(statut='o',typ='R',max=1),
+      NOM_CHAM          =SIMP(statut='o',typ='TXM',into=("DEPL","VARI_ELGA","SIEF_ELGA",),max=1),
+      NOM_CMP           =SIMP(statut='o',typ='TXM',max=1),
+                                  ),
+
 
       SUBD_METHODE    =SIMP(statut='f',typ='TXM',into =("AUCUNE","UNIFORME","EXTRAPOLE"),defaut="UNIFORME",max=1,
                             fr="Méthode de subdivision des pas de temps en cas de diconvergence"),
@@ -92,7 +100,7 @@ DEFI_LIST_INST=OPER(nom="DEFI_LIST_INST",op=  28,sd_prod=list_inst,reentrant='n'
              SUBD_ITER_FIN  =SIMP(statut='f',typ='I',defaut=8,val_min=3,max=1,
                 fr="Seules les n dernières itérations sont prises pour l'extrapolation"),
              SUBD_PAS       =SIMP(statut='f',typ='I',defaut=4,val_min=2,max=1,
-                fr="Nombre de subdivision d'un pas de temps en cas divergence"),
+                fr="Nombre de subdivision d'un pas de temps en cas ERREUR"),
 
                 b_subd_unif_manu  =   BLOC(condition="METHODE == 'MANUEL'",        
              regles=(AU_MOINS_UN('SUBD_NIVEAU','SUBD_PAS_MINI'),),

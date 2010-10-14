@@ -4,7 +4,7 @@
       INTEGER NUPO,IVARI,IDDL,NUSP
       CHARACTER*(*) CHAM19,NOMMA,NOMAIL,NONOEU,NOCMP1
 C ----------------------------------------------------------------------
-C MODIF UTILITAI  DATE 29/03/2010   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 11/10/2010   AUTEUR COURTOIS M.COURTOIS 
 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -286,7 +286,7 @@ C N EST PAS PREVU : REALISER L EVOLUTION
           VALK(1) = NOMAIZ
           VALI (1) = NCDYN
           VALI (2) = ICMP
-          CALL U2MESG('AOF', 'UTILITAI7_5',1,VALK,2,VALI,0,0.D0)
+          CALL U2MESG(AOF, 'UTILITAI7_5',1,VALK,2,VALI,0,0.D0)
           IDDL=0
           GO TO 9999
         ELSE

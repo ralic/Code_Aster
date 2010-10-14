@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 21/04/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+#& MODIF COMMANDE  DATE 11/10/2010   AUTEUR COURTOIS M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,7 +20,7 @@
 from Macro.calc_fonction_ops import calc_fonction_ops
 def calc_fonction_prod(self,DERIVE,EXTRACTION,INTEGRE,INVERSE,COMB,COMB_C,
                        ENVELOPPE,FRACTILE,SPEC_OSCI,ASSE,FFT,COMPOSE,CORR_ACCE,PUISSANCE,
-                       LISS_ENVELOP,ABS, **args):
+                       LISS_ENVELOP,ABS, REGR_POLYNOMIALE, **args):
 
    if (INTEGRE     != None): return fonction_sdaster
    if (DERIVE      != None): return fonction_sdaster
@@ -55,9 +55,11 @@ def calc_fonction_prod(self,DERIVE,EXTRACTION,INTEGRE,INVERSE,COMB,COMB_C,
       if (AsType(vale) == fonction_c) : return fonction_sdaster
    if (CORR_ACCE   != None): return fonction_sdaster
    if (LISS_ENVELOP!= None): return nappe_sdaster
+   if (REGR_POLYNOMIALE != None): return fonction_sdaster
    if (PUISSANCE   != None): return AsType(PUISSANCE[0]['FONCTION'])
    if (ABS         != None): return fonction_sdaster
    raise AsException("type de concept resultat non prevu")
+
 
 CALC_FONCTION=MACRO(nom="CALC_FONCTION",op=calc_fonction_ops,sd_prod=calc_fonction_prod
                     ,fr="Effectue des opérations mathématiques sur des concepts de type fonction",
@@ -65,7 +67,7 @@ CALC_FONCTION=MACRO(nom="CALC_FONCTION",op=calc_fonction_ops,sd_prod=calc_foncti
             UIinfo={"groupes":("Fonction",)},
          regles=(UN_PARMI('DERIVE','INTEGRE','SPEC_OSCI','COMB','COMB_C','ENVELOPPE',
                           'COMPOSE','EXTRACTION','ASSE','FFT','CORR_ACCE', 'PUISSANCE',
-                          'LISS_ENVELOP','INVERSE','ABS','FRACTILE'),),
+                          'LISS_ENVELOP','INVERSE','ABS','FRACTILE','REGR_POLYNOMIALE'),),
          FFT             =FACT(statut='f',fr="Transformée de Fourier ou de son inverse",
            FONCTION        =SIMP(statut='o',typ=(fonction_sdaster,fonction_c) ),
            METHODE         =SIMP(statut='f',typ='TXM',defaut="PROL_ZERO",into=("PROL_ZERO","TRONCATURE","COMPLET") ),
@@ -88,6 +90,10 @@ CALC_FONCTION=MACRO(nom="CALC_FONCTION",op=calc_fonction_ops,sd_prod=calc_foncti
            FREQ_MAX        =SIMP(statut='f',typ='R',defaut =35.5),
            ELARG           =SIMP(statut='f',typ='R',defaut =0.1 ),
            TOLE_LISS       =SIMP(statut='f',typ='R',defaut =0.25 ),
+         ),
+         REGR_POLYNOMIALE = FACT(statut='f',fr="Régression polynomiale d'une fonction",
+           FONCTION        =SIMP(statut='o',typ=fonction_sdaster),
+           DEGRE           =SIMP(statut='o',typ='I'),
          ),
          SPEC_OSCI       =FACT(statut='f',fr="Spectre d'oscillateur",
            METHODE         =SIMP(statut='f',typ='TXM',defaut="NIGAM",into=("NIGAM",) ),
@@ -112,7 +118,7 @@ CALC_FONCTION=MACRO(nom="CALC_FONCTION",op=calc_fonction_ops,sd_prod=calc_foncti
            COEF_R          =SIMP(statut='f',typ='R',fr="Coefficient réel de la combinaison linéaire associée à la fonction" ),
            COEF_C          =SIMP(statut='f',typ='C',fr="Coefficient complexe de la combinaison linéaire associée à la fonction" ),
          ),
-         b_comb          =BLOC ( condition = " (COMB != None) or (COMB_C != None)",
+         b_comb          =BLOC ( condition = "COMB != None or COMB_C != None or REGR_POLYNOMIALE != None",
              LIST_PARA      =SIMP(statut='f',typ=listr8_sdaster ),  
          ),
          COMPOSE         =FACT(statut='f',fr="Composition de deux fonctions FONC_RESU(FONC_PARA)",

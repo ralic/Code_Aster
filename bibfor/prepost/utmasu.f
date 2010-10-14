@@ -8,7 +8,7 @@
       CHARACTER*(*)       NOMOB1
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 12/01/2010   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF PREPOST  DATE 11/10/2010   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -73,7 +73,6 @@ C
       INTEGER       IFM , NIV, IPOS, ITYPMA, NUTYMA
       INTEGER       LISNOE(27),INDMAI
       LOGICAL       FIRST,LVNOR,OKCOIN
-      CHARACTER*1   TYPERR
       CHARACTER*8   K8B, NOMAIL, TYPE, VNOR
       CHARACTER*16  OPER,K16B
       CHARACTER*24  NOMAVO,VALK(4)
@@ -170,7 +169,7 @@ C
             CALL JENUNO(JEXNUM(MAIL//'.NOMMAI',NUMA),NOMAIL)
             IF ( FIRST ) THEN
                VALK(1)=NOMAIL
-               CALL U2MESK('L','PREPOST6_29',1,VALK)
+               CALL U2MESK('A+','PREPOST6_29',1,VALK)
             ELSE
                VALK (1)= NOMAIL
                CALL U2MESG('A+','PREPOST6_30',1,VALK,0,0,0,0.D0)

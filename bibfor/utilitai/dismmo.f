@@ -4,7 +4,7 @@
       CHARACTER*(*) QUESTI,NOMOBZ,REPKZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 29/03/2010   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 12/10/2010   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -48,7 +48,7 @@ C     ----- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       CHARACTER*32 JEXNUM
 C     ----- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C
-      INTEGER IAUX,IBID,IALIEL,IANOMA,ICO,ICP,IGREL
+      INTEGER IAUX,IBID,IALIEL,IANOMA,ICO,ICP,IGREL,JNFIS
       INTEGER IRET,ITYPEL,NBGREL,NEL,LXLGUT
 C
       CHARACTER*1 K1BID
@@ -229,6 +229,17 @@ C     ------------------------------------------
      &        (QUESTI.EQ.'NB_NO_SS_MAX')) THEN
 C     ------------------------------------------
         CALL DISMMA(QUESTI,MA,REPI,REPK,IERD)
+
+C     ------------------------------------
+      ELSEIF (QUESTI.EQ.'NB_FISS_XFEM') THEN
+C     ------------------------------------
+        CALL JEEXIN(NOMOB//'.NFIS',IRET)
+        IF (IRET.GT.0) THEN
+           CALL JEVEUO(NOMOB//'.NFIS','L',JNFIS)
+           REPI = ZI(JNFIS)
+        ELSE
+           REPI = 0
+        ENDIF
 
 C     ------------------------------------
       ELSEIF (QUESTI.EQ.'EXI_ELEM') THEN

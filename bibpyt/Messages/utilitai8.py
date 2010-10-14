@@ -1,4 +1,4 @@
-#@ MODIF utilitai8 Messages  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
+#@ MODIF utilitai8 Messages  DATE 11/10/2010   AUTEUR DELMAS J.DELMAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -129,8 +129,9 @@ cata_msg = {
 """),
 
 25 : _("""
- Le nombre d'astérisques pour les noms de fichiers ensight de pression est trop grand il est limite à 7
-  nombre d'asterisques : %(i1)d
+ Le nombre d'astérisques pour les noms de fichiers ensight de pression est trop grand.
+ Il est limite à 7
+ Il y a %(i1)d asterisques.
 """),
 
 26 : _("""

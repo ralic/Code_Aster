@@ -1,4 +1,4 @@
-#@ MODIF imprime Lecture_Cata_Ele  DATE 05/10/2010   AUTEUR SELLENET N.SELLENET 
+#@ MODIF imprime Lecture_Cata_Ele  DATE 11/10/2010   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE VABHHTS J.PELLET
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -38,6 +38,9 @@ def impr_cata(capy,nomfic,format,seq='oui'):
 
 #   imprimer un catalogue python (capy) sur un fichier à un format donné
 #       seq='non' permet de demander le "split" en autant de fichiers qu'il y a de catalogues
+#       format='ojb'     : impression des objets jeveux correspondant à la SD &CATA
+#       format='cata'    : impression au format ".cata" (en texte)
+#       format='cata_l'  : impression au format ".cata" (en texte) avec des lignes "longues" (plus facile pour les grep)
 
         if seq=="oui":
             fimpr = open(nomfic,"w")
@@ -394,6 +397,12 @@ def imprime_ojb(file,capy):
    if len(capy.te)==0 : ERR.mess('E',"il faut des catalogues de TYPE_ELEM__.")
 
    d={} # dictionnaire des ojb
+
+   # Bouts de code servant parfois aux développeurs pour générer des fichiers de "doc" :
+   # Ces bouts de code sont placés ici, après le "degenerise" et avant les "del cata"
+   if 0 :
+      nomfic="/local00/home/lvabhhts/liCMP.txt"
+      impr_CMP(nomfic,capy) # pour imprimer tous les 6-uplets ( OPTION  TYPELEM  IN/OUT  PARAM   GRANDEUR  CMP )
 
 
    #  TOUCOMLIBR = objet contenant tous les commentaires libres :
@@ -1097,6 +1106,7 @@ def get_liattr(capy,cata):
       return liattr
 
 
+#-------------------------------------------------------------------------------------------
 def get_lifpgl(capy):
 #  retourne un dictionnaire contenant toutes les définitions des familles "liste" de PG
 #-------------------------------------------------------------------------------------------
@@ -1114,3 +1124,56 @@ def get_lifpgl(capy):
                        lifpgl[note2+nofpgl]=fpgl[1]
                        lifpgl[note2+nofpgl].append(elref1[0])
    return lifpgl
+
+
+
+#----------------------------------------------------------------------------------
+def impr_CMP(nomfic,capy):
+# pour imprimer tous les 6-uplets ( OPTION  TYPELEM  IN/OUT  PARAM  GRANDEUR  CMP )
+#-----------------------------------------------------------------------------------
+   file = open(nomfic,"w")
+
+   for cata in capy.te:
+       entete,modlocs,opts=cata.cata_te
+       note=entete[0]
+
+
+       # modes locaux :
+       # ---------------
+       MLOCs,MLVEs,MLMAs=modlocs
+
+       dicmod={}
+       for moloc in MLOCs:
+           nomolo=moloc[0];nogd=moloc[1];typept=moloc[2];diff=moloc[4]
+
+           licmp=[]
+           if diff == "IDEN" :
+              licmp.extend(moloc[5])
+           else:
+              for (en,point) in moloc[5]:
+                 licmp.extend(point)
+           licmp=list(set(licmp)) ; licmp.sort()
+           dicmod[nomolo]=(nogd,licmp)
+
+       if opts:
+            for opt in opts:
+                noop=opt[0];numte=int(opt[1]);nbin=len(opt[2])/2;nbou=len(opt[3])/2
+
+                if numte > 0 :
+
+                    for kk in range(nbin):
+                        mode =opt[2][2*kk]
+                        param=opt[2][2*kk+1]
+                        if mode in dicmod.keys() :
+                           nogd,licmp=dicmod[mode]
+                           for cmp in licmp :
+                              file.write(noop+" "+note+" IN "+param+" "+nogd+" "+cmp+"\n")
+
+                    for kk in range(nbou):
+                        mode =opt[3][2*kk]
+                        param=opt[3][2*kk+1]
+                        if mode in dicmod.keys() :
+                           nogd,licmp=dicmod[mode]
+                           for cmp in licmp :
+                              file.write(noop+" "+note+" OUT "+param+" "+nogd+" "+cmp+"\n")
+

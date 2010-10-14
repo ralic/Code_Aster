@@ -3,7 +3,7 @@
      &   MODELE,MATE,CARA,NCHAR,CTYP)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 05/10/2010   AUTEUR SELLENET N.SELLENET 
+C MODIF CALCULEL  DATE 11/10/2010   AUTEUR PELLET J.PELLET 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -220,7 +220,7 @@ C     ON RECUPERE LE TYPE DE MODE: DYNAMIQUE OU STATIQUE
       EXITIM = .FALSE.
       CALL JENONU(JEXNOM(RESUCO//'           .NOVA','INST'),IRET)
       IF (IRET.NE.0) EXITIM = .TRUE.
-      CALL EXLIMA(' ','V',MODELE,LIGREL)
+      CALL EXLIMA(' ',0,'V',MODELE,LIGREL)
       EXIPOU = .FALSE.
       CALL DISMOI('F','EXI_POUX',LIGREL,'LIGREL',IBID,K8B,IERD)
       IF (K8B(1:3).EQ.'OUI') EXIPOU = .TRUE.
@@ -228,7 +228,7 @@ C=======================================================================
 C                   SPECIAL POUTRE A LA POUX (1)
 C=======================================================================
       IF (EXIPOU) THEN
-C-------on verifie si deriere le concept mode_meca on trouve un mode_dyn
+C-------ON VERIFIE SI DERIERE LE CONCEPT MODE_MECA ON TROUVE UN MODE_DYN
 C        IF (CONCEP.EQ.'MODE_MECA' .OR. CONCEP.EQ.'DYNA_TRANS' .OR.
 C     &      CONCEP.EQ.'MODE_ACOU' .OR. CONCEP.EQ.'DYNA_HARMO') THEN
         IF ((CONCEP.EQ.'MODE_MECA'.AND.TYPEMO(1:8).EQ.'MODE_DYN') .OR.
@@ -455,14 +455,14 @@ C
           CODSEN=0
 C
           CALL JEVEUO(KNUM,'L',JORDR)
-          
+
 C         PASSAGE CALC_CHAMP
           IF (NOPASE.EQ.' ') THEN
             CALL CALCOP(OPTION,RESUCO,RESUC1,NBORDR,ZI(JORDR),KCHA,
      &                  NCHAR,CTYP,TYSD,NBCHRE,IOCC,SOP,IRET)
             IF ( IRET.EQ.0 ) GO TO 440
           ENDIF
-          
+
           NUORD = ZI(JORDR)
           CALL MEDOM2(MODELE,MATE,CARA,KCHA,NCHAR,CTYP,RESUCO,NUORD,
      &                    NBORDR,NPASS,LIGREL)
@@ -2573,7 +2573,6 @@ C ---- VERIF SENSIBILITE FIN
   482         CONTINUE
               CALL JEDEMA()
   480       CONTINUE
-C      -----------------------------------------------------------------
 
           ELSE
             CALL U2MESK('A','CALCULEL3_22',1,OPTION)

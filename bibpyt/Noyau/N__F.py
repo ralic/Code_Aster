@@ -1,4 +1,4 @@
-#@ MODIF N__F Noyau  DATE 07/09/2009   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF N__F Noyau  DATE 11/10/2010   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -46,11 +46,11 @@ class _F(UserDict.UserDict):
       else:
         return cmp(self.data, dict)
 
+   def __iter__(self):
+      return iter(self.data)
+
    def copy(self):
       import copy
       c= copy.copy(self)
       c.data=self.data.copy()
       return c
-
-
-   

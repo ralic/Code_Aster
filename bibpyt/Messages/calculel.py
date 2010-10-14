@@ -1,4 +1,4 @@
-#@ MODIF calculel Messages  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
+#@ MODIF calculel Messages  DATE 11/10/2010   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -336,6 +336,31 @@ Conseils :
  pour le point                 :  %(k3)s
  pour le sous-point            :  %(k4)s
 """),
+
+72 : _("""
+ Erreur commande CALC_FERRAILLAGE :
+   On n'a pas réussi à calculer la carte de ferraillage sur un élément.
+   Code_retour de la routine clcplq.f : %(i1)d
+
+ Signification du code d'erreur :
+   1000 : Levier negatif ou nul (l'utilisateur a fourni des valeurs d'enrobage incompatibles avec l'épaisseur de l'élément)
+   1010 : Dépassement déformation béton
+   1020 : Erreur calcul ELU
+   1050 : Dépassement contrainte béton;
+"""),
+
+73 : _("""
+ Erreur utilisateur commande CALC_FERRAILLAGE :
+   Certains mots clés de CALC_FERRAILLAGE / AFFE sont obligatoires :
+     pour TYPE_COMB='ELU' :
+        PIVA et PIVB
+     pour TYPE_COMB='ELS' :
+        CEQUI
+"""),
+
+
+
+
 
 91 : _("""
  incohérence des familles de points de Gauss pour la maille  %(k1)s

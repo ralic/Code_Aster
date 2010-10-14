@@ -1,4 +1,4 @@
-# MODIF  DATE 21/10/2008   AUTEUR NISTOR I.NISTOR 
+# MODIF  DATE 11/10/2010   AUTEUR DELMAS J.DELMAS 
 # TITRE SOUS-STRUCTURATION TRANSITOIRE : POUTRE AMORTIE EN TRACTION
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -125,9 +125,27 @@ V_ASSE=ASSE_VECTEUR(  VECT_ELEM=V_ELEM,
                            NUME_DDL=NUMERO)
 
 #
-MODES=MODE_ITER_SIMULT(     MATR_A=K_ASSE,
+MOD_CAL=MODE_ITER_SIMULT(     MATR_A=K_ASSE,
                                  MATR_B=M_ASSE,
                              CALC_FREQ=_F( NMAX_FREQ = 10))
+
+# CE BLOC POUR TESTER LIRE_RESU POUR LES BASES
+IMPR_RESU(MODELE=POUTRE,
+          FORMAT='MED',
+          UNITE=81,
+          RESU=_F(MAILLAGE=MAYA,
+                  RESULTAT=MOD_CAL,
+                  NOM_CHAM='DEPL',),);
+
+MODES=LIRE_RESU(FORMAT='MED',
+                UNITE=81,
+                FORMAT_MED=_F(NOM_CHAM='DEPL',
+                              NOM_CHAM_MED='MOD_CAL_DEPL____________________',),
+                TYPE_RESU='MODE_MECA',
+                MATR_A=K_ASSE,
+                MATR_B=M_ASSE,
+                TOUT_ORDRE='OUI',
+                MAILLAGE=MAYA,);
 
 ##
 MACRO_PROJ_BASE(  BASE=MODES,MATR_ASSE_GENE=(
@@ -251,6 +269,7 @@ A_ASSE1=ASSE_MATRICE(  MATR_ELEM=A_ELEM1,
 
 #
 MODES1=MODE_ITER_SIMULT(     MATR_A=K_ASSE1,
+#MOD_CAL1=MODE_ITER_SIMULT(     MATR_A=K_ASSE1,
                                  MATR_B=M_ASSE1,
                              CALC_FREQ=_F( NMAX_FREQ = 04))
 
@@ -334,6 +353,7 @@ V_ASSE2=ASSE_VECTEUR(  VECT_ELEM=V_ELEM2,
                            NUME_DDL=NUM2)
 
 #
+#MOD_CAL2=MODE_ITER_SIMULT(     MATR_A=K_ASSE2,
 MODES2=MODE_ITER_SIMULT(     MATR_A=K_ASSE2,
                                  MATR_B=M_ASSE2,
                              CALC_FREQ=_F( NMAX_FREQ = 05))

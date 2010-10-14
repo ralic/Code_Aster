@@ -3,7 +3,7 @@
      &                  DLAGRC,VECTCC)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 22/02/2010   AUTEUR DESOZA T.DESOZA 
+C MODIF ELEMENTS  DATE 11/10/2010   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -58,10 +58,13 @@ C
 C ----------------------------------------------------------------------
 C
       INTEGER   I
-      INTEGER   IBID,NDEXCL(9),IEXCL      
+      INTEGER   NDEXCL(9),IEXCL      
 C
 C ----------------------------------------------------------------------
 C
+      DO 10 I = 1,9
+        NDEXCL(I) = 0
+ 10   CONTINUE     
 C
       IF (PHASE.EQ.'SANS') THEN
         DO 61 I = 1,NNL
@@ -85,14 +88,14 @@ C
      &                HPG*FFL(I)*JEU*JACOBI    
  62     CONTINUE
       ELSEIF (PHASE.EQ.'EXCL') THEN 
-        CALL MMEXNO(TYPBAR,IBID  ,NDEXCL)
+        CALL MMEXN1(TYPBAR,NDEXCL)
         DO 78 IEXCL = 1,9   
           IF (NDEXCL(IEXCL).EQ.1) THEN
             VECTCC(IEXCL) = 0D0
           ENDIF  
  78     CONTINUE 
         IF (TYPRAC.NE.0) THEN
-          CALL MMEXNO(IBID  ,TYPRAC,NDEXCL)
+          CALL MMEXN2(TYPRAC,NDEXCL)
           DO 79 IEXCL = 1,9   
             IF (NDEXCL(IEXCL).EQ.1) THEN
               VECTCC(IEXCL) = 0D0

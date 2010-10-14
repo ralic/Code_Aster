@@ -1,7 +1,7 @@
       SUBROUTINE CAPOCO(CHAR  ,MOTFAC)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 14/09/2010   AUTEUR ABBAS M.ABBAS 
+C MODIF MODELISA  DATE 11/10/2010   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -176,7 +176,7 @@ C
             ENDIF
           
             IF (R1.NE.R2) THEN
-              CALL U2MESS('1','CONTACT3_37')
+              CALL U2MESS('I','CONTACT3_37')
             ENDIF
           
             RAYON  = (R1+R2)/2.D0

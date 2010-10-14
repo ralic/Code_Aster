@@ -1,7 +1,7 @@
       SUBROUTINE NMDOPI(MODELZ,NUMEDD,METHOD,LRELI ,SDPILO)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 05/10/2010   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 11/10/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -39,7 +39,7 @@ C
 C IN  MODELE : MODELE
 C IN  NUMEDD : NUME_DDL
 C IN  METHOD : DESCRIPTION DE LA METHODE DE RESOLUTION
-C IN  LRELI  : .TRUE. SI RECHERCHE LINEAIRE 
+C IN  LRELI  : .TRUE. SI RECHERCHE LINEAIRE
 C OUT SDPILO : SD PILOTAGE
 C               .PLTK
 C                (1) = TYPE DE PILOTAGE
@@ -49,7 +49,7 @@ C                (4) = NOM DE LA CARTE DU TYPE (PILO_R) MIN/MAX
 C                (5) = PROJECTION 'OUI' OU 'NON' SUR LES BORNES
 C                (6) = TYPE DE SELECTION : 'RESIDU',
 C                        'NORM_INCR_DEPL' OU 'ANGL_INCR_DEPL'
-C                (7) = EVOLUTION DES BORNES 
+C                (7) = EVOLUTION DES BORNES
 C                        'CROISSANT', 'DECROISSANT' OU 'SANS'
 C               .PLCR  COEFFICIENTS DU PILOTAGE
 C               .PLIR  PARAMETRES DU PILOTAGE
@@ -104,8 +104,8 @@ C --- INITIALISATIONS
 C
       MODELE = MODELZ
 C
-C --- AFFICHAGE 
-C      
+C --- AFFICHAGE
+C
       IF (NIV.GE.2) THEN
         WRITE (IFM,*) '<MECANONLINE> ... CREATION SD PILOTAGE'
       ENDIF
@@ -120,14 +120,14 @@ C
       CALL GETVTX('PILOTAGE','SELECTION'      ,1,1,1,TYPSEL,N1)
       ZK24(JPLTK+5) = TYPSEL
       CALL GETVTX('PILOTAGE','EVOL_PARA'      ,1,1,1,EVOLPA,N1)
-      ZK24(JPLTK+6) = EVOLPA    
+      ZK24(JPLTK+6) = EVOLPA
 C
 C --- PARAMETRES COEF_MULT ET ETA_PILO_MAX
 C
       CALL WKVECT(SDPILO(1:19)// '.PLIR','V V R8',5,JPLIR)
       CALL GETVR8('PILOTAGE','COEF_MULT',1,1,1,COEF  , N1)
       ZR(JPLIR)   = COEF
-      
+
       IF (ABS(COEF).LE.R8PREM()) THEN
         CALL U2MESS('F','PILOTAGE_3')
       ENDIF
@@ -164,7 +164,7 @@ C ======================================================================
       IF (TYPPIL .EQ. 'PRED_ELAS' .OR.
      &    TYPPIL .EQ. 'DEFORMATION') THEN
 
-        CALL EXLIMA('PILOTAGE','V',MODELE,LIGRPI)
+        CALL EXLIMA('PILOTAGE',1,'V',MODELE,LIGRPI)
         ZK24(JPLTK+1) = LIGRPI
 
 
@@ -180,7 +180,7 @@ C ======================================================================
         CARETA   = '&&NMDOPI.BORNEPILO'
         LBORN(1) = 'A0'
         LBORN(2) = 'A1'
-        CALL MECACT('V'   ,CARETA,'MODELE',LIGRMO,'PILO_R', 
+        CALL MECACT('V'   ,CARETA,'MODELE',LIGRMO,'PILO_R',
      &              2     ,LBORN ,IBID    ,LM    ,C16BID  ,
      &              K8BID)
         ZK24(JPLTK+3) = CARETA
@@ -300,7 +300,7 @@ C
           IF (RELMET.NE.'PILOTAGE') THEN
             CALL U2MESS('F','PILOTAGE_4')
           ENDIF
-        ENDIF    
+        ENDIF
       ENDIF
 
       CALL JEDEMA()

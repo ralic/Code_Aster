@@ -1,7 +1,7 @@
       SUBROUTINE DISMXF(QUESTI,NOMOBZ,REPI,REPKZ,IERD)
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 10/08/2010   AUTEUR GENIAUT S.GENIAUT 
+C MODIF UTILITAI  DATE 12/10/2010   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -39,7 +39,8 @@ C
 C ----------------------------------------------------------------------
 C     VARIABLES LOCALES:
 C     ------------------
-      INTEGER JINFO,JMOD
+      INTEGER JINFO,JMOD,LONG
+      CHARACTER*8 K8BID
 
 C --------------- COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32 JEXNUM,JEXNOM,JEXATR,JEXR8
@@ -52,12 +53,11 @@ C --------------- COMMUNS NORMALISES  JEVEUX  --------------------------
       REAL*8 ZR
       COMPLEX*16 ZC
       LOGICAL ZL
-      CHARACTER*8 ZK8,NOGD
+      CHARACTER*8 ZK8
       CHARACTER*16 ZK16
       CHARACTER*24 ZK24
       CHARACTER*32 ZK32
       CHARACTER*80 ZK80
-      CHARACTER*8 K8BID
 C --------------- FIN COMMUNS NORMALISES  JEVEUX  --------------------
 C
       CALL JEMARQ()
@@ -78,6 +78,16 @@ C
 
         CALL JEVEUO(NOMOB//'.MODELE','L',JMOD)
         REPK = ZK8(JMOD-1+1)
+
+      ELSE IF (QUESTI.EQ.'NB_FOND') THEN
+
+        CALL JELIRA(NOMOB//'.FONDMULT','LONMAX',LONG,K8BID)
+        REPI = LONG/2
+
+      ELSE IF (QUESTI.EQ.'NB_POINT_FOND') THEN
+
+        CALL JELIRA(NOMOB//'.FONDFISS','LONMAX',LONG,K8BID)
+        REPI = LONG/4
 
       ELSE
 

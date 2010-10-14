@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 15/03/2010   AUTEUR SELLENET N.SELLENET 
+#& MODIF COMMANDE  DATE 11/10/2010   AUTEUR DELMAS J.DELMAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -158,12 +158,7 @@ LIRE_RESU=OPER(nom="LIRE_RESU",op=150,sd_prod=lire_resu_prod,reentrant='n',
              POSI_INST       =SIMP(statut='f',typ='I',min=2,max=2),
              POSI_FREQ       =SIMP(statut='f',typ='I',min=2,max=2),
              NOM_CMP         =SIMP(statut='o',typ='TXM',max='**'),),
-         ),
-             
-         b_mode   =BLOC(condition="((TYPE_RESU=='MODE_MECA')or(TYPE_RESU=='MODE_MECA_C') )and (FORMAT=='IDEAS')",
-             NUME_DDL        =SIMP(statut='f',typ=(nume_ddl_sdaster),max=1,
-                fr="Utile en dynamique pour pouvoir imposer la numérotation des cham_no."),     
-         ),
+         ),          
 
 # 1-3 ensight :
 # -------------
@@ -191,8 +186,10 @@ LIRE_RESU=OPER(nom="LIRE_RESU",op=150,sd_prod=lire_resu_prod,reentrant='n',
 # 2) blocs selon le type du résultat :
 #---------------------------------
          b_mode_meca     =BLOC(condition="(TYPE_RESU=='MODE_MECA')or(TYPE_RESU=='MODE_MECA_C')",
-           MATR_A         =SIMP(statut='f',typ=matr_asse_depl_r,),
-           MATR_B         =SIMP(statut='f',typ=matr_asse_depl_r,),
+           MATR_A         =SIMP(statut='f',typ=matr_asse_depl_r,max=1),
+           MATR_B         =SIMP(statut='f',typ=matr_asse_depl_r,max=1),
+           NUME_DDL        =SIMP(statut='f',typ=(nume_ddl_sdaster),max=1,
+                           fr="Utile en dynamique pour pouvoir imposer la numérotation des cham_no."),
          ),
 
 

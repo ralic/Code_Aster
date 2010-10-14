@@ -1,6 +1,7 @@
-# MODIF  DATE 01/07/2008   AUTEUR CORUS M.CORUS 
+# MODIF  DATE 11/10/2010   AUTEUR COURTOIS M.COURTOIS 
 # RESPONSABLE MCOURTOI M.COURTOIS
-# TITRE VALIDATION DE L'OPTION ASSE DE CALC_FONCTION
+# TITRE VALIDATION DE DIVERSES OPTIONS DE CALC_FONCTION
+#       ASSE, FFT, REGR_POLYNOMIALE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,9 +19,6 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-# ET VALIDATION DE L'OPTION FFT DE CALC_FONCTION
-#
-#===================================================
 #
 
 DEBUT(CODE=_F(NOM='ZZZZ100B', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
@@ -331,6 +329,60 @@ TEST_FONCTION(VALEUR=(
                      VALE_REFE = Y4,
                     PRECISION = PRECIS ) , )  ,
                )
-#
+
+# VALIDATION DE LA REGRESSION POLYNOMIALE
+a0, a1, a2, a3, a4, a5 = (-56., 23., 89, -17.3, -1.414, 3.14)
+form = FORMULE(NOM_PARA='X',
+               VALE="""a0 + a1*X + a2*X**2 + a3*X**3 + a4*X**4 + a5*X**5"""
+)
+
+absc_in = DEFI_LIST_REEL(DEBUT=-2.55,
+                         INTERVALLE=(_F(JUSQU_A=0.,
+                                        NOMBRE=3,),
+                                     _F(JUSQU_A=1.,
+                                        NOMBRE=2),
+                                     _F(JUSQU_A=6.56,
+                                        NOMBRE=8),),
+)
+
+F_in = CALC_FONC_INTERP(FONCTION=form,
+                        LIST_PARA=absc_in,
+)
+
+absc_out = DEFI_LIST_REEL(DEBUT=-5.0,
+                          INTERVALLE=(_F(JUSQU_A=10.,
+                                         NOMBRE=1000,),),
+)
+
+Poly = CALC_FONCTION(REGR_POLYNOMIALE=_F(FONCTION=F_in,
+                                         DEGRE=5,),
+                     LIST_PARA=absc_out,
+                     )
+
+IMPR_FONCTION(FORMAT='XMGRACE',
+              UNITE=30,
+              COURBE=(_F(FONCTION=F_in,
+                         MARQUEUR=4,
+                         STYLE=0),
+                      _F(FONCTION=Poly,
+                         MARQUEUR=0,),
+              ),)
+
+# pour ne pas dependre de l'interpolation des fonctions :
+# - on prend des abscisses connues de F_in,
+# - Poly est finement tabulee (1000 points).
+TEST_FONCTION(VALEUR=(
+   _F(FONCTION=Poly,
+      VALE_PARA=0.,
+      VALE_REFE=a0,), 
+   _F(FONCTION=Poly,
+      VALE_PARA=1.,
+      VALE_REFE=a0+a1+a2+a3+a4+a5,), 
+   _F(FONCTION=Poly,
+      VALE_PARA=6.56,
+      VALE_REFE=form(6.56),), 
+),)
+
+
 FIN()
 #

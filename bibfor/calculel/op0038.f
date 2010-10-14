@@ -1,7 +1,7 @@
       SUBROUTINE OP0038()
       IMPLICIT NONE
 C ----------------------------------------------------------------------
-C MODIF CALCULEL  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
+C MODIF CALCULEL  DATE 11/10/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -82,7 +82,7 @@ C
       CALL MEDOM1(MODELE,MATE,CARA,KCHA,NCHAR,CTYP,BLAN8,1)
       CALL JEVEUO(KCHA,'E',JCHA)
 
-      CALL EXLIMA(' ','G',MODELE,LIGREL)
+      CALL EXLIMA(' ',0,'G',MODELE,LIGREL)
 
       EXITIM = .FALSE.
       PRESS = ' '

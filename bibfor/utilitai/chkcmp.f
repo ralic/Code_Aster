@@ -1,9 +1,9 @@
       SUBROUTINE CHKCMP(MODELE,MAILLA,
      &                  NBCMP,LISCMP,NBENT,LISENT,TYPENT,
-     &                  TYPERR,SUBERR)
+     &                  TYPERR)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
+C MODIF UTILITAI  DATE 11/10/2010   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -29,7 +29,6 @@ C ======================================================================
       CHARACTER*8  LISENT(*)
       CHARACTER*8  TYPENT
       CHARACTER*1  TYPERR
-      CHARACTER*6  SUBERR
 C
 C ----------------------------------------------------------------------
 C ROUTINE UTILITAIRE
@@ -46,7 +45,6 @@ C IN  NBENT  : LONGUEUR DE LA LISTE DES ENTITES A EXAMINER
 C IN  LISENT : LISTE ENTITES A EXAMINER
 C IN  TYPENT : TYPE DES ENTITES A EXAMINER (NOEUD OU GROUP_NO)
 C IN  TYPERR : TYPE D'ARRET (ALARME, ERREUR,...)
-C IN  SUBERR : SOUS-PROGRAMME AFFICHE DANS L'ERREUR
 C
 C -------------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ----------------
 C
@@ -112,7 +110,7 @@ C
                 CALL JENUNO(JEXNUM(NOMNOE,INO),NOMNO)
               VALK (1) = NOMNO
               VALK (2) = LISCMP(J)
-                CALL U2MESG('TYPERR', 'UTILITAI5_95',2,VALK,0,0,0,0.D0)
+                CALL U2MESG(TYPERR, 'UTILITAI5_95',2,VALK,0,0,0,0.D0)
               ENDIF
   12        CONTINUE
   11      CONTINUE
@@ -127,7 +125,7 @@ C
               VALK (1) = NOMNO
               VALK (2) = NOMNO
               VALK (3) = LISCMP(J)
-              CALL U2MESG('TYPERR', 'UTILITAI5_96',3,VALK,0,0,0,0.D0)
+              CALL U2MESG(TYPERR, 'UTILITAI5_96',3,VALK,0,0,0,0.D0)
             ENDIF
   21      CONTINUE
   20    CONTINUE

@@ -1,4 +1,4 @@
-#@ MODIF prepost5 Messages  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
+#@ MODIF prepost5 Messages  DATE 11/10/2010   AUTEUR SELLENET N.SELLENET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -63,11 +63,6 @@ Option illicite pour le resultat %(k1)s numero d'ordre trop grand %(k2)s pour le
  le noeud traite  n'est associe a aucune maille volumique.
  numero du noeud =  %(i1)d
  nombre de mailles attachees au noeud =  %(i2)d
-"""),
-
-12 : _("""
- le noeud milieu : %(k1)s
- n'est pas supprime car il appartient  a une maille qui reste quadratique.
 """),
 
 16 : _("""

@@ -4,7 +4,7 @@
      &                  MATRMC)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/07/2010   AUTEUR MASSIN P.MASSIN 
+C MODIF ELEMENTS  DATE 11/10/2010   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -63,12 +63,14 @@ C OUT MATRMC : MATRICE ELEMENTAIRE DEPL_M/LAGR_C
 C
 C ----------------------------------------------------------------------
 C
-      INTEGER   INOC,INOM,IDIM,JJ
-      INTEGER   IBID,NDEXCL(9),IEXCL
+      INTEGER   INOC,INOM,IDIM,JJ,I
+      INTEGER   NDEXCL(9),IEXCL
 C
 C ----------------------------------------------------------------------
 C
-
+      DO 10 I = 1,9
+        NDEXCL(I) = 0
+ 10   CONTINUE
 C
 C --- PARTIE CONTACT METHODE LAGRANGIENNE
 C       
@@ -102,7 +104,7 @@ C
   191     CONTINUE
   201   CONTINUE  
       ELSEIF (PHASE.EQ.'EXCL') THEN 
-        CALL MMEXNO(TYPBAR,IBID,NDEXCL)         
+        CALL MMEXN1(TYPBAR,NDEXCL)
         DO 291 INOM = 1,NNM
           DO 281 IDIM = 1,NDIM
             JJ = NDIM*(INOM-1)+IDIM 
@@ -114,7 +116,7 @@ C
   281     CONTINUE
   291   CONTINUE 
         IF (TYPRAC.NE.0) THEN
-        CALL MMEXNO(IBID  ,TYPRAC,NDEXCL)         
+        CALL MMEXN2(TYPRAC,NDEXCL)
         DO 299 INOM = 1,NNM
           DO 289 IDIM = 1,NDIM
             JJ = NDIM*(INOM-1)+IDIM 

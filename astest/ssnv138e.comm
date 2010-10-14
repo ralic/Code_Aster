@@ -1,0 +1,333 @@
+# MODIF  DATE 12/10/2010   AUTEUR GENIAUT S.GENIAUT 
+# TITRE VERSION POUTRE DE LA PLAQUE EN GRANDES ROTATIONS SSNV138A
+# ssnv138e.para = tps_job 300 mem_job 128Mo ncpus 1 liste_test S
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+
+# MODELISATION E : IDEM. MODELISATION D, AVEC CRITERE DE RE-DECOUPAGE BASE SUR UN EVENT-DRIVEN
+
+DEBUT(CODE=_F( NOM = 'SSNV138E',NIV_PUB_WEB='INTERNET',VISU_EFICAS='OUI'));
+
+PRE_GIBI(UNITE_GIBI=17,
+         UNITE_MAILLAGE=20,);
+
+MA=LIRE_MAILLAGE(UNITE=20,);
+
+MA=DEFI_GROUP(reuse =MA,
+              MAILLAGE=MA,
+              CREA_GROUP_NO=_F(TOUT_GROUP_MA='OUI',),);
+
+PRE_GIBI(UNITE_GIBI=18,
+         UNITE_MAILLAGE=21,);
+
+MA_SECT=LIRE_MAILLAGE(UNITE=21,);
+
+MO=AFFE_MODELE(MAILLAGE=MA,
+               AFFE=_F(GROUP_MA='AB',
+                       PHENOMENE='MECANIQUE',
+                       MODELISATION='POU_D_TGM',),);
+
+MATE=DEFI_MATERIAU(ELAS=_F(E=12.0E+6,
+                           NU=0.3,),);
+
+GF=DEFI_GEOM_FIBRE(
+   SECTION =_F(GROUP_FIBRE='SECF',
+             GROUP_MA_SECT='SECT',
+             MAILLAGE_SECT=MA_SECT,
+            COOR_AXE_POUTRE=(0.,0.,),),)
+
+COMPF=DEFI_COMPOR(GEOM_FIBRE=GF,MATER_SECT=MATE,
+                  MULTIFIBRE=_F(GROUP_FIBRE='SECF',MATER=MATE,
+                                 RELATION='ELAS',DEFORMATION='GROT_GDEP',),
+                     )
+
+
+CH_MAT=AFFE_MATERIAU(MAILLAGE=MA,
+                  AFFE=_F(TOUT='OUI',MATER=MATE,),
+                  AFFE_COMPOR=_F(TOUT='OUI',COMPOR=COMPF),
+                 );
+
+
+CARA=AFFE_CARA_ELEM(MODELE=MO,
+                    POUTRE=_F(GROUP_MA='AB',
+                              SECTION='GENERALE',
+                              CARA=('A','IY','IZ','AY','AZ','JX','JG',),
+                              VALE=(0.1,0.00833333333333,8.33333333333e-05,1.2,1.2,0.00033333333333333,0.0,),),
+                    ORIENTATION=_F(GROUP_MA='AB',
+                                   CARA='ANGL_VRIL',
+                                   VALE=0.0,),
+                      GEOM_FIBRE=GF,
+                      MULTIFIBRE=_F(GROUP_MA='AB',
+                                   GROUP_FIBRE='SECF'),);
+
+CL=AFFE_CHAR_MECA(MODELE=MO,
+                  DDL_IMPO=(_F(GROUP_NO='PA',
+                               DX=0.,
+                               DY=0.,
+                               DRX=0.,
+                               DRY=0.,
+                               DRZ=0.,),
+                            _F(GROUP_NO='AB',
+                               DZ=0.,),),);
+
+MOMENT=AFFE_CHAR_MECA(MODELE=MO,
+                      FORCE_NODALE=_F(GROUP_NO='PB',
+                                      MZ=100.0,),);
+
+MOMENT_F=DEFI_FONCTION(NOM_PARA='INST',
+                       VALE=(0.0,0.0,10.0,10.0,),);
+
+tfin = 6.0;
+
+
+TEMPS=DEFI_LIST_REEL(DEBUT=0.,
+                     INTERVALLE=(
+                             _F( JUSQU_A =  0.005,   NOMBRE = 1),
+                             _F( JUSQU_A =  0.3,   NOMBRE = 1),
+                             _F( JUSQU_A =  0.6,   NOMBRE = 1),
+                             _F( JUSQU_A =  1.0,   NOMBRE = 1),
+                             _F( JUSQU_A =  3.0,   NOMBRE = 1),
+                             _F( JUSQU_A =  6.0,   NOMBRE = 1),
+                             ),
+                           );
+
+# gestion manuelle
+DEFLIST = DEFI_LIST_INST(DEFI_LIST=_F(METHODE   ='MANUEL',
+                                      LIST_INST = TEMPS, ),
+                         ECHEC=(
+                                _F(EVENEMENT='DELTA_GRANDEUR',
+                                   VALE_REF=5.e-2,
+                                   NOM_CHAM='DEPL',
+                                   NOM_CMP ='DX',  
+                                   SUBD_NIVEAU=10),
+                                _F(EVENEMENT='DELTA_GRANDEUR',
+                                   VALE_REF=5.e-2,
+                                   NOM_CHAM='DEPL',
+                                   NOM_CMP ='DY'),
+                               )
+                         )
+                         
+                         
+# gestion auto
+# DEFLIST = DEFI_LIST_INST(DEFI_LIST=_F(METHODE   ='AUTO',
+#                                       LIST_INST = TEMPS,
+#                                       PAS_MINI  = 1.e-10),
+#                          ADAPTATION=_F(PCENT_AUGM=50.0),
+#                          )
+
+
+RESO=STAT_NON_LINE(MODELE=MO,
+                   CHAM_MATER=CH_MAT,
+                   CARA_ELEM=CARA,
+                   EXCIT=(_F(CHARGE=CL,),
+                          _F(CHARGE=MOMENT,
+                             FONC_MULT=MOMENT_F,),),
+                   COMP_INCR=_F(RELATION='MULTIFIBRE',),
+                   INCREMENT=_F(LIST_INST=DEFLIST,
+                                INST_FIN=tfin,),
+                   NEWTON=_F(MATRICE='TANGENTE',
+                             REAC_ITER=1,),
+                   );
+
+U_CALC=RECU_FONCTION(RESULTAT=RESO,
+                     TOUT_ORDRE='OUI',
+                     NOM_CHAM='DEPL',
+                     NOM_CMP='DX',
+                     GROUP_NO='PB',);
+
+V_CALC=RECU_FONCTION(RESULTAT=RESO,
+                     TOUT_ORDRE='OUI',
+                     NOM_CHAM='DEPL',
+                     NOM_CMP='DY',
+                     GROUP_NO='PB',);
+
+DRZ_CAL=RECU_FONCTION(RESULTAT=RESO,
+                      TOUT_ORDRE='OUI',
+                      NOM_CHAM='DEPL',
+                      NOM_CMP='DRZ',
+                      GROUP_NO='PB',);
+
+DRZ_CALC=CALC_FONCTION(COMB=_F(FONCTION=DRZ_CAL,
+                               COEF=-1.0,),);
+#Test sur la rotation autour de Z de l'extremite libre
+
+TEST_FONCTION(VALEUR=_F(FONCTION=DRZ_CALC,
+                        NOM_PARA='INST',
+                        VALE_PARA=0.3,
+                        VALE_REFE=-0.3,
+                        REFERENCE='ANALYTIQUE',),);
+
+TEST_FONCTION(VALEUR=_F(FONCTION=DRZ_CALC,
+                        NOM_PARA='INST',
+                        VALE_PARA=0.6,
+                        VALE_REFE=-0.6,
+                        REFERENCE='ANALYTIQUE',),);
+
+TEST_FONCTION(VALEUR=_F(FONCTION=DRZ_CALC,
+                        NOM_PARA='INST',
+                        VALE_PARA=1.0,
+                        VALE_REFE=-1.0,
+                        REFERENCE='ANALYTIQUE',),);
+
+TEST_FONCTION(VALEUR=_F(FONCTION=DRZ_CALC,
+                        NOM_PARA='INST',
+                        VALE_PARA=3.0,
+                        VALE_REFE=-3.0,
+                        REFERENCE='ANALYTIQUE',),);
+
+TEST_FONCTION(VALEUR=_F(FONCTION=DRZ_CALC,
+                        NOM_PARA='INST',
+                        VALE_PARA=6.0,
+                        VALE_REFE=-6.0,
+                        PRECISION=0.005,
+                        REFERENCE='ANALYTIQUE',),);
+# REFERENCE ANALYTIQUE
+
+TPS_CALC=DEFI_LIST_REEL(DEBUT=0.005,
+                        INTERVALLE=_F(JUSQU_A=tfin,
+                                      PAS=0.005,),);
+
+U_REFE = FORMULE(VALE='10*(sin(INST)/INST-1)',
+                 NOM_PARA='INST',);
+
+V_REFE = FORMULE(VALE='10*(1-cos(INST))/INST',
+                 NOM_PARA='INST',);
+
+U_REF_FO=CALC_FONC_INTERP(FONCTION=U_REFE,
+                          LIST_PARA=TPS_CALC,
+                          PROL_GAUCHE='LINEAIRE',);
+
+V_REF_FO=CALC_FONC_INTERP(FONCTION=V_REFE,
+                          LIST_PARA=TPS_CALC,
+                          PROL_GAUCHE='LINEAIRE',);
+#Calcul des valeurs analytiques aux instants choisis
+INST1 = 0.3;
+
+U1 = 10*(sin(INST1)/INST1-1);
+
+V1 = 10*(1-cos(INST1))/INST1;
+
+INST2 = 0.6;
+
+U2 = 10*(sin(INST2)/INST2-1);
+
+V2 = 10*(1-cos(INST2))/INST2;
+
+INST3 = 3.0;
+
+U3 = 10*(sin(INST3)/INST3-1);
+
+V3 = 10*(1-cos(INST3))/INST3;
+
+INST4 = 6.0;
+
+U4 = 10*(sin(INST4)/INST4-1);
+
+V4 = 10*(1-cos(INST4))/INST4;
+
+#Test sur le deplacement l'extremite libre
+
+TEST_FONCTION(VALEUR=_F(FONCTION=U_CALC,
+                        NOM_PARA='INST',
+                        VALE_PARA=INST1,
+                        VALE_REFE=U1,
+                        CRITERE='RELATIF',
+                        PRECISION=0.02,
+                        REFERENCE='ANALYTIQUE',),);
+
+TEST_FONCTION(VALEUR=_F(FONCTION=U_CALC,
+                        NOM_PARA='INST',
+                        VALE_PARA=INST2,
+                        VALE_REFE=U2,
+                        CRITERE='RELATIF',
+                        PRECISION=0.01,
+                        REFERENCE='ANALYTIQUE',),);
+
+TEST_FONCTION(VALEUR=_F(FONCTION=U_CALC,
+                        NOM_PARA='INST',
+                        VALE_PARA=INST3,
+                        VALE_REFE=U3,
+                        CRITERE='RELATIF',
+                        PRECISION=0.003,
+                        REFERENCE='ANALYTIQUE',),);
+
+TEST_FONCTION(VALEUR=_F(FONCTION=U_CALC,
+                        NOM_PARA='INST',
+                        VALE_PARA=INST4,
+                        VALE_REFE=U4,
+                        CRITERE='RELATIF',
+                        PRECISION=0.005,
+                        REFERENCE='ANALYTIQUE',),);
+
+TEST_FONCTION(VALEUR=_F(FONCTION=V_CALC,
+                        NOM_PARA='INST',
+                        VALE_PARA=INST1,
+                        VALE_REFE=V1,
+                        CRITERE='RELATIF',
+                        REFERENCE='ANALYTIQUE',),);
+
+TEST_FONCTION(VALEUR=_F(FONCTION=V_CALC,
+                        NOM_PARA='INST',
+                        VALE_PARA=INST2,
+                        VALE_REFE=V2,
+                        CRITERE='RELATIF',
+                        REFERENCE='ANALYTIQUE',),);
+
+TEST_FONCTION(VALEUR=_F(FONCTION=V_CALC,
+                        NOM_PARA='INST',
+                        VALE_PARA=INST3,
+                        VALE_REFE=V3,
+                        CRITERE='RELATIF',
+                        PRECISION=0.005,
+                        REFERENCE='ANALYTIQUE',),);
+
+# a cet instant, la ref est proche de 0, un test en relatif n'a pas de sens
+# il faudrait un test en relatif par rapport au depl max : (vcal - vref)/vmax < 1%
+# on feinte en faisant un test en absolu avec une tolerance qui depend du depl max :
+# (vcal - vref) < vmax * 1% 
+vmax = 7.
+TEST_FONCTION(VALEUR=_F(FONCTION=V_CALC,
+                        NOM_PARA='INST',
+                        VALE_PARA=INST4,
+                        VALE_REFE=V4,
+                        CRITERE='ABSOLU',
+                        PRECISION=0.01*7.,
+                        REFERENCE='ANALYTIQUE',),);
+
+#Impression des valeurs et des graphes
+
+IMPR_FONCTION(FORMAT='XMGRACE',
+              COURBE=(_F(FONCTION=U_CALC,),
+                      _F(FONCTION=V_CALC,),
+                      _F(FONCTION=U_REF_FO,),
+                      _F(FONCTION=V_REF_FO,
+                         LIST_PARA=TEMPS,),),
+              TITRE='DX et DY en fonction du pseudo-temps',);
+
+IMPR_FONCTION(FORMAT='XMGRACE',
+              UNITE=30,
+              COURBE=_F(FONCTION=DRZ_CALC,),
+              TITRE='DRZ en fonction du pseudo-temps',);
+
+IMPR_FONCTION(FORMAT='TABLEAU',
+              COURBE=(_F(FONCTION=U_CALC,),
+                      _F(FONCTION=V_CALC,),
+                      _F(FONCTION=DRZ_CALC,),),
+              UNITE=8,);
+
+FIN();

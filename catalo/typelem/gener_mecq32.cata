@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 16/02/2010   AUTEUR PELLET J.PELLET 
+%& MODIF TYPELEM  DATE 11/10/2010   AUTEUR PELLET J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -88,6 +88,8 @@ MODE_LOCAL__
     NTEMPER  = TEMP_R   ELNO__ IDEN__  (TEMP     TEMP_INF TEMP_SUP )
     ZVARIPG  = VARI_R   ELGA__ MASS    (VARI     )
     ZVARINO  = VARI_R   ELNO__ IDEN__  (VARI     )
+    CFER1_R  = FER1_R   ELEM__         (TYPCOMB  ENROBG  CEQUI   SIGACI  SIGBET  PIVA     PIVB )
+    CFER2_R  = FER2_R   ELEM__         (DNSXI     DNSXS   DNSYI   DNSYS   DNST    SIGMBE   EPSIBE)
 
 VECTEUR__
     MVECTUR = VDEP_R DDL_MECA
@@ -108,6 +110,8 @@ OPTION__
     AMOR_MECA           50    IN__   NGEOMER  PGEOMER  MMATUUR  PMASSEL  CMATERC  PMATERC  MMATUUR  PRIGIEL
                                      ZVARCPG  PVARCPR
                               OUT__  MMATUUR  PMATUUR
+    CALC_FERRAILLAGE   146    IN__   CCACOQU  PCACOQU  CFER1_R  PFERRA1  EEFGENOR PEFFORR
+                              OUT__  CFER2_R  PFERRA2
     CARA_GEOM           -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
     CHAR_LIMITE         -1    IN__   XXXXXX   XXXXXX

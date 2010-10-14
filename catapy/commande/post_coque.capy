@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 13/09/2010   AUTEUR DESROCHES X.DESROCHES 
+#& MODIF COMMANDE  DATE 11/10/2010   AUTEUR DESROCHES X.DESROCHES 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -28,8 +28,8 @@ POST_COQUE=MACRO(nom="POST_COQUE",op=post_coque_ops,sd_prod=table_sdaster, reent
              # SD résultat et champ à posttraiter :
              RESULTAT        =SIMP(statut='o',typ=resultat_sdaster,fr="RESULTAT à posttraiter",),
              CHAM            =SIMP(statut='o',typ='TXM',into=("EFFORT","DEFORMATION",)),
-             NUME_ORDRE      =SIMP(statut='f',typ='I',defaut=1),
-             INST            =SIMP(statut='f',typ='R',defaut=0.E+0),
+             NUME_ORDRE      =SIMP(statut='f',typ='I'),
+             INST            =SIMP(statut='f',typ='R'),
 
              # points de post-traitement :
              COOR_POINT      =FACT(statut='o',max='**',fr="coordonnées et position dans l épaisseur",

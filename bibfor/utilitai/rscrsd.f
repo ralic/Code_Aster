@@ -4,7 +4,7 @@
       INTEGER NBORDR
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 27/04/2010   AUTEUR DESROCHES X.DESROCHES 
+C MODIF UTILITAI  DATE 11/10/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -46,7 +46,7 @@ C     ------------------------------------------------------------------
       PARAMETER (NCMEC1=47)
 C      PARAMETER (NCMEC2=54)
       PARAMETER (NCMEC2=56)
-      PARAMETER (NCMEC3=39)
+      PARAMETER (NCMEC3=41)
       PARAMETER (NCMECA=NCMEC1+NCMEC2+NCMEC3)
       CHARACTER*16 CHMEC1(NCMEC1)
       CHARACTER*16 CHMEC2(NCMEC2)
@@ -131,7 +131,8 @@ C      '1234567890123456','1234567890123456','1234567890123456',
      & 'MODE_FLAMB',      'ENDO_ELGA',        'ENDO_ELNO_ELGA',
      & 'INDI_LOCA_ELGA',  'EXTR_ELGA_VARI',   'EXTR_ELNO_VARI',
      & 'EXTR_NOEU_VARI',  'MODE_MECA',        'SIEF_SENO_SEGA',
-     & 'COHE_ELGA',       'INDC_ELGA',        'SECO_ELGA'/
+     & 'COHE_ELGA',       'INDC_ELGA',        'SECO_ELGA',
+     & 'VARC_ELGA',       'FERRAILLAGE'/
 
 C     ------------------------------------------------------------------
 C                      C H A M P _ T H E R M I Q U E
@@ -343,7 +344,7 @@ C     ------------------------------------------------------------------
 
 C     ------------------------------------------------------------------
       ELSEIF (TYPES2.EQ.'MODE_MECA' .OR. TYPES2.EQ.'MODE_MECA_C' .OR.
-     &        TYPES2.EQ.'MODE_GENE' .OR. TYPES2.EQ.'MODE_ACOU' .OR. 
+     &        TYPES2.EQ.'MODE_GENE' .OR. TYPES2.EQ.'MODE_ACOU' .OR.
      &        TYPES2.EQ.'DYNAMIQUE' ) THEN
 
 

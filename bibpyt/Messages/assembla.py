@@ -1,4 +1,4 @@
-#@ MODIF assembla Messages  DATE 14/09/2010   AUTEUR ABBAS M.ABBAS 
+#@ MODIF assembla Messages  DATE 11/10/2010   AUTEUR DELMAS J.DELMAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -262,9 +262,16 @@ Risques & conseils :
 """),
 
 66 : _("""
- Problème dans NULILI.F: on a au moins deux maillages différents:
-  - maillage 1: %(k1)s
-  - maillage 2: %(k2)s
+ Il faut vérifier la cohérence des maillages dans les structures de données
+ %(k5)s et %(k6)s. Les maillages devraient être les mêmes.
+ 
+ On trouve au moins deux maillages différents :
+  - maillage 1 : %(k1)s
+  - maillage 2 : %(k2)s
+
+ Détails :
+   Le maillage 1 : %(k1)s est lié au ligrel 1 : %(k3)s
+   Le maillage 2 : %(k2)s est lié au ligrel 2 : %(k4)s
 """),
 
 67 : _("""

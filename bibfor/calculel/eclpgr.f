@@ -1,6 +1,6 @@
       SUBROUTINE ECLPGR
       IMPLICIT   NONE
-C MODIF CALCULEL  DATE 22/03/2010   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 11/10/2010   AUTEUR PELLET J.PELLET 
 C RESPONSABLE PELLET J.PELLET
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -65,7 +65,7 @@ C DEB -----------------------------------------------------------------
 
       CALL DISMOI('F','NOM_MAILLA',MO1,'MODELE',IBID,MA1,IBID)
 
-      CALL EXLIMA('ECLA_PG','V',MO1,LIGREL)
+      CALL EXLIMA('ECLA_PG',1,'V',MO1,LIGREL)
 
       NOMFPG='&&ECLPGR.NOMFPG'
 

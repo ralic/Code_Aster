@@ -5,7 +5,7 @@
       CHARACTER*(*) RESU,MODELE,MATE,CARA,LCHAR(1),OPTIOZ
 C.======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 16/11/2009   AUTEUR REZETTE C.REZETTE 
+C MODIF UTILITAI  DATE 11/10/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -179,7 +179,7 @@ C     ---------------
         ELSE
           NOPARR(6) = 'MEMBRANE'
           NOPARR(7) = 'FLEXION'
-        ENDIF  
+        ENDIF
         NBPARR    = 7
       END IF
       ENERGI = ZERO
@@ -243,7 +243,7 @@ C     ------------------------------------------------
       MLGNMA = NOMA//'.NOMMAI'
       MLGGMA = NOMA//'.GROUPEMA'
 
-      CALL EXLIMA(OPTIOZ,'V',MODELE,LIGREL)
+      CALL EXLIM3(OPTIOZ,'V',MODELE,LIGREL)
 
 C ---  CREATION DE LA TABLE 'GLOBALE' :
 C      -----------------------------

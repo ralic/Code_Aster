@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 27/04/2010   AUTEUR DESROCHES X.DESROCHES 
+#& MODIF COMMANDE  DATE 11/10/2010   AUTEUR PELLET J.PELLET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -117,7 +117,7 @@ CALC_ELEM=OPER(nom="CALC_ELEM",op=58,sd_prod=calc_elem_prod,reentrant='f',
                               #  derivees
                                  "DEUL_ELGA_DEPL","DEDE_ELNO_DLDE","DESI_ELNO_DLSI",
                               #  autres
-                                 "VALE_NCOU_MAXI","PRES_DBEL_DEPL"),),
+                                 "VALE_NCOU_MAXI","PRES_DBEL_DEPL","VARC_ELGA"),),
 
                NOM_CHAM  =SIMP(statut='f',typ='TXM',fr="nom du champ pour VALE_NCOU_MAXI", ),
                NOM_CMP   =SIMP(statut='f',typ='TXM',fr="nom de la composante pour VALE_NCOU_MAXI",  ),
@@ -303,6 +303,7 @@ b_charge =BLOC( condition = "OPTION in ('EPME_ELNO_DEPL','EPSI_ELGA_DEPL','EPME_
                                  "EPSP_ELNO","EPSP_ELGA",
                                  "EPFD_ELNO","EPFD_ELGA","EPVC_ELNO","EPVC_ELGA",
                                  "EPFP_ELNO","EPFP_ELGA",
+                                 "VARC_ELGA",
                                  "VARI_ELNO_ELGA","VARI_ELNO_TUYO","VARI_ELNO_COQU","CRIT_ELNO_RUPT",
                                  "EXTR_ELGA_VARI","EXTR_ELNO_VARI",
                                  # CRIT

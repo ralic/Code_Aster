@@ -2,7 +2,7 @@
      &                  NBSUIV)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/07/2009   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 11/10/2010   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -304,14 +304,12 @@ C
 
          IF (N2.NE.0) THEN
            CALL CHKCMP(MO,MAILLA,
-     &                 NCMP,ZK8(JCMP),NBGN,ZK8(JGRN),'GROUP_NO',
-     &                 'F','DYOBS1')
+     &                 NCMP,ZK8(JCMP),NBGN,ZK8(JGRN),'GROUP_NO', 'F')
          ENDIF
 
          IF (N1.NE.0) THEN
            CALL CHKCMP(MO,MAILLA,
-     &                 NCMP,ZK8(JCMP),NBNO,ZK8(JNOE),'NOEUD   ',
-     &                 'F','DYOBS1')
+     &                 NCMP,ZK8(JCMP),NBNO,ZK8(JNOE),'NOEUD   ', 'F')
          ENDIF
        ENDIF
 C

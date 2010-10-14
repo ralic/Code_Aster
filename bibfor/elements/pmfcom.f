@@ -10,7 +10,7 @@
      &                  MODF,SIGF,VARIP,ISECAN,CODRET)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/10/2007   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 11/10/2010   AUTEUR FLEJOU J-L.FLEJOU 
 C TOLE CRP_21
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -78,6 +78,7 @@ C     ------------------------------------------------------------------
       CHARACTER*4 FAMI
       CHARACTER*8 MATERI,NOMRES
       CHARACTER*16 COMPO,ALGO
+      CHARACTER*30 VALKM(2)
       DATA ARRET,RETOUR/'FM','  '/
       DATA NOECLB/'Y01','Y02','A1','A2','B1','B2','BETA1','BETA2',
      &     'SIGF'/
@@ -266,10 +267,11 @@ C SI MODULE TANGENT PAS CALCULE EXACTEMENT -> EVALUATION
 
 C       APPEL A COMP1D POUR BENEFICIER DE TOUS LES COMPORTEMENTS AXIS
 C       PAR UNE EXTENSION DE LA METHODE DE DEBORST
-
         IF ((ALGO(1:7).NE.'DEBORST').AND.
      &      (COMPO(1:4).NE.'SANS')) THEN
-          CALL U2MESK('F','ALGORITH6_81',1,COMPO)
+               VALKM(1) = COMPO
+               VALKM(2) = 'DEFI_COMPOR/MULTIFIBRE'
+               CALL U2MESK('F','ALGORITH6_81',2,VALKM)
         ELSE
 
           IF ((OPTION(1:9).EQ.'FULL_MECA') .OR.

@@ -1,4 +1,4 @@
-# MODIF  DATE 04/10/2010   AUTEUR GNICOLAS G.NICOLAS 
+# MODIF  DATE 12/10/2010   AUTEUR GENIAUT S.GENIAUT 
 # TITRE PROPAGATION MIXTE D'UNE FISSURE 3D AVEC X-FEM ET RAFFINEMENT ADAPTATIF
 # sslv317a.para = tps_job 180 mem_job 512Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -167,7 +167,7 @@ for i_propa in xrange(pas_debut,nb_pas) :
    # Remarque : au debut, les mailles sont tellement grossieres que l'on est oblige de 'forcer' 
    # leur raffinement dans un tore dont le rayon diminue au fur et a mesure des iterations de raffinement
    
-   val=[min(1./exp(rayon/5.),1./exp(h0/(2.**k))) for k in range(nb_raff)]
+   val=[-1.*max(rayon/5.,h0/(2.**k)) for k in range(nb_raff)]
    
    # Superposition du maillage initial grossier de la structure avec le maillae de la fissure
    MA[0] = ASSE_MAILLAGE(MAILLAGE_1 = MASTR,
@@ -202,8 +202,8 @@ for i_propa in xrange(pas_debut,nb_pas) :
    # est definie sur le maillage en entree du raffinement 
    CHERR[0] = RAFF_XFEM(FISSURE=FISS)
 
-   # Formule distance pour une fissure: 1/exp(r)
-   MDISTF=FORMULE(NOM_PARA=('X1','X2'),VALE= '1./exp(sqrt(X1**2+X2**2))');
+   # erreur en distance pour une fissure: -r
+   MDISTF=FORMULE(NOM_PARA=('X1','X2'),VALE= '-1.*sqrt(X1**2+X2**2)');
 
    
    # Raffinements successifs autour du fond de fissure
@@ -219,8 +219,8 @@ for i_propa in xrange(pas_debut,nb_pas) :
                      NIVE_MAX = 8,
                      GROUP_MA='M_ENRI',
                      CHAM_GD = CHERR[i_raff],
-                     TYPE_VALEUR_INDICA='V_ABSOLUE',
                      CRIT_RAFF_ABS =val[i_raff],
+                     TYPE_VALEUR_INDICA = 'V_RELATIVE',
                      MAILLAGE_N   = MA[i_raff],
                      MAILLAGE_NP1 = MA[i_raff+1],
                      MAJ_CHAM=(_F(TYPE_CHAM='NOEU_NEUT_R',
@@ -421,7 +421,7 @@ for i_propa in xrange(pas_debut,nb_pas) :
                  TYPE_TEST='MAX',
                  VALE=7.92678E+04,
                  CRITERE='RELATIF',
-                 PRECISION=0.0001,
+                 PRECISION=0.01,
                  REFERENCE='NON_REGRESSION');   
 
       TEST_TABLE(TABLE=TAB_KG,
@@ -429,7 +429,7 @@ for i_propa in xrange(pas_debut,nb_pas) :
                  TYPE_TEST='MIN',
                  VALE=4.54730E+04,
                  CRITERE='RELATIF',
-                 PRECISION=0.0001,
+                 PRECISION=0.01,
                  REFERENCE='NON_REGRESSION');   
 
 #-----------------------------------------------------------------------------------------

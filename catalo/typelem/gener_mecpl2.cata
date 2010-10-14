@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 16/06/2010   AUTEUR CARON A.CARON 
+%& MODIF TYPELEM  DATE 11/10/2010   AUTEUR PELLET J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -173,6 +173,7 @@ MODE_LOCAL__
     NTEMPER  = TEMP_R   ELNO__ IDEN__  (TEMP     )
     ZVARCPG  = VARI_R   ELGA__ MATER   (VARI     )
     ZVARIPG  = VARI_R   ELGA__ RIGI    (VARI     )
+    EVARC_R  = VARC_R   ELGA__ RIGI    (TEMP HYDR SECH IRRA CORR NEUT1 NEUT2)
     ZVARINO  = VARI_R   ELNO__ IDEN__  (VARI     )
     EVOISIN  = VOISIN   ELEM__         (V0       V1       V2       V3       V4       V5
                                         V6       T0       T1       T2       T3       T4
@@ -590,6 +591,7 @@ OPTION__
     TOU_INI_ELNO        99    IN__   NGEOMER  PGEOMER
                               OUT__  EDOMGNO  PDOMMAG  EDEFONO  PEPSI_R  ENGEOM_R PGEOM_R  ENINST_R PINST_R
                                      ENNEUT_F PNEUT_F  ENNEUT_R PNEUT_R  ECONTNO  PSIEF_R  ZVARINO  PVARI_R
+    VARC_ELGA           530   IN__   ZVARCPG  PVARCPR   OUT__  EVARC_R  PVARC_R
     VARI_ELGA_ELNO      98    IN__   CCOMPOR  PCOMPOR  ZVARINO  PVARINR
                               OUT__  ZVARIPG  PVARIGR
     VARI_ELNO_ELGA      98    IN__   CCOMPOR  PCOMPOR  ZVARIPG  PVARIGR

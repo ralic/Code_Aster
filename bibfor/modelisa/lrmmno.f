@@ -2,7 +2,7 @@
      &                    NOMU, NOMNOE, COORDO, COODSC, COOREF,
      &                    IFM, INFMED )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 07/09/2010   AUTEUR DESOZA T.DESOZA 
+C MODIF MODELISA  DATE 11/10/2010   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -91,7 +91,8 @@ C
 C
       CHARACTER*4 DIMESP
       CHARACTER*15 SAUX15
-      CHARACTER*8 NOMCOO(3), UNICOO(3), SAUX08
+      CHARACTER*8 SAUX08
+      CHARACTER*16 NOMCOO(3), UNICOO(3)
 C
 C     ------------------------------------------------------------------
       CALL JEMARQ ( )

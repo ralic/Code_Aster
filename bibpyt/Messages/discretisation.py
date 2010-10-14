@@ -1,4 +1,4 @@
-#@ MODIF discretisation Messages  DATE 10/08/2010   AUTEUR GENIAUT S.GENIAUT 
+#@ MODIF discretisation Messages  DATE 12/10/2010   AUTEUR GENIAUT S.GENIAUT 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -56,9 +56,14 @@ Certains pas de temps de la liste (LISTE_INST) sont plus petits
    Renseignez la discrétisation temporelle par le mot clé INCREMENT
 """),
 
+9 : _("""
+ Attention, en cas d'erreur (contact, loi de comportement, pilotage, ...), le pas de temps
+ ne sera pas re-decoupe.
+"""),
+
 
 10 : _("""
- On ne peut définir qu'une seule occurence de ECHEC/EVENEMENT='DIVERGENCE'.
+ On ne peut définir qu'une seule occurence de ECHEC/EVENEMENT='ERREUR'.
 """),
 
 11 : _("""

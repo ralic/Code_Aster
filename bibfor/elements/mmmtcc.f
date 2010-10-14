@@ -3,7 +3,7 @@
      &                  DISSIP,MATRCC)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 22/02/2010   AUTEUR DESOZA T.DESOZA 
+C MODIF ELEMENTS  DATE 11/10/2010   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -59,10 +59,14 @@ C
 C ----------------------------------------------------------------------
 C
       INTEGER   INOC1,INOC2
-      INTEGER   IBID,NDEXCL(9),IEXCL
+      INTEGER   NDEXCL(9),IEXCL,I
 C
 C ----------------------------------------------------------------------
 C
+      DO 10 I = 1,9
+        NDEXCL(I) = 0
+ 10   CONTINUE
+C 
       IF (PHASE.EQ.'SANS') THEN
         DO 61 INOC1 = 1,NNL
           DO 51 INOC2 = 1,NNL
@@ -80,14 +84,14 @@ C
    54     CONTINUE
    64   CONTINUE
       ELSEIF (PHASE.EQ.'EXCL') THEN 
-        CALL MMEXNO(TYPBAR,IBID  ,NDEXCL)
+        CALL MMEXN1(TYPBAR,NDEXCL)
         DO 78 IEXCL = 1,9   
           IF (NDEXCL(IEXCL).EQ.1) THEN
             MATRCC(IEXCL,IEXCL) = - FFL(IEXCL)*FFL(IEXCL)
           ENDIF  
    78   CONTINUE 
         IF (TYPRAC.NE.0) THEN
-          CALL MMEXNO(IBID  ,TYPRAC,NDEXCL)
+          CALL MMEXN2(TYPRAC,NDEXCL)
           DO 79 IEXCL = 1,9   
             IF (NDEXCL(IEXCL).EQ.1) THEN
               MATRCC(IEXCL,IEXCL) = - FFL(IEXCL)*FFL(IEXCL)

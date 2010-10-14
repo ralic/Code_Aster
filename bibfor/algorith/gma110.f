@@ -2,7 +2,7 @@
      &                  NBINCR,TABSGR,TABSST,TABGMA,TABNOM)
       IMPLICIT REAL*8 (A-H,O-Z)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF ALGORITH  DATE 11/10/2010   AUTEUR NISTOR I.NISTOR 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -94,6 +94,11 @@ C     --- RECHERCHE DES NOMS DANS NOM_GROUP_MA ---
          IF (NOMUT .EQ. ' ') THEN
             LENG1 = LXLGUT(NOMSST)
             LENG2 = LXLGUT(NOMGR)
+            IF (LENG1+LENG2 .GT. 8) THEN
+               VALK (1) = NOMGR
+               VALK (2) = NOMSST
+               CALL U2MESG('A', 'SOUSTRUC2_10',2,VALK,0,0,0,0.D0)
+            ENDIF
             LENG2 = MIN(8-LENG1,LENG2)
             IF (LENG2.GT.0) THEN
                NOMUT=NOMSST(1:LENG1)//NOMGR(1:LENG2)

@@ -1,4 +1,4 @@
-#@ MODIF post_k1_k2_k3_ops Macro  DATE 10/08/2010   AUTEUR GENIAUT S.GENIAUT 
+#@ MODIF post_k1_k2_k3_ops Macro  DATE 12/10/2010   AUTEUR GENIAUT S.GENIAUT 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -120,6 +120,7 @@ def InterpolBaseFiss(s0, Basefo, Coorfo) :
 #--------------------------------------------------------------------------------------------------------------- 
 
 def verif_type_fond_fiss(ndim,FOND_FISS) :
+   from Utilitai.Utmess     import  UTMESS
    if ndim == 3 :
       Typ = FOND_FISS.FOND_______TYPE.get()
 #     attention : Typ est un tuple contenant une seule valeur
@@ -131,6 +132,7 @@ def verif_type_fond_fiss(ndim,FOND_FISS) :
 def get_noeud_fond_fiss(FOND_FISS) :
    """ retourne la liste des noeuds de FOND_FISS"""
    import string as S
+   from Utilitai.Utmess     import  UTMESS
    Lnoff = FOND_FISS.FOND_______NOEU.get()
    if Lnoff == None :
 #     Cas double fond de fissure : par convention les noeuds sont ceux de fond_inf
@@ -144,7 +146,8 @@ def get_noeud_fond_fiss(FOND_FISS) :
 def get_noeud_a_calculer(Lnoff,ndim,FOND_FISS,MAILLAGE,EnumTypes,args) :
       """ retourne la liste des noeuds de FOND_FISS a calculer"""
       import string as S
-
+      from Utilitai.Utmess     import  UTMESS
+ 
       NOEUD          = args['NOEUD']
       SANS_NOEUD     = args['SANS_NOEUD']
       GROUP_NO       = args['GROUP_NO']
@@ -398,6 +401,7 @@ def get_tab_dep(self,Lnocal,Nnocal,Nnoff,d_coorf,Lnoff,DTANOR,DTANEX,ABSC_CURV_M
 def get_dico_levres(lev,FOND_FISS,ndim,Lnoff,Nnoff):
       "retourne ???"""
       import string as S
+      from Utilitai.Utmess     import  UTMESS
       if lev == 'sup' :
          Nnorm = FOND_FISS.SUPNORM____NOEU.get()
          if not Nnorm : 
@@ -489,9 +493,10 @@ def get_absfon(Lnoff,Nnoff,d_coor):
 
 #--------------------------------------------------------------------------------------------------------------- 
 
-def get_noeuds_perp_regle(Lnocal,d_coor,dicoS,dicoI,PREC_VIS_A_VIS,ABSC_CURV_MAXI,SYME_CHAR,rmprec,precn):
+def get_noeuds_perp_regle(Lnocal,d_coor,dicoS,dicoI,Lnoff,PREC_VIS_A_VIS,ABSC_CURV_MAXI,SYME_CHAR,rmprec,precn):
       """retourne la liste des noeuds du fond (encore ?), la liste des listes des noeuds perpendiculaires"""
       import numpy as NP
+      from Utilitai.Utmess     import  UTMESS
 
       NBTRLS = 0
       NBTRLI = 0
@@ -610,6 +615,8 @@ def get_resxfem(self,xcont,RESULTAT,MAILLAGE,MODELISATION,MODEL) :
 def get_coor_xfem(args,FISSURE,ndim):
       """retourne la liste des coordonnees des points du fond, la base locale en fond et le nombre de points"""
 
+      from Utilitai.Utmess     import  UTMESS
+   
       Listfo = FISSURE.FONDFISS.get()
       Basefo = FISSURE.BASEFOND.get()
       NB_POINT_FOND = args['NB_POINT_FOND']
@@ -650,6 +657,7 @@ def get_direction_xfem(Nnoff,Vpropa,Coorfo,VECT_K1,DTAN_ORIG,DTAN_EXTR,ndim) :
       """retourne la dirction de propagation, la normale a la surface de la fissure,
       et l'abscisse curviligne en chaque point du fond"""
       import numpy as NP
+      from Utilitai.Utmess     import  UTMESS
 
       VP = [None]*Nnoff
       VN = [None]*Nnoff
@@ -778,6 +786,7 @@ def get_sens_tangente_xfem(self,ndim,Nnoff,Coorfo,VP,ABSC_CURV_MAXI,__RESX,dmax)
       """retourne le sens de la tangente   ???"""
       from Accas import _F
       import numpy as NP
+      from Utilitai.Utmess     import  UTMESS
 
       MACR_LIGN_COUPE  = self.get_cmd('MACR_LIGN_COUPE')
       DETRUIRE         = self.get_cmd('DETRUIRE')
@@ -926,6 +935,7 @@ def get_tab(self,lev,ino,Tlib,Lno,TTSo,FOND_FISS,FISSURE,TYPE_MAILLAGE,RESULTAT,
 
 def get_liste_inst(tabsup,args,LIST_ORDRE,NUME_ORDRE,INST,LIST_INST,EnumTypes) :
       """retourne la liste d'instants"""
+      from Utilitai.Utmess     import  UTMESS
       if 'INST' in tabsup.para : 
          l_inst=None
          l_inst_tab=tabsup['INST'].values()['INST']
@@ -1055,6 +1065,7 @@ def get_depl_sup(FISSURE,FOND_FISS,rmprec,RESULTAT,tabsupi,ndim,d_coor,Lnofon,in
 
       import numpy as NP
       import copy
+      from Utilitai.Utmess     import  UTMESS
       
       abscs = getattr(tabsupi,'ABSC_CURV').values()
 
@@ -1135,6 +1146,7 @@ def get_depl_inf(FISSURE,FOND_FISS,rmprec,RESULTAT,tabinfi,ndim,d_coor,Lnofon,in
       """retourne les déplacements inf"""
       import numpy as NP
       import copy
+      from Utilitai.Utmess     import  UTMESS
 
       if SYME_CHAR=='SANS' and not FISSURE : 
          absci = getattr(tabinfi,'ABSC_CURV').values()
@@ -1266,6 +1278,7 @@ def get_saut(self,pgl,ds,di,INFO,FISSURE,SYME_CHAR,abscs,ndim) :
       from Accas import _F
       import aster
       import numpy as NP
+      from Utilitai.Utmess     import  UTMESS
    
       CREA_TABLE    = self.get_cmd('CREA_TABLE')
       DETRUIRE      = self.get_cmd('DETRUIRE')
@@ -1734,7 +1747,7 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
          dicoF = get_absfon(Lnoff,Nnoff,d_coor)
           
 #        Noeuds LEVRE_SUP et LEVRE_INF
-         (Lnofon, Lnosup, Lnoinf) = get_noeuds_perp_regle(Lnocal,d_coor,dicoS,dicoI,
+         (Lnofon, Lnosup, Lnoinf) = get_noeuds_perp_regle(Lnocal,d_coor,dicoS,dicoI,Lnoff,
                                                           PREC_VIS_A_VIS,ABSC_CURV_MAXI,SYME_CHAR,rmprec,precn)
          Nbnofo = len(Lnofon)
 

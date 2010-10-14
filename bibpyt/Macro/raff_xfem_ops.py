@@ -1,4 +1,4 @@
-#@ MODIF raff_xfem_ops Macro  DATE 11/05/2010   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF raff_xfem_ops Macro  DATE 12/10/2010   AUTEUR GENIAUT S.GENIAUT 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -57,10 +57,10 @@ def raff_xfem_ops(self,FISSURE,INFO,**args):
    else :
       nbfiss = 1
 
-#  formule distance pour une fissure: 1/exp(r)
-   __MDISTF=FORMULE(NOM_PARA=('X1','X2'),VALE= '1./exp(sqrt(X1**2+X2**2))');
-#  formule distance pour une interface: 1/exp(lsn)
-   __MDISTI=FORMULE(NOM_PARA=('X1'),VALE= '1./exp(sqrt(X1**2))');
+#  formule distance pour une fissure: -r
+   __MDISTF=FORMULE(NOM_PARA=('X1','X2'),VALE= '-1.*sqrt(X1**2+X2**2)');
+#  formule distance pour une interface: -r = -|lsn|
+   __MDISTI=FORMULE(NOM_PARA=('X1'),VALE= '-1.*sqrt(X1**2)');
 
    __CERR= [None]*nbfiss
    list_err=[]

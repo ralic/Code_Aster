@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF astermodule supervis  DATE 06/09/2010   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF astermodule supervis  DATE 11/10/2010   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -47,8 +47,6 @@ char * fstr3( _IN char *s, _IN STRING_SIZE l) ;
 void convert( _IN int nval, _IN PyObject *tup, _OUT INTEGER *val) ;
 void convertxt( _IN int nval, _IN PyObject *tup, _OUT char *val, _IN STRING_SIZE taille) ;
 void converltx( _IN int nval, _IN PyObject *tup, _OUT char *val, _IN STRING_SIZE taille) ;
-
-void AjoutChaineA( _INOUT char **base , _IN char *supplement ) ;
 
 void TraitementFinAster( _IN int val ) ;
 
@@ -1995,7 +1993,8 @@ PyObject *args;
         */
         else {
           groups = (char *)malloc(long_nomcham*sizeof(char));
-          groups = strcpy(groups,"        ");
+          BLANK(groups, long_nomcham);
+          
         }
 
         try(1){
@@ -3872,60 +3871,6 @@ int EstPret( _IN char *chaine , _IN STRING_SIZE longueur )
                 }
         }
         return pret ;
-}
-
-
-/* ------------------------------------------------------------------ */
-void AjoutChaineA( _INOUT char **base , _IN char *supplement )
-{
-        /*
-        Procedure  : AjoutChaineA
-        Intention
-                la chaine de caractere "base" est agrandie de la chaine
-                "supplement". La zone memoire occupee par base est reallouee
-                et la valeur du pointeur *base est donc modifiee.
-                Dans cette operation tous les caracteres sont significatifs
-                sauf le caractere NUL ('\0').
-
-        PRENEZ GARDE ! : base doit etre une zone allouee DYNAMIQUEMENT
-
-        */
-
-        char *resultat = (char*)0 ;
-        int ajout      = 0 ;
-        int taille     = 0 ;
-        int total      = 0 ;
-        void *malloc(size_t size);
-    
-        taille = ( *base ) ? strlen( *base ) : 0 ;
-
-        ajout = ( supplement ) ? strlen( supplement ) : 0 ;
-        total = taille + ajout + 1 /* caractere de fin de chaine */;
-        if ( ajout > 0 ){
-                if ( taille > 0 ){
-                        resultat = (char*)(malloc(total)) ;
-                        ASSERT(resultat!=NULL) ;
-                        strcpy(resultat,*base) ;
-                        strcat(resultat,supplement) ;
-                }
-                else{
-                        resultat = (char*)(malloc(total)) ;
-                        ASSERT(resultat!=NULL) ;
-                        strcpy(resultat,supplement) ;
-                }
-        }
-        else{
-                if ( taille > 0 ){
-                        resultat = (char*)(malloc(total)) ;
-                        strcpy(resultat,*base) ;
-                }
-        }
-        if( *base ){
-                ASSERT(strlen(*base)==taille) /* verification INVARIANT !! */
-                free(*base) ;
-                *base=(char*)0 ;
-        }
-        *base = resultat ;
 }
 
 

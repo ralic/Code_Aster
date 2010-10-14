@@ -1,4 +1,4 @@
-%& MODIF COMPELEM  DATE 28/09/2010   AUTEUR MASSIN P.MASSIN 
+%& MODIF COMPELEM  DATE 11/10/2010   AUTEUR PELLET J.PELLET 
 % RESPONSABLE PROIX
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
@@ -963,6 +963,11 @@ GRANDEUR_SIMPLE__
 >>
     FELECR   = R    X1       Y1       Z1       X2       Y2       Z2       CODE
 
+<< FER1_R et FER2_R : 2 grandeurs utilisées par CALC_FERRAILLAGE
+>>
+    FER1_R   = R    TYPCOMB  ENROBG  CEQUI  SIGACI  SIGBET  PIVA  PIVB
+    FER2_R   = R    DNSXI  DNSXS  DNSYI  DNSYS  DNST  SIGMBE  EPSIBE
+
 <<  FISS_R Type:R Noeud du fond de fissure et sa normale
     (calcul du K1, K2 en 2D)
        XA : coordonnée 1 du noeud du fond de fissure
@@ -1749,7 +1754,7 @@ FORC_C   = C    FX       FY       FZ       MX       MY       MZ       BX       R
        DEPV22   DEPV23   DEPV31   DEPV32   DEPV33   TRSIG    CONT_X   CONT_Y
        CONT_Z   SIG_NX   SIG_NY   SIG_NZ   SIG_N    SIG_TX   SIG_TY   SIG_TZ
        SIG_T1X  SIG_T1Y  SIG_T1Z  SIG_T1   SIG_T2X  SIG_T2Y  SIG_T2Z  SIG_T2
-       LH1P     LH1M     DPRE1P   DPRE1M        
+       LH1P     LH1M     DPRE1P   DPRE1M
 
 <<  SIEF_R Type:R Etat de contrainte (ou d'effort interne) (cf. (U .. . .. . .))
        SIXX : sigma_xx contraintes dans un milieu continu
@@ -1892,7 +1897,7 @@ FORC_C   = C    FX       FY       FZ       MX       MY       MZ       BX       R
        DEPV22   DEPV23   DEPV31   DEPV32   DEPV33   TRSIG    CONT_X   CONT_Y
        CONT_Z   SIG_NX   SIG_NY   SIG_NZ   SIG_N    SIG_TX   SIG_TY   SIG_TZ
        SIG_T1X  SIG_T1Y  SIG_T1Z  SIG_T1   SIG_T2X  SIG_T2Y  SIG_T2Z  SIG_T2
-       LH1P     LH1M     DPRE1P   DPRE1M    
+       LH1P     LH1M     DPRE1P   DPRE1M
 
 <<  SING_R Type:R grandeurs liée au calcul de carte de taille
        DEGRE : ordre de la singularité
@@ -1980,6 +1985,17 @@ FORC_C   = C    FX       FY       FZ       MX       MY       MZ       BX       R
 >>
     VAR2_R   = R    V[100]
 
+<<  VARC_R Type:R Variables de commande (nommées) :
+       TEMP : température
+       HYDR : hydratation
+       SECH : séchage
+       IRRA : irradiation
+       CORR : corrosion
+       NEUT1 : "neutre 1" (définie par l'utilisateur)
+       NEUT2 : "neutre 2" (définie par l'utilisateur)
+>>
+    VARC_R   = R    TEMP HYDR SECH IRRA CORR NEUT1 NEUT2
+
 <<  VARI_R Type:R Variables internes pour les lois de comportement
     non-linéaires
     Attention : le nombre de variables interne pouvant varier fortement selon
@@ -2062,4 +2078,4 @@ GRANDEUR_ELEMENTAIRE__
    VTEM_R 1 TEMP_R
    VVAR_R 1 VANL_R
    MZNS_R 2 NEUT_R   NEUT_R   MR
-   
+

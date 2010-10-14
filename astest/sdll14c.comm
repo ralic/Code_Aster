@@ -1,4 +1,4 @@
-# MODIF  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 11/10/2010   AUTEUR DELMAS J.DELMAS 
 # RESPONSABLE ADBHHPM P.MASSIN
 # DATE   : 20/09/2000
 # AUTEUR : F. LEBOUVIER
@@ -25,8 +25,10 @@
 #  - ANALYSE DYNAMIQUE D'UNE TUYAUTERIE COMPORTANT UN COUDE
 #  - MODELISATION AVEC DES ELEMENTS 'TUYAU' SEG4 (3 MODES DE FOURIER)
 #---------------------------------------------------------------------
-DEBUT( CODE=_F( NOM = 'SDLL14C',NIV_PUB_WEB='INTERNET'))
-
+DEBUT(CODE=_F( NOM = 'SDLL14C',NIV_PUB_WEB='INTERNET'),
+      IGNORE_ALARM='PREPOST_86',)
+# CETTE ALARME QUI PREVIENT L'UTILISATEUR QU'ON OUBLIE CERTAINS NOEUDS 
+# POUR LES TRIA7, QUAD9 ET SEG4 DANS L'IMPR_RESU
 #
 MAIL=LIRE_MAILLAGE(   INFO=2)
 
@@ -109,13 +111,30 @@ MACRO_MATR_ASSE(        MODELE=MODELE,
                   )
 
 #                                                            
-MODES=MODE_ITER_SIMULT(      MATR_A=K,
+MOD_CAL=MODE_ITER_SIMULT(      MATR_A=K,
                                MATR_B=M,
                               METHODE='TRI_DIAG',
                             CALC_FREQ=_F( OPTION = 'PLUS_PETITE',
                                        NMAX_FREQ = 4)
                          )
 
+# CE BLOC POUR TESTER LIRE_RESU POUR LES BASES
+IMPR_RESU(MODELE=MODELE,
+          FORMAT='MED',
+          UNITE=81,
+          RESU=_F(MAILLAGE=MAILLAGE,
+                  RESULTAT=MOD_CAL,
+                  NOM_CHAM='DEPL',),);
+
+MODES=LIRE_RESU(FORMAT='MED',
+                UNITE=81,
+                FORMAT_MED=_F(NOM_CHAM='DEPL',
+                              NOM_CHAM_MED='MOD_CAL_DEPL____________________',),
+                TYPE_RESU='MODE_MECA',
+                MATR_A=K,
+                MATR_B=M,
+                TOUT_ORDRE='OUI',
+                MAILLAGE=MAILLAGE,);
 #
 #---------------------------------------------------------------------
 #                        VERIFICATION DES RESULTATS

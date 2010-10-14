@@ -1,9 +1,10 @@
-      SUBROUTINE EXLIMA ( MOTFAZ, BASE, MODELZ, LIGREL )
+      SUBROUTINE EXLIMA ( MOTFAZ, IOCC, BASE, MODELZ, LIGREL )
       IMPLICIT   NONE
       CHARACTER*(*)       MOTFAZ, BASE, MODELZ, LIGREL
+      INTEGER  IOCC
 C     -----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 24/11/2009   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 11/10/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -51,7 +52,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  -------------------------
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  -------------------------
 C
-      INTEGER         I, IB, NMOFAC, N1, JMA, NBMA
+      INTEGER         I, IB, N1, JMA, NBMA
       CHARACTER*8     MODELE, NOMA, K8BID
       CHARACTER*16    MOTFAC,MOTCLE(2),TYPMCL(2),OPER,K16B
       CHARACTER*19    LIGRMO
@@ -68,17 +69,13 @@ C
       LISMAI = '&&EXLIMA.LISTE_MAILLES'
 
 
-C     --  SI ON DOIT TOUT PRENDRE , LIGREL=LIGRMO
+C     --  SI ON DOIT TOUT PRENDRE , LIGREL = LIGRMO
 C     ------------------------------------------------------
       IF ( MOTFAC .NE. ' ' ) THEN
-         CALL GETFAC( MOTFAC, NMOFAC )
-         IF ( NMOFAC .EQ. 0 )  GOTO 9998
-            DO 10 I = 1 , NMOFAC
-               IF (GETEXM(MOTFAC,'TOUT') .EQ. 1) THEN
-                 CALL GETVTX ( MOTFAC, 'TOUT' , I,1,0, K8BID, N1 )
-                 IF ( N1 .NE. 0 )  GOTO 9998
-               ENDIF
- 10         CONTINUE
+         IF (GETEXM(MOTFAC,'TOUT') .EQ. 1) THEN
+           CALL GETVTX ( MOTFAC, 'TOUT' , IOCC,1,0, K8BID, N1 )
+           IF ( N1 .NE. 0 )  GOTO 9998
+         ENDIF
       ELSE
          CALL GETVTX ( ' ', 'TOUT' , 1,1,0, K8BID, N1 )
          IF (N1.NE.0)  GOTO 9998
@@ -94,8 +91,8 @@ C
 C --- CREATION ET AFFECTATION DU VECTEUR DE K8 DE NOM LISMAI
 C     CONTENANT LES NOMS DES MAILLES FORMANT LE LIGREL A CREER
 C     --------------------------------------------------------
-      CALL RELIEM ( MODELE, NOMA, 'NU_MAILLE', MOTFAC,1, 2, MOTCLE(1),
-     &              TYPMCL(1), LISMAI, NBMA )
+      CALL RELIEM(MODELE,NOMA,'NU_MAILLE',MOTFAC,IOCC,2,MOTCLE(1),
+     &              TYPMCL(1),LISMAI,NBMA )
 
 C     -- SI LES MOTS CLES GROUP_MA ET MAILLE N'ONT PAS ETE UTILISES:
       IF (NBMA.EQ.0) GOTO 9998

@@ -1,0 +1,389 @@
+# MODIF  DATE 11/10/2010   AUTEUR PELLET J.PELLET 
+# TITRE FERRAILLAGE D'UNE CUVE CARREE SELON LA METHODE DE CAPRA ET MAURY
+# ssls135a.para = tps_job 30 mem_job 128Mo ncpus 1 liste_test S
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+# MODELISATION B : DKT
+
+DEBUT(CODE=_F(NOM='SSLS135A', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
+
+MeshLin=LIRE_MAILLAGE(UNITE=20, FORMAT='ASTER')
+
+# Type de calcul
+FEMLin=AFFE_MODELE(MAILLAGE=MeshLin,
+                   AFFE=(_F(GROUP_MA=('COTEX','COTEX1','COTEY1','COTEY','BASE',),
+                            PHENOMENE='MECANIQUE',
+                            MODELISATION='DKT',),
+                         _F(GROUP_NO='BASEN',
+                            PHENOMENE='MECANIQUE',
+                            MODELISATION='DIS_T',),),);
+
+# Caracteristiques de Materiaux
+beton=DEFI_MATERIAU(ELAS=_F(E=3.0E10,
+                            NU=0.15,
+                            RHO=2500.0,),);
+
+# Association des materiaux au modele
+Mat=AFFE_MATERIAU(MAILLAGE=MeshLin,
+                  MODELE=FEMLin,
+                  AFFE=_F(TOUT='OUI',
+                          MATER=beton,),);
+
+# Proprietes autres (notamment raideur de sol)
+AFFECARA=AFFE_CARA_ELEM(MODELE=FEMLin,
+                        COQUE=(_F(GROUP_MA='BASE',
+                                  EPAIS=0.4,
+                                  ANGL_REP=(0.0,0.0,),),
+                               _F(GROUP_MA='COTEX',
+                                  EPAIS=0.4,
+                                  ANGL_REP=(90.0,0.0,),),
+                               _F(GROUP_MA='COTEY',
+                                  EPAIS=0.4,
+                                  ANGL_REP=(0.0,0.0,),),
+                               _F(GROUP_MA='COTEY1',
+                                  EPAIS=0.4,
+                                  ANGL_REP=(0.0,0.0,),),
+                               _F(GROUP_MA='COTEX1',
+                                  EPAIS=0.4,
+                                  ANGL_REP=(90.0,0.0,),),),
+                        DISCRET=_F(CARA='M_T_D_N',
+                                   GROUP_NO='BASEN',
+                                   VALE=0.0,),
+                        RIGI_PARASOL=_F(GROUP_MA='BASE',
+                                        COEF_GROUP=1.0,
+                                        CARA='K_T_D_N',
+                                        VALE=(5000E6,5000E6,5000E6,),
+                                        COOR_CENTRE=(5.0,5.0,0.0,),),);
+# Calcul de la raideur
+#   raideur unitaire = 50E6 N/m3
+#   surface = 10*10
+#   raideur globale KZ = 50E6 * (10*10)
+#   KX = KY = KZ
+
+# gradient de Pression
+eauPlus=DEFI_FONCTION(NOM_PARA='Z',VALE=(0.0,49050.0,
+                            5.0,0.0,
+                            ),);
+
+# gradient de Pression
+eauMoins=DEFI_FONCTION(NOM_PARA='Z',VALE=(0.0,-49050.0,
+                             5.0,0.0,
+                             ),);
+
+# definition de la gravite
+Grav=AFFE_CHAR_MECA(MODELE=FEMLin,
+                    PESANTEUR=_F(GRAVITE=9.81, DIRECTION=(0., 0., -1.,)))
+
+# definition de pression laterale
+pressX1=AFFE_CHAR_MECA_F(MODELE=FEMLin,
+                         FORCE_COQUE=_F(GROUP_MA='COTEX1',
+                                        FZ=eauPlus,),);
+
+# definition de pression laterale
+pressX=AFFE_CHAR_MECA_F(MODELE=FEMLin,
+                        FORCE_COQUE=_F(GROUP_MA='COTEX',
+                                       FZ=eauMoins,),);
+
+# definition de pression laterale
+pressY1=AFFE_CHAR_MECA_F(MODELE=FEMLin,
+                         FORCE_COQUE=_F(GROUP_MA='COTEY1',
+                                        FZ=eauPlus,),);
+
+# definition de pression laterale
+pressY=AFFE_CHAR_MECA_F(MODELE=FEMLin,
+                        FORCE_COQUE=_F(GROUP_MA='COTEY',
+                                       FZ=eauMoins,),);
+
+# definition de pression verticale
+pressRep=AFFE_CHAR_MECA(MODELE=FEMLin,
+                        PRES_REP=_F(GROUP_MA='BASE',
+                                    PRES=49050.0,),);
+
+# definition de forces nodales sur contour haut
+surchrep=AFFE_CHAR_MECA(MODELE=FEMLin,
+                        FORCE_NODALE=_F(GROUP_NO='DESSUSN',
+                                        FZ=-9523.8,),);
+
+
+
+# Calcul des efforts :
+
+Solution=MECA_STATIQUE(MODELE=FEMLin,
+                       CHAM_MATER=Mat,
+                       CARA_ELEM=AFFECARA,
+                       EXCIT=(_F(CHARGE=pressY,),
+                              _F(CHARGE=pressY1,),
+                              _F(CHARGE=pressX,),
+                              _F(CHARGE=pressX1,),
+                              _F(CHARGE=pressRep,),
+                              _F(CHARGE=Grav,),
+                              _F(CHARGE=surchrep,),),);
+
+# calculs elementaires, en complement de resultats
+Solution=CALC_ELEM(reuse =Solution,
+                   RESULTAT=Solution,
+                   OPTION=('SIEF_ELNO_ELGA','SIGM_ELNO_DEPL','EFGE_ELNO_DEPL',),);
+
+# calculs supplementaires pour le ferraillage
+Solution=CALC_FERRAILLAGE(reuse =Solution,
+                   RESULTAT=Solution,
+                   TYPE_COMB='ELS',
+                   INST=(0.),
+                   AFFE  = (_F( TOUT='OUI', ENROBG=0.04, CEQUI=15.E0, SIGM_ACIER=2.3E8, SIGM_BETON=3.5E7))
+                   );
+
+#IMPR_RESU(RESU=_F(RESULTAT=Solution, NOM_CHAM='FERRAILLAGE'));
+
+
+#--------------------------------------------------------------------------------------------
+# Tests de validation (source externe) :
+#----------------------------------------
+
+TEST_RESU(RESU=(
+
+# nom du point de mesure, nom de la maille, coordonnees du centre de gravite :
+#  BC : 'M1115'     7.75, 7.25, 0.0
+#  BSO: 'M686'      5.25, 5.25, 0.0
+#  BSE: 'M1391'     9.75, 5.25, 0.0
+#  BNO: 'M462'      5.25, 9.75, 0.0
+#  BNE: 'M596'      9.75, 9.75, 0.0
+#
+#  VC : 'M562'      10.0, 6.75, 2.25
+#  VBN: 'M1113'     10.0, 9.75, 0.25
+#  VBS: 'M1373'     10.0, 5.25, 0.25
+#  VHN: 'M516'      10.0, 9.75, 4.75
+#  VHS: 'M1173'     10.0, 5.25, 4.75
+
+
+
+# BC -> M1115 :
+   _F(RESULTAT=Solution, INST=0., NOM_CHAM='FERRAILLAGE', REFERENCE='SOURCE_EXTERNE',  POINT=1,
+      MAILLE='M1115', NOM_CMP='DNSXI', VALE=0.     ,CRITERE='ABSOLU', PRECISION=1.E-5, ),
+   _F(RESULTAT=Solution, INST=0., NOM_CHAM='FERRAILLAGE', REFERENCE='SOURCE_EXTERNE',  POINT=1,
+      MAILLE='M1115', NOM_CMP='DNSXS', VALE=6.E-4  ,CRITERE='ABSOLU', PRECISION= 0.5E-4 ),
+   _F(RESULTAT=Solution, INST=0., NOM_CHAM='FERRAILLAGE', REFERENCE='SOURCE_EXTERNE',  POINT=1,
+      MAILLE='M1115', NOM_CMP='DNSYI', VALE=0.     ,CRITERE='ABSOLU', PRECISION=1.E-5, ),
+   _F(RESULTAT=Solution, INST=0., NOM_CHAM='FERRAILLAGE', REFERENCE='SOURCE_EXTERNE',  POINT=1,
+      MAILLE='M1115', NOM_CMP='DNSYS', VALE=5.E-4  ,CRITERE='ABSOLU', PRECISION= 0.7E-4 ),
+
+# BSO -> M686 :
+   _F(RESULTAT=Solution, INST=0., NOM_CHAM='FERRAILLAGE', REFERENCE='SOURCE_EXTERNE',  POINT=1,
+      MAILLE='M686',  NOM_CMP='DNSXI', VALE=0.     ,CRITERE='ABSOLU', PRECISION=1.E-5, ),
+   _F(RESULTAT=Solution, INST=0., NOM_CHAM='FERRAILLAGE', REFERENCE='SOURCE_EXTERNE',  POINT=1,
+      MAILLE='M686',  NOM_CMP='DNSXS', VALE=3.E-4  ,CRITERE='ABSOLU', PRECISION= 0.2E-4 ),
+   _F(RESULTAT=Solution, INST=0., NOM_CHAM='FERRAILLAGE', REFERENCE='SOURCE_EXTERNE',  POINT=1,
+      MAILLE='M686',  NOM_CMP='DNSYI', VALE=0.     ,CRITERE='ABSOLU', PRECISION=1.E-5, ),
+   _F(RESULTAT=Solution, INST=0., NOM_CHAM='FERRAILLAGE', REFERENCE='SOURCE_EXTERNE',  POINT=1,
+      MAILLE='M686',  NOM_CMP='DNSYS', VALE=3.E-4  ,CRITERE='ABSOLU', PRECISION= 0.2E-4 ),
+
+# BSE -> M1391 :
+   _F(RESULTAT=Solution, INST=0., NOM_CHAM='FERRAILLAGE', REFERENCE='SOURCE_EXTERNE',  POINT=1,
+      MAILLE='M1391', NOM_CMP='DNSXI', VALE=0.     ,CRITERE='ABSOLU', PRECISION=1.E-5, ),
+   _F(RESULTAT=Solution, INST=0., NOM_CHAM='FERRAILLAGE', REFERENCE='SOURCE_EXTERNE',  POINT=1,
+      MAILLE='M1391', NOM_CMP='DNSXS', VALE=6.E-4  ,CRITERE='ABSOLU', PRECISION= 0.6E-4 ),
+   _F(RESULTAT=Solution, INST=0., NOM_CHAM='FERRAILLAGE', REFERENCE='SOURCE_EXTERNE',  POINT=1,
+      MAILLE='M1391', NOM_CMP='DNSYI', VALE=1.E-4  ,CRITERE='ABSOLU', PRECISION= 0.6E-4 ),
+   _F(RESULTAT=Solution, INST=0., NOM_CHAM='FERRAILLAGE', REFERENCE='SOURCE_EXTERNE',  POINT=1,
+      MAILLE='M1391', NOM_CMP='DNSYS', VALE=2.E-4  ,CRITERE='ABSOLU', PRECISION= 0.3E-4 ),
+
+# BNO -> M462 :
+   _F(RESULTAT=Solution, INST=0., NOM_CHAM='FERRAILLAGE', REFERENCE='SOURCE_EXTERNE',  POINT=1,
+      MAILLE='M462',  NOM_CMP='DNSXI', VALE=1.E-4  ,CRITERE='ABSOLU', PRECISION= 0.6E-4 ),
+   _F(RESULTAT=Solution, INST=0., NOM_CHAM='FERRAILLAGE', REFERENCE='SOURCE_EXTERNE',  POINT=1,
+      MAILLE='M462',  NOM_CMP='DNSXS', VALE=2.E-4  ,CRITERE='ABSOLU', PRECISION= 0.3E-4 ),
+   _F(RESULTAT=Solution, INST=0., NOM_CHAM='FERRAILLAGE', REFERENCE='SOURCE_EXTERNE',  POINT=1,
+      MAILLE='M462',  NOM_CMP='DNSYI', VALE=0.     ,CRITERE='ABSOLU', PRECISION=1.E-5, ),
+   _F(RESULTAT=Solution, INST=0., NOM_CHAM='FERRAILLAGE', REFERENCE='SOURCE_EXTERNE',  POINT=1,
+      MAILLE='M462',  NOM_CMP='DNSYS', VALE=4.E-4  ,CRITERE='ABSOLU', PRECISION= 1.5E-4 ),
+
+# BNE -> M596 :
+   _F(RESULTAT=Solution, INST=0., NOM_CHAM='FERRAILLAGE', REFERENCE='SOURCE_EXTERNE',  POINT=1,
+      MAILLE='M596',  NOM_CMP='DNSXI', VALE=3.E-4  ,CRITERE='ABSOLU', PRECISION= 0.7E-4 ),
+   _F(RESULTAT=Solution, INST=0., NOM_CHAM='FERRAILLAGE', REFERENCE='SOURCE_EXTERNE',  POINT=1,
+      MAILLE='M596',  NOM_CMP='DNSXS', VALE=1.E-4  ,CRITERE='ABSOLU', PRECISION= 0.2E-4 ),
+   _F(RESULTAT=Solution, INST=0., NOM_CHAM='FERRAILLAGE', REFERENCE='SOURCE_EXTERNE',  POINT=1,
+      MAILLE='M596',  NOM_CMP='DNSYI', VALE=2.E-4  ,CRITERE='ABSOLU', PRECISION= 1.1E-4 ),
+   _F(RESULTAT=Solution, INST=0., NOM_CHAM='FERRAILLAGE', REFERENCE='SOURCE_EXTERNE',  POINT=1,
+      MAILLE='M596',  NOM_CMP='DNSYS', VALE=2.E-4  ,CRITERE='ABSOLU', PRECISION= 0.7E-4 ),
+
+# VC -> M562 :
+   _F(RESULTAT=Solution, INST=0., NOM_CHAM='FERRAILLAGE', REFERENCE='SOURCE_EXTERNE',  POINT=1,
+      MAILLE='M562',  NOM_CMP='DNSXI', VALE=1.E-4  ,CRITERE='ABSOLU', PRECISION= 1.0E-4 ),
+   _F(RESULTAT=Solution, INST=0., NOM_CHAM='FERRAILLAGE', REFERENCE='SOURCE_EXTERNE',  POINT=1,
+      MAILLE='M562',  NOM_CMP='DNSXS', VALE=6.E-4  ,CRITERE='ABSOLU', PRECISION= 1.8E-4 ),
+   _F(RESULTAT=Solution, INST=0., NOM_CHAM='FERRAILLAGE', REFERENCE='SOURCE_EXTERNE',  POINT=1,
+      MAILLE='M562',  NOM_CMP='DNSYI', VALE=0.     ,CRITERE='ABSOLU', PRECISION=1.E-5, ),
+   _F(RESULTAT=Solution, INST=0., NOM_CHAM='FERRAILLAGE', REFERENCE='SOURCE_EXTERNE',  POINT=1,
+      MAILLE='M562',  NOM_CMP='DNSYS', VALE=4.E-4  ,CRITERE='ABSOLU', PRECISION= 1.4E-4 ),
+
+
+# VBN -> M1113 :
+   _F(RESULTAT=Solution, INST=0., NOM_CHAM='FERRAILLAGE', REFERENCE='SOURCE_EXTERNE',  POINT=1,
+      MAILLE='M1113', NOM_CMP='DNSXI', VALE=2.E-4  ,CRITERE='ABSOLU', PRECISION= 1.7E-4 ),
+   _F(RESULTAT=Solution, INST=0., NOM_CHAM='FERRAILLAGE', REFERENCE='SOURCE_EXTERNE',  POINT=1,
+      MAILLE='M1113', NOM_CMP='DNSXS', VALE=1.E-4  ,CRITERE='ABSOLU', PRECISION= 0.9E-4 ),
+   _F(RESULTAT=Solution, INST=0., NOM_CHAM='FERRAILLAGE', REFERENCE='SOURCE_EXTERNE',  POINT=1,
+      MAILLE='M1113', NOM_CMP='DNSYI', VALE=2.E-4  ,CRITERE='ABSOLU', PRECISION= 0.2E-4 ),
+   _F(RESULTAT=Solution, INST=0., NOM_CHAM='FERRAILLAGE', REFERENCE='SOURCE_EXTERNE',  POINT=1,
+      MAILLE='M1113', NOM_CMP='DNSYS', VALE=3.E-4  ,CRITERE='ABSOLU', PRECISION= 1.6E-4 ),
+
+
+# VBS -> M1373 :
+   _F(RESULTAT=Solution, INST=0., NOM_CHAM='FERRAILLAGE', REFERENCE='SOURCE_EXTERNE',  POINT=1,
+      MAILLE='M1373', NOM_CMP='DNSXI', VALE=1.E-4  ,CRITERE='ABSOLU', PRECISION= 0.6E-4 ),
+   _F(RESULTAT=Solution, INST=0., NOM_CHAM='FERRAILLAGE', REFERENCE='SOURCE_EXTERNE',  POINT=1,
+      MAILLE='M1373', NOM_CMP='DNSXS', VALE=1.E-4  ,CRITERE='ABSOLU', PRECISION= 0.6E-4 ),
+
+   _F(RESULTAT=Solution, INST=0., NOM_CHAM='FERRAILLAGE', REFERENCE='SOURCE_EXTERNE',  POINT=1,
+      MAILLE='M1373', NOM_CMP='DNSYI', VALE=0.     ,CRITERE='ABSOLU', PRECISION=1.E-5, ),
+   _F(RESULTAT=Solution, INST=0., NOM_CHAM='FERRAILLAGE', REFERENCE='SOURCE_EXTERNE',  POINT=1,
+      MAILLE='M1373', NOM_CMP='DNSYS', VALE=0.     ,CRITERE='ABSOLU', PRECISION=1.E-5, ),
+
+# VHN -> M516 :
+   _F(RESULTAT=Solution, INST=0., NOM_CHAM='FERRAILLAGE', REFERENCE='SOURCE_EXTERNE',  POINT=1,
+      MAILLE='M516',  NOM_CMP='DNSXI', VALE=15.E-4 ,CRITERE='ABSOLU', PRECISION= 0.7E-4 ),
+   _F(RESULTAT=Solution, INST=0., NOM_CHAM='FERRAILLAGE', REFERENCE='SOURCE_EXTERNE',  POINT=1,
+      MAILLE='M516',  NOM_CMP='DNSXS', VALE=0.     ,CRITERE='ABSOLU', PRECISION=1.E-5, ),
+   _F(RESULTAT=Solution, INST=0., NOM_CHAM='FERRAILLAGE', REFERENCE='SOURCE_EXTERNE',  POINT=1,
+      MAILLE='M516',  NOM_CMP='DNSYI', VALE=1.E-4  ,CRITERE='ABSOLU', PRECISION= 0.4E-4 ),
+
+   _F(RESULTAT=Solution, INST=0., NOM_CHAM='FERRAILLAGE', REFERENCE='SOURCE_EXTERNE',  POINT=1,
+      MAILLE='M516',  NOM_CMP='DNSYS', VALE=0.     ,CRITERE='ABSOLU', PRECISION=1.E-5, ),
+
+# VHS -> M1173 :
+   _F(RESULTAT=Solution, INST=0., NOM_CHAM='FERRAILLAGE', REFERENCE='SOURCE_EXTERNE',  POINT=1,
+      MAILLE='M1173', NOM_CMP='DNSXI', VALE=0.     ,CRITERE='ABSOLU', PRECISION=1.E-5, ),
+   _F(RESULTAT=Solution, INST=0., NOM_CHAM='FERRAILLAGE', REFERENCE='SOURCE_EXTERNE',  POINT=1,
+      MAILLE='M1173', NOM_CMP='DNSXS', VALE=9.E-4  ,CRITERE='ABSOLU', PRECISION= 0.9E-4 ),
+   _F(RESULTAT=Solution, INST=0., NOM_CHAM='FERRAILLAGE', REFERENCE='SOURCE_EXTERNE',  POINT=1,
+      MAILLE='M1173', NOM_CMP='DNSYI', VALE=0.     ,CRITERE='ABSOLU', PRECISION=1.E-5, ),
+   _F(RESULTAT=Solution, INST=0., NOM_CHAM='FERRAILLAGE', REFERENCE='SOURCE_EXTERNE',  POINT=1,
+      MAILLE='M1173', NOM_CMP='DNSYS', VALE=0.     ,CRITERE='ABSOLU', PRECISION=0.1E-4, ),
+
+  ))
+
+
+#----------------------------------------------------------------------------------------------------
+# Tests de non-regression :
+#--------------------------
+
+TEST_RESU(RESU=(
+
+# BC -> M1115 :
+   _F(RESULTAT=Solution, INST=0., NOM_CHAM='FERRAILLAGE', REFERENCE='NON_REGRESSION',  POINT=1,
+      MAILLE='M1115', NOM_CMP='DNSXI', VALE=       0.0E+00                     ,CRITERE='ABSOLU', PRECISION=1.E-5, ),
+   _F(RESULTAT=Solution, INST=0., NOM_CHAM='FERRAILLAGE', REFERENCE='NON_REGRESSION',  POINT=1,
+      MAILLE='M1115', NOM_CMP='DNSXS', VALE=       6.49420369709756E-04        ,CRITERE='RELATIF', PRECISION=1.E-5, ),
+   _F(RESULTAT=Solution, INST=0., NOM_CHAM='FERRAILLAGE', REFERENCE='NON_REGRESSION',  POINT=1,
+      MAILLE='M1115', NOM_CMP='DNSYI', VALE=       0.0E+00                     ,CRITERE='ABSOLU', PRECISION=1.E-5, ),
+   _F(RESULTAT=Solution, INST=0., NOM_CHAM='FERRAILLAGE', REFERENCE='NON_REGRESSION',  POINT=1,
+      MAILLE='M1115', NOM_CMP='DNSYS', VALE=       5.6678519606E-04            ,CRITERE='RELATIF', PRECISION=1.E-5, ),
+
+# BSO -> M686 :
+   _F(RESULTAT=Solution, INST=0., NOM_CHAM='FERRAILLAGE', REFERENCE='NON_REGRESSION',  POINT=1,
+      MAILLE='M686',  NOM_CMP='DNSXI', VALE=       0.0E+00                     ,CRITERE='ABSOLU', PRECISION=1.E-5, ),
+   _F(RESULTAT=Solution, INST=0., NOM_CHAM='FERRAILLAGE', REFERENCE='NON_REGRESSION',  POINT=1,
+      MAILLE='M686',  NOM_CMP='DNSXS', VALE=       2.867605E-04                ,CRITERE='RELATIF', PRECISION=1.E-5, ),
+   _F(RESULTAT=Solution, INST=0., NOM_CHAM='FERRAILLAGE', REFERENCE='NON_REGRESSION',  POINT=1,
+      MAILLE='M686',  NOM_CMP='DNSYI', VALE=       0.0E+00                     ,CRITERE='ABSOLU', PRECISION=1.E-5, ),
+   _F(RESULTAT=Solution, INST=0., NOM_CHAM='FERRAILLAGE', REFERENCE='NON_REGRESSION',  POINT=1,
+      MAILLE='M686',  NOM_CMP='DNSYS', VALE=       2.86933371E-04              ,CRITERE='RELATIF', PRECISION=1.E-5, ),
+
+# BSE -> M1391 :
+   _F(RESULTAT=Solution, INST=0., NOM_CHAM='FERRAILLAGE', REFERENCE='NON_REGRESSION',  POINT=1,
+      MAILLE='M1391', NOM_CMP='DNSXI', VALE=       0.0E+00                     ,CRITERE='ABSOLU', PRECISION=1.E-5, ),
+   _F(RESULTAT=Solution, INST=0., NOM_CHAM='FERRAILLAGE', REFERENCE='NON_REGRESSION',  POINT=1,
+      MAILLE='M1391', NOM_CMP='DNSXS', VALE=       5.4016615E-04               ,CRITERE='RELATIF', PRECISION=1.E-5, ),
+   _F(RESULTAT=Solution, INST=0., NOM_CHAM='FERRAILLAGE', REFERENCE='NON_REGRESSION',  POINT=1,
+      MAILLE='M1391', NOM_CMP='DNSYI', VALE=       4.899093631279E-05          ,CRITERE='RELATIF', PRECISION=1.E-5, ),
+   _F(RESULTAT=Solution, INST=0., NOM_CHAM='FERRAILLAGE', REFERENCE='NON_REGRESSION',  POINT=1,
+      MAILLE='M1391', NOM_CMP='DNSYS', VALE=       2.2982507E-04               ,CRITERE='RELATIF', PRECISION=1.E-5, ),
+
+# BNO -> M462 :
+   _F(RESULTAT=Solution, INST=0., NOM_CHAM='FERRAILLAGE', REFERENCE='NON_REGRESSION',  POINT=1,
+      MAILLE='M462',  NOM_CMP='DNSXI', VALE=       4.899093631284E-05          ,CRITERE='RELATIF', PRECISION=1.E-5, ),
+   _F(RESULTAT=Solution, INST=0., NOM_CHAM='FERRAILLAGE', REFERENCE='NON_REGRESSION',  POINT=1,
+      MAILLE='M462',  NOM_CMP='DNSXS', VALE=       2.2551498E-04               ,CRITERE='RELATIF', PRECISION=1.E-5, ),
+   _F(RESULTAT=Solution, INST=0., NOM_CHAM='FERRAILLAGE', REFERENCE='NON_REGRESSION',  POINT=1,
+      MAILLE='M462',  NOM_CMP='DNSYI', VALE=       0.0E+00                     ,CRITERE='ABSOLU', PRECISION=1.E-5, ),
+   _F(RESULTAT=Solution, INST=0., NOM_CHAM='FERRAILLAGE', REFERENCE='NON_REGRESSION',  POINT=1,
+      MAILLE='M462',  NOM_CMP='DNSYS', VALE=       5.4447625E-04               ,CRITERE='RELATIF', PRECISION=1.E-5, ),
+
+# BNE -> M596 :
+   _F(RESULTAT=Solution, INST=0., NOM_CHAM='FERRAILLAGE', REFERENCE='NON_REGRESSION',  POINT=1,
+      MAILLE='M596',  NOM_CMP='DNSXI', VALE=       2.38415678E-04              ,CRITERE='RELATIF', PRECISION=1.E-5, ),
+   _F(RESULTAT=Solution, INST=0., NOM_CHAM='FERRAILLAGE', REFERENCE='NON_REGRESSION',  POINT=1,
+      MAILLE='M596',  NOM_CMP='DNSXS', VALE=       8.1048219266886E-05         ,CRITERE='RELATIF', PRECISION=1.E-5, ),
+   _F(RESULTAT=Solution, INST=0., NOM_CHAM='FERRAILLAGE', REFERENCE='NON_REGRESSION',  POINT=1,
+      MAILLE='M596',  NOM_CMP='DNSYI', VALE=       3.098628654E-04             ,CRITERE='RELATIF', PRECISION=1.E-5, ),
+   _F(RESULTAT=Solution, INST=0., NOM_CHAM='FERRAILLAGE', REFERENCE='NON_REGRESSION',  POINT=1,
+      MAILLE='M596',  NOM_CMP='DNSYS', VALE=       1.3961E-04                  ,CRITERE='RELATIF', PRECISION=1.E-5, ),
+
+# VC -> M562 :
+   _F(RESULTAT=Solution, INST=0., NOM_CHAM='FERRAILLAGE', REFERENCE='NON_REGRESSION',  POINT=1,
+      MAILLE='M562',  NOM_CMP='DNSXI', VALE=       0.0E+00                     ,CRITERE='RELATIF', PRECISION=1.E-5, ),
+   _F(RESULTAT=Solution, INST=0., NOM_CHAM='FERRAILLAGE', REFERENCE='NON_REGRESSION',  POINT=1,
+      MAILLE='M562',  NOM_CMP='DNSXS', VALE=       7.772788218E-04             ,CRITERE='RELATIF', PRECISION=1.E-5, ),
+   _F(RESULTAT=Solution, INST=0., NOM_CHAM='FERRAILLAGE', REFERENCE='NON_REGRESSION',  POINT=1,
+      MAILLE='M562',  NOM_CMP='DNSYI', VALE=       0.0E+00                     ,CRITERE='ABSOLU', PRECISION=1.E-5, ),
+   _F(RESULTAT=Solution, INST=0., NOM_CHAM='FERRAILLAGE', REFERENCE='NON_REGRESSION',  POINT=1,
+      MAILLE='M562',  NOM_CMP='DNSYS', VALE=       5.3902E-04                  ,CRITERE='RELATIF', PRECISION=1.E-5, ),
+
+# VBN -> M1113 :
+   _F(RESULTAT=Solution, INST=0., NOM_CHAM='FERRAILLAGE', REFERENCE='NON_REGRESSION',  POINT=1,
+      MAILLE='M1113', NOM_CMP='DNSXI', VALE=       3.62527336872E-04           ,CRITERE='RELATIF', PRECISION=1.E-5, ),
+   _F(RESULTAT=Solution, INST=0., NOM_CHAM='FERRAILLAGE', REFERENCE='NON_REGRESSION',  POINT=1,
+      MAILLE='M1113', NOM_CMP='DNSXS', VALE=       1.37862686E-05              ,CRITERE='RELATIF', PRECISION=1.E-5, ),
+   _F(RESULTAT=Solution, INST=0., NOM_CHAM='FERRAILLAGE', REFERENCE='NON_REGRESSION',  POINT=1,
+      MAILLE='M1113', NOM_CMP='DNSYI', VALE=       2.17955239518E-04           ,CRITERE='RELATIF', PRECISION=1.E-5, ),
+   _F(RESULTAT=Solution, INST=0., NOM_CHAM='FERRAILLAGE', REFERENCE='NON_REGRESSION',  POINT=1,
+      MAILLE='M1113', NOM_CMP='DNSYS', VALE=       4.54536E-04                 ,CRITERE='RELATIF', PRECISION=1.E-5, ),
+
+# VBS -> M1373 :
+   _F(RESULTAT=Solution, INST=0., NOM_CHAM='FERRAILLAGE', REFERENCE='NON_REGRESSION',  POINT=1,
+      MAILLE='M1373', NOM_CMP='DNSXI', VALE=       4.485537564865E-05          ,CRITERE='RELATIF', PRECISION=1.E-5, ),
+   _F(RESULTAT=Solution, INST=0., NOM_CHAM='FERRAILLAGE', REFERENCE='NON_REGRESSION',  POINT=1,
+      MAILLE='M1373', NOM_CMP='DNSXS', VALE=       1.5644093432E-04            ,CRITERE='RELATIF', PRECISION=1.E-5, ),
+   _F(RESULTAT=Solution, INST=0., NOM_CHAM='FERRAILLAGE', REFERENCE='NON_REGRESSION',  POINT=1,
+      MAILLE='M1373', NOM_CMP='DNSYI', VALE=       0.0E+00                     ,CRITERE='ABSOLU', PRECISION=1.E-5, ),
+   _F(RESULTAT=Solution, INST=0., NOM_CHAM='FERRAILLAGE', REFERENCE='NON_REGRESSION',  POINT=1,
+      MAILLE='M1373', NOM_CMP='DNSYS', VALE=       0.0E+00                     ,CRITERE='ABSOLU', PRECISION=1.E-5, ),
+
+# VHN -> M516 :
+   _F(RESULTAT=Solution, INST=0., NOM_CHAM='FERRAILLAGE', REFERENCE='NON_REGRESSION',  POINT=1,
+      MAILLE='M516',  NOM_CMP='DNSXI', VALE=       1.431243828E-03             ,CRITERE='RELATIF', PRECISION=1.E-5, ),
+   _F(RESULTAT=Solution, INST=0., NOM_CHAM='FERRAILLAGE', REFERENCE='NON_REGRESSION',  POINT=1,
+      MAILLE='M516',  NOM_CMP='DNSXS', VALE=       0.0E+00                     ,CRITERE='ABSOLU', PRECISION=1.E-5, ),
+   _F(RESULTAT=Solution, INST=0., NOM_CHAM='FERRAILLAGE', REFERENCE='NON_REGRESSION',  POINT=1,
+      MAILLE='M516',  NOM_CMP='DNSYI', VALE=       6.01385273E-05              ,CRITERE='RELATIF', PRECISION=1.E-5, ),
+   _F(RESULTAT=Solution, INST=0., NOM_CHAM='FERRAILLAGE', REFERENCE='NON_REGRESSION',  POINT=1,
+      MAILLE='M516',  NOM_CMP='DNSYS', VALE=       0.0E+00                     ,CRITERE='ABSOLU', PRECISION=1.E-5, ),
+
+# VHS -> M1173 :
+   _F(RESULTAT=Solution, INST=0., NOM_CHAM='FERRAILLAGE', REFERENCE='NON_REGRESSION',  POINT=1,
+      MAILLE='M1173', NOM_CMP='DNSXI', VALE=       0.0E+00                     ,CRITERE='ABSOLU', PRECISION=1.E-5, ),
+   _F(RESULTAT=Solution, INST=0., NOM_CHAM='FERRAILLAGE', REFERENCE='NON_REGRESSION',  POINT=1,
+      MAILLE='M1173', NOM_CMP='DNSXS', VALE=       9.8273833598439E-04         ,CRITERE='RELATIF', PRECISION=1.E-5, ),
+   _F(RESULTAT=Solution, INST=0., NOM_CHAM='FERRAILLAGE', REFERENCE='NON_REGRESSION',  POINT=1,
+      MAILLE='M1173', NOM_CMP='DNSYI', VALE=       0.0E+00                     ,CRITERE='ABSOLU', PRECISION=1.E-5, ),
+   _F(RESULTAT=Solution, INST=0., NOM_CHAM='FERRAILLAGE', REFERENCE='NON_REGRESSION',  POINT=1,
+      MAILLE='M1173', NOM_CMP='DNSYS', VALE=       6.92846336696773E-06        ,CRITERE='ABSOLU', PRECISION=1.E-5, ),
+))
+
+FIN();
+

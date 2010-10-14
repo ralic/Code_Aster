@@ -1,12 +1,13 @@
       SUBROUTINE RSLESD (RESULT,NUORD,MODELE,MATERI,CARELE,EXCIT,
      &                   IEXCIT)
       IMPLICIT NONE
+C     RESPONSABLE PELLET
       INTEGER      NUORD,IEXCIT
       CHARACTER*8  RESULT,MODELE,CARELE,MATERI
       CHARACTER*19 EXCIT
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 16/11/2009   AUTEUR REZETTE C.REZETTE 
+C MODIF UTILITAI  DATE 11/10/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -69,9 +70,10 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 
       INTEGER      JPARA,N1,N2,N3,N4,IEX,JLCHA,JINFC,JFCHA,NCHA
       INTEGER      ILU,ISD,NCHALU,NCHASD,LCHALU,FCHALU,VALI(2)
+      INTEGER      GETEXM
 
       CHARACTER*6  NOMPRO
-      CHARACTER*8  BLAN8,NOMSD,NOMLU,FONCLU,K8B,FONCSD
+      CHARACTER*8  NOMSD,NOMLU,FONCLU,K8B,FONCSD
       CHARACTER*16 TYPE,NOMCMD
       CHARACTER*19 KCHA, KFON
       CHARACTER*24 EXCISD,VALK(4)
@@ -84,13 +86,13 @@ C ----------------------------------------------------------------------
 C
 C--- INITIALISATIONS
 C               123456789012345678901234
-      BLAN8  = '        '
       KCHA   = '&&'//NOMPRO//'.CHARGE    '
       KFON   = '&&'//NOMPRO//'.FONC_MULT '
       IEXCIT = 0
       N4     = 0
 C
       CALL GETRES(K8B,TYPE,NOMCMD)
+
 C
 C==========================================================
 C
@@ -102,16 +104,14 @@ C
 C---  RECUPERATION DU NOM DU MODELE
 C
       N1=0
-      NOMLU=BLAN8
-      IF(NOMCMD(1:6).NE.'CALC_G')THEN
+      NOMLU=' '
+      IF (GETEXM(' ','MODELE').EQ.1) THEN
         CALL GETVID(' ','MODELE'    ,0,1,1,NOMLU,N1)
       ENDIF
-C
+
       CALL RSADPA(RESULT,'L',1,'MODELE',NUORD,0,JPARA,K8B)
       NOMSD=ZK8(JPARA)
-C
-C--- VERIFICATIONS ET AFFECTATIONS
-C
+
       IF (NOMSD.NE.' ')THEN
         IF (N1.EQ.0) THEN
            MODELE = NOMSD
@@ -125,13 +125,10 @@ C
         IF (N1.NE.0) THEN
            MODELE = NOMLU
         ELSE
-           MODELE = BLAN8
+           MODELE = ' '
         ENDIF
       ENDIF
-C
-C--- SI LE MODELE EST ABSENT DE LA SD RESULTAT ET S'IL EST FOURNI PAR
-C    L'UTILISATEUR , ON LE STOCKE DANS LA SD RESULTAT
-C
+
       IF(NOMSD.EQ.' '.AND.NOMLU.NE.' ') THEN
          CALL RSADPA(RESULT,'E',1,'MODELE',NUORD,0,JPARA,K8B)
          ZK8(JPARA)=MODELE
@@ -145,45 +142,35 @@ C==========================================================
 C
 C--- RECUPERATION DU NOM DU CARA_ELEM
 C
-      IF (NOMCMD.NE.'CALC_G') THEN
+      CALL RSADPA(RESULT,'L',1,'CARAELEM',NUORD,0,JPARA,K8B)
+      NOMSD=ZK8(JPARA)
+      IF (GETEXM(' ','CARA_ELEM').EQ.1) THEN
         CALL GETVID(' ','CARA_ELEM',0,1,1,NOMLU,N2)
-        CALL RSADPA(RESULT,'L',1,'CARAELEM',NUORD,0,JPARA,K8B)
-        NOMSD=ZK8(JPARA)
-C
-C--- VERIFICATIONS ET AFFECTATIONS
-C
-        IF (NOMSD.NE.' ')THEN
-C
-          IF (N2.EQ.0) THEN
-C
-             CARELE = NOMSD
-C
-          ELSEIF (NOMSD.EQ.NOMLU) THEN
-             CARELE = NOMLU
-C
-          ELSE
-C
-             CALL U2MESS('A','UTILITAI4_38')
-             CARELE = NOMLU
-          ENDIF
-        ELSE
-          IF (N2.NE.0) THEN
-C
-             CARELE = NOMLU
-          ELSE
-C
-             CARELE = BLAN8
-          ENDIF
-        ENDIF
-C
-C--- SI LE CARA_ELEM EST ABSENT DE LA SD RESULTAT ET S'IL EST FOURNI PAR
-C    L'UTILISATEUR , ON LE STOCKE DANS LA SD RESULTAT
-C
+      ELSE
+        N2=0
+        NOMLU=' '
+      ENDIF
 
-        IF(NOMSD.EQ.' '.AND.NOMLU.NE.' ') THEN
-           CALL RSADPA(RESULT,'E',1,'CARAELEM',NUORD,0,JPARA,K8B)
-           ZK8(JPARA)=CARELE
+      IF (NOMSD.NE.' ')THEN
+        IF (N2.EQ.0) THEN
+           CARELE = NOMSD
+        ELSEIF (NOMSD.EQ.NOMLU) THEN
+           CARELE = NOMLU
+        ELSE
+           CALL U2MESS('A','UTILITAI4_38')
+           CARELE = NOMLU
         ENDIF
+      ELSE
+        IF (N2.NE.0) THEN
+           CARELE = NOMLU
+        ELSE
+           CARELE = ' '
+        ENDIF
+      ENDIF
+
+      IF(NOMSD.EQ.' '.AND.NOMLU.NE.' ') THEN
+         CALL RSADPA(RESULT,'E',1,'CARAELEM',NUORD,0,JPARA,K8B)
+         ZK8(JPARA)=CARELE
       ENDIF
 C
 C==========================================================
@@ -195,19 +182,16 @@ C==========================================================
 C
 C---  RECUPERATION DU NOM DU CHAMP MATERIAU
 C
-      IF(NOMCMD(1:6).NE.'CALC_G')THEN
+      IF (GETEXM(' ','CHAM_MATER').EQ.1) THEN
         CALL GETVID(' ','CHAM_MATER',0,1,1,NOMLU,N3)
       ELSE
         N3=0
-        NOMLU=BLAN8
+        NOMLU=' '
       ENDIF
 
-C
       CALL RSADPA(RESULT,'L',1,'CHAMPMAT',NUORD,0,JPARA,K8B)
       NOMSD=ZK8(JPARA)
-C
-C--- VERIFICATIONS ET AFFECTATIONS
-C
+
       IF (NOMSD.NE.' ')THEN
         IF (N3.EQ.0) THEN
            MATERI = NOMSD
@@ -221,13 +205,10 @@ C
         IF (N3.NE.0) THEN
            MATERI = NOMLU
         ELSE
-           MATERI = BLAN8
+           MATERI = ' '
         ENDIF
       ENDIF
-C
-C--- SI LE MATERIAU EST ABSENT DE LA SD RESULTAT ET S'IL EST FOURNI PAR
-C    L'UTILISATEUR , ON LE STOCKE DANS LA SD RESULTAT
-C
+
       IF(NOMSD.EQ.' '.AND.NOMLU.NE.' ') THEN
          CALL RSADPA(RESULT,'E',1,'CHAMPMAT',NUORD,0,JPARA,K8B)
          ZK8(JPARA)=MATERI
@@ -244,9 +225,9 @@ C--- RECUPERATION DES CHARGEMENTS 'EXCIT'
 C
 C--- LECTURE DES INFORMATIONS UTILISATEUR
 C
-      IF(NOMCMD.NE.'POST_ELEM') THEN
+      IF (GETEXM('EXCIT','CHARGE').EQ.1) THEN
 
-         CALL GETFAC('EXCIT',NCHALU)
+        CALL GETFAC('EXCIT',NCHALU)
 C
         IF ( NCHALU .NE. 0 ) THEN
           CALL WKVECT(KCHA,'V V K8',NCHALU,LCHALU)
@@ -263,8 +244,9 @@ C
             ENDIF
   10      CONTINUE
         ENDIF
-      ELSE
+      ENDIF
 C
+      IF (GETEXM(' ','CHARGE').EQ.1) THEN
         CALL GETVID(' ','CHARGE'    ,0,1,0,K8B   ,N4)
         NCHA = -N4
         NCHALU = MAX(1,NCHA)
@@ -333,7 +315,7 @@ C
           DO 70 ILU = 1,NCHALU
             DO 50 ISD = 1,NCHASD
               FONCSD = ZK24(JFCHA-1+ISD)(1:8)
-              IF(FONCSD(1:2).EQ.'&&') FONCSD = BLAN8
+              IF(FONCSD(1:2).EQ.'&&') FONCSD = ' '
               IF(ZK8(FCHALU-1+ILU).EQ.FONCSD) GOTO 60
  50         CONTINUE
               CALL U2MESS('A','UTILITAI4_41')
@@ -349,7 +331,7 @@ C
           DO 90 ISD = 1,NCHASD
            IF(ZK8(LCHALU-1+ILU).EQ.ZK24(JLCHA-1+ISD)(1:8)) THEN
               FONCSD = ZK24(JFCHA-1+ISD)(1:8)
-              IF(FONCSD(1:2).EQ.'&&') FONCSD = BLAN8
+              IF(FONCSD(1:2).EQ.'&&') FONCSD = ' '
               IF(ZK8(FCHALU-1+ILU).EQ.FONCSD) GOTO 95
               VALK(1)=ZK8(LCHALU-1+ILU)
               VALK(2)=ZK8(FCHALU-1+ILU)

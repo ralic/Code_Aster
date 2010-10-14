@@ -4,7 +4,7 @@
      &                  SIGM, VIM,
      &                  SIGP, VIP, DSIDEP,CODRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/09/2008   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 11/10/2010   AUTEUR FLEJOU J-L.FLEJOU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,11 +23,11 @@ C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
       IMPLICIT NONE
       INTEGER       IMATE,CODRET,KPG,KSP
-      CHARACTER*16  COMPOR(*),OPTION
+      CHARACTER*16  COMPOR(*),OPTION,VALKM(2)
       CHARACTER*(*) FAMI
       REAL*8        EPSM,DEPS,SIGM,VIM(*)
       REAL*8        ANGMAS(3)
-      
+
       REAL*8        SIGP,VIP(*),DSIDEP
 C ----------------------------------------------------------------------
 C          REALISE LES LOIS 1D (DEBORST OU EXPLICITEMENT 1D)
@@ -97,7 +97,9 @@ C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
           COM1D=.TRUE.
           IF ((COMPOR(5)(1:7).NE.'DEBORST').AND.
      &        (COMPOR(1)(1:4).NE.'SANS')) THEN
-                CALL U2MESK('F','ALGORITH6_81',1,COMPOR(1))
+               VALKM(1) = COMPOR(1)
+               VALKM(2) = 'COMP_INCR'
+                CALL U2MESK('F','ALGORITH6_81',2,VALKM)
           ENDIF
       ENDIF
 
@@ -120,7 +122,7 @@ C --- CARACTERISTIQUES ELASTIQUES A TPLUS
         CALL NM1DCI(FAMI,KPG,KSP,IMATE,EM,EP,SIGM,
      &            DEPS,VIM,OPTION,' ',SIGP,VIP,DSIDEP)
       ELSE IF (ELAS) THEN
-      
+
         IF (OPTION.EQ.'FULL_MECA'.OR.
      &      OPTION.EQ.'RIGI_MECA_TANG') THEN
            DSIDEP = EP
@@ -130,7 +132,7 @@ C --- CARACTERISTIQUES ELASTIQUES A TPLUS
            CALL VERIFT(FAMI,KPG,KSP,'T',IMATE,'ELAS',1,DEPSTH,IRET)
            SIGP = EP* (SIGM/EM+DEPS-DEPSTH)
         ENDIF
-        
+
       ELSE IF (COM1D) THEN
 
         CALL COMP1D(FAMI,KPG,KSP,OPTION,

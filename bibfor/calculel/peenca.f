@@ -2,10 +2,10 @@
       IMPLICIT REAL*8 (A-H,O-Z)
       CHARACTER*(*)     CHAMP
       INTEGER                 LONG,   NBMAIL,NUMMAI(*)
-      REAL*8                       VR(13)
+      REAL*8                       VR(LONG)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 08/12/2008   AUTEUR SELLENET N.SELLENET 
+C MODIF CALCULEL  DATE 11/10/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -60,8 +60,6 @@ C     ------------------------------------------------------------------
       CALL JEMARQ()
       CHAMP2 = CHAMP
       RZERO  = 0.0D0
-C
-C     --- ON RETROUVE LE NOM DU LIGREL ---
 
 C     -- ON VERIFIE QUE LE CHAM_ELEM N'EST PAS TROP DYNAMIQUE :
       CALL CELVER(CHAMP2,'NBVARI_CST','STOP',IBID)
@@ -78,21 +76,9 @@ C
 C
 C     --- TYPE DE LA GRANDEUR ---
       SCAL= SCALAI(ZI(JCELD))
-C
-C     --- ON NE VERIFIE PAS LES LONGUEURS, CAR ELLES SONT DIFFERENTES
-C         SUIVANT LE TYPE D'ELEMENT.
-C     --- LA VALEUR "TOTALE" QUE L'ON VEUT RECUPERER EST PLACE EN 1
+
       NBGR  =  NBGREL(LIGREL)
 
-C    +                                //'INCOMPATIBLES ENTRE EUX.')
-C           ENDIF
-C           FIRST = .FALSE.
-C        ENDIF
-C 10  CONTINUE
-C     IF (LONGT.GT.LONG) THEN
-
-CCC   ENDIF
-C
 C     -- ON MET A ZERO LE VECTEUR "VSCAL":
       IF (SCAL(1:1).EQ.'R') THEN
          DO 12  I = 1,LONG

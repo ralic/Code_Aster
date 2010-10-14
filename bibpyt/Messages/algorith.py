@@ -1,4 +1,4 @@
-#@ MODIF algorith Messages  DATE 04/10/2010   AUTEUR PELLET J.PELLET 
+#@ MODIF algorith Messages  DATE 11/10/2010   AUTEUR DELMAS J.DELMAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -127,7 +127,19 @@ cata_msg = {
  le cas des contraintes planes n'est pas traité pour ce modèle.
 """),
 
+52 : _("""
+  Le nombre de modes et de degré de liberté d'interface sont différents.
+"""),
 
+53 : _("""
+  Le nombre de modes dynamiques est %(i1)s, 
+  ce n'est pas un multiple du nombre de composante.
+"""),
+
+54 : _("""
+  Le nombre de modes statiques est %(i1)s, 
+  ce n'est pas un multiple du nombre de composante.
+"""),
 
 
 

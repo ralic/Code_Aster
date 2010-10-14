@@ -1,4 +1,4 @@
-#@ MODIF V_MCSIMP Validation  DATE 07/09/2009   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF V_MCSIMP Validation  DATE 11/10/2010   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -154,6 +154,8 @@ class MCSIMP:
                        intoProto.adapt(val)
                    cardProto.adapt(lval)
                    if self.definition.validators:
+                       if hasattr(self.definition.validators,'set_MCSimp'):
+                          self.definition.validators.set_MCSimp(self)
                        self.definition.validators.convert(lval)
                except ValError,e:
                    valid=0

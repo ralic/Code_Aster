@@ -3,7 +3,7 @@
       INTEGER NCHAR,NH,NBOCC
       CHARACTER*(*) RESU,MODELE,MATE,CARA,LCHAR(*)
 C     ------------------------------------------------------------------
-C MODIF UTILITAI  DATE 29/03/2010   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 11/10/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -114,7 +114,7 @@ C --- RECUPERATION DU NIVEAU D'IMPRESSION
       MLGNMA = NOMA//'.NOMMAI'
       MLGGMA = NOMA//'.GROUPEMA'
 
-      CALL EXLIMA('ENER_CIN','V',MODELE,LIGREL)
+      CALL EXLIM3('ENER_CIN','V',MODELE,LIGREL)
 
       KNUM = '&&PEECIN.NUME_ORDRE'
       KINS = '&&PEECIN.INSTANT'

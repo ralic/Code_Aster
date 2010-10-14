@@ -2,7 +2,7 @@
       IMPLICIT      NONE
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 27/10/2009   AUTEUR SELLENET N.SELLENET 
+C MODIF ALGORITH  DATE 12/10/2010   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -67,11 +67,11 @@ C
 C
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 C
-      INTEGER      LEEVR,LESUR,LAEVR,LATPR,LATPK
-      PARAMETER   (LEEVR=4,LESUR=8)
+      INTEGER      LEEVR,LEEVK,LESUR,LAEVR,LATPR,LATPK
+      PARAMETER   (LEEVR=4,LEEVK=3,LESUR=8)
       PARAMETER   (LAEVR=5,LATPR=6,LATPK=4)
 
-      INTEGER      IRET,N,JLIR
+      INTEGER      IRET,N,JLIR,I,NOCC
       INTEGER      JEEVR,JEEVK,JESUR,JAEVR,JATPR,JATPK
       CHARACTER*8  K8BID
 C
@@ -80,6 +80,8 @@ C
       CALL ASSERT(TYPQUE.EQ.'LIST'.OR.
      &            TYPQUE.EQ.'ECHE'.OR.
      &            TYPQUE.EQ.'ADAP')
+
+      CALL ASSERT(GETSET.EQ.'L'.OR.GETSET.EQ.'E')
 
 C     ------------------------------------------------------------------
 C                     QUESTION SUR LA LISTE
@@ -140,6 +142,10 @@ C     ------------------------------------------------------------------
       ELSEIF (TYPQUE.EQ.'ECHE') THEN
       
         CALL ASSERT(QUEST.EQ.'NOM_EVEN'.OR.
+     &              QUEST.EQ.'NOM_CHAM'.OR.
+     &              QUEST.EQ.'NOM_CMP'.OR.
+     &              QUEST.EQ.'VALE_REF'.OR.
+     &              QUEST.EQ.'CRIT_COMP'.OR.
      &              QUEST.EQ.'SUBD_METH'.OR.
      &              QUEST.EQ.'SUBD_PAS'.OR.
      &              QUEST.EQ.'SUBD_PAS_MINI'.OR.
@@ -148,18 +154,71 @@ C     ------------------------------------------------------------------
      &              QUEST.EQ.'SUBD_ITER_IGNO'.OR.
      &              QUEST.EQ.'SUBD_ITER_FIN'.OR.
      &              QUEST.EQ.'SUBD_ITER_PLUS'.OR.
+     &              QUEST.EQ.'IOCC_ERREUR'.OR.
+     &              QUEST.EQ.'VERIF_EVEN'.OR.
      &              QUEST.EQ.'NB_OCC')
         
         IF (QUEST.EQ.'NB_OCC') THEN
           CALL JELIRA(SD//'.EEVR','LONMAX',IRET,K8BID)
           VALI = IRET /LEEVR
 
+        ELSEIF (QUEST.EQ.'IOCC_ERREUR') THEN
+          CALL ASSERT(GETSET.EQ.'L')
+          CALL JELIRA(SD//'.EEVR','LONMAX',IRET,K8BID)
+          NOCC = IRET /LEEVR
+          CALL JEVEUO(SD//'.EEVR','L',JEEVR)
+          VALI = 0
+          DO 100 I = 1,NOCC
+            N = NINT(ZR(JEEVR-1+LEEVR*(I-1)+1))
+            IF (N.EQ.0) VALI=I
+ 100      CONTINUE
+          CALL ASSERT(VALI.GT.0)
+          CALL ASSERT(VALI.LE.NOCC)
+
         ELSEIF (QUEST.EQ.'NOM_EVEN') THEN
           CALL JEVEUO(SD//'.EEVR','L',JEEVR)
           N = NINT(ZR(JEEVR-1+LEEVR*(IOCC-1)+1))
-          IF (N.EQ.0) VALK = 'DIVERGENCE_ITER'
-          IF (N.EQ.1) VALK = 'DIVERGENCE_ERRE'
+          IF (N.EQ.0) VALK = 'ERREUR'
+          IF (N.EQ.1) VALK = 'DELTA_GRANDEUR'
           IF (N.EQ.2) VALK = 'COLLISION'
+
+        ELSEIF (QUEST.EQ.'VERIF_EVEN') THEN
+          CALL JEVEUO(SD//'.EEVR',GETSET,JEEVR)
+          IF (GETSET.EQ.'L') THEN
+            IF (ZR(JEEVR-1+LEEVR*(IOCC-1)+4).EQ.1) THEN
+              VALK='OUI'
+            ELSEIF (ZR(JEEVR-1+LEEVR*(IOCC-1)+4).EQ.0) THEN
+              VALK='NON'
+            ENDIF
+          ELSEIF (GETSET.EQ.'E') THEN
+            IF (VALK.EQ.'OUI') THEN
+              ZR(JEEVR-1+LEEVR*(IOCC-1)+4)=1
+            ELSEIF (VALK.EQ.'NON') THEN
+              ZR(JEEVR-1+LEEVR*(IOCC-1)+4)=0
+            ELSE
+              CALL ASSERT(.FALSE.)
+            ENDIF
+          ENDIF
+
+        ELSEIF (QUEST.EQ.'NOM_CHAM') THEN
+          CALL JEVEUO(SD//'.EEVK','L',JEEVK)
+          VALK = ZK16(JEEVK-1+LEEVK*(IOCC-1)+2)
+
+        ELSEIF (QUEST.EQ.'NOM_CMP') THEN
+          CALL JEVEUO(SD//'.EEVK','L',JEEVK)
+          VALK = ZK16(JEEVK-1+LEEVK*(IOCC-1)+3)
+
+        ELSEIF (QUEST.EQ.'VALE_REF') THEN
+          CALL JEVEUO(SD//'.EEVR','L',JEEVR)
+          VALR = ZR(JEEVR-1+LEEVR*(IOCC-1)+3)
+
+        ELSEIF (QUEST.EQ.'CRIT_COMP') THEN
+          CALL JEVEUO(SD//'.EEVR','L',JEEVR)
+          VALI = NINT(ZR(JEEVR-1+LEEVR*(IOCC-1)+2))
+          IF (VALI.EQ.1) VALK = 'LT'
+          IF (VALI.EQ.2) VALK = 'GT'
+          IF (VALI.EQ.3) VALK = 'LE'
+          IF (VALI.EQ.4) VALK = 'GE'
 
         ELSEIF (QUEST.EQ.'SUBD_METH') THEN
           CALL JEVEUO(SD//'.ESUR',GETSET,JESUR)

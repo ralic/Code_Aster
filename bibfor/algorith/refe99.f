@@ -1,7 +1,9 @@
       SUBROUTINE  REFE99 (NOMRES)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
+      CHARACTER*8  NOMRES
+C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/01/2010   AUTEUR BODEL C.BODEL 
+C MODIF ALGORITH  DATE 11/10/2010   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,13 +20,21 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
-C***********************************************************************
-C  P. RICHARD     DATE 12/90
-C-----------------------------------------------------------------------
-C  BUT : RECUPERER LES NOMS UTILISATEUR DES CONCEPTS ASSOCIES AUX
-C        MATRICES ASSEMBLEES CONSIDEREES - EFFECTUER QUELQUES CONTROLES
-C        CREER LE .REFD
-C-----------------------------------------------------------------------
+C
+C     BUT:
+C       RECUPERER LES NOMS UTILISATEUR DES CONCEPTS ASSOCIES AUX
+C       MATRICES ASSEMBLEES CONSIDEREES - EFFECTUER QUELQUES CONTROLES
+C       CREER LE .REFD
+C
+C
+C     ARGUMENTS:
+C     ----------
+C
+C      ENTREE :
+C-------------
+C IN   NOMRES   : NOM DE LA SD_RESULTAT
+C
+C ......................................................................
 C
 C-------- DEBUT COMMUNS NORMALISES  JEVEUX  ----------------------------
 C
@@ -43,20 +53,21 @@ C
       CHARACTER*80                                            ZK80
       COMMON  /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C
-C----------  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
+C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C
-      CHARACTER*6  PGC
-      CHARACTER*8  NOMRES,K8BID,RESUL
+      CHARACTER*6 NOMPRO
+      PARAMETER (NOMPRO='REFE99')
+
+      INTEGER      I,IOC1,IOC3,IOC4,IOC5,IOCI,IRET,IBID
+      INTEGER      LDREF,LLRES,LTMOME,NBG,NBMOME
+C
+      CHARACTER*8  K8BID,RESUL
       CHARACTER*8  MECA
       CHARACTER*19 NUMDDL,NUMBIS
       CHARACTER*24 RAID,MASS,INTF,AMOR
       CHARACTER*24 VALK(4)
+C
       LOGICAL      NOSEUL
-      INTEGER      NBGL, IBID
-C
-C-----------------------------------------------------------------------
-C
-      DATA PGC /'REFE99'/
 C
 C-----------------------------------------------------------------------
 C
@@ -83,7 +94,7 @@ C
         NUMDDL(15:19)='.NUME'
         CALL GETVID('CLASSIQUE','MODE_MECA',1,1,0,K8BID,NBMOME)
         NBMOME = -NBMOME
-        CALL WKVECT('&&'//PGC//'.MODE_MECA','V V K8',NBMOME,LTMOME)
+        CALL WKVECT('&&'//NOMPRO//'.MODE_MECA','V V K8',NBMOME,LTMOME)
         CALL GETVID('CLASSIQUE','MODE_MECA',1,1,NBMOME,ZK8(LTMOME),IBID)
         DO 10 I=1,NBMOME
           CALL JEVEUO(ZK8(LTMOME-1+I)//'           .REFD','L',LLRES)
@@ -102,7 +113,7 @@ C
             CALL U2MESG('F', 'ALGORITH14_24',4,VALK,0,0,0,0.D0)
           ENDIF
 10      CONTINUE
-        CALL JEDETR('&&'//PGC//'.MODE_MECA')
+        CALL JEDETR('&&'//NOMPRO//'.MODE_MECA')
       ENDIF
 C
 C --- CAS RITZ
@@ -111,13 +122,11 @@ C
         NOSEUL=.FALSE.
         CALL GETVID('RITZ','MODE_MECA',1,1,999,K8BID,NBG)
         CALL GETVID('RITZ','MODE_INTF',2,1,0,K8BID,IBID)
-        WRITE(6,*) 'IBID = ', IBID,' NBG = ', NBG
         IF ((IBID.GT.0).OR.(NBG.GT.1)) THEN 
           NOSEUL=.TRUE.
         ENDIF
-        WRITE(6,*) 'NOSEUL = ', NOSEUL
         CALL GETVID('    ','NUME_REF',1,1,1,NUMDDL,IBID)
-        IF ((IBID.EQ.0).AND.(NOSEUL)) THEN
+        IF ((IBID.EQ.0).AND.NOSEUL) THEN
 C         si on a plus d'un mode_meca en entree, preciser NUME_REF
           CALL U2MESG('E', 'ALGORITH17_8',0,' ',0,0,0,0.D0)
         ENDIF
@@ -180,8 +189,6 @@ C
          ENDIF
       ENDIF
 C
-C
-C
- 9999 CONTINUE
       CALL JEDEMA()
+C
       END

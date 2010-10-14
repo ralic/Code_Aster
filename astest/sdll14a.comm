@@ -1,4 +1,4 @@
-# MODIF  DATE 03/07/2007   AUTEUR SALMONA L.SALMONA 
+# MODIF  DATE 11/10/2010   AUTEUR DELMAS J.DELMAS 
 # RESPONSABLE ADBHHPM P.MASSIN
 # DATE   : 04/04/2000
 # AUTEUR : F. LEBOUVIER (DELTACAD)
@@ -103,13 +103,30 @@ MACRO_MATR_ASSE(        MODELE=MODELE,
                   )
 
 #                                                            
-MODES=MODE_ITER_SIMULT(      MATR_A=K,
+MOD_CAL=MODE_ITER_SIMULT(      MATR_A=K,
                                MATR_B=M,
                               METHODE='TRI_DIAG',
                             CALC_FREQ=_F( OPTION = 'PLUS_PETITE',
                                        NMAX_FREQ = 4)
                          )
 
+# CE BLOC POUR TESTER LIRE_RESU POUR LES BASES
+IMPR_RESU(MODELE=MODELE,
+          FORMAT='MED',
+          UNITE=81,
+          RESU=_F(MAILLAGE=MAILLAGE,
+                  RESULTAT=MOD_CAL,
+                  NOM_CHAM='DEPL',),);
+
+MODES=LIRE_RESU(FORMAT='MED',
+                UNITE=81,
+                FORMAT_MED=_F(NOM_CHAM='DEPL',
+                              NOM_CHAM_MED='MOD_CAL_DEPL____________________',),
+                TYPE_RESU='MODE_MECA',
+                MATR_A=K,
+                MATR_B=M,
+                TOUT_ORDRE='OUI',
+                MAILLAGE=MAILLAGE,);
 #---------------------------------------------------------------------
 #                        VERIFICATION DES RESULTATS
 #---------------------------------------------------------------------

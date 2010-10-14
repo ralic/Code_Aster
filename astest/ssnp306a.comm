@@ -1,4 +1,4 @@
-# MODIF  DATE 12/04/2010   AUTEUR MICHEL S.MICHEL 
+# MODIF  DATE 11/10/2010   AUTEUR ABBAS M.ABBAS 
 # TITRE VALIDATION DU CRITERE DE FLAMBEMENT PAR RECHERCHE SELECTIVE DES VALEURS PROPRES
 # ssnp306a.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -21,7 +21,10 @@
 
 
 DEBUT(CODE=_F(NOM='SSNP306A',
-              NIV_PUB_WEB='INTERNET',));
+              NIV_PUB_WEB='INTERNET',),
+              DEBUG=_F(JXVERI='OUI'),
+              
+              );
 
 
 MAILLAGE =  LIRE_MAILLAGE()
@@ -81,7 +84,7 @@ CH_U4  = AFFE_CHAR_CINE( MODELE   = MO,
                         )                                                             
                                                                                            
 
-EVOL   = STAT_NON_LINE( MODELE     = MO,
+EVOL   = STAT_NON_LINE( MODELE     = MO,INFO=2,
                         CHAM_MATER = CHMAT,
                         EXCIT      = (_F( CHARGE       = CH_U1,
                                           FONC_MULT    = COEF1),

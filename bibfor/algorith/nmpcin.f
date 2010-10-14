@@ -1,7 +1,7 @@
-      SUBROUTINE NMPCIN(MATASS,JCCID )
+      SUBROUTINE NMPCIN(MATASS)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 19/04/2010   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 11/10/2010   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -22,8 +22,6 @@ C RESPONSABLE ABBAS M.ABBAS
 C
       IMPLICIT NONE 
       CHARACTER*19  MATASS
-      INTEGER       JCCID
-
 C 
 C ----------------------------------------------------------------------
 C
@@ -35,7 +33,6 @@ C ----------------------------------------------------------------------
 C
 C
 C IN  MATASS : MATRICE DU PREMIER MEMBRE ASSEMBLEE
-C OUT JCCID  : POINTEUR SUR LES DDLS ELIMINES PAR AFFE_CHAR_CINE
 C
 C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
 C
@@ -56,7 +53,7 @@ C
 C
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 C
-      INTEGER JREFA
+      INTEGER JREFA,JCCID
       LOGICAL LVCINE
 C
 C ----------------------------------------------------------------------

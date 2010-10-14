@@ -1,4 +1,4 @@
-#@ MODIF fonct0 Messages  DATE 24/08/2010   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF fonct0 Messages  DATE 11/10/2010   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -358,5 +358,15 @@ Noms des paramètres fournis  : %(ktout)s
   La borne inf doit etre inférieure à la borne sup. 
   Veuillez revoir la saisie du mot-clé INTERVALLE.
 """),
+
+57 : _("""
+Le polynome est de la forme :
+    a[0] x^N + a[1] x^(N-1) + a[2] x^(N-2) + ... + a[N]
+
+avec :
+   %(k1)s
+
+"""),
+
 
 }

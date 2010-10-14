@@ -1,21 +1,21 @@
-#@ MODIF algorith6 Messages  DATE 04/10/2010   AUTEUR PROIX J-M.PROIX 
+#@ MODIF algorith6 Messages  DATE 11/10/2010   AUTEUR FLEJOU J-L.FLEJOU 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # RESPONSABLE DELMAS J.DELMAS
 
@@ -115,21 +115,21 @@ cata_msg = {
 31 : _("""
  le nombre dabscisses d'une des fonctions d'interpolation
  n'est pas identique au nombre d'abscisses du premier point
- de mesure expérimental 
+ de mesure expérimental
 """),
 
 32 : _("""
   le critère d'égalite de la liste d'abscisses du premier dataset 58
   et de la liste d'abscisses d une des fonctions de pondération
-  n'est pas verifié 
+  n'est pas verifié
 """),
 
 33 : _("""
- incompatibilité NOM_PARA et données mesurées 
+ incompatibilité NOM_PARA et données mesurées
 """),
 
 37 : _("""
- pas de numéro d'ordre pour le concept  %(k1)s 
+ pas de numéro d'ordre pour le concept  %(k1)s
 """),
 
 52 : _("""
@@ -151,7 +151,7 @@ cata_msg = {
 """),
 
 55 : _("""
- THETA = 1 ou 0.5 
+ THETA = 1 ou 0.5
 """),
 
 56 : _("""
@@ -178,7 +178,7 @@ cata_msg = {
 61 : _("""
  BARCELONE :
  il faut que la contrainte hydrostatique soit supérieure
- à la  pression de cohesion -KC*PC 
+ à la  pression de cohesion -KC*PC
 """),
 
 62 : _("""
@@ -193,7 +193,7 @@ cata_msg = {
 64 : _("""
  CAM_CLAY :
  il faut que la contrainte hydrostatique soit supérieure
- a la pression initiale PA 
+ a la pression initiale PA
 """),
 
 66 : _("""
@@ -223,11 +223,11 @@ cata_msg = {
 """),
 
 80 : _("""
- pb interp vari entiere ?? 
+ pb interp vari entiere ??
 """),
 
 81 : _("""
- utiliser ALGO_1D="DEBORST" sous COMP_INCR pour le comportement  %(k1)s 
+ Utilisez ALGO_1D="DEBORST" sous %(k2)s pour le comportement %(k1)s.
 """),
 
 86 : _("""

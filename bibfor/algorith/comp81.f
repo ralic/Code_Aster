@@ -3,7 +3,7 @@
       CHARACTER*8  NOMRES,NOMA,BASMOD
       CHARACTER*19 MASSF,RAIDF,AMORF
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 05/07/2010   AUTEUR DEVESA G.DEVESA 
+C MODIF ALGORITH  DATE 11/10/2010   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -74,8 +74,6 @@ C
       NU = NOMRES
       NU = NU(1:14)//'.NUME'
       LREDU = .FALSE.
-C      CALL GETVTX ( ' ', 'REDUC' , 1,1,1, TREDU, N2 )
-C      IF (TREDU.EQ.'OUI') LREDU = .TRUE.
 
 C **********************
 C     RECUPERATION DES INFOS UTILES
@@ -93,7 +91,6 @@ C **********************
         CHCAR = BLANC
       ENDIF
       
-C      WRITE(6,*) 'NUMDDL LINTF NOMO NOMA ',NUMDDL,LINTF,NOMO,NOMA
       IF (LINTF.NE.BLANC) THEN
 C On recupere le nbre de noeuds presents dans interf_dyna
         CALL JELIRA(JEXNUM(LINTF//'.IDC_LINO',1),'LONMAX',
@@ -104,16 +101,16 @@ C On recupere le liste des noeuds presents dans interf_dyna
         NBNOE=0
       ENDIF
       CALL JEVEUO(NOMRES//'.MAEL_MASS_DESC','L',IADESC)
-C      NDDEXT=(ZI(IADESC+1)*(ZI(IADESC+1)+1)/2)
       CALL DISMOI('F','NB_MODES_TOT',BASMOD,'RESULTAT',
      &                      NBMTOT,K8BID,IER)
+      IF (NBMTOT.EQ.0) CALL ASSERT(.FALSE.)
       CALL DISMOI('F','NB_MODES_STA',BASMOD,'RESULTAT',
      &                      NBMDEF,K8BID,IER)
-
       NBMDYN=NBMTOT-NBMDEF
-
+      IF (NBNDYN.LT.0) CALL ASSERT(.FALSE.)
+      
       IF (NBMTOT.NE.ZI(IADESC+1)) THEN
-         WRITE(6,*) 'NOMBRES DE MODES ET DE DDL INTERFACE DIFFERENTS' 
+        CALL U2MESS('I','ALGORITH_52')        
       ENDIF
 
 C **********************
@@ -128,9 +125,7 @@ C Il faut choisir NBNDYN qui ne soient pas sur l'interface et possedant
 C NCMPMX composantes.
       CALL JELIRA(JEXNUM(NU(1:19)//'.PRNO',1),'LONMAX',N1,K8BID)
       CALL JEVEUO(JEXNUM(NU(1:19)//'.PRNO',1),'L',IAPRNO)
-C      CALL DISMOI('F','NB_NO_MAILLA',NOMA,'MAILLAGE',NBNOEU,K8BID,IE)
       NBNO = N1/(NEC+2)
-C      WRITE(6,*) 'NBNO NBNOEU ',NBNO,NBNOEU
       K=1
       NCMPMX = 0
       DO 553 I=1,NBNO
@@ -140,7 +135,6 @@ C      WRITE(6,*) 'NBNO NBNOEU ',NBNO,NBNOEU
           NCMPMX = MAX(NCMPMX,NUEQ)
         ENDIF
   553 CONTINUE
-      WRITE(6,*) 'NCMPMX ',NCMPMX
 C On va choisir plusieurs noeuds qui ne sont pas presents dans
 C l'interface et tels que le nbre de ddl considere soit egal 
 C au nbre de modes dynamiques
@@ -168,10 +162,8 @@ C On prend comme postulat que NBNDYN=PARTIE_ENTIERE de NBMDYN/NCMPMX
       NBNDYN=NBMDYN/NCMPMX
       RBNDYN=DBLE(NBMDYN)/DBLE(NCMPMX)
       IF (ABS(RBNDYN-DBLE(NBNDYN)).GT.0.D0) THEN
-         WRITE(6,*) 
-     +'LE NOMBRE DE MODES DYNAMIQUES EST NON MULTIPLE DE NCMP =',NCMPMX
+        CALL U2MESI('I','ALGORITH_53',1,NCMPMX)        
       ENDIF
-      WRITE(6,*) 'NBNDYN ',NBNDYN
       IF (NBNDYN.EQ.0) THEN
          CALL WKVECT(NOMRES//'.NEUBID','V V I',1,INEBID)
          ZI(INEBID) = 0
@@ -198,16 +190,12 @@ C On prend comme postulat que NBNDYN=PARTIE_ENTIERE de NBMDYN/NCMPMX
         CALL RSADPA(BASMOD,'L',1,'NOEUD_CMP',NBMDYN+1,0,LNOCMP,K8BID)
         IF (ZK16(LNOCMP).EQ.' ') LREDU=.TRUE.
       ENDIF
-C      WRITE(6,*) 'NEUBID ',(ZI(INEBID+I-1),I=1,NBNDYN)
-      WRITE(6,*) 'LREDU ',LREDU
       IF (LREDU) THEN
         NBNDEF=NBMDEF/NCMPMX
         RBNDEF=DBLE(NBMDEF)/DBLE(NCMPMX)
         IF (ABS(RBNDEF-DBLE(NBNDEF)).GT.0.D0) THEN
-          WRITE(6,*) 
-     +'LE NOMBRE DE MODES STATIQUES EST NON MULTIPLE DE NCMP =',NCMPMX
+          CALL U2MESI('I','ALGORITH_54',1,NCMPMX)        
         ENDIF
-        WRITE(6,*) 'NBNDEF ',NBNDEF 
         IF (NBNDYN.NE.0) THEN
           NBNOT = NBNO2 + NBNDYN
           CALL JUVECA('&&COMP81.NEUEXC',NBNOT)
@@ -235,7 +223,6 @@ C      WRITE(6,*) 'NEUBID ',(ZI(INEBID+I-1),I=1,NBNDYN)
   655   CONTINUE
 
   654   CONTINUE
-C       WRITE(6,*) 'NOSTDY ',(ZI(INSTDY+I-1),I=1,NBNDEF)  
       ELSE
         IF (NBNOE.NE.0) THEN
           CALL WKVECT('&&COMP81.NOSTDY','V V I',NBNOE,INSTDY)
@@ -302,11 +289,9 @@ C **********************
       DO 665 I=1,NBNDYN
         ZI(IACONX+I-1)=ZI(INEBID+I-1)
  665  CONTINUE
-C      WRITE(6,*) 'NEUBID ',(ZI(INEBID+I-1),I=1,NBNDYN)
       DO 666 I=NBNDYN+1,NBNDEF+NBNDYN
         ZI(IACONX+I-1)=ZI(INSTDY+I-NBNDYN-1)
  666  CONTINUE
-C      WRITE(6,*) 'LINO ',(ZI(IACONX+I-1),I=1,NBNDEF+NBNDYN)
 
 C **********************
 C     CREATION DU .CONX
@@ -322,7 +307,6 @@ C **********************
          ZI(IACON1+3*I-2)=ZI(INSTDY+I-NBNDYN-1)
          ZI(IACON1+3*I-1)=0
  668  CONTINUE
-C      WRITE(6,*) 'CONX ',(ZI(IACON1+I-1),I=1,3*(NBNDEF+NBNDYN))
  669  CONTINUE
 
 C **********************
@@ -371,7 +355,6 @@ C
           ZI(IADESM-1+7)=ICAS
  670    CONTINUE
       ENDIF
-C      WRITE(6,*) 'COUCOU FIN COMP81'
       CALL JEDETC(' ','&&COMP81',1)
       
  9999 CONTINUE

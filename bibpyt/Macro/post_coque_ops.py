@@ -1,4 +1,4 @@
-#@ MODIF post_coque_ops Macro  DATE 08/02/2010   AUTEUR DESROCHES X.DESROCHES 
+#@ MODIF post_coque_ops Macro  DATE 11/10/2010   AUTEUR DESROCHES X.DESROCHES 
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -50,6 +50,10 @@ def post_coque_ops(self,RESULTAT,COOR_POINT,CHAM,NUME_ORDRE,INST,
     assert AsType(RESULTAT).__name__ in ('evol_elas','evol_noli',)
     dico = RESULTAT.LIST_CHAMPS()
     dico2 = RESULTAT.LIST_VARI_ACCES()
+  # si ni INST ni NUME_ORDRE ne sont presents, on prend le premier 
+  # instant calcule 
+    if not INST and not NUME_ORDRE :
+       INST = dico2['INST'][0]
     iret,ibid,n_modele = aster.dismoi('F','MODELE',RESULTAT.nom,'RESULTAT')
     MODEL = self.get_concept(n_modele)
     if INST != 0.0 :

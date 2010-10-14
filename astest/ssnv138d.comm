@@ -1,4 +1,4 @@
-# MODIF  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
+# MODIF  DATE 12/10/2010   AUTEUR GENIAUT S.GENIAUT 
 # TITRE VERSION POUTRE DE LA PLAQUE EN GRANDES ROTATIONS SSNV138A
 # ssnv138d.para = tps_job 300 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -264,12 +264,17 @@ TEST_FONCTION(VALEUR=_F(FONCTION=V_CALC,
                         PRECISION=0.005,
                         REFERENCE='ANALYTIQUE',),);
 
+# a cet instant, la ref est proche de 0, un test en relatif n'a pas de sens
+# il faudrait un test en relatif par rapport au depl max : (vcal - vref)/vmax < 1%
+# on feinte en faisant un test en absolu avec une tolerance qui depend du depl max :
+# (vcal - vref) < vmax * 1% 
+vmax = 7.
 TEST_FONCTION(VALEUR=_F(FONCTION=V_CALC,
                         NOM_PARA='INST',
                         VALE_PARA=INST4,
                         VALE_REFE=V4,
-                        CRITERE='RELATIF',
-                        PRECISION=0.31,
+                        CRITERE='ABSOLU',
+                        PRECISION=0.01*7.,
                         REFERENCE='ANALYTIQUE',),);
 
 TEST_FONCTION(VALEUR=_F(FONCTION=V_CALC,

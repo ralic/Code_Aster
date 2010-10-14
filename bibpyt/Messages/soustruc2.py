@@ -1,4 +1,4 @@
-#@ MODIF soustruc2 Messages  DATE 30/08/2010   AUTEUR NISTOR I.NISTOR 
+#@ MODIF soustruc2 Messages  DATE 11/10/2010   AUTEUR NISTOR I.NISTOR 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -76,6 +76,12 @@ cata_msg={
  Le support indiqué pour la restitution %(k1)s n'est
   pas cohérent avec le support utilisé pour la base modale %(k2)s.
  CONSEIL : Renseigner le bon support de restitution dans le fichier de commande.
+"""),
+
+10 : _("""
+ Lors de la copie du groupe de mailles %(k1)s appartenant à la sous-structure %(k2)s, 
+ le nom qui lui sera affecté dans squelette depasse 8 caracteres. La troncature peut 
+ générer un conflit plus tard avec les noms des autres groupes de mailles.
 """),
 
 

@@ -1,4 +1,4 @@
-# MODIF  DATE 20/07/2010   AUTEUR MAHFOUZ D.MAHFOUZ 
+# MODIF  DATE 11/10/2010   AUTEUR NISTOR I.NISTOR 
 # TITRE SOUS-STRUCTURATION DYNAMIQUE : MAILLAGE INCOMPATIBLE ET MODES
 # sdlv402a.para = tps_job 120 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -30,7 +30,8 @@
 # ======================================================================
 
 DEBUT(CODE=_F(NOM='SDLV402A',
-              NIV_PUB_WEB='INTERNET',),);
+              NIV_PUB_WEB='INTERNET',),
+      IGNORE_ALARM=('SOUSTRUC2_10',),);
 
 #**************************************
 # CREATION DU MACRO-ELEMENT DYNAMIQUE 1

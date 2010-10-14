@@ -4,7 +4,7 @@
       CHARACTER*(*) OPTIOZ,NOMTEZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
+C MODIF ELEMENTS  DATE 11/10/2010   AUTEUR FLEJOU J-L.FLEJOU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -59,7 +59,7 @@ C *************** DECLARATION DES VARIABLES LOCALES ********************
       INTEGER JTAB(7),IRET
       PARAMETER (NEQ=6,NBT=21,NVAMAX=8)
       CHARACTER*4  FAMI
-      CHARACTER*16 COMPEL
+      CHARACTER*16 COMPEL,VALKM(2)
 
 C   CONSTANTES POUR INTO MENEGOTTO
 
@@ -341,7 +341,9 @@ C     ------------
         CALL JEVECH ('PCOMPOR','L',ICOMPO)
         IF ((ZK16(ICOMPO-1+5)(1:7).NE.'DEBORST').AND.
      &      (ZK16(ICOMPO)(1:4).NE.'SANS')) THEN
-          CALL U2MESK('F','ALGORITH6_81',1,ZK16(ICOMPO))
+          VALKM(1) = ZK16(ICOMPO)
+          VALKM(2) = 'COMP_INCR'
+          CALL U2MESK('F','ALGORITH6_81',2,VALKM)
         ELSE
 
             SIGX=EFFNOM/A

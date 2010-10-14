@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 21/09/2010   AUTEUR PELLET J.PELLET 
+C MODIF ALGELINE  DATE 11/10/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -97,7 +97,7 @@ C ----------------------------------------------------------------------
           CALL WKVECT('&&OP0167.NOMCHAMP','V V K16',NCH,ICHAM)
           CALL GETVTX('ECLA_PG','NOM_CHAM',1,1,NCH,ZK16(ICHAM),NCH)
         ENDIF
-        CALL EXLIMA('ECLA_PG','V',MO,LIGREL)
+        CALL EXLIMA('ECLA_PG',1,'V',MO,LIGREL)
         CALL ECLPGM(NOMAOU,MO,LIGREL,SHRINK,LONMIN,NCH,ZK16(ICHAM))
         GOTO 350
 

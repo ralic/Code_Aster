@@ -1,4 +1,4 @@
-#@ MODIF prepost3 Messages  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
+#@ MODIF prepost3 Messages  DATE 11/10/2010   AUTEUR DELMAS J.DELMAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -49,11 +49,6 @@ cata_msg = {
 
 10 : _("""
  soit le fichier n'existe pas, soit c'est une mauvaise version de hdf (utilise par med).
-"""),
-
-29 : _("""
- pour LIRE_RESU / FORMAT=IDEAS
- le maillage doit normalement avoir été lu au format IDEAS.
 """),
 
 30 : _("""
