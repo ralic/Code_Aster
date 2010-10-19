@@ -3,7 +3,7 @@
      &                   LQUALI,RDESQ,TYPE,IETDEB,IETRAT,RCTDEB,LDIST)
       IMPLICIT NONE
 !           CONFIGURATION MANAGEMENT OF EDF VERSION                  
-!& MODIF AMUMPT MUMPS  DATE 15/03/2010   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+!& MODIF AMUMPT MUMPS  DATE 18/10/2010   AUTEUR BOITEAU O.BOITEAU 
 ! ================================================================== 
 ! COPYRIGHT (C) 1991 - 2008  EDF R&D              WWW.CODE-ASTER.ORG 
 !                                                                    
@@ -277,6 +277,11 @@ C -- AFFICHAGE
              WRITE(IFM,*)
              WRITE(IFM,*)'*********************************************'
      &                  //'*********************************'
+             IF (LDIST) THEN
+               WRITE(IFM,*)' CALCUL MUMPS DISTRIBUE'
+             ELSE
+               WRITE(IFM,*)' CALCUL MUMPS CENTRALISE'
+             ENDIF
              WRITE(IFM,*)'<MONITORING '//NVERS(1:12)//' >'
              WRITE(IFM,'(A19,I9)')' TAILLE DU SYSTEME ',N
              IF (LQUALI) THEN
@@ -292,7 +297,7 @@ C -- AFFICHAGE
      &         ' NBRE TERMES K    '//' LU FACTEURS'
              DO K=0,NBPROC-1
                WRITE(IFM,1001)K,ZI(MONIT(9)+K),ZI(MONIT(1)+K),
-     &                        ZI(MONIT(2)+K)
+     &                          ZI(MONIT(2)+K)
                IAUX1=IAUX1+ZI(MONIT(9)+K)
                IAUX2=IAUX2+ZI(MONIT(1)+K)
                IAUX3=IAUX3+ZI(MONIT(2)+K)
@@ -300,7 +305,6 @@ C -- AFFICHAGE
 C -- EN CENTRALISE ON NE FAIT PAS LA SOMME
              IF (.NOT.LDIST) THEN
                IAUX1=IAUX1/NBPROC
-               CALL ASSERT(IAUX1.EQ.ZI(MONIT(9)))
              ENDIF
 C
              WRITE(IFM,*)'--------------------------------------------'
@@ -320,8 +324,8 @@ C            MONITORING MEMOIRE
                IBID=DMPSK%ICNTL(22)
              ELSE IF (TYPE.EQ.'Z') THEN
                IBID=ZMPSK%ICNTL(22)
-	     ELSE
-	       CALL ASSERT(.FALSE.)
+             ELSE
+               CALL ASSERT(.FALSE.)
              ENDIF
              IF (IBID.EQ.0) THEN 
                KTEMP='IN-CORE'

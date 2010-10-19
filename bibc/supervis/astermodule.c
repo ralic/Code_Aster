@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF astermodule supervis  DATE 11/10/2010   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF astermodule supervis  DATE 19/10/2010   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -3142,7 +3142,7 @@ PyObject *args;
                 /*  contient le nombre de concepts crees dans le      */
                 /*  calcul precedent)                                 */
 
-                CALL_POURSU (&lot,&ipass,&ier,&lonuti);
+                CALL_POURSU (&ipass,&ier,&lonuti);
 
 
                 /* recuperation de la liste des concepts dans une     */
@@ -3208,8 +3208,9 @@ PyObject *args;
         fflush(stdout) ;
 
         try(1){
-                /*  appel de la commande debut */
-                CALL_DEBUT (&lot,&ipass,&ier);
+                /* appel de la commande debut
+                 * DEBUT ne traite pas lot : argument supprimé */
+                CALL_DEBUT (&ipass,&ier);
         }
         finally{
                 /* On depile l appel */
@@ -3240,7 +3241,6 @@ static PyObject *aster_init(self, args)
 PyObject *self; /* Not used */
 PyObject *args;
 {
-   INTEGER lot=1 ; /* FORTRAN_TRUE */
    INTEGER ier=0 ;
    INTEGER dbg=0 ; /* FORTRAN_FALSE */
 
@@ -3255,7 +3255,7 @@ PyObject *args;
    fflush(stderr) ;
    fflush(stdout) ;
 
-   CALL_IBMAIN (&lot,&ier,&dbg);
+   CALL_IBMAIN(&dbg);
 
    /* jeveux est parti ! */
    jeveux_status = 1;

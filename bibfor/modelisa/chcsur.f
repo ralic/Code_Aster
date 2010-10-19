@@ -5,7 +5,7 @@
       CHARACTER*(*)       CHCINE, CNSZ, MO
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 19/05/2008   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 19/10/2010   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -92,11 +92,11 @@ C --- CREATION DE LA SD
 C
       CALL WKVECT ( CAFCI, 'G V I', (3*NBLOC+1), JAFCI )
       IF (TYPE.EQ.'R') THEN
-         CALL WKVECT ( CAFCV, 'G V R' , NBLOC, JAFCV )
+         CALL WKVECT ( CAFCV, 'G V R' , MAX(NBLOC,1), JAFCV )
       ELSE IF (TYPE.EQ.'C') THEN
-         CALL WKVECT ( CAFCV, 'G V C' , NBLOC, JAFCV )
+         CALL WKVECT ( CAFCV, 'G V C' , MAX(NBLOC,1), JAFCV )
       ELSE IF (TYPE.EQ.'F') THEN
-         CALL WKVECT ( CAFCV, 'G V K8', NBLOC, JAFCV )
+         CALL WKVECT ( CAFCV, 'G V K8', MAX(NBLOC,1), JAFCV )
       ENDIF
 C
 C --- ON REMPLIT LES .AFCI .AFCV
@@ -152,7 +152,7 @@ C
  140     CONTINUE
       ENDIF
 
-      IF (IBLOC.EQ.0) CALL U2MESS('F','CALCULEL_9')
+      IF (IBLOC.EQ.0) CALL U2MESS('A','CALCULEL_9')
       ZI(JAFCI) = IBLOC
 C
       CALL JEDEMA()

@@ -1,4 +1,4 @@
-# MODIF  DATE 28/01/2010   AUTEUR BODEL C.BODEL 
+# MODIF  DATE 19/10/2010   AUTEUR DELMAS J.DELMAS 
 # TITRE VALIDATION DE PROJ_MESU_MODAL : CAS 3D, BASE : BASE_MODALE
 # sdlv122b.para = tps_job 100 mem_job 250Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -204,14 +204,14 @@ REPONSE=REST_GENE_PHYS(   RESU_GENE=REPGENE,
 LTEMPS=DEFI_LIST_REEL(   VALE=(9.E-4,  17.E-4,  25.E-4,)              )
 
 #
-REPONSE=CALC_ELEM( reuse=REPONSE,    RESULTAT=REPONSE,
+REPONS=CALC_ELEM( RESULTAT=REPONSE,
                             MODELE=MODELE,
                         CHAM_MATER=MATER,
                          LIST_INST=LTEMPS,
                             OPTION='SIGM_ELNO_DEPL'                  )
 
 #
-REPONSE=CALC_NO( reuse=REPONSE,   RESULTAT=REPONSE,
+REPONS=CALC_NO( reuse=REPONS,   RESULTAT=REPONS,
                       LIST_INST=LTEMPS,
                          OPTION='SIGM_NOEU_DEPL'                     )
 
@@ -219,32 +219,32 @@ REPONSE=CALC_NO( reuse=REPONSE,   RESULTAT=REPONSE,
 # TEST DES RESULTATS
 # ==================
 TEST_RESU(RESU=(
-         _F( RESULTAT = REPONSE,          GROUP_NO = 'NRES3',
+         _F( RESULTAT = REPONS,          GROUP_NO = 'NRES3',
                NOM_CHAM = 'SIGM_NOEU_DEPL', NOM_CMP = 'SIXX',
                CRITERE = 'RELATIF',        PRECISION = 1.E-2,
                NUME_ORDRE = 90,               VALE = 3.41647E+07),
 #
-         _F( RESULTAT = REPONSE,          GROUP_NO = 'NRES3',
+         _F( RESULTAT = REPONS,          GROUP_NO = 'NRES3',
                NOM_CHAM = 'SIGM_NOEU_DEPL', NOM_CMP = 'SIXX',
                CRITERE = 'RELATIF',        PRECISION = 1.E-2,
                NUME_ORDRE = 170,              VALE = 8.04567E+07),
 #
-         _F( RESULTAT = REPONSE,          GROUP_NO = 'NRES3',
+         _F( RESULTAT = REPONS,          GROUP_NO = 'NRES3',
                NOM_CHAM = 'SIGM_NOEU_DEPL', NOM_CMP = 'SIXX',
                CRITERE = 'RELATIF',        PRECISION = 1.E-2,
                NUME_ORDRE = 250,              VALE = 4.25077E+07),
 #
-         _F( RESULTAT = REPONSE,          GROUP_NO = 'NRES4',
+         _F( RESULTAT = REPONS,          GROUP_NO = 'NRES4',
                NOM_CHAM = 'SIGM_NOEU_DEPL', NOM_CMP = 'SIXX',
                CRITERE = 'RELATIF',        PRECISION = 1.E-2,
                NUME_ORDRE = 90,               VALE = 4.64966E+07),
 #
-         _F( RESULTAT = REPONSE,          GROUP_NO = 'NRES4',
+         _F( RESULTAT = REPONS,          GROUP_NO = 'NRES4',
                NOM_CHAM = 'SIGM_NOEU_DEPL', NOM_CMP = 'SIXX',
                CRITERE = 'RELATIF',        PRECISION = 1.E-2,
                NUME_ORDRE = 170,              VALE = 6.67109E+07),
 #
-         _F( RESULTAT = REPONSE,          GROUP_NO = 'NRES4',
+         _F( RESULTAT = REPONS,          GROUP_NO = 'NRES4',
                NOM_CHAM = 'SIGM_NOEU_DEPL', NOM_CMP = 'SIXX',
                CRITERE = 'RELATIF',        PRECISION = 1.E-2,
                NUME_ORDRE = 250,              VALE = 4.29307E+07)))

@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SOUSTRUC  DATE 29/09/2010   AUTEUR COURTOIS M.COURTOIS 
+C MODIF SOUSTRUC  DATE 19/10/2010   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -136,7 +136,7 @@ C       ---------------------
      &                ZK8(IALIK8),NBID)
 
           CALL JENONU(JEXNOM(GRPNOE,ZK8(IALIK8)),IGN1)
-          CALL JELIRA(JEXNUM(GRPNOE,IGN1),'LONMAX',ILI1,K8B)
+          CALL JELIRA(JEXNUM(GRPNOE,IGN1),'LONUTI',ILI1,K8B)
           CALL JEVEUO(JEXNUM(GRPNOE,IGN1),'L',IAGM1)
           IF (ILI1.GT.NBIS) THEN
             NBIS = 2*ILI1
@@ -152,7 +152,7 @@ C       ---------------------
 
           DO 32,IGN = 2,N3
             CALL JENONU(JEXNOM(GRPNOE,ZK8(IALIK8-1+IGN)),IGN2)
-            CALL JELIRA(JEXNUM(GRPNOE,IGN2),'LONMAX',ILI2,K8B)
+            CALL JELIRA(JEXNUM(GRPNOE,IGN2),'LONUTI',ILI2,K8B)
             CALL JEVEUO(JEXNUM(GRPNOE,IGN2),'L',IAGM2)
             CALL UTLISI('INTER',ZI(IALII1),N,ZI(IAGM2),ILI2,ZI(IALII2),
      &                  NBIS,NTROU)
@@ -169,7 +169,9 @@ C       ---------------------
             GO TO 100
           END IF
           CALL JECROC(JEXNOM(GRPNOE,NOGNO))
-          CALL JEECRA(JEXNOM(GRPNOE,NOGNO),'LONMAX',N,K8B)
+          CALL JEECRA(JEXNOM(GRPNOE,NOGNO),'LONMAX',
+     &        MAX(1,N),K8B)
+          CALL JEECRA(JEXNOM(GRPNOE,NOGNO),'LONUTI',N,K8B)
           CALL JEVEUO(JEXNOM(GRPNOE,NOGNO),'E',IAGMA)
           DO 36 II = 1,N
             ZI(IAGMA-1+II) = ZI(IALII1-1+II)
@@ -186,7 +188,7 @@ C       ------------------
      &                ZK8(IALIK8),NBID)
 
           CALL JENONU(JEXNOM(GRPNOE,ZK8(IALIK8)),IGN1)
-          CALL JELIRA(JEXNUM(GRPNOE,IGN1),'LONMAX',ILI1,K8B)
+          CALL JELIRA(JEXNUM(GRPNOE,IGN1),'LONUTI',ILI1,K8B)
           CALL JEVEUO(JEXNUM(GRPNOE,IGN1),'L',IAGM1)
           IF (ILI1.GT.NBIS) THEN
             NBIS = 2*ILI1
@@ -202,7 +204,7 @@ C       ------------------
 
           DO 42,IGN = 2,N4
             CALL JENONU(JEXNOM(GRPNOE,ZK8(IALIK8-1+IGN)),IGN2)
-            CALL JELIRA(JEXNUM(GRPNOE,IGN2),'LONMAX',ILI2,K8B)
+            CALL JELIRA(JEXNUM(GRPNOE,IGN2),'LONUTI',ILI2,K8B)
             CALL JEVEUO(JEXNUM(GRPNOE,IGN2),'L',IAGM2)
             CALL UTLISI('UNION',ZI(IALII1),N,ZI(IAGM2),ILI2,ZI(IALII2),
      &                  NBIS,NTROU)
@@ -228,7 +230,9 @@ C       ------------------
             END IF
           ELSE
             CALL JECROC(JEXNOM(GRPNOE,NOGNO))
-            CALL JEECRA(JEXNOM(GRPNOE,NOGNO),'LONMAX',N,K8B)
+            CALL JEECRA(JEXNOM(GRPNOE,NOGNO),'LONMAX',
+     &        MAX(1,N),K8B)
+            CALL JEECRA(JEXNOM(GRPNOE,NOGNO),'LONUTI',N,K8B)
             CALL JEVEUO(JEXNOM(GRPNOE,NOGNO),'E',IAGMA)
             DO 46 II = 1,N
               ZI(IAGMA-1+II) = ZI(IALII1-1+II)
@@ -246,7 +250,7 @@ C       ------------------
      &                ZK8(IALIK8),NBID)
 
           CALL JENONU(JEXNOM(GRPNOE,ZK8(IALIK8)),IGN1)
-          CALL JELIRA(JEXNUM(GRPNOE,IGN1),'LONMAX',ILI1,K8B)
+          CALL JELIRA(JEXNUM(GRPNOE,IGN1),'LONUTI',ILI1,K8B)
           CALL JEVEUO(JEXNUM(GRPNOE,IGN1),'L',IAGM1)
           IF (ILI1.GT.NBIS) THEN
             NBIS = 2*ILI1
@@ -262,7 +266,7 @@ C       ------------------
 
           DO 52,IGN = 2,N5
             CALL JENONU(JEXNOM(GRPNOE,ZK8(IALIK8-1+IGN)),IGN2)
-            CALL JELIRA(JEXNUM(GRPNOE,IGN2),'LONMAX',ILI2,K8B)
+            CALL JELIRA(JEXNUM(GRPNOE,IGN2),'LONUTI',ILI2,K8B)
             CALL JEVEUO(JEXNUM(GRPNOE,IGN2),'L',IAGM2)
             CALL UTLISI('DIFFE',ZI(IALII1),N,ZI(IAGM2),ILI2,ZI(IALII2),
      &                  NBIS,NTROU)
@@ -278,7 +282,9 @@ C       ------------------
             END IF
           ELSE
             CALL JECROC(JEXNOM(GRPNOE,NOGNO))
-            CALL JEECRA(JEXNOM(GRPNOE,NOGNO),'LONMAX',N,K8B)
+            CALL JEECRA(JEXNOM(GRPNOE,NOGNO),'LONMAX',
+     &        MAX(1,N),K8B)
+            CALL JEECRA(JEXNOM(GRPNOE,NOGNO),'LONUTI',N,K8B)
             CALL JEVEUO(JEXNOM(GRPNOE,NOGNO),'E',IAGMA)
             DO 56 II = 1,N
               ZI(IAGMA-1+II) = ZI(IALII1-1+II)
@@ -356,7 +362,9 @@ C         ----------------------------------------
             CALL JEVEUO(LISNO,'L',IDLINO)
 
             CALL JECROC(JEXNOM(MA//'.GROUPENO',NOGNO))
-            CALL JEECRA(JEXNOM(MA//'.GROUPENO',NOGNO),'LONMAX',NBNO,K8B)
+            CALL JEECRA(JEXNOM(MA//'.GROUPENO',NOGNO),'LONMAX',
+     &        MAX(1,NBNO),K8B)
+            CALL JEECRA(JEXNOM(MA//'.GROUPENO',NOGNO),'LONUTI',NBNO,K8B)
             CALL JEVEUO(JEXNOM(MA//'.GROUPENO',NOGNO),'E',IAGMA)
 
             DO 92 II = 1,NBNO
@@ -396,7 +404,9 @@ C         --- ON VERIFIE QUE TOUS LES NOEUDS SONT DISTINCTS ---
  20       CONTINUE
 C
           CALL JECROC(JEXNOM(GRPNOE,NOGNO))
-          CALL JEECRA(JEXNOM(GRPNOE,NOGNO),'LONMAX',NBNO,K8B)
+          CALL JEECRA(JEXNOM(GRPNOE,NOGNO),'LONMAX',
+     &        MAX(1,NBNO),K8B)
+          CALL JEECRA(JEXNOM(GRPNOE,NOGNO),'LONUTI',NBNO,K8B)
           CALL JEVEUO(JEXNOM(GRPNOE,NOGNO),'E',IAGMA)
           DO 22 INO = 0,NBNO - 1
             ZI(IAGMA+INO) = ZI(JNOEU+INO)
@@ -415,7 +425,7 @@ C       ---------------------
           CALL GETVEM(MA,'GROUP_NO',MOTFAC,'GROUP_NO',IOCC,1,1,
      &                NOGNO2,NBID)
           CALL JENONU(JEXNOM(GRPNOE,NOGNO2),IGN2)
-          CALL JELIRA(JEXNUM(GRPNOE,IGN2),'LONMAX',ILI2,K8B)
+          CALL JELIRA(JEXNUM(GRPNOE,IGN2),'LONUTI',ILI2,K8B)
           CALL JEVEUO(JEXNUM(GRPNOE,IGN2),'L',IAGN2)
 C
           CALL GETVTX(MOTFAC,'POSITION',IOCC,1,0,KPOS,N6B)
@@ -434,7 +444,9 @@ C
           END IF
 
           CALL JECROC(JEXNOM(GRPNOE,NOGNO))
-          CALL JEECRA(JEXNOM(GRPNOE,NOGNO),'LONMAX',N6A,K8B)
+          CALL JEECRA(JEXNOM(GRPNOE,NOGNO),'LONMAX',
+     &        MAX(1,N6A),K8B)
+          CALL JEECRA(JEXNOM(GRPNOE,NOGNO),'LONUTI',N6A,K8B)
           CALL JEVEUO(JEXNOM(GRPNOE,NOGNO),'E',IAGNO)
           NBGNAJ = NBGNAJ + 1
           IF (N6B.NE.0) GO TO 80
@@ -476,7 +488,7 @@ C     --------------------------
           DO 200 I = 1,NBGNAJ
             II = NBGNIN + I
             CALL JENUNO(JEXNUM(GRPNOE,II),NOGNO)
-            CALL JELIRA(JEXNUM(GRPNOE,II),'LONMAX',NBNO,K8B)
+            CALL JELIRA(JEXNUM(GRPNOE,II),'LONUTI',NBNO,K8B)
             WRITE (IFM,'(15X,A,2X,A8,5X,A,2X,I8,10X,A)') '!',NOGNO,'!',
      &        NBNO,'!'
  200      CONTINUE
@@ -493,7 +505,7 @@ C     --------------------
           II = NBGNIN + I
           CALL JEVEUO(JEXNUM(GRPNOE,II),'L',IAGNO)
           CALL JENUNO(JEXNUM(GRPNOE,II),NOGNO)
-          CALL JELIRA(JEXNUM(GRPNOE,II),'LONMAX',NBNO,K8B)
+          CALL JELIRA(JEXNUM(GRPNOE,II),'LONUTI',NBNO,K8B)
           WRITE (IFM,'(/,3A,/,27(''-''))') 'NOEUDS DU GROUPE ',NOGNO,
      &      ' :'
           NBLINE = NBNO/MAXCOL

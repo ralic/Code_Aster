@@ -1,4 +1,4 @@
-# MODIF  DATE 05/10/2010   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 19/10/2010   AUTEUR DESOZA T.DESOZA 
 # TITRE VALEUR DE REFERENCE POUR LES ELEMENTS CABLES
 # zzzz234c.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -23,9 +23,6 @@ DEBUT(CODE=_F(NOM='ZZZZ234C',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 # Fonction de calcul de l'erreur
 CoefRef = 1.0E-05
-CERREUR = FORMULE(NOM_PARA=('RESI_REFE','RESI_GLOB'),
-                  VALE='(RESI_REFE - 1.0E+05*RESI_GLOB)')
-
 
 MA = LIRE_MAILLAGE(INFO=2);
 
@@ -73,7 +70,21 @@ RE_CAB=STAT_NON_LINE(MODELE     = MO_CAB,
 TB_CAB = RECU_TABLE(CO=RE_CAB,NOM_PARA=('ITER_GLOB'),)
 
 IMPR_TABLE(TABLE=TB_CAB)
-TEST_TABLE(TABLE=TB_CAB, NOM_PARA='ITER_GLOB', VALE_I=2, FILTRE=_F(NOM_PARA='NUME_ORDRE',VALE_I=1,),
-           CRITERE='RELATIF', PRECISION=1.0E-15, REFERENCE='NON_REGRESSION',); 
+TEST_TABLE(TABLE=TB_CAB, NOM_PARA='ITER_GLOB', VALE_I=3, FILTRE=_F(NOM_PARA='NUME_ORDRE',VALE_I=1,),
+           CRITERE = 'ABSOLU',        PRECISION = 0.,REFERENCE='NON_REGRESSION',); 
+
+
+TEST_RESU(RESU=(_F(RESULTAT   = RE_CAB,
+                   INST       = 1.0,
+                   NOM_CHAM   = 'DEPL',
+                   GROUP_NO   = 'B',
+                   NOM_CMP    = 'DX',
+                   VALE       = 3.7893850685387E-06,
+                   
+                   REFERENCE  = 'NON_REGRESSION',
+                   VERSION    = '10.2.20',
+                   PRECISION  = 1E-8,
+                   ),),
+       )
 
 FIN()

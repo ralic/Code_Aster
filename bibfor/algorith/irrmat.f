@@ -1,8 +1,8 @@
-      SUBROUTINE IRRMAT(FAMI,KPG,KSP,MODEL,IMAT,NMAT,ITMAX,RELA,VIND,
+      SUBROUTINE IRRMAT(FAMI,KPG,KSP,MODEL,IMAT,NMAT,ITMAX,RELA,
      &                  MATERD,MATERF,MATCST,NDT,NDI,NR,NVI)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/09/2010   AUTEUR FLEJOU J-L.FLEJOU 
+C MODIF ALGORITH  DATE 18/10/2010   AUTEUR FLEJOU J-L.FLEJOU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -25,8 +25,7 @@ C RESPONSABLE FLEJOU J-L.FLEJOU
       CHARACTER*3   MATCST
       CHARACTER*(*) FAMI
       INTEGER IMAT,NMAT,NDT,NDI,NR,NVI,KPG,KSP,IRET,ITMAX
-      REAL*8  MATERD(NMAT,2),MATERF(NMAT,2),RELA,R8PREM
-      REAL*8  VIND(*)
+      REAL*8  MATERD(NMAT,2),MATERF(NMAT,2),RELA
 
 C     ----------------------------------------------------------------
 C     IRRAD3M   : RECUPERATION DU MATERIAU A T(TEMPD) ET T+DT(TEMPF)
@@ -76,34 +75,41 @@ C     NOMBRE DE PARAMETRES DE LA LOI : NBCARA
      &             'ETAI_S  ','RG0     ','ALPHA   ','PHI0    ',
      &             'KAPPA   ','ZETA_F  ','ZETA_G  ','TOLER_ET'/
 
-C     NOM               a t-                          a t+ (t-+dt)
+C     NOM                         a t-                 a t+ (t-+dt)
 C     -------------------------------------------------------------
-C     E                 MATERD(1,1)                   MATERF(1,1)
-C     NU                MATERD(2,1)                   MATERF(2,1)
-C     ALPHA             MATERD(3,1)                   MATERF(3,1)
+C     E                           MATERD(1,1)          MATERF(1,1)
+C     NU                          MATERD(2,1)          MATERF(2,1)
+C     ALPHA                       MATERD(3,1)          MATERF(3,1)
 
-C     AI0               MATERD(4,2)                   MATERF(4,2)
-C     ETAI_S            MATERD(5,2)                   MATERF(5,2)
-C     AG                MATERD(6,2)                   MATERF(6,2)
-C     K                 MATERD(7,2)                   MATERF(7,2)
-C     N                 MATERD(8,2)                   MATERF(8,2)
-C     P0                MATERD(9,2)                   MATERF(9,2)
-C     KAPPA             MATERD(10,2)                  MATERF(10,2)
-C     R02               MATERD(11,2)                  MATERF(11,2)
-C     ZETAF             MATERD(12,2)                  MATERF(12,2)
-C     PENTE EN PE       MATERD(13,2)                  MATERF(13,2)
-C     PK                MATERD(14,2)                  MATERF(14,2)
-C     PE                MATERD(15,2)                  MATERF(15,2)
-C     CONTRAINTE EN PE  MATERD(16,2)                  MATERF(16,2)
-C     ZETAG             MATERD(17,2)                  MATERF(17,2)
+C     AI0                         MATERD(4,2)          MATERF(4,2)
+C     ETAI_S                      MATERD(5,2)          MATERF(5,2)
+C     AG                          MATERD(6,2)          MATERF(6,2)
+C     K                           MATERD(7,2)          MATERF(7,2)
+C     N                           MATERD(8,2)          MATERF(8,2)
+C     P0                          MATERD(9,2)          MATERF(9,2)
+C     KAPPA                       MATERD(10,2)         MATERF(10,2)
+C     R02                         MATERD(11,2)         MATERF(11,2)
+C     ZETAF                       MATERD(12,2)         MATERF(12,2)
+C     PENTE EN PE                 MATERD(13,2)         MATERF(13,2)
+C     PK                          MATERD(14,2)         MATERF(14,2)
+C     PE                          MATERD(15,2)         MATERF(15,2)
+C     CONTRAINTE EN PE            MATERD(16,2)         MATERF(16,2)
+C     ZETAG                       MATERD(17,2)         MATERF(17,2)
 
-C     IRRADIATION       MATERD(18,2)                  MATERF(18,2)
-C     AGINT             MATERD(19,2)                  MATERF(19,2)
+C     IRRADIATION                 MATERD(18,2)         MATERF(18,2)
+C     AGINT                       MATERD(19,2)         MATERF(19,2)
 
-C     TOLER SUR SEUIL   MATERD(20,2)                  MATERF(20,2)
-C     ERREUR SUR SEUIL  MATERD(21,2)                  MATERF(21,2)
+C     TOLER SUR SEUIL             MATERD(20,2)         MATERF(20,2)
+C     ERREUR SUR SEUIL            MATERD(21,2)         MATERF(21,2)
 
-C     TEMPERATURE       MATERD(22,2)                  MATERF(22,2)
+C     TEMPERATURE                 MATERD(22,2)         MATERF(22,2)
+
+C     INCREMENT IRRADIATION       MATERD(23,2)         MATERF(23,2)
+C     INCREMENT TEMPERATURE       MATERD(24,2)         MATERF(24,2)
+
+
+C -   PROTECTION SUR LA DIMENSION DES TABLEAUX : MATERD MATERF
+      CALL ASSERT(NMAT.GE.30)
 
 C -   NB DE COMPOSANTES / VARIABLES INTERNES -------------------------
       CALL IRRNVI ( MODEL, NDT, NDI, NR, NVI )
@@ -467,6 +473,13 @@ C     TOLERENCE ET ERREUR SUR LE FRANCHISSEMENT DU SEUIL
       MATERF(21,2) = 0.0D0
 C     TEMPERATURE
       MATERF(22,2) = TEMPF
+
+C     INCREMENT IRRADIATION
+      MATERD(23,2) = MATERF(18,2) - MATERD(18,2)
+      MATERF(23,2) = MATERD(23,2)
+C     INCREMENT TEMPERATURE
+      MATERD(24,2) = MATERF(22,2) - MATERD(22,2)
+      MATERF(24,2) = MATERD(24,2)
 
 C -   MATERIAU CONSTANT ?
 C -   ON NE PEUT PAS SAVOIR A L AVANCE DONC NON

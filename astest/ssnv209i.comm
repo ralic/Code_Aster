@@ -1,4 +1,4 @@
-# MODIF  DATE 15/03/2010   AUTEUR DESOZA T.DESOZA 
+# MODIF  DATE 19/10/2010   AUTEUR DESOZA T.DESOZA 
 # TITRE INTERFACE EN CONTACT FROTTANT AVEC X-FEM
 # ssnv209i.para = tps_job 40 mem_job 32Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -102,11 +102,10 @@ CHA2   = DEFI_CONTACT(MODELE         = MO,
                                  GROUP_MA_ESCL  = 'LCONTA',
                                  APPARIEMENT    = 'MAIT_ESCL',
                                  INTEGRATION    = 'NOEUD',
-                                 CONTACT_INIT   = 'OUI',
+                                 CONTACT_INIT   = 'INTERPENETRE',
                                  SEUIL_INIT     = 100.,
                                  COEF_FROT = 1.0,
                                  COEF_CONT = 1.0,
-                                 EXCLUSION_PIV_NUL='OUI',
                                  COULOMB        = 1.,
                               ),
                              

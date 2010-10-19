@@ -1,7 +1,7 @@
       SUBROUTINE CLA110(NOMRES,MODGEN)
       IMPLICIT REAL*8 (A-H,O-Z)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 07/09/2010   AUTEUR DESOZA T.DESOZA 
+C MODIF ALGORITH  DATE 19/10/2010   AUTEUR DELMAS J.DELMAS 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -110,9 +110,9 @@ C-----DEFINITION DES REPERTOIRES DE TRAVAIL-----------------------------
       CALL JECREO(TT//'.NOM.SST','V N K8')
       CALL JEECRA(TT//'.NOM.SST','NOMMAX',NBSTAC,' ')
       CALL JECREC(TT//'.LISTE.MA','V V I','NU',
-     +                                    'DISPERSE','VARIABLE',NBSTAC)
+     &                                    'DISPERSE','VARIABLE',NBSTAC)
       CALL JECREC(TT//'.LISTE.NO','V V I','NU',
-     +                                    'DISPERSE','VARIABLE',NBSTAC)
+     &                                    'DISPERSE','VARIABLE',NBSTAC)
 C
 C --- RECHERCHE DES NOMS DE GROUPES DE MAILLES UTILISATEUR ---
       CALL GETVTX(' ','EXCLUSIF',0,1,1,EXCLU,IBID)
@@ -123,11 +123,11 @@ C --- RECHERCHE DES NOMS DE GROUPES DE MAILLES UTILISATEUR ---
          CALL WKVECT(TT//'.UT.GMA','V V K8',NBGRUT,LUTGMA)
          DO 100 I = 1,NBGRUT
             CALL GETVTX('NOM_GROUP_MA','NOM',I,1,1,
-     +                   ZK8(LUTNOM-1+I),IBID)
+     &                   ZK8(LUTNOM-1+I),IBID)
             CALL GETVTX('NOM_GROUP_MA','SOUS_STRUC',I,1,1,
-     +                   ZK8(LUTSST-1+I),IBID)
+     &                   ZK8(LUTSST-1+I),IBID)
             CALL GETVEM(MAILLA,'GROUP_MA','NOM_GROUP_MA','GROUP_MA',
-     +                     I,1,1,ZK8(LUTGMA-1+I),IBID)
+     &                     I,1,1,ZK8(LUTGMA-1+I),IBID)
 C           --- RECHERCHE SI LA SOUS-STRUCTURE EXISTE ---
             IS = 0
  90         CONTINUE
@@ -203,7 +203,7 @@ C-----DETERMINATION DU NOMBRE DE MAILLES POUR CHAQUE SST ACTIVE---------
           NBMA=NBMA+NBUF
         ELSE
           CALL DISMOI('F','NB_MA_MAILLA',MAILLA,'MAILLAGE',NBMA,
-     +                                               K8BID,IRET)
+     &                                               K8BID,IRET)
           CALL JEEXIN(MAILLA//'.GROUPEMA',IRET)
           IF (IRET .NE.0) THEN
              CALL JELIRA(MAILLA//'.GROUPEMA','NUTIOC',NGRMA,K8BID)
@@ -240,7 +240,7 @@ C
         CALL JEVEUO(JEXNUM(TT//'.LISTE.MA',NUACT),'E',LTLIMA)
         IF(NBTOUT.GT.0) THEN
           CALL DISMOI('F','NB_MA_MAILLA',MAILLA,'MAILLAGE',NBMA,
-     +                                             K8BID,IRET)
+     &                                             K8BID,IRET)
           IAD=LTLIMA+ZI(LTNBMA+NUACT-1)
           DO 250 J=1,NBMA
             ZI(IAD+J-1)=J
@@ -255,7 +255,7 @@ C
           CALL GETVTX(CSS,CGR,I,1,NBGR,ZK8(LTNOGR),IBID)
           IAD=LTLIMA+ZI(LTNBMA+NUACT-1)
           CALL RECUMA(MAILLA,NBMA,NBGR,ZK8(LTNOMA),ZK8(LTNOGR),
-     +                                                NBSKMA,ZI(IAD))
+     &                                                NBSKMA,ZI(IAD))
           ZI(LTNBMA+NUACT-1)=ZI(LTNBMA+NUACT-1)+NBSKMA
         ENDIF
 C
@@ -369,7 +369,7 @@ C
       CALL JECREO(NOMRES//'.NOMMAI','G N K8')
       CALL JEECRA(NOMRES//'.NOMMAI','NOMMAX',NBMAT,' ')
       CALL JECREC(NOMCON,'G V I','NU',
-     +                         'CONTIG','VARIABLE',NBMAT)
+     &                         'CONTIG','VARIABLE',NBMAT)
       CALL JEECRA(NOMCON,'LONT',NCTAIL,K8BID)
       CALL WKVECT(NOMRES//'.TYPMAIL','G V I',NBMAT,IBID)
 C
@@ -377,7 +377,7 @@ C
       CALL JEECRA(NOMRES//'.NOMNOE','NOMMAX',NBNOT,' ')
 C
       CALL JECREC(NOMRES//'.GROUPEMA','G V I','NO',
-     +                         'DISPERSE','VARIABLE',NBSTAC+NGRMAT)
+     &                         'DISPERSE','VARIABLE',NBSTAC+NGRMAT)
 C
       CALL WKVECT(NOMRES//'.COORDO    .REFE','G V K24',4,LDREF)
       ZK24(LDREF) = NOMRES
@@ -425,11 +425,11 @@ C
         CALL INTET0(ZR(LTROT+(I-1)*3+1),MATROT,2)
         CALL R8INIR(NBCMPM*NBCMPM,0.D0,MATBUF,1)
         CALL PMPPR(MATTMP,NBCMPM,NBCMPM,1,MATROT,NBCMPM,NBCMPM,1,
-     +                                    MATBUF,NBCMPM,NBCMPM)
+     &                                    MATBUF,NBCMPM,NBCMPM)
         CALL R8INIR(NBCMPM*NBCMPM,0.D0,MATROT,1)
         CALL INTET0(ZR(LTROT+(I-1)*3+2),MATTMP,1)
         CALL PMPPR(MATBUF,NBCMPM,NBCMPM,1,MATTMP,NBCMPM,NBCMPM,1,
-     +                                    MATROT,NBCMPM,NBCMPM)
+     &                                    MATROT,NBCMPM,NBCMPM)
 C
         NBNO=ZI(LTNBNO+I-1)
         CALL JEVEUO(JEXNUM(TT//'.LISTE.NO',I),'L',LTLINO)
@@ -480,8 +480,10 @@ C  BOUCLE SUR LES ELEMENTS GENERIQUES DE LA SST COURANTE
         NBMA=ZI(LTNBMA+I-1)
         CALL JEVEUO(JEXNUM(TT//'.LISTE.MA',I),'L',LTLIMA)
         CALL JECROC(JEXNOM(NOMRES//'.GROUPEMA',NOMSST))
-        CALL JEECRA(JEXNOM(NOMRES//'.GROUPEMA',NOMSST),'LONMAX',NBMA,
-     +                  K8BID)
+        CALL JEECRA(JEXNOM(NOMRES//'.GROUPEMA',NOMSST),'LONMAX',
+     &        MAX(1,NBMA), K8BID)
+        CALL JEECRA(JEXNOM(NOMRES//'.GROUPEMA',NOMSST),'LONUTI',NBMA,
+     &                  K8BID)
         CALL JEVEUO(JEXNOM(NOMRES//'.GROUPEMA',NOMSST),'E',LDGRMA)
         NBTGRM = NBTGRM+1
         DO 450 J=1,NBMA
@@ -510,7 +512,7 @@ C
 C       --- TRAITEMENT DES GROUPES DE MAILLES
            CALL JEVEUO(TT//'.GR.'//NOMSST,'L',ILSTGR)
            CALL GMA110(NBGR,EXCLU,NBGRUT,MAILLA,NOMSST,NBTGRM,NOMRES,
-     +          NBINCR, ZK8(ILSTGR),ZK8(LUTSST),ZK8(LUTGMA),ZK8(LUTNOM))
+     &          NBINCR, ZK8(ILSTGR),ZK8(LUTSST),ZK8(LUTGMA),ZK8(LUTNOM))
         ENDIF
         CALL JELIBE(JEXNUM(TT//'.LISTE.MA',I))
         CALL JELIBE(JEXNOM(NOMRES//'.GROUPEMA',NOMSST))

@@ -1,23 +1,23 @@
       SUBROUTINE MMTGEN(NOMA  ,DEFICO,RESOCO,NEWGEO,ITEMAX,
      &                  EPSMAX)
-C     
+C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 14/09/2010   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 19/10/2010   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C RESPONSABLE ABBAS M.ABBAS
 C
@@ -27,13 +27,13 @@ C
       CHARACTER*19  NEWGEO
       INTEGER       ITEMAX
       REAL*8        EPSMAX
-C      
+C
 C ----------------------------------------------------------------------
 C
 C ROUTINE CONTACT (TOUTES METHODES - APPARIEMENT)
 C
 C CALCUL DES VECTEURS TANGENTS EN CHAQUE NOEUD POUR CHAQUE ELEMENT
-C      
+C
 C ----------------------------------------------------------------------
 C
 C
@@ -75,11 +75,10 @@ C
       CHARACTER*24 TGELNO
       INTEGER      JTGELN
       CHARACTER*4  TYPNO
-      LOGICAL      LPOINT,LPOUTR,LSSFR,CFCALD
+      LOGICAL      LPOINT,LPOUTR,CFCALD
       REAL*8       COORMA(27)
       INTEGER      NNOMAI,NDIM,NBNOM
       CHARACTER*8  ALIAS,NOMMAI,K8BID
-      INTEGER      NBEXFR,NDEXFR,POSEXF(3)
       CHARACTER*4  TYPMAI
 C
 C ----------------------------------------------------------------------
@@ -91,7 +90,7 @@ C --- AFFICHAGE
 C
       IF (NIV.GE.2) THEN
         WRITE (IFM,*) '<CONTACT> ......... TANGENTES SUR' //
-     &  ' LES NOEUDS PAR ELEMENT (ELNO)' 
+     &  ' LES NOEUDS PAR ELEMENT (ELNO)'
       ENDIF
 C
 C --- ACCES SD CONTACT
@@ -104,79 +103,64 @@ C
       NDIMG     = CFDISI(DEFICO,'NDIM' )
       COORNO(1) = 0.D0
       COORNO(2) = 0.D0
-      COORNO(3) = 0.D0  
+      COORNO(3) = 0.D0
       DO 5 I = 1,27
         COORMA(I) = 0.D0
- 5    CONTINUE                                    
+ 5    CONTINUE
 C
 C --- BOUCLE SUR LES MAILLES
 C
       DO 20 IMA = 1,NMACO
 C
 C ----- MAILLE COURANTE
-C      
-        POSMAI = IMA  
+C
+        POSMAI = IMA
 C
 C ----- CARACTERISTIQUES DE LA MAILLE
 C
         CALL CFCARM(NOMA  ,DEFICO,NEWGEO,POSMAI,TYPMAI,
      &              NUMMAI,ALIAS ,NOMMAI,NDIM  ,NNOMAI,
-     &              COORMA) 
+     &              COORMA)
 C
 C ----- INDICES DANS CONTNO DES NOEUDS DE LA MAILLE
-C            
+C
         CALL CFPOSN(DEFICO,POSMAI,POSNNO,NNOMAI)
 C
 C ----- INDICES ABSOLUS DANS LE MAILLAGE DES NOEUDS DE LA MAILLE
-C            
-        CALL CFNUMN(DEFICO,NNOMAI,POSNNO,NUMNNO)       
 C
-C ----- VRAI NOMBRE DE NOEUDS DE LA MAILLE        
-C        
+        CALL CFNUMN(DEFICO,NNOMAI,POSNNO,NUMNNO)
+C
+C ----- VRAI NOMBRE DE NOEUDS DE LA MAILLE
+C
         CALL JELIRA(JEXNUM(NOMA//'.CONNEX',NUMMAI),'LONMAX',
-     &              NBNOM ,K8BID )      
+     &              NBNOM ,K8BID )
 C
 C ----- TYPE DE MAILLE
-C 
+C
         LPOUTR = (ALIAS(1:2).EQ.'SE').AND.(NDIMG.EQ.3)
-        LPOINT = ALIAS.EQ.'PO1' 
-C
-C ----- Y-A-T-IL DES NOEUDS DE TYPE SANS_NOEUD_FR DANS LA MAILLE ?
-C
-        IF (TYPMAI.EQ.'ESCL') THEN 
-          CALL MMINFM(POSMAI,DEFICO,'NDEXFR',NDEXFR)
-          LSSFR  = NDEXFR.NE.0
-          IF (LSSFR) THEN
-            CALL MMFREX(DEFICO,NNOMAI,POSNNO,NUMNNO,NBEXFR,
-     &                  POSEXF)
-          ELSE
-            NBEXFR = 0    
-          ENDIF
-        ELSE
-          NBEXFR = 0  
-        ENDIF    
+        LPOINT = ALIAS.EQ.'PO1'
 C
 C ----- ACCES MAILLE COURANTE
-C        
+C
         CALL JEVEUO(JEXNUM(TGELNO,POSMAI),'E',JTGELN)
 C
 C ----- BOUCLE SUR LES NOEUDS DE LA MAILLE
 C
-        DO 10 INO = 1,NNOMAI  
+        DO 10 INO = 1,NNOMAI
 C
 C ------- NUMERO DU NOEUD DANS SD CONTACT ET DANS MAILLAGE
 C
-          POSNO  = POSNNO(INO)  
+          POSNO  = POSNNO(INO)
           NUMNO  = NUMNNO(INO)
 C
 C ------- INITIALISATIONS
-C           
-          TAU1(1) = R8MAEM() 
-          TAU1(2) = R8MAEM() 
-          TAU1(3) = R8MAEM() 
-          TAU2(1) = R8MAEM() 
-          TAU2(2) = R8MAEM() 
-          TAU2(3) = R8MAEM() 
+C
+          TAU1(1) = R8MAEM()
+          TAU1(2) = R8MAEM()
+          TAU1(3) = R8MAEM()
+          TAU2(1) = R8MAEM()
+          TAU2(2) = R8MAEM()
+          TAU2(3) = R8MAEM()
 C
 C ------- ZONE DU NOEUD
 C
@@ -188,60 +172,52 @@ C
 C
 C ------- TYPE DU NOEUD
 C
-          CALL CFTYPN(DEFICO,POSNO ,TYPNO )     
+          CALL CFTYPN(DEFICO,POSNO ,TYPNO )
           IF (.NOT.CFCALD(DEFICO,IZONE ,TYPMAI)) THEN
-            GOTO 16        
+            GOTO 16
           ENDIF
 C
 C ------- CALCUL DES TANGENTES EN CE NOEUD SI ELEMENT POINT
-C        
+C
           IF (LPOINT) THEN
             CALL MMCPOI(NOMA  ,DEFICO,NDIMG ,IZONE ,NUMMAI,
-     &                  TYPMAI,TAU1  ,TAU2  ) 
+     &                  TYPMAI,TAU1  ,TAU2  )
             GOTO 15
-          ENDIF  
-C
-C ------- CALCUL DES TANGENTES EN CE NOEUD SI SANS_NOEUD_FR
-C      
-          IF (NBEXFR.NE.0) THEN
-            CALL MMTGEX(NOMA  ,NDIMG ,DEFICO,IZONE ,POSNO ,
-     &                  NUMNO ,NBEXFR,POSEXF,TAU1  ,TAU2  )
-            GOTO 15
-          ENDIF 
+          ENDIF
 C
 C ------- CALCUL DES TANGENTES EN CE NOEUD SI ELEMENT POUTRE
-C              
+C
           IF (LPOUTR) THEN
             CALL MMCPOU(NOMA  ,DEFICO,IZONE  ,NUMMAI,TYPNO ,
      &                  TAU1  ,TAU2  )
             GOTO 15
-          ENDIF 
+          ENDIF
 C
 C ------- CALCUL DES TANGENTES EN CE NOEUD
-C          
+C
           CALL MMCTAN(NOMMAI,ALIAS ,NBNOM ,NDIMG ,COORMA,
-     &                COORNO,ITEMAX,EPSMAX,TAU1  ,TAU2  )  
-  15      CONTINUE                     
+     &                COORNO,ITEMAX,EPSMAX,TAU1  ,TAU2  )
+  15      CONTINUE
 C
 C ------- NORMALISATION DES TANGENTES
 C
           CALL MMTANN(NDIMG ,TAU1  ,TAU2  ,NIVERR)
-          IF (NIVERR.EQ.1) THEN  
+          IF (NIVERR.EQ.1) THEN
             CALL U2MESS('I','CONTACT3_33')
             CALL U2MESG('F','CONTACT3_14',1,NOMMAI,0,0,3,COORNO)
-          ENDIF    
+          ENDIF
 C
 C ------- STOCKAGE DES TANGENTES
-C    
+C
   16      CONTINUE
           ZR(JTGELN+6*(INO-1)+1 -1) = TAU1(1)
           ZR(JTGELN+6*(INO-1)+2 -1) = TAU1(2)
-          ZR(JTGELN+6*(INO-1)+3 -1) = TAU1(3)                     
+          ZR(JTGELN+6*(INO-1)+3 -1) = TAU1(3)
           ZR(JTGELN+6*(INO-1)+4 -1) = TAU2(1)
           ZR(JTGELN+6*(INO-1)+5 -1) = TAU2(2)
-          ZR(JTGELN+6*(INO-1)+6 -1) = TAU2(3) 
-        
- 10     CONTINUE                
+          ZR(JTGELN+6*(INO-1)+6 -1) = TAU2(3)
+
+ 10     CONTINUE
  20   CONTINUE
 C
       CALL JEDEMA()

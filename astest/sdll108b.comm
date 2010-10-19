@@ -1,4 +1,4 @@
-# MODIF  DATE 29/09/2009   AUTEUR MACOCCO K.MACOCCO 
+# MODIF  DATE 19/10/2010   AUTEUR DELMAS J.DELMAS 
 # TITRE : Table de Neubert
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -85,14 +85,11 @@ MODE_STA=MODE_STATIQUE(  MATR_RIGI=RIGIDITE,   MATR_MASS=MASSE,
                              PSEUDO_MODE=_F(  AXE = ( 'X',  'Y',  'Z', ))  )
 
 MODE_STA=CALC_ELEM(reuse=MODE_STA,  RESULTAT=MODE_STA,
-                         MODELE=MOD,
                          OPTION=( 'EFGE_ELNO_DEPL', 'SIEF_ELGA_DEPL',
-                                  'EFGE_ELNO_CART',   ),
-                         CHAM_MATER=CHMAT,   CARA_ELEM=CARLEM        )
+                                  'EFGE_ELNO_CART',   ), )
 
 MODE_STA=CALC_NO(reuse=MODE_STA,  RESULTAT=MODE_STA,
-                   MODELE=MOD,  OPTION='REAC_NODA',
-                       CHAM_MATER=CHMAT,   CARA_ELEM=CARLEM          )
+                   OPTION='REAC_NODA',)
 
 MODE_MEC=MODE_ITER_INV(  MATR_A=RIGIDITE,   MATR_B=MASSE,
                   CALC_FREQ=_F(  OPTION = 'PROCHE',
@@ -108,14 +105,11 @@ IMPR_RESU(RESU=_F(RESULTAT=MODE_MEC))
 MODE_MEC=NORM_MODE(reuse=MODE_MEC,   MODE=MODE_MEC,   NORME='MASS_GENE',)
 
 MODE_MEC=CALC_ELEM(reuse=MODE_MEC,  RESULTAT=MODE_MEC,
-                         MODELE=MOD,
                          OPTION=( 'EFGE_ELNO_DEPL', 'SIEF_ELGA_DEPL',
-                                  'EFGE_ELNO_CART',   ),
-                         CHAM_MATER=CHMAT,   CARA_ELEM=CARLEM        )
+                                  'EFGE_ELNO_CART',   ),)
 
 MODE_MEC=CALC_NO(reuse=MODE_MEC,  RESULTAT=MODE_MEC,
-                   MODELE=MOD,  OPTION='REAC_NODA',
-                       CHAM_MATER=CHMAT,   CARA_ELEM=CARLEM          )
+                   OPTION='REAC_NODA',)
 
 ACCE_XZ=DEFI_FONCTION(  NOM_PARA='FREQ',    INTERPOL='LOG',
                              PROL_DROITE='CONSTANT',

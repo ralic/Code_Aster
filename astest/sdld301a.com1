@@ -17,21 +17,14 @@ MODE_CO=MODE_STATIQUE(MATR_MASS=MATRMASS,
 
 MODE_CO=CALC_ELEM(reuse =MODE_CO,
                   RESULTAT=MODE_CO,
-                  CHAM_MATER=CHAMPMAT,
-                  MODELE=MODELE,
-                  CARA_ELEM=CARA,
                   OPTION=('SIEF_ELGA_DEPL','EFGE_ELNO_DEPL'),);
 
-MODE_CO=CALC_NO(reuse =MODE_CO,  MODELE=MODELE,
+MODE_CO=CALC_NO(reuse =MODE_CO,
                 RESULTAT=MODE_CO,
-                CARA_ELEM=CARA,
-                CHAM_MATER=CHAMPMAT,
                 OPTION='FORC_NODA')
 
-MODE_CO=CALC_NO(reuse =MODE_CO,  MODELE=MODELE,
+MODE_CO=CALC_NO(reuse =MODE_CO,
                 RESULTAT=MODE_CO,
-                CARA_ELEM=CARA,
-                CHAM_MATER=CHAMPMAT,
                 OPTION='REAC_NODA')
 
 TEST_RESU(RESU=(_F(NOM_CHAM='DEPL',

@@ -5,7 +5,7 @@
      &                    TYPGEO, NOMTYP, NMATYP,
      &                    INFMED )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 07/09/2009   AUTEUR PELLET J.PELLET 
+C MODIF PREPOST  DATE 19/10/2010   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -199,11 +199,11 @@ C
 C
 C 4.3. ==> ECRITURE
 C
-      CALL EFFAMC ( FID, NOMAMD, NOMFAM, NUMFAM,
+      CALL MFFAMC ( FID, NOMAMD, NOMFAM, NUMFAM,
      &              IAUX, IAUX, K200, NATT,
      &              SAUX80, 0, CODRET )
       IF ( CODRET.NE.0 ) THEN
-        SAUX08='EFFAMC  '
+        SAUX08='MFFAMC  '
         CALL U2MESG('F','DVP_97',1,SAUX08,1,CODRET,0,0.D0)
       ENDIF
 C

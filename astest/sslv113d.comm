@@ -1,4 +1,4 @@
-# MODIF  DATE 31/05/2010   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 19/10/2010   AUTEUR DELMAS J.DELMAS 
 # TITRE TEST DE L'ESTIMATEUR D'ERREUR EN QUANTITE D'INTERET
 # sslv113d.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -83,7 +83,7 @@ RESUPRIM=MECA_STATIQUE(MODELE=MO,
 RESUPRIM=CALC_ELEM(reuse =RESUPRIM,
                    RESULTAT=RESUPRIM,
                    TOUT_ORDRE='OUI',
-                   OPTION='SIRE_ELNO_DEPL',);
+                   OPTION='SIGM_ELNO_DEPL',);
 
 RESUPRIM=CALC_ELEM(reuse =RESUPRIM,
                    RESULTAT=RESUPRIM,
@@ -119,7 +119,7 @@ RESUDUAL=MECA_STATIQUE(MODELE=MO,
 RESUDUAL=CALC_ELEM(reuse =RESUDUAL,
                    RESULTAT=RESUDUAL,
                    TOUT_ORDRE='OUI',
-                   OPTION='SIRE_ELNO_DEPL',);
+                   OPTION='SIGM_ELNO_DEPL',);
 
 RESUDUAL=CALC_ELEM(reuse =RESUDUAL,
                    RESULTAT=RESUDUAL,
@@ -149,11 +149,11 @@ TEST_RESU(RESU=_F(RESULTAT=RESUPRIM,
                   NOM_CMP='ERREST',
                   MAILLE='M1',
                   POINT=1,
-                  VALE=2.76907E-02,
+                  VALE=0.01577288,
                   CRITERE='RELATIF',
                   PRECISION=1e-06,
                   REFERENCE='NON_REGRESSION',
-                  VERSION='9.3.15',),);
+                  VERSION='10.2.20',),);
 
 TEST_RESU(RESU=_F(RESULTAT=RESUPRIM,
                   NUME_ORDRE=1,
@@ -161,11 +161,11 @@ TEST_RESU(RESU=_F(RESULTAT=RESUPRIM,
                   NOM_CMP='ERREST',
                   MAILLE='M1',
                   POINT=1,
-                  VALE=6.2004157E-03,
+                  VALE=2.85480739E-03,
                   CRITERE='RELATIF',
                   PRECISION=1e-06,
                   REFERENCE='NON_REGRESSION',
-                  VERSION='9.3.15',),);
+                  VERSION='10.2.20',),);
 
 TEST_RESU(RESU=_F(RESULTAT=RESUPRIM,
                   NUME_ORDRE=1,
@@ -173,19 +173,19 @@ TEST_RESU(RESU=_F(RESULTAT=RESUPRIM,
                   NOM_CMP='ERREST',
                   MAILLE='M4',
                   NOEUD='N1',
-                  VALE=1.01420306E-04,
+                  VALE=5.11604027E-05,
                   CRITERE='RELATIF',
                   PRECISION=1e-06,
                   REFERENCE='NON_REGRESSION',
-                  VERSION='9.3.15',),);
+                  VERSION='10.2.20',),);
 
 TEST_RESU(RESU=_F(RESULTAT=RESUPRIM,
                   NUME_ORDRE=1,
                   PARA='ERREUR_QIRE',
-                  VALE=6.53117E-03,
+                  VALE=3.20386449E-03,
                   CRITERE='RELATIF',
                   PRECISION=1e-06,
                   REFERENCE='NON_REGRESSION',
-                  VERSION='9.3.15',),);
+                  VERSION='10.2.20',),);
 
 FIN();

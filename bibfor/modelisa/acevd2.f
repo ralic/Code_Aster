@@ -4,7 +4,7 @@
       CHARACTER*8       NOMA,NOMO
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 03/11/2008   AUTEUR ABBAS M.ABBAS 
+C MODIF MODELISA  DATE 19/10/2010   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -132,7 +132,7 @@ C
 C ---    "GROUP_MA" = TOUTES LES MAILLES DE TOUS LES GROUPES DE MAILLES
          IF (NG.GT.0) THEN
            DO 38 II = 1 , NG
-             CALL JELIRA(JEXNOM(GRPMA,ZK8(JDLS+II-1)),'LONMAX',NBMA,K8B)
+             CALL JELIRA(JEXNOM(GRPMA,ZK8(JDLS+II-1)),'LONUTI',NBMA,K8B)
              CALL JEVEUO(JEXNOM(GRPMA,ZK8(JDLS+II-1)),'L',IALIMA)
              CALL ACEVTR(NOMA,NOMO,2,ZK8(1),ZI(IALIMA),NBMA,NDIM)
  38        CONTINUE
@@ -150,7 +150,7 @@ C                                                  DE GROUPES DE NOEUDS
             IF (NJ.GT.0) THEN
                DO 42 I = 1 , NJ
                   CALL JEVEUO(JEXNOM(MLGGNO,ZK8(JDLS+I-1)),'L',JDGN)
-                  CALL JELIRA(JEXNOM(MLGGNO,ZK8(JDLS+I-1)),'LONMAX',
+                  CALL JELIRA(JEXNOM(MLGGNO,ZK8(JDLS+I-1)),'LONUTI',
      &                                                  NBNOGR,K1BID)
                   CALL CRLINU ( 'NUM', MLGNNO, NBNOGR, ZI(JDGN), K8B,
      &                           NBMTRD, ZI(JDNW), ZI(JDDI), KK )

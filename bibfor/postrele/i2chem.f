@@ -4,7 +4,7 @@
       CHARACTER*8 NOMAIL
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 06/07/2009   AUTEUR COURTOIS M.COURTOIS 
+C MODIF POSTRELE  DATE 19/10/2010   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -123,7 +123,7 @@ C----------------------------------------------------------------------
               VALK (2) = NOMGR
               CALL U2MESG('E', 'INTEMAIL_16',2,VALK,1,OCC,0,0.D0)
             ELSE
-              CALL JELIRA(JEXNOM(GRPMAI,NOMGR),'LONMAX',NBM,K1B)
+              CALL JELIRA(JEXNOM(GRPMAI,NOMGR),'LONUTI',NBM,K1B)
               CALL JEVEUO(JEXNOM(GRPMAI,NOMGR),'L',JGRM1)
               DO 20,IM = 1,NBM,1
                 CALL JEVEUO(TYPE,'L',IATYMA)
@@ -165,7 +165,7 @@ C----------------------------------------------------------------------
           CALL GETVTX('DEFI_CHEMIN','GROUP_MA',OCC,1,N2,ZK8(JGRMA),N2)
           DO 70,IG = 1,N2,1
             NOMGR = ZK8(JGRMA+IG-1)
-            CALL JELIRA(JEXNOM(GRPMAI,NOMGR),'LONMAX',NBM,K1B)
+            CALL JELIRA(JEXNOM(GRPMAI,NOMGR),'LONUTI',NBM,K1B)
             CALL JEVEUO(JEXNOM(GRPMAI,NOMGR),'L',JGRM2)
             DO 60,IM = 1,NBM,1
               NUMM = ZI(JGRM2+IM-1)

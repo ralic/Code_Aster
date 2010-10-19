@@ -1,4 +1,4 @@
-# MODIF  DATE 13/07/2010   AUTEUR MASSIN P.MASSIN 
+# MODIF  DATE 19/10/2010   AUTEUR DESOZA T.DESOZA 
 # TITRE PLAQUE AVEC CONTACT ET FROTTEMENT SUR UN PLAN RIGIDE
 # ssnv128w.para = tps_job 100 mem_job 200Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -82,7 +82,7 @@ CHA1=DEFI_CONTACT(MODELE=MO,
                  ZONE=_F(
                          GROUP_MA_MAIT = 'SBATI',
                          GROUP_MA_ESCL = 'SCONTA',
-                         CONTACT_INIT = 'OUI',
+                         CONTACT_INIT = 'INTERPENETRE',
                          COULOMB        = 1.0,
                          SEUIL_INIT     = 0.,
                          SANS_GROUP_NO_FR= 'PP',

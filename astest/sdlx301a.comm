@@ -1,5 +1,5 @@
 
-# MODIF  DATE 13/10/2010   AUTEUR BOITEAU O.BOITEAU 
+# MODIF  DATE 19/10/2010   AUTEUR DELMAS J.DELMAS 
 # TITRE BATIMENT SOUMIS A UNE EXCITATION SISMIQUE
 # VERSION B de ce test : ajout de poutres afin de lier les DRZ
 #                        entre poteaux et plaques
@@ -184,19 +184,13 @@ IMPR_RESU(MODELE=MO,
                   NUME_MODE=(1,2,3,4,5,6,7,8,),),);
 #                                              
 MODE1=CALC_ELEM(reuse =MODE1,
-                MODELE=MO,
-                CHAM_MATER=CHMAT,
-                CARA_ELEM=CARAELEM,
                 RESULTAT=MODE1,
                 OPTION=('SIEF_ELGA_DEPL','EFGE_ELNO_DEPL',),);
 #
 
 MODE1=CALC_NO(reuse =MODE1,
               RESULTAT=MODE1,
-              OPTION='REAC_NODA',
-              MODELE=MO,
-              CHAM_MATER=CHMAT,
-              CARA_ELEM=CARAELEM,);
+              OPTION='REAC_NODA',);
 
 
 ##################
@@ -653,27 +647,18 @@ MODE_STA=MODE_STATIQUE(MATR_RIGI=RIGIDITE,
 #
 
 MODE_STA=CALC_ELEM(reuse =MODE_STA,
-                   MODELE=MO,
-                   CHAM_MATER=CHMAT,
-                   CARA_ELEM=CARAELEM,
                    RESULTAT=MODE_STA,
                    OPTION=('SIEF_ELGA_DEPL','EFGE_ELNO_DEPL',),);
 #
 
 MODE_STA=CALC_NO(reuse =MODE_STA,
                  RESULTAT=MODE_STA,
-                 OPTION='FORC_NODA',
-                 MODELE=MO,
-                 CHAM_MATER=CHMAT,
-                 CARA_ELEM=CARAELEM,);
+                 OPTION='FORC_NODA',);
 #
 
 MODE_STA=CALC_NO(reuse =MODE_STA,
                  RESULTAT=MODE_STA,
-                 OPTION='REAC_NODA',
-                 MODELE=MO,
-                 CHAM_MATER=CHMAT,
-                 CARA_ELEM=CARAELEM,);
+                 OPTION='REAC_NODA',);
 #
 
 SISMC=COMB_SISM_MODAL(MODE_MECA=MODE1,

@@ -1,9 +1,8 @@
-      SUBROUTINE IB0MAI ( IER )
+      SUBROUTINE IB0MAI()
       IMPLICIT REAL*8 (A-H,O-Z)
-      INTEGER                      IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 11/08/2009   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF SUPERVIS  DATE 19/10/2010   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -84,7 +83,7 @@ C     --- ALLOCATION D'UNE BASE DE DONNEES TEMPORAIRE VOLATILE---
 C
       CALL ULDEFI(6,' ','MESSAGE','A','N','N')
       CALL ULDEFI(9,' ','ERREUR' ,'A','N','N')
-      CALL ULDEFI(15,' ','CODE' ,'A','N','N')
+      CALL ULDEFI(15,' ','CODE' ,'A','N','O')
 
       IF ( LERMEM ) CALL U2MESI('F','SUPERVIS_11',1,INT(FNTMEM*LOIS))
 

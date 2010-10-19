@@ -1,4 +1,4 @@
-# MODIF  DATE 21/09/2010   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 19/10/2010   AUTEUR COURTOIS M.COURTOIS 
 # TITRE INTERFACE EN CONTACT FROTTANT AVEC X-FEM
 # ssnv209k.para = tps_job 400 mem_job 800Mo mem_aster 80 ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -250,6 +250,7 @@ MA_XFEM=POST_MAIL_XFEM(MAILLAGE_SAIN = MAILLAG1,
 
 MA_XFEM=DEFI_GROUP(reuse=MA_XFEM,
                    MAILLAGE=MA_XFEM,
+                   DETR_GROUP_NO=_F(NOM='NFISSU',),
                    CREA_GROUP_NO=(_F(OPTION='ENV_SPHERE',
                                      NOM='PPA',
                                      POINT=(0.,0.),

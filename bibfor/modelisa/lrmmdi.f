@@ -4,7 +4,7 @@
      &                    NBNOEU, NBMAIL, NBNOMA,
      &                    DESCFI, ADAPMA )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 14/09/2010   AUTEUR REZETTE C.REZETTE 
+C MODIF MODELISA  DATE 19/10/2010   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -109,7 +109,7 @@ C====
 C
 C 1.1. ==> NOMBRE DE NOEUDS
 C
-      CALL EFNEMA ( FID, NOMAMD, EDCOOR, EDNOEU, TYPNOE, IAUX,
+      CALL MFNEMA ( FID, NOMAMD, EDCOOR, EDNOEU, TYPNOE, IAUX,
      &              NBNOEU, CODRET)
       IF ( CODRET.NE.0 ) THEN
         CALL CODENT ( CODRET,'G',SAUX08 )
@@ -129,7 +129,7 @@ C
 C
         IF ( TYPGEO(ITYP) .NE. 0 ) THEN
 C
-          CALL EFNEMA ( FID, NOMAMD,
+          CALL MFNEMA ( FID, NOMAMD,
      &                  EDCONN, EDMAIL, TYPGEO(ITYP), EDNODA,
      &                  NMATYP(ITYP), CODRET )
           IF ( CODRET.NE.0 ) THEN

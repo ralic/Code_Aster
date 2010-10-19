@@ -4,7 +4,7 @@
         IMPLICIT   NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/11/2009   AUTEUR DELMAS J.DELMAS 
+C MODIF ALGORITH  DATE 18/10/2010   AUTEUR FLEJOU J-L.FLEJOU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -32,10 +32,16 @@ C           IMAT   :  ADRESSE DU MATERIAU CODE
 C           NMAT   :  DIMENSION MATER
 C           MATER  :  COEFFICIENTS MATERIAU
 C           NVI    :  NB VARIABLES INTERNES
+C           NR     :  NB DE TERME DANS LE SYSTEME DE NEWTOW
 C           DEPS   :  INCREMENT DE DEFORMATION
-C           SIGF    :  CONTRAINTE A L INSTANT +
-C           VIN    :  VARIABLES INTERNES
-C           SIGD    :  CONTRAINTE A L INSTANT -
+C           SIGF   :  CONTRAINTE A L INSTANT +
+C           VIN    :  VARIABLES INTERNES A L INSTANT +
+C           SIGD   :  CONTRAINTE A L INSTANT -
+C           VIND   :  VARIABLES INTERNES A L INSTANT -
+C           THETA  :  ?? COMP_INCR/PARM_THETA
+C           DT     :  ??
+C           DEVG   :  ??
+C           DEVGII :  ??
 C       OUT DSDE   :  MATRICE DE COMPORTEMENT TANGENT = DSIG/DEPS
 C           VP     : VALEURS PROPRES DU DEVIATEUR ELASTIQUE (HOEK-BROWN)
 C           VECP   : VECTEURS PROPRES DU DEVIATEUR ELASTIQUE(HOEK-BROWN)
@@ -44,31 +50,31 @@ C                    = 0, TOUT VA BIEN PAS DE REDECOUPAGE
 C                    = 1 ou 2, CORRESPOND AU CODE RETOUR DE PLASTI.F
 C       ----------------------------------------------------------------
 C TOLE CRP_21
-        INTEGER         IMAT, NMAT , NVI, NR,KPG,KSP,CODRET
-        REAL*8          DSDE(6,6),DEVG(*),DEVGII,SIGF(6),DEPS(6),DG
-        REAL*8          VIN(*), VIND(*),THETA,DT,MATER(NMAT,2)
-        REAL*8          VP(3),VECP(3,3),SIGD(6)
-        CHARACTER*8     MOD
-        CHARACTER*16    LOI
-        CHARACTER*(*)   FAMI
+      INTEGER         IMAT, NMAT , NVI, NR,KPG,KSP,CODRET
+      REAL*8          DSDE(6,6),DEVG(*),DEVGII,SIGF(6),DEPS(6),DG
+      REAL*8          VIN(*), VIND(*),THETA,DT,MATER(NMAT,2)
+      REAL*8          VP(3),VECP(3,3),SIGD(6)
+      CHARACTER*8     MOD
+      CHARACTER*16    LOI
+      CHARACTER*(*)   FAMI
 C       ----------------------------------------------------------------
-        
-        CODRET = 0
-        
-        IF     ( LOI(1:8) .EQ. 'ROUSS_PR' .OR.
-     &           LOI(1:10) .EQ. 'ROUSS_VISC' ) THEN
-          CALL  RSLJPL(FAMI,KPG,KSP,LOI,IMAT,NMAT,MATER,
-     &                 SIGF,VIN,VIND,DEPS,THETA,DT,DSDE)
+
+      CODRET = 0
+
+      IF     ( LOI(1:8) .EQ. 'ROUSS_PR' .OR.
+     &         LOI(1:10) .EQ. 'ROUSS_VISC' ) THEN
+         CALL RSLJPL(FAMI,KPG,KSP,LOI,IMAT,NMAT,MATER,
+     &               SIGF,VIN,VIND,DEPS,THETA,DT,DSDE)
 C
-        ELSEIF ( LOI(1:6) .EQ. 'LAIGLE'   ) THEN
-          CALL  LGLJPL(MOD,NMAT,MATER,SIGF,DEVG,DEVGII,VIN,DSDE,CODRET)
+      ELSEIF ( LOI(1:6) .EQ. 'LAIGLE'   ) THEN
+         CALL LGLJPL(MOD,NMAT,MATER,SIGF,DEVG,DEVGII,VIN,DSDE,CODRET)
 C
-        ELSEIF (( LOI(1:10) .EQ. 'HOEK_BROWN'   ).OR.
-     &          ( LOI(1:14) .EQ. 'HOEK_BROWN_EFF'   ))THEN
-          CALL  HBRJPL(MOD,NMAT,MATER,SIGF,VIN,VIND,VP,VECP,DSDE)
-        ELSEIF ( LOI(1:7) .EQ. 'IRRAD3M'   ) THEN
-          CALL  IRRJPL(FAMI,KPG,KSP,MOD,NMAT,MATER,NR,NVI,SIGF,VIND,
-     &                 VIN,SIGD,DSDE)
-        ENDIF
+      ELSEIF ( (LOI(1:10) .EQ. 'HOEK_BROWN').OR.
+     &         (LOI(1:14) .EQ. 'HOEK_BROWN_EFF') )THEN
+         CALL HBRJPL(MOD,NMAT,MATER,SIGF,VIN,VIND,VP,VECP,DSDE)
 C
-        END
+      ELSEIF ( LOI(1:7) .EQ. 'IRRAD3M' ) THEN
+         CALL IRRJPL(MOD,NMAT,MATER,SIGF,VIND,VIN,DSDE)
+      ENDIF
+C
+      END

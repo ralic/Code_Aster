@@ -1,7 +1,7 @@
       SUBROUTINE CFINIG(RESOCO,ITERAT,LNOPRE)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 14/09/2010   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 19/10/2010   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -67,7 +67,7 @@ C
 C ----------------------------------------------------------------------
 C
       CALL JEMARQ() 
-      CALL INFDBG('MECANONLINE',IFM,NIV)       
+      CALL INFDBG('CONTACT',IFM,NIV)       
 C
 C --- AFFICHAGE
 C      

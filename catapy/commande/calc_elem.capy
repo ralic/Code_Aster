@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 11/10/2010   AUTEUR PELLET J.PELLET 
+#& MODIF COMMANDE  DATE 19/10/2010   AUTEUR DELMAS J.DELMAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -106,7 +106,7 @@ CALC_ELEM=OPER(nom="CALC_ELEM",op=58,sd_prod=calc_elem_prod,reentrant='f',
                                  "ETOT_ELGA","ETOT_ELNO_ELGA","ETOT_ELEM","DISS_ELGA","DISS_ELNO_ELGA",
                               #  estimateurs erreur
                                  "SIGM_NOZ1_ELGA","ERZ1_ELEM_SIGM","SIGM_NOZ2_ELGA","ERZ2_ELEM_SIGM",
-                                 "SIRE_ELNO_DEPL","ERRE_ELEM_SIGM","ERRE_ELNO_ELEM",
+                                 "ERRE_ELEM_SIGM","ERRE_ELNO_ELEM",
                                  "QIRE_ELEM_SIGM","QIRE_ELNO_ELEM","QIZ1_ELEM_SIGM","QIZ2_ELEM_SIGM",
                                  "SING_ELEM","SING_ELNO_ELEM",
                               #  CRIT
@@ -259,7 +259,7 @@ b_charge =BLOC( condition = "OPTION in ('EPME_ELNO_DEPL','EPSI_ELGA_DEPL','EPME_
           b_indi_erreur        =BLOC( condition = "TYPE_OPTION=='INDI_ERREUR'",
                OPTION    =SIMP(statut='o',typ='TXM',validators=NoRepeat(),max='**',defaut="ERRE_ELEM_SIGM",
                            into=("SIGM_NOZ1_ELGA","ERZ1_ELEM_SIGM","SIGM_NOZ2_ELGA","ERZ2_ELEM_SIGM",
-                                 "SIRE_ELNO_DEPL","ERRE_ELEM_SIGM","ERRE_ELNO_ELEM",
+                                 "ERRE_ELEM_SIGM","ERRE_ELNO_ELEM",
                                  "QIRE_ELEM_SIGM","QIRE_ELNO_ELEM","QIZ1_ELEM_SIGM","QIZ2_ELEM_SIGM",
                                  "SING_ELEM","SING_ELNO_ELEM",
                                  )),

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 04/10/2010   AUTEUR GNICOLAS G.NICOLAS 
+#& MODIF COMMANDE  DATE 18/10/2010   AUTEUR GNICOLAS G.NICOLAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -52,8 +52,8 @@ MACR_ADAP_MAIL=MACRO(nom="MACR_ADAP_MAIL",op=macr_adap_mail_ops,sd_prod=macr_ada
 #
 # 2. Version de HOMARD
 #
-  VERSION_HOMARD = SIMP(statut='f',typ='TXM',defaut="V9_6",
-                        into=("V9_6", "V9_N", "V9_N_PERSO"),
+  VERSION_HOMARD = SIMP(statut='f',typ='TXM',defaut="V9_7",
+                        into=("V9_7", "V9_N", "V9_N_PERSO"),
                         fr="Version de HOMARD",
                         ang="HOMARD release"),
 #
@@ -85,9 +85,9 @@ MACR_ADAP_MAIL=MACRO(nom="MACR_ADAP_MAIL",op=macr_adap_mail_ops,sd_prod=macr_ada
                              ang="Additional mesh after adaptation" ),
 #
 # 5. Le pilotage de l'adaptation, avec les variantes suivantes :
-#  . Raffinement et deraffinement, selon un champ d'indicateurs d'erreur
-#  . Raffinement seul, selon un champ d'indicateurs d'erreur
-#  . Deraffinement seul, selon un champ d'indicateurs d'erreur
+#  . Raffinement et deraffinement, selon un champ
+#  . Raffinement seul, selon un champ
+#  . Deraffinement seul, selon un champ
 #  . Raffinement seul, selon des zones geometriques
 #  . Raffinement uniforme : toutes les mailles sont divisées
 #  . Deraffinement uniforme : toutes les mailles sont regroupées
@@ -98,44 +98,44 @@ MACR_ADAP_MAIL=MACRO(nom="MACR_ADAP_MAIL",op=macr_adap_mail_ops,sd_prod=macr_ada
                     into=("RAFF_DERA","RAFFINEMENT","DERAFFINEMENT","RAFFINEMENT_ZONE", \
                           "RAFFINEMENT_UNIFORME","DERAFFINEMENT_UNIFORME", \
                           "MODIFICATION","RIEN"),
-                    fr="Pilotage de l'adaptation : selon un indicateur d'erreur ou uniforme.",
-                    ang="Adaptation control : either among an error indicator or uniform" ),
+                    fr="Pilotage de l'adaptation : selon un champ ou uniforme.",
+                    ang="Adaptation control : either among an field or uniform" ),
 #
-# 6. Pour de l'adaptation libre, il faut un indicateur d'erreur
+# 6. Pour de l'adaptation libre, il faut un champ ou une zone
 #
-  b_indicateur_d_erreur = BLOC( condition = " (ADAPTATION == 'RAFF_DERA') or \
-                                              (ADAPTATION == 'RAFFINEMENT') or \
-                                              (ADAPTATION == 'DERAFFINEMENT') " ,
-                                fr="Pour une adaptation libre, choix de l'indicateur d'erreur ou d'une zone à raffiner",
-                                ang="For a free adaptation, selection of the error indicator or of a zone",
+  b_champ = BLOC( condition = " (ADAPTATION == 'RAFF_DERA') or \
+                                (ADAPTATION == 'RAFFINEMENT') or \
+                                (ADAPTATION == 'DERAFFINEMENT') " ,
+                  fr="Pour une adaptation libre, choix du champ ou d'une zone à raffiner",
+                  ang="For a free adaptation, selection of the field or of a zone",
 #
     regles=(UN_PARMI('CHAM_GD','RESULTAT_N')),
 #
-# 6.1. Repérage de la zone à raffiner à l'aide d'un indicateur
+# 6.1. Reperage de la zone a raffiner a l'aide d'un champ
 #
 # 6.1.1. Sous forme de champ de grandeur
 #
     CHAM_GD    = SIMP(statut='f',typ=cham_gd_sdaster,
-                      fr="Champ de grandeur Code_Aster contenant l'indicateur d'erreur",
-                      ang="Code_Aster champ de grandeur with error indicator" ),
+                      fr="Champ de grandeur Code_Aster pilotant l'adaptation",
+                      ang="Code_Aster 'champ de grandeur' governing the adapatation" ),
 #
 # 6.1.2. Sous forme de concept resultat_sdaster
 #
     RESULTAT_N = SIMP(statut='f',typ=(evol_elas,evol_noli,evol_ther) ,
-                      fr="Concept resultat Code_Aster contenant l'indicateur d'erreur",
-                      ang="The Code_Aster result with error indicator" ),
+                      fr="Concept resultat Code_Aster contenant le champ",
+                      ang="The Code_Aster result with the field" ),
 #
-    b_champ_indicateur = BLOC(condition="(RESULTAT_N != None)",
+    b_champ_adaptation = BLOC(condition="(RESULTAT_N != None)",
       NOM_CHAM = SIMP(statut='o',typ='TXM',into=C_NOM_CHAM_INTO(),
-                        fr="Champ de l'indicateur d'erreur dans le résultat",
-                        ang="The error indicator field in the result structure" ),
+                        fr="Champ dans le résultat",
+                        ang="The field in the result structure" ),
     ),
 #
-# 6.1.3. Est-ce un champ dérivé
+# 6.1.3. Est-ce un champ derive
 #
     b_sensibilite = BLOC(condition=" (RESULTAT_N != None) or (CHAM_GD != None) ",
                         fr="Est-ce un champ dérivé",
-                        ang="Is the indicator a derivative field",
+                        ang="Is the field a derivative field",
 #
       SENSIBILITE = SIMP(statut='f',typ=(para_sensi,theta_geom),
                          fr="Paramètre de sensibilité.",
@@ -146,20 +146,20 @@ MACR_ADAP_MAIL=MACRO(nom="MACR_ADAP_MAIL",op=macr_adap_mail_ops,sd_prod=macr_ada
 # 6.1.4. La ou les composantes retenues
 #
     b_composante = BLOC(condition=" (RESULTAT_N != None) or (CHAM_GD != None) ",
-                        fr="Choix de la composante ou des composantes pour l'indicateur",
-                        ang="Selection of the component(s) for the error indicator",
+                        fr="Choix de la composante ou des composantes pour le champ",
+                        ang="Selection of the component(s) for the field",
 #
       NOM_CMP = SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**',
-                            fr="Liste des composante(s) retenue(s) pour l'indicateur d'erreur.",
-                            ang="List of the selected component(s) for the error indicator." ),
+                            fr="Liste des composante(s) retenue(s) pour le champ.",
+                            ang="List of the selected component(s) for the field." ),
 #
     ),
 #
-# 6.1.5. Le paramètre temporel pour l'indicateur
+# 6.1.5. Le paramètre temporel pour le champ
 #
     b_parametre_temporel = BLOC(condition="(RESULTAT_N != None)",
-                                fr="Choix éventuel du paramètre temporel pour l'indicateur",
-                                ang="Time selection for the error indicator (option)",
+                                fr="Choix éventuel du paramètre temporel pour le champ",
+                                ang="Time selection for the field (option)",
 #
       regles=(EXCLUS('NUME_ORDRE','INST'),),
 #
@@ -196,34 +196,34 @@ MACR_ADAP_MAIL=MACRO(nom="MACR_ADAP_MAIL",op=macr_adap_mail_ops,sd_prod=macr_ada
 #
     ),
 #
-# 6.1.6. Type de valeur de l'indicateur : absolue (norme L2), norme infinie, ou relative
+# 6.1.6. Usage des composantes : maximum, maximum de la valeur absolue, ou de la norme L2, ou de la norme infinie
 #
-    b_valeur_indicateur = BLOC(condition=" (RESULTAT_N != None) or (CHAM_GD != None) ",
-                               fr="Type de valeur pour l'indicateur",
-                               ang="Type of the value type for the error indicator",
+    b_usage_cmp = BLOC(condition=" (RESULTAT_N != None) or (CHAM_GD != None) ",
+                       fr="Type d'usage de(s) composante(s)",
+                       ang="Type of the use for the component(s)",
 #
-      TYPE_VALEUR_INDICA = SIMP(statut='f',typ='TXM',defaut="V_ABSOLUE",
-                                into=("V_ABSOLUE", "NORME_L2", "NORME_INFINIE", "V_RELATIVE"),
-                                fr="Valeur absolue, norme des composantes ou valeur relative pour l'indicateur",
-                                ang="Absolute value, norm or relative value for the error indicator" ),
+      USAGE_CMP = SIMP(statut='f',typ='TXM',defaut="NORME_L2",
+                       into=("ABSOLU", "NORME_L2", "NORME_INFINIE", "RELATIF"),
+                       fr="Valeur absolue de la composante, ou norme du champ, ou valeur relative de la composante",
+                       ang="Absolute value of the component, or norm of the field, or relative value of the component" ),
 #
     ),
 #
-# 6.1.7. Type d'opération sur l'indicateur : la valeur par maille ou le max du saut entre mailles
+# 6.1.7. Usage du champ : la valeur par maille ou le max du saut entre mailles
 #
-    b_usage_indicateur = BLOC(condition=" (RESULTAT_N != None) or (CHAM_GD != None) ",
-                              fr="Usage de l'indicateur : direct ou saut",
-                              ang="Use type for the error indicator : direct or jump",
+    b_usage_champ = BLOC(condition=" (RESULTAT_N != None) or (CHAM_GD != None) ",
+                         fr="Usage du champ : direct ou saut",
+                         ang="Use type for the field : direct or jump",
 #
-      TYPE_OPER_INDICA = SIMP(statut='f',typ='TXM',defaut="MAILLE",into=("MAILLE","SAUT"),
-                              fr="Usage de l'indicateur : la valeur par maille ou le saut entre mailles voisines",
-                              ang="Use of the indicator : value over every mesh or jump between neighbour" ),
+      USAGE_CHAMP = SIMP(statut='f',typ='TXM',defaut="MAILLE",into=("MAILLE","SAUT"),
+                         fr="Usage du champ : la valeur par maille ou le saut entre mailles voisines",
+                         ang="Use of the field : value over every mesh or jump between the neighbours" ),
 #
     ),
 #
   ) ,
 #
-# 7. Les criteres pour de l'adaptation libre avec un indicateur d'erreur :
+# 7. Les criteres pour de l'adaptation libre avec un champ :
 #        absolu, relatif, en proportion d'entite
 # 7.1. Pour le raffinement :
 #

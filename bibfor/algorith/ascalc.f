@@ -11,22 +11,22 @@
       LOGICAL       MONOAP, MUAPDE, COMDIR, TRONC, CORFRE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2009   AUTEUR MACOCCO K.MACOCCO 
+C MODIF ALGORITH  DATE 19/10/2010   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CRP_21
 C     ------------------------------------------------------------------
@@ -84,7 +84,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON  /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
       CHARACTER*32       JEXNOM, JEXNUM
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
-      INTEGER       IBID, ID, IOPT, IRET, JCREP, JDIR, JMOD, JREP1, 
+      INTEGER       IBID, ID, IOPT, IRET, JCREP, JDIR, JMOD, JREP1,
      &              JTABS, JVAL, NBMODE, NBOPT, NBPARA, NBPARI, NBPARK,
      &              NBPARR, NBSUP, NDEPL, NEQ, JREP2, NBDIS(NBSUP),
      &              NOC,IOC,JNOE1,N1,NNO,IS,INO,IGR,NGR,JGRN,JDGN,IER
@@ -110,8 +110,8 @@ C
       KVX1 = '&&ASCALC.REP_MO1'
       KVX2 = '&&ASCALC.REP_MO2'
       KVE2 = '&&ASCALC.C_REP_MOD'
-      KVE3 = '&&ASCALC.REP_DIR' 
-      KVE4 = '&&ASCALC.TABS'   
+      KVE3 = '&&ASCALC.REP_DIR'
+      KVE4 = '&&ASCALC.TABS'
       CALL DISMOI('F','NOM_NUME_DDL',MASSE,'MATR_ASSE',IBID,NUME,IRET)
 C
       CALL GETFAC ( 'COMB_DEPL_APPUI', NDEPL )
@@ -125,13 +125,13 @@ C
          GLOB = .TRUE.
       ENDIF
 
-      
+
 C  ----         CAS DECORRELE            ----
-C  ---- INITIALISATION DU TABLEAU CONCERNANT 
-C  ---- LES REGROUPEMENTS EN INTRA-GROUPE 
+C  ---- INITIALISATION DU TABLEAU CONCERNANT
+C  ---- LES REGROUPEMENTS EN INTRA-GROUPE
       DO 50 IS = 1,NBSUP
-        NBDIS(IS) = 0       
- 50   CONTINUE   
+        NBDIS(IS) = 0
+ 50   CONTINUE
       NINTRA = NBSUP
       NOC = NBSUP
 
@@ -140,7 +140,7 @@ C  ---- CONSTITUTION DES GROUPES D'APPUI ----
         MOTFA1 = 'GROUP_APPUI'
         CALL GETFAC ( MOTFA1, NOC)
 C  ---- SI GROUP_APPUI EST PRESENT ----
-        IF (NOC.NE.0) THEN          
+        IF (NOC.NE.0) THEN
           DO 100 IOC = 1,NOC
           CALL GETVTX(MOTFA1,'NOEUD',IOC,1,0,NOEU,N1)
           IF (N1.NE.0) THEN
@@ -153,10 +153,10 @@ C  ---- SI GROUP_APPUI EST PRESENT ----
               DO 102 IS=1,NBSUP
                 DO 103 ID =1,3
                 IF (NOMSUP((ID-1)*NBSUP+IS).EQ.NOEU) THEN
-                  IF (NBDIS(IS).NE.0) THEN 
+                  IF (NBDIS(IS).NE.0) THEN
                     CALL U2MESS('F','SEISME_29')
                   ENDIF
-                  NBDIS(IS) = IOC  
+                  NBDIS(IS) = IOC
                ENDIF
  103           CONTINUE
  102          CONTINUE
@@ -181,7 +181,7 @@ C  ---- SI GROUP_APPUI EST PRESENT ----
                    IER = IER + 1
                    CALL ASSERT(IRET .NE. 0)
                 ENDIF
-                CALL JELIRA(JEXNOM(OBJ1,GRNOEU),'LONMAX',NNO,K1B)
+                CALL JELIRA(JEXNOM(OBJ1,GRNOEU),'LONUTI',NNO,K1B)
                 CALL JEVEUO(JEXNOM(OBJ1,GRNOEU),'L',JDGN)
 
                 DO 111 INO = 1, NNO
@@ -189,10 +189,10 @@ C  ---- SI GROUP_APPUI EST PRESENT ----
                    DO 112 IS=1,NBSUP
                      DO 113 ID =1,3
                       IF (NOMSUP((ID-1)*NBSUP+IS).EQ.NOEU) THEN
-                        IF (NBDIS(IS).NE.0) THEN 
+                        IF (NBDIS(IS).NE.0) THEN
                           CALL U2MESS('F','SEISME_29')
                         ENDIF
-                        NBDIS(IS) = IOC  
+                        NBDIS(IS) = IOC
                        ENDIF
  113                CONTINUE
  112              CONTINUE
@@ -201,7 +201,7 @@ C  ---- SI GROUP_APPUI EST PRESENT ----
               CALL JEDETR('&&ASCALC.GROUP_NO')
             ENDIF
           ENDIF
- 100      CONTINUE 
+ 100      CONTINUE
           NCOMPT = 0
           IF (NOC.EQ.1) THEN
             DO 120 IS=1,NBSUP
@@ -211,23 +211,23 @@ C  ---- SI GROUP_APPUI EST PRESENT ----
               CALL U2MESS('F','SEISME_30')
             ENDIF
           ENDIF
-        ENDIF         
+        ENDIF
 C  ---- SI GROUP_APPUI EST ABSENT ----
         NCOMPT = 0
         DO 130 IS=1,NBSUP
           IF (NBDIS(IS).EQ.0) THEN
             NCOMPT    = NCOMPT + 1
-            NBDIS(IS) = NOC + NCOMPT                    
-          ENDIF     
+            NBDIS(IS) = NOC + NCOMPT
+          ENDIF
  130    CONTINUE
-        NINTRA = NOC + NCOMPT            
+        NINTRA = NOC + NCOMPT
       ELSE
 C  ---- SI LES EXCITATIONS SONT CORRELEES ----
           DO 140 IS=1,NBSUP
-            NBDIS(IS) = IS 
- 140      CONTINUE   
-          NINTRA = NBSUP  
-      ENDIF     
+            NBDIS(IS) = IS
+ 140      CONTINUE
+          NINTRA = NBSUP
+      ENDIF
 C
 C
 C     --- BOUCLE SUR LES OPTIONS DE CALCUL "NOMSY" ---
@@ -236,7 +236,7 @@ C     --- BOUCLE SUR LES OPTIONS DE CALCUL "NOMSY" ---
          NOMSY2 = NOMSY
          IF (NOMSY(1:4).EQ.'VITE') NOMSY2 = 'DEPL'
          IF (NOMSY(1:4).EQ.'ACCE') NOMSY2 = 'DEPL'
-         CALL VPRECU ( MOME, NOMSY2, NBMODE, NORDR, KVEC, 
+         CALL VPRECU ( MOME, NOMSY2, NBMODE, NORDR, KVEC,
      +                 NBPARA, NOPARA, K8B, KVAL, K8B,
      +                 NEQ, NBMODE, CTYP, NBPARI, NBPARR, NBPARK )
          CALL JEVEUO(KVEC,'L',JMOD)
@@ -259,8 +259,8 @@ C              --- CALCUL DES REPONSE MODALES ---
 C
 C              --- COMBINAISON DES REPONSES MODALES ---
 C
-               CALL ASCORM ( MONOAP, TYPCMO, NBSUP, NSUPP, NEQ, 
-     +                       NBMODE, ZR(JREP1), ZR(JREP2), AMORT, 
+               CALL ASCORM ( MONOAP, TYPCMO, NBSUP, NSUPP, NEQ,
+     +                       NBMODE, ZR(JREP1), ZR(JREP2), AMORT,
      +                       ZR(JVAL), ID, TEMPS, ZR(JCREP), ZR(JTABS),
      +                       NOMSY, ZR(JMOD), REASUP, SPECTR, CORFRE,
      +                       MUAPDE, TCOSUP, NINTRA, NBDIS)
@@ -285,7 +285,7 @@ C
 C
 C              --- PRISE EN COMPTE DE LA TRONCATURE ---
 C              --- DANS LE CAS DE CALCUL DE REPONSE GLOBALE  ---
-               
+
                IF ( TRONC ) THEN
                   CALL ASTRON ( NOMSY, PSMO, MONOAP, MUAPDE, NBSUP,
      +                          NSUPP, NEQ, NBMODE, ID, ZR(JMOD),
@@ -312,7 +312,7 @@ C
 C            --- PRISE EN COMPTE DES EFFETS D'ENTRAINEMENT ---
 C            --- DANS LE CAS DE CALCUL DE REPONSE GLOBALE  ---
 C
-            IF ( NOMSY(1:11) .NE. 'ACCE_ABSOLU' ) THEN 
+            IF ( NOMSY(1:11) .NE. 'ACCE_ABSOLU' ) THEN
                CALL ASECON ( NOMSY, NEQ, MOME, RESU )
             ENDIF
 C

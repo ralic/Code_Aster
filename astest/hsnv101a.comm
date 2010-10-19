@@ -1,4 +1,4 @@
-# MODIF  DATE 05/10/2010   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 19/10/2010   AUTEUR DESOZA T.DESOZA 
 # TITRE THERMO_METALLO_MECANIQUE DECOUPLEE EN TRACTION SIMPLE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -290,8 +290,8 @@ TEST_RESU(RESU=(
            _F(  RESULTAT = U,              NUME_ORDRE = 70,
              PARA = 'INST',             VALE = 1.76000E+02),
            _F(  RESULTAT = U,              NUME_ORDRE = 70,
-             PARA = 'ITER_GLOB',        VALE_I = 0,
-             CRITERE = 'ABSOLU',        PRECISION = 4.E+00),
+             PARA = 'ITER_GLOB',        VALE_I = 5,
+             CRITERE = 'ABSOLU',        PRECISION = 0.),
            )
            )
 

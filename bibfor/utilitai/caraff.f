@@ -5,7 +5,7 @@
       CHARACTER*(*)                         CARTZ
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 06/07/2009   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 19/10/2010   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -139,6 +139,7 @@ C
         ELSE
            CALL RELIEM(' ', NOMA, 'NU_MAILLE', MOTCLF, IOCC, 2,
      &                                 MOTCLS, TYPMCL, MESMAI, NBMAIL )
+           IF (NBMAIL.EQ.0) GOTO 30
            CALL JEVEUO ( MESMAI, 'L', JMAIL )
            CALL NOCART(CARTE,3,' ','NUM',NBMAIL,K8B,ZI(JMAIL),' ',NBCMP)
            CALL JEDETR ( MESMAI )

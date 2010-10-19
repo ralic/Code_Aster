@@ -3,7 +3,7 @@
         IMPLICIT REAL*8 (A-H,O-Z)
 C       ----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 19/10/2010   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -67,12 +67,8 @@ C
         ILEC=1
         DEBLIG=0
         CALL LIRTET(IFL,IFM,ILEC,INOM,CNL,NOM,ICL,IV,RV,CV,DEBLIG)
-C        WRITE(IFM,*)' NUMTCL             = ',NUMTCL
-C        WRITE(IFM,*)' NBT(NUMTCL) ENTREE = ',NBT(NUMTCL)
-C        WRITE(IFM,*)' DIM(NUMTCL) ENTREE = ',DIM(NUMTCL)
-C        WRITE(IFM,*)' CV(1:8) APRES LIRTET = ',CV(1:8)
-C        WRITE(IFM,*)' NOM AVANT =',NOM
-           IF(NOM.EQ.'INDEFINI') THEN
+
+        IF(NOM.EQ.'INDEFINI') THEN
 C
 C -----    LECTURE NOM DU GROUPE SI IL N Y A PAS D'ENTETE
 C
@@ -86,7 +82,7 @@ C
            CALL VERMOT(ICL,IV,CV,CNL,IER,IRTET)
            IF ( IRTET.GT.0 ) GOTO (2), IRTET
            NOM = CV(1:IV)
-           ELSE
+        ELSE
 C
 C -----    LECTURE PREMIER NOM DE NOEUD / MAILLE OU FIN APRES L'ENTETE
 C
@@ -95,8 +91,7 @@ C
            CALL VERMOT(ICL,IV,CV,CNL,IER,IRTET)
            IF ( IRTET.GT.0 ) GOTO (2), IRTET
            NBT(NUMTCL) = NBT(NUMTCL) + 1
-           ENDIF
-C          WRITE(IFM,*)' NOM APRES =',NOM
+        ENDIF
 C
 C ----- LECTURE DES NOMS DE NOEUDS OU MAILLES DU GROUPE
 C
@@ -125,13 +120,13 @@ C
           VALK(1) = CNL
           VALK(2) = NOM
           CALL U2MESK('A','MODELISA4_80', 2 ,VALK)
-        IER = 1
-        GOTO 2
+C         -- ON VA CREER UN GROUPE VIDE DE LONGUEUR 1 :
+          DIM(NUMTCL) = DIM(NUMTCL) + 1
+          NBT(NUMTCL) = NBT(NUMTCL) + 1
+          GOTO 2
         ENDIF
 
         DIM(NUMTCL) = DIM(NUMTCL) + 1
-C        WRITE(IFM,*)' NBT(NUMTCL) SORTIE = ',NBT(NUMTCL)
-C        WRITE(IFM,*)' DIM(NUMTCL) SORTIE = ',DIM(NUMTCL)
         IF(IFN.EQ.0)GOTO 1
         IF(IFN.EQ.1)GOTO 2
 C

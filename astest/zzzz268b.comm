@@ -1,26 +1,28 @@
-# MODIF  DATE 09/08/2010   AUTEUR BARGELLINI R.BARGELLINI 
+# MODIF  DATE 19/10/2010   AUTEUR DELMAS J.DELMAS 
 # TITRE VALIDATION DE POST_BORDET EN 2D ET 3D
 # zzzz268b.para = tps_job 30 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
 
-DEBUT(CODE=_F(  NOM = 'ZZZZ268B',NIV_PUB_WEB='INTERNET'));
+DEBUT(CODE=_F(  NOM = 'ZZZZ268B',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'),
+      # MODELISA4_80 : presence de GROUP_MA ou GROUP_NO vides.
+      IGNORE_ALARM=('MODELISA4_80',))
 
 
 MA = LIRE_MAILLAGE()
@@ -76,10 +78,16 @@ CLIM=AFFE_CHAR_MECA(MODELE=MO,
                                  DX=0.),
                               ),
                                  );
-                                 
+
 TRAC=AFFE_CHAR_MECA(MODELE=MO,
                     DDL_IMPO=_F(GROUP_NO='HAUT',
                                     DZ=.001,),);
+
+# Pour tester la possibilite de creer des charges "vides" :
+# Les 2 charges suivantes sont "vides" car les groupes sont vides
+CHVID1=AFFE_CHAR_MECA(MODELE=MO, DDL_IMPO=_F(GROUP_MA=('GMVID1','GMVID2') , DZ=.001,),);
+CHVID2=AFFE_CHAR_MECA(MODELE=MO, DDL_IMPO=_F(GROUP_NO=('GNVID1','GNVID2') , DZ=.001,),);
+
 
 CMULT=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.0,0.0,
                           1.0,1.0,
@@ -87,13 +95,15 @@ CMULT=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.0,0.0,
 
 
 ##########################################################
-# CALCUL 
+# CALCUL
 ##########################################################
 EVOL=STAT_NON_LINE(MODELE=MO,
                    CHAM_MATER=CHMAT,
                    EXCIT=(_F(CHARGE=TRAC,
                             FONC_MULT=CMULT,
                             TYPE_CHARGE='FIXE_CSTE',),
+                          _F(CHARGE=CHVID1,),
+                          _F(CHARGE=CHVID2,),
                           _F(CHARGE=CLIM,),),
                    COMP_INCR=_F(RELATION='VMIS_ISOT_LINE',
                                 TOUT='OUI',),
@@ -107,12 +117,12 @@ EVOL=STAT_NON_LINE(MODELE=MO,
                                 LIST_INST=INST),);
 
 ##########################################################
-# POST-TRAITEMENT POUR CALCUL DE BORDET 
+# POST-TRAITEMENT POUR CALCUL DE BORDET
 ##########################################################
 SIGY1=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(0.,00.,
                          100.,1000.,
                          ),PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',);
-                         
+
 SIGY2=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(0.,00.,
                          100.,500.,
                          ),PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',);
@@ -122,15 +132,15 @@ SIGY=DEFI_NAPPE(NOM_PARA='EPSI',
                 PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',
                 PARA=(0.0005,0.001),
                 FONCTION=(SIGY1,SIGY2),);
-                
+
 TEMP=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.,0.,10.,100.),
                     PROL_DROITE='LINEAIRE',PROL_GAUCHE='CONSTANT',);
 
 SIGREF=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(0.,200.,
                          100.,300.,
                          ),PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',);
-                 
-                                            
+
+
 BORDET=POST_BORDET(
             TOUT='OUI',
             INST=5,
@@ -148,7 +158,7 @@ BORDET=POST_BORDET(
             CHAM_MATER=CHMAT,
             TEMP=TEMP,
              )
-            
+
 # --COMPARAISON AVEC L'ANALYTIQUE--
 #
 TEST_TABLE( TABLE     = BORDET,
@@ -183,7 +193,7 @@ TEST_TABLE( TABLE     = BORDET,
             PRECISION = 1.E-3,
             REFERENCE = 'ANALYTIQUE',
             )
-            
+
 TEST_TABLE( TABLE     = BORDET,
             NOM_PARA  = 'PROBA_BORDET',
             FILTRE    = (_F(NOM_PARA  = 'INST',
@@ -215,7 +225,7 @@ TEST_TABLE( TABLE     = BORDET,
             CRITERE   = 'RELATIF',
             PRECISION = 3.E-3,
             REFERENCE = 'ANALYTIQUE',
-            )          
+            )
 
 
 FIN();

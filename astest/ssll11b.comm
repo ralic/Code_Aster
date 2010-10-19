@@ -1,4 +1,4 @@
-# MODIF  DATE 25/03/2008   AUTEUR LEBOUVIER F.LEBOUVIER 
+# MODIF  DATE 19/10/2010   AUTEUR DELMAS J.DELMAS 
 # TITRE TREILLIS DE BARRES ARTICULEES TRAITE UNIQUEMENT DES LIAISONS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -406,17 +406,15 @@ STL1 = CREA_RESU(OPERATION='AFFE',
                  NOM_CHAM='DEPL',
                  AFFE=_F(CHAM_GD=DEPL1,
                          INST=0.,
+                         MODELE=MOD,
+                         CARA_ELEM=CAREL,
+                         CHAM_MATER=CHMAT,
                          )
                 );
 
 
 STL1=CALC_ELEM(reuse=STL1, RESULTAT=STL1,
-               MODELE=MOD,
-               CARA_ELEM=CAREL,
-               CHAM_MATER=CHMAT,
                INST=0.,
-               EXCIT=(_F(  CHARGE = CHARGE1),
-                      _F(  CHARGE = CHARGE2)),
                OPTION='EFGE_ELNO_DEPL'
                       )
 

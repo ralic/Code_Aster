@@ -3,7 +3,7 @@
       CHARACTER*8         MAILLA
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF PREPOST  DATE 19/10/2010   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -71,7 +71,7 @@ C
       IF ( IRET .EQ. 0 ) THEN
          CALL U2MESK('F','PREPOST_1',1,NOGRN2)
       ENDIF
-      CALL JELIRA ( JEXNOM(GRPNOE,NOGRN1), 'LONMAX', NBNO, K8B )
+      CALL JELIRA ( JEXNOM(GRPNOE,NOGRN1), 'LONUTI', NBNO, K8B )
       CALL JEVEUO ( JEXNOM(GRPNOE,NOGRN1), 'L', JGRN1 )
       CALL JEVEUO ( JEXNOM(GRPNOE,NOGRN2), 'L', JGRN2 )
       LISO1 = '&&ASCELI.NOEUD_1'
@@ -91,7 +91,7 @@ C     --------------------------------------------------------------
       CALL JELIRA ( GRPNOE, 'NUTIOC', NBGRNO, K8B )
       DO 70 IGR = 1,NBGRNO
          CALL JENUNO ( JEXNUM(GRPNOE,IGR),NOMGRN )
-         CALL JELIRA ( JEXNOM(GRPNOE,NOMGRN), 'LONMAX', NBPT, K8B )
+         CALL JELIRA ( JEXNOM(GRPNOE,NOMGRN), 'LONUTI', NBPT, K8B )
          CALL JEVEUO ( JEXNOM(GRPNOE,NOMGRN), 'E', JPOIN )
          DO 80 INO = 1 , NBPT
            DO 90 INOV = 1 , NBNO
@@ -189,7 +189,7 @@ C     ----------------------------------
 
       DO 270 IGR = 1,NBGRNO
          CALL JENUNO ( JEXNUM(GRPNOE,IGR),NOMGRN )
-         CALL JELIRA ( JEXNOM(GRPNOE,NOMGRN), 'LONMAX', NBPT, K8B )
+         CALL JELIRA ( JEXNOM(GRPNOE,NOMGRN), 'LONUTI', NBPT, K8B )
          CALL JEVEUO ( JEXNOM(GRPNOE,NOMGRN), 'E', JPOIN )
          CALL JEVEUO ( JEXNOM(TMP//'.GROUPENO',NOMGRN), 'L', JPOIN2 )
          DO 280 INO = 1 , NBPT

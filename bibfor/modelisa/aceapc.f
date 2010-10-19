@@ -3,7 +3,7 @@
       CHARACTER*8         NOMU, NOMA
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF MODELISA  DATE 19/10/2010   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -142,7 +142,7 @@ C ON STOCKE DIRECTEMENT LES DONNEES UTILISATEUR : RAYON ET ORIE_ARC
             IF ( NC.EQ.0 .AND. NP.EQ.0 ) THEN
               DO 556 IGM=1,NG
                CALL JEVEUO(JEXNOM(MLGGMA,ZK8(JDLS-1+IGM)),'L',JDGM)
-               CALL JELIRA(JEXNOM(MLGGMA,ZK8(JDLS-1+IGM)),'LONMAX',
+               CALL JELIRA(JEXNOM(MLGGMA,ZK8(JDLS-1+IGM)),'LONUTI',
      &                     NMG,ZK8BID)
                  DO 576 IJM=1,NMG
                   IMG = ZI(JDGM+IJM-1)
@@ -189,7 +189,7 @@ C CHAQUE MAILLE DE LA LISTE PEUT AVOIR UN GAMMA DIFFERENT
      &                           RR,XCEN,TOLE,V1,ISPV)
                   DO 557 IGM=1,NG
                    CALL JEVEUO(JEXNOM(MLGGMA,ZK8(JDLS-1+IGM)),'L',JDGM)
-                   CALL JELIRA(JEXNOM(MLGGMA,ZK8(JDLS-1+IGM)),'LONMAX',
+                   CALL JELIRA(JEXNOM(MLGGMA,ZK8(JDLS-1+IGM)),'LONUTI',
      &                         NMG,ZK8BID)
                      DO 57 IJM=1,NMG
                       IMG = ZI(JDGM+IJM-1)
@@ -248,7 +248,7 @@ C CHAQUE MAILLE DE LA LISTE PEUT AVOIR UN GAMMA DIFFERENT
      &                  XCEN,TOLE,V1,ISPV)
                   DO 558 IGM=1,NG
                    CALL JEVEUO(JEXNOM(MLGGMA,ZK8(JDLS-1+IGM)),'L',JDGM)
-                   CALL JELIRA(JEXNOM(MLGGMA,ZK8(JDLS-1+IGM)),'LONMAX',
+                   CALL JELIRA(JEXNOM(MLGGMA,ZK8(JDLS-1+IGM)),'LONUTI',
      &                         NMG,ZK8BID)
                      DO 58 IJM=1,NMG
                       IMG = ZI(JDGM+IJM-1)

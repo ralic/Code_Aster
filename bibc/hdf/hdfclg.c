@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF hdfclg hdf  DATE 13/10/2009   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF hdfclg hdf  DATE 19/10/2010   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2003  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -17,6 +17,7 @@
 /*    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.     */
 /* ================================================================== */
 #include "aster.h"
+#include "aster_fort.h"
 /*-----------------------------------------------------------------------------/
 / Fermeture d'un groupe HDF, renvoie une erreur si le groupe ne peut être fermé 
 /  Paramètres :
@@ -24,14 +25,20 @@
 /  Résultats :
 /     0 = fermeture OK, -1 sinon (long)
 /-----------------------------------------------------------------------------*/
+#ifndef _DISABLE_HDF5
 #include <hdf5.h>
+#endif
 
 INTEGER DEFP(HDFCLG, hdfclg, INTEGER *idg)
 {
+#ifndef _DISABLE_HDF5
    hid_t  idgrp;     
    herr_t icode;
    idgrp=(hid_t) *idg;
    if ((icode = H5Gclose(idgrp)) < 0) 
       return -1 ;
+#else
+   CALL_U2MESS("F", "FERMETUR_3");
+#endif
    return 0;
 }     

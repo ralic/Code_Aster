@@ -1,4 +1,4 @@
-#@ MODIF prepost2 Messages  DATE 14/09/2010   AUTEUR REZETTE C.REZETTE 
+#@ MODIF prepost2 Messages  DATE 19/10/2010   AUTEUR DELMAS J.DELMAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -22,6 +22,10 @@
 def _(x) : return x
 
 cata_msg = {
+
+1 : _("""
+  Il faut autant de nom pour NOM_CHAM_MED que pour NOM_CHAM.
+"""),
 
 2 : _("""
 Modele inconnu, pas d'impression du champ  %(k1)s 

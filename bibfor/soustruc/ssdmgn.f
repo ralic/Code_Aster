@@ -1,6 +1,6 @@
       SUBROUTINE SSDMGN(MAG)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SOUSTRUC  DATE 06/07/2009   AUTEUR COURTOIS M.COURTOIS 
+C MODIF SOUSTRUC  DATE 19/10/2010   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -117,7 +117,7 @@ C
           NOMACR= ZK8(IANMCR-1+ISMA)
           CALL DISMOI('F','NOM_MAILLA',NOMACR,'MACR_ELEM_STAT'
      &                    ,IBID,MAL,IED)
-          CALL JELIRA(JEXNOM(MAL//'.GROUPENO',NOMGNL),'LONMAX',N3,KBID)
+          CALL JELIRA(JEXNOM(MAL//'.GROUPENO',NOMGNL),'LONUTI',N3,KBID)
           NBGNOT= NBGNOT+1
           LONT=LONT+N3
         END IF
@@ -210,6 +210,8 @@ C               --------------------------------------
                 CALL JECROC(JEXNOM(MAG//'.GROUPENO',NOMGNG))
                 CALL JEECRA(JEXNOM(MAG//'.GROUPENO',NOMGNG),
      &                 'LONMAX',NBNO,KBID)
+                CALL JEECRA(JEXNOM(MAG//'.GROUPENO',NOMGNG),
+     &                 'LONUTI',NBNO,KBID)
                 CALL JEVEUO(JEXNOM(MAG//'.GROUPENO',NOMGNG),
      &                 'E',IAGNO)
                 DO 5112,II=1,NBNO
@@ -238,7 +240,7 @@ C
           CALL JELIRA(NOMACR//'.LINO','LONUTI',NBNOEX,KBID)
           CALL DISMOI('F','NOM_MAILLA',NOMACR,'MACR_ELEM_STAT'
      &                    ,IBID,MAL,IED)
-          CALL JELIRA(JEXNOM(MAL//'.GROUPENO',NOMGNL),'LONMAX',N3,KBID)
+          CALL JELIRA(JEXNOM(MAL//'.GROUPENO',NOMGNL),'LONUTI',N3,KBID)
           CALL JEVEUO(JEXNOM(MAL//'.GROUPENO',NOMGNL),'L',IAGNL)
           CALL UTLISI('INTER',ZI(IALINO),NBNOEX,ZI(IAGNL),N3,
      &             ZI(IAWK1),LONT,NBNO)
@@ -247,6 +249,8 @@ C
             CALL JECROC(JEXNOM(MAG//'.GROUPENO',NOMGNG))
             CALL JEECRA(JEXNOM(MAG//'.GROUPENO',NOMGNG),
      &             'LONMAX',NBNO,KBID)
+            CALL JEECRA(JEXNOM(MAG//'.GROUPENO',NOMGNG),
+     &             'LONUTI',NBNO,KBID)
             CALL JEVEUO(JEXNOM(MAG//'.GROUPENO',NOMGNG),'E',IAGNO)
             DO 52,II=1,NBNO
               INOL=ZI(IAWK1-1+II)

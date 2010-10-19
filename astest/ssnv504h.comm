@@ -1,4 +1,4 @@
-# MODIF  DATE 30/08/2010   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 19/10/2010   AUTEUR DESOZA T.DESOZA 
 # TITRE EXTRUSION D'UN LOPIN CONTACT
 # ssnv504h.para = tps_job 220 mem_job 32Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -138,7 +138,7 @@ CH2  = DEFI_CONTACT(MODELE         = MO,
                              GROUP_MA_MAIT = 'SMAI1',
                              GROUP_MA_ESCL = 'SESC1',
                              APPARIEMENT   = 'MAIT_ESCL',
-                             CONTACT_INIT  = 'OUI',
+                             CONTACT_INIT  = 'INTERPENETRE',
                              ),
                           ),
                    );

@@ -1,7 +1,7 @@
       SUBROUTINE RITZ99(NOMRES)
       IMPLICIT REAL*8 (A-H,O-Z)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 01/03/2010   AUTEUR NISTOR I.NISTOR 
+C MODIF ALGORITH  DATE 18/10/2010   AUTEUR NISTOR I.NISTOR 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -135,7 +135,7 @@ C
           ZK24(LDREF) = ' '
           ZK24(LDREF+1) = ' '
           ZK24(LDREF+2) = ' '
-          ZK24(LDREF+3) = NUMREF
+          ZK24(LDREF+3) = NUMREF(1:14)
           ZK24(LDREF+4) = INTF
           ZK24(LDREF+5) = ' '
           ZK24(LDREF+6) = 'RITZ'

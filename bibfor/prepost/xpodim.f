@@ -4,7 +4,7 @@
      &                  MAXFEM)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 07/09/2010   AUTEUR DESOZA T.DESOZA 
+C MODIF PREPOST  DATE 19/10/2010   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -198,6 +198,8 @@ C       CREATION DU VECTEUR D'INDIRECTION DES GROUP_MA
             ZI(JDIRGR-1+I)=CPTGR2
             CALL JEECRA(JEXNUM(MAXFEM//'.GROUPEMA',CPTGR2),
      &                                              'LONMAX',N,KBID)
+            CALL JEECRA(JEXNUM(MAXFEM//'.GROUPEMA',CPTGR2),
+     &                                              'LONUTI',N,KBID)
             WRITE(IFM,808) NOGMA,N
           ENDIF
  31     CONTINUE

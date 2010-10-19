@@ -8,7 +8,7 @@
      &                    VECGRM, NBCGRM, NBGRLO )
 C TOLE CRP_21
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 14/09/2010   AUTEUR REZETTE C.REZETTE 
+C MODIF MODELISA  DATE 19/10/2010   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -112,16 +112,14 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32                                    ZK32
       CHARACTER*80                                              ZK80
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
-      CHARACTER*32 JEXNUM
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
 C 0.3. ==> VARIABLES LOCALES
 C
       CHARACTER*6 NOMPRO
-      CHARACTER*24 VALK(4)
       PARAMETER ( NOMPRO = 'LRMMF3' )
 C
-      INTEGER CODRET, I, J
+      INTEGER CODRET, I
       INTEGER VALI
       INTEGER IAUX, JAUX, KAUX,JAU2
       INTEGER ITYP, INDIK8, INOM, ITMP, IVGRM
@@ -129,14 +127,15 @@ C
       INTEGER NBATTR, NBGROU, NBENFA
       INTEGER IDATFA(200)
       INTEGER ADNOMG, ADNUMG, ADNUME, NVNBGR
-      INTEGER ILMED, ILNEW, NOGRLO, NOGRCO, JNOGRL, JNOGRC
+      INTEGER ILMED, ILNEW, NOGRLO, JNOGRL, JNOGRC
       LOGICAL IERR, RENOMM, ERRGM
       REAL*8  MR
       CHARACTER*80 KBID, NEWGRM
 C
       CHARACTER*2 SAUX02
       CHARACTER*8 SAUX08, K8B
-      CHARACTER*32 NOMFAM, MK(3)
+      CHARACTER*32 NOMFAM
+      CHARACTER*80 VALK(4)
       CHARACTER*200 DESCAT(200)
 C
       INTEGER LXLGUT
@@ -162,11 +161,14 @@ C====
 C
 C 1.1. ==> LECTURE DANS LE FICHIER MED
 C
-      CALL EFFAMI ( FID,  NOMAMD, RANGFA, NOMFAM, NUMFAM,
+C     NOMBRE MAXI D'ATTRIBUTS
+      NBATTR = 200
+C
+      CALL MFFAMI ( FID,  NOMAMD, RANGFA, NOMFAM, NUMFAM,
      &              IDATFA, VAATFA, DESCAT, NBATTR,
      &              NOGRFA, NBGROU, CODRET)
       IF ( CODRET.NE.0 ) THEN
-        SAUX08='EFFAMI  '
+        SAUX08='MFFAMI  '
         CALL U2MESG('F','DVP_97',1,SAUX08,1,CODRET,0,0.D0)
       ENDIF
 C
@@ -216,10 +218,10 @@ C   2.0.1. --- RENOMMAGE PAR L'UTILISATEUR
                      KBID = ZK32(IVGRM-1+I*2)
                      ILNEW = LXLGUT(KBID)
                      RENOMM = .TRUE.
-                     MK(1) = NOGRFA(IAUX)
-                     MK(2) = KBID(1:ILNEW)
+                     VALK(1) = NOGRFA(IAUX)
+                     VALK(2) = KBID(1:ILNEW)
                      IF ( INFMED.GE.2 ) THEN
-                        CALL U2MESG('I','MED_16',2,MK,1,IAUX,0,MR)
+                        CALL U2MESG('I','MED_16',2,VALK,1,IAUX,0,MR)
                      ENDIF
                      NEWGRM = KBID(1:ILNEW)
                   ENDIF
@@ -229,9 +231,9 @@ C          --- VERIFIER QUE LES NOUVEAUX NOMS N'EXISTENT PAS DEJA
                   ILNEW = LXLGUT(KBID)
                   IF (NOGRFA(IAUX)(1:ILMED) .EQ. KBID(1:ILNEW)) THEN
                      ERRGM = .TRUE.
-                     MK(1) = ZK32(IVGRM-1+I*2-1)
-                     MK(2) = KBID(1:ILNEW)
-                     CALL U2MESK('E','MED_9',2,MK)
+                     VALK(1) = ZK32(IVGRM-1+I*2-1)
+                     VALK(2) = KBID(1:ILNEW)
+                     CALL U2MESK('E','MED_9',2,VALK)
                   ENDIF
  910           CONTINUE
             ENDIF
@@ -251,10 +253,10 @@ C   2.0.2. --- SUPPRESSION DES CARACTERES INTERDITS (ACCENTS...)
             IF ( NOGRFA(IAUX).NE.NEWGRM ) THEN
               JAU2 = LXLGUT(NOMFAM)
               MI(1) = IAUX
-              MK(1) = NOMFAM(1:JAU2)
-              MK(2) = NOGRFA(IAUX)
-              MK(3) = NEWGRM(1:8)
-              CALL U2MESG('A', 'MED_10', 3, MK, 1, MI, 0, MR)
+              VALK(1) = NOMFAM(1:JAU2)
+              VALK(2) = NOGRFA(IAUX)
+              VALK(3) = NEWGRM(1:8)
+              CALL U2MESG('A', 'MED_10', 3, VALK, 1, MI, 0, MR)
               NOGRFA(IAUX) = NEWGRM(1:8)
             ENDIF
 C
@@ -263,17 +265,17 @@ C   2.0.3. --- CONTROLE QUE LA LONGUEUR <= 8
             IF ( JAUX.GT.8 ) THEN
               JAU2 = LXLGUT(NOMFAM)
               MI(1) = IAUX
-              MK(1) = NOMFAM(1:JAU2)
-              MK(2) = NOGRFA(IAUX)
-              MK(3) = NOGRFA(IAUX)(1:8)
-              CALL U2MESG('A', 'MED_7', 3, MK, 1, MI, 0, MR)
+              VALK(1) = NOMFAM(1:JAU2)
+              VALK(2) = NOGRFA(IAUX)
+              VALK(3) = NOGRFA(IAUX)(1:8)
+              CALL U2MESG('A', 'MED_7', 3, VALK, 1, MI, 0, MR)
 C
 C   2.0.4. --- CONTROLE QUE LE NOM EST NON VIDE
             ELSEIF(JAUX.EQ.0)THEN
               JAU2 = LXLGUT(NOMFAM)
               MI(1) = IAUX
-              MK(1) = NOMFAM(1:JAU2)
-              CALL U2MESG('F', 'MED_11', 1, MK, 1, MI, 0, MR)
+              VALK(1) = NOMFAM(1:JAU2)
+              CALL U2MESG('F', 'MED_11', 1, VALK, 1, MI, 0, MR)
             ENDIF
    20     CONTINUE
 C
@@ -287,20 +289,20 @@ C
 C
 C 2.2. ==> COHERENCE DES NOMBRES DE GROUPES OU D'ATTRIBUTS
 C
-        MK(1) = NOMFAM
+        VALK(1) = NOMFAM
         IF ( NBGROU.NE.CARAFA(1,RANGFA) ) THEN
           MI(1) = CARAFA(1,RANGFA)
           MI(2) = NBGROU
-          MK(2) = 'groupes'
+          VALK(2) = 'groupes'
         ENDIF
         IF ( NBATTR.NE.CARAFA(2,RANGFA) ) THEN
           MI(1) = CARAFA(2,RANGFA)
           MI(2) = NBATTR
-          MK(2) = 'attributs'
+          VALK(2) = 'attributs'
         ENDIF
         IF ( ( NBGROU.NE.CARAFA(1,RANGFA) ) .OR. 
      &       ( NBATTR.NE.CARAFA(2,RANGFA) ) ) THEN
-          CALL U2MESG('F','MED_8', 2, MK, 2, MI, 0, MR)
+          CALL U2MESG('F','MED_8', 2, VALK, 2, MI, 0, MR)
         ENDIF
 C
 C 2.3. ==> CREATION :

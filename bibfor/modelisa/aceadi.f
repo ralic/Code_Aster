@@ -4,7 +4,7 @@
       CHARACTER*8     NOMA,NOMO
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 22/06/2009   AUTEUR FLEJOU J-L.FLEJOU 
+C MODIF MODELISA  DATE 19/10/2010   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -269,7 +269,7 @@ C                    LA LISTE DE GROUPES DE NOEUDS
             IF (NJ.GT.0) THEN
                DO 42 I = 1 , NJ
                   CALL JEVEUO(JEXNOM(MLGGNO,ZK8(JDLS+I-1)),'L',JDGN)
-                  CALL JELIRA(JEXNOM(MLGGNO,ZK8(JDLS+I-1)),'LONMAX',
+                  CALL JELIRA(JEXNOM(MLGGNO,ZK8(JDLS+I-1)),'LONUTI',
      &                                                  NBNOGR,K1BID)
                   CALL CRLINU('NUM', MLGNNO, NBNOGR, ZI(JDGN), K8B,
      &                         NBMTRD, ZI(JDNW), ZI(JDDI), KK )

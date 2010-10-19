@@ -1,4 +1,4 @@
-# MODIF  DATE 05/10/2010   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 19/10/2010   AUTEUR DESOZA T.DESOZA 
 # RESPONSABLE F6BHHBO P.DEBONNIERES
 # TITRE CYLINDRE INFINI SOUS PRESSION (VISCOELASTICITE)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -320,8 +320,8 @@ TEST_RESU(RESU=(
            _F(  RESULTAT = U,              INST = 60.,
              PARA = 'INST',             VALE = 6.00000E+01),
            _F(  RESULTAT = U,              INST = 60.,
-             CRITERE = 'ABSOLU',         PRECISION = 5.,
-             PARA = 'ITER_GLOB',        VALE_I = 0),
+             CRITERE = 'ABSOLU',        PRECISION = 0.,
+             PARA = 'ITER_GLOB',        VALE_I = 3),
            )
            )
 

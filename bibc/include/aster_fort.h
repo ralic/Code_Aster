@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF aster_fort include  DATE 24/08/2010   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF aster_fort include  DATE 19/10/2010   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2010  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -73,14 +73,14 @@ extern void DEFSSP(ONERRF,onerrf,char *,STRING_SIZE, _OUT char *,STRING_SIZE, _O
 #define CALL_GCNCON(a,b) CALLSS(GCNCON,gcncon,a,b)
 extern void DEFSS(GCNCON,gcncon,char *,STRING_SIZE,char *,STRING_SIZE);
 
-#define CALL_DEBUT(a,b,c)  F_FUNC(DEBUT,debut)(a,b,c)
-extern void STDCALL(DEBUT,debut)(INTEGER* , INTEGER* , INTEGER* );
+#define CALL_DEBUT(a,b)  F_FUNC(DEBUT,debut)(a,b)
+extern void STDCALL(DEBUT,debut)(INTEGER* , INTEGER* );
 
-#define CALL_IBMAIN(a,b,c)  F_FUNC(IBMAIN,ibmain)(a,b,c)
-extern void STDCALL(IBMAIN,ibmain)(INTEGER* , INTEGER* , INTEGER* );
+#define CALL_IBMAIN(a)  F_FUNC(IBMAIN,ibmain)(a)
+extern void STDCALL(IBMAIN,ibmain)(INTEGER*);
 
-#define CALL_POURSU(a,b,c,d) CALLPPPP(POURSU,poursu,a,b,c,d)
-extern void DEFPPPP(POURSU,poursu,INTEGER* , INTEGER* , INTEGER* ,INTEGER*) ;
+#define CALL_POURSU(a,b,c) F_FUNC(POURSU,poursu)(a,b,c)
+extern void STDCALL(POURSU,poursu)(INTEGER* , INTEGER* ,INTEGER*) ;
 
 #define CALL_GCCPTS(a,la) F_FUNC(GCCPTS,gccpts)(a,la)
 extern void DEFS(GCCPTS,gccpts,char *, STRING_SIZE );

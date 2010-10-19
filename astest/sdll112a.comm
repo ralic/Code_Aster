@@ -1,4 +1,4 @@
-# MODIF  DATE 29/09/2009   AUTEUR MACOCCO K.MACOCCO 
+# MODIF  DATE 19/10/2010   AUTEUR DELMAS J.DELMAS 
 # TITRE  CHEMINEE SOUS EXCITATION SISMIQUE MULTI-SUPPORTEE
 # sdll112a.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -92,14 +92,12 @@ MODE=MODE_ITER_SIMULT(  MATR_A=RIGIDITE,    MATR_B=MASSE,
 MODE=NORM_MODE(reuse=MODE,   MODE=MODE,    NORME='TRAN_ROTA',
                   )
 
-MODE=CALC_ELEM(reuse=MODE,  MODELE=MODELE,
+MODE=CALC_ELEM(reuse=MODE, 
                      RESULTAT=MODE,         OPTION='SIEF_ELGA_DEPL',
-                     CHAM_MATER=CHAMPMAT,   CARA_ELEM=CARA_ELE
                   )
 
-MODE=CALC_NO(reuse=MODE,  MODELE=MODELE,  RESULTAT=MODE,
+MODE=CALC_NO(reuse=MODE,RESULTAT=MODE,
                  OPTION=('REAC_NODA','FORC_NODA'),
-                     CHAM_MATER=CHAMPMAT,    CARA_ELEM=CARA_ELE
                   )
 
 #
@@ -257,14 +255,12 @@ MODE_ST1=MODE_STATIQUE(  MATR_RIGI=RIGIDITE,   MATR_MASS=MASSE,
                                                   )
                           )
 
-MODE_ST1=CALC_ELEM(reuse=MODE_ST1,  MODELE=MODELE,
+MODE_ST1=CALC_ELEM(reuse=MODE_ST1,
                      RESULTAT=MODE_ST1,     OPTION='SIEF_ELGA_DEPL',
-                     CHAM_MATER=CHAMPMAT,   CARA_ELEM=CARA_ELE
                   )
 
-MODE_ST1=CALC_NO(  reuse=MODE_ST1,  RESULTAT=MODE_ST1, MODELE=MODELE,
+MODE_ST1=CALC_NO(  reuse=MODE_ST1,  RESULTAT=MODE_ST1,
                        OPTION=('FORC_NODA','REAC_NODA'),
-                     CHAM_MATER=CHAMPMAT,    CARA_ELEM=CARA_ELE
                  )
 #-----------------------------------------
 
@@ -395,14 +391,12 @@ MODE_STA=MODE_STATIQUE(  MATR_RIGI=RIGIDITE,    MATR_MASS=MASSE,
                          MODE_STAT=_F( TOUT = 'OUI',
                                        TOUT_CMP = 'OUI')  )
 
-MODE_STA=CALC_ELEM(reuse=MODE_STA,  MODELE=MODELE,
+MODE_STA=CALC_ELEM(reuse=MODE_STA,
                      RESULTAT=MODE_STA,     OPTION='SIEF_ELGA_DEPL',
-                     CHAM_MATER=CHAMPMAT,   CARA_ELEM=CARA_ELE
                   )
 
-MODE_STA=CALC_NO(  reuse=MODE_STA,  RESULTAT=MODE_STA, MODELE=MODELE,
+MODE_STA=CALC_NO(  reuse=MODE_STA,  RESULTAT=MODE_STA,
                        OPTION=('FORC_NODA','REAC_NODA'),
-                     CHAM_MATER=CHAMPMAT,    CARA_ELEM=CARA_ELE
                   )
 
 #

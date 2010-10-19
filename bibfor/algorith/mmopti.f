@@ -2,7 +2,7 @@
      &                  LGLISS,IPTC  ,EPSINT,JEUSGN)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 14/09/2010   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 19/10/2010   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -23,9 +23,9 @@ C RESPONSABLE ABBAS M.ABBAS
 C
       IMPLICIT NONE
       CHARACTER*24 RESOCO
-      INTEGER      IPTC
+      INTEGER      CTCINI,IPTC
       REAL*8       SEUILI,EPSINT,JEUSGN
-      LOGICAL      PREMIE,CTCINI,LCOMPL,LGLISS
+      LOGICAL      PREMIE,LCOMPL,LGLISS
 C
 C ----------------------------------------------------------------------
 C
@@ -89,15 +89,25 @@ C
 C --- CONTACT_INIT
 C
       IF (PREMIE) THEN
-        IF (CTCINI) THEN
+        IF (CTCINI.EQ.2) THEN
+C ------- SEULEMENT POUR LES POINTS INTERPENETRES
           IF (JEUSGN.LE.EPSINT) THEN
             ZR(JTABF+ZTABF*(IPTC-1)+22) = 1.D0
             IF (LGLISS) THEN
               ZR(JTABF+ZTABF*(IPTC-1)+17) = 1.D0
             ENDIF
           ENDIF
-        ELSE
+        ELSEIF (CTCINI.EQ.1) THEN
+C ------- POUR TOUS LES POINTS
+          ZR(JTABF+ZTABF*(IPTC-1)+22) = 1.D0
+          IF (LGLISS) THEN
+            ZR(JTABF+ZTABF*(IPTC-1)+17) = 1.D0
+          ENDIF
+        ELSEIF (CTCINI.EQ.0) THEN
+C ------- PAS DE CONTACT INITIAL
           ZR(JTABF+ZTABF*(IPTC-1)+22) = 0.D0
+        ELSE
+          CALL ASSERT(.FALSE.)
         ENDIF
       ENDIF
 C

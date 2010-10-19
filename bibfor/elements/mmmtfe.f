@@ -4,7 +4,7 @@
      &                  NDEXFR,COEFFF,MATRFE)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 27/07/2010   AUTEUR DESOZA T.DESOZA 
+C MODIF ELEMENTS  DATE 19/10/2010   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -72,7 +72,7 @@ C
 C ----------------------------------------------------------------------
 C
       INTEGER   INOF,INOE,ICMP,IDIM,I,J,K,II,JJ,NBCPF
-      INTEGER   NDEXCL(9),CMP
+      INTEGER   NDEXCL(10)
       REAL*8    A(2,3),B(2,3)
       REAL*8    H1(3),H2(3)
       REAL*8    H(3,2)
@@ -156,21 +156,20 @@ C
  184    CONTINUE       
 
       ELSEIF (PHASE.EQ.'EXFR') THEN
-        CALL ISDECO(NDEXFR,NDEXCL,9)
-        CMP = 0
-        DO 9 IDIM = 1,NDIM
-          IF (TAU1(IDIM).NE.0.D0) CMP = IDIM
- 9      CONTINUE
+        CALL ISDECO(NDEXFR,NDEXCL,10)
         DO 122 INOF = 1,NNL
           IF (NDEXCL(INOF).EQ.1) THEN
             DO 121 INOE = 1,NNE
-C               ON ANNULE QUE LE PREMIER LAGRANGE DE FROTTEMENT
-C               DEVELOPPEMENT NON GENERIQUE ENCORE EN 3D
-              II     = NBCPF*(INOF-1)+1
-C               ON ANNULE QUE LA DIRECTION DE FROTTEMENT
-C               // AUX AXES CAR DEVELOPPEMENT NON GENERIQUE
-              JJ     = NDIM*(INOE-1)+CMP
-              MATRFE(II,JJ) = 0.D0
+              DO 120 ICMP = 1,NBCPF
+                IF ((ICMP.EQ.2).AND.(NDEXCL(10).EQ.0)) THEN
+                  GOTO 120
+                ENDIF
+                DO 119 IDIM = 1,NDIM
+                  II = NBCPF*(INOF-1)+ICMP
+                  JJ = NDIM*(INOE-1)+IDIM
+                  MATRFE(II,JJ) = 0.D0
+ 119            CONTINUE
+ 120          CONTINUE
  121        CONTINUE
           ENDIF
  122    CONTINUE

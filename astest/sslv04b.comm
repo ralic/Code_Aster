@@ -1,4 +1,4 @@
-# MODIF  DATE 12/01/2010   AUTEUR LEBOUVIER F.LEBOUVIER 
+# MODIF  DATE 19/10/2010   AUTEUR DELMAS J.DELMAS 
 # TITRE CYLINDRE EN C.P. (PENTA15 HEXA20)
 # sslv04b.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -110,7 +110,7 @@ CALC_ELEM(reuse= RESU ,
 
 
   
-# TEST DU CHAMP 'PROJ_ELEM_SIG_N'
+# TEST DU CHAMP 'PROJ_ELEM_SIGM'
 # MAILLE MA751 PRES DU POINT A
 
 TEST_RESU(RESU=(
@@ -118,7 +118,7 @@ TEST_RESU(RESU=(
               REFERENCE ='ANALYTIQUE',
               PRECISION = 3.,
               RESULTAT  = RESU, 
-              NOM_CHAM = 'PROJ_ELEM_SIGN',
+              NOM_CHAM = 'PROJ_ELEM_SIGM',
               NUME_ORDRE = 1,
               POINT  = 1, 
               MAILLE='MA751',
@@ -128,7 +128,7 @@ TEST_RESU(RESU=(
               REFERENCE ='ANALYTIQUE',
               PRECISION = 5.E-1,
               RESULTAT  = RESU, 
-              NOM_CHAM = 'PROJ_ELEM_SIGN',
+              NOM_CHAM = 'PROJ_ELEM_SIGM',
               NUME_ORDRE = 1,
               POINT  = 1, 
               MAILLE='MA751',
@@ -138,7 +138,7 @@ TEST_RESU(RESU=(
               REFERENCE ='ANALYTIQUE',
               PRECISION = 1.E-2,
               RESULTAT  = RESU, 
-              NOM_CHAM = 'PROJ_ELEM_SIGN',
+              NOM_CHAM = 'PROJ_ELEM_SIGM',
               NUME_ORDRE = 1,
               POINT  = 1, 
               MAILLE='MA751',
@@ -146,14 +146,14 @@ TEST_RESU(RESU=(
               NOM_CMP = 'SIG_NZ'),
            ),)
 
-# TEST DU CHAMP 'PROJ_ELEM_SIG_T'
+# TEST DU CHAMP 'PROJ_ELEM_SIGM
 
 TEST_RESU(RESU=(
            _F(CRITERE   = 'ABSOLU',
               REFERENCE ='ANALYTIQUE',
               PRECISION = 2.E-1,
               RESULTAT  = RESU, 
-              NOM_CHAM = 'PROJ_ELEM_SIGT',
+              NOM_CHAM = 'PROJ_ELEM_SIGM',
               NUME_ORDRE = 1,
               POINT  = 1, 
               MAILLE='MA751',
@@ -163,7 +163,7 @@ TEST_RESU(RESU=(
               REFERENCE ='ANALYTIQUE',
               PRECISION = 5.,
               RESULTAT  = RESU, 
-              NOM_CHAM = 'PROJ_ELEM_SIGT',
+              NOM_CHAM = 'PROJ_ELEM_SIGM',
               NUME_ORDRE = 1,
               POINT  = 1, 
               MAILLE='MA751',
@@ -173,7 +173,7 @@ TEST_RESU(RESU=(
               REFERENCE ='ANALYTIQUE',
               PRECISION = 2.E-2,
               RESULTAT  = RESU, 
-              NOM_CHAM = 'PROJ_ELEM_SIGT',
+              NOM_CHAM = 'PROJ_ELEM_SIGM',
               NUME_ORDRE = 1,
               POINT  = 1, 
               MAILLE='MA751',
@@ -181,14 +181,14 @@ TEST_RESU(RESU=(
               NOM_CMP = 'SIG_TZ'),
            ),)
 
-# TEST DU CHAMP 'PROJ_ELEM_SIG_T1'
+# TEST DU CHAMP 'PROJ_ELEM_SIGM
 
 TEST_RESU(RESU=(
            _F(CRITERE   = 'ABSOLU',
               REFERENCE ='ANALYTIQUE',
               PRECISION = 1.E-2,
               RESULTAT  = RESU, 
-              NOM_CHAM = 'PROJ_ELEM_SIT1',
+              NOM_CHAM = 'PROJ_ELEM_SIGM',
               NUME_ORDRE = 1,
               POINT  = 1, 
               MAILLE='MA751',
@@ -198,7 +198,7 @@ TEST_RESU(RESU=(
               REFERENCE ='ANALYTIQUE',
               PRECISION = 1.E-2,
               RESULTAT  = RESU, 
-              NOM_CHAM = 'PROJ_ELEM_SIT1',
+              NOM_CHAM = 'PROJ_ELEM_SIGM',
               NUME_ORDRE = 1,
               POINT  = 1, 
               MAILLE='MA751',
@@ -208,7 +208,7 @@ TEST_RESU(RESU=(
               REFERENCE ='ANALYTIQUE',
               PRECISION = 2.E-2,
               RESULTAT  = RESU, 
-              NOM_CHAM = 'PROJ_ELEM_SIT1',
+              NOM_CHAM = 'PROJ_ELEM_SIGM',
               NUME_ORDRE = 1,
               POINT  = 1, 
               MAILLE='MA751',
@@ -216,14 +216,14 @@ TEST_RESU(RESU=(
               NOM_CMP = 'SIG_T1Z'),
            ),)
 
-# TEST DU CHAMP 'PROJ_ELEM_SIG_T2'
+# TEST DU CHAMP 'PROJ_ELEM_SIGM
 
 TEST_RESU(RESU=(
            _F(CRITERE   = 'ABSOLU',
               REFERENCE ='ANALYTIQUE',
               PRECISION = 2.E-1,
               RESULTAT  = RESU, 
-              NOM_CHAM = 'PROJ_ELEM_SIT2',
+              NOM_CHAM = 'PROJ_ELEM_SIGM',
               NUME_ORDRE = 1,
               POINT  = 1, 
               MAILLE='MA751',
@@ -233,7 +233,7 @@ TEST_RESU(RESU=(
               REFERENCE ='ANALYTIQUE',
               PRECISION = 5.,
               RESULTAT  = RESU, 
-              NOM_CHAM = 'PROJ_ELEM_SIT2',
+              NOM_CHAM = 'PROJ_ELEM_SIGM',
               NUME_ORDRE = 1,
               POINT  = 1, 
               MAILLE='MA751',
@@ -243,7 +243,7 @@ TEST_RESU(RESU=(
               REFERENCE ='ANALYTIQUE',
               PRECISION = 1.E-2,
               RESULTAT  = RESU, 
-              NOM_CHAM = 'PROJ_ELEM_SIT2',
+              NOM_CHAM = 'PROJ_ELEM_SIGM',
               NUME_ORDRE = 1,
               POINT  = 1, 
               MAILLE='MA751',
@@ -259,7 +259,7 @@ TEST_RESU(RESU=(
               REFERENCE ='ANALYTIQUE',
               PRECISION = 6.E-2,
               RESULTAT  = RESU, 
-              NOM_CHAM = 'PROJ_ELEM_SIGN',
+              NOM_CHAM = 'PROJ_ELEM_SIGM',
               NUME_ORDRE = 1,
               POINT  = 1, 
               MAILLE='MA769',
@@ -269,7 +269,7 @@ TEST_RESU(RESU=(
               REFERENCE ='ANALYTIQUE',
               PRECISION = 4.E-2,
               RESULTAT  = RESU, 
-              NOM_CHAM = 'PROJ_ELEM_SIGN',
+              NOM_CHAM = 'PROJ_ELEM_SIGM',
               NUME_ORDRE = 1,
               POINT  = 1, 
               MAILLE='MA769',
@@ -279,7 +279,7 @@ TEST_RESU(RESU=(
               REFERENCE ='ANALYTIQUE',
               PRECISION = 1.E-2,
               RESULTAT  = RESU, 
-              NOM_CHAM = 'PROJ_ELEM_SIGN',
+              NOM_CHAM = 'PROJ_ELEM_SIGM',
               NUME_ORDRE = 1,
               POINT  = 1, 
               MAILLE='MA769',
@@ -287,14 +287,14 @@ TEST_RESU(RESU=(
               NOM_CMP = 'SIG_NZ'),
            ),)
 
-# TEST DU CHAMP 'PROJ_ELEM_SIG_T'
+# TEST DU CHAMP 'PROJ_ELEM_SIGM
 
 TEST_RESU(RESU=(
            _F(CRITERE   = 'RELATIF',
               REFERENCE ='ANALYTIQUE',
               PRECISION = 4.E-2,
               RESULTAT  = RESU, 
-              NOM_CHAM = 'PROJ_ELEM_SIGT',
+              NOM_CHAM = 'PROJ_ELEM_SIGM',
               NUME_ORDRE = 1,
               POINT  = 1, 
               MAILLE='MA769',
@@ -304,7 +304,7 @@ TEST_RESU(RESU=(
               REFERENCE ='ANALYTIQUE',
               PRECISION = 5.E-2,
               RESULTAT  = RESU, 
-              NOM_CHAM = 'PROJ_ELEM_SIGT',
+              NOM_CHAM = 'PROJ_ELEM_SIGM',
               NUME_ORDRE = 1,
               POINT  = 1, 
               MAILLE='MA769',
@@ -314,7 +314,7 @@ TEST_RESU(RESU=(
               REFERENCE ='ANALYTIQUE',
               PRECISION = 1.E-2,
               RESULTAT  = RESU, 
-              NOM_CHAM = 'PROJ_ELEM_SIGT',
+              NOM_CHAM = 'PROJ_ELEM_SIGM',
               NUME_ORDRE = 1,
               POINT  = 1, 
               MAILLE='MA769',
@@ -322,14 +322,14 @@ TEST_RESU(RESU=(
               NOM_CMP = 'SIG_TZ'),
            ),)
 
-# TEST DU CHAMP 'PROJ_ELEM_SIG_T1'
+# TEST DU CHAMP 'PROJ_ELEM_SIGM
 
 TEST_RESU(RESU=(
            _F(CRITERE   = 'ABSOLU',
               REFERENCE ='ANALYTIQUE',
               PRECISION = 1.E-2,
               RESULTAT  = RESU, 
-              NOM_CHAM = 'PROJ_ELEM_SIT1',
+              NOM_CHAM = 'PROJ_ELEM_SIGM',
               NUME_ORDRE = 1,
               POINT  = 1, 
               MAILLE='MA769',
@@ -339,7 +339,7 @@ TEST_RESU(RESU=(
               REFERENCE ='ANALYTIQUE',
               PRECISION = 1.E-2,
               RESULTAT  = RESU, 
-              NOM_CHAM = 'PROJ_ELEM_SIT1',
+              NOM_CHAM = 'PROJ_ELEM_SIGM',
               NUME_ORDRE = 1,
               POINT  = 1, 
               MAILLE='MA769',
@@ -349,7 +349,7 @@ TEST_RESU(RESU=(
               REFERENCE ='ANALYTIQUE',
               PRECISION = 1.E-2,
               RESULTAT  = RESU, 
-              NOM_CHAM = 'PROJ_ELEM_SIT1',
+              NOM_CHAM = 'PROJ_ELEM_SIGM',
               NUME_ORDRE = 1,
               POINT  = 1, 
               MAILLE='MA769',
@@ -357,14 +357,14 @@ TEST_RESU(RESU=(
               NOM_CMP = 'SIG_T1Z'),
            ),)
 
-# TEST DU CHAMP 'PROJ_ELEM_SIG_T2'
+# TEST DU CHAMP 'PROJ_ELEM_SIGM
 
 TEST_RESU(RESU=(
            _F(CRITERE   = 'RELATIF',
               REFERENCE ='ANALYTIQUE',
               PRECISION = 4.E-2,
               RESULTAT  = RESU, 
-              NOM_CHAM = 'PROJ_ELEM_SIT2',
+              NOM_CHAM = 'PROJ_ELEM_SIGM',
               NUME_ORDRE = 1,
               POINT  = 1, 
               MAILLE='MA769',
@@ -374,7 +374,7 @@ TEST_RESU(RESU=(
               REFERENCE ='ANALYTIQUE',
               PRECISION = 5.E-2,
               RESULTAT  = RESU, 
-              NOM_CHAM = 'PROJ_ELEM_SIT2',
+              NOM_CHAM = 'PROJ_ELEM_SIGM',
               NUME_ORDRE = 1,
               POINT  = 1, 
               MAILLE='MA769',
@@ -384,7 +384,7 @@ TEST_RESU(RESU=(
               REFERENCE ='ANALYTIQUE',
               PRECISION = 1.E-2,
               RESULTAT  = RESU, 
-              NOM_CHAM = 'PROJ_ELEM_SIT2',
+              NOM_CHAM = 'PROJ_ELEM_SIGM',
               NUME_ORDRE = 1,
               POINT  = 1, 
               MAILLE='MA769',

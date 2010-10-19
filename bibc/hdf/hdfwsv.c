@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF hdfwsv hdf  DATE 16/11/2009   AUTEUR REZETTE C.REZETTE */
+/* MODIF hdfwsv hdf  DATE 19/10/2010   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2003  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -17,6 +17,7 @@
 /*    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.     */
 /* ================================================================== */
 #include "aster.h"
+#include "aster_fort.h"
 /*-----------------------------------------------------------------------------/
 / Ecriture sur un fichier HDF d'un segment de valeur associé à un objet JEVEUX
 /  Paramètres : 
@@ -28,11 +29,14 @@
 /  Résultats :
 /     identificateur du fichier, -1 sinon (hid_t = int)
 /-----------------------------------------------------------------------------*/
+#ifndef _DISABLE_HDF5
 #include <hdf5.h>
+#endif
 #include <stdlib.h>
 
 INTEGER DEFPSSSPSP(HDFWSV, hdfwsv, INTEGER *idf, char *nomg, STRING_SIZE lg, char *nomdts, STRING_SIZE ln, char *type, STRING_SIZE lt, INTEGER *ltype, char *sv, STRING_SIZE toto, INTEGER *lsv)
 {
+#ifndef _DISABLE_HDF5
   hid_t idfic,datatype,dataspace,dataset,type_id;
   herr_t iret;
   hsize_t dimsf[1];
@@ -124,5 +128,8 @@ INTEGER DEFPSSSPSP(HDFWSV, hdfwsv, INTEGER *idf, char *nomg, STRING_SIZE lg, cha
   free(nomd);
   free(vtype);
   if ((istat=strcmp(vtype,"K"))==0) { free(mot);}
+#else
+  CALL_U2MESS("F", "FERMETUR_3");
+#endif
   return 0 ; 
 }

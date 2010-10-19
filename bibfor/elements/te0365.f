@@ -3,7 +3,7 @@
       CHARACTER*16        OPTION, NOMTE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 14/09/2010   AUTEUR ABBAS M.ABBAS 
+C MODIF ELEMENTS  DATE 19/10/2010   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -234,7 +234,7 @@ C
 C
 C --- CALCUL DES VITESSES/ACCELERATIONS
 C
-      IF (IFORM.EQ.2) THEN
+      IF (IFORM.NE.0) THEN
         CALL MMVITM(NBDM  ,NDIM  ,NNE   ,NNM   ,FFE   ,
      &              FFM   ,JVITM ,JACCM ,JVITP ,VITME ,
      &              VITMM ,VITPE ,VITPM ,ACCME ,ACCMM )

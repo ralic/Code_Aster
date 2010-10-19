@@ -1,4 +1,4 @@
-# MODIF  DATE 30/08/2010   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 19/10/2010   AUTEUR DELMAS J.DELMAS 
 # TITRE POUTRE SOUMISE A UNE FORCE SINUSOIDALE REPARTIE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -151,14 +151,14 @@ DYNFX=DYNA_LINE_TRAN(        MODELE=MO,
                        )
 
 #
-DYNFX=CALC_ELEM( reuse=DYNFX,
-
-
-                         RESULTAT=DYNFX,
-                            EXCIT=_F( CHARGE = REPFX,
-                                   FONC_MULT = fCOS),
-                           OPTION=('EFGE_ELNO_DEPL',
-                                   'SIGM_ELNO_DEPL',
+DYN_FX=CALC_ELEM(MODELE=MO,
+                 CHAM_MATER=CHMAT,
+                 CARA_ELEM=CAREL,
+                 RESULTAT=DYNFX,
+                 EXCIT=_F( CHARGE = REPFX,
+                           FONC_MULT = fCOS),
+                 OPTION=('EFGE_ELNO_DEPL',
+                         'SIGM_ELNO_DEPL',
                                   )
                     )
 
@@ -167,7 +167,7 @@ DYNFX=CALC_ELEM( reuse=DYNFX,
 #
 # T = 0.3333 S
 #
-TEST_RESU(   RESU=_F( RESULTAT = DYNFX,
+TEST_RESU(   RESU=_F( RESULTAT = DYN_FX,
                     NOM_CHAM = 'EFGE_ELNO_DEPL',
                     NUME_ORDRE = 1,
                     MAILLE = 'S01',
@@ -181,7 +181,7 @@ TEST_RESU(   RESU=_F( RESULTAT = DYNFX,
 #
 # T = 0.6666 S
 #
-TEST_RESU(   RESU=_F( RESULTAT = DYNFX,
+TEST_RESU(   RESU=_F( RESULTAT = DYN_FX,
                     NOM_CHAM = 'EFGE_ELNO_DEPL',
                     NUME_ORDRE = 2,
                     MAILLE = 'S01',
@@ -197,7 +197,7 @@ TEST_RESU(   RESU=_F( RESULTAT = DYNFX,
 #
 # T = 0.3333 S
 #
-TEST_RESU(   RESU=_F( RESULTAT = DYNFX,
+TEST_RESU(   RESU=_F( RESULTAT = DYN_FX,
                     NOM_CHAM = 'EFGE_ELNO_DEPL',
                     NUME_ORDRE = 1,
                     MAILLE = 'S01',
@@ -210,7 +210,7 @@ TEST_RESU(   RESU=_F( RESULTAT = DYNFX,
 #
 # T = 0.6666 S
 #
-TEST_RESU(   RESU=_F( RESULTAT = DYNFX,
+TEST_RESU(   RESU=_F( RESULTAT = DYN_FX,
                     NOM_CHAM = 'EFGE_ELNO_DEPL',
                     NUME_ORDRE = 2,
                     MAILLE = 'S01',
@@ -281,14 +281,14 @@ DYNPOF20=DYNA_LINE_TRAN(        MODELE=MO,
                           )
 
 #
-DYNPOF20=CALC_ELEM( reuse=DYNPOF20,
-
-
-                            RESULTAT=DYNPOF20,
-                               EXCIT=_F( CHARGE = PONF20,
-                                      FONC_MULT = fCOS),
-                              OPTION=('EFGE_ELNO_DEPL',
-                                      'SIGM_ELNO_DEPL',
+DYNP_F20=CALC_ELEM( MODELE=MO,
+                    CHAM_MATER=CHMAT,
+                    CARA_ELEM=CAREL,
+                    RESULTAT=DYNPOF20,
+                    EXCIT=_F( CHARGE = PONF20,
+                              FONC_MULT = fCOS),
+                    OPTION=('EFGE_ELNO_DEPL',
+                            'SIGM_ELNO_DEPL',
                                      )
                     )
 
@@ -297,7 +297,7 @@ DYNPOF20=CALC_ELEM( reuse=DYNPOF20,
 #
 # T = 0.3333 S
 #
-TEST_RESU(   RESU=_F( RESULTAT = DYNPOF20,
+TEST_RESU(   RESU=_F( RESULTAT = DYNP_F20,
                     NOM_CHAM = 'EFGE_ELNO_DEPL',
                     NUME_ORDRE = 1,
                     MAILLE = 'S01',
@@ -311,7 +311,7 @@ TEST_RESU(   RESU=_F( RESULTAT = DYNPOF20,
 #
 # T = 0.6666 S
 #
-TEST_RESU(   RESU=_F( RESULTAT = DYNPOF20,
+TEST_RESU(   RESU=_F( RESULTAT = DYNP_F20,
                     NOM_CHAM = 'EFGE_ELNO_DEPL',
                     NUME_ORDRE = 2,
                     MAILLE = 'S01',
@@ -335,14 +335,14 @@ DYNPOM20=DYNA_LINE_TRAN(        MODELE=MO,
                        )
 
 #
-DYNPOM20=CALC_ELEM( reuse=DYNPOM20,
-
-
-                            RESULTAT=DYNPOM20,
-                               EXCIT=_F( CHARGE = PONM20,
-                                      FONC_MULT = fCOS),
-                              OPTION=('EFGE_ELNO_DEPL',
-                                      'SIGM_ELNO_DEPL',
+DYNP_M20=CALC_ELEM( MODELE=MO,
+                    CHAM_MATER=CHMAT,
+                    CARA_ELEM=CAREL,
+                    RESULTAT=DYNPOM20,
+                    EXCIT=_F( CHARGE = PONM20,
+                              FONC_MULT = fCOS),
+                    OPTION=('EFGE_ELNO_DEPL',
+                            'SIGM_ELNO_DEPL',
                                      )
                     )
 
@@ -352,7 +352,7 @@ DYNPOM20=CALC_ELEM( reuse=DYNPOM20,
 #
 # T = 0.3333 S
 #
-TEST_RESU(   RESU=_F( RESULTAT = DYNPOM20,
+TEST_RESU(   RESU=_F( RESULTAT = DYNP_M20,
                     NOM_CHAM = 'EFGE_ELNO_DEPL',
                     NUME_ORDRE = 1,
                     MAILLE = 'S01',
@@ -366,7 +366,7 @@ TEST_RESU(   RESU=_F( RESULTAT = DYNPOM20,
 #
 # T = 0.6666 S
 #
-TEST_RESU(   RESU=_F( RESULTAT = DYNPOM20,
+TEST_RESU(   RESU=_F( RESULTAT = DYNP_M20,
                     NOM_CHAM = 'EFGE_ELNO_DEPL',
                     NUME_ORDRE = 2,
                     MAILLE = 'S01',

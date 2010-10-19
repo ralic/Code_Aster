@@ -1,4 +1,4 @@
-# MODIF  DATE 14/10/2010   AUTEUR BOYERE E.BOYERE 
+# MODIF  DATE 19/10/2010   AUTEUR DESOZA T.DESOZA 
 # TITRE POUTRE CANTILEVER EN GRANDE ROTATION SOUMISE A UN MOMENT
 # ssnl103a.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -96,8 +96,8 @@ TEST_RESU(RESU=(
            _F(  RESULTAT = RESU,           NUME_ORDRE = 1,
              PARA = 'INST',             VALE = 1.00000E+00),
            _F(  RESULTAT = RESU,           NUME_ORDRE = 1,
-             PARA = 'ITER_GLOB',        VALE_I = 9,
-             CRITERE = 'ABSOLU',         PRECISION = 2.),
+             PARA = 'ITER_GLOB',        VALE_I = 10,
+             CRITERE = 'ABSOLU',        PRECISION = 0.),
            )
            )
 

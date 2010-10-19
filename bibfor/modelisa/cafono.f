@@ -6,7 +6,7 @@
       CHARACTER*(*)            LIGRCZ,                 LIGRMZ
 C     -----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 19/01/2010   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 19/10/2010   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -214,6 +214,7 @@ C       ---------------------------
 
         CALL RELIEM(' ', NOMA, 'NO_NOEUD', MOTCLF, I, 2,
      &                                  MOTCLS, TYPMCL, MESNOE, NBNO )
+        IF (NBNO.EQ.0) GOTO 110
         CALL JEVEUO ( MESNOE, 'L', JNO )
 
         DO 100 JJ = 1,NBNO

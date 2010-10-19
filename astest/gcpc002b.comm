@@ -1,4 +1,4 @@
-# MODIF  DATE 18/05/2010   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 19/10/2010   AUTEUR DELMAS J.DELMAS 
 # TITRE  DSR3 - RENUM RCMK / AFFE_CHAR_MECA / SOLVE
 # gcpc002b.para = tps_job 150 mem_job 500Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -77,11 +77,11 @@ RESU=CREA_RESU(OPERATION='AFFE',
                TYPE_RESU='EVOL_ELAS',
                NOM_CHAM='DEPL',
                AFFE=_F(CHAM_GD=DEP,
-                       INST=0.,),);
+                       INST=0.,
+                       MODELE=MO,
+                       CHAM_MATER=CHMAT,),);
 
 RESU=CALC_ELEM(reuse =RESU,
-               MODELE=MO,
-               CHAM_MATER=CHMAT,
                RESULTAT=RESU,
                INST=0.,
                OPTION='SIGM_ELNO_DEPL',);

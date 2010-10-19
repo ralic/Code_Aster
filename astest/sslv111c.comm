@@ -1,4 +1,4 @@
-# MODIF  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 19/10/2010   AUTEUR DELMAS J.DELMAS 
 # TITRE ESTIMATEUR D'ERREUR SUR UNE PLAQUE TROUEE EN TRACTION
 # sslv111c.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -98,7 +98,7 @@ RESU=CALC_ELEM(  reuse=RESU,
                           OPTION=(
                                   'ERZ1_ELEM_SIGM',
                                   'ERZ2_ELEM_SIGM',
-                                  'SIRE_ELNO_DEPL',
+                                  'SIGM_ELNO_DEPL',
                                   'ERRE_ELEM_SIGM',
                                  ),
                       RESULTAT=RESU

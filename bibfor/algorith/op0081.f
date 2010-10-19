@@ -1,8 +1,8 @@
       SUBROUTINE OP0081()
       IMPLICIT NONE
+C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C-----------------------------------------------------------------------
-C MODIF ALGORITH  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
+C MODIF ALGORITH  DATE 19/10/2010   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,11 +20,23 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
 C
-C  BUT: OPERATEUR DE CALCUL DE MACRO-ELEMENT A PARTIR D'UNE BASE MODALE
+C     BUT:
+C       OPERATEUR DE CALCUL DE MACRO-ELEMENT A PARTIR D'UNE BASE MODALE
 C       ET DE MATRICES ASSEMBLEES
-C-----------------------------------------------------------------------
 C
-C-------- DEBUT COMMUNS NORMALISES  JEVEUX  ----------------------------
+C
+C     ARGUMENTS:
+C     ----------
+C
+C      ENTREE :
+C-------------
+C
+C      SORTIE :
+C-------------
+C
+C ......................................................................
+C
+C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
 C
       INTEGER          ZI
       COMMON  /IVARJE/ ZI(1)
@@ -41,17 +53,19 @@ C
       CHARACTER*80                                            ZK80
       COMMON  /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C
-C-----  FIN  COMMUNS NORMALISES  JEVEUX  -------------------------------
+C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C
-      INTEGER      IBID,IOC,N1
+      INTEGER      IOC,N1
+
       REAL*8       RBID
+
       CHARACTER*8  NOMRES,NOMCON,NOMOPE,MAILLA,BASMOD,BLANC
       CHARACTER*19 RAID,MASS,AMOR,IMPE,TYPMAT
-      CHARACTER*24 NOMMAT,NOMREP,NOMFAM,NOMFAP,NOMFAD
+      CHARACTER*24 NOMMAT
 C
       DATA BLANC /'        '/
-C-----------------------------------------------------------------------
 C
+C-----------------------------------------------------------------------
 C
       CALL INFMAJ()
       CALL GETRES(NOMRES, NOMCON, NOMOPE)
@@ -105,6 +119,6 @@ C
 C
 C --- COMPATIBILITE AVEC SD MACR_ELEM_STAT
 C
-      CALL COMP81(NOMRES, BASMOD, RAID, MASS, AMOR, MAILLA)
+      CALL COMP81(NOMRES, BASMOD, RAID, MAILLA)
 
       END

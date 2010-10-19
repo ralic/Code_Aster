@@ -2,7 +2,7 @@
      &                    NSUPP, MASSE, NOMSUP, DEPSUP, RECMOD,
      &                    NINTRA, NBDIS)
       IMPLICIT  NONE
-      INTEGER           ID, NEQ, NBSUP, NSUPP(*), NDIR(*), NINTRA, 
+      INTEGER           ID, NEQ, NBSUP, NSUPP(*), NDIR(*), NINTRA,
      &                  NBDIS(NBSUP)
       REAL*8            DEPSUP(NBSUP,*), RECMOD(NBSUP,NEQ,*)
       CHARACTER*(*)     STAT, NOMSUP(NBSUP,*), MASSE
@@ -10,7 +10,7 @@
       LOGICAL           MUAPDE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2009   AUTEUR MACOCCO K.MACOCCO 
+C MODIF ALGORITH  DATE 19/10/2010   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -142,7 +142,7 @@ C
                    CALL U2MESK('E','SEISME_2', 2 ,VALK)
                   GOTO 26
                ELSE
-                  CALL JELIRA(JEXNOM(OBJ1,GRNOEU),'LONMAX',NN,K1BID)
+                  CALL JELIRA(JEXNOM(OBJ1,GRNOEU),'LONUTI',NN,K1BID)
                   CALL JEVEUO(JEXNOM(OBJ1,GRNOEU),'L',JDGN)
                   DO 28 INO = 1, NN
                      CALL JENUNO(JEXNUM(OBJ2,ZI(JDGN+INO-1)),NOEU)

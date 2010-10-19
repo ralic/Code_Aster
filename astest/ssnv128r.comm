@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2010   AUTEUR DESOZA T.DESOZA 
+# MODIF  DATE 19/10/2010   AUTEUR DESOZA T.DESOZA 
 # TITRE PLAQUE AVEC CONTACT ET FROTTEMENT SUR UN PLAN RIGIDE
 # ssnv128r.para = tps_job 170 mem_job 200Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -75,15 +75,18 @@ CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
 CHA1=DEFI_CONTACT(MODELE=MO,
                   FORMULATION='CONTINUE',
                   FROTTEMENT='COULOMB',
-                  ITER_GEOM_MAXI=2,
+                  ITER_GEOM_MAXI=10,
+                  RESI_GEOM=0.01,
                   ITER_CONT_MAXI=10,
-                  ITER_FROT_MAXI=12,
+                  ITER_FROT_MAXI=20,
+                  RESI_FROT=0.01,
                   ZONE=_F(GROUP_MA_MAIT='SBATI',
                           GROUP_MA_ESCL='SCONTA',
-                          CONTACT_INIT='OUI',
+                          CONTACT_INIT='INTERPENETRE',
                           COULOMB=1.0,
                           SANS_GROUP_NO_FR='PP',
-                          SEUIL_INIT=0.,),);
+                          DIRE_EXCL_FROT=(1,0,0),
+                          SEUIL_INIT=0.0,),);
 
 CHA2=AFFE_CHAR_MECA(MODELE=MO,
                     DDL_IMPO=(_F(GROUP_NO='NENCA',

@@ -1,4 +1,4 @@
-#@ MODIF contact Messages  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
+#@ MODIF contact Messages  DATE 19/10/2010   AUTEUR DESOZA T.DESOZA 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -128,10 +128,6 @@ Contact méthode continue. La modélisation COQUE_3D n'est pas encore compatible a
 
 95 : _("""
 Contact méthode continue. Les options RACCORD_LINE_QUAD et FOND_FISSURE sont exclusives.
-"""),
-
-96 : _("""
-Contact méthode continue. Pour l'option SANS_GROUP_NO_FR, il faut que le frottement soit activé.
 """),
 
 97 : _("""

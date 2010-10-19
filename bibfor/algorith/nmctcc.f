@@ -2,7 +2,7 @@
      &                  RESOCO,VALINC,MMCVCA)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 14/09/2010   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 19/10/2010   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -77,6 +77,7 @@ C
       REAL*8       R8BID,R8VIDE
       INTEGER      IBID
       CHARACTER*16 K16BLA
+      CHARACTER*24 FLIFLO
 C      
 C ----------------------------------------------------------------------
 C
@@ -86,7 +87,7 @@ C
 C --- AFFICHAGE
 C
       IF (NIV.GE.2) THEN
-        WRITE (IFM,*) '<CONTACT> ALGORITHME DES CONTRAINTES ACTIVES' 
+        WRITE (IFM,*) '<MECANONLINE> ALGORITHME DES CONTRAINTES ACTIVES'
       ENDIF       
 C
 C --- INITIALISATIONS
@@ -94,6 +95,7 @@ C
       NOMO   = MODELE(1:8)
       NTPC   = CFDISI(DEFICO,'NTPC') 
       K16BLA = ' ' 
+      FLIFLO = RESOCO(1:14)//'.FLIPFLOP '
       MMCVCA = .FALSE.
 C
 C --- INFOS BOUCLE CONTACT
@@ -134,6 +136,9 @@ C
         IF (LFROT) THEN
 C ------- CONVERGENCE FORCEE
           CALL U2MESS('A','CONTACT3_86')
+          IF (LCTCC) THEN
+            CALL JERAZO(FLIFLO,NTPC  ,1)
+          ENDIF
           MMCVCA = .TRUE.        
         ELSE
           CALL U2MESS('F','CONTACT3_85')

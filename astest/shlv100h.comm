@@ -1,4 +1,4 @@
-# MODIF  DATE 08/12/2008   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 19/10/2010   AUTEUR DELMAS J.DELMAS 
 # TITRE REPONSE HARMONIQUE CYLINDRE EN D.P. (TRIA3 QUAD4) AXISYM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -99,15 +99,14 @@ DEP=CREA_RESU(OPERATION='AFFE',
               NOM_CHAM='DEPL',
               AFFE=_F(CHAM_GD=DEPLA,
                       INST=0.,
-                      ),
+                      MODELE=MO,
+                      CHAM_MATER=CM),
                 );
 
 
 DEP=CALC_ELEM(reuse=DEP, RESULTAT=DEP,
-              MODELE=MO,
               OPTION='SIGM_ELNO_DEPL',
-              INST=0.,
-              CHAM_MATER=CM                               )
+              INST=0.,)
 
 TEST_RESU(CHAM_NO=(
    # DEPLACEMENTS

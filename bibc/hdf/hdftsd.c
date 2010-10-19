@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF hdftsd hdf  DATE 13/10/2009   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF hdftsd hdf  DATE 19/10/2010   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2003  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -17,6 +17,7 @@
 /*    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.     */
 /* ================================================================== */
 #include "aster.h"
+#include "aster_fort.h"
 /*-----------------------------------------------------------------------------/
 / Récupération du type et de la taille des valeurs stockées dans un dataset
 / au sein d'un fichier HDF 
@@ -28,14 +29,17 @@
 /  Résultats :
 /    =O OK, -1 sinon
 /-----------------------------------------------------------------------------*/
-#include "hdf5.h"
+#ifndef _DISABLE_HDF5
+#include <hdf5.h>
+#endif
 #define FALSE   0
 
 INTEGER DEFPSPP(HDFTSD, hdftsd, INTEGER *iddat, char *type, STRING_SIZE lt, INTEGER *ltype, INTEGER *lv)
 {
+  INTEGER iret=-1;
+#ifndef _DISABLE_HDF5
   hid_t id,datatype,class,dataspace;
   hsize_t dims_out[1];
-  long iret=-1;
   int k,rank,status;
 
   id=(hid_t) *iddat;
@@ -59,5 +63,8 @@ INTEGER DEFPSPP(HDFTSD, hdftsd, INTEGER *iddat, char *type, STRING_SIZE lt, INTE
       }
     }
   }
+#else
+  CALL_U2MESS("F", "FERMETUR_3");
+#endif
   return iret;
 }

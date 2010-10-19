@@ -1,4 +1,4 @@
-# MODIF  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 19/10/2010   AUTEUR DESOZA T.DESOZA 
 # TITRE CONTACT AVEC FROTTEMENT D'UNE PLAQUE SUR UN PLAN RIGIDE
 # ssnv128m.para = tps_job 210 mem_job 32Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -87,7 +87,7 @@ CHA2 = DEFI_CONTACT(MODELE         = MO,
                              COEF_CONT     = 1.,
                              ALGO_FROT     = 'STANDARD',
                              COEF_FROT     = 1., 
-                             CONTACT_INIT  = 'OUI',
+                             CONTACT_INIT  = 'INTERPENETRE',
                              SEUIL_INIT    = 1.E-1,                                                         
                              ),                            
                           ),

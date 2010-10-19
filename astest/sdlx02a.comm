@@ -1,4 +1,4 @@
-# MODIF  DATE 24/08/2010   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 19/10/2010   AUTEUR DELMAS J.DELMAS 
 # TITRE PROBLEME DE HOVGAARD: CALCUL MODAL ET CALCUL SPECTRAL
 # ======================================================================
 # sdlx02a.para = tps_job 60 mem_job 400Mo ncpus 1 liste_test R
@@ -99,13 +99,11 @@ MODE_DIA=MODE_ITER_SIMULT(  MATR_A=RIGIDITE,   MATR_B=MASSE_DI,
 
 MODE_DIA=NORM_MODE(reuse=MODE_DIA,   MODE=MODE_DIA,   NORME='TRAN_ROTA',)
 
-MODE_DIA=CALC_ELEM(reuse=MODE_DIA,  MODELE=MODELE,  RESULTAT=MODE_DIA,
-                         OPTION=( 'SIEF_ELGA_DEPL', 'EFGE_ELNO_DEPL', ),
-                         CHAM_MATER=CHAMPMAT,   CARA_ELEM=CARA_ELE  )
+MODE_DIA=CALC_ELEM(reuse=MODE_DIA,  RESULTAT=MODE_DIA,
+                         OPTION=( 'SIEF_ELGA_DEPL', 'EFGE_ELNO_DEPL', ),)
 
 MODE_DIA=CALC_NO(reuse=MODE_DIA,  RESULTAT=MODE_DIA,
-                   MODELE=MODELE,   OPTION='REAC_NODA',
-                       CHAM_MATER=CHAMPMAT,   CARA_ELEM=CARA_ELE    )
+                 OPTION='REAC_NODA', )
 
 TEST_RESU(RESU=( 
        _F( RESULTAT = MODE,      NUME_MODE = 1,  PRECISION = 0.006, 
@@ -167,13 +165,11 @@ T_RELE = POST_RELEVE_T ( ACTION=_F( INTITULE = 'MO_ST',
 IMPR_TABLE ( TABLE = T_RELE,
              NOM_PARA = ('NOEUD','NUME_ORDRE','DX','DY','DZ','NOEUD_CMP',), )
 
-MODE_STA=CALC_ELEM(reuse=MODE_STA,  MODELE=MODELE,  RESULTAT=MODE_STA,
-                         OPTION=( 'SIEF_ELGA_DEPL', 'EFGE_ELNO_DEPL', ),
-                         CHAM_MATER=CHAMPMAT,   CARA_ELEM=CARA_ELE   )
+MODE_STA=CALC_ELEM(reuse=MODE_STA,  RESULTAT=MODE_STA,
+                         OPTION=( 'SIEF_ELGA_DEPL', 'EFGE_ELNO_DEPL', ), )
 
 MODE_STA=CALC_NO(reuse=MODE_STA,  RESULTAT=MODE_STA,
-                    MODELE=MODELE,   OPTION='REAC_NODA',
-                       CHAM_MATER=CHAMPMAT,   CARA_ELEM=CARA_ELE     )
+                    OPTION='REAC_NODA',)
 
 #
 

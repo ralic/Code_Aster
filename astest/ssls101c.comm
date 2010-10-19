@@ -1,4 +1,4 @@
-# MODIF  DATE 05/07/2010   AUTEUR DESROCHES X.DESROCHES 
+# MODIF  DATE 19/10/2010   AUTEUR DELMAS J.DELMAS 
 # TITRE PLAQUE CIRCULAIRE POSEE SOUS PRESSION  147 SHB8
 # ssls101c.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -425,13 +425,15 @@ RESU=CREA_RESU(OPERATION='AFFE',
                 TYPE_RESU='EVOL_ELAS',
                 NOM_CHAM='DEPL',
                 AFFE=_F(CHAM_GD=DEPR,
-                        INST=0.
+                        INST=0.,
+                        MODELE=MODEL,
+                        CHAM_MATER=CHMAT,
                         ),
                 );
 
-RESU=CALC_ELEM( reuse=RESU, RESULTAT=RESU, MODELE=MODEL,
+RESU=CALC_ELEM( reuse=RESU, RESULTAT=RESU, 
                           OPTION=('SIEF_ELGA_DEPL'),
-                           CHAM_MATER=CHMAT,  )
+                             )
 
 #--------------------------------------------------------------------
 # expression des contraintes a partir du moment SIXX=MXX*12*z/(h*h*h)

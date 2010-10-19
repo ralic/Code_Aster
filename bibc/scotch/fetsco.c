@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF fetsco scotch  DATE 07/04/2009   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF fetsco scotch  DATE 19/10/2010   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2005  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -18,14 +18,18 @@
 /* ================================================================== */
 #include <stdio.h>
 #include "aster.h"
+
+#ifndef _DISABLE_SCOTCH
 #include "common.h"
 #include "scotch.h"
+#endif
 
 
 void DEFPPPPPPPPP(FETSCO,fetsco, INTEGER *nbmato, INTEGER *nblien,
                                  int *connect, int *idconnect, INTEGER *nbpart,
                                  int *mapsd, int *edlo, int *velo, INTEGER *ier)
 {
+#ifndef _DISABLE_SCOTCH
   int err;
   SCOTCH_Graph        grafdat;
   SCOTCH_Arch         archdat; 
@@ -65,6 +69,6 @@ void DEFPPPPPPPPP(FETSCO,fetsco, INTEGER *nbmato, INTEGER *nblien,
   }
   
   *ier = (INTEGER)err;
-
+#endif
 }
 

@@ -1,7 +1,7 @@
       SUBROUTINE NMCTCI(DEFICO,RESOCO,SDDYNA,VALINC)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 14/09/2010   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 19/10/2010   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -64,7 +64,7 @@ C
 C ----------------------------------------------------------------------
 C
       CALL JEMARQ()
-      CALL INFDBG('MECANONLINE',IFM,NIV) 
+      CALL INFDBG('MECANONLINE',IFM,NIV)
 C
 C --- TYPE DE CONTACT
 C      
@@ -75,7 +75,7 @@ C
       IF (LCTCC.OR.LXFCM) THEN
 C
         IF (NIV.GE.2) THEN
-          WRITE (IFM,*) '<CONTACT> INITIALISATION'//
+          WRITE (IFM,*) '<MECANONLINE> INITIALISATION'//
      &          ' DES BOUCLES POUR LE CONTACT' 
         ENDIF
 C

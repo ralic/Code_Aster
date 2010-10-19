@@ -1,4 +1,4 @@
-#& MODIF COMMUN  DATE 11/10/2010   AUTEUR PELLET J.PELLET 
+#& MODIF COMMUN  DATE 19/10/2010   AUTEUR DELMAS J.DELMAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -145,10 +145,7 @@ def C_NOM_CHAM_INTO() : return  ("ACCE",    #COMMUN#
                         "PRES_NOEU_DBEL",
                         "PRES_NOEU_IMAG",
                         "PRES_NOEU_REEL",
-                        "PROJ_ELEM_SIGN",
-                        "PROJ_ELEM_SIGT",
-                        "PROJ_ELEM_SIT1",
-                        "PROJ_ELEM_SIT2",
+                        "PROJ_ELEM_SIGM",
                         "RADI_ELGA_SIGM",
                         "RADI_ELNO_SIGM",
                         "RADI_NOEU_SIGM",
@@ -176,8 +173,6 @@ def C_NOM_CHAM_INTO() : return  ("ACCE",    #COMMUN#
                         "SIPO_ELNO_SIEF",
                         "SIPO_NOEU_DEPL",
                         "SIPO_NOEU_SIEF",
-                        "SIRE_ELNO_DEPL",
-                        "SIRE_NOEU_DEPL",
                         "SOUR_ELGA_ELEC",
                         "TEMP",
                         "THETA",

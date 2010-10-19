@@ -1,7 +1,7 @@
       SUBROUTINE CFJEFI(NOMA  ,DEFICO,RESOCO,RESU  )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 14/09/2010   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 19/10/2010   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -72,7 +72,7 @@ C
 C ----------------------------------------------------------------------
 C
       CALL JEMARQ ()
-      CALL INFNIV(IFM,NIV)
+      CALL INFDBG('CONTACT',IFM,NIV)
       IF (NIV.EQ.2) THEN
         WRITE(IFM,*)'<CONTACT> LIAISONS FINALES '
       ENDIF       
@@ -137,7 +137,7 @@ C
   99  CONTINUE
       IF ( NIV .GE. 2 ) THEN
         WRITE(IFM,1003) NBLIAC
-        IF ((LCTFD).AND.(.NOT.LPENAF)) THEN
+        IF (LCTFD.AND.(.NOT.LPENAF)) THEN
           IF (NDIMG.EQ.2) THEN
             WRITE(IFM,1006) LLF
           ELSEIF (NDIMG.EQ.3) THEN

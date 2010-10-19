@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SOUSTRUC  DATE 29/09/2010   AUTEUR COURTOIS M.COURTOIS 
+C MODIF SOUSTRUC  DATE 19/10/2010   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -161,7 +161,7 @@ C       ---------------------
      &                NOGMA2,NBID)
           CALL GETVTX('CREA_GROUP_MA','POSITION',IOCC,1,0,KPOS,N6B)
           CALL JENONU(JEXNOM(MA//'.GROUPEMA',NOGMA2),IGM2)
-          CALL JELIRA(JEXNUM(MA//'.GROUPEMA',IGM2),'LONMAX',ILI2,KBID)
+          CALL JELIRA(JEXNUM(MA//'.GROUPEMA',IGM2),'LONUTI',ILI2,KBID)
           CALL JEVEUO(JEXNUM(MA//'.GROUPEMA',IGM2),'L',IAGM2)
           IND1 = 0
           IND2 = 0
@@ -211,7 +211,7 @@ C       -------------------
    50     CONTINUE
 
           CALL JENONU(JEXNOM(MA//'.GROUPEMA',ZK8(IALIK8)),IGM1)
-          CALL JELIRA(JEXNUM(MA//'.GROUPEMA',IGM1),'LONMAX',ILI1,KBID)
+          CALL JELIRA(JEXNUM(MA//'.GROUPEMA',IGM1),'LONUTI',ILI1,KBID)
           CALL JEVEUO(JEXNUM(MA//'.GROUPEMA',IGM1),'L',IAGM1)
           IF (ILI1.GT.NBIS) THEN
             NBIS = 2*ILI1
@@ -227,7 +227,7 @@ C       -------------------
 
           DO 80,IGM = 2,N3
             CALL JENONU(JEXNOM(MA//'.GROUPEMA',ZK8(IALIK8-1+IGM)),IGM2)
-            CALL JELIRA(JEXNUM(MA//'.GROUPEMA',IGM2),'LONMAX',ILI2,KBID)
+            CALL JELIRA(JEXNUM(MA//'.GROUPEMA',IGM2),'LONUTI',ILI2,KBID)
             CALL JEVEUO(JEXNUM(MA//'.GROUPEMA',IGM2),'L',IAGM2)
             CALL UTLISI('INTER',ZI(IALII1),N,ZI(IAGM2),ILI2,ZI(IALII2),
      &                  NBIS,NTROU)
@@ -264,7 +264,7 @@ C       -------------------
   100     CONTINUE
 
           CALL JENONU(JEXNOM(MA//'.GROUPEMA',ZK8(IALIK8)),IGM1)
-          CALL JELIRA(JEXNUM(MA//'.GROUPEMA',IGM1),'LONMAX',ILI1,KBID)
+          CALL JELIRA(JEXNUM(MA//'.GROUPEMA',IGM1),'LONUTI',ILI1,KBID)
           CALL JEVEUO(JEXNUM(MA//'.GROUPEMA',IGM1),'L',IAGM1)
           IF (ILI1.GT.NBIS) THEN
             NBIS = 2*ILI1
@@ -280,7 +280,7 @@ C       -------------------
 
           DO 130,IGM = 2,N4
             CALL JENONU(JEXNOM(MA//'.GROUPEMA',ZK8(IALIK8-1+IGM)),IGM2)
-            CALL JELIRA(JEXNUM(MA//'.GROUPEMA',IGM2),'LONMAX',ILI2,KBID)
+            CALL JELIRA(JEXNUM(MA//'.GROUPEMA',IGM2),'LONUTI',ILI2,KBID)
             CALL JEVEUO(JEXNUM(MA//'.GROUPEMA',IGM2),'L',IAGM2)
             CALL UTLISI('UNION',ZI(IALII1),N,ZI(IAGM2),ILI2,ZI(IALII2),
      &                  NBIS,NTROU)
@@ -327,7 +327,7 @@ C       -------------------
   150     CONTINUE
 
           CALL JENONU(JEXNOM(MA//'.GROUPEMA',ZK8(IALIK8)),IGM1)
-          CALL JELIRA(JEXNUM(MA//'.GROUPEMA',IGM1),'LONMAX',ILI1,KBID)
+          CALL JELIRA(JEXNUM(MA//'.GROUPEMA',IGM1),'LONUTI',ILI1,KBID)
           CALL JEVEUO(JEXNUM(MA//'.GROUPEMA',IGM1),'L',IAGM1)
           IF (ILI1.GT.NBIS) THEN
             NBIS = 2*ILI1
@@ -343,7 +343,7 @@ C       -------------------
 
           DO 180,IGM = 2,N5
             CALL JENONU(JEXNOM(MA//'.GROUPEMA',ZK8(IALIK8-1+IGM)),IGM2)
-            CALL JELIRA(JEXNUM(MA//'.GROUPEMA',IGM2),'LONMAX',ILI2,KBID)
+            CALL JELIRA(JEXNUM(MA//'.GROUPEMA',IGM2),'LONUTI',ILI2,KBID)
             CALL JEVEUO(JEXNUM(MA//'.GROUPEMA',IGM2),'L',IAGM2)
             CALL UTLISI('DIFFE',ZI(IALII1),N,ZI(IAGM2),ILI2,ZI(IALII2),
      &                  NBIS,NTROU)
@@ -433,7 +433,9 @@ C       ----------------------------------
           CALL JEVEUO(LISMA,'L',IDLIMA)
 
           CALL JECROC(JEXNOM(MA//'.GROUPEMA',NOGMA))
-          CALL JEECRA(JEXNOM(MA//'.GROUPEMA',NOGMA),'LONMAX',NBMA,
+          CALL JEECRA(JEXNOM(MA//'.GROUPEMA',NOGMA),'LONMAX',
+     &        MAX(1,NBMA), KBID)
+          CALL JEECRA(JEXNOM(MA//'.GROUPEMA',NOGMA),'LONUTI',NBMA,
      &                KBID)
           CALL JEVEUO(JEXNOM(MA//'.GROUPEMA',NOGMA),'E',JGMA)
 
@@ -462,7 +464,7 @@ C     --------------------------
         DO 220 I = 1,NBGNAJ
           II = NBGMIN + I
           CALL JENUNO(JEXNUM(MA//'.GROUPEMA',II),NOGMA)
-          CALL JELIRA(JEXNUM(MA//'.GROUPEMA',II),'LONMAX',NBMA,KBID)
+          CALL JELIRA(JEXNUM(MA//'.GROUPEMA',II),'LONUTI',NBMA,KBID)
           WRITE (IFM,'(15X,A,2X,A8,5X,A,2X,I8,10X,A)') '!',NOGMA,'!',
      &      NBMA,'!'
   220   CONTINUE
@@ -477,7 +479,7 @@ C     --------------------
           II = NBGMIN + I
           CALL JEVEUO(JEXNUM(MA//'.GROUPEMA',II),'L',JLISMA)
           CALL JENUNO(JEXNUM(MA//'.GROUPEMA',II),NOGMA)
-          CALL JELIRA(JEXNUM(MA//'.GROUPEMA',II),'LONMAX',NBMA,KBID)
+          CALL JELIRA(JEXNUM(MA//'.GROUPEMA',II),'LONUTI',NBMA,KBID)
           WRITE (IFM,'(/,3A,/,28(''-''))') 'MAILLES DU GROUPE ',NOGMA,
      &      ' :'
           NBLINE = NBMA/MAXCOL

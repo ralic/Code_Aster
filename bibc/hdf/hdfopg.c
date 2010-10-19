@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF hdfopg hdf  DATE 16/11/2009   AUTEUR REZETTE C.REZETTE */
+/* MODIF hdfopg hdf  DATE 19/10/2010   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2003  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -18,6 +18,7 @@
 /* ================================================================== */
 #include <stdlib.h>
 #include "aster.h"
+#include "aster_fort.h"
 /*-----------------------------------------------------------------------------/
 / Ouverture d'un groupe HDF, renvoie une erreur si le groupe ne peut être ouvert 
 /  Paramètres :
@@ -26,14 +27,17 @@
 /  Résultats :
 /     identificateur du groupe, -1 sinon (hid_t = int)
 /-----------------------------------------------------------------------------*/
+#ifndef _DISABLE_HDF5
 #include <hdf5.h>
+#endif
 
 INTEGER DEFPS(HDFOPG, hdfopg, INTEGER *idf, char *nomgr, STRING_SIZE ln)
 {
+  INTEGER iret=-1;
+#ifndef _DISABLE_HDF5
   hid_t  idgrp,idfic;     
   char *nomd;
   int k;
-  long iret=-1;
   void *malloc(size_t size);
   
   idfic=(hid_t) *idf;
@@ -53,7 +57,10 @@ INTEGER DEFPS(HDFOPG, hdfopg, INTEGER *idf, char *nomgr, STRING_SIZE ln)
   nomd[k+1] = '\0';
 
   if ((idgrp = H5Gopen(idfic, nomd)) >= 0) 
-    iret = (long) idgrp;
+    iret = (INTEGER) idgrp;
   free (nomd);
+#else
+  CALL_U2MESS("F", "FERMETUR_3");
+#endif
   return iret;
 }     

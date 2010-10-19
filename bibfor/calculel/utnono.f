@@ -5,7 +5,7 @@
       INTEGER                                                IRET
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 19/10/2010   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -36,7 +36,7 @@ C IN  : NOMGRP : NOM D'UN GROUP_NO OU D'UN GROUP_MA
 C OUT : NOMOBJ : NOM DU NOEUD OU DE LA MAILLE
 C OUT : IRET   : CODE RETOUR
 C                 0 --> OK
-C                10 --> LE GROUPE N'EXISTE PAS
+C                10 --> LE GROUPE N'EXISTE PAS OU EST VIDE
 C                 1 -->  PLUSIEURS NOEUDS OU MAILLES DANS LE GROUPE
 C ----------------------------------------------------------------------
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
@@ -61,12 +61,12 @@ C
       CHARACTER*1  TYPM
       CHARACTER*8  K8B, KNBNO
       CHARACTER*16 TYPGRP, NOM
-C
+
       CALL JEMARQ()
       IRET = 10
       TYPM = MESS(1:1)
       NOMOBJ = ' '
-C
+
       IF ( TYPE(1:5) .EQ. 'NOEUD' ) THEN
          TYPGRP = '.GROUPENO       '
          NOM    = '.NOMNOE         '
@@ -76,9 +76,14 @@ C
       ELSE
          GOTO 9999
       ENDIF
-C
+
       CALL JEEXIN(JEXNOM(NOMMA//TYPGRP,NOMGRP),IRET1)
-      IF ( IRET1 .EQ. 0 ) THEN
+      IF (IRET1.GT.0)THEN
+        CALL JELIRA(JEXNOM(NOMMA//TYPGRP,NOMGRP),'LONUTI',NBNO,K8B)
+      ELSE
+        NBNO=0
+      ENDIF
+      IF ( NBNO .EQ. 0 ) THEN
          IF ( TYPM .EQ. ' ' ) GOTO 9999
          IF ( TYPE(1:5) .EQ. 'NOEUD' ) THEN
             CALL U2MESK(TYPM,'ELEMENTS_67',1,NOMGRP)
@@ -87,9 +92,9 @@ C
          ENDIF
          GOTO 9999
       ENDIF
-C
+
       IRET = 0
-      CALL JELIRA(JEXNOM(NOMMA//TYPGRP,NOMGRP),'LONMAX',NBNO,K8B)
+      CALL ASSERT(NBNO.GT.0)
       IF ( NBNO .NE. 1 ) THEN
          IRET = 1
          IF ( TYPM .EQ. 'F'  .OR.  TYPM .EQ. 'E' ) THEN
@@ -106,10 +111,10 @@ C
             GOTO 9999
          ENDIF
       ENDIF
-C
+
       CALL JEVEUO(JEXNOM(NOMMA//TYPGRP,NOMGRP),'L',IAD)
       CALL JENUNO(JEXNUM(NOMMA//NOM,ZI(IAD)),NOMOBJ)
-C
+
  9999 CONTINUE
       CALL JEDEMA()
       END

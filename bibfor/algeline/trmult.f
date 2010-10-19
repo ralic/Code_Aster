@@ -5,7 +5,7 @@
       REAL*8        PSIDE(NEQ)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 11/05/2009   AUTEUR NISTOR I.NISTOR 
+C MODIF ALGELINE  DATE 19/10/2010   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -119,7 +119,7 @@ C           --- ECLATE LE GROUP_NO EN NOEUD ---
             MANONO = MAILLA//'.NOMNOE'
             II = -1
             DO 20 I = 1,NBGR
-               CALL JELIRA(JEXNOM(MAGRNO,ZK8(IDGN+I-1)),'LONMAX',
+               CALL JELIRA(JEXNOM(MAGRNO,ZK8(IDGN+I-1)),'LONUTI',
      &          NB,KBID)
                CALL JEVEUO(JEXNOM(MAGRNO,ZK8(IDGN+I-1)),'L',LDGN)
                DO 22 IN = 0,NB-1

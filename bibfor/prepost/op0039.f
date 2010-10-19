@@ -1,6 +1,7 @@
       SUBROUTINE OP0039 ()
       IMPLICIT   NONE
-C     ------------------------------------------------------------------
+C ----------------------------------------------------------------------
+C MODIF PREPOST  DATE 19/10/2010   AUTEUR DELMAS J.DELMAS 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,30 +19,43 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C MODIF PREPOST  DATE 21/09/2010   AUTEUR PELLET J.PELLET 
 C TOLE CRP_20
-C     PROCEDURE IMPR_RESU
-C     ------------------------------------------------------------------
-C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
-      INTEGER           ZI
-      COMMON / IVARJE / ZI(1)
-      REAL*8            ZR
-      COMMON / RVARJE / ZR(1)
-      COMPLEX*16        ZC
-      COMMON / CVARJE / ZC(1)
-      LOGICAL           ZL
-      COMMON / LVARJE / ZL(1)
-      CHARACTER*8       ZK8
+C
+C     BUT:
+C       IMPRIMER DES RESULTATS ET DES MAILLAGE
+C       PROCEDURE IMPR_RESU
+C
+C
+C     ARGUMENTS:
+C     ----------
+C
+C      ENTREE :
+C-------------
+C
+C      SORTIE :
+C-------------
+C
+C ......................................................................
+C
+C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
+C
+      INTEGER          ZI
+      COMMON  /IVARJE/ ZI(1)
+      REAL*8           ZR
+      COMMON  /RVARJE/ ZR(1)
+      COMPLEX*16       ZC
+      COMMON  /CVARJE/ ZC(1)
+      LOGICAL          ZL
+      COMMON  /LVARJE/ ZL(1)
+      CHARACTER*8      ZK8
       CHARACTER*16              ZK16
-      CHARACTER*24                       ZK24
-      CHARACTER*32                                ZK32
-      CHARACTER*80                                         ZK80
-      COMMON / KVARJE / ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
+      CHARACTER*24                        ZK24
+      CHARACTER*32                                  ZK32
+      CHARACTER*80                                            ZK80
+      COMMON  /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
       CHARACTER*32      JEXNUM
-C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
 C
-C 0.3. ==> VARIABLES LOCALES
-C
+C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C
       INTEGER NOCC, IOCC, IOC2, NBREST
       INTEGER VALI
@@ -49,30 +63,26 @@ C
       INTEGER VERSIO
       INTEGER INFMAI
       INTEGER NIVE
-      INTEGER N, NC, NM, NRES, NMI, NMO, NN, NP, NPA, NR, JP
-      INTEGER N0, N1, N10, N11, N01, N2, N21, N22, N3, N4
+      INTEGER N, NC, NM, NRES, NMI, NMO, NN, NP, NPA, NR
+      INTEGER N0, N1, N10, N11, N01, N2, N21, N22, N23, N3, N4
       INTEGER NUMEMO, NBMODL, NMAIL
       INTEGER IUTIL, IDEBU
       INTEGER IMXGM,  IMXGN,  IMXNO, IMXMA
       INTEGER NBMA, NBNO, NBGRM, NBGRN
       INTEGER NBNOMX, NBGNMX, NBMAMX, NBGMMX
-      INTEGER NBNOS, NBNOT, NBNOU, NBMAT, NBCMP, NBNOSY, NBORDR
-      INTEGER NBPARA, JPARA, JLAST, JNOSY, JPA, JORDR, ISY, JCMP
+      INTEGER NBNOS, NBNOT, NBNOU, NBMAT, NBCMP, NBNOSY, NBORDR, NBCMDU
+      INTEGER NBPARA, JPARA, JLAST, JNOSY, JPA, JORDR, ISY, JCMP, JNCMED
       INTEGER JMODL, JNUNOS, JNUNOT, JTOPO, JNUMA, JLMA, JMMA, JNUNOU
       INTEGER JLGRM, JNGRM, JLGRN, JNGRN, JLNO, JNNO
       INTEGER NBELE, NBNOE
       INTEGER NINF, NSUP, NMA
       INTEGER IAUX, JAUX, I, J, JINDNO, JNOFI, II, IER
       INTEGER IBID, IRET, ICMP, NVCMP, JVCMP
-      INTEGER NRPASS, NBPASS, ADRECG, GD, NCMPMX, IADESC, IAD, NBCMPT
-C
+      INTEGER NRPASS, NBPASS, ADRECG, GD, NCMPMX,IAD, NBCMPT
       INTEGER LXLGUT
 C
       REAL*8 PREC, BORSUP, BORINF, VERSI2, EPS
 C
-      LOGICAL LRESU,LCOR,LMAX,LMIN,LINF,LSUP,LCASTS,LMOD,LGMSH,ULEXIS
-      LOGICAL LMAIL,AFAIRE,LREST
-C     ------------------------------------------------------------------
       CHARACTER*1  CECR,K1BID,K1OCC
       CHARACTER*3  TOUPAR,TOUCHA,COOR,TMAX,TMIN, SAUX03
       CHARACTER*4  PARTIE
@@ -84,12 +94,18 @@ C     ------------------------------------------------------------------
       CHARACTER*24 NOMJV
       CHARACTER*24 VALK(6)
       CHARACTER*24 NORECG,CORRN,CORRM
+      CHARACTER*32 K32BID
       CHARACTER*80 TITRE
 C
-C     ------------------------------------------------------------------
+      LOGICAL LRESU,LCOR,LMAX,LMIN,LINF,LSUP,LCASTS,LMOD,LGMSH,ULEXIS
+      LOGICAL LMAIL,AFAIRE,LREST
+C
+C ----------------------------------------------------------------------
+C
       CALL JEMARQ()
       CALL INFMAJ()
 
+      NBCMDU = 0
       BORINF = 0.D0
       BORSUP = 0.D0
       NORECG = '&&OP0039.RESULTAT_GD'
@@ -457,8 +473,9 @@ C        ---  IMPRESSION DU MAILLAGE AU PREMIER PASSAGE -----
 C
 C        --- ECRITURE D'UN CHAM_GD ---
          IF(NC .NE.0) THEN
-           NBNOSY    = 1
+           NBNOSY = 1
            CALL WKVECT('&&OP0039.NOM_SYMB','V V K16',NBNOSY,JNOSY)
+           CALL WKVECT('&&OP0039.NOM_CH_MED','V V K32',NBNOSY,JNCMED)
 C          --- NOM DU CHAM_GD ---
            ZK16(JNOSY)  = LERESU
            NPA       = 0
@@ -466,6 +483,10 @@ C          --- NOM DU CHAM_GD ---
            NBORDR    = 1
            CALL WKVECT('&&OP0039.NUM_ORDR','V V I',NBORDR,JORDR)
            ZI(JORDR) = 1
+           CALL GETVTX('RESU','NOM_CHAM_MED' ,IOCC,1,0,K32BID,N23)
+           NBCMDU = - N23
+           CALL GETVTX('RESU','NOM_CHAM_MED',IOCC,1,NBCMDU,
+     &                                              ZK32(JNCMED),IRET)
 C
 C        --- ECRITURE D'UN RESULTAT_COMPOSE ---
          ELSEIF (NR.NE.0) THEN
@@ -473,6 +494,7 @@ C          --- ON REGARDE QUELS SONT LES NOM_CHAM A IMPRIMER:
            TOUCHA = 'OUI'
            CALL GETVTX('RESU','TOUT_CHAM',IOCC,1,1,TOUCHA,N21)
            CALL GETVTX('RESU','NOM_CHAM' ,IOCC,1,0,K16BID,N22)
+           CALL GETVTX('RESU','NOM_CHAM_MED' ,IOCC,1,0,K32BID,N23)
 C          *** N22 EST NEGATIF SI L'UTILISATEUR DONNE UNE LISTE DE NOMS
 C              (PAR DEFAUT TOUS LES CHAMPS CAR MOT-CLE FACULTATIF)
            IF(ABS(N21)+ABS(N22).EQ.0) N21=1
@@ -491,11 +513,19 @@ C            - ON RECUPERE LES NOMS (ON IMPRIME TOUS LES CHAMPS)
              JNOSY =1
            ELSEIF(N22.LT.0) THEN
              NBNOSY = - N22
+             NBCMDU = - N23
              CALL WKVECT('&&OP0039.NOM_SYMB','V V K16',
      &                   NBNOSY,JNOSY)
+             CALL WKVECT('&&OP0039.NOM_CH_MED','V V K32',NBNOSY,JNCMED)
+
 C            - ON RECUPERE LA LISTE DES NOMS DONNEE PAR L'UTILISATEUR
              CALL GETVTX('RESU','NOM_CHAM',IOCC,1,NBNOSY,
      &                                                ZK16(JNOSY),N0)
+             CALL GETVTX('RESU','NOM_CHAM_MED',IOCC,1,
+     &                                         NBCMDU,ZK32(JNCMED),IRET)
+             IF ((NBCMDU.NE.0).AND.(NBCMDU.NE.NBNOSY)) THEN
+               CALL U2MESS('F','PREPOST2_1')
+             ENDIF
            ENDIF
 
 C          --- ON REGARDE QUELS SONT LES NOM_CMP A IMPRIMER:
@@ -919,10 +949,11 @@ C          - VERIFICATION DES PARAMETRES (FORMAT 'RESULTAT')
 C
 C          - ECRITURE DU CONCEPT LERESU SUR FICHIER FICH AU FORMAT FORM
            CALL IRECRI(LERESU,RESU,NOPASE,FORM,IFI,TITRE,LGMSH,
-     &       NBNOSY,ZK16(JNOSY),PARTIE,NBPARA,ZK16(JPARA),NBORDR,
-     &       ZI(JORDR),LRESU,'RESU',IOCC,MODELE,CECR,TYCHA,
-     &       LCOR,NBNOT,ZI(JNUNOT),NBMAT,ZI(JNUMA),NBCMP,ZK8(JCMP),
-     &       LSUP,BORSUP,LINF,BORINF,LMAX,LMIN,FORMR,LMOD,NIVE,VERSIO )
+     &       NBNOSY,ZK16(JNOSY),NBCMDU,ZK32(JNCMED),PARTIE,NBPARA,
+     &       ZK16(JPARA),NBORDR,ZI(JORDR),LRESU,'RESU',IOCC,MODELE,CECR,
+     &       TYCHA,LCOR,NBNOT,ZI(JNUNOT),NBMAT,ZI(JNUMA),NBCMP,
+     &       ZK8(JCMP),LSUP,BORSUP,LINF,BORINF,LMAX,LMIN,FORMR,LMOD,
+     &       NIVE,VERSIO)
          ENDIF
 C        **********************
 C        --- FIN IMPRESSION ---
@@ -931,6 +962,7 @@ C        **********************
 C
 C        --- DESTRUCTION TABLEAUX DE TRAVAIL
          CALL JEDETR ( '&&OP0039.NOM_SYMB'    )
+         CALL JEDETR ( '&&OP0039.NOM_CH_MED'  )
          CALL JEDETR ( '&&OP0039.NUM_ORDR'    )
          CALL JEDETR ( '&&OP0039.NUME_ORDRE'  )
          CALL JEDETR ( '&&OP0039.NOMUTI_PARA' )

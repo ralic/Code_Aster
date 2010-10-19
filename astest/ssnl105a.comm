@@ -1,4 +1,4 @@
-# MODIF  DATE 05/10/2010   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 19/10/2010   AUTEUR DESOZA T.DESOZA 
 #
 # TITRE CADRE DE BARRES HAUBANE.
 # ssnl105a.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
@@ -114,7 +114,8 @@ TEST_RESU(RESU=(
            _F(  RESULTAT = RESU1,          NUME_ORDRE = 2,
              PARA = 'INST',             VALE = 2.00000E+00),
            _F(  RESULTAT = RESU1,          NUME_ORDRE = 2,
-             PARA = 'ITER_GLOB',        VALE_I = 1),
+CRITERE = 'ABSOLU',        PRECISION = 0.,
+             PARA = 'ITER_GLOB',        VALE_I = 2),
            
            ))
 

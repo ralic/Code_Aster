@@ -1,8 +1,8 @@
       SUBROUTINE HUJIID (MOD, MATER, INDI, DEPS, I1E, YD, VIND, DY,
-     &                   LOOP, DSIG, BNEWS, IRET)
+     &                   LOOP, DSIG, BNEWS, MTRAC, IRET)
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/12/2009   AUTEUR KHAM M.KHAM 
+C MODIF ALGORITH  DATE 18/10/2010   AUTEUR FOUCAULT A.FOUCAULT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -71,7 +71,7 @@ C ====================================================================
       REAL*8      E1,E2,E3,NU12,NU13,NU23,G1,G2,G3,NU21,NU31,NU32,DELTA
       REAL*8      FACTOR, MAXI, COHES, VEC(3), R8PREM, PT, QT
       CHARACTER*8 MOD, NOMAIL
-      LOGICAL     DEBUG, LOOP, BNEWS(3)
+      LOGICAL     DEBUG, LOOP, BNEWS(3), MTRAC
 C ====================================================================
       PARAMETER   ( D13  = .3333333333334D0 )
       PARAMETER   ( UN   = 1.D0 )
@@ -130,6 +130,11 @@ C --- OPERATEUR DE RIGIDITE NON LINEAIRE -----------------------------
 C ====================================================================
 C --- OPERATEUR LINEAIRE NON LINEAIRE --------------------------------
 C ====================================================================
+      IF((I1E-PISO).GE.ZERO)THEN
+        IRET = 1
+        GOTO 9999
+      ENDIF
+
       CALL LCINMA (ZERO, HOOKNL)
         
       IF (MOD(1:2) .EQ. '3D'     .OR.
@@ -224,6 +229,9 @@ C --- FAUT-IL CONSIDERER LES MECANISMES DE TRACTION?
         CALL HUJPRJ(I,SIGT,SIGD,PT,QT)
         IF ((((PT+DEUX*RTRAC-PTRAC)/ABS(PREF)).GE.-R8PREM())
      &      .AND.(.NOT.BNEWS(I))) THEN
+          NBMECT = NBMECT + 1
+          INDI(NBMECT) = 8 + I
+        ELSEIF ((.NOT.BNEWS(I)).AND.(MTRAC)) THEN
           NBMECT = NBMECT + 1
           INDI(NBMECT) = 8 + I
         ENDIF

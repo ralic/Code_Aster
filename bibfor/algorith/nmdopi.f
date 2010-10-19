@@ -1,7 +1,7 @@
       SUBROUTINE NMDOPI(MODELZ,NUMEDD,METHOD,LRELI ,SDPILO)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 11/10/2010   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 19/10/2010   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -223,7 +223,7 @@ C ======================================================================
      &               1,1,1,NOMGRP,N1)
           CALL GETVTX ('PILOTAGE','NOM_CMP',  1,1,1,NOMDDL,N1)
           GRNO=NOMA//'.GROUPENO'
-          CALL JELIRA (JEXNOM(GRNO,NOMGRP),'LONMAX',NBNO,K8BID)
+          CALL JELIRA (JEXNOM(GRNO,NOMGRP),'LONUTI',NBNO,K8BID)
           IF ( NBNO .GT. 1 ) THEN
             CALL U2MESS('F','PILOTAGE_52')
           ENDIF
@@ -256,7 +256,7 @@ C ======================================================================
      &             1,1,1,NOMGRP,N1)
 
         GRNO=NOMA//'.GROUPENO'
-        CALL JELIRA (JEXNOM(GRNO,NOMGRP),'LONMAX',NBNO,K8BID)
+        CALL JELIRA (JEXNOM(GRNO,NOMGRP),'LONUTI',NBNO,K8BID)
         CALL JEVEUO (JEXNOM(GRNO,NOMGRP),'L',JGRO)
         IF (NBNO.EQ.0) CALL U2MESK('F','PILOTAGE_54',1,NOMGRP)
         COEF = 1.D0 / NBNO

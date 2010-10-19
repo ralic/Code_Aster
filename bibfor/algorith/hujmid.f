@@ -3,7 +3,7 @@
      &  NEGMUL, IRET, SUBD, LOOP, NDEC0, INDI,MECTRA)
         IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 09/02/2010   AUTEUR FOUCAULT A.FOUCAULT 
+C MODIF ALGORITH  DATE 18/10/2010   AUTEUR FOUCAULT A.FOUCAULT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -46,7 +46,7 @@ C      IRET    :  CODE RETOUR
 C   -------------------------------------------------------------------
       INTEGER   NDT, NDI, NVI, NR, NMOD, IRET, JJ, NBMECT
       INTEGER   I, J, K, KK, ITER, INDI(7), NDEC0, NDEC
-      INTEGER   NITIMP, NBMECA, COMPT
+      INTEGER   NITIMP, NBMECA, COMPT, MSUP(2)
       INTEGER   UMESS, IUNIFI, IFM, NIV
       INTEGER   ESSAI, ESSMAX, RESI, NMAX
       LOGICAL   DEBUG, NOCONV, AREDEC, STOPNC, NEGMUL(8), SUBD
@@ -77,7 +77,7 @@ C   -------------------------------------------------------------------
       REAL*8    PREDI0(6), SIGD0(6), DEPS0(6), VIND0(50), PROB(4)
       LOGICAL   AREDE0, STOPN0, LOOP0, PROX(4), PROBT, PROXC(4)
       LOGICAL   TRACTI, CYCL, NEGTRA, BNEWS(3), NODEF
-      LOGICAL   NEGLAM(3), MECTRA, LTRY
+      LOGICAL   NEGLAM(3), MECTRA, LTRY, MODIF, MTRAC
       
       CHARACTER*8 MOD
 
@@ -98,6 +98,7 @@ C ----------------------------------------------------------------
    3    CONTINUE
 
       MECTRA = .FALSE.
+      MTRAC  = .FALSE.
 C --------------------------------------------------
 C ----  SAUVEGARDE DES GRANDEURS D ENTREE INITIALES
 C --------------------------------------------------
@@ -224,7 +225,7 @@ C ---> INITIALISATION : DY : CALCUL DE LA SOLUTION D ESSAI INITIALE
 C      (SOLUTION EXPLICITE)
 C ------------------------------------------------------------------
       CALL HUJIID (MOD, MATER, INDI, DEPS, I1F, YD, VIND, DY,
-     &              LOOP, DSIG, BNEWS, IRET)
+     &              LOOP, DSIG, BNEWS, MTRAC, IRET)
 
       IF(DEBUG)WRITE(6,*)'INDI =',(INDI(I),I=1,7)
 
@@ -616,7 +617,7 @@ C ----------------------------------------------------------
 C ETIQUETTE 9999 ---> GESTION DES NON CONVERGENCES LOCALES
 C                     LIMITEES A 5 TENTATIVES 
 C ----------------------------------------------------------
- 9999 CONTINUE
+9999  CONTINUE
       IF (COMPT.GT.5) THEN
         NOCONV = .TRUE.
 C --- ON REGARDE SI L'ETAT INITIAL MATERIAU AVAIT SOLLICITE
@@ -670,7 +671,7 @@ C --- AUX 3 SEUILS PLASTIQUES DE TRACTION
           ELSEIF (PROB(I).EQ.DEUX) THEN
             VIND(27+I)   = ZERO
           ENDIF
-  252   CONTINUE
+ 252    CONTINUE
         IRET = 0
         PROBT = .FALSE.
         CALL LCEQVN(NVI,VIND,VINF)
@@ -680,8 +681,10 @@ C --- AUX 3 SEUILS PLASTIQUES DE TRACTION
         IF (DEBUG) WRITE(6,'(A)') 'HUJMID :: 9999 TRACTI'
         CALL LCEQVE(DEPS0,DEPS)
         CALL LCEQVN(NVI,VIND0,VIND)
+        MODIF = .FALSE.
         DO 254 I = 1, NBMECT
           IF (YE(NDT+1+NBMECA+I).EQ.ZERO) THEN
+            MODIF = .TRUE.
             IF (INDI(I).LE.8) THEN
               IF (INDI(I).LT.5) THEN
                 IF ((ABS(VIND(4*INDI(I)+5)).GT.R8PREM()).OR.
@@ -699,8 +702,9 @@ C --- AUX 3 SEUILS PLASTIQUES DE TRACTION
             ENDIF
             TRACTI = .FALSE.
           ENDIF
-  254   CONTINUE 
+ 254    CONTINUE 
         IF(DEBUG)WRITE(6,*)'NEGLAM =',(NEGLAM(I),I=1,3)
+        MTRAC = .FALSE.
         DO 253 I = 1, 3
 C --- ON NE DOIT PAS REACTIVE UN MECANISME DE TRACTION QUI DONNE 
 C     COMME PREDICTEUR UN MULTIPLICATEUR PLASTIQUE NEGATIF
@@ -713,6 +717,7 @@ C ----------------------------------------------------
             IF(DEBUG)WRITE(6,*)'PK =',PF
             IF (((PF+DEUX*RTRAC-PTRAC)/ABS(PREF)).GT.-R8PREM())THEN
               BNEWS(I) = .FALSE.
+              IF(.NOT.MODIF)MTRAC = .TRUE.
             ENDIF
           ENDIF
  253    CONTINUE
@@ -744,7 +749,7 @@ C-----------------------------------------------------------
      &       .AND. (VIND(INDI(I)).EQ.MATER(18,2))) THEN
           CYCL = .TRUE.
         ENDIF
-  260 CONTINUE
+ 260  CONTINUE
       IF (DEBUG) WRITE(6,*) '9999 RESI:',RESI
 
 C ---------------------------------------------------------------
@@ -754,6 +759,21 @@ C ---------------------------------------------------------------
       IF ((RESI.GT.7).AND.(RESI.LE.7+NBMECA)) THEN
         RESI = RESI - 7
         IF ((INDI(RESI).GT.4).AND.(INDI(RESI).LT.8)) THEN
+
+C --- Y AVAIT IL UN MECANISME CYCLIQUE DEVIATOIRE DEJA DESACTIVE
+C     DURANT CETTE TENTATIVE?
+          MSUP(1) = 0
+          MSUP(2) = 0
+          J = 0
+          DO 258 I=5,7
+            IF(VIND(23+I).NE.VIND0(23+I))THEN
+              IF((I.NE.INDI(RESI)).AND.(VIND(I).EQ.MATER(18,2)))THEN
+                J = J+1
+                MSUP(J) = I
+              ENDIF
+            ENDIF     
+ 258      CONTINUE
+ 
           CALL LCEQVE(PREDI0,SIGF)
           CALL LCEQVE(SIGD0,SIGD)
           CALL LCEQVE(DEPS0,DEPS)
@@ -762,6 +782,11 @@ C ---------------------------------------------------------------
           STOPNC = STOPN0
           LOOP   = LOOP0
           VIND(23+INDI(RESI)) = ZERO
+          IF(J.NE.0)THEN
+             DO 26 I=1,J
+                VIND(23+MSUP(I)) = ZERO
+  26         CONTINUE
+          ENDIF
 
 C --- EXISTE-T-IL UN MECANISME DEVIATOIRE AYANT LE MEME COMPORTEMENT 
 C     QUE CELUI IDENTIFIE PRECEDEMMENT COMME POSANT PROBLEME ? 
@@ -772,6 +797,8 @@ C     QUE CELUI IDENTIFIE PRECEDEMMENT COMME POSANT PROBLEME ?
               VIND(23+INDI(I)) = ZERO
             ENDIF
  257      CONTINUE
+
+
           IRET = 0
           PROBT = .FALSE.
           CALL LCEQVN(NVI,VIND,VINF)
@@ -917,4 +944,5 @@ C ---------------------------------------------------------------
  2000 CONTINUE
 
       IF (DEBUG) WRITE(6,*)'HUJMID --- VINF =',(VINF(I),I=24,31)
+      IF(DEBUG)WRITE(6,*)'IRET - HUJMID =',IRET
       END

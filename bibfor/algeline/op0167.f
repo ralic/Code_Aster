@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 11/10/2010   AUTEUR PELLET J.PELLET 
+C MODIF ALGELINE  DATE 19/10/2010   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -816,7 +816,10 @@ C ----------------------------------------------------------------------
           ENDIF
           CALL JEVEUO(JEXNUM(GRPMAV,I),'L',JVG)
           CALL JELIRA(JEXNUM(GRPMAV,I),'LONMAX',NBMA,K1B)
-          CALL JEECRA(JEXNOM(GRPMAI,NOMG),'LONMAX',NBMA,' ')
+          CALL JEECRA(JEXNOM(GRPMAI,NOMG),'LONMAX',
+     &        MAX(1,NBMA),' ')
+          CALL JELIRA(JEXNUM(GRPMAV,I),'LONUTI',NBMA,K1B)
+          CALL JEECRA(JEXNOM(GRPMAI,NOMG),'LONUTI',NBMA,' ')
           CALL JEVEUO(JEXNOM(GRPMAI,NOMG),'E',JGG)
           DO 240 J=0,NBMA-1
             ZI(JGG+J)=ZI(JVG+J)
@@ -824,6 +827,7 @@ C ----------------------------------------------------------------------
   250   CONTINUE
         DO 270 I=1,NBGRMA
           CALL GETVTX('CREA_GROUP_MA','NOM',I,1,1,NOMG,N1)
+          CALL ASSERT(N1.EQ.1)
           CALL JEEXIN(JEXNOM(GRPMAI,NOMG),IRET)
           IF (IRET.EQ.0) THEN
             CALL JECROC(JEXNOM(GRPMAI,NOMG))
@@ -834,7 +838,8 @@ C ----------------------------------------------------------------------
           NBMAJ2=0
           CALL PALIM3('CREA_GROUP_MA',I,NOMAIN,CRGRNU,CRGRNO,NBMAJ2)
           CALL JEVEUO(CRGRNO,'L',JCRGNO)
-          CALL JEECRA(JEXNOM(GRPMAI,NOMG),'LONMAX',NBMAJ2,' ')
+          CALL JEECRA(JEXNOM(GRPMAI,NOMG),'LONMAX',MAX(NBMAJ2,1),' ')
+          CALL JEECRA(JEXNOM(GRPMAI,NOMG),'LONUTI',NBMAJ2,' ')
           CALL JEVEUO(JEXNOM(GRPMAI,NOMG),'E',IAGMA)
           DO 260 IMA=0,NBMAJ2-1
             CALL JENONU(JEXNOM(NOMMAI,ZK8(JCRGNO+IMA)),ZI(IAGMA+IMA))
@@ -853,7 +858,7 @@ C ----------------------------------------------------------------------
         DO 290 I=1,NBGRNO
           CALL JENUNO(JEXNUM(GRPNOV,I),NOMG)
           CALL JEVEUO(JEXNUM(GRPNOV,I),'L',JVG)
-          CALL JELIRA(JEXNUM(GRPNOV,I),'LONMAX',NBNO,K1B)
+          CALL JELIRA(JEXNUM(GRPNOV,I),'LONUTI',NBNO,K1B)
           CALL JEEXIN(JEXNOM(GRPNOE,NOMG),IRET)
           IF (IRET.EQ.0) THEN
             CALL JECROC(JEXNOM(GRPNOE,NOMG))
@@ -861,7 +866,8 @@ C ----------------------------------------------------------------------
             VALK(1)=NOMG
             CALL U2MESG('F','ALGELINE4_11',1,VALK,0,0,0,0.D0)
           ENDIF
-          CALL JEECRA(JEXNOM(GRPNOE,NOMG),'LONMAX',NBNO,' ')
+          CALL JEECRA(JEXNOM(GRPNOE,NOMG),'LONMAX',MAX(NBNO,1),' ')
+          CALL JEECRA(JEXNOM(GRPNOE,NOMG),'LONUTI',NBNO,' ')
           CALL JEVEUO(JEXNOM(GRPNOE,NOMG),'E',JGG)
           DO 280 J=0,NBNO-1
             ZI(JGG+J)=ZI(JVG+J)
@@ -906,7 +912,10 @@ C ----------------------------------------------------------------------
               ENDIF
               CALL JEVEUO(JEXNUM(GRPMAV,I),'L',JVG)
               CALL JELIRA(JEXNUM(GRPMAV,I),'LONMAX',NBMA,K8B)
-              CALL JEECRA(JEXNOM(GRPMAI,NOMG),'LONMAX',NBMA,' ')
+              CALL JEECRA(JEXNOM(GRPMAI,NOMG),'LONMAX',
+     &        MAX(1,NBMA),' ')
+              CALL JELIRA(JEXNUM(GRPMAV,I),'LONUTI',NBMA,K8B)
+              CALL JEECRA(JEXNOM(GRPMAI,NOMG),'LONUTI',NBMA,' ')
               CALL JEVEUO(JEXNOM(GRPMAI,NOMG),'E',JGG)
               DO 310 J=0,NBMA-1
                 ZI(JGG+J)=ZI(JVG+J)
@@ -930,7 +939,8 @@ C ----------------------------------------------------------------------
                 VALK(1)=NOGMA
                 CALL U2MESG('F','ALGELINE4_9',1,VALK,0,0,0,0.D0)
               ENDIF
-              CALL JEECRA(JEXNOM(GRPMAI,NOGMA),'LONMAX',NBMA,K8B)
+              CALL JEECRA(JEXNOM(GRPMAI,NOGMA),'LONMAX',MAX(NBMA,1),K8B)
+              CALL JEECRA(JEXNOM(GRPMAI,NOGMA),'LONUTI',NBMA,K8B)
               CALL JEVEUO(JEXNOM(GRPMAI,NOGMA),'E',IAGMA)
               DO 330,IMA=0,NBMA-1
                 CALL JENONU(JEXNOM(NOMMAI,ZK8(JMAIL+IMA)),ZI(IAGMA+IMA))

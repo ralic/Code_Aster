@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF hdfopd hdf  DATE 16/11/2009   AUTEUR REZETTE C.REZETTE */
+/* MODIF hdfopd hdf  DATE 19/10/2010   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2003  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -18,6 +18,7 @@
 /* ================================================================== */
 #include <stdlib.h>
 #include "aster.h"
+#include "aster_fort.h"
 /*-----------------------------------------------------------------------------/
 / Ouverture d'un dataset HDF, renvoie éventuellement une erreur  
 /  Paramètres :
@@ -27,13 +28,16 @@
 /  Résultats :
 /     identificateur du dataset, -1 sinon (hid_t = int)
 /-----------------------------------------------------------------------------*/
+#ifndef _DISABLE_HDF5
 #include <hdf5.h>
+#endif
 
 INTEGER DEFPSS(HDFOPD, hdfopd, INTEGER *idf, char *nomg, STRING_SIZE lg, char *nomd, STRING_SIZE ln)
 {
+  INTEGER iret=-1;
+#ifndef _DISABLE_HDF5
   hid_t id,idfic; 
   int k,lg2;
-  long iret=-1;
   char *nom;
   void *malloc(size_t size); 
   
@@ -63,5 +67,8 @@ INTEGER DEFPSS(HDFOPD, hdfopd, INTEGER *idf, char *nomg, STRING_SIZE lg, char *n
     iret = (long) id;
 
   free (nom);
+#else
+  CALL_U2MESS("F", "FERMETUR_3");
+#endif
   return iret;
 }     

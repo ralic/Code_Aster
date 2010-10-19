@@ -19,7 +19,7 @@ C ======================================================================
       IMPLICIT   NONE
       CHARACTER*8    NOMA
 C ======================================================================
-C MODIF MODELISA  DATE 06/07/2009   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 19/10/2010   AUTEUR DELMAS J.DELMAS 
 C
 C     ORILGM  --  LE BUT EST DE REORIENTER, SI C'EST NECESSAIRE,
 C                 LES MAILLES DE PEAU DE GROUPES DE MAILLES
@@ -184,7 +184,7 @@ C          LISTE DES MAILLES 'VOLUMIQUES' (SANS DOUBLON) : ZI(JMASU)
 C
          DO 110 IGR = 1, NG
             GMAT = ZK8(JJJ+IGR-1)
-            CALL JELIRA (JEXNOM(GRMAMA,GMAT), 'LONMAX', NBMAIL, K8B )
+            CALL JELIRA (JEXNOM(GRMAMA,GMAT), 'LONUTI', NBMAIL, K8B )
             CALL JEVEUO (JEXNOM(GRMAMA,GMAT), 'L', JGRO )
             WRITE(IFM,1000) GMAT, NBMAIL
             NORIEN=0
@@ -251,11 +251,11 @@ C          LISTE DES MAILLES 'VOLUMIQUES' (SANS DOUBLON) : ZI(JMAVO)
            NBMAVO=0
            CALL WKVECT('&&ORILGM.GROUP_MA_VOLU','V V I',1,JMAVO)
          ENDIF
-C         
-C          
+C
+C
          DO 210 IGR = 1, NG
             GMAT = ZK8(JJJ+IGR-1)
-            CALL JELIRA (JEXNOM(GRMAMA,GMAT), 'LONMAX', NBMAIL, K8B )
+            CALL JELIRA (JEXNOM(GRMAMA,GMAT), 'LONUTI', NBMAIL, K8B )
             CALL JEVEUO (JEXNOM(GRMAMA,GMAT), 'L', JGRO )
             WRITE(IFM,1000) GMAT,  NBMAIL
             NORIEN=0
@@ -305,7 +305,7 @@ C
          IF ( ORIVEC ) THEN
             DO 310 IGR = 1, NG
                GMAT = ZK8(JJJ+IGR-1)
-               CALL JELIRA (JEXNOM(GRMAMA,GMAT), 'LONMAX', NBMAIL,K8B)
+               CALL JELIRA (JEXNOM(GRMAMA,GMAT), 'LONUTI', NBMAIL,K8B)
                CALL JEVEUO (JEXNOM(GRMAMA,GMAT), 'L', JGRO )
                WRITE(IFM,1000) GMAT,  NBMAIL
                NORIEN=0
@@ -317,7 +317,7 @@ C
          ELSE
             DO 320 IGR = 1, NG
                GMAT = ZK8(JJJ+IGR-1)
-               CALL JELIRA (JEXNOM(GRMAMA,GMAT), 'LONMAX', NBMAIL,K8B)
+               CALL JELIRA (JEXNOM(GRMAMA,GMAT), 'LONUTI', NBMAIL,K8B)
                CALL JEVEUO (JEXNOM(GRMAMA,GMAT), 'L', JGRO )
                WRITE(IFM,1000) GMAT,  NBMAIL
                NORIEN=0
@@ -365,7 +365,7 @@ C
          IF ( ORIVEC ) THEN
             DO 410 IGR = 1, NG
                GMAT = ZK8(JJJ+IGR-1)
-               CALL JELIRA (JEXNOM(GRMAMA,GMAT), 'LONMAX', NBMAIL,K8B)
+               CALL JELIRA (JEXNOM(GRMAMA,GMAT), 'LONUTI', NBMAIL,K8B)
                CALL JEVEUO (JEXNOM(GRMAMA,GMAT), 'L', JGRO )
                WRITE(IFM,1000) GMAT,  NBMAIL
                NORIEN=0
@@ -377,7 +377,7 @@ C
          ELSE
             DO 420 IGR = 1, NG
                GMAT = ZK8(JJJ+IGR-1)
-               CALL JELIRA (JEXNOM(GRMAMA,GMAT), 'LONMAX', NBMAIL,K8B)
+               CALL JELIRA (JEXNOM(GRMAMA,GMAT), 'LONUTI', NBMAIL,K8B)
                CALL JEVEUO (JEXNOM(GRMAMA,GMAT), 'L', JGRO )
                WRITE(IFM,1000) GMAT,  NBMAIL
                NORIEN=0

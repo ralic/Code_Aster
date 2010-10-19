@@ -1,16 +1,16 @@
       SUBROUTINE IRMARE(IFC,NDIM,NNO,COORDO,NBMA,CONNEX,POINT,NOMA,
-     &                  TYPMA,TYPEL,LMOD,TITRE,NBTITR,NBGRN,NOGN,NBGRM,
-     &                  NOGM,NOMAI,NONOE)
+     &                  TYPMA,TYPEL,LMOD,TITRE,NBTITR,NBGRN,NBGRM,
+     &                  NOMAI,NONOE)
       IMPLICIT REAL*8 (A-H,O-Z)
 C
       CHARACTER*80 TITRE(*)
-      CHARACTER*8  NOGN(*),NOGM(*),NOMAI(*),NONOE(*),NOMA
+      CHARACTER*8  NOMAI(*),NONOE(*),NOMA
       REAL*8       COORDO(*)
       INTEGER      CONNEX(*),TYPMA(*),POINT(*),TYPEL(*),IFC,NBTITR
       LOGICAL      LMOD
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF PREPOST  DATE 19/10/2010   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -41,13 +41,11 @@ C       NOMAT  : NOM DU MAILLAGE
 C       TYPMA  : TYPES DES MAILLES
 C       TYPEL  : TYPES DES ELEMENTS
 C       LMOD   : LOGIQUE INDIQUANT SI IMPRESSION MODELE OU MAILLAGE
-C                 .TRUE. MODELE
+C                 .TRUE. : ON N'IMPRIME QUE LES MAILLES DU MODELE
 C       TITRE  : TITRE ASSOCIE AU MAILLAGE
 C       TOUT CE QUI SUIT CONCERNE LES GROUPES:
 C          NBGRN: NOMBRE DE GROUPES DE NOEUDS
-C          NOGN : NOM DES GROUPES DE NOEUDS
 C          NBGRM: NOMBRE DE GROUPES DE MAILLES
-C          NOGM : NOM DES GROUPES DE MAILLES
 C          NOMAI: NOMS DES MAILLES
 C          NONOE: NOMS DES NOEUDS
 C
@@ -69,8 +67,7 @@ C     ----------- COMMUNS NORMALISES  JEVEUX  --------------------------
 C     ------------------------------------------------------------------
 C ---------------------------------------------------------------------
 C
-      CHARACTER*8   NOMM
-      CHARACTER*8 KBID
+      CHARACTER*8   NOMM,NOMGR,KBID
 C
 C     ECRITURE DU TITRE
 C
@@ -81,9 +78,10 @@ C
  10   CONTINUE
       WRITE (IFC,*)      'FINSF'
       WRITE (IFC,*)      '%'
-C
+
+
 C     ECRITURE DES NOEUDS
-C
+C     --------------------
       IF (NDIM.EQ.3)  THEN
          WRITE (IFC,*)   'COOR_3D'
       ELSEIF (NDIM.EQ.2) THEN
@@ -96,9 +94,10 @@ C
       DO 1 INO = 1,NNO
         WRITE (IFC,1001) NONOE(INO),(COORDO(3*(INO-1)+J),J=1,NDIM)
   1   CONTINUE
-C
+
+
 C     ECRITURE DES MAILLES
-C
+C     ---------------------
       ITYPP = 0
       IFIN = 0
       DO 21 IMA = 1,NBMA
@@ -142,43 +141,53 @@ C        -- SI LMOD =.TRUE. ON IMPRIME LE MODELE SINON LE MAILLAGE
         WRITE(IFC,*)  '%'
       ENDIF
 
-C
+
 C     ECRITURE DES GROUPES DE NOEUDS
-C
+C     -------------------------------
       DO 752 IGN = 1,NBGRN
+         CALL JENUNO(JEXNUM(NOMA//'.GROUPENO',IGN),NOMGR)
+         CALL JELIRA(JEXNUM(NOMA//'.GROUPENO',IGN),'LONUTI',NBN,KBID)
          WRITE(IFC,*) 'GROUP_NO'
-         WRITE(IFC,*) NOGN(IGN)
-         CALL JEVEUO(JEXNUM(NOMA//'.GROUPENO',IGN),'L',IAGRNO)
-         CALL JELIRA(JEXNUM(NOMA//'.GROUPENO',IGN),'LONMAX',NBN,KBID)
-         WRITE(IFC,'(7(1X,A8))') (NONOE(ZI(IAGRNO-1+JN)),JN=1,NBN)
+         WRITE(IFC,*) NOMGR
+         IF (NBN.GT.0) THEN
+           CALL JEVEUO(JEXNUM(NOMA//'.GROUPENO',IGN),'L',IAGRNO)
+           WRITE(IFC,'(7(1X,A8))') (NONOE(ZI(IAGRNO-1+JN)),JN=1,NBN)
+         ENDIF
          WRITE(IFC,*) 'FINSF'
          WRITE(IFC,*) '%'
   752 CONTINUE
-C
+
+
 C     ECRITURE DES GROUPES DE MAILLES
-C
+C     --------------------------------
       DO 754 IGM = 1,NBGRM
-         CALL JEVEUO(JEXNUM(NOMA//'.GROUPEMA',IGM),'L',IAGRMA)
-         CALL JELIRA(JEXNUM(NOMA//'.GROUPEMA',IGM),'LONMAX',NBM,KBID)
-         CALL WKVECT('&&IRMARE.NOMAI','V V K8',NBM,JMAI)
-         IPO = 0
-         DO 756 JM=1,NBM
-           IF (LMOD) THEN
-              IF(TYPEL(ZI(IAGRMA-1+JM)).EQ.0) GOTO 756
+         CALL JENUNO(JEXNUM(NOMA//'.GROUPEMA',IGM),NOMGR)
+         CALL JELIRA(JEXNUM(NOMA//'.GROUPEMA',IGM),'LONUTI',NBM,KBID)
+         WRITE(IFC,*) 'GROUP_MA'
+         WRITE(IFC,*) NOMGR
+         IF (NBM.GT.0) THEN
+           CALL JEVEUO(JEXNUM(NOMA//'.GROUPEMA',IGM),'L',IAGRMA)
+           CALL WKVECT('&&IRMARE.NOMAI','V V K8',MAX(NBM,1),JMAI)
+           IPO = 0
+           DO 756 JM=1,NBM
+             IF (LMOD) THEN
+                IF(TYPEL(ZI(IAGRMA-1+JM)).EQ.0) GOTO 756
+             ENDIF
+             ZK8(JMAI-1+IPO+1)= NOMAI(ZI(IAGRMA-1+JM))
+             IPO=IPO+1
+  756      CONTINUE
+           IF (IPO.NE.0) THEN
+             WRITE(IFC,'(7(1X,A8))')  (ZK8(JMAI-1+JM),JM=1,IPO)
            ENDIF
-           ZK8(JMAI-1+IPO+1)= NOMAI(ZI(IAGRMA-1+JM))
-           IPO=IPO+1
-  756    CONTINUE
-         IF (IPO.NE.0) THEN
-           WRITE(IFC,*) 'GROUP_MA'
-           WRITE(IFC,*) NOGM(IGM)
-           WRITE(IFC,'(7(1X,A8))')  (ZK8(JMAI-1+JM),JM=1,IPO)
-           WRITE(IFC,*) 'FINSF'
-           WRITE(IFC,*) '%'
+           CALL JEDETR('&&IRMARE.NOMAI')
          ENDIF
-         CALL JEDETR('&&IRMARE.NOMAI')
+         WRITE(IFC,*) 'FINSF'
+         WRITE(IFC,*) '%'
   754 CONTINUE
+
+
       WRITE(IFC,*) 'FIN'
+
  1001 FORMAT (1X,A8,1X,1PD21.14,1X,1PD21.14,1X,1PD21.14)
  1003 FORMAT (8(1X,A8))
  1004 FORMAT (9X,7(1X,A8))

@@ -1,4 +1,4 @@
-# MODIF  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 19/10/2010   AUTEUR DELMAS J.DELMAS 
 # TITRE REPONSE HARMONIQUE CYLINDRE EN D.P. (QUAD9) AXISYM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -99,22 +99,19 @@ DEP=CREA_RESU(OPERATION='AFFE',
               NOM_CHAM='DEPL',
               AFFE=_F(CHAM_GD=DEPLA,
                       INST=0.,
-                      ),
+                      MODELE=MO,
+                      CHAM_MATER=CM),
                 );
 
 
 CAL1=CALC_ELEM(RESULTAT=DEP,
-              MODELE=MO,
               OPTION='SIGM_ELNO_DEPL',
-              INST=0.,
-              CHAM_MATER=CM    )
+              INST=0.,)
 
 CAL1=CALC_ELEM(reuse=CAL1,
               RESULTAT=DEP,
-              MODELE=MO,
               OPTION='SIEF_ELGA_DEPL',
-              INST=0.,
-              CHAM_MATER=CM      )
+              INST=0.,)
 
 #--------------------------------------------------------------------
 RELEVE_1=POST_RELEVE_T(

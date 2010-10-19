@@ -1,4 +1,4 @@
-# MODIF  DATE 05/10/2010   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 19/10/2010   AUTEUR DESOZA T.DESOZA 
 # TITRE THERMO_METALLO_MECANIQUE COUPLEE EN TRACTION SIMPLE
 # hsnv102a.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -341,8 +341,9 @@ TEST_RESU(RESU=(
            _F(  RESULTAT = U,              NUME_ORDRE = 27,
              PARA = 'INST',             VALE = 9.00000E+01),
            _F(  RESULTAT = U,              NUME_ORDRE = 27,
-             PARA = 'ITER_GLOB',        VALE_I = 0,
-             CRITERE = 'ABSOLU',         PRECISION = 2.E0),
+             PARA = 'ITER_GLOB',        VALE_I = 2,
+             CRITERE = 'ABSOLU',        PRECISION = 0.
+        ),
            )
            )
 

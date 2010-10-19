@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 19/07/2010   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 19/10/2010   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -347,7 +347,7 @@ C                IF (NOMANC.NE.'        ') THEN
                   NOEUMA = MAILLA//'.NOMNOE'
 
                   CALL JEVEUO(JEXNOM(GRNOMA,NOMANC),'L',JGRO)
-                  CALL JELIRA(JEXNOM(GRNOMA,NOMANC),'LONMAX',IDIMAX,K1B)
+                  CALL JELIRA(JEXNOM(GRNOMA,NOMANC),'LONUTI',IDIMAX,K1B)
                   CALL WKVECT(LISNOE,'V V K8',IDIMAX,JLIST)
 
                   INDNOE = 0

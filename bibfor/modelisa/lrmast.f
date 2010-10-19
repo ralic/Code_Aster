@@ -12,7 +12,7 @@ C     OUT
       INTEGER         NBNOEU,NBMAIL,NBCOOR
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 07/09/2010   AUTEUR DESOZA T.DESOZA 
+C MODIF MODELISA  DATE 19/10/2010   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -171,7 +171,7 @@ C
         INTEGER         DIMDBG(NBMDBG)
         INTEGER         NBTTIT(NBMTIT), NBTGRP(NBMGRP)
         INTEGER         NBTMAI(NBMMAX), NBTCOO(NBMCOO)
-        INTEGER         DEBLIG,ULISOP
+        INTEGER         DEBLIG,ULISOP,ISMAEM
         INTEGER         FMTMAI(NBMMAX)
 C
         REAL*8          RV
@@ -181,11 +181,11 @@ C
         CHARACTER*8     MCLTIT(NBMTIT), MCLGRP(NBMGRP)
         CHARACTER*8     MCLMAI(NBMMAX), MCLCOO(NBMCOO)
         CHARACTER*8     MCLDBG(NBMDBG), MCLINT(NBMINT)
-        CHARACTER*8     NOM, NOMG, NOMN
+        CHARACTER*8     NOM, NOMG, NOMN, KBID
         CHARACTER*8     NOM1
         CHARACTER*14    CNL
         CHARACTER*16    CMD,K16NOM
-        CHARACTER*24    GRPNOV, GRPMAV, CONXV
+        CHARACTER*24    GRPNOV, GRPMAV, CONXV,NOMGRP
         CHARACTER*24 VALK(2)
         CHARACTER*24    NOMDBG(50,NBMDBG)
         CHARACTER*80    CV,     DAT
@@ -374,11 +374,11 @@ C
 C -     FIN  DE LECTURE DU FICHIER
 C
         IF(NBNOEU.EQ.0)THEN
-        CALL U2MESS('E','MODELISA5_2')
+        CALL U2MESS('F','MODELISA5_2')
         IER = 1
         ENDIF
         IF(NBMAIL.EQ.0)THEN
-        CALL U2MESS('E','MODELISA5_3')
+        CALL U2MESS('F','MODELISA5_3')
         IER = 1
         ENDIF
 C
@@ -577,7 +577,7 @@ C
                 IF(NUM.EQ.0)THEN
                  VALK(1) = NOM
                  VALK(2) = NOMN
-                 CALL U2MESK('E','MODELISA5_4', 2 ,VALK)
+                 CALL U2MESK('F','MODELISA5_4', 2 ,VALK)
                 IER = 1
                 ENDIF
  550            CONTINUE
@@ -598,17 +598,18 @@ C         REMISE A ZERO DE L'OBJET "&&OP001.NOEUD2" :
 
           CALL JENUNO(JEXNUM(GRPNOV,I),NOMG)
           CALL JEVEUO(JEXNUM(GRPNOV,I),'L',JVG)
-          CALL JELIRA(JEXNUM(GRPNOV,I),'LONMAX',NBNO,K1BID)
+          CALL JELIRA(JEXNUM(GRPNOV,I),'LONUTI',NBNO,K1BID)
 C         --- ON VERIFIE QUE TOUS LES NOEUDS SONT DISTINCTS ---
           NBNO1 = 0
           DO 610 IM1 = 1 , NBNO
              NOM1 = ZK8(JVG+IM1-1)
+             CALL ASSERT(NOM1.NE.' ')
              CALL JENONU(JEXNOM(NOMNOE,NOM1),NUM)
              IF ( NUM .EQ. 0 )THEN
                 IER = IER + 1
                  VALK(1) = NOM1
                  VALK(2) = NOMG
-                 CALL U2MESK('E','MODELISA5_5', 2 ,VALK)
+                 CALL U2MESK('F','MODELISA5_5', 2 ,VALK)
                 GOTO 610
              ENDIF
              ZI(JNOEU2-1+NUM)=ZI(JNOEU2-1+NUM)+1
@@ -622,8 +623,10 @@ C         --- ON VERIFIE QUE TOUS LES NOEUDS SONT DISTINCTS ---
              ZI(JNOEU+NBNO1-1) = NUM
  610      CONTINUE
           CALL JECROC(JEXNOM(GRPNOE,NOMG))
-          CALL JEECRA(JEXNOM(GRPNOE,NOMG),'LONMAX',NBNO1,' ')
+          CALL JEECRA(JEXNOM(GRPNOE,NOMG),'LONMAX',MAX(NBNO1,1),' ')
+          CALL JEECRA(JEXNOM(GRPNOE,NOMG),'LONUTI',NBNO1,' ')
           CALL JEVEUO(JEXNOM(GRPNOE,NOMG),'E',JGG)
+          ZI(JGG)=-ISMAEM()
           DO 650 J = 0 , NBNO1-1
             ZI(JGG+J) = ZI(JNOEU+J)
  650      CONTINUE
@@ -646,8 +649,8 @@ C         REMISE A ZERO DE L'OBJET "&&OP001.MAILLE2" :
  706      CONTINUE
           CALL JENUNO(JEXNUM(GRPMAV,I),NOMG)
           CALL JEVEUO(JEXNUM(GRPMAV,I),'L',JVG)
-          CALL JELIRA(JEXNUM(GRPMAV,I),'LONMAX',NBMA,K1BID)
-C         --- ON VERIFIE QUE TOUTES LES MAILLES SONT DISTINCTS ---
+          CALL JELIRA(JEXNUM(GRPMAV,I),'LONUTI',NBMA,K1BID)
+C         --- ON VERIFIE QUE TOUTES LES MAILLES SONT DISTINCTES ---
           NBMA1 = 0
           DO 710 IM1 = 1 , NBMA
              NOM1 = ZK8(JVG+IM1-1)
@@ -656,7 +659,7 @@ C         --- ON VERIFIE QUE TOUTES LES MAILLES SONT DISTINCTS ---
                 IER = IER + 1
                  VALK(1) = NOM1
                  VALK(2) = NOMG
-                 CALL U2MESK('E','MODELISA5_7', 2 ,VALK)
+                 CALL U2MESK('F','MODELISA5_7', 2 ,VALK)
                 GOTO 710
              ENDIF
              ZI(JMAIL2-1+NUM)=ZI(JMAIL2-1+NUM)+1
@@ -670,8 +673,10 @@ C         --- ON VERIFIE QUE TOUTES LES MAILLES SONT DISTINCTS ---
              ZI(JMAIL+NBMA1-1) = NUM
  710      CONTINUE
           CALL JECROC(JEXNOM(GRPMAI,NOMG))
-          CALL JEECRA(JEXNOM(GRPMAI,NOMG),'LONMAX',NBMA1,' ')
+          CALL JEECRA(JEXNOM(GRPMAI,NOMG),'LONMAX',MAX(NBMA1,1),' ')
+          CALL JEECRA(JEXNOM(GRPMAI,NOMG),'LONUTI',NBMA1,' ')
           CALL JEVEUO(JEXNOM(GRPMAI,NOMG),'E',JGG)
+          ZI(JGG)=-ISMAEM()
           DO 750 J = 0 , NBMA1-1
              ZI(JGG+J) = ZI(JMAIL+J)
  750      CONTINUE
@@ -682,10 +687,7 @@ C         --- ON VERIFIE QUE TOUTES LES MAILLES SONT DISTINCTS ---
 C
 C -     FIN DE TRANSCODAGE
 C
-      IF ( IER .NE. 0 ) THEN
-         CALL U2MESS('F','MODELISA5_9')
-         GOTO 9999
-      ENDIF
+      IF ( IER .NE. 0 )  CALL U2MESS('F','MODELISA5_9')
 C
 C -     DUMP DES OBJETS DEMANDES
 C
@@ -706,6 +708,7 @@ C
 C FERMETURE DU FICHIER
 C
         CALL ULOPEN ( -IFL,' ',' ',' ',' ')
-C
+
+
         CALL JEDEMA ( )
         END

@@ -1,4 +1,4 @@
-# MODIF  DATE 19/10/2009   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 19/10/2010   AUTEUR DELMAS J.DELMAS 
 # TITRE  SYSTEME 2 MASSES - 4 RESSORTS ENCASTRE EN NO1 ET NO5
 # sdld33a.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -147,26 +147,16 @@ MODES=NORM_MODE(reuse =MODES,
 #
 
 MODES=CALC_ELEM(reuse =MODES,
-                MODELE=MODELE,
-                CHAM_MATER=CHAMPMAT,
-                CARA_ELEM=CARA,
                 RESULTAT=MODES,
                 OPTION=('SIEF_ELGA_DEPL','EFGE_ELNO_DEPL',),);
 
 MODES=CALC_NO(reuse =MODES,
               RESULTAT=MODES,
-              OPTION='FORC_NODA',
-              MODELE=MODELE,
-              CHAM_MATER=CHAMPMAT,
-              CARA_ELEM=CARA,);
+              OPTION='FORC_NODA',);
 
 MODES=CALC_NO(reuse =MODES,
               RESULTAT=MODES,
-              OPTION='REAC_NODA',
-              MODELE=MODELE,
-              CHAM_MATER=CHAMPMAT,
-              CARA_ELEM=CARA,);
-
+              OPTION='REAC_NODA',);
 #
 
 TEST_RESU(RESU=(_F(RESULTAT=MODES,
@@ -195,25 +185,16 @@ MODE_STA=MODE_STATIQUE(MATR_RIGI=MATRRIGI,
 #
 
 MODE_STA=CALC_ELEM(reuse =MODE_STA,
-                   MODELE=MODELE,
-                   CHAM_MATER=CHAMPMAT,
-                   CARA_ELEM=CARA,
                    RESULTAT=MODE_STA,
                    OPTION=('SIEF_ELGA_DEPL','EFGE_ELNO_DEPL',),);
 
 MODE_STA=CALC_NO(reuse =MODE_STA,
                  RESULTAT=MODE_STA,
-                 OPTION='FORC_NODA',
-                 MODELE=MODELE,
-                 CHAM_MATER=CHAMPMAT,
-                 CARA_ELEM=CARA,);
+                 OPTION='FORC_NODA',);
 
 MODE_STA=CALC_NO(reuse =MODE_STA,
                  RESULTAT=MODE_STA,
-                 OPTION='REAC_NODA',
-                 MODELE=MODELE,
-                 CHAM_MATER=CHAMPMAT,
-                 CARA_ELEM=CARA,);
+                 OPTION='REAC_NODA',);
 
 #
 

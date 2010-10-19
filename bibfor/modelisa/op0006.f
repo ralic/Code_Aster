@@ -2,7 +2,7 @@
       IMPLICIT   NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
+C MODIF MODELISA  DATE 19/10/2010   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -327,6 +327,7 @@ C         TOUT='OUI' PAR DEFAUT :
           ELSE
             CALL RELIEM(NOMODE,NOMAIL,'NU_MAILLE','AFFE_VARC',IOCC,
      &                  2,MOTCLE,TYPMCL,MESMAI,NBMA)
+            IF (NBMA.EQ.0) GOTO 80
             CALL JEVEUO(MESMAI,'L',JMA)
             CALL NOCART(CART1,3,K8B,'NUM',NBMA,' ',ZI(JMA),' ',NCMP)
             CALL NOCART(CART2,3,K8B,'NUM',NBMA,' ',ZI(JMA),' ',7)

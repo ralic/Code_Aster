@@ -2,7 +2,7 @@
       IMPLICIT      NONE
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 12/10/2010   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ALGORITH  DATE 19/10/2010   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -71,7 +71,7 @@ C
       PARAMETER   (LEEVR=4,LEEVK=3,LESUR=8)
       PARAMETER   (LAEVR=5,LATPR=6,LATPK=4)
 
-      INTEGER      IRET,N,JLIR,I,NOCC
+      INTEGER      IRET,N,JLIR
       INTEGER      JEEVR,JEEVK,JESUR,JAEVR,JATPR,JATPK
       CHARACTER*8  K8BID
 C
@@ -154,7 +154,6 @@ C     ------------------------------------------------------------------
      &              QUEST.EQ.'SUBD_ITER_IGNO'.OR.
      &              QUEST.EQ.'SUBD_ITER_FIN'.OR.
      &              QUEST.EQ.'SUBD_ITER_PLUS'.OR.
-     &              QUEST.EQ.'IOCC_ERREUR'.OR.
      &              QUEST.EQ.'VERIF_EVEN'.OR.
      &              QUEST.EQ.'NB_OCC')
         
@@ -162,25 +161,13 @@ C     ------------------------------------------------------------------
           CALL JELIRA(SD//'.EEVR','LONMAX',IRET,K8BID)
           VALI = IRET /LEEVR
 
-        ELSEIF (QUEST.EQ.'IOCC_ERREUR') THEN
-          CALL ASSERT(GETSET.EQ.'L')
-          CALL JELIRA(SD//'.EEVR','LONMAX',IRET,K8BID)
-          NOCC = IRET /LEEVR
-          CALL JEVEUO(SD//'.EEVR','L',JEEVR)
-          VALI = 0
-          DO 100 I = 1,NOCC
-            N = NINT(ZR(JEEVR-1+LEEVR*(I-1)+1))
-            IF (N.EQ.0) VALI=I
- 100      CONTINUE
-          CALL ASSERT(VALI.GT.0)
-          CALL ASSERT(VALI.LE.NOCC)
-
         ELSEIF (QUEST.EQ.'NOM_EVEN') THEN
           CALL JEVEUO(SD//'.EEVR','L',JEEVR)
           N = NINT(ZR(JEEVR-1+LEEVR*(IOCC-1)+1))
-          IF (N.EQ.0) VALK = 'ERREUR'
-          IF (N.EQ.1) VALK = 'DELTA_GRANDEUR'
-          IF (N.EQ.2) VALK = 'COLLISION'
+          IF (N.EQ.0) VALK = 'DIVERGENCE_ITER'
+          IF (N.EQ.1) VALK = 'DIVERGENCE_ERRE'
+          IF (N.EQ.2) VALK = 'DELTA_GRANDEUR'
+          IF (N.EQ.3) VALK = 'COLLISION'
 
         ELSEIF (QUEST.EQ.'VERIF_EVEN') THEN
           CALL JEVEUO(SD//'.EEVR',GETSET,JEEVR)

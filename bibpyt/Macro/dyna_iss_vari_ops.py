@@ -1,4 +1,4 @@
-#@ MODIF dyna_iss_vari_ops Macro  DATE 11/05/2010   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF dyna_iss_vari_ops Macro  DATE 18/10/2010   AUTEUR NISTOR I.NISTOR 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -86,11 +86,12 @@ def dyna_iss_vari_ops(self, NOM_CMP, PRECISION, INTERF,MATR_COHE, FREQ_INIT,UNIT
    # MAILLAGE
    nom_bamo = v_refa_rigi[0]
    nume_ddl = aster.getvectjev(nom_bamo[0:8] + '           .REFD        ' )[3]
-   nom_mail = aster.getvectjev( nume_ddl[0:19] + '.REFN        ' )[0] 
+   print 'nume ddl=',nume_ddl
+   nom_mail = aster.getvectjev( nume_ddl[0:14] + '.NUME.REFN        ' )[0] 
    maillage = sd_maillage(nom_mail)
    # MODELE, DDLGENE
    nom_ddlgene = v_refa_rigi[1]  
-   nom_modele = aster.getvectjev( nume_ddl[0:19] + '.LILI        ' )[1]   
+   nom_modele = aster.getvectjev( nume_ddl[0:14] + '.NUME.LILI        ' )[1]   
    resultat = self.get_concept(nom_bamo)
    nume_ddlgene = self.get_concept(nom_ddlgene)
    modele = self.get_concept(nom_modele[0:8])

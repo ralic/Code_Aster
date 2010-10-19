@@ -5,7 +5,7 @@
       CHARACTER*8         NOMA
 C.======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 14/01/2008   AUTEUR REZETTE C.REZETTE 
+C MODIF MODELISA  DATE 19/10/2010   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -69,6 +69,8 @@ C
 C.========================= DEBUT DU CODE EXECUTABLE ==================
 C
       CALL JEMARQ ( )
+      IF (NBMAIL.EQ.0) GOTO 9999
+
       CALL INFNIV ( IFM , NIV )
 C
       ZERO = 0
@@ -213,5 +215,6 @@ C
       CALL JEDETR('&&ORNORM.ORI5')
       CALL JEDETR(NOMAVO)
 C
+9999  CONTINUE
       CALL JEDEMA()
       END

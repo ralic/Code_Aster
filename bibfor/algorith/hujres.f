@@ -2,7 +2,7 @@
      &           SIGD, VIND, SIGF, VINF, IRET, ETATF)
       IMPLICIT NONE
 C          CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 09/02/2010   AUTEUR FOUCAULT A.FOUCAULT 
+C MODIF ALGORITH  DATE 18/10/2010   AUTEUR FOUCAULT A.FOUCAULT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -40,7 +40,7 @@ C       ETATF  :  ETAT PLASTIQUE OU ELASTIQUE DU POINT DE GAUSS
 C   ------------------------------------------------------------------
       INTEGER       NDT, NDI, NVI, NDEC, IRET
       INTEGER       I, K, IFM, NIV, JJ, NSUBD, MAJ
-      INTEGER       NVIMAX, IMPO, IDEC, IMAT, INDI(7)
+      INTEGER       NVIMAX, IDEC, IMAT, INDI(7)
       PARAMETER     (NVIMAX=50)
       REAL*8        EPSD(6), DEPS(6),VINS(NVIMAX)
       REAL*8        SIGD(6), SIGF(6), PREDIC(6), PTRAC
@@ -51,7 +51,7 @@ C   ------------------------------------------------------------------
       REAL*8        VINT(NVIMAX), DEUX, R8PREM
       REAL*8        TOL, ASIG, ADSIG, TOLE1, RTRAC
       LOGICAL       CHGMEC, NOCONV, AREDEC, STOPNC, NEGMUL(8)
-      LOGICAL       SUBD, RDCTPS, LOOP
+      LOGICAL       SUBD, RDCTPS, LOOP, IMPOSE
       CHARACTER*8   MOD
       CHARACTER*7   ETATF
       LOGICAL       DEBUG, PLAS, TRY, NODEC, TRACT
@@ -292,6 +292,33 @@ C --- ETAT DE CONTRAINTES ISOTROPE
           IRET = 0
           IF (DEBUG) WRITE(6,'(A)')'HUJRES :: CORRECTION SIGMA'
         ENDIF
+C --- SI PROCHE TRACTION ET NON CONVERGENCE, ON IMPOSE
+C --- ETAT DE CONTRAINTES ISOTROPE
+        IF(NOCONV)THEN 
+          IMPOSE = .FALSE.
+          DO 49 I = 1, NDI
+            CALL HUJPRJ(I, SIGF, VEC, PF, QF)
+            IF ((ABS(PF-PTRAC)/ABS(PREF)).LT.1D-5) THEN
+              IMPOSE = .TRUE.
+              IF (DEBUG) WRITE(6,'(A)')'HUJRES :: SOL LIQUEFIE'
+            ENDIF
+ 49       CONTINUE
+          IF(IMPOSE)THEN
+            NOCONV = .FALSE.
+            DO 47 I = 1, 3
+              SIGF(I)     = -DEUX*RTRAC
+              SIGF(3+I)   = ZERO
+              VIND(23+I)  = ZERO
+              VIND(27+I)  = ZERO
+              VIND(5+4*I) = ZERO
+              VIND(6+4*I) = ZERO
+              VIND(7+4*I) = ZERO
+              VIND(8+4*I) = ZERO
+ 47         CONTINUE
+            CALL LCEQVN(NVI,VIND,VINF)
+            IRET = 0
+            ENDIF
+        ENDIF
 
 C --- PRISE DE DECISION POUR LA SUITE DE L'ALGORITHME
 C --- ECHEC DE L'INTEGRATION
@@ -374,4 +401,5 @@ C End - Boucle sur les redecoupages
 
 2000  FORMAT(A,10(1X,E12.5))
 1001  FORMAT(A,I3)
+      IF(DEBUG)WRITE(6,*)'IRET - HUJRES =',IRET
       END

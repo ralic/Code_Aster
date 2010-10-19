@@ -3,7 +3,7 @@
 C RESPONSABLE PELLET J.PELLET
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
+C MODIF MODELISA  DATE 19/10/2010   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -251,7 +251,7 @@ C       -- RAPPEL : LES MOTS CLES TOUT,GROUP_MA,... S'EXCLUENT
             LMAIL=.TRUE.
             DO 40 I=1,NGM
               CALL JEVEUO(JEXNOM(GRPMAI,ZK8(JDEF+I-1)),'L',JDGM)
-              CALL JELIRA(JEXNOM(GRPMAI,ZK8(JDEF+I-1)),'LONMAX',NBGRMA,
+              CALL JELIRA(JEXNOM(GRPMAI,ZK8(JDEF+I-1)),'LONUTI',NBGRMA,
      &                    K8B)
               DO 30 J=1,NBGRMA
                 NUMAIL=ZI(JDGM+J-1)
@@ -284,7 +284,7 @@ C       -- RAPPEL : LES MOTS CLES TOUT,GROUP_MA,... S'EXCLUENT
             LNOEU=.TRUE.
             DO 70 I=1,NGN
               CALL JEVEUO(JEXNOM(GRPNOE,ZK8(JDEF+I-1)),'L',JDGN)
-              CALL JELIRA(JEXNOM(GRPNOE,ZK8(JDEF+I-1)),'LONMAX',NBGRNO,
+              CALL JELIRA(JEXNOM(GRPNOE,ZK8(JDEF+I-1)),'LONUTI',NBGRNO,
      &                    K8B)
               DO 60 J=1,NBGRNO
                 NUMNOE=ZI(JDGN+J-1)
@@ -581,7 +581,7 @@ C     ---------------------------------------------------
 C     -- POUR LES VOLUMES FINIS, CREATION DU VOISINAGE :
 C     ---------------------------------------------------
       CALL DISMOI('F','EXI_VF',LIGREL,'LIGREL',IBID,EXIVF,IBID)
-C      
+C
 C     -- SCHEMAS NON VF AYANT BESOIN D'UN VOISINAGE :
 C     ---------------------------------------------------
       CALL DISMOI('F','BESOIN_VOISIN',LIGREL,'LIGREL',IBID,BEVOIS,IBID)

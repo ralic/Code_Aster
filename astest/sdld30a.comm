@@ -1,4 +1,4 @@
-# MODIF  DATE 15/06/2010   AUTEUR MACOCCO K.MACOCCO 
+# MODIF  DATE 19/10/2010   AUTEUR DELMAS J.DELMAS 
 # TITRE  SYSTEME 2 MASSES - 3 RESSORTS ENCASTRE EN NO1 ET NO4
 #        SOUMISE A UNE EXCITATION  SPECTRALE MULTIPLE
 # sdld30a.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test R
@@ -142,7 +142,6 @@ MODES=MODE_ITER_SIMULT(MATR_A=RIGIDITE,
 IMPR_RESU(RESU=(_F(RESULTAT=MODES,
                    TOUT_PARA = 'OUI',)))
 #
-
 MODES=NORM_MODE(reuse =MODES,
                 MODE=MODES,
                 NORME='MASS_GENE',);
@@ -150,18 +149,13 @@ MODES=NORM_MODE(reuse =MODES,
 #
 
 MODES=CALC_ELEM(reuse =MODES,
-                MODELE=MODELE,
-                CHAM_MATER=CHAMPMAT,
-                CARA_ELEM=CARA_ELE,
                 RESULTAT=MODES,
                 OPTION=('SIEF_ELGA_DEPL','EFGE_ELNO_DEPL',),);
 
 MODES=CALC_NO(reuse =MODES,
               RESULTAT=MODES,
               TOUT_ORDRE='OUI',
-              OPTION=('REAC_NODA','FORC_NODA',),
-              MODELE=MODELE,
-              CARA_ELEM=CARA_ELE,);
+              OPTION=('REAC_NODA','FORC_NODA',),);
 
 # TESTS DES FREQUENCES PROPRES
 # REF : ANALYTIQUE
@@ -190,18 +184,13 @@ MODE_STA=MODE_STATIQUE(MATR_RIGI=RIGIDITE,
                                     AVEC_CMP='DX',),);
 
 MODE_STA=CALC_ELEM(reuse =MODE_STA,
-                   MODELE=MODELE,
-                   CHAM_MATER=CHAMPMAT,
-                   CARA_ELEM=CARA_ELE,
                    RESULTAT=MODE_STA,
                    OPTION=('SIEF_ELGA_DEPL','EFGE_ELNO_DEPL',),);
 
 MODE_STA=CALC_NO(reuse =MODE_STA,
                  RESULTAT=MODE_STA,
                  TOUT_ORDRE='OUI',
-                 OPTION=('REAC_NODA','FORC_NODA',),
-                 MODELE=MODELE,
-                 CARA_ELEM=CARA_ELE,);
+                 OPTION=('REAC_NODA','FORC_NODA',),);
 
 #-------------------------------------------------
 #-------------------------------------------------
@@ -442,18 +431,13 @@ MODEC=MODE_STATIQUE(MATR_RIGI=RIGIDITE,
                                    AVEC_CMP='DX',),);
 
 MODEC=CALC_ELEM(reuse =MODEC,
-                MODELE=MODELE,
-                CHAM_MATER=CHAMPMAT,
-                CARA_ELEM=CARA_ELE,
                 RESULTAT=MODEC,
                 OPTION=('SIEF_ELGA_DEPL','EFGE_ELNO_DEPL',),);
 
 MODEC=CALC_NO(reuse =MODEC,
               RESULTAT=MODEC,
               TOUT_ORDRE='OUI',
-              OPTION='REAC_NODA',
-              MODELE=MODELE,
-              CARA_ELEM=CARA_ELE,);
+              OPTION='REAC_NODA',);
 
 #------------------------------------------
 # RGQBIC

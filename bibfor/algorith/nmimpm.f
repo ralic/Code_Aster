@@ -1,7 +1,7 @@
       SUBROUTINE NMIMPM(UNITM,PHASE,NATURZ,ARGZ,ARGR,ARGI)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 19/04/2010   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 19/10/2010   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -28,15 +28,15 @@ C
       CHARACTER*(*) ARGZ(*)
       REAL*8        ARGR(*)
       INTEGER       ARGI(*)
-C 
+C
 C ----------------------------------------------------------------------
 C
 C ROUTINE MECA_NON_LINE (AFFICHAGE)
 C
 C GESTION DES IMPRESSIONS DE LA COMMANDE MECA_NON_LINE
-C      
+C
 C ----------------------------------------------------------------------
-C      
+C
 C
 C IN  PHASE  : 'INIT' INITIALISATION
 C              'TITR' AFFICHAGE DE L'EN TETE DES PAS DE TEMPS
@@ -67,7 +67,7 @@ C              'ECHEC_PIL' -> ECHEC DU PILOTAGE
 C              'ECHEC_CON' -> ECHEC DE TRAITEMENT DU CONTACT
 C              'CONT_SING' -> MATRICE DE CONTACT SINGULIERE
 C              'MATR_SING' -> MATRICE DU SYSTEME SINGULIERE
-C              
+C
 C              'BCL_SEUIL' -> NUMERO BOUCLE SEUIL CONTACT ECP
 C              'BCL_GEOME' -> NUMERO BOUCLE GEOMETRIE CONTACT ECP
 C              'BCL_CTACT' -> NUMERO BOUCLE CONTRAINTE ACTIVE
@@ -116,8 +116,8 @@ C
       CHARACTER*9      NATURE
       CHARACTER*1      MARQ
       CHARACTER*4      ARG4
-      CHARACTER*8      ARG8  
-      CHARACTER*18     ARG18  
+      CHARACTER*8      ARG8
+      CHARACTER*18     ARG18
       INTEGER          LONGR,PRECR,LONGI,LONGK,FORCOL
       INTEGER          VALI,TPSNBR
       REAL*8           VALR,R8VIDE
@@ -239,11 +239,11 @@ C
         ELSE
           CALL IMPFOR(UNIBID,R8LONG,R8PREC,ARGR(1),ARG16)
         ENDIF
-C        
+C
         IF (UNITM.EQ.MESS) THEN
           WRITE(UNITM,*)
           CALL IMPFOK(LIGNE,LARGE,UNITM)
-          WRITE(UNITM,*)        
+          WRITE(UNITM,*)
           IF (NATURE(1:4).EQ.'POST') THEN
             CALL IMPFOK('POST-TRAITEMENT: '//ARG18,35,UNITM)
           ELSE
@@ -256,10 +256,10 @@ C
  39           CONTINUE
               CALL IMPFOK(LIGNE,LARGE,UNITM)
             ENDIF
-          ENDIF        
+          ENDIF
         ELSE
           WRITE(UNITM,*)
-          WRITE(UNITM,*)       
+          WRITE(UNITM,*)
           IF (NATURE(1:4).EQ.'POST') THEN
             CALL IMPFOK('POST-TRAITEMENT: '//ARG18,35,UNITM)
           ELSE
@@ -308,14 +308,14 @@ C --- ARCHIVAGE ETAT INITIAL
 
       ELSE IF (NATURE .EQ. 'ARCH_TETE') THEN
         WRITE(UNITM,*)
-        CALL IMPFOK('ARCHIVAGE DES CHAMPS: ',22,UNITM)
+        CALL IMPFOK('ARCHIVAGE DES CHAMPS : ',23,UNITM)
 
 C --- ARCHIVAGE DES CHAMPS
 
       ELSE IF (NATURE .EQ. 'ARCHIVAGE') THEN
 
  1000   FORMAT(1P,3X,'CHAMP STOCKE : ',A16,' INSTANT : ',1PE12.5,
-     &         '  NUMERO D''ORDRE : ',I5)
+     &         3X,' NUMERO D''ORDRE : ',I5)
         IF (UNITM.EQ.MESS) THEN
           ARG16 = ARGZ(1)
           WRITE (UNITM,1000) ARG16,ARGR(1),ARGI(1)
@@ -330,11 +330,11 @@ C --- ARCHIVAGE DES CHAMPS DERIVES (SENSIBILITE)
           ARG8 = ARGZ(1)
           WRITE (UNITM,1001) ARG8
         ENDIF
-        
+
 C --- ARCHIVAGE DES MODES (FLAMBEMENT ET VIBRATOIRES)
 
       ELSE IF (NATURE .EQ. 'ARCH_MODE') THEN
-        ARG8 = ARGZ(1) 
+        ARG8 = ARGZ(1)
         IF (ARG8.EQ.'VIBR') THEN
           ARG18 = 'MODE VIBRATOIRE   '
         ELSEIF(ARG8.EQ.'FLAM') THEN
@@ -342,7 +342,7 @@ C --- ARCHIVAGE DES MODES (FLAMBEMENT ET VIBRATOIRES)
         ELSE
           CALL ASSERT(.FALSE.)
         ENDIF
-        
+
  1002   FORMAT(1P,3X,'ARCHIVAGE - ',A18,' - NUMERO D''ORDRE : ',
      &         I5)
         IF (UNITM.EQ.MESS) THEN
@@ -353,7 +353,7 @@ C --- ARCHIVAGE DES MODES (FLAMBEMENT ET VIBRATOIRES)
 C --- IMPRESSION DES MODES (FLAMBEMENT ET VIBRATOIRES)
 
       ELSE IF (NATURE .EQ. 'IMPR_MODE') THEN
-        ARG8 = ARGZ(1) 
+        ARG8 = ARGZ(1)
         IF (ARG8.EQ.'VIBR') THEN
           ARG18 = 'MODE VIBRATOIRE   '
         ELSEIF(ARG8.EQ.'FLAM') THEN
@@ -365,196 +365,211 @@ C --- IMPRESSION DES MODES (FLAMBEMENT ET VIBRATOIRES)
         IF (UNITM.EQ.MESS) THEN
           WRITE(UNITM,*)
           WRITE (UNITM,1003) ARG18,ARGR(1),ARGI(1)
-        ENDIF        
+        ENDIF
 C
 C --- TEMPS PASSE DANS UN PAS DE TEMPS
-C        
+C
       ELSE IF (NATURE .EQ. 'TPS_PAS') THEN
         IF (UNITM.EQ.MESS) THEN
           WRITE(UNITM,*)
-          
-          CALL IMPFOT(UNITM,ARGR(1),ARG24)
+
+          CALL IMPFOT(ARGR(1),ARG24)
           WRITE(UNITM,660) ARG24
 
 
 
-          CALL IMPFOT(UNITM,ARGR(8),ARG24)
+          CALL IMPFOT(ARGR(8),ARG24)
           WRITE(UNITM,661) ARG24,ARGI(8)
-          
-          CALL IMPFOT(UNITM,ARGR(2),ARG24)
+
+          CALL IMPFOT(ARGR(2),ARG24)
           WRITE(UNITM,667) ARG24
-          
+
           TPSTOT = ARGR(3)
           TPSNBR = ARGI(3)
-          CALL IMPFOT(UNITM,TPSTOT,ARG24)
+          CALL IMPFOT(TPSTOT,ARG24)
           WRITE(UNITM,668) ARG24,TPSNBR
 
           TPSTOT = ARGR(4)
           TPSNBR = ARGI(4)
-          CALL IMPFOT(UNITM,TPSTOT,ARG24)
+          CALL IMPFOT(TPSTOT,ARG24)
           WRITE(UNITM,669) ARG24,TPSNBR
-  
+
           TPSTOT = ARGR(5)
           TPSNBR = ARGI(5)
-          CALL IMPFOT(UNITM,TPSTOT,ARG24)
+          CALL IMPFOT(TPSTOT,ARG24)
           WRITE(UNITM,670) ARG24,TPSNBR
-          
+
           TPSTOT = ARGR(6)
           TPSNBR = ARGI(6)
-          CALL IMPFOT(UNITM,TPSTOT,ARG24)
+          CALL IMPFOT(TPSTOT,ARG24)
           WRITE(UNITM,671) ARG24,TPSNBR
 
           IF (ARGI(7).NE.0) THEN
-            CALL IMPFOT(UNITM,ARGR(7),ARG24)
-           WRITE(UNITM,672) ARG24,ARGI(7)            
-          
-          ENDIF                   
-          
-          CALL IMPFOT(UNITM,ARGR(15),ARG24)
-          WRITE(UNITM,673) ARG24           
-          
-          WRITE(UNITM,*)
-                                    
+            CALL IMPFOT(ARGR(7),ARG24)
+           WRITE(UNITM,672) ARG24,ARGI(7)
+
+          ENDIF
+
+          CALL IMPFOT(ARGR(15),ARG24)
+          WRITE(UNITM,673) ARG24
+
         ENDIF
- 660    FORMAT ('TEMPS CPU CONSOMME DANS CE PAS DE TEMPS : ',(A24))
- 661    FORMAT (1P,3X,'TEMPS PAR ITERATION DE NEWTON  : ',
-     &          (A24),' - NBRE NEWT.: ',I5) 
- 667    FORMAT (1P,3X,'TEMPS ARCHIVAGE                : ',
-     &          (A24))
- 668    FORMAT (1P,3X,'TEMPS CREATION NUMEROTATION    : ',
-     &          (A24),' - NBRE NUME.: ',I5)
- 669    FORMAT (1P,3X,'TEMPS FACTORISATION MATRICE    : ',
-     &          (A24),' - NBRE FACT.: ',I5)
- 670    FORMAT (1P,3X,'TEMPS INTEGRATION COMPORTEMENT : ',
-     &          (A24),' - NBRE INTE.: ',I5)
- 671    FORMAT (1P,3X,'TEMPS RESOLUTION K.U = F       : ',
-     &          (A24),' - NBRE RESO.: ',I5)
- 672    FORMAT (1P,3X,'TEMPS RESOLUTION CONTACT       : ',
-     &          (A24),' - NBRE ITER.: ',I5) 
- 673    FORMAT (1P,3X,'TEMPS AUTRES OPERATIONS        : ',
-     &           (A24))       
-C 
+ 660    FORMAT ('TEMPS CPU CONSOMME DANS CE PAS DE TEMPS : ',(A20))
+ 661    FORMAT (1P,3X,'TEMPS MOYEN PAR ITERATION DE NEWTON  : ',
+     &          (A20),' - NBRE NEWT. : ',I5)
+ 667    FORMAT (1P,3X,'TEMPS ARCHIVAGE                      : ',
+     &          (A20))
+ 668    FORMAT (1P,3X,'TEMPS CREATION NUMEROTATION          : ',
+     &          (A20),' - NBRE NUME. : ',I5)
+ 669    FORMAT (1P,3X,'TEMPS FACTORISATION MATRICE          : ',
+     &          (A20),' - NBRE FACT. : ',I5)
+ 670    FORMAT (1P,3X,'TEMPS INTEGRATION COMPORTEMENT       : ',
+     &          (A20),' - NBRE INTE. : ',I5)
+ 671    FORMAT (1P,3X,'TEMPS RESOLUTION K.U = F             : ',
+     &          (A20),' - NBRE RESO. : ',I5)
+ 672    FORMAT (1P,3X,'TEMPS RESOLUTION CONTACT             : ',
+     &          (A20),' - NBRE ITER. : ',I5)
+ 673    FORMAT (1P,3X,'TEMPS AUTRES OPERATIONS              : ',
+     &          (A20))
+C
 C --- STAT. CONTACT DISCRET SUR UN PAS DE TEMPS
-C 
+C
       ELSE IF (NATURE .EQ. 'STAT_CTCD') THEN
         IF (UNITM.EQ.MESS) THEN
           WRITE(UNITM,*)
           WRITE(UNITM,766)
-          WRITE(UNITM,767) ARGI(1)          
+          WRITE(UNITM,767) ARGI(1)
+          IF (ARGI(2).GT.0) THEN
           WRITE(UNITM,768) ARGI(2)
-          WRITE(UNITM,769) ARGI(3) 
+          ENDIF
+          WRITE(UNITM,769) ARGI(3)
           IF (ARGI(4).GT.0) THEN
-            WRITE(UNITM,770) ARGI(4) 
-          ENDIF 
-          CALL IMPFOT(UNITM,ARGR(1),ARG24)
-          WRITE(UNITM,771) ARG24          
-          CALL IMPFOT(UNITM,ARGR(2),ARG24)
-          WRITE(UNITM,772) ARG24                    
-          WRITE(UNITM,*)
+            WRITE(UNITM,770) ARGI(4)
+          ENDIF
+          CALL IMPFOT(ARGR(1),ARG24)
+          WRITE(UNITM,771) ARG24
+          CALL IMPFOT(ARGR(2),ARG24)
+          WRITE(UNITM,772) ARG24
         ENDIF
- 766    FORMAT ('CONTACT DISCRET:')
- 767    FORMAT (1P,3X,'NOMBRE D''ITERATIONS DE CONTACT        : ',I8)
- 768    FORMAT (1P,3X,'NOMBRE D''ITERATIONS DE REAC. GEOM     : ',I8)
- 769    FORMAT (1P,3X,'NOMBRE FINAL DE LIAISONS DE CONTACT   : ',I8) 
- 770    FORMAT (1P,3X,'NOMBRE FINAL DE LIAISONS DE FROTTEMENT: ',I8)  
- 771    FORMAT (1P,3X,'TEMPS TOTAL APPARIEMENT               : ',
+ 766    FORMAT ('CONTACT DISCRET :')
+ 767    FORMAT (1P,3X,'NOMBRE D''ITERATIONS DE CONTACT         : ',10X,
+     &          I8)
+ 768    FORMAT (1P,3X,'NOMBRE D''ITERATIONS DE REAC. GEOM      : ',10X,
+     &          I8)
+ 769    FORMAT (1P,3X,'NOMBRE FINAL DE LIAISONS DE CONTACT    : ',10X,
+     &          I8)
+ 770    FORMAT (1P,3X,'NOMBRE FINAL DE LIAISONS DE FROTTEMENT : ',10X,
+     &          I8)
+ 771    FORMAT (1P,3X,'TEMPS TOTAL APPARIEMENT                : ',
      &           (A24))
- 772    FORMAT (1P,3X,'TEMPS TOTAL RESOLUTION                : ',
-     &           (A24)) 
-C 
+ 772    FORMAT (1P,3X,'TEMPS TOTAL RESOLUTION                 : ',
+     &           (A24))
+C
 C --- STAT. CONTACT CONTINU SUR UN PAS DE TEMPS
-C 
+C
       ELSE IF (NATURE .EQ. 'STAT_CTCC') THEN
         IF (UNITM.EQ.MESS) THEN
           WRITE(UNITM,*)
           WRITE(UNITM,780)
-          WRITE(UNITM,781) ARGI(1)          
+          WRITE(UNITM,781) ARGI(1)
+          IF (ARGI(2).GT.0) THEN
           WRITE(UNITM,782) ARGI(2)
-          WRITE(UNITM,783) ARGI(3)          
+          ENDIF
+          IF (ARGI(3).GT.0) THEN
+          WRITE(UNITM,783) ARGI(3)
+        ENDIF
+          CALL IMPFOT(ARGR(1),ARG24)
+          WRITE(UNITM,784) ARG24
+          CALL IMPFOT(ARGR(2),ARG24)
+          WRITE(UNITM,785) ARG24
           WRITE(UNITM,*)
         ENDIF
- 780    FORMAT ('CONTACT CONTINU:')
- 781    FORMAT (1P,3X,'NOMBRE D''ITERATIONS DE CONTACT      : ',I8) 
- 782    FORMAT (1P,3X,'NOMBRE D''ITERATIONS DE FROTTEMENT   : ',I8)
- 783    FORMAT (1P,3X,'NOMBRE D''ITERATIONS DE REAC. GEOM   : ',I8) 
+ 780    FORMAT ('CONTACT CONTINU :')
+ 781    FORMAT (1P,3X,'NOMBRE D''ITERATIONS DE CONTACT       : ',10X,I8)
+ 782    FORMAT (1P,3X,'NOMBRE D''ITERATIONS DE FROTTEMENT    : ',10X,I8)
+ 783    FORMAT (1P,3X,'NOMBRE D''ITERATIONS DE REAC. GEOM    : ',10X,I8)
+ 784    FORMAT (1P,3X,'TEMPS TOTAL APPARIEMENT              : ',
+     &           (A24))
+ 785    FORMAT (1P,3X,'TEMPS TOTAL RESOLUTION               : ',
+     &           (A24))
 
 C
 C --- TEMPS PASSE DANS UN PAS DE TEMPS
-C        
+C
       ELSE IF (NATURE .EQ. 'TPS_FIN') THEN
         IF (UNITM.EQ.MESS) THEN
           WRITE(UNITM,*)
           CALL IMPFOK(LIGNE,LARGE,UNITM)
           WRITE(UNITM,800)
-          CALL IMPFOK(LIGNE,LARGE,UNITM) 
-          
-                   
+          CALL IMPFOK(LIGNE,LARGE,UNITM)
+
+
           WRITE(UNITM,801) ARGI(11)
           WRITE(UNITM,802) ARGI(5)
-          IF ((ARGI(6)).NE.0) THEN
-            WRITE(UNITM,803) ARGI(6)          
+          IF (ARGI(6).NE.0) THEN
+            WRITE(UNITM,803) ARGI(6)
           ENDIF
-          IF ((ARGI(7)).NE.0) THEN
-            WRITE(UNITM,804) ARGI(7)          
+          IF (ARGI(7).NE.0) THEN
+            WRITE(UNITM,804) ARGI(7)
           ENDIF
-          IF ((ARGI(9)).NE.0) THEN
-            WRITE(UNITM,805) ARGI(9) 
-            WRITE(UNITM,806) ARGI(8) 
-            IF ((ARGI(10)).NE.0) THEN
-              WRITE(UNITM,807) ARGI(10)             
-            ENDIF                     
-          ENDIF    
-          
-          WRITE(UNITM,808) ARGI(1)    
+          IF (ARGI(9).NE.0) THEN
+            WRITE(UNITM,805) ARGI(9)
+            WRITE(UNITM,806) ARGI(8)
+            IF (ARGI(10).NE.0) THEN
+              WRITE(UNITM,807) ARGI(10)
+            ENDIF
+          ENDIF
+
+          WRITE(UNITM,808) ARGI(1)
           WRITE(UNITM,809) ARGI(2)
           WRITE(UNITM,810) ARGI(3)
-          WRITE(UNITM,811) ARGI(4)  
-          
-          CALL IMPFOT(UNITM,ARGR(1),ARG24)
-          WRITE(UNITM,820) ARG24
-          CALL IMPFOT(UNITM,ARGR(2),ARG24)
-          WRITE(UNITM,821) ARG24
-          CALL IMPFOT(UNITM,ARGR(3),ARG24)
-          WRITE(UNITM,822) ARG24
-          CALL IMPFOT(UNITM,ARGR(4),ARG24)
-          WRITE(UNITM,823) ARG24  
-          
-          IF ((ARGI(9)).NE.0) THEN
-            CALL IMPFOT(UNITM,ARGR(5),ARG24)
-            WRITE(UNITM,825) ARG24 
-            CALL IMPFOT(UNITM,ARGR(6),ARG24)
-            WRITE(UNITM,824) ARG24             
-          ENDIF                                   
+          WRITE(UNITM,811) ARGI(4)
 
-          CALL IMPFOK(LIGNE,LARGE,UNITM)   
+          CALL IMPFOT(ARGR(1),ARG24)
+          WRITE(UNITM,820) ARG24
+          CALL IMPFOT(ARGR(2),ARG24)
+          WRITE(UNITM,821) ARG24
+          CALL IMPFOT(ARGR(3),ARG24)
+          WRITE(UNITM,822) ARG24
+          CALL IMPFOT(ARGR(4),ARG24)
+          WRITE(UNITM,823) ARG24
+
+          IF (ARGI(9).NE.0) THEN
+            CALL IMPFOT(ARGR(5),ARG24)
+            WRITE(UNITM,825) ARG24
+            CALL IMPFOT(ARGR(6),ARG24)
+            WRITE(UNITM,824) ARG24
+          ENDIF
+
+          CALL IMPFOK(LIGNE,LARGE,UNITM)
         ENDIF
  800    FORMAT ('STATISTIQUES SUR LE TRANSITOIRE ')
- 801    FORMAT (1P,3X,'NOMBRE DE PAS DE TEMPS                  : ',I6) 
- 802    FORMAT (1P,3X,'NOMBRE D''ITERATIONS DE NEWTON           : ',I6)
- 803    FORMAT (1P,3X,'NOMBRE D''ITERATIONS DE RECH.LINE        : ',I6)
- 804    FORMAT (1P,3X,'NOMBRE D''ITERATIONS DE FETI             : ',I6) 
- 805    FORMAT (1P,3X,'NOMBRE D''ITERATIONS DE CONTACT (ALGO)   : ',I6)
- 806    FORMAT (1P,3X,'NOMBRE D''ITERATIONS DE CONTACT (GEOM)   : ',I6)
- 807    FORMAT (1P,3X,'NOMBRE D''ITERATIONS DE CONTACT (FROT)   : ',I6)
- 808    FORMAT (1P,3X,'NOMBRE DE CREATION DE NUMEROTATION      : ',I6)
- 809    FORMAT (1P,3X,'NOMBRE DE FACTORISATION DE MATRICE      : ',I6)
- 810    FORMAT (1P,3X,'NOMBRE D''INTEGRATION DE COMPORTEMENT    : ',I6)
- 811    FORMAT (1P,3X,'NOMBRE DE RESOLUTION K.U = F            : ',I6)
-  
- 
- 820    FORMAT (1P,3X,'TEMPS POUR CREATION NUMEROTATION        : ',
+ 801    FORMAT (1P,3X,'NOMBRE DE PAS DE TEMPS                 : ',I8)
+ 802    FORMAT (1P,3X,'NOMBRE D''ITERATIONS DE NEWTON          : ',I8)
+ 803    FORMAT (1P,3X,'NOMBRE D''ITERATIONS DE RECH. LINE      : ',I8)
+ 804    FORMAT (1P,3X,'NOMBRE D''ITERATIONS DE FETI            : ',I8)
+ 805    FORMAT (1P,3X,'NOMBRE D''ITERATIONS DE CONTACT (ALGO.) : ',I8)
+ 806    FORMAT (1P,3X,'NOMBRE D''ITERATIONS DE CONTACT (GEOM.) : ',I8)
+ 807    FORMAT (1P,3X,'NOMBRE D''ITERATIONS DE CONTACT (FROT.) : ',I8)
+ 808    FORMAT (1P,3X,'NOMBRE DE CREATION DE NUMEROTATION     : ',I8)
+ 809    FORMAT (1P,3X,'NOMBRE DE FACTORISATION DE MATRICE     : ',I8)
+ 810    FORMAT (1P,3X,'NOMBRE D''INTEGRATION DE COMPORTEMENT   : ',I8)
+ 811    FORMAT (1P,3X,'NOMBRE DE RESOLUTION K.U = F           : ',I8)
+
+
+ 820    FORMAT (1P,3X,'TEMPS POUR CREATION NUMEROTATION       : ',
      &          (A24))
- 821    FORMAT (1P,3X,'TEMPS POUR FACTORISATION MATRICE        : ',
+ 821    FORMAT (1P,3X,'TEMPS POUR FACTORISATION MATRICE       : ',
      &          (A24))
- 822    FORMAT (1P,3X,'TEMPS POUR INTEGRATION COMPORTEMENT     : ',
-     &          (A24)) 
- 823    FORMAT (1P,3X,'TEMPS POUR RESOLUTION K.U = F           : ',
-     &          (A24)) 
- 824    FORMAT (1P,3X,'TEMPS POUR CONTACT (ALGORITHME)         : ',
+ 822    FORMAT (1P,3X,'TEMPS POUR INTEGRATION COMPORTEMENT    : ',
      &          (A24))
- 825    FORMAT (1P,3X,'TEMPS POUR CONTACT (APPARIEMENT)        : ',
+ 823    FORMAT (1P,3X,'TEMPS POUR RESOLUTION K.U = F          : ',
      &          (A24))
-      
+ 824    FORMAT (1P,3X,'TEMPS POUR CONTACT (ALGORITHME)        : ',
+     &          (A24))
+ 825    FORMAT (1P,3X,'TEMPS POUR CONTACT (APPARIEMENT)       : ',
+     &          (A24))
+
 C
 C --- ERREUR
 C
@@ -623,7 +638,7 @@ C
           WRITE(UNITM,*)
         ENDIF
 C
-C --- PAS DE CRITERES DE CONVERGENCE 
+C --- PAS DE CRITERES DE CONVERGENCE
 C
       ELSE IF (NATURE .EQ. 'CONV_NONE') THEN
         IF (UNITM.EQ.MESS) THEN
@@ -631,7 +646,7 @@ C
           CALL IMPFOK('< > PAS DE CRITERE(S) DE CONVERGENCE           ',
      &                47,UNITM)
           WRITE(UNITM,*)
-        ENDIF 
+        ENDIF
 C
 C --- CONVERGENCE FORCEE PAR ARRET = 'OUI'
 C
@@ -639,25 +654,25 @@ C
         IF (UNITM.EQ.MESS) THEN
           WRITE(UNITM,*)
           CALL IMPFOK('< > CONVERGENCE FORCEE  (ARRET=NON)            ',
-     &                47,UNITM)          
+     &                47,UNITM)
           WRITE(UNITM,*)
-        ENDIF                 
+        ENDIF
 C
 C --- RESI_GLOB_RELA ET CHARGEMENT = 0, CONVERGENCE SUR RESI_GLOB_MAXI
 C
       ELSE IF (NATURE .EQ. 'CONV_MAXI') THEN
         IF (UNITM.EQ.MESS) THEN
           WRITE(UNITM,*)
-          CALL IMPFOR(UNIBID,R8LONG,R8PREC,ARGR(1),ARG16)  
+          CALL IMPFOR(UNIBID,R8LONG,R8PREC,ARGR(1),ARG16)
           CALL IMPFOK('<*> ATTENTION : CONVERGENCE ATTEINTE AVEC',
-     &        41,UNITM)         
+     &        41,UNITM)
           CALL IMPFOK('CRITERE RESI_GLOB_MAXI='//ARG16,
      &        39,UNITM)
           CALL IMPFOK('POUR CAUSE DE CHARGEMENT PRESQUE NUL',36,UNITM)
         ENDIF
 C
 C --- RESI_COMP_RELA ET IT = 1, CONVERGENCE SUR RESI_GLOB_MAXI
-C        
+C
       ELSE IF (NATURE .EQ. 'MAXI_COMP') THEN
         IF (UNITM.EQ.MESS) THEN
           WRITE(UNITM,*)
@@ -722,9 +737,9 @@ C
             POSFIN = POS+ZLAR-1
             CALL IMPSDV(SDIMPR(1:14),
      &                  ICOL,K16BID,VALR,IBID,MARQ)
-     
+
             IF (VALR.EQ.R8VIDE()) THEN
-              
+
               TAMPON(POS:POSFIN) = NOVALU(1:16)
             ELSE
               CALL IMPFOR(UNIBID,LONGR,PRECR,VALR,
@@ -733,7 +748,7 @@ C
                 POSMAR = POS + ZLAR - 2
                 TAMPON(POSMAR:POSMAR) = MARQ(1:1)
               ENDIF
-            ENDIF  
+            ENDIF
           ELSE IF (FORCOL.EQ.3) THEN
             POSFIN = POS+ZLAR-1
             CALL IMPSDV(SDIMPR(1:14),
@@ -747,7 +762,7 @@ C
 
         CALL IMPFOK(TAMPON,LARGE,UNITM)
       ELSE
-        CALL ASSERT(.FALSE.)  
+        CALL ASSERT(.FALSE.)
 
       END IF
 

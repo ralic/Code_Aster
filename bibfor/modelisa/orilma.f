@@ -8,7 +8,7 @@
       REAL*8              PREC
 C.======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 14/10/2008   AUTEUR REZETTE C.REZETTE 
+C MODIF MODELISA  DATE 19/10/2010   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -51,7 +51,7 @@ C                                 SI ORIE_PEAU_2D ("GROUP_MA_SURF")
 C                                   = LISTE DES MAILLES SURFACIQUES
 C                                     UTILES A LA REORIENTATION
 C                                 SINON: MAILVO N'EST PAS UTILISE
-C    NBMAVO         IN    I       NB DE MAILLES DE MAILVO 
+C    NBMAVO         IN    I       NB DE MAILLES DE MAILVO
 C.========================= DEBUT DES DECLARATIONS ====================
 C ----- COMMUNS NORMALISES  JEVEUX
       INTEGER          ZI
@@ -83,6 +83,7 @@ C
 C.========================= DEBUT DU CODE EXECUTABLE ==================
 C
       CALL JEMARQ ( )
+      IF (NBMAIL.EQ.0) GOTO 9999
 C
 C --- INITIALISATIONS :
 C     ---------------
@@ -186,5 +187,6 @@ C
       CALL JEDETR('&&ORILMA.ORI4')
       CALL JEDETR(NOMOB1)
 C
+9999  CONTINUE
       CALL JEDEMA()
       END

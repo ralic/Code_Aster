@@ -2,7 +2,7 @@
      &                  CTCCVG)
 C     
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/10/2010   AUTEUR BOITEAU O.BOITEAU 
+C MODIF ALGORITH  DATE 19/10/2010   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -124,7 +124,7 @@ C          C'EST D/K+1.
 C DELT0  : INCREMENT DE DEPLACEMENT DEPUIS LA DERNIERE ITERATION DE
 C          NEWTON SANS TRAITER LE CONTACT. C'EST C-1.F.
 C ======================================================================
-      CALL INFNIV(IFM,NIV)
+      CALL INFDBG('CONTACT',IFM,NIV) 
       IF (NIV.GE.2) THEN
         WRITE (IFM,*) '<CONTACT> <> ALGO_CONTACT   : GRADIENT '//
      &    'CONJUGUE PROJETE'

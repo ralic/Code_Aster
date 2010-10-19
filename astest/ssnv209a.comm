@@ -1,4 +1,4 @@
-# MODIF  DATE 18/01/2010   AUTEUR MACOCCO K.MACOCCO 
+# MODIF  DATE 19/10/2010   AUTEUR DESOZA T.DESOZA 
 # TITRE INTERFACE EN CONTACT FROTTANT AVEC X-FEM
 # ssnv209a.para = tps_job 120 mem_job 128Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -96,21 +96,15 @@ CHA2 = DEFI_CONTACT(MODELE         = MO,
                     FORMULATION    = 'CONTINUE',
                     FROTTEMENT     = 'COULOMB',
                     ITER_GEOM_MAXI = 3,
-                    ITER_CONT_MAXI = 30,
+                    ITER_CONT_MAXI = 4,
                     ITER_FROT_MAXI = 10,
-                    
                     ZONE =(
                            _F(
                              GROUP_MA_MAIT = 'LBATI',
                              GROUP_MA_ESCL = 'LCONTA',
                              APPARIEMENT   = 'MAIT_ESCL',
-                             ALGO_CONT     = 'STANDARD',
-                             COEF_CONT     = 1.,
-                             ALGO_FROT     = 'STANDARD',
-                             COEF_FROT     = 1.,                             
-                             EXCLUSION_PIV_NUL='OUI',
-                             CONTACT_INIT  = 'OUI',
-                             SEUIL_INIT    = 100.,
+                             CONTACT_INIT  = 'INTERPENETRE',
+                             SEUIL_INIT    = 1.,
                              COULOMB       = 1.0,  
                              ),                            
                           ),

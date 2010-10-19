@@ -4,7 +4,7 @@
       CHARACTER*(*)     NOMCMP,MATRIC,MOTFAC
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 21/06/2010   AUTEUR CORUS M.CORUS 
+C MODIF ALGELINE  DATE 19/10/2010   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -94,7 +94,7 @@ C
       ELSEIF (MOTFAC(1:11).EQ.'MODE_INTERF') THEN
          JIND1 = LBLO
          JIND2 = LACT
-         TEXTE = TEXT1         
+         TEXTE = TEXT1
       ELSE
          CALL U2MESS('F','ALGELINE2_5')
       ENDIF
@@ -143,7 +143,7 @@ C           --- ECLATE LE GROUP_NO EN NOEUD ---
             II = -1
             DO 18 ING = 1,NBGR
                NOMGR = ZK8(IDGN+ING-1)
-               CALL JELIRA(JEXNOM(MAGRNO,NOMGR),'LONMAX',NB,KBID)
+               CALL JELIRA(JEXNOM(MAGRNO,NOMGR),'LONUTI',NB,KBID)
                CALL JEVEUO(JEXNOM(MAGRNO,NOMGR),'L',LDGN)
                DO 20 IN = 0,NB-1
                   CALL JENUNO(JEXNUM(MANONO,ZI(LDGN+IN)),NOMNOE)

@@ -18,7 +18,7 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
       IMPLICIT REAL*8 (A-H,O-Z)
 C-----------------------------------------------------------------------
-C MODIF ALGORITH  DATE 07/09/2010   AUTEUR DESOZA T.DESOZA 
+C MODIF ALGORITH  DATE 19/10/2010   AUTEUR DELMAS J.DELMAS 
 C
 C  BUT:  CREATION D'UN MAILLAGE SQUELETTE POUR LA SOUS-STRUCTURATION
 C        CYCLIQUE
@@ -94,7 +94,7 @@ C
       IF (IOCTOU.LT.0) THEN
         IOCTOU = 1
         CALL DISMOI('F','NB_MA_MAILLA',MAILLA,'MAILLAGE',NBTOUT,K8BID,
-     +              IRET)
+     &              IRET)
       END IF
 C
 C----------NOMBRE DE MAILLES (AVEC REPETITION EVENTUELLE)---------------
@@ -118,7 +118,7 @@ C
     5   CONTINUE
       ELSE
         CALL RECUMA(MAILLA,NBMA,NBGR,ZK8(LTNMMA),ZK8(LTNMGR),NBSKMA,
-     +              ZI(LTNUMA))
+     &              ZI(LTNUMA))
       END IF
 C
 C----------------DESTRUCTION DES OBJETS CADUQUES------------------------
@@ -192,7 +192,7 @@ C
       CALL JEECRA(NOMRES//'.NOMMAI','NOMMAX',NBMATO,K8BID)
 C
       CALL JECREC(NOMRES//'.CONNEX','G V I','NU',
-     +            'CONTIG','VARIABLE',NBMATO)
+     &            'CONTIG','VARIABLE',NBMATO)
       CALL JEECRA(NOMRES//'.CONNEX','LONT',NTACON,K8BID)
 C
       CALL WKVECT(NOMRES//'.TYPMAIL','G V I',NBMATO,IBID)
@@ -203,7 +203,7 @@ C
 C
 C
       CALL JECREC(NOMRES//'.GROUPEMA','G V I','NO',
-     +            'DISPERSE','VARIABLE',NBSECT)
+     &            'DISPERSE','VARIABLE',NBSECT)
 C
 C
       CALL WKVECT(NOMRES//'.COORDO    .REFE','G V K24',4,LDREF)
@@ -265,8 +265,10 @@ C
         CALL CODENT( I , 'D0' , KNUSEC  )
         GRMCOU = 'MASEC'//KNUSEC
         CALL JECROC(JEXNOM(NOMRES//'.GROUPEMA',GRMCOU))
-        CALL JEECRA(JEXNOM(NOMRES//'.GROUPEMA',GRMCOU),'LONMAX',NBSKMA,
-     +              K8BID)
+        CALL JEECRA(JEXNOM(NOMRES//'.GROUPEMA',GRMCOU),'LONMAX',
+     &        MAX(1,NBSKMA), K8BID)
+        CALL JEECRA(JEXNOM(NOMRES//'.GROUPEMA',GRMCOU),'LONUTI',NBSKMA,
+     &              K8BID)
         CALL JEVEUO(JEXNOM(NOMRES//'.GROUPEMA',GRMCOU),'E',LDGRMA)
 C
 C   BOUCLE SUR NOEUD GENERIQUES SECTEUR
@@ -310,11 +312,13 @@ C
           ZI(LDGRMA+J-1) = NTEMNA
 C
           CALL JELIRA(JEXNUM(MAILLA//'.CONNEX',NUMMA),'LONMAX',NBCON,
-     +                K8BID)
+     &                K8BID)
           CALL JECROC(JEXNOM(NOMRES//'.NOMMAI',NOMCOU))
           CALL JENONU(JEXNOM(NOMRES//'.NOMMAI',NOMCOU),IBID)
           CALL JEECRA(JEXNUM(NOMRES//'.CONNEX',IBID),'LONMAX',NBCON,
-     +                K8BID)
+     &                K8BID)
+          CALL JEECRA(JEXNUM(NOMRES//'.CONNEX',IBID),'LONUTI',NBCON,
+     &                K8BID)
           CALL JEVEUO(JEXNUM(MAILLA//'.CONNEX',NUMMA),'L',LLCONA)
 C
           DO 80 K = 1,NBCON

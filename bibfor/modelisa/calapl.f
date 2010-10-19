@@ -4,7 +4,7 @@
       CHARACTER*(*)     LIGRMO
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 23/05/2006   AUTEUR CIBHHPD L.SALMONA 
+C MODIF MODELISA  DATE 19/10/2010   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -125,6 +125,7 @@ C ------ GEOMETRIE DU CONDUCTEUR SECONDAIRE
 C
          CALL RELIEM(LIGRMO, NOMA, 'NU_MAILLE', MOTCLF, IOCC, 2,
      +                                 MOTCL2, TYPMC2, MESMA2, NBMA2 )
+         IF (NBMA2.EQ.0) GOTO 10
 C
 C ------ GEOMETRIE DU CONDUCTEUR PRINCIPAL
 C
@@ -152,6 +153,7 @@ C
          ELSE
             CALL RELIEM(LIGRMO, NOMA, 'NU_MAILLE', MOTCLF, IOCC, 2,
      +                                  MOTCLE, TYPMCL, MESMAI, NBMA )
+            IF (NBMA.EQ.0) GOTO 10
             CALL JEVEUO ( MESMAI, 'L', JMA )
             IF ( NBMA2 .EQ. 0 ) THEN
                CALL WKVECT ( LISTMA, 'G V I', 2*NBMA, JNUMA )

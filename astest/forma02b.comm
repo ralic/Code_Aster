@@ -1,4 +1,4 @@
-# MODIF  DATE 23/03/2010   AUTEUR PROIX J-M.PROIX 
+# MODIF  DATE 19/10/2010   AUTEUR DESOZA T.DESOZA 
 # RESPONSABLE JMBHH01 J.M.PROIX
 # TITRE FORMATION THERMO-PLASTICITE TRAJET DE CHARGEMENT 100 INCREMENTS
 # forma02b.para = tps_job 80 mem_job 64Mo ncpus 1 liste_test S
@@ -52,22 +52,28 @@ IMPR_FONCTION(FORMAT='XMGRACE',
                         FONC_Y=Tau,),
               LEGENDE_X='Sig',
               LEGENDE_Y='Tau',);
-Ninst = 100;
 
 
 L_INST=DEFI_LIST_REEL(DEBUT=0.0,
-                      INTERVALLE=(_F(JUSQU_A=0.81,
-                                     NOMBRE=1,),
-                                  _F(JUSQU_A=1.0,
-                                     NOMBRE=Ninst,),
-                                  _F(JUSQU_A=2.0,
-                                     NOMBRE=Ninst,),
-                                  _F(JUSQU_A=3.0,
-                                     NOMBRE=Ninst,),),);
+                      INTERVALLE=(_F(JUSQU_A=0.81,NOMBRE=1,),
+                                  _F(JUSQU_A=1.00,NOMBRE=1,),
+                                  _F(JUSQU_A=2.00,NOMBRE=1,),
+                                  _F(JUSQU_A=3.00,NOMBRE=1,),),);
+
+# gestion manuelle avec event-driven
+DEFLIST = DEFI_LIST_INST(DEFI_LIST=_F(METHODE   ='MANUEL',
+                                      LIST_INST = L_INST, ),
+                         ECHEC=_F(EVENEMENT='DELTA_GRANDEUR',
+                                  VALE_REF=0.2e-2,
+                                  NOM_CHAM='VARI_ELGA',
+                                  NOM_CMP ='V1',  
+                                  SUBD_NIVEAU=10),
+                         )
+
 
 U=SIMU_POINT_MAT(COMP_INCR=_F(RELATION='VMIS_ISOT_LINE',),
                  MATER=ACIER,
-                 INCREMENT=_F(LIST_INST=L_INST,),
+                 INCREMENT=_F(LIST_INST=DEFLIST),
                  NEWTON=_F(PREDICTION='ELASTIQUE',
                            MATRICE='TANGENTE',
                            REAC_ITER=1,),
@@ -103,7 +109,7 @@ TEST_TABLE(TABLE=U,
                      PRECISION=1e-05,),
            NOM_PARA='EPXX',
            VALE=0.035265,
-           PRECISION=0.01,
+           PRECISION=0.005,
            REFERENCE='ANALYTIQUE',);
 
 TEST_TABLE(TABLE=U,
@@ -112,7 +118,7 @@ TEST_TABLE(TABLE=U,
                      PRECISION=1e-05,),
            NOM_PARA='EPXY',
            VALE=0.020471,
-           PRECISION=0.01,
+           PRECISION=0.015,
            REFERENCE='ANALYTIQUE',);
 
 # C
@@ -123,7 +129,7 @@ TEST_TABLE(TABLE=U,
                      PRECISION=1e-05,),
            NOM_PARA='EPXX',
            VALE=0.0352777,
-           PRECISION=0.01,
+           PRECISION=0.005,
            REFERENCE='AUTRE_ASTER',);
 
 TEST_TABLE(TABLE=U,
@@ -132,7 +138,7 @@ TEST_TABLE(TABLE=U,
                      PRECISION=1e-05,),
            NOM_PARA='EPXY',
            VALE=0.0202462,
-           PRECISION=0.01,
+           PRECISION=0.015,
            REFERENCE='AUTRE_ASTER',);
 
 # pour trace de courbe et comparaison avec modelisation A

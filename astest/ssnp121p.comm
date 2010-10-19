@@ -1,4 +1,4 @@
-# MODIF  DATE 13/07/2010   AUTEUR MASSIN P.MASSIN 
+# MODIF  DATE 19/10/2010   AUTEUR DESOZA T.DESOZA 
 # TITRE CONTACT DE DEUX BLOCS
 # ssnp121p.para = tps_job 30 mem_job 100Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -95,7 +95,7 @@ CHA2 = DEFI_CONTACT(
                GROUP_MA_ESCL = 'AB',
                GROUP_MA_MAIT = 'EF',
                INTEGRATION = 'SIMPSON2',
-               CONTACT_INIT = 'OUI',
+               CONTACT_INIT = 'INTERPENETRE',
                ALGO_CONT='PENALISATION',
                COEF_PENA_CONT=1E+16,
         ),);

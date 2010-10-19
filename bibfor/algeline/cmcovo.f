@@ -6,7 +6,7 @@
       REAL*8       EPAIS
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 08/02/2010   AUTEUR SELLENET N.SELLENET 
+C MODIF ALGELINE  DATE 19/10/2010   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -524,8 +524,10 @@ C  -------------------------------------------------------------
             CALL U2MESG('F', 'ALGELINE4_9',1,VALK,0,0,0,0.D0)
           END IF
           CALL JEVEUO(JEXNUM(GRPMAV,I),'L',JVG)
-          CALL JELIRA(JEXNUM(GRPMAV,I),'LONMAX',NBMAI,K1B)
-          CALL JEECRA(JEXNOM(GRPMAI,NOMG),'LONMAX',NBMAI,' ')
+          CALL JELIRA(JEXNUM(GRPMAV,I),'LONUTI',NBMAI,K1B)
+          CALL JEECRA(JEXNOM(GRPMAI,NOMG),'LONMAX',
+     &        MAX(1,NBMAI),' ')
+          CALL JEECRA(JEXNOM(GRPMAI,NOMG),'LONUTI',NBMAI,' ')
           CALL JEVEUO(JEXNOM(GRPMAI,NOMG),'E',JGG)
           DO 112 J = 0,NBMAI - 1
             ZI(JGG+J) = ZI(JVG+J)
@@ -540,7 +542,9 @@ C
             VALK(1) = NOMG
           CALL U2MESG('F', 'ALGELINE4_9',1,VALK,0,0,0,0.D0)
         END IF
-          CALL JEECRA(JEXNOM(GRPMAI,NOMG),'LONMAX',NBMA,' ')
+          CALL JEECRA(JEXNOM(GRPMAI,NOMG),'LONMAX',
+     &        MAX(1,NBMA),' ')
+          CALL JEECRA(JEXNOM(GRPMAI,NOMG),'LONUTI',NBMA,' ')
           CALL JEVEUO(JEXNOM(GRPMAI,NOMG),'E',JGG)
           DO 120 J = 1,NBMA
             ZI(JGG+J-1) = ZI(JNEWM+J-1)
@@ -556,7 +560,7 @@ C  -------------------------------------------------------------
         DO 240 I = 1,NBGRNO
           CALL JENUNO(JEXNUM(GRPNOV,I),NOMG)
           CALL JEVEUO(JEXNUM(GRPNOV,I),'L',JVG)
-          CALL JELIRA(JEXNUM(GRPNOV,I),'LONMAX',NBNO,K1B)
+          CALL JELIRA(JEXNUM(GRPNOV,I),'LONUTI',NBNO,K1B)
           CALL JEEXIN(JEXNOM(GRPNOE,NOMG),IRET)
           IF (IRET.EQ.0) THEN
             CALL JECROC(JEXNOM(GRPNOE,NOMG))
@@ -564,7 +568,9 @@ C  -------------------------------------------------------------
             VALK(1) = NOMG
             CALL U2MESG('F', 'ALGELINE4_11',1,VALK,0,0,0,0.D0)
           END IF
-          CALL JEECRA(JEXNOM(GRPNOE,NOMG),'LONMAX',NBNO,' ')
+          CALL JEECRA(JEXNOM(GRPNOE,NOMG),'LONMAX',
+     &        MAX(1,NBNO),' ')
+          CALL JEECRA(JEXNOM(GRPNOE,NOMG),'LONUTI',NBNO,' ')
           CALL JEVEUO(JEXNOM(GRPNOE,NOMG),'E',JGG)
           DO 230 J = 0,NBNO - 1
             ZI(JGG+J) = ZI(JVG+J)

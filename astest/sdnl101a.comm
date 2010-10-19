@@ -1,5 +1,5 @@
 
-# MODIF  DATE 05/10/2010   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 19/10/2010   AUTEUR DESOZA T.DESOZA 
 # TITRE PORTEE DE CABLES SOUMISE A DES EFFORTS ELECTRODYNAMIQUES
 # sdnl101a.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -254,9 +254,8 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU,
                 _F(RESULTAT=RESU,
                    NUME_ORDRE=1,
                    PARA='ITER_GLOB',
-                   VALE_I=0,
-                   CRITERE='ABSOLU',
-                   PRECISION=20.0,),
+                   VALE_I=18,
+                   CRITERE = 'ABSOLU',        PRECISION = 0.),
                 ),);
 
 RESU=STAT_NON_LINE(reuse =RESU,
@@ -294,9 +293,9 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU,
                 _F(RESULTAT=RESU,
                    NUME_ORDRE=1,
                    PARA='ITER_GLOB',
-                   VALE_I=0,
+                   VALE_I=1,
                    CRITERE='ABSOLU',
-                   PRECISION=20.0,),
+                   PRECISION=0.0,),
                 ),);
 #--------------------------------------------------------------------
 
@@ -329,9 +328,9 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU,
                 _F(RESULTAT=RESU,
                    NUME_ORDRE=6,
                    PARA='ITER_GLOB',
-                   VALE_I=0,
+                   VALE_I=3,
                    CRITERE='ABSOLU',
-                   PRECISION=4.0,),
+                   PRECISION=0.0,),
                 ),);
 
 
@@ -399,9 +398,9 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU,
                 _F(RESULTAT=RESU,
                    NUME_ORDRE=11,
                    PARA='ITER_GLOB',
-                   VALE_I=0,
+                   VALE_I=3,
                    CRITERE='ABSOLU',
-                   PRECISION=4.0,),
+                   PRECISION=0.0,),
                 ),);
 
 RESU=DYNA_NON_LINE(reuse =RESU,
@@ -436,9 +435,9 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU,
                 _F(RESULTAT=RESU,
                    NUME_ORDRE=16,
                    PARA='ITER_GLOB',
-                   VALE_I=0,
+                   VALE_I=3,
                    CRITERE='ABSOLU',
-                   PRECISION=4.0,),
+                   PRECISION=0.0,),
                 ),);
 
 RESU=DYNA_NON_LINE(reuse =RESU,
@@ -473,9 +472,9 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU,
                 _F(RESULTAT=RESU,
                    NUME_ORDRE=21,
                    PARA='ITER_GLOB',
-                   VALE_I=0,
+                   VALE_I=3,
                    CRITERE='ABSOLU',
-                   PRECISION=4.0,),
+                   PRECISION=0.0,),
                 ),);
 
 RESU=DYNA_NON_LINE(reuse =RESU,
@@ -510,9 +509,9 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU,
                 _F(RESULTAT=RESU,
                    NUME_ORDRE=26,
                    PARA='ITER_GLOB',
-                   VALE_I=0,
+                   VALE_I=3,
                    CRITERE='ABSOLU',
-                   PRECISION=4.0,),
+                   PRECISION=0.0,),
                 ),);
 
 RESU=DYNA_NON_LINE(reuse =RESU,
@@ -544,9 +543,9 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU,
                 _F(RESULTAT=RESU,
                    NUME_ORDRE=31,
                    PARA='ITER_GLOB',
-                   VALE_I=0,
+                   VALE_I=3,
                    CRITERE='ABSOLU',
-                   PRECISION=5.0,),
+                   PRECISION=0.0,),
                 ),);
 
 RESU=DYNA_NON_LINE(reuse =RESU,
@@ -581,9 +580,9 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU,
                 _F(RESULTAT=RESU,
                    NUME_ORDRE=36,
                    PARA='ITER_GLOB',
-                   VALE_I=0,
+                   VALE_I=4,
                    CRITERE='ABSOLU',
-                   PRECISION=4.0,),
+                   PRECISION=0.0,),
                 ),);
 #
 
@@ -619,9 +618,9 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU,
                 _F(RESULTAT=RESU,
                    NUME_ORDRE=41,
                    PARA='ITER_GLOB',
-                   VALE_I=0,
+                   VALE_I=4,
                    CRITERE='ABSOLU',
-                   PRECISION=3.0,),
+                   PRECISION=0.0,),
                 ),);
 #
 

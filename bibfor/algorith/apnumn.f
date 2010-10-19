@@ -1,7 +1,7 @@
       SUBROUTINE APNUMN(SDAPPA,POSNO ,NUMNO )
 C     
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 14/09/2010   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 19/10/2010   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -37,30 +37,11 @@ C IN  SDAPPA : NOM DE LA SD APPARIEMENT
 C IN  POSNO  : POSITION DU NOEUD DANS LES SD
 C OUT NUMNO  : NUMERO ABSOLU DU NOEUD DANS LE MAILLAGE
 C
-C -------------- DEBUT DECLARATIONS NORMALISEES JEVEUX -----------------
-C
-      INTEGER            ZI
-      COMMON  / IVARJE / ZI(1)
-      REAL*8             ZR
-      COMMON  / RVARJE / ZR(1)
-      COMPLEX*16         ZC
-      COMMON  / CVARJE / ZC(1)
-      LOGICAL            ZL
-      COMMON  / LVARJE / ZL(1)
-      CHARACTER*8        ZK8
-      CHARACTER*16                ZK16
-      CHARACTER*24                          ZK24
-      CHARACTER*32                                    ZK32
-      CHARACTER*80                                              ZK80
-      COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
-C
-C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
+C ----------------------------------------------------------------------
 C
       CHARACTER*24 DEFICO
 C
 C ----------------------------------------------------------------------
-C
-      CALL JEMARQ()    
 C
 C --- NOM SD DEFINITION CONTACT
 C
@@ -69,7 +50,5 @@ C
 C --- REPONSE
 C
       CALL CFNUMN(DEFICO,1     ,POSNO ,NUMNO )  
-C
-      CALL JEDEMA()
 C 
       END

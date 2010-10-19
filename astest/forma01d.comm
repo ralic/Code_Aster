@@ -1,4 +1,4 @@
-# MODIF  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 19/10/2010   AUTEUR DELMAS J.DELMAS 
 # TITRE FORMATION DE BASE A L'UTILISATION D'ASTER - TP DYNAMIQUE
 # forma01d.para = tps_job 60 mem_job 160Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -224,23 +224,23 @@ DYNATRAN=REST_GENE_PHYS(RESU_GENE=TRANGEN1,
 #
 # CALCUL DES CONTRAINTES DUES AUX EFFORTS GENERALISES
 
-DYNATRAN=CALC_ELEM(reuse =DYNATRAN,
-                   MODELE=MODELE,
+DYNATRA=CALC_ELEM(MODELE=MODELE,
                    CHAM_MATER=CHMAT,
                    CARA_ELEM=CARA_POU,
                    RESULTAT=DYNATRAN,
                    OPTION='SIPO_ELNO_DEPL',);
+
 #
 # CALCUL DES CONTRAINTES DUES AUX EFFORTS GENERALISES AUX NOEUDS
 
-DYNATRAN=CALC_NO(reuse =DYNATRAN,
-                 RESULTAT=DYNATRAN,
+DYNATRA=CALC_NO(reuse =DYNATRA,
+                 RESULTAT=DYNATRA,
                  OPTION='SIPO_NOEU_DEPL',);
 # INSTANT DES MAX :
 
 EXTR_T=CREA_CHAMP(TYPE_CHAM='ELNO_SIEF_R',
                   OPERATION='EXTR',
-                  RESULTAT=DYNATRAN,
+                  RESULTAT=DYNATRA,
                   NOM_CHAM='SIPO_ELNO_DEPL',
                   TYPE_MAXI='MAXI',
                   TYPE_RESU='INST',
@@ -250,7 +250,7 @@ EXTR_T=CREA_CHAMP(TYPE_CHAM='ELNO_SIEF_R',
 
 EXTR_V=CREA_CHAMP(TYPE_CHAM='ELNO_SIEF_R',
                   OPERATION='EXTR',
-                  RESULTAT=DYNATRAN,
+                  RESULTAT=DYNATRA,
                   NOM_CHAM='SIPO_ELNO_DEPL',
                   TYPE_MAXI='MAXI',
                   TYPE_RESU='VALE',
@@ -265,7 +265,7 @@ IMPR_RESU(MODELE=MODELE,
 
 EXTR_TMI=CREA_CHAMP(TYPE_CHAM='ELNO_SIEF_R',
                     OPERATION='EXTR',
-                    RESULTAT=DYNATRAN,
+                    RESULTAT=DYNATRA,
                     NOM_CHAM='SIPO_ELNO_DEPL',
                     TYPE_MAXI='MINI',
                     TYPE_RESU='INST',
@@ -275,7 +275,7 @@ EXTR_TMI=CREA_CHAMP(TYPE_CHAM='ELNO_SIEF_R',
 
 EXTR_VMI=CREA_CHAMP(TYPE_CHAM='ELNO_SIEF_R',
                     OPERATION='EXTR',
-                    RESULTAT=DYNATRAN,
+                    RESULTAT=DYNATRA,
                     NOM_CHAM='SIPO_ELNO_DEPL',
                     TYPE_MAXI='MINI',
                     TYPE_RESU='VALE',
@@ -288,7 +288,7 @@ IMPR_RESU(MODELE=MODELE,
                 _F(CHAM_GD=EXTR_VMI,),),);
 # TEST_RESU UNIQUEMENT POUR FAIRE TEST
 
-TEST_RESU(RESU=(_F(RESULTAT=DYNATRAN,
+TEST_RESU(RESU=(_F(RESULTAT=DYNATRA,
                    INST=2.0,
                    NOM_CHAM='SIPO_NOEU_DEPL',
                    NOM_CMP='SN',
@@ -297,7 +297,7 @@ TEST_RESU(RESU=(_F(RESULTAT=DYNATRAN,
                    PRECISION=(0.005,1e-06,),
                    REFERENCE='NON_REGRESSION',
                    VERSION='8.04',),
-                _F(RESULTAT=DYNATRAN,
+                _F(RESULTAT=DYNATRA,
                    INST=2.0,
                    NOM_CHAM='SIPO_NOEU_DEPL',
                    NOM_CMP='SVY',
@@ -306,7 +306,7 @@ TEST_RESU(RESU=(_F(RESULTAT=DYNATRAN,
                    PRECISION=(0.05,1e-06,),
                    REFERENCE='NON_REGRESSION',
                    VERSION='8.04',),
-                _F(RESULTAT=DYNATRAN,
+                _F(RESULTAT=DYNATRA,
                    INST=2.0,
                    NOM_CHAM='SIPO_NOEU_DEPL',
                    NOM_CMP='SMFZ',

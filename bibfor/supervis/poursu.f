@@ -1,6 +1,6 @@
-      SUBROUTINE POURSU ( LOT,IPASS,IER ,LONUTI)
+      SUBROUTINE POURSU ( IPASS,IER ,LONUTI)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 29/10/2007   AUTEUR PELLET J.PELLET 
+C MODIF SUPERVIS  DATE 19/10/2010   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,13 +21,12 @@ C ======================================================================
 C BUT :
 C     RETOURNE DANS LONUTI, LE NOMBRE DE CONCEPTS CREES DANS
 C     LA MEMOIRE JEVEUX..
-      LOGICAL   LOT
       INTEGER   IER,LONUTI,IPASS
 C     --- VARIABLES GLOBALES -------------------------------------------
       CHARACTER*4     CBID
 
 C     --- CHARGEMENT DE LA MEMOIRE JEVEUX ------------------------------
-      CALL DEBUT(LOT,IPASS,IER)
+      CALL DEBUT(IPASS,IER)
 
 C     --- RECUPERATION CONCEPTS ----------------------------------------
       CALL JEMARQ()

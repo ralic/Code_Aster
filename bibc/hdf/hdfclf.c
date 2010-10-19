@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF hdfclf hdf  DATE 13/10/2009   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF hdfclf hdf  DATE 19/10/2010   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2003  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -17,6 +17,7 @@
 /*    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.     */
 /* ================================================================== */
 #include "aster.h"
+#include "aster_fort.h"
 /*-----------------------------------------------------------------------------/
 / Fermeture d'un fichier HDF, renvoie une erreur si le fichier existe 
 /  Paramètres :
@@ -24,15 +25,21 @@
 /  Résultats :
 /     0 = fermeture OK, -1 sinon (long)
 /-----------------------------------------------------------------------------*/
+#ifndef _DISABLE_HDF5
 #include <hdf5.h>
+#endif
 
 INTEGER DEFP(HDFCLF, hdfclf, INTEGER *idf)
 {
-hid_t idfic;
-herr_t icode;
+#ifndef _DISABLE_HDF5
+    hid_t idfic;
+    herr_t icode;
 
-idfic=(hid_t) *idf;
-if ((icode = H5Fclose(idfic)) < 0) 
-   return -1 ;
-return 0;
+    idfic=(hid_t) *idf;
+    if ((icode = H5Fclose(idfic)) < 0) 
+        return -1 ;
+#else
+    CALL_U2MESS("F", "FERMETUR_3");
+#endif
+    return 0;
 }     

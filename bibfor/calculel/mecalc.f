@@ -5,7 +5,7 @@
      &                  CHVARI,COMPOR,CHTESE,CHDESE,NOPASE,
      &                  TYPESE,CHACSE,CODRET)
 C ----------------------------------------------------------------------
-C MODIF CALCULEL  DATE 06/09/2010   AUTEUR SELLENET N.SELLENET 
+C MODIF CALCULEL  DATE 19/10/2010   AUTEUR DELMAS J.DELMAS 
 C TOLE CRP_20 CRP_21
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -71,8 +71,8 @@ C PARAMETRES D'APPELS
       PARAMETER (MAXOUT=2)
 
       CHARACTER*1 BASE2
-      CHARACTER*8 POUX,NOMODE,LPAIN(MAXIN),LPAOUT(MAXOUT),NOMGD,CAREL,
-     &            MATERI,MATERS,NOMA
+      CHARACTER*8 POUX,NOMODE,LPAIN(MAXIN),LPAOUT(MAXOUT),CAREL
+      CHARACTER*8 MATERI,MATERS,NOMA
       CHARACTER*16 OPTIO2,VARI
       CHARACTER*19 CANBSP,CANBVA,CHXFEM(3)
       CHARACTER*24 VALK
@@ -240,34 +240,13 @@ CJMP    PUIS LE CHAMPS CHSIG ASSOCIE A LA FOIS A PCONTRR ET PSIEFNOR
           LPAIN(1) = 'PDEFORR'
           LCHIN(1) = CHEPS
           LPAOUT(1) = 'PDEFOEQ'
-        ELSE IF (OPTIO2.EQ.'PROJ_ELEM_SIGN') THEN
+        ELSE IF (OPTIO2.EQ.'PROJ_ELEM_SIGM') THEN
           LPAIN(1) = 'PSIG3D'
           LCHIN(1) = CHSIG
           LPAIN(2) = 'PGEOMER'
           LCHIN(2) = CHGEOM
           NBIN = 2
-          LPAOUT(1) = 'PPJSIGN'
-        ELSE IF (OPTIO2.EQ.'PROJ_ELEM_SIGT') THEN
-          LPAIN(1) = 'PSIG3D'
-          LCHIN(1) = CHSIG
-          LPAIN(2) = 'PGEOMER'
-          LCHIN(2) = CHGEOM
-          NBIN = 2
-          LPAOUT(1) = 'PPJSIGT'
-        ELSE IF (OPTIO2.EQ.'PROJ_ELEM_SIT1') THEN
-          LPAIN(1) = 'PSIG3D'
-          LCHIN(1) = CHSIG
-          LPAIN(2) = 'PGEOMER'
-          LCHIN(2) = CHGEOM
-          NBIN = 2
-          LPAOUT(1) = 'PPJSIT1'
-        ELSE IF (OPTIO2.EQ.'PROJ_ELEM_SIT2') THEN
-          LPAIN(1) = 'PSIG3D'
-          LCHIN(1) = CHSIG
-          LPAIN(2) = 'PGEOMER'
-          LCHIN(2) = CHGEOM
-          NBIN = 2
-          LPAOUT(1) = 'PPJSIT2'
+          LPAOUT(1) = 'PPJSIGM'
         ELSE
           LPAIN(1) = 'PDEPLAR'
           IF (OPTIO2.EQ.'SIGM_ELNO_COQU') THEN
@@ -383,7 +362,6 @@ C ----------------------------------------------------------------------
 C ----------------------------------------------------------------------
             IF (OPTIO2.EQ.'SIGM_ELNO_DEPL' .OR.
      &          OPTIO2.EQ.'SIPO_ELNO_DEPL' .OR.
-     &          OPTIO2.EQ.'SIRE_ELNO_DEPL' .OR.
      &          OPTIO2.EQ.'SIEF_ELGA_DEPL' .OR.
      &          OPTIO2.EQ.'SIGM_ELNO_SIEF' .OR.
      &          OPTIO2.EQ.'SIPO_ELNO_SIEF') THEN

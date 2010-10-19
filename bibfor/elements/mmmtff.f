@@ -4,7 +4,7 @@
      &                  COEFFP,MATRFF)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 27/07/2010   AUTEUR DESOZA T.DESOZA 
+C MODIF ELEMENTS  DATE 19/10/2010   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -67,7 +67,7 @@ C OUT MATRFF : MATRICE ELEMENTAIRE LAGR_F/LAGR_F
 C
 C ----------------------------------------------------------------------
 C
-      INTEGER   I, J, K , L,II,JJ,IDIM,NBCPF,NDEXCL(9)
+      INTEGER   I, J, K , L,II,JJ,IDIM,NBCPF,NDEXCL(10)
       REAL*8    TT(3,3)
       REAL*8    H1(3),H2(3)
       REAL*8    R(2,2)
@@ -133,13 +133,16 @@ C
  24     CONTINUE
 C
       ELSEIF (PHASE.EQ.'EXFR') THEN
-        CALL ISDECO(NDEXFR,NDEXCL,9)
+        CALL ISDECO(NDEXFR,NDEXCL,10)
         DO 121 I = 1,NNL
           IF (NDEXCL(I).EQ.1) THEN
-C           ON ANNULE QUE LE PREMIER LAGRANGE DE FROTTEMENT
-C           DEVELOPPEMENT NON GENERIQUE ENCORE EN 3D
-            II = NBCPF*(I-1)+1
-            MATRFF(II,II) = 1.D0
+            DO 120 L = 1,NBCPF
+              IF ((L.EQ.2).AND.(NDEXCL(10).EQ.0)) THEN
+                GOTO 120
+              ENDIF
+              II = NBCPF*(I-1)+L
+              MATRFF(II,II) = 1.D0
+ 120        CONTINUE
           ENDIF
  121    CONTINUE
       ELSEIF ((PHASE.EQ.'PADH').OR.(PHASE.EQ.'PGLI')) THEN

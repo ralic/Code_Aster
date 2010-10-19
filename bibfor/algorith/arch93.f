@@ -1,11 +1,9 @@
       SUBROUTINE ARCH93(RESU,CONCEP,NUME,RAIDE,NBMODD,NBMODF,NBMODA,
      &                  NBMOAD,NBMODI,NBPSMO)
-      IMPLICIT REAL*8 (A-H,O-Z)
-      INTEGER             IER
-C     ------------------------------------------------------------------
+      IMPLICIT NONE
+C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 21/06/2010   AUTEUR CORUS M.CORUS 
+C MODIF ALGORITH  DATE 19/10/2010   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,12 +20,24 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C     ------------------------------------------------------------------
 C
-C     OPERATEUR :   MODE_STATIQUE
+C     BUT:
+C       OPERATEUR MODE_STATIQUE
 C
-C     ------------------------------------------------------------------
-C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
+C
+C     ARGUMENTS:
+C     ----------
+C
+C      ENTREE :
+C-------------
+C
+C      SORTIE :
+C-------------
+C
+C ......................................................................
+C
+C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
+C
       INTEGER          ZI
       COMMON  /IVARJE/ ZI(1)
       REAL*8           ZR
@@ -37,46 +47,53 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       LOGICAL          ZL
       COMMON  /LVARJE/ ZL(1)
       CHARACTER*8      ZK8
-      CHARACTER*16            ZK16
-      CHARACTER*24                    ZK24
-      CHARACTER*32                            ZK32
-      CHARACTER*80                                    ZK80
+      CHARACTER*16              ZK16
+      CHARACTER*24                        ZK24
+      CHARACTER*32                                  ZK32
+      CHARACTER*80                                            ZK80
       COMMON  /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
-C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
-C     ------------------------------------------------------------------
-      INTEGER      IBID,NEQ,LMATR,LMATM,LDUTI,IFM,NIV,LMOAD,LMODA,
+C
+C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
+C
+      INTEGER      IBID,NEQ,IFM,NIV,LMOAD,LMODA,
      &             VALI,IRET, NBMODI,LDDLD,LMODD,LDDLF,LMODF,LVALE,
      &             NIVE, VERSIO,IND,IE,I,IA,ID,IEQ,IERD,IFIN,IM,IMOAD,
      &             IMODA,IMODE,IMODF,IUL,IUNIFI,JAXE,JPARA,LCOEF,LDDAD,
-     &             LFREQ,LNOM,LNUME,LRES,LTYPE,NA,NBMOAD,NBMODA,
+     &             LFREQ,LNOM,LNUME,LRES,LTYPE,NA,NBMOAD,NBMODA,LADPA,
      &             NBMODD,NBMODE,NBMODF,NBPAR,NBPSMO,NBTROU,NNAXE,
      &             NND
+
       REAL*8       R8B, ZERO, UN, COEF(3),XNORM
-      CHARACTER*8  K8B, RESU, NOMMA, MONAXE, FORMAR
+
+      CHARACTER*8  K8B, RESU,MONAXE, FORMAR, CHMAT, CARAEL
       CHARACTER*8  NOMNOE, NOMCMP, KNUM, NOMDIR
       CHARACTER*8  NOSIMP, NOPASE
       CHARACTER*14 NUME
-      CHARACTER*16 NOMCMD, CONCEP, ACCES(3)
-      CHARACTER*19 CHAMNO,RAIDE,MATFAC,MASSE,AMOR,NUMEDD,MATPRE
-      CHARACTER*19 SOLVEU,RESU19
+      CHARACTER*16 CONCEP,ACCES(3)
+      CHARACTER*19 CHAMNO,RAIDE
       CHARACTER*24 VALE,VALK,MOCB,MOATTA,MOAIMP,MOAUNI,MOINTF,
-     &             DDLCB,DDLMN,VEFREQ,DDLAC
-      LOGICAL      DEPLIM, FORCIM, ACCUNI, ACCDDL, DIRECT
-      LOGICAL      LMOD,LBID
+     &             DDLCB,DDLMN,VEFREQ,DDLAC,MODELE
+      CHARACTER*32 K32BID
+
       COMPLEX*16   C16B
-C     ------------------------------------------------------------------
+
+      LOGICAL      DIRECT
+      LOGICAL      LMOD,LBID
+C
+C-----------------------------------------------------------------------
+C
       CALL JEMARQ()
-      
-C               123456789012345678901234
-      DDLCB=   '&&OP0093.DDL_STAT_DEPL'
-      MOCB= '&&OP0093.MODE_STAT_DEPL'
-      DDLMN=   '&&OP0093.DDL_STAT_FORC'
-      MOATTA=  '&&OP0093.MODE_STAT_FORC'
+
+C             123456789012345678901234
+      DDLCB= '&&OP0093.DDL_STAT_DEPL'
+      MOCB=  '&&OP0093.MODE_STAT_DEPL'
+      DDLMN= '&&OP0093.DDL_STAT_FORC'
+      MOATTA='&&OP0093.MODE_STAT_FORC'
       MOAUNI='&&OP0093.MODE_STAT_ACCU'
       MOAIMP='&&OP0093.MODE_ACCE_IMPO'
-      DDLAC=   '&&OP0093.DDL_ACCE_IMPO'
-      MOINTF=  '&&MOIN93.MODE_INTF_DEPL'
-      VEFREQ= '&&MOIN93.FREQ_INTF_DEPL'
+      DDLAC= '&&OP0093.DDL_ACCE_IMPO'
+      MOINTF='&&MOIN93.MODE_INTF_DEPL'
+      VEFREQ='&&MOIN93.FREQ_INTF_DEPL'
 
 C---------------------------C
 C--                       --C
@@ -85,10 +102,14 @@ C--                       --C
 C---------------------------C
 
       NBMODE = NBMODD + NBMODF + NBMODA + NBMOAD + NBMODI
-      
+
       CALL DISMOI('F','NB_EQUA',RAIDE,'MATR_ASSE',NEQ,K8B,IERD)
+      CALL DISMOI('F','NOM_MODELE',RAIDE,'MATR_ASSE',IBID,MODELE,IERD)
+      CALL DISMOI('F','CHAM_MATER',RAIDE,'MATR_ASSE',IBID,CHMAT,IERD)
+      CALL DISMOI('F','CARA_ELEM',RAIDE,'MATR_ASSE',IBID,CARAEL,IERD)
+
       CALL RSCRSD('G',RESU,CONCEP,NBMODE)
-      
+
       IMODE = 0
       NIVE=3
       UN=1.D0
@@ -96,11 +117,11 @@ C---------------------------C
       CALL INFNIV(IFM,NIV)
 C--
 C-- MODES DE CONTRAINTE
-C--      
+C--
       IF ( NBMODD .GT. 0 ) THEN
          CALL JEVEUO(DDLCB,'L',LDDLD)
          CALL JEVEUO(MOCB,'L',LMODD)
-         
+
          DO 50 IEQ = 1,NEQ
             IF (ZI(LDDLD+IEQ-1).EQ.1) THEN
                IMODE = IMODE + 1
@@ -132,12 +153,18 @@ C              --- LES PARAMETRES ---
                ZK16(LTYPE) = 'DEPL_IMPO'
                CALL RSADPA(RESU,'E',1,'TYPE_MODE',IMODE,0,LTYPE,K8B)
                ZK16(LTYPE) = 'MODE_STA'
+               CALL RSADPA(RESU,'E',1,'MODELE',IMODE,0,LADPA,K8B)
+               ZK8(LADPA) = MODELE(1:8)
+               CALL RSADPA(RESU,'E',1,'CHAMPMAT',IMODE,0,LADPA,K8B)
+               ZK8(LADPA) = CHMAT
+               CALL RSADPA(RESU,'E',1,'CARAELEM',IMODE,0,LADPA,K8B)
+               ZK8(LADPA) = CARAEL
             ENDIF
  50      CONTINUE
       ENDIF
 C--
 C-- MODES D'ATTACHE
-C--            
+C--
       IF ( NBMODF .GT. 0 ) THEN
          IMODF = 0
          CALL JEVEUO(DDLMN,'L',LDDLF)
@@ -176,12 +203,18 @@ C              --- LES PARAMETRES ---
                ZK16(LTYPE) = 'FORC_IMPO'
                CALL RSADPA(RESU,'E',1,'TYPE_MODE',IMODE,0,LTYPE,K8B)
                ZK16(LTYPE) = 'MODE_STA'
+               CALL RSADPA(RESU,'E',1,'MODELE',IMODE,0,LADPA,K8B)
+               ZK8(LADPA) = MODELE(1:8)
+               CALL RSADPA(RESU,'E',1,'CHAMPMAT',IMODE,0,LADPA,K8B)
+               ZK8(LADPA) = CHMAT
+               CALL RSADPA(RESU,'E',1,'CARAELEM',IMODE,0,LADPA,K8B)
+               ZK8(LADPA) = CARAEL
             ENDIF
  60      CONTINUE
       ENDIF
 C--
 C-- MODES A ACCELERATION UNIFORME
-C--            
+C--
       IF ( NBMOAD .GT. 0 ) THEN
          IMOAD = 0
          CALL JEVEUO(MOAIMP,'L',LMOAD)
@@ -220,14 +253,20 @@ C              --- LES PARAMETRES ---
                ZK16(LTYPE) = 'ACCE_DDL_IMPO'
                CALL RSADPA(RESU,'E',1,'TYPE_MODE',IMODE,0,LTYPE,K8B)
                ZK16(LTYPE) = 'MODE_STA'
+               CALL RSADPA(RESU,'E',1,'MODELE',IMODE,0,LADPA,K8B)
+               ZK8(LADPA) = MODELE(1:8)
+               CALL RSADPA(RESU,'E',1,'CHAMPMAT',IMODE,0,LADPA,K8B)
+               ZK8(LADPA) = CHMAT
+               CALL RSADPA(RESU,'E',1,'CARAELEM',IMODE,0,LADPA,K8B)
+               ZK8(LADPA) = CARAEL
             ENDIF
  66      CONTINUE
       ENDIF
 C--
 C-- MODES A ACCELERATION IMPOSEE
-C--            
+C--
       IF ( NBMODA .GT. 0 ) THEN
-         
+
          CALL JEVEUO(MOAUNI,'L',LMODA)
          IMODA = 0
          DO 70 I = 1,NBPSMO
@@ -337,16 +376,22 @@ C              --- LES PARAMETRES ---
                ZK16(LTYPE) = 'ACCE_IMPO'
                CALL RSADPA(RESU,'E',1,'TYPE_MODE',IMODE,0,LTYPE,K8B)
                ZK16(LTYPE) = 'MODE_STA'
+               CALL RSADPA(RESU,'E',1,'MODELE',IMODE,0,LADPA,K8B)
+               ZK8(LADPA) = MODELE(1:8)
+               CALL RSADPA(RESU,'E',1,'CHAMPMAT',IMODE,0,LADPA,K8B)
+               ZK8(LADPA) = CHMAT
+               CALL RSADPA(RESU,'E',1,'CARAELEM',IMODE,0,LADPA,K8B)
+               ZK8(LADPA) = CARAEL
  74         CONTINUE
  70      CONTINUE
       ENDIF
 C--
 C-- MODES D'INTERFACE
-C--      
+C--
       IF ( NBMODI .GT. 0 ) THEN
          CALL JEVEUO(MOINTF,'L',LMODD)
          CALL JEVEUO(VEFREQ,'L',LFREQ)
-         
+
          DO 90 IEQ = 1,NBMODI
                IMODE = IMODE + 1
 C
@@ -362,7 +407,7 @@ C              --- LE VECTEUR ---
                VALE(1:19)  = CHAMNO
                VALE(20:24) = '.VALE'
                CALL JEVEUO(VALE,'E',LVALE)
-               IND = NEQ*(IMODE-1)               
+               IND = NEQ*(IMODE-1)
                DO 100 IE = 0, NEQ-1
                   ZR(LVALE+IE) = ZR(LMODD+IND+IE)
  100           CONTINUE
@@ -381,6 +426,13 @@ C              --- LES PARAMETRES ---
                ZK16(LTYPE) = 'MODE_INT'
                CALL RSADPA(RESU,'E',1,'FREQ',IMODE,0,LTYPE,K8B)
                ZR(LTYPE) = ZR(LFREQ+IEQ-1)
+               CALL RSADPA(RESU,'E',1,'MODELE',IMODE,0,LADPA,K8B)
+               ZK8(LADPA) = MODELE(1:8)
+               CALL RSADPA(RESU,'E',1,'CHAMPMAT',IMODE,0,LADPA,K8B)
+               ZK8(LADPA) = CHMAT
+               CALL RSADPA(RESU,'E',1,'CARAELEM',IMODE,0,LADPA,K8B)
+               ZK8(LADPA) = CARAEL
+
  90      CONTINUE
       ENDIF
 C
@@ -407,7 +459,7 @@ C     --- ECRITURE EVENTUELLE DES VALEURS ET DES VECTEURS PROPRES ---
          K8B = ' '
          IUL = IUNIFI( 'MESSAGE' )
          CALL IRECRI ( RESU,NOSIMP,NOPASE, 'RESULTAT',IUL, K8B,
-     &                 LBID,IBID, K8B,' ', NBPAR,
+     &                 LBID,IBID, K8B,IBID,K32BID,' ', NBPAR,
      &                 ZK16(JPARA), NBMODE, ZI(LRES), .TRUE., K8B,
      &                 IBID, K8B, 'T', K8B,.FALSE., IBID, IBID, IBID,
      &                 IBID, IBID, K8B, .FALSE., R8B, .FALSE., R8B,

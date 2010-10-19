@@ -1,4 +1,4 @@
-# MODIF  DATE 04/10/2010   AUTEUR GNICOLAS G.NICOLAS 
+# MODIF  DATE 18/10/2010   AUTEUR GNICOLAS G.NICOLAS 
 # TITRE COUPLAGE ASTER_HOMARD - CAS BIDIMENSIONNEL EN TRANSITOIRE
 # zzzz121c.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -426,7 +426,7 @@ MACR_ADAP_MAIL(INFO=1,
                NOM_CHAM = 'SIEF_ELGA_DEPL',
                NOM_CMP = 'SIZZ' ,
                NUME_ORDRE = 3,
-               TYPE_OPER_INDICA = 'SAUT',
+               USAGE_CHAMP = 'SAUT',
                CRIT_RAFF_PE = 0.02,
                CRIT_DERA_PE = 0.60,
                QUALITE='OUI'

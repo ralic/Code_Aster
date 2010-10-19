@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGELINE  DATE 19/10/2010   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -118,7 +118,7 @@ C        --- ECLATE LE GROUP_NO EN NOEUD ---
          MANONO = MAILLA//'.NOMNOE'
          II = -1
          DO 20 I = 1,NBGR
-            CALL JELIRA(JEXNOM(MAGRNO,ZK8(IDGN+I-1)),'LONMAX',NB,KBID)
+            CALL JELIRA(JEXNOM(MAGRNO,ZK8(IDGN+I-1)),'LONUTI',NB,KBID)
             CALL JEVEUO(JEXNOM(MAGRNO,ZK8(IDGN+I-1)),'L',LDGN)
             DO 22 IN = 0,NB-1
                CALL JENUNO(JEXNUM(MANONO,ZI(LDGN+IN)),NOMNOE)

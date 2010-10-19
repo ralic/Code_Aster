@@ -3,7 +3,7 @@
       CHARACTER*8  NOMRES
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 11/10/2010   AUTEUR DELMAS J.DELMAS 
+C MODIF ALGORITH  DATE 18/10/2010   AUTEUR NISTOR I.NISTOR 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -91,7 +91,7 @@ C
         CALL GETVID('CLASSIQUE','INTERF_DYNA',1,1,1,INTF,IBID)
         CALL DISMOI('F','NOM_NUME_DDL',INTF,'INTERF_DYNA',
      &              IBID,NUMDDL,IRET)
-        NUMDDL(15:19)='.NUME'
+C        NUMDDL(15:19)='.NUME'
         CALL GETVID('CLASSIQUE','MODE_MECA',1,1,0,K8BID,NBMOME)
         NBMOME = -NBMOME
         CALL WKVECT('&&'//NOMPRO//'.MODE_MECA','V V K8',NBMOME,LTMOME)
@@ -103,8 +103,8 @@ C
           AMOR=ZK24(LLRES+2)
           CALL DISMOI('F','NOM_NUME_DDL',RAID,'MATR_ASSE',IBID,
      &                 NUMBIS,IRET)
-          NUMBIS(15:19)='.NUME'
-          IF(NUMBIS(1:19).NE.NUMDDL(1:19)) THEN
+C          NUMBIS(15:19)='.NUME'
+          IF(NUMBIS(1:14).NE.NUMDDL(1:14)) THEN
             RESUL = ZK8(LTMOME-1+I)
             VALK (1) = RESUL
             VALK (2) = NUMBIS(1:8)
@@ -114,6 +114,7 @@ C
           ENDIF
 10      CONTINUE
         CALL JEDETR('&&'//NOMPRO//'.MODE_MECA')
+
       ENDIF
 C
 C --- CAS RITZ
@@ -130,7 +131,7 @@ C
 C         si on a plus d'un mode_meca en entree, preciser NUME_REF
           CALL U2MESG('E', 'ALGORITH17_8',0,' ',0,0,0,0.D0)
         ENDIF
-        NUMDDL(15:19)='.NUME'
+C        NUMDDL(15:19)='.NUME'
         CALL GETVID('  ','INTERF_DYNA',1,1,0,INTF,IOCI)
         IF(IOCI.LT.0) THEN
           CALL GETVID('  ','INTERF_DYNA',1,1,1,INTF,IOCI)
@@ -175,7 +176,7 @@ C
          ZK24(LDREF) = RAID
          ZK24(LDREF+1) = MASS
          ZK24(LDREF+2) = AMOR
-         ZK24(LDREF+3) = NUMDDL
+         ZK24(LDREF+3) = NUMDDL(1:14)
          ZK24(LDREF+4)   = INTF
          ZK24(LDREF+5) = '  '
          IF (IOC1.GT.0) THEN

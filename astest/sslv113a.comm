@@ -1,4 +1,4 @@
-# MODIF  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 19/10/2010   AUTEUR DELMAS J.DELMAS 
 # TITRE TEST DE L'ESTIMATEUR EN RESIDU SUR UN CYLINDRE CREUX
 # sslv113a.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -86,50 +86,50 @@ RESU=MECA_STATIQUE(         MODELE=MO,
 RESU=CALC_ELEM(     reuse=RESU,
 
                             TOUT_ORDRE='OUI',
-                                OPTION=( 'SIRE_ELNO_DEPL',
+                                OPTION=( 'SIGM_ELNO_DEPL',
                                          'ERRE_ELEM_SIGM',
                                         ),
                               RESULTAT=RESU
                         )
 
 TEST_RESU(RESU=(
-        _F(  RESULTAT = RESU,  NUME_ORDRE = 1, NOM_CHAM = 'SIRE_ELNO_DEPL',
+        _F(  RESULTAT = RESU,  NUME_ORDRE = 1, NOM_CHAM = 'SIGM_ELNO_DEPL',
           MAILLE = 'M1',     POINT = 1, NOM_CMP = 'SIXX',
           VALE = F1(1.) ,      PRECISION = 0.07),
-        _F(  RESULTAT = RESU,  NUME_ORDRE = 1, NOM_CHAM = 'SIRE_ELNO_DEPL',
+        _F(  RESULTAT = RESU,  NUME_ORDRE = 1, NOM_CHAM = 'SIGM_ELNO_DEPL',
           MAILLE = 'M1',     POINT = 1, NOM_CMP = 'SIYY',
           VALE = 0.19518,              PRECISION = 0.15),
-        _F(  RESULTAT = RESU,  NUME_ORDRE = 1, NOM_CHAM = 'SIRE_ELNO_DEPL',
+        _F(  RESULTAT = RESU,  NUME_ORDRE = 1, NOM_CHAM = 'SIGM_ELNO_DEPL',
           MAILLE = 'M1',     POINT = 1, NOM_CMP = 'SIZZ',
           VALE = F2(1.) ,       PRECISION = 0.02),
 
-        _F(  RESULTAT = RESU,  NUME_ORDRE = 1, NOM_CHAM = 'SIRE_ELNO_DEPL',
+        _F(  RESULTAT = RESU,  NUME_ORDRE = 1, NOM_CHAM = 'SIGM_ELNO_DEPL',
           MAILLE = 'M2',     POINT = 2, NOM_CMP = 'SIXX',
           VALE = F1(1.5) ,      PRECISION = 0.02),
-        _F(  RESULTAT = RESU,  NUME_ORDRE = 1, NOM_CHAM = 'SIRE_ELNO_DEPL',
+        _F(  RESULTAT = RESU,  NUME_ORDRE = 1, NOM_CHAM = 'SIGM_ELNO_DEPL',
           MAILLE = 'M2',     POINT = 2, NOM_CMP = 'SIYY',
           VALE = 0.19518,              PRECISION = 0.06),
-        _F(  RESULTAT = RESU,  NUME_ORDRE = 1, NOM_CHAM = 'SIRE_ELNO_DEPL',
+        _F(  RESULTAT = RESU,  NUME_ORDRE = 1, NOM_CHAM = 'SIGM_ELNO_DEPL',
           MAILLE = 'M2',     POINT = 2, NOM_CMP = 'SIZZ',
           VALE = F2(1.5) ,      PRECISION = 0.02),
 
-        _F(  RESULTAT = RESU,  NUME_ORDRE = 1, NOM_CHAM = 'SIRE_ELNO_DEPL',
+        _F(  RESULTAT = RESU,  NUME_ORDRE = 1, NOM_CHAM = 'SIGM_ELNO_DEPL',
           MAILLE = 'M3',     POINT = 2, NOM_CMP = 'SIXX',
           VALE = F3(1.5) ,      PRECISION = 0.02),
-        _F(  RESULTAT = RESU,  NUME_ORDRE = 1, NOM_CHAM = 'SIRE_ELNO_DEPL',
+        _F(  RESULTAT = RESU,  NUME_ORDRE = 1, NOM_CHAM = 'SIGM_ELNO_DEPL',
           MAILLE = 'M3',     POINT = 2, NOM_CMP = 'SIYY',
           VALE = -0.32135,             PRECISION = 0.02),
-        _F(  RESULTAT = RESU,  NUME_ORDRE = 1, NOM_CHAM = 'SIRE_ELNO_DEPL',
+        _F(  RESULTAT = RESU,  NUME_ORDRE = 1, NOM_CHAM = 'SIGM_ELNO_DEPL',
           MAILLE = 'M3',     POINT = 2, NOM_CMP = 'SIZZ',
           VALE = F4(1.5),      PRECISION = 0.02),
 
-        _F(  RESULTAT = RESU,  NUME_ORDRE = 1, NOM_CHAM = 'SIRE_ELNO_DEPL',
+        _F(  RESULTAT = RESU,  NUME_ORDRE = 1, NOM_CHAM = 'SIGM_ELNO_DEPL',
           MAILLE = 'M4',     POINT = 3, NOM_CMP = 'SIXX',
           VALE = F3(2.) ,       PRECISION = 0.02),
-        _F(  RESULTAT = RESU,  NUME_ORDRE = 1, NOM_CHAM = 'SIRE_ELNO_DEPL',
+        _F(  RESULTAT = RESU,  NUME_ORDRE = 1, NOM_CHAM = 'SIGM_ELNO_DEPL',
           MAILLE = 'M4',     POINT = 3, NOM_CMP = 'SIYY',
           VALE = -0.32135,             PRECISION = 0.02),
-        _F(  RESULTAT = RESU,  NUME_ORDRE = 1, NOM_CHAM = 'SIRE_ELNO_DEPL',
+        _F(  RESULTAT = RESU,  NUME_ORDRE = 1, NOM_CHAM = 'SIGM_ELNO_DEPL',
           MAILLE = 'M4',     POINT = 3, NOM_CMP = 'SIZZ',
           VALE = F4(2.),       PRECISION = 0.02))
            )

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 04/10/2010   AUTEUR GREFFET N.GREFFET 
+#& MODIF COMMANDE  DATE 19/10/2010   AUTEUR DESOZA T.DESOZA 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -243,7 +243,7 @@ DYNA_NON_LINE=OPER(nom="DYNA_NON_LINE",op= 70,sd_prod=evol_noli,reentrant='f',
                                       "MATR_ASSE",
                                       "ITER_DEBO",
                                       "CTCD_ITER","CTCD_GEOM","CTCD_NOEU",
-                                      "CTCC_GEOM","CTCC_FROT","CTCC_CONT",
+                                      "BOUC_GEOM","BOUC_FROT","BOUC_CONT","CTCC_BOUC","CTCC_NOEU",
                                       "SUIV_1","SUIV_2","SUIV_3","SUIV_4",
                                      ),
                                ),
@@ -251,6 +251,7 @@ DYNA_NON_LINE=OPER(nom="DYNA_NON_LINE",op= 70,sd_prod=evol_noli,reentrant='f',
                     NOM_COLONNE == 'RESI_MAXI' or\
                     NOM_COLONNE == 'RESI_REFE' or\
                     NOM_COLONNE == 'CTCD_GEOM' or\
+                    NOM_COLONNE == 'CTCC_BOUC' or\
                     NOM_COLONNE == 'STANDARD' ",
                             INFO_RESIDU = SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON")),
                           ),
@@ -303,5 +304,15 @@ DYNA_NON_LINE=OPER(nom="DYNA_NON_LINE",op= 70,sd_prod=evol_noli,reentrant='f',
                                ang="List of sensitivity parameters"),
 #-------------------------------------------------------------------
          INFO            =SIMP(statut='f',typ='I',defaut=1,into=(1,2) ),
+         b_info=BLOC(condition="(INFO==2)",
+               fr="filtre les messages émis dans le .mess selon le type de message demandé",
+               INFO_DBG = SIMP(statut='f',typ='TXM',max='**',validators=NoRepeat(),
+                               into=("CONTACT",
+                                     "MECA_NON_LINE",
+                                     "PILOTAGE",
+                                     "FACTORISATION",
+                                     "APPARIEMENT"),
+                             ),
+                    ),
          TITRE           =SIMP(statut='f',typ='TXM',max='**'),
 )

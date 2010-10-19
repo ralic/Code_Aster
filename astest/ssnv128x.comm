@@ -1,4 +1,4 @@
-# MODIF  DATE 20/04/2010   AUTEUR DESOZA T.DESOZA 
+# MODIF  DATE 19/10/2010   AUTEUR DESOZA T.DESOZA 
 # TITRE CONTACT AVEC FROTTEMENT D'UNE PLAQUE SUR UN PLAN RIGIDE
 # ssnv128x.para = tps_job 150 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -46,8 +46,6 @@ MA=DEFI_GROUP(reuse =MA,
               MAILLAGE=MA,
               CREA_GROUP_NO=(_F(GROUP_MA='SCONTA',
                                 NOM='NCONTA',),
-                             _F(UNION=('PPSZ','PPS',),
-                                NOM='PP',),
                              _F(GROUP_MA='VPLAQ',
                                 NOM='NPLAQ',),
                              _F(DIFFE=('NPLAQ','NCONTA',),
@@ -96,7 +94,7 @@ CHA2=DEFI_CONTACT(MODELE         = MO,
                           GROUP_MA_MAIT  = 'SBATI',
                           GROUP_MA_ESCL  = 'SCONTA',
                           COULOMB        = 1.0,
-                          SANS_GROUP_NO = 'PP',
+                          SANS_GROUP_MA  = 'LBLOCY',
                         )
                   )
                   

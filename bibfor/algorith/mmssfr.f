@@ -1,7 +1,7 @@
       SUBROUTINE MMSSFR(DEFICO,IZONE ,POSMAE,NDEXFR)
 C     
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 14/09/2010   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 19/10/2010   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -62,7 +62,8 @@ C
       INTEGER      NUMNO
       INTEGER      NNOMAI,POSNNO(9),NUMNNO(9)
       INTEGER      SUPPOK,INO
-      INTEGER      NDEXCL(9),NBEXFR
+      INTEGER      CFDISI,NDIMG,MMINFI,NDIREX
+      INTEGER      NDEXCL(10),NBEXFR
 C
 C ----------------------------------------------------------------------
 C
@@ -72,7 +73,7 @@ C --- INITIALISATIONS
 C
       NBEXFR = 0
       NDEXFR = 0
-      DO 10 INO = 1,9
+      DO 10 INO = 1,10
         NDEXCL(INO) = 0
  10   CONTINUE     
 C
@@ -98,7 +99,29 @@ C
 C --- CODAGE
 C
       IF (NBEXFR.NE.0) THEN
-        CALL ISCODE(NDEXCL,NDEXFR,9     )
+C
+C ----- NOMBRE DE DIRECTIONS A EXCLURE
+C
+        NDIMG  = CFDISI(DEFICO,'NDIM')
+        NDIREX = MMINFI(DEFICO,'EXCL_DIR',IZONE)
+        IF (NDIMG.EQ.2) THEN
+          IF (NDIREX.GT.0) THEN
+            NDEXCL(10) = 1
+          ELSE
+            CALL ASSERT(.FALSE.)
+          ENDIF
+        ELSEIF (NDIMG.EQ.3) THEN
+          IF (NDIREX.EQ.1) THEN
+            NDEXCL(10) = 0
+          ELSEIF (NDIREX.EQ.2) THEN
+            NDEXCL(10) = 1
+          ELSE
+            CALL ASSERT(.FALSE.)
+          ENDIF
+        ELSE
+          CALL ASSERT(.FALSE.)
+        ENDIF
+        CALL ISCODE(NDEXCL,NDEXFR,10    )
       ENDIF
 C
       CALL JEDEMA()      

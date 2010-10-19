@@ -6,7 +6,7 @@
       CHARACTER*(*)       NOMTA, PARA, MODE, VK
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF UTILITAI  DATE 19/10/2010   AUTEUR DESOZA T.DESOZA 
 C RESPONSABLE DURAND C.DURAND
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG

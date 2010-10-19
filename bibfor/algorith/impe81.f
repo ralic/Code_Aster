@@ -1,10 +1,10 @@
-      SUBROUTINE IMPE81(NOMRES, IMPE, BASEMO )
-      IMPLICIT REAL*8 (A-H,O-Z)
+      SUBROUTINE IMPE81(NOMRES,IMPE,BASEMO)
+      IMPLICIT NONE
       CHARACTER*8  NOMRES, BASEMO
       CHARACTER*19 IMPE
-C TOLE CRP_4
+C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/06/2010   AUTEUR DEVESA G.DEVESA 
+C MODIF ALGORITH  DATE 19/10/2010   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -21,7 +21,27 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
-C      ---- DEBUT DES COMMUNS JEVEUX ----------------------------------
+C
+C     BUT:
+C       REMPLIR 
+C
+C
+C     ARGUMENTS:
+C     ----------
+C
+C      ENTREE :
+C-------------
+C IN   NOMRES    : NOM DE LA SD_RESULTAT
+C IN   IMPE      : NOM DE LA MATRICE D'IMPEDANCE
+C IN   BASEMO    : NOM DE LA BASE MODALE DE PROJECTION
+C
+C      SORTIE :
+C-------------
+C
+C ......................................................................
+C
+C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
+C
       INTEGER        ZI
       COMMON /IVARJE/ZI(1)
       REAL*8         ZR
@@ -36,19 +56,24 @@ C      ---- DEBUT DES COMMUNS JEVEUX ----------------------------------
       CHARACTER*32                          ZK32
       CHARACTER*80                                  ZK80
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
-      CHARACTER*32   JEXNUM, JEXNOM
-C      ---- FIN DES COMMUNS JEVEUX ------------------------------------
+      CHARACTER*32   JEXNUM
 C
-      INTEGER      IBID, N1, N2, N3, N4, N5, NBVECT, IER, NBMODE,
-     +             IADRIF, LLREFE, ULISOP
-      REAL*8       RBID, PARTR, PARTI, PARTR0, PARTI0 
-      COMPLEX*16   CBID
-      CHARACTER*1  TYPMAT
-      CHARACTER*8  K8B, MATRAS, INTERF, BLANC
+C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
+C
+      INTEGER      I,J,IER, NBMODE,IADRIF
+      INTEGER      LDBLO,LDBLOI,LDDESA,LDDESM,LDDESR,LDREFA,LDREFM
+      INTEGER      LDREFR,LDRESA,LDRESM,LDRESR
+      INTEGER      NBDEF,NBMODD,NBMODS,NFR,NIM,NTAIL
+
+      REAL*8       PARTR, PARTI, PARTR0, PARTI0
+      REAL*8       AMSO,DPI,FREQ,R8PI 
+
+      CHARACTER*8  K8B, BLANC
       CHARACTER*16 TYPRES, NOMCOM
       CHARACTER*19 IMPINI
 C
       DATA BLANC /'        '/
+C
 C-----------------------------------------------------------------------
 C
       CALL JEMARQ()
@@ -63,9 +88,6 @@ C
       CALL GETVR8(' ','AMOR_SOL',1,1,1,AMSO,NFR)
       CALL GETVID(' ','MATR_IMPE_INIT',1,1,1,IMPINI,NIM)
       AMSO = 2.D0*AMSO
-C
-      TYPMAT= TYPRES(16:16)
-      WRITE(6,*) 'TYPMAT = ',TYPMAT
 C
       CALL WKVECT(NOMRES//'.MAEL_RAID_REFE','G V K24',2,LDREFR)
       ZK24(LDREFR) = BASEMO

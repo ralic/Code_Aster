@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF hdfrsv hdf  DATE 13/10/2009   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF hdfrsv hdf  DATE 19/10/2010   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2003  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -17,6 +17,7 @@
 /*    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.     */
 /* ================================================================== */
 #include "aster.h"
+#include "aster_fort.h"
 /*-----------------------------------------------------------------------------/
 / Lecture sur un fichier HDF d'un segment de valeur associé à un objet JEVEUX
 /  Paramètres : 
@@ -27,14 +28,17 @@
 /  Résultats :
 /     =0 OK, -1 sinon 
 /-----------------------------------------------------------------------------*/
+#ifndef _DISABLE_HDF5
 #include <hdf5.h>
+#endif
 
 INTEGER DEFPPPP(HDFRSV, hdfrsv, INTEGER *idat, INTEGER *lsv, void *sv, INTEGER *icv)
 {
+  INTEGER iret=-1;
+#ifndef _DISABLE_HDF5
   hid_t ida,datatype,dasp,bidon=0;
   herr_t ier;
   hsize_t dims[1];
-  long iret=-1;
   int rank,status;
 
   ida = (hid_t) *idat;
@@ -49,7 +53,7 @@ INTEGER DEFPPPP(HDFRSV, hdfrsv, INTEGER *idat, INTEGER *lsv, void *sv, INTEGER *
           if ( H5Tequal(H5T_STD_I32LE,datatype)>0 || H5Tequal(H5T_STD_I64LE,datatype)>0  ||
                H5Tequal(H5T_STD_I32BE,datatype)>0 || H5Tequal(H5T_STD_I64BE,datatype)>0 ) {
             if (*icv != 0) { 
-	      if ((H5Tconvert(datatype,H5T_NATIVE_LONG,*lsv,sv,NULL,bidon)) >= 0) {
+          if ((H5Tconvert(datatype,H5T_NATIVE_LONG,*lsv,sv,NULL,bidon)) >= 0) {
                 iret = 0;
               }
             } else { iret = 0; }
@@ -60,5 +64,8 @@ INTEGER DEFPPPP(HDFRSV, hdfrsv, INTEGER *idat, INTEGER *lsv, void *sv, INTEGER *
       H5Sclose(dasp);
     }
   }
+#else
+  CALL_U2MESS("F", "FERMETUR_3");
+#endif
   return iret ; 
 }

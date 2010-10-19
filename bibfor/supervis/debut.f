@@ -1,10 +1,9 @@
-      SUBROUTINE DEBUT  ( LOT,IPASS,IER )
+      SUBROUTINE DEBUT  ( IPASS,IER )
       IMPLICIT NONE
-      LOGICAL             LOT
       INTEGER                 IER,IPASS
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 11/08/2009   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF SUPERVIS  DATE 19/10/2010   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -42,6 +41,8 @@ C     MOT-CLE CODE PRESENT ?
          CMPDEF = 'ABORT'
       ELSE
          CMPDEF = 'EXCEPTION'
+C        FERMETURE DU .CODE (OUVERT PAR IB0MAI)
+         CALL ULOPEN(-15, ' ', ' ', ' ', ' ')
       ENDIF
       CALL GETVTX('ERREUR', 'ERREUR_F', 1, 1, 1, CMPUT, N)
       IF ( N .EQ. 1 ) THEN

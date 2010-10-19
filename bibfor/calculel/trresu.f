@@ -3,7 +3,7 @@
       INTEGER    IFIC, NOCC
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 06/09/2010   AUTEUR REZETTE C.REZETTE 
+C MODIF CALCULEL  DATE 19/10/2010   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -224,7 +224,7 @@ C                    123456789012345678901234567890123
             LIGN2(1:NL2+16)=LIGN2(1:NL2-1)//' '//NOPARA
             LIGN1(NL1+17:NL1+17)='.'
             LIGN2(NL2+17:NL2+17)='.'
- 
+
             CALL UTEST3('RESU',IOCC,TBTXT)
 
             CALL GETVTX('RESU','TYPE_TEST',IOCC,1,1,TYPTES,N1)
@@ -325,7 +325,7 @@ C                    123456789012345678901234567890123
               IF (N1.NE.0) THEN
 C              RIEN A FAIRE.
               ELSE IF (N2.NE.0) THEN
-                CALL UTNONO('E',NOMMA,'NOEUD',NOGRNO,NONOEU(1:8),IRET)
+                CALL UTNONO('A',NOMMA,'NOEUD',NOGRNO,NONOEU(1:8),IRET)
                 IF (IRET.NE.0) THEN
                   WRITE (IFIC,*) TESTOK
                   GO TO 50
@@ -345,7 +345,7 @@ C              RIEN A FAIRE.
                   VALK(2) = NOPARA
                   VALK(3) = TITRES
                   CALL U2MESG('F','CALCULEL6_97',3,VALK,1,NUMORD,0,0.D0)
-                END IF 
+                END IF
                 IF(NOPASE.NE.' ')THEN
                     NL1 = LXLGUT(LIGN1)
                     NL2 = LXLGUT(LIGN2)

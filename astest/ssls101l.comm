@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2010   AUTEUR IDOUX L.IDOUX 
+# MODIF  DATE 19/10/2010   AUTEUR DELMAS J.DELMAS 
 # TITRE PLAQUE CIRCULAIRE POSEE SOUS PRESSION  
 # ssls101l.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -393,11 +393,11 @@ RESU=CREA_RESU(OPERATION='AFFE',
                TYPE_RESU='EVOL_ELAS',
                NOM_CHAM='DEPL',
                AFFE=_F(CHAM_GD=DEPR,
-                       INST=0.,),);
+                       INST=0.,
+                       MODELE=MODEL,
+                       CHAM_MATER=CHMAT,),);
 
 RESU=CALC_ELEM(reuse =RESU,
-               MODELE=MODEL,
-               CHAM_MATER=CHMAT,
                RESULTAT=RESU,
                OPTION='SIEF_ELGA_DEPL',);
 

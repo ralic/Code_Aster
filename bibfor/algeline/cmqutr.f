@@ -6,7 +6,7 @@
       CHARACTER*(*)       BASZ
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 14/09/2010   AUTEUR REZETTE C.REZETTE 
+C MODIF ALGELINE  DATE 19/10/2010   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -206,7 +206,7 @@ C     --- BCLE SUR LES GROUP_MA DU MAILLAGE INITIAL
          DO 421 I = 1, NBGRM
             CALL JENUNO( JEXNUM(GRPMAV, I), NOMG)
             CALL JEVEUO( JEXNUM(GRPMAV, I), 'L', JGRMA)
-            CALL JELIRA( JEXNUM(GRPMAV, I), 'LONMAX', NBMAG, K1B)
+            CALL JELIRA( JEXNUM(GRPMAV, I), 'LONUTI', NBMAG, K1B)
             NBMA2 = NBMAG
 C        --- BCLE SUR LES MAILLES DU GROUP_MA
             DO 4210 J = 1, NBMAG
@@ -217,7 +217,9 @@ C        --- BCLE SUR LES MAILLES DU GROUP_MA
  4210       CONTINUE
             CALL JECROC( JEXNOM(GRPMAI, NOMG))
 C        --- LE NOUVEAU GROUP_MA CONTIENDRA NBMA2 MAILLES
-            CALL JEECRA( JEXNOM(GRPMAI, NOMG), 'LONMAX', NBMA2, ' ')
+            CALL JEECRA( JEXNOM(GRPMAI, NOMG), 'LONMAX',
+     &        MAX(1,NBMA2), ' ')
+            CALL JEECRA( JEXNOM(GRPMAI, NOMG), 'LONUTI', NBMA2, ' ')
             CALL JEECRA( JEXNOM(GRPMAI, NOMG), 'LONUTI', 0, ' ')
             IF ( NIV.GT.1 ) THEN
                WRITE(IFM,*) 'GROUP_MA '//NOMG,' (',I,') PASSE DE ',
@@ -354,7 +356,7 @@ C
          DO 20 I = 1,NBGRNO
             CALL JENUNO ( JEXNUM(GRPNOV,I), NOMG )
             CALL JEVEUO ( JEXNUM(GRPNOV,I), 'L', JVG )
-            CALL JELIRA ( JEXNUM(GRPNOV,I), 'LONMAX', NBNO, K1B )
+            CALL JELIRA ( JEXNUM(GRPNOV,I), 'LONUTI', NBNO, K1B )
             CALL JEEXIN ( JEXNOM(GRPNOE,NOMG), IRET )
             IF (IRET.EQ.0) THEN
                CALL JECROC ( JEXNOM( GRPNOE, NOMG ) )
@@ -363,7 +365,9 @@ C           --- NE DEVRAIT PAS ARRIVER !
                VALK = NOMG
                CALL U2MESG('F', 'ALGELINE4_11',1,VALK,0,0,0,0.D0)
             END IF
-            CALL JEECRA(JEXNOM(GRPNOE,NOMG),'LONMAX',NBNO,' ')
+            CALL JEECRA(JEXNOM(GRPNOE,NOMG),'LONMAX',
+     &        MAX(1,NBNO),' ')
+            CALL JEECRA(JEXNOM(GRPNOE,NOMG),'LONUTI',NBNO,' ')
             CALL JEVEUO(JEXNOM(GRPNOE,NOMG),'E',JGG)
             DO 22 J = 1, NBNO
                ZI(JGG-1+J) = ZI(JVG-1+J)

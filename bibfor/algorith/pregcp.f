@@ -3,7 +3,7 @@
      &                  VEZERO,DELTAU,SOLVEU,PREMAX)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/10/2010   AUTEUR BOITEAU O.BOITEAU 
+C MODIF ALGORITH  DATE 19/10/2010   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -70,7 +70,7 @@ C                             INITIALISATIONS
 C ======================================================================
       CALL JEMARQ()
 
-      CALL INFNIV(IFM,NIV)
+      CALL INFDBG('CONTACT',IFM,NIV)
 
 C --- RECUPERATION DE L'ADRESSE DU VECTEUR DE TRAVAIL
       CALL JEVEUO(DELTAU(1:19)//'.VALE','E',JDELTA)

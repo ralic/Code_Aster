@@ -1,4 +1,4 @@
-# MODIF  DATE 11/10/2010   AUTEUR NISTOR I.NISTOR 
+# MODIF  DATE 19/10/2010   AUTEUR DELMAS J.DELMAS 
 # TITRE CHOC D UNE POUTRE SUR UN APPUI : SOUS-STRUCTURATION
 # sdnl104b.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -426,12 +426,12 @@ resu_dy1=REST_GENE_PHYS(   RESU_GENE=TRAN_GE1,
                              INTERPOL='LIN',
                              MODE_MECA=mod1 )
 
-resu_dy1=CALC_ELEM(reuse=resu_dy1,RESULTAT= resu_dy1,
+resu_dy=CALC_ELEM(RESULTAT= resu_dy1,
                    MODELE=BARRE,CHAM_MATER=CHMAT,CARA_ELEM=CARA,
                    OPTION='SIGM_ELNO_DEPL')
 
 
-TEST_RESU( RESU=_F( RESULTAT = resu_dy1,
+TEST_RESU( RESU=_F( RESULTAT = resu_dy,
                   NOM_CHAM = 'SIGM_ELNO_DEPL',
                   INST = 0.00000E+00,
                   CRITERE = 'RELATIF',    PRECISION = 9.E-3,

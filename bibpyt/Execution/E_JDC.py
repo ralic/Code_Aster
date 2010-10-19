@@ -1,4 +1,4 @@
-#@ MODIF E_JDC Execution  DATE 06/09/2010   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF E_JDC Execution  DATE 19/10/2010   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -171,6 +171,8 @@ class JDC:
 """ % (cpu_total_user+cpu_total_syst, cpu_total_user, cpu_total_syst, cpu_restant)
 
        aster.affiche('MESSAGE', texte_final)
+       if self.fico is None:
+           aster.affiche('MESSAGE', repr(self.timer))
        aster.fclose(6)
        # fichier d'info
        txt = "%10.2f %10.2f %10.2f %10.2f\n" \

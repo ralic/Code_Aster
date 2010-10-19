@@ -1,6 +1,6 @@
-      REAL*8 FUNCTION ARMIN(NOMA)
+      REAL*8 FUNCTION ARMIN(NOMAZ)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 27/07/2010   AUTEUR DESOZA T.DESOZA 
+C MODIF UTILITAI  DATE 19/10/2010   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -18,7 +18,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
       IMPLICIT NONE
-      CHARACTER*8  NOMA
+      CHARACTER*8  NOMAZ
 C
 C ----------------------------------------------------------------------
 C
@@ -51,12 +51,12 @@ C
 C
 C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
 C
-      CHARACTER*8  K8B
+      CHARACTER*8  NOMA,K8B
       CHARACTER*19 NOMT19
       CHARACTER*24 PARA
       INTEGER      IBID,IER
       INTEGER      NBPAR
-      REAL*8       R8B,PREC
+      REAL*8       R8B,ARETE
       COMPLEX*16   CBID
 C
 C ----------------------------------------------------------------------
@@ -65,26 +65,23 @@ C
 C
 C --- RECUPERATION DE L'ARETE MINIMUM DU MAILLAGE
 C
+      NOMA = NOMAZ
       CALL JEEXIN(NOMA//'           .LTNT',IER   )
       IF (IER.NE.0) THEN
          CALL LTNOTB(NOMA  ,'CARA_GEOM',NOMT19)
          NBPAR = 0
          PARA = 'AR_MIN                  '
          CALL TBLIVA(NOMT19,NBPAR ,' '   ,IBID  ,R8B   ,CBID  ,K8B   ,
-     &               K8B   ,R8B   ,PARA  ,K8B   ,IBID  ,ARMIN ,CBID  ,
+     &               K8B   ,R8B   ,PARA  ,K8B   ,IBID  ,ARETE ,CBID  ,
      &               K8B   ,IER   )
          IF (IER.EQ.0) THEN
-            PREC = ARMIN*1.D-06
-         ELSEIF (IER.EQ.1) THEN
-            PREC = 1.D-10
+            ARMIN = ARETE
          ELSE
             CALL U2MESS('F','MODELISA2_13')
          ENDIF
       ELSE
          CALL U2MESS('F','MODELISA3_18')
       ENDIF
-C
-      ARMIN = PREC
 C
       CALL JEDEMA()
 C

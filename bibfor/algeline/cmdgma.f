@@ -3,7 +3,7 @@
       CHARACTER*(*)       MAILLA
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 07/09/2009   AUTEUR PELLET J.PELLET 
+C MODIF ALGELINE  DATE 19/10/2010   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -58,20 +58,20 @@ C     --------------------------------------------------------
         DO 1,IGMA=1,NGRMA
           CALL JEEXIN(JEXNUM(MA//'.GROUPEMA',IGMA),IRET)
           IF (IRET.GT.0) THEN
-            CALL JELIRA(JEXNUM(MA//'.GROUPEMA',IGMA),'LONMAX',LONG,K1B)
+            CALL JELIRA(JEXNUM(MA//'.GROUPEMA',IGMA),'LONUTI',LONG,K1B)
             IF (LONG.LE.LIMIT) ZI(IANUGR-1+IGMA)=1
           END IF
 1       CONTINUE
       END IF
 
       CALL GETVEM(MA,'GROUP_MA','DETR_GROUP_MA','GROUP_MA',
-     +                1,1,0,ZK8(1),NDETR)
+     &                1,1,0,ZK8(1),NDETR)
 C     ----------------------------------------------------------
       IF (NDETR.LT.0) THEN
         NDETR=-NDETR
         CALL WKVECT ('&&CMDGMA.LIGRMA_A_DETR','V V K8',NDETR,IALIGR)
         CALL GETVEM(MA,'GROUP_MA','DETR_GROUP_MA','GROUP_MA',
-     +                  1,1,NDETR,ZK8(IALIGR),N1)
+     &                  1,1,NDETR,ZK8(IALIGR),N1)
         DO 2,IGMA=1,NDETR
           CALL JENONU(JEXNOM(MA//'.GROUPEMA',ZK8(IALIGR-1+IGMA)),NUGR)
           IF (NUGR.GT.0)  ZI(IANUGR-1+NUGR)=1
@@ -93,7 +93,7 @@ C
       CALL JEDETR(MA//'.GROUPEMA')
 
       IF (NGRMAN.GT.0) CALL JECREC(MA//'.GROUPEMA','G V I','NO',
-     +              'DISPERSE','VARIABLE',NGRMAN)
+     &              'DISPERSE','VARIABLE',NGRMAN)
 
       DO 3, I=1,NGRMA
         CALL JEEXIN(JEXNUM('&&CMDGMA.GROUPEMA',I),IRET)
@@ -102,8 +102,10 @@ C
           CALL JENUNO(JEXNUM('&&CMDGMA.GROUPEMA',I),NOMG)
           CALL JECROC(JEXNOM(MA//'.GROUPEMA',NOMG))
           CALL JEVEUO(JEXNUM('&&CMDGMA.GROUPEMA',I),'L',JVG)
-          CALL JELIRA(JEXNUM('&&CMDGMA.GROUPEMA',I),'LONMAX',NBMA,K1B)
-          CALL JEECRA(JEXNOM(MA//'.GROUPEMA',NOMG),'LONMAX',NBMA,' ')
+          CALL JELIRA(JEXNUM('&&CMDGMA.GROUPEMA',I),'LONUTI',NBMA,K1B)
+          CALL JEECRA(JEXNOM(MA//'.GROUPEMA',NOMG),'LONMAX',
+     &        MAX(1,NBMA),' ')
+          CALL JEECRA(JEXNOM(MA//'.GROUPEMA',NOMG),'LONUTI',NBMA,' ')
           CALL JEVEUO(JEXNOM(MA//'.GROUPEMA',NOMG),'E',JGG)
           DO 4,II=1,NBMA
             ZI(JGG-1+II)=ZI(JVG-1+II)

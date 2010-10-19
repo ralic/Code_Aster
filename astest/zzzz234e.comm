@@ -1,4 +1,4 @@
-# MODIF  DATE 05/10/2010   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 19/10/2010   AUTEUR DESOZA T.DESOZA 
 # TITRE TEST DU BON FONCTIONNEMENT DE LA VALEUR DE REFERENCE DE
 # zzzz234e.para = tps_job 90 mem_job 64Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -24,12 +24,7 @@
 DEBUT(CODE=_F(NOM='ZZZZ234E',NIV_PUB_WEB='INTERNET'),
       DEBUG=_F(SDVERI='OUI'))
 
-
-# Fonction de calcul de l'erreur
 CoefRef = 1.0E-05
-CERREUR = FORMULE(NOM_PARA=('RESI_REFE','RESI_GLOB'),
-                  VALE='(RESI_REFE - 1.0E+05*RESI_GLOB)')
-
 
 MA = LIRE_MAILLAGE(INFO=2);
 
@@ -74,8 +69,21 @@ RE_2DITL=STAT_NON_LINE(MODELE  = MO_2DITL,
 TB_2DITL = RECU_TABLE(CO=RE_2DITL,NOM_PARA=('ITER_GLOB'),)
 
 IMPR_TABLE(TABLE=TB_2DITL)
-TEST_TABLE(TABLE=TB_2DITL, NOM_PARA='ITER_GLOB', VALE_I=0, FILTRE=_F(NOM_PARA='NUME_ORDRE',VALE_I=1,),
-           CRITERE='RELATIF', PRECISION=1.0E-15, REFERENCE='NON_REGRESSION',); 
+TEST_TABLE(TABLE=TB_2DITL, NOM_PARA='ITER_GLOB', VALE_I=1, FILTRE=_F(NOM_PARA='NUME_ORDRE',VALE_I=1,),
+           CRITERE = 'ABSOLU',        PRECISION = 0., REFERENCE='NON_REGRESSION',);
+
+TEST_RESU(RESU=(_F(RESULTAT   = RE_2DITL,
+                   INST       = 1.0,
+                   NOM_CHAM   = 'DEPL',
+                   GROUP_NO   = 'B',
+                   NOM_CMP    = 'DY',
+                   VALE       = -4.1684035014589E-06,
+                   
+                   REFERENCE  = 'NON_REGRESSION',
+                   VERSION    = '10.2.20',
+                   PRECISION  = 1E-8,
+                   ),),
+       )
 
 #-------------------------------------------------------------------------------------
 # 2 --> 2D_DIST_TR : TR_L (SEG2)
@@ -111,9 +119,22 @@ RE_2DTRL=STAT_NON_LINE(MODELE  = MO_2DTRL,
 TB_2DTRL = RECU_TABLE(CO=RE_2DTRL,NOM_PARA=('ITER_GLOB'),)
 
 IMPR_TABLE(TABLE=TB_2DTRL)
-TEST_TABLE(TABLE=TB_2DTRL, NOM_PARA='ITER_GLOB', VALE_I=0, FILTRE=_F(NOM_PARA='NUME_ORDRE',VALE_I=1,),
-           CRITERE='RELATIF', PRECISION=1.0E-15, REFERENCE='NON_REGRESSION',); 
+TEST_TABLE(TABLE=TB_2DTRL, NOM_PARA='ITER_GLOB', VALE_I=1, FILTRE=_F(NOM_PARA='NUME_ORDRE',VALE_I=1,),
+           CRITERE = 'ABSOLU',        PRECISION = 0., REFERENCE='NON_REGRESSION',);
 
+
+TEST_RESU(RESU=(_F(RESULTAT   = RE_2DTRL,
+                   INST       = 1.0,
+                   NOM_CHAM   = 'DEPL',
+                   GROUP_NO   = 'B',
+                   NOM_CMP    = 'DY',
+                   VALE       = -4.1684035014589E-06,
+                   
+                   REFERENCE  = 'NON_REGRESSION',
+                   VERSION    = '10.2.20',
+                   PRECISION  = 1E-8,
+                   ),),
+       )
 
 #-------------------------------------------------------------------------------------
 # 3 --> 2D_DIST_T : T_N (POI)
@@ -163,9 +184,22 @@ RE_2DITN=STAT_NON_LINE(MODELE  = MO_2DITN,
 TB_2DITN = RECU_TABLE(CO=RE_2DITN,NOM_PARA=('ITER_GLOB'),)
 
 IMPR_TABLE(TABLE=TB_2DITN)
-TEST_TABLE(TABLE=TB_2DITN, NOM_PARA='ITER_GLOB', VALE_I=0, FILTRE=_F(NOM_PARA='NUME_ORDRE',VALE_I=1,),
-           CRITERE='RELATIF', PRECISION=1.0E-15, REFERENCE='NON_REGRESSION',); 
+TEST_TABLE(TABLE=TB_2DITN, NOM_PARA='ITER_GLOB', VALE_I=1, FILTRE=_F(NOM_PARA='NUME_ORDRE',VALE_I=1,),
+           CRITERE = 'ABSOLU',        PRECISION = 0., REFERENCE='NON_REGRESSION',);
 
+
+TEST_RESU(RESU=(_F(RESULTAT   = RE_2DITN,
+                   INST       = 1.0,
+                   NOM_CHAM   = 'DEPL',
+                   GROUP_NO   = 'B',
+                   NOM_CMP    = 'DX',
+                   VALE       = -7.5789154571981E-06,
+                   
+                   REFERENCE  = 'NON_REGRESSION',
+                   VERSION    = '10.2.20',
+                   PRECISION  = 1E-8,
+                   ),),
+       )
 
 #-------------------------------------------------------------------------------------
 # 4 --> 2D_DIST_TR : TR_N (POI)
@@ -204,7 +238,20 @@ RE_2DTRN=STAT_NON_LINE(MODELE  = MO_2DTRN,
 TB_2DTRN = RECU_TABLE(CO=RE_2DTRN,NOM_PARA=('ITER_GLOB'),)
 
 IMPR_TABLE(TABLE=TB_2DTRN)
-TEST_TABLE(TABLE=TB_2DTRN, NOM_PARA='ITER_GLOB', VALE_I=0, FILTRE=_F(NOM_PARA='NUME_ORDRE',VALE_I=1,),
-           CRITERE='RELATIF', PRECISION=1.0E-15, REFERENCE='NON_REGRESSION',); 
+TEST_TABLE(TABLE=TB_2DTRN, NOM_PARA='ITER_GLOB', VALE_I=1, FILTRE=_F(NOM_PARA='NUME_ORDRE',VALE_I=1,),
+           CRITERE = 'ABSOLU',        PRECISION = 0., REFERENCE='NON_REGRESSION',);
+
+TEST_RESU(RESU=(_F(RESULTAT   = RE_2DTRN,
+                   INST       = 1.0,
+                   NOM_CHAM   = 'DEPL',
+                   GROUP_NO   = 'B',
+                   NOM_CMP    = 'DX',
+                   VALE       = -7.5789154571981E-06,
+                   
+                   REFERENCE  = 'NON_REGRESSION',
+                   VERSION    = '10.2.20',
+                   PRECISION  = 1E-8,
+                   ),),
+       )
 
 FIN()

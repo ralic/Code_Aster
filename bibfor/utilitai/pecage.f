@@ -4,7 +4,7 @@
       CHARACTER*(*) RESU,MODELE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 11/10/2010   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 19/10/2010   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -155,7 +155,7 @@ C     --- CREATION DE LA TABLE ---
               CALL U2MESK('A','UTILITAI3_46',1,ZK8(JGR+IG-1))
               GO TO 20
             END IF
-            CALL JELIRA(JEXNOM(MLGGMA,ZK8(JGR+IG-1)),'LONMAX',NBMA,K8B)
+            CALL JELIRA(JEXNOM(MLGGMA,ZK8(JGR+IG-1)),'LONUTI',NBMA,K8B)
             IF (NBMA.EQ.0) THEN
               CALL U2MESK('A','UTILITAI3_47',1,ZK8(JGR+IG-1))
               GO TO 20

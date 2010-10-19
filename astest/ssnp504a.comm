@@ -1,4 +1,4 @@
-# MODIF  DATE 18/01/2010   AUTEUR MACOCCO K.MACOCCO 
+# MODIF  DATE 19/10/2010   AUTEUR DESOZA T.DESOZA 
 # TITRE CONTACT EN GRANDS GLISSEMENTS AVEC X-FEM POUR DES FISSURES
 # ssnp504a.para = tps_job 90 mem_job 256Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -64,7 +64,7 @@ CONT = DEFI_CONTACT(MODELE         = MODELE,
                              COEF_FROT     = 100., 
                              COULOMB       = 0.5, 
                              TOLE_PROJ_EXT = 0.0,  
-                             CONTACT_INIT  = 'OUI',                         
+                             CONTACT_INIT  = 'INTERPENETRE',                         
                              ),
                            _F(
                              GROUP_MA_MAIT = 'L23',
@@ -77,7 +77,7 @@ CONT = DEFI_CONTACT(MODELE         = MODELE,
                              COEF_FROT     = 100., 
                              COULOMB       = 0.5, 
                              TOLE_PROJ_EXT = 0.0,  
-                             CONTACT_INIT  = 'OUI',                         
+                             CONTACT_INIT  = 'INTERPENETRE',                         
                              ),                                                          
                           ),
                    );

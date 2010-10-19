@@ -1,7 +1,7 @@
       SUBROUTINE MDEXPM ( NOFIMD, NOMAMD, EXISTM, NDIM, CODRET )
 C_____________________________________________________________________
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 22/06/2010   AUTEUR SELLENET N.SELLENET 
+C MODIF PREPOST  DATE 19/10/2010   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -60,12 +60,10 @@ C
 C
       INTEGER IDFIMD, NBMAIE
       INTEGER IAUX, JAUX, KAUX, TYAUX
-      INTEGER VALI(3)
 C
       CHARACTER*8  SAUX08
       CHARACTER*32 SAUX32
       CHARACTER*200 DAUX
-      CHARACTER*24 VALK(2)
 C ______________________________________________________________________
 C
 C====
@@ -85,7 +83,7 @@ C
 C
       ELSE
 C
-      CALL EFOUVR ( IDFIMD, NOFIMD, EDLECT, IAUX )
+      CALL MFOUVR ( IDFIMD, NOFIMD, EDLECT, IAUX )
       IF ( IAUX.EQ.0 ) THEN
 C====
 C 2. LE MAILLAGE EST-IL PRESENT ?
@@ -93,9 +91,9 @@ C====
 C
 C 2.1. ==> COMBIEN DE MAILLAGES DANS LE FICHIER
 C
-      CALL EFNMAA ( IDFIMD, NBMAIE, CODRET )
+      CALL MFNMAA ( IDFIMD, NBMAIE, CODRET )
       IF ( CODRET.NE.0 ) THEN
-        SAUX08='EFNMAA  '
+        SAUX08='MFNMAA  '
         CALL U2MESG('F','DVP_97',1,SAUX08,1,CODRET,0,0.D0)
       ENDIF
 C
@@ -110,9 +108,9 @@ C
 C                 12345678901234567890123456789012
         SAUX32 = '                                '
         IAUX = 1
-        CALL EFMAAI ( IDFIMD, IAUX, SAUX32, KAUX, TYAUX, DAUX, CODRET )
+        CALL MFMAAI ( IDFIMD, IAUX, SAUX32, KAUX, TYAUX, DAUX, CODRET )
         IF ( CODRET.NE.0 ) THEN
-          SAUX08='EFMAAI  '
+          SAUX08='MFMAAI  '
           CALL U2MESG('F','DVP_97',1,SAUX08,1,CODRET,0,0.D0)
         ENDIF
         IF ( TYAUX .NE. EDNSTR ) THEN
@@ -132,9 +130,9 @@ C
 C
 C 2.3. ==> FERMETURE DU FICHIER
 C
-      CALL EFFERM ( IDFIMD, CODRET )
+      CALL MFFERM ( IDFIMD, CODRET )
       IF ( CODRET.NE.0 ) THEN
-        SAUX08='EFFERM  '
+        SAUX08='MFFERM  '
         CALL U2MESG('F','DVP_97',1,SAUX08,1,CODRET,0,0.D0)
       ENDIF
 C

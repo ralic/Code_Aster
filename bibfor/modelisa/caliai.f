@@ -4,7 +4,7 @@
       CHARACTER*8 CHARGE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 06/07/2009   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 19/10/2010   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -116,7 +116,7 @@ C        -------------------------------------------------------
              VALK(2) = NOMA
              CALL U2MESK('F','MODELISA2_95', 2 ,VALK)
           ELSE
-            CALL JELIRA(JEXNOM(GROUNO,ZK8(JJJ+IGR-1)),'LONMAX',N1,K1BID)
+            CALL JELIRA(JEXNOM(GROUNO,ZK8(JJJ+IGR-1)),'LONUTI',N1,K1BID)
             NBGT = NBGT + N1
           END IF
    20   CONTINUE
@@ -204,7 +204,7 @@ C           --------------------
           INDNOE = 0
           DO 70 J = 1,NG
             CALL JEVEUO(JEXNOM(GROUNO,ZK8(JLIST1-1+J)),'L',JGR0)
-            CALL JELIRA(JEXNOM(GROUNO,ZK8(JLIST1-1+J)),'LONMAX',N,K1BID)
+            CALL JELIRA(JEXNOM(GROUNO,ZK8(JLIST1-1+J)),'LONUTI',N,K1BID)
             DO 60 K = 1,N
               IN = ZI(JGR0-1+K)
               INDNOE = INDNOE + 1

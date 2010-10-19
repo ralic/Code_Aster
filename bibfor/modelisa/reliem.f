@@ -7,7 +7,7 @@
       CHARACTER*(*) LITROZ,TYPEM,MOTFAZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 03/11/2009   AUTEUR DESOZA T.DESOZA 
+C MODIF MODELISA  DATE 19/10/2010   AUTEUR DELMAS J.DELMAS 
 C RESPONSABLE PELLET J.PELLET
 C TOLE CRP_4
 C ======================================================================
@@ -185,8 +185,17 @@ C        -----------------
             ZI4(ITRMA-1+IMA) = 1
 
           ELSE IF (TYPMCL.EQ.'GROUP_MA') THEN
-            CALL JELIRA(JEXNOM(MA//'.GROUPEMA',KARG),'LONMAX',NMA,K8B)
+            CALL JELIRA(JEXNOM(MA//'.GROUPEMA',KARG),'LONUTI',NMA,K8B)
             CALL JEVEUO(JEXNOM(MA//'.GROUPEMA',KARG),'L',KMA)
+
+C           -- UNE VERIFICATION PENDANT LE CHANTIER "GROUPES VIDES" :
+            CALL JELIRA(JEXNOM(MA//'.GROUPEMA',KARG),'LONMAX',IBID,K8B)
+            IF (IBID.EQ.1) THEN
+              CALL ASSERT(NMA.LE.1)
+            ELSE
+              CALL ASSERT(NMA.EQ.IBID)
+            ENDIF
+
             DO 60 JMA = 1,NMA
               IMA = ZI(KMA-1+JMA)
               ZI4(ITRMA-1+IMA) = 1
@@ -197,8 +206,17 @@ C        -----------------
             ZI4(ITRNO-1+INO) = 1
 
           ELSE IF (TYPMCL.EQ.'GROUP_NO') THEN
-            CALL JELIRA(JEXNOM(MA//'.GROUPENO',KARG),'LONMAX',NNO,K8B)
+            CALL JELIRA(JEXNOM(MA//'.GROUPENO',KARG),'LONUTI',NNO,K8B)
             CALL JEVEUO(JEXNOM(MA//'.GROUPENO',KARG),'L',KNO)
+
+C           -- UNE VERIFICATION PENDANT LE CHANTIER "GROUPES VIDES" :
+            CALL JELIRA(JEXNOM(MA//'.GROUPENO',KARG),'LONMAX',IBID,K8B)
+            IF (IBID.EQ.1) THEN
+              CALL ASSERT(NNO.LE.1)
+            ELSE
+              CALL ASSERT(NNO.EQ.IBID)
+            ENDIF
+
             DO 70 JNO = 1,NNO
               INO = ZI(KNO-1+JNO)
               ZI4(ITRNO-1+INO) = 1

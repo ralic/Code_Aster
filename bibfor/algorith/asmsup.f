@@ -8,7 +8,7 @@
       CHARACTER*14      NUME
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2009   AUTEUR MACOCCO K.MACOCCO 
+C MODIF ALGORITH  DATE 19/10/2010   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -204,7 +204,7 @@ C     --- RECUPERATION DES COMBINAISONS DES SUPPORTS ---
                     CALL U2MESK('E','SEISME_2', 2 ,VALK)
                     GOTO 50
                   ELSE
-                    CALL JELIRA(JEXNOM(OBJ1,GRNOEU),'LONMAX',NNO,K1B)
+                    CALL JELIRA(JEXNOM(OBJ1,GRNOEU),'LONUTI',NNO,K1B)
                     CALL JEVEUO(JEXNOM(OBJ1,GRNOEU),'L',JDGN)
                     DO 52 INO = 1, NNO
                       CALL JENUNO(JEXNUM(OBJ2,ZI(JDGN+INO-1)),NOEU)

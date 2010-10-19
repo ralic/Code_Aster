@@ -5,7 +5,7 @@
       CHARACTER*8         NOMA, NOMO
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 21/06/2010   AUTEUR PROIX J-M.PROIX 
+C MODIF MODELISA  DATE 19/10/2010   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -249,7 +249,7 @@ C
             IF (NJ.GT.0) THEN
               IF (NJ.EQ.1) THEN
                 CALL JEVEUO(JEXNOM(MLGGNO,NOMLU),'L',JDGN)
-                CALL JELIRA(JEXNOM(MLGGNO,NOMLU),'LONMAX',NNG,K1BID)
+                CALL JELIRA(JEXNOM(MLGGNO,NOMLU),'LONUTI',NNG,K1BID)
                 IF (NNG.EQ.1) THEN
                   INN=INN+1
                   ZI(JNOZK-1+INN) = ZI(JDGN)

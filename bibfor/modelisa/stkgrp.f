@@ -3,7 +3,7 @@
         IMPLICIT REAL*8 (A-H,O-Z)
 C       ----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 19/10/2010   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -90,85 +90,84 @@ C
 C
  10     CONTINUE
         CALL JEVEUO(GRP,'E',IADG)
-C
-C - LIRE ITEM SUIVANT =  NOM DU GROUPE ?
-C
+
+C ----- LIRE ITEM SUIVANT =  NOM DU GROUPE ?
         DEBLIG=0
         CALL LIRTET(IFL,IFM,2,1,CNL,NOMG,ICL,IV,RV,CV,DEBLIG)
-C
-C -----    LECTURE NOM DU GROUPE SI IL N Y A PAS D'ENTETE
-C
-           IF (NOMG.EQ.'INDEFINI') THEN
-           NOMG        = B8
-           NOMG(1:IV)  = CV(1:IV)
-           CALL TESFIN(ICL,IV,CV,IRTET)
-           IF ( IRTET.GT.0 ) GOTO (1,2), IRTET
-           ELSE
-C
-C -----    STOCKAGE PREMIER NOM DE NOEUD / MAILLE OU FIN APRES L'ENTETE
-C
-           CALL TESFIN(ICL,IV,CV,IRTET)
-           IF ( IRTET.GT.0 ) GOTO (1,2), IRTET
-           NOM       = B8
-           NOM(1:IV) = CV(1:IV)
-           ZK8(IADG+NUM) = NOM
-           NUM = NUM + 1
-           ENDIF
-C
-C - STOCKAGE DES NOMS DES NOEUDS OU MAILLES DU GROUPE
-C
+
+C ----- LECTURE NOM DU GROUPE SI IL N Y A PAS D'ENTETE
+        IF (NOMG.EQ.'INDEFINI') THEN
+          NOMG        = B8
+          NOMG(1:IV)  = CV(1:IV)
+          CALL TESFIN(ICL,IV,CV,IRTET)
+          CALL ASSERT(IRTET.EQ.0)
+          IF ( IRTET.GT.0 ) GOTO (7,8), IRTET
+        ELSE
+
+C -----   STOCKAGE PREMIER NOM DE NOEUD / MAILLE OU FIN APRES L'ENTETE
+          CALL TESFIN(ICL,IV,CV,IRTET)
+          IF ( IRTET.GT.0 ) GOTO (7,8), IRTET
+          NOM       = B8
+          NOM(1:IV) = CV(1:IV)
+          ZK8(IADG+NUM) = NOM
+          NUM = NUM + 1
+        ENDIF
+
+C ----- STOCKAGE DES NOMS DES NOEUDS OU MAILLES DU GROUPE
  6      CONTINUE
+
         CALL LIRITM(IFL,ICL,IV,RV,CV,CNL,DEBLIG,2)
-C
-C - ITEM = MOT  CLE FIN  OU FINSF ?
-C
+
+
+C ----- ITEM = MOT  CLE FIN  OU FINSF ?
         IF(DEBLIG.EQ.1) THEN
             CALL TESFIN(ICL,IV,CV,IRTET)
             IF ( IRTET.GT.0 ) GOTO (7,8), IRTET
         ENDIF
-C
-C - STOCKAGE DES NOEUDS OU MAILLES DU GROUPE
-C
+
+C ----- STOCKAGE DES NOEUDS OU MAILLES DU GROUPE
         NOM       = B8
         NOM(1:IV) = CV(1:IV)
         ZK8(IADG+NUM) = NOM
-C
-C - INCREMENTATION DU NB D'ITEM LUS
-C
+
+C ----- INCREMENTATION DU NB D'ITEM LUS
         NUM = NUM + 1
-C
-C - NOEUD OU MAILLE SUIVANT
-C
+
+C ----- NOEUD OU MAILLE SUIVANT
         GOTO 6
-C
-C - SORTIE EN FIN OU FINSF
-C
+
+C ----- SORTIE EN FIN OU FINSF
  7      CONTINUE
         IFN = 0
         GOTO 9
  8      CONTINUE
         IFN = 1
-C
-C - CREATION ET DIMENSIONNEMENT DE L OBJET GRP.NOM_DU_GROUPE
-C
+
+
+C ----- CREATION ET DIMENSIONNEMENT DE L OBJET GRP.NOM_DU_GROUPE
  9      CONTINUE
+
         IF(I.EQ.1)THEN
-        NBITEM = NUM - NUMN
-        NUMN = NUM
+          NBITEM = NUM - NUMN
+          NUMN = NUM
+C         -- POUR UN GROUPE VIDE, LONMAX=1
+          IF (NBITEM.EQ.0) NUMN=NUMN+1
         ELSE
-        NBITEM = NUM - NUMM
-        NUMM = NUM
+          NBITEM = NUM - NUMM
+          NUMM = NUM
+C         -- POUR UN GROUPE VIDE, LONMAX=1
+          IF (NBITEM.EQ.0) NUMM=NUMM+1
         ENDIF
 C
-          IF(NBITEM.NE.0) THEN
-            CALL JEEXIN (JEXNOM(GRP,NOMG),IRET)
-            IF(IRET.EQ.0) THEN
-               CALL JECROC(JEXNOM(GRP,NOMG))
-               CALL JEECRA(JEXNOM(GRP,NOMG),'LONMAX',NBITEM,' ')
-            ELSE
-               CALL U2MESK('F','MODELISA7_11',1,NOMG)
-            ENDIF
-          ENDIF
+        CALL ASSERT(NBITEM.GE.0)
+        CALL JEEXIN (JEXNOM(GRP,NOMG),IRET)
+        IF(IRET.EQ.0) THEN
+           CALL JECROC(JEXNOM(GRP,NOMG))
+           CALL JEECRA(JEXNOM(GRP,NOMG),'LONMAX',MAX(NBITEM,1),' ')
+           CALL JEECRA(JEXNOM(GRP,NOMG),'LONUTI',NBITEM,' ')
+        ELSE
+           CALL U2MESK('F','MODELISA7_11',1,NOMG)
+        ENDIF
 C
         IF(IFN.EQ.0)GOTO 1
         IF(IFN.EQ.1)GOTO 2
@@ -176,9 +175,12 @@ C
  1      CONTINUE
         IRTETI = 1
         GOTO 9999
+
+C       FINSF
  2      CONTINUE
         IRTETI = 2
         GOTO 9999
+
  3      CONTINUE
         IRTETI = 0
         GOTO 9999

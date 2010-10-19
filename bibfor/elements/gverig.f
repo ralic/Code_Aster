@@ -3,7 +3,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 22/01/2008   AUTEUR REZETTE C.REZETTE 
+C MODIF ELEMENTS  DATE 19/10/2010   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -229,7 +229,7 @@ C
             ELSE
 C LES NOEUDS DE CE GROUP_NO DOIVENT APPARTENIR A GAMMO
 C
-              CALL JELIRA (JEXNOM(GRPNO,ZK8(JJJ+IGR-1)),'LONMAX',
+              CALL JELIRA (JEXNOM(GRPNO,ZK8(JJJ+IGR-1)),'LONUTI',
      &                     N1,K8BID)
               CALL JEVEUO (JEXNOM(GRPNO,ZK8(JJJ+IGR-1)),'L',IADR)
               DO 4 J=1,N1

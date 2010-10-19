@@ -1,0 +1,49 @@
+      SUBROUTINE PMSTA1(SIGM,SIGP,DEPS,VIM,VIP,NVI,NBPAR,NOMPAR,TABINC,
+     &                  VR)
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ALGORITH  DATE 19/10/2010   AUTEUR DESOZA T.DESOZA 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C ======================================================================
+
+      IMPLICIT NONE
+C-----------------------------------------------------------------------
+C           OPERATEUR    CALC_POINT_MAT STOCKAGE DANS LA TBLE RESULTAT
+C-----------------------------------------------------------------------
+      INTEGER      NBPAR,I,NVI
+      CHARACTER*8  K8B
+      CHARACTER*16 NOMPAR(*)
+      CHARACTER*19 TABINC
+      COMPLEX*16 CBID
+      REAL*8  DEPS(6),SIGM(6),SIGP(6),VIM(*),VIP(*),VR(*),RAC2
+
+      RAC2=SQRT(2.D0)
+
+C     STOCKAGE DES INCREMENTS POUR NMEVDR
+      CALL DCOPY(6,SIGP,1,VR(8),1)
+      CALL DAXPY(6,-1.D0,SIGM,1,VR(8),1)
+      CALL DSCAL(3,1.D0/RAC2,VR(11),1)
+
+      CALL DCOPY(6,DEPS,1,VR(2),1)
+      CALL DSCAL(3,1.D0/RAC2,VR(5),1)
+      CALL DCOPY(NVI,VIP,1,VR(16),1)
+      CALL DAXPY(NVI,-1.D0,VIM,1,VR(16),1)
+
+      CALL TBAJLI(TABINC,NBPAR,NOMPAR,I,VR,CBID,K8B,0)
+C      CALL TBIMEX(TABINC,6, NBPAR, NOMPAR, 'ASTER','E11.4')
+
+
+      END

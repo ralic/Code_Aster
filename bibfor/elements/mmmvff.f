@@ -4,7 +4,7 @@
      &                  COEFFF,DDEPLE,DDEPLM,MPROJT,VECTFF)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 27/07/2010   AUTEUR DESOZA T.DESOZA 
+C MODIF ELEMENTS  DATE 19/10/2010   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -76,7 +76,7 @@ C
       INTEGER   I, K, L, II,NBCPF
       REAL*8    TT(2)
       REAL*8    NRESE,INTER(2)
-      INTEGER   NDEXCL(9)
+      INTEGER   NDEXCL(10)
       REAL*8    DVITE(3),DVITET(3)
 C
 C ----------------------------------------------------------------------
@@ -182,11 +182,16 @@ C
   202     CONTINUE
   201   CONTINUE
       ELSEIF (PHASE.EQ.'EXFR') THEN
-        CALL ISDECO(NDEXFR,NDEXCL,9)
-        DO 111 I=1,9
+        CALL ISDECO(NDEXFR,NDEXCL,10)
+        DO 111 I=1,NNL
           IF (NDEXCL(I).EQ.1) THEN
-            II = (I-1)*NBCPF+1
-            VECTFF(II) = 0.D0
+            DO 110 L=1,NBCPF
+              IF ((L.EQ.2).AND.(NDEXCL(10).EQ.0)) THEN
+                GOTO 110
+              ENDIF
+              II = (I-1)*NBCPF+L
+              VECTFF(II) = 0.D0
+  110       CONTINUE
           ENDIF
   111   CONTINUE
       ELSEIF (PHASE.EQ.'ADHE') THEN

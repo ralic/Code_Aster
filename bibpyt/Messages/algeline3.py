@@ -1,4 +1,4 @@
-#@ MODIF algeline3 Messages  DATE 29/09/2010   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF algeline3 Messages  DATE 18/10/2010   AUTEUR BOYERE E.BOYERE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -290,15 +290,10 @@ Le système à résoudre n'a pas de DDL actif.
 On trouve plus de 9999 valeurs propres dans la bande demandée
 """),
 
-65: _("""
-La matrice de raideur est numériquement singulière (malgré la stratégie de décalage) :
- la valeur de décalage est une valeur propre ou la matrice est non inversible.
-"""),
-
 66: _("""
   -> La borne minimale de la bande de fréquences est une valeur propre !
      Malgré la stratégie de décalage, la matrice de raideur est numériquement
-     singulière.
+     singulière (modes de corps rigide).
   -> Risque & Conseil :
      Augmenter (ou diminuer) la fréquence (ou la charge critique dans le cas du calcul de
      flambement) qui définit la borne minimale de la bande de fréquence.
@@ -311,8 +306,11 @@ On poursuit tout de meme.
 """),
 
 68: _("""
-La matrice de raideur est singulière malgre la strategie de décalage
-(structure avec des modes de corps solide).
+  -> La matrice de raideur est singulière malgre la strategie de décalage
+(structure avec des modes de corps rigide).
+  -> Risque & Conseil :
+Utiliser l'option 'BANDE' avec une borne minimale de la bande de fréquence 
+légèrement négative (ou positive)
 """),
 
 69: _("""

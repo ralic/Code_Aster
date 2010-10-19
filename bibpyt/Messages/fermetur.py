@@ -1,4 +1,4 @@
-#@ MODIF fermetur Messages  DATE 24/08/2010   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF fermetur Messages  DATE 19/10/2010   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -84,19 +84,19 @@ La bibliothèque "YACS" n'est pas installée sur cette machine.
 """),
 
 13 : _("""
-La bibliothèque UMAT n'a pas pu être chargée.
+La bibliothèque %(k1)s n'a pas pu être chargée.
 
-Nom de la bibliothèque : %(k1)s
+Nom de la bibliothèque : %(k2)s
 
 Conseil : Vérifier que l'environnement est correctement défini,
           notamment la variable LD_LIBRARY_PATH.
 """),
 
 14 : _("""
-Le symbole demandé n'a pas été trouvé dans la bibliothèque UMAT.
+Le symbole demandé n'a pas été trouvé dans la bibliothèque %(k1)s.
 
-Nom de la bibliothèque : %(k1)s
-        Nom du symbole : %(k2)s
+Nom de la bibliothèque : %(k2)s
+        Nom du symbole : %(k3)s
 
 Conseil : Vérifier que l'environnement est correctement défini,
           notamment la variable LD_LIBRARY_PATH.

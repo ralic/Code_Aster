@@ -1,7 +1,8 @@
       SUBROUTINE OP0176()
-C     ------------------------------------------------------------------
+      IMPLICIT   NONE
+C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
+C MODIF PREPOST  DATE 19/10/2010   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,17 +19,24 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C     OPERATEUR D'EXTRACTION
-C     ------------------------------------------------------------------
 C
-      IMPLICIT   NONE
-C
-C 0.1. ==> ARGUMENTS
+C     BUT:
+C       OPERATEUR D'EXTRACTION
 C
 C
-C 0.2. ==> COMMUNS
+C     ARGUMENTS:
+C     ----------
 C
-C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
+C      ENTREE :
+C-------------
+C
+C      SORTIE :
+C-------------
+C
+C ......................................................................
+C
+C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
+C
       INTEGER          ZI
       COMMON  /IVARJE/ ZI(1)
       REAL*8           ZR
@@ -43,31 +51,35 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32                            ZK32
       CHARACTER*80                                    ZK80
       COMMON  /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
-C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
-C 0.3. ==> VARIABLES LOCALES
+C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C
       CHARACTER*6 NOMPRO
       PARAMETER ( NOMPRO = 'OP0176' )
 C
-      INTEGER       IBID, NBORDR, JORDR, NBEXCL, JEXCL, NBARCH, JARCH
-      INTEGER       NBAC, NBPA, JPA, IRET, NBNOSY, NBPARA
-      INTEGER       IAUX, JAUX, IZERO,NIVE,VERSIO,IUL,IUNIFI
-      INTEGER NRPASS, NBPASS
-      INTEGER ADRECG,IEXI,IEXI2
-      REAL*8        R8B
-      CHARACTER*1   CECR
-      CHARACTER*8   K8B, FORM, FORMAR
-      CHARACTER*8 LERES0, LERES1, NOPASE
+      INTEGER IBID,NBORDR,JORDR,NBEXCL,JEXCL,NBARCH,JARCH
+      INTEGER NBAC,NBPA,JPA,IRET,NBNOSY,NBPARA
+      INTEGER IAUX,JAUX,IZERO,NIVE,VERSIO,IUL,IUNIFI
+      INTEGER NRPASS,NBPASS,ADRECG
+
+      REAL*8 R8B
+
+      CHARACTER*1 CECR
+      CHARACTER*8 K8B,FORM,FORMAR
+      CHARACTER*8 LERES0,LERES1,NOPASE
       CHARACTER*8 NOSIMP
-      CHARACTER*16  TYPCON, NOMCMD
-      CHARACTER*19  RESUOU, RESUIN
-      CHARACTER*24  LISARC, LICHEX, NOMPAR
+      CHARACTER*16 TYPCON,NOMCMD
+      CHARACTER*19 RESUOU,RESUIN
+      CHARACTER*24 LISARC,LICHEX,NOMPAR
       CHARACTER*24 VALK(2)
       CHARACTER*24 NORECG
-      LOGICAL       FALS, TRUE , LMOD,LBID
-      COMPLEX*16    C16B
-C     ------------------------------------------------------------------
+      CHARACTER*32 K32BID
+
+      LOGICAL FALS,TRUE,LMOD,LBID
+
+      COMPLEX*16 C16B
+C
+C ----------------------------------------------------------------------
 C
       CALL JEMARQ( )
       CALL INFMAJ()
@@ -192,7 +204,7 @@ C
         CECR = 'T'
         IZERO = 0
         CALL IRECRI ( LERES1,NOSIMP,NOPASE,FORM,IUL,K8B,LBID,
-     &                IZERO,K8B,' ',NBPARA,ZK16(JPA),
+     &                IZERO,K8B,IBID,K32BID,' ',NBPARA,ZK16(JPA),
      &                NBORDR,ZI(JORDR),TRUE,'RESU',1,K8B,CECR,K8B,FALS,
      &                IZERO,IBID,IZERO,IBID,IZERO,K8B,FALS,R8B,FALS,R8B,
      &                FALS,FALS,FORMAR,LMOD,NIVE,VERSIO)

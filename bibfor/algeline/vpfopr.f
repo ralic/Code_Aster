@@ -3,7 +3,7 @@
      &                   PRECDC, NBRSSA, NBLAGR, SOLVEU)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 13/10/2010   AUTEUR BOITEAU O.BOITEAU 
+C MODIF ALGELINE  DATE 18/10/2010   AUTEUR BOYERE E.BOYERE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -123,7 +123,7 @@ C     VPSTUR
             IF (NBESSA .LE. NBRSSA) THEN
                GOTO 10
             ELSE
-               CALL U2MESS('F','ALGELINE3_65')
+               CALL U2MESS('F','ALGELINE3_68')
                CALL VPSTUR(LRAIDE,OMGSHI,LMASSE,LDYNAM,DET,IDET,
      &                     NPIVOT,IER,SOLVEU)
             ENDIF
@@ -242,7 +242,7 @@ C        --- CENTRAGE DE L INTERVALLE ---
             IF (NBESSA .LE. NBRSSA) THEN
                GOTO 23
             ELSE
-               CALL U2MESS('F','ALGELINE3_65')
+               CALL U2MESS('F','ALGELINE3_66')
                CALL VPSTUR(LRAIDE,OMGSHI,LMASSE,LDYNAM,DET,IDET,
      &                     NPIVOT,IER,SOLVEU)
             ENDIF

@@ -5,7 +5,7 @@
      &                    NBNOEU, NBMAIL, NBCOOR, VECGRM, NBCGRM )
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 14/09/2010   AUTEUR REZETTE C.REZETTE 
+C MODIF MODELISA  DATE 19/10/2010   AUTEUR COURTOIS M.COURTOIS 
 C RESPONSABLE GNICOLAS G.NICOLAS
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -49,7 +49,7 @@ C
       CHARACTER*24 COOVAL, COODSC, COOREF, GRPNOE, GRPMAI, CONNEX
       CHARACTER*24 FORMM,  TITRE,  NOMMAI, NOMNOE, TYPMAI, VECGRM
       CHARACTER*24 ADAPMA
-      CHARACTER*24 VALK(2)
+      CHARACTER*32 VALK(2)
       CHARACTER*8 NOMU
 C
 C     OUT
@@ -123,9 +123,9 @@ C 1.2. ==> VERIFICATION DU FICHIER MED
 C
 C 1.2.1. ==> VERIFICATION DE LA VERSION HDF
 C
-      CALL EFFOCO ( NOFIMD, CODRET )
+      CALL MFFOCO ( NOFIMD, CODRET )
       IF ( CODRET.NE.0 ) THEN
-        VALK (1) = NOFIMD
+        VALK (1) = NOFIMD(1:32)
         VALK (2) = NOMAMD
         VALI (1) = CODRET
         CALL U2MESG('A','MODELISA9_44',2,VALK,1,VALI,0,0.D0)
@@ -134,19 +134,19 @@ C
 C
 C 1.2.2. ==> VERIFICATION DE LA VERSION MED
 C
-      CALL EFVECO ( NOFIMD, CODRET )
+      CALL MFVECO ( NOFIMD, CODRET )
       IF ( CODRET.NE.0 ) THEN
         VALI (1) = CODRET
         CALL U2MESI('A+','MED_24',1,VALI)
-        CALL EFVEDO(VLIB(1),VLIB(2),VLIB(3),IRET)
+        CALL MFVEDO(VLIB(1),VLIB(2),VLIB(3),IRET)
         IF( IRET.EQ.0) THEN
           VALI (1) = VLIB(1)
           VALI (2) = VLIB(2)
           VALI (3) = VLIB(3)
           CALL U2MESI('A+','MED_25',3,VALI)
         ENDIF
-        CALL EFOUVR ( FID, NOFIMD, EDLECT, CODRET )
-        CALL EFVELI ( FID, VFIC(1),VFIC(2),VFIC(3), IRET )
+        CALL MFOUVR ( FID, NOFIMD, EDLECT, CODRET )
+        CALL MFVELI ( FID, VFIC(1),VFIC(2),VFIC(3), IRET )
         IF( IRET.EQ.0) THEN
           IF ( VFIC(2).EQ.-1 .OR. VFIC(3).EQ.-1) THEN
             CALL U2MESS('A+','MED_26')
@@ -163,7 +163,7 @@ C
             CALL U2MESS('A+','MED_28')
           ENDIF
         ENDIF
-        CALL EFFERM ( FID, CODRET )
+        CALL MFFERM ( FID, CODRET )
         CALL U2MESS('A','MED_41')
       ENDIF
 C
@@ -188,7 +188,7 @@ C
         CALL MDEXMA ( NOFIMD, NOMAMD, IAUX, EXISTM, NDIM, CODRET )
         IF ( .NOT.EXISTM ) THEN
            VALK(1) = NOMAMD
-           VALK(2) = NOFIMD
+           VALK(2) = NOFIMD(1:32)
            CALL U2MESK('F','MED_51', 2 ,VALK)
         ENDIF
 C
@@ -202,9 +202,9 @@ C====
 C
 C 2.1. ==> OUVERTURE FICHIER MED EN LECTURE
 C
-      CALL EFOUVR ( FID, NOFIMD, EDLECT, CODRET )
+      CALL MFOUVR ( FID, NOFIMD, EDLECT, CODRET )
       IF ( CODRET.NE.0 ) THEN
-        VALK (1) = NOFIMD
+        VALK (1) = NOFIMD(1:32)
         VALK (2) = NOMAMD
         VALI (1) = CODRET
         CALL U2MESG('A','MODELISA9_51',2,VALK,1,VALI,0,0.D0)
@@ -286,9 +286,9 @@ C====
 C
 C 9.1. ==> FERMETURE FICHIER
 C
-      CALL EFFERM ( FID, CODRET )
+      CALL MFFERM ( FID, CODRET )
       IF ( CODRET.NE.0 ) THEN
-        VALK (1) = NOFIMD
+        VALK (1) = NOFIMD(1:32)
         VALK (2) = NOMAMD
         VALI (1) = CODRET
         CALL U2MESG('A','MODELISA9_52',2,VALK,1,VALI,0,0.D0)

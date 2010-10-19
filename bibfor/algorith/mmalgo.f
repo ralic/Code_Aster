@@ -1,9 +1,9 @@
       SUBROUTINE MMALGO(XA    ,XS    ,LVITES,LCOMPL,LGLINI,
-     &                  JEU   ,JEUVIT,ASPERI,LAMBDC,MMCVCA,
-     &                  SCOTCH,XANEW ,XSNEW )
-C     
+     &                  JEU   ,JEUVIT,ASPERI,LAMBDC,COEFCR,
+     &                  MMCVCA,SCOTCH,XANEW ,XSNEW )
+C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 19/10/2010   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,22 +23,21 @@ C ======================================================================
 C RESPONSABLE ABBAS M.ABBAS
 C
       IMPLICIT NONE
-      INTEGER  XA,XS
-      INTEGER  XSNEW,XANEW
-      LOGICAL  LVITES,LCOMPL,MMCVCA,SCOTCH
-      REAL*8   JEU,JEUVIT,ASPERI,LAMBDC
-      LOGICAL  LGLINI
-C      
+      INTEGER  XA    ,XS
+      INTEGER  XANEW ,XSNEW
+      LOGICAL  LVITES,LCOMPL,MMCVCA,LGLINI,SCOTCH
+      REAL*8   JEU   ,JEUVIT,ASPERI,LAMBDC,COEFCR
+C
 C ----------------------------------------------------------------------
 C
 C ROUTINE CONTACT (METHODE CONTINUE - CONTRAINTES ACTIVES)
 C
 C TRAITEMENT DES DIFFERENTS CAS
-C      
+C
 C ----------------------------------------------------------------------
 C
 C
-C IN  XS     : INDICATEUR DE CONTACT 
+C IN  XS     : INDICATEUR DE CONTACT
 C                - XS = 0: PAS DE CONTACT
 C                - XS = 1: CONTACT
 C IN  XA     : INDICATEUR POUR LA COMPLIANCE
@@ -55,6 +54,7 @@ C IN  JEU    : VALEUR DU JEU
 C IN  JEUVIT : VALEUR DU GAP DES VITESSES NORMALES
 C IN  ASPERI : COEFFICIENT POUR LES ASPERITES (COMPLIANCE)
 C IN  LAMBDC : MULTIPLICATEUR DE CONTACT DU POINT DE CONTACT
+C IN  COEFCR : COEFFICIENT DE REGULARISATION DU CONTACT RHO_N
 C OUT XAEND  : NOUVEL INDICATEUR POUR COMPLIANCE
 C                 XA = 0 ON N'EST PAS "DANS" LES ASPERITES
 C              SI PAS DE COMPLIANCE ACTIVEE: XA VAUT TOUJOURS 1
@@ -94,92 +94,76 @@ C
       XANEW  = XA
       XSNEW  = XS
 C
-      IF ((XA.EQ.0) .AND. (XS.EQ.0)) THEN
+      IF (LCOMPL) THEN
 C
-C --- LE PC N'EST PAS CONTACTANT          (XS=0)
-C --- LE PC NE TOUCHE PAS LES ASPERITES   (XA=0)
+C --- COMPLIANCE
 C
-        IF (JEU.GT.ASPERI) THEN
-C
-C --- ON TOUCHE LES ASPERITES (-> XA = 1)
-C
-          XANEW = 1
-          IF (JEU .LE. R8PREM()) THEN
-C
-C --- CONTACTANT SI GLISSIERE UNIQUEMENT (-> XS = 1)
-C
-            IF (LGLINI) THEN
-              XSNEW = 1
-              MMCVCA = .FALSE.
-            ELSE
-              XSNEW = 0
-            ENDIF
-
-          ELSE
-C
-C --- CONTACTANT (-> XS = 1)
-C
-            XSNEW = 1
-            MMCVCA = .FALSE.
-          END IF
-        ENDIF
-      ELSE IF ((XA.EQ.1) .AND. (XS.EQ.0)) THEN
-C
-C --- LE PC N'EST PAS CONTACTANT          (XS=0)
-C --- LE PC TOUCHE LES ASPERITES          (XA=1)
-C
-C C'EST LE CAS PAR DEFAUT SI COMPLIANCE='NON'
-C
-        IF (JEU .GT. R8PREM()) THEN
-C
-C --- LE PC EST CONTACTANT
-C
-          IF (LVITES) THEN
-            IF (JEUVIT .GT. 0.D0) THEN
-              XSNEW = 1
-              MMCVCA = .FALSE.
-            END IF
-          ELSE
-C
-C --- FORMULATION EN DEPLACEMENT: ON REBOUCLE
-C
-            XSNEW = 1
-            XANEW = 1
-            MMCVCA = .FALSE.
-          END IF
-
-        ELSE
-
-          IF (JEU.LT.ASPERI .AND. LCOMPL) THEN
-            XSNEW = 0
-            XANEW = 0
+        IF (XA.EQ.0) THEN
+C ----- LE PC NE TOUCHAIT PAS LES ASPERITES (XA=0)
+          CALL ASSERT(XS.EQ.0)
+          IF (JEU.LE.ASPERI) THEN
+C ------- ET NE LES TOUCHE TOUJOURS PAS
+            GOTO 999
           ENDIF
-C
-C --- ON FORCE LE PC CONTACTANT SI GLISSIERE EN CONTACT_INIT
-C
-          IF (LGLINI) THEN
-            XSNEW = 1
-            MMCVCA = .FALSE.
-          ENDIF
-
         ENDIF
-
-      ELSE IF ((XA.EQ.1) .AND. (XS.EQ.1)) THEN
+      ENDIF
 C
-C --- LE PC EST       CONTACTANT          (XS=1)
-C --- LE PC TOUCHE LES ASPERITES          (XA=1)
+C --- LE PC TOUCHAIT LES ASPERITES
+C --- (C'EST TOUJOURS LE CAS QUAND IL N'Y A PAS DE COMPLIANCE)
 C
+      XANEW = 1
+C
+C --- VERIFICATION DU SIGNE DU MULTIPLICATEUR AUGMENTE
+C
+      IF ((LAMBDC-COEFCR*JEU).LE.R8PREM()) THEN
+        XSNEW = 1
+      ELSE
+        XSNEW = 0
+      ENDIF
+C
+C --- CAS GLISSIERE
+C
+      IF (LGLINI) THEN
+C ----- XS=0 EST POSSIBLE SI LE POINT A ETE EXCLUS PAR TOLE_*
+        IF (XS.EQ.0) THEN
+          XSNEW = 1
+        ENDIF
+C ----- PAS DE DECOLLEMENT AUTORISE
+        IF (XS.EQ.1) THEN
+          XSNEW = 1
+        ENDIF
+      ENDIF
+C
+C --- THETA-METHODE
+C
+      IF (XS.EQ.1) THEN
+C ----- UN POINT EST EN CONTACT
         SCOTCH = .TRUE.
-        IF ((LAMBDC.GT.0) .AND. (.NOT.LGLINI)) THEN
-C --- LE PC SE DECOLLE (TEST UNIQUEMENT SI GLISSIERE='NON')
-          MMCVCA = .FALSE.
+      ENDIF
+C
+C --- FORMULATION EN VITESSE
+C
+      IF (LVITES) THEN
+        IF ((XS.EQ.0).AND.(JEUVIT.LE.0.D0)) THEN
           XSNEW = 0
         END IF
-
-      ELSE
-        CALL ASSERT(.FALSE.)
-      END IF
+      ENDIF
 C
-
+C --- COMPLIANCE
+C
+      IF (LCOMPL) THEN
+        IF ((XS.EQ.0).AND.(JEU.LE.ASPERI)) THEN
+C ----- LE PC NE TOUCHE PLUS LES ASPERITES
+          XANEW = 0
+        ENDIF
+      ENDIF
+C
+C --- CONVERGENCE ?
+C
+      IF (XS.NE.XSNEW) THEN
+        MMCVCA=.FALSE.
+      ENDIF
+C
+ 999  CONTINUE
       CALL JEDEMA()
       END

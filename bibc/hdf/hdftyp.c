@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF hdftyp hdf  DATE 13/10/2009   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF hdftyp hdf  DATE 19/10/2010   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2003  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -18,6 +18,7 @@
 /* ================================================================== */
 #include <stdlib.h>
 #include "aster.h"
+#include "aster_fort.h"
 /*-----------------------------------------------------------------------------/
 / Récupération du type associé (dataset,group,etc) de chaque entité d'une liste 
 / de noms d'un groupe donné au sein d'un fichier HDF 
@@ -29,11 +30,14 @@
 /  Résultats :
 /     nombre de datasets et de groups
 /-----------------------------------------------------------------------------*/
-#include "hdf5.h"
+#ifndef _DISABLE_HDF5
+#include <hdf5.h>
+#endif
 #define FALSE   0
 
 INTEGER DEFPSPS(HDFTYP, hdftyp, INTEGER *idf, char *nomgr, STRING_SIZE ln, INTEGER *nbnom, char *typ, STRING_SIZE ltp)
 {
+#ifndef _DISABLE_HDF5
   hid_t idfic;
   char *nomg, *pt, *ptype; 
   int indx,j,ind;
@@ -65,9 +69,14 @@ INTEGER DEFPSPS(HDFTYP, hdftyp, INTEGER *idf, char *nomgr, STRING_SIZE ln, INTEG
   }
   free(nomg);
   free(ptype);
+#else
+  CALL_U2MESS("F", "FERMETUR_3");
+#endif
   return 0; 
 }
-   
+
+
+#ifndef _DISABLE_HDF5
 herr_t indiceType(hid_t id, const char *nom, void *donnees)
 {
   char *retour;
@@ -92,3 +101,4 @@ herr_t indiceType(hid_t id, const char *nom, void *donnees)
   }
   return 1;
 }
+#endif

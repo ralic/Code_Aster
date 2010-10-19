@@ -1,4 +1,4 @@
-# MODIF  DATE 14/09/2010   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 19/10/2010   AUTEUR DESOZA T.DESOZA 
 # TITRE CONTACT DE DEUX PLAQUES
 # ssnp121h.para = tps_job 60 mem_job 100Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -98,7 +98,7 @@ CHA2 = DEFI_CONTACT(MODELE         = MO,
                     ZONE =_F(
                              GROUP_MA_ESCL = 'AB',
                              GROUP_MA_MAIT = 'EF',
-                             CONTACT_INIT  = 'OUI',
+                             CONTACT_INIT  = 'INTERPENETRE',
                              INTEGRATION   = 'NCOTES2',
                              ALGO_CONT     = 'STANDARD',
                              COEF_CONT     = 1000.,

@@ -8,7 +8,7 @@
       LOGICAL                   NSYMX, NSYMY
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 19/10/2010   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -119,7 +119,7 @@ C
       ELSEIF ( MOTCLE(1:8) .EQ. 'GROUP_MA' ) THEN
          DO 30 IG = 1 , NBMAIL
             CALL JEVEUO (JEXNOM(MLGGMA,NOMMAI(IG)),'L',JGRO)
-            CALL JELIRA (JEXNOM(MLGGMA,NOMMAI(IG)),'LONMAX',NBMA,K8B)
+            CALL JELIRA (JEXNOM(MLGGMA,NOMMAI(IG)),'LONUTI',NBMA,K8B)
             DO 32 IM = 1 , NBMA
                NUMAIL = ZI(JGRO+IM-1)
                CALL JEVEUO (JEXNUM(MLGCOX,NUMAIL),'L',JDES)

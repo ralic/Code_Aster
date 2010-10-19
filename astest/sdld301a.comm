@@ -1,4 +1,4 @@
-# MODIF  DATE 29/09/2009   AUTEUR MACOCCO K.MACOCCO 
+# MODIF  DATE 19/10/2010   AUTEUR DELMAS J.DELMAS 
 # TITRE SYSTEME 2 MASSES 3 RESSORTS
 #       SYSTEME MASSE-RESSORT A 2 DEGRES DE LIBERTE
 #       ANALYSE SPECTRALE MULTI SUPPORTEE
@@ -123,25 +123,18 @@ MODES=NORM_MODE(reuse=MODES,
 
 #
 MODES=CALC_ELEM(reuse=MODES,
-                          MODELE=MODELE,
                         RESULTAT=MODES,
-                       CARA_ELEM=CARA,
-                      CHAM_MATER=CHAMPMAT,
                           OPTION=( 'SIEF_ELGA_DEPL',
                                     'EFGE_ELNO_DEPL',)
                   )
 
 MODES=CALC_NO(  reuse=MODES,
-                        RESULTAT=MODES,   MODELE=MODELE,
-                       CARA_ELEM=CARA,
-                      CHAM_MATER=CHAMPMAT,
+                        RESULTAT=MODES,   
                           OPTION='FORC_NODA'
                   )
 
 MODES=CALC_NO(  reuse=MODES,
-                        RESULTAT=MODES,   MODELE=MODELE,
-                       CARA_ELEM=CARA,
-                      CHAM_MATER=CHAMPMAT,
+                        RESULTAT=MODES,   
                           OPTION='REAC_NODA'
                   )
 
@@ -169,25 +162,18 @@ MODE_STA=MODE_STATIQUE(   MATR_RIGI=MATRRIGI,
 
 #
 MODE_STA=CALC_ELEM(reuse=MODE_STA,
-                             MODELE=MODELE,
                            RESULTAT=MODE_STA,
-                          CARA_ELEM=CARA,
-                         CHAM_MATER=CHAMPMAT,
                              OPTION=( 'SIEF_ELGA_DEPL',
                                       'EFGE_ELNO_DEPL', )
                      )
 
-MODE_STA=CALC_NO(  reuse=MODE_STA,  MODELE=MODELE,
+MODE_STA=CALC_NO(  reuse=MODE_STA,
                            RESULTAT=MODE_STA,
-                          CARA_ELEM=CARA,
-                         CHAM_MATER=CHAMPMAT,
                              OPTION='FORC_NODA'
                      )
 
-MODE_STA=CALC_NO(  reuse=MODE_STA,  MODELE=MODELE,
+MODE_STA=CALC_NO(  reuse=MODE_STA,  
                            RESULTAT=MODE_STA,
-                          CARA_ELEM=CARA,
-                         CHAM_MATER=CHAMPMAT,
                              OPTION='REAC_NODA'
                      )
 
@@ -228,25 +214,18 @@ MODE_CO2=MODE_STATIQUE(   MATR_RIGI=MATRRIGI,
 
 #
 MODE_CO2=CALC_ELEM(reuse=MODE_CO2,
-                             MODELE=MODELE,
                            RESULTAT=MODE_CO2,
-                          CARA_ELEM=CARA,
-                         CHAM_MATER=CHAMPMAT,
                              OPTION=( 'SIEF_ELGA_DEPL',
                                       'EFGE_ELNO_DEPL', )
                      )
 
-MODE_CO2=CALC_NO(  reuse=MODE_CO2,  MODELE=MODELE,
+MODE_CO2=CALC_NO(  reuse=MODE_CO2,
                            RESULTAT=MODE_CO2,
-                          CARA_ELEM=CARA,
-                         CHAM_MATER=CHAMPMAT,
                              OPTION='FORC_NODA'
                      )
 
-MODE_CO2=CALC_NO(  reuse=MODE_CO2,  MODELE=MODELE,
+MODE_CO2=CALC_NO(  reuse=MODE_CO2,
                            RESULTAT=MODE_CO2,
-                          CARA_ELEM=CARA,
-                         CHAM_MATER=CHAMPMAT,
                              OPTION='REAC_NODA'
                      )
 

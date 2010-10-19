@@ -1,4 +1,4 @@
-# MODIF  DATE 11/05/2010   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 18/10/2010   AUTEUR BOYERE E.BOYERE 
 # TITRE PAVE SOUS PRESSION SINUS COMPARAISON ENTRE TRANSITOIRE ET HARMONIQUE
 # sdlv124a.para = tps_job 660 mem_job 1000Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -165,8 +165,6 @@ DYNATRAN=DYNA_LINE_TRAN(NEWMARK=_F(),
                                     );
 
 DYNATRAN=CALC_ELEM(reuse =DYNATRAN,
-               MODELE=MODEL,
-               CHAM_MATER=CHMAT,
                RESULTAT=DYNATRAN,
                MAILLE = 'M1145',
                 LIST_INST = LISTRD,
@@ -221,8 +219,6 @@ DYNHASS=DYNA_LINE_HARM(MATR_MASS=MASS,
                              );
                              
 DYNHASS=CALC_ELEM(reuse =DYNHASS,
-               MODELE=MODEL,
-               CHAM_MATER=CHMAT,
                MAILLE = 'M1145',
                RESULTAT=DYNHASS,
                TOUT_ORDRE='OUI',
@@ -283,8 +279,6 @@ if plus:
                                  );
 
   DYNTPHY=CALC_ELEM(reuse =DYNTPHY,
-               MODELE=MODEL,
-               CHAM_MATER=CHMAT,
                RESULTAT=DYNTPHY,
                 LIST_INST = LISTRD,
                 PRECISION=1.E-6,
@@ -367,9 +361,16 @@ DHX2=RECU_FONCTION (   RESULTAT = DYNHPHY,
                       NOM_CHAM = 'DEPL',
                       TOUT_ORDRE = 'OUI');
                                             
+# TEST DE RECU_FONCTION SUR UN HARM_GENE
+DGX2=RECU_FONCTION (   RESU_GENE = DYNHGEN,
+                      NOM_CMP = 'DX',
+                      NOEUD = 'N433',
+                      NOM_CHAM = 'DEPL')
+                                            
 # CALCUL DE LA VALEUR MAX SUR N PERIODE
 DHX11=CALC_FONCTION(EXTRACTION=_F(FONCTION=DHX1,PARTIE='MODULE'),);
 DHX21=CALC_FONCTION(EXTRACTION=_F(FONCTION=DHX2,PARTIE='MODULE'),);
+DGX21=CALC_FONCTION(EXTRACTION=_F(FONCTION=DGX2,PARTIE='MODULE'),);
 
 DTX11=CALC_FONCTION(ABS=_F(FONCTION=DTX1),);
 DTX111=INFO_FONCTION(MAX=_F(FONCTION=DTX11));                      
@@ -405,6 +406,15 @@ TEST_FONCTION(VALEUR=(
                         ),
               );
 
+TEST_FONCTION(VALEUR=(
+                     _F(FONCTION=DGX21,
+                        NOM_PARA='FREQ',
+                        VALE_PARA=freq,
+                        VALE_REFE=test1,
+                        REFERENCE='AUTRE_ASTER',
+                        PRECISION=0.01),
+                        ),
+              );
 
 #########################################################
 # RECUPERATION DE LA CONTRAINTE AUX POINTS DE GAUSS  

@@ -5,7 +5,7 @@
       CHARACTER*(*) RESU,MODELE,MATE,CARA,NOMCMD,LCHAR(*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 11/10/2010   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 19/10/2010   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -356,7 +356,7 @@ C        RECOPIE DE SIGIS DANS SIGIE
                 CALL U2MESK('A','UTILITAI3_46',1,NOMMAI)
                 GO TO 50
               END IF
-              CALL JELIRA(JEXNOM(MLGGMA,NOMMAI),'LONMAX',NBMA,K8B)
+              CALL JELIRA(JEXNOM(MLGGMA,NOMMAI),'LONUTI',NBMA,K8B)
               IF (NBMA.EQ.0) THEN
                 CALL U2MESK('A','UTILITAI3_47',1,NOMMAI)
                 GO TO 50

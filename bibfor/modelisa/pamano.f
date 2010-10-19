@@ -4,7 +4,7 @@
       CHARACTER*(*)     MOTFAZ, MOCLEZ, NOMAZ, LISTYZ, LISNOZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 06/07/2009   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 19/10/2010   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -146,7 +146,7 @@ C              -----------------------------------------------------
      &                    MOTFAC,MOTCLE,IOCC,1,NG,ZK8(JJJ),NGR)
              DO 10 IGR = 1, NGR
                 CALL JEVEUO (JEXNOM(GRMAMA,ZK8(JJJ+IGR-1)),'L',JGRO)
-                CALL JELIRA (JEXNOM(GRMAMA,ZK8(JJJ+IGR-1)),'LONMAX',
+                CALL JELIRA (JEXNOM(GRMAMA,ZK8(JJJ+IGR-1)),'LONUTI',
      &                      NBMAIL,K1BID)
                 DO 20 M = 1, NBMAIL
                   NUMAIL = ZI(JGRO-1+M)
@@ -241,7 +241,7 @@ C              ------------------------------------------------
              CALL GETVEM (NOMA,'GROUP_NO',
      &                    MOTFAC,MOTCLE,IOCC,1,NG,ZK8(JJJ),NGR)
              DO 40 IGR = 1, NGR
-               CALL JELIRA (JEXNOM(GRNOMA,ZK8(JJJ+IGR-1)),'LONMAX',
+               CALL JELIRA (JEXNOM(GRNOMA,ZK8(JJJ+IGR-1)),'LONUTI',
      &                      N3,K1BID)
                IDIM3 = IDIM3 + N3
  40          CONTINUE
@@ -309,7 +309,7 @@ C
              CALL GETVTX (MOTFAC,MOTCLE,IOCC,1,NG,ZK8(JJJ),NGR)
              DO 50 IGR = 1, NGR
                CALL JEVEUO (JEXNOM(GRMAMA,ZK8(JJJ+IGR-1)),'L',JGRO)
-               CALL JELIRA (JEXNOM(GRMAMA,ZK8(JJJ+IGR-1)),'LONMAX',
+               CALL JELIRA (JEXNOM(GRMAMA,ZK8(JJJ+IGR-1)),'LONUTI',
      &                      NBMAIL,K1BID)
                DO 60 M = 1, NBMAIL
                   NUMAIL = ZI(JGRO-1+M)
@@ -360,7 +360,7 @@ C
              CALL GETVTX (MOTFAC,MOTCLE,IOCC,1,NG,ZK8(JJJ),NGR)
              DO 100 IGR = 1, NGR
                CALL JEVEUO (JEXNOM(GRNOMA,ZK8(JJJ+IGR-1)),'L',JGRO)
-               CALL JELIRA (JEXNOM(GRNOMA,ZK8(JJJ+IGR-1)),'LONMAX',
+               CALL JELIRA (JEXNOM(GRNOMA,ZK8(JJJ+IGR-1)),'LONUTI',
      &                      N3,K1BID)
                DO 110 INO = 1, N3
                   IN = ZI(JGRO+INO-1)

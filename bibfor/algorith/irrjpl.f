@@ -1,15 +1,14 @@
-      SUBROUTINE  IRRJPL(FAMI,KPG,KSP,MOD,NMAT,MATER,NR,NVI,SIGF,VIND,
-     &                   VINF,SIGD,DSDE)
+      SUBROUTINE  IRRJPL(MODEL,NMAT,MATER,SIGF,VIND,
+     &                   VINF,DSDE)
 
       IMPLICIT NONE
-      CHARACTER*(*)     FAMI
-      CHARACTER*8       MOD
-      INTEGER           NMAT,KPG,KSP,NVI,NR
-      REAL*8            MATER(NMAT,2),DSDE(6,6),SIGF(6),VIND(*)
-      REAL*8            VINF(*),SIGD(6)
+      CHARACTER*8       MODEL
+      INTEGER           NMAT
+      REAL*8            MATER(NMAT,2),DSDE(6,6),SIGF(6)
+      REAL*8            VIND(*),VINF(*)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 17/12/2007   AUTEUR FLEJOU J-L.FLEJOU 
+C MODIF ALGORITH  DATE 18/10/2010   AUTEUR FLEJOU J-L.FLEJOU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -46,8 +45,8 @@ C       ----------------------------------------------------------------
 C     ------------------------------------------------------------------
       COMMON /TDIM/ NDT,NDI
 
-      REAL*8  YD(NR),YF(NR),DY(NR),DET,MAT(6,6),I4(6,6)
-      REAL*8  FKOOH(6,6),IRRAD,IRRAF,DPHI,PF,ETAIF,DP,DETAI,DPI
+      REAL*8  DET,MAT(6,6),I4(6,6)
+      REAL*8  FKOOH(6,6),DPHI,PF,ETAIF,DP,DETAI,DPI
       REAL*8  AI0,ETAIS,K,N,P0,KAPPA,R02,ZETAF,PENPE,PK,PE,SPE,SR
       REAL*8  DDFDDS(6,6),DRSDS(6,6),SEQUIV,DEV(6),DFDS(6),DRIDS,DRPDP
       REAL*8  R8PREM,LCNRTS
@@ -63,20 +62,6 @@ C     ------------------------------------------------------------------
      &             0.0D0   , 0.0D0  , 0.0D0  , 0.0D0  ,0.0D0  ,1.0D0/
 C     ------------------------------------------------------------------
 
-      CALL LCEQVN(NDT,SIGF,YF)
-      CALL LCEQVN(NDT,SIGD,YD)
-
-      CALL LCEQVN ( NVI-1,  VIND , YD(NDT+1) )
-      CALL LCEQVN ( NVI-1,  VINF , YF(NDT+1) )
-
-      IF ( MOD.EQ.'C_PLAN') THEN
-        CALL LCEQVN ( (NR-1),  YF , DY )
-        CALL DAXPY ( (NR-1), -1.D0, YD, 1,DY, 1)
-      ELSE
-        CALL LCEQVN ( NR,  YF , DY )
-        CALL DAXPY ( NR, -1.D0, YD, 1,DY, 1)
-      ENDIF
-
 C     CALCUL DE LA MATRICE JACOBIENNE ==> methode b (plus sure)
 C     a) Faire appel a IRRJAC
 C        certaines des équations sont normées   ==> précautions
@@ -84,25 +69,16 @@ C        si le jacobien est changé              ==> répercutions
 C        CALL IRRJAC (FAMI,KPG,KSP,MOD,NMAT,MATER,YF,DY,NR,DRDY)
 C     b) Calcul qui ressemble a IRRJAC
 C        independant de IRRJAC
-C        duplication de code
+C        adaptation du code de IRRJAC
 
-      CALL LCOPIL ( 'ISOTROPE' , MOD , MATER(1,1) , FKOOH )
-      CALL RCVARC ('F','IRRA','-',FAMI,KPG,KSP,IRRAD,IRET)
-      CALL RCVARC ('F','IRRA','+',FAMI,KPG,KSP,IRRAF,IRET)
-C     ARRET DANS IRRMAT SI  IRRAD .GT. IRRAF*1.00001
-      IF ( IRRAD .GT. IRRAF ) THEN
-         DPHI = 0.0D0
-      ELSE
-         DPHI = IRRAF - IRRAD
-      ENDIF
-
-C     RECUPERATION DES VARIABLES INTERNES
-      PF    = YF(NDT+1)
-      ETAIF = YF(NDT+2)
+      CALL LCOPIL ( 'ISOTROPE' , MODEL , MATER(1,1) , FKOOH )
+C     RECUPERATION DES VARIABLES INTERNES A t+
+      PF    = VINF(1)
+      ETAIF = VINF(2)
 C     RECUPERATION DES INCREMENTS DES VARIABLES INTERNES
-      DP    = DY(NDT+1)
-      DETAI = DY(NDT+2)
-      DPI   = DY(NDT+3)
+      DP    = VINF(1) - VIND(1)
+      DETAI = VINF(2) - VIND(2)
+      DPI   = VINF(3) - VIND(3)
 
 C     CARACTERISTIQUES MATERIAUX
       AI0   = MATER(4,2)
@@ -117,6 +93,8 @@ C     CARACTERISTIQUES MATERIAUX
       PK    = MATER(14,2)
       PE    = MATER(15,2)
       SPE   = MATER(16,2)
+C     INCREMENT D'IRRADIATION
+      DPHI = MATER(23,2)
 
 C     Calcul de DRSDS : (6,6)
       CALL IRRFSS(SIGF,DDFDDS)

@@ -1,4 +1,4 @@
-#@ MODIF creation_donnees_homard Macro  DATE 04/10/2010   AUTEUR GNICOLAS G.NICOLAS 
+#@ MODIF creation_donnees_homard Macro  DATE 18/10/2010   AUTEUR GNICOLAS G.NICOLAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -22,7 +22,7 @@
 Cette classe cree le fichier de configuration permettant de lancer HOMARD
 depuis Code_Aster.
 """
-__revision__ = "V1.6"
+__revision__ = "V1.7"
 __all__ = [ ]
  
 import os
@@ -439,10 +439,11 @@ class creation_donnees_homard:
       if self.mode_homard == "ADAP" :
         self.ecrire_ligne_configuration_3("HOMaiN__", "M_"+self.str_niter  , self.fic_homard_niter )
         self.ecrire_ligne_configuration_3("HOMaiNP1", "M_"+self.str_niterp1, self.fic_homard_niterp1)
-        aux = "oui"
-      else :
-        aux = "non"
-      self.ecrire_ligne_configuration_2("EcriFiHO", aux)
+        if ( self.dico_configuration["niter"] == 0 ) :
+          aux = "TOUT"
+        else :
+          aux = "NP1"
+        self.ecrire_ligne_configuration_2("EcriFiHO", aux)
 #
 #     5. Le pilotage de l'adaptation
 #
@@ -472,8 +473,8 @@ class creation_donnees_homard:
           if self.dico_configuration["Indicateur"].has_key("NUME_ORDRE") :
             self.ecrire_ligne_configuration_2("CCNumOrI", self.dico_configuration["Indicateur"]["NUME_ORDRE"])
             self.ecrire_ligne_configuration_2("CCNumPTI", self.dico_configuration["Indicateur"]["NUME_ORDRE"])
-          if self.mots_cles.has_key("TYPE_VALEUR_INDICA") :
-            self.ecrire_ligne_configuration_2("CCUsCmpI", self.mots_cles["TYPE_VALEUR_INDICA"])
+          if self.mots_cles.has_key("USAGE_CMP") :
+            self.ecrire_ligne_configuration_2("CCUsCmpI", self.mots_cles["USAGE_CMP"])
 #
 #     5.3. Les eventuelles zones de raffinement
 #
@@ -524,9 +525,9 @@ class creation_donnees_homard:
 #
 #     5.5. L'usage de l'indicateur
 #
-        if self.mots_cles.has_key("TYPE_OPER_INDICA") :
-          if self.mots_cles["TYPE_OPER_INDICA"] is not None :
-            self.ecrire_ligne_configuration_2("CCModeFI", self.mots_cles["TYPE_OPER_INDICA"])
+        if self.mots_cles.has_key("USAGE_CHAMP") :
+          if self.mots_cles["USAGE_CHAMP"] is not None :
+            self.ecrire_ligne_configuration_2("CCModeFI", self.mots_cles["USAGE_CHAMP"])
 #
 #     5.6. Les eventuels groupes de filtrage du raffinement/deraffinement
 #

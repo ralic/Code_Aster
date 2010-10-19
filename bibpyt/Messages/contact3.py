@@ -1,4 +1,4 @@
-#@ MODIF contact3 Messages  DATE 14/09/2010   AUTEUR ABBAS M.ABBAS 
+#@ MODIF contact3 Messages  DATE 19/10/2010   AUTEUR DESOZA T.DESOZA 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -23,6 +23,16 @@ def _(x) : return x
 
 cata_msg = {
 
+1 : _("""
+Formulation continue.
+Vous avez activé le frottement de Coulomb (FROTTEMENT='COULOMB') pourtant toutes les zones de contact
+portent un coefficient de frottement nul.
+
+Le frottement est donc désactivé.
+
+Conseil : vérifiez que vous avez correctement défini le coefficient de frottement (mot-clé COULOMB) dans chaque zone. 
+"""),
+
 2 : _("""
   La maille de fond de fissure de type POI1, introduite par le mot-clef MAILLE_FOND ou GROUP_MA_FOND,
 ne correspond pas à une extrémité du segment toucahnt le fond de fisssure. 
@@ -30,10 +40,12 @@ ne correspond pas à une extrémité du segment toucahnt le fond de fisssure.
 """),
 
 3 : _("""
-  Pour la formulation de contact < %(k1)s > le couple:
-  ALGO_CONT: < %(k2)s >
-  ALGO_FROT: < %(k3)s >  
-  N'est pas possible.
+  Pour la formulation de contact < %(k1)s > le couple :
+  ALGO_CONT : < %(k2)s >
+  ALGO_FROT : < %(k3)s >  
+  n'est pas permis.
+  
+  Conseil : consultez la documentation pour connaître les couples autorisés.
 """),
 
 4 : _("""

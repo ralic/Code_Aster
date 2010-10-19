@@ -1,4 +1,4 @@
-%& MODIF COMPELEM  DATE 05/10/2010   AUTEUR MAHFOUZ D.MAHFOUZ 
+%& MODIF COMPELEM  DATE 18/10/2010   AUTEUR TARDIEU N.TARDIEU 
 % ======================================================================
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
@@ -259,6 +259,8 @@ PHENOMENE_MODELISATION__
               MAILLE__ HEXA8     ELEMENT__ MECA_HEXS8
               MAILLE__ QUAD8     ELEMENT__ MECA_FACE8
               MAILLE__ QUAD4     ELEMENT__ MECA_FACE4
+              MAILLE__ TETRA10   ELEMENT__ MECA_TETRS10
+              MAILLE__ TRIA6     ELEMENT__ MECA_FACE6
 
        MODELISATION__ '3D'               DIM__ 3 3   CODE__ '3D_'
               ATTRIBUT__  NBSIGM=X6 TYPMOD=COMP3D

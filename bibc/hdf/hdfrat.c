@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF hdfrat hdf  DATE 13/10/2009   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF hdfrat hdf  DATE 19/10/2010   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2003  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -17,6 +17,7 @@
 /*    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.     */
 /* ================================================================== */
 #include "aster.h"
+#include "aster_fort.h"
 /*-----------------------------------------------------------------------------/
 / Lire un attribut de type chaine de caractères associé à un dataset 
 / au sein d'un fichier HDF 
@@ -28,15 +29,18 @@
 /  Résultats :
 /     =0 OK, =-1 problème 
 /-----------------------------------------------------------------------------*/
-#include "hdf5.h"
+#ifndef _DISABLE_HDF5
+#include <hdf5.h>
+#endif
 
 INTEGER DEFPSPS(HDFRAT, hdfrat, INTEGER *iddat, char *nomat, STRING_SIZE ln, INTEGER *nbv, char *valat, STRING_SIZE lv)
 {
+  INTEGER iret=-1,lt;
+#ifndef _DISABLE_HDF5
   hid_t ida,attr,atyp,aspa;  
   herr_t ret;
   int k;
   int rank;
-  long iret=-1,lt;
   hsize_t sdim[1]; 
   char *nom;
   void *malloc(size_t size); 
@@ -61,5 +65,8 @@ INTEGER DEFPSPS(HDFRAT, hdfrat, INTEGER *iddat, char *nomat, STRING_SIZE ln, INT
     ret  = H5Aclose(attr);
   } 
   free(nom);
+#else
+  CALL_U2MESS("F", "FERMETUR_3");
+#endif
   return iret;
 }

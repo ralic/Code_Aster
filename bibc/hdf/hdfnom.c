@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF hdfnom hdf  DATE 13/10/2009   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF hdfnom hdf  DATE 19/10/2010   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2003  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -18,6 +18,7 @@
 /* ================================================================== */
 #include <stdlib.h>
 #include "aster.h"
+#include "aster_fort.h"
 /*-----------------------------------------------------------------------------/
 / Récupération des noms (dataset,group) de chaque entité contenu dans
 / d'un groupe donné au sein d'un fichier HDF 
@@ -27,15 +28,18 @@
 /  Résultats :
 /     nombre de datasets et de groups
 /-----------------------------------------------------------------------------*/
-#include "hdf5.h"
+#ifndef _DISABLE_HDF5
+#include <hdf5.h>
+#endif
 
 INTEGER DEFPSS(HDFNOM, hdfnom, INTEGER *idf, char *nomgr, STRING_SIZE ln, char *nom, STRING_SIZE lnm)
 {
+  INTEGER nbobj=0;
+#ifndef _DISABLE_HDF5
   hid_t idfic;
   char *nomg, *pnomdts, *pnom;
   int k, ll;
   int l,ind,indx;
-  long nbobj=0;
   void *malloc(size_t size);
   
   herr_t indiceName(hid_t loc_id, const char *name, void *opdata);
@@ -65,9 +69,13 @@ INTEGER DEFPSS(HDFNOM, hdfnom, INTEGER *idf, char *nomgr, STRING_SIZE ln, char *
   }
   free(nomg);
   free(pnomdts);
+#else
+  CALL_U2MESS("F", "FERMETUR_3");
+#endif
   return nbobj; 
 }
 
+#ifndef _DISABLE_HDF5
 herr_t indiceName(hid_t id, const char *nom, void *donnees)
 {
   char *p;
@@ -76,3 +84,4 @@ herr_t indiceName(hid_t id, const char *nom, void *donnees)
   strcpy(p,nom);
   return 1;
 }
+#endif

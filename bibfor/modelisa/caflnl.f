@@ -4,7 +4,7 @@
       CHARACTER*(*)       LIGRMO
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 23/05/2006   AUTEUR CIBHHPD L.SALMONA 
+C MODIF MODELISA  DATE 19/10/2010   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -95,6 +95,7 @@ C
          ELSE
             CALL RELIEM(LIGRMO, NOMA, 'NU_MAILLE', MOTCLF, IOCC, 2,
      +                                  MOTCLE, TYPMCL, MESMAI, NBMA )
+            IF (NBMA.EQ.0) GOTO 10
             CALL JEVEUO ( MESMAI, 'L', JMA )
             CALL NOCART ( CARTE,3,K8B,'NUM',NBMA,K8B,ZI(JMA),' ',NCMP)
             CALL JEDETR ( MESMAI )

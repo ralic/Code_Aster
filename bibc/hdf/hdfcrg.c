@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF hdfcrg hdf  DATE 16/11/2009   AUTEUR REZETTE C.REZETTE */
+/* MODIF hdfcrg hdf  DATE 19/10/2010   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2003  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -18,6 +18,7 @@
 /* ================================================================== */
 #include <stdlib.h>
 #include "aster.h"
+#include "aster_fort.h"
 /*-----------------------------------------------------------------------------/
 / Création d'un groupe HDF, renvoie une erreur si le groupe ne peut être créé 
 /  Paramètres :
@@ -27,14 +28,17 @@
 /  Résultats :
 /     identificateur du groupe, -1 sinon (hid_t = int)
 /-----------------------------------------------------------------------------*/
+#ifndef _DISABLE_HDF5
 #include <hdf5.h>
+#endif
 
 INTEGER DEFPSS(HDFCRG, hdfcrg, INTEGER *idf, char *nomgp, STRING_SIZE lp, char *nomgr, STRING_SIZE ln)
 {
+  INTEGER iret=-1;
+#ifndef _DISABLE_HDF5
   hid_t  idgrp,idfic;     
   char *nomd;
   int k,lg2;
-  long iret=-1;
   void *malloc(size_t size);
     
   idfic=(hid_t) *idf;
@@ -62,5 +66,8 @@ INTEGER DEFPSS(HDFCRG, hdfcrg, INTEGER *idf, char *nomgp, STRING_SIZE lp, char *
   if ((idgrp = H5Gcreate(idfic, nomd, 0)) >= 0) 
     iret = (long) idgrp;
   free (nomd);
+#else
+  CALL_U2MESS("F", "FERMETUR_3");
+#endif
   return iret;
 }     

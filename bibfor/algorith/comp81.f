@@ -1,9 +1,10 @@
-      SUBROUTINE COMP81(NOMRES,BASMOD,RAIDF,MASSF,AMORF,NOMA)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      SUBROUTINE COMP81(NOMRES,BASMOD,RAIDF,NOMA)
+      IMPLICIT NONE
       CHARACTER*8  NOMRES,NOMA,BASMOD
-      CHARACTER*19 MASSF,RAIDF,AMORF
+      CHARACTER*19 RAIDF
+C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 11/10/2010   AUTEUR DELMAS J.DELMAS 
+C MODIF ALGORITH  DATE 19/10/2010   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -20,18 +21,29 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
-C-----------------------------------------------------------------------
-C  BUT : COMPATIBILITE MACR_ELEM_DYNA/MACR_ELEM_STAT
-C-----------------------------------------------------------------------
 C
-C NOMRES /I/ : NOM UTILISATEUR DU RESULTAT
-C BASMOD /I/ : NOM UT DE LA BASE MODALE DE PROJECTION
-C RAIDF  /I/ : NOM UT DE LA MATRICE RAIDEUR A PROJETER
-C MASSEF /I/ : NOM UT DE LA MATRICE DE MASSE A PROJETER
-C AMORF  /I/ : NOM UT DE LA MATRICE D'AMORTISSEMENT A PROJETER
-C MAILLA /I/ : NOM UT DU MAILLAGE EN AMONT
+C     BUT:
+C       COMPATIBILITE MACR_ELEM_DYNA/MACR_ELEM_STAT
 C
-C-------- DEBUT COMMUNS NORMALISES  JEVEUX  ----------------------------
+C
+C     ARGUMENTS:
+C     ----------
+C
+C      ENTREE :
+C-------------
+C IN   NOMRES    : NOM UTILISATEUR DU RESULTAT
+C IN   BASMOD    : NOM UT DE LA BASE MODALE DE PROJECTION
+C IN   RAIDF     : NOM UT DE LA MATRICE RAIDEUR A PROJETER
+C IN   MASSEF    : NOM UT DE LA MATRICE DE MASSE A PROJETER
+C IN   AMORF     : NOM UT DE LA MATRICE D'AMORTISSEMENT A PROJETER
+C IN   MAILLA    : NOM UT DU MAILLAGE EN AMONTC
+C
+C      SORTIE :
+C-------------
+C
+C ......................................................................
+C
+C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
 C
       INTEGER          ZI
       COMMON  /IVARJE/ ZI(1)
@@ -47,27 +59,29 @@ C
       CHARACTER*32                                  ZK32
       CHARACTER*80                                            ZK80
       COMMON  /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
-C
       CHARACTER*32 JEXNUM,JEXNOM
 C
-C----------  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
+C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C
-      INTEGER      IAREFM,IRET,IBID,NBNOE,LLDEF,IACONX,NTOT,
-     +             IAK11,IAK1,IAM11,IAM1,NBMTOT,NBMDEF,IER,
-     +             NBMDYN,NBNDYN,I,J,K,INEBID,NEC,GD,NBEC
-      REAL*8       RBNDYN
-C      CHARACTER*6  PGC
-      CHARACTER*8  NOMO,BLANC,LINTF,K8BID,CHMAT,CHCAR,NOGDSI,NOGDS2
+      INTEGER      IAREFM,IRET,IBID,NBNOE,LLDEF,IACONX
+      INTEGER      NBMTOT,NBMDEF,IER
+      INTEGER      NBMDYN,NBNDYN,I,J,K,INEBID,NEC,IE,IERD
+      INTEGER      IACON1,IADESC,IADESM,IALICA,IALICH,IAPRNO,ICAS
+      INTEGER      IGEX,INSTDY,IOCC,IVAL,LDGN,LDGN0,LLREFB,LNOCMP
+      INTEGER      N1,NBNDEF,NBNO,NBNO2,NBNOT,NCMPMX,NOCC,NUEQ,NUNOT
+
+      REAL*8       RBNDYN,RBNDEF
+
+      CHARACTER*8  NOMO,BLANC,LINTF,K8BID,CHMAT,CHCAR,NOGDSI
       CHARACTER*8  NOMCAS,VECTAS,GNEX
       CHARACTER*14 NUMDDL
       CHARACTER*19 NU
-C      CHARACTER*3  TREDU
+
       LOGICAL      LREDU
 C
-C-----------------------------------------------------------------------
       DATA BLANC         /'        '/
+C
 C-----------------------------------------------------------------------
-C --- RECUPERATION EVENTUELLE MATRICE RAIDEUR EN ARGUMENT
 C
       CALL JEMARQ()
 C
@@ -92,10 +106,10 @@ C **********************
       ENDIF
       
       IF (LINTF.NE.BLANC) THEN
-C On recupere le nbre de noeuds presents dans interf_dyna
+C ON RECUPERE LE NBRE DE NOEUDS PRESENTS DANS INTERF_DYNA
         CALL JELIRA(JEXNUM(LINTF//'.IDC_LINO',1),'LONMAX',
      &              NBNOE,K8BID)
-C On recupere le liste des noeuds presents dans interf_dyna
+C ON RECUPERE LE LISTE DES NOEUDS PRESENTS DANS INTERF_DYNA
         CALL JEVEUO(LINTF//'.IDC_DEFO','L',LLDEF)
       ELSE
         NBNOE=0
@@ -107,7 +121,7 @@ C On recupere le liste des noeuds presents dans interf_dyna
       CALL DISMOI('F','NB_MODES_STA',BASMOD,'RESULTAT',
      &                      NBMDEF,K8BID,IER)
       NBMDYN=NBMTOT-NBMDEF
-      IF (NBNDYN.LT.0) CALL ASSERT(.FALSE.)
+      IF (NBMDYN.LT.0) CALL ASSERT(.FALSE.)
       
       IF (NBMTOT.NE.ZI(IADESC+1)) THEN
         CALL U2MESS('I','ALGORITH_52')        
@@ -121,8 +135,8 @@ C **********************
       CALL DISMOI('F','NOM_GD',NU(1:14),'NUME_DDL',IBID,NOGDSI,IERD)
       CALL DISMOI('F','NB_EC',NOGDSI,'GRANDEUR',NEC,K8BID,IERD)
 
-C Il faut choisir NBNDYN qui ne soient pas sur l'interface et possedant 
-C NCMPMX composantes.
+C IL FAUT CHOISIR NBNDYN QUI NE SOIENT PAS SUR L'INTERFACE ET POSSEDANT 
+C NCMPMX COMPOSANTES.
       CALL JELIRA(JEXNUM(NU(1:19)//'.PRNO',1),'LONMAX',N1,K8BID)
       CALL JEVEUO(JEXNUM(NU(1:19)//'.PRNO',1),'L',IAPRNO)
       NBNO = N1/(NEC+2)
@@ -135,13 +149,13 @@ C NCMPMX composantes.
           NCMPMX = MAX(NCMPMX,NUEQ)
         ENDIF
   553 CONTINUE
-C On va choisir plusieurs noeuds qui ne sont pas presents dans
-C l'interface et tels que le nbre de ddl considere soit egal 
-C au nbre de modes dynamiques
-C On prend comme postulat que NBNDYN=PARTIE_ENTIERE de NBMDYN/NCMPMX
+C ON VA CHOISIR PLUSIEURS NOEUDS QUI NE SONT PAS PRESENTS DANS
+C L'INTERFACE ET TELS QUE LE NBRE DE DDL CONSIDERE SOIT EGAL 
+C AU NBRE DE MODES DYNAMIQUES
+C ON PREND COMME POSTULAT QUE NBNDYN=PARTIE_ENTIERE DE NBMDYN/NCMPMX
       CALL GETVTX(' ','SANS_GROUP_NO',1,1,1,GNEX,IGEX)
       IF (IGEX.NE.0) THEN
-        CALL JELIRA(JEXNOM(NOMA//'.GROUPENO',GNEX),'LONMAX',NBNO2,K8BID)
+        CALL JELIRA(JEXNOM(NOMA//'.GROUPENO',GNEX),'LONUTI',NBNO2,K8BID)
         CALL JEVEUO(JEXNOM(NOMA//'.GROUPENO',GNEX),'L',LDGN0)
         CALL WKVECT('&&COMP81.NEUEXC','V V I',NBNO2,LDGN)
         DO 557 J=1,NBNO2
@@ -240,17 +254,17 @@ C **********************
 C     CREATION DU .REFM
 C **********************
       CALL WKVECT(NOMRES//'.REFM','G V K8',8,IAREFM)
-C Stockage du nom du modele
+C STOCKAGE DU NOM DU MODELE
       ZK8(IAREFM-1+1)= NOMO
-C Stockage du nom du maillage
+C STOCKAGE DU NOM DU MAILLAGE
       ZK8(IAREFM-1+2)= NOMA
-C Stockage du nom du champ de materiau
+C STOCKAGE DU NOM DU CHAMP DE MATERIAU
       ZK8(IAREFM-1+3)=CHMAT
-C Stockage du nom du champ de caracteristiques elementaires
+C STOCKAGE DU NOM DU CHAMP DE CARACTERISTIQUES ELEMENTAIRES
       ZK8(IAREFM-1+4)=CHCAR
-C Stockage du nom de la numerotation
+C STOCKAGE DU NOM DE LA NUMEROTATION
       ZK8(IAREFM-1+5)=NU
-C Stockage du nom du champ de caracteristiques elementaires
+C STOCKAGE DU NOM DU CHAMP DE CARACTERISTIQUES ELEMENTAIRES
       ZK8(IAREFM-1+6)= 'OUI_RIGI'
       ZK8(IAREFM-1+7)= 'OUI_MASS'
       ZK8(IAREFM-1+8)= 'NON_AMOR'
@@ -260,24 +274,24 @@ C     CREATION DU .DESM
 C **********************
       CALL WKVECT(NOMRES//'.DESM','G V I',10,IADESM)
 
-C mettre ici le nbre de ?
+C METTRE ICI LE NBRE DE ?
       ZI(IADESM-1+1)= 0
-C mettre ici le nbre de noeud exterieur non dupliques
+C METTRE ICI LE NBRE DE NOEUD EXTERIEUR NON DUPLIQUES
       ZI(IADESM-1+2)=NBNDEF+NBNDYN
-C mettre ici le nbre de noeuds internes
+C METTRE ICI LE NBRE DE NOEUDS INTERNES
       ZI(IADESM-1+3)=NBNO
-C mettre ici le nbre de ddl exterieur
+C METTRE ICI LE NBRE DE DDL EXTERIEUR
       ZI(IADESM-1+4)=ZI(IADESC+1)
-C mettre ici le nbre de ddl interieur (ou total)
+C METTRE ICI LE NBRE DE DDL INTERIEUR (OU TOTAL)
       ZI(IADESM-1+5)=0
-C mettre ici le nbre de chargement
+C METTRE ICI LE NBRE DE CHARGEMENT
       ZI(IADESM-1+6)=0
       ZI(IADESM-1+7)=0
-C mettre ici le nbre de lagrange externe
+C METTRE ICI LE NBRE DE LAGRANGE EXTERNE
       ZI(IADESM-1+8)=0
-C mettre ici le nbre de lagrange liaison
+C METTRE ICI LE NBRE DE LAGRANGE LIAISON
       ZI(IADESM-1+9)=0
-C mettre ici le nbre de lagrange interne
+C METTRE ICI LE NBRE DE LAGRANGE INTERNE
       ZI(IADESM-1+10)=0
 C
       IF ((NBNDEF+NBNDYN).EQ.0) GOTO 669 
@@ -312,17 +326,8 @@ C **********************
 C **********************
 C     CREATION DU .KP_EE
 C **********************
-C      CALL WKVECT(NOMRES//'.KP_EE','G V R',NDDEXT,IAK1)
-C      CALL WKVECT(NOMRES//'.MP_EE','G V R',NDDEXT,IAM1)
-C      CALL JEVEUO(NOMRES//'.MAEL_RAID_VALE','L',IAK11)
-C      CALL JEVEUO(NOMRES//'.MAEL_MASS_VALE','L',IAM11)
-C      CALL DCOPY(NDDEXT,ZR(IAK11),1,ZR(IAK1),1)
-C      CALL DCOPY(NDDEXT,ZR(IAM11),1,ZR(IAM1),1)
       CALL JEEXIN(NOMRES//'.MAEL_AMOR_VALE',IRET)
       IF (IRET.GT.0) THEN
-C        CALL WKVECT(NOMRES//'.AP_EE','G V R',NDDEXT,IAA1)
-C        CALL JEVEUO(NOMRES//'.MAEL_AMOR_VALE','L',IAA11)
-C        CALL DCOPY(NDDEXT,ZR(IAA11),1,ZR(IAA1),1)
         ZK8(IAREFM-1+8)= 'OUI_AMOR'
       END IF
 C
@@ -357,6 +362,5 @@ C
       ENDIF
       CALL JEDETC(' ','&&COMP81',1)
       
- 9999 CONTINUE
       CALL JEDEMA()
       END

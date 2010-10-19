@@ -1,7 +1,7 @@
       SUBROUTINE FLEXIB(BASMOD,NBMOD,FLEX,NL,NC,NUML,NUMC)
       IMPLICIT REAL*8 (A-H,O-Z)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF ALGORITH  DATE 18/10/2010   AUTEUR NISTOR I.NISTOR 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -70,7 +70,7 @@ C
       CHARACTER*24 VALK
       CHARACTER*1 K1BID
 C
-C-----------------------------------------------------------------------
+C----------------------------------------------------------------------
       DATA PGC /'FLEXIB'/
 C-----------------------------------------------------------------------
 C
@@ -107,6 +107,8 @@ C
 C --- RECUPERATION DU NOMBRE DE DDL PHYSIQUES ASSEMBLES
 C
       CALL DISMOI('F','NB_EQUA',NUMDDL,'NUME_DDL',NEQ,K8BID,IRET)
+C----ON AJOUT .NUME POUR OBTENIR LE PROF_CHNO
+      NUMDDL(15:19)='.NUME'
       CALL JEVEUO(NUMDDL//'.DEEQ','L',IDDEEQ)
 C
 C --- RECUPERATION DU NOMBRE DE NOEUDS DES INTERFACES

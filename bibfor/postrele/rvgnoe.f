@@ -6,7 +6,7 @@
       CHARACTER*24                           NLSTND
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 13/10/2009   AUTEUR DESROCHES X.DESROCHES 
+C MODIF POSTRELE  DATE 19/10/2010   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -87,7 +87,7 @@ C
          CALL GETVEM(NMAILA,'GROUP_NO',MCF,'GROUP_NO',
      &                                    IOCC,1,NBRGPN,ZK8(AGRPN),N1)
          DO 10, I = 1, NBRGPN, 1
-            CALL JELIRA(JEXNOM(NREPGN,ZK8(AGRPN+I-1)),'LONMAX',N1,K1B)
+            CALL JELIRA(JEXNOM(NREPGN,ZK8(AGRPN+I-1)),'LONUTI',N1,K1B)
             NBTND = NBTND + N1
 10       CONTINUE
       ENDIF

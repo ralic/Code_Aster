@@ -2,7 +2,7 @@
      &                  TYPLIA,TYPOPE,TYPEOU,JEU)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 14/09/2010   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 19/10/2010   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -91,7 +91,7 @@ C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
 C
       CHARACTER*24 NUMLIA
       INTEGER      JNUMLI 
-      INTEGER      IP    ,IZONE
+      INTEGER      IP,IZONE,IBID,NIV
       INTEGER      ENTAPP
       CHARACTER*8  NOMAPP
       CHARACTER*16 NOMNOE
@@ -104,6 +104,8 @@ C
 C ----------------------------------------------------------------------
 C
       CALL JEMARQ ()
+C
+      CALL INFDBG('CONTACT',IBID,NIV) 
 C
 C --- ACCES SD CONTACT
 C
@@ -161,50 +163,51 @@ C
 C
 C --- AFFICHAGE LIAISON
 C
-      IF (TYPEOU.EQ.'ALG') THEN
-        WRITE (IFM,1000) ILIAI,'(',NOMNOE,TYPE2,NOMAPP,'): ',
-     &                   CHAIAC,JEU,',TYPE: ',TYPLI,
+      IF(NIV.GE.2)THEN
+        IF (TYPEOU.EQ.'ALG') THEN
+          WRITE (IFM,1000) ILIAI,'(',NOMNOE,TYPE2,NOMAPP,'): ',
+     &                     CHAIAC,JEU,',TYPE: ',TYPLI,
+     &                     ')'
+        ELSE IF (TYPEOU.EQ.'PRE') THEN
+          CHAIAC = ' PRES. NEGATIVE (MU:'
+          WRITE (IFM,1000) ILIAI,'(',NOMNOE,TYPE2,NOMAPP,'): ',
+     &                     CHAIAC,JEU,',TYPE: ',TYPLI,
+     &                     ')'
+        ELSE IF (TYPEOU.EQ.'NEG') THEN
+          CHAIAC = ' PRES. NEGATIVE (MU:'
+          WRITE (IFM,1000) ILIAI,'(',NOMNOE,TYPE2,NOMAPP,'): ',
+     &                     CHAIAC,JEU,',TYPE: ',TYPLI,
+     &                     ')'     
+        ELSE IF (TYPEOU.EQ.'PIV') THEN
+          CHAIAC = ' PIVOT NUL         ('
+          WRITE (IFM,1001) ILIAI,'(',NOMNOE,TYPE2,NOMAPP,'): ',
+     &                     CHAIAC,' TYPE: ',TYPLI,
+     &                     ')'
+        ELSE IF (TYPEOU.EQ.'GLI') THEN
+          CHAIAC = ' GLISSANTE - SUPP. ('
+          WRITE (IFM,1001) ILIAI,'(',NOMNOE,TYPE2,NOMAPP,'): ',
+     &                     CHAIAC,' TYPE: ',TYPLI,
+     &                     ')'
+        ELSE IF (TYPEOU.EQ.'ADH') THEN
+          CHAIAC = ' ADHERENTE - ADD.  ('
+          WRITE (IFM,1001) ILIAI,'(',NOMNOE,TYPE2,NOMAPP,'): ',
+     &                     CHAIAC,' TYPE: ',TYPLI,
      &                   ')'
-      ELSE IF (TYPEOU.EQ.'PRE') THEN
-        CHAIAC = ' PRES. NEGATIVE (MU:'
-        WRITE (IFM,1000) ILIAI,'(',NOMNOE,TYPE2,NOMAPP,'): ',
-     &                   CHAIAC,JEU,',TYPE: ',TYPLI,
-     &                   ')'
-      ELSE IF (TYPEOU.EQ.'NEG') THEN
-        CHAIAC = ' PRES. NEGATIVE (MU:'
-        WRITE (IFM,1000) ILIAI,'(',NOMNOE,TYPE2,NOMAPP,'): ',
-     &                   CHAIAC,JEU,',TYPE: ',TYPLI,
-     &                   ')'     
-      ELSE IF (TYPEOU.EQ.'PIV') THEN
-        CHAIAC = ' PIVOT NUL         ('
-        WRITE (IFM,1001) ILIAI,'(',NOMNOE,TYPE2,NOMAPP,'): ',
+        ELSE IF (TYPEOU.EQ.'ALJ') THEN
+          CHAIAC = ' DECOLLE DU JEU     '
+          WRITE (IFM,1002) ILIAI,'(',NOMNOE,TYPE2,NOMAPP,'): ',
+     &                     CHAIAC,JEU
+        ELSE IF (TYPEOU.EQ.'SIN') THEN
+          CHAIAC = ' PIVOT NUL         ('
+          WRITE (IFM,1001) ILIAI,'(',NOMNOE,TYPE2,NOMAPP,'): ',
      &                   CHAIAC,' TYPE: ',TYPLI,
      &                   ')'
-      ELSE IF (TYPEOU.EQ.'GLI') THEN
-        CHAIAC = ' GLISSANTE - SUPP. ('
-        WRITE (IFM,1001) ILIAI,'(',NOMNOE,TYPE2,NOMAPP,'): ',
-     &                   CHAIAC,' TYPE: ',TYPLI,
-     &                   ')'
-      ELSE IF (TYPEOU.EQ.'ADH') THEN
-        CHAIAC = ' ADHERENTE - ADD.  ('
-        WRITE (IFM,1001) ILIAI,'(',NOMNOE,TYPE2,NOMAPP,'): ',
-     &                   CHAIAC,' TYPE: ',TYPLI,
-     &                   ')'
-      ELSE IF (TYPEOU.EQ.'ALJ') THEN
-        CHAIAC = ' DECOLLE DU JEU     '
-        WRITE (IFM,1002) ILIAI,'(',NOMNOE,TYPE2,NOMAPP,'): ',
-     &                   CHAIAC,JEU
-      ELSE IF (TYPEOU.EQ.'SIN') THEN
-        CHAIAC = ' PIVOT NUL         ('
-        WRITE (IFM,1001) ILIAI,'(',NOMNOE,TYPE2,NOMAPP,'): ',
-     &                   CHAIAC,' TYPE: ',TYPLI,
-     &                   ')'
-      ELSE IF (TYPEOU.EQ.'AGC') THEN
-        CHAIAC = ') PRESENTE UNE INTERPENETRATION : JEU='
-        WRITE (IFM,1003) ILIAI,' (NOEUD ',NOMNOE,
-     &                   CHAIAC, JEU
+        ELSE IF (TYPEOU.EQ.'AGC') THEN
+          CHAIAC = ') PRESENTE UNE INTERPENETRATION : JEU='
+          WRITE (IFM,1003) ILIAI,' (NOEUD ',NOMNOE,
+     &                     CHAIAC, JEU
+        ENDIF
       ENDIF
-
 
     
  1000 FORMAT (' <CONTACT> <> LIAISON ',I5,A1,A16,A4,A8,A3,A20,E10.3,

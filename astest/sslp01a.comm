@@ -1,4 +1,4 @@
-# MODIF  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 19/10/2010   AUTEUR DELMAS J.DELMAS 
 # TITRE PLAQUE EN FLEXION ET CISAILLEMENT DANS SON PLAN
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -125,12 +125,14 @@ IMPR_RESU( FORMAT = 'IDEAS', UNITE = 38,
 #----------------------------------------------------------
 
 
-DEF_R=LIRE_RESU(     MAILLAGE=MAIL,
-                           UNITE=38,
+DEF_R=LIRE_RESU(           UNITE=38,
                           FORMAT='IDEAS',
                        TYPE_RESU='EVOL_ELAS',
                         NOM_CHAM='DEPL',
-                      TOUT_ORDRE='OUI'
+                      TOUT_ORDRE='OUI',
+                          MODELE=MODELE,
+                      CHAM_MATER=CHMAT,
+                           EXCIT=(_F(CHARGE=CHARGT),),
                   )
 
 #
@@ -143,9 +145,7 @@ U_R=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
 #
 # CALCUL DES CONTRAINTES
 
-DEF_R=CALC_ELEM( reuse= DEF_R ,RESULTAT= DEF_R ,MODELE=MODELE,
-                              CHAM_MATER=CHMAT,
-                              EXCIT=(_F(CHARGE=CHARGT),),
+DEF_R=CALC_ELEM( reuse= DEF_R ,RESULTAT= DEF_R ,
                               OPTION=('SIGM_ELNO_DEPL',),
                 )
 

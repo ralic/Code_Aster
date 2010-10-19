@@ -3,7 +3,7 @@
       CHARACTER*(*)       TRANGE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 06/07/2009   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 18/10/2010   AUTEUR BOYERE E.BOYERE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -171,7 +171,7 @@ C
       ELSE
          DO 52 IORDR = 0, NBORDR-1
             II = ZI(LORDR+IORDR)
-            CALL RSEXCH(RESU,'DEPL',II,CHAMP,IRET)
+            CALL RSEXCH(RESU,NOMCHA,II,CHAMP,IRET)
             CALL JEVEUO(CHAMP(1:19)//'.VALE','L',ITRESU)
             CALL MDGEP5(NEQ,NBMODE,ZR(IDBASE),ZC(ITRESU),IDDL,CREP)
             ZR(LVAR+IORDR) = ZR(JINST+IORDR)

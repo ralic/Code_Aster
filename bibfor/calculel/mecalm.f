@@ -3,7 +3,7 @@
      &   MODELE,MATE,CARA,NCHAR,CTYP)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 11/10/2010   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 19/10/2010   AUTEUR DELMAS J.DELMAS 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -477,7 +477,7 @@ C    -- OPTIONS "SIGM_ELNO_DEPL","SIEF_ELGA_DEPL","EPSI_ELNO_DEPL",
 C               "EPSI_ELGA_DEPL","EPSG_ELNO_DEPL","EPSG_ELGA_DEPL",
 C               "EPME_ELNO_DEPL","EPME_ELGA_DEPL","EPMG_ELNO_DEPL",
 C               "EPMG_ELGA_DEPL","EFGE_ELNO_DEPL","EPOT_ELEM_DEPL",
-C               "SIPO_ELNO_DEPL","SIRE_ELNO_DEPL","DEGE_ELNO_DEPL",
+C               "SIPO_ELNO_DEPL","DEGE_ELNO_DEPL",
 C               "SIGM_ELNO_SIEF","SIPO_ELNO_SIEF",
 C               "EPVC_ELGA","EPVC_ELNO"
 C    ------------------------------------------------------------------
@@ -496,7 +496,6 @@ C    ------------------------------------------------------------------
      &        OPTION.EQ.'EFGE_ELNO_DEPL' .OR.
      &        OPTION.EQ.'EPOT_ELEM_DEPL' .OR.
      &        OPTION.EQ.'SIPO_ELNO_DEPL' .OR.
-     &        OPTION.EQ.'SIRE_ELNO_DEPL' .OR.
      &        OPTION.EQ.'DEGE_ELNO_DEPL' .OR.
      &        OPTION.EQ.'SIGM_ELNO_SIEF' .OR.
      &        OPTION.EQ.'FLHN_ELGA' .OR.
@@ -1274,40 +1273,7 @@ C ---- VERIF SENSIBILITE FIN
               CALL RSEXC2(1,1,RESUCO,'DEPL',IORDR,CHAMGD,OPTION,IRET)
               CALL RSEXCH(RESUCO,'COMPORTEMENT',IORDR,COMPOR,IRET1)
 
-              OPTIO2='PROJ_ELEM_SIGN'
-              CALL MEARCC(OPTIO2,MODELE,CHSIG,CHSIGF)
-              CALL RSEXC1(LERES1,OPTIO2,IORDR,CHELEM)
-              CALL MECALC(OPTIO2,MODELE,CHAMGD,CHGEOM,MATE,CHCARA,K24B,
-     &                   K24B,K24B,K24B,K24B,CHSIGF,K24B,K24B,K24B,
-     &                   K24B,K24B,K24B,ZERO,CZERO,K24B,K24B,CHELEM,
-     &                   K24B,LIGREL,BASE,K24B,K24B,K24B,COMPOR,CHTESE,
-     &                   CHDESE,NOPASE,TYPESE,CHACSE,IRET)
-              CALL RSNOCH(LERES1,OPTIO2,IORDR,' ')
-              CALL DETRSD('CHAM_ELEM',CHSIGF)
-
-              OPTIO2='PROJ_ELEM_SIGT'
-              CALL MEARCC(OPTIO2,MODELE,CHSIG,CHSIGF)
-              CALL RSEXC1(LERES1,OPTIO2,IORDR,CHELEM)
-              CALL MECALC(OPTIO2,MODELE,CHAMGD,CHGEOM,MATE,CHCARA,K24B,
-     &                   K24B,K24B,K24B,K24B,CHSIGF,K24B,K24B,K24B,
-     &                   K24B,K24B,K24B,ZERO,CZERO,K24B,K24B,CHELEM,
-     &                   K24B,LIGREL,BASE,K24B,K24B,K24B,COMPOR,CHTESE,
-     &                   CHDESE,NOPASE,TYPESE,CHACSE,IRET)
-              CALL RSNOCH(LERES1,OPTIO2,IORDR,' ')
-              CALL DETRSD('CHAM_ELEM',CHSIGF)
-
-              OPTIO2='PROJ_ELEM_SIT1'
-              CALL MEARCC(OPTIO2,MODELE,CHSIG,CHSIGF)
-              CALL RSEXC1(LERES1,OPTIO2,IORDR,CHELEM)
-              CALL MECALC(OPTIO2,MODELE,CHAMGD,CHGEOM,MATE,CHCARA,K24B,
-     &                   K24B,K24B,K24B,K24B,CHSIGF,K24B,K24B,K24B,
-     &                   K24B,K24B,K24B,ZERO,CZERO,K24B,K24B,CHELEM,
-     &                   K24B,LIGREL,BASE,K24B,K24B,K24B,COMPOR,CHTESE,
-     &                   CHDESE,NOPASE,TYPESE,CHACSE,IRET)
-              CALL RSNOCH(LERES1,OPTIO2,IORDR,' ')
-              CALL DETRSD('CHAM_ELEM',CHSIGF)
-
-              OPTIO2='PROJ_ELEM_SIT2'
+              OPTIO2='PROJ_ELEM_SIGM'
               CALL MEARCC(OPTIO2,MODELE,CHSIG,CHSIGF)
               CALL RSEXC1(LERES1,OPTIO2,IORDR,CHELEM)
               CALL MECALC(OPTIO2,MODELE,CHAMGD,CHGEOM,MATE,CHCARA,K24B,

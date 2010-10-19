@@ -1,7 +1,7 @@
        SUBROUTINE NMDEBG(TYPOBZ,NOMOBZ,IFM   )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 23/09/2008   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 19/10/2010   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -23,7 +23,7 @@ C
       IMPLICIT NONE
       CHARACTER*(*) NOMOBZ
       CHARACTER*(*) TYPOBZ
-      INTEGER       IFM
+      INTEGER       IFM,NIV
 
 C 
 C ----------------------------------------------------------------------
@@ -74,25 +74,33 @@ C
       NOMOBJ = NOMOBZ
       TYPOBJ = TYPOBZ
 C
+      CALL INFDBG('MECA_NON_LINE',IBID,NIV) 
+C
 C --- IMPRESSION
 C
       IF (TYPOBJ.EQ.'VECT') THEN
         CALL TSTOBJ(NOMOBJ(1:19)//'.VALE','OUI' ,RESUME,SOMMI ,SOMMR ,
      &              IBID                 ,LONMAX,TYPE  ,IRET  ,IBID)
         IF ((TYPE.EQ.'R').AND.(IRET.EQ.0)) THEN
-          WRITE (IFM,1003) NOMOBJ(1:19),LONMAX,SOMMR 
+          IF (NIV.GE.2) THEN
+            WRITE (IFM,1003) NOMOBJ(1:19),LONMAX,SOMMR
+          ENDIF
         ENDIF
       ELSEIF (TYPOBJ.EQ.'CHEL') THEN
         CALL TSTOBJ(NOMOBJ(1:19)//'.CELV','OUI' ,RESUME,SOMMI ,SOMMR ,
      &              IBID                 ,LONMAX,TYPE  ,IRET  ,IBID)
         IF ((TYPE.EQ.'R').AND.(IRET.EQ.0)) THEN
-          WRITE (IFM,1003) NOMOBJ(1:19),LONMAX,SOMMR
+          IF (NIV.GE.2) THEN
+            WRITE (IFM,1003) NOMOBJ(1:19),LONMAX,SOMMR
+          ENDIF
         ENDIF 
       ELSEIF (TYPOBJ.EQ.'MATA') THEN
         CALL TSTOBJ(NOMOBJ(1:19)//'.VALM','OUI' ,RESUME,SOMMI ,SOMMR ,
      &              IBID                 ,LONMAX,TYPE  ,IRET  ,IBID)
         IF ((TYPE.EQ.'R').AND.(IRET.EQ.0)) THEN
-          WRITE (IFM,1003) NOMOBJ(1:19),LONMAX,SOMMR
+          IF (NIV.GE.2) THEN
+            WRITE (IFM,1003) NOMOBJ(1:19),LONMAX,SOMMR
+          ENDIF
         ENDIF  
       ELSE
         CALL UTIMSD(IFM,-1,.TRUE.,.TRUE.,NOMOBJ(1:19),1,' ')         

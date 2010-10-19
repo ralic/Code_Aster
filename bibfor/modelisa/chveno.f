@@ -4,7 +4,7 @@
       CHARACTER*(*)               NOMA, NOMO
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 19/07/2010   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 19/10/2010   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -191,7 +191,7 @@ C
 C
 C ---             RECUPERATION DU NOMBRE DE MAILLES DU GROUP_MA :
 C                 ---------------------------------------------
-                  CALL JELIRA (JEXNOM(GRMAMA,NOGR),'LONMAX',NBMAIL,
+                  CALL JELIRA (JEXNOM(GRMAMA,NOGR),'LONUTI',NBMAIL,
      &                                                      K1BID)
                   CALL JEVEUO (JEXNOM(GRMAMA,NOGR),'L',JGRO)
 C
@@ -232,11 +232,11 @@ C
                 ENDIF
                 NORIE1 = 0
                 NORIE2 = 0
-                CALL JELIRA (JEXNOM(GRMAMA,NOGR),'LONMAX',NBMAIL,
+                CALL JELIRA (JEXNOM(GRMAMA,NOGR),'LONUTI',NBMAIL,
      &                                                    K1BID)
                 CALL JEVEUO (JEXNOM(GRMAMA,NOGR),'L',JGRO)
 C
-                IF ( MCFL(IC) ) THEN
+                IF ( MCFL(IC).AND.(NBMAIL.GT.0) ) THEN
 C
                   CALL WKVECT('&&CHVENO.MAILLE_BORD','V V I',NBMAIL,
      &                                                         JMAB)

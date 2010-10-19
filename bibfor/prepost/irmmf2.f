@@ -5,7 +5,7 @@
      &                    NUFAEN, NUFACR, NOGRFA, NOFAEX, TABAUX,
      &                    INFMED, NIVINF, IFM )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 14/09/2010   AUTEUR REZETTE C.REZETTE 
+C MODIF PREPOST  DATE 19/10/2010   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -102,7 +102,6 @@ C
 C 0.3. ==> VARIABLES LOCALES
 C
       CHARACTER*6 NOMPRO
-      CHARACTER*24 VALK(2)
       PARAMETER ( NOMPRO = 'IRMMF2' )
 C
       INTEGER NTYMAX
@@ -317,11 +316,11 @@ C
 C
 C 2.3.3. ==> ECRITURE DES CARACTERISTIQUES DE LA FAMILLE
 C
-          CALL EFFAMC ( FID, NOMAMD, NOMFAM, NUMFAM,
+          CALL MFFAMC ( FID, NOMAMD, NOMFAM, NUMFAM,
      &                  IAUX, IAUX, K200, NATT,
      &                  NOGRFA, NBGNOF, CODRET )
           IF ( CODRET.NE.0 ) THEN
-            SAUX08='EFFAMC  '
+            SAUX08='MFFAMC  '
             CALL U2MESG('F','DVP_97',1,SAUX08,1,CODRET,0,0.D0)
           ENDIF
 C
@@ -339,11 +338,11 @@ C 3.1. ==> ECRITURE DANS LE CAS DES NOEUDS
 C
       IF ( TYPENT.EQ.TYGENO ) THEN
 C
-        CALL EFFAME ( FID, NOMAMD, NUFAEN, NBRENT,
+        CALL MFFAME ( FID, NOMAMD, NUFAEN, NBRENT,
      &                EDNOEU, TYGENO, CODRET )
 C
         IF ( CODRET.NE.0 ) THEN
-          SAUX08='EFFAME  '
+          SAUX08='MFFAME  '
           CALL U2MESG('F','DVP_97',1,SAUX08,1,CODRET,0,0.D0)
         ENDIF
 C
@@ -366,11 +365,11 @@ C
               TABAUX(IAUX) = NUFAEN(ZI(KAUX-1+IAUX))
   321       CONTINUE
 C
-            CALL EFFAME ( FID, NOMAMD, TABAUX, NMATYP(ITYP),
+            CALL MFFAME ( FID, NOMAMD, TABAUX, NMATYP(ITYP),
      &                    EDMAIL, TYPGEO(ITYP), CODRET )
 C
             IF ( CODRET.NE.0 ) THEN
-              SAUX08='EFFAME  '
+              SAUX08='MFFAME  '
               CALL U2MESG('F','DVP_97',1,SAUX08,1,CODRET,0,0.D0)
             ENDIF
 C

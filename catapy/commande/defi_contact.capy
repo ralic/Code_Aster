@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 14/09/2010   AUTEUR ABBAS M.ABBAS 
+#& MODIF COMMANDE  DATE 19/10/2010   AUTEUR DESOZA T.DESOZA 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -413,7 +413,8 @@ DEFI_CONTACT=OPER(nom       = "DEFI_CONTACT",
                                                                    into=("GAUSS","NOEUD","SIMPSON","SIMPSON1","SIMPSON2",
                                                                                          "NCOTES" ,"NCOTES1" ,"NCOTES2"),),
 
-                                            CONTACT_INIT    =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON"),),
+                                            CONTACT_INIT    =SIMP(statut='f',typ='TXM',defaut="NON",
+                                                                  into=("OUI","INTERPENETRE","NON"),),
 
                                             GLISSIERE       =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON"),),
 
@@ -448,10 +449,10 @@ DEFI_CONTACT=OPER(nom       = "DEFI_CONTACT",
                                               regles=(EXCLUS('SANS_NOEUD_FR','SANS_GROUP_NO_FR'),),
                                               SANS_NOEUD_FR    =SIMP(statut='f',typ=no  ,validators=NoRepeat(),max='**'),
                                               SANS_GROUP_NO_FR =SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**'),
-                                              b_sans_group_no_frot=BLOC(condition="SANS_GROUP_NO_FR != None or SANS_NO_FR != None",
-                                                                        fr="Direction(s) de frottement à exclure",
-                                                                        EXCL_FROT_1 =SIMP(statut='f',typ='R',min=3,max=3),
-                                                                        EXCL_FROT_2 =SIMP(statut='f',typ='R',min=3,max=3),
+                                              b_sans_group_no_frot=BLOC(condition = " SANS_GROUP_NO_FR != None or \
+                                                                                         SANS_NOEUD_FR != None ",
+                                                fr="Direction de frottement à exclure (uniquement dans le cas 3D)",
+                                                DIRE_EXCL_FROT=SIMP(statut='f',typ='R',min=3,max=3),
                                                 ),
 
                                               ALGO_FROT       =SIMP(statut='f',typ='TXM',defaut="STANDARD",

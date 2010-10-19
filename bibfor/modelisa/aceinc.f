@@ -9,7 +9,7 @@
       CHARACTER*16      MCLF(*)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 31/10/2006   AUTEUR PABHHHH N.TARDIEU 
+C MODIF MODELISA  DATE 19/10/2010   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -136,7 +136,7 @@ C ---     "GROUP_MA" = MAILLES DANS LA LISTE DES GROUPES DE MAILLES
             IF (MCL.EQ.11) NOCAGB = NOCAGB + 1
             DO 34 I = 1 , NG
               CALL JEVEUO(JEXNOM(MLGGMA,ZK8(JDLS+I-1)),'L',JDGM)
-              CALL JELIRA(JEXNOM(MLGGMA,ZK8(JDLS+I-1)),'LONMAX',
+              CALL JELIRA(JEXNOM(MLGGMA,ZK8(JDLS+I-1)),'LONUTI',
      &                                              NBMAGR,K1BID)
               DO 36 J = 1,NBMAGR
                 NUMMAI = ZI(JDGM+J-1)
@@ -172,7 +172,7 @@ C ---   "GROUP_NO" = MAILLES TARDIVES DANS LA LISTE DE GROUPES DE NOEUDS
             IF (NJ.GT.0) THEN
               DO 48 I = 1 , NJ
                 CALL JEVEUO(JEXNOM(MLGGNO,ZK8(JDLS+I-1)),'L',JDGN)
-                CALL JELIRA(JEXNOM(MLGGNO,ZK8(JDLS+I-1)),'LONMAX',
+                CALL JELIRA(JEXNOM(MLGGNO,ZK8(JDLS+I-1)),'LONUTI',
      &                                                NBNOGR,K1BID)
                 DO 50 J = 1,NBNOGR
                   NUMNOE = ZI(JDGN+J-1)

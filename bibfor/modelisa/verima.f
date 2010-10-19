@@ -4,7 +4,7 @@
       CHARACTER*(*)    NOMZ, LIMANZ(LONLIM), TYPZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 19/10/2010   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -72,7 +72,7 @@ C        AUX GROUP_NO DU MAILLAGE
 C        -------------------------------------------------------
           DO 10 IGR = 1, LONLIM
               LIMANO = LIMANZ(IGR)
-              CALL JEEXIN (JEXNOM(GRNOMA,LIMANO),IRET)
+              CALL JENONU (JEXNOM(GRNOMA,LIMANO),IRET)
               IF (IRET .EQ. 0) THEN
                  VALK(1) = LIMANO
                  VALK(2) = NOMA
@@ -102,7 +102,7 @@ C        AUX GROUP_MA DU MAILLAGE
 C        -------------------------------------------------------
             DO 30 IGR = 1, LONLIM
               LIMANO = LIMANZ(IGR)
-              CALL JEEXIN (JEXNOM(GRMAMA,LIMANO),IRET)
+              CALL JENONU (JEXNOM(GRMAMA,LIMANO),IRET)
               IF (IRET .EQ. 0) THEN
                  VALK(1) = LIMANO
                  VALK(2) = NOMA

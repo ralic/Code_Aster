@@ -1,7 +1,7 @@
       SUBROUTINE OP0001()
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
+C MODIF MODELISA  DATE 19/10/2010   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -117,7 +117,7 @@ C
               CALL ASSERT(ILNG.GT.0 .AND. ILNG.LE.8)
  100       CONTINUE
         ENDIF
-      
+
       ENDIF
 C
 C
@@ -203,6 +203,7 @@ C     ---------------------------------
       ELSE
          CALL U2MESS('A','MODELISA5_49')
       ENDIF
+
 C
 C     IMPRESSIONS DU MOT CLE INFO :
 C     ---------------------------

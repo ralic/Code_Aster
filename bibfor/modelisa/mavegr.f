@@ -3,7 +3,7 @@
       CHARACTER*8         NOMU
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 19/10/2010   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -83,8 +83,10 @@ C
                IF ( NOMG .EQ. BLANC ) GOTO 110
                CALL JECROC ( JEXNOM ( GRPMAI, NOMG ) )
                CALL JEVEUO ( JEXNUM(GRPMAV,I), 'L', JVG )
-               CALL JELIRA ( JEXNUM(GRPMAV,I), 'LONMAX', NBMA, K8B )
-               CALL JEECRA ( JEXNOM(GRPMAI,NOMG), 'LONMAX', NBMA, ' ' )
+               CALL JELIRA ( JEXNUM(GRPMAV,I), 'LONUTI', NBMA, K8B )
+               CALL JEECRA ( JEXNOM(GRPMAI,NOMG), 'LONMAX',
+     &        MAX(1,NBMA), ' ' )
+               CALL JEECRA ( JEXNOM(GRPMAI,NOMG), 'LONUTI', NBMA, ' ' )
                CALL JEVEUO ( JEXNOM(GRPMAI,NOMG), 'E', JGG )
                DO 112 J = 0, NBMA-1
                   ZI(JGG+J) = ZI(JVG+J)
@@ -123,8 +125,10 @@ C
                IF ( NOMG .EQ. BLANC ) GOTO 210
                CALL JECROC ( JEXNOM ( GRPNOE, NOMG ) )
                CALL JEVEUO ( JEXNUM(GRPNOV,I), 'L', JVG )
-               CALL JELIRA ( JEXNUM(GRPNOV,I), 'LONMAX', NBNO, K8B )
-               CALL JEECRA ( JEXNOM(GRPNOE,NOMG), 'LONMAX', NBNO, ' ' )
+               CALL JELIRA ( JEXNUM(GRPNOV,I), 'LONUTI', NBNO, K8B )
+               CALL JEECRA ( JEXNOM(GRPNOE,NOMG), 'LONMAX',
+     &        MAX(1,NBNO), ' ' )
+               CALL JEECRA ( JEXNOM(GRPNOE,NOMG), 'LONUTI', NBNO, ' ' )
                CALL JEVEUO ( JEXNOM(GRPNOE,NOMG), 'E', JGG )
                DO 212 J = 0, NBNO-1
                   ZI(JGG+J) = ZI(JVG+J)

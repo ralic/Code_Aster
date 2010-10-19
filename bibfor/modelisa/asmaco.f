@@ -2,7 +2,7 @@
       IMPLICIT NONE
       CHARACTER*8        MA1, MA2, MAG
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 07/09/2010   AUTEUR DESOZA T.DESOZA 
+C MODIF MODELISA  DATE 19/10/2010   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -123,8 +123,8 @@ CCC   ------------------------------------------------------------------
 CCC   ------------------------------------------------------------------
 CCC VERIFICATION QUE LES 2 GROUP_MA A COLLER ONT LE MM NOMBRE DE MAILLES
 CCC   ------------------------------------------------------------------
-      CALL JELIRA(JEXNOM(MA1//'.GROUPEMA',CGPM1),'LONMAX',NBNGM1,K8B)
-      CALL JELIRA(JEXNOM(MA2//'.GROUPEMA',CGPM2),'LONMAX',NBNGM2,K8B)
+      CALL JELIRA(JEXNOM(MA1//'.GROUPEMA',CGPM1),'LONUTI',NBNGM1,K8B)
+      CALL JELIRA(JEXNOM(MA2//'.GROUPEMA',CGPM2),'LONUTI',NBNGM2,K8B)
       NBNGM=NBNGM1
       IF(NBNGM1.NE.NBNGM2) THEN
          VALK(1) = CGPM1
@@ -472,7 +472,7 @@ C
         ICOMPT=0
         DO 71,I=1,NBGM1
           CALL JEVEUO(JEXNUM(MA1//'.GROUPEMA',I),'L',IAGMA1)
-          CALL JELIRA(JEXNUM(MA1//'.GROUPEMA',I),'LONMAX',N,K8B)
+          CALL JELIRA(JEXNUM(MA1//'.GROUPEMA',I),'LONUTI',N,K8B)
           CALL JENUNO(JEXNUM(MA1//'.GROUPEMA',I),NOGMA)
           IF (NOGMA.NE.CGPM1) THEN
 C
@@ -487,6 +487,8 @@ C
               ICOMPT=ICOMPT+1
               CALL JECROC(JEXNOM(MAG//'.GROUPEMA',NOGMA))
               CALL JEECRA(JEXNUM(MAG//'.GROUPEMA',ICOMPT),'LONMAX',
+     &        MAX(1,ILGMA),K8B)
+              CALL JEECRA(JEXNUM(MAG//'.GROUPEMA',ICOMPT),'LONUTI',
      &                           ILGMA,K8B)
               CALL JEVEUO(JEXNUM(MAG//'.GROUPEMA',ICOMPT),'E',IAGMAX)
               ILGM2=0
@@ -505,7 +507,7 @@ C
  71     CONTINUE
         DO 72,I=1,NBGM2
           CALL JEVEUO(JEXNUM(MA2//'.GROUPEMA',I),'L',IAGMA2)
-          CALL JELIRA(JEXNUM(MA2//'.GROUPEMA',I),'LONMAX',N,K8B)
+          CALL JELIRA(JEXNUM(MA2//'.GROUPEMA',I),'LONUTI',N,K8B)
           CALL JENUNO(JEXNUM(MA2//'.GROUPEMA',I),NOGMA)
           IF ((NOGMA.NE.CGPM2).OR.(.NOT.ELIM)) THEN
             CALL JEEXIN(JEXNOM(MAG//'.GROUPEMA',NOGMA),IRET)
@@ -540,6 +542,8 @@ C
               ICOMPT = ICOMPT + 1
               CALL JECROC(JEXNOM(MAG//'.GROUPEMA',NOGMA))
               CALL JEECRA(JEXNUM(MAG//'.GROUPEMA',ICOMPT),'LONMAX',
+     &        MAX(1,ILGMA),K8B)
+              CALL JEECRA(JEXNUM(MAG//'.GROUPEMA',ICOMPT),'LONUTI',
      &                    ILGMA,K8B)
               CALL JEVEUO(JEXNUM(MAG//'.GROUPEMA',ICOMPT),'E',IAGMAX)
               ILGM2=0
@@ -580,10 +584,12 @@ CCC   ------------------------------------------------------------------
      &                               'DISPERSE','VARIABLE',NBGNO)
         DO 81,I=1,NBGN1
           CALL JEVEUO(JEXNUM(MA1//'.GROUPENO',I),'L',IAGNO1)
-          CALL JELIRA(JEXNUM(MA1//'.GROUPENO',I),'LONMAX',N,K8B)
+          CALL JELIRA(JEXNUM(MA1//'.GROUPENO',I),'LONUTI',N,K8B)
           CALL JENUNO(JEXNUM(MA1//'.GROUPENO',I),NOGNO)
           CALL JECROC(JEXNOM(MAG//'.GROUPENO',NOGNO))
-          CALL JEECRA(JEXNUM(MAG//'.GROUPENO',I),'LONMAX',N,K8B)
+          CALL JEECRA(JEXNUM(MAG//'.GROUPENO',I),'LONMAX',
+     &        MAX(1,N),K8B)
+          CALL JEECRA(JEXNUM(MAG//'.GROUPENO',I),'LONUTI',N,K8B)
           CALL JEVEUO(JEXNUM(MAG//'.GROUPENO',I),'E',IAGNOX)
           DO 811, II=1,N
             ZI(IAGNOX-1+II)=ZI(IAGNO1-1+II)
@@ -592,7 +598,7 @@ CCC   ------------------------------------------------------------------
         ICOMPT = 0
         DO 82,I=1,NBGN2
           CALL JEVEUO(JEXNUM(MA2//'.GROUPENO',I),'L',IAGNO2)
-          CALL JELIRA(JEXNUM(MA2//'.GROUPENO',I),'LONMAX',N,K8B)
+          CALL JELIRA(JEXNUM(MA2//'.GROUPENO',I),'LONUTI',N,K8B)
           CALL JENUNO(JEXNUM(MA2//'.GROUPENO',I),NOGNO)
           CALL JEEXIN(JEXNOM(MAG//'.GROUPENO',NOGNO),IRET)
           IF (IRET.GT.0) THEN
@@ -616,7 +622,9 @@ CCC   ------------------------------------------------------------------
           ICOMPT = ICOMPT + 1
           I1 = NBGN1 + ICOMPT
           CALL JECROC(JEXNOM(MAG//'.GROUPENO',NOGNO))
-          CALL JEECRA(JEXNUM(MAG//'.GROUPENO',I1),'LONMAX',N,K8B)
+          CALL JEECRA(JEXNUM(MAG//'.GROUPENO',I1),'LONMAX',
+     &        MAX(1,N),K8B)
+          CALL JEECRA(JEXNUM(MAG//'.GROUPENO',I1),'LONUTI',N,K8B)
           CALL JEVEUO(JEXNUM(MAG//'.GROUPENO',I1),'E',IAGNOX)
           DO 824, II=1,N
             MATCH=.FALSE.

@@ -4,7 +4,7 @@
       CHARACTER*1         TYPE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 28/09/2010   AUTEUR MASSIN P.MASSIN 
+C MODIF MODELISA  DATE 19/10/2010   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -168,6 +168,7 @@ C ----- NOEUDS A CONTRAINDRE :
 
         CALL RELIEM ( ' ', MA, 'NU_NOEUD', MFAC, IOC, 5, MOTCLE, MOTCLE,
      &                CINO, NBNO )
+        IF (NBNO.EQ.0) GOTO 100
         CALL JEVEUO ( CINO, 'L', IDINO )
 
 C ----- DDL A CONTRAINDRE :

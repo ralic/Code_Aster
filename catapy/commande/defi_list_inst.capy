@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 12/10/2010   AUTEUR GENIAUT S.GENIAUT 
+#& MODIF COMMANDE  DATE 19/10/2010   AUTEUR DESOZA T.DESOZA 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -63,6 +63,16 @@ DEFI_LIST_INST=OPER(nom="DEFI_LIST_INST",op=  28,sd_prod=list_inst,reentrant='n'
       NOM_CHAM          =SIMP(statut='o',typ='TXM',into=("DEPL","VARI_ELGA","SIEF_ELGA",),max=1),
       NOM_CMP           =SIMP(statut='o',typ='TXM',max=1),
                                   ),
+
+        b_subd_erreur  =   BLOC(condition="EVENEMENT == 'ERREUR'",        
+      SUBD_METHODE    =SIMP(statut='f',typ='TXM',into =("AUCUNE","UNIFORME","EXTRAPOLE"),defaut="UNIFORME",max=1,
+                            fr="Méthode de subdivision des pas de temps en cas de divergence pour erreur"),
+                                          ),         
+
+        b_subd_event  =   BLOC(condition="EVENEMENT == 'DELTA_GRANDEUR'",        
+      SUBD_METHODE    =SIMP(statut='f',typ='TXM',into =("AUCUNE","UNIFORME"),defaut="UNIFORME",max=1,
+                            fr="Méthode de subdivision des pas de temps en cas de diconvergence pour event-driven"),
+                                          ),         
 
 
       SUBD_METHODE    =SIMP(statut='f',typ='TXM',into =("AUCUNE","UNIFORME","EXTRAPOLE"),defaut="UNIFORME",max=1,

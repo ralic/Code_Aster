@@ -6,7 +6,7 @@
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF MODELISA  DATE 23/04/2007   AUTEUR GNICOLAS G.NICOLAS 
+C MODIF MODELISA  DATE 19/10/2010   AUTEUR DELMAS J.DELMAS 
 C RESPONSABLE UFBHHLL C.CHAVANT
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -127,6 +127,7 @@ C
          ELSE
             CALL RELIEM(LIGRMO, NOMA, 'NU_MAILLE', MOTCLF, IOCC, 2,
      &                                  MOTCLE, TYPMCL, MESMAI, NBMA )
+            IF (NBMA.EQ.0) GOTO 10
             CALL JEVEUO ( MESMAI, 'L', JMA )
             CALL NOCART ( CARTE,3,K8B,'NUM',NBMA,K8B,ZI(JMA),' ',NCMP)
             CALL JEDETR ( MESMAI )

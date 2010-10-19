@@ -6,7 +6,7 @@
       CHARACTER*(*)       LIGRMO
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF MODELISA  DATE 19/10/2010   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -296,6 +296,7 @@ C
          ELSE
             CALL RELIEM(LIGRMO, NOMA, 'NO_MAILLE', MOTCLF, IOCC, 2,
      &                                  MOTCLE, TYPMCL, MESMAI, NBMA )
+            IF (NBMA.EQ.0) GOTO 120
             CALL JEVEUO ( MESMAI, 'L', JMA )
             CALL VETYMA ( NOMA, ZK8(JMA),NBMA, K8B,0, MOTCLF,NDIM,IER)
             IF (NCMP1.GT.0) THEN

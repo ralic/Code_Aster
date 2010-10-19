@@ -9,7 +9,7 @@
       LOGICAL          CORFRE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 05/11/2007   AUTEUR VIVAN L.VIVAN 
+C MODIF ALGORITH  DATE 19/10/2010   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -216,7 +216,7 @@ C
                      CALL U2MESK('E','SEISME_2', 2 ,VALK)
                      GOTO 30
                   ENDIF
-                  CALL JELIRA(JEXNOM(OBJ1,GRNOEU),'LONMAX',NNO,K1B)
+                  CALL JELIRA(JEXNOM(OBJ1,GRNOEU),'LONUTI',NNO,K1B)
                   CALL JEVEUO(JEXNOM(OBJ1,GRNOEU),'L',JDGN)
                   DO 32 INO = 1, NNO
                      CALL JENUNO(JEXNUM(OBJ2,ZI(JDGN+INO-1)),NOEU)

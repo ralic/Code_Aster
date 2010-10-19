@@ -6,7 +6,7 @@
       INTEGER NB, ISPV
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 29/03/2010   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 19/10/2010   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -114,7 +114,7 @@ C     ------------------------------------------------------------------
       ELSE IF (TYPE.EQ.'GRMA') THEN
          DO 53 IG = 1,NB
             CALL JEVEUO(JEXNOM(MLGGMA,LISTE(IG)),'L',JDGM)
-            CALL JELIRA(JEXNOM(MLGGMA,LISTE(IG)),'LONMAX',NM,C8)
+            CALL JELIRA(JEXNOM(MLGGMA,LISTE(IG)),'LONUTI',NM,C8)
             DO 54 IM = 1,NM
                IMG = ZI(JDGM+IM-1)
                CALL JEVEUO(JEXNUM(MLGCNX,IMG),'L',JDNO)

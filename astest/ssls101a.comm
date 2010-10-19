@@ -1,4 +1,4 @@
-# MODIF  DATE 05/10/2010   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 19/10/2010   AUTEUR DESOZA T.DESOZA 
 # TITRE PLAQUE CIRCULAIRE POSEE     SOUS PRESSION DKT    50 N - 76 TRIA3
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -433,8 +433,8 @@ TEST_RESU(RESU=(
            _F(  RESULTAT = U3,             NUME_ORDRE = 3,
              PARA = 'INST', REFERENCE = 'NON_REGRESSION', VALE = 6.00000E-01),
            _F(  RESULTAT = U3,             NUME_ORDRE = 3,
-             PARA = 'ITER_GLOB',        VALE_I = 0,
-             CRITERE = 'ABSOLU', REFERENCE = 'NON_REGRESSION', PRECISION = 2.E+00),
+             PARA = 'ITER_GLOB',        VALE_I = 1,
+             CRITERE = 'ABSOLU',        PRECISION = 0.),
            )
            )
 
@@ -492,8 +492,8 @@ TEST_RESU(RESU=(
            _F(  RESULTAT = U3, REFERENCE = 'NON_REGRESSION', NUME_ORDRE = 4,
              PARA = 'INST',             VALE = 1.00000E+00),
            _F(  RESULTAT = U3, REFERENCE = 'NON_REGRESSION', NUME_ORDRE = 4,
-             PARA = 'ITER_GLOB',        VALE_I = 0,
-             CRITERE = 'ABSOLU',        PRECISION = 2.E+00),
+             PARA = 'ITER_GLOB',        VALE_I = 1,
+             CRITERE = 'ABSOLU',        PRECISION = 0.),
            )
            )
 

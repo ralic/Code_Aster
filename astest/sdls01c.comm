@@ -1,4 +1,4 @@
-# MODIF  DATE 11/10/2010   AUTEUR NISTOR I.NISTOR 
+# MODIF  DATE 19/10/2010   AUTEUR DELMAS J.DELMAS 
 # TITRE SOUS STRUCTURATION DYNAMIQUE : PLAQUE MINCE LIBRE ET ENCASTREE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -467,9 +467,9 @@ CARSQUEL=AFFE_CARA_ELEM(  MODELE=MODELE1,
                                    GROUP_MA = 'TOUT2')  )
 
 #
-MODGL2=CALC_ELEM( reuse=MODGL2,MODELE=MODELE1,
+MODGL22=CALC_ELEM( MODELE=MODELE1,
                        CHAM_MATER=MATSQUEL,
-                        CARA_ELEM=CARSQUEL,
+                       CARA_ELEM=CARSQUEL,
                       TOUT_ORDRE='OUI',
                           OPTION='SIGM_ELNO_DEPL',
                          RESULTAT=MODGL2 )

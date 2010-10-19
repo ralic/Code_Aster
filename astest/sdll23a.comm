@@ -1,4 +1,4 @@
-# MODIF  DATE 29/09/2009   AUTEUR MACOCCO K.MACOCCO 
+# MODIF  DATE 19/10/2010   AUTEUR DELMAS J.DELMAS 
 # TITRE POUTRE ENCASTREE-LIBRE: REPONSE SPECTRALE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -84,13 +84,11 @@ MODE_MEC=MODE_ITER_SIMULT(  MATR_A=RIGIDITE,   MATR_B=MASSE,
 MODE_MEC=NORM_MODE(reuse=MODE_MEC,   MODE=MODE_MEC,   NORME='MASS_GENE',)
 
 MODE_MEC=CALC_ELEM(reuse=MODE_MEC,  RESULTAT=MODE_MEC,
-                         MODELE=MODELE,      OPTION=('SIEF_ELGA_DEPL',
-                         'EFGE_ELNO_DEPL', 'SIPO_ELNO_DEPL'),
-                         CHAM_MATER=CH_MATE,   CARA_ELEM=CARA_ELE    )
+                         OPTION=('SIEF_ELGA_DEPL',
+                         'EFGE_ELNO_DEPL', 'SIPO_ELNO_DEPL'),)
 
 MODE_MEC=CALC_NO(reuse=MODE_MEC,  RESULTAT=MODE_MEC,
-                    MODELE=MODELE,   OPTION='REAC_NODA',
-                       CHAM_MATER=CH_MATE,   CARA_ELEM=CARA_ELE,
+                    OPTION='REAC_NODA',
                       TOUT_ORDRE='OUI' )
 
 MODEMEC2=MODE_ITER_SIMULT(  MATR_A=RIGIDITE,   MATR_B=MASSE,
@@ -98,30 +96,25 @@ MODEMEC2=MODE_ITER_SIMULT(  MATR_A=RIGIDITE,   MATR_B=MASSE,
                               DIM_SOUS_ESPACE = 6) )
 
 MODEMEC2=CALC_ELEM(reuse=MODEMEC2,  RESULTAT=MODEMEC2,
-                         MODELE=MODELE,      OPTION='SIEF_ELGA_DEPL',
-                         CHAM_MATER=CH_MATE,   CARA_ELEM=CARA_ELE    )
+                         OPTION='SIEF_ELGA_DEPL', )
 
 MODEMEC2=CALC_NO(reuse=MODEMEC2,  RESULTAT=MODEMEC2,
-                    MODELE=MODELE,  OPTION='REAC_NODA',
-                       CHAM_MATER=CH_MATE,   CARA_ELEM=CARA_ELE,
+                    OPTION='REAC_NODA',
                       NUME_MODE=(1, 2,) )
 
 MODEMEC2=CALC_NO(reuse=MODEMEC2,  RESULTAT=MODEMEC2,
-                    MODELE=MODELE,  OPTION='REAC_NODA',
-                       CHAM_MATER=CH_MATE,   CARA_ELEM=CARA_ELE,
+                    OPTION='REAC_NODA',
                        NUME_ORDRE=3 )
 
 MODEMEC2=CALC_NO(reuse=MODEMEC2,  RESULTAT=MODEMEC2,
-                    MODELE=MODELE, OPTION='REAC_NODA',
-                       CHAM_MATER=CH_MATE,   CARA_ELEM=CARA_ELE,
+                    OPTION='REAC_NODA',
                        FREQ=12.4675,  CRITERE='ABSOLU', PRECISION=1.E-3 )
 
 LIS=DEFI_LIST_REEL( DEBUT=27.5075, INTERVALLE=_F( JUSQU_A = 41.7401,
                        NOMBRE = 1))
 
 MODEMEC2=CALC_NO(reuse=MODEMEC2,  RESULTAT=MODEMEC2,
-                   MODELE=MODELE,  OPTION='REAC_NODA',
-                       CHAM_MATER=CH_MATE,   CARA_ELEM=CARA_ELE,
+                   OPTION='REAC_NODA',
                       LIST_FREQ=LIS ,PRECISION=1.E-3,)
 
 TEST_RESU(RESU=( _F(  RESULTAT = MODE_MEC,  PARA = 'FREQ',
@@ -172,22 +165,18 @@ MODE_STA=MODE_STATIQUE(  MATR_RIGI=RIGIDITE,   MATR_MASS=MASSE,
                                          NOM_DIR = 'Z')) )
 
 MODE_STA=CALC_ELEM(reuse=MODE_STA,  RESULTAT=MODE_STA,
-                         MODELE=MODELE,      OPTION='SIEF_ELGA_DEPL',
-                         CHAM_MATER=CH_MATE,   CARA_ELEM=CARA_ELE    )
+                         OPTION='SIEF_ELGA_DEPL',)
 
 MODE_STA=CALC_NO(reuse=MODE_STA,  RESULTAT=MODE_STA,
-                   MODELE=MODELE,   OPTION='REAC_NODA',
-                       CHAM_MATER=CH_MATE,   CARA_ELEM=CARA_ELE,
+                   OPTION='REAC_NODA',
                       NOEUD_CMP=('ACCE', 'X',))
 
 MODE_STA=CALC_NO(reuse=MODE_STA,  RESULTAT=MODE_STA,
-                   MODELE=MODELE,   OPTION='REAC_NODA',
-                       CHAM_MATER=CH_MATE,   CARA_ELEM=CARA_ELE,
+                   OPTION='REAC_NODA',
                       NOEUD_CMP=('ACCE', 'Y',))
 
 MODE_STA=CALC_NO(reuse=MODE_STA,  RESULTAT=MODE_STA,
-                    MODELE=MODELE,   OPTION='REAC_NODA',
-                       CHAM_MATER=CH_MATE,   CARA_ELEM=CARA_ELE,
+                    OPTION='REAC_NODA',
                       NOEUD_CMP=('ACCE', 'Z',))
 
 ACCE_X=DEFI_FONCTION(  NOM_PARA='FREQ',        INTERPOL='LOG',

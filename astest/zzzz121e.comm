@@ -1,4 +1,4 @@
-# MODIF  DATE 04/10/2010   AUTEUR GNICOLAS G.NICOLAS 
+# MODIF  DATE 18/10/2010   AUTEUR GNICOLAS G.NICOLAS 
 # TITRE COUPLAGE ASTER_HOMARD - CAS 3D EN HEXAEDRES
 # zzzz121e.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -164,11 +164,7 @@ RESU00=CALC_ELEM(reuse =RESU00,
 
 #
 # 3.6. IMPRESSION
-##IMPR_RESU(
-##FORMAT='MED',
-##
-##RESU=_F(RESULTAT=RESU00,),
-##);
+#IMPR_RESU(FORMAT='MED',RESU=_F(RESULTAT=RESU00,),);
 
 
 #
@@ -180,10 +176,17 @@ MACR_ADAP_MAIL(MAILLAGE_N=M00,
                RESULTAT_N=RESU00,
                NOM_CHAM='ERRE_ELEM_SIGM',
                NOM_CMP='ERREST',
+               MAJ_CHAM=_F(CHAM_MAJ=CO('DEPL1'),
+                           TYPE_CHAM='NOEU_DEPL_R',
+                           RESULTAT=RESU00,
+                           NOM_CHAM='DEPL',
+                           NUME_ORDRE=1,),
                CRIT_RAFF_PE=0.1,
                QUALITE='OUI',
                CONNEXITE='OUI',
                TAILLE='OUI',);
+
+#IMPR_RESU(FORMAT='MED',RESU=_F(CHAM_GD=DEPL1,),);
 
 #
 # 5. CALCUL SUR LE MAILLAGE 01
@@ -225,29 +228,51 @@ RESU01=MECA_STATIQUE(MODELE=MODE01,
 
 #
 # 5.5. IMPRESSION
-##IMPR_RESU(
-##FORMAT='MED',
-##
-##RESU=_F(RESULTAT=RESU01,),
-##);
+#IMPR_RESU(FORMAT='MED',RESU=_F(RESULTAT=RESU01,),);
 
 
 #
 # 7. ADAPTATION DU MAILLAGE DE 01 VERS 02
 #    . RAFFINEMENT SELON UNE BOITE PARALLELEPIPEDIQUE
+#    ON CHOISIT 3 PETITES BOITES QUI CHACUNE ENTOURENT UNE ARETE D'UN
+#    HEXAEDRE. CES 3 ARETES N'ETANT PAS CONCOURRANTES, L'HEXAEDRE EST
+#    DECOUPE EN 18 TETRAEDRES. DE MEME, SON VOISIN SE TROUVE ALORS
+#    ATTAQUE PAR 2 ARETES EN VIS_A_VIS, DONC COUPE EN 2 PYRAMIDES
+#    ET 12 TETRAEDRES. CELA PERMET DE TESTER LES INTERPOLATIONS SUR
+#    LE NOEUD CENTRAL QUI EST CREE.
 
 MACR_ADAP_MAIL(MAILLAGE_N=M01,
                MAILLAGE_NP1=CO('M02'),
                ADAPTATION='RAFFINEMENT_ZONE',
-               ZONE=_F(TYPE='BOITE',
-                       X_MINI=-0.01,
-                       X_MAXI=2.01,
-                       Y_MINI=-0.01,
-                       Y_MAXI=4.01,
+               ZONE=(_F(TYPE='BOITE',
+                       X_MINI= 3.99,
+                       X_MAXI= 4.01,
+                       Y_MINI= 3.99,
+                       Y_MAXI= 4.01,
                        Z_MINI=-0.01,
-                       Z_MAXI=1.01,),
+                       Z_MAXI= 2.01,),
+                     _F(TYPE='BOITE',
+                       X_MINI= 3.99,
+                       X_MAXI= 6.01,
+                       Y_MINI= 5.99,
+                       Y_MAXI= 6.01,
+                       Z_MINI=-0.01,
+                       Z_MAXI= 0.01,),
+                     _F(TYPE='BOITE',
+                       X_MINI= 5.99,
+                       X_MAXI= 6.01,
+                       Y_MINI= 3.99,
+                       Y_MAXI= 6.01,
+                       Z_MINI= 1.99,
+                       Z_MAXI= 2.01,),),
+               MAJ_CHAM=_F(CHAM_MAJ=CO('DEPL2'),
+                           TYPE_CHAM='NOEU_DEPL_R',
+                           RESULTAT=RESU01,
+                           NOM_CHAM='DEPL',
+                           NUME_ORDRE=1,),
                QUALITE='OUI',);
 
+#IMPR_RESU(FORMAT='MED',RESU=_F(CHAM_GD=DEPL2,),);
 #
 # 8. CALCUL SUR LE MAILLAGE 02
 # 8.1. MODELE MECANIQUE
@@ -298,32 +323,66 @@ RESU02=CALC_NO(reuse =RESU02,
                OPTION='ERRE_NOEU_ELEM',);
 
 # 8.6. IMPRESSION
-##IMPR_RESU(
-##FORMAT='MED',
-##
-##RESU=_F(RESULTAT=RESU02,),
-##);
+#IMPR_RESU(FORMAT='MED',RESU=_F(RESULTAT=RESU02,),);
+#IMPR_RESU(RESU=_F(RESULTAT=RESU02,),);
 
+# 9. TESTS DE NON-REGRESSION
+#    ON CREE DEUX GROUPES DE NOEUD CONTENANT CHACUN UN DES NOEUDS CREES AU CENTRE
+#    DES HEXAEDRES COUPES. CELA PERMET DE S'AFFRANCHIR D'EVENTUELS CHANGEMENTS DE
+#    NUMEROTATION DES NOEUDS DANS HOMARD ET DE PERENISER LES TESTS
+#    REMARQUE : LEUR NOM EST CELUI DU NOEUD POUR LA VERSION 10.02.20
+#
+M02=DEFI_GROUP( reuse =M02,
+                MAILLAGE=M02,
+                CREA_GROUP_NO=(_F(NOM='N55',
+                                  OPTION='ENV_SPHERE',
+                                  POINT=(3.,3.,1.),
+                                  PRECISION=1/200.,
+                                  RAYON=1/200.),
+                              _F(NOM='N56',
+                                  OPTION='ENV_SPHERE',
+                                  POINT=(5.,5.,1.),
+                                  PRECISION=1/200.,
+                                  RAYON=1/200.),),
+                INFO=2 );
 
-TEST_RESU(RESU=(_F(RESULTAT=RESU02,
+#IMPR_RESU(FORMAT='MED',RESU=_F(MAILLAGE=M02,),);
+
+TEST_RESU(CHAM_NO=(_F(CHAM_GD=DEPL2,
+                     GROUP_NO='N55',
+                     NOM_CMP='DX',
+                     VALE=6.03633800,
+                     CRITERE='RELATIF',
+                     PRECISION=1.E-08,
+                     REFERENCE='NON_REGRESSION',
+                     VERSION='10.02.20',),
+                   _F(CHAM_GD=DEPL2,
+                     GROUP_NO='N56',
+                     NOM_CMP='DZ',
+                     VALE=-14.0615426,
+                     CRITERE='RELATIF',
+                     PRECISION=1.E-08,
+                     REFERENCE='NON_REGRESSION',
+                     VERSION='10.02.20',),),
+          RESU=(_F(RESULTAT=RESU02,
                    NUME_ORDRE=1,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DZ',
                    GROUP_NO='A',
-                   VALE=-19.8173561,
+                   VALE=-17.3329132,
                    CRITERE='RELATIF',
                    PRECISION=1.E-8,
                    REFERENCE='NON_REGRESSION',
-                   VERSION='9.02.23',),
+                   VERSION='10.02.20',),
                 _F(RESULTAT=RESU02,
                    NUME_ORDRE=1,
                    NOM_CHAM='ERRE_NOEU_ELEM',
                    NOM_CMP='ERREST',
                    GROUP_NO='A',
-                   VALE=1.64631332E5,
+                   VALE=5.18187530E4,
                    CRITERE='RELATIF',
                    PRECISION=1.E-6,
                    REFERENCE='NON_REGRESSION',
-                   VERSION='9.05.04',),),);
+                   VERSION='10.02.20',),),);
 
 FIN();

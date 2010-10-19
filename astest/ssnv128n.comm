@@ -1,4 +1,4 @@
-# MODIF  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 19/10/2010   AUTEUR DESOZA T.DESOZA 
 # TITRE CONTACT AVEC FROTTEMENT D'UNE PLAQUE SUR UN PLAN RIGIDE
 # ssnv128n.para = tps_job 160 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -81,7 +81,7 @@ CHA4 = DEFI_CONTACT(MODELE         = MO,
                     FORMULATION    = 'CONTINUE',
                     FROTTEMENT     = 'COULOMB',
                     REAC_GEOM      = 'CONTROLE',
-                    NB_ITER_GEOM   = 2, 
+                    NB_ITER_GEOM   = 2,
                     REAC_FROT      = 'AUTOMATIQUE',
                     ITER_FROT_MAXI = 8,
                     RESI_FROT      = 2.E-3,
@@ -89,13 +89,13 @@ CHA4 = DEFI_CONTACT(MODELE         = MO,
                            _F(
                              GROUP_MA_ESCL = 'SBATI',
                              GROUP_MA_MAIT = 'SCONTA',
-                             SANS_GROUP_NO = ('PPS','PPSZ'),
+                             SANS_GROUP_NO = ('PBS','PBZ'),
                              COULOMB       = 1.0,
-                             SEUIL_INIT    = 0.,                                                         
-                             ),                            
+                             SEUIL_INIT    = 0.,
+                             ),
                           ),
                    );
-                   
+
 #
 RAMPE=DEFI_FONCTION(NOM_PARA='INST',
                     PROL_GAUCHE='LINEAIRE',
@@ -111,7 +111,7 @@ U4M=STAT_NON_LINE(MODELE      = MO,
                   CHAM_MATER  = CHMAT,
                   EXCIT       =(_F(CHARGE = CHA1, FONC_MULT = RAMPE),
                                 ),
-                  CONTACT     = CHA4,              
+                  CONTACT     = CHA4,
                   COMP_ELAS   = _F(RELATION = 'ELAS'),
                   NEWTON      = _F(REAC_ITER = 1),
                   INCREMENT   = _F(LIST_INST = L_INST),
@@ -120,7 +120,7 @@ U4M=STAT_NON_LINE(MODELE      = MO,
                                    RESI_GLOB_RELA = 1.0E-5),
 #                 INFO=2,
                 );
-                
+
 # ---- TEST ----
 
 TEST_RESU(RESU=(_F(RESULTAT   = U4M,

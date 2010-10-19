@@ -1,6 +1,6 @@
       SUBROUTINE JEFINI ( COND )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 06/04/2010   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 19/10/2010   AUTEUR COURTOIS M.COURTOIS 
 C RESPONSABLE LEFEBVRE J-P.LEFEBVRE
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -46,9 +46,10 @@ C
       REAL *8          MXDYN , MCDYN , MLDYN , VMXDYN , LGIO  
       COMMON /RDYNJE/  MXDYN , MCDYN , MLDYN , VMXDYN , LGIO(2)
 C     ==================================================================
-      INTEGER          VALI(7) , INFO        
+      INTEGER          VALI(7) , INFO, IFM, IRES
       CHARACTER*8      KCOND , STAOU
       CHARACTER*24     LADATE
+      REAL*8           RVAL(9)
 C     ------------------------------------------------------------------
 C
       KCOND  = COND ( 1: MIN( LEN(COND) , LEN(KCOND) ) )
@@ -100,13 +101,27 @@ C
         CALL JXABOR()
       ENDIF
 C
-      IF ( KCOND .NE. 'TEST    ') THEN
-        IFM = IUNIFI('ERREUR')
-        IF (IFM .GT. 0) THEN
-          WRITE(IFM,*) '<I>       FERMETURE DES BASES EFFECTUEE'
+C     --- IMPRESSION DES CONSOMMATIONS MEMOIRE ---
+      CALL JEINFO(RVAL)
+      IFM = IUNIFI('MESSAGE')
+      IRES = IUNIFI('RESULTAT')
+C
+      IF(IRES .GT. 0) THEN
+        WRITE(IRES,*) ' '
+        WRITE(IRES,'(2A,F11.2,A)') 
+     +        ' <I> <FIN> MEMOIRE JEVEUX MINIMALE REQUISE POUR ',
+     +        'L''EXECUTION :                ',RVAL(2),' Mo'
+        IF (RVAL(9).GT.0) THEN 
+          WRITE(IRES,'(2A,F11.2,A)') 
+     +        ' <I> <FIN> MAXIMUM DE MEMOIRE UTILISEE PAR LE PROCESSUS'
+     +        ,' LORS DE L''EXECUTION :',RVAL(9)/1024,' Mo'
         ENDIF
-        IFM = IUNIFI('MESSAGE')
+      ENDIF
+C
+      IF ( KCOND .NE. 'TEST    ') THEN
         IF (IFM .GT. 0) THEN
+          WRITE(IFM,*) ' '
+          WRITE(IFM,*) '<I>       FERMETURE DES BASES EFFECTUEE'
           IF ( LDYN .EQ. 1 ) THEN
             VALI(1) = NINT(MXDYN/(1024*1024))
             VALI(2) = LISZON*LOIS/(1024*1024)
@@ -136,12 +151,16 @@ C
      &                  VALI(7),' Mo.'    
             WRITE(IFM,*) ' '
           ENDIF         
+          WRITE(IFM,*) '  MAXIMUM DE MEMOIRE UTILISEE PAR'
+          WRITE(IFM,'(2A,F11.2,A)') '   LE PROCESSUS LORS DE '
+     &                 ,'L''EXECUTION    :  ',RVAL(9)/1024,' Mo.'
+          WRITE(IFM,*) ' '
           CALL ENLIRD(LADATE)
           WRITE(IFM,*) '<I>       FIN D''EXECUTION LE : '//LADATE
 C
-C       --- ON FERME TOUT ---
         ENDIF
 C
+C       --- ON FERME TOUT ---
         CALL ULCLOS
 C
         CALL XFINI(19)

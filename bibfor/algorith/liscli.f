@@ -2,7 +2,7 @@
      &                  LISINZ,IVAL  )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 19/10/2010   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -64,8 +64,8 @@ C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
 C
       CHARACTER*24 CHARGE,INFCHA,FOMULT
       INTEGER      JALICH,JINFCH,JALIFC
-      INTEGER      NCHAR   
-      CHARACTER*24 INFOCH
+      INTEGER      NCHAR, NBIOUT, I
+      CHARACTER*24 INFOCH(3)
 C
 C ----------------------------------------------------------------------
 C
@@ -86,97 +86,87 @@ C
 C
       NOMCHA = ZK24(JALICH+ICHAR-1)(1:8)
       NOMFCT = ZK24(JALIFC+ICHAR-1)(1:8) 
-      NBINFO = 0
+      NBIOUT = 0
 C
       IF (ZI(JINFCH+ICHAR).EQ.-1) THEN
-        NBINFO = 1
-        INFOCH = 'CINE_CSTE'
-        LISINZ(NBINFO) = INFOCH
+        NBIOUT = 1
+        INFOCH(NBIOUT) = 'CINE_CSTE'
       
       ELSEIF (ZI(JINFCH+ICHAR) .EQ. -2) THEN
-        NBINFO = 1
-        INFOCH = 'CINE_FO'
-        LISINZ(NBINFO) = INFOCH
+        NBIOUT = 1
+        INFOCH(NBIOUT) = 'CINE_FO'
         
       ELSEIF (ZI(JINFCH+ICHAR) .EQ. -3) THEN
-        NBINFO = 1
-        INFOCH = 'CINE_FT'
-        LISINZ(NBINFO) = INFOCH
+        NBIOUT = 1
+        INFOCH(NBIOUT) = 'CINE_FT'
         
       ELSEIF (ZI(JINFCH+ICHAR) .EQ. 5) THEN
-        NBINFO = 1
-        INFOCH = 'DIRI_PILO'
-        LISINZ(NBINFO) = INFOCH
+        NBIOUT = 1
+        INFOCH(NBIOUT) = 'DIRI_PILO'
         
       ELSEIF (ZI(JINFCH+ICHAR) .EQ. 1) THEN
-        NBINFO = 1
-        INFOCH = 'DIRI_CSTE'
+        NBIOUT = 1
+        INFOCH(NBIOUT) = 'DIRI_CSTE'
         IF ( ZI(JINFCH+3*NCHAR+2+ICHAR).EQ.1) THEN
-          INFOCH = INFOCH(1:9)//'_DIDI'
+          INFOCH(NBIOUT) = INFOCH(NBIOUT)(1:9)//'_DIDI'
         ENDIF
-        LISINZ(NBINFO) = INFOCH
 
       ELSEIF (ZI(JINFCH+ICHAR) .EQ. 2) THEN
-        NBINFO = 1
-        INFOCH = 'DIRI_FO'
+        NBIOUT = 1
+        INFOCH(NBIOUT) = 'DIRI_FO'
         IF ( ZI(JINFCH+3*NCHAR+2+ICHAR).EQ.1) THEN
-          INFOCH = INFOCH(1:9)//'_DIDI'
+          INFOCH(NBIOUT) = INFOCH(NBIOUT)(1:9)//'_DIDI'
         ENDIF        
-        LISINZ(NBINFO) = INFOCH
 
       ELSEIF (ZI(JINFCH+ICHAR) .EQ. 3) THEN
-        NBINFO = 1
-        INFOCH = 'DIRI_FT'
+        NBIOUT = 1
+        INFOCH(NBIOUT) = 'DIRI_FT'
         IF ( ZI(JINFCH+3*NCHAR+2+ICHAR).EQ.1) THEN
-          INFOCH = INFOCH(1:9)//'_DIDI'
+          INFOCH(NBIOUT) = INFOCH(NBIOUT)(1:9)//'_DIDI'
         ENDIF        
-        LISINZ(NBINFO) = INFOCH
       ENDIF
 C
       IF (ZI(JINFCH+NCHAR+ICHAR) .EQ. 6) THEN
-        NBINFO = NBINFO + 1
-        INFOCH = 'NEUM_ONDE'
-        LISINZ(NBINFO) = INFOCH
+        NBIOUT = NBIOUT + 1
+        INFOCH(NBIOUT) = 'NEUM_ONDE'
         
       ELSEIF ((ZI(JINFCH+NCHAR+ICHAR) .EQ. 55) .AND.
      &        (ZI(JINFCH+4*NCHAR+4)   .EQ. 99) ) THEN   
-        NBINFO = NBINFO + 1
-        INFOCH = 'NEUM_SIGM_INT'
-        LISINZ(NBINFO) = INFOCH
+        NBIOUT = NBIOUT + 1
+        INFOCH(NBIOUT) = 'NEUM_SIGM_INT'
 
       ELSEIF (ZI(JINFCH+NCHAR+ICHAR) .EQ. 5) THEN
-        NBINFO = NBINFO + 1
-        INFOCH = 'NEUM_PILO'
-        LISINZ(NBINFO) = INFOCH
+        NBIOUT = NBIOUT + 1
+        INFOCH(NBIOUT) = 'NEUM_PILO'
         
       ELSEIF (ZI(JINFCH+NCHAR+ICHAR) .EQ. 4) THEN       
-        NBINFO = NBINFO + 1
-        INFOCH = 'NEUM_SUIV'  
-        LISINZ(NBINFO) = INFOCH    
+        NBIOUT = NBIOUT + 1
+        INFOCH(NBIOUT) = 'NEUM_SUIV'  
         
       ELSEIF (ZI(JINFCH+NCHAR+ICHAR) .EQ. 2) THEN
-        NBINFO = NBINFO + 1
-        INFOCH = 'NEUM_FO'
-        LISINZ(NBINFO) = INFOCH
+        NBIOUT = NBIOUT + 1
+        INFOCH(NBIOUT) = 'NEUM_FO'
         
       ELSEIF (ZI(JINFCH+NCHAR+ICHAR) .EQ. 3) THEN
-        NBINFO = NBINFO + 1
-        INFOCH = 'NEUM_FT'
-        LISINZ(NBINFO) = INFOCH
+        NBIOUT = NBIOUT + 1
+        INFOCH(NBIOUT) = 'NEUM_FT'
 
       ELSEIF (ZI(JINFCH+NCHAR+ICHAR) .EQ. 1) THEN
-        NBINFO = NBINFO + 1
-        INFOCH = 'NEUM_CSTE'
-        LISINZ(NBINFO) = INFOCH 
+        NBIOUT = NBIOUT + 1
+        INFOCH(NBIOUT) = 'NEUM_CSTE'
       ENDIF         
 C 
       IF (ZI(JINFCH+2*NCHAR+2)   .NE. 0) THEN
-        INFOCH = 'NEUM_LAPL'
-        NBINFO = NBINFO + 1
+        NBIOUT = NBIOUT + 1
+        INFOCH(NBIOUT) = 'NEUM_LAPL'
         IVAL   = ZI(JINFCH+2*NCHAR+2)
-        LISINZ(NBINFO) = INFOCH
       ENDIF
 
+C     REMPLIT LES NBINFO VALEURS DEMANDEES DANS LISINZ
+      NBINFO = MIN(NBINFO, NBIOUT)
+      DO 10 I = 1, NBINFO
+        LISINZ(I) = INFOCH(I)
+   10 CONTINUE
 
       CALL JEDEMA()
       END

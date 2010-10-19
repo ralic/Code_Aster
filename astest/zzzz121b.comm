@@ -1,4 +1,4 @@
-# MODIF  DATE 04/10/2010   AUTEUR GNICOLAS G.NICOLAS 
+# MODIF  DATE 18/10/2010   AUTEUR GNICOLAS G.NICOLAS 
 # TITRE COUPLAGE ASTER_HOMARD - CAS TRIDIMENSIONNEL
 # zzzz121b.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -463,7 +463,7 @@ MACR_ADAP_MAIL(MAILLAGE_N=MTROI,
                NOM_CHAM='DEPL',
                SENSIBILITE=FZ,
                NOM_CMP='DX',
-               TYPE_VALEUR_INDICA='V_ABSOLUE',
+               USAGE_CMP='ABSOLU',
                CRIT_RAFF_PE=0.20,
                CRIT_DERA_PE=0.25,
                MAJ_CHAM=(_F(CHAM_MAJ=CO('DUDFQUAT'),

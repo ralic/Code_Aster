@@ -1,4 +1,4 @@
-# MODIF  DATE 26/01/2010   AUTEUR DESOZA T.DESOZA 
+# MODIF  DATE 19/10/2010   AUTEUR DESOZA T.DESOZA 
 # TITRE CONTACT AVEC FROTTEMENT ET USURE D'UNE PLAQUE SUR UN PLAN RIGIDE
 # ssnv128s.para = tps_job 100 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -83,7 +83,7 @@ CHA4 = DEFI_CONTACT(MODELE         = MO,
                              GROUP_MA_ESCL = 'LCONTA',
                              SANS_GROUP_NO = ('PPS',),
                              COULOMB       = 1.0,
-                             CONTACT_INIT  = 'OUI',
+                             CONTACT_INIT  = 'INTERPENETRE',
                              SEUIL_INIT    = 0.0,
                              ALGO_CONT     = 'STANDARD',
                              COEF_CONT     = 1.0,

@@ -1,4 +1,4 @@
-# MODIF  DATE 28/01/2008   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 19/10/2010   AUTEUR DELMAS J.DELMAS 
 # TITRE CALCUL DE FLUX THERMIQUE (2D PLAN_DIAG)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -64,13 +64,13 @@ RESUL = CREA_RESU(OPERATION='AFFE',
                  TYPE_RESU='EVOL_THER',
                  NOM_CHAM='TEMP',
                  AFFE=_F(CHAM_GD = CHTEMPL,
-                         INST = 1.0)
+                         INST = 1.0,
+                         MODELE=MO,
+                         CHAM_MATER=CHMAT,)
                 )
 #
 RESUL = CALC_ELEM(reuse=RESUL,
                  RESULTAT=RESUL,
-                 MODELE=MO,
-                 CHAM_MATER=CHMAT,
                  OPTION=('FLUX_ELGA_TEMP','FLUX_ELNO_TEMP',)
                 )
 #
@@ -186,13 +186,13 @@ RESUQ = CREA_RESU(OPERATION='AFFE',
                  TYPE_RESU='EVOL_THER',
                  NOM_CHAM='TEMP',
                  AFFE=_F(CHAM_GD = CHTEMPQ,
-                         INST = 1.0)
+                         INST = 1.0,
+                         MODELE=MO,
+                         CHAM_MATER=CHMAT,)
                 )
 #
 RESUQ = CALC_ELEM(reuse=RESUQ,
                  RESULTAT=RESUQ,
-                 MODELE=MO,
-                 CHAM_MATER=CHMAT,
                  OPTION=('FLUX_ELGA_TEMP','FLUX_ELNO_TEMP',)
                 )
 #
