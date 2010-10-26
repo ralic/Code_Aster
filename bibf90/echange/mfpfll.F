@@ -1,6 +1,6 @@
       SUBROUTINE MFPFLL( FID , PFLVAL , N , PRO , CRET)
 !           CONFIGURATION MANAGEMENT OF EDF VERSION                  
-!& MODIF MFPFLL ECHANGE  DATE 19/10/2010   AUTEUR COURTOIS M.COURTOIS 
+!& MODIF MFPFLL ECHANGE  DATE 25/10/2010   AUTEUR COURTOIS M.COURTOIS 
 ! ================================================================== 
 ! COPYRIGHT (C) 1991 - 2010  EDF R&D              WWW.CODE-ASTER.ORG 
 !                                                                    
@@ -22,14 +22,23 @@ C     L'ARGUMENT N N'EST PAS DANS L'API MED
       INTEGER FID,N,CRET
       INTEGER PFLVAL(*)
       CHARACTER*(*) PRO
-#ifndef _DISABLE_MED
+#ifdef _DISABLE_MED
+      CALL U2MESS('F','FERMETUR_2')
+#else
+! BEGIN MED
+#ifdef _USE_MED_SHORT_INT
       INTEGER*4 FID4, CRET4
       INTEGER*4 PFLVA4(N)
+#ifdef _DEBUG_MED
+      PRINT *,'=== MFPFLL ==='
+#endif
       FID4 = FID
       CALL EFPFLL( FID4, PFLVA4 , PRO , CRET4)
       CALL CONVI4(PFLVAL, PFLVA4, -N)
       CRET = CRET4
 #else
-      CALL U2MESS('F','FERMETUR_2')
+      CALL EFPFLL( FID , PFLVAL , PRO , CRET)
+#endif
+! END MED
 #endif
       END

@@ -1,7 +1,7 @@
       SUBROUTINE MFNVAL(FID,CHA,TYPENT,TYPGEO,NUMDT,NUMO,MAA,PFLMOD,
      &     N,CRET)
 !           CONFIGURATION MANAGEMENT OF EDF VERSION                  
-!& MODIF MFNVAL ECHANGE  DATE 19/10/2010   AUTEUR COURTOIS M.COURTOIS 
+!& MODIF MFNVAL ECHANGE  DATE 25/10/2010   AUTEUR COURTOIS M.COURTOIS 
 ! ================================================================== 
 ! COPYRIGHT (C) 1991 - 2010  EDF R&D              WWW.CODE-ASTER.ORG 
 !                                                                    
@@ -22,9 +22,16 @@
       INTEGER FID,TYPENT,TYPGEO,N,CRET
       INTEGER NUMDT, NUMO, PFLMOD
       CHARACTER*(*) CHA, MAA
-#ifndef _DISABLE_MED
+#ifdef _DISABLE_MED
+      CALL U2MESS('F','FERMETUR_2')
+#else
+! BEGIN MED
+#ifdef _USE_MED_SHORT_INT
       INTEGER*4 FID4, TYPEN4, TYPGE4, N4, CRET4
       INTEGER*4 NUMDT4, NUMO4, PFLMO4
+#ifdef _DEBUG_MED
+      PRINT *,'=== MFNVAL ==='
+#endif
       FID4 = FID
       TYPEN4 = TYPENT
       TYPGE4 = TYPGEO
@@ -36,6 +43,9 @@
       N = N4
       CRET = CRET4
 #else
-      CALL U2MESS('F','FERMETUR_2')
+      CALL EFNVAL(FID,CHA,TYPENT,TYPGEO,NUMDT,NUMO,MAA,PFLMOD,
+     &     N,CRET)
+#endif
+! END MED
 #endif
       END

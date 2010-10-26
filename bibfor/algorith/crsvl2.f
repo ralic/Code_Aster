@@ -3,7 +3,7 @@
       CHARACTER*19 SOLVEU
       INTEGER      NPREC,CASPAR
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/10/2010   AUTEUR BOITEAU O.BOITEAU 
+C MODIF ALGORITH  DATE 26/10/2010   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -23,9 +23,10 @@ C ======================================================================
 C ----------------------------------------------------------
 C  BUT : REMPLISSAGE SD_SOLVEUR POUR UN CALCUL MODAL DONT LES MATRICES
 C        NE S'APPUIENT PAS SUR DES NOEUDS D'UN MAILLAGE (NUME_DDL_GENE)
-C        DANS CE CAS SEUL LDLT EST LICITE.
+C        DANS CE CAS SEUL LDLT OU MUMPS SONT LICITES.
 C        ON ECRASE DONC LES DONNEES SAISIES PAR L'UTILISATEUR, SAUF
-C        CELLES DU BLOC COMMUN AUX SOLVEURS DIRECTS.
+C        CELLES DU BLOC COMMUN AUX SOLVEURS DIRECTS, ET ON IMPOSE MUMPS
+C        AVEC LES MEMES VALEURS PAR DEFAUT QUE CELLE DU CATALOGUE STD
 C
 C IN K19 SOLVEU  : NOM DU SOLVEUR DONNE EN ENTREE
 C OUT    SOLVEU  : LE SOLVEUR EST CREE ET INSTANCIE
@@ -55,7 +56,6 @@ C --- FIN DECLARATIONS NORMALISEES JEVEUX --------------------
 
       INTEGER      ISLVK,ISLVI,ISLVR
       REAL*8       JEVTBL
-      CHARACTER*8  RENUM
 
 C------------------------------------------------------------------
       CALL JEMARQ()
@@ -68,29 +68,26 @@ C --- ON REMPLIT LA SD_SOLVEUR
       CALL JEVEUO(SOLVEU//'.SLVR','E',ISLVR)
       CALL JEVEUO(SOLVEU//'.SLVI','E',ISLVI)
 
-      IF (CASPAR.EQ.1) THEN
-        RENUM='SANS'
-      ENDIF      
-      ZK24(ISLVK-1+1) = 'LDLT'
-      ZK24(ISLVK-1+2) = 'XXXX'
-      ZK24(ISLVK-1+3) = 'XXXX'
-      ZK24(ISLVK-1+4) = RENUM
-      ZK24(ISLVK-1+5) = 'XXXX'
-      ZK24(ISLVK-1+6) = 'XXXX'
-      ZK24(ISLVK-1+7) = 'XXXX'
+      ZK24(ISLVK-1+1) = 'MUMPS'
+      ZK24(ISLVK-1+2) = 'AUTO'
+      ZK24(ISLVK-1+3) = 'AUTO'
+      ZK24(ISLVK-1+4) = 'AUTO'
+      ZK24(ISLVK-1+5) = 'NON'
+      ZK24(ISLVK-1+6) = 'OUI'
+      ZK24(ISLVK-1+7) = 'NON'
       ZK24(ISLVK-1+8) = 'XXXX'
-      ZK24(ISLVK-1+9) = 'XXXX'
-      ZK24(ISLVK-1+10)= 'XXXX'
-      ZK24(ISLVK-1+11)= 'XXXX'
+      ZK24(ISLVK-1+9) = 'NON'
+      ZK24(ISLVK-1+10)= 'NON'
+      ZK24(ISLVK-1+11)= 'AUTO'
 
-      ZR(ISLVR-1+1) = 0.D0
-      ZR(ISLVR-1+2) = 0.D0
-      ZR(ISLVR-1+3) = JEVTBL()
+      ZR(ISLVR-1+1) = -1.D0
+      ZR(ISLVR-1+2) = -1.D0
+      ZR(ISLVR-1+3) = 0.D0
       ZR(ISLVR-1+4) = 0.D0
 
       ZI(ISLVI-1+1) = NPREC
-      ZI(ISLVI-1+2) = -9999
-      ZI(ISLVI-1+3) = -9999
+      ZI(ISLVI-1+2) = 30
+      ZI(ISLVI-1+3) = 0
       ZI(ISLVI-1+4) = -9999      
       ZI(ISLVI-1+5) = -9999      
       ZI(ISLVI-1+6) = -9999      

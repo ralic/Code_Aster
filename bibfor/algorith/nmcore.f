@@ -3,7 +3,7 @@
      &                  MAXREL,MAXNOD)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 05/10/2010   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 25/10/2010   AUTEUR GRANET S.GRANET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -186,15 +186,15 @@ C
       IF (LCMP) THEN
           IF (NUMINS.EQ.1) THEN
             CONVOK(4) = .FALSE.
-            IF(VNODA.LT.R8PREM())THEN
+C            IF(VNODA.LT.R8PREM())THEN
                IF(VCHAR .LE. (1.D-6 * CHMINI )) THEN
                    VRESI1=VMAXI
                ELSE
                    VRESI1=VRELA
                ENDIF 
-            ELSE
-                VRESI1=VNODA
-            ENDIF
+C            ELSE
+C                VRESI1=VNODA
+C            ENDIF
 C            
             IF ((VRESI1.LT.RESDEF).OR. 
      &            (VRESI1.LT.R8PREM())) THEN

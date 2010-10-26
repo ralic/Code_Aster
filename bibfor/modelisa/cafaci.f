@@ -1,9 +1,10 @@
-      SUBROUTINE CAFACI( FONREE, CHAR )
+      SUBROUTINE CAFACI ( FONREE, CHAR )
       IMPLICIT NONE
       CHARACTER*4         FONREE
       CHARACTER*8                 CHAR
+C ---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 19/10/2010   AUTEUR DELMAS J.DELMAS 
+C MODIF MODELISA  DATE 26/10/2010   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,8 +21,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C TOLE CRP_20
-
+C
 C     BUT: CREER LES CARTES CHAR.CHME.CMULT ET CHAR.CHME.CIMPO
 C          ET REMPLIR LIGRCH POUR FACE_IMPO
 
@@ -56,16 +56,15 @@ C---------------- FIN COMMUNS NORMALISES  JEVEUX  ----------------------
       INTEGER NBNOEU,JVAL,NDDLA,JDIREC,NBNO
       INTEGER IDIM,IN,JNORM,JTANG,JNONO,NFACI
       INTEGER IBID,JNOMA,IER,NDIM,NBMA2,JCOMPT
-      INTEGER N1,N2,INO,JPRNM,NBEC,NMCL,INOR,ICMP,ICMPX,INDIK8
-      INTEGER IE,NBMA,NBCMP,INOM
-      INTEGER JLIST2,JLIST3,JLIST1,NBMA3,NBNO1,NBNO3
+      INTEGER N1,N2,INO,JPRNM,NBEC,NMCL,INOR,ICMP
+      INTEGER NBMA,NBCMP,INOM
+      INTEGER JLIST2,JLIST3,NBNO1,NBNO3
       INTEGER DDLIMP(NMOCL),NBNO2,JLINO2,JLINO1,JLINO,JLINU
       REAL*8 VALIMR(NMOCL),COEF(3),DIRECT(3)
       COMPLEX*16 VALIMC(NMOCL),COEFC(3)
       CHARACTER*1 K1BID
       CHARACTER*2 TYPLAG
       CHARACTER*3 TYMOCL(NMOCL)
-      CHARACTER*3 CDIM
       CHARACTER*4 TYPCOE
       CHARACTER*8 K8B,NOMA,MOD,NOMG
       CHARACTER*8 VALIMF(NMOCL),NOMNOE,DDL(3)
@@ -74,7 +73,8 @@ C---------------- FIN COMMUNS NORMALISES  JEVEUX  ----------------------
       CHARACTER*24 MESMAI,MESMA2,LNOEU2,LNOEU1,MESNO3
       CHARACTER*19 LIGRMO
       CHARACTER*19 LISREL,NOXFEM
-      LOGICAL EXISDG,LXFEM
+      LOGICAL LXFEM
+      CHARACTER*19 CH1,CH2,CH3
 
       CALL JEMARQ()
       CALL GETFAC('FACE_IMPO',NFACI)
@@ -160,12 +160,23 @@ C    --------------------------------------------------------
       CALL JEEXIN(MOD//'.XFEM_CONT',IER)
       IF (IER.EQ.0) THEN
         LXFEM = .FALSE.
+        NOXFEM = ' '
+        CH1 = ' '
+        CH2 = ' '
+        CH3 = ' '
       ELSE
         LXFEM = .TRUE.
         NOXFEM = '&&CAFACI.NOXFEM'
         CALL CNOCNS(MOD//'.NOXFEM','V',NOXFEM)
         CALL JEVEUO(NOXFEM//'.CNSL','L',JNOXFL)
         CALL JEVEUO(NOXFEM//'.CNSV','L',JNOXFV)
+C       STATUT DU NOEUD ET LEVEL SETS
+        CH1 = '&&CAFACI.CHS1'
+        CH2 = '&&CAFACI.CHS2'
+        CH3 = '&&CAFACI.CHS3'
+        CALL CELCES(MOD//'.STNO','V',CH1)
+        CALL CELCES(MOD//'.LNNO','V',CH2)
+        CALL CELCES(MOD//'.LTNO','V',CH3)
       ENDIF
 
       DO 210 I = 1,NFACI
@@ -359,10 +370,11 @@ C   ----------------------
 
               IF (LXFEM) THEN
                 IF (ZL(JNOXFL-1+2*IN)) THEN
-                  CALL XDDLIM(MOD,DDL,ZK8(INOM),NBCMP,NOMNOE,IN,
+                  CALL XDDLIM(MOD,DDL,NOMNOE,IN,
      &                        VALIMR(NDDLA+1),VALIMC(J),VALIMF(J),
-     &                        ZI(JPRNM-1+(IN-1)*NBEC+1),FONREE,
-     &                        IBID,LISREL,NDIM,DIRECT,JNOXFV)
+     &                        FONREE,
+     &                        IBID,LISREL,NDIM,DIRECT,JNOXFV,
+     &                        CH1, CH2, CH3)
                   GOTO 105
                 ENDIF
               ENDIF
@@ -383,10 +395,11 @@ C   ----------------------
 
               IF (LXFEM) THEN
                 IF (ZL(JNOXFL-1+2*IN)) THEN
-                  CALL XDDLIM(MOD,DDL,ZK8(INOM),NBCMP,NOMNOE,IN,
+                  CALL XDDLIM(MOD,DDL,NOMNOE,IN,
      &                        VALIMR(NDDLA+2),VALIMC(J),VALIMF(J),
-     &                        ZI(JPRNM-1+(IN-1)*NBEC+1),FONREE,
-     &                        IBID,LISREL,NDIM,DIRECT,JNOXFV)
+     &                        FONREE,
+     &                        IBID,LISREL,NDIM,DIRECT,JNOXFV,
+     &                        CH1, CH2, CH3)
                   GOTO 120
                 ENDIF
               ENDIF
@@ -433,8 +446,9 @@ C                 ASSOCIE AUX DDLS IMPOSES PAR NOEUD
             CALL AFDDLI(ZR(JVAL),ZK8(JVAL),ZC(JVAL),
      &                    ZI(JPRNM-1+ (IN-1)*NBEC+1),NDDLA,FONREE,
      &                    NOMNOE,IN,DDLIMP,VALIMR,VALIMF,VALIMC,MOTCLE,
-     &                    NBEC,ZR(JDIREC+3* (IN-1)),0,MOD,LISREL,
-     &                    ZK8(INOM),NBCMP,ZI(JCOMPT))
+     &                    ZR(JDIREC+3* (IN-1)),0,MOD,LISREL,
+     &                    ZK8(INOM),NBCMP,ZI(JCOMPT),LXFEM,JNOXFL,
+     &                    JNOXFV,CH1,CH2,CH3)
   180     CONTINUE
           DO 181,K=1,NDDLA
              IF (ZI(JCOMPT-1+K) .EQ. 0 ) CALL U2MESK('F','MODELISA2_45',
@@ -459,13 +473,15 @@ C        LIGRCH ET .NEMA)
 C        -------------------------------------
       CALL AFLRCH(LISREL,CHAR)
 
-  220 CONTINUE
       CALL JEDETR('&&NBNLMA.LN')
       CALL JEDETR('&&NBNLMA.NBN')
       CALL JEDETR('&&CANORT.NORMALE')
       CALL JEDETR('&&CANORT.TANGENT')
       IF (LXFEM) THEN
-        CALL JEDETR(NOXFEM)
+        CALL DETRSD('CHAM_NO_S'  ,NOXFEM)
+        CALL DETRSD('CHAM_ELEM_S',CH1)
+        CALL DETRSD('CHAM_ELEM_S',CH2)
+        CALL DETRSD('CHAM_ELEM_S',CH3)
       ENDIF
 
   999 CONTINUE

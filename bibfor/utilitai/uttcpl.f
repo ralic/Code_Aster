@@ -5,7 +5,7 @@
       CHARACTER*24 NOMC(DIM)
       CHARACTER*80 NOML(DIM)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 28/06/2010   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 26/10/2010   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -73,7 +73,7 @@ C     -----------------------------------------------------
 C     -- LES 2 MESURES SUIVANTES SONT SPECIALES : ON S'INTERDIT DE
 C        FAIRE APPEL A JEVEUX. VOIR UTTCPU.F, UTTCPR.F
 C        C'EST LEUR NOM QUI EST CONNU DE TOUS : 'CPU.MEMD.1/2'
-      D1(13)='CPU.MEMD.1|P|#4 DECHARGEMENT DE LA MEMOIRE SUR DIsque'
+      D1(13)='CPU.MEMD.1|P|#4 Dechargement de la memoire sur disque'
       D1(14)='CPU.MEMD.2|P|#4 ??? libre pour mesure interne jeveux'
 
 C     D1(15) ='CPU.CALC.4|S|#2.1.1.1 Routine extrai'

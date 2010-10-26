@@ -1,6 +1,6 @@
       SUBROUTINE MFNFAM(FID,MAA,N,CRET)
 !           CONFIGURATION MANAGEMENT OF EDF VERSION                  
-!& MODIF MFNFAM ECHANGE  DATE 19/10/2010   AUTEUR COURTOIS M.COURTOIS 
+!& MODIF MFNFAM ECHANGE  DATE 25/10/2010   AUTEUR COURTOIS M.COURTOIS 
 ! ================================================================== 
 ! COPYRIGHT (C) 1991 - 2010  EDF R&D              WWW.CODE-ASTER.ORG 
 !                                                                    
@@ -20,7 +20,11 @@
       IMPLICIT NONE
       INTEGER FID,N,CRET
       CHARACTER*(*) MAA
-#ifndef _DISABLE_MED
+#ifdef _DISABLE_MED
+      CALL U2MESS('F','FERMETUR_2')
+#else
+! BEGIN MED
+#ifdef _USE_MED_SHORT_INT
       INTEGER*4 FID4, N4, CRET4
       FID4 = FID
       CALL EFNFAM(FID4,MAA,N4,CRET4)
@@ -31,6 +35,8 @@
       PRINT *,'N=',N,' CRET=',CRET
 #endif
 #else
-      CALL U2MESS('F','FERMETUR_2')
+      CALL EFNFAM(FID,MAA,N,CRET)
+#endif
+! END MED
 #endif
       END

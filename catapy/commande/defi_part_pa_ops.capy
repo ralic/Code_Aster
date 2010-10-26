@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 21/04/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+#& MODIF COMMANDE  DATE 26/10/2010   AUTEUR BOITEAU O.BOITEAU 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -27,7 +27,7 @@ DEFI_PART_PA_OPS=PROC(nom="DEFI_PART_PA_OPS",op=29,
          NB_PART         =SIMP(statut='o',typ='I',),
 
          # Methode de partitionnement
-         METHODE         =SIMP(statut='f',typ='TXM',into=("PMETIS","SCOTCH","KMETIS",), defaut="SCOTCH" ),
+         METHODE         =SIMP(statut='f',typ='TXM',into=("PMETIS","SCOTCH","KMETIS",), defaut="KMETIS" ),
          
          LOGICIEL      =SIMP(statut='f',typ='TXM'),
 

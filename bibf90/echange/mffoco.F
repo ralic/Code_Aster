@@ -1,6 +1,6 @@
       SUBROUTINE MFFOCO(NOM,CRET)
 !           CONFIGURATION MANAGEMENT OF EDF VERSION                  
-!& MODIF MFFOCO ECHANGE  DATE 19/10/2010   AUTEUR COURTOIS M.COURTOIS 
+!& MODIF MFFOCO ECHANGE  DATE 25/10/2010   AUTEUR COURTOIS M.COURTOIS 
 ! ================================================================== 
 ! COPYRIGHT (C) 1991 - 2010  EDF R&D              WWW.CODE-ASTER.ORG 
 !                                                                    
@@ -19,11 +19,20 @@
 ! ================================================================== 
       INTEGER CRET
       CHARACTER*(*) NOM
-#ifndef _DISABLE_MED
-      INTEGER*4 CRET4
-      CALL EFFOCO(NOM,CRET4)
-      CRET = CRET4
-#else
+#ifdef _DISABLE_MED
       CALL U2MESS('F','FERMETUR_2')
+#else
+! BEGIN MED
+#ifdef _USE_MED_SHORT_INT
+      INTEGER*4 CRET4
+#ifdef _DEBUG_MED
+      PRINT *,'=== MFFOCO ==='
+#endif
+      CALL EFFOCO(NOM,CRET4)
+      CRET = INT(CRET4, 8)
+#else
+      CALL EFFOCO(NOM,CRET)
+#endif
+! END MED
 #endif
       END

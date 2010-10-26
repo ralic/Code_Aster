@@ -1,4 +1,4 @@
-# MODIF  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
+# MODIF  DATE 25/10/2010   AUTEUR GENIAUT S.GENIAUT 
 # TITRE PLAQUE BIAISE SOUS CHARGEMENT CONCENTRE
 # ssnv139b.para = tps_job 300 mem_job 100Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -89,24 +89,14 @@ L_INST=DEFI_LIST_REEL(   DEBUT=0.0,INTERVALLE=(
 
 #
 
-DEFLIST1=DEFI_LIST_INST(INFO=1,
-                          DEFI_LIST=_F(LIST_INST=L_INST,
-                                       METHODE='AUTO',
-                                       PAS_MINI=1.E-07),
-                          ADAPTATION=_F(EVENEMENT='SEUIL',
-                                        PCENT_AUGM=100.0,
-                                        NOM_PARA='NB_ITER_NEWTON',
-                                        CRIT_COMP='LE',
-                                        MODE_CALCUL_TPLUS='FIXE',
-                                        NB_INCR_SEUIL=2),
-                          ECHEC=_F(#SUBD_NIVEAU=10,
-                                   SUBD_METHODE='UNIFORME',
-                                   EVENEMENT='DIVERGENCE',
-                                   SUBD_PAS=8,
-                                   SUBD_COEF_PAS_1=0.5,
-                               #    SUBD_PAS_MINI=0.0
-                                   ),
-                          );
+DEFLIST1=DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST=L_INST,
+                                     METHODE='AUTO',
+                                     PAS_MINI=1.E-07),
+                        ECHEC=_F(SUBD_PAS=8,
+                                 SUBD_COEF_PAS_1=0.5),
+                        ADAPTATION=_F(EVENEMENT='SEUIL'),
+                        );
+
 NONLIN=STAT_NON_LINE(       MODELE=MODELE_1,
                         CHAM_MATER=CH_MAT_1,
                          CARA_ELEM=CARAC_1,

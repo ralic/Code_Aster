@@ -1,6 +1,6 @@
       SUBROUTINE MFFAME(FID,MAA,FAM,N,TYPENT,TYPGEO,CRET)
 !           CONFIGURATION MANAGEMENT OF EDF VERSION                  
-!& MODIF MFFAME ECHANGE  DATE 19/10/2010   AUTEUR COURTOIS M.COURTOIS 
+!& MODIF MFFAME ECHANGE  DATE 25/10/2010   AUTEUR COURTOIS M.COURTOIS 
 ! ================================================================== 
 ! COPYRIGHT (C) 1991 - 2010  EDF R&D              WWW.CODE-ASTER.ORG 
 !                                                                    
@@ -20,8 +20,15 @@
       IMPLICIT NONE
       INTEGER FID,FAM(*),N,TYPENT,TYPGEO,CRET
       CHARACTER*(*) MAA
-#ifndef _DISABLE_MED
+#ifdef _DISABLE_MED
+      CALL U2MESS('F','FERMETUR_2')
+#else
+! BEGIN MED
+#ifdef _USE_MED_SHORT_INT
       INTEGER*4 FID4, FAM4(N), N4, TYPEN4, TYPGE4, CRET4
+#ifdef _DEBUG_MED
+      PRINT *,'=== MFFAME ==='
+#endif
       FID4 = FID
       CALL CONVI4(FAM, FAM4, N)
       N4 = N
@@ -30,6 +37,8 @@
       CALL EFFAME(FID4,MAA,FAM4,N4,TYPEN4,TYPGE4,CRET4)
       CRET = CRET4
 #else
-      CALL U2MESS('F','FERMETUR_2')
+      CALL EFFAME(FID,MAA,FAM,N,TYPENT,TYPGEO,CRET)
+#endif
+! END MED
 #endif
       END

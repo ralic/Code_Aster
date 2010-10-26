@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF dll_yacs supervis  DATE 19/10/2010   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF dll_yacs supervis  DATE 25/10/2010   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2010  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -29,7 +29,6 @@
 
 #include "dll_register.h"
 
-void dll_init();
 PyObject* get_dll_register_dict();
 
 
@@ -78,7 +77,7 @@ void load_yacs_lib()
         char *nompal, STRING_SIZE lnompal, INTEGER4 *info) = NULL;
     /* string sizes are fixed : lnomvar=144, lnompal=8 */
     if ( iret == 0 ) {
-        strcpy(symbol, "cpech");
+        strcpy(symbol, "cpech_");
         printf("searching symbol '%s'... ", symbol);
         dlerror();    /* Clear any existing error */
 
@@ -104,7 +103,7 @@ void load_yacs_lib()
         DOUBLE *paramr, INTEGER4 *info) = NULL;
     /* string sizes are fixed : lnomvar=144 */
     if ( iret == 0 ) {
-        strcpy(symbol, "cpedb");
+        strcpy(symbol, "cpedb_");
         printf("searching symbol '%s'... ", symbol);
         dlerror();    /* Clear any existing error */
 
@@ -130,7 +129,7 @@ void load_yacs_lib()
         INTEGER4 *parami, INTEGER4 *info) = NULL;
     /* string sizes are fixed : lnomvar=144 */
     if ( iret == 0 ) {
-        strcpy(symbol, "cpeen");
+        strcpy(symbol, "cpeen_");
         printf("searching symbol '%s'... ", symbol);
         dlerror();    /* Clear any existing error */
 
@@ -156,7 +155,7 @@ void load_yacs_lib()
         char *nompal, STRING_SIZE lnompal, INTEGER4 *info) = NULL;
     /* string sizes are fixed : lnomvar=144, lnompal=8 */
     if ( iret == 0 ) {
-        strcpy(symbol, "cplch");
+        strcpy(symbol, "cplch_");
         printf("searching symbol '%s'... ", symbol);
         dlerror();    /* Clear any existing error */
 
@@ -182,7 +181,7 @@ void load_yacs_lib()
         DOUBLE *paramr, INTEGER4 *info) = NULL;
     /* string sizes are fixed : lnomvar=144 */
     if ( iret == 0 ) {
-        strcpy(symbol, "cpldb");
+        strcpy(symbol, "cpldb_");
         printf("searching symbol '%s'... ", symbol);
         dlerror();    /* Clear any existing error */
 
@@ -208,7 +207,7 @@ void load_yacs_lib()
         INTEGER4 *parami, INTEGER4 *info) = NULL;
     /* string sizes are fixed : lnomvar=144 */
     if ( iret == 0 ) {
-        strcpy(symbol, "cplen");
+        strcpy(symbol, "cplen_");
         printf("searching symbol '%s'... ", symbol);
         dlerror();    /* Clear any existing error */
 
@@ -256,14 +255,13 @@ void DEFPPPPSPSP(CPECH,cpech,
 {
     char symbol[12];
     PyObject* DLL_DICT;
-    DLL_DICT = get_dll_register_dict();
     void DEF_P_PPPPSPSP(*f_cpech,
         INTEGER *icompo, INTEGER4 *cpiter, REAL4 *tf, INTEGER4 *numpas,
         char *nomvar, STRING_SIZE lnomvar, INTEGER4 *idim,
         char *nompal, STRING_SIZE lnompal, INTEGER4 *info) = NULL;
+    DLL_DICT = get_dll_register_dict();
 
-    strcpy(symbol, "cpech");
-    dll_init();
+    strcpy(symbol, "cpech_");
     if ( ! libsymb_is_known(DLL_DICT, LIB_YACS, symbol) ) {
         load_yacs_lib();
     }
@@ -285,14 +283,13 @@ void DEFPPPPSPPP(CPEDB,cpedb,
 {
     char symbol[12];
     PyObject* DLL_DICT;
-    DLL_DICT = get_dll_register_dict();
     void DEF_P_PPPPSPPP(*f_cpedb,
         INTEGER *icompo, INTEGER4 *cpiter, DOUBLE *tf, INTEGER4 *numpas,
         char *nomvar, STRING_SIZE lnomvar, INTEGER4 *idim,
         DOUBLE *paramr, INTEGER4 *info) = NULL;
+    DLL_DICT = get_dll_register_dict();
 
-    strcpy(symbol, "cpedb");
-    dll_init();
+    strcpy(symbol, "cpedb_");
     if ( ! libsymb_is_known(DLL_DICT, LIB_YACS, symbol) ) {
         load_yacs_lib();
     }
@@ -313,14 +310,13 @@ void DEFPPPPSPPP(CPEEN,cpeen,
 {
     char symbol[12];
     PyObject* DLL_DICT;
-    DLL_DICT = get_dll_register_dict();
     void DEF_P_PPPPSPPP(*f_cpeen,
         INTEGER *icompo, INTEGER4 *cpiter, REAL4 *tf, INTEGER4 *numpas,
         char *nomvar, STRING_SIZE lnomvar, INTEGER4 *idim,
         INTEGER4 *parami, INTEGER4 *info) = NULL;
+    DLL_DICT = get_dll_register_dict();
 
-    strcpy(symbol, "cpeen");
-    dll_init();
+    strcpy(symbol, "cpeen_");
     if ( ! libsymb_is_known(DLL_DICT, LIB_YACS, symbol) ) {
         load_yacs_lib();
     }
@@ -341,14 +337,13 @@ void DEFPPPPPSPPSP(CPLCH,cplch,
 {
     char symbol[12];
     PyObject* DLL_DICT;
-    DLL_DICT = get_dll_register_dict();
     void DEF_P_PPPPPSPPSP(*f_cplch,
         INTEGER *icompo, INTEGER4 *cpiter, REAL4 *ti, REAL4 *tf, INTEGER4 *numpas,
         char *nomvar, STRING_SIZE lnomvar, INTEGER4 *idim, INTEGER4 *taille,
         char *nompal, STRING_SIZE lnompal, INTEGER4 *info) = NULL;
+    DLL_DICT = get_dll_register_dict();
 
-    strcpy(symbol, "cplch");
-    dll_init();
+    strcpy(symbol, "cplch_");
     if ( ! libsymb_is_known(DLL_DICT, LIB_YACS, symbol) ) {
         load_yacs_lib();
     }
@@ -370,14 +365,13 @@ void DEFPPPPPSPPPP(CPLDB,cpldb,
 {
     char symbol[12];
     PyObject* DLL_DICT;
-    DLL_DICT = get_dll_register_dict();
     void DEF_P_PPPPPSPPPP(*f_cpldb,
         INTEGER *icompo, INTEGER4 *cpiter, DOUBLE *ti, DOUBLE *tf, INTEGER4 *numpas,
         char *nomvar, STRING_SIZE lnomvar, INTEGER4 *idim, INTEGER4 *taille,
         DOUBLE *paramr, INTEGER4 *info) = NULL;
+    DLL_DICT = get_dll_register_dict();
 
-    strcpy(symbol, "cpldb");
-    dll_init();
+    strcpy(symbol, "cpldb_");
     if ( ! libsymb_is_known(DLL_DICT, LIB_YACS, symbol) ) {
         load_yacs_lib();
     }
@@ -398,14 +392,13 @@ void DEFPPPPPSPPPP(CPLEN,cplen,
 {
     char symbol[12];
     PyObject* DLL_DICT;
-    DLL_DICT = get_dll_register_dict();
     void DEF_P_PPPPPSPPPP(*f_cplen,
         INTEGER *icompo, INTEGER4 *cpiter, REAL4 *ti, REAL4 *tf, INTEGER4 *numpas,
         char *nomvar, STRING_SIZE lnomvar, INTEGER4 *idim, INTEGER4 *taille,
         INTEGER4 *parami, INTEGER4 *info) = NULL;
+    DLL_DICT = get_dll_register_dict();
 
-    strcpy(symbol, "cplen");
-    dll_init();
+    strcpy(symbol, "cplen_");
     if ( ! libsymb_is_known(DLL_DICT, LIB_YACS, symbol) ) {
         load_yacs_lib();
     }

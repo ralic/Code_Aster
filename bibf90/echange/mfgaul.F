@@ -1,6 +1,6 @@
       SUBROUTINE MFGAUL( FID, TR1, TR2, TR3, NBT, K32, CRET)
 !           CONFIGURATION MANAGEMENT OF EDF VERSION                  
-!& MODIF MFGAUL ECHANGE  DATE 19/10/2010   AUTEUR COURTOIS M.COURTOIS 
+!& MODIF MFGAUL ECHANGE  DATE 25/10/2010   AUTEUR COURTOIS M.COURTOIS 
 ! ================================================================== 
 ! COPYRIGHT (C) 1991 - 2010  EDF R&D              WWW.CODE-ASTER.ORG 
 !                                                                    
@@ -21,13 +21,22 @@
       REAL*8 TR1(*), TR2(*), TR3(*)
       INTEGER FID,NBT,CRET
       CHARACTER*32 K32
-#ifndef _DISABLE_MED
+#ifdef _DISABLE_MED
+      CALL U2MESS('F','FERMETUR_2')
+#else
+! BEGIN MED
+#ifdef _USE_MED_SHORT_INT
       INTEGER*4 FID4, NBT4, CRET4
+#ifdef _DEBUG_MED
+      PRINT *,'=== MFGAUL ==='
+#endif
       FID4 = FID
       NBT4 = NBT
       CALL EFGAUL( FID4, TR1, TR2, TR3, NBT4, K32, CRET4)
       CRET = CRET4
 #else
-      CALL U2MESS('F','FERMETUR_2')
+      CALL EFGAUL( FID, TR1, TR2, TR3, NBT, K32, CRET)
+#endif
+! END MED
 #endif
       END

@@ -1,6 +1,6 @@
       SUBROUTINE MFNGRO(FID,MAA,IND,N,CRET)
 !           CONFIGURATION MANAGEMENT OF EDF VERSION                  
-!& MODIF MFNGRO ECHANGE  DATE 19/10/2010   AUTEUR COURTOIS M.COURTOIS 
+!& MODIF MFNGRO ECHANGE  DATE 25/10/2010   AUTEUR COURTOIS M.COURTOIS 
 ! ================================================================== 
 ! COPYRIGHT (C) 1991 - 2010  EDF R&D              WWW.CODE-ASTER.ORG 
 !                                                                    
@@ -20,14 +20,23 @@
       IMPLICIT NONE
       INTEGER FID,IND,N,CRET
       CHARACTER*(*) MAA
-#ifndef _DISABLE_MED
+#ifdef _DISABLE_MED
+      CALL U2MESS('F','FERMETUR_2')
+#else
+! BEGIN MED
+#ifdef _USE_MED_SHORT_INT
       INTEGER*4 FID4, IND4, N4, CRET4
+#ifdef _DEBUG_MED
+      PRINT *,'=== MFNGRO ==='
+#endif
       FID4 = FID
       IND4 = IND
       CALL EFNGRO(FID4,MAA,IND4,N4,CRET4)
       N = N4
       CRET = CRET4
 #else
-      CALL U2MESS('F','FERMETUR_2')
+      CALL EFNGRO(FID,MAA,IND,N,CRET)
+#endif
+! END MED
 #endif
       END

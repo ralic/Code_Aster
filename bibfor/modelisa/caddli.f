@@ -1,6 +1,11 @@
       SUBROUTINE CADDLI(NOMCMD,MOTFAC,FONREE,CHAR)
+      IMPLICIT NONE
+      CHARACTER*4 FONREE
+      CHARACTER*8 CHAR
+      CHARACTER*16 NOMCMD,MOTFAC
+C ---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 19/10/2010   AUTEUR DELMAS J.DELMAS 
+C MODIF MODELISA  DATE 26/10/2010   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -17,12 +22,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-      IMPLICIT NONE
-
-      CHARACTER*4 FONREE
-      CHARACTER*8 CHAR
-      CHARACTER*16 NOMCMD,MOTFAC
-
+C
 C     BUT: CREER LES CARTES CHAR.CHME.CMULT ET CHAR.CHME.CIMPO
 C          ET REMPLIR LIGRCH, EN SE SERVANT DE L'OBJET .PRNM
 C          POUR AFFECTER LE BON NOMBRE DE DEGRES DE LIBERTE A CHAQUE NOE
@@ -56,11 +56,13 @@ C-----------------------------------------------------------------------
 C---------------- DECLARATION DES VARIABLES LOCALES  -------------------
 
       INTEGER NMOCL
-      INTEGER VALI(2)
       PARAMETER (NMOCL=300)
+      INTEGER VALI(2)
       INTEGER DDLIMP(NMOCL),NDDLI,N,NMCL,I,J,NDDLA,IBID
       INTEGER IER,NBEC,JNOMA,NBNOEU,JPRNM,JVAL
       INTEGER JDIREC,JDIMEN,NBNO,IALINO,K,INO
+      INTEGER JNOXFL,JNOXFV
+      LOGICAL LXFEM
       REAL*8 VALIMR(NMOCL)
       COMPLEX*16 VALIMC(NMOCL)
 
@@ -70,6 +72,7 @@ C---------------- DECLARATION DES VARIABLES LOCALES  -------------------
       CHARACTER*8 NOMN,VALIMF(NMOCL)
       CHARACTER*16 MOTCLE(NMOCL),MOTCL2(5),TYMOC2(5)
       CHARACTER*19 LIGRMO,LISREL
+      CHARACTER*19 NOXFEM,CH1,CH2,CH3
       CHARACTER*24 NOMNOE
 
 C--- Variables pour le mot-clef "LIAISON = ENCASTRE"
@@ -96,7 +99,7 @@ C-------------------------------------------------------------
 
       LISREL = '&&CADDLI.RLLISTE'
       CALL GETFAC(MOTFAC,NDDLI)
-      IF (NDDLI.EQ.0) GO TO 110
+      IF (NDDLI.EQ.0) GO TO 999
 
 C --- MODELE ASSOCIE A LA CHARGE ---
       CALL DISMOI('F','NOM_MODELE',CHAR(1:8),'CHARGE',IBID,MOD,IER)
@@ -125,6 +128,31 @@ C --- MAILLAGE ASSOCIE AU MODELE ---
       CALL JELIRA(NOMNOE,'NOMMAX',NBNOEU,K1BID)
 
       CALL JEVEUO(LIGRMO//'.PRNM','L',JPRNM)
+
+C    --------------------------------------------------------
+C    MODELE X-FEM
+C    --------------------------------------------------------
+      CALL JEEXIN(MOD//'.XFEM_CONT',IER)
+      IF (IER.EQ.0) THEN
+        LXFEM = .FALSE.
+        NOXFEM = ' '
+        CH1 = ' '
+        CH2 = ' '
+        CH3 = ' '
+      ELSE
+        LXFEM = .TRUE.
+        NOXFEM = '&&CADDLI.NOXFEM'
+        CALL CNOCNS(MOD//'.NOXFEM','V',NOXFEM)
+        CALL JEVEUO(NOXFEM//'.CNSL','L',JNOXFL)
+        CALL JEVEUO(NOXFEM//'.CNSV','L',JNOXFV)
+C       STATUT DU NOEUD ET LEVEL SETS
+        CH1 = '&&CADDLI.CHS1'
+        CH2 = '&&CADDLI.CHS2'
+        CH3 = '&&CADDLI.CHS3'
+        CALL CELCES(MOD//'.STNO','V',CH1)
+        CALL CELCES(MOD//'.LNNO','V',CH2)
+        CALL CELCES(MOD//'.LTNO','V',CH3)
+      ENDIF
 
 C --------------------------------------------------------------
 C 3   BOUCLE SUR LES OCCURENCES DU MOT-CLE FACTEUR DDL IMPOSE
@@ -291,9 +319,10 @@ C---  GESTION DU MOT-CLEF "LIAISON"
 
             CALL AFDDLI(ZR(JVAL),ZK8(JVAL),ZC(JVAL),
      &                  ZI(JPRNM-1+ (INO-1)*NBEC+1),NDDLA,FONREE,NOMN,
-     &                  INO,DDLIMP,VALIMR,VALIMF,VALIMC,MOTCLE,NBEC,
+     &                  INO,DDLIMP,VALIMR,VALIMF,VALIMC,MOTCLE,
      &                  ZR(JDIREC+3*(INO-1)),0,MOD,LISREL,
-     &                  ZK8(INOM),NBCMP,ZI(JCOMPT))
+     &                  ZK8(INOM),NBCMP,ZI(JCOMPT),LXFEM,JNOXFL,JNOXFV,
+     &                  CH1,CH2,CH3)
    90   CONTINUE
 
 C       -- IL NE FAUT PAS GRONDER L'UTILISATEUR SI 'ENCASTRE' :
@@ -313,9 +342,16 @@ C       -- IL NE FAUT PAS GRONDER L'UTILISATEUR SI 'ENCASTRE' :
         CALL JEDETR('&&CADDLI.NUNOTMP')
 
   100 CONTINUE
-
+C
       CALL AFLRCH(LISREL,CHAR)
-
-  110 CONTINUE
+C
+      IF (LXFEM) THEN
+        CALL DETRSD('CHAM_NO_S'  ,NOXFEM)
+        CALL DETRSD('CHAM_ELEM_S',CH1)
+        CALL DETRSD('CHAM_ELEM_S',CH2)
+        CALL DETRSD('CHAM_ELEM_S',CH3)
+      ENDIF
+C
+  999 CONTINUE
       CALL JEDEMA()
       END

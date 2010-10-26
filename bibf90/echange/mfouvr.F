@@ -1,6 +1,6 @@
       SUBROUTINE MFOUVR(FID, NOM, ACCES, CRET)
 !           CONFIGURATION MANAGEMENT OF EDF VERSION                  
-!& MODIF MFOUVR ECHANGE  DATE 19/10/2010   AUTEUR COURTOIS M.COURTOIS 
+!& MODIF MFOUVR ECHANGE  DATE 25/10/2010   AUTEUR COURTOIS M.COURTOIS 
 ! ================================================================== 
 ! COPYRIGHT (C) 1991 - 2010  EDF R&D              WWW.CODE-ASTER.ORG 
 !                                                                    
@@ -20,13 +20,22 @@
       IMPLICIT NONE
       CHARACTER*(*) NOM
       INTEGER ACCES, FID, CRET
-#ifndef _DISABLE_MED
+#ifdef _DISABLE_MED
+      CALL U2MESS('F','FERMETUR_2')
+#else
+! BEGIN MED
+#ifdef _USE_MED_SHORT_INT
       INTEGER*4 ACCES4, FID4, CRET4
+#ifdef _DEBUG_MED
+      PRINT *,'=== MFOUVR ==='
+#endif
       ACCES4 = ACCES
       CALL EFOUVR(FID4, NOM, ACCES4, CRET4)
       FID = FID4
       CRET = CRET4
 #else
-      CALL U2MESS('F','FERMETUR_2')
+      CALL EFOUVR(FID, NOM, ACCES, CRET)
+#endif
+! END MED
 #endif
       END

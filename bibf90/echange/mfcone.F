@@ -1,7 +1,7 @@
       SUBROUTINE MFCONE (FID, MAA, MDIM,CONN, CSIZE, SWITCH, N,
      &                   TYPENT,TYPGEO,TYPCON,CRET)
 !           CONFIGURATION MANAGEMENT OF EDF VERSION                  
-!& MODIF MFCONE ECHANGE  DATE 19/10/2010   AUTEUR COURTOIS M.COURTOIS 
+!& MODIF MFCONE ECHANGE  DATE 25/10/2010   AUTEUR COURTOIS M.COURTOIS 
 ! ================================================================== 
 ! COPYRIGHT (C) 1991 - 2010  EDF R&D              WWW.CODE-ASTER.ORG 
 !                                                                    
@@ -23,9 +23,13 @@ C     L'ARGUMENT CSIZE N'EST PAS DANS L'API MED
       CHARACTER*(*) MAA
       INTEGER FID, CONN(*),CSIZE,TYPENT,TYPGEO,TYPCON,CRET
       INTEGER N,MDIM, SWITCH
+#ifdef _DISABLE_MED
+      CALL U2MESS('F','FERMETUR_2')
+#else
+! BEGIN MED
+#ifdef _USE_MED_SHORT_INT
       INTEGER*4 FID4, CONN4(CSIZE), TYPEN4, TYPGE4, TYPCO4, CRET4
       INTEGER*4 N4, MDIM4, SWITC4
-#ifndef _DISABLE_MED
 #ifdef _DEBUG_MED
       INTEGER IC
 #endif
@@ -40,8 +44,8 @@ C     L'ARGUMENT CSIZE N'EST PAS DANS L'API MED
 #ifdef _DEBUG_MED
       PRINT *,'=== MFCONE ==='
       PRINT *,'FID=',FID4,' MAA=',MAA,' MDIM=',MDIM4
-      WRITE(6,*) 'CONN=',(CONN(IC),IC=1,CSIZE)
-      WRITE(6,*)'CONN4=',(CONN4(IC),IC=1,CSIZE)
+      WRITE(6,*) 'CONN=',(CONN(IC),IC=1,MIN(12,CSIZE))
+      WRITE(6,*)'CONN4=',(CONN4(IC),IC=1,MIN(12,CSIZE))
       PRINT *,'SWITCH=',SWITC4,' N=',N4,' TYPENT=',TYPEN4
       PRINT *,'TYPGEO=',TYPGE4,' TYPCON=',TYPCO4
 #endif
@@ -49,6 +53,9 @@ C     L'ARGUMENT CSIZE N'EST PAS DANS L'API MED
      &             TYPEN4,TYPGE4,TYPCO4,CRET4)
       CRET = CRET4
 #else
-      CALL U2MESS('F','FERMETUR_2')
+      CALL EFCONE (FID, MAA, MDIM,CONN, SWITCH, N,
+     &                   TYPENT,TYPGEO,TYPCON,CRET)
+#endif
+! END MED
 #endif
       END

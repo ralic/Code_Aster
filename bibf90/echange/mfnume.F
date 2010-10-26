@@ -1,7 +1,7 @@
       SUBROUTINE MFNUME(FID, MAA, NUM, N,
      &                  TYPENT, TYPGEO,CRET)
 !           CONFIGURATION MANAGEMENT OF EDF VERSION                  
-!& MODIF MFNUME ECHANGE  DATE 19/10/2010   AUTEUR COURTOIS M.COURTOIS 
+!& MODIF MFNUME ECHANGE  DATE 25/10/2010   AUTEUR COURTOIS M.COURTOIS 
 ! ================================================================== 
 ! COPYRIGHT (C) 1991 - 2010  EDF R&D              WWW.CODE-ASTER.ORG 
 !                                                                    
@@ -23,10 +23,17 @@
       INTEGER NUM(*)
       INTEGER FID,TYPENT, TYPGEO,CRET
       INTEGER N
-#ifndef _DISABLE_MED
+#ifdef _DISABLE_MED
+      CALL U2MESS('F','FERMETUR_2')
+#else
+! BEGIN MED
+#ifdef _USE_MED_SHORT_INT
       INTEGER*4 NUM4(N)
       INTEGER*4 FID4, TYPEN4, TYPGE4, CRET4
       INTEGER*4 N4
+#ifdef _DEBUG_MED
+      PRINT *,'=== MFNUME ==='
+#endif
       CALL CONVI4(NUM, NUM4, N)
       FID4 = FID
       TYPEN4 = TYPENT
@@ -36,6 +43,9 @@
      &            TYPEN4, TYPGE4,CRET4)
       CRET = CRET4
 #else
-      CALL U2MESS('F','FERMETUR_2')
+      CALL EFNUME(FID, MAA, NUM, N,
+     &                  TYPENT, TYPGEO,CRET)
+#endif
+! END MED
 #endif
       END

@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF dll_interface supervis  DATE 19/10/2010   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF dll_interface supervis  DATE 25/10/2010   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2010  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -53,6 +53,7 @@ PyObject* get_dll_register_dict()
 {
     /* Return the register dictionnary.
      * For external modules. */
+    dll_init();
     return DLL_DICT;
 }
 

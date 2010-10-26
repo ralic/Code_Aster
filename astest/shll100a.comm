@@ -1,4 +1,4 @@
-# MODIF  DATE 11/10/2010   AUTEUR NISTOR I.NISTOR 
+# MODIF  DATE 26/10/2010   AUTEUR NISTOR I.NISTOR 
 # TITRE  REPONSE HARMONIQUE D'UNE BARRE PAR SOUS-STRUCTURATION DYNAMIQUE
 # shll100a.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -26,7 +26,7 @@
 #
 #
 DEBUT(CODE=_F( NOM = 'SHLL100A',NIV_PUB_WEB='INTERNET'),
-      IGNORE_ALARM=('SOUSTRUC2_10',),DEBUG=_F(SDVERI='OUI'))
+      DEBUG=_F(SDVERI='OUI'))
 
 #MODELE DIRECT
 #
@@ -432,10 +432,10 @@ MACRO2=MACR_ELEM_DYNA(  BASE_MODALE=BAMO2,
 ###### MODELE GENERALISE :
 ###
 #
-MODEGE=DEFI_MODELE_GENE( SOUS_STRUC=( _F( NOM = 'COTE1',
-                             MACR_ELEM_DYNA = MACRO1),
-                              _F( NOM = 'COTE2',
-                             MACR_ELEM_DYNA = MACRO2)),
+MODEGE=DEFI_MODELE_GENE( SOUS_STRUC=(_F( NOM = 'COTE1',
+                                         MACR_ELEM_DYNA = MACRO1),
+                                     _F( NOM = 'COTE2',
+                                         MACR_ELEM_DYNA = MACRO2),),
                               LIAISON=_F( SOUS_STRUC_1 = 'COTE1',
                                        SOUS_STRUC_2 = 'COTE2',
                                        INTERFACE_1 = 'DROITE',
@@ -486,9 +486,11 @@ TEST_FONCTION( VALEUR= _F( FONCTION = FOGEN2 ,
 #
 SQUEL=DEFI_SQUELETTE(  MODELE_GENE=MODEGE,
                        SOUS_STRUC=( _F( NOM = 'COTE1',
-                                        TOUT = 'OUI'),
+                                        GROUP_MA='TOUT'
+                                       ),
                                     _F( NOM = 'COTE2',
-                                        TOUT = 'OUI')))
+                                       GROUP_MA='TOUT'
+                                   )))
 
 #
 DEBUG(SDVERI='OUI')

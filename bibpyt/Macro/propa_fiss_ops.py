@@ -1,4 +1,4 @@
-#@ MODIF propa_fiss_ops Macro  DATE 10/08/2010   AUTEUR GENIAUT S.GENIAUT 
+#@ MODIF propa_fiss_ops Macro  DATE 26/10/2010   AUTEUR MAHFOUZ D.MAHFOUZ 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -139,6 +139,7 @@ def propa_fiss_ops(self,METHODE_PROPA,INFO,**args):
   ASSE_MAILLAGE         =self.get_cmd('ASSE_MAILLAGE'  )
   LIRE_MAILLAGE    =self.get_cmd('LIRE_MAILLAGE'  )
   DEFI_FICHIER = self.get_cmd('DEFI_FICHIER'  )
+  DEFI_GROUP = self.get_cmd('DEFI_GROUP'  )
   CREA_TABLE    =self.get_cmd('CREA_TABLE'  )
   CALC_TABLE    =self.get_cmd('CALC_TABLE'  )
   PROPA_XFEM = self.get_cmd('PROPA_XFEM'  )
@@ -520,7 +521,6 @@ def propa_fiss_ops(self,METHODE_PROPA,INFO,**args):
       MAIL_FISS1 =  Fiss['MAIL_ACTUEL']
       MFOND = Fiss['GROUP_MA_FOND']
       MFISS = Fiss['GROUP_MA_FISS']
-  
 #------------------------------------------------------------------
 # CAS 2a : MODELE 3D
 #
@@ -665,6 +665,23 @@ def propa_fiss_ops(self,METHODE_PROPA,INFO,**args):
 #
       if dime == 2 :
         mm[numfis] = MAIL_PY()
+        FISS_A = '%s_%i' %(MFISS,(it-1))
+        DEFI_GROUP(reuse =MAIL_FISS1,
+                 MAILLAGE=MAIL_FISS1,
+                 CREA_GROUP_NO=_F(OPTION='NOEUD_ORDO',
+                                  NOM='Nds_Plan',
+                                  GROUP_MA=FISS_A,),INFO=2);
+        DEFI_GROUP(reuse =MAIL_FISS1,
+                 MAILLAGE=MAIL_FISS1,
+                 DETR_GROUP_MA=_F(NOM='A',),
+                 CREA_GROUP_MA=_F(OPTION='APPUI',
+                                  NOM='A',
+                                  TYPE_APPUI='TOUT',
+                                  GROUP_NO='Nds_Plan',),INFO=2);
+        DEFI_GROUP(reuse =MAIL_FISS1,
+                 MAILLAGE=MAIL_FISS1,
+                 DETR_GROUP_NO=_F(NOM='Nds_Plan',),);
+
         mm[numfis].FromAster(MAIL_FISS1)
         
         (nno,ndim) = mm[numfis].cn.shape
@@ -706,7 +723,7 @@ def propa_fiss_ops(self,METHODE_PROPA,INFO,**args):
         fsi = mm[numfis].gma['%s_%i' %(MFISS,it-1)]
         fsi = NP.concatenate((fsi,NP.array([nbma])))
         mm[numfis].gma['%s_%i' %(MFISS,it)] = fsi.astype(int)
-  
+ 
 # Ajout Maille fond (POI1)
         NomMaillesEnPlus =     ['MF%s%i' %(ALPHABET[0], it+1)]
         num_maille = [ nbma + 2 ]
@@ -747,7 +764,6 @@ def propa_fiss_ops(self,METHODE_PROPA,INFO,**args):
     ma_tot = ASSE_MAILLAGE(MAILLAGE_1 = MAIL_STRUC,
                       MAILLAGE_2 = __MMX[Nbfissure-1],
                       OPERATION='SUPERPOSE',)
- 
 #------------------------------------------------------------------
 # CAS 3 : METHODE_PROPA = 'INITIALISATION'
 #

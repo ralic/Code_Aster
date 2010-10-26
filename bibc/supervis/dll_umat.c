@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF dll_umat supervis  DATE 19/10/2010   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF dll_umat supervis  DATE 25/10/2010   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2010  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -29,7 +29,6 @@
 
 #include "dll_register.h"
 
-void dll_init();
 PyObject* get_dll_register_dict();
 
 
@@ -140,7 +139,6 @@ void DEFUMATWRAP(UMATWP, umatwp,
     PyObject* DLL_DICT;
     DLL_DICT = get_dll_register_dict();
     
-    dll_init();
     lon1 = (int)lnomlib;
     lon2 = (int)lnomsub;
     while (nomlib[lon1-1] == ' ')  lon1--;

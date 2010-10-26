@@ -1,4 +1,4 @@
-#@ MODIF partition Utilitai  DATE 31/05/2010   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF partition Utilitai  DATE 26/10/2010   AUTEUR MAHFOUZ D.MAHFOUZ 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -328,7 +328,7 @@ connex   = mm.co
             l.append("%-8s  %s" % (self.correspondance_noeuds[i], ch))
 
       # Connectivité des mailles
-      ind = NP.argsort(self.tm, kind="mergesort")
+      ind = range(len(self.tm))
       ty = 0
       # Si le maillage initial ne provient pas d'Aster
       if len(self.correspondance_mailles) == 0:

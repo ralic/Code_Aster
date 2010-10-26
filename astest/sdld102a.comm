@@ -1,4 +1,4 @@
-# MODIF  DATE 11/10/2010   AUTEUR NISTOR I.NISTOR 
+# MODIF  DATE 26/10/2010   AUTEUR NISTOR I.NISTOR 
 # TITRE SOUS-STRUCTURATION TRANSITOIRE : SYSTEME MASSES-RESSORTS
 # sdld102a.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -32,7 +32,6 @@
 
 DEBUT(CODE=_F(NOM='SDLD102A',
               NIV_PUB_WEB='INTERNET',),
-      IGNORE_ALARM=('SOUSTRUC2_10',),
       DEBUG=_F(SDVERI='OUI',),);
 
 #
@@ -193,7 +192,7 @@ IMPR_MACR_ELEM(MACR_ELEM_DYNA=MACEL1,
 # ----- CALCUL SUR MODELE GENERALISE DES SOUS-STRUCTURES
 
 MODEGE=DEFI_MODELE_GENE(SOUS_STRUC=(_F(NOM='COTE1',
-                                       MACR_ELEM_DYNA=MACEL1,),
+                                       MACR_ELEM_DYNA=MACEL1),
                                     _F(NOM='COTE2',
                                        MACR_ELEM_DYNA=MACEL2,),),
                         LIAISON=_F(SOUS_STRUC_1='COTE1',
@@ -207,7 +206,7 @@ MODEGE=DEFI_MODELE_GENE(SOUS_STRUC=(_F(NOM='COTE1',
 #
 # ----- NUMEROTATION DU PROBLEME GENERALISE DES SOUS-STRUCTURES
 
-NUMEGE=NUME_DDL_GENE(MODELE_GENE=MODEGE,);
+NUMEGE=NUME_DDL_GENE(MODELE_GENE=MODEGE);
 
 #
 # ----- ASSEMBLAGE DES MATRICES ET VECTEURS
@@ -301,9 +300,13 @@ TEST_FICHIER(FICHIER='./REPE_OUT/RESU.gene',
 
 SQUEL=DEFI_SQUELETTE(MODELE_GENE=MODEGE,
                      SOUS_STRUC=(_F(NOM='COTE1',
-                                    TOUT='OUI',),
+#                                    TOUT='OUI',
+                                    GROUP_MA='RESSORT'
+                                    ),
                                  _F(NOM='COTE2',
-                                    TOUT='OUI',),),);
+#                                    TOUT='OUI',
+                                    GROUP_MA='RESSORT'
+                                    ),),);
 
 #
 

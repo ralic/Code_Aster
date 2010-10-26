@@ -3,7 +3,7 @@
       CHARACTER*16         OPTION, NOMTE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 14/09/2010   AUTEUR ABBAS M.ABBAS 
+C MODIF ELEMENTS  DATE 26/10/2010   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -248,6 +248,7 @@ C
 C
 C --- CALCUL USURE
 C
+      PRFUSU = 0.D0
       IF (IUSURE .EQ. 1) THEN
         CALL MMUSUM(NDIM  ,MPROJT,DDEPLE,DDEPLM,PRFUSU,
      &              DELUSU,DISSIP)

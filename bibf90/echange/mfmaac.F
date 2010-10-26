@@ -1,6 +1,6 @@
       SUBROUTINE MFMAAC ( FID , NOM , DIM , TYPE, DESC, CRET )
 !           CONFIGURATION MANAGEMENT OF EDF VERSION                  
-!& MODIF MFMAAC ECHANGE  DATE 19/10/2010   AUTEUR COURTOIS M.COURTOIS 
+!& MODIF MFMAAC ECHANGE  DATE 25/10/2010   AUTEUR COURTOIS M.COURTOIS 
 ! ================================================================== 
 ! COPYRIGHT (C) 1991 - 2010  EDF R&D              WWW.CODE-ASTER.ORG 
 !                                                                    
@@ -21,14 +21,23 @@
       CHARACTER*(*) NOM
       CHARACTER*(*) DESC
       INTEGER FID, DIM, TYPE, CRET
-#ifndef _DISABLE_MED
+#ifdef _DISABLE_MED
+      CALL U2MESS('F','FERMETUR_2')
+#else
+! BEGIN MED
+#ifdef _USE_MED_SHORT_INT
       INTEGER*4 FID4, DIM4, TYPE4, CRET4
+#ifdef _DEBUG_MED
+      PRINT *,'=== MFMAAC ==='
+#endif
       FID4 = FID
       DIM4 = DIM
       TYPE4 = TYPE
       CALL EFMAAC ( FID4, NOM , DIM4, TYPE4, DESC, CRET4)
       CRET = CRET4
 #else
-      CALL U2MESS('F','FERMETUR_2')
+      CALL EFMAAC( FID , NOM , DIM , TYPE, DESC, CRET )
+#endif
+! END MED
 #endif
       END

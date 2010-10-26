@@ -1,4 +1,4 @@
-# MODIF  DATE 11/10/2010   AUTEUR NISTOR I.NISTOR 
+# MODIF  DATE 26/10/2010   AUTEUR NISTOR I.NISTOR 
 # TITRE SOUS STRUCTURATION DYNAMIQUE : PLAQUE MINCE APPUYEE-APPUYEE
 # sdls106c.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -41,7 +41,7 @@
 #123678901234567890123456789012345678901234567890123456789012345678901
 #
 DEBUT(CODE=_F(NOM='SDLS106C', NIV_PUB_WEB='INTERNET'),
-      IGNORE_ALARM=('SOUSTRUC2_10',),DEBUG=_F(SDVERI='OUI'))
+      DEBUG=_F(SDVERI='OUI'))
 
 #
 
@@ -290,10 +290,11 @@ RESGEN=MODE_ITER_SIMULT( MATR_A=RIGGEN,
 
 SQUEL=DEFI_SQUELETTE(  MODELE_GENE=MODEGE,SOUS_STRUC=(
                             _F( NOM = 'CARRE1',
-                                        TOUT = 'OUI'),
+                                GROUP_MA = 'CALCUL',
+                               ),
                             _F( NOM = 'CARRE2',
-                                        TOUT = 'OUI'))
- )
+                                GROUP_MA = 'CALCUL',
+                              )))
 #
 #   RESTITUTION SUR MAILLAGE SQUELETTE
 #

@@ -1,4 +1,4 @@
-#@ MODIF utilitai Messages  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
+#@ MODIF utilitai Messages  DATE 26/10/2010   AUTEUR BOITEAU O.BOITEAU 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -210,7 +210,18 @@ cata_msg = {
 """),
 
 
-
+53 : _("""
+ Vous avez choisi le partitionneur SCOTCH pour un calcul parallèle. Celui-ci est
+  momentanement débranché de cette fonctionnalité. On préconise à la place la
+  méthode KMETIS. On a fait le changement de méthode pour vous lors de ce calcul
+ de partitionnement.
+ Une autre possibilité consiste à faire votre calcul en 2 étapes:
+   - un calcul séquentiel qui génère votre partitionnement créé via SCOTCH,
+   - le reste de votre calcul (FETI, MUMPS avec distribution par SOUS_DOMAINES...)
+     en parallèle.
+ Sinon, si vous avez un besoin spécifique lié à l'usage de Scotch, contactez 
+ l'équipe de développement.
+"""),
 
 
 54 : _("""

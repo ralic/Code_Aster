@@ -1,10 +1,10 @@
       SUBROUTINE AFDDLI(VALR,VALK,VALC,PRNM,NDDLA,FONREE,NOMN,INO,
-     &                  DDLIMP,VALIMR,VALIMF,VALIMC,MOTCLE,NBEC,DIRECT,
-     &                  DIMENS,MOD,LISREL,NOMCMP,NBCMP,ICOMPT)
-      IMPLICIT REAL*8 (A-H,O-Z)
-
+     &                  DDLIMP,VALIMR,VALIMF,VALIMC,MOTCLE,DIRECT,
+     &                  DIMENS,MOD,LISREL,NOMCMP,NBCMP,ICOMPT,LXFEM,
+     &                  JNOXFL,JNOXFV,CH1,CH2,CH3)
+      IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 28/09/2010   AUTEUR MASSIN P.MASSIN 
+C MODIF MODELISA  DATE 26/10/2010   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -31,6 +31,9 @@ C TOLE CRP_21
       CHARACTER*8  VALK(*),NOMN,VALIMF(NDDLA),NOMCMP(*),MOD
       CHARACTER*16 MOTCLE(NDDLA)
       CHARACTER*19 LISREL
+      LOGICAL      LXFEM
+      INTEGER      JNOXFL,JNOXFV
+      CHARACTER*19 CH1,CH2,CH3
 
 C  BUT : * EFFECTUER LE BLOCAGE DES DDLS DONNES PAR MOTCLE(*)
 C          SUR LE NOEUD NOMN DANS LA LISTE DE RELATIONS LISREL.
@@ -51,7 +54,6 @@ C   VALIMR : VALEURS DE BLOCAGE SUR CHAQUE DDL (FONREE = 'REEL')
 C   VALIMF : VALEURS DE BLOCAGE SUR CHAQUE DDL (FONREE = 'FONC')
 C   VALIMC : VALEURS DE BLOCAGE SUR CHAQUE DDL (FONREE = 'COMP')
 C   MOTCLE : TABLEAU DES NOMS DES DDLS DANS DDL_IMPO/FACE_IMPO
-C   NBEC   : NOMBRE D'ENTIERS CODES REPRESENTANT LA GRANDEUR
 C   DIRECT : DIRECTION DE LA COMPOSANTE QUE L'ON VEUT CONTRAINDRE
 C            N'EST UTILISEE QUE SI DIMENS DIFFERENT DE 0
 C   DIMENS :  SI = 0 ON IMPOSE UN DDL SELON UNE DIRECTION DU REPERE
@@ -87,18 +89,17 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 
-      INTEGER IBID,IER,JNOXFL,JNOXFV
+      INTEGER      J,IBID,ICMP,IITYP,INDIK8
       CHARACTER*16 OPER
       CHARACTER*8  K8B
       CHARACTER*4  FONRE1,FONRE2,TYPCOE
       CHARACTER*2  TYPLAG
       REAL*8       COEF,RBID(3)
       COMPLEX*16   CUN
-      LOGICAL      LXFEM
-      CHARACTER*19  NOXFEM
 
 C-----------------------------------------------------------------------
 
+      CALL JEMARQ()
       CALL GETRES(K8B,K8B,OPER)
       IITYP = 0
       IF (OPER.EQ.'AFFE_CHAR_MECA_C') IITYP = 1
@@ -106,21 +107,7 @@ C-----------------------------------------------------------------------
       TYPCOE = 'REEL'
       IF (FONREE.EQ.'COMP')  TYPCOE = 'COMP'
       IF (IITYP.EQ.1)  TYPCOE = 'COMP'
-
-C    --------------------------------------------------------
-C    MODELE X-FEM
-C    --------------------------------------------------------
-      CALL JEEXIN(MOD//'.XFEM_CONT',IER)
-      IF (IER.EQ.0) THEN
-        LXFEM = .FALSE.
-      ELSE
-        LXFEM = .TRUE.
-        NOXFEM = '&&AFDDLI.NOXFEM'
-        CALL CNOCNS(MOD//'.NOXFEM','V',NOXFEM)
-        CALL JEVEUO(NOXFEM//'.CNSL','L',JNOXFL)
-        CALL JEVEUO(NOXFEM//'.CNSV','L',JNOXFV)
-      ENDIF
-
+C
 C --- AFFECTATION DU BLOCAGE A LA LISTE DE RELATIONS LISREL :
 C     -----------------------------------------------------
       DO 30 J = 1,NDDLA
@@ -132,9 +119,10 @@ C       -- SI LA CMP N'EXISTE PAS SUR LE NOEUD, ON SAUTE :
 
         IF (LXFEM) THEN
           IF (ZL(JNOXFL-1+2*INO).AND.MOTCLE(J)(1:1).EQ.'D') THEN
-            CALL XDDLIM(MOD,MOTCLE(J)(1:8),NOMCMP,NBCMP,NOMN,INO,
-     &                   VALIMR(J),VALIMC(J),VALIMF(J),PRNM,FONREE,
-     &                   ICOMPT(J),LISREL,IBID,RBID,JNOXFV)
+            CALL XDDLIM(MOD,MOTCLE(J)(1:8),NOMN,INO,
+     &                   VALIMR(J),VALIMC(J),VALIMF(J),FONREE,
+     &                   ICOMPT(J),LISREL,IBID,RBID,JNOXFV,
+     &                   CH1, CH2, CH3)
             GOTO 30
           ENDIF
         ENDIF
@@ -179,8 +167,5 @@ C       --------------------------------------
         END IF
    30 CONTINUE
 
-      IF (LXFEM) THEN
-        CALL JEDETR(NOXFEM)
-      ENDIF
-
+      CALL JEDEMA()
       END

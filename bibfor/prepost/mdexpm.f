@@ -1,7 +1,7 @@
       SUBROUTINE MDEXPM ( NOFIMD, NOMAMD, EXISTM, NDIM, CODRET )
 C_____________________________________________________________________
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 19/10/2010   AUTEUR COURTOIS M.COURTOIS 
+C MODIF PREPOST  DATE 25/10/2010   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -107,6 +107,7 @@ C
 C
 C                 12345678901234567890123456789012
         SAUX32 = '                                '
+        DAUX = ' '
         IAUX = 1
         CALL MFMAAI ( IDFIMD, IAUX, SAUX32, KAUX, TYAUX, DAUX, CODRET )
         IF ( CODRET.NE.0 ) THEN

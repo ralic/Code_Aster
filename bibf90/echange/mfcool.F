@@ -1,7 +1,7 @@
       SUBROUTINE MFCOOL(FID,MAA,MDIM,COO,MODCOO,NUMCO,PFLTAB,PSIZE,
      &                  TYPREP,NOM,UNIT,CRET)
 !           CONFIGURATION MANAGEMENT OF EDF VERSION                  
-!& MODIF MFCOOL ECHANGE  DATE 19/10/2010   AUTEUR COURTOIS M.COURTOIS 
+!& MODIF MFCOOL ECHANGE  DATE 25/10/2010   AUTEUR COURTOIS M.COURTOIS 
 ! ================================================================== 
 ! COPYRIGHT (C) 1991 - 2010  EDF R&D              WWW.CODE-ASTER.ORG 
 !                                                                    
@@ -24,9 +24,16 @@
       INTEGER PFLTAB(*)
       REAL*8 COO(*)
       CHARACTER*(*) NOM(*),UNIT(*)
-#ifndef _DISABLE_MED
+#ifdef _DISABLE_MED
+      CALL U2MESS('F','FERMETUR_2')
+#else
+! BEGIN MED
+#ifdef _USE_MED_SHORT_INT
       INTEGER*4 FID4, MDIM4, MODCO4, TYPRE4, CRET4, PSIZE4, NUMCO4
       INTEGER*4 PFLTA4(PSIZE)
+#ifdef _DEBUG_MED
+      PRINT *,'=== MFCOOL ==='
+#endif
       FID4 = FID
       MDIM4 = MDIM
       MODCO4 = MODCOO
@@ -38,6 +45,9 @@
       TYPREP = TYPRE4
       CRET = CRET4
 #else
-      CALL U2MESS('F','FERMETUR_2')
+      CALL EFCOOL(FID,MAA,MDIM,COO,MODCOO,NUMCO,PFLTAB,PSIZE,
+     &                  TYPREP,NOM,UNIT,CRET)
+#endif
+! END MED
 #endif
       END

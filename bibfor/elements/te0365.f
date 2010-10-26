@@ -3,7 +3,7 @@
       CHARACTER*16        OPTION, NOMTE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 19/10/2010   AUTEUR DESOZA T.DESOZA 
+C MODIF ELEMENTS  DATE 26/10/2010   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -270,6 +270,7 @@ C --- CALCUL DES SECONDS MEMBRES DE CONTACT/FROTTEMENT
 C
       IF (OPTION.EQ.'CHAR_MECA_CONT') THEN
         LFROTT = .FALSE.
+        NDEXFR = 0
         IF ((TYPBAR.NE.0).OR.(TYPRAC.NE.0)) THEN
           CALL MMMVEC('CONT',
      &                LSTABC,LPENAC,LCOMPL,LFROTT,LSTABF,
@@ -334,7 +335,6 @@ C
         IF (.NOT.LFROTT)    INDCO = 0
         TYPBAR = 0
         TYPRAC = 0
-        NDEXFR = 0
         IF (INDCO.EQ.0) THEN
           CALL MMMVEC('SANS',
      &                LSTABC,LPENAC,LCOMPL,LFROTT,LSTABF,

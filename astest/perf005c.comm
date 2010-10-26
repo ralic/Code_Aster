@@ -1,4 +1,4 @@
-# MODIF  DATE 20/09/2010   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 25/10/2010   AUTEUR COURTOIS M.COURTOIS 
 # TITRE CONTACT DE HERTZ ENTRE 2 DEMI-SPHERES
 # perf005c.para = tps_job 18000 mem_job 1300Mo ncpus 1 liste_test P
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -114,23 +114,5 @@ if 0 : # pour compter les noeuds en contact (ceux qui ont CONT != 0.) :
                      NOM_CHAM='VALE_CONT', RESULTAT=RESU, NUME_ORDRE=1)
     # pour compter les noeuds en contact, on peut faire :
     #    cat xxxx.mess pipe  grep 'N[0-9]* * pipe *0"backslash".[1-9]' pipe wc -l
-
-TEST_TEMPS(
-   RESU = (_F(
-      COMMANDE  = 'STAT_NON_LINE',
-      MACHINE   = 'all',
-      VALE      =  5000.,
-      CRITERE   = 'RELATIF',
-      PRECISION =  0.20,
-      TYPE_TEST = 'USER', ),
-         _F(
-      COMMANDE  = 'STAT_NON_LINE',
-      MACHINE   = 'all',
-      VALE      =  10000.,
-      CRITERE   = 'RELATIF',
-      PRECISION =  0.20,
-      TYPE_TEST = 'USER+SYS',),
-   ),
-)
 
 FIN();

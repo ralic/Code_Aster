@@ -1,6 +1,6 @@
       SUBROUTINE MFCHAI(FID,IND,CHA,TYPE,COMP,UNIT,NCOMP,CRET)
 !           CONFIGURATION MANAGEMENT OF EDF VERSION                  
-!& MODIF MFCHAI ECHANGE  DATE 19/10/2010   AUTEUR COURTOIS M.COURTOIS 
+!& MODIF MFCHAI ECHANGE  DATE 25/10/2010   AUTEUR COURTOIS M.COURTOIS 
 ! ================================================================== 
 ! COPYRIGHT (C) 1991 - 2010  EDF R&D              WWW.CODE-ASTER.ORG 
 !                                                                    
@@ -20,8 +20,15 @@
       IMPLICIT NONE
       CHARACTER*(*) CHA,COMP(*),UNIT(*)
       INTEGER FID,IND,TYPE,NCOMP,CRET
+#ifdef _DISABLE_MED
+      CALL U2MESS('F','FERMETUR_2')
+#else
+! BEGIN MED
+#ifdef _USE_MED_SHORT_INT
       INTEGER*4 FID4, IND4, TYPE4, NCOMP4, CRET4
-#ifndef _DISABLE_MED
+#ifdef _DEBUG_MED
+      PRINT *,'=== MFCHAI ==='
+#endif
       FID4 = FID
       IND4 = IND
       NCOMP4 = NCOMP
@@ -29,6 +36,8 @@
       TYPE = TYPE4
       CRET = CRET4
 #else
-      CALL U2MESS('F','FERMETUR_2')
+      CALL EFCHAI(FID,IND,CHA,TYPE,COMP,UNIT,NCOMP,CRET)
+#endif
+! END MED
 #endif
       END

@@ -1,6 +1,6 @@
-# MODIF  DATE 15/06/2010   AUTEUR MACOCCO K.MACOCCO 
+# MODIF  DATE 26/10/2010   AUTEUR BOITEAU O.BOITEAU 
 # TITRE SOUS-STRUCT. TRANSITOIRE : SYSTEME MASSES-RESSORTS AMORTI
-# sdld102c.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
+# sdld102c.para = tps_job 120 mem_job 200Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -33,7 +33,13 @@
 # ET 'ADAPT') SONT TESTES (LE SCHEME 'DEVOGE' NE SUPPORTANT PAS LA
 # PRISE EN COMPTE DE L'AMORTISSEMENT).
 #
-#
+# A PARTIR DU NUME_DDL_GENE, ON DUPLIQUE LE CALCUL (L'UN BASE SUR LES
+# MODES CALCULES PAR MODE_ITER_SIMULT ET L'AUTRE BASE SUR MODE_ITER_INV)
+# POUR TESTER L'ISOFONCTIONNALITE DES 2 OPERATEURS EN CAS DE 
+# NUME_DDL_GENE. D'AUTRE PART ON CHOISIT (A TORT) L'USAGE DU SOLVEUR
+# LINEAIRE MULT_FRONT POUR FORCER LE CHANGEMENT EN INTERNE OPERATEUR 
+# POUR MUMPS.
+# ON TESTE AUSSI DS CETTE CONFIGURATION L'OPERATEUR IMPR_STURM
 #
 DEBUT(CODE=_F( NOM = 'SDLD102C',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
@@ -111,7 +117,8 @@ V_ASSE=ASSE_VECTEUR(  VECT_ELEM=V_ELEM,
 #------------------------------------------------------------------
 
 MODES=MODE_ITER_SIMULT(     MATR_A=K_ASSE, 
-                                 MATR_B=M_ASSE, 
+                                 MATR_B=M_ASSE, INFO=2,
+                          SOLVEUR=_F(METHODE='MUMPS',),
                              CALC_FREQ=_F( NMAX_FREQ = 1))
 
 #  DEFINITION DES INTERFACES
@@ -190,50 +197,58 @@ FGEN=ASSE_VECT_GENE(    NUME_DDL_GENE=NUMEGE,
                          CHAR_SOUS_STRUC=_F( SOUS_STRUC = 'COTE1', 
                                           VECT_ASSE = V_ASSE))
 
-#  CALCUL DES MODES PROPRES DE LA STRUCTURE GLOBALE
+#  CALCUL DES MODES PROPRES DE LA STRUCTURE GLOBALE (SUIVANT  2 SOLVEURS
+#  MODAUX DISTINCTS)
 #------------------------------------------------------------------
+# ON CHOISIT (A TORT) L'USAGE DU SOLVEUR LINEAIRE MULT_FRONT POUR FORCER
+# LE CHANGEMENT EN INTERNE OPERATEUR POUR MUMPS
+IMPR_STURM(MATR_A=RIGGEN,MATR_B=MASGEN,FREQ_MAX=3.E-1,
+           SOLVEUR=_F(METHODE='MULT_FRONT'))
+# CAS 1
+RESGEN=MODE_ITER_SIMULT(MATR_A=RIGGEN, MATR_B=MASGEN,INFO=2,
+                        CALC_FREQ=_F(OPTION = 'PLUS_PETITE', 
+                                     NMAX_FREQ = 3),
+                        SOLVEUR=_F(METHODE='MULT_FRONT',),)
 
-RESGEN=MODE_ITER_SIMULT(     MATR_A=RIGGEN, 
-                                 MATR_B=MASGEN, 
-                             CALC_FREQ=_F( OPTION = 'PLUS_PETITE', 
-                                        NMAX_FREQ = 3))
-
-#
 MODGLO=REST_SOUS_STRUC(   RESU_GENE=RESGEN, 
+                           SOUS_STRUC='COTE1', 
+                           TOUT_ORDRE='OUI')
+# CAS 2
+RESGEN2=MODE_ITER_INV(MATR_A=RIGGEN,MATR_B=MASGEN,
+                        SOLVEUR=_F(METHODE='MULT_FRONT',),
+                 CALC_FREQ=_F( OPTION = 'PROCHE',
+               FREQ = ( 1.21E-1,  2.25E-1, 2.94E-1,)) )
+MODGLO2=REST_SOUS_STRUC(   RESU_GENE=RESGEN2, 
                            SOUS_STRUC='COTE1', 
                            TOUT_ORDRE='OUI')
 
 #  NUMEROTATION DU PROBLEME GENERALISE
 #------------------------------------------------------------------
 
-NUMEMODE=NUME_DDL_GENE(      BASE=RESGEN,
-                          STOCKAGE='PLEIN')
+NUMEMODE=NUME_DDL_GENE(BASE=RESGEN,STOCKAGE='PLEIN')
+NUMEMOD2=NUME_DDL_GENE(BASE=RESGEN2,STOCKAGE='PLEIN')
 
 #  MATRICES ET VECTEURS GENERALISES
 #------------------------------------------------------------------
 
-MASPRO=PROJ_MATR_BASE( BASE=RESGEN,
-                          NUME_DDL_GENE=NUMEMODE,
-                          MATR_ASSE_GENE=MASGEN)
+MASPRO=PROJ_MATR_BASE( BASE=RESGEN,NUME_DDL_GENE=NUMEMODE,
+                       MATR_ASSE_GENE=MASGEN)
+RIGPRO=PROJ_MATR_BASE( BASE=RESGEN,NUME_DDL_GENE=NUMEMODE,
+                       MATR_ASSE_GENE=RIGGEN)
+AMOPRO=PROJ_MATR_BASE( BASE=RESGEN,NUME_DDL_GENE=NUMEMODE,
+                       MATR_ASSE_GENE=AMOGEN)
+VECPRO=PROJ_VECT_BASE( BASE=RESGEN,NUME_DDL_GENE=NUMEMODE,
+                       VECT_ASSE_GENE=FGEN)
 
-#
-RIGPRO=PROJ_MATR_BASE( BASE=RESGEN,
-                          NUME_DDL_GENE=NUMEMODE,
-                          MATR_ASSE_GENE=RIGGEN)
+MASPRO2=PROJ_MATR_BASE( BASE=RESGEN2,NUME_DDL_GENE=NUMEMOD2,
+                       MATR_ASSE_GENE=MASGEN)
+RIGPRO2=PROJ_MATR_BASE( BASE=RESGEN2,NUME_DDL_GENE=NUMEMOD2,
+                       MATR_ASSE_GENE=RIGGEN)
+AMOPRO2=PROJ_MATR_BASE( BASE=RESGEN2,NUME_DDL_GENE=NUMEMOD2,
+                       MATR_ASSE_GENE=AMOGEN)
+VECPRO2=PROJ_VECT_BASE( BASE=RESGEN2,NUME_DDL_GENE=NUMEMOD2,
+                       VECT_ASSE_GENE=FGEN)
 
-#
-AMOPRO=PROJ_MATR_BASE( BASE=RESGEN,
-                          NUME_DDL_GENE=NUMEMODE,
-                          MATR_ASSE_GENE=AMOGEN)
-
-#
-VECPRO=PROJ_VECT_BASE( BASE=RESGEN,
-                          NUME_DDL_GENE=NUMEMODE,
-                          VECT_ASSE_GENE=FGEN)
-
-#
-##
-#
 LIST_R=DEFI_LIST_REEL(       DEBUT=0.,
                            INTERVALLE=_F( JUSQU_A = 80., 
                                        NOMBRE = 10))
@@ -241,6 +256,7 @@ LIST_R=DEFI_LIST_REEL(       DEBUT=0.,
 #  CALCULS TRANSITOIRES 
 #-----------------------------------------------------------------
 
+# CAS 1
 TRANGEN1=DYNA_TRAN_MODAL(   METHODE='EULER',
                              MASS_GENE=MASPRO, 
                              RIGI_GENE=RIGPRO, 
@@ -252,8 +268,6 @@ TRANGEN1=DYNA_TRAN_MODAL(   METHODE='EULER',
                                        PAS = 0.01),
                             ARCHIVAGE=_F( PAS_ARCH = 10)
                             )
-
-#
 TRANGEN2=DYNA_TRAN_MODAL(   METHODE='NEWMARK',
                              MASS_GENE=MASPRO, 
                              RIGI_GENE=RIGPRO, 
@@ -265,8 +279,6 @@ TRANGEN2=DYNA_TRAN_MODAL(   METHODE='NEWMARK',
                                        PAS = 0.01),
                             ARCHIVAGE=_F( PAS_ARCH = 10)
                             )
-
-#
 TRANGEN3=DYNA_TRAN_MODAL(   METHODE='ADAPT',
                              MASS_GENE=MASPRO, 
                              RIGI_GENE=RIGPRO, 
@@ -282,33 +294,62 @@ TRANGEN3=DYNA_TRAN_MODAL(   METHODE='ADAPT',
                                        VITE_MIN = 'MAXI'),
                             ARCHIVAGE=_F( PAS_ARCH = 10)
                             )
-
+# CAS 2
+TRANGEN4=DYNA_TRAN_MODAL(   METHODE='EULER',
+                             MASS_GENE=MASPRO2, 
+                             RIGI_GENE=RIGPRO2, 
+                             AMOR_GENE=AMOPRO2, 
+                                EXCIT=_F( VECT_GENE = VECPRO2,
+                                       COEF_MULT = 1.),
+                            INCREMENT=_F( INST_INIT = 0.,
+                                       INST_FIN = 82.,
+                                       PAS = 0.01),
+                            ARCHIVAGE=_F( PAS_ARCH = 10)
+                            )
+TRANGEN5=DYNA_TRAN_MODAL(   METHODE='NEWMARK',
+                             MASS_GENE=MASPRO2, 
+                             RIGI_GENE=RIGPRO2, 
+                             AMOR_GENE=AMOPRO2, 
+                                EXCIT=_F( VECT_GENE = VECPRO2,
+                                       COEF_MULT = 1.),
+                            INCREMENT=_F( INST_INIT = 0.,
+                                       INST_FIN = 82.,
+                                       PAS = 0.01),
+                            ARCHIVAGE=_F( PAS_ARCH = 10)
+                            )
+TRANGEN6=DYNA_TRAN_MODAL(   METHODE='ADAPT',
+                             MASS_GENE=MASPRO2, 
+                             RIGI_GENE=RIGPRO2, 
+                             AMOR_GENE=AMOPRO2, 
+                                EXCIT=_F( VECT_GENE = VECPRO2,
+                                       COEF_MULT = 1.),
+                            INCREMENT=_F( INST_INIT = 0.,
+                                       INST_FIN = 82.,
+                                       PAS_MAXI = 0.1,
+                                       PAS = 0.01,
+                                       NB_POIN_PERIODE = 300,
+                                       VITE_MIN = 'MAXI'),
+                            ARCHIVAGE=_F( PAS_ARCH = 10)
+                            )
 #  RESTITUTIONS
 #------------------------------------------------------------------
 
+# CAS 1
 TRAN1=REST_GENE_PHYS(   RESU_GENE=TRANGEN1,
                         TOUT_CHAM='OUI',
                         LIST_INST=LIST_R,
                         INTERPOL='LIN',
                         MODE_MECA=MODGLO )
-
-
-#
 TRAN2=REST_GENE_PHYS(   RESU_GENE=TRANGEN2,
                         TOUT_CHAM='OUI',
                         LIST_INST=LIST_R,
                         INTERPOL='LIN',
                         MODE_MECA=MODGLO )
-
-
-#
 TRAN3=REST_GENE_PHYS(   RESU_GENE=TRANGEN3,
                         TOUT_CHAM='OUI',
                         LIST_INST=LIST_R,
                         INTERPOL='LIN',
                         MODE_MECA=MODGLO )
-
-#
 TEST_RESU( RESU=_F( RESULTAT = TRAN1,
                   NOM_CHAM = 'DEPL',
                   INST = 8.00000E+01,
@@ -317,8 +358,6 @@ TEST_RESU( RESU=_F( RESULTAT = TRAN1,
                   NOEUD = 'NO3',
                   NOM_CMP = 'DX',
                   VALE = 0.49867E+00))
-
-#
 TEST_RESU( RESU=_F( RESULTAT = TRAN2,
                   NOM_CHAM = 'DEPL',
                   INST = 8.00000E+01,
@@ -327,8 +366,6 @@ TEST_RESU( RESU=_F( RESULTAT = TRAN2,
                   NOEUD = 'NO3',
                   NOM_CMP = 'DX',
                   VALE = 0.49867E+00))
-
-#
 TEST_RESU( RESU=_F( RESULTAT = TRAN3,
                   NOM_CHAM = 'DEPL',
                   INST = 8.00000E+01,
@@ -337,7 +374,46 @@ TEST_RESU( RESU=_F( RESULTAT = TRAN3,
                   NOEUD = 'NO3',
                   NOM_CMP = 'DX',
                   VALE = 0.49867E+00))
-
+# CAS 2
+TRAN4=REST_GENE_PHYS(   RESU_GENE=TRANGEN4,
+                        TOUT_CHAM='OUI',
+                        LIST_INST=LIST_R,
+                        INTERPOL='LIN',
+                        MODE_MECA=MODGLO2 )
+TRAN5=REST_GENE_PHYS(   RESU_GENE=TRANGEN5,
+                        TOUT_CHAM='OUI',
+                        LIST_INST=LIST_R,
+                        INTERPOL='LIN',
+                        MODE_MECA=MODGLO2 )
+TRAN6=REST_GENE_PHYS(   RESU_GENE=TRANGEN6,
+                        TOUT_CHAM='OUI',
+                        LIST_INST=LIST_R,
+                        INTERPOL='LIN',
+                        MODE_MECA=MODGLO2 )
+TEST_RESU( RESU=_F( RESULTAT = TRAN4,
+                  NOM_CHAM = 'DEPL',
+                  INST = 8.00000E+01,
+                  CRITERE = 'RELATIF',
+                  PRECISION = 1.E-2,
+                  NOEUD = 'NO3',
+                  NOM_CMP = 'DX',
+                  VALE = 0.49867E+00))
+TEST_RESU( RESU=_F( RESULTAT = TRAN5,
+                  NOM_CHAM = 'DEPL',
+                  INST = 8.00000E+01,
+                  CRITERE = 'RELATIF',
+                  PRECISION = 1.E-2,
+                  NOEUD = 'NO3',
+                  NOM_CMP = 'DX',
+                  VALE = 0.49867E+00))
+TEST_RESU( RESU=_F( RESULTAT = TRAN6,
+                  NOM_CHAM = 'DEPL',
+                  INST = 8.00000E+01,
+                  CRITERE = 'RELATIF',
+                  PRECISION = 1.E-2,
+                  NOEUD = 'NO3',
+                  NOM_CMP = 'DX',
+                  VALE = 0.49867E+00))
 #
 FIN()
 #

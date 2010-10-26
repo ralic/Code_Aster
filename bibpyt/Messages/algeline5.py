@@ -1,4 +1,4 @@
-#@ MODIF algeline5 Messages  DATE 13/10/2010   AUTEUR BOITEAU O.BOITEAU 
+#@ MODIF algeline5 Messages  DATE 26/10/2010   AUTEUR BOITEAU O.BOITEAU 
 # -*- coding: iso-8859-1 -*-
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -396,12 +396,13 @@ cata_msg={
 """),
 72: _("""
     Les matrices utilisées ne s'appuient pas sur des données issues d'un maillage.
-    Dans ce cas on doit utiliser uniquement le solveur linéaire LDLT. On a donc 
-    changé le paramétrage pour vous et selectionné ce solveur linéaire.
+    Dans ce cas on doit utiliser, soit le solveur linéaire LDLT, soit celui MUMPS.
+    On a donc changé le paramétrage pour vous et selectionné le solveur linéaire
+    MUMPS (avec son paramétrage usuel par défaut).
     Conseil:
     ========
     La prochaine fois, dans une telle situation (NUME_DDL_GENE...), paramétrer
-    explicitement SOLVEUR/METHODE='LDLT'.
+    explicitement SOLVEUR/METHODE='MUMPS'.
 """),
 73: _("""
     On a besoin d'effectuer un calcul de déterminant. Pour l'instant seuls les

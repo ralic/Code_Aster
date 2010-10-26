@@ -1,4 +1,4 @@
-# MODIF  DATE 10/05/2010   AUTEUR PROIX J-M.PROIX 
+# MODIF  DATE 25/10/2010   AUTEUR GENIAUT S.GENIAUT 
 # TITRE VALIDATION MONOCRISTAL CHARGEMENT CYCLIQUE
 # ssnd109a.para = tps_job 150 mem_job 60Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -68,15 +68,10 @@ CMP_POLY=DEFI_COMPOR(POLYCRISTAL=(
                     LOCALISATION='BETA',DL=0.,DA=0.,
                     );
                     
-DEFLIST1=DEFI_LIST_INST(DEFI_LIST=_F(METHODE='MANUEL',
-                                     LIST_INST=LINST,),
-                        ECHEC=_F(EVENEMENT='DIVERGENCE',
-                                 SUBD_METHODE='UNIFORME',
-                                 SUBD_COEF_PAS_1=1.0,
-                                 SUBD_PAS=10,
-                                 SUBD_NIVEAU=10,
-                                 SUBD_PAS_MINI=0.0,),
-                        INFO=1,);
+DEFLIST1=DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST=LINST,),
+                        ECHEC=_F(SUBD_PAS=10,
+                                 SUBD_NIVEAU=10,),
+                        );
 
 IMPL1=SIMU_POINT_MAT(COMP_INCR=_F(RELATION='MONOCRISTAL',
                                   COMPOR=CMP_MONO,),

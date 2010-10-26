@@ -2,7 +2,7 @@
      &                  N,TYPREP,
      &                  NOM,UNIT,CRET)
 !           CONFIGURATION MANAGEMENT OF EDF VERSION                  
-!& MODIF MFCOOE ECHANGE  DATE 19/10/2010   AUTEUR COURTOIS M.COURTOIS 
+!& MODIF MFCOOE ECHANGE  DATE 25/10/2010   AUTEUR COURTOIS M.COURTOIS 
 ! ================================================================== 
 ! COPYRIGHT (C) 1991 - 2010  EDF R&D              WWW.CODE-ASTER.ORG 
 !                                                                    
@@ -25,7 +25,11 @@
       INTEGER FID,TYPREP,MDIM
       INTEGER N,CRET,MODCOO
       CHARACTER*16 NOM(*), UNIT(*)
-#ifndef _DISABLE_MED
+#ifdef _DISABLE_MED
+      CALL U2MESS('F','FERMETUR_2')
+#else
+! BEGIN MED
+#ifdef _USE_MED_SHORT_INT
       INTEGER*4 FID4, TYPRE4, MDIM4
       INTEGER*4 N4, CRET4, MODCO4
       FID4 = FID
@@ -44,6 +48,10 @@
      &                  NOM,UNIT,CRET4)
       CRET = CRET4
 #else
-      CALL U2MESS('F','FERMETUR_2')
+      CALL EFCOOE(FID, MAA, MDIM, COO, MODCOO,
+     &                  N,TYPREP,
+     &                  NOM,UNIT,CRET)
+#endif
+! END MED
 #endif
       END

@@ -1,4 +1,4 @@
-# MODIF  DATE 11/10/2010   AUTEUR NISTOR I.NISTOR 
+# MODIF  DATE 26/10/2010   AUTEUR NISTOR I.NISTOR 
 # TITRE SOUS STRUCTURATION DYNAMIQUE : PLAQUE MINCE APPUYEE-APPUYEE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -36,7 +36,7 @@
 #123678901234567890123456789012345678901234567890123456789012345678901
 #
 DEBUT(CODE=_F(NOM='SDLS106A', NIV_PUB_WEB='INTERNET'), 
-      IGNORE_ALARM=('SOUSTRUC2_10',),DEBUG=_F(SDVERI='OUI'))
+      DEBUG=_F(SDVERI='OUI'))
 
 #
 
@@ -216,10 +216,10 @@ MACEL2=MACR_ELEM_DYNA(  BASE_MODALE=BAMO2_CL,
 #
 #   CALCUL SUR MODELE GENERALISE
 #
-MODEGE=DEFI_MODELE_GENE(SOUS_STRUC=( _F( NOM = 'CARRE1',
-                                         MACR_ELEM_DYNA = MACEL1),
-                             _F( NOM = 'CARRE2',
-                                         MACR_ELEM_DYNA = MACEL2)),
+MODEGE=DEFI_MODELE_GENE(SOUS_STRUC=(_F( NOM = 'CARRE1',
+                                        MACR_ELEM_DYNA = MACEL1),
+                                    _F( NOM = 'CARRE2',
+                                        MACR_ELEM_DYNA = MACEL2),),
                              LIAISON=_F( SOUS_STRUC_1 = 'CARRE1',
                                       SOUS_STRUC_2 = 'CARRE2',
                                       INTERFACE_1 = 'GAUCHE_1',
@@ -252,6 +252,32 @@ RESGEN=MODE_ITER_SIMULT(     MATR_A=RIGGEN,
                                         NMAX_FREQ = 6))
 
 #
+#  MEME CHOSE EN ELIMINANT LES EQUATIONS DE LIAISON
+#
+#  NUMEROTATION DU PROBLEME GENERALISE
+#
+NUGEEL=NUME_DDL_GENE(  MODELE_GENE=MODEGE,
+                       METHODE='ELIMINE',)
+
+#
+#  ASSEMBLAGE DES MATRICES RAIDEUR ET MASSE
+#
+MAGEEL=ASSE_MATR_GENE(  NUME_DDL_GENE=NUGEEL,
+                                  OPTION='MASS_GENE')
+
+#
+RIGEEL=ASSE_MATR_GENE(  NUME_DDL_GENE=NUGEEL,
+                                  OPTION='RIGI_GENE')
+
+#
+#   CALCUL DES MODES PROPRES DE LA STRUCTURE GLOBALE
+#
+RESGEL=MODE_ITER_SIMULT(     MATR_A=RIGEEL,
+                                 MATR_B=MAGEEL,
+                             CALC_FREQ=_F( OPTION = 'PLUS_PETITE',
+                                        NMAX_FREQ = 6))
+
+#
 
 #
 
@@ -260,10 +286,12 @@ RESGEN=MODE_ITER_SIMULT(     MATR_A=RIGGEN,
 
 SQUEL=DEFI_SQUELETTE(  MODELE_GENE=MODEGE,SOUS_STRUC=(
                             _F( NOM = 'CARRE1',
-                                        TOUT = 'OUI'),
+                                GROUP_MA = 'CALCUL',
+                               ),
                             _F( NOM = 'CARRE2',
-                                        TOUT = 'OUI'))
- )
+                                GROUP_MA = 'CALCUL',
+                               ))
+                       )
 
 #
 #   RESTITUTION SUR MAILLAGE SQUELETTE
@@ -289,6 +317,11 @@ MODGLO2=REST_SOUS_STRUC(   RESU_GENE=RESGEN,
                            TOUT_ORDRE='OUI',
                             TOUT_CHAM='OUI')
 
+#-- RESTITUTION AVEC LA METHODE 'ELIMINE'
+MOGLOEL=REST_SOUS_STRUC(   RESU_GENE=RESGEL,
+                           SOUS_STRUC='CARRE2',
+                           TOUT_ORDRE='OUI',
+                            TOUT_CHAM='OUI')                            
 #
 #
 SQUELBIS=DEFI_SQUELETTE(  MODELE_GENE=MODEGE,

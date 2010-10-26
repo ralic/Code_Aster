@@ -3,7 +3,7 @@
      &                  TYPENT,TYPGEO,
      &                  NUMDT, NUMO,CRET)
 !           CONFIGURATION MANAGEMENT OF EDF VERSION                  
-!& MODIF MFCHRL ECHANGE  DATE 19/10/2010   AUTEUR COURTOIS M.COURTOIS 
+!& MODIF MFCHRL ECHANGE  DATE 25/10/2010   AUTEUR COURTOIS M.COURTOIS 
 ! ================================================================== 
 ! COPYRIGHT (C) 1991 - 2010  EDF R&D              WWW.CODE-ASTER.ORG 
 !                                                                    
@@ -25,9 +25,16 @@
       INTEGER FID,TYPENT,TYPGEO,CRET
       INTEGER INTLAC,NUMCO,NUMDT,NUMO,PFLMOD
       REAL*8 VAL(*)
+#ifdef _DISABLE_MED
+      CALL U2MESS('F','FERMETUR_2')
+#else
+! BEGIN MED
+#ifdef _USE_MED_SHORT_INT
       INTEGER*4 FID4, TYPEN4, TYPGE4, CRET4
       INTEGER*4 INTLA4, NUMCO4, NUMDT4, NUMO4, PFLMO4
-#ifndef _DISABLE_MED
+#ifdef _DEBUG_MED
+      PRINT *,'=== MFCHRL ==='
+#endif
       FID4 = FID
       TYPEN4 = TYPENT
       TYPGE4 = TYPGEO
@@ -42,6 +49,11 @@
      &                  NUMDT4, NUMO4,CRET4)
       CRET = CRET4
 #else
-      CALL U2MESS('F','FERMETUR_2')
+      CALL EFCHRL(FID,MAA,CHA,VAL,
+     &                  INTLAC,NUMCO,LOCNAME,PROFIL,PFLMOD,
+     &                  TYPENT,TYPGEO,
+     &                  NUMDT, NUMO,CRET)
+#endif
+! END MED
 #endif
       END

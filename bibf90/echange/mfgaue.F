@@ -1,7 +1,7 @@
       SUBROUTINE MFGAUE( FID, TYPGEO, REFCOO, MODECO, NGAUSS,
      &                  GSCOO, WG, LOCNAME,CRET)
 !           CONFIGURATION MANAGEMENT OF EDF VERSION                  
-!& MODIF MFGAUE ECHANGE  DATE 19/10/2010   AUTEUR COURTOIS M.COURTOIS 
+!& MODIF MFGAUE ECHANGE  DATE 25/10/2010   AUTEUR COURTOIS M.COURTOIS 
 ! ================================================================== 
 ! COPYRIGHT (C) 1991 - 2010  EDF R&D              WWW.CODE-ASTER.ORG 
 !                                                                    
@@ -22,8 +22,15 @@
       INTEGER FID,TYPGEO,MODECO,NGAUSS,CRET
       REAL*8 REFCOO(*),GSCOO(*),WG(*)
       CHARACTER*(*) LOCNAME
-#ifndef _DISABLE_MED
+#ifdef _DISABLE_MED
+      CALL U2MESS('F','FERMETUR_2')
+#else
+! BEGIN MED
+#ifdef _USE_MED_SHORT_INT
       INTEGER*4 FID4, TYPGE4, MODE_4, NGAUS4, CRET4
+#ifdef _DEBUG_MED
+      PRINT *,'=== MFGAUE ==='
+#endif
       FID4 = FID
       TYPGE4 = TYPGEO
       MODE_4 = MODECO
@@ -32,6 +39,9 @@
      &                  GSCOO, WG, LOCNAME,CRET4)
       CRET = CRET4
 #else
-      CALL U2MESS('F','FERMETUR_2')
+      CALL EFGAUE( FID, TYPGEO, REFCOO, MODECO, NGAUSS,
+     &                  GSCOO, WG, LOCNAME,CRET)
+#endif
+! END MED
 #endif
       END

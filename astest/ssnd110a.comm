@@ -1,4 +1,4 @@
-# MODIF  DATE 12/07/2010   AUTEUR PROIX J-M.PROIX 
+# MODIF  DATE 25/10/2010   AUTEUR GENIAUT S.GENIAUT 
 # TITRE VALIDATION MONOCRISTAL LOI DD_CFC 
 # ssnd110a.para = tps_job 60 mem_job 60Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -102,14 +102,9 @@ LINSTDD=DEFI_LIST_REEL(DEBUT=0.0,
                       );
 
 LIS2DD=DEFI_LIST_INST(INFO=1,
-                        DEFI_LIST=_F(LIST_INST=LINSTDD,
-                                     METHODE='MANUEL'),
+                        DEFI_LIST=_F(LIST_INST=LINSTDD),
                         ECHEC=_F(SUBD_NIVEAU=20,
-                                 SUBD_METHODE='UNIFORME',
-                                 EVENEMENT='DIVERGENCE',
-                                 SUBD_PAS=10,
-                                 SUBD_COEF_PAS_1=1.0,
-                                 SUBD_PAS_MINI=0.0),
+                                 SUBD_PAS=10),
                         );
 
 # vecteurs direction de chargement

@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF dll_zmat supervis  DATE 19/10/2010   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF dll_zmat supervis  DATE 25/10/2010   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2010  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -113,9 +113,9 @@ void STDCALL(ZASWRP, zaswrp) (
     */
     void (*f_zaster) ZMAT_ARGUMENTS = NULL;
     PyObject* DLL_DICT;
+    dll_init();
     DLL_DICT = get_dll_register_dict();
     
-    dll_init();
     if ( ! libsymb_is_known(DLL_DICT, LIB_Zmat, SYMB_Zmat) ) {
         load_zmat_lib();
     }

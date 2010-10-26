@@ -2,7 +2,7 @@
      &                  PROFIL,PFLMOD,TYPENT,TYPGEO,NUMDT,DTUNIT,
      &                  DT,NUMO,CRET)
 !           CONFIGURATION MANAGEMENT OF EDF VERSION                  
-!& MODIF MFCHRE ECHANGE  DATE 19/10/2010   AUTEUR COURTOIS M.COURTOIS 
+!& MODIF MFCHRE ECHANGE  DATE 25/10/2010   AUTEUR COURTOIS M.COURTOIS 
 ! ================================================================== 
 ! COPYRIGHT (C) 1991 - 2010  EDF R&D              WWW.CODE-ASTER.ORG 
 !                                                                    
@@ -26,9 +26,16 @@
       INTEGER INTLAC,NUMCO,NUMDT,NUMO
       REAL*8 DT
       REAL*8 VAL(*)
+#ifdef _DISABLE_MED
+      CALL U2MESS('F','FERMETUR_2')
+#else
+! BEGIN MED
+#ifdef _USE_MED_SHORT_INT
       INTEGER*4 FID4, N4, PFLMO4, TYPEN4, TYPGE4, CRET4
       INTEGER*4 INTLA4, NUMCO4, NUMDT4, NUMO4
-#ifndef _DISABLE_MED
+#ifdef _DEBUG_MED
+      PRINT *,'=== MFCHRE ==='
+#endif
       FID4 = FID
       N4 = N
       PFLMO4 = PFLMOD
@@ -43,6 +50,10 @@
      &                  DT,NUMO4,CRET4)
       CRET = CRET4
 #else
-      CALL U2MESS('F','FERMETUR_2')
+      CALL EFCHRE(FID,MAA,CHA,VAL,INTLAC,N,LOCNAME,NUMCO,
+     &                  PROFIL,PFLMOD,TYPENT,TYPGEO,NUMDT,DTUNIT,
+     &                  DT,NUMO,CRET)
+#endif
+! END MED
 #endif
       END

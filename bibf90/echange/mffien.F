@@ -1,6 +1,6 @@
       SUBROUTINE MFFIEN(FID,IAUX,DESCFI,CRET)
 !           CONFIGURATION MANAGEMENT OF EDF VERSION                  
-!& MODIF MFFIEN ECHANGE  DATE 19/10/2010   AUTEUR COURTOIS M.COURTOIS 
+!& MODIF MFFIEN ECHANGE  DATE 25/10/2010   AUTEUR COURTOIS M.COURTOIS 
 ! ================================================================== 
 ! COPYRIGHT (C) 1991 - 2010  EDF R&D              WWW.CODE-ASTER.ORG 
 !                                                                    
@@ -20,13 +20,22 @@
       IMPLICIT NONE
       INTEGER FID,IAUX,CRET
       CHARACTER*(*) DESCFI
-#ifndef _DISABLE_MED
+#ifdef _DISABLE_MED
+      CALL U2MESS('F','FERMETUR_2')
+#else
+! BEGIN MED
+#ifdef _USE_MED_SHORT_INT
       INTEGER*4 FID4, IAUX4, CRET4
+#ifdef _DEBUG_MED
+      PRINT *,'=== MFFIEN ==='
+#endif
       FID4 = FID
       IAUX4 = IAUX
       CALL EFFIEN(FID4,IAUX4,DESCFI,CRET4)
       CRET = CRET4
 #else
-      CALL U2MESS('F','FERMETUR_2')
+      CALL EFFIEN(FID,IAUX,DESCFI,CRET)
+#endif
+! END MED
 #endif
       END

@@ -1,4 +1,4 @@
-# MODIF  DATE 11/10/2010   AUTEUR NISTOR I.NISTOR 
+# MODIF  DATE 26/10/2010   AUTEUR NISTOR I.NISTOR 
 # TITRE SOUS-STRUCTURATION TRANSITOIRE : POUTRE EN TRACTION SIMPLE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -28,7 +28,7 @@
 #      - PAR SOUS-STRUCTURATION DYNAMIQUE TRANSITOIRE
 #
 DEBUT(CODE=_F(NOM='SDLL113A', NIV_PUB_WEB='INTERNET'),
-      IGNORE_ALARM=('SOUSTRUC2_10',),DEBUG=_F(SDVERI='OUI'))
+      DEBUG=_F(SDVERI='OUI'))
 
 PRE_IDEAS(UNITE_IDEAS=19,
            UNITE_MAILLAGE=21)
@@ -317,15 +317,15 @@ MACRO2=MACR_ELEM_DYNA(  BASE_MODALE=BAMO2)
 #
 MODEGE=DEFI_MODELE_GENE( SOUS_STRUC=(_F( NOM = 'COTE1',
                                          MACR_ELEM_DYNA = MACRO1),
-                             _F( NOM = 'COTE2',
-                                         MACR_ELEM_DYNA = MACRO2)),
+                                     _F( NOM = 'COTE2',
+                                         MACR_ELEM_DYNA = MACRO2),),
                                 LIAISON=_F( SOUS_STRUC_1 = 'COTE1',
                                          SOUS_STRUC_2 = 'COTE2',
                                          INTERFACE_1 = 'DROITE',
                                          INTERFACE_2 = 'GAUCHE'))
 
 #
-NUMEGE=NUME_DDL_GENE(  MODELE_GENE=MODEGE)
+NUMEGE=NUME_DDL_GENE(  MODELE_GENE=MODEGE,)
 
 #
 K_GENE=ASSE_MATR_GENE(  NUME_DDL_GENE=NUMEGE,
@@ -376,9 +376,11 @@ TRANGENE=DYNA_TRAN_MODAL( MASS_GENE=M_GENE, RIGI_GENE=K_GENE,
 #
 SQUEL=DEFI_SQUELETTE(  MODELE_GENE=MODEGE,SOUS_STRUC=(
                             _F( NOM = 'COTE1',
-                                        TOUT = 'OUI'),
+                                GROUP_MA='TOUT1'
+                                ),
                             _F( NOM = 'COTE2',
-                                        TOUT = 'OUI')))
+                                GROUP_MA='TOUT1'
+                                )))
 
 #
 TRAN_GLO=REST_SOUS_STRUC(  RESU_GENE=TRANGENE,

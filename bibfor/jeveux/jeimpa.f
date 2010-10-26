@@ -1,6 +1,6 @@
       SUBROUTINE JEIMPA ( UNIT , NOMLU , COM )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 12/04/2010   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 26/10/2010   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -63,7 +63,7 @@ C
       CHARACTER *33   CVAL
       INTEGER         ICRE , IRET , IVAL
 C
-      PARAMETER     ( NNAO = 15 )
+      PARAMETER     ( NNAO = 15 , NNL = 10)
       PARAMETER     ( NNAC = 6  )
       CHARACTER *8    NAC(NNAC) , NAO(NNAO)
       CHARACTER *1    TAC(NNAC) , TAO(NNAO)  , GENRI
@@ -158,7 +158,7 @@ C
          IF ( NOML32(25:32) .EQ. NOME ) THEN
             WRITE(UNIT,'(A,A8)') 'NOM OC',NOMEC
          ELSE IF ( NOML32(25:32) .EQ. NUME ) THEN
-            WRITE(UNIT,'(A,I8)') 'NUM OC',NUMEC
+            WRITE(UNIT,'(A,I12)') 'NUM OC',NUMEC
          ENDIF
       ENDIF
       IF ( IRET . EQ. 2 ) THEN
@@ -167,27 +167,27 @@ C
         DO 10 K = 1 , NNACI
            CALL JELIRA ( NOML32 , NAC(K) , IVAL , CVAL )
            IF ( TAC(K) .EQ. 'I' ) THEN
-             WRITE(UNIT,'(A8,I8)') NAC(K),IVAL
+             WRITE(UNIT,'(A8,I12)') NAC(K),IVAL
            ELSE
              WRITE(UNIT,'(A8,A)')  NAC(K),CVAL(1:LAC(K))
            ENDIF
    10   CONTINUE
       ENDIF
       DO 20 K = 1 , NNAO
-          ICOL = K - 11
+          ICOL = K - 10
           IF ( NAO(K)(1:3) .EQ. 'LON' ) ILON = 1
           IF ( NAO(K)(1:3) .EQ. 'NOM' ) ILON = 2
-          IF ( (K.LE.7)                                           .OR.
-     &         (K.GT.7 .AND. K.LE.11
+          IF ( (K.LE.6)                                           .OR.
+     &         (K.GT.6 .AND. K.LE.10
      &            .AND. LCONST .AND. TAB3(ILON,JLON) )            .OR.
-     &         ( (IRET.EQ.1.OR.IRET.EQ.3) .AND. (K.GT.7 .AND. K.LE.11)
+     &         ( (IRET.EQ.1.OR.IRET.EQ.3) .AND. (K.GT.6 .AND. K.LE.10)
      &           .AND. TAB3(ILON,JLON) )                          .OR.
-     &         ( IRET.EQ.2 .AND. (K.GT.11.AND.TAB2(ICOL,JCOL)))   .OR.
-     &         ( IRET.EQ.3 .AND. (K.GT.11.AND.TAB1(ICOL,JCOL)))   .OR.
-     &         ( IRET.EQ.1 .AND. (K.GT.11)                    ) ) THEN
+     &         ( IRET.EQ.2 .AND. (K.GT.10.AND.TAB2(ICOL,JCOL)))   .OR.
+     &         ( IRET.EQ.3 .AND. (K.GT.10.AND.TAB1(ICOL,JCOL)))   .OR.
+     &         ( IRET.EQ.1 .AND. (K.GT.10)                    ) ) THEN
             CALL JELIRA ( NOML32 , NAO(K) , IVAL , CVAL )
             IF ( TAO(K) .EQ. 'I' ) THEN
-              WRITE(UNIT,'(A8,I8)') NAO(K),IVAL 
+              WRITE(UNIT,'(A8,I12)') NAO(K),IVAL 
             ELSE
               WRITE(UNIT,'(A8,A)') NAO(K),CVAL(1:LAO(K))
             ENDIF

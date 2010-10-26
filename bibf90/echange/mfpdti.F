@@ -1,7 +1,7 @@
       SUBROUTINE MFPDTI(FID,CHA,TYPENT,TYPGEO,IND,NGAUSS,
      &                  NUMDT,NUMO,DTUNIT,DT,MAA,LOCAL,NMAA,CRET)
 !           CONFIGURATION MANAGEMENT OF EDF VERSION                  
-!& MODIF MFPDTI ECHANGE  DATE 19/10/2010   AUTEUR COURTOIS M.COURTOIS 
+!& MODIF MFPDTI ECHANGE  DATE 25/10/2010   AUTEUR COURTOIS M.COURTOIS 
 ! ================================================================== 
 ! COPYRIGHT (C) 1991 - 2010  EDF R&D              WWW.CODE-ASTER.ORG 
 !                                                                    
@@ -24,9 +24,16 @@
       CHARACTER*16 DTUNIT
       REAL*8 DT
       LOGICAL LOCAL
-#ifndef _DISABLE_MED
+#ifdef _DISABLE_MED
+      CALL U2MESS('F','FERMETUR_2')
+#else
+! BEGIN MED
+#ifdef _USE_MED_SHORT_INT
       INTEGER*4 FID4,TYPEN4,TYPGE4,IND4,NGAUS4,NUMDT4,NUMO4,NMAA4,CRET4
       LOGICAL*4 LOCAL4
+#ifdef _DEBUG_MED
+      PRINT *,'=== MFPDTI ==='
+#endif
       FID4 = FID
       TYPEN4 = TYPENT
       TYPGE4 = TYPGEO
@@ -40,6 +47,9 @@
       NMAA = NMAA4
       CRET = CRET4
 #else
-      CALL U2MESS('F','FERMETUR_2')
+      CALL EFPDTI(FID,CHA,TYPENT,TYPGEO,IND,NGAUSS,
+     &                  NUMDT,NUMO,DTUNIT,DT,MAA,LOCAL,NMAA,CRET)
+#endif
+! END MED
 #endif
       END

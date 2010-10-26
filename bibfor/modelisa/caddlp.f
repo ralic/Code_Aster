@@ -4,7 +4,7 @@
       CHARACTER*8                 CHAR
 C ---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 03/11/2009   AUTEUR DESOZA T.DESOZA 
+C MODIF MODELISA  DATE 26/10/2010   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -61,7 +61,7 @@ C
       CHARACTER*8   NOMN, VALIMF(NDDLA), DDL(NDDLA)
       CHARACTER*16  MOTFAC, MOTCLE(NDDLA), MOTCL1(2), TYMOC1(2),
      &              MOTCL2(2), TYMOC2(2), NOMCMD
-      CHARACTER*19  LIGRMO, LISREL
+      CHARACTER*19  LIGRMO, LISREL, K19BID
       CHARACTER*24  NOMNOE, NCNCIN
 C ----------------------------------------------------------------------
       DATA MOTCLE / 'DX' , 'DY' , 'DZ' , 'DRX' , 'DRY' , 'DRZ' /
@@ -229,9 +229,10 @@ C           ----------------------------------------------
             CALL AFDDLI ( ZR(JVAL), ZK8(JVAL), ZC(JVAL),
      &                    ZI(JPRNM-1+(INO-1)*NBEC+1), NDDLA,
      &                    FONREE, NOMN, INO, DDLIMP, VALIMR, VALIMF,
-     &                    VALIMC, MOTCLE, NBEC, ZR(JDIREC+3*(INO-1)),
+     &                    VALIMC, MOTCLE, ZR(JDIREC+3*(INO-1)),
      &                    ZI(JDIMEN+INO-1), MOD,LISREL,
-     &                    ZK8(INOM), NBCMP, ZI(JCOMPT))
+     &                    ZK8(INOM), NBCMP, ZI(JCOMPT), .FALSE., IBID,
+     &                    IBID, K19BID, K19BID, K19BID)
 110      CONTINUE
          DO 111,K=1,NDDLA
             IF (ZI(JCOMPT-1+K) .EQ. 0 )

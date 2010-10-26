@@ -1,4 +1,4 @@
-# MODIF  DATE 19/10/2010   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 26/10/2010   AUTEUR NISTOR I.NISTOR 
 # TITRE CHOC D UNE POUTRE SUR UN APPUI : SOUS-STRUCTURATION
 # sdnl104b.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -24,7 +24,7 @@
 # CHOQUANT SUR UN APPUI ELASTIQUE PAR SOUS-STRUCTURATION
 #
 DEBUT(  CODE=_F( NOM = 'SDNL104B',NIV_PUB_WEB='INTERNET'),
-       IGNORE_ALARM=('SOUSTRUC2_10',),DEBUG=_F(SDVERI='OUI'))
+       DEBUG=_F(SDVERI='OUI'))
 
 #
 MAYA=LIRE_MAILLAGE( )
@@ -228,9 +228,11 @@ RESGEN=MODE_ITER_SIMULT(     MATR_A=K_GENE,
 #
 SQUEL=DEFI_SQUELETTE(  MODELE_GENE=MODEGE,SOUS_STRUC=(
                             _F( NOM = 'COTE1',
-                                        TOUT = 'OUI'),
+                                     GROUP_MA='TOUT'
+                               ),
                             _F( NOM = 'COTE2',
-                                        TOUT = 'OUI')))
+                                     GROUP_MA='TOUT'
+                                )))
 
 
 DEBUG(SDVERI='OUI')

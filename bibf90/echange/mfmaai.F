@@ -1,6 +1,6 @@
       SUBROUTINE MFMAAI( FID, INDICE, MAA, DIM, TYPE, DESC, CRET)
 !           CONFIGURATION MANAGEMENT OF EDF VERSION                  
-!& MODIF MFMAAI ECHANGE  DATE 19/10/2010   AUTEUR COURTOIS M.COURTOIS 
+!& MODIF MFMAAI ECHANGE  DATE 25/10/2010   AUTEUR COURTOIS M.COURTOIS 
 ! ================================================================== 
 ! COPYRIGHT (C) 1991 - 2010  EDF R&D              WWW.CODE-ASTER.ORG 
 !                                                                    
@@ -21,8 +21,15 @@
       INTEGER FID,DIM,CRET,INDICE,TYPE
       CHARACTER*(*) MAA
       CHARACTER*(*) DESC
-#ifndef _DISABLE_MED
+#ifdef _DISABLE_MED
+      CALL U2MESS('F','FERMETUR_2')
+#else
+! BEGIN MED
+#ifdef _USE_MED_SHORT_INT
       INTEGER*4 FID4, DIM4, CRET4, INDIC4, TYPE4
+#ifdef _DEBUG_MED
+      PRINT *,'=== MFMAAI ==='
+#endif
       FID4 = FID
       INDIC4 = INDICE
       CALL EFMAAI( FID4, INDIC4, MAA, DIM4, TYPE4, DESC, CRET4)
@@ -30,6 +37,8 @@
       TYPE = TYPE4
       CRET = CRET4
 #else
-      CALL U2MESS('F','FERMETUR_2')
+      CALL EFMAAI( FID, INDICE, MAA, DIM, TYPE, DESC, CRET)
+#endif
+! END MED
 #endif
       END

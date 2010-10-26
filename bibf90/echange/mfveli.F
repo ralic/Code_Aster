@@ -1,6 +1,6 @@
       SUBROUTINE MFVELI (FID,MAJ,MINI,REL,CRET)
 !           CONFIGURATION MANAGEMENT OF EDF VERSION                  
-!& MODIF MFVELI ECHANGE  DATE 19/10/2010   AUTEUR COURTOIS M.COURTOIS 
+!& MODIF MFVELI ECHANGE  DATE 25/10/2010   AUTEUR COURTOIS M.COURTOIS 
 ! ================================================================== 
 ! COPYRIGHT (C) 1991 - 2010  EDF R&D              WWW.CODE-ASTER.ORG 
 !                                                                    
@@ -20,9 +20,16 @@
       IMPLICIT NONE
       INTEGER FID, MAJ, MINI, REL
       INTEGER CRET
-#ifndef _DISABLE_MED
+#ifdef _DISABLE_MED
+      CALL U2MESS('F','FERMETUR_2')
+#else
+! BEGIN MED
+#ifdef _USE_MED_SHORT_INT
       INTEGER*4 FID4, MAJ4, MIN4, REL4
       INTEGER*4 CRET4
+#ifdef _DEBUG_MED
+      PRINT *,'=== MFVELI ==='
+#endif
       FID4 = FID
       CALL EFVELI (FID4,MAJ4,MIN4,REL4,CRET4)
       MAJ = MAJ4
@@ -30,6 +37,8 @@
       REL = REL4
       CRET = CRET4
 #else
-      CALL U2MESS('F','FERMETUR_2')
+      CALL EFVELI (FID,MAJ,MINI,REL,CRET)
+#endif
+! END MED
 #endif
       END

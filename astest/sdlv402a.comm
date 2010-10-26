@@ -1,4 +1,4 @@
-# MODIF  DATE 11/10/2010   AUTEUR NISTOR I.NISTOR 
+# MODIF  DATE 26/10/2010   AUTEUR NISTOR I.NISTOR 
 # TITRE SOUS-STRUCTURATION DYNAMIQUE : MAILLAGE INCOMPATIBLE ET MODES
 # sdlv402a.para = tps_job 120 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -31,13 +31,16 @@
 
 DEBUT(CODE=_F(NOM='SDLV402A',
               NIV_PUB_WEB='INTERNET',),
-      IGNORE_ALARM=('SOUSTRUC2_10',),);
+      );
 
 #**************************************
 # CREATION DU MACRO-ELEMENT DYNAMIQUE 1
 #**************************************
 
 MAYA1=LIRE_MAILLAGE(UNITE=20);
+
+MAYA1=DEFI_GROUP( reuse=MAYA1,   MAILLAGE=MAYA1,
+  CREA_GROUP_MA=_F(  NOM = 'TOUT', TOUT = 'OUI'))
 
 ELAS1=DEFI_MATERIAU(ELAS=_F(E=71000000000.0,
                             NU=0.3,
@@ -113,6 +116,9 @@ MACEL1=MACR_ELEM_DYNA(BASE_MODALE=BASE1,
 
 
 MAYA2=LIRE_MAILLAGE(UNITE=21);
+
+MAYA2=DEFI_GROUP( reuse=MAYA2,   MAILLAGE=MAYA2,
+  CREA_GROUP_MA=_F(  NOM = 'TOUT', TOUT = 'OUI'))
 
 ELAS2=DEFI_MATERIAU(ELAS=_F(E=120000000000.0,
                             NU=0.3,
@@ -295,9 +301,11 @@ RESGENR=MODE_ITER_SIMULT(MATR_A=KGENR,
 
 GLOBAL=DEFI_SQUELETTE(MODELE_GENE=MODELRG,
                       SOUS_STRUC=(_F(NOM='MAILR1',
-                                     TOUT='OUI',),
+                                     GROUP_MA='TOUT'
+                                     ),
                                   _F(NOM='MAILR2',
-                                     TOUT='OUI',),),);
+                                     GROUP_MA='TOUT'
+                                 ),),);
 
 MODGLO=REST_SOUS_STRUC(RESU_GENE=RESGENR,
                       TOUT_ORDRE='OUI',

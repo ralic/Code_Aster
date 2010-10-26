@@ -1,6 +1,6 @@
       SUBROUTINE MFNPDT(FID,CHA,TYPE,GEO,N,CRET)
 !           CONFIGURATION MANAGEMENT OF EDF VERSION                  
-!& MODIF MFNPDT ECHANGE  DATE 19/10/2010   AUTEUR COURTOIS M.COURTOIS 
+!& MODIF MFNPDT ECHANGE  DATE 25/10/2010   AUTEUR COURTOIS M.COURTOIS 
 ! ================================================================== 
 ! COPYRIGHT (C) 1991 - 2010  EDF R&D              WWW.CODE-ASTER.ORG 
 !                                                                    
@@ -20,8 +20,15 @@
       IMPLICIT NONE
       INTEGER FID,TYPE,GEO,N,CRET
       CHARACTER*(*) CHA
-#ifndef _DISABLE_MED
+#ifdef _DISABLE_MED
+      CALL U2MESS('F','FERMETUR_2')
+#else
+! BEGIN MED
+#ifdef _USE_MED_SHORT_INT
       INTEGER*4 FID4, TYPE4, GEO4, N4, CRET4
+#ifdef _DEBUG_MED
+      PRINT *,'=== MFNPDT ==='
+#endif
       FID4 = FID
       TYPE4 = TYPE
       GEO4 = GEO
@@ -29,6 +36,8 @@
       N = N4
       CRET = CRET4
 #else
-      CALL U2MESS('F','FERMETUR_2')
+      CALL EFNPDT(FID,CHA,TYPE,GEO,N,CRET)
+#endif
+! END MED
 #endif
       END

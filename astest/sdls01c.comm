@@ -1,4 +1,4 @@
-# MODIF  DATE 19/10/2010   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 26/10/2010   AUTEUR NISTOR I.NISTOR 
 # TITRE SOUS STRUCTURATION DYNAMIQUE : PLAQUE MINCE LIBRE ET ENCASTREE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -40,7 +40,7 @@
 #12345678901234567890123456789012345678901234567890123456789012345678901
 #
 DEBUT(CODE=_F( NOM = 'SDLS01C',NIV_PUB_WEB='INTERNET'),
-      IGNORE_ALARM=('SOUSTRUC2_10',),DEBUG=_F(SDVERI='OUI'))
+      DEBUG=_F(SDVERI='OUI'))
 
 #
 MAILLA=LIRE_MAILLAGE( UNITE=20)
@@ -274,13 +274,15 @@ RESGEN=MODE_ITER_SIMULT(     MATR_A=RIGGEN,
                                  MATR_B=MASGEN,
                              CALC_FREQ=_F( OPTION = 'BANDE',
                                         FREQ = (8., 150.,)),
+                             SOLVEUR=_F(NPREC=10,),
                              VERI_MODE=_F( SEUIL = 1.E-3))
 #
 #   CREATION DU MAILLAGE SQUELETTE DE LA STRUCTURE GLOBALE
 #
 SQUEL=DEFI_SQUELETTE(  MODELE_GENE=MODEGE,SOUS_STRUC=(
                             _F( NOM = 'CARRE1',
-                                        TOUT = 'OUI'),
+                                GROUP_MA='TOUT'
+                                 ),
                             _F( NOM = 'CARRE2',
                                         GROUP_MA = 'CALCUL'),
                             _F( NOM = 'CARRE3',

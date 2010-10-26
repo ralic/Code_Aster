@@ -1,6 +1,6 @@
       SUBROUTINE MFCHAC(FID,CHA,TYPE,COMP,UNIT,NCOMP,CRET)
 !           CONFIGURATION MANAGEMENT OF EDF VERSION                  
-!& MODIF MFCHAC ECHANGE  DATE 19/10/2010   AUTEUR COURTOIS M.COURTOIS 
+!& MODIF MFCHAC ECHANGE  DATE 25/10/2010   AUTEUR COURTOIS M.COURTOIS 
 ! ================================================================== 
 ! COPYRIGHT (C) 1991 - 2010  EDF R&D              WWW.CODE-ASTER.ORG 
 !                                                                    
@@ -20,14 +20,23 @@
       IMPLICIT NONE
       CHARACTER*(*) CHA,COMP(*),UNIT(*)
       INTEGER FID, NCOMP, CRET, TYPE
+#ifdef _DISABLE_MED
+      CALL U2MESS('F','FERMETUR_2')
+#else
+! BEGIN MED
+#ifdef _USE_MED_SHORT_INT
       INTEGER*4 FID4, NCOMP4, CRET4, TYPE4
-#ifndef _DISABLE_MED
+#ifdef _DEBUG_MED
+      PRINT *,'=== MFCHAC ==='
+#endif
       FID4 = FID
       NCOMP4 = NCOMP
       TYPE4 = TYPE
       CALL EFCHAC(FID4, CHA, TYPE4, COMP, UNIT, NCOMP4, CRET4)
       CRET = CRET4
 #else
-      CALL U2MESS('F','FERMETUR_2')
+      CALL EFCHAC(FID, CHA, TYPE, COMP, UNIT, NCOMP, CRET)
+#endif
+! END MED
 #endif
       END

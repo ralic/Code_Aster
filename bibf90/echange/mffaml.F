@@ -1,6 +1,6 @@
       SUBROUTINE MFFAML(FID,MAA,FAM,N,TYPENT,TYPGEO,CRET)
 !           CONFIGURATION MANAGEMENT OF EDF VERSION                  
-!& MODIF MFFAML ECHANGE  DATE 19/10/2010   AUTEUR COURTOIS M.COURTOIS 
+!& MODIF MFFAML ECHANGE  DATE 25/10/2010   AUTEUR COURTOIS M.COURTOIS 
 ! ================================================================== 
 ! COPYRIGHT (C) 1991 - 2010  EDF R&D              WWW.CODE-ASTER.ORG 
 !                                                                    
@@ -20,7 +20,11 @@
       IMPLICIT NONE
       INTEGER FID,FAM(*),N,TYPENT,TYPGEO,CRET
       CHARACTER*(*) MAA
-#ifndef _DISABLE_MED
+#ifdef _DISABLE_MED
+      CALL U2MESS('F','FERMETUR_2')
+#else
+! BEGIN MED
+#ifdef _USE_MED_SHORT_INT
       INTEGER*4 FID4, FAM4(N), N4, TYPEN4, TYPGE4, CRET4
 #ifdef _DEBUG_MED
       INTEGER IC
@@ -37,10 +41,12 @@
       CALL CONVI4(FAM, FAM4, -N)
       CRET = CRET4
 #ifdef _DEBUG_MED
-      WRITE(6,*) 'FAM=',(FAM(IC),IC=1,N)
+      WRITE(6,*) 'FAM(1..12)=',(FAM(IC),IC=1,MIN(12,N))
       PRINT *,'CRET=',CRET
 #endif
 #else
-      CALL U2MESS('F','FERMETUR_2')
+      CALL EFFAML(FID,MAA,FAM,N,TYPENT,TYPGEO,CRET)
+#endif
+! END MED
 #endif
       END
