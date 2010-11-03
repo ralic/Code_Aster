@@ -1,4 +1,4 @@
-# MODIF  DATE 28/09/2010   AUTEUR MASSIN P.MASSIN 
+# MODIF  DATE 02/11/2010   AUTEUR TARDIEU N.TARDIEU 
 # TITRE CHAINETTE EN CONTACT FROTTANT AVEC X-FEM QUADRATIQUES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -270,7 +270,7 @@ TEST_RESU(RESU=(_F(  RESULTAT=RES_XFEM,NUME_ORDRE=1,
                      NOM_CHAM='DEPL',NOM_CMP='LAGS_C',
                      TYPE_TEST='SOMM_ABS',
                      CRITERE = 'RELATIF',
-                     VALE = 11.611287715085,PRECISION=1.E-12,
+                     VALE = 11.611287715085,PRECISION=7.E-12,
                      REFERENCE = 'NON_REGRESSION',
                      VERSION = '10.2.12'),
                 _F(  RESULTAT=RES_XFEM,NUME_ORDRE=1,

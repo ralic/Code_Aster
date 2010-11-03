@@ -2,7 +2,7 @@
      &                                   DEPSM,VIM,VIP,SIG,DSIDEP,IRET)
 C =====================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 11/03/2008   AUTEUR MAHFOUZ D.MAHFOUZ 
+C MODIF ALGORITH  DATE 02/11/2010   AUTEUR MEUNIER S.MEUNIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -46,9 +46,9 @@ C OUT SIGP    CONTRAINTES EN T+
 C OUT DSIDEP  MATRICE TANGENTE      
 C OUT IRET    CODE RETOUR (0 = OK)
 C ======================================================================
-      INTEGER      TYPEDP,NDT,NDI,NVI
-      REAL*8       MATERF(5,2),DEPS(6)
-      CHARACTER*2  CODRET
+      INTEGER      NBMAT,TYPEDP,NDT,NDI,NVI
+      PARAMETER    (NBMAT  = 5 )
+      REAL*8       MATERF(NBMAT,2),DEPS(6)
       CHARACTER*8  MOD
 C ======================================================================
       COMMON /TDIM/   NDT, NDI
@@ -60,7 +60,7 @@ C ======================================================================
 C ======================================================================
 C --- RETRAIT DE LA DEFORMATION DUE A LA DILATATION THERMIQUE ----------
 C ======================================================================
-      CALL DPDEDI(MATERF, TD, TF, TR, DEPSM, DEPS)
+      CALL DPVPDI(NBMAT,MATERF, TD, TF, TR, DEPSM, DEPS)
 C ======================================================================
       IF (TYPEDP.EQ.1) THEN
 C ======================================================================

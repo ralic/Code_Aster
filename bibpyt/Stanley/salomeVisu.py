@@ -1,4 +1,4 @@
-#@ MODIF salomeVisu Stanley  DATE 26/05/2010   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF salomeVisu Stanley  DATE 02/11/2010   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -262,7 +262,7 @@ class ISOVALEURS( VISU ):
         result = None
         type_champ = cata[selection.nom_cham].type
 
-        if type_champ == 'ELGA' or type_champ == 'ELNO' :
+        if type_champ == 'ELGA' or type_champ == 'ELNO' or type_champ == 'ELEM':
             result = Visu.CELL 
         elif type_champ == 'NOEU':
             result = Visu.NODE

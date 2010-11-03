@@ -1,4 +1,4 @@
-# MODIF  DATE 07/04/2009   AUTEUR FOURNIER I.FOURNIER 
+# MODIF  DATE 03/11/2010   AUTEUR BOITEAU O.BOITEAU 
 # TITRE SOUS-STRUCTURATION DYNAMIQUE : PLAQUE MINCE APPUYEE SUR SES BORDS
 # perf006b.para = tps_job 2000 mem_job 1150Mo ncpus 1 liste_test P
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -195,6 +195,7 @@ RESGEN=MODE_ITER_SIMULT(MATR_A=RIGGEN,
                                       STOP_ERREUR='OUI',
                                       STURM='OUI',
                                       SEUIL=5E-04),
+                    SOLVEUR=_F(METHODE='MUMPS',PCENT_PIVOT=50,NPREC=9),
                         CALC_FREQ=_F(OPTION='PLUS_PETITE',
                                      NMAX_FREQ=12,),);
 

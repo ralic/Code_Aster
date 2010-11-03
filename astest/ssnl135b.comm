@@ -1,4 +1,4 @@
-# MODIF  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
+# MODIF  DATE 03/11/2010   AUTEUR ABBAS M.ABBAS 
 # RESPONSABLE PEYRARD C.PEYRARD
 # TITRE DETERMINATION DES CHARGES DE RUINE DE LA CONSOLE MEKELEC
 # ssnl135b.para = tps_job 230 mem_job 128Mo ncpus 1 liste_test S
@@ -632,6 +632,7 @@ DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = TEMPS),
 MEKEFOR=STAT_NON_LINE(MODELE=MO,
                       CHAM_MATER=CHMAT,
                       CARA_ELEM=CAREL,
+                      INFO = 1,
                       EXCIT=(_F(CHARGE=LIAISON,),
                              _F(CHARGE=DEPLT,),
                              _F(CHARGE=FORCT,
@@ -649,7 +650,7 @@ MEKEFOR=STAT_NON_LINE(MODELE=MO,
                       NEWTON=_F(MATRICE='TANGENTE',
                                 REAC_ITER=1,),
                       PILOTAGE=_F(TYPE='LONG_ARC',
-                                  COEF_MULT=10.0,
+                                  COEF_MULT=20.0,
                                   SELECTION='ANGL_INCR_DEPL',
                                   GROUP_NO='MEKELEC',
                                   NOM_CMP=('DX','DY','DZ',),),

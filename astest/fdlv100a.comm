@@ -1,4 +1,4 @@
-# MODIF  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 03/11/2010   AUTEUR BOITEAU O.BOITEAU 
 # TITRE PISTON COUPLE A UNE COLONNE DE FLUIDE INCOMPRESSIBLE
 # fdlv100a.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -127,6 +127,7 @@ MASTOT=COMB_MATR_ASSE( COMB_R=(  _F( MATR_ASSE = MGENE,
                                       COEF_R = 1.)))
 
 MODHUMI=MODE_ITER_SIMULT( MATR_A=RIGGEN,  MATR_B=MASTOT,
+                         SOLVEUR=_F(METHODE='LDLT'),
                              CALC_FREQ=_F( OPTION = 'PLUS_PETITE',
                                         NMAX_FREQ = 1)
                             )

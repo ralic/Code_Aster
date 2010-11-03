@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF dll_register supervis  DATE 24/08/2010   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF dll_register supervis  DATE 02/11/2010   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2010  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -61,9 +61,9 @@ int libsymb_register(PyObject* dict, const char* libname, const char* symbname,
                 PYDBG("new dict = ", dict)
     } else {
                 PYDBG("error during registering : ", key)
-        Py_XDECREF(key);
-        Py_XDECREF(value);
     }
+    Py_XDECREF(key);
+    Py_XDECREF(value);
     return iret;
 }
 
@@ -118,9 +118,9 @@ void libsymb_apply_on_all(PyObject* dict, void (*function)(void *handle), int re
      */
     PyObject *key, *value, *ihand;
     void *pt;
+    Py_ssize_t pos = 0;
 
     if ( ! dict ) return;
-    Py_ssize_t pos = 0;
                 PYDBG("dict = ", dict)
     while ( PyDict_Next(dict, &pos, &key, &value) ) {
                 PYDBG("callback function called for key : ", key)

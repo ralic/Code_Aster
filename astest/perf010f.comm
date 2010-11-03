@@ -1,4 +1,4 @@
-# MODIF  DATE 09/03/2010   AUTEUR DESOZA T.DESOZA 
+# MODIF  DATE 02/11/2010   AUTEUR SELLENET N.SELLENET 
 # TITRE CALCUL DE PERFORMANCE : DIABOLO PLEIN
 # perf010f.para = tps_job 2000 mem_job 6500Mo ncpus 1 liste_test P
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -111,7 +111,7 @@ RESU=MECA_STATIQUE(MODELE=MO,
                    SOLVEUR=_F(METHODE='MUMPS',
                               OUT_OF_CORE='OUI',
                               RESI_RELA=-1.0,
-                              PCENT_PIVOT=30,
+                              PCENT_PIVOT=50,
                               MATR_DISTRIBUEE='OUI',
                               ),
                    INFO=1,);

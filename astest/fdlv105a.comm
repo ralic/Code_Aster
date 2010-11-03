@@ -1,5 +1,6 @@
-# MODIF  DATE 08/12/2008   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 03/11/2010   AUTEUR BOITEAU O.BOITEAU 
 # TITRE PISTON AXISYMETRIQUE VIBRANT DANS UN FLUIDE INCOMPRESSIBLE
+# fdlv105a.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -161,6 +162,7 @@ MASTOT=COMB_MATR_ASSE( COMB_R=(  _F( MATR_ASSE = MGENE,
                                       COEF_R = 1.)))
 
 MODHUMI=MODE_ITER_SIMULT( MATR_A=RIGGEN,  MATR_B=MASTOT,
+                         SOLVEUR=_F(METHODE='LDLT'),
                              CALC_FREQ=_F( OPTION = 'BANDE',
                                         FREQ = (1.,100.,))
                             )

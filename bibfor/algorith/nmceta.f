@@ -6,7 +6,7 @@
      &                  PILCVG,RESIDU)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION 
-C MODIF ALGORITH  DATE 16/03/2010   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 03/11/2010   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -202,10 +202,10 @@ C
       IF (NBEFFE.EQ.2) THEN
         CALL NMCESE(MODELE,NUMEDD,MATE  ,CARELE,COMREF,
      &              COMPOR,LISCHA,CARCRI,FONACT,DEFICO,
-     &              ITERAT,SDNURO,VALINC,SOLALG,VEELEM,
-     &              VEASSE,SDTIME,OFFSET,TYPSEL,LICITE,
-     &              RHO   ,ETA   ,ETAF  ,RESIDU,LDCCVG,
-     &              PILCVG)
+     &              ITERAT,SDNURO,SDPILO,VALINC,SOLALG,
+     &              VEELEM,VEASSE,SDTIME,OFFSET,TYPSEL,
+     &              LICITE,RHO   ,ETA   ,ETAF  ,RESIDU,
+     &              LDCCVG,PILCVG)
       ELSEIF (NBEFFE.EQ.1) THEN
         ETAF   = ETA(1)
         PILCVG = LICITE(1)

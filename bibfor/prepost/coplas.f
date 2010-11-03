@@ -1,13 +1,14 @@
-      SUBROUTINE COPLAS( TEMPA, K1A, K1B, MATREV, LREV, DEKLAG,
+      SUBROUTINE COPLAS( TEMPA, K1A, K1B, MATREV, LREV, 
+     &                   DEKLAG, PRODEF, ORIDEF,
      &                   KAL, KBL, DKMA, DKMB, K1ACP, K1BCP )
 C
       IMPLICIT      NONE
       REAL*8        TEMPA, KAL, KBL, K1A, K1B, LREV, DEKLAG
-      REAL*8        DKMA, DKMB, K1ACP, K1BCP
-      CHARACTER*8   MATREV
+      REAL*8        DKMA, DKMB, K1ACP, K1BCP, PRODEF
+      CHARACTER*8   MATREV, ORIDEF
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 19/02/2008   AUTEUR MACOCCO K.MACOCCO 
+C MODIF PREPOST  DATE 02/11/2010   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -69,7 +70,7 @@ C ======================================================================
       INTEGER      ITOT13, ITOT14, ITOT15
       REAL*8       SIGMA, TEMP1, TEMP2, SIGMA1, SIGMA2, REST, PENT
       REAL*8       TEMPDI, LAMB1, LAMB2, TEMPD, COEF1, COEF2, RYA, PI
-      REAL*8       BETAA, BETAB, R8PI, DK
+      REAL*8       BETAA, BETAB, R8PI, DK, CA, CB, VAL1, VAL2
       CHARACTER*1  K1BID
       CHARACTER*8  PROLN, K8B
       CHARACTER*16 PHENOM, PROLG
@@ -238,24 +239,41 @@ C ======================================================================
       CALL U2MESS('F','PREPOST_10')
  30   CONTINUE
       RYA = (K1A * K1A)/(6 * PI * SIGMA * SIGMA)
-      BETAA = 1 + 0.3D0 * TANH(36*RYA/(LREV+DEKLAG))
-      BETAB = 1 + 0.5D0 * TANH(36*RYA/(LREV+DEKLAG))
-      IF (K1A.GT.KAL) THEN
-         DK = BETAA*K1A - K1A
-         IF (DK.GT.DKMA) THEN
-            DKMA = DK
+      IF (ORIDEF.EQ.'LONGI') THEN
+         CA = 0.165D0*LOG(PRODEF*1000)
+         CB = 0.465D0*(1+PRODEF/100*1000)
+      ELSE
+         CA = 0.5D0
+         CB = 0.5D0
+      ENDIF
+      BETAA = 1 + CA * TANH(36*RYA/(LREV+DEKLAG))
+      BETAB = 1 + CB * TANH(36*RYA/(LREV+DEKLAG))
+      IF (K1A.LT.KAL) THEN
+         K1ACP = K1A + DKMA
+      ELSE
+         VAL1 = BETAA*K1A
+         VAL2 = K1A + DKMA
+         IF (VAL1.GT.VAL2) THEN
+            K1ACP = VAL1
+            DKMA = K1ACP - K1A
+         ELSE
+            K1ACP = K1A + DKMA
          ENDIF
       ENDIF
       KAL = K1A
-      K1ACP = K1A + DKMA
-      IF (K1B.GT.KBL) THEN
-         DK = BETAB*K1B - K1B
-         IF (DK.GT.DKMB) THEN
-            DKMB = DK
+      IF (K1B.LT.KBL) THEN
+         K1BCP = K1B + DKMB
+      ELSE
+         VAL1 = BETAB*K1B
+         VAL2 = K1B + DKMB
+         IF (VAL1.GT.VAL2) THEN
+            K1BCP = VAL1
+            DKMB = K1BCP - K1B
+         ELSE
+            K1BCP = K1B + DKMB
          ENDIF
       ENDIF
       KBL = K1B
-      K1BCP = K1B + DKMB
 C ======================================================================
       CALL JEDEMA()
 C ======================================================================

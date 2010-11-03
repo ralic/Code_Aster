@@ -1,8 +1,8 @@
       SUBROUTINE NMCEAI(NUMEDD,DEPDEL,DEPPR1,DEPPR2,DEPOLD,
-     &                  RHO   ,ETA   ,F     )
+     &                  SDPILO,RHO   ,ETA   ,F     )
 C 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 23/09/2008   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 03/11/2010   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -23,7 +23,7 @@ C RESPONSABLE ABBAS M.ABBAS
 C
       IMPLICIT NONE
       CHARACTER*24  NUMEDD
-      CHARACTER*19  DEPDEL,DEPOLD,DEPPR1,DEPPR2
+      CHARACTER*19  SDPILO,DEPDEL,DEPOLD,DEPPR1,DEPPR2
       REAL*8        ETA,RHO,F
 C
 C ----------------------------------------------------------------------
@@ -36,6 +36,7 @@ C ----------------------------------------------------------------------
 C
 C
 C IN  NUMEDD : NUME_DDL
+C IN  SDPILO : SD PILOTAGE
 C IN  DEPDEL : INCREMENT DE DEPLACEMENT DEPUIS DEBUT PAS DE TEMPS
 C IN  DEPOLD : INCREMENT DE DEPLACEMENT PAS DE TEMPS PRECEDENT
 C IN  DEPPR1 : INCREMENT DE DEPLACEMENT K-1.F_DONNE
@@ -64,9 +65,11 @@ C
 C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
 C
       CHARACTER*8   K8BID
-      REAL*8        SCA ,NODUP 
+      REAL*8        SCA ,NODUP ,COEF
       INTEGER       JDEPDE,JDU0,JDU1,JDEPOL
       INTEGER       NEQ,IRET,I
+      CHARACTER*19  SELPIL
+      INTEGER       JPLSL
 C
 C ----------------------------------------------------------------------
 C
@@ -79,6 +82,11 @@ C
       F      = 0.D0
       CALL DISMOI('F','NB_EQUA',NUMEDD,'NUME_DDL',NEQ,K8BID,IRET)
 C
+C --- ACCES VECTEUR DE SELCTION CMP DX/DY/DZ
+C      
+      SELPIL = SDPILO(1:14)//'.PLSL'
+      CALL JEVEUO(SELPIL(1:19)//'.VALE','L',JPLSL)
+C
 C --- ACCES AUX VECTEURS SOLUTIONS
 C      
       CALL JEVEUO(DEPDEL(1:19)//'.VALE','L',JDEPDE)
@@ -89,14 +97,16 @@ C
 C --- CALCUL DE L'ANGLE
 C      
       DO 25 I = 1,NEQ
-       SCA    = SCA    + ZR(JDEPOL+I-1)*(ZR(JDEPDE+I-1)
-     &                 + RHO*ZR(JDU0+I-1)
-     &                 + ETA*ZR(JDU1+I-1))
+       COEF   = ZR(JPLSL-1+I)
+       SCA    = SCA    + (ZR(JDEPOL+I-1)*(ZR(JDEPDE+I-1)
+     &                 +  RHO*ZR(JDU0+I-1)
+     &                 +  ETA*ZR(JDU1+I-1)))*COEF
        NODUP  = NODUP  + (ZR(JDEPDE+I-1)
      &                 + RHO*ZR(JDU0+I-1)
-     &                 + ETA*ZR(JDU1+I-1))**2
+     &                 + ETA*ZR(JDU1+I-1))**2    
  25   CONTINUE
 C   
+
       F   = SCA / SQRT(NODUP)
       F   = -F
 C

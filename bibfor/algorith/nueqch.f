@@ -1,7 +1,8 @@
-      SUBROUTINE NUEQCH(CHAMNO,NBNO,NUMNO,NOMCMP,NUEQ)
+      SUBROUTINE NUEQCH(ERREUR,CHAMNO,NOMA,NBNO  ,NUMNO ,NOMCMP,
+     &                  NUEQ  )
 C      
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/10/2009   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 03/11/2010   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,10 +19,12 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C      IMPLICIT REAL*8 (A-H,O-Z)
-      IMPLICIT       NONE
+C RESPONSABLE ABBAS M.ABBAS
+C 
+      IMPLICIT     NONE
       CHARACTER*19 CHAMNO
-      CHARACTER*8  NOMCMP(*)
+      CHARACTER*8  NOMCMP(*),NOMA
+      CHARACTER*1  ERREUR
       INTEGER      NBNO,NUMNO(*),NUEQ(*)
 C 
 C ----------------------------------------------------------------------
@@ -35,6 +38,9 @@ C ----------------------------------------------------------------------
 C
 C      
 C IN  CHAMNO  : CHAM_NO A MODIFIER
+C IN  ERREUR  : 'F' SI UNE COMPOSANTE ABSENTE -> ERREUR
+C               'A' SI UNE COMPOSANTE ABSENTE -> ALARME
+C               ' ' SI UNE COMPOSANTE ABSENTE -> RIEN
 C IN  NBNO    : NOMBRE DE NOEUDS
 C IN  NUMNO   : LISTE DES NUMEROS DE NOEUD
 C IN  NOMCMP  : LISTE DES NOMS DE COMPOSANTE
@@ -42,7 +48,7 @@ C OUT NUEQ    : LISTE DES POSITIONS DANS LE .VALE
 C
 C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ---------------------------
 C
-      CHARACTER*32       JEXNOM
+      CHARACTER*32       JEXNOM,JEXNUM
       INTEGER            ZI
       COMMON  / IVARJE / ZI(1)
       REAL*8             ZR
@@ -61,49 +67,60 @@ C
 C ---------- FIN  DECLARATIONS  NORMALISEES  JEVEUX -------------------
 C
       CHARACTER*19 PFCHNO
-      CHARACTER*8  NOMGD,KBID
-      INTEGER      IBID,IER,NBCMPX,LONK8,ICO,ITROU
-      INTEGER      I,K,IDC,NEC,INDIK8
-      INTEGER      JK8,JNUEQ,JPRNO
+      CHARACTER*8  NOMGD
+      INTEGER      IBID,IER,NBCMPX,NCMP,ICO,ITROU
+      INTEGER      ICMP,INO,IDC,NEC,INDIK8
+      INTEGER      JCMP,JNUEQ,JPRNO
       LOGICAL      EXIS,EXISDG
-      CHARACTER*8  K8BID
-      CHARACTER*24 VALK
+      CHARACTER*8  K8BID,NOM,NOMNOE
 C
 C ----------------------------------------------------------------------
 C
       CALL JEMARQ()
-      CALL DISMOI('F','NOM_GD',      CHAMNO,'CHAM_NO',IBID,NOMGD , IER)
+C
+      CALL DISMOI('F','NOM_GD',CHAMNO,'CHAM_NO' ,IBID  ,NOMGD,IER)
+      CALL DISMOI('F','NB_EC' ,NOMGD, 'GRANDEUR',NEC   ,K8BID,IER)
+      CALL DISMOI('F','NB_CMP_MAX',  NOMGD, 'GRANDEUR',NBCMPX,K8BID,IER)
+      CALL JEVEUO(JEXNOM('&CATA.GD.NOMCMP',NOMGD),'L',JCMP)
+      CALL JELIRA(JEXNOM('&CATA.GD.NOMCMP',NOMGD),'LONMAX',NCMP, K8BID)
+C      
       CALL DISMOI('F','PROF_CHNO',CHAMNO,'CHAM_NO',IBID,PFCHNO, IER)
-      CALL DISMOI('F','NB_EC',       NOMGD, 'GRANDEUR',NEC ,KBID,   IER)
-      CALL DISMOI('F','NB_CMP_MAX',  NOMGD, 'GRANDEUR',NBCMPX,KBID, IER)
-      CALL JEVEUO(JEXNOM('&CATA.GD.NOMCMP',NOMGD),'L',JK8)
-      CALL JELIRA(JEXNOM('&CATA.GD.NOMCMP',NOMGD),'LONMAX',LONK8, K8BID)
       CALL JEVEUO(PFCHNO//'.PRNO','L',JPRNO)
       CALL JEVEUO(PFCHNO//'.NUEQ','L',JNUEQ)
 C
-      DO 10 K = 1,NBNO
-        IDC = INDIK8(ZK8(JK8),NOMCMP(K),1,LONK8)
-        VALK = NOMCMP(K)
-        ICO = 0
-        DO 100 I=1,NBCMPX
-          IF(EXISDG(ZI(JPRNO-1+(NEC+2)*(NUMNO(K)-1)+2+1),I)) THEN
-            ICO = ICO + 1
-            EXIS = .TRUE.
+      DO 10 INO = 1,NBNO
+        NOM    = NOMCMP(INO)
+        IDC    = INDIK8(ZK8(JCMP),NOM   ,1,NCMP)
+        ICO    = 0
+        DO 100 ICMP = 1,NBCMPX
+          IF (EXISDG(ZI(JPRNO-1+(NEC+2)*(NUMNO(INO)-1)+2+1),ICMP)) THEN
+            ICO    = ICO + 1
+            EXIS   = .TRUE.
           ELSE
-            EXIS = .FALSE.
+            EXIS   = .FALSE.
           ENDIF
-          IF ( I .EQ. IDC ) THEN
+          IF ( ICMP .EQ. IDC ) THEN
             IF ( EXIS ) THEN
               ITROU = ICO
               GOTO 101
-            ELSE      
-              CALL U2MESK('F', 'MECANONLINE5_50',1,VALK)
+            ELSE
+              ITROU = 0
+              IF (ERREUR.NE. ' ') THEN 
+                CALL U2MESK(ERREUR, 'MECANONLINE5_50',1,NOM)
+              ENDIF
             ENDIF
           ENDIF
  100    CONTINUE
-        CALL U2MESK('F', 'MECANONLINE5_50',1,VALK)
+        IF (ERREUR.NE. ' ') THEN 
+          CALL U2MESK(ERREUR, 'MECANONLINE5_50',1,NOM)
+        ENDIF  
  101    CONTINUE
-        NUEQ(K)=ZI(JNUEQ-1+ZI(JPRNO-1+(NEC+2)*(NUMNO(K)-1)+1)+ITROU-1)
+        IF (ITROU.EQ.0) THEN
+          NUEQ(INO) = 0
+        ELSE
+          NUEQ(INO) = ZI(JNUEQ-1+ZI(JPRNO-1+
+     &               (NEC+2)*(NUMNO(INO)-1)+1)+ITROU-1)
+        ENDIF  
  10   CONTINUE
 C 
       CALL JEDEMA()

@@ -2,7 +2,7 @@
       IMPLICIT   NONE
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
+C MODIF PREPOST  DATE 02/11/2010   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -147,7 +147,8 @@ C --- AJOUT DE CORRECTION PLASTIQUE AU CALCUL DES FACTEURS -------------
 C --- D'INTENSITE DE CONTRAINTES ---------------------------------------
 C ======================================================================
             CALL COPLAS( TEMPA, K1A, K1B, MATREV, LREV, DEKLAG,
-     +                   KAL, KBL, DKMA, DKMB, K1ACP, K1BCP )
+     +                   PRODEF, ORIDEF, KAL, KBL, DKMA, DKMB,
+     +                   K1ACP, K1BCP )
 C ======================================================================
 C --- RECUPERATION DES TEMPERATURES AUX POINTES DE LA FISSURE ----------
 C ======================================================================

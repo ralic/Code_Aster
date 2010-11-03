@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF astermodule supervis  DATE 19/10/2010   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF astermodule supervis  DATE 02/11/2010   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -2036,7 +2036,7 @@ PyObject *args;
         INTEGER ishf=0;
         INTEGER ilng=0;
         INTEGER ctype=0;
-        int i, ksize;
+        int i, ksize=0;
         char *iaddr;
 
         if (!PyArg_ParseTuple(args, "s|ll:getvectjev",&nomsd,&ishf,&ilng)) return NULL;
@@ -2145,7 +2145,7 @@ PyObject *args;
         INTEGER lcon;
         INTEGER ctype=0;
         INTEGER *val, nbval;
-        int i, ksize;
+        int i, ksize=0;
         char *iaddr;
         void *malloc(size_t size);
 
@@ -2236,6 +2236,8 @@ PyObject *args;
                     }
                     PyDict_SetItem(dico,key,tup);
                 }
+                Py_XDECREF(key);
+                Py_XDECREF(tup);
          }
          CALL_JEDETR("&&GETCON.PTEUR_NOM");
          CALL_JEDEMA();
@@ -2475,7 +2477,9 @@ PyObject *args;
          }
        }
 
-     PyDict_SetItem(dico,key,liste);
+       PyDict_SetItem(dico,key,liste);
+       Py_XDECREF(key);
+       Py_XDECREF(liste);
      }
 
      free(liord);
@@ -2544,7 +2548,9 @@ PyObject *args;
                 }
             }
             PyDict_SetItem(dico,key,liste);
-          };
+            Py_XDECREF(key);
+            Py_XDECREF(liste);
+          }
 
           free(ival);
           free(rval);

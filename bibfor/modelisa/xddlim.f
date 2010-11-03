@@ -10,7 +10,7 @@
       CHARACTER*19 LISREL
 C ---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 26/10/2010   AUTEUR DESOZA T.DESOZA 
+C MODIF MODELISA  DATE 02/11/2010   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -110,6 +110,7 @@ C --- NOMBRE DE FISSURES VUES PAR LA MAILLE
       NFISS = ZI(JSTNOD-1+5+4*(NUMA-1)+2)
 C
       IF (NFISS.GT.1) THEN
+        CH4 = '&&XDDLIM.CHS4'
         CALL CELCES(MODELE//'.FISSNO','V',CH4)
         CALL JEVEUO(CH4//'.CESV','L',JFISNV)
         CALL JEVEUO(CH4//'.CESL','L',JFISNL)

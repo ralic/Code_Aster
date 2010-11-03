@@ -1,4 +1,4 @@
-#@ MODIF pilotage Messages  DATE 05/10/2010   AUTEUR ABBAS M.ABBAS 
+#@ MODIF pilotage Messages  DATE 03/11/2010   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -24,7 +24,7 @@ def _(x) : return x
 cata_msg = {
 
 1  : _("""
- Pas de pilotage PRED_ELAS possible en C_PLAN.
+ Le pilotage de type PRED_ELAS n'est pas possible en modélisation C_PLAN.
 """),
 
 2  : _("""
@@ -40,35 +40,27 @@ cata_msg = {
 """),
 
 48 : _("""
- ETA_PILO_MAX doit etre inférieur à ETA_PILO_R_MAX
+ ETA_PILO_MAX doit être inférieur à ETA_PILO_R_MAX
 """),
 
 49 : _("""
- ETA_PILO_MIN doit etre supérieur à ETA_PILO_R_MIN
+ ETA_PILO_MIN doit être supérieur à ETA_PILO_R_MIN
 """),
 
 50 : _("""
  Il ne faut pas plus d'un noeud pour le pilotage DDL_IMPO.
 """),
 
-51 : _("""
- Il ne faut pas plus d'un groupe de noeud pour le pilotage DDL_IMPO.
-"""),
-
-52 : _("""
- Il ne faut pas plus d'un noeud dans le groupe pour le pilotage DDL_IMPO.
-"""),
-
-53 : _("""
- Il faut préciser un groupe de noeuds pour le pilotage LONG_ARC.
-"""),
-
-54 : _("""
- Le groupe de noeud  %(k1)s est vide.
-"""),
-
 55 : _("""
  La liste des composantes est vide pour le pilotage LONG_ARC.
+"""),
+
+56 : _("""
+ Il faut une et une seule composante de nom NOM_CMP pour le pilotage de type DDL_IMPO.
+"""),
+
+57 : _("""
+ Il faut plus d'un noeud pour le pilotage LONG_ARC.
 """),
 
 83 : _("""
