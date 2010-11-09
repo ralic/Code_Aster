@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 12/05/2009   AUTEUR DESROCHES X.DESROCHES 
+#& MODIF COMMANDE  DATE 09/11/2010   AUTEUR DELMAS J.DELMAS 
 # ======================================================================
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,7 +20,7 @@
 POST_RELEVE_T=OPER(nom="POST_RELEVE_T",op=51,sd_prod=table_sdaster,reentrant='f',
             fr="Extraire des valeurs de composantes de champs de grandeurs pour y effectuer des calculs (moyenne,invariants,..)"
                +" ou pour les exprimer dans d'autres repères",
-            docu="U4.81.21",UIinfo={"groupes":("Post traitements",)},
+            docu="U4.81.21",UIinfo={"groupes":("Post-traitements","Résultats et champs",)},
 
          ACTION          =FACT(statut='o',max='**',
                                regles=(UN_PARMI('RESULTAT','CHAM_GD'),), 

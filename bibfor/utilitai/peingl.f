@@ -5,7 +5,7 @@
       CHARACTER*(*) RESU,MODELE,MATE,CARA,LCHAR(1),OPTIOZ
 C.======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 19/10/2010   AUTEUR DELMAS J.DELMAS 
+C MODIF UTILITAI  DATE 08/11/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -392,7 +392,7 @@ C CREATION D'UN CHAMP DE VARIABLES INTERNES NUL
               IVARI=0
               CHBID='&&PEINGL.VARINUL'
               CALL CALCUL('S','TOU_INI_ELGA',LIGRMO,1,CHGEOM,'PGEOMER',
-     &                  1,CHBID,'PVARI_R','V')
+     &                  1,CHBID,'PVARI_R','V','OUI')
            END IF
         END IF
 
@@ -473,7 +473,7 @@ C      --------------------------------
         END IF
 
         CALL CALCUL('S',OPTION,LIGREL,NBIN,LCHIN,LPAIN,NBOUT,LCHOUT,
-     &              LPAOUT,'V')
+     &              LPAOUT,'V','OUI')
 
 C ---  BOUCLE SUR LES OCCURENCES DU MOT-CLE INDIC_ENER :
 C      -----------------------------------------------

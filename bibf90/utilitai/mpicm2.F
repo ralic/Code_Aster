@@ -1,6 +1,6 @@
       SUBROUTINE MPICM2(OPTMPI,NOMJEV)
 !           CONFIGURATION MANAGEMENT OF EDF VERSION                  
-!& MODIF MPICM2 UTILITAI  DATE 16/02/2010   AUTEUR PELLET J.PELLET 
+!& MODIF MPICM2 UTILITAI  DATE 08/11/2010   AUTEUR PELLET J.PELLET 
 ! ================================================================== 
 ! COPYRIGHT (C) 1991 - 2010  EDF R&D              WWW.CODE-ASTER.ORG 
 !                                                                    
@@ -125,6 +125,11 @@ C     ---------------------------------
           CALL DCOPY(N4,ZR(JNOMJV),1,ZR(JTRAV),1)
           CALL MPI_REDUCE(ZR(JTRAV),ZR(JNOMJV),N4,LR8,MPI_SUM,0,
      &                    MPI_COMM_WORLD,IERMPI)
+        ELSEIF (TYPSCA.EQ.'C') THEN
+          CALL WKVECT(NOTRAV,'V V C',NLONG,JTRAV)
+          CALL ZCOPY(N4,ZC(JNOMJV),1,ZC(JTRAV),1)
+          CALL MPI_REDUCE(ZC(JTRAV),ZC(JNOMJV),N4,LC8,MPI_SUM,0,
+     &                    MPI_COMM_WORLD,IERMPI)
         ELSE IF (TYPSCA.EQ.'I') THEN
           CALL WKVECT(NOTRAV,'V V I',NLONG,JTRAV)
           DO 1, K=1,N4
@@ -167,6 +172,11 @@ C       REMARQUE : NOMJEV PEUT ETRE UNE COLLECTION
             CALL WKVECT(NOTRAV,'V V R',NLONG,JTRAV)
             CALL DCOPY(N4,ZR(JNOMJV),1,ZR(JTRAV),1)
             CALL MPI_ALLREDUCE(ZR(JTRAV),ZR(JNOMJV),N4,LR8,MPI_SUM,
+     &                      MPI_COMM_WORLD,IERMPI)
+          ELSEIF (TYPSCA.EQ.'C') THEN
+            CALL WKVECT(NOTRAV,'V V C',NLONG,JTRAV)
+            CALL ZCOPY(N4,ZC(JNOMJV),1,ZC(JTRAV),1)
+            CALL MPI_ALLREDUCE(ZC(JTRAV),ZC(JNOMJV),N4,LC8,MPI_SUM,
      &                      MPI_COMM_WORLD,IERMPI)
           ELSE IF (TYPSCA.EQ.'I') THEN
             CALL WKVECT(NOTRAV,'V V I',NLONG,JTRAV)

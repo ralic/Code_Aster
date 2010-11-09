@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 13/10/2009   AUTEUR COURTOIS M.COURTOIS 
+#& MODIF COMMANDE  DATE 09/11/2010   AUTEUR DELMAS J.DELMAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -28,7 +28,7 @@ def dyna_line_harm_prod(MATR_RIGI,**args):
 DYNA_LINE_HARM=OPER(nom="DYNA_LINE_HARM",op=  60,sd_prod=dyna_line_harm_prod,
                     fr="Calcul de la réponse dynamique complexe d'un système à une excitation harmonique",
                     reentrant='f',
-            UIinfo={"groupes":("Résolution",)},
+            UIinfo={"groupes":("Résolution","Dynamique",)},
          regles=(PRESENT_ABSENT('AMOR_REDUIT','MATR_AMOR'),
                  PRESENT_ABSENT('AMOR_REDUIT','LIST_AMOR'),
                  PRESENT_ABSENT('MATR_AMOR','LIST_AMOR'),

@@ -5,7 +5,7 @@
       CHARACTER*8    MODEL
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 21/06/2010   AUTEUR MACOCCO K.MACOCCO 
+C MODIF ALGORITH  DATE 08/11/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -81,7 +81,7 @@ C-----------------------------------------------------------------------
       LCHOUT(1)=CELLC
 
       CALL CALCUL('S','CFL_XFEM',LIGREL,1,LCHIN,LPAIN,1,LCHOUT,LPAOUT,
-     &            'V')
+     &            'V','OUI')
 
 C   ON VA CHERCHER LE MINIMUM DE CELLC SUR LES ELEMENTS -->  LCMIN
       CALL MEMAX('MIN',CELLC,'X1',1,'X1',LCMIN,0,IBID)

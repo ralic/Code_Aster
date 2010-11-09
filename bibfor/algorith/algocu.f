@@ -2,7 +2,7 @@
      &                  RESU  )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 08/11/2010   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -96,7 +96,7 @@ C DELTA  : INCREMENT DONNE PAR CHAQUE ITERATION DE CONTRAINTES ACTIVES.
 C          C'EST D/K+1.
 
 C
-      CALL INFNIV(IFM,NIV)
+      CALL INFDBG('CONTACT',IFM,NIV)
       
       IF(NIV.GE.2) THEN
         WRITE (IFM,*) '<LIA_UNIL> <> ALGORITHME   : CONT. ACTIVES'
@@ -184,7 +184,7 @@ C ======================================================================
      &                ZR(JDELT0),VAL)
           AJEU = ZR(JAPJEU+II-1) - VAL
 
-          IF ((AJEU.LT.0.0D0).OR.(ZR(JAPJEU+II-1).LT. (0.D0))) THEN
+          IF (AJEU.LT.0.0D0) THEN
             INDIC = 0
             POSIT = NBLIAC + 1
             CALL CUTABL(INDIC,NBLIAC,AJLIAI,SPLIAI,
@@ -478,7 +478,7 @@ C
 C --- MAJ DU JEU (IL N'EST RECALCULE QU'EN DEBUT DE PAS DE TPS)
 C
 
-      DO 162 ILIAC = 1, NBLIAC
+      DO 162 ILIAC = 1, NBLIAI
         JDECAL = ZI(JPOI+ILIAC-1)
         NBDDL  = ZI(JPOI+ILIAC) - ZI(JPOI+ILIAC-1)
         CALL CALADU(NEQ,NBDDL,ZR(JAPCOE+JDECAL),ZI(JAPDDL+JDECAL),
@@ -493,6 +493,7 @@ C
       IF ( NIV .GE. 2 ) THEN
         WRITE(IFM,1002) ITER
         WRITE(IFM,1003) NBLIAC
+        CALL CUIMP1(DEFICU,RESOCU,IFM   )
       END IF
 
   999 CONTINUE

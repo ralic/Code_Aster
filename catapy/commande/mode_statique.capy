@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 20/09/2010   AUTEUR TARDIEU N.TARDIEU 
+#& MODIF COMMANDE  DATE 09/11/2010   AUTEUR DELMAS J.DELMAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,9 +19,9 @@
 # RESPONSABLE NISTOR I.NISTOR
 
 MODE_STATIQUE=OPER(nom="MODE_STATIQUE",op= 93,sd_prod=mode_meca,
-                   fr="Calcul de deformees statiques pour un déplacement, une force ou une accélération unitaire imposé",
+                   fr="Calcul de déformées statiques pour un déplacement, une force ou une accélération unitaire imposé",
                    reentrant='n',
-            UIinfo={"groupes":("Résolution",)},
+            UIinfo={"groupes":("Résolution","Dynamique",)},
             
             
          regles=(UN_PARMI('MODE_STAT','FORCE_NODALE','PSEUDO_MODE','MODE_INTERF'),

@@ -1,7 +1,7 @@
       SUBROUTINE NMCHCR (MAT,DP,PM,NDIMSI,SIGEDV,NBVAR,EPSPM,ALFAM,
      &  ALFA2M,DEUXMU,VISC,MEMO,RM,RP,QM,Q,KSIM,KSI,DT,F)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/01/2009   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 08/11/2010   AUTEUR PROIX J-M.PROIX 
 C TOLE CRP_21
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -69,7 +69,7 @@ C -----  ARGUMENTS
 C -----  VARIABLES LOCALES
            INTEGER     I
            REAL*8      R0,RINF,B,CINF,K,W,GAMMA0,AINF,C2INF ,GAMM20
-           REAL*8      ZERO,UN,DEUX,TROIS,C2P,GAMM2P,M2P,XN,VI(6)
+           REAL*8      ZERO,UN,DEUX,TROIS,C2P,GAMM2P,M2P,XN,VI(6),NNE
            REAL*8      PP,CP,GAMMAP,MP,RPPMDP,SEQ,S(6),R8MIEM,GRJEPS
            REAL*8      MUMEM,VALDEN,KVI,ETAM,Q0MEM,QMMEM,DR,DEPSP(6)
            REAL*8      CRITME,DQ,DKSI(6),XXN,PETIN(6),PETIN2(6),GQ
@@ -131,7 +131,7 @@ C --- DETERMINATION DE L'INCREMENT DES DEFORMATIONS PLASTIQUES
          DEPPEQ=0.D0
          DO 120 I = 1, NDIMSI
             DEPSP(I)=SIGEDV(I)
-     &            - (MP*DP*ALFAM(I)-M2P*DP*ALFA2M(I))/1.5D0
+     &            - (MP*ALFAM(I)-M2P*ALFA2M(I))/1.5D0
             DEPPEQ=DEPPEQ+DEPSP(I)*DEPSP(I) 
   120    CONTINUE
          DEPPEQ=SQRT(DEPPEQ*1.5D0)
@@ -159,10 +159,24 @@ C --- DETERMINATION DE L'INCREMENT DES DEFORMATIONS PLASTIQUES
                ELSE
                   DKSI(I)=0.D0
                ENDIF
-               KSI(I)=KSIM(I)+DKSI(I)
    19       CONTINUE
+C            test partie positive de <n:n*>. Utilité ?
+C            NNE=0.D0
+C            DO I=1,NDIMSI
+C            NNE=NNE+DEPSP(I)*DKSI(I)
+C            ENDDO
+C            IF (NNE.LT.0.D0) THEN
+C             DQ=0
+C             DO i=1,NDIMSI
+C             DKSI(I)=0.D0
+C             KSI(I)=KSIM(I)
+C             ENDDO
+C            ENDIF
          ENDIF   
          Q=QM+DQ
+         DO 21 I=1,NDIMSI
+            KSI(I)=KSIM(I)+DKSI(I)
+   21    CONTINUE
          GQ=QMMEM+(Q0MEM-QMMEM)*EXP(-2.D0*MUMEM*Q)
          DR=B*(GQ-RM)*DP/(1.D0+B*DP)
          RP = RM + DR
@@ -170,7 +184,7 @@ C --- DETERMINATION DE L'INCREMENT DES DEFORMATIONS PLASTIQUES
       ELSEIF (MEMO.EQ.0) THEN
          RPP     = RINF + (R0-RINF)*EXP(-B*PP)
       ENDIF   
-      
+
       SEQ = ZERO
 C POUR NORMER L'EQUATION      
       DENOM = ZERO
@@ -184,7 +198,7 @@ C
             S(I) = SIGEDV(I) -DEUX/TROIS*MP*ALFAM(I)
      &                       -DEUX/TROIS*M2P*ALFA2M(I)
             SDENOM(I) = SIGEDV(I) -DEUX/TROIS*CINF*ALFAM(I)
-     &                            -DEUX/TROIS*CINF*ALFA2M(I)
+     &                            -DEUX/TROIS*C2INF*ALFA2M(I)
         ENDIF
         SEQ  = SEQ + S(I)*S(I)
         DENOM=DENOM+SDENOM(I)*SDENOM(I)

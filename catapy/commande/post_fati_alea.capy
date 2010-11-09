@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 21/04/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+#& MODIF COMMANDE  DATE 09/11/2010   AUTEUR DELMAS J.DELMAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,7 +18,7 @@
 # ======================================================================
 # RESPONSABLE ZENTNER I.ZENTNER
 POST_FATI_ALEA=OPER(nom="POST_FATI_ALEA",op=170,sd_prod=table_sdaster,reentrant='n',
-            UIinfo={"groupes":("Post traitements",)},
+            UIinfo={"groupes":("Post-traitements","Rupture",)},
                     fr="Calculer le dommage de fatigue subi par une structure soumise à une sollicitation de type aléatoire",
          regles=(ENSEMBLE('MOMENT_SPEC_0','MOMENT_SPEC_2'),
                  PRESENT_PRESENT( 'MOMENT_SPEC_4','MOMENT_SPEC_0'),

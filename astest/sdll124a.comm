@@ -1,4 +1,4 @@
-# MODIF  DATE 11/05/2010   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 09/11/2010   AUTEUR TORKHANI M.TORKHANI 
 # RESPONSABLE TORKHANI M.TORKHANI
 # TITRE DIAGRAMME DE CAMPBELL D'UNE LIGNE D'ARBRE SIMPLIFIEE
 # sdll124a.para = tps_job 300 mem_job 128Mo ncpus 1 liste_test S
@@ -234,7 +234,7 @@ L_S=[1.];
 # ----------------------------------------------------------
 IMPR_DIAG_CAMPBELL(MAILLAGE   =mail, 
                  MODES      =l_mod,
-                 NFREQ_camp =nbF_camp,
+                 NFREQ_CAMP =nbF_camp,
                  TYP_PREC   =typ_prec, 
                  TYP_TRI    =typ_tri,
                  UNIT_FLE   = unit_fle,

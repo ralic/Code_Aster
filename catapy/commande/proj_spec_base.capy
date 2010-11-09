@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 21/04/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+#& MODIF COMMANDE  DATE 09/11/2010   AUTEUR DELMAS J.DELMAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,7 +18,7 @@
 # ======================================================================
 # RESPONSABLE ADOBES A.ADOBES
 PROJ_SPEC_BASE=OPER(nom="PROJ_SPEC_BASE",op= 146,sd_prod=table_fonction,reentrant='n',
-            UIinfo={"groupes":("Matrices/vecteurs",)},
+            UIinfo={"groupes":("Matrices et vecteurs",)},
             fr="Projecter un ou plusieurs spectres de turbulence sur une (ou plusieurs) base(s) modale(s) ",
       regles=(UN_PARMI('BASE_ELAS_FLUI','MODE_MECA','CHAM_NO'),),
          SPEC_TURB       =SIMP(statut='o',typ=spectre_sdaster,validators=NoRepeat(),max='**' ),

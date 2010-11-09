@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 13/07/2010   AUTEUR MAHFOUZ D.MAHFOUZ 
+#& MODIF COMMANDE  DATE 09/11/2010   AUTEUR DELMAS J.DELMAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -35,7 +35,7 @@ def post_gp_prod(self, TABL_GPMAX,TABL_GP, **kargs):
 POST_GP=MACRO(nom="POST_GP", op=post_gp_ops, sd_prod=post_gp_prod,
               fr="Calcul du critère énergétique Gp suite à un calcul thermo-mécanique",
               reentrant='n',
-              UIinfo={"groupes":("Post traitements",)},
+              UIinfo={"groupes":("Post-traitements","Rupture",)},
               regles=(UN_PARMI('IDENTIFICATION', 'PREDICTION'),
                       UN_PARMI('THETA_2D','THETA_3D'),
                       PRESENT_PRESENT('THETA_2D','DIRECTION'),),

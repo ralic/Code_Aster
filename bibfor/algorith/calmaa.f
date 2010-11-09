@@ -2,7 +2,7 @@
      &                  MAA)
 C--------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 03/11/2008   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 08/11/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -74,7 +74,8 @@ C--------------------D'INTERFACE -----------------------------------
       CALL WKVECT(MAA2,'V V K24',1,JLVA)
       LCHOUT(1) = MATEL(1:8)//'.ME000'
       CALL CODENT(1,'D0',LCHOUT(1) (12:14))
-      CALL CALCUL('S',OPTION,LIGRMO,1,LCHIN,LPAIN,1,LCHOUT,LPAOUT,'V')
+      CALL CALCUL('S',OPTION,LIGRMO,1,LCHIN,LPAIN,1,LCHOUT,LPAOUT,'V',
+     &               'OUI')
       ZK24(JLVA) = LCHOUT(1)
       CALL JEECRA(MAA2,'LONUTI',1,K8BID)
 

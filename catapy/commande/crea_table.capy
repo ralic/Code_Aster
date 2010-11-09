@@ -1,20 +1,20 @@
-#& MODIF COMMANDE  DATE 28/06/2010   AUTEUR FLEJOU J-L.FLEJOU 
+#& MODIF COMMANDE  DATE 09/11/2010   AUTEUR DELMAS J.DELMAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # RESPONSABLE COURTOIS M.COURTOIS
 
@@ -30,13 +30,14 @@ def crea_table_prod(TYPE_TABLE, **args):
 
 CREA_TABLE=OPER(nom="CREA_TABLE",op=36,sd_prod=crea_table_prod,
                 fr="Création d'une table à partir d'une fonction ou de deux listes",
-                reentrant='f',UIinfo={"groupes":("Table",)},
+                reentrant='f',
+                UIinfo={"groupes":("Tables",)},
 
            regles=(EXCLUS('FONCTION','LISTE','RESU'),),
 
            LISTE=FACT(statut='f',max='**',
                  fr="Creation d'une table a partir de listes",
-                 regles=(UN_PARMI('LISTE_I','LISTE_R','LISTE_K')), 
+                 regles=(UN_PARMI('LISTE_I','LISTE_R','LISTE_K')),
                         PARA     =SIMP(statut='o',typ='TXM'),
                         TYPE_K   =SIMP(statut='f',typ='TXM',defaut='K8',
                                     into=('K8','K16','K24')),
@@ -96,7 +97,7 @@ CREA_TABLE=OPER(nom="CREA_TABLE",op=36,sd_prod=crea_table_prod,
 
            TYPE_TABLE = SIMP(statut='f', typ='TXM', defaut="TABLE",
                              into=('TABLE', 'TABLE_FONCTION', 'TABLE_CONTENEUR'),),
-           
+
            TITRE=SIMP(statut='f',typ='TXM',max='**'),
 )  ;
 

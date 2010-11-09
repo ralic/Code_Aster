@@ -8,7 +8,7 @@
       LOGICAL EXITIM
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 22/06/2009   AUTEUR FLEJOU J-L.FLEJOU 
+C MODIF CALCULEL  DATE 08/11/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -131,7 +131,8 @@ C ----------------------------------------------------------------------
       CALL GCNCO2(NEWNOM)
       LCHOUT(1) (10:16) = NEWNOM(2:8)
       CALL CORICH('E',LCHOUT(1),-1,IBID)
-      CALL CALCUL('S',OPTION,LIGRMO,18,LCHIN,LPAIN,1,LCHOUT,LPAOUT,BASE)
+      CALL CALCUL('S',OPTION,LIGRMO,18,LCHIN,LPAIN,1,LCHOUT,LPAOUT,BASE,
+     &                 'OUI')
 
       CALL REAJRE(VECELZ,LCHOUT(1),BASE)
 

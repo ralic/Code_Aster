@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 02/03/2010   AUTEUR MACOCCO K.MACOCCO 
+#& MODIF COMMANDE  DATE 09/11/2010   AUTEUR DELMAS J.DELMAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,7 +21,7 @@ def modi_repere_prod(RESULTAT,**args):
   if AsType(RESULTAT) != None : return AsType(RESULTAT)
 
 MODI_REPERE=OPER(nom="MODI_REPERE",op=191,sd_prod=modi_repere_prod,reentrant='n',
-            UIinfo={"groupes":("Résultats et champs",)},
+            UIinfo={"groupes":("Post-traitements","Résultats et champs",)},
                     fr="Calcule des résultats dans le repère cylindrique",
          RESULTAT        =SIMP(statut='o',typ=resultat_sdaster),
 

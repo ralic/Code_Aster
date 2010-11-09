@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 19/10/2010   AUTEUR DESOZA T.DESOZA 
+#& MODIF COMMANDE  DATE 09/11/2010   AUTEUR DELMAS J.DELMAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -45,14 +45,14 @@ DEFI_CONTACT=OPER(nom       = "DEFI_CONTACT",
                                position='global',
                                defaut="SANS",
                                into=("COULOMB","SANS",)),
-                               
+
 ### PARAMETRES GENERAUX (UNIQUEMENT POUR LE CONTACT MAILLE, NE DEPENDENT PAS DE LA ZONE DE CONTACT)
 
          b_contact_mail=BLOC(condition = "((FORMULATION == 'CONTINUE') or (FORMULATION == 'DISCRETE'))",
-           STOP_INTERP   = SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON")), 
-           LISSAGE       = SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON")),    
-         ),                            
-                               
+           STOP_INTERP   = SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON")),
+           LISSAGE       = SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON")),
+         ),
+
 ### PARAMETRES GENERAUX (UNIQUEMENT POUR LE CONTACT, NE DEPENDENT PAS DE LA ZONE DE CONTACT)
 
          b_contact=BLOC(condition = "FORMULATION != 'LIAISON_UNIL' ",
@@ -179,7 +179,7 @@ DEFI_CONTACT=OPER(nom       = "DEFI_CONTACT",
                                                  fr="Autorise-t-on de sortir du domaine admissible lors de la recherche lineaire",),
                                   ),
            ), #fin bloc b_contact
-                                              
+
 ## AFFECTATIONS (ZONES PAR ZONES)
 
 # AFFECTATION - CAS LIAISON_UNILATERALE
@@ -202,7 +202,7 @@ DEFI_CONTACT=OPER(nom       = "DEFI_CONTACT",
 # -- Incompatibilité avec CL
                                             SANS_NOEUD      =SIMP(statut='f',typ=no   ,validators=NoRepeat(),max='**'),
                                             SANS_GROUP_NO   =SIMP(statut='f',typ=grno ,validators=NoRepeat(),max='**'),
-                                            
+
 
                                             ),
                                   ), #fin bloc b_affe_unil
@@ -278,7 +278,7 @@ DEFI_CONTACT=OPER(nom       = "DEFI_CONTACT",
                                             RESOLUTION      =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON")),
                                             b_verif=BLOC(condition = "RESOLUTION == 'NON' ",
                                                TOLE_INTERP   = SIMP(statut='f',typ='R',defaut = 0.),
-                                            ),   
+                                            ),
 
 # -- Résolution
                                             ALGO_CONT       =SIMP(statut='o',typ='TXM',defaut="CONTRAINTE",
@@ -381,7 +381,7 @@ DEFI_CONTACT=OPER(nom       = "DEFI_CONTACT",
                                             SANS_GROUP_NO   =SIMP(statut='f',typ=grno ,validators=NoRepeat(),max='**'),
                                             SANS_MAILLE     =SIMP(statut='f',typ=ma   ,validators=NoRepeat(),max='**'),
                                             SANS_GROUP_MA   =SIMP(statut='f',typ=grma ,validators=NoRepeat(),max='**'),
-                                            
+
                                             FOND_FISSURE    =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON"),),
                                             b_fond_fissure =BLOC(condition = "FOND_FISSURE == 'OUI' ",
                                                                  fr="Traitement en fond de fissure",
@@ -406,7 +406,7 @@ DEFI_CONTACT=OPER(nom       = "DEFI_CONTACT",
                                             RESOLUTION      =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON")),
                                             b_verif=BLOC(condition = "RESOLUTION == 'NON' ",
                                                TOLE_INTERP   = SIMP(statut='f',typ='R',defaut = 0.),
-                                            ),  
+                                            ),
 
 # -- Fonctionnalités spécifiques 'CONTINUE'
                                             INTEGRATION     =SIMP(statut='f',typ='TXM',defaut="NOEUD",

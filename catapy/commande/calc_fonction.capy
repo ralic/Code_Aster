@@ -1,20 +1,20 @@
-#& MODIF COMMANDE  DATE 11/10/2010   AUTEUR COURTOIS M.COURTOIS 
+#& MODIF COMMANDE  DATE 09/11/2010   AUTEUR DELMAS J.DELMAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-# (AT YOUR OPTION) ANY LATER VERSION.                                 
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
 #
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 #
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # RESPONSABLE COURTOIS M.COURTOIS
 from Macro.calc_fonction_ops import calc_fonction_ops
@@ -25,7 +25,7 @@ def calc_fonction_prod(self,DERIVE,EXTRACTION,INTEGRE,INVERSE,COMB,COMB_C,
    if (INTEGRE     != None): return fonction_sdaster
    if (DERIVE      != None): return fonction_sdaster
    if (INVERSE     != None): return fonction_sdaster
-   if (COMB        != None): 
+   if (COMB        != None):
       type_vale=AsType(COMB[0]['FONCTION'])
       for mcfact in COMB :
           if(AsType(mcfact['FONCTION'])!=type_vale):
@@ -64,7 +64,7 @@ def calc_fonction_prod(self,DERIVE,EXTRACTION,INTEGRE,INVERSE,COMB,COMB_C,
 CALC_FONCTION=MACRO(nom="CALC_FONCTION",op=calc_fonction_ops,sd_prod=calc_fonction_prod
                     ,fr="Effectue des opérations mathématiques sur des concepts de type fonction",
                      reentrant='n',
-            UIinfo={"groupes":("Fonction",)},
+            UIinfo={"groupes":("Fonctions",)},
          regles=(UN_PARMI('DERIVE','INTEGRE','SPEC_OSCI','COMB','COMB_C','ENVELOPPE',
                           'COMPOSE','EXTRACTION','ASSE','FFT','CORR_ACCE', 'PUISSANCE',
                           'LISS_ENVELOP','INVERSE','ABS','FRACTILE','REGR_POLYNOMIALE'),),
@@ -72,7 +72,7 @@ CALC_FONCTION=MACRO(nom="CALC_FONCTION",op=calc_fonction_ops,sd_prod=calc_foncti
            FONCTION        =SIMP(statut='o',typ=(fonction_sdaster,fonction_c) ),
            METHODE         =SIMP(statut='f',typ='TXM',defaut="PROL_ZERO",into=("PROL_ZERO","TRONCATURE","COMPLET") ),
            b_syme          =BLOC ( condition = " AsType(FONCTION)==fonction_c ",
-             SYME           =SIMP(statut='f',typ='TXM',into=('OUI','NON'),defaut='OUI' ),  
+             SYME           =SIMP(statut='f',typ='TXM',into=('OUI','NON'),defaut='OUI' ),
            ),
          ),
          DERIVE          =FACT(statut='f',fr="Dérivée d une fonction",
@@ -119,7 +119,7 @@ CALC_FONCTION=MACRO(nom="CALC_FONCTION",op=calc_fonction_ops,sd_prod=calc_foncti
            COEF_C          =SIMP(statut='f',typ='C',fr="Coefficient complexe de la combinaison linéaire associée à la fonction" ),
          ),
          b_comb          =BLOC ( condition = "COMB != None or COMB_C != None or REGR_POLYNOMIALE != None",
-             LIST_PARA      =SIMP(statut='f',typ=listr8_sdaster ),  
+             LIST_PARA      =SIMP(statut='f',typ=listr8_sdaster ),
          ),
          COMPOSE         =FACT(statut='f',fr="Composition de deux fonctions FONC_RESU(FONC_PARA)",
            FONC_RESU       =SIMP(statut='o',typ=fonction_sdaster),
@@ -151,7 +151,7 @@ CALC_FONCTION=MACRO(nom="CALC_FONCTION",op=calc_fonction_ops,sd_prod=calc_foncti
          ),
          INVERSE         =FACT(statut='f',fr="Inverse d'une fonction",
             FONCTION      =SIMP(statut='o', typ=fonction_sdaster),
-         ),     
+         ),
          NOM_PARA        =SIMP(statut='f',typ='TXM',into=C_PARA_FONCTION() ),
          NOM_RESU        =SIMP(statut='f',typ='TXM' ),
          INTERPOL        =SIMP(statut='f',typ='TXM',max=2,into=("NON","LIN","LOG") ),

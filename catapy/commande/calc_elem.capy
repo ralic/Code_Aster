@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 19/10/2010   AUTEUR DELMAS J.DELMAS 
+#& MODIF COMMANDE  DATE 09/11/2010   AUTEUR DELMAS J.DELMAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,7 +22,7 @@ def calc_elem_prod(RESULTAT,**args):
    raise AsException("type de concept resultat non prevu")
 
 CALC_ELEM=OPER(nom="CALC_ELEM",op=58,sd_prod=calc_elem_prod,reentrant='f',
-            UIinfo={"groupes":("Post traitements",)},
+            UIinfo={"groupes":("Post-traitements","Résultats et champs",)},
             fr="Compléter ou créer un résultat en calculant des champs par éléments (contraintes, déformations,... )",
      MODELE          =SIMP(statut='f',typ=modele_sdaster),
      CHAM_MATER      =SIMP(statut='f',typ=cham_mater),

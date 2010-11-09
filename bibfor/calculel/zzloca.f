@@ -3,7 +3,7 @@
       CHARACTER*(*) MODELE,LIGREL,MATEZ,SIGMA,SIGNO,RESU
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 08/11/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -68,7 +68,8 @@ C DEB-------------------------------------------------------------------
       LPAOUT(1) = 'PERREUR'
       LCHOUT(1) = RESU
       OPTION = 'CALC_ESTI_ERRE'
-      CALL CALCUL('S',OPTION,LIGREL,5,LCHIN,LPAIN,1,LCHOUT,LPAOUT,'G')
+      CALL CALCUL('S',OPTION,LIGREL,5,LCHIN,LPAIN,1,LCHOUT,LPAOUT,'G',
+     &               'OUI')
 
    10 CONTINUE
       END

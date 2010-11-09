@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 10/08/2010   AUTEUR GENIAUT S.GENIAUT 
+#& MODIF COMMANDE  DATE 09/11/2010   AUTEUR DELMAS J.DELMAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,7 +18,7 @@
 # ======================================================================
 # RESPONSABLE GENIAUT S.GENIAUT
 POST_MAIL_XFEM=OPER(nom="POST_MAIL_XFEM",op= 187,sd_prod=maillage_sdaster,
-                    reentrant='n',UIinfo={"groupes":("Maillage",)},
+                    reentrant='n',UIinfo={"groupes":("Maillage","Rupture",)},
             fr="Crée un maillage se conformant à la fissure pour le post-traitement des éléments XFEM",
     MODELE        = SIMP(statut='o',typ=modele_sdaster),
     MAILLAGE_SAIN = SIMP(statut='f',typ=maillage_sdaster),

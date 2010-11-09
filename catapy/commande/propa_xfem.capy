@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 15/12/2009   AUTEUR COLOMBO D.COLOMBO 
+#& MODIF COMMANDE  DATE 09/11/2010   AUTEUR DELMAS J.DELMAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,7 +19,7 @@
 # RESPONSABLE GENIAUT S.GENIAUT
 
 PROPA_XFEM=OPER(nom="PROPA_XFEM",op=10,sd_prod=fiss_xfem,reentrant='n',
-                UIinfo={"groupes":("Modelisation",)},
+                UIinfo={"groupes":("Post-traitements","Rupture",)},
                 fr="Propagation de fissure avec X-FEM",
     
     MODELE        =SIMP(statut='o',typ=modele_sdaster),

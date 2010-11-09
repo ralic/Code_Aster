@@ -11,7 +11,7 @@
       CHARACTER*19      SOLVEU
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 13/10/2010   AUTEUR BOITEAU O.BOITEAU 
+C MODIF ALGELINE  DATE 08/11/2010   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -50,6 +50,7 @@ C
 C     ------------------------------------------------------------------
 C
       IFREQ = 0
+      DET0=0.D0
       IF (OPTION(1:6) .EQ. 'AJUSTE') THEN
 C
          DO 1 JFREQ = 1,NFREQ - 1

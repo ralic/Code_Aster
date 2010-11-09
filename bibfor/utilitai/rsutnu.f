@@ -5,7 +5,7 @@
       CHARACTER*(*) RESU,MOTCLE,KNUM,CRIT
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 24/11/2009   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 08/11/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -227,7 +227,12 @@ C     --- CAS "NUME_MODE","INST","FREQ", ... ---
                 VALI (2) = ZI(JORD2)
                 VALI (3) = ZI(JORD2+1)
                 VALI (4) = ZI(JORD2+2)
-                CALL U2MESG('A','UTILITAI8_46',0,' ',4,VALI,0,0.D0)
+                IF (NBTROU.EQ.2) THEN
+                  CALL U2MESG('A','UTILITAI8_46',0,' ',3,VALI,0,0.D0)
+                ELSE
+                  CALL U2MESG('A','UTILITAI8_48',0,' ',4,VALI,0,0.D0)
+                ENDIF
+                
                 CALL I2TRGI(ZI(JORD1),ZI(JORD2),NBTROU,NBORDR)
               ELSE IF (NBTROU.EQ.0) THEN
                 VALK (1) = RESU

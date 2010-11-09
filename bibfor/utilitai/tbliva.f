@@ -7,7 +7,7 @@
       CHARACTER*(*)       NOMTA,LIPACR(*),VK(*),VALK,CRIT(*),CTYPE,PARA
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 08/11/2010   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -78,6 +78,11 @@ C
 C
       IER = 0
       CTYPE = '?'
+C
+      VALI=0
+      VALR=0.D0
+      VALC=DCMPLX(0.D0,0.D0)
+      VALK=' '
 C
       NOMTAB = NOMTA
       CALL JEEXIN ( NOMTAB//'.TBBA', IRET )

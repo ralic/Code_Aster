@@ -5,7 +5,7 @@
       CHARACTER*16      OPTION
       CHARACTER*24      MATE, COMPOR, PHASIN
       CHARACTER*(*)     MODELZ
-C MODIF ALGORITH  DATE 07/09/2009   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 08/11/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -49,19 +49,19 @@ C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 
       INTEGER       NBHIST, IADTRC(2), LONG, JORDR, NBORDR, I, IRET,
-     +              VALI(2), IAD, IFM, IUNIFI, JMATE, IBID,NUM0, NUM1,
-     +              NUM2, NUM3, IORD, IAINST, NUMPHI
+     &              VALI(2), IAD, IFM, IUNIFI, JMATE, IBID,NUM0, NUM1,
+     &              NUM2, NUM3, IORD, IAINST, NUMPHI
       REAL*8        R8B, TIME(6), INST0,INST1,INST2, DT3, R8PREM,R8VIDE
       REAL*8        VALR(2)
       INTEGER       VALII
       COMPLEX*16    CBID
       CHARACTER*2   CODRET, TEST
       CHARACTER*8   K8B, MODELE, NOMCM2(2), MATER, TIMCMP(6), LPAIN(8),
-     +              LPAOUT(2)
+     &              LPAOUT(2)
       CHARACTER*16  OPTIO2
       CHARACTER*19  SDTEMP,LCHIN(8), LCHOUT(2)
       CHARACTER*24  CH24, LIGRMO, TEMPE, TEMPA, NOMCH, CHTIME, KORDRE,
-     +              CHMATE, TEMPI, CHFTRC
+     &              CHMATE, TEMPI, CHFTRC
 
       DATA TIMCMP/ 'INST    ', 'DELTAT  ', 'THETA   ', 'KHI     ',
      &             'R       ', 'RHO     '/
@@ -159,7 +159,7 @@ C
 
         CALL COPISD('CHAM_ELEM_S','V',COMPOR,LCHOUT(1))
         CALL CALCUL('S',OPTIO2,LIGRMO,4,LCHIN,LPAIN,2,LCHOUT,LPAOUT,
-     &                'V')
+     &                'V','OUI')
 
         CALL RSEXCH(TEMPER,'META_ELNO_TEMP',NUM0,NOMCH,IRET)
         CALL COPISD('CHAMP_GD','G','&&SMEVOL.PHAS_META1',NOMCH(1:19))
@@ -194,7 +194,7 @@ C
 
         CALL COPISD('CHAM_ELEM_S','V',COMPOR,LCHOUT(1))
         CALL CALCUL('S',OPTIO2,LIGRMO,4,LCHIN,LPAIN,1,LCHOUT,LPAOUT,
-     &                'V')
+     &                'V','OUI')
 
         CALL RSEXCH ( TEMPER, 'META_ELNO_TEMP', NUM1, NOMCH, IRET )
         CALL COPISD('CHAMP_GD','G','&&SMEVOL.PHAS_META1',NOMCH(1:19))
@@ -297,7 +297,7 @@ C ------------------------
 
         CALL COPISD('CHAM_ELEM_S','V',COMPOR,LCHOUT(1))
         CALL CALCUL('S',OPTION,LIGRMO,8,LCHIN,LPAIN,1,LCHOUT,LPAOUT,
-     &              'V')
+     &              'V','OUI')
 
 C ----- STOCKAGE DU CHAMP DANS LA S D EVOL_THER
 
@@ -312,7 +312,7 @@ C ----- STOCKAGE DU CHAMP DANS LA S D EVOL_THER
 
 C
  1010 FORMAT (1P,3X,'CHAMP    STOCKE   :',1X,A14,' NUME_ORDRE:',I8,
-     >       ' INSTANT:',D12.5)
+     &       ' INSTANT:',D12.5)
 C
       CALL JEDEMA()
       END

@@ -1,7 +1,7 @@
       SUBROUTINE XREACL(NOMA  ,NOMO ,MATE ,VALINC,RESOCO)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/06/2010   AUTEUR CARON A.CARON 
+C MODIF ALGORITH  DATE 08/11/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -24,21 +24,21 @@ C
       CHARACTER*8   NOMA ,NOMO
       CHARACTER*24  RESOCO,MATE
       CHARACTER*19  VALINC(*)
-C     
+C
 C ----------------------------------------------------------------------
 C
 C ROUTINE XFEM (METHODE XFEM - ALGORITHME)
 C
 C MISE À JOUR DU SEUIL DE FROTTEMENT
-C      
+C
 C ----------------------------------------------------------------------
 C
 C
 C IN  NOMO   : NOM DE L'OBJET MODELE
-C IN  NOMA   : NOM DE L'OBJET MAILLAGE 
-C IN  RESOCO : SD CONTACT (RESOLUTION)  
+C IN  NOMA   : NOM DE L'OBJET MAILLAGE
+C IN  RESOCO : SD CONTACT (RESOLUTION)
 C IN  VALINC : VARIABLE CHAPEAU POUR INCREMENTS VARIABLES
-C 
+C
 C -------------- DEBUT DECLARATIONS NORMALISEES JEVEUX -----------------
 C
       INTEGER ZI
@@ -70,51 +70,51 @@ C
       CHARACTER*16 OPTION
       CHARACTER*24 AINTER,CFACE,FACLON,PINTER,CHGEOM,BASECO
       CHARACTER*19 DEPPLU
-      INTEGER      JXC 
-      LOGICAL      DEBUG,LCONTX         
-      INTEGER      IFM,NIV,IFMDBG,NIVDBG            
+      INTEGER      JXC
+      LOGICAL      DEBUG,LCONTX
+      INTEGER      IFM,NIV,IFMDBG,NIVDBG
 C
 C ----------------------------------------------------------------------
 C
       CALL JEMARQ()
       CALL INFDBG('XFEM',IFM,NIV)
-      CALL INFDBG('PRE_CALCUL',IFMDBG,NIVDBG)      
+      CALL INFDBG('PRE_CALCUL',IFMDBG,NIVDBG)
 C
 C --- INITIALISATIONS
-C 
+C
       LIGRMO = NOMO(1:8)//'.MODELE'
       CSEUIL = '&&XREACL.SEUIL'
       CCOHES = '&&XREACL.COHES'
       XDONCO = RESOCO(1:14)//'.XFDO'
-      XSEUCO = RESOCO(1:14)//'.XFSE'      
-      XCOHES = RESOCO(1:14)//'.XCOH'      
-      OPTION = 'XREACL' 
+      XSEUCO = RESOCO(1:14)//'.XFSE'
+      XCOHES = RESOCO(1:14)//'.XCOH'
+      OPTION = 'XREACL'
       IF (NIVDBG.GE.2) THEN
         DEBUG  = .TRUE.
       ELSE
         DEBUG  = .FALSE.
-      ENDIF            
+      ENDIF
       CALL DISMOI('F','NB_MA_MAILLA',NOMA,'MAILLAGE',NBMA,KBID,IBID)
 C
 C --- DECOMPACTION DES VARIABLES CHAPEAUX
-C        
-      CALL NMCHEX(VALINC,'VALINC','DEPPLU',DEPPLU)    
 C
-C --- SI PAS DE CONTACT ALORS ON ZAPPE LA VÉRIFICATION 
+      CALL NMCHEX(VALINC,'VALINC','DEPPLU',DEPPLU)
+C
+C --- SI PAS DE CONTACT ALORS ON ZAPPE LA VÉRIFICATION
 C
       CALL JEVEUO(NOMO(1:8)//'.XFEM_CONT'  ,'L',JXC)
       LCONTX = ZI(JXC) .GE. 1
       IF (.NOT.LCONTX) THEN
         GOTO 9999
-      ENDIF 
+      ENDIF
 C
 C --- INITIALISATION DES CHAMPS POUR CALCUL
 C
       CALL INICAL(NBIN  ,LPAIN ,LCHIN ,
-     &            NBOUT ,LPAOUT,LCHOUT)                  
-C                                                               
-C --- CREATION DU CHAM_ELEM_S VIERGE                             
-C               
+     &            NBOUT ,LPAOUT,LCHOUT)
+C
+C --- CREATION DU CHAM_ELEM_S VIERGE
+C
       CALL XMCHEX(NOMA  ,NBMA  ,CSEUIL)
       CALL XMCHEX(NOMA  ,NBMA  ,CCOHES)
 C
@@ -131,7 +131,7 @@ C
 C --- RECUPERATION DES COORDONNEES DES NOEUDS
 C
       CHGEOM = NOMA(1:8)//'.COORDO'
-C       
+C
 C --- CREATION DES LISTES DES CHAMPS IN
 C
       LPAIN(1) = 'PDEPL_P'
@@ -159,9 +159,9 @@ C
       LPAIN(12) = 'PBASECO'
       LCHIN(12) = BASECO(1:19)
 
-C       
+C
 C --- CREATION DES LISTES DES CHAMPS OUT
-C    
+C
       LPAOUT(1) = 'PSEUIL'
       LCHOUT(1) = CSEUIL(1:19)
       LPAOUT(2) = 'PCOHESO'
@@ -170,18 +170,18 @@ C
 C --- APPEL A CALCUL
 C
       CALL CALCUL('S',OPTION,LIGRMO,NBIN  ,LCHIN ,LPAIN,
-     &                              NBOUT ,LCHOUT,LPAOUT,'V')
+     &                              NBOUT ,LCHOUT,LPAOUT,'V','OUI')
 C
       IF (DEBUG) THEN
         CALL DBGCAL(OPTION,IFMDBG,
      &              NBIN  ,LPAIN ,LCHIN ,
      &              NBOUT ,LPAOUT,LCHOUT)
-      ENDIF      
+      ENDIF
 C
 C --- ON COPIE CSEUIL DANS RESOCO.SE
 C
       CALL COPISD('CHAMP_GD','V',LCHOUT(1),XSEUCO)
-      CALL COPISD('CHAMP_GD','V',LCHOUT(2),XCOHES) 
+      CALL COPISD('CHAMP_GD','V',LCHOUT(2),XCOHES)
 C
  9999 CONTINUE
 C

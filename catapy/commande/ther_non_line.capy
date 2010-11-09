@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 20/09/2010   AUTEUR TARDIEU N.TARDIEU 
+#& MODIF COMMANDE  DATE 09/11/2010   AUTEUR DELMAS J.DELMAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,7 +18,7 @@
 # ======================================================================
 # RESPONSABLE DURAND C.DURAND
 THER_NON_LINE=OPER(nom="THER_NON_LINE",op= 186,sd_prod=evol_ther,reentrant='f',
-            UIinfo={"groupes":("Résolution",)},
+            UIinfo={"groupes":("Résolution","Thermique",)},
                    fr="Résoudre un problème thermique non linéaire (conditions limites ou comportement matériau)"
                       +" stationnaire ou transitoire" ,
          regles=(CONCEPT_SENSIBLE('ENSEMBLE'),),

@@ -2,7 +2,7 @@
       IMPLICIT  NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 04/05/2009   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 08/11/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -112,7 +112,7 @@ C     --------------------------------
 
         CALL CESVAR(CARELE,' ',LIGRMO,CHOUT)
         CALL CALCUL('S','PREP_VRC',LIGRMO,NBIN,LCHIN,LPAIN,1,CHOUT,
-     &              PAOUT,'G')
+     &              PAOUT,'G','OUI')
         CALL DETRSD('CHAM_ELEM_S',CHOUT)
         CALL RSNOCH(RESU,'TEMP',KINST,' ')
         CALL RSADPA(RESU,'E',1,'INST',KINST,0,JINST,KBID)

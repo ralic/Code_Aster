@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 16/09/2008   AUTEUR PELLET J.PELLET 
+#& MODIF COMMANDE  DATE 09/11/2010   AUTEUR DELMAS J.DELMAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,7 +20,7 @@
 AFFE_CHAR_ACOU=OPER(nom="AFFE_CHAR_ACOU",op=  68,sd_prod=char_acou,
                     fr="Affectation de charges et conditions aux limites acoustiques constantes",
                     reentrant='n',
-            UIinfo={"groupes":("Modélisation",)},
+            UIinfo={"groupes":("Chargements","Acoustique",)},
          regles=(AU_MOINS_UN('PRES_IMPO','VITE_FACE','IMPE_FACE','LIAISON_UNIF' ),),
          MODELE          =SIMP(statut='o',typ=modele_sdaster ),
          VERI_DDL        =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON") ),

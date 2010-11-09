@@ -3,7 +3,7 @@
 C TOLE CRP_20
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 25/05/2010   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF ALGORITH  DATE 08/11/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -435,6 +435,16 @@ C ----- MOT CLE LIST_INST/LIST_FREQ PRESENT :
             ZI(IADESC-1+1) = IGD
             CALL JEDETR(NOMCH//'.VALE')
             CALL WKVECT(NOMCH//'.VALE','G V R',LG,JC)
+
+C           -- LA PROGRAMMATION CI-DESSOUS N'EST VALABLE QUE SI :
+C              LES GRANDEURS XXXX_F ET XXXX_R :
+C                * ONT LE MEME NOMBRE D'ENTIERS CODES
+C                * QUE LE RANG (DANS LE CATALOGUE) DE CHAQUE CMP
+C                  DE XXXX_F EST LE MEME QUE DANS XXXX_R
+C              AUJOURD'HUI, SEULES TEMP_F, DEPL_F ET PRES_F SONT AINSI.
+            IF (NOGDSI.NE.'TEMP_F'.AND.NOGDSI.NE.'DEPL_F'.AND.
+     &      NOGDSI.NE.'PRES_F') CALL U2MESK('F','CALCULEL2_5',1,NOGDSI)
+            CALL ASSERT(TYPEGD(1:4).EQ.NOGDSI(1:4))
 
 C           -- CHAM_NO DE FONCTIONS A EVALUER
 C           ----------------------------------

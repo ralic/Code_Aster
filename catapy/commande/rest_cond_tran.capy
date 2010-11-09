@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 11/05/2009   AUTEUR NISTOR I.NISTOR 
+#& MODIF COMMANDE  DATE 09/11/2010   AUTEUR DELMAS J.DELMAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -30,7 +30,7 @@ REST_COND_TRAN=OPER(nom="REST_COND_TRAN",op=  78,sd_prod=rest_cond_tran_prod,
                         +"non-lineaire avec projection modale ou d'un calcul transitoire linear"
                         +"avec condensation dynamique",
                     reentrant='n',
-            UIinfo={"groupes":("Matrices/vecteurs",)},
+            UIinfo={"groupes":("Matrices et vecteurs",)},
         regles=(
                 EXCLUS('TOUT_ORDRE','NUME_ORDRE','INST','LIST_INST','TOUT_INST'),
                 EXCLUS('MACR_ELEM_DYNA','BASE_MODALE'),),

@@ -1,7 +1,7 @@
       SUBROUTINE MEMZME(MODELE,MATEL)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 25/03/2008   AUTEUR REZETTE C.REZETTE 
+C MODIF CALCULEL  DATE 08/11/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -67,7 +67,8 @@ C ----------------------------------------------------------------------
       LCHIN(1) = CHGEOM
 
       OPTION = 'MASS_ZZ1'
-      CALL CALCUL('S',OPTION,LIGRMO,1,LCHIN,LPAIN,1,LCHOUT,LPAOUT,'V')
+      CALL CALCUL('S',OPTION,LIGRMO,1,LCHIN,LPAIN,1,LCHOUT,LPAOUT,'V',
+     &               'OUI')
       CALL REAJRE(MATEL,LCHOUT(1),'V')
 
       CALL JEDEMA()

@@ -1,4 +1,4 @@
-#@ MODIF calculel6 Messages  DATE 04/10/2010   AUTEUR PELLET J.PELLET 
+#@ MODIF calculel6 Messages  DATE 08/11/2010   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -59,7 +59,20 @@ Solution :
 """),
 
 7: _("""
-  Filtre non valide.
+Erreur utilisateur dans la commande TEST_TABLE :
+  On n'a pas pu trouver dans la table la valeur à tester.
+
+Conseils :
+  Plusieurs raisons peuvent expliquer l'échec du test :
+    * Le paramètre testé n'existe pas dans la table
+    * Les filtres utilisés sont tels qu'aucune ligne ne les vérifie
+    * Dans une occurrence du mot clé filtre, l'utilisateur s'est trompé de mot clé
+      pour indiquer la valeur :
+        * VALE    -> réel
+        * VALE_I  -> entier
+        * VALE_K  -> chaine de caractères
+        * VALE_C  -> complexe
+
 """),
 
 8: _("""

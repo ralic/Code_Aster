@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 03/05/2010   AUTEUR GENIAUT S.GENIAUT 
+#& MODIF COMMANDE  DATE 09/11/2010   AUTEUR DELMAS J.DELMAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -39,7 +39,7 @@ def propa_fiss_prod(self,**args):
 
 PROPA_FISS=MACRO(nom="PROPA_FISS",op=propa_fiss_ops,sd_prod=propa_fiss_prod,
             fr="Propagation de fissure avec X-FEM",reentrant='n',
-            UIinfo={"groupes":("Post traitements",)},
+            UIinfo={"groupes":("Post-traitements","Rupture",)},
 
         METHODE_PROPA = SIMP(statut='o',typ='TXM',
                                into=("SIMPLEXE","UPWIND","MAILLAGE","INITIALISATION") ),

@@ -1,7 +1,7 @@
       SUBROUTINE VECHNL(TYPCAL,MODELE,CHARGE,INFCHA,CARELE,INST,CHTN,
      &                  VAPRIN,VAPRMO,LOSTAT,NOPASE,TYPESE,LVECHN)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 23/10/2008   AUTEUR TORKHANI M.TORKHANI 
+C MODIF ALGORITH  DATE 08/11/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -250,7 +250,7 @@ C====
    20           CONTINUE
               END IF
               CALL CALCUL('S',OPTION,LIGRMO,NCHIN,LCHIN,LPAIN,1,LCHOUT,
-     &                    LPAOUT,'V')
+     &                    LPAOUT,'V','OUI')
 
 C INCREMENTATION DE LONUTI ET STOCKAGE DU RESULTAT
               CALL REAJRE(LVECHN,LCHOUT(1),'V')
@@ -312,7 +312,7 @@ C====
    30           CONTINUE
               END IF
               CALL CALCUL('S',OPTION,LIGRMO,NCHIN,LCHIN,LPAIN,1,LCHOUT,
-     &                    LPAOUT,'V')
+     &                    LPAOUT,'V','OUI')
 
 C INCREMENTATION DE LONUTI ET STOCKAGE DU RESULTAT
               CALL REAJRE(LVECHN,LCHOUT(1),'V')
@@ -367,7 +367,7 @@ C====
    40           CONTINUE
               END IF
               CALL CALCUL('S',OPTION,LIGRMO,NCHIN,LCHIN,LPAIN,1,LCHOUT,
-     &                    LPAOUT,'V')
+     &                    LPAOUT,'V','OUI')
 
 C INCREMENTATION DE LONUTI ET STOCKAGE DU RESULTAT
               CALL REAJRE(LVECHN,LCHOUT(1),'V')
@@ -413,7 +413,7 @@ C====
    50           CONTINUE
               END IF
               CALL CALCUL('S',OPTION,LIGRMO,NCHIN,LCHIN,LPAIN,1,LCHOUT,
-     &                    LPAOUT,'V')
+     &                    LPAOUT,'V','OUI')
 
 C INCREMENTATION DE LONUTI ET STOCKAGE DU RESULTAT
               CALL REAJRE(LVECHN,LCHOUT(1),'V')

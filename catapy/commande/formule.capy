@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 05/07/2010   AUTEUR COURTOIS M.COURTOIS 
+#& MODIF COMMANDE  DATE 09/11/2010   AUTEUR DELMAS J.DELMAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -41,7 +41,7 @@ def form_pyth_ops(self, d):
    self.sd.setFormule(NOM_PARA, texte.strip())
 
 FORMULE=FORM(nom="FORMULE",op_init=form_pyth_ops,op=-5,
-             sd_prod=formule_prod,UIinfo={"groupes":("Fonction",)},
+             sd_prod=formule_prod,UIinfo={"groupes":("Fonctions",)},
              fr="Définit une formule réelle ou complexe à partir de son expression mathématique",
          regles=(UN_PARMI('VALE','VALE_C',),),
          VALE     =SIMP(statut='f',typ='TXM'),

@@ -3,7 +3,7 @@
      &                  PARTPS,CARCRI,CHVARC,LIGREZ,LISCHA,
      &                  OPTION)
 C
-C MODIF ALGORITH  DATE 28/09/2010   AUTEUR MASSIN P.MASSIN 
+C MODIF ALGORITH  DATE 08/11/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -224,7 +224,7 @@ C
         LSN    =MODELE(1:8)//'.LNNO'
         LST    =MODELE(1:8)//'.LTNO'
         STANO  = MODELE(1:8)//'.STNO'
-        FISSNO = MODELE(1:8)//'.FISSNO'  
+        FISSNO = MODELE(1:8)//'.FISSNO'
       ELSE
         PINTTO = '&&VEFNME.PINTTO.BID'
         CNSETO = '&&VEFNME.CNSETO.BID'
@@ -277,7 +277,7 @@ C
 C --- APPEL A CALCUL
 C
       CALL CALCUL('S',OPTIO2,LIGREL,NBIN ,LCHIN ,LPAIN ,
-     &                       NBOUT,LCHOUT,LPAOUT,'V')
+     &                       NBOUT,LCHOUT,LPAOUT,'V','OUI')
 C
       IF (DEBUG) THEN
         CALL DBGCAL(OPTIO2,IFMDBG,

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 13/10/2010   AUTEUR BOITEAU O.BOITEAU 
+#& MODIF COMMANDE  DATE 09/11/2010   AUTEUR DELMAS J.DELMAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -29,7 +29,7 @@ def mode_iter_inv_prod(MATR_A,MATR_C,TYPE_RESU,**args ):
 MODE_ITER_INV=OPER(nom="MODE_ITER_INV",op=  44,sd_prod=mode_iter_inv_prod
                     ,fr="Calcul des modes propres par itérations inverses ; valeurs propres et modes réels ou complexes",
                      reentrant='n',
-            UIinfo={"groupes":("Résolution",)},
+            UIinfo={"groupes":("Résolution","Dynamique",)},
          regles=(CONCEPT_SENSIBLE('ENSEMBLE'),),
          MATR_A          =SIMP(statut='o',typ=(matr_asse_depl_r,matr_asse_gene_r,matr_asse_pres_r ) ),
          MATR_B          =SIMP(statut='o',typ=(matr_asse_depl_r,matr_asse_gene_r,matr_asse_pres_r ) ),

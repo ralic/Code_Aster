@@ -1,7 +1,7 @@
       SUBROUTINE VEBUME(MODELZ,DEPLAZ,LISCHA,VECELZ)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 25/03/2008   AUTEUR REZETTE C.REZETTE 
+C MODIF ALGORITH  DATE 08/11/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,20 +23,20 @@ C
       IMPLICIT NONE
       CHARACTER*(*) MODELZ,DEPLAZ,VECELZ
       CHARACTER*19  LISCHA
-C 
+C
 C ----------------------------------------------------------------------
 C
 C ROUTINE MECA_NON_LINE (CALCUL)
 C
 C CALCUL DES VECTEURS ELEMENTAIRES B.U - ELEMENTS DE LAGRANGE
-C      
+C
 C ----------------------------------------------------------------------
 C
-C      
+C
 C IN  MODELE : NOM DU MODELE
 C IN  DEPLA  : CHAMP DE DEPLACEMENTS
 C IN  LISCHA : SD L_CHARGES
-C OUT VECELE : VECTEURS ELEMENTAIRES     
+C OUT VECELE : VECTEURS ELEMENTAIRES
 C
 C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
 C
@@ -56,7 +56,7 @@ C
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
-C 
+C
       INTEGER      NBOUT,NBIN
       PARAMETER    (NBOUT=1, NBIN=2)
       CHARACTER*8  LPAOUT(NBOUT),LPAIN(NBIN)
@@ -66,16 +66,16 @@ C
       CHARACTER*16 OPTION
       CHARACTER*24 LIGRCH
       INTEGER      IRET,NCHAR,NDIR,ICHA,IBID
-      INTEGER      JCHAR,JINF      
+      INTEGER      JCHAR,JINF
       CHARACTER*8  MODELE
       CHARACTER*19 DEPLA,VECELE
-      INTEGER      IFMDBG,NIVDBG                                        
+      INTEGER      IFMDBG,NIVDBG
       LOGICAL      DEBUG
 C
 C ----------------------------------------------------------------------
 C
-      CALL JEMARQ()  
-      CALL INFDBG('PRE_CALCUL',IFMDBG,NIVDBG)        
+      CALL JEMARQ()
+      CALL INFDBG('PRE_CALCUL',IFMDBG,NIVDBG)
 C
 C --- INITIALISATIONS
 C
@@ -93,10 +93,10 @@ C
 C --- INITIALISATION DES CHAMPS POUR CALCUL
 C
       CALL INICAL(NBIN  ,LPAIN ,LCHIN ,
-     &            NBOUT ,LPAOUT,LCHOUT) 
+     &            NBOUT ,LPAOUT,LCHOUT)
 C
 C --- ACCES AUX CHARGES
-C           
+C
       CALL JEEXIN(LISCHA(1:19)//'.LCHA',IRET)
       IF ( IRET .EQ. 0 ) GOTO 9999
       CALL JELIRA(LISCHA(1:19)//'.LCHA','LONMAX',NCHAR,K8BID)
@@ -110,7 +110,7 @@ C
       CALL REAJRE(VECELE,' ','V')
 C
 C --- CALCUL DE L'OPTION B.U
-C 
+C
       NDIR = 0
       DO 10 ICHA = 1,NCHAR
         IF (ZI(JINF+ICHA).LE.0) GO TO 10
@@ -130,20 +130,20 @@ C
         CALL GCNCO2(MASQUE)
         LCHOUT(1)(10:16) = MASQUE(2:8)
         CALL CORICH('E',LCHOUT(1),ICHA,IBID)
-C          
+C
         CALL CALCUL('S',OPTION,LIGRCH,NBIN ,LCHIN ,LPAIN ,
-     &                                NBOUT,LCHOUT,LPAOUT,'V')
+     &                                NBOUT,LCHOUT,LPAOUT,'V','OUI')
 C
         IF (DEBUG) THEN
           CALL DBGCAL(OPTION,IFMDBG,
      &                NBIN  ,LPAIN ,LCHIN ,
      &                NBOUT ,LPAOUT,LCHOUT)
-        ENDIF   
-C     
-        NDIR = NDIR + 1        
+        ENDIF
+C
+        NDIR = NDIR + 1
         CALL REAJRE(VECELE,LCHOUT(1),'V')
    10 CONTINUE
-C   
+C
 
  9999 CONTINUE
 

@@ -6,7 +6,7 @@
      &               CNXINV,REFLOC
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/04/2010   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 08/11/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -140,7 +140,7 @@ C------------------------------------------------------
             LCHOUT(2)=FISS//'.PRO.NORMAL'
 
             CALL CALCUL('S','XFEM_SMPLX_INIT',LIGREL,1,LCHIN,LPAIN,2,
-     &                   LCHOUT,LPAOUT,'V')
+     &                   LCHOUT,LPAOUT,'V','OUI')
 
             CALL CELCES (CELMT,'V',FISS//'.PRO.MES_EL')
             CALL JEDETR (CELMT)

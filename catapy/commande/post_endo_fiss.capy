@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 21/04/2010   AUTEUR BOTTONI M.BOTTONI 
+#& MODIF COMMANDE  DATE 09/11/2010   AUTEUR DELMAS J.DELMAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -35,7 +35,7 @@ POST_ENDO_FISS=MACRO(nom       = "POST_ENDO_FISS",
                      op        = post_endo_fiss_ops,
                      sd_prod  = post_endo_fiss_prod,
                      reentrant = 'n',
-                     UIinfo = {"groupes":("Outils metier",)},
+                     UIinfo = {"groupes":("Post-traitements","Outils-métier",)},
                      fr = "Individuation du trace d'une fissure a partir d'un champ scalaire pertinant",
 
             TABLE  = SIMP(statut = 'o', typ = CO,),

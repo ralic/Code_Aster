@@ -1,4 +1,4 @@
-#@ MODIF calculel Messages  DATE 11/10/2010   AUTEUR PELLET J.PELLET 
+#@ MODIF calculel Messages  DATE 08/11/2010   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -167,12 +167,22 @@ Conseil :
 
 24 : _("""
  les champs à assembler n'ont pas la même longueur
-
-
-
-
-
 """),
+
+
+25 : _("""
+Erreur utilisateur dans PROJ_SPEC_BASE :
+ La commande n'accepte que le parallélisme de type PARTITION='CENTRALISE'.
+ Modèle impliqué : %(k1)s
+
+Conseil :
+ Dans la commande AFFE_MODELE (ou MODI_MODELE), il faut utiliser PARTITION='CENTRALISE'
+"""),
+
+
+
+
+
 
 27 : _("""
  CHAM_ELEM à combiner incompatible

@@ -3,7 +3,7 @@
       IMPLICIT REAL *8 (A-H,O-Z)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
+C MODIF PREPOST  DATE 08/11/2010   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -37,8 +37,9 @@ C-----------------------------------------------------------------------
 C
       IFIRES = IUNIFI('RESULTAT')
 C
-      CALL GETVTX(' ','LOI_USURE',1,1,1,LOI,N1)
+      CALL GETVTX(' ','LOI_USURE',0,1,1,LOI,N1)
       IRET = 0
+      K8B=' '
 C
 C **********************************************************************
 C                 M O D E L E     A R C H A R D
@@ -49,7 +50,7 @@ C
             WRITE(IFIRES,1000)
             CALL GETVR8('MOBILE','COEF_USURE',1,1,1,XK,N1)
             IF ( N1 .EQ. 0 ) THEN
-               CALL GETVTX(' ','MATER_USURE',1,1,1,MATE,N2)
+               CALL GETVTX(' ','MATER_USURE',0,1,1,MATE,N2)
                CALL USUBAN( MATE, ISUPP, PARA, IRET )
                XK = PARA(1)
             ENDIF
@@ -57,9 +58,9 @@ C
          ELSEIF ( ISUPP .EQ. 2 ) THEN
             CALL GETVR8('OBSTACLE','COEF_USURE',1,1,1,XK,N1)
             IF ( N1 .EQ. 0 ) THEN
-               CALL GETVTX(' ','USURE_OBST',1,1,1,K8B,N2)
+               CALL GETVTX(' ','USURE_OBST',0,1,1,K8B,N2)
                IF ( K8B(1:3) .EQ. 'OUI' ) THEN
-                  CALL GETVTX(' ','MATER_USURE',1,1,1,MATE,N3)
+                  CALL GETVTX(' ','MATER_USURE',0,1,1,MATE,N3)
                   CALL USUBAN ( MATE, ISUPP, PARA, IRET )
                   XK = PARA(1)
                ELSE
@@ -88,7 +89,7 @@ C
             CALL GETVR8('MOBILE','COEF_C'    ,1,1,1,PARA(5),N5)
             IF ( N4 .EQ. 0 ) PARA(4) =  5.D0
             IF ( N5 .EQ. 0 ) PARA(5) = 10.D0
-            CALL GETVTX(' ','MATER_USURE',1,1,1,MATE,N6)
+            CALL GETVTX(' ','MATER_USURE',0,1,1,MATE,N6)
             IF ( N6 .NE. 0 ) THEN
                CALL USUBAN( MATE, ISUPP, PARA, IRET )
             ENDIF
@@ -101,9 +102,9 @@ C
             CALL GETVR8('OBSTACLE','COEF_C'    ,1,1,1,PARA(5),N5)
             IF ( N4 .EQ. 0 ) PARA(4) =  5.D0
             IF ( N5 .EQ. 0 ) PARA(5) = 10.D0
-            CALL GETVTX(' ','MATER_USURE',1,1,1,MATE,N6)
+            CALL GETVTX(' ','MATER_USURE',0,1,1,MATE,N6)
             IF ( N6 .NE. 0 ) THEN
-               CALL GETVTX(' ','USURE_OBST',1,1,1,K8B,N2)
+               CALL GETVTX(' ','USURE_OBST',0,1,1,K8B,N2)
                IF ( K8B(1:3) .EQ. 'OUI' ) THEN
                   CALL USUBAN( MATE, ISUPP, PARA, IRET )
                ELSE
@@ -146,7 +147,7 @@ C
            IF ( N2 .EQ. 0 ) XB = 1.2D0
            IF ( N3 .EQ. 0 ) XN = 2.44D-08
            IF ( N4 .EQ. 0 ) XA = 1.D-13
-           CALL GETVTX(' ','MATER_USURE',1,1,1,MATE,N5)
+           CALL GETVTX(' ','MATER_USURE',0,1,1,MATE,N5)
            IF ( N5 .NE. 0 ) THEN
               CALL USUBAN ( MATE, ISUPP, PARA, IRET )
               XS = PARA(1)
@@ -164,9 +165,9 @@ C
            IF ( N2 .EQ. 0 ) XB = 1.2D0
            IF ( N3 .EQ. 0 ) XN = 2.44D-08
            IF ( N4 .EQ. 0 ) XA = 1.D-13
-           CALL GETVTX(' ','MATER_USURE',1,1,1,MATE,N5)
+           CALL GETVTX(' ','MATER_USURE',0,1,1,MATE,N5)
            IF ( N5 .NE. 0 ) THEN
-              CALL GETVTX(' ','USURE_OBST',1,1,1,K8B,N6)
+              CALL GETVTX(' ','USURE_OBST',0,1,1,K8B,N6)
               IF ( K8B(1:3) .EQ. 'OUI' ) THEN
                  CALL USUBAN ( MATE, ISUPP, PARA, IRET )
                  XS = PARA(2)

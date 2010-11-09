@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 16/09/2008   AUTEUR PELLET J.PELLET 
+#& MODIF COMMANDE  DATE 09/11/2010   AUTEUR DELMAS J.DELMAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,7 +21,7 @@ AFFE_CHAR_THER_F=OPER(nom="AFFE_CHAR_THER_F",op=34,sd_prod=char_ther,
                      fr="Affectation de charges et conditions aux limites thermiques fonction d'un (ou plusieurs)"
                          +" paramètres (temps, ...)",
                      reentrant='n',
-            UIinfo={"groupes":("Modélisation",)},
+            UIinfo={"groupes":("Chargements","Thermique",)},
       regles=(AU_MOINS_UN('TEMP_IMPO','SOURCE','FLUX_REP','FLUX_NL','ECHANGE',
                           'ECHANGE_PAROI','LIAISON_DDL','LIAISON_GROUP','LIAISON_UNIF',
                           'GRAD_TEMP_INIT','RAYONNEMENT'),),

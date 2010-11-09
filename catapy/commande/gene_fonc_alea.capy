@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 21/04/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+#& MODIF COMMANDE  DATE 09/11/2010   AUTEUR DELMAS J.DELMAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,7 +20,7 @@
 GENE_FONC_ALEA=OPER(nom="GENE_FONC_ALEA",op= 118,sd_prod=table_fonction,
                     fr="Génération de la fonction temporelle à partir d une matrice interspectrale",
                     reentrant='n',
-            UIinfo={"groupes":("Fonction",)},
+            UIinfo={"groupes":("Fonctions",)},
          INTE_SPEC       =SIMP(statut='o',typ=table_fonction),
          NUME_VITE_FLUI  =SIMP(statut='f',typ='I' ),
          INTERPOL        =SIMP(statut='f',typ='TXM',defaut="OUI",into=("NON","OUI") ),

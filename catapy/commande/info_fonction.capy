@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 24/08/2010   AUTEUR COURTOIS M.COURTOIS 
+#& MODIF COMMANDE  DATE 09/11/2010   AUTEUR DELMAS J.DELMAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -29,7 +29,7 @@ def info_fonction_prod(self,ECART_TYPE,RMS,NOCI_SEISME,MAX,NORME, **args):
 INFO_FONCTION=MACRO(nom="INFO_FONCTION",op=info_fonction_ops,sd_prod=info_fonction_prod
                     ,fr="Opérations mathématiques sur des concepts de type fonction, fonction_c ou nappe",
                      reentrant='n',
-            UIinfo={"groupes":("Fonction",)},
+            UIinfo={"groupes":("Fonctions",)},
          regles=(UN_PARMI('MAX','RMS','NOCI_SEISME','NORME','ECART_TYPE',),),
          RMS             =FACT(statut='f',fr="Valeur RMS d'une fonction",max='**',
            METHODE         =SIMP(statut='f',typ='TXM',defaut="TRAPEZE",into=("SIMPSON","TRAPEZE") ),

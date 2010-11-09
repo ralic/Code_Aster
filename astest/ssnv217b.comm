@@ -1,4 +1,4 @@
-# MODIF  DATE 28/09/2010   AUTEUR IDOUX L.IDOUX 
+# MODIF  DATE 08/11/2010   AUTEUR IDOUX L.IDOUX 
 # TITRE CUBE EN TRACTION SIMPLE ET COMPRESSION AVEC LA LOI ENDO_ORTH_BETON
 # ssnv217b.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -19,7 +19,9 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
-DEBUT(CODE=_F(NOM='SSNV217B',NIV_PUB_WEB='INTERNET',VISU_EFICAS='OUI'),);
+DEBUT(CODE=_F(NOM='SSNV217B',
+              NIV_PUB_WEB='INTERNET',
+              VISU_EFICAS='OUI',),);
 
 MA=LIRE_MAILLAGE(FORMAT='MED',);
 
@@ -28,14 +30,14 @@ MO=AFFE_MODELE(MAILLAGE=MA,
                        PHENOMENE='MECANIQUE',
                        MODELISATION='3D_GRAD_EPSI',),);
 
-BETON=DEFI_MATERIAU(NON_LOCAL=_F(LONG_CARA=1.0,),
-                    ELAS=_F(E=32000000000.0,
+BETON=DEFI_MATERIAU(ELAS=_F(E=32000000000.0,
                             NU=0.2,
                             RHO=2400.0,),
                     ENDO_ORTH_BETON=_F(K0=300.0,
                                        K1=10500000.0,
                                        ECROB=1000.0,
-                                       ECROD=60000.0,),);
+                                       ECROD=60000.0,),
+                    NON_LOCAL=_F(LONG_CARA=1.0,),);
 
 MOMAT=AFFE_MATERIAU(MAILLAGE=MA,
                     AFFE=_F(TOUT='OUI',
@@ -73,17 +75,23 @@ DEP_Y_2=AFFE_CHAR_MECA(MODELE=MO,
                        DDL_IMPO=_F(GROUP_MA='depl_y',
                                    DY=0.0,),);
 
-FONC_X=DEFI_FONCTION(NOM_PARA='INST',
-                     VALE=(0.0,0.0,0.1,0.73,1.0,1.0,),
-                     PROL_DROITE='CONSTANT',);
+FONC_X=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.0,0.0,
+                           0.1,0.73,
+                           1.0,1.0,
+                           ),PROL_DROITE='CONSTANT',);
 
-FONC_Y=DEFI_FONCTION(NOM_PARA='INST',
-                     VALE=(0.0,0.0,1.0,0.0,1.1,0.8,2.0,1.0,),
-                     PROL_DROITE='CONSTANT',);
+FONC_Y=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.0,0.0,
+                           1.0,0.0,
+                           1.1,0.8,
+                           2.0,1.0,
+                           ),PROL_DROITE='CONSTANT',);
 
-FONC_Z=DEFI_FONCTION(NOM_PARA='INST',
-                     VALE=(0.0,0.0,2.0,0.0,2.5,0.5,3.0,0.0,4.0,-60.0,),
-                     PROL_DROITE='CONSTANT',);
+FONC_Z=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.0,0.0,
+                           2.0,0.0,
+                           2.5,0.5,
+                           3.0,0.0,
+                           4.0,-60.0,
+                           ),PROL_DROITE='CONSTANT',);
 
 L_TPS=DEFI_LIST_REEL(DEBUT=0.0,
                      INTERVALLE=_F(JUSQU_A=4.0,
@@ -109,10 +117,9 @@ U=STAT_NON_LINE(MODELE=MO,
                 INCREMENT=_F(LIST_INST=L_INST,
                              INST_INIT=0.0,
                              INST_FIN=1.0,),
+                NEWTON=_F(REAC_ITER=1,),
                 ARCHIVAGE=_F(LIST_INST=L_ARCH,
-                             ARCH_ETAT_INIT='OUI',),
-                NEWTON=_F(REAC_ITER=1,),);
-
+                             ARCH_ETAT_INIT='OUI',),);
 
 U=STAT_NON_LINE(reuse =U,
                 MODELE=MO,
@@ -128,8 +135,8 @@ U=STAT_NON_LINE(reuse =U,
                 INCREMENT=_F(LIST_INST=L_INST,
                              INST_INIT=1.0,
                              INST_FIN=2.0,),
-                ARCHIVAGE=_F(LIST_INST=L_ARCH,),
-                NEWTON=_F(REAC_ITER=1,),);
+                NEWTON=_F(REAC_ITER=1,),
+                ARCHIVAGE=_F(LIST_INST=L_ARCH,),);
 
 U=STAT_NON_LINE(reuse =U,
                 MODELE=MO,
@@ -146,8 +153,9 @@ U=STAT_NON_LINE(reuse =U,
                 INCREMENT=_F(LIST_INST=L_INST,
                              INST_INIT=2.0,
                              INST_FIN=4.0,),
-                ARCHIVAGE=_F(LIST_INST=L_ARCH,),
-                NEWTON=_F(REAC_ITER=1,),);
+                NEWTON=_F(REAC_ITER=1,),
+                CONVERGENCE=_F(ITER_GLOB_MAXI=20,),
+                ARCHIVAGE=_F(LIST_INST=L_ARCH,),);
 
 TEST_RESU(RESU=_F(RESULTAT=U,
                   NUME_ORDRE=2,

@@ -1,20 +1,20 @@
-#& MODIF COMMANDE  DATE 06/07/2009   AUTEUR GALENNE E.GALENNE 
+#& MODIF COMMANDE  DATE 09/11/2010   AUTEUR DELMAS J.DELMAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-# (AT YOUR OPTION) ANY LATER VERSION.                                 
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
 #
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 #
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # RESPONSABLE ANGLES J.ANGLES
 def calc_fatigue_prod(TYPE_CALCUL,OPTION,**args):
@@ -27,7 +27,7 @@ def calc_fatigue_prod(TYPE_CALCUL,OPTION,**args):
 CALC_FATIGUE=OPER(nom="CALC_FATIGUE",op= 151,sd_prod=calc_fatigue_prod,reentrant='n',
                   fr="Calculer un champ de dommage de fatigue subit par une structure et déterminer le plan critique"
                       +" dans lequel le cisaillement est maximal.",
-            UIinfo={"groupes":("Post traitements",)},
+            UIinfo={"groupes":("Post-traitements","Rupture",)},
 
          TYPE_CALCUL = SIMP(statut='o',typ='TXM',
                                into=("CUMUL_DOMMAGE","FATIGUE_MULTI","FATIGUE_VIBR") ),
@@ -39,7 +39,7 @@ CALC_FATIGUE=OPER(nom="CALC_FATIGUE",op= 151,sd_prod=calc_fatigue_prod,reentrant
                                  into=("DOMA_ELNO_SIGM","DOMA_ELGA_SIGM",
                                        "DOMA_ELNO_EPSI","DOMA_ELGA_EPSI",
                                        "DOMA_ELNO_EPME","DOMA_ELGA_EPME") ),
-           
+
              b_sigm   =BLOC(condition = "OPTION == 'DOMA_ELNO_SIGM' or OPTION == 'DOMA_ELGA_SIGM'",
                                fr="Calcul a partir d un champ de contraintes.",
                HISTOIRE        =FACT(statut='o',
@@ -65,7 +65,7 @@ CALC_FATIGUE=OPER(nom="CALC_FATIGUE",op= 151,sd_prod=calc_fatigue_prod,reentrant
            TAHERI_NAPPE    =SIMP(statut='f',typ=(nappe_sdaster,formule) ),
            TAHERI_FONC     =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
          ),
-         
+
          b_domma_moda   =BLOC(condition = "TYPE_CALCUL == 'FATIGUE_VIBR'",
                                fr="Calcul d un champ de dommage en dynamique vibratoire",
            regles=(PRESENT_PRESENT('DOMMAGE','MATER', ),),
@@ -107,10 +107,10 @@ CALC_FATIGUE=OPER(nom="CALC_FATIGUE",op= 151,sd_prod=calc_fatigue_prod,reentrant
            b_non_period   =BLOC(condition = "TYPE_CHARGE == 'NON_PERIODIQUE'",
                CRITERE       =SIMP(statut='o',typ='TXM',
                                    into=("MATAKE_MODI_AV","DANG_VAN_MODI_AV","FATESOCI_MODI_AV","VMIS_TRESCA") ),
-               b_fati_np  =BLOC(condition = 
+               b_fati_np  =BLOC(condition =
                                "(CRITERE == 'MATAKE_MODI_AV' or CRITERE == 'DANG_VAN_MODI_AV' or CRITERE == 'FATESOCI_MODI_AV')",
                    PROJECTION    =SIMP(statut='o',typ='TXM',into=("UN_AXE", "DEUX_AXES") ),
-                   DELTA_OSCI    =SIMP(statut='f',typ='R',defaut= 0.0E+0),  
+                   DELTA_OSCI    =SIMP(statut='f',typ='R',defaut= 0.0E+0),
                ),
            ),
          ),

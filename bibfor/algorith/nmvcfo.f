@@ -1,7 +1,7 @@
       SUBROUTINE NMVCFO(MODELZ,MATE  ,CARELE,
      &                  COMPOR,COMREF,COMVAL,VECELZ)
 C
-C MODIF ALGORITH  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 08/11/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -25,13 +25,13 @@ C
       CHARACTER*(*) MODELZ,VECELZ
       CHARACTER*24  MATE  ,COMREF,CARELE,COMPOR
       CHARACTER*19  COMVAL
-C 
+C
 C ----------------------------------------------------------------------
 C
 C ROUTINE MECA_NON_LINE (CALCUL)
 C
 C ESTIMATION D'UNE FORCE DE REFERENCE LIEE A L'ACTION DES VAR. COMM.
-C      
+C
 C ----------------------------------------------------------------------
 C
 C
@@ -77,31 +77,31 @@ C
       CHARACTER*24 LIGRMO,CHGEOM,CHCARA(18)
       CHARACTER*16 OPTION
       INTEGER      IFMDBG,NIVDBG
-C      
+C
 C ----------------------------------------------------------------------
 C
-      CALL JEMARQ()  
-      CALL INFDBG('PRE_CALCUL',IFMDBG,NIVDBG)        
+      CALL JEMARQ()
+      CALL INFDBG('PRE_CALCUL',IFMDBG,NIVDBG)
 C
 C --- INITIALISATIONS
 C
       MODELE = MODELZ
       LIGRMO = MODELE(1:8)//'.MODELE'
-      MASQUE = '.VEXXX'      
+      MASQUE = '.VEXXX'
       VECELE = VECELZ
 C
 C --- INITIALISATION DES CHAMPS POUR CALCUL
 C
       CALL INICAL(NBIN  ,LPAIN ,LCHIN ,
-     &            NBOUT ,LPAOUT,LCHOUT) 
+     &            NBOUT ,LPAOUT,LCHOUT)
 C
 C --- CHAMP DE GEOMETRIE
-C    
+C
       CALL MEGEOM(MODELE,' ' , EXIGEO, CHGEOM)
 C
 C --- CHAMP DE CARACTERISTIQUES ELEMENTAIRES
-C      
-      CALL MECARA(CARELE(1:8), EXICAR, CHCARA)  
+C
+      CALL MECARA(CARELE(1:8), EXICAR, CHCARA)
 C
 C --- LECTURE DES VARIABLES DE COMMANDE EN T+ ET VAL. DE REF
 C
@@ -117,7 +117,7 @@ C
       CALL NMVCD2('EPSA',MATE,EXIEPA,LBID)
 C
 C --- CHAMPS D'ENTREE
-C 
+C
       LPAIN(1)  = 'PGEOMER'
       LCHIN(1)  =  CHGEOM(1:19)
       LPAIN(2)  = 'PMATERC'
@@ -150,7 +150,7 @@ C
       LCHIN(15) =  CHCARA(1) (1:8)//'.CAFIBR'
       LPAIN(16) = 'PCOMPOR'
       LCHIN(16) =  COMPOR(1:19)
-C      
+C
 C --- PREPARATION DES VECT_ELEM
 C
       CALL JEEXIN(VECELE(1:19)// '.RELR',IRET)
@@ -158,7 +158,7 @@ C
         CALL MEMARE('V',VECELE,MODELE,MATE,CARELE,'CHAR_MECA')
       END IF
       CALL JEDETR(VECELE(1:19)// '.RELR')
-      CALL REAJRE(VECELE,' ','V')      
+      CALL REAJRE(VECELE,' ','V')
 C
 C --- CALCUL DES OPTIONS EN T+
 C
@@ -166,14 +166,14 @@ C
 C
 C --- THERMIQUE
 C
-      IF (EXITEM) THEN    
+      IF (EXITEM) THEN
         NBRES     = NBRES+1
         CALL CODENT(NBRES,'D0',MASQUE(4:6))
         LPAOUT(1) = 'PVECTUR'
         LCHOUT(1) =  VECELE(1:8)//MASQUE
         OPTION    = 'CHAR_MECA_TEMP_R'
         CALL CALCUL('C',OPTION,LIGRMO,NBIN ,LCHIN,LPAIN,
-     &                                NBOUT,LCHOUT,LPAOUT,'V')
+     &                                NBOUT,LCHOUT,LPAOUT,'V','OUI')
         CALL JEEXIN(LCHOUT(1)//'.RESL',IRET)
         IF (IRET.GT.0) THEN
           CALL REAJRE(VECELE,LCHOUT(1),'V')
@@ -191,7 +191,7 @@ C
         LCHOUT(1) =  VECELE(1:8)//MASQUE
         OPTION    = 'CHAR_MECA_HYDR_R'
         CALL CALCUL('C',OPTION,LIGRMO,NBIN ,LCHIN,LPAIN,
-     &                                NBOUT,LCHOUT,LPAOUT,'V')        
+     &                                NBOUT,LCHOUT,LPAOUT,'V','OUI')
         CALL REAJRE(VECELE,LCHOUT(1),'V')
       END IF
 C
@@ -204,7 +204,7 @@ C
         LCHOUT(1) =  VECELE(1:8)// MASQUE
         OPTION = 'CHAR_MECA_SECH_R'
         CALL CALCUL('C',OPTION,LIGRMO,NBIN ,LCHIN,LPAIN,
-     &                                NBOUT,LCHOUT,LPAOUT,'V')        
+     &                                NBOUT,LCHOUT,LPAOUT,'V','OUI')
         CALL REAJRE(VECELE,LCHOUT(1),'V')
       END IF
 C
@@ -217,7 +217,7 @@ C
         LCHOUT(1) =  VECELE(1:8)// MASQUE
         OPTION = 'CHAR_MECA_EPSA_R'
         CALL CALCUL('C',OPTION,LIGRMO,NBIN ,LCHIN,LPAIN,
-     &                                NBOUT,LCHOUT,LPAOUT,'V')        
+     &                                NBOUT,LCHOUT,LPAOUT,'V','OUI')
         CALL REAJRE(VECELE,LCHOUT(1),'V')
       END IF
 C

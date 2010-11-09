@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 11/05/2009   AUTEUR NISTOR I.NISTOR 
+#& MODIF COMMANDE  DATE 09/11/2010   AUTEUR DELMAS J.DELMAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -29,7 +29,7 @@ def rest_gene_phys_prod(RESU_GENE,**args ):
 REST_GENE_PHYS=OPER(nom="REST_GENE_PHYS",op=  75,sd_prod=rest_gene_phys_prod,
                     fr="Restituer dans la base physique des résultats en coordonnées généralisées",
                     reentrant='n',
-            UIinfo={"groupes":("Matrices/vecteurs",)},
+            UIinfo={"groupes":("Matrices et vecteurs",)},
         regles=(
                 EXCLUS('INST','LIST_INST','TOUT_INST',
                        'TOUT_ORDRE','NUME_ORDRE','NUME_MODE',),

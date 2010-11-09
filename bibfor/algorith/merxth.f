@@ -1,7 +1,7 @@
       SUBROUTINE MERXTH(MODELE,CHARGE,INFCHA,CARELE,MATE,INST,CHTNI,
      &                  MERIGI,COMPOR,TMPCHI,TMPCHF)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 23/10/2008   AUTEUR TORKHANI M.TORKHANI 
+C MODIF ALGORITH  DATE 08/11/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -123,7 +123,7 @@ C DEB ------------------------------------------------------------------
         ILIRES = ILIRES + 1
         CALL CODENT(ILIRES,'D0',LCHOUT(1) (12:14))
         CALL CALCUL('S',OPTION,LIGREL(1),7,LCHIN,LPAIN,1,LCHOUT,LPAOUT,
-     &              'V')
+     &              'V','OUI')
         CALL REAJRE(MERIGI,LCHOUT(1),'V')
       END IF
 
@@ -158,7 +158,7 @@ C DEB ------------------------------------------------------------------
                 ILIRES = ILIRES + 1
                 CALL CODENT(ILIRES,'D0',LCHOUT(1) (12:14))
                 CALL CALCUL('S',OPTION,LIGREL(NLIGR(K)),NBOPT(K),LCHIN,
-     &                      LPAIN,1,LCHOUT,LPAOUT,'V')
+     &                      LPAIN,1,LCHOUT,LPAOUT,'V','OUI')
                 CALL REAJRE(MERIGI,LCHOUT(1),'V')
               END IF
    10       CONTINUE

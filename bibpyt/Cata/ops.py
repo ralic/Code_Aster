@@ -1,4 +1,4 @@
-#@ MODIF ops Cata  DATE 23/03/2010   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF ops Cata  DATE 09/11/2010   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -188,8 +188,8 @@ def POURSUITE(self, PAR_LOT, IMPR_MACRO, CODE, DEBUG, IGNORE_ALARM, **args):
                UTMESS('A', 'SUPERVIS_93', valk=(elem, name))
                del pickle_context[elem]
                continue
-            # rétablir le parent pour les attributs de la SD
-            pickle_context[elem].reparent_sd()
+            # rétablir le catalogue de SD
+            pickle_context[elem].rebuild_sd()
             if elem in self.g_context.keys():
                poursu_class=self.g_context[elem].__class__
                if poursu_class!=pickle_class :
@@ -212,6 +212,8 @@ def POURSUITE(self, PAR_LOT, IMPR_MACRO, CODE, DEBUG, IGNORE_ALARM, **args):
      # POURSUITE
      if hasattr(self,'fichier_init'):
         return
+     if aster_exists:
+        UTMESS('F','SUPERVIS_89')
      self.make_poursuite()
 
 def get_pickled_context():

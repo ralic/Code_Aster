@@ -1,4 +1,4 @@
-# MODIF  DATE 15/06/2010   AUTEUR MACOCCO K.MACOCCO 
+# MODIF  DATE 09/11/2010   AUTEUR NISTOR I.NISTOR 
 # TITRE SOUS-STRUCT. TRANS. (MNEAL) : SYSTEME 3 MASSES - 4 RESSORTS
 # sdld102b.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -182,10 +182,14 @@ MACEL2=MACR_ELEM_DYNA(  BASE_MODALE=BAMO2)
 #  DEFINITION DU MODELE GENERALISE
 #------------------------------------------------------------------
 
-MODEGE=DEFI_MODELE_GENE( SOUS_STRUC=(_F( NOM = 'COTE1',
-                                         MACR_ELEM_DYNA = MACEL1),
-                             _F( NOM = 'COTE2',
-                                         MACR_ELEM_DYNA = MACEL2)),
+MODEGE=DEFI_MODELE_GENE( SOUS_STRUC=(_F(NOM='COTE1',
+                                       MACR_ELEM_DYNA=MACEL1,
+                                       ANGL_NAUT = (0., 0., 0.,),
+                                       TRANS=(0.,0.,0.),),
+                                    _F(NOM='COTE2',
+                                       MACR_ELEM_DYNA=MACEL2,
+                                       ANGL_NAUT = (0., 0., 0.,),
+                                       TRANS=(0.2,0.,0.),),),
                              LIAISON=_F( SOUS_STRUC_1 = 'COTE1',
                                       SOUS_STRUC_2 = 'COTE2',
                                       INTERFACE_1 = 'DROITE',

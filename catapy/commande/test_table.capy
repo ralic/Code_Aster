@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 01/02/2010   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 09/11/2010   AUTEUR DELMAS J.DELMAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,10 +18,10 @@
 # ======================================================================
 # RESPONSABLE COURTOIS M.COURTOIS
 TEST_TABLE=PROC(nom="TEST_TABLE",op= 177,
-            UIinfo={"groupes":("Impression",)},
-         fr="Tester une cellule ou une colonne d'une table",
-         regles=(UN_PARMI('VALE','VALE_I','VALE_C', ),
-                 DERIVABLE('TABLE'),),
+                UIinfo={"groupes":("Tables","Utilitaires",)},
+                fr="Tester une cellule ou une colonne d'une table",
+                regles=(UN_PARMI('VALE','VALE_I','VALE_C', ),
+                DERIVABLE('TABLE'),),
 #  concept table_sdaster à tester
          TABLE           =SIMP(statut='o',typ=table_sdaster),
 

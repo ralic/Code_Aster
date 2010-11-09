@@ -6,7 +6,7 @@
       CHARACTER*6   CHTEMP
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 08/11/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -93,7 +93,8 @@ C
       LPAOUT(1) = 'PERREUR'
       LCHOUT(1) = RESU
       OPTION = 'ERRE_QIZZ'
-      CALL CALCUL('S',OPTION,LIGREL,7,LCHIN,LPAIN,1,LCHOUT,LPAOUT,'G')
+      CALL CALCUL('S',OPTION,LIGREL,7,LCHIN,LPAIN,1,LCHOUT,LPAOUT,'G',
+     &               'OUI')
 
    10 CONTINUE
       END

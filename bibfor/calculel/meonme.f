@@ -6,7 +6,7 @@
       CHARACTER*(*) MATE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 23/10/2008   AUTEUR TORKHANI M.TORKHANI 
+C MODIF CALCULEL  DATE 08/11/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -109,7 +109,7 @@ C           LIGRCH = LCHAR(ICHA)//'.CHME.LIGRE'
             ILIRES = ILIRES + 1
             CALL CODENT(ILIRES,'D0',LCHOUT(1) (12:14))
             CALL CALCUL('S',OPTION,LIGRMO,3,LCHIN,LPAIN,1,LCHOUT,LPAOUT,
-     &                  'G')
+     &                  'G','OUI')
             CALL REAJRE(MATEL,LCHOUT(1),'G')
           END IF
    10   CONTINUE

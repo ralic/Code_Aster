@@ -1,7 +1,7 @@
       LOGICAL FUNCTION ISCHAR(LISCHA,TYPCHA,SOUTYP,ICHAR )     
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 04/10/2010   AUTEUR GREFFET N.GREFFET 
+C MODIF ALGORITH  DATE 08/11/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -149,6 +149,9 @@ C
             LDIRI  = .TRUE.  
             LDUAL  = .TRUE.            
           ELSEIF (ZI(JINFCH+ICHA).EQ.5) THEN  
+            LDIRI  = .TRUE.  
+            LDUAL  = .TRUE.          
+          ELSEIF (ZI(JINFCH+ICHA).EQ.6) THEN  
             LDIRI  = .TRUE.  
             LDUAL  = .TRUE.
           ELSEIF (ZI(JINFCH+ICHA).EQ.0) THEN 

@@ -1,4 +1,4 @@
-# MODIF  DATE 03/03/2009   AUTEUR BOYERE E.BOYERE 
+# MODIF  DATE 08/11/2010   AUTEUR BOITEAU O.BOITEAU 
 # TITRE CALCUL D'UNE LIGNE D'ARBRE SANS DISQUE
 # sdll141d.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -128,7 +128,7 @@ MODEG=MODE_ITER_SIMULT(MATR_A=RIGIDITE,
                        MATR_B=MASSE,
                        MATR_C=GYOM,
                        VERI_MODE=_F(SEUIL=2.E-3),
-       METHODE='SORENSEN',
+       METHODE='QZ',
        CALC_FREQ=_F(OPTION='CENTRE',
                                      FREQ=1.,
                                      NMAX_FREQ=30),)

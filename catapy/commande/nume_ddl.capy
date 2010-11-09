@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 08/08/2008   AUTEUR DESOZA T.DESOZA 
+#& MODIF COMMANDE  DATE 09/11/2010   AUTEUR DELMAS J.DELMAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,7 +18,7 @@
 # ======================================================================
 # RESPONSABLE PELLET J.PELLET
 NUME_DDL=OPER(nom="NUME_DDL",op=11,sd_prod=nume_ddl_sdaster,reentrant='n',
-            UIinfo={"groupes":("Matrices/vecteurs",)},
+            UIinfo={"groupes":("Matrices et vecteurs",)},
               fr="Etablissement de la numérotation des ddl avec ou sans renumérotation et du stockage de la matrice",
                   regles=(UN_PARMI('MATR_RIGI','MODELE'),),
          MATR_RIGI       =SIMP(statut='f',validators=NoRepeat(),max=100,

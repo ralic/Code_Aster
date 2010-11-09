@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 11/05/2009   AUTEUR NISTOR I.NISTOR 
+#& MODIF COMMANDE  DATE 09/11/2010   AUTEUR DELMAS J.DELMAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -31,7 +31,7 @@ def macro_proj_base_prod(self,MATR_ASSE_GENE,VECT_ASSE_GENE,PROFIL,**args ):
 
 MACRO_PROJ_BASE=MACRO(nom="MACRO_PROJ_BASE",op=macro_proj_base_ops,
          regles=(AU_MOINS_UN('MATR_ASSE_GENE','VECT_ASSE_GENE')),
-            UIinfo={"groupes":("Matrices/vecteurs",)},
+            UIinfo={"groupes":("Matrices et vecteurs","Dynamique",)},
                       sd_prod=macro_proj_base_prod,
          fr="Projection des matrices et/ou vecteurs assemblés sur une base (modale ou de RITZ)",
          BASE            =SIMP(statut='o',typ=(mode_meca,mode_gene) ),

@@ -1,20 +1,20 @@
-#& MODIF COMMANDE  DATE 21/04/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+#& MODIF COMMANDE  DATE 09/11/2010   AUTEUR DELMAS J.DELMAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-# (AT YOUR OPTION) ANY LATER VERSION.                                 
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
 #
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 #
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # RESPONSABLE PELLET J.PELLET
 def calc_vect_elem_prod(OPTION,**args):
@@ -25,7 +25,7 @@ def calc_vect_elem_prod(OPTION,**args):
   raise AsException("type de concept resultat non prevu")
 
 CALC_VECT_ELEM=OPER(nom="CALC_VECT_ELEM",op=8,sd_prod=calc_vect_elem_prod,reentrant='n',
-            UIinfo={"groupes":("Matrices/vecteurs",)},
+            UIinfo={"groupes":("Matrices et vecteurs",)},
                     fr="Calcul des seconds membres élémentaires",
          OPTION          =SIMP(statut='o',typ='TXM',into=("CHAR_MECA","CHAR_THER","CHAR_ACOU",
                                                            "FORC_NODA") ),
@@ -38,7 +38,7 @@ CALC_VECT_ELEM=OPER(nom="CALC_VECT_ELEM",op=8,sd_prod=calc_vect_elem_prod,reentr
               CARA_ELEM    =SIMP(statut='f',typ=cara_elem),
               INST         =SIMP(statut='f',typ='R',defaut= 0.E+0 ),
               MODE_FOURIER =SIMP(statut='f',typ='I',defaut= 0 ),
-           ),  
+           ),
            b_modele     =BLOC(condition = "(MODELE != None)",fr="modèle contenant une sous-structure",
               SOUS_STRUC      =FACT(statut='o',min=01,
                 regles=(UN_PARMI('TOUT','SUPER_MAILLE'),),
@@ -53,15 +53,15 @@ CALC_VECT_ELEM=OPER(nom="CALC_VECT_ELEM",op=8,sd_prod=calc_vect_elem_prod,reentr
            CHARGE           =SIMP(statut='o',typ=char_ther,validators=NoRepeat(),max='**'),
            INST             =SIMP(statut='f',typ='R',defaut= 0.E+0 ),
          ),
-              
+
          b_char_acou     =BLOC(condition = "OPTION=='CHAR_ACOU'",
            CHAM_MATER        =SIMP(statut='o',typ=cham_mater),
            CHARGE            =SIMP(statut='o',typ=char_acou,validators=NoRepeat(),max='**'),
          ),
-         
+
          b_forc_noda     =BLOC(condition = "OPTION=='FORC_NODA'",
            SIEF_ELGA         =SIMP(statut='o',typ=cham_elem),
            CARA_ELEM         =SIMP(statut='f',typ=cara_elem),
            MODELE            =SIMP(statut='f',typ=modele_sdaster),
-         ),       
+         ),
 ) ;

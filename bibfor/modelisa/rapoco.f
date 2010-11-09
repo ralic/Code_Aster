@@ -1,7 +1,7 @@
       SUBROUTINE RAPOCO(NUMDLZ,IOCC,FONREZ,LISREZ,CHARGZ)
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 19/10/2010   AUTEUR DELMAS J.DELMAS 
+C MODIF MODELISA  DATE 08/11/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -381,7 +381,7 @@ C     ---------------------------------------------------
       LCHOUT(1) = '&&RAPOCO.PSECT'
 
       CALL CALCUL('S','CARA_SECT_POUT3',LIGREL,3,LCHIN,LPAIN,1,LCHOUT,
-     &            LPAOUT,'V')
+     &            LPAOUT,'V','OUI')
 
 C --- VECTEUR DES QUANTITES GEOMETRIQUES PRECITEES SOMMEES
 C --- SUR LA SURFACE DE RACCORD, CES QUANTITES SERONT NOTEES :
@@ -498,7 +498,7 @@ C     ------------------------------
       LCHOUT(2) = '&&RAPOCO.VECT2'
 
       CALL CALCUL('S','CARA_SECT_POUT4',LIGREL,4,LCHIN,LPAIN,2,LCHOUT,
-     &            LPAOUT,'V')
+     &            LPAOUT,'V','OUI')
 
 C --- CREATION DES .RERR DES VECTEURS EN SORTIE DE CALCUL
 C     --------------------------------------------------------

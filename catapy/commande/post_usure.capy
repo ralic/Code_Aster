@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 21/04/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+#& MODIF COMMANDE  DATE 09/11/2010   AUTEUR DELMAS J.DELMAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,7 +18,7 @@
 # ======================================================================
 # RESPONSABLE ZENTNER I.ZENTNER
 POST_USURE=OPER(nom="POST_USURE",op=153,sd_prod=table_sdaster,reentrant='f',
-            UIinfo={"groupes":("Post traitements",)},
+            UIinfo={"groupes":("Post-traitements",)},
                 fr="Calcul des volumes d'usure et des profondeurs d'usure d'après la puissance d'usure",
          regles=(UN_PARMI('TUBE_NEUF','RESU_GENE','PUIS_USURE'),
                  PRESENT_PRESENT('RESU_GENE','NOEUD','LOI_USURE'),

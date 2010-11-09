@@ -1,5 +1,5 @@
       SUBROUTINE NMDEPR(MODELE,LIGREL,CARELE,CHARGE,ICHA,INSTAN,RESUFV)
-C MODIF ALGORITH  DATE 22/03/2010   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 08/11/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -142,7 +142,7 @@ C     ---------------------------------------------------------
 
         CALL CORICH('E',RESUFV(1),ICHA,IBID)
         CALL CALCUL('S',OPTION,LIGREL,2,LCHIN,LPAIN,1,RESUFV(1),PAOUT,
-     &              'V')
+     &              'V','OUI')
       END IF
 
 C 2 - SURFACIQUE
@@ -198,7 +198,7 @@ C     ---------------------------------------------------------
 
         CALL CORICH('E',RESUFV(2),ICHA,IBID)
         CALL CALCUL('S',OPTION,LIGREL,2,LCHIN,LPAIN,1,RESUFV(2),PAOUT,
-     &              'V')
+     &              'V','OUI')
       END IF
 
 C 3 - PRESSION
@@ -247,7 +247,7 @@ C     -------------------------------------
 
         CALL CORICH('E',RESUFV(3),ICHA,IBID)
         CALL CALCUL('S',OPTION,LIGREL,6,LCHIN,LPAIN,1,RESUFV(3),PAOUT,
-     &              'V')
+     &              'V','OUI')
       END IF
 
 

@@ -1,4 +1,4 @@
-# MODIF  DATE 16/11/2009   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 09/11/2010   AUTEUR NISTOR I.NISTOR 
 # TITRE MODELE PROBABILISTE NONPARAMETRIQUE EN HARMONIQUE SOUS-STRUCTURE
 # shls200a.para = tps_job 310 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -288,8 +288,7 @@ BAMO2=DEFI_BASE_MODALE( CLASSIQUE=_F(INTERF_DYNA = INTERF2,
 MACRO1M=MACR_ELEM_DYNA(  BASE_MODALE=BAMO1,
                          MATR_AMOR =  MATD1,)
 MACRO2M=MACR_ELEM_DYNA(  BASE_MODALE=BAMO2,
-                         MATR_AMOR =  MATD2, )
-                                
+                         MATR_AMOR =  MATD2, )                
 
 LFREQ=DEFI_LIST_REEL(DEBUT=30.,
                           INTERVALLE=_F(JUSQU_A=60.,
@@ -353,9 +352,14 @@ for k in range(1,ns+1):
 
 
    MODEGE=DEFI_MODELE_GENE( SOUS_STRUC=(_F( NOM = 'PLQ1', 
-                                         MACR_ELEM_DYNA = MACRO1), 
+                                         MACR_ELEM_DYNA = MACRO1,
+                                         ANGL_NAUT = (0., 0., 0.,),
+                                         TRANS=(0.,0.,0.),), 
                              _F( NOM = 'PLQ2', 
-                                         MACR_ELEM_DYNA = MACRO2,)),LIAISON=( 
+                                         MACR_ELEM_DYNA = MACRO2,
+                                         ANGL_NAUT = (0., 0., 0.,),
+                                         TRANS=(0.,0.,0.),)),
+                             LIAISON=( 
                                 _F( SOUS_STRUC_1 = 'PLQ1', 
                                          SOUS_STRUC_2 = 'PLQ2', 
                                          INTERFACE_1 = 'LIAI1',

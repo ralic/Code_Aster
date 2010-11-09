@@ -7,7 +7,7 @@
       CHARACTER*19 MATEL
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 16/06/2010   AUTEUR CARON A.CARON 
+C MODIF CALCULEL  DATE 08/11/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -105,7 +105,7 @@ C
         LPAIN(9) = 'PLST'
         LCHIN(9) = LST
         LPAIN(10) = 'PSTANO'
-        LCHIN(10) = STANO  
+        LCHIN(10) = STANO
         LPAIN(11) = 'PPMILTO'
         LCHIN(11) = PMILTO
 C
@@ -117,7 +117,7 @@ C
         OPTION = 'RIGI_MECA_GE'
 
         CALL CALCUL('S',OPTION,LIGRMO,11,LCHIN,LPAIN,1,
-     &              LCHOUT,LPAOUT,BASE)
+     &              LCHOUT,LPAOUT,BASE,'OUI')
         CALL REAJRE(MATEL,LCHOUT(1),BASE)
 
       ELSEIF (IER.EQ.0) THEN
@@ -146,7 +146,7 @@ C
         LCHIN(9) = CARA(1:8)//'.CANBSP'
         OPTION = 'RIGI_MECA_GE'
         CALL CALCUL('S',OPTION,LIGRMO,9,LCHIN,LPAIN,1,LCHOUT,
-     &              LPAOUT,BASE)
+     &              LPAOUT,BASE,'OUI')
         CALL REAJRE(MATEL,LCHOUT(1),BASE)
 
       ENDIF

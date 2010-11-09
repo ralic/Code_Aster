@@ -2,7 +2,7 @@
      &                  INSTAP,DEPMOZ,DEPDEZ,VECELZ,INSTAM,
      &                  COMPOR,CARCRI,LIGREZ,VITEZ)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 08/11/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -25,7 +25,6 @@ C RESPONSABLE VABHHTS J.PELLET
       CHARACTER*19 VECELE
       CHARACTER*24 MODELE,CARELE,CHARGE,INFCHA,COMPOR,
      &             CARCRI
-     
       REAL*8 INSTAP,INSTAM
 C ----------------------------------------------------------------------
 C     CALCUL DES VECTEURS ELEMENTAIRES DES CHARGEMENTS MECANIQUES
@@ -215,9 +214,9 @@ C     -------------------------------------
               IF (NOMLIG(K).EQ.'.VEASS') THEN
                 CALL JEVEUO(LCHIN(1),'L',JLCHIN)
                 CALL COPISD('CHAMP_GD','V',ZK8(JLCHIN),RESUEL)
-              ELSE    
+              ELSE
                 CALL CALCUL('S',OPTION,LIGREL,NBOPT(K),LCHIN,LPAIN,1,
-     &                      RESUEL,PAOUT,'V')
+     &                      RESUEL,PAOUT,'V','OUI')
               END IF
               ILVE = ILVE + 1
               CALL REAJRE(VECELE,RESUEL,'V')
@@ -229,7 +228,7 @@ C     -------------------------------------
             ENDIF
    20     CONTINUE
           IF (SOMME.EQ.0) THEN
-             CALL U2MESS('F','MECANONLINE2_4') 
+             CALL U2MESS('F','MECANONLINE2_4')
           ENDIF
         END IF
 C       --TRAITEMENT DE AFFE_CHAR_MECA/EVOL_CHAR

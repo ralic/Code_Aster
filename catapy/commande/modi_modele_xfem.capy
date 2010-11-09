@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 20/07/2010   AUTEUR MAHFOUZ D.MAHFOUZ 
+#& MODIF COMMANDE  DATE 09/11/2010   AUTEUR DELMAS J.DELMAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,7 +19,7 @@
 # RESPONSABLE GENIAUT S.GENIAUT
 
 MODI_MODELE_XFEM=OPER(nom="MODI_MODELE_XFEM",op= 113,sd_prod=modele_sdaster,docu="U4.44.12-e",reentrant='f',
-            UIinfo={"groupes":("Modélisation",)},
+            UIinfo={"groupes":("Modélisation","Rupture",)},
                            fr="Engendrer ou enrichir une structure de donnees en affectant les cham_gd associes",
                            
     MODELE_IN       =SIMP(statut='o',typ=modele_sdaster,min=1,max=1,),

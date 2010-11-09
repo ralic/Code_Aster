@@ -2,7 +2,7 @@
      &                  LISINZ,IVAL  )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 19/10/2010   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 08/11/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -104,6 +104,10 @@ C
         NBIOUT = 1
         INFOCH(NBIOUT) = 'DIRI_PILO'
         
+      ELSEIF (ZI(JINFCH+ICHAR) .EQ. 6) THEN
+        NBIOUT = 1
+        INFOCH(NBIOUT) = 'DIRI_PILO_F'
+                
       ELSEIF (ZI(JINFCH+ICHAR) .EQ. 1) THEN
         NBIOUT = 1
         INFOCH(NBIOUT) = 'DIRI_CSTE'

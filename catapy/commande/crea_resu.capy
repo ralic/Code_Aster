@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 25/05/2010   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+#& MODIF COMMANDE  DATE 09/11/2010   AUTEUR DELMAS J.DELMAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -32,7 +32,7 @@ def crea_resu_prod(TYPE_RESU,**args):
   raise AsException("type de concept resultat non prevu")
 
 CREA_RESU=OPER(nom="CREA_RESU",op=124,sd_prod=crea_resu_prod,reentrant='f',
-            UIinfo={"groupes":("Modélisation",)},
+            UIinfo={"groupes":("Résultats et champs",)},
                fr="Créer ou enrichir une structure de donnees resultat à partir de champs aux noeuds",
 
          OPERATION =SIMP(statut='o',typ='TXM',into=("AFFE","ASSE","ECLA_PG","PERM_CHAM","PROL_RTZ","PREP_VRC1","PREP_VRC2",),

@@ -1,7 +1,7 @@
       SUBROUTINE  ENETOT(OPTION, IORD, LIGREL, CHGEOM, CHDEPL,
-     +                   CHDEPM, CHSIG, CHSIGM, CHELEM)
+     &                   CHDEPM, CHSIG, CHSIGM, CHELEM)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/01/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ELEMENTS  DATE 08/11/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -82,7 +82,7 @@ C      ------------------------------------
       LCHOUT(1) = '&&ENETOT.CHAMELEM1'
 C
       CALL CALCUL('S',OPTION, LIGREL, NBIN, LCHIN, LPAIN, 1, LCHOUT,
-     +            LPAOUT, 'V')
+     &            LPAOUT, 'V','OUI')
 C
       TYPCST(1) = 'R'
       TYPCST(2) = 'R'

@@ -3,7 +3,7 @@
      &                  MEMASS,MEAMOR)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 29/03/2010   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 08/11/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -232,7 +232,7 @@ C
         NOP = 11
       ENDIF
       CALL CALCUL('S',OPTION,LIGRMO,NOP ,LCHIN,LPAIN,
-     &                              2   ,LCHOUT,LPAOUT,BASE)
+     &                              2   ,LCHOUT,LPAOUT,BASE,'OUI')
 C
       IF (DEBUG) THEN
         CALL DBGCAL(OPTION,IFMDBG,
@@ -262,7 +262,8 @@ C
           CALL CODENT(ILIRES+1,'D0',LCHOUT(3) (12:14))
           OPTION = 'MECA_DDLM_R'
           CALL CALCUL('S',OPTION,LIGRCH,1,LCHIN,LPAIN,
-     &                                  1,LCHOUT(3),LPAOUT(3),BASE)
+     &                                  1,LCHOUT(3),LPAOUT(3),BASE,'OUI'
+     &)
           CALL REAJRE(MEAMOR,LCHOUT(3),BASE)
    50   CONTINUE
       END IF

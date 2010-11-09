@@ -1,4 +1,4 @@
-#@ MODIF impr_diag_campbell_utils Macro  DATE 11/05/2010   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF impr_diag_campbell_utils Macro  DATE 09/11/2010   AUTEUR TORKHANI M.TORKHANI 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -27,7 +27,7 @@ from Accas import _F
 # "self" est l'objet MACRO
 
 
-def CLASS_MODES(self,L_MODES, NFREQ, NFREQ_camp, L_GR_NOEUD, VITE_ROTA) :
+def CLASS_MODES(self,L_MODES, NFREQ, NFREQ_CAMP, L_GR_NOEUD, VITE_ROTA) :
     """Classification des modes en flexion, en torsion et en traction/compression"""
     
     POST_RELEVE_T     =self.get_cmd('POST_RELEVE_T') 
@@ -212,17 +212,17 @@ def CLASS_MODES(self,L_MODES, NFREQ, NFREQ_camp, L_GR_NOEUD, VITE_ROTA) :
     # -----------------------------------------------------------
     NFREQ_fc=0;
     for jj in range(NFREQ_f): 
-        if NVT_f[jj][NBV-1]<= NFREQ_camp: 
+        if NVT_f[jj][NBV-1]<= NFREQ_CAMP: 
             NFREQ_fc=NFREQ_fc+1;
    
     NFREQ_tc=0;
     for jj in range(NFREQ_t): 
-        if NVT_t[jj][NBV-1]<= NFREQ_camp: 
+        if NVT_t[jj][NBV-1]<= NFREQ_CAMP: 
             NFREQ_tc=NFREQ_tc+1;
  
     NFREQ_lc=0;
     for jj in range(NFREQ_l): 
-        if NVT_l[jj][NBV-1]<= NFREQ_camp: 
+        if NVT_l[jj][NBV-1]<= NFREQ_CAMP: 
             NFREQ_lc=NFREQ_lc+1;
       
     RESULT =[NFREQ_f,NFREQ_t,NFREQ_l,Mf,Mt,Ml,NVT,NVT_f,NVT_t,NVT_l,NFREQ_fc,NFREQ_tc,NFREQ_lc]

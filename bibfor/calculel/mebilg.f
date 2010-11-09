@@ -11,7 +11,7 @@
       LOGICAL EXTIM
 C ......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 01/04/2008   AUTEUR MACOCCO K.MACOCCO 
+C MODIF CALCULEL  DATE 08/11/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -210,7 +210,7 @@ C - TRAITEMENT DES CHARGES V
       LIGRMO = MODELE//'.MODELE'
       NCHIN = 20
       CALL CALCUL('S',OPTI,LIGRMO,NCHIN,LCHIN,LPAIN,1,LCHOUT,LPAOUT,
-     &            'V')
+     &            'V','OUI')
 
 C  SOMMATION DES FIC ET G ELEMENTAIRES
 

@@ -1,6 +1,6 @@
       SUBROUTINE NMSIGI(LIGRMO,COMPOR,SIGINI)
 C
-C MODIF ALGORITH  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 08/11/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -29,7 +29,7 @@ C
 C ROUTINE MECA_NON_LINE (INITIALISATION)
 C
 C RECUPERATION D'UN CHARGEMENT MECANIQUE DE TYPE PRECONTRAINTE
-C      
+C
 C ----------------------------------------------------------------------
 C
 C
@@ -67,9 +67,9 @@ C
       CHARACTER*8  CHARGE
       CHARACTER*16 OPTION
       CHARACTER*19 SIGCHA
-C      
+C
 C ----------------------------------------------------------------------
-C      
+C
       CALL JEMARQ()
 
       CALL GETFAC('EXCIT',NBOCC)
@@ -88,7 +88,7 @@ C
             LCHIN(2) = SIGCHA
             CALL COPISD('CHAM_ELEM_S','V',COMPOR,LCHOUT(1))
             CALL CALCUL('S',OPTION,LIGRMO,2,LCHIN,LPAIN,1,LCHOUT,LPAOUT,
-     &                  'V')
+     &                  'V','OUI')
             CALL DETRSD('CHAM_ELEM_S',LCHOUT(1))
             CALL COPISD('CHAMP_GD','V','&&NMSIGI.PEPCON3',SIGINI)
           END IF

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 21/04/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+#& MODIF COMMANDE  DATE 09/11/2010   AUTEUR DELMAS J.DELMAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -27,7 +27,7 @@ def exec_logiciel_prod(self, MAILLAGE, **args):
 
 EXEC_LOGICIEL = MACRO(nom="EXEC_LOGICIEL",op=exec_logiciel_ops, sd_prod=exec_logiciel_prod,
                       fr="Exécute un logiciel ou une commande système depuis Aster",
-                      UIinfo={"groupes":("Outils métier",)},
+                      UIinfo={"groupes":("Gestion du travail","Outils-métier",)},
       
       regles = (AU_MOINS_UN('LOGICIEL', 'MAILLAGE'),),
       

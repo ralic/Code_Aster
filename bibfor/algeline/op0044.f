@@ -1,7 +1,7 @@
       SUBROUTINE OP0044()
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 26/10/2010   AUTEUR BOITEAU O.BOITEAU 
+C MODIF ALGELINE  DATE 08/11/2010   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -119,6 +119,8 @@ C     ------------------------------------------------------------------
 C
       UNDF = R8VIDE()
       INDF = ISNNEM()
+      DET1=0.D0
+      DET2=0.D0
 
 C     --- RECUPERATION DU RESULTAT  ---
       CALL GETRES( MODES, TYPCON, NOMCMD )

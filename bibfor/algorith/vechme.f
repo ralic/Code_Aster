@@ -3,7 +3,7 @@
      &                  NOPASZ,TYPESE,STYPSE,VECELZ)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/06/2010   AUTEUR CARON A.CARON 
+C MODIF ALGORITH  DATE 08/11/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -415,7 +415,7 @@ C             -- SI .VEASS, IL N'Y A PAS DE CALCUL A LANCER
                   CALL ASSERT(NCHIN.LE.NCHINX)
 
                   CALL CALCUL(STOP,OPTION,LIGREL,NCHIN,LCHIN,LPAIN,1,
-     &                        RESUEL,PAOUT,'V')
+     &                        RESUEL,PAOUT,'V','OUI')
 
                 END IF
 

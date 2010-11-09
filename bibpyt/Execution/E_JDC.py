@@ -1,4 +1,4 @@
-#@ MODIF E_JDC Execution  DATE 19/10/2010   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF E_JDC Execution  DATE 09/11/2010   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -249,6 +249,9 @@ class JDC:
            if isinstance(value,ENTITE) :continue
            # Enfin on conserve seulement les objets que l'on peut pickler individuellement.
            try:
+              # pour accélérer, on supprime le catalogue de SD devenu inutile.
+              if isinstance(value, ASSD):
+                  value.supprime_sd()
               pickle.dumps(value)
               d[key]=value
            except:

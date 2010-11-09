@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 21/04/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+#& MODIF COMMANDE  DATE 09/11/2010   AUTEUR DELMAS J.DELMAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,7 +18,7 @@
 # ======================================================================
 # RESPONSABLE ANGLES J.ANGLES
 POST_FATIGUE=OPER(nom="POST_FATIGUE",op=136,sd_prod=table_sdaster,reentrant='n',
-            UIinfo={"groupes":("Post traitements",)},
+            UIinfo={"groupes":("Post-traitements","Rupture",)},
                   fr="Calculer en un point, le dommage de fatigue subi par une structure soumise à une histoire de chargement",
 
          CHARGEMENT = SIMP(statut='o',typ='TXM',into=("UNIAXIAL","PERIODIQUE","QUELCONQUE")),

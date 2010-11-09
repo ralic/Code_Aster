@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 20/09/2010   AUTEUR TARDIEU N.TARDIEU 
+#& MODIF COMMANDE  DATE 09/11/2010   AUTEUR DELMAS J.DELMAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,7 +21,7 @@ CALC_FORC_AJOU=OPER(nom="CALC_FORC_AJOU",op=199,sd_prod=vect_asse_gene,
                    fr="Calculer l'effet de surpression hydrodynamique due au mouvement d'entrainement de la structure"
                        +" en analyse sismique",
                    reentrant ='n',
-            UIinfo={"groupes":("Matrices/vecteurs",)},
+            UIinfo={"groupes":("Matrices et vecteurs",)},
 
         regles=(EXCLUS('MODE_MECA','MODELE_GENE'),
                 PRESENT_PRESENT( 'MODELE_GENE','NUME_DDL_GENE'),
@@ -76,7 +76,7 @@ CALC_FORC_AJOU=OPER(nom="CALC_FORC_AJOU",op=199,sd_prod=vect_asse_gene,
            b_mumps        =BLOC(condition = "METHODE == 'MUMPS' ",fr="Paramètres de la méthode MUMPS",
              TYPE_RESOL      =SIMP(statut='f',typ='TXM',defaut="AUTO",into=("NONSYM","SYMGEN","SYMDEF","AUTO")),
              PRETRAITEMENTS  =SIMP(statut='f',typ='TXM',defaut="AUTO",into=("SANS","AUTO")),
-             POSTTRAITEMENTS =SIMP(statut='f',typ='TXM',defaut="AUTO",into=("SANS","AUTO","FORCE")),             
+             POSTTRAITEMENTS =SIMP(statut='f',typ='TXM',defaut="AUTO",into=("SANS","AUTO","FORCE")),
              RENUM           =SIMP(statut='f',typ='TXM',defaut="AUTO",into=("AMD","AMF","PORD","METIS","QAMD","AUTO")),
              ELIM_LAGR2      =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON")),
              PCENT_PIVOT     =SIMP(statut='f',typ='I',defaut=10,),
@@ -95,7 +95,7 @@ CALC_FORC_AJOU=OPER(nom="CALC_FORC_AJOU",op=199,sd_prod=vect_asse_gene,
                REAC_PRECOND        =SIMP(statut='f',typ='I',defaut=5, ),
                RENUM               =SIMP(statut='f',typ='TXM',defaut="SANS",into=("SANS","RCMK") ),
              ),
-             b_jacobi_sor   =BLOC(condition = "PRE_COND == 'JACOBI' or PRE_COND == 'SOR'", 
+             b_jacobi_sor   =BLOC(condition = "PRE_COND == 'JACOBI' or PRE_COND == 'SOR'",
                                                                          fr="Paramètres des préconditionneurs JACOBI et SOR",
                RENUM               =SIMP(statut='f',typ='TXM',defaut="SANS",into=("SANS","RCMK") ),
              ),

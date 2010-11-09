@@ -1,4 +1,4 @@
-# MODIF  DATE 20/07/2010   AUTEUR MAHFOUZ D.MAHFOUZ 
+# MODIF  DATE 09/11/2010   AUTEUR NISTOR I.NISTOR 
 # TITRE SOUS STRUCTURATION DYNAMIQUE : TRIANGLE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -297,14 +297,20 @@ MACEL3=MACR_ELEM_DYNA(BASE_MODALE=BAMO3_CL,);
 
 MODEGENE=DEFI_MODELE_GENE(SOUS_STRUC=(
                                       _F(NOM='TRI1',
-                                         MACR_ELEM_DYNA=MACEL1,),
+                                         MACR_ELEM_DYNA=MACEL1,
+                                         TRANS=(0.,0.0,0.),
+                                         ANGL_NAUT=(0.0,0.0,0.0,),),
                                       _F(NOM='TRI2',
                                          MACR_ELEM_DYNA=MACEL2,
+                                         TRANS=(0.,0.0,0.),
                                          ANGL_NAUT=(0.0,0.0,180.0,),),
                                       _F(NOM='TRI3',
-                                         MACR_ELEM_DYNA=MACEL3,),
+                                         MACR_ELEM_DYNA=MACEL3,
+                                         TRANS=(-0.5,-0.866025,0.),
+                                         ANGL_NAUT=(0.,0.,0.,),),
                                       _F(NOM='TRI4',
                                          MACR_ELEM_DYNA=MACEL3,
+                                         TRANS=(1.5,-0.866025,0.),
                                          ANGL_NAUT=(0.0,180.0,0.0,),),
                                          ),
                           LIAISON=(
@@ -338,6 +344,8 @@ MASSGENE=ASSE_MATR_GENE(NUME_DDL_GENE=NUMEGE,
 
 RESGEN=MODE_ITER_SIMULT(MATR_A=RIGIGENE,
                         MATR_B=MASSGENE,
+                        SOLVEUR=_F(METHODE='MUMPS',
+                                   PCENT_PIVOT=50,),
                         CALC_FREQ=_F(OPTION='BANDE',
                                      FREQ=(0.0,250.0,),),);
 

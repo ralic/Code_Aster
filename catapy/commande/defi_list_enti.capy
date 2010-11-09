@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 21/04/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+#& MODIF COMMANDE  DATE 09/11/2010   AUTEUR DELMAS J.DELMAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,7 +20,7 @@
 DEFI_LIST_ENTI=OPER(nom="DEFI_LIST_ENTI",op=22,sd_prod=listis_sdaster,
                     fr="Définir une liste d'entiers strictement croissante",
                     reentrant='n',
-            UIinfo={"groupes":("Fonction",)},
+            UIinfo={"groupes":("Fonctions",)},
 
          OPERATION    =SIMP(statut='o',typ='TXM',defaut='DEFI',into=('DEFI','NUME_ORDRE',)),
 

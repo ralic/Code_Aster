@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
+C MODIF PREPOST  DATE 08/11/2010   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -143,6 +143,7 @@ C     ----- RECUPERATION INSTANTS OU FREQUENCES ---
         WRITE(IFM,'(''FREQ DE'',1X,1PE12.5,1X,''A'',1X,1PE12.5,
      &  1X,''PAS'',1X,1PE12.5)') FINI,FFIN,PAS
       ENDIF
+      IC=0
       CALL GETVR8(' ','DIRE_ONDE',IC,1,3,DI(1),N)
       IF (N.NE.0) THEN
          WRITE(IFMIS,'(''DIRE ONDE'')') 

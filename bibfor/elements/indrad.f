@@ -1,7 +1,7 @@
       SUBROUTINE INDRAD(OPTION,NORME,MODELE,LIGREL,CHSIG1,CHSIG2,CHVAR1,
      &                  CHVAR2,CHELEM)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 11/09/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 08/11/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -114,7 +114,7 @@ C      ---------
       LCHOUT(1) = CHELEM
 
       CALL CALCUL('S',OPTION,LIGREL,NBIN,LCHIN,LPAIN,1,LCHOUT,LPAOUT,
-     &            'G')
+     &            'G','OUI')
 
       CALL DETRSD('CHAMP_GD','&&INDRAD.NORME')
 C.============================ FIN DE LA ROUTINE ======================

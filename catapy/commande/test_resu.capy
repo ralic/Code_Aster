@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 06/09/2010   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 09/11/2010   AUTEUR DELMAS J.DELMAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,7 +20,7 @@
 # ======================================================================
 # RESPONSABLE LEFEBVRE J.P.LEFEBVRE
 TEST_RESU=PROC(nom="TEST_RESU",op=23,
-            UIinfo={"groupes":("Impression",)},
+            UIinfo={"groupes":("Résultats et champs","Utilitaires",)},
          fr="Extraction d'une valeur d'une structure de donnée et comparaison à une valeur de référence",
          regles=(AU_MOINS_UN('CHAM_NO','CHAM_ELEM','RESU','GENE','OBJET','TEST_NAN',)),
 

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 19/10/2010   AUTEUR DESOZA T.DESOZA 
+#& MODIF COMMANDE  DATE 09/11/2010   AUTEUR DELMAS J.DELMAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,7 +20,7 @@
 #
 DYNA_NON_LINE=OPER(nom="DYNA_NON_LINE",op= 70,sd_prod=evol_noli,reentrant='f',
             fr="Calcul de l'évolution dynamique d'une structure dont le matériau ou la géométrie ont un comportement non linéaire",
-            UIinfo={"groupes":("Résolution",)},
+            UIinfo={"groupes":("Résolution","Dynamique",)},
          regles=(AU_MOINS_UN('COMP_INCR','COMP_ELAS',),
                  CONCEPT_SENSIBLE('ENSEMBLE'),),
          MODELE          =SIMP(statut='o',typ=modele_sdaster),

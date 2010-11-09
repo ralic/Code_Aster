@@ -1,4 +1,4 @@
-#@ MODIF basetype Noyau  DATE 07/09/2009   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF basetype Noyau  DATE 09/11/2010   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -38,7 +38,7 @@ C'est ce comportement qui est capturé dans la classe BaseType
 La classe `Type` hérite de BaseType et y associe la métaclasse MetaType.
 
 """
-from copy import copy,deepcopy
+
 import cPickle
 
 __docformat__ = "restructuredtext"
@@ -130,6 +130,22 @@ class BaseType(object):
         for nam in self._subtypes:
             obj = getattr( self, nam )
             obj.reparent( self, nam )
+
+    def supprime(self, delete=False):
+        """Permet de casser les boucles de références pour que les ASSD
+        puissent être détruites.
+        Si `delete` vaut True, on supprime l'objet lui-même et pas
+        seulement les références remontantes."""
+        self._parent = None
+        self._name = None
+        for nam in self._subtypes:
+            obj = getattr(self, nam)
+            obj.supprime(delete)
+        if delete:
+            for nam in self._subtypes:
+                if hasattr(self, nam):
+                    delattr(self, nam)
+                    self._subtypes.remove(nam)
 
     def base( self ):
         if self._parent is None:

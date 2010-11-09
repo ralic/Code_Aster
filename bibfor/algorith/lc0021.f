@@ -2,7 +2,7 @@
      &              INSTAP,EPSM,DEPS,SIGM,VIM,OPTION,ANGMAS,SIGP,VIP,
      &                  TAMPON,TYPMOD,ICOMP,NVI,DSIDEP,CODRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 07/07/2009   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 08/11/2010   AUTEUR REZETTE C.REZETTE 
 C TOLE CRP_21
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -28,10 +28,13 @@ C ======================================================================
       REAL*8          SIGM(6),SIGP(6)
       REAL*8          VIM(*),VIP(*)
       REAL*8          DSIDEP(6,6)
-      CHARACTER*16    COMPOR(*),OPTION
+      CHARACTER*16    COMPOR(*),OPTION,OPTIO2(2)
       CHARACTER*8     TYPMOD(*)
       CHARACTER*(*)   FAMI
+C
+      OPTIO2(1)=OPTION
+      OPTIO2(2)=' '
               CALL LCUMFP (FAMI,KPG,KSP,NDIM,TYPMOD,IMATE,COMPOR,INSTAM,
-     &                     INSTAP,EPSM,DEPS,SIGM,VIM,OPTION,
+     &                     INSTAP,EPSM,DEPS,SIGM,VIM,OPTIO2,
      &                     SIGP,VIP,DSIDEP,CRIT)
       END

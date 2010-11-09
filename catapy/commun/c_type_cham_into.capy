@@ -1,4 +1,4 @@
-#& MODIF COMMUN  DATE 27/06/2005   AUTEUR D6BHHJP J.P.LEFEBVRE 
+#& MODIF COMMUN  DATE 09/11/2010   AUTEUR GNICOLAS G.NICOLAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -16,12 +16,23 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
+# RESPONSABLE GNICOLAS G.NICOLAS
 #
 # ce fichier contient la liste des "into" possibles pour le mot cle TYPE_CHAM
-def C_TYPE_CHAM_INTO() : #COMMUN#
-   l=[]
-   for gd in C_NOM_GRANDEUR() :
-        for typ in ("ELEM","ELNO","ELGA","CART","NOEU") :
-             l.append(typ+"_"+gd)
-   return tuple(l)
+def C_TYPE_CHAM_INTO( type_cham=None ) : #COMMUN#
+# Si aucun argument n'est passe, on utilise tous les types de champs possibles
+  if ( type_cham is None ) :
+    l_cham = ["ELEM", "ELNO", "ELGA", "CART", "NOEU"]
+# Sinon, on n'utilise que les types passes en argument
+  else :
+    l_cham = []
+    for typ in type_cham :
+      l_cham.append(typ)
+#
+  l = []
+  for gd in C_NOM_GRANDEUR() :
+    for typ in l_cham :
+      l.append(typ+"_"+gd)
+#
+  return tuple(l)
 

@@ -1,7 +1,7 @@
       SUBROUTINE TE0027(OPTION,NOMTE)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
+C MODIF ELEMENTS  DATE 08/11/2010   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -111,7 +111,8 @@ C INITIALISATIONS POUR APPEL A NMELNL
       OPRUPT = 'RUPTURE'
       EPSINI = .FALSE.
       TYPMOD(1) = '3D      '
-
+      TYPMOD(2) = ' '
+C
       FAMI = 'RIGI'
       CALL ELREF4(' ',FAMI,NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO)
 

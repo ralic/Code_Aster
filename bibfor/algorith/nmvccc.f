@@ -3,7 +3,7 @@
      &                  EXIEPA,EXIPHA,VECEL )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 25/03/2008   AUTEUR REZETTE C.REZETTE 
+C MODIF ALGORITH  DATE 08/11/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -104,7 +104,7 @@ C
         LCHOUT(1) =  VECEL(1:8)// MASQUE
         OPTION    = 'CHAR_MECA_TEMP_R'
         CALL CALCUL('C',OPTION,LIGRMO,NBIN  ,LCHIN ,LPAIN,
-     &                                NBOUT ,LCHOUT,LPAOUT,'V')
+     &                                NBOUT ,LCHOUT,LPAOUT,'V','OUI')
         CALL JEEXIN(LCHOUT(1)//'.RESL',IRET)
         CALL REAJRE(VECEL,LCHOUT(1),'V')
       END IF
@@ -117,7 +117,7 @@ C
         LCHOUT(1) =  VECEL(1:8)// MASQUE
         OPTION    = 'CHAR_MECA_HYDR_R'
         CALL CALCUL('S',OPTION,LIGRMO,NBIN  ,LCHIN ,LPAIN,
-     &                                NBOUT ,LCHOUT,LPAOUT,'V')
+     &                                NBOUT ,LCHOUT,LPAOUT,'V','OUI')
         CALL REAJRE(VECEL,LCHOUT(1),'V')
       END IF
 C
@@ -129,7 +129,7 @@ C
         LCHOUT(1) =  VECEL(1:8)// MASQUE
         OPTION    = 'CHAR_MECA_SECH_R'
         CALL CALCUL('S',OPTION,LIGRMO,NBIN  ,LCHIN ,LPAIN,
-     &                                NBOUT ,LCHOUT,LPAOUT,'V')
+     &                                NBOUT ,LCHOUT,LPAOUT,'V','OUI')
         CALL REAJRE(VECEL,LCHOUT(1),'V')
       END IF
 C
@@ -141,7 +141,7 @@ C
         LCHOUT(1) =  VECEL(1:8)// MASQUE
         OPTION    = 'CHAR_MECA_EPSA_R'
         CALL CALCUL('S',OPTION,LIGRMO,NBIN  ,LCHIN ,LPAIN,
-     &                                NBOUT ,LCHOUT,LPAOUT,'V')
+     &                                NBOUT ,LCHOUT,LPAOUT,'V','OUI')
         CALL REAJRE(VECEL,LCHOUT(1),'V')
       END IF
 C
@@ -153,7 +153,7 @@ C
         LCHOUT(1) =  VECEL(1:8)// MASQUE
         OPTION    = 'CHAR_MECA_META_Z'
         CALL CALCUL('S',OPTION,LIGRMO,NBIN  ,LCHIN ,LPAIN,
-     &                                NBOUT ,LCHOUT,LPAOUT,'V')
+     &                                NBOUT ,LCHOUT,LPAOUT,'V','OUI')
         CALL REAJRE(VECEL,LCHOUT(1),'V')
       END IF
 C

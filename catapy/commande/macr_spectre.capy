@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 21/04/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+#& MODIF COMMANDE  DATE 09/11/2010   AUTEUR DELMAS J.DELMAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,8 +21,9 @@
 from Macro.macr_spectre_ops import macr_spectre_ops
 
 MACR_SPECTRE=MACRO(nom="MACR_SPECTRE",op=macr_spectre_ops,sd_prod=table_sdaster,
-                       reentrant='n', UIinfo={"groupes":("Outils métier",)},
-                       fr="calcul de spectre, post-traitement de séisme",
+                       reentrant='n',
+                       UIinfo={"groupes":("Post-traitements","Outils-métier",)},
+                       fr="Calcul de spectre, post-traitement de séisme",
          MAILLAGE      =SIMP(statut='o',typ=maillage_sdaster,),
          PLANCHER      =FACT(statut='o',max='**',
             regles=(AU_MOINS_UN('NOEUD','GROUP_NO' ),),

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 22/09/2009   AUTEUR SELLENET N.SELLENET 
+#& MODIF COMMANDE  DATE 09/11/2010   AUTEUR DELMAS J.DELMAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,7 +22,7 @@ from Macro.stanley_ops import stanley_ops
 
 STANLEY=MACRO(nom="STANLEY",op=stanley_ops,sd_prod=None,
                        reentrant='n',
-              UIinfo={"groupes":("Outils métier",)},
+              UIinfo={"groupes":("Post-traitements",)},
                        fr="Outil de post-traitement interactif Stanley ",
          RESULTAT        =SIMP(statut='f',typ=(evol_elas,evol_noli,evol_ther,mode_meca,dyna_harmo,dyna_trans) ),
          MODELE          =SIMP(statut='f',typ=modele_sdaster),

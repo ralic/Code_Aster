@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 21/04/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+#& MODIF COMMANDE  DATE 09/11/2010   AUTEUR DELMAS J.DELMAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,7 +18,7 @@
 # ======================================================================
 # RESPONSABLE DESROCHES X.DESROCHES
 INTE_MAIL_3D=OPER(nom="INTE_MAIL_3D",op=96,sd_prod=surface_sdaster,
-            UIinfo={"groupes":("Post traitements",)},
+            UIinfo={"groupes":("Post-traitements",)},
                   fr="Définir un chemin de type segment de droite dans un maillage 3D",reentrant='n',
          MAILLAGE        =SIMP(statut='o',typ=maillage_sdaster),
          TOUT            =SIMP(statut='f',typ='TXM',into=("OUI",) ),

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 10/08/2010   AUTEUR MEUNIER S.MEUNIER 
+#& MODIF COMMANDE  DATE 08/11/2010   AUTEUR PELLET J.PELLET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -264,7 +264,7 @@ AFFE_MODELE=OPER(nom="AFFE_MODELE",op=18,sd_prod=modele_sdaster,
                  CHARGE_PROC0_SD =SIMP(statut='f',typ='I',defaut=0,val_min=0),
              ),
              b_dist_maille          =BLOC(condition = "PARALLELISME in ('MAIL_DISPERSE','MAIL_CONTIGU')",
-                 CHARGE_PROC0_MA =SIMP(statut='f',typ='I',defaut=100,val_min=0),
+                 CHARGE_PROC0_MA =SIMP(statut='f',typ='I',defaut=100,val_min=0,val_max=100),
              ),
          ),
 

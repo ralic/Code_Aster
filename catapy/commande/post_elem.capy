@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 19/05/2009   AUTEUR MACOCCO K.MACOCCO 
+#& MODIF COMMANDE  DATE 09/11/2010   AUTEUR DELMAS J.DELMAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,7 +18,7 @@
 # ======================================================================
 # RESPONSABLE DESROCHES X.DESROCHES
 POST_ELEM=OPER(nom="POST_ELEM",op=107,sd_prod=table_sdaster,reentrant='n',
-            UIinfo={"groupes":("Post traitements",)},
+            UIinfo={"groupes":("Post-traitements","Résultats et champs",)},
                fr="Calcul de quantités globales (masse, inerties, énergie, ...) sur tout ou partie du modèle",
 
          regles=(UN_PARMI('MASS_INER', 'ENER_POT', 'ENER_CIN','TRAV_EXT','MINMAX',

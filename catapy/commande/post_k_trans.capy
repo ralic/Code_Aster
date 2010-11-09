@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 30/09/2008   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 09/11/2010   AUTEUR DELMAS J.DELMAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,7 +22,7 @@ from Macro.post_k_trans_ops import post_k_trans_ops
 
 POST_K_TRANS=MACRO(nom="POST_K_TRANS",op=post_k_trans_ops,sd_prod=table_sdaster,
             fr="Calcul des facteurs d intensite des contrainte par recombinaison modale",reentrant='n',
-            UIinfo={"groupes":("Post traitements",)},
+            UIinfo={"groupes":("Post-traitements","Rupture",)},
         RESU_TRANS      =SIMP(statut='o',typ=tran_gene), 
         K_MODAL         =FACT(statut='o',
            TABL_K_MODA     =SIMP(statut='f',typ=table_sdaster,),

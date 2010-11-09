@@ -3,7 +3,7 @@
       INTEGER                 IER,IPASS
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 19/10/2010   AUTEUR COURTOIS M.COURTOIS 
+C MODIF SUPERVIS  DATE 08/11/2010   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -33,6 +33,8 @@ C
       CHARACTER*16 NOMCMD, K16B, CMPDEF, CMPUT, CMPOUT
       CHARACTER*80 FICHDF
       INTEGER IERIMP, ICMD, LOUT, N, NCODE
+C
+      FICHDF=' '
 C
 C --- ERREUR / ERREUR_F :
 C     MOT-CLE CODE PRESENT ?

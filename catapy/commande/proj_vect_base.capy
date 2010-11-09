@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 11/05/2009   AUTEUR NISTOR I.NISTOR 
+#& MODIF COMMANDE  DATE 09/11/2010   AUTEUR DELMAS J.DELMAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,7 +21,7 @@
 PROJ_VECT_BASE=OPER(nom="PROJ_VECT_BASE",op=  72,sd_prod=vect_asse_gene,
                     fr="Projection d'un vecteur assemblé sur une base (modale ou de RITZ)",
                     reentrant='n',
-            UIinfo={"groupes":("Matrices/vecteurs",)},
+            UIinfo={"groupes":("Matrices et vecteurs",)},
          regles=(UN_PARMI('VECT_ASSE','VECT_ASSE_GENE'),),              
          BASE            =SIMP(statut='o',typ=(mode_meca,mode_gene) ),
          NUME_DDL_GENE   =SIMP(statut='o',typ=nume_ddl_gene ),

@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 16/02/2010   AUTEUR PELLET J.PELLET 
+%& MODIF TYPELEM  DATE 09/11/2010   AUTEUR TORKHANI M.TORKHANI 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -182,6 +182,8 @@ OPTION__
     MASS_MECA_EXPLI     141   IN__   CCAARPO  PCAARPO  CCAGNPO  PCAGNPO  CCAORIE  PCAORIE  NGEOMER  PGEOMER
                                      CMATERC  PMATERC  ZVARCPG  PVARCPR
                               OUT__  MMATUUR  PMATUUR
+    MECA_GYRO           -1    IN__   XXXXXX   XXXXXX
+                              OUT__  XXXXXX   XXXXXX
     MECA_SENS_MATE      -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
     MECA_SENS_RAPH      -1    IN__   XXXXXX   XXXXXX

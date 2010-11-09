@@ -1,20 +1,20 @@
-#& MODIF COMMANDE  DATE 15/03/2010   AUTEUR COURTOIS M.COURTOIS 
+#& MODIF COMMANDE  DATE 09/11/2010   AUTEUR DELMAS J.DELMAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
@@ -38,6 +38,7 @@ from Macro.calc_table_ops import calc_table_ops
 
 CALC_TABLE=MACRO(nom="CALC_TABLE",op=calc_table_ops, sd_prod=calc_table_prod,
                  fr="Opérations sur une table",
+                 UIinfo={"groupes":("Tables",)},
                  reentrant='f',
    regles=(DERIVABLE('TABLE'),),
    TABLE  = SIMP(statut='o',typ=table_sdaster),
@@ -45,7 +46,7 @@ CALC_TABLE=MACRO(nom="CALC_TABLE",op=calc_table_ops, sd_prod=calc_table_prod,
                     fr = "Suite des opérations à effectuer sur la table",
       OPERATION = SIMP(statut='o', typ='TXM',
                   into=('FILTRE', 'EXTR', 'RENOMME', 'TRI', 'COMB', 'AJOUT', 'OPER', 'SUPPRIME')),
-      
+
       b_filtre = BLOC(condition="OPERATION == 'FILTRE'",
                       fr="Sélectionne les lignes de la table vérifiant un critère",
          NOM_PARA  = SIMP(statut='o',typ='TXM'),
@@ -67,32 +68,32 @@ CALC_TABLE=MACRO(nom="CALC_TABLE",op=calc_table_ops, sd_prod=calc_table_prod,
             PRECISION = SIMP(statut='f',typ='R',defaut= 1.0E-3 ),
          ),
       ),
-      
+
       b_extr = BLOC(condition="OPERATION ==  'EXTR'",
                     fr="Extrait une ou plusieurs colonnes de la table",
          NOM_PARA = SIMP(statut='o',typ='TXM',validators=NoRepeat(),max='**',
                          fr="Noms des colonnes à extraire"),
       ),
-   
+
       b_suppr = BLOC(condition="OPERATION ==  'SUPPRIME'",
                     fr="Supprime une ou plusieurs colonnes de la table",
          NOM_PARA = SIMP(statut='o',typ='TXM',validators=NoRepeat(),max='**',
                          fr="Noms des colonnes à supprimer"),
       ),
-   
+
       b_renomme = BLOC(condition="OPERATION == 'RENOMME'",
                        fr="Renomme un ou plusieurs paramètres de la table",
          NOM_PARA = SIMP(statut='o', typ='TXM', validators=NoRepeat(), min=2, max=2,
                          fr="Couple (ancien nom du paramètre, nouveau nom du paramètre)",),
       ),
-   
+
       b_tri = BLOC(condition="OPERATION == 'TRI'",
                    fr="Ordonne les lignes de la table selon les valeurs d'un ou plusieurs paramètres",
          NOM_PARA = SIMP(statut='o',typ='TXM',validators=NoRepeat(),max='**'),
          ORDRE    = SIMP(statut='f',typ='TXM',defaut="CROISSANT",
                          into=("CROISSANT","DECROISSANT") ),
       ),
-      
+
       b_comb = BLOC(condition="OPERATION == 'COMB'",
                     fr="Combine deux tables ayant éventuellement des paramètres communs",
          TABLE    = SIMP(statut='o',typ=table_sdaster,
@@ -103,14 +104,14 @@ CALC_TABLE=MACRO(nom="CALC_TABLE",op=calc_table_ops, sd_prod=calc_table_prod,
          RESTREINT = SIMP(statut='f', typ='TXM', into=('OUI', 'NON'), defaut='NON',
                           fr="Restreint la fusion uniquement aux lignes où les NOM_PARA sont communs"),
       ),
-      
+
       b_append = BLOC(condition="OPERATION == 'AJOUT'",
                     fr="Ajoute une ligne à la table initiale",
          NOM_PARA = SIMP(statut='o',typ='TXM',max='**',
                          fr="Noms des paramètres dont les valeurs sont fournies sous VALE"),
          VALE     = SIMP(statut='o',typ=assd,max='**', fr='Valeurs des paramètres'),
       ),
-      
+
       b_oper = BLOC(condition="OPERATION == 'OPER'",
                     fr="Applique une formule dans laquelle les variables sont les paramètres de la table",
          FORMULE  = SIMP(statut='o',typ=formule,
@@ -119,7 +120,7 @@ CALC_TABLE=MACRO(nom="CALC_TABLE",op=calc_table_ops, sd_prod=calc_table_prod,
                          fr="Nom de la nouvelle colonne"),
       ),
    ),
-   
+
    SENSIBILITE = SIMP(statut='f',typ=(para_sensi,theta_geom),max=1,
                       fr="Paramètre de sensibilité",
                       ang="Sensitivity parameter"),

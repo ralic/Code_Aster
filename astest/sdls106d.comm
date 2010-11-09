@@ -1,4 +1,4 @@
-# MODIF  DATE 26/10/2010   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 09/11/2010   AUTEUR NISTOR I.NISTOR 
 # TITRE SOUS STRUCTURATION DYNAMIQUE : PLAQUE MINCE APPUYEE-APPUYEE
 # sdls106d.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -215,11 +215,17 @@ MACEL3=MACR_ELEM_DYNA( BASE_MODALE=BAMO3_CL,
 #   CALCUL SUR MODELE GENERALISE
 
 MODEGE=DEFI_MODELE_GENE(SOUS_STRUC=(_F( NOM = 'FA1',
-                                        MACR_ELEM_DYNA = MACEL1),
+                                        MACR_ELEM_DYNA = MACEL1,
+                                        ANGL_NAUT = (0., 0., 0.,),
+                                        TRANS=(0.,0.,0.),),
                                     _F( NOM = 'FA2',
-                                        MACR_ELEM_DYNA = MACEL2),
+                                        MACR_ELEM_DYNA = MACEL2,
+                                        ANGL_NAUT = (0., 0., 0.,),
+                                        TRANS=(0.,0.,0.),),
                                     _F( NOM = 'FA3',
-                                        MACR_ELEM_DYNA = MACEL3),
+                                        MACR_ELEM_DYNA = MACEL3,
+                                        ANGL_NAUT = (0., 0., 0.,),
+                                        TRANS=(0.,0.,0.),),
                                     ),
                              LIAISON=(_F(SOUS_STRUC_1 = 'FA1',
                                          SOUS_STRUC_2 = 'FA2',
@@ -255,6 +261,9 @@ RESGEN=MODE_ITER_SIMULT( MATR_A=RIGGEN,
                          METHODE='SORENSEN',
                          CALC_FREQ=_F( OPTION = 'PLUS_PETITE',
                                        NMAX_FREQ=10,),
+                         SOLVEUR=_F(METHODE='MUMPS',
+                                    PCENT_PIVOT=50,
+                                    NPREC=9),
                          VERI_MODE=_F(PREC_SHIFT=5.0000000000000001E-3,
                                       STOP_ERREUR='NON',
                                       STURM='NON',

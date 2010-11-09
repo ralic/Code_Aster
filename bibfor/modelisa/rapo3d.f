@@ -1,7 +1,7 @@
       SUBROUTINE RAPO3D(NUMDLZ,IOCC,FONREZ,LISREZ,CHARGZ)
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 19/10/2010   AUTEUR DELMAS J.DELMAS 
+C MODIF MODELISA  DATE 08/11/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -370,7 +370,7 @@ C        SOMME/S_ELEMENT(1,X,Y,Z,X*X,Y*Y,Z*Z,X*Y,X*Z,Y*Z)DS
       LCHOUT(1) = '&&RAPO3D.PSECT'
 
       CALL CALCUL('S','CARA_SECT_POUT3',LIGREL,1,LCHIN,LPAIN,1,LCHOUT,
-     &            LPAOUT,'V')
+     &            LPAOUT,'V','OUI')
 
 C --- -----------------------------------------------------------------
 C --- VECTEUR DES QUANTITES GEOMETRIQUES PRECITEES SOMMEES
@@ -492,7 +492,7 @@ C              Z = ZM - ZG = NJ*ZJ - ZG
       LCHOUT(2) = '&&RAPO3D.VECT_XYZNI'
 
       CALL CALCUL('S','CARA_SECT_POUT4',LIGREL,2,LCHIN,LPAIN,2,LCHOUT,
-     &            LPAOUT,'V')
+     &            LPAOUT,'V','OUI')
 
 C --- -----------------------------------------------------------------
 C --- CREATION DES .RERR DES VECTEURS EN SORTIE DE CALCUL

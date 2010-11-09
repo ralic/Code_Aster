@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 21/04/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+#& MODIF COMMANDE  DATE 09/11/2010   AUTEUR DELMAS J.DELMAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,7 +22,7 @@ from Macro.macr_aspic_mail_ops import macr_aspic_mail_ops
 
 MACR_ASPIC_MAIL=MACRO(nom="MACR_ASPIC_MAIL",op= macr_aspic_mail_ops,sd_prod=maillage_sdaster,reentrant='n',
             fr="Engendre le maillage d'un piquage sain ou avec fissure (longue ou courte)",
-            UIinfo={"groupes":("Outils métier",)},
+            UIinfo={"groupes":("Maillage","Outils-métier",)},
 
          EXEC_MAILLAGE   =FACT(statut='o',
            LOGICIEL        =SIMP(statut='o',typ='TXM',defaut="GIBI2000",into=("GIBI98","GIBI2000")),

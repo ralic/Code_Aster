@@ -2,7 +2,7 @@
      &                  VECELZ)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 10/08/2010   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ALGORITH  DATE 08/11/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -26,23 +26,23 @@ C
       CHARACTER*(*) MODELZ,DEPLAZ,VECELZ
       CHARACTER*19  LISCHA
       CHARACTER*24  MATE,CARELE
-C 
+C
 C ----------------------------------------------------------------------
 C
 C ROUTINE MECA_NON_LINE (CALCUL)
 C
 C CALCUL DES VECTEURS ELEMENTAIRES BT.LAMBDA
-C      
+C
 C ----------------------------------------------------------------------
 C
 C
 C IN  BASE   : BASE 'V' OU 'G' OU SONT CREES LES OBJETS EN SORTIE
 C IN  MATE   : CHAMP DE MATERIAU
-C IN  CARELE : CARACTERISTIQUES ELEMENTAIRES      
+C IN  CARELE : CARACTERISTIQUES ELEMENTAIRES
 C IN  MODELE : NOM DU MODELE
 C IN  DEPLA  : CHAMP DE DEPLACEMENTS
 C IN  LISCHA : SD L_CHARGES
-C OUT VECELE : VECTEURS ELEMENTAIRES     
+C OUT VECELE : VECTEURS ELEMENTAIRES
 C
 C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
 C
@@ -75,14 +75,14 @@ C
       INTEGER      IRET,NCHAR,NDIR,ICHA
       INTEGER      JCHAR,JINF
       CHARACTER*8  MODELE
-      CHARACTER*19 DEPLA,VECELE   
+      CHARACTER*19 DEPLA,VECELE
       INTEGER      IFMDBG,NIVDBG
       LOGICAL      DEBUG
 C
 C ----------------------------------------------------------------------
 C
-      CALL JEMARQ()  
-      CALL INFDBG('PRE_CALCUL',IFMDBG,NIVDBG)        
+      CALL JEMARQ()
+      CALL INFDBG('PRE_CALCUL',IFMDBG,NIVDBG)
 C
 C --- INITIALISATIONS
 C
@@ -100,10 +100,10 @@ C
 C --- INITIALISATION DES CHAMPS POUR CALCUL
 C
       CALL INICAL(NBIN  ,LPAIN ,LCHIN ,
-     &            NBOUT ,LPAOUT,LCHOUT)       
+     &            NBOUT ,LPAOUT,LCHOUT)
 C
 C --- ACCES AUX CHARGES
-C      
+C
       CALL JEEXIN(LISCHA(1:19)//'.LCHA',IRET)
       IF ( IRET .EQ. 0 ) GOTO 9999
       CALL JELIRA(LISCHA(1:19)//'.LCHA','LONMAX',NCHAR,K8BID)
@@ -111,7 +111,7 @@ C
       CALL JEVEUO(LISCHA(1:19)//'.INFC','L',JINF)
 C
 C --- ALLOCATION DU VECT_ELEM RESULTAT :
-C     
+C
       CALL JEEXIN(VECELE//'.RELR' ,IRET)
       IF ( IRET .EQ. 0 ) THEN
         CALL MEMARE(BASE,VECELE,MODELE,MATE  ,CARELE,'CHAR_MECA')
@@ -121,7 +121,7 @@ C
       CALL REAJRE(VECELE,' ',BASE)
 C
 C --- CALCUL DE L'OPTION BT.LAMBDA
-C      
+C
       NDIR  = 0
       DO 10 ICHA = 1,NCHAR
         IF ( ZI(JINF+ICHA) .GT. 0 ) THEN
@@ -134,17 +134,17 @@ C
           LPAIN(2)  = 'PLAGRAR'
           LCHIN(2)  =  DEPLA
           LPAOUT(1) = 'PVECTUR'
-          LCHOUT(1) =  VECELE(1:8)//MASQUE        
-C          
+          LCHOUT(1) =  VECELE(1:8)//MASQUE
+C
           CALL CALCUL('S',OPTION,LIGRCH,NBIN ,LCHIN ,LPAIN ,
-     &                                  NBOUT,LCHOUT,LPAOUT,BASE)
+     &                                  NBOUT,LCHOUT,LPAOUT,BASE,'OUI')
 C
           IF (DEBUG) THEN
             CALL DBGCAL(OPTION,IFMDBG,
      &                  NBIN  ,LPAIN ,LCHIN ,
      &                  NBOUT ,LPAOUT,LCHOUT)
-          ENDIF   
-C     
+          ENDIF
+C
           CALL REAJRE(VECELE,LCHOUT(1),'V')
         ENDIF
  10   CONTINUE

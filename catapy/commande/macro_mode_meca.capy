@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 13/10/2010   AUTEUR BOITEAU O.BOITEAU 
+#& MODIF COMMANDE  DATE 09/11/2010   AUTEUR DELMAS J.DELMAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,7 +22,7 @@ from Macro.macro_mode_meca_ops import macro_mode_meca_ops
 
 MACRO_MODE_MECA=MACRO(nom="MACRO_MODE_MECA",op=macro_mode_meca_ops,sd_prod=mode_meca,
                      reentrant='n',fr="Lancer une succession de calculs de modes propres réels",
-            UIinfo={"groupes":("Résolution",)},
+            UIinfo={"groupes":("Résolution","Dynamique",)},
          MATR_A          =SIMP(statut='o',typ=matr_asse_depl_r ),
          MATR_B          =SIMP(statut='o',typ=matr_asse_depl_r ),
          INFO            =SIMP(statut='f',typ='I',defaut= 1,into=(1,2) ),

@@ -1,4 +1,4 @@
-#@ MODIF calculel7 Messages  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
+#@ MODIF calculel7 Messages  DATE 08/11/2010   AUTEUR DESROCHES X.DESROCHES 
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -33,5 +33,10 @@ cata_msg = {
  le nbre de cmp calculees du flux
 """),
 
+3: _("""
+  Le MODELE doit etre le meme pour tous les numeros d'ordre du RESULTAT.
+  Faire le post_traitement en rentrant le numero d'ordre ou explicitement
+  le nom du modele.
+"""),
 
 }

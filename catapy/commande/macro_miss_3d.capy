@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 16/02/2010   AUTEUR GREFFET N.GREFFET 
+#& MODIF COMMANDE  DATE 09/11/2010   AUTEUR DELMAS J.DELMAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,7 +22,7 @@ from Macro.macro_miss_3d_ops import macro_miss_3d_ops
 
 MACRO_MISS_3D=MACRO(nom="MACRO_MISS_3D",op=macro_miss_3d_ops,
             fr="Préparation des données puis exécution du logiciel MISS3D",
-            UIinfo={"groupes":("Matrices/vecteurs",)},
+            UIinfo={"groupes":("Résolution","Outils-métier",)},
          OPTION          =FACT(statut='o',
            regles=(UN_PARMI('TOUT','MODULE'),),
            TOUT            =SIMP(statut='f',typ='TXM',into=("OUI",)),

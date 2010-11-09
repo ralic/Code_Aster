@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 04/10/2010   AUTEUR GREFFET N.GREFFET 
+#& MODIF COMMANDE  DATE 09/11/2010   AUTEUR DELMAS J.DELMAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,7 +21,7 @@ DYNA_TRAN_MODAL=OPER(nom="DYNA_TRAN_MODAL",op=  74,sd_prod=tran_gene,
                      fr="Calcul de la réponse dynamique transitoire d'un système amorti ou non en coordonées généralisées"
                         +" par superposition modale ou par sous structuration",
                      reentrant='f',
-            UIinfo={"groupes":("Résolution",)},
+            UIinfo={"groupes":("Résolution","Dynamique",)},
       regles=(EXCLUS('AMOR_REDUIT','AMOR_GENE','LIST_AMOR'),
               PRESENT_ABSENT('MODE_STAT','MODE_CORR'),),
          METHODE         =SIMP(statut='f',typ='TXM',defaut="EULER",

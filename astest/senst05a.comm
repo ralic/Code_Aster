@@ -1,6 +1,7 @@
-# MODIF  DATE 08/11/2007   AUTEUR SALMONA L.SALMONA 
+# MODIF  DATE 08/11/2010   AUTEUR BOITEAU O.BOITEAU 
 # RESPONSABLE BOITEAU O.BOITEAU
 # TITRE Sensibilite par rapport a la chaleur volumique et emissivite
+# senst05a.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -264,7 +265,7 @@ TEST_TABLE(
    TYPE_TEST = 'MAX',
    VALE      = 0.,
    CRITERE   = 'ABSOLU',
-   PRECISION = 1.E-8,
+   PRECISION = 1.E-6,
    REFERENCE = 'AUTRE_ASTER',
 )
 
@@ -300,7 +301,7 @@ TEST_TABLE(
    TYPE_TEST = 'MAX',
    VALE      = 0.,
    CRITERE   = 'ABSOLU',
-   PRECISION = 1.E-7,
+   PRECISION = 1.E-6,
    REFERENCE = 'AUTRE_ASTER',
 )
 

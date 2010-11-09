@@ -2,7 +2,7 @@
      &                  CHTNZ,VAPRIZ,VAPRMZ,LOSTAT,NOPASZ,TYPESE,STYPSE,
      &                  VECELZ)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 23/10/2008   AUTEUR TORKHANI M.TORKHANI 
+C MODIF ALGORITH  DATE 08/11/2010   AUTEUR PELLET J.PELLET 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -536,7 +536,7 @@ C====
    30             CONTINUE
                 END IF
                 CALL CALCUL('S',OPTION,LIGREL(NLIGR(K)),NCHIN,LCHIN,
-     &                      LPAIN,1,RESUEL,PAOUT,'V')
+     &                      LPAIN,1,RESUEL,PAOUT,'V','OUI')
 
 C INCREMENTATION DE LONUTI ET STOCKAGE DU RESULTAT
                 ILVE = ILVE + 1
@@ -670,7 +670,7 @@ C====
    60           CONTINUE
               END IF
               CALL CALCUL('S',OPTION,LIGREL(NLIGR(K)),NCHIN,LCHIN,LPAIN,
-     &                    1,RESUEL,PAOUT,'V')
+     &                    1,RESUEL,PAOUT,'V','OUI')
 
 C INCREMENTATION DE LONUTI ET STOCKAGE DU RESULTAT
               ILVE = ILVE + 1

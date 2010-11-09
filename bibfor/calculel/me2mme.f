@@ -1,7 +1,7 @@
       SUBROUTINE ME2MME(MODELZ,NCHAR,LCHAR,MATE,CARAZ,EXITIM,TIME,
      &                  MATELZ,NH,BASEZ)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 30/08/2010   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 08/11/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -220,7 +220,7 @@ C ====================================================================
             ILIRES = ILIRES + 1
             CALL CODENT(ILIRES,'D0',LCHOUT(1) (12:14))
             CALL CALCUL('S',OPTION,LIGRCH,NBIN,LCHIN,LPAIN,1,LCHOUT,
-     &                  LPAOUT,BASE)
+     &                  LPAOUT,BASE,'OUI')
             CALL REAJRE(MATEL,LCHOUT(1),BASE)
           END IF
 C ====================================================================
@@ -237,7 +237,7 @@ C ====================================================================
             ILIRES = ILIRES + 1
             CALL CODENT(ILIRES,'D0',LCHOUT(1) (12:14))
             CALL CALCUL('S',OPTION,LIGRCH,NBIN,LCHIN,LPAIN,1,LCHOUT,
-     &                  LPAOUT,BASE)
+     &                  LPAOUT,BASE,'OUI')
             CALL REAJRE(MATEL,LCHOUT(1),BASE)
           END IF
 
@@ -258,7 +258,7 @@ C ====================================================================
             ILIRES = ILIRES + 1
             CALL CODENT(ILIRES,'D0',LCHOUT(1) (12:14))
             CALL CALCUL('S',OPTION,LIGRMO,NBIN,LCHIN,LPAIN,1,LCHOUT,
-     &                  LPAOUT,BASE)
+     &                  LPAOUT,BASE,'OUI')
             CALL REAJRE(MATEL,LCHOUT(1),BASE)
           END IF
 C ====================================================================
@@ -276,7 +276,7 @@ C ====================================================================
             ILIRES = ILIRES + 1
             CALL CODENT(ILIRES,'D0',LCHOUT(1) (12:14))
             CALL CALCUL('S',OPTION,LIGRMO,NBIN,LCHIN,LPAIN,1,LCHOUT,
-     &                  LPAOUT,BASE)
+     &                  LPAOUT,BASE,'OUI')
             CALL REAJRE(MATEL,LCHOUT(1),BASE)
           END IF
 C ====================================================================
@@ -294,7 +294,7 @@ C ====================================================================
             ILIRES = ILIRES + 1
             CALL CODENT(ILIRES,'D0',LCHOUT(1) (12:14))
             CALL CALCUL('S',OPTION,LIGRMO,NBIN,LCHIN,LPAIN,1,LCHOUT,
-     &                  LPAOUT,BASE)
+     &                  LPAOUT,BASE,'OUI')
             CALL REAJRE(MATEL,LCHOUT(1),BASE)
           END IF
 C ====================================================================
@@ -312,7 +312,7 @@ C ====================================================================
             ILIRES = ILIRES + 1
             CALL CODENT(ILIRES,'D0',LCHOUT(1) (12:14))
             CALL CALCUL('S',OPTION,LIGRMO,NBIN,LCHIN,LPAIN,1,LCHOUT,
-     &                  LPAOUT,BASE)
+     &                  LPAOUT,BASE,'OUI')
             CALL REAJRE(MATEL,LCHOUT(1),BASE)
           END IF
 C ====================================================================
@@ -330,7 +330,7 @@ C ====================================================================
             ILIRES = ILIRES + 1
             CALL CODENT(ILIRES,'D0',LCHOUT(1) (12:14))
             CALL CALCUL('S',OPTION,LIGRMO,NBIN,LCHIN,LPAIN,1,LCHOUT,
-     &                  LPAOUT,BASE)
+     &                  LPAOUT,BASE,'OUI')
             CALL REAJRE(MATEL,LCHOUT(1),BASE)
           END IF
 C ====================================================================
@@ -348,7 +348,7 @@ C ====================================================================
             ILIRES = ILIRES + 1
             CALL CODENT(ILIRES,'D0',LCHOUT(1) (12:14))
             CALL CALCUL('S',OPTION,LIGRMO,NBIN,LCHIN,LPAIN,1,LCHOUT,
-     &                  LPAOUT,BASE)
+     &                  LPAOUT,BASE,'OUI')
             CALL REAJRE(MATEL,LCHOUT(1),BASE)
           END IF
 C ====================================================================
@@ -365,7 +365,7 @@ C ====================================================================
             ILIRES = ILIRES + 1
             CALL CODENT(ILIRES,'D0',LCHOUT(1) (12:14))
             CALL CALCUL('S',OPTION,LIGRMO,NBIN,LCHIN,LPAIN,1,LCHOUT,
-     &                  LPAOUT,BASE)
+     &                  LPAOUT,BASE,'OUI')
             CALL REAJRE(MATEL,LCHOUT(1),BASE)
           END IF
 C ====================================================================
@@ -382,7 +382,7 @@ C ====================================================================
             ILIRES = ILIRES + 1
             CALL CODENT(ILIRES,'D0',LCHOUT(1) (12:14))
             CALL CALCUL('S',OPTION,LIGRMO,NBIN,LCHIN,LPAIN,1,LCHOUT,
-     &                  LPAOUT,BASE)
+     &                  LPAOUT,BASE,'OUI')
             CALL REAJRE(MATEL,LCHOUT(1),BASE)
           END IF
 C ====================================================================
@@ -396,7 +396,7 @@ C ====================================================================
             ILIRES = ILIRES + 1
             CALL CODENT(ILIRES,'D0',LCHOUT(1) (12:14))
             CALL CALCUL('S',OPTION,LIGRMO,NBIN,LCHIN,LPAIN,1,LCHOUT,
-     &                  LPAOUT,BASE)
+     &                  LPAOUT,BASE,'OUI')
             CALL REAJRE(MATEL,LCHOUT(1),BASE)
           END IF
 C ====================================================================
@@ -410,7 +410,7 @@ C ====================================================================
             ILIRES = ILIRES + 1
             CALL CODENT(ILIRES,'D0',LCHOUT(1) (12:14))
             CALL CALCUL('S',OPTION,LIGRMO,NBIN,LCHIN,LPAIN,1,LCHOUT,
-     &                  LPAOUT,BASE)
+     &                  LPAOUT,BASE,'OUI')
             CALL REAJRE(MATEL,LCHOUT(1),BASE)
           END IF
 C ====================================================================
@@ -434,7 +434,7 @@ C ====================================================================
             ILIRES = ILIRES + 1
             CALL CODENT(ILIRES,'D0',LCHOUT(1) (12:14))
             CALL CALCUL('S',OPTION,LIGRMO,NBIN,LCHIN,LPAIN,1,LCHOUT,
-     &                  LPAOUT,BASE)
+     &                  LPAOUT,BASE,'OUI')
             CALL REAJRE(MATEL,LCHOUT(1),BASE)
           END IF
 C ====================================================================
@@ -446,7 +446,7 @@ C ====================================================================
             ILIRES = ILIRES + 1
             CALL CODENT(ILIRES,'D0',LCHOUT(1) (12:14))
             CALL CALCUL('S',OPTION,LIGRMO,NBIN,LCHIN,LPAIN,1,LCHOUT,
-     &                  LPAOUT,BASE)
+     &                  LPAOUT,BASE,'OUI')
             CALL REAJRE(MATEL,LCHOUT(1),BASE)
           END IF
 C ====================================================================
@@ -477,7 +477,7 @@ C         -- LA BOUCLE 30 SERT A TRAITER LES FORCES ELECTRIQUES LAPLACE
             ILIRES = ILIRES + 1
             CALL CODENT(ILIRES,'D0',LCHOUT(1) (12:14))
             CALL CALCUL('S',OPTION,LIGRMO,NBIN,LCHIN,LPAIN,1,LCHOUT,
-     &                  LPAOUT,BASE)
+     &                  LPAOUT,BASE,'OUI')
             CALL REAJRE(MATEL,LCHOUT(1),BASE)
    30     CONTINUE
    40     CONTINUE
@@ -495,7 +495,7 @@ C ====================================================================
             ILIRES = ILIRES + 1
             CALL CODENT(ILIRES,'D0',LCHOUT(1) (12:14))
             CALL CALCUL('S',OPTION,LIGRMO,NBIN,LCHIN,LPAIN,1,LCHOUT,
-     &                  LPAOUT,BASE)
+     &                  LPAOUT,BASE,'OUI')
             CALL REAJRE(MATEL,LCHOUT(1),BASE)
           END IF
 C ====================================================================
@@ -512,7 +512,7 @@ C ====================================================================
             ILIRES = ILIRES + 1
             CALL CODENT(ILIRES,'D0',LCHOUT(1) (12:14))
             CALL CALCUL('S',OPTION,LIGRMO,NBIN,LCHIN,LPAIN,1,LCHOUT,
-     &                  LPAOUT,BASE)
+     &                  LPAOUT,BASE,'OUI')
             CALL REAJRE(MATEL,LCHOUT(1),BASE)
           END IF
 C ====================================================================
@@ -539,7 +539,7 @@ C ====================================================================
             ILIRES = ILIRES + 1
             CALL CODENT(ILIRES,'D0',LCHOUT(1) (12:14))
             CALL CALCUL('S',OPTION,LIGRMO,NBIN,LCHIN,LPAIN,1,LCHOUT,
-     &                  LPAOUT,BASE)
+     &                  LPAOUT,BASE,'OUI')
             CALL REAJRE(MATEL,LCHOUT(1),BASE)
           END IF
 C ====================================================================
@@ -591,7 +591,7 @@ C       -- CHARGEMENT DE DILATATION THERMIQUE :
           ILIRES = ILIRES + 1
           CALL CODENT(ILIRES,'D0',LCHOUT(1) (12:14))
           CALL CALCUL('S',OPTION,LIGRMO,NBIN,LCHIN,LPAIN,1,LCHOUT,
-     &                LPAOUT,BASE)
+     &                LPAOUT,BASE,'OUI')
           CALL REAJRE(MATEL,LCHOUT(1),BASE)
           CALL DETRSD('CHAMP_GD',CHVARC)
         END IF

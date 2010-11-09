@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 30/09/2008   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 09/11/2010   AUTEUR DELMAS J.DELMAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,7 +19,7 @@
 # RESPONSABLE BOYERE E.BOYERE
 IMPR_GENE=PROC(nom="IMPR_GENE",op= 157,
             fr="Imprimer le résultat d'un calcul dynamique en variables généralisées au format RESULTAT",
-            UIinfo={"groupes":("Impression",)},
+            UIinfo={"groupes":("Impression","Dynamique",)},
          FORMAT          =SIMP(statut='f',typ='TXM',defaut="RESULTAT",into=("RESULTAT",) ),
          UNITE           =SIMP(statut='f',typ='I',defaut=8),  
          GENE            =FACT(statut='o',max='**',

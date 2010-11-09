@@ -1,4 +1,4 @@
-# MODIF  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
+# MODIF  DATE 08/11/2010   AUTEUR SELLENET N.SELLENET 
 # RESPONSABLE G8BHHXD X.DESROCHES
 # TITRE CYLINDRE SOUS CHARGEMENT THERMIQUE (AXIS_FOURIER)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -68,11 +68,6 @@ CHMAT=AFFE_MATERIAU( MAILLAGE=MAIL,
                   AFFE_VARC =_F(TOUT='OUI', CHAMP_GD=CHAR_NO, NOM_VARC='TEMP',VALE_REF=0.),
                           )
 
-# Materiau sans prise en compte de la temperature :
-CHMATST=AFFE_MATERIAU( MAILLAGE=MAIL,
-                  AFFE=_F(  TOUT = 'OUI', MATER = ACIER),
-                          )
-
 # RESOLUTION
 
 CHNUL=AFFE_CHAR_MECA(MODELE=MODELE,  FORCE_NODALE=_F(GROUP_NO = 'ENCAST', FX = 0.) )
@@ -101,7 +96,7 @@ U0_S=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
 
 DEF=CALC_ELEM( reuse= DEF ,RESULTAT= DEF ,
                            MODELE=MODELE,
-                           CHAM_MATER=CHMATST,
+                           CHAM_MATER=CHMAT,
                            TOUT_ORDRE='OUI',
                            OPTION=('SIGM_ELNO_DEPL',)
                 )
@@ -206,48 +201,56 @@ T1=POST_RELEVE_T(    ACTION=_F(
 #
 # E1
 TEST_TABLE(        TABLE=T1,
+                   REFERENCE='NON_REGRESSION',
                    FILTRE=_F(  NOM_PARA = 'NOEUD',
                             VALE_K = 'N1'),
                  NOM_PARA='SIXX',
-                     VALE=5.872145666E+06    )
+                     VALE=-4.8784164077558E+06    )
 
 TEST_TABLE(        TABLE=T1,
+                   REFERENCE='NON_REGRESSION',
                    FILTRE=_F(  NOM_PARA = 'NOEUD',
                             VALE_K = 'N1'),
                  NOM_PARA='SIYY',
-                     VALE=1.137204848E+07    )
+                     VALE=6.2148640368671E+05    )
 
 TEST_TABLE(        TABLE=T1,
+                   REFERENCE='NON_REGRESSION',
                    FILTRE=_F(  NOM_PARA = 'NOEUD',
                             VALE_K = 'N1'),
                  NOM_PARA='SIZZ',
-                     VALE=5.1024766510338E+06 )
+                     VALE=-5.6522960704417E+06 )
 
 TEST_TABLE(        TABLE=T1,
+                   REFERENCE='NON_REGRESSION',
                    FILTRE=_F(  NOM_PARA = 'NOEUD',
                             VALE_K = 'N1'),
                  NOM_PARA='SIXY',
                      VALE=-3.739500149E+06    )
 
 TEST_TABLE(        TABLE=T1,
+                   REFERENCE='NON_REGRESSION',
                    FILTRE=_F(  NOM_PARA = 'NOEUD',
                             VALE_K = 'N172'),
                  NOM_PARA='SIXX',
-                     VALE=5.407372656E+06    )
+                     VALE=-5.3437906856338E+06    )
 
 TEST_TABLE(        TABLE=T1,
+                   REFERENCE='NON_REGRESSION',
                    FILTRE=_F(  NOM_PARA = 'NOEUD',
                             VALE_K = 'N172'),
                  NOM_PARA='SIYY',
-                     VALE=1.026810308E+07    )
+                     VALE=-4.8306025991672E+05    )
 
 TEST_TABLE(        TABLE=T1,
+                   REFERENCE='NON_REGRESSION',
                    FILTRE=_F(  NOM_PARA = 'NOEUD',
                             VALE_K = 'N172'),
                  NOM_PARA='SIZZ',
-                     VALE=4.6557915460043E+06 )
+                     VALE=-6.098981175471E+06 )
 
 TEST_TABLE(        TABLE=T1,
+                   REFERENCE='NON_REGRESSION',
                    FILTRE=_F(  NOM_PARA = 'NOEUD',
                             VALE_K = 'N172'),
                  NOM_PARA='SIXY',

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 01/02/2010   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 09/11/2010   AUTEUR DELMAS J.DELMAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -22,7 +22,7 @@ from Macro.test_fonction_ops import test_fonction_ops
 
 TEST_FONCTION=MACRO(nom="TEST_FONCTION",op=test_fonction_ops,sd_prod=None,
             fr="Extraction d'une valeur numérique ou d'un attribut de fonction pour comparaison à une valeur de référence",
-            UIinfo={"groupes":("Impression",)},
+            UIinfo={"groupes":("Fonctions","Utilitaires",)},
          TEST_NOOK       =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON") ),
          VALEUR          =FACT(statut='f',max='**',
                                fr="Tester la valeur d une fonction ou d une nappe",

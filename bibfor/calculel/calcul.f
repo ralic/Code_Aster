@@ -1,8 +1,8 @@
       SUBROUTINE CALCUL(STOP,OPTIO,LIGRLZ,NIN,LCHIN,LPAIN,NOU,LCHOU,
-     &                  LPAOU,BASE)
+     &                  LPAOU,BASE,MPIC)
       IMPLICIT NONE
 
-C MODIF CALCULEL  DATE 28/06/2010   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 08/11/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -26,7 +26,7 @@ C     ARGUMENTS:
 C     ----------
       INTEGER NIN,NOU
       CHARACTER*(*) BASE,OPTIO
-      CHARACTER*(*) LCHIN(*),LCHOU(*),LPAIN(*),LPAOU(*),LIGRLZ
+      CHARACTER*(*) LCHIN(*),LCHOU(*),LPAIN(*),LPAOU(*),LIGRLZ,MPIC
 C ----------------------------------------------------------------------
 C     ENTREES:
 C        STOP   :  /'S' : ON S'ARRETE SI AUCUN ELEMENT FINI DU LIGREL
@@ -43,6 +43,10 @@ C        LCHOU  :  LISTE DES NOMS DES CHAMPS "OUT"
 C        LPAIN  :  LISTE DES NOMS DES PARAMETRES "IN"
 C        LPAOU  :  LISTE DES NOMS DES PARAMETRES "OUT"
 C        BASE   :  'G' , 'V' OU 'L'
+C        MPIC   :  'OUI' / 'NON' :
+C                  'OUI' : SI LE CALCUL EST DISTRIBUE, ON "COMPLETE" LES
+C                          CHAM_ELEM "OUT" POUR QUE LE CHAMP SOIT LE
+C                          MEME SUR TOUS LES PROCESSEURS.
 
 C     SORTIES:
 C       ALLOCATION ET CALCUL DES OBJETS CORRESPONDANT AUX CHAMPS "OUT"
@@ -102,7 +106,7 @@ C-----------------------------------------------------------------------
       INTEGER IEL,NUMC,NUMAIL,K,JRESL
       INTEGER I,IPAR,NIN2,NIN3,NOU2,NOU3,JTYPMA
       CHARACTER*1 BASE2,KBID
-      CHARACTER*8 NOMPAR,CAS,EXIELE,K8BID,PARTIT
+      CHARACTER*8 NOMPAR,CAS,EXIELE,K8BID,PARTIT,TYCH
       CHARACTER*10 K10B
       CHARACTER*16 K16BID, CMDE
       CHARACTER*20 K20B1, K20B2, K20B3, K20B4
@@ -122,6 +126,8 @@ C DEB-------------------------------------------------------------------
       IACTIF=1
       BASE2=BASE
       OPTION=OPTIO
+      CALL ASSERT(MPIC.EQ.'OUI'.OR.MPIC.EQ.'NON')
+
       DBG=.FALSE.
       LFETMO=.FALSE.
       LFETTS=.FALSE.
@@ -511,12 +517,21 @@ C     QUELQUES ACTIONS HORS BOUCLE GREL DUES A CALVOI==1 :
 C     -----------------------------------------------------
       CALL MONTEE(OPT,LIGREL,NOU2,LCHOU2,LPAOU2,'FIN')
 
+C     8- ON "COMPLETE" LES CHAM_ELEM "OUT" SI NECESSAIRE :
+C     ----------------------------------------------------
+      IF (MPIC.EQ.'OUI'.AND.LDIST) THEN
+        DO 111,I=1,NOU2
+          CALL DISMOI('F','TYPE_CHAMP',LCHOU2(I),'CHAMP',IBID,TYCH,IBID)
+          IF (TYCH(1:2).EQ.'EL')  CALL SDMPIC('CHAM_ELEM',LCHOU2(I))
+  111   CONTINUE
+      ENDIF
+
 C     -- POUR DEBUGGAGE, ON TRACE LE CHAMP RESULTAT
 C      CALL IMPRSD('CHAMP',LCHOU2(1),6,'IMPRSD FIN DE CALCUL')
 
       IF (DBG) CALL CALDBG(OPTION,'OUTF',NOU2,LCHOU2,LPAOU2)
 
-C     8- ON DETRUIT LES OBJETS VOLATILES CREES PAR CALCUL:
+C     9- ON DETRUIT LES OBJETS VOLATILES CREES PAR CALCUL:
 C     ----------------------------------------------------
       DO 110,I=1,NBOBTR
         CALL JEDETR(ZK24(IAOBTR-1+I))

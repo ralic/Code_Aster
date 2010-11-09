@@ -2,7 +2,7 @@
      &                  LISINZ,IVAL  )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 08/11/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -100,9 +100,12 @@ C
         ELSEIF (INFOCH.EQ.'CINE_FT') THEN
           ZI(JINFCH+ICHAR) = -3
         
-        ELSEIF (INFOCH(1:9).EQ.'DIRI_PILO') THEN
+        ELSEIF (INFOCH.EQ.'DIRI_PILO ') THEN
           ZI(JINFCH+ICHAR) = 5
-
+      
+        ELSEIF (INFOCH.EQ.'DIRI_PILO_F') THEN
+          ZI(JINFCH+ICHAR) = 6
+          
         ELSEIF (INFOCH(1:9).EQ.'DIRI_CSTE') THEN
           ZI(JINFCH+ICHAR) = 1
           IF (INFOCH(10:15).EQ.'_DIDI') THEN

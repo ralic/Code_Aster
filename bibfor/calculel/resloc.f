@@ -4,7 +4,7 @@
      &                   CVOISX, CHELEM )
 C ......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 16/06/2010   AUTEUR CARON A.CARON 
+C MODIF CALCULEL  DATE 08/11/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -552,7 +552,7 @@ CGN   33 CONTINUE
 CGN 3000 FORMAT(I2,1X,A8,1X,A24)
 
       CALL CALCUL('C',OPTION,LIGREL,NBRIN,LCHIN,LPAIN,1,
-     &            LCHOUT,LPAOUT,'G')
+     &            LCHOUT,LPAOUT,'G','OUI')
       CALL EXISD('CHAMP_GD',LCHOUT(1),IRET)
       IF (IRET.EQ.0) THEN
         CALL U2MESK('F','CALCULEL2_88',1,OPTION)

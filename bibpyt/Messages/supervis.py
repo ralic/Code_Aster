@@ -1,4 +1,4 @@
-#@ MODIF supervis Messages  DATE 24/08/2010   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF supervis Messages  DATE 09/11/2010   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -388,6 +388,14 @@ Types incompatibles entre glob.1 et pick.1 pour le concept de nom %(k1)s.
 Concept de nom %(k1)s et de type %(k2)s introuvable dans la base globale"
 """),
 
+89: _("""
+ Il n'y a pas de fichier glob.1 ou bhdf.1 dans le répertoire courant.
+
+Conseils:
+   - Vérifiez que vous avez une base (de type base ou bhdf) dans votre étude.
+   - Vérifiez si elle doit être décompressée ou pas.
+"""),
+
 93 : _("""
 La variable python "%(k1)s" fait référence au concept "%(k2)s".
 Cela se produit avec ce type d'enchainement :
@@ -403,7 +411,8 @@ On détruit cette variable ("%(k1)s" dans l'exemple ci-dessus).
 """),
 
 94 : _("""
-Le temps CPU system (%(r1)f) atteint une valeur supérieure à %(i1)d%% du temps CPU (%(r2)f).
+Le temps CPU system (%(r1).1f) atteint une valeur supérieure à %(i1)d%%
+du temps CPU (%(r2).1f).
 Ce comportement est peut-être anormal. 
 Le nombre d'appel au mécanisme de déchargement de la mémoire depuis le début du
 calcul est de %(i2)d. 

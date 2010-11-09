@@ -4,7 +4,7 @@
       CHARACTER*(*) RESU,MODELE,CARA,LCHAR(*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 19/10/2010   AUTEUR DELMAS J.DELMAS 
+C MODIF UTILITAI  DATE 08/11/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -218,7 +218,7 @@ C            OPTION DE CALCUL RICE_TRACEY ---
         LCHOUT(2) = '&&PERITR.SDRPR'
         LPAOUT(2) = 'PSDRPR'
         CALL CALCUL('S',OPTIO2,LIGREL,NBIN,LCHIN,LPAIN,2,LCHOUT,LPAOUT,
-     &              'V')
+     &              'V','OUI')
 
         DO 80 IOCC = 1,NBOCC
           CALL GETVTX(OPTION(1:11),'TOUT',IOCC,1,0,K8B,NT)

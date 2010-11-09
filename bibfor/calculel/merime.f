@@ -10,7 +10,7 @@
       CHARACTER*(1) BASE
       LOGICAL EXITIM
 C ----------------------------------------------------------------------
-C MODIF CALCULEL  DATE 16/06/2010   AUTEUR CARON A.CARON 
+C MODIF CALCULEL  DATE 08/11/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -161,7 +161,7 @@ C
         LCHIN(11) = PMILTO
 
         CALL CALCUL('S',OPTION,LIGRMO,11,LCHIN,LPAIN,1,LCHOUT,LPAOUT,
-     &              BASE)
+     &              BASE,'OUI')
         CALL REAJRE(MATEL,LCHOUT(1),BASE)
 
       ELSEIF (ICODE.EQ.0 .AND. IER.EQ.0) THEN
@@ -189,9 +189,9 @@ C----- CAS DU MODELE FEM CLASSIQUE---------------
         LPAIN(10) = 'PPESANR'
         LCHIN(10) = CHCHAR
         LPAIN(11) = 'PGEOME2'
-        LCHIN(11) = ' '
+        LCHIN(11) = CHGEOM
         LPAIN(12) = ' '
-        LCHIN(12) = CHGEOM
+        LCHIN(12) = ' '
         LPAIN(13) = 'PCAGNBA'
         LCHIN(13) = CHCARA(11)
         LPAIN(14) = 'PCAMASS'
@@ -213,7 +213,7 @@ C----- CAS DU MODELE FEM CLASSIQUE---------------
         LPAIN(22) = 'PCINFDI'
         LCHIN(22) = CHCARA(15)
         CALL CALCUL('S',OPTION,LIGRMO,22,LCHIN,LPAIN,2,LCHOUT,LPAOUT,
-     &              BASE)
+     &              BASE,'OUI')
         CALL REAJRE(MATEL,LCHOUT(1),BASE)
         CALL REAJRE(MATEL,LCHOUT(2),BASE)
         ILIRES = ILIRES +2
@@ -234,7 +234,7 @@ C----- CAS DU MODELE FEM CLASSIQUE---------------
         CALL CODENT(ILIRES,'D0',LCHOUT(1) (12:14))
         OPTION = 'MECA_DDLM_R'
         CALL CALCUL('S',OPTION,LIGRCH,1,LCHIN,LPAIN,1,LCHOUT,LPAOUT,
-     &              BASE)
+     &              BASE,'OUI')
         CALL REAJRE(MATEL,LCHOUT(1),BASE)
    10 CONTINUE
 

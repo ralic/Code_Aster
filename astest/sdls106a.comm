@@ -1,4 +1,4 @@
-# MODIF  DATE 26/10/2010   AUTEUR NISTOR I.NISTOR 
+# MODIF  DATE 09/11/2010   AUTEUR NISTOR I.NISTOR 
 # TITRE SOUS STRUCTURATION DYNAMIQUE : PLAQUE MINCE APPUYEE-APPUYEE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -217,9 +217,13 @@ MACEL2=MACR_ELEM_DYNA(  BASE_MODALE=BAMO2_CL,
 #   CALCUL SUR MODELE GENERALISE
 #
 MODEGE=DEFI_MODELE_GENE(SOUS_STRUC=(_F( NOM = 'CARRE1',
-                                        MACR_ELEM_DYNA = MACEL1),
+                                        MACR_ELEM_DYNA = MACEL1,
+                                        ANGL_NAUT = (0., 0., 0.,),
+                                        TRANS=(0.,0.,0.),),
                                     _F( NOM = 'CARRE2',
-                                        MACR_ELEM_DYNA = MACEL2),),
+                                        MACR_ELEM_DYNA = MACEL2,
+                                        ANGL_NAUT = (0., 0., 0.,),
+                                        TRANS=(-1.,0.,0.),),),
                              LIAISON=_F( SOUS_STRUC_1 = 'CARRE1',
                                       SOUS_STRUC_2 = 'CARRE2',
                                       INTERFACE_1 = 'GAUCHE_1',

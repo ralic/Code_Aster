@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
+#& MODIF COMMANDE  DATE 09/11/2010   AUTEUR DELMAS J.DELMAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,7 +21,7 @@ from Macro.raff_xfem_ops import raff_xfem_ops
 RAFF_XFEM=MACRO(nom="RAFF_XFEM",op=raff_xfem_ops,sd_prod=cham_no_sdaster,
                    fr="Calcul de la distance au fond de fissure le plus proche",
                    reentrant='n',
-            UIinfo={"groupes":("Rupture",)},
+            UIinfo={"groupes":("Résultats et champs","Rupture",)},
 
     FISSURE       =SIMP(statut='o',typ=fiss_xfem,min=1,max='**',),
     INFO          =SIMP(statut='f',typ='I',defaut=1,into=(1,2)),

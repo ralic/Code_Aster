@@ -3,7 +3,7 @@
      &                    CODRET )
 C_____________________________________________________________________
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 19/10/2010   AUTEUR COURTOIS M.COURTOIS 
+C MODIF PREPOST  DATE 08/11/2010   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -118,6 +118,7 @@ C 1.2. ==> RECHERCHE DU CHAMP VOULU
 C
       LNOCHM = LXLGUT(NOCHMD)
       EXISTC = 0
+      ILOCAL = .TRUE.
 C
       DO 12 , IAUX = 1 , NBCHAM
 C

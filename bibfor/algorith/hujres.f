@@ -2,7 +2,7 @@
      &           SIGD, VIND, SIGF, VINF, IRET, ETATF)
       IMPLICIT NONE
 C          CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 18/10/2010   AUTEUR FOUCAULT A.FOUCAULT 
+C MODIF ALGORITH  DATE 08/11/2010   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -66,6 +66,7 @@ C   ------------------------------------------------------------------
 
       TRY = .TRUE.
       LOOP = .FALSE.
+      NODEC=.FALSE.
 
       DO 70 I = 1, 7
         INDI(I) = 0

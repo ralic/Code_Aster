@@ -1,4 +1,4 @@
-#@ MODIF impr_diag_campbell_ops Macro  DATE 11/05/2010   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF impr_diag_campbell_ops Macro  DATE 09/11/2010   AUTEUR TORKHANI M.TORKHANI 
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -21,7 +21,7 @@
 
 
 
-def impr_diag_campbell_ops(self, MAILLAGE, MODES, NFREQ_camp, TYP_PREC, TYP_TRI,
+def impr_diag_campbell_ops(self, MAILLAGE, MODES, NFREQ_CAMP, TYP_PREC, TYP_TRI,
                            UNIT_FLE, UNIT_TOR, UNIT_LON, UNIT_TOT, UNIT_INT,L_S, **args) :
 # Macro permettant de tracer le diagramme de Campbell suivant 
 # le type de suivi des modes et le type de calcul de la precession
@@ -137,21 +137,21 @@ def impr_diag_campbell_ops(self, MAILLAGE, MODES, NFREQ_camp, TYP_PREC, TYP_TRI,
         aster.affiche('RESULTAT', chaine)
         chaine='Nombre de valeurs propres detectees est %d' %NFREQ
         aster.affiche('RESULTAT', chaine)
-    if NFREQ_camp > NFREQ:
-            chaine='Nombre de frequences demandees pour le trace  %d' %NFREQ_camp
+    if NFREQ_CAMP > NFREQ:
+            chaine='Nombre de frequences demandees pour le trace  %d' %NFREQ_CAMP
             aster.affiche('RESULTAT', chaine)
-            NFREQ_camp = NFREQ-4;
-            chaine='Nombre de frequences pour le trace  %d' %NFREQ_camp
+            NFREQ_CAMP = NFREQ-4;
+            chaine='Nombre de frequences pour le trace  %d' %NFREQ_CAMP
             aster.affiche('RESULTAT', chaine)
     else: 
-           chaine='Nombre de frequences demandees pour le trace  %d' %NFREQ_camp
+           chaine='Nombre de frequences demandees pour le trace  %d' %NFREQ_CAMP
            aster.affiche('RESULTAT', chaine)
-    if NFREQ_camp <=0 :      
+    if NFREQ_CAMP <=0 :      
         chaine='Le trace du diagramme de Campbell s''arrete !.'
         aster.affiche('RESULTAT', chaine)
        
   
-    if NFREQ_camp>0:
+    if NFREQ_CAMP>0:
     
 # ------------------------------------------------------------------
 # Classe les modes en flexion, en torsion , en traction/ compression
@@ -171,7 +171,7 @@ def impr_diag_campbell_ops(self, MAILLAGE, MODES, NFREQ_camp, TYP_PREC, TYP_TRI,
     
     
         NOEU=len(L_GR_NOEUD);
-        C_MODES=CLASS_MODES(self,lmo,NFREQ,NFREQ_camp,L_GR_NOEUD,L_VIT1);
+        C_MODES=CLASS_MODES(self,lmo,NFREQ,NFREQ_CAMP,L_GR_NOEUD,L_VIT1);
 
         NFREQ_f=C_MODES[0];
         NFREQ_t=C_MODES[1];

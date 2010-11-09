@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 21/04/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+#& MODIF COMMANDE  DATE 09/11/2010   AUTEUR DELMAS J.DELMAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,7 +18,7 @@
 # ======================================================================
 # RESPONSABLE LEFEBVRE J.P.LEFEBVRE
 IMPR_CO=PROC(nom="IMPR_CO",op=17,
-            UIinfo={"groupes":("Impression",)},
+            UIinfo={"groupes":("Impression","Utilitaires",)},
              fr="Imprimer tous les objets JEVEUX qui constituent un concept utilisateur existant (pour les développeurs)",
          regles=(UN_PARMI('CONCEPT','CHAINE','TOUT' ),),
 

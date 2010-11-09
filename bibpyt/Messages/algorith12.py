@@ -1,4 +1,4 @@
-#@ MODIF algorith12 Messages  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
+#@ MODIF algorith12 Messages  DATE 09/11/2010   AUTEUR NISTOR I.NISTOR 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -31,9 +31,6 @@ cata_msg = {
  nom interface inexistante : %(k3)s
 """),
 
-3 : _("""
- une sous-structure est sans connexion sous-structure -->  %(k1)s
-"""),
 
 7 : _("""
  données incompatibles :

@@ -3,7 +3,7 @@
       CHARACTER*(*) LIGREL,ERREE,ERREN
 C----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 19/02/2008   AUTEUR MEUNIER S.MEUNIER 
+C MODIF CALCULEL  DATE 08/11/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -40,6 +40,7 @@ C ......................................................................
       LPAOUT(1) = 'PERRENO'
       LCHOUT(1) = ERREN
 
-      CALL CALCUL('S',OPTION,LIGREL,1,LCHIN,LPAIN,1,LCHOUT,LPAOUT,'G')
+      CALL CALCUL('S',OPTION,LIGREL,1,LCHIN,LPAIN,1,LCHOUT,LPAOUT,'G',
+     &               'OUI')
 
       END

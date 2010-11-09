@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 21/04/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+#& MODIF COMMANDE  DATE 09/11/2010   AUTEUR DELMAS J.DELMAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,7 +21,7 @@
 from Macro.test_fichier_ops import test_fichier_ops
 
 TEST_FICHIER=MACRO(nom="TEST_FICHIER", op=test_fichier_ops,
-                   UIinfo={"groupes":("Impression",)},
+                   UIinfo={"groupes":("Utilitaires",)},
                    fr="Tester la non régression de fichiers produits par des commandes aster",
    FICHIER          =SIMP(statut='o',typ='TXM',validators=LongStr(1,255)),
    EXPR_IGNORE      =SIMP(statut='f',typ='TXM',max='**',

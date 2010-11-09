@@ -1,4 +1,4 @@
-# MODIF  DATE 23/03/2010   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 08/11/2010   AUTEUR DESROCHES X.DESROCHES 
 # TITRE : TUNNEL CIRCULAIRE REVETU EN CHAMP DE CONTRAINTES INITIAL ISOTROPE
 # sslp105a.para = tps_job 60 mem_job 100Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -519,8 +519,26 @@ TEST_RESU(RESU=_F(RESULTAT=RESU1,
                   PRECISION = 0.01,
                   CRITERE = 'RELATIF',
                   REFERENCE='ANALYTIQUE',),);                 
-                                                                
-
+                                                            
+TAB1=POST_ELEM(
+                MASS_INER=_F(TOUT='OUI'),
+                RESULTAT=RESU1,NUME_ORDRE=1);       
+                
+TEST_TABLE(TABLE=TAB1,
+           REFERENCE='NON_REGRESSION',
+           NOM_PARA='MASSE',
+           VALE= 7.96466E+05   )
+#
+# CALCUL DE MASS_INER SUR LE MODELE APRES L'EXCAVATION
+#
+TAB2=POST_ELEM(
+                MASS_INER=_F(TOUT='OUI'),
+                MODELE=MO2,CHAM_MATER=CHMAT3);       
+                
+TEST_TABLE(TABLE=TAB2,
+           REFERENCE='NON_REGRESSION',
+           NOM_PARA='MASSE',
+           VALE= 7.97738E+05   )
 FIN();
 
 

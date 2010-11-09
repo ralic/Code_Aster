@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 11/10/2010   AUTEUR DESROCHES X.DESROCHES 
+#& MODIF COMMANDE  DATE 09/11/2010   AUTEUR DELMAS J.DELMAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,7 +20,7 @@
 
 from Macro.post_coque_ops import post_coque_ops
 POST_COQUE=MACRO(nom="POST_COQUE",op=post_coque_ops,sd_prod=table_sdaster, reentrant='n',
-             UIinfo={"groupes":("Post traitements",)},
+             UIinfo={"groupes":("Post-traitements",)},
              fr="Calcul des efforts et déformations en un point et une cote quelconque de la coque",
 
              regles=(EXCLUS('INST','NUME_ORDRE'),),
@@ -32,7 +32,7 @@ POST_COQUE=MACRO(nom="POST_COQUE",op=post_coque_ops,sd_prod=table_sdaster, reent
              INST            =SIMP(statut='f',typ='R'),
 
              # points de post-traitement :
-             COOR_POINT      =FACT(statut='o',max='**',fr="coordonnées et position dans l épaisseur",
+             COOR_POINT      =FACT(statut='o',max='**',fr="coordonnées et position dans l'épaisseur",
                                    COOR=SIMP(statut='o',typ='R',min=3,max=4),),
 
             )

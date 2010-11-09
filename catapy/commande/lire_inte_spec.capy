@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 21/04/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+#& MODIF COMMANDE  DATE 09/11/2010   AUTEUR DELMAS J.DELMAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -23,7 +23,7 @@ from Macro.lire_inte_spec_ops import lire_inte_spec_ops
 LIRE_INTE_SPEC=MACRO(nom="LIRE_INTE_SPEC",op=lire_inte_spec_ops,sd_prod=table_fonction,
                     fr="Lecture sur un fichier externe de fonctions complexes pour créer une matrice interspectrale",
                     reentrant='n',
-            UIinfo={"groupes":("Fonction",)},
+            UIinfo={"groupes":("Lecture","Fonctions",)},
          UNITE           =SIMP(statut='o',typ='I' ),
          FORMAT_C        =SIMP(statut='f',typ='TXM',defaut="MODULE_PHASE",into=("REEL_IMAG","MODULE_PHASE") ),
          FORMAT          =SIMP(statut='f',typ='TXM',defaut="ASTER",into=("ASTER","IDEAS") ),

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 14/12/2009   AUTEUR ANDRIAM H.ANDRIAMBOLOLONA 
+#& MODIF COMMANDE  DATE 09/11/2010   AUTEUR DELMAS J.DELMAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -34,7 +34,7 @@ def observation_prod(self, RESULTAT, **args):
         return None
 
 OBSERVATION=MACRO(nom="OBSERVATION",op=observation_ops,
-            UIinfo={"groupes":("Matrices/vecteurs",)},
+            UIinfo={"groupes":("Matrices et vecteurs",)},
                       sd_prod=observation_prod,
                       fr="Calcul de l'observabilite d'un champ aux noeuds ",
 #

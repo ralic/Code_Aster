@@ -1,4 +1,4 @@
-# MODIF  DATE 03/11/2010   AUTEUR BOITEAU O.BOITEAU 
+# MODIF  DATE 09/11/2010   AUTEUR NISTOR I.NISTOR 
 # TITRE SOUS-STRUCTURATION DYNAMIQUE : PLAQUE MINCE APPUYEE SUR SES BORDS
 # perf006a.para = tps_job 500 mem_job 350Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -141,16 +141,21 @@ MAC_EL=MACR_ELEM_DYNA(BASE_MODALE=BAMO_CL,);
 #   CALCUL SUR MODELE GENERALISE
 
 MODEGE=DEFI_MODELE_GENE(SOUS_STRUC=(_F(NOM='M_EL1',
-                                       MACR_ELEM_DYNA=MAC_EL,),
+                                       MACR_ELEM_DYNA=MAC_EL,
+                                       ANGL_NAUT = (0., 0., 0.,),
+                                       TRANS=(0.,0.,0.)),
                                     _F(NOM='M_EL2',
                                        MACR_ELEM_DYNA=MAC_EL,
-                                       ANGL_NAUT=(90.,0.,0.,),),
+                                       ANGL_NAUT=(90.,0.,0.,),
+                                       TRANS=(0.,0.,0.)),
                                     _F(NOM='M_EL3',
                                        MACR_ELEM_DYNA=MAC_EL,
-                                       ANGL_NAUT=(180.,0.,0.,),),
+                                       ANGL_NAUT=(180.,0.,0.,),
+                                       TRANS=(0.,0.,0.)),
                                     _F(NOM='M_EL4',
                                        MACR_ELEM_DYNA=MAC_EL,
-                                       ANGL_NAUT=(270.,0.,0.,),),),
+                                       ANGL_NAUT=(270.,0.,0.,),
+                                       TRANS=(0.,0.,0.)),),
                         LIAISON=(_F(SOUS_STRUC_1='M_EL1',
                                     INTERFACE_1='GAUCHE',
                                     SOUS_STRUC_2='M_EL2',

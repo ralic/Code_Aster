@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 21/04/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+#& MODIF COMMANDE  DATE 09/11/2010   AUTEUR DELMAS J.DELMAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -27,7 +27,7 @@ GENE_MATR_ALEA=OPER(nom="GENE_MATR_ALEA",op=  27,
 sd_prod=gene_matr_alea_prod,
                fr="Générer une réalisation d'une matrice aléatoire réelle sym. déf. positive ou d'un macro élément dynamique",
                reentrant='n',
-            UIinfo={"groupes":("Matrice",)},
+            UIinfo={"groupes":("Matrices et vecteurs",)},
    MATR_MOYEN   = SIMP(statut='o', typ=(matr_asse_gene_r,macr_elem_dyna)),
 
 #    cas matrice generalisee 

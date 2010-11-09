@@ -1,7 +1,7 @@
       SUBROUTINE MEDIME(BASE  ,CUMUL ,MODELE,LISCHA,MEDIRI)
-C      
+C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 12/01/2010   AUTEUR GRANET S.GRANET 
+C MODIF ALGORITH  DATE 08/11/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,20 +22,20 @@ C RESPONSABLE ABBAS M.ABBAS
 C
       IMPLICIT NONE
       CHARACTER*1  BASE
-      CHARACTER*4  CUMUL     
+      CHARACTER*4  CUMUL
       CHARACTER*24 MODELE
       CHARACTER*19 MEDIRI
       CHARACTER*19 LISCHA
-C 
+C
 C ----------------------------------------------------------------------
 C
 C ROUTINE MECA_NON_LINE (CALCUL)
 C
 C CALCUL DES MATRICES ELEMENTAIRES DES ELEMENTS DE LAGRANGE
-C      
+C
 C ----------------------------------------------------------------------
 C
-C 
+C
 C IN  BASE    : BASE 'V' OU BASE OU SONT CREES LES OBJETS EN SORTIE
 C IN  CUMUL   : /'ZERO' : ON INITIALISE LE MATR_ELEM
 C               /'CUMU' : ON AJOUTE UN NOUVEAU MATR_ELEM AUX EXISTANTS
@@ -72,41 +72,41 @@ C
       CHARACTER*19 LIGRCH
       INTEGER      IRET,JCHAR,JINF,ICHA,ILIRES
       INTEGER      NCHAR,NLUTI
-      INTEGER      IFMDBG,NIVDBG 
-      LOGICAL      DEBUG     
+      INTEGER      IFMDBG,NIVDBG
+      LOGICAL      DEBUG
 C
 C ----------------------------------------------------------------------
 C
       CALL JEMARQ()
-      CALL INFDBG('PRE_CALCUL',IFMDBG,NIVDBG)       
+      CALL INFDBG('PRE_CALCUL',IFMDBG,NIVDBG)
 C
 C --- INITIALISATIONS
-C   
+C
       OPTION = 'MECA_DDLM_R'
       IF (NIVDBG.GE.2) THEN
         DEBUG  = .TRUE.
       ELSE
         DEBUG  = .FALSE.
-      ENDIF       
+      ENDIF
 C
 C --- INITIALISATION DES CHAMPS POUR CALCUL
 C
       CALL INICAL(NBIN  ,LPAIN ,LCHIN ,
-     &            NBOUT ,LPAOUT,LCHOUT)       
+     &            NBOUT ,LPAOUT,LCHOUT)
 C
 C --- ACCES AUX CHARGEMENTS
-C 
+C
       CALL JEEXIN(LISCHA(1:19)//'.LCHA',IRET)
       IF (IRET.EQ.0) THEN
         NCHAR = 0
         GOTO 20
-      ELSE  
+      ELSE
         CALL JELIRA(LISCHA(1:19)//'.LCHA','LONMAX',NCHAR,K8BID)
         CALL JEVEUO(LISCHA(1:19)//'.LCHA','L',JCHAR)
         CALL JEVEUO(LISCHA(1:19)//'.INFC','L',JINF)
-      ENDIF  
+      ENDIF
 C
-C --- PREPARATION DES MATR_ELEM 
+C --- PREPARATION DES MATR_ELEM
 C
       IF (CUMUL.EQ.'ZERO') THEN
         CALL JEDETR(MEDIRI//'.RELR')
@@ -121,11 +121,11 @@ C
 C
       IF (CUMUL.EQ.'ZERO') THEN
         NLUTI  = 1
-      ELSE IF (CUMUL.EQ.'CUMU') THEN 
+      ELSE IF (CUMUL.EQ.'CUMU') THEN
         CALL JELIRA(MEDIRI//'.RELR','LONUTI',NLUTI,K8BID)
         NLUTI  = NLUTI+1
         CALL CODENT(NLUTI+1,'D0',LCHOUT(1) (12:14))
-      ELSE 
+      ELSE
         CALL ASSERT(.FALSE.)
       ENDIF
 
@@ -140,13 +140,13 @@ C
           IF (IRET.LE.0) GO TO 10
 C
 C ---     CHAMPS IN
-C         
-          LPAIN(1)  = 'PDDLMUR'  
+C
+          LPAIN(1)  = 'PDDLMUR'
           LCHIN(1)  = NOMCHA//'.CHME.CMULT'
 C
 C ---     CHAMPS OUT
-C          
-          LPAOUT(1) = 'PMATUUR'  
+C
+          LPAOUT(1) = 'PMATUUR'
           CALL CODENT(ILIRES+1,'D0',LCHOUT(1) (17:19))
 C
 C ---     APPEL A CALCUL
@@ -155,17 +155,17 @@ C
             CALL DBGCAL(OPTION,IFMDBG,
      &                  NBIN  ,LPAIN ,LCHIN ,
      &                  NBOUT ,LPAOUT,LCHOUT)
-          ENDIF 
-C          
+          ENDIF
+C
           CALL CALCUL('S',OPTION,LIGRCH,NBIN ,LCHIN,LPAIN,
-     &                                  NBOUT,LCHOUT,LPAOUT,BASE)
+     &                                  NBOUT,LCHOUT,LPAOUT,BASE,'OUI')
 C
 C ---     STOCKAGE DES RESU_ELEM
-C     
+C
           CALL REAJRE(MEDIRI,LCHOUT(1),BASE)
           ILIRES = ILIRES + 1
         END IF
-   10 CONTINUE   
+   10 CONTINUE
    20 CONTINUE
 C
       CALL JEDEMA()

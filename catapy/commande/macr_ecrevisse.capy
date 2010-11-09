@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 21/04/2010   AUTEUR BOTTONI M.BOTTONI 
+#& MODIF COMMANDE  DATE 09/11/2010   AUTEUR DELMAS J.DELMAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -31,7 +31,7 @@ def macr_ecrevisse_prod(self,TABLE,TEMPER,DEBIT,**args):
 
 
 MACR_ECREVISSE=MACRO(nom="MACR_ECREVISSE",op=macr_ecrevisse_ops,sd_prod=macr_ecrevisse_prod,reentrant='f',
-                       UIinfo={"groupes":("Outils metier",)},fr="Procedure de couplage avec Ecrevisse",
+                       UIinfo={"groupes":("Résolution","Outils-métier",)},fr="Procedure de couplage avec Ecrevisse",
 
        reuse =SIMP(statut='f',typ='evol_noli'),
        regles = (EXCLUS('TEMPER','ETAT_INIT'),

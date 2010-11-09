@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 16/02/2010   AUTEUR GREFFET N.GREFFET 
+#& MODIF COMMANDE  DATE 09/11/2010   AUTEUR DELMAS J.DELMAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -17,7 +17,9 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
 # RESPONSABLE GREFFET
-INIT_COMPO=PROC(nom="INIT_COMPO",op=  117,
-                    fr="Initialiser adresse component YACS",
+INIT_COMPO=PROC(nom="INIT_COMPO",
+                op=  117,
+                UIinfo={"groupes":("Gestion du travail",)},
+                fr="Initialiser adresse component YACS",
            COMPO           =SIMP(statut='o',typ='I',),
 )  ;

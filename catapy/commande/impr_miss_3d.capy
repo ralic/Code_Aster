@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 13/10/2009   AUTEUR COURTOIS M.COURTOIS 
+#& MODIF COMMANDE  DATE 09/11/2010   AUTEUR DELMAS J.DELMAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,7 +18,7 @@
 # ======================================================================
 # RESPONSABLE DEVESA G.DEVESA
 IMPR_MISS_3D=PROC(nom="IMPR_MISS_3D",op= 162,
-            UIinfo={"groupes":("Impression",)},
+            UIinfo={"groupes":("Impression","Outils-métier",)},
          fr="Impression des données d'entrée pour une étude sismique avec MISS3D",
          regles=(UN_PARMI('INST_INIT','FREQ_INIT'),
                  PRESENT_PRESENT('INST_INIT','INST_FIN'),

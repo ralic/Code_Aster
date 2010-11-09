@@ -1,4 +1,4 @@
-# MODIF  DATE 20/07/2010   AUTEUR MAHFOUZ D.MAHFOUZ 
+# MODIF  DATE 09/11/2010   AUTEUR NISTOR I.NISTOR 
 # TITRE MASSE AJOUTEE CALCULEE SUR MODELE GENERALISE - MODES MOUILLES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -197,10 +197,12 @@ MACEL2=MACR_ELEM_DYNA(  BASE_MODALE=BAMO2)
 #
 MODEGE=DEFI_MODELE_GENE(SOUS_STRUC=( _F( NOM = 'CYLINDR0',
                                          MACR_ELEM_DYNA = MACEL1,
-                                         ANGL_NAUT = (0., 0., 0.,)),
+                                         ANGL_NAUT = (0., 0., 0.,),
+                                         TRANS=(0.,0.,0.),),
                              _F( NOM = 'CYLINDR1',
                                          MACR_ELEM_DYNA = MACEL2,
-                                         ANGL_NAUT = (-90., 0., 0.,))),
+                                         ANGL_NAUT = (-90., 0., 0.,),
+                                         TRANS=(1.,0.,0.),)),
                              LIAISON=_F( SOUS_STRUC_1 = 'CYLINDR0',
                                       SOUS_STRUC_2 = 'CYLINDR1',
                                       INTERFACE_1 = 'EST',

@@ -3,7 +3,7 @@
       IMPLICIT REAL*8  (A-H,O-Z)
 C---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/10/2010   AUTEUR BOITEAU O.BOITEAU 
+C MODIF ALGORITH  DATE 08/11/2010   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -91,6 +91,20 @@ C-----------------------------------------------------------------
 C ON RECUPERE LE NOMBRE DE MODES DANS LE MODE_MECA
 C DEFINI
       CALL JEMARQ()
+C
+C     INITIALISATIONS
+      TEMPOR = '&&MAJOU.NUMODE'
+      VEPR   = '&&MAJOU.VEPR'
+      CHCOMB = '&&CHCOMB'
+      CHCMB2 = '&&CHCMB2'
+      CHFLU =  '&&MAJOU.CHFLU'
+      VESOLX = '&&VEMAJX'
+      VESOLY = '&&VEMAJY'
+      VESOLZ = '&&VEMAJZ'
+      CHAMNX = '&&MAJOU.CHAMNX'
+      CHAMNY = '&&MAJOU.CHAMNY'
+      CHAMNZ = '&&MAJOU.CHAMNZ'
+C
       CALL RSORAC(MODMEC,'LONUTI',IBID,BID,K8BID,CBID,EBID,'ABSOLU',
      +             NBMODE,1,NBID)
 
@@ -147,7 +161,6 @@ C RECUPERATION DES MODES SELECTIONNES
       CALL GETVIS(' ','NUME_MODE_MECA',0,1,0,SEL,N15)
       NBSEL=-1*N15
       IF(NBSEL.GT.0) THEN
-        TEMPOR='&&MAJOU.NUMODE'
         CALL WKVECT(TEMPOR,'V V I',NBSEL,IDSEL)
         CALL GETVIS(' ','NUME_MODE_MECA',0,1,NBSEL,ZI(IDSEL),N16)
       ENDIF
@@ -187,14 +200,11 @@ C SORTIE DE BOUCLE POUR LES MODES NON-SELECTIONNES
 
 
           CALL RSEXCH(MODMEC,'DEPL',ILIRES,NOMCHA,IRET)
-          CHAMNX='&&MAJOU.CHAMNX'
           CALL ALIMRS(MATE,MAILLA,MAFLUI,MOINT,NDBLE,NUM,NOMCHA(1:19),
      &              CHAMNX, 'DX',ICOR)
-          CHAMNY='&&MAJOU.CHAMNY'
           CALL ALIMRS(MATE,MAILLA,MAFLUI,MOINT,NDBLE,NUM,NOMCHA(1:19),
      &               CHAMNY, 'DY',ICOR)
           IF(MODEL.EQ.'3D') THEN
-            CHAMNZ='&&MAJOU.CHAMNZ'
             CALL ALIMRS(MATE,MAILLA,MAFLUI,MOINT,NDBLE,NUM,NOMCHA(1:19),
      &                 CHAMNZ, 'DZ',ICOR)
           ENDIF
@@ -212,10 +222,6 @@ C-----SUR LES CONTOURS DE LA INTERFACE FLUIDE
 
            TYPECH(1) ='R'
            TYPECH(2) ='R'
-
-           VESOLX = '&&VEMAJX'
-           VESOLY = '&&VEMAJY'
-           VESOLZ = '&&VEMAJZ'
 
            NOMCH(1) = VESOLX(1:8)
            NOMCH(2) = VESOLY(1:8)
@@ -246,8 +252,6 @@ C---ON RECOMBINE LES DEUX (TROIS)CHAMPS AUX NOEUDS DE TEMP ET ON CALCULE
 C-----LE FLUX FLUIDE TOTAL.....
 
 
-           CHCOMB = '&&CHCOMB'
-
            CALL VTCMBL(2,TYPCST,CONST,TYPECH,NOMCH,'R',CHCOMB)
 
            IF(MODEL.EQ.'3D') THEN
@@ -264,13 +268,9 @@ C-----LE FLUX FLUIDE TOTAL.....
              NOMCH(1) = CHCOMB
              NOMCH(2) = VESOLZ(1:8)
 
-             CHCMB2='&&CHCMB2'
              CALL VTCMBL(2,TYPCST,CONST,TYPECH,NOMCH,'R',CHCMB2)
 
            ENDIF
-
-
-           CHFLU = '&&MAJOU.CHFLU'
 
            IF(MODEL.EQ.'3D')THEN
             TAMPON=CHCMB2
@@ -290,7 +290,6 @@ C----ON RESOUT L EQUATION DE LAPLACE
 C--------ON REPLONGE LA PRESSION SUR L INTERFACE
 C-----------------QU 'ON STOCKE
 
-           VEPR = '&&MAJOU.VEPR'
            CALL CHNUCN(CHFLU,NUM,0,K8BID,'V',VEPR)
 
            VESTOC= '&&MAJOU.VESTOC'
@@ -358,21 +357,18 @@ C TABLEAUX POUR LES DEPLACEMENTS EN Z
 
     3   CONTINUE
       ENDIF
-      CALL JEDETC('V',TEMPOR,1)
 
-           CALL JEDETC('V',VEPR,1)
-           CALL JEDETC('V',CHCOMB,1)
-           CALL JEDETC('V',CHCMB2,1)
-           CALL JEDETC('V',CHFLU,1)
-           CALL JEDETC('V',VESOLX,1)
-           CALL JEDETC('V',VESOLY,1)
-           CALL JEDETC('V',VESOLZ,1)
-           CALL JEDETC('V',CHTMPX,1)
-           CALL JEDETC('V',CHTMPY,1)
-           CALL JEDETC('V',CHTMPZ,1)
-           CALL JEDETC('V',CHAMNX,1)
-           CALL JEDETC('V',CHAMNY,1)
-           CALL JEDETC('V',CHAMNZ,1)
+      CALL JEDETC('V',TEMPOR,1)
+      CALL JEDETC('V',VEPR,1)
+      CALL JEDETC('V',CHCOMB,1)
+      CALL JEDETC('V',CHCMB2,1)
+      CALL JEDETC('V',CHFLU,1)
+      CALL JEDETC('V',VESOLX,1)
+      CALL JEDETC('V',VESOLY,1)
+      CALL JEDETC('V',VESOLZ,1)
+      CALL JEDETC('V',CHAMNX,1)
+      CALL JEDETC('V',CHAMNY,1)
+      CALL JEDETC('V',CHAMNZ,1)
 
       CALL JEDEMA()
-        END
+      END

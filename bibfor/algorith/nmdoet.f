@@ -2,7 +2,7 @@
      &                  SDSENS,SDPILO,SDDYNA,RESOCO,SOLALG,
      &                  LACC0 ,INSTIN)
 C
-C MODIF ALGORITH  DATE 04/10/2010   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 08/11/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -432,7 +432,7 @@ C
             LPAIN(1) = 'PGEOMER'
             OPT = 'TOU_INI_ELGA'
             CALL CALCUL('S',OPT,LIGRMO,1,LCHIN,LPAIN,NCHOUT,LCHOUT,
-     &                  LPAOUT,'V')
+     &                  LPAOUT,'V','OUI')
             CALL NMSIGI(LIGRMO,COMPOR,SIGMOI)
           END IF
 C

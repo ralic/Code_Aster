@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 19/10/2010   AUTEUR DELMAS J.DELMAS 
+#& MODIF COMMANDE  DATE 09/11/2010   AUTEUR DELMAS J.DELMAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,7 +18,7 @@
 # ======================================================================
 # RESPONSABLE SELLENET N.SELLENET
 IMPR_RESU=PROC(nom="IMPR_RESU",op=39,
-            UIinfo={"groupes":("Impression",)},
+            UIinfo={"groupes":("Impression","Résultats et champs",)},
                fr="Imprimer un maillage et/ou les résultats d'un calcul (différents formats)",
          MODELE          =SIMP(statut='f',typ=modele_sdaster),
 

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 13/10/2010   AUTEUR BOITEAU O.BOITEAU 
+#& MODIF COMMANDE  DATE 09/11/2010   AUTEUR DELMAS J.DELMAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -33,7 +33,7 @@ MODE_ITER_SIMULT=OPER(nom="MODE_ITER_SIMULT",op=  45,sd_prod=mode_iter_simult_pr
                       fr="Calcul des modes propres par itérations simultanées ; valeurs propres et"
                          +" modes propres réels ou complexes",
                       reentrant='n',
-            UIinfo={"groupes":("Résolution",)},
+            UIinfo={"groupes":("Résolution","Dynamique",)},
          regles=(CONCEPT_SENSIBLE('ENSEMBLE'),),
          MATR_A          =SIMP(statut='o',typ=(matr_asse_depl_r,matr_asse_depl_c,
                                matr_asse_gene_r,matr_asse_gene_c,matr_asse_pres_r ) ),

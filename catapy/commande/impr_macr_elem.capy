@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 06/05/2008   AUTEUR CORUS M.CORUS 
+#& MODIF COMMANDE  DATE 09/11/2010   AUTEUR DELMAS J.DELMAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,7 +19,7 @@
 # RESPONSABLE CORUS M.CORUS
 
 IMPR_MACR_ELEM=PROC(nom="IMPR_MACR_ELEM",op= 160,
-                    UIinfo={"groupes":("Impression",)},
+                    UIinfo={"groupes":("Impression","Outils-métier",)},
          fr="Impression d'une structure de données MACR_ELEM_DYNA au format IDEAS MISS3D PLEXUS ou CADYRO",
          MACR_ELEM_DYNA  =SIMP(statut='o',typ=macr_elem_dyna ),
          FORMAT          =SIMP(statut='f',typ='TXM',defaut="IDEAS",

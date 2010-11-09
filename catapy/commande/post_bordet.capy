@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 09/08/2010   AUTEUR BARGELLINI R.BARGELLINI 
+#& MODIF COMMANDE  DATE 09/11/2010   AUTEUR DELMAS J.DELMAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -24,6 +24,7 @@ from Macro.post_bordet_ops import post_bordet_ops
 
 
 POST_BORDET =MACRO(nom="POST_BORDET", op=post_bordet_ops,sd_prod=table_sdaster,
+                   UIinfo={"groupes":("Outils-métier","Rupture",)},
                    docu="",reentrant='n',fr="calcul de la probabilite de clivage via le modele de Bordet",
          regles=(UN_PARMI('TOUT','GROUP_MA'),
                  UN_PARMI('INST','NUME_ORDRE'),

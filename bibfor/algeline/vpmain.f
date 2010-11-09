@@ -3,7 +3,7 @@
       CHARACTER*(*) MODELE,MATE,CARA
       REAL*8 XMASTR
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 22/06/2009   AUTEUR FLEJOU J-L.FLEJOU 
+C MODIF ALGELINE  DATE 08/11/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -109,7 +109,7 @@ C     --- CALCUL DE L'OPTION ---
       LCHOUT(1) = CHELEM
 
       CALL CALCUL('S','MASS_INER',LIGRMO,NB,LCHIN ,LPAIN,
-     &                                    1,LCHOUT,LPAOUT,'V')
+     &                                    1,LCHOUT,LPAOUT,'V','OUI')
 
       DO 33 I=1,MXVALE
          ZMAS(I)=0.D0

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 04/10/2010   AUTEUR MEUNIER S.MEUNIER 
+#& MODIF COMMANDE  DATE 09/11/2010   AUTEUR DELMAS J.DELMAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -26,7 +26,7 @@ AFFE_CHAR_CINE_F=OPER(nom="AFFE_CHAR_CINE_F",op= 101,sd_prod=affe_char_cine_f_pr
                       fr="Affectation de conditions aux limites cinématiques fonction d'un (ou plusieurs) paramètres"
                         +" pour un traitement sans dualisation",
                      reentrant='n',
-            UIinfo={"groupes":("Modélisation",)},
+            UIinfo={"groupes":("Chargements","Mécanique",)},
          regles=(UN_PARMI('MECA_IMPO','THER_IMPO')),
          MODELE          =SIMP(statut='o',typ=modele_sdaster ),
          MECA_IMPO       =FACT(statut='f',max='**',

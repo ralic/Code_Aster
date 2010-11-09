@@ -10,7 +10,7 @@
       CHARACTER*(*) LCHIN(*),LCHOU(*),LPAIN(*),LPAOU(*),LIGREL
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 06/04/2009   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 08/11/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -71,6 +71,7 @@ C     ----- FIN COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*19 CH1,CH2,CHDYNR,CHDYNI,REEL,IMAG
       CHARACTER*19 CHACCR,CHACCI,CHDEPR,CHDEPI
       CHARACTER*16 OPTIO2
+      CHARACTER*14 VALK(1)
       CHARACTER*8 NOMGD
       INTEGER IBID,I,IDESC,ICELD,GD,INDIC1,INDIC2,INDIC3,IRET
       INTEGER INDIC4
@@ -112,6 +113,10 @@ C     -----------------------------------------------
           IF (LPAIN(I).EQ.'PDEPLAR')INDIC1=I
    10   CONTINUE
         CALL ASSERT(INDIC1.GT.0)
+        IF ( LCHIN(INDIC1).EQ.' ' ) THEN
+          VALK(1) = OPTION
+          CALL U2MESK('F','UTILITAI8_10',1,VALK)
+        ENDIF
         CALL JEVEUO(LCHIN(INDIC1)(1:19)//'.DESC','L',IDESC)
         GD=ZI(IDESC)
         CALL JENUNO(JEXNUM('&CATA.GD.NOMGD',GD),NOMGD)
@@ -121,7 +126,7 @@ C     -----------------------------------------------
 C        ----------------------------------
 C         LE CHAMP EST REEL, ON FAIT UN APPEL A CALCUL ET ON SORT
           CALL CALCUL(STOP,OPTIO2,LIGREL,NIN,LCHIN,LPAIN,NOU,LCHOU,
-     &                LPAOU,BASE)
+     &                LPAOU,BASE,'OUI')
           GOTO 70
 
 
@@ -162,7 +167,7 @@ C         DES CHAMPS
 C         -- CALCUL 1ERE PARTIE (R):
           CALL COPISD('CHAM_ELEM_S','V',LCHOU(1),CH1)
           CALL CALCUL(STOP,OPTIO2,LIGREL,NIN,LCHIN,LPAIN,NOU,CH1,LPAOU,
-     &                'V')
+     &                'V','OUI')
 
 C         -- CALCUL 2EME PARTIE (I):
           LCHIN(INDIC1)=IMAG
@@ -173,7 +178,7 @@ C         -- CALCUL 2EME PARTIE (I):
           ENDIF
           CALL COPISD('CHAM_ELEM_S','V',LCHOU(1),CH2)
           CALL CALCUL(STOP,OPTIO2,LIGREL,NIN,LCHIN,LPAIN,NOU,CH2,LPAOU,
-     &                'V')
+     &                'V','OUI')
 
 
 C         -- ASSEMBLAGE (R,I) OU CUMUL (R+I) :
@@ -207,7 +212,7 @@ C     -----------------------------------------------
         IF (NOMGD.EQ.'SIEF_R') THEN
 C       -------------------------------
           CALL CALCUL(STOP,OPTIO2,LIGREL,NIN,LCHIN,LPAIN,NOU,LCHOU,
-     &                LPAOU,BASE)
+     &                LPAOU,BASE,'OUI')
           GOTO 70
 
 
@@ -229,14 +234,14 @@ C       -------------------------------
 C         -- CALCUL 1ERE PARTIE (R):
           CALL COPISD('CHAM_ELEM_S','V',LCHOU(1),CH1)
           CALL CALCUL(STOP,OPTIO2,LIGREL,NIN,LCHIN,LPAIN,NOU,CH1,LPAOU,
-     &                'V')
+     &                'V','OUI')
 
 C         -- CALCUL 2EME PARTIE (I):
           LCHIN(INDIC1)=IMAG
           IF (POUX.EQ.'OUI')LCHIN(INDIC2)=CHDYNI
           CALL COPISD('CHAM_ELEM_S','V',LCHOU(1),CH2)
           CALL CALCUL(STOP,OPTIO2,LIGREL,NIN,LCHIN,LPAIN,NOU,CH2,LPAOU,
-     &                'V')
+     &                'V','OUI')
 
 
 C         -- ASSEMBLAGE (R,I) OU CUMUL (R+I) :
@@ -258,7 +263,7 @@ C     -----------------------------------------------
 C       POUR TOUTE LES AUTRES OPTIONS LE CALCUL EN COMPLEXE N EST PAS
 C       ENCORE AUTORISE ET ON FAIT DONC UN APPEL A CALCUL
         CALL CALCUL(STOP,OPTIO2,LIGREL,NIN,LCHIN,LPAIN,NOU,LCHOU,LPAOU,
-     &              BASE)
+     &              BASE,'OUI')
       ENDIF
 
 

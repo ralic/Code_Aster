@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 22/06/2010   AUTEUR DEVESA G.DEVESA 
+#& MODIF COMMANDE  DATE 09/11/2010   AUTEUR DELMAS J.DELMAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,7 +20,7 @@
 LIRE_IMPE_MISS=OPER(nom="LIRE_IMPE_MISS",op= 164,sd_prod=matr_asse_gene_c,
                     fr="Création d une matrice assemblée à partir de base modale",
                     reentrant='n',
-            UIinfo={"groupes":("Matrices/vecteurs",)},           
+            UIinfo={"groupes":("Matrices et vecteurs","Outils-métier",)},           
          BASE            =SIMP(statut='o',typ=mode_meca ),
          NUME_DDL_GENE   =SIMP(statut='o',typ=nume_ddl_gene ),
          FREQ_EXTR       =SIMP(statut='o',typ='R',max=1),

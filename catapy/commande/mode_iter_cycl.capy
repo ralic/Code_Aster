@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 11/05/2009   AUTEUR NISTOR I.NISTOR 
+#& MODIF COMMANDE  DATE 09/11/2010   AUTEUR DELMAS J.DELMAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,7 +21,7 @@ MODE_ITER_CYCL=OPER(nom="MODE_ITER_CYCL",op=  80,sd_prod=mode_cycl,
                     fr="Calcul des modes propres d'une structure à répétitivité cyclique à partir"
                         +" d'une base de modes propres réels",
                     reentrant='n',
-            UIinfo={"groupes":("Résolution",)},
+            UIinfo={"groupes":("Résolution","Dynamique",)},
          BASE_MODALE     =SIMP(statut='o',typ=mode_meca ),
          NB_MODE         =SIMP(statut='f',typ='I',defaut= 999 ),
          NB_SECTEUR      =SIMP(statut='o',typ='I' ),

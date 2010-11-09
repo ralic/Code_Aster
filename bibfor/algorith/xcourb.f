@@ -7,7 +7,7 @@
 
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/10/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 08/11/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -142,7 +142,7 @@ C------------------------------------------------------------------
       LIGRMO=MODELE//'.MODELE'
       NCHIN=2
       CALL CALCUL('S','GRAD_NEUT9_R',LIGRMO,NCHIN,LCHIN,LPAIN,1,
-     &                  LCHOUT,LPAOUT,'V')
+     &                  LCHOUT,LPAOUT,'V','OUI')
 
       CALL JEDEMA()
       END

@@ -1,4 +1,4 @@
-#@ MODIF calculel2 Messages  DATE 12/07/2010   AUTEUR BERARD A.BERARD 
+#@ MODIF calculel2 Messages  DATE 08/11/2010   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -48,6 +48,19 @@ Erreur de programmation :
 Conseil :
   Si nécessaire, il faut demander une évolution du code.
 """),
+
+5: _("""
+Erreur utilisateur dans CREA_RESU
+  Quand on utilise la commande CREA_RESU avec le mot clé AFFE / CHAM_GD et que le
+  champ est un champ de fonctions (de la géométrie et/ou du temps), il faut que la grandeur
+  associée à ce champ soit TEMP_F, DEPL_F ou PRES_F.
+
+  Ici, la grandeur est : %(k1)s
+"""),
+
+
+
+
 
 7: _("""
  trop d'antécédents
@@ -217,10 +230,10 @@ Erreur Utilisateur :
  probleme noeud tardif pour un champ à représentation constante
 """),
 
-55: _("""
-  erreur dans l'extraction d'un resuelem pour le grel :  %(k1)s
-  le champ n'existe pas
-"""),
+
+
+
+
 
 56: _("""
   erreur lors d'une extraction:

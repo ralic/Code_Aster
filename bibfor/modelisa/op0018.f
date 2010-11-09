@@ -3,7 +3,7 @@
 C RESPONSABLE PELLET J.PELLET
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 19/10/2010   AUTEUR DELMAS J.DELMAS 
+C MODIF MODELISA  DATE 08/11/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -595,7 +595,7 @@ C     ---------------------------------------------------
       CALL GETVTX(' ','VERI_JACOBIEN',1,1,1,VERIF,NBV)
       IF (VERIF(1).EQ.'OUI') CALL CALCUL('C','VERI_JACOBIEN',LIGREL,1,
      &                            NOMA//'.COORDO','PGEOMER',1,
-     &                            '&&OP0018.CODRET','PCODRET','V')
+     &                            '&&OP0018.CODRET','PCODRET','V','OUI')
 
 
 

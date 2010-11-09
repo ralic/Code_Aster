@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 30/09/2008   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 09/11/2010   AUTEUR DELMAS J.DELMAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,7 +22,7 @@ from Macro.macr_lign_coupe_ops import macr_lign_coupe_ops
 
 MACR_LIGN_COUPE=MACRO(nom="MACR_LIGN_COUPE",op=macr_lign_coupe_ops,sd_prod=table_sdaster,
                        reentrant='n',
-            UIinfo={"groupes":("Outils métier",)},
+            UIinfo={"groupes":("Post-traitements","Résultats et champs",)},
             fr="Extraction des valeurs d'un résultat dans une ou plusieurs tables sur des lignes de coupe définies"
              +" par deux points et un intervalle",
             regles=(UN_PARMI("RESULTAT","CHAM_GD"),),

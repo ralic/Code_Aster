@@ -5,7 +5,7 @@
       CHARACTER*16 TYPRES
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 11/10/2010   AUTEUR DELMAS J.DELMAS 
+C MODIF PREPOST  DATE 08/11/2010   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -135,6 +135,7 @@ C              12345678
         IAUX = 1
         BASENO='&&'//NOMPRO
         INPSCO='&&'//NOMPRO//'_PSCO'
+        IBID=0
         CALL PSLECT ( ' ', IBID, BASENO, RESU, IAUX,
      &                NBPASE, INPSCO, IRET )
         IF(TYPRES.EQ.'EVOL_ELAS'.OR.

@@ -1,6 +1,6 @@
       SUBROUTINE COENDO(OPTION,MODELE,LIGREL,CHMATE,CHVARC,CHSIG,CHELEM)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 08/11/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -95,7 +95,8 @@ C      ----------------------------------------------
 
       OPT2 = 'ENDO_ELNO_SIGM'
 
-      CALL CALCUL('S',OPT2,LIGREL,NBIN,LCHIN,LPAIN,1,LCHOUT,LPAOUT,'G')
+      CALL CALCUL('S',OPT2,LIGREL,NBIN,LCHIN,LPAIN,1,LCHOUT,LPAOUT,'G',
+     &                'OUI')
 
 C.============================ FIN DE LA ROUTINE ======================
       END

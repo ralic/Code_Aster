@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 14/06/2010   AUTEUR COURTOIS M.COURTOIS 
+#& MODIF COMMANDE  DATE 09/11/2010   AUTEUR DELMAS J.DELMAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -26,7 +26,7 @@ def extr_table_prod(TYPE_RESU,**args):
   raise AsException("type de concept resultat non prevu")
 
 EXTR_TABLE=OPER(nom="EXTR_TABLE",op=173,sd_prod=extr_table_prod,reentrant='n',
-            UIinfo={"groupes":("Résultats et champs",)},
+            UIinfo={"groupes":("Résultats et champs","Tables")},
          fr="Extraire d'une table des concepts Code_Aster",
          TYPE_RESU       =SIMP(statut='o',typ='TXM',),
 

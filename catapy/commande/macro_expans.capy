@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 11/05/2009   AUTEUR NISTOR I.NISTOR 
+#& MODIF COMMANDE  DATE 09/11/2010   AUTEUR DELMAS J.DELMAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -37,7 +37,7 @@ MACRO_EXPANS=MACRO(nom="MACRO_EXPANS",
                    op=macro_expans_ops,
                    sd_prod=macro_expans_prod,
                    reentrant='n',
-                   UIinfo={"groupes":("Outils métier",)},
+                   UIinfo={"groupes":("Outils-métier","Dynamique",)},
                    fr="Outil d'expansion de resultats exprimentaux sur une base definie sur un modele numerique",
                         MODELE_CALCUL   = FACT(statut='o',
                            MODELE          = SIMP(statut='o',typ=(modele_sdaster) ),

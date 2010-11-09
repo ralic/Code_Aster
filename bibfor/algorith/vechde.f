@@ -3,7 +3,7 @@
      &                  LVECHZ)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 08/11/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -381,9 +381,9 @@ C 5.1. ==>  DEFINITION DES ARGUMENTS DE CALCUL
         LPAIN(11) = 'PPESANR'
         LCHIN(11) = CHCHAR
         LPAIN(12) = 'PGEOME2'
-        LCHIN(12) = ' '
+        LCHIN(12) = CHGEOM
         LPAIN(13) = ' '
-        LCHIN(13) = CHGEOM
+        LCHIN(13) = ' '
         LPAIN(14) = 'PCAGNBA'
         LCHIN(14) = CHCARA(11)
         LPAIN(15) = 'PCAMASS'
@@ -540,7 +540,7 @@ C ==========
       LCHOUT(1) (10:16) = NEWNOM(2:8)
       CALL CORICH('E',LCHOUT(1),-1,IBID)
       CALL CALCUL('S',OPTION,LIGRMO,NCHIN,LCHIN,LPAIN,NCHOUT,LCHOUT,
-     &            LPAOUT,'V')
+     &            LPAOUT,'V','OUI')
 
       ZK24(JLVE) = LCHOUT(1)
       CALL JEECRA(LVECHP,'LONUTI',1,K8BID)

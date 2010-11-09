@@ -3,7 +3,7 @@
      &                  BASE  )
 
 C
-C MODIF CALCULEL  DATE 16/06/2010   AUTEUR CARON A.CARON 
+C MODIF CALCULEL  DATE 08/11/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -179,7 +179,7 @@ C
         LCHOUT(1) = MATELE(1:15)//'.M01'
 
         CALL CALCUL('S',OPTION,LIGRMO,10,LCHIN,LPAIN,1,
-     &              LCHOUT,LPAOUT,BASE)
+     &              LCHOUT,LPAOUT,BASE,'OUI')
         CALL REAJRE(MATELZ,LCHOUT(1),BASE)
 
       ELSEIF (IER.EQ.0) THEN
@@ -246,7 +246,7 @@ C
         ENDIF
 C
         CALL CALCUL('S',OPTION,LIGRMO,NBIN  ,LCHIN ,LPAIN ,
-     &                              NBOUT2,LCHOUT,LPAOUT,BASE)
+     &                              NBOUT2,LCHOUT,LPAOUT,BASE,'OUI')
 C
 C ----- STOCKAGE DES RESU_ELEM
 C

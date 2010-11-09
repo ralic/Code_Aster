@@ -8,7 +8,7 @@
      &               CNXINV,NODTOR,ELETOR,LIGGRD
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/04/2010   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 08/11/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -301,7 +301,7 @@ C  Modif Julien
          LCHOUT(1)=CELGDF
 
          CALL CALCUL('S','MOY_NOEU_S',LIGGRD,1,LCHIN,LPAIN,1,
-     &               LCHOUT,LPAOUT,'V')
+     &               LCHOUT,LPAOUT,'V','OUI')
 
 
 C-----------------------------------------------------------------------
@@ -324,7 +324,7 @@ C---------------------------------------------------------
          LCHOUT(2)=CELALF
 
          CALL CALCUL('S','XFEM_SMPLX_CALC',LIGGRD,4,LCHIN,LPAIN,2,
-     &               LCHOUT,LPAOUT,'V')
+     &               LCHOUT,LPAOUT,'V','OUI')
 
          CALL CELCES (CELDFI,'V',CESDFI)
          CALL JEVEUO (CESDFI//'.CESV','L',JDELFI)
@@ -495,7 +495,7 @@ C---------------------------------------------------
          LCHOUT(1)=CELGLT
 
          CALL CALCUL('S','GRAD_NEUT_R',LIGGRD,2,LCHIN,LPAIN,1,LCHOUT,
-     &               LPAOUT,'V')
+     &               LPAOUT,'V','OUI')
 
 C  PASSAGE D'UN CHAM_ELNO EN UN CHAM_NO
          CALL CELCES (CELGLT, 'V', CHAMS)

@@ -1,22 +1,22 @@
       SUBROUTINE OP0177()
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
+C MODIF CALCULEL  DATE 08/11/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C
 C     COMMANDE:  TEST_TABLE
@@ -85,7 +85,7 @@ C
       NORECG = '&&'//NOMPRO//'_RESULTA_GD     '
       MOTCLE = 'TABLE'
 C
-      NOMFI = ' ' 
+      NOMFI = ' '
       IFIC  = IUNIFI('RESULTAT')
       IF ( .NOT. ULEXIS( IFIC ) ) THEN
          CALL ULOPEN ( IFIC, ' ', NOMFI, 'NEW', 'O' )
@@ -185,35 +185,9 @@ C     ------------------------------------------------------------------
       IF ( NPARFI .NE. 0 ) THEN
          NEWTA1 = '&&'//NOMPRO//'.FILTRE '
          CALL TBIMFI ( NPARFI, NEWTAB, NEWTA1, IRET )
-         IF ( IRET .NE. 0 ) THEN
-            NL1 = LXLGUT(LIGN1)
-            NL11 = LXLGUT(LIGN1(1:NL1-1))
-            NL2 = LXLGUT(LIGN2)
-            NL22 = LXLGUT(LIGN2(1:NL2-1))
-            IF(NL11.LT.80)THEN
-               WRITE (IFIC,*) LIGN1(1:NL11)
-            ELSEIF(NL11.LT.160)THEN
-               WRITE (IFIC,1160) LIGN1(1:80),
-     &                           LIGN1(81:NL11)
-            ELSE
-               WRITE (IFIC,1200) LIGN1(1:80),
-     &                           LIGN1(81:160),
-     &                           LIGN1(161:NL11)
-            ENDIF
-            IF(NL22.LT.80)THEN
-               WRITE (IFIC,*) LIGN2(1:NL22)
-            ELSEIF(NL22.LT.160)THEN
-               WRITE (IFIC,1160) LIGN2(1:80),
-     &                           LIGN2(81:NL22)
-            ELSE
-               WRITE (IFIC,1200) LIGN2(1:80),
-     &                           LIGN2(81:160),
-     &                           LIGN2(161:NL22)
-            ENDIF
-            CALL U2MESS('F','CALCULEL6_7')
-         ENDIF
+         IF ( IRET .NE. 0 )  CALL U2MESS('F','CALCULEL6_7')
          NEWTAB = NEWTA1
-      ENDIF 
+      ENDIF
 C     ------------------------------------------------------------------
 C
       CALL UTEST3(' ',1,TBTXT)
@@ -254,10 +228,10 @@ C
 
          CALL UTEST0 ( NEWTAB, PARA, TYPTES, TYPR, TBTXT,ZI(IREFI),
      +                ZR(IREFR), ZC(IREFC), PREC, CRIT, IFIC, SSIGNE )
-         GOTO 9999 
+         GOTO 9999
       ENDIF
 C
-      CALL TBLIVA ( NEWTAB, 0, K8B, IBID, R8B, CBID, K8B, K8B, R8B, 
+      CALL TBLIVA ( NEWTAB, 0, K8B, IBID, R8B, CBID, K8B, K8B, R8B,
      +                      PARA, CTYPE, VALI, VALR, VALC, VALK, IRET )
 
 

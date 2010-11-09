@@ -1,7 +1,7 @@
       SUBROUTINE OP0038()
       IMPLICIT NONE
 C ----------------------------------------------------------------------
-C MODIF CALCULEL  DATE 11/10/2010   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 08/11/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -134,7 +134,7 @@ C        ------------------------
 C        -- OPTION POINTS DE GAUSS :
       ELSE IF (OPTION.EQ.'COOR_ELGA') THEN
         CALL CALCUL('S',OPTION,LIGREL,1,CHGEOM,'PGEOMER ',1,CHELEM,
-     &              'PCOORPG ',BASE)
+     &              'PCOORPG ',BASE,'OUI')
 C        ------------------------
 C        -- OPTIONS ACOUSTIQUES :
 C        ------------------------

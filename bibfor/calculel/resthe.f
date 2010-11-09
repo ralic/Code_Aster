@@ -4,7 +4,7 @@
      &  CHGEOM,CHSOUR,OPT1,IAUX)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 08/04/2008   AUTEUR MEUNIER S.MEUNIER 
+C MODIF CALCULEL  DATE 08/11/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -246,7 +246,7 @@ C LANCEMENT DES CALCULS ELEMENTAIRES-----------------------------------
       NBOUT = 1
 
       CALL CALCUL('S',OPT1,LIGREL,NBIN,LCHIN,LPAIN,NBOUT,LCHOUT,
-     &  LPAOUT,'G')
+     &  LPAOUT,'G','OUI')
 
       CALL JEDETR('&&RESTHE.JEVEUO')
       CALL JEDEMA()

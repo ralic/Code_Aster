@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 21/06/2010   AUTEUR CORUS M.CORUS 
+#& MODIF COMMANDE  DATE 09/11/2010   AUTEUR DELMAS J.DELMAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,7 +20,7 @@
 NUME_DDL_GENE=OPER(nom="NUME_DDL_GENE",op= 127,sd_prod=nume_ddl_gene,
                    fr="Etablissement de la numérotation des ddl d'un modèle établi en coordonnées généralisées",
                     reentrant='n',
-            UIinfo={"groupes":("Matrices/vecteurs",)},
+            UIinfo={"groupes":("Matrices et vecteurs",)},
          regles=UN_PARMI('MODELE_GENE','BASE'),
          MODELE_GENE     =SIMP(statut='f',typ=modele_gene ),
              b_modele_gene     =BLOC(condition = "MODELE_GENE != None",

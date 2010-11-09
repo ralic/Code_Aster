@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 28/09/2010   AUTEUR MASSIN P.MASSIN 
+#& MODIF COMMANDE  DATE 08/11/2010   AUTEUR DESROCHES X.DESROCHES 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,7 +20,7 @@
 AFFE_CHAR_MECA=OPER(nom="AFFE_CHAR_MECA",op=   7,sd_prod=char_meca,
                     fr="Affectation de charges et conditions aux limites mécaniques constantes",
                      reentrant='n',
-            UIinfo={"groupes":("Modélisation",)},
+            UIinfo={"groupes":("Chargements","Mécanique",)},
          regles=(AU_MOINS_UN('DDL_IMPO','FACE_IMPO','CHAMNO_IMPO','LIAISON_DDL','LIAISON_XFEM','FORCE_NODALE',
                              'FORCE_FACE','FORCE_ARETE','FORCE_CONTOUR','FORCE_INTERNE',
                              'PRES_REP','FORCE_POUTRE','FORCE_COQUE','LIAISON_OBLIQUE',
@@ -36,7 +36,7 @@ AFFE_CHAR_MECA=OPER(nom="AFFE_CHAR_MECA",op=   7,sd_prod=char_meca,
          EVOL_CHAR       =SIMP(statut='f',fr="Champ de pression issu d'un autre calcul",
                                typ=evol_char ),
 
-         PESANTEUR       =FACT(statut='f',max='**',fr="Champ de pesanteur",
+         PESANTEUR       =FACT(statut='f',max=1,fr="Champ de pesanteur",
             GROUP_MA         =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
             MAILLE           =SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**'),
             GRAVITE          =SIMP(statut='o',typ='R',min=1,max=1),
@@ -46,7 +46,7 @@ AFFE_CHAR_MECA=OPER(nom="AFFE_CHAR_MECA",op=   7,sd_prod=char_meca,
                                into=('DUALISATION',),defaut='DUALISATION',),
                                # METHODE='ELIMINATION' est traité dans le fortran mais dangereux actuellement
 
-         ROTATION        =FACT(statut='f', max='**', fr="Définition d'un chargement de rotation",
+         ROTATION        =FACT(statut='f', max=1, fr="Définition d'un chargement de rotation",
                        GROUP_MA = SIMP(statut='f',typ=grma,validators=NoRepeat(), max='**'),
                        MAILLE   = SIMP(statut='f',typ=ma, validators=NoRepeat(),max='**'),
                        VITESSE  = SIMP(statut='o', typ='R',min=1,max=1),

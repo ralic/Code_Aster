@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 19/07/2010   AUTEUR NISTOR I.NISTOR 
+#& MODIF COMMANDE  DATE 09/11/2010   AUTEUR DELMAS J.DELMAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -31,7 +31,7 @@ def rest_sous_struc_prod(RESU_GENE,RESULTAT,**args ):
 REST_SOUS_STRUC=OPER(nom="REST_SOUS_STRUC",op=  77,sd_prod=rest_sous_struc_prod,
           fr="Restituer dans la base physique des résultats obtenus par sous-structuration",
                     reentrant='n',
-            UIinfo={"groupes":("Matrices/vecteurs",)},
+            UIinfo={"groupes":("Matrices et vecteurs",)},
         regles=(UN_PARMI('RESU_GENE','RESULTAT'),
 # ajout d'une regle de Ionel et Nicolas:
 #                UN_PARMI('NOM_CHAM','TOUT_CHAM'),

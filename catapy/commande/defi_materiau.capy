@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 12/07/2010   AUTEUR PROIX J-M.PROIX 
+#& MODIF COMMANDE  DATE 09/11/2010   AUTEUR DELMAS J.DELMAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -2731,7 +2731,7 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater_sdaster,
            NON_LOCAL       =FACT(statut='f',
              regles=(AU_MOINS_UN('LONG_CARA','C_GONF','C_GRAD_VARI','PENA_LAGR',),),
              LONG_CARA       =SIMP(statut='f',typ='R'),
-             C_GRAD_VARI     =SIMP(statut='f',typ='R'),             
+             C_GRAD_VARI     =SIMP(statut='f',typ='R'),
              PENA_LAGR       =SIMP(statut='f',typ='R',defaut= 1.0E3),
              C_GONF          =SIMP(statut='f',typ='R'),
              COEF_RIGI_MINI  =SIMP(statut='f',typ='R'),
@@ -2850,7 +2850,7 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater_sdaster,
              ),
              DILAT           =SIMP(statut='f',typ='R',defaut=0.0),
            ),
-           
+
            DRUCK_PRAGER_FO  =FACT(statut='f',
              ALPHA           =SIMP(statut='o',typ=(fonction_sdaster,formule)),
              SY              =SIMP(statut='o',typ=(fonction_sdaster,formule)),
@@ -2883,7 +2883,7 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater_sdaster,
              R_ULT      =SIMP(statut='o',typ='R',fr="parametre d ecrouissage correspondant au seuil ultime"),
              BETA_0     =SIMP(statut='o',typ='R',fr="parametre d ecrouissage relatif à la dilatance au seuil d elasticite"),
              BETA_PIC   =SIMP(statut='o',typ='R',fr="parametre d ecrouissage relatif à la dilatance au seuil de pic"),
-             BETA_ULT   =SIMP(statut='o',typ='R',fr="parametre d ecrouissage relatif à la dilatance au seuil ultime"),          
+             BETA_ULT   =SIMP(statut='o',typ='R',fr="parametre d ecrouissage relatif à la dilatance au seuil ultime"),
            ),
              HOEK_BROWN          =FACT(statut='f',
              GAMMA_RUP       =SIMP(statut='o',typ='R'),

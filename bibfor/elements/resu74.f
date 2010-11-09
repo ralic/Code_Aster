@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 05/02/2007   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 08/11/2010   AUTEUR BOYERE E.BOYERE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -53,7 +53,7 @@ C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
 C
       INTEGER      NBMODE, NC, NP, NI, NBSTO1, NBINST, NBSTO2
       INTEGER      NBSTO3, NBSTOC, NBSAU2, NBSAUV, NTEM2, NTEMP
-      INTEGER      NBCHOC
+      INTEGER      NBCHOC, NTEM1
       REAL*8       PREC, TINIT, PREC2
       CHARACTER*1  K1BID
       CHARACTER*8  RESU, CRIT
@@ -139,8 +139,8 @@ C
       DO 10 I = 1,NBINST
          ZI(JORDR-1+I) = ZI(JORDR1-1+I)
   10  CONTINUE
-      DO 20 I = 1,NBSAU2
-         ZI(JORDR+NBINST-1+I) = ZI(JORDR2+I) + ZI(JORDR1+NBINST-1)
+      DO 20 I = 1,NBSAU2-1
+         ZI(JORDR+NBINST-1+I) = ZI(JORDR2+I+1) + ZI(JORDR1+NBINST-1)
   20  CONTINUE
       CALL JEVEUO(NOMRES//'           .INST' ,'E',JINST2)
       CALL WKVECT(RESU//'           .INST','G V R',NBSAUV,JINST)
@@ -149,13 +149,19 @@ C
 C
 C     --- RECUPERATION DES PAS DE TEMPS
 C
+      CALL JELIRA(TRAN//'           .PTEM' ,'LONUTI',NTEM1,K1BID)
       CALL JELIRA(NOMRES//'           .PTEM' ,'LONUTI',NTEM2,K1BID)
       IF (NTEM2.GT.1) THEN
-        CALL JEVEUO(TRAN//'           .PTEM' ,'E',JTEM1)
-        CALL JEVEUO(NOMRES//'           .PTEM' ,'E',JTEM2)
+        CALL JEVEUO(TRAN//'           .PTEM' ,'L',JTEM1)
+        CALL JEVEUO(NOMRES//'           .PTEM' ,'L',JTEM2)
         NTEMP = NBINST -1 + NTEM2
         CALL WKVECT(RESU//'           .PTEM','G V R',NTEMP,JTEMP)
-        CALL DCOPY(NBINST-1,ZR(JTEM1),1,ZR(JTEMP),1)
+        DO 30 I = 1, NTEM1
+            ZR(JTEMP+I-1)=ZR(JTEM1+I-1)
+ 30     CONTINUE
+        DO 40 I = NTEM1+1, NBINST-1
+            ZR(JTEMP+I-1)=ZR(JTEM1+NTEM1-1)
+ 40     CONTINUE
         CALL DCOPY(NTEM2,ZR(JTEM2),1,ZR(JTEMP+NBINST-1),1)
       ENDIF
 C

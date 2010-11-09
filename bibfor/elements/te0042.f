@@ -3,7 +3,7 @@
       CHARACTER*(*) OPTION,NOMTE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 22/06/2009   AUTEUR FLEJOU J-L.FLEJOU 
+C MODIF ELEMENTS  DATE 09/11/2010   AUTEUR TORKHANI M.TORKHANI 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -53,18 +53,14 @@ C     ------------------------------------------------------------------
       INTEGER LDIS,LORIEN,JEFFO,JDEPL,INFODI
       REAL*8  ULR(12),FLR(12)
       REAL*8  PGL(3,3),KLC(144),MAT(144),UGR(12),R8BID
-      CHARACTER*16 CH16,NOMCMD,TYPRES
-      CHARACTER*19 NOMFON
+      CHARACTER*16 CH16
       LOGICAL LSIGNE
 C     ------------------------------------------------------------------
 
 
       LSIGNE = .TRUE.
       INFODI = 1
-      CALL GETRES(NOMFON,TYPRES,NOMCMD)
-      IF (NOMCMD.EQ.'CALC_ELEM') THEN
-         CALL INFDIS('SYMK',INFODI,R8BID)
-      ENDIF
+      CALL INFDIS('SYMK',INFODI,R8BID)
       IF (NOMTE.EQ.'MECA_DIS_TR_L') THEN
          IF (INFODI.EQ.1) THEN
             NBTERM = 78

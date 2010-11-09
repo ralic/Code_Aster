@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 21/04/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+#& MODIF COMMANDE  DATE 09/11/2010   AUTEUR DELMAS J.DELMAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,7 +21,7 @@ from Macro.post_dyna_alea_ops import post_dyna_alea_ops
 POST_DYNA_ALEA=MACRO(nom="POST_DYNA_ALEA",op= post_dyna_alea_ops,sd_prod=table_sdaster,
                     fr="Traitements statistiques de résultats de type interspectre et impression sur fichiers",
                     reentrant='n',
-            UIinfo={"groupes":("Post traitements",)},
+            UIinfo={"groupes":("Post-traitements","Dynamique",)},
          regles=(UN_PARMI('FRAGILITE','INTE_SPEC'),),
          FRAGILITE  =FACT(statut='f',fr="donnees pour courbe de fragilite",max='**', 
                     TABL_RESU  =SIMP(statut='o',typ=table_sdaster),

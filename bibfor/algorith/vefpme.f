@@ -7,7 +7,7 @@
       REAL*8 PARTPS(*)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 23/10/2008   AUTEUR TORKHANI M.TORKHANI 
+C MODIF ALGORITH  DATE 08/11/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -144,7 +144,7 @@ C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
       LPAIN(13) = 'PCAMASS'
       LCHIN(13) = CHCARA(12)
       LPAOUT(1) = 'PVECTUR'
-      
+
       DO 20 ICHA = 1,NCHAR
         NOMCHA = ZK24(JCHAR+ICHA-1) (1:8)
         LIGRCH = NOMCHA//'.CHME.LIGRE'
@@ -181,7 +181,7 @@ C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
                 CALL COPISD('CHAMP_GD','V',ZK8(JLCHIN),LCHOUT(1))
               ELSE
                 CALL CALCUL('S',OPTION,LIGREL,13,LCHIN,LPAIN,1,LCHOUT,
-     &                    LPAOUT,'V')
+     &                    LPAOUT,'V','OUI')
               ENDIF
               CALL REAJRE(LVECHP,LCHOUT(1),'V')
             END IF

@@ -1,4 +1,4 @@
-# MODIF  DATE 11/05/2010   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 09/11/2010   AUTEUR NISTOR I.NISTOR 
 # TITRE FONCTIONNALITES PYTHON SUR GRANDEURS GENERALISEES : POUTRE 3D SOUS-STRUCTUREE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -195,10 +195,13 @@ MACRSTA2=MACR_ELEM_DYNA(BASE_MODALE=BASE2,
                      MATR_MASS=MASS,);
 
 MODLGENE=DEFI_MODELE_GENE(SOUS_STRUC=(_F(NOM='SS1',
-                                         MACR_ELEM_DYNA=MACRSTA1,),
+                                         MACR_ELEM_DYNA=MACRSTA1,
+                                         TRANS = (0., 0., 0.,),
+                                         ANGL_NAUT = (0., 0., 0.,),),
                                       _F(NOM='SS2',
                                          MACR_ELEM_DYNA=MACRSTA2,
-                                         TRANS=(0.0,-0.25,0.0,),),),
+                                         TRANS=(0.0,-0.25,0.0,),
+                                         ANGL_NAUT = (0., 0., 0.,),),),
                           LIAISON=_F(SOUS_STRUC_1='SS1',
                                      INTERFACE_1='INTER1',
                                      SOUS_STRUC_2='SS2',
@@ -261,10 +264,13 @@ MACR2=MACR_ELEM_DYNA(BASE_MODALE=BASE22,
 # definition du modele generalise avec option REDUIT
 # pour prise en compte des modes d'interface
 MODLGENR=DEFI_MODELE_GENE(SOUS_STRUC=(_F(NOM='SS1',
-                                         MACR_ELEM_DYNA=MACR1,),
+                                         MACR_ELEM_DYNA=MACR1,
+                                         TRANS = (0., 0., 0.,),
+                                         ANGL_NAUT = (0., 0., 0.,),),
                                       _F(NOM='SS2',
                                          MACR_ELEM_DYNA=MACR2,
                                          TRANS=(0.0,-0.25,0.0,),
+                                         ANGL_NAUT = (0., 0., 0.,),
                                          ),),
                           LIAISON=_F(SOUS_STRUC_1='SS1',
                                      INTERFACE_1='INTER1',

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 18/10/2010   AUTEUR GNICOLAS G.NICOLAS 
+#& MODIF COMMANDE  DATE 09/11/2010   AUTEUR GNICOLAS G.NICOLAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -44,7 +44,7 @@ def macr_adap_mail_prod(self,MAJ_CHAM,ADAPTATION,**args):
 MACR_ADAP_MAIL=MACRO(nom="MACR_ADAP_MAIL",op=macr_adap_mail_ops,sd_prod=macr_adap_mail_prod,
                      fr="Adapter un maillage avec le logiciel HOMARD.",
                      ang="Mesh adaptation with the HOMARD software.",
-                     docu="U7.03.01-b",UIinfo={"groupe":("Maillage",)},
+                     docu="U7.03.01",UIinfo={"groupes":("Maillage",)},
 #
 # 1. Le niveau d'information
 #
@@ -52,8 +52,8 @@ MACR_ADAP_MAIL=MACRO(nom="MACR_ADAP_MAIL",op=macr_adap_mail_ops,sd_prod=macr_ada
 #
 # 2. Version de HOMARD
 #
-  VERSION_HOMARD = SIMP(statut='f',typ='TXM',defaut="V9_7",
-                        into=("V9_7", "V9_N", "V9_N_PERSO"),
+  VERSION_HOMARD = SIMP(statut='f',typ='TXM',defaut="V9_8",
+                        into=("V9_8", "V9_N", "V9_N_PERSO"),
                         fr="Version de HOMARD",
                         ang="HOMARD release"),
 #
@@ -541,7 +541,7 @@ MACR_ADAP_MAIL=MACRO(nom="MACR_ADAP_MAIL",op=macr_adap_mail_ops,sd_prod=macr_ada
 #
 # 12.2. Le type du champ qui contiendra le resultat de la mise a jour
 #
-    TYPE_CHAM = SIMP(statut='o',typ='TXM',into=C_TYPE_CHAM_INTO(),
+    TYPE_CHAM = SIMP(statut='o',typ='TXM',into=C_TYPE_CHAM_INTO( ('NOEU', 'ELNO', 'ELEM') ),
                      fr="Type du champ qui contiendra le champ mis à jour",
                      ang="Type of the field for the updated field" ),
 #

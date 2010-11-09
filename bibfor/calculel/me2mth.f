@@ -3,7 +3,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 25/03/2008   AUTEUR REZETTE C.REZETTE 
+C MODIF CALCULEL  DATE 08/11/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -157,7 +157,7 @@ C           --  ( CHAR_THER_TEXT_F , ISO_FACE ) SUR LE MODELE
             ILIRES = ILIRES + 1
             CALL CODENT(ILIRES,'D0',LCHOUT(1) (12:14))
             CALL CALCUL('S',OPTION,LIGRMO,5,LCHIN,LPAIN,1,LCHOUT,LPAOUT,
-     &                  'G')
+     &                  'G','OUI')
             CALL REAJRE(VECEL,LCHOUT(1),'G')
           END IF
 C  =====================================================================
@@ -175,7 +175,7 @@ C           --  ( CHAR_THER_FLUN_F , ISO_FACE ) SUR LE MODELE
             ILIRES = ILIRES + 1
             CALL CODENT(ILIRES,'D0',LCHOUT(1) (12:14))
             CALL CALCUL('S',OPTION,LIGRMO,3,LCHIN,LPAIN,1,LCHOUT,LPAOUT,
-     &                  'G')
+     &                  'G','OUI')
             CALL REAJRE(VECEL,LCHOUT(1),'G')
           END IF
 C  =====================================================================
@@ -193,7 +193,7 @@ C           --  ( CHAR_THER_FLUX_  , ISO_FACE ) SUR LE MODELE
             ILIRES = ILIRES + 1
             CALL CODENT(ILIRES,'D0',LCHOUT(1) (12:14))
             CALL CALCUL('S',OPTION,LIGRMO,3,LCHIN,LPAIN,1,LCHOUT,LPAOUT,
-     &                  'G')
+     &                  'G','OUI')
             CALL REAJRE(VECEL,LCHOUT(1),'G')
           END IF
 C  =====================================================================
@@ -211,7 +211,7 @@ C           --   ( CHAR_THER_SOUR_F , ISO    )  SUR LE MODELE
             ILIRES = ILIRES + 1
             CALL CODENT(ILIRES,'D0',LCHOUT(1) (12:14))
             CALL CALCUL('S',OPTION,LIGRMO,3,LCHIN,LPAIN,1,LCHOUT,LPAOUT,
-     &                  'G')
+     &                  'G','OUI')
             CALL REAJRE(VECEL,LCHOUT(1),'G')
           END IF
 C  =====================================================================
@@ -231,7 +231,7 @@ C           --   ( CHAR_THER_GRAI_  ,  ISO_VOLU  ) SUR LE   MODELE
             ILIRES = ILIRES + 1
             CALL CODENT(ILIRES,'D0',LCHOUT(1) (12:14))
             CALL CALCUL('S',OPTION,LIGRMO,4,LCHIN,LPAIN,1,LCHOUT,LPAOUT,
-     &                  'G')
+     &                  'G','OUI')
             CALL REAJRE(VECEL,LCHOUT(1),'G')
           END IF
 C  =====================================================================
@@ -249,7 +249,7 @@ C           --   ( THER_DDLI_F    , CAL_TI   )  SUR LE LIGREL(CHARGE)
             ILIRES = ILIRES + 1
             CALL CODENT(ILIRES,'D0',LCHOUT(1) (12:14))
             CALL CALCUL('S',OPTION,LIGRCH,3,LCHIN,LPAIN,1,LCHOUT,LPAOUT,
-     &                  'G')
+     &                  'G','OUI')
             CALL REAJRE(VECEL,LCHOUT(1),'G')
           END IF
    10   CONTINUE

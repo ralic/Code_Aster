@@ -1,22 +1,22 @@
       SUBROUTINE NMDOCH(LISCHA,NBPASE,IEXCIT,EXCIT ,INPSCO)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 04/10/2010   AUTEUR GREFFET N.GREFFET 
+C MODIF ALGORITH  DATE 08/11/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C RESPONSABLE ABBAS M.ABBAS
 C TOLE CRP_20
@@ -70,13 +70,13 @@ C
       INTEGER      INFMAX,INDIC,ICH,IRET,INFC,J,ICHAR
       INTEGER      NRPASE,ADCHSE,IAUX,JAUX,JINFCH
       INTEGER      JLCHA,JINFC
-      INTEGER      JLCHA2,JINFC2 
-      INTEGER      JLISDB,ICHD     
+      INTEGER      JLCHA2,JINFC2
+      INTEGER      JLISDB,ICHD
       CHARACTER*5  SUFFIX
       CHARACTER*8  K8BID,AFFCHA,PARCHA,TYPCHA,REPONS
       CHARACTER*8  NOPASE,FCTCSR
       CHARACTER*16 K16BID,NOMCMD,TYPESD
-      CHARACTER*8  NOMCHA,NOMFCT,NOMCH1,NOMFC1    
+      CHARACTER*8  NOMCHA,NOMFCT,NOMCH1,NOMFC1
       CHARACTER*24 INFOC1,INFOCH
       CHARACTER*19 LISCH2,LISDBL
       CHARACTER*24 LIGRCH,LCHIN,K24BID
@@ -86,7 +86,7 @@ C
       INTEGER      NBINFO
 C --- NOMBRE MAXIMUM DE TYPE_INFO
       INTEGER      NBINMX
-      PARAMETER   (NBINMX=99) 
+      PARAMETER   (NBINMX=99)
       CHARACTER*24 LISINF(NBINMX)
 C --- NOMBRE MAXIMUM DE RESUELEM POUR LES FORCES DE LAPLACE : NBCHMX
       INTEGER      NBCHMX
@@ -125,31 +125,32 @@ C
       LACCE  = .FALSE.
       INFOCH = 'RIEN'
       NPILO  = 0
-      INDIC  = 0 
+      INDIC  = 0
       NEXCI  = 0
-      ICHAR  = 0 
+      ICHAR  = 0
+      K24BID = ' '
 C
 C --- NOMBRE DE CHARGES
-C     
+C
       IF (IEXCIT.EQ.1) THEN
         CALL GETFAC('EXCIT',NEXCI )
         IF (NEXCI.GT.0) THEN
           DO 20 IEXC = 1,NEXCI
             CALL GETVID('EXCIT','CHARGE',IEXC,1,1,K24BID,NOCC  )
 C
-C --- GLUTE POUR LE CAS DEFI_CABLE_BP: MELANGE 
+C --- GLUTE POUR LE CAS DEFI_CABLE_BP: MELANGE
 C --- CINEMATIQUE/NEUMANN
-C            
+C
             CALL JEEXIN(K24BID(1:8)//'.CHME.SIGIN.VALE',IRET)
             IF (IRET.NE.0) THEN
-              CALL JEEXIN(K24BID(1:8)//'.CHME.CIMPO.DESC',IRET2) 
+              CALL JEEXIN(K24BID(1:8)//'.CHME.CIMPO.DESC',IRET2)
             ELSE
               IRET2 = 1
             ENDIF
 C
             IF ((NOCC.EQ.1).AND.(IRET2.NE.0)) THEN
               NCHAR  = NCHAR  + 1
-            ENDIF  
+            ENDIF
    20     CONTINUE
         ELSE
 C --- CAS OU LE CHARGEMENT PEUT NE PAS ETRE OBLIGATOIRE (DYNA_NON_LINE)
@@ -164,9 +165,9 @@ C     ON CREE UNE SD CHARGE CONTENANT 1 CHARGE FICTIVE
       ELSE
         CALL JEVEUO(EXCIT(1:19)//'.INFC','L',JINFC)
         NCHAR  = ZI(JINFC)
-        
+
 C
-C --- POUR CALC_NO : AFFE_CHAR_CINE EST ILLICITE: ON LES ENLEVE 
+C --- POUR CALC_NO : AFFE_CHAR_CINE EST ILLICITE: ON LES ENLEVE
 C
         IF (NOMCMD.EQ.'CALC_NO') THEN
           NCHAR1 = NCHAR
@@ -174,19 +175,19 @@ C
           CALL JEVEUO(EXCIT(1:19)//'.LCHA','L',JLCHA)
           DO 22 ICH = 1, NCHAR1
             NOMCHA = ZK24(JLCHA-1+ICH)(1:8)
-            
+
             CALL JEEXIN(NOMCHA//'.CHME.SIGIN',IRET)
             IF (NOMCHA.NE.' ') THEN
               CALL DISMOI('F'   ,'TYPE_CHARGE',NOMCHA,'CHARGE',IBID  ,
      &                    AFFCHA,IRET)
-              
+
               IF (AFFCHA(1:5).NE.'CIME_') THEN
                 NCHAR2 = NCHAR2 + 1
-              ENDIF  
-            ENDIF  
+              ENDIF
+            ENDIF
    22     CONTINUE
-C   
-          IF (NCHAR1.NE.NCHAR2) THEN     
+C
+          IF (NCHAR1.NE.NCHAR2) THEN
             NCHAR3 = MAX(NCHAR2,1)
             LISCH2 = '&&NMDOME.CHARGES'
             CALL LISCCR(LISCH2,NCHAR3,'V')
@@ -195,7 +196,7 @@ C
             DO 24 ICH = 1,NCHAR1
               NBINFO = 1
               CALL LISCLI(EXCIT ,ICH   ,NOMCH1,NOMFC1,NBINFO,
-     &                    INFOC1,IVAL1 )              
+     &                    INFOC1,IVAL1 )
               IF (INFOC1(1:5).NE.'CINE_') THEN
                 INCHA1 = INCHA1 + 1
                 CALL LISCAD(LISCH2,INCHA1,NOMCH1,NOMFC1,NBINFO,
@@ -203,8 +204,8 @@ C
               ENDIF
 
    24       CONTINUE
-            NCHAR  = NCHAR2 
-            EXCIT  = LISCH2        
+            NCHAR  = NCHAR2
+            EXCIT  = LISCH2
           ENDIF
         ENDIF
 
@@ -216,10 +217,10 @@ C
 C
 C --- CREATION LA SD L_CHARGES
 C
-        CALL LISCCR(LISCHA,NCHAR ,'V')  
+        CALL LISCCR(LISCHA,NCHAR ,'V')
 C
 C --- CREATION LA SD L_CHARGES_SENSI
-C        
+C
         CALL JEDETR(CHARSE)
         IAUX     = MAX(NBPASE,1)
         CALL WKVECT(CHARSE         ,'V V K8' ,IAUX     ,ADCHSE)
@@ -239,7 +240,7 @@ C
               IF (NOMCHA.EQ.ZK8(JLISDB+ICHD-1)) THEN
                 CALL U2MESK('E','CHARGES_1',1,NOMCHA)
               ENDIF
- 131        CONTINUE 
+ 131        CONTINUE
             IF (N1.EQ.0) THEN
               INDIC  = INDIC + 1
               GOTO 30
@@ -289,7 +290,7 @@ C
           ENDIF
 C
 C -------- NOMBRE DE CHARGES PILOTEES
-C          
+C
           IF (TYPCHA.EQ.'FIXE_PIL') THEN
             NPILO  = NPILO + 1
           ENDIF
@@ -304,18 +305,18 @@ C
           END IF
 C
 C -------- FONCTIONS MULTIPLICATIVES DES CHARGES
-C           
+C
           LFCPLX = (NOMCMD.EQ.'DYNA_LINE_HARM' .OR.
      &    ( NOMCMD.EQ.'LIRE_RESU' .AND. TYPESD.EQ.'DYNA_HARMO' ) )
           LACCE  = (NOMCMD.EQ.'DYNA_NON_LINE'.OR.
-     &      NOMCMD.EQ.'LIRE_RESU')      
+     &      NOMCMD.EQ.'LIRE_RESU')
           CALL LISLFC(EXCIT ,ICH   ,INDIC ,IEXCIT,NEXCI ,
      &                LFCPLX,LACCE ,FCTCSR,NOMFCT)
           IF (NOMFCT.NE.FCTCSR) THEN
             IF (TYPCHA.EQ.'FIXE_PIL') THEN
               CALL U2MESK('F','CHARGES_38',1,NOMCHA(1:8))
-            ENDIF 
-          ENDIF    
+            ENDIF
+          ENDIF
 C
 C -------- CHARGE DE TYPE DIRICHLET PROVENANT D'UN AFFE_CHAR_CINE
 C
@@ -341,7 +342,7 @@ C
           IF (INFOCH.NE.'RIEN') THEN
             NBINFO = NBINFO + 1
             CALL ASSERT(NBINFO.LT.NBINMX)
-            LISINF(NBINFO) = INFOCH 
+            LISINF(NBINFO) = INFOCH
           ENDIF
 C
 C -------- CHARGE DE TYPE DIRICHLET PROVENANT DE AFFE_CHAR_MECA
@@ -352,15 +353,24 @@ C
           IF (IRET.NE.0) THEN
             IF (TYPCHA(1:4).EQ.'SUIV') THEN
               CALL U2MESK('F','CHARGES_23',1,NOMCHA(1:8))
-              
+
             ELSE IF (TYPCHA.EQ.'FIXE_PIL') THEN
               CALL DISMOI('F'   ,'PARA_INST',LCHIN(1:19),'CARTE',IBID  ,
      &                    PARCHA,IRET  )
               IF (PARCHA(1:3).EQ.'OUI') THEN
                 CALL U2MESK('F','CHARGES_28',1,NOMCHA(1:8))
-              ENDIF 
-              INFOCH = 'DIRI_PILO'
-              
+              ENDIF
+
+              IF (AFFCHA(5:7).EQ.'_FT') THEN
+                CALL U2MESK('F','CHARGES_28',1,NOMCHA(1:8))
+              ELSEIF (AFFCHA(5:7).EQ.'_FO') THEN
+                INFOCH = 'DIRI_PILO_F'
+              ELSE
+                INFOCH = 'DIRI_PILO'
+              ENDIF
+
+
+
             ELSE
               IF (AFFCHA(5:7).EQ.'_FO') THEN
                 INFOCH = 'DIRI_FO'
@@ -369,7 +379,7 @@ C
                 IF (PARCHA(1:3).EQ.'OUI') THEN
                   INFOCH = 'DIRI_FT'
                 END IF
-                
+
                 IF (EXCHSE) THEN
                   DO 50,NRPASE = 1,NBPASE
                     NOPASE = ZK8(ADCHSE+NRPASE-1)
@@ -384,7 +394,7 @@ C
    50             CONTINUE
                 END IF
               ELSE
-                INFOCH = 'DIRI_CSTE' 
+                INFOCH = 'DIRI_CSTE'
               END IF
               IF (TYPCHA(1:4).EQ.'DIDI') THEN
                 INFOCH = INFOCH(1:9)//'_DIDI'
@@ -394,8 +404,8 @@ C
           IF (INFOCH.NE.'RIEN') THEN
             NBINFO = NBINFO + 1
             CALL ASSERT(NBINFO.LT.NBINMX)
-            LISINF(NBINFO) = INFOCH 
-          ENDIF        
+            LISINF(NBINFO) = INFOCH
+          ENDIF
 C
 C -------- CHARGE DE TYPE NEUMANN
 C
@@ -411,10 +421,10 @@ C
             IF (IRET.NE.0) THEN
               IF (NOMLIG(ITYCH).EQ.'.ONDPL') THEN
                 INFOCH = 'NEUM_ONDE'
-                
+
               ELSEIF (NOMLIG(ITYCH).EQ.'.SIINT') THEN
                 INFOCH = 'NEUM_SIGM_INT'
-                
+
               ELSE IF (TYPCHA.EQ.'FIXE_PIL') THEN
                 INFOCH = 'NEUM_PILO'
                 IF (NOMLIG(ITYCH).NE.'.VEASS') THEN
@@ -424,20 +434,20 @@ C
                     CALL U2MESS('F','CHARGES_28')
                   ENDIF
                 ENDIF
-                
+
               ELSE IF (TYPCHA(1:4).EQ.'SUIV') THEN
                 INFOCH = 'NEUM_SUIV'
-                
+
               ELSE IF (AFFCHA(5:7).EQ.'_FO') THEN
                 CALL DISMOI('F','PARA_INST',LCHIN(1:19),'CARTE',IBID,
      &                      PARCHA,IRET)
-                
+
                 IF (PARCHA(1:3).EQ.'OUI') THEN
                   INFOCH = 'NEUM_FT'
                 ELSE
-                  INFOCH = 'NEUM_FO'            
+                  INFOCH = 'NEUM_FO'
                 END IF
-                
+
                 IF (EXCHSE) THEN
                   DO 60,NRPASE = 1,NBPASE
                     NOPASE = ZK8(ADCHSE+NRPASE-1)
@@ -458,10 +468,10 @@ C
             IF (INFOCH.NE.'RIEN') THEN
               NBINFO = NBINFO + 1
               CALL ASSERT(NBINFO.LT.NBINMX)
-              LISINF(NBINFO) = INFOCH 
-            ENDIF        
+              LISINF(NBINFO) = INFOCH
+            ENDIF
    70     CONTINUE
-          
+
 C
 C -------- CHARGE DE TYPE EVOL_CHAR
 C
@@ -472,7 +482,7 @@ C
             IF (TYPCHA(1:4).EQ.'SUIV') THEN
               INFOCH = 'NEUM_SUIV'
             ELSE
-              INFOCH = 'NEUM_CSTE' 
+              INFOCH = 'NEUM_CSTE'
             END IF
             IF (TYPCHA.EQ.'FIXE_PIL') THEN
               CALL U2MESK('F','CHARGES_34',1,NOMCHA(1:8))
@@ -481,7 +491,7 @@ C
           IF (INFOCH.NE.'RIEN') THEN
             NBINFO = NBINFO + 1
             CALL ASSERT(NBINFO.LT.NBINMX)
-            LISINF(NBINFO) = INFOCH 
+            LISINF(NBINFO) = INFOCH
           ENDIF
 C
 C -------- CHARGES DE TYPE FORCE DE LAPLACE
@@ -503,11 +513,11 @@ C
           IF (INFC.NE.0) THEN
             IVAL   = MAX(INFMAX,INFC)
             INFOCH = 'NEUM_LAPL'
-          ENDIF  
+          ENDIF
           IF (INFOCH.NE.'RIEN') THEN
             NBINFO = NBINFO + 1
             CALL ASSERT(NBINFO.LT.NBINMX)
-            LISINF(NBINFO) = INFOCH 
+            LISINF(NBINFO) = INFOCH
           ENDIF
 C
 C -------- CHARGES DE TYPE ARLEQUIN
@@ -534,25 +544,25 @@ C
             END IF
             IF (TYPCHA.EQ.'FIXE_PIL') THEN
               CALL U2MESK('F','CHARGES_35',1,NOMCHA(1:8))
-            END IF            
+            END IF
           END IF
           IF (INFOCH.NE.'RIEN') THEN
             NBINFO = NBINFO + 1
             CALL ASSERT(NBINFO.LT.NBINMX)
-            LISINF(NBINFO) = INFOCH 
+            LISINF(NBINFO) = INFOCH
           ENDIF
 C
-C --- AJOUT DE LA CHARGE          
-C                    
+C --- AJOUT DE LA CHARGE
+C
           IF (NBINFO.GT.0) THEN
              ICHAR  = ICHAR+1
              CALL LISCAD(LISCHA,ICHAR ,NOMCHA,NOMFCT,NBINFO,
-     &                   LISINF,IVAL  ) 
+     &                   LISINF,IVAL  )
           ENDIF
 
   130   CONTINUE
 C
-C ---- PILOTAGE POSSIBLE SI IL YA DES CHARGES PILOTEES !  
+C ---- PILOTAGE POSSIBLE SI IL YA DES CHARGES PILOTEES !
 C
         IF( NOMCMD.NE.'LIRE_RESU') THEN
           IF (NOMCMD.EQ.'STAT_NON_LINE') THEN
@@ -562,12 +572,12 @@ C
             END IF
             IF (NPILO.GT.1) THEN
               CALL U2MESS('F','CHARGES_40')
-            END IF              
+            END IF
           END IF
         ENDIF
-      ENDIF 
+      ENDIF
 C
-      CALL JEDETR(LISDBL)       
+      CALL JEDETR(LISDBL)
 C
 
       CALL JEDEMA()

@@ -1,0 +1,301 @@
+# MODIF  DATE 08/11/2010   AUTEUR PROIX J-M.PROIX 
+# TITRE VALIDATION EFFET DE MEMOIRE VISC_CIN2_MEMO
+# ssnd111a.para = tps_job 300 mem_job 128Mo mem_aster 20 ncpus 1 liste_test S
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+#DEBUT(PAR_LOT='OUI')
+DEBUT(CODE=_F(NOM='SSND111A',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'));
+
+#  parametres constants
+
+R0__ = 97.82907013
+GAMA1__ = 3079.148555 
+GAMA2__ = 178.6588221    
+C1INF__ = 182392.4371
+C2INF__ = 16679.65460
+
+YOUNG = 184000.0;
+NU = 0.33;
+Q0__ = -86.18795281
+Qm__ = 270.5400631
+eta__ = 0.135
+#eta__ = 0.5
+
+PETITB__ = 51.31782615
+AINF__ = 0.5817571069
+UNETA__ = 1./156.8607050
+EXP_N__ = 6.835707681  
+MU__ = 10.00231083
+
+ACIER2=DEFI_MATERIAU(ELAS=_F(E=YOUNG,
+                             NU=0.33,),
+                     VISCOCHAB=_F(K_0=156.8607050,
+                                  N=EXP_N__ ,
+
+                                  Q_M=Qm__,
+                                  Q_0=Q0__,
+                                  MU=MU__,
+                                  ETA=eta__,
+                                  QR_0 = 0.,
+
+                                  K=R0__,
+                                  B=PETITB__,
+                                  C1=C1INF__,
+                                  C2=C2INF__,
+                                  G1_0=GAMA1__,
+                                  G2_0=GAMA2__,
+                                  A_I = AINF__,
+                                  ),);
+
+ACIER=DEFI_MATERIAU(ELAS=_F(E=YOUNG,
+                              NU=NU,),
+               CIN2_CHAB=_F(R_0=R0__,
+                            B=PETITB__,
+                            C1_I=C1INF__,
+                            C2_I=C2INF__,
+                            G1_0=GAMA1__,
+                            G2_0=GAMA2__,
+                            A_I=AINF__,
+                            R_I = 0.,
+                            W = 0.,
+                            K = 1.),
+                            MEMO_ECRO=_F(MU = MU__,
+                                         Q_M = Qm__,
+                                         Q_0 = Q0__,
+                                         ETA = eta__,
+                                         ),
+                            LEMAITRE=_F(N=EXP_N__,
+                                         UN_SUR_K=UNETA__,
+                                         UN_SUR_M = 0.),
+                                        );
+
+# --- On importe le chargement ------------------------------------------------------------------------
+
+# cycle stabilise 0.3%  
+EPS03=LIRE_FONCTION(UNITE=33,NOM_PARA='INST',INDIC_PARA=[1,1], INDIC_RESU=[1,2],PROL_DROITE='LINEAIRE',);
+
+#lt3 = EPS03.Absc()
+#LIST3=DEFI_LIST_REEL(VALE=lt3);
+
+# on redefini le decoupage avec 200 points par cycles (1 cycle = 3 secondes)
+LIST3=DEFI_LIST_REEL(DEBUT=0.,
+                    INTERVALLE=_F(JUSQU_A=40.5,
+                                  PAS=0.015,),);
+
+
+DEFLIST3=DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST=LIST3,METHODE='MANUEL', ),
+                        ECHEC=_F(SUBD_PAS=10),
+                        );
+
+
+
+R03MT=SIMU_POINT_MAT(COMP_INCR=_F(RELATION='VISC_CIN2_MEMO',ITER_INTE_MAXI=50),
+                 MATER=ACIER,
+                 INCREMENT=_F(LIST_INST=DEFLIST3,),
+                 NEWTON=_F(REAC_ITER=1),
+                 EPSI_IMPOSE=_F(EPYY=EPS03,),
+                 INFO=1,
+                                );
+
+#IMPR_TABLE(TABLE=R03MT,NOM_PARA=('INST','EPYY','SIYY','V1','V16','V18','V19'))
+
+# On extrait le dernier cycle calcule
+R03M = CALC_TABLE( TABLE=R03MT,
+                   ACTION=(_F(OPERATION='EXTR', NOM_PARA=('INST','SIYY','EPYY'),),
+                           _F(OPERATION='FILTRE',NOM_PARA= 'INST' , CRIT_COMP= 'GE' , VALE= 37.0,),
+                  ),)
+
+
+
+# --- On met en forme les donnees en vue du trace ----------------------------------------------------
+f03xM=RECU_FONCTION(TABLE=R03M,PARA_X='INST',PARA_Y='EPYY');
+f03yM=RECU_FONCTION(TABLE=R03M,PARA_X='INST',PARA_Y='SIYY');
+
+R03MV=SIMU_POINT_MAT(COMP_INCR=_F(RELATION='VISCOCHAB',ITER_INTE_MAXI=50),
+                 MATER=ACIER2,
+                 INCREMENT=_F(LIST_INST=DEFLIST3),
+                 NEWTON=_F(REAC_ITER=1),
+                 EPSI_IMPOSE=_F(EPYY=EPS03,),
+                                );
+
+#IMPR_TABLE(TABLE=R03MV,NOM_PARA=('INST','EPYY','SIYY','V13','V15','V17','V18'))
+
+R03V = CALC_TABLE( TABLE=R03MV,
+   ACTION=(
+   _F(OPERATION='EXTR', NOM_PARA=('INST','SIYY','EPYY'),),
+             _F(OPERATION='FILTRE',NOM_PARA= 'INST' , CRIT_COMP= 'GE' , VALE= 37.0,),
+   ),)
+
+
+f03xV=RECU_FONCTION(TABLE=R03V,PARA_X='INST',PARA_Y='EPYY');
+f03yV=RECU_FONCTION(TABLE=R03V,PARA_X='INST',PARA_Y='SIYY');
+
+R03VE=SIMU_POINT_MAT(COMP_INCR=_F(RELATION='VISCOCHAB',ITER_INTE_MAXI=50,RESI_INTE_RELA=1.E-4,RESO_INTE='RUNGE_KUTTA_2'),
+                 MATER=ACIER2,
+                 INCREMENT=_F(LIST_INST=DEFLIST3,),
+                 NEWTON=_F(REAC_ITER=1),
+                 EPSI_IMPOSE=_F(EPYY=EPS03,),
+                                );
+# p, q, xi_yy, xi_zz                                
+#IMPR_TABLE(TABLE=R03VE,NOM_PARA=('INST','EPYY','SIYY','V27','V26','V20','V21'))
+
+R03E = CALC_TABLE( TABLE=R03VE,
+   ACTION=(
+   _F(OPERATION='EXTR', NOM_PARA=('INST','SIYY','EPYY'),),
+             _F(OPERATION='FILTRE',NOM_PARA= 'INST' , CRIT_COMP= 'GE' , VALE= 37.0,),
+   ),)
+
+f03xE=RECU_FONCTION(TABLE=R03E,PARA_X='INST',PARA_Y='EPYY');
+f03yE=RECU_FONCTION(TABLE=R03E,PARA_X='INST',PARA_Y='SIYY');
+
+
+
+# --- On compare les trois simulations 
+IMPR_FONCTION(FORMAT='XMGRACE',UNITE=40,
+                  COURBE=(
+                   _F(LEGENDE='EPS0.3%, CIN2_MEMO, ETA='+str(eta__),
+                  FONC_X=f03xM,
+                  FONC_Y=f03yM,
+                  COULEUR = 3, MARQUEUR=0,
+                  ),
+                  _F(LEGENDE='EPS0.3%, VISCOCHAB RK2, ETA='+str(eta__),
+                  FONC_X=f03xE,
+                  FONC_Y=f03yE,
+                  COULEUR = 2, MARQUEUR=0,
+                  ),
+                  _F(LEGENDE='EPS0.3%, VISCOCHAB, ETA='+str(eta__),
+                  FONC_X=f03xV,
+                  FONC_Y=f03yV,
+                  COULEUR = 1, MARQUEUR=0,
+                  ),
+                  ),
+                  TITRE='EPS=0.3%',
+                                    );          
+
+
+qvi=RECU_FONCTION(TABLE=R03MV,PARA_X='INST',PARA_Y='V15');
+ksiyyvi=RECU_FONCTION(TABLE=R03MV,PARA_X='INST',PARA_Y='V17');
+
+qve=RECU_FONCTION(TABLE=R03VE,PARA_X='INST',PARA_Y='V26');
+ksiyyve=RECU_FONCTION(TABLE=R03VE,PARA_X='INST',PARA_Y='V20');
+
+qvm=RECU_FONCTION(TABLE=R03MT,PARA_X='INST',PARA_Y='V16');
+ksiyyvm=RECU_FONCTION(TABLE=R03MT,PARA_X='INST',PARA_Y='V18');
+
+
+
+IMPR_FONCTION(FORMAT='XMGRACE',UNITE=41,
+                  COURBE=(
+                   _F(LEGENDE='Q-CIN2_MEMO, ETA='+str(eta__),
+                  FONCTION=qvm,
+                  COULEUR = 3, MARQUEUR=0,
+                  ),
+                  _F(LEGENDE='Q-VISCOCHAB RK2, ETA='+str(eta__),
+                  FONCTION=qve,
+                  COULEUR = 2, MARQUEUR=0,
+                  ),
+                  _F(LEGENDE='Q-VISCOCHAB, ETA='+str(eta__),
+                  FONCTION=qvi,
+                  COULEUR = 1, MARQUEUR=0,
+                  ),
+                  ),
+                  TITRE='EPS=0.3%',
+                                    );          
+
+IMPR_FONCTION(FORMAT='XMGRACE',UNITE=42,
+                  COURBE=(
+                   _F(LEGENDE='KSI-CIN2_MEMO, ETA='+str(eta__),
+                  FONCTION=ksiyyvm,
+                  COULEUR = 6, MARQUEUR=0,
+                  ),
+                  _F(LEGENDE='KSI-VISCOCHAB RK2, ETA='+str(eta__),
+                  FONCTION=ksiyyve,
+                  COULEUR = 5, MARQUEUR=0,
+                  ),
+                  _F(LEGENDE='KSI-VISCOCHAB, ETA='+str(eta__),
+                  FONCTION=ksiyyvi,
+                  COULEUR = 4, MARQUEUR=0,
+                  ),
+                  ),
+                  TITRE='EPS=0.3%',
+                                    );          
+
+
+# test de VISCOCHAB explicite = SIDOLO : non regression
+TEST_FONCTION(VALEUR=_F(FONCTION=f03yE,
+                        NOM_PARA='INST',
+                        VALE_PARA=39.75,
+                        VALE_REFE=224.30988,
+                        REFERENCE='NON_REGRESSION',),
+                        );
+
+
+# reference= VISCOCHAB explicite = SIDOLO
+TEST_FONCTION(VALEUR=_F(FONCTION=qve,
+                        NOM_PARA='INST',
+                        VALE_PARA=40.5,
+                        VALE_REFE=1.81114E-03,
+                        REFERENCE='NON_REGRESSION',),
+                        );
+
+
+# test de VISC_CIN2_MEMO
+
+# reference= VISCOCHAB explicite = SIDOLO
+TEST_FONCTION(VALEUR=_F(FONCTION=qvm,
+                        NOM_PARA='INST',
+                        VALE_PARA=40.5,
+                        VALE_REFE=1.81114E-03,
+                        PRECISION=0.009,
+                        REFERENCE='AUTRE_ASTER',),
+                        );
+
+
+# reference= VISCOCHAB explicite = SIDOLO
+TEST_FONCTION(VALEUR=_F(FONCTION=f03yM,
+                        NOM_PARA='INST',
+                        VALE_PARA=39.75,
+                        VALE_REFE=224.30988,
+                        PRECISION=0.002,
+                        REFERENCE='AUTRE_ASTER',),
+                        );
+
+# test de VISCOCHAB IMPLICITE
+
+# reference= VISCOCHAB explicite = SIDOLO
+TEST_FONCTION(VALEUR=_F(FONCTION=qvi,
+                        NOM_PARA='INST',
+                        VALE_PARA=40.5,
+                        VALE_REFE=1.81114E-03,
+                        PRECISION=0.005,
+                        REFERENCE='AUTRE_ASTER',),
+                        );
+
+
+# reference= VISCOCHAB explicite = SIDOLO
+TEST_FONCTION(VALEUR=_F(FONCTION=f03yV,
+                        NOM_PARA='INST',
+                        VALE_PARA=39.75,
+                        VALE_REFE=224.30988,
+                        PRECISION=0.002,
+                        REFERENCE='AUTRE_ASTER',),
+                        );
+
+
+
+FIN();

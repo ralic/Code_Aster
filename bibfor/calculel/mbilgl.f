@@ -19,7 +19,7 @@
       LOGICAL UFONC,VFONC,EPSIU,EPSIV,THLAG2,LMELAS
 C ......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 27/10/2008   AUTEUR GALENNE E.GALENNE 
+C MODIF CALCULEL  DATE 08/11/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -278,12 +278,12 @@ C                                         NDIMTE = NDEG+1 SI TH-LEGENDRE
         END IF
 
         CALL CALCUL('S',OPTI,LIGRMO,NCHIN,LCHIN,LPAIN,1,LCHOUT,LPAOUT,
-     &              'V')
+     &              'V','OUI')
         CALL MESOMM(CHGTHI,1,IBID,GTHI,CBID,0,IBID)
         ZR(IADRG+I-1) = GTHI
    20 CONTINUE
 
-C ABSCISSE CURVILIGNE      
+C ABSCISSE CURVILIGNE
       OBJ1 = MODELE//'.MODELE    .LGRF'
       CALL JEVEUO(OBJ1,'L',IADRMA)
       NOMA1 = ZK8(IADRMA)

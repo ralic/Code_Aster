@@ -1,26 +1,26 @@
-#& MODIF COMMANDE  DATE 09/11/2009   AUTEUR AUDEBERT S.AUDEBERT 
+#& MODIF COMMANDE  DATE 09/11/2010   AUTEUR DELMAS J.DELMAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-# (AT YOUR OPTION) ANY LATER VERSION.                                 
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
 #
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 #
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # RESPONSABLE AUDEBERT S.AUDEBERT
 COMB_SISM_MODAL=OPER(nom="COMB_SISM_MODAL",op= 109,sd_prod=mode_meca,
                      fr="Réponse sismique par recombinaison modale par une méthode spectrale",
                      reentrant='n',
-            UIinfo={"groupes":("Post traitements",)},
+            UIinfo={"groupes":("Post-traitements","Dynamique",)},
          regles=(EXCLUS('TOUT_ORDRE','NUME_ORDRE','FREQ','NUME_MODE','LIST_FREQ','LIST_ORDRE'),
                  UN_PARMI('AMOR_REDUIT','LIST_AMOR','AMOR_GENE' ),
                  UN_PARMI('MONO_APPUI','MULTI_APPUI' ),),
@@ -36,14 +36,14 @@ COMB_SISM_MODAL=OPER(nom="COMB_SISM_MODAL",op= 109,sd_prod=mode_meca,
            CRITERE         =SIMP(statut='f',typ='TXM',defaut="RELATIF",into=("RELATIF","ABSOLU") ),
          ),
          MODE_CORR       =SIMP(statut='f',typ=mode_meca ),
-         
+
          AMOR_REDUIT     =SIMP(statut='f',typ='R',max='**'),
          LIST_AMOR       =SIMP(statut='f',typ=listr8_sdaster ),
          AMOR_GENE       =SIMP(statut='f',typ=matr_asse_gene_r ),
-         
+
          MASS_INER       =SIMP(statut='f',typ=table_sdaster ),
          CORR_FREQ       =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON") ),
-         
+
          EXCIT           =FACT(statut='o',max='**',
            regles=(UN_PARMI('AXE','TRI_AXE','TRI_SPEC' ),),
            AXE             =SIMP(statut='f',typ='R',max=3,fr="Excitation suivant un seul axe",),
@@ -61,12 +61,12 @@ COMB_SISM_MODAL=OPER(nom="COMB_SISM_MODAL",op= 109,sd_prod=mode_meca,
            b_tri_spec      =BLOC(condition = "TRI_SPEC != None",fr="Excitation suivant les trois axes  avec trois spectres",
              SPEC_OSCI       =SIMP(statut='o',typ=(nappe_sdaster,formule),min=3,max=3 ),
              ECHELLE         =SIMP(statut='f',typ='R',min=3,max=3),
-           ),       
+           ),
            NATURE          =SIMP(statut='f',typ='TXM',defaut="ACCE",into=("ACCE","VITE","DEPL") ),
            b_mult_appui    =BLOC(condition = "(MULTI_APPUI != None)",
                                  regles=(UN_PARMI('NOEUD','GROUP_NO' ),),
            NOEUD           =SIMP(statut='f',typ=no  ,validators=NoRepeat(),max='**'),
-           GROUP_NO        =SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**'),)                              
+           GROUP_NO        =SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**'),)
          ),
          MONO_APPUI      =SIMP(statut='f',typ='TXM',into=("OUI",),
                                  fr="excitation imposée unique" ),
@@ -77,7 +77,7 @@ COMB_SISM_MODAL=OPER(nom="COMB_SISM_MODAL",op= 109,sd_prod=mode_meca,
            regles=(UN_PARMI('NOEUD','GROUP_NO' ),),
            NOEUD           =SIMP(statut='f',typ=no  ,validators=NoRepeat(),max='**'),
            GROUP_NO        =SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**'),),
-           
+
          ),
          b_correle =BLOC(condition = "MULTI_APPUI == 'CORRELE' ",
            COMB_MULT_APPUI =FACT(statut='f',max='**',

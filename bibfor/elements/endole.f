@@ -5,7 +5,7 @@
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 08/11/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -130,7 +130,7 @@ C      -------------------------
 
       OPT2 = OPTION
       CALL CALCUL('S',OPT2,LIGREL,NBIN,LCHIN,LPAIN,
-     &            NBOUT,LCHOUT,LPAOUT,'G')
+     &            NBOUT,LCHOUT,LPAOUT,'G','OUI')
 
 C.============================ FIN DE LA ROUTINE ======================
       END

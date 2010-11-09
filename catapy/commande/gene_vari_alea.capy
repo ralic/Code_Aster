@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 21/04/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+#& MODIF COMMANDE  DATE 09/11/2010   AUTEUR DELMAS J.DELMAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,7 +22,7 @@ GENE_VARI_ALEA=MACRO(nom="GENE_VARI_ALEA",
                op_init=gene_vari_alea_init,op=gene_vari_alea_ops,
                sd_prod=reel,reentrant='n',
                fr="Générer une réalisation d'une variable aléatoire réelle de loi de probabilité donnée (Gamma ou Exponentielle)",
-               UIinfo={"groupes":("Fonction",)},
+               UIinfo={"groupes":("Fonctions",)},
    TYPE       = SIMP(statut='f', typ='TXM', into=("EXP_TRONQUEE", "EXPONENTIELLE", "GAMMA"), defaut="GAMMA"),
    b_gamma    =BLOC(condition = "TYPE == 'GAMMA' ",fr="Parametres loi gamma",
            VALE_MOY   = SIMP(statut='f', typ='R', defaut=1.),

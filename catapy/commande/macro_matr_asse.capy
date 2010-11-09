@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 17/11/2008   AUTEUR DELMAS J.DELMAS 
+#& MODIF COMMANDE  DATE 09/11/2010   AUTEUR DELMAS J.DELMAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -46,7 +46,7 @@ def macro_matr_asse_prod(self,NUME_DDL,MATR_ASSE,**args):
   return None
 
 MACRO_MATR_ASSE=MACRO(nom="MACRO_MATR_ASSE",op=macro_matr_asse_ops,
-            UIinfo={"groupes":("Matrices/vecteurs",)},
+            UIinfo={"groupes":("Matrices et vecteurs",)},
                       sd_prod=macro_matr_asse_prod,
                       fr="Calcul des matrices assemblées (rigidité, masse, amortissement,...) ",
          MODELE          =SIMP(statut='o',typ=modele_sdaster),

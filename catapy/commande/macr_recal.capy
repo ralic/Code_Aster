@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 22/04/2010   AUTEUR ASSIRE A.ASSIRE 
+#& MODIF COMMANDE  DATE 09/11/2010   AUTEUR DELMAS J.DELMAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -24,7 +24,7 @@ def macr_recal_prod(self,**args ):
   return listr8_sdaster
 
 MACR_RECAL = MACRO(nom="MACR_RECAL",op=macr_recal_ops,
-            UIinfo={"groupes":("Résultats et champs",)},
+            UIinfo={"groupes":("Résolution","Résultats et champs",)},
                       sd_prod=macr_recal_prod,
                       fr="Réalise le recalage des calculs Aster sur des résultats expérimentaux"
                         +" ou sur d'autres résultats de calculs",

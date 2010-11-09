@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 21/04/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+#& MODIF COMMANDE  DATE 09/11/2010   AUTEUR DELMAS J.DELMAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -30,9 +30,9 @@ LIRE_FONCTION=MACRO(nom="LIRE_FONCTION",op=lire_fonction_ops,sd_prod=lire_foncti
                    fr="Lit les valeurs réelles dans un fichier de données représentant une fonction et"
                      +" crée un concept de type fonction ou nappe",
                    reentrant='n',
-            UIinfo={"groupes":("Fonction",)},
+            UIinfo={"groupes":("Lecture","Fonctions",)},
          FORMAT          =SIMP(statut='f',typ='TXM',into=("LIBRE",),defaut="LIBRE"  ),
-         TYPE            =SIMP(statut='f',typ='TXM',into=("FONCTION","FONCTION_C","NAPPE"),defaut="FONCTION"  ),
+         TYPE            =SIMP(statut='f',typ='TXM',into=("Fonctions","FONCTION_C","NAPPE"),defaut="FONCTION"  ),
          SEPAR           =SIMP(statut='f',typ='TXM',into=("None",",",";","/"),defaut="None" ),
          INDIC_PARA      =SIMP(statut='f',typ='I',min=2,max=2,defaut=[1,1]),
          b_fonction      =BLOC(condition = "TYPE=='FONCTION' ",

@@ -1,4 +1,4 @@
-#@ MODIF algorith17 Messages  DATE 16/08/2010   AUTEUR GRANET S.GRANET 
+#@ MODIF algorith17 Messages  DATE 08/11/2010   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -23,9 +23,11 @@ def _(x) : return x
 
 cata_msg={
 1: _("""
- Solveur linéaire MUMPS distribué, routine CRESOL.
- Le processeur de rang %(i1)d ne s'est vu attribuer aucune maille physique
- du modèle!
+ Il y a moins de sous-domaines (%(i1)d) que de processeurs participant au calcul (%(i2)d).
+ 
+ Conseils :
+   - augmentez le nombre de sous-domaines de la partition du mot-clé PARTITION
+   - diminuez le nombre de processeurs du calcul
 """),
 
 2: _("""

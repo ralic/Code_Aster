@@ -2,7 +2,7 @@
       IMPLICIT  NONE
 C ......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 14/04/2008   AUTEUR GALENNE E.GALENNE 
+C MODIF ELEMENTS  DATE 08/11/2010   AUTEUR REZETTE C.REZETTE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -35,7 +35,7 @@ C    IXFEM       --> SI =0, ON EST DANS UN CALCUL CLASSIQUE
 C ......................................................................
 C
       INTEGER       I,K1PHI,K2PHI,GPHI, UNIT,IBID,IXFEM
-      REAL*8        G,FIC1,FIC2,K1,K2,GIRWIN,RCMP(4),VALE(*)
+      REAL*8        G,FIC1,FIC2,K1,K2,GIRWIN,RCMP(4),VALE(5)
       REAL*8        K11(10),K21(10),K12(10),K22(10),K1MAX,K1MIN
       REAL*8        K2MIN,K2SUP,GMAX,K1DEV,K2DEV,GDEV,FIC1D,FIC2D
       CHARACTER*8   NOMNOE

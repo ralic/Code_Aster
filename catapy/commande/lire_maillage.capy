@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 07/12/2009   AUTEUR REZETTE C.REZETTE 
+#& MODIF COMMANDE  DATE 09/11/2010   AUTEUR DELMAS J.DELMAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,7 +21,7 @@ LIRE_MAILLAGE=OPER(nom="LIRE_MAILLAGE",op=   1,sd_prod=maillage_sdaster,
                    fr="Crée un maillage par lecture d'un fichier au format Aster ou Med",
                    ang="Readings of a mesh file",
                    reentrant='n',
-            UIinfo={"groupes":("Maillage",)},
+            UIinfo={"groupes":("Lecture","Maillage",)},
 #
          UNITE           =SIMP(statut='f',typ='I',defaut= 20 ),
 #

@@ -5,7 +5,7 @@
       CHARACTER*(*) RESU,MODELE,MATE,CARA,LCHAR(*),DEFORM
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 19/10/2010   AUTEUR DELMAS J.DELMAS 
+C MODIF UTILITAI  DATE 08/11/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -127,7 +127,7 @@ C     --- CALCUL DE L'OPTION ---
       LCHOUT(1) = CHELEM
 
       CALL CALCUL('S','MASS_INER',LIGREL,NB,LCHIN,LPAIN,1,LCHOUT,LPAOUT,
-     &            'V')
+     &            'V','OUI')
 
       MXVALE = MXVAL1
       NBPARR = NBPAR1

@@ -2,7 +2,7 @@
       IMPLICIT NONE
       CHARACTER*(*)       GDTETZ, THETAZ, MODELZ
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/10/2007   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 08/11/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -88,7 +88,7 @@ C =================================================================
       LCHOUT(1) = '&&GRAD_THETA_NO'
       NBIN = 2
       CALL CALCUL('S','GTHE_ELNO_ELGA',LIGREL,NBIN,LCHIN,LPAIN,1,LCHOUT,
-     &            LPAOUT,'V')
+     &            LPAOUT,'V','OUI')
 
 C =================================================================
 C --- CALCUL DU CHAMNO DES GRAD_NOEU_THETA DU CHAMP THETA SUR     =

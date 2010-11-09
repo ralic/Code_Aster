@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 21/04/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+#& MODIF COMMANDE  DATE 09/11/2010   AUTEUR DELMAS J.DELMAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,7 +22,7 @@ from Macro.lire_table_ops import lire_table_ops
 
 LIRE_TABLE=MACRO(nom="LIRE_TABLE",op=lire_table_ops,sd_prod=table_sdaster,
                  fr="Lecture d'un fichier contenant une table",
-            UIinfo={"groupes":("Table",)},
+            UIinfo={"groupes":("Lecture","Tables",)},
          UNITE           =SIMP(statut='o',typ='I' ),
          FORMAT          =SIMP(statut='f',typ='TXM',into=("ASTER",),defaut="ASTER"),
          NUME_TABLE      =SIMP(statut='f',typ='I',defaut=1),

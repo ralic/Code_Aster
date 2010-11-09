@@ -3,7 +3,7 @@
 C       ----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 23/10/2008   AUTEUR TORKHANI M.TORKHANI 
+C MODIF UTILITAI  DATE 09/11/2010   AUTEUR TORKHANI M.TORKHANI 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -28,8 +28,8 @@ C       ----------------------------------------------------------------
         REAL*8  MV(N)  , MP(M,M)
 C
         K = 0
-        DO 10 J = 1 , M
-          DO 20 I = 1 , M
+        DO 10 I = 1 , M
+          DO 20 J = 1 , M
           K = K + 1
           MV(K) = MP(I,J)
  20       CONTINUE
