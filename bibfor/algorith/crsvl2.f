@@ -1,9 +1,9 @@
-      SUBROUTINE CRSVL2(SOLVEU,NPREC,CASPAR)
+      SUBROUTINE CRSVL2(SOLVEU,NPREC,RAIDE)
       IMPLICIT NONE
-      CHARACTER*19 SOLVEU
-      INTEGER      NPREC,CASPAR
+      CHARACTER*19 SOLVEU,RAIDE
+      INTEGER      NPREC
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/10/2010   AUTEUR BOITEAU O.BOITEAU 
+C MODIF ALGORITH  DATE 15/11/2010   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -31,8 +31,8 @@ C
 C IN K19 SOLVEU  : NOM DU SOLVEUR DONNE EN ENTREE
 C OUT    SOLVEU  : LE SOLVEUR EST CREE ET INSTANCIE
 C IN  IN NPREC   : PRECISION DE LA DETECTION DE SINGULARITE
-C IN  IN CASPAR  : NUMERO DU CAS PARTICULIER (UNE SEULE VALEUR 1)
-C                 =1  MATR_ASSE CONSTRUITES AVEC NUME_DDL_GENE
+C IN  K19 RAIDE  : NOM DE LA MATRICE DE RAIDEUR (POUR CRITERE DE CHOIX
+C                  DU SOLVEUR)
 C ----------------------------------------------------------
 
 C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------
@@ -54,44 +54,80 @@ C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------
 
 C --- FIN DECLARATIONS NORMALISEES JEVEUX --------------------
 
-      INTEGER      ISLVK,ISLVI,ISLVR
+      INTEGER      ISLVK,ISLVI,ISLVR,IREFA,INEQU,NEQ
       REAL*8       JEVTBL
+      CHARACTER*14 NU
 
 C------------------------------------------------------------------
       CALL JEMARQ()
 
-C --- OPTION INVALIDE
-      IF (CASPAR.NE.1) CALL ASSERT(.FALSE.)
+      CALL U2MESS('I','ALGELINE5_72')
+      CALL JEVEUO(RAIDE//'.REFA','L',IREFA)
+      NU = ZK24(IREFA+1)      
+      CALL JEVEUO(NU//'.NUME.NEQU','L',INEQU)
+      NEQ = ZI(INEQU)
+      
+C      WRITE(6,*)'<CRSVL2> TAILLE DU PB ',NEQ
      
 C --- ON REMPLIT LA SD_SOLVEUR
       CALL JEVEUO(SOLVEU//'.SLVK','E',ISLVK)
       CALL JEVEUO(SOLVEU//'.SLVR','E',ISLVR)
       CALL JEVEUO(SOLVEU//'.SLVI','E',ISLVI)
 
-      ZK24(ISLVK-1+1) = 'MUMPS'
-      ZK24(ISLVK-1+2) = 'AUTO'
-      ZK24(ISLVK-1+3) = 'AUTO'
-      ZK24(ISLVK-1+4) = 'AUTO'
-      ZK24(ISLVK-1+5) = 'NON'
-      ZK24(ISLVK-1+6) = 'OUI'
-      ZK24(ISLVK-1+7) = 'NON'
-      ZK24(ISLVK-1+8) = 'XXXX'
-      ZK24(ISLVK-1+9) = 'NON'
-      ZK24(ISLVK-1+10)= 'NON'
-      ZK24(ISLVK-1+11)= 'AUTO'
+      IF (NEQ.LE.100) THEN
+        ZK24(ISLVK-1+1) = 'LDLT'
+        ZK24(ISLVK-1+2) = 'XXXX'
+        ZK24(ISLVK-1+3) = 'XXXX'
+        ZK24(ISLVK-1+4) = 'SANS'
+        ZK24(ISLVK-1+5) = 'NON'
+        ZK24(ISLVK-1+6) = 'XXXX'
+        ZK24(ISLVK-1+7) = 'XXXX'
+        ZK24(ISLVK-1+8) = 'XXXX'
+        ZK24(ISLVK-1+9) = 'XXXX'
+        ZK24(ISLVK-1+10)= 'XXXX'
+        ZK24(ISLVK-1+11)= 'XXXX'
 
-      ZR(ISLVR-1+1) = -1.D0
-      ZR(ISLVR-1+2) = -1.D0
-      ZR(ISLVR-1+3) = 0.D0
-      ZR(ISLVR-1+4) = 0.D0
+        ZR(ISLVR-1+1) = 0.D0
+        ZR(ISLVR-1+2) = 0.D0
+        ZR(ISLVR-1+3) = JEVTBL()
+        ZR(ISLVR-1+4) = 0.D0
 
-      ZI(ISLVI-1+1) = NPREC
-      ZI(ISLVI-1+2) = 30
-      ZI(ISLVI-1+3) = 0
-      ZI(ISLVI-1+4) = -9999      
-      ZI(ISLVI-1+5) = -9999      
-      ZI(ISLVI-1+6) = -9999      
-      ZI(ISLVI-1+7) = -9999      
+        ZI(ISLVI-1+1) = NPREC
+        ZI(ISLVI-1+2) = -9999
+        ZI(ISLVI-1+3) = 0
+        ZI(ISLVI-1+4) = -9999      
+        ZI(ISLVI-1+5) = -9999      
+        ZI(ISLVI-1+6) = -9999      
+        ZI(ISLVI-1+7) = -9999  
+      ELSE IF (NEQ.GT.100) THEN
+        ZK24(ISLVK-1+1) = 'MUMPS'
+        ZK24(ISLVK-1+2) = 'AUTO'
+        ZK24(ISLVK-1+3) = 'AUTO'
+        ZK24(ISLVK-1+4) = 'AUTO'
+        ZK24(ISLVK-1+5) = 'NON'
+        ZK24(ISLVK-1+6) = 'OUI'
+        ZK24(ISLVK-1+7) = 'NON'
+        ZK24(ISLVK-1+8) = 'XXXX'
+        ZK24(ISLVK-1+9) = 'NON'
+        ZK24(ISLVK-1+10)= 'NON'
+        ZK24(ISLVK-1+11)= 'AUTO'
+
+        ZR(ISLVR-1+1) = -1.D0
+        ZR(ISLVR-1+2) = -1.D0
+        ZR(ISLVR-1+3) = 0.D0
+        ZR(ISLVR-1+4) = 0.D0
+
+        ZI(ISLVI-1+1) = NPREC
+        ZI(ISLVI-1+2) = 30
+        ZI(ISLVI-1+3) = 0
+        ZI(ISLVI-1+4) = -9999      
+        ZI(ISLVI-1+5) = -9999      
+        ZI(ISLVI-1+6) = -9999      
+        ZI(ISLVI-1+7) = -9999
+      ELSE
+C DONNEE INVALIDE
+        CALL ASSERT(.FALSE.)      
+      ENDIF    
 
       CALL JEDEMA()
       END

@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
+C MODIF ALGORITH  DATE 16/11/2010   AUTEUR AUDEBERT S.AUDEBERT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -229,7 +229,6 @@ C
          IF (NCD.NE.0) THEN
             CALL U2MESK('I+','SEISME_18',1,TYPCDI)
          ENDIF
-         CALL U2MESS('I','SEISME_27')
       ENDIF
 C     ----- RECUPERATION DES EXCITATIONS -----
       WRITE(IFM,1060)
@@ -260,7 +259,6 @@ C     -----  SUR LES COMPOSANTES DANS LE CAS CORRELE     -----
              CALL U2MESS('A','SEISME_28')
           ENDIF
         ENDIF
-        CALL U2MESS('I','SEISME_27')
       ENDIF
 C
 

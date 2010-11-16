@@ -1,4 +1,4 @@
-#@ MODIF recal0 Messages  DATE 21/09/2010   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF recal0 Messages  DATE 16/11/2010   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -46,14 +46,12 @@ On desactive l'affichage des courbes par Gnuplot.
 (menu Option de ASTK) pour limiter la mémoire allouée au calcul maître.
 """),
 
- 7 : _("""Aucune valeur pour le paramètre 'memjeveux'. Verifier le .export.
-"""),
+# 7 : _(""" """),
 
  8 : _("""Vérifier les valeurs des paramètres 'mem_aster' et 'memjeveux'.
 """),
 
- 9 : _("""Information : les calculs esclaves utiliseront : %(r1).1f Mega Mots.
-"""),
+# 9 : _(""" """),
 
 10 : _("""Pour l'algorithme %(k1)s, on ne peut tracer qu'à la derniere itération.
 """),
@@ -76,6 +74,7 @@ On desactive l'affichage des courbes par Gnuplot.
 
 16 : _("""
 --> Calcul du gradient par differences finies <--
+
 """),
 
 17 : _("""Tracé des graphiques
@@ -116,10 +115,14 @@ Calcul de G avec les paramètres :
    %(k1)s
 """),
 
-28 : _("""--> Mode de lancement BATCH impossible sur : %(k1)s, on bascule en INTERACTIF <--
+28 : _("""
+--> Mode de lancement BATCH impossible sur : %(k1)s, on bascule en INTERACTIF <--
+
 """),
 
-29 : _("""--> Mode de lancement des calculs esclaves : %(k1)s <--
+29 : _("""
+--> Mode de lancement des calculs esclaves : %(k1)s <--
+
 """),
 
 30 : _("""
@@ -191,9 +194,7 @@ Valeur à interpoler              :  %(k1)s
 Domaine couvert par l'experience : [%(k2)s : %(k3)s]
 """),
 
-49 : _("""Erreur dans le calcul esclave: 
-   %(k1)s
-"""),
+#49 : _(""" """),
 
 50 : _("""
 --> Critere d'arret sur le residu atteint, la valeur du residu est : %(r1)s <--
@@ -288,21 +289,16 @@ Calcul avec les parametres suivants (pertubation du parametre %(k2)s pour le gra
 
 69 : _("""
 Information : les calculs esclaves seront lancés en BATCH avec les paramètres suivants :
-     Temps   (sec) : %(k1)s
-     Mémoire (Mo)  : %(k2)s
-     Classe        : %(k3)s
+     Temps          : %(k1)s sec
+     Mémoire totale : %(k2)s Mo
+     dont Aster     : %(k3)s Mo
+     Classe         : %(k4)s
 
 """),
 
-70 : _("""
-Erreur! Le calcul esclave '%(k1)s' ne s'est pas arrete correctement!
-L'output du job est : %(k2)s
-Il est recopié ci-dessous.
-"""),
+#70 : _(""" """),
 
-71 : _("""
-Erreur! Au moins un calcul esclave ne s'est pas arreté correctement! Vérifier le repertoire : %(k1)s
-"""),
+#71 : _(""" """),
 
 72 : _("""
 Fonctionnelle au point X0:
@@ -361,20 +357,36 @@ Vérifier qu'il est suffisament petit pour un calcul de gradient par différences 
 
 """),
 
-81 : _("""Repertoire contenant les executions Aster :
+81 : _("""
+
+Répertoire contenant les exécutions Aster :
+   %(k1)s
+
+"""),
+
+82 : _("""Impossible de créer le répertoire temporaire : %(k1)s
+"""),
+
+83 : _("""
+Erreur! Le calcul esclave '%(k1)s' ne s'est pas arrêté correctement!
+L'output du job est : %(k2)s
+"""),
+
+84 : _("""
+Erreur! Au moins un calcul esclave ne s'est pas arrêté correctement! Vérifier le répertoire : %(k1)s
+"""),
+
+85 : _(""" Erreur dans le calcul esclave:
    %(k1)s
 """),
 
-82 : _("""Impossible de creer le repertoire temporaire : %(k1)s
+86 : _("""
+Erreur! Le calcul esclave '%(k1)s' n'a pas pu démarrer !
+   Diagnostic : %(k2)s
+
+Il s'agit vraisemblablement d'un problème de configuration du serveur de calcul ou de ressources disponibles.
 """),
 
-#83 : _(""" """),
-
-#84 : _(""" """),
-
-#85 : _(""" """),
-
-#86 : _(""" """),
 
 #87 : _(""" """),
 

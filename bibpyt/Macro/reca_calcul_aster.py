@@ -1,4 +1,4 @@
-#@ MODIF reca_calcul_aster Macro  DATE 21/09/2010   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF reca_calcul_aster Macro  DATE 16/11/2010   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE ASSIRE A.ASSIRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -31,6 +31,7 @@ import math
 import glob
 import socket
 import shutil
+import tempfile
 
 import numpy as NP
 
@@ -58,6 +59,7 @@ class CALCUL_ASTER:
                           INFO=0,
                ):
   
+  
       self.METHODE               = METHODE
       self.UNITE_ESCL            = UNITE_ESCL
       self.UNITE_RESU            = UNITE_RESU
@@ -66,15 +68,22 @@ class CALCUL_ASTER:
       self.PARA_DIFF_FINI        = PARA_DIFF_FINI
       self.vector_output         = vector_output
 
-      self.memjeveux_esclave     = CALCUL_ESCLAVE['memjeveux_esclave']
-      self.mem_aster             = CALCUL_ESCLAVE['mem_aster']
       self.MODE                  = CALCUL_ESCLAVE['MODE']
-      self.MEMOIRE               = CALCUL_ESCLAVE['MEMOIRE']
-      self.TEMPS                 = CALCUL_ESCLAVE['TEMPS']
+#       self.MEMOIRE               = CALCUL_ESCLAVE['MEMOIRE']
+#       self.TEMPS                 = CALCUL_ESCLAVE['TEMPS']
+
+      # Parametres batch
       self.CLASSE                = CALCUL_ESCLAVE['CLASSE']
       self.ACTUALISATION         = CALCUL_ESCLAVE['ACTUALISATION']
       self.NMAX_SIMULT           = CALCUL_ESCLAVE['NMAX_SIMULT']
       self.LANCEMENT             = CALCUL_ESCLAVE['LANCEMENT']
+
+      # Parametres des job esclaves
+      self.tpsjob                = CALCUL_ESCLAVE['tpsjob']
+      self.tpmax                 = CALCUL_ESCLAVE['tpmax']
+      self.mem_aster             = CALCUL_ESCLAVE['mem_aster']
+      self.memjob                = CALCUL_ESCLAVE['memjob']
+      self.memjeveux             = CALCUL_ESCLAVE['memjeveux']
 
       self.INFO                  = INFO
  
@@ -87,7 +96,9 @@ class CALCUL_ASTER:
       #self.LANCEMENT             = LANCEMENT
 
       # Variables locales
-      self.new_export            = os.path.join(os.getcwd(), 'tmp_export')
+      tmpfile = tempfile.NamedTemporaryFile(prefix= os.path.join(os.getcwd(), 'tmp_export_') )
+      self.new_export            = str(tmpfile.name)
+      tmpfile.close()
 
       # Variables calculees
       self.evaluation_fonction   = 0
@@ -404,6 +415,7 @@ class CALCUL_ASTER:
      """
 
      from asrun.profil import ASTER_PROFIL
+     from asrun.common.sysutils import on_64bits
 
      # Recuperation du fichier .export
      if self.export:  export = self.export
@@ -428,7 +440,6 @@ class CALCUL_ASTER:
                   username = getpass.getuser()
      user_mach_dist = "%s@%s:" % ( username, socket.gethostname() )
 
-
      # On cherche s'il y a un fichier hostfile pour rajouter user@hostname
      l_fr = getattr(prof, 'data')
      l_tmp = l_fr[:]
@@ -437,26 +448,26 @@ class CALCUL_ASTER:
            user_mach = user_mach_dist
            break
 
-     # En distribue
-     if self.TEMPS:    prof.param['tpsjob']    = str(self.TEMPS)
-     if self.MEMOIRE:  prof.param['memjob']    = str(self.MEMOIRE)
+     # Parametres ajoutes par le mot-cle CALCUL_ESCLAVE
+     if self.tpsjob:    prof.param['tpsjob']    = str(self.tpsjob)
+     if self.tpmax:     prof.args['tpmax']      = str(self.tpmax)
+     if self.mem_aster: prof.param['mem_aster'] = str(self.mem_aster)
+     if self.memjob:    prof.param['memjob']    = str(self.memjob)
+     if self.memjeveux: prof.args['memjeveux']  = str(self.memjeveux)
 
      # En batch et distribue
      if self.MODE == 'BATCH':
-#        user_mach = "%s@%s:" % ( prof.param['username'][0], socket.gethostname() )
         user_mach = user_mach_dist
         prof.param['mode']      = 'batch'
-        if self.mem_aster: prof.param['mem_aster'] = str(self.mem_aster)
+        #if self.mem_aster: prof.param['mem_aster'] = str(self.mem_aster)
 
-        # classe reservee sur la machine Aster
+        # Choix d'une classe reservee
         if self.CLASSE:
            prof.param['classe'] = self.CLASSE
 
      # xterm
      if prof.param.has_key('xterm'):
         del prof.param['xterm']
-     # memjeveux
-     prof.args['memjeveux'] = self.memjeveux_esclave
 
      # fichier/répertoire
      for lab in ('data', 'resu'):
@@ -500,9 +511,6 @@ class CALCUL_ASTER:
 
            # Tous les autres fichiers en Resultat
            elif lab == 'resu':
-#               if self.UNITE_GRAPHIQUE and dico['ul'] == str(self.UNITE_GRAPHIQUE): l_fr.remove(dico)
-#               else:
-#                  dico['path'] = user_mach + os.path.join(tmp_macr_recal, os.path.basename(dico['path']))
               l_fr.remove(dico)
 
            # Tous les autres fichiers en Donnees
@@ -517,7 +525,7 @@ class CALCUL_ASTER:
                             shutil.copyfile(src, dst)
                             dico['path'] = user_mach + os.path.join(tmp_macr_recal, os.path.basename(dico['path']))
                         except Exception, e:
-                            print e
+                            if debug: print e
                      else:
                         dico['path'] = user_mach + os.path.join(os.getcwd(), 'fort.%s' % dico['ul'])
 
@@ -528,7 +536,5 @@ class CALCUL_ASTER:
      prof.WriteExportTo(self.new_export)
 
      if debug: os.system('cp ' + self.new_export + ' /tmp')
-     os.system('cp ' + self.new_export + ' /tmp')
-     #os.system('sleep 500')
 
-  # --FIN CLASSE  ----------------------------------------------------------------------------
+     # --FIN CLASSE  ----------------------------------------------------------------------------

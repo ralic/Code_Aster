@@ -1,16 +1,16 @@
       SUBROUTINE ASTRON ( NOMSY, PSMO, MONOAP, MUAPDE, NBSUP, NSUPP,
-     +                    NEQ, NBMODE, ID, VECMOD, PARMOD, ASSPEC,
+     +                    NEQ, NBMODE, ID, VECMOD, PARMOD, SPECTR,
      +                    NOMSUP, REASUP, REPDIR )
       IMPLICIT  NONE
       INTEGER           NBSUP, NSUPP(*), NEQ, NBMODE, ID
-      REAL*8            VECMOD(NEQ,*),PARMOD(NBMODE,*),ASSPEC(NBSUP,*),
+      REAL*8            VECMOD(NEQ,*),PARMOD(NBMODE,*),SPECTR(*),
      +                  REASUP(NBSUP,NBMODE,*),REPDIR(NBSUP,NEQ,*)
       CHARACTER*16      NOMSY
       CHARACTER*(*)     PSMO, NOMSUP(NBSUP,*)
       LOGICAL           MONOAP, MUAPDE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 05/11/2007   AUTEUR VIVAN L.VIVAN 
+C MODIF ALGORITH  DATE 16/11/2010   AUTEUR AUDEBERT S.AUDEBERT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -43,7 +43,7 @@ C IN  : NBMODE : NOMBRE DE MODES
 C IN  : ID     : LA DIRECTION DE CALCUL
 C IN  : VECMOD : VECTEUR DES DEFORMEES MODALES
 C IN  : PARMOD : VECTEUR DES PARAMETRES MODAUX
-C IN  : ASSPEC : VECTEUR DES ASYMPTOTES DES SPECTRES
+C IN  : SPECTR : TABLEAU DES VALEURS DU SPECTRE
 C IN  : NOMSUP : VECTEUR DES NOMS DES SUPPORTS
 C IN  : REASUP : VECTEUR DES REACTIONS MODALES AUX SUPPORTS
 C OUT : REPDIR : VECTEUR DES RECOMBINAISONS MODALES
@@ -65,6 +65,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON  /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER       IBID, IM, IN, IORDR, IRET, IS, JMOD, JVALE, NBTROU
+      INTEGER       IND
       REAL*8        R8B, GAMMA0, RNI, UN, XXX
       COMPLEX*16    CBID
       CHARACTER*8   K8B, NOEU, CMP, NOMCMD, NOMCMP(3)
@@ -105,7 +106,8 @@ C           --- DEFORMEE STATIQUE ---
               CALL JEVEUO(CHEXTR//'.CELV','L',JVALE)
             END IF
 C
-            GAMMA0 = ASSPEC(1,ID)
+            IND = ID + 3*(NBMODE-1)
+            GAMMA0 = SPECTR(IND)
             DO 34 IN = 1,NEQ
                XXX = GAMMA0 * ( ZR(JVALE+IN-1) - ZR(JMOD+IN-1) )
                REPDIR(NBSUP,IN,ID) = REPDIR(NBSUP,IN,ID) + XXX*XXX
@@ -117,7 +119,8 @@ C
             DO 40 IS = 1,NSUPP(ID)
                NOEU   = NOMSUP(IS,ID)
                MONACC = NOEU//CMP
-               GAMMA0 = ASSPEC(IS,ID)
+               IND = ID + 3*(NBMODE-1) + 3*NBMODE*(IS-1)
+               GAMMA0 = SPECTR(IND)
                CALL RSORAC(PSMO,'NOEUD_CMP',IBID,R8B,MONACC,CBID,R8B,
      +                                              K8B,IORDR,1,NBTROU)
                CALL RSEXCH(PSMO,NOMSY,IORDR,CHEXTR,IRET)

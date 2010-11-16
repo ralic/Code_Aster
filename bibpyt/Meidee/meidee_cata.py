@@ -1,4 +1,4 @@
-#@ MODIF meidee_cata Meidee  DATE 12/07/2010   AUTEUR BERARD A.BERARD 
+#@ MODIF meidee_cata Meidee  DATE 16/11/2010   AUTEUR BODEL C.BODEL 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -58,14 +58,41 @@ class Resultat:
         self.cara_mod = None
 
 
+    def get_modele(self):
+        """Recherche le modele associe au resultat. Routine generique pour les dyna_harmo et mode_meca"""
+        if not self.modele:
+            if aster.jeveux_exists(self.nom.ljust(19)+'.NOVA'):
+                iret,ibid,modele_name = aster.dismoi('F','MODELE',self.nom,'RESULTAT')
+                modele_name=modele_name.rstrip()
+                if modele_name[0:1] != "#" :
+                    self.modele_name = modele_name
+                    self.modele = self.objects.modeles[self.modele_name]
+                    return
+
+        # TODO : si cela ne marche pas, passer par les matrices
+
+        # Si cela ne marche pas, on passe par le maillage
+        if not self.modele:
+            self.get_maillage()
+            for m, _mod in self.objects.modeles.items():
+                if not _mod.maya_name:
+                    _mod.get_maillage()
+                if _mod.maya_name == self.maya_name:
+                    self.modele_name = m
+                    self.modele = _mod
+
+        if not self.modele:
+            self.mess.disp_mess("On ne trouve pas le modele associe au resultat " + self.nom)
+            UTMESS('A','MEIDEE0_8',valk=(self.nom))
+
 
 
 class ModeMeca(Resultat):
     """!Gestion des sd_resultat d'aster
 
-    Permet de conserver une référence sur un objet aster sd_resultat
-    et permet aussi de récupérer facilement les concepts aster associés
-    tels le modèle, le maillage, la numérotation, matrices de masse et raideur
+    Permet de conserver une reference sur un objet aster sd_resultat
+    et permet aussi de recuperer facilement les concepts aster associes
+    tels le modele, le maillage, la numerotation, matrices de masse et raideur
     """
     def __init__(self,
                  objects   = None,    # macro MeideeObjects parente
@@ -174,7 +201,7 @@ class ModeMeca(Resultat):
             UTMESS('A','MEIDEE0_8',valk=(self.nom))
 
     def show_linked_concepts(self):
-        """!Affichage du concept résultats et des concepts liés"""
+        """!Affichage du concept resultats et des concepts lies"""
         self.mess.disp_mess( ( self.nom + " : " ) )
         self.mess.disp_mess( ( ".modele" + self.modele_name ) )
         self.mess.disp_mess( ( ".maillage" +  self.maya_name ) )
@@ -203,7 +230,7 @@ class ModeMeca(Resultat):
 
         # Rangement des donnees modales selon le type : statique ou dynamique
         # Si une donnee est incompatible avec le type (exemple : la frequence d'un mode statique), on remplit par None
-        #XXX depuis issue15113, le "if/else" n'est peut-etre plus nécessaire.
+        # TODO : depuis issue15113, le "if/else" n'est peut-etre plus necessaire.
         for ind_ordr in range(len(nume_ordr)):
             liste = ['FREQ','AMOR_REDUIT','AMOR_GENE','RIGI_GENE','MASS_GENE']
             if resu_stat[ind_ordr] is not None: # mode statique
@@ -217,9 +244,6 @@ class ModeMeca(Resultat):
 
         self.cara_mod = cara_mod
         return cara_mod
-
-            
-            
 
     def extr_matr(self, extract_ddl):
         """ Extrait les champs de deformees contenus dans le resultat"""
@@ -263,8 +287,8 @@ class ModeMeca(Resultat):
             if tach[0].strip():
                 self.nom_cham = desc[ind_cham].strip()
                 return
-        # cette méthode sert a PROJ_MESUR_MODAL dans MACRO_EXPANS : on ne garde
-        # donc qu'un seul nom symbolique. Par ordre décroissant de priorité :
+        # cette methode sert a PROJ_MESUR_MODAL dans MACRO_EXPANS : on ne garde
+        # donc qu'un seul nom symbolique. Par ordre decroissant de priorite :
         # 'DEPL', 'VITE', 'ACCE', etc...
 
 
@@ -305,19 +329,6 @@ class DynaHarmo(Resultat):
                          self.obj.LIST_VARI_ACCES()['FREQ'])
         return vari_acces
 
-    def get_modele(self):
-        """ Recherche du modele associe au resultat harmonique"""
-        if not self.modele:
-          if aster.getvectjev(self.nom.ljust(19) + '.MODL') :
-            self.modele_name = aster.getvectjev(self.nom.ljust(19) + '.MODL')[0].strip()
-            if len(self.modele_name) > 0:
-                self.modele = self.objects.modeles[self.modele_name]
-
-        # TODO : cas ou le resultat dyn n'a pas ete cree avec l'info sur
-        # le modele (exemple : LIRE_RESU, avec mot-cle MAILLAGE). Dans ce cas
-        # il faut aller chercher la nom du maillage dans
-        # 'nom      .00X.000001.REFE', et aller chercher le modele avec le nom
-        # du maillage.
 
     def get_maillage(self):
         desc = self.obj.DESC.get()
@@ -332,10 +343,10 @@ class DynaHarmo(Resultat):
                self.maya = self.objects.maillages[self.maya_name]
 
     def get_nume(self):
-        """ Recherche d'un nume_ddl. Le pb est qu'il n'est pas nécessaire
+        """ Recherche d'un nume_ddl. Le pb est qu'il n'est pas necessaire
             d'avoir un nume_ddl pour faire un dyna_harmo. On cherche donc
-            le maillage associé au resultat et on regarde quel nume
-            possède ce meme maillage"""
+            le maillage associe au resultat et on regarde quel nume
+            possede ce meme maillage"""
 
         self.get_maillage()
         for nume in self.objects.nume_ddl.keys():
@@ -356,11 +367,26 @@ class DynaHarmo(Resultat):
             if tach[0].strip():
                 self.nom_cham = desc[ind_cham].strip()
                 return self.nom_cham
-        # cette méthode sert a PROJ_MESU_MODAL dans MACRO_EXPANS : on ne garde
-        # donc qu'un seul nom symbolique. Par ordre décroissant de priorité :
+        # cette methode sert a PROJ_MESU_MODAL dans MACRO_EXPANS : on ne garde
+        # donc qu'un seul nom symbolique. Par ordre decroissant de priorite :
         # 'DEPL', 'VITE', 'ACCE', etc...
             
-        
+    def get_modes_data(self):
+        """ retourne pour tout type de mode_meca les caras
+            dynamiques (frequences, amor...) et les nom_cmp pour
+            les modes statiques quand ils le sont"""
+        cara_mod = {'NUME_ORDRE':[],
+                    'FREQ':[],
+                    'NOEUD_CMP':[],
+                    }
+
+        cara_mod['NUME_ORDRE'] = self.obj.LIST_PARA()['NUME_ORDRE']
+        cara_mod['FREQ'] = self.obj.LIST_PARA()['FREQ']
+        cara_mod['NOEUD_CMP'] = [None]*len(cara_mod['FREQ'])
+
+        self.cara_mod = cara_mod
+        return cara_mod
+       
 
 
 #-----------------------------------------------------------------------------------------
@@ -422,14 +448,14 @@ class InterSpectre:
     """!Gestion des concepts de type table interspectrale
 
     Regroupe les concepts aster de type table interspectrale :
-    - Différencie les tabl_instp des autres tables tabl_sdaster,
+    - Differencie les tabl_instp des autres tables tabl_sdaster,
     - Extrait les tabl_intsp sous forme d'une matrice python interspectrale
-    - Crée un lien entre les numérotations des ddl de cette matrice
-      avec les numérotations d'un modèle EF. ex : la ligne/colonne 3 de la
-      matrice interspectrale correspond au noeud 1DZ du modèle
-    - Crée une table inter-spectrale sd_aster à partir d'une matrice python
-         - Crée une table inter-spectrale sd_aster à partir d'une matrice python
-        On peut créer une table avec le nom, la table format aster (obj_ast) ou la matrice
+    - Cree un lien entre les numerotations des ddl de cette matrice
+      avec les numerotations d'un modele EF. ex : la ligne/colonne 3 de la
+      matrice interspectrale correspond au noeud 1DZ du modele
+    - Cree une table inter-spectrale sd_aster a partir d'une matrice python
+         - Cree une table inter-spectrale sd_aster a partir d'une matrice python
+        On peut creer une table avec le nom, la table format aster (obj_ast) ou la matrice
         format python (mat)
     """
     def __init__(self,
@@ -441,10 +467,10 @@ class InterSpectre:
                  var_opt    = None
                  ):
         self.nom = nom.strip()                # nom aster de la sd
-        self.obj = obj_ast                    # objet aster (à remplir ou à fabriquer)
+        self.obj = obj_ast                    # objet aster (a remplir ou a fabriquer)
         self.matr_inte_spec = mat             # matrice inter-spectrale format python
         self.intsp = 0                        # vaut 1 si la table est un intsp, 0 sinon
-        self.var_opt(var_opt)                 # definit self.opt : vaut 1 si les modeles sont définis
+        self.var_opt(var_opt)                 # definit self.opt : vaut 1 si les modeles sont definis
         self.f = frequences
         self.resu_name = ""
         self.resu = None
@@ -467,15 +493,6 @@ class InterSpectre:
             self.extr_freq()
         self.intsp = 1
 
-#        try:
-#            if len(self.f) == 0:
-#                self.extr_freq()
-#            self.intsp = 1
-#
-#        except KeyError:
-#            print "test NOOK"
-#            # Cas où la table_sdaster n'est pas une tabl_intsp
-#            #pass # TODO : faire en sorte que cette table ne soit pas visible
 
     def make_inte_spec(self, titre, paras_out):
         """
@@ -512,7 +529,7 @@ class InterSpectre:
         mcfact.append(_F(PARA='OPTION'      ,LISTE_K=('TOUT',) ,NUME_LIGN=(1,)))
         mcfact.append(_F(PARA='DIMENSION'   ,LISTE_I=(dim,)    ,NUME_LIGN=(1,)))
         if isinstance(self.resu, Resultat):
-            # Si on associe l'inter-spectre à un résultat,
+            # Si on associe l'inter-spectre a un resultat,
             # on range les fonctions par rapport aux noeuds et composantes
             if not self.nume_phy:
                 self.nume_phy, self.nume_mat, bid = nume_ddl_phy(self.resu)
@@ -543,11 +560,11 @@ class InterSpectre:
                             )
 
     def def_inte_spec(self, intsp):
-        """ Associe une table intsp aster à l'instance de InterSpectre"""
+        """ Associe une table intsp aster a l'instance de InterSpectre"""
         self.obj = intsp
 
     def def_nom(self, nom):
-        """ Associe un nom (self.nom) à l'InterSpectre"""
+        """ Associe un nom (self.nom) a l'InterSpectre"""
         self.nom = nom
 
     def var_opt(self, opt):
@@ -564,7 +581,7 @@ class InterSpectre:
         """Lie l'inter-spectre au concept mode_meca OBS. Permet de lier les
         lignes et colonnes de l'inter-spectre aux DDL des deformees modales
         et de tout ranger dans le bon ordre. Si l'inter-spectre est defini
-        avec des numeros d'ordre, alors on suppose qu'ils sont rangés dans le bon
+        avec des numeros d'ordre, alors on suppose qu'ils sont ranges dans le bon
         ordre.
         """
         self.resu = resu
@@ -608,8 +625,9 @@ class InterSpectre:
                 coupl_ddl.append( (noeudi[ind].split()[0] + '_' + cmpi[ind].split()[0],
                                    noeudj[ind].split()[0] + '_' + cmpj[ind].split()[0]) )
             isnume = 1
+            
         except KeyError:
-            # l'inter-spectre n'est défini qu'avec des numéros d'ordre indépendants du modèle
+            # l'inter-spectre n'est defini qu'avec des numeros d'ordre independants du modele
             numi  = tabl_py['NUME_ORDRE_I'].values()['NUME_ORDRE_I']
             numj  = tabl_py['NUME_ORDRE_J'].values()['NUME_ORDRE_J']
             coupl_ddl.append((numi,numj))
@@ -633,14 +651,13 @@ class InterSpectre:
                 DETRUIRE( CONCEPT = _F( NOM = __FONC ),INFO=1 )
                 ind_fonc = ind_fonc + 1
 
-        # Rangement dans l'ordre des fonctions (par rapport à la numérotation du self.resu)
+        # Rangement dans l'ordre des fonctions (par rapport a la numerotation du self.resu)
         nume = self.nume_phy
         for ind_coupl in range(len(coupl_ddl)):
             try:
                 ind_l = nume.index(coupl_ddl[ind_coupl][0])
                 ind_c = nume.index(coupl_ddl[ind_coupl][1])
             except ValueError:
-
                 raise TypeError
             for ind_freq in range(nb_freq):
                 self.matr_inte_spec[ind_freq,ind_l,ind_c] = fonc_py[ind_coupl].vale_y[ind_freq]
@@ -650,8 +667,8 @@ class InterSpectre:
 
 
     def extr_freq(self):
-        """Extraction des fréquences d'étude dans la tabl_intsp qui contient
-        les inter-spectres mesurés"""
+        """Extraction des frequences d'etude dans la tabl_intsp qui contient
+        les inter-spectres mesures"""
         from Cata.cata import RECU_FONCTION
         from Cata.cata import DETRUIRE
         tabl_py=self.obj.EXTR_TABLE()
@@ -672,14 +689,14 @@ class Tempo:
     """!Gestion des concepts de type table_fonction contenant des temporels
 
     Regroupe les concepts aster de type table_fonction :
-    - Différencie les tabl_fonc des autres tables tabl_sdaster,
+    - Differencie les tabl_fonc des autres tables tabl_sdaster,
     - Extrait les tabl_fonc sous forme d'une matrice python de temporels
-    - Crée un lien entre les numérotations des ddl de cette matrice
-      avec les numérotations d'un modèle EF. ex : la ligne/colonne 3 de la
-      matrice interspectrale correspond au noeud 1DZ du modèle
-#    - Crée une table inter-spectrale sd_aster à partir d'une matrice python
-#         - Crée une table inter-spectrale sd_aster à partir d'une matrice python
-#        On peut créer une table avec le nom, la table format aster (obj_ast) ou la matrice
+    - Cree un lien entre les numerotations des ddl de cette matrice
+      avec les numerotations d'un modele EF. ex : la ligne/colonne 3 de la
+      matrice interspectrale correspond au noeud 1DZ du modele
+#    - Cree une table inter-spectrale sd_aster a partir d'une matrice python
+#         - Cree une table inter-spectrale sd_aster a partir d'une matrice python
+#        On peut creer une table avec le nom, la table format aster (obj_ast) ou la matrice
 #        format python (mat)
     """
     def __init__(self,
@@ -728,11 +745,11 @@ class Tempo:
 
 
     def def_tempo(self, tempo):
-        """ Associe une table intsp aster à l'instance de InterSpectre"""
+        """ Associe une table intsp aster a l'instance de InterSpectre"""
         self.obj = tempo
 
     def def_nom(self, nom):
-        """ Associe un nom (self.nom) à l'InterSpectre"""
+        """ Associe un nom (self.nom) a l'InterSpectre"""
         self.nom = nom
 
     def var_opt(self, opt):
@@ -749,7 +766,7 @@ class Tempo:
         """Lie le temporel au concept mode_meca OBS. Permet de lier les
         catalogues de temporels aux DDL des deformees modales
         et de tout ranger dans le bon ordre. Si les temporels sont definis
-        avec des numeros d'ordre, alors on suppose qu'ils sont rangés dans le bon
+        avec des numeros d'ordre, alors on suppose qu'ils sont ranges dans le bon
         ordre.
         """
         self.resu = resu
@@ -770,8 +787,8 @@ class Tempo:
 
 
     def extr_temps(self):
-        """Extraction des instants d'étude dans la Tempo qui contient
-        les temporels mesurés"""
+        """Extraction des instants d'etude dans la Tempo qui contient
+        les temporels mesures"""
         from Cata.cata import RECU_FONCTION
         from Cata.cata import DETRUIRE
         tabl_py=self.obj.EXTR_TABLE()
@@ -820,7 +837,10 @@ class Modele:
 
 
     def get_nume(self):
-        """Recherche des nume_ddl qui depend de ce modele
+        """Recherche des nume_ddl qui dependent de ce modele
+           NB : attention, si plusieurs nume_ddl en dependent, seul le premier
+           deviendra self.nume_ddl. C'est utile pour les modeles experimentaux
+           pour lesquels le ddl est pipo.
         """
         if self.nume_ddl == None:
             for nume_name, nume in self.objects.nume_ddl.items():
@@ -901,10 +921,14 @@ class MeideeObjects:
             elif isinstance( v, cham_mater ):
                 self.cham_mater[i] = v
             elif isinstance( v, table_sdaster ):
-                try : # cas d'une table frequentielle (inter-spectre)
-                    self.inter_spec[i] = InterSpectre(nom = i, obj_ast = v, mess = self.mess)
-                except KeyError : # cas d'une table temporelle
+                # test du type de table :
+                typ_table = self.test_table(v)
+                if typ_table == 'tempo':
                     self.list_tempo[i] = Tempo(nom = i, obj_ast = v, mess = self.mess)
+                elif typ_table == 'intespec':
+                    self.inter_spec[i] = InterSpectre(nom = i, obj_ast = v, mess = self.mess)
+                else:
+                    pass
             elif isinstance( v, nume_ddl_sdaster ):
                 self.nume_ddl[i] = v
 
@@ -950,10 +974,14 @@ class MeideeObjects:
             self.dyna_harmo[name].get_nume()
             self.dyna_harmo[name].get_maillage()
         if isinstance( obj, table_sdaster ):
-            try :
-                self.inter_spec[name] = InterSpectre(nom = name, obj_ast = obj, mess = self.mess)
-            except KeyError :
+            # test du type de table :
+            typ_table = self.test_table(obj)
+            if typ_table == 'tempo':
                 self.list_tempo[name] = Tempo(nom = name, obj_ast = obj, mess = self.mess)
+            elif typ_table == 'intespec':
+                self.inter_spec[name] = InterSpectre(nom = name, obj_ast = obj, mess = self.mess)
+            else:
+                pass
         self.resultats = self.mode_meca.copy()
         self.resultats.update(self.dyna_harmo) # dict ou on met toutes les sd resu
 
@@ -968,6 +996,27 @@ class MeideeObjects:
             v.show_linked_concepts()
 
 
+    def test_table(self, obj):
+        """ test si la table est composee de fonctions et si ces
+            fonctions sont temporelles ou frequentielles"""
+        from Cata.cata import RECU_FONCTION
+        table_py = obj.EXTR_TABLE()
+        paras = table_py.para
+        if 'FONCTION_C' in paras: type_fonc = 'FONCTION_C'
+        elif 'FONCTION' in paras: type_fonc = 'FONCTION'
+        else:return
+        toto = table_py[type_fonc]
+        try:
+            nom_fonc = toto.values()[type_fonc][0]
+        except IndexError:
+            return # deja vu : des tables avec lacolonne fonction vide...
+        __FONC = RECU_FONCTION(TABLE = obj, NOM_PARA_TABL = type_fonc,
+                               FILTRE = _F(NOM_PARA=type_fonc,VALE_K=nom_fonc))
+        
+        nom_para = __FONC.Parametres()['NOM_PARA']
+        if nom_para == 'INST': return 'tempo'
+        elif nom_para == 'FREQ': return 'intespec'
+        else: return
 
     def get_groupno(self):
         """!essaye de relier les concepts entre eux"""
@@ -1054,8 +1103,8 @@ class MeideeObjects:
         return self.cham_mater[name]
 
     def register_weakref(self,name):
-        """ garde les NOMS des concepts destinés à être supprimés à chaque
-            mise à jour de meidee_objects """
+        """ garde les NOMS des concepts destines a être supprimes a chaque
+            mise a jour de CalcEssaiObjects """
         
         self.weakref.append(name)
 
@@ -1081,7 +1130,7 @@ def compt_cmp(champ, ddl_test):
     """! Permet de compter le nombre de composantes
     d'un champ aux noeuds.
 
-    :param ddl_test: un degré de liberté existant pour le champ."""
+    :param ddl_test: un degre de liberte existant pour le champ."""
 
     nbval = len(aster.getvectjev(champ.nom.ljust(19) + '.VALE'))
     champy  = champ.EXTR_COMP(ddl_test,[],1)
@@ -1182,7 +1231,7 @@ def nume_ddl_phy(resu, extract_ddl):
 
 def nume_ddl_gene(resu, extract_mode = None):
     """
-    Crée le meme vecteur de numérotation avec une numérotation par modes.
+    Cree le meme vecteur de numerotation avec une numerotation par modes.
     Retourne "MO"+#mode
     """
     modes = []
@@ -1232,7 +1281,7 @@ def find_no(maya,mcsimp):
 
 
 def CreaTable(mcfact, titre, paras_out, mess):
-    """!Sortie des données sous forme de sd_table"""
+    """!Sortie des donnees sous forme de sd_table"""
     from Cata.cata import CREA_TABLE
     TablesOut = paras_out["TablesOut"]
     TypeTable = paras_out["TypeTables"]
@@ -1242,7 +1291,7 @@ def CreaTable(mcfact, titre, paras_out, mess):
 
     if paras_out["ComptTable"] > len(paras_out["TablesOut"]):
         mess.disp_mess("!! Il n'y a plus de noms de concepts     !!")
-        mess.disp_mess("!! disponibles pour sortir des résultats !!")
+        mess.disp_mess("!! disponibles pour sortir des resultats !!")
         mess.disp_mess(" ")
         return
 
@@ -1252,7 +1301,7 @@ def CreaTable(mcfact, titre, paras_out, mess):
                        TITRE = titre,
                        TYPE_TABLE=TypeTable)
 
-    mess.disp_mess("Les résultats sont sauvés dans la table "
+    mess.disp_mess("Les resultats sont sauves dans la table "
                    + TablesOut[compteur].nom)
     mess.disp_mess("Cette table porte pour titre : " + titre)
     mess.disp_mess(" ")

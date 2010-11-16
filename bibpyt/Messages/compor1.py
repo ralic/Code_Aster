@@ -1,4 +1,4 @@
-#@ MODIF compor1 Messages  DATE 29/09/2010   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF compor1 Messages  DATE 15/11/2010   AUTEUR TARDIEU N.TARDIEU 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -96,6 +96,11 @@ localement via ITER_INTE_PAS.
 
 14: _("""
  HUJTID :: erreur dans le calcul de la matrice tangente
+"""),
+
+15: _("""
+ Pour les poutres multifibres, l'utilisation de lois de comportement via 
+ ALGO_1D='DEBORST' nécessite d'avoir un seul matériau par poutre!
 """),
 
 16 : _("""

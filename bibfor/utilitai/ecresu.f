@@ -5,7 +5,7 @@
       CHARACTER*19 VECTOT
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 14/12/2009   AUTEUR DEVESA G.DEVESA 
+C MODIF UTILITAI  DATE 15/11/2010   AUTEUR GREFFET N.GREFFET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -57,15 +57,22 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER      NBORDR,LTPS,JORDR,IBID,I,LFREQ,NBNOEU,NBCMP,LBIG,II
       INTEGER      LTPS2,IEQ,IER,NEQ,LVAL,LVALS,JDEP,JREFE,IRET,NBVA2
-      INTEGER      IRES,N1
-      REAL*8       R8B,R1
+      INTEGER      NBSAUV,IARCHI,ISTO1,ISTO2,ISTO3,JDEPS,JVITS,JACCS
+      INTEGER      JPASS,JORD,JINST,JFCHO,JDCHO,JVCHO,JICHO,JREDC,JREDD
+      INTEGER      IRES,N1,JDESC,NBMODE,LVALV,LVALA,J,LV1,LV2,LV3
+      INTEGER      JREFAM,JVINT
+      REAL*8       R8B,R1,RBID
+      REAL*8       DT
       COMPLEX*16   C16B
+      LOGICAL      LPSTO
       CHARACTER*1  K1B,KTYP
       CHARACTER*4  GRANDE
-      CHARACTER*8  K8B,RAIDE
+      CHARACTER*8  K8B
+      CHARACTER*8  MASGEN,RIGGEN,AMOGEN,BASEMO
       CHARACTER*16 K16B,TYPOUT
       CHARACTER*19 K19B,CHDEP,CHDEPS,KREFE
       CHARACTER*24 TYPRES,CHDEP2,REFE
+      CHARACTER*24 RAIDE
 C
       DATA  REFE  /'                   .REFD'/
 C     ------------------------------------------------------------------
@@ -78,36 +85,51 @@ C   Recuperation type RESU
       IF (TYPRES(1:10).EQ.'DYNA_HARMO') THEN
          TYPOUT='DYNA_TRANS'
          NBVA2=NBVA
-      ELSEIF (TYPRES(1:10).EQ.'HARM_GENE') THEN
+      ELSEIF (TYPRES(1:9).EQ.'HARM_GENE') THEN
          TYPOUT='TRAN_GENE'
          NBVA2=NBVA
        ELSEIF (TYPRES(1:10).EQ.'DYNA_TRANS') THEN
          TYPOUT='DYNA_HARMO'
          NBVA2=2*NBVA
-      ELSEIF (TYPRES(1:10).EQ.'TRAN_GENE') THEN
+      ELSEIF (TYPRES(1:9).EQ.'TRAN_GENE') THEN
          TYPOUT='HARM_GENE'
          NBVA2=2*NBVA
+            CALL JEVEUO(RESIN(1:8)//'           .REFD','L',JREFE)
+            RIGGEN = ZK24(JREFE)
+            MASGEN = ZK24(JREFE+1)
+            AMOGEN = ZK24(JREFE+2)
       ENDIF
 C
 C  Creation objet de stockage en LTPS pour les valeurs d'instants
 C
 C  Champs
-      CALL RSEXCH(RESIN,GRANDE,1,CHDEP,IRET)
-      CALL JEVEUO(CHDEP//'.VALE','L',LVAL)
+      IF ( TYPRES(1:9).NE.'TRAN_GENE') THEN
+         CALL RSEXCH(RESIN,GRANDE,1,CHDEP,IRET)
+         CALL JEVEUO(CHDEP//'.VALE','L',LVAL)
 C  Nombre d'equations : NEQ
-      CHDEP2 = CHDEP(1:19)//'.VALE'
-      CALL JELIRA(CHDEP2,'LONMAX',NEQ,K1B)
+         CHDEP2 = CHDEP(1:19)//'.VALE'
+         CALL JELIRA(CHDEP2,'LONMAX',NEQ,K1B)
+         NBORDR = NBVA
+      ELSE
+         CALL JELIRA(RESIN(1:19)//'.ORDR','LONUTI',NBORDR,K1B)
+         CALL JEVEUO(RESIN(1:19)//'.'//GRANDE ,'L',LVAL)
+         CHDEP2 = RESIN(1:19)//'.'//GRANDE
+         CALL JELIRA(CHDEP2,'LONMAX',NEQ,K1B)
+         NEQ = NEQ / NBORDR         
+      ENDIF
       CALL WKVECT('&&ECRESU.PARAMACC','V V R',NBVA,LTPS)
 C
 C  Creation objet resultat en sortie si non existence
 C
-      NBORDR = NBVA
+C      NBORDR = NBVA
       CALL JEEXIN ( RESOU(1:8)//'           .DESC', IRES )
-      IF ( IRES.EQ.0 ) CALL RSCRSD('G',RESOU,TYPOUT,NBORDR)
+      IF ( (IRES.EQ.0).AND.(TYPOUT(1:9).NE.'TRAN_GENE')) 
+     &     CALL RSCRSD('G',RESOU,TYPOUT,NBORDR)
 C
       REFE(1:8) = RESIN
-      CALL JEVEUO (REFE, 'L', JREFE )
-      RAIDE = ZK24(JREFE+2)
+      CALL JEVEUO(REFE, 'L', JREFE )
+      RAIDE = ZK24(JREFE)
+
 C
       IF ( (TYPOUT(1:10).EQ.'DYNA_HARMO').OR.
      &     (TYPOUT(1:9).EQ.'HARM_GENE') ) THEN
@@ -119,15 +141,19 @@ C  Temps
             CALL RSADPA(RESOU,'E',1,'FREQ',I,0,LTPS2,K8B)
             ZR(LTPS2) = ZR(LTPS+I-1)
             CALL RSEXCH (RESOU,GRANDE,I,CHDEPS,IRET)
-            CALL VTCREM (CHDEPS, RAIDE, 'G', 'C' )
+            IF (TYPOUT(1:10).EQ.'DYNA_HARMO') THEN
+              CALL VTCREM (CHDEPS, RAIDE, 'G', 'C' )
+            ELSE
+               CALL VTCREM (CHDEPS, MASGEN, 'G', 'C' )
+               CALL JEECRA(CHDEPS//'.DESC','DOCU',0,'VGEN')
+            ENDIF
             CALL JEVEUO(CHDEPS//'.VALE', 'E', LVALS )
             DO 30 IEQ = 1,NEQ
                ZC(LVALS+IEQ-1) = ZC(NPARA+NBVA*(IEQ-1)+I-1)
  30         CONTINUE
             CALL RSNOCH(RESOU,GRANDE,I,' ')
  20      CONTINUE
-      ELSEIF ( (TYPOUT(1:10).EQ.'DYNA_TRANS').OR.
-     &         (TYPOUT(1:9).EQ.'TRAN_GENE') ) THEN
+      ELSEIF ( TYPOUT(1:10).EQ.'DYNA_TRANS' ) THEN
          DO  100 I = 1,NBVA
             ZR(LTPS+I-1) =  ZR(NPARA+(NEQ*NBVA2)+I-1)
  100     CONTINUE
@@ -148,9 +174,89 @@ C  Temps
  300        CONTINUE
             CALL RSNOCH(RESOU,GRANDE,(I-1),' ')
  200     CONTINUE
+      ELSEIF ( TYPOUT(1:9).EQ.'TRAN_GENE' ) THEN
+         IF ( IRES .EQ. 0 ) THEN
+            DO  400 I = 1,NBVA
+               ZR(LTPS+I-1) =  ZR(NPARA+(NEQ*NBVA2)+I-1)
+ 400        CONTINUE
+            ISTO1 = 0
+            ISTO2 = 0
+            ISTO3 = 0
+            LPSTO = .FALSE.
+            JVINT = 1
+ 
+C         CALL MDGENE(BASEMO,NBMODE,K14B,MASGEN,RIGGEN,AMOGEN,NEXCIT,
+C     &            JVEC,IRET)
+C         IF (IRET.NE.0) CALL U2MESS('F','ALGORITH5_24')
+         
+            CALL JEVEUO(RESIN(1:8)//'           .REFD','L',JREFE)
+            RIGGEN = ZK24(JREFE)(1:8)
+            MASGEN = ZK24(JREFE+1)(1:8)
+            AMOGEN = ZK24(JREFE+2)(1:8)
+            NBSAUV = NBORDR
+            DT = ZR(LTPS+1) - ZR(LTPS)
+            CALL JEVEUO(MASGEN(1:8)//'           .DESC','L',JDESC)
+            NBMODE = ZI(JDESC+1)
+            CALL JEVEUO(MASGEN(1:8)//'           .REFA','L',JREFAM)
+            BASEMO = ZK24(JREFAM-1+1)(1:8)
+C Bizarre !!!!
+C            NBSAUV = NBSAUV + 1
+
+         
+            K8B = '        '
+            CALL MDALLO(RESOU(1:8),BASEMO,MASGEN,RIGGEN,AMOGEN,NBMODE,
+     &            DT,NBSAUV,0,K8B,K8B,0,K8B,0,
+     &            JDEPS,JVITS,JACCS,JPASS,JORDR,JINST,JFCHO,JDCHO,JVCHO,
+     &            JICHO,JREDC,JREDD,.FALSE.,'EULER   ')
+            CALL WKVECT('&&ECRESU.DEPL','V V R',NEQ,LVALS)
+            CALL WKVECT('&&ECRESU.VITE','V V R',NEQ,LVALV)
+            CALL WKVECT('&&ECRESU.ACCE','V V R',NEQ,LVALA)
+            LV1 = LVALS
+            LV2 = LVALV
+            LV3 = LVALA
+            IF (GRANDE.EQ.'VITE') THEN
+               LV1 = LVALV
+               LV2 = LVALS
+            ELSEIF (GRANDE.EQ.'ACCE') THEN
+               LV1 = LVALA
+               LV3 = LVALS
+            ENDIF
+         
+C            DO 500 I = 1,NBORDR+1
+            DO 500 I = 1,NBORDR
+               J = I - 1
+               IARCHI = J
+               ISTO1 = J
+               DO 600 IEQ = 1,NEQ
+                  R1 = ZR(NPARA+NBVA*(IEQ-1)+I-1)
+                  ZR(LV1+IEQ-1) = R1
+                  ZR(LV2+IEQ-1)=0.D0
+                  ZR(LV3+IEQ-1)=0.D0
+ 600           CONTINUE
+           
+               CALL MDARCH(ISTO1,IARCHI,ZR(LTPS+I-1),DT,NEQ,ZR(LVALS),
+     &            ZR(LVALV),ZR(LVALA),
+     &            ISTO2,0,0.D0,0, ISTO3,0,0.D0,
+     &            0, ZR(JDEPS),ZR(JVITS),ZR(JACCS),RBID,LPSTO,ZI(JORDR),
+     &            ZR(JINST),ZR(JFCHO),ZR(JDCHO),ZR(JVCHO),ZI(JICHO),
+     &            ZR(JVINT),ZI(JREDC),ZR(JREDD))
+ 500        CONTINUE
+         ELSE
+            CALL JEVEUO(RESOU(1:8)//'           .'//GRANDE ,'E',LVALS)
+            DO 700 I = 1,NBORDR+1
+               J = I - 1
+               IARCHI = J
+               ISTO1 = J
+               DO 800 IEQ = 1,NEQ
+                  R1 = ZR(NPARA+NBVA*(IEQ-1)+I-1)
+                  ZR(LVALS+IEQ-1) = R1
+ 800           CONTINUE
+ 700        CONTINUE
+         
+         ENDIF
       ENDIF
 C  On finalise le RESOU
-      IF ( IRES.EQ.0 ) THEN
+      IF ( (IRES.EQ.0) .AND. (TYPOUT(1:9).NE.'TRAN_GENE') ) THEN
          KREFE = RESOU(1:8)
          CALL WKVECT(KREFE//'.REFD','G V K24',7,JORDR)
          ZK24(JORDR) = ZK24(JREFE)

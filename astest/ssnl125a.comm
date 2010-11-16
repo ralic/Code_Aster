@@ -1,4 +1,4 @@
-# MODIF  DATE 12/04/2010   AUTEUR MICHEL S.MICHEL 
+# MODIF  DATE 15/11/2010   AUTEUR PELLET J.PELLET 
 # TITRE VALIDATION DE LA LOI D ENDOMMAGEMENT FRAGILE
 # ssnl125a.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -54,12 +54,12 @@ DEFI_GROUP(reuse         = MA,
                                NOM = 'NO1',
                                POINT = (0.,ytest1,),
                                RAYON = (1.e-5),
-                               PRECISION = (1.e-5),),    
+                               PRECISION = (1.e-5),),
                             _F(OPTION = 'ENV_SPHERE',
                                NOM = 'NO2',
                                POINT = (0.,ytest2,),
                                RAYON = (1.e-5),
-                               PRECISION = (1.e-5),),    
+                               PRECISION = (1.e-5),),
                             _F(NOM = 'NOTEST',
                                UNION = ('NO1','NO2'),),
 
@@ -73,8 +73,9 @@ DEFI_GROUP(reuse         = MA,
 MO = AFFE_MODELE(MAILLAGE = MA,
                  AFFE     = _F(GROUP_MA     = 'MATIERE',
                                PHENOMENE    = 'MECANIQUE',
-                               MODELISATION = 'AXIS_GRAD_VARI',),)
-                               
+                               MODELISATION = 'AXIS_GRAD_VARI',),
+                 PARTITION=_F(PARALLELISME='MAIL_DISPERSE'))
+
 # -----------------------------------------------------
 #                  PARAMETRES MATERIAU
 # -----------------------------------------------------
@@ -119,8 +120,8 @@ PROFIL = DEFI_FONCTION(NOM_PARA    = 'Y',
                        PROL_DROITE = 'LINEAIRE')
 
 CINE = AFFE_CHAR_MECA_F(MODELE   = MO,
-                        DDL_IMPO = _F(GROUP_NO = 'MATIERE', 
-                                      DX = ZERO, 
+                        DDL_IMPO = _F(GROUP_NO = 'MATIERE',
+                                      DX = ZERO,
                                       DY = PROFIL),)
 
 # -----------------------------------------------------
@@ -131,7 +132,7 @@ EVOL = STAT_NON_LINE(SOLVEUR     = _F(METHODE = 'MUMPS',
                                       PCENT_PIVOT = 300),
                      MODELE      = MO,
                      CHAM_MATER  = CHMAT,
-                     EXCIT       = (_F(CHARGE = CINE, 
+                     EXCIT       = (_F(CHARGE = CINE,
                                       FONC_MULT = RAMPE),),
                      COMP_INCR   = _F(RELATION = 'ENDO_SCALAIRE',
                                      DEFORMATION = 'PETIT'),
@@ -190,9 +191,9 @@ TEST_TABLE(REFERENCE = 'ANALYTIQUE',
            PRECISION = prec,
            TABLE     = RESU,
            NOM_PARA  = 'V1',
-           FILTRE    = (_F(NOM_PARA = 'INST'  , 
+           FILTRE    = (_F(NOM_PARA = 'INST'  ,
                            VALE = eps1),
-                        _F(NOM_PARA = 'COOR_Y', 
+                        _F(NOM_PARA = 'COOR_Y',
                            VALE = ytest1),),)
 
 TEST_TABLE(REFERENCE = 'ANALYTIQUE',
@@ -200,9 +201,9 @@ TEST_TABLE(REFERENCE = 'ANALYTIQUE',
            PRECISION = prec,
            TABLE     = RESU,
            NOM_PARA  = 'V1',
-           FILTRE    = (_F(NOM_PARA = 'INST'  , 
+           FILTRE    = (_F(NOM_PARA = 'INST'  ,
                            VALE = eps1),
-                        _F(NOM_PARA = 'COOR_Y', 
+                        _F(NOM_PARA = 'COOR_Y',
                            VALE = ytest2),),)
 
 TEST_TABLE(REFERENCE = 'ANALYTIQUE',
@@ -210,9 +211,9 @@ TEST_TABLE(REFERENCE = 'ANALYTIQUE',
            PRECISION = prec,
            TABLE     = RESU,
            NOM_PARA  = 'V1',
-           FILTRE    = (_F(NOM_PARA = 'INST'  , 
+           FILTRE    = (_F(NOM_PARA = 'INST'  ,
                            VALE = eps2),
-                        _F(NOM_PARA = 'COOR_Y', 
+                        _F(NOM_PARA = 'COOR_Y',
                            VALE = ytest1),),)
 
 TEST_TABLE(REFERENCE = 'ANALYTIQUE',
@@ -220,9 +221,9 @@ TEST_TABLE(REFERENCE = 'ANALYTIQUE',
            PRECISION = prec,
            TABLE     = RESU,
            NOM_PARA  = 'V1',
-           FILTRE    = (_F(NOM_PARA = 'INST'  , 
+           FILTRE    = (_F(NOM_PARA = 'INST'  ,
                            VALE = eps2),
-                        _F(NOM_PARA = 'COOR_Y', 
+                        _F(NOM_PARA = 'COOR_Y',
                            VALE = ytest2),),)
 
 TEST_TABLE(REFERENCE = 'ANALYTIQUE',
@@ -230,9 +231,9 @@ TEST_TABLE(REFERENCE = 'ANALYTIQUE',
            PRECISION = prec,
            TABLE     = RESU,
            NOM_PARA  = 'V1',
-           FILTRE    = (_F(NOM_PARA = 'INST'  , 
+           FILTRE    = (_F(NOM_PARA = 'INST'  ,
                            VALE = eps3),
-                        _F(NOM_PARA = 'COOR_Y', 
+                        _F(NOM_PARA = 'COOR_Y',
                            VALE = ytest1),),)
 
 TEST_TABLE(REFERENCE = 'ANALYTIQUE',
@@ -240,9 +241,9 @@ TEST_TABLE(REFERENCE = 'ANALYTIQUE',
            PRECISION = prec,
            TABLE     = RESU,
            NOM_PARA  = 'V1',
-           FILTRE    = (_F(NOM_PARA = 'INST'  , 
+           FILTRE    = (_F(NOM_PARA = 'INST'  ,
                            VALE = eps3),
-                        _F(NOM_PARA = 'COOR_Y', 
+                        _F(NOM_PARA = 'COOR_Y',
                            VALE = ytest2),),)
 
 IMPR_TABLE(TABLE = RESU,

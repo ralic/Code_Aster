@@ -3,7 +3,7 @@
      &                  EPS,DEPS,TEMPM,TEMPP,SIGM,VIM,
      &                  OPTION,ANGMAS,SIGP,VIP,DSDE,CODRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 11/10/2010   AUTEUR FLEJOU J-L.FLEJOU 
+C MODIF ELEMENTS  DATE 15/11/2010   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -28,7 +28,7 @@ C  VARIABLE ENTREE/SORTIE
       INTEGER        CODRET,KPG,KSP,MOD,IMATE
       REAL*8         TEMPM,TEMPP,TREF,ANGMAS(3),SIGM(4),EPS(4),DEPS(4)
       REAL*8         VIM(*),VIP(*),SIGP(4),DSDE(6,6),CARCRI(*),LC(1)
-      REAL*8         INSTM,INSTP,EP,EM,ALPHAP,ALPHAM,DEPSTH,ETG
+      REAL*8         INSTM,INSTP,EP,EM,ALPHAP,ALPHAM,DEPSTH,ETG,DEPSM
       CHARACTER*8    TYPMOD(2),NOMPAR
       CHARACTER*2    CODRES
 
@@ -87,15 +87,19 @@ C ---        CARACTERISTIQUES ELASTIQUES A TPLUS
                 DSDE(2,2) = EP
              ELSE IF ((COMPOR(1).EQ.'VMIS_ISOT_LINE') .OR.
      &                (COMPOR(1).EQ.'VMIS_ISOT_TRAC')) THEN
+                CALL VERIFT(FAMI,KPG,1,'T',IMATE,'ELAS',1,DEPSTH,IRET)
+                DEPSM=DEPS(1)-DEPSTH
                 CALL NM1DIS(FAMI,KPG,KSP,IMATE,EM,EP,
-     &               SIGM,DEPS,VIM,OPTION,COMPOR,' ',SIGP(1),VIP,ETG)
+     &               SIGM,DEPSM,VIM,OPTION,COMPOR,' ',SIGP(1),VIP,ETG)
                 DSDE(1,1) = ETG+1.D-6*EP
 C               DSDE(1,1) = ETG
                 DSDE(2,2) = EP
                 SIGP(2)=0.D0
              ELSE IF (COMPOR(1).EQ.'VMIS_CINE_LINE') THEN
+                CALL VERIFT(FAMI,KPG,1,'T',IMATE,'ELAS',1,DEPSTH,IRET)
+                DEPSM=DEPS(1)-DEPSTH
                 CALL NM1DCI(FAMI,KPG,KSP,IMATE,EM,EP,
-     &                  SIGM,DEPS,VIM,OPTION,' ',SIGP(1),VIP,EP)
+     &                  SIGM,DEPSM,VIM,OPTION,' ',SIGP(1),VIP,EP)
                 DSDE(1,1) = ETG
                 DSDE(2,2) = EP
              ELSE

@@ -1,4 +1,4 @@
-#@ MODIF meidee_parametres Meidee  DATE 12/07/2010   AUTEUR BERARD A.BERARD 
+#@ MODIF meidee_parametres Meidee  DATE 16/11/2010   AUTEUR BODEL C.BODEL 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -36,19 +36,18 @@ import time
 
 from Tkinter import Frame, Menubutton, Menu, StringVar, IntVar, BooleanVar, Listbox
 from Tkinter import Scrollbar, Label, Radiobutton, Button, Entry
-from Tkinter import Checkbutton, Canvas
+from Tkinter import Checkbutton, Canvas, Toplevel
 from Tkinter import NORMAL, DISABLED
-from Meidee.meidee_iface import XmgrManager
+from Meidee.meidee_iface import XmgrManager, MyMenu
 
 # teste si pylotage est present pour pouvoir utiliser Salome
 try:
     import pylotage
     __salome__ = True
-    # Lorsque les modifs de meidee_salome_visu seront reportees dans pylotage,
-    # supprimer la ligne suivante:
+    # la ligne suivante fait appel a une surcharge provisoire de pylotage
     from Meidee.meidee_salome_visu import Visu, NODE
-    # et decommenter la ligne suivante:
-    # from pylotage.TOOLS.Visu import Visu, NODE
+
+    from pylotage.TOOLS.Study import StudyManager
 except ImportError:
     __salome__ = False
     Visu = object
@@ -372,7 +371,8 @@ class InterfaceParametres(Frame):
             return MeideeGmsh(self.mess)
         else:
             return MeideeSalome(self.mess, self.machine_name, self.salome_port.get(),
-                                self.mode_distant.get(), self.user.get(), self.protocole.get(), self.protocole_ok)
+                                self.mode_distant.get(), self.user.get(), self.protocole.get(), 
+                                self.protocole_ok, self)
         pass
     
     def get_logiciel_courbes(self):
@@ -382,7 +382,7 @@ class InterfaceParametres(Frame):
         if self.logiciel.get() == "Gmsh/Xmgrace":
             return MeideeXmgrace()
         else:
-            return MeideeSalomeCourbes(self.mess, self.machine_name, self.salome_port.get())
+            return MeideeSalomeCourbes(self.mess, self.machine_name, self.salome_port.get(),self)
         pass
     
     # fonction proxy vers le bon logiciel
@@ -455,8 +455,13 @@ class MeideeLogiciel(object):
         d_resu = self.get_impr_resu_params()
         
         if nume_mode is not None:
-            d_resu['NUME_MODE'] = nume_mode
-        
+            if isinstance(nume_mode[0],str):
+                d_resu = {}
+                d_resu['NOEUD_CMP'] = nume_mode
+                d_resu['NOM_CHAM'] = 'DEPL'
+            elif isinstance(nume_mode[0],int):
+                d_resu['NUME_MODE'] = nume_mode
+
         l_resultat = []
         
         if isinstance(resultat, tuple) or isinstance(resultat, list):
@@ -487,7 +492,7 @@ class MeideeLogiciel(object):
             for i in range(len(resultat)):
                     self.impr_resu(resultat[i], nume_mode)
         else:
-            self.impr_resu(modele, resultat, nume_mode)
+            self.impr_resu(resultat, nume_mode)
         self.libere_fichier()
         term = self.affiche()
         
@@ -538,7 +543,8 @@ class MeideeGmsh(MeideeLogiciel):
 
 # Classe specifique pour la gestion de la visu Salome
 class MeideeSalome(MeideeLogiciel):
-    def __init__(self, mess, machine_name, salome_port, mode_distant, user, protocole, protocole_ok):
+    def __init__(self, mess, machine_name, salome_port, mode_distant,
+                 user, protocole, protocole_ok, ihm_param):
         MeideeLogiciel.__init__(self, mess)
         self.impr_resu_format = "MED"
         self.impr_resu_params = {}
@@ -550,6 +556,7 @@ class MeideeSalome(MeideeLogiciel):
         self.protocole_ok = protocole_ok
         self.dataPresentation = None
         self.theMedFile = None
+        self.ihm_param = ihm_param
 
     def affiche(self, fichier=None):
         if fichier is None:
@@ -559,19 +566,38 @@ class MeideeSalome(MeideeLogiciel):
         working_dir     = os.getcwd()
         self.theMedFile = os.path.join(working_dir, fichier)
         
-        # Par construction du fichier med lors de IMPR_RESU, le fichier med ne contient que les champs qu'on veut afficher
-        # => Pour chaque maillage, on affiche tous les champs a tous les ordres
+        # liste des etudes ouvertes sous le name service donne
+        st_mng = StudyManager(ORBInitRef='NameService=corbaname::%s:%i'%(self.machine_name, self.salome_port),
+                              machineName = self.machine_name)
+        studies = st_mng.getOpenStudies()
         
-        # On affiche les deplacements aux noeuds:
+        self.study_name = None
+        if not studies :
+            # pas d'etudes Salome ouverte : il faut en ouvrir une
+            study = st_mng.getOrCreateStudy('CALC_ESSAI')
+            self.study_name = 'CALC_ESSAI'
+            self.suite()
+        # cas ou une ou plusieurs etudes salome sont ouvertes.
+        if len(studies) == 1:
+            # une seule etude ouverte
+            self.study_name = studies[0]
+            self.suite()
+        else:
+            # plusieurs etudes ouvertes : on ouvre une fenetre pour choisir l'etude a selectionner
+            choix_st = ChoixStudy(self,studies,self.ihm_param)
+            
+    def suite(self):
+
         entity = NODE
-        
+        theDelay = 0
         try:
             salomeVisu = Visu( ORBInitRef='NameService=corbaname::%s:%i'%(self.machine_name, self.salome_port),
-                               studyName = "Meidee",
+                               studyName = self.study_name,
                                machineName = self.machine_name  )
         except:
             self.mess.disp_mess("Impossible de trouver le module VISU de la machine %s sur le port %i" \
                               %(self.machine_name, self.salome_port))
+            self.mess.disp_mess("Conseil : si i existe une cession de Salomé, pensez à activer le modue Visu")
             return
         
         # Transfert vers machine distante
@@ -634,7 +660,7 @@ class MeideeSalome(MeideeLogiciel):
     def transfert_med_file(self):
         
         current_time =  time.strftime("%Y_%m_%d-%H_%M_%S")
-        med_distant = "/tmp/meidee-%s-%s.med"%(self.user, current_time)
+        med_distant = "/tmp/CALC_ESSAI-%s-%s.med"%(self.user, current_time)
         cmd = "%s %s %s@%s:%s"%(self.protocole, self.theMedFile, self.user, self.machine_name, med_distant)
         ret = os.system(cmd)
         if ret != 0:
@@ -708,42 +734,71 @@ class MeideeLogicielCourbes(MeideeLogiciel):
 
 class MeideeSalomeCourbes(MeideeLogicielCourbes):
     
-    def __init__(self, mess, machine_name, salome_port):
+    def __init__(self, mess, machine_name, salome_port, ihm_param):
         self.mess = mess
         self.machine_name = machine_name
         self.salome_port = salome_port
+        self.ihm_param = ihm_param
     
     # l_x: liste des abscisses
     # ll_y: liste de liste des ordonnees (une liste par courbe)
     # l_legende: liste de legendes (une legende par courbe)
-    # Bug en 4.1.3 : n'affiche que la derniere courbe au lieu de toutes les courbes superposees
-    # => REX 12604
     def affiche(self, l_x, ll_y, couleur=None, l_legende=None, titre_x="Abscisses", titre_y="Ordonnées"):
+        # les donnees d'entree sont passees en attribut de la classe pour etre utilisees dans la methode "suite"
+        self.l_x = l_x
+        self.ll_y = ll_y
+        self.couleur = couleur
+        self.l_legende = l_legende
+        self.titre_x = titre_x
+        self.titre_y = titre_y
+
+        # recuperation des noms des etudes Salome ouvertes :
+        st_mng = StudyManager(ORBInitRef='NameService=corbaname::%s:%i'%(self.machine_name, self.salome_port),
+                              machineName = self.machine_name)
+        studies = st_mng.getOpenStudies()
+        
+        self.study_name = None
+        if not studies :
+            # pas d'etudes Salome ouverte : il faut en ouvrir une
+            study = st_mng.getOrCreateStudy('CALC_ESSAI')
+            self.study_name = 'CALC_ESSAI'
+            self.suite()
+        # cas ou une ou plusieurs etudes salome sont ouvertes.
+        if len(studies) == 1:
+            # une seule etude ouverte
+            self.study_name = studies[0]
+            self.suite()
+        else:
+            # plusieurs etudes ouvertes : on ouvre une fenetre pour choisir l'etude a selectionner
+            choix_st = ChoixStudy(self,studies,self.ihm_param)
+        
+
+    def suite(self):
+        """ suite de la methode affiche"""
         # On cree la meme liste de courbes que celle sortie dans Stanley donnee a pylotage
         from Stanley import as_courbes
         
         l_courbes = []
-        
+        l_x = self.l_x
         # boucle sur les listes d'ordonnees
-        for i, l_y in enumerate(ll_y):
+        for i, l_y in enumerate(self.ll_y):
             courbe = as_courbes.Courbe(l_x, l_y)
-            if l_legende is None:
+            if self.l_legende is None:
                 nom_courbe = "Courbe %i"%i
             else:
-                nom_courbe = l_legende[i]
+                nom_courbe = self.l_legende[i]
             l_courbes.append((courbe, nom_courbe))
-        
+
         # on recupere les services du module VISU
         salomeVisu = Visu( ORBInitRef='NameService=corbaname::%s:%i'%(self.machine_name, self.salome_port),
-                             studyName = "Meidee",
-                             machineName = self.machine_name  )
+                           studyName = self.study_name, machineName = self.machine_name  )
         
-        if l_legende is None:
-            titre='Courbes Meidee'
+        if self.l_legende is None:
+            titre='Courbes CALC_ESSAI'
         else:
-            titre=l_legende[0]
+            titre=self.l_legende[0]
         
-        salomeVisu.XYPlot2(l_courbes, titre, titre_x, titre_y)
+        salomeVisu.XYPlot2(l_courbes, titre, self.titre_x, self.titre_y)
         pass
 
 class MeideeXmgrace(MeideeLogicielCourbes):
@@ -774,3 +829,23 @@ class MeideeXmgrace(MeideeLogicielCourbes):
         self.xmgr_manager.fermer()
         pass
     
+
+class ChoixStudy:
+
+    def __init__(self,parent,results,ihm_parent): # attention : rajouter ihm_parametre a l'appel
+        self.parent = parent
+        
+        self.fenetre = Toplevel(ihm_parent)
+        self.var_resu = StringVar()
+        self.fenetre.title("Choix de l'etude Salome")
+        f = Frame(self.fenetre)
+        MyMenu( f, options = results,var = self.var_resu).grid(row=0, column=0, sticky='ew')
+        Button(f,text='OK',command=self.fermer,width = 30).grid(row=1,column=0,sticky='ew')
+        f.grid(row=0,column=0)
+
+        self.fenetre.mainloop()
+
+    def fermer(self):
+        self.parent.study_name = self.var_resu.get()
+        self.parent.suite()
+        self.fenetre.destroy()

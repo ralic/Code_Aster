@@ -11,7 +11,7 @@
       LOGICAL       MONOAP, MUAPDE, COMDIR, TRONC, CORFRE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 19/10/2010   AUTEUR DELMAS J.DELMAS 
+C MODIF ALGORITH  DATE 16/11/2010   AUTEUR AUDEBERT S.AUDEBERT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -279,7 +279,7 @@ C
 C              ----CALCUL DE L ACCELERATION ABSOLUE
 C
                CALL ASACCE ( NOMSY, MONOAP, MUAPDE, NBSUP, NEQ, NBMODE,
-     +                       ID, NUME, ZR(JMOD), ZR(JVAL), ASSPEC,
+     +                       ID, NUME, ZR(JMOD), ZR(JVAL), SPECTR,
      +                       ZR(JCREP) )
 
 C
@@ -289,7 +289,7 @@ C              --- DANS LE CAS DE CALCUL DE REPONSE GLOBALE  ---
                IF ( TRONC ) THEN
                   CALL ASTRON ( NOMSY, PSMO, MONOAP, MUAPDE, NBSUP,
      +                          NSUPP, NEQ, NBMODE, ID, ZR(JMOD),
-     +                          ZR(JVAL), ASSPEC, NOMSUP, REASUP,
+     +                          ZR(JVAL), SPECTR, NOMSUP, REASUP,
      +                          ZR(JCREP) )
                ENDIF
 C

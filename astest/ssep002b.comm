@@ -1,0 +1,176 @@
+# MODIF  DATE 16/11/2010   AUTEUR ELGHARIB J.EL-GHARIB 
+# TITRE CHARGE LIMITE SUP - COUDE AVEC SOUS EPAISSEUR
+# ssep002b.para = tps_job 512 mem_job 300Mo ncpus 1 liste_test S
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+# RESPONSABLE ELGHARIB J.EL-GHARIB
+
+# Donnees calcul
+#-------------------------------
+
+# contrainte admissible
+Sh=98.7;
+# module d'Young
+EE = 200000. ;
+# coefficient de poisson 
+nnu  = 0.3 ;
+
+#-------------------------------
+T_FIN = 2.3 ;
+
+#  
+# les elements incompressibles ne marchent qu'avec des elements quadratiques
+# LINE_QUAD est necesaire dans le fichier comm si le maillage produit par salome
+# est lineaire 
+
+DEBUT(CODE=_F(NOM='ssep002b', NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'),
+      IGNORE_ALARM=('MODELISA4_6',))
+
+
+MAL=LIRE_MAILLAGE(FORMAT='MED');
+
+MA1=CREA_MAILLAGE(MAILLAGE=MAL,LINE_QUAD=_F(TOUT='OUI'))
+
+MA=CREA_MAILLAGE(MAILLAGE=MA1,
+                 CREA_POI1=_F(GROUP_NO='P2',
+                              NOM_GROUP_MA='MA_P2',),
+                 );
+
+MA=DEFI_GROUP(reuse =MA,
+              MAILLAGE=MA,
+              CREA_GROUP_NO=_F(GROUP_MA='COUDE',
+                               NOM='SOMMETS',
+                               CRIT_NOEUD='SOMMET',),);
+
+#MACR_INFO_MAIL(MAILLAGE=MA,QUALITE='OUI',INTERPENETRATION='OUI',CONNEXITE='OUI',TAILLE='OUI');
+
+MO=AFFE_MODELE(MAILLAGE=MA,
+               AFFE=(_F(MODELISATION='3D_INCO',
+                       
+GROUP_MA=('COUDE','PEAUINT','PEAUEXT','EXTUBE','CLGV'),
+                        PHENOMENE='MECANIQUE'),
+                     _F(MODELISATION='DIS_TR',
+                        GROUP_MA='MA_P2',
+                        PHENOMENE='MECANIQUE'),
+                    ),
+              );
+
+MATC=DEFI_MATERIAU(ELAS=_F(E=EE,NU=nnu,),
+                   ECRO_LINE=_F(D_SIGM_EPSI=0,SY=Sh,),);
+
+CHMAT=AFFE_MATERIAU(MODELE=MO,
+                    AFFE=(_F(TOUT='OUI',
+                             MATER=MATC,),),
+                    MAILLAGE=MA,
+                   );
+
+CHCAR=AFFE_CARA_ELEM(MODELE=MO,
+                     DISCRET=(_F(VALE=(0.0,0.0,0.0,0.0,0.0,0.0,),
+                                 CARA='K_TR_D_N',
+                                 GROUP_MA='MA_P2')),
+                     INFO=1,
+                    );
+
+# ----------- CONDITIONS AUX LIMITES -------------------------------
+CH_CL=AFFE_CHAR_MECA(MODELE=MO,
+                    
+LIAISON_ELEM=(_F(OPTION='3D_POU',NUME_LAGR='NORMAL',ANGL_MAX=1.0,
+                                     
+GROUP_NO_2='P2',GROUP_MA_1='CLGV'),
+                                   ),
+                     INFO=1,
+                    );
+
+CH_CLC=AFFE_CHAR_CINE(MODELE=MO,
+                      MECA_IMPO=(_F(GROUP_NO='P2',
+                                  DY=0.0,DX=0.0,DZ=0.0,
+                                  DRZ=0.0,DRX=0.0,DRY=0.0),
+                              _F(GROUP_NO='SOMMETS',
+                                 GONF=0.0,),
+                                 ),
+                     INFO=1,
+                    );
+
+# ----------------- CHARGEMENT PERMANENT -----------------------------
+
+PRES=AFFE_CHAR_MECA(MODELE=MO,
+                    PRES_REP=_F(GROUP_MA='PEAUINT',
+                                PRES=1.0,),
+                    EFFE_FOND=_F(GROUP_MA_INT='BORDTU',
+                                 GROUP_MA='EXTUBE',
+                                 PRES=1.0,),);
+
+# --- la convergence devient difficile vers 2.4 : 
+# --- la gestion de la liste d'instants n'est pas evidente pour un outil metier
+
+L_INST=DEFI_LIST_REEL(DEBUT=0,
+                      INTERVALLE=(_F(JUSQU_A=1.0,NOMBRE=1,),
+                                    _F(JUSQU_A=T_FIN,NOMBRE=1,),
+                                           # _F(JUSQU_A=2.40,NOMBRE=1,),
+                                    ),),
+
+DEFLIST=DEFI_LIST_INST(INFO=1,
+                          DEFI_LIST=_F(LIST_INST=L_INST,
+                                       METHODE='AUTO',
+                                       PAS_MINI=1.E-07),
+                          );
+
+#DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = L_INST,),
+#                                ECHEC=_F(SUBD_METHODE='UNIFORME',
+#                                                  SUBD_PAS=4,
+#                                                  SUBD_NIVEAU=4,),)
+
+# -------------- CALCUL AVEC LA LOI DE NORTON-HOFF (CAS 1)-------------
+
+RESU1=STAT_NON_LINE(MODELE=MO,
+                    CHAM_MATER=CHMAT,
+                    CARA_ELEM=CHCAR,
+                    EXCIT=(_F(CHARGE=CH_CL,),
+                           _F(CHARGE=CH_CLC,),
+                          _F(CHARGE=PRES,TYPE_CHARGE='FIXE_PILO',),),
+                   
+COMP_INCR=(_F(RELATION='NORTON_HOFF',GROUP_MA=('COUDE','PEAUINT',
+'PEAUEXT','EXTUBE','CLGV'),),
+                               _F(RELATION='ELAS',GROUP_MA='MA_P2',),),
+                    INCREMENT=_F(LIST_INST=DEFLIST,),
+                            NEWTON=_F(MATRICE='TANGENTE',REAC_ITER=1,),
+                    PILOTAGE=_F(TYPE='ANA_LIM',),
+                    CONVERGENCE=_F(RESI_GLOB_RELA=0.0001,
+                                   ITER_GLOB_MAXI=10,),);
+
+ECHL=POST_ELEM(CHAR_LIMITE=_F(CHAR_CSTE='NON',),
+               MODELE=MO,
+               CHAM_MATER=CHMAT,
+               RESULTAT=RESU1,);
+
+IMPR_TABLE(TABLE=ECHL);
+
+TEST_TABLE(TABLE=ECHL,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=T_FIN,),
+           NOM_PARA='CHAR_LIMI_SUP',
+           VALE=1.14689E+01,
+           REFERENCE='NON_REGRESSION',);
+
+
+
+FIN(FORMAT_HDF='OUI');
+
+
+
+

@@ -1,4 +1,4 @@
-#@ MODIF algeline5 Messages  DATE 26/10/2010   AUTEUR BOITEAU O.BOITEAU 
+#@ MODIF algeline5 Messages  DATE 15/11/2010   AUTEUR BOITEAU O.BOITEAU 
 # -*- coding: iso-8859-1 -*-
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -397,12 +397,13 @@ cata_msg={
 72: _("""
     Les matrices utilisées ne s'appuient pas sur des données issues d'un maillage.
     Dans ce cas on doit utiliser, soit le solveur linéaire LDLT, soit celui MUMPS.
-    On a donc changé le paramétrage pour vous et selectionné le solveur linéaire
-    MUMPS (avec son paramétrage usuel par défaut).
+    On a donc changé le paramétrage pour vous et selectionné, suivant la taille du
+    problème, l'un des deux solveurs préconisés.
     Conseil:
     ========
     La prochaine fois, dans une telle situation (NUME_DDL_GENE...), paramétrer
-    explicitement SOLVEUR/METHODE='MUMPS'.
+    explicitement SOLVEUR/METHODE='MUMPS' (problème de taille >100) ou 'LDLT'
+    (problèmes de taille =<100).
 """),
 73: _("""
     On a besoin d'effectuer un calcul de déterminant. Pour l'instant seuls les
@@ -418,5 +419,22 @@ cata_msg={
     Conseil:
     ========
     Relancer le calcul avec SOLVEUR/NPREC>0 (par exemple 8).
+"""),
+75: _("""
+    Le solveur modal utilisé par MODE_ITER_SIMULT n'a pas réussi à capturer tous
+    les modes propres souhaités avec le niveau de convergence requis.
+    
+    Conseil:
+    =======
+    Relancer le calcul en tenant compte des précisions du message précédent.
+    Pour améliorer la convergence des algorithmes modaux vous pouvez par exemple:
+       - Diminuer le nbre de modes recherchés à chaque fois en découpant votre
+         calcul modal en plusieurs bande (à la main ou via MACRO_MODE_MECA). Cela
+         améliore aussi souvent grandement les performances des calculs.
+       - Avec la méthode de Sorensen, augmenter la taille de l'espace de projection
+         (DIM_SOUS_ESPACE/COEF_DIM_ESPACE) ou jouer sur les paramètres numériques
+          qui pilote la convergence (PREC_SOREN et NMAX_ITER_SOREN).
+       - Avec la méthode QZ, diminuer NMAX_FREQ ou changer de variante (TYPE_QZ).
+         
 """),
 }

@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
+C MODIF ALGELINE  DATE 16/11/2010   AUTEUR BODEL C.BODEL 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -39,7 +39,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON  /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
       CHARACTER*32     JEXNUM
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
-      PARAMETER   ( NBPARI=1 , NBPARR=15 , NBPARK=1, NBPARA=17 )
+      PARAMETER   ( NBPARI=1 , NBPARR=15 , NBPARK=3, NBPARA=19 )
       INTEGER       LPAR(3)
       INTEGER VALI(2)
       REAL*8        R8B, PREC, ZERO, MASTOT
@@ -60,7 +60,8 @@ C     ------------------------------------------------------------------
       DATA  KVALK / '&&OP0168.GRAN_MODAL_K_' /
       DATA NOMPAR / 'MASS_EFFE_UN_DX' , 'MASS_EFFE_UN_DY' ,
      &              'MASS_EFFE_UN_DZ' /
-      DATA  NOPARA /        'NUME_MODE'       , 'NORME'           ,
+      DATA  NOPARA /        'NUME_MODE'       , 
+     &  'NORME'           , 'TYPE_MODE'       , 'NOEUD_CMP'       ,
      &  'FREQ'            , 'OMEGA2'          , 'AMOR_REDUIT'     ,
      &  'MASS_GENE'       , 'RIGI_GENE'       , 'AMOR_GENE'       ,
      &  'MASS_EFFE_DX'    , 'MASS_EFFE_DY'    , 'MASS_EFFE_DZ'    ,

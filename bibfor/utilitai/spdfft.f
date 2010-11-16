@@ -4,7 +4,7 @@
       INTEGER             NSENS
 C     ----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 14/12/2009   AUTEUR DEVESA G.DEVESA 
+C MODIF UTILITAI  DATE 15/11/2010   AUTEUR GREFFET N.GREFFET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -42,6 +42,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*16  METHOD,SYM
       CHARACTER*19  NOMFS, NOMFON
+      COMPLEX*16    DCMPLX
       REAL*8        PAS,PASFRQ
       INTEGER       NBVAL,NBVA,NBPTS,NBPTS1,NBPTS2,LTRA,LRES,LRES1,IER
       INTEGER       NIN,NOUT,NBVIN,NBVOUT,LVAR,N,LFON,I,II,VALMAX
@@ -129,12 +130,18 @@ C         NBPTS=2*NBPTS
             ZC(LTRA+NBPTS2-I+1) =
      &               DCMPLX(ZR(LFON+II-1),-ZR(LFON+II))
   201    CONTINUE
+         ZC(LTRA+NBPTS+1)=DCMPLX(((4.D0*ZR(LFON+II-1)-ZR(LFON+II-3)
+     &      )/3.D0),0.D0)
          IF ( (NBPTS.GT.NBVA) .AND. (SYM.EQ.'NON') ) THEN
             DO 2999 I = 1,(NBPTS-NBVA)
                ZC(LTRA+NBVA+I-1) =  DCMPLX(0.D0,0.D0)
                ZC(LTRA+NBPTS2-NBVA-I+1) =  DCMPLX(0.D0,0.D0)
  2999       CONTINUE
          ENDIF
+         
+         ZC(LTRA+NBPTS+1)=DCMPLX(((4.D0*DBLE(ZC(LTRA+NBPTS))
+     &   -DBLE(ZC(LTRA+NBPTS-1)) )/3.D0),0.D0)
+         
          CALL FFT(ZC(LTRA),NBPTS2,-1)
          PAS = ZR(LVAR+1)-ZR(LVAR)
 C         NOMFS = 'FCT_FFT'

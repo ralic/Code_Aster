@@ -10,7 +10,7 @@
       COMPLEX*16        VECPC8(NEQ,*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 07/09/2010   AUTEUR DESOZA T.DESOZA 
+C MODIF ALGELINE  DATE 16/11/2010   AUTEUR BODEL C.BODEL 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -56,9 +56,9 @@ C     ------------------------------------------------------------------
       INTEGER       NMIN1, KMODE, NORDR, IBID, I, LADPA, LMODE, LVALE
       INTEGER       INDK24, NBPAST, IRANG,IRET,JMODG,JMACR,JBASM,JRAID
       INTEGER       JMOD2,JLIME,JMERI,LTYBA
-      PARAMETER    ( NBPAST = 18 )
+      PARAMETER    ( NBPAST = 19 )
       CHARACTER*8   RES ,K8B, RAIDE, MODELE, CHMAT, CARAEL
-      CHARACTER*16  TYPCON, NOMCMD, NOSY
+      CHARACTER*16  TYPCON, NOMCMD, NOSY, TYPMOD
       CHARACTER*19  CHAMNO,SD2
       CHARACTER*24  REFD,NUME,NOPAST(NBPAST)
       CHARACTER*24 VALK,TYPEBA
@@ -68,8 +68,8 @@ C     ------------------------------------------------------------------
       DATA  REFD  /'                   .REFD'/
 C
 C --- PARAMETRES STOCKES DANS LA SD RESULTAT DYNAMIQUE
-      DATA  NOPAST /        'NUME_MODE'       , 'NORME'           ,
-     &  'TYPE_MODE'       ,
+      DATA  NOPAST /        'NUME_MODE'       , 
+     &  'NORME'           , 'TYPE_MODE'       , 'NOEUD_CMP'       ,
      &  'FREQ'            , 'OMEGA2'          , 'AMOR_REDUIT'     ,
      &  'MASS_GENE'       , 'RIGI_GENE'       , 'AMOR_GENE'       ,
      &  'MASS_EFFE_DX'    , 'MASS_EFFE_DY'    , 'MASS_EFFE_DZ'    ,
@@ -314,10 +314,26 @@ C ----- ON STOCKE 'TYPE_MODE' POUR LES MODES PROPRES 'MODE_MECA'
 C
         IF ( TYPCON(1:9).EQ.'MODE_MECA'.OR.
      &       TYPCON(1:9).EQ.'MODE_GENE') THEN
+         
+           IRANG = INDK24(NOPARA(NBPARI+1),NOPAST(3),1,NBPARK)
+           IF ( IRANG .GT. 0 ) THEN
+             TYPMOD = RESUFK(KMODE,IRANG)
+             WRITE(6,*) 'TYPMOD = ', TYPMOD
+             IF (TYPMOD(1:8).EQ.'        ') THEN
+               TYPMOD = 'MODE_DYN'
+             ENDIF
+             CALL RSADPA(MODES,'E',1,NOPAST(3),NORDR,0,LADPA,K8B)
+             ZK16(LADPA)= TYPMOD
+           ENDIF
 
-           CALL RSADPA(MODES,'E',1,NOPAST(3),NORDR,0,LADPA,K8B)
-           ZK16(LADPA)= 'MODE_DYN'
+        ENDIF
 
+C ----- ON STOCKE 'NOEUD_CMP'
+C
+        IRANG = INDK24(NOPARA(NBPARI+1),NOPAST(4),1,NBPARK)
+        IF ( IRANG .GT. 0 ) THEN
+           CALL RSADPA(MODES,'E',1,NOPAST(4),NORDR,0,LADPA,K8B)
+           ZK16(LADPA) = RESUFK(KMODE,IRANG)
         ENDIF
 C
 C ----- ON STOCKE : MODELE, CARA_ELEM, CHAM_MATER
@@ -342,7 +358,7 @@ C
              ZR(LADPA) = RESUFR(KMODE,2)
            ENDIF
         ELSE
-          DO 48 I = 4 , NBPAST
+          DO 48 I =  5, NBPAST
             IRANG = INDK24(NOPARA(NBPARI+NBPARK+1),NOPAST(I),1,NBPARR)
             IF ( IRANG .GT. 0 ) THEN
               CALL RSADPA(MODES,'E',1,NOPAST(I),NORDR,0,LADPA,K8B)

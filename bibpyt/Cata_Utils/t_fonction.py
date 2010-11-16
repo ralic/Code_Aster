@@ -1,4 +1,4 @@
-#@ MODIF t_fonction Cata_Utils  DATE 24/08/2010   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF t_fonction Cata_Utils  DATE 15/11/2010   AUTEUR GREFFET N.GREFFET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -409,7 +409,7 @@ class t_fonction :
        vale_y=self.vale_y[:2**n]
     elif methode=='PROL_ZERO'  :
        vale_y=self.vale_y
-       if len(self.vale_y) < 2**(n + 1):
+       if len(self.vale_y) > 2**n:
           vale_y=NP.array(self.vale_y)
           vale_y = NP.concatenate( (vale_y, NP.zeros(2**(n+1)-len(self.vale_x))) )
     elif   methode=='COMPLET'  : 
@@ -464,7 +464,7 @@ class t_fonction_c(t_fonction) :
     else :
        if methode=='PROL_ZERO' :
           fonc_temp=self.vale_y
-          if len(self.vale_y) < 2**(n + 1):
+          if len(self.vale_y) > 2**n:
              fonc_temp = NP.concatenate( (self.vale_y, NP.zeros(2**(n+1)-len(self.vale_x)))  )
        elif methode=='TRONCATURE' :
           fonc_temp=self.vale_y[:2**n]

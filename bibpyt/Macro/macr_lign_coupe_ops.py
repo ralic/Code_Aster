@@ -1,4 +1,4 @@
-#@ MODIF macr_lign_coupe_ops Macro  DATE 12/07/2010   AUTEUR BERARD A.BERARD 
+#@ MODIF macr_lign_coupe_ops Macro  DATE 15/11/2010   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -790,7 +790,9 @@ def macr_lign_coupe_ops(self,RESULTAT,CHAM_GD,UNITE_MAILLAGE,LIGN_COUPE,
     __mocou=AFFE_MODELE(MAILLAGE=__macou,
                         AFFE=_F(TOUT='OUI',
                                 PHENOMENE='MECANIQUE',
-                                MODELISATION='BARRE',),);
+                                MODELISATION='BARRE',),
+                                PARTITION=_F(PARALLELISME='CENTRALISE'),
+                                );
   elif AsType(RESULTAT).__name__ in ('evol_ther',) :
     __mocou=AFFE_MODELE(MAILLAGE=__macou,
                         AFFE=_F(TOUT='OUI',

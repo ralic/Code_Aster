@@ -1,0 +1,182 @@
+# MODIF  DATE 16/11/2010   AUTEUR ELGHARIB J.EL-GHARIB 
+# TITRE CHARGE LIMITE INF - COUDE AVEC SOUS EPAISSEUR
+# ssep002a.para = tps_job 512 mem_job 300Mo ncpus 1 liste_test S
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+# RESPONSABLE ELGHARIB J.EL-GHARIB
+
+
+# Donnees calcul
+#-------------------------------
+# contrainte admissible
+Sh=98.7;
+# module d'Young
+EE = 200000. ;
+# coefficient de poisson 
+nnu  = 0.3 ;
+
+# pente de la courbe d'ecrouissage
+d_sigm_epsi = 0.
+
+#--------------------------------
+T_FIN = 1.
+
+DEBUT(CODE=_F(NOM='ssep002a', NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'),
+      IGNORE_ALARM=('MODELISA4_6',))
+
+
+MAL=LIRE_MAILLAGE(FORMAT='MED');
+
+MA1=CREA_MAILLAGE(MAILLAGE=MAL,LINE_QUAD=_F(TOUT='OUI'))
+
+MA=CREA_MAILLAGE(MAILLAGE=MA1,
+                 CREA_POI1=_F(NOM_GROUP_MA='MA_P2',
+                              GROUP_NO='P2',),);
+
+MA=DEFI_GROUP(reuse =MA,MAILLAGE=MA,
+              CREA_GROUP_NO=_F(GROUP_MA='COUDE',NOM='PILO',),);
+
+#MACR_INFO_MAIL(MAILLAGE=MA,QUALITE='OUI',INTERPENETRATION='OUI',CONNEXITE='OUI',TAILLE='OUI');
+
+MO=AFFE_MODELE(MAILLAGE=MA,
+               INFO=1,
+              
+AFFE=(_F(GROUP_MA=('COUDE','PEAUINT','PEAUEXT','EXTUBE','CLGV',),
+                        PHENOMENE='MECANIQUE',
+                        MODELISATION='3D',),
+                     _F(GROUP_MA='MA_P2',
+                        PHENOMENE='MECANIQUE',
+                        MODELISATION='DIS_TR',),),);
+
+MA=MODI_MAILLAGE(reuse =MA,
+                 MAILLAGE=MA,
+                 ORIE_PEAU_3D=(_F(GROUP_MA='PEAUINT',),
+                               _F(GROUP_MA='PEAUEXT',),
+                               _F(GROUP_MA='EXTUBE',),
+                               _F(GROUP_MA='CLGV',),),
+                    );
+
+MATC=DEFI_MATERIAU(ELAS=_F(E=EE ,NU =nnu,),
+                   ECRO_LINE=_F(D_SIGM_EPSI=d_sigm_epsi, SY=Sh,),);
+
+MAT_ELAS=DEFI_MATERIAU(ELAS=_F(E=EE ,NU=nnu,),);
+
+CHMAT=AFFE_MATERIAU(MAILLAGE=MA,MODELE=MO,
+                    AFFE=(_F(TOUT='OUI',MATER=MATC),
+                          _F(GROUP_MA='MA_P2',MATER=MAT_ELAS,),),
+                );
+
+CHCAR=AFFE_CARA_ELEM(MODELE=MO,
+                     INFO=1,
+                     DISCRET=_F(GROUP_MA='MA_P2',
+                                CARA='K_TR_D_N',
+                                VALE=(0.0,0.0,0.0,0.0,0.0,0.0,),),);
+# ----------- CONDITIONS AUX LIMITES -------------------------------
+
+CH_CL=AFFE_CHAR_MECA(MODELE=MO,
+                     DDL_IMPO=_F(GROUP_NO='P2',
+                                 DX=0.0,
+                                 DY=0.0,
+                                 DZ=0.0,
+                                 DRX=0.0,
+                                 DRY=0.0,
+                                 DRZ=0.0,),
+                     LIAISON_ELEM=_F(OPTION='3D_POU',
+                                     GROUP_MA_1='CLGV',
+                                     GROUP_NO_2='P2',
+                                     NUME_LAGR='NORMAL',
+                                     ANGL_MAX=1.0,),
+                     INFO=1,);
+# ----------- CHARGEMENT PERMANENT ----------------------------------
+
+PRES=AFFE_CHAR_MECA(MODELE=MO,
+                    PRES_REP=_F(GROUP_MA='PEAUINT',
+                                PRES=1.0,),
+                    EFFE_FOND=_F(GROUP_MA_INT='BORDTU',
+                                 GROUP_MA='EXTUBE',
+                                 PRES=1.0,),);
+
+L_INST=DEFI_LIST_REEL(DEBUT=0,
+                      INTERVALLE=(_F(JUSQU_A=0.15,NOMBRE=1,),
+                                          _F(JUSQU_A=T_FIN,NOMBRE=1,),
+                          ),);
+
+DEFLIST=DEFI_LIST_INST(INFO=1,
+                          DEFI_LIST=_F(LIST_INST=L_INST,
+                                       METHODE='AUTO',
+                                       PAS_MINI=1.E-07),
+                          );
+
+
+
+RESU1=STAT_NON_LINE(MODELE=MO,
+                    CHAM_MATER=CHMAT,
+                    CARA_ELEM=CHCAR,
+                    EXCIT=(_F(CHARGE=CH_CL,),
+                           _F(CHARGE=PRES,
+                              TYPE_CHARGE='FIXE_PILO',),),
+                   
+COMP_INCR=(_F(RELATION='VMIS_ISOT_LINE',TOUT='OUI',),
+                               _F(RELATION='ELAS',GROUP_MA='MA_P2',),),
+                    INCREMENT=_F(LIST_INST=DEFLIST,),
+                    PILOTAGE=_F(TYPE='LONG_ARC',
+                                COEF_MULT=1.,
+                                #ETA_PILO_MIN=0.01,
+                                #ETA_PILO_R_MIN=0.001,
+                                SELECTION='ANGL_INCR_DEPL',
+                                GROUP_NO='PILO',
+                                NOM_CMP=('DX','DY','DZ',),),
+                    NEWTON=_F(MATRICE='TANGENTE',REAC_ITER=1,),
+                    #CONVERGENCE=_F(
+                                   #SIGM_REFE=200.,
+                                   #RESI_REFE_RELA=0.001,
+                                   # ITER_GLOB_MAXI=100,),
+                    SOLVEUR=_F(STOP_SINGULIER='DECOUPE',
+                               METHODE = 'MUMPS'),
+                    OBSERVATION=(_F(NOM_CMP='DZ',
+                                   SUIVI_DDL='OUI',
+                                   NOM_CHAM='DEPL',
+                                   NUME_SUIVI=1,
+                                   VALE_MAX='OUI',),),
+                   );
+
+ETA_PILO=RECU_FONCTION(RESULTAT=RESU1,
+                       TOUT_ORDRE='OUI',
+                       NOM_PARA_RESU='ETA_PILOTAGE',);
+
+IMPR_FONCTION(FORMAT='TABLEAU',
+              COURBE=_F(FONCTION=ETA_PILO,),
+              UNITE=8,);
+
+#IMPR_FONCTION(FORMAT='XMGRACE',
+#              UNITE=38,
+#              COURBE=_F(FONCTION=ETA_PILO,),
+#              TITRE=' Fy(ETA_PILOTAGE) fonction du temps',
+#              LEGENDE_X='Temps',
+#              LEGENDE_Y='ETA_PILOTAGE',);
+
+#IMPR_RESU(FORMAT='MED',UNITE=81,
+#          RESU=(
+#                _F(RESULTAT=RESU1,),),);
+
+TEST_FONCTION(VALEUR=( _F(FONCTION=ETA_PILO,
+                         NOM_PARA='INST',
+                         VALE_PARA=T_FIN,
+                         VALE_REFE= 1.10967E+01,
+                         REFERENCE='NON_REGRESSION',),),);
+FIN(FORMAT_HDF='OUI');

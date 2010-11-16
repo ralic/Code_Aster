@@ -1,7 +1,7 @@
       SUBROUTINE OP0045()
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 26/10/2010   AUTEUR BOITEAU O.BOITEAU 
+C MODIF ALGELINE  DATE 15/11/2010   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -400,8 +400,7 @@ C        CMDE ECLATEE NUME_DDL LORS DE LA CONSTITUTION DES MATRICES.
 C     -- CAS PARTICULIER 1: NUME_DDL_GENE, ON IMPOSE METRES=MUMPS
       IF ((ZK24(JREFA+9)(1:4).EQ.'GENE').AND. 
      &  (METRES(1:8).EQ.'MULT_FRO')) THEN
-        CALL U2MESS('I','ALGELINE5_72')
-        CALL CRSVL2(SOLVEU,NPREC,1)
+        CALL CRSVL2(SOLVEU,NPREC,RAIDE)
       ENDIF
       NPREC=ZI(ISLVI)
       METRES=ZK24(ISLVK)      
@@ -869,7 +868,7 @@ C     ------------------------------------------------------------------
      &         OMECOR, KTYP, KQRNR, NEQACT, ILSCAL, IRSCAL,
      &         OPTIOF, TYPRES, OMEMIN, OMEMAX, OMESHI, ZI(LPROD), NFREQ,
      &         LMASSE, LRAIDE, LAMOR, NUMEDD, SIGMA, ICSCAL, IVSCAL,
-     &         IISCAL, IBSCAL)
+     &         IISCAL, IBSCAL, FLAGE)
           CALL RECTFR(NCONV, NCONV, OMESHI, NPIVOT, NBLAGR,
      &         ZR(LVALPR), NFREQ, ZI(LRESUI), ZR(LRESUR), NFREQ)
           CALL VPBOST(TYPRES, NCONV, NCONV, OMESHI, ZR(LVALPR),
@@ -900,7 +899,7 @@ C     ------------------------------------------------------------------
      &         OMECOR, KTYP, KQRNR, NEQACT, ILSCAL, IRSCAL,
      &         OPTIOF, TYPRES, OMEMIN, OMEMAX, OMESHI, ZI(LPROD), NFREQ,
      &         LMASSE, LRAIDE, LAMOR, NUMEDD, SIGMA, ICSCAL, IVSCAL,
-     &         IISCAL, IBSCAL)
+     &         IISCAL, IBSCAL, FLAGE)
           NPIVOT = NBLAGR
 
           CALL RECTFC(NCONV, NCONV, SIGMA, NPIVOT, NBLAGR,
@@ -1021,7 +1020,7 @@ C     ------------------------------------------------------------------
      &         NCONV, OMECOR, KTYP, KQRNR, NEQACT, ILSCAL, IRSCAL,
      &         OPTIOF, TYPRES, OMEMIN, OMEMAX, OMESHI, ZI(LPROD), NFREQ,
      &         LMASSE, LRAIDE, LAMOR, NUMEDD, SIGMA, ICSCAL, IVSCAL,
-     &         IISCAL, IBSCAL)
+     &         IISCAL, IBSCAL, FLAGE)
           NFREQ=NFREQ/2
           CALL WP4VEC(NFREQ,NCONV,NEQ,SIGMA,
      &           ZC(LVALPR),ZC(LVEC),MXRESF,
@@ -1094,7 +1093,9 @@ C     ------------------------------------------------------------------
         ENDIF
       ENDIF
 C ---- NOMBRE DE MODES CONVERGES
-      NCONV = NFREQ
+C ---- SI LE SOLVEUR MODAL A BIEN ACHEVE SON TRAVAIL ON FAIT CETTE AFFEC
+C ---- TATION SINON ON NE TIENT COMPTE QUE DES NCONV MODES REELLEMENT CV
+      IF (.NOT.FLAGE) NCONV = NFREQ
 
 C     ------------------------------------------------------------------
 C     -------------------- CORRECTION : OPTION BANDE -------------------
@@ -1111,7 +1112,6 @@ C     --- SI OPTION BANDE ON NE GARDE QUE LES FREQUENCES DANS LA BANDE
 110     CONTINUE
         IF (MFREQ.NE.NCONV) CALL U2MESS('I','ALGELINE2_17')
       ENDIF
-
 
 C     ------------------------------------------------------------------
 C     -------------- CALCUL DES PARAMETRES GENERALISES  ----------------
@@ -1134,6 +1134,7 @@ C     --- POSITION MODALE NEGATIVE DES MODES INTERDITE
      &              RBID,ZC(LVEC), NBPARI, NPARR, NBPARK, NOPARA,'    ',
      &              ZI(LRESUI), ZR(LRESUR), ZK24(LRESUK),KTYP)
       ENDIF
+
 C     --- IMPRESSIONS LIEES A LA METHODE ---
       CALL VPWECF (' ', TYPRES, NCONV, MXRESF, ZI(LRESUI), ZR(LRESUR),
      &  ZK24(LRESUK), LAMOR,KTYP,LNS)
@@ -1183,7 +1184,7 @@ C     ET DE SON EVENTUELLE OCCURENCE EXTERNE (MUMPS)
       IF ((OPTIOV.EQ.'OUI').AND.(IERX.NE.0))
      &  CALL U2MESS('F','ALGELINE2_74')
 
-      IF (FLAGE) CALL ASSERT(.FALSE.)
+      IF (FLAGE) CALL U2MESS('F','ALGELINE5_75')
  999  CONTINUE
 
 C     ------------------------------------------------------------------

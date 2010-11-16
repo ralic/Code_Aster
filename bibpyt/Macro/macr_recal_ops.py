@@ -1,4 +1,4 @@
-#@ MODIF macr_recal_ops Macro  DATE 21/09/2010   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF macr_recal_ops Macro  DATE 16/11/2010   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -179,7 +179,7 @@ def macr_recal(self, UNITE_ESCL, RESU_EXP, POIDS, LIST_PARA, RESU_CALC,
    TOLE_FONC       = args['TOLE_FONC']
 
    # Pour les calculs esclaves
-   CALCUL_ESCLAVE  = {}.fromkeys( ['LANCEMENT', 'MODE', 'MEMOIRE', 'TEMPS', 'CLASSE', 'ACTUALISATION', 'memjeveux_esclave', 'mem_aster', 'NMAX_SIMULT', ] )
+   CALCUL_ESCLAVE  = {}.fromkeys( ['LANCEMENT', 'MODE', 'CLASSE', 'ACTUALISATION', 'memjeveux', 'memjob', 'mem_aster', 'tpmax', 'tpsjob', 'NMAX_SIMULT', ] )
 
    dESCLAVE=args['CALCUL_ESCLAVE'][0].cree_dict_valeurs(args['CALCUL_ESCLAVE'][0].mc_liste)
    for i in dESCLAVE.keys():
@@ -188,12 +188,6 @@ def macr_recal(self, UNITE_ESCL, RESU_EXP, POIDS, LIST_PARA, RESU_CALC,
    CALCUL_ESCLAVE['LANCEMENT']                                            = dESCLAVE['LANCEMENT']
    if dESCLAVE.has_key('MODE'):          CALCUL_ESCLAVE['MODE']           = dESCLAVE['MODE']
    else:                                 CALCUL_ESCLAVE['MODE']           = prof['mode'][0].upper()
-   if dESCLAVE.has_key('MEMOIRE'):       CALCUL_ESCLAVE['MEMOIRE']        = dESCLAVE['MEMOIRE']
-   else:                                 CALCUL_ESCLAVE['MEMOIRE']        = prof['memjob'][0]
-   if dESCLAVE.has_key('TEMPS'):         CALCUL_ESCLAVE['TEMPS']          = dESCLAVE['TEMPS']
-   else:                                 CALCUL_ESCLAVE['TEMPS']          = prof['tps_job'][0]
-   if dESCLAVE.has_key('CLASSE'):        CALCUL_ESCLAVE['CLASSE']         = dESCLAVE['CLASSE']
-   if dESCLAVE.has_key('ACTUALISATION'): CALCUL_ESCLAVE['ACTUALISATION']  = dESCLAVE['ACTUALISATION']
 
    LANCEMENT = CALCUL_ESCLAVE['LANCEMENT']
 
@@ -214,7 +208,6 @@ def macr_recal(self, UNITE_ESCL, RESU_EXP, POIDS, LIST_PARA, RESU_CALC,
    if args.has_key('DYNAMIQUE'):         DYNAMIQUE = args['DYNAMIQUE']
    else:                                 DYNAMIQUE = None
 
-
    #_____________________________________________
    #
    # VERIFICATION PREALABLE SUR GNUPLOT
@@ -233,44 +226,72 @@ def macr_recal(self, UNITE_ESCL, RESU_EXP, POIDS, LIST_PARA, RESU_CALC,
 
    #_____________________________________________
    #
-   # VERIFICATIONS PREALABLES
+   # PARAMETRES DU MODE DISTRIBUTION
    #_____________________________________________
 
    if LANCEMENT == 'DISTRIBUTION':
 
-       # Recuperation des parametres mem_aster et memjeveux
-       try:
-           mem_aster = float(prof['mem_aster'][0])
-       except ValueError:
-           mem_aster = 100.0
-       memjeveux = prof.args.get('memjeveux')
+       print prof.param['tpsjob'][0]
+       print prof.args['tpmax']
+       print prof.param['mem_aster'][0]
+       print prof.args['memjeveux']
+       print prof.param['memjob'][0]
 
-       if mem_aster in (0., 100.):
+       # Pour la conversion mega-mots / mega-octets
+       from asrun.common.sysutils import on_64bits
+       if on_64bits(): facw = 8
+       else:           facw = 4
+
+       # Recuperation du parametre mem_aster
+       try:               mem_aster = int(prof['mem_aster'][0])
+       except ValueError: mem_aster = 100
+       if mem_aster in (0, 100):
            if CALCUL_ESCLAVE['MODE']=='INTERACTIF': UTMESS('A','RECAL0_6')
-           mem_aster = 0.
-       if not memjeveux:
-           UTMESS('F','RECAL0_7')
-    
-       try:
-           if mem_aster == 0.:
-               memjeveux_esclave = float(memjeveux)
-           else:
-               memjeveux_esclave = float(memjeveux) / float(mem_aster) * 100. - float(memjeveux)
-       except:
-           UTMESS('F','RECAL0_8')
-    
-       CALCUL_ESCLAVE['memjeveux_esclave'] = memjeveux_esclave
-       #CALCUL_ESCLAVE['mem_aster'] = mem_aster
-       UTMESS('I','RECAL0_9', valr=memjeveux_esclave)
+           mem_aster = 100
+       CALCUL_ESCLAVE['mem_aster'] = mem_aster
 
+       # Utilisation du mot-cle TEMPS
+       if dESCLAVE.has_key('TEMPS'):    
+          CALCUL_ESCLAVE['tpsjob'] = int(dESCLAVE['TEMPS']/60)
+          CALCUL_ESCLAVE['tpmax']  = int(dESCLAVE['TEMPS'])
+       else:
+          # Recuperation depuis le calcul maitre
+          CALCUL_ESCLAVE['tpsjob'] = prof.param['tpsjob'][0]
+          CALCUL_ESCLAVE['tpmax']  = prof.args['tpmax']
 
+       # Utilisation du mot-cle MEMOIRE
+       if dESCLAVE.has_key('MEMOIRE'):    
+          CALCUL_ESCLAVE['memjob']    = int(dESCLAVE['MEMOIRE']*1024)
+          # Calcul du parametre memjeveux esclave
+          memjeveux                   = int(dESCLAVE['MEMOIRE']/facw)
+          try:
+             if mem_aster == 100: CALCUL_ESCLAVE['memjeveux'] = memjeveux
+             else:                CALCUL_ESCLAVE['memjeveux'] = float(int( (float(mem_aster) / 100.) * float(memjeveux)))
+          except:
+             UTMESS('F','RECAL0_8')
+       else:
+          # Recuperation depuis le calcul maitre
+          CALCUL_ESCLAVE['memjob']    = int(prof.param['memjob'][0])
+          CALCUL_ESCLAVE['memjeveux'] = prof.args['memjeveux']
+
+       # Parametres batch
        if CALCUL_ESCLAVE['MODE']=='BATCH':
+           if dESCLAVE.has_key('CLASSE'):        CALCUL_ESCLAVE['CLASSE']         = dESCLAVE['CLASSE']
+           if dESCLAVE.has_key('ACTUALISATION'): CALCUL_ESCLAVE['ACTUALISATION']  = dESCLAVE['ACTUALISATION']
+
+           # Affichage parametres batch
            if CALCUL_ESCLAVE['CLASSE']: classe = CALCUL_ESCLAVE['CLASSE']
            else:                        classe = ' -auto- '
-           UTMESS('I','RECAL0_69', valk=( str(CALCUL_ESCLAVE['TEMPS']), str(CALCUL_ESCLAVE['MEMOIRE']), classe ) )
+           UTMESS('I','RECAL0_69', valk=( str(CALCUL_ESCLAVE['tpmax']), str(int(CALCUL_ESCLAVE['memjob'])/1024), str(int(float(CALCUL_ESCLAVE['memjeveux'])*facw)), classe ) )
+
+   #_____________________________________________
+   #
+   # VERIFICATIONS
+   #_____________________________________________
 
    if float(PARA_DIFF_FINI) > 0.1:
       UTMESS('A','RECAL0_76', valk=( str(PARA_DIFF_FINI) ) )
+
 
    #_____________________________________________
    #

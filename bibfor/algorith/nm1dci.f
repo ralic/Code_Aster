@@ -2,7 +2,7 @@
      &                  DEPS,VIM,OPTION,MATERI,SIGP,VIP,DSDE)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
+C MODIF ALGORITH  DATE 15/11/2010   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -34,7 +34,8 @@ C IN  EM        : MODULE D YOUNG MOINS
 C IN  EP        : MODULE D YOUNG PLUS
 
 C IN  SIGM    : CONTRAINTE AU TEMPS MOINS
-C IN  DEPS    : DEFORMATION  TOTALE PLUS - DEFORMATION MOINS
+C IN  DEPS    : DEFORMATION  TOTALE PLUS - DEFORMATION MOINS 
+C                       - INCREMENT DEFORMATION THERMIQUE
 C IN  VIM     : VARIABLE INTERNES MOINS
 C IN  OPTION     : OPTION DE CALCUL
 
@@ -53,7 +54,7 @@ C     ------------------------------------------------------------------
 C     ------------------------------------------------------------------
 C     VARIABLES LOCALES
 C     ------------------------------------------------------------------
-      REAL*8 SIGE,DP,VALPAR,VALRES(2),DEPSTH,ETM,ETP,XP,XM,HM,HP
+      REAL*8 SIGE,DP,VALPAR,VALRES(2),ETM,ETP,XP,XM,HM,HP
       REAL*8 TREF,TEMPP,TEMPM
       CHARACTER*2 FB2,CODRES(2)
       CHARACTER*8 NOMPAR,NOMECL(2)
@@ -73,8 +74,7 @@ C     ------------------------------------------------------------------
       SIGY = VALRES(2)
       XM = VIM(1)
 C     ------------------------------------------------------------------
-      CALL VERIFT(FAMI,KPG,KSP,'T',IMATE,'ELAS',1,DEPSTH,IRET)
-      SIGE = EP* (SIGM/EM+DEPS-DEPSTH) - HP/HM*XM
+      SIGE = EP* (SIGM/EM+DEPS) - HP/HM*XM
 
       SIELEQ = ABS(SIGE)
 C     ------------------------------------------------------------------
@@ -86,7 +86,7 @@ C     ------------------------------------------------------------------
           DSDE = EP
           DP = 0.D0
           XP = HP/HM*XM
-          SIGP = EP* (SIGM/EM+DEPS-DEPSTH)
+          SIGP = EP* (SIGM/EM+DEPS)
           VIP(1) = XP
         ELSE
           VIP(2) = 1.D0

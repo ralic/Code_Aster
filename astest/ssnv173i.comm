@@ -1,4 +1,4 @@
-# MODIF  DATE 21/09/2010   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 15/11/2010   AUTEUR PELLET J.PELLET 
 # TITRE BARREAU FISSURE AVEC X-FEM
 # ssnv173i.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -30,7 +30,8 @@ MAILLAGE=DEFI_GROUP(reuse =MAILLAGE,
                     MAILLAGE=MAILLAGE,
                     CREA_GROUP_NO=_F(GROUP_MA='VOL',),);
 
-MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAGE,AFFE=_F(GROUP_MA=('VOL',), PHENOMENE='MECANIQUE', MODELISATION='3D',))
+MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAGE,AFFE=_F(GROUP_MA=('VOL',), PHENOMENE='MECANIQUE', MODELISATION='3D',),
+                     PARTITION=_F(PARALLELISME='CENTRALISE'))
 
 LN=FORMULE(NOM_PARA=('X','Y','Z'),VALE='Z-12.5 ');
 LT=FORMULE(NOM_PARA=('X','Y','Z'),VALE='X-10. ');
@@ -69,7 +70,7 @@ L_INST=DEFI_LIST_REEL(DEBUT=0.0,
                       INTERVALLE=_F(JUSQU_A=3.0,
                                     NOMBRE=3,),);
 
-MODI_MODELE(reuse=MODELEK, MODELE=MODELEK, PARTITION=_F(PARALLELISME='MAIL_DISPERSE'))
+MODI_MODELE(reuse=MODELEK, MODELE=MODELEK, PARTITION=_F(PARALLELISME='CENTRALISE'))
 UTOT=STAT_NON_LINE(SOLVEUR=_F(METHODE='MUMPS',PCENT_PIVOT=10,),MODELE=MODELEK,
                    CHAM_MATER=CHAMPMAT,
                    EXCIT=(_F(CHARGE=CH,),
@@ -100,20 +101,21 @@ MA_XFEM=POST_MAIL_XFEM(
 MOD_VISU=AFFE_MODELE(MAILLAGE=MA_XFEM,
                      AFFE=_F(TOUT='OUI',
                               PHENOMENE='MECANIQUE',
-                              MODELISATION='3D',),)
+                              MODELISATION='3D',),
+                     PARTITION=_F(PARALLELISME='CENTRALISE'))
 
 RES_XFEM=POST_CHAM_XFEM(MODELE_VISU   = MOD_VISU,
                         RESULTAT      = UTOT,
-                        
+
                         INFO          = 2)
 
 #IMPR_RESU(FORMAT='GMSH',UNITE=82,RESU=_F(RESULTAT=RES_XFEM));
 
 
 
-# -------------------------------------------------------------   
+# -------------------------------------------------------------
 #            TEST_TABLE
-# -------------------------------------------------------------   
+# -------------------------------------------------------------
 
 
 DEP=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',

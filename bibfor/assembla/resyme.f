@@ -1,6 +1,6 @@
       SUBROUTINE RESYME(RESU1Z,BASEZ,RESU2Z)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 08/11/2010   AUTEUR PELLET J.PELLET 
+C MODIF ASSEMBLA  DATE 15/11/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -91,7 +91,7 @@ C     -------------------------------------------
       END IF
 
 
-C --- CREATION DU RESUELEM SYMETRIQUE :
+C --- CREATION DU MATR_ELEM SYMETRIQUE :
 C     -------------------------------------------
       CALL JEDETR(RESUL2//'.RELR')
       CALL JEDETR(RESUL2//'.RERR')
@@ -121,7 +121,7 @@ C       --------------------------------
           IF (SYMEL.EQ.'NON_SYM') THEN
             CALL DISMOI('F','NOM_LIGREL',RESL1,'RESUELEM',IBID,LIGREL,
      &                  IER)
-       CALL UTIMSD(6,2,.FALSE.,.TRUE.,RESL1,1,' ')
+
             CALL CALCUL('S',OPTION,LIGREL,1,RESL1,'PNOSYM',1,RESL2,
      &                  'PSYM',BASE,'OUI')
 C           -- ON VERIFIE QUE LES DIFFERENTS TYPE_ELEMENT ON FAIT LEUR

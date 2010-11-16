@@ -1,4 +1,4 @@
-#@ MODIF recal Macro  DATE 21/09/2010   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF recal Macro  DATE 16/11/2010   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -572,7 +572,7 @@ class CALCULS_ASTER:
          try:
             execfile(new)
          except Exception, e:
-            UTMESS('F', 'RECAL0_49', valk=str(e))
+            UTMESS('F', 'RECAL0_85', valk=str(e))
 
 
          # ----------------------------------------------------------------------------
@@ -694,7 +694,7 @@ class CALCULS_ASTER:
         # ----------------------------------------------------------------------------
         sys.argv = ['']
         run = AsRunFactory()
-        run.options['debug_stderr'] = True  # pas d'output d'executions des esclaves dans l'output maitre
+        if info<=2: run.options['debug_stderr'] = False  # pas d'output d'executions des esclaves dans l'output maitre
 
         # Master profile
         prof = ASTER_PROFIL(filename=export)
@@ -721,16 +721,29 @@ class CALCULS_ASTER:
                     resudir = None
         if not resudir:
             # Par defaut, dans un sous-repertoire du repertoire d'execution
+            shared_tmp=None
             pref = 'tmp_macr_recal_'
             # On cherche s'il y a un fichier hostfile pour placer les fichiers dans un repertoire partage
             l_fr = getattr(prof, 'data')
             l_tmp = l_fr[:]
             for dico in l_tmp:
                if dico['type']=='hostfile':
-                  pref = os.environ['HOME'] + os.sep + 'tmp_macr_recal_'
+                  shared_tmp = run.get('shared_tmp')
+                  if not shared_tmp: shared_tmp = os.path.join( os.environ['HOME'], 'tmp_macr_recal')
+                  pref = shared_tmp + os.sep + 'tmp_macr_recal_'
                   break
             # Si batch alors on place les fichiers dans un repertoire partage
-            if prof['mode'][0]=='batch': pref = os.environ['HOME'] + os.sep + 'tmp_macr_recal_'
+            if prof['mode'][0]=='batch': 
+                  shared_tmp = run.get('shared_tmp')
+                  if not shared_tmp: shared_tmp = os.path.join( os.environ['HOME'], 'tmp_macr_recal')
+                  pref = shared_tmp + os.sep + 'tmp_macr_recal1_'
+
+            # Creation du repertoire temporaire racine de macr_recal
+            if shared_tmp:
+               if not os.path.isdir(shared_tmp):
+                   try:    os.mkdir(shared_tmp)
+                   except: 
+                      if info>=1: UTMESS('F','RECAL0_82',valk=shared_tmp)
 
             resudir = tempfile.mkdtemp(prefix=pref)
         flashdir = os.path.join(resudir,'flash')
@@ -781,7 +794,7 @@ class CALCULS_ASTER:
                                      resudir=resudir, flashdir=flashdir,
                                      keywords={'POST_CALCUL': '\n'.join(t)},
                                      info=info,
-                                     nbnook=0, exec_result=[])            # OUT
+                                     nbnook=[0,]*numthread, exec_result=[])            # OUT
         # ... and dispatch task on 'list_tests'
         etiq = 'calc_%%0%dd' % (int(log10(nbval)) + 1)
         labels = [etiq % (i+1) for i in range(nbval)]
@@ -794,38 +807,38 @@ class CALCULS_ASTER:
         # Liste des diagnostics
         # ----------------------------------------------------------------------------
         d_diag = {}
+
+
         for result in task.exec_result:
-            #print result
             label = result[0]
             diag  = result[2]
             if len(result) >= 8: output_filename = os.path.join('~', 'flasheur', str(result[7]))
             else:                output_filename = ''
             d_diag[label] = diag
+
             if not diag[0:2] in ['OK', '<A']:
-              if not diag in ['<F>_COPY_ERROR']:
-                  UTMESS('A', 'RECAL0_70', valk=(label, output_filename))
-  
-                  # Affichage de l'output
-                  try:
-                     f=open(output_filename, 'r')
-                     print f.read()
-                     f.close()
-                  except: pass
+              if diag in ['<F>_NOT_RUN', '<A>_NOT_SUBMITTED']:
+                  UTMESS('F', 'RECAL0_86', valk=(label, diag))
+              else:
+                  UTMESS('A', 'RECAL0_83', valk=(label, output_filename))
+
+#                  # Affichage de l'output
+#                  try:
+#                     f=open(output_filename, 'r')
+#                     print f.read()
+#                     f.close()
+#                  except: pass
 
 
         if not d_diag: 
-                UTMESS('F', 'RECAL0_71', valk=resudir)
+                UTMESS('F', 'RECAL0_84', valk=resudir)
         self.list_diag = [ d_diag[label] for label in labels ]
 
         # ----------------------------------------------------------------------------
         # Arret si tous les jobs ne se sont pas deroules correctement
         # ----------------------------------------------------------------------------
-        iret = 0
-        if task.nbnook > 0:
-           iret = 4
-        if iret:
-           UTMESS('A', 'RECAL0_71', valk=resudir)
-           run.Sortie(iret)
+        if sum(task.nbnook) > 0:
+           UTMESS('F', 'RECAL0_84', valk=resudir)
 
 
 

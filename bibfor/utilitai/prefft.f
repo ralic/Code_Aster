@@ -7,7 +7,7 @@
       CHARACTER*19  RESIN,VECTOT
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 14/12/2009   AUTEUR DEVESA G.DEVESA 
+C MODIF UTILITAI  DATE 15/11/2010   AUTEUR GREFFET N.GREFFET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -63,20 +63,21 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER      LTPS2,IEQ,IORDR,LACCE,LFON,IDDL,NBVA,LTRA,NEQ
       INTEGER      LVAR,NBTOT,IER,LORDR,LPRO,LVAL,IRET
       INTEGER      LVALE,NBVAL,NIN,NOUT,NBVIN,NBVOUT,LFON2,J
-      REAL*8       R8B
+      REAL*8       R8B, DIMAG
       COMPLEX*16   C16B
       CHARACTER*1  K1B
       CHARACTER*4  GRANDE
       CHARACTER*8  K8B,CRIT
       CHARACTER*16 K16B,NOMOP,SYM
       CHARACTER*19 K19B,CHDEP,KNUME,CHAM19,NOMFON,SORTIE,FONOUT
-      CHARACTER*24 VALE,CHDEP2
+      CHARACTER*24 VALE,CHDEP2,TYPRES
 C     ------------------------------------------------------------------
       CALL JEMARQ() 
 C      pour ne pas invalider NPARA
       GRANDE = GRAND
       IER = 0
 C
+      CALL GETTCO(RESIN,TYPRES)
       CALL JELIRA(RESIN//'.ORDR','LONUTI',NBORDR,K1B)
       CALL RSORAC(RESIN,'LONUTI',IBID,R8B,K8B,C16B,R8B,K8B,NBORDR,1,
      &              IBID)
@@ -97,11 +98,19 @@ C
       LFON = LVAR + NBORDR
       FONOUT = '&&PREFFT.FCTFFT'
 C
-      CALL RSEXCH(RESIN,GRANDE,1,CHDEP,IRET)
-      CALL JEVEUO(CHDEP//'.VALE','L',LVAL)
+      IF (TYPRES .NE. 'TRAN_GENE') THEN
+         CALL RSEXCH(RESIN,GRANDE,1,CHDEP,IRET)
+         CALL JEVEUO(CHDEP//'.VALE','L',LVAL)
 C  Nombre d'equations : NEQ
-      CHDEP2 = CHDEP(1:19)//'.VALE'
-      CALL JELIRA(CHDEP2,'LONMAX',NEQ,K1B)
+         CHDEP2 = CHDEP(1:19)//'.VALE'
+         CALL JELIRA(CHDEP2,'LONMAX',NEQ,K1B)
+      ELSE
+         CALL JEVEUO(RESIN//'.'//GRANDE ,'L',LVAL)
+         CHDEP2 = RESIN//'.'//GRANDE
+         CALL JELIRA(CHDEP2,'LONMAX',NEQ,K1B)
+         NEQ = NEQ / NBORDR
+         CALL JEVEUO(RESIN//'.INST' ,'L',LACCE)
+      ENDIF
       IDDL = 1
       II = 0
       SYM = SYMETR
@@ -109,15 +118,23 @@ C  Nombre d'equations : NEQ
 C  Retirer 1 pour DYNA_LINE_TRAN...
 C         NBORDR = NBORDR -1
 C
-         DO 5 IORDR = 0 , NBORDR-1
-            CALL RSEXCH(RESIN,GRANDE,IORDR,CHAM19,IRET)
-            CALL RSADPA(RESIN,'L',1,'INST',IORDR,0,LACCE,K8B)
-            CALL JEVEUO(CHAM19//'.VALE','L',LVALE)
-            ZR(LVAR+IORDR) = ZR(LACCE)
-            ZR(LFON+II) = ZR(LVALE+IDDL-1)
-            II = II + 1
-            CALL JELIBE(CHAM19//'.VALE')
-   5     CONTINUE
+         IF (TYPRES .NE. 'TRAN_GENE') THEN
+            DO 5 IORDR = 0 , NBORDR-1
+               CALL RSEXCH(RESIN,GRANDE,IORDR,CHAM19,IRET)
+               CALL RSADPA(RESIN,'L',1,'INST',IORDR,0,LACCE,K8B)
+               CALL JEVEUO(CHAM19//'.VALE','L',LVALE)
+               ZR(LVAR+IORDR) = ZR(LACCE)
+               ZR(LFON+II) = ZR(LVALE+IDDL-1)
+               II = II + 1
+               CALL JELIBE(CHAM19//'.VALE')
+   5        CONTINUE
+         ELSE
+            DO 6 IORDR = 0 , NBORDR-1
+               ZR(LVAR+IORDR) = ZR(LACCE+IORDR)
+               ZR(LFON+II) = ZR(LVAL+IDDL-1+(NEQ*IORDR))
+               II = II + 1
+   6        CONTINUE
+         ENDIF
 C         NIN = LVAR
          NBVIN = NBORDR*2
 C         CALL SPDFFT(NSENS,NIN,NBVIN,NOUT,NBVOUT,METHOD,SYM,'V')
@@ -138,30 +155,54 @@ C         ENDIF
          DO 15 I = 1,NBVOUT
             ZC(NPARA+(IDDL-1)*NBVOUT+I-1) = ZC(LFON2+I-1)
    15    CONTINUE
-         CALL JELIBE(CHAM19//'.VALE')
-         DO 10 IDDL = 2 , NEQ
-            II = 0
-            DO 20 IORDR = 0 , NBORDR-1
-               CALL RSEXCH(RESIN,GRANDE,IORDR,CHAM19,IRET)
-               CALL RSADPA(RESIN,'L',1,'INST',IORDR,0,LACCE,K8B)
-               CALL JEVEUO(CHAM19//'.VALE','L',LVALE)
-               ZR(LFON+II) = ZR(LVALE+IDDL-1)
-               II = II + 1
-               CALL JELIBE(CHAM19//'.VALE')
-   20       CONTINUE
-            SYM = SYMETR
-            NBVIN = NBORDR*2
-            CALL SPDFFT(NSENS,NOMFON,NBVIN,FONOUT,NBVOUT,METHOD,
+         IF (TYPRES .NE. 'TRAN_GENE') THEN
+            CALL JELIBE(CHAM19//'.VALE')
+            DO 10 IDDL = 2 , NEQ
+               II = 0
+               DO 20 IORDR = 0 , NBORDR-1
+                  CALL RSEXCH(RESIN,GRANDE,IORDR,CHAM19,IRET)
+                  CALL RSADPA(RESIN,'L',1,'INST',IORDR,0,LACCE,K8B)
+                  CALL JEVEUO(CHAM19//'.VALE','L',LVALE)
+                  ZR(LFON+II) = ZR(LVALE+IDDL-1)
+                  II = II + 1
+                  CALL JELIBE(CHAM19//'.VALE')
+   20          CONTINUE
+               SYM = SYMETR
+               NBVIN = NBORDR*2
+               CALL SPDFFT(NSENS,NOMFON,NBVIN,FONOUT,NBVOUT,METHOD,
      &                  SYM,'V')
-            CALL JEVEUO(FONOUT,'L',NOUT)
+               CALL JEVEUO(FONOUT,'L',NOUT)
 C
 C   Recup resultat FFT-1
 C
-            LFON2 = NOUT + NBVOUT
-            DO 30 J = 1,NBVOUT
-               ZC(NPARA+(IDDL-1)*NBVOUT+J-1) = ZC(LFON2+J-1)
-   30       CONTINUE
-   10    CONTINUE
+               LFON2 = NOUT + NBVOUT
+               DO 30 J = 1,NBVOUT
+                  ZC(NPARA+(IDDL-1)*NBVOUT+J-1) = ZC(LFON2+J-1)
+   30          CONTINUE
+   10       CONTINUE
+         ELSE
+            DO 11 IDDL = 2 , NEQ
+               II = 0
+               DO 21 IORDR = 0 , NBORDR-1
+                  ZR(LFON+II) = ZR(LVAL+IDDL-1+(NEQ*IORDR))
+C                  ZR(LFON+II) = ZR(LVAL+(IDDL-1)*NBORDR+IORDR)
+                  II = II + 1
+   21          CONTINUE
+               SYM = SYMETR
+               NBVIN = NBORDR*2
+               CALL SPDFFT(NSENS,NOMFON,NBVIN,FONOUT,NBVOUT,METHOD,
+     &                  SYM,'V')
+               CALL JEVEUO(FONOUT,'L',NOUT)
+C
+C   Recup resultat FFT-1
+C
+               LFON2 = NOUT + NBVOUT
+               DO 31 J = 1,NBVOUT
+                  ZC(NPARA+(IDDL-1)*NBVOUT+J-1) = ZC(LFON2+J-1)
+   31          CONTINUE
+   11       CONTINUE
+         
+         ENDIF
 C
 C On stocke les instants a la fin
 C
@@ -182,6 +223,9 @@ C  Sens inverse
             II = II + 1
             CALL JELIBE(CHAM19//'.VALE')
    50    CONTINUE
+         IF (ABS(ZR(LFON+II-1)).LT.((1.D-6)*ABS(ZR(LFON+II-2)))) THEN
+            ZR(LFON+II-1) = 0.D0
+         ENDIF
 C         NIN = LVAR
          NBVIN = NBORDR*3
          CALL SPDFFT(NSENS,NOMFON,NBVIN,FONOUT,NBVOUT,METHOD,SYM,'V')
@@ -235,7 +279,7 @@ C
             ZR(NPARA+(NEQ*NBVOUT)+I-1) = ZR(NOUT+I-1)
   400    CONTINUE
       ENDIF
-      CALL JELIBE(CHAM19//'.VALE')
+      IF (TYPRES .NE. 'TRAN_GENE') CALL JELIBE(CHAM19//'.VALE')
 C
       NBVA = NBVOUT
       CALL JEDETR( KNUME )

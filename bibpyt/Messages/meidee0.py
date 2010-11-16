@@ -1,4 +1,4 @@
-#@ MODIF meidee0 Messages  DATE 28/01/2010   AUTEUR BODEL C.BODEL 
+#@ MODIF meidee0 Messages  DATE 16/11/2010   AUTEUR BODEL C.BODEL 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -44,10 +44,6 @@ Cela risque de causer une erreur fatale par la suite.
 """),
 7: _("""
 Erreur dans MACRO_EXPANS
-"""),
-8: _("""
-MEIDEE TURBULENT : erreur dans le calcul des longueurs de corrélation
-généralisées
 """),
 8: _("""
 Impossible de trouver le modele associe a la base de modes %(k1)s.

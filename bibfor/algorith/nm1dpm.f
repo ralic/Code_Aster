@@ -5,7 +5,7 @@
      >           VIP,SIGP,DSDE)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
+C MODIF ALGORITH  DATE 15/11/2010   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -62,6 +62,7 @@ C       SIGM   : CONTRAINTE INSTANT MOINS
 C       VI M   : VARIABLES INTERNES INSTANT MOINS
 C       DEPS   : DEFORMATION TOTALE INSTANT PLUS
 C               - DEFORMATION TOTALE INSTANT PLUS
+C               - INCREMENT DEFORMATION THERMIQUE
 C       TEMPP  : TEMPERATURE IMPOSEE A L'INSTANT PLUS
 C
 C OUT : SIGP   : CONTRAINTE A L'INSTANT ACTUEL
@@ -75,7 +76,7 @@ C
       REAL*8      EPSRM,EPSRP,SIGRP,EPSM,DEPSM
       REAL*8      SIGEL,PALEL,PALEC,PALSU,PALGIU
       REAL*8      SIGEPS,EPSMEC,DEPMEC,EPS0,SIG0
-      REAL*8      FLBG,EPSTHE
+      REAL*8      FLBG
       REAL*8      A5,XISEC,XIPRIM,BC,BT,GAS,B0,SIGINF
       REAL*8      CHGDIR,ER,EPSETP,XI,SIGETP
       REAL*8      E,SY,EPSU,SU,EPSH,R0,B,A1
@@ -101,10 +102,6 @@ C
       ENDIF
 C
 C----------RECUPERATION DES CARACTERISTIQUES
-C
-C
-      CALL VERIFT(FAMI,KPG,KSP,'T',IMATE,'ELAS',1,EPSTHE,IRET)
-C
 C
       E=CSTPM(1)
       SY=CSTPM(2)
@@ -148,6 +145,7 @@ C   DEFORMATION I   OBTENU PAR       I SIGNIFICATION      I
 C---------------I--------------------I--------------------I
 C   DEPS        I ARGUMENT           I DEF TOTALE TEMPS + I
 C               I                    I-DEF TOTALE TEMPS - I
+C               I                    I-DEF THERMIQUE      I
 C---------------I--------------------I--------------------I
 C   EPSM        I VARIABLE INTERNE - I DEF MECA TEMPS -   I
 C---------------I--------------------I--------------------I
@@ -163,7 +161,7 @@ C               I                    I =EPSM+DEPMEC       I
 C---------------I--------------------I--------------------I
 C
 C12345678901234567890123456789012345678901234567890123456789012345678901
-      DEPMEC  =DEPS-EPSTHE
+      DEPMEC  =DEPS
       EPSMEC  =EPSM + DEPMEC
       CHGDIR  =DEPSM*DEPMEC
       SIGEPS  =SIGM*DEPMEC

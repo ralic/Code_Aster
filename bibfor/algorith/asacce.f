@@ -1,15 +1,15 @@
       SUBROUTINE ASACCE ( NOMSY, MONOAP, MUAPDE, NBSUP, NEQ, NBMODE,
-     &                    ID, NUME, VECMOD, PARMOD, ASSPEC, RECMOD )
+     &                    ID, NUME, VECMOD, PARMOD, SPECTR, RECMOD )
       IMPLICIT  NONE
       INTEGER           NBSUP, NEQ, NBMODE, ID
       REAL*8            VECMOD(NEQ,*), PARMOD(NBMODE,*),
-     &                  ASSPEC(NBSUP,*), RECMOD(NBSUP,NEQ,*)
+     &                  SPECTR(*), RECMOD(NBSUP,NEQ,*)
       CHARACTER*16      NOMSY
       CHARACTER*(*)     NUME
       LOGICAL           MONOAP, MUAPDE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 05/11/2007   AUTEUR VIVAN L.VIVAN 
+C MODIF ALGORITH  DATE 16/11/2010   AUTEUR AUDEBERT S.AUDEBERT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -41,7 +41,7 @@ C IN  : NBMODE : NOMBRE DE MODES
 C IN  : ID     : LA DIRECTION DE CALCUL
 C IN  : VECMOD : VECTEUR DES DEFORMEES MODALES
 C IN  : PARMOD : VECTEUR DES PARAMETRES MODAUX
-C IN  : ASSPEC : VECTEUR DES ASYMPTOTES DES SPECTRES
+C IN  : SPECTR : VECTEUR DES SPECTRES
 C OUT : RECMOD : VECTEUR DES RECOMBINAISONS MODALES
 C     ------------------------------------------------------------------
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
@@ -86,7 +86,7 @@ C           --- VECTEUR UNITAIRE DANS LA DIRECTION ID ---
             CALL WKVECT('&&ASTRON.VECTEUR_UNIT','V V I',NEQ,JUNI)
             CALL PTEDDL('NUME_DDL',NUME,1,NOMCMP(ID),NEQ,ZI(JUNI))
 C
-            GAMMA0 = ASSPEC(1,ID)
+            GAMMA0 = SPECTR(ID+3*(NBMODE-1))
             DO 24 IN = 1,NEQ
                XXX = GAMMA0 * ( ZI(JUNI+IN-1) - ZR(JMOD+IN-1) )
                RECMOD(IS,IN,ID) = RECMOD(IS,IN,ID) + XXX*XXX
@@ -109,7 +109,7 @@ C           --- VECTEUR UNITAIRE DANS LA DIRECTION ID ---
             CALL WKVECT('&&ASTRON.VECTEUR_UNIT','V V I',NEQ,JUNI)
             CALL PTEDDL('NUME_DDL',NUME,1,NOMCMP(ID),NEQ,ZI(JUNI))
 C
-            GAMMA0 = ASSPEC(1,ID)
+            GAMMA0 = SPECTR(ID+3*(NBMODE-1)+3*NBMODE*(IS-1))
             DO 44 IN = 1,NEQ
                XXX = GAMMA0 * ( ZI(JUNI+IN-1) - ZR(JMOD+IN-1) )
                RECMOD(IS,IN,ID) = RECMOD(IS,IN,ID) + XXX*XXX

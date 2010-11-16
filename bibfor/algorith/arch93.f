@@ -3,7 +3,7 @@
       IMPLICIT NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 19/10/2010   AUTEUR DELMAS J.DELMAS 
+C MODIF ALGORITH  DATE 16/11/2010   AUTEUR BODEL C.BODEL 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,6 +20,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
+C     ------------------------------------------------------------------
 C
 C     BUT:
 C       OPERATEUR MODE_STATIQUE
@@ -61,7 +62,7 @@ C
      &             IMODA,IMODE,IMODF,IUL,IUNIFI,JAXE,JPARA,LCOEF,LDDAD,
      &             LFREQ,LNOM,LNUME,LRES,LTYPE,NA,NBMOAD,NBMODA,LADPA,
      &             NBMODD,NBMODE,NBMODF,NBPAR,NBPSMO,NBTROU,NNAXE,
-     &             NND
+     &             NND,LNUMM
 
       REAL*8       R8B, ZERO, UN, COEF(3),XNORM
 
@@ -149,6 +150,8 @@ C              --- LES PARAMETRES ---
                ZK16(LNOM) = NOMNOE//NOMCMP
                CALL RSADPA(RESU,'E',1,'NUME_DDL',IMODE,0,LNUME,K8B)
                ZI(LNUME) = IEQ
+               CALL RSADPA(RESU,'E',1,'NUME_MODE',IMODE,0,LNUMM,K8B)
+               ZI(LNUMM) = IMODE
                CALL RSADPA(RESU,'E',1,'TYPE_DEFO',IMODE,0,LTYPE,K8B)
                ZK16(LTYPE) = 'DEPL_IMPO'
                CALL RSADPA(RESU,'E',1,'TYPE_MODE',IMODE,0,LTYPE,K8B)
@@ -199,6 +202,8 @@ C              --- LES PARAMETRES ---
                ZK16(LNOM) = NOMNOE//NOMCMP
                CALL RSADPA(RESU,'E',1,'NUME_DDL',IMODE,0,LNUME,K8B)
                ZI(LNUME) = IEQ
+               CALL RSADPA(RESU,'E',1,'NUME_MODE',IMODE,0,LNUMM,K8B)
+               ZI(LNUMM) = IMODE
                CALL RSADPA(RESU,'E',1,'TYPE_DEFO',IMODE,0,LTYPE,K8B)
                ZK16(LTYPE) = 'FORC_IMPO'
                CALL RSADPA(RESU,'E',1,'TYPE_MODE',IMODE,0,LTYPE,K8B)
@@ -249,6 +254,8 @@ C              --- LES PARAMETRES ---
                ZK16(LNOM) = NOMNOE//NOMCMP
                CALL RSADPA(RESU,'E',1,'NUME_DDL',IMODE,0,LNUME,K8B)
                ZI(LNUME) = IEQ
+               CALL RSADPA(RESU,'E',1,'NUME_MODE',IMODE,0,LNUMM,K8B)
+               ZI(LNUMM) = IMODE
                CALL RSADPA(RESU,'E',1,'TYPE_DEFO',IMODE,0,LTYPE,K8B)
                ZK16(LTYPE) = 'ACCE_DDL_IMPO'
                CALL RSADPA(RESU,'E',1,'TYPE_MODE',IMODE,0,LTYPE,K8B)
@@ -372,6 +379,8 @@ C              --- LES PARAMETRES ---
                ZR(LCOEF) = COEF(2)
                CALL RSADPA(RESU,'E',1,'COEF_Z',IMODE,0,LCOEF,K8B)
                ZR(LCOEF) = COEF(3)
+               CALL RSADPA(RESU,'E',1,'NUME_MODE',IMODE,0,LNUMM,K8B)
+               ZI(LNUMM) = IMODE
                CALL RSADPA(RESU,'E',1,'TYPE_DEFO',IMODE,0,LTYPE,K8B)
                ZK16(LTYPE) = 'ACCE_IMPO'
                CALL RSADPA(RESU,'E',1,'TYPE_MODE',IMODE,0,LTYPE,K8B)
@@ -420,6 +429,8 @@ C              --- LES PARAMETRES ---
                ZK16(LNOM) = '  '
                CALL RSADPA(RESU,'E',1,'NUME_DDL',IMODE,0,LNUME,K8B)
                ZI(LNUME) = IEQ
+               CALL RSADPA(RESU,'E',1,'NUME_MODE',IMODE,0,LNUMM,K8B)
+               ZI(LNUMM) = IMODE
                CALL RSADPA(RESU,'E',1,'TYPE_DEFO',IMODE,0,LTYPE,K8B)
                ZK16(LTYPE) = 'DEPL_IMPO'
                CALL RSADPA(RESU,'E',1,'TYPE_MODE',IMODE,0,LTYPE,K8B)

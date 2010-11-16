@@ -1,24 +1,24 @@
 # MODIF  DATE 16/11/2010   AUTEUR AUDEBERT S.AUDEBERT 
 # TITRE POUTRE ENCASTREE-LIBRE: REPONSE SPECTRALE
-# RESPONSABLE AUDEBERT S.AUDEBERT
-# sdll23b.para = tps_job 60 mem_job 270Mo ncpus 1 liste_test R
+# sdll23c.para = tps_job 60 mem_job 270Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-# (AT YOUR OPTION) ANY LATER VERSION.
-#
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
-#
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
+# RESPONSABLE AUDEBERT S.AUDEBERT
 # ----------------------------------------------------------------------
 # POUTRE ENCASTREE-LIBRE SOUMIS A UN SEISME
 # CORRECTION STATIQUE DE L'EFFET DES MODES PROPRES D'ORDRE ELEVE
@@ -26,20 +26,14 @@
 # ----------------------------------------------------------------------
 
 
-DEBUT( CODE=_F(  NOM = 'SDLL23B',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+DEBUT( CODE=_F(  NOM = 'SDLL23C',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 MAILLAGE=LIRE_MAILLAGE( )
 
 MAILLAGE=DEFI_GROUP( reuse=MAILLAGE,   MAILLAGE=MAILLAGE,
                            CREA_GROUP_MA=_F(  NOM = 'MAILLAGE',
-       MAILLE = ( 'E01', 'E02', 'E03', 'E04','E05','E06','E07','E08','E09',
-'E10','E11','E12','E13','E14','E15','E16','E17','E18','E19','E20','E21'))
+                                           MAILLE = ( 'E01', 'E02', ))
                         )
-
-IMPR_RESU(FORMAT='IDEAS',
-          UNITE=30,
-          RESU=_F(MAILLAGE=MAILLAGE,),
-          ),
 
 MAT=DEFI_MATERIAU( ELAS=_F(  E = 2.E+11,  NU = 0.3,  RHO = 0.) )
 
@@ -48,14 +42,14 @@ CH_MATE=AFFE_MATERIAU(  MAILLAGE=MAILLAGE,
 
 MODELE=AFFE_MODELE(  MAILLAGE=MAILLAGE,AFFE=(
                         _F(  GROUP_MA = 'M_POUT', PHENOMENE = 'MECANIQUE',
-                               MODELISATION = 'POU_D_E'),
+                               MODELISATION = 'POU_D_TG'),
                              _F(  GROUP_NO = 'MASSE',  PHENOMENE = 'MECANIQUE',
                                MODELISATION = 'DIS_T')) )
 
 CARA_ELE=AFFE_CARA_ELEM(  MODELE=MODELE,
                 POUTRE=_F(  GROUP_MA = 'M_POUT',  SECTION = 'GENERALE',
-                         CARA = (   'A',     'IY',      'IZ',      'JX',   ),
-                         VALE = ( 78.1E-4, 5696.E-8, 2003.E-8, 7699.E-8,)),DISCRET=(
+                         CARA = (   'A',     'IY',      'IZ',      'JX',   'AY', 'AZ'),
+                         VALE = ( 78.1E-4, 5696.E-8, 2003.E-8, 7699.E-8, 1.2, 1.2)),DISCRET=(
                 _F(  NOEUD = 'B',  CARA = 'M_T_D_N', VALE = 50000.),
                         _F(  NOEUD = 'C',  CARA = 'M_T_D_N', VALE = 5000.)) )
 
@@ -102,44 +96,44 @@ MODE_MEC=CALC_NO(reuse=MODE_MEC,  RESULTAT=MODE_MEC,
                       TOUT_ORDRE='OUI' )
 
 TEST_RESU(RESU=( _F(  RESULTAT = MODE_MEC,  PARA = 'FREQ',
-#                     CRITERE = 'RELATIF',  PRECISION = 0.01,
-                     NUME_MODE = 1,       VALE = 0.24672983679248),
+                     CRITERE = 'RELATIF',  PRECISION = 0.01,
+                     NUME_MODE = 1,       VALE = 0.247),
                    _F(  RESULTAT = MODE_MEC,  PARA = 'FREQ',
-#                     CRITERE = 'RELATIF',  PRECISION = 0.01,
-                     NUME_MODE = 2,       VALE = 0.41606979330672),
+                     CRITERE = 'RELATIF',  PRECISION = 0.01,
+                     NUME_MODE = 2,       VALE = 0.416),
                    _F(  RESULTAT = MODE_MEC,  PARA = 'FREQ',
-#                     CRITERE = 'RELATIF',  PRECISION = 0.01,
-                     NUME_MODE = 3,       VALE = 7.3932198898911),
+                     CRITERE = 'RELATIF',  PRECISION = 0.01,
+                     NUME_MODE = 3,       VALE = 7.0269),
                    _F(  RESULTAT = MODE_MEC,  PARA = 'FREQ',
-#                     CRITERE = 'RELATIF',  PRECISION = 0.01,
-                     NUME_MODE = 4,       VALE = 12.467464460106),
+                     CRITERE = 'RELATIF',  PRECISION = 0.01,
+                     NUME_MODE = 4,       VALE = 10.9171),
                    _F(  RESULTAT = MODE_MEC,  PARA = 'FREQ',
-#                     CRITERE = 'RELATIF',  PRECISION = 0.01,
-                     NUME_MODE = 5,       VALE = 27.507460449654),
+                     CRITERE = 'RELATIF',  PRECISION = 0.01,
+                     NUME_MODE = 5,       VALE = 27.507),
                    _F(  RESULTAT = MODE_MEC,  PARA = 'FREQ',
-#                     CRITERE = 'RELATIF',  PRECISION = 0.01,
-                     NUME_MODE = 6,       VALE = 41.740148177304))   )
+                     CRITERE = 'RELATIF',  PRECISION = 0.01,
+                     NUME_MODE = 6,       VALE = 41.740))   )
 
 #
 
 TEST_RESU(RESU=( _F(  RESULTAT = MODE_MEC,  PARA = 'FACT_PARTICI_DY',
-#                     CRITERE = 'RELATIF',  PRECISION = 0.01,
-                     NUME_MODE = 1,       VALE =73.316046400148 ),
+                     CRITERE = 'RELATIF',  PRECISION = 0.01,
+                     NUME_MODE = 1,       VALE = 73.322),
                    _F(  RESULTAT = MODE_MEC,  PARA = 'FACT_PARTICI_DZ',
-#                     CRITERE = 'RELATIF',  PRECISION = 0.01,
-                     NUME_MODE = 2,       VALE = 73.316046400148),
+                     CRITERE = 'RELATIF',  PRECISION = 0.01,
+                     NUME_MODE = 2,       VALE = 73.332),
                    _F(  RESULTAT = MODE_MEC,  PARA = 'FACT_PARTICI_DY',
-#                     CRITERE = 'RELATIF',  PRECISION = 0.01,
-                     NUME_MODE = 3,       VALE = 222.76614944881),
+                     CRITERE = 'RELATIF',  PRECISION = 0.01,
+                     NUME_MODE = 3,       VALE = 222.764),
                    _F(  RESULTAT = MODE_MEC,  PARA = 'FACT_PARTICI_DZ',
-#                     CRITERE = 'RELATIF',  PRECISION = 0.01,
-                     NUME_MODE = 4,       VALE = 222.76614944881),
+                     CRITERE = 'RELATIF',  PRECISION = 0.01,
+                     NUME_MODE = 4,       VALE = 222.761),
                    _F(  RESULTAT = MODE_MEC,  PARA = 'FACT_PARTICI_DX',
-#                     CRITERE = 'RELATIF',  PRECISION = 0.01,
-                     NUME_MODE = 5,       VALE = 130.13674275889),
+                     CRITERE = 'RELATIF',  PRECISION = 0.01,
+                     NUME_MODE = 5,       VALE = 130.137),
                    _F(  RESULTAT = MODE_MEC,  PARA = 'FACT_PARTICI_DX',
-#                     CRITERE = 'RELATIF',  PRECISION = 0.01,
-                     NUME_MODE = 6,       VALE = 195.1010717144))      )
+                     CRITERE = 'RELATIF',  PRECISION = 0.01,
+                     NUME_MODE = 6,       VALE = 195.101))      )
 
 MODE_STA=MODE_STATIQUE(  MATR_RIGI=RIGIDITE,   MATR_MASS=MASSE,
                          SOLVEUR=_F(METHODE='MULT_FRONT'),
@@ -202,19 +196,19 @@ SISM_SP3=COMB_SISM_MODAL(  MODE_MECA=MODE_MEC,
 TEST_RESU(RESU=( _F(  RESULTAT = SISM_SP3,  NOM_CHAM = 'DEPL',
 #                     CRITERE = 'RELATIF',  PRECISION = 0.02,
                      NOEUD_CMP = ( 'COMBI',  'QUAD', ),
-                     NOEUD = 'B',     NOM_CMP = 'DY',    VALE = 0.012473833912903),
+                     NOEUD = 'B',     NOM_CMP = 'DY',    VALE = 0.013629557646925),
                    _F(  RESULTAT = SISM_SP3,  NOM_CHAM = 'DEPL',
 #                     CRITERE = 'RELATIF',  PRECISION = 0.02,
                      NOEUD_CMP = ( 'COMBI',  'QUAD', ),
-                     NOEUD = 'C',     NOM_CMP = 'DY',    VALE = 1.2820383667858),
+                     NOEUD = 'C',     NOM_CMP = 'DY',    VALE = 1.2823319955938),
+                   _F(  RESULTAT = SISM_SP3,  NOM_CHAM = 'DEPL',
+#                   CRITERE = 'RELATIF',  PRECISION = 0.02,
+                     NOEUD_CMP = ( 'COMBI',  'QUAD', ),
+                     NOEUD = 'B',     NOM_CMP = 'DZ',    VALE = 2.8597672021264E-03),
                    _F(  RESULTAT = SISM_SP3,  NOM_CHAM = 'DEPL',
 #                     CRITERE = 'RELATIF',  PRECISION = 0.02,
                      NOEUD_CMP = ( 'COMBI',  'QUAD', ),
-                     NOEUD = 'B',     NOM_CMP = 'DZ',    VALE = 2.8326699538329E-03),
-                   _F(  RESULTAT = SISM_SP3,  NOM_CHAM = 'DEPL',
-#                     CRITERE = 'RELATIF',  PRECISION = 0.02,
-                     NOEUD_CMP = ( 'COMBI',  'QUAD', ),
-                     NOEUD = 'C',     NOM_CMP = 'DZ',    VALE = 0.76732602647580))
+                     NOEUD = 'C',     NOM_CMP = 'DZ',    VALE = 0.76782573063606))
               )
 
 #
@@ -222,45 +216,45 @@ TEST_RESU(RESU=( _F(  RESULTAT = SISM_SP3,  NOM_CHAM = 'DEPL',
 TEST_RESU(RESU=( _F(  RESULTAT = SISM_SP3,  NOM_CHAM = 'REAC_NODA',
 #                     CRITERE = 'ABSOLU',   PRECISION = 0.0001,
                      NOEUD_CMP = ( 'COMBI',  'QUAD', ),
-                     NOEUD = 'A',     NOM_CMP = 'DX',    VALE = 9.3557827900295E-10),
+                     NOEUD = 'A',     NOM_CMP = 'DX',    VALE = 2.1971168376976E-12),
                    _F(  RESULTAT = SISM_SP3,  NOM_CHAM = 'REAC_NODA',
 #                     CRITERE = 'RELATIF',  PRECISION = 0.02,
                      NOEUD_CMP = ( 'COMBI',  'QUAD', ),
-                     NOEUD = 'A',     NOM_CMP = 'DY',    VALE = 1.2407217704158E+06),
+                     NOEUD = 'A',     NOM_CMP = 'DY',    VALE = 1.786596370118E+06),
                    _F(  RESULTAT = SISM_SP3,  NOM_CHAM = 'REAC_NODA',
 #                     CRITERE = 'RELATIF',  PRECISION = 0.02,
                      NOEUD_CMP = ( 'COMBI',  'QUAD', ),
-                     NOEUD = 'A',     NOM_CMP = 'DZ',    VALE = 27188.52643932),
+                     NOEUD = 'A',     NOM_CMP = 'DZ',    VALE =39162.572803515 ),
                    _F(  RESULTAT = SISM_SP3,  NOM_CHAM = 'REAC_NODA',
 #                     CRITERE = 'RELATIF',  PRECISION = 0.03,
                      NOEUD_CMP = ( 'COMBI',  'QUAD', ),
-                     NOEUD = 'A',     NOM_CMP = 'DRY',    VALE = 2.6268962998574E+05),
+                     NOEUD = 'A',     NOM_CMP = 'DRY',    VALE = 2.6191880163205E+05),
                    _F(  RESULTAT = SISM_SP3,  NOM_CHAM = 'REAC_NODA',
 #                     CRITERE = 'RELATIF',  PRECISION = 0.02,
                      NOEUD_CMP = ( 'COMBI',  'QUAD', ),
-                     NOEUD = 'A',     NOM_CMP = 'DRZ',    VALE = 5.9693667838728E+05))
+                     NOEUD = 'A',     NOM_CMP = 'DRZ',    VALE = 5.6297469517745E+05))
                    )
 #
 TEST_RESU(RESU=(_F( RESULTAT= SISM_SP3 , NOM_CHAM= 'SIPO_ELNO_DEPL',
 #                   CRITERE= 'RELATIF'  , PRECISION= 0.02,
                    NOEUD_CMP= ( 'COMBI' , 'QUAD', ),
                    MAILLE = 'E01',
-                   NOEUD= 'A'    , NOM_CMP= 'SMFY'   , VALE=  4.6118263691316E+09),
+                   NOEUD= 'A'    , NOM_CMP= 'SMFY'   , VALE=  4.6117462564375E+09),
                 _F( RESULTAT= SISM_SP3 , NOM_CHAM= 'SIPO_ELNO_DEPL',
 #                   CRITERE= 'RELATIF' , PRECISION= 0.02,
                    NOEUD_CMP= ( 'COMBI' , 'QUAD', ),
                    MAILLE = 'E01',
-                   NOEUD= 'A'    , NOM_CMP= 'SMFZ'   , VALE=  2.9802130723279E+10),
+                   NOEUD= 'A'    , NOM_CMP= 'SMFZ'   , VALE=   2.9794825166173E+10),
                  _F( RESULTAT= SISM_SP3 , NOM_CHAM= 'SIPO_ELNO_DEPL',
 #                   CRITERE= 'RELATIF' , PRECISION= 0.02,
                    NOEUD_CMP= ( 'COMBI' , 'QUAD', ),
                    MAILLE = 'E01',
-                   NOEUD= 'A'    , NOM_CMP= 'SVY'   , VALE= 1.5886322284454E+08),
+                   NOEUD= 'A'    , NOM_CMP= 'SVY'   , VALE= 1.9063128148933E+08),
                  _F( RESULTAT= SISM_SP3 , NOM_CHAM= 'SIPO_ELNO_DEPL',
 #                   CRITERE= 'RELATIF' , PRECISION= 0.03,
                    NOEUD_CMP= ( 'COMBI' , 'QUAD', ),
                    MAILLE = 'E01',
-                   NOEUD= 'A'    , NOM_CMP= 'SVZ'   , VALE= 3.4812453827554E+06)),
+                   NOEUD= 'A'    , NOM_CMP= 'SVZ'   , VALE=  4.1786782760899E+06)),
                  )
 #
 
@@ -290,19 +284,19 @@ TEST_RESU(RESU=( _F(  RESULTAT = SISM_SP6,  NOM_CHAM = 'DEPL',
                    _F(  RESULTAT = SISM_SP6,  NOM_CHAM = 'DEPL',
 #                     CRITERE = 'RELATIF',  PRECISION = 0.02,
                      NOEUD_CMP = ( 'COMBI',  'QUAD', ),
-                     NOEUD = 'B',     NOM_CMP = 'DY',    VALE = 0.012473833912903),
+                     NOEUD = 'B',     NOM_CMP = 'DY',    VALE = 0.013629557646925),
                    _F(  RESULTAT = SISM_SP6,  NOM_CHAM = 'DEPL',
 #                     CRITERE = 'RELATIF',  PRECISION = 0.02,
                      NOEUD_CMP = ( 'COMBI',  'QUAD', ),
-                     NOEUD = 'C',     NOM_CMP = 'DY',    VALE = 1.2820383667858),
+                     NOEUD = 'C',     NOM_CMP = 'DY',    VALE = 1.2823319955938),
                    _F(  RESULTAT = SISM_SP6,  NOM_CHAM = 'DEPL',
 #                     CRITERE = 'RELATIF',  PRECISION = 0.02,
                      NOEUD_CMP = ( 'COMBI',  'QUAD', ),
-                     NOEUD = 'B',     NOM_CMP = 'DZ',    VALE = 3.8149533947522E-03),
+                     NOEUD = 'B',     NOM_CMP = 'DZ',    VALE = 4.7444232405363E-03),
                    _F(  RESULTAT = SISM_SP6,  NOM_CHAM = 'DEPL',
 #                     CRITERE = 'RELATIF',  PRECISION = 0.02,
                      NOEUD_CMP = ( 'COMBI',  'QUAD', ),
-                     NOEUD = 'C',     NOM_CMP = 'DZ',    VALE = 0.76732603227443))
+                     NOEUD = 'C',     NOM_CMP = 'DZ',    VALE = 0.76782574358185))
                      )
 
 #
@@ -314,19 +308,19 @@ TEST_RESU(RESU=( _F(  RESULTAT = SISM_SP6,  NOM_CHAM = 'REAC_NODA',
                    _F(  RESULTAT = SISM_SP6,  NOM_CHAM = 'REAC_NODA',
 #                     CRITERE = 'RELATIF',  PRECISION = 0.02,
                      NOEUD_CMP = ( 'COMBI',  'QUAD', ),
-                     NOEUD = 'A',     NOM_CMP = 'DY',    VALE = 1.2407217704158E+06),
+                     NOEUD = 'A',     NOM_CMP = 'DY',    VALE = 1.786596370118E+06),
                    _F(  RESULTAT = SISM_SP6,  NOM_CHAM = 'REAC_NODA',
 #                     CRITERE = 'RELATIF',  PRECISION = 0.02,
                      NOEUD_CMP = ( 'COMBI',  'QUAD', ),
-                     NOEUD = 'A',     NOM_CMP = 'DZ',    VALE = 7.816175907562E+05),
+                     NOEUD = 'A',     NOM_CMP = 'DZ',    VALE = 1.2782936753791E+06),
                    _F(  RESULTAT = SISM_SP6,  NOM_CHAM = 'REAC_NODA',
 #                     CRITERE = 'RELATIF',  PRECISION = 0.02,
                      NOEUD_CMP = ( 'COMBI',  'QUAD', ),
-                     NOEUD = 'A',     NOM_CMP = 'DRY',   VALE = 4.4814046246508E+05),
+                     NOEUD = 'A',     NOM_CMP = 'DRY',   VALE = 4.6741049214649E+05),
                    _F(  RESULTAT = SISM_SP6,  NOM_CHAM = 'REAC_NODA',
 #                     CRITERE = 'RELATIF',  PRECISION = 0.02,
                      NOEUD_CMP = ( 'COMBI',  'QUAD', ),
-                     NOEUD = 'A',     NOM_CMP = 'DRZ',   VALE = 5.9693667838728E+05))
+                     NOEUD = 'A',     NOM_CMP = 'DRZ',   VALE = 5.6297469517745E+05))
                    )
 
 SISM_3ST=COMB_SISM_MODAL(  MODE_MECA=MODE_MEC,
@@ -354,43 +348,43 @@ TEST_RESU(RESU=( _F(  RESULTAT = SISM_3ST,  NOM_CHAM = 'DEPL',
                    _F(  RESULTAT = SISM_3ST,  NOM_CHAM = 'DEPL',
 #                     CRITERE = 'RELATIF',  PRECISION = 0.02,
                      NOEUD_CMP = ( 'COMBI',  'QUAD', ),
-                     NOEUD = 'B',     NOM_CMP = 'DY',    VALE = 0.012473833912903),
+                     NOEUD = 'B',     NOM_CMP = 'DY',    VALE = 0.013629557646925),
                    _F(  RESULTAT = SISM_3ST,  NOM_CHAM = 'DEPL',
 #                     CRITERE = 'RELATIF',  PRECISION = 0.02,
                      NOEUD_CMP = ( 'COMBI',  'QUAD', ),
-                     NOEUD = 'C',     NOM_CMP = 'DY',    VALE = 1.2820383667858),
+                     NOEUD = 'C',     NOM_CMP = 'DY',    VALE = 1.2823319955938),
                    _F(  RESULTAT = SISM_3ST,  NOM_CHAM = 'DEPL',
 #                     CRITERE = 'RELATIF',  PRECISION = 0.02,
                      NOEUD_CMP = ( 'COMBI',  'QUAD', ),
-                     NOEUD = 'B',     NOM_CMP = 'DZ',    VALE = 4.9492336845147E-03),
+                     NOEUD = 'B',     NOM_CMP = 'DZ',    VALE = 6.0159947697715E-03),
                    _F(  RESULTAT = SISM_3ST,  NOM_CHAM = 'DEPL',
 #                     CRITERE = 'RELATIF',  PRECISION = 0.02,
                      NOEUD_CMP = ( 'COMBI',  'QUAD', ),
-                     NOEUD = 'C',     NOM_CMP = 'DZ',    VALE = 0.76732604110227))
+                     NOEUD = 'C',     NOM_CMP = 'DZ',    VALE = 0.76782575594170))
                    )
 
 #
 
 TEST_RESU(RESU=( _F(  RESULTAT = SISM_3ST,  NOM_CHAM = 'REAC_NODA',
-#                     CRITERE = 'RELATIF',  PRECISION = 0.02,
+                     CRITERE = 'RELATIF',  PRECISION = 0.02,
                      NOEUD_CMP = ( 'COMBI',  'QUAD', ),
                      NOEUD = 'A',     NOM_CMP = 'DX',    VALE = 1.375E+06),
                    _F(  RESULTAT = SISM_3ST,  NOM_CHAM = 'REAC_NODA',
-#                     CRITERE = 'RELATIF',  PRECISION = 0.02,
+                     CRITERE = 'RELATIF',  PRECISION = 0.02,
                      NOEUD_CMP = ( 'COMBI',  'QUAD', ),
-                     NOEUD = 'A',     NOM_CMP = 'DY',    VALE = 1.2407217704158E+06),
+                     NOEUD = 'A',     NOM_CMP = 'DY',    VALE = 1.786596370118E+06),
                    _F(  RESULTAT = SISM_3ST,  NOM_CHAM = 'REAC_NODA',
-#                     CRITERE = 'RELATIF',  PRECISION = 0.02,
+                     CRITERE = 'RELATIF',  PRECISION = 0.02,
                      NOEUD_CMP = ( 'COMBI',  'QUAD', ),
-                     NOEUD = 'A',     NOM_CMP = 'DZ',    VALE = 1.2409168199941E+06),
+                     NOEUD = 'A',     NOM_CMP = 'DZ',    VALE = 1.7867981938393E+06),
                    _F(  RESULTAT = SISM_3ST,  NOM_CHAM = 'REAC_NODA',
-#                     CRITERE = 'RELATIF',  PRECISION = 0.02,
+                     CRITERE = 'RELATIF',  PRECISION = 0.02,
                      NOEUD_CMP = ( 'COMBI',  'QUAD', ),
-                     NOEUD = 'A',     NOM_CMP = 'DRY',   VALE = 6.3365510433959E+05),
+                     NOEUD = 'A',     NOM_CMP = 'DRY',   VALE = 6.0129894713356E+05),
                    _F(  RESULTAT = SISM_3ST,  NOM_CHAM = 'REAC_NODA',
-#                     CRITERE = 'RELATIF',  PRECISION = 0.02,
+                     CRITERE = 'RELATIF',  PRECISION = 0.02,
                      NOEUD_CMP = ( 'COMBI',  'QUAD', ),
-                     NOEUD = 'A',     NOM_CMP = 'DRZ',   VALE = 5.9693667838728E+05))
+                     NOEUD = 'A',     NOM_CMP = 'DRZ',   VALE = 5.6297469517745E+05))
                    )
 
 # ----------------------------------------------------------------------
@@ -420,19 +414,19 @@ TEST_RESU(RESU=( _F(  RESULTAT = SISM_CQC,  NOM_CHAM = 'DEPL',
                    _F(  RESULTAT = SISM_CQC,  NOM_CHAM = 'DEPL',
 #                     CRITERE = 'RELATIF',  PRECISION = 0.02,
                      NOEUD_CMP = ( 'COMBI',  'QUAD', ),
-                     NOEUD = 'B',     NOM_CMP = 'DY',    VALE = 0.012473856031368),
+                     NOEUD = 'B',     NOM_CMP = 'DY',    VALE = 0.013629581953265),
                    _F(  RESULTAT = SISM_CQC,  NOM_CHAM = 'DEPL',
 #                     CRITERE = 'RELATIF',  PRECISION = 0.02,
                      NOEUD_CMP = ( 'COMBI',  'QUAD', ),
-                     NOEUD = 'C',     NOM_CMP = 'DY',    VALE = 1.2820383646338),
+                     NOEUD = 'C',     NOM_CMP = 'DY',    VALE = 1.2823319930104),
                    _F(  RESULTAT = SISM_CQC,  NOM_CHAM = 'DEPL',
 #                     CRITERE = 'RELATIF',  PRECISION = 0.02,
                      NOEUD_CMP = ( 'COMBI',  'QUAD', ),
-                     NOEUD = 'B',     NOM_CMP = 'DZ',    VALE = 3.8149629787884E-03),
+                     NOEUD = 'B',     NOM_CMP = 'DZ',    VALE = 4.7444373736942E-03),
                    _F(  RESULTAT = SISM_CQC,  NOM_CHAM = 'DEPL',
 #                     CRITERE = 'RELATIF',  PRECISION = 0.02,
                      NOEUD_CMP = ( 'COMBI',  'QUAD', ),
-                     NOEUD = 'C',     NOM_CMP = 'DZ',    VALE = 0.76732603179794))
+                     NOEUD = 'C',     NOM_CMP = 'DZ',    VALE = 0.76782574270855))
                      )
 
 #
@@ -444,19 +438,19 @@ TEST_RESU(RESU=( _F(  RESULTAT = SISM_CQC,  NOM_CHAM = 'REAC_NODA',
                    _F(  RESULTAT = SISM_CQC,  NOM_CHAM = 'REAC_NODA',
 #                     CRITERE = 'RELATIF',  PRECISION = 0.02,
                      NOEUD_CMP = ( 'COMBI',  'QUAD', ),
-                     NOEUD = 'A',     NOM_CMP = 'DY',   VALE = 1.240721851097E+06),
+                     NOEUD = 'A',     NOM_CMP = 'DY',   VALE = 1.7865964957309E+06),
                    _F(  RESULTAT = SISM_CQC,  NOM_CHAM = 'REAC_NODA',
 #                     CRITERE = 'RELATIF',  PRECISION = 0.02,
                      NOEUD_CMP = ( 'COMBI',  'QUAD', ),
-                     NOEUD = 'A',     NOM_CMP = 'DZ',   VALE = 7.8161772800652E+05),
+                     NOEUD = 'A',     NOM_CMP = 'DZ',   VALE = 1.2782939178264E+06),
                    _F(  RESULTAT = SISM_CQC,  NOM_CHAM = 'REAC_NODA',
 #                     CRITERE = 'RELATIF',  PRECISION = 0.02,
                      NOEUD_CMP = ( 'COMBI',  'QUAD', ),
-                     NOEUD = 'A',     NOM_CMP = 'DRY',  VALE = 4.4814153748419E+05),
+                     NOEUD = 'A',     NOM_CMP = 'DRY',  VALE = 4.6741183576697E+05),
                    _F(  RESULTAT = SISM_CQC,  NOM_CHAM = 'REAC_NODA',
 #                     CRITERE = 'RELATIF',  PRECISION = 0.02,
                      NOEUD_CMP = ( 'COMBI',  'QUAD', ),
-                     NOEUD = 'A',     NOM_CMP = 'DRZ',  VALE = 5.9693743146768E+05))
+                     NOEUD = 'A',     NOM_CMP = 'DRZ',  VALE = 5.629755035049E+05))
                    )
 
 # ----------------------------------------------------------------------
@@ -487,19 +481,19 @@ TEST_RESU(RESU=( _F(  RESULTAT = SISM_DPC,  NOM_CHAM = 'DEPL',
                    _F(  RESULTAT = SISM_DPC,  NOM_CHAM = 'DEPL',
 #                     CRITERE = 'RELATIF',  PRECISION = 0.02,
                      NOEUD_CMP = ( 'COMBI',  'QUAD', ),
-                     NOEUD = 'B',     NOM_CMP = 'DY',    VALE = 0.012477381282041),
+                     NOEUD = 'B',     NOM_CMP = 'DY',    VALE = 0.013633420210604),
                    _F(  RESULTAT = SISM_DPC,  NOM_CHAM = 'DEPL',
 #                     CRITERE = 'RELATIF',  PRECISION = 0.02,
                      NOEUD_CMP = ( 'COMBI',  'QUAD', ),
-                     NOEUD = 'C',     NOM_CMP = 'DY',    VALE = 1.2820380215887),
+                     NOEUD = 'C',     NOM_CMP = 'DY',    VALE = 1.2823315849942),
                    _F(  RESULTAT = SISM_DPC,  NOM_CHAM = 'DEPL',
 #                     CRITERE = 'RELATIF',  PRECISION = 0.02,
                      NOEUD_CMP = ( 'COMBI',  'QUAD', ),
-                     NOEUD = 'B',     NOM_CMP = 'DZ',    VALE = 3.8158095661316E-03),
+                     NOEUD = 'B',     NOM_CMP = 'DZ',    VALE = 4.7456199055417E-03),
                    _F(  RESULTAT = SISM_DPC,  NOM_CHAM = 'DEPL',
 #                     CRITERE = 'RELATIF',  PRECISION = 0.02,
                      NOEUD_CMP = ( 'COMBI',  'QUAD', ),
-                     NOEUD = 'C',     NOM_CMP = 'DZ',    VALE = 0.76732598970295))
+                     NOEUD = 'C',     NOM_CMP = 'DZ',    VALE = 0.76782566963015))
                     )
 
 #
@@ -511,19 +505,19 @@ TEST_RESU(RESU=( _F(  RESULTAT = SISM_DPC,  NOM_CHAM = 'REAC_NODA',
                    _F(  RESULTAT = SISM_DPC,  NOM_CHAM = 'REAC_NODA',
 #                     CRITERE = 'RELATIF',  PRECISION = 0.02,
                      NOEUD_CMP = ( 'COMBI',  'QUAD', ),
-                     NOEUD = 'A',     NOM_CMP = 'DY',   VALE = 1.2407347118635E+06),
+                     NOEUD = 'A',     NOM_CMP = 'DY',   VALE = 1.7866163341938E+06),
                    _F(  RESULTAT = SISM_DPC,  NOM_CHAM = 'REAC_NODA',
 #                     CRITERE = 'RELATIF',  PRECISION = 0.02,
                      NOEUD_CMP = ( 'COMBI',  'QUAD', ),
-                     NOEUD = 'A',     NOM_CMP = 'DZ',   VALE = 7.8162985301398E+05),
+                     NOEUD = 'A',     NOM_CMP = 'DZ',   VALE = 1.2783142059665E+06),
                    _F(  RESULTAT = SISM_DPC,  NOM_CHAM = 'REAC_NODA',
 #                     CRITERE = 'RELATIF',  PRECISION = 0.02,
                      NOEUD_CMP = ( 'COMBI',  'QUAD', ),
-                     NOEUD = 'A',     NOM_CMP = 'DRY',  VALE = 4.4823649770349E+05),
+                     NOEUD = 'A',     NOM_CMP = 'DRY',  VALE = 4.6752425798924E+05),
                    _F(  RESULTAT = SISM_DPC,  NOM_CHAM = 'REAC_NODA',
 #                     CRITERE = 'RELATIF',  PRECISION = 0.02,
                      NOEUD_CMP = ( 'COMBI',  'QUAD', ),
-                     NOEUD = 'A',     NOM_CMP = 'DRZ',  VALE = 5.9705746268039E+05))
+                     NOEUD = 'A',     NOM_CMP = 'DRZ',  VALE = 5.6310315145429E+05))
                    )
 
 FIN( )

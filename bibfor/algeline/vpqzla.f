@@ -3,9 +3,9 @@
      &   LVEC, KQRN, LVALPR, NCONV, OMECOR, KTYP, KQRNR,
      &   NEQACT, ILSCAL, IRSCAL, OPTIOF, TYPRES, OMEMIN, OMEMAX, OMESHI,
      &   DDLEXC, NFREQ, LMASSE, LRAIDE, LAMOR, NUMEDD, SIGMA,
-     &   ICSCAL, IVSCAL, IISCAL, IBSCAL)
+     &   ICSCAL, IVSCAL, IISCAL, IBSCAL, FLAGE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 02/11/2010   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGELINE  DATE 15/11/2010   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -81,6 +81,7 @@ C IN  NUMEDD : K19: NOM DU NUME_DDL
 C IN  SIGMA  : C16: VALEUR DU SHIFT EN GENE COMPLEXE ET QUADRATIQUE
 C IN ICSCAL/IVSCAL: IS :ADRESSE JEVEUX VECTEURS AUX POUR QZ_EQUI
 C IN IISCAL/IBSCAL: IS/LOG : ADR. JEVEUX VECTEURS AUX POUR QZ_EQUI
+C OUT FLAGE  : LO : FLAG PERMETTANT DE GERER LES IMPRESSIONS
 C-----------------------------------------------------------------------
 C CORPS DU PROGRAMME
       IMPLICIT NONE
@@ -112,6 +113,7 @@ C DECLARATION PARAMETRES D'APPELS
       CHARACTER*19 NUMEDD
       REAL*8       OMECOR,OMEMIN,OMEMAX,OMESHI
       COMPLEX*16   SIGMA
+      LOGICAL      FLAGE
 C-----------------------------------------------------------------------
 C DECLARATION VARIABLES LOCALES
 
@@ -965,7 +967,8 @@ C-------------------------------------
         VALI(1)=NCONV/IMULT
         VALI(2)=NEQACT
         IF (LKR.AND.(.NOT.LC).AND.(.NOT.LNSM).AND.(.NOT.LNSR)) THEN
-          KMSG='F'
+          KMSG='E'
+          FLAGE=.TRUE.
         ELSE
           KMSG='I'
         ENDIF
@@ -1008,7 +1011,8 @@ C ---- GENERALISE SYM REEL
           IF (NCONV.NE.NFREQ) THEN
             VALI(1)=NCONV
             VALI(2)=NFREQ
-            KMSG='F'
+            KMSG='E'
+            FLAGE=.TRUE.
             CALL U2MESG(KMSG,'ALGELINE5_63',0,' ',2,VALI,0,VALR)
           ENDIF
           DO 81 I = 1, NCONV
@@ -1025,7 +1029,8 @@ C ---- GENERALISE SYM REEL
           ELSE
             VALI(1)=NFREQ
             VALI(2)=NCONV
-            KMSG='F'
+            KMSG='E'
+            FLAGE=.TRUE.
             CALL U2MESG(KMSG,'ALGELINE5_66',0,' ',2,VALI,0,VALR)
           ENDIF
         ENDIF

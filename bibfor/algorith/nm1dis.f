@@ -2,7 +2,7 @@
      &                  DEPS,VIM,OPTION,COMPOR,MATERI,SIGP,VIP,DSDE)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
+C MODIF ALGORITH  DATE 15/11/2010   AUTEUR LEBOUVIER F.LEBOUVIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -36,7 +36,8 @@ C IN  SY       : LIMITE D ELASTICITE INITIALE
 
 C IN  SIGM    : CONTRAINTE AU TEMPS MOINS
 C               UTILISE UNIQUEMENT POUR EVALUER DSDEM
-C IN  DEPS    : DEFORMATION  TOTALE PLUS - DEFORMATION TOTALE MOINS
+C IN  DEPS    : DEFORMATION  TOTALE PLUS - DEFORMATION MOINS 
+C                    - INCREMENT DEFORMATION THERMIQUE
 C IN  EPSPM   : DEFORMATION  PLASTIQUE MOINS
 C IN  PM      : DEFORMATION  PLASTIQUE CUMULEE MOINS
 
@@ -56,7 +57,7 @@ C     ------------------------------------------------------------------
 C     ------------------------------------------------------------------
 C     VARIABLES LOCALES
 C     ------------------------------------------------------------------
-      REAL*8 RPRIM,RM,SIGE,VALPAR,VALRES(2),DEPSTH,AIRERP,DUM
+      REAL*8 RPRIM,RM,SIGE,VALPAR,VALRES(2),AIRERP,DUM
       REAL*8 SIELEQ,RP,DP,NU,ASIGE
       INTEGER JPROLM,JVALEM,NBVALM,NBVALP,JPROLP,JVALEP,IRET
       CHARACTER*2 BL2,FB2,CODRES(2)
@@ -110,8 +111,7 @@ C --- CARACTERISTIQUES ECROUISSAGE DONNE PAR COURBE DE TRACTION
 C     ------------------------------------------------------------------
 C     ESTIMATION ELASTIQUE
 C     ------------------------------------------------------------------
-      CALL VERIFT(FAMI,KPG,KSP,'T',IMATE,'ELAS',1,DEPSTH,IRET)
-      SIGE = EP* (SIGM/EM+DEPS-DEPSTH)
+      SIGE = EP* (SIGM/EM+DEPS)
       SIELEQ = ABS(SIGE)
 C     ------------------------------------------------------------------
 C     CALCUL EPSP, P , SIG
