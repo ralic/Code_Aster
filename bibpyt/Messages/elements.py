@@ -1,4 +1,4 @@
-#@ MODIF elements Messages  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
+#@ MODIF elements Messages  DATE 22/11/2010   AUTEUR FLEJOU J-L.FLEJOU 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -38,6 +38,14 @@ Conseil :
   Emettre une demande d'évolution.
 """),
 
+3 : _("""
+Vous utilisez des éléments de type GRILLE_MEMBRANE. Le mot clef ANGL_REP de la commande AFFE_CARA_ELEM
+permet d'indiquer la direction des armatures.
+La projection de ce vecteur directeur dans le plan de certains des éléments de GRILLE_MEMBRANE est nulle.
+
+Conseil :
+  Vérifiez les données sous le mot clef ANGL_REP de la commande AFFE_CARA_ELEM.
+"""),
 
 
 5 : _("""

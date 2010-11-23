@@ -1,7 +1,7 @@
       SUBROUTINE UTACLI(X, LISTE, INDMAX, TOLE, INDICE)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 23/02/2000   AUTEUR GJBHHEL E.LORENTZ 
+C MODIF UTILITAI  DATE 23/11/2010   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,13 +21,13 @@ C ======================================================================
 
       IMPLICIT NONE
       INTEGER  INDMAX, INDICE
-      REAL*8   X, LISTE(0:INDMAX), TOLE
+      REAL*8   X, LISTE(0:INDMAX-1), TOLE
 
 C ----------------------------------------------------------------------
 C               RECHERCHE DANS UNE LISTE DE REELS MONOTONE
 C ----------------------------------------------------------------------
 C IN  X      : REEL RECHERCHE
-C IN  LISTE  : LISTE (0:INDMAX)
+C IN  LISTE  : LISTE (0:INDMAX-1) DE TAILLE INDMAX
 C IN  INDMAX : INDICE MAXIMUM DANS LA LISTE
 C IN  TOLE   : TOLERANCE ABSOLUE AUTORISEE
 C OUT INDICE : INDICE DU REEL LE PLUS PROCHE DANS LE SEUIL DE TOLERANCE
@@ -40,7 +40,7 @@ C ----------------------------------------------------------------------
 
 
 C    RECHERCHE DU PREMIER INDICE CORRESPONDANT
-      DO 10 I = 0, INDMAX
+      DO 10 I = 0, INDMAX-1
         DELTA = ABS(X-LISTE(I))
         IF (DELTA .LE. TOLE) GOTO 100
  10   CONTINUE
@@ -53,7 +53,7 @@ C    RECHERCHE DE L'INDICE OPTIMAL (CARACTERE MONOTONE DE LA LISTE)
  100  CONTINUE
       INDICE = I
       DELMIN = DELTA
-      DO 110 I = INDICE+1, INDMAX
+      DO 110 I = INDICE+1, INDMAX-1
         DELTA = ABS(X-LISTE(I))
         IF (DELTA.GT.DELMIN) GOTO 9999
         DELMIN = DELTA

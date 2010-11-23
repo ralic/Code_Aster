@@ -1,7 +1,7 @@
       SUBROUTINE APETS1(KPTSC)
       IMPLICIT NONE
 !           CONFIGURATION MANAGEMENT OF EDF VERSION                  
-!& MODIF APETS1 PETSC  DATE 29/03/2010   AUTEUR BOITEAU O.BOITEAU 
+!& MODIF APETS1 PETSC  DATE 23/11/2010   AUTEUR DESOZA T.DESOZA 
 ! ================================================================== 
 ! COPYRIGHT (C) 1991 - 2008  EDF R&D              WWW.CODE-ASTER.ORG 
 !                                                                    

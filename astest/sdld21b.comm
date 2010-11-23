@@ -1,5 +1,6 @@
-# MODIF  DATE 21/10/2008   AUTEUR NISTOR I.NISTOR 
+# MODIF  DATE 22/11/2010   AUTEUR GREFFET N.GREFFET 
 # TITRE SYSTEME MASSE-RESSORT A 8 DDL AVEC AMORTISSEMENT VISQUEUX
+# sdld21b.para = tps_job 240 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -99,11 +100,368 @@ DYNAHARG=DYNA_LINE_HARM( MATR_MASS=MASSEGEN, MATR_RIGI=RIGIDGEN,
                               TOUT_CHAM='OUI',
                              EXCIT=_F(  COEF_MULT = 1.,VECT_ASSE = EFFOGENE)
                             )
+DYNTPST = REST_SPEC_TEMP( RESU_GENE = DYNAHARG , 
+                          METHODE = 'PROL_ZERO' ,
+                          SYMETRIE = 'NON' ,
+                          TOUT_CHAM = 'OUI'  );
+DYNTPSU = REST_SPEC_TEMP( RESU_GENE = DYNAHARG , 
+                          METHODE = 'PROL_ZERO' ,
+                          SYMETRIE = 'NON' ,
+                          NOM_CHAM = 'DEPL'  );
+DYNTPSV = REST_SPEC_TEMP( RESU_GENE = DYNAHARG , 
+                          METHODE = 'PROL_ZERO' ,
+                          SYMETRIE = 'NON' ,
+                          NOM_CHAM = 'VITE'  );
+DYNTPSA = REST_SPEC_TEMP( RESU_GENE = DYNAHARG , 
+                          METHODE = 'PROL_ZERO' ,
+                          SYMETRIE = 'NON' ,
+                          NOM_CHAM = 'ACCE'  );
+
+DYNTU = RECU_FONCTION(RESU_GENE=DYNTPST,
+                      NOEUD = 'P4',NOM_CMP = 'DX',NOM_CHAM = 'DEPL', )
+DYNTV = RECU_FONCTION(RESU_GENE=DYNTPST,
+                      NOEUD = 'P4',NOM_CMP = 'DX',NOM_CHAM = 'VITE', )
+DYNTA = RECU_FONCTION(RESU_GENE=DYNTPST,
+                      NOEUD = 'P4',NOM_CMP = 'DX',NOM_CHAM = 'ACCE', )
+DYNU = RECU_FONCTION(RESU_GENE=DYNTPSU,
+                      NOEUD = 'P4',NOM_CMP = 'DX',NOM_CHAM = 'DEPL', )
+DYNV = RECU_FONCTION(RESU_GENE=DYNTPSV,
+                      NOEUD = 'P4',NOM_CMP = 'DX',NOM_CHAM = 'VITE', )
+DYNA = RECU_FONCTION(RESU_GENE=DYNTPSA,
+                      NOEUD = 'P4',NOM_CMP = 'DX',NOM_CHAM = 'ACCE', )
+
+COMPU1 = CALC_FONCTION(COMB=( _F(  FONCTION = DYNTU, COEF = 1.),
+                              _F(  FONCTION = DYNU, COEF = -1.))
+                       )
+COMPV1 = CALC_FONCTION(COMB=( _F(  FONCTION = DYNTV, COEF = 1.),
+                              _F(  FONCTION = DYNV, COEF = -1.))
+                       )
+COMPA1 = CALC_FONCTION(COMB=( _F(  FONCTION = DYNTA, COEF = 1.),
+                              _F(  FONCTION = DYNA, COEF = -1.))
+                       )
+MAXCU1 = INFO_FONCTION( MAX=_F(  FONCTION = COMPU1))
+MAXCV1 = INFO_FONCTION( MAX=_F(  FONCTION = COMPV1))
+MAXCA1 = INFO_FONCTION( MAX=_F(  FONCTION = COMPA1))
+#IMPR_TABLE(TABLE=MAXCU1)
+#IMPR_TABLE(TABLE=MAXCV1)
+#IMPR_TABLE(TABLE=MAXCA1)
+TEST_TABLE(TABLE=MAXCU1,TYPE_TEST='SOMM_ABS',
+           NOM_PARA='DEPL',VALE=0.,REFERENCE='ANALYTIQUE',CRITERE='ABSOLU',
+            );
+TEST_TABLE(TABLE=MAXCV1,TYPE_TEST='SOMM_ABS',
+           NOM_PARA='VITE',VALE=0.,REFERENCE='ANALYTIQUE',CRITERE='ABSOLU',
+            );
+TEST_TABLE(TABLE=MAXCA1,TYPE_TEST='SOMM_ABS',
+           NOM_PARA='ACCE',VALE=0.,REFERENCE='ANALYTIQUE',CRITERE='ABSOLU',
+            );
+
+
+# TPS1 = 0.25
+# TPS2 = 1.
+# 
+# TEST_FONCTION(VALEUR=(
+#                        _F(  FONCTION = DYNTU,NOM_PARA='INST',VALE_PARA=TPS1,
+#                            VALE_REFE=0.,REFERENCE='AUTRE_ASTER',),
+#                        _F(  FONCTION = DYNU,NOM_PARA='INST',VALE_PARA=TPS1,
+#                            VALE_REFE=0.,REFERENCE='AUTRE_ASTER',),
+#                        _F(  FONCTION = DYNTU,NOM_PARA='INST',VALE_PARA=TPS2,
+#                             VALE_REFE=0.,REFERENCE='AUTRE_ASTER',),
+#                        _F(  FONCTION = DYNU,NOM_PARA='INST',VALE_PARA=TPS2,
+#                            VALE_REFE=0.,REFERENCE='AUTRE_ASTER',),
+#                        _F(  FONCTION = DYNTV,NOM_PARA='INST',VALE_PARA=TPS1,
+#                            VALE_REFE=0.,REFERENCE='AUTRE_ASTER',),
+#                        _F(  FONCTION = DYNV,NOM_PARA='INST',VALE_PARA=TPS1,
+#                            VALE_REFE=0.,REFERENCE='AUTRE_ASTER',),
+#                        _F(  FONCTION = DYNTV,NOM_PARA='INST',VALE_PARA=TPS2,
+#                            VALE_REFE=0.,REFERENCE='AUTRE_ASTER',),
+#                        _F(  FONCTION = DYNV,NOM_PARA='INST',VALE_PARA=TPS2,
+#                            VALE_REFE=0.,REFERENCE='AUTRE_ASTER',),
+#                        _F(  FONCTION = DYNA,NOM_PARA='INST',VALE_PARA=TPS1,
+#                            VALE_REFE=0.,REFERENCE='AUTRE_ASTER',),
+#                        _F(  FONCTION = DYNTA,NOM_PARA='INST',VALE_PARA=TPS2,
+#                            VALE_REFE=0.,REFERENCE='AUTRE_ASTER',),
+#                        _F(  FONCTION = DYNA,NOM_PARA='INST',VALE_PARA=TPS2,
+#                            VALE_REFE=0.,REFERENCE='AUTRE_ASTER',),
+#                            ),);
+                          
+                           
+                           
+# IMPR_FONCTION(   FORMAT='XMGRACE', UNITE=51, COURBE= (
+#                      _F( FONCTION=DYNTU, LEGENDE='DEPL_TOUT_CHAM',),
+#                      _F( FONCTION=DYNU, LEGENDE='DEPL_NOM_CHAM',),
+#                      ))
+# IMPR_FONCTION(   FORMAT='XMGRACE', UNITE=52, COURBE= (
+#                      _F( FONCTION=DYNTV, LEGENDE='VITE_TOUT_CHAM',),
+#                      _F( FONCTION=DYNV, LEGENDE='VITE_NOM_CHAM',),
+#                      ))
+# IMPR_FONCTION(   FORMAT='XMGRACE', UNITE=53, COURBE= (
+#                      _F( FONCTION=DYNTA, LEGENDE='ACCE_TOUT_CHAM',),
+#                      _F( FONCTION=DYNA, LEGENDE='ACCE_NOM_CHAM',),
+#                      ))
+
+
+
+
+TRANPHYT=REST_GENE_PHYS(    RESU_GENE=DYNTPST,
+                                TOUT_CHAM='OUI',
+                                                      )
+TRANPHYU=REST_GENE_PHYS(    RESU_GENE=DYNTPSU,
+                                TOUT_CHAM='OUI',
+                                                      )
+TRANPHYV=REST_GENE_PHYS(    RESU_GENE=DYNTPSV,
+                                TOUT_CHAM='OUI',
+                                                      )
+TRANPHYA=REST_GENE_PHYS(    RESU_GENE=DYNTPSA,
+                                TOUT_CHAM='OUI',
+                                                      )
+
+DYNAHARP=DYNA_LINE_HARM( MATR_MASS=MATASSM, MATR_RIGI=MATASSR,
+                            MATR_AMOR=MATASSC,
+#                            AMOR_REDUIT:(0.0087 0.0171 0.0250 0.0321
+#                                         0.0383 0.0433 0.0470 0.0492)
+#                       AMOR_REDUIT=(8.6824E-3, 0.017101, 0.0250, 3.21393E-2,
+#                            3.83022E-2, 4.33012E-2, 4.69846E-2, 4.92403E-2,),
+#                            AMOR_REDUIT:(27.982 108.55 300.00 383.42
+#                                         544.56 900.00 819.43 900.00)
+                             LIST_FREQ=LIFREQ,
+                              TOUT_CHAM='OUI',
+                             EXCIT=_F(  COEF_MULT = 1.,VECT_ASSE = VECTASS)
+                            )
+
+DYNTPSTP = REST_SPEC_TEMP( RESULTAT = DYNAHARP , 
+                          METHODE = 'PROL_ZERO' ,
+                          SYMETRIE = 'NON' ,
+                          TOUT_CHAM = 'OUI'  );
+DYNTPSUP = REST_SPEC_TEMP( RESULTAT = DYNAHARP , 
+                          METHODE = 'PROL_ZERO' ,
+                          SYMETRIE = 'NON' ,
+                          NOM_CHAM = 'DEPL'  );
+DYNTPSVP = REST_SPEC_TEMP( RESULTAT = DYNAHARP , 
+                          METHODE = 'PROL_ZERO' ,
+                          SYMETRIE = 'NON' ,
+                          NOM_CHAM = 'VITE'  );
+DYNTPSAP = REST_SPEC_TEMP( RESULTAT = DYNAHARP , 
+                          METHODE = 'PROL_ZERO' ,
+                          SYMETRIE = 'NON' ,
+                          NOM_CHAM = 'ACCE'  );
+
+DYNTUP = RECU_FONCTION(RESULTAT=DYNTPSTP,
+                      NOEUD = 'P4',NOM_CMP = 'DX',NOM_CHAM = 'DEPL', )
+DYNTVP = RECU_FONCTION(RESULTAT=DYNTPSTP,
+                      NOEUD = 'P4',NOM_CMP = 'DX',NOM_CHAM = 'VITE', )
+DYNTAP = RECU_FONCTION(RESULTAT=DYNTPSTP,
+                      NOEUD = 'P4',NOM_CMP = 'DX',NOM_CHAM = 'ACCE', )
+DYNUP = RECU_FONCTION(RESULTAT=DYNTPSUP,
+                      NOEUD = 'P4',NOM_CMP = 'DX',NOM_CHAM = 'DEPL', )
+DYNVP = RECU_FONCTION(RESULTAT=DYNTPSVP,
+                      NOEUD = 'P4',NOM_CMP = 'DX',NOM_CHAM = 'VITE', )
+DYNAP = RECU_FONCTION(RESULTAT=DYNTPSAP,
+                      NOEUD = 'P4',NOM_CMP = 'DX',NOM_CHAM = 'ACCE', )
+
+COMPU1P = CALC_FONCTION(COMB=( _F(  FONCTION = DYNTUP, COEF = 1.),
+                              _F(  FONCTION = DYNUP, COEF = -1.))
+                       )
+COMPV1P = CALC_FONCTION(COMB=( _F(  FONCTION = DYNTVP, COEF = 1.),
+                              _F(  FONCTION = DYNVP, COEF = -1.))
+                       )
+COMPA1P = CALC_FONCTION(COMB=( _F(  FONCTION = DYNTAP, COEF = 1.),
+                              _F(  FONCTION = DYNAP, COEF = -1.))
+                       )
+
+MAXCU1P = INFO_FONCTION( MAX=_F(  FONCTION = COMPU1P))
+MAXCV1P = INFO_FONCTION( MAX=_F(  FONCTION = COMPV1P))
+MAXCA1P = INFO_FONCTION( MAX=_F(  FONCTION = COMPA1P))
+#IMPR_TABLE(TABLE=MAXCU1P)
+#IMPR_TABLE(TABLE=MAXCV1P)
+#IMPR_TABLE(TABLE=MAXCA1P)
+TEST_TABLE(TABLE=MAXCU1P,TYPE_TEST='SOMM_ABS',
+           NOM_PARA='DX',VALE=0.,REFERENCE='ANALYTIQUE',CRITERE='ABSOLU',
+            );
+TEST_TABLE(TABLE=MAXCV1P,TYPE_TEST='SOMM_ABS',
+           NOM_PARA='DX',VALE=0.,REFERENCE='ANALYTIQUE',CRITERE='ABSOLU',
+            );
+TEST_TABLE(TABLE=MAXCA1P,TYPE_TEST='SOMM_ABS',
+           NOM_PARA='DX',VALE=0.,REFERENCE='ANALYTIQUE',CRITERE='ABSOLU',
+            );
+# IMPR_FONCTION(   FORMAT='XMGRACE', UNITE=61, COURBE= (
+#                      _F( FONCTION=DYNTUP, LEGENDE='DEPL_TOUT_CHAM',),
+#                      _F( FONCTION=DYNUP, LEGENDE='DEPL_NOM_CHAM',),
+#                      ))
+# IMPR_FONCTION(   FORMAT='XMGRACE', UNITE=62, COURBE= (
+#                      _F( FONCTION=DYNTVP, LEGENDE='VITE_TOUT_CHAM',),
+#                      _F( FONCTION=DYNVP, LEGENDE='VITE_NOM_CHAM',),
+#                      ))
+# IMPR_FONCTION(   FORMAT='XMGRACE', UNITE=63, COURBE= (
+#                      _F( FONCTION=DYNTAP, LEGENDE='ACCE_TOUT_CHAM',),
+#                      _F( FONCTION=DYNAP, LEGENDE='ACCE_NOM_CHAM',),
+#                      ))
 
 DYNAHARM=REST_GENE_PHYS(    RESU_GENE=DYNAHARG,
                                 TOUT_CHAM='OUI',
                               LIST_FREQ=LIFREQ
                                                       )
+                                                      
+DYNTPST2 = REST_SPEC_TEMP( RESULTAT = DYNAHARM , 
+                          METHODE = 'PROL_ZERO' ,
+                          SYMETRIE = 'NON' ,
+                          TOUT_CHAM = 'OUI'  );
+DYNTPSU2 = REST_SPEC_TEMP( RESULTAT = DYNAHARM , 
+                          METHODE = 'PROL_ZERO' ,
+                          SYMETRIE = 'NON' ,
+                          NOM_CHAM = 'DEPL'  );
+DYNTPSV2 = REST_SPEC_TEMP( RESULTAT = DYNAHARM , 
+                          METHODE = 'PROL_ZERO' ,
+                          SYMETRIE = 'NON' ,
+                          NOM_CHAM = 'VITE'  );
+DYNTPSA2 = REST_SPEC_TEMP( RESULTAT = DYNAHARM , 
+                          METHODE = 'PROL_ZERO' ,
+                          SYMETRIE = 'NON' ,
+                          NOM_CHAM = 'ACCE'  );
+                                                      
+DYNTUP2 = RECU_FONCTION(RESULTAT=DYNTPST2,
+                      NOEUD = 'P4',NOM_CMP = 'DX',NOM_CHAM = 'DEPL', )
+DYNTVP2 = RECU_FONCTION(RESULTAT=DYNTPST2,
+                      NOEUD = 'P4',NOM_CMP = 'DX',NOM_CHAM = 'VITE', )
+DYNTAP2 = RECU_FONCTION(RESULTAT=DYNTPST2,
+                      NOEUD = 'P4',NOM_CMP = 'DX',NOM_CHAM = 'ACCE', )
+DYNUP2 = RECU_FONCTION(RESULTAT=DYNTPSU2,
+                      NOEUD = 'P4',NOM_CMP = 'DX',NOM_CHAM = 'DEPL', )
+DYNVP2 = RECU_FONCTION(RESULTAT=DYNTPSV2,
+                      NOEUD = 'P4',NOM_CMP = 'DX',NOM_CHAM = 'VITE', )
+DYNAP2 = RECU_FONCTION(RESULTAT=DYNTPSA2,
+                      NOEUD = 'P4',NOM_CMP = 'DX',NOM_CHAM = 'ACCE', )
+                                                      
+COMPU1P2 = CALC_FONCTION(COMB=( _F(  FONCTION = DYNTUP2, COEF = 1.),
+                              _F(  FONCTION = DYNUP2, COEF = -1.))
+                       )
+COMPV1P2 = CALC_FONCTION(COMB=( _F(  FONCTION = DYNTVP2, COEF = 1.),
+                              _F(  FONCTION = DYNVP2, COEF = -1.))
+                       )
+COMPA1P2 = CALC_FONCTION(COMB=( _F(  FONCTION = DYNTAP2, COEF = 1.),
+                              _F(  FONCTION = DYNAP2, COEF = -1.))
+                       )
+
+MAXCU1P2 = INFO_FONCTION( MAX=_F(  FONCTION = COMPU1P2))
+MAXCV1P2 = INFO_FONCTION( MAX=_F(  FONCTION = COMPV1P2))
+MAXCA1P2 = INFO_FONCTION( MAX=_F(  FONCTION = COMPA1P2))
+
+#IMPR_TABLE(TABLE=MAXCU1P2)
+#IMPR_TABLE(TABLE=MAXCV1P2)
+#IMPR_TABLE(TABLE=MAXCA1P2)
+TEST_TABLE(TABLE=MAXCU1P2,TYPE_TEST='SOMM_ABS',
+           NOM_PARA='DX',VALE=0.,REFERENCE='ANALYTIQUE',CRITERE='ABSOLU',
+            );
+TEST_TABLE(TABLE=MAXCV1P2,TYPE_TEST='SOMM_ABS',
+           NOM_PARA='DX',VALE=0.,REFERENCE='ANALYTIQUE',CRITERE='ABSOLU',
+            );
+TEST_TABLE(TABLE=MAXCA1P2,TYPE_TEST='SOMM_ABS',
+           NOM_PARA='DX',VALE=0.,REFERENCE='ANALYTIQUE',CRITERE='ABSOLU',
+            );
+                                                      
+COMPU = CALC_FONCTION(COMB=( _F(  FONCTION = DYNTUP2, COEF = 1.),
+                             _F(  FONCTION = DYNTU, COEF = -1.))
+                       )
+COMPUS = CALC_FONCTION(COMB=( _F(  FONCTION = DYNTUP, COEF = 1.),
+                             _F(  FONCTION = DYNTU, COEF = -1.))
+                       )
+COMPUSS = CALC_FONCTION(COMB=( _F(  FONCTION = DYNTUP, COEF = 1.),
+                             _F(  FONCTION = DYNTUP2, COEF = -1.))
+                       )
+COMPV = CALC_FONCTION(COMB=( _F(  FONCTION = DYNTVP2, COEF = 1.),
+                             _F(  FONCTION = DYNTV, COEF = -1.))
+                       )
+COMPVS = CALC_FONCTION(COMB=( _F(  FONCTION = DYNTVP, COEF = 1.),
+                             _F(  FONCTION = DYNTV, COEF = -1.))
+                       )
+COMPVSS = CALC_FONCTION(COMB=( _F(  FONCTION = DYNTVP, COEF = 1.),
+                             _F(  FONCTION = DYNTVP2, COEF = -1.))
+                       )
+COMPA = CALC_FONCTION(COMB=( _F(  FONCTION = DYNTAP2, COEF = 1.),
+                             _F(  FONCTION = DYNTA, COEF = -1.))
+                       )
+COMPAS = CALC_FONCTION(COMB=( _F(  FONCTION = DYNTAP, COEF = 1.),
+                             _F(  FONCTION = DYNTA, COEF = -1.))
+                       )
+COMPASS = CALC_FONCTION(COMB=( _F(  FONCTION = DYNTAP, COEF = 1.),
+                             _F(  FONCTION = DYNTAP2, COEF = -1.))
+                       )
+MAXCU = INFO_FONCTION( MAX=_F(  FONCTION = COMPU))
+MAXCUS = INFO_FONCTION( MAX=_F(  FONCTION = COMPUS))
+MAXCUSS = INFO_FONCTION( MAX=_F(  FONCTION = COMPUSS))
+MAXCV = INFO_FONCTION( MAX=_F(  FONCTION = COMPV))
+MAXCVS = INFO_FONCTION( MAX=_F(  FONCTION = COMPVS))
+MAXCVSS = INFO_FONCTION( MAX=_F(  FONCTION = COMPVSS))
+MAXCA = INFO_FONCTION( MAX=_F(  FONCTION = COMPA))
+MAXCAS = INFO_FONCTION( MAX=_F(  FONCTION = COMPAS))
+MAXCASS = INFO_FONCTION( MAX=_F(  FONCTION = COMPASS))
+# IMPR_TABLE(TABLE=MAXCU)
+# IMPR_TABLE(TABLE=MAXCUS)
+# IMPR_TABLE(TABLE=MAXCUSS)
+# IMPR_TABLE(TABLE=MAXCV)
+# IMPR_TABLE(TABLE=MAXCVS)
+# IMPR_TABLE(TABLE=MAXCVSS)
+
+TEST_TABLE(TABLE=MAXCU,TYPE_TEST='SOMM_ABS',
+           NOM_PARA='DX',VALE=0.,REFERENCE='ANALYTIQUE',CRITERE='ABSOLU',
+            );
+TEST_TABLE(TABLE=MAXCUS,TYPE_TEST='SOMM_ABS',
+           NOM_PARA='DX',VALE=0.,REFERENCE='ANALYTIQUE',CRITERE='ABSOLU',
+            );
+TEST_TABLE(TABLE=MAXCUSS,TYPE_TEST='SOMM_ABS',
+           NOM_PARA='DX',VALE=0.,REFERENCE='ANALYTIQUE',CRITERE='ABSOLU',
+            );
+TEST_TABLE(TABLE=MAXCV,TYPE_TEST='SOMM_ABS',
+           NOM_PARA='DX',VALE=0.,REFERENCE='ANALYTIQUE',CRITERE='ABSOLU',
+            );
+TEST_TABLE(TABLE=MAXCVS,TYPE_TEST='SOMM_ABS',
+           NOM_PARA='DX',VALE=0.,REFERENCE='ANALYTIQUE',CRITERE='ABSOLU',
+            );
+TEST_TABLE(TABLE=MAXCVSS,TYPE_TEST='SOMM_ABS',
+           NOM_PARA='DX',VALE=0.,REFERENCE='ANALYTIQUE',CRITERE='ABSOLU',
+            );
+TEST_TABLE(TABLE=MAXCA,TYPE_TEST='SOMM_ABS',
+           NOM_PARA='DX',VALE=0.,REFERENCE='ANALYTIQUE',CRITERE='ABSOLU',
+            );
+TEST_TABLE(TABLE=MAXCAS,TYPE_TEST='SOMM_ABS',
+           NOM_PARA='DX',VALE=0.,REFERENCE='ANALYTIQUE',CRITERE='ABSOLU',
+            );
+TEST_TABLE(TABLE=MAXCASS,TYPE_TEST='SOMM_ABS',
+           NOM_PARA='DX',VALE=0.,REFERENCE='ANALYTIQUE',CRITERE='ABSOLU',
+            );
+
+
+
+# IMPR_FONCTION(   FORMAT='XMGRACE', UNITE=71, COURBE= (
+#                      _F( FONCTION=DYNTUP2, LEGENDE='DEPL_TOUT_CHAM',),
+#                      _F( FONCTION=DYNUP2, LEGENDE='DEPL_NOM_CHAM',),
+#                      ))
+# IMPR_FONCTION(   FORMAT='XMGRACE', UNITE=72, COURBE= (
+#                      _F( FONCTION=DYNTVP2, LEGENDE='VITE_TOUT_CHAM',),
+#                      _F( FONCTION=DYNVP2, LEGENDE='VITE_NOM_CHAM',),
+#                      ))
+# IMPR_FONCTION(   FORMAT='XMGRACE', UNITE=73, COURBE= (
+#                      _F( FONCTION=DYNTAP2, LEGENDE='ACCE_TOUT_CHAM',),
+#                      _F( FONCTION=DYNAP2, LEGENDE='ACCE_NOM_CHAM',),
+#                      ))
+# 
+# 
+# IMPR_FONCTION(   FORMAT='XMGRACE', UNITE=81, COURBE= (
+#                      _F( FONCTION=DYNTU, LEGENDE='DEPL_DLH_GENE',MARQUEUR=0,),
+#                      _F( FONCTION=DYNTUP, LEGENDE='DEPL_DLH_PHY',MARQUEUR=0,),
+#                      _F( FONCTION=DYNTUP2, LEGENDE='DEPL_DLH_GENE_REST',MARQUEUR=0,),
+#                      ))
+# IMPR_FONCTION(   FORMAT='XMGRACE', UNITE=82, COURBE= (
+#                      _F( FONCTION=DYNTV, LEGENDE='VITE_DLH_GENE',MARQUEUR=0,),
+#                      _F( FONCTION=DYNTVP, LEGENDE='VITE_DLH_PHY',MARQUEUR=0,),
+#                      _F( FONCTION=DYNTVP2, LEGENDE='VITE_DLH_GENE_REST',MARQUEUR=0,),
+#                      ))
+# IMPR_FONCTION(   FORMAT='XMGRACE', UNITE=83, COURBE= (
+#                      _F( FONCTION=DYNTA, LEGENDE='ACCE_DLH_GENE',MARQUEUR=0,),
+#                      _F( FONCTION=DYNTAP, LEGENDE='ACCE_DLH_PHY',MARQUEUR=0,),
+#                      _F( FONCTION=DYNTAP2, LEGENDE='ACCE_DLH_GENE_REST',MARQUEUR=0,),
+#                      ))
+
+
 
 F1=RECU_FONCTION(  RESULTAT=DYNAHARM,    NOM_CHAM='DEPL',
                      LIST_FREQ=LIFREQ,      NOEUD='P4',    NOM_CMP='DX'  )

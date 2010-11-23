@@ -5,7 +5,7 @@
       CHARACTER*19 VECTOT
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 15/11/2010   AUTEUR GREFFET N.GREFFET 
+C MODIF UTILITAI  DATE 22/11/2010   AUTEUR GREFFET N.GREFFET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -88,16 +88,16 @@ C   Recuperation type RESU
       ELSEIF (TYPRES(1:9).EQ.'HARM_GENE') THEN
          TYPOUT='TRAN_GENE'
          NBVA2=NBVA
-       ELSEIF (TYPRES(1:10).EQ.'DYNA_TRANS') THEN
+      ELSEIF (TYPRES(1:10).EQ.'DYNA_TRANS') THEN
          TYPOUT='DYNA_HARMO'
          NBVA2=2*NBVA
       ELSEIF (TYPRES(1:9).EQ.'TRAN_GENE') THEN
          TYPOUT='HARM_GENE'
          NBVA2=2*NBVA
-            CALL JEVEUO(RESIN(1:8)//'           .REFD','L',JREFE)
-            RIGGEN = ZK24(JREFE)
-            MASGEN = ZK24(JREFE+1)
-            AMOGEN = ZK24(JREFE+2)
+         CALL JEVEUO(RESIN(1:8)//'           .REFD','L',JREFE)
+         RIGGEN = ZK24(JREFE)
+         MASGEN = ZK24(JREFE+1)
+         AMOGEN = ZK24(JREFE+2)
       ENDIF
 C
 C  Creation objet de stockage en LTPS pour les valeurs d'instants
@@ -142,7 +142,12 @@ C  Temps
             ZR(LTPS2) = ZR(LTPS+I-1)
             CALL RSEXCH (RESOU,GRANDE,I,CHDEPS,IRET)
             IF (TYPOUT(1:10).EQ.'DYNA_HARMO') THEN
-              CALL VTCREM (CHDEPS, RAIDE, 'G', 'C' )
+              IF (RAIDE(1:1).NE.' ') THEN
+                CALL VTCREM (CHDEPS, RAIDE, 'G', 'C' )
+              ELSE
+                CALL VTCREB(CHDEPS,ZK24(JREFE+3),'G','C',N1)
+                CALL ASSERT(N1.EQ.NEQ)
+              ENDIF
             ELSE
                CALL VTCREM (CHDEPS, MASGEN, 'G', 'C' )
                CALL JEECRA(CHDEPS//'.DESC','DOCU',0,'VGEN')
@@ -162,7 +167,13 @@ C  Temps
             CALL RSADPA(RESOU,'E',1,'INST',(I-1),0,LTPS2,K8B)
             ZR(LTPS2) = ZR(LTPS+I-1)
             CALL RSEXCH (RESOU,GRANDE,(I-1),CHDEPS,IRET)
-            CALL VTCREM (CHDEPS, RAIDE, 'G', 'R' )
+            IF (RAIDE(1:1).NE.' ') THEN
+              CALL VTCREM (CHDEPS, RAIDE, 'G', 'R' )
+            ELSE
+              CALL VTCREB(CHDEPS,ZK24(JREFE+3),'G','R',N1)
+              CALL ASSERT(N1.EQ.NEQ)
+            ENDIF
+            
             CALL JEVEUO(CHDEPS//'.VALE', 'E', LVALS )
             CALL JELIRA(CHDEPS//'.VALE', 'LONMAX', N1,K1B )
             CALL ASSERT(N1.EQ.NEQ)
@@ -189,7 +200,6 @@ C         CALL MDGENE(BASEMO,NBMODE,K14B,MASGEN,RIGGEN,AMOGEN,NEXCIT,
 C     &            JVEC,IRET)
 C         IF (IRET.NE.0) CALL U2MESS('F','ALGORITH5_24')
          
-            CALL JEVEUO(RESIN(1:8)//'           .REFD','L',JREFE)
             RIGGEN = ZK24(JREFE)(1:8)
             MASGEN = ZK24(JREFE+1)(1:8)
             AMOGEN = ZK24(JREFE+2)(1:8)
@@ -243,16 +253,17 @@ C            DO 500 I = 1,NBORDR+1
  500        CONTINUE
          ELSE
             CALL JEVEUO(RESOU(1:8)//'           .'//GRANDE ,'E',LVALS)
-            DO 700 I = 1,NBORDR+1
+            CALL JELIRA(RESOU(1:8)//'           .'//GRANDE,'LONMAX',
+     &              IBID,K1B)
+            DO 700 I = 1,NBORDR
                J = I - 1
                IARCHI = J
                ISTO1 = J
                DO 800 IEQ = 1,NEQ
                   R1 = ZR(NPARA+NBVA*(IEQ-1)+I-1)
-                  ZR(LVALS+IEQ-1) = R1
+                  ZR(LVALS+(NEQ*ISTO1)+IEQ-1) = R1
  800           CONTINUE
  700        CONTINUE
-         
          ENDIF
       ENDIF
 C  On finalise le RESOU

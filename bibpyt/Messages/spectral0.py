@@ -1,4 +1,4 @@
-#@ MODIF spectral0 Messages  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
+#@ MODIF spectral0 Messages  DATE 22/11/2010   AUTEUR GREFFET N.GREFFET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -48,10 +48,6 @@ Nombre de fonctions incorrect.
 
 7: _("""
 Erreur dans les données de fonctions.
-"""),
-
-8: _("""
-Pas de calcul absolu avec TRAN_GENE.
 """),
 
 9: _("""

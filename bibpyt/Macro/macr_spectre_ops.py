@@ -1,4 +1,4 @@
-#@ MODIF macr_spectre_ops Macro  DATE 19/11/2007   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF macr_spectre_ops Macro  DATE 22/11/2010   AUTEUR GREFFET N.GREFFET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -109,8 +109,8 @@ def macr_spectre_ops(self,MAILLAGE,PLANCHER,NOM_CHAM,CALCUL,RESU,IMPRESSION=None
                   ### Récupération des fonctions
                   motscles={}
                   if resu['RESU_GENE']!=None :
-                     if CALCUL=='ABSOLU' :
-                        UTMESS('F','SPECTRAL0_8')
+                     #if CALCUL=='ABSOLU' :
+                     #   UTMESS('F','SPECTRAL0_8')
                      motscles['RESU_GENE'] = resu['RESU_GENE']
 
                   if resu['RESULTAT' ]!=None :

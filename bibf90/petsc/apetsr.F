@@ -1,7 +1,7 @@
       SUBROUTINE APETSR(ACTION,KPTSC,RSOLU,VCINE)
       IMPLICIT NONE
 !           CONFIGURATION MANAGEMENT OF EDF VERSION
-!& MODIF APETSR PETSC  DATE 06/09/2010   AUTEUR TARDIEU N.TARDIEU 
+!& MODIF APETSR PETSC  DATE 23/11/2010   AUTEUR DESOZA T.DESOZA 
 ! ==================================================================
 ! COPYRIGHT (C) 1991 - 2008  EDF R&D              WWW.CODE-ASTER.ORG
 !
@@ -90,7 +90,7 @@
 
 !     -- COMMON POUR L'UTILISATION DU PRECONDITIONNEUR
 !     -- SIMPLE PRECISION LDLT_SP
-      COMMON /LDLTSP/SOLVBD,NOMAT,NOSOLV,xlocal,xscatt,xglobal
+      COMMON /LDLTSP/xlocal,xscatt,xglobal,SOLVBD,NOMAT,NOSOLV
 
 !=================================================================
 !  Variables PETSc

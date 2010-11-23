@@ -1,7 +1,7 @@
       SUBROUTINE FETSKP()
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 26/10/2010   AUTEUR BOITEAU O.BOITEAU 
+C MODIF UTILITAI  DATE 22/11/2010   AUTEUR ASSIRE A.ASSIRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -52,10 +52,10 @@ C DECLARATION VARIABLES LOCALES
      &              RENUM,NBRE,NBMABO,MAIL2,VELO,EDLO,POIDS,NUMSDM,NMAP,
      &              I,J,IMA,NBBORD,LREP,IULM1,ULNUME,IOCC,NOCC,IRET,
      &              IFM,NIV,NBLIEN,NBPART,RENUM3,IDMA,IULM2,MABORD,VAL,
-     &              RANG,NBPROC
+     &              RANG,NBPROC,NBFORM,ITMP
       REAL*8        TMPS(6)
       CHARACTER*8   MA,K8BID,GRPEMA,KTMP,NOM,MOD,SDBORD,FATAL,
-     &              VERIF,KTMP2,METH,BORD,KTMP3,KTMP4
+     &              VERIF,KTMP2,METH,BORD,KTMP3,KTMP4,K8NB
       CHARACTER*32  JEXNUM
       CHARACTER*256 JNOM(4)
       CHARACTER*128 REP
@@ -222,11 +222,22 @@ C ------- ON IMPRIME LE GRAPH
         ENDIF
         CALL ULOPEN ( IULM1,' ', ' ', 'NEW', 'O' )
         WRITE(IULM1,'(I12,I12,I3)')NBMATO,NBLIEN/2,11
+
+C         DO 70 IMA=1,NBMATO
+C           NBFORM=0
+C           ITMP=2*( 1+ZI4(IDCO-1+IMA+1)-1-ZI4(IDCO-1+IMA) ) + 2
+C           IF (ITMP.GT.NBFORM) NBFORM=ITMP
+C  70     CONTINUE
+C         WRITE(K8NB,'(''('',I4,''I8'','')'')') NBFORM
+
         DO 71 IMA=1,NBMATO
-          WRITE(IULM1,'(50I8)')ZI4(VELO-1+IMA),
+          WRITE(K8NB,'(''('',I4,''I8'','')'')') 2*(1+ZI4(IDCO-1+IMA+1)-1
+     &                              - ZI4(IDCO-1+IMA) ) + 2
+          WRITE(IULM1,K8NB)ZI4(VELO-1+IMA),
      &                         (ZI4(CO-1+I),ZI4(EDLO-1+I),
      &                         I=ZI4(IDCO-1+IMA),ZI4(IDCO-1+IMA+1)-1)
  71     CONTINUE
+
         CALL ULOPEN (-IULM1,' ',' ',' ',' ')
 
 C CREATION DU FICHIER DU GRAPHE POUR L'APPEL EXTERNE DE SCOTCH
@@ -238,7 +249,7 @@ C        WRITE(IULM1,'(I1)')0
 C        WRITE(IULM1,'(I12,I12)')NBMATO,NBLIEN
 C        WRITE(IULM1,'(I1,I2,I2)')1,0,11
 C        DO 153 IMA=1,NBMATO
-C          WRITE(IULM1,'(50I8)')ZI4(VELO-1+IMA),ZI(NBMAMA-1+IMA),
+C          WRITE(IULM1,'(500I8)')ZI4(VELO-1+IMA),ZI(NBMAMA-1+IMA),
 C     &                         (ZI4(EDLO-1+I),ZI4(CO-1+I),
 C     &                         I=ZI4(IDCO-1+IMA),ZI4(IDCO-1+IMA+1)-1)
 C 153    CONTINUE

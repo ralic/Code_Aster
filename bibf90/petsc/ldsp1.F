@@ -1,7 +1,7 @@
       SUBROUTINE LDSP1(pc,ierr)
       IMPLICIT NONE
 !           CONFIGURATION MANAGEMENT OF EDF VERSION                  
-!& MODIF LDSP1 PETSC  DATE 23/08/2010   AUTEUR TARDIEU N.TARDIEU 
+!& MODIF LDSP1 PETSC  DATE 23/11/2010   AUTEUR DESOZA T.DESOZA 
 ! ================================================================== 
 ! COPYRIGHT (C) 1991 - 2010  EDF R&D              WWW.CODE-ASTER.ORG 
 !                                                                    
@@ -29,10 +29,9 @@
 #include "include/finclude/petscksp.h"
 !================================================================
       CHARACTER*19 SOLVBD
-      CHARACTER*19 NOMAT,NOSOLV,VTEMP
-      CHARACTER*4  ETAMAT
-      INTEGER      JREFA,ISLVK
-      COMMON /LDLTSP/SOLVBD,NOMAT,NOSOLV,xlocal,xscatt,xglobal
+      CHARACTER*19 NOMAT,NOSOLV
+      INTEGER      JREFA
+      COMMON /LDLTSP/xlocal,xscatt,xglobal,SOLVBD,NOMAT,NOSOLV
 !================================================================
 ! --- DECLARATIONS NORMALISEES JEVEUX ----------------------------
       INTEGER ZI

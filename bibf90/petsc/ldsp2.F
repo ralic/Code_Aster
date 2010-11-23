@@ -1,7 +1,7 @@
       SUBROUTINE LDSP2(pc,x,y,ierr)
       IMPLICIT NONE
 !           CONFIGURATION MANAGEMENT OF EDF VERSION                  
-!& MODIF LDSP2 PETSC  DATE 13/10/2010   AUTEUR BOITEAU O.BOITEAU 
+!& MODIF LDSP2 PETSC  DATE 23/11/2010   AUTEUR DESOZA T.DESOZA 
 ! ================================================================== 
 ! COPYRIGHT (C) 1991 - 2010  EDF R&D              WWW.CODE-ASTER.ORG 
 !                                                                    
@@ -32,7 +32,7 @@
       CHARACTER*19 NOMAT,NOSOLV
       COMPLEX*16   CBID
       INTEGER      IRET
-      COMMON /LDLTSP/SOLVBD,NOMAT,NOSOLV,xlocal,xscatt,xglobal
+      COMMON /LDLTSP/xlocal,xscatt,xglobal,SOLVBD,NOMAT,NOSOLV
 !=================================================================
 !  Variables PETSc
       PetscInt ierr

@@ -1,7 +1,7 @@
       SUBROUTINE APETSC(ACTION,SOLVEZ,MATASZ,RSOLU,VCINEZ,NBSOL,IRET)
       IMPLICIT NONE
 !           CONFIGURATION MANAGEMENT OF EDF VERSION                  
-!& MODIF APETSC PETSC  DATE 08/08/2008   AUTEUR DESOZA T.DESOZA 
+!& MODIF APETSC PETSC  DATE 23/11/2010   AUTEUR DESOZA T.DESOZA 
 ! ================================================================== 
 ! COPYRIGHT (C) 1991 - 2008  EDF R&D              WWW.CODE-ASTER.ORG 
 !                                                                    

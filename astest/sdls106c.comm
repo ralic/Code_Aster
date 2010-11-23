@@ -1,4 +1,4 @@
-# MODIF  DATE 09/11/2010   AUTEUR NISTOR I.NISTOR 
+# MODIF  DATE 22/11/2010   AUTEUR NISTOR I.NISTOR 
 # TITRE SOUS STRUCTURATION DYNAMIQUE : PLAQUE MINCE APPUYEE-APPUYEE
 # sdls106c.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -279,6 +279,9 @@ RESGEN=MODE_ITER_SIMULT( MATR_A=RIGGEN,
                          OPTION='MODE_RIGIDE',
                          CALC_FREQ=_F( OPTION = 'PLUS_PETITE',
                                        NMAX_FREQ=10,),
+                         SOLVEUR=_F(METHODE='MUMPS',
+                                    PCENT_PIVOT=50,
+                                    NPREC=9),
                          VERI_MODE=_F(PREC_SHIFT=5.0000000000000001E-3,
                                       STOP_ERREUR='NON',
                                       STURM='NON',

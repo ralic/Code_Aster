@@ -1,6 +1,6 @@
       SUBROUTINE CRSMSP(SOLVBZ,MATASZ)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 23/08/2010   AUTEUR TARDIEU N.TARDIEU 
+C MODIF ALGELINE  DATE 22/11/2010   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,6 +22,7 @@ C ======================================================================
 C-----------------------------------------------------------------------
 C     CREATION D'UNE SD SOLVEUR MUMPS SIMPLE PRECISION UTILISEE COMME
 C     PRECONDITIONNEUR
+C     ATTENTION A LA COHERENCE AVEC CRSVL2 ET CRSVMU
 C-----------------------------------------------------------------------
 C IN  K*  SOLVBZ    : NOM DE LA SD SOLVEUR MUMPS BIDON
 C IN  K*  MATASZ    : MATRICE DU SYSTEME
@@ -71,6 +72,7 @@ C     LA MATRICE EST-ELLE NON SYMETRIQUE
       CALL WKVECT(SOLVBD//'.SLVR','V V R',   4,JSLVR)
       CALL WKVECT(SOLVBD//'.SLVI','V V I',   7,JSLVI)
 
+C     ATTENTION A LA COHERENCE AVEC CRSVL2 ET CRSVMU
       ZK24(JSLVK-1+1)  = 'MUMPS'
 C     PRETRAITEMENTS
       ZK24(JSLVK-1+2)  = 'AUTO'

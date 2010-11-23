@@ -7,7 +7,7 @@
       COMPLEX*16                          VALC,REFC(NBREF)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 06/09/2010   AUTEUR REZETTE C.REZETTE 
+C MODIF UTILITAI  DATE 23/11/2010   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -35,13 +35,13 @@ C  IN  : R8  : EPSI   : PRECISION ESPEREE
 C  IN  : I   : IFIC   : NUMERO LOGIQUE DU FICHIER DE SORTIE
 C  OUT :                IMPRESSION SUR LISTING
 C ----------------------------------------------------------------------
-      INTEGER I, IMIN, MINVI, TMPI, NL, LXLGUT, TVALI(2),NL1,NL2,NL3,NL4
+      INTEGER I, IMIN, MINVI, TMPI, NL, LXLGUT, TVALI(2),NL1,NL2
       PARAMETER   (NL=6)
       CHARACTER*4  TESTOK, RELA
       CHARACTER*16 K120,K170,TCHERR(2)
       CHARACTER*24 TCHVAL(2),TCHVAR(2),TCHVAC(2)
       CHARACTER*48 LIGN2(NL),TCHVA2(2)
-      REAL*8       ERR, ZERO, CENT, EPSR, TMPR, MINVR, MINVC, TMPC
+      REAL*8       ERR, ZERO, CENT, TMPR, MINVR, MINVC, TMPC
       REAL*8       TVALR(2),TERRR(2)
       COMPLEX*16   ZEROC, VTC
       LOGICAL      LOK
@@ -94,7 +94,11 @@ C
             IF ( REFR(IMIN) .NE. ZERO ) THEN
                ERR = (VALR - REFR(IMIN)) / REFR(IMIN) *CENT
             ELSE
-               ERR = 999.999999D0
+               IF (LOK) THEN
+                 ERR = 0.D0
+               ELSE
+                 ERR = 999.999999D0
+               ENDIF
             ENDIF
             IF ( LOK ) TESTOK = ' OK '
              TERRR(1)=ERR
@@ -168,7 +172,11 @@ C
             IF ( REFI(IMIN) .NE. 0 ) THEN
                ERR = ( VALI - REFI(IMIN) )*CENT / REFI(IMIN)
             ELSE
-               ERR = 999.999999D0
+               IF (LOK) THEN
+                 ERR = 0.D0
+               ELSE
+                 ERR = 999.999999D0
+               ENDIF
             ENDIF
             IF ( LOK ) TESTOK = ' OK '
              TERRR(1)=ERR
@@ -247,7 +255,11 @@ C    --- NBREF > 1 N'EST PAS GERE PAR LE SUPERVISEUR...
             IF ( VTC .NE. ZEROC ) THEN
                ERR = ABS(VALC - VTC) /  ABS(VTC) *CENT
             ELSE
-               ERR = 999.999999D0
+               IF (LOK) THEN
+                 ERR = 0.D0
+               ELSE
+                 ERR = 999.999999D0
+               ENDIF
             ENDIF
             IF ( LOK ) TESTOK = ' OK '
             TERRR(1)=ERR
