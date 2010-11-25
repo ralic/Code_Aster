@@ -1,4 +1,4 @@
-#@ MODIF salomeVisu Stanley  DATE 02/11/2010   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF salomeVisu Stanley  DATE 25/11/2010   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -20,7 +20,7 @@
 
 debug = False
 
-import os, commands, string, sys, socket
+import os, commands, string, sys, socket, getpass
 from Utilitai.Utmess import UTMESS
 from pylotage.TOOLS import *
 from graphiqueTk import *
@@ -96,7 +96,7 @@ class VISU:
             if param['mode']   == 'LOCAL':
                lst = ['tmp']
                try:
-                  amachineName = socket.gethostname()
+                  amachineName = param[ 'machine_salome' ]
                except:
                   UTMESS('A','STANLEY_15')
                   return {}
@@ -170,10 +170,10 @@ class VISU:
 # =========================================================================
 
 class ISOVALEURS( VISU ):
-    def __init__( self,  fichier, param,  selection ) :        
-        if not os.path.exists( fichier):
+    def __init__( self, fichier, param,  selection ) :        
+        if not os.path.exists( fichier ):
             raise _("Fichier MED résultat de Stanley non accessible par SALOME : ") + fichier
-            
+
         VISU .__init__( self,  param )
 
         # Si on n'a pas trouvé de session Salome ouverte on sort
@@ -184,7 +184,7 @@ class ISOVALEURS( VISU ):
         self.visuType      = None                               #type de visualisation
         self.entityType    = None                               #type d'entité
         self.selection     = selection
-        
+
         # selon mode recopie sur le poste utilisateur de fichiers si nécessaire
         if   self.param['mode'] == 'LOCAL' :
                 self.__init_local( )
@@ -198,20 +198,20 @@ class ISOVALEURS( VISU ):
         # parsing fichier MED( nom maillage + nom champ + nb iteration )
         self.medInfo = MEDInfo( selection )
         self.medInfo.iteration = 1 # CS_pbruno à finir implémenter ( on affiche que le 1er instant )
-        
+
         if not self.medInfo.name or not self.medInfo.fieldName or not self.medInfo.iteration:            
             raise 'Erreur lecture fichier MED : %s \n Nom maillage : %s, Nom champs %s '%( self.fichier,  self.medInfo.name, self.medInfo.fieldName )
-        
+
         # selection d'un type de visualisation ( parmi celles possibles )
         self.visuType = self.__visuType( self.selection )        
-        
+
         # sur quel entité ( VISU.NODE, VISU.EDGE, VISU.FACE,  VISU.CELL )
         self.entityType = self.__entityType( self.selection )
-        
+
         # et enfin la visualisation..
         self.Show()
-        
-            
+
+
     def __init_local( self ):
         """
         Stanley fonctionne sur le poste local de l'utilisateur
@@ -219,7 +219,7 @@ class ISOVALEURS( VISU ):
         try:    os.rename( self.fichier, self.fichier  + '.pos' )
         except: pass
         self.fichier += '.pos'
-        
+
 
 
     def __init_distant( self ):
@@ -229,7 +229,7 @@ class ISOVALEURS( VISU ):
         """
         result = False
         fichier = os.path.basename( self.fichier )
-    
+
         mdis        = self.param['machine_salome']                                   # machine
         fdis        = self.param['tmp'] + '/' + fichier + '.pos'                     # /tmp/fort.33.pos
         fmdis       = self.param['machine_salome_login'] + '@' + mdis + ":" + fdis   # user@machine:/tmp/fort.33.pos
@@ -318,9 +318,9 @@ class ISOVALEURS( VISU ):
 
         try:
           salomeVisu = Visu.Visu( **salomeParam )
-        except:
+        except Exception, e:
           UTMESS('A','STANLEY_19',valk=[salomeParam['machineName']])
-          raise _("Erreur lors de la visualisation.")
+          raise _("Erreur lors de la visualisation.\n\nParametres Salome :%s\n\nErreur :\n%s\n\n" % (salomeParam,e))
 
 
         ok = salomeVisu.readMED( medFilePath, medInfo.name, entity )
@@ -329,7 +329,7 @@ class ISOVALEURS( VISU ):
 
         # title: nom du champ
         title = cata[self.selection.nom_cham].nom 
-        
+
         if visuType == ScalarMap: # CS_pbruno :attention par defaut on trace le module du champs 
             ok = salomeVisu.ScalarMap( medInfo.fieldName, medInfo.iteration, title)
         elif visuType== DeformedShape:

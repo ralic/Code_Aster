@@ -17,7 +17,7 @@ C                EST DEJA FAITE (CF ULDEFI)
 C     REMARQUE : SI L'INITIALISATION N'A PAS ETE FAITE LA ROUTINE S'EN
 C                CHARGERA (APPEL A ULINIT)
 C     ------------------------------------------------------------------
-C MODIF UTILIFOR  DATE 03/11/2004   AUTEUR MCOURTOI M.COURTOIS 
+C MODIF UTILIFOR  DATE 23/11/2010   AUTEUR COURTOIS M.COURTOIS 
 C RESPONSABLE D6BHHJP J.P.LEFEBVRE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
@@ -37,8 +37,6 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
 C
-      INTEGER       MXIMPR
-      PARAMETER   ( MXIMPR = 5)
       INTEGER          MXF
       PARAMETER       (MXF=100)
       CHARACTER*1      TYPEFI(MXF),ACCEFI(MXF),ETATFI(MXF),MODIFI(MXF)
@@ -52,13 +50,12 @@ C
       INTEGER          I
 C     ------------------------------------------------------------------
 C     CONSERVER LA COHERENCE AVEC IBIMPR
+      INTEGER       MXIMPR
+      PARAMETER   ( MXIMPR = 3)
       CHARACTER*16  NOMPR (MXIMPR)
-      CHARACTER*1   TYPPR (MXIMPR) , AUTPR(MXIMPR)
-      INTEGER       UNITPR (MXIMPR)   , PRESPR(MXIMPR)
-      DATA          NOMPR  /'VIGILE'  , 'MESSAGE'   , 'RESULTAT',
-     +                      'ERREUR'  ,  'MED'      /
-      DATA          UNITPR /    0     ,      6      ,     8     ,
-     +                          9     ,    80       /
+      INTEGER       UNITPR (MXIMPR)
+      DATA          NOMPR  /'MESSAGE'  , 'RESULTAT', 'ERREUR'/
+      DATA          UNITPR /    6      ,     8     ,      9  /
 C     ------------------------------------------------------------------
 C
       IF ( FIRST .NE. 17111990 ) CALL ULINIT

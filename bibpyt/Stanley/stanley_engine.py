@@ -1,4 +1,4 @@
-#@ MODIF stanley_engine Stanley  DATE 24/08/2010   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF stanley_engine Stanley  DATE 25/11/2010   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -44,7 +44,16 @@ E. LORENTZ, P. BADEL, A. ASSIRE
 STANLEY
 """
 
-import sys, os, os.path, string, copy, tkFileDialog, cPickle, tkMessageBox, time
+import sys
+import os
+import os.path
+import string
+import copy
+import tkFileDialog
+import tkMessageBox
+import cPickle
+import time
+import socket
 
 #import Tix as Tk
 import Tkinter as Tk
@@ -530,6 +539,21 @@ Ce mode est indisponible car Salome n'existe pas encore sous Windows.
 
     UTMESS('I','STANLEY_27')
 
+    # Recupere le hostname et le display
+    if 'HOSTNAME' in os.environ.keys(): hostname = os.environ['HOSTNAME']
+    else:                               hostname = socket.gethostname()
+
+    if 'DISPLAY' in os.environ.keys():  
+        display  = os.environ['DISPLAY']
+        mdisplay = os.environ['DISPLAY'].split(':')[0]
+    else: raise "Erreur! Pas de DISPLAY defini!"   # Ce cas est normalement impossible car Stanley doit avoir un DISPLAY pour pouvoir s'ouvrir
+
+    # Local ou Distant ?
+    if (mdisplay is ['localhost', '127.0.0.1']) or (hostname == mdisplay[0:len(hostname)]) or (hostname in ['localhost', '127.0.0.1']):
+        mode_local = True
+    else:
+        mode_local = False
+
     # Reinitialisation avec des parametres par defaut
     self.para={}
     for section in self.dliste_section.keys():
@@ -542,22 +566,14 @@ Ce mode est indisponible car Salome n'existe pas encore sous Windows.
        except:  self.para[section][cle] = ''
 
     # Detection du mode et surcharge des parametres qu'on peut detecter
-    if 'HOSTNAME' in os.environ.keys():
+    if mode_local:
           self.para['CONFIG']['mode']                  = 'LOCAL'
-          self.para['CONFIG']['machine_visu']          = os.environ['DISPLAY']
-          self.para['CONFIG']['machine_gmsh']          = os.environ['HOSTNAME']
-          self.para['CONFIG']['machine_salome']        = os.environ['HOSTNAME']
-
-    elif 'DISPLAY' in os.environ.keys():
-       mdisplay = os.environ['DISPLAY'].split(':')[0]
-       if mdisplay == 'localhost':
-          self.para['CONFIG']['mode']                  = 'LOCAL'
-          self.para['CONFIG']['machine_visu']          = os.environ['DISPLAY']
-          self.para['CONFIG']['machine_gmsh']          = 'localhost'
-          self.para['CONFIG']['machine_salome']        = 'localhost'
-       else:
+          self.para['CONFIG']['machine_visu']          = display
+          self.para['CONFIG']['machine_gmsh']          = mdisplay
+          self.para['CONFIG']['machine_salome']        = mdisplay
+    else:
           self.para['CONFIG']['mode']                  = 'DISTANT'
-          self.para['CONFIG']['machine_visu']          = os.environ['DISPLAY']
+          self.para['CONFIG']['machine_visu']          = display
           self.para['CONFIG']['machine_gmsh']          = mdisplay
           self.para['CONFIG']['machine_gmsh_login']    = 'please_change_me'
           self.para['CONFIG']['machine_salome']        = mdisplay
@@ -2468,8 +2484,8 @@ class DRIVER_SALOME_ISOVALEURS(DRIVER_ISOVALEURS) :
 #       if not contexte: return
 
     # On efface le fichier si il existe deja
-    if os.path.isfile('fort.'+str(ul)):
-      try:    os.remove('fort.'+str(ul))
+    if os.path.isfile(medFileName):
+      try:    os.remove(medFileName)
       except: pass
 
     DEFI_FICHIER(UNITE = ul, 

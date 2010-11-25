@@ -1,9 +1,9 @@
       SUBROUTINE IBMAIN( LLDBG )
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       LOGICAL             LLDBG
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 19/10/2010   AUTEUR COURTOIS M.COURTOIS 
+C MODIF SUPERVIS  DATE 23/11/2010   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -35,10 +35,11 @@ C     ------------------------------------------------------------------
       EXTERNAL LXDELI
 C     ------------------------------------------------------------------
 C     DEFINITION DES UNITES DE LECTURE/ECRITURE COMMANDE UTILISATEUR
+      INTEGER    IRDUSR,    LRECL
       PARAMETER (IRDUSR=1 , LRECL=80)
 C     ------------------------------------------------------------------
       CHARACTER*8 CMDUSR
-      INTEGER     ISUI
+      INTEGER     ISSUIV, ISUI
 C
       CMDUSR = 'CMD   01'
 C
@@ -48,10 +49,6 @@ C     --- BUFFERISATION EN CAS DE SUIVI INTERACTIF
       IF ( ISSUIV(ISUI) .GT. 0) THEN
           CALL FASTER()
       ENDIF
-C
-C     --- INITIALISATION DES ROUTINES DE MESSAGE ---
-      CALL PRDEFC( 132 )
-      CALL PRINIT( 0 , 0)
 C
 C     --- INITIALISATION DE L'ANALYSEUR LEXICAL ET DE L'UNITE DE LECTURE
       CALL LXINIT( LXDELI )

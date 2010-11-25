@@ -4,7 +4,7 @@
       CHARACTER*(*)             FICHIE, NAME, ACCES, AUTOR
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 19/07/2010   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF UTILITAI  DATE 23/11/2010   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -44,7 +44,7 @@ C
       CHARACTER*16     DDNAME(MXF)
       CHARACTER*255    NAMEFI(MXF)
       INTEGER          FIRST, UNITFI(MXF) , NBFILE
-      COMMON/ ASGFI1 / FIRST, UNITFI         , NBFILE
+      COMMON/ ASGFI1 / FIRST, UNITFI      , NBFILE
       COMMON/ ASGFI2 / NAMEFI,DDNAME,TYPEFI,ACCEFI,ETATFI,MODIFI
 C
       CHARACTER*255 NAMELL
@@ -54,19 +54,14 @@ C
       CHARACTER*1   K1ACCE,K1AUT
       INTEGER       I,IERR,IER1,IER2,IFILE
       LOGICAL       V11
-C     ------------------------------------------------------------------
-      INTEGER       MXIMPR
-      PARAMETER   ( MXIMPR = 5)
-C     ------------------------------------------------------------------
+      CHARACTER*80  VALK(3)
 C     CONSERVER LA COHERENCE AVEC IBIMPR
+      INTEGER       MXIMPR
+      PARAMETER   ( MXIMPR = 3)
       CHARACTER*16  NOMPR (MXIMPR)
-      CHARACTER*1   TYPPR (MXIMPR) , AUTPR(MXIMPR)
-      CHARACTER*24 VALK(3)
-      INTEGER       UNITPR (MXIMPR)   , PRESPR(MXIMPR)
-      DATA          NOMPR  /'VIGILE'  , 'MESSAGE'   , 'RESULTAT',
-     &                      'ERREUR'  ,  'MED'      /
-      DATA          UNITPR /    0     ,      6      ,     8     ,
-     &                          9     ,    80       /
+      INTEGER       UNITPR (MXIMPR)
+      DATA          NOMPR  /'MESSAGE'  , 'RESULTAT', 'ERREUR'/
+      DATA          UNITPR /    6      ,     8     ,      9  /
 C     ------------------------------------------------------------------
 C
       NAME16 = NAME
@@ -145,7 +140,7 @@ C
         IF (K1ACCE.NE.'N') THEN 
           INQUIRE ( FILE=NAMELL, EXIST=V11, IOSTAT=IER1)
           IF (.NOT.V11) THEN
-            VALK(1)=NAMELL
+            VALK(1)=NAMELL(1:80)
             VALK(2)=K8B
             CALL U2MESK('F','UTILITAI5_1',2,VALK)
           ENDIF

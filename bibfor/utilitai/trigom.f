@@ -1,6 +1,6 @@
       REAL*8 FUNCTION TRIGOM(FONC,X)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 23/11/2010   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -35,21 +35,18 @@ C ----------------------------------------------------------------------
       REAL*8 X,EPS,X2
       EPS = 1.D-12
 
-      IF ((X.GT.1.D0+EPS) .OR. (X.LT.-1.D0-EPS)) CALL U2MESS('F','UTILIT
-     &AI5_1')
-
+      IF ((X.GT.1.D0+EPS) .OR. (X.LT.-1.D0-EPS))
+     &    CALL U2MESS('F','UTILITAI5_50')
 
       X2 = X
       IF (X.GT.1.D0) X2 = 1.D0
       IF (X.LT.-1.D0) X2 = -1.D0
 
+      CALL ASSERT(FONC.EQ.'ASIN' .OR. FONC.EQ.'ACOS')
       IF (FONC.EQ.'ASIN') THEN
         TRIGOM = ASIN(X2)
-      ELSE IF (FONC.EQ.'ACOS') THEN
-        TRIGOM = ACOS(X2)
       ELSE
-        CALL U2MESS('F','UTILITAI5_2')
+        TRIGOM = ACOS(X2)
       END IF
-
 
       END

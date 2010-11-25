@@ -1,4 +1,4 @@
-#@ MODIF propa_fiss_ops Macro  DATE 26/10/2010   AUTEUR MAHFOUZ D.MAHFOUZ 
+#@ MODIF propa_fiss_ops Macro  DATE 24/11/2010   AUTEUR MICOL A.MICOL 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -18,10 +18,19 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
 
-from math import atan, atan2, cos, sin, sqrt
+from math import atan, atan2, cos, sin
 
 import numpy as NP
-
+import aster
+import string
+import copy
+from Accas import _F
+from Utilitai.Utmess     import  UTMESS
+from types import ListType, TupleType
+from Utilitai.Table      import Table, merge
+from Utilitai.partition import MAIL_PY
+from SD.sd_mater     import sd_compor1
+from Cata.cata import table_sdaster,fiss_xfem,modele_sdaster
 
 def InterpolationLineaire(x0, points) :
    """
@@ -100,16 +109,37 @@ def betaf(k1,k2) :
   if k2 == 0:
      beta = 0.
   else :
-     beta = 2*atan(0.25*(k1/k2-abs(k2)/k2*sqrt((k1/k2)**2+8)))
+     beta = 2*atan(0.25*(k1/k2-abs(k2)/k2*NP.sqrt((k1/k2)**2+8)))
   return beta
 
-#TODO prefer use numpy.cross
-def cross_product(a,b):
-    cross = [0]*3
-    cross[0] = a[1]*b[2]-a[2]*b[1]
-    cross[1] = a[2]*b[0]-a[0]*b[2]
-    cross[2] = a[0]*b[1]-a[1]*b[0]
-    return cross
+def recup_Elas(LOI):
+      if LOI == None :
+         UTMESS('F','RUPTURE1_50') 
+      dLoi=LOI[0].cree_dict_valeurs(LOI[0].mc_liste)
+      mat = dLoi['MATER']
+      matph = mat.NOMRC.get()  
+      phenom=None
+      for cmpt in matph :
+         if cmpt[:4]=='ELAS' :
+            phenom=cmpt
+            break
+      if phenom==None : UTMESS('F','RUPTURE0_5')
+      compor = sd_compor1('%-8s.%s' % (mat.nom, phenom))
+      valk = [s.strip() for s in compor.VALK.get()]
+      valr = compor.VALR.get()
+      dicmat=dict(zip(valk,valr))
+      if dicmat.has_key('TEMP_DEF')  :
+        nompar = ('TEMP',)
+        valpar = (dicmat['TEMP_DEF'],)
+        UTMESS('A','XFEM2_85',valr=valpar)
+        nomres=['E','NU']
+        valres,codret = MATER.RCVALE('ELAS',nompar,valpar,nomres,'F')
+        e = valres[0]
+        nu = valres[1]
+      else :
+        e  = dicmat['E']
+        nu = dicmat['NU'] 
+      return e,nu,dLoi
     
 #def propa_fiss_ops(self,METHODE_PROPA,TEST_MAIL,INFO,**args):
 def propa_fiss_ops(self,METHODE_PROPA,INFO,**args):
@@ -118,16 +148,7 @@ def propa_fiss_ops(self,METHODE_PROPA,INFO,**args):
   Propagation de fissure pour les modeles X-FEM : propagation par la methode de HAMILTON 
   ou par projection sur un maillage
   """
-  import aster
-  import string
-  import copy
-  from Accas import _F
-  from Utilitai.Utmess     import  UTMESS
-  from types import ListType, TupleType
-  from Utilitai.Table      import Table, merge
-  from Utilitai.partition import MAIL_PY
-  from SD.sd_mater     import sd_compor1
-  from Cata.cata import table_sdaster,fiss_xfem,modele_sdaster
+
 
 
   EnumTypes = (ListType, TupleType)
@@ -158,32 +179,8 @@ def propa_fiss_ops(self,METHODE_PROPA,INFO,**args):
     
     if (TEST_MAIL == 'NON' ) :
       LOI= args['LOI_PROPA']
-      if LOI == None :
-         UTMESS('F','RUPTURE1_50') 
-      dLoi=LOI[0].cree_dict_valeurs(LOI[0].mc_liste)
-      mat = dLoi['MATER']
-      matph = mat.NOMRC.get()  
-      phenom=None
-      for cmpt in matph :
-         if cmpt[:4]=='ELAS' :
-            phenom=cmpt
-            break
-      if phenom==None : UTMESS('F','RUPTURE0_5')
-      compor = sd_compor1('%-8s.%s' % (mat.nom, phenom))
-      valk = [s.strip() for s in compor.VALK.get()]
-      valr = compor.VALR.get()
-      dicmat=dict(zip(valk,valr))
-      if dicmat.has_key('TEMP_DEF')  :
-        nompar = ('TEMP',)
-        valpar = (dicmat['TEMP_DEF'],)
-        UTMESS('A','XFEM2_85',valr=valpar)
-        nomres=['E','NU']
-        valres,codret = MATER.RCVALE('ELAS',nompar,valpar,nomres,'F')
-        e = valres[0]
-        nu = valres[1]
-      else :
-        e  = dicmat['E']
-        nu = dicmat['NU']  
+      e,nu,dLoi = recup_Elas(LOI)
+      
 # Construction catalogue PROPA_XFEM
       dLoix = {}
       dLoix['LOI'] = 'PARIS'
@@ -325,7 +322,7 @@ def propa_fiss_ops(self,METHODE_PROPA,INFO,**args):
       coef_M =  LOI_PROPA['M']
       coef_C =  LOI_PROPA['C']
       coef_N =  LOI_PROPA['N']
-      YOUNG = 2.E11
+      YOUNG,NU,dLoi=recup_Elas(LOI_PROPA)
     it = args['ITERATION']
     Damax =  args['DA_MAX']
     COMP_LINE = args['COMP_LINE']
@@ -390,9 +387,9 @@ def propa_fiss_ops(self,METHODE_PROPA,INFO,**args):
              if (dime == 2) : __tmp = __tabp
              if (dime == 3) : __tmp = __tabp.PT_FOND==(k+1)
              if (dime == 3) : absc[k]=__tmp['ABSC_CURV'][k]
-             ddkeq = sqrt(YOUNG)*(sqrt(max(__tmp.values()['G_MAX'])) 
-                          - sqrt(min(__tmp.values()['G_MAX']))) 
-             rminmax = sqrt(min(__tmp.values()['G_MAX'])) / sqrt(max(__tmp.values()['G_MAX']))
+             ddkeq = NP.sqrt(YOUNG)*(NP.sqrt(max(__tmp.values()['G_MAX'])) 
+                          - NP.sqrt(min(__tmp.values()['G_MAX']))) 
+             rminmax = NP.sqrt(min(__tmp.values()['G_MAX'])) / NP.sqrt(max(__tmp.values()['G_MAX']))
              DKeq[numfis][k] = [absc[k], ddkeq ]
              RmM[numfis][k]  =   [absc[k], rminmax ]
              k1 = __tmp.values()['K1_MAX']
@@ -424,7 +421,7 @@ def propa_fiss_ops(self,METHODE_PROPA,INFO,**args):
               k2 = __tab1['K2_MAX'][k]
               if (dime == 3) : absc[k]=__tab1['ABSC_CURV'][k]
               BETA[numfis][k] = [absc[k] , betaf(k1,k2)] 
-              DKeq[numfis][k] = [absc[k],sqrt(YOUNG)*NP.sqrt(__tab1['G_MAX'][k])]
+              DKeq[numfis][k] = [absc[k],NP.sqrt(YOUNG)*NP.sqrt(__tab1['G_MAX'][k])]
               RmM[numfis][k] = [absc[k], CMIN/CMAX]
               VMAX0 = dadN(coef_C,coef_N,coef_M,DKeq[numfis][k][1],RmM[numfis][k][1]) 
               VMAX = max(VMAX,VMAX0 )
@@ -452,8 +449,8 @@ def propa_fiss_ops(self,METHODE_PROPA,INFO,**args):
                 if (min(__tmp['G_LOCAL']) < 0.) :
                   UTMESS('F','RUPTURE1_46')
                 absc = __tmp.values()['ABSC_CURV'][0]
-                DKeq[numfis][k]=[absc, sqrt(YOUNG)*(sqrt(max(__tmp.values()['G_LOCAL']))-sqrt(min(__tmp.values()['G_LOCAL'])))]
-                RmM[numfis][k] = [absc, sqrt(min(__tmp.values()['G_LOCAL'])) / sqrt(max(__tmp.values()['G_LOCAL']))]
+                DKeq[numfis][k]=[absc, NP.sqrt(YOUNG)*(NP.sqrt(max(__tmp.values()['G_LOCAL']))-NP.sqrt(min(__tmp.values()['G_LOCAL'])))]
+                RmM[numfis][k] = [absc, NP.sqrt(min(__tmp.values()['G_LOCAL'])) / NP.sqrt(max(__tmp.values()['G_LOCAL']))]
                 dbeta = max(__tmp.values()['BETA_LOCAL'])-min(__tmp.values()['BETA_LOCAL'])
                 if dbeta > (5./180.*3.1415) :
                   UTMESS('F','XFEM2_72')
@@ -461,8 +458,8 @@ def propa_fiss_ops(self,METHODE_PROPA,INFO,**args):
               else :
                 if (min(__tabp.values()['G']) < 0.) :
                   UTMESS('F','RUPTURE1_46')
-                DKeq[numfis][k]=[0.,sqrt(YOUNG)*(sqrt(max(__tabp.values()['G']))-sqrt(min(__tabp.values()['G'])))]
-                RmM[numfis][k] = [0., sqrt(min(__tabp.values()['G'])) / sqrt(max(__tabp.values()['G'])) ]
+                DKeq[numfis][k]=[0.,NP.sqrt(YOUNG)*(NP.sqrt(max(__tabp.values()['G']))-NP.sqrt(min(__tabp.values()['G'])))]
+                RmM[numfis][k] = [0., NP.sqrt(min(__tabp.values()['G'])) / NP.sqrt(max(__tabp.values()['G'])) ]
                 k1 = __tabp.values()['K1'][0]
                 k2 = __tabp.values()['K2'][0]
                 BETA[numfis][k]=[0., betaf(k1,k2)]
@@ -479,7 +476,7 @@ def propa_fiss_ops(self,METHODE_PROPA,INFO,**args):
               CMAX = COMP_LINE['COEF_MULT_MAXI']
             if (min(__tab1['G_LOCAL']) < 0.) :
               UTMESS('F','RUPTURE1_46')
-            DKeq[numfis] = [[__tab1['ABSC_CURV'][i],NP.sqrt(__tab1['G_LOCAL'][i])*sqrt(YOUNG) ] for i in range(nbptfon)]
+            DKeq[numfis] = [[__tab1['ABSC_CURV'][i],NP.sqrt(__tab1['G_LOCAL'][i])*NP.sqrt(YOUNG) ] for i in range(nbptfon)]
             RmM[numfis] = [[__tab1['ABSC_CURV'][i], CMIN/CMAX] for i in range(nbptfon)]
             BETA[numfis] = [[__tab1['ABSC_CURV'][i],__tab1['BETA_LOCAL'][i]] for i in range(nbptfon)]
             for i in range(nbptfon) :
@@ -496,7 +493,7 @@ def propa_fiss_ops(self,METHODE_PROPA,INFO,**args):
               CMAX = COMP_LINE['COEF_MULT_MAXI']
             if (min(__tab1['G']) < 0.) :
               UTMESS('F','RUPTURE1_46')
-            DKeq[numfis][0] = [0.,sqrt(YOUNG)*max(NP.sqrt(__tab1['G']))]
+            DKeq[numfis][0] = [0.,NP.sqrt(YOUNG)*max(NP.sqrt(__tab1['G']))]
             k1 = __tab1['K1'][0]
             k2 = __tab1['K2'][0]
             BETA[numfis][0] = [0.,betaf(k1,k2)] 
@@ -905,7 +902,7 @@ def propa_fiss_ops(self,METHODE_PROPA,INFO,**args):
       vect_y = args['VECT_Y']
       gdax = args['DEMI_GRAND_AXE']
       ptax = args['DEMI_PETIT_AXE']
-      normale = cross_product(vect_x,vect_y)
+      normale = NP.cross(vect_x,vect_y)
       verif = NP.dot(vect_x,vect_y)
       if abs(verif) > 0.01:
           UTMESS('F','RUPTURE1_52')

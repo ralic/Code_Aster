@@ -1,4 +1,4 @@
-#@ MODIF med2 Messages  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
+#@ MODIF med2 Messages  DATE 23/11/2010   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -42,6 +42,14 @@ cata_msg = {
 
 3 : _("""
      Fichier MED introuvable.
+"""),
+
+4 : _("""
+Le champ '%(k1)s' est déjà présent
+dans le fichier med pour l'instant %(r1)G.
+  -> Conseil :
+     Vous pouvez soit imprimer le champ dans un autre fichier, soit
+     nommer le champ différemment.
 """),
 
 }

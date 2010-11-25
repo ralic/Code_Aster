@@ -1,8 +1,8 @@
       SUBROUTINE PRENTE
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 11/08/2009   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF SUPERVIS  DATE 23/11/2010   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,14 +21,14 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C     ECRITURE D'UN ENTETE
 C     ------------------------------------------------------------------
-      INTEGER       IVERS, IUTIL, INIVO
+      INTEGER       IVERS, IUTIL, INIVO, IFM
+      INTEGER       MLNBPR, ISOMP, ISMPI, IUNIFI
       CHARACTER*8   CVERS
       CHARACTER*16  DATEVE,MACH,OS,PROC,KPRO
       CHARACTER*24  LADATE
 C     ------------------------------------------------------------------
       INTEGER       FIRST
       SAVE          FIRST, DATEVE, CVERS,LADATE
-      INTEGER       LSUP
       LOGICAL       BDVP, LEXP
       SAVE          BDVP, LEXP
       DATA          FIRST/0/
@@ -57,36 +57,36 @@ C
       ENDIF
 C     ------------------------------------------------------------------
       IF (BDVP .AND. LEXP) THEN
-        CALL PRTITR('C','-- CODE_ASTER -- VERSION'
+        CALL PRTITR('-- CODE_ASTER -- VERSION'
      +              //' CORRECTIVE '//CVERS//' AVANT STABILISATION --')
       ELSE IF (BDVP .AND. .NOT. LEXP) THEN
-        CALL PRTITR('C','-- CODE_ASTER -- VERSION'
+        CALL PRTITR('-- CODE_ASTER -- VERSION'
      +                  //' DE DEVELOPPEMENT '//CVERS//' --')
       ELSE IF (LEXP) THEN
-        CALL PRTITR('C','-- CODE_ASTER -- VERSION'
+        CALL PRTITR('-- CODE_ASTER -- VERSION'
      +                  //' D''EXPLOITATION '//CVERS//' --')
       ELSE
-        CALL PRTITR('C','-- CODE_ASTER -- VERSION'
+        CALL PRTITR('-- CODE_ASTER -- VERSION'
      +                  //' DE DEVELOPPEMENT STABILISEE '//CVERS//' --')
       ENDIF
       IF ( ISMPI() .EQ.1 ) THEN
-        CALL PRTITR('C',' VERSION PARALLELE COMPILEE AVEC MPI')
+        CALL PRTITR(' VERSION PARALLELE COMPILEE AVEC MPI')
       ELSE
-        CALL PRTITR('C',' VERSION SEQUENTIELLE')
+        CALL PRTITR(' VERSION SEQUENTIELLE')
       ENDIF
       IF ( ISOMP() .EQ.1 ) THEN
-        CALL PRTITR('C',' PARALLELISME OPENMP ACTIF')
+        CALL PRTITR(' PARALLELISME OPENMP ACTIF')
       ENDIF
 
-      CALL PRTITR('C','COPYRIGHT  EDF-R&D 1991 - '//DATEVE(7:10))
+      CALL PRTITR('COPYRIGHT  EDF-R&D 1991 - '//DATEVE(7:10))
       
       WRITE(KPRO,'(I3)') MLNBPR() 
-      CALL PRTITR('C','EXECUTION DU : '//LADATE)
+      CALL PRTITR('EXECUTION DU : '//LADATE)
       CALL NODNAM(1,MACH,OS,PROC)
-      CALL PRTITR('C','PLATE-FORME : '//MACH)
-      CALL PRTITR('C','NB MAX PROC OpenMP: '//KPRO)
-      CALL PRTITR('C','SYSTEME : '//OS)
-      CALL PRTITR('C','CPU : '//PROC)
+      CALL PRTITR('PLATE-FORME : '//MACH)
+      CALL PRTITR('NB MAX PROC OpenMP: '//KPRO)
+      CALL PRTITR('SYSTEME : '//OS)
+      CALL PRTITR('CPU : '//PROC)
 C
 C --- VERSION SURCHARGEE OU NON ?
       CALL SURCHG(IFM)

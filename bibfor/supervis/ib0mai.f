@@ -1,8 +1,8 @@
       SUBROUTINE IB0MAI()
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 19/10/2010   AUTEUR COURTOIS M.COURTOIS 
+C MODIF SUPERVIS  DATE 23/11/2010   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -27,8 +27,11 @@ C      2   ERREUR(S) DANS LA COMMANDE  "DEBUT" OU "POURSUITE"
 C      0   SINON
 C     ------------------------------------------------------------------
       CHARACTER*8  NOMF
-      INTEGER      UNMEGA, IADZON
+      INTEGER      UNMEGA, IADZON, IDEBUG, IMEMO, INTDBG, LMO, LOIS
+      INTEGER      MEMDEM, MXDYN
       LOGICAL      LERMEM
+      REAL*8       FNTMEM, VDY
+      INTEGER      LOISEM, ISDBGJ, MEMDIS, MEJVST, MEMJVX
 C
 C     --- MEMOIRE POUR LE GESTIONNAIRE D'OBJET ---
       UNMEGA = 1 024 * 1 024
@@ -74,7 +77,7 @@ C     --- OUVERTURE DE GESTIONNAIRE D'OBJET ---
       WRITE(6,'(1X,A,I14,A,F12.3,A)')
      &          'LIMITE MEMOIRE DYNAMIQUE      : ',
      &           MXDYN*LOIS,' OCTETS (',MXDYN*LOIS*1.D0/UNMEGA,' Mo)'
-      CALL JEDEBU(4,IMEMO,MXDYN,IADZON,LMO,'MESSAGE','VIGILE',IDEBUG )
+      CALL JEDEBU(4,IMEMO,MXDYN,IADZON,LMO,IDEBUG )
       WRITE(6,'(1X,A)')   '======================================='
 C
 C     --- ALLOCATION D'UNE BASE DE DONNEES TEMPORAIRE VOLATILE---

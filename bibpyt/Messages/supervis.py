@@ -1,4 +1,4 @@
-#@ MODIF supervis Messages  DATE 09/11/2010   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF supervis Messages  DATE 23/11/2010   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -169,10 +169,6 @@ cata_msg={
 
 29: _("""
  Trop de noms définis dans la liste argument de "FICHIER"
-"""),
-
-30: _("""
-  %(k1)s est déjà (re-) défini
 """),
 
 31: _("""

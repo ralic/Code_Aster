@@ -1,9 +1,9 @@
       SUBROUTINE IBIMPR ( IER )
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
       INTEGER             IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 20/09/2010   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF SUPERVIS  DATE 23/11/2010   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -27,44 +27,34 @@ C       = 0 ==> PAS DE PROBLEME
 C      /= 0 ==> PROBLEME A LA DEFINITION  DES UNITES LOGIQUES
 C     ------------------------------------------------------------------
 C
-C     --- VARIABLES LOCALES --------------------------------------------
-      PARAMETER   ( MXIMPR = 4)
+C     CONSERVER LA COHERENCE AVEC IBIMPR
+      INTEGER       MXIMPR
+      PARAMETER   ( MXIMPR = 3)
+      CHARACTER*16  NOMPR (MXIMPR)
+      INTEGER       UNITPR (MXIMPR)
+      CHARACTER*1   AUTPR(MXIMPR)
+      CHARACTER*24  VALK(2)
+      INTEGER VALI, IMPR, INOM, IOCC, IUN, NBNOM, NBOCC, NBUNIT
       CHARACTER*16    MOTFAC, NOMRES, CONCEP, NOMCMD
       CHARACTER*16    PRNOM (MXIMPR)
       INTEGER         PRUNIT, PLACE, PASSE
       SAVE                           PASSE
-C     ------------------------------------------------------------------
-      CHARACTER*16  NOMPR (MXIMPR)
-      CHARACTER*1   TYPPR (MXIMPR) , AUTPR(MXIMPR)
-      CHARACTER*24  VALK(2)
-      INTEGER VALI
-      INTEGER       UNITPR (MXIMPR)   , PRESPR(MXIMPR)
-      DATA          NOMPR  /'VIGILE'  , 'MESSAGE'   , 'RESULTAT',
-     &                      'ERREUR'  /
-      DATA          UNITPR /    0     ,      6      ,     8     ,
-     &                          9     /
-      DATA          TYPPR /    'A'    ,    'A'      ,    'A'    ,
-     &                         'A'    /
-      DATA          AUTPR /    'N'    ,    'N'      ,    'O'    ,
-     &                         'N'    /
       DATA          PASSE  /    0     /
+      DATA          NOMPR  /'MESSAGE'  , 'RESULTAT', 'ERREUR'/
+      DATA          UNITPR /    6      ,     8     ,      9  /
+      DATA          AUTPR /    'N'    ,     'O'     ,    'N' /
 C     ------------------------------------------------------------------
       IER = 0
 C
 C     --- RECUPERATION DU NOM DE LA COMMANDE UTILISATEUR ---
       CALL GETRES( NOMRES , CONCEP , NOMCMD )
 C
-C     --- ACTUALISATION DES COMPTEURS DE PRESENCE ---
       PASSE = PASSE + 1
-      DO 4 IMPR = 1, MXIMPR
-         PRESPR(IMPR) = 0
-   4  CONTINUE
 C
 C     --- DEFINITION EVENTUELLE DES OPTIONS PAR DEFAUTS ---
       IF ( PASSE .EQ. 1) THEN
         DO 5 IMPR = 1, MXIMPR
-           CALL ULDEFI(UNITPR(IMPR),' ',NOMPR(IMPR),TYPPR(IMPR),'N',
-     &                 AUTPR(IMPR))
+           CALL ULDEFI(UNITPR(IMPR),' ',NOMPR(IMPR),'A','N',AUTPR(IMPR))
    5    CONTINUE
       ENDIF
 C
@@ -89,12 +79,6 @@ C
                VALK (1) = PRNOM(1)
                VALK (2) = PRNOM(2)
                CALL U2MESG('E','SUPERVIS_84',2,VALK,1,VALI,0,0.D0)
-            ELSEIF ( PRESPR(PLACE) .NE. 0 ) THEN
-               IER = IER + 1
-               CALL U2MESK('E','SUPERVIS_30',1,PRNOM(INOM))
-               PRNOM(INOM) = '::'
-            ELSE
-               PRESPR(PLACE) = 1
             ENDIF
   15     CONTINUE
          CALL GETVIS(MOTFAC,'UNITE',IOCC,IUN,IUN,PRUNIT,NBUNIT)

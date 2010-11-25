@@ -7,7 +7,7 @@
       REAL*8         DAMAX,DT,DAFISS
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 12/10/2010   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ALGORITH  DATE 24/11/2010   AUTEUR MICOL A.MICOL 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -457,7 +457,7 @@ C               THE CRACK FRONT USING THE PARIS LAW
                 ENDIF
                    
                 VPNT = (C/(1-R)**N)*
-     &                 (SQRT(MATE)*ABS(SQRT(G1)-SQRT(G2)))**M
+     &               (SQRT(MATE/(1-MATNU**2))*ABS(SQRT(G1)-SQRT(G2)))**M
 
               ELSE
 
@@ -787,7 +787,7 @@ C                  THE CRACK FRONT USING THE PARIS LAW
                    ENDIF
                    
                    VPNT = (C/(1-R)**N)*
-     &                    (SQRT(MATE)*ABS(SQRT(G1)-SQRT(G2)))**M
+     &               (SQRT(MATE/(1-MATNU**2))*ABS(SQRT(G1)-SQRT(G2)))**M
 
                  ELSE
 

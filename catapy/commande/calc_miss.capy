@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 09/11/2010   AUTEUR DELMAS J.DELMAS 
+#& MODIF COMMANDE  DATE 23/11/2010   AUTEUR COURTOIS M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -27,7 +27,7 @@ CALC_MISS = MACRO(nom="CALC_MISS",op=calc_miss_ops,
    OPTION      = FACT(statut='o',
       MODULE      = SIMP(statut='f',typ='TXM',defaut="MISS_IMPE", into=("MISS_IMPE",)),
    ),
-   TABLE_SOL   = SIMP(statut='f', typ=table_sdaster),
+   TABLE_SOL   = SIMP(statut='o', typ=table_sdaster),
 
    PROJET      = SIMP(statut='f', typ='TXM'),
    REPERTOIRE  = SIMP(statut='f', typ='TXM'),

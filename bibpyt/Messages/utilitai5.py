@@ -1,4 +1,4 @@
-#@ MODIF utilitai5 Messages  DATE 11/10/2010   AUTEUR DELMAS J.DELMAS 
+#@ MODIF utilitai5 Messages  DATE 23/11/2010   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -24,11 +24,7 @@ def _(x) : return x
 cata_msg = {
 
 1 : _("""
- Le fichier de nom %(k1)s associé à l'unite logique %(k2)s n'existe pas.
-"""),
-
-2 : _("""
- asin/acos svp
+ Le fichier de nom %(k1)s associé à l'unité logique %(k2)s n'existe pas.
 """),
 
 3 : _("""
@@ -112,11 +108,11 @@ cata_msg = {
 """),
 
 23 : _("""
- la redefinition de l'unite logique  %(k1)s  n'est pas autorisee
+ La redéfinition de l'unité logique  %(k1)s n'est pas autorisée.
 """),
 
 24 : _("""
- type d'acces inconnu " %(k1)s ", unite  %(k2)s
+ Le type d'accès est inconnu "%(k1)s" pour l'unité %(k2)s.
 """),
 
 25 : _("""
@@ -144,19 +140,19 @@ cata_msg = {
 """),
 
 31 : _("""
- la maille: %(k1)s n'appartient pas au maillage: %(k2)s
+ La maille '%(k1)s' n'appartient pas au maillage '%(k2)s'.
 """),
 
 32 : _("""
- le champ: %(k1)s n'est pas un champ par elements aux noeuds.
+ Le champ '%(k1)s' n'est pas un champ par éléments aux noeuds.
 """),
 
 34 : _("""
- la maille: %(k1)s n'est pas affectee dans le ligrel: %(k2)s
+ La maille '%(k1)s' n'est pas affectée dans le groupe d'éléments finis '%(k2)s'.
 """),
 
 35 : _("""
- la maille:  %(k1)s  possede un type d'element ignorant le cham_elem teste.
+ La maille '%(k1)s' possède un type d'élément ignorant le champ par élément testé.
 """),
 
 36 : _("""
@@ -168,11 +164,11 @@ cata_msg = {
 """),
 
 38 : _("""
- l'element n'admet pas la composante  %(k1)s
+ L'élément n'admet pas la composante '%(k1)s'.
 """),
 
 39 : _("""
- determination de la localisation des points de gauss
+ Détermination de la localisation des points de gauss.
 """),
 
 41 : _("""
@@ -209,6 +205,10 @@ cata_msg = {
 
 49 : _("""
  type de champ non traite:  %(k1)s
+"""),
+
+50 : _("""
+    La valeur de l'argument est en dehors de l'intervalle [-1, 1].
 """),
 
 52 : _("""

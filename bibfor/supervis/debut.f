@@ -3,7 +3,7 @@
       INTEGER                 IER,IPASS
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 08/11/2010   AUTEUR REZETTE C.REZETTE 
+C MODIF SUPERVIS  DATE 23/11/2010   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -55,8 +55,8 @@ C
       IER    = 0
       IF(IPASS .NE. 1) GOTO 9999
          CALL IBIMPR( IERIMP )
-         CALL PRINIT( -1, 0 )
-         CALL PRENTE
+         CALL PRINIT()
+         CALL PRENTE()
 C --- LECTURE DU MOT CLE FACTEUR DEBUG OU DE GESTION MEMOIRE DEMANDE
       CALL IBDBGS()
 C
