@@ -1,4 +1,4 @@
-#@ MODIF assembla Messages  DATE 11/10/2010   AUTEUR DELMAS J.DELMAS 
+#@ MODIF assembla Messages  DATE 29/11/2010   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -29,6 +29,11 @@ cata_msg = {
     de matrice non-symétrique.
 
   Conseil : Changer de solveur
+"""),
+
+2 : _("""
+  Erreur d'utilisation :
+    Les charges cinématiques ne fonctionnent pas avec MUMPS en matrice distribuée
 """),
 
 3: _("""

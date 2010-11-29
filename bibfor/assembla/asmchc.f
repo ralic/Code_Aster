@@ -3,7 +3,7 @@
       CHARACTER*(*) MATAS
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 22/06/2010   AUTEUR SELLENET N.SELLENET 
+C MODIF ASSEMBLA  DATE 29/11/2010   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -69,6 +69,7 @@ C     CALL CHEKSD('SD_MATR_ASSE',MAT,IRET)
       NU = ZK24(JREFA-1+2)(1:14)
       CALL JEEXIN(NU//'.NUML.DELG',IMATD)
       IF ( IMATD.NE.0 ) THEN
+        CALL U2MESS('F','ASSEMBLA_2')
         CALL JEVEUO(NU//'.NUML.NEQU','L',JNEQU)
         CALL JEVEUO(NU//'.NUML.NULG','L',JNULG)
       ELSE

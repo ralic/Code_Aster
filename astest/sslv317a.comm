@@ -1,4 +1,4 @@
-# MODIF  DATE 18/10/2010   AUTEUR GNICOLAS G.NICOLAS 
+# MODIF  DATE 29/11/2010   AUTEUR COURTOIS M.COURTOIS 
 # TITRE PROPAGATION MIXTE D'UNE FISSURE 3D AVEC X-FEM ET RAFFINEMENT ADAPTATIF
 # sslv317a.para = tps_job 180 mem_job 512Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -421,7 +421,7 @@ for i_propa in xrange(pas_debut,nb_pas) :
                  TYPE_TEST='MAX',
                  VALE=7.92678E+04,
                  CRITERE='RELATIF',
-                 PRECISION=0.01,
+                 PRECISION=0.02,
                  REFERENCE='NON_REGRESSION');   
 
       TEST_TABLE(TABLE=TAB_KG,

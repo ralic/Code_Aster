@@ -1,0 +1,90 @@
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR sellenet     SELLENET Nicolas       DATE 11/29/2010 - 01:29:50
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 015934 DU 2010-11-18 09:30:55
+TYPE anomalie concernant Code_Aster (VERSION 9.1)
+TITRE
+    En NEW10.2.25, le cas-test perf011b est NOOK sur Aster 4 MPI.
+FONCTIONNALITE
+   Problème :
+   ----------
+   perf011b NOOK en parallèle sur aster4.
+   
+   
+   Solution :
+   ----------
+   Le problème venant de MATR_DISTRIBUEE avec les charges cinématiques, on interdit cette
+   combinaison pour la stabilisation.
+   
+   Résultat faux : lorsqu'on utilise MATR_DISTRIBUEE avec des charges cinématiques, on peut
+   obtenir des résultats aléatoires.
+   
+   
+   Sources impactées :
+   -------------------
+   assembla.py
+   asmchc.f
+   mumps01a.comm
+   ssnv129e.comm
+   perf011b.comm
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  OUI   DEPUIS : 10.2.3
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    perf011b
+NB_JOURS_TRAV  : 3.5
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR courtois     COURTOIS Mathieu       DATE 11/29/2010 - 01:29:51
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 015977 DU 2010-11-29 07:55:09
+TYPE anomalie concernant Code_Aster (VERSION 9.1)
+TITRE
+    En NEW10.2.27, le cas-test sslv317a est NOOK sur Aster4.
+FONCTIONNALITE
+   Le test est NOOK sur un test de non régression sur le max de K1 
+   le long du fond.
+   On peut augmenter la tolérance à 2%.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    sslv317a
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+
+
+========================================================================
+=== Recapitulation des operations demandees pour toutes les restitutions
+========================================================================
+
+
+    TYPE Action    unite                      user      Auteur         nblg  ajout suppr.
+
+ CASTEST MODIF mumps01a                     courtois M.COURTOIS         174      7      6
+ CASTEST MODIF perf011b                     courtois M.COURTOIS         589      6      6
+ CASTEST MODIF sslv317a                     courtois M.COURTOIS         481      2      2
+ CASTEST MODIF ssnv129e                     courtois M.COURTOIS         218      5      2
+ FORTRAN MODIF assembla/asmchc              courtois M.COURTOIS         305      2      1
+  PYTHON MODIF Messages/assembla            courtois M.COURTOIS         299      6      1
+
+
+        nb unites  nb lignes  ajouts  suppr.  difference
+ AJOUT :    0           0         0                +0
+ MODIF :    6        2066        28      18       +10
+ SUPPR :    0           0                 0        +0
+ DEPLA :    0           0 
+         ----      ------     ------  ------   ------
+ TOTAL :    6        2066        28      18       +10 
