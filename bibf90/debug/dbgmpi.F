@@ -1,6 +1,6 @@
       SUBROUTINE DBGMPI(ICO)
 !           CONFIGURATION MANAGEMENT OF EDF VERSION                  
-!& MODIF DBGMPI DEBUG  DATE 26/05/2010   AUTEUR PELLET J.PELLET 
+!& MODIF DBGMPI DEBUG DATE 26/05/2010 AUTEUR PELLET J.PELLET
 ! ================================================================== 
 ! COPYRIGHT (C) 1991 - 2010  EDF R&D              WWW.CODE-ASTER.ORG 
 !                                                                    

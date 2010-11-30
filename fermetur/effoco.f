@@ -1,6 +1,0 @@
-
-      SUBROUTINE EFFOCO(NOM,CRET)
-      INTEGER CRET
-      CHARACTER*(*) NOM
-      CALL U2MESS('F','FERMETUR_2')
-      END

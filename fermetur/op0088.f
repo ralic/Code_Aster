@@ -1,6 +1,5 @@
-      SUBROUTINE OP0088(IERR)
+      SUBROUTINE OP0088( )
       IMPLICIT REAL*8 (A-H,O-Z)
-      INTEGER           IERR
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C MODIF FERMETUR DATE 03/08/95  AUTEUR GIBHHCM C.MASSERET
@@ -23,7 +22,6 @@ C ======================================================================
 C     ------------------------------------------------------------------
       CHARACTER*16  NOMCMD, CONCEP
       CHARACTER*8   NOMRES
-      IERR = 1
       CALL GETRES(NOMRES,CONCEP,NOMCMD)
       CALL U2MESS('F','FERMETUR_5')
       END

@@ -1,5 +1,0 @@
-          INTEGER FUNCTION HDFTSD (I,KNOM1,J,K)
-       INTEGER I,J,K
-       CHARACTER*(*) KNOM1
-      CALL U2MESS('F','FERMETUR_3')
-      END

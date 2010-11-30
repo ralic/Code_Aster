@@ -1,5 +1,0 @@
-          INTEGER FUNCTION HDFRSV (I,J,ITAB,ICONV)
-       CHARACTER *(*) ITAB(*)
-       INTEGER I,J,ICONV
-      CALL U2MESS('F','FERMETUR_3')
-      END

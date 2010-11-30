@@ -1,4 +1,0 @@
-          INTEGER FUNCTION HDFCRF (KNOM)
-       CHARACTER*(*) KNOM
-      CALL U2MESS('F','FERMETUR_3')
-      END

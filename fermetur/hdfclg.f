@@ -1,4 +1,0 @@
-          INTEGER FUNCTION HDFCLG (I)
-       INTEGER I
-      CALL U2MESS('F','FERMETUR_3')
-      END
