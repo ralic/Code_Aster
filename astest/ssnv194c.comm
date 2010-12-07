@@ -1,4 +1,4 @@
-# MODIF  DATE 23/03/2010   AUTEUR PROIX J-M.PROIX 
+# MODIF  DATE 07/12/2010   AUTEUR GENIAUT S.GENIAUT 
 # TITRE : TRACTION SUR UN POLYCRISTAL A 10 GRAINS, AVEC SIMU_POINT_MAT
 # ssnv194c.para = tps_job 150 mem_job 60Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -89,7 +89,7 @@ SOLNL=SIMU_POINT_MAT(INFO=1,
                    COMP_INCR=_F(
                                 RELATION='POLYCRISTAL',
                                 COMPOR=COMPORP,
-                                RESO_INTE='RUNGE_KUTTA_2',
+                                ALGO_INTE='RUNGE_KUTTA',
                                 RESI_INTE_RELA=1.E-6,
                                 ),
                    NEWTON=_F(

@@ -1,4 +1,4 @@
-# MODIF  DATE 10/05/2010   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 07/12/2010   AUTEUR PELLET J.PELLET 
 # TITRE TREMPE D UN BARREAU INFINI A SECTION CARREE
 # mtlp100a.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -676,7 +676,6 @@ TEMPE1=CALC_META(reuse =TEMPE1,
 TEMPE1=CALC_ELEM(reuse =TEMPE1,
                  RESULTAT=TEMPE1,
                  INST=(300.0,410.0,),
-#                 OPTION=('DURT_ELGA_META','DURT_ELNO_META',),);
                  OPTION=('DURT_ELNO_META',),);
 
 TEST_RESU(RESU=(_F(RESULTAT=TEMPE1,
@@ -784,7 +783,7 @@ FIN();
 
 #-----------------------------------------------------------------------
 #
-# Ceci est une copie du programme DEFITRC permettant de produire la 
+# Ceci est une copie du programme DEFITRC permettant de produire la
 #   commande DEFI_TRC a partir des diagrammes TRC. La syntaxe produite
 #   est compatible avec les versions 9 et 10.
 #   On retrouve ce programme dans le fichier mtlp100a.66

@@ -1,4 +1,4 @@
-# MODIF  DATE 12/04/2010   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 07/12/2010   AUTEUR PELLET J.PELLET 
 # RESPONSABLE GNICOLAS G.NICOLAS
 # TITRE ESSAI MED POUR DIFFERENTS TYPES D ELEMENTS
 # zzzz161a.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test R
@@ -104,7 +104,7 @@ RESUTRQ2=LIRE_RESU(
 RESUTRQ2=CALC_ELEM( reuse=RESUTRQ2,   RESULTAT=RESUTRQ2,
                     OPTION=( 'SIGM_ELNO_DEPL',
                              'EPSI_ELNO_DEPL',
-                             'ERRE_ELEM_SIGM', )
+                             'ERME_ELEM', )
                      )
 
 #
@@ -121,7 +121,7 @@ IMPR_RESU ( RESU=_F( MAILLAGE=MAILTRQU, IMPR_COOR = 'OUI', ) ) ;
 IMPR_RESU ( RESU=_F( RESULTAT=RESUTRQ2, ) ) ;
 IMPR_RESU ( RESU=_F( CHAM_GD =REQT_GD, ) ) ;
 IMPR_RESU ( RESU=_F( RESULTAT=RESUTRQ2,
-                     NOM_CHAM = ('ERRE_ELEM_SIGM',),
+                     NOM_CHAM = ('ERME_ELEM',),
                      GROUP_MA = 'MILIEU' ),
             INFO=2 ) ;
 #
@@ -134,7 +134,7 @@ IMPR_RESU ( FORMAT='MED', RESU=_F( RESULTAT=RESUTRQ2,
                                    NOM_CHAM = ('SIGM_ELNO_DEPL',),),
             INFO=2 ) ;
 IMPR_RESU ( FORMAT='MED', RESU=_F( RESULTAT=RESUTRQ2,
-                                   NOM_CHAM = 'ERRE_ELEM_SIGM',),
+                                   NOM_CHAM = 'ERME_ELEM',),
             INFO=2 ) ;
 #
 # 5. Relecture
@@ -172,7 +172,7 @@ ERRERELU=LIRE_CHAMP(MAILLAGE=MAILTRQU,
                 MODELE=MODETRQU,
                 FORMAT='MED',
                 UNITE=80,
-                NOM_MED='RESUTRQ2ERRE_ELEM_SIGM__________',
+                NOM_MED='RESUTRQ2ERME_ELEM_______________',
                 NUME_ORDRE=1,NUME_PT=1,
                 TYPE_CHAM='ELEM_ERRE_R',
                 NOM_CMP_IDEM='OUI',

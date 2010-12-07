@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 09/11/2010   AUTEUR DELMAS J.DELMAS 
+#& MODIF COMMANDE  DATE 07/12/2010   AUTEUR PELLET J.PELLET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -51,10 +51,10 @@ MACRO_ELAS_MULT=MACRO(nom="MACRO_ELAS_MULT",op=macro_elas_mult_ops,sd_prod=macro
                                        "SIGM_ELNO_CART","EFGE_ELNO_CART","DEGE_ELNO_DEPL","EPSI_ELNO_DEPL",
                                        "EPSI_ELGA_DEPL","EPSG_ELNO_DEPL","EPSG_ELGA_DEPL","EPSP_ELNO","EPSP_ELGA",
                                        "ECIN_ELEM_DEPL","FLUX_ELGA_TEMP","FLUX_ELNO_TEMP","SOUR_ELGA_ELEC",
-                                       "PRES_ELNO_DBEL","PRES_ELNO_REEL","PRES_ELNO_IMAG","INTE_ELNO_ACTI",
-                                       "INTE_ELNO_REAC","SIGM_NOZ1_ELGA","ERZ1_ELEM_SIGM","SIGM_NOZ2_ELGA",
-                                       "ERZ2_ELEM_SIGM","VNOR_ELEM_DEPL","ERRE_ELNO_ELEM",
-                                       "ERRE_ELEM_SIGM","EQUI_ELNO_SIGM","EQUI_ELGA_SIGM","EQUI_ELNO_EPSI",
+                                       "PRAC_ELNO","INTE_ELNO",
+                                       "SIGM_NOZ1_ELGA","ERZ1_ELEM_SIGM","SIGM_NOZ2_ELGA",
+                                       "ERZ2_ELEM_SIGM","VNOR_ELEM_DEPL","ERME_ELNO",
+                                       "ERME_ELEM","EQUI_ELNO_SIGM","EQUI_ELGA_SIGM","EQUI_ELNO_EPSI",
                                        "QIRE_ELEM_SIGM","QIRE_ELNO_ELEM","QIZ1_ELEM_SIGM","QIZ2_ELEM_SIGM",
                                        "EQUI_ELGA_EPSI","FORC_NODA","REAC_NODA","EPSI_NOEU_DEPL","SIGM_NOEU_DEPL",
                                        "EFGE_NOEU_DEPL","EQUI_NOEU_SIGM","EQUI_NOEU_EPSI","FLUX_NOEU_TEMP") ),

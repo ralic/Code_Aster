@@ -1,21 +1,21 @@
-#@ MODIF calc_eolienne Intranet  DATE 12/07/2010   AUTEUR BERARD A.BERARD 
+#@ MODIF calc_eolienne Intranet  DATE 07/12/2010   AUTEUR PELLET J.PELLET 
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 #
 # LISTE DES FONCTIONS, MACROS et CATALOGUES
@@ -85,7 +85,7 @@ def calc_char_houle_ops(self, INFO, STREAM, IMPRESSION, **args):
   EXEC_LOGICIEL = self.get_cmd("EXEC_LOGICIEL")
   IMPR_TABLE= self.get_cmd("IMPR_TABLE")
   DEFI_FICHIER= self.get_cmd("DEFI_FICHIER")
-  
+
 # 1.3 ==> Le nom des programmes à lancer
 
 #  repertoire_outils = "/home/eolien/ASTER_EOLIEN/"
@@ -157,7 +157,7 @@ def calc_char_houle_ops(self, INFO, STREAM, IMPRESSION, **args):
     peri_houle    = STREAM['PERI_HOULE']
     courant_euler = STREAM['COUR_EULERIEN']
     ordre_fonc    = STREAM['ORDR_FONC_COURAN']
-  
+
     f_menu.write(str(prof)+" <= Profondeur d'eau (m)\n")
     f_menu.write(str(h_houle)+" <= Hauteur de houle (crete-a-creux) (m)\n")
     f_menu.write(str(peri_houle)+" <= Periode de houle (s)\n")
@@ -191,7 +191,7 @@ def calc_char_houle_ops(self, INFO, STREAM, IMPRESSION, **args):
     coef_inertie = STREAM['COEF_INERTIE']
     nb_nive_z    = STREAM['NB_POINTS_VERT']
     nb_dt_par_t  = STREAM['NB_INTER_PERI']
-  
+
     f_FM.write(str(diam)+" <= Diametre du cylindre (m)\n")
     f_FM.write(str(coef_trainee)+" <= Coefficient de trainee Cd\n")
     f_FM.write(str(coef_inertie)+" <= Coefficient d'inertie Cm\n")
@@ -262,7 +262,7 @@ def calc_char_houle_ops(self, INFO, STREAM, IMPRESSION, **args):
 #
 # 6. C'est fini !
 #____________________________________________________________________
-#    
+#
     break
 
 # 6.1. ==> Arret en cas d'erreur
@@ -323,7 +323,7 @@ def mail_eolienne(H_TOTALE, H_BASE, H_IMMERGEE, H_MOYEU, H_JONCTION, DECAL_PALES
 #
 # 3 ==> Ecriture des donnees necessaires dans le fichier auxiliaire
 #
-  if MODELISATION == 'POUTRE' :   
+  if MODELISATION == 'POUTRE' :
 
     # 3.1 ==> Ouverture du fichier auxiliaire
 
@@ -340,7 +340,7 @@ def mail_eolienne(H_TOTALE, H_BASE, H_IMMERGEE, H_MOYEU, H_JONCTION, DECAL_PALES
     if hbe > 0.0 :
       for i in range(nbe) :
         j = j+1
-        fdaux.write("base"+str(j)+" = baset . "+str(j)+";\n") 
+        fdaux.write("base"+str(j)+" = baset . "+str(j)+";\n")
 
     for i in range(NB_ELEM_FUT) :
       fdaux.write("fut"+str(i+1)+" = futt . "+str(i+1)+";\n")
@@ -385,56 +385,56 @@ def mail_eolienne(H_TOTALE, H_BASE, H_IMMERGEE, H_MOYEU, H_JONCTION, DECAL_PALES
     if TYPE_ELEM == 'CUB8' : fdgib.write("quad = 'non';\n")
     if TYPE_ELEM == 'CU20' : fdgib.write("quad = 'oui';\n")
 
-  fdgib.write("**** hauteur totale du monopode (hors nacelle)\n") 
-  fdgib.write("h_totale = "+str(H_TOTALE)+";\n")   
-  fdgib.write("**** hauteur de la base du monopode\n") 
-  fdgib.write("hb = "+str(H_BASE)+";\n")   
-  fdgib.write("**** hauteur immergee (deduite du calcul par STREAM)\n") 
-  fdgib.write("hbi = "+str(H_IMMERGEE)+";\n")   
-  fdgib.write("**** nombre de mailles immergees de la base\n") 
-  fdgib.write("nbi = "+str(nbi)+";\n")   
-  fdgib.write("**** hauteur emergee\n") 
-  fdgib.write("hbe = "+str(hbe)+";\n")   
-  fdgib.write("**** nombre de mailles emergees de la base\n") 
-  fdgib.write("nbe = "+str(nbe)+";\n")   
-  fdgib.write("**** decoupage vertical\n") 
-  fdgib.write("nb_base = "+str(NB_ELEM_BASE)+";\n")   
-  fdgib.write("nb_fut = "+str(NB_ELEM_FUT)+";\n")   
-  fdgib.write("**** diametre et epaisseur bas du fut\n") 
-  fdgib.write("dex_bfut = "+str(DEXT_BAS_FUT)+";\n")   
-  fdgib.write("ep_bfut = "+str(EPAIS_BAS_FUT)+";\n")   
-  fdgib.write("**** diametre et epaisseur haut du fut\n") 
-  fdgib.write("dex_hfut = "+str(DEXT_HAUT_FUT)+";\n")   
-  fdgib.write("ep_hfut = "+str(EPAIS_HAUT_FUT)+";\n")   
-  fdgib.write("**** diametre et epaisseur bas de la base\n") 
-  fdgib.write("dex_bbas = "+str(DEXT_BAS_BASE)+";\n")   
-  fdgib.write("ep_bbas = "+str(EPAIS_BAS_BASE)+";\n")   
-  fdgib.write("**** diametre et epaisseur haut de la base\n") 
-  fdgib.write("dex_hbas = "+str(DEXT_HAUT_BASE)+";\n")   
-  fdgib.write("ep_hbas = "+str(EPAIS_HAUT_BASE)+";\n")   
+  fdgib.write("**** hauteur totale du monopode (hors nacelle)\n")
+  fdgib.write("h_totale = "+str(H_TOTALE)+";\n")
+  fdgib.write("**** hauteur de la base du monopode\n")
+  fdgib.write("hb = "+str(H_BASE)+";\n")
+  fdgib.write("**** hauteur immergee (deduite du calcul par STREAM)\n")
+  fdgib.write("hbi = "+str(H_IMMERGEE)+";\n")
+  fdgib.write("**** nombre de mailles immergees de la base\n")
+  fdgib.write("nbi = "+str(nbi)+";\n")
+  fdgib.write("**** hauteur emergee\n")
+  fdgib.write("hbe = "+str(hbe)+";\n")
+  fdgib.write("**** nombre de mailles emergees de la base\n")
+  fdgib.write("nbe = "+str(nbe)+";\n")
+  fdgib.write("**** decoupage vertical\n")
+  fdgib.write("nb_base = "+str(NB_ELEM_BASE)+";\n")
+  fdgib.write("nb_fut = "+str(NB_ELEM_FUT)+";\n")
+  fdgib.write("**** diametre et epaisseur bas du fut\n")
+  fdgib.write("dex_bfut = "+str(DEXT_BAS_FUT)+";\n")
+  fdgib.write("ep_bfut = "+str(EPAIS_BAS_FUT)+";\n")
+  fdgib.write("**** diametre et epaisseur haut du fut\n")
+  fdgib.write("dex_hfut = "+str(DEXT_HAUT_FUT)+";\n")
+  fdgib.write("ep_hfut = "+str(EPAIS_HAUT_FUT)+";\n")
+  fdgib.write("**** diametre et epaisseur bas de la base\n")
+  fdgib.write("dex_bbas = "+str(DEXT_BAS_BASE)+";\n")
+  fdgib.write("ep_bbas = "+str(EPAIS_BAS_BASE)+";\n")
+  fdgib.write("**** diametre et epaisseur haut de la base\n")
+  fdgib.write("dex_hbas = "+str(DEXT_HAUT_BASE)+";\n")
+  fdgib.write("ep_hbas = "+str(EPAIS_HAUT_BASE)+";\n")
 
-  if MODELISATION == '3D' or MODELISATION == 'COQUE' :   
-    fdgib.write("**** nombre d'elements sur un demi-cercle\n") 
-    fdgib.write("nbcirfut = "+str(NBEL_DCIR_FUT)+";\n")   
-    fdgib.write("nbcirbas = "+str(NBEL_DCIR_BASE)+";\n")  
-    fdgib.write("**** hauteur de la jonction base/fut\n") 
-    fdgib.write("hbj = "+str(H_JONCTION)+";\n")   
-  if MODELISATION == '3D' :     
-    fdgib.write("**** nombre d'elements dans l'epaisseur\n") 
-    fdgib.write("nbep_fut = "+str(NBEL_EPAIS_FUT)+";\n")   
-    fdgib.write("nbep_bas = "+str(NBEL_EPAIS_BASE)+";\n")   
+  if MODELISATION == '3D' or MODELISATION == 'COQUE' :
+    fdgib.write("**** nombre d'elements sur un demi-cercle\n")
+    fdgib.write("nbcirfut = "+str(NBEL_DCIR_FUT)+";\n")
+    fdgib.write("nbcirbas = "+str(NBEL_DCIR_BASE)+";\n")
+    fdgib.write("**** hauteur de la jonction base/fut\n")
+    fdgib.write("hbj = "+str(H_JONCTION)+";\n")
+  if MODELISATION == '3D' :
+    fdgib.write("**** nombre d'elements dans l'epaisseur\n")
+    fdgib.write("nbep_fut = "+str(NBEL_EPAIS_FUT)+";\n")
+    fdgib.write("nbep_bas = "+str(NBEL_EPAIS_BASE)+";\n")
 
-  fdgib.write("**** angle entre la pression du vent et l'axe X (degres)\n") 
-  fdgib.write("alpha = "+str(ANGLE_VENT_AXE_X)+";\n")   
-  fdgib.write("**** decalage pales\n") 
-  fdgib.write("dec0 = "+str(DECAL_PALES)+";\n")   
-  fdgib.write("**** hauteur moyeu\n") 
-  fdgib.write("hp0 = "+str(H_MOYEU)+";\n")   
+  fdgib.write("**** angle entre la pression du vent et l'axe X (degres)\n")
+  fdgib.write("alpha = "+str(ANGLE_VENT_AXE_X)+";\n")
+  fdgib.write("**** decalage pales\n")
+  fdgib.write("dec0 = "+str(DECAL_PALES)+";\n")
+  fdgib.write("**** hauteur moyeu\n")
+  fdgib.write("hp0 = "+str(H_MOYEU)+";\n")
 
-  fdgib.write("opti echo 0;\n")   
+  fdgib.write("opti echo 0;\n")
 #  loc_datg = "/home/eolien/DATG/"
   loc_datg = aster.repdex()
-  fdgib.write("* \n")   
+  fdgib.write("* \n")
   fdgib.write(open(os.path.join(loc_datg, 'calc_eolienne.datg'), 'r').read())
 
 # 4.3 ==> Fermeture du fichier de donnees GIBI
@@ -714,8 +714,8 @@ def donn_boucle_pas_temps(lignes,Nb_pas_temps) :
 #
 test = 'NON'
 #  Nb_pas_temps = 0
-#####################   
-  
+#####################
+
 def extr_char_houle(k,dict_temps,Nb_valeur,lignes) :
 
   liste = numpy.zeros((Nb_valeur,2))
@@ -737,7 +737,7 @@ def extr_char_houle(k,dict_temps,Nb_valeur,lignes) :
 #___________________ FIN FONCTION extr_char_houle ___________________
 #
 #                    _____________________________
-#                           _______________       
+#                           _______________
 #                    _____________________________
 #
 #____________________________________________________________________
@@ -831,7 +831,7 @@ def macr_calc_eolienne_ops(self, INFO, MONOPODE, EXEC_MAILLAGE, AFFE_MATERIAU, C
      EPAIS_NACELLE   = None
      NBEL_EPAIS_BASE = None
      NBEL_EPAIS_FUT  = None
-     
+
   if (MODELISATION == '3D') :
      NBEL_DCIR_BASE  = MONOPODE['NBEL_DCIR_BASE']
      NBEL_DCIR_FUT   = MONOPODE['NBEL_DCIR_FUT']
@@ -876,7 +876,7 @@ def macr_calc_eolienne_ops(self, INFO, MONOPODE, EXEC_MAILLAGE, AFFE_MATERIAU, C
   if (MODELISATION == '3D') and (FATIGUE != None) :
 
     H_IMMERGEE = MONOPODE['H_BASE']
-  
+
     mail_eolienne(H_TOTALE, H_BASE, H_IMMERGEE, H_MOYEU, H_JONCTION, DECAL_PALES,
                   DEXT_NACELLE, EPAIS_NACELLE, DEXT_HAUT_BASE, DEXT_BAS_BASE,
                   EPAIS_HAUT_BASE, EPAIS_BAS_BASE, DEXT_HAUT_FUT, DEXT_BAS_FUT,
@@ -893,9 +893,9 @@ def macr_calc_eolienne_ops(self, INFO, MONOPODE, EXEC_MAILLAGE, AFFE_MATERIAU, C
                  )
 
     PRE_GIBI()
-    
+
     if NOM_MAIL_REF!=None : self.DeclareOut('mail_ref',NOM_MAIL_REF)
-    mail_ref = LIRE_MAILLAGE()    
+    mail_ref = LIRE_MAILLAGE()
 
 # debut test
 #       IMPR_CO(CO=mail_ref,)
@@ -918,7 +918,7 @@ def macr_calc_eolienne_ops(self, INFO, MONOPODE, EXEC_MAILLAGE, AFFE_MATERIAU, C
   MA       = [None] * (Nb_pas_temps+1)   # pour les modelisations POUTRE et 3D
   __MO     = [None] * (Nb_pas_temps+1)
   CARA     = [None] * (Nb_pas_temps+1)
-  __affmat = [None] * (Nb_pas_temps+1)  
+  __affmat = [None] * (Nb_pas_temps+1)
 
 # 1.8 ==> Construction du dictionnaire contenant :
 #         pas_de_temps : numeros de ligne du fichier resu_STREAM_FM
@@ -932,7 +932,7 @@ def macr_calc_eolienne_ops(self, INFO, MONOPODE, EXEC_MAILLAGE, AFFE_MATERIAU, C
 #
   test = 'NON'
 #  Nb_pas_temps = 0
-#####################   
+#####################
 #____________________________________________________________________
 #
 # 2. ==> BOUCLE SUR LES PAS DE TEMPS
@@ -944,7 +944,7 @@ def macr_calc_eolienne_ops(self, INFO, MONOPODE, EXEC_MAILLAGE, AFFE_MATERIAU, C
 #        5. dans le cas ou un calcul en fatigue est demande nous projetons
 #           le champ de contrainte calcule aux noeuds sur un maillage de reference.
 #
-  
+
   for j in range(Nb_pas_temps+1) :
 
     k = j + 1
@@ -959,16 +959,16 @@ def macr_calc_eolienne_ops(self, INFO, MONOPODE, EXEC_MAILLAGE, AFFE_MATERIAU, C
 
     H_IMMERGEE = liste[[(range_arrive-range_depart-2),0]]
     if INFO == 2 :
-      print "<I> <MACR_CALC_EOLIENNE> ==> Numero d'ordre = ", j    
-      print "<I> <MACR_CALC_EOLIENNE> ==> hauteur_eau = ", H_IMMERGEE    
+      print "<I> <MACR_CALC_EOLIENNE> ==> Numero d'ordre = ", j
+      print "<I> <MACR_CALC_EOLIENNE> ==> hauteur_eau = ", H_IMMERGEE
 
 #####################
 #    VALEUR TEST
 #
 #    hauteur_eau = 30.
-#####################   
-    print "\n<CALC_EOLIENNE>  liste = \n", liste          
-    print"   "     
+#####################
+    print "\n<CALC_EOLIENNE>  liste = \n", liste
+    print"   "
 
 # 2.3 ==> Calcul des coefficients de la regression de maniere a
 #         construire un chargement continu.
@@ -1029,23 +1029,23 @@ def macr_calc_eolienne_ops(self, INFO, MONOPODE, EXEC_MAILLAGE, AFFE_MATERIAU, C
         nom  = 'FUT'+str(i+1)
         incr = (DEXT_BAS_FUT - DEXT_HAUT_FUT)/(2.0*NB_ELEM_FUT)
         r1 = (DEXT_BAS_FUT/2.0) - (i*incr)
-        r2 = r1 - incr     
+        r2 = r1 - incr
         motscle['POUTRE'].append(_F(GROUP_MA=nom,SECTION='CERCLE',CARA=('R1','R2','EP1','EP2',),VALE=(r1,r2,EPAIS_BAS_FUT,EPAIS_HAUT_FUT,),VARI_SECT='HOMOTHETIQUE',), )
 
       for i in range(NB_ELEM_BASE) :
         nom = 'BASE'+str(i+1)
         incr = (DEXT_BAS_BASE - DEXT_HAUT_BASE)/(2.0*NB_ELEM_BASE)
-        r1 = (DEXT_BAS_BASE/2.0) - (i*incr)        
-        r2 = r1 - incr     
+        r1 = (DEXT_BAS_BASE/2.0) - (i*incr)
+        r2 = r1 - incr
         motscle['POUTRE'].append(_F(GROUP_MA=nom,SECTION='CERCLE',CARA=('R1','R2','EP1','EP2',),VALE=(r1,r2,EPAIS_BAS_BASE,EPAIS_HAUT_BASE,),VARI_SECT='HOMOTHETIQUE',), )
 
-      CARA[j]=AFFE_CARA_ELEM( MODELE = __MO[j], 
+      CARA[j]=AFFE_CARA_ELEM( MODELE = __MO[j],
                               **motscle );
 
 # 2.8 ==> Modelisation COQUE
-       
+
     if MODELISATION == 'COQUE' :
- 
+
       MA2[j] = CREA_MAILLAGE( MAILLAGE=MA[j],
                               MODI_MAILLE=( _F( OPTION   = 'QUAD8_9',
                                                 GROUP_MA = ('PARTEM','PARTIM',),),
@@ -1061,13 +1061,13 @@ def macr_calc_eolienne_ops(self, INFO, MONOPODE, EXEC_MAILLAGE, AFFE_MATERIAU, C
                                         PHENOMENE    = 'MECANIQUE',
                                         MODELISATION = 'POU_D_E',),),
                             );
-  
-      
+
+
       MA2[j] = MODI_MAILLAGE( reuse         = MA2[j],
                               MAILLAGE      = MA2[j],
                               ORIE_NORM_COQUE = _F(
                               GROUP_MA = ('PARTEM','PARTIM','JONCTION'),),);
- 
+
       CARA[j] = AFFE_CARA_ELEM( MODELE=__MO[j],
                                 POUTRE=( _F(GROUP_MA = 'NACELLE',
                                             SECTION  = 'CERCLE',
@@ -1086,7 +1086,7 @@ def macr_calc_eolienne_ops(self, INFO, MONOPODE, EXEC_MAILLAGE, AFFE_MATERIAU, C
 # 2.9 ==> Modelisation 3D
 
     if MODELISATION == '3D' :
-    
+
       __MO[j] = AFFE_MODELE( MAILLAGE=MA[j],
                              AFFE=(_F( GROUP_MA     = ('BASE','FUT','JONCTION','CHAUTE','SI1','SE1'),
                                        PHENOMENE    = 'MECANIQUE',
@@ -1095,7 +1095,7 @@ def macr_calc_eolienne_ops(self, INFO, MONOPODE, EXEC_MAILLAGE, AFFE_MATERIAU, C
                                        PHENOMENE    ='MECANIQUE',
                                        MODELISATION ='POU_D_E',),),
                            );
-   
+
       MA[j] = MODI_MAILLAGE( reuse        = MA[j],
                              MAILLAGE     = MA[j],
                              ORIE_PEAU_3D = _F(
@@ -1141,9 +1141,9 @@ def macr_calc_eolienne_ops(self, INFO, MONOPODE, EXEC_MAILLAGE, AFFE_MATERIAU, C
 
     RAUMER = 1027.42     # masse volumique de l'eau de mer (kg/m3)
     l_elem_stream = 0.3  # longueur des elements de STREAM_FM (m)
-  
+
     if test == 'OUI':
-      # FC3 poutre           
+      # FC3 poutre
       if MODELISATION == 'POUTRE' :
         FC3 = FORMULE(NOM_PARA=('X','Y','Z'),VALE=' -(exp((Z+231.21)/20.187))/0.3')
       else :
@@ -1153,7 +1153,7 @@ def macr_calc_eolienne_ops(self, INFO, MONOPODE, EXEC_MAILLAGE, AFFE_MATERIAU, C
           -0.0021*(atan(Y/(X+1.E-8)))*(atan(Y/(X+1.E-8)))+0.0224*(atan(Y/(X+1.E-8)))+0.9328)*
           (0.5*'''+str(RAUMER)+'''*1.6**2)))''')
     else :
-      if MODELISATION == 'POUTRE' :   
+      if MODELISATION == 'POUTRE' :
         FC3 = FORMULE(NOM_PARA=('X','Y','Z'),VALE=''' -('''
            +str(teta0)+'''+('''
            +str(teta1)+''')*(Z-('''+str(alpha1)+'''))+('''
@@ -1174,8 +1174,8 @@ def macr_calc_eolienne_ops(self, INFO, MONOPODE, EXEC_MAILLAGE, AFFE_MATERIAU, C
                            +str(beta2)+''')-'''+str(beta3)+'''*(Z-'''+str(alpha1)+''')))/'''+str(l_elem_stream)+''')-'''
           +str(deux_pi_r_bas)+'''*(('''+str(H_BASE)+'''-Z)*1.0E+4))*
           ((-6.E-8*(atan(Y/(X+1.E-8)))*(atan(Y/(X+1.E-8)))*(atan(Y/(X+1.E-8)))*(atan(Y/(X+1.E-8)))+2.E-5*(atan(Y/(X+1.E-8)))*(atan(Y/(X+1.E-8)))*(atan(Y/(X+1.E-8)))
-          -0.0021*(atan(Y/(X+1.E-8)))*(atan(Y/(X+1.E-8)))+0.0224*(atan(Y/(X+1.E-8)))+0.9328))/('''+str(r_bas)+'''*'''+str(int_dp_etoil)+''')))''')     
-          
+          -0.0021*(atan(Y/(X+1.E-8)))*(atan(Y/(X+1.E-8)))+0.0224*(atan(Y/(X+1.E-8)))+0.9328))/('''+str(r_bas)+'''*'''+str(int_dp_etoil)+''')))''')
+
     if CHARGEMENT['VENT'] == 'OUI' :
       FV0 = CHARGEMENT['FORCE_VENT_FUT']
     else :
@@ -1250,7 +1250,7 @@ def macr_calc_eolienne_ops(self, INFO, MONOPODE, EXEC_MAILLAGE, AFFE_MATERIAU, C
 
                                       _F(GROUP_NO='CHP0',FZ=F3,),
                                         ),)
-  
+
     if MODELISATION == '3D' :
       LIMIT=AFFE_CHAR_MECA(MODELE=__MO[j],
                          DDL_IMPO=_F(GROUP_NO='CBASI',
@@ -1294,7 +1294,7 @@ def macr_calc_eolienne_ops(self, INFO, MONOPODE, EXEC_MAILLAGE, AFFE_MATERIAU, C
 
       RESU=CALC_ELEM( reuse =RESU,
                       RESULTAT=RESU,
-                      OPTION=('SIEF_ELNO_ELGA','SIGM_ELNO_SIEF','SIPO_ELNO_SIEF',),)
+                      OPTION=('SIEF_ELNO_ELGA',),)
 
     if MODELISATION == 'COQUE' :
       RESU=MECA_STATIQUE( MODELE=__MO[j],
@@ -1311,7 +1311,7 @@ def macr_calc_eolienne_ops(self, INFO, MONOPODE, EXEC_MAILLAGE, AFFE_MATERIAU, C
 
       RESU = CALC_NO( reuse =RESU,
                       RESULTAT=RESU,
-                      OPTION=('SIGM_NOEU_DEPL','EQUI_NOEU_SIGM',),);        
+                      OPTION=('SIGM_NOEU_DEPL','EQUI_NOEU_SIGM',),);
 
     if MODELISATION == '3D' :
       RESU=MECA_STATIQUE( MODELE=__MO[j],
@@ -1328,19 +1328,19 @@ def macr_calc_eolienne_ops(self, INFO, MONOPODE, EXEC_MAILLAGE, AFFE_MATERIAU, C
 
       RESU = CALC_NO( reuse =RESU,
                       RESULTAT=RESU,
-                      OPTION=('SIGM_NOEU_DEPL','EQUI_NOEU_SIGM',),);         
+                      OPTION=('SIGM_NOEU_DEPL','EQUI_NOEU_SIGM',),);
 
 # 2.13 ==> Preparation du modele de reference si modelisation 3D calcul de la fatigue
 
     delta = periode_houle/Nb_pas_temps
     inst = -periode_houle/2.0 + j*delta
     if (MODELISATION == '3D') and (FATIGUE != None) :
-  
+
       if (k == 1) :
         CHAMREF = AFFE_MATERIAU( MAILLAGE = mail_ref,
                                  MODELE   = MOREF,
-                                 AFFE     = motscles['AFFE_MATERIAU'],)  
-  
+                                 AFFE     = motscles['AFFE_MATERIAU'],)
+
       RESPRO = PROJ_CHAMP( METHODE  = 'COLOCATION',
                            NOM_CHAM = 'SIGM_NOEU_DEPL',
                            RESULTAT = RESU,
@@ -1349,7 +1349,7 @@ def macr_calc_eolienne_ops(self, INFO, MONOPODE, EXEC_MAILLAGE, AFFE_MATERIAU, C
                            VIS_A_VIS=(
                                       _F( GROUP_MA_2='MONOPODE',
                                           GROUP_MA_1='MONOPODE' ),
-                                     ),                  
+                                     ),
                          )
 
       SIG_PRO = CREA_CHAMP( TYPE_CHAM  = 'NOEU_SIEF_R',
@@ -1360,12 +1360,12 @@ def macr_calc_eolienne_ops(self, INFO, MONOPODE, EXEC_MAILLAGE, AFFE_MATERIAU, C
                           )
 
       if (k==1) :
-        RESREF = CREA_RESU( 
+        RESREF = CREA_RESU(
                             OPERATION = 'AFFE',
                             TYPE_RESU = 'EVOL_ELAS',
                             NOM_CHAM  = 'SIGM_NOEU_DEPL',
                             AFFE      = _F( CHAM_GD = SIG_PRO,
-                                            INST = (inst), ), 
+                                            INST = (inst), ),
                           )
       else :
         RESREF = CREA_RESU( reuse = RESREF,
@@ -1416,15 +1416,15 @@ def macr_calc_eolienne_ops(self, INFO, MONOPODE, EXEC_MAILLAGE, AFFE_MATERIAU, C
         if impr['FORMAT']=='IDEAS':
           UNIT_4B=DEFI_FICHIER(FICHIER=fich4b)
           unitr = UNIT_4B
-        if MODELISATION == '3D':    
+        if MODELISATION == '3D':
              motscles['IMPRESSION'].append(_F(MAILLAGE=MA[j],RESULTAT=RESU,
                                              NOM_CHAM=('DEPL','SIGM_ELNO_DEPL','EQUI_ELNO_SIGM',),) )
-        if MODELISATION == 'COQUE':      
+        if MODELISATION == 'COQUE':
              motscles['IMPRESSION'].append(_F(MAILLAGE=MA2[j],RESULTAT=RESU,
                                            NOM_CHAM=('DEPL','SIGM_ELNO_DEPL','EQUI_ELNO_SIGM',),) )
-        if MODELISATION == 'POUTRE':     
+        if MODELISATION == 'POUTRE':
              motscles['IMPRESSION'].append(_F(MAILLAGE=MA[j],RESULTAT=RESU,
-                                           NOM_CHAM=('DEPL','SIGM_ELNO_SIEF','SIPO_ELNO_SIEF',),) )
+                                           NOM_CHAM=('DEPL',),) )
 
       IMPR_RESU(FORMAT=impr['FORMAT'],UNITE=unitr,
                 RESU=motscles['IMPRESSION'],)
@@ -1442,7 +1442,7 @@ def macr_calc_eolienne_ops(self, INFO, MONOPODE, EXEC_MAILLAGE, AFFE_MATERIAU, C
         if impr['FORMAT']=='IDEAS':
           DEFI_FICHIER(ACTION='LIBERER',FICHIER=fich4b)
           DETRUIRE(CONCEPT=_F( NOM = UNIT_4B))
-      
+
       if (MODELISATION == '3D') and (FATIGUE != None) :
          DETRUIRE(CONCEPT=_F( NOM = SIG_PRO))
          DETRUIRE(CONCEPT=_F( NOM = RESPRO))
@@ -1464,8 +1464,8 @@ def macr_calc_eolienne_ops(self, INFO, MONOPODE, EXEC_MAILLAGE, AFFE_MATERIAU, C
 #
 # 3.1 ==> Calcul de la fatigue
 #
-  if (MODELISATION == '3D') and  (FATIGUE != None) : 
-                   
+  if (MODELISATION == '3D') and  (FATIGUE != None) :
+
     self.DeclareOut('CHFATI',self.sd)
     CHFATI = CALC_FATIGUE (
                  TYPE_CALCUL = 'FATIGUE_MULTI',
@@ -1497,7 +1497,7 @@ def macr_calc_eolienne_ops(self, INFO, MONOPODE, EXEC_MAILLAGE, AFFE_MATERIAU, C
 #
 # 4. C'est fini !
 #____________________________________________________________________
-#    
+#
   if erreur :
     if not messages_erreur.has_key(erreur) :
       erreur = 100
@@ -1526,24 +1526,24 @@ CALC_CHAR_HOULE=MACRO( nom="CALC_CHAR_HOULE",op=calc_char_houle_ops,
                        fr="Calcul le chargement du a la houle.",
                        ang=".",reentrant='n',
                        docu="Ux.xx.xx-a",
- 
+
          STREAM            =FACT(statut='o',max=1,
-           PROFONDEUR        =SIMP(statut='o',typ='R'),  
-           H_HOULE           =SIMP(statut='o',typ='R'),  
-           PERI_HOULE        =SIMP(statut='o',typ='R'), 
-           COUR_EULERIEN     =SIMP(statut='o',typ='R'), 
-           COEF_TRAINEE      =SIMP(statut='o',typ='R'),  
-           COEF_INERTIE      =SIMP(statut='o',typ='R'),  
-           ORDR_FONC_COURAN  =SIMP(statut='o',typ='I'),  
-           NB_POINTS_VERT    =SIMP(statut='o',typ='I'),  
-           NB_INTER_PERI     =SIMP(statut='o',typ='I'),  
-           DEXT_HAUT_BASE    =SIMP(statut='o',typ='R'), 
+           PROFONDEUR        =SIMP(statut='o',typ='R'),
+           H_HOULE           =SIMP(statut='o',typ='R'),
+           PERI_HOULE        =SIMP(statut='o',typ='R'),
+           COUR_EULERIEN     =SIMP(statut='o',typ='R'),
+           COEF_TRAINEE      =SIMP(statut='o',typ='R'),
+           COEF_INERTIE      =SIMP(statut='o',typ='R'),
+           ORDR_FONC_COURAN  =SIMP(statut='o',typ='I'),
+           NB_POINTS_VERT    =SIMP(statut='o',typ='I'),
+           NB_INTER_PERI     =SIMP(statut='o',typ='I'),
+           DEXT_HAUT_BASE    =SIMP(statut='o',typ='R'),
          ),
-            
+
          IMPRESSION      =FACT(statut='f',
          UNITE           =SIMP(statut='o',typ='I'),
          ),
-             
+
          INFO           = SIMP(statut='f',typ='I',defaut=1,into=(1,2)),
 
 );
@@ -1567,94 +1567,94 @@ MACR_CALC_EOLIENNE=MACRO(nom="MACR_CALC_EOLIENNE",op=macr_calc_eolienne_ops,
                    fr="Calcul d une eolienne en mer.",
                    ang=".",reentrant='n',
                    docu="U2.09.04-a",
- 
+
          EXEC_MAILLAGE   =FACT(statut='o',
            LOGICIEL        =SIMP(statut='o',typ='TXM',defaut="GIBI2000",into=("GIBI98","GIBI2000") ),
-           UNITE_DATG      =SIMP(statut='f',typ='I',defaut=70),  
-           UNITE_MGIB      =SIMP(statut='f',typ='I',defaut=19),  
+           UNITE_DATG      =SIMP(statut='f',typ='I',defaut=70),
+           UNITE_MGIB      =SIMP(statut='f',typ='I',defaut=19),
            NIVE_GIBI       =SIMP(statut='f',typ='I',defaut=10,into=(3,4,5,6,7,8,9,10,11)),
          ),
 
          MODELISATION   =SIMP(statut='o',typ='TXM', into=("POUTRE","COQUE","3D") ),
          NOM_MAIL_REF   =SIMP(statut='f',typ=(CO,maillage_sdaster)),
-            
+
          TYPE_ELEM      =SIMP(statut='f',typ='TXM',defaut="CUB8",into=("CUB8","CU20") ),
-            
+
          b_model_3D  =BLOC(condition = "MODELISATION == '3D'",
-   
+
             MONOPODE =FACT(statut='o',max=1,
 
-               H_TOTALE        =SIMP(statut='o',typ='R' ),  
-               H_BASE          =SIMP(statut='o',typ='R' ),  
-               H_MOYEU         =SIMP(statut='o',typ='R' ),  
-               H_JONCTION      =SIMP(statut='o',typ='R' ),  
-               DECAL_PALES     =SIMP(statut='o',typ='R' ),  
-               DEXT_NACELLE    =SIMP(statut='o',typ='R' ), 
-               EPAIS_NACELLE   =SIMP(statut='o',typ='R' ), 
-               DEXT_HAUT_BASE  =SIMP(statut='o',typ='R' ), 
-               DEXT_BAS_BASE   =SIMP(statut='f',typ='R' ), 
-               EPAIS_HAUT_BASE =SIMP(statut='o',typ='R' ), 
-               EPAIS_BAS_BASE  =SIMP(statut='f',typ='R' ), 
-               DEXT_HAUT_FUT   =SIMP(statut='o',typ='R' ), 
-               DEXT_BAS_FUT    =SIMP(statut='f',typ='R' ), 
-               EPAIS_HAUT_FUT  =SIMP(statut='o',typ='R' ), 
-               EPAIS_BAS_FUT   =SIMP(statut='f',typ='R' ), 
+               H_TOTALE        =SIMP(statut='o',typ='R' ),
+               H_BASE          =SIMP(statut='o',typ='R' ),
+               H_MOYEU         =SIMP(statut='o',typ='R' ),
+               H_JONCTION      =SIMP(statut='o',typ='R' ),
+               DECAL_PALES     =SIMP(statut='o',typ='R' ),
+               DEXT_NACELLE    =SIMP(statut='o',typ='R' ),
+               EPAIS_NACELLE   =SIMP(statut='o',typ='R' ),
+               DEXT_HAUT_BASE  =SIMP(statut='o',typ='R' ),
+               DEXT_BAS_BASE   =SIMP(statut='f',typ='R' ),
+               EPAIS_HAUT_BASE =SIMP(statut='o',typ='R' ),
+               EPAIS_BAS_BASE  =SIMP(statut='f',typ='R' ),
+               DEXT_HAUT_FUT   =SIMP(statut='o',typ='R' ),
+               DEXT_BAS_FUT    =SIMP(statut='f',typ='R' ),
+               EPAIS_HAUT_FUT  =SIMP(statut='o',typ='R' ),
+               EPAIS_BAS_FUT   =SIMP(statut='f',typ='R' ),
                NB_ELEM_BASE    =SIMP(statut='f',typ='I',defaut=30),
                NB_ELEM_FUT     =SIMP(statut='f',typ='I',defaut=70),
                NBEL_EPAIS_BASE =SIMP(statut='f',typ='I',defaut=3),
                NBEL_EPAIS_FUT  =SIMP(statut='f',typ='I',defaut=3),
                NBEL_DCIR_BASE  =SIMP(statut='f',typ='I',defaut=15),
                NBEL_DCIR_FUT   =SIMP(statut='f',typ='I',defaut=15),
-                          ),    
+                          ),
             ),
-                        
+
          b_model_coque  =BLOC(condition = "MODELISATION == 'COQUE' ",
-   
+
            MONOPODE        =FACT(statut='o',max=1,
 
-              H_TOTALE        =SIMP(statut='o',typ='R' ),  
-              H_BASE          =SIMP(statut='o',typ='R' ),  
-              H_MOYEU         =SIMP(statut='o',typ='R' ),  
-              H_JONCTION      =SIMP(statut='o',typ='R' ),  
-              DECAL_PALES     =SIMP(statut='o',typ='R' ),  
-              DEXT_NACELLE    =SIMP(statut='o',typ='R' ), 
-              EPAIS_NACELLE   =SIMP(statut='o',typ='R' ), 
-              DEXT_HAUT_BASE  =SIMP(statut='o',typ='R' ), 
-              DEXT_BAS_BASE   =SIMP(statut='f',typ='R' ), 
-              EPAIS_HAUT_BASE =SIMP(statut='o',typ='R' ), 
-              EPAIS_BAS_BASE  =SIMP(statut='f',typ='R' ), 
-              DEXT_HAUT_FUT   =SIMP(statut='o',typ='R' ), 
-              DEXT_BAS_FUT    =SIMP(statut='f',typ='R' ), 
-              EPAIS_HAUT_FUT  =SIMP(statut='o',typ='R' ), 
-              EPAIS_BAS_FUT   =SIMP(statut='f',typ='R' ), 
+              H_TOTALE        =SIMP(statut='o',typ='R' ),
+              H_BASE          =SIMP(statut='o',typ='R' ),
+              H_MOYEU         =SIMP(statut='o',typ='R' ),
+              H_JONCTION      =SIMP(statut='o',typ='R' ),
+              DECAL_PALES     =SIMP(statut='o',typ='R' ),
+              DEXT_NACELLE    =SIMP(statut='o',typ='R' ),
+              EPAIS_NACELLE   =SIMP(statut='o',typ='R' ),
+              DEXT_HAUT_BASE  =SIMP(statut='o',typ='R' ),
+              DEXT_BAS_BASE   =SIMP(statut='f',typ='R' ),
+              EPAIS_HAUT_BASE =SIMP(statut='o',typ='R' ),
+              EPAIS_BAS_BASE  =SIMP(statut='f',typ='R' ),
+              DEXT_HAUT_FUT   =SIMP(statut='o',typ='R' ),
+              DEXT_BAS_FUT    =SIMP(statut='f',typ='R' ),
+              EPAIS_HAUT_FUT  =SIMP(statut='o',typ='R' ),
+              EPAIS_BAS_FUT   =SIMP(statut='f',typ='R' ),
               NB_ELEM_BASE    =SIMP(statut='f',typ='I',defaut=30),
               NB_ELEM_FUT     =SIMP(statut='f',typ='I',defaut=70),
               NBEL_DCIR_BASE  =SIMP(statut='f',typ='I',defaut=15),
               NBEL_DCIR_FUT   =SIMP(statut='f',typ='I',defaut=15),
-                             ),    
+                             ),
            ),
 
          b_model_poutre  =BLOC(condition = "MODELISATION == 'POUTRE' ",
-   
+
            MONOPODE          =FACT(statut='o',max=1,
 
-              H_TOTALE        =SIMP(statut='o',typ='R' ),  
-              H_BASE          =SIMP(statut='o',typ='R' ),  
-              H_MOYEU         =SIMP(statut='o',typ='R' ),  
-              DECAL_PALES     =SIMP(statut='o',typ='R' ),  
-              DEXT_HAUT_BASE  =SIMP(statut='o',typ='R' ), 
-              DEXT_BAS_BASE   =SIMP(statut='f',typ='R' ), 
-              EPAIS_HAUT_BASE =SIMP(statut='o',typ='R' ), 
-              EPAIS_BAS_BASE  =SIMP(statut='f',typ='R' ), 
-              DEXT_HAUT_FUT   =SIMP(statut='o',typ='R' ), 
-              DEXT_BAS_FUT    =SIMP(statut='f',typ='R' ), 
-              EPAIS_HAUT_FUT  =SIMP(statut='o',typ='R' ), 
-              EPAIS_BAS_FUT   =SIMP(statut='f',typ='R' ), 
+              H_TOTALE        =SIMP(statut='o',typ='R' ),
+              H_BASE          =SIMP(statut='o',typ='R' ),
+              H_MOYEU         =SIMP(statut='o',typ='R' ),
+              DECAL_PALES     =SIMP(statut='o',typ='R' ),
+              DEXT_HAUT_BASE  =SIMP(statut='o',typ='R' ),
+              DEXT_BAS_BASE   =SIMP(statut='f',typ='R' ),
+              EPAIS_HAUT_BASE =SIMP(statut='o',typ='R' ),
+              EPAIS_BAS_BASE  =SIMP(statut='f',typ='R' ),
+              DEXT_HAUT_FUT   =SIMP(statut='o',typ='R' ),
+              DEXT_BAS_FUT    =SIMP(statut='f',typ='R' ),
+              EPAIS_HAUT_FUT  =SIMP(statut='o',typ='R' ),
+              EPAIS_BAS_FUT   =SIMP(statut='f',typ='R' ),
               NB_ELEM_BASE    =SIMP(statut='f',typ='I',defaut=30),
               NB_ELEM_FUT     =SIMP(statut='f',typ='I',defaut=70),
-                             ),    
+                             ),
            ),
-                  
+
          AFFE_MATERIAU   =FACT(statut='o',max=3,
              regles=(UN_PARMI('TOUT','GROUP_MA'),),
              TOUT           =SIMP(statut='f',typ='TXM',into=("OUI",) ),
@@ -1704,19 +1704,19 @@ MACR_CALC_EOLIENNE=MACRO(nom="MACR_CALC_EOLIENNE",op=macr_calc_eolienne_ops,
          IMPRESSION      =FACT(statut='f',
            FORMAT          =SIMP(statut='f',typ='TXM',defaut="RESULTAT",
                                  into=("RESULTAT","CASTEM","IDEAS","ENSIGHT")),
-                                 
+
            b_format_ideas  =BLOC(condition="FORMAT=='IDEAS'",fr="version Ideas",
              VERSION         =SIMP(statut='f',typ='I',defaut=5,into=(4,5)),
-           ),  
+           ),
 
            b_format_castem =BLOC(condition="FORMAT=='CASTEM'",fr="version Castem",
              NIVE_GIBI       =SIMP(statut='f',typ='I',defaut=10,into=(3,10)),
            ),
-             
+
              TOUT_ORDRE      =SIMP(statut='f',typ='TXM',into=("OUI",) ),
              NUME_ORDRE      =SIMP(statut='f',typ='I',validators=NoRepeat(),max='**'),
              INST            =SIMP(statut='f',typ='R',validators=NoRepeat(),max='**'),
-         ),      
+         ),
 
         INFO           = SIMP(statut='f',typ='I',defaut=1,into=(1,2)),
 

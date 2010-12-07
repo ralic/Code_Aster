@@ -1,4 +1,4 @@
-# MODIF  DATE 30/08/2010   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 07/12/2010   AUTEUR PELLET J.PELLET 
 # TITRE GUIDE D'ONDE A SORTIE ANECHOIQUE (ONDES PLANES)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -81,14 +81,14 @@ DYNAHARM=DYNA_LINE_HARM( MATR_MASS=MATASM,  MATR_RIGI=MATASK,
                                     PUIS_PULS = 1,  PHAS_DEG = 90.))
 
 TEST_RESU(RESU=(
-            _F( RESULTAT = DYNAHARM,  NOM_CHAM = 'DEPL',  NUME_ORDRE = 01,
+            _F( RESULTAT = DYNAHARM,  NOM_CHAM = 'DEPL',  NUME_ORDRE = 1,
              NOEUD = 'NO1',    NOM_CMP = 'PRES',  VALE_C = ('RI',-6.2426,0.,)),
-            _F( RESULTAT = DYNAHARM,  NOM_CHAM = 'DEPL',  NUME_ORDRE = 01,
+            _F( RESULTAT = DYNAHARM,  NOM_CHAM = 'DEPL',  NUME_ORDRE = 1,
              NOEUD = 'NO780',  NOM_CMP = 'PRES',  VALE_C = ('MP',6.2426,180.,)),
-            _F( RESULTAT = DYNAHARM,  NOM_CHAM = 'DEPL',  NUME_ORDRE = 01,
+            _F( RESULTAT = DYNAHARM,  NOM_CHAM = 'DEPL',  NUME_ORDRE = 1,
        # VALEUR EN RADIAN DANS LE FICHIER TEST INITIAL : 0.265615
              NOEUD = 'NO751',  NOM_CMP = 'PRES',  VALE_C = ('MP',6.2426,15.2186,)),
-            _F( RESULTAT = DYNAHARM,  NOM_CHAM = 'DEPL',  NUME_ORDRE = 01,
+            _F( RESULTAT = DYNAHARM,  NOM_CHAM = 'DEPL',  NUME_ORDRE = 1,
              NOEUD = 'NO763',  NOM_CMP = 'PRES',  VALE_C = ('MP',6.2426,15.2186,)))
             )
 
@@ -96,20 +96,20 @@ TEST_RESU(RESU=(
 DYNAHARM=CALC_ELEM( reuse=DYNAHARM,
                             TOUT_ORDRE='OUI',
                              RESULTAT=DYNAHARM,
-                               OPTION='PRES_DBEL_DEPL'
+                               OPTION='PRME_ELNO'
            )
 
 TEST_RESU(RESU=(
-             _F( RESULTAT = DYNAHARM,  NOM_CHAM = 'PRES_DBEL_DEPL', NUME_ORDRE = 01,
+             _F( RESULTAT = DYNAHARM,  NOM_CHAM = 'PRME_ELNO', NUME_ORDRE = 1,
               MAILLE = 'MA1',
               NOEUD = 'NO1',  NOM_CMP = 'DB',  VALE = 109.8867),
-             _F( RESULTAT = DYNAHARM,  NOM_CHAM = 'PRES_DBEL_DEPL', NUME_ORDRE = 01,
+             _F( RESULTAT = DYNAHARM,  NOM_CHAM = 'PRME_ELNO', NUME_ORDRE = 1,
               MAILLE = 'MA1',
               NOEUD = 'NO780', NOM_CMP = 'DB',  VALE = 109.8867),
-             _F( RESULTAT = DYNAHARM,  NOM_CHAM = 'PRES_DBEL_DEPL', NUME_ORDRE = 01,
+             _F( RESULTAT = DYNAHARM,  NOM_CHAM = 'PRME_ELNO', NUME_ORDRE = 1,
               MAILLE = 'MA57',
               NOEUD = 'NO751', NOM_CMP = 'DB',  VALE = 109.8867),
-             _F( RESULTAT = DYNAHARM,  NOM_CHAM = 'PRES_DBEL_DEPL', NUME_ORDRE = 01,
+             _F( RESULTAT = DYNAHARM,  NOM_CHAM = 'PRME_ELNO', NUME_ORDRE = 1,
               MAILLE = 'MA57',
               NOEUD = 'NO763', NOM_CMP = 'DB',  VALE = 109.8867))
              )

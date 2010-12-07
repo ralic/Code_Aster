@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 09/11/2010   AUTEUR DELMAS J.DELMAS 
+#& MODIF COMMANDE  DATE 07/12/2010   AUTEUR PELLET J.PELLET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -33,8 +33,7 @@ CALC_ELEM=OPER(nom="CALC_ELEM",op=58,sd_prod=calc_elem_prod,reentrant='f',
 
      regles=(EXCLUS('TOUT_ORDRE','NUME_ORDRE','INST','FREQ','NUME_MODE',
                     'NOEUD_CMP','LIST_INST','LIST_FREQ','LIST_ORDRE','NOM_CAS'),
-             CONCEPT_SENSIBLE("SEPARE"),
-             DERIVABLE('RESULTAT'),),
+                    ),
      TOUT_ORDRE      =SIMP(statut='f',typ='TXM',into=("OUI",) ),
      NUME_ORDRE      =SIMP(statut='f',typ='I',validators=NoRepeat(),max='**'),
      NUME_MODE       =SIMP(statut='f',typ='I',validators=NoRepeat(),max='**'),
@@ -96,7 +95,7 @@ CALC_ELEM=OPER(nom="CALC_ELEM",op=58,sd_prod=calc_elem_prod,reentrant='f',
                               #  contraintes
                            into=( "SIEF_ELNO_ELGA","SIGM_ELNO_DEPL","SIEF_ELGA_DEPL",
                                   "SIPO_ELNO_DEPL","EFGE_ELNO_DEPL","EFGE_ELNO_CART","SIGM_ELNO_CART",
-                                  "SIGM_ELNO_SIEF","SIPO_ELNO_SIEF","SIGM_ELNO_TUYO","PROJ_ELEM_SIGM",
+                                  "SIGM_ELNO_TUYO","PROJ_ELEM_SIGM",
                               # déformations
                                  "EPSI_ELNO_DEPL","EPSI_ELGA_DEPL","EPSG_ELGA_DEPL","EPSG_ELNO_DEPL",
                                  "EPME_ELNO_DEPL","EPME_ELGA_DEPL","DEGE_ELNO_DEPL","EPSI_ELNO_TUYO",
@@ -106,7 +105,7 @@ CALC_ELEM=OPER(nom="CALC_ELEM",op=58,sd_prod=calc_elem_prod,reentrant='f',
                                  "ETOT_ELGA","ETOT_ELNO_ELGA","ETOT_ELEM","DISS_ELGA","DISS_ELNO_ELGA",
                               #  estimateurs erreur
                                  "SIGM_NOZ1_ELGA","ERZ1_ELEM_SIGM","SIGM_NOZ2_ELGA","ERZ2_ELEM_SIGM",
-                                 "ERRE_ELEM_SIGM","ERRE_ELNO_ELEM",
+                                 "ERME_ELEM","ERME_ELNO",
                                  "QIRE_ELEM_SIGM","QIRE_ELNO_ELEM","QIZ1_ELEM_SIGM","QIZ2_ELEM_SIGM",
                                  "SING_ELEM","SING_ELNO_ELEM",
                               #  CRIT
@@ -114,10 +113,8 @@ CALC_ELEM=OPER(nom="CALC_ELEM",op=58,sd_prod=calc_elem_prod,reentrant='f',
                                  "EQUI_ELNO_EPSI","EQUI_ELGA_EPSI","EQUI_ELNO_EPME","EQUI_ELGA_EPME",
                                  "ENDO_ELGA","ENDO_ELNO_ELGA",
                                  "ENDO_ELNO_SIGA","ENDO_ELNO_SINO","SIEQ_ELNO_TUYO","EPEQ_ELNO_TUYO",
-                              #  derivees
-                                 "DEUL_ELGA_DEPL","DEDE_ELNO_DLDE","DESI_ELNO_DLSI",
                               #  autres
-                                 "VALE_NCOU_MAXI","PRES_DBEL_DEPL","VARC_ELGA"),),
+                                 "VALE_NCOU_MAXI","PRME_ELNO","VARC_ELGA"),),
 
                NOM_CHAM  =SIMP(statut='f',typ='TXM',fr="nom du champ pour VALE_NCOU_MAXI", ),
                NOM_CMP   =SIMP(statut='f',typ='TXM',fr="nom de la composante pour VALE_NCOU_MAXI",  ),
@@ -132,7 +129,7 @@ CALC_ELEM=OPER(nom="CALC_ELEM",op=58,sd_prod=calc_elem_prod,reentrant='f',
                                (type(OPTION)==type(()) and  'SING_ELEM' in OPTION)",
                     PREC_ERR=SIMP(statut='o',typ='R',val_min= 0.,
                                   fr="precision demandee pour calculer la carte de taille des elements"),
-                    TYPE_ESTI=SIMP(statut='f',typ='TXM',into=("ERRE_ELEM_SIGM","ERZ1_ELEM_SIGM","ERZ2_ELEM_SIGM",
+                    TYPE_ESTI=SIMP(statut='f',typ='TXM',into=("ERME_ELEM","ERZ1_ELEM_SIGM","ERZ2_ELEM_SIGM",
                                                               "QIRE_ELEM_SIGM","QIZ1_ELEM_SIGM","QIZ2_ELEM_SIGM",),
                                    fr="choix de l'estimateur d'erreur"),),
 
@@ -173,7 +170,7 @@ CALC_ELEM=OPER(nom="CALC_ELEM",op=58,sd_prod=calc_elem_prod,reentrant='f',
                             fr="option de calcul des contraintes ou efforts generalises",
                             into=( "SIEF_ELNO_ELGA","SIGM_ELNO_DEPL","SIEF_ELGA_DEPL","SIGM_ELNO_TUYO",
                                    "SIPO_ELNO_DEPL","EFGE_ELNO_DEPL","EFGE_ELNO_CART","SIGM_ELNO_CART",
-                                   "SIGM_ELNO_SIEF","SIPO_ELNO_SIEF"),),
+                                   ),),
 
                b_charge =BLOC( condition = "OPTION in ('SIGM_ELNO_DEPL','SIEF_ELGA_DEPL',\
                                                        'SIPO_ELNO_DEPL','EFGE_ELNO_DEPL',) or \
@@ -241,14 +238,10 @@ b_charge =BLOC( condition = "OPTION in ('EPME_ELNO_DEPL','EPSI_ELGA_DEPL','EPME_
                      CHARGE          =SIMP(statut='o',typ=(char_meca,char_ther,char_acou) ),),
                                  ),
 
-          b_derivees         =BLOC( condition = "TYPE_OPTION=='DERIVEES'",
-                  OPTION    =SIMP(statut='o',typ='TXM',validators=NoRepeat(),max='**',
-                           into=("DEUL_ELGA_DEPL","DEDE_ELNO_DLDE","DESI_ELNO_DLSI",
-                                 ) ),),
 
           b_autres         =BLOC( condition = "TYPE_OPTION=='AUTRES'",
                   OPTION    =SIMP(statut='o',typ='TXM',validators=NoRepeat(),max='**',
-                           into=("VALE_NCOU_MAXI","PRES_DBEL_DEPL",
+                           into=("VALE_NCOU_MAXI","PRME_ELNO",
                                  ) ),
                b_maxi    =BLOC( condition = "OPTION=='VALE_NCOU_MAXI' or \
                                 (type(OPTION)==type(()) and 'VALE_NCOU_MAXI' in OPTION)",
@@ -257,9 +250,9 @@ b_charge =BLOC( condition = "OPTION in ('EPME_ELNO_DEPL','EPSI_ELGA_DEPL','EPME_
                                  ),
 
           b_indi_erreur        =BLOC( condition = "TYPE_OPTION=='INDI_ERREUR'",
-               OPTION    =SIMP(statut='o',typ='TXM',validators=NoRepeat(),max='**',defaut="ERRE_ELEM_SIGM",
+               OPTION    =SIMP(statut='o',typ='TXM',validators=NoRepeat(),max='**',defaut="ERME_ELEM",
                            into=("SIGM_NOZ1_ELGA","ERZ1_ELEM_SIGM","SIGM_NOZ2_ELGA","ERZ2_ELEM_SIGM",
-                                 "ERRE_ELEM_SIGM","ERRE_ELNO_ELEM",
+                                 "ERME_ELEM","ERME_ELNO",
                                  "QIRE_ELEM_SIGM","QIRE_ELNO_ELEM","QIZ1_ELEM_SIGM","QIZ2_ELEM_SIGM",
                                  "SING_ELEM","SING_ELNO_ELEM",
                                  )),
@@ -274,7 +267,7 @@ b_charge =BLOC( condition = "OPTION in ('EPME_ELNO_DEPL','EPSI_ELGA_DEPL','EPME_
                                (type(OPTION)==type(()) and  'SING_ELEM' in OPTION)",
                     PREC_ERR=SIMP(statut='o',typ='R',val_min= 0.,
                                   fr="precision demandee pour calculer la carte de taille des elements" ),
-                    TYPE_ESTI=SIMP(statut='f',typ='TXM',into=("ERRE_ELEM_SIGM","ERZ1_ELEM_SIGM","ERZ2_ELEM_SIGM",
+                    TYPE_ESTI=SIMP(statut='f',typ='TXM',into=("ERME_ELEM","ERZ1_ELEM_SIGM","ERZ2_ELEM_SIGM",
                                                               "QIRE_ELEM_SIGM","QIZ1_ELEM_SIGM","QIZ2_ELEM_SIGM",),
                                    fr="choix de l'estimateur d'erreur"),),
 
@@ -293,8 +286,8 @@ b_charge =BLOC( condition = "OPTION in ('EPME_ELNO_DEPL','EPSI_ELGA_DEPL','EPME_
           b_toutes =BLOC( condition = "TYPE_OPTION == 'TOUTES'",fr="toutes les options evol noli",
                OPTION      =SIMP(statut='o',typ='TXM',validators=NoRepeat(),max='**',
                            into=( "SIEF_ELNO_ELGA","PROJ_ELEM_SIGM",
-                                  "SIGM_ELNO_TUYO","SIGM_ELNO_COQU","PROJ_ELNO_SIGM",
-                                  "SIGM_ELNO_SIEF","SIPO_ELNO_SIEF","EFGE_ELNO_CART",
+                                  "SIGM_ELNO_TUYO","SIGM_ELNO_COQU",
+                                  "EFGE_ELNO_CART",
                                   "FLHN_ELGA",
                                   # EPSI
                                   "EPSI_ELNO_DEPL","EPSI_ELGA_DEPL","EPSG_ELNO_DEPL","EPSG_ELGA_DEPL",
@@ -308,7 +301,7 @@ b_charge =BLOC( condition = "OPTION in ('EPME_ELNO_DEPL','EPSI_ELGA_DEPL','EPME_
                                  "EXTR_ELGA_VARI","EXTR_ELNO_VARI",
                                  # CRIT
                                  "EQUI_ELNO_SIGM","EQUI_ELGA_SIGM","SIEQ_ELNO_TUYO","EPEQ_ELNO_TUYO",
-                                 "ERRE_ELEM_SIGM","ERRE_ELNO_ELEM","ERZ1_ELEM_SIGM","ERZ2_ELEM_SIGM",
+                                 "ERME_ELEM","ERME_ELNO","ERZ1_ELEM_SIGM","ERZ2_ELEM_SIGM",
                                  "QIRE_ELEM_SIGM","QIRE_ELNO_ELEM","QIZ1_ELEM_SIGM","QIZ2_ELEM_SIGM",
                                  "EQUI_ELNO_EPSI","EQUI_ELGA_EPSI","EQUI_ELNO_EPME","EQUI_ELGA_EPME",
                                  "DCHA_ELNO_SIGM","DCHA_ELGA_SIGM","RADI_ELNO_SIGM","RADI_ELGA_SIGM",
@@ -335,7 +328,7 @@ b_charge =BLOC( condition = "OPTION in ('EPME_ELNO_DEPL','EPSI_ELGA_DEPL','EPME_
                                (type(OPTION)==type(()) and  'SING_ELEM' in OPTION)",
                     PREC_ERR=SIMP(statut='o',typ='R',val_min= 0.,
                                   fr="precision demandee pour calculer la carte de taille des elements" ),
-                    TYPE_ESTI=SIMP(statut='f',typ='TXM',into=("ERRE_ELEM_SIGM","ERZ1_ELEM_SIGM","ERZ2_ELEM_SIGM",
+                    TYPE_ESTI=SIMP(statut='f',typ='TXM',into=("ERME_ELEM","ERZ1_ELEM_SIGM","ERZ2_ELEM_SIGM",
                                                               "QIRE_ELEM_SIGM","QIZ1_ELEM_SIGM","QIZ2_ELEM_SIGM",),
                                    fr="choix de l'estimateur d'erreur"),),
 
@@ -378,7 +371,7 @@ b_charge =BLOC( condition = "OPTION in ('EPME_ELNO_DEPL','EPSI_ELGA_DEPL','EPME_
                OPTION =SIMP(statut='o',typ='TXM',validators=NoRepeat(),max='**',
                               #  contraintes
                            into=( "SIEF_ELNO_ELGA","EFGE_ELNO_CART","SIGM_ELNO_TUYO","SIGM_ELNO_COQU",
-                           "SIGM_ELNO_SIEF","SIPO_ELNO_SIEF",),),
+                           ),),
                              ),
 
           b_epsi         =BLOC( condition = "TYPE_OPTION=='EPSI'",
@@ -441,8 +434,8 @@ b_charge =BLOC( condition = "OPTION in ('EPME_ELNO_DEPL','EPSI_ELGA_DEPL','EPME_
                                  ),
 
           b_indi_erreur         =BLOC( condition = "TYPE_OPTION=='INDI_ERREUR'",
-               OPTION    =SIMP(statut='o',typ='TXM',validators=NoRepeat(),max='**',defaut="ERRE_ELEM_SIGM",
-                           into=("ERRE_ELEM_SIGM","ERRE_ELNO_ELEM","ERZ1_ELEM_SIGM","ERZ2_ELEM_SIGM",
+               OPTION    =SIMP(statut='o',typ='TXM',validators=NoRepeat(),max='**',defaut="ERME_ELEM",
+                           into=("ERME_ELEM","ERME_ELNO","ERZ1_ELEM_SIGM","ERZ2_ELEM_SIGM",
                                  "DCHA_ELNO_SIGM","DCHA_ELGA_SIGM","RADI_ELNO_SIGM","RADI_ELGA_SIGM",
                                  "QIRE_ELEM_SIGM","QIRE_ELNO_ELEM","QIZ1_ELEM_SIGM","QIZ2_ELEM_SIGM",
                                  "SING_ELEM","SING_ELNO_ELEM",) ),
@@ -457,7 +450,7 @@ b_charge =BLOC( condition = "OPTION in ('EPME_ELNO_DEPL','EPSI_ELGA_DEPL','EPME_
                                (type(OPTION)==type(()) and  'SING_ELEM' in OPTION)",
                     PREC_ERR=SIMP(statut='o',typ='R',val_min= 0.,
                                   fr="precision demandee pour calculer la carte de taille des elements" ),
-                    TYPE_ESTI=SIMP(statut='f',typ='TXM',into=("ERRE_ELEM_SIGM","ERZ1_ELEM_SIGM","ERZ2_ELEM_SIGM",
+                    TYPE_ESTI=SIMP(statut='f',typ='TXM',into=("ERME_ELEM","ERZ1_ELEM_SIGM","ERZ2_ELEM_SIGM",
                                                               "QIRE_ELEM_SIGM","QIZ1_ELEM_SIGM","QIZ2_ELEM_SIGM",),
                                    fr="choix de l'estimateur d'erreur"),),
 
@@ -476,9 +469,8 @@ b_charge =BLOC( condition = "OPTION in ('EPME_ELNO_DEPL','EPSI_ELGA_DEPL','EPME_
 #           thermique : evol_ther, fourier_ther
      b_ther          =BLOC( condition = "AsType(RESULTAT) in (evol_ther,fourier_ther,)" ,fr="options thermiques",
           OPTION          =SIMP(statut='o',typ='TXM',validators=NoRepeat(),max='**',
-                           into=("DEUL_ELGA_TEMP","DETE_ELNO_DLTE","FLUX_ELGA_TEMP","FLUX_ELNO_TEMP",
-                                  "HYDR_ELNO_ELGA","DURT_ELGA_META","DURT_ELNO_META",
-                                  "SOUR_ELGA_ELEC","ERRE_ELEM_TEMP","ERRE_ELNO_ELEM",),),
+                           into=("FLUX_ELGA_TEMP","FLUX_ELNO_TEMP",
+                                  "DURT_ELNO_META","SOUR_ELGA_ELEC","ERTH_ELEM","ERTH_ELNO",),),
                EXCIT           =FACT(statut='f',max='**',
                     regles=(EXCLUS('FONC_MULT','FONC_MULT_C','COEF_MULT','COEF_MULT_C'),),
                     CHARGE          =SIMP(statut='o',typ=char_ther ),
@@ -495,8 +487,7 @@ b_charge =BLOC( condition = "OPTION in ('EPME_ELNO_DEPL','EPSI_ELGA_DEPL','EPME_
 #    acoustique
      b_acou          =BLOC( condition = "AsType(RESULTAT) in (acou_harmo,mode_acou,)",fr="options acoustiques",
           OPTION          =SIMP(statut='o',typ='TXM',validators=NoRepeat(),max='**',
-                           into=("PRES_ELNO_DBEL","PRES_ELNO_REEL","PRES_ELNO_IMAG",
-                                 "INTE_ELNO_ACTI","INTE_ELNO_REAC",
+                           into=("PRAC_ELNO", "INTE_ELNO",
                                  ),),
           EXCIT           =FACT(statut='f',max='**',
                 regles=(EXCLUS('FONC_MULT','FONC_MULT_C','COEF_MULT','COEF_MULT_C'),),
@@ -543,9 +534,6 @@ b_charge =BLOC( condition = "OPTION in ('EPME_ELNO_DEPL','EPSI_ELGA_DEPL','EPME_
 
 
 
-     SENSIBILITE     =SIMP(statut='f',typ=(para_sensi,theta_geom),validators=NoRepeat(),max='**',
-                           fr="Liste des paramètres de sensibilité.",
-                           ang="List of sensitivity parameters"),
      INFO            =SIMP(statut='f',typ='I',defaut= 1,into=( 1 , 2) ),
      TITRE           =SIMP(statut='f',typ='TXM',max='**'),
 ) ;

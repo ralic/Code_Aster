@@ -4,7 +4,7 @@
       CHARACTER*24  CARCRI
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 30/06/2008   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 07/12/2010   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -31,7 +31,7 @@ C                     1 : COMPOSANTE INUTILISEE
 C                     2 : RESI_INTE_RELA
 C                     3 : THETA 
 C                     4 : ITER_INTE_PAS
-C                     5 : RESO_INTE (0: EULER_1, 1: RK_2, 2: RK_4)
+C                     5 : ALGO_INTE
 C ----------------------------------------------------------------------
 C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
 

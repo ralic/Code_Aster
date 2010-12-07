@@ -1,4 +1,4 @@
-# MODIF  DATE 08/11/2010   AUTEUR PROIX J-M.PROIX 
+# MODIF  DATE 07/12/2010   AUTEUR GENIAUT S.GENIAUT 
 # TITRE ESSAI DE TRACTION CISAILLEMENT EN 3D (VISCOCHAB / VISC_CIN2_MEMO)
 # ssnv118d.para = tps_job 100 mem_job 64Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -169,7 +169,7 @@ SOLNL=STAT_NON_LINE(
                          COMP_INCR=_F(
                 RELATION = 'VISCOCHAB',
                 DEFORMATION = 'PETIT',
-                RESO_INTE='IMPLICITE_RELI',
+                ALGO_INTE='NEWTON_RELI',
                 ITER_INTE_MAXI = 100,
                 TOUT = 'OUI'),
                          INCREMENT=_F(

@@ -1,4 +1,4 @@
-#@ MODIF simo_miehe Comportement  DATE 06/04/2009   AUTEUR DURAND C.DURAND 
+#@ MODIF simo_miehe Comportement  DATE 07/12/2010   AUTEUR GENIAUT S.GENIAUT 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================

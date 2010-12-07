@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 12/04/2010   AUTEUR MICHEL S.MICHEL 
+%& MODIF TYPELEM  DATE 07/12/2010   AUTEUR PELLET J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -219,8 +219,8 @@ OPTION__
     EQUI_ELNO_EPME      -1    IN__   XXXXXX   XXXXXX  OUT__  XXXXXX   XXXXXX
     EQUI_ELNO_EPSI      -1    IN__   XXXXXX   XXXXXX  OUT__  XXXXXX   XXXXXX
     EQUI_ELNO_SIGM      -1    IN__   XXXXXX   XXXXXX  OUT__  XXXXXX   XXXXXX
-    ERRE_ELEM_SIGM      -1    IN__   XXXXXX   XXXXXX  OUT__  XXXXXX   XXXXXX
-    ERRE_ELNO_ELEM      -1    IN__   XXXXXX   XXXXXX  OUT__  XXXXXX   XXXXXX
+    ERME_ELEM           -1    IN__   XXXXXX   XXXXXX  OUT__  XXXXXX   XXXXXX
+    ERME_ELNO           -1    IN__   XXXXXX   XXXXXX  OUT__  XXXXXX   XXXXXX
     FORC_NODA           508   IN__   ECONTPG  PCONTMR  DDL_MECA PDEPLMR  NGEOMER  PGEOMER  CCARCRI  PCARCRI
                                      CMATERC  PMATERC
                               OUT__  MVECTUR  PVECTUR

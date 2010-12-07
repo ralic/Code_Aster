@@ -1,4 +1,4 @@
-# MODIF  DATE 29/09/2009   AUTEUR GNICOLAS G.NICOLAS 
+# MODIF  DATE 07/12/2010   AUTEUR PELLET J.PELLET 
 # TITRE CALCUL DE CHARGE LIMITE EN 3D - METHODE DE NORTON-HOFF
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -69,7 +69,7 @@ INCOMP = AFFE_CHAR_MECA(
 
 # ----------- CHARGEMENT A PILOTER ------------------------------------
 # REMARQUE : ON IMPOSE EXPLICITEMENT LA FORCE NULLE POUR UN CALCUL
-#            CORRECT DE ERRE_ELEM_SIGM
+#            CORRECT DE ERME_ELEM
 
 CH1=AFFE_CHAR_MECA(    MODELE=MO,FORCE_FACE=(
 #
@@ -121,8 +121,8 @@ RESU=CALC_ELEM(reuse=RESU,
 
                         OPTION=('EPSI_ELNO_DEPL',
                                 'SIEF_ELNO_ELGA',
-                                'ERRE_ELEM_SIGM',
-                                'ERRE_ELNO_ELEM',),
+                                'ERME_ELEM',
+                                'ERME_ELNO',),
                    )
 
 
@@ -158,7 +158,7 @@ TEST_RESU(RESU=(
 TEST_RESU(RESU=(
            _F( RESULTAT = RESU,
                NUME_ORDRE = 1,
-               NOM_CHAM = 'ERRE_ELEM_SIGM',
+               NOM_CHAM = 'ERME_ELEM',
                CRITERE = 'RELATIF',
                PRECISION = 0.001,
                POINT = 1,
@@ -172,7 +172,7 @@ TEST_RESU(RESU=(
 TEST_RESU(RESU=(
            _F( RESULTAT = RESU,
                NUME_ORDRE = 1,
-               NOM_CHAM = 'ERRE_ELNO_ELEM',
+               NOM_CHAM = 'ERME_ELNO',
                CRITERE = 'RELATIF',
                PRECISION = 0.001,
                NOEUD= 'N1',

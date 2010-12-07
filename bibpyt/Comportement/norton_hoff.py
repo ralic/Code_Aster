@@ -1,4 +1,4 @@
-#@ MODIF norton_hoff Comportement  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
+#@ MODIF norton_hoff Comportement  DATE 07/12/2010   AUTEUR GENIAUT S.GENIAUT 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -37,7 +37,7 @@ loi = LoiComportement(
    nom_vari       = ('VIDE',),
    mc_mater       = ('ECRO_LINE'),
    deformation    = ('PETIT', 'PETIT_REAC', 'GROT_GDEP',),
-   schema         = ('IMPLICITE',),
+   algo_inte         = ('ANALYTIQUE',),
    modelisation   = ('3D', 'AXIS', 'D_PLAN'),
    nom_varc       = ('TEMP'),
    type_matr_tang = ('PERTURBATION', 'VERIFICATION'),

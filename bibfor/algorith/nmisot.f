@@ -3,7 +3,7 @@
      &                   DEPS,SIGM,VIM,
      &                   OPTION,SIGP,VIP,DSIDEP,DEMU,CINCO,IRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 01/02/2010   AUTEUR MEUNIER S.MEUNIER 
+C MODIF ALGORITH  DATE 07/12/2010   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -390,7 +390,7 @@ C
      &                      NU,PM,RP,RPRIM,AIRERP,SIELEQ,DP0)
               ENDIF
               XAP = DP0
-              CALL ZEROFO(NMCRI1,VAL0,XAP,PRECR,NITER,DP,IRET)
+              CALL ZEROFO(NMCRI1,VAL0,XAP,PRECR,NITER,DP,IRET,IBID)
               IF(IRET.EQ.1) GOTO 9999
               IF (LINE.GT.0.5D0) THEN
                 RP = SIGY +RPRIM*(PM+DP)
@@ -417,7 +417,7 @@ C               RPRIM(PM+DP0)
                 VAL0  = NMCRI2(0.D0)
                 PRECR = CRIT(3) * SIGY
                 NITER = NINT(CRIT(1))
-                CALL ZEROFO(NMCRI2,VAL0,XAP,PRECR,NITER,DP,IRET)
+                CALL ZEROFO(NMCRI2,VAL0,XAP,PRECR,NITER,DP,IRET,IBID)
                 IF(IRET.EQ.1) GOTO 9999
                 CALL ECPUIS(E,SIGY,ALFAFA,UNSURN,PM,DP,RP,RPRIM)
               ELSE

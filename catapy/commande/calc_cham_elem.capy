@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 09/11/2010   AUTEUR DELMAS J.DELMAS 
+#& MODIF COMMANDE  DATE 07/12/2010   AUTEUR PELLET J.PELLET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -38,14 +38,14 @@ CALC_CHAM_ELEM=OPER(nom="CALC_CHAM_ELEM",op=38,sd_prod=cham_elem,
 
          OPTION          =SIMP(statut='o',typ='TXM',
                                into=("FLUX_ELGA_TEMP","FLUX_ELNO_TEMP",
-                                     "PRES_ELNO_DBEL","PRES_ELNO_REEL","PRES_ELNO_IMAG",
+                                     "PRAC_ELNO",
                                      "COOR_ELGA"), ),
 
          b_thermique  =BLOC(condition="OPTION in ('FLUX_ELNO_TEMP','FLUX_ELGA_TEMP',)",
            TEMP            =SIMP(statut='o',typ=(cham_no_sdaster,)),
          ),
 
-         b_acoustique  =BLOC(condition="OPTION in ('PRES_ELNO_DBEL','PRES_ELNO_REEL','PRES_ELNO_IMAG',)",
+         b_acoustique  =BLOC(condition="OPTION in ('PRAC_ELNO',)",
            PRES            =SIMP(statut='o',typ=(cham_no_sdaster,)),
          ),
 

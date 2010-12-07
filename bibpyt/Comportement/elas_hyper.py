@@ -1,4 +1,4 @@
-#@ MODIF elas_hyper Comportement  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
+#@ MODIF elas_hyper Comportement  DATE 07/12/2010   AUTEUR GENIAUT S.GENIAUT 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -34,7 +34,7 @@ loi = LoiComportement(
    modelisation   = ('3D', 'C_PLAN', 'D_PLAN'),
    deformation    = ('GROT_GDEP'),
    nom_varc       = ('TEMP'),
-   schema         = 'IMPLICITE',
+   algo_inte         = 'ANALYTIQUE',
    type_matr_tang = ('PERTURBATION', 'VERIFICATION'),
    proprietes     = ' ',
 )

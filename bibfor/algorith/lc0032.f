@@ -3,7 +3,7 @@
      &    TM,TP,TREF,TAMPON,TYPMOD,ICOMP,NVI,DSIDEP,CODRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C TOLE CRP_21
-C MODIF ALGORITH  DATE 14/12/2009   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 07/12/2010   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -25,29 +25,31 @@ C ======================================================================
       REAL*8          CRIT(12),ANGMAS(3),INSTAM,INSTAP,TAMPON(*)
       REAL*8          EPSM(6),DEPS(6),SIGM(6),SIGP(6),VIM(*),VIP(*)
       REAL*8          DSIDEP(6,6),TM,TP,TREF
-      CHARACTER*16    COMPOR(16),OPTION
+      CHARACTER*16    COMPOR(16),OPTION,ALGO
       CHARACTER*8     TYPMOD(*)
       CHARACTER*(*)   FAMI
       
-C     Lois de comportement intégrées en IMPLICITE et en RUNGE_KUTTA
-C     rappel (voir nmdorc) : CRIT(6) = 0 : IMPLICITE
-C                                      1 : RK_2
-C                                      2 : RK_4
-C                                      3: IMPLICITE + RECHERCHE LINEAIRE
+C     Lois de comportement intégrées en IMPLICITE (NEWTON & CO) et en
+C                                       EXPLICITE (RUNGE_KUTTA)
 
-      N = INT(CRIT(6))
+C     RECUP DU NOM DE L'ALGORITHME D'INTEGRATION LOCAL
+      CALL UTLCAL('VALE_NOM',ALGO,CRIT(6))
 
-      IF (N.EQ.0.OR.N.EQ.3) THEN
+      IF (ALGO.EQ.'NEWTON'.OR.ALGO.EQ.'NEWTON_RELI') THEN
       
         CALL PLASTI(FAMI,KPG,KSP,TYPMOD,IMATE,COMPOR,CRIT,INSTAM,INSTAP,
      &              TM,TP,TREF,EPSM,DEPS,SIGM,VIM,OPTION,ANGMAS,
      &              SIGP,VIP,DSIDEP,ICOMP,NVI,TAMPON,CODRET)
 
-      ELSEIF (N.EQ.1.OR.N.EQ.2) THEN
+      ELSEIF (ALGO.EQ.'RUNGE_KUTTA') THEN
 
          CALL NMVPRK(FAMI,KPG,KSP,NDIM,TYPMOD,IMATE,COMPOR,CRIT,INSTAM,
      &               INSTAP,EPSM,DEPS,SIGM,VIM,OPTION,ANGMAS,SIGP,VIP,
      &               DSIDEP)
+
+      ELSE
+      
+        CALL ASSERT(.FALSE.)
 
       ENDIF
       

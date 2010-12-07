@@ -1,4 +1,4 @@
-# MODIF  DATE 19/10/2010   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 07/12/2010   AUTEUR PELLET J.PELLET 
 # TITRE ESTIMATEUR D'ERREUR SUR UNE PLAQUE TROUEE EN TRACTION
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -102,8 +102,8 @@ RESU=CALC_ELEM(  reuse=RESU,
                                   'ERZ1_ELEM_SIGM',
                                   'ERZ2_ELEM_SIGM',
                                   'SIGM_ELNO_DEPL',
-                                  'ERRE_ELEM_SIGM',
-                                  'ERRE_ELNO_ELEM',
+                                  'ERME_ELEM',
+                                  'ERME_ELNO',
                                  ),
                       RESULTAT=RESU
                         )
@@ -210,11 +210,11 @@ IMPR_RESU(   MODELE=MO,
 'EST SUPERIEURE A 10 POUR CENT',     ),
          BORNE_INF = 10., NOM_CMP = 'NUEST'),
 
-       _F( RESULTAT = RESU, NOM_CHAM = 'ERRE_ELEM_SIGM',
+       _F( RESULTAT = RESU, NOM_CHAM = 'ERME_ELEM',
          NUME_ORDRE = 1, SOUS_TITRE = 'ESTIMATEUR D''ERREUR EN RESIDU',
       VALE_MAX = 'OUI', VALE_MIN = 'OUI'),
 
-       _F( RESULTAT = RESU, NOM_CHAM = 'ERRE_ELEM_SIGM',
+       _F( RESULTAT = RESU, NOM_CHAM = 'ERME_ELEM',
          NUME_ORDRE = 1, SOUS_TITRE = (
 'ESTIMATEUR D''ERREUR EN RESIDU :LISTE DES MAILLES OU L''ERREUR  ',
 'RELATIVE EST SUPERIEURE A 10 POUR CENT',     ),
@@ -234,16 +234,16 @@ TEST_RESU(RESU=(
             _F( RESULTAT = RESU, NOM_CHAM = 'ERZ2_ELEM_SIGM', NUME_ORDRE = 1,
              CRITERE = 'ABSOLU',     PRECISION = 10.,
              MAILLE = 'M1',   POINT = 1, NOM_CMP = 'NUEST', VALE = 0.),
-            _F( RESULTAT = RESU, NOM_CHAM = 'ERRE_ELEM_SIGM', NUME_ORDRE = 1,
+            _F( RESULTAT = RESU, NOM_CHAM = 'ERME_ELEM', NUME_ORDRE = 1,
              CRITERE = 'ABSOLU',     PRECISION = 0.006,
              MAILLE = 'M1',  POINT = 1, NOM_CMP = 'ERREST', VALE = 0.),
-            _F( RESULTAT = RESU, NOM_CHAM = 'ERRE_ELEM_SIGM', NUME_ORDRE = 1,
+            _F( RESULTAT = RESU, NOM_CHAM = 'ERME_ELEM', NUME_ORDRE = 1,
              CRITERE = 'ABSOLU',     PRECISION = 10.,
              MAILLE = 'M1',   POINT = 1, NOM_CMP = 'NUEST', VALE = 0.),
-            _F( RESULTAT = RESU, NOM_CHAM = 'ERRE_ELNO_ELEM', NUME_ORDRE = 1,
+            _F( RESULTAT = RESU, NOM_CHAM = 'ERME_ELNO', NUME_ORDRE = 1,
              CRITERE = 'ABSOLU',     PRECISION = 0.006,
              MAILLE = 'M1',  POINT = 1, NOM_CMP = 'ERREST', VALE = 0.),
-            _F( RESULTAT = RESU, NOM_CHAM = 'ERRE_ELNO_ELEM', NUME_ORDRE = 1,
+            _F( RESULTAT = RESU, NOM_CHAM = 'ERME_ELNO', NUME_ORDRE = 1,
              CRITERE = 'ABSOLU',     PRECISION = 10.,
              MAILLE = 'M1',   POINT = 1, NOM_CMP = 'NUEST', VALE = 0.))
            )

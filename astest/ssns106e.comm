@@ -1,4 +1,4 @@
-# MODIF  DATE 30/08/2010   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 06/12/2010   AUTEUR SFAYOLLE S.FAYOLLE 
 # RESPONSABLE SFAYOLLE S.FAYOLLE
 # TITRE  : ENDOMMAGEMENT D UNE PLAQUE PLANE SOUS SOLLICITATIONS VARIEES
 # ssns106e.para = tps_job 120 mem_job 64Mo ncpus 1 liste_test R
@@ -25,7 +25,6 @@
 
 DEBUT(CODE=_F(NOM='SSNS106E',
               NIV_PUB_WEB='INTERNET',),);
-
 EP = 0.1;
 
 D0 = 0.00011;
@@ -223,10 +222,11 @@ inst1=DEFI_LIST_REEL(DEBUT=0.0,
                      INTERVALLE=_F(JUSQU_A=t3,
                                    PAS=dt,),);
 
-DEFLIST = DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = inst1,),
-                         ECHEC=_F(SUBD_METHODE='UNIFORME',
-                                  SUBD_PAS=4,
-                                  SUBD_PAS_MINI=0.0001,),);
+DEFLIST=DEFI_LIST_INST(DEFI_LIST=_F(METHODE='MANUEL',
+                                    LIST_INST=inst1,),
+                       ECHEC=_F(SUBD_METHODE='UNIFORME',
+                                SUBD_PAS=4,
+                                SUBD_PAS_MINI=0.0001,),);
 
 RESU_R=STAT_NON_LINE(MODELE=MO,
                      CHAM_MATER=MATER,
@@ -236,37 +236,20 @@ RESU_R=STAT_NON_LINE(MODELE=MO,
                             _F(CHARGE=COND_1,
                                FONC_MULT=chf1,),),
                      COMP_INCR=(_F(RELATION='ENDO_ISOT_BETON',
-                                   DEFORMATION='PETIT',
                                    ALGO_C_PLAN='DEBORST',
-                                   ALGO_1D='ANALYTIQUE',
-                                   RESI_INTE_RELA=1e-06,
-                                   ITER_INTE_MAXI=10,
-                                   ITER_INTE_PAS=0,
-                                   RESO_INTE='IMPLICITE',
                                    GROUP_MA='DALLE',),
                                 _F(RELATION='GRILLE_ISOT_LINE',
-                                   DEFORMATION='PETIT',
                                    ALGO_C_PLAN='ANALYTIQUE',
-                                   ALGO_1D='ANALYTIQUE',
-                                   RESI_INTE_RELA=1e-06,
-                                   ITER_INTE_MAXI=10,
-                                   ITER_INTE_PAS=0,
-                                   RESO_INTE='IMPLICITE',
                                    GROUP_MA=('ACIER1L','ACIER2L','ACIER1T','ACIER2T',),),),
                      INCREMENT=_F(LIST_INST=DEFLIST,
                                   PRECISION=0.1,),
-                     NEWTON=_F(REAC_INCR=1,
-                               MATRICE='TANGENTE',
-                               PAS_MINI_ELAS=0.0,
-                               REAC_ITER=1,),
+                     NEWTON=_F(REAC_ITER=1,),
                      CONVERGENCE=_F(ITER_GLOB_MAXI=25,),);
 
 RESU_R=CALC_NO(reuse =RESU_R,
                RESULTAT=RESU_R,
                PRECISION=1.E-3,
-               OPTION='FORC_NODA',
-
-               );
+               OPTION='FORC_NODA',);
 
 RESU_G=STAT_NON_LINE(MODELE=MO_G,
                      CHAM_MATER=MATER,
@@ -278,23 +261,17 @@ RESU_G=STAT_NON_LINE(MODELE=MO_G,
                      COMP_INCR=_F(RELATION='GLRC_DM',),
                      INCREMENT=_F(LIST_INST=DEFLIST,
                                   PRECISION=0.1,),
-                     NEWTON=_F(REAC_INCR=1,
-                               MATRICE='TANGENTE',
-                               PAS_MINI_ELAS=0.0,
-                               REAC_ITER=1,),
+                     NEWTON=_F(REAC_ITER=1,),
                      CONVERGENCE=_F(ITER_GLOB_MAXI=25,),);
 
 RESU_G=CALC_ELEM(reuse =RESU_G,
-
                  RESULTAT=RESU_G,
                  OPTION='VARI_ELNO_ELGA',);
 
 RESU_G=CALC_NO(reuse =RESU_G,
                RESULTAT=RESU_G,
                PRECISION=1.E-3,
-               OPTION=('FORC_NODA','VARI_NOEU_ELGA',),
-
-               );
+               OPTION=('FORC_NODA','VARI_NOEU_ELGA',),);
 
 TFN_B_R=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                 INTITULE='B_FN',
@@ -322,14 +299,14 @@ TMY_B_R=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                 RESULTAT=RESU_R,
                                 NOM_CHAM='FORC_NODA',
                                 GROUP_NO='B',
-                                NOM_CMP=('DRY',),),);
+                                NOM_CMP='DRY',),);
 
 TMY_B_G=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                 INTITULE='B_MYG',
                                 RESULTAT=RESU_G,
                                 NOM_CHAM='FORC_NODA',
                                 GROUP_NO='B',
-                                NOM_CMP=('DRY',),),);
+                                NOM_CMP='DRY',),);
 
 FORM_A = FORMULE(VALE='abs(DX+DY)',
                  NOM_PARA=('DX','DY',),);
@@ -338,35 +315,37 @@ FORM_V = FORMULE(VALE='(DX*DX+DY*DY)**0.5*(DX+DY)/abs(DX+DY)',
                  NOM_PARA=('DX','DY',),);
 
 DIFR_V = FORMULE(VALE='(VG-V)/V',
-                  NOM_PARA=('V','VG',),);
+                 NOM_PARA=('V','VG',),);
 
 DIFR_MY = FORMULE(VALE='(MYG-MY)/MY',
                   NOM_PARA=('MY','MYG',),);
 
 TFN_B_R=CALC_TABLE(reuse =TFN_B_R,
                    TABLE=TFN_B_R,
-                   ACTION=(_F(OPERATION='EXTR',
-                              NOM_PARA=('INST','DX','DY',),),),);
+                   ACTION=_F(OPERATION='EXTR',
+                             NOM_PARA=('INST','DX','DY',),),);
 
-TFN_B_R=CALC_TABLE(reuse=TFN_B_R,
+TFN_B_R=CALC_TABLE(reuse =TFN_B_R,
                    TABLE=TFN_B_R,
                    ACTION=_F(OPERATION='OPER',
                              FORMULE=FORM_A,
                              NOM_PARA='DI',),);
 
-TFN_B_R=CALC_TABLE(TABLE=TFN_B_R, reuse = TFN_B_R,
-                    ACTION=(_F(OPERATION='FILTRE',
-                               NOM_PARA='DI',
-                               CRIT_COMP='NE',
-                               VALE=0.0,),),);
+TFN_B_R=CALC_TABLE(reuse =TFN_B_R,
+                   TABLE=TFN_B_R,
+                   ACTION=_F(OPERATION='FILTRE',
+                             NOM_PARA='DI',
+                             CRIT_COMP='NE',
+                             VALE=0.0,),);
 
-TFN_B_R=CALC_TABLE(reuse=TFN_B_R,
+TFN_B_R=CALC_TABLE(reuse =TFN_B_R,
                    TABLE=TFN_B_R,
                    ACTION=_F(OPERATION='SUPPRIME',
-                             NOM_PARA='DI'),);
+                             NOM_PARA='DI',),);
 
-TFN_B_R=CALC_TABLE(TABLE=TFN_B_R, reuse = TFN_B_R,
-                    ACTION=(_F(OPERATION='OPER',
+TFN_B_R=CALC_TABLE(reuse =TFN_B_R,
+                   TABLE=TFN_B_R,
+                   ACTION=(_F(OPERATION='OPER',
                               FORMULE=FORM_V,
                               NOM_PARA='V',),
                            _F(OPERATION='RENOMME',
@@ -376,8 +355,8 @@ TFN_B_R=CALC_TABLE(TABLE=TFN_B_R, reuse = TFN_B_R,
 
 TFN_B_G=CALC_TABLE(reuse =TFN_B_G,
                    TABLE=TFN_B_G,
-                   ACTION=(_F(OPERATION='EXTR',
-                              NOM_PARA=('INST','DX','DY',),),),);
+                   ACTION=_F(OPERATION='EXTR',
+                             NOM_PARA=('INST','DX','DY',),),);
 
 TFN_B_G=CALC_TABLE(reuse =TFN_B_G,
                    TABLE=TFN_B_G,
@@ -385,16 +364,17 @@ TFN_B_G=CALC_TABLE(reuse =TFN_B_G,
                              FORMULE=FORM_A,
                              NOM_PARA='DI',),);
 
-TFN_B_G=CALC_TABLE(TABLE=TFN_B_G, reuse = TFN_B_G,
-                    ACTION=(_F(OPERATION='FILTRE',
-                               NOM_PARA='DI',
-                               CRIT_COMP='NE',
-                               VALE=0.0,),),);
+TFN_B_G=CALC_TABLE(reuse =TFN_B_G,
+                   TABLE=TFN_B_G,
+                   ACTION=_F(OPERATION='FILTRE',
+                             NOM_PARA='DI',
+                             CRIT_COMP='NE',
+                             VALE=0.0,),);
 
-TFN_B_G=CALC_TABLE(reuse=TFN_B_G,
+TFN_B_G=CALC_TABLE(reuse =TFN_B_G,
                    TABLE=TFN_B_G,
                    ACTION=_F(OPERATION='SUPPRIME',
-                             NOM_PARA='DI'),);
+                             NOM_PARA='DI',),);
 
 TFN_B_G=CALC_TABLE(reuse =TFN_B_G,
                    TABLE=TFN_B_G,
@@ -407,20 +387,22 @@ TFN_B_G=CALC_TABLE(reuse =TFN_B_G,
                               NOM_PARA=('DY','FYG',),),),);
 
 TFN_B=CALC_TABLE(TABLE=TFN_B_R,
-                 ACTION=(_F(OPERATION='COMB',
-                            TABLE=TFN_B_G,
-                            NOM_PARA='INST',),),);
+                 ACTION=_F(OPERATION='COMB',
+                           TABLE=TFN_B_G,
+                           NOM_PARA='INST',),);
 
-TFN_B=CALC_TABLE(TABLE=TFN_B, reuse = TFN_B,
-                 ACTION=(_F(OPERATION='FILTRE',
-                               NOM_PARA='V',
-                               CRIT_COMP='NE',
-                               VALE=0.0,),),);
+TFN_B=CALC_TABLE(reuse =TFN_B,
+                 TABLE=TFN_B,
+                 ACTION=_F(OPERATION='FILTRE',
+                           NOM_PARA='V',
+                           CRIT_COMP='NE',
+                           VALE=0.0,),);
 
-TFN_B=CALC_TABLE(TABLE=TFN_B, reuse = TFN_B,
-                 ACTION=(_F(OPERATION='OPER',
-                            FORMULE=DIFR_V,
-                            NOM_PARA='VG_V (%)',),),);
+TFN_B=CALC_TABLE(reuse =TFN_B,
+                 TABLE=TFN_B,
+                 ACTION=_F(OPERATION='OPER',
+                           FORMULE=DIFR_V,
+                           NOM_PARA='VG_V (%)',),);
 
 TMY_B_R=CALC_TABLE(reuse =TMY_B_R,
                    TABLE=TMY_B_R,
@@ -437,152 +419,140 @@ TMY_B_G=CALC_TABLE(reuse =TMY_B_G,
                               NOM_PARA=('DRY','MYG',),),),);
 
 TMY_B=CALC_TABLE(TABLE=TMY_B_R,
-                 ACTION=(_F(OPERATION='COMB',
-                            TABLE=TMY_B_G,
-                            NOM_PARA='INST',),),);
+                 ACTION=_F(OPERATION='COMB',
+                           TABLE=TMY_B_G,
+                           NOM_PARA='INST',),);
 
-TMY_B=CALC_TABLE(TABLE=TMY_B, reuse=TMY_B,
-                 ACTION=(_F(OPERATION='FILTRE',
-                               NOM_PARA='MY',
-                               CRIT_COMP='NE',
-                               VALE=0.0,),),);
+TMY_B=CALC_TABLE(reuse =TMY_B,
+                 TABLE=TMY_B,
+                 ACTION=_F(OPERATION='FILTRE',
+                           NOM_PARA='MY',
+                           CRIT_COMP='NE',
+                           VALE=0.0,),);
 
-TMY_B=CALC_TABLE(TABLE=TMY_B, reuse=TMY_B,
-                 ACTION=(_F(OPERATION='OPER',
-                            FORMULE=DIFR_MY,
-                            NOM_PARA='MYG_MY (%)',),),);
+TMY_B=CALC_TABLE(reuse =TMY_B,
+                 TABLE=TMY_B,
+                 ACTION=_F(OPERATION='OPER',
+                           FORMULE=DIFR_MY,
+                           NOM_PARA='MYG_MY (%)',),);
 
 VAR_ENDO=CALC_TABLE(reuse =VAR_ENDO,
                     TABLE=VAR_ENDO,
                     ACTION=(_F(OPERATION='EXTR',
-                               NOM_PARA=('INST','V1','V2'),),
+                               NOM_PARA=('INST','V1','V2',),),
                             _F(OPERATION='RENOMME',
                                NOM_PARA=('V1','D1',),),
                             _F(OPERATION='RENOMME',
                                NOM_PARA=('V2','D2',),),),);
 
 IMPR_TABLE(TABLE=TFN_B,);
+
 IMPR_TABLE(TABLE=TMY_B,);
+
 IMPR_TABLE(TABLE=VAR_ENDO,);
 
-TEST_RESU(RESU=(
+TEST_RESU(RESU=(_F(RESULTAT=RESU_G,
+                   INST=1.0,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   NOEUD='N2',
+                   VALE=0.0,
+                   CRITERE='ABSOLU',
+                   PRECISION=1e-06,
+                   REFERENCE='NON_REGRESSION',),
                 _F(RESULTAT=RESU_G,
-                  NOEUD='N2',
-                  INST=1.0,
-                  NOM_CHAM='DEPL',
-                  NOM_CMP='DX',
-                  VALE =0.0,
-                  CRITERE='ABSOLU',
-                  PRECISION = 1.0E-6,
-                  REFERENCE='NON_REGRESSION',
-                  ),
+                   INST=1.0,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DZ',
+                   NOEUD='N2',
+                   VALE=-0.003,
+                   PRECISION=1e-06,
+                   REFERENCE='NON_REGRESSION',),
                 _F(RESULTAT=RESU_G,
-                  NOEUD='N2',
-                  INST=1.0,
-                  NOM_CHAM='DEPL',
-                  NOM_CMP='DZ',
-                  VALE =-3.0000000000000e-03,
-                  PRECISION = 1.0E-6,
-                  REFERENCE='NON_REGRESSION',
-                  ),
+                   INST=1.0,
+                   NOM_CHAM='FORC_NODA',
+                   NOM_CMP='DY',
+                   NOEUD='N2',
+                   VALE=15058.8134864,
+                   PRECISION=1e-06,
+                   REFERENCE='NON_REGRESSION',),
                 _F(RESULTAT=RESU_G,
-                  NOEUD='N2',
-                  INST=1.0,
-                  NOM_CHAM='FORC_NODA',
-                  NOM_CMP='DY',
-                  VALE = 1.5058813486351e+04,
-                  PRECISION = 1.0E-6,
-                  REFERENCE='NON_REGRESSION',
-                  ),
+                   INST=1.0,
+                   NOM_CHAM='VARI_ELNO_ELGA',
+                   NOM_CMP='V1',
+                   MAILLE='GM182',
+                   NOEUD='N1',
+                   VALE=0.0,
+                   PRECISION=1e-06,
+                   REFERENCE='NON_REGRESSION',),
                 _F(RESULTAT=RESU_G,
-                  MAILLE='GM182',
-                  NOEUD='N1',
-                  INST=1.0,
-                  NOM_CHAM='VARI_ELNO_ELGA',
-                  NOM_CMP='V1',
-                  VALE =0.0,
-                  PRECISION = 1.0E-6,
-                  REFERENCE='NON_REGRESSION',
-                  ),
+                   INST=1.0,
+                   NOM_CHAM='VARI_ELNO_ELGA',
+                   NOM_CMP='V2',
+                   MAILLE='GM182',
+                   NOEUD='N1',
+                   VALE=1.178108,
+                   PRECISION=1e-06,
+                   REFERENCE='NON_REGRESSION',),
                 _F(RESULTAT=RESU_G,
-                  MAILLE='GM182',
-                  NOEUD='N1',
-                  INST=1.0,
-                  NOM_CHAM='VARI_ELNO_ELGA',
-                  NOM_CMP='V2',
-                  VALE =1.178108,
-                  PRECISION = 1.0E-6,
-                  REFERENCE='NON_REGRESSION',
-                  ),
+                   INST=2.8,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   NOEUD='N4',
+                   VALE=-8.8e-05,
+                   PRECISION=1e-06,
+                   REFERENCE='NON_REGRESSION',),
                 _F(RESULTAT=RESU_G,
-                  NOEUD='N4',
-                  INST=2.8,
-                  NOM_CHAM='DEPL',
-                  NOM_CMP='DX',
-                  VALE =-8.8e-05,
-                  PRECISION = 1.0E-6,
-                  REFERENCE='NON_REGRESSION',
-                  ),
+                   INST=2.8,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DZ',
+                   NOEUD='N4',
+                   VALE=0.0019504378,
+                   PRECISION=1e-06,
+                   REFERENCE='NON_REGRESSION',),
                 _F(RESULTAT=RESU_G,
-                  NOEUD='N4',
-                  INST=2.8,
-                  NOM_CHAM='DEPL',
-                  NOM_CMP='DZ',
-                  VALE =1.9504378E-03,
-                  PRECISION = 1.0E-6,
-                  REFERENCE='NON_REGRESSION',
-                  ),
+                   INST=2.8,
+                   NOM_CHAM='FORC_NODA',
+                   NOM_CMP='DY',
+                   NOEUD='N4',
+                   VALE=-12047.0496585,
+                   PRECISION=1e-06,
+                   REFERENCE='NON_REGRESSION',),
                 _F(RESULTAT=RESU_G,
-                  NOEUD='N4',
-                  INST=2.8,
-                  NOM_CHAM='FORC_NODA',
-                  NOM_CMP='DY',
-                  VALE =-1.2047049658499e+04,
-                  PRECISION = 1.0E-6,
-                  REFERENCE='NON_REGRESSION',
-                  ),
+                   INST=2.8,
+                   NOM_CHAM='VARI_ELNO_ELGA',
+                   NOM_CMP='V1',
+                   MAILLE='GM182',
+                   NOEUD='N1',
+                   VALE=0.7519636,
+                   PRECISION=1e-06,
+                   REFERENCE='NON_REGRESSION',),
                 _F(RESULTAT=RESU_G,
-                  MAILLE='GM182',
-                  NOEUD='N1',
-                  INST=2.8,
-                  NOM_CHAM='VARI_ELNO_ELGA',
-                  NOM_CMP='V1',
-                  VALE =0.7519636,
-                  PRECISION = 1.0E-6,
-                  REFERENCE='NON_REGRESSION',
-                  ),
+                   INST=2.8,
+                   NOM_CHAM='VARI_ELNO_ELGA',
+                   NOM_CMP='V2',
+                   MAILLE='GM182',
+                   NOEUD='N1',
+                   VALE=1.178108,
+                   PRECISION=1e-06,
+                   REFERENCE='NON_REGRESSION',),
                 _F(RESULTAT=RESU_G,
-                  MAILLE='GM182',
-                  NOEUD='N1',
-                  INST=2.8,
-                  NOM_CHAM='VARI_ELNO_ELGA',
-                  NOM_CMP='V2',
-                  VALE =1.178108,
-                  PRECISION = 1.0E-6,
-                  REFERENCE='NON_REGRESSION',
-                  ),
+                   INST=3.0,
+                   NOM_CHAM='VARI_ELNO_ELGA',
+                   NOM_CMP='V1',
+                   MAILLE='GM182',
+                   NOEUD='N1',
+                   VALE=1.162571,
+                   PRECISION=1e-06,
+                   REFERENCE='NON_REGRESSION',),
                 _F(RESULTAT=RESU_G,
-                  MAILLE='GM182',
-                  NOEUD='N1',
-                  INST=3.0,
-                  NOM_CHAM='VARI_ELNO_ELGA',
-                  NOM_CMP='V1',
-                  VALE =1.162571,
-                  PRECISION = 1.0E-6,
-                  REFERENCE='NON_REGRESSION',
-                  ),
-                _F(RESULTAT=RESU_G,
-                  MAILLE='GM182',
-                  NOEUD='N1',
-                  INST=3.0,
-                  NOM_CHAM='VARI_ELNO_ELGA',
-                  NOM_CMP='V2',
-                  VALE =1.178108,
-                  PRECISION = 1.0E-6,
-                  REFERENCE='NON_REGRESSION',
-                  ),
-                )
-          )
-
+                   INST=3.0,
+                   NOM_CHAM='VARI_ELNO_ELGA',
+                   NOM_CMP='V2',
+                   MAILLE='GM182',
+                   NOEUD='N1',
+                   VALE=1.178108,
+                   PRECISION=1e-06,
+                   REFERENCE='NON_REGRESSION',),),);
 
 FIN();

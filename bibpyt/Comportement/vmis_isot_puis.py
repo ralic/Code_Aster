@@ -1,4 +1,4 @@
-#@ MODIF vmis_isot_puis Comportement  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
+#@ MODIF vmis_isot_puis Comportement  DATE 07/12/2010   AUTEUR GENIAUT S.GENIAUT 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -32,7 +32,7 @@ par une courbe de traction analytique avec une loi puissance""",
    modelisation   = ('3D', 'AXIS', 'C_PLAN', 'D_PLAN', '1D'),
    deformation    = ('PETIT', 'PETIT_REAC', 'GROT_GDEP', 'SIMO_MIEHE','GDEF_HYPO_ELAS'),
    nom_varc       = ('TEMP', 'SECH', 'HYDR'),
-   schema         = ('IMPLICITE',),
+   algo_inte         = ('DEKKER',),
    type_matr_tang = ('PERTURBATION', 'VERIFICATION'),
    proprietes     = None,
 )

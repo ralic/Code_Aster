@@ -1,4 +1,4 @@
-# MODIF  DATE 30/08/2010   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 07/12/2010   AUTEUR PELLET J.PELLET 
 # TITRE SENSIBILITE EFGE_ELNO_DEPL / SIPO_ELNO_DEPL
 # sensd09c.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -101,14 +101,12 @@ DYT=DYNA_LINE_TRAN(MODELE=MO,CHAM_MATER=CHMAT,CARA_ELEM=CARELE,
                       NEWMARK=_F(),)
 
 DYT = CALC_ELEM(
-                reuse = DYT,
-                RESULTAT= DYT,
-                OPTION = ('EFGE_ELNO_DEPL','SIPO_ELNO_DEPL',),);
-
-DYT = CALC_ELEM(
                  reuse = DYT,
                  RESULTAT= DYT,NUME_ORDRE=20,
-                 SENSIBILITE=(PS[0],PS[1]),
+                 OPTION = ('EFGE_ELNO_DEPL','SIPO_ELNO_DEPL',),
+                 );
+
+CALC_SENSI(reuse = DYT,RESULTAT= DYT,NUME_ORDRE=20,SENSIBILITE=(PS[0],PS[1]),
                  OPTION = ('EFGE_ELNO_DEPL','SIPO_ELNO_DEPL',),
                  );
 

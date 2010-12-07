@@ -2,7 +2,7 @@
      &                   T,LAMBDA,DEUXMU,LAMF,DEUMUF,GMT,GMC,GF,
      &                   SEUIL,ALF,CRIT,CODRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 04/05/2010   AUTEUR SFAYOLLE S.FAYOLLE 
+C MODIF ELEMENTS  DATE 07/12/2010   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -57,11 +57,8 @@ C                    REDECOUPAGE LOCAL DU PAS DE TEMPS
 C                    (ITER_INTE_PAS  == ITEDEC)
 C                    -1,0,1 = PAS DE REDECOUPAGE
 C                     N = NOMBRE DE PALIERS
-C              (6) = TYPE D INTEGRATION LOCAL POUR
-C                    LA LOI DE COMPORTEMENT
-C                    (RESO_INTE == INTLOC)
-C                    0 = IMPLICITE
-C                    1 = RUNGE_KUTTA
+C              (6) = TYPE D INTEGRATION LOCAL POUR LA LOI DE 
+C                    COMPORTEMENT (ALGO_INTE)
 C OUT:
 C       SIG     : CONTRAINTE
 C       VIP     : VARIABLES INTERNES EN T+

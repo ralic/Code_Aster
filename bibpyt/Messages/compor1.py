@@ -1,4 +1,4 @@
-#@ MODIF compor1 Messages  DATE 15/11/2010   AUTEUR TARDIEU N.TARDIEU 
+#@ MODIF compor1 Messages  DATE 07/12/2010   AUTEUR GENIAUT S.GENIAUT 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -99,9 +99,9 @@ localement via ITER_INTE_PAS.
 """),
 
 15: _("""
- Pour les poutres multifibres, l'utilisation de lois de comportement via 
- ALGO_1D='DEBORST' nécessite d'avoir un seul matériau par poutre!
-"""),
+  Pour les poutres multifibres, l'utilisation de lois de comportement via 
+  ALGO_1D='DEBORST' nécessite d'avoir un seul matériau par poutre!
+ """),
 
 16 : _("""
 Arret suite à l'échec de l'intégration de la loi de comportement.
@@ -237,7 +237,10 @@ Erreur numérique (overflow) : la plasticité cumulée devient très grande.
 """),
 
 45: _("""
- Le type de schema de resolution choisi <%(k1)s> est incompatible avec le comportement <%(k2)s>
+ Le type d'algorithme d'intégration choisi : <%(k1)s> (sous COMP_INCR/%(k2)s) est incompatible avec le comportement <%(k3)s>.
+
+Conseil :
+Ne renseignez pas le mot-clé COMP_INCR/%(k2)s, afin de sélectionner l'algorithme par défaut.
 """),
 
 46: _("""

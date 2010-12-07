@@ -3,7 +3,7 @@
      &                   OPTION,SIGP,VIP,DSIDEP,IRET)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 18/05/2010   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 07/12/2010   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -60,11 +60,8 @@ C                         REDECOUPAGE LOCAL DU PAS DE TEMPS
 C                         (RESI_INTE_PAS == 0)
 C                         0 = PAS DE REDECOUPAGE
 C                         N = NOMBRE DE PALIERS
-C               CRIT(6) = TYPE D INTEGRATION LOCALE POUR LA LOI DE
-C                         COMPORTEMENT
-C                          (RESO_LOCA  == 0)
-C                          0 = IMPLICITE
-C                          1 = RUNGE_KUTTA_2
+C               CRIT(6) = TYPE D INTEGRATION LOCAL POUR LA LOI DE 
+C                         COMPORTEMENT (ALGO_INTE)
 C IN  INSTAM  : INSTANT DU CALCUL PRECEDENT
 C IN  INSTAP  : INSTANT DU CALCUL
 C IN  TM      : TEMPERATURE A L'INSTANT PRECEDENT
@@ -147,7 +144,7 @@ C----------------------
       LOI   =  COMPOR(1)
       MOD   =  TYPMOD(1)
       CPLAN =  TYPMOD(1) .EQ. 'C_PLAN'
-      METING = 'IMPLICITE'
+      METING = 'NEWTON'
       DT = INSTAP - INSTAM
       ETATF(1) = 'ELASTIC'
       ETATF(2) = 'EXPONEN'
@@ -192,7 +189,8 @@ C-------------------------
       CALL LCOPLI('ISOTROPE', MOD, MATE, HOOK)
 C
       IF (.NOT.( LOI(1:4) .EQ. 'ELAS'.OR.
-     &           LOI(1:9) .EQ. 'VENDOCHAB' )) THEN
+     &           LOI.EQ. 'VENDOCHAB'.OR.
+     &           LOI.EQ. 'VISC_ENDO_LEMA')) THEN
             CALL U2MESK('F','ALGORITH4_50',1,LOI)
       ENDIF
 C
@@ -240,8 +238,6 @@ C
 C CALCUL DIRECT DE LA SOLUTION DANS LE CAS OU LES EQUATIONS SE
 C REDUISENT A UNE SEULE : SI R_D=K_D ET ALPHA=BETA=0
 
-      GK   = MATE(9,2)
-      GR   = MATE(7,2)
       ISIMP=0
 C
 C-- 2. CALCULS:
@@ -252,7 +248,7 @@ C              - DES CONTRAINTES ET DES DERIVEES
 C              - ARCHIVAGE DES VARIABLES
 C-----------------------------------------------------------------------
       IF (OPTION(1:9).EQ.'RAPH_MECA'.OR.OPTION(1:9).EQ.'FULL_MECA') THEN
-        IF (ABS(GR-GK).LE.TOLER*GR) THEN
+        IF (LOI.EQ. 'VISC_ENDO_LEMA') THEN
          IF (.NOT.CPLAN) THEN
            CALL NMVEND(FAMI,KPG,KSP,MATM,MATE,NMAT,DT,EPSM,DEPS,SIGM,
      &                 VIM,NDIM,CRIT,DAMMAX,ETATF,P,NP,BETA,NB,ITER,IER)
@@ -260,7 +256,7 @@ C-----------------------------------------------------------------------
            IF (IER.GT.0) THEN
              GOTO 801
            ELSE
-             CALL NMVECD ( IMATE, MATE, NMAT, MATCST, HOOK, DT, TP,
+             CALL NMVECD ( IMATE, MATE, NMAT, MATCST, LOI, HOOK, DT, TP,
      &                   P, NP, BETA, NB, EP, RM, DM,
      &                   DSGDE, DSGDB, DSGDP, DRBDE, DRPDE,
      &                   RB, RP, DRBDB, DRBDP, DRPDB, DRPDP, ETATF, IER)
@@ -270,7 +266,7 @@ C-----------------------------------------------------------------------
         ENDIF
         DO 00200 ITER= 1,ITMAX
 C
-          CALL NMVECD ( IMATE, MATE, NMAT, MATCST, HOOK, DT, TP,
+          CALL NMVECD ( IMATE, MATE, NMAT, MATCST, LOI, HOOK, DT, TP,
      &                  P, NP, BETA, NB, EP, RM, DM,
      &                  DSGDE, DSGDB, DSGDP, DRBDE, DRPDE,
      &                  RB, RP, DRBDB, DRBDP, DRPDB, DRPDP, ETATF, IER)
@@ -292,14 +288,6 @@ C
              DBETA(3) = ZERO
           ENDIF
 
-C ON PEUT AUSSI DE PAS FAIRE D'ITERATION DE NEWTON
-C CAR SOLUTION CALCULEE PAR NMVEND
-C           IF (ABS(GR-GK).LE.TOLER*GR) THEN
-C           IF (.NOT.CPLAN) THEN
-C              GOTO 230
-C           ENDIF
-C           ENDIF
-C C
 C-- 2.3. TEST DE CONVERGENCE
 C-------------------------
 C
@@ -370,10 +358,9 @@ C
       ENDIF
 C-- 3. MISE A JOUR DE L'OPERATEUR TANGENT
 C----------------------------------------
-C       IF (OPTION.EQ.'RIGI_MECA_TANG'.OR.
-C      &    OPTION.EQ.'FULL_MECA') THEN
+
       IF (OPTION.EQ.'FULL_MECA') THEN
-C         IF (OPTION(1:9).EQ.'FULL_MECA') THEN
+
           IF (ETATF(1).EQ.'ELASTIC') THEN
             CALL LCEQMN(NB, HOOK, DSIDEP)
           ELSE
@@ -399,7 +386,7 @@ C        ENDIF
 C-- RIGIDITE TANGENTE (RIGI_MECA_ELAS,FULL_MECA_ELAS)->MATRICE ELASTIQUE
         ELSEIF (OPTION(10:14).EQ.'_ELAS') THEN
 C             MATRICE SECANTE=MATRICE ELASTIQUE
-C             CALL LCEQMN(NB, HOOK, DSIDEP)
+
              IF( OPTION.EQ.'FULL_MECA_ELAS') THEN
                 UNMD=1.D0 - VIP(NB+3)
              ELSE

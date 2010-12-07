@@ -1,6 +1,6 @@
       SUBROUTINE TE0552(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 04/04/2005   AUTEUR CIBHHPD L.SALMONA 
+C MODIF ELEMENTS  DATE 07/12/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -23,7 +23,7 @@ C ======================================================================
 C----------------------------------------------------------------------
 C FONCTION REALISEE: CALCUL DE LA DURETE ASSOCIEE A LA METALLURGIE
 C                    EN 3D
-C OPTION : 'DURT_ELGA_META' ET 'DURT_ELNO_META'
+C OPTION :  'DURT_ELNO_META'
 C - ARGUMENTS:
 C        DONNEES:      OPTION       -->  OPTION DE CALCUL
 C                      NOMTE        -->  NOM DU TYPE ELEMENT

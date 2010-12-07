@@ -1,4 +1,4 @@
-# MODIF  DATE 08/11/2007   AUTEUR SALMONA L.SALMONA 
+# MODIF  DATE 07/12/2010   AUTEUR PELLET J.PELLET 
 # RESPONSABLE GNICOLAS G.NICOLAS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -79,18 +79,10 @@ TEMPLIN=THER_LINEAIRE(
               CHAM_MATER=CHMATHE,
                   EXCIT=_F( CHARGE = CHTHE)
                          )
-#
-TEMPLIN=CALC_ELEM(
-                   SENSIBILITE=(THETA),
-                   reuse=TEMPLIN,
-                   RESULTAT=TEMPLIN,
-                   OPTION='DETE_ELNO_DLTE'
-                  )
-#
-CALC_NO( reuse=TEMPLIN,  RESULTAT=TEMPLIN,
-                 SENSIBILITE=(THETA),
-                 OPTION='DETE_NOEU_DLTE')
-#
+
+CALC_SENSI( SENSIBILITE=(THETA), reuse=TEMPLIN, RESULTAT=TEMPLIN,
+                   OPTION=('DETE_ELNO_DLTE','DETE_NOEU_DLTE'))
+
 CHDIL=AFFE_CHAR_MECA(  MODELE=MO,
            DDL_IMPO=_F(  GROUP_MA = 'TOUT',   DY = 0.) )
 
@@ -110,31 +102,19 @@ DEPLDIL=MECA_STATIQUE(
 
                          )
 
-CALC_ELEM( reuse= DEPLDIL ,RESULTAT= DEPLDIL ,
-                      SENSIBILITE=(THETA),
+# MECA_STATIQUE semble avoir deje calcule SIGM_ELNO_DEPL :
+# => pour eviter une alarme :
+# CALC_ELEM( reuse= DEPLDIL,RESULTAT=DEPLDIL, OPTION=('SIGM_ELNO_DEPL',))
 
-                      OPTION=('SIGM_ELNO_DEPL',)
-                         )
-#
-CALC_ELEM( reuse=DEPLDIL,
-                   RESULTAT=DEPLDIL,
-                   SENSIBILITE=(THETA),
+CALC_NO(   reuse= DEPLDIL,RESULTAT=DEPLDIL, OPTION=('SIGM_NOEU_DEPL',))
 
-                   OPTION=('SIEF_ELGA_DEPL',
-                            'DEDE_ELNO_DLDE',
-                            'DESI_ELNO_DLSI')
-                 )
-#
-CALC_NO( reuse=DEPLDIL,   RESULTAT=DEPLDIL,
-             OPTION=('SIGM_NOEU_DEPL')
+
+CALC_SENSI( reuse=DEPLDIL, RESULTAT=DEPLDIL, SENSIBILITE=(THETA),
+             OPTION=('SIGM_ELNO_DEPL','SIEF_ELGA_DEPL','DEDE_ELNO_DLDE',
+                     'DESI_ELNO_DLSI','SIGM_NOEU_DEPL','DESI_NOEU_DLSI', 'DEDE_NOEU_DLDE')
                    )
 
-CALC_NO( reuse=DEPLDIL,   RESULTAT=DEPLDIL,
-                      SENSIBILITE=(THETA),
-             OPTION=('DESI_NOEU_DLSI', 'DEDE_NOEU_DLDE')
-                   )
 
-#
 TEST_RESU(RESU=(
 # DERIVEES DES TEMPERATURES
       _F( RESULTAT = TEMPLIN,  NUME_ORDRE = 0,

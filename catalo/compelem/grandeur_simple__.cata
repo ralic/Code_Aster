@@ -1,4 +1,4 @@
-%& MODIF COMPELEM  DATE 11/10/2010   AUTEUR PELLET J.PELLET 
+%& MODIF COMPELEM  DATE 07/12/2010   AUTEUR PELLET J.PELLET 
 % RESPONSABLE PROIX
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
@@ -413,25 +413,24 @@ GRANDEUR_SIMPLE__
 >>
     CORR_R   = R    CORR
 
-<<  CRRU_R: Critères de rupture dans les couches (post-traitement)
-       SIGL :  contrainte suivant la 1ère direction orthotropie
-       SIGT :  contrainte suivant la 2ème direction orthotropie
+<<  CRRU_R   : Critères de rupture dans les couches (post-traitement)
+       SIGL  :  contrainte suivant la 1ère direction orthotropie
+       SIGT  :  contrainte suivant la 2ème direction orthotropie
        SIGLT :  contrainte de cisaillement
        CRIL  : critère de rupture suivant la 1ère direction orthotropie
-       CRIT :  critère de rupture suivant la 2ème direction orthotropie
+       CRIT  :  critère de rupture suivant la 2ème direction orthotropie
        CRILT : critère de rupture en cisaillement suivant LT
        CRITH : critère de TSAI-HILL
 >>
     CRRU_R   = R    SIGL  SIGT  SIGLT  CRIL     CRIT   CRILT    CRITH
 
-<<  DBEL_R Type:R Décibel acoustique
-       DB décibel
->>
+<<  DBEL_R  Cette grandeur n'est plus utilisée. Elle devrait etre detruite.>>
     DBEL_R   = R    DB
 
-<<  DDCEL_I Type:I
-       NPG_DYN : ...
-       NCMP_DYN : ...
+
+<<  DCEL_I Type:I
+       NPG_DYN  : Nombre de sous-points pour un cham_elem a sous-points
+       NCMP_DYN : Nombre réel de CMPS pour la grandeur VARI_R
 >>
     DCEL_I   = I    NPG_DYN  NCMP_DYN
 
@@ -1223,12 +1222,13 @@ FORC_C   = C    FX       FY       FZ       MX       MY       MZ       BX       R
 >>
     INST_R   = R    INST     DELTAT   THETA    KHI      R        RHO
 
-<<  INTE_R Type:R
-       INTX :
-       INTY :
-       INTZ :
+<<  INTE_R Type:R Intensité acoustique
+       INTX_R : partie réelle selon OX
+       INTY_R : partie imaginaire selon OY
+       ...
+       INTZ_I : partie imaginaire selon OZ
 >>
-    INTE_R   = R    INTX     INTY     INTZ
+    INTE_R   = R    INTX_R  INTY_R  INTZ_R  INTX_I  INTY_I  INTZ_I
 
 <<  IRRA_R Type:R
        IRRA :
@@ -1427,6 +1427,7 @@ FORC_C   = C    FX       FY       FZ       MX       MY       MZ       BX       R
 >>
     POSI     = I    POS
 
+
 <<  PREC Type:R précision
        PREC : valeur de la précision
        SIGM :
@@ -1442,6 +1443,13 @@ FORC_C   = C    FX       FY       FZ       MX       MY       MZ       BX       R
 >>
     PREC     = R    PREC     SIGM     EPSI     FHYDR1   FHYDR2   FTHERM   VARI
                     EFFORT   MOMENT   DEPL     LAG_GV
+
+<<  PRAC_R Type:R Pression acoustique (phénomène Acoustique)
+       PRES_R  partie réelle de la pression
+       PRES_I  partie imaginaire de la pression
+       DB      décibel
+>>
+    PRAC_R   = R    PRES_R  PRES_I  DB
 
 <<  PRES_C Type:C Chargement surfacique appliqué a un modèle mécanique
    (PRES,CISA)
@@ -1476,6 +1484,12 @@ FORC_C   = C    FX       FY       FZ       MX       MY       MZ       BX       R
        limites
 >>
     PRES_R   = R    PRES     CISA     VX       VY       VZ       LAGR
+
+<<  PRME_R Type:R Pression acoustique (phénomène Mécanique)
+       DB décibel
+>>
+    PRME_R   = R    DB
+
 
 <<  RAYO_F Type:K8
        SIGMA :

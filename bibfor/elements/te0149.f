@@ -3,7 +3,7 @@
       CHARACTER*(*)       OPTION , NOMTE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 07/12/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -26,8 +26,6 @@ C     ------------------------------------------------------------------
 C IN  OPTION : K16 : NOM DE L'OPTION A CALCULER
 C        'SIGM_ELNO_DEPL'
 C        'SIPO_ELNO_DEPL'
-C        'SIGM_ELNO_SIEF'
-C        'SIPO_ELNO_SIEF'
 C IN  NOMTE  : K16 : NOM DU TYPE ELEMENT
 C        'MECA_POU_D_E' : POUTRE DROITE D'EULER       (SECTION VARIABLE)
 C        'MECA_POU_D_T' : POUTRE DROITE DE TIMOSHENKO (SECTION VARIABLE)
@@ -158,27 +156,6 @@ C
          CALL JEVECH ( 'PCONTPO' , 'E' , JEFFO )
          CALL POSIPR ( NOMTE, EFGE, ZR(JEFFO) )
 C
-      ELSEIF ( OPTION .EQ. 'SIGM_ELNO_SIEF' ) THEN
-         CALL JEVECH ( 'PSIEFNOR' , 'L' , JEFGE )
-         DO 10 K = 1,6
-            EFGE(K) = -ZR(JEFGE+K-1)
- 10      CONTINUE
-         DO 12 K = 7,12
-            EFGE(K) = ZR(JEFGE+K-1)
- 12      CONTINUE
-         CALL JEVECH ( 'PCONTRR' , 'E' , JEFFO )
-         CALL POSIGR ( NOMTE, EFGE, ZR(JEFFO) )
-C
-      ELSEIF ( OPTION .EQ. 'SIPO_ELNO_SIEF' ) THEN
-         CALL JEVECH ( 'PSIEFNOR' , 'L' , JEFGE )
-         DO 20 K = 1,6
-            EFGE(K) = -ZR(JEFGE+K-1)
- 20      CONTINUE
-         DO 22 K = 7,12
-            EFGE(K) = ZR(JEFGE+K-1)
- 22      CONTINUE
-         CALL JEVECH ( 'PCONTPO' , 'E' , JEFFO )
-         CALL POSIPR ( NOMTE, EFGE, ZR(JEFFO) )
 C
       ELSE
 C OPTION NON PROGRAMMEE

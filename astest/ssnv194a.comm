@@ -1,4 +1,4 @@
-# MODIF  DATE 14/12/2009   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 07/12/2010   AUTEUR GENIAUT S.GENIAUT 
 # TITRE : TRACTION SUR UN AGREGAT A 10 GRAINS, ACIER BAINITIQUE
 # RESPONSABLE JMBHH01 J.M.PROIX
 # ssnv194a.para = tps_job 280 mem_job 70Mo ncpus 1 liste_test R
@@ -136,7 +136,7 @@ SOLNL=STAT_NON_LINE(MODELE=TROISD,
                              TYPE_CHARGE='FIXE_CSTE',),
                     COMP_INCR=_F(RELATION='MONOCRISTAL',
                                  COMPOR=MONO1,
-                                 RESO_INTE='IMPLICITE_RELI',
+                                 ALGO_INTE='NEWTON_RELI',
                                  DEFORMATION='PETIT',
                                  TOUT='OUI',),
                     INCREMENT=_F(LIST_INST=LINST),

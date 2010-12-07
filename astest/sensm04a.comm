@@ -1,4 +1,4 @@
-# MODIF  DATE 30/08/2010   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 07/12/2010   AUTEUR PELLET J.PELLET 
 # RESPONSABLE PABHHHH N. TARDIEU
 # TITRE SENSIBILITE AUX DONNEES MATERIAUX EN MECA_STATIQUE ORTHOTROPE 2D
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -114,58 +114,15 @@ RES=MECA_STATIQUE(MODELE=MODEMECA,
                    SENSIBILITE=tuple(PS),
                   );
 
-RES = CALC_ELEM(
-                 reuse = RES,
-                 RESULTAT = RES,
-                 OPTION = 'EPSI_ELNO_DEPL'
-                 );
-RES = CALC_ELEM(
-                 reuse = RES,
-                 RESULTAT = RES,
-                 OPTION = 'EPSI_ELNO_DEPL',
-                 SENSIBILITE=tuple(PS)
-                 );
+RES = CALC_ELEM( reuse = RES, RESULTAT = RES, OPTION = ('EPSI_ELNO_DEPL','SIGM_ELNO_DEPL') );
 
-RES = CALC_ELEM(
-                 reuse = RES,
-                 RESULTAT = RES,
-                 OPTION = 'SIGM_ELNO_DEPL'
-                 );
-RES = CALC_ELEM(
-                 reuse = RES,
-                 RESULTAT = RES,
-                 OPTION = 'SIGM_ELNO_DEPL',
-                 SENSIBILITE=tuple(PS)
-                 );
-
-RES = CALC_ELEM(
-                 reuse = RES,
-                 RESULTAT = RES,
-
-                 OPTION = 'SIEF_ELGA_DEPL'
-                 );
-RES = CALC_ELEM(
-                 reuse = RES,
-                 RESULTAT = RES,
-
-                 OPTION = 'SIEF_ELGA_DEPL',
-                 SENSIBILITE = tuple(PS)
-                 );
+RES = CALC_NO( reuse =  RES  , RESULTAT  =  RES  , OPTION = ('REAC_NODA',),);
 
 
-RES = CALC_NO( reuse      =  RES         ,
-              RESULTAT   =  RES         ,
-
-
-              OPTION     = ('REAC_NODA',),);
-
-RES = CALC_NO( reuse      =  RES         ,
-              RESULTAT   =  RES         ,
-
-
-              OPTION     = ('REAC_NODA',),
-              SENSIBILITE = tuple(PS)
+CALC_SENSI( reuse = RES,RESULTAT = RES , SENSIBILITE = tuple(PS),
+              OPTION     = ('EPSI_ELNO_DEPL','SIGM_ELNO_DEPL','SIEF_ELGA_DEPL','REAC_NODA',),
               );
+
 
 
 TAB_REF=POST_RELEVE_T(ACTION=_F(INTITULE='SENSIBILITE',

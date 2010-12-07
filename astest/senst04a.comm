@@ -1,4 +1,4 @@
-# MODIF  DATE 08/11/2007   AUTEUR SALMONA L.SALMONA 
+# MODIF  DATE 07/12/2010   AUTEUR PELLET J.PELLET 
 # RESPONSABLE O.BOITEAU
 # TITRE Validation de la sensibilite par rapport au coefficient d'echan
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -126,11 +126,13 @@ RESU=THER_LINEAIRE(MODELE=MODTHER,CHAM_MATER=CMAT,
 # 4.1.1 Calcul du flux aux noeuds
 #
 RESU=CALC_ELEM(reuse=RESU,RESULTAT=RESU,
-#             INFO=2,
              OPTION='FLUX_ELNO_TEMP',
-             SENSIBILITE=(PS1,PS2,));
+);
 RESU=CALC_NO(reuse=RESU,RESULTAT=RESU,OPTION='FLUX_NOEU_TEMP',
-           SENSIBILITE=(PS1,PS2,));
+);
+CALC_SENSI(reuse=RESU,RESULTAT=RESU, SENSIBILITE=(PS1,PS2,),
+           OPTION=('FLUX_ELNO_TEMP','FLUX_NOEU_TEMP',),
+          );
 #
 # 4.2 Calculs pour evaluer les differences finies
 #

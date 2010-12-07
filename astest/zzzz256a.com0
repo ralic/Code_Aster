@@ -1,0 +1,27 @@
+POURSUITE(CODE=_F(NOM='ZZZZ256A'),PAR_LOT='NON',DEBUG=_F(SDVERI='OUI'));
+
+
+# Validation de l'extraction des matrices dans l'espace python
+# et de la résolution en python :
+#--------------------------------------------------------------
+import numpy.linalg as LA
+
+MAT1P=MAT1.EXTR_MATR()
+VEC1P=VEC1.VALE.get()
+SOL2P=LA.solve(MAT1P, VEC1P)
+
+# TEST_RESU
+# la solution du systeme lineaire est (0., 1.) :
+
+TAB1=CREA_TABLE(LISTE=(_F(PARA='TEST',  TYPE_K='K8', LISTE_K=('DX','DY'),),
+                       _F(PARA='VALEUR',             LISTE_R=(SOL2P[0],SOL2P[1])),),)
+
+TEST_TABLE(TABLE=TAB1, FILTRE=_F(NOM_PARA='TEST',VALE_K='DX',),
+           NOM_PARA='VALEUR', VALE=0.,  REFERENCE='ANALYTIQUE', CRITERE='ABSOLU', PRECISION=1.E-9)
+
+TEST_TABLE(TABLE=TAB1, FILTRE=_F(NOM_PARA='TEST',VALE_K='DY',),
+           NOM_PARA='VALEUR', VALE=1.,  REFERENCE='ANALYTIQUE', PRECISION=1.E-9)
+
+
+
+FIN();

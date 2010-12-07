@@ -1,4 +1,4 @@
-#@ MODIF rouss_visc Comportement  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
+#@ MODIF rouss_visc Comportement  DATE 07/12/2010   AUTEUR GENIAUT S.GENIAUT 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -26,7 +26,7 @@ loi = LoiComportement(
    doc = """Relation de comportement élasto-visco-plastique de G.Rousselier, en petites déformations (DEFORMATION='PETIT_REAC', 'EULER_ALMANSI','REAC_GEOM' ou 'PETIT'), . 
    Elle permet de rendre compte de la croissance des cavités et de décrire la rupture ductile.
    Pour faciliter l'intégration de ce modèle, il est conseillé d'utiliser le redécoupage automatique local du pas de temps (ITER_INTE_PAS). 
-   Pour l'intégration de cette loi, une theta-méthode est disponible et on conseille d'utiliser une intégration semi-implicite c'est-à-dire : PARM_THETA = 0.5.""",
+   Pour l'intégration de cette loi, une theta-méthode est disponible et on conseille d'utiliser une intégration semi-NEWTON_1D c'est-à-dire : PARM_THETA = 0.5.""",
    num_lc         = 30,
    nb_vari        = 5,
    nom_vari       = ('EPSPEQ','POROSITE','INDIPLAS','DISSIP','EBLOC'),
@@ -34,7 +34,7 @@ loi = LoiComportement(
    modelisation   = ('3D', 'AXIS', 'D_PLAN'),
    deformation    = ('PETIT', 'PETIT_REAC', 'GROT_GDEP'),
    nom_varc       = ('TEMP'),
-   schema         = ('IMPLICITE',),
+   algo_inte         = ('NEWTON_1D',),
    type_matr_tang = ('PERTURBATION', 'VERIFICATION'),
    proprietes     = None,
 )

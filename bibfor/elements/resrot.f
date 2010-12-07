@@ -1,6 +1,6 @@
       SUBROUTINE RESROT ( ROTA, COOR, FF, RHO, NNO, NPG, FRX, FRY )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 04/04/2006   AUTEUR CIBHHLV L.VIVAN 
+C MODIF ELEMENTS  DATE 07/12/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,7 +22,7 @@ C
 C ......................................................................
 C    - FONCTION REALISEE:  CALCUL DE LA FORCE 2D DUE A UN TERME DE
 C                          ROTATION
-C                          POUR L'OPTION : 'ERRE_ELEM_SIGM'
+C                          POUR L'OPTION : 'ERME_ELEM'
 C                             (ESTIMATEUR EN RESIDU)
 C
 C    - ARGUMENTS:

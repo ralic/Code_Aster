@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2010   AUTEUR IDOUX L.IDOUX 
+# MODIF  DATE 07/12/2010   AUTEUR PELLET J.PELLET 
 # TITRE PARALLEPEPIPEDE SOUS SON PROPRE POIDS (HEXA20 GROSSIER)
 # sslv07d.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -61,7 +61,7 @@ MA=ASSE_MAILLAGE(MAILLAGE_1=MA1,
 
 
 DEFI_GROUP( reuse=MA, MAILLAGE=MA,
-            CREA_GROUP_MA=_F( NOM = 'VOLUM',OPTION='APPUI', 
+            CREA_GROUP_MA=_F( NOM = 'VOLUM',OPTION='APPUI',
                               TYPE_APPUI='AU_MOINS_UN',
                            GROUP_NO='A'))
 
@@ -142,7 +142,7 @@ DEPLD2=STAT_NON_LINE(MODELE=MO,
                      ARCHIVAGE=_F(LIST_INST=L_INST,
                                   CHAM_EXCLU='VARI_ELGA',),);
 
-# REMARQUE : STRICTO SENSU, LE CALCUL DE ERRE_ELEM_SIGM EST FAUX CAR
+# REMARQUE : STRICTO SENSU, LE CALCUL DE ERME_ELEM EST FAUX CAR
 #            DES BORDS A CONTRAINTE NULLE N'ONT PAS ETE DEFINIS DANS LE
 #            MAILLAGE ET A FORTIORI DANS LE CHARGEMENT
 #            IL FAUDRA COMPLETER LE MAILLAGE UN JOUR. G. NICOLAS.
@@ -152,8 +152,8 @@ DEPLD2 = CALC_ELEM (reuse=DEPLD2,
 
               OPTION= (
                'SIEF_ELNO_ELGA',
-               'ERRE_ELEM_SIGM',
-               'ERRE_ELNO_ELEM',
+               'ERME_ELEM',
+               'ERME_ELNO',
            ),   ) ;
 
 #---------------------------------------------------------------------
@@ -161,7 +161,7 @@ DEPLD2 = CALC_ELEM (reuse=DEPLD2,
 
 TEST_RESU(RESU=(_F(RESULTAT=DEPLD2,
                    NUME_ORDRE=10,
-                   NOM_CHAM='ERRE_ELEM_SIGM',
+                   NOM_CHAM='ERME_ELEM',
                    NOM_CMP='NUEST',
                    MAILLE='M10',
                    POINT=1,
@@ -171,7 +171,7 @@ TEST_RESU(RESU=(_F(RESULTAT=DEPLD2,
                    VERSION='9.05.04',),
                 _F(RESULTAT=DEPLD2,
                    NUME_ORDRE=10,
-                   NOM_CHAM='ERRE_ELNO_ELEM',
+                   NOM_CHAM='ERME_ELNO',
                    NOM_CMP='ERREST',
                    MAILLE='M6',
                    NOEUD='N96',

@@ -1,4 +1,4 @@
-#@ MODIF visc_isot_trac Comportement  DATE 06/04/2009   AUTEUR DURAND C.DURAND 
+#@ MODIF visc_isot_trac Comportement  DATE 07/12/2010   AUTEUR GENIAUT S.GENIAUT 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -31,7 +31,7 @@ loi = LoiComportement(
    modelisation   = ('3D', 'AXIS', 'C_PLAN', 'D_PLAN', '1D'),
    deformation    = ('SIMO_MIEHE',),
    nom_varc       = ('TEMP', 'SECH', 'HYDR'),
-   schema         = ('IMPLICITE',),
+   algo_inte         = ('SECANTE','BRENT',),
    type_matr_tang = ('PERTURBATION', 'VERIFICATION'),
    proprietes     = None,
 )

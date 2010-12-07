@@ -5,7 +5,7 @@
         IMPLICIT NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 12/07/2010   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 07/12/2010   AUTEUR GENIAUT S.GENIAUT 
 C RESPONSABLE JMBHH01 J.M.PROIX
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -58,11 +58,8 @@ C                      CRIT(1) = NOMBRE D ITERATIONS MAXI A CONVERGENCE
 C                                (ITER_INTE_MAXI == ITECREL)
 C                      CRIT(3) = CRITERE DE PRECISION POUR L INTEGRATION
 C                                PAR LA METHODE DE RUNGE KUTTA
-C                      CRIT(6) = TYPE D INTEGRATION LOCALE POUR
-C                                LA LOI DE COMPORTEMENT
-C                                (RESO_LOCA  == INTLOC)
-C                                0 = IMPLICITE
-C                                1 = RUNGE_KUTTA_2
+C                      CRIT(6) = TYPE D INTEGRATION LOCAL POUR LA LOI DE
+C                                COMPORTEMENT (ALGO_INTE)
 C               TIMED   INSTANT T
 C               TIMEF   INSTANT T+DT
 C               EPSDT   DEFORMATION TOTALE A T

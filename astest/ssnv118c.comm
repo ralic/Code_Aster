@@ -1,4 +1,4 @@
-# MODIF  DATE 22/12/2008   AUTEUR PROIX J-M.PROIX 
+# MODIF  DATE 07/12/2010   AUTEUR GENIAUT S.GENIAUT 
 # TITRE ESSAI DE TRACTION GENEE EN 3D (VISCOCHAB)
 # ssnv118c.para = tps_job 60 mem_job 64Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -126,7 +126,7 @@ SOLNL=STAT_NON_LINE(
                 RELATION = 'VISCOCHAB',
                 DEFORMATION = 'PETIT',
                 ITER_INTE_MAXI = 80,
-                RESO_INTE = 'RUNGE_KUTTA_2',
+                ALGO_INTE = 'RUNGE_KUTTA',
                 TOUT = 'OUI'),
                          INCREMENT=_F( 
                 LIST_INST = LINST),

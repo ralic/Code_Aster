@@ -1,4 +1,4 @@
-# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 07/12/2010   AUTEUR GENIAUT S.GENIAUT 
 # TITRE POUTRE ENCASTREE A UNE EXTREMITE ET CHARGEE PAR UNE TRACTION
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -89,12 +89,12 @@ REST=DYNA_NON_LINE(
                 FONC_MULT = FONCT),COMP_INCR=(
                          _F(
                 RELATION = 'VMIS_POU_LINE',
-                RESO_INTE = 'RUNGE_KUTTA_4',
+                
                 ITER_INTE_MAXI = 500,
                 GROUP_MA = 'GC1'),
                          _F(
                 RELATION = 'VMIS_POU_FLEJOU',
-                RESO_INTE = 'RUNGE_KUTTA_4',
+                
                 ITER_INTE_MAXI = 500,
                 GROUP_MA = 'GR1')),
                          INCREMENT=_F(

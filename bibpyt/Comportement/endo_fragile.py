@@ -1,4 +1,4 @@
-#@ MODIF endo_fragile Comportement  DATE 12/04/2010   AUTEUR MICHEL S.MICHEL 
+#@ MODIF endo_fragile Comportement  DATE 07/12/2010   AUTEUR GENIAUT S.GENIAUT 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -32,7 +32,7 @@ loi = LoiComportement(
    modelisation   = ('3D', 'AXIS', 'C_PLAN', 'D_PLAN','GRADEPSI'),
    deformation    = ('PETIT', 'PETIT_REAC', 'GROT_GDEP'),
    nom_varc       = ('TEMP', 'SECH', 'HYDR'),
-   schema         = ('IMPLICITE',),
+   algo_inte         = ('ANALYTIQUE',),
    type_matr_tang = ('PERTURBATION', 'VERIFICATION'),
    proprietes     = None,
 )

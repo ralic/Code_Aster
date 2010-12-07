@@ -1,4 +1,4 @@
-#@ MODIF lemaitre_irra Comportement  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
+#@ MODIF lemaitre_irra Comportement  DATE 07/12/2010   AUTEUR GENIAUT S.GENIAUT 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -28,8 +28,8 @@ loi = LoiComportement(
    Le grandissement ne se faisant que selon une direction, il est nécessaire dans les cas 3D et 2D de donner la 
    direction du grandissement par l'opérande ANGL_REP du mot clé MASSIF de l'opérateur AFFE_CARA_ELEM. 
    Pour les poutres, le fluage et le grandissement n'ont lieu que dans le sens axial de la poutre : 
-   dans les autres directions, le comportement est élastique. Le schéma d'intégration est implicite ou semi-implicite, 
-   mais on conseille d'utiliser une intégration semi-implicite c'est-à-dire PARM_THETA= 0.5,RESO_INTE=IMPLICITE.""",
+   dans les autres directions, le comportement est élastique. Le schéma d'intégration est DEKKER ou semi-DEKKER, 
+   mais on conseille d'utiliser une intégration semi-DEKKER c'est-à-dire PARM_THETA= 0.5,RESO_INTE=DEKKER.""",
    num_lc         = 28,
    nb_vari        = 2,
    nom_vari       = ('EPSPEQ','VIDE'),
@@ -37,7 +37,7 @@ loi = LoiComportement(
    modelisation   = ('3D', 'AXIS', 'D_PLAN'),
    deformation    = ('PETIT', 'PETIT_REAC', 'GROT_GDEP'),
    nom_varc       = ('TEMP', 'IRRA'),
-   schema         = ('IMPLICITE',),
+   algo_inte         = ('DEKKER',),
    type_matr_tang = ('PERTURBATION', 'VERIFICATION'),
    proprietes     = None,
 )

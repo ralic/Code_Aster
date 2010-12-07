@@ -1,4 +1,4 @@
-# MODIF  DATE 17/02/2009   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 07/12/2010   AUTEUR PELLET J.PELLET 
 # RESPONSABLE GNICOLAS G.NICOLAS
 # TITRE SENSIBILITE AUX DONNEES - EXEMPLE D'UTILISATION
 # sensm07a.para = tps_job 60 mem_job 64Mo liste_test R
@@ -136,21 +136,16 @@ resultat=MECA_STATIQUE(MODELE=modele,
 #
 resultat=CALC_ELEM(reuse =resultat,
                    RESULTAT=resultat,
-                   OPTION=('SIGM_ELNO_DEPL','ERRE_ELEM_SIGM'));
-#
-# 8.2. Les derivees des contraintes aux points de Gauss
-#
-resultat=CALC_ELEM(reuse =resultat,
-                   RESULTAT=resultat,
-                   SENSIBILITE=(E1,E2,E3,PA,PB),
-                   OPTION=('SIEF_ELGA_DEPL','SIGM_ELNO_DEPL'));
-#
-# 8.3. Les derivees des contraintes aux noeuds
+                   OPTION=('SIGM_ELNO_DEPL','ERME_ELEM'));
 #
 resultat=CALC_NO(reuse =resultat,
                  RESULTAT=resultat,
-                 SENSIBILITE=(E1,E2,E3),
                  OPTION='SIGM_NOEU_DEPL');
+#
+# 8.2. Les derivees des contraintes aux points de Gauss
+# 8.3. Les derivees des contraintes aux noeuds
+CALC_SENSI(reuse =resultat, RESULTAT=resultat, SENSIBILITE=(E1,E2,E3,PA,PB),
+                 OPTION=('SIEF_ELGA_DEPL','SIGM_ELNO_DEPL','SIGM_NOEU_DEPL'));
 #
 # 9. Impressions des resultats
 #

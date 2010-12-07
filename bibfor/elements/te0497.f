@@ -1,7 +1,7 @@
       SUBROUTINE TE0497(OPTION,NOMTE)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 10/08/2010   AUTEUR MEUNIER S.MEUNIER 
+C MODIF ELEMENTS  DATE 07/12/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,7 +22,7 @@ C RESPONSABLE MEUNIER S.MEUNIER
 C TOLE CRP_20
 C-----------------------------------------------------------------------
 C    - FONCTION REALISEE:  CALCUL DE L'ESTIMATEUR D'ERREUR EN RESIDU
-C      SUR UN ELEMENT ISOPARAMETRIQUE 2D, VIA L'OPTION 'ERRE_ELEM_SIGM'
+C      SUR UN ELEMENT ISOPARAMETRIQUE 2D, VIA L'OPTION 'ERME_ELEM'
 C      POUR LES MODELISATIONS HM SATUREES
 C   -------------------------------------------------------------------
 C

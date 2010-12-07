@@ -1,4 +1,4 @@
-#@ MODIF calculel3 Messages  DATE 12/07/2010   AUTEUR FLEJOU J-L.FLEJOU 
+#@ MODIF calculel3 Messages  DATE 07/12/2010   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -89,7 +89,7 @@ cata_msg = {
 """),
 
 15: _("""
- Par défaut on utilise l'estimateur en résidu ERRE_ELEM_SIGM.
+ Par défaut on utilise l'estimateur en résidu ERME_ELEM.
 """),
 
 16 : _("""

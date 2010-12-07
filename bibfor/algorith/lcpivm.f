@@ -3,7 +3,7 @@
      &                   OPTION,TAUP,VIP,DTAUDF,IRET)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 15/01/2008   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 07/12/2010   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -95,7 +95,7 @@ C COMMON GRANDES DEFORMATIONS SIMO - MIEHE
 C ----------------------------------------------------------------------
 C ----------------------------------------------------------------------
       LOGICAL RESI,RIGI,ELAS
-      INTEGER I,IJ,LINE
+      INTEGER I,IJ,LINE,IBID
       REAL*8  TEMP,DP,SEUIL,R8BID
       REAL*8  RP,PENTEP,AIRERP
       REAL*8  EM(6),EP(6),TRTAU,DVBE(6),JE
@@ -152,7 +152,7 @@ C-----------------------------------------------------------------------
             PRECR = CARCRI(3) * SIGY                                   
             NITER = NINT(CARCRI(1))                                    
                                                                        
-            CALL ZEROFO(NMCRI6,VAL0,XAP,PRECR,NITER,DP,IRET)           
+            CALL ZEROFO(NMCRI6,VAL0,XAP,PRECR,NITER,DP,IRET,IBID)      
             IF(IRET.EQ.1) GOTO 9999                                    
             CALL ECPUIS(YOUNG,SIGY,APUI,1.D0/NPUI,PM,DP,RP,RPRIM) 
             PENTE=RPRIM

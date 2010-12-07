@@ -1,4 +1,4 @@
-# MODIF  DATE 30/08/2010   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 07/12/2010   AUTEUR PELLET J.PELLET 
 # RESPONSABLE GNICOLAS G.NICOLAS
 # TITRE validation du calcul de sensibilite au chargement en MECA_STATIQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -84,61 +84,13 @@ REMS=MECA_STATIQUE(MODELE=MODEMECA,
                    SENSIBILITE=(PSX,PSY)
                   );
 
-REMS = CALC_ELEM(
-                 reuse = REMS,
-                 RESULTAT = REMS,
+REMS = CALC_ELEM( reuse = REMS, RESULTAT = REMS, OPTION =('EPSI_ELNO_DEPL','SIGM_ELNO_DEPL') );
 
-                 OPTION = 'EPSI_ELNO_DEPL'
-                 );
-REMS = CALC_ELEM(
-                 reuse = REMS,
-                 RESULTAT = REMS,
-
-                 OPTION = 'EPSI_ELNO_DEPL',
-                 SENSIBILITE = (PSX,PSY)
-                 );
-
-REMS = CALC_ELEM(
-                 reuse = REMS,
-                 RESULTAT = REMS,
-
-                 OPTION = 'SIGM_ELNO_DEPL'
-                 );
-REMS = CALC_ELEM(
-                 reuse = REMS,
-                 RESULTAT = REMS,
-
-                 OPTION = 'SIGM_ELNO_DEPL',
-                 SENSIBILITE = (PSX,PSY)
-                 );
-
-REMS = CALC_ELEM(
-                 reuse = REMS,
-                 RESULTAT = REMS,
-
-                 OPTION = 'SIEF_ELGA_DEPL'
-                 );
-REMS = CALC_ELEM(
-                 reuse = REMS,
-                 RESULTAT = REMS,
-
-                 OPTION = 'SIEF_ELGA_DEPL',
-                 SENSIBILITE = (PSX,PSY)
-                 );
+REMS = CALC_NO( reuse      =  REMS         , RESULTAT   =  REMS         , OPTION     = ('REAC_NODA',),);
 
 
-REMS = CALC_NO( reuse      =  REMS         ,
-              RESULTAT   =  REMS         ,
-
-
-              OPTION     = ('REAC_NODA',),);
-
-REMS = CALC_NO( reuse      =  REMS         ,
-              RESULTAT   =  REMS         ,
-
-
-              OPTION     = ('REAC_NODA',),
-              SENSIBILITE = (PSX,PSY)
+CALC_SENSI( reuse = REMS,RESULTAT = REMS , SENSIBILITE = (PSX,PSY),
+              OPTION     = ('EPSI_ELNO_DEPL','SIGM_ELNO_DEPL','SIEF_ELGA_DEPL','REAC_NODA',),
               );
 
 

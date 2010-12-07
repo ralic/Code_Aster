@@ -4,7 +4,7 @@
       INTEGER NBORDR
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 19/10/2010   AUTEUR DELMAS J.DELMAS 
+C MODIF UTILITAI  DATE 07/12/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -43,7 +43,7 @@ C                      C H A M P _ M E C A N I Q U E
 C     ------------------------------------------------------------------
       PARAMETER (NCMEC1=42)
       PARAMETER (NCMEC2=56)
-      PARAMETER (NCMEC3=41)
+      PARAMETER (NCMEC3=37)
       PARAMETER (NCMECA=NCMEC1+NCMEC2+NCMEC3)
       CHARACTER*16 CHMEC1(NCMEC1)
       CHARACTER*16 CHMEC2(NCMEC2)
@@ -52,7 +52,7 @@ C     ------------------------------------------------------------------
 C     ------------------------------------------------------------------
 C                      C H A M P _ T H E R M I Q U E
 C     ------------------------------------------------------------------
-      PARAMETER (NCTHER=19)
+      PARAMETER (NCTHER=18)
       CHARACTER*16 CHTHER(NCTHER)
 C     ------------------------------------------------------------------
 C                      C H A M P _ V A R C
@@ -62,7 +62,7 @@ C     ------------------------------------------------------------------
 C     ------------------------------------------------------------------
 C                      C H A M P _ A C O U S T I Q U E
 C     ------------------------------------------------------------------
-      PARAMETER (NCACOU=11)
+      PARAMETER (NCACOU=5)
       CHARACTER*16 CHACOU(NCACOU)
 C     ------------------------------------------------------------------
 C                      C H A M P _ T H E T A
@@ -94,7 +94,7 @@ C      '1234567890123456','1234567890123456','1234567890123456',
       DATA CHMEC2/
      & 'DEGE_ELNO_DEPL',  'DEGE_NOEU_DEPL',  'EPOT_ELEM_DEPL',
      & 'ECIN_ELEM_DEPL',  'FORC_NODA',       'REAC_NODA',
-     & 'ERRE_ELEM_SIGM',  'ERRE_ELNO_ELEM',  'ERRE_NOEU_ELEM',
+     & 'ERME_ELEM',  'ERME_ELNO',  'ERME_NOEU',
      & 'ERZ1_ELEM_SIGM',  'ERZ2_ELEM_SIGM',  'QIRE_ELEM_SIGM',
      & 'QIRE_ELNO_ELEM',  'QIRE_NOEU_ELEM',  'QIZ1_ELEM_SIGM',
      & 'QIZ2_ELEM_SIGM',  'EPSG_ELGA_DEPL',  'EPSG_ELNO_DEPL',
@@ -105,7 +105,7 @@ C      '1234567890123456','1234567890123456','1234567890123456',
      & 'COMPORTEMENT',    'DCHA_ELGA_SIGM',  'DCHA_ELNO_SIGM',
      & 'DCHA_NOEU_SIGM',  'RADI_ELGA_SIGM',  'RADI_ELNO_SIGM',
      & 'RADI_NOEU_SIGM',  'ENDO_ELNO_SIGA',  'ENDO_ELNO_SINO',
-     & 'ENDO_NOEU_SINO',  'PRES_DBEL_DEPL',  'SIGM_ELNO_COQU',
+     & 'ENDO_NOEU_SINO',  'PRME_ELNO',  'SIGM_ELNO_COQU',
      & 'EPME_ELNO_DEPL',  'EPME_ELGA_DEPL',  'EPMG_ELNO_DEPL',
      & 'EPMG_ELGA_DEPL',  'ENEL_ELGA',       'ENEL_ELNO_ELGA',
      & 'ENEL_NOEU_ELGA',  'SIGM_NOEU_COQU',  'SIGM_ELNO_TUYO',
@@ -117,8 +117,7 @@ C      '1234567890123456','1234567890123456','1234567890123456',
      & 'EQUI_ELGA_EPME',  'EQUI_ELNO_EPME',   'EQUI_NOEU_EPME',
      & 'DEDE_ELNO_DLDE',  'DEDE_NOEU_DLDE',   'DESI_ELNO_DLSI',
      & 'DESI_NOEU_DLSI',  'PMPB_ELGA_SIEF',   'PMPB_ELNO_SIEF',
-     & 'PMPB_NOEU_SIEF',  'SIGM_ELNO_SIEF',   'SIPO_ELNO_SIEF',
-     & 'SIGM_NOEU_SIEF',  'SIPO_NOEU_SIEF',   'EPFP_ELNO',
+     & 'PMPB_NOEU_SIEF', 'EPFP_ELNO',
      & 'EPFP_ELGA',       'EPFD_ELNO',        'EPFD_ELGA',
      & 'EPVC_ELNO',       'EPVC_ELGA',        'VALE_CONT',
      & 'VARI_ELNO_COQU',  'CRIT_ELNO_RUPT',   'ETOT_ELGA',
@@ -136,11 +135,11 @@ C      '1234567890123456','1234567890123456','1234567890123456',
       DATA CHTHER/
      & 'TEMP',            'FLUX_ELGA_TEMP',  'FLUX_ELNO_TEMP',
      & 'FLUX_NOEU_TEMP',  'META_ELGA_TEMP',  'META_ELNO_TEMP',
-     & 'META_NOEU_TEMP',  'DURT_ELGA_META',  'DURT_ELNO_META',
+     & 'META_NOEU_TEMP',  'DURT_ELNO_META',
      & 'DURT_NOEU_META',  'HYDR_ELNO_ELGA',  'SOUR_ELGA_ELEC',
      & 'HYDR_NOEU_ELGA',  'DETE_ELNO_DLTE',  'DETE_NOEU_DLTE',
-     & 'COMPORTHER',      'ERRE_ELEM_TEMP',  'ERRE_ELNO_ELEM',
-     & 'ERRE_NOEU_ELEM'/
+     & 'COMPORTHER',      'ERTH_ELEM',  'ERTH_ELNO',
+     & 'ERTH_NOEU'/
 C     ------------------------------------------------------------------
 C                      C H A M P _ V A R C
 C     ------------------------------------------------------------------
@@ -153,10 +152,8 @@ C                      C H A M P _ A C O U S T I Q U E
 C     ------------------------------------------------------------------
 C      '1234567890123456','1234567890123456','1234567890123456',
       DATA CHACOU/
-     & 'PRES',            'PRES_ELNO_DBEL',  'PRES_ELNO_REEL',
-     & 'PRES_ELNO_IMAG',  'INTE_ELNO_ACTI',  'INTE_ELNO_REAC',
-     & 'PRES_NOEU_DBEL',  'PRES_NOEU_REEL',  'PRES_NOEU_IMAG',
-     & 'INTE_NOEU_ACTI',  'INTE_NOEU_REAC'/
+     & 'PRES', 'PRAC_ELNO','INTE_ELNO',
+     & 'PRAC_NOEU','INTE_NOEU'/
 C     ------------------------------------------------------------------
 C                      C H A M P _ T H E T A _ R U P T
 C     ------------------------------------------------------------------

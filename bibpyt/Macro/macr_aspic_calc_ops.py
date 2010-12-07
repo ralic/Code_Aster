@@ -1,4 +1,4 @@
-#@ MODIF macr_aspic_calc_ops Macro  DATE 14/09/2010   AUTEUR ABBAS M.ABBAS 
+#@ MODIF macr_aspic_calc_ops Macro  DATE 07/12/2010   AUTEUR GENIAUT S.GENIAUT 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -21,7 +21,7 @@
 
 def macr_aspic_calc_ops(self,TYPE_MAILLAGE,TUBULURE,MAILLAGE,MODELE,CHAM_MATER,CARA_ELEM,
                              FOND_FISS_1,FOND_FISS_2,RESU_THER,AFFE_MATERIAU,EQUILIBRE,
-                             PRES_REP,ECHANGE,TORS_CORP,TORS_TUBU,COMP_INCR,COMP_ELAS,
+                             PRES_REP,ECHANGE,TORS_CORP,TORS_TUBU,COMP_ELAS,
                              THETA_3D,OPTION,SOLVEUR,CONVERGENCE,NEWTON,RECH_LINEAIRE,
                              INCREMENT,PAS_AZIMUT,IMPRESSION,INFO,TITRE,BORNES ,**args):
   """
@@ -346,9 +346,7 @@ def macr_aspic_calc_ops(self,TYPE_MAILLAGE,TUBULURE,MAILLAGE,MODELE,CHAM_MATER,C
      
   motscles['EXCIT'] =mcfex
 #
-  mcfci=[]  # mot clé facteur COMP_INCR :obligatoire pour les noeuds discrets
-  if COMP_INCR!=None :
-    mcfci.append(_F(TOUT    ='OUI' ,RELATION=COMP_INCR['RELATION']))
+  mcfci=[]  # mot clé facteur COMP_INCR :obligatoire pour les noeuds discrets dans STAT_NON_LINE
   mcfci.append(  _F(GROUP_MA=NOMNOE,RELATION='ELAS'))
   motscles['COMP_INCR'] =mcfci
 #
@@ -754,7 +752,6 @@ def macr_aspic_calc_ops(self,TYPE_MAILLAGE,TUBULURE,MAILLAGE,MODELE,CHAM_MATER,C
           motscles={}
           if COMP_ELAS!=None:  motscles['COMP_ELAS']=  _F(TOUT     = 'OUI',
                                                           RELATION = COMP_ELAS['RELATION'],)
-          if COMP_INCR!=None:  motscles['COMP_INCR']=  _F(RELATION = COMP_INCR['RELATION'],)
           __gtheta = CALC_G ( THETA      = _F(THETA=__theta),
                               OPTION     = 'CALC_G_GLOB',
                               RESULTAT   = nomres,

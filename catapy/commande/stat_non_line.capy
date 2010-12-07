@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 09/11/2010   AUTEUR DELMAS J.DELMAS 
+#& MODIF COMMANDE  DATE 07/12/2010   AUTEUR GENIAUT S.GENIAUT 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -43,22 +43,7 @@ STAT_NON_LINE=OPER(nom="STAT_NON_LINE",op=70,sd_prod=evol_noli,
                 FONC_MULT   =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
               ),
          COMP_INCR       =C_COMP_INCR(),
-         COMP_ELAS       =FACT(statut='f',max='**',
-           RESI_INTE_RELA  =SIMP(statut='f',typ='R',defaut= 1.0E-6),
-           ITER_INTE_MAXI  =SIMP(statut='f',typ='I',defaut= 10 ),
-           ITER_INTE_PAS   =SIMP(statut='f',typ='I',defaut= 0 ),
-           RESO_INTE       =SIMP(statut='f',typ='TXM',defaut="IMPLICITE",
-                                 into=("IMPLICITE",)),
-           RELATION        =SIMP(statut='o',typ='TXM',defaut="ELAS",
-                                 into=("ELAS","ELAS_VMIS_LINE","ELAS_VMIS_TRAC","ELAS_VMIS_PUIS",
-                                      "ELAS_POUTRE_GR","CABLE","ELAS_HYPER")),
-          
-           DEFORMATION     =SIMP(statut='f',typ='TXM',defaut="PETIT" ,into=("PETIT","GROT_GDEP",) ),
-      regles=(PRESENT_ABSENT('TOUT','GROUP_MA','MAILLE'),),
-           TOUT            =SIMP(statut='f',typ='TXM',into=("OUI",) ),
-           GROUP_MA        =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
-           MAILLE          =SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**'),
-         ),
+         COMP_ELAS       =C_COMP_ELAS('STAT_NON_LINE'),
          b_reuse =BLOC(condition = "reuse",fr="en mode concept reentrant : ETAT_INIT obligatoire",
            ETAT_INIT       =FACT(statut='o',
              regles=(AU_MOINS_UN('EVOL_NOLI','DEPL','SIGM','VARI',),

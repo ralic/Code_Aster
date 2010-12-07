@@ -1,7 +1,7 @@
       SUBROUTINE OP0038()
       IMPLICIT NONE
 C ----------------------------------------------------------------------
-C MODIF CALCULEL  DATE 08/11/2010   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 07/12/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -138,9 +138,7 @@ C        -- OPTION POINTS DE GAUSS :
 C        ------------------------
 C        -- OPTIONS ACOUSTIQUES :
 C        ------------------------
-      ELSE IF (OPTION.EQ.'PRES_ELNO_DBEL' .OR.
-     &         OPTION.EQ.'PRES_ELNO_REEL' .OR.
-     &         OPTION.EQ.'PRES_ELNO_IMAG') THEN
+      ELSE IF (OPTION.EQ.'PRAC_ELNO') THEN
 
         CALL CHPVER('F',PRESS,'NOEU','PRES_C',IERD)
         CALL MECOAC(OPTION,MODELE,LIGREL,MATE,PRESS,CHELEM)

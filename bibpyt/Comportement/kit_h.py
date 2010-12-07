@@ -1,4 +1,4 @@
-#@ MODIF kit_h Comportement  DATE 10/08/2010   AUTEUR MEUNIER S.MEUNIER 
+#@ MODIF kit_h Comportement  DATE 07/12/2010   AUTEUR GENIAUT S.GENIAUT 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -47,7 +47,7 @@ loi = LoiComportement(
    modelisation   = ('D_PLAN_HS','3D_HS'),
    deformation    = ('PETIT', 'PETIT_REAC', 'GROT_GDEP'),
    nom_varc       = None,
-   schema         = ('IMPLICITE'),
+   algo_inte         = ('SANS_OBJET'),
    type_matr_tang = None,
    proprietes     = None,
 )

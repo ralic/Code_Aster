@@ -1,0 +1,268 @@
+# MODIF  DATE 07/12/2010   AUTEUR GENIAUT S.GENIAUT 
+# TITRE MODELISATION DE LA RUPTURE D'UN BARRAGE 2D A L'AIDE DES ELEMENT DE JOINT ET DE LA LOI JOINT_MECA_FROT
+# ssnp142c.para = tps_job 200 mem_job 64Mo ncpus 1 liste_test S
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+
+DEBUT(CODE=_F(NOM='SSNP142C',NIV_PUB_WEB='INTERNET',VISU_EFICAS='OUI'),PAR_LOT='OUI')
+# MIS EN EAU DU BARRAGE 2D, OU LE JOINT EST MODELISE PAR LA LOI DE FROTTEMENT
+######## PARAMETRES #############
+tfin=4
+
+# PARAMETRES MECANIQUES DU BARRAGE DE LA TERRE ET DE L'EAU (VALEURS TESTS)
+young=3.E12
+poiss=0.0
+rho_b=2400.
+rho_t=0.
+rho_e=1000.
+ap=9.81
+h=10.
+long=5.
+
+# NIVEAU D'EAU
+niv_am=DEFI_FONCTION(NOM_PARA='INST',NOM_RESU='NRT_AM',VALE=(0,0, 1,3, 2,6, 3,8, 4,9),);
+niv_av=DEFI_FONCTION(NOM_PARA='INST',NOM_RESU='NRT_AV',VALE=(0,0, 1,0, 2,0, 3,0, 4,0),);
+
+# PARAMETRES MECANIQUES DES JOINTS
+k_n=1E12
+k_t=2*k_n
+# JOINT FROTTEMENT
+mu=0.35
+adhe=1000.
+ecrouissage=k_t*0.1
+
+
+
+##################################
+
+MA=LIRE_MAILLAGE(FORMAT='MED');
+
+MA=DEFI_GROUP(reuse =MA,
+              MAILLAGE=MA,
+
+  CREA_GROUP_MA = (
+
+# SURFACES
+    _F(NOM = 'BARRAGE',    GROUP_MA = 'G_2D_27'),
+    _F(NOM = 'TERRE'  ,    GROUP_MA = 'G_2D_29'),
+    _F(NOM = 'JOINT'  ,    GROUP_MA = 'G_2D_28'),
+
+# LINES
+    _F(NOM = 'TERRE_BO', UNION = ('G_1D_33','G_1D_35','G_1D_36')),
+    _F(NOM = 'BAR_AMON', GROUP_MA = 'G_1D_38'),
+    _F(NOM = 'BAR_AVAL',  GROUP_MA = 'G_1D_40'),
+    _F(NOM = 'BAR_HAUT',  GROUP_MA = 'G_1D_41'),
+    _F(NOM = 'JOINT_H' ,  GROUP_MA = 'G_1D_42'),
+    _F(NOM = 'JOINT_B' ,  GROUP_MA = 'G_1D_43'),
+          ),
+
+   CREA_GROUP_NO = (
+# LINES
+    _F(NOM = 'JOINT_H'  ,  GROUP_MA = 'JOINT_H',OPTION='NOEUD_ORDO'),
+    _F(NOM = 'JOINT_B'  ,  GROUP_MA = 'JOINT_B',OPTION='NOEUD_ORDO'),
+
+                               ));
+
+
+MA=MODI_MAILLAGE(reuse =MA,
+                   MAILLAGE=MA,
+                   ORIE_PEAU_2D=_F(GROUP_MA=('BAR_AMON','BAR_AVAL')),
+                   INFO=1)
+
+MA=MODI_MAILLAGE(reuse =MA,
+                   MAILLAGE=MA,
+                   ORIE_FISSURE=_F(GROUP_MA='JOINT'),
+                   INFO=1)
+
+MO=AFFE_MODELE(MAILLAGE=MA,
+               VERIF='MAILLE',
+               AFFE=(_F(GROUP_MA=('BARRAGE','TERRE','BAR_AMON','BAR_AVAL'),
+                        PHENOMENE='MECANIQUE',
+                        MODELISATION='D_PLAN',),
+                     _F(GROUP_MA='JOINT',
+                        PHENOMENE='MECANIQUE',
+                        MODELISATION='PLAN_JOINT',),),);
+
+# MATERIAU BETON ET TERRE
+MAT_B=DEFI_MATERIAU(ELAS=_F(
+                              E   = young,
+                              NU  = poiss,
+                              RHO = rho_b),)
+
+MAT_T=DEFI_MATERIAU(ELAS=_F(
+                              E   = young,
+                              NU  = poiss,
+                              RHO = rho_t),)
+
+
+# MATERIAU JOINT MECANIQUE AVEC FROTTEMENT
+MAT_JF=DEFI_MATERIAU(
+                  JOINT_MECA_FROT=_F(K_N=k_n,
+                                     K_T=k_t,
+                                     PENA_TANG=ecrouissage,
+                                     MU=mu,
+                                     ADHESION=adhe,
+                                ),);
+
+
+
+CM_F=AFFE_MATERIAU(MAILLAGE=MA,
+                 AFFE=(
+                      _F(GROUP_MA='BARRAGE',MATER = MAT_B),
+                      _F(GROUP_MA='TERRE',  MATER = MAT_T),
+                      _F(GROUP_MA='JOINT',  MATER = MAT_JF))
+                 );
+
+# CONDITION AUX LIMITES SUR LA TERRE
+TERRE=AFFE_CHAR_MECA(MODELE=MO,FACE_IMPO=_F(GROUP_MA='TERRE_BO',DX=0.0,DY=0.0,),);
+
+# POIDS
+PESBAR = AFFE_CHAR_MECA(
+  MODELE = MO,
+  FORCE_INTERNE = (_F(GROUP_MA='BARRAGE',FX=0, FY=-rho_b*ap))
+  );
+PESTER = AFFE_CHAR_MECA(
+  MODELE = MO,
+  FORCE_INTERNE = (_F(GROUP_MA='TERRE',  FX=0, FY=-rho_t*ap))
+  );
+
+# PRESSION D'EAU SUR LE BARRAGE
+p_am = FORMULE(VALE='max(rho_e*ap*(niv_am(INST)-Y),0)',NOM_PARA=('Y','INST',),);
+p_av = FORMULE(VALE='max(rho_e*ap*(niv_av(INST)-Y),0)',NOM_PARA=('Y','INST',),);
+
+PAMONT=AFFE_CHAR_MECA_F(MODELE=MO,PRES_REP=_F(GROUP_MA=('BAR_AMON',),PRES=p_am,),);
+PAVAL =AFFE_CHAR_MECA_F(MODELE=MO,PRES_REP=_F(GROUP_MA=('BAR_AVAL', ),PRES=p_av,),);
+
+# LISTE D'INSTANTS
+LR=DEFI_LIST_REEL(DEBUT=0.0,INTERVALLE=(_F(JUSQU_A=3, NOMBRE=3,),_F(JUSQU_A=tfin, NOMBRE=2,)));
+L_INST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = LR ),
+                        ECHEC=_F(
+                                 SUBD_NIVEAU=6,
+                                 SUBD_PAS  = 10,
+                                 SUBD_PAS_MINI = 1.E-10,
+                                 ),)
+
+
+# CALCUL MECANIQUE AVEC FROTTEMENT
+U_F=STAT_NON_LINE(MODELE=MO,
+                  CHAM_MATER=CM_F,
+                  EXCIT=(
+                         _F(CHARGE=TERRE),
+                         _F(CHARGE=PESBAR),
+                         _F(CHARGE=PESTER),
+                         _F(CHARGE=PAMONT),
+                         _F(CHARGE=PAVAL),),
+                  COMP_INCR=(_F(RELATION='JOINT_MECA_FROT',
+                                GROUP_MA='JOINT',),
+                             _F(RELATION='ELAS',
+                                GROUP_MA=('TERRE','BARRAGE')),),
+                  INCREMENT=_F(LIST_INST=L_INST,INST_FIN=tfin),
+                  NEWTON=_F(MATRICE='TANGENTE',REAC_ITER=1,),
+                  RECH_LINEAIRE=_F(ITER_LINE_MAXI=5,),
+                  CONVERGENCE=_F(ITER_GLOB_MAXI=12,
+                                 RESI_GLOB_RELA=1E-5),
+                  SOLVEUR=_F(METHODE='MUMPS',),
+                  ARCHIVAGE = _F(ARCH_ETAT_INIT = 'OUI',
+                                 LIST_INST = LR)
+                  );
+
+
+################### POST TRAITEMENT U_F  #######################
+
+U_F=CALC_ELEM(reuse =U_F,
+
+              RESULTAT=U_F,
+              OPTION='VARI_ELNO_ELGA',
+              NOM_CHAM='VARI_ELGA',GROUP_MA='JOINT');
+
+U_F=CALC_ELEM(reuse =U_F,
+
+              RESULTAT=U_F,
+              OPTION='SIEF_ELNO_ELGA',
+              NOM_CHAM='SIEF_ELGA',GROUP_MA='JOINT');
+
+U_F=CALC_NO(reuse =U_F,
+            RESULTAT=U_F,
+            OPTION=('VARI_NOEU_ELGA','SIEF_NOEU_ELGA'),
+            GROUP_MA='JOINT');
+
+# SAUT NORMALE DANS LE JOINT
+SAUT_F=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
+                               INTITULE='SAUT_N',
+                               RESULTAT=U_F,
+                               NOM_CHAM='VARI_NOEU_ELGA',
+                               INST=tfin,
+                               GROUP_NO=('JOINT_H',),
+                               NOM_CMP='V7',),);
+
+# CONTRAINTE NORMALE DANS LE JOINT
+SIGN_F=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
+                               INTITULE='SIG_N',
+                               RESULTAT=U_F,
+                               NOM_CHAM='SIEF_NOEU_ELGA',
+                               INST=tfin,
+                               GROUP_NO = ('JOINT_H',),
+                               NOM_CMP='SIGN'),);
+
+
+
+
+################### TESTS U_F  NON REGRESSION #######################
+
+
+TEST_TABLE(TABLE=SAUT_F,
+           FILTRE=(_F(NOM_PARA='COOR_X',VALE=1.3)),
+           NOM_PARA='V7',
+           VALE=-8.71750E-08,
+           REFERENCE='NON_REGRESSION')
+TEST_TABLE(TABLE=SIGN_F,
+           FILTRE=(_F(NOM_PARA='COOR_X',VALE=1.3)),
+           NOM_PARA='SIGN',
+           VALE=-8.71750E+04,
+           REFERENCE='NON_REGRESSION')
+
+TEST_TABLE(TABLE=SAUT_F,
+           FILTRE=(_F(NOM_PARA='COOR_X',VALE=3.2)),
+           NOM_PARA='V7',
+           VALE=-1.84071E-07,
+           REFERENCE='NON_REGRESSION')
+TEST_TABLE(TABLE=SIGN_F,
+           FILTRE=(_F(NOM_PARA='COOR_X',VALE=3.2)),
+           NOM_PARA='SIGN',
+           VALE=-1.84071E+05,
+           REFERENCE='NON_REGRESSION')
+
+TEST_TABLE(TABLE=SAUT_F,
+           FILTRE=(_F(NOM_PARA='COOR_X',VALE=4.6)),
+           NOM_PARA='V7',
+           VALE=-2.89656E-07,
+           REFERENCE='NON_REGRESSION')
+TEST_TABLE(TABLE=SIGN_F,
+           FILTRE=(_F(NOM_PARA='COOR_X',VALE=4.6)),
+           NOM_PARA='SIGN',
+           VALE=-2.89656E+05,
+           REFERENCE='NON_REGRESSION')
+
+
+IMPR_TABLE(TABLE=SAUT_F,FORMAT='TABLEAU',NOM_PARA=('COOR_X','V7'),);
+IMPR_TABLE(TABLE=SIGN_F,FORMAT='TABLEAU',NOM_PARA=('COOR_X','SIGN'),);
+
+#IMPR_RESU(FORMAT='GMSH',RESU=(_F(RESULTAT=U_F,NOM_CHAM='DEPL',TYPE_CHAM='VECT_2D',NOM_CMP=('DX','DY'))))
+#IMPR_RESU(FORMAT='GMSH',RESU=(_F(RESULTAT=U_F,NOM_CHAM='VARI_ELGA',NOM_CMP=('V1','V2',),GROUP_MA=('JOINT'))))
+
+FIN()

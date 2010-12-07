@@ -1,4 +1,4 @@
-#@ MODIF lemaitre Comportement  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
+#@ MODIF lemaitre Comportement  DATE 07/12/2010   AUTEUR GENIAUT S.GENIAUT 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -27,7 +27,7 @@ loi = LoiComportement(
    Un cas particulier de cette relation (en annulant le paramètre UN_SUR_M) donne une relation de NORTON. 
    La correspondance des variables internes permet le chaînage avec un calcul utilisant un comportement 
    élasto-plastique avec écrouissage isotrope (VMIS_ISOT_LINE, VMIS_ISOT_TRAC, VMIS_ISOT_PUIS). 
-   L'ntégration de ce modèle est réalisée par une méthode semi-implicite (PARM_THETA=0.5) ou implicite (PARM_THETA=1)""",
+   L'ntégration de ce modèle est réalisée par une méthode semi-DEKKER (PARM_THETA=0.5) ou DEKKER (PARM_THETA=1)""",
    num_lc         = 29,
    nb_vari        = 2,
    nom_vari       = ('EPSPEQ','VIDE'),
@@ -35,7 +35,7 @@ loi = LoiComportement(
    modelisation   = ('3D', 'AXIS', 'D_PLAN'),
    deformation    = ('PETIT', 'PETIT_REAC', 'GROT_GDEP','GDEF_HYPO_ELAS'),
    nom_varc       = ('TEMP'),
-   schema         = ('IMPLICITE',),
+   algo_inte         = ('DEKKER',),
    type_matr_tang = ('PERTURBATION', 'VERIFICATION'),
    proprietes     = None,
 )

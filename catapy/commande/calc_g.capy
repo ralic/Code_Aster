@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 09/11/2010   AUTEUR DELMAS J.DELMAS 
+#& MODIF COMMANDE  DATE 07/12/2010   AUTEUR GENIAUT S.GENIAUT 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -92,19 +92,11 @@ CALC_G=OPER(nom="CALC_G",op=100,sd_prod=table_sdaster,
          ),
          SYME_CHAR       =SIMP(statut='f',typ='TXM',defaut="SANS",into=("SYME","ANTI","SANS") ),
 
-         COMP_ELAS       =FACT(statut='f',
-               RELATION        =SIMP(statut='f',typ='TXM',defaut="ELAS",
-                                     into=("ELAS","ELAS_VMIS_LINE","ELAS_VMIS_TRAC","ELAS_VMIS_PUIS") ),
-               CALCUL_CONTRAINTE =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON") ),
-               DEFORMATION     =SIMP(statut='f',typ='TXM',defaut="PETIT" ,into=("PETIT","GROT_GDEP",) ),
-      regles=(PRESENT_ABSENT('TOUT','GROUP_MA','MAILLE'),),
-               TOUT            =SIMP(statut='f',typ='TXM',into=("OUI",) ),
-               GROUP_MA        =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
-               MAILLE          =SIMP(statut='f',typ=ma,validators=NoRepeat(),max='**'),
-         ),
+         COMP_ELAS       =C_COMP_ELAS('CALC_G'),
+
          COMP_INCR       =FACT(statut='f',
                RELATION        =SIMP(statut='f',typ='TXM',defaut="ELAS",
-                                     into=("ELAS","VMIS_ISOT_TRAC","VMIS_ISOT_LINE","VMIS_CINE_LINE","ELAS_VMIS_PUIS") ),
+                                     into=("ELAS","VMIS_ISOT_TRAC","VMIS_ISOT_LINE","VMIS_CINE_LINE","VMIS_ISOT_PUIS") ),
                DEFORMATION     =SIMP(statut='f',typ='TXM',defaut="PETIT",into=("PETIT","PETIT_REAC") ),
       regles=(PRESENT_ABSENT('TOUT','GROUP_MA','MAILLE'),),
                TOUT            =SIMP(statut='f',typ='TXM',into=("OUI",) ),

@@ -1,4 +1,4 @@
-#@ MODIF czm_tac_mix Comportement  DATE 06/04/2009   AUTEUR DURAND C.DURAND 
+#@ MODIF czm_tac_mix Comportement  DATE 07/12/2010   AUTEUR GENIAUT S.GENIAUT 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -37,7 +37,7 @@ loi = LoiComportement(
    modelisation   = ('3D','PLAN','AXIS','INTERFAC'),
    deformation    = ('PETIT'),
    nom_varc       = None,
-   schema         = ('IMPLICITE'),
+   algo_inte         = ('ANALYTIQUE'),
    type_matr_tang = ('PERTURBATION', 'VERIFICATION'),
    proprietes     = ('PRED_ELAS'),
 )

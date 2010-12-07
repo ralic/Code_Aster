@@ -1,5 +1,5 @@
 
-# MODIF  DATE 02/02/2010   AUTEUR IDOUX L.IDOUX 
+# MODIF  DATE 07/12/2010   AUTEUR PELLET J.PELLET 
 # TITRE HYDRO-MECANIQUE PERMANENT ET INDICATEUR D'ERREUR
 # wtnp116b.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -224,14 +224,14 @@ RESU_00=CALC_ELEM(reuse =RESU_00,
 RESU_00=CALC_ELEM(reuse =RESU_00,
                   RESULTAT=RESU_00,
                   INST=400000.0,
-                  OPTION=('ERRE_ELEM_SIGM','ERRE_ELNO_ELEM',),);
+                  OPTION=('ERME_ELEM','ERME_ELNO',),);
 #
 # 3.5.3. Transfert sur les noeuds
 
 RESU_00=CALC_NO(reuse =RESU_00,
                 RESULTAT=RESU_00,
                 INST=400000.0,
-                OPTION='ERRE_NOEU_ELEM',);
+                OPTION='ERME_NOEU',);
 
 #
 # 4. Tests par rapport aux valeurs de reference
@@ -265,7 +265,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU_00,
                    REFERENCE='ANALYTIQUE',),
                 _F(RESULTAT=RESU_00,
                    NUME_ORDRE=2,
-                   NOM_CHAM='ERRE_NOEU_ELEM',
+                   NOM_CHAM='ERME_NOEU',
                    NOM_CMP='ESTERG1',
                    GROUP_NO='POURTEST',
                    VALE=6.6559498309649E-07,
@@ -275,7 +275,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU_00,
                    VERSION='9.02.27',),
                 _F(RESULTAT=RESU_00,
                    NUME_ORDRE=2,
-                   NOM_CHAM='ERRE_NOEU_ELEM',
+                   NOM_CHAM='ERME_NOEU',
                    NOM_CMP='ESTERG2',
                    GROUP_NO='POURTEST',
                    VALE=7.2760871822674E-08,
@@ -426,14 +426,14 @@ RESU_01=CALC_ELEM(reuse =RESU_01,
 RESU_01=CALC_ELEM(reuse =RESU_01,
                   RESULTAT=RESU_01,
                   INST=400000.0,
-                  OPTION=('ERRE_ELEM_SIGM','ERRE_ELNO_ELEM',),);
+                  OPTION=('ERME_ELEM','ERME_ELNO',),);
 #
 # 7.5.3. Transfert sur les noeuds
 
 RESU_01=CALC_NO(reuse =RESU_01,
                 RESULTAT=RESU_01,
                 INST=400000.0,
-                OPTION='ERRE_NOEU_ELEM',);
+                OPTION='ERME_NOEU',);
 #
 # 8. Tests par rapport aux valeurs de reference
 
@@ -466,7 +466,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU_01,
                    REFERENCE='ANALYTIQUE',),
                 _F(RESULTAT=RESU_01,
                    NUME_ORDRE=2,
-                   NOM_CHAM='ERRE_NOEU_ELEM',
+                   NOM_CHAM='ERME_NOEU',
                    NOM_CMP='ESTERG1',
                    GROUP_NO='POURTEST',
                    VALE=1.6519790002101E-07,
@@ -476,7 +476,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU_01,
                    VERSION='9.02.27',),
                 _F(RESULTAT=RESU_01,
                    NUME_ORDRE=2,
-                   NOM_CHAM='ERRE_NOEU_ELEM',
+                   NOM_CHAM='ERME_NOEU',
                    NOM_CMP='ESTERG2',
                    GROUP_NO='POURTEST',
                    VALE=9.0867580555583E-09,

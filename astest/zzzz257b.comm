@@ -1,4 +1,4 @@
-# MODIF  DATE 13/10/2009   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 07/12/2010   AUTEUR PELLET J.PELLET 
 # TITRE ESTIMATEURS D'ERREUR EN QUANTITES D'INTERET POUR LE CALCUL DES FIC
 # zzzz257b.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -170,7 +170,7 @@ IMPR_TABLE(TABLE=POST_K,
 RESU=CALC_ELEM(reuse =RESU,
                RESULTAT=RESU,
                OPTION=('SIEF_ELNO_ELGA',
-                       'ERRE_ELEM_SIGM',
+                       'ERME_ELEM',
                        'ERZ1_ELEM_SIGM',
                        'ERZ2_ELEM_SIGM',),);
 
@@ -196,7 +196,7 @@ RESUDUAL=MECA_STATIQUE(MODELE=MODL,
 RESUDUAL=CALC_ELEM(reuse =RESUDUAL,
                    RESULTAT=RESUDUAL,
                    OPTION=('SIEF_ELNO_ELGA',
-                           'ERRE_ELEM_SIGM',
+                           'ERME_ELEM',
                            'ERZ1_ELEM_SIGM',
                            'ERZ2_ELEM_SIGM',),);
 

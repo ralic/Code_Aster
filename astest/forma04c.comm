@@ -1,4 +1,4 @@
-# MODIF  DATE 04/10/2010   AUTEUR GNICOLAS G.NICOLAS 
+# MODIF  DATE 07/12/2010   AUTEUR PELLET J.PELLET 
 # RESPONSABLE GNICOLAS G.NICOLAS
 # TITRE Maillage adaptatif mecanique sur une poutre en flexion
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -156,8 +156,8 @@ for num_calc in range(0,nb_calc1) :
 # CALCUL DE L'INDICATEUR ZZ1 PAR ELEM
                        'ERZ1_ELEM_SIGM',
 # CALCUL DE L'INDICATEUR EN RESIDU PAR ELEM ET AUX NOEUDS PAR ELEM
-                       'ERRE_ELEM_SIGM',
-                       'ERRE_ELNO_ELEM',),);
+                       'ERME_ELEM',
+                       'ERME_ELNO',),);
 
 # IMPRESSION FORMAT CASTEM I
    DEFI_FICHIER(FICHIER='IMPR',UNITE=55)
@@ -165,7 +165,7 @@ for num_calc in range(0,nb_calc1) :
             RESU=_F(MAILLAGE=MA[num_calc],
                     RESULTAT=DEPLA[num_calc],
                     NOM_CHAM=('DEPL','SIEF_ELNO_ELGA',
-                              'ERRE_ELNO_ELEM')
+                              'ERME_ELNO')
                      ),);
    DEFI_FICHIER(ACTION='LIBERER',UNITE=55)
 
@@ -258,7 +258,7 @@ for num_calc in range(0,nb_calc1) :
               MAILLAGE_N = MA[num_calc],
               MAILLAGE_NP1 = MA[num_calc1],
               RESULTAT_N=DEPLA[num_calc],
-              NOM_CHAM='ERRE_ELEM_SIGM',
+              NOM_CHAM='ERME_ELEM',
               NOM_CMP='NUEST',
               CRIT_RAFF_PE=0.2,
               CRIT_DERA_PE=0.2,

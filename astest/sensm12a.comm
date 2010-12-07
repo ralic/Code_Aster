@@ -1,4 +1,4 @@
-# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 07/12/2010   AUTEUR PELLET J.PELLET 
 # RESPONSABLE F6BHHBO P.DEBONNIERES
 # TITRE PLAQUE SOUS PRESSION EN DP (PLASTICITE DRUCKER-PRAGER)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -109,17 +109,10 @@ RESUS=STAT_NON_LINE(MODELE=MO,
                    SENSIBILITE=FORCES,
                    INFO=1);
 
-RESUS=CALC_ELEM( reuse=RESUS,
-                            OPTION=(
-                  'SIEF_ELNO_ELGA',  'VARI_ELNO_ELGA',),
-                          RESULTAT=RESUS,
-              )
+RESUS=CALC_ELEM( reuse=RESUS, OPTION=( 'SIEF_ELNO_ELGA',  'VARI_ELNO_ELGA',), RESULTAT=RESUS,)
 
-RESUS=CALC_ELEM( reuse=RESUS,
-                            OPTION=(
-                  'SIEF_ELNO_ELGA',  'VARI_ELNO_ELGA',),
-                   SENSIBILITE=FORCES,
-                          RESULTAT=RESUS,
+CALC_SENSI( reuse=RESUS, RESULTAT=RESUS, SENSIBILITE=FORCES,
+                            OPTION=( 'SIEF_ELNO_ELGA',  'VARI_ELNO_ELGA',),
               )
 
 # Extraction de contrainte YY et de sa derivee

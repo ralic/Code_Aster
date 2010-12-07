@@ -1,4 +1,4 @@
-# MODIF  DATE 21/11/2006   AUTEUR SALMONA L.SALMONA 
+# MODIF  DATE 07/12/2010   AUTEUR PELLET J.PELLET 
 # RESPONSABLE PABHHHH N. TARDIEU
 # TITRE SENSIBILITE AUX DONNEES MATERIAUX EN MECA_STATIQUE ORTHOTROPE 3D
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -6,17 +6,17 @@
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-# (AT YOUR OPTION) ANY LATER VERSION.                                 
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
 #
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 #
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 #=======================================================================
 DEBUT( CODE=_F(  NOM = 'SENSM05A',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),)
@@ -29,7 +29,7 @@ DEBUT( CODE=_F(  NOM = 'SENSM05A',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),)
 #           !               !               !     !
 #           !               * CENTRE        !     !
 #           !               !               !     *
-#           !               !               !   /  
+#           !               !               !   /
 #           !               !               ! /
 #           *-------------------------------*
 #       ORIGINE                              I
@@ -39,7 +39,7 @@ DEBUT( CODE=_F(  NOM = 'SENSM05A',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),)
 #              0.  < Z < 1.
 #
 # Chargement par une force nodale au noeud OPPOSE
-# La solution de reference de sensibilite parvient 
+# La solution de reference de sensibilite parvient
 # d'un calcul par differences finies.
 #
 #
@@ -112,28 +112,11 @@ RES=MECA_STATIQUE(MODELE=MODEMECA,
                    SENSIBILITE=tuple(PS),
                   );
 
-RES = CALC_ELEM(
-                 reuse = RES,
-                 RESULTAT = RES,
-                 OPTION = 'EPSI_ELNO_DEPL'
-                 );
-RES = CALC_ELEM(
-                 reuse = RES,
-                 RESULTAT = RES,
-                 OPTION = 'EPSI_ELNO_DEPL',
-                 SENSIBILITE=tuple(PS)
-                 );
+RES = CALC_ELEM( reuse = RES, RESULTAT = RES, OPTION = ('EPSI_ELNO_DEPL','SIGM_ELNO_DEPL') );
 
-RES = CALC_ELEM(
-                 reuse = RES,
-                 RESULTAT = RES,
-                 OPTION = 'SIGM_ELNO_DEPL'
-                 );
-RES = CALC_ELEM(
-                 reuse = RES,
-                 RESULTAT = RES,
-                 OPTION = 'SIGM_ELNO_DEPL',
-                 SENSIBILITE=tuple(PS)
+
+CALC_SENSI( reuse = RES, RESULTAT = RES, SENSIBILITE=tuple(PS),
+                 OPTION =('EPSI_ELNO_DEPL', 'SIGM_ELNO_DEPL'),
                  );
 
 TAB_REF=POST_RELEVE_T(ACTION=_F(INTITULE='SENSIBILITE',

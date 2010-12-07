@@ -1,4 +1,4 @@
-#@ MODIF sech_bazant Comportement  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
+#@ MODIF sech_bazant Comportement  DATE 07/12/2010   AUTEUR GENIAUT S.GENIAUT 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -29,7 +29,7 @@ loi = LoiComportement(
    modelisation   = ('3D', 'AXIS', 'PLAN','3D_DIAG','PLAN_DIAG','AXIS_DIAG'),
    deformation    = ('PETIT', 'PETIT_REAC', 'GROT_GDEP'),
    nom_varc       = None,
-   schema         = ('IMPLICITE'),
+   algo_inte         = ('SANS_OBJET'),
    type_matr_tang = None,
    proprietes     = None,
 )

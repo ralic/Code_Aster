@@ -1,4 +1,4 @@
-#@ MODIF endo_scalaire Comportement  DATE 12/04/2010   AUTEUR MICHEL S.MICHEL 
+#@ MODIF endo_scalaire Comportement  DATE 07/12/2010   AUTEUR GENIAUT S.GENIAUT 
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -31,7 +31,7 @@ loi = LoiComportement(
    modelisation   = ('3D', 'AXIS', 'D_PLAN', 'GRADVARI'),
    deformation    = ('PETIT',),
    nom_varc       = ('TEMP',),
-   schema         = ('IMPLICITE',),
+   algo_inte         = ('ANALYTIQUE',),
    type_matr_tang = ('PERTURBATION', 'VERIFICATION'),
    proprietes     = None,
 )

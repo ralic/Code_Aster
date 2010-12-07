@@ -1,4 +1,4 @@
-# MODIF  DATE 30/08/2010   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 07/12/2010   AUTEUR PELLET J.PELLET 
 # RESPONSABLE F6BHHBO P.DEBONNIERES
 # TITRE COUDE SOUS PRESSION EN 3D (PLASTICITE VON-MISES ISOT LINEAIRE)
 # sensm10a.para = tps_job 400 mem_job 512Mo liste_test S
@@ -162,19 +162,12 @@ EVOL=STAT_NON_LINE(MODELE=MODMECA,
                                   ITER_GLOB_MAXI=20,),
             SENSIBILITE=(PSP,PS_E1,PS_E2,PS_SIGY,PS_DSDE,PS_DY,DY_FOND),);
 
-EVOL = CALC_NO( reuse      =  EVOL         ,
-              RESULTAT   =  EVOL         ,
+
+EVOL = CALC_NO( reuse      =  EVOL , RESULTAT   =  EVOL, OPTION     = ('REAC_NODA',),)
 
 
-              OPTION     = ('REAC_NODA',),);
+CALC_SENSI( reuse = EVOL,RESULTAT = EVOL, SENSIBILITE = (PSP,PS_SIGY,PS_DSDE),  OPTION  = ('REAC_NODA',),)
 
-EVOL = CALC_NO( reuse      =  EVOL         ,
-              RESULTAT   =  EVOL         ,
-
-
-              OPTION     = ('REAC_NODA',),
-              SENSIBILITE = (PSP,PS_SIGY,PS_DSDE)
-              );
 
 
 

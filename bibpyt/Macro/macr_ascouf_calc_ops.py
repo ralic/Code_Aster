@@ -1,4 +1,4 @@
-#@ MODIF macr_ascouf_calc_ops Macro  DATE 14/09/2010   AUTEUR ABBAS M.ABBAS 
+#@ MODIF macr_ascouf_calc_ops Macro  DATE 07/12/2010   AUTEUR GENIAUT S.GENIAUT 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -21,7 +21,7 @@
 
 def macr_ascouf_calc_ops(self,TYPE_MAILLAGE,CL_BOL_P2_GV,MAILLAGE,MODELE,CHAM_MATER,CARA_ELEM,
                               FOND_FISS,RESU_THER,AFFE_MATERIAU,
-                              PRES_REP,ECHANGE,TORS_P1,COMP_INCR,COMP_ELAS,
+                              PRES_REP,ECHANGE,TORS_P1,COMP_ELAS,
                               SOLVEUR,CONVERGENCE,NEWTON,RECH_LINEAIRE,
                               INCREMENT,THETA_3D,IMPR_TABLE,IMPRESSION,INFO,TITRE ,**args):
   """
@@ -347,10 +347,8 @@ def macr_ascouf_calc_ops(self,TYPE_MAILLAGE,CL_BOL_P2_GV,MAILLAGE,MODELE,CHAM_MA
     contact = _chcont  
   motscles['EXCIT'] =mcfex
 #
-  mcfci=[]  # mot clé facteur COMP_INCR :obligatoire pour les noeuds discrets
-  if COMP_INCR!=None :
-    mcfci.append(_F(TOUT='OUI' ,RELATION=COMP_INCR['RELATION']))
-  elif COMP_ELAS!=None :
+  mcfci=[]  # mot clé facteur COMP_INCR :obligatoire pour les noeuds discrets dans STAT_NON_LINE
+  if COMP_ELAS!=None :
     motscles['COMP_ELAS'] =_F(GROUP_MA='COUDE',RELATION=COMP_ELAS['RELATION'])
     if TORS_P1!=None     : mcfci.append(  _F(GROUP_MA='P1',RELATION='ELAS'))
     if CL_BOL_P2_GV==None: mcfci.append(  _F(GROUP_MA='P2',RELATION='ELAS'))
@@ -721,7 +719,6 @@ def macr_ascouf_calc_ops(self,TYPE_MAILLAGE,CL_BOL_P2_GV,MAILLAGE,MODELE,CHAM_MA
                                        R_SUP  = thet['R_SUP'],),
                            );
         motscles = {}
-        if COMP_INCR!=None : motscles['COMP_INCR']=_F(RELATION=COMP_INCR['RELATION'])
         if COMP_ELAS!=None : motscles['COMP_ELAS']=_F(RELATION=COMP_ELAS['RELATION'])
         _nogthe=CALC_G( RESULTAT   =nomres,
                         OPTION='CALC_G_GLOB',
@@ -732,7 +729,6 @@ def macr_ascouf_calc_ops(self,TYPE_MAILLAGE,CL_BOL_P2_GV,MAILLAGE,MODELE,CHAM_MA
 #
       for thet in THETA_3D:
         motscles = {}
-        if COMP_INCR!=None : motscles['COMP_INCR']=_F(RELATION=COMP_INCR['RELATION'])
         if COMP_ELAS!=None : motscles['COMP_ELAS']=_F(RELATION=COMP_ELAS['RELATION'])
         if   TYPE_MAILLAGE =='FISS_COUDE' :
                              motscles['LISSAGE']=_F(LISSAGE_THETA='LEGENDRE',

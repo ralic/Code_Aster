@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2010   AUTEUR IDOUX L.IDOUX 
+# MODIF  DATE 07/12/2010   AUTEUR GENIAUT S.GENIAUT 
 # TITRE ETIREMENT D'UN PARALLELEPIPEDE ORTHOTROPE SOUS SON PROPRE POIDS
 # sslv120a.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -581,8 +581,8 @@ RESUMI1=STAT_NON_LINE(MODELE=MO,
                                    RESI_INTE_RELA=1e-06,
                                    ITER_INTE_MAXI=10,
                                    ITER_INTE_PAS=-10,
-                                   RESO_INTE='IMPLICITE',
-                                  # RESO_INTE='RUNGE_KUTTA_2',
+                                   ALGO_INTE='NEWTON',
+                                  # ALGO_INTE='RUNGE_KUTTA',
                                    TOUT='OUI',),),
                      INCREMENT=(_F(LIST_INST=LINST,),),
                      NEWTON=_F(
@@ -678,7 +678,7 @@ RESUMM1=STAT_NON_LINE(MODELE=MO,
                      ),
                      COMP_INCR=(_F(RELATION='MONOCRISTAL',
                                    COMPOR=COMPOR2,
-                                   RESO_INTE='RUNGE_KUTTA_2',
+                                   ALGO_INTE='RUNGE_KUTTA',
                                    TOUT='OUI',),),
                      INCREMENT=(_F(LIST_INST=LINST,),),
                      NEWTON=_F(
@@ -769,7 +769,7 @@ RESUMP1=STAT_NON_LINE(MODELE=MO,
                      ),
                      COMP_INCR=(_F(RELATION='POLYCRISTAL',
                                    COMPOR=COMPORP,
-                                   RESO_INTE='RUNGE_KUTTA_2',
+                                   ALGO_INTE='RUNGE_KUTTA',
                                    TOUT='OUI',),),
                      INCREMENT=(_F(LIST_INST=LINST,),),
                      NEWTON=_F(

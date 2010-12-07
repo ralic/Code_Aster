@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 04/10/2010   AUTEUR MEUNIER S.MEUNIER 
+%& MODIF TYPELEM  DATE 07/12/2010   AUTEUR PELLET J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -239,9 +239,9 @@ OPTION__
                               OUT__  EDFEQNO  PDEFOEQ
     EQUI_ELNO_SIGM      330   IN__   ECONTPG  PCONTRR
                               OUT__  ECOEQNO  PCONTEQ
-    ERRE_ELEM_SIGM      -1    IN__   XXXXXX   XXXXXX
+    ERME_ELEM           -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
-    ERRE_ELNO_ELEM      -1    IN__   XXXXXX   XXXXXX
+    ERME_ELNO           -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
     FORC_NODA           7     IN__   CCOMPOR  PCOMPOR  ECONTPG  PCONTMR  DDL_MECA PDEPLMR  NGEOMER  PGEOMER
                               OUT__  MVECTUR  PVECTUR

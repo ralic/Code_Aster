@@ -6,7 +6,7 @@
       IMPLICIT NONE
 C     ==================================================================
 C          CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/09/2010   AUTEUR FLEJOU J-L.FLEJOU 
+C MODIF ALGORITH  DATE 07/12/2010   AUTEUR GENIAUT S.GENIAUT 
 C RESPONSABLE GENIAUT
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -104,11 +104,12 @@ C
       REAL*8          PGL(3,3)
       REAL*8          TOUTMS(5,24,6),HSR(5,24,24)
       CHARACTER*4     CARGAU
-      CHARACTER*16    CPMONO(5*NMAT+1),COMP(*)
+      CHARACTER*16    CPMONO(5*NMAT+1),COMP(*),ALGO
 C
 C     ACTIVATION OU PAS DE LA RECHERCHE LINEAIRE
       LRELI = .FALSE.
-      IF (NINT(CRIT(6)).EQ.3) LRELI = .TRUE.
+      CALL UTLCAL('VALE_NOM',ALGO,CRIT(6))
+      IF (ALGO.EQ.'NEWTON_RELI') LRELI = .TRUE.
 C
 C     INITIALISATION YD = ( SIGD , VIND , (EPSD(3)) )
 C

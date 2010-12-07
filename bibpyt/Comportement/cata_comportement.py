@@ -1,4 +1,4 @@
-#@ MODIF cata_comportement Comportement  DATE 06/04/2009   AUTEUR DURAND C.DURAND 
+#@ MODIF cata_comportement Comportement  DATE 07/12/2010   AUTEUR GENIAUT S.GENIAUT 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -28,7 +28,7 @@ import os
    Contenu du module :
 
    - CataLoiComportement : le catalogue
-      Méthodes : add, get, create, get_info, get_vari, query
+      Méthodes : add, get, create, get_info, get_vari, query, get_algo
    
    - LoiComportement : l'objet loi de comportement
       Définition, stockage et récupération des valeurs
@@ -54,13 +54,17 @@ Interfaces Fortran/Python :
       4. est-ce que VALEUR est un valeur autorisée de PROPRIETE ?
          CALL LCTEST(COMPOR, PROPRIETE, VALEUR, IRET)
          ==> iret = catalc.query(COMPOR, PROPRIETE, VALEUR)
+
+      5. récupère le nom du 1er algorithme d'integration
+         CALL LCALGO(COMPOR, ALGO)
+         ==> algo_inte = catalc.get_algo(COMPOR)
       
 ------------------------------------------------------------------------
 
 """
 
 __properties__ = ('deformation', 'mc_mater', 'modelisation', 'nb_vari',
-                  'nom_varc', 'nom_vari', 'proprietes', 'schema',
+                  'nom_varc', 'nom_vari', 'proprietes', 'algo_inte',
                   'type_matr_tang')
 
 # -----------------------------------------------------------------------------
@@ -183,7 +187,7 @@ class Base(object):
    types de déformations      : %(deformation)r
    mots-clés du matériau      : %(mc_mater)r
    variables de commandes     : %(nom_varc)r
-   schémas d'intégration      : %(schema)r
+   schémas d'intégration      : %(algo_inte)r
    type de matrice tangente   : %(type_matr_tang)r
    propriétés supplémentaires : %(proprietes)r
 """
@@ -200,7 +204,7 @@ class LoiComportement(Base):
    
    nom_vari, proprietes : definition, affectation de valeurs
    mc_mater : besoin de regles ENSEMBLE, AU_MOINS_UN, UN_PARMI
-   modelisation, deformation, nom_varc, schema, type_matr_tang : listes des valeurs acceptees
+   modelisation, deformation, nom_varc, algo_inte, type_matr_tang : listes des valeurs acceptees
    """
    def __init__(self, nom, num_lc, doc='', **kwargs):
       """Initialisations.
@@ -248,7 +252,7 @@ class LoiComportement(Base):
    modelisation   = Base.gen_property('modelisation',   (str, unicode), "Modélisations")
    deformation    = Base.gen_property('deformation',    (str, unicode), "Types de déformation")
    nom_varc       = Base.gen_property('nom_varc',       (str, unicode), "Noms des variables de commandes")
-   schema         = Base.gen_property('schema',         (str, unicode), "Schéma d'intégration")
+   algo_inte      = Base.gen_property('algo_inte',      (str, unicode), "Schéma d'intégration")
    type_matr_tang = Base.gen_property('type_matr_tang', (str, unicode), "Type de matrice tangente")
    proprietes     = Base.gen_property('proprietes',     (str, unicode), "Propriétés")
 
@@ -292,7 +296,7 @@ class KIT(Base):
    modelisation   = property(Base.gen_getfunc(intersection, 'modelisation'))
    deformation    = property(Base.gen_getfunc(intersection, 'deformation'))
    nom_varc       = property(Base.gen_getfunc(intersection, 'nom_varc'))
-   schema         = property(Base.gen_getfunc(intersection, 'schema'))
+   algo_inte      = property(Base.gen_getfunc(intersection, 'algo_inte'))
    type_matr_tang = property(Base.gen_getfunc(intersection, 'type_matr_tang'))
    proprietes     = property(Base.gen_getfunc(intersection, 'proprietes'))
 
@@ -453,6 +457,18 @@ class CataLoiComportement(object):
          raise CataComportementError, 'Propriete invalide : %s' % attr
       # retourner 1 si (valeur est dans comport.attr), 0 sinon.
       return int(valeur.strip() in getattr(comport, attr))
+
+# -----------------------------------------------------------------------------
+   def get_algo(self, loi):
+      """Retourne le 1er algorithme d'integration
+      
+      CALL LCALGO(COMPOR, ALGO)
+      ==> algo_inte = catalc.get_algo(COMPOR)
+      """
+      if self.debug:
+         print 'catalc.get_algo - args =', loi
+      comport = self.get(loi)
+      return comport.algo_inte
 
 # -----------------------------------------------------------------------------
    def __repr__(self):

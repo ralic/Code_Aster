@@ -6,7 +6,7 @@
         IMPLICIT REAL*8(A-H,O-Z)
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 02/02/2010   AUTEUR SELLENET N.SELLENET 
+C MODIF ALGORITH  DATE 07/12/2010   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -53,7 +53,7 @@ C     ----------------------------------------------------------------
       REAL*8 EVI(6),    ECROU,    DMG
       REAL*8 DEVI(6),DEVCUM,   DECROU,   DDMG
       REAL*8 ZE, TD, VALP(3)
-      REAL*8 S, ALPHA_D, BETA_D, N, MVP, KVP, RD, AD , KD
+      REAL*8 S, ALPHA_D, BETA_D, N, UNSMVP, KVP, RD, AD , KD
 C     ----------------------------------------------------------------
       PARAMETER(ZE=0.0D0)
       PARAMETER(TD=1.5D0)
@@ -66,12 +66,12 @@ C     ----------------------------------------------------------------
 C
 C --    COEFFICIENTS MATERIAU INELASTIQUES
 C
-      S    = COEFT(1)
-      ALPHA_D = COEFT(2)
-      BETA_D = COEFT(3)
-      N    = COEFT(4)
-      MVP    = (1.D0/COEFT(5))
-      KVP    = (1.D0/COEFT(6))
+      S    = COEFT(4)
+      ALPHA_D = COEFT(5)
+      BETA_D = COEFT(6)
+      N    = COEFT(1)
+      UNSMVP    = COEFT(2)
+      KVP    = (1.D0/COEFT(3))
       RD     = COEFT(7)
       AD     = COEFT(8)
 C     ----------------------------------------------------------------
@@ -171,7 +171,7 @@ C
 C
 C------ EQUATION DONNANT LA DERIVEE DE L ECROUISSAGE
 C
-        DECROU=CRITV/((1-DMG)*KVP*ECROU**(1/MVP))
+        DECROU=CRITV/((1-DMG)*KVP*ECROU**(UNSMVP))
         DECROU=MAX(0.D0,DECROU)
         DECROU=DECROU**N
 C

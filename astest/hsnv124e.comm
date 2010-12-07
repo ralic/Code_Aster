@@ -1,5 +1,5 @@
 
-# MODIF  DATE 04/02/2008   AUTEUR PROIX J-M.PROIX 
+# MODIF  DATE 07/12/2010   AUTEUR GENIAUT S.GENIAUT 
 # RESPONSABLE JMBHH01 J.M.PROIX
 # TITRE TEST PHI2AS NUMERO 1 MODELISATION BARRE ECROUISSAGE CINEMATIQUE LINEAIRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -178,7 +178,7 @@ U=STAT_NON_LINE(MODELE=MOMECA,
                                RESI_INTE_RELA=9.9999999999999995E-07,
                                ITER_INTE_MAXI=50,
                                ITER_INTE_PAS=0,
-                               RESO_INTE='IMPLICITE',),
+                               ),
                 INCREMENT=_F(LIST_INST=LINST,),
                 NEWTON=_F(REAC_INCR=1,
                        #   MATRICE='ELASTIQUE',
@@ -252,7 +252,7 @@ U2=STAT_NON_LINE(MODELE=MOMECA,
                                 RESI_INTE_RELA=9.9999999999999995E-07,
                                 ITER_INTE_MAXI=50,
                                 ITER_INTE_PAS=0,
-                                RESO_INTE='IMPLICITE',),
+                                ),
                  INCREMENT=_F(LIST_INST=LINST,),
                  NEWTON=_F(REAC_INCR=1,
                         #   MATRICE='TANGENTE',
@@ -341,7 +341,7 @@ U3=STAT_NON_LINE(MODELE=MOMECA,
                                 RESI_INTE_RELA=9.9999999999999995E-07,
                                 ITER_INTE_MAXI=50,
                                 ITER_INTE_PAS=0,
-                                RESO_INTE='IMPLICITE',
+                                
                                 ALGO_1D='DEBORST'),
                  INCREMENT=_F(LIST_INST=LINST,),
                      RECH_LINEAIRE=_F(ITER_LINE_MAXI = 8),

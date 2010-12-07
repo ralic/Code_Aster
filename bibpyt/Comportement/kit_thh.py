@@ -1,4 +1,4 @@
-#@ MODIF kit_thh Comportement  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
+#@ MODIF kit_thh Comportement  DATE 07/12/2010   AUTEUR GENIAUT S.GENIAUT 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -48,7 +48,7 @@ loi = LoiComportement(
    modelisation   = ('D_PLAN_THH','D_PLAN_THHD','D_PLAN_THHS','AXIS_THH','AXIS_THHD','AXIS_THHS','3D_THH','3D_THHD','3D_THHS','D_PLAN_THH2D','AXIS_THH2D','3D_THH2D','D_PLAN_THH2S','AXIS_THH2S','3D_THH2S'),
    deformation    = ('PETIT', 'PETIT_REAC', 'GROT_GDEP'),
    nom_varc       = None,
-   schema         = ('IMPLICITE'),
+   algo_inte         = ('SANS_OBJET'),
    type_matr_tang = None,
    proprietes     = None,
 )

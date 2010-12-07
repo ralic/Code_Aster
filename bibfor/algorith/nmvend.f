@@ -1,7 +1,7 @@
       SUBROUTINE NMVEND(FAMI,KPG,KSP,MATERD,MATERF,NMAT,DT1,EPSM,DEPS,
      &         SIGM,VIM,NDIM,CRIT,DAMMAX,ETATF,P,NP,BETA,NB,ITER,IER)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 08/11/2010   AUTEUR REZETTE C.REZETTE 
+C MODIF ALGORITH  DATE 07/12/2010   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,6 +18,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
+C TOLE CRP_4
 C TOLE CRP_7
 C TOLE CRP_21
 C-----------------------------------------------------------------------
@@ -29,6 +30,7 @@ C
       REAL*8        EPSM(6),DEPS(6),SIGM(6)
       CHARACTER*(*) FAMI
       CHARACTER*7   ETATF(3)
+      CHARACTER*16  METH
 C-----------------------------------------------------------------------
 C     INTEGRATION DE LA LOI DE COMPORTEMENT VISCO PLASTIQUE DE
 C     CHABOCHE AVEC ENDOMAGEMENT. INTEGRATION EULER IMPLICITE
@@ -59,10 +61,9 @@ C                1=NOOK
 C
 C INFO P(1)=RPOINT,  P(2)=DFOINT
 C-----------------------------------------------------------------------
-C TOLE CRP_4
       INTEGER     I,NDT,NDI,NITER,IRET,IRET1,IRET2,IRET3,IT2,ITER
       INTEGER*8   IR
-      REAL*8      DAMMAX, EPSI, R8PREM, PREC,PRECR,VAL0,DEVSE(6),SIGE(6)
+      REAL*8      DAMMAX, R8PREM, PREC,PRECR,VAL0,DEVSE(6),SIGE(6)
 C
       REAL*8  EPST(6),DEPSTH(6), EPSED(6),E,NU,ALPHAP,ALPHAM,DD,DR
       COMMON /TDIM/   NDT  , NDI
@@ -76,14 +77,15 @@ C
       REAL*8 DEVEP(6),VALX,DENO,VALP1,DFDS(6), D2FDS(6,6),TEST
 C
 C-----------------------------------------------------------------------
-C-- 1. INITIALISATIONS
-C   ===================
+C     1. INITIALISATIONS
+C     ===================
       NITER =  INT(CRIT(1))
       PREC =  CRIT(3)
       IER = 0
       DT=DT1
       IT2=0
       ITER=0
+
       RM=VIM(NB+2)
       DM=VIM(NB+3)
       E =MATERF(1,1)
@@ -95,34 +97,36 @@ C   ===================
       TROIKM = EM/(1.D0-2.D0*NUM)
       MUM=EM/2.D0/(1.D0+NUM)
 
-        IF (NDIM.EQ.2) THEN
-           SIGM(5)=0.D0
-           SIGM(6)=0.D0
-           DEPS(5)=0.D0
-           DEPS(6)=0.D0
-        ENDIF
+      IF (NDIM.EQ.2) THEN
+        SIGM(5)=0.D0
+        SIGM(6)=0.D0
+        DEPS(5)=0.D0
+        DEPS(6)=0.D0
+      ENDIF
+
       ALPHAP=MATERF(3,1)
       ALPHAM=MATERD(3,1)
-      SYVP = MATERF(1,2)
-      NVP  = MATERF(4,2)
-      KVP  = 1.D0/MATERF(6,2)   
-      RD   = MATERF(7,2)
-      AD   = MATERF(8,2)
+      NVP  = MATERF(1,2)
       UNSURN=1.D0/NVP
-      UNSURM=MATERF(5,2)
+      UNSURM=MATERF(2,2)
+      KVP  = 1.D0/MATERF(3,2)   
+      SYVP = MATERF(4,2)
+      RD   = MATERF(5,2)
+      AD   = MATERF(6,2)
 
       CALL LCDEVI(SIGM,DEVSM)
       CALL LCDEVI(DEPS,DEVEP)
-        IF (NDIM.EQ.2) THEN
-           DEVSM(5)=0.D0
-           DEVSM(6)=0.D0
-           DEVEP(5)=0.D0
-           DEVEP(6)=0.D0
-        ENDIF
+
+      IF (NDIM.EQ.2) THEN
+        DEVSM(5)=0.D0
+        DEVSM(6)=0.D0
+        DEVEP(5)=0.D0
+        DEVEP(6)=0.D0
+      ENDIF
 
       IF (DM.GE.1.D0) DM=DAMMAX
       DO 15 I = 1,6
-          EPSEF(I)=DEVSM(I)/(1.D0-DM)/2.D0/MUM+DEVEP(I)
+        EPSEF(I)=DEVSM(I)/(1.D0-DM)/2.D0/MUM+DEVEP(I)
  15   CONTINUE
       CALL LCPRSV(2.D0*MU,EPSEF,DEVSE)
 
@@ -132,8 +136,7 @@ C -- TEMPERATURE
       CALL RCVARC(' ','TEMP','-',FAMI,KPG,KSP,TM,IRET2)
       CALL RCVARC(' ','TEMP','+',FAMI,KPG,KSP,TP,IRET3)
       IRET=IRET1+IRET2+IRET3
-      IF ((IRET.EQ.0).AND.((ALPHAP+ALPHAM).EQ.0.D0))
-     &   THEN
+      IF ((IRET.EQ.0).AND.((ALPHAP+ALPHAM).EQ.0.D0)) THEN
         CALL U2MESS('F','CALCULEL_31')
       ELSEIF (((ALPHAP+ALPHAM).EQ.0.D0).OR.(IRET.GE.1)) THEN 
         COEF = 0.D0
@@ -141,12 +144,11 @@ C -- TEMPERATURE
         COEF = ALPHAP*(TP-TREF)- ALPHAM*(TM-TREF)
       ENDIF
 
-
       SEQE= LCNRTS(DEVSE)
       
-      IF (SEQE.GT.SYVP)THEN
+      IF (SEQE.GT.SYVP) THEN
       
-C RESOLUTION DE L'EQUATION EN DR
+C        RESOLUTION DE L'EQUATION EN DR
 
          VAL0 = NMFEND(0.D0)
          IF (VAL0.GT.0.D0) THEN
@@ -199,48 +201,27 @@ C              A FAIRE : UNE VRAIE DICHOTOMIE
          ENDIF
          
 21       CONTINUE
-C        RESOLUTION DE L'EQUATION EN DR PAR METHODE DE CORDES
-         X(1) = 0.D0
-         X(2) = XAP
-         Y(1) = VAL0
-         Y(2) = VAL1
-         X(3) = X(1)
-         Y(3) = Y(1)
-         X(4) = X(2)
-         Y(4) = Y(2)
-C
-         IF (ABS(Y(4)).LT.PRECR) THEN
-            DR=X(4)
-            GOTO 50
+
+C        RECUPERATION DE L'ALGORITHME DE RESOLUTION 1D
+         CALL UTLCAL('VALE_NOM',METH,CRIT(6))
+      
+         IF (METH.EQ.'BRENT') THEN
+
+           CALL ZEROFB(NMFEND,0.D0,XAP,PRECR,NITER,DR,IER,ITER)
+
+         ELSEIF (METH.EQ.'SECANTE') THEN
+
+           CALL ZEROFC(NMFEND,0.D0,XAP,PRECR,NITER,DR,IER,ITER)
+
+         ELSEIF (METH.EQ.'DEKKER') THEN
+
+           CALL ZEROFO(NMFEND,VAL0,XAP,PRECR,NITER,DR,IER,ITER)
+
+         ELSE
+
+           CALL ASSERT(.FALSE.)
+
          ENDIF
-         DO 40 ITER = 1, NITER
-           IF (Y(1).GT.0 .OR. Y(2).LT.0) THEN
-              CALL U2MESS('A','ALGORITH6_78')
-              IER=24
-              GOTO 9999
-           ENDIF
-           IF (X(3).EQ.X(4)) THEN
-              CALL U2MESS('A','ALGORITH9_84')
-              IER=25
-              GOTO 9999
-           ENDIF
-           CALL ZEROCO(X,Y)
-           Y(4) = NMFEND(X(4))
-C          DOUBLE CRITERE : F<EPSI ET DR/R < EPSI
-           IF (ABS(Y(4)).LT.PRECR) THEN
-              IF(ABS(RM+X(4)).GT.R8PREM()) THEN
-                 TEST=ABS(X(4)-X(3))/ABS(RM+X(4))
-              ELSE
-                 TEST=ABS(X(4)-X(3))
-              ENDIF
-              IF (TEST.LT.PRECR) THEN
-                 DR=X(4)
-                 GOTO 50
-              ENDIF
-           ENDIF
-  40     CONTINUE
-         IER=26
-         GOTO 9999
 
   50     CONTINUE
 
@@ -261,7 +242,6 @@ C          DOUBLE CRITERE : F<EPSI ET DR/R < EPSI
             DEVSIG(I)=(1.D0-DF)*DEVSE(I)/DENO
  16      CONTINUE
 
-
       ELSE
 
          DR=0.D0
@@ -269,6 +249,7 @@ C          DOUBLE CRITERE : F<EPSI ET DR/R < EPSI
          SEQ1MD=SYVP
          DF=DM
          CALL R8INIR(6,0.D0,DEVSIG,1)
+
       ENDIF
 
       DEPSMO = 0.D0

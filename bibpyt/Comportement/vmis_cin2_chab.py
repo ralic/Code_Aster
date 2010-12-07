@@ -1,4 +1,4 @@
-#@ MODIF vmis_cin2_chab Comportement  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
+#@ MODIF vmis_cin2_chab Comportement  DATE 07/12/2010   AUTEUR GENIAUT S.GENIAUT 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -33,7 +33,7 @@ loi = LoiComportement(
    modelisation   = ('3D', 'AXIS', 'D_PLAN'),
    deformation    = ('PETIT', 'PETIT_REAC', 'GROT_GDEP','GDEF_HYPO_ELAS'),
    nom_varc       = ('TEMP',),
-   schema         = ('IMPLICITE',),
+   algo_inte         = ('SECANTE','BRENT',),
    type_matr_tang = ('PERTURBATION', 'VERIFICATION'),
    proprietes     = None,
 )

@@ -1,4 +1,4 @@
-# MODIF  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 06/12/2010   AUTEUR DESOZA T.DESOZA 
 # TITRE EMBOUTISSAGE D'UNE TOLE PAR UN POINCON HEMISPHERIQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -346,7 +346,7 @@ TEST_RESU(RESU=_F(RESULTAT=DEFOR,
                   NOM_CMP='DY',
                   GROUP_NO='A2',
                   VALE=5.0,
-                  PRECISION=0.29999999999999999,
+                  PRECISION=0.1,
                   REFERENCE='SOURCE_EXTERNE',),);
 
 TEST_RESU(RESU=_F(RESULTAT=DEFOR,
@@ -355,7 +355,26 @@ TEST_RESU(RESU=_F(RESULTAT=DEFOR,
                   NOM_CMP='DY',
                   GROUP_NO='A2',
                   VALE=7.0,
-                  PRECISION=0.25,
+                  PRECISION=0.1,
                   REFERENCE='SOURCE_EXTERNE',),);
 
+# TESTS DE NON REGRESSION
+
+TEST_RESU(RESU=_F(RESULTAT=DEFOR,
+                  NUME_ORDRE=3,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DY',
+                  GROUP_NO='A2',
+                  VALE=4.8433465966113,
+                  REFERENCE='SOURCE_EXTERNE',
+                  VERSION='10.3.0',),);
+
+TEST_RESU(RESU=_F(RESULTAT=DEFOR,
+                  NUME_ORDRE=6,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DY',
+                  GROUP_NO='A2',
+                  VALE=7.3917964600581,
+                  REFERENCE='SOURCE_EXTERNE',
+                  VERSION='10.3.0',),);
 FIN();

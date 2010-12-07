@@ -1,5 +1,5 @@
 
-# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 07/12/2010   AUTEUR GENIAUT S.GENIAUT 
 # RESPONSABLE F6BHHBO P.DEBONNIERES
 # TITRE ESSAI DE TRACTION-CISAILLEMENT (VISCOELASTICITE CYRANO3)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -42,15 +42,11 @@ ACIER=DEFI_MATERIAU(ELAS=_F(E=178600.0,
                     LEMAITRE=_F(N=11.0,
                                 UN_SUR_K=0.00032840723,
                                 UN_SUR_M=0.178571429,),
-                    VENDOCHAB=_F(S=0.0,
-                                 ALPHA_D=0.0,
-                                 BETA_D=0.0,
-                                 N=11.0,
-                                 UN_SUR_M=0.178571429,
-                                 UN_SUR_K=0.00032840723,
+                    VISC_ENDO=_F(SY=0.0,
                                  R_D=3.0,
-                                 A_D=100000.0,
-                                 K_D=3.0,),);
+                                 A_D=100000.0,),);
+
+
 
 CM=AFFE_MATERIAU(MAILLAGE=M,
                  AFFE=_F(TOUT='OUI',
@@ -218,8 +214,9 @@ U2=STAT_NON_LINE(MODELE=MO,
                  CHAM_MATER=CM,
                  EXCIT=(_F(CHARGE=CH1,),
                         _F(CHARGE=CH2,),),
-                 COMP_INCR=_F(RELATION='VENDOCHAB',
-                              ITER_INTE_MAXI=1000,),
+                 COMP_INCR=_F(RELATION='VISC_ENDO_LEMA',
+                              ALGO_INTE='BRENT',
+                              ITER_INTE_MAXI=20),
                  INCREMENT=_F(LIST_INST=L_INST2,
                               INST_FIN=30.0,),
                  NEWTON=_F(PREDICTION='EXTRAPOL',

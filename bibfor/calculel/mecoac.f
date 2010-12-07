@@ -3,7 +3,7 @@
       CHARACTER*(*) OPTIOZ,MODELE,LIGREL,MATE,PRESS,CHAMEL
 C----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 08/11/2010   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 07/12/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -46,40 +46,15 @@ C DEB-------------------------------------------------------------------
 
       LCHOUT(1) = CHAMEL
 
-      IF (OPTION.EQ.'PRES_ELNO_DBEL') THEN
-        LPAOUT(1) = 'PDBEL_R'
+      IF (OPTION.EQ.'PRAC_ELNO') THEN
+        LPAOUT(1) = 'PPRAC_R'
         LPAIN(1) = 'PPRESSC'
         LCHIN(1) = PRESS
         CALL CALCUL('S',OPTION,LIGREL,1,LCHIN,LPAIN,1,LCHOUT,LPAOUT,'G',
      &                 'OUI')
 
-      ELSE IF (OPTION.EQ.'PRES_ELNO_REEL') THEN
-        LPAOUT(1) = 'PPRESSR'
-        LPAIN(1) = 'PPRESSC'
-        LCHIN(1) = PRESS
-        CALL CALCUL('S',OPTION,LIGREL,1,LCHIN,LPAIN,1,LCHOUT,LPAOUT,'G',
-     &                 'OUI')
-
-      ELSE IF (OPTION.EQ.'PRES_ELNO_IMAG') THEN
-        LPAOUT(1) = 'PPRESSI'
-        LPAIN(1) = 'PPRESSC'
-        LCHIN(1) = PRESS
-        CALL CALCUL('S',OPTION,LIGREL,1,LCHIN,LPAIN,1,LCHOUT,LPAOUT,'G',
-     &                 'OUI')
-
-      ELSE IF (OPTION.EQ.'INTE_ELNO_ACTI') THEN
-        LPAOUT(1) = 'PINTEAC'
-        LPAIN(1) = 'PPRESSC'
-        LCHIN(1) = PRESS
-        LPAIN(2) = 'PGEOMER'
-        LCHIN(2) = CHGEOM
-        LPAIN(3) = 'PMATERC'
-        LCHIN(3) = MATE
-        CALL CALCUL('S',OPTION,LIGREL,3,LCHIN,LPAIN,1,LCHOUT,LPAOUT,'G',
-     &                 'OUI')
-
-      ELSE IF (OPTION.EQ.'INTE_ELNO_REAC') THEN
-        LPAOUT(1) = 'PINTERE'
+      ELSE IF (OPTION.EQ.'INTE_ELNO') THEN
+        LPAOUT(1) = 'PINTER'
         LPAIN(1) = 'PPRESSC'
         LCHIN(1) = PRESS
         LPAIN(2) = 'PGEOMER'

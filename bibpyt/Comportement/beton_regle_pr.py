@@ -1,4 +1,4 @@
-#@ MODIF beton_regle_pr Comportement  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
+#@ MODIF beton_regle_pr Comportement  DATE 07/12/2010   AUTEUR GENIAUT S.GENIAUT 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -37,7 +37,7 @@ loi = LoiComportement(
    modelisation   = ('D_PLAN', 'C_PLAN'),
    deformation    = ('PETIT','PETIT_REAC', 'GROT_GDEP'),
    nom_varc       = ('TEMP'),
-   schema         = ('IMPLICITE'),
+   algo_inte         = ('ANALYTIQUE'),
    type_matr_tang = ('PERTURBATION', 'VERIFICATION'),
    proprietes     = None,
 )

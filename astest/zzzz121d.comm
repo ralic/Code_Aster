@@ -1,4 +1,4 @@
-# MODIF  DATE 04/10/2010   AUTEUR GNICOLAS G.NICOLAS 
+# MODIF  DATE 07/12/2010   AUTEUR PELLET J.PELLET 
 # RESPONSABLE GNICOLAS G.NICOLAS
 # TITRE TEST DE HOMARD AVEC DES QUADRANGLES
 # zzzz121d.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test S
@@ -198,7 +198,7 @@ RESU_0=CALC_ELEM(reuse =RESU_0,
 
 
                  RESULTAT=RESU_0,
-                 OPTION=('SIGM_ELNO_DEPL','ERRE_ELEM_SIGM',),
+                 OPTION=('SIGM_ELNO_DEPL','ERME_ELEM',),
 
 );
 #
@@ -222,7 +222,7 @@ MACR_ADAP_MAIL(MAILLAGE_N=M_0,
                MAILLAGE_NP1=CO('M_1'),
                ADAPTATION='RAFFINEMENT',
                RESULTAT_N=RESU_0,
-               NOM_CHAM='ERRE_ELEM_SIGM',
+               NOM_CHAM='ERME_ELEM',
                NOM_CMP='ERREST',
                CRIT_RAFF_PE=0.05,
                MAILLAGE_FRONTIERE=ARC,
@@ -277,7 +277,7 @@ RESU_1=CALC_ELEM(reuse =RESU_1,
 
 
                  RESULTAT=RESU_1,
-                 OPTION=('SIGM_ELNO_DEPL','ERRE_ELEM_SIGM',),
+                 OPTION=('SIGM_ELNO_DEPL','ERME_ELEM',),
 
 );
 #
@@ -303,7 +303,7 @@ MACR_ADAP_MAIL(MAILLAGE_N=M_1,
                MAILLAGE_NP1=CO('M_2'),
                ADAPTATION='RAFF_DERA',
                RESULTAT_N=RESU_1,
-               NOM_CHAM='ERRE_ELEM_SIGM',
+               NOM_CHAM='ERME_ELEM',
                NOM_CMP='ERREST',
                CRIT_RAFF_PE=0.6,
                CRIT_DERA_PE=0.2,
@@ -362,7 +362,7 @@ RESU_2=CALC_ELEM(reuse =RESU_2,
 
 
                  RESULTAT=RESU_2,
-                 OPTION=('SIGM_ELNO_DEPL','ERRE_ELEM_SIGM',),
+                 OPTION=('SIGM_ELNO_DEPL','ERME_ELEM',),
 
 );
 #
@@ -386,7 +386,7 @@ MACR_ADAP_MAIL(MAILLAGE_N=M_2,
                MAILLAGE_NP1=CO('M_3'),
                ADAPTATION='RAFF_DERA',
                RESULTAT_N=RESU_2,
-               NOM_CHAM='ERRE_ELEM_SIGM',
+               NOM_CHAM='ERME_ELEM',
                NOM_CMP='ERREST',
                CRIT_RAFF_PE=0.01,
                CRIT_DERA_PE=0.8,

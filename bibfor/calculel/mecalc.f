@@ -5,7 +5,7 @@
      &                  CHVARI,COMPOR,CHTESE,CHDESE,NOPASE,
      &                  TYPESE,CHACSE,CODRET)
 C ----------------------------------------------------------------------
-C MODIF CALCULEL  DATE 19/10/2010   AUTEUR DELMAS J.DELMAS 
+C MODIF CALCULEL  DATE 07/12/2010   AUTEUR PELLET J.PELLET 
 C TOLE CRP_20 CRP_21
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -307,8 +307,7 @@ CJMP    PUIS LE CHAMPS CHSIG ASSOCIE A LA FOIS A PCONTRR ET PSIEFNOR
             INDMEC = .FALSE.
           ELSE IF (OPTIO2.EQ.'SOUR_ELGA_ELEC') THEN
             LPAOUT(1) = 'PSOUR_R'
-          ELSE IF (OPTIO2.EQ.'DURT_ELGA_META' .OR.
-     &             OPTIO2.EQ.'DURT_ELNO_META') THEN
+          ELSE IF (OPTIO2.EQ.'DURT_ELNO_META') THEN
             LPAIN(1) = 'PPHASIN'
             LCHIN(1) = CHMETA
             LPAOUT(1) = 'PDURT_R'
@@ -362,17 +361,14 @@ C ----------------------------------------------------------------------
 C ----------------------------------------------------------------------
             IF (OPTIO2.EQ.'SIGM_ELNO_DEPL' .OR.
      &          OPTIO2.EQ.'SIPO_ELNO_DEPL' .OR.
-     &          OPTIO2.EQ.'SIEF_ELGA_DEPL' .OR.
-     &          OPTIO2.EQ.'SIGM_ELNO_SIEF' .OR.
-     &          OPTIO2.EQ.'SIPO_ELNO_SIEF') THEN
+     &          OPTIO2.EQ.'SIEF_ELGA_DEPL') THEN
               LPAOUT(1) = 'PCONTRR'
               IF (POUX.EQ.'OUI') THEN
                 CALL MECHPO('&&MECHPO',CHARGE,MODELE,CHDEP2,
      &                      CHDYNR,SUROPT,LPAIN(NBIN+1),LCHIN(NBIN+1),
      &                      NB,TYPCOE,ALPHA,CALPHA)
                 NBIN = NBIN + NB
-                IF (OPTIO2.EQ.'SIPO_ELNO_DEPL' .OR.
-     &              OPTIO2.EQ.'SIPO_ELNO_SIEF') THEN
+                IF (OPTIO2.EQ.'SIPO_ELNO_DEPL') THEN
                   LPAOUT(1) = 'PCONTPO'
                 END IF
               END IF

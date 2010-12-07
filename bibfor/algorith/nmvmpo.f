@@ -5,7 +5,7 @@
      &                  CONTP, FL, KLV)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 03/03/2008   AUTEUR FLEJOU J-L.FLEJOU 
+C MODIF ALGORITH  DATE 07/12/2010   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -68,6 +68,7 @@ C         D1B      : MATRICE DE COMPORTEMENT TANGENT
 
 C
       CHARACTER*2 NOMRES(2),CODRES(2)
+      CHARACTER*16 ALGO
       LOGICAL VECTEU,MATRIC
       INTEGER DIMKLV,KP,KK,I,J,K,LGPG,ICORES(4),II,JJ,JTAB(7)
       REAL*8 EPS(7),DEPS(7),FG(14),VIM(9),SIGP(7),SIGM(7),VIP(9)
@@ -84,6 +85,10 @@ C              ET LES 4 DDLS UTILISES DANS LE CRITERE :
 C              N,MY,MZ,MX
       DATA ICORES/1,5,6,4/
 C
+
+C     RECUP DU NOM DE L'ALGORITHME D'INTEGRATION LOCAL
+      CALL UTLCAL('VALE_NOM',ALGO,CARCRI(6))
+
       IF ( NPG .EQ. 3 ) THEN
          CO(1) = 5.D0/9.D0
          CO(2) = 8.D0/9.D0
@@ -239,18 +244,17 @@ C        CAS ELASTIQUE
 810         CONTINUE
             CALL R8INIR(9,0.D0,VIP,1)
          ELSE
-C           IMPLICITE OU EXPLICITE ? SI CARCRI(6)=1 ==> EXPLICITE
 C           VARIABLES INTERNES A T-
             DO 565 I=1,LGPG
                VIM(I)  = VARIM(LGPG*(KP-1)+I)
 565         CONTINUE
-
-            IF ( INT(CARCRI(6)).GT.0.5D0) THEN
+            IF (ALGO.EQ.'RUNGE_KUTTA') THEN
+C              CAS EXPLICITE            
                CALL NMVMPK(NC,EPS,DEPS,VIM,SIGM,
      &                     LOI346,HOEL,VECTEU,MATRIC,CARCRI,
      &                     SIGP,VIP,HOTA)
-            ELSE
-C              IMPLICITE
+            ELSEIF (ALGO.EQ.'NEWTON') THEN
+C              CAS IMPLICITE
                DO 57 I=1,4
                   II = ICORES(I)
                   DEPS4(I)=DEPS(II)

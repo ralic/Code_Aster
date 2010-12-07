@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 09/11/2010   AUTEUR DELMAS J.DELMAS 
+#& MODIF COMMANDE  DATE 07/12/2010   AUTEUR PELLET J.PELLET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -25,14 +25,10 @@ CALC_NO=OPER(nom="CALC_NO",op= 106,sd_prod=calc_no_prod,reentrant='f',
             fr="Enrichir une SD Résultat par des champs aux noeuds calculés à partir de champs aux éléments évalués aux noeuds",
             UIinfo={"groupes":("Post-traitements","Résultats et champs",)},
          RESULTAT        =SIMP(statut='o',typ=resultat_sdaster),
-         SENSIBILITE     =SIMP(statut='f',typ=(para_sensi,theta_geom),validators=NoRepeat(),max='**',
-                               fr="Liste des paramètres de sensibilité.",
-                               ang="List of sensitivity parameters"),
 
          regles=(EXCLUS('TOUT_ORDRE','NUME_ORDRE','INST','FREQ','NUME_MODE',
                         'NOEUD_CMP','LIST_INST','LIST_FREQ','LIST_ORDRE','NOM_CAS'),
-                 CONCEPT_SENSIBLE("SEPARE"),
-                 DERIVABLE('RESULTAT'),),
+                 ),
          TOUT_ORDRE      =SIMP(statut='f',typ='TXM',into=("OUI",) ),
          NUME_ORDRE      =SIMP(statut='f',typ='I',validators=NoRepeat(),max='**'),
          NUME_MODE       =SIMP(statut='f',typ='I',validators=NoRepeat(),max='**'),
@@ -67,18 +63,17 @@ CALC_NO=OPER(nom="CALC_NO",op= 106,sd_prod=calc_no_prod,reentrant='f',
                                      "EPSP_NOEU"     ,
                                      "EPVC_NOEU","EPFD_NOEU","EPFP_NOEU","EPFP_NOEU",
                                      "EQUI_NOEU_EPME","EQUI_NOEU_EPSI","EQUI_NOEU_SIGM",
-                                     "ERRE_NOEU_ELEM","QIRE_NOEU_ELEM",
+                                     "ERME_NOEU","ERTH_NOEU","QIRE_NOEU_ELEM",
                                      "FLUX_NOEU_TEMP",
                                      "HYDR_NOEU_ELGA",
-                                     "INTE_NOEU_ACTI","INTE_NOEU_REAC",
+                                     "INTE_NOEU",
                                      "META_NOEU_TEMP",
                                      "PMPB_NOEU_SIEF",
-                                     "PRES_NOEU_DBEL","PRES_NOEU_IMAG","PRES_NOEU_REEL",
+                                     "PRAC_NOEU",
                                      "RADI_NOEU_SIGM",
                                      "SIEF_NOEU_ELGA",
                                      "SIGM_NOEU_CART","SIGM_NOEU_COQU","SIGM_NOEU_DEPL",
-                                     "SIGM_NOEU_SIEF",
-                                     "SIPO_NOEU_DEPL","SIPO_NOEU_SIEF",
+                                     "SIPO_NOEU_DEPL",
                                      "VARI_NOEU","EXTR_NOEU_VARI","VARI_NOEU_ELGA",) ),
 
          b_forc_reac     =BLOC(condition = """(OPTION == 'FORC_NODA') or (type(OPTION) == type(()) and 'FORC_NODA' in OPTION) or\

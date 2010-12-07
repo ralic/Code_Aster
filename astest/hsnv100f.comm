@@ -1,4 +1,4 @@
-# MODIF  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
+# MODIF  DATE 07/12/2010   AUTEUR PELLET J.PELLET 
 # TITRE THERMO-PLASTICITE EN TRACTION SIMPLE (MODELISATION:POU_D_E)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -143,15 +143,9 @@ U=STAT_NON_LINE(
 
 #
 U=CALC_ELEM( reuse=U,
-                            OPTION=('SIEF_ELNO_ELGA',  'VARI_ELNO_ELGA','SIGM_ELNO_SIEF'),
+                            OPTION=('SIEF_ELNO_ELGA',  'VARI_ELNO_ELGA'),
                           RESULTAT=U,
               )
-
-#
-TEST_RESU(RESU=(
-          _F(  RESULTAT = U,   NOM_CHAM = 'SIGM_ELNO_SIEF',  NUME_ORDRE = 1,REFERENCE='ANALYTIQUE',
-            MAILLE = 'M1',NOEUD = 'N2',NOM_CMP = 'SIXX',VALE = -133.333),
-                                                                     ),)
 
 
 T_POT=POST_ELEM(    CHAM_MATER=CM,

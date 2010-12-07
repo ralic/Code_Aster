@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2010   AUTEUR IDOUX L.IDOUX 
+# MODIF  DATE 07/12/2010   AUTEUR PELLET J.PELLET 
 # TITRE PARALLEPEPIPEDE SOUS SON PROPRE POIDS (HEXA20 GROSSIER)
 # sslv07a.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -57,7 +57,7 @@ MA=ASSE_MAILLAGE(MAILLAGE_1=MA1,
                             GROUP_MA_2='SURF2'))
 
 DEFI_GROUP( reuse=MA, MAILLAGE=MA,
-            CREA_GROUP_MA=_F( NOM = 'VOLUM',OPTION='APPUI', 
+            CREA_GROUP_MA=_F( NOM = 'VOLUM',OPTION='APPUI',
                               TYPE_APPUI='AU_MOINS_UN',
                            GROUP_NO='A'))
 
@@ -65,11 +65,11 @@ DEFI_GROUP( reuse=MA, MAILLAGE=MA,
             CREA_GROUP_NO=_F( NOM = 'ABSANSA',UNION=('BX','AXSANSA')))
 
 DEFI_GROUP( reuse=MA, MAILLAGE=MA,
-            CREA_GROUP_MA=_F( NOM = 'BAS', 
+            CREA_GROUP_MA=_F( NOM = 'BAS',
                               MAILLE =('M1','M2','M3','M4')))
 
 DEFI_GROUP( reuse=MA, MAILLAGE=MA,
-            CREA_GROUP_MA=_F( NOM = 'HAUT', 
+            CREA_GROUP_MA=_F( NOM = 'HAUT',
                               MAILLE =('M9','M10','M11','M12')))
 
 MO=AFFE_MODELE(MAILLAGE=MA,
@@ -127,8 +127,8 @@ BLOQU=AFFE_CHAR_MECA(MODELE=MO,
 # APPLICATION DU CHARGEMENT DE PESANTEUR A TOUT LE MAILLAGE.
 # LE MAILLAGE (12 MAILLES) EST PARTITIONNE EN DEUX GROUPES DE
 # MAILLES 'HAUT' ET 'BAS', ET UNE LISTE DE 4 MAILLES. L'OBJECTIF
-# EST DE VERIFIER LA BONNE PRISE EN COMPTE DES MOTS-CLES 
-# GROUP_MA ET MAILLE. 
+# EST DE VERIFIER LA BONNE PRISE EN COMPTE DES MOTS-CLES
+# GROUP_MA ET MAILLE.
 CH=AFFE_CHAR_MECA(MODELE=MO,
                   PESANTEUR=_F(GRAVITE=9.81,
                                DIRECTION=(0.0,0.0,-1.0,),
@@ -233,7 +233,7 @@ DEPLD3=STAT_NON_LINE(MODELE=MO,
                      ARCHIVAGE=_F(LIST_INST=L_INST,
                                   CHAM_EXCLU='VARI_ELGA',),);
 
-# REMARQUE : STRICTO SENSU, LE CALCUL DE ERRE_ELEM_SIGM EST FAUX CAR
+# REMARQUE : STRICTO SENSU, LE CALCUL DE ERME_ELEM EST FAUX CAR
 #            DES BORDS A CONTRAINTE NULLE N'ONT PAS ETE DEFINIS DANS LE
 #            MAILLAGE ET A FORTIORI DANS LE CHARGEMENT
 #            IL FAUDRA COMPLETER LE MAILLAGE UN JOUR. G. NICOLAS.
@@ -241,7 +241,7 @@ DEPLD3=STAT_NON_LINE(MODELE=MO,
 DEPLD2 = CALC_ELEM (reuse=DEPLD2,
               RESULTAT= DEPLD2,
               OPTION= ( 'SIEF_ELNO_ELGA',
-                        'ERRE_ELEM_SIGM', 'ERRE_ELNO_ELEM',),
+                        'ERME_ELEM', 'ERME_ELNO',),
             ) ;
 
 ENER_ELA=POST_ELEM(ENER_ELAS=_F(TOUT='OUI',),
@@ -455,7 +455,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU,
 
 TEST_RESU(RESU=(_F(RESULTAT=DEPLD2,
                    NUME_ORDRE=10,
-                   NOM_CHAM='ERRE_ELEM_SIGM',
+                   NOM_CHAM='ERME_ELEM',
                    NOM_CMP='NUEST',
                    MAILLE='M10',
                    POINT=1,
@@ -465,7 +465,7 @@ TEST_RESU(RESU=(_F(RESULTAT=DEPLD2,
                    VERSION='9.05.04',),
                 _F(RESULTAT=DEPLD2,
                    NUME_ORDRE=10,
-                   NOM_CHAM='ERRE_ELNO_ELEM',
+                   NOM_CHAM='ERME_ELNO',
                    NOM_CMP='ERREST',
                    MAILLE='M6',
                    NOEUD='N96',
@@ -477,7 +477,7 @@ TEST_RESU(RESU=(_F(RESULTAT=DEPLD2,
           )
 TEST_RESU(RESU=(_F(RESULTAT=DEPLD2,
                    NUME_ORDRE=10,
-                   NOM_CHAM='ERRE_ELEM_SIGM',
+                   NOM_CHAM='ERME_ELEM',
                    NOM_CMP='ERREST',
                    MAILLE='M12',
                    POINT=1,
@@ -487,7 +487,7 @@ TEST_RESU(RESU=(_F(RESULTAT=DEPLD2,
                    VERSION='9.05.04',),
                 _F(RESULTAT=DEPLD2,
                    NUME_ORDRE=10,
-                   NOM_CHAM='ERRE_ELEM_SIGM',
+                   NOM_CHAM='ERME_ELEM',
                    NOM_CMP='TERMRE',
                    MAILLE='M12',
                    POINT=1,
@@ -497,7 +497,7 @@ TEST_RESU(RESU=(_F(RESULTAT=DEPLD2,
                    VERSION='9.05.04',),
                 _F(RESULTAT=DEPLD2,
                    NUME_ORDRE=10,
-                   NOM_CHAM='ERRE_ELEM_SIGM',
+                   NOM_CHAM='ERME_ELEM',
                    NOM_CMP='TERMSA',
                    MAILLE='M12',
                    POINT=1,
@@ -507,7 +507,7 @@ TEST_RESU(RESU=(_F(RESULTAT=DEPLD2,
                    VERSION='9.05.04',),
                 _F(RESULTAT=DEPLD2,
                    NUME_ORDRE=10,
-                   NOM_CHAM='ERRE_ELEM_SIGM',
+                   NOM_CHAM='ERME_ELEM',
                    NOM_CMP='TERMNO',
                    MAILLE='M12',
                    POINT=1,

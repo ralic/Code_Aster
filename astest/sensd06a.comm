@@ -1,4 +1,4 @@
-# MODIF  DATE 13/09/2010   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 07/12/2010   AUTEUR PELLET J.PELLET 
 # RESPONSABLE H.ANDRIAMBOLOLONA
 # TITRE SENSIBILITE AUX MATERIAUX EN DYNAMIQUE LINEAIRE TRANSITOIRE ISOTROPE 2D
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -138,20 +138,10 @@ DYT=DYNA_LINE_TRAN(MODELE=MO,CHAM_MATER=CHMAT,
                    NEWMARK=_F(),)
 #                   WILSON=_F(),)
 
-DYT = CALC_ELEM(
-                 reuse = DYT,
 
-                 RESULTAT = DYT,
+DYT = CALC_ELEM( reuse = DYT, RESULTAT = DYT, OPTION = 'SIGM_ELNO_DEPL', );
 
-                 OPTION = 'SIGM_ELNO_DEPL',
-                 );
-
-DYT = CALC_ELEM(
-                 reuse = DYT,
-
-                 RESULTAT = DYT,
-
-                 SENSIBILITE=tuple(PS),
+CALC_SENSI( reuse = DYT, RESULTAT = DYT, SENSIBILITE=tuple(PS),
                  OPTION = 'SIGM_ELNO_DEPL',
                  );
 

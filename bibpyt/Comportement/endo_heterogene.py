@@ -1,4 +1,4 @@
-#@ MODIF endo_heterogene Comportement  DATE 15/06/2010   AUTEUR GRANET S.GRANET 
+#@ MODIF endo_heterogene Comportement  DATE 07/12/2010   AUTEUR GENIAUT S.GENIAUT 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -30,7 +30,7 @@ loi = LoiComportement(
    mc_mater       = ('ELAS', 'ENDO_HETEROGENE', 'NON_LOCAL'),
    modelisation   = ( 'D_PLAN','GRADSIGM',),
    deformation    = ('PETIT', 'PETIT_REAC'),
-   schema         = ('IMPLICITE',),
+   algo_inte         = ('ANALYTIQUE',),
    type_matr_tang = ('PERTURBATION', 'VERIFICATION'),
    proprietes     = None,
 )

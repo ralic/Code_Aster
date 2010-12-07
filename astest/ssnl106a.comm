@@ -1,4 +1,4 @@
-# MODIF  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 07/12/2010   AUTEUR GENIAUT S.GENIAUT 
 # TITRE POUTRE ENCASTREE A UNE EXTREMITE ET CHARGEE PAR UNE TRACTION
 # ssnl106a.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -91,12 +91,12 @@ REST=STAT_NON_LINE(
                          _F(
                 RELATION = 'VMIS_POU_LINE',
                 GROUP_MA = 'GC1',
-                RESO_INTE = 'RUNGE_KUTTA_4',
+                
                 ITER_INTE_MAXI = 500),
                          _F(
                 RELATION = 'VMIS_POU_FLEJOU',
                 GROUP_MA = 'GR1',
-                RESO_INTE = 'RUNGE_KUTTA_4',
+                
                 ITER_INTE_MAXI = 500)),
                          INCREMENT=_F(
                 LIST_INST = LINST),
@@ -115,14 +115,14 @@ REST=CALC_ELEM( reuse=REST,
                      RESULTAT=REST,
                        OPTION='DEGE_ELNO_DEPL'    )
 
-REST=CALC_ELEM( reuse=REST,
-                     RESULTAT=REST,
-                       OPTION='SIGM_ELNO_SIEF'    )
-
-
-REST=CALC_ELEM( reuse=REST,
-                     RESULTAT=REST,
-                       OPTION='SIPO_ELNO_SIEF'    )
+# REST=CALC_ELEM( reuse=REST,
+#                      RESULTAT=REST,
+#                        OPTION='SIGM_ELNO_SIEF'    )
+# 
+# 
+# REST=CALC_ELEM( reuse=REST,
+#                      RESULTAT=REST,
+#                        OPTION='SIPO_ELNO_SIEF'    )
 
 
 TEST_RESU(RESU=(_F( RESULTAT = REST,
@@ -183,73 +183,73 @@ TEST_RESU(RESU=(_F( RESULTAT = REST,
                  PRECISION = 1.E-3))
           )
 
-TEST_RESU(RESU=(_F( RESULTAT = REST,
-                 NUME_ORDRE = 11,
-                 NOM_CHAM = 'SIGM_ELNO_SIEF',
-                 NOEUD = 'R3',
-                 MAILLE = 'SR2',
-                 NOM_CMP = 'SIXX',
-                 VALE = 1.5615E8, REFERENCE = 'ANALYTIQUE',
-                 PRECISION = 1.E-3),
-           _F( RESULTAT = REST,
-                 NUME_ORDRE = 21,
-                 NOM_CHAM = 'SIGM_ELNO_SIEF',
-                 NOEUD = 'R3',
-                 MAILLE = 'SR2',
-                 NOM_CMP = 'SIXX',
-                 VALE = 1.57645E8, REFERENCE = 'ANALYTIQUE',
-                 PRECISION = 1.E-3),
-           _F( RESULTAT = REST,
-                 NUME_ORDRE = 11,
-                 NOM_CHAM = 'SIGM_ELNO_SIEF',
-                 NOEUD = 'C3',
-                 MAILLE = 'SC2',
-                 NOM_CMP = 'SIXX',
-                 VALE = 1.515E8, REFERENCE = 'ANALYTIQUE',
-                 PRECISION = 1.E-3),
-           _F( RESULTAT = REST,
-                 NUME_ORDRE = 21,
-                 NOM_CHAM = 'SIGM_ELNO_SIEF',
-                 NOEUD = 'C3',
-                 MAILLE = 'SC2',
-                 NOM_CMP = 'SIXX',
-                 VALE = 1.53E8, REFERENCE = 'ANALYTIQUE',
-                 PRECISION = 1.E-3),
-
-           _F( RESULTAT = REST,
-                 NUME_ORDRE = 11,
-                 NOM_CHAM = 'SIPO_ELNO_SIEF',
-                 NOEUD = 'R3',
-                 MAILLE = 'SR2',
-                 NOM_CMP = 'SN',
-                 VALE = 1.5615E8, REFERENCE = 'ANALYTIQUE',
-                 PRECISION = 1.E-3),
-           _F( RESULTAT = REST,
-                 NUME_ORDRE = 21,
-                 NOM_CHAM = 'SIPO_ELNO_SIEF',
-                 NOEUD = 'R3',
-                 MAILLE = 'SR2',
-                 NOM_CMP = 'SN',
-                 VALE = 1.57645E8, REFERENCE = 'ANALYTIQUE',
-                 PRECISION = 1.E-3),
-           _F( RESULTAT = REST,
-                 NUME_ORDRE = 11,
-                 NOM_CHAM = 'SIPO_ELNO_SIEF',
-                 NOEUD = 'C3',
-                 MAILLE = 'SC2',
-                 NOM_CMP = 'SN',
-                 VALE = 1.515E8, REFERENCE = 'ANALYTIQUE',
-                 PRECISION = 1.E-3),
-           _F( RESULTAT = REST,
-                 NUME_ORDRE = 21,
-                 NOM_CHAM = 'SIPO_ELNO_SIEF',
-                 NOEUD = 'C3',
-                 MAILLE = 'SC2',
-                 NOM_CMP = 'SN',
-                 VALE = 1.53E8, REFERENCE = 'ANALYTIQUE',
-                 PRECISION = 1.E-3),
-                 )
-          )
+# TEST_RESU(RESU=(_F( RESULTAT = REST,
+#                  NUME_ORDRE = 11,
+#                  NOM_CHAM = 'SIGM_ELNO_SIEF',
+#                  NOEUD = 'R3',
+#                  MAILLE = 'SR2',
+#                  NOM_CMP = 'SIXX',
+#                  VALE = 1.5615E8, REFERENCE = 'ANALYTIQUE',
+#                  PRECISION = 1.E-3),
+#            _F( RESULTAT = REST,
+#                  NUME_ORDRE = 21,
+#                  NOM_CHAM = 'SIGM_ELNO_SIEF',
+#                  NOEUD = 'R3',
+#                  MAILLE = 'SR2',
+#                  NOM_CMP = 'SIXX',
+#                  VALE = 1.57645E8, REFERENCE = 'ANALYTIQUE',
+#                  PRECISION = 1.E-3),
+#            _F( RESULTAT = REST,
+#                  NUME_ORDRE = 11,
+#                  NOM_CHAM = 'SIGM_ELNO_SIEF',
+#                  NOEUD = 'C3',
+#                  MAILLE = 'SC2',
+#                  NOM_CMP = 'SIXX',
+#                  VALE = 1.515E8, REFERENCE = 'ANALYTIQUE',
+#                  PRECISION = 1.E-3),
+#            _F( RESULTAT = REST,
+#                  NUME_ORDRE = 21,
+#                  NOM_CHAM = 'SIGM_ELNO_SIEF',
+#                  NOEUD = 'C3',
+#                  MAILLE = 'SC2',
+#                  NOM_CMP = 'SIXX',
+#                  VALE = 1.53E8, REFERENCE = 'ANALYTIQUE',
+#                  PRECISION = 1.E-3),
+# 
+#            _F( RESULTAT = REST,
+#                  NUME_ORDRE = 11,
+#                  NOM_CHAM = 'SIPO_ELNO_SIEF',
+#                  NOEUD = 'R3',
+#                  MAILLE = 'SR2',
+#                  NOM_CMP = 'SN',
+#                  VALE = 1.5615E8, REFERENCE = 'ANALYTIQUE',
+#                  PRECISION = 1.E-3),
+#            _F( RESULTAT = REST,
+#                  NUME_ORDRE = 21,
+#                  NOM_CHAM = 'SIPO_ELNO_SIEF',
+#                  NOEUD = 'R3',
+#                  MAILLE = 'SR2',
+#                  NOM_CMP = 'SN',
+#                  VALE = 1.57645E8, REFERENCE = 'ANALYTIQUE',
+#                  PRECISION = 1.E-3),
+#            _F( RESULTAT = REST,
+#                  NUME_ORDRE = 11,
+#                  NOM_CHAM = 'SIPO_ELNO_SIEF',
+#                  NOEUD = 'C3',
+#                  MAILLE = 'SC2',
+#                  NOM_CMP = 'SN',
+#                  VALE = 1.515E8, REFERENCE = 'ANALYTIQUE',
+#                  PRECISION = 1.E-3),
+#            _F( RESULTAT = REST,
+#                  NUME_ORDRE = 21,
+#                  NOM_CHAM = 'SIPO_ELNO_SIEF',
+#                  NOEUD = 'C3',
+#                  MAILLE = 'SC2',
+#                  NOM_CMP = 'SN',
+#                  VALE = 1.53E8, REFERENCE = 'ANALYTIQUE',
+#                  PRECISION = 1.E-3),
+#                  )
+#           )
 
 # ------ FLEXION GZ EN PLASTICITE PARFAITE ---------------------------
 
@@ -307,7 +307,7 @@ RESM=STAT_NON_LINE(
                          COMP_INCR=_F(
                 RELATION = 'VMIS_POU_LINE',
                 ITER_INTE_MAXI = 50,
-                RESO_INTE = 'RUNGE_KUTTA_4',
+                
                 RESI_INTE_RELA = 1.E-6),
                          INCREMENT=_F(
                 LIST_INST = LINSR),
@@ -327,13 +327,13 @@ RESM=CALC_ELEM( reuse=RESM,
                      RESULTAT=RESM,
                        OPTION='DEGE_ELNO_DEPL'    )
 
-RESM=CALC_ELEM( reuse=RESM,
-                     RESULTAT=RESM,
-                       OPTION='SIGM_ELNO_SIEF'    )
-
-RESM=CALC_ELEM( reuse=RESM,
-                     RESULTAT=RESM,
-                       OPTION='SIPO_ELNO_SIEF'    )
+# RESM=CALC_ELEM( reuse=RESM,
+#                      RESULTAT=RESM,
+#                        OPTION='SIGM_ELNO_SIEF'    )
+# 
+# RESM=CALC_ELEM( reuse=RESM,
+#                      RESULTAT=RESM,
+#                        OPTION='SIPO_ELNO_SIEF'    )
 
 
 # RESULTATS EN PLASTICITE PARFAITE

@@ -1,21 +1,21 @@
-#@ MODIF cata_champs Stanley  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
+#@ MODIF cata_champs Stanley  DATE 07/12/2010   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
 
@@ -100,13 +100,13 @@ class CHAMP :
     assert type_cham in ['ELNO','ELGA','NOEU','ELEM']
 
     self.nom      = nom_cham
-    self.type     = type_cham 
+    self.type     = type_cham
     self.heredite = heredite
     self.comment  = comment
 
     if fonc :
       self.fonc = fonc
-    else : 
+    else :
       if type_cham == 'NOEU' :  self.fonc = CHAMP.Calc_no
       if type_cham == 'ELNO' :  self.fonc = CHAMP.Calc_elem
       if type_cham == 'ELGA' :  self.fonc = CHAMP.Calc_elem
@@ -123,8 +123,8 @@ class CHAMP :
 class CATA_CHAMPS :
 
   '''Base de connaissance sur les champs traitables'''
-  
-  
+
+
   def __init__(self) :
 
     self.cata = {}
@@ -153,10 +153,10 @@ class CATA_CHAMPS :
     self('EQUI_ELGA_EPSI', 'ELGA',['EPSI_ELGA_DEPL'],            "Invariants des deformations aux points de Gauss")
     self('EQUI_ELNO_EPSI', 'ELNO',['EPSI_ELNO_DEPL'],            "Invariants des deformations aux noeuds par element")
     self('EQUI_NOEU_EPSI', 'NOEU',['EQUI_ELNO_EPSI'],            "Invariants des deformations aux noeuds")
-    
-# indicateurs d erreur    
-    self('ERRE_ELEM_SIGM', 'ELEM',['SIEF_ELNO_ELGA'],            "Indicateurs d'erreur en résidu par élément")
-    self('ERRE_ELNO_ELEM', 'ELNO',['ERRE_ELEM_SIGM'],            "Indicateurs d'erreur en résidu aux noeuds par élément")
+
+# indicateurs d erreur
+    self('ERME_ELEM', 'ELEM',['SIEF_ELNO_ELGA'],                 "Indicateurs d'erreur en résidu par élément")
+    self('ERME_ELNO', 'ELNO',['ERME_ELEM'],                      "Indicateurs d'erreur en résidu aux noeuds par élément")
     self('QIRE_ELEM_SIGM', 'ELEM',[],                            "Indicateurs d'erreur en quantités d'intéret en résidu par élément")
     self('QIRE_ELNO_ELEM', 'ELNO',['QIRE_ELEM_SIGM'],            "Indicateurs d'erreur en quantités d'intéret en résidu aux noeuds par élément")
     self('SIGM_NOZ1_ELGA', 'ELEM',['SIEF_ELGA','SIEF_ELGA_DEPL'],"Champ de contraintes lissées Zhu-Zienkiewicz 1 aux noeuds")

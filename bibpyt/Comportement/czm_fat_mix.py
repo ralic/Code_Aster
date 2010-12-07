@@ -1,4 +1,4 @@
-#@ MODIF czm_fat_mix Comportement  DATE 20/07/2009   AUTEUR LAVERNE J.LAVERNE 
+#@ MODIF czm_fat_mix Comportement  DATE 07/12/2010   AUTEUR GENIAUT S.GENIAUT 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -33,7 +33,7 @@ loi = LoiComportement(
    modelisation   = ('3D','PLAN','AXIS','INTERFAC'),
    deformation    = ('PETIT'),
    nom_varc       = None,
-   schema         = ('IMPLICITE'),
+   algo_inte         = ('ANALYTIQUE'),
    type_matr_tang = ('PERTURBATION', 'VERIFICATION'),
    proprietes     = ('PRED_ELAS'),
 )

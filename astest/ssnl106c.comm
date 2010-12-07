@@ -1,4 +1,4 @@
-# MODIF  DATE 30/08/2010   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 07/12/2010   AUTEUR GENIAUT S.GENIAUT 
 # TITRE POUTRE ENCASTREE A UNE EXTREMITE ET CHARGEE PAR UNE TRACTION
 # ssnl106c.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -213,8 +213,7 @@ RESM=STAT_NON_LINE(
                 CHARGE = CHARM,
                 FONC_MULT = FONCM),
                          COMP_INCR=_F(
-                RELATION = 'VMIS_POU_LINE',
-                RESO_INTE = 'RUNGE_KUTTA_4'),
+                RELATION = 'VMIS_POU_LINE'),
                          INCREMENT=_F(
                 LIST_INST = LINSR),
                        CONVERGENCE=_F(
@@ -373,31 +372,31 @@ TEST_RESU(RESU=(_F( RESULTAT = RESM, NOM_CHAM = 'REAC_NODA', NOEUD = 'R3',
 
 #---------------------------------------------------------------------
 
-CALC_ELEM( reuse=RESM,   RESULTAT=RESM,
-                      NUME_ORDRE=( 1,  71, ),
-                          OPTION=( 'SIGM_ELNO_SIEF',
-                                   'SIPO_ELNO_SIEF', )
-                     )
+# CALC_ELEM( reuse=RESM,   RESULTAT=RESM,
+#                       NUME_ORDRE=( 1,  71, ),
+#                           OPTION=( 'SIGM_ELNO_SIEF',
+#                                    'SIPO_ELNO_SIEF', )
+#                      )
 
-TEST_RESU(RESU=(
-       _F(  RESULTAT = RESM,   NOM_CHAM = 'SIGM_ELNO_SIEF',
-              NUME_ORDRE = 1,     MAILLE = 'SC2',
-              NOEUD = 'C3',     NOM_CMP = 'SIXX',
-              REFERENCE = 'ANALYTIQUE',    VALE = 1.50000E+08),
-       _F(  RESULTAT = RESM,   NOM_CHAM = 'SIPO_ELNO_SIEF',
-              NUME_ORDRE = 1,     MAILLE = 'SC2',
-              NOEUD = 'C3',     NOM_CMP = 'SMFZ',
-              REFERENCE = 'ANALYTIQUE',    VALE = -1.50000E+08),
-
-       _F(  RESULTAT = RESM,   NOM_CHAM = 'SIGM_ELNO_SIEF',
-              NUME_ORDRE = 71,     MAILLE = 'SC2',
-              NOEUD = 'C3',     NOM_CMP = 'SIXX',
-              REFERENCE = 'ANALYTIQUE',    VALE = 2.53809E+08),
-       _F(  RESULTAT = RESM,   NOM_CHAM = 'SIPO_ELNO_SIEF',
-              NUME_ORDRE = 71,     MAILLE = 'SC2',
-              NOEUD = 'C3',     NOM_CMP = 'SMFZ',
-              REFERENCE = 'ANALYTIQUE',    VALE = 2.53809E+08))
-              )
+# TEST_RESU(RESU=(
+#        _F(  RESULTAT = RESM,   NOM_CHAM = 'SIGM_ELNO_SIEF',
+#               NUME_ORDRE = 1,     MAILLE = 'SC2',
+#               NOEUD = 'C3',     NOM_CMP = 'SIXX',
+#               REFERENCE = 'ANALYTIQUE',    VALE = 1.50000E+08),
+#        _F(  RESULTAT = RESM,   NOM_CHAM = 'SIPO_ELNO_SIEF',
+#               NUME_ORDRE = 1,     MAILLE = 'SC2',
+#               NOEUD = 'C3',     NOM_CMP = 'SMFZ',
+#               REFERENCE = 'ANALYTIQUE',    VALE = -1.50000E+08),
+# 
+#        _F(  RESULTAT = RESM,   NOM_CHAM = 'SIGM_ELNO_SIEF',
+#               NUME_ORDRE = 71,     MAILLE = 'SC2',
+#               NOEUD = 'C3',     NOM_CMP = 'SIXX',
+#               REFERENCE = 'ANALYTIQUE',    VALE = 2.53809E+08),
+#        _F(  RESULTAT = RESM,   NOM_CHAM = 'SIPO_ELNO_SIEF',
+#               NUME_ORDRE = 71,     MAILLE = 'SC2',
+#               NOEUD = 'C3',     NOM_CMP = 'SMFZ',
+#               REFERENCE = 'ANALYTIQUE',    VALE = 2.53809E+08))
+#               )
 
 #---------------------------------------------------------------------
 FIN( )

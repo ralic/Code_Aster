@@ -1,4 +1,4 @@
-# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 07/12/2010   AUTEUR GENIAUT S.GENIAUT 
 # TITRE : TRACTION SUR UN POLYCRISTAL A 10 GRAINS, ACIER BAINITIQUE
 # ssnv194b.para = tps_job 150 mem_job 60Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -140,7 +140,7 @@ SOLNL=STAT_NON_LINE(MODELE=TROISD,
                     COMP_INCR=(_F(RELATION='POLYCRISTAL',
                                   COMPOR=COMPORP,
                                   DEFORMATION='PETIT',
-                                  RESO_INTE='RUNGE_KUTTA_2',
+                                  ALGO_INTE='RUNGE_KUTTA',
                                   TOUT='OUI',
                                   RESI_INTE_RELA=1.E-6
                                   ),),

@@ -2,7 +2,7 @@
      &                    KTAN, EFFINT, PGL, CRIT, CODRET )
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION 
-C MODIF ELEMENTS  DATE 23/03/2010   AUTEUR SFAYOLLE S.FAYOLLE 
+C MODIF ELEMENTS  DATE 07/12/2010   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -45,11 +45,8 @@ C                      REDECOUPAGE LOCAL DU PAS DE TEMPS
 C                      (ITER_INTE_PAS  == ITEDEC)
 C                       -1,0,1 = PAS DE REDECOUPAGE
 C                       N = NOMBRE DE PALIERS
-C                (6) = TYPE D INTEGRATION LOCAL POUR
-C                      LA LOI DE COMPORTEMENT
-C                      (RESO_INTE == INTLOC)
-C                      0 = IMPLICITE
-C                      1 = RUNGE_KUTTA
+C                (6) = TYPE D INTEGRATION LOCAL POUR LA LOI DE 
+C                      COMPORTEMENT (ALGO_INTE)
 C     OUT KTAN : MATRICE DE RIGIDITE TANGENTE
 C                    SI 'FULL_MECA' OU 'RIGI_MECA_TANG'
 C     OUT BTSIG : DIV (SIGMA)

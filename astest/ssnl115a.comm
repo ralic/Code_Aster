@@ -1,4 +1,4 @@
-# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 07/12/2010   AUTEUR GENIAUT S.GENIAUT 
 # TITRE POUTRE EN FLEXION SIMPLE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -108,7 +108,7 @@ RESU=STAT_NON_LINE(
                 ITER_GLOB_MAXI = NBIGLOB),
                          COMP_INCR=_F(
                 RELATION = 'VMIS_POU_FLEJOU',
-                RESO_INTE = 'RUNGE_KUTTA_4',
+                
                 ITER_INTE_MAXI = NBIINTE,
                 DEFORMATION = 'PETIT',
                 GROUP_MA = 'STICK', ),

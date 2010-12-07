@@ -3,7 +3,7 @@
      &                   ,DA1,DA2,KDMAX,TOLD,CODRET)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 12/04/2010   AUTEUR SFAYOLLE S.FAYOLLE 
+C MODIF ELEMENTS  DATE 06/12/2010   AUTEUR SFAYOLLE S.FAYOLLE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -90,23 +90,30 @@ C-----VERIFIER SI LE SEUIL EST ATTEINT
      &    .OR. (.NOT. LCONV2 .AND. DA2.GE.VIM(2))) THEN
 
         DO 60, I = 1,KDMAX
-          DR1D  = COF1*TREPS*DE33D1 /(1.0D0 + DA1)**2
-     &          - 2.0D0*QM1   /(1.0D0 + DA1)**3
-     &          - 2.0D0*QFF(1)/(ALF   + DA1)**3
-          DR2D  = COF1*TREPS*DE33D2 /(1.0D0 + DA2)**2      
-     &          - 2.0D0*QM2   /(1.0D0 + DA2)**3
-     &          - 2.0D0*QFF(2)/(ALF   + DA2)**3
 
-          IF(ABS(DR1D) .LT. 1.0D-14 ) THEN
-            DD1 = 0.0D0
-          ELSE
-            DD1 = - RD1/DR1D
+          DD1 = 0.0D0
+          DD2 = 0.0D0
+
+          IF (RD1 .GE. 0.0D0) THEN
+            DR1D  = COF1*TREPS*DE33D1 /(1.0D0 + DA1)**2
+     &            - 2.0D0*QM1   /(1.0D0 + DA1)**3
+     &            - 2.0D0*QFF(1)/(ALF   + DA1)**3
+            IF(ABS(DR1D) .LT. 1.0D-14 ) THEN
+              DD1 = 0.0D0
+            ELSE
+              DD1 = - RD1/DR1D
+            ENDIF
           ENDIF
 
-          IF(ABS(DR2D) .LT. 1.0D-14 ) THEN
-            DD2 = 0.0D0
-          ELSE
-            DD2 = - RD2/DR2D
+          IF (RD2 .GE. 0.0D0) THEN
+            DR2D = COF1*TREPS*DE33D2 /(1.0D0 + DA2)**2
+     &           - 2.0D0*QM2   /(1.0D0 + DA2)**3
+     &           - 2.0D0*QFF(2)/(ALF   + DA2)**3
+            IF(ABS(DR2D) .LT. 1.0D-14 ) THEN
+              DD2 = 0.0D0
+            ELSE
+              DD2 = - RD2/DR2D
+            ENDIF
           ENDIF
 
           IF(((ABS(DD1*RD1) .LT. TOLD*SEUILR) .OR.

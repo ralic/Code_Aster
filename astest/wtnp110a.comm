@@ -1,4 +1,4 @@
-# MODIF  DATE 30/08/2010   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 07/12/2010   AUTEUR PELLET J.PELLET 
 # TITRE  - ECOULEMENT ORTHOTROPE SATURE EN 2D
 # wtnp110a.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -197,12 +197,12 @@ U0=CALC_ELEM(reuse =U0,
              RESULTAT=U0,
              LIST_INST=INSTERR,
              TYPE_OPTION='INDI_ERREUR',
-             OPTION=('ERRE_ELEM_SIGM','ERRE_ELNO_ELEM',),);
+             OPTION=('ERME_ELEM','ERME_ELNO',),);
 
 U0=CALC_NO(reuse =U0,
            RESULTAT=U0,
            LIST_INST=INSTERR,
-           OPTION='ERRE_NOEU_ELEM',);
+           OPTION='ERME_NOEU',);
 
 TEST_RESU(RESU=(_F(RESULTAT=U0,
                    NUME_ORDRE=1,
@@ -239,7 +239,7 @@ TEST_RESU(RESU=(_F(RESULTAT=U0,
                    VERSION='10.2.09',),
                 _F(RESULTAT=U0,
                    NUME_ORDRE=1,
-                   NOM_CHAM='ERRE_NOEU_ELEM',
+                   NOM_CHAM='ERME_NOEU',
                    NOM_CMP='ERHMHY_G',
                    NOEUD='N313',
                    VALE=1.8983822585492E-12,

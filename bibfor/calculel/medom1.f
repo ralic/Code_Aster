@@ -10,7 +10,7 @@
       CHARACTER*(*)                      KCHA
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 08/11/2010   AUTEUR REZETTE C.REZETTE 
+C MODIF CALCULEL  DATE 07/12/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -88,6 +88,7 @@ C
 C
       IF ( (NOMCMD.EQ.'CALC_ELEM'     ).OR.
      &     (NOMCMD.EQ.'CALC_NO'       ).OR.
+     &     (NOMCMD.EQ.'CALC_SENSI'    ).OR.
      &     (NOMCMD.EQ.'POST_ELEM'     ).OR.
      &     (NOMCMD.EQ.'CALC_G'        )) THEN
 C

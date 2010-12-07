@@ -6,22 +6,22 @@
       CHARACTER*8              TYPAC,RESU,CHAM
       CHARACTER*16        NSYMB
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 28/06/2010   AUTEUR FLEJOU J-L.FLEJOU 
+C MODIF UTILITAI  DATE 07/12/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C     ----- OPERATEUR CREA_TABLE , MOT-CLE FACTEUR RESU   --------------
 C
@@ -47,7 +47,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       LOGICAL           ZL
       COMMON / LVARJE / ZL(1)
       CHARACTER*8       ZK8
-      CHARACTER*16              ZK16
+      CHARACTER*16              ZK16,CONCEP
       CHARACTER*24                       ZK24
       CHARACTER*32                                ZK32
       CHARACTER*80                                         ZK80
@@ -56,8 +56,8 @@ C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
       CHARACTER*8 K8B
       INTEGER N0,N1,JKCHA,JRVAL,JIVAL,JNIORD,NBTO,NBNO,NBLO,NBNI,NBLI
       INTEGER NBNM,NBLM,NBNF,NBLF,NBIS,NBR8,JLIST,IBID,NBTROU,I
-      INTEGER NBCMP,VALI,N2
-      REAL*8  R8B,EPSI,VALR
+      INTEGER NBCMP,VALI,N2,JINST,KK,NUORD
+      REAL*8  R8B,EPSI,VALR,RINST
       COMPLEX*16 CBID
       CHARACTER*4 TYCH
       CHARACTER*8 CRIT
@@ -73,7 +73,7 @@ C =============================================================
 C -1- CAS: CHAM_GD
 C =============================================================
 
-      IF(N0.NE.0)THEN 
+      IF(N0.NE.0)THEN
 C
            CALL WKVECT(NKCHA,'V V K24',1,JKCHA)
            CALL GETVID('RESU','CHAM_GD'  ,1,1,1,ZK24(JKCHA),N0)
@@ -91,7 +91,7 @@ C
 C =============================================================
 C -2- CAS: RESULTAT/NOM_CHAM
 C =============================================================
-      ELSEIF(N1.NE.0)THEN 
+      ELSEIF(N1.NE.0)THEN
 C
 C --- 2.1- ON DETERMINE :
 C     ------------------
@@ -151,7 +151,7 @@ C        -- LIST_ORDRE, LIST_MODE
             ELSE
                TYPAC = 'MODE'
                CALL GETVID('RESU','LIST_MODE',1,1,1,NLIST,N1)
-            ENDIF    
+            ENDIF
             NLIST(20:24) = '.VALE'
             CALL JELIRA(NLIST,'LONMAX',NBVAL,K8B)
             CALL JEVEUO(NLIST,'L',JLIST)
@@ -196,19 +196,35 @@ C        -- FREQ
 C
 C    -- ACCES TOUT_ORDRE :
         ELSE
-          CALL WKVECT(NRVAL,'V V R',1,JRVAL)
-          ZR(JRVAL) = 0.0D0
 
-          TYPAC = 'ORDRE'
           CBID = DCMPLX(0,0)
           CALL RSORAC(RESU,'LONUTI',IBID,R8B,K8B,CBID,R8B,K8B,
      &               NBVAL,1,NBTROU)
           CALL WKVECT(NIVAL,'V V I',NBVAL,JIVAL)
           CALL RSORAC(RESU,'TOUT_ORDRE',IBID,R8B,K8B,CBID,R8B,K8B,
      &               ZI(JIVAL),NBVAL,NBTROU)
+
+C         -- SI LE RESULTAT EST UN EVOL_XXX, ON FORCE TYPAC='INST'
+C            POUR QUE LES INSTANTS SOIENT IMPRIMES DANS LA TABLE :
+          CALL GETTCO(RESU,CONCEP)
+          IF (CONCEP(1:5).EQ.'EVOL_') THEN
+            TYPAC='INST'
+            CALL WKVECT(NRVAL,'V V R',NBVAL,JRVAL)
+            DO 25, KK=1,NBVAL
+              NUORD=ZI(JIVAL-1+KK)
+              CALL RSADPA(RESU,'L',1,'INST',NUORD,0,JINST,K8B)
+              RINST=ZR(JINST)
+              ZR(JRVAL-1+KK) = RINST
+25          CONTINUE
+          ELSE
+            TYPAC = 'ORDRE'
+            CALL WKVECT(NRVAL,'V V R',1,JRVAL)
+            ZR(JRVAL) = 0.0D0
+          ENDIF
+
         ENDIF
 
-C    
+C
 C --- 2.2- ON DETERMINE :
 C     ------------------
 C         NKCHA = TABLEAU DES NOMS DE CHAMP
@@ -231,7 +247,7 @@ C         NKCHA = TABLEAU DES NOMS DE CHAMP
                 ZK24(JKCHA+I-1) = '&&CHAMP_INEXISTANT'
             ENDIF
 30        CONTINUE
-   
+
         ELSEIF ( TYPAC .EQ. 'MODE' ) THEN
           CALL JEVEUO(NIVAL,'L',JIVAL)
           DO 40 I = 1,NBVAL
@@ -282,10 +298,7 @@ C         NKCHA = TABLEAU DES NOMS DE CHAMP
                 ZK24(JKCHA+I-1) = '&&CHAMP_INEXISTANT'
             ENDIF
 50        CONTINUE
-
         ENDIF
-
-
       ENDIF
 
       CALL JEDEMA()

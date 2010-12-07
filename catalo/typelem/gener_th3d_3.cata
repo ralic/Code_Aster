@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 16/02/2010   AUTEUR PELLET J.PELLET 
+%& MODIF TYPELEM  DATE 07/12/2010   AUTEUR PELLET J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -45,9 +45,8 @@ ENTETE__ ELEMENT__ THER_PYRAM13     MAILLE__ PYRAM13
    OPTION__   DURT_ELNO_META          -1
    OPTION__   META_ELNO_TEMP          -1
    OPTION__   META_INIT_ELNO          -1
-   OPTION__   ERRE_ELEM_TEMP_R        -1
-   OPTION__   ERRE_ELEM_TEMP_F        -1
-   OPTION__   ERRE_ELNO_ELEM          -1
+   OPTION__   ERTH_ELEM               -1
+   OPTION__   ERTH_ELNO               -1
 ENTETE__ ELEMENT__ THER_PYRAM5      MAILLE__ PYRAM5
    ELREFE__  PY5       GAUSS__  RIGI=FPG5  MASS=FPG5  GANO=FPG5
    ELREFE__  QU4       GAUSS__  RIGI=FPG4  MASS=FPG4
@@ -57,9 +56,8 @@ ENTETE__ ELEMENT__ THER_PYRAM5      MAILLE__ PYRAM5
    OPTION__   DURT_ELNO_META          -1
    OPTION__   META_ELNO_TEMP          -1
    OPTION__   META_INIT_ELNO          -1
-   OPTION__   ERRE_ELEM_TEMP_R        -1
-   OPTION__   ERRE_ELEM_TEMP_F        -1
-   OPTION__   ERRE_ELNO_ELEM          -1
+   OPTION__   ERTH_ELEM               -1
+   OPTION__   ERTH_ELNO               -1
 ENTETE__ ELEMENT__ THER_TETRA10     MAILLE__ TETRA10
    ELREFE__  T10       GAUSS__  RIGI=FPG15   MASS=FPG15  GANO=FPG15
    ELREFE__  TR6       GAUSS__  RIGI=FPG6   MASS=FPG6
@@ -78,9 +76,8 @@ ENTETE__ ELEMENT__ THER_PYRAM5_D    MAILLE__ PYRAM5
    ELREFE__  QU4       GAUSS__  RIGI=FPG4    MASS=FPG4
    ELREFE__  TR3       GAUSS__  RIGI=COT3    MASS=COT3
    OPTION__   INIT_MAIL_VOIS          -1
-   OPTION__   ERRE_ELEM_TEMP_R        -1
-   OPTION__   ERRE_ELEM_TEMP_F        -1
-   OPTION__   ERRE_ELNO_ELEM          -1
+   OPTION__   ERTH_ELEM               -1
+   OPTION__   ERTH_ELNO               -1
 ENTETE__ ELEMENT__ THER_TETRA4_D    MAILLE__ TETRA4
    ELREFE__  TE4       GAUSS__  RIGI=FPG4  MASS=FPG4  GANO=FPG4  NOEU=NOEU_S
    ELREFE__  TR3       GAUSS__  RIGI=COT3    MASS=COT3
@@ -192,15 +189,11 @@ OPTION__
                               OUT__  XXXXXX   XXXXXX
     EPOT_ELEM_TEMP      66    IN__   NGEOMER  PGEOMER  CMATERC  PMATERC  DDL_THER PTEMPER  CTEMPSR  PTEMPSR
                               OUT__  EENEDNO  PENERDR
-    ERRE_ELEM_TEMP_F    3     IN__   CREFERK  PCHARG   EFLUXNO  PFLUX_M  EFLUXNO  PFLUX_P  NGEOMER  PGEOMER
-                                     CMATERC  PMATERC  CSOURCF  PSOURCR  DDL_THER PTEMP_M  DDL_THER PTEMP_P
-                                     EVOISIN  PVOISIN
+    ERTH_ELEM           3     IN__   CREFERK  PCHARG   EFLUXNO  PFLUX_M  EFLUXNO  PFLUX_P  NGEOMER  PGEOMER
+                                     CMATERC  PMATERC  CSOURCF  PSOURCF  DDL_THER PTEMP_M  DDL_THER PTEMP_P
+                                     EVOISIN  PVOISIN  ESOURCR  PSOURCR
                               OUT__  EERREURT PERREUR
-    ERRE_ELEM_TEMP_R    3     IN__   CREFERK  PCHARG   EFLUXNO  PFLUX_M  EFLUXNO  PFLUX_P  NGEOMER  PGEOMER
-                                     CMATERC  PMATERC  ESOURCR  PSOURCR  DDL_THER PTEMP_M  DDL_THER PTEMP_P
-                                     EVOISIN  PVOISIN
-                              OUT__  EERREURT PERREUR
-    ERRE_ELNO_ELEM      379   IN__   EERREURT PERREUR
+    ERTH_ELNO           379   IN__   EERREURT PERREUR
                               OUT__  EERRENOT PERRENO
     FLUX_ELGA_SENS      62    IN__   CCAMASS  PCAMASS  NGEOMER  PGEOMER  CMATERC  PMATERC  CMATERC  PMATSEN
                                      DDL_THER PTEMPER  CTEMPSR  PTEMPSR  DDL_THER PTEMSEN

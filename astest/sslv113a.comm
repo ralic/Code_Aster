@@ -1,4 +1,4 @@
-# MODIF  DATE 19/10/2010   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 07/12/2010   AUTEUR PELLET J.PELLET 
 # TITRE TEST DE L'ESTIMATEUR EN RESIDU SUR UN CYLINDRE CREUX
 # sslv113a.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -87,7 +87,7 @@ RESU=CALC_ELEM(     reuse=RESU,
 
                             TOUT_ORDRE='OUI',
                                 OPTION=( 'SIGM_ELNO_DEPL',
-                                         'ERRE_ELEM_SIGM',
+                                         'ERME_ELEM',
                                         ),
                               RESULTAT=RESU
                         )
@@ -135,35 +135,35 @@ TEST_RESU(RESU=(
            )
 
 TEST_RESU(RESU=(
-        _F(  RESULTAT = RESU,   NUME_ORDRE = 1, NOM_CHAM = 'ERRE_ELEM_SIGM',
+        _F(  RESULTAT = RESU,   NUME_ORDRE = 1, NOM_CHAM = 'ERME_ELEM',
           MAILLE = 'M1',     POINT = 1, NOM_CMP = 'NUEST',
           VALE = 0.,     CRITERE = 'ABSOLU',
           PRECISION = 5.),
-        _F(  RESULTAT = RESU,   NUME_ORDRE = 1, NOM_CHAM = 'ERRE_ELEM_SIGM',
+        _F(  RESULTAT = RESU,   NUME_ORDRE = 1, NOM_CHAM = 'ERME_ELEM',
           MAILLE = 'M2',     POINT = 1, NOM_CMP = 'NUEST',
           VALE = 0.,     CRITERE = 'ABSOLU',
           PRECISION = 5.),
-        _F(  RESULTAT = RESU,   NUME_ORDRE = 1, NOM_CHAM = 'ERRE_ELEM_SIGM',
+        _F(  RESULTAT = RESU,   NUME_ORDRE = 1, NOM_CHAM = 'ERME_ELEM',
           MAILLE = 'M3',     POINT = 1, NOM_CMP = 'NUEST',
           VALE = 0.,     CRITERE = 'ABSOLU',
           PRECISION = 5.),
-        _F(  RESULTAT = RESU,   NUME_ORDRE = 1, NOM_CHAM = 'ERRE_ELEM_SIGM',
+        _F(  RESULTAT = RESU,   NUME_ORDRE = 1, NOM_CHAM = 'ERME_ELEM',
           MAILLE = 'M4',     POINT = 1, NOM_CMP = 'NUEST',
           VALE = 0.,     CRITERE = 'ABSOLU',
           PRECISION = 5.),
-        _F(  RESULTAT = RESU,   NUME_ORDRE = 1, NOM_CHAM = 'ERRE_ELEM_SIGM',
+        _F(  RESULTAT = RESU,   NUME_ORDRE = 1, NOM_CHAM = 'ERME_ELEM',
           MAILLE = 'M1',     POINT = 1, NOM_CMP = 'ERREST',
           VALE = 0.,     CRITERE = 'ABSOLU',
           PRECISION = 0.1),
-        _F(  RESULTAT = RESU,   NUME_ORDRE = 1, NOM_CHAM = 'ERRE_ELEM_SIGM',
+        _F(  RESULTAT = RESU,   NUME_ORDRE = 1, NOM_CHAM = 'ERME_ELEM',
           MAILLE = 'M2',     POINT = 1, NOM_CMP = 'ERREST',
           VALE = 0.,     CRITERE = 'ABSOLU',
           PRECISION = 0.1),
-        _F(  RESULTAT = RESU,   NUME_ORDRE = 1, NOM_CHAM = 'ERRE_ELEM_SIGM',
+        _F(  RESULTAT = RESU,   NUME_ORDRE = 1, NOM_CHAM = 'ERME_ELEM',
           MAILLE = 'M3',     POINT = 1, NOM_CMP = 'ERREST',
           VALE = 0.,     CRITERE = 'ABSOLU',
           PRECISION = 0.1),
-        _F(  RESULTAT = RESU,   NUME_ORDRE = 1, NOM_CHAM = 'ERRE_ELEM_SIGM',
+        _F(  RESULTAT = RESU,   NUME_ORDRE = 1, NOM_CHAM = 'ERME_ELEM',
           MAILLE = 'M4',     POINT = 1, NOM_CMP = 'ERREST',
           VALE = 0.,     CRITERE = 'ABSOLU',
           PRECISION = 0.1))

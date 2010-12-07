@@ -1,4 +1,4 @@
-# MODIF  DATE 04/10/2010   AUTEUR GNICOLAS G.NICOLAS 
+# MODIF  DATE 07/12/2010   AUTEUR PELLET J.PELLET 
 # TITRE DEMONSTRATION DE LA JOURNE ASTER LIBRE DU 14 OCTOBRE 2003
 # demo001a.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -88,7 +88,7 @@ for k in range(3):
                               _F(CHARGE=FPILO),),);
 
    RESUELAS=CALC_ELEM(reuse =RESUELAS,
-                 OPTION=('SIEF_ELNO_ELGA','ERRE_ELEM_SIGM','ERRE_ELNO_ELEM'),
+                 OPTION=('SIEF_ELNO_ELGA','ERME_ELEM','ERME_ELNO'),
                  RESULTAT=RESUELAS);
 
    MAIL[k+1]=CO('MAIL_%d' % (k+1))
@@ -96,7 +96,7 @@ for k in range(3):
                    MAILLAGE_N = MAIL[k],
                    MAILLAGE_NP1 = MAIL[k+1],
                    RESULTAT_N = RESUELAS,
-                   NOM_CHAM = 'ERRE_ELEM_SIGM',
+                   NOM_CHAM = 'ERME_ELEM',
                    NOM_CMP = 'ERREST' ,
                    CRIT_RAFF_PE = 0.08,
                 MAILLAGE_FRONTIERE = MAILFRON,
@@ -108,7 +108,7 @@ for k in range(3):
    DEFI_FICHIER(UNITE=51)
 
    IMPR_RESU(FORMAT='GMSH',UNITE=51,MODELE=MO,
-             RESU=_F( RESULTAT=RESUELAS,NOM_CHAM='ERRE_ELEM_SIGM',NOM_CMP='ERREST'),)
+             RESU=_F( RESULTAT=RESUELAS,NOM_CHAM='ERME_ELEM',NOM_CMP='ERREST'),)
    DEFI_FICHIER(ACTION='LIBERER',UNITE=51)
 
 #  Lancement de GMSH

@@ -5,7 +5,7 @@
      &                    TYPESE, NPASS,  CODRET )
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 19/10/2010   AUTEUR DELMAS J.DELMAS 
+C MODIF CALCULEL  DATE 07/12/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -180,10 +180,10 @@ C               12   345678   9012345678901234
       YAXFEM = .FALSE.
 C
 C=======================================================================
-C 2. OPTION "ERRE_ELEM_SIGM"
+C 2. OPTION "ERME_ELEM"
 C=======================================================================
 C
-      IF ( OPTION.EQ.'ERRE_ELEM_SIGM' ) THEN
+      IF ( OPTION.EQ.'ERME_ELEM' ) THEN
 C
 C 2.1. ==> PREALABLES
 C ---- VERIFICATION DU PERIMETRE D'UTILISATION
@@ -365,7 +365,7 @@ C
               ELSE
 C SINON, ON RECUPERE LE CHAMP DE L'INSTANT PRECEDENT
                 IBID = IORDR - 1
-                CALL RSEXC2(1,1,RESUCO,'ERRE_ELEM_SIGM',IBID,K24B,
+                CALL RSEXC2(1,1,RESUCO,'ERME_ELEM',IBID,K24B,
      &                      OPTION,IRET1)
                 IF ( IRET1.GT.0 ) THEN
                   CALL CODENT(IBID,'G',K8B)
@@ -417,10 +417,10 @@ C
  10   CONTINUE
 C
 C=======================================================================
-C 3. OPTION "ERRE_ELNO_ELEM"
+C 3. OPTION "ERME_ELNO"
 C=======================================================================
 C
-      ELSE IF ( OPTION.EQ.'ERRE_ELNO_ELEM' ) THEN
+      ELSE IF ( OPTION.EQ.'ERME_ELNO' ) THEN
 C
         DO 11 , IAUX = 1 , NBORDR
 C
@@ -428,7 +428,7 @@ C
 C
           CALL JERECU('V')
           IORDR = ZI(JORDR+IAUX-1)
-          CALL RSEXC2(1,1,RESUCO,'ERRE_ELEM_SIGM',IORDR,CHERRE,
+          CALL RSEXC2(1,1,RESUCO,'ERME_ELEM',IORDR,CHERRE,
      &                OPTION,IRET1)
 C
           IF (IRET1.EQ.0) THEN

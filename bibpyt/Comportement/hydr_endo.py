@@ -1,4 +1,4 @@
-#@ MODIF hydr_endo Comportement  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
+#@ MODIF hydr_endo Comportement  DATE 07/12/2010   AUTEUR GENIAUT S.GENIAUT 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -34,7 +34,7 @@ loi = LoiComportement(
    modelisation   = ('KIT_HH','KIT_HHM','KIT_HM','KIT_THHM','KIT_THH','KIT_THM','KIT_THV'),
    deformation    = ('PETIT', 'PETIT_REAC', 'GROT_GDEP'),
    nom_varc       = ('TEMP'),
-   schema         = 'IMPLICITE',
+   algo_inte         = 'SANS_OBJET',
    type_matr_tang = ('PERTURBATION', 'VERIFICATION'),
    proprietes     = ' ',
 )

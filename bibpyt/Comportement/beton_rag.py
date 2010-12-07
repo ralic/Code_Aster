@@ -1,4 +1,4 @@
-#@ MODIF beton_rag Comportement  DATE 08/12/2009   AUTEUR DEBONNIERES P.DE-BONNIERES 
+#@ MODIF beton_rag Comportement  DATE 07/12/2010   AUTEUR GENIAUT S.GENIAUT 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -37,7 +37,7 @@ loi = LoiComportement(
    modelisation   = ('3D', 'AXIS', 'D_PLAN'),
    deformation    = ('PETIT', 'PETIT_REAC'),
    nom_varc       = ('TEMP',),
-   schema         = ('IMPLICITE',),
+   algo_inte         = ('SPECIFIQUE',),
    type_matr_tang = ('PERTURBATION', 'VERIFICATION'),
    proprietes     = None,
 )

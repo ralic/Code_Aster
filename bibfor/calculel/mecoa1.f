@@ -3,7 +3,7 @@
       CHARACTER*(*) OPTIOZ,MODELE,LIGREL,MATE,DEPLA,CHAMEL
 C----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 08/11/2010   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 07/12/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -46,8 +46,8 @@ C DEB-------------------------------------------------------------------
 
       LCHOUT(1) = CHAMEL
 
-      IF (OPTION.EQ.'PRES_DBEL_DEPL') THEN
-        LPAOUT(1) = 'PDBEL_R'
+      IF (OPTION.EQ.'PRME_ELNO') THEN
+        LPAOUT(1) = 'PPRME_R'
         LPAIN(1) = 'PDEPLAC'
         LCHIN(1) = DEPLA
         CALL CALCUL('S',OPTION,LIGREL,1,LCHIN,LPAIN,1,LCHOUT,LPAOUT,'G',

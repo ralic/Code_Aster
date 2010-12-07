@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 19/07/2010   AUTEUR PELLET J.PELLET 
+%& MODIF TYPELEM  DATE 07/12/2010   AUTEUR PELLET J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -274,10 +274,6 @@ OPTION__
                                      CTEMPSR  PTEMPSR  ZVARCPG  PVARCRR
                               OUT__  ECONTNO  PCONTRR
                                      ECONTNC  PCONTRC
-    SIGM_ELNO_SIEF      149   IN__   CCAGRPO  PCAGEPO  CCAGNPO  PCAGNPO  CCAORIE  PCAORIE  DDL_MECA PDEPLAR
-                                     NGEOMER  PGEOMER  CMATERC  PMATERC  EEFGENO  PSIEFNOR CSUROPT  PSUROPT
-                                     ZVARCPG  PVARCPR  CTEMPSR  PTEMPSR  ZVARCPG  PVARCRR
-                              OUT__  ECONTNO  PCONTRR
     SIPO_ELNO_DEPL      149   IN__   CABSCUR  PABSCUR  CCAGRPO  PCAGEPO  CCAGNPO  PCAGNPO  CCAORIE  PCAORIE
                                      DDL_MECA PCHDYNR  CCOEFC   PCOEFFC  CCOEFR   PCOEFFR  DDL_MECA PDEPLAR
                                      CFORCEF  PFF1D1D  CFORCER  PFR1D1D  NGEOMER  PGEOMER  CMATERC  PMATERC
@@ -285,10 +281,6 @@ OPTION__
                                      CTEMPSR  PTEMPSR  ZVARCPG  PVARCRR
                               OUT__  ECONTPO  PCONTPO
                                      ECONTPC  PCONTPC
-    SIPO_ELNO_SIEF      149   IN__   CCAGRPO  PCAGEPO  CCAGNPO  PCAGNPO  CCAORIE  PCAORIE  DDL_MECA PDEPLAR
-                                     NGEOMER  PGEOMER  CMATERC  PMATERC  EEFGENO  PSIEFNOR CSUROPT  PSUROPT
-                                     ZVARCPG  PVARCPR  CTEMPSR  PTEMPSR  ZVARCPG  PVARCRR
-                              OUT__  ECONTPO  PCONTPO
     SYME_MDNS_R         222   IN__   MMATUNS  PNOSYM OUT__  MMATUUR  PSYM
     TOU_INI_ELGA        99    IN__   NGEOMER  PGEOMER
                               OUT__  EEFGEGA  PSIEF_R  ZVARIPG  PVARI_R

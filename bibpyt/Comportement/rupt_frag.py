@@ -1,4 +1,4 @@
-#@ MODIF rupt_frag Comportement  DATE 06/04/2009   AUTEUR DURAND C.DURAND 
+#@ MODIF rupt_frag Comportement  DATE 07/12/2010   AUTEUR GENIAUT S.GENIAUT 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -32,7 +32,7 @@ loi = LoiComportement(
    modelisation   = ('ELEMDISC','GRADVARI'),
    deformation    = ('PETIT'),
    nom_varc       = None,
-   schema         = ('IMPLICITE'),
+   algo_inte         = ('ANALYTIQUE'),
    type_matr_tang = None,
    proprietes     = None,
 )

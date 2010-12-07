@@ -1,4 +1,4 @@
-#@ MODIF irrad3m Comportement  DATE 20/09/2010   AUTEUR FLEJOU J-L.FLEJOU 
+#@ MODIF irrad3m Comportement  DATE 07/12/2010   AUTEUR GENIAUT S.GENIAUT 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -34,7 +34,7 @@ loi = LoiComportement(
    modelisation   = ('3D', 'AXIS', 'D_PLAN','C_PLAN'),
    deformation    = ('PETIT', 'PETIT_REAC', 'GROT_GDEP'),
    nom_varc       = ('TEMP','IRRA'),
-   schema         = ('IMPLICITE','IMPLICITE_RELI'),
+   algo_inte         = ('NEWTON','NEWTON_RELI'),
    type_matr_tang = ('PERTURBATION', 'VERIFICATION'),
    proprietes     = None,
 )

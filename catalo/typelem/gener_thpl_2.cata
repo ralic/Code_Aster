@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 10/05/2010   AUTEUR TARDIEU N.TARDIEU 
+%& MODIF TYPELEM  DATE 07/12/2010   AUTEUR PELLET J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -273,16 +273,11 @@ OPTION__
                               OUT__  XXXXXX   XXXXXX
     EPOT_ELEM_TEMP      220   IN__   NGEOMER  PGEOMER  CMATERC  PMATERC  DDL_THER PTEMPER  CTEMPSR  PTEMPSR
                               OUT__  EENEDNO  PENERDR
-    ERRE_ELEM_TEMP_F    3     IN__   CREFERK  PCHARG   EFLUXNO  PFLUX_M  EFLUXNO  PFLUX_P  NGEOMER  PGEOMER
-                                     CMATERC  PMATERC  CSOURCF  PSOURCR  DDL_THER PTEMP_M  DDL_THER PTEMP_P
-                                     EVOISIN  PVOISIN
+    ERTH_ELEM           3     IN__   CREFERK  PCHARG   EFLUXNO  PFLUX_M  EFLUXNO  PFLUX_P  NGEOMER  PGEOMER
+                                     CMATERC  PMATERC  CSOURCF  PSOURCF  DDL_THER PTEMP_M  DDL_THER PTEMP_P
+                                     EVOISIN  PVOISIN  ESOURCR  PSOURCR
                               OUT__  EERREURT PERREUR
-    ERRE_ELEM_TEMP_R    3     IN__   CREFERK  PCHARG   EFLUXNO  PFLUX_M  EFLUXNO  PFLUX_P  NGEOMER  PGEOMER
-                                     CMATERC  PMATERC  ESOURCR  PSOURCR  DDL_THER PTEMP_M  DDL_THER PTEMP_P
-                                     EVOISIN  PVOISIN
-                              OUT__  EERREURT PERREUR
-    ERRE_ELNO_ELEM      379   IN__   EERREURT PERREUR
-                              OUT__  EERRENOT PERRENO
+    ERTH_ELNO           379   IN__   EERREURT PERREUR  OUT__  EERRENOT PERRENO
     FLUX_ELGA_SENS      69    IN__   CCAMASS  PCAMASS  NGEOMER  PGEOMER  CMATERC  PMATERC  CMATERC  PMATSEN
                                      DDL_THER PTEMPER  CTEMPSR  PTEMPSR  DDL_THER PTEMSEN
                               OUT__  EFLUXPG  PFLUX_R
@@ -337,7 +332,7 @@ OPTION__
     TOU_INI_ELEM        99    IN__   NGEOMER  PGEOMER
                               OUT__  CSOURCR  PSOUR_R
     TOU_INI_ELGA        99    IN__   NGEOMER  PGEOMER
-                              OUT__  ESOURCR  PSOUR_R  EGNEUT_R PNEUT_R  EGGEOM_R PGEOM_R  EGNEUT_F PNEUT_F 
+                              OUT__  ESOURCR  PSOUR_R  EGNEUT_R PNEUT_R  EGGEOM_R PGEOM_R  EGNEUT_F PNEUT_F
     TOU_INI_ELNO        99    IN__   NGEOMER  PGEOMER
                               OUT__  ENGEOM_R PGEOM_R  ENINST_R PINST_R  ENNEUT_F PNEUT_F  ENNEUT_R PNEUT_R
                                      EPHASNO_ PVARI_R

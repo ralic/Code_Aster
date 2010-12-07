@@ -1,0 +1,94 @@
+#& MODIF COMMUN  DATE 07/12/2010   AUTEUR GENIAUT S.GENIAUT 
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                  
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+# RESPONSABLE GENIAUT S.GENIAUT
+def C_COMP_ELAS( COMMAND ) :  #COMMUN#
+    
+    assert COMMAND in ('MACR_ASCOUF_CALC','MACR_ASPIC_CALC','CALC_G','POST_GP',
+                       'CALC_POINT_MAT','SIMU_POINT_MAT', 'DYNA_NON_LINE','STAT_NON_LINE','CALCUL',)
+    
+    kwargs = {}
+
+# ----------------------------------------------------------------------------------------------------------------------------------
+#                            RELATION
+# ----------------------------------------------------------------------------------------------------------------------------------
+    # commandes pour lesquelles on ne peut pas choisir une relation de type 1d
+    if COMMAND in ('CALC_G','POST_GP','CALC_POINT_MAT','SIMU_POINT_MAT' ):
+        kwargs['RELATION'] = SIMP(statut='o',typ='TXM',defaut="ELAS",
+                                 into=("ELAS","ELAS_VMIS_LINE","ELAS_VMIS_TRAC","ELAS_VMIS_PUIS","ELAS_HYPER"))
+
+    # commandes pour lesquelles tout type de relation est possible
+    elif COMMAND in ('DYNA_NON_LINE','STAT_NON_LINE','CALCUL',):
+        kwargs['RELATION'] = SIMP(statut='o',typ='TXM',defaut="ELAS",
+                                 into=("ELAS","ELAS_VMIS_LINE","ELAS_VMIS_TRAC",
+                                       "ELAS_VMIS_PUIS","ELAS_HYPER","ELAS_POUTRE_GR","CABLE"))
+
+     # cas particulier de MACR_ASCOUF/ASPIC_CALC : on limite volontairement le choix pour ne pas perturber l'utilisateur
+     # mais theoriquement, toutes les lois disponibles pour CALC_G le sont aussi pour MACR_ASCOUF/ASPIC_CALC
+    elif COMMAND in ('MACR_ASCOUF_CALC','MACR_ASPIC_CALC'):
+        kwargs['RELATION'] = SIMP(statut='o',typ='TXM',into=("ELAS","ELAS_VMIS_TRAC"))
+
+
+# ----------------------------------------------------------------------------------------------------------------------------------
+#                            DEFORMATION
+# ----------------------------------------------------------------------------------------------------------------------------------
+
+    # commandes pour lesquelles on ne peut pas choisir les grandes deformations
+    if COMMAND in ('CALC_POINT_MAT','MACR_ASCOUF_CALC','MACR_ASPIC_CALC'):
+        kwargs['DEFORMATION'] =SIMP(statut='f',typ='TXM',defaut="PETIT" ,into=("PETIT",))
+
+    # commandes pour lesquelles on peut choisir tout type de deformation
+    elif COMMAND in ('DYNA_NON_LINE','STAT_NON_LINE','CALCUL','POST_GP','CALC_G','SIMU_POINT_MAT', ):
+        kwargs['DEFORMATION'] =SIMP(statut='f',typ='TXM',defaut="PETIT" ,into=("PETIT","GROT_GDEP",))
+
+# ----------------------------------------------------------------------------------------------------------------------------------
+#                            INTEGRATION (RESI_INTE_RELA, ITER_INTE_MAXI, ALGO_INTE)
+# ----------------------------------------------------------------------------------------------------------------------------------
+
+    kwargs['RESI_INTE_RELA']    =SIMP(statut='f',typ='R',defaut= 1.0E-6)
+    kwargs['ITER_INTE_MAXI']    =SIMP(statut='f',typ='I',defaut= 10 )
+    kwargs['ALGO_INTE']         =SIMP(statut='f',typ='TXM',into=("ANALYTIQUE", "SECANTE",))
+
+# ----------------------------------------------------------------------------------------------------------------------------------
+#                            LOCALISATION
+# ----------------------------------------------------------------------------------------------------------------------------------
+
+    # commandes pour lesquelles la localisation n'a pas de sens
+    # 'CALC_POINT_MAT','SIMU_POINT_MAT' 
+
+    # commandes pour lesquelles la localisation est automatique
+    # 'MACR_ASCOUF_CALC','MACR_ASPIC_CALC'
+
+    # commandes pour lesquelles on peut choisir la localisation
+    if COMMAND in ('DYNA_NON_LINE','STAT_NON_LINE','CALC_G','POST_GP','CALCUL'):
+        kwargs['regles'] = (PRESENT_ABSENT('TOUT','GROUP_MA','MAILLE'),)
+        kwargs['TOUT'] =SIMP(statut='f',typ='TXM',into=("OUI",) )
+        kwargs['GROUP_MA']  =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**')
+        kwargs['MAILLE']    =SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**')
+
+# ----------------------------------------------------------------------------------------------------------------------------------
+#                            DIVERS
+# ----------------------------------------------------------------------------------------------------------------------------------
+
+    if COMMAND == 'CALC_G':
+        kwargs['CALCUL_CONTRAINTE'] =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON") )
+
+
+    mcfact = FACT(statut='f',max='**', **kwargs)
+
+    return mcfact

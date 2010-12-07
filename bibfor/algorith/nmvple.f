@@ -2,7 +2,7 @@
      &                   INSTAM,INSTAP,DEPS,SIGM,VIM,
      &                   OPTION,SIGP,VIP,DSIDEP,IRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 07/12/2010   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -73,7 +73,7 @@ C
       REAL*8            DEGRAN(6)
       REAL*8            VPALEM
       EXTERNAL          VPALEM
-      INTEGER           IULMES,IUNIFI,K,L,IRET1
+      INTEGER           IULMES,IUNIFI,K,L,IRET1,IBID
       INTEGER           NDIMSI,IRET2
       REAL*8            A0,XAP,X,TM,TP
       REAL*8            FG,FDGDST,FDGDEV,DEFAM(6),DEFAP(6)
@@ -229,7 +229,7 @@ C
         IF (ABS(A0).LE.PREC) THEN
           X = 0.D0
         ELSE
-          CALL ZEROF2(VPALEM,A0,XAP,PREC,INT(NITER),X,IRET)
+          CALL ZEROF2(VPALEM,A0,XAP,PREC,INT(NITER),X,IRET,IBID)
           IF(IRET.EQ.1) THEN
           IF ( OPTION(1:9) .EQ. 'RAPH_MECA' .OR.
      &         OPTION(1:9) .EQ. 'FULL_MECA' ) THEN

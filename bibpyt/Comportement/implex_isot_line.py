@@ -1,4 +1,4 @@
-#@ MODIF implex_isot_line Comportement  DATE 08/09/2009   AUTEUR SFAYOLLE S.FAYOLLE 
+#@ MODIF implex_isot_line Comportement  DATE 07/12/2010   AUTEUR GENIAUT S.GENIAUT 
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -30,7 +30,7 @@ loi = LoiComportement(
    modelisation   = ('3D', 'AXIS', 'C_PLAN', 'D_PLAN', '1D'),
    deformation    = ('PETIT', 'PETIT_REAC'),
    nom_varc       = ('TEMP'),
-   schema         = 'IMPLICITE',
+   algo_inte         = 'ANALYTIQUE',
    type_matr_tang = ('PERTURBATION', 'VERIFICATION'),
    proprietes     = None,
 )

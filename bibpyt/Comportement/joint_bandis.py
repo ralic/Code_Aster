@@ -1,4 +1,4 @@
-#@ MODIF joint_bandis Comportement  DATE 20/04/2010   AUTEUR JAUBERT A.JAUBERT 
+#@ MODIF joint_bandis Comportement  DATE 07/12/2010   AUTEUR GENIAUT S.GENIAUT 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -31,7 +31,7 @@ loi = LoiComportement(
    modelisation   = ('KIT_HM'),
    deformation    = ('PETIT'),
    nom_varc       = None,
-   schema         = ('IMPLICITE'),
+   algo_inte         = ('SANS_OBJET'),
    type_matr_tang = ('PERTURBATION', 'VERIFICATION'),
    proprietes     = ('PRED_ELAS'),
 )

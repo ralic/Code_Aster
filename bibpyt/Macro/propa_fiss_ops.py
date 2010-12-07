@@ -1,4 +1,4 @@
-#@ MODIF propa_fiss_ops Macro  DATE 24/11/2010   AUTEUR MICOL A.MICOL 
+#@ MODIF propa_fiss_ops Macro  DATE 07/12/2010   AUTEUR DELMAS J.DELMAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -21,16 +21,9 @@
 from math import atan, atan2, cos, sin
 
 import numpy as NP
-import aster
-import string
-import copy
 from Accas import _F
-from Utilitai.Utmess     import  UTMESS
 from types import ListType, TupleType
-from Utilitai.Table      import Table, merge
-from Utilitai.partition import MAIL_PY
-from SD.sd_mater     import sd_compor1
-from Cata.cata import table_sdaster,fiss_xfem,modele_sdaster
+
 
 def InterpolationLineaire(x0, points) :
    """
@@ -113,6 +106,7 @@ def betaf(k1,k2) :
   return beta
 
 def recup_Elas(LOI):
+      from SD.sd_mater     import sd_compor1
       if LOI == None :
          UTMESS('F','RUPTURE1_50') 
       dLoi=LOI[0].cree_dict_valeurs(LOI[0].mc_liste)
@@ -149,7 +143,11 @@ def propa_fiss_ops(self,METHODE_PROPA,INFO,**args):
   ou par projection sur un maillage
   """
 
-
+  import aster
+  import string
+  from Accas import _F
+  from Utilitai.Utmess     import  UTMESS
+  from Utilitai.partition import MAIL_PY
 
   EnumTypes = (ListType, TupleType)
   
@@ -262,6 +260,7 @@ def propa_fiss_ops(self,METHODE_PROPA,INFO,**args):
        __Mod = [None]*StepTot
        mcsimp['TOLERANCE'] = args['TOLERANCE']
        fiss = FissAct[0]
+       import aster
        iret,ibid,mod_fiss = aster.dismoi('F','NOM_MODELE',fiss.nom,'FISS_XFEM')
        mod_fiss=mod_fiss.strip()
        MOD_FISS = self.get_concept(mod_fiss)

@@ -1,11 +1,11 @@
-       SUBROUTINE NMVECD (IMATE, MATE, NMAT, MATCST, HOOK, DT, TP,
+       SUBROUTINE NMVECD (IMATE, MATE, NMAT, MATCST,LOI, HOOK, DT, TP,
      &                    P, NP, BETA, NB, EP, RM, DM,
      &                    DSGDE, DSGDB, DSGDP, DRBDE, DRPDE,
      &                    RB, RP, DRBDB, DRBDP, DRPDB, DRPDP,
      &                    ETATF, IER)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 14/09/2009   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 07/12/2010   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -35,6 +35,7 @@ C
       REAL*8        DT, TP, DRBDE(NB,NB), DRPDE(NP,NB)
       CHARACTER*3   MATCST
       CHARACTER*7   ETATF(3)
+      CHARACTER*16  LOI
 C-----------------------------------------------------------------------
 C     INTEGRATION DE LA LOI DE COMPORTEMENT VISCO PLASTIQUE DE
 C     CHABOCHE AVEC ENDOMAGEMENT
@@ -101,13 +102,11 @@ CJMP      EPSI   = SQRT( R8PREM() )
 C     EPSI   = 1.D-15
       EPSI=R8MIEM()
       IER = 0
-      SY   = MATE(1,2)
-      GN   = MATE(4,2)
-      IF (MATE(4,2).LE.0.D0) GOTO 05001
-      GM   = 1.D0/MATE(5,2)
-      IF (GM.LE.0.D0) GOTO 05001
-      UNSM = MATE(5,2)
-      GK   = 1.D0/MATE(6,2)
+      SY   = MATE(4,2)
+      GN   = MATE(1,2)
+      IF (GN.LE.0.D0) GOTO 05001
+      UNSM = MATE(2,2)
+      GK   = 1.D0/MATE(3,2)
       GR   = MATE(7,2)
       GA   = MATE(8,2)
       SE = 0.D0
@@ -222,7 +221,7 @@ C    -----------------
            DSCDR = SC/R*UNSM*DT
         ENDIF
         IF (R.LE.1.D-5.AND.P(1).LE.0.D0) THEN
-          GN = GN*GM/(GN+GM)
+          GN = GN/(1.D0+GN*UNSM)
           SC = GK*DT**UNSM
         ENDIF
         IF (SC.LE.EPSI) THEN
@@ -260,8 +259,16 @@ C    -----------------
 C
 C-- 4. EQUATIONS EN P(2) ET DERIVEES
 C   ================================
-      CALL NMVEXI (BETA, SE, DSEDB, NB, MATE, NMAT, XHI, DXHIDB)
-      KXHI = MATE(9,2)
+      IF (LOI.EQ.'VENDOCHAB') THEN
+         CALL NMVEXI (BETA, SE, DSEDB, NB, MATE, NMAT, XHI, DXHIDB)
+         KXHI = MATE(9,2)
+      ELSEIF (LOI.EQ.'VISC_ENDO_LEMA') THEN
+         KXHI = 0.D0
+         XHI  = 0.D0
+      ELSE
+         CALL ASSERT(.FALSE.)
+      ENDIF
+
       DKXIDX = 0.D0
       IF (XHI.LE.EPSI .OR. D.EQ.DAMMAX) THEN
         P2    =0.D0

@@ -1,7 +1,7 @@
       SUBROUTINE LCJOBA (NDIM, TYPMOD, IMATE, CRIT, SUM, DSU,
      &                    VIM,OPTION, SIG, VIP,  DSIDEP, IRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/09/2005   AUTEUR LEBOUVIE F.LEBOUVIER 
+C MODIF ALGORITH  DATE 07/12/2010   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -24,7 +24,7 @@ C ----------------------------------------------------------------------
       CHARACTER*16       OPTION
       INTEGER            NDIM, IMATE, IRET
       REAL*8             SUM(2), DSU(2), VIM(6)
-      REAL*8             SIG(2), VIP(6), DSIDEP(2,2),CRIT(3)
+      REAL*8             SIG(6), VIP(6), DSIDEP(6,6),CRIT(3)
 C ----------------------------------------------------------------------
 C     LOI DE COMPORTEMENT ENDOMMAGEABLE DE LA LIAISON ACIER-BETON :
 C     COUPLAGE ENTRE L'EFFORT NORMAL ET LE CISAILLEMENT
@@ -189,7 +189,7 @@ C ====================================================================
       IF (RESI) THEN          
 
 C    MATRICE DE COMPORTEMENT
-        CALL R8INIR(4,0.D0,DSIDEP,1)
+        CALL R8INIR(36,0.D0,DSIDEP,1)
         DSIDEP(1,1)=E                   
         DSIDEP(2,2)=GTT                
 
@@ -331,7 +331,7 @@ C --------EVALUATION DE LA CONVERGENCE
 C   5 -  CALCUL DES CONTRAINTES REELLES
 C----------------------------------------------------------------	
 
-        CALL R8INIR(2, 0.D0, SIG,1)
+        CALL R8INIR(6, 0.D0, SIG,1)
 
         SIG(1)=DSIDEP(1,1)*(1.D0-DFN)*EPS(1)
         SIG(2)=DSIDEP(2,2)*(1.D0-DFT)*EPS(2)
@@ -362,7 +362,7 @@ C ======================================================================
 C   1 -  CONTRIBUTION ELASTIQUE
 C ------------------------------------------------------------     	  
               
-        CALL R8INIR(4, 0.D0, DSIDEP,1)
+        CALL R8INIR(36, 0.D0, DSIDEP,1)
 
         DSIDEP(1,1)=E*(1.D0-DFN)   
         DSIDEP(2,2)=GTT*(1.D0-DFT) 

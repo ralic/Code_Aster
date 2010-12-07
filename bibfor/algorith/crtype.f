@@ -3,7 +3,7 @@
 C TOLE CRP_20
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 15/11/2010   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 07/12/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -90,7 +90,7 @@ C ----------------------------------------------------------------------
       CALL GETVTX(' ','TYPE_RESU',1,1,1,TYPRES,N1)
 
       CALL JEEXIN(RESU//'           .DESC',IRET)
-      IF (IRET.EQ.0) CALL RSCRSD('G',RESU,TYPRES,100)
+      IF (IRET.EQ.0) CALL RSCRSD('G',RESU,TYPRES,10)
 
       LNCAS = .FALSE.
       IF (TYPRES.EQ.'MULT_ELAS' .OR. TYPRES.EQ.'FOURIER_ELAS' .OR.

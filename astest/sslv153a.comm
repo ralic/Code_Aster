@@ -1,4 +1,4 @@
-# MODIF  DATE 13/09/2010   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 07/12/2010   AUTEUR PELLET J.PELLET 
 # RESPONSABLE GNICOLAS G.NICOLAS
 # TITRE INDICATEUR D'ERREUR MAILLES VOLUMIQUES ET FONCTIONS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -158,25 +158,25 @@ SOLUPR=CALC_ELEM(reuse =SOLUPR,
 SOLUPR=CALC_ELEM(reuse =SOLUPR,
                  RESULTAT=SOLUPR,
                  TYPE_OPTION='INDI_ERREUR',
-                 OPTION=('ERRE_ELEM_SIGM','ERRE_ELNO_ELEM',),
+                 OPTION=('ERME_ELEM','ERME_ELNO',),
 
 );
 
 SOLUPR=CALC_NO(reuse =SOLUPR,
                RESULTAT=SOLUPR,
-               OPTION='ERRE_NOEU_ELEM',);
+               OPTION='ERME_NOEU',);
 ##IMPR_RESU(
 ##FORMAT='RESULTAT',
 ##
 ##RESU=_F(RESULTAT=SOLUPR,
-##NOM_CHAM='ERRE_ELEM_SIGM',
+##NOM_CHAM='ERME_ELEM',
 ##NOM_CMP=('ERREST','TERMRE','TERMNO','TERMSA',),),
 ##);
 ##IMPR_RESU(
 ##FORMAT='MED',
 ##
 ##RESU=_F(RESULTAT=SOLUPR,
-##NOM_CHAM='ERRE_ELEM_SIGM',
+##NOM_CHAM='ERME_ELEM',
 ##NOM_CMP='ERREST',),
 ##);
 
@@ -221,13 +221,13 @@ SOLUDU=CALC_ELEM(reuse =SOLUDU,
 SOLUDU=CALC_ELEM(reuse =SOLUDU,
                  RESULTAT=SOLUDU,
                  TYPE_OPTION='INDI_ERREUR',
-                 OPTION=('ERRE_ELEM_SIGM','ERRE_ELNO_ELEM',),
+                 OPTION=('ERME_ELEM','ERME_ELNO',),
 
 );
 
 SOLUDU=CALC_NO(reuse =SOLUDU,
                RESULTAT=SOLUDU,
-               OPTION='ERRE_NOEU_ELEM',);
+               OPTION='ERME_NOEU',);
 ##IMPR_RESU(
 ##FORMAT='MED',
 ##
@@ -273,7 +273,7 @@ TEST_RESU(RESU=(_F(RESULTAT=SOLUPR,
                    VERSION='9.05.02',),
                 _F(RESULTAT=SOLUPR,
                    NUME_ORDRE=1,
-                   NOM_CHAM='ERRE_NOEU_ELEM',
+                   NOM_CHAM='ERME_NOEU',
                    NOM_CMP='ERREST',
                    GROUP_NO='MESURE',
                    VALE=9358.16222031,
@@ -283,7 +283,7 @@ TEST_RESU(RESU=(_F(RESULTAT=SOLUPR,
                    VERSION='9.05.02',),
                 _F(RESULTAT=SOLUDU,
                    NUME_ORDRE=1,
-                   NOM_CHAM='ERRE_NOEU_ELEM',
+                   NOM_CHAM='ERME_NOEU',
                    NOM_CMP='ERREST',
                    GROUP_NO='MESURE',
                    VALE=39919.0267977,
@@ -382,13 +382,13 @@ SOLUPR=CALC_ELEM(reuse =SOLUPR,
 SOLUPR=CALC_ELEM(reuse =SOLUPR,
                  RESULTAT=SOLUPR,
                  TYPE_OPTION='INDI_ERREUR',
-                 OPTION=('ERRE_ELEM_SIGM','ERRE_ELNO_ELEM',),
+                 OPTION=('ERME_ELEM','ERME_ELNO',),
 
 );
 
 SOLUPR=CALC_NO(reuse =SOLUPR,
                RESULTAT=SOLUPR,
-               OPTION='ERRE_NOEU_ELEM',);
+               OPTION='ERME_NOEU',);
 
 # C.2.2. Erreur en quantite d'interet
 # C.2.2.1. Chargement dual
@@ -430,13 +430,13 @@ SOLUDU=CALC_ELEM(reuse =SOLUDU,
 SOLUDU=CALC_ELEM(reuse =SOLUDU,
                  RESULTAT=SOLUDU,
                  TYPE_OPTION='INDI_ERREUR',
-                 OPTION=('ERRE_ELEM_SIGM','ERRE_ELNO_ELEM',),
+                 OPTION=('ERME_ELEM','ERME_ELNO',),
 
 );
 
 SOLUDU=CALC_NO(reuse =SOLUDU,
                RESULTAT=SOLUDU,
-               OPTION='ERRE_NOEU_ELEM',);
+               OPTION='ERME_NOEU',);
 
 # C.3. Calcul de l'estimateur d'erreur en quantite d'interet
 
@@ -463,7 +463,7 @@ TEST_RESU(RESU=(_F(RESULTAT=SOLUPR,
                    VERSION='9.05.02',),
                 _F(RESULTAT=SOLUPR,
                    NUME_ORDRE=1,
-                   NOM_CHAM='ERRE_NOEU_ELEM',
+                   NOM_CHAM='ERME_NOEU',
                    NOM_CMP='ERREST',
                    GROUP_NO='MESURE',
                    VALE=9358.16222031,
@@ -473,7 +473,7 @@ TEST_RESU(RESU=(_F(RESULTAT=SOLUPR,
                    VERSION='9.05.02',),
                 _F(RESULTAT=SOLUDU,
                    NUME_ORDRE=1,
-                   NOM_CHAM='ERRE_NOEU_ELEM',
+                   NOM_CHAM='ERME_NOEU',
                    NOM_CMP='ERREST',
                    GROUP_NO='MESURE',
                    VALE=39919.0267977,

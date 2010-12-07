@@ -4,7 +4,7 @@
      &                   CVOISX, CHELEM )
 C ......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 08/11/2010   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 07/12/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -26,7 +26,7 @@ C
 C     BUT:
 C         CALCUL DE L'ESTIMATEUR D'ERREUR EN RESIDU
 C
-C         OPTION : 'ERRE_ELEM_SIGM'
+C         OPTION : 'ERME_ELEM'
 C
 C     ARGUMENTS:
 C     ----------
@@ -542,7 +542,7 @@ C
       LPAOUT(1) = 'PERREUR'
       LCHOUT(1) = CHELEM
 C
-      OPTION = 'ERRE_ELEM_SIGM'
+      OPTION = 'ERME_ELEM'
 C
 CGN      WRITE(6,*) NOMPRO,' APPELLE CALCUL POUR ', OPTION
 CGN      WRITE(6,*) '  LPAIN    LCHIN'

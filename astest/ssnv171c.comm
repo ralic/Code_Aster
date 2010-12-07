@@ -1,4 +1,4 @@
-# MODIF  DATE 10/05/2010   AUTEUR PROIX J-M.PROIX 
+# MODIF  DATE 07/12/2010   AUTEUR GENIAUT S.GENIAUT 
 # TITRE VALIDATION MONOCRISTAL ET POLYCRISTAL
 # RESPONSABLE JMBHH01 J.M.PROIX
 # VALIDATION DEFORMATION PLASTIQUE EQUIVALENTE CUMULEE
@@ -103,7 +103,7 @@ MONOEXPL=STAT_NON_LINE(MODELE=TROISD,
                        COMP_INCR=_F(RELATION='MONOCRISTAL',
                                     COMPOR=COMPORT,
                                     ITER_INTE_MAXI=100,
-                                    RESO_INTE='RUNGE_KUTTA_2',),
+                                    ALGO_INTE='RUNGE_KUTTA',),
                        INCREMENT=_F(LIST_INST=LINST,),
                        CONVERGENCE=_F(ITER_GLOB_MAXI=100,),
                        NEWTON=_F(PREDICTION='EXTRAPOL',
@@ -169,7 +169,7 @@ MONO1IMP=STAT_NON_LINE(MODELE=TROISD,
                                     COMPOR=COMPORT,
                                     ITER_INTE_MAXI=100,
                                     ITER_INTE_PAS=4,
-                                    RESO_INTE='IMPLICITE',),
+                                    ALGO_INTE='NEWTON',),
                        INCREMENT=_F(LIST_INST=LINST,),
                        CONVERGENCE=_F(ITER_GLOB_MAXI=100,),
                        NEWTON=_F(REAC_ITER=1,),);
@@ -319,7 +319,7 @@ POLYEXPL=STAT_NON_LINE(MODELE=TROISD,
                                     COMPOR=COMPORP,
                                     DEFORMATION='PETIT',
                                     ITER_INTE_MAXI=10,
-                                    RESO_INTE='RUNGE_KUTTA_2',
+                                    ALGO_INTE='RUNGE_KUTTA',
                                     TOUT='OUI',),
                        INCREMENT=_F(LIST_INST=LINST,),
                        CONVERGENCE=_F(RESI_GLOB_RELA=1e-06,

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 09/11/2010   AUTEUR DELMAS J.DELMAS 
+#& MODIF COMMANDE  DATE 07/12/2010   AUTEUR PELLET J.PELLET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -46,17 +46,16 @@ def l_nom_cham_pas_elga(): return (
      "ERRE_ELEM_NOZ2", "ERRE_ELNO_ELGA", "ERRE_NOEU_ELGA", "ERTH_ELEM_TEMP", "ERTH_ELNO_ELEM",
      "ETOT_ELEM", "ETOT_ELNO_ELGA", "FLUX_ELNO_TEMP", "FLUX_NOEU_TEMP", "FORC_NODA", "FSUR_2D",
      "FSUR_3D", "FVOL_2D", "FVOL_3D", "GRAD_NOEU_THETA", "HYDR_ELNO_ELGA", "HYDR_NOEU_ELGA",
-     "INTE_ELNO_ACTI", "INTE_ELNO_REAC", "INTE_NOEU_ACTI", "INTE_NOEU_REAC", "IRRA",
+     "INTE_ELNO", "INTE_NOEU", "IRRA",
      "META_ELNO_TEMP", "META_NOEU_TEMP", "PMPB_ELNO_SIEF", "PMPB_NOEU_SIEF",
-     "PRES", "PRES_DBEL_DEPL", "PRES_ELNO_DBEL", "PRES_ELNO_IMAG", "PRES_ELNO_REEL",
-     "PRES_NOEU_DBEL", "PRES_NOEU_IMAG", "PRES_NOEU_REEL",
+     "PRES", "PRME_ELNO", "PRAC_ELNO","PRAC_NOEU",
      "RADI_ELNO_SIGM", "RADI_NOEU_SIGM", "REAC_NODA",
      "SIEF_ELNO", "SIEF_ELNO_ELGA", "SIEF_NOEU", "SIEF_NOEU_ELGA", "SIEQ_ELNO_TUYO",
-     "SIGM_ELNO_CART", "SIGM_ELNO_COQU", "SIGM_ELNO_DEPL", "SIGM_ELNO_SIEF",
+     "SIGM_ELNO_CART", "SIGM_ELNO_COQU", "SIGM_ELNO_DEPL",
      "SIGM_ELNO_TUYO", "SIGM_NOEU_CART", "SIGM_NOEU_COQU",
-     "SIGM_NOEU_DEPL", "SIGM_NOEU_SIEF", "SIGM_NOZ1_ELGA",
-     "SIGM_NOZ2_ELGA", "SIPO_ELNO_DEPL", "SIPO_ELNO_SIEF", "SIPO_NOEU_DEPL",
-     "SIPO_NOEU_SIEF", "TEMP", "THETA",
+     "SIGM_NOEU_DEPL", "SIGM_NOZ1_ELGA",
+     "SIGM_NOZ2_ELGA", "SIPO_ELNO_DEPL", "SIPO_NOEU_DEPL",
+     "TEMP", "THETA",
      "VALE_CONT", "VALE_NCOU_MAXI", "VARI_ELNO", "VARI_ELNO_COQU",
      "VARI_ELNO_ELGA", "VARI_ELNO_TUYO", "VARI_NOEU", "VARI_NOEU_ELGA",
      "VITE", "VITE_ABSOLU", "VITE_VENT",
@@ -86,7 +85,7 @@ LIRE_RESU=OPER(nom="LIRE_RESU",op=150,sd_prod=lire_resu_prod,reentrant='n',
          NB_VARI         =SIMP(statut='f',typ='I' ),
 
          CHAM_MATER      =SIMP(statut='f',typ=cham_mater,),
-         
+
          CARA_ELEM       =SIMP(statut='f',typ=cara_elem,),
 
           b_evol_elas  = BLOC(condition="TYPE_RESU=='EVOL_ELAS'",
@@ -158,7 +157,7 @@ LIRE_RESU=OPER(nom="LIRE_RESU",op=150,sd_prod=lire_resu_prod,reentrant='n',
              POSI_INST       =SIMP(statut='f',typ='I',min=2,max=2),
              POSI_FREQ       =SIMP(statut='f',typ='I',min=2,max=2),
              NOM_CMP         =SIMP(statut='o',typ='TXM',max='**'),),
-         ),          
+         ),
 
 # 1-3 ensight :
 # -------------

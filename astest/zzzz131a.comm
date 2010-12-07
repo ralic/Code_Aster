@@ -1,4 +1,4 @@
-# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 07/12/2010   AUTEUR GENIAUT S.GENIAUT 
 # TITRE VALIDATION DE LA COMMANDE CREA_RESU MOT CLE FACTEUR PERM_CHAM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -106,11 +106,9 @@ RESU1=STAT_NON_LINE(
                                     FONC_MULT = FONCT1),COMP_INCR=(
                          _F( RELATION = 'VMIS_POU_LINE',
                                     GROUP_MA = 'POU1',
-                                    RESO_INTE = 'RUNGE_KUTTA_4',
                                     ITER_INTE_MAXI = 500),
                          _F( RELATION = 'VMIS_POU_FLEJOU',
                                     GROUP_MA = 'POU2',
-                                    RESO_INTE = 'RUNGE_KUTTA_4',
                                     ITER_INTE_MAXI = 500)),
                          INCREMENT=_F( LIST_INST =
                          LINST1,),
@@ -312,11 +310,9 @@ RESU2=STAT_NON_LINE(
                              EXCIT=_F( CHARGE = CHART2,
                                     FONC_MULT = FONCT2),COMP_INCR=(
                          _F( RELATION = 'VMIS_POU_LINE',
-                                    RESO_INTE = 'RUNGE_KUTTA_4',
                                     ITER_INTE_MAXI = 500,
                                     GROUP_MA = 'POU4'),
                          _F( RELATION = 'VMIS_POU_FLEJOU',
-                                    RESO_INTE = 'RUNGE_KUTTA_4',
                                     ITER_INTE_MAXI = 500,
                                     GROUP_MA = 'POU3')),
                          INCREMENT=_F( LIST_INST = LINST2,

@@ -44,16 +44,16 @@ RESU[nbadap]=CALC_ELEM(reuse =RESU[nbadap],
                        RESULTAT=RESU[nbadap],
                        LIST_INST=LI2_BIS,
                        TYPE_OPTION='INDI_ERREUR',
-                       OPTION=('ERRE_ELEM_SIGM','ERRE_ELNO_ELEM',),);
+                       OPTION=('ERME_ELEM','ERME_ELNO',),);
 
 RESU[nbadap]=CALC_NO(reuse =RESU[nbadap],
                      RESULTAT=RESU[nbadap],
                      INST=T2_FIN,
-                     OPTION='ERRE_NOEU_ELEM',);
+                     OPTION='ERME_NOEU',);
 
 TEST_RESU( RESU = (
            _F(  RESULTAT = RESU[nbadap],  INST=T2_FIN,
-                NOM_CHAM = 'ERRE_NOEU_ELEM',   NOM_CMP = 'ESTERG1',
+                NOM_CHAM = 'ERME_NOEU',   NOM_CMP = 'ESTERG1',
                 CRITERE = 'RELATIF',  PRECISION = 1.E-6,
                 GROUP_NO = 'NO_TEST',      VALE = 6.8723106927078E-03,
                 REFERENCE = 'NON_REGRESSION', VERSION = '9.02.13' ),
@@ -101,16 +101,16 @@ RESU_TOT=CALC_ELEM(reuse =RESU_TOT,
                   RESULTAT=RESU_TOT,
                   LIST_INST=LI_BIS,
                   TYPE_OPTION='INDI_ERREUR',
-                  OPTION=('ERRE_ELEM_SIGM','ERRE_ELNO_ELEM',),);
+                  OPTION=('ERME_ELEM','ERME_ELNO',),);
 
 RESU_TOT=CALC_NO(reuse =RESU_TOT,
                   RESULTAT=RESU_TOT,
                   INST=T2_FIN,
-                  OPTION='ERRE_NOEU_ELEM',);
+                  OPTION='ERME_NOEU',);
 
 TEST_RESU( RESU = (
         _F(  RESULTAT = RESU_TOT,  INST=T2_FIN,
-            NOM_CHAM = 'ERRE_NOEU_ELEM',   NOM_CMP = 'ESTERG1',
+            NOM_CHAM = 'ERME_NOEU',   NOM_CMP = 'ESTERG1',
             CRITERE = 'RELATIF',  PRECISION = 1.E-6,
             GROUP_NO = 'NO_TEST',      VALE = 6.8723106927078E-03,
             REFERENCE = 'NON_REGRESSION', VERSION = '9.02.13' ),

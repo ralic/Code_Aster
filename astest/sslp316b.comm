@@ -1,4 +1,4 @@
-# MODIF  DATE 21/09/2010   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 07/12/2010   AUTEUR PELLET J.PELLET 
 # TITRE VALIDATION DE L'ESTIMATEUR D'ERREUR XFEM SUR UNE PLAQUE FISSUREE
 # sslp316b.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -101,7 +101,7 @@ UTOT=STAT_NON_LINE(MODELE=MODK,
 
 UTOT=CALC_ELEM(reuse =UTOT,
                RESULTAT=UTOT,
-               OPTION=('SIEF_ELNO_ELGA','ERRE_ELEM_SIGM',),);
+               OPTION=('SIEF_ELNO_ELGA','ERME_ELEM',),);
 
 TEST_RESU(RESU=(_F(RESULTAT=UTOT,
                    INST=1.0,
@@ -165,7 +165,7 @@ TEST_RESU(RESU=(_F(RESULTAT=UTOT,
                    VERSION='9.03.16',),
                  _F(RESULTAT=UTOT,
                    INST=1.0,
-                   NOM_CHAM='ERRE_ELEM_SIGM',
+                   NOM_CHAM='ERME_ELEM',
                    NOM_CMP='ERREST',
                    TYPE_TEST='MAX',
                    VALE=1.3e-4,
@@ -175,7 +175,7 @@ TEST_RESU(RESU=(_F(RESULTAT=UTOT,
                    VERSION='9.03.16',),
                 _F(RESULTAT=UTOT,
                    INST=1.0,
-                   NOM_CHAM='ERRE_ELEM_SIGM',
+                   NOM_CHAM='ERME_ELEM',
                    NOM_CMP='ERREST',
                    TYPE_TEST='MIN',
                    VALE=2.42e-9,

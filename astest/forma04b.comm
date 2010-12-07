@@ -1,22 +1,22 @@
-# MODIF  DATE 11/05/2010   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 07/12/2010   AUTEUR PELLET J.PELLET 
 # RESPONSABLE GNICOLAS G.NICOLAS
 # TITRE Maillage adaptatif mecanique sur une poutre en flexion
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 #-------------------------------------------------------------------
 #                  CORRIGE TP INDICATEUR-REMAILLAGE N 1 (NEW6)
@@ -27,7 +27,7 @@
 # ete commentarises. Ils n'ont lieu d'etre que pour un fonctionne
 # ment en interactif.
 #
-# INSTRUCTIONS LIEES AU TP EN INTERACTIF: 
+# INSTRUCTIONS LIEES AU TP EN INTERACTIF:
 # EN RUN_ASTER_NEW6 ('run_aster config.txt' ou via l'outil 'meg')
 # PARAMETRE D'EXECUTION DE CETTE ETUDE: 128Mo
 # MODE D'EMPLOI:
@@ -52,7 +52,7 @@ energie_vs_raff = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
 fleche_vs_raff = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
 erenergie_vs_raff = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
 erfleche_vs_raff = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
-ZZ1_vs_raff = [3.619, 1.332 , 0.626 , 0.346 , 0.202 , 0., 0.0, 0.0] 
+ZZ1_vs_raff = [3.619, 1.332 , 0.626 , 0.346 , 0.202 , 0., 0.0, 0.0]
 BR_vs_raff = [2.868, 1.305 , 0.742 , 0.458 , 0.282 , 0., 0.0, 0.0]
 nbddl_vs_raff = [156, 555 , 2085 , 8073 , 31761, 0.0, 0.0, 0.0]
 energie_vs_raff_NUM = NP.zeros((len(energie_vs_raff),2))
@@ -78,7 +78,7 @@ for i in range(len(energie_vs_raff)) :
     ZZ1_vs_raff_NUM[i][0]     = i
     BR_vs_raff_NUM[i][0]      = i
     nbddl_vs_raff_NUM[i][0]   = i
-    
+
 # NOMBRE DE REMAILLAGE (MAILLAGE INITIAL = MAILLAGE 0)
 nb_calc = 4
 
@@ -105,14 +105,14 @@ DEBUT(CODE=_F(NOM = 'FORMA04B',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),PAR_LOT
 ACIER=DEFI_MATERIAU(ELAS=_F(E=210.E3,
                             NU=0.2,),);
 
-# DEFINITION DES INSTANTS POUR STAT_NON_LINE                            
+# DEFINITION DES INSTANTS POUR STAT_NON_LINE
 L_INST=DEFI_LIST_REEL(DEBUT=0.0,INTERVALLE=_F(JUSQU_A=1.0,
                                 NOMBRE=1,),);
 F_INST=DEFI_FONCTION(NOM_PARA='INST',
                      VALE=(0.0,0.0,1.,1.),);
 
-# LECTURE ET INFO MAILLAGE                     
-num_calc=0   
+# LECTURE ET INFO MAILLAGE
+num_calc=0
 MA[num_calc]=LIRE_MAILLAGE(INFO=2, VERI_MAIL=_F());
 MA[num_calc]=DEFI_GROUP(reuse =MA[num_calc],
                  MAILLAGE=MA[num_calc],
@@ -130,12 +130,12 @@ for num_calc in range(0,nb_calc1) :
    MO[num_calc]=AFFE_MODELE(MAILLAGE=MA[num_calc],
                   AFFE=(_F(TOUT = 'OUI',
                            PHENOMENE='MECANIQUE',
-                           MODELISATION='C_PLAN',),),);                 
+                           MODELISATION='C_PLAN',),),);
    CHMAT[num_calc]=AFFE_MATERIAU(MAILLAGE=MA[num_calc],
                        AFFE=_F(GROUP_MA='GM14',
                                 MATER=ACIER,),);
-                                
-# CL D'ENCASTREMENT + PRESSION REPARTIE POUR FLEXION                                 
+
+# CL D'ENCASTREMENT + PRESSION REPARTIE POUR FLEXION
    CLIM[num_calc]=AFFE_CHAR_MECA(
              MODELE=MO[num_calc],
              DDL_IMPO=_F(GROUP_MA='GM13',
@@ -177,20 +177,20 @@ for num_calc in range(0,nb_calc1) :
 # CALCUL DE L'INDICATEUR ZZ1 PAR ELEM
                        'ERZ1_ELEM_SIGM',
 # CALCUL DE L'INDICATEUR EN RESIDU PAR ELEM ET AUX NOEUDS PAR ELEM
-                       'ERRE_ELEM_SIGM',
-                       'ERRE_ELNO_ELEM',),);
-                          
+                       'ERME_ELEM',
+                       'ERME_ELNO',),);
+
 # IMPRESSION FORMAT CASTEM I
    DEFI_FICHIER(FICHIER='IMPR',UNITE=55)
    IMPR_RESU(MODELE=MO[num_calc], FORMAT='CASTEM', UNITE=55,
             RESU=_F(MAILLAGE=MA[num_calc],
                     RESULTAT=DEPLA[num_calc],
                     NOM_CHAM=('DEPL','SIEF_ELNO_ELGA',
-                              'ERRE_ELNO_ELEM')
+                              'ERME_ELNO')
                      ),);
    DEFI_FICHIER(ACTION='LIBERER',UNITE=55)
 
-# AFFICHAGE GIBI INTERACTIF DEPL + CONTRAINTE + INDICATEURS EN RESIDU 
+# AFFICHAGE GIBI INTERACTIF DEPL + CONTRAINTE + INDICATEURS EN RESIDU
 #   os.system('sed s/numcalc/'+str(num_calc)+'/g /home/boiteau/ASTER/TP_INDIC/TP12/post1.dgibi > post1.dgibi')
 #   os.system('/logiciels/aster/outils/gibi2000.x post1.dgibi')
 
@@ -208,7 +208,7 @@ for num_calc in range(0,nb_calc1) :
                  NOM_CHAM='DEPL',
                  RESULTANTE=('DY'),
                  OPERATION='EXTRACTION',),)
-                               
+
 # IMPRESSION DES TABLES PRECEDENTES DANS LE .RESU
    IMPR_TABLE(TABLE=ENER[num_calc],FORMAT_R='1PE24.12')
 #   IMPR_TABLE(TABLE=ENER[num_calc])
@@ -228,13 +228,13 @@ for num_calc in range(0,nb_calc1) :
    if num_calc == 4 :
       erfl4 = abs((fleche_vs_raff_NUM[num_calc][1]-flec_ref)/flec_ref)*100.
       eren4 = abs((energie_vs_raff_NUM[num_calc][1]-ener_ref)/ener_ref)*100.
-      
-# INIT. POUR AFFICHAGE   
+
+# INIT. POUR AFFICHAGE
    ZZ1_vs_raff_NUM[num_calc][1]     = ZZ1_vs_raff[num_calc]
    BR_vs_raff_NUM[num_calc][1]      = BR_vs_raff[num_calc]
    nbddl_vs_raff_NUM[num_calc][1]   = nbddl_vs_raff[num_calc]
 
-   
+
 # AFFICHAGES GNUPLOT INTERACTIF (APRES LE PREMIER REMAILLAGE)
    num_calc1 = num_calc + 1
 #   if num_calc > 0 :
@@ -247,7 +247,7 @@ for num_calc in range(0,nb_calc1) :
 #     graphe.plot(Gnuplot.Data(fleche_vs_raff_NUM[:num_calc1],\
 #                 title='Convergence de la fleche'),
 #                 Gnuplot.Data(energie_vs_raff_NUM[:num_calc1],\
-#                 title='Convergence de l energie de deformation'),)            
+#                 title='Convergence de l energie de deformation'),)
 #     raw_input('\n\n\nAppuyer sur une touche pour continuer...\n\n\n')
 #     del graphe
 #     graphe = Gnuplot.Gnuplot()
@@ -256,9 +256,9 @@ for num_calc in range(0,nb_calc1) :
 #     graphe('set grid')
 #     graphe.xlabel('Numero iteration de raffinement uniforme')
 #     graphe.ylabel('Nombre de DDL')
-#     graphe.plot(Gnuplot.Data(nbddl_vs_raff_NUM[:num_calc1],title='NB_DDL'),)            
+#     graphe.plot(Gnuplot.Data(nbddl_vs_raff_NUM[:num_calc1],title='NB_DDL'),)
 #     raw_input('\n\n\nAppuyer sur une touche pour continuer...\n\n\n')
-#     del graphe      
+#     del graphe
 #     graphe = Gnuplot.Gnuplot()
 #     Gnuplot.GnuplotOpts.prefer_inline_data=1
 #     graphe('set data style lines')
@@ -269,7 +269,7 @@ for num_calc in range(0,nb_calc1) :
 #                 title='Energie de deformation'),
 #            Gnuplot.Data(erfleche_vs_raff_NUM[:num_calc1],title='Fleche'),
 #            Gnuplot.Data(ZZ1_vs_raff_NUM[:num_calc1],title='ZZ1'),
-#            Gnuplot.Data(BR_vs_raff_NUM[:num_calc1],title='Residu'),)            
+#            Gnuplot.Data(BR_vs_raff_NUM[:num_calc1],title='Residu'),)
 #     raw_input('\n\n\nAppuyer sur une touche pour continuer...\n\n\n')
 #     del graphe
 
@@ -288,12 +288,12 @@ for num_calc in range(0,nb_calc1) :
    print 'ERREUR ZZ1 = ',ZZ1_vs_raff_NUM[:num_calc1]
    print '**************'
    print 'ERREUR RESIDU = ',BR_vs_raff_NUM[:num_calc1]
-   
-# POUR NE PAS REMAILLER A LA DERNIERE ITERATION  
+
+# POUR NE PAS REMAILLER A LA DERNIERE ITERATION
    if num_calc == nb_calc :
      break
-     
-# SUBTILITE MACRO_COMMANDE VIS A VIS DES ENTREES  
+
+# SUBTILITE MACRO_COMMANDE VIS A VIS DES ENTREES
    MA[num_calc1]=CO('MA_%d' % (num_calc1))
 
 # RAFFINEMENT UNIFORME VIA HOMARD
@@ -323,11 +323,11 @@ TEST_FONCTION(VALEUR=(
     _F(FONCTION=ERREFL4,NOM_PARA='BIDON',VALE_PARA=0.,PRECISION=1.E-3,CRITERE='ABSOLU',
        VALE_REFE=0.,REFERENCE='ANALYTIQUE',),
     _F(FONCTION=ERREEN4,NOM_PARA='BIDON',VALE_PARA=0.,PRECISION=1.E-3,CRITERE='ABSOLU',
-       VALE_REFE=0.,REFERENCE='ANALYTIQUE',)))  
-            
+       VALE_REFE=0.,REFERENCE='ANALYTIQUE',)))
+
 #-------------------------------------------------------------------
 #                       POST-TRAITEMENTS PYTHON
-#-------------------------------------------------------------------             
+#-------------------------------------------------------------------
 
 # AFFICHAGES GNUPLOT POSTSCRIPT
 #f1 = open("fort.60","w")

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 09/11/2010   AUTEUR DELMAS J.DELMAS 
+#& MODIF COMMANDE  DATE 07/12/2010   AUTEUR GENIAUT S.GENIAUT 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -30,7 +30,6 @@ MACR_ASCOUF_CALC=MACRO(nom="MACR_ASCOUF_CALC",op=macr_ascouf_calc_ops,sd_prod=ma
                       fr="Réalise l'analyse thermomécanique du coude dont le maillage a été concu par MACR_ASCOUF_MAIL",
                       reentrant='n',
             UIinfo={"groupes":("Résolution","Outils-métier",)},
-         regles=(UN_PARMI('COMP_INCR','COMP_ELAS'),),
 
          TYPE_MAILLAGE   =SIMP(statut='o',typ='TXM',
                                into=("SAIN",
@@ -82,24 +81,8 @@ MACR_ASCOUF_CALC=MACRO(nom="MACR_ASCOUF_CALC",op=macr_ascouf_calc_ops,sd_prod=ma
            FONC_MULT       =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
          ),
 
-         COMP_INCR       =FACT(statut='f',
-           RELATION        =SIMP(statut='o',typ='TXM',into=("VMIS_ISOT_TRAC",) ),
-           RESI_INTE_RELA  =SIMP(statut='f',typ='R'
-                                ,defaut= 1.0E-6),
-           ITER_INTE_MAXI  =SIMP(statut='f',typ='I',defaut= 10 ),
-           ITER_INTE_PAS   =SIMP(statut='f',typ='I',defaut= 0 ),
-           RESO_INTE       =SIMP(statut='f',typ='TXM',defaut="IMPLICITE",
-                                 into=("RUNGE_KUTTA_2","RUNGE_KUTTA_4","IMPLICITE")),
-         ),
 
-         COMP_ELAS       =FACT(statut='f',
-           RELATION        =SIMP(statut='o',typ='TXM',into=("ELAS","ELAS_VMIS_TRAC") ),
-           RESI_INTE_RELA  =SIMP(statut='f',typ='R',defaut= 1.0E-6),
-           ITER_INTE_MAXI  =SIMP(statut='f',typ='I',defaut= 10 ),
-           ITER_INTE_PAS   =SIMP(statut='f',typ='I',defaut= 0 ),
-           RESO_INTE       =SIMP(statut='f',typ='TXM',defaut="IMPLICITE",
-                                 into=("RUNGE_KUTTA_2","RUNGE_KUTTA_4","IMPLICITE")),
-         ),
+         COMP_ELAS       =C_COMP_ELAS('MACR_ASCOUF_CALC'),
 
          SOLVEUR         =C_SOLVEUR(),
 

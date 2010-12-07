@@ -1,6 +1,6 @@
-# MODIF  DATE 23/03/2010   AUTEUR PROIX J-M.PROIX 
+# MODIF  DATE 07/12/2010   AUTEUR GENIAUT S.GENIAUT 
 # RESPONSABLE PROIX J-M.PROIX
-# TITRE  TEST LOI DE COMPORTEMENT 3D  VENDOCHAB
+# TITRE  TEST LOI DE COMPORTEMENT 3D  VISC_ENDO_LEMA
 # comp002d.para = tps_job 300 mem_job 512Mo mem_aster 20 ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -42,8 +42,6 @@ POISSON = 0.3
 #parametres viscosite
 
 S=0.0  
-ALPHA_D=0.0 
-BETA_D=0.0 
 N=12.0 
 UN_SUR_M=(1.0/9.0)  
 UN_SUR_K= (1.0/2110.0)
@@ -52,7 +50,6 @@ UN_SUR_K= (1.0/2110.0)
 
 R_D=6.3  
 A_D=3191.0
-K_D=6.3
 
 
 # def des materiaux
@@ -66,34 +63,30 @@ A_D_Pa  = A_D*C_Pa
 ACIER[0]=DEFI_MATERIAU(ELAS=_F(E=YOUNG_Pa,
                                NU=POISSON,
                                               ALPHA=11.8e-6),
-                    VENDOCHAB=_F(S  = S,
-                                 ALPHA_D= ALPHA_D,
-                                 BETA_D= BETA_D,
-                                 N  = N,
+                    LEMAITRE=_F( N  = N,
                                  UN_SUR_M  = UN_SUR_M,
                                  UN_SUR_K  = UN_SUR_K_Pa, 
+                    ),
+                    VISC_ENDO=_F(SY  = S,
                                  R_D   = R_D,   
                                  A_D   = A_D_Pa,   
-                                 K_D   = K_D,   
                                  ),);
 
 #unite en MPa
 ACIER[1]=DEFI_MATERIAU(ELAS=_F(E=YOUNG,
                                NU=POISSON,
                                               ALPHA=11.8e-6),
-                    VENDOCHAB=_F(S  = S,
-                                 ALPHA_D= ALPHA_D,
-                                 BETA_D= BETA_D,
-                                 N  = N,
+                    LEMAITRE=_F( N  = N,
                                  UN_SUR_M  = UN_SUR_M,
                                  UN_SUR_K  = UN_SUR_K, 
+                    ),
+                    VISC_ENDO=_F(SY  = S,
                                  R_D   = R_D,   
                                  A_D   = A_D,   
-                                 K_D   = K_D,   
                                  ),);
                                  
 
-compor='VENDOCHAB'
+compor='VISC_ENDO_LEMA'
 
 INCLUDE(UNITE=92)
 
@@ -142,7 +135,7 @@ for i in range(Ncal):
 
 #Resout le pb a deformation imposee
         RESU[i]=SIMU_POINT_MAT(
-                   COMP_INCR=_F(RELATION=compor,ITER_INTE_MAXI=100),
+                   COMP_INCR=_F(RELATION=compor,ITER_INTE_MAXI=100,ALGO_INTE='SECANTE'),
                    NEWTON=_F(MATRICE='TANGENTE',
                              REAC_ITER=3,),
                    CONVERGENCE=_F(ITER_GLOB_MAXI=10,),
@@ -191,7 +184,7 @@ Linst=DEFI_LIST_REEL(DEBUT=0.0,
 
 RESU_TGT=SIMU_POINT_MAT(
                    COMP_INCR=_F(RELATION=compor, ITER_INTE_MAXI=100,               
-                                TYPE_MATR_TANG='VERIFICATION',
+                                TYPE_MATR_TANG='VERIFICATION',ALGO_INTE='SECANTE',
                                 VALE_PERT_RELA=1.E-5,
                                ),
                    NEWTON=_F(MATRICE='TANGENTE',REAC_ITER=1,),

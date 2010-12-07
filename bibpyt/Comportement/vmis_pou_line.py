@@ -1,4 +1,4 @@
-#@ MODIF vmis_pou_line Comportement  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
+#@ MODIF vmis_pou_line Comportement  DATE 07/12/2010   AUTEUR GENIAUT S.GENIAUT 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -30,7 +30,7 @@ loi = LoiComportement(
    modelisation   = ('POU_D_E','POU_D_T'),
    deformation    = ('PETIT','PETIT_REAC'),
    nom_varc       = ('TEMP'),
-   schema         = ('IMPLICITE','RUNGE_KUTTA_4'),
+   algo_inte         = ('RUNGE_KUTTA','NEWTON'),
    type_matr_tang = None,
    proprietes     = None,
 )

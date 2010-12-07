@@ -1,4 +1,4 @@
-# MODIF  DATE 30/08/2010   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 07/12/2010   AUTEUR PELLET J.PELLET 
 # TITRE GUIDE D'ONDE A SORTIE ANECHOIQUE (ONDES PLANES) E.F. CLASSIQUES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -121,21 +121,21 @@ HARMO=CALC_ELEM( reuse=HARMO,
 
                      TOUT_ORDRE='OUI',
                      RESULTAT=HARMO,
-                     OPTION='INTE_ELNO_ACTI'
+                     OPTION='INTE_ELNO'
          )
 
 TEST_RESU(RESU=(
-          _F( RESULTAT = HARMO, NOM_CHAM = 'INTE_ELNO_ACTI', NUME_ORDRE = 01,
-           MAILLE = 'M4', NOEUD = 'N69', NOM_CMP = 'INTX', VALE = 0.04370,
+          _F( RESULTAT = HARMO, NOM_CHAM = 'INTE_ELNO', NUME_ORDRE = 1,
+           MAILLE = 'M4', NOEUD = 'N69', NOM_CMP = 'INTX_R', VALE = 0.04370,
            PRECISION = 3.E-2),
-          _F( RESULTAT = HARMO, NOM_CHAM = 'INTE_ELNO_ACTI', NUME_ORDRE = 01,
-           MAILLE = 'M6', NOEUD = 'N95', NOM_CMP = 'INTX', VALE = 0.04370,
+          _F( RESULTAT = HARMO, NOM_CHAM = 'INTE_ELNO', NUME_ORDRE = 1,
+           MAILLE = 'M6', NOEUD = 'N95', NOM_CMP = 'INTX_R', VALE = 0.04370,
            PRECISION = 3.E-2),
-          _F( RESULTAT = HARMO, NOM_CHAM = 'INTE_ELNO_ACTI', NUME_ORDRE = 01,
-           MAILLE = 'M468', NOEUD = 'N65', NOM_CMP = 'INTX', VALE = 0.04370,
+          _F( RESULTAT = HARMO, NOM_CHAM = 'INTE_ELNO', NUME_ORDRE = 1,
+           MAILLE = 'M468', NOEUD = 'N65', NOM_CMP = 'INTX_R', VALE = 0.04370,
            PRECISION = 3.E-2),
-          _F( RESULTAT = HARMO, NOM_CHAM = 'INTE_ELNO_ACTI', NUME_ORDRE = 01,
-           MAILLE = 'M470', NOEUD = 'N876', NOM_CMP = 'INTX', VALE = 0.04370,
+          _F( RESULTAT = HARMO, NOM_CHAM = 'INTE_ELNO', NUME_ORDRE = 1,
+           MAILLE = 'M470', NOEUD = 'N876', NOM_CMP = 'INTX_R', VALE = 0.04370,
            PRECISION = 3.E-2))
           )
 

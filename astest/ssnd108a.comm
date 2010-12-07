@@ -1,4 +1,4 @@
-# MODIF  DATE 08/11/2010   AUTEUR PROIX J-M.PROIX 
+# MODIF  DATE 07/12/2010   AUTEUR GENIAUT S.GENIAUT 
 # RESPONSABLE PROIX J-M.PROIX
 # TITRE TRACTIONS-ROTATIONS MULTIPLES GDEF_HYPOELAS VISCOPLASTIQUE
 # ssnd108a.para = tps_job 180 mem_job 64Mo mem_aster 50 ncpus 1 liste_test S
@@ -25,7 +25,7 @@ DEBUT(CODE=_F(NOM = 'SSND108A',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'));
 compor=[]
 compor.append(['LEMAITRE','GDEF_HYPO_ELAS']) # reference
 compor.append(['LEMAITRE','GDEF_HYPO_ELAS'])
-compor.append(['VENDOCHAB','GDEF_HYPO_ELAS'])
+compor.append(['VISC_ENDO_LEMA','GDEF_HYPO_ELAS'])
 compor.append(['VISC_CIN2_CHAB','GDEF_HYPO_ELAS'])
 compor.append(['VISC_CIN1_CHAB','GDEF_HYPO_ELAS'])
 compor.append(['VISC_CIN2_MEMO','GDEF_HYPO_ELAS'])
@@ -59,15 +59,9 @@ acier=DEFI_MATERIAU(ELAS=_F(E=2e+05,NU=0.3,),
                                   Q_0=Q_0,
                                   ETA=ETA,
                                  ),
-                    VENDOCHAB=_F(S=0.,
-                                 ALPHA_D=0.,
-                                 BETA_D=0.,
-                                 N=N,
-                                 UN_SUR_M=1./10000.,
-                                 UN_SUR_K=1.E-3,
+                    VISC_ENDO=_F(SY=0.,
                                  R_D=R_D,
-                                 A_D=1.E7,
-                                 K_D=R_D),
+                                 A_D=1.E7),
                     );
 
 #lire le maillage

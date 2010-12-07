@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF astermodule supervis  DATE 02/11/2010   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF astermodule supervis  DATE 07/12/2010   AUTEUR GENIAUT S.GENIAUT */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -3610,6 +3610,31 @@ void DEFPSS(LCCREE, lccree, _IN INTEGER *nbkit,
 
    Py_XDECREF(res);
    Py_XDECREF(tup_kit);
+   Py_XDECREF(catalc);
+}
+
+/* ------------------------------------------------------------------ */
+void DEFSS(LCALGO, lcalgo, _IN char *compor, STRING_SIZE lcompor,
+                           _OUT char *algo, STRING_SIZE lalgo
+                            )
+{
+/*
+   Retourne le premier algorithme d'intégration
+
+      CALL LCALGO(COMPOR, ALGO)
+      ==> algo_inte = catalc.get_algo(COMPOR)
+*/
+   PyObject *catalc, *res;
+
+   catalc = GetJdcAttr("catalc");
+   res = PyObject_CallMethod(catalc, "get_algo", "s#", compor, lcompor);
+   if (res == NULL) {
+      MYABORT("Echec lors de la recuperation du premier algorithme d'intégration (lcalgo/get_algo) !");
+   }
+
+   convertxt(1, res, algo, lalgo);
+
+   Py_XDECREF(res);
    Py_XDECREF(catalc);
 }
 

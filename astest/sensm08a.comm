@@ -1,4 +1,4 @@
-# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 07/12/2010   AUTEUR PELLET J.PELLET 
 # RESPONSABLE F6BHHBO P.DEBONNIERES
 # TITRE PLAQUE SOUS PRESSION EN DP (PLASTICITE VON-MISES ISOT LINEAIRE)
 # sensm08a.para = tps_job 60 mem_job 64Mo liste_test R
@@ -108,12 +108,7 @@ RESU=STAT_NON_LINE(MODELE=MO,
 
 RESU=CALC_ELEM(reuse =RESU,
                TOUT_ORDRE='OUI',
-               OPTION='SIEF_ELNO_ELGA',
-               RESULTAT=RESU,);
-
-RESU=CALC_ELEM(reuse =RESU,
-               TOUT_ORDRE='OUI',
-               OPTION='VARI_ELNO_ELGA',
+               OPTION=('SIEF_ELNO_ELGA','VARI_ELNO_ELGA'),
                RESULTAT=RESU,);
 
 RESU=CALC_NO(reuse =RESU,
@@ -121,23 +116,9 @@ RESU=CALC_NO(reuse =RESU,
                OPTION='SIEF_NOEU_ELGA',
                RESULTAT=RESU,);
 
-RESU=CALC_ELEM(reuse =RESU,
-               TOUT_ORDRE='OUI',
-               OPTION='SIEF_ELNO_ELGA',
-               SENSIBILITE=(PS_E,PS_DSDE,PS_SIGY),
-               RESULTAT=RESU,);
-
-RESU=CALC_ELEM(reuse =RESU,
-               TOUT_ORDRE='OUI',
-               OPTION='VARI_ELNO_ELGA',
-               SENSIBILITE=(PS_E,PS_DSDE,PS_SIGY),
-               RESULTAT=RESU,);
-
-RESU=CALC_NO(reuse =RESU,
-               TOUT_ORDRE='OUI',
-               OPTION='SIEF_NOEU_ELGA',
-               SENSIBILITE=(PS_E,PS_DSDE,PS_SIGY),
-               RESULTAT=RESU,);
+CALC_SENSI(reuse =RESU, TOUT_ORDRE='OUI',RESULTAT=RESU,SENSIBILITE=(PS_E,PS_DSDE,PS_SIGY),
+               OPTION=('SIEF_ELNO_ELGA','VARI_ELNO_ELGA','SIEF_NOEU_ELGA',),
+               );
 
 
 TEST_RESU(RESU=(

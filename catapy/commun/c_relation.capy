@@ -1,4 +1,4 @@
-#& MODIF COMMUN  DATE 10/08/2010   AUTEUR MEUNIER S.MEUNIER 
+#& MODIF COMMUN  DATE 07/12/2010   AUTEUR GENIAUT S.GENIAUT 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -72,6 +72,7 @@ def C_RELATION() : return (             "ELAS",            #COMMUN#
                                         "JOINT_BA",
                                         "JOINT_BANDIS",
                                         "JOINT_MECA_RUPT",
+                                        "JOINT_MECA_FROT",
                                         "KIT_DDI",
                                         "KIT_HH",
                                         "KIT_H",
@@ -125,6 +126,7 @@ def C_RELATION() : return (             "ELAS",            #COMMUN#
                                         "RUPT_FRAG",
                                         "SANS",
                                         "VENDOCHAB",
+                                        "VISC_ENDO_LEMA",
                                         "VISCOCHAB",
                                         "VISC_CIN1_CHAB",
                                         "VISC_CIN2_CHAB",

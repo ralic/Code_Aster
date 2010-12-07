@@ -1,4 +1,4 @@
-# MODIF  DATE 19/10/2010   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 07/12/2010   AUTEUR PELLET J.PELLET 
 # TITRE GUIDE D'ONDE A SORTIE ANECHOIQUE (ONDES PLANES) E.F. CLASSIQUES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -139,72 +139,47 @@ TEST_RESU(CHAM_NO=(
               NOEUD = 'NO763', NOM_CMP = 'PRES', VALE_C = ('RI',6.02368,1.6387,)))
              )
 
-CHNODBEL=CALC_CHAM_ELEM(      MODELE=GUIDE,
-                              CHAM_MATER=CHAMPMAT,
-                               PRES=VECRES,
-                                  OPTION='PRES_ELNO_DBEL'
-                            )
+CHPRAC=CALC_CHAM_ELEM(      MODELE=GUIDE, CHAM_MATER=CHAMPMAT,
+                               PRES=VECRES,  OPTION='PRAC_ELNO' )
 
 TEST_RESU(CHAM_ELEM=(
-             _F( CHAM_GD = CHNODBEL,
+             _F( CHAM_GD = CHPRAC,
               MAILLE = 'MA1',
               NOEUD = 'NO1',   NOM_CMP = 'DB',  VALE = 109.9),
-             _F( CHAM_GD = CHNODBEL,
+             _F( CHAM_GD = CHPRAC,
               MAILLE = 'MA1',
               NOEUD = 'NO780', NOM_CMP = 'DB',  VALE = 109.9),
-             _F( CHAM_GD = CHNODBEL,
+             _F( CHAM_GD = CHPRAC,
               MAILLE = 'MA57',
               NOEUD = 'NO751', NOM_CMP = 'DB',  VALE = 109.9),
-             _F( CHAM_GD = CHNODBEL,
+             _F( CHAM_GD = CHPRAC,
               MAILLE = 'MA57',
               NOEUD = 'NO763', NOM_CMP = 'DB',  VALE = 109.9))
              )
 
-#
-
-PREEL=CALC_CHAM_ELEM(      MODELE=GUIDE,
-                              CHAM_MATER=CHAMPMAT,
-                               PRES=VECRES,
-                                  OPTION='PRES_ELNO_REEL'
-                            )
 
 TEST_RESU(CHAM_ELEM=(
-             _F( CHAM_GD = PREEL,
-              MAILLE = 'MA1',
-              NOEUD = 'NO1',   NOM_CMP = 'PRES', VALE = -6.2426),
-             _F( CHAM_GD = PREEL,
-              MAILLE = 'MA1',
-              NOEUD = 'NO780', NOM_CMP = 'PRES', VALE = -6.2426),
-             _F( CHAM_GD = PREEL,
-              MAILLE = 'MA57',
-              NOEUD = 'NO751', NOM_CMP = 'PRES', VALE = 6.02368),
-             _F( CHAM_GD = PREEL,
-              MAILLE = 'MA57',
-              NOEUD = 'NO763', NOM_CMP = 'PRES', VALE = 6.02368))
+             _F( CHAM_GD = CHPRAC,   MAILLE = 'MA1',
+              NOEUD = 'NO1',   NOM_CMP = 'PRES_R', VALE = -6.2426),
+             _F( CHAM_GD = CHPRAC,  MAILLE = 'MA1',
+              NOEUD = 'NO780', NOM_CMP = 'PRES_R', VALE = -6.2426),
+             _F( CHAM_GD = CHPRAC, MAILLE = 'MA57',
+              NOEUD = 'NO751', NOM_CMP = 'PRES_R', VALE = 6.02368),
+             _F( CHAM_GD = CHPRAC, MAILLE = 'MA57',
+              NOEUD = 'NO763', NOM_CMP = 'PRES_R', VALE = 6.02368))
              )
-
-PIMAG=CALC_CHAM_ELEM(      MODELE=GUIDE,
-                              CHAM_MATER=CHAMPMAT,
-                               PRES=VECRES,
-                                  OPTION='PRES_ELNO_IMAG'
-                            )
 
 TEST_RESU(CHAM_ELEM=(
-           _F( CHAM_GD = PIMAG,
-            MAILLE = 'MA1',
-            NOEUD = 'NO1',   NOM_CMP = 'PRES', VALE = 0.,
-            CRITERE = 'ABSOLU'),
-           _F( CHAM_GD = PIMAG,
-            MAILLE = 'MA1',
-            NOEUD = 'NO780', NOM_CMP = 'PRES', VALE = 0.,
-            CRITERE = 'ABSOLU'),
-           _F( CHAM_GD = PIMAG,
-            MAILLE = 'MA57',
-            NOEUD = 'NO751', NOM_CMP = 'PRES', VALE = 1.6387, PRECISION = 3.3E-3),
-           _F( CHAM_GD = PIMAG,
-            MAILLE = 'MA57',
-            NOEUD = 'NO763', NOM_CMP = 'PRES', VALE = 1.6387, PRECISION = 3.3E-3))
+           _F( CHAM_GD = CHPRAC,  MAILLE = 'MA1',
+            NOEUD = 'NO1',   NOM_CMP = 'PRES_I', VALE = 0., CRITERE = 'ABSOLU'),
+           _F( CHAM_GD = CHPRAC, MAILLE = 'MA1',
+            NOEUD = 'NO780', NOM_CMP = 'PRES_I', VALE = 0., CRITERE = 'ABSOLU'),
+           _F( CHAM_GD = CHPRAC, MAILLE = 'MA57',
+            NOEUD = 'NO751', NOM_CMP = 'PRES_I', VALE = 1.6387, PRECISION = 3.3E-3),
+           _F( CHAM_GD = CHPRAC, MAILLE = 'MA57',
+            NOEUD = 'NO763', NOM_CMP = 'PRES_I', VALE = 1.6387, PRECISION = 3.3E-3))
              )
+
 
 #-----------------------CALCUL HARMONIQUE-------------------------------
 
@@ -240,113 +215,69 @@ IMPR_RESU(FORMAT='MED',
 PRESHARM=CALC_ELEM( reuse=PRESHARM,
                             TOUT_ORDRE='OUI',
                              RESULTAT=PRESHARM,
-                               OPTION='INTE_ELNO_ACTI'
+                               OPTION='INTE_ELNO'
            )
 
 TEST_RESU(RESU=(
-           _F( RESULTAT = PRESHARM,  NOM_CHAM = 'INTE_ELNO_ACTI', NUME_ORDRE = 01,
-            MAILLE = 'MA1',
-            NOEUD = 'NO1',  NOM_CMP = 'INTX',  VALE = 0.04370, PRECISION = 3.E-2),
-           _F( RESULTAT = PRESHARM,  NOM_CHAM = 'INTE_ELNO_ACTI', NUME_ORDRE = 01,
-            MAILLE = 'MA1',
-            NOEUD = 'NO780', NOM_CMP = 'INTX',  VALE = 0.04370, PRECISION = 3.E-2),
-           _F( RESULTAT = PRESHARM,  NOM_CHAM = 'INTE_ELNO_ACTI', NUME_ORDRE = 01,
-            MAILLE = 'MA57',
-            NOEUD = 'NO751', NOM_CMP = 'INTX',  VALE = 0.04370, PRECISION = 3.E-2),
-           _F( RESULTAT = PRESHARM,  NOM_CHAM = 'INTE_ELNO_ACTI', NUME_ORDRE = 01,
-            MAILLE = 'MA57',
-            NOEUD = 'NO763', NOM_CMP = 'INTX',  VALE = 0.04370, PRECISION = 3.E-2))
-             )
+            # INTX_R :
+           _F( RESULTAT = PRESHARM,  NOM_CHAM = 'INTE_ELNO', NUME_ORDRE = 1, MAILLE = 'MA1',
+            NOEUD = 'NO1',  NOM_CMP = 'INTX_R',  VALE = 0.04370, PRECISION = 3.E-2),
+           _F( RESULTAT = PRESHARM,  NOM_CHAM = 'INTE_ELNO', NUME_ORDRE = 1, MAILLE = 'MA1',
+            NOEUD = 'NO780', NOM_CMP = 'INTX_R',  VALE = 0.04370, PRECISION = 3.E-2),
+           _F( RESULTAT = PRESHARM,  NOM_CHAM = 'INTE_ELNO', NUME_ORDRE = 1, MAILLE = 'MA57',
+            NOEUD = 'NO751', NOM_CMP = 'INTX_R',  VALE = 0.04370, PRECISION = 3.E-2),
+           _F( RESULTAT = PRESHARM,  NOM_CHAM = 'INTE_ELNO', NUME_ORDRE = 1, MAILLE = 'MA57',
+            NOEUD = 'NO763', NOM_CMP = 'INTX_R',  VALE = 0.04370, PRECISION = 3.E-2),
+
+            # INTX_I :
+           _F( RESULTAT = PRESHARM,  NOM_CHAM = 'INTE_ELNO', NUME_ORDRE = 1, MAILLE = 'MA1',
+            NOEUD = 'NO1',   NOM_CMP = 'INTX_I',  VALE = 0.0, PRECISION = 3.5E-4, CRITERE = 'ABSOLU'),
+           _F( RESULTAT = PRESHARM,  NOM_CHAM = 'INTE_ELNO', NUME_ORDRE = 1, MAILLE = 'MA1',
+            NOEUD = 'NO780', NOM_CMP = 'INTX_I',  VALE = 0.0, PRECISION = 3.5E-4, CRITERE = 'ABSOLU'),
+           _F( RESULTAT = PRESHARM,  NOM_CHAM = 'INTE_ELNO', NUME_ORDRE = 1, MAILLE = 'MA57',
+            NOEUD = 'NO751', NOM_CMP = 'INTX_I',  VALE = 0.0, PRECISION = 3.5E-4, CRITERE = 'ABSOLU'),
+           _F( RESULTAT = PRESHARM,  NOM_CHAM = 'INTE_ELNO', NUME_ORDRE = 1, MAILLE = 'MA57',
+            NOEUD = 'NO763', NOM_CMP = 'INTX_I',  VALE = 0.0, PRECISION = 3.5E-4, CRITERE = 'ABSOLU'))
+           )
 
 PRESHARM=CALC_ELEM( reuse=PRESHARM,
                             TOUT_ORDRE='OUI',
                              RESULTAT=PRESHARM,
-                               OPTION='INTE_ELNO_REAC'
+                               OPTION='PRAC_ELNO'
            )
 
 TEST_RESU(RESU=(
-             _F( RESULTAT = PRESHARM,  NOM_CHAM = 'INTE_ELNO_REAC', NUME_ORDRE = 01,
-              MAILLE = 'MA1',
-              NOEUD = 'NO1',   NOM_CMP = 'INTX',  VALE = 0.0, PRECISION = 3.5E-4,
-                                                 CRITERE = 'ABSOLU'),
-             _F( RESULTAT = PRESHARM,  NOM_CHAM = 'INTE_ELNO_REAC', NUME_ORDRE = 01,
-              MAILLE = 'MA1',
-              NOEUD = 'NO780', NOM_CMP = 'INTX',  VALE = 0.0, PRECISION = 3.5E-4,
-                                                 CRITERE = 'ABSOLU'),
-             _F( RESULTAT = PRESHARM,  NOM_CHAM = 'INTE_ELNO_REAC', NUME_ORDRE = 01,
-              MAILLE = 'MA57',
-              NOEUD = 'NO751', NOM_CMP = 'INTX',  VALE = 0.0, PRECISION = 3.5E-4,
-                                                 CRITERE = 'ABSOLU'),
-             _F( RESULTAT = PRESHARM,  NOM_CHAM = 'INTE_ELNO_REAC', NUME_ORDRE = 01,
-              MAILLE = 'MA57',
-              NOEUD = 'NO763', NOM_CMP = 'INTX',  VALE = 0.0, PRECISION = 3.5E-4,
-                                                 CRITERE = 'ABSOLU'))
-             )
-
-PRESHARM=CALC_ELEM( reuse=PRESHARM,
-                            TOUT_ORDRE='OUI',
-                             RESULTAT=PRESHARM,
-                               OPTION='PRES_ELNO_DBEL'
-           )
-
-TEST_RESU(RESU=(
-             _F( RESULTAT = PRESHARM,  NOM_CHAM = 'PRES_ELNO_DBEL', NUME_ORDRE = 01,
-              MAILLE = 'MA1',
+             _F( RESULTAT = PRESHARM,  NOM_CHAM = 'PRAC_ELNO', NUME_ORDRE = 1, MAILLE = 'MA1',
               NOEUD = 'NO1',  NOM_CMP = 'DB',  VALE = 109.9),
-             _F( RESULTAT = PRESHARM,  NOM_CHAM = 'PRES_ELNO_DBEL', NUME_ORDRE = 01,
-              MAILLE = 'MA1',
+             _F( RESULTAT = PRESHARM,  NOM_CHAM = 'PRAC_ELNO', NUME_ORDRE = 1, MAILLE = 'MA1',
               NOEUD = 'NO780', NOM_CMP = 'DB',  VALE = 109.9),
-             _F( RESULTAT = PRESHARM,  NOM_CHAM = 'PRES_ELNO_DBEL', NUME_ORDRE = 01,
-              MAILLE = 'MA57',
+             _F( RESULTAT = PRESHARM,  NOM_CHAM = 'PRAC_ELNO', NUME_ORDRE = 1, MAILLE = 'MA57',
               NOEUD = 'NO751', NOM_CMP = 'DB',  VALE = 109.9),
-             _F( RESULTAT = PRESHARM,  NOM_CHAM = 'PRES_ELNO_DBEL', NUME_ORDRE = 01,
-              MAILLE = 'MA57',
+             _F( RESULTAT = PRESHARM,  NOM_CHAM = 'PRAC_ELNO', NUME_ORDRE = 1, MAILLE = 'MA57',
               NOEUD = 'NO763', NOM_CMP = 'DB',  VALE = 109.9))
              )
 
-PRESHARM=CALC_ELEM( reuse=PRESHARM,
-                            TOUT_ORDRE='OUI',
-                             RESULTAT=PRESHARM,
-                               OPTION='PRES_ELNO_REEL'
-           )
 
 TEST_RESU(RESU=(
-             _F( RESULTAT = PRESHARM,  NOM_CHAM = 'PRES_ELNO_REEL', NUME_ORDRE = 01,
-              MAILLE = 'MA1',
-              NOEUD = 'NO1',   NOM_CMP = 'PRES',  VALE = -6.2426),
-             _F( RESULTAT = PRESHARM,  NOM_CHAM = 'PRES_ELNO_REEL', NUME_ORDRE = 01,
-              MAILLE = 'MA1',
-              NOEUD = 'NO780', NOM_CMP = 'PRES',  VALE = -6.2426),
-             _F( RESULTAT = PRESHARM,  NOM_CHAM = 'PRES_ELNO_REEL', NUME_ORDRE = 01,
-              MAILLE = 'MA57',
-              NOEUD = 'NO751', NOM_CMP = 'PRES',  VALE = 6.02368),
-             _F( RESULTAT = PRESHARM,  NOM_CHAM = 'PRES_ELNO_REEL', NUME_ORDRE = 01,
-              MAILLE = 'MA57',
-              NOEUD = 'NO763', NOM_CMP = 'PRES',  VALE = 6.02368))
+             _F( RESULTAT = PRESHARM,  NOM_CHAM = 'PRAC_ELNO', NUME_ORDRE = 1, MAILLE = 'MA1',
+              NOEUD = 'NO1',   NOM_CMP = 'PRES_R',  VALE = -6.2426),
+             _F( RESULTAT = PRESHARM,  NOM_CHAM = 'PRAC_ELNO', NUME_ORDRE = 1, MAILLE = 'MA1',
+              NOEUD = 'NO780', NOM_CMP = 'PRES_R',  VALE = -6.2426),
+             _F( RESULTAT = PRESHARM,  NOM_CHAM = 'PRAC_ELNO', NUME_ORDRE = 1, MAILLE = 'MA57',
+              NOEUD = 'NO751', NOM_CMP = 'PRES_R',  VALE = 6.02368),
+             _F( RESULTAT = PRESHARM,  NOM_CHAM = 'PRAC_ELNO', NUME_ORDRE = 1, MAILLE = 'MA57',
+              NOEUD = 'NO763', NOM_CMP = 'PRES_R',  VALE = 6.02368))
              )
 
-PRESHARM=CALC_ELEM( reuse=PRESHARM,
-                            TOUT_ORDRE='OUI',
-                             RESULTAT=PRESHARM,
-                               OPTION='PRES_ELNO_IMAG'
-           )
-
 TEST_RESU(RESU=(
-           _F( RESULTAT = PRESHARM,  NOM_CHAM = 'PRES_ELNO_IMAG', NUME_ORDRE = 01,
-            MAILLE = 'MA1',
-            NOEUD = 'NO1',  NOM_CMP = 'PRES',  VALE = 0.,
-                                     CRITERE = 'ABSOLU'),
-           _F( RESULTAT = PRESHARM,  NOM_CHAM = 'PRES_ELNO_IMAG', NUME_ORDRE = 01,
-            MAILLE = 'MA1',
-            NOEUD = 'NO780', NOM_CMP = 'PRES',  VALE = 0.,
-                                     CRITERE = 'ABSOLU'),
-          _F( RESULTAT = PRESHARM,  NOM_CHAM = 'PRES_ELNO_IMAG', NUME_ORDRE = 01,
-           MAILLE = 'MA57',
-           NOEUD = 'NO751', NOM_CMP = 'PRES',  VALE = 1.6387, PRECISION = 3.3E-3,
-                                     CRITERE = 'RELATIF'),
-          _F( RESULTAT = PRESHARM,  NOM_CHAM = 'PRES_ELNO_IMAG', NUME_ORDRE = 01,
-           MAILLE = 'MA57',
-           NOEUD = 'NO763',  NOM_CMP = 'PRES',  VALE = 1.6387, PRECISION = 3.3E-3))
+           _F( RESULTAT = PRESHARM,  NOM_CHAM = 'PRAC_ELNO', NUME_ORDRE = 1, MAILLE = 'MA1',
+            NOEUD = 'NO1',  NOM_CMP = 'PRES_I',  VALE = 0., CRITERE = 'ABSOLU'),
+           _F( RESULTAT = PRESHARM,  NOM_CHAM = 'PRAC_ELNO', NUME_ORDRE = 1, MAILLE = 'MA1',
+            NOEUD = 'NO780', NOM_CMP = 'PRES_I',  VALE = 0., CRITERE = 'ABSOLU'),
+          _F( RESULTAT = PRESHARM,  NOM_CHAM = 'PRAC_ELNO', NUME_ORDRE = 1, MAILLE = 'MA57',
+           NOEUD = 'NO751', NOM_CMP = 'PRES_I',  VALE = 1.6387, PRECISION = 3.3E-3, CRITERE = 'RELATIF'),
+          _F( RESULTAT = PRESHARM,  NOM_CHAM = 'PRAC_ELNO', NUME_ORDRE = 1, MAILLE = 'MA57',
+           NOEUD = 'NO763',  NOM_CMP = 'PRES_I',  VALE = 1.6387, PRECISION = 3.3E-3))
              )
 
 FIN()

@@ -1,4 +1,4 @@
-# MODIF  DATE 04/10/2010   AUTEUR GNICOLAS G.NICOLAS 
+# MODIF  DATE 07/12/2010   AUTEUR PELLET J.PELLET 
 # TITRE CONSOLIDATION TERZAGHI 2D Q8
 # wtnl100f.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -187,17 +187,17 @@ for k in range(1,nbadap+1):
                     RESULTAT=RESU[k],
                     LIST_INST=LI1_BIS,
                     TYPE_OPTION='INDI_ERREUR',
-                    OPTION=('ERRE_ELEM_SIGM','ERRE_ELNO_ELEM',),);
+                    OPTION=('ERME_ELEM','ERME_ELNO',),);
 
   RESU[k]=CALC_NO(reuse =RESU[k],
                     RESULTAT=RESU[k],
                     INST=T1_FIN,
-                    OPTION='ERRE_NOEU_ELEM',);
+                    OPTION='ERME_NOEU',);
 
   if ( k == 1 ) :
     TEST_RESU( RESU = (
             _F(  RESULTAT = RESU[k],  INST=T1_FIN,
-                 NOM_CHAM = 'ERRE_NOEU_ELEM',   NOM_CMP = 'ESTERG1',
+                 NOM_CHAM = 'ERME_NOEU',   NOM_CMP = 'ESTERG1',
                  CRITERE = 'RELATIF',  PRECISION = 1.E-10,
                  GROUP_NO = 'NO_TEST',      VALE = 5.1838946544447E-03,
                  REFERENCE = 'NON_REGRESSION', VERSION = '9.02.13' ),
@@ -212,7 +212,7 @@ for k in range(1,nbadap+1):
                    MAILLAGE_NP1=MAIL[k+1],
                    ADAPTATION='RAFFINEMENT',
                    RESULTAT_N=RESU[k],
-                   NOM_CHAM='ERRE_ELEM_SIGM',
+                   NOM_CHAM='ERME_ELEM',
                    NOM_CMP='ESTERG1',
                    NUME_ORDRE=25,
                    CRIT_RAFF_PE=0.05,);

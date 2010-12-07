@@ -1,9 +1,10 @@
-      SUBROUTINE CGMFTM(TYMAZ,NOMAZ,LISMAZ,NBMA,IERR)
-      IMPLICIT   NONE
-      INTEGER             NBMA,IERR
-      CHARACTER*(*)       NOMAZ, LISMAZ, TYMAZ
+      SUBROUTINE CGMFTM(TYMAZ,NOMAZ,LISMA,NBMA,IERR)
+      IMPLICIT NONE
+      INTEGER NBMA,IERR
+      CHARACTER*(*) NOMAZ, TYMAZ
+C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 09/06/2009   AUTEUR REZETTE C.REZETTE 
+C MODIF MODELISA  DATE 07/12/2010   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -28,7 +29,7 @@ C                 EN FONCTION DE LEUR TYPE.
 C
 C -------------------------------------------------------
 C  TYMA          - IN    - K8   - : TYPE DE MAILLE RETENU
-C                                   ("TOUT","1D","2D","3D")
+C                                   ("TOUT","0D","1D","2D","3D")
 C  NOMAZ         - IN    - K8   - : NOM DU MAILLAGE
 C  LISMAZ        - INOUT - K24  - : NOM DE LA LISTE DE MAILLES A FILTRER
 C                                   ET FILTREE
@@ -67,82 +68,51 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32                               ZK32
       CHARACTER*80                                        ZK80
       COMMON  /KVARJE/ ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
-      CHARACTER*32     JEXNOM, JEXNUM, JEXATR
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
 
-      INTEGER ITYP,I,NN,JMALA2,JMALA,IMA
-      CHARACTER*8  NOMA, TYMA, TYPMA
-      CHARACTER*24 LISMA,LISMA2
+      INTEGER I,DIM,JLIMA,JLITR,NBMAIL,NBTROU
+      CHARACTER*1 K1BID
+      CHARACTER*8  NOMA, TYMA
+      CHARACTER*24 LISMA,LITROU
 
       CALL JEMARQ()
 
       NOMA=NOMAZ
-      LISMA=LISMAZ
       TYMA=TYMAZ
+   
+      LITROU='&&CGMFTP.MA_FILTREES'
 
-      CALL JEVEUO( NOMA//'.TYPMAIL', 'L', ITYP )
-      CALL JEVEUO( LISMA, 'E', JMALA)
+      CALL JELIRA(LISMA,'LONMAX',NBMAIL,K1BID)
+      IF (NBMAIL.NE.NBMA) CALL ASSERT(.FALSE.)
 
-      LISMA2='&&CGMFTP.MA_FILTREES'
-      CALL WKVECT(LISMA2,'V V I',NBMA,JMALA2)
+      IF (TYMA.EQ.'0D') THEN
+        DIM = 0
+      ELSE IF (TYMA.EQ.'1D') THEN
+        DIM = 1
+      ELSE IF (TYMA.EQ.'2D') THEN
+        DIM = 2
+      ELSE IF (TYMA.EQ.'3D') THEN
+        DIM = 3
+      ELSE
+        CALL ASSERT(.FALSE.)
+      ENDIF
 
-      NN=0
-      IERR=1
-
-      IF(TYMA(1:2).EQ.'1D')THEN
-
+      CALL UTFLMD(NOMA,LISMA,DIM,NBTROU,LITROU)
+      
+      IF (NBMA.EQ.0) THEN
+        IERR = 1
+      ELSE
+        IERR = 0
+        NBMA = NBTROU
+        CALL JEVEUO(LISMA ,'E',JLIMA)
+        CALL JEVEUO(LITROU,'L',JLITR)
         DO 10 I=1,NBMA
-          IMA=ZI(JMALA+I-1)
-          CALL JENUNO(JEXNUM('&CATA.TM.NOMTM',ZI(ITYP+IMA-1)),TYPMA)
-
-          IF (TYPMA(1:3).EQ.'SEG' )THEN
-              ZI(JMALA2+NN)=IMA
-              NN=NN+1
-          ENDIF
-
+          ZI(JLIMA+I-1)=ZI(JLITR+I-1)
  10     CONTINUE
-
-      ELSE IF(TYMA.EQ.'2D')THEN
-
-        DO 20 I=1,NBMA
-          IMA=ZI(JMALA+I-1)
-          CALL JENUNO(JEXNUM('&CATA.TM.NOMTM',ZI(ITYP+IMA-1)),TYPMA)
-
-          IF (TYPMA(1:4).EQ.'TRIA' .OR.
-     &        TYPMA(1:4).EQ.'QUAD')THEN
-              ZI(JMALA2+NN)=IMA
-              NN=NN+1
-          ENDIF
-
- 20     CONTINUE
-
-      ELSE IF(TYMA.EQ.'3D')THEN
-
-        DO 30 I=1,NBMA
-          IMA=ZI(JMALA+I-1)
-          CALL JENUNO(JEXNUM('&CATA.TM.NOMTM',ZI(ITYP+IMA-1)),TYPMA)
-
-          IF (TYPMA(1:5).EQ.'TETRA' .OR.
-     &        TYPMA(1:5).EQ.'PENTA' .OR.
-     &        TYPMA(1:5).EQ.'PYRAM' .OR.
-     &        TYPMA(1:4).EQ.'HEXA')THEN
-              ZI(JMALA2+NN)=IMA
-              NN=NN+1
-          ENDIF
-
- 30     CONTINUE
-
+        
       ENDIF
 
-      IF(NN.NE.0)THEN
-        IERR=0
-        NBMA=NN
-        DO 40 I=1,NBMA
-          ZI(JMALA+I-1)=ZI(JMALA2+I-1)
- 40     CONTINUE
-      ENDIF
-
-      CALL JEDETR(LISMA2)
+      CALL JEDETR(LITROU)
 
       CALL JEDEMA()
 

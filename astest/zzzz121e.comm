@@ -1,22 +1,22 @@
-# MODIF  DATE 18/10/2010   AUTEUR GNICOLAS G.NICOLAS 
+# MODIF  DATE 07/12/2010   AUTEUR PELLET J.PELLET 
 # TITRE COUPLAGE ASTER_HOMARD - CAS 3D EN HEXAEDRES
 # zzzz121e.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # RESPONSABLE GNICOLAS G.NICOLAS
 # Attention : Ceci est un test de non regression et non pas d'evaluation
@@ -42,7 +42,7 @@
 #         .            .            .            . /
 #         .            .            .            ./
 #         ---------------------------------------.
-#         1            2            3            4      
+#         1            2            3            4
 #
 # NOMBRE DE NOEUDS : 32
 #
@@ -160,7 +160,7 @@ RESU00=MECA_STATIQUE(MODELE=MODE00,
 
 RESU00=CALC_ELEM(reuse =RESU00,
                  RESULTAT=RESU00,
-                 OPTION=('SIEF_ELNO_ELGA','ERRE_ELEM_SIGM',),);
+                 OPTION=('SIEF_ELNO_ELGA','ERME_ELEM',),);
 
 #
 # 3.6. IMPRESSION
@@ -174,7 +174,7 @@ MACR_ADAP_MAIL(MAILLAGE_N=M00,
                MAILLAGE_NP1=CO('M01'),
                ADAPTATION='RAFFINEMENT',
                RESULTAT_N=RESU00,
-               NOM_CHAM='ERRE_ELEM_SIGM',
+               NOM_CHAM='ERME_ELEM',
                NOM_CMP='ERREST',
                MAJ_CHAM=_F(CHAM_MAJ=CO('DEPL1'),
                            TYPE_CHAM='NOEU_DEPL_R',
@@ -316,11 +316,11 @@ RESU02=MECA_STATIQUE(MODELE=MODE02,
 
 RESU02=CALC_ELEM(reuse =RESU02,
                  RESULTAT=RESU02,
-                 OPTION=('SIEF_ELNO_ELGA','ERRE_ELEM_SIGM','ERRE_ELNO_ELEM',),);
+                 OPTION=('SIEF_ELNO_ELGA','ERME_ELEM','ERME_ELNO',),);
 
 RESU02=CALC_NO(reuse =RESU02,
                RESULTAT=RESU02,
-               OPTION='ERRE_NOEU_ELEM',);
+               OPTION='ERME_NOEU',);
 
 # 8.6. IMPRESSION
 #IMPR_RESU(FORMAT='MED',RESU=_F(RESULTAT=RESU02,),);
@@ -376,7 +376,7 @@ TEST_RESU(CHAM_NO=(_F(CHAM_GD=DEPL2,
                    VERSION='10.02.20',),
                 _F(RESULTAT=RESU02,
                    NUME_ORDRE=1,
-                   NOM_CHAM='ERRE_NOEU_ELEM',
+                   NOM_CHAM='ERME_NOEU',
                    NOM_CMP='ERREST',
                    GROUP_NO='A',
                    VALE=5.18187530E4,

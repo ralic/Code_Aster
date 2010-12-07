@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 16/02/2010   AUTEUR PELLET J.PELLET 
+%& MODIF TYPELEM  DATE 07/12/2010   AUTEUR PELLET J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -260,11 +260,7 @@ OPTION__
                               OUT__  XXXXXX   XXXXXX
     SIGM_ELNO_DEPL      -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
-    SIGM_ELNO_SIEF      -1    IN__   XXXXXX   XXXXXX
-                              OUT__  XXXXXX   XXXXXX
     SIPO_ELNO_DEPL      -1    IN__   XXXXXX   XXXXXX
-                              OUT__  XXXXXX   XXXXXX
-    SIPO_ELNO_SIEF      -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
     TOU_INI_ELEM        99    IN__   NGEOMER  PGEOMER
                               OUT__  ECAFIEL  PCAFI_R  ENBSP_I  PNBSP_I

@@ -1,4 +1,4 @@
-# MODIF  DATE 30/08/2010   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 07/12/2010   AUTEUR PELLET J.PELLET 
 # TITRE POUTRE ENCASTREE A UNE EXTREMITE ET CHARGEE PAR UNE TRACTION
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -423,34 +423,5 @@ _F( RESULTAT = RESM, NOM_CHAM = 'PMPB_NOEU_SIEF', NOEUD = 'C3',
   NOM_CMP = 'PMPB', NUME_ORDRE = 41, VALE = 2.53471E+08, PRECISION = 1.E-2))
                 )
 
-#---------------------------------------------------------------------
-
-CALC_ELEM( reuse=RESM,   RESULTAT=RESM,
-                      NUME_ORDRE=( 1,  71, ),
-                          OPTION=( 'SIGM_ELNO_SIEF',
-                                   'SIPO_ELNO_SIEF', )
-                     )
-
-TEST_RESU(RESU=(
-       _F(  RESULTAT = RESM,   NOM_CHAM = 'SIGM_ELNO_SIEF',
-              NUME_ORDRE = 1,     MAILLE = 'SC2',
-              NOEUD = 'C3',     NOM_CMP = 'SIXX',
-              REFERENCE = 'ANALYTIQUE',    VALE = 1.50000E+08),
-       _F(  RESULTAT = RESM,   NOM_CHAM = 'SIPO_ELNO_SIEF',
-              NUME_ORDRE = 1,     MAILLE = 'SC2',
-              NOEUD = 'C3',     NOM_CMP = 'SMFZ',
-              REFERENCE = 'ANALYTIQUE',    VALE = -1.50000E+08),
-
-       _F(  RESULTAT = RESM,   NOM_CHAM = 'SIGM_ELNO_SIEF',
-              NUME_ORDRE = 71,     MAILLE = 'SC2',
-              NOEUD = 'C3',     NOM_CMP = 'SIXX',
-              REFERENCE = 'ANALYTIQUE',    VALE = 2.53809E+08),
-       _F(  RESULTAT = RESM,   NOM_CHAM = 'SIPO_ELNO_SIEF',
-              NUME_ORDRE = 71,     MAILLE = 'SC2',
-              NOEUD = 'C3',     NOM_CMP = 'SMFZ',
-              REFERENCE = 'ANALYTIQUE',    VALE = 2.53809E+08))
-              )
-
-#---------------------------------------------------------------------
 FIN( )
 #

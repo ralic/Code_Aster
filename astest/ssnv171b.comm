@@ -1,5 +1,5 @@
 
-# MODIF  DATE 05/07/2010   AUTEUR PROIX J-M.PROIX 
+# MODIF  DATE 07/12/2010   AUTEUR GENIAUT S.GENIAUT 
 # TITRE MONOCRISTAL OCTAEDRIQUE MERIC-CAILLETAUD EXPLICITE ET IMPLICITE AVEC SIMU_POINT_MAT
 # RESPONSABLE JMBHH01 J.M.PROIX
 # ssnv171b.para = tps_job 600 mem_job 512Mo mem_aster 10 ncpus 1 liste_test S
@@ -70,7 +70,7 @@ DEFLIST1 =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = LINST),
 MONOIMPL=SIMU_POINT_MAT(INFO=1,
                    COMP_INCR=_F(RELATION='MONOCRISTAL',
                                 COMPOR=COMPOR1,
-                                RESO_INTE='IMPLICITE_RELI',
+                                ALGO_INTE='NEWTON_RELI',
                                 ),
                    MASSIF=_F(ANGL_REP=30.0),
                    ANGLE=0.,
@@ -135,7 +135,7 @@ COMPOR2=DEFI_COMPOR( MONOCRISTAL=(_F(MATER=ACIER,
 MONOEXPL=SIMU_POINT_MAT(INFO=2,
                    COMP_INCR=_F(RELATION='MONOCRISTAL',
                                 COMPOR=COMPOR2,
-                                RESO_INTE='RUNGE_KUTTA_2',
+                                ALGO_INTE='RUNGE_KUTTA',
                                 RESI_INTE_RELA=1.E-6,
                                 TYPE_MATR_TANG='PERTURBATION',
                                 ),

@@ -1,10 +1,10 @@
-        SUBROUTINE VECMAT ( FAMI, KPG, KSP, MOD,    JMAT,   NMAT,
+        SUBROUTINE VECMAT ( FAMI, KPG, KSP, MOD, LOI, JMAT,   NMAT,
      1                      MATERD, MATERF, MATCST, TYPMA,    NDT,
      2                      NDI,    NR,     NVI )
         IMPLICIT NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 30/06/2008   AUTEUR MAHFOUZ D.MAHFOUZ 
+C MODIF ALGORITH  DATE 07/12/2010   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -63,6 +63,7 @@ C    ----------------------------------------------------------------
         CHARACTER*2     BL2, FB2, CERR(12)
         CHARACTER*3     MATCST
         CHARACTER*11    METING
+        CHARACTER*16    LOI
         CHARACTER*(*)   FAMI
 C       ----------------------------------------------------------------
         COMMON /OPTI/   IOPTIO , IDNR
@@ -98,7 +99,7 @@ C - POUR INTEGRATION PAR METHODE EXPLICITE ON RESTE DIMENSIONNE EN 3D
            NR  = NDT+3
            NVI = NDT+4
 C - POUR INTEGRATION PAR METHODE IMPLICITE ON RESTE DIMENSIONNE EN 3D
-      ELSEIF  (METING(1:9).EQ.'IMPLICITE') THEN
+      ELSEIF  (METING(1:9).EQ.'NEWTON') THEN
            NDT = 6
            NDI = 3
            NR  = NDT+2
@@ -155,29 +156,38 @@ C --- DONC:
 C
       LMAT=7
       LFCT=9
-C
+
       MATCST = 'OUI'
 
       NBMAT=ZI(JMAT)
 C     UTILISABLE SEULEMENT AVEC UN MATERIAU PAR MAILLE
       CALL ASSERT(NBMAT.EQ.1)
-      IMAT = JMAT+ZI(JMAT+NBMAT+1)
 
-      DO 10 IK = 1, ZI(IMAT+1)
-        IF(ZK16(ZI(IMAT)+IK-1)(1:9).EQ.'VENDOCHAB') THEN
-          IPI=ZI(IMAT+IK+ZI(IMAT+1)-1)
-          DO 15 IL = 1, ZI(IPI+2)
-            IVALK = ZI(IPI+3)
-            IF (ZK8(IVALK+IL-1)(1:3).EQ.'K_D') THEN
-              IPIF=IPI+LMAT-1+LFCT*(IL-1)
-              JPRO=ZI(IPIF+1)
-              IF (ZK24(JPRO).EQ.'NAPPE') THEN
-                MATCST = 'NAP'
-              ENDIF
-            ENDIF
- 15       CONTINUE
-        ENDIF
- 10   CONTINUE
+      DO  9 J = 1 , 2
+      DO  9 I = 1 , NMAT
+         MATERD(I,J) = 0.D0
+         MATERF(I,J) = 0.D0
+ 9    CONTINUE
+
+      IF (LOI.EQ.'VENDOCHAB') THEN
+      
+         IMAT = JMAT+ZI(JMAT+NBMAT+1)
+
+         DO 10 IK = 1, ZI(IMAT+1)
+           IF(ZK16(ZI(IMAT)+IK-1)(1:9).EQ.'VENDOCHAB') THEN
+             IPI=ZI(IMAT+IK+2-1)
+             DO 15 IL = 1, ZI(IPI+2)
+               IVALK = ZI(IPI+3)
+               IF (ZK8(IVALK+IL-1)(1:3).EQ.'K_D') THEN
+                 IPIF=IPI+LMAT-1+LFCT*(IL-1)
+                 JPRO=ZI(IPIF+1)
+                 IF (ZK24(JPRO).EQ.'NAPPE') THEN
+                   MATCST = 'NAP'
+                 ENDIF
+               ENDIF
+ 15          CONTINUE
+           ENDIF
+ 10      CONTINUE
 C
 C -     RECUPERATION MATERIAU -----------------------------------------
 C
@@ -191,44 +201,92 @@ C VARIABLES INTERNES DANS LA SOUS ROUTINE D'INTEGRATION LOCALE PAR
 C UNE METHODE DE RUNGE-KUTTA NMVPRK.F
 C
 C
-          NOMC(1)   = 'E       '
-          NOMC(2)   = 'NU      '
-          NOMC(3)   = 'ALPHA   '
-          NOMC(4)   = 'S       '
-          NOMC(5)   = 'ALPHA_D '
-          NOMC(6)   = 'BETA_D  '
-          NOMC(7)   = 'N       '
-          NOMC(8)   = 'UN_SUR_M'
-          NOMC(9)   = 'UN_SUR_K'
-          NOMC(10)  = 'R_D     '
-          NOMC(11)  = 'A_D     '
-          NOMC(12)  = 'K_D     '
+         NOMC(1)   = 'E       '
+         NOMC(2)   = 'NU      '
+         NOMC(3)   = 'ALPHA   '
+         
+         NOMC(4)   = 'N       '
+         NOMC(5)   = 'UN_SUR_M'
+         NOMC(6)   = 'UN_SUR_K'
+         
+         NOMC(7)   = 'SY      '
+         NOMC(8)   = 'ALPHA_D '
+         NOMC(9)   = 'BETA_D  '
+         NOMC(10)  = 'R_D     '
+         NOMC(11)  = 'A_D     '
+         NOMC(12)  = 'K_D     '
 
 C
-          DO  9 J = 1 , 2
-          DO  9 I = 1 , NMAT
-          MATERD(I,J) = 0.D0
-          MATERF(I,J) = 0.D0
- 9       CONTINUE
+C -      RECUPERATION MATERIAU A TEMPD (T)
+C
+         CALL RCVALB(FAMI,KPG,KSP,'-',JMAT,' ',   'ELAS',0,
+     1              ' ', 0.D0, 3,
+     2                  NOMC(1),  MATERD(1,1),  CERR(1), BL2 )
+         IF (CERR(3) .NE. 'OK' ) THEN
+            MATERD(3,1) = 0.D0  
+         ENDIF
+         CALL RCVALB(FAMI,KPG,KSP,'-',JMAT,' ','LEMAITRE',   0,
+     1               ' ', 0.D0, 3,
+     2                  NOMC(4),  MATERD(1,2),  CERR(4), FB2 )
+         CALL RCVALB(FAMI,KPG,KSP,'-',JMAT,' ','VENDOCHAB',   0,
+     1               ' ', 0.D0, 5,
+     2                  NOMC(7),  MATERD(4,2),  CERR(7), FB2 )
+         IF (MATCST.EQ.'NAP') THEN
+            MATERD(9,2)=0.0D0
+         ELSE
+            CALL RCVALB(FAMI,KPG,KSP,'-',JMAT,' ','VENDOCHAB',   0,
+     1                ' ', 0.D0, 1,
+     2                   NOMC(12),  MATERD(9,2),  CERR(12), FB2 )
+         ENDIF
+C
+C -      RECUPERATION MATERIAU A TEMPF (T+DT)
+C
+         CALL RCVALB(FAMI,KPG,KSP,'+',JMAT,' ',   'ELAS',     0,
+     1               ' ', 0.D0, 3,
+     2                  NOMC(1),  MATERF(1,1),  CERR(1), BL2 )
+         IF (CERR(3) .NE. 'OK' ) THEN
+           MATERF(3,1) = 0.D0
+         ENDIF
+         CALL RCVALB(FAMI,KPG,KSP,'+',JMAT,' ','LEMAITRE',   0,
+     1               ' ', 0.D0, 3,
+     2                  NOMC(4),  MATERF(1,2),  CERR(4), FB2 )
+         CALL RCVALB(FAMI,KPG,KSP,'+',JMAT,' ','VENDOCHAB',   0,
+     1               ' ', 0.D0, 5,
+     2                  NOMC(7),  MATERF(4,2),  CERR(7), FB2 )
+         IF (MATCST.EQ.'NAP') THEN
+            MATERF(9,2)=0.0D0
+         ELSE
+            CALL RCVALB(FAMI,KPG,KSP,'+',JMAT,' ','VENDOCHAB',   0,
+     1                ' ', 0.D0, 1,
+     2                   NOMC(12),  MATERF(9,2),  CERR(12), FB2 )
+         ENDIF
+         
+      ELSEIF (LOI.EQ.'VISC_ENDO_LEMA') THEN
+      
+         NOMC(1)   = 'E       '
+         NOMC(2)   = 'NU      '
+         NOMC(3)   = 'ALPHA   '
+         NOMC(4)   = 'N       '
+         NOMC(5)   = 'UN_SUR_M'
+         NOMC(6)   = 'UN_SUR_K'
+         NOMC(7)   = 'SY      '
+         NOMC(8)   = 'R_D     '
+         NOMC(9)   = 'A_D     '
 C
 C -     RECUPERATION MATERIAU A TEMPD (T)
 C
-          CALL RCVALB(FAMI,KPG,KSP,'-',JMAT,' ',   'ELAS',0,
+         CALL RCVALB(FAMI,KPG,KSP,'-',JMAT,' ',   'ELAS',0,
+     1              ' ', 0.D0, 3,
+     2                  NOMC(1),  MATERD(1,1),  CERR(1), BL2 )
+         IF (CERR(3) .NE. 'OK' ) THEN
+            MATERD(3,1) = 0.D0  
+         ENDIF
+         CALL RCVALB(FAMI,KPG,KSP,'-',JMAT,' ','LEMAITRE',   0,
      1               ' ', 0.D0, 3,
-     2                   NOMC(1),  MATERD(1,1),  CERR(1), BL2 )
-          IF (CERR(3) .NE. 'OK' ) THEN
-             MATERD(3,1) = 0.D0  
-          ENDIF
-          CALL RCVALB(FAMI,KPG,KSP,'-',JMAT,' ','VENDOCHAB',   0,
-     1                ' ', 0.D0, 8,
-     2                   NOMC(4),  MATERD(1,2),  CERR(4), FB2 )
-        IF (MATCST.EQ.'NAP') THEN
-          MATERD(9,2)=0.0D0
-        ELSE
-          CALL RCVALB(FAMI,KPG,KSP,'-',JMAT,' ','VENDOCHAB',   0,
-     1                ' ', 0.D0, 1,
-     2                   NOMC(12),  MATERD(9,2),  CERR(12), FB2 )
-        ENDIF
+     2                  NOMC(4),  MATERD(1,2),  CERR(4), FB2 )
+         CALL RCVALB(FAMI,KPG,KSP,'-',JMAT,' ','VISC_ENDO',   0,
+     1               ' ', 0.D0, 3,
+     2                  NOMC(7),  MATERD(4,2),  CERR(7), FB2 )
 C
 C -     RECUPERATION MATERIAU A TEMPF (T+DT)
 C
@@ -238,16 +296,15 @@ C
           IF (CERR(3) .NE. 'OK' ) THEN
             MATERF(3,1) = 0.D0
           ENDIF
-          CALL RCVALB(FAMI,KPG,KSP,'+',JMAT,' ','VENDOCHAB',   0,
-     1                ' ', 0.D0, 8,
-     2                   NOMC(4),  MATERF(1,2),  CERR(4), FB2 )
-        IF (MATCST.EQ.'NAP') THEN
-          MATERF(9,2)=0.0D0
-        ELSE
-          CALL RCVALB(FAMI,KPG,KSP,'+',JMAT,' ','VENDOCHAB',   0,
-     1                ' ', 0.D0, 1,
-     2                   NOMC(12),  MATERF(9,2),  CERR(12), FB2 )
-        ENDIF
+         CALL RCVALB(FAMI,KPG,KSP,'+',JMAT,' ','LEMAITRE',   0,
+     1               ' ', 0.D0, 3,
+     2                  NOMC(4),  MATERF(1,2),  CERR(4), FB2 )
+         CALL RCVALB(FAMI,KPG,KSP,'+',JMAT,' ','VISC_ENDO',   0,
+     1               ' ', 0.D0, 3,
+     2                  NOMC(7),  MATERF(4,2),  CERR(7), FB2 )
+         
+      ENDIF 
+      
 C
 C
 C - MATERIAU CONSTANT ? REMARQUE : NON UTILISE POUR L'INSTANT

@@ -1,6 +1,6 @@
       SUBROUTINE TE0344(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 07/12/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -64,7 +64,7 @@ C     ------------------------------------------------------------------
 C     ------------------------------------------------------------------
 C
       IF(OPTION(11:14).NE.'SIEF') THEN
-       
+
 C     --- RECUPERATION DES CARACTERISTIQUES MATERIAUX ---
       CALL JEVECH('PMATERC','L',LMATER)
 C
@@ -195,7 +195,7 @@ C           (CONVENTION ADOPTEE/AL95-205)
              ZR(JEFFO-1+I)   = - FLR(I)
              ZR(JEFFO-1+I+7) =   FLR(I+7)
  200     CONTINUE
-  
+
       ELSEIF (OPTION.EQ.'SIGM_ELNO_DEPL') THEN
          CALL JEVECH('PCONTRR','E',JEFFO)
          DO 210 I = 1,6
@@ -212,24 +212,6 @@ C           (CONVENTION ADOPTEE/AL95-205)
  220     CONTINUE
          CALL POSIPR ( NOMTE, FE, ZR(JEFFO) )
 
-      ELSEIF ( OPTION .EQ. 'SIGM_ELNO_SIEF' ) THEN
-         CALL JEVECH ( 'PSIEFNOR' , 'L' , JEFGE )
-         CALL JEVECH ( 'PCONTRR' , 'E' , JEFFO )
-         DO 230 I = 1,6
-            FE(I)   =   -ZR(JEFGE+I-1)
-            FE(I+6) =    ZR(JEFGE+I-1+7)
- 230     CONTINUE
-         CALL JEVECH ( 'PCONTRR' , 'E' , JEFFO )
-         CALL POSIGR ( NOMTE, FE, ZR(JEFFO) )
-C
-      ELSEIF ( OPTION .EQ. 'SIPO_ELNO_SIEF' ) THEN
-         CALL JEVECH ( 'PSIEFNOR' , 'L' , JEFGE )
-         CALL JEVECH ( 'PCONTPO' , 'E' , JEFFO )
-         DO 240 I = 1,6
-            FE(I)   =   -ZR(JEFGE+I-1)
-            FE(I+6) =    ZR(JEFGE+I-1+7)
- 240      CONTINUE
-         CALL POSIPR ( NOMTE, FE, ZR(JEFFO) )
 C
       ELSE
 C OPTION NON PROGRAMMEE

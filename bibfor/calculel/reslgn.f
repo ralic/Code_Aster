@@ -3,7 +3,7 @@
       CHARACTER*(*) LIGREL,ERREE,ERREN
 C----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 08/11/2010   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 07/12/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,7 +21,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 
-C     BUT:   CALCUL DE L'OPTION : 'ERRE_ELNO_ELEM' ET 'QIRE_ELNO_ELEM'
+C     BUT:   CALCUL DE L'OPTION : 'ERME_ELNO' ET 'QIRE_ELNO_ELEM'
 C     ----
 
 C IN  : LIGREL : NOM DU LIGREL

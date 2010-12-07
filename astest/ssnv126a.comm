@@ -1,5 +1,5 @@
 
-# MODIF  DATE 22/11/2010   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 07/12/2010   AUTEUR GENIAUT S.GENIAUT 
 # TITRE ESSAI DE RELAXATION EN 3D VENDOCHAB
 # ssnv126a.para = tps_job 80 mem_job 64Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -196,12 +196,13 @@ ACIER=DEFI_MATERIAU(ELAS_FO=_F(E=F_E,
                                NU=F_NU,
                                TEMP_DEF_ALPHA=100.0,
                                ALPHA=F_ALPHA,),
-                    VENDOCHAB_FO=_F(S=SEUIL,
+                    LEMAITRE_FO=_F(N=N_T,
+                                   UN_SUR_M= M_T,
+                                   UN_SUR_K= K_T,
+                                ),
+                    VENDOCHAB_FO=_F(SY=SEUIL,
                                     ALPHA_D=A1,
                                     BETA_D=A2,
-                                    N=N_T,
-                                    UN_SUR_M= M_T,
-                                    UN_SUR_K= K_T,
                                     R_D=R_T,
                                     A_D=A_T,
                                     K_D=KD_T,),);
@@ -280,7 +281,7 @@ SOLNL=STAT_NON_LINE(SOLVEUR=_F(METHODE='MUMPS',PCENT_PIVOT=10,),MODELE=EPD3,
                                  TOUT='OUI',
                                  RESI_INTE_RELA=1.E-6,
                                  ITER_INTE_MAXI=20,
-                                 RESO_INTE='RUNGE_KUTTA_2',),
+                                 ALGO_INTE='RUNGE_KUTTA',),
                     INCREMENT=_F(LIST_INST=LINST,
                                  NUME_INST_FIN=60,),
                     NEWTON=_F(REAC_INCR=1,

@@ -1,4 +1,4 @@
-# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 07/12/2010   AUTEUR PELLET J.PELLET 
 # TITRE PLAQUE ENTAILLEE EN ELASTOPLASTICITE (ELEMENTS QUAD4 SI)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -85,8 +85,8 @@ RESU=CALC_ELEM(reuse =RESU,
 
                RESULTAT=RESU,
                OPTION=('SIEF_ELNO_ELGA',
-                       'ERRE_ELEM_SIGM',
-                       'ERRE_ELNO_ELEM',
+                       'ERME_ELEM',
+                       'ERME_ELNO',
                       ),
                );
 
@@ -167,7 +167,7 @@ TEST_TABLE(TABLE=S_T,
 TEST_RESU(RESU=(
            _F( RESULTAT = RESU,
                INST = 1.,
-               NOM_CHAM = 'ERRE_ELEM_SIGM',
+               NOM_CHAM = 'ERME_ELEM',
                CRITERE = 'RELATIF',
                PRECISION = 0.0001,
                POINT = 1,
@@ -181,7 +181,7 @@ TEST_RESU(RESU=(
 TEST_RESU(RESU=(
            _F( RESULTAT = RESU,
                INST = 1.,
-               NOM_CHAM = 'ERRE_ELNO_ELEM',
+               NOM_CHAM = 'ERME_ELNO',
                CRITERE = 'RELATIF',
                PRECISION = 0.0001,
                NOEUD= 'N6',

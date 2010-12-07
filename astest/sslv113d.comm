@@ -1,4 +1,4 @@
-# MODIF  DATE 19/10/2010   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 07/12/2010   AUTEUR PELLET J.PELLET 
 # TITRE TEST DE L'ESTIMATEUR D'ERREUR EN QUANTITE D'INTERET
 # sslv113d.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -88,7 +88,7 @@ RESUPRIM=CALC_ELEM(reuse =RESUPRIM,
 RESUPRIM=CALC_ELEM(reuse =RESUPRIM,
                    RESULTAT=RESUPRIM,
                    TOUT_ORDRE='OUI',
-                   OPTION='ERRE_ELEM_SIGM',);
+                   OPTION='ERME_ELEM',);
 
 #-----------------------------------------------------------------------
 #
@@ -124,7 +124,7 @@ RESUDUAL=CALC_ELEM(reuse =RESUDUAL,
 RESUDUAL=CALC_ELEM(reuse =RESUDUAL,
                    RESULTAT=RESUDUAL,
                    TOUT_ORDRE='OUI',
-                   OPTION='ERRE_ELEM_SIGM',);
+                   OPTION='ERME_ELEM',);
 
 #-----------------------------------------------------------------------
 #
@@ -145,7 +145,7 @@ RESUPRIM=CALC_ELEM(reuse =RESUPRIM,
 
 TEST_RESU(RESU=_F(RESULTAT=RESUPRIM,
                   NUME_ORDRE=1,
-                  NOM_CHAM='ERRE_ELEM_SIGM',
+                  NOM_CHAM='ERME_ELEM',
                   NOM_CMP='ERREST',
                   MAILLE='M1',
                   POINT=1,

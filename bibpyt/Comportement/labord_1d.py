@@ -1,4 +1,4 @@
-#@ MODIF labord_1d Comportement  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
+#@ MODIF labord_1d Comportement  DATE 07/12/2010   AUTEUR GENIAUT S.GENIAUT 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -31,7 +31,7 @@ loi = LoiComportement(
    modelisation   = ('1D'),
    deformation    = ('PETIT','PETIT_REAC', 'EULER_ALMANSI','REAC_GEOM','REAC_GEOM'),
    nom_varc       = ('TEMP'),
-   schema         = ('IMPLICITE',),
+   algo_inte         = ('ANALYTIQUE',),
    type_matr_tang = None,
    proprietes     = None,
 )
