@@ -1,0 +1,162 @@
+      SUBROUTINE CALKBB (NNO, NDIM, AXI, R, KPG, GEOM, IVF, F, IPOIDS,
+     &                   IDFDE, DSIDEP, KBB)
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ALGORITH  DATE 14/12/2010   AUTEUR PROIX J-M.PROIX 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C ======================================================================
+C RESPONSABLE PROIX J-M.PROIX
+      IMPLICIT NONE
+
+C......................................................................
+C     BUT:  CALCUL DE LA MATRICE DE RAIDEUR LIEE A LA BULLE KBB
+C......................................................................
+C IN  NNO    : NOMBRE DE NOEUDS DE L'ELEMENT LIES AUX DEPLACEMENTS
+C IN  NDIM   : DIMENSION DE L'ESPACE, VAUT 2 OU 3
+C IN  GEOM   : COORDONEES DES NOEUDS
+C IN  IVF    : VALEUR DES FONCTIONS DE FORME (EN AXISYMETRIQUE)
+C IN  F      : GRADIENT DE LA TRANSFORMATION
+C IN  IPOIDS : POIDS DU POINT DE GAUSS
+C IN  IDFDE  : DERIVEE DES FONCTIONS DE FORME ELEMENT DE REFERENCE
+C IN  DSIDEP : MATRICE TANGENTE COHERENTE POUR LA PARTIE BULLE
+C OUT KBB    : MATRICE KBB
+C......................................................................
+
+      LOGICAL AXI
+
+      INTEGER IPOIDS, IDFDE, NNO, NDIM, KPG, IVF
+
+      REAL*8 GEOM(NDIM,NNO),F(3,3), R
+      REAL*8 KBB(NDIM,NDIM), DSIDEP(6,6)
+
+C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
+      INTEGER  ZI
+      COMMON  / IVARJE / ZI(1)
+      REAL*8             ZR
+      COMMON  / RVARJE / ZR(1)
+      COMPLEX*16         ZC
+      COMMON  / CVARJE / ZC(1)
+      LOGICAL            ZL
+      COMMON  / LVARJE / ZL(1)
+      CHARACTER*8        ZK8
+      CHARACTER*16                ZK16
+      CHARACTER*24                          ZK24
+      CHARACTER*32                                    ZK32
+      CHARACTER*80                                              ZK80
+      COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
+C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
+
+      INTEGER I, J, N, KL, PQ
+
+      REAL*8 TMP, RAC2, DEFB(2*NDIM,NNO,NDIM), DEFTRB(NNO,NDIM)
+      REAL*8 DFDIB(NNO,NDIM), POIDS, VFF, DEFDB(2*NDIM,NNO,NDIM)
+
+C - INITIALISATION
+      CALL R8INIR(NDIM*NDIM, 0.D0, KBB,1)
+      RAC2=SQRT(2.D0)
+
+C - CAS 2D
+
+C - CALCUL DES DERIVEES DE FONCTIONS DE FORME DE LA PARTIE BULLE
+C   POUR TOUS LES SOUS-ELEMENTS
+      IF (NDIM .EQ. 2) THEN 
+        CALL DFDM2B ( NNO,KPG,IPOIDS,IDFDE,GEOM,DFDIB(1,1),
+     &                DFDIB(1,2),POIDS )
+
+C - CALCUL DES MATRICES BBULLE ET BBULLED SELON LA POSITION DE LA BULLE
+C PAR RAPPORT AU SOUS ELEMENT, LA VALEUR DE LA FONCTION DE FORME CHANGE
+        DO 45 N=1,NNO
+          DO 40 I=1,NDIM
+            DEFB(1,N,I) =  F(I,1)*DFDIB(N,1)
+            DEFB(2,N,I) =  F(I,2)*DFDIB(N,2)
+            DEFB(3,N,I) =  0.D0
+            DEFB(4,N,I) = (F(I,1)*DFDIB(N,2)+F(I,2)*DFDIB(N,1))/RAC2
+ 40       CONTINUE
+ 45     CONTINUE
+
+C - TERME DE CORRECTION (3,3) AXI QUI PORTE EN FAIT SUR LE DDL 1
+        IF (AXI) THEN
+          DO 50 N=1,NNO
+            VFF = ZR(IVF-1+N+(KPG-1)*NNO)
+            DEFB(3,N,1) = F(3,3)*VFF/R
+ 50       CONTINUE
+          POIDS=POIDS*R
+        END IF
+
+C - CALCUL DU DEVIATEUR DE BBUL
+        DO 75 N=1,NNO
+          DO 76 I = 1,NDIM
+            DEFTRB(N,I) =  DEFB(1,N,I) + DEFB(2,N,I) + DEFB(3,N,I)
+            DO 77 KL = 1,3
+              DEFDB(KL,N,I) = DEFB(KL,N,I) - DEFTRB(N,I)/3.D0 
+ 77         CONTINUE
+            DEFDB(4,N,I) = DEFB(4,N,I)
+ 76       CONTINUE
+ 75     CONTINUE
+
+C - CAS 3D
+C - CALCUL DES DERIVEES DE FONCTIONS DE FORME DE LA PARTIE BULLE
+C   POUR TOUS LES SOUS-ELEMENTS
+      ELSEIF (NDIM .EQ. 3) THEN 
+        CALL DFDM3B ( NNO,KPG,IPOIDS,IDFDE,GEOM,DFDIB(1,1),
+     &                DFDIB(1,2),DFDIB(1,3),POIDS )
+
+C - CALCUL DES MATRICES BBULLE ET BBULLED SELON LA POSITION DE LA BULLE
+C PAR RAPPORT AU SOUS ELEMENT, LA VALEUR DE LA FONCTION DE FORME CHANGE
+
+        DO 145 N=1,NNO
+          DO 140 I=1,NDIM
+            DEFB(1,N,I) =  F(I,1)*DFDIB(N,1)
+            DEFB(2,N,I) =  F(I,2)*DFDIB(N,2)
+            DEFB(3,N,I) =  F(I,3)*DFDIB(N,3)
+            DEFB(4,N,I) = (F(I,1)*DFDIB(N,2) + F(I,2)*DFDIB(N,1))/RAC2
+            DEFB(5,N,I) = (F(I,1)*DFDIB(N,3) + F(I,3)*DFDIB(N,1))/RAC2
+            DEFB(6,N,I) = (F(I,2)*DFDIB(N,3) + F(I,3)*DFDIB(N,2))/RAC2
+ 140      CONTINUE
+ 145    CONTINUE
+
+C - CALCUL DU DEVIATEUR DE BBUL
+        DO 175 N=1,NNO
+          DO 176 I = 1,NDIM
+            DEFTRB(N,I) =  DEFB(1,N,I) + DEFB(2,N,I) + DEFB(3,N,I)
+            DO 177 KL = 1,3
+              DEFDB(KL,N,I) = DEFB(KL,N,I) - DEFTRB(N,I)/3.D0
+ 177        CONTINUE
+            DEFDB(4,N,I) = DEFB(4,N,I)
+            DEFDB(5,N,I) = DEFB(5,N,I)
+            DEFDB(6,N,I) = DEFB(6,N,I)
+ 176      CONTINUE
+ 175    CONTINUE
+      ELSE
+        CALL ASSERT(.FALSE.)
+      END IF
+
+C - CALCUL DE LA MATRICE KBB
+      DO 105 N=1,NNO
+        DO 104 I=1,NDIM
+          DO 102 J=1,NDIM
+            TMP = 0.D0
+            DO 101 KL = 1,2*NDIM
+              DO 100 PQ = 1,2*NDIM
+                TMP = TMP + DEFDB(KL,N,I)*DSIDEP(KL,PQ)*DEFDB(PQ,N,J)
+ 100          CONTINUE
+ 101        CONTINUE
+            KBB(I,J) = KBB(I,J) + POIDS*TMP
+ 102      CONTINUE
+ 104    CONTINUE
+ 105  CONTINUE
+
+      END

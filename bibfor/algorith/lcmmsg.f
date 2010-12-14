@@ -1,10 +1,10 @@
         SUBROUTINE LCMMSG(NOMFAM,NBSYS,NUSYS,PGL,MS,NG,LG,IR,Q)
         IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 14/12/2010   AUTEUR PROIX J-M.PROIX 
 C RESPONSABLE JMBHH01 J.M.PROIX
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -199,78 +199,80 @@ C   N ET L DOIVENT ETRE UNITAIRES
          CALL U2MESS('F','ALGORITH4_69')
       ELSE IF (NOMFAM.EQ.'CUBIQUE1') THEN
 C BCC LATTICE, {110} SLIP
-         N(1,1)=0.D0
-         N(1,2)=1.D0
-         N(1,3)=1.D0
-         N(2,1)=1.D0
-         N(2,2)=0.D0
-         N(2,3)=1.D0
-         N(3,1)=1.D0
-         N(3,2)=-1.D0
-         N(3,3)=0.D0
-         N(4,1)=0.D0
-         N(4,2)=1.D0
-         N(4,3)=-1.D0
-         N(5,1)=1.D0
-         N(5,2)=0.D0
-         N(5,3)=1.D0
-         N(6,1)=1.D0
-         N(6,2)=1.D0
-         N(6,3)=0.D0
-         N(7,1)=0.D0
-         N(7,2)=1.D0
-         N(7,3)=1.D0
-         N(8,1)=1.D0
-         N(8,2)=0.D0
-         N(8,3)=-1.D0
-         N(9,1)=1.D0
-         N(9,2)=1.D0
-         N(9,3)=0.D0
-         N(10,1)=0.D0
-         N(10,2)=1.D0
-         N(10,3)=-1.D0
-         N(11,1)=1.D0
-         N(11,2)=0.D0
+         N(1,1) = 1.D0
+         N(1,2) = 1.D0
+         N(1,3) = 0.D0
+         N(2,1) =-1.D0
+         N(2,2) = 0.D0
+         N(2,3) = 1.D0
+         N(3,1) = 0.D0
+         N(3,2) =-1.D0
+         N(3,3) =-1.D0
+         N(4,1) = 0.D0
+         N(4,2) =-1.D0
+         N(4,3) = 1.D0
+         N(5,1) = 1.D0
+         N(5,2) = 0.D0
+         N(5,3) =-1.D0
+         N(6,1) =-1.D0
+         N(6,2) = 1.D0
+         N(6,3) = 0.D0
+         N(7,1) =-1.D0
+         N(7,2) =-1.D0
+         N(7,3) = 0.D0
+         N(8,1) = 1.D0
+         N(8,2) = 0.D0
+         N(8,3) = 1.D0
+         N(9,1) = 0.D0
+         N(9,2) = 1.D0
+         N(9,3) =-1.D0
+         N(10,1)= 1.D0
+         N(10,2)=-1.D0
+         N(10,3)= 0.D0
+         N(11,1)=-1.D0
+         N(11,2)= 0.D0
          N(11,3)=-1.D0
-         N(12,1)=1.D0
-         N(12,2)=-1.D0
-         N(12,3)=0.D0
-         L(1,1)=1.D0
-         L(1,2)=1.D0
-         L(1,3)=-1.D0
-         L(2,1)=1.D0
-         L(2,2)=1.D0
-         L(2,3)=-1.D0
-         L(3,1)=1.D0
-         L(3,2)=1.D0
-         L(3,3)=-1.D0
-         L(4,1)=1.D0
-         L(4,2)=-1.D0
-         L(4,3)=-1.D0
-         L(5,1)=1.D0
-         L(5,2)=-1.D0
-         L(5,3)=-1.D0
-         L(6,1)=1.D0
-         L(6,2)=-1.D0
-         L(6,3)=-1.D0
-         L(7,1)=1.D0
-         L(7,2)=-1.D0
-         L(7,3)=1.D0
-         L(8,1)=1.D0
-         L(8,2)=-1.D0
-         L(8,3)=1.D0
-         L(9,1)=1.D0
-         L(9,2)=-1.D0
-         L(9,3)=1.D0
-         L(10,1)=1.D0
-         L(10,2)=1.D0
-         L(10,3)=1.D0
-         L(11,1)=1.D0
-         L(11,2)=1.D0
-         L(11,3)=1.D0
-         L(12,1)=1.D0
-         L(12,2)=1.D0
-         L(12,3)=1.D0
+         N(12,1)= 0.D0
+         N(12,2)= 1.D0
+         N(12,3)= 1.D0
+
+         L(1,1) = 1.D0
+         L(1,2) =-1.D0
+         L(1,3) = 1.D0
+         L(2,1) = 1.D0
+         L(2,2) =-1.D0
+         L(2,3) = 1.D0
+         L(3,1) = 1.D0
+         L(3,2) =-1.D0
+         L(3,3) = 1.D0
+         L(4,1) = 1.D0
+         L(4,2) = 1.D0
+         L(4,3) = 1.D0
+         L(5,1) = 1.D0
+         L(5,2) = 1.D0
+         L(5,3) = 1.D0
+         L(6,1) = 1.D0
+         L(6,2) = 1.D0
+         L(6,3) = 1.D0
+         L(7,1) =-1.D0
+         L(7,2) = 1.D0
+         L(7,3) = 1.D0
+         L(8,1) =-1.D0
+         L(8,2) = 1.D0
+         L(8,3) = 1.D0
+         L(9,1) =-1.D0
+         L(9,2) = 1.D0
+         L(9,3) = 1.D0
+         L(10,1)= 1.D0
+         L(10,2)= 1.D0
+         L(10,3)=-1.D0
+         L(11,1)= 1.D0
+         L(11,2)= 1.D0
+         L(11,3)=-1.D0
+         L(12,1)= 1.D0
+         L(12,2)= 1.D0
+         L(12,3)=-1.D0
+         
 C   N ET L DOIVENT ETRE UNITAIRES
       DO 123 J=1,12
       DO 123 K=1,3

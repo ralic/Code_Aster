@@ -1,4 +1,4 @@
-# MODIF  DATE 25/10/2010   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 13/12/2010   AUTEUR DESOZA T.DESOZA 
 # TITRE CONTACT DE HERTZ ENTRE 2 DEMI-SPHERES
 # perf005f.para = tps_job 9000 mem_job 2048Mo ncpus 1 liste_test P
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -67,9 +67,7 @@ CHA1=AFFE_CHAR_MECA(MODELE=MO,
 
 CHA2 = DEFI_CONTACT(MODELE      = MO,
                     FORMULATION = 'CONTINUE',
-                    #RESI_GEOM = 0.05,
-                    REAC_GEOM = 'CONTROLE',
-                    NB_ITER_GEOM = 3,
+                    RESI_GEOM = 0.05,
                     ZONE = _F(GROUP_MA_MAIT='SMAI',
                               GROUP_MA_ESCL='SESC',
                             ),

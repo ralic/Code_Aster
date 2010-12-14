@@ -1,7 +1,7 @@
-#& MODIF COMMANDE  DATE 09/11/2010   AUTEUR DELMAS J.DELMAS 
+#& MODIF COMMANDE  DATE 13/12/2010   AUTEUR DESOZA T.DESOZA 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -22,6 +22,7 @@ DEFI_CONTACT=OPER(nom       = "DEFI_CONTACT",
                   op        = 30,
                   sd_prod   = char_contact,
                   fr        = "Définit les zones soumises à des conditions de contact unilatéral avec ou sans frottement",
+                  #en        = "Allows the definition of contact surfaces as well as unilateral conditions",
                   reentrant = 'n',
                   UIinfo    = {"groupes":("Modélisation",)},
 
@@ -33,85 +34,69 @@ DEFI_CONTACT=OPER(nom       = "DEFI_CONTACT",
 # FORMULATION (UNIQUE PAR OCCURRENCE DE DEFI_CONTACT)
 
          FORMULATION     =SIMP(statut='o',
-                               typ='TXM',
                                position='global',
+                               typ='TXM',
+                               fr="Choix d'une formulation de contact ou de liaisons unilatérales",
                                defaut="DISCRETE",
                                into=("DISCRETE","CONTINUE","XFEM","LIAISON_UNIL",),),
 
-# PARAMETRE GENERAL: FROTTEMENT
+# PARAMETRE GENERAL : FROTTEMENT
 
          FROTTEMENT      =SIMP(statut='f',
-                               typ='TXM',
                                position='global',
+                               typ='TXM',
+                               fr="Choix d'un modèle de frottement (uniquement pour les formulations de contact)",
                                defaut="SANS",
                                into=("COULOMB","SANS",)),
 
 ### PARAMETRES GENERAUX (UNIQUEMENT POUR LE CONTACT MAILLE, NE DEPENDENT PAS DE LA ZONE DE CONTACT)
 
          b_contact_mail=BLOC(condition = "((FORMULATION == 'CONTINUE') or (FORMULATION == 'DISCRETE'))",
-           STOP_INTERP   = SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON")),
-           LISSAGE       = SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON")),
-         ),
+#          ARRET DU CALCUL POUR LE MODE SANS RESOLUTION DU CONTACT
+           STOP_INTERP   = SIMP(statut='f',
+                                typ='TXM',
+                                fr="Arrête le calcul dès qu'une interpénétration est détectée en mode RESOLUTION='NON'",
+                                defaut="NON",
+                                into=("OUI","NON")),
+#          LISSAGE DES NORMALES PAR MOYENNATION AUX NOEUDS
+           LISSAGE       = SIMP(statut='f',
+                                typ='TXM',
+                                fr="Lissage des normales par moyennation aux noeuds",
+                                defaut="NON",
+                                into=("OUI","NON")),
+#          VERIFICATION DE L'ORIENTATION ET DE LA COHERENCE DES NORMALES
+           VERI_NORM       =SIMP(statut='f',
+                                 typ='TXM',
+                                 fr="Vérification de l'orientation (sortante) des normales aux surfaces",
+                                 defaut="OUI",
+                                 into=("OUI","NON"),),
+           ),
 
 ### PARAMETRES GENERAUX (UNIQUEMENT POUR LE CONTACT, NE DEPENDENT PAS DE LA ZONE DE CONTACT)
 
          b_contact=BLOC(condition = "FORMULATION != 'LIAISON_UNIL' ",
 
-# PARAMETRE GENERAL: VERIFICATION DE L'ORIENTATION ET DE LA COHERENCE DES NORMALES
+# PARAMETRE GENERAL : BOUCLE DE GEOMETRIE
 
-           VERI_NORM       =SIMP(statut='f',
-                                 typ='TXM',
-                                 defaut="OUI",
-                                 into=("OUI","NON"),),
+           REAC_GEOM =SIMP(statut='f',
+                           typ='TXM',
+                           defaut="AUTOMATIQUE",
+                           into=("AUTOMATIQUE","CONTROLE","SANS",),
+                           ),
+           b_geom_auto_mail = BLOC(condition = "REAC_GEOM == 'AUTOMATIQUE' and ((FORMULATION == 'DISCRETE') or \
+                                                                                (FORMULATION == 'CONTINUE')) ",
+                                ITER_GEOM_MAXI = SIMP(statut='f',typ='I',defaut=10),
+                                RESI_GEOM      = SIMP(statut='f',typ='R',defaut=0.01),
+             ),
+           b_geom_auto_xfem = BLOC(condition = "REAC_GEOM == 'AUTOMATIQUE' and FORMULATION == 'XFEM'",
+                                ITER_GEOM_MAXI = SIMP(statut='f',typ='I',defaut=5),
+                                RESI_GEOM      = SIMP(statut='f',typ='R',defaut=0.0001),
+             ),
+           b_geom_controle  = BLOC(condition = "REAC_GEOM == 'CONTROLE' ",
+                                NB_ITER_GEOM   = SIMP(statut='f',typ='I',defaut = 2),
+             ),
 
-# PARAMETRE GENERAL: BOUCLE SUR GEOMETRIE
-
-           b_bouc_geom_disc=BLOC(condition = "FORMULATION == 'DISCRETE' ",
-                                 REAC_GEOM =SIMP(statut='f',
-                                                 typ='TXM',
-                                                 into=("AUTOMATIQUE","CONTROLE","SANS",),
-                                                 defaut="AUTOMATIQUE",
-                                                 ),
-                                 b_automatique = BLOC(condition = "REAC_GEOM == 'AUTOMATIQUE' ",
-                                   ITER_GEOM_MAXI = SIMP(statut='f',typ='I',defaut=5),
-                                   RESI_GEOM      = SIMP(statut='f',typ='R',defaut=0.05),
-                                   ),
-                                 b_controle    = BLOC(condition = "REAC_GEOM == 'CONTROLE' ",
-                                   NB_ITER_GEOM   = SIMP(statut='f',typ='I',defaut = 2),
-                                   ),
-                                 ),
-
-           b_bouc_geom_cont=BLOC(condition = "FORMULATION == 'CONTINUE' ",
-                                 REAC_GEOM =SIMP(statut='f',
-                                                 typ='TXM',
-                                                 into=("AUTOMATIQUE","CONTROLE","SANS",),
-                                                 defaut="AUTOMATIQUE",
-                                                 ),
-                                 b_automatique = BLOC(condition = "REAC_GEOM == 'AUTOMATIQUE' ",
-                                   ITER_GEOM_MAXI = SIMP(statut='f',typ='I',defaut=5),
-                                   RESI_GEOM      = SIMP(statut='f',typ='R',defaut=0.0001),
-                                   ),
-                                 b_controle    = BLOC(condition = "REAC_GEOM == 'CONTROLE' ",
-                                   NB_ITER_GEOM   = SIMP(statut='f',typ='I',defaut = 2),
-                                   ),
-                                 ),
-
-           b_bouc_geom_xfem=BLOC(condition = "FORMULATION == 'XFEM' ",
-                                 REAC_GEOM =SIMP(statut='f',
-                                                 typ='TXM',
-                                                 into=("AUTOMATIQUE","CONTROLE","SANS",),
-                                                 defaut="SANS",
-                                                 ),
-                                 b_automatique = BLOC(condition = "REAC_GEOM == 'AUTOMATIQUE' ",
-                                   ITER_GEOM_MAXI = SIMP(statut='f',typ='I',defaut=5),
-                                   RESI_GEOM      = SIMP(statut='f',typ='R',defaut=0.0001),
-                                   ),
-                                 b_controle    = BLOC(condition = "REAC_GEOM == 'CONTROLE' ",
-                                   NB_ITER_GEOM   = SIMP(statut='f',typ='I',defaut = 2),
-                                   ),
-                                 ),
-
-# PARAMETRE GENERAL: BOUCLE SUR CONTACT
+# PARAMETRE GENERAL : BOUCLE DE CONTACT
 
            b_bouc_cont_disc=BLOC(condition = "FORMULATION == 'DISCRETE' ",
                                  ITER_CONT_MULT = SIMP(statut='f',typ='I',defaut = 4),
@@ -132,51 +117,73 @@ DEFI_CONTACT=OPER(nom       = "DEFI_CONTACT",
                                  ITER_CONT_TYPE= SIMP(statut='f',typ='TXM',defaut="MAXI",
                                                       into=("MULT","MAXI")),
                                  b_bouc_cont_mult = BLOC(condition = "ITER_CONT_TYPE=='MULT'",
-                                   ITER_CONT_MULT = SIMP(statut='f',typ='I',defaut = 4),
+                                                         ITER_CONT_MULT = SIMP(statut='f',typ='I',defaut = 4),
                                    ),
                                  b_bouc_cont_maxi = BLOC(condition = "ITER_CONT_TYPE=='MAXI'",
-                                   ITER_CONT_MAXI = SIMP(statut='f',typ='I',defaut = 30),
+                                                         ITER_CONT_MAXI = SIMP(statut='f',typ='I',defaut = 30),
                                    ),
                                  ),
 
-# PARAMETRE GENERAL: BOUCLE SUR FROTTEMENT
+# PARAMETRE GENERAL : BOUCLE DE FROTTEMENT
 
            b_bouc_frot     = BLOC(condition = "FROTTEMENT=='COULOMB' and ((FORMULATION == 'CONTINUE') or (FORMULATION == 'XFEM')) ",
                                   REAC_FROT =SIMP(statut='f',
                                                   typ='TXM',
+                                                  defaut="AUTOMATIQUE",
                                                   into=("AUTOMATIQUE","CONTROLE",),
-                                                  defaut="AUTOMATIQUE",),
+                                                  ),
                                   b_automatique = BLOC(condition = "REAC_FROT == 'AUTOMATIQUE' ",
-                                    ITER_FROT_MAXI = SIMP(statut='f',typ='I',defaut=2),
-                                    RESI_FROT      = SIMP(statut='f',typ='R',defaut=0.0001),
+                                                       ITER_FROT_MAXI = SIMP(statut='f',typ='I',defaut=10),
+                                                       RESI_FROT      = SIMP(statut='f',typ='R',defaut=0.0001),
                                     ),
                                   b_controle    = BLOC(condition = "REAC_FROT == 'CONTROLE' ",
-                                    NB_ITER_FROT   = SIMP(statut='f',typ='I',defaut = 2),
+                                                       NB_ITER_FROT   = SIMP(statut='f',typ='I',defaut = 2),
                                     ),
-                                 ),
+                                  ),
 
-# PARAMETRE GENERAL: METHODES DISCRETES
+# PARAMETREs GENERAUX : METHODES DISCRETES
 
            b_para_discret  = BLOC(condition = "FORMULATION == 'DISCRETE' ",
-                                  STOP_SINGULIER= SIMP(statut='f',typ='TXM',defaut="OUI",
-                                                       into=("OUI","NON")),
-                                  NB_RESOL      = SIMP(statut='f',typ='I', defaut=10 ),
-                                  RESI_ABSO     = SIMP(statut='f',typ='R',
-                                  fr="Critere de convergence (niveau d'interpenetration autorise)"),
-                                  REAC_ITER     = SIMP(statut='f',typ='I',defaut=3,
-                                   fr="Frequence de reinitialisation de la conjugaison"),
-                                  ITER_GCP_MAXI = SIMP(statut='f',typ='I',defaut=0,
-                                  fr="Nombre d'iterations maximal pour le GCP"),
-
-                                  PRE_COND      = SIMP(statut='f',typ='TXM',defaut="SANS",into=("DIRICHLET","SANS"),
-                                  fr="Choix d'un preconditionneur (accelere la convergence)"),
-                                  ITER_PRE_MAXI = SIMP(statut='f',typ='I',defaut=0,
-                                  fr="Nombre d'iterations maximal pour le preconditionneur"),
-                                  COEF_RESI     = SIMP(statut='f',typ='R',defaut = 1.,
-                                  fr="Critere_Convergence_Preconditionneur = COEF_RESI*Critere_Convergence_GCP",),
-                                  RECH_LINEAIRE = SIMP(statut='f',typ='TXM',defaut="ADMISSIBLE",
-                                                       into=("ADMISSIBLE","NON_ADMISSIBLE"),
-                                                 fr="Autorise-t-on de sortir du domaine admissible lors de la recherche lineaire",),
+#                                 ## METHODES DE DUALISATION ##
+                                  STOP_SINGULIER= SIMP(statut='f',
+                                                       typ='TXM',
+                                                       fr="Tient compte de la singularité de la matrice de contact",
+                                                       defaut="OUI",
+                                                       into=("OUI","NON"),),
+                                  NB_RESOL      = SIMP(statut='f',
+                                                       typ='I',
+                                  fr="Nombre de résolutions simultanées pour la construction du complément de Schur",
+                                                       defaut=10,),
+#                                 ## GCP ##
+                                  RESI_ABSO     = SIMP(statut='f',
+                                                       typ='R',
+                                  fr="Critère de convergence (niveau d'interpénétration autorisé pour 'GCP')",),
+                                  REAC_ITER     = SIMP(statut='f',
+                                                       typ='I',
+                                                       fr="Fréquence de réinitialisation de la conjugaison ('GCP')",
+                                                       defaut=3,),
+                                  ITER_GCP_MAXI = SIMP(statut='f',
+                                                       typ='I',
+                                                       fr="Nombre d'itérations maximal ('GCP')",
+                                                       defaut=0,),
+                                  PRE_COND      = SIMP(statut='f',
+                                                       typ='TXM',
+                                                       fr="Choix d'un préconditionneur (accélère la convergence de 'GCP')",
+                                                       defaut="SANS",
+                                                       into=("DIRICHLET","SANS"),),
+                                  ITER_PRE_MAXI = SIMP(statut='f',
+                                                       typ='I',
+                                                       fr="Nombre d'itérations maximal pour le préconditionneur ('GCP')",
+                                                       defaut=0,),
+                                  COEF_RESI     = SIMP(statut='f',
+                                                       typ='R',
+                                                       fr="Critère de convergence du préconditionneur (COEF_RESI*RESI_ABSO)",
+                                                       defaut = 1.,),
+                                  RECH_LINEAIRE = SIMP(statut='f',
+                                                       typ='TXM',
+                                  fr="Autorisation de sortie du domaine admissible lors de la recherche linéaire",
+                                                       defaut="ADMISSIBLE",
+                                                       into=("ADMISSIBLE","NON_ADMISSIBLE"),),
                                   ),
            ), #fin bloc b_contact
 
@@ -184,372 +191,361 @@ DEFI_CONTACT=OPER(nom       = "DEFI_CONTACT",
 
 # AFFECTATION - CAS LIAISON_UNILATERALE
 
-           b_affe_unil     = BLOC(condition = "FORMULATION == 'LIAISON_UNIL'",
-                                  ZONE=FACT(statut='o',
-                                            max='**',
-
+         b_affe_unil     = BLOC(condition = "FORMULATION == 'LIAISON_UNIL'",
+                                ZONE=FACT(statut='o',
+                                          max='**',
 # -- Liaison unilatérale
-                                            regles=(UN_PARMI('GROUP_MA','MAILLE','GROUP_NO','NOEUD'),),
-                                            GROUP_MA        =SIMP(statut='f',typ=grma ,validators=NoRepeat(),max='**'),
-                                            MAILLE          =SIMP(statut='f',typ=ma   ,validators=NoRepeat(),max='**'),
-                                            GROUP_NO        =SIMP(statut='f',typ=grno ,validators=NoRepeat(),max='**'),
-                                            NOEUD           =SIMP(statut='f',typ=no   ,validators=NoRepeat(),max='**'),
-
-                                            NOM_CMP         =SIMP(statut='o',typ='TXM',max='**'),
-                                            COEF_IMPO       =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule),),
-                                            COEF_MULT       =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule),max='**'),
-
+                                          regles=(UN_PARMI('GROUP_MA','MAILLE','GROUP_NO','NOEUD'),),
+                                          GROUP_MA        =SIMP(statut='f',typ=grma ,validators=NoRepeat(),max='**'),
+                                          MAILLE          =SIMP(statut='f',typ=ma   ,validators=NoRepeat(),max='**'),
+                                          GROUP_NO        =SIMP(statut='f',typ=grno ,validators=NoRepeat(),max='**'),
+                                          NOEUD           =SIMP(statut='f',typ=no   ,validators=NoRepeat(),max='**'),
+#
+                                          NOM_CMP         =SIMP(statut='o',typ='TXM',max='**'),
+                                          COEF_IMPO       =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule),),
+                                          COEF_MULT       =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule),max='**'),
 # -- Incompatibilité avec CL
-                                            SANS_NOEUD      =SIMP(statut='f',typ=no   ,validators=NoRepeat(),max='**'),
-                                            SANS_GROUP_NO   =SIMP(statut='f',typ=grno ,validators=NoRepeat(),max='**'),
+                                          SANS_NOEUD      =SIMP(statut='f',typ=no   ,validators=NoRepeat(),max='**'),
+                                          SANS_GROUP_NO   =SIMP(statut='f',typ=grno ,validators=NoRepeat(),max='**'),
 
 
-                                            ),
-                                  ), #fin bloc b_affe_unil
+                                          ),
+                                ), #fin bloc b_affe_unil
 
 # AFFECTATION - CAS DISCRET
 
-           b_affe_discret  = BLOC(condition = "FORMULATION == 'DISCRETE'",
-                                  ZONE=FACT(statut='o',
-                                            max='**',
-
+         b_affe_discret  = BLOC(condition = "FORMULATION == 'DISCRETE'",
+                                ZONE=FACT(statut='o',
+                                          max='**',
 # -- Appariement
-                                            APPARIEMENT     =SIMP(statut='f',typ='TXM',defaut="MAIT_ESCL",
-                                                                  into=("NODAL","MAIT_ESCL"),),
+                                          APPARIEMENT     =SIMP(statut='f',typ='TXM',defaut="MAIT_ESCL",
+                                                                into=("NODAL","MAIT_ESCL"),),
+#
+                                          regles=(UN_PARMI('GROUP_MA_ESCL','MAILLE_ESCL'),
+                                                  UN_PARMI('GROUP_MA_MAIT','MAILLE_MAIT'),),
+                                          GROUP_MA_MAIT   =SIMP(statut='f',typ=grma ,validators=NoRepeat(),max=1),
+                                          MAILLE_MAIT     =SIMP(statut='f',typ=ma   ,validators=NoRepeat(),max='**'),
+                                          GROUP_MA_ESCL   =SIMP(statut='f',typ=grma ,validators=NoRepeat(),max=1),
+                                          MAILLE_ESCL     =SIMP(statut='f',typ=ma   ,validators=NoRepeat(),max='**'),
+#
+                                          NORMALE         =SIMP(statut='f',typ='TXM',defaut="MAIT",
+                                                                into=("MAIT","MAIT_ESCL","ESCL"),),
+#
+                                          VECT_MAIT       =SIMP(statut='f',typ='TXM',defaut="AUTO",
+                                                                into=("AUTO","FIXE","VECT_Y")),
 
-                                            regles=(UN_PARMI('GROUP_MA_ESCL','MAILLE_ESCL'),
-                                                    UN_PARMI('GROUP_MA_MAIT','MAILLE_MAIT'),),
-                                            GROUP_MA_MAIT   =SIMP(statut='f',typ=grma ,validators=NoRepeat(),max=1),
-                                            MAILLE_MAIT     =SIMP(statut='f',typ=ma   ,validators=NoRepeat(),max='**'),
-                                            GROUP_MA_ESCL   =SIMP(statut='f',typ=grma ,validators=NoRepeat(),max=1),
-                                            MAILLE_ESCL     =SIMP(statut='f',typ=ma   ,validators=NoRepeat(),max='**'),
-
-                                            NORMALE         =SIMP(statut='f',typ='TXM',defaut="MAIT",
-                                                                  into=("MAIT","MAIT_ESCL","ESCL"),),
-
-                                            VECT_MAIT       =SIMP(statut='f',typ='TXM',defaut="AUTO",
-                                                                  into=("AUTO","FIXE","VECT_Y")),
-
-                                            b_nmait_fixe=BLOC(condition = "VECT_MAIT == 'FIXE'",
-                                              MAIT_FIXE     =SIMP(statut='o',typ='R',min=3,max=3),
-                                              ),
-
-                                            b_nmait_vecty=BLOC(condition = "VECT_MAIT == 'VECT_Y'",
-                                              MAIT_VECT_Y   =SIMP(statut='o',typ='R',min=3,max=3),
-                                              ),
-
-                                            VECT_ESCL       =SIMP(statut='f',typ='TXM',defaut="AUTO",
-                                                                  into=("AUTO","FIXE","VECT_Y")),
-
-                                            b_nescl_fixe=BLOC(condition = "VECT_ESCL == 'FIXE'",
-                                              ESCL_FIXE     =SIMP(statut='o',typ='R',min=3,max=3),
-                                              ),
-
-                                            b_nescl_vecty=BLOC(condition = "VECT_ESCL == 'VECT_Y'",
-                                              ESCL_VECT_Y   =SIMP(statut='o',typ='R',min=3,max=3),
-                                              ),
-
-                                            TYPE_APPA       =SIMP(statut='f',typ='TXM',defaut="PROCHE",
-                                                             into  =("PROCHE","FIXE")),
-
-                                            b_appa_fixe     =BLOC(condition = "TYPE_APPA == 'FIXE'",
-                                              DIRE_APPA     =SIMP(statut='f',typ='R',min=3,max=3),
-                                              ),
-
-                                            DIST_POUTRE     =SIMP(statut='f',typ='TXM',defaut="NON", into=("OUI","NON")),
-                                            DIST_COQUE      =SIMP(statut='f',typ='TXM',defaut="NON", into=("OUI","NON")),
-                                            b_cara=BLOC(condition = "DIST_POUTRE == 'OUI' or DIST_COQUE == 'OUI'",
-                                              CARA_ELEM     =SIMP(statut='o',typ=(cara_elem) ),
-                                              ),
-
-                                            DIST_MAIT       =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
-                                            DIST_ESCL       =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
-
-                                            TOLE_APPA       =SIMP(statut='f',typ='R'  ,defaut=-1.0),
-                                            TOLE_PROJ_EXT   =SIMP(statut='f',typ='R'  ,defaut=0.50),
-
-# -- Incompatibilité avec CL
-                                            SANS_NOEUD      =SIMP(statut='f',typ=no   ,validators=NoRepeat(),max='**'),
-                                            SANS_GROUP_NO   =SIMP(statut='f',typ=grno ,validators=NoRepeat(),max='**'),
-                                            SANS_MAILLE     =SIMP(statut='f',typ=ma   ,validators=NoRepeat(),max='**'),
-                                            SANS_GROUP_MA   =SIMP(statut='f',typ=grma ,validators=NoRepeat(),max='**'),
-
-# -- Mode sans calcul
-                                            RESOLUTION      =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON")),
-                                            b_verif=BLOC(condition = "RESOLUTION == 'NON' ",
-                                               TOLE_INTERP   = SIMP(statut='f',typ='R',defaut = 0.),
+                                          b_nmait_fixe=BLOC(condition = "VECT_MAIT == 'FIXE'",
+                                            MAIT_FIXE     =SIMP(statut='o',typ='R',min=3,max=3),
                                             ),
 
+                                          b_nmait_vecty=BLOC(condition = "VECT_MAIT == 'VECT_Y'",
+                                            MAIT_VECT_Y   =SIMP(statut='o',typ='R',min=3,max=3),
+                                            ),
+#
+                                          VECT_ESCL       =SIMP(statut='f',typ='TXM',defaut="AUTO",
+                                                                into=("AUTO","FIXE","VECT_Y")),
+
+                                          b_nescl_fixe=BLOC(condition = "VECT_ESCL == 'FIXE'",
+                                            ESCL_FIXE     =SIMP(statut='o',typ='R',min=3,max=3),
+                                            ),
+
+                                          b_nescl_vecty=BLOC(condition = "VECT_ESCL == 'VECT_Y'",
+                                            ESCL_VECT_Y   =SIMP(statut='o',typ='R',min=3,max=3),
+                                            ),
+#
+                                          TYPE_APPA       =SIMP(statut='f',typ='TXM',defaut="PROCHE",
+                                                           into  =("PROCHE","FIXE")),
+
+                                          b_appa_fixe     =BLOC(condition = "TYPE_APPA == 'FIXE'",
+                                            DIRE_APPA     =SIMP(statut='f',typ='R',min=3,max=3),
+                                            ),
+#
+                                          DIST_POUTRE     =SIMP(statut='f',typ='TXM',defaut="NON", into=("OUI","NON")),
+                                          DIST_COQUE      =SIMP(statut='f',typ='TXM',defaut="NON", into=("OUI","NON")),
+                                          b_cara=BLOC(condition = "DIST_POUTRE == 'OUI' or DIST_COQUE == 'OUI'",
+                                            CARA_ELEM     =SIMP(statut='o',typ=(cara_elem) ),
+                                            ),
+
+                                          DIST_MAIT       =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
+                                          DIST_ESCL       =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
+#
+                                          TOLE_APPA       =SIMP(statut='f',typ='R'  ,defaut=-1.0),
+                                          TOLE_PROJ_EXT   =SIMP(statut='f',typ='R'  ,defaut=0.50),
+# -- Incompatibilité avec CL
+                                          SANS_NOEUD      =SIMP(statut='f',typ=no   ,validators=NoRepeat(),max='**'),
+                                          SANS_GROUP_NO   =SIMP(statut='f',typ=grno ,validators=NoRepeat(),max='**'),
+                                          SANS_MAILLE     =SIMP(statut='f',typ=ma   ,validators=NoRepeat(),max='**'),
+                                          SANS_GROUP_MA   =SIMP(statut='f',typ=grma ,validators=NoRepeat(),max='**'),
+# -- Mode sans calcul
+                                          RESOLUTION      =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON")),
+                                          b_verif=BLOC(condition = "RESOLUTION == 'NON' ",
+                                            TOLE_INTERP   = SIMP(statut='f',typ='R',defaut = 0.),
+                                            ),
 # -- Résolution
-                                            ALGO_CONT       =SIMP(statut='o',typ='TXM',defaut="CONTRAINTE",
-                                                                  into=("CONTRAINTE","LAGRANGIEN","PENALISATION","GCP"),),
+                                          ALGO_CONT       =SIMP(statut='o',typ='TXM',defaut="CONTRAINTE",
+                                                                into=("CONTRAINTE","LAGRANGIEN","PENALISATION","GCP"),),
 
-                                            b_active=BLOC(condition = "ALGO_CONT == 'CONTRAINTE' ",
-                                                         fr="Paramètres de la méthode des contraintes actives (contact uniquement)",
-                                              GLISSIERE     =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON")),
-                                              b_glissiere=BLOC(condition = "GLISSIERE == 'OUI' ",
-                                                ALARME_JEU  =SIMP(statut='f',typ='R',defaut=0.),
-                                                ),
-                                              ),
-
-
-                                            b_penal_contact=BLOC(condition = "ALGO_CONT == 'PENALISATION' ",
-                                                                 fr="Paramètres de la méthode pénalisée (contact)",
-                                              E_N           =SIMP(statut='o',typ='R'),
-                                              ),
-
-                                            b_frottement=BLOC(condition = "FROTTEMENT == 'COULOMB' ",
-                                                              fr="Paramètres du frottement",
-                                              COULOMB       =SIMP(statut='o',typ='R',),
-                                              COEF_MATR_FROT=SIMP(statut='f',typ='R',defaut=0.E+0),
-                                              ALGO_FROT     =SIMP(statut='o',typ='TXM',defaut="PENALISATION",
-                                                                  into=("PENALISATION","LAGRANGIEN"),),
-
-                                              b_penal_frot=BLOC(condition = "ALGO_FROT == 'PENALISATION' ",
-                                                                fr="Paramètres de la méthode pénalisée (frottement)",
-                                                E_T         =SIMP(statut='o',typ='R'),
-                                                ),
-                                              ),
-                                            ), #fin mot-clé facteur ZONE
-                                  ), #fin bloc b_affe_discret
-
+                                          b_active=BLOC(condition = "ALGO_CONT == 'CONTRAINTE' ",
+                                                        fr="Paramètres de la méthode des contraintes actives (contact uniquement)",
+                                                        GLISSIERE=SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON")),
+                                                        b_glissiere=BLOC(condition = "GLISSIERE == 'OUI' ",
+                                                                         ALARME_JEU  =SIMP(statut='f',typ='R',defaut=0.),
+                                                                        ),
+                                                        ),
+#
+                                          b_penal_contact=BLOC(condition = "ALGO_CONT == 'PENALISATION' ",
+                                                               fr="Paramètres de la méthode pénalisée (contact)",
+                                                               E_N=SIMP(statut='o',typ='R'),
+                                                               ),
+#
+                                          b_frottement=BLOC(condition = "FROTTEMENT == 'COULOMB' ",
+                                                            fr="Paramètres du frottement de Coulomb",
+                                                            COULOMB       =SIMP(statut='o',typ='R',),
+                                                            COEF_MATR_FROT=SIMP(statut='f',typ='R',defaut=0.E+0),
+                                                            ALGO_FROT     =SIMP(statut='o',typ='TXM',defaut="PENALISATION",
+                                                                                into=("PENALISATION","LAGRANGIEN"),),
+#
+                                                            b_penal_frot=BLOC(condition = "ALGO_FROT == 'PENALISATION' ",
+                                                                              fr="Paramètres de la méthode pénalisée (frottement)",
+                                                                              E_T=SIMP(statut='o',typ='R'),
+                                                                              ),
+                                                           ),
+                                          ), #fin mot-clé facteur ZONE
+                                ), #fin bloc b_affe_discret
 
 # AFFECTATION - CAS CONTINUE
 
-           b_affe_continue = BLOC(condition = "FORMULATION == 'CONTINUE'",
-                                  ZONE=FACT(statut='o',
-                                            max='**',
-
+         b_affe_continue = BLOC(condition = "FORMULATION == 'CONTINUE'",
+                                ZONE=FACT(statut='o',
+                                          max='**',
 # -- Appariement
-                                            APPARIEMENT     =SIMP(statut='f',typ='TXM',defaut="MAIT_ESCL",
-                                                                  into=("MAIT_ESCL",)),
+                                          APPARIEMENT     =SIMP(statut='f',typ='TXM',defaut="MAIT_ESCL",
+                                                                into=("MAIT_ESCL",)),
+#
+                                          regles=(UN_PARMI('GROUP_MA_ESCL','MAILLE_ESCL'),
+                                                  UN_PARMI('GROUP_MA_MAIT','MAILLE_MAIT'),),
+                                          GROUP_MA_MAIT   =SIMP(statut='f',typ=grma ,validators=NoRepeat(),max=1),
+                                          MAILLE_MAIT     =SIMP(statut='f',typ=ma   ,validators=NoRepeat(),max='**'),
+                                          GROUP_MA_ESCL   =SIMP(statut='f',typ=grma ,validators=NoRepeat(),max=1),
+                                          MAILLE_ESCL     =SIMP(statut='f',typ=ma   ,validators=NoRepeat(),max='**'),
+#
+                                          NORMALE         =SIMP(statut='f',typ='TXM',defaut="MAIT",
+                                                                into=("MAIT","MAIT_ESCL","ESCL"),),
+#
+                                          VECT_MAIT       =SIMP(statut='f',typ='TXM',defaut="AUTO",
+                                                                into=("AUTO","FIXE","VECT_Y")),
 
-                                            regles=(UN_PARMI('GROUP_MA_ESCL','MAILLE_ESCL'),
-                                                    UN_PARMI('GROUP_MA_MAIT','MAILLE_MAIT'),),
-                                            GROUP_MA_MAIT   =SIMP(statut='f',typ=grma ,validators=NoRepeat(),max=1),
-                                            MAILLE_MAIT     =SIMP(statut='f',typ=ma   ,validators=NoRepeat(),max='**'),
-                                            GROUP_MA_ESCL   =SIMP(statut='f',typ=grma ,validators=NoRepeat(),max=1),
-                                            MAILLE_ESCL     =SIMP(statut='f',typ=ma   ,validators=NoRepeat(),max='**'),
-
-                                            NORMALE         =SIMP(statut='f',typ='TXM',defaut="MAIT",
-                                                                  into=("MAIT","MAIT_ESCL","ESCL"),),
-
-                                            VECT_MAIT       =SIMP(statut='f',typ='TXM',defaut="AUTO",
-                                                                  into=("AUTO","FIXE","VECT_Y")),
-
-                                            b_nmait_fixe=BLOC(condition = "VECT_MAIT == 'FIXE'",
-                                              MAIT_FIXE     =SIMP(statut='o',typ='R',min=3,max=3),
-                                              ),
-
-                                            b_nmait_vecty=BLOC(condition = "VECT_MAIT == 'VECT_Y'",
-                                              MAIT_VECT_Y   =SIMP(statut='o',typ='R',min=3,max=3),
-                                              ),
-
-                                            VECT_ESCL       =SIMP(statut='f',typ='TXM',defaut="AUTO",
-                                                                  into=("AUTO","FIXE","VECT_Y")),
-
-                                            b_nescl_fixe=BLOC(condition = "VECT_ESCL == 'FIXE'",
-                                              ESCL_FIXE     =SIMP(statut='o',typ='R',min=3,max=3),
-                                              ),
-
-                                            b_nescl_vecty=BLOC(condition = "VECT_ESCL == 'VECT_Y'",
-                                              ESCL_VECT_Y   =SIMP(statut='o',typ='R',min=3,max=3),
-                                              ),
-
-                                            TYPE_APPA       =SIMP(statut='f',typ='TXM',defaut="PROCHE",
-                                                             into  =("PROCHE","FIXE")),
-
-                                            b_appa_fixe=BLOC(condition = "TYPE_APPA == 'FIXE'",
-                                              DIRE_APPA     =SIMP(statut='f',typ='R',min=3,max=3),
-                                              ),
-
-                                            DIST_POUTRE     =SIMP(statut='f',typ='TXM',defaut="NON", into=("OUI","NON")),
-                                            DIST_COQUE      =SIMP(statut='f',typ='TXM',defaut="NON", into=("OUI","NON")),
-                                            b_cara=BLOC(condition = "DIST_POUTRE == 'OUI' or DIST_COQUE == 'OUI'",
-                                              CARA_ELEM     =SIMP(statut='o',typ=(cara_elem) ),
-                                              ),
-
-                                            DIST_MAIT       =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
-                                            DIST_ESCL       =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
-
-                                            TOLE_APPA       =SIMP(statut='f',typ='R'  ,defaut=-1.0),
-                                            TOLE_PROJ_EXT   =SIMP(statut='f',typ='R'  ,defaut=0.50),
-
-# -- Incompatibilité avec CL
-
-                                            SANS_NOEUD      =SIMP(statut='f',typ=no   ,validators=NoRepeat(),max='**'),
-                                            SANS_GROUP_NO   =SIMP(statut='f',typ=grno ,validators=NoRepeat(),max='**'),
-                                            SANS_MAILLE     =SIMP(statut='f',typ=ma   ,validators=NoRepeat(),max='**'),
-                                            SANS_GROUP_MA   =SIMP(statut='f',typ=grma ,validators=NoRepeat(),max='**'),
-
-                                            FOND_FISSURE    =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON"),),
-                                            b_fond_fissure =BLOC(condition = "FOND_FISSURE == 'OUI' ",
-                                                                 fr="Traitement en fond de fissure",
-                                              regles=(UN_PARMI('NOEUD_FOND','GROUP_NO_FOND','MAILLE_FOND','GROUP_MA_FOND'),),
-                                              NOEUD_FOND    =SIMP(statut='f',typ=no  ,validators=NoRepeat(),max='**'),
-                                              GROUP_NO_FOND =SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**'),
-                                              MAILLE_FOND   =SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**'),
-                                              GROUP_MA_FOND =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
-                                              ),
-
-                                            RACCORD_LINE_QUAD=SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON"),),
-                                            b_raccord_surf =BLOC(condition = "RACCORD_LINE_QUAD == 'OUI' ",
-                                                                 fr="Traitement du raccord surfacique",
-                                              regles=(UN_PARMI('NOEUD_RACC','GROUP_NO_RACC'),),
-                                              NOEUD_RACC    =SIMP(statut='f',typ=no  ,validators=NoRepeat(),max='**'),
-                                              GROUP_NO_RACC =SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**'),
-                                              ),
-
-                                            EXCLUSION_PIV_NUL=SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON",),),
-
-# -- Mode sans calcul
-                                            RESOLUTION      =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON")),
-                                            b_verif=BLOC(condition = "RESOLUTION == 'NON' ",
-                                               TOLE_INTERP   = SIMP(statut='f',typ='R',defaut = 0.),
+                                          b_nmait_fixe=BLOC(condition = "VECT_MAIT == 'FIXE'",
+                                            MAIT_FIXE     =SIMP(statut='o',typ='R',min=3,max=3),
                                             ),
 
+                                          b_nmait_vecty=BLOC(condition = "VECT_MAIT == 'VECT_Y'",
+                                            MAIT_VECT_Y   =SIMP(statut='o',typ='R',min=3,max=3),
+                                            ),
+#
+                                          VECT_ESCL       =SIMP(statut='f',typ='TXM',defaut="AUTO",
+                                                                into=("AUTO","FIXE","VECT_Y")),
+
+                                          b_nescl_fixe=BLOC(condition = "VECT_ESCL == 'FIXE'",
+                                            ESCL_FIXE     =SIMP(statut='o',typ='R',min=3,max=3),
+                                            ),
+
+                                          b_nescl_vecty=BLOC(condition = "VECT_ESCL == 'VECT_Y'",
+                                            ESCL_VECT_Y   =SIMP(statut='o',typ='R',min=3,max=3),
+                                            ),
+#
+                                          TYPE_APPA       =SIMP(statut='f',typ='TXM',defaut="PROCHE",
+                                                           into  =("PROCHE","FIXE")),
+
+                                          b_appa_fixe=BLOC(condition = "TYPE_APPA == 'FIXE'",
+                                            DIRE_APPA     =SIMP(statut='f',typ='R',min=3,max=3),
+                                            ),
+#
+                                          DIST_POUTRE     =SIMP(statut='f',typ='TXM',defaut="NON", into=("OUI","NON")),
+                                          DIST_COQUE      =SIMP(statut='f',typ='TXM',defaut="NON", into=("OUI","NON")),
+                                          b_cara=BLOC(condition = "DIST_POUTRE == 'OUI' or DIST_COQUE == 'OUI'",
+                                            CARA_ELEM     =SIMP(statut='o',typ=(cara_elem) ),
+                                            ),
+
+                                          DIST_MAIT       =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
+                                          DIST_ESCL       =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
+#
+                                          TOLE_APPA       =SIMP(statut='f',typ='R'  ,defaut=-1.0),
+                                          TOLE_PROJ_EXT   =SIMP(statut='f',typ='R'  ,defaut=0.50),
+# -- Incompatibilité avec CL
+                                          SANS_NOEUD      =SIMP(statut='f',typ=no   ,validators=NoRepeat(),max='**'),
+                                          SANS_GROUP_NO   =SIMP(statut='f',typ=grno ,validators=NoRepeat(),max='**'),
+                                          SANS_MAILLE     =SIMP(statut='f',typ=ma   ,validators=NoRepeat(),max='**'),
+                                          SANS_GROUP_MA   =SIMP(statut='f',typ=grma ,validators=NoRepeat(),max='**'),
+#
+                                          FOND_FISSURE    =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON"),),
+                                          b_fond_fissure  =BLOC(condition = "FOND_FISSURE == 'OUI' ",
+                                                                fr="Traitement en fond de fissure",
+                                          regles=(UN_PARMI('NOEUD_FOND','GROUP_NO_FOND','MAILLE_FOND','GROUP_MA_FOND'),),
+                                          NOEUD_FOND    =SIMP(statut='f',typ=no  ,validators=NoRepeat(),max='**'),
+                                          GROUP_NO_FOND =SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**'),
+                                          MAILLE_FOND   =SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**'),
+                                          GROUP_MA_FOND =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
+                                                                ),
+#
+                                          RACCORD_LINE_QUAD=SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON"),),
+                                          b_raccord_surf =BLOC(condition = "RACCORD_LINE_QUAD == 'OUI' ",
+                                                               fr="Traitement du raccord surfacique",
+                                                               regles=(UN_PARMI('NOEUD_RACC','GROUP_NO_RACC'),),
+                                          NOEUD_RACC    =SIMP(statut='f',typ=no  ,validators=NoRepeat(),max='**'),
+                                          GROUP_NO_RACC =SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**'),
+                                                               ),
+#
+                                          EXCLUSION_PIV_NUL=SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON",),),
+# -- Mode sans calcul
+                                          RESOLUTION       =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON")),
+                                          b_verif=BLOC(condition = "RESOLUTION == 'NON' ",
+                                                       TOLE_INTERP   = SIMP(statut='f',typ='R',defaut = 0.),
+                                                       ),
 # -- Fonctionnalités spécifiques 'CONTINUE'
-                                            INTEGRATION     =SIMP(statut='f',typ='TXM',defaut="NOEUD",
-                                                                   into=("GAUSS","NOEUD","SIMPSON","SIMPSON1","SIMPSON2",
-                                                                                         "NCOTES" ,"NCOTES1" ,"NCOTES2"),),
+                                          INTEGRATION     =SIMP(statut='f',typ='TXM',defaut="NOEUD",
+                                                                 into=("GAUSS","NOEUD","SIMPSON","SIMPSON1","SIMPSON2",
+                                                                                       "NCOTES" ,"NCOTES1" ,"NCOTES2"),),
+#
+                                          CONTACT_INIT    =SIMP(statut='f',typ='TXM',defaut="NON",
+                                                                into=("OUI","INTERPENETRE","NON"),),
+#
+                                          GLISSIERE       =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON"),),
+#
+                                          ALGO_CONT       =SIMP(statut='f',typ='TXM',defaut="STANDARD",
+                                                                into=("STANDARD","AVANCE","PENALISATION"),),
 
-                                            CONTACT_INIT    =SIMP(statut='f',typ='TXM',defaut="NON",
-                                                                  into=("OUI","INTERPENETRE","NON"),),
-
-                                            GLISSIERE       =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON"),),
-
-                                            ALGO_CONT       =SIMP(statut='f',typ='TXM',defaut="STANDARD",
-                                                                  into=("STANDARD","AVANCE","PENALISATION"),),
-
-                                            b_cont_std=BLOC(condition = "ALGO_CONT == 'STANDARD' ",
-                                                            fr="Parametres de la formulation Lagrangienne",
-                                              COEF_CONT     =SIMP(statut='f',typ='R',defaut=100.E+0),
-                                              ),
-                                            b_cont_avc=BLOC(condition = "ALGO_CONT == 'AVANCE' ",
-                                                            fr="Parametres du Lagrangien augmenté",
-                                              COEF_REGU_CONT=SIMP(statut='f',typ='R',defaut=100.E+0),
-                                              COEF_STAB_CONT=SIMP(statut='f',typ='R',defaut=100.E+0),
-                                              COEF_PENA_CONT=SIMP(statut='f',typ='R',defaut=100.E+0),
-                                              ),
-                                            b_cont_pena =BLOC(condition = "ALGO_CONT == 'PENALISATION' ",
+                                          b_cont_std=BLOC(condition = "ALGO_CONT == 'STANDARD' ",
+                                                          fr="Paramètres de la formulation Lagrangienne",
+                                                          COEF_CONT = SIMP(statut='f',typ='R',defaut=100.E+0),
+                                                          ),
+                                          b_cont_avc=BLOC(condition = "ALGO_CONT == 'AVANCE' ",
+                                                          fr="Paramètres du Lagrangien augmenté",
+                                                          COEF_REGU_CONT=SIMP(statut='f',typ='R',defaut=100.E+0),
+                                                          COEF_STAB_CONT=SIMP(statut='f',typ='R',defaut=100.E+0),
+                                                          COEF_PENA_CONT=SIMP(statut='f',typ='R',defaut=100.E+0),
+                                                          ),
+                                          b_cont_pena=BLOC(condition = "ALGO_CONT == 'PENALISATION' ",
                                                             fr="Paramètres de la méthode pénalisée",
-                                              COEF_PENA_CONT  =SIMP(statut='o',typ='R'),),
+                                                            COEF_PENA_CONT  =SIMP(statut='o',typ='R'),
+                                                            ),
+#
+                                          COMPLIANCE      =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON",) ),
+                                          b_compliance=BLOC(condition = "COMPLIANCE == 'OUI' ",
+                                                            fr="Paramètres de la compliance",
+                                                            ASPERITE = SIMP(statut='o',typ='R',),
+                                                            E_N      = SIMP(statut='o',typ='R',),
+                                                            E_V      = SIMP(statut='f',typ='R',defaut=0.E+0),
+                                            ),
+#
+                                          b_frottement=BLOC(condition = "FROTTEMENT == 'COULOMB' ",
+                                                            fr="Paramètres du frottement de Coulomb",
+                                                            COULOMB    = SIMP(statut='o',typ='R',),
+                                                            SEUIL_INIT = SIMP(statut='f',typ='R',defaut=0.E+0),
+#
+                                          regles=(EXCLUS('SANS_NOEUD_FR','SANS_GROUP_NO_FR'),),
+                                          SANS_NOEUD_FR    =SIMP(statut='f',typ=no  ,validators=NoRepeat(),max='**'),
+                                          SANS_GROUP_NO_FR =SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**'),
+                                                            b_sans_group_no_frot=BLOC(condition = " SANS_GROUP_NO_FR != None or \
+                                                                                                    SANS_NOEUD_FR != None ",
+                                                            fr="Direction de frottement à exclure (uniquement dans le cas 3D)",
+                                                            DIRE_EXCL_FROT=SIMP(statut='f',typ='R',min=3,max=3),
+                                                            ),
 
-                                            COMPLIANCE      =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON",) ),
-                                            b_compliance=BLOC(condition = "COMPLIANCE == 'OUI' ",fr="Parametres de la compliance",
-                                              ASPERITE      =SIMP(statut='o',typ='R',),
-                                              E_N           =SIMP(statut='o',typ='R',),
-                                              E_V           =SIMP(statut='f',typ='R',defaut=0.E+0),
-                                              ),
+                                            ALGO_FROT       =SIMP(statut='f',typ='TXM',defaut="STANDARD",
+                                                                  into=("STANDARD","AVANCE","PENALISATION"),),
+                                            b_frot_std      =BLOC(condition = "ALGO_FROT == 'STANDARD' ",
+                                                                  fr="Paramètres de la formulation Lagrangienne",
+                                                                  COEF_FROT  =SIMP(statut='f',typ='R',defaut=100.E+0),
+                                                                  ),
+                                            b_frot_avc      =BLOC(condition = "ALGO_FROT == 'AVANCE' ",
+                                                                  fr="Paramètres du Lagrangien augmenté",
+                                                                  COEF_REGU_FROT  =SIMP(statut='f',typ='R',defaut=100.E+0),
+                                                                  COEF_STAB_FROT  =SIMP(statut='f',typ='R',defaut=100.E+0),
+                                                                  COEF_PENA_FROT  =SIMP(statut='f',typ='R',defaut=100.E+0),
+                                                                  ),
+                                            b_frot_pena     =BLOC(condition = "ALGO_FROT == 'PENALISATION' ",
+                                                                  fr="Paramètres de la méthode pénalisée",
+                                                                  COEF_PENA_FROT  =SIMP(statut='o',typ='R'),
+                                                                  ),
+#
+                                            USURE           =SIMP(statut='f',typ='TXM',defaut="SANS",into=("SANS","ARCHARD",),),
+                                            b_usure         =BLOC(condition = "USURE == 'ARCHARD' ",
+                                                                  fr="Parametres de la loi d'usure d'Archard",
+                                                                  K =SIMP(statut='o',typ='R',),
+                                                                  H =SIMP(statut='o',typ='R',val_min=1E-8),
+                                                                  ),
 
-                                            b_frottement=BLOC(condition = "FROTTEMENT == 'COULOMB' ",fr="Paramètres du frottement",
-                                              COULOMB          =SIMP(statut='o',typ='R',),
-                                              SEUIL_INIT     =SIMP(statut='f',typ='R',defaut=0.E+0),
-
-                                              regles=(EXCLUS('SANS_NOEUD_FR','SANS_GROUP_NO_FR'),),
-                                              SANS_NOEUD_FR    =SIMP(statut='f',typ=no  ,validators=NoRepeat(),max='**'),
-                                              SANS_GROUP_NO_FR =SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**'),
-                                              b_sans_group_no_frot=BLOC(condition = " SANS_GROUP_NO_FR != None or \
-                                                                                         SANS_NOEUD_FR != None ",
-                                                fr="Direction de frottement à exclure (uniquement dans le cas 3D)",
-                                                DIRE_EXCL_FROT=SIMP(statut='f',typ='R',min=3,max=3),
-                                                ),
-
-                                              ALGO_FROT       =SIMP(statut='f',typ='TXM',defaut="STANDARD",
-                                                                    into=("STANDARD","AVANCE","PENALISATION"),),
-                                              b_frot_std      =BLOC(condition = "ALGO_FROT == 'STANDARD' ",
-                                                                    fr="Parametres de la formulation Lagrangienne",
-                                                                   COEF_FROT  =SIMP(statut='f',typ='R',defaut=100.E+0),
-                                                ),
-                                              b_frot_avc      =BLOC(condition = "ALGO_FROT == 'AVANCE' ",
-                                                                    fr="Parametres du Lagrangien augmenté",
-                                                                   COEF_REGU_FROT  =SIMP(statut='f',typ='R',defaut=100.E+0),
-                                                                   COEF_STAB_FROT  =SIMP(statut='f',typ='R',defaut=100.E+0),
-                                                                   COEF_PENA_FROT  =SIMP(statut='f',typ='R',defaut=100.E+0),
-                                                ),
-                                              b_frot_pena =BLOC(condition = "ALGO_FROT == 'PENALISATION' ",
-                                                                    fr="Paramètres de la méthode pénalisée",
-                                                                   COEF_PENA_FROT  =SIMP(statut='o',typ='R'),
-                                                ),
-
-                                              USURE          =SIMP(statut='f',typ='TXM',defaut="SANS",into=("SANS","ARCHARD",),),
-                                              b_usure        =BLOC(condition = "USURE == 'ARCHARD' ",
-                                                                   fr="Parametres de la loi d'usure d'Archard",
-                                                                   K =SIMP(statut='o',typ='R',),
-                                                                   H =SIMP(statut='o',typ='R',val_min=1E-8),
-                                                ),
-
-                                              ), #fin bloc b_frottement
-                                            ), #fin mot-clé facteur ZONE
-                                  ), #fin bloc b_affe_continue
+                                            ), #fin bloc b_frottement
+                                          ), #fin mot-clé facteur ZONE
+                                ), #fin bloc b_affe_continue
 
 
 # AFFECTATION - CAS XFEM
 
-           b_affe_xfem =BLOC(condition = "FORMULATION == 'XFEM'",
-                             ZONE=FACT(statut='o',
-                                       max='**',
+         b_affe_xfem =BLOC(condition = "FORMULATION == 'XFEM'",
+                           ZONE=FACT(statut='o',
+                                     max='**',
 # -- Fissure
-                                       FISS_MAIT      = SIMP(statut='o',typ=fiss_xfem,max=1),
-                                       TOLE_PROJ_EXT   =SIMP(statut='f',typ='R'  ,defaut=0.50),
-
+                                     FISS_MAIT      = SIMP(statut='o',typ=fiss_xfem,max=1),
+                                     TOLE_PROJ_EXT  =SIMP(statut='f',typ='R',defaut=0.50),
 # -- Fonctionnalités spécifiques 'XFEM'
-                                       INTEGRATION    = SIMP(statut='f',
-                                                             typ='TXM',
-                                                             defaut="FPG4",
-                                                             into=("GAUSS","FPG2","FPG3","FPG4","FPG6","FPG7",
-                                                                   "NOEUD","SIMPSON","SIMPSON1","NCOTES","NCOTES1","NCOTES2"),),
+                                     INTEGRATION    = SIMP(statut='f',
+                                                           typ='TXM',
+                                                           defaut="FPG4",
+                                                           into=("GAUSS","FPG2","FPG3","FPG4","FPG6","FPG7",
+                                                                 "NOEUD","SIMPSON","SIMPSON1","NCOTES","NCOTES1","NCOTES2"),),
+#
+                                     CONTACT_INIT   = SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON"),),
+#
+                                     GLISSIERE      = SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON"),),
+                                     RELATION         = SIMP(statut='f',typ='TXM',defaut="NON",into=("CZM_XFEM","NON"),),
+#
+                                     ALGO_LAGR      = SIMP(statut='f',typ='TXM',defaut="VERSION1",
+                                                           into=("NON","VERSION1","VERSION2"),),
+                                     COEF_ECHELLE   = SIMP(statut='f',typ='R',defaut=1.E+6),
+#
+                                     ALGO_CONT      =SIMP(statut='f',typ='TXM',defaut="STANDARD",
+                                                                into=("STANDARD","AVANCE","PENALISATION"),),
 
-                                       CONTACT_INIT   = SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON"),),
+                                     b_cont_std=BLOC(condition = "ALGO_CONT == 'STANDARD' ",
+                                                     fr="Parametres de la formulation Lagrangienne",
+                                       COEF_CONT    =SIMP(statut='f',typ='R',defaut=100.E+0),
+                                       ),
+                                     b_cont_avc=BLOC(condition = "ALGO_CONT == 'AVANCE' ",fr="Parametres du Lagrangien augmenté",
+                                       COEF_REGU_CONT =SIMP(statut='f',typ='R',defaut=100.E+0),
+                                       COEF_STAB_CONT =SIMP(statut='f',typ='R',defaut=0.E+0),
+                                       COEF_PENA_CONT =SIMP(statut='f',typ='R',defaut=0.E+0),
+                                       ),
 
-                                       GLISSIERE      = SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON"),),
-                                       RELATION         = SIMP(statut='f',typ='TXM',defaut="NON",into=("CZM_XFEM","NON"),),
+                                     b_cont_pen=BLOC(condition = "ALGO_CONT == 'PENALISATION' ",
+                                       fr="Paramètre de la méthode pénalisée",
+                                       COEF_PENA_CONT =SIMP(statut='o',typ='R'),
+                                       ),
 
-                                       ALGO_LAGR      = SIMP(statut='f',typ='TXM',defaut="VERSION1",
-                                                             into=("NON","VERSION1","VERSION2"),),
-                                       COEF_ECHELLE   = SIMP(statut='f',typ='R',defaut=1.E+6),
+                                     b_frottement=BLOC(condition = "FROTTEMENT == 'COULOMB' ",fr="Paramètres du frottement",
+                                       COULOMB      =SIMP(statut='o',typ='R',),
+                                       SEUIL_INIT   =SIMP(statut='f',typ='R',defaut=0.E+0),
 
-                                       ALGO_CONT      =SIMP(statut='f',typ='TXM',defaut="STANDARD",
-                                                                  into=("STANDARD","AVANCE","PENALISATION"),),
+                                       ALGO_FROT    =SIMP(statut='f',typ='TXM',defaut="STANDARD",
+                                                                into=("STANDARD","AVANCE","PENALISATION"),),
 
-                                       b_cont_std=BLOC(condition = "ALGO_CONT == 'STANDARD' ",
+                                       b_frot_std=BLOC(condition = "ALGO_FROT == 'STANDARD' ",
                                                        fr="Parametres de la formulation Lagrangienne",
-                                         COEF_CONT    =SIMP(statut='f',typ='R',defaut=100.E+0),
+                                         COEF_FROT  =SIMP(statut='f',typ='R',defaut=100.E+0),
                                          ),
-                                       b_cont_avc=BLOC(condition = "ALGO_CONT == 'AVANCE' ",fr="Parametres du Lagrangien augmenté",
-                                         COEF_REGU_CONT =SIMP(statut='f',typ='R',defaut=100.E+0),
-                                         COEF_STAB_CONT =SIMP(statut='f',typ='R',defaut=0.E+0),
-                                         COEF_PENA_CONT =SIMP(statut='f',typ='R',defaut=0.E+0),
+                                       b_frot_avc=BLOC(condition = "ALGO_FROT == 'AVANCE' ",
+                                                       fr="Parametres du Lagrangien augmenté",
+                                         COEF_REGU_FROT  =SIMP(statut='f',typ='R',defaut=100.E+0),
+                                         COEF_STAB_FROT  =SIMP(statut='f',typ='R',defaut=0.E+0),
+                                         COEF_PENA_FROT  =SIMP(statut='f',typ='R',defaut=0.E+0),
                                          ),
-
-                                       b_cont_pen=BLOC(condition = "ALGO_CONT == 'PENALISATION' ",
-                                         fr="Paramètre de la méthode pénalisée",
-                                         COEF_PENA_CONT =SIMP(statut='o',typ='R'),
+                                       b_frot_pen=BLOC(condition = "ALGO_FROT == 'PENALISATION'",
+                                                       fr="Paramètre de la méthode pénalisée",
+                                                       COEF_PENA_FROT=SIMP(statut='o',typ='R'),
                                          ),
-
-                                       b_frottement=BLOC(condition = "FROTTEMENT == 'COULOMB' ",fr="Paramètres du frottement",
-                                         COULOMB      =SIMP(statut='o',typ='R',),
-                                         SEUIL_INIT   =SIMP(statut='f',typ='R',defaut=0.E+0),
-
-                                         ALGO_FROT    =SIMP(statut='f',typ='TXM',defaut="STANDARD",
-                                                                  into=("STANDARD","AVANCE","PENALISATION"),),
-
-                                         b_frot_std=BLOC(condition = "ALGO_FROT == 'STANDARD' ",
-                                                         fr="Parametres de la formulation Lagrangienne",
-                                           COEF_FROT  =SIMP(statut='f',typ='R',defaut=100.E+0),
-                                           ),
-                                         b_frot_avc=BLOC(condition = "ALGO_FROT == 'AVANCE' ",
-                                                         fr="Parametres du Lagrangien augmenté",
-                                           COEF_REGU_FROT  =SIMP(statut='f',typ='R',defaut=100.E+0),
-                                           COEF_STAB_FROT  =SIMP(statut='f',typ='R',defaut=0.E+0),
-                                           COEF_PENA_FROT  =SIMP(statut='f',typ='R',defaut=0.E+0),
-                                           ),
-                                         b_frot_pen=BLOC(condition = "ALGO_FROT == 'PENALISATION' ",
-                                                         fr="Paramètre de la méthode pénalisée",
-                                           COEF_PENA_FROT  =SIMP(statut='o',typ='R'),
-                                           ),
-                                         ), #fin bloc b_frottement
-                                       ), #fin mot-clé facteur ZONE
-                             ), #fin bloc b_affe_xfem
+                                       ), #fin bloc b_frottement
+                                     ), #fin mot-clé facteur ZONE
+                           ), #fin bloc b_affe_xfem
 
                   ) #fin OPER

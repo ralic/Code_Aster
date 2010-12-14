@@ -1,9 +1,9 @@
-# MODIF  DATE 07/12/2010   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 14/12/2010   AUTEUR PROIX J-M.PROIX 
 # TITRE ETIREMENT D'UN PARALLELEPIPEDE ORTHOTROPE SOUS SON PROPRE POIDS
 # sslv120a.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -257,17 +257,17 @@ MAT2B=DEFI_MATERIAU( ELAS_ORTH=_F(  E_L = 5.0E+11,
                                 ALPHA_N = 0.,
                                 ALPHA_T = 0.) ,
 
-                    ECOU_VISC1=_F(N=0.0,
+                    MONO_VISC1=_F(N=0.0,
                                   K=1.E11,
                                   C=0.0,
                                   ),
 
-                    ECRO_ISOT1=_F(R_0=1.E11,
+                    MONO_ISOT1=_F(R_0=1.E11,
                                   Q=0.,
                                   B=0.,
                                   H=0.0,),
 
-                    ECRO_CINE1=_F(D=0.,),
+                    MONO_CINE1=_F(D=0.,),
 
                                   );
 
@@ -279,17 +279,17 @@ CHMAT2B=AFFE_MATERIAU(  MAILLAGE=MA,
 
 MAT2=DEFI_MATERIAU( MATER=MAT,
 
-                    ECOU_VISC1=_F(N=10.0,
+                    MONO_VISC1=_F(N=10.0,
                                   K=100.,
                                   C=0.0,
                                   ),
 
-                    ECRO_ISOT1=_F(R_0=1.E10,
+                    MONO_ISOT1=_F(R_0=1.E10,
                                   Q=0.,
                                   B=1.,
                                   H=0.0,),
 
-                    ECRO_CINE1=_F(D=0.,),
+                    MONO_CINE1=_F(D=0.,),
 
                                   );
 
@@ -301,9 +301,9 @@ CHMAT2=AFFE_MATERIAU(  MAILLAGE=MA,
                         
 COMPOR2=DEFI_COMPOR(MONOCRISTAL=(_F(
                                     MATER=MAT2,
-                                    ECOULEMENT='ECOU_VISC1',
-                                    ECRO_ISOT='ECRO_ISOT1',
-                                    ECRO_CINE='ECRO_CINE1',
+                                    ECOULEMENT='MONO_VISC1',
+                                    ECRO_ISOT='MONO_ISOT1',
+                                    ECRO_CINE='MONO_CINE1',
                                     ELAS='ELAS_ORTH',
                                     FAMI_SYST_GLIS='UNIAXIAL',
                                     ),),);

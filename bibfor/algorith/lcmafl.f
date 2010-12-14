@@ -2,9 +2,9 @@
      &                   NBVAL,VALRES,NMAT,HSR,NBHSR,NBSYS)
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 12/07/2010   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 14/12/2010   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -39,10 +39,10 @@ C     ----------------------------------------------------------------
       CHARACTER*8     NOMRES(NMAT)
       CHARACTER*2     CODRET(NMAT)
       CHARACTER*(*)   FAMI,POUM
-      CHARACTER*16    NMATER, NECOUL
+      CHARACTER*16    NMATER, NECOUL, NECRIS
 C     ----------------------------------------------------------------
 C
-      IF (NECOUL.EQ.'ECOU_VISC1') THEN
+      IF (NECOUL.EQ.'MONO_VISC1') THEN
           NBVAL=3
           NOMRES(1)='N'
           NOMRES(2)='K'
@@ -55,7 +55,7 @@ C         PAR CONVENTION ECOU_VISC1 A LE NUMERO 1
           VALRES(1)=1
 
       ENDIF
-      IF (NECOUL.EQ.'ECOU_VISC2') THEN
+      IF (NECOUL.EQ.'MONO_VISC2') THEN
           NBVAL=5
           NOMRES(1)='N'
           NOMRES(2)='K'
@@ -70,7 +70,7 @@ C         PAR CONVENTION ECOU_VISC2 A LE NUMERO 2
           VALRES(1)=2
 
       ENDIF
-      IF (NECOUL.EQ.'ECOU_VISC3') THEN
+      IF (NECOUL.EQ.'MONO_VISC3') THEN
           NBVAL=5
           NOMRES(1)='K'
           NOMRES(2)='TAUMU'
@@ -88,7 +88,8 @@ C         PAR CONVENTION ECOU_VISC3 A LE NUMERO 3
           NBVAL=NBVAL+1
           VALRES(NBVAL)=TEMPF
       ENDIF
-      IF (NECOUL.EQ.'ECOU_DD_CFC') THEN
+      IF ((NECOUL.EQ.'MONO_DD_CFC').OR.
+     &    (NECOUL.EQ.'MONO_DD_CC')) THEN
           NBVAL=6
           NOMRES(1)='TAU_F'
           NOMRES(2)='GAMMA0'
@@ -105,7 +106,7 @@ C         PAR CONVENTION ECOU_DD_CFC A LE NUMERO 5
           NBVAL=NBVAL+1
           VALRES(NBVAL)=0.D0
       ENDIF
-      IF (NECOUL.EQ.'KOCKS_RAUCH') THEN
+      IF (NECOUL.EQ.'MONO_DD_KR') THEN
           NBVAL=10
           NOMRES(1)='K'
           NOMRES(2)='TAUR'
@@ -152,8 +153,8 @@ C         DEFINITION DE LA MATRICE D'INTERACTION POUR KOCKS-RAUCH
               ENDIF                          
 
           ENDIF
-      
-          CALL LCMHSR (NBSYS, NBCOEF, VALH, HSRI)
+          NECRIS=NECOUL
+          CALL LCMHSR (NECOUL,NECRIS,NBSYS, NBCOEF, VALH, HSRI)
           NBHSR=NBHSR+1
           IF (NBHSR.GT.5) CALL U2MESS('F','COMPOR1_22')
           DO 5 I=1,NBSYS

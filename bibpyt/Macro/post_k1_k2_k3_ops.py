@@ -1,8 +1,8 @@
-#@ MODIF post_k1_k2_k3_ops Macro  DATE 12/10/2010   AUTEUR GENIAUT S.GENIAUT 
+#@ MODIF post_k1_k2_k3_ops Macro  DATE 14/12/2010   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -599,7 +599,7 @@ def get_resxfem(self,xcont,RESULTAT,MAILLAGE,MODELISATION,MODEL) :
                                         PHENOMENE='MECANIQUE',
                                         MODELISATION=MODELISATION,),),);        
 
-         __RESX=PROJ_CHAMP(METHODE='COLOCATION',
+         __RESX=PROJ_CHAMP(METHODE='COLLOCATION',
                            TYPE_CHAM='NOEU',
                            NOM_CHAM='DEPL',
                            RESULTAT=RESULTAT,

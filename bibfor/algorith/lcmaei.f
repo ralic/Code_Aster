@@ -2,9 +2,9 @@
      &            NBVAL,VALRES,NMAT,HSR,IFA,NOMFAM,NBSYS,NBHSR)
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 12/07/2010   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 14/12/2010   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -47,9 +47,9 @@ C     ----------------------------------------------------------------
 C
       NBVAL=0
       
-      IF(NECOUL.EQ.'KOCKS_RAUCH') GOTO 9999
+      IF(NECOUL.EQ.'MONO_DD_KR') GOTO 9999
       
-      IF (NECRIS.EQ.'ECRO_ISOT1') THEN                               
+      IF (NECRIS.EQ.'MONO_ISOT1') THEN                               
           NBVAL=3                                                    
           NOMRES(1)='R_0'                                            
           NOMRES(2)='Q'                                              
@@ -61,7 +61,7 @@ C
 C         PAR CONVENTION ECRO_ISOT1 A LE NUMERO 1
           VALRES(1)=1
           
-      ELSEIF (NECRIS.EQ.'ECRO_ISOT2') THEN                           
+      ELSEIF (NECRIS.EQ.'MONO_ISOT2') THEN                           
           NBVAL=5                                                    
           NOMRES(1)='R_0'                                            
           NOMRES(2)='Q1'                                             
@@ -76,7 +76,7 @@ C         PAR CONVENTION ECRO_ISOT1 A LE NUMERO 1
 C         PAR CONVENTION ECRO_ISOT2 A LE NUMERO 2
           VALRES(1)=2
           
-      ELSEIF (NECRIS.EQ.'ECRO_DD_CFC') THEN                           
+      ELSEIF (NECRIS(1:7).EQ.'MONO_DD') THEN                           
           NBVAL=3                                                    
           NOMRES(1)='ALPHA'                                            
           NOMRES(2)='BETA'                                             
@@ -141,7 +141,7 @@ C        IL FAUT AU MOINS H1 A H4
          ENDIF 
       ENDIF
 
-      CALL LCMHSR (NBSYS, NBCOEF, VALH, HSRI)
+      CALL LCMHSR (NECOUL,NECRIS,NBSYS, NBCOEF, VALH, HSRI)
       NBHSR=NBHSR+1
       IF (NBHSR.GT.5) CALL U2MESS('F','COMPOR1_22')
       DO 7 I=1,NBSYS

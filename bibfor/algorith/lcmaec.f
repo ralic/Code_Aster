@@ -2,9 +2,9 @@
      &                   VALRES,NMAT)
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/08/2007   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 14/12/2010   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -41,7 +41,7 @@ C     ----------------------------------------------------------------
       CHARACTER*16    NMATER, NECOUL
 C     ----------------------------------------------------------------
 C
-      IF (NECOUL.EQ.'ECRO_CINE1') THEN
+      IF (NECOUL.EQ.'MONO_CINE1') THEN
           NBVAL=1
           NOMRES(1)='D'
           CALL RCVALB(FAMI,KPG,KSP,POUM,IMAT,NMATER, NECOUL,0,' ',0.D0,
@@ -52,7 +52,7 @@ C         PAR CONVENTION ECRO_CINE1 A LE NUMERO 1
           VALRES(1)=1
           
       ENDIF
-      IF (NECOUL.EQ.'ECRO_CINE2') THEN
+      IF (NECOUL.EQ.'MONO_CINE2') THEN
           NBVAL=4
           NOMRES(1)='D'
           NOMRES(2)='GM'

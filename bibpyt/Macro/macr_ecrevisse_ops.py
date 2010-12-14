@@ -1,8 +1,8 @@
-#@ MODIF macr_ecrevisse_ops Macro  DATE 12/07/2010   AUTEUR BERARD A.BERARD 
+#@ MODIF macr_ecrevisse_ops Macro  DATE 14/12/2010   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -305,7 +305,7 @@ def macr_ecrevisse_ops(self,reuse,
                 **motclefs )
 
               RTHERMPJ=PROJ_CHAMP(RESULTAT=__THINIT, MODELE_1=MODELE_THER, MODELE_2=MODELE_MECA,
-                     METHODE='COLOCATION',
+                     METHODE='COLLOCATION',
                      VIS_A_VIS=_F(TOUT_1='OUI', TOUT_2='OUI',),
                      INFO=2,
                       )
@@ -323,7 +323,7 @@ def macr_ecrevisse_ops(self,reuse,
 
            # Projection du champ thermique, a tous les instants sinon pas de deformations thermiques
               RTHERMPJ=PROJ_CHAMP(RESULTAT=RTHERM, MODELE_1=MODELE_THER, MODELE_2=MODELE_MECA,
-                METHODE='COLOCATION',
+                METHODE='COLLOCATION',
                 VIS_A_VIS=_F(TOUT_1='OUI', TOUT_2='OUI',),
                 INFO=2,
                  )

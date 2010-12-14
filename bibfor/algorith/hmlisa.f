@@ -4,14 +4,14 @@
      &                  ADDETE,ADCOTE,CONGEM,CONGEP,VINTM,VINTP,DSDE,
      &                  EPSV,DEPSV,P1,DP1,T,DT,PHI,RHO11,PHI0,SAT,
      &                  RETCOM,BIOT,RINSTP)
-     
+
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 20/04/2010   AUTEUR JAUBERT A.JAUBERT 
+C MODIF ALGORITH  DATE 14/12/2010   AUTEUR PELLET J.PELLET 
 C RESPONSABLE UFBHHLL C.CHAVANT
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -60,7 +60,7 @@ C ======================================================================
       REAL*8       RHO12,RHO21,RHO22,CP12,CP21,CP22,COEPS,DSATP1
       REAL*8       M11M,SATM
       REAL*8       EPS
-      PARAMETER  ( EPS = 1.D-21 ) 
+      PARAMETER  ( EPS = 1.D-21 )
       LOGICAL      EMMAG
 C ======================================================================
 C --- DECLARATIONS PERMETTANT DE RECUPERER LES CONSTANTES MECANIQUES ---
@@ -120,7 +120,7 @@ C ======================================================================
 C =====================================================================
 C --- RECUPERATION DES COEFFICIENTS MECANIQUES ------------------------
 C =====================================================================
-      IF(EM.GT.EPS)THEN 
+      IF(EM.GT.EPS)THEN
         EMMAG = .TRUE.
       ENDIF
 
@@ -129,8 +129,8 @@ C =====================================================================
 C *********************************************************************
 C *** LES VARIABLES INTERNES ******************************************
 C *********************************************************************
-      IF ((OPTION(1:9).EQ.'RAPH_MECA') .OR.
-     >    (OPTION(1:9).EQ.'FORC_NODA') .OR.
+      IF ((OPTION.EQ.'RAPH_MECA') .OR.
+     >    (OPTION.EQ.'FORC_NODA') .OR.
      +    (OPTION(1:9).EQ.'FULL_MECA')) THEN
 C =====================================================================
 C --- CALCUL DE LA VARIABLE INTERNE DE POROSITE SELON FORMULE DOCR ----
@@ -140,7 +140,7 @@ C =====================================================================
      +       DEPSV,ALPHA0,DT,DP1,DP2,SIGNE,SAT,CS,BIOT,PHI,PHIM,RETCOM)
          ELSE IF (YAMEC .EQ. 2) THEN
              PHI    =  VINTP(ADVICO+VICPHI)
-         ENDIF         
+         ENDIF
 
          IF (EMMAG )THEN
             CALL VIEMMA(NBVARI,VINTM,VINTP,ADVICO,VICPHI,PHI0,
@@ -186,7 +186,7 @@ C =====================================================================
 C ======================================================================
 C --- CALCUL DES ENTHALPIES SELON FORMULE DOCR -------------------------
 C ======================================================================
-         IF ((OPTION(1:9).EQ.'RAPH_MECA') .OR.
+         IF ((OPTION.EQ.'RAPH_MECA') .OR.
      +       (OPTION(1:9).EQ.'FULL_MECA')) THEN
             CONGEP(ADCP11+NDIM+1) = CONGEP(ADCP11+NDIM+1)
      +               + ENTEAU(DT,ALPLIQ,T,RHO11,DP2,DP1,DPAD,SIGNE,CP11)
@@ -201,7 +201,7 @@ C ======================================================================
 C ======================================================================
 C --- CALCUL SI PAS RIGI_MECA_TANG -------------------------------------
 C ======================================================================
-      IF ((OPTION(1:9).EQ.'RAPH_MECA') .OR.
+      IF ((OPTION.EQ.'RAPH_MECA') .OR.
      +    (OPTION(1:9).EQ.'FULL_MECA')) THEN
 C ======================================================================
 C --- CALCUL DES CONTRAINTES DE PRESSIONS ------------------------------
@@ -240,7 +240,7 @@ C ======================================================================
 C --- CALCUL DES DERIVEES DES APPORTS MASSIQUES ------------------------
 C --- UNIQUEMENT POUR LA PARTIE MECANIQUE ------------------------------
 C ======================================================================
-           IF (.NOT.PERMAN) THEN 
+           IF (.NOT.PERMAN) THEN
             DO 10 I = 1,3
                DSDE(ADCP11,ADDEME+NDIM-1+I) =
      +             DSDE(ADCP11,ADDEME+NDIM-1+I) + DMDEPV(RHO11,SAT,BIOT)

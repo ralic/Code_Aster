@@ -1,11 +1,11 @@
 
-# MODIF  DATE 07/12/2010   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 14/12/2010   AUTEUR PROIX J-M.PROIX 
 # TITRE COMPORTEMENTS ELASTOVISCOPLASTIQUES MONOCRISTALLINS
 # RESPONSABLE JMBHH01 J.M.PROIX
 # ssnv172a.para = tps_job 210 mem_job 64Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -158,31 +158,31 @@ ACIER=DEFI_MATERIAU(ELAS=_F(E=145200.0,
                     LEMAITRE=_F(N=10.0,
                                 UN_SUR_K=0.025,
                                 UN_SUR_M=0.0,),
-                    ECOU_VISC1=_F(N=10.0,
+                    MONO_VISC1=_F(N=10.0,
                                   K=40.0,
                                   C=10.0,),
-                    ECOU_VISC2=_F(N=10.0,
+                    MONO_VISC2=_F(N=10.0,
                                   K=40.0,
                                   C=10.0,
                                   D=0.0,
                                   A=0.0,),
-                    ECOU_VISC3=_F(K=KeV,
+                    MONO_VISC3=_F(K=KeV,
                                   TAUMU=75.5,
                                   GAMMA0=1e-10,
                                   DELTAV=1e-06,
                                   DELTAG0=0,),
-                    ECRO_ISOT1=_F(R_0=75.5,
+                    MONO_ISOT1=_F(R_0=75.5,
                                   Q=9.77,
                                   B=19.34,
                                   H=0.0,),
-                    ECRO_ISOT2=_F(R_0=75.5,
+                    MONO_ISOT2=_F(R_0=75.5,
                                   Q1=9.77,
                                   B1=19.34,
                                   H=0.0,
                                   Q2=0.0,
                                   B2=0.0,),
-                    ECRO_CINE1=_F(D=36.68,),
-                    ECRO_CINE2=_F(D=36.68,
+                    MONO_CINE1=_F(D=36.68,),
+                    MONO_CINE2=_F(D=36.68,
                                   GM=0.0,
                                   PM=0.0,
                                   C=0.0,),);
@@ -190,41 +190,41 @@ ACIER=DEFI_MATERIAU(ELAS=_F(E=145200.0,
 ACIERT=DEFI_MATERIAU(ELAS=_F(E=145200.0,
                             NU=0.0,
                             ALPHA=0.),
-                    ECOU_VISC1=_F(N=10.0,
+                    MONO_VISC1=_F(N=10.0,
                                   K=40.0,
                                   C=10.0,),
-                    ECOU_VISC2=_F(N=10.0,
+                    MONO_VISC2=_F(N=10.0,
                                   K=40.0,
                                   C=10.0,
                                   D=0.0,
                                   A=0.0,),
-                    ECOU_VISC3=_F(K=KeV,
+                    MONO_VISC3=_F(K=KeV,
                                   TAUMU=75.5,
                                   GAMMA0=1e-10,
                                   DELTAV=1e-06,
                                   DELTAG0=0,),
-                    ECRO_ISOT1=_F(R_0=75.5,
+                    MONO_ISOT1=_F(R_0=75.5,
                                   Q=9.77,
                                   B=19.34,
                                   H=0.0,),
-                    ECRO_ISOT2=_F(R_0=75.5,
+                    MONO_ISOT2=_F(R_0=75.5,
                                   Q1=9.77,
                                   B1=19.34,
                                   H=0.0,
                                   Q2=0.0,
                                   B2=0.0,),
-                    ECRO_CINE1=_F(D=36.68,),
-                    ECRO_CINE2=_F(D=36.68,
+                    MONO_CINE1=_F(D=36.68,),
+                    MONO_CINE2=_F(D=36.68,
                                   GM=10.0,
                                   PM=0.10,
                                   C=10.0,),);
                                   
-# MATERIAU DEFINI POUR LE COMPORTEMENT  KOCKS_RAUCH
+# MATERIAU DEFINI POUR LE COMPORTEMENT  DD_KR
 
 ACIER2=DEFI_MATERIAU(ELAS=_F(E=275200.,
                             NU=0.3,
                             ALPHA=0.),
-                   KOCKS_RAUCH=_F(K      = 8.62E-5,
+                   MONO_DD_KR=_F(K      = 8.62E-5,
                                   TAUR   = 498.,
                                   TAU0   = 132.,
                                   GAMMA0 = 1.E6,
@@ -239,14 +239,7 @@ ACIER2=DEFI_MATERIAU(ELAS=_F(E=275200.,
                                    H3      = 0.25,
                                    H4      = 0.25,
                                   ),        
-                    ECOU_VISC1=_F(N=10.0,
-                                  K=40.0,
-                                  C=1.0,),
-                    ECRO_ISOT1=_F(R_0=75.5,
-                                  Q=9.77,
-                                  B=19.34,
-                                  H=0.0,),
-                    ECRO_CINE1=_F(D=36.68,),);
+                    );
 
 
 COEFN=8.
@@ -263,19 +256,19 @@ DELTAV=KeV*TEMP
 ACIER3=DEFI_MATERIAU(ELAS=_F(E=145200.0,
                             NU=0.0,
                             ALPHA=0.),
-                    ECOU_VISC1=_F(N=COEFN,
+                    MONO_VISC1=_F(N=COEFN,
                                   K=COEFK,
                                   C=0.0,),
-                    ECOU_VISC3=_F(K=KeV,
+                    MONO_VISC3=_F(K=KeV,
                                   TAUMU=75.5,
                                   GAMMA0=GAMMAP0,
                                   DELTAV=DELTAV,
                                   DELTAG0=0,),
-                    ECRO_ISOT1=_F(R_0=75.5,
+                    MONO_ISOT1=_F(R_0=75.5,
                                   Q=0,
                                   B=0,
                                   H=0.0,),
-                    ECRO_CINE1=_F(D=0,),
+                    MONO_CINE1=_F(D=0,),
                                   );
 
 
@@ -338,16 +331,16 @@ ACIERORT=DEFI_MATERIAU(
                                 ALPHA_N = 0.,
                                  ALPHA_T = 0.),
                             
-                    ECOU_VISC1=_F(N=10.0,
+                    MONO_VISC1=_F(N=10.0,
                                   K=40.0,
                                   C=10.0,),
 
-                    ECRO_ISOT1=_F(R_0=75.5,
+                    MONO_ISOT1=_F(R_0=75.5,
                                   Q=9.77,
                                   B=19.34,
                                   H=0.0,),
 
-                    ECRO_CINE1=_F(D=36.68,),
+                    MONO_CINE1=_F(D=36.68,),
                                   );
 
 MATORTH=AFFE_MATERIAU(MAILLAGE=CUBE,
@@ -355,39 +348,39 @@ MATORTH=AFFE_MATERIAU(MAILLAGE=CUBE,
                           MATER=ACIERORT,),);
                           
 COMPOR1=DEFI_COMPOR(MONOCRISTAL=(_F(MATER=ACIER,
-                                    ECOULEMENT='ECOU_VISC1',
-                                    ECRO_ISOT='ECRO_ISOT1',
-                                    ECRO_CINE='ECRO_CINE1',
+                                    ECOULEMENT='MONO_VISC1',
+                                    ECRO_ISOT='MONO_ISOT1',
+                                    ECRO_CINE='MONO_CINE1',
                                     ELAS='ELAS',
                                     FAMI_SYST_GLIS='UNIAXIAL',),),);
 
 COMPOR2=DEFI_COMPOR(MONOCRISTAL=(_F(MATER=ACIER,
-                                    ECOULEMENT='ECOU_VISC2',
-                                    ECRO_ISOT='ECRO_ISOT2',
-                                    ECRO_CINE='ECRO_CINE2',
+                                    ECOULEMENT='MONO_VISC2',
+                                    ECRO_ISOT='MONO_ISOT2',
+                                    ECRO_CINE='MONO_CINE2',
                                     ELAS='ELAS',
                                     FAMI_SYST_GLIS='UNIAXIAL',),),);
                           
 COMPOR3A=DEFI_COMPOR(MONOCRISTAL=(_F(MATER=ACIER3,
-                                    ECOULEMENT='ECOU_VISC1',
-                                    ECRO_ISOT='ECRO_ISOT1',
-                                    ECRO_CINE='ECRO_CINE1',
+                                    ECOULEMENT='MONO_VISC1',
+                                    ECRO_ISOT='MONO_ISOT1',
+                                    ECRO_CINE='MONO_CINE1',
                                     ELAS='ELAS',
                                     FAMI_SYST_GLIS='UNIAXIAL',),),);
                           
 COMPOR3B=DEFI_COMPOR(MONOCRISTAL=(_F(MATER=ACIER3,
-                                    ECOULEMENT='ECOU_VISC3',
-                                    ECRO_ISOT='ECRO_ISOT1',
-                                    ECRO_CINE='ECRO_CINE1',
+                                    ECOULEMENT='MONO_VISC3',
+                                    ECRO_ISOT='MONO_ISOT1',
+                                    ECRO_CINE='MONO_CINE1',
                                     ELAS='ELAS',
                                     FAMI_SYST_GLIS='UNIAXIAL',),),);
                           
 
 # ORTHOTROPIE
 COMPORTH=DEFI_COMPOR(MONOCRISTAL=(_F(MATER=ACIERORT,
-                                    ECOULEMENT='ECOU_VISC1',
-                                    ECRO_ISOT='ECRO_ISOT1',
-                                    ECRO_CINE='ECRO_CINE1',
+                                    ECOULEMENT='MONO_VISC1',
+                                    ECRO_ISOT='MONO_ISOT1',
+                                    ECRO_CINE='MONO_CINE1',
                                     ELAS='ELAS_ORTH',
                                     FAMI_SYST_GLIS='UNIAXIAL',),),);
 
@@ -398,33 +391,31 @@ ORIEN=AFFE_CARA_ELEM(MODELE=TROISD,
                                ANGL_REP=(30.0,0.0,0.0,),),);
 
 COMPORT=DEFI_COMPOR(MONOCRISTAL=(_F(MATER=ACIERT,
-                                    ECOULEMENT='ECOU_VISC1',
-                                    ECRO_ISOT='ECRO_ISOT1',
-                                    ECRO_CINE='ECRO_CINE1',
+                                    ECOULEMENT='MONO_VISC1',
+                                    ECRO_ISOT='MONO_ISOT1',
+                                    ECRO_CINE='MONO_CINE1',
                                     ELAS='ELAS',
                                     FAMI_SYST_GLIS='BASAL',),
                                  _F(MATER=ACIERT,
-                                    ECOULEMENT='ECOU_VISC2',
-                                    ECRO_ISOT='ECRO_ISOT2',
-                                    ECRO_CINE='ECRO_CINE2',
+                                    ECOULEMENT='MONO_VISC2',
+                                    ECRO_ISOT='MONO_ISOT2',
+                                    ECRO_CINE='MONO_CINE2',
                                     FAMI_SYST_GLIS='PRISMATIQUE',),
                                  _F(MATER=ACIERT,
-                                    ECOULEMENT='ECOU_VISC3',
-                                    ECRO_ISOT='ECRO_ISOT1',
-                                    ECRO_CINE='ECRO_CINE2',
+                                    ECOULEMENT='MONO_VISC3',
+                                    ECRO_ISOT='MONO_ISOT1',
+                                    ECRO_CINE='MONO_CINE2',
                                     FAMI_SYST_GLIS='CUBIQUE1',),
                                  _F(MATER=ACIERT,
-                                    ECOULEMENT='ECOU_VISC3',
-                                    ECRO_ISOT='ECRO_ISOT2',
-                                    ECRO_CINE='ECRO_CINE1',
+                                    ECOULEMENT='MONO_VISC3',
+                                    ECRO_ISOT='MONO_ISOT2',
+                                    ECRO_CINE='MONO_CINE1',
                                     FAMI_SYST_GLIS='MACLAGE',),),);
                           
 
-# KOCKS_RAUCH
+
 COMPORKR=DEFI_COMPOR(MONOCRISTAL=(_F(MATER=ACIER2,
-                                    ECOULEMENT='KOCKS_RAUCH',
-                                    ECRO_ISOT='ECRO_ISOT1',
-                                    ECRO_CINE='ECRO_CINE1',
+                                    ECOULEMENT='MONO_DD_KR',
                                     ELAS='ELAS',
                                     FAMI_SYST_GLIS='BCC24',),),);
 
@@ -440,7 +431,6 @@ ORIENKR=AFFE_CARA_ELEM(MODELE=TROISD,
 
 
 
-# LOI DE COMPORTEMENT KOCKS_RAUCH
 
 IMPLKR=STAT_NON_LINE(MODELE=TROISD,
                      CHAM_MATER=MAT2,
@@ -471,29 +461,20 @@ TEST_RESU(RESU=(_F(RESULTAT=IMPLKR,
                    NOM_CMP='SIXX',
                    MAILLE='MA1',
                    POINT=1,
-                   VALE=-3.2437264702129E+02,PRECISION=(0.004,0.0001),
+                   VALE=-3.2437E+02,PRECISION=(0.004,0.0001),
                    REFERENCE='SOURCE_EXTERNE',),
-                _F(RESULTAT=IMPLKR,
-                   INST=TFIN3,
-                   NOM_CHAM='EPSI_ELGA_DEPL',
-                   NOM_CMP='EPXX',
-                   MAILLE='MA1',
-                   POINT=1,
-                   VALE=-0.002,
-                   REFERENCE='ANALYTIQUE',),
                 _F(RESULTAT=IMPLKR,
                    INST=TFIN3,
                    NOM_CHAM='EPSP_ELGA',
                    NOM_CMP='EPXX',
                    MAILLE='MA1',
                    POINT=1,
-                   VALE=-8.1822270710961E-04,PRECISION=(0.04,0.0001),
+                   VALE=-8.1822E-04,PRECISION=(0.002,0.0001),
                    REFERENCE='SOURCE_EXTERNE',),
                    ),)
                    
 
 
-# LOI DE COMPORTEMENT KOCKS_RAUCH en Explicite
 
 EXPLKR=STAT_NON_LINE(MODELE=TROISD,
                      CHAM_MATER=MAT2,
@@ -524,28 +505,19 @@ TEST_RESU(RESU=(_F(RESULTAT=EXPLKR,
                    NOM_CMP='SIXX',
                    MAILLE='MA1',
                    POINT=1,
-                   VALE=-3.2437264702129E+02,PRECISION=(0.04,0.0001),
+                   VALE=-3.2437E+02,PRECISION=(0.004,0.0001),
                    REFERENCE='SOURCE_EXTERNE',),
-                _F(RESULTAT=EXPLKR,
-                   INST=TFIN3,
-                   NOM_CHAM='EPSI_ELGA_DEPL',
-                   NOM_CMP='EPXX',
-                   MAILLE='MA1',
-                   POINT=1,
-                   VALE=-0.002,
-                   REFERENCE='ANALYTIQUE',),
                 _F(RESULTAT=EXPLKR,
                    INST=TFIN3,
                    NOM_CHAM='EPSP_ELGA',
                    NOM_CMP='EPXX',
                    MAILLE='MA1',
                    POINT=1,
-                   VALE=-8.1822270710961E-04,PRECISION=0.02,
+                   VALE=-8.1822E-04,PRECISION=(0.0005,0.0001),
                    REFERENCE='SOURCE_EXTERNE',),
                    ),)
                    
 
-# LOI DE COMPORTEMENT KOCKS_RAUCH en Explicite POLYCRISTAL
 
 EXPLKRP=STAT_NON_LINE(MODELE=TROISD,
                      CHAM_MATER=MAT2,
@@ -577,23 +549,15 @@ TEST_RESU(RESU=(_F(RESULTAT=EXPLKRP,
                    NOM_CMP='SIXX',
                    MAILLE='MA1',
                    POINT=1,
-                   VALE=-3.2437264702129E+02,PRECISION=(0.04,0.0001),
+                   VALE=-3.2437E+02,PRECISION=(0.004,0.0001),
                    REFERENCE='SOURCE_EXTERNE',),
-                _F(RESULTAT=EXPLKRP,
-                   INST=TFIN3,
-                   NOM_CHAM='EPSI_ELGA_DEPL',
-                   NOM_CMP='EPXX',
-                   MAILLE='MA1',
-                   POINT=1,
-                   VALE=-0.002,
-                   REFERENCE='ANALYTIQUE',),
                 _F(RESULTAT=EXPLKRP,
                    INST=TFIN3,
                    NOM_CHAM='EPSP_ELGA',
                    NOM_CMP='EPXX',
                    MAILLE='MA1',
                    POINT=1,
-                   VALE=-8.1822270710961E-04,PRECISION=0.02,
+                   VALE=-8.1822E-04,PRECISION=(0.0005,0.0001),
                    REFERENCE='SOURCE_EXTERNE',),
                    ),)
                    
@@ -646,7 +610,7 @@ TEST_RESU(RESU=(_F(RESULTAT=SOLCHAB,
                    
                    
                    
-# IMPLICITE : TEST DE ECOU_VISC1, ECRO_LINE1, ECRO_CIN1
+# IMPLICITE : TEST DE MONO_VISC1, MONO_LINE1, MONO_CIN1
 
 IMPL1=STAT_NON_LINE(MODELE=TROISD,INFO=1,
                      CHAM_MATER=MAT,
@@ -702,7 +666,7 @@ TEST_RESU(RESU=(_F(RESULTAT=IMPL1,
                    
                    
                           
-# IMPLICITE : TEST DE ECOU_VISC2, ECRO_LINE2, ECRO_CIN2
+# IMPLICITE : TEST DE MONO_VISC2, MONO_LINE2, MONO_CIN2
 
 IMPL2=STAT_NON_LINE(MODELE=TROISD,INFO=1,
                      CHAM_MATER=MAT,
@@ -726,7 +690,7 @@ IMPL2=CALC_ELEM(reuse =IMPL2,
                  OPTION=('EPSI_ELGA_DEPL','EPSP_ELGA',),);
 
                    
-# COMPARASION A IMPL1 : Avec les valeurs des coeffcients de ECRO_CINE2, ECRO_ISOT2, ECOU_VISC2, 
+# COMPARASION A IMPL1 : Avec les valeurs des coeffcients de MONO_CINE2, MONO_ISOT2, MONO_VISC2, 
 #                            on doit trouver la meme solution
 TEST_RESU(RESU=(_F(RESULTAT=IMPL2,
                    INST=TFIN,
@@ -757,7 +721,7 @@ TEST_RESU(RESU=(_F(RESULTAT=IMPL2,
 
                    
 
-# EXPLICITE RUNGE_KUTTA : TEST DE ECOU_VISC1, ECRO_LINE1, ECRO_CIN1
+# EXPLICITE RUNGE_KUTTA : TEST DE MONO_VISC1, MONO_LINE1, MONO_CIN1
 
 
 EXPL1=STAT_NON_LINE(MODELE=TROISD,
@@ -799,7 +763,8 @@ TEST_RESU(RESU=(_F(RESULTAT=EXPL1,
                    NOM_CMP='EPXX',
                    MAILLE='MA1',
                    POINT=1,
-                   VALE=-0.00067594,
+                   VALE=-0.0006764427,
+                   PRECISION=(0.002,0.0001,),
                    REFERENCE='AUTRE_ASTER',),
                 _F(RESULTAT=EXPL1,
                    INST=TFIN,
@@ -807,12 +772,12 @@ TEST_RESU(RESU=(_F(RESULTAT=EXPL1,
                    NOM_CMP='EPXX',
                    MAILLE='MA1',
                    POINT=1,
-                   VALE=-1.82299780001e-05,
-                   PRECISION=(0.02,0.0001,),
+                   VALE=-1.87292E-05,
+                   PRECISION=(0.04,0.0001,),
                    REFERENCE='AUTRE_ASTER',),),);
 
 
-# EXPLICITE RUNGE_KUTTA : TEST DE ECOU_VISC2, ECRO_LINE2, ECRO_CIN2
+# EXPLICITE RUNGE_KUTTA : TEST DE MONO_VISC2, MONO_LINE2, MONO_CIN2
 
 EXPL2=STAT_NON_LINE(MODELE=TROISD,
                      CHAM_MATER=MAT,
@@ -862,7 +827,7 @@ TEST_RESU(RESU=(_F(RESULTAT=EXPL2,
                    ),);
 
 
-# EXPLICITE RUNGE_KUTTA : TEST DE ECOU_VISC3,
+# EXPLICITE RUNGE_KUTTA : TEST DE MONO_VISC3,
 
 
 

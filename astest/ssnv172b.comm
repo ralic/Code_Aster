@@ -1,10 +1,10 @@
 
-# MODIF  DATE 07/12/2010   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 14/12/2010   AUTEUR PROIX J-M.PROIX 
 # TITRE COMPORTEMENTS ELASTOVISCOPLASTIQUES MONOCRISTALLINS 2D
 # ssnv172b.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -73,14 +73,14 @@ ACIER=DEFI_MATERIAU(ELAS=_F(E=145200.0,
                     LEMAITRE=_F(N=10.0,
                                 UN_SUR_K=0.025,
                                 UN_SUR_M=0.0,),
-                    ECOU_VISC1=_F(N=10.0,
+                    MONO_VISC1=_F(N=10.0,
                                   K=40.0,
                                   C=10.0,),
-                    ECRO_ISOT1=_F(R_0=75.5,
+                    MONO_ISOT1=_F(R_0=75.5,
                                   Q=9.77,
                                   B=19.34,
                                   H=0.0,),
-                    ECRO_CINE1=_F(D=36.68,),
+                    MONO_CINE1=_F(D=36.68,),
                                   );
 
 
@@ -118,9 +118,9 @@ TEST_RESU(RESU=(_F(RESULTAT=SOLCHAB,
 
 
 COMPOR1=DEFI_COMPOR(MONOCRISTAL=(_F(MATER=ACIER,
-                                    ECOULEMENT='ECOU_VISC1',
-                                    ECRO_ISOT='ECRO_ISOT1',
-                                    ECRO_CINE='ECRO_CINE1',
+                                    ECOULEMENT='MONO_VISC1',
+                                    ECRO_ISOT='MONO_ISOT1',
+                                    ECRO_CINE='MONO_CINE1',
                                     ELAS='ELAS',
                                     FAMI_SYST_GLIS='UNIAXIAL',),),);
 
@@ -129,7 +129,7 @@ ORIEN=AFFE_CARA_ELEM(MODELE=MODEL2D,
                      MASSIF=_F(GROUP_MA='TOUT',
                                ANGL_REP=(180.0,180.0,0.0,),),);
 
-# IMPLICITE : TEST DE ECOU_VISC1, ECRO_LINE1, ECRO_CINE1
+# IMPLICITE : TEST DE MONO_VISC1, MONO_LINE1, MONO_CINE1
 
 IMPL1=STAT_NON_LINE(MODELE=MODEL2D,INFO=1,
                      CHAM_MATER=MAT,
@@ -160,7 +160,7 @@ TEST_RESU(RESU=(_F(RESULTAT=IMPL1,
 
 
 
-# EXPLICITE RUNGE_KUTTA : TEST DE ECOU_VISC1, ECRO_LINE1, ECRO_CINE1
+# EXPLICITE RUNGE_KUTTA : TEST DE MONO_VISC1, MONO_LINE1, MONO_CINE1
 
 
 EXPL1=STAT_NON_LINE(MODELE=MODEL2D,

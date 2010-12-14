@@ -1,8 +1,8 @@
-#@ MODIF co_cham_no SD  DATE 11/05/2010   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF co_cham_no SD  DATE 14/12/2010   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -28,13 +28,14 @@ import numpy
 # -----------------------------------------------------------------------------
 # post-traitement :
 class post_comp_cham_no :
-  def __init__(self,valeurs,noeud=None) :
+  def __init__(self,valeurs,noeud=None,comp=None) :
     self.valeurs=valeurs
     self.noeud=noeud
+    self.comp=comp
 
 # -----------------------------------------------------------------------------
 class cham_no_sdaster(cham_gd_sdaster, sd_cham_no):
-   def EXTR_COMP(self,comp,lgno,topo=0) :
+   def EXTR_COMP(self,comp=' ',lgno=[],topo=0) :
       """ retourne les valeurs de la composante comp du champ sur la liste
         de groupes de noeuds lgno avec eventuellement l'info de la
         topologie si topo>0. Si lgno est une liste vide, c'est equivalent
@@ -42,7 +43,10 @@ class cham_no_sdaster(cham_gd_sdaster, sd_cham_no):
         Attributs retourne
           - self.valeurs : numpy.array contenant les valeurs
         Si on a demande la topo (i.e. self.topo = 1) :
-          - self.noeud  : numero de noeud """
+          - self.noeud  : numero de noeud 
+        Si on demande toutes les composantes (comp = ' ') :
+          - self.comp : les composantes associees a chaque grandeur pour chaque noeud
+      """
       if not self.accessible() :
          raise Accas.AsException("Erreur dans cham_no.EXTR_COMP en PAR_LOT='OUI'")
 
@@ -50,7 +54,7 @@ class cham_no_sdaster(cham_gd_sdaster, sd_cham_no):
       ncham=ncham+(8-len(ncham))*' '
       nchams=ncham[0:7]+'S'
       ncmp=comp+(8-len(comp))*' '
-
+      
       aster.prepcompcham(ncham,nchams,ncmp,"NO      ",topo,lgno)
 
       valeurs=numpy.array(aster.getvectjev(nchams+(19-len(ncham))*' '+'.V'))
@@ -60,9 +64,13 @@ class cham_no_sdaster(cham_gd_sdaster, sd_cham_no):
       else :
          noeud=None
 
-      aster.prepcompcham("__DETR__",nchams,ncmp,"NO      ",topo,lgno)
-
-      return post_comp_cham_no(valeurs,noeud)
+      if comp[:1] == ' ':
+         comp=(aster.getvectjev(nchams+(19-len(ncham))*' '+'.C'))
+         aster.prepcompcham("__DETR__",nchams,ncmp,"NO      ",topo,lgno)
+         return post_comp_cham_no(valeurs,noeud,comp)
+      else:
+         aster.prepcompcham("__DETR__",nchams,ncmp,"NO      ",topo,lgno)
+         return post_comp_cham_no(valeurs,noeud)
       
    def __add__(self, other):
       from SD.sd_nume_equa import sd_nume_equa

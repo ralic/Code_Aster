@@ -1,8 +1,8 @@
-#@ MODIF sd_compor SD  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
+#@ MODIF sd_compor SD  DATE 14/12/2010   AUTEUR PROIX J-M.PROIX 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -82,15 +82,14 @@ class sd_compor(AsBase):
             famil     =cprk[5*k+0]
             mater     =cprk[5*k+1]
             ecoul     =cprk[5*k+2]
-            ecro_isot =cprk[5*k+3]
-            ecro_cine =cprk[5*k+4]
+            MONO_isot =cprk[5*k+3]
+            MONO_cine =cprk[5*k+4]
             sd2=sd_mater(mater) ; sd2.check(checker)
             assert famil in ('BASAL','BCC24','PRISMATIQUE','OCTAEDRIQUE','PYRAMIDAL1',
-                            'PYRAMIDAL2','CUBIQUE1','CUBIQUE2','MACLAGE','JOINT_GRAIN',
-                            'RL','UNIAXIAL')
-            assert ecoul in ('ECOU_VISC1','ECOU_VISC2','ECOU_VISC3')
-            assert ecro_isot in ('ECRO_ISOT1','ECRO_ISOT2')
-            assert ecro_cine in ('ECRO_CINE1','ECRO_CINE2')
+                            'PYRAMIDAL2','CUBIQUE1','CUBIQUE2','MACLAGE','UNIAXIAL')
+            assert ecoul in ('MONO_VISC1','MONO_VISC2','MONO_VISC3')
+            assert MONO_isot in ('MONO_ISOT1','MONO_ISOT2')
+            assert MONO_cine in ('MONO_CINE1','MONO_CINE2')
 
 
 

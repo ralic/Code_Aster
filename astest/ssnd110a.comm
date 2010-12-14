@@ -1,4 +1,4 @@
-# MODIF  DATE 07/12/2010   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 14/12/2010   AUTEUR PROIX J-M.PROIX 
 # TITRE VALIDATION MONOCRISTAL LOI DD_CFC 
 # ssnd110a.para = tps_job 60 mem_job 60Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -52,23 +52,21 @@ ALPHA=0.0
 ACIERDD=DEFI_MATERIAU(ELAS=_F(E=E,
                             NU=NU,
                             ALPHA=0.),
-                      ECOU_DD_CFC=_F(TAU_F  = TAU_F,  # MPa
+                      MONO_DD_CFC=_F(TAU_F  = TAU_F,  # MPa
                                      Y      = Y      ,  # 2.5 Angstrom
                                      N      = N,
                                      GAMMA0 = GAMMA0,
                                      A      = A,
-                                                         B      = B,
-                                    ),
-                      ECRO_DD_CFC=_F(RHO_REF= RHOREF,    # en mm**-2
+                                     B      = B,
+                                     RHO_REF= RHOREF,    # en mm**-2
                                      ALPHA=ALPHA,
                                      BETA=BETA,          # 2.54 Angstrom
-                                    H1      = 1.0,
-                                    H2      = 1.0,
-                                    H3      = 1.0,
-                                    H4      = 1.0,
-                                    H5      = 1.0,
+                                     H1      = 1.0,
+                                     H2      = 1.0,
+                                     H3      = 1.0,
+                                     H4      = 1.0,
+                                     H5      = 1.0,
                                    ),
-                      ECRO_CINE1=_F(D=0,),
                       );
 
 
@@ -77,13 +75,10 @@ ACIERDD=DEFI_MATERIAU(ELAS=_F(E=E,
 
 # DD_CFC
 COMPORDD=DEFI_COMPOR(MONOCRISTAL=_F(MATER=ACIERDD,
-                                    ECOULEMENT='ECOU_DD_CFC',
-                                    ECRO_ISOT='ECRO_DD_CFC',
-                                    ECRO_CINE='ECRO_CINE1',
+                                    ECOULEMENT='MONO_DD_CFC',
                                     ELAS='ELAS',
                                     FAMI_SYST_GLIS='OCTAEDRIQUE',
                                     ),);
-
 
 
 # LOI DE COMPORTEMENT DD_CFC en Explicite
@@ -413,11 +408,9 @@ TEST_FONCTION(VALEUR=_F(FONCTION=EVIYZ,
 # DD_CFC  en IMPLICITE
 
 COMPODDI=DEFI_COMPOR(MONOCRISTAL=_F(MATER=ACIERDD,
-                                    ECOULEMENT='ECOU_DD_CFC',
-                                    ECRO_ISOT='ECRO_DD_CFC',
-                                    ECRO_CINE='ECRO_CINE1',
+                                    ECOULEMENT='MONO_DD_CFC',
                                     ELAS='ELAS',
-                                    FAMI_SYST_GLIS='OCTAEDRIQUE',
+                                  #  FAMI_SYST_GLIS='OCTAEDRIQUE',
                                     ),
                                     ROTA_RESEAU='POST');
 

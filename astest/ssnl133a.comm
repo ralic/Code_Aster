@@ -1,9 +1,9 @@
-# MODIF  DATE 08/11/2010   AUTEUR DESOZA T.DESOZA 
+# MODIF  DATE 13/12/2010   AUTEUR DESOZA T.DESOZA 
 # TITRE POST-FLAMBEMENT ELASTIQUE D'UNE STRUCTURE EN L
 # ssnl133a.para = tps_job 500 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -19,10 +19,7 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
 
-DEBUT(CODE=_F( NOM = 'SSNL133A',NIV_PUB_WEB='INTERNET',VISU_EFICAS='OUI'),
-#     TEMPS SYST IMPORTANT SUITE A L'UTILISATION DE MUMPS ET LES LIBERATIONS
-#     MEMOIRES QUI S'EN SUIVENT
-      IGNORE_ALARM='SUPERVIS_94',);
+DEBUT(CODE=_F( NOM = 'SSNL133A',NIV_PUB_WEB='INTERNET',VISU_EFICAS='OUI'),);
 
 PRE_GIBI(UNITE_GIBI=17,
          UNITE_MAILLAGE=20,);
@@ -72,20 +69,19 @@ FORCE_F=DEFI_FONCTION(NOM_PARA='INST',
                       VALE=(0.,0.,10.0,10.0,),);
 tfin = 5.0;
 
-
 TEMPS=DEFI_LIST_REEL(DEBUT=0.,
                      INTERVALLE=(_F(JUSQU_A=1.0,
-                                    NOMBRE=10,),
-                                 _F(JUSQU_A=2.6,
-                                    PAS=0.01,),
+                                    NOMBRE=1,),
                                  _F(JUSQU_A=tfin,
-                                    PAS=0.1,),),);
+                                    NOMBRE=20,),),);
 
-DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = TEMPS),
+DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = TEMPS,
+                                     METHODE='AUTO',
+                                     PAS_MINI=1.0E-12,),
                         ECHEC=_F(SUBD_METHODE='UNIFORME',
-                                 SUBD_NIVEAU=10,
                                  SUBD_PAS=4,
-                                 SUBD_PAS_MINI = 1e-7),)
+                                 SUBD_PAS_MINI = 1e-7),
+                        ADAPTATION=_F(EVENEMENT='SEUIL'),)
 
 RESO=STAT_NON_LINE(INFO=1,
                    MODELE=MO,
@@ -103,51 +99,9 @@ RESO=STAT_NON_LINE(INFO=1,
                              REAC_ITER=1,),
                    CONVERGENCE=_F(RESI_GLOB_RELA=1.0E-6,
                                   ITER_GLOB_MAXI=20,),
-                   SOLVEUR=_F(METHODE='MUMPS',
-                              #STOP_SINGULIER='DECOUPE',
-                              NPREC=-1,),);
-
-##RESO=STAT_NON_LINE(
-##reuse =RESO,
-##MODELE=MO,
-##CHAM_MATER=MAT,
-##CARA_ELEM=CARA,
-##
-##EXCIT=(_F(CHARGE=CL,),
-##       _F(CHARGE=FORCE,
-##          TYPE_CHARGE='FIXE_PILO',),),
-##
-##COMP_ELAS=_F(RELATION='ELAS_POUTRE_GR',
-##             DEFORMATION='GROT_GDEP',),
-##ETAT_INIT=_F(
-##EVOL_NOLI=RESO,
-##),
-##
-##INCREMENT=_F(LIST_INST=TEMPS,
-##             INST_FIN=tfin,
-##             SUBD_METHODE='UNIFORME', SUBD_PAS=4,
-##             SUBD_PAS_MINI=1.0E-6,),
-##
-##NEWTON=_F(MATRICE='TANGENTE',
-##          REAC_ITER=1,),
-##
-##PILOTAGE=_F(TYPE='LONG_ARC',
-##            COEF_MULT=1.0,
-##            ETA_PILO_MAX=5.0,
-##            SELECTION='ANGL_INCR_DEPL',
-##            GROUP_NO='LAME',
-##            NOM_CMP=('DX','DZ',),),
-##
-##CONVERGENCE=_F(RESI_GLOB_RELA=1.0E-6,
-##               ITER_GLOB_MAXI=50,),
-##
-##SOLVEUR=_F(STOP_SINGULIER='DECOUPE',),
-##);
-
-##ETA_PILO=RECU_FONCTION(
-##RESULTAT=RESO,
-##NOM_PARA_RESU='ETA_PILOTAGE',
-##);
+                   SOLVEUR=_F(METHODE='LDLT',
+                              STOP_SINGULIER='DECOUPE',
+                              ),);
 
 DEPX=RECU_FONCTION(RESULTAT=RESO,
                    TOUT_ORDRE='OUI',

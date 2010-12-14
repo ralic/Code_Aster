@@ -1,8 +1,8 @@
-#@ MODIF joint_meca_rupt Comportement  DATE 07/12/2010   AUTEUR GENIAUT S.GENIAUT 
+#@ MODIF joint_meca_rupt Comportement  DATE 14/12/2010   AUTEUR PROIX J-M.PROIX 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -24,15 +24,17 @@ from cata_comportement import LoiComportement
 loi = LoiComportement(
    nom            = 'JOINT_MECA_RUPT',
    doc = """Relation de comportement de contact, elastique avec resistance a la traction et rupture 
-             pour modéliser les joints dans les barrages""",
+             pour modéliser les joints dans les barrages. Cette loi permet également de modéliser le clavage de plots.
+             Enfin elle permet de modéliser, avec les éléments de joint HM, un couplage entre 
+             la mécanique et l'écoulement de fluide dans la fissure""",
    num_lc         = 45,
-   nb_vari        = 10,
-   nom_vari       = ('SEUILDEP','INDIDISS','INDIENDO','PCENERDI','DOMTAN','PCDOMTAN','SAUT_N','SAUT_T1','SAUT_T2', 'EPAISSJO'),
-   mc_mater       = ('JOINT_BETON'),
-   modelisation   = ('3D','PLAN','AXIS','ELEMJOINT'),
+   nb_vari        = 17,
+   nom_vari       = ('SEUILDEP','INDIDISS','INDIENDO','PCENERDI','DOMTAN','PCDOMTAN','SAUT_N','SAUT_T1','SAUT_T2', 'EPAISSJO','SIGN_GLO','GRADP_X','GRADP_Y','GRADP_Z','FH_X','FH_Y','FH_Z'),
+   mc_mater       = ('JOINT_MECA_RUPT'),
+   modelisation   = ('3D','PLAN','AXIS','ELEMJOINT','EJ_HYME'),
    deformation    = ('PETIT'),
    nom_varc       = ('TEMP'),
-   algo_inte         = ('ANALYTIQUE'),
+   algo_inte      = ('ANALYTIQUE'),
    type_matr_tang = ('PERTURBATION', 'VERIFICATION'),
    proprietes     = ('PRED_ELAS'),
 )

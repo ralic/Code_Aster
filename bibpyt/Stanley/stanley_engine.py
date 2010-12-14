@@ -1,4 +1,4 @@
-#@ MODIF stanley_engine Stanley  DATE 30/11/2010   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF stanley_engine Stanley  DATE 14/12/2010   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -2114,7 +2114,7 @@ class DRIVER :
       texte = "Cette action n'est pas realisable.\n"+str(err)
       return self.erreur.Remonte_Erreur(err, [], 2, texte)
 
-    motscles = { 'METHODE' : 'COLOCATION' }
+    motscles = { 'METHODE' : 'COLLOCATION' }
     if contexte.para_sensi:
        motscles['SENSIBILITE'] = contexte.para_sensi
 

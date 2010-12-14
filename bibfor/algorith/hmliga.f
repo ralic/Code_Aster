@@ -7,10 +7,10 @@
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 20/04/2010   AUTEUR JAUBERT A.JAUBERT 
+C MODIF ALGORITH  DATE 14/12/2010   AUTEUR PELLET J.PELLET 
 C RESPONSABLE UFBHHLL C.CHAVANT
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -56,17 +56,17 @@ C ======================================================================
       REAL*8       CP11,CP21,SAT,DSATP1,MAMOLG,RHO21,EM
       REAL*8       R,RHO0,CSIGM,ALP11,ALP12,ALP21
       REAL*8       EPS
-      PARAMETER  ( EPS = 1.D-21 ) 
+      PARAMETER  ( EPS = 1.D-21 )
       LOGICAL      EMMAG
 C ======================================================================
 C --- VARIABLES LOCALES POUR BARCELONE-------------------------------
 C ======================================================================
       REAL*8       TINI,CRIT(*)
-      REAL*8       DSIDP1(6),DEPS(6)    
+      REAL*8       DSIDP1(6),DEPS(6)
       REAL*8       DSDEME(6,6)
 CCCC    SIP NECESSAIRE POUR CALCULER LES CONTRAINTES TOTALES
 CCCC    ET ENSUITE CONTRAINTES NETTES POUR BARCELONE
-      REAL*8  SIPM,SIPP         
+      REAL*8  SIPM,SIPP
 C ======================================================================
 C --- DECLARATIONS PERMETTANT DE RECUPERER LES CONSTANTES MECANIQUES ---
 C ======================================================================
@@ -126,7 +126,7 @@ C ======================================================================
 C =====================================================================
 C --- RECUPERATION DES COEFFICIENTS MECANIQUES ------------------------
 C =====================================================================
-      IF(EM.GT.EPS)THEN 
+      IF(EM.GT.EPS)THEN
         EMMAG = .TRUE.
       ENDIF
       CALL INITHM(IMATE,YAMEC,PHI0,EM,ALPHA0,K0,CS,BIOT,T,
@@ -134,8 +134,8 @@ C =====================================================================
 C *********************************************************************
 C *** LES VARIABLES INTERNES ******************************************
 C *********************************************************************
-      IF ((OPTION(1:9).EQ.'RAPH_MECA') .OR.
-     >    (OPTION(1:9).EQ.'FORC_NODA') .OR.
+      IF ((OPTION.EQ.'RAPH_MECA') .OR.
+     >    (OPTION.EQ.'FORC_NODA') .OR.
      &    (OPTION(1:9).EQ.'FULL_MECA')) THEN
 C =====================================================================
 C --- CALCUL DE LA VARIABLE INTERNE DE POROSITE SELON FORMULE DOCR ----
@@ -200,7 +200,7 @@ C =====================================================================
 C ======================================================================
 C --- CALCUL DES ENTHALPIES SELON FORMULE DOCR -------------------------
 C ======================================================================
-         IF ((OPTION(1:9).EQ.'RAPH_MECA') .OR.
+         IF ((OPTION.EQ.'RAPH_MECA') .OR.
      +       (OPTION(1:9).EQ.'FULL_MECA')) THEN
             CONGEP(ADCP11+NDIM+1) = CONGEP(ADCP11+NDIM+1)
      +               + ENTEAU(DT,ALPLIQ,T,RHO11,DP2,DP1,DPAD,SIGNE,CP11)
@@ -216,7 +216,7 @@ C ======================================================================
 C ======================================================================
 C --- CALCUL SI PAS RIGI_MECA_TANG -------------------------------------
 C ======================================================================
-      IF ((OPTION(1:9).EQ.'RAPH_MECA') .OR.
+      IF ((OPTION.EQ.'RAPH_MECA') .OR.
      +    (OPTION(1:9).EQ.'FULL_MECA')) THEN
 C ======================================================================
 C --- CALCUL DES CONTRAINTES DE PRESSIONS ------------------------------
@@ -345,7 +345,7 @@ C --- DSIGM/DEPP1
      &                               DSIDP1(I)
    50       CONTINUE
          ENDIF
-      ENDIF      
+      ENDIF
 C =====================================================================
  30   CONTINUE
 C =====================================================================

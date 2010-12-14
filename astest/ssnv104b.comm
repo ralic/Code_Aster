@@ -1,9 +1,9 @@
-# MODIF  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 13/12/2010   AUTEUR DESOZA T.DESOZA 
 #
 # TITRE CONTACT DE DEUX SPHERES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
 #              SEE THE FILE "LICENSE.TERMS" FOR INFORMATION ON USAGE AND
 #              REDISTRIBUTION OF THIS FILE.
 # ======================================================================
@@ -303,10 +303,10 @@ TEST_RESU(
                   NOM_CHAM = 'DEPL',
                   NOEUD = 'N287',
                   NOM_CMP = 'DX',
-                  VALE = -1.08448E-01,
+                  VALE = -0.10810386252479,
                   PRECISION = 1.0E-03,
                   REFERENCE='NON_REGRESSION',
-                  VERSION = '7.3.23',
+                  VERSION = '10.3.1',
                   CRITERE = 'RELATIF'),
             _F(
                   RESULTAT = RESU3,
@@ -314,10 +314,10 @@ TEST_RESU(
                   NOM_CHAM = 'DEPL',
                   NOEUD = 'N287',
                   NOM_CMP = 'DY',
-                  VALE = -1.63534E-01,
+                  VALE = -0.16437466032269,
                   PRECISION = 1.0E-03,
                   REFERENCE='NON_REGRESSION',
-                  VERSION = '7.3.23',
+                  VERSION = '10.3.1',
                   CRITERE = 'RELATIF'),
             _F(
                   RESULTAT = RESU3,
@@ -325,10 +325,10 @@ TEST_RESU(
                   NOM_CHAM = 'DEPL',
                   NOEUD = 'N285',
                   NOM_CMP = 'DX',
-                  VALE = -1.61415E-01,
+                  VALE = -0.16091237439822,
                   PRECISION = 1.0E-03,
                   REFERENCE='NON_REGRESSION',
-                  VERSION = '7.3.23',
+                  VERSION = '10.3.1',
                   CRITERE = 'RELATIF'),
             _F(
                   RESULTAT = RESU3,
@@ -426,10 +426,10 @@ TEST_RESU(
                   NOM_CHAM = 'DEPL',
                   NOEUD = 'N287',
                   NOM_CMP = 'DX',
-                  VALE = -1.08448E-01,
+                  VALE = -0.10810386252479,
                   PRECISION = 1.0E-03,
                   REFERENCE='NON_REGRESSION',
-                  VERSION = '7.3.23',
+                  VERSION = '10.3.1',
                   CRITERE = 'RELATIF'),
             _F(
                   RESULTAT = RESU4,
@@ -437,10 +437,10 @@ TEST_RESU(
                   NOM_CHAM = 'DEPL',
                   NOEUD = 'N287',
                   NOM_CMP = 'DY',
-                  VALE = -1.63534E-01,
+                  VALE = -0.16437466032269,
                   PRECISION = 1.0E-03,
                   REFERENCE='NON_REGRESSION',
-                  VERSION = '7.3.23',
+                  VERSION = '10.3.1',
                   CRITERE = 'RELATIF'),
             _F(
                   RESULTAT = RESU4,
@@ -448,10 +448,10 @@ TEST_RESU(
                   NOM_CHAM = 'DEPL',
                   NOEUD = 'N285',
                   NOM_CMP = 'DX',
-                  VALE = -1.61416E-01,
+                  VALE = -0.16091237439822,
                   PRECISION = 1.E-03,
                   REFERENCE='NON_REGRESSION',
-                  VERSION = '7.3.23',
+                  VERSION = '10.3.1',
                   CRITERE = 'RELATIF'),
             _F(
                   RESULTAT = RESU4,

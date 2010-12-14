@@ -6,9 +6,9 @@ C RESPONSABLE PELLET J.PELLET
       CHARACTER*8 NOCHE8,NOCHS8,NOCMP,KTYPE
       CHARACTER*8 GROUP(NGROUP)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 04/10/2010   AUTEUR PELLET J.PELLET 
+C MODIF PREPOST  DATE 14/12/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -47,6 +47,7 @@ C
       INTEGER      NBMA,IMA,NBPT,NBSP,NBCMP,IPT,ISP,IAD,JVAL,JMA,JPO,JSP
       INTEGER     IVAL,IRET,K,ITRMA,ITRNO,IGR,NBTROU,ITBMA,LMA,NBVAL
       INTEGER     JCNSD,JCNSL,JCNSC,JCNSV,NBNO,INO,JNO,NBN,IN,IBID
+      INTEGER     JCMP,CMPMIN,CMPMAX
       LOGICAL     LTOPO
 
 
@@ -56,6 +57,11 @@ C
       CESZ=NOCHS8
       LITROU='&&PRCOCH.NUM_MAILLE'
 
+      NUMCMP = 0
+      IF (NOCMP(1:2).EQ.' ') THEN
+        NUMCMP = -1
+      ENDIF
+
       IF (NOCHE8.EQ.'__DETR__') THEN
 C     --  SI NOCHE8='__DETR__' : ON DETRUIT LES VECTEURS
         CALL JEDETR(CESZ // '.V')
@@ -64,6 +70,8 @@ C     --  SI NOCHE8='__DETR__' : ON DETRUIT LES VECTEURS
           CALL JEDETR(CESZ // '.P')
           CALL JEDETR(CESZ // '.SP')
           CALL JEDETR(CESZ // '.N')
+          CALL JEDETR(CESZ // '.C')
+C          ENDIF
         ENDIF
         GOTO 9999
       ENDIF
@@ -293,6 +301,9 @@ C -- 2EME ETAPE : RECUPERATION DU NUMCMP QUI NOUS INTERESSE
 
         NCMPMX = ZI(JCNSD-1+2)
 
+        IF (NUMCMP.LT.0) THEN
+          GOTO 60
+        ENDIF        
         DO 50 ICMP=1,NCMPMX
           IF (ZK8(JCNSC-1+ICMP).EQ.NOCMP) THEN
             NUMCMP=ICMP
@@ -313,43 +324,65 @@ C                   ET CREATION DES VECTEURS
         NBVAL=0
         NBNO = ZI(JCNSD-1+1)
 
-        DO 70 INO=1,NBNO
-          IF (ZL(JCNSL-1+(INO-1)*NCMPMX+NUMCMP)) NBVAL=NBVAL+1
-70     CONTINUE
+        IF (NUMCMP.LT.0) THEN
+          DO 70 ICMP=1,NCMPMX
+            DO 71 INO=1,NBNO    
+              IF (ZL(JCNSL-1+(INO-1)*NCMPMX+ICMP))  NBVAL=NBVAL+1
+71          CONTINUE
+70        CONTINUE
+        ELSE
+          DO 72 INO=1,NBNO
+            IF (ZL(JCNSL-1+(INO-1)*NCMPMX+NUMCMP)) NBVAL=NBVAL+1
+72      CONTINUE
+        ENDIF
+
+                  
 
         IF (NBVAL.EQ.0) THEN
           CALL U2MESS('S','CHAMPS_1')
         ENDIF
 
-          IF (TSCA.EQ.'R') THEN
-            CALL WKVECT(CESZ // '.V','G V R',NBVAL,JVAL)
-          ELSEIF (TSCA.EQ.'I') THEN
-            CALL WKVECT(CESZ // '.V','G V I',NBVAL,JVAL)
-          ELSEIF (TSCA.EQ.'C') THEN
-            CALL WKVECT(CESZ // '.V','G V C',NBVAL,JVAL)
-          ENDIF
+        IF (TSCA.EQ.'R') THEN
+          CALL WKVECT(CESZ // '.V','G V R',NBVAL,JVAL)
+        ELSEIF (TSCA.EQ.'I') THEN
+          CALL WKVECT(CESZ // '.V','G V I',NBVAL,JVAL)
+        ELSEIF (TSCA.EQ.'C') THEN
+          CALL WKVECT(CESZ // '.V','G V C',NBVAL,JVAL)
+        ENDIF
         IF (LTOPO) THEN
           CALL WKVECT(CESZ // '.N','G V I',NBVAL,JNO)
+          IF (NUMCMP.LT.0) THEN
+            CALL WKVECT(CESZ // '.C','G V K8',NBVAL,JCMP)
+          ENDIF
         ENDIF
 
 C -- 4EME ETAPE : REMPLISSAGE DES VECTEURS
         IVAL=0
         DO 200 INO=1,NBNO
-          IF (ZL(JCNSL-1+(INO-1)*NCMPMX+NUMCMP)) THEN
-            IVAL=IVAL+1
-            IF (TSCA.EQ.'R') THEN
-              ZR(JVAL-1+IVAL)=ZR(JCNSV-1+(INO-1)*NCMPMX+NUMCMP)
-            ELSEIF (TSCA.EQ.'I') THEN
-              ZI(JVAL-1+IVAL)=ZI(JCNSV-1+(INO-1)*NCMPMX+NUMCMP)
-            ELSEIF (TSCA.EQ.'C') THEN
-              ZC(JVAL-1+IVAL)=ZC(JCNSV-1+(INO-1)*NCMPMX+NUMCMP)
-            ENDIF
-            IF (LTOPO) THEN
-              ZI(JNO-1+IVAL)=INO
-            ENDIF
+          IF (NUMCMP.GT.0) THEN
+            CMPMIN=NUMCMP
+            CMPMAX=NUMCMP
+          ELSE
+            CMPMIN=1
+            CMPMAX=NCMPMX
           ENDIF
-200      CONTINUE
-
+          DO 201 ICMP=CMPMIN,CMPMAX
+            IF (ZL(JCNSL-1+(INO-1)*NCMPMX+ICMP)) THEN
+              IVAL=IVAL+1
+              IF (TSCA.EQ.'R') THEN
+                ZR(JVAL-1+IVAL)=ZR(JCNSV-1+(INO-1)*NCMPMX+ICMP)
+              ELSEIF (TSCA.EQ.'I') THEN
+                ZI(JVAL-1+IVAL)=ZI(JCNSV-1+(INO-1)*NCMPMX+ICMP)
+              ELSEIF (TSCA.EQ.'C') THEN
+                ZC(JVAL-1+IVAL)=ZC(JCNSV-1+(INO-1)*NCMPMX+ICMP)
+              ENDIF
+              IF (LTOPO) THEN
+                ZI(JNO-1+IVAL)=INO
+                IF (NUMCMP.LT.0) ZK8(JCMP-1+IVAL)=ZK8(JCNSC-1+ICMP)
+              ENDIF
+            ENDIF
+201       CONTINUE              
+200     CONTINUE
 
       ELSE
         CALL ASSERT(.FALSE.)

@@ -1,8 +1,8 @@
       SUBROUTINE TE0159(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 21/07/2009   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF CALCULEL  DATE 14/12/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -50,7 +50,7 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 
 
-      IF (OPTION(1:14).EQ.'SIEF_ELNO_ELGA') THEN
+       IF (OPTION.EQ.'SIEF_ELNO_ELGA') THEN
 C     -----------------------------------------------
         CALL JEVECH('PCONTRR','L',ISIGGA)
         CALL JEVECH('PSIEFNOR','E',ISIGNO)
@@ -65,7 +65,7 @@ C     -----------------------------------------------
         END IF
 
 
-      ELSE IF (OPTION(1:14).EQ.'VARI_ELNO_ELGA') THEN
+       ELSE IF (OPTION.EQ.'VARI_ELNO_ELGA') THEN
 C     -----------------------------------------------
         CALL JEVECH('PVARIGR','L',IVARGA)
         CALL JEVECH('PVARINR','E',IVARNO)
@@ -89,7 +89,7 @@ C     -----------------------------------------------
         END IF
 
 
-      ELSE IF (OPTION(1:14).EQ.'VARI_ELGA_ELNO') THEN
+       ELSE IF (OPTION.EQ.'VARI_ELGA_ELNO') THEN
 C     -----------------------------------------------
         CALL JEVECH('PCOMPOR','L',ICOMPO)
         READ (ZK16(ICOMPO+1),'(I16)') NBVAR

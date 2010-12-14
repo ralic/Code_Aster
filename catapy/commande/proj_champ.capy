@@ -1,7 +1,7 @@
-#& MODIF COMMANDE  DATE 09/11/2010   AUTEUR DELMAS J.DELMAS 
+#& MODIF COMMANDE  DATE 14/12/2010   AUTEUR PELLET J.PELLET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -18,27 +18,40 @@
 # ======================================================================
 # RESPONSABLE PELLET J.PELLET
 def proj_champ_prod(RESULTAT=None,CHAM_GD=None,**args ):
-    if AsType(RESULTAT) != None : return AsType(RESULTAT)
-    if AsType(CHAM_GD)  != None : return AsType(CHAM_GD)
+    if (RESULTAT == None and CHAM_GD == None) : return corresp_2_mailla
+    if  RESULTAT != None                      : return AsType(RESULTAT)
+    if  CHAM_GD  != None                      : return AsType(CHAM_GD)
     raise AsException("type de concept resultat non prevu")
 
 
 
 
 PROJ_CHAMP=OPER(nom="PROJ_CHAMP",op= 166,sd_prod=proj_champ_prod,reentrant='f',
-            UIinfo={"groupes":("Résultats et champs",)},
-                fr="Projeter des champs d'un maillage sur un autre",
+        UIinfo={"groupes":("Résultats et champs",)},
+            fr="Projeter des champs d'un maillage sur un autre",
+
+     # faut-il projeter les champs ?
+     PROJECTION      =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON",),),
+
+     # pour projeter avec une sd_corresp_2_mailla deja calculée :
+     MATR_PROJECTION   =SIMP(statut='f',typ=corresp_2_mailla,),
 
 
-         METHODE         =SIMP(statut='f',typ='TXM',defaut="AUTO",
-                               into=("NUAGE_DEG_0","NUAGE_DEG_1","AUTO","COLOCATION","ECLA_PG",) ),
 
+     #-----------------------------------------------------------------------------------------------------------
+     # 1er cas : on fait tout d'un coup : creation de la sd_corresp_2_mailla + projection des champs
+     #-----------------------------------------------------------------------------------------------
+     b_1_et_2   =BLOC(condition= "PROJECTION == 'OUI' and MATR_PROJECTION == None",
          regles=(UN_PARMI('RESULTAT','CHAM_GD'),
                  UN_PARMI('MODELE_1','MAILLAGE_1'),
                  UN_PARMI('MODELE_2','MAILLAGE_2'),
                  ),
          RESULTAT        =SIMP(statut='f',typ=resultat_sdaster),
          CHAM_GD         =SIMP(statut='f',typ=(cham_no_sdaster,cham_elem)),
+
+         METHODE         =SIMP(statut='f',typ='TXM',defaut="AUTO",
+                               into=("NUAGE_DEG_0","NUAGE_DEG_1","AUTO","COLLOCATION","ECLA_PG",) ),
+
 
          MODELE_1        =SIMP(statut='f',typ=modele_sdaster),
          MAILLAGE_1      =SIMP(statut='f',typ=maillage_sdaster),
@@ -53,9 +66,9 @@ PROJ_CHAMP=OPER(nom="PROJ_CHAMP",op= 166,sd_prod=proj_champ_prod,reentrant='f',
          ),
 
 
-         # Cas de la projection COLOCATION :
+         # Cas de la projection COLLOCATION :
          #--------------------------------------------
-         b_elem          =BLOC(condition="METHODE in ('COLOCATION','ECLA_PG','AUTO')",
+         b_elem          =BLOC(condition="METHODE in ('COLLOCATION','ECLA_PG','AUTO')",
              CAS_FIGURE      =SIMP(statut='f',typ='TXM',into=("2D","3D","2.5D","1.5D",),
                   fr="Pour indiquer au programme le type de projection souhaité"),
              DISTANCE_MAX    =SIMP(statut='f',typ='R',
@@ -78,6 +91,151 @@ PROJ_CHAMP=OPER(nom="PROJ_CHAMP",op= 166,sd_prod=proj_champ_prod,reentrant='f',
          ),
 
 
+         # Cas de la projection d'une sd_resultat :
+         #--------------------------------------------
+         b_resultat      =BLOC(condition="RESULTAT != None",
+           regles=(EXCLUS('TOUT_ORDRE','NUME_ORDRE','INST','FREQ','LIST_INST','LIST_FREQ','LIST_ORDRE'),
+                   EXCLUS('TOUT_CHAM','NOM_CHAM',),
+                   CONCEPT_SENSIBLE('SEPARE'),
+                   REUSE_SENSIBLE(),
+                   DERIVABLE('RESULTAT'),),
+           SENSIBILITE     =SIMP(statut='f',typ=(para_sensi,theta_geom),validators=NoRepeat(),max='**',
+                               fr="Liste des paramétres de sensibilité.",
+                               ang="List of sensitivity parameters",),
+
+           NOM_PARA        =SIMP(statut='f',typ='TXM', max='**'),
+           TOUT_CHAM       =SIMP(statut='f',typ='TXM',into=("OUI",) ),
+           NOM_CHAM        =SIMP(statut='f',typ='TXM',validators=NoRepeat(),max='**'),
+
+           NUME_DDL        =SIMP(statut='f',typ=(nume_ddl_sdaster),
+                fr="Utile en dynamique pour pouvoir imoser la numérotation des cham_no."),
+
+           TOUT_ORDRE      =SIMP(statut='f',typ='TXM',into=("OUI",) ),
+           NUME_ORDRE      =SIMP(statut='f',typ='I',validators=NoRepeat(),max='**' ),
+           LIST_ORDRE      =SIMP(statut='f',typ=listis_sdaster),
+           INST            =SIMP(statut='f',typ='R',validators=NoRepeat(),max='**' ),
+           LIST_INST       =SIMP(statut='f',typ=listr8_sdaster),
+           FREQ            =SIMP(statut='f',typ='R',validators=NoRepeat(),max='**' ),
+           LIST_FREQ       =SIMP(statut='f',typ=listr8_sdaster),
+           NUME_MODE       =SIMP(statut='f',typ='I',validators=NoRepeat(),max='**' ),
+           NOEUD_CMP       =SIMP(statut='f',typ='TXM',validators=NoRepeat(),max='**'),
+
+           b_acce_reel     =BLOC(condition="(FREQ != None)or(LIST_FREQ != None)or(INST != None)or(LIST_INST != None)",
+              CRITERE         =SIMP(statut='f',typ='TXM',defaut="RELATIF",into=("RELATIF","ABSOLU",),),
+              b_prec_rela=BLOC(condition="(CRITERE=='RELATIF')",
+                   PRECISION       =SIMP(statut='f',typ='R',defaut= 1.E-6,),),
+              b_prec_abso=BLOC(condition="(CRITERE=='ABSOLU')",
+                   PRECISION       =SIMP(statut='o',typ='R',),),
+           ),
+         ),
+
+
+         VIS_A_VIS       =FACT(statut='f',max='**',
+           regles=(AU_MOINS_UN('TOUT_1','GROUP_MA_1','MAILLE_1','GROUP_NO_1','NOEUD_1'),
+                   AU_MOINS_UN('TOUT_2','GROUP_MA_2','MAILLE_2','GROUP_NO_2','NOEUD_2'),),
+           TOUT_1          =SIMP(statut='f',typ='TXM',into=("OUI",) ),
+           GROUP_MA_1      =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
+           MAILLE_1        =SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**'),
+           GROUP_NO_1      =SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**'),
+           NOEUD_1         =SIMP(statut='f',typ=no  ,validators=NoRepeat(),max='**'),
+           TOUT_2          =SIMP(statut='f',typ='TXM',into=("OUI",) ),
+           GROUP_MA_2      =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
+           MAILLE_2        =SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**'),
+           GROUP_NO_2      =SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**'),
+           NOEUD_2         =SIMP(statut='f',typ=no  ,validators=NoRepeat(),max='**'),
+
+           # les mots clés suivants ne sont actifs que si METHODE='COLLOCATION' mais on ne peut pas le vérifier:
+               CAS_FIGURE      =SIMP(statut='f',typ='TXM',into=("2D","3D","2.5D","1.5D",) ),
+               TRANSF_GEOM_1   =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule),min=2,max=3,
+                    fr="2 (ou 3) fonctions fx,fy,fz définissant la transformation géométrique à appliquer"+
+                       " aux noeuds du MODELE_1 avant la projection."),
+               TRANSF_GEOM_2   =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule),min=2,max=3,
+                    fr="2 (ou 3) fonctions fx,fy,fz définissant la transformation géométrique à appliquer"+
+                       " aux noeuds du MODELE_2 avant la projection."),
+         ),
+     ), # fin bloc b_1_et_2
+
+
+
+     #-----------------------------------------------------------------------------------------------------------
+     # 2eme cas : on s'arrete apres la creation de la sd_corresp_2_mailla
+     #-----------------------------------------------------------------------------------------------
+     b_1   =BLOC(condition="PROJECTION == 'NON'",
+
+         METHODE         =SIMP(statut='f',typ='TXM',defaut="COLLOCATION",
+                               into=("COLLOCATION",) ),
+
+         regles=(UN_PARMI('MODELE_1','MAILLAGE_1'),
+                 UN_PARMI('MODELE_2','MAILLAGE_2'),
+                 ),
+         MODELE_1        =SIMP(statut='f',typ=modele_sdaster),
+         MAILLAGE_1      =SIMP(statut='f',typ=maillage_sdaster),
+
+         MODELE_2        =SIMP(statut='f',typ=modele_sdaster),
+         MAILLAGE_2      =SIMP(statut='f',typ=maillage_sdaster),
+
+
+         # Cas de la projection COLLOCATION :
+         #--------------------------------------------
+         b_elem          =BLOC(condition="METHODE in ('COLLOCATION',)",
+             CAS_FIGURE      =SIMP(statut='f',typ='TXM',into=("2D","3D","2.5D","1.5D",),
+                  fr="Pour indiquer au programme le type de projection souhaité"),
+             DISTANCE_MAX    =SIMP(statut='f',typ='R',
+                  fr="Distance maximale entre le noeud et l'élément le plus proche, lorsque le noeud n'est dans aucun élément."),
+
+             TRANSF_GEOM_1   =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule),min=2,max=3,
+                  fr="2 (ou 3) fonctions fx,fy,fz définissant la transformation géométrique à appliquer"+
+                     " aux noeuds du MODELE_1 avant la projection."),
+             TRANSF_GEOM_2   =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule),min=2,max=3,
+                  fr="2 (ou 3) fonctions fx,fy,fz définissant la transformation géométrique à appliquer"+
+                     " aux noeuds du MODELE_2 avant la projection."),
+
+             ALARME          =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON") ),
+
+         ),
+
+         VIS_A_VIS       =FACT(statut='f',max='**',
+           regles=(AU_MOINS_UN('TOUT_1','GROUP_MA_1','MAILLE_1','GROUP_NO_1','NOEUD_1'),
+                   AU_MOINS_UN('TOUT_2','GROUP_MA_2','MAILLE_2','GROUP_NO_2','NOEUD_2'),),
+           TOUT_1          =SIMP(statut='f',typ='TXM',into=("OUI",) ),
+           GROUP_MA_1      =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
+           MAILLE_1        =SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**'),
+           GROUP_NO_1      =SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**'),
+           NOEUD_1         =SIMP(statut='f',typ=no  ,validators=NoRepeat(),max='**'),
+           TOUT_2          =SIMP(statut='f',typ='TXM',into=("OUI",) ),
+           GROUP_MA_2      =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
+           MAILLE_2        =SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**'),
+           GROUP_NO_2      =SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**'),
+           NOEUD_2         =SIMP(statut='f',typ=no  ,validators=NoRepeat(),max='**'),
+
+           # les mots clés suivants ne sont actifs que si METHODE='COLLOCATION' mais on ne peut pas le vérifier:
+               CAS_FIGURE      =SIMP(statut='f',typ='TXM',into=("2D","3D","2.5D","1.5D",) ),
+               TRANSF_GEOM_1   =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule),min=2,max=3,
+                    fr="2 (ou 3) fonctions fx,fy,fz définissant la transformation géométrique à appliquer"+
+                       " aux noeuds du MODELE_1 avant la projection."),
+               TRANSF_GEOM_2   =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule),min=2,max=3,
+                    fr="2 (ou 3) fonctions fx,fy,fz définissant la transformation géométrique à appliquer"+
+                       " aux noeuds du MODELE_2 avant la projection."),
+         ),
+     ), # fin bloc b_1
+
+
+
+     #-----------------------------------------------------------------------------------------------------------
+     # 3eme cas : on projette les champs avec une sd_corresp_2_mailla déjé calculée
+     #-----------------------------------------------------------------------------------------------
+     b_2   =BLOC(condition="MATR_PROJECTION != None",
+         regles=(UN_PARMI('RESULTAT','CHAM_GD'),),
+         RESULTAT        =SIMP(statut='f',typ=resultat_sdaster),
+         CHAM_GD         =SIMP(statut='f',typ=(cham_no_sdaster,cham_elem)),
+
+         TYPE_CHAM       =SIMP(statut='f',typ='TXM',into=("NOEU",),
+              fr="Pour forcer le type des champs projetés. NOEU -> cham_no"),
+
+         PROL_ZERO       =SIMP(statut='f',typ='TXM',into=("OUI","NON"),defaut="NON",
+              fr="Pour prolonger les champs par zéro lé ou la projection ne donne pas de valeurs."),
+
+
 
          # Cas de la projection d'une sd_resultat :
          #--------------------------------------------
@@ -88,7 +246,7 @@ PROJ_CHAMP=OPER(nom="PROJ_CHAMP",op= 166,sd_prod=proj_champ_prod,reentrant='f',
                    REUSE_SENSIBLE(),
                    DERIVABLE('RESULTAT'),),
            SENSIBILITE     =SIMP(statut='f',typ=(para_sensi,theta_geom),validators=NoRepeat(),max='**',
-                               fr="Liste des paramètres de sensibilité.",
+                               fr="Liste des paramétres de sensibilité.",
                                ang="List of sensitivity parameters",),
 
            NOM_PARA        =SIMP(statut='f',typ='TXM', max='**'),
@@ -118,35 +276,10 @@ PROJ_CHAMP=OPER(nom="PROJ_CHAMP",op= 166,sd_prod=proj_champ_prod,reentrant='f',
            ),
 
          ),
+     ), # fin bloc b_2
 
 
 
-         # Mots clés utilisables dans tous les cas :
-         #---------------------------------------------
-         TITRE           =SIMP(statut='f',typ='TXM',max='**' ),
-         INFO            =SIMP(statut='f',typ='I',defaut=1,into=(1,2)),
-
-         VIS_A_VIS       =FACT(statut='f',max='**',
-           regles=(AU_MOINS_UN('TOUT_1','GROUP_MA_1','MAILLE_1','GROUP_NO_1','NOEUD_1'),
-                   AU_MOINS_UN('TOUT_2','GROUP_MA_2','MAILLE_2','GROUP_NO_2','NOEUD_2'),),
-           TOUT_1          =SIMP(statut='f',typ='TXM',into=("OUI",) ),
-           GROUP_MA_1      =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
-           MAILLE_1        =SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**'),
-           GROUP_NO_1      =SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**'),
-           NOEUD_1         =SIMP(statut='f',typ=no  ,validators=NoRepeat(),max='**'),
-           TOUT_2          =SIMP(statut='f',typ='TXM',into=("OUI",) ),
-           GROUP_MA_2      =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
-           MAILLE_2        =SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**'),
-           GROUP_NO_2      =SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**'),
-           NOEUD_2         =SIMP(statut='f',typ=no  ,validators=NoRepeat(),max='**'),
-
-           # les mots clés suivants ne sont actifs que si METHODE='COLOCATION' mais on ne peut pas le vérifier:
-               CAS_FIGURE      =SIMP(statut='f',typ='TXM',into=("2D","3D","2.5D","1.5D",) ),
-               TRANSF_GEOM_1   =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule),min=2,max=3,
-                    fr="2 (ou 3) fonctions fx,fy,fz définissant la transformation géométrique à appliquer"+
-                       " aux noeuds du MODELE_1 avant la projection."),
-               TRANSF_GEOM_2   =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule),min=2,max=3,
-                    fr="2 (ou 3) fonctions fx,fy,fz définissant la transformation géométrique à appliquer"+
-                       " aux noeuds du MODELE_2 avant la projection."),
-         ),
+     TITRE           =SIMP(statut='f',typ='TXM',max='**' ),
+     INFO            =SIMP(statut='f',typ='I',defaut=1,into=(1,2)),
 )  ;

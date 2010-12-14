@@ -1,9 +1,9 @@
-# MODIF  DATE 11/05/2010   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 14/12/2010   AUTEUR PELLET J.PELLET 
 # TITRE  : POUTRE EN TRACTION (ELEMENTS VOLUMIQUES)
 # sdlv131a.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -135,14 +135,14 @@ if statique:
                   OPTION=('EPSI_NOEU_DEPL', )
                      )
 
-projection = 1
+projection = 0
 if projection:
 # MESURE
     MAILMESU=LIRE_MAILLAGE(UNITE=22)
 
     MODLMESU=AFFE_MODELE( MAILLAGE=MAILMESU,
                           AFFE=(
-                              _F( MAILLE = ('P3','P4','P5','P6',),
+                              _F( MAILLE = ('P3','P4','P5','P6','L1','L2','L3',),
                                   PHENOMENE = 'MECANIQUE',
                                   MODELISATION = 'DIS_T'),
                                 ),)
@@ -167,13 +167,34 @@ if projection:
                               ),
                    FILTRE =(
                               _F( GROUP_NO = 'P3',
+                                NOM_CHAM = 'EPSI_NOEU_DEPL',
                                 DDL_ACTIF = ('EPXX','EPZZ',),),
                               _F( GROUP_NO = 'P4',
+                                NOM_CHAM = 'EPSI_NOEU_DEPL',
                                 DDL_ACTIF = ('EPXX','EPYY',),),
                               _F( GROUP_NO = 'P5',
+                                NOM_CHAM = 'EPSI_NOEU_DEPL',
                                   DDL_ACTIF = ('EPXX','EPZZ',),),
                               _F( GROUP_NO = 'P6',
+                                NOM_CHAM = 'EPSI_NOEU_DEPL',
                                   DDL_ACTIF = ('EPXX','EPYY',),),
+                              ),
+                  );
+
+    OBSMXT = OBSERVATION(
+                   RESULTAT = REPSTA,
+                   MODELE_1 = MODEL,
+                   MODELE_2 = MODLMESU,
+                   PROJECTION = 'OUI',
+                   TOUT_ORDRE = 'OUI',
+                   NOM_CHAM = ('DEPL','EPSI_NOEU_DEPL',), 
+                   FILTRE =(
+                              _F( GROUP_NO = 'P3',
+                                NOM_CHAM = 'EPSI_NOEU_DEPL',
+                                DDL_ACTIF = ('EPXX','EPZZ',),),
+                              _F( GROUP_NO = 'P5',
+                                NOM_CHAM = 'DEPL',
+                                DDL_ACTIF = ('DX','DZ',),),
                               ),
                   );
 
@@ -184,6 +205,8 @@ else:
                    MODELE_2 = MODEL,
                    PROJECTION = 'NON',
                    TOUT_ORDRE = 'OUI',
+                   MATR_A=M_AS_RIG,
+                   MATR_B=M_AS_MAS,
                    NOM_CHAM = 'EPSI_NOEU_DEPL',
                    EPSI_MOYENNE = (  # pour JAUGE : une occ par jauge
                               _F(
@@ -202,22 +225,43 @@ else:
                               ),
                    FILTRE = (
                               _F( GROUP_NO = 'P3',
+                                NOM_CHAM = 'EPSI_NOEU_DEPL',
                                   DDL_ACTIF = ('EPXX','EPZZ',),
                                 #  DDL_ACTIF = ('DX','DZ',),
                                  ),
                               _F( GROUP_NO = 'P4',
+                                NOM_CHAM = 'EPSI_NOEU_DEPL',
                                   DDL_ACTIF = ('EPXX','EPYY',),
                                 #  DDL_ACTIF = ('DX','DY',),
                                  ),
                               _F( GROUP_NO = 'P5',
+                                NOM_CHAM = 'EPSI_NOEU_DEPL',
                                   DDL_ACTIF = ('EPXX','EPZZ',),
-                                #  DDL_ACTIF = ('DX','DZ',),
                                  ),
                               _F( GROUP_NO = 'P6',
+                                NOM_CHAM = 'EPSI_NOEU_DEPL',
                                   DDL_ACTIF = ('EPXX','EPYY',),
-                                #  DDL_ACTIF = ('DX','DY',),
                                  ),
                              ),
+                  );
+
+    OBSMXT = OBSERVATION(
+                   RESULTAT = REPSTA,
+                   MODELE_1 = MODEL,
+                   MODELE_2 = MODEL,
+                   PROJECTION = 'NON',
+                   TOUT_ORDRE = 'OUI',
+                   MATR_A=M_AS_RIG,
+                   MATR_B=M_AS_MAS,
+                   NOM_CHAM = ('DEPL','EPSI_NOEU_DEPL',),
+                   FILTRE =(
+                              _F( GROUP_NO = 'P3',
+                                NOM_CHAM = 'EPSI_NOEU_DEPL',
+                                DDL_ACTIF = ('EPXX','EPZZ',),),
+                              _F( GROUP_NO = 'P5',
+                                NOM_CHAM = 'DEPL',
+                                DDL_ACTIF = ('DX','DZ',),),
+                              ),
                   );
 
 #---------------------------------------------------------------------
@@ -225,11 +269,13 @@ else:
 #---------------------------------------------------------------------
 #
 #IMPR_CO(CONCEPT=_F(NOM=OBSJAU)),
+#IMPR_CO(CONCEPT=_F(NOM=OBSMXT)),
 
 if statique:
   exx = force/young
   eyy = -poisson*exx
   ezz = -poisson*exx
+  deltal = force*longueur/young
 
   TEST_RESU(RESU=(
        _F( RESULTAT = OBSJAU,        NOM_CHAM = 'EPSI_NOEU_DEPL',
@@ -254,6 +300,18 @@ if statique:
              REFERENCE = 'ANALYTIQUE',
              CRITERE = 'RELATIF',    PRECISION = 1.E-3,
              NUME_ORDRE = 1,                 VALE = eyy),
+
+# observation mixte
+       _F( RESULTAT = OBSMXT,        NOM_CHAM = 'EPSI_NOEU_DEPL',
+             NOM_CMP = 'EPXX',    GROUP_NO = 'P3',
+             REFERENCE = 'ANALYTIQUE',
+             CRITERE = 'RELATIF',    PRECISION = 1.E-3,
+             NUME_ORDRE = 1,                 VALE = exx),
+       _F( RESULTAT = OBSMXT,        NOM_CHAM = 'DEPL',
+             NOM_CMP = 'DX',    GROUP_NO = 'P5',
+             REFERENCE = 'ANALYTIQUE',
+             CRITERE = 'RELATIF',    PRECISION = 6.E-2,
+             NUME_ORDRE = 1,                 VALE = deltal),
   ),);
 
 FIN();

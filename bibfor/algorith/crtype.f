@@ -3,9 +3,9 @@
 C TOLE CRP_20
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 07/12/2010   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 14/12/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -60,7 +60,7 @@ C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
       PARAMETER (MXPARA=10)
       INTEGER RSMXNO,NBTROU,JCPT,NBR,IVMX,K
       INTEGER VALI,JREFD
-      INTEGER NFR,NBFREQ,N4
+      INTEGER NFR,NBFREQ,N4,JNMO,NMODE
       REAL*8 VALPU(MXPARA),RBID,TPS,PREC,VALR(3),FREQ
       COMPLEX*16 CBID
       LOGICAL LNCAS,IDENSD,LFONC
@@ -209,7 +209,26 @@ C ----- MOT CLE "NOM_CAS", "NUME_MODE", "FREQ"  PRESENT :
         IF (LNCAS) THEN
           CALL RSORAC(RESU,'LONUTI',IBID,RBID,K8B,CBID,RBID,K8B,NUMINI,
      &                1,NBTROU)
-          NUMINI = NUMINI + 1
+
+          IF (TYPRES.EQ.'MODE_MECA') THEN
+            CALL GETVIS('AFFE','NUME_MODE',IOCC,1,1,NUME,N0)
+            IF (N0.NE.0) THEN
+              J = 0 
+              DO 100 I = 1,NUMINI
+                CALL RSADPA ( RESU,'L',1,'NUME_MODE',I,0,JNMO,K8B)
+                NMODE = ZI(JNMO)
+                IF (NMODE .EQ. NUME) THEN
+                  NUMINI = NUME
+                  J = J+1
+                ENDIF
+ 100          CONTINUE
+              IF (J .EQ. 0) NUMINI = NUMINI+1
+            ELSE
+              NUMINI = NUMINI + 1
+            ENDIF
+          ELSE
+            NUMINI = NUMINI + 1
+          ENDIF
 
           CALL RSEXCH(RESU,NSYMB,NUMINI,NOMCH,IRET)
           IF (IRET.EQ.0) THEN

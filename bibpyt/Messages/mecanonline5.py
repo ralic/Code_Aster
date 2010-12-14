@@ -1,8 +1,8 @@
-#@ MODIF mecanonline5 Messages  DATE 04/10/2010   AUTEUR GREFFET N.GREFFET 
+#@ MODIF mecanonline5 Messages  DATE 13/12/2010   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -36,11 +36,10 @@ Avec un schéma de type explicite, seule la prédiction TANGENTE est possible
 
 4 : _("""
  Vous utilisez une méthode de contact (continue ou XFEM) qui nécessite de réactualiser la matrice tangente
- à chaque itération. La réactualisation est donc forcée (REAC_ITER = 1) et ce même si vous utilisez la matrice
- 'ELASTIQUE'.
+ à chaque itération. La réactualisation est donc forcée (REAC_ITER = 1).
 
   -> Risque & Conseil :
-   - Vous pouvez supprimer cette alarme dans le cas où vous utilisez une matrice 'TANGENTE', pour cela
+   - Vous pouvez supprimer cette alarme si vous 
      renseignez REAC_ITER=1 sous le mot-clé facteur NEWTON.
  
 """),

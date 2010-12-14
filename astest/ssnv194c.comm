@@ -1,4 +1,4 @@
-# MODIF  DATE 07/12/2010   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 14/12/2010   AUTEUR PROIX J-M.PROIX 
 # TITRE : TRACTION SUR UN POLYCRISTAL A 10 GRAINS, AVEC SIMU_POINT_MAT
 # ssnv194c.para = tps_job 150 mem_job 60Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -37,10 +37,10 @@ LINST=DEFI_LIST_REEL(DEBUT=0.0,
 
 ACIER=DEFI_MATERIAU(ELAS=_F(E=145200.0,
                             NU=0.3,),
-                    ECOU_VISC1=_F(N=10.0,
+                    MONO_VISC1=_F(N=10.0,
                                   K=40.0,
                                   C=1.0,),
-                    ECRO_ISOT1=_F(R_0=75.5,
+                    MONO_ISOT1=_F(R_0=75.5,
                                   Q=9.77,
                                   B=19.34,
                                   H1=1.0,
@@ -48,7 +48,7 @@ ACIER=DEFI_MATERIAU(ELAS=_F(E=145200.0,
                                   H3=1.0,
                                   H4=1.0,
                                   ),
-                    ECRO_CINE1=_F(D=36.68,),);
+                    MONO_CINE1=_F(D=36.68,),);
 
 EPSZZ=DEFI_FONCTION(NOM_PARA='INST',
                    VALE=(0.0,0.0,1.0,1.0,),
@@ -56,9 +56,9 @@ EPSZZ=DEFI_FONCTION(NOM_PARA='INST',
                    PROL_GAUCHE='LINEAIRE',);
 
 COMPORT=DEFI_COMPOR(MONOCRISTAL=(_F(MATER=ACIER,
-                                    ECOULEMENT='ECOU_VISC1',
-                                    ECRO_ISOT='ECRO_ISOT1',
-                                    ECRO_CINE='ECRO_CINE1',
+                                    ECOULEMENT='MONO_VISC1',
+                                    ECRO_ISOT='MONO_ISOT1',
+                                    ECRO_CINE='MONO_CINE1',
                                     ELAS='ELAS',
                                     FAMI_SYST_GLIS='BCC24',),),);
 

@@ -1,0 +1,1456 @@
+# MODIF  DATE 14/12/2010   AUTEUR TORKHANI M.TORKHANI 
+# TITRE VALIDATION DE CALCUL HARMONIQUE POUR DISCRET NON SYMETRIQUE
+# shll103a.para = tps_job 300 mem_job 128Mo ncpus 1 liste_test S
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+# RESPONSABLE TORKHANI M.TORKHANI
+#
+
+import numpy as NP
+
+DEBUT(CODE=_F(NOM='SHLL103A', NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),
+      DEBUG=_F(SDVERI='OUI'),PAR_LOT='OUI',);
+
+mail=LIRE_MAILLAGE();
+
+acier=DEFI_MATERIAU(ELAS=_F(E=2.e11,
+                            NU=0.3,
+                            RHO=7800,),);
+
+# ---------------------
+# AFFECTATION DU MODELE
+# ---------------------
+modele=AFFE_MODELE(MAILLAGE=mail,
+                   AFFE=(_F(GROUP_MA='ROTOR',
+                            PHENOMENE='MECANIQUE',
+                            MODELISATION='POU_D_T',),
+                         _F(GROUP_MA=('DISQ1','DISQ2','PALIER1','PALIER2'),
+                            PHENOMENE='MECANIQUE',
+                            MODELISATION='DIS_TR',),),);
+
+# -----------------------
+# AFFECTATION DU MATERIAU
+# -----------------------
+chmat=AFFE_MATERIAU(MAILLAGE=mail,
+                    AFFE=_F(GROUP_MA='ROTOR',
+                            MATER=acier,),);
+
+# --------------------------------
+# DEF DES SECTIONS et des RAIDEURS
+# --------------------------------
+cara=AFFE_CARA_ELEM(MODELE=modele,
+                    POUTRE=(_F(GROUP_MA='SA1',
+                              SECTION='CERCLE',
+                              CARA='R',
+                              VALE=0.02,),
+                            _F(GROUP_MA='SA2',
+                              SECTION='CERCLE',
+                              CARA=('R','EP'),
+                              VALE=(0.035,0.03,),),
+                            _F(GROUP_MA='SA3',
+                              SECTION='CERCLE',
+                              CARA=('R','EP'),
+                              VALE=(0.02,0.015,),),),
+                    DISCRET=(_F(CARA='M_TR_D_N',
+                                GROUP_MA='DISQ1',
+                                VALE=(3.50E+00,7.00E-03, 
+                                3.50E-03,3.50E-03,0,0,0,0,0,0,),),
+                             _F(CARA='M_TR_D_N',
+                                GROUP_MA='DISQ2',
+                                VALE=(3.00E+00,6.00E-03, 
+                                3.00E-03,3.00E-03,0,0,0,0,0,0,),),
+                             _F(GROUP_MA='PALIER1',
+                                   CARA='K_TR_N',
+                                   SYME='NON',
+                                   VALE = ( 0.,   0.,   0.,   0.,   0.,   0.,  0.,   8.0E7,   -6.0E7,   0.,
+                                   0.,   0.,   0.,   -1.0E7,   1.0E8,   0.,   0.,   0.,   0.,   0.,
+                                   0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,
+                                   0.,   0.,   0.,   0.,   0.,   0.,),),
+                             _F(GROUP_MA='PALIER1',
+                                   CARA='A_TR_N',
+                                   SYME='NON',
+                                   VALE = ( 0.,   0.,   0.,   0.,   0.,   0.,  0.,   8.0E3,   -3.0E3,   0.,
+                                   0.,   0.,   0.,   -3.0E3,   1.2E4,   0.,   0.,   0.,   0.,   0.,
+                                   0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,
+                                   0.,   0.,   0.,   0.,   0.,   0.,),),
+                             _F(GROUP_MA='PALIER2',
+                                   CARA='K_TR_N',
+                                   SYME='NON',
+                                   VALE = ( 0.,   0.,   0.,   0.,   0.,   0.,  0.,   5.0E7,   -4.0E7,   0.,
+                                   0.,   0.,   0.,   -2.0E6,   7.0E7,   0.,   0.,   0.,   0.,   0.,
+                                   0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,
+                                   0.,   0.,   0.,   0.,   0.,   0.,),),
+                             _F(GROUP_MA='PALIER2',
+                                   CARA='A_TR_N',
+                                   SYME='NON',
+                                   VALE = ( 0.,   0.,   0.,   0.,   0.,   0.,  0.,   6.0E3,   -1.5E3,   0.,
+                                   0.,   0.,   0.,   -1.5E3,   8.0E3,   0.,   0.,   0.,   0.,   0.,
+                                   0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,   0.,
+                                   0.,   0.,   0.,   0.,   0.,   0.,),),
+                           )
+                        );
+
+# ------------------
+# CONDITIONS AUX LIMITES
+# ------------------
+blocage=AFFE_CHAR_MECA(MODELE=modele,
+                        DDL_IMPO=(_F(GROUP_NO=('PALIER1',),
+                                     DX=0,
+                                     DRX=0,
+                                     ),))
+                                    
+# --------------------------------
+#MATRICES ASSEMBLEES K, M
+# --------------------------------
+MACRO_MATR_ASSE(MODELE=modele,
+                CHAM_MATER=chmat,
+                CARA_ELEM=cara,
+                CHARGE=blocage,
+                NUME_DDL=CO('NUMEDDL'),
+                MATR_ASSE=(_F(MATRICE=CO('RIGIDITE'),
+                              OPTION='RIGI_MECA',),
+                           _F(MATRICE=CO('MASSE'),
+                              OPTION='MASS_MECA',),
+                           _F(MATRICE=CO('AMOR'),
+                              OPTION='AMOR_MECA',),),);
+                              
+              
+
+GYELEM=CALC_MATR_ELEM(OPTION='MECA_GYRO',
+                      MODELE=modele,
+                      CHAM_MATER=chmat,
+                      CARA_ELEM=cara,);
+
+GYAS=ASSE_MATRICE(MATR_ELEM=GYELEM,
+                  NUME_DDL=NUMEDDL,);
+
+VIT=NP.array([60.0,1500.0,15000.0])
+nbV=len(VIT);
+val_eff= 1.0;
+FUN=DEFI_CONSTANTE(VALE=1.0,);
+
+EF_HAR_Y=AFFE_CHAR_MECA(MODELE=modele,
+                        FORCE_NODALE=_F(NOEUD='N13',
+                                        FY=(val_eff),),);
+
+EF_HAR_Z=AFFE_CHAR_MECA(MODELE=modele,
+                        FORCE_NODALE=_F(NOEUD='N13',
+                                        FZ=(val_eff),),);
+
+EF_ELE_Y=CALC_VECT_ELEM(OPTION='CHAR_MECA',
+                        CHARGE=EF_HAR_Y,);
+
+EF_ASS_Y=ASSE_VECTEUR(VECT_ELEM=EF_ELE_Y,
+                      NUME_DDL=NUMEDDL,);
+
+EF_ELE_Z=CALC_VECT_ELEM(OPTION='CHAR_MECA',
+                        CHARGE=EF_HAR_Z,);
+
+EF_ASS_Z=ASSE_VECTEUR(VECT_ELEM=EF_ELE_Z,
+                      NUME_DDL=NUMEDDL,);
+
+module = FORMULE(NOM_PARA=("REEL", "IMAG"), VALE="""sqrt(REEL**2 + IMAG**2)""")
+phase = FORMULE(NOM_PARA=("REEL", "IMAG"), VALE="""atan2(IMAG, REEL)/pi*180""")
+
+
+# ROTOR A L'ARRET
+RPM2 = 0.0
+FREQ2 = (RPM2 / 60.0);
+OM2 = FREQ2 * 2 * pi;
+GYOM2=COMB_MATR_ASSE(COMB_R=(_F(MATR_ASSE=GYAS, COEF_R=OM2,),
+                             _F(MATR_ASSE=AMOR, COEF_R=1.,),),);
+
+i=0
+for i, RPM in enumerate(VIT):
+  
+  DHAM=DYNA_LINE_HARM(MATR_MASS=MASSE,
+                    MATR_RIGI=RIGIDITE,
+                    MATR_AMOR=GYOM2,
+                    FREQ=RPM/60.,
+                    EXCIT=(
+                           _F(VECT_ASSE=EF_ASS_Y,
+                              FONC_MULT=FUN,
+                              PHAS_DEG=0.0,),
+                           ),
+                    );
+
+  DY_DIS2=RECU_FONCTION(RESULTAT=DHAM,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
+                   NOEUD='N13',);
+
+  DZ_DIS2=RECU_FONCTION(RESULTAT=DHAM,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DZ',
+                   NOEUD='N13',);
+
+  if i == 0:
+    TABMODY = CREA_TABLE(FONCTION=_F(FONCTION=DY_DIS2))
+    TABMODZ = CREA_TABLE(FONCTION=_F(FONCTION=DZ_DIS2))
+  else:
+    tdyi = CREA_TABLE(FONCTION=_F(FONCTION=DY_DIS2))
+    tdzi = CREA_TABLE(FONCTION=_F(FONCTION=DZ_DIS2))
+    TABMODY = CALC_TABLE(reuse=TABMODY,
+                         TABLE=TABMODY,
+                         ACTION=(_F(OPERATION='COMB', TABLE=tdyi),),
+                         TITRE="Table DY")
+    TABMODZ = CALC_TABLE(reuse=TABMODZ,
+                         TABLE=TABMODZ,
+                         ACTION=(_F(OPERATION='COMB', TABLE=tdzi),),
+                         TITRE="Table DZ")
+    DETRUIRE(CONCEPT=_F(NOM=(tdyi, tdzi),),)
+  
+  DETRUIRE(CONCEPT=_F(NOM=DHAM))
+  DETRUIRE(CONCEPT=_F(NOM=DY_DIS2))
+  DETRUIRE(CONCEPT=_F(NOM=DZ_DIS2))
+
+
+TABMODY = CALC_TABLE(reuse=TABMODY,
+                     TABLE=TABMODY,
+                     ACTION=(_F(OPERATION='RENOMME', NOM_PARA=('DY_R', 'REEL'),),
+                             _F(OPERATION='RENOMME', NOM_PARA=('DY_I', 'IMAG'),),
+                             _F(OPERATION='OPER', NOM_PARA='DEPL', FORMULE=module),
+                             _F(OPERATION='OPER', NOM_PARA='PHAS', FORMULE=phase),),
+                     TITRE="Table DY")
+TABMODZ = CALC_TABLE(reuse=TABMODZ,
+                     TABLE=TABMODZ,
+                     ACTION=(_F(OPERATION='RENOMME', NOM_PARA=('DZ_R', 'REEL'),),
+                             _F(OPERATION='RENOMME', NOM_PARA=('DZ_I', 'IMAG'),),
+                             _F(OPERATION='OPER', NOM_PARA='DEPL', FORMULE=module),
+                             _F(OPERATION='OPER', NOM_PARA='PHAS', FORMULE=phase),),
+                     TITRE="Table DZ")
+
+IMPR_TABLE(TABLE=TABMODY)
+IMPR_TABLE(TABLE=TABMODZ)
+
+TEST_TABLE(TABLE=TABMODY, NOM_PARA='DEPL', VALE=.1032E-6,
+           FILTRE=( _F(  NOM_PARA = 'FREQ', VALE = 1.0,),),
+           PRECISION=.05,
+           REFERENCE='SOURCE_EXTERNE',)
+
+TEST_TABLE(TABLE=TABMODY, NOM_PARA='DEPL', VALE=1.032447E-07,
+           FILTRE=( _F(  NOM_PARA = 'FREQ', VALE = 1.0,),),
+           PRECISION=1.E-5,
+           REFERENCE='NON_REGRESSION',)
+
+TEST_TABLE(TABLE=TABMODY, NOM_PARA='DEPL', VALE=.1044E-6,
+           FILTRE=( _F(  NOM_PARA = 'FREQ', VALE = 25.0,),),
+           PRECISION=.05,
+           REFERENCE='SOURCE_EXTERNE',)
+
+TEST_TABLE(TABLE=TABMODY, NOM_PARA='DEPL', VALE=1.045004E-7,
+           FILTRE=( _F(  NOM_PARA = 'FREQ', VALE = 25.0,),),
+           PRECISION=1.E-5,
+           REFERENCE='NON_REGRESSION',)
+
+TEST_TABLE(TABLE=TABMODY, NOM_PARA='DEPL', VALE=.1904E-6,
+           FILTRE=( _F(  NOM_PARA = 'FREQ', VALE = 250.0,),),
+           PRECISION=.05,
+           REFERENCE='SOURCE_EXTERNE',)
+
+TEST_TABLE(TABLE=TABMODY, NOM_PARA='DEPL', VALE=1.939702E-07,
+           FILTRE=( _F(  NOM_PARA = 'FREQ', VALE = 250.0,),),
+           PRECISION=1.E-5,
+           REFERENCE='NON_REGRESSION',)
+
+TEST_TABLE(TABLE=TABMODY, NOM_PARA='PHAS', VALE=-0.0265,
+           FILTRE=( _F(  NOM_PARA = 'FREQ', VALE = 1.0,),),
+           PRECISION=.05,
+           REFERENCE='SOURCE_EXTERNE',)
+
+TEST_TABLE(TABLE=TABMODY, NOM_PARA='PHAS', VALE=-0.026412,
+           FILTRE=( _F(  NOM_PARA = 'FREQ', VALE = 1.0,),),
+           PRECISION=1.E-5,
+           REFERENCE='NON_REGRESSION',)
+
+TEST_TABLE(TABLE=TABMODY, NOM_PARA='PHAS', VALE=-0.6705,
+           FILTRE=( _F(  NOM_PARA = 'FREQ', VALE = 25.0,),),
+           PRECISION=.05,
+           REFERENCE='SOURCE_EXTERNE',)
+
+TEST_TABLE(TABLE=TABMODY, NOM_PARA='PHAS', VALE=-0.6688371,
+           FILTRE=( _F(  NOM_PARA = 'FREQ', VALE = 25.0,),),
+           PRECISION=1.E-5,
+           REFERENCE='NON_REGRESSION',)
+
+TEST_TABLE(TABLE=TABMODY, NOM_PARA='PHAS', VALE=-137.103,
+           FILTRE=( _F(  NOM_PARA = 'FREQ', VALE = 250.0,),),
+           PRECISION=.05,
+           REFERENCE='SOURCE_EXTERNE',)
+
+TEST_TABLE(TABLE=TABMODY, NOM_PARA='PHAS', VALE=-137.883914,
+           FILTRE=( _F(  NOM_PARA = 'FREQ', VALE = 250.0,),),
+           PRECISION=1.E-5,
+           REFERENCE='NON_REGRESSION',)
+
+TEST_TABLE(TABLE=TABMODZ, NOM_PARA='DEPL', VALE=.4144E-7,
+           FILTRE=( _F(  NOM_PARA = 'FREQ', VALE = 1.0,),),
+           PRECISION=.05,
+           REFERENCE='SOURCE_EXTERNE',)
+
+TEST_TABLE(TABLE=TABMODZ, NOM_PARA='DEPL', VALE=4.1409459E-08,
+           FILTRE=( _F(  NOM_PARA = 'FREQ', VALE = 1.0,),),
+           PRECISION=1.E-5,
+           REFERENCE='NON_REGRESSION',)
+
+TEST_TABLE(TABLE=TABMODZ, NOM_PARA='DEPL', VALE=.4234E-7,
+           FILTRE=( _F(  NOM_PARA = 'FREQ', VALE = 25.0,),),
+           PRECISION=.05,
+           REFERENCE='SOURCE_EXTERNE',)
+
+TEST_TABLE(TABLE=TABMODZ, NOM_PARA='DEPL', VALE=4.2361137E-08,
+           FILTRE=( _F(  NOM_PARA = 'FREQ', VALE = 25.0,),),
+           PRECISION=1.E-5,
+           REFERENCE='NON_REGRESSION',)
+
+TEST_TABLE(TABLE=TABMODZ, NOM_PARA='DEPL', VALE=.7070E-6,
+           FILTRE=( _F(  NOM_PARA = 'FREQ', VALE = 250.0,),),
+           PRECISION=.05,
+           REFERENCE='SOURCE_EXTERNE',)
+
+TEST_TABLE(TABLE=TABMODZ, NOM_PARA='DEPL', VALE=7.1316349E-07,
+           FILTRE=( _F(  NOM_PARA = 'FREQ', VALE = 250.0,),),
+           PRECISION=1.E-5,
+           REFERENCE='NON_REGRESSION',)
+
+TEST_TABLE(TABLE=TABMODZ, NOM_PARA='PHAS', VALE=-0.0644,
+           FILTRE=( _F(  NOM_PARA = 'FREQ', VALE = 1.0,),),
+           PRECISION=.05,
+           REFERENCE='SOURCE_EXTERNE',)
+
+TEST_TABLE(TABLE=TABMODZ, NOM_PARA='PHAS', VALE=-0.065168,
+           FILTRE=( _F(  NOM_PARA = 'FREQ', VALE = 1.0,),),
+           PRECISION=1.E-5,
+           REFERENCE='NON_REGRESSION',)
+
+TEST_TABLE(TABLE=TABMODZ, NOM_PARA='PHAS', VALE=-1.6253,
+           FILTRE=( _F(  NOM_PARA = 'FREQ', VALE = 25.0,),),
+           PRECISION=.05,
+           REFERENCE='SOURCE_EXTERNE',)
+
+TEST_TABLE(TABLE=TABMODZ, NOM_PARA='PHAS', VALE=-1.644894,
+           FILTRE=( _F(  NOM_PARA = 'FREQ', VALE = 25.0,),),
+           PRECISION=1.E-5,
+           REFERENCE='NON_REGRESSION',)
+
+TEST_TABLE(TABLE=TABMODZ, NOM_PARA='PHAS', VALE=139.528,
+           FILTRE=( _F(  NOM_PARA = 'FREQ', VALE = 250.0,),),
+           PRECISION=.05,
+           REFERENCE='SOURCE_EXTERNE',)
+
+TEST_TABLE(TABLE=TABMODZ, NOM_PARA='PHAS', VALE=141.906802,
+           FILTRE=( _F(  NOM_PARA = 'FREQ', VALE = 250.0,),),
+           PRECISION=1.E-5,
+           REFERENCE='NON_REGRESSION',)
+
+DETRUIRE(CONCEPT=_F(NOM=TABMODY))
+DETRUIRE(CONCEPT=_F(NOM=TABMODZ))
+
+
+for i, RPM in enumerate(VIT):
+  
+  DHAM=DYNA_LINE_HARM(MATR_MASS=MASSE,
+                    MATR_RIGI=RIGIDITE,
+                    MATR_AMOR=GYOM2,
+                    FREQ=RPM/60.,
+                    EXCIT=(
+                           _F(VECT_ASSE=EF_ASS_Z,
+                              FONC_MULT=FUN,
+                              PHAS_DEG=180.0,),
+                           ),
+                    );
+
+  DY_DIS2=RECU_FONCTION(RESULTAT=DHAM,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
+                   NOEUD='N13',);
+
+  DZ_DIS2=RECU_FONCTION(RESULTAT=DHAM,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DZ',
+                   NOEUD='N13',);
+
+  if i == 0:
+    TABMODY = CREA_TABLE(FONCTION=_F(FONCTION=DY_DIS2))
+    TABMODZ = CREA_TABLE(FONCTION=_F(FONCTION=DZ_DIS2))
+  else:
+    tdyi = CREA_TABLE(FONCTION=_F(FONCTION=DY_DIS2))
+    tdzi = CREA_TABLE(FONCTION=_F(FONCTION=DZ_DIS2))
+    TABMODY = CALC_TABLE(reuse=TABMODY,
+                         TABLE=TABMODY,
+                         ACTION=(_F(OPERATION='COMB', TABLE=tdyi),),
+                         TITRE="Table DY")
+    TABMODZ = CALC_TABLE(reuse=TABMODZ,
+                         TABLE=TABMODZ,
+                         ACTION=(_F(OPERATION='COMB', TABLE=tdzi),),
+                         TITRE="Table DZ")
+    DETRUIRE(CONCEPT=_F(NOM=(tdyi, tdzi),),)
+  
+  DETRUIRE(CONCEPT=_F(NOM=DHAM))
+  DETRUIRE(CONCEPT=_F(NOM=DY_DIS2))
+  DETRUIRE(CONCEPT=_F(NOM=DZ_DIS2))
+
+
+TABMODY = CALC_TABLE(reuse=TABMODY,
+                     TABLE=TABMODY,
+                     ACTION=(_F(OPERATION='RENOMME', NOM_PARA=('DY_R', 'REEL'),),
+                             _F(OPERATION='RENOMME', NOM_PARA=('DY_I', 'IMAG'),),
+                             _F(OPERATION='OPER', NOM_PARA='DEPL', FORMULE=module),
+                             _F(OPERATION='OPER', NOM_PARA='PHAS', FORMULE=phase),),
+                     TITRE="Table DY")
+TABMODZ = CALC_TABLE(reuse=TABMODZ,
+                     TABLE=TABMODZ,
+                     ACTION=(_F(OPERATION='RENOMME', NOM_PARA=('DZ_R', 'REEL'),),
+                             _F(OPERATION='RENOMME', NOM_PARA=('DZ_I', 'IMAG'),),
+                             _F(OPERATION='OPER', NOM_PARA='DEPL', FORMULE=module),
+                             _F(OPERATION='OPER', NOM_PARA='PHAS', FORMULE=phase),),
+                     TITRE="Table DZ")
+
+IMPR_TABLE(TABLE=TABMODY, UNITE=6)
+IMPR_TABLE(TABLE=TABMODZ, UNITE=6)
+
+
+TEST_TABLE(TABLE=TABMODY, NOM_PARA='DEPL', VALE=.2628E-8,
+           FILTRE=( _F(  NOM_PARA = 'FREQ', VALE = 1.0,),),
+           PRECISION=.05,
+           REFERENCE='SOURCE_EXTERNE',)
+
+TEST_TABLE(TABLE=TABMODY, NOM_PARA='DEPL', VALE=2.6302506E-09,
+           FILTRE=( _F(  NOM_PARA = 'FREQ', VALE = 1.0,),),
+           PRECISION=1.E-5,
+           REFERENCE='NON_REGRESSION',)
+
+TEST_TABLE(TABLE=TABMODY, NOM_PARA='DEPL', VALE=.2704E-8,
+           FILTRE=( _F(  NOM_PARA = 'FREQ', VALE = 25.0,),),
+           PRECISION=.05,
+           REFERENCE='SOURCE_EXTERNE',)
+
+TEST_TABLE(TABLE=TABMODY, NOM_PARA='DEPL', VALE=2.7072809E-09,
+           FILTRE=( _F(  NOM_PARA = 'FREQ', VALE = 25.0,),),
+           PRECISION=1.E-5,
+           REFERENCE='NON_REGRESSION',)
+
+TEST_TABLE(TABLE=TABMODY, NOM_PARA='DEPL', VALE=.7230E-7,
+           FILTRE=( _F(  NOM_PARA = 'FREQ', VALE = 250.0,),),
+           PRECISION=.05,
+           REFERENCE='SOURCE_EXTERNE',)
+
+TEST_TABLE(TABLE=TABMODY, NOM_PARA='DEPL', VALE=7.2533807E-08,
+           FILTRE=( _F(  NOM_PARA = 'FREQ', VALE = 250.0,),),
+           PRECISION=1.E-5,
+           REFERENCE='NON_REGRESSION',)
+
+TEST_TABLE(TABLE=TABMODZ, NOM_PARA='DEPL', VALE=.8330E-7,
+           FILTRE=( _F(  NOM_PARA = 'FREQ', VALE = 1.0,),),
+           PRECISION=.05,
+           REFERENCE='SOURCE_EXTERNE',)
+
+TEST_TABLE(TABLE=TABMODZ, NOM_PARA='DEPL', VALE=8.333970E-08,
+           FILTRE=( _F(  NOM_PARA = 'FREQ', VALE = 1.0,),),
+           PRECISION=1.E-5,
+           REFERENCE='NON_REGRESSION',)
+
+TEST_TABLE(TABLE=TABMODZ, NOM_PARA='DEPL', VALE=.8410E-7,
+           FILTRE=( _F(  NOM_PARA = 'FREQ', VALE = 25.0,),),
+           PRECISION=.05,
+           REFERENCE='SOURCE_EXTERNE',)
+
+TEST_TABLE(TABLE=TABMODZ, NOM_PARA='DEPL', VALE=8.4141780E-08,
+           FILTRE=( _F(  NOM_PARA = 'FREQ', VALE = 25.0,),),
+           PRECISION=1.E-5,
+           REFERENCE='NON_REGRESSION',)
+
+TEST_TABLE(TABLE=TABMODZ, NOM_PARA='DEPL', VALE=.3280E-6,
+           FILTRE=( _F(  NOM_PARA = 'FREQ', VALE = 250.0,),),
+           PRECISION=.05,
+           REFERENCE='SOURCE_EXTERNE',)
+
+TEST_TABLE(TABLE=TABMODZ, NOM_PARA='DEPL', VALE=3.2877293E-07,
+           FILTRE=( _F(  NOM_PARA = 'FREQ', VALE = 250.0,),),
+           PRECISION=1.E-5,
+           REFERENCE='NON_REGRESSION',)
+
+TEST_TABLE(TABLE=TABMODY, NOM_PARA='PHAS', VALE=-179.857,
+           FILTRE=( _F(  NOM_PARA = 'FREQ', VALE = 1.0,),),
+           PRECISION=.05,
+           REFERENCE='SOURCE_EXTERNE',)
+
+TEST_TABLE(TABLE=TABMODY, NOM_PARA='PHAS', VALE=-179.857637,
+           FILTRE=( _F(  NOM_PARA = 'FREQ', VALE = 1.0,),),
+           PRECISION=1.E-5,
+           REFERENCE='NON_REGRESSION',)
+
+TEST_TABLE(TABLE=TABMODY, NOM_PARA='PHAS', VALE=-176.462,
+           FILTRE=( _F(  NOM_PARA = 'FREQ', VALE = 25.0,),),
+           PRECISION=.05,
+           REFERENCE='SOURCE_EXTERNE',)
+
+TEST_TABLE(TABLE=TABMODY, NOM_PARA='PHAS', VALE=-176.48232,
+           FILTRE=( _F(  NOM_PARA = 'FREQ', VALE = 25.0,),),
+           PRECISION=1.E-5,
+           REFERENCE='NON_REGRESSION',)
+
+TEST_TABLE(TABLE=TABMODY, NOM_PARA='PHAS', VALE=-5.873,
+           FILTRE=( _F(  NOM_PARA = 'FREQ', VALE = 250.0,),),
+           PRECISION=.05,
+           REFERENCE='SOURCE_EXTERNE',)
+
+TEST_TABLE(TABLE=TABMODY, NOM_PARA='PHAS', VALE=-5.989503,
+           FILTRE=( _F(  NOM_PARA = 'FREQ', VALE = 250.0,),),
+           PRECISION=1.E-5,
+           REFERENCE='NON_REGRESSION',)
+
+TEST_TABLE(TABLE=TABMODZ, NOM_PARA='PHAS', VALE=179.977,
+           FILTRE=( _F(  NOM_PARA = 'FREQ', VALE = 1.0,),),
+           PRECISION=.05,
+           REFERENCE='SOURCE_EXTERNE',)
+
+TEST_TABLE(TABLE=TABMODZ, NOM_PARA='PHAS', VALE=179.97694,
+           FILTRE=( _F(  NOM_PARA = 'FREQ', VALE = 1.0,),),
+           PRECISION=1.E-5,
+           REFERENCE='NON_REGRESSION',)
+
+TEST_TABLE(TABLE=TABMODZ, NOM_PARA='PHAS', VALE=179.416,
+           FILTRE=( _F(  NOM_PARA = 'FREQ', VALE = 25.0,),),
+           PRECISION=.05,
+           REFERENCE='SOURCE_EXTERNE',)
+
+TEST_TABLE(TABLE=TABMODZ, NOM_PARA='PHAS', VALE=179.417645,
+           FILTRE=( _F(  NOM_PARA = 'FREQ', VALE = 25.0,),),
+           PRECISION=1.E-5,
+           REFERENCE='NON_REGRESSION',)
+
+TEST_TABLE(TABLE=TABMODZ, NOM_PARA='PHAS', VALE=115.268,
+           FILTRE=( _F(  NOM_PARA = 'FREQ', VALE = 250.0,),),
+           PRECISION=.05,
+           REFERENCE='SOURCE_EXTERNE',)
+
+TEST_TABLE(TABLE=TABMODZ, NOM_PARA='PHAS', VALE=115.472560,
+           FILTRE=( _F(  NOM_PARA = 'FREQ', VALE = 250.0,),),
+           PRECISION=1.E-5,
+           REFERENCE='NON_REGRESSION',)
+
+DETRUIRE(CONCEPT=_F(NOM=TABMODY))
+DETRUIRE(CONCEPT=_F(NOM=TABMODZ))
+DETRUIRE(CONCEPT=_F(NOM=GYOM2))
+
+# ROTOR TOURNANT A LA VITESSE DE ROTATION DE 40000 TR/MIN
+RPM2 = 40000.0
+FREQ2 = (RPM2 / 60.0);
+OM2 = FREQ2 * 2 * pi;
+GYOM2=COMB_MATR_ASSE(COMB_R=(_F(MATR_ASSE=GYAS, COEF_R=OM2,),
+                             _F(MATR_ASSE=AMOR, COEF_R=1.,),),);
+
+for i, RPM in enumerate(VIT):
+  
+  DHAM=DYNA_LINE_HARM(MATR_MASS=MASSE,
+                    MATR_RIGI=RIGIDITE,
+                    MATR_AMOR=GYOM2,
+                    FREQ=RPM/60.,
+                    EXCIT=(
+                           _F(VECT_ASSE=EF_ASS_Y,
+                              FONC_MULT=FUN,
+                              PHAS_DEG=0.0,),
+                           ),
+                    );
+
+  DY_DIS2=RECU_FONCTION(RESULTAT=DHAM,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
+                   NOEUD='N13',);
+
+  DZ_DIS2=RECU_FONCTION(RESULTAT=DHAM,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DZ',
+                   NOEUD='N13',);
+
+  if i == 0:
+    TABMODY = CREA_TABLE(FONCTION=_F(FONCTION=DY_DIS2))
+    TABMODZ = CREA_TABLE(FONCTION=_F(FONCTION=DZ_DIS2))
+  else:
+    tdyi = CREA_TABLE(FONCTION=_F(FONCTION=DY_DIS2))
+    tdzi = CREA_TABLE(FONCTION=_F(FONCTION=DZ_DIS2))
+    TABMODY = CALC_TABLE(reuse=TABMODY,
+                         TABLE=TABMODY,
+                         ACTION=(_F(OPERATION='COMB', TABLE=tdyi),),
+                         TITRE="Table DY")
+    TABMODZ = CALC_TABLE(reuse=TABMODZ,
+                         TABLE=TABMODZ,
+                         ACTION=(_F(OPERATION='COMB', TABLE=tdzi),),
+                         TITRE="Table DZ")
+    DETRUIRE(CONCEPT=_F(NOM=(tdyi, tdzi),),)
+  
+  DETRUIRE(CONCEPT=_F(NOM=DHAM))
+  DETRUIRE(CONCEPT=_F(NOM=DY_DIS2))
+  DETRUIRE(CONCEPT=_F(NOM=DZ_DIS2))
+
+
+TABMODY = CALC_TABLE(reuse=TABMODY,
+                     TABLE=TABMODY,
+                     ACTION=(_F(OPERATION='RENOMME', NOM_PARA=('DY_R', 'REEL'),),
+                             _F(OPERATION='RENOMME', NOM_PARA=('DY_I', 'IMAG'),),
+                             _F(OPERATION='OPER', NOM_PARA='DEPL', FORMULE=module),
+                             _F(OPERATION='OPER', NOM_PARA='PHAS', FORMULE=phase),),
+                     TITRE="Table DY")
+TABMODZ = CALC_TABLE(reuse=TABMODZ,
+                     TABLE=TABMODZ,
+                     ACTION=(_F(OPERATION='RENOMME', NOM_PARA=('DZ_R', 'REEL'),),
+                             _F(OPERATION='RENOMME', NOM_PARA=('DZ_I', 'IMAG'),),
+                             _F(OPERATION='OPER', NOM_PARA='DEPL', FORMULE=module),
+                             _F(OPERATION='OPER', NOM_PARA='PHAS', FORMULE=phase),),
+                     TITRE="Table DZ")
+
+IMPR_TABLE(TABLE=TABMODY, UNITE=6)
+IMPR_TABLE(TABLE=TABMODZ, UNITE=6)
+
+
+
+TEST_TABLE(TABLE=TABMODY, NOM_PARA='DEPL', VALE=.1032E-6,
+           FILTRE=( _F(  NOM_PARA = 'FREQ', VALE = 1.0,),),
+           PRECISION=.05,
+           REFERENCE='SOURCE_EXTERNE',)
+
+TEST_TABLE(TABLE=TABMODY, NOM_PARA='DEPL', VALE=.1045E-6,
+           FILTRE=( _F(  NOM_PARA = 'FREQ', VALE = 25.0,),),
+           PRECISION=.05,
+           REFERENCE='SOURCE_EXTERNE',)
+
+TEST_TABLE(TABLE=TABMODY, NOM_PARA='DEPL', VALE=.4897E-7,
+           FILTRE=( _F(  NOM_PARA = 'FREQ', VALE = 250.0,),),
+           PRECISION=.05,
+           REFERENCE='SOURCE_EXTERNE',)
+
+TEST_TABLE(TABLE=TABMODZ, NOM_PARA='DEPL', VALE=.4144E-7,
+           FILTRE=( _F(  NOM_PARA = 'FREQ', VALE = 1.0,),),
+           PRECISION=.05,
+           REFERENCE='SOURCE_EXTERNE',)
+
+TEST_TABLE(TABLE=TABMODZ, NOM_PARA='DEPL', VALE=.4252E-7,
+           FILTRE=( _F(  NOM_PARA = 'FREQ', VALE = 25.0,),),
+           PRECISION=.05,
+           REFERENCE='SOURCE_EXTERNE',)
+
+TEST_TABLE(TABLE=TABMODZ, NOM_PARA='DEPL', VALE=.2332E-6,
+           FILTRE=( _F(  NOM_PARA = 'FREQ', VALE = 250.0,),),
+           PRECISION=.05,
+           REFERENCE='SOURCE_EXTERNE',)
+
+TEST_TABLE(TABLE=TABMODY, NOM_PARA='PHAS', VALE=-0.0068,
+           FILTRE=( _F(  NOM_PARA = 'FREQ', VALE = 1.0,),),
+           PRECISION=.05,
+           REFERENCE='SOURCE_EXTERNE',)
+
+TEST_TABLE(TABLE=TABMODY, NOM_PARA='PHAS', VALE=-0.1664,
+           FILTRE=( _F(  NOM_PARA = 'FREQ', VALE = 25.0,),),
+           PRECISION=.05,
+           REFERENCE='SOURCE_EXTERNE',)
+
+TEST_TABLE(TABLE=TABMODY, NOM_PARA='PHAS', VALE=-141.023,
+           FILTRE=( _F(  NOM_PARA = 'FREQ', VALE = 250.0,),),
+           PRECISION=.05,
+           REFERENCE='SOURCE_EXTERNE',)
+
+TEST_TABLE(TABLE=TABMODZ, NOM_PARA='PHAS', VALE=-0.1637,
+           FILTRE=( _F(  NOM_PARA = 'FREQ', VALE = 1.0,),),
+           PRECISION=.05,
+           REFERENCE='SOURCE_EXTERNE',)
+
+TEST_TABLE(TABLE=TABMODZ, NOM_PARA='PHAS', VALE=-4.0901,
+           FILTRE=( _F(  NOM_PARA = 'FREQ', VALE = 25.0,),),
+           PRECISION=.05,
+           REFERENCE='SOURCE_EXTERNE',)
+
+TEST_TABLE(TABLE=TABMODZ, NOM_PARA='PHAS', VALE=98.1335,
+           FILTRE=( _F(  NOM_PARA = 'FREQ', VALE = 250.0,),),
+           PRECISION=.05,
+           REFERENCE='SOURCE_EXTERNE',)
+
+DETRUIRE(CONCEPT=_F(NOM=TABMODY))
+DETRUIRE(CONCEPT=_F(NOM=TABMODZ))
+
+
+for i, RPM in enumerate(VIT):
+
+  DHAM=DYNA_LINE_HARM(MATR_MASS=MASSE,
+                    MATR_RIGI=RIGIDITE,
+                    MATR_AMOR=GYOM2,
+                    FREQ=RPM/60.,
+                    EXCIT=(
+                           _F(VECT_ASSE=EF_ASS_Z,
+                              FONC_MULT=FUN,
+                              PHAS_DEG=180.0,),
+                           ),
+                    );
+
+  DY_DIS2=RECU_FONCTION(RESULTAT=DHAM,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
+                   NOEUD='N13',);
+
+  DZ_DIS2=RECU_FONCTION(RESULTAT=DHAM,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DZ',
+                   NOEUD='N13',);
+
+  if i == 0:
+    TABMODY = CREA_TABLE(FONCTION=_F(FONCTION=DY_DIS2))
+    TABMODZ = CREA_TABLE(FONCTION=_F(FONCTION=DZ_DIS2))
+  else:
+    tdyi = CREA_TABLE(FONCTION=_F(FONCTION=DY_DIS2))
+    tdzi = CREA_TABLE(FONCTION=_F(FONCTION=DZ_DIS2))
+    TABMODY = CALC_TABLE(reuse=TABMODY,
+                         TABLE=TABMODY,
+                         ACTION=(_F(OPERATION='COMB', TABLE=tdyi),),
+                         TITRE="Table DY")
+    TABMODZ = CALC_TABLE(reuse=TABMODZ,
+                         TABLE=TABMODZ,
+                         ACTION=(_F(OPERATION='COMB', TABLE=tdzi),),
+                         TITRE="Table DZ")
+    DETRUIRE(CONCEPT=_F(NOM=(tdyi, tdzi),),)
+  
+  DETRUIRE(CONCEPT=_F(NOM=DHAM))
+  DETRUIRE(CONCEPT=_F(NOM=DY_DIS2))
+  DETRUIRE(CONCEPT=_F(NOM=DZ_DIS2))
+
+
+TABMODY = CALC_TABLE(reuse=TABMODY,
+                     TABLE=TABMODY,
+                     ACTION=(_F(OPERATION='RENOMME', NOM_PARA=('DY_R', 'REEL'),),
+                             _F(OPERATION='RENOMME', NOM_PARA=('DY_I', 'IMAG'),),
+                             _F(OPERATION='OPER', NOM_PARA='DEPL', FORMULE=module),
+                             _F(OPERATION='OPER', NOM_PARA='PHAS', FORMULE=phase),),
+                     TITRE="Table DY")
+TABMODZ = CALC_TABLE(reuse=TABMODZ,
+                     TABLE=TABMODZ,
+                     ACTION=(_F(OPERATION='RENOMME', NOM_PARA=('DZ_R', 'REEL'),),
+                             _F(OPERATION='RENOMME', NOM_PARA=('DZ_I', 'IMAG'),),
+                             _F(OPERATION='OPER', NOM_PARA='DEPL', FORMULE=module),
+                             _F(OPERATION='OPER', NOM_PARA='PHAS', FORMULE=phase),),
+                     TITRE="Table DZ")
+
+IMPR_TABLE(TABLE=TABMODY, UNITE=6)
+IMPR_TABLE(TABLE=TABMODZ, UNITE=6)
+
+
+TEST_TABLE(TABLE=TABMODY, NOM_PARA='DEPL', VALE=.2629E-8,
+           FILTRE=( _F(  NOM_PARA = 'FREQ', VALE = 1.0,),),
+           PRECISION=.05,
+           REFERENCE='SOURCE_EXTERNE',)
+
+TEST_TABLE(TABLE=TABMODY, NOM_PARA='DEPL', VALE=.3647E-8,
+           FILTRE=( _F(  NOM_PARA = 'FREQ', VALE = 25.0,),),
+           PRECISION=.05,
+           REFERENCE='SOURCE_EXTERNE',)
+
+TEST_TABLE(TABLE=TABMODY, NOM_PARA='DEPL', VALE=.1131E-6,
+           FILTRE=( _F(  NOM_PARA = 'FREQ', VALE = 250.0,),),
+           PRECISION=.05,
+           REFERENCE='SOURCE_EXTERNE',)
+
+TEST_TABLE(TABLE=TABMODZ, NOM_PARA='DEPL', VALE=.8330E-7,
+           FILTRE=( _F(  NOM_PARA = 'FREQ', VALE = 1.0,),),
+           PRECISION=.05,
+           REFERENCE='SOURCE_EXTERNE',)
+
+TEST_TABLE(TABLE=TABMODZ, NOM_PARA='DEPL', VALE=.8418E-7,
+           FILTRE=( _F(  NOM_PARA = 'FREQ', VALE = 25.0,),),
+           PRECISION=.05,
+           REFERENCE='SOURCE_EXTERNE',)
+
+TEST_TABLE(TABLE=TABMODZ, NOM_PARA='DEPL', VALE=.1057E-6,
+           FILTRE=( _F(  NOM_PARA = 'FREQ', VALE = 250.0,),),
+           PRECISION=.05,
+           REFERENCE='SOURCE_EXTERNE',)
+
+TEST_TABLE(TABLE=TABMODY, NOM_PARA='PHAS', VALE=-177.936,
+           FILTRE=( _F(  NOM_PARA = 'FREQ', VALE = 1.0,),),
+           PRECISION=.05,
+           REFERENCE='SOURCE_EXTERNE',)
+
+TEST_TABLE(TABLE=TABMODY, NOM_PARA='PHAS', VALE=-138.368,
+           FILTRE=( _F(  NOM_PARA = 'FREQ', VALE = 25.0,),),
+           PRECISION=.05,
+           REFERENCE='SOURCE_EXTERNE',)
+
+TEST_TABLE(TABLE=TABMODY, NOM_PARA='PHAS', VALE=25.433,
+           FILTRE=( _F(  NOM_PARA = 'FREQ', VALE = 250.0,),),
+           PRECISION=.05,
+           REFERENCE='SOURCE_EXTERNE',)
+
+TEST_TABLE(TABLE=TABMODZ, NOM_PARA='PHAS', VALE=179.996,
+           FILTRE=( _F(  NOM_PARA = 'FREQ', VALE = 1.0,),),
+           PRECISION=.05,
+           REFERENCE='SOURCE_EXTERNE',)
+
+TEST_TABLE(TABLE=TABMODZ, NOM_PARA='PHAS', VALE=179.918,
+           FILTRE=( _F(  NOM_PARA = 'FREQ', VALE = 25.0,),),
+           PRECISION=.05,
+           REFERENCE='SOURCE_EXTERNE',)
+
+TEST_TABLE(TABLE=TABMODZ, NOM_PARA='PHAS', VALE=103.212,
+           FILTRE=( _F(  NOM_PARA = 'FREQ', VALE = 250.0,),),
+           PRECISION=.05,
+           REFERENCE='SOURCE_EXTERNE',)
+
+DETRUIRE(CONCEPT=_F(NOM=TABMODY))
+DETRUIRE(CONCEPT=_F(NOM=TABMODZ))
+DETRUIRE(CONCEPT=_F(NOM=GYOM2))
+
+
+# ROTOR TOURNANT A LA VITESSE DE ROTATION DE 50000 TR/MIN
+RPM2 = 50000.0
+FREQ2 = (RPM2 / 60.0);
+OM2 = FREQ2 * 2 * pi;
+GYOM2=COMB_MATR_ASSE(COMB_R=(_F(MATR_ASSE=GYAS, COEF_R=OM2,),
+                             _F(MATR_ASSE=AMOR, COEF_R=1.,),),);
+
+for i, RPM in enumerate(VIT):
+  
+  DHAM=DYNA_LINE_HARM(MATR_MASS=MASSE,
+                    MATR_RIGI=RIGIDITE,
+                    MATR_AMOR=GYOM2,
+                    FREQ=RPM/60.,
+                    EXCIT=(
+                           _F(VECT_ASSE=EF_ASS_Y,
+                              FONC_MULT=FUN,
+                              PHAS_DEG=0.0,),
+                           ),
+                    );
+
+  DY_DIS2=RECU_FONCTION(RESULTAT=DHAM,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
+                   NOEUD='N13',);
+
+  DZ_DIS2=RECU_FONCTION(RESULTAT=DHAM,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DZ',
+                   NOEUD='N13',);
+
+  if i == 0:
+    TABMODY = CREA_TABLE(FONCTION=_F(FONCTION=DY_DIS2))
+    TABMODZ = CREA_TABLE(FONCTION=_F(FONCTION=DZ_DIS2))
+  else:
+    tdyi = CREA_TABLE(FONCTION=_F(FONCTION=DY_DIS2))
+    tdzi = CREA_TABLE(FONCTION=_F(FONCTION=DZ_DIS2))
+    TABMODY = CALC_TABLE(reuse=TABMODY,
+                         TABLE=TABMODY,
+                         ACTION=(_F(OPERATION='COMB', TABLE=tdyi),),
+                         TITRE="Table DY")
+    TABMODZ = CALC_TABLE(reuse=TABMODZ,
+                         TABLE=TABMODZ,
+                         ACTION=(_F(OPERATION='COMB', TABLE=tdzi),),
+                         TITRE="Table DZ")
+    DETRUIRE(CONCEPT=_F(NOM=(tdyi, tdzi),),)
+  
+  DETRUIRE(CONCEPT=_F(NOM=DHAM))
+  DETRUIRE(CONCEPT=_F(NOM=DY_DIS2))
+  DETRUIRE(CONCEPT=_F(NOM=DZ_DIS2))
+
+
+TABMODY = CALC_TABLE(reuse=TABMODY,
+                     TABLE=TABMODY,
+                     ACTION=(_F(OPERATION='RENOMME', NOM_PARA=('DY_R', 'REEL'),),
+                             _F(OPERATION='RENOMME', NOM_PARA=('DY_I', 'IMAG'),),
+                             _F(OPERATION='OPER', NOM_PARA='DEPL', FORMULE=module),
+                             _F(OPERATION='OPER', NOM_PARA='PHAS', FORMULE=phase),),
+                     TITRE="Table DY")
+TABMODZ = CALC_TABLE(reuse=TABMODZ,
+                     TABLE=TABMODZ,
+                     ACTION=(_F(OPERATION='RENOMME', NOM_PARA=('DZ_R', 'REEL'),),
+                             _F(OPERATION='RENOMME', NOM_PARA=('DZ_I', 'IMAG'),),
+                             _F(OPERATION='OPER', NOM_PARA='DEPL', FORMULE=module),
+                             _F(OPERATION='OPER', NOM_PARA='PHAS', FORMULE=phase),),
+                     TITRE="Table DZ")
+
+IMPR_TABLE(TABLE=TABMODY, UNITE=6)
+IMPR_TABLE(TABLE=TABMODZ, UNITE=6)
+
+
+TEST_TABLE(TABLE=TABMODY, NOM_PARA='DEPL', VALE=.1032E-6,
+           FILTRE=( _F(  NOM_PARA = 'FREQ', VALE = 1.0,),),
+           PRECISION=.05,
+           REFERENCE='SOURCE_EXTERNE',)
+
+TEST_TABLE(TABLE=TABMODY, NOM_PARA='DEPL', VALE=.1046E-6,
+           FILTRE=( _F(  NOM_PARA = 'FREQ', VALE = 25.0,),),
+           PRECISION=.05,
+           REFERENCE='SOURCE_EXTERNE',)
+
+TEST_TABLE(TABLE=TABMODY, NOM_PARA='DEPL', VALE=.3762E-7,
+           FILTRE=( _F(  NOM_PARA = 'FREQ', VALE = 250.0,),),
+           PRECISION=.05,
+           REFERENCE='SOURCE_EXTERNE',)
+
+TEST_TABLE(TABLE=TABMODZ, NOM_PARA='DEPL', VALE=.4144E-7,
+           FILTRE=( _F(  NOM_PARA = 'FREQ', VALE = 1.0,),),
+           PRECISION=.05,
+           REFERENCE='SOURCE_EXTERNE',)
+
+TEST_TABLE(TABLE=TABMODZ, NOM_PARA='DEPL', VALE=.4257E-7,
+           FILTRE=( _F(  NOM_PARA = 'FREQ', VALE = 25.0,),),
+           PRECISION=.05,
+           REFERENCE='SOURCE_EXTERNE',)
+
+TEST_TABLE(TABLE=TABMODZ, NOM_PARA='DEPL', VALE=.1942E-6,
+           FILTRE=( _F(  NOM_PARA = 'FREQ', VALE = 250.0,),),
+           PRECISION=.05,
+           REFERENCE='SOURCE_EXTERNE',)
+
+TEST_TABLE(TABLE=TABMODY, NOM_PARA='PHAS', VALE=-0.0019,
+           FILTRE=( _F(  NOM_PARA = 'FREQ', VALE = 1.0,),),
+           PRECISION=.05,
+           REFERENCE='SOURCE_EXTERNE',)
+
+TEST_TABLE(TABLE=TABMODY, NOM_PARA='PHAS', VALE=-0.0402,
+           FILTRE=( _F(  NOM_PARA = 'FREQ', VALE = 25.0,),),
+           PRECISION=.075,
+           REFERENCE='SOURCE_EXTERNE',)
+
+TEST_TABLE(TABLE=TABMODY, NOM_PARA='PHAS', VALE=-128.635,
+           FILTRE=( _F(  NOM_PARA = 'FREQ', VALE = 250.0,),),
+           PRECISION=.05,
+           REFERENCE='SOURCE_EXTERNE',)
+
+TEST_TABLE(TABLE=TABMODZ, NOM_PARA='PHAS', VALE=-0.1886,
+           FILTRE=( _F(  NOM_PARA = 'FREQ', VALE = 1.0,),),
+           PRECISION=.05,
+           REFERENCE='SOURCE_EXTERNE',)
+
+TEST_TABLE(TABLE=TABMODZ, NOM_PARA='PHAS', VALE=-4.7040,
+           FILTRE=( _F(  NOM_PARA = 'FREQ', VALE = 25.0,),),
+           PRECISION=.05,
+           REFERENCE='SOURCE_EXTERNE',)
+
+TEST_TABLE(TABLE=TABMODZ, NOM_PARA='PHAS', VALE=94.708,
+           FILTRE=( _F(  NOM_PARA = 'FREQ', VALE = 250.0,),),
+           PRECISION=.05,
+           REFERENCE='SOURCE_EXTERNE',)
+
+DETRUIRE(CONCEPT=_F(NOM=TABMODY))
+DETRUIRE(CONCEPT=_F(NOM=TABMODZ))
+
+for i, RPM in enumerate(VIT):
+  
+  DHAM=DYNA_LINE_HARM(MATR_MASS=MASSE,
+                    MATR_RIGI=RIGIDITE,
+                    MATR_AMOR=GYOM2,
+                    FREQ=RPM/60.,
+                    EXCIT=(
+                           _F(VECT_ASSE=EF_ASS_Z,
+                              FONC_MULT=FUN,
+                              PHAS_DEG=180.0,),
+                           ),
+                    );
+
+  DY_DIS2=RECU_FONCTION(RESULTAT=DHAM,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
+                   NOEUD='N13',);
+
+  DZ_DIS2=RECU_FONCTION(RESULTAT=DHAM,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DZ',
+                   NOEUD='N13',);
+
+  if i == 0:
+    TABMODY = CREA_TABLE(FONCTION=_F(FONCTION=DY_DIS2))
+    TABMODZ = CREA_TABLE(FONCTION=_F(FONCTION=DZ_DIS2))
+  else:
+    tdyi = CREA_TABLE(FONCTION=_F(FONCTION=DY_DIS2))
+    tdzi = CREA_TABLE(FONCTION=_F(FONCTION=DZ_DIS2))
+    TABMODY = CALC_TABLE(reuse=TABMODY,
+                         TABLE=TABMODY,
+                         ACTION=(_F(OPERATION='COMB', TABLE=tdyi),),
+                         TITRE="Table DY")
+    TABMODZ = CALC_TABLE(reuse=TABMODZ,
+                         TABLE=TABMODZ,
+                         ACTION=(_F(OPERATION='COMB', TABLE=tdzi),),
+                         TITRE="Table DZ")
+    DETRUIRE(CONCEPT=_F(NOM=(tdyi, tdzi),),)
+  
+  DETRUIRE(CONCEPT=_F(NOM=DHAM))
+  DETRUIRE(CONCEPT=_F(NOM=DY_DIS2))
+  DETRUIRE(CONCEPT=_F(NOM=DZ_DIS2))
+
+
+TABMODY = CALC_TABLE(reuse=TABMODY,
+                     TABLE=TABMODY,
+                     ACTION=(_F(OPERATION='RENOMME', NOM_PARA=('DY_R', 'REEL'),),
+                             _F(OPERATION='RENOMME', NOM_PARA=('DY_I', 'IMAG'),),
+                             _F(OPERATION='OPER', NOM_PARA='DEPL', FORMULE=module),
+                             _F(OPERATION='OPER', NOM_PARA='PHAS', FORMULE=phase),),
+                     TITRE="Table DY")
+TABMODZ = CALC_TABLE(reuse=TABMODZ,
+                     TABLE=TABMODZ,
+                     ACTION=(_F(OPERATION='RENOMME', NOM_PARA=('DZ_R', 'REEL'),),
+                             _F(OPERATION='RENOMME', NOM_PARA=('DZ_I', 'IMAG'),),
+                             _F(OPERATION='OPER', NOM_PARA='DEPL', FORMULE=module),
+                             _F(OPERATION='OPER', NOM_PARA='PHAS', FORMULE=phase),),
+                     TITRE="Table DZ")
+
+IMPR_TABLE(TABLE=TABMODY, UNITE=6)
+IMPR_TABLE(TABLE=TABMODZ, UNITE=6)
+
+
+TEST_TABLE(TABLE=TABMODY, NOM_PARA='DEPL', VALE=.2630E-8,
+           FILTRE=( _F(  NOM_PARA = 'FREQ', VALE = 1.0,),),
+           PRECISION=.05,
+           REFERENCE='SOURCE_EXTERNE',)
+
+TEST_TABLE(TABLE=TABMODY, NOM_PARA='DEPL', VALE=.4046E-8,
+           FILTRE=( _F(  NOM_PARA = 'FREQ', VALE = 25.0,),),
+           PRECISION=.05,
+           REFERENCE='SOURCE_EXTERNE',)
+
+TEST_TABLE(TABLE=TABMODY, NOM_PARA='DEPL', VALE=.1098E-6,
+           FILTRE=( _F(  NOM_PARA = 'FREQ', VALE = 250.0,),),
+           PRECISION=.05,
+           REFERENCE='SOURCE_EXTERNE',)
+
+TEST_TABLE(TABLE=TABMODZ, NOM_PARA='DEPL', VALE=.8330E-7,
+           FILTRE=( _F(  NOM_PARA = 'FREQ', VALE = 1.0,),),
+           PRECISION=.05,
+           REFERENCE='SOURCE_EXTERNE',)
+
+TEST_TABLE(TABLE=TABMODZ, NOM_PARA='DEPL', VALE=.8422E-7,
+           FILTRE=( _F(  NOM_PARA = 'FREQ', VALE = 25.0,),),
+           PRECISION=.05,
+           REFERENCE='SOURCE_EXTERNE',)
+
+TEST_TABLE(TABLE=TABMODZ, NOM_PARA='DEPL', VALE=.8943E-7,
+           FILTRE=( _F(  NOM_PARA = 'FREQ', VALE = 250.0,),),
+           PRECISION=.05,
+           REFERENCE='SOURCE_EXTERNE',)
+
+TEST_TABLE(TABLE=TABMODY, NOM_PARA='PHAS', VALE=-177.456,
+           FILTRE=( _F(  NOM_PARA = 'FREQ', VALE = 1.0,),),
+           PRECISION=.05,
+           REFERENCE='SOURCE_EXTERNE',)
+
+TEST_TABLE(TABLE=TABMODY, NOM_PARA='PHAS', VALE=-132.383,
+           FILTRE=( _F(  NOM_PARA = 'FREQ', VALE = 25.0,),),
+           PRECISION=.05,
+           REFERENCE='SOURCE_EXTERNE',)
+
+TEST_TABLE(TABLE=TABMODY, NOM_PARA='PHAS', VALE=28.143,
+           FILTRE=( _F(  NOM_PARA = 'FREQ', VALE = 250.0,),),
+           PRECISION=.05,
+           REFERENCE='SOURCE_EXTERNE',)
+
+TEST_TABLE(TABLE=TABMODZ, NOM_PARA='PHAS', VALE=-179.999,
+           FILTRE=( _F(  NOM_PARA = 'FREQ', VALE = 1.0,),),
+           PRECISION=.05,
+           REFERENCE='SOURCE_EXTERNE',)
+
+TEST_TABLE(TABLE=TABMODZ, NOM_PARA='PHAS', VALE=-179.956,
+           FILTRE=( _F(  NOM_PARA = 'FREQ', VALE = 25.0,),),
+           PRECISION=.05,
+           REFERENCE='SOURCE_EXTERNE',)
+
+TEST_TABLE(TABLE=TABMODZ, NOM_PARA='PHAS', VALE=108.053,
+           FILTRE=( _F(  NOM_PARA = 'FREQ', VALE = 250.0,),),
+           PRECISION=.05,
+           REFERENCE='SOURCE_EXTERNE',)
+
+DETRUIRE(CONCEPT=_F(NOM=TABMODY))
+DETRUIRE(CONCEPT=_F(NOM=TABMODZ))
+DETRUIRE(CONCEPT=_F(NOM=GYOM2))
+
+# ROTOR TOURNANT A LA VITESSE DE ROTATION DE 60000 TR/MIN
+RPM2 = 60000.0
+FREQ2 = (RPM2 / 60.0);
+OM2 = FREQ2 * 2 * pi;
+GYOM2=COMB_MATR_ASSE(COMB_R=(_F(MATR_ASSE=GYAS, COEF_R=OM2,),
+                             _F(MATR_ASSE=AMOR, COEF_R=1.,),),);
+
+for i, RPM in enumerate(VIT):
+  
+  DHAM=DYNA_LINE_HARM(MATR_MASS=MASSE,
+                    MATR_RIGI=RIGIDITE,
+                    MATR_AMOR=GYOM2,
+                    FREQ=RPM/60.,
+                    EXCIT=(
+                           _F(VECT_ASSE=EF_ASS_Y,
+                              FONC_MULT=FUN,
+                              PHAS_DEG=0.0,),
+                           ),
+                    );
+
+  DY_DIS2=RECU_FONCTION(RESULTAT=DHAM,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
+                   NOEUD='N13',);
+
+  DZ_DIS2=RECU_FONCTION(RESULTAT=DHAM,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DZ',
+                   NOEUD='N13',);
+
+  if i == 0:
+    TABMODY = CREA_TABLE(FONCTION=_F(FONCTION=DY_DIS2))
+    TABMODZ = CREA_TABLE(FONCTION=_F(FONCTION=DZ_DIS2))
+  else:
+    tdyi = CREA_TABLE(FONCTION=_F(FONCTION=DY_DIS2))
+    tdzi = CREA_TABLE(FONCTION=_F(FONCTION=DZ_DIS2))
+    TABMODY = CALC_TABLE(reuse=TABMODY,
+                         TABLE=TABMODY,
+                         ACTION=(_F(OPERATION='COMB', TABLE=tdyi),),
+                         TITRE="Table DY")
+    TABMODZ = CALC_TABLE(reuse=TABMODZ,
+                         TABLE=TABMODZ,
+                         ACTION=(_F(OPERATION='COMB', TABLE=tdzi),),
+                         TITRE="Table DZ")
+    DETRUIRE(CONCEPT=_F(NOM=(tdyi, tdzi),),)
+  
+  DETRUIRE(CONCEPT=_F(NOM=DHAM))
+  DETRUIRE(CONCEPT=_F(NOM=DY_DIS2))
+  DETRUIRE(CONCEPT=_F(NOM=DZ_DIS2))
+
+
+TABMODY = CALC_TABLE(reuse=TABMODY,
+                     TABLE=TABMODY,
+                     ACTION=(_F(OPERATION='RENOMME', NOM_PARA=('DY_R', 'REEL'),),
+                             _F(OPERATION='RENOMME', NOM_PARA=('DY_I', 'IMAG'),),
+                             _F(OPERATION='OPER', NOM_PARA='DEPL', FORMULE=module),
+                             _F(OPERATION='OPER', NOM_PARA='PHAS', FORMULE=phase),),
+                     TITRE="Table DY")
+TABMODZ = CALC_TABLE(reuse=TABMODZ,
+                     TABLE=TABMODZ,
+                     ACTION=(_F(OPERATION='RENOMME', NOM_PARA=('DZ_R', 'REEL'),),
+                             _F(OPERATION='RENOMME', NOM_PARA=('DZ_I', 'IMAG'),),
+                             _F(OPERATION='OPER', NOM_PARA='DEPL', FORMULE=module),
+                             _F(OPERATION='OPER', NOM_PARA='PHAS', FORMULE=phase),),
+                     TITRE="Table DZ")
+
+IMPR_TABLE(TABLE=TABMODY, UNITE=6)
+IMPR_TABLE(TABLE=TABMODZ, UNITE=6)
+
+
+TEST_TABLE(TABLE=TABMODY, NOM_PARA='DEPL', VALE=.1032E-6,
+           FILTRE=( _F(  NOM_PARA = 'FREQ', VALE = 1.0,),),
+           PRECISION=.05,
+           REFERENCE='SOURCE_EXTERNE',)
+
+TEST_TABLE(TABLE=TABMODY, NOM_PARA='DEPL', VALE=1.032451E-07,
+           FILTRE=( _F(  NOM_PARA = 'FREQ', VALE = 1.0,),),
+           PRECISION=1.E-5,
+           REFERENCE='NON_REGRESSION',)
+
+TEST_TABLE(TABLE=TABMODY, NOM_PARA='DEPL', VALE=.1047E-6,
+           FILTRE=( _F(  NOM_PARA = 'FREQ', VALE = 25.0,),),
+           PRECISION=.05,
+           REFERENCE='SOURCE_EXTERNE',)
+
+TEST_TABLE(TABLE=TABMODY, NOM_PARA='DEPL', VALE=1.0470967E-07,
+           FILTRE=( _F(  NOM_PARA = 'FREQ', VALE = 25.0,),),
+           PRECISION=1.E-5,
+           REFERENCE='NON_REGRESSION',)
+
+TEST_TABLE(TABLE=TABMODY, NOM_PARA='DEPL', VALE=.3047E-7,
+           FILTRE=( _F(  NOM_PARA = 'FREQ', VALE = 250.0,),),
+           PRECISION=.05,
+           REFERENCE='SOURCE_EXTERNE',)
+
+TEST_TABLE(TABLE=TABMODY, NOM_PARA='DEPL', VALE=3.0420178E-08,
+           FILTRE=( _F(  NOM_PARA = 'FREQ', VALE = 250.0,),),
+           PRECISION=1.E-5,
+           REFERENCE='NON_REGRESSION',)
+
+TEST_TABLE(TABLE=TABMODZ, NOM_PARA='DEPL', VALE=.4141E-7,
+           FILTRE=( _F(  NOM_PARA = 'FREQ', VALE = 1.0,),),
+           PRECISION=.05,
+           REFERENCE='SOURCE_EXTERNE',)
+
+TEST_TABLE(TABLE=TABMODZ, NOM_PARA='DEPL', VALE=4.1409852E-08,
+           FILTRE=( _F(  NOM_PARA = 'FREQ', VALE = 1.0,),),
+           PRECISION=1.E-5,
+           REFERENCE='NON_REGRESSION',)
+
+TEST_TABLE(TABLE=TABMODZ, NOM_PARA='DEPL', VALE=.4261E-7,
+           FILTRE=( _F(  NOM_PARA = 'FREQ', VALE = 25.0,),),
+           PRECISION=.05,
+           REFERENCE='SOURCE_EXTERNE',)
+
+TEST_TABLE(TABLE=TABMODZ, NOM_PARA='DEPL', VALE=4.2614277E-08,
+           FILTRE=( _F(  NOM_PARA = 'FREQ', VALE = 25.0,),),
+           PRECISION=1.E-5,
+           REFERENCE='NON_REGRESSION',)
+
+TEST_TABLE(TABLE=TABMODZ, NOM_PARA='DEPL', VALE=.1648E-6,
+           FILTRE=( _F(  NOM_PARA = 'FREQ', VALE = 250.0,),),
+           PRECISION=.05,
+           REFERENCE='SOURCE_EXTERNE',)
+
+TEST_TABLE(TABLE=TABMODZ, NOM_PARA='DEPL', VALE=1.6481191E-07,
+           FILTRE=( _F(  NOM_PARA = 'FREQ', VALE = 250.0,),),
+           PRECISION=1.E-5,
+           REFERENCE='NON_REGRESSION',)
+
+TEST_TABLE(TABLE=TABMODY, NOM_PARA='PHAS', VALE= 0.0030,
+           FILTRE=( _F(  NOM_PARA = 'FREQ', VALE = 1.0,),),
+           PRECISION=.05,
+           REFERENCE='SOURCE_EXTERNE',)
+
+TEST_TABLE(TABLE=TABMODY, NOM_PARA='PHAS', VALE= 3.114054E-03,
+           FILTRE=( _F(  NOM_PARA = 'FREQ', VALE = 1.0,),),
+           PRECISION=1.E-5,
+           REFERENCE='NON_REGRESSION',)
+
+TEST_TABLE(TABLE=TABMODY, NOM_PARA='PHAS', VALE= 0.0862,
+           FILTRE=( _F(  NOM_PARA = 'FREQ', VALE = 25.0,),),
+           PRECISION=.05,
+           REFERENCE='SOURCE_EXTERNE',)
+
+TEST_TABLE(TABLE=TABMODY, NOM_PARA='PHAS', VALE= 0.08942,
+           FILTRE=( _F(  NOM_PARA = 'FREQ', VALE = 25.0,),),
+           PRECISION=1.E-5,
+           REFERENCE='NON_REGRESSION',)
+
+TEST_TABLE(TABLE=TABMODY, NOM_PARA='PHAS', VALE=-111.742,
+           FILTRE=( _F(  NOM_PARA = 'FREQ', VALE = 250.0,),),
+           PRECISION=.05,
+           REFERENCE='SOURCE_EXTERNE',)
+
+TEST_TABLE(TABLE=TABMODY, NOM_PARA='PHAS', VALE=-111.075823,
+           FILTRE=( _F(  NOM_PARA = 'FREQ', VALE = 250.0,),),
+           PRECISION=1.E-5,
+           REFERENCE='NON_REGRESSION',)
+
+TEST_TABLE(TABLE=TABMODZ, NOM_PARA='PHAS', VALE=-0.2134,
+           FILTRE=( _F(  NOM_PARA = 'FREQ', VALE = 1.0,),),
+           PRECISION=.05,
+           REFERENCE='SOURCE_EXTERNE',)
+
+TEST_TABLE(TABLE=TABMODZ, NOM_PARA='PHAS', VALE=-0.214173,
+           FILTRE=( _F(  NOM_PARA = 'FREQ', VALE = 1.0,),),
+           PRECISION=1.E-5,
+           REFERENCE='NON_REGRESSION',)
+
+TEST_TABLE(TABLE=TABMODZ, NOM_PARA='PHAS', VALE=-5.3164,
+           FILTRE=( _F(  NOM_PARA = 'FREQ', VALE = 25.0,),),
+           PRECISION=.05,
+           REFERENCE='SOURCE_EXTERNE',)
+
+TEST_TABLE(TABLE=TABMODZ, NOM_PARA='PHAS', VALE=-5.335139,
+           FILTRE=( _F(  NOM_PARA = 'FREQ', VALE = 25.0,),),
+           PRECISION=1.E-5,
+           REFERENCE='NON_REGRESSION',)
+
+TEST_TABLE(TABLE=TABMODZ, NOM_PARA='PHAS', VALE=92.018,
+           FILTRE=( _F(  NOM_PARA = 'FREQ', VALE = 250.0,),),
+           PRECISION=.05,
+           REFERENCE='SOURCE_EXTERNE',)
+
+TEST_TABLE(TABLE=TABMODZ, NOM_PARA='PHAS', VALE=92.056318,
+           FILTRE=( _F(  NOM_PARA = 'FREQ', VALE = 250.0,),),
+           PRECISION=1.E-5,
+           REFERENCE='NON_REGRESSION',)
+
+DETRUIRE(CONCEPT=_F(NOM=TABMODY))
+DETRUIRE(CONCEPT=_F(NOM=TABMODZ))
+
+
+for i, RPM in enumerate(VIT):
+  
+  DHAM=DYNA_LINE_HARM(MATR_MASS=MASSE,
+                    MATR_RIGI=RIGIDITE,
+                    MATR_AMOR=GYOM2,
+                    FREQ=RPM/60.,
+                    EXCIT=(
+                           _F(VECT_ASSE=EF_ASS_Z,
+                              FONC_MULT=FUN,
+                              PHAS_DEG=180.0,),
+                           ),
+                    );
+
+  DY_DIS2=RECU_FONCTION(RESULTAT=DHAM,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
+                   NOEUD='N13',);
+
+  DZ_DIS2=RECU_FONCTION(RESULTAT=DHAM,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DZ',
+                   NOEUD='N13',);
+
+  if i == 0:
+    TABMODY = CREA_TABLE(FONCTION=_F(FONCTION=DY_DIS2))
+    TABMODZ = CREA_TABLE(FONCTION=_F(FONCTION=DZ_DIS2))
+  else:
+    tdyi = CREA_TABLE(FONCTION=_F(FONCTION=DY_DIS2))
+    tdzi = CREA_TABLE(FONCTION=_F(FONCTION=DZ_DIS2))
+    TABMODY = CALC_TABLE(reuse=TABMODY,
+                         TABLE=TABMODY,
+                         ACTION=(_F(OPERATION='COMB', TABLE=tdyi),),
+                         TITRE="Table DY")
+    TABMODZ = CALC_TABLE(reuse=TABMODZ,
+                         TABLE=TABMODZ,
+                         ACTION=(_F(OPERATION='COMB', TABLE=tdzi),),
+                         TITRE="Table DZ")
+    DETRUIRE(CONCEPT=_F(NOM=(tdyi, tdzi),),)
+  
+  DETRUIRE(CONCEPT=_F(NOM=DHAM))
+  DETRUIRE(CONCEPT=_F(NOM=DY_DIS2))
+  DETRUIRE(CONCEPT=_F(NOM=DZ_DIS2))
+
+
+TABMODY = CALC_TABLE(reuse=TABMODY,
+                     TABLE=TABMODY,
+                     ACTION=(_F(OPERATION='RENOMME', NOM_PARA=('DY_R', 'REEL'),),
+                             _F(OPERATION='RENOMME', NOM_PARA=('DY_I', 'IMAG'),),
+                             _F(OPERATION='OPER', NOM_PARA='DEPL', FORMULE=module),
+                             _F(OPERATION='OPER', NOM_PARA='PHAS', FORMULE=phase),),
+                     TITRE="Table DY")
+TABMODZ = CALC_TABLE(reuse=TABMODZ,
+                     TABLE=TABMODZ,
+                     ACTION=(_F(OPERATION='RENOMME', NOM_PARA=('DZ_R', 'REEL'),),
+                             _F(OPERATION='RENOMME', NOM_PARA=('DZ_I', 'IMAG'),),
+                             _F(OPERATION='OPER', NOM_PARA='DEPL', FORMULE=module),
+                             _F(OPERATION='OPER', NOM_PARA='PHAS', FORMULE=phase),),
+                     TITRE="Table DZ")
+
+IMPR_TABLE(TABLE=TABMODY, UNITE=6)
+IMPR_TABLE(TABLE=TABMODZ, UNITE=6)
+
+
+TEST_TABLE(TABLE=TABMODY, NOM_PARA='DEPL', VALE=.2631E-8,
+           FILTRE=( _F(  NOM_PARA = 'FREQ', VALE = 1.0,),),
+           PRECISION=.05,
+           REFERENCE='SOURCE_EXTERNE',)
+
+TEST_TABLE(TABLE=TABMODY, NOM_PARA='DEPL', VALE=2.6339428E-09,
+           FILTRE=( _F(  NOM_PARA = 'FREQ', VALE = 1.0,),),
+           PRECISION=1.E-5,
+           REFERENCE='NON_REGRESSION',)
+
+TEST_TABLE(TABLE=TABMODY, NOM_PARA='DEPL', VALE=.4480E-8,
+           FILTRE=( _F(  NOM_PARA = 'FREQ', VALE = 25.0,),),
+           PRECISION=.05,
+           REFERENCE='SOURCE_EXTERNE',)
+
+TEST_TABLE(TABLE=TABMODY, NOM_PARA='DEPL', VALE=4.4820477E-09,
+           FILTRE=( _F(  NOM_PARA = 'FREQ', VALE = 25.0,),),
+           PRECISION=1.E-5,
+           REFERENCE='NON_REGRESSION',)
+
+TEST_TABLE(TABLE=TABMODY, NOM_PARA='DEPL', VALE=.1047E-6,
+           FILTRE=( _F(  NOM_PARA = 'FREQ', VALE = 250.0,),),
+           PRECISION=.05,
+           REFERENCE='SOURCE_EXTERNE',)
+
+TEST_TABLE(TABLE=TABMODY, NOM_PARA='DEPL', VALE=1.0477672E-07,
+           FILTRE=( _F(  NOM_PARA = 'FREQ', VALE = 250.0,),),
+           PRECISION=1.E-5,
+           REFERENCE='NON_REGRESSION',)
+
+TEST_TABLE(TABLE=TABMODZ, NOM_PARA='DEPL', VALE=.8334E-7,
+           FILTRE=( _F(  NOM_PARA = 'FREQ', VALE = 1.0,),),
+           PRECISION=.05,
+           REFERENCE='SOURCE_EXTERNE',)
+
+TEST_TABLE(TABLE=TABMODZ, NOM_PARA='DEPL', VALE=8.333995E-08,
+           FILTRE=( _F(  NOM_PARA = 'FREQ', VALE = 1.0,),),
+           PRECISION=1.E-5,
+           REFERENCE='NON_REGRESSION',)
+
+TEST_TABLE(TABLE=TABMODZ, NOM_PARA='DEPL', VALE=.8426E-7,
+           FILTRE=( _F(  NOM_PARA = 'FREQ', VALE = 25.0,),),
+           PRECISION=.05,
+           REFERENCE='SOURCE_EXTERNE',)
+
+TEST_TABLE(TABLE=TABMODZ, NOM_PARA='DEPL', VALE=8.430557E-08,
+           FILTRE=( _F(  NOM_PARA = 'FREQ', VALE = 25.0,),),
+           PRECISION=1.E-5,
+           REFERENCE='NON_REGRESSION',)
+
+TEST_TABLE(TABLE=TABMODZ, NOM_PARA='DEPL', VALE=.7843E-7,
+           FILTRE=( _F(  NOM_PARA = 'FREQ', VALE = 250.0,),),
+           PRECISION=.05,
+           REFERENCE='SOURCE_EXTERNE',)
+
+TEST_TABLE(TABLE=TABMODZ, NOM_PARA='DEPL', VALE=7.855081E-08,
+           FILTRE=( _F(  NOM_PARA = 'FREQ', VALE = 250.0,),),
+           PRECISION=1.E-5,
+           REFERENCE='NON_REGRESSION',)
+
+TEST_TABLE(TABLE=TABMODY, NOM_PARA='PHAS', VALE=-176.977,
+           FILTRE=( _F(  NOM_PARA = 'FREQ', VALE = 1.0,),),
+           PRECISION=.05,
+           REFERENCE='SOURCE_EXTERNE',)
+
+TEST_TABLE(TABLE=TABMODY, NOM_PARA='PHAS', VALE=-176.97999,
+           FILTRE=( _F(  NOM_PARA = 'FREQ', VALE = 1.0,),),
+           PRECISION=1.E-5,
+           REFERENCE='NON_REGRESSION',)
+
+TEST_TABLE(TABLE=TABMODY, NOM_PARA='PHAS', VALE=-127.484,
+           FILTRE=( _F(  NOM_PARA = 'FREQ', VALE = 25.0,),),
+           PRECISION=.05,
+           REFERENCE='SOURCE_EXTERNE',)
+
+TEST_TABLE(TABLE=TABMODY, NOM_PARA='PHAS', VALE=-127.51225,
+           FILTRE=( _F(  NOM_PARA = 'FREQ', VALE = 25.0,),),
+           PRECISION=1.E-5,
+           REFERENCE='NON_REGRESSION',)
+
+TEST_TABLE(TABLE=TABMODY, NOM_PARA='PHAS', VALE=30.268,
+           FILTRE=( _F(  NOM_PARA = 'FREQ', VALE = 250.0,),),
+           PRECISION=.05,
+           REFERENCE='SOURCE_EXTERNE',)
+
+TEST_TABLE(TABLE=TABMODY, NOM_PARA='PHAS', VALE=30.37102,
+           FILTRE=( _F(  NOM_PARA = 'FREQ', VALE = 250.0,),),
+           PRECISION=1.E-5,
+           REFERENCE='NON_REGRESSION',)
+
+TEST_TABLE(TABLE=TABMODZ, NOM_PARA='PHAS', VALE=-179.994,
+           FILTRE=( _F(  NOM_PARA = 'FREQ', VALE = 1.0,),),
+           PRECISION=.05,
+           REFERENCE='SOURCE_EXTERNE',)
+
+TEST_TABLE(TABLE=TABMODZ, NOM_PARA='PHAS', VALE=-179.99371,
+           FILTRE=( _F(  NOM_PARA = 'FREQ', VALE = 1.0,),),
+           PRECISION=1.E-5,
+           REFERENCE='NON_REGRESSION',)
+
+TEST_TABLE(TABLE=TABMODZ, NOM_PARA='PHAS', VALE=-179.830,
+           FILTRE=( _F(  NOM_PARA = 'FREQ', VALE = 25.0,),),
+           PRECISION=.05,
+           REFERENCE='SOURCE_EXTERNE',)
+
+TEST_TABLE(TABLE=TABMODZ, NOM_PARA='PHAS', VALE=-179.82855,
+           FILTRE=( _F(  NOM_PARA = 'FREQ', VALE = 25.0,),),
+           PRECISION=1.E-5,
+           REFERENCE='NON_REGRESSION',)
+
+TEST_TABLE(TABLE=TABMODZ, NOM_PARA='PHAS', VALE=113.870,
+           FILTRE=( _F(  NOM_PARA = 'FREQ', VALE = 250.0,),),
+           PRECISION=.05,
+           REFERENCE='SOURCE_EXTERNE',)
+
+TEST_TABLE(TABLE=TABMODZ, NOM_PARA='PHAS', VALE=114.20029,
+           FILTRE=( _F(  NOM_PARA = 'FREQ', VALE = 250.0,),),
+           PRECISION=1.E-5,
+           REFERENCE='NON_REGRESSION',)
+
+DETRUIRE(CONCEPT=_F(NOM=TABMODY))
+DETRUIRE(CONCEPT=_F(NOM=TABMODZ))
+DETRUIRE(CONCEPT=_F(NOM=GYOM2))
+
+FIN();

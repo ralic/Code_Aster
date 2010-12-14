@@ -3,9 +3,9 @@
      &          TAMPON)
         IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 12/07/2010   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 14/12/2010   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -72,7 +72,7 @@ C        LA MATRICE DE ROTATION QM EST STOCKEE DANS VIND (N-19 a N-9)
             NUVI=NUVI+3                                           
             NUV1=NUV1+1                                           
             
-            IF(NECOUL.EQ.'KOCKS_RAUCH') THEN
+            IF(NECOUL.EQ.'MONO_DD_KR') THEN
                TAUS=0.D0
                DO 102 I=1,6
                   TAUS=TAUS+YF(I)*MS(I)
@@ -85,7 +85,8 @@ C        LA MATRICE DE ROTATION QM EST STOCKEE DANS VIND (N-19 a N-9)
                CALL LCMMKR(TAUS,MATERF(NMAT+1),CISA2,IFA,NMAT,NBCOMM,
      &           IS,NBSYS,HSR,VIND(7),DY(NUV1),DT,
      &           DALPHA,DGAMMA,DP,CRIT,SGNS,IRET)
-            ELSEIF(NECOUL.EQ.'ECOU_DD_CFC') THEN
+            ELSEIF ((NECOUL.EQ.'MONO_DD_CFC').OR.
+     &              (NECOUL.EQ.'MONO_DD_CC')) THEN
                TAUS=0.D0
                DO 103 I=1,6
                   TAUS=TAUS+YF(I)*MS(I)
@@ -145,7 +146,7 @@ C           stockage de OMEGAP pour la rotation de reseau
 C ROTATION RESEAU FIN
             ENDIF
   7      CONTINUE                                             
-            IF(NECOUL.EQ.'ECOU_DD_CFC') VINF(NVI-2)=MAXRP
+            IF(NECOUL.EQ.'MONO_DD_CFC') VINF(NVI-2)=MAXRP
   6   CONTINUE
                                                
 C ROTATION RESEAU DEBUT

@@ -7,22 +7,22 @@
      +                  RHO11,PHI0,SAT,RETCOM,THMC,BIOT,RINSTP)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/04/2010   AUTEUR JAUBERT A.JAUBERT 
+C MODIF ALGORITH  DATE 14/12/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CRP_21
 C TOLE CRP_21
@@ -63,7 +63,7 @@ C ======================================================================
       REAL*8       UMPRHS, BIDON,RHO12,RHO21,CP22
       REAL*8       PADM,RHO22,VARPAD,VARBIO,VARLQ,EM
       REAL*8       EPS
-      PARAMETER  ( EPS = 1.D-21 ) 
+      PARAMETER  ( EPS = 1.D-21 )
       LOGICAL      EMMAG
 C ======================================================================
 C --- DECLARATIONS PERMETTANT DE RECUPERER LES CONSTANTES MECANIQUES ---
@@ -124,7 +124,7 @@ C    LA VARIABLE INTERNE DE PRESSION DE VAPEUR EST 0
 C =====================================================================
 C --- RECUPERATION DES COEFFICIENTS MECANIQUES ------------------------
 C =====================================================================
-      IF(EM.GT.EPS)THEN 
+      IF(EM.GT.EPS)THEN
         EMMAG = .TRUE.
       ENDIF
 
@@ -133,8 +133,8 @@ C =====================================================================
 C *********************************************************************
 C *** LES VARIABLES INTERNES ******************************************
 C *********************************************************************
-      IF ((OPTION(1:9).EQ.'RAPH_MECA') .OR.
-     &    (OPTION(1:9).EQ.'FORC_NODA').OR.
+      IF ((OPTION.EQ.'RAPH_MECA') .OR.
+     &    (OPTION.EQ.'FORC_NODA').OR.
      &    (OPTION(1:9).EQ.'FULL_MECA')) THEN
 C =====================================================================
 C --- CALCUL DE LA VARIABLE INTERNE DE POROSITE SELON FORMULE DOCR ----
@@ -214,7 +214,7 @@ C =====================================================================
 C ======================================================================
 C --- CALCUL DES ENTHALPIES SELON FORMULE DOCR -------------------------
 C ======================================================================
-         IF ((OPTION(1:9).EQ.'RAPH_MECA') .OR.
+         IF ((OPTION.EQ.'RAPH_MECA') .OR.
      +       (OPTION(1:9).EQ.'FULL_MECA')) THEN
             CONGEP(ADCP11+NDIM+1) = CONGEP(ADCP11+NDIM+1)
      +              + ENTEAU(DT,ALPLIQ,T,RHO11,DP2,DP1,DPAD,SIGNE,CP11)
@@ -235,7 +235,7 @@ C ======================================================================
 C ======================================================================
 C --- CALCUL SI PAS RIGI_MECA_TANG -------------------------------------
 C ======================================================================
-      IF ((OPTION(1:9).EQ.'RAPH_MECA') .OR.
+      IF ((OPTION.EQ.'RAPH_MECA') .OR.
      +    (OPTION(1:9).EQ.'FULL_MECA')) THEN
 C ======================================================================
 C --- CALCUL DES CONTRAINTES DE PRESSIONS ------------------------------
@@ -288,7 +288,7 @@ C ======================================================================
                DSDE(ADCP12,ADDEME+NDIM-1+I) =ZERO
                DSDE(ADCP21,ADDEME+NDIM-1+I) =
      +       DSDE(ADCP21,ADDEME+NDIM-1+I) + DMDEPV(RHO21,1.0D0-SAT,BIOT)
-               DSDE(ADCP22,ADDEME+NDIM-1+I) = 
+               DSDE(ADCP22,ADDEME+NDIM-1+I) =
      +             DSDE(ADCP22,ADDEME+NDIM-1+I) + DMDEPV(RHO22,SAT,BIOT)
  10         CONTINUE
          ENDIF

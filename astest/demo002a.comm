@@ -1,11 +1,11 @@
-# MODIF  DATE 11/05/2010   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 13/12/2010   AUTEUR DESOZA T.DESOZA 
 # RESPONSABLE MABBAS M.ABBAS
 #
 # TITRE AILETTE FISSUREE AVEC CONTACT
 # demo002a.para = tps_job 70 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -267,35 +267,35 @@ TEST_RESU(RESU=(
                    NOM_CHAM='DEPL',
                    NOM_CMP='DX',
                    GROUP_NO='A4',
-                   VALE=1.77227E-01,
+                   VALE=0.17314507066042,
                    INST=500,
                    REFERENCE='NON_REGRESSION',
-                   VERSION='7.1.07',),
+                   VERSION='10.3.1',),
                 _F(RESULTAT=RESU,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DY',
                    GROUP_NO='A4',
-                   VALE=4.34230E-02,
+                   VALE=0.042272314049943,
                    INST=500,
                    REFERENCE='NON_REGRESSION',
-                   VERSION='7.2.2',),
+                   VERSION='10.3.1',),
 
                  _F(RESULTAT=RESU,
                    NOM_CHAM='VITE',
                    NOM_CMP='DX',
                    GROUP_NO='A4',
-                   VALE=8.46964E-02,
+                   VALE=0.086164293311673,
                    INST=500,
                    REFERENCE='NON_REGRESSION',
-                   VERSION='7.1.07',),
+                   VERSION='10.3.1',),
                 _F(RESULTAT=RESU,
                    NOM_CHAM='VITE',
                    NOM_CMP='DY',
                    GROUP_NO='A4',
-                   VALE=5.65116E-03,
+                   VALE=6.0296076997463E-03,
                    INST=500,
                    REFERENCE='NON_REGRESSION',
-                   VERSION='7.1.07',),
+                   VERSION='10.3.1',),
                    ),);
 
 #=============================================================================================
@@ -311,14 +311,14 @@ TEST_RESU(RESU=(
                    INST=500,
                    REFERENCE='NON_REGRESSION',
                    VERSION='7.1.07',),
-                _F(RESULTAT=RESU,
+                _F(RESULTAT=RESU2,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DY',
                    GROUP_NO='A4',
-                   VALE=4.34230E-02,
+                   VALE=-0.041168472828804,
                    INST=500,
                    REFERENCE='NON_REGRESSION',
-                   VERSION='7.3.23',),
+                   VERSION='10.3.1',),
 
                  _F(RESULTAT=RESU2,
                    NOM_CHAM='VITE',

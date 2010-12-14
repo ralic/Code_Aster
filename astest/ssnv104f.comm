@@ -1,10 +1,10 @@
 
-# MODIF  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 13/12/2010   AUTEUR DESOZA T.DESOZA 
 #
 # TITRE CONTACT DE DEUX SPHERES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
 #              SEE THE FILE "LICENSE.TERMS" FOR INFORMATION ON USAGE AND
 #              REDISTRIBUTION OF THIS FILE.
 # ======================================================================
@@ -332,7 +332,7 @@ TEST_RESU(CHAM_ELEM=_F(CHAM_GD=SIELNO4,
                        NOM_CMP='SIYY',
                        VALE=-2798.3,
                        CRITERE='RELATIF',
-                       PRECISION=0.06,
+                       PRECISION=0.07,
                        REFERENCE='ANALYTIQUE',),);
 # TEST DE LA CONFORMITE PAR RAPPORT AUX RESULTATS ASTER
 # PRECEDENTS

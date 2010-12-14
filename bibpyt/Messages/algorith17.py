@@ -1,8 +1,8 @@
-#@ MODIF algorith17 Messages  DATE 08/11/2010   AUTEUR PELLET J.PELLET 
+#@ MODIF algorith17 Messages  DATE 14/12/2010   AUTEUR PROIX J-M.PROIX 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -73,4 +73,19 @@ cata_msg={
 13 : _("""
   La pression de gaz de référence doit toujours être différente de zéro.
 """),
+
+14 : _("""
+  Les mots clés PRES_FLU et PRES_CLAV sont incompatibles avec les modélisations xxx_JOINT_HYME
+"""),
+
+15 : _("""
+  Les données matériau RHO_F, VISC_F et OUV_MIN sont obligatoires avec les modélisations xxx_JOINT_HYME
+"""),
+
+
+16 : _("""
+  Les données matériau RHO_F, VISC_F et OUV_MIN sont incompatibles avec les modélisations xxx_JOINT
+"""),
+
+
 }

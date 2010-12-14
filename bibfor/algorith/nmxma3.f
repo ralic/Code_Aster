@@ -3,9 +3,9 @@
      &                  MEASSE)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 13/12/2010   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -56,41 +56,6 @@ C IN  LCALME : SI MATR_ELEM A CALCULER
 C      
 C ----------------------------------------------------------------------
 C
-      CHARACTER*6  TYPMAT 
-      INTEGER      IMATR
-      CHARACTER*19 MATASS  
-      CHARACTER*16 OPTASS        
-      LOGICAL      LCALC,LASSE
-C      
-C ----------------------------------------------------------------------
-C
-         
-C
-C --- CALCUL ET ASSEMBLAGE DES MATR_ELEM
-C      
-      DO 10 IMATR = 1,NBMATR
-C
-C --- MATR_ELEM COURANTE
-C      
-        TYPMAT = LTYPMA(IMATR)    
-        LCALC  = LCALME(IMATR)
-        LASSE  = LASSME(IMATR)
-        OPTASS = LOPTMA(IMATR)
-C
-C --- CALCULER MATR_ELEM 
-C           
-        IF (LCALC) THEN
-C --- IL FAUT UTILISEZ NMXMAT !!          
-          CALL ASSERT(.FALSE.)               
-        ENDIF
-C
-C --- ASSEMBLER MATR_ELEM EN MATR_ASSE
-C             
-        IF (LASSE) THEN
-          CALL NMCHEX(MEASSE,'MEASSE',TYPMAT,MATASS)
-          CALL NMASSM(FONACT,LISCHA,SOLVEU,NUMEDD,TYPMAT,
-     &                OPTASS,MEELEM,MATASS)
-        ENDIF
-  10  CONTINUE 
+      CALL ASSERT(.FALSE.)
 C
       END

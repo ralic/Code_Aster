@@ -1,9 +1,9 @@
       SUBROUTINE TE0336 ( OPTION , NOMTE )
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 15/04/2008   AUTEUR CNGUYEN C.NGUYEN 
+C MODIF ELEMENTS  DATE 14/12/2010   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
@@ -68,10 +68,12 @@ C                DIMENSIONNE  A  NEQMAX CMP MAX * 9 NO MAX
 C ----------------------------------------------------------------------
       PARAMETER         ( NPGMAX = 9 , NNOMAX = 9 , NEQMAX = 16 )
 C ----------------------------------------------------------------------
+      CHARACTER*6        TYPMOD
       CHARACTER*16       OPTION , NOMTE
       INTEGER            NNO ,    KP ,   I
       INTEGER            NCEQ,    IDCP,  ICONT,  IDEFO, IEQUIF
       INTEGER            NPG , NNOS, NCMP
+      INTEGER            NDIM1,NBVA
       REAL*8             EQPG(NEQMAX*NPGMAX),    EQNO(NEQMAX*NNOMAX)
       REAL*8             SIGMA(6) ,DEFORM(6)
 C
@@ -92,6 +94,13 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C
+
+      NBVA = 0
+
+      CALL EQCARA(NOMTE,TYPMOD,NDIM1,NCEQ,NCMP,NBVA)
+
+      IF (NBVA .EQ. 0) NBVA = 4
+
       CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO)
 
       IF ( OPTION(11:14) .EQ. 'EPSI' )  THEN
@@ -156,7 +165,7 @@ C
               DO 103 KP = 1,NPG
                   IDCP = (KP-1) * NCEQ
                   DO 109 I = 1,4
-                      SIGMA(I) = ZR(ICONT+(KP-1)*4+I-1)
+                      SIGMA(I) = ZR(ICONT+(KP-1)*NBVA+I-1)
  109              CONTINUE
                   SIGMA(5) = 0.D0
                   SIGMA(6) = 0.D0

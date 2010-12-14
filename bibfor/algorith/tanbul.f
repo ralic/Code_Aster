@@ -1,0 +1,77 @@
+      SUBROUTINE TANBUL ( NDIM, KPG, IMATE, COMPOR, ALPHA, DSBDEP )
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ALGORITH  DATE 14/12/2010   AUTEUR PROIX J-M.PROIX 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C ======================================================================
+C RESPONSABLE PROIX J-M.PROIX
+      IMPLICIT NONE
+
+      INTEGER NDIM, KPG, IMATE
+
+      REAL*8 ALPHA, DSBDEP(6,6)
+
+      CHARACTER*16 COMPOR(4)
+
+C......................................................................
+C     BUT:  CALCUL DE LA MATRICE TANGENTE BULLE
+C......................................................................
+C IN  NDIM    : DIMENSION DE L'ESPACE
+C IN  KPG     : NUMERO DU POINT DE GAUSS
+C IN  IMATE   : NUMERO DU MATERIAU
+C IN  COMPOR  : NOM DU COMPORTEMENT
+C OUT  ALPHA  : INVERSE DU MODULE DE COMPRESSIBILITE 1/KAPPA
+C OUT  DSBDEP : MATRICE TANGENTE BULLE
+C......................................................................
+
+      INTEGER K, L
+
+      REAL*8 E, NU, DEUXMU, TROISK, VALRES(2)
+
+      CHARACTER*2 FB2, CRET(2)
+      CHARACTER*8 NOMRES(2)
+
+C - INITIALISATION
+      CALL R8INIR(36, 0.D0, DSBDEP, 1)
+
+      IF (.NOT.( COMPOR(1)(1:4) .EQ. 'ELAS'.OR.
+     &     COMPOR(1)(1:9) .EQ. 'VMIS_ISOT' )) THEN
+            CALL U2MESK('F','ALGORITH4_50',1,COMPOR(1))
+      ENDIF
+
+C - RECUPERATION DE E ET NU DANS LE FICHIER PYTHON
+      FB2 = 'F '
+      NOMRES(1)='E'
+      NOMRES(2)='NU'
+      CALL RCVALB('RIGI',KPG,1,'+',IMATE,' ','ELAS',0,' ',0.D0,2,NOMRES,
+     &            VALRES,CRET,FB2)
+      E  = VALRES(1)
+      NU = VALRES(2)
+      ALPHA=(3.D0*(1.D0-2.D0*NU))/E
+
+      DEUXMU = E/(1.D0+NU)
+      TROISK = E/(1.D0-2.D0*NU)
+
+      DO 10 K=1,3
+        DO 20 L=1,3
+          DSBDEP(K,L)=DSBDEP(K,L)+(TROISK/3.D0-DEUXMU/(3.D0))
+ 20     CONTINUE
+ 10   CONTINUE
+      DO 30 K=1,2*NDIM
+        DSBDEP(K,K) = DSBDEP(K,K) + DEUXMU
+ 30   CONTINUE
+
+      END

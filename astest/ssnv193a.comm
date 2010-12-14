@@ -1,9 +1,9 @@
-# MODIF  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 13/12/2010   AUTEUR ABBAS M.ABBAS 
 # TITRE CONTACT AVEC MACRO-ELEMENTS STATIQUE
-# ssnv193a.para = tps_job 700 mem_job 300Mo ncpus 1 liste_test V
+# ssnv193a.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test V
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -19,169 +19,277 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
 
+
 DEBUT(CODE=_F(NOM='SSNV193A',
-              NIV_PUB_WEB='INTERNET',),);
+              NIV_PUB_WEB='INTERNET',),
+#              IGNORE_ALARM=('MECANONLINE5_4',),
+              );
 
-PRE_GMSH();
 
-MA=LIRE_MAILLAGE();
+MA=LIRE_MAILLAGE(FORMAT='MED');
 
+MA=MODI_MAILLAGE(reuse =MA,
+                   MAILLAGE=MA,
+                   ORIE_PEAU_3D=(_F(GROUP_MA='Esclave',),
+                                 _F(GROUP_MA='Maitre',),),);
 MA=DEFI_GROUP(reuse =MA,
               MAILLAGE=MA,
-              CREA_GROUP_MA=(_F(NOM='Cube1',
-                                GROUP_MA='GM1',),
-                             _F(NOM='Cube2',
-                                GROUP_MA='GM8',),
-                             _F(NOM='Haut',
-                                GROUP_MA='GM9',),
-                             _F(NOM='Interf',
-                                GROUP_MA='GM2',),
-                             _F(NOM='Esclave',
-                                GROUP_MA='GM3',),
-                           #  _F(NOM='Bord1',
-                           #     GROUP_MA='GM4',),
-                           #  _F(NOM='Bord2',
-                           #     GROUP_MA='GM10',),
-                             _F(NOM='Base',
-                                GROUP_MA='GM5',),
-                             _F(NOM='Maitre',
-                                GROUP_MA='GM6',),
-                           #  _F(NOM='Bords',
-                           #     UNION=('Bord1','Bord2',),),
-                                ),);
-
-MA=DEFI_GROUP(reuse =MA,
-              MAILLAGE=MA,
-              CREA_GROUP_NO=(
-              #_F(GROUP_MA='Bords',
-              #                  NOM='Bords',),
-                             _F(GROUP_MA='Esclave',
-                                NOM='Esclave',),   
+              CREA_GROUP_NO=(                                                                         _F(GROUP_MA='Esclave',
+                                NOM='Esclave',),
                              _F(GROUP_MA='Interf',
                                 NOM='Interf',),
-                             _F(GROUP_MA='GM9',
-                                NOM='Haut',),
-                             _F(GROUP_MA='GM2',
-                                NOM='GM2',),
-                            # _F(DIFFE=('Bords','Haut','GM2',),
-                            #    NOM='Bord2',),
-                                ),);
+                             _F(GROUP_MA='Haut',
+                                NOM='Haut',),                           
+                                
+                              ),);
 
-ACIER=DEFI_MATERIAU(ELAS=_F(E=150000000000.0,
+ACIER=DEFI_MATERIAU(ELAS=_F(E=210.E9,
                             NU=0.3,
                             RHO=7800.0,),);
 
-CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
-                    AFFE=_F(TOUT='OUI',
-                            MATER=ACIER,),);
-#CREATION DU MACRO-ELEMENT STATIQUE
+RIGID=DEFI_MATERIAU(ELAS=_F(E=210.E15,
+                            NU=0.3,
+                            RHO=7800.0,),);
 
+
+LISTIN1=DEFI_LIST_REEL(DEBUT=0.0,
+                       INTERVALLE=_F(JUSQU_A=1.0,
+                                     NOMBRE=2,),);
+
+
+RAMPE=DEFI_FONCTION(NOM_PARA='INST',
+                    PROL_GAUCHE='LINEAIRE',
+                    PROL_DROITE='LINEAIRE',
+                    VALE=(0.0,0.0,1.0,1.0,)
+                    )
+
+# CALCUL DE REFERENCE SANS MACRO_ELEMENTS
+
+CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
+                    AFFE=(_F(TOUT='OUI',
+                            MATER=ACIER,),
+                          _F(GROUP_MA='Cube1',
+                            MATER=RIGID,)  
+                            )
+                            ,);             
+
+MO=AFFE_MODELE(MAILLAGE=MA,
+               AFFE=_F(TOUT='OUI',
+                       PHENOMENE='MECANIQUE',
+                       MODELISATION='3D',),);
+
+ENCAST=AFFE_CHAR_CINE(MODELE=MO,
+                      MECA_IMPO=_F(GROUP_MA='Maitre',
+                                  DX=0.0,
+                                  DY=0.0,
+                                  DZ=0.0,),);
+
+
+CONTC =DEFI_CONTACT(MODELE    = MO,
+                  FORMULATION  = 'CONTINUE',
+                  ZONE=(
+                        _F(
+                          GROUP_MA_MAIT='Maitre',
+                          GROUP_MA_ESCL='Esclave',
+                          CONTACT_INIT='OUI',
+                         ),                         
+                       ),  
+                  )
+
+DEPL=AFFE_CHAR_MECA(MODELE=MO,
+                     DDL_IMPO=_F(GROUP_MA='Haut',
+                                 DX=0.0,
+                                 DY=0.0,
+                                 DZ=-0.1,),)
+                                 
+UCTCC=STAT_NON_LINE(MODELE=MO,
+                CHAM_MATER=CHMAT,
+                EXCIT=(
+                        _F(CHARGE=ENCAST,),
+                        _F(CHARGE=DEPL,FONC_MULT=RAMPE),
+                      ),
+                CONTACT = CONTC,
+                COMP_INCR=(_F(RELATION='ELAS',
+                              TOUT='OUI',),
+                          ),
+                INCREMENT=_F(LIST_INST=LISTIN1,),
+                NEWTON=_F(MATRICE='ELASTIQUE',
+                          REAC_ITER=1,),    
+                SOLVEUR=_F(SYME='OUI',),               
+                INFO=1,);
+
+TEST_RESU(RESU=_F(RESULTAT=UCTCC,
+                  NUME_ORDRE=2,
+                  NOM_CHAM='VALE_CONT',
+                  NOM_CMP='RZ',
+                  GROUP_NO='A',
+                  VALE=-1.3801560770878E+09,
+                  CRITERE='RELATIF',
+                  PRECISION=1E-6,
+                  REFERENCE='NON_REGRESSION',
+                  VERSION='10.3.0',),);
+                  
+TEST_RESU(RESU=_F(RESULTAT=UCTCC,
+                  NUME_ORDRE=2,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DZ',
+                  GROUP_NO='A',
+                  VALE=0.0,
+                  CRITERE='ABSOLU',
+                  PRECISION=1E-12,
+                  REFERENCE='ANALYTIQUE',
+                  VERSION='10.3.0',),);                  
+                
+                
+#CREATION DU MACRO-ELEMENT STATIQUE
 MODSS=AFFE_MODELE(MAILLAGE=MA,
-                  AFFE=_F(GROUP_MA=('Cube2','Haut','Interf',),
+                  AFFE=_F(
+                  GROUP_MA=('Cube2','Esclave','Haut',), 
                           PHENOMENE='MECANIQUE',
                           MODELISATION='3D',),);
 
 CHF31=AFFE_CHAR_MECA(MODELE=MODSS,
-                     DDL_IMPO=_F(GROUP_NO='Haut',
+                     DDL_IMPO=_F(GROUP_MA='Haut',
                                  DX=0.0,
                                  DY=0.0,
-                                 DZ=-1.0,),);
+                                 DZ=-0.1,),);
+                                 
 MACSS=MACR_ELEM_STAT(DEFINITION=_F(MODELE=MODSS,
                                    CHAM_MATER=CHMAT,
                                    CHAR_MACR_ELEM=CHF31,),
-                     EXTERIEUR=_F(GROUP_NO='Interf',),
+                     EXTERIEUR=_F(GROUP_NO=('Esclave')),
                      RIGI_MECA=_F(),
                      CAS_CHARGE=_F(NOM_CAS='K1',
                                    SUIV='OUI',
                                    CHARGE=CHF31,),);
 
 MAYSS=DEFI_MAILLAGE(DEFI_SUPER_MAILLE=_F(MACR_ELEM=MACSS,
-                                   SUPER_MAILLE='MAILLE1',),
-                    RECO_GLOBAL=_F(TOUT='OUI',),
-                    DEFI_NOEUD=_F(TOUT='OUI',
-                                  INDEX=(1,0,1,8,),),);
-#FIN DU MACRO
-
+                                   SUPER_MAILLE='MAILLE1',),                                        DEFI_NOEUD=_F(TOUT='OUI',
+                                  INDEX=(1,0,1,8,),),
+                                  );
+#FIN DU MACRO-ELEMENT STATIQUE
 MAG=ASSE_MAILLAGE(MAILLAGE_1=MA,
                   MAILLAGE_2=MAYSS,
                   OPERATION='SOUS_STR',);
-
-MO=AFFE_MODELE(MAILLAGE=MAG,
+                  
+CHMAT2=AFFE_MATERIAU(MAILLAGE=MAG,
+                    AFFE=(_F(TOUT='OUI',
+                            MATER=ACIER,),
+                          _F(GROUP_MA='Cube1',
+                            MATER=RIGID,)  
+                            ),);
+                            
+MOMACR=AFFE_MODELE(MAILLAGE=MAG,
                AFFE_SOUS_STRUC=_F(SUPER_MAILLE='MAILLE1',
                                   PHENOMENE='MECANIQUE',),
                AFFE=_F(GROUP_MA=('Cube1','Maitre','Base',),
                        PHENOMENE='MECANIQUE',
                        MODELISATION='3D',),);
-
-LISTIN1=DEFI_LIST_REEL(DEBUT=0.0,
-                       INTERVALLE=_F(JUSQU_A=0.1,
-                                     NOMBRE=20,),);
-
-CHF3_1=AFFE_CHAR_MECA(MODELE=MO,
-                      DDL_IMPO=_F(GROUP_MA='Base',
-                                  DX=0.0,
-                                  DY=0.0,
-                                  DZ=0.0,),);
-
-
-CHF2_1 =DEFI_CONTACT(MODELE    = MO,
+                           
+CONTC2 =DEFI_CONTACT(MODELE    = MOMACR,
+                  FORMULATION  = 'CONTINUE',
+                  ZONE=(
+                        _F(
+                          GROUP_MA_MAIT='Maitre',
+                          GROUP_MA_ESCL='Esclave',
+                          CONTACT_INIT='OUI',
+                         ),                         
+                       ),);
+CONTD2 =DEFI_CONTACT(MODELE    = MOMACR,
                   FORMULATION  = 'DISCRETE',
-                  REAC_GEOM    = 'CONTROLE',
-                  NB_ITER_GEOM = 1,
-
                   ZONE=(
                         _F(
                           GROUP_MA_MAIT='Maitre',
                           GROUP_MA_ESCL='Esclave',
                          ),                         
-                       ),  
-                  )
-
-CHMAT2=AFFE_MATERIAU(MAILLAGE=MAG,
-                     AFFE=_F(TOUT='OUI',
-                             MATER=ACIER,),);
-
-U=STAT_NON_LINE(SOLVEUR=_F(SYME='OUI',),
-                MODELE=MO,
+                       ),);
+                                             
+ENCAST2=AFFE_CHAR_CINE(MODELE=MOMACR,
+                      MECA_IMPO=_F(GROUP_MA='Maitre',
+                                  DX=0.0,
+                                  DY=0.0,
+                                  DZ=0.0,),); 
+                                                           
+UMCTCC=STAT_NON_LINE(MODELE=MOMACR,
                 CHAM_MATER=CHMAT2,
-                EXCIT=(_F(CHARGE=CHF3_1,),
-                       ),
-                CONTACT = CHF2_1,       
+                SOLVEUR=_F(SYME='OUI',),
+                EXCIT=(
+                        _F(CHARGE=ENCAST2,),
+                      ),
+                CONTACT = CONTC2,       
                 SOUS_STRUC=_F(CAS_CHARGE='K1',
-                              SUPER_MAILLE='MAILLE1',),
+                              FONC_MULT=RAMPE,
+                           SUPER_MAILLE='MAILLE1',),
                 COMP_INCR=(_F(RELATION='ELAS',
                               TOUT='OUI',),
-                           _F(RELATION='ELAS',
-                              GROUP_MA=('Cube1','Maitre','Base',),),),
+                          ),
                 INCREMENT=_F(LIST_INST=LISTIN1,),
                 NEWTON=_F(MATRICE='ELASTIQUE',
-                          REAC_ITER=1,),
-                CONVERGENCE=_F(RESI_GLOB_MAXI=0.01,
-                               ITER_GLOB_MAXI=10,
-                               ARRET='NON',),
+                          REAC_ITER=1,),         
                 INFO=1,);
 
-TEST_RESU(RESU=_F(RESULTAT=U,
-                  NUME_ORDRE=20,
+TEST_RESU(RESU=_F(RESULTAT=UMCTCC,
+                  NUME_ORDRE=2,
                   NOM_CHAM='VALE_CONT',
                   NOM_CMP='RZ',
-                  NOEUD='N1',
-                  VALE=-1.684812E+08,
+                  GROUP_NO='A',
+                  VALE=-1.3801560770878E+09,
                   CRITERE='RELATIF',
                   PRECISION=1E-6,
-                  REFERENCE='NON_REGRESSION',
-                  VERSION='8.3.2',),);
-
-TEST_RESU(RESU=_F(RESULTAT=U,
-                  NUME_ORDRE=20,
-                  NOM_CHAM='VALE_CONT',
-                  NOM_CMP='RZ',
-                  NOEUD='N410',
-                  VALE=-6.85123E+08,
-                  CRITERE='RELATIF',
-                  PRECISION=1E-6,
-                  REFERENCE='NON_REGRESSION',
-                  VERSION='8.3.2',),);
+                  REFERENCE='AUTRE_ASTER',
+                  VERSION='10.3.0',),);
                   
+TEST_RESU(RESU=_F(RESULTAT=UMCTCC,
+                  NUME_ORDRE=2,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DZ',
+                  GROUP_NO='A',
+                  VALE=0.0,
+                  CRITERE='ABSOLU',
+                  PRECISION=1E-12,
+                  REFERENCE='ANALYTIQUE',
+                  VERSION='10.3.0',),); 
+                  
+                                  
+UMCTCD=STAT_NON_LINE(MODELE=MOMACR,                                           
+                   CHAM_MATER=CHMAT2,
+                   SOLVEUR=_F(SYME='OUI',),
+                EXCIT=(
+                        _F(CHARGE=ENCAST2,),
+                      ),
+                CONTACT = CONTD2,       
+                SOUS_STRUC=_F(CAS_CHARGE='K1',
+                              FONC_MULT=RAMPE,
+                           SUPER_MAILLE='MAILLE1',),
+                COMP_INCR=(_F(RELATION='ELAS',
+                              TOUT='OUI',),
+                          ),
+                INCREMENT=_F(LIST_INST=LISTIN1,),
+                NEWTON=_F(MATRICE='ELASTIQUE',
+                          REAC_ITER=1,),         
+                INFO=1,);
+
+TEST_RESU(RESU=_F(RESULTAT=UMCTCD,
+                  NUME_ORDRE=2,
+                  NOM_CHAM='VALE_CONT',
+                  NOM_CMP='RZ',
+                  GROUP_NO='A',
+                  VALE=-1.3801560770878E+09,
+                  CRITERE='RELATIF',
+                  PRECISION=1E-6,
+                  REFERENCE='AUTRE_ASTER',
+                  VERSION='10.3.0',),);
+                  
+TEST_RESU(RESU=_F(RESULTAT=UMCTCD,
+                  NUME_ORDRE=2,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DZ',
+                  GROUP_NO='A',
+                  VALE=0.0,
+                  CRITERE='ABSOLU',
+                  PRECISION=1E-12,
+                  REFERENCE='ANALYTIQUE',
+                  VERSION='10.3.0',),);          
+          
 
 FIN();

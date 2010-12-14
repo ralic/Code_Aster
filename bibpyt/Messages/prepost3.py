@@ -1,8 +1,8 @@
-#@ MODIF prepost3 Messages  DATE 11/10/2010   AUTEUR DELMAS J.DELMAS 
+#@ MODIF prepost3 Messages  DATE 14/12/2010   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -51,9 +51,6 @@ cata_msg = {
  soit le fichier n'existe pas, soit c'est une mauvaise version de hdf (utilise par med).
 """),
 
-30 : _("""
- on a trouve plusieurs champs pour le même DATASET
-"""),
 
 31 : _("""
  on n'a pas trouvé le numéro d'ordre à l'adresse indiquée
@@ -202,17 +199,5 @@ cata_msg = {
  pour le paramètre donné on n'a pas trouvé la fonction.
 """),
 
-96 : _("""
- l'option FORC_NODA_NONL doit être appelée seule
-"""),
-
-97 : _("""
- avec l'option FORC_NODA_NONL il faut que le résultat de la commande 
- soit différent de l'argument "RESULTAT" :  %(k1)s 
-"""),
-
-98 : _("""
- l'option FORC_NODA_NONL doit être calculée sur un résultat DYNA_TRANS
-"""),
 
 }

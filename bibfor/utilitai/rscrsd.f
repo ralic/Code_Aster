@@ -4,9 +4,9 @@
       INTEGER NBORDR
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 07/12/2010   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 13/12/2010   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -43,7 +43,7 @@ C                      C H A M P _ M E C A N I Q U E
 C     ------------------------------------------------------------------
       PARAMETER (NCMEC1=42)
       PARAMETER (NCMEC2=56)
-      PARAMETER (NCMEC3=37)
+      PARAMETER (NCMEC3=40)
       PARAMETER (NCMECA=NCMEC1+NCMEC2+NCMEC3)
       CHARACTER*16 CHMEC1(NCMEC1)
       CHARACTER*16 CHMEC2(NCMEC2)
@@ -117,7 +117,7 @@ C      '1234567890123456','1234567890123456','1234567890123456',
      & 'EQUI_ELGA_EPME',  'EQUI_ELNO_EPME',   'EQUI_NOEU_EPME',
      & 'DEDE_ELNO_DLDE',  'DEDE_NOEU_DLDE',   'DESI_ELNO_DLSI',
      & 'DESI_NOEU_DLSI',  'PMPB_ELGA_SIEF',   'PMPB_ELNO_SIEF',
-     & 'PMPB_NOEU_SIEF', 'EPFP_ELNO',
+     & 'PMPB_NOEU_SIEF',  'EPFP_ELNO',
      & 'EPFP_ELGA',       'EPFD_ELNO',        'EPFD_ELGA',
      & 'EPVC_ELNO',       'EPVC_ELGA',        'VALE_CONT',
      & 'VARI_ELNO_COQU',  'CRIT_ELNO_RUPT',   'ETOT_ELGA',
@@ -126,7 +126,8 @@ C      '1234567890123456','1234567890123456','1234567890123456',
      & 'INDI_LOCA_ELGA',  'EXTR_ELGA_VARI',   'EXTR_ELNO_VARI',
      & 'EXTR_NOEU_VARI',  'MODE_MECA',        'SIEF_SENO_SEGA',
      & 'COHE_ELGA',       'INDC_ELGA',        'SECO_ELGA',
-     & 'VARC_ELGA',       'FERRAILLAGE'/
+     & 'VARC_ELGA',       'FERRAILLAGE',      'EPVC_NOEU',
+     & 'EPFD_NOEU',       'EPFP_NOEU'/
 
 C     ------------------------------------------------------------------
 C                      C H A M P _ T H E R M I Q U E

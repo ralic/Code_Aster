@@ -1,9 +1,9 @@
-# MODIF  DATE 17/02/2009   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 13/12/2010   AUTEUR SELLENET N.SELLENET 
 # TITRE PRISE EN COMPTE DE LA DILATATION THERMIQUE ET DU FLUAGE DE DESSICCATION DANS LE MODELE BETON_UMLV_FP
-# ssnv180a.para = tps_job 70 mem_job 32Mo ncpus 1 liste_test R
+# ssnv180a.para = tps_job 80 mem_job 32Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -234,6 +234,10 @@ U=CALC_ELEM(reuse=U,
             OPTION=('EPSI_ELNO_DEPL','EPVC_ELGA','EPVC_ELNO','EPFP_ELGA','EPFD_ELGA',
                     'EPFP_ELNO','EPFD_ELNO',),)
 
+U=CALC_NO(reuse=U,
+          RESULTAT=U,
+          OPTION=('EPVC_NOEU','EPFD_NOEU','EPFP_NOEU'),)
+
 RELEVE_=POST_RELEVE_T(ACTION=(
                    _F(  RESULTAT = U,
                             INTITULE = 'DEPL',
@@ -246,6 +250,78 @@ RELEVE_=POST_RELEVE_T(ACTION=(
                             ), )
 # TESTS SUR LES DEFORMATIONS TOTALES
 TEST_RESU(RESU=(
+      _F( RESULTAT = U,
+          NOM_CHAM = 'EPVC_ELGA',
+          MAILLE = 'M1',
+          POINT=1,
+          NUME_ORDRE=49,
+          NOM_CMP = 'EPTHER_L',
+          VALE = 8.3E-06,
+          PRECISION = 0.001,
+          REFERENCE = 'NON_REGRESSION'),
+      _F( RESULTAT = U,
+          NOM_CHAM = 'EPVC_ELGA',
+          MAILLE = 'M1',
+          POINT=1,
+          NUME_ORDRE=49,
+          NOM_CMP = 'EPTHER_T',
+          VALE = 8.3E-06,
+          PRECISION = 0.001,
+          REFERENCE = 'NON_REGRESSION'),
+      _F( RESULTAT = U,
+          NOM_CHAM = 'EPVC_ELGA',
+          MAILLE = 'M1',
+          POINT=1,
+          NUME_ORDRE=49,
+          NOM_CMP = 'EPTHER_N',
+          VALE = 8.3E-06,
+          PRECISION = 0.001,
+          REFERENCE = 'NON_REGRESSION'),
+      _F( RESULTAT = U,
+          NOM_CHAM = 'EPVC_ELGA',
+          MAILLE = 'M1',
+          POINT=1,
+          NUME_ORDRE=49,
+          NOM_CMP = 'EPSECH',
+          VALE = -2.07500E-05,
+          PRECISION = 0.001,
+          REFERENCE = 'NON_REGRESSION'),
+      _F( RESULTAT = U,
+          NOM_CHAM = 'EPVC_ELGA',
+          MAILLE = 'M1',
+          POINT=1,
+          NUME_ORDRE=49,
+          NOM_CMP = 'EPHYDR',
+          VALE = -6.0E-05,
+          PRECISION = 0.001,
+          REFERENCE = 'NON_REGRESSION'),
+      _F( RESULTAT = U,
+          NOM_CHAM = 'EPFD_ELGA',
+          MAILLE = 'M1',
+          POINT=1,
+          NUME_ORDRE=49,
+          NOM_CMP = 'EPXX',
+          VALE = 2.80675E-22,
+          PRECISION = 0.001,
+          REFERENCE = 'NON_REGRESSION'),
+      _F( RESULTAT = U,
+          NOM_CHAM = 'EPFD_ELGA',
+          MAILLE = 'M1',
+          POINT=1,
+          NUME_ORDRE=49,
+          NOM_CMP = 'EPYY',
+          VALE = -3.89732E-22,
+          PRECISION = 0.001,
+          REFERENCE = 'NON_REGRESSION'),
+      _F( RESULTAT = U,
+          NOM_CHAM = 'EPFD_ELGA',
+          MAILLE = 'M1',
+          POINT=1,
+          NUME_ORDRE=49,
+          NOM_CMP = 'EPZZ',
+          VALE = -4.69811E-05,
+          PRECISION = 0.001,
+          REFERENCE = 'NON_REGRESSION'),
       _F( RESULTAT = U,
           NOM_CHAM = 'EPSI_ELNO_DEPL',
           MAILLE = 'M1',
@@ -353,6 +429,33 @@ TEST_RESU(RESU=(
           VALE = -1.132E-03,
           PRECISION = 0.005,
           REFERENCE = 'ANALYTIQUE'),
+        ),)
+
+TEST_RESU(RESU=(
+      _F( RESULTAT = U,
+          NOM_CHAM = 'EPVC_NOEU',
+          NOEUD = 'N1',
+          INST = 64800000.,
+          NOM_CMP = 'EPTHER_L',
+          VALE = 2.00000E-04,
+          PRECISION = 0.005,
+          REFERENCE = 'NON_REGRESSION'),
+      _F( RESULTAT = U,
+          NOM_CHAM = 'EPFD_NOEU',
+          NOEUD = 'N1',
+          INST = 64800000.,
+          NOM_CMP = 'EPZZ',
+          VALE = -1.13208E-03,
+          PRECISION = 0.005,
+          REFERENCE = 'NON_REGRESSION'),
+      _F( RESULTAT = U,
+          NOM_CHAM = 'EPFP_NOEU',
+          NOEUD = 'N1',
+          INST = 64800000.,
+          NOM_CMP = 'EPZZ',
+          VALE = -4.18390E-04,
+          PRECISION = 0.005,
+          REFERENCE = 'NON_REGRESSION'),
         ),)
 
 FIN()

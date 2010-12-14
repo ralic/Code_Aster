@@ -8,10 +8,10 @@
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 20/04/2010   AUTEUR JAUBERT A.JAUBERT 
+C MODIF ALGORITH  DATE 14/12/2010   AUTEUR PELLET J.PELLET 
 C RESPONSABLE GRANET S.GRANET
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -63,7 +63,7 @@ C ======================================================================
       REAL*8       RHO12,RHO21,CP22
       REAL*8       PADM,RHO22,EM
       REAL*8       EPS
-      PARAMETER  ( EPS = 1.D-21 ) 
+      PARAMETER  ( EPS = 1.D-21 )
       LOGICAL      EMMAG
 C ======================================================================
 C --- DECLARATIONS PERMETTANT DE RECUPERER LES CONSTANTES MECANIQUES ---
@@ -99,7 +99,7 @@ C =====================================================================
      +             RBID27, RBID28, RBID29, MAMOLG, CP21, RBID32,
      +             RBID33, RBID34, RBID35, MAMOLV, CP12, RBID38,
      +             RBID39, RBID45, RBID46, CP22,   KH,   RBID49,
-     >             EM,RBID50,R3BID,RBID51,RINSTP) 
+     >             EM,RBID50,R3BID,RBID51,RINSTP)
 C ======================================================================
 C --- INITIALISATIONS --------------------------------------------------
 C ======================================================================
@@ -131,8 +131,8 @@ C =====================================================================
 C *********************************************************************
 C *** LES VARIABLES INTERNES ******************************************
 C *********************************************************************
-      IF ((OPTION(1:9).EQ.'RAPH_MECA') .OR.
-     &    (OPTION(1:9).EQ.'FORC_NODA').OR.
+      IF ((OPTION.EQ.'RAPH_MECA') .OR.
+     &    (OPTION.EQ.'FORC_NODA').OR.
      &    (OPTION(1:9).EQ.'FULL_MECA')) THEN
 C =====================================================================
 C --- CALCUL DE LA VARIABLE INTERNE DE POROSITE SELON FORMULE DOCR ----
@@ -233,7 +233,7 @@ C =====================================================================
 C ======================================================================
 C --- CALCUL DES ENTHALPIES SELON FORMULE DOCR -------------------------
 C ======================================================================
-         IF ((OPTION(1:9).EQ.'RAPH_MECA') .OR.
+         IF ((OPTION.EQ.'RAPH_MECA') .OR.
      +       (OPTION(1:9).EQ.'FULL_MECA')) THEN
             CONGEP(ADCP11+NDIM+1) = CONGEP(ADCP11+NDIM+1)
      +              + ENTEAU(DT,ALPLIQ,T,RHO11,DP2,DP1,DPAD,SIGNE,CP11)
@@ -255,7 +255,7 @@ C ======================================================================
 C ======================================================================
 C --- CALCUL SI PAS RIGI_MECA_TANG -------------------------------------
 C ======================================================================
-      IF ((OPTION(1:9).EQ.'RAPH_MECA') .OR.
+      IF ((OPTION.EQ.'RAPH_MECA') .OR.
      +    (OPTION(1:9).EQ.'FULL_MECA')) THEN
 C ======================================================================
 C --- CALCUL DES CONTRAINTES DE PRESSIONS ------------------------------
@@ -267,10 +267,10 @@ C ======================================================================
 C ======================================================================
 C --- CALCUL DES APPORTS MASSIQUES SELON FORMULE DOCR ------------------
 C ======================================================================
-         
+
          CONGEP(ADCP11) = APPMAS(M11M,PHI,PHIM,SAT,SATM,RHO11,
      +                                                RHO11M,EPSV,EPSVM)
-        
+
          CONGEP(ADCP12) = APPMAS(M12M,PHI,PHIM,1.0D0-SAT,
      +                               1.0D0-SATM,RHO12,RHO12M,EPSV,EPSVM)
          CONGEP(ADCP21) = APPMAS(M21M,PHI,PHIM,1.0D0-SAT,
@@ -312,7 +312,7 @@ C ======================================================================
      +       DSDE(ADCP12,ADDEME+NDIM-1+I) + DMDEPV(RHO12,1.0D0-SAT,BIOT)
                DSDE(ADCP21,ADDEME+NDIM-1+I) =
      +       DSDE(ADCP21,ADDEME+NDIM-1+I) + DMDEPV(RHO21,1.0D0-SAT,BIOT)
-               DSDE(ADCP22,ADDEME+NDIM-1+I) = 
+               DSDE(ADCP22,ADDEME+NDIM-1+I) =
      +             DSDE(ADCP22,ADDEME+NDIM-1+I) + DMDEPV(RHO22,SAT,BIOT)
  10         CONTINUE
          ENDIF

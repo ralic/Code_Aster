@@ -1,4 +1,4 @@
-# MODIF  DATE 07/12/2010   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 14/12/2010   AUTEUR PROIX J-M.PROIX 
 # TITRE VALIDATION MONOCRISTAL CHARGEMENT CYCLIQUE
 # ssnd109a.para = tps_job 150 mem_job 60Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -45,19 +45,19 @@ COEF=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.0,0.0,
 
 ACIER=DEFI_MATERIAU(ELAS=_F(E=190000.0,
                             NU=0.3,),
-                    ECOU_VISC1=_F(N=10.,
+                    MONO_VISC1=_F(N=10.,
                                   K=10.,
                                   C=100000.,),
-                    ECRO_ISOT1=_F(R_0=40.,
+                    MONO_ISOT1=_F(R_0=40.,
                                   Q=0.,
                                   B=5.,
                                   H=0.,),
-                    ECRO_CINE1=_F(D=4150.,),);
+                    MONO_CINE1=_F(D=4150.,),);
 
 CMP_MONO=DEFI_COMPOR(MONOCRISTAL=_F(MATER=ACIER,
-                                    ECOULEMENT='ECOU_VISC1',
-                                    ECRO_ISOT='ECRO_ISOT1',
-                                    ECRO_CINE='ECRO_CINE1',
+                                    ECOULEMENT='MONO_VISC1',
+                                    ECRO_ISOT='MONO_ISOT1',
+                                    ECRO_CINE='MONO_CINE1',
                                     ELAS='ELAS',
                                     FAMI_SYST_GLIS='OCTAEDRIQUE',),);
 

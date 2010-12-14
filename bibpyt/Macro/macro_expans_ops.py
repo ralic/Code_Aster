@@ -1,8 +1,8 @@
-#@ MODIF macro_expans_ops Macro  DATE 12/07/2010   AUTEUR BERARD A.BERARD 
+#@ MODIF macro_expans_ops Macro  DATE 14/12/2010   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -30,7 +30,7 @@ def macro_expans_ops( self,
                       MODES_NUM=None,
                       MODES_EXP=None,
                       RESOLUTION=None,
-                      *args
+                      **args
                      ):
     """!macro MACRO_EXPANS """
     from Accas import _F
@@ -47,6 +47,13 @@ def macro_expans_ops( self,
     NORM_MODE = self.get_cmd('NORM_MODE')
 
 
+    RESU_NUM = MODELE_CALCUL['BASE']
+    RESU_EXP = MODELE_MESURE['MESURE']
+    MOD_CALCUL = MODELE_CALCUL['MODELE']
+    MOD_MESURE = MODELE_MESURE['MODELE']
+    NOM_CHAM = MODELE_MESURE['NOM_CHAM']
+
+
     # La macro compte pour 1 dans la numerotation des commandes
     self.set_icmd(1)
 
@@ -56,20 +63,18 @@ def macro_expans_ops( self,
         is_nume_num = 1
     else:
         if RESU_NX:
-            UTMESS('A','MEIDEE0_6',valk=['MODELE_MESURE','RESU_EX'])
+            UTMESS('A','CALCESSAI0_6',valk=['MODELE_MESURE','RESU_EX'])
+
     if MODELE_MESURE['NUME_MODE'] or  MODELE_MESURE['NUME_ORDRE']:
         # On cree un RESU_EX par extraction de NUME_ORDREs
         is_nume_exp = 1
+        if isinstance(RESU_NUM,dyna_harmo):
+            # on ne peut pas faire de EXTR_MODE  sur un DYNA_HARMO
+            is_nume_exp = 0
+            UTMESS('A','CALCESSAI0_13')
     else:
-        if RESU_EX: UTMESS('A','MEIDEE0_6',valk=['MODELE_CALCUL','RESU_NX'])
+        if RESU_EX: UTMESS('A','CALCESSAI0_6',valk=['MODELE_CALCUL','RESU_NX'])
 
-    RESU_NUM = MODELE_CALCUL['BASE']
-    RESU_EXP = MODELE_MESURE['MESURE']
-
-    MOD_CALCUL = MODELE_CALCUL['MODELE']
-    MOD_MESURE = MODELE_MESURE['MODELE']
-
-    NOM_CHAM = MODELE_MESURE['NOM_CHAM']
 
     # Extraction des modes numériques
     # -------------------------------
@@ -133,7 +138,7 @@ def macro_expans_ops( self,
     else:
         paras = None
         #"LE MODELE MEDURE DOIT ETRE UN CONCEPT DE TYPE DYNA_HARMO OU MODE_MECA")
-        UTMESS('A','MEIDEE0_1')
+        UTMESS('A','CALCESSAI0_1')
 
 
     try:
@@ -167,15 +172,16 @@ def macro_expans_ops( self,
         self.DeclareOut( "RESU_RD", RESU_RD )
 
     nume=None
-    if resu_ex.REFD.get():
-        tmp = resu_ex.REFD.get()[3]
-        if tmp.strip() :
-            nume = self.get_concept(tmp)
-    elif NUME_DDL:
+    if NUME_DDL:
         nume = NUME_DDL
     if not nume :
-        UTMESS('A','MEIDEE0_5')
-    RESU_RD = PROJ_CHAMP( METHODE    = 'COLOCATION',
+        if resu_ex.REFD.get():
+            tmp = resu_ex.REFD.get()[3]
+            if tmp.strip() :
+                nume = self.get_concept(tmp)
+        else:
+            UTMESS('A','CALCESSAI0_5')
+    RESU_RD = PROJ_CHAMP( METHODE    = 'COLLOCATION',
                           RESULTAT   = RESU_ET,
                           MODELE_1   = MOD_CALCUL,
                           MODELE_2   = MOD_MESURE,

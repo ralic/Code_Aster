@@ -1,8 +1,8 @@
-# MODIF  DATE 19/10/2010   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 14/12/2010   AUTEUR PELLET J.PELLET 
 # TITRE VALIDATION DE PROJ_MESU_MODAL : CAS 3D, BASE (MODE_MECA)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
@@ -152,7 +152,8 @@ MESURE=LIRE_RESU(FORMAT='IDEAS_DS58',
                  UNITE=33,
                  MAILLAGE=MAILMESU,
                  TYPE_RESU='DYNA_TRANS',
-                 NOM_CHAM='SIEF_NOEU',
+                 NOM_CHAM=('DEPL','VITE','SIEF_NOEU',),
+               #  NOM_CHAM='SIEF_NOEU',
                  TOUT_ORDRE='OUI',)
 #
 # PROJECTION DES MESURES SUR LA BASE MODALE DU MODELE
@@ -163,9 +164,8 @@ REPGENE=PROJ_MESU_MODAL(
                                     BASE = MODES,),
                          MODELE_MESURE=_F( MODELE = MODLMESU,
                                     MESURE = MESURE,
-#                                    NOM_PARA = 'INST',
-                                    NOM_CHAM = 'SIEF_NOEU',
-                                    ),)
+                                    NOM_CHAM = ('DEPL','VITE','SIEF_NOEU',),),
+                        )
 
 #
 # RESTITUTION DES RESULTATS 
@@ -182,6 +182,100 @@ REPGENE=PROJ_MESU_MODAL(
 #
 REPONSE=REST_GENE_PHYS(   RESU_GENE=REPGENE,
                             TOUT_CHAM='OUI'                          )
+
+DEPL3=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL3',
+                      GROUP_NO=('NRES3'),
+                      RESULTAT=REPONSE,
+                      NOM_CHAM='DEPL',
+                      TOUT_ORDRE='OUI',
+                      NOM_CMP='DX',
+                      OPERATION='EXTRACTION',
+                      ),);
+
+#IMPR_TABLE( UNITE = 8, TABLE = DEPL3 )
+
+VITE5=POST_RELEVE_T(ACTION=_F(INTITULE='VITE5',
+                      GROUP_NO=('NRES5'),
+                      RESULTAT=REPONSE,
+                      NOM_CHAM='VITE',
+                      TOUT_ORDRE='OUI',
+                      NOM_CMP='DX',
+                      OPERATION='EXTRACTION',
+                      ),);
+
+#IMPR_TABLE( UNITE = 8, TABLE = VITE5 )
+
+# POUR TEST LIRE_RESU
+
+DEPLM=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLM',
+                      NOEUD=('N3'),
+                      RESULTAT=MESURE,
+                      NOM_CHAM='DEPL',
+                      TOUT_ORDRE='OUI',
+                      NOM_CMP='D1',
+                      OPERATION='EXTRACTION',
+                      ),);
+
+#IMPR_TABLE( UNITE = 8, TABLE = DEPLM )
+
+VITEM=POST_RELEVE_T(ACTION=_F(INTITULE='VITEM',
+                      NOEUD=('N5'),
+                      RESULTAT=MESURE,
+                      NOM_CHAM='VITE',
+                      TOUT_ORDRE='OUI',
+                      NOM_CMP='D1',
+                      OPERATION='EXTRACTION',
+                      ),);
+
+#IMPR_TABLE( UNITE = 8, TABLE = VITEM )
+
+F1=FORMULE(NOM_PARA=('DX', 'D1',),
+                VALE='abs (DX - D1)')
+
+T1=CALC_TABLE(TABLE=DEPLM,
+              ACTION=(
+                               _F(OPERATION='COMB',
+                                  TABLE=DEPL3,
+                                  NOM_PARA=('INST',),),
+                               _F(OPERATION='OPER',
+                                  NOM_PARA='DIFF',
+                                  FORMULE=F1),
+                      ),
+              TITRE='Comparaison calcul / mesure')
+
+#IMPR_TABLE( UNITE = 8, TABLE = T1 )
+
+T2=CALC_TABLE(TABLE=VITEM,
+              ACTION=(
+                               _F(OPERATION='COMB',
+                                  TABLE=VITE5,
+                                  NOM_PARA=('INST',),),
+                               _F(OPERATION='OPER',
+                                  NOM_PARA='DIFF',
+                                  FORMULE=F1),
+                      ),
+              TITRE='Comparaison calcul / mesure')
+
+#IMPR_TABLE( UNITE = 8, TABLE = T2 )
+
+TEST_TABLE(
+     TABLE     = T1,
+     NOM_PARA  = 'DIFF',
+     TYPE_TEST = 'SOMM',
+     VALE      = 0.,
+     CRITERE   = 'ABSOLU',
+     PRECISION = 1.E-7,
+     REFERENCE = 'AUTRE_ASTER',)
+
+
+TEST_TABLE(
+     TABLE     = T2,
+     NOM_PARA  = 'DIFF',
+     TYPE_TEST = 'SOMM',
+     VALE      = 0.,
+     CRITERE   = 'ABSOLU',
+     PRECISION = 1.E-4,
+     REFERENCE = 'AUTRE_ASTER',)
 
 #
 LTEMPS=DEFI_LIST_REEL(   VALE=(9.E-4,  17.E-4,  25.E-4,)              )
@@ -209,6 +303,54 @@ REPON=CALC_ELEM( RESULTAT=REPONSE,
 REPON=CALC_NO( reuse=REPON,   RESULTAT=REPON,
                       LIST_INST=LTEMPS,
                          OPTION='SIGM_NOEU_DEPL'                     )
+
+SIXX4=POST_RELEVE_T(ACTION=_F(INTITULE='SIXX4',
+                      GROUP_NO=('NRES4'),
+                      RESULTAT=REPON,
+                      NOM_CHAM='SIGM_NOEU_DEPL',
+                      TOUT_ORDRE='OUI',
+                      NOM_CMP='SIXX',
+                      OPERATION='EXTRACTION',
+                      ),);
+
+#IMPR_TABLE( UNITE = 8, TABLE = SIXX4 )
+
+SIXXM=POST_RELEVE_T(ACTION=_F(INTITULE='SIXXM',
+                      NOEUD=('N4'),
+                      RESULTAT=MESURE,
+                      NOM_CHAM='SIEF_NOEU',
+                      TOUT_ORDRE='OUI',
+                      NOM_CMP='SIXX',
+                      OPERATION='EXTRACTION',
+                      ),);
+
+#IMPR_TABLE( UNITE = 8, TABLE = SIXXM )
+
+F2=FORMULE(NOM_PARA=('SIXX', 'SIXXM',),
+                VALE='abs (SIXX - SIXXM)')
+
+T3=CALC_TABLE(TABLE=SIXXM,
+             ACTION=(_F(OPERATION='RENOMME',
+                                  NOM_PARA=('SIXX', 'SIXXM'),),
+                               _F(OPERATION='COMB',
+                                  TABLE=SIXX4,
+                                  NOM_PARA=('INST',),),
+                               _F(OPERATION='OPER',
+                                  NOM_PARA='DIFF',
+                                  FORMULE=F2),
+                      ),
+              TITRE='Comparaison calcul / mesure')
+
+#IMPR_TABLE( UNITE = 8, TABLE = T3 )
+
+TEST_TABLE(
+     TABLE     = T3,
+     NOM_PARA  = 'DIFF',
+     TYPE_TEST = 'SOMM',
+     VALE      = 0.,
+     CRITERE   = 'ABSOLU',
+     PRECISION = 1.E-6,
+     REFERENCE = 'AUTRE_ASTER',)
 
 #
 # TEST DES RESULTATS 

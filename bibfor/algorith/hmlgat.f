@@ -7,10 +7,10 @@
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 20/04/2010   AUTEUR JAUBERT A.JAUBERT 
+C MODIF ALGORITH  DATE 14/12/2010   AUTEUR PELLET J.PELLET 
 C RESPONSABLE UFBHHLL C.CHAVANT
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -55,7 +55,7 @@ C ======================================================================
       REAL*8       ALP11,RHO12,RHO21
       REAL*8       EM
       REAL*8       EPS
-      PARAMETER  ( EPS = 1.D-21 ) 
+      PARAMETER  ( EPS = 1.D-21 )
       LOGICAL      EMMAG
 C ======================================================================
 C --- DECLARATIONS PERMETTANT DE RECUPERER LES CONSTANTES MECANIQUES ---
@@ -79,7 +79,7 @@ C --- BUT : RECUPERER LES DONNEES MATERIAUX THM -----------------------
 C =====================================================================
       CALL NETBIS(MECA,NET,BISHOP)
       CALL THMRCP( 'INTERMED', IMATE, THMC, MECA, HYDR, THER,
-     +             RBID1, RBID2, RBID3, RBID4, RBID5, T, P1, 
+     +             RBID1, RBID2, RBID3, RBID4, RBID5, T, P1,
      +             P1-DP1,RBID6,RBID7, RBID8,
      +             RBID10, RBID11, RHO0,CSIGM,BIOT, SATM, SAT,
      +             DSATP1, RBID14, RBID15, RBID16,RBID17, RBID18,
@@ -88,7 +88,7 @@ C =====================================================================
      +             RBID27, RBID28, RBID29, RBID30, RBID31,RBID32,
      +             RBID33, RBID34, RBID35, RBID36, RBID37,RBID38,
      +             RBID39, RBID45, RBID46, RBID47, RBID48,RBID49,
-     >             EM,RBID50,R3BID,RBID51,RINSTP)    
+     >             EM,RBID50,R3BID,RBID51,RINSTP)
 
 C ======================================================================
 C --- POUR EVITER DES PB AVEC OPTIMISEUR ON MET UNE VALEUR DANS CES ----
@@ -116,7 +116,7 @@ C ======================================================================
 C =====================================================================
 C --- RECUPERATION DES COEFFICIENTS MECANIQUES ------------------------
 C =====================================================================
-      IF(EM.GT.EPS)THEN 
+      IF(EM.GT.EPS)THEN
         EMMAG = .TRUE.
       ENDIF
 
@@ -127,9 +127,9 @@ C =====================================================================
 C *********************************************************************
 C *** LES VARIABLES INTERNES ******************************************
 C *********************************************************************
-      IF ((OPTION(1:9).EQ.'RAPH_MECA') .OR.
+      IF ((OPTION.EQ.'RAPH_MECA') .OR.
      &    (OPTION(1:9).EQ.'FULL_MECA').OR.
-     &    (OPTION(1:9).EQ.'FORC_NODA')) THEN
+     &    (OPTION.EQ.'FORC_NODA')) THEN
 C =====================================================================
 C --- CALCUL DE LA VARIABLE INTERNE DE POROSITE SELON FORMULE DOCR ----
 C =====================================================================
@@ -185,7 +185,7 @@ C =====================================================================
 C ======================================================================
 C --- CALCUL DES ENTHALPIES SELON FORMULE DOCR -------------------------
 C ======================================================================
-         IF ((OPTION(1:9).EQ.'RAPH_MECA') .OR.
+         IF ((OPTION.EQ.'RAPH_MECA') .OR.
      +       (OPTION(1:9).EQ.'FULL_MECA')) THEN
             CONGEP(ADCP11+NDIM+1) = CONGEP(ADCP11+NDIM+1)
      +               + ENTEAU(DT,ALPLIQ,T,RHO11,DP2,DP1,DPAD,SIGNE,CP11)
@@ -199,7 +199,7 @@ C ======================================================================
 C ======================================================================
 C --- CALCUL SI PAS RIGI_MECA_TANG -------------------------------------
 C ======================================================================
-      IF ((OPTION(1:9).EQ.'RAPH_MECA') .OR.
+      IF ((OPTION.EQ.'RAPH_MECA') .OR.
      +    (OPTION(1:9).EQ.'FULL_MECA')) THEN
 C ======================================================================
 C --- CALCUL DES CONTRAINTES DE PRESSIONS ------------------------------

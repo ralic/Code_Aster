@@ -1,10 +1,10 @@
-# MODIF  DATE 30/08/2010   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 14/12/2010   AUTEUR PELLET J.PELLET 
 # ======================================================================
 # TITRE  - CONSOLIDATION TERZAGHI 2D Q8
 # wtnl100c.para = tps_job 90 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -169,7 +169,7 @@ MODELIN=AFFE_MODELE(MAILLAGE=MAILLIN,
                            MODELISATION='D_PLAN',),);
 
 RESULIN = PROJ_CHAMP(
-               METHODE='COLOCATION',
+               METHODE='COLLOCATION',
                RESULTAT=RESU1,
                MODELE_1=MODELE,
                MODELE_2=MODELIN,
@@ -190,7 +190,7 @@ IMPR_RESU(FORMAT = 'IDEAS', UNITE = 30,
 
 
 RESULINS = PROJ_CHAMP(
-               METHODE='COLOCATION',
+               METHODE='COLLOCATION',
                RESULTAT=RESU1,
                MODELE_1=MODELE,
                MODELE_2=MODELIN,

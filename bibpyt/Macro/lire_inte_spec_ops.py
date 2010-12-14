@@ -1,8 +1,8 @@
-#@ MODIF lire_inte_spec_ops Macro  DATE 26/03/2008   AUTEUR BODEL C.BODEL 
+#@ MODIF lire_inte_spec_ops Macro  DATE 14/12/2010   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -145,7 +145,7 @@ def lire_inte_spec_ops(self,
         # Verification a posteriori de la dimension de l'inter-spectre
         tmp = 0.5*(-1+sqrt(1+8*len(l_fonc)))
         dim = int(tmp)
-        nb_fonc = 0.5*dim*(dim+1) 
+        nb_fonc = dim*(dim+1)/2
 
         if dim != tmp :
             UTMESS('F', 'SPECTRAL0_6')

@@ -1,8 +1,8 @@
-#@ MODIF calc_essai_ops Macro  DATE 28/01/2010   AUTEUR BODEL C.BODEL 
+#@ MODIF calc_essai_ops Macro  DATE 14/12/2010   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -21,31 +21,24 @@
 ## \package calc_essai_ops Implémentation de la macro CALC_ESSAI
 #
 # Ce module contient la partie controle de la macro CALC_ESSAI
-# l'implémetation de cette macro se trouve dans les modules
-# meidee_help, meidee_mac, meidee_massamor, meidee_turbulent
-# on utilise aussi une librairie de support
-# pour la gestion de l'interface graphique dans meidee_iface
+# les autres fichiers sources sont situes dans ../Calc_essai
 
 
 def calc_essai_ops( self,
                     INTERACTIF          = None,
-                    #UNITE_FIMEN         = None,
                     UNITE_RESU          = None,
                     EXPANSION           = None,
-                    #MEIDEE_FLUDELA      = None,
-                    #MEIDEE_TURBULENT    = None,
                     IDENTIFICATION      = None,
                     MODIFSTRUCT         = None,
                     TRAITEMENTSIG       = None,
                     GROUP_NO_CAPTEURS   = None,
                     GROUP_NO_EXTERIEUR  = None,
-                    #RESU_FLUDELA        = None,
-                    #RESU_TURBULENT      = None,
                     RESU_IDENTIFICATION = None,
                     RESU_MODIFSTRU      = None,
                     **args):
+
+    from Calc_essai.cata_ce import CalcEssaiObjects
     import aster
-    from Meidee.meidee_cata import MeideeObjects
     ier = 0
     
     # La macro compte pour 1 dans la numerotation des commandes
@@ -75,60 +68,35 @@ def calc_essai_ops( self,
                           "ComptTable" : 0,
                           "TablesOut"  : table_fonction}
 
-## SUPRESSION (PROVISOIRE ?) DES ONGLETS IFS
-##    if not RESU_FLUDELA:
-##        RESU_FLUDELA = []
-##    else:
-##        for res in RESU_FLUDELA:
-##            table.append(res['TABLE'])
-##    out_fludela = {"DeclareOut" : self.DeclareOut,
-##                   "TypeTables" : 'TABLE',
-##                   "ComptTable" : 0,
-##                   "TablesOut" : table}
-##
-##    if not RESU_TURBULENT:
-##        RESU_TURBULENT = []
-##    else:
-##        for res in RESU_TURBULENT:
-##            table_fonction.append(res['FONCTION'])
-##    out_meideeturb = {"DeclareOut" : self.DeclareOut,
-##                      "FoncOut" : table_fonction}
     
     # Mode interactif : ouverture d'une fenetre Tk
     if INTERACTIF == "OUI":
         aster.onFatalError('EXCEPTION')
 
         create_interactive_window(self,
-                                  #UNITE_FIMEN,
-                                  #out_fludela,
-                                  #out_meideeturb,
                                   out_identification,
                                   out_modifstru,
                                   )
     else:
-        from Meidee.meidee_calcul import MessageBox
-        from Meidee.meidee_test import TestMeidee
+        from Calc_essai.ce_test import MessageBox
+        from Calc_essai.ce_test import TestCalcEssai
         mess = MessageBox(UNITE_RESU)
         mess.disp_mess("Mode non intéractif")
         
-        objects = MeideeObjects(self, mess)
+        objects = CalcEssaiObjects(self, mess)
 
         # importation des concepts aster existants de la memoire jeveux
-        TestMeidee(self,
-                   mess,
-                   #out_fludela,
-                   #out_meideeturb,
-                   out_identification,
-                   out_modifstru,
-                   objects,
-                   EXPANSION,
-                   #MEIDEE_FLUDELA,
-                   #MEIDEE_TURBULENT,
-                   IDENTIFICATION,
-                   MODIFSTRUCT,
-                   GROUP_NO_CAPTEURS,
-                   GROUP_NO_EXTERIEUR              
-                   )
+        TestCalcEssai(self,
+                      mess,
+                      out_identification,
+                      out_modifstru,
+                      objects,
+                      EXPANSION,
+                      IDENTIFICATION,
+                      MODIFSTRUCT,
+                      GROUP_NO_CAPTEURS,
+                      GROUP_NO_EXTERIEUR              
+                      )
 
         mess.close_file()
     aster.onFatalError(prev)
@@ -136,28 +104,21 @@ def calc_essai_ops( self,
 
 
 
-def create_tab_mess_widgets(tk):
+def create_tab_mess_widgets(tk,tabskeys):
     """Construits les objects table et boîte à messages."""
     try:
         from Pmw import PanedWidget
     except ImportError:
         PanedWidget = None
     
-    from Meidee.meidee_iface import MessageBoxInteractif, TabbedWindow
+    from Calc_essai.outils_ihm import MessageBoxInteractif, TabbedWindow
     
     tabsw = tk
     msgw = tk
     tk.rowconfigure(0, weight=2)
     tk.rowconfigure(1, weight=1)
 
-    tabs = TabbedWindow(tabsw, ["Expansion de modeles",
-                                "Modification structurale",
-                                #"MEIDEE mono-modal fludela",
-                                #"MEIDEE mono-modal turbulent",
-                                "Identification de chargement",
-                                "Traitement du signal",
-                                "Parametres de visualisation",
-                               ])
+    tabs = TabbedWindow(tabsw, tabskeys)
 
     tabs.grid(row=0, column=0, sticky='nsew')
     # pack(side='top',expand=1,fill='both')
@@ -167,23 +128,6 @@ def create_tab_mess_widgets(tk):
     mess.grid(row=1, column=0, sticky='nsew')
     
     return tabs, mess
-
-## SUPRESSION (PROVISOIRE ?) DES ONGLETS IFS
-##def get_fimen_files(UNITE_FIMEN, FIMEN=None):
-##    """Fichiers fimen éventuels associés aux unités logiques en entrée"""
-##    # XXX FIMEN is not defined (should it be included in the macro)
-##    from Utilitai.UniteAster import UniteAster
-##    fichiers_fimen = []
-##    print "FIMEN:", UNITE_FIMEN
-##
-##    if UNITE_FIMEN:
-##        if type(FIMEN)==int:
-##            UNITE_FIMEN= [ UNITE_FIMEN ]
-##        for unit in UNITE_FIMEN:
-##            UL = UniteAster()
-##            fichiers_fimen.append( (unit, UL.Nom(unit)) )
-##
-##    return fichiers_fimen
 
 
 class FermetureCallback:
@@ -203,70 +147,60 @@ class FermetureCallback:
 
 
 def create_interactive_window(macro,
-                              #UNITE_FIMEN,
-                              #out_fludela,
-                              #out_meideeturb,
                               out_identification,
                               out_modifstru,
                               ):
     """Construit la fenêtre interactive comprenant une table pour 
-    les 4 domaines de Meidee."""
+    les 4 domaines de CALC_ESSAI."""
     from Tkinter import Tk
     
-    from Meidee.meidee_cata import MeideeObjects
-    from Meidee.meidee_correlation import InterfaceCorrelation
-    from Meidee.meidee_modifstruct import InterfaceModifStruct
-    from Meidee.meidee_turbulent import InterfaceTurbulent
-    from Meidee.meidee_parametres import InterfaceParametres
-    from Meidee.meidee_calc_spec import InterfaceCalcSpec
-## SUPRESSION (PROVISOIRE ?) DES ONGLETS IFS
-##    from Meidee.meidee_fludela import InterfaceFludela, InterfaceTurbMonomod
+    from Calc_essai.cata_ce import CalcEssaiObjects
+    from Calc_essai.ce_ihm_expansion import InterfaceCorrelation
+    from Calc_essai.ce_ihm_modifstruct import InterfaceModifStruct
+    from Calc_essai.ce_ihm_identification import InterfaceIdentification
+    from Calc_essai.ce_ihm_parametres import InterfaceParametres
+    from Calc_essai.ce_calc_spec import InterfaceCalcSpec
     
     # fenetre principale
     tk = Tk()
-    tk.rowconfigure(0, weight=1)
-    tk.columnconfigure(0,weight=1)
     tk.title("CALC_ESSAI")
+    tk.rowconfigure(0,weight=1)
+    tk.rowconfigure(1,weight=20)
+    tk.rowconfigure(2,weight=1)
 
-    tabs, mess = create_tab_mess_widgets(tk)
+    tabskeys = ["Expansion de modeles",
+                "Modification structurale",
+                "Identification de chargement",
+                "Traitement du signal",
+                "Parametres de visualisation" ]
+    
+    tabs, mess = create_tab_mess_widgets(tk, tabskeys)
     main = tabs.root()
     
     # importation des concepts aster de la memoire jeveux    
-    objects = MeideeObjects(macro, mess)
+    objects = CalcEssaiObjects(macro, mess)
     tabs.set_objects(objects)
     
     param_visu = InterfaceParametres(main, mess)
     
-    iface = InterfaceCorrelation(main, objects, macro, mess,
-                                 param_visu)
-    imodifstruct = InterfaceModifStruct(main, objects, macro,
-                                        mess, out_modifstru, param_visu)
-    identification = InterfaceTurbulent(main, objects, mess, out_identification, param_visu)
-    
+    iface = InterfaceCorrelation(main, objects, macro, mess,param_visu)
+    imodifstruct = InterfaceModifStruct(main, objects, macro,mess, out_modifstru, param_visu)
+    identification = InterfaceIdentification(main, objects, mess, out_identification, param_visu)
     calc_spec= InterfaceCalcSpec(main,objects,mess,param_visu)
-## SUPRESSION (PROVISOIRE ?) DES ONGLETS IFS
-##    fludelamonomod = InterfaceFludela(main, objects,
-##                                      get_fimen_files(UNITE_FIMEN), mess, out_fludela, param_visu)
-##    turbmonomod = InterfaceTurbMonomod(main, objects,get_fimen_files(UNITE_FIMEN) ,mess, out_meideeturb, param_visu)
 
-
-    tabs.set_tab("Expansion de modeles", iface.main)
-    tabs.set_tab("Modification structurale", imodifstruct.main)
-    tabs.set_tab("Identification de chargement", identification)
-    tabs.set_tab("Traitement du signal", calc_spec)
-    tabs.set_tab("Parametres de visualisation", param_visu)
-## SUPRESSION (PROVISOIRE ?) DES ONGLETS IFS
-##    tabs.set_tab("MEIDEE mono-modal fludela", fludelamonomod )
-##    tabs.set_tab("MEIDEE mono-modal turbulent", turbmonomod )
+    tabs.set_tab(tabskeys[0], iface.main)
+    tabs.set_tab(tabskeys[1], imodifstruct.main)
+    tabs.set_tab(tabskeys[2], identification)
+    tabs.set_tab(tabskeys[3], calc_spec)
+    tabs.set_tab(tabskeys[4], param_visu)    
     
-    
-    tabs.set_current_tab("Expansion de modeles")
+    tabs.set_current_tab(tabskeys[4])
 
     tk.protocol("WM_DELETE_WINDOW", FermetureCallback(tk, identification).apply)
     
     try:
         tk.mainloop()
     except :
-        print "MEIDEE : *ERREUR*"
+        print "CALC_ESSAI : *ERREUR*"
 
     

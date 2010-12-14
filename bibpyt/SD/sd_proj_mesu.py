@@ -1,8 +1,8 @@
-#@ MODIF sd_proj_mesu SD  DATE 15/01/2008   AUTEUR PELLET J.PELLET 
+#@ MODIF sd_proj_mesu SD  DATE 14/12/2010   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -53,7 +53,7 @@ class sd_proj_mesu(AsBase):
 
         # vérifications communes :
         assert self.PJMRG.lonmax >= nbutil
-        n1=self.PJMBP.lonmax
+        n1=self.PJMBP.lonuti
         nbmode=n1/nbutil
         assert n1==nbutil*nbmode , (nbmode,nbutil,n1)
         assert self.PJMRF.exists
