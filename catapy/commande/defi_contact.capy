@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 13/12/2010   AUTEUR DESOZA T.DESOZA 
+#& MODIF COMMANDE  DATE 21/12/2010   AUTEUR ABBAS M.ABBAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -78,23 +78,36 @@ DEFI_CONTACT=OPER(nom       = "DEFI_CONTACT",
 
 # PARAMETRE GENERAL : BOUCLE DE GEOMETRIE
 
-           REAC_GEOM =SIMP(statut='f',
-                           typ='TXM',
-                           defaut="AUTOMATIQUE",
-                           into=("AUTOMATIQUE","CONTROLE","SANS",),
-                           ),
-           b_geom_auto_mail = BLOC(condition = "REAC_GEOM == 'AUTOMATIQUE' and ((FORMULATION == 'DISCRETE') or \
-                                                                                (FORMULATION == 'CONTINUE')) ",
-                                ITER_GEOM_MAXI = SIMP(statut='f',typ='I',defaut=10),
-                                RESI_GEOM      = SIMP(statut='f',typ='R',defaut=0.01),
-             ),
-           b_geom_auto_xfem = BLOC(condition = "REAC_GEOM == 'AUTOMATIQUE' and FORMULATION == 'XFEM'",
-                                ITER_GEOM_MAXI = SIMP(statut='f',typ='I',defaut=5),
-                                RESI_GEOM      = SIMP(statut='f',typ='R',defaut=0.0001),
-             ),
-           b_geom_controle  = BLOC(condition = "REAC_GEOM == 'CONTROLE' ",
-                                NB_ITER_GEOM   = SIMP(statut='f',typ='I',defaut = 2),
-             ),
+           b_bouc_geom_mail=BLOC(condition = "(FORMULATION == 'DISCRETE' or FORMULATION == 'CONTINUE')",
+                                 REAC_GEOM =SIMP(statut='f',
+                                                 typ='TXM',
+                                                 into=("AUTOMATIQUE","CONTROLE","SANS",),
+                                                 defaut="AUTOMATIQUE",
+                                                 ),
+                                 b_automatique = BLOC(condition = "REAC_GEOM == 'AUTOMATIQUE' ",
+                                   ITER_GEOM_MAXI = SIMP(statut='f',typ='I',defaut=10),
+                                   RESI_GEOM      = SIMP(statut='f',typ='R',defaut=0.01),
+                                   ),
+                                 b_controle    = BLOC(condition = "REAC_GEOM == 'CONTROLE' ",
+                                   NB_ITER_GEOM   = SIMP(statut='f',typ='I',defaut = 2),
+                                   ),
+                                 ),
+
+           b_bouc_geom_xfem=BLOC(condition = "FORMULATION == 'XFEM' ",
+                                 REAC_GEOM =SIMP(statut='f',
+                                                 typ='TXM',
+                                                 into=("AUTOMATIQUE","CONTROLE","SANS",),
+                                                 defaut="SANS",
+                                                 ),
+                                 b_automatique = BLOC(condition = "REAC_GEOM == 'AUTOMATIQUE' ",
+                                   ITER_GEOM_MAXI = SIMP(statut='f',typ='I',defaut=10),
+                                   RESI_GEOM      = SIMP(statut='f',typ='R',defaut=0.0001),
+                                   ),
+                                 b_controle    = BLOC(condition = "REAC_GEOM == 'CONTROLE' ",
+                                   NB_ITER_GEOM   = SIMP(statut='f',typ='I',defaut = 2),
+                                   ),
+                                 ),
+
 
 # PARAMETRE GENERAL : BOUCLE DE CONTACT
 

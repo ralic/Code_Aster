@@ -1,7 +1,7 @@
-#& MODIF COMMANDE  DATE 09/11/2010   AUTEUR DELMAS J.DELMAS 
+#& MODIF COMMANDE  DATE 21/12/2010   AUTEUR MASSIN P.MASSIN 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -48,7 +48,7 @@ DEFI_FISS_XFEM=OPER(nom="DEFI_FISS_XFEM",op=  41,sd_prod=fiss_xfem,reentrant='n'
 #                             ENSEMBLE('CHAM_NO_LSN','CHAM_NO_LST'),
 #                             ENSEMBLE('GROUP_MA_FISS','GROUP_MA_FOND')),
 #                                ),
-#
+# 
 #       b_interface           =BLOC(condition = "TYPE_DISCONTINUITE == 'INTERFACE' ",fr="Regles pour les interfaces",
 #                 regles    =(PRESENT_ABSENT('FONC_LN','FONC_LT'),
 #                             PRESENT_ABSENT('CHAM_NO_LSN','CHAM_NO_LST'),
@@ -112,7 +112,7 @@ DEFI_FISS_XFEM=OPER(nom="DEFI_FISS_XFEM",op=  41,sd_prod=fiss_xfem,reentrant='n'
     GROUP_MA_ENRI         =SIMP(statut='f',typ=grma,max=01),
 
 # ------------------------------------------------------------------------------------------------------------------------
-#                       types d'enrichissement
+#                       types d'enrichissement 
 # ------------------------------------------------------------------------------------------------------------------------
 
     b_enri_inte           =BLOC(condition = "TYPE_DISCONTINUITE == 'INTERFACE' ",
@@ -134,7 +134,7 @@ DEFI_FISS_XFEM=OPER(nom="DEFI_FISS_XFEM",op=  41,sd_prod=fiss_xfem,reentrant='n'
            NB_COUCHES     =SIMP(statut='f',typ='I',defaut=4,val_min=1),
 
                                ),
-                             ),
+                             ),                        
                           ),
 
 # ------------------------------------------------------------------------------------------------------------------------
@@ -151,6 +151,14 @@ DEFI_FISS_XFEM=OPER(nom="DEFI_FISS_XFEM",op=  41,sd_prod=fiss_xfem,reentrant='n'
 
                              ),
 
+# ------------------------------------------------------------------------------------------------------------------------
+#                       branchement
+# ------------------------------------------------------------------------------------------------------------------------
+
+    JONCTION              =FACT(statut='f',max=1,
+      FISSURE             =SIMP(statut='o',typ=fiss_xfem,min=1,max='**',),
+      POINT               =SIMP(statut='o',typ='R',max=3,),
+                               ),
 # ------------------------------------------------------------------------------------------------------------------------
 #                       info
 # ------------------------------------------------------------------------------------------------------------------------

@@ -17,9 +17,9 @@
       REAL*8        VI(LGPG,NPG),SIG(4,NPG),MATUU(*)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/09/2010   AUTEUR MASSIN P.MASSIN 
+C MODIF ALGORITH  DATE 21/12/2010   AUTEUR MASSIN P.MASSIN 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -35,7 +35,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
 C RESPONSABLE GENIAUT S.GENIAUT
-C TOLE CRP_21
+C TOLE CRP_21 CRS_1404
 C.......................................................................
 C
 C     BUT:  CALCUL  DES OPTIONS RIGI_MECA_TANG, RAPH_MECA ET FULL_MECA
@@ -97,7 +97,7 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       REAL*8   DSIDEP(6,6),F(3,3),EPS(6),SIGMA(6),FTF,DETF
       REAL*8   TMP1,TMP2,SIGP(6),FE(4),BASLOG(6)
       REAL*8   XG(NDIM),XE(NDIM),FF(NNOP),JAC,LSNG,LSTG
-      REAL*8   RBID(4,3),RBID1(4),RBID2(4)
+      REAL*8   RBID(4,3),RBID1(10),RBID2(10)
       REAL*8   DFDI(NNOP,NDIM),PFF(6,NNOP,NNOP),DGDGL(4,3)
       REAL*8   DEF(6,NNOP,NDIM*(1+NFH+NFE)),GRAD(3,3),ANGMAS(3)
       INTEGER  INDI(4),INDJ(4)
@@ -114,28 +114,28 @@ C--------------------------------------------------------------------
 
 C     NOMBRE DE DDL DE DEPLACEMENT À CHAQUE NOEUD SOMMET
       DDLD=NDIM*(1+NFH+NFE)
-
+C
 C     NOMBRE DE DDL TOTAL (DEPL+CONTACT) À CHAQUE NOEUD SOMMET
       DDLS=DDLD+DDLC
-
+C
       CALL ELREF4(' ','RIGI',IBID,IBID,NNOPS,IBID,IBID,IBID,IBID,IBID)
-
+C
 C - INITIALISATION
       GRDEPL = COMPOR(3).EQ. 'GROT_GDEP'
       AXI    = TYPMOD(1) .EQ. 'AXIS'
       CPLAN  = TYPMOD(1) .EQ. 'C_PLAN'
-
+C
       IF (GRDEPL .OR. AXI) THEN
         CALL U2MESS('F','XFEM2_2')
       ENDIF
-
+C
 C     ADRESSE DES COORD DU SOUS ELT EN QUESTION
       CALL JEVEUO(COORSE,'L',JCOORS)
 C
       CALL ELREF5(ELRESE,'XINT',NDIMB,NNO,NNOS,NPGBIS,IPOIDS,JCOOPG,IVF,
      &                  IDFDE,JDFD2,JGANO)
       CALL ASSERT(NPG.EQ.NPGBIS.AND.NDIM.EQ.NDIMB)
-
+C
 C - CALCUL POUR CHAQUE POINT DE GAUSS
 
       DO 10 KPG=1,NPG
@@ -146,13 +146,13 @@ C       COORDONNEES DU PT DE GAUSS DANS LE REPERE REEL : XG
           XG(I)=XG(I)+ZR(IVF-1+NNO*(KPG-1)+N)*ZR(JCOORS-1+NDIM*(N-1)+I)
  111      CONTINUE
  110    CONTINUE
-
+C
 C       JUSTE POUR CALCULER LES FF
-
+C
         CALL REEREF(ELREFP,NNOP,NNOPS,IGEOM,XG,IDEPL,GRDEPL,NDIM,HE,
      &              FISNO,NFISS,NFH,NFE,DDLS,DDLM,FE,DGDGL,'NON',
      &              XE,FF,DFDI,F,EPS,GRAD)
-
+C
         IF (NFE.GT.0) THEN
 C         BASE LOCALE AU POINT DE GAUSS
           CALL VECINI(6,0.D0,BASLOG)
@@ -171,7 +171,7 @@ C         FONCTION D'ENRICHISSEMENT AU POINT DE GAUSS ET LEURS DERIVEES
 C         ON A PAS PU CALCULER LES DERIVEES DES FONCTIONS SINGULIERES
 C         CAR ON SE TROUVE SUR LE FOND DE FISSURE
           CALL ASSERT(IRET.NE.0)
-
+C
         ENDIF
 C
 C       COORDONNÉES DU POINT DE GAUSS DANS L'ELEMENT DE REF PARENT : XE
@@ -180,7 +180,7 @@ C       ET CALCUL DE FF, DFDI, ET EPS
         IF ( OPTION(1:10) .EQ. 'RIGI_MECA_'
      &  .OR. OPTION(1: 9) .EQ. 'FULL_MECA'    
      &  .OR. OPTION(1: 9) .EQ. 'RAPH_MECA') THEN
-
+C
           CALL REEREF(ELREFP,NNOP,NNOPS,IGEOM,XG,IDEPL,GRDEPL,NDIM,HE,
      &                FISNO,NFISS,NFH,NFE,DDLS,DDLM,FE,DGDGL,'OUI',
      &                XE,FF,DFDI,F,EPS,GRAD)
@@ -191,12 +191,12 @@ C          SI OPTION 'RIGI_MECA', ON INITIALISE À 0 LES DEPL
      &                FISNO,NFISS,NFH,NFE,DDLS,-1,FE,DGDGL,'INI',
      &                XE,FF,DFDI,F,EPS,RBID)
         ENDIF
-
+C
 C - CALCUL DES ELEMENTS GEOMETRIQUES
 
 C      CALCUL DES PRODUITS SYMETR. DE F PAR N,
         DO 120 N=1,NNOP
-
+C
           CPT=0
 C         FONCTIONS DE FORME CLASSIQUES
           DO 121 I=1,2
@@ -216,7 +216,7 @@ C         ENRICHISSEMENT PAR HEAVYSIDE
               DEF(4,N,CPT) =  DEF(4,N,I) * HE(FISNO(N,IG))
  123        CONTINUE
  122      CONTINUE
-
+C
 C         ENRICHISSEMENT PAR LES NFE FONTIONS SINGULIERES
           DO 124 IG=1,NFE
             DO 125 I=1,2
@@ -236,19 +236,19 @@ C         ENRICHISSEMENT PAR LES NFE FONTIONS SINGULIERES
  124       CONTINUE
         CALL ASSERT(CPT.EQ.DDLD)
  120    CONTINUE
-
+C
 C       POUR CALCULER LE JACOBIEN DE LA TRANSFO SSTET->SSTET REF
 C       ON ENVOIE DFDM2D AVEC LES COORD DU SS-ELT
         CALL DFDM2D(NNO,KPG,IPOIDS,IDFDE,ZR(JCOORS),
      &                                   RBID1,RBID2,JAC)
-
+C
 C      TERME DE CORRECTION (3,3) AXI QUI PORTE EN FAIT SUR LE DDL 1
 C        IF (AXI) THEN
 C          DO 127 N=1,NNOP
 C            DEF(3,N,1) = F(3,3)*ZR(IVF+N+(KPG-1)*NNO-1)/R
 C 127      CONTINUE
 C        ENDIF
-
+C
 C      CALCUL DES PRODUITS DE FONCTIONS DE FORMES (ET DERIVEES)
         IF ( (OPTION(1:10) .EQ. 'RIGI_MECA_'
      &  .OR.  OPTION(1: 9) .EQ. 'FULL_MECA'    ) .AND. GRDEPL) THEN
@@ -261,11 +261,11 @@ C      CALCUL DES PRODUITS DE FONCTIONS DE FORMES (ET DERIVEES)
  126        CONTINUE
  128      CONTINUE
         ENDIF
-
+C
 C  ----CALCUL DE LA MATRICE DE RIGIDITE POUR L'OPTIONS RIGI_MECA   
-
+C
         IF ( OPTION .EQ. 'RIGI_MECA') THEN
-
+C
 C -       LOI DE COMPORTEMENT : ON VA OBTENIR ICI LA MATRICE DE HOOKE
 C         POUR LE CAS ELASTIQUE ISOTROPE - DEFO/CONTR PLANES
           IPG= IDECPG + KPG
@@ -273,13 +273,13 @@ C         POUR LE CAS ELASTIQUE ISOTROPE - DEFO/CONTR PLANES
           COMPO2(2)=' '
           COMPO2(3)=' '        
           COMPO2(4)=' '        
-
+C
           CALL NMCPEL('XFEM',IPG,1,POUM,2,TYPMOD,ANGMAS,IMATE,COMPO2,
      &            CRIT,OPTION,EPS,SIGMA,VI(1,KPG),DSIDEP,CODRET)
-
+C
           DO 230 N=1,NNOP
             CALL INDENT(N,DDLS,DDLM,NNOPS,NN)
-
+C
             DO 231 I=1,DDLD
               KKD = (NN+I-1) * (NN+I) /2
               DO 251,KL=1,4
@@ -292,17 +292,17 @@ C         POUR LE CAS ELASTIQUE ISOTROPE - DEFO/CONTR PLANES
               DO 240 J=1,DDLD
                 DO 241 M=1,N
                   CALL INDENT(M,DDLS,DDLM,NNOPS,MN)
-
+C
                   IF (M.EQ.N) THEN
                     J1 = I
                   ELSE
                     J1 = DDLD
                   ENDIF
-
+C
 C                RIGIDITE ELASTIQUE
                   TMP2 = SIGP(1)*DEF(1,M,J) + SIGP(2)*DEF(2,M,J)
      &                 + SIGP(3)*DEF(3,M,J) + SIGP(4)*DEF(4,M,J)
-
+C
 C                STOCKAGE EN TENANT COMPTE DE LA SYMETRIE
                   IF (J.LE.J1) THEN
                     KK = KKD + MN + J
@@ -314,26 +314,26 @@ C                STOCKAGE EN TENANT COMPTE DE LA SYMETRIE
  230      CONTINUE
         GOTO 9999
         ENDIF
-
+C
 C - LOI DE COMPORTEMENT : S(E) ET DS/DE
-
+C
 C       POUR LES VARIABLES DE COMMANDES (TEMP...), IL EST NECESSSAIRE
 C       DE DONNER LA POSITION DU POINT DE GAUSS COURRANT DANS LA
 C       FAMILLE 'XFEM'
         IPG= IDECPG + KPG
-
+C
         CALL NMCPEL('XFEM',IPG,1,POUM,2,TYPMOD,ANGMAS,IMATE,COMPOR,CRIT,
      &            OPTION,EPS,SIGMA,VI(1,KPG),DSIDEP,CODRET)
-
+C
 C - CALCUL DE LA MATRICE DE RIGIDITE POUR LES OPTIONS RIGI_MECA_TANG
 C   ET FULL_MECA
 
         IF ( OPTION(1:10) .EQ. 'RIGI_MECA_'
      &  .OR. OPTION(1: 9) .EQ. 'FULL_MECA'    ) THEN
-
+C
           DO 130 N=1,NNOP
             CALL INDENT(N,DDLS,DDLM,NNOPS,NN)
-
+C
             DO 131 I=1,DDLD
               KKD = (NN+I-1) * (NN+I) /2
               DO 151,KL=1,4
@@ -343,17 +343,17 @@ C   ET FULL_MECA
                 SIGP(KL)=SIGP(KL)+DEF(3,N,I)*DSIDEP(3,KL)
                 SIGP(KL)=SIGP(KL)+DEF(4,N,I)*DSIDEP(4,KL)
  151          CONTINUE
-
+C
               DO 140 J=1,DDLD
                 DO 141 M=1,N
                   CALL INDENT(M,DDLS,DDLM,NNOPS,MN)
-
+C
                   IF (M.EQ.N) THEN
                     J1 = I
                   ELSE
                     J1 = DDLD
                   ENDIF
-
+C
 C                 RIGIDITE GEOMETRIQUE
                   TMP1 = 0.D0
                   IF (GRDEPL .AND. I.EQ.J) THEN
@@ -361,39 +361,39 @@ C                 RIGIDITE GEOMETRIQUE
      &                   + PFF(2,N,M)*SIGMA(2)
      &                   + PFF(3,N,M)*SIGMA(3)
      &                   + PFF(4,N,M)*SIGMA(4)
-
+C
 C                  TERME DE CORRECTION AXISYMETRIQUE
 C                    IF (AXI .AND. I.EQ.1) THEN
 C                      TMP1=TMP1+ZR(IVF+N+(KPG-1)*NNO-1)*
 C     &                     ZR(IVF+M+(KPG-1)*NNO-1)/(R*R)*SIGMA(3)
 C                    END IF
                   ENDIF
-
+C
 C                RIGIDITE ELASTIQUE
                   TMP2 = SIGP(1)*DEF(1,M,J) + SIGP(2)*DEF(2,M,J)
      &                 + SIGP(3)*DEF(3,M,J) + SIGP(4)*DEF(4,M,J)
-
+C
 C                STOCKAGE EN TENANT COMPTE DE LA SYMETRIE
                   IF (J.LE.J1) THEN
                     KK = KKD + MN + J
                     MATUU(KK) = MATUU(KK) + (TMP1+TMP2)*JAC
                   END IF
-
+C
  141            CONTINUE
  140          CONTINUE
  131        CONTINUE
  130      CONTINUE
-
+C
         ENDIF
-
+C
 C - CALCUL DE LA FORCE INTERIEURE ET DES CONTRAINTES DE CAUCHY
-
+C
         IF(OPTION(1:9).EQ.'FULL_MECA'.OR.
      &     OPTION(1:9).EQ.'RAPH_MECA') THEN
-
+C
           DO 185 N=1,NNOP
             CALL INDENT(N,DDLS,DDLM,NNOPS,NN)
-
+C
             DO 186 I=1,DDLD
               DO 187 KL=1,4
               ZR(IVECTU-1+NN+I)=
@@ -401,7 +401,7 @@ C - CALCUL DE LA FORCE INTERIEURE ET DES CONTRAINTES DE CAUCHY
  187          CONTINUE
  186        CONTINUE
  185      CONTINUE
-
+C
           IF ( GRDEPL ) THEN
 C          CONVERSION LAGRANGE -> CAUCHY
             IF (CPLAN) F(3,3) = SQRT(ABS(2.D0*EPS(3)+1.D0))
@@ -424,6 +424,6 @@ C          CONVERSION LAGRANGE -> CAUCHY
         ENDIF
 
  9999 CONTINUE
-
+C
  10   CONTINUE
       END

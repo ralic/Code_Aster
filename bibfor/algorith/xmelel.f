@@ -1,8 +1,8 @@
       SUBROUTINE XMELEL(IIN,NTYELE,NTYELM,IORDR,NNDEL)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/04/2010   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 21/12/2010   AUTEUR MASSIN P.MASSIN 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -43,8 +43,8 @@ C
 C ----------------------------------------------------------------------
 C
       INTEGER      NBTYP
-      PARAMETER    (NBTYP=43)
-      CHARACTER*16  CPL(NBTYP,2)
+      PARAMETER    (NBTYP=47)
+      CHARACTER*16 CPL(NBTYP,2)
       INTEGER      NPL(NBTYP)
       INTEGER      K
 C
@@ -61,6 +61,7 @@ C
      &      'MECA_XHTC_PENTA6','MECA_XHTC_PENTA6',
      &      'MECA_XHC_TETRA4','MECA_XHC_TETRA4',
      &      'MECA_XHTC_TETRA4','MECA_XHTC_TETRA4',
+     &      'MECPQU8_XHC','MEDPQU8_XHC','MECPTR6_XHC','MEDPTR6_XHC',
      &      'MECPQU4_XTC','MECPTR3_XTC','MEDPQU4_XTC','MEDPTR3_XTC',
      &      'MECA_XTC_HEXA8','MECA_XTC_PENTA6','MECA_XTC_TETRA4'/
       DATA (CPL(K,2),K=1,NBTYP) /
@@ -76,13 +77,16 @@ C
      &      'MECA_XHC_PENTA6','MECA_XHTC_PENTA6',
      &      'MECA_XHC_TETRA4','MECA_XHTC_TETRA4',
      &      'MECA_XHC_TETRA4','MECA_XHTC_TETRA4',
+     &      'MECPQU8_XHC','MEDPQU8_XHC','MECPTR6_XHC','MEDPTR6_XHC',
      &      'MECPQU4_XTC','MECPTR3_XTC','MEDPQU4_XTC','MEDPTR3_XTC',
      &      'MECA_XTC_HEXA8','MECA_XTC_PENTA6','MECA_XTC_TETRA4'/
       DATA (NPL(K),K=1,NBTYP) /
      &      8, 8, 8, 8, 6, 6, 6, 6, 7, 7, 12, 9,
      &      8, 8, 8, 8, 6, 6, 6, 6, 7, 7, 12, 9,
      &      16, 16, 16, 16, 12, 12, 12, 12, 8, 8, 8, 8,
+     &      16,16,12,12,
      &      4, 3, 4, 3, 8, 6, 4/
+
 C
 C ----------------------------------------------------------------------
 C

@@ -1,11 +1,12 @@
-      SUBROUTINE XTDEPM(NDIM  ,NNM   ,NNE   ,NNES  ,NDDLSE,
+      SUBROUTINE XTDEPM(NDIM  ,JNNM,JNNE,NDEPLE,
      &                  NSINGE,NSINGM,FFE   ,FFM   ,JDEPDE,
-     &                  RRE   ,RRM   ,DDEPLE,DDEPLM)
+     &                  RRE   ,RRM ,JDDLE,JDDLM,
+     &                  DDEPLE,DDEPLM)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
+C MODIF ELEMENTS  DATE 21/12/2010   AUTEUR MASSIN P.MASSIN 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -23,10 +24,10 @@ C ======================================================================
 C RESPONSABLE ABBAS M.ABBAS
 C
       IMPLICIT NONE
-      INTEGER NDIM,NNM,NNE,NNES
-      INTEGER NDDLSE,NSINGE,NSINGM
+      INTEGER NDIM,JNNM(3),JNNE(3)
+      INTEGER NSINGE,NSINGM
       REAL*8  RRE,RRM
-      INTEGER JDEPDE
+      INTEGER JDEPDE,NDEPLE,JDDLE(2),JDDLM(2)
       REAL*8  FFM(9),FFE(9)
       REAL*8  DDEPLE(3),DDEPLM(3)
 C      
@@ -45,7 +46,7 @@ C IN  NNM    : NOMBRE DE NOEUDS DE LA MAILLE MAITRE
 C IN  NNES   : NOMBRE DE NOEUDS SOMMETS DE LA MAILLE ESCLAVE
 C IN  NSINGE : NOMBRE DE FONCTIONS SINGULIERE ESCLAVES
 C IN  NSINGM : NOMBRE DE FONCTIONS SINGULIERE MAIT RES
-C IN  NDDLSE : NOMBRE DE DDLS D'UN NOEUD SOMMET ESCLAVE
+C IN  DDLES : NOMBRE DE DDLS D'UN NOEUD SOMMET ESCLAVE
 C IN  RRE    : SQRT LSN PT ESCLAVE
 C IN  RRM    : SQRT LSN PT MAITRE
 C IN  JDEPDE : POINTEUR JEVEUX POUR DEPDEL
@@ -73,7 +74,8 @@ C
 C
 C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
 C
-      INTEGER IDIM,INOE,INOM,ISINGM,ISINGE,PL     
+      INTEGER IDIM,INOE,INOM,ISINGM,ISINGE,PL,IN,JN,NDDLE
+      INTEGER NNES,NNEM,NNM,NNMS,DDLES,DDLEM,DDLMS,DDLMM
 C
 C ----------------------------------------------------------------------
 C
@@ -81,19 +83,32 @@ C
 C
 C --- INITIALISATIONS
 C
+      NNES=JNNE(2)
+      NNEM=JNNE(3)
+      NNM=JNNM(1)
+      NNMS=JNNM(2)
+      DDLES=JDDLE(1)
+      DDLEM=JDDLE(2)
+      DDLMS=JDDLM(1)
+      DDLMM=JDDLM(2)
+      NDDLE = DDLES*NNES+DDLEM*NNEM
+C
       CALL VECINI(3,0.D0,DDEPLM)
       CALL VECINI(3,0.D0,DDEPLE)    
+
 C
       DO 200 IDIM = 1,NDIM
-        DO 210 INOE = 1,NNES
+        DO 210 INOE = 1,NDEPLE
           IF (NNM.NE.0) THEN
-            PL           = NDDLSE*(INOE-1) + IDIM
+            CALL INDENT(INOE,DDLES,DDLEM,NNES,IN)
+            PL           = IN + IDIM
             DDEPLE(IDIM) = DDEPLE(IDIM)+
      &                     FFE(INOE)*(ZR(JDEPDE-1+PL)-
      &                                ZR(JDEPDE-1+PL+NDIM))
           ENDIF
           DO 215 ISINGE = 1,NSINGE
-            PL           = NDDLSE*INOE-2*NDIM+IDIM
+            CALL INDENT(INOE+1,DDLES,DDLEM,NNES,IN)
+            PL           = IN -2*NDIM+IDIM
             DDEPLE(IDIM) = DDEPLE(IDIM) - 
      &                     RRE*FFE(INOE)*ZR(JDEPDE-1+PL)
  215      CONTINUE
@@ -102,10 +117,8 @@ C
 C
       DO 201 IDIM = 1,NDIM
         DO 220 INOM = 1,NNM
-          PL           = NDDLSE*NNES+
-     &                   NDIM*(NNE-NNES) +
-     &                   (2+NSINGM)*NDIM*(INOM-1) +
-     &                   IDIM
+          CALL INDENT(INOM,DDLMS,DDLMM,NNMS,JN)
+          PL = NDDLE + JN + IDIM
           DDEPLM(IDIM) = DDEPLM(IDIM)+
      &                   FFM(INOM)*(ZR(JDEPDE-1+PL)+
      &                              ZR(JDEPDE-1+PL+NDIM))

@@ -1,9 +1,9 @@
       SUBROUTINE TE0382(OPTION,NOMTE)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 07/12/2010   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 21/12/2010   AUTEUR MASSIN P.MASSIN 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -80,7 +80,7 @@ C     (CAS D'1 ELEMENT PARENT QUADRATIQUE) => NBNAMX=3
       INTEGER INP
       INTEGER INO,NBSIGM,NBNAPA
       INTEGER JPINTT,JCNSET,JLONCH,JVOXSE,JSIGSE,JPMILT
-      INTEGER NIT,NSE,IT,ISE,CPT,IN,J,IPG
+      INTEGER NSE,ISE,IN,J,IPG
       INTEGER LEVOIS
       INTEGER IER,IRESE
 
@@ -111,7 +111,7 @@ C     (CAS D'1 ELEMENT PARENT QUADRATIQUE) => NBNAMX=3
       DATA    FAMI   /'BID','XINT','XINT','BID','XINT','XINT'/
 C
 C ----------------------------------------------------------------------
-C ----- NORME CALCULEE : SEMI-H1 (H1) ou ENERGIE (NRJ) -----------------
+C ----- NORME CALCULEE : SEMI-H1 (H1) OU ENERGIE (NRJ) -----------------
 C ----------------------------------------------------------------------
 C
       DATA TYPNOR / 'NRJ' /
@@ -347,128 +347,111 @@ C ----------------------------------------------------------------------
 C ------------------- BOUCLE SUR LES SOUS ELEMENTS ---------------------
 C ----------------------------------------------------------------------
 C
-C --- INITIALISATION DU N° DE SS-ELEMENT COURANT
+C --- RECUPERATION DU DECOUPAGE EN NSE SIMPLEXES
 C
-      CPT=0
-C
-C --- RECUPERATION DU DECOUPAGE EN NIT SIMPLEXES
-C
-      NIT=ZI(JLONCH-1+1)
-C
-C --- BOUCLE SUR LES NIT SIMPLEXES
-C
-      DO 300 IT=1,NIT
-C
-C ----- RECUPERATION DU DECOUPAGE EN NSE SOUS-ELEMENTS
-C
-        NSE=ZI(JLONCH-1+1+IT)
-C
-C ----- BOUCLE SUR LES NSE SOUS-ELEMENTS
-C
-        DO 310 ISE=1,NSE
-C
-          CPT=CPT+1
-C
-C ------- CALCUL DES COORDONNEES DES NOEUDS ET ECRITURE DANS ZR()
-C
-          COORSE='&&TE0288.COORSE'
-          CALL WKVECT(COORSE,'V V R',NDIM*NNO,JCOORS)
-C
-C ------- BOUCLE SUR LES 3 SOMMETS DU SOUS-ELEMENT
-C
-          DO 311 IN=1,NNO
-            INO=ZI(JCNSET-1+NNO*(CPT-1)+IN)
-            DO 312 J=1,NDIM
-              IF (INO.LT.1000) THEN
-                ZR(JCOORS-1+NDIM*(IN-1)+J)=ZR(IGEOM-1+NDIM*(INO-1)+J)
-              ELSEIF (INO.GT.1000 .AND. INO.LT.2000) THEN
-                ZR(JCOORS-1+NDIM*(IN-1)+J)=
-     &                               ZR(JPINTT-1+NDIM*(INO-1000-1)+J)
-              ELSEIF (INO.GT.2000 .AND. INO.LT.3000) THEN
-                ZR(JCOORS-1+NDIM*(IN-1)+J)=
-     &                               ZR(JPMILT-1+NDIM*(INO-2000-1)+J)
-              ELSEIF (INO.GT.3000) THEN
-                ZR(JCOORS-1+NDIM*(IN-1)+J)=
-     &                               ZR(JPMILT-1+NDIM*(INO-3000-1)+J)
-              ENDIF
- 312        CONTINUE
- 311      CONTINUE
-C
-C ------- CALCUL DE LA TAILLE DU SOUS-ELEMENT
-C
-          CALL UTHK(NOMTSE,JCOORS,HSE,NDIM,ITAB,IBID,IBID,IBID,NIV,IFM)
-C
-C ------- CALCUL DE L'ORIENTATION DU SOUS-ELEMENT
-C
-          CALL UTJAC(.TRUE.,JCOORS,1,IDFSE,0,IBID,NNO,ORIEN)
-C
-C ------------------- CALCUL DU TERME VOLUMIQUE -----------------------
-C
-          TVOLSE=0.D0
-          CALL XRMEV2(CPT,NPG,NDIM,IGEOM,JSIGSE,COORSE,TVOLSE)
-C
-          IF (TYPNOR.EQ.'NRJ') THEN
-            TVOL=TVOL+TVOLSE*HSE**2
-          ELSE 
-            TVOL=TVOL+SQRT(TVOLSE)*HSE
-          ENDIF                
-C
-C ----------------------------------------------------------------------
-C --------------- BOUCLE SUR LES ARETES DU SOUS-ELEMENT ----------------
-C ----------------------------------------------------------------------
-C
-          DO 314 IN=1,NNO
-C
-            LEVOIS=ZI(JVOXSE-1+NNO*(CPT-1)+IN)
-C
-C --------- PRESENCE OU NON D'UN VOISIN DE L'AUTRE COTE DE L'ARETE
-C
-            IF(LEVOIS.NE.0) THEN
-C
-C ----------- CALCUL DE NORMALES, TANGENTES ET JACOBIENS
-C
-              IAUX = IN
-              CALL CALNOR('2D',JCOORS,
-     &                    IAUX,NNO,NBNASE,ORIEN,
-     &                    IBID,IBID,ITABID,IBID,IBID,IBID,
-     &                    JACO,NX,NY,RTBID3,
-     &                    TX,TY,HF)
-C
-C ----------- CALCUL DU SAUT DE CONTRAINTES AUX NOEUDS S-E/VOISIN
-C ----------- (EQUIVALENT XFEM DE ERMES2)
-C
-              CALL XRMES2(NDIM,NBNASE,CPT,IN,LEVOIS,JSIGSE,NNO,NBCMP,
-     &                    JCNSET,SG11,SG22,SG12)
-C
-C ----------- CALCUL DE L'INTEGRALE SUR L'ARETE
-C
-              CALL R8INIR(NBNASE,0.D0,CHX,1)
-              CALL R8INIR(NBNASE,0.D0,CHY,1)
-C             ATTENTION, NBNASE=2 ALORS QUE DS INTENC TOUS LES ARGUMENTS
-C             D'ENTREE SONT DIMENSIONNES A 3, MAIS CA NA POSE PAS DE PB
-              CALL INTENC(NBNASE,JACO,CHX,CHY,SG11,SG22,SG12,NX,NY,INTE)
-C
-C ----------- ACTUALISATION DU TERME DE BORD
-C
-              IF (TYPNOR.EQ.'NRJ') THEN
-                TSAU=TSAU+0.5D0*HF*INTE
-              ELSE 
-                TSAU=TSAU+0.5D0*SQRT(HF)*SQRT(INTE)
-              ENDIF                
-C
-            END IF
-C
- 314      CONTINUE
-C
-C ----------------------------------------------------------------------
-C ----------- FIN BOUCLE SUR LES ARETES DU SOUS-ELEMENT ----------------
-C ----------------------------------------------------------------------
-C
-          CALL JEDETR(COORSE)
+      NSE=ZI(JLONCH-1+1)
 
- 310    CONTINUE
+      DO 310 ISE=1,NSE
+C
+C ----- CALCUL DES COORDONNEES DES NOEUDS ET ECRITURE DANS ZR()
+C
+        COORSE='&&TE0288.COORSE'
+        CALL WKVECT(COORSE,'V V R',NDIM*NNO,JCOORS)
+C
+C ----- BOUCLE SUR LES 3 SOMMETS DU SOUS-ELEMENT
+C
+        DO 311 IN=1,NNO
+          INO=ZI(JCNSET-1+NNO*(ISE-1)+IN)
+          DO 312 J=1,NDIM
+            IF (INO.LT.1000) THEN
+              ZR(JCOORS-1+NDIM*(IN-1)+J)=ZR(IGEOM-1+NDIM*(INO-1)+J)
+            ELSEIF (INO.GT.1000 .AND. INO.LT.2000) THEN
+              ZR(JCOORS-1+NDIM*(IN-1)+J)=
+     &                             ZR(JPINTT-1+NDIM*(INO-1000-1)+J)
+            ELSEIF (INO.GT.2000 .AND. INO.LT.3000) THEN
+              ZR(JCOORS-1+NDIM*(IN-1)+J)=
+     &                             ZR(JPMILT-1+NDIM*(INO-2000-1)+J)
+            ELSEIF (INO.GT.3000) THEN
+              ZR(JCOORS-1+NDIM*(IN-1)+J)=
+     &                             ZR(JPMILT-1+NDIM*(INO-3000-1)+J)
+            ENDIF
+ 312      CONTINUE
+ 311    CONTINUE
+C
+C ----- CALCUL DE LA TAILLE DU SOUS-ELEMENT
+C
+        CALL UTHK(NOMTSE,JCOORS,HSE,NDIM,ITAB,IBID,IBID,IBID,NIV,IFM)
+C
+C ----- CALCUL DE L'ORIENTATION DU SOUS-ELEMENT
+C
+        CALL UTJAC(.TRUE.,JCOORS,1,IDFSE,0,IBID,NNO,ORIEN)
+C
+C ----------------- CALCUL DU TERME VOLUMIQUE -----------------------
+C
+        TVOLSE=0.D0
+        CALL XRMEV2(ISE,NPG,NDIM,IGEOM,JSIGSE,COORSE,TVOLSE)
+C
+        IF (TYPNOR.EQ.'NRJ') THEN
+          TVOL=TVOL+TVOLSE*HSE**2
+        ELSE 
+          TVOL=TVOL+SQRT(TVOLSE)*HSE
+        ENDIF                
+C
+C --------------------------------------------------------------------
+C ------------- BOUCLE SUR LES ARETES DU SOUS-ELEMENT ----------------
+C --------------------------------------------------------------------
+C
+        DO 314 IN=1,NNO
+C
+          LEVOIS=ZI(JVOXSE-1+NNO*(ISE-1)+IN)
+C
+C ------- PRESENCE OU NON D'UN VOISIN DE L'AUTRE COTE DE L'ARETE
+C
+          IF(LEVOIS.NE.0) THEN
+C
+C --------- CALCUL DE NORMALES, TANGENTES ET JACOBIENS
+C
+            IAUX = IN
+            CALL CALNOR('2D',JCOORS,
+     &                  IAUX,NNO,NBNASE,ORIEN,
+     &                  IBID,IBID,ITABID,IBID,IBID,IBID,
+     &                  JACO,NX,NY,RTBID3,
+     &                  TX,TY,HF)
+C
+C --------- CALCUL DU SAUT DE CONTRAINTES AUX NOEUDS S-E/VOISIN
+C --------- (EQUIVALENT XFEM DE ERMES2)
+C
+            CALL XRMES2(NDIM,NBNASE,ISE,IN,LEVOIS,JSIGSE,NNO,NBCMP,
+     &                  JCNSET,SG11,SG22,SG12)
+C
+C --------- CALCUL DE L'INTEGRALE SUR L'ARETE
+C
+            CALL R8INIR(NBNASE,0.D0,CHX,1)
+            CALL R8INIR(NBNASE,0.D0,CHY,1)
+C           ATTENTION, NBNASE=2 ALORS QUE DS INTENC TOUS LES ARGUMENTS
+C           D'ENTREE SONT DIMENSIONNES A 3, MAIS CA NA POSE PAS DE PB
+            CALL INTENC(NBNASE,JACO,CHX,CHY,SG11,SG22,SG12,NX,NY,INTE)
+C
+C --------- ACTUALISATION DU TERME DE BORD
+C
+            IF (TYPNOR.EQ.'NRJ') THEN
+              TSAU=TSAU+0.5D0*HF*INTE
+            ELSE 
+              TSAU=TSAU+0.5D0*SQRT(HF)*SQRT(INTE)
+            ENDIF                
+C
+          END IF
+C
+ 314    CONTINUE
+C
+C --------------------------------------------------------------------
+C --------- FIN BOUCLE SUR LES ARETES DU SOUS-ELEMENT ----------------
+C --------------------------------------------------------------------
+C
+        CALL JEDETR(COORSE)
 
- 300  CONTINUE
+ 310  CONTINUE
+
 C
 C ----------------------------------------------------------------------
 C ------------------ FIN BOUCLE SUR LES SOUS ELEMENTS  -----------------

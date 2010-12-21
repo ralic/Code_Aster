@@ -1,13 +1,14 @@
-      SUBROUTINE XMVEC1(NDIM  ,NNE   ,NNES  ,NNC   ,NNM   ,
+      SUBROUTINE XMVEC1(NDIM,JNNE,NDEPLE,NNC   ,JNNM   ,
      &                  HPG   ,NFAES ,FFC   ,FFE   ,FFM   ,
      &                  JACOBI,DLAGRC,JPCAI ,CFACE ,COEFCA,
      &                  JEU   ,NORM  ,TYPMAI,NSINGE,NSINGM,
-     &                  RRE   ,RRM   ,NDDLSE,VTMP  )
+     &                  RRE   ,RRM   ,NCONTA,JDDLE,JDDLM,
+     &                  VTMP  )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 21/12/2010   AUTEUR MASSIN P.MASSIN 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -25,13 +26,14 @@ C ======================================================================
 C TOLE CRP_21
 C
       IMPLICIT NONE
-      INTEGER  NDIM,NNE,NNES,NNM,NNC,NFAES
-      INTEGER  JPCAI,CFACE(3,5),NSINGE,NSINGM,NDDLSE
+      INTEGER  NDIM,JNNE(3),JNNM(3),NNC,NFAES
+      INTEGER  JPCAI,CFACE(3,5),NSINGE,NSINGM
       REAL*8   HPG,FFC(8),JACOBI,FFE(8),FFM(8)
       REAL*8   DLAGRC,JEU,NORM(3),COEFCA,RRE,RRM
       REAL*8   VTMP(168)
       CHARACTER*8  TYPMAI
-C      
+      INTEGER  NCONTA,NDEPLE,JDDLE(2),JDDLM(2)
+C
 C ----------------------------------------------------------------------
 C
 C ROUTINE CONTACT (METHODE XFEMGG - CALCUL ELEM.)
@@ -65,20 +67,33 @@ C IN  RRE    : SQRT LST ESCLAVE
 C IN  RRM    : SQRT LST MAITRE
 C I/O VTMP   : VECTEUR SECOND MEMBRE ELEMENTAIRE DE CONTACT/FROTTEMENT
 C ----------------------------------------------------------------------
-      INTEGER I,J,K,II,IN,PL,XOULA
+      INTEGER I,J,K,II,IN,PL,XOULA,IIN,NDDLE
+      INTEGER NNE,NNES,NNEM,NNM,NNMS,DDLES,DDLEM,DDLMS,DDLMM
       REAL*8  VV
 C ----------------------------------------------------------------------
 C
 C --------------------- CALCUL DE [L1_CONT]-----------------------------
 C
+      NNE=JNNE(1)
+      NNES=JNNE(2)
+      NNEM=JNNE(3)
+      NNM=JNNM(1)
+      NNMS=JNNM(2)
+      DDLES=JDDLE(1)
+      DDLEM=JDDLE(2)
+      DDLMS=JDDLM(1)
+      DDLMM=JDDLM(2)
+      NDDLE = DDLES*NNES+DDLEM*NNEM
+C
       IF (NNM.NE.0) THEN
 C
       DO 10 J = 1,NDIM
-        DO 20 I = 1,NNES
+        DO 20 I = 1,NDEPLE
 C --- BLOCS ES,CL ; ES,EN ; (ES,SI)
           VV = HPG*JACOBI*(DLAGRC-COEFCA*JEU) *
      &          FFE(I)*NORM(J)
-          II = NDDLSE*(I-1)+J
+          CALL INDENT(I,DDLES,DDLEM,NNES,IIN)
+          II = IIN + J
           VTMP(II) = -VV
           II = II + NDIM
           VTMP(II) =  VV
@@ -91,8 +106,8 @@ C --- BLOCS ES,CL ; ES,EN ; (ES,SI)
 C --- BLOCS MA,CL ; MA,EN ; (MA,SI)
           VV = HPG*JACOBI*(DLAGRC-COEFCA*JEU) *
      &          FFM(I)*NORM(J)
-          II = NDDLSE*NNES+NDIM*(NNE-NNES) +
-     &          (2+NSINGM)*NDIM*(I-1)+J
+          CALL INDENT(I,DDLMS,DDLMM,NNMS,IIN)
+          II = NDDLE + IIN + J
           VTMP(II) = VV
           II = II + NDIM
           VTMP(II) = VV
@@ -104,11 +119,12 @@ C --- BLOCS MA,CL ; MA,EN ; (MA,SI)
    10 CONTINUE
       ELSE
       DO 50 J = 1,NDIM
-        DO 60 I = 1,NNES
+        DO 60 I = 1,NDEPLE
 C --- BLOCS ES,SI
           VV = HPG*JACOBI*(DLAGRC-COEFCA*JEU) *
      &          FFE(I)*NORM(J)
-          II = NDDLSE*(I-1)+J
+          CALL INDENT(I,DDLES,DDLEM,NNES,IIN)
+          II = IIN + J
           VTMP(II) = RRE * VV
    60   CONTINUE
    50 CONTINUE
@@ -117,8 +133,8 @@ C
 C --------------------- CALCUL DE [L2]----------------------------------
 C
       DO 40 I = 1,NNC
-        IN=XOULA(CFACE,NFAES,I,JPCAI,TYPMAI)
-        CALL XPLMA2(NDIM,NNE,NNES,NDDLSE,IN,PL)
+        IN=XOULA(CFACE,NFAES,I,JPCAI,TYPMAI,NCONTA)
+        CALL XPLMA2(NDIM,NNE,NNES,DDLES,IN,PL)
         VTMP(PL) = -HPG*JACOBI*JEU*FFC(I)
    40 CONTINUE
 C

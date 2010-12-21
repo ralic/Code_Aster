@@ -1,9 +1,9 @@
       SUBROUTINE IMPCOD(COLONN,ICOD  )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 12/01/2010   AUTEUR GRANET S.GRANET 
+C MODIF ALGORITH  DATE 21/12/2010   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -18,6 +18,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
+C RESPONSABLE ABBAS M.ABBAS
 C
       IMPLICIT     NONE
       INTEGER      ICOD
@@ -41,7 +42,7 @@ C
 C ----------------------------------------------------------------------
 C
       INTEGER       ZDEF
-      PARAMETER    (ZDEF=33)
+      PARAMETER    (ZDEF=40)
       INTEGER       I
       CHARACTER*9   MOTCLE(ZDEF)
 
@@ -56,14 +57,14 @@ C
       DATA MOTCLE(9)        / 'RELI_ITER'/
       DATA MOTCLE(10)       / 'RELI_COEF'/
       DATA MOTCLE(11)       / 'PILO_PARA'/
-      DATA MOTCLE(12)       / 'LAGR_ECAR'/
-      DATA MOTCLE(13)       / 'LAGR_INCR'/
-      DATA MOTCLE(14)       / 'LAGR_ITER'/
+      DATA MOTCLE(12)       / '&&&&&&&&&'/
+      DATA MOTCLE(13)       / '&&&&&&&&&'/
+      DATA MOTCLE(14)       / '&&&&&&&&&'/
       DATA MOTCLE(15)       / 'MATR_ASSE'/
       DATA MOTCLE(16)       / 'ITER_DEBO'/
       DATA MOTCLE(17)       / 'CTCD_ITER'/
-      DATA MOTCLE(18)       / 'CTCD_GEOM'/
-      DATA MOTCLE(19)       / 'CTCD_NOEU'/
+      DATA MOTCLE(18)       / '&&&&&&&&&'/
+      DATA MOTCLE(19)       / '&&&&&&&&&'/
       DATA MOTCLE(20)       / 'BOUC_GEOM'/
       DATA MOTCLE(21)       / 'BOUC_FROT'/
       DATA MOTCLE(22)       / 'BOUC_CONT'/
@@ -72,11 +73,11 @@ C
       DATA MOTCLE(25)       / 'SUIV_3'/
       DATA MOTCLE(26)       / 'SUIV_4'/
       DATA MOTCLE(27)       / 'ITER_FETI'/
-      DATA MOTCLE(28)       / 'CTCC_BOUC'/
-      DATA MOTCLE(29)       / 'CTCC_NOEU'/
+      DATA MOTCLE(28)       / 'BOUC_VALE'/
+      DATA MOTCLE(29)       / 'BOUC_NOEU'/
       DATA MOTCLE(30)       / 'RESI_COMP'/
       DATA MOTCLE(31)       / 'COMP_NOEU'/
-      DATA MOTCLE(32)       / '&&&&&&'/
+      DATA MOTCLE(32)       / '&&&&&&&&&'/
 C
 C ----------------------------------------------------------------------
 C

@@ -1,8 +1,8 @@
-#@ MODIF mecanonline4 Messages  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
+#@ MODIF mecanonline4 Messages  DATE 21/12/2010   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -23,10 +23,6 @@ def _(x) : return x
 
 cata_msg = {
 
-3 : _("""
-Il y a trop de colonnes de SUIVI_DDL (limité à quatre)
-"""),
-
 5 : _("""
 Le fichier pour le SUIVI_DDL doit etre défini dans la première occurrence
 """),
@@ -34,11 +30,6 @@ Le fichier pour le SUIVI_DDL doit etre défini dans la première occurrence
 6 : _("""
 Le fichier pour le SUIVI_DDL a été donné sans unité logique
 """),
-
-21 : _("""
-Le format est trop grand pour la largeur max. d'une colonne (16)
-"""),
-
 
 35 : _("""
  On utilise MECA_NON_LINE en enrichissant les résultats (REUSE).

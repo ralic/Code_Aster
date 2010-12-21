@@ -2,7 +2,8 @@
      &                   NBVAL,VALRES,NMAT,HSR,NBHSR,NBSYS)
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 14/12/2010   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 20/12/2010   AUTEUR PELLET J.PELLET 
+C TOLE CRS_1404
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -128,15 +129,15 @@ C         PAR CONVENTION KOCKS_RAUCH A LE NUMERO 4
           CALL RCVARC('F','TEMP',POUM,FAMI,KPG,KSP,TEMPF,IRET2)
           NBVAL=NBVAL+1
           VALRES(NBVAL)=TEMPF
-          
+
 
 C         DEFINITION DE LA MATRICE D'INTERACTION POUR KOCKS-RAUCH
           NOMRES(1)='H'
           CALL RCVALB (FAMI,KPG,KSP,POUM,IMAT,NMATER, NECOUL,0,' ',0.D0,
      &                 1, NOMRES, H,CODRET,' ')
           IF (CODRET(1).EQ.'OK') THEN
-              NBCOEF=1                          
-              VALH(1)=H                                        
+              NBCOEF=1
+              VALH(1)=H
           ELSE
               NOMRES(1)='H1'
               NOMRES(2)='H2'
@@ -147,10 +148,10 @@ C         DEFINITION DE LA MATRICE D'INTERACTION POUR KOCKS-RAUCH
               CALL RCVALB (FAMI,KPG,KSP,POUM,IMAT,NMATER, NECOUL,
      &                   0,' ',0.D0,6,NOMRES,VALH,CODRET,' ')
               IF (CODRET(5).EQ.'OK') THEN
-                  NBCOEF=6                          
+                  NBCOEF=6
               ELSE
                   NBCOEF=4
-              ENDIF                          
+              ENDIF
 
           ENDIF
           NECRIS=NECOUL

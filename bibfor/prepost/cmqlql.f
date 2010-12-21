@@ -1,8 +1,8 @@
       SUBROUTINE CMQLQL ( MAIN, MAOUT, NBMA, LIMA)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 11/10/2010   AUTEUR SELLENET N.SELLENET 
+C MODIF PREPOST  DATE 20/12/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -110,7 +110,8 @@ C     ON RECUPERE LES NUMEROS DES MAILLES QUADRATIQUES:
 
 C     NOMBRE DE MAILLES QUADRATIQUES :
       NBMA = ICOUNT
-C
+      IF (NBMA.EQ.0) CALL U2MESS('F','MODELISA3_8')
+
 C     ===============================
 C     RECUPERATION DES NOEUDS MILIEUX
 C     ===============================
@@ -125,32 +126,33 @@ C     =========================================================
       CALL JEDUPO(MAIN//'.NOMMAI'  ,'G',MAOUT//'.NOMMAI'  ,.FALSE.)
       CALL JEDUPO(MAIN//'.DIME'    ,'G',MAOUT//'.DIME'    ,.FALSE.)
       CALL JEDUPO(MAIN//'.TYPMAIL' ,'G',MAOUT//'.TYPMAIL' ,.FALSE.)
-C
+
       CALL JEEXIN(MAIN//'.GROUPEMA',IRET)
       IF(IRET.NE.0)THEN
         CALL JEDUPO(MAIN//'.GROUPEMA','G',MAOUT//'.GROUPEMA',.FALSE.)
       ENDIF
-C
+
 C     ACTUALISATION DE '.DIME'
       DIMEQ=MAOUT//'.DIME'
       CALL JEVEUO(DIMEQ,'E',JDIM)
       ZI(JDIM)=ZI(JDIM)-NBNM
-C
+
 C     ==================================================================
 C     MISE A JOUR DES NOEUDS ('.COORDO','.NOMNOE','.GROUPENO')
 C     ==================================================================
 
       CALL CMQLNO(MAIN,MAOUT,NBNM,ZI(JNM))
-C
+
 C     =============================================
 C     MISE A JOUR DES MAILLES ('.CONNEX','.TYPMAI')
 C     =============================================
-C
+
       CALL CMQLMA(MAIN,MAOUT,NBMA,ZI(JMQ))
-C
+
       CALL JEDETR('&&CMQLQL.MAIL_QUAD')
       CALL JEDETR('&&CMQLQL.NOEUD_MILIEU')
-C
+
+9999  CONTINUE
       CALL JEDEMA()
-C
+
       END

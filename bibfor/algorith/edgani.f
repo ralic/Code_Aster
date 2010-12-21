@@ -3,15 +3,16 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/11/2009   AUTEUR DURAND C.DURAND 
+C MODIF ALGORITH  DATE 20/12/2010   AUTEUR PELLET J.PELLET 
+C TOLE CRS_1404
 
       INTEGER  DIM
       REAL*8   Y(DIM),PM,DVSITR(DIM-1),EQSITR
       REAL*8   MU,ANI(6,6),GAMMA(3),M(3),N(3)
       REAL*8   G(DIM),MAXG,DGDY(DIM,DIM)
-                  
+
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -29,12 +30,12 @@ C ======================================================================
 
 C ----------------------------------------------------------------------
 C     MODELE VISCOPLASTIQUE SANS SEUIL DE EDGAR
-C     CALCUL DE LA FONCTION G DE SA DERIVEE ET DU CRITERE D ARRET  
+C     CALCUL DE LA FONCTION G DE SA DERIVEE ET DU CRITERE D ARRET
 C  IN  DIM   : DIMENSION DU SYSTEME A RESOUDRE
 C              DIM=NDIM+1 AVEC NDIM=6 EN 3D ET 4 EN 2D
 C  IN  Y    :  Y(1)=DVEPSEL(1)
 C              Y(2)=DVEPSEL(2)
-C              Y(3)=DVEPSEL(3) 
+C              Y(3)=DVEPSEL(3)
 C              Y(4)=DVEPSEL(4)
 C              Y(5)=DVEPSEL(5) (EN 3D)
 C              Y(6)=DVEPSEL(6) (EN 3D)
@@ -63,10 +64,10 @@ C 1.1 - DIMENSION
 
       NDIM=DIM-1
       DP=Y(DIM)
-      
+
 C 1.2 - DEFORMATION ELASTIQUE EQUIVALENTE
-      
-      EQEPEL = EDGEQU (NDIM,Y,ANI)            
+
+      EQEPEL = EDGEQU (NDIM,Y,ANI)
 
 C 1.3 - VECTEUR ANI(I,J)*Y(J)
 
@@ -83,18 +84,18 @@ C 2 - VECTEUR G
         G(I)=Y(I)-DVSITR(I)/(2.D0*MU)+DP*VECT(I)/EQEPEL
         G(I)=-G(I)
  15   CONTINUE
-      
+
       G(DIM)= EQEPEL
       DO 20 K=1,3
         G(DIM)=G(DIM)-GAMMA(K)*((PM+DP)**M(K))*(DP**N(K))
  20   CONTINUE
       G(DIM)=-G(DIM)
-      
+
 C 3 - MAX DE G POUR CRITERE REMIS EN CONTRAINTE
-      
+
       MAXG=ABS(G(1))
       DO 25 I=2,DIM
-        IF (ABS(G(I)).GT.MAXG) MAXG=ABS(G(I))  
+        IF (ABS(G(I)).GT.MAXG) MAXG=ABS(G(I))
  25   CONTINUE
       MAXG=2.D0*MU*MAXG
 
@@ -103,7 +104,7 @@ C     = [DG(1)/DVEPSEL(1)... .DG(1)/DVEPSEL(NDIM)    - DG(1)/DP   ]
 C       [.......................................    .- ...... ....]
 C       [DG(NDIM)/DVEPSEL(1)..DG(NDIM)/DVEPSEL(NDIM) - DG(NDIM)/DP]
 C       [---------------------------------------------------------]
-C       [DG(DIM)/DVEPSEL(1)..DG(DIM)/DVEPSEL(NDIM)   - DG(DIM)/DP] 
+C       [DG(DIM)/DVEPSEL(1)..DG(DIM)/DVEPSEL(NDIM)   - DG(DIM)/DP]
 
       DO 30 I=1,NDIM
         DO 35 J=1,NDIM
@@ -114,12 +115,12 @@ C       [DG(DIM)/DVEPSEL(1)..DG(DIM)/DVEPSEL(NDIM)   - DG(DIM)/DP]
             IF (I.GE.4) DGDY(I,J)=DGDY(I,J)+0.5D0
           ENDIF
           IF (J.GE.4) DGDY(I,J)=2.D0*DGDY(I,J)
- 35     CONTINUE 
+ 35     CONTINUE
  30   CONTINUE
 
       DO 40 I=1,NDIM
         DGDY(I,DIM)=VECT(I)/EQEPEL
- 40   CONTINUE 
+ 40   CONTINUE
 
       DO 45 J=1,NDIM
         DGDY(DIM,J)=VECT(J)/EQEPEL

@@ -1,0 +1,136 @@
+      SUBROUTINE NMIMPS(SDIMPR)
+C
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ALGORITH  DATE 21/12/2010   AUTEUR ABBAS M.ABBAS 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C ======================================================================
+C RESPONSABLE ABBAS M.ABBAS
+C
+      IMPLICIT NONE
+      CHARACTER*24  SDIMPR
+C
+C ----------------------------------------------------------------------
+C
+C ROUTINE MECA_NON_LINE (AFFICHAGE - ACCES SD)
+C
+C IMPRESSION DES RESIDUS (RECAP FIN DE PAS)
+C
+C ----------------------------------------------------------------------
+C
+C
+C IN  SDIMPR : SD SUR L'AFFICHAGE DES COLONNES
+C
+C -------------- DEBUT DECLARATIONS NORMALISEES JEVEUX -----------------
+C
+      INTEGER ZI
+      COMMON /IVARJE/ZI(1)
+      REAL*8 ZR
+      COMMON /RVARJE/ZR(1)
+      COMPLEX*16 ZC
+      COMMON /CVARJE/ZC(1)
+      LOGICAL ZL
+      COMMON /LVARJE/ZL(1)
+      CHARACTER*8 ZK8
+      CHARACTER*16 ZK16
+      CHARACTER*24 ZK24
+      CHARACTER*32 ZK32
+      CHARACTER*80 ZK80
+      COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
+C
+C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
+C      
+      INTEGER        NRESI,ZCOL
+      PARAMETER     (NRESI=4,ZCOL = 16)
+      CHARACTER*9    RESCOL(NRESI)
+      CHARACTER*16   RESNOM(ZCOL)
+      REAL*8         RESVAL(ZCOL)
+      CHARACTER*16   RESNOE(ZCOL)      
+C       
+      CHARACTER*24   IMPCNT,IMPCNL,IMPCNV,IMPCNA
+      INTEGER        JIMPCT,JIMPCL,JIMPCV,JIMPCA       
+      INTEGER        JIMPCO,JIMPIN
+      CHARACTER*24   IMPCOL,IMPINF
+      INTEGER        ICOL,IRESI,ICOD,IARG
+      INTEGER        NCOL,NRESIF,IBID
+      CHARACTER*9    COLONN
+      REAL*8         VALR(1)
+      CHARACTER*16   VALK(2)
+C
+      DATA RESCOL(1) /'RESI_RELA'/
+      DATA RESCOL(2) /'RESI_MAXI'/
+      DATA RESCOL(3) /'RESI_REFE'/
+      DATA RESCOL(4) /'RESI_COMP'/      
+C
+C ----------------------------------------------------------------------
+C
+      CALL JEMARQ()
+C
+C --- RECUPERATION DES PARAMETRES
+C
+      IMPINF = SDIMPR(1:14)//'.INFO'
+      IMPCOL = SDIMPR(1:14)//'.DEFI.COL'
+      CALL JEVEUO(IMPINF,'L',JIMPIN)
+      CALL JEVEUO(IMPCOL,'L',JIMPCO)      
+      IMPCNT = SDIMPR(1:14)//'.CONV.TYP'
+      IMPCNL = SDIMPR(1:14)//'.CONV.LIE'
+      IMPCNV = SDIMPR(1:14)//'.CONV.VAL'
+      IMPCNA = SDIMPR(1:14)//'.CONV.ACT'      
+      CALL JEVEUO(IMPCNT,'E',JIMPCT)
+      CALL JEVEUO(IMPCNL,'E',JIMPCL)
+      CALL JEVEUO(IMPCNV,'E',JIMPCV)
+      CALL JEVEUO(IMPCNA,'E',JIMPCA)  
+      NCOL   = ZI(JIMPIN-1+1)
+C
+C --- INITIALISATIONS
+C    
+      IARG   = 0
+      NRESIF = 0
+      CALL ASSERT(ZCOL.EQ.16)
+C
+C --- BOCULE SUR LES RESIDUS
+C
+      DO 10 IRESI = 1,NRESI
+        COLONN = RESCOL(IRESI)
+        CALL IMPCOD(COLONN,ICOD)
+        IF (ICOD.EQ.0) THEN
+          CALL ASSERT(.FALSE.)
+        ENDIF
+        DO 15 ICOL = 1,NCOL
+          IF (ZI(JIMPCO-1+ICOL).EQ.ICOD) THEN
+            IARG = IARG + 1
+            RESNOM(IARG) = ZK16(JIMPCT-1+IRESI)
+            RESVAL(IARG) = ZR(JIMPCV-1+IRESI)
+            RESNOE(IARG) = ZK16(JIMPCL-1+IRESI)
+            IF (ZL(JIMPCA-1+IRESI)) THEN
+              NRESIF = NRESIF + 1
+            ENDIF
+          ENDIF
+ 15     CONTINUE        
+ 10   CONTINUE
+C
+C --- AFFICHAGE
+C      
+      DO 20 IARG = 1,NRESIF
+        VALK(1) = RESNOM(IARG)
+        VALK(2) = RESNOE(IARG)
+        VALR(1) = RESVAL(IARG)
+        CALL U2MESG('I','MECANONLINE6_36',2,VALK,0,IBID,1,VALR)
+  20  CONTINUE   
+C
+      CALL JEDEMA()
+
+      END

@@ -1,12 +1,12 @@
-      SUBROUTINE XMMAB0(NDIM  ,NNC   ,NNE   ,NNES  ,NFAES ,
+      SUBROUTINE XMMAB0(NDIM  ,NNC   ,JNNE   ,NFAES ,
      &                  JPCAI ,HPG   ,FFC   ,JACOBI,COEFCA,
-     &                  TYPMAI,CFACE ,TAU1  ,TAU2  ,NDDLSE,
-     &                  MMAT  )
+     &                  TYPMAI,CFACE ,TAU1  ,TAU2  ,JDDLE,
+     &                  NCONTA,MMAT  )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/04/2010   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 21/12/2010   AUTEUR MASSIN P.MASSIN 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -23,11 +23,12 @@ C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C
       IMPLICIT NONE
-      INTEGER  NDIM,NNC,NNE,NNES,NFAES,JPCAI,CFACE(5,3),NDDLSE
+      INTEGER  NDIM,NNC,JNNE(3),NFAES,JPCAI,CFACE(5,3),JDDLE(2)
       REAL*8   HPG,FFC(8),JACOBI,COEFCA
       REAL*8   TAU1(3),TAU2(3)     
       REAL*8   MMAT(168,168)
       CHARACTER*8  TYPMAI
+      INTEGER  NCONTA
 C      
 C ----------------------------------------------------------------------
 C
@@ -54,11 +55,15 @@ C
 C ----------------------------------------------------------------------
 C
       INTEGER I,J,K,L,II,JJ,INI,INJ,PLI,PLJ,XOULA
+      INTEGER NNE,NNES,DDLES
       REAL*8  TT(2,2)
 C
 C ----------------------------------------------------------------------
 C
 C --- INITIALISATIONS
+      NNE=JNNE(1)
+      NNES=JNNE(2)
+      DDLES=JDDLE(1)
 C
       DO 300 I = 1,2
         DO 290 J = 1,2
@@ -77,10 +82,10 @@ C
 C
       DO 284 I = 1,NNC
         DO 283 J = 1,NNC
-          INI=XOULA(CFACE,NFAES,I,JPCAI,TYPMAI)
-          CALL XPLMA2(NDIM,NNE,NNES,NDDLSE,INI,PLI)
-          INJ=XOULA(CFACE,NFAES,J,JPCAI,TYPMAI)
-          CALL XPLMA2(NDIM,NNE,NNES,NDDLSE,INJ,PLJ)
+          INI=XOULA(CFACE,NFAES,I,JPCAI,TYPMAI,NCONTA)
+          CALL XPLMA2(NDIM,NNE,NNES,DDLES,INI,PLI)
+          INJ=XOULA(CFACE,NFAES,J,JPCAI,TYPMAI,NCONTA)
+          CALL XPLMA2(NDIM,NNE,NNES,DDLES,INJ,PLJ)
           DO 282 L = 1,NDIM-1
             DO 281 K = 1,NDIM-1
               II = PLI+L

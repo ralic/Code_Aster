@@ -1,8 +1,8 @@
-#@ MODIF calculel4 Messages  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
+#@ MODIF calculel4 Messages  DATE 20/12/2010   AUTEUR MEUNIER S.MEUNIER 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -94,7 +94,7 @@ Conseil :
 
 12 : _("""
  Erreur de programmation (catalogue des éléments finis) :
- Les éléments finis ayant l'attribut VOLU_FINI='OUI' ne peuvent créer que des
+ Les éléments finis ayant l'attribut VF_AVEC_VOISIN='OUI' ne peuvent créer que des
  matrices élémentaires non-symétriques.
 """),
 
@@ -177,8 +177,8 @@ Conseil :
 """),
 
 59 : _("""
-Erreur utilisateur dans PROJ_CHAMP :
- Les maillages associés au MODELE_1 et au RESULTAT sont differents : %(k1)s et %(k2)s.
+Erreur utilisateur :
+ Les maillages associés aux concepts %(k1)s et %(k2)s sont différents : %(k3)s et %(k4)s.
 """),
 
 60 : _("""

@@ -1,9 +1,9 @@
-      SUBROUTINE XMPINT(NDIM  ,NFAES ,JPCPI ,JPCCF ,GEOPI )
+      SUBROUTINE XMPINT(NDIM ,NPTE ,NFAES ,JPCPI ,JPCCF ,GEOPI )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 21/12/2010   AUTEUR MASSIN P.MASSIN 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -21,7 +21,7 @@ C ======================================================================
 C
       IMPLICIT NONE
       INTEGER       JPCPI,JPCCF
-      INTEGER       NDIM,NFAES
+      INTEGER       NDIM,NFAES,NPTE
       REAL*8        GEOPI(9)
 C      
 C ----------------------------------------------------------------------
@@ -70,12 +70,12 @@ C
 C ----------------------------------------------------------------------
 C
       CALL JEMARQ() 
-C       
-      DO 30 I=1,NDIM
+C
+      DO 30 I=1,NPTE
 C --- BOUCLE SUR LES POINTS D'INTERSECTION DE LA FACETTE
         DO 40 J=1,NDIM
           GEOPI(NDIM*(I-1)+J) = 
-     &     ZR(JPCPI-1+NDIM*(INT(ZR(JPCCF-1+NDIM*(NFAES-1)+I))-1)+J)
+     &     ZR(JPCPI-1+NDIM*(INT(ZR(JPCCF-1+NPTE*(NFAES-1)+I))-1)+J)
  40     CONTINUE
  30   CONTINUE
 C

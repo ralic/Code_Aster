@@ -1,13 +1,13 @@
-      SUBROUTINE XDIVTE(TYPMA,CONNEC,AREPAR,NIT)
+      SUBROUTINE XDIVTE(NDIM,ELP,CNSET,NSE,NNOSE)
       IMPLICIT NONE
 
-      INTEGER       CONNEC(6,6),AREPAR(6,6),NIT
-      CHARACTER*8   TYPMA
+      INTEGER       NDIM,CNSET(*),NSE,NNOSE
+      CHARACTER*8   ELP
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/06/2010   AUTEUR CARON A.CARON 
+C MODIF ALGORITH  DATE 21/12/2010   AUTEUR MASSIN P.MASSIN 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -29,15 +29,13 @@ C                               D'UN ÉLÉMENT PARENT X-FEM
 C                          (VOIR BOOK III 19/04/04)
 C
 C     ENTREE
-C       TYPMA  : TYPE DE MAILLE
+C       NDIM    : DIMENSSION DU MODELE
+C       ELP     : TYPE DE MAILLE
 C
 C     SORTIE
-C       CONNEC  : CONNECTIVITÉ DES NOEUDS DE LA MAILLE
-C       AREPAR  : IT,AR -> ARETE DE L'ELEMENT PARENT QUI
-C                 CORRESPOND A L'ARETE AR DU SSELT IT, OU ZERO
-C                 SI AUCUNE ARETE DE L'ELEMENT PARENT NE CORRESPOND.
-C                 LES ARETES SONT ORDONNEES PAR LA ROUTINE CONARE
-C       NIT     : NOMBRE DE SOUS-TÉTRAS
+C       CNSET   : CONNECTIVITÉ DES NOEUDS DE LA MAILLE
+C       NSE     : NOMBRE DE SOUS-TÉTRAS (SOUS TRIA)
+C       NNOSE   : NOMBRE DE NOEUDS DU SOUS TETRA (SOUS TRIA)
 C     ------------------------------------------------------------------
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER          ZI
@@ -56,19 +54,12 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON  /KVARJE/ ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
-      INTEGER         I,J
+      INTEGER         INO,ISE,CONNEC(6,6)
 C ----------------------------------------------------------------------
 
       CALL JEMARQ()
 
-      DO 100 I=1,6
-        DO 110 J=1,6
-          CONNEC(I,J)=0
-          AREPAR(I,J)=0
- 110    CONTINUE
- 100  CONTINUE
-
-      IF (TYPMA(1:4).EQ.'HEXA') THEN
+      IF (ELP.EQ.'HE8'.OR.ELP.EQ.'H20') THEN
         CONNEC(1,1)=6
         CONNEC(1,2)=3
         CONNEC(1,3)=2
@@ -93,44 +84,9 @@ C ----------------------------------------------------------------------
         CONNEC(6,2)=8
         CONNEC(6,3)=4
         CONNEC(6,4)=6
-        AREPAR(1,1)=0
-        AREPAR(1,2)=10
-        AREPAR(1,3)=0
-        AREPAR(1,4)=2
-        AREPAR(1,5)=3
-        AREPAR(1,6)=0
-        AREPAR(2,1)=0
-        AREPAR(2,2)=4
-        AREPAR(2,3)=0
-        AREPAR(2,4)=9
-        AREPAR(2,5)=0
-        AREPAR(2,6)=1
-        AREPAR(3,1)=0
-        AREPAR(3,2)=10
-        AREPAR(3,3)=0
-        AREPAR(3,4)=5
-        AREPAR(3,5)=0
-        AREPAR(3,6)=0
-        AREPAR(4,1)=0
-        AREPAR(4,2)=8
-        AREPAR(4,3)=5
-        AREPAR(4,4)=12
-        AREPAR(4,5)=0
-        AREPAR(4,6)=0
-        AREPAR(5,1)=0
-        AREPAR(5,2)=11
-        AREPAR(5,3)=0
-        AREPAR(5,4)=6
-        AREPAR(5,5)=0
-        AREPAR(5,6)=7
-        AREPAR(6,1)=0
-        AREPAR(6,2)=3
-        AREPAR(6,3)=0
-        AREPAR(6,4)=12
-        AREPAR(6,5)=0
-        AREPAR(6,6)=0
-        NIT=6
-      ELSEIF (TYPMA(1:5).EQ.'PENTA') THEN
+        NSE=6
+        NNOSE=4
+      ELSEIF (ELP.EQ.'PE6'.OR.ELP.EQ.'P15') THEN
         CONNEC(1,1)=5
         CONNEC(1,2)=4
         CONNEC(1,3)=6
@@ -143,26 +99,9 @@ C ----------------------------------------------------------------------
         CONNEC(3,2)=2
         CONNEC(3,3)=5
         CONNEC(3,4)=1
-        AREPAR(1,1)=4
-        AREPAR(1,2)=5
-        AREPAR(1,3)=0
-        AREPAR(1,4)=6
-        AREPAR(1,5)=7
-        AREPAR(1,6)=0
-        AREPAR(2,1)=1
-        AREPAR(2,2)=3
-        AREPAR(2,3)=0
-        AREPAR(2,4)=2
-        AREPAR(2,5)=0
-        AREPAR(2,6)=9
-        AREPAR(3,1)=0
-        AREPAR(3,2)=5
-        AREPAR(3,3)=0
-        AREPAR(3,4)=8
-        AREPAR(3,5)=1
-        AREPAR(3,6)=0
-        NIT=3
-      ELSEIF (TYPMA(1:5).EQ.'PYRAM') THEN
+        NSE=3
+        NNOSE=4
+      ELSEIF (ELP.EQ.'PY5'.OR.ELP.EQ.'P13') THEN
 C       SOUS-TETRAS 
 C       CONNEC = [1 2 3 5
 C                 1 3 4 5]
@@ -174,46 +113,25 @@ C                 1 3 4 5]
         CONNEC(2,2)=3
         CONNEC(2,3)=4
         CONNEC(2,4)=5
-        AREPAR(1,1)=1
-        AREPAR(1,2)=0
-        AREPAR(1,3)=3
-        AREPAR(1,4)=4
-        AREPAR(1,5)=5
-        AREPAR(1,6)=7
-        AREPAR(2,1)=0
-        AREPAR(2,2)=2
-        AREPAR(2,3)=3
-        AREPAR(2,4)=6
-        AREPAR(2,5)=7
-        AREPAR(2,6)=8
-        NIT=2
-      ELSEIF (TYPMA(1:5).EQ.'TETRA') THEN
+        NSE=2
+        NNOSE=4
+      ELSEIF (ELP.EQ.'TE4'.OR.ELP.EQ.'T10') THEN
         CONNEC(1,1)=1
         CONNEC(1,2)=2
         CONNEC(1,3)=3
         CONNEC(1,4)=4
-        AREPAR(1,1)=1
-        AREPAR(1,2)=2
-        AREPAR(1,3)=3
-        AREPAR(1,4)=4
-        AREPAR(1,5)=5
-        AREPAR(1,6)=6
-        NIT=1
-      ELSEIF (TYPMA(1:5).EQ.'QUAD4') THEN
+        NSE=1
+        NNOSE=4
+      ELSEIF (ELP.EQ.'QU4'.OR.ELP.EQ.'QU8'.AND.NDIM.EQ.3) THEN
         CONNEC(1,1)=1
         CONNEC(1,2)=2
         CONNEC(1,3)=4
         CONNEC(2,1)=2
         CONNEC(2,2)=3
         CONNEC(2,3)=4
-        AREPAR(1,1)=1
-        AREPAR(1,2)=0
-        AREPAR(1,3)=4
-        AREPAR(2,1)=2
-        AREPAR(2,2)=3
-        AREPAR(2,3)=0
-        NIT=2
-      ELSEIF (TYPMA(1:5).EQ.'QUAD8') THEN
+        NSE=2
+        NNOSE=3
+      ELSEIF (ELP.EQ.'QU8'.AND.NDIM.EQ.2) THEN
         CONNEC(1,1)=1
         CONNEC(1,2)=2
         CONNEC(1,3)=4
@@ -226,49 +144,44 @@ C                 1 3 4 5]
         CONNEC(2,4)=6
         CONNEC(2,5)=7
         CONNEC(2,6)=9
-        AREPAR(1,1)=1
-        AREPAR(1,2)=0
-        AREPAR(1,3)=4
-        AREPAR(2,1)=2
-        AREPAR(2,2)=3
-        AREPAR(2,3)=0
-        NIT=2
-      ELSEIF (TYPMA(1:5).EQ.'TRIA3') THEN
+        NSE=2
+        NNOSE=6
+      ELSEIF (ELP.EQ.'TR3'.OR.ELP.EQ.'TR6'.AND.NDIM.EQ.3) THEN
         CONNEC(1,1)=1
         CONNEC(1,2)=2
         CONNEC(1,3)=3
-        AREPAR(1,1)=1
-        AREPAR(1,2)=2
-        AREPAR(1,3)=3
-        NIT=1
-      ELSEIF (TYPMA(1:5).EQ.'TRIA6') THEN
+        NSE=1
+        NNOSE=3
+      ELSEIF (ELP.EQ.'TR6'.AND.NDIM.EQ.2) THEN
         CONNEC(1,1)=1
         CONNEC(1,2)=2
         CONNEC(1,3)=3
         CONNEC(1,4)=4
         CONNEC(1,5)=5
         CONNEC(1,6)=6
-        AREPAR(1,1)=1
-        AREPAR(1,2)=2
-        AREPAR(1,3)=3
-        NIT=1
-      ELSEIF (TYPMA(1:4).EQ.'SEG2') THEN
+        NSE=1
+        NNOSE=6
+      ELSEIF (ELP.EQ.'SE2') THEN
         CONNEC(1,1)=1
         CONNEC(1,2)=2
-        AREPAR(1,1)=1
-        AREPAR(1,2)=2
-        NIT=1  
-      ELSEIF (TYPMA(1:4).EQ.'SEG3') THEN
+        NSE=1
+        NNOSE=2
+      ELSEIF (ELP.EQ.'SE3') THEN
         CONNEC(1,1)=1
         CONNEC(1,2)=2
         CONNEC(1,3)=3
-        AREPAR(1,1)=1
-        AREPAR(1,2)=2
-        NIT=1
+        NSE=1
+        NNOSE=3
       ELSE
 C       TYPE D'ELEMENT FINI PAS TRAITE
         CALL ASSERT(.FALSE.)
       ENDIF
+
+      DO 10 ISE=1,NSE
+        DO 20 INO=1,NNOSE
+          CNSET(NNOSE*(ISE-1)+INO)=CONNEC(ISE,INO)
+  20    CONTINUE
+  10  CONTINUE
 
       CALL JEDEMA()
       END

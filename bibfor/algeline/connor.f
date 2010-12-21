@@ -3,9 +3,10 @@
 
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 22/12/2008   AUTEUR DESOZA T.DESOZA 
+C MODIF ALGELINE  DATE 20/12/2010   AUTEUR PELLET J.PELLET 
+C TOLE CRS_1404
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -318,7 +319,7 @@ C           write(6,*)'Rapport Gevibus': ZR(IRAP-1+(IM-1)*NBVAL+I)
 
 
 
-C     2)  FORMULATION ALTERNATIVE 
+C     2)  FORMULATION ALTERNATIVE
 C         ===============
 
 C     CALCUL DE LA VITESSE CRITIQUE INTER TUBES POUR CHAQUE COMBINAISON
@@ -347,14 +348,14 @@ C     PHI EST DE LA FORME E*S+F
 
                C=(VITE(IMA+1)-VITE(IMA))/(ABSCUR(IMA+1)-ABSCUR(IMA))
                D=VITE(IMA)-C*ABSCUR(IMA)
-               
+
                COEFF1=0.D0
                COEFF2=0.D0
                COEFF3=0.D0
                COEFF4=0.D0
                COEFF5=0.D0
                COEFF6=0.D0
-             
+
 C PRISE EN COMPTE DES DDL DE TRANSLATION
 
                DO 145 ID=1,3
@@ -375,7 +376,7 @@ C    COEFFICIENT DU POLYNOME DU 5 DEGRES RESULTAT DE RHO*V**2*PHI**2
                  COEFF5=2*C*D*(F**2)*B+2*E*F*(D**2)*B+(D**2)*(F**2)*A+
      &                      COEFF5
                  COEFF6=(D**2)*(F**2)*B+COEFF6
-                 
+
  145           CONTINUE
 
                ZR(IENER-1+NBZEX*(IM-1)+IZONE+NBZEX*NBM)=

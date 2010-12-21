@@ -1,5 +1,5 @@
       SUBROUTINE  ASEIHM(OPTION,AXI,NDIM,NNO1,NNO2,NPI,NPG,
-     &                    DIMUEL,DIMDEF,DIMCON,NBVARI,IMATE, 
+     &                    DIMUEL,DIMDEF,DIMCON,NBVARI,IMATE,
      &                    IU,IP,IPF,IQ,
      &                    MECANI,PRESS1,PRESS2,TEMPE,
      &                    VFF1,VFF2,DFFR2,INSTAM,INSTAP,DEPLM,
@@ -7,35 +7,35 @@
      &                    WREF,GEOM,ANG,COMPOR,PERMAN,
      &                    CRIT,VECTU,MATUU,RETCOM)
 
-      IMPLICIT NONE 
+      IMPLICIT NONE
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/04/2010   AUTEUR JAUBERT A.JAUBERT 
+C MODIF ALGORITH  DATE 20/12/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C ======================================================================
-C TOLE CRP_21
+C TOLE CRP_21 CRS_1404
 C ======================================================================
 C =====================================================================
 C......................................................................
 C
 C     BUT:  CALCUL DU VECTEUR FORCES INTERNES ELEMENTAIRE, DES
 C           CONTRAINTES GENERALISEES, DES VARIABLES INTERNES
-C           ET/OU DE L'OPERATEUR TANGENT ELEMENTAIRE 
+C           ET/OU DE L'OPERATEUR TANGENT ELEMENTAIRE
 C......................................................................
 C =====================================================================
 C IN OPTION  : OPTION DE CALCUL
@@ -72,21 +72,21 @@ C IN GEOM    : COORDONNEES DES NOEUDS (FAMILLE 1)
 C IN ANG     : ANGLES D'EULER NODAUX (FAMILLE 1)
 C IN COMPOR  : COMPORTEMENT
 C IN PERMAN  : REGIME PERMANENT ?
-C IN CRIT    : CRITERES DE CONVERGENCE LOCAUX 
+C IN CRIT    : CRITERES DE CONVERGENCE LOCAUX
 C =====================================================================
 C OUT RETCOM : CODE RETOUR LOI DE COMPORTEMENT
 C OUT VECTU  : VECTEUR FORCE INTERNE ELEMENTAIRE
 C OUT MATUU  : OPERATEUR TANGENT ELEMENTAIRE
-C OUT SIGP   : CONTRAINTES GENERALISEES AU TEMPS PLUS AUX POINTS 
+C OUT SIGP   : CONTRAINTES GENERALISEES AU TEMPS PLUS AUX POINTS
 C              D'INTEGRATION
 C OUT VARIP  : VARIABLES INTERNES AU TEMPS PLUS AUX POINTS D'INTEGRATION
-C --- POUR L'HYDRAULIQUE : VAR. INT. 1 : RHO_LIQUIDE - RHO_0 
-C --- POUR LE COUPLAGE   : VAR. INT. 1 : PHI - PHI_0 
-C ---                    : VAR. INT. 2 : PVP - PVP_0 SI VAPEUR 
-C ---                    : VAR. INT. 3 : SATURATION SI LOI NON SATUREE 
-C                        : VAR. INT. 4 : OUVH 
+C --- POUR L'HYDRAULIQUE : VAR. INT. 1 : RHO_LIQUIDE - RHO_0
+C --- POUR LE COUPLAGE   : VAR. INT. 1 : PHI - PHI_0
+C ---                    : VAR. INT. 2 : PVP - PVP_0 SI VAPEUR
+C ---                    : VAR. INT. 3 : SATURATION SI LOI NON SATUREE
+C                        : VAR. INT. 4 : OUVH
 C --- POUR LA MECANIQUE  : VAR. INT. 1 : TLINT
-C                        
+C
 C......................................................................
 C
 
@@ -100,7 +100,7 @@ C - VARIABLES ENTREE
        REAL*8 WREF(NPI),ANG(24),CRIT(*)
        REAL*8 INSTAM,INSTAP,DEPLM(DIMUEL),DEPLP(DIMUEL),GEOM(NDIM,NNO2)
        REAL*8 SIGM(DIMCON,NPI),VARIM(NBVARI,NPI)
-       CHARACTER*8 NOMAIL       
+       CHARACTER*8 NOMAIL
        CHARACTER*16 OPTION,COMPOR(*)
        LOGICAL AXI,PERMAN
 
@@ -117,7 +117,7 @@ C - VARIABLES LOCALES
        REAL*8 DEFGEM(DIMDEF),DEFGEP(DIMDEF),MATRI
        LOGICAL RESI,RIGI
 
-    
+
 C =====================================================================
 C --- DETERMINATION DES VARIABLES CARACTERISANT LE MILIEU ET OPTION ---
 C =====================================================================
@@ -151,7 +151,7 @@ C ======================================================================
         DO 1 I=1,DIMUEL
           VECTU(I)=0.D0
  1      CONTINUE
-      END IF  
+      END IF
 
       IF (RIGI) THEN
          DO 3 I=1,DIMUEL*DIMUEL
@@ -169,7 +169,7 @@ C =====================================================================
 C =====================================================================
 C --- CALCUL DE LA MATRICE DE PASSAGE DDL -> DEFORMATIONS GENERALISEES
 C =====================================================================
-       
+
        CALL MATTHM(NDIM,AXI,NNO1,NNO2,DIMUEL,DIMDEF,IU,IP,IPF,
      &             IQ,YAP1,YAP2,YATE,ADDEP1,ADDEP2,ADDLH1,
      &             VFF1(1,KPI),VFF2(1,KPI),DFFR2(1,1,KPI),WREF(KPI),
@@ -187,11 +187,11 @@ C =====================================================================
  109       CONTINUE
  108     CONTINUE
 
-      
+
 C =====================================================================
 C --- INTEGRATION DES LOIS DE COMPORTEMENT ----------------------------
 C =====================================================================
-         
+
          CALL COEIHM(OPTION,PERMAN,RESI,RIGI,IMATE,COMPOR,
      &                    CRIT,INSTAM,INSTAP,NOMAIL,
      &                    NDIM,DIMDEF,DIMCON,NBVARI,YAMEC,YAP1,
@@ -201,33 +201,33 @@ C =====================================================================
      &                    DEFGEM,DEFGEP,KPI,NPG,NPI,SIGM(1,KPI),
      &                    SIGP(1,KPI),VARIM(1,KPI),VARIP(1,KPI),RES,
      &                    DRDE,RETCOM)
-         
+
 C =====================================================================
 C --- CALCUL DES FORCES INTERIEURES ET DE L'OPERATEUR TANGENT ---------
 C =====================================================================
 
          IF (RESI) THEN
-           DO 699 K=1,DIMUEL     
+           DO 699 K=1,DIMUEL
              DO 700 I=1,DIMDEF
-               VECTU(K)=VECTU(K)+WI*Q(I,K)*RES(I)      
- 700         CONTINUE          
- 699       CONTINUE 
+               VECTU(K)=VECTU(K)+WI*Q(I,K)*RES(I)
+ 700         CONTINUE
+ 699       CONTINUE
          END IF
 
-         IF (RIGI) THEN 
-           KM = 1    
+         IF (RIGI) THEN
+           KM = 1
            DO 702 K=1,DIMUEL
-             DO 703 M=1,DIMUEL 
+             DO 703 M=1,DIMUEL
                MATRI=0.D0
                DO 704 I=1,DIMDEF
                  DO 705 J=1,DIMDEF
                    MATRI = MATRI + WI*Q(I,K)*DRDE(I,J)*Q(J,M)
  705             CONTINUE
  704           CONTINUE
-               MATUU(KM) = MATUU(KM) + MATRI 
+               MATUU(KM) = MATUU(KM) + MATRI
                KM = KM + 1
- 703         CONTINUE  
- 702       CONTINUE 
+ 703         CONTINUE
+ 702       CONTINUE
          END IF
 
  10   CONTINUE

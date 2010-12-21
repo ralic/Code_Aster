@@ -1,4 +1,4 @@
-%& MODIF COMPELEM  DATE 14/12/2010   AUTEUR PROIX J-M.PROIX 
+%& MODIF COMPELEM  DATE 21/12/2010   AUTEUR MASSIN P.MASSIN 
 % ======================================================================
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
@@ -131,9 +131,9 @@ PHENOMENE_MODELISATION__
 %        En général : 6 (X6) pour les éléments 3D, 4 (X4) pour certains éléments 2D
 %
 %
-%  VOLU_FINI = 'OUI' : l'élément est de type "volume fini". Cela implique :
-%               - les calculs élémentaires peuvent utiliser les voisins (routine tecac2.f)
+%  VF_AVEC_VOISIN = 'OUI' : l'élément est de type "volume fini". Cela implique :
 %               - les matrices élémentaires sont de type "VOISIN_VF"
+%               - les calculs élémentaires utilisent les voisins (routine tecac2.f)
 %
 %
 %  TYPE_VOISIN = typvoi : type du voisinage des éléments de type "volume_fini"
@@ -161,7 +161,7 @@ PHENOMENE_MODELISATION__
               MAILLE__ SEG3     ELEMENT__ HM_J_DPSE3
 
         MODELISATION__ '3D_HH2SUDM'        DIM__ 3 3   CODE__ '3DM'
-              ATTRIBUT__  VOLU_FINI=OUI THM=OUI TYPE_VOISIN=F3
+              ATTRIBUT__  VF_AVEC_VOISIN=OUI THM=OUI TYPE_VOISIN=F3
               MAILLE__ HEXA27    ELEMENT__ ZHH2_HEXA27_SUDM
               MAILLE__ QUAD9     ELEMENT__ ZHH2_FACE9_SUDM
 
@@ -176,7 +176,7 @@ PHENOMENE_MODELISATION__
               MAILLE__ QUAD9     ELEMENT__ ZHH2_FACE9_SUC
 
         MODELISATION__ 'D_PLAN_HH2SUDM'    DIM__ 2 2  CODE__ '2DM'
-               ATTRIBUT__  VOLU_FINI=OUI  THM=OUI TYPE_VOISIN=A2
+               ATTRIBUT__  VF_AVEC_VOISIN=OUI  THM=OUI TYPE_VOISIN=A2
                            D_PLAN=OUI
                MAILLE__ TRIA7     ELEMENT__ DHH2T7_SUDM
                MAILLE__ QUAD9     ELEMENT__ DHH2Q9_SUDM
@@ -195,7 +195,7 @@ PHENOMENE_MODELISATION__
                MAILLE__ SEG3      ELEMENT__ DHH2S3_SUC
 
        MODELISATION__ 'VF1'      DIM__ 2 2  CODE__ 'VF1'
-              ATTRIBUT__  VOLU_FINI=OUI  TYPE_VOISIN=A2
+              ATTRIBUT__  VF_AVEC_VOISIN=OUI  TYPE_VOISIN=A2
               MAILLE__ TRIA3     ELEMENT__ VF1T3
               MAILLE__ QUAD4     ELEMENT__ VF1Q4
 
@@ -391,6 +391,33 @@ PHENOMENE_MODELISATION__
               MAILLE__ PENTA15   ELEMENT__ MECA_XHTC_PE15_X
               MAILLE__ PYRAM13   ELEMENT__ MECA_XHTC_PY13_X
               MAILLE__ TETRA10   ELEMENT__ MECA_XHTC_TE10_X
+
+       MODELISATION__ '3DXHH'            DIM__ 3 3   CODE__ '3XH'
+              ATTRIBUT__  NBSIGM=X6  TYPMOD=COMP3D
+              MAILLE__ HEXA8     ELEMENT__ MECA_XH1_HEXA8
+              MAILLE__ HEXA8     ELEMENT__ MECA_XH2_HEXA8
+              MAILLE__ HEXA8     ELEMENT__ MECA_XH3_HEXA8
+              MAILLE__ HEXA8     ELEMENT__ MECA_XH4_HEXA8
+              MAILLE__ PENTA6    ELEMENT__ MECA_XH1_PENTA6
+              MAILLE__ PENTA6    ELEMENT__ MECA_XH2_PENTA6
+              MAILLE__ PENTA6    ELEMENT__ MECA_XH3_PENTA6
+              MAILLE__ PENTA6    ELEMENT__ MECA_XH4_PENTA6
+              MAILLE__ PYRAM5    ELEMENT__ MECA_XH1_PYRAM5
+              MAILLE__ PYRAM5    ELEMENT__ MECA_XH2_PYRAM5
+              MAILLE__ PYRAM5    ELEMENT__ MECA_XH3_PYRAM5
+              MAILLE__ PYRAM5    ELEMENT__ MECA_XH4_PYRAM5
+              MAILLE__ TETRA4    ELEMENT__ MECA_XH1_TETRA4
+              MAILLE__ TETRA4    ELEMENT__ MECA_XH2_TETRA4
+              MAILLE__ TETRA4    ELEMENT__ MECA_XH3_TETRA4
+              MAILLE__ TETRA4    ELEMENT__ MECA_XH4_TETRA4
+              MAILLE__ QUAD4     ELEMENT__ MECA_XH1_FACE4
+              MAILLE__ QUAD4     ELEMENT__ MECA_XH2_FACE4
+              MAILLE__ QUAD4     ELEMENT__ MECA_XH3_FACE4
+              MAILLE__ QUAD4     ELEMENT__ MECA_XH4_FACE4
+              MAILLE__ TRIA3     ELEMENT__ MECA_XH1_FACE3
+              MAILLE__ TRIA3     ELEMENT__ MECA_XH2_FACE3
+              MAILLE__ TRIA3     ELEMENT__ MECA_XH3_FACE3
+              MAILLE__ TRIA3     ELEMENT__ MECA_XH4_FACE3
 
 %-------------------------------------------------------------------
 
@@ -712,12 +739,35 @@ PHENOMENE_MODELISATION__
               MAILLE__ QUAD4     ELEMENT__ MEDPQU4_XHTC
               MAILLE__ QUAD8     ELEMENT__ MEDPQU8_XHTC_X
 
-       MODELISATION__ 'D_PLAN_XHH'         DIM__ 2 2   CODE__ 'XI1'
+       MODELISATION__ 'C_PLAN_XHH'         DIM__ 2 2   CODE__ 'CXH'
+              ATTRIBUT__  NBSIGM=X4 C_PLAN=OUI  TYPMOD=C_PLAN
+              MAILLE__ TRIA3     ELEMENT__ MECPTR3_XH1
+              MAILLE__ TRIA3     ELEMENT__ MECPTR3_XH2
+              MAILLE__ TRIA3     ELEMENT__ MECPTR3_XH3
+              MAILLE__ TRIA3     ELEMENT__ MECPTR3_XH4
+              MAILLE__ QUAD4     ELEMENT__ MECPQU4_XH1
+              MAILLE__ QUAD4     ELEMENT__ MECPQU4_XH2
+              MAILLE__ QUAD4     ELEMENT__ MECPQU4_XH3
+              MAILLE__ QUAD4     ELEMENT__ MECPQU4_XH4
+              MAILLE__ SEG2      ELEMENT__ MEPLSE2_XH1
+              MAILLE__ SEG2      ELEMENT__ MEPLSE2_XH2
+              MAILLE__ SEG2      ELEMENT__ MEPLSE2_XH3
+              MAILLE__ SEG2      ELEMENT__ MEPLSE2_XH4
+
+       MODELISATION__ 'D_PLAN_XHH'         DIM__ 2 2   CODE__ 'DXH'
               ATTRIBUT__  NBSIGM=X4 D_PLAN=OUI  TYPMOD=D_PLAN
               MAILLE__ TRIA3     ELEMENT__ MEDPTR3_XH1
-              MAILLE__ QUAD4     ELEMENT__ MEDPQU4_XH1
               MAILLE__ TRIA3     ELEMENT__ MEDPTR3_XH2
+              MAILLE__ TRIA3     ELEMENT__ MEDPTR3_XH3
+              MAILLE__ TRIA3     ELEMENT__ MEDPTR3_XH4
+              MAILLE__ QUAD4     ELEMENT__ MEDPQU4_XH1
               MAILLE__ QUAD4     ELEMENT__ MEDPQU4_XH2
+              MAILLE__ QUAD4     ELEMENT__ MEDPQU4_XH3
+              MAILLE__ QUAD4     ELEMENT__ MEDPQU4_XH4
+              MAILLE__ SEG2      ELEMENT__ MEPLSE2_XH1
+              MAILLE__ SEG2      ELEMENT__ MEPLSE2_XH2
+              MAILLE__ SEG2      ELEMENT__ MEPLSE2_XH3
+              MAILLE__ SEG2      ELEMENT__ MEPLSE2_XH4
 
 %-------------------------------------------------------------------
 

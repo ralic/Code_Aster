@@ -3,9 +3,9 @@
       CHARACTER*(*) NOMSD,TYPESD
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 16/02/2010   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 20/12/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -52,7 +52,7 @@ C ---------------- FIN COMMUNS NORMALISES  JEVEUX  --------------------
       CHARACTER*24 NOMS2, TYPES2
       CHARACTER*19 K19
       CHARACTER*8  KMPIC
-      INTEGER IFM,NIV,IBID,JCELK,IEXI,JREFA
+      INTEGER IFM,NIV,IBID,JCELK,IEXI,JREFA,JNOLI
 C ----------------------------------------------------------------------
 
       CALL JEMARQ()
@@ -70,6 +70,16 @@ C     ----------------------------------
         CALL MPICM2('MPI_SUM',K19//'.CELV')
         CALL JEVEUO(K19//'.CELK','E',JCELK)
         ZK24(JCELK-1+7)='MPI_COMPLET'
+
+
+      ELSEIF (TYPES2.EQ.'RESUELEM') THEN
+C     ----------------------------------
+        K19=NOMS2
+        CALL DISMOI('F','MPI_COMPLET',K19,'RESUELEM',IBID,KMPIC,IBID)
+        IF (KMPIC.EQ.'OUI') GOTO 9999
+        CALL MPICM2('MPI_SUM',K19//'.RESL')
+        CALL JEVEUO(K19//'.NOLI','E',JNOLI)
+        ZK24(JNOLI-1+3)='MPI_COMPLET'
 
 
       ELSEIF (TYPES2.EQ.'MATR_ASSE') THEN

@@ -1,11 +1,11 @@
-      SUBROUTINE XTLAGM(TYPMAI,NDIM  ,NNC   ,NN     ,NNS   ,
+      SUBROUTINE XTLAGM(TYPMAI,NDIM  ,NNC   ,JNN    ,
      &                  NDDLS ,NFACE ,CFACE ,JDEPDE,JPCAI  ,
-     &                  FFC   ,LFROTT,DLAGRC,DLAGRF)
+     &                  FFC   ,LFROTT,NCONTA,DLAGRC,DLAGRF)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
+C MODIF ELEMENTS  DATE 21/12/2010   AUTEUR MASSIN P.MASSIN 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -23,7 +23,7 @@ C ======================================================================
 C RESPONSABLE ABBAS M.ABBAS
 C
       IMPLICIT NONE
-      INTEGER      NDIM,NNC,NN,NNS,NDDLS
+      INTEGER      NDIM,NNC,JNN(3),NDDLS,NCONTA
       INTEGER      JDEPDE,JPCAI
       REAL*8       FFC(9)
       CHARACTER*8  TYPMAI
@@ -62,14 +62,14 @@ C OUT DLAGRF : INCREMENT DEPDEL DES LAGRANGIENS DE FROTTEMENT
 C
 C ----------------------------------------------------------------------
 C 
-      CALL XTLAGC(TYPMAI,NDIM  ,NNC   ,NN     ,NNS   ,
+      CALL XTLAGC(TYPMAI,NDIM  ,NNC   ,JNN   ,
      &            NDDLS ,NFACE ,CFACE ,JDEPDE,JPCAI  ,
-     &            FFC   ,DLAGRC)
+     &            FFC   ,NCONTA,DLAGRC)
 C
       IF (LFROTT) THEN
-        CALL XTLAGF(TYPMAI,NDIM  ,NNC   ,NN     ,NNS   ,
+        CALL XTLAGF(TYPMAI,NDIM  ,NNC   ,JNN   ,
      &              NDDLS ,NFACE ,CFACE ,JDEPDE,JPCAI  ,
-     &              FFC   ,DLAGRF) 
+     &              FFC   ,NCONTA,DLAGRF) 
       ENDIF    
 C
       END

@@ -1,9 +1,9 @@
-# MODIF  DATE 30/08/2010   AUTEUR LEBOUVIER F.LEBOUVIER 
+# MODIF  DATE 20/12/2010   AUTEUR MEUNIER S.MEUNIER 
 # TITRE MODELISATION DU GONFLEMENT DE L ARGILE GONFLANTE (3D THH2MS)
 # wtnv136c.para = tps_job 150 mem_job 128Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -231,8 +231,8 @@ CHMAT=AFFE_MATERIAU(    MAILLAGE=MAILLAGE,
                              AFFE=_F(  TOUT = 'OUI',    MATER = MATAGO,  )
                           )
 
-DEP_FIX=AFFE_CHAR_MECA(    MODELE=MODELE,
-                           FACE_IMPO=(
+DEP_FIX=AFFE_CHAR_CINE(    MODELE=MODELE,
+                           MECA_IMPO=(
                               _F(GROUP_MA = 'HAUT',      DZ = 0.,   ),
                               _F(GROUP_MA = 'DEVANT',    DX = 0.,   ),
                               _F(GROUP_MA = 'GAUCHE',    DY = 0.,   ),
@@ -245,14 +245,11 @@ DEP_FIX=AFFE_CHAR_MECA(    MODELE=MODELE,
                               _F(GROUP_MA = 'BAS',      TEMP = 0.,   ),
                               _F(GROUP_MA = 'DERRIERE',    TEMP = 0.,   ),
                               _F(GROUP_MA = 'DROITE',    TEMP = 0.,   ),
-                                ),
-                           DDL_IMPO=(
                              _F(TOUT='OUI',       PRE2= PGAGO0), )
+                                ),
 
-                         ),
-
-DEP_VAR=AFFE_CHAR_MECA(    MODELE=MODELE,
-                           DDL_IMPO=(
+DEP_VAR=AFFE_CHAR_CINE(    MODELE=MODELE,
+                           MECA_IMPO=(
                              _F(TOUT='OUI',       PRE1=1.0), )
 
                          ),
@@ -343,7 +340,7 @@ U2=STAT_NON_LINE(
                 INCREMENT=_F(LIST_INST = TEMPS2, ),
 
                 NEWTON=_F( MATRICE = 'TANGENTE',REAC_ITER = 1,),
-
+                SOLVEUR=_F(METHODE='PETSC',ALGORITHME='GMRES',),
                 CONVERGENCE=_F(
                         ITER_GLOB_MAXI=40,
                         ITER_GLOB_ELAS=50,

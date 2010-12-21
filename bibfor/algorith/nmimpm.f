@@ -1,9 +1,9 @@
-      SUBROUTINE NMIMPM(UNITM,PHASE,NATURZ,ARGZ,ARGR,ARGI)
+      SUBROUTINE NMIMPM(PHASE ,NATURZ,ARGZ  ,ARGR  ,ARGI  )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 19/10/2010   AUTEUR DESOZA T.DESOZA 
+C MODIF ALGORITH  DATE 21/12/2010   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -22,67 +22,29 @@ C TOLE CRP_20
 C RESPONSABLE MABBAS M.ABBAS
 C
       IMPLICIT      NONE
-      INTEGER       UNITM
       CHARACTER*4   PHASE
       CHARACTER*(*) NATURZ
       CHARACTER*(*) ARGZ(*)
       REAL*8        ARGR(*)
       INTEGER       ARGI(*)
-C
+C 
 C ----------------------------------------------------------------------
 C
 C ROUTINE MECA_NON_LINE (AFFICHAGE)
 C
 C GESTION DES IMPRESSIONS DE LA COMMANDE MECA_NON_LINE
-C
+C      
 C ----------------------------------------------------------------------
-C
+C      
 C
 C IN  PHASE  : 'INIT' INITIALISATION
 C              'TITR' AFFICHAGE DE L'EN TETE DES PAS DE TEMPS
-C              'IMPR' IMPRESSION
-C IN  NATURE : NATURE DE L'IMPRESSION POUR PHASE 'INIT'
-C              'DYNA_TRAN' -> CAS SCHEMA EXPLICITE (PAS DE TABLEAU
-C                             DE CONVERGENCE)
-C              ' '         -> AUTRES CAS
-C IN  NATURE : NATURE DE L'IMPRESSION
-C              'MATR_ASSE' -> ASSEMBLAGE DE LA MATRICE
-C              'ARCH_INIT' -> TITRE ARCHIVAGE ETAT INITIAL
-C              'ARCHIVAGE' -> STOCKAGE DES CHAMPS
-C              'ARCH_SENS' -> STOCKAGE DES CHAMPS DERIVES (SENSIBILITE)
-C              'ITER_MAXI' -> MAXIMUM ITERATIONS ATTEINT
-C              'SUBDIVISE' -> SUBDIVISION DU PAS DE TEMPS
-C              'CONV_OK  ' -> CONVERGENCE ATTEINTE
-C              'CONV_MAXI' -> CONVERGENCE ATTEINTE SUR RESI_GLOB_MAXI
-C                             QUAND RESI_GLOB_RELA & CHARGEMENT=0
-C              'CONV_NONE' -> PAS DE CRITERES DE CONVERGENCE
-C              'CONV_FORC' -> CONVERGENCE FORCEE (ARRET = NON)
-C              'GEOM_MIN'  -> BOUCLE EN MOINS
-C              'GEOM_MAX'  -> BOUCLE SUPPLEMENTAIRE
-C              'FIXE_NON'  -> BOUCLE SUPPLEMENTAIRE SUR POINT FIXE
-C                             DU CONTACT-FROTTEMENT
-C              'LIGN_TABL' -> LIGNE DU TABLAU DE CONVERGENCE
-C              'ECHEC_LDC' -> ECHEC DE L'INTEGRATION DE LA LDC
-C              'ECHEC_PIL' -> ECHEC DU PILOTAGE
-C              'ECHEC_CON' -> ECHEC DE TRAITEMENT DU CONTACT
-C              'CONT_SING' -> MATRICE DE CONTACT SINGULIERE
-C              'MATR_SING' -> MATRICE DU SYSTEME SINGULIERE
-C
-C              'BCL_SEUIL' -> NUMERO BOUCLE SEUIL CONTACT ECP
-C              'BCL_GEOME' -> NUMERO BOUCLE GEOMETRIE CONTACT ECP
-C              'BCL_CTACT' -> NUMERO BOUCLE CONTRAINTE ACTIVE
-C                             CONTACT ECP
-C              'CNV_SEUIL' -> CONVERGENCE BOUCLE SEUIL CONTACT ECP
-C              'CNV_GEOME' -> CONVERGENCE BOUCLE GEOMETRIE CONTACT ECP
-C              'CNV_CTACT' -> CONVERGENCE BOUCLE CONTRAINTE ACTIVE
-C                             CONTACT ECP
-C              'LIGNE    ' -> SIMPLE LIGNE DE SEPARATION DANS LE TABLEAU
-C              'OPTI_LIST' -> LISTE D'INSTANTS OPTIMISEES
-C                               (OPTION OPTI_LIST_INST)
+C              'IMPR' IMPRESSION DES MESSAGES
+C              'TABL' IMPRESSION DU TABLEAU DE CONVERGENCE
+C IN  NATURE : VOIR NMIMP0/NMIMPL/NMIMPT
 C IN  ARGZ   : ARGUMENTS EVENTUELS DE TYPE TEXTE
 C IN  ARGR   : ARGUMENTS EVENTUELS DE TYPE REEL
 C IN  ARGI   : ARGUMENTS EVENTUELS DE TYPE ENTIER
-C ----------------------------------------------------------------------
 C
 C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
 C
@@ -104,669 +66,55 @@ C
 C
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 C
-      INTEGER          ZCOL,ZLIG,ZTIT,ZLAR
-      PARAMETER       (ZCOL = 16,ZLIG = 255,ZTIT = 3,ZLAR=16)
-      INTEGER          MESS,IUNIFI
-      REAL*8           R8BID
-      INTEGER          POS,POSFIN,POSMAR
-      INTEGER          I,K,ICOL,IBID
-      INTEGER          UNIBID,R8LONG,R8PREC
-      CHARACTER*24     SDIMPR,ARG24
-      CHARACTER*16     ARG16,K16BID,OPTASS,NOVALU
-      CHARACTER*9      NATURE
-      CHARACTER*1      MARQ
-      CHARACTER*4      ARG4
-      CHARACTER*8      ARG8
-      CHARACTER*18     ARG18
-      INTEGER          LONGR,PRECR,LONGI,LONGK,FORCOL
-      INTEGER          VALI,TPSNBR
-      REAL*8           VALR,R8VIDE
-      CHARACTER*16     VALK
-      CHARACTER*(ZLIG) LIGNE,COLONN,TITRE(ZTIT),TAMPON
-      CHARACTER*(ZLAR) TITCOL(ZTIT)
-      INTEGER          LIGMAX,TITMAX,NBCOL,LARMAX,LARGE,COLMAX
-      SAVE             COLONN,TITRE,LARGE,LIGNE
-      SAVE             LIGMAX,TITMAX,NBCOL
-      CHARACTER*24     IMPCNT,IMPCNL,IMPCNV,IMPCNA
-      INTEGER          JIMPCT,JIMPCL,JIMPCV,JIMPCA
-      REAL*8           TPSTOT
-      DATA SDIMPR      /'&&OP0070.IMPR.          '/
+      CHARACTER*24  SDIMPR
+      CHARACTER*24  IMPINF
+      INTEGER       JIMPIN      
+      INTEGER       LARGE ,UNITE,ILIGNE,UIMPR,IUNIFI
+      CHARACTER*255 TITFIC(3)
+      CHARACTER*255 LIGNE,COLONN,TITRE(3),COLFIC
+      SAVE          LIGNE,COLONN,TITRE,COLFIC
 C
 C ----------------------------------------------------------------------
 C
       CALL JEMARQ()
-
-      MESS   = IUNIFI ('MESSAGE')
-      NATURE = NATURZ
-C
-C --- FORMAT D'AFFICHAGE D'INFO NON CONTENUES DANS LE TABLEAU
-C
-      UNIBID = 0
-      R8LONG = 16
-      R8PREC = 9
-      NOVALU = ' - SANS OBJET - '
-
-C ======================================================================
-C                   INITIALISATION DE L'IMPRESSION
-C                   NB: UNE COLONNE FAIT ZLARG
-C ======================================================================
-
-      IF (PHASE.EQ.'INIT') THEN
-C
-C --- RECUPERATION ET VERIFICATION DES PARAMETRES
-C
-         CALL IMPINF(SDIMPR,IBID  ,COLMAX,LIGMAX,TITMAX,
-     &               NBCOL ,LARGE ,IBID  ,IBID  ,LARMAX)
-C
-C --- SI CE MESSAGE SE DECLENCHE, VERIFIER LA COHERENCE ENTRE
-C --- ZTIT, ZCOL, ZLIG DANS IMPINI ET LES DONNEES LOCALES
-C --- ELLES DOIVENT ETRE STRICTEMENT IDENTIQUES
-C
-         CALL ASSERT ((ZCOL.EQ.COLMAX).AND.
-     &       (ZTIT.EQ.TITMAX).AND.
-     &       (ZLAR.EQ.LARMAX).AND.
-     &       (ZLIG.EQ.LIGMAX))
 C
 C --- INITIALISATIONS
 C
-         DO 21 I = 1,LIGMAX
-           TITRE(1)(I:I)  = ' '
-           TITRE(2)(I:I)  = ' '
-           TITRE(3)(I:I)  = ' '
-           COLONN(I:I)    = ' '
-           LIGNE(I:I)     = ' '
- 21      CONTINUE
+      SDIMPR  = '&&OP0070.IMPR.'   
 C
-C --- LIGNE DE SEPARATION
-C --- STOCKEE ET SAUVEE (SAVE) DANS LIGNE
+C --- RECUPERATION DES PARAMETRES
 C
-         DO 22 I = 1,LARGE
-           LIGNE(I:I) = '-'
- 22      CONTINUE
+      IMPINF = SDIMPR(1:14)//'.INFO'
+      CALL JEVEUO(IMPINF,'L',JIMPIN)
+      LARGE  = ZI(JIMPIN-1+2)
+      UNITE  = ZI(JIMPIN-1+3)    
 C
-C --- MARQUAGE DES COLONNES PAR LES TRAITS VERTICAUX
-C --- (LARGEUR D'UNE COLONNE FIXEE PAR ZLAR)
-C --- STOCKEE ET SAUVEE (SAVE) DANS COLONN
+C --- IMPRESSIONS
 C
-         DO 23 I = 1,LARGE
-          IF (MOD(I-1,ZLAR+1) .EQ. 0) THEN
-            COLONN(I:I) = '|'
-          ELSE
-            COLONN(I:I) = ' '
-          END IF
- 23      CONTINUE
-C
-C --- TITRE DES COLONNES
-C
-         POS = 2
-         DO 30 ICOL = 1,NBCOL
-           CALL IMPSDA(SDIMPR,'LIRE',ICOL  ,IBID  ,TITCOL,
-     &                 IBID  ,IBID  ,IBID  ,IBID  ,IBID  )
-           DO 32 K = 1,TITMAX
-             TITRE(K)(POS:POS+ZLAR-1) = TITCOL(K)
- 32        CONTINUE
-           POS = POS+ZLAR+1
- 30      CONTINUE
-
-         DO 35 I = 1,LARGE
-           IF (MOD(I-1,ZLAR+1) .EQ. 0) THEN
-             DO 34 K = 1,TITMAX
-               TITRE(K)(I:I) = '|'
- 34          CONTINUE
-           END IF
- 35      CONTINUE
-C
-C --- PREPARATION DU FICHIER DE SORTIE
-C
-         IF (UNITM.NE.MESS) THEN
-           CALL NMIMPF(UNITM)
-         ENDIF
-
-         GOTO 9999
-      ENDIF
-
-
-C ======================================================================
-C                        AFFICHAGE DE L'EN-TETE
-C ======================================================================
-
-      IF (PHASE .EQ. 'TITR') THEN
-C
-C --- AFFICHAGE DE L'INSTANT DE CALCUL
-C
-        IF (NATURE(1:4).EQ.'POST') THEN
-          ARG18 = ARGZ(1)
-        ELSE
-          CALL IMPFOR(UNIBID,R8LONG,R8PREC,ARGR(1),ARG16)
+      IF (PHASE.EQ.'INIT') THEN
+        CALL NMIMP0(SDIMPR,'|',LIGNE ,COLONN,TITRE)
+        IF (UNITE.NE.0) THEN
+          CALL NMIMP0(SDIMPR,',',LIGNE ,COLFIC,TITFIC)
+          DO 10 ILIGNE = 1,3
+            CALL IMPFOK(TITFIC(ILIGNE),LARGE,UNITE )
+ 10       CONTINUE
         ENDIF
-C
-        IF (UNITM.EQ.MESS) THEN
-          WRITE(UNITM,*)
-          CALL IMPFOK(LIGNE,LARGE,UNITM)
-          WRITE(UNITM,*)
-          IF (NATURE(1:4).EQ.'POST') THEN
-            CALL IMPFOK('POST-TRAITEMENT: '//ARG18,35,UNITM)
-          ELSE
-            CALL IMPFOK('INSTANT DE CALCUL : '//ARG16,36,UNITM)
-            WRITE(UNITM,*)
-            IF (NATURE.EQ.'IMPLICITE') THEN
-              CALL IMPFOK(LIGNE,LARGE,UNITM)
-              DO 39 K = 1,TITMAX
-                CALL IMPFOK(TITRE(K),LARGE,UNITM)
- 39           CONTINUE
-              CALL IMPFOK(LIGNE,LARGE,UNITM)
-            ENDIF
-          ENDIF
-        ELSE
-          WRITE(UNITM,*)
-          WRITE(UNITM,*)
-          IF (NATURE(1:4).EQ.'POST') THEN
-            CALL IMPFOK('POST-TRAITEMENT: '//ARG18,35,UNITM)
-          ELSE
-            CALL IMPFOK('INSTANT DE CALCUL : '//ARG16,36,UNITM)
-            WRITE(UNITM,*)
-            IF (NATURE.EQ.'IMPLICITE') THEN
-              CALL IMPFOK(LIGNE,LARGE,UNITM)
-              DO 33 K = 1,TITMAX
-                CALL IMPFOK(TITRE(K),LARGE,UNITM)
- 33           CONTINUE
-              CALL IMPFOK(LIGNE,LARGE,UNITM)
-            ENDIF
-          ENDIF
-        ENDIF
-        GOTO 9999
-      END IF
-
-
-C ======================================================================
-C                       GESTION DES IMPRESSIONS
-C ======================================================================
-
-
-C --- LIGNE
-
-      IF (NATURE(1:5) .EQ. 'LIGNE') THEN
-        CALL IMPFOK(LIGNE,LARGE,UNITM)
-
-C --- ASSEMBLAGE MATRICE
-
-      ELSE IF (NATURE .EQ. 'MATR_ASSE') THEN
-
-        OPTASS = ARGZ(1)
-
-        CALL IMPSDR(SDIMPR(1:14),
-     &              'MATR_ASSE',OPTASS,R8BID,IBID)
-
-
-C --- ARCHIVAGE ETAT INITIAL
-
-      ELSE IF (NATURE .EQ. 'ARCH_INIT') THEN
-        WRITE(UNITM,*)
-        CALL IMPFOK('ARCHIVAGE DE L''ETAT INITIAL',27,UNITM)
-
-C --- ARCHIVAGE ETAT INITIAL
-
-      ELSE IF (NATURE .EQ. 'ARCH_TETE') THEN
-        WRITE(UNITM,*)
-        CALL IMPFOK('ARCHIVAGE DES CHAMPS : ',23,UNITM)
-
-C --- ARCHIVAGE DES CHAMPS
-
-      ELSE IF (NATURE .EQ. 'ARCHIVAGE') THEN
-
- 1000   FORMAT(1P,3X,'CHAMP STOCKE : ',A16,' INSTANT : ',1PE12.5,
-     &         3X,' NUMERO D''ORDRE : ',I5)
-        IF (UNITM.EQ.MESS) THEN
-          ARG16 = ARGZ(1)
-          WRITE (UNITM,1000) ARG16,ARGR(1),ARGI(1)
-        ENDIF
-
-C --- ARCHIVAGE DES CHAMPS DERIVES (SENSIBILITE)
-
-      ELSE IF (NATURE .EQ. 'ARCH_SENS') THEN
-
- 1001   FORMAT(1P,3X,'ARCHIVAGE DES CHAMPS DERIVES PAR RAPPORT A ',A8)
-        IF (UNITM.EQ.MESS) THEN
-          ARG8 = ARGZ(1)
-          WRITE (UNITM,1001) ARG8
-        ENDIF
-
-C --- ARCHIVAGE DES MODES (FLAMBEMENT ET VIBRATOIRES)
-
-      ELSE IF (NATURE .EQ. 'ARCH_MODE') THEN
-        ARG8 = ARGZ(1)
-        IF (ARG8.EQ.'VIBR') THEN
-          ARG18 = 'MODE VIBRATOIRE   '
-        ELSEIF(ARG8.EQ.'FLAM') THEN
-          ARG18 = 'MODE DE FLAMBEMENT'
-        ELSE
-          CALL ASSERT(.FALSE.)
-        ENDIF
-
- 1002   FORMAT(1P,3X,'ARCHIVAGE - ',A18,' - NUMERO D''ORDRE : ',
-     &         I5)
-        IF (UNITM.EQ.MESS) THEN
-          WRITE(UNITM,*)
-          WRITE (UNITM,1002) ARG18,ARGI(1)
-        ENDIF
-
-C --- IMPRESSION DES MODES (FLAMBEMENT ET VIBRATOIRES)
-
-      ELSE IF (NATURE .EQ. 'IMPR_MODE') THEN
-        ARG8 = ARGZ(1)
-        IF (ARG8.EQ.'VIBR') THEN
-          ARG18 = 'MODE VIBRATOIRE   '
-        ELSEIF(ARG8.EQ.'FLAM') THEN
-          ARG18 = 'MODE DE FLAMBEMENT'
-        ELSE
-          CALL ASSERT(.FALSE.)
-        ENDIF
- 1003   FORMAT(1P,3X,A18,': ',1PE16.9,' - NUMERO DU MODE : ',I5)
-        IF (UNITM.EQ.MESS) THEN
-          WRITE(UNITM,*)
-          WRITE (UNITM,1003) ARG18,ARGR(1),ARGI(1)
-        ENDIF
-C
-C --- TEMPS PASSE DANS UN PAS DE TEMPS
-C
-      ELSE IF (NATURE .EQ. 'TPS_PAS') THEN
-        IF (UNITM.EQ.MESS) THEN
-          WRITE(UNITM,*)
-
-          CALL IMPFOT(ARGR(1),ARG24)
-          WRITE(UNITM,660) ARG24
-
-
-
-          CALL IMPFOT(ARGR(8),ARG24)
-          WRITE(UNITM,661) ARG24,ARGI(8)
-
-          CALL IMPFOT(ARGR(2),ARG24)
-          WRITE(UNITM,667) ARG24
-
-          TPSTOT = ARGR(3)
-          TPSNBR = ARGI(3)
-          CALL IMPFOT(TPSTOT,ARG24)
-          WRITE(UNITM,668) ARG24,TPSNBR
-
-          TPSTOT = ARGR(4)
-          TPSNBR = ARGI(4)
-          CALL IMPFOT(TPSTOT,ARG24)
-          WRITE(UNITM,669) ARG24,TPSNBR
-
-          TPSTOT = ARGR(5)
-          TPSNBR = ARGI(5)
-          CALL IMPFOT(TPSTOT,ARG24)
-          WRITE(UNITM,670) ARG24,TPSNBR
-
-          TPSTOT = ARGR(6)
-          TPSNBR = ARGI(6)
-          CALL IMPFOT(TPSTOT,ARG24)
-          WRITE(UNITM,671) ARG24,TPSNBR
-
-          IF (ARGI(7).NE.0) THEN
-            CALL IMPFOT(ARGR(7),ARG24)
-           WRITE(UNITM,672) ARG24,ARGI(7)
-
-          ENDIF
-
-          CALL IMPFOT(ARGR(15),ARG24)
-          WRITE(UNITM,673) ARG24
-
-        ENDIF
- 660    FORMAT ('TEMPS CPU CONSOMME DANS CE PAS DE TEMPS : ',(A20))
- 661    FORMAT (1P,3X,'TEMPS MOYEN PAR ITERATION DE NEWTON  : ',
-     &          (A20),' - NBRE NEWT. : ',I5)
- 667    FORMAT (1P,3X,'TEMPS ARCHIVAGE                      : ',
-     &          (A20))
- 668    FORMAT (1P,3X,'TEMPS CREATION NUMEROTATION          : ',
-     &          (A20),' - NBRE NUME. : ',I5)
- 669    FORMAT (1P,3X,'TEMPS FACTORISATION MATRICE          : ',
-     &          (A20),' - NBRE FACT. : ',I5)
- 670    FORMAT (1P,3X,'TEMPS INTEGRATION COMPORTEMENT       : ',
-     &          (A20),' - NBRE INTE. : ',I5)
- 671    FORMAT (1P,3X,'TEMPS RESOLUTION K.U = F             : ',
-     &          (A20),' - NBRE RESO. : ',I5)
- 672    FORMAT (1P,3X,'TEMPS RESOLUTION CONTACT             : ',
-     &          (A20),' - NBRE ITER. : ',I5)
- 673    FORMAT (1P,3X,'TEMPS AUTRES OPERATIONS              : ',
-     &          (A20))
-C
-C --- STAT. CONTACT DISCRET SUR UN PAS DE TEMPS
-C
-      ELSE IF (NATURE .EQ. 'STAT_CTCD') THEN
-        IF (UNITM.EQ.MESS) THEN
-          WRITE(UNITM,*)
-          WRITE(UNITM,766)
-          WRITE(UNITM,767) ARGI(1)
-          IF (ARGI(2).GT.0) THEN
-          WRITE(UNITM,768) ARGI(2)
-          ENDIF
-          WRITE(UNITM,769) ARGI(3)
-          IF (ARGI(4).GT.0) THEN
-            WRITE(UNITM,770) ARGI(4)
-          ENDIF
-          CALL IMPFOT(ARGR(1),ARG24)
-          WRITE(UNITM,771) ARG24
-          CALL IMPFOT(ARGR(2),ARG24)
-          WRITE(UNITM,772) ARG24
-        ENDIF
- 766    FORMAT ('CONTACT DISCRET :')
- 767    FORMAT (1P,3X,'NOMBRE D''ITERATIONS DE CONTACT         : ',10X,
-     &          I8)
- 768    FORMAT (1P,3X,'NOMBRE D''ITERATIONS DE REAC. GEOM      : ',10X,
-     &          I8)
- 769    FORMAT (1P,3X,'NOMBRE FINAL DE LIAISONS DE CONTACT    : ',10X,
-     &          I8)
- 770    FORMAT (1P,3X,'NOMBRE FINAL DE LIAISONS DE FROTTEMENT : ',10X,
-     &          I8)
- 771    FORMAT (1P,3X,'TEMPS TOTAL APPARIEMENT                : ',
-     &           (A24))
- 772    FORMAT (1P,3X,'TEMPS TOTAL RESOLUTION                 : ',
-     &           (A24))
-C
-C --- STAT. CONTACT CONTINU SUR UN PAS DE TEMPS
-C
-      ELSE IF (NATURE .EQ. 'STAT_CTCC') THEN
-        IF (UNITM.EQ.MESS) THEN
-          WRITE(UNITM,*)
-          WRITE(UNITM,780)
-          WRITE(UNITM,781) ARGI(1)
-          IF (ARGI(2).GT.0) THEN
-          WRITE(UNITM,782) ARGI(2)
-          ENDIF
-          IF (ARGI(3).GT.0) THEN
-          WRITE(UNITM,783) ARGI(3)
-        ENDIF
-          CALL IMPFOT(ARGR(1),ARG24)
-          WRITE(UNITM,784) ARG24
-          CALL IMPFOT(ARGR(2),ARG24)
-          WRITE(UNITM,785) ARG24
-          WRITE(UNITM,*)
-        ENDIF
- 780    FORMAT ('CONTACT CONTINU :')
- 781    FORMAT (1P,3X,'NOMBRE D''ITERATIONS DE CONTACT       : ',10X,I8)
- 782    FORMAT (1P,3X,'NOMBRE D''ITERATIONS DE FROTTEMENT    : ',10X,I8)
- 783    FORMAT (1P,3X,'NOMBRE D''ITERATIONS DE REAC. GEOM    : ',10X,I8)
- 784    FORMAT (1P,3X,'TEMPS TOTAL APPARIEMENT              : ',
-     &           (A24))
- 785    FORMAT (1P,3X,'TEMPS TOTAL RESOLUTION               : ',
-     &           (A24))
-
-C
-C --- TEMPS PASSE DANS UN PAS DE TEMPS
-C
-      ELSE IF (NATURE .EQ. 'TPS_FIN') THEN
-        IF (UNITM.EQ.MESS) THEN
-          WRITE(UNITM,*)
-          CALL IMPFOK(LIGNE,LARGE,UNITM)
-          WRITE(UNITM,800)
-          CALL IMPFOK(LIGNE,LARGE,UNITM)
-
-
-          WRITE(UNITM,801) ARGI(11)
-          WRITE(UNITM,802) ARGI(5)
-          IF (ARGI(6).NE.0) THEN
-            WRITE(UNITM,803) ARGI(6)
-          ENDIF
-          IF (ARGI(7).NE.0) THEN
-            WRITE(UNITM,804) ARGI(7)
-          ENDIF
-          IF (ARGI(9).NE.0) THEN
-            WRITE(UNITM,805) ARGI(9)
-            WRITE(UNITM,806) ARGI(8)
-            IF (ARGI(10).NE.0) THEN
-              WRITE(UNITM,807) ARGI(10)
-            ENDIF
-          ENDIF
-
-          WRITE(UNITM,808) ARGI(1)
-          WRITE(UNITM,809) ARGI(2)
-          WRITE(UNITM,810) ARGI(3)
-          WRITE(UNITM,811) ARGI(4)
-
-          CALL IMPFOT(ARGR(1),ARG24)
-          WRITE(UNITM,820) ARG24
-          CALL IMPFOT(ARGR(2),ARG24)
-          WRITE(UNITM,821) ARG24
-          CALL IMPFOT(ARGR(3),ARG24)
-          WRITE(UNITM,822) ARG24
-          CALL IMPFOT(ARGR(4),ARG24)
-          WRITE(UNITM,823) ARG24
-
-          IF (ARGI(9).NE.0) THEN
-            CALL IMPFOT(ARGR(5),ARG24)
-            WRITE(UNITM,825) ARG24
-            CALL IMPFOT(ARGR(6),ARG24)
-            WRITE(UNITM,824) ARG24
-          ENDIF
-
-          CALL IMPFOK(LIGNE,LARGE,UNITM)
-        ENDIF
- 800    FORMAT ('STATISTIQUES SUR LE TRANSITOIRE ')
- 801    FORMAT (1P,3X,'NOMBRE DE PAS DE TEMPS                 : ',I8)
- 802    FORMAT (1P,3X,'NOMBRE D''ITERATIONS DE NEWTON          : ',I8)
- 803    FORMAT (1P,3X,'NOMBRE D''ITERATIONS DE RECH. LINE      : ',I8)
- 804    FORMAT (1P,3X,'NOMBRE D''ITERATIONS DE FETI            : ',I8)
- 805    FORMAT (1P,3X,'NOMBRE D''ITERATIONS DE CONTACT (ALGO.) : ',I8)
- 806    FORMAT (1P,3X,'NOMBRE D''ITERATIONS DE CONTACT (GEOM.) : ',I8)
- 807    FORMAT (1P,3X,'NOMBRE D''ITERATIONS DE CONTACT (FROT.) : ',I8)
- 808    FORMAT (1P,3X,'NOMBRE DE CREATION DE NUMEROTATION     : ',I8)
- 809    FORMAT (1P,3X,'NOMBRE DE FACTORISATION DE MATRICE     : ',I8)
- 810    FORMAT (1P,3X,'NOMBRE D''INTEGRATION DE COMPORTEMENT   : ',I8)
- 811    FORMAT (1P,3X,'NOMBRE DE RESOLUTION K.U = F           : ',I8)
-
-
- 820    FORMAT (1P,3X,'TEMPS POUR CREATION NUMEROTATION       : ',
-     &          (A24))
- 821    FORMAT (1P,3X,'TEMPS POUR FACTORISATION MATRICE       : ',
-     &          (A24))
- 822    FORMAT (1P,3X,'TEMPS POUR INTEGRATION COMPORTEMENT    : ',
-     &          (A24))
- 823    FORMAT (1P,3X,'TEMPS POUR RESOLUTION K.U = F          : ',
-     &          (A24))
- 824    FORMAT (1P,3X,'TEMPS POUR CONTACT (ALGORITHME)        : ',
-     &          (A24))
- 825    FORMAT (1P,3X,'TEMPS POUR CONTACT (APPARIEMENT)       : ',
-     &          (A24))
-
-C
-C --- ERREUR
-C
-      ELSE IF (NATURE(1:6) .EQ. 'ERREUR') THEN
-        CALL IMPFOK(LIGNE,LARGE,UNITM)
-        WRITE(UNITM,*)
-        CALL NMIMPA(UNITM,ARGZ(1),ARGI(1))
-        WRITE(UNITM,*)
-C
-C --- SUBDIVISION DU PAS DE TEMPS
-C
-      ELSE IF (NATURE .EQ. 'SUBDIVISE') THEN
-        IF (UNITM.EQ.MESS) THEN
-          CALL IMPFOK(LIGNE,LARGE,UNITM)
-          WRITE(UNITM,*)
-          CALL IMPFOI(0,4,ARGI(1),ARG4)
-          CALL IMPFOK('SUBDIVISION DU PAS DE TEMPS EN '//ARG4//
-     &                ' SOUS PAS',44,UNITM)
-          WRITE(UNITM,*)
-        ENDIF
-C
-C --- RECAPITULATIF DES INFOS DE CONVERGENCE
-C
-      ELSE IF (NATURE .EQ. 'CONV_RECA') THEN
-
-        IMPCNT = SDIMPR(1:14)//'CONV.TYPE'
-        IMPCNL = SDIMPR(1:14)//'CONV.LIEU'
-        IMPCNV = SDIMPR(1:14)//'CONV.VAL'
-        IMPCNA = SDIMPR(1:14)//'CONV.ACT'
-        CALL JEVEUO(IMPCNT,'L',JIMPCT)
-        CALL JEVEUO(IMPCNL,'L',JIMPCL)
-        CALL JEVEUO(IMPCNV,'L',JIMPCV)
-        CALL JEVEUO(IMPCNA,'L',JIMPCA)
-
-
-
-        IF (UNITM.EQ.MESS) THEN
-          DO 10 I = 1,5
-            IF (ZL(JIMPCA-1+I)) THEN
-
-              TAMPON = 'RESIDU '
-              TAMPON(8:23)  =  ZK16(JIMPCT-1+I)
-
-              CALL IMPFOR(UNIBID,R8LONG,R8PREC,ZR(JIMPCV-1+I),ARG16)
-
-              TAMPON(24:49) = ' VAUT '//ARG16
-
-              IF (ARGZ(1)(1:7).NE.'INCONNU') THEN
-                TAMPON(46:50) = ' SUR '
-                TAMPON(51:66) = ZK16(JIMPCL-1+I)
-              ENDIF
-              CALL IMPFOK(TAMPON,66,UNITM)
-
-
-            ENDIF
-  10      CONTINUE
-        ENDIF
-C
-C --- CRITERES DE CONVERGENCE ATTEINTS
-C
-      ELSE IF (NATURE .EQ. 'CONV_OK  ') THEN
-        IF (UNITM.EQ.MESS) THEN
-          WRITE(UNITM,*)
-          CALL IMPFOK('<*> CRITERE(S) DE CONVERGENCE ATTEINT(S)       ',
-     &                47,UNITM)
-          WRITE(UNITM,*)
-        ENDIF
-C
-C --- PAS DE CRITERES DE CONVERGENCE
-C
-      ELSE IF (NATURE .EQ. 'CONV_NONE') THEN
-        IF (UNITM.EQ.MESS) THEN
-          WRITE(UNITM,*)
-          CALL IMPFOK('< > PAS DE CRITERE(S) DE CONVERGENCE           ',
-     &                47,UNITM)
-          WRITE(UNITM,*)
-        ENDIF
-C
-C --- CONVERGENCE FORCEE PAR ARRET = 'OUI'
-C
-      ELSE IF (NATURE .EQ. 'CONV_FORC') THEN
-        IF (UNITM.EQ.MESS) THEN
-          WRITE(UNITM,*)
-          CALL IMPFOK('< > CONVERGENCE FORCEE  (ARRET=NON)            ',
-     &                47,UNITM)
-          WRITE(UNITM,*)
-        ENDIF
-C
-C --- RESI_GLOB_RELA ET CHARGEMENT = 0, CONVERGENCE SUR RESI_GLOB_MAXI
-C
-      ELSE IF (NATURE .EQ. 'CONV_MAXI') THEN
-        IF (UNITM.EQ.MESS) THEN
-          WRITE(UNITM,*)
-          CALL IMPFOR(UNIBID,R8LONG,R8PREC,ARGR(1),ARG16)
-          CALL IMPFOK('<*> ATTENTION : CONVERGENCE ATTEINTE AVEC',
-     &        41,UNITM)
-          CALL IMPFOK('CRITERE RESI_GLOB_MAXI='//ARG16,
-     &        39,UNITM)
-          CALL IMPFOK('POUR CAUSE DE CHARGEMENT PRESQUE NUL',36,UNITM)
-        ENDIF
-C
-C --- RESI_COMP_RELA ET IT = 1, CONVERGENCE SUR RESI_GLOB_MAXI
-C
-      ELSE IF (NATURE .EQ. 'MAXI_COMP') THEN
-        IF (UNITM.EQ.MESS) THEN
-          WRITE(UNITM,*)
-          CALL U2MESS('A','MECANONLINE2_98')
-        ENDIF
-C
-C -- BOUCLE DE GEOMETRIE CONTACT METHODE CONTINUE
-C
-      ELSE IF (NATURE .EQ. 'BCL_GEOME') THEN
-         CALL IMPSDR(SDIMPR,'BOUC_GEOM',K16BID,R8BID,ARGI(1))
-         CALL IMPSDM(SDIMPR,'BOUC_GEOM','X')
-C
-C --- BOUCLE DE SEUIL CONTACT METHODE CONTINUE
-C
-      ELSE IF (NATURE .EQ. 'BCL_SEUIL') THEN
-         CALL IMPSDR(SDIMPR,'BOUC_FROT',K16BID,R8BID,ARGI(1))
-         CALL IMPSDM(SDIMPR,'BOUC_FROT','X')
-C
-C --- BOUCLE DE CONTRAINTES ACTIVES CONTACT METHODE CONTINUE
-C
-      ELSE IF (NATURE .EQ. 'BCL_CTACT') THEN
-         CALL IMPSDR(SDIMPR(1:14),
-     &               'BOUC_CONT',K16BID,R8BID,ARGI(1))
-         CALL IMPSDM(SDIMPR(1:14),'BOUC_CONT','X')
-C
-C -- CONVERGENCE BOUCLE DE SEUIL CONTACT METHODE CONTINUE
-C
-      ELSE IF (NATURE .EQ. 'CNV_SEUIL') THEN
-         CALL IMPSDM(SDIMPR(1:14),'BOUC_FROT',' ')
-C
-C -- CONVERGENCE BOUCLE DE CONTRAINTES ACTIVES CONTACT METHODE CONTINUE
-C
-      ELSE IF (NATURE .EQ. 'CNV_CTACT') THEN
-         CALL IMPSDM(SDIMPR(1:14),'BOUC_CONT',' ')
-C
-C -- CONVERGENCE BOUCLE DE GEOMETRIE CONTACT CONTACT METHODE CONTINUE
-C
-      ELSE IF (NATURE .EQ. 'CNV_GEOME') THEN
-         CALL IMPSDM(SDIMPR(1:14),'BOUC_GEOM',' ')
-C
-C -- ETAT DE LA CONVERGENCE
-C
-      ELSE IF (NATURE .EQ. 'LIGN_TABL') THEN
-        TAMPON = COLONN(1:LARGE)
-
-        POS = 2
-        DO 100 ICOL = 1, NBCOL
-          CALL IMPSDA(SDIMPR,'LIRE',ICOL  ,IBID  ,TITCOL,
-     &                FORCOL,LONGR ,PRECR ,LONGI ,LONGK )
-
-          IF (FORCOL.EQ.1) THEN
-            POSFIN = POS+ZLAR-1
-            CALL IMPSDV(SDIMPR(1:14),
-     &                  ICOL,K16BID,R8BID,VALI,MARQ)
-            CALL IMPFOI(0,LONGI,VALI,
-     &                  TAMPON(POS:POSFIN))
-            IF (MARQ(1:1).NE.' ') THEN
-              POSMAR = POS + ZLAR - 2
-              TAMPON(POSMAR:POSMAR) = MARQ(1:1)
-            ENDIF
-          ELSE IF (FORCOL.EQ.2) THEN
-            POSFIN = POS+ZLAR-1
-            CALL IMPSDV(SDIMPR(1:14),
-     &                  ICOL,K16BID,VALR,IBID,MARQ)
-
-            IF (VALR.EQ.R8VIDE()) THEN
-
-              TAMPON(POS:POSFIN) = NOVALU(1:16)
-            ELSE
-              CALL IMPFOR(UNIBID,LONGR,PRECR,VALR,
-     &                    TAMPON(POS:POSFIN))
-              IF (MARQ(1:1).NE.' ') THEN
-                POSMAR = POS + ZLAR - 2
-                TAMPON(POSMAR:POSMAR) = MARQ(1:1)
-              ENDIF
-            ENDIF
-          ELSE IF (FORCOL.EQ.3) THEN
-            POSFIN = POS+ZLAR-1
-            CALL IMPSDV(SDIMPR(1:14),
-     &                  ICOL,VALK,R8BID,IBID,MARQ)
-            TAMPON(POS:POSFIN) = VALK(1:16)
-          ELSE
-            CALL ASSERT(.FALSE.)
-          ENDIF
-          POS = POS + ZLAR + 1
- 100    CONTINUE
-
-        CALL IMPFOK(TAMPON,LARGE,UNITM)
+      ELSEIF (PHASE .EQ. 'TITR') THEN
+        CALL NMIMPT(SDIMPR,NATURZ,TITRE ,LIGNE ,ARGR  )
+      ELSEIF (PHASE .EQ. 'IMPR') THEN
+        CALL NMIMPL(SDIMPR,NATURZ,LIGNE ,ARGZ  ,ARGR  ,
+     &              ARGI  )
+      ELSEIF (PHASE .EQ. 'TABL') THEN
+        UIMPR  = IUNIFI('MESSAGE') 
+        CALL IMPSDL(SDIMPR,COLONN,UIMPR ) 
+        IF (UNITE.NE.0) THEN
+          UIMPR  = UNITE
+          CALL IMPSDL(SDIMPR,COLFIC,UIMPR ) 
+        ENDIF  
       ELSE
+        WRITE(6,*) 'PHASE: ',PHASE
         CALL ASSERT(.FALSE.)
-
-      END IF
-
- 9999 CONTINUE
-
+      ENDIF
+C
       CALL JEDEMA()
       END

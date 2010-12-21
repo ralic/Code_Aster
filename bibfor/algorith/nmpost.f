@@ -6,7 +6,7 @@
      &                  SDDYNA)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/12/2010   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 21/12/2010   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -143,7 +143,7 @@ C
           ELSE
             CALL ASSERT(.FALSE.)
           ENDIF
-          CALL NMIMPR('TITR','POST','FLAMBEMENT        ',0.D0,0)
+          CALL NMIMPR('TITR',OPTFLA,' ',0.D0,0)
 C
 C --- CALCUL EFFECTIF
 C
@@ -167,7 +167,7 @@ C
           ELSE
             CALL ASSERT(.FALSE.)
           ENDIF
-          CALL NMIMPR('TITR','POST','MODES VIBRATOIRES ',0.D0,0)
+          CALL NMIMPR('TITR',OPTFLA,' ',0.D0,0)
 C
 C --- CALCUL EFFECTIF
 C

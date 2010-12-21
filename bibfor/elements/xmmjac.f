@@ -1,9 +1,9 @@
       SUBROUTINE XMMJAC(ALIAS ,GEOM ,DFF,JAC   )
 C     
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
+C MODIF ELEMENTS  DATE 21/12/2010   AUTEUR MASSIN P.MASSIN 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -72,15 +72,20 @@ C
       DYDK = 0.D0
       DZDK = 0.D0               
 C
-
       IF (ALIAS(1:5).EQ.'SE2') THEN
         DO 10 I = 1,2
           DXDS = DXDS + GEOM(2*(I-1)+1)*DFF(1,I)
           DYDS = DYDS + GEOM(2*(I-1)+2)*DFF(1,I)
    10   CONTINUE
         JAC = SQRT(DXDS**2+DYDS**2+DZDS**2)
-      ELSE IF (ALIAS(1:5).EQ.'TR3') THEN
+      ELSEIF (ALIAS(1:5).EQ.'SE3') THEN
         DO 20 I = 1,3
+          DXDS = DXDS + GEOM(2*(I-1)+1)*DFF(1,I)
+          DYDS = DYDS + GEOM(2*(I-1)+2)*DFF(1,I)
+   20   CONTINUE
+        JAC = SQRT(DXDS**2+DYDS**2+DZDS**2)
+      ELSE IF (ALIAS(1:5).EQ.'TR3') THEN
+        DO 30 I = 1,3
           DXDE = DXDE + GEOM(3*I-2)*DFF(1,I)
           DXDK = DXDK + GEOM(3*I-2)*DFF(2,I)
           DYDE = DYDE + GEOM(3*I-1)*DFF(1,I)
@@ -89,7 +94,7 @@ C
           DZDK = DZDK + GEOM(3*I)*DFF(2,I)
           IF (DZDE.NE.0) THEN
           ENDIF
-   20   CONTINUE
+   30   CONTINUE
         JAC = SQRT((DYDE*DZDK-DZDE*DYDK)**2+ (DZDE*DXDK-DXDE*DZDK)**2+
      &        (DXDE*DYDK-DYDE*DXDK)**2)
       ELSE

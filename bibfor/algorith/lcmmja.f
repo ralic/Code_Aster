@@ -3,10 +3,10 @@
      &                    NR,NVI,VIND,YF,DY,DRDY,IRET)
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C TOLE CRP_21
-C MODIF ALGORITH  DATE 12/07/2010   AUTEUR PROIX J-M.PROIX 
+C TOLE CRP_21 CRS_1404
+C MODIF ALGORITH  DATE 20/12/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -74,7 +74,7 @@ C     ----------------------------------------------------------------
       IRET=0
       NBFSYS=NBCOMM(NMAT,2)
 C     test pour verifier que KOCKS_RAUCH n'est pas mélangé avec d'autres
-      
+
       DO 6 IFA=1,NBFSYS
          IFL=NBCOMM(IFA,1)
          NUECOU=NINT(MATERF(NMAT+IFL))
@@ -87,13 +87,13 @@ C     test pour verifier que KOCKS_RAUCH n'est pas mélangé avec d'autres
         IF (KR(I).LT.IMIN) IMIN=KR(I)
     7 CONTINUE
       IF (IMAX.EQ.4) THEN
-C        KOCKS-RAUCH    
+C        KOCKS-RAUCH
          CALL ASSERT(IMIN.EQ.4)
          CALL LCMMJ2 (TYPMOD, NMAT, MATERF,TIMED, TIMEF,
      &                ITMAX,TOLER,COMP,NBCOMM,CPMONO,PGL,TOUTMS,HSR,
      &                 NR,NVI,VIND,YF,DY,DRDY,IRET)
       ELSEIF (IMAX.EQ.5) THEN
-C        DD-CFC    
+C        DD-CFC
          CALL ASSERT(IMIN.EQ.5)
          CALL LCMMJ3 (TYPMOD, NMAT, MATERF,TIMED, TIMEF,
      &                NBCOMM,CPMONO,PGL,TOUTMS,HSR,

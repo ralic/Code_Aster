@@ -4,7 +4,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 08/11/2010   AUTEUR DEBONNIERES P.DE-BONNIERES 
+C MODIF ALGORITH  DATE 20/12/2010   AUTEUR PELLET J.PELLET 
 
       INTEGER        NDIM,IMAT,IRET,KPG,KSP
       CHARACTER*16  COMPOR(*),OPTION
@@ -16,7 +16,7 @@ C MODIF ALGORITH  DATE 08/11/2010   AUTEUR DEBONNIERES P.DE-BONNIERES
       REAL*8         DSIDEP(6,6)
 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -31,8 +31,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C TOLE CRP_20
-C TOLE CRP_21
+C TOLE CRP_20 CRP_21 CRS_1404
 
 C ----------------------------------------------------------------------
 C     MODELE VISCOPLASTIQUE SANS SEUIL DE EDGAR
@@ -67,7 +66,7 @@ C ----------------------------------------------------------------------
       INTEGER  I,J,K,NZ,NDIMSI
       INTEGER  IRE2
       INTEGER  ITER,ITEMAX
-      REAL*8   TM,TP,TREF,TEMP,DT            
+      REAL*8   TM,TP,TREF,TEMP,DT
       REAL*8   PHASE(3),PHASM(3),ZALPHA
       REAL*8   ZERO,PREC,R8PREM,RBID
       REAL*8   KRON(6)
@@ -83,10 +82,10 @@ C ----------------------------------------------------------------------
       REAL*8   VECT(2*NDIM),MAT(2*NDIM+1,2*NDIM+1)
       REAL*8   EDGEQU
       REAL*8   R1(2*NDIM+1,2*NDIM),H1(2*NDIM,2*NDIM)
-      
+
       CHARACTER*1 C1
-      CHARACTER*8 ZIRC(2)      
-      LOGICAL      RESI,RIGI            
+      CHARACTER*8 ZIRC(2)
+      LOGICAL      RESI,RIGI
       DATA          KRON/1.D0,1.D0,1.D0,0.D0,0.D0,0.D0/
       DATA          ZIRC /'ALPHPUR','ALPHBETA'/
 
@@ -103,7 +102,7 @@ C *******************
 
       RESI   = OPTION(1:4).EQ.'RAPH' .OR. OPTION(1:4).EQ.'FULL'
       RIGI   = OPTION(1:4).EQ.'RIGI' .OR. OPTION(1:4).EQ.'FULL'
-      
+
       IF(NDIM.EQ.2) THEN
         NDIMSI=4
       ELSE
@@ -144,7 +143,7 @@ C 1.2 - RECUPERATION DES PHASES METALLURGIQUES
           IF (IRE2.EQ.1) PHASE(K)=0.D0
  10     CONTINUE
 
-      ENDIF        
+      ENDIF
 
       ZALPHA=PHASE(1)+PHASE(2)
       PHASE(NZ)=1.D0-ZALPHA
@@ -154,14 +153,14 @@ C 1.3 - TEST SUR LES PHASES
       DO 15 K=1,NZ
         IF (PHASE(K).LE.ZERO) PHASE(K)=0.D0
         IF (PHASE(K).GE.1.D0)  PHASE(K)=1.D0
- 15    CONTINUE       
+ 15    CONTINUE
       IF (ZALPHA.LE.ZERO) ZALPHA=0.D0
       IF (ZALPHA.GE.1.D0)  ZALPHA=1.D0
 
 C **************************************
 C 2 - RECUPERATION DES CARACTERISTIQUES
 C **************************************
-C ATTENTION CAR LA MATRICE D ANISOTROPIE EST DONNEE DANS LE 
+C ATTENTION CAR LA MATRICE D ANISOTROPIE EST DONNEE DANS LE
 C REPERE (R - T - Z) DONC IL FAUT FAIRE UN CHANGEMENT DE REPERE
 C EN AXI C EST SIMPLE CAR IL SUFFIT D INVERSER LES TERMES 2 ET 3
 
@@ -189,7 +188,7 @@ C       SANS LE SQRT(2)
           DEPS(I)=DEPS2(I)
           IF (I.GE.4) THEN
             SIGM(I)=SIGM2(I)/SQRT(2.D0)
-            DEPS(I)=DEPS2(I)/SQRT(2.D0)            
+            DEPS(I)=DEPS2(I)/SQRT(2.D0)
           ENDIF
  20     CONTINUE
 
@@ -199,7 +198,7 @@ C 3.2 - TRACE
         TRDEPS  = (DEPS(1)+DEPS(2)+DEPS(3))/3.D0
         TRSIGM = (SIGM(1)+SIGM(2)+SIGM(3))/3.D0
         TRSIGP = TRSIGM + TROISK*(TRDEPS-DEPSTH)
-        
+
 C 3.3 - DEVIATEUR DE LA CONTRAINTE ESSAI CONNUE DVSITR
 
         DO 25 I=1,NDIMSI
@@ -212,7 +211,7 @@ C 3.3 - DEVIATEUR DE LA CONTRAINTE ESSAI CONNUE DVSITR
  30     CONTINUE
 
 C 3.4 - CONTRAINTE EQUIVALENTE ESSAI CONNUE EQSITR
-        
+
         EQSITR = EDGEQU (NDIMSI,DVSITR,ANI)
         EQEPTR = EQSITR/(2.D0*MU)
         PM=VIM(1)
@@ -230,17 +229,17 @@ C       ALORS SIGP=DVSITR + TRSIGP ET VIP(1)=VIM(1)
  35       CONTINUE
           VIP(1)=VIM(1)
           VIP(2)=0.D0
-          
+
         ELSE
 
 C 4.2 - SYSTEME NON LINEAIRE A RESOUDRE EN [DVEPEL,DP]
 C       TEL QUE DVSIGP=2*MU*DVEPEL
-C       DVEPEL PLUTOT QUE DVSIGP CAR MEME UNITE QUE DP 
-C       G(Y)=0 
+C       DVEPEL PLUTOT QUE DVSIGP CAR MEME UNITE QUE DP
+C       G(Y)=0
 C       DIM=NDIMSI+1
 C       Y(1)=DVEPEL(1)
 C       Y(2)=DVEPEL(2)
-C       Y(3)=DVEPEL(3) 
+C       Y(3)=DVEPEL(3)
 C       Y(4)=DVEPEL(4)
 C       Y(5)=DVEPEL(5) (EN 3D)
 C       Y(6)=DVEPEL(6) (EN 3D)
@@ -252,7 +251,7 @@ C
 C       CE SYSTEME EST RESOLU PAR UNE METHODE DE NEWTON
 C       DG(I)/DY(J)*DY(J)=-G(I) => DY(I)=-(DG(I)/DY(J)**-1)*G(J)
 C
-C      L INVERSION DU SYSTEME EST FAITE DANS MGAUSS 
+C      L INVERSION DU SYSTEME EST FAITE DANS MGAUSS
 C      MGAUSS RESOUD AX=B
 C      EN ENTREE A ET B
 C      EN SORTIE (A**-1)*B STOCKEE DANS B
@@ -267,18 +266,18 @@ C         ON SE RAMENE A UNE SEULE EQUATION EN DP
 
           ITEMAX=NINT(CRIT(1))
           PREC=CRIT(3)
-                    
+
           CALL EDGINI(ITEMAX,PREC,PM,EQSITR,MU,GAMMA,M,N,DP,IRE2)
           IF (IRE2.GT.0) THEN
             IRET  = 1
             GOTO 998
           ENDIF
-          
+
           DO 40 I=1,NDIMSI
-            DVSIGP(I) = (1.D0-3.D0*MU*DP/EQSITR)*DVSITR(I) 
+            DVSIGP(I) = (1.D0-3.D0*MU*DP/EQSITR)*DVSITR(I)
             DVEPEL(I)= DVSIGP(I)/(2.D0*MU)
             Y(I)=DVEPEL(I)
- 40       CONTINUE         
+ 40       CONTINUE
           Y(NDIMSI+1)=DP
 
 C 4.2.2 - CALCUL DE G SA DERIVEE ET LE CRITERE D ARRET
@@ -289,7 +288,7 @@ C         LE CRITERE D ARRET EST LE MAX DE G
 
 C 4.2.3 - ITERATION DE NEWTON
 C ATTENTION SI W MATRICE DGDY MODIFIE
-          
+
           DO 50 ITER = 1, ITEMAX
             IF (MAXG.LE.PREC) GOTO 999
 
@@ -299,7 +298,7 @@ C ATTENTION SI W MATRICE DGDY MODIFIE
               IRET  = 1
               GOTO 998
             ENDIF
-            
+
             DO 55 I=1,NDIMSI+1
               Y(I)=Y(I)+G(I)
               IF (I.LE.NDIMSI) DVSIGP(I)=2.D0*MU*Y(I)
@@ -314,23 +313,23 @@ C ATTENTION SI W MATRICE DGDY MODIFIE
      1                   G,MAXG,DGDY)
 
  50       CONTINUE
-          
+
           IRET  = 1
           GOTO 998
 
  999      CONTINUE
-                    
+
 C 4.2.3 - CALCUL DE SIGMA ET P
-          
+
           DO 60 I = 1,NDIMSI
             SIGP(I) = DVSIGP(I)+TRSIGP*KRON(I)
- 60       CONTINUE  
+ 60       CONTINUE
           DP=Y(NDIMSI+1)
           VIP(1)=VIM(1)+DP
           VIP(2)=1.D0
         ENDIF
-      
-      ENDIF          
+
+      ENDIF
 
 C *******************************
 C 5 - MATRICE TANGENTE DSIGDE
@@ -348,48 +347,48 @@ C SI FULL MAIS VIP(2)=1 => MATRICE COHERENTE A TP
               DSIDEP(I,J)=0.D0
  75         CONTINUE
  70       CONTINUE
-          
+
           DO 80 I=1,NDIMSI
             IF (I.LE.3) DSIDEP(I,I)=(4.D0*MU/3.D0)+TROISK/3.D0
             IF (I.GT.3) DSIDEP(I,I)=2.D0*MU
- 80       CONTINUE          
-          
+ 80       CONTINUE
+
           DO 90 I=1,3
             DO 95 J=1,3
               IF (I.NE.J) DSIDEP(I,J)=(-2.D0*MU/3.D0)+TROISK/3.D0
  95         CONTINUE
  90       CONTINUE
         ENDIF
-        
-        IF ((OPTION(1:4).EQ.'FULL').AND.(VIP(2).EQ.1.D0))THEN        
+
+        IF ((OPTION(1:4).EQ.'FULL').AND.(VIP(2).EQ.1.D0))THEN
 
           DO 200 J=1,NDIMSI
             DO 201 I=1,NDIMSI+1
               R1(I,J)=0.D0
  201        CONTINUE
             R1(J,J)=1.D0
- 200      CONTINUE           
-            
+ 200      CONTINUE
+
           DO 202 I=1,NDIMSI+1
             DO 203 K=1,NDIMSI+1
               MAT(I,K)=DGDY(I,K)
               IF (K.GE.4) MAT(I,K)=MAT(I,K)/2.D0
  203        CONTINUE
  202      CONTINUE
-            
+
           CALL MGAUSS('NFSP',MAT,R1,NDIMSI+1,NDIMSI+1,NDIMSI,RBID,IRE2)
           IF (IRE2.GT.0) THEN
             IRET  = 1
             GOTO 998
           ENDIF
-          
-          DO 204 J=1,NDIMSI  
+
+          DO 204 J=1,NDIMSI
             DO 205 I=1,NDIMSI
               H1(I,J)=R1(I,J)
  205        CONTINUE
- 204      CONTINUE          
+ 204      CONTINUE
 
-C ON COMPLETE 
+C ON COMPLETE
 
           DO 206 I=1,NDIMSI
             VECT(I)=H1(I,1)+H1(I,2)+H1(I,3)
@@ -397,7 +396,7 @@ C ON COMPLETE
             IF (I.LE.3) VECT(I)=VECT(I)+TROISK
             VECT(I)=VECT(I)/3.D0
  206      CONTINUE
-          
+
           DO 207 I=1,NDIMSI
             DO 208 J=1,NDIMSI
                H1(I,J)=2.D0*MU*H1(I,J)
@@ -409,26 +408,26 @@ C ON AFFECTE H1 A DSIDEP AVEC LES RACINE DE 2 POUR I NE J
 
          DO 400 I=1,NDIMSI
             DO 410 J=1,NDIMSI
-              DSIDEP(I,J)=H1(I,J)              
+              DSIDEP(I,J)=H1(I,J)
          IF ((I.EQ.J).AND.(I.GE.4)) DSIDEP(I,J)=2.D0*DSIDEP(I,J)/4.D0
               IF ((I.NE.J).AND.((I.GE.4).OR.(J.GE.4))) THEN
                 DSIDEP(I,J)=SQRT(2.D0)*DSIDEP(I,J)/2.D0
               ENDIF
  410        CONTINUE
- 400      CONTINUE         
-        ENDIF                      
+ 400      CONTINUE
+        ENDIF
       ENDIF
 
 C *************************************
 C 6 - ON REPASSE SIGP AVEC LE SQRT(2)
 C *************************************
-      
+
       IF (RESI) THEN
         DO 160 I=4,NDIMSI
           SIGP(I)=SIGP(I)*SQRT(2.D0)
  160    CONTINUE
       ENDIF
-      
- 998  CONTINUE     
-      
+
+ 998  CONTINUE
+
       END

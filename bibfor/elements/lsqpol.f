@@ -2,9 +2,10 @@
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 06/05/2008   AUTEUR MARKOVIC D.MARKOVIC 
+C MODIF ELEMENTS  DATE 20/12/2010   AUTEUR PELLET J.PELLET 
+C TOLE CRS_1404
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -21,18 +22,18 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 
 C ------------------------------------------------------------------
-C 
+C
 C              REGRESSION POLYNOMIALE DE TYPE MOINDRE CARRES
 C                  (LEAST SQUARES POLYNOMIAL FITTING)
-C 
+C
 C              REFERENCE: BASIC SCIENTIFIC SUBROUTINES, VOL. II
 C                         F.R. RUCKDESCHEL, BYTE/MCGRAWW-HILL, 1981
 C                         ET D'APRES J-P MOREAU, PARIS
-C 
+C
 C                                                   P.KOECHLIN 02-2004
-C 
+C
 C ------------------------------------------------------------------
-C 
+C
 C   ENTREE
 C       ORDRE : ORDRE DE LA REGRESSION (ORDRE>0)
 C               = DEGRE MAX DU POLYNOME QUE L'ON CHERCHE
@@ -42,7 +43,7 @@ C               ON COMPARE E1 A LA DIMINUTION DE LA DEVIATION STANDARD
 C       NPT   : NOMBRE DE POINTS (NPT>1)
 C       XX    : ABSCISSE DES POINTS (XX DISTINCTS)
 C       YY    : ORDONNEES DES POINTS
-C 
+C
 C   SORTIE
 C       ORDOK : ORDRE FINALEMENT OBTENU >=0
 C                  (  AVANT VERIFICATION DU DEGRE:
@@ -52,14 +53,14 @@ C                  ORDOK=-1 CORRESPOND A UNE ERREUR
 C       POLY  : POLYNOME OBTENU
 C               POLY=POLY(1) + POLY(2)*X + POLY(2)*X^2 +...+ POLY(N)*X^N
 C       SIGMA : DEVIATION STANDARD
-C 
-C 
+C
+C
 C      LA ROUTINE N'EST VALABLE QUE POUR ORDRE >=1
 C      MAIS EN SORTIE, ON A ORDOK >=0
 
       REAL*8    GRAND
       PARAMETER (GRAND = 1.0D20)
-      
+
       INTEGER   ORDRE,NPT
       REAL*8    XX(NPT),YY(NPT)
       REAL*8    POLY(ORDRE+1),SIGMA
@@ -99,17 +100,17 @@ C --- INITIALISATION ------------------------------
         AA(I) = 0.D0
         BB(I) = 0.D0
         FF(I) = 0.D0
- 13   CONTINUE  
+ 13   CONTINUE
       DO 16, I = 1,NPT
         VV(I) = 0.D0
         DD(I) = 0.D0
- 16   CONTINUE  
+ 16   CONTINUE
 
       D1 = SQRT(NPT*1.0D0)
 
       DO 18, I = 1,NPT
         EE(I) = 1.D0 / D1
- 18   CONTINUE  
+ 18   CONTINUE
       F1 = D1
 
       A1 = 0.D0
@@ -125,9 +126,9 @@ C --- INITIALISATION ------------------------------
       BB(1) = 1.D0 / F1
       FF(1) = BB(1) * POLY1
 
-      DO 35, I = 1,NPT 
+      DO 35, I = 1,NPT
         VV(I) = VV(I) + POLY1*EE(I)
- 35   CONTINUE  
+ 35   CONTINUE
 
 C --- DEBUT BOUCLE ----------------------------------------
 
@@ -136,7 +137,7 @@ C --- DEBUT BOUCLE ----------------------------------------
 C SAVE LATEST RESULTS
         DO 45, I = 1,ORDRE+1
           POLY2(I) = POLY(I)
- 45     CONTINUE  
+ 45     CONTINUE
         ORDOK2 = ORDOK
         V2  = V1
         F2  = F1
@@ -176,16 +177,16 @@ C SAVE LATEST RESULTS
 
         DO 83, I = 1,NPT
           VV(I) = VV(I) + POLY1*EE(I)
- 83     CONTINUE 
-  
-        DO 86, I = 1,ORDRE+1 
+ 83     CONTINUE
+
+        DO 86, I = 1,ORDRE+1
           FF(I) = FF(I) + POLY1*BB(I)
  86     CONTINUE
-     
-        DO 88, I = 1,ORDRE+1 
+
+        DO 88, I = 1,ORDRE+1
           POLY(I) = FF(I)
- 88     CONTINUE 
-    
+ 88     CONTINUE
+
         ORDOK = ORDLOO
 
         SIGMA = 0.D0
@@ -210,7 +211,7 @@ C           ABORTED SEQUENCE, RECOVER LAST VALUES
             SIGMA = V2
             DO 100, I = 1,ORDRE+1
               POLY(I) = POLY2(I)
- 100        CONTINUE   
+ 100        CONTINUE
             GOTO 999
           ENDIF
         ENDIF

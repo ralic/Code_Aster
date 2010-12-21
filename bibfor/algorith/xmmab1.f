@@ -1,15 +1,15 @@
-      SUBROUTINE XMMAB1(NDIM  ,NNE   ,NNES  ,NNC   ,NNM   ,
+      SUBROUTINE XMMAB1(NDIM  ,JNNE, NDEPLE  ,NNC   ,JNNM   ,
      &                  NFAES ,CFACE ,HPG   ,FFC   ,FFE   ,
      &                  FFM   ,JACOBI,JPCAI ,LAMBDA,COEFCA,   
      &                  JEU   ,COEFFA,COEFFF,TAU1  ,TAU2  ,
      &                  RESE  ,MPROJ ,NORM  ,TYPMAI,NSINGE,
-     &                  NSINGM,RRE   ,RRM   ,NVIT  ,NDDLSE,
-     &                  MMAT  )
+     &                  NSINGM,RRE   ,RRM   ,NVIT  ,NCONTA,
+     &                  JDDLE,JDDLM,MMAT  )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/04/2010   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 21/12/2010   AUTEUR MASSIN P.MASSIN 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -27,14 +27,14 @@ C ======================================================================
 C TOLE CRP_21
 C
       IMPLICIT NONE
-      INTEGER  NDIM,NNE,NNES,NNC,NNM,NFAES,JPCAI,CFACE(5,3)
-      INTEGER  NSINGE,NSINGM
-      INTEGER  NVIT,NDDLSE
+      INTEGER  NDIM,JNNE(3),NNC,JNNM(3),NFAES,JPCAI,CFACE(5,3)
+      INTEGER  NSINGE,NSINGM,NCONTA,JDDLE(2),JDDLM(2)
+      INTEGER  NVIT,NDEPLE
       REAL*8   HPG,FFC(8),FFE(8),FFM(8),JACOBI,NORM(3)
       REAL*8   LAMBDA,COEFFF,COEFFA,RRE,RRM,COEFCA,JEU
       REAL*8   TAU1(3),TAU2(3),RESE(3),MMAT(168,168),MPROJ(3,3)
       CHARACTER*8  TYPMAI
-C      
+C
 C ----------------------------------------------------------------------
 C
 C ROUTINE CONTACT (METHODE XFEMGG - CALCUL ELEM.)
@@ -58,7 +58,7 @@ C IN  HPG    : POIDS DU POINT INTEGRATION DU POINT DE CONTACT
 C IN  FFC    : FONCTIONS DE FORME DU PT CONTACT DANS ELC
 C IN  FFE    : FONCTIONS DE FORME DU PT CONTACT DANS ESC
 C IN  FFM    : FONCTIONS DE FORME DE LA PROJECTION DU PTC DANS MAIT
-C IN  NDDLSE : NOMBRE DE DDLS D'UN NOEUD SOMMET ESCLAVE
+C IN  ddles : NOMBRE DE DDLS D'UN NOEUD SOMMET ESCLAVE
 C IN  JACOBI : JACOBIEN DE LA MAILLE AU POINT DE CONTACT
 C IN  JPCAI  : POINTEUR VERS LE VECTEUR DES ARRETES ESCLAVES 
 C              INTERSECTEES
@@ -77,11 +77,21 @@ C IN  RRM    : SQRT LST MAITRE
 C IN  NVIT   : POINT VITAL OU PAS
 C I/O MMAT   : MATRICE ELEMENTAIRE DE CONTACT/FROTTEMENT
 C ----------------------------------------------------------------------
-      INTEGER   I, J, K, L, M, II, JJ, INI, PLI, XOULA
+      INTEGER   I, J, K, L, M, II, JJ, INI, PLI, XOULA,JJN,IIN,DDLE
+      INTEGER   NNE,NNES,NNM,NNMS,DDLES,DDLEM,DDLMS,DDLMM
       REAL*8    E(3,3), A(3,3), C(3,3),MP, MB, MBT ,MM ,MMT
 C ----------------------------------------------------------------------
 C
 C --- INITIALISATIONS
+C
+      NNE=JNNE(1)
+      NNES=JNNE(2)
+      NNM=JNNM(1)
+      NNMS=JNNM(2)
+      DDLES=JDDLE(1)
+      DDLEM=JDDLE(2)
+      DDLMS=JDDLM(1)
+      DDLMM=JDDLM(2)
 C
       DO 1 I = 1,3
         DO 2 J = 1,3
@@ -119,6 +129,7 @@ C
     8 CONTINUE
       MP = (LAMBDA-COEFCA*JEU)*COEFFF*HPG*JACOBI
 C
+      DDLE = DDLES*NNES+DDLEM*(NNE-NNES)
       IF (NNM.NE.0) THEN
 C
 C --------------------- CALCUL DE [A] ET [B] -----------------------
@@ -133,14 +144,15 @@ C
             MBT = MP*A(L,K)
           ENDIF
           DO 20 I = 1,NNC
-            INI=XOULA(CFACE,NFAES,I,JPCAI,TYPMAI)
-            CALL XPLMA2(NDIM,NNE,NNES,NDDLSE,INI,PLI)
+            INI=XOULA(CFACE,NFAES,I,JPCAI,TYPMAI,NCONTA)
+            CALL XPLMA2(NDIM,NNE,NNES,DDLES,INI,PLI)
             II = PLI+L-1
-            DO 30 J = 1,NNES
+            DO 30 J = 1,NDEPLE
 C --- BLOCS ES:CONT, CONT:ES
               MM = MB *FFC(I)*FFE(J)
               MMT= MBT*FFC(I)*FFE(J)
-              JJ = NDDLSE*(J-1)+K
+              CALL INDENT(J,DDLES,DDLEM,NNES,JJN)
+              JJ = JJN+K
               MMAT(II,JJ) = -MM
               MMAT(JJ,II) = -MMT
               JJ = JJ + NDIM
@@ -156,8 +168,8 @@ C --- BLOCS ES:CONT, CONT:ES
 C --- BLOCS MA:CONT, CONT:MA
               MM = MB *FFC(I)*FFM(J)
               MMT= MBT*FFC(I)*FFM(J)
-              JJ = NDDLSE*NNES+NDIM*(NNE-NNES) + 
-     &              (2+NSINGM)*NDIM*(J-1)+K
+              CALL INDENT(J,DDLMS,DDLMM,NNMS,JJN)
+              JJ = DDLE + JJN + K
               MMAT(II,JJ) = MM
               MMAT(JJ,II) = MMT
               JJ = JJ + NDIM
@@ -179,13 +191,15 @@ C
         DO 110 L = 1,NDIM
           MB  = -MP*COEFFA*E(L,K)+COEFCA*COEFFF*HPG*JACOBI*C(L,K)
           MBT = -MP*COEFFA*E(L,K)+COEFCA*COEFFF*HPG*JACOBI*C(K,L)
-          DO 200 I = 1,NNES
-            DO 210 J = 1,NNES
+          DO 200 I = 1,NDEPLE
+            DO 210 J = 1,NDEPLE
 C --- BLOCS ES:ES
               MM = MB *FFE(I)*FFE(J)
               MMT= MBT*FFE(I)*FFE(J)
-              II = NDDLSE*(I-1)+L
-              JJ = NDDLSE*(J-1)+K
+              CALL INDENT(I,DDLES,DDLEM,NNES,IIN)
+              CALL INDENT(J,DDLES,DDLEM,NNES,JJN)
+              II = IIN + L
+              JJ = JJN + K
               MMAT(II,JJ) =  MM
               JJ = JJ + NDIM
               MMAT(II,JJ) = -MM
@@ -208,9 +222,10 @@ C --- BLOCS ES:ES
 C --- BLOCS ES:MA, MA:ES
               MM = MB *FFE(I)*FFM(J)
               MMT= MBT*FFE(I)*FFM(J)
-              II = NDDLSE*(I-1)+L
-              JJ = NDDLSE*NNES+NDIM*(NNE-NNES) +
-     &              (2+NSINGM)*NDIM*(J-1)+K
+              CALL INDENT(I,DDLES,DDLEM,NNES,IIN)
+              CALL INDENT(J,DDLMS,DDLMM,NNMS,JJN)
+              II = IIN + L
+              JJ = DDLE + JJN + K
               MMAT(II,JJ) = -MM
               MMAT(JJ,II) = -MMT
               JJ = JJ + NDIM
@@ -256,10 +271,10 @@ C --- BLOCS ES:MA, MA:ES
 C --- BLOCS MA:MA
               MM = MB *FFM(I)*FFM(J)
               MMT= MBT*FFM(I)*FFM(J)
-              II = NDDLSE*NNES+NDIM*(NNE-NNES) +
-     &              (2+NSINGM)*NDIM*(I-1)+L
-              JJ = NDDLSE*NNES+NDIM*(NNE-NNES) +
-     &              (2+NSINGM)*NDIM*(J-1)+K
+              CALL INDENT(I,DDLMS,DDLMM,NNMS,IIN)
+              CALL INDENT(J,DDLMS,DDLMM,NNMS,JJN)
+              II = DDLE + IIN + L
+              JJ = DDLE + JJN + K
               MMAT(II,JJ) =  MM
               JJ = JJ + NDIM
               MMAT(II,JJ) =  MM
@@ -295,14 +310,15 @@ C
             MBT = MP*A(L,K)
           ENDIF
           DO 520 I = 1,NNC
-            INI=XOULA(CFACE,NFAES,I,JPCAI,TYPMAI)
-            CALL XPLMA2(NDIM,NNE,NNES,NDDLSE,INI,PLI)
+            INI=XOULA(CFACE,NFAES,I,JPCAI,TYPMAI,NCONTA)
+            CALL XPLMA2(NDIM,NNE,NNES,DDLES,INI,PLI)
             II = PLI+L-1
-            DO 530 J = 1,NNES
+            DO 530 J = 1,NDEPLE
 C --- BLOCS ES:CONT, CONT:ES
               MM = MB *FFC(I)*FFE(J)
               MMT= MBT*FFC(I)*FFE(J)
-              JJ = 2*NDIM*(J-1)+K
+              CALL INDENT(J,DDLES,DDLEM,NNES,JJN)
+              JJ = JJN + K
               MMAT(II,JJ) = RRE * MM
               MMAT(JJ,II) = RRE * MMT
   530       CONTINUE
@@ -315,12 +331,14 @@ C
       DO 600 K = 1,NDIM
         DO 610 L = 1,NDIM
           MB  = -MP*COEFFA*E(L,K)+COEFCA*COEFFF*HPG*JACOBI*C(L,K)
-          DO 620 I = 1,NNES
-            DO 630 J = 1,NNES
+          DO 620 I = 1,NDEPLE
+            DO 630 J = 1,NDEPLE
 C --- BLOCS ES:ES
               MM = MB *FFE(I)*FFE(J)
-              II = NDDLSE*(I-1)+L
-              JJ = NDDLSE*(J-1)+K
+              CALL INDENT(I,DDLES,DDLEM,NNES,IIN)
+              CALL INDENT(J,DDLES,DDLEM,NNES,JJN)
+              II = IIN + L
+              JJ = JJN + K
               MMAT(II,JJ) = RRE * RRE * MM
   630       CONTINUE
   620     CONTINUE

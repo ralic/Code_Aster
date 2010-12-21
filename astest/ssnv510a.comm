@@ -1,4 +1,4 @@
-# MODIF  DATE 28/09/2010   AUTEUR MASSIN P.MASSIN 
+# MODIF  DATE 21/12/2010   AUTEUR MASSIN P.MASSIN 
 # TITRE COMPRESSION UNIAXIALE D UN BLOC MULTI-FISSURE
 # ssnv510a.para = tps_job 30 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -32,13 +32,14 @@ PRE_GIBI();
 MAILLAG=LIRE_MAILLAGE(INFO=1,);
 
 MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAG,
-                     AFFE=(_F(GROUP_MA=('SURF',),
+                     AFFE=(_F(GROUP_MA=('SURF','LIG4',),
                               PHENOMENE='MECANIQUE',
                               MODELISATION='D_PLAN',),),);
 
 LN1=FORMULE(NOM_PARA=('X','Y'),VALE='Y-0.5');
 LN2=FORMULE(NOM_PARA=('X','Y'),VALE='Y-1.5');
-LN3=FORMULE(NOM_PARA=('X','Y'),VALE='Y-3.5');
+LN3=FORMULE(NOM_PARA=('X','Y'),VALE='Y-2.5');
+LN4=FORMULE(NOM_PARA=('X','Y'),VALE='Y-3.5');
 
 FISS1=DEFI_FISS_XFEM(MODELE=MODELEIN,
                      TYPE_DISCONTINUITE='INTERFACE',
@@ -52,12 +53,16 @@ FISS3=DEFI_FISS_XFEM(MODELE=MODELEIN,
                      TYPE_DISCONTINUITE='INTERFACE',
                      DEFI_FISS=_F(FONC_LN=LN3,),
                      INFO=1,);
+FISS4=DEFI_FISS_XFEM(MODELE=MODELEIN,
+                     TYPE_DISCONTINUITE='INTERFACE',
+                     DEFI_FISS=_F(FONC_LN=LN4,),
+                     INFO=1,);
 
 MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,
-                         FISSURE=(FISS1,FISS2,FISS3,),
+                         FISSURE=(FISS1,FISS2,FISS3,FISS4),
                          INFO=1,);
 
-E=1000.0E6
+E=100.0E6
 nu=0.0
 ACIER=DEFI_MATERIAU(ELAS=_F(E=E,
                             NU=nu,
@@ -68,49 +73,26 @@ CHAMPMAT=AFFE_MATERIAU(MAILLAGE=MAILLAG,
                        AFFE=_F(TOUT='OUI',
                                 MATER=ACIER,),);
 
+def pression(y) :
+   if y >=3.5 : return 40e6
+   if y < 3.5 and y >= 2.5 : return 30e6
+   if y < 2.5 and y >= 1.5 : return 20e6
+   if y < 1.5 and y >= 0.5 : return 10e6
+   if y < 0.5 : return 0
+
+PRESSION = FORMULE(VALE='pression(Y)',NOM_PARA='Y',);
+
 def depx(y) :
-   if y == 3 : return  0.5
-   return y/4
+   return y/5
 
 def depy(y) :
    return 0
 
-DEPL_X = FORMULE(VALE='depx(Y)',
-                  NOM_PARA=('Y',),);
-DEPL_Y = FORMULE(VALE='depy(X)',
-                  NOM_PARA=('X',),);
-         
 CH1=AFFE_CHAR_MECA_F(MODELE=MODELEK,
-                     DDL_IMPO=(_F(GROUP_MA=('LIG4',),DX=DEPL_X,DY=DEPL_Y,),),);
+                     PRES_REP=(_F(GROUP_MA='LIG4',PRES = PRESSION,),),);
 
 CH2=AFFE_CHAR_MECA(MODELE=MODELEK,
-                     DDL_IMPO=(_F(GROUP_MA=('LIG2',),DX=0,DY=0,H1X=0,H1Y=0,H2X=0,H2Y=0,),),
-                     LIAISON_DDL=(_F(NOEUD=('N1','N12','N1','N12','N12',),
-                                     DDL=('DX','DX','H1X','H1X','H2X',),
-                                     COEF_MULT=(1,1,-1,-1,-1),
-                                     COEF_IMPO=0,),
-                                  _F(NOEUD=('N1','N12','N1','N12','N12',),
-                                     DDL=('DX','DX','H1X','H1X','H2X',),
-                                     COEF_MULT=(1,1,1,1,-1),
-                                     COEF_IMPO=0.5,),
-                                  _F(NOEUD=('N11','N12','N11','N12','N12',),
-                                     DDL=('DX','DX','H1X','H2X','H1X',),
-                                     COEF_MULT=(1,1,-1,-1,1),
-                                     COEF_IMPO=0.5,),
-                                  _F(NOEUD=('N11','N12','N11','N12','N12',),
-                                     DDL=('DX','DX','H1X','H1X','H2X',),
-                                     COEF_MULT=(1,1,1,1,1),
-                                     COEF_IMPO=1,),
-                                  _F(NOEUD=('N10','N4','N10','N4',),
-                                     DDL=('DX','DX','H1X','H1X',),
-                                     COEF_MULT=(1,1,-1,-1),
-                                     COEF_IMPO=1,),
-                                  _F(NOEUD=('N10','N4','N10','N4',),
-                                     DDL=('DX','DX','H1X','H1X',),
-                                     COEF_MULT=(1,1,1,1),
-                                     COEF_IMPO=2,),           
-                                     ),
-                                        );
+                   DDL_IMPO=(_F(GROUP_MA='LIG2',DX=0,DY=0,H1X=0,H1Y=0,H2X=0,H2Y=0,),),);
 
 CHXFEM=AFFE_CHAR_MECA(MODELE=MODELEK,
                       LIAISON_XFEM='OUI',
@@ -140,21 +122,13 @@ MA_XFEM=POST_MAIL_XFEM(MODELE=MODELEK);
 
 
 MOD_VISU=AFFE_MODELE(MAILLAGE=MA_XFEM,
-                     AFFE=_F(TOUT='OUI',
+                     AFFE=_F(GROUP_MA='SURF',
                      PHENOMENE='MECANIQUE',
                      MODELISATION='D_PLAN',
                 ),)
 
 RES_XFEM=POST_CHAM_XFEM(MODELE_VISU  = MOD_VISU,
                         RESULTAT        = UTOT1,)
-
-
-
-#IMPR_RESU(FORMAT='GMSH',RESU=(_F(RESULTAT=RES_XFEM,
-#                                 NOM_CHAM='DEPL',
-#                                 TYPE_CHAM='VECT_2D',
-#                                 NOM_CMP=('DX','DY',),),),);
-
 
 TABDEP=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLACEMENT SUR LES LEVRES',
                                RESULTAT=RES_XFEM,
@@ -164,14 +138,11 @@ TABDEP=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLACEMENT SUR LES LEVRES',
                                TOUT_CMP='OUI',
                                OPERATION='EXTRACTION',),);
 
-
 TABDEP = CALC_TABLE(reuse = TABDEP,
                      TABLE = TABDEP,
                      ACTION=_F(OPERATION='TRI',
                                NOM_PARA='COOR_Y',
                                ORDRE='CROISSANT',),);
-
-#IMPR_TABLE(TABLE=TABDEP)
 
 # FILTRE SUR LES NOMS DES NOEUDS POUR NE GARDER QUE LES NP (COTE MAITRE)
 
@@ -219,14 +190,14 @@ TEST_TABLE(TABLE=TABDEPP,
                  VALE=0.0,
                  REFERENCE ='ANALYTIQUE',
                  CRITERE='ABSOLU',
-                 PRECISION=1E-14,);
+                 PRECISION=1E-13,);
 TEST_TABLE(TABLE=TABDEPP,
                  NOM_PARA='DY',
                  TYPE_TEST='SOMM_ABS',
                  VALE=0.0,
                  REFERENCE ='ANALYTIQUE',
                  CRITERE='ABSOLU',
-                 PRECISION=1E-14,);
+                 PRECISION=1E-13,);
 
 TEST_TABLE(TABLE=TABDEPM,
                  NOM_PARA='DX-DXM',
@@ -234,7 +205,7 @@ TEST_TABLE(TABLE=TABDEPM,
                  VALE=0.0,
                  REFERENCE ='ANALYTIQUE',
                  CRITERE='ABSOLU',
-                 PRECISION=1E-14,);
+                 PRECISION=1E-13,);
 
 TEST_TABLE(TABLE=TABDEPM,
                  NOM_PARA='DY',
@@ -242,6 +213,6 @@ TEST_TABLE(TABLE=TABDEPM,
                  VALE=0.0,
                  REFERENCE ='ANALYTIQUE',
                  CRITERE='ABSOLU',
-                 PRECISION=1E-14,);
+                 PRECISION=1E-13,);
 
 FIN();                 

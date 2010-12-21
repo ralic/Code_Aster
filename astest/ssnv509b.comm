@@ -1,4 +1,4 @@
-# MODIF  DATE 02/11/2010   AUTEUR TARDIEU N.TARDIEU 
+# MODIF  DATE 21/12/2010   AUTEUR MASSIN P.MASSIN 
 # TITRE CHAINETTE EN CONTACT FROTTANT AVEC X-FEM QUADRATIQUES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -148,8 +148,8 @@ UTOT1=STAT_NON_LINE(MODELE=MODELEK,
                                 INST_FIN=1.0,),
                    CONVERGENCE=(_F(ARRET='OUI',
                                   RESI_GLOB_RELA=1E-9)),
-                   SOLVEUR=_F(METHODE='MUMPS',PCENT_PIVOT=10,
-                              NPREC=-1),
+                   SOLVEUR=_F(METHODE='MUMPS',
+                                          NPREC=-1,),
                    NEWTON=_F(REAC_ITER=1,),
                    ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA',),
                    INFO=1,);
@@ -254,14 +254,14 @@ TEST_RESU(RESU=(_F(  RESULTAT=RES_XFEM,NUME_ORDRE=1,
                      NOM_CHAM='DEPL',NOM_CMP='DX',
                      TYPE_TEST='SOMM_ABS',
                      CRITERE = 'ABSOLU',
-                     VALE = 6.7383684157384E-08,PRECISION=1.E-12,
+                     VALE = 6.7383684157384E-08,PRECISION=1.E-6,
                      REFERENCE = 'NON_REGRESSION',
                      VERSION = '10.2.12'),
                 _F(  RESULTAT=RES_XFEM,NUME_ORDRE=1,
                      NOM_CHAM='DEPL',NOM_CMP='DY',
                      TYPE_TEST='SOMM_ABS',
                      CRITERE = 'ABSOLU',
-                     VALE = 1.2418983749083E-03,PRECISION=1.E-12,
+                     VALE = 1.2418983749083E-03,PRECISION=1.E-6,
                      REFERENCE = 'NON_REGRESSION',
                      VERSION = '10.2.12'),),)
 
@@ -270,16 +270,16 @@ TEST_RESU(RESU=(_F(  RESULTAT=RES_XFEM,NUME_ORDRE=1,
                      NOM_CHAM='DEPL',NOM_CMP='LAGS_C',
                      TYPE_TEST='SOMM_ABS',
                      CRITERE = 'RELATIF',
-                     VALE = 11.611287715085,PRECISION=7.E-12,
+                     VALE = 11.580142517126,PRECISION=1.E-6,
                      REFERENCE = 'NON_REGRESSION',
-                     VERSION = '10.2.12'),
+                     VERSION = '10.2.30'),
                 _F(  RESULTAT=RES_XFEM,NUME_ORDRE=1,
                      NOM_CHAM='DEPL',NOM_CMP='LAGS_F1',
                      TYPE_TEST='SOMM_ABS',
                      CRITERE = 'RELATIF',
-                     VALE = 22.445258408545,PRECISION=1.E-12,
+                     VALE = 22.445365146783,PRECISION=1.E-6,
                      REFERENCE = 'NON_REGRESSION',
-                     VERSION = '10.2.12'),),)
+                     VERSION = '10.2.30'),),)
 
 
 IMPR_TABLE(TABLE=LAG2,

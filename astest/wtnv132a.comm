@@ -1,9 +1,9 @@
-# MODIF  DATE 30/08/2010   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 20/12/2010   AUTEUR MEUNIER S.MEUNIER 
 # TITRE CONSTRUCTION PAR COUCHES EN HYDROMECANIQUE DRAINE AVEC LA LOI DE HUJEUX
 # wtnv132a.para = tps_job 1000 mem_job 512Mo mem_aster 25 ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -172,8 +172,8 @@ PES=AFFE_CHAR_MECA(MODELE=MOD[nbcouche-2],
                    PESANTEUR=_F(GRAVITE=9.81,
                                 DIRECTION=(0.0,0.0,-1.0,),),);
 
-CHPAR=AFFE_CHAR_MECA(MODELE=MOD[nbcouche-2],
-                     DDL_IMPO=_F(GROUP_MA='BAS', DZ=0.0),);
+CHPAR=AFFE_CHAR_CINE(MODELE=MOD[nbcouche-2],
+                     MECA_IMPO=_F(GROUP_MA='BAS', DZ=0.0),);
 
 TEMPS=DEFI_LIST_REEL(DEBUT=0.0,
                      INTERVALLE=(_F(JUSQU_A=2000000.,NOMBRE=20,),
@@ -195,17 +195,17 @@ TEMPS=DEFI_LIST_REEL(DEBUT=0.0,
 # Consditions aux limites en deplacement pour les premieres couches
 n_couche=2
 
-CHLAT=AFFE_CHAR_MECA(MODELE=MOD[0],
-                     DDL_IMPO=(_F(GROUP_MA=('DR1','GA1'), DX=0.0),
+CHLAT=AFFE_CHAR_CINE(MODELE=MOD[0],
+                     MECA_IMPO=(_F(GROUP_MA=('DR1','GA1'), DX=0.0),
                                _F(GROUP_MA=('DE1','AR1'), DY=0.0),),);
 
 # Conditions hydrauliques
-PHAUT=AFFE_CHAR_MECA(MODELE=MOD[0],
-                     DDL_IMPO=_F(GROUP_MA='HA1',
+PHAUT=AFFE_CHAR_CINE(MODELE=MOD[0],
+                     MECA_IMPO=_F(GROUP_MA='HA1',
                                  PRE1=0.0));
 
-PBAS=AFFE_CHAR_MECA(MODELE=MOD[0],
-                    DDL_IMPO=_F(GROUP_MA='HA0',
+PBAS=AFFE_CHAR_CINE(MODELE=MOD[0],
+                    MECA_IMPO=_F(GROUP_MA='HA0',
                                 PRE1=19620.0),);
 
 SIEF=CREA_CHAMP(INFO=1,
@@ -459,17 +459,17 @@ for n in range(1,nbcouche-1):
                                        GROUP_MA =list_group_ma[:n+1]),);
 
     # Deplacements lateraux nuls
-    CHLAT=AFFE_CHAR_MECA(INFO=1,
+    CHLAT=AFFE_CHAR_CINE(INFO=1,
                          MODELE=MOD[n],
-                         DDL_IMPO=(_F(GROUP_MA=('GA'+str(n+1),'DR'+str(n+1)),
+                         MECA_IMPO=(_F(GROUP_MA=('GA'+str(n+1),'DR'+str(n+1)),
                                       DX=0.0),
                                    _F(GROUP_MA=('DE'+str(n+1),'AR'+str(n+1)),
                                       DY=0.0,),),);
 
     # Pression hydraulique nulle en haut de la couche posee (numero n)
-    PHAUT=AFFE_CHAR_MECA(INFO=1,
+    PHAUT=AFFE_CHAR_CINE(INFO=1,
                          MODELE=MOD[n],
-                         DDL_IMPO=_F(GROUP_MA='HA'+str(n+1),
+                         MECA_IMPO=_F(GROUP_MA='HA'+str(n+1),
                                      PRE1=0.0,),);
 
     SIEF=CREA_CHAMP(INFO=1,

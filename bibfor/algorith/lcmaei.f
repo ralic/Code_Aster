@@ -2,7 +2,8 @@
      &            NBVAL,VALRES,NMAT,HSR,IFA,NOMFAM,NBSYS,NBHSR)
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 14/12/2010   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 20/12/2010   AUTEUR PELLET J.PELLET 
+C TOLE CRS_1404
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -46,44 +47,44 @@ C     ----------------------------------------------------------------
 C     ----------------------------------------------------------------
 C
       NBVAL=0
-      
+
       IF(NECOUL.EQ.'MONO_DD_KR') GOTO 9999
-      
-      IF (NECRIS.EQ.'MONO_ISOT1') THEN                               
-          NBVAL=3                                                    
-          NOMRES(1)='R_0'                                            
-          NOMRES(2)='Q'                                              
-          NOMRES(3)='B'                                              
-          CALL RCVALB (FAMI,KPG,KSP,POUM,IMAT,NMATER, NECRIS,0,' ',  
-     &                0.D0, 3,NOMRES, VALLUE,CODRET,'FM')            
+
+      IF (NECRIS.EQ.'MONO_ISOT1') THEN
+          NBVAL=3
+          NOMRES(1)='R_0'
+          NOMRES(2)='Q'
+          NOMRES(3)='B'
+          CALL RCVALB (FAMI,KPG,KSP,POUM,IMAT,NMATER, NECRIS,0,' ',
+     &                0.D0, 3,NOMRES, VALLUE,CODRET,'FM')
           CALL LCEQVN ( NBVAL , VALLUE  , VALRES(2) )
           NBVAL=NBVAL+1
 C         PAR CONVENTION ECRO_ISOT1 A LE NUMERO 1
           VALRES(1)=1
-          
-      ELSEIF (NECRIS.EQ.'MONO_ISOT2') THEN                           
-          NBVAL=5                                                    
-          NOMRES(1)='R_0'                                            
-          NOMRES(2)='Q1'                                             
-          NOMRES(3)='B1'                                             
-          NOMRES(4)='Q2'                                             
-          NOMRES(5)='B2'                                             
-          CALL RCVALB (FAMI,KPG,KSP,POUM,IMAT,NMATER, NECRIS,0,' ',  
+
+      ELSEIF (NECRIS.EQ.'MONO_ISOT2') THEN
+          NBVAL=5
+          NOMRES(1)='R_0'
+          NOMRES(2)='Q1'
+          NOMRES(3)='B1'
+          NOMRES(4)='Q2'
+          NOMRES(5)='B2'
+          CALL RCVALB (FAMI,KPG,KSP,POUM,IMAT,NMATER, NECRIS,0,' ',
      &                 0.D0,NBVAL,NOMRES, VALLUE,CODRET,'FM')
-     
+
           CALL LCEQVN ( NBVAL , VALLUE  , VALRES(2) )
           NBVAL=NBVAL+1
 C         PAR CONVENTION ECRO_ISOT2 A LE NUMERO 2
           VALRES(1)=2
-          
-      ELSEIF (NECRIS(1:7).EQ.'MONO_DD') THEN                           
-          NBVAL=3                                                    
-          NOMRES(1)='ALPHA'                                            
-          NOMRES(2)='BETA'                                             
+
+      ELSEIF (NECRIS(1:7).EQ.'MONO_DD') THEN
+          NBVAL=3
+          NOMRES(1)='ALPHA'
+          NOMRES(2)='BETA'
           NOMRES(3)='RHO_REF'
-          CALL RCVALB (FAMI,KPG,KSP,POUM,IMAT,NMATER, NECRIS,0,' ',  
-     &                 0.D0,NBVAL,NOMRES, VALLUE,CODRET,'FM')     
-C         CALCUL ET STOCKAGE DE MU          
+          CALL RCVALB (FAMI,KPG,KSP,POUM,IMAT,NMATER, NECRIS,0,' ',
+     &                 0.D0,NBVAL,NOMRES, VALLUE,CODRET,'FM')
+C         CALCUL ET STOCKAGE DE MU
           CALL RCCOMA(IMAT,'ELAS',PHENOM,CODRET)
 
           IF (PHENOM.EQ.'ELAS') THEN
@@ -97,23 +98,23 @@ C         CALCUL ET STOCKAGE DE MU
      &                   1,'G_LN',MU,CODRET,'FM')
           ENDIF
           VALLUE(4)=MU
-          NBVAL=4                                                    
+          NBVAL=4
           CALL LCEQVN ( NBVAL , VALLUE  , VALRES(2) )
           NBVAL=NBVAL+1
 C         PAR CONVENTION ECRO_DD_CFC A LE NUMERO 3
           VALRES(1)=3
-          
-      ENDIF                                                          
+
+      ENDIF
 
 C     DEFINITION DE LA MATRICE D'INTERACTION
 C     SOIT UN SEUL COEF H, SOIT H1,...H4,H5,H6
       NOMRES(1)='H'
-      
+
       CALL RCVALB (FAMI,KPG,KSP,POUM,IMAT,NMATER, NECRIS,0,' ',0.D0,
      &             1, NOMRES, H,CODRET,' ')
       IF (CODRET(1).EQ.'OK') THEN
-         NBCOEF=1                          
-         VALH(1)=H                                        
+         NBCOEF=1
+         VALH(1)=H
       ELSE
          NOMRES(1)='H1'
          NOMRES(2)='H2'
@@ -129,16 +130,16 @@ C        IL FAUT AU MOINS H1 A H4
                CALL ASSERT(.FALSE.)
             ENDIF
  1       CONTINUE
-         
-         IF (CODRET(5).EQ.'OK') THEN 
+
+         IF (CODRET(5).EQ.'OK') THEN
             IF (CODRET(6).EQ.'OK') THEN
                NBCOEF=6
             ELSE
                NBCOEF=5
-            ENDIF 
+            ENDIF
          ELSE
             NBCOEF=4
-         ENDIF 
+         ENDIF
       ENDIF
 
       CALL LCMHSR (NECOUL,NECRIS,NBSYS, NBCOEF, VALH, HSRI)

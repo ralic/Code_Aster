@@ -1,7 +1,7 @@
-%& MODIF TYPELEM  DATE 28/09/2010   AUTEUR MASSIN P.MASSIN 
+%& MODIF TYPELEM  DATE 21/12/2010   AUTEUR MASSIN P.MASSIN 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
-% COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+% COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
 % THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 % IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 % THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -40,7 +40,7 @@ MODE_LOCAL__
     EPRESNO  = PRES_R   ELNO__ IDEN__  (PRES     CISA    )
     CPRES_R  = PRES_R   ELEM__         (PRES     CISA    )
     N1NEUT_R = NEUT_R   ELNO__ IDEN__  (X1       )
-    E6NEUTI = NEUT_I    ELEM__         (X[6])
+    E2NEUTI = NEUT_I    ELEM__         (X[2])
     E8NEUTI = NEUT_I    ELEM__         (X[8])
     E18NEUI = NEUT_I    ELEM__         (X[18])
     E36NEUI = NEUT_I    ELEM__         (X[36])
@@ -58,23 +58,23 @@ MATRICE__
 
 OPTION__
     CHAR_MECA_FF1D2D    36    IN__   CFORCEF  PFF1D2D  NGEOMER  PGEOMER  CTEMPSR  PTEMPSR  E9NEUTR  PPINTTO
-                                     E36NEUI  PCNSETO  E6NEUTI  PHEAVTO  E8NEUTI  PLONCHA  N1NEUT_R PLSN   
+                                     E36NEUI  PCNSETO  E2NEUTI  PHEAVTO  E8NEUTI  PLONCHA  N1NEUT_R PLSN   
                                      N1NEUT_R PLST     STANO_I  PSTANO   E22NEUTR PPMILTO
                               OUT__  MVECTUR  PVECTUR
     CHAR_MECA_FR1D2D    36    IN__   NFORCER  PFR1D2D  NGEOMER  PGEOMER  E9NEUTR  PPINTTO
-                                     E36NEUI  PCNSETO  E6NEUTI  PHEAVTO  E8NEUTI  PLONCHA  N1NEUT_R PLSN   
+                                     E36NEUI  PCNSETO  E2NEUTI  PHEAVTO  E8NEUTI  PLONCHA  N1NEUT_R PLSN   
                                      N1NEUT_R PLST     STANO_I  PSTANO   E22NEUTR PPMILTO
                               OUT__  MVECTUR  PVECTUR
     CHAR_MECA_PRES_F    36    IN__   NGEOMER  PGEOMER  CPRESSF  PPRESSF  CTEMPSR  PTEMPSR  E9NEUTR  PPINTTO
-                                     E36NEUI  PCNSETO  E6NEUTI  PHEAVTO  E8NEUTI  PLONCHA  N1NEUT_R PLSN   
+                                     E36NEUI  PCNSETO  E2NEUTI  PHEAVTO  E8NEUTI  PLONCHA  N1NEUT_R PLSN   
                                      N1NEUT_R PLST     STANO_I  PSTANO   E22NEUTR PPMILTO
                               OUT__  MVECTUR  PVECTUR
     CHAR_MECA_PRES_R    36    IN__   NGEOMER  PGEOMER  EPRESNO  PPRESSR  E9NEUTR  PPINTTO  E36NEUI  PCNSETO
-                                     E6NEUTI  PHEAVTO  E8NEUTI  PLONCHA  N1NEUT_R PLSN     N1NEUT_R PLST
+                                     E2NEUTI  PHEAVTO  E8NEUTI  PLONCHA  N1NEUT_R PLSN     N1NEUT_R PLST
                                      STANO_I  PSTANO   E22NEUTR PPMILTO
                               OUT__  MVECTUR  PVECTUR
     TOPOSE              514   IN__   NGEOMER  PGEOMER  N1NEUT_R PLEVSET
-                              OUT__  E9NEUTR  PPINTTO  E36NEUI  PCNSETO   E6NEUTI  PHEAVTO  E8NEUTI  PLONCHA
+                              OUT__  E9NEUTR  PPINTTO  E36NEUI  PCNSETO   E2NEUTI  PHEAVTO  E8NEUTI  PLONCHA
                                      E10NEUTR PAINTER  E22NEUTR PPMILTO
     TOU_INI_ELNO        99    IN__   NGEOMER  PGEOMER
                               OUT__  EPRESNO  PPRES_R

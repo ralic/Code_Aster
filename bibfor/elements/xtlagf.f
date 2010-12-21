@@ -1,11 +1,11 @@
-      SUBROUTINE XTLAGF(TYPMAI,NDIM  ,NNC   ,NN    ,NNS    ,
-     &                  NDDLS ,NFACE ,CFACE ,JDEPDE,JPCAI  ,
-     &                  FFC   ,DLAGRF)
+      SUBROUTINE XTLAGF(TYPMAI,NDIM  ,NNC   ,JNN        ,
+     &                  NDDLS,NFACE ,CFACE ,JDEPDE,JPCAI  ,
+     &                  FFC   ,NCONTA,DLAGRF)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
+C MODIF ELEMENTS  DATE 21/12/2010   AUTEUR MASSIN P.MASSIN 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -23,7 +23,7 @@ C ======================================================================
 C RESPONSABLE ABBAS M.ABBAS
 C
       IMPLICIT NONE
-      INTEGER      NDIM,NNC,NN,NNS,NDDLS
+      INTEGER      NDIM,NNC,JNN(3),JDDL(2),NCONTA
       INTEGER      JDEPDE,JPCAI
       REAL*8       FFC(9)
       CHARACTER*8  TYPMAI
@@ -76,7 +76,7 @@ C
 C
 C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
 C
-      INTEGER IDIM,INO
+      INTEGER IDIM,INO,NN,NNS,NDDLS
       INTEGER IN,XOULA,PL
 C
 C ----------------------------------------------------------------------
@@ -84,6 +84,9 @@ C
       CALL JEMARQ()
 C
 C --- INITIALISATIONS
+C
+      NN = JNN(1)
+      NNS= JNN(2)
 C
       DLAGRF(1) = 0.D0
       DLAGRF(2) = 0.D0
@@ -93,7 +96,7 @@ C
       DO 221 IDIM=2,NDIM
         DO 231 INO = 1,NNC
           IN    = XOULA(CFACE ,NFACE ,INO   ,JPCAI ,
-     &                  TYPMAI)
+     &                  TYPMAI,NCONTA)
           CALL XPLMA2(NDIM  ,NN    ,NNS   ,NDDLS ,IN    ,PL    )
           DLAGRF(IDIM-1) = DLAGRF(IDIM-1)+
      &          FFC(INO)*ZR(JDEPDE-1+PL+IDIM-1)

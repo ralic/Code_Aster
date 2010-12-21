@@ -1,8 +1,8 @@
-#@ MODIF sd_xfem SD  DATE 28/09/2010   AUTEUR MASSIN P.MASSIN 
+#@ MODIF sd_xfem SD  DATE 21/12/2010   AUTEUR MASSIN P.MASSIN 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -48,6 +48,8 @@ class sd_fiss_xfem(AsBase):
     BASEFOND        = Facultatif(AsVR())
     FONDMULT        = Facultatif(AsVI())
     CARAFOND        = Facultatif(AsVR(lonmax=12,))
+    JONFISS = Facultatif(AsVK8())
+    JONCOEF = Facultatif(AsVI())
 
 # I.2) objets relatifs a l'enrichissement
 

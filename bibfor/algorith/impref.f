@@ -1,9 +1,9 @@
       SUBROUTINE IMPREF(ICOD  ,SDSUIV,TITRE ,FORMA )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 12/01/2010   AUTEUR GRANET S.GRANET 
+C MODIF ALGORITH  DATE 21/12/2010   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -18,13 +18,12 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
+C RESPONSABLE ABBAS M.ABBAS
 C
       IMPLICIT NONE
       INTEGER      ICOD
       CHARACTER*24 SDSUIV
-      INTEGER      ZTIT,ZDEF
-      PARAMETER    (ZTIT=3,ZDEF=33)
-      CHARACTER*16 TITRE(ZTIT)
+      CHARACTER*16 TITRE(3)
       INTEGER      FORMA
 C
 C ----------------------------------------------------------------------
@@ -42,16 +41,35 @@ C
 C IN  ICOD   : CODE DE LA COLONNE
 C IN  SDSUIV : NOM DE LA SD POUR SUIVI DDL
 C OUT TITRE  : TITRES STANDARDS DE LA COLONNE
-C OUT FORMA  : TYPE DE LA COLONNE
+C OUT FORCOL : TYPE DE LA COLONNE
 C              1: ENTIER
 C              2: REEL
 C              3: CHAINE
 C
-C ----------------------------------------------------------------------
+C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
 C
-      INTEGER       J,ISUIV
-      CHARACTER*16  TITCOL(ZTIT,ZDEF)
-      INTEGER       FORCOL(ZDEF)
+      INTEGER      ZI
+      COMMON  / IVARJE / ZI(1)
+      REAL*8       ZR
+      COMMON  / RVARJE / ZR(1)
+      COMPLEX*16   ZC
+      COMMON  / CVARJE / ZC(1)
+      LOGICAL      ZL
+      COMMON  / LVARJE / ZL(1)
+      CHARACTER*8  ZK8
+      CHARACTER*16    ZK16
+      CHARACTER*24        ZK24
+      CHARACTER*32            ZK32
+      CHARACTER*80                ZK80
+      COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
+C
+C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
+C 
+      INTEGER      ZDEF
+      PARAMETER    (ZDEF=32)
+      INTEGER      J,ISUIV
+      CHARACTER*16 TITCOL(3,ZDEF)
+      INTEGER      FORCOL(ZDEF)
 
 
       DATA (TITCOL(J,1),J=1,3)/ '   ITERATIONS   ',
@@ -120,19 +138,19 @@ C
       DATA FORCOL(11) /2/
 
 
-      DATA (TITCOL(J,12),J=1,3)/ '  ECART ABSOLU  ',
-     &                           '   LAGRANGIEN   ',
-     &                           ' RESI_DUAL_ABSO '/
+      DATA (TITCOL(J,12),J=1,3)/ '                ',
+     &                           '                ',
+     &                           '                '/
       DATA FORCOL(12) /2/
 
 
-      DATA (TITCOL(J,13),J=1,3)/ '   INCREMENT    ',
-     &                           '   LAGRANGIEN   ',
-     &                           ' RESI_PRIM_ABSO '/
+      DATA (TITCOL(J,13),J=1,3)/ '                ',
+     &                           '                ',
+     &                           '                '/
       DATA FORCOL(13) /2/
 
-      DATA (TITCOL(J,14),J=1,3)/ '   ITERATIONS   ',
-     &                           '   LAGRANGIEN   ',
+      DATA (TITCOL(J,14),J=1,3)/ '                ',
+     &                           '                ',
      &                           '                '/
       DATA FORCOL(14) /1/
 
@@ -155,118 +173,111 @@ C
       DATA FORCOL(17) /1/
 
 
-      DATA (TITCOL(J,18),J=1,3)/ '    REAC GEOM   ',
-     &                           '    MAXIMUM     ',
+      DATA (TITCOL(J,18),J=1,3)/ '                ',
+     &                           '                ',
      &                           '                '/
       DATA FORCOL(18) /2/
 
 
-      DATA (TITCOL(J,19),J=1,3)/ '    REAC GEOM   ',
-     &                           '    MAXIMUM     ',
-     &                           '    AU POINT    '/
+      DATA (TITCOL(J,19),J=1,3)/ '                ',
+     &                           '                ',
+     &                           '                '/
       DATA FORCOL(19) /3/
 
 
       DATA (TITCOL(J,20),J=1,3)/ '     CONTACT    ',
-     &                           '                ',
-     &                           '   ITER. GEOM.  '/
+     &                           '    BCL. GEOM.  ',
+     &                           '   ITERATIONS   '/
       DATA FORCOL(20) /1/
 
 
       DATA (TITCOL(J,21),J=1,3)/ '     CONTACT    ',
-     &                           '    CONTINU     ',
-     &                           '   ITER. FROT.  '/
+     &                           '    BCL. FROT.  ',
+     &                           '   ITERATIONS   '/
       DATA FORCOL(21) /1/
 
 
       DATA (TITCOL(J,22),J=1,3)/ '     CONTACT    ',
-     &                           '    CONTINU     ',
-     &                           '   ITER. CONT.  '/
+     &                           '    BCL. CONT.  ',
+     &                           '   ITERATIONS   '/
       DATA FORCOL(22) /1/
 
 
-      DATA (TITCOL(J,23),J=1,3)/ '&1              ',
-     &                           '                ',
+      DATA (TITCOL(J,23),J=1,3)/ '   SUIVI DDL    ',
+     &                           '      01        ',
      &                           '                '/
       DATA FORCOL(23) /2/
 
 
-      DATA (TITCOL(J,24),J=1,3)/ '&2              ',
-     &'                ',
-     &'                '/
+      DATA (TITCOL(J,24),J=1,3)/ '   SUIVI DDL    ',
+     &                           '      02        ',
+     &                           '                '/
       DATA FORCOL(24) /2/
 
 
-      DATA (TITCOL(J,25),J=1,3)/ '&3              ',
-     &'                ',
-     &'                '/
+      DATA (TITCOL(J,25),J=1,3)/ '   SUIVI DDL    ',
+     &                           '      03        ',
+     &                           '                '/     
       DATA FORCOL(25) /2/
 
 
-      DATA (TITCOL(J,26),J=1,3)/ '&4              ',
-     &'                ',
-     &'                '/
+      DATA (TITCOL(J,26),J=1,3)/ '   SUIVI DDL    ',
+     &                           '      04        ',
+     &                           '                '/     
       DATA FORCOL(26) /2/
 
 
-      DATA (TITCOL(J,27),J=1,3)/ '   ITERATIONS   ',
-     &                           '     FETI       ',
-     &                           '                '/
+      DATA (TITCOL(J,27),J=1,3)/ '     FETI       ',
+     &                           '                ',
+     &                           '   ITERATIONS   '/
       DATA FORCOL(27) /1/
 
 
       DATA (TITCOL(J,28),J=1,3)/ '     CONTACT    ',
-     &                           '    CONTINU     ',
-     &                           ' BCL. MAX. VAL. '/
+     &                           '       BCL.     ',
+     &                           '    MAX. VAL.   '/
       DATA FORCOL(28) /2/
 
 
       DATA (TITCOL(J,29),J=1,3)/ '     CONTACT    ',
-     &                           '    CONTINU     ',
-     &                           ' BCL. MAX. LIEU '/
+     &                           '       BCL.     ',
+     &                           '    MAX. LIEU   '/
       DATA FORCOL(29) /3/
 
       DATA (TITCOL(J,30),J=1,3)/ '     RESIDU     ',
-     &                                     '     RELATIF    ',
-     &                                     ' RESI_COMP_RELA '/
+     &                           '     RELATIF    ',
+     &                           ' RESI_COMP_RELA '/
       DATA FORCOL(30) /2/
 
-      DATA (TITCOL(J,31),J=1,3)/ 'RESIDU RELA COMP ',
+      DATA (TITCOL(J,31),J=1,3)/ 'RESIDU RELA COMP',
      &                           '    MAXIMUM     ',
      &                           '    AU POINT    '/
-
       DATA FORCOL(31) /3/
 
-      DATA (TITCOL(J,32),J=1,3)/ '&&&&&&&&&&&&&&&&',
-     &'                ',
-     &'                '/
+      DATA (TITCOL(J,32),J=1,3)/ '                ',
+     &                           '                ',
+     &                           '                '/
       DATA FORCOL(32) /2/
-
 C
 C ----------------------------------------------------------------------
+C 
+      CALL JEMARQ()  
 C
-
-      IF (ZTIT.NE.3) THEN
-        CALL ASSERT(.FALSE.)
-      ENDIF
-      IF (ZDEF.NE.33) THEN
-       CALL ASSERT(.FALSE.)
-      ENDIF
       IF ((ICOD.LE.0).OR.(ICOD.GT.32)) THEN
         WRITE(6,*) 'ICOD:',ICOD
         CALL ASSERT(.FALSE.)
       ENDIF
 
-      FORMA    = FORCOL(ICOD)
-
+      FORMA   = FORCOL(ICOD)
 
       IF ((ICOD.GE.23).AND.(ICOD.LE.26)) THEN
-        ISUIV = (ICOD-22)
-        CALL SUIIMP(SDSUIV,ISUIV ,ZTIT  ,TITRE )
+        ISUIV  = (ICOD-22)
+        CALL SUIIMP(SDSUIV,ISUIV ,3   ,TITRE )
       ELSE
-        DO 10 J = 1,ZTIT
-          TITRE(J) = TITCOL(J,ICOD)
-  10    CONTINUE
+        TITRE(1) = TITCOL(1,ICOD)
+        TITRE(2) = TITCOL(2,ICOD)
+        TITRE(3) = TITCOL(3,ICOD)
       ENDIF
 
+      CALL JEDEMA()
       END

@@ -1,4 +1,4 @@
-# MODIF  DATE 13/12/2010   AUTEUR DESOZA T.DESOZA 
+# MODIF  DATE 21/12/2010   AUTEUR ABBAS M.ABBAS 
 # TITRE VALIDATION DE POU_D_TGM
 # ssnv505h.para = tps_job 550 mem_job 256Mo ncpus 1 liste_test V
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -158,7 +158,7 @@ ULAG=STAT_NON_LINE(MODELE=MODE,
                           FONC_MULT=RAMPE,),
                       ),
                 CONTACT  = CHLAG,
-                SOLVEUR=_F(RENUM='MDA'),
+                SOLVEUR=_F(RENUM='MDA',SYME='OUI',),
                 COMP_INCR=_F(RELATION='MULTIFIBRE'),
                 INCREMENT=_F(LIST_INST=L_INST,
                              ),
@@ -246,9 +246,6 @@ TEST_TABLE(TABLE=T_REA_LA,
 
 CHCON= DEFI_CONTACT(MODELE         = MODE,
                     FORMULATION    = 'CONTINUE',
-                    REAC_GEOM      = 'CONTROLE',
-                    NB_ITER_GEOM   = 4,
-                    #ITER_GEOM_MAXI = 4,
                     ITER_CONT_MAXI = 10,
                     ZONE =(
                            _F(
@@ -337,10 +334,10 @@ TEST_TABLE(TABLE=T_REA_CO,
            NOM_PARA='DY',
            FILTRE=_F(NOM_PARA='INST',
                      VALE=0.8),
-           VALE=2087.4485011165,
+           VALE=2085.1589042336,
            PRECISION=0.1E-2,
            REFERENCE='NON_REGRESSION',
-           VERSION='10.3.1',);
+           VERSION='10.3.2',);
 
 TEST_TABLE(TABLE=T_REA_CO,
            NOM_PARA='DY',
@@ -357,8 +354,6 @@ TEST_TABLE(TABLE=T_REA_CO,
 
 CHSIG= DEFI_CONTACT(MODELE         = MODE,
                     FORMULATION    = 'CONTINUE',
-                    REAC_GEOM      = 'CONTROLE',
-                    NB_ITER_GEOM   = 4,
                     ZONE =(
                            _F(
                               GROUP_MA_MAIT  = 'POU1',
@@ -445,10 +440,10 @@ TEST_TABLE(TABLE=T_REA_SI,
            NOM_PARA='DY',
            FILTRE=_F(NOM_PARA='INST',
                      VALE=0.8),
-           VALE=2.08781E3,
+           VALE=2085.1589042336,
            PRECISION=0.1E-2,
            REFERENCE='NON_REGRESSION',
-           VERSION='10.1.4',);
+           VERSION='10.3.2',);
 
 TEST_TABLE(TABLE=T_REA_SI,
            NOM_PARA='DY',

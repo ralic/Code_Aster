@@ -1,6 +1,6 @@
       FUNCTION MAXELE(TMAX,ITYPE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 14/12/2010   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 20/12/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,4 +22,5 @@ C ======================================================================
       INTEGER      MAXELE,ITYPE
 
       CALL ASSERT(.FALSE.)
+      MAXELE=0
       END

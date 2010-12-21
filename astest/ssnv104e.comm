@@ -1,4 +1,4 @@
-# MODIF  DATE 20/04/2010   AUTEUR DESOZA T.DESOZA 
+# MODIF  DATE 21/12/2010   AUTEUR ABBAS M.ABBAS 
 # RESPONSABLE ABBAS M.ABBAS
 # AUTEUR : M. ZARROUG
 # DATE   : 18/12/2000
@@ -6,7 +6,7 @@
 # ssnv104e.para = tps_job 120 mem_job 100Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
@@ -50,7 +50,6 @@ CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
 
 CHA1 = DEFI_CONTACT(MODELE         = MO,
                     FORMULATION    = 'CONTINUE',
-                    REAC_GEOM      = 'CONTROLE',
                     ITER_CONT_MAXI = 20, 
                     ZONE =(
                            _F(
@@ -111,42 +110,13 @@ RESU=STAT_NON_LINE(MODELE=MO,
                                    NOM_CMP='SIXX',
                                    VALE_MAX='OUI',
                                    SUIVI_DDL='OUI')),      
-                   AFFICHAGE=(_F(NOM_COLONNE='STANDARD',
-                                 INFO_RESIDU='OUI'),
-                              _F(NOM_COLONNE='RELI_ITER')),
+                   AFFICHAGE=(_F(INFO_RESIDU='OUI',
+                                 UNITE=37,),),
                    NEWTON=_F(MATRICE='TANGENTE',
                              REAC_ITER=1),
                    CONVERGENCE=_F(RESI_GLOB_MAXI=1.));
 
 
-RESU2=STAT_NON_LINE(MODELE=MO,
-                   CHAM_MATER=CHMAT,
-                   EXCIT=(
-                          _F(CHARGE=CHA2,
-                             FONC_MULT=RAMPE)),
-                   CONTACT  = CHA1, 
-                   COMP_ELAS=_F(RELATION='ELAS',),
-                   INCREMENT=_F(LIST_INST=L_INST,),
-                   AFFICHAGE=_F(NOM_COLONNE='MINIMUM',),
-                   NEWTON=_F(MATRICE='TANGENTE',
-                             REAC_ITER=1),
-                   CONVERGENCE=_F(RESI_GLOB_MAXI=1.));
-
-RESU3=STAT_NON_LINE(MODELE=MO,
-                   CHAM_MATER=CHMAT,
-                   EXCIT=(
-                          _F(CHARGE=CHA2,
-                             FONC_MULT=RAMPE)),
-                   CONTACT  = CHA1, 
-                   COMP_ELAS=_F(RELATION='ELAS',),
-                   INCREMENT=_F(LIST_INST=L_INST,),
-                   AFFICHAGE=(_F(UNITE=37,
-                                 NOM_COLONNE='ITER_NEWT',
-                                 LONG_I = 2),
-                              _F(NOM_COLONNE='INCR_TPS')),
-                   NEWTON=_F(MATRICE='TANGENTE',
-                             REAC_ITER=1),
-                   CONVERGENCE=_F(RESI_GLOB_MAXI=1.));
 
 RESU=CALC_ELEM(reuse =RESU,
                OPTION=('SIEF_ELNO_ELGA','VARI_ELNO_ELGA',),

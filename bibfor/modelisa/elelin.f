@@ -5,7 +5,7 @@
       INTEGER       NNOP,NNOPS,NCONTA
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 16/06/2010   AUTEUR CARON A.CARON 
+C MODIF MODELISA  DATE 21/12/2010   AUTEUR MASSIN P.MASSIN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -36,7 +36,7 @@ C       NNOPS   : NOMBRE DE NOEUDS DE L'ELEMENT LINEAIRE
 C......................................................................
 
       INTEGER      NDIM,NBFPG,NBPG(20)
-      REAL*8       X(27),VOL
+      REAL*8       X(3*27),VOL
       CHARACTER*8  FAPG(20)
       LOGICAL      ISMALI
 
@@ -59,9 +59,9 @@ C......................................................................
           ELREF2=ELREF1
           CALL ELRACA(ELREF1,NDIM,NNOP,NNOPS,NBFPG,FAPG,NBPG,X,VOL)
         ENDIF
-       ELSE
-          ELREF2=ELREF1
-          CALL ELRACA(ELREF1,NDIM,NNOP,NNOPS,NBFPG,FAPG,NBPG,X,VOL)
+      ELSE
+        ELREF2=ELREF1
+        CALL ELRACA(ELREF1,NDIM,NNOP,NNOPS,NBFPG,FAPG,NBPG,X,VOL)
       ENDIF
 
       CALL JEDEMA()

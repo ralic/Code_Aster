@@ -1,9 +1,9 @@
       SUBROUTINE TE0367(OPTION,NOMTE)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 05/10/2010   AUTEUR MAHFOUZ D.MAHFOUZ 
+C MODIF ELEMENTS  DATE 21/12/2010   AUTEUR MASSIN P.MASSIN 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -55,7 +55,7 @@ C
       PARAMETER    (N=168)
 C
       INTEGER      I,NFAES
-      INTEGER      NDIM,NDDL,NNE,NNES,NNM,NNC,NDDLSE
+      INTEGER      NDIM,NDDL,NNE(3),NNM(3),NNC
       INTEGER      NSINGE,NSINGM
       INTEGER      JPCPO,JPCPI,JPCAI,JPCCF,IVECT,JSTNO
       INTEGER      INDNOR,IFROTT,INDCO
@@ -66,15 +66,18 @@ C
       REAL*8       COORE(3),COORM(3),COORC(2)
       REAL*8       FFE(8),FFM(8),FFC(8),DFFC(3,8)
       REAL*8       JACOBI,HPG
-      CHARACTER*8  TYPMAE,TYPMAM,TYPMAC,TYPMAI
+      CHARACTER*8  TYPMAE,TYPMAM,TYPMAC,TYPMAI,TYPMEC
       INTEGER      INADH,NVIT,LACT(8),NLACT,NINTER
       REAL*8       GEOPI(9)
       REAL*8       COEFFF,COEFCA,COEFFA,COEFFP
       REAL*8       RRE,RRM,JEU,R8BID
       REAL*8       RESE(3),NRESE
       REAL*8       DDEPLE(3),DDEPLM(3),DLAGRC,DLAGRF(2)     
-      LOGICAL      LMALIN,LFROTT,LPENAF,LESCLX,LMAITX,LCONTX
+      LOGICAL      LFROTT,LPENAF,LESCLX,LMAITX,LCONTX
       REAL*8       VTMP(N)
+      INTEGER      NCONTA,IBID,NPTE
+      INTEGER      NDEPLE,DDLE(2),DDLM(2)
+      REAL*8       FFEC(8)
 C
 C ----------------------------------------------------------------------
 C
@@ -82,10 +85,11 @@ C
 C
 C --- INFOS SUR LA MAILLE DE CONTACT
 C
-      CALL XMELET (NOMTE ,TYPMAI,TYPMAE,TYPMAM,TYPMAC,
-     &            NDIM  ,NDDL  ,NNE   ,NNM   ,NNC   ,
-     &            LMALIN,NNES  ,NDDLSE,NSINGE,NSINGM)  
-     
+      CALL XMELET(NOMTE , TYPMAI , TYPMAE ,TYPMAM ,TYPMAC  ,
+     &                  NDIM  , NDDL   , NNE   , NNM  , 
+     &                  NNC   , DDLE  , DDLM  ,
+     &                  NCONTA, NDEPLE , NSINGE, NSINGM)
+
       CALL ASSERT(NDDL.LE.N)
 C
 C --- INITIALISATIONS
@@ -109,7 +113,7 @@ C
       TAU2(2)  = ZR(JPCPO-1+8)
       TAU2(3)  = ZR(JPCPO-1+9)
       INDCO    = NINT(ZR(JPCPO-1+11))
-      NINTER   = NINT(ZR(JPCPO-1+12))
+      NINTER   = NINT(ZR(JPCPO-1+31))
       COEFCA   = ZR(JPCPO-1+13)
       COEFFA   = ZR(JPCPO-1+14)
       COEFFF   = ZR(JPCPO-1+15)
@@ -118,6 +122,7 @@ C
       HPG      = ZR(JPCPO-1+19)
 C --- LES NUMEROS DES FACETTES DE CONTACT (ESCLAVE ET MAITRE) DONT LE
 C --- PTC ET SON PROJETE APPARTIENT
+      NPTE     = NINT(ZR(JPCPO-1+12))
       NFAES    = NINT(ZR(JPCPO-1+22))
 C --- LES COORDONNEES ESCLAVE ET MAITRES DANS L'ELEMENT PARENT
       COORE(1) = ZR(JPCPO-1+24)
@@ -131,7 +136,7 @@ C --- POINT D'INTEGRATION VITAL OU PAS
 C --- SQRT LSN PT ESCLAVE ET MAITRE
       RRE      = ZR(JPCPO-1+18)
       RRM      = ZR(JPCPO-1+23)
-      IF (NNM.EQ.0) RRE = 2*RRE
+      IF (NNM(1).EQ.0) RRE = 2*RRE
       LFROTT   = IFROTT.EQ.3     
 C
 C --- RECUPERATION DES DONNEES DE LA CARTE CONTACT PINTER (VOIR XMCART)
@@ -167,23 +172,29 @@ C
 C
 C --- CALCUL DES COORDONNEES REELLES DES POINTS D'INTERSECTION ESCLAVES
 C
-      CALL XMPINT(NDIM  ,NFAES ,JPCPI ,JPCCF ,GEOPI )
+      CALL XMPINT(NDIM  ,NPTE,NFAES ,JPCPI ,JPCCF ,GEOPI )
 C
 C --- FONCTIONS DE FORME
 C
-      CALL XTFORM(NDIM  ,TYPMAE,TYPMAM,TYPMAC,NNES  ,
-     &            NNM   ,NNC   ,COORE ,COORM ,COORC ,
+      CALL XTFORM(NDIM  ,TYPMAE,TYPMAM,TYPMAC,NDEPLE ,
+     &            NNM(1)   ,NNC   ,COORE ,COORM ,COORC ,
      &            FFE   ,FFM   ,DFFC  )
 C
 C --- FONCTION DE FORMES POUR LES LAGRANGIENS
 C
-      IF (LMALIN) THEN
-        NNC   = NNE
+      IF (NCONTA.EQ.1) THEN
+        NNC   = NNE(2)
         CALL XLACTI(TYPMAI,NINTER,JPCAI,LACT,NLACT)
         CALL XMOFFC(LACT,NLACT,NNC,FFE,FFC)
+      ELSEIF (NCONTA.EQ.3) THEN
+        NNC   = NNE(2)
+        CALL ELELIN(NCONTA,TYPMAE,TYPMEC,IBID,IBID)
+        CALL ELRFVF(TYPMEC,COORE,NNC,FFEC,IBID)
+        CALL XLACTI(TYPMAI,NINTER,JPCAI,LACT,NLACT)
+        CALL XMOFFC(LACT,NLACT,NNC,FFEC,FFC)
       ELSE
         CALL ELRFVF(TYPMAC,COORC,NNC,FFC,NNC)
-      ENDIF   
+      ENDIF
 C
 C --- JACOBIEN POUR LE POINT DE CONTACT
 C
@@ -195,9 +206,9 @@ C
 C
 C --- CALCUL DES INCREMENTS - LAGRANGE DE CONTACT ET FROTTEMENT
 C       
-      CALL XTLAGM(TYPMAI,NDIM  ,NNC   ,NNE   ,NNES   ,
-     &            NDDLSE,NFAES ,CFACE ,JDEPDE,JPCAI  ,
-     &            FFC   ,LFROTT,DLAGRC,DLAGRF) 
+      CALL XTLAGM(TYPMAI,NDIM  ,NNC   ,NNE   ,
+     &            DDLE(1),NFAES ,CFACE ,JDEPDE,JPCAI  ,
+     &            FFC   ,LFROTT,NCONTA,DLAGRC,DLAGRF) 
 C
 C --- NOEUDS EXCLUS PAR PROJECTION HORS ZONE
 C
@@ -216,24 +227,27 @@ C --- CALCUL DES SECOND MEMBRES DE CONTACT/FROTTEMENT
 C
 C --- VECTEUR SECOND MEMBRE SI CONTACT
 C
-          CALL XMMJEU(NDIM  ,NNM   ,NNE   ,NNES  ,NDDLSE,
-     &                NSINGE,NSINGM,FFE   ,FFM   ,NORM  ,
-     &                JGEOM ,JDEPDE,JDEPM ,RRE   ,RRM   ,
-     &                JEU   )
-          CALL XMVEC1(NDIM  ,NNE   ,NNES  ,NNC   ,NNM   ,
-     &                HPG   ,NFAES ,FFC   ,FFE   ,FFM   ,
-     &                JACOBI,DLAGRC,JPCAI ,CFACE ,COEFCA,
-     &                JEU   ,NORM  ,TYPMAI,NSINGE,NSINGM,
-     &                RRE   ,RRM   ,NDDLSE,VTMP  )
+         CALL XMMJEU(NDIM  ,NNM,NNE,NDEPLE,
+     &                  NSINGE,NSINGM,FFE  ,FFM   ,NORM  ,
+     &                  JGEOM ,JDEPDE,JDEPM ,RRE   ,RRM   ,
+     &                  DDLE, DDLM, JEU   )
+
+         CALL XMVEC1(NDIM, NNE, NDEPLE, NNC   ,NNM   ,
+     &                  HPG   ,NFAES ,FFC   ,FFE   ,FFM   ,
+     &                  JACOBI,DLAGRC,JPCAI ,CFACE ,COEFCA,
+     &                  JEU   ,NORM  ,TYPMAI,NSINGE,NSINGM,
+     &                  RRE   ,RRM   ,NCONTA, DDLE, DDLM,
+     &                  VTMP  )
 
         ELSE IF (INDCO .EQ. 0) THEN
           IF (NVIT.EQ.1) THEN
 C
 C --- CALCUL DU VECTEUR - CAS SANS CONTACT
 C
-            CALL XMVEC0(NDIM  ,NNE   ,NNES  ,NNC   ,NFAES ,
+          CALL XMVEC0(NDIM  ,NNE   ,NNC   ,NFAES ,
      &                  DLAGRC,HPG   ,FFC   ,JACOBI,CFACE ,
-     &                  JPCAI ,COEFCA,TYPMAI,NDDLSE ,VTMP  )
+     &                  JPCAI ,COEFCA,TYPMAI,DDLE,NCONTA,VTMP)
+
           ENDIF
         ELSE
           CALL U2MESS('F','ELEMENTS3_80')
@@ -250,19 +264,22 @@ C              ---------------------
 C
 C --- CALCUL DU VECTEUR - CAS SANS FROTTEMENT
 C
-            CALL XMVEF0(NDIM  ,NNE   ,NNES  ,NNC   ,NFAES ,
+
+         CALL XMVEF0(NDIM  ,NNE ,NNC   ,NFAES ,
      &                  JPCAI ,HPG   ,FFC   ,JACOBI,COEFCA,
      &                  DLAGRF,CFACE ,TYPMAI,TAU1  ,TAU2  ,
-     &                  NDDLSE,VTMP  )
+     &                  DDLE,NCONTA,VTMP  )
           ENDIF
         ELSE IF (INDCO.EQ.1) THEN
 C
 C --- CALCUL DES INCREMENTS - DEPLACEMENTS
 C     
-          CALL XTDEPM(NDIM  ,NNM   ,NNE   ,NNES  ,NDDLSE,
-     &                NSINGE,NSINGM,FFE   ,FFM   ,JDEPDE,
-     &                RRE   ,RRM   ,DDEPLE,DDEPLM)         
-C      
+          CALL XTDEPM(NDIM  ,NNM,NNE,NDEPLE,
+     &                  NSINGE,NSINGM,FFE   ,FFM   ,JDEPDE,
+     &                  RRE   ,RRM ,DDLE, DDLM,
+     &                  DDEPLE,DDEPLM)
+
+C
 C --- ON CALCULE L'ETAT DE CONTACT ADHERENT OU GLISSANT
 C      
           CALL TTPRSM(NDIM  ,DDEPLE,DDEPLM,DLAGRF,COEFFA,
@@ -271,10 +288,11 @@ C
 C
 C --- CALCUL DU JEU     
 C     
-          CALL XMMJEU(NDIM  ,NNM   ,NNE   ,NNES  ,NDDLSE,
-     &                NSINGE,NSINGM,FFE   ,FFM   ,NORM  ,
-     &                JGEOM ,JDEPDE,JDEPM ,RRE   ,RRM   ,
-     &                JEU   )  
+
+          CALL XMMJEU(NDIM  ,NNM,NNE,NDEPLE,
+     &                  NSINGE,NSINGM,FFE  ,FFM   ,NORM  ,
+     &                  JGEOM ,JDEPDE,JDEPM ,RRE   ,RRM   ,
+     &                  DDLE,DDLM, JEU   )
 C
 C --- SI GLISSANT, NORMALISATION RESE
 C
@@ -282,13 +300,14 @@ C
 C
 C --- VECTEUR FROTTEMENT
 C
-          CALL XMVEF1(NDIM  ,NNE   ,NNM   ,NNES  ,NNC   ,
-     &                NFAES ,CFACE ,HPG   ,FFC   ,FFE   ,
-     &                FFM   ,JACOBI,JPCAI ,DLAGRC,DLAGRF,
-     &                COEFFA,COEFFF,TAU1  ,TAU2  ,RESE  ,
-     &                MPROJT,COEFCA,JEU   ,TYPMAI,NSINGE,
-     &                NSINGM,RRE   ,RRM   ,NVIT  ,NDDLSE,
-     &                VTMP  )
+          CALL XMVEF1(NDIM  ,NNE   ,NNM,NDEPLE ,
+     &                  NNC,NFAES ,CFACE ,HPG   ,FFC   ,FFE   ,
+     &                  FFM   ,JACOBI,JPCAI ,DLAGRC,DLAGRF,
+     &                  COEFFA,COEFFF,TAU1  ,TAU2  ,RESE  ,
+     &                  MPROJT ,COEFCA,JEU   ,TYPMAI,NSINGE,
+     &                  NSINGM,RRE   ,RRM   ,NVIT  ,
+     &                  NCONTA,DDLE,DDLM,VTMP  )
+
         ENDIF
       ELSE
         CALL ASSERT(.FALSE.)
@@ -296,14 +315,16 @@ C
 C
 C --- SUPPRESSION DES DDLS SUPERFLUS (CONTACT ET XHTC)
 C
-      LESCLX = NSINGE.EQ.1.AND.NNM.NE.0
+      LESCLX = NSINGE.EQ.1.AND.NNM(1).NE.0
       LMAITX = NSINGM.EQ.1
-      LCONTX = LMALIN.AND.NLACT.LT.NNES
+      LCONTX = (NCONTA.EQ.1.OR.NCONTA.EQ.3).AND.NLACT.LT.NNE(2)
       IF (LESCLX.OR.LMAITX.OR.LCONTX) THEN
         CALL JEVECH('PSTANO' ,'L',JSTNO)
-        CALL XTEDD2(NDIM  ,NNES  ,NNM   ,NDDL  ,NDDLSE,OPTION,
-     &              LESCLX,LMAITX,LCONTX,ZI(JSTNO),LACT,
-     &              R8BID  ,VTMP  )
+        CALL XTEDD2(NDIM,NNE,NDEPLE,NNM,NDDL,
+     &           OPTION,LESCLX,LMAITX,LCONTX,ZI(JSTNO),LACT,
+     &           DDLE,R8BID,VTMP)
+ 
+
       ENDIF
 C
 C --- RECOPIE VALEURS FINALES

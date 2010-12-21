@@ -1,8 +1,8 @@
-#@ MODIF calculel Messages  DATE 08/11/2010   AUTEUR PELLET J.PELLET 
+#@ MODIF calculel Messages  DATE 20/12/2010   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -145,6 +145,18 @@ Conseil :
 18 : _("""
  les parties réelle et imaginaire du champ à assembler ne sont pas du même type
  l'un est un CHAM_NO et l'autre un CHAM_ELEM
+"""),
+
+19 : _("""
+Erreur :
+ Le cham_elem %(k1)s est incohérent :
+   Il possède %(i1)d GREL.
+   Il a été calculé avec le LIGREL %(k2)s qui possède %(i2)d GREL.
+
+Risques & Conseils :
+ Il peut s'agir d'une erreur de programmation.
+ Mais ce problème peut aussi se produire si le LIGREL a été entre temps détruit
+ et recréé sous le meme nom.
 """),
 
 20 : _("""

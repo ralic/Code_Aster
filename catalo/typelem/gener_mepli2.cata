@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 14/12/2010   AUTEUR PROIX J-M.PROIX
+%& MODIF TYPELEM  DATE 21/12/2010   AUTEUR SFAYOLLE S.FAYOLLE 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -120,8 +120,9 @@ OPTION__
                               OUT__  VVECTUR  PVECTUR
     CHAR_MECA_ROTA_R    -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
-    CHAR_MECA_TEMP_R    -1    IN__   XXXXXX   XXXXXX
-                              OUT__  XXXXXX   XXXXXX
+    CHAR_MECA_TEMP_R    97    IN__   CCAMASS  PCAMASS  CCOMPOR  PCOMPOR NGEOMER  PGEOMER  CMATERC  PMATERC
+                                     ZVARCPG  PVARCPR  CTEMPSR  PTEMPSR ZVARCPG  PVARCRR
+                              OUT__  MVECTUR  PVECTUR
     COOR_ELGA           479   IN__   NGEOMER  PGEOMER
                               OUT__  EGGEOP_R PCOORPG
     ECIN_ELEM_DEPL      -1    IN__   XXXXXX   XXXXXX

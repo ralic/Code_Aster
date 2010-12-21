@@ -3,9 +3,9 @@
       CHARACTER*16 OPTION,NOMTE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 28/09/2010   AUTEUR MASSIN P.MASSIN 
+C MODIF ELEMENTS  DATE 21/12/2010   AUTEUR MASSIN P.MASSIN 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -58,7 +58,7 @@ C      INTEGER NFH,NFE,SINGU,DDLC,DDLS,NDDL
 C      INTEGER IGEOM,IPRES,ITEMPS,IFORC,IRET,IRES
 C      INTEGER JLST,JPTINT,JAINT,JCFACE,JLONCH
 C      INTEGER I,J,NINTER,NFACE,CFACE(5,3),IFA,NLI,IN(3),IG
-C      INTEGER AR(12,3),NBAR,FAC(6,4),NBF,IBID2(12,3),IBID,CPT,INO,ILEV
+C      INTEGER AR(12,3),NBAR,FAC(6,4),NBF,IBID2(12,3),IBID,INO,ILEV
 C      INTEGER NNOF,NPGF,IPOIDF,IVFF,IDFDEF,IPGF,POS
 C      REAL*8  MULT,PRES,CISA, FORREP(3,2),FF(27),G(3),JAC,ND(3),HE(2)
 C      REAL*8  RR(2),LST,XG(4)
@@ -70,12 +70,11 @@ C      DATA    HE / -1.D0 , 1.D0/
       INTEGER IBID,NDIM,NNOP,NNO,NPG,IVF
       INTEGER NFH,NFE,SINGU,DDLC,JPMILT,IRESE
       INTEGER JPINTT,JCNSET,JHEAVT,JLONCH,JCOORS,IGEOM,JOUT
-      INTEGER I,J,NIT,CPT,IT,NSE,ISE,IN,INO,NSEMAX(3),IPG,KPG
+      INTEGER I,J,NSE,ISE,IN,INO,IPG,KPG
       LOGICAL ISMALI
 
       DATA    ELRESE /'SE2','TR3','TE4','SE3','TR6','TE4'/
       DATA    FAMI   /'BID','XINT','XINT','BID','XINT','XINT'/
-      DATA    NSEMAX / 2 , 3 , 6 /
 
       CALL JEMARQ()
 C
@@ -115,85 +114,74 @@ C     PROPRES AUX ELEMENTS 1D ET 2D (QUADRATIQUES)
 
       CALL JEVECH('PXFGEOM','E',JOUT)
 
+C     RÉCUPÉRATION DE LA SUBDIVISION DE L'ÉLÉMENT EN NSE SOUS ELEMENT
+      NSE=ZI(JLONCH-1+1)
 
-C     RÉCUPÉRATION DE LA SUBDIVISION L'ÉLÉMENT PARENT EN NIT TETRAS 
-      NIT=ZI(JLONCH-1+1)
+C       BOUCLE D'INTEGRATION SUR LES NSE SOUS-ELEMENTS
+      DO 110 ISE=1,NSE
 
-      CPT=0
-C     BOUCLE SUR LES NIT TETRAS
-      DO 100 IT=1,NIT
+C       COORD DU SOUS-ÉLT EN QUESTION
+        COORSE='&&TE0046.COORSE'
+        CALL WKVECT(COORSE,'V V R',NDIM*NNO,JCOORS)
 
-C       RÉCUPÉRATION DU DÉCOUPAGE EN NSE SOUS-ÉLÉMENTS 
-        NSE=ZI(JLONCH-1+1+IT)
-
-C       BOUCLE D'INTÉGRATION SUR LES NSE SOUS-ÉLÉMENTS
-        DO 110 ISE=1,NSE
-
-          CPT=CPT+1
-
-C         COORD DU SOUS-ÉLT EN QUESTION
-          COORSE='&&TE0046.COORSE'
-          CALL WKVECT(COORSE,'V V R',NDIM*NNO,JCOORS)
-
-C         BOUCLE SUR LES SOMMETS DU SOUS-TRIA (DU SOUS-SEG)
-          DO 111 IN=1,NNO
-            INO=ZI(JCNSET-1+NNO*(CPT-1)+IN)
-            DO 112 J=1,NDIM
-              IF (INO.LT.1000) THEN
-                ZR(JCOORS-1+NDIM*(IN-1)+J)=ZR(IGEOM-1+NDIM*(INO-1)+J)
-              ELSEIF (INO.GT.1000 .AND. INO.LT.2000) THEN
-                ZR(JCOORS-1+NDIM*(IN-1)+J)=
-     &                               ZR(JPINTT-1+NDIM*(INO-1000-1)+J)
-              ELSEIF (INO.GT.2000 .AND. INO.LT.3000) THEN
-                ZR(JCOORS-1+NDIM*(IN-1)+J)=
-     &                               ZR(JPMILT-1+NDIM*(INO-2000-1)+J)
-             ELSEIF (INO.GT.3000) THEN
-                ZR(JCOORS-1+NDIM*(IN-1)+J)=
-     &                               ZR(JPMILT-1+NDIM*(INO-3000-1)+J)
-              ENDIF
- 112        CONTINUE
- 111      CONTINUE
+C       BOUCLE SUR LES SOMMETS DU SOUS-TRIA (DU SOUS-SEG)
+        DO 111 IN=1,NNO
+          INO=ZI(JCNSET-1+NNO*(ISE-1)+IN)
+          DO 112 J=1,NDIM
+            IF (INO.LT.1000) THEN
+              ZR(JCOORS-1+NDIM*(IN-1)+J)=ZR(IGEOM-1+NDIM*(INO-1)+J)
+            ELSEIF (INO.GT.1000 .AND. INO.LT.2000) THEN
+              ZR(JCOORS-1+NDIM*(IN-1)+J)=
+     &                             ZR(JPINTT-1+NDIM*(INO-1000-1)+J)
+            ELSEIF (INO.GT.2000 .AND. INO.LT.3000) THEN
+              ZR(JCOORS-1+NDIM*(IN-1)+J)=
+     &                             ZR(JPMILT-1+NDIM*(INO-2000-1)+J)
+           ELSEIF (INO.GT.3000) THEN
+              ZR(JCOORS-1+NDIM*(IN-1)+J)=
+     &                             ZR(JPMILT-1+NDIM*(INO-3000-1)+J)
+            ENDIF
+ 112      CONTINUE
+ 111    CONTINUE
 
 
 C-----------------------------------------------------------------------
 C         BOUCLE SUR LES POINTS DE GAUSS DU SOUS-ELT
 C-----------------------------------------------------------------------
 
-          DO 200 KPG=1,NPG
+        DO 200 KPG=1,NPG
 
-C           COORDONNÉES DU PT DE GAUSS DANS LE REPÈRE RÉEL : XG
-            CALL VECINI(NDIM,0.D0,XG)
-            DO 210 I=1,NDIM
-              DO 211 IN=1,NNO
-                XG(I) = XG(I) + ZR(IVF-1+NNO*(KPG-1)+IN) 
-     &                        * ZR(JCOORS-1+NDIM*(IN-1)+I)
- 211          CONTINUE
- 210        CONTINUE
+C         COORDONNÉES DU PT DE GAUSS DANS LE REPÈRE RÉEL : XG
+          CALL VECINI(NDIM,0.D0,XG)
+          DO 210 I=1,NDIM
+            DO 211 IN=1,NNO
+              XG(I) = XG(I) + ZR(IVF-1+NNO*(KPG-1)+IN) 
+     &                      * ZR(JCOORS-1+NDIM*(IN-1)+I)
+ 211        CONTINUE
+ 210      CONTINUE
 
-C           COORDONNEES DU PG DANS L'ELEMENT DE REF PARENT : XE
-            CALL REEREF(ELREFP,NNOP,IBID,IGEOM,XG,IBID,.FALSE.,NDIM,
-     &           RBID,IBID,IBID,IBID,IBID,IBID,IBID,RBID,RBID,
-     &           'NON',XE,FF,RBID,RBID,RBID,RBID)
+C         COORDONNEES DU PG DANS L'ELEMENT DE REF PARENT : XE
+          CALL REEREF(ELREFP,NNOP,IBID,IGEOM,XG,IBID,.FALSE.,NDIM,
+     &         RBID,IBID,IBID,IBID,IBID,IBID,IBID,RBID,RBID,
+     &         'NON',XE,FF,RBID,RBID,RBID,RBID)
 
-C           NUMERO DE CE POINT DE GAUSS DANS LA FAMILLE 'XFEM'
-            IPG= ( NSEMAX(NDIM)*(IT-1)+ (ISE-1)) * NPG + KPG
+C         NUMERO DE CE POINT DE GAUSS DANS LA FAMILLE 'XFEM'
+          IPG= (ISE-1) * NPG + KPG
 
-            DO 220 J=1,NDIM
-              ZR(JOUT-1+NDIM*(IPG-1)+J) = XE(J)
- 220        CONTINUE
+          DO 220 J=1,NDIM
+            ZR(JOUT-1+NDIM*(IPG-1)+J) = XE(J)
+ 220      CONTINUE
 
 
- 200      CONTINUE
+ 200    CONTINUE
 
 C-----------------------------------------------------------------------
 C         FIN DE LA BOUCLE SUR LES POINTS DE GAUSS DU SOUS-ELT
 C-----------------------------------------------------------------------
 
-          CALL JEDETR(COORSE)
+        CALL JEDETR(COORSE)
 
- 110    CONTINUE
+ 110  CONTINUE
 
- 100  CONTINUE
 
       CALL JEDEMA()
       END

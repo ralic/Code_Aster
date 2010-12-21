@@ -4,25 +4,25 @@
      &                  PRESN,OPTION,IGTHET,JBASEC)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 28/09/2010   AUTEUR MASSIN P.MASSIN 
+C MODIF ELEMENTS  DATE 20/12/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C RESPONSABLE GENIAUT S.GENIAUT
-C TOLE CRP_21
+C TOLE CRP_21 CRS_1404
 
       IMPLICIT NONE
       CHARACTER*8   NOMPAR(4)
@@ -30,7 +30,7 @@ C TOLE CRP_21
       INTEGER   NDIM,IFA,CFACE(5,3),JAINT,IGEOM,NFH,SINGU,JLST,IPRES
       INTEGER   NFE,DDLC,IPREF,ITEMPS,NNOP,ITHET,JPTINT,IGTHET,IDEPL
       INTEGER   DDLM,JBASEC
-      REAL*8    VALRES(3) 
+      REAL*8    VALRES(3)
       REAL*8    BASLOC(9*NNOP),PRESN(27)
 
 
@@ -160,7 +160,7 @@ C     BOUCLE SUR LES POINTS DE GAUSS DES FACETTES
 C       CALCUL DE JAC (PRODUIT DU JACOBIEN ET DU POIDS)
 C       ET DES FF DE L'ÉLÉMENT PARENT AU POINT DE GAUSS
 C       ET LA NORMALE ND ORIENTÉE DE ESCL -> MAIT
-C       ET DE XG : COORDONNEES REELLES DU POINT DE GAUSS              
+C       ET DE XG : COORDONNEES REELLES DU POINT DE GAUSS
 C       ET DE DFDI : DERIVVES DES FF PARENT
         ELREFC='NON'
         IF (NDIM .EQ. 3) THEN
@@ -232,13 +232,13 @@ C         CALCUL DE LA PRESSION AUX POINTS DE GAUSS
              FORREP(2,2) = FORREP(2,2)+ CISA * (-ND(1))
           ENDIF
 
-        ELSEIF ((OPTION.EQ.'CALC_K_G_F') .OR. 
+        ELSEIF ((OPTION.EQ.'CALC_K_G_F') .OR.
      &                    (OPTION.EQ.'CALC_G_F'))THEN
 
 C         VALEUR DE LA PRESSION
           XG(NDIM+1) = ZR(ITEMPS)
           CALL FOINTE('FM',ZK8(IPREF),NDIM+1,NOMPAR,XG,PRES,IER)
-          IF(NDIM.EQ.2) 
+          IF(NDIM.EQ.2)
      &      CALL FOINTE('FM',ZK8(IPREF+1),NDIM+1,NOMPAR,XG,CISA,IER)
           DO 260 J=1,NDIM
             FORREP(J,1) = -PRES * ND(J)
@@ -267,7 +267,7 @@ C       -----------------------------------
           THETA(I)=0.D0
           DO 301 INO=1,NNOP
             THETA(I) = THETA(I) + FF(INO) * ZR(ITHET-1+NDIM*(INO-1)+I)
- 301      CONTINUE 
+ 301      CONTINUE
 
           DO 310 J=1,NDIM
              DO 311 INO=1,NNOP
@@ -308,7 +308,7 @@ C           DDL ENRICHIS EN FOND DE FISSURE
                 DEPLA(I) = DEPLA(I) + RR(ILEV) * FF(INO)
      &                               * ZR(IDEPL-1+INDI+CPT)
  204          CONTINUE
- 200      CONTINUE        
+ 200      CONTINUE
 
 C         --------------------------------
 C         4) CALCUL DES CHAMPS AUXILIAIRES
@@ -326,8 +326,8 @@ C         CHAMPS AUXILIARES DANS LA BASE GLOBALE : U1,U2,U3
             DO 510 I=1,NDIM
               DO 511 J=1,NDIM
                 U1(I) = U1(I) + P(I,J) * U1L(J)
-                U2(I) = U2(I) + P(I,J) * U2L(J)   
-                IF (NDIM.EQ.3) U3(I) = U3(I) + P(I,J) * U3L(J) 
+                U2(I) = U2(I) + P(I,J) * U2L(J)
+                IF (NDIM.EQ.3) U3(I) = U3(I) + P(I,J) * U3L(J)
  511          CONTINUE
  510        CONTINUE
           ENDIF
@@ -341,13 +341,13 @@ C         -----------------------------------------
           DO 400 I=1,NDIM
             DO 410 J=1,NDIM
                DO 411 INO=1,NNOP
-                 IF ((OPTION.EQ.'CALC_K_G') 
-     &               .OR. (OPTION.EQ.'CALC_G')) THEN   
+                 IF ((OPTION.EQ.'CALC_K_G')
+     &               .OR. (OPTION.EQ.'CALC_G')) THEN
                          DPREDI(I,J) = DPREDI(I,J) +
      &         HE(ILEV) * DFDI(INO,J) * ZR(IPRES-1+INO) * ND(I)
                  ENDIF
-                 IF ((OPTION.EQ.'CALC_K_G_F') 
-     &               .OR. (OPTION.EQ.'CALC_G_F')) THEN   
+                 IF ((OPTION.EQ.'CALC_K_G_F')
+     &               .OR. (OPTION.EQ.'CALC_G_F')) THEN
                          DPREDI(I,J) = DPREDI(I,J) +
      &              HE(ILEV) * DFDI(INO,J) * PRESN(INO) * ND(I)
                  ENDIF
@@ -367,7 +367,7 @@ C         -----------------------------------
           K1 = 0.D0
           K2 = 0.D0
           K3 = 0.D0
-          
+
           DO 520 J = 1,NDIM
             G  =  G + (FORREP(J,ILEV) * DIVT + DFOR(J)) * DEPLA(J)
             IF (OPTION(1:8).EQ.'CALC_K_G')  THEN
@@ -377,8 +377,8 @@ C         -----------------------------------
             ENDIF
  520      CONTINUE
 
-          ZR(IGTHET)   = ZR(IGTHET)   + G  * JAC * MULT    
-          IF (OPTION(1:8).EQ.'CALC_K_G')  THEN            
+          ZR(IGTHET)   = ZR(IGTHET)   + G  * JAC * MULT
+          IF (OPTION(1:8).EQ.'CALC_K_G')  THEN
             ZR(IGTHET+1)=ZR(IGTHET+1)+ K1*JAC*MULT*SQRT(COEFF)*0.5D0
             ZR(IGTHET+2)=ZR(IGTHET+2)+ K2*JAC*MULT*SQRT(COEFF)*0.5D0
             ZR(IGTHET+3)=ZR(IGTHET+3)+ K3*JAC*MULT*SQRT(COEFF3)*0.5D0

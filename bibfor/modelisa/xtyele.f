@@ -1,6 +1,6 @@
       SUBROUTINE XTYELE(NOMA,MODELX,TRAV,NFISS,FISS,CONTAC,NDIM,LINTER)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 28/09/2010   AUTEUR MASSIN P.MASSIN 
+C MODIF MODELISA  DATE 21/12/2010   AUTEUR MASSIN P.MASSIN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -18,6 +18,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
 C RESPONSABLE PELLET J.PELLET
+C TOLE CRS_1404
       IMPLICIT NONE
       CHARACTER*8  NOMA,MODELX
       CHARACTER*24 TRAV
@@ -136,19 +137,9 @@ C
               IF (ZI(JTAB-1+5*(IMA-1)+4).EQ.0) THEN
 C --- BLINDAGE DANS LE CAS DU MULTI-HEAVISIDE
                 CALL JENUNO(JEXNUM(NOMA//'.NOMMAI',IMA),NOMAIL)
-                IF (NDIM.EQ.3) THEN
-                  CALL U2MESK('F','XFEM_40', 1 ,NOMAIL)
-                ELSE
-                  IF (ZI(JNBPT-1+IMA).EQ.2) THEN
-                    CALL JENUNO(JEXNUM('&CATA.TM.NOMTM',ITYPMA),TYPMA)
-                    IF (.NOT.ISMALI(TYPMA)) THEN
-                      CALL U2MESK('F','XFEM_41', 1 ,NOMAIL)
-                    ENDIF
-                  ELSEIF (ZI(JNBPT-1+IMA).EQ.3) THEN
-                    CALL U2MESK('F','XFEM_42', 1 ,NOMAIL)
-                  ELSE
-                    CALL ASSERT(.FALSE.)
-                  ENDIF
+                CALL JENUNO(JEXNUM('&CATA.TM.NOMTM',ITYPMA),TYPMA)
+                IF (.NOT.ISMALI(TYPMA)) THEN
+                  CALL U2MESK('F','XFEM_41', 1 ,NOMAIL)
                 ENDIF
               ENDIF
 
@@ -292,9 +283,8 @@ C --- SI LA MAILLE EST VUE UNE DEUXIEME FOIS,
 C
                 IF (CONTAC.GT.1) CALL U2MESK('F','XFEM_43', 1 ,NOMAIL)
 C --- SI CONTACT AUTRE QUE P1P1
-                  
-                IF (KK.GT.1.OR.ZI(JTAB-1+5*(IMA-1)+2).EQ.1
-     &                      .OR.ZI(JTAB-1+5*(IMA-1)+3).EQ.1) THEN
+                IF (KK.GT.1.OR.ABS(ZI(JTAB-1+5*(IMA-1)+2)).EQ.1
+     &                      .OR.ABS(ZI(JTAB-1+5*(IMA-1)+3)).EQ.1) THEN
 C --- SI UNE DES MAILLES CONTIENT DU CRACK-TIP
                   CALL U2MESK('F','XFEM_44', 1 ,NOMAIL)
                 ENDIF
@@ -306,6 +296,9 @@ C
 C --- CALCUL DU NOMBRE DE FONCTIONS HEAVISIDE
                 CALL XTYHEA(FISS,NFISS,IFISS,IMA,NNO,JCONX1,JCONX2,
      &                                                   NBHEAV)
+                IF (NBHEAV.GT.4) THEN
+                  CALL U2MESK('F','XFEM_40', 1 ,NOMAIL)
+                ENDIF
                 ZI(JNBPT2-1+IMA) = NBHEAV
                 IF (ZI(JTAB-1+5*(IMA-1)+1).GT.0.NEQV.LCONT) THEN
 C --- SI SEULEMENT UNE DES 2 MAILLES A DU CONTACT

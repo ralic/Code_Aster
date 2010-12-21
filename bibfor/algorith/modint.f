@@ -3,22 +3,22 @@
      &                  VEFREQ)
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/10/2010   AUTEUR BOITEAU O.BOITEAU 
+C MODIF ALGORITH  DATE 20/12/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CRP_4
 C-----------------------------------------------------------------------
@@ -28,9 +28,9 @@ C
 C  BUT:      < CALCUL DES MODES D'INTERFACE >
 C
 C  ON EXTRAIT, A PARTIR DE LA SOUS MATRICE ASSOCIEE A L'INTERFACE, LA
-C  CONNECTIVITE DU TREILLIS DE POUTRE SOUS JACENT. ON DETERMINE LE 
-C  NOMBRE DE PARTIES INDEPENDANTES DE L'INTERFACE, ET ON CALCULE, POUR 
-C  CHAQUE PARTIE, LES PREMIERS MODES PROPRES, EN PRENANT SOIN DE BIEN  
+C  CONNECTIVITE DU TREILLIS DE POUTRE SOUS JACENT. ON DETERMINE LE
+C  NOMBRE DE PARTIES INDEPENDANTES DE L'INTERFACE, ET ON CALCULE, POUR
+C  CHAQUE PARTIE, LES PREMIERS MODES PROPRES, EN PRENANT SOIN DE BIEN
 C  CAPTER LES MODES DE CORPS RIGIDE. ON CONSTRUIT ENSUITE, SUR LA BASE
 C  DE CES MODES, UN SOUS ESPACE POUR PROJETER LES MATRICES DU PROBLEME
 C  COMPLET, ET ON CALCULE, SUR CE SOUS ESPACE, LES MODES D'INTERFACE.
@@ -69,8 +69,8 @@ C
       CHARACTER*80                                    ZK80
       COMMON  /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C
-      CHARACTER*32  JEXNOM,JEXNUM      
-C      
+      CHARACTER*32  JEXNOM,JEXNUM
+C
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
 C     ------------------------------------------------------------------
@@ -80,8 +80,8 @@ C-- VARIABLES EN ENTREES / SORTIE
       REAL*8       SHIFT
       CHARACTER*19 MASSE,RAIDE,SSAMI,RAIINT
       CHARACTER*24 COINT,NODDLI,MATMOD,VEFREQ
-     
-C-- VARIABLES DE LA ROUTINE  
+
+C-- VARIABLES DE LA ROUTINE
       INTEGER      LMATMO,I1,J1,K1,M1,N1,L1,LMAKRY,LINDDL,
      &             LACT,NSEKRY,ILA1,ILA2,LVTEMP,LVTMP2,NOD,LWR,LWI,
      &             LINLAG,LALPI,LBETA,LMATK,LMATM,LMAPRO,LKPRO,
@@ -99,10 +99,10 @@ C-- VARIABLES DE LA ROUTINE
       CHARACTER*1  LISTYP(2),KBID
       CHARACTER*8  NOMCMP(6)
       CHARACTER*19 LISMAT(2),IMPED,SOLVEU,NUME91,NUME
-      CHARACTER*24 MAKRY,VTEMP,VTEMP2,INDDDL,INDLAG,MATINT,VALK 
+      CHARACTER*24 MAKRY,VTEMP,VTEMP2,INDDDL,INDLAG,MATINT,VALK
 
 C-----------C
-C--       --C     
+C--       --C
 C-- DEBUT --C
 C--       --C
 C-----------C
@@ -110,7 +110,7 @@ C-----------C
       CALL JEMARQ()
 
 C------------------------------------------------------------C
-C--                                                        --C      
+C--                                                        --C
 C-- CONSTRUCTION DES MATRICES D'IMPEDANCE DYNAMIQUE K+MU*M --C
 C--            ET DE MASSE DU MODELE D'INTERFACE           --C
 C--                                                        --C
@@ -129,7 +129,7 @@ C------------------------------------------------------------C
       COMLIN(2)=SHIFT
       LISTYP(1)='R'
       LISTYP(2)='R'
-      
+
       CALL MTCMBL(2,LISTYP,COMLIN,LISMAT,
      &                  IMPED,' ',NUME91,'ELIM1')
       CALL MTDSCR(IMPED)
@@ -153,9 +153,9 @@ C-------------------------------------------------------------------C
 
       CALL INTDIS(COINT,NNOINT,NODDLI,'&&MODINT.INTERFACES_SST ',
      &            NBSST)
-      
+
       CALL JEVEUO('&&MODINT.INTERFACES_SST ','L',LINDIN)
-      
+
 C------------------------------------------------------C
 C--                                                  --C
 C-- CALCUL DES MODES DU MODELE D'INTERFACE (ARNOLDI) --C
@@ -164,9 +164,9 @@ C------------------------------------------------------C
 
 C-- ESTIMATION DU NOMBRE DE MODES A CALCULER PAR SOUS STRUCURE
 
-      NORM=NBMOD/NBSST
+      NORM=DBLE(NBMOD/NBSST)
       TEMP=6.D0/NBSST
-      
+
       COEFF=3
       IF (NORM .GT. 7) THEN
         NBVECT=COEFF*(INT(NORM)+2*(INT(TEMP)+1))
@@ -181,7 +181,7 @@ C-- ESTIMATION DU NOMBRE DE MODES A CALCULER PAR SOUS STRUCURE
       WRITE(6,*)' LA TAILE DU SOUS ESPACE RETENU EST',NSEKRY
       WRITE(6,*)'------------------------------------------------',
      &'------------------------'
-            
+
       CALL WKVECT('&&MODINT.VECT_TEMP','V V R',6*NNOINT,LVTEMP)
       CALL WKVECT('&&MODINT.VECT_TEMP_2','V V R',6*NNOINT,LVTMP2)
       CALL WKVECT('&&MODINT.KRYLOV_INT','V V R',6*NNOINT*NBVECT,LKRYL)
@@ -199,21 +199,21 @@ C-- ALLOC. DES MATRICES DE TRAVAIL POUR LE CALCUL DES VALEURS PROPRES
 C-- ALLOCATION DE LA MATRICE CONTENANT LA BASE DU SE DE KRYLOV
       CALL WKVECT('&&MODINT.SE_KRYLOV','V V R',NEQ*NSEKRY,LMAKRY)
       CALL JEVEUO('&&MOIN93.IS_DDL_INTERF  ','L',LDDLD)
-      
+
 C-- VECTEUR D'INDICES
       CALL JEVEUO('&&MOIN93.V_IND_DDL_INT','L',LINDDL)
       CALL JEVEUO('&&MOIN93.V_IND_LAG','L',LINLAG)
       CALL JEVEUO('&&MOIN93.DDL_ACTIF_INT','L',LINTRF)
 
-C--                                               
-C-- BOUCLE SUR LES PARTIES D'INTERFACE DISJOINTES 
-C--                      
-                         
-C-- ON DESACTIVE LE TEST FPE     
+C--
+C-- BOUCLE SUR LES PARTIES D'INTERFACE DISJOINTES
+C--
+
+C-- ON DESACTIVE LE TEST FPE
       CALL MATFPE(-1)
-      
+
       DO 70 N1=1,NBSST
-                
+
 C-- TIRAGE ALEATOIRE DU VECTEUR INITIAL
         NORM=0.D0
         DO 80 I1=1,6*NNOINT
@@ -254,7 +254,7 @@ C-- REMPLISSAGE DE LA MATRICE DE HESSENBERG ET DU SE DE KRYLOV ASSOCIE
               ZR(LKRYL+(K1-1)*6*NNOINT+I1-1)=ZR(LVTMP2+I1-1)/NORM
               ZR(LVTEMP+I1-1)=ZR(LKRYL+(K1-1)*6*NNOINT+I1-1)
   140       CONTINUE
-          ENDIF  
+          ENDIF
   100   CONTINUE
 
 C-- RESOLUTION DU PROBLEME AUX VALEURS PROPRES
@@ -278,11 +278,11 @@ C-- TRI DES VALEURS PROPRES
               ZI(LINDFR+I1-1)=J1
             ENDIF
   160     CONTINUE
-  
+
           ZR(LWR+ZI(LINDFR+I1-1)-1)=1.D-16
           ZR(LWI+ZI(LINDFR+I1-1)-1)=1.D-16
   150   CONTINUE
- 
+
 C-- RAJOUTER LA SELECTION DES DDL
 C-- ON GARDE LES 6 DDL POUR LA CONSTRUCTION DU MODELE D'INTERFACE
 
@@ -295,11 +295,11 @@ C-- CONSTRUCTION DU SOUS ESPACE POUR LE PROBLEME COMPLET
             TEMP=ZR(LMOLOR+(J1-1)*NBVECT+K1-1)
             DO 190 I1=1,NDDLIN
               M1=ZI(LINTRF+I1-1)
-              
+
               ZR(LMAKRY+DECAL+(L1-1)*NEQ+ZI(LINLAG+(I1-1)*2)-1)=
      &           ZR(LMAKRY+DECAL+(L1-1)*NEQ+ZI(LINLAG+(I1-1)*2)-1)
      &           +ZR(LKRYL+(K1-1)*6*NNOINT+M1-1)*TEMP
-     
+
               ZR(LMAKRY+DECAL+(L1-1)*NEQ+ZI(LINLAG+(I1-1)*2+1)-1)=
      &           ZR(LMAKRY+DECAL+(L1-1)*NEQ+ZI(LINLAG+(I1-1)*2+1)-1)
      &           +ZR(LKRYL+(K1-1)*6*NNOINT+M1-1)*TEMP
@@ -332,8 +332,8 @@ C-- MISE A 0 DES DDL DE LAGRANGE
         DO 210 J1=1,NSEKRY
           ZR(LMAKRY+(J1-1)*NEQ+ZI(LINLAG+(I1-1)*2)-1)=0.D0
           ZR(LMAKRY+(J1-1)*NEQ+ZI(LINLAG+(I1-1)*2+1)-1)=0.D0
-  210   CONTINUE   
-  200 CONTINUE    
+  210   CONTINUE
+  200 CONTINUE
 
       CALL JEVEUO(MASSE(1:19)//'.&INT','L',LMATM)
       CALL MRMULT('ZERO',LMATM,ZR(LMAKRY),'R',ZR(LMATRM),NSEKRY)
@@ -347,8 +347,8 @@ C-- MISE A 0 DES DDL DE LAGRANGE
           ZR(LMATRM+(J1-1)*NEQ+ZI(LINLAG+(I1-1)*2+1)-1)=0.D0
           ZR(LMATRK+(J1-1)*NEQ+ZI(LINLAG+(I1-1)*2)-1)=0.D0
           ZR(LMATRK+(J1-1)*NEQ+ZI(LINLAG+(I1-1)*2+1)-1)=0.D0
-  230   CONTINUE   
-  220 CONTINUE    
+  230   CONTINUE
+  220 CONTINUE
 
       DO 240 J1=1,NSEKRY
           ZR(LMAPRO+(J1-1)*NSEKRY+J1-1)=
@@ -356,14 +356,14 @@ C-- MISE A 0 DES DDL DE LAGRANGE
      &                ZR(LMATRM+(J1-1)*NEQ),1)
           ZR(LKPRO+(J1-1)*NSEKRY+J1-1)=
      &       DDOT(NEQ,ZR(LMAKRY+(J1-1)*NEQ),1,
-     &                ZR(LMATRK+(J1-1)*NEQ),1)        
+     &                ZR(LMATRK+(J1-1)*NEQ),1)
         DO 250 I1=1,J1-1
           ZR(LMAPRO+(J1-1)*NSEKRY+I1-1)=
      &       DDOT(NEQ,ZR(LMAKRY+(I1-1)*NEQ),1,
      &                ZR(LMATRM+(J1-1)*NEQ),1)
           ZR(LMAPRO+(I1-1)*NSEKRY+J1-1)=
      &       ZR(LMAPRO+(J1-1)*NSEKRY+I1-1)
-      
+
           ZR(LKPRO+(J1-1)*NSEKRY+I1-1)=
      &       DDOT(NEQ,ZR(LMAKRY+(I1-1)*NEQ),1,
      &                ZR(LMATRK+(J1-1)*NEQ),1)
@@ -374,7 +374,7 @@ C-- MISE A 0 DES DDL DE LAGRANGE
 
 C-------------------------------------------------C
 C--                                             --C
-C-- RESOLUTION DU PB AUX VALEURS PROPRES REDUIT --C  
+C-- RESOLUTION DU PB AUX VALEURS PROPRES REDUIT --C
 C--                                             --C
 C-------------------------------------------------C
 
@@ -388,14 +388,14 @@ C-------------------------------------------------C
      &           ZR(LMORED),NSEKRY,ZR(LMORED),NSEKRY,SWORK,
      &           -1,INFO)
       LWORK=INT(SWORK)
-      CALL WKVECT('&&MODINT.MATR_WORK_DGGEV','V V R',LWORK,LLWORK)     
+      CALL WKVECT('&&MODINT.MATR_WORK_DGGEV','V V R',LWORK,LLWORK)
       CALL DGGEV('N','V',NSEKRY,ZR(LKPRO),NSEKRY,ZR(LMAPRO),
      &           NSEKRY,ZR(LALPR),ZR(LALPI),ZR(LBETA),
      &           ZR(LMORED),NSEKRY,ZR(LMORED),NSEKRY,ZR(LLWORK),
      &           LWORK,INFO)
-C-- ON REACTIVE LE TEST FPE  
+C-- ON REACTIVE LE TEST FPE
       CALL MATFPE(1)
-      
+
 C-- CLASSEMENT DES FREQUENCES PROPRES
       TEMP=1.D+16
       DO 260 I1=1,NSEKRY
@@ -406,10 +406,10 @@ C-- CLASSEMENT DES FREQUENCES PROPRES
           ZR(LFREQ+I1-1)=TEMP
         ENDIF
   260 CONTINUE
-  
-  
+
+
       CALL WKVECT(VEFREQ,'V V R',NBMOD,LVP)
-  
+
       DO 270 I1=1,NBMOD
         TEMP=1.D+16
         DO 280 J1=1,NSEKRY
@@ -422,7 +422,7 @@ C-- CLASSEMENT DES FREQUENCES PROPRES
         LAMBDA=ZR(LALPR+ZI(LINDFR+I1-1)-1)/
      &         ZR(LBETA+ZI(LINDFR+I1-1)-1)-0*SHIFT
         ZR(LVP+I1-1)=(SQRT(ABS(LAMBDA)))/2/PI
-  270 CONTINUE        
+  270 CONTINUE
 
 C-------------------------------------------------------C
 C--                                                   --C
@@ -442,13 +442,13 @@ C-------------------------------------------------------C
   290 CONTINUE
 
 C---------------------------------------C
-C--                                   --C 
+C--                                   --C
 C-- DESTRUCTION DES OBJETS DE TRAVAIL --C
 C--                                   --C
 C---------------------------------------C
-      
+
       CALL DETRSD('MATR_ASSE',IMPED)
-      
+
       CALL JEDETR('&&MODINT.VECT_TEMP')
       CALL JEDETR('&&MODINT.VECT_TEMP_2')
       CALL JEDETR('&&MODINT.KRYLOV_INT')
@@ -470,7 +470,7 @@ C---------------------------------------C
       CALL JEDETR('&&MODINT.VECT_ALPHAI')
       CALL JEDETR('&&MODINT.VECT_BETA')
       CALL JEDETR('&&MODINT.MATR_MOD_RED')
-      CALL JEDETR('&&MODINT.MATR_WORK_DGGEV')     
+      CALL JEDETR('&&MODINT.MATR_WORK_DGGEV')
 
 C---------C
 C--     --C

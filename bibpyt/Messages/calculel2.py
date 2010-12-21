@@ -1,8 +1,8 @@
-#@ MODIF calculel2 Messages  DATE 08/11/2010   AUTEUR PELLET J.PELLET 
+#@ MODIF calculel2 Messages  DATE 20/12/2010   AUTEUR MEUNIER S.MEUNIER 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -53,7 +53,7 @@ Conseil :
 Erreur utilisateur dans CREA_RESU
   Quand on utilise la commande CREA_RESU avec le mot clé AFFE / CHAM_GD et que le
   champ est un champ de fonctions (de la géométrie et/ou du temps), il faut que la grandeur
-  associée à ce champ soit TEMP_F, DEPL_F ou PRES_F.
+  associée à ce champ soit TEMP_F, DEPL_F, PRES_F ou FORC_F.
 
   Ici, la grandeur est : %(k1)s
 """),

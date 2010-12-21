@@ -4,9 +4,9 @@
       INTEGER  JJ,NFISS,ITYPX(*),ITYPEL,NTYPX(*)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 28/09/2010   AUTEUR MASSIN P.MASSIN 
+C MODIF MODELISA  DATE 21/12/2010   AUTEUR MASSIN P.MASSIN 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -63,54 +63,38 @@ C
 C
       CALL JEMARQ()
 
-      IF (ZI(JJ+1).EQ.-1.AND.NFISS.EQ.1)  THEN
-
-        ZI(JJ+5) = ITYPX(1)
-        NTYPX(1) = NTYPX(1) + 1
+      IF (NFISS.EQ.1) THEN
+        IF (ZI(JJ+1).EQ.-1)  THEN
+          ZI(JJ+5) = ITYPX(1)
+          NTYPX(1) = NTYPX(1) + 1
+          NTYPX(7) = NTYPX(7) + 1
+        ELSEIF (ZI(JJ+2).EQ.-1) THEN
+          ZI(JJ+5) = ITYPX(2)
+          NTYPX(2) = NTYPX(2) + 1
+          NTYPX(7) = NTYPX(7) + 1
+        ELSEIF (ZI(JJ+3).EQ.-1) THEN
+          ZI(JJ+5) = ITYPX(3)
+          NTYPX(3) = NTYPX(3) + 1
+          NTYPX(7) = NTYPX(7) + 1
+        ELSEIF (ZI(JJ+1).EQ.1)  THEN
+          ZI(JJ+5) = ITYPX(4)
+          NTYPX(4) = NTYPX(4) + 1
+          NTYPX(7) = NTYPX(7) + 1
+        ELSEIF (ZI(JJ+2).EQ.1) THEN
+          ZI(JJ+5) = ITYPX(5)
+          NTYPX(5) = NTYPX(5) + 1
+          NTYPX(7) = NTYPX(7) + 1
+        ELSEIF (ZI(JJ+3).EQ.1) THEN
+          ZI(JJ+5)=ITYPX(6)
+          NTYPX(6) = NTYPX(6) + 1
+          NTYPX(7) = NTYPX(7) + 1
+        ELSE
+          CALL ASSERT (.FALSE.)
+        ENDIF
+      ELSEIF (NFISS.GT.1) THEN
+        ZI(JJ+5)= ITYPX(6+ABS(ZI(JJ+1)))
+        NTYPX(7+ABS(ZI(JJ+1))) = NTYPX(7+ABS(ZI(JJ+1))) + 1
         NTYPX(7) = NTYPX(7) + 1
-
-      ELSEIF (ZI(JJ+2).EQ.-1) THEN
-
-        ZI(JJ+5) = ITYPX(2)
-        NTYPX(2) = NTYPX(2) + 1
-        NTYPX(7) = NTYPX(7) + 1
-
-      ELSEIF (ZI(JJ+3).EQ.-1) THEN
-
-        ZI(JJ+5) = ITYPX(3)
-        NTYPX(3) = NTYPX(3) + 1
-        NTYPX(7) = NTYPX(7) + 1
-
-      ELSEIF (ZI(JJ+1).EQ.1.AND.NFISS.EQ.1)  THEN
-
-        ZI(JJ+5) = ITYPX(4)
-        NTYPX(4) = NTYPX(4) + 1
-        NTYPX(7) = NTYPX(7) + 1
-
-      ELSEIF (ZI(JJ+2).EQ.1) THEN
-
-        ZI(JJ+5) = ITYPX(5)
-        NTYPX(5) = NTYPX(5) + 1
-        NTYPX(7) = NTYPX(7) + 1
-
-      ELSEIF (ZI(JJ+3).EQ.1) THEN
-
-        ZI(JJ+5)=ITYPX(6)
-        NTYPX(6) = NTYPX(6) + 1
-        NTYPX(7) = NTYPX(7) + 1
-
-      ELSEIF (ABS(ZI(JJ+1)).EQ.1.AND.NFISS.EQ.2) THEN
-
-        ZI(JJ+5)=ITYPX(7)
-        NTYPX(8) = NTYPX(8) + 1
-        NTYPX(7) = NTYPX(7) + 1
-
-      ELSEIF (ABS(ZI(JJ+1)).EQ.2.AND.NFISS.EQ.2) THEN
-
-        ZI(JJ+5)=ITYPX(8)
-        NTYPX(9) = NTYPX(9) + 1
-        NTYPX(7) = NTYPX(7) + 1
-
       ENDIF
 
       CALL JEDEMA()

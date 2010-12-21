@@ -1,15 +1,15 @@
-      SUBROUTINE XMVEF1(NDIM  ,NNE   ,NNM   ,NNES  ,NNC   ,
-     &                  NFAES ,CFACE ,HPG   ,FFC   ,FFE   ,
+      SUBROUTINE XMVEF1(NDIM  ,JNNE   ,JNNM,NDEPLE ,
+     &                  NNC,NFAES ,CFACE ,HPG   ,FFC   ,FFE   ,
      &                  FFM   ,JACOBI,JPCAI ,DLAGRC,DLAGRF,
      &                  COEFFA,COEFFF,TAU1  ,TAU2  ,RESE  ,
      &                  MPROJ ,COEFCA,JEU   ,TYPMAI,NSINGE,
-     &                  NSINGM,RRE   ,RRM   ,NVIT  ,NDDLSE,
-     &                  VTMP  )
+     &                  NSINGM,RRE   ,RRM   ,NVIT  ,
+     &                  NCONTA,JDDLE,JDDLM,VTMP  )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/04/2010   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 21/12/2010   AUTEUR MASSIN P.MASSIN 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -27,12 +27,13 @@ C ======================================================================
 C TOLE CRP_21
 C
       IMPLICIT NONE
-      INTEGER  NDIM,NNC,NNE,NNES,NNM,NFAES,JPCAI,CFACE(5,3)
-      INTEGER  NSINGE,NSINGM,NVIT,NDDLSE
+      INTEGER  NDIM,NNC,JNNE(3),JNNM(3),NFAES,JPCAI,CFACE(5,3)
+      INTEGER  NSINGE,NSINGM,NVIT,JDDLE(2),JDDLM(2)
       REAL*8   HPG,FFC(8),FFE(8),FFM(8),JACOBI
       REAL*8   DLAGRC,DLAGRF(2)
       REAL*8   COEFFF,COEFFA,RRE,RRM,COEFCA,JEU
       REAL*8   TAU1(3),TAU2(3),RESE(3),MPROJ(3,3),VTMP(168)
+      INTEGER  NCONTA,NDEPLE
       CHARACTER*8  TYPMAI
 C      
 C ----------------------------------------------------------------------
@@ -76,11 +77,23 @@ C IN  NVIT   : POINT VITAL OU PAS
 C IN  INADH  : POINT ADHERENT OU PAS
 C I/O VTMP   : VECTEUR SECOND MEMBRE ELEMENTAIRE DE CONTACT/FROTTEMENT
 C ----------------------------------------------------------------------
-      INTEGER   I, J, K, II, INI, PLI, XOULA
+      INTEGER   I, J, K, II, INI, PLI, XOULA,IIN,NDDLE
+      INTEGER   NNE,NNES,NNEM,NNM,NNMS,DDLES,DDLEM,DDLMS,DDLMM
       REAL*8    VECTT(3), TT(2), VV, T
 C ----------------------------------------------------------------------
 C
 C --- INITIALISATIONS
+C
+      NNE=JNNE(1)
+      NNES=JNNE(2)
+      NNEM=JNNE(3)
+      NNM=JNNM(1)
+      NNMS=JNNM(2)
+      DDLES=JDDLE(1)
+      DDLEM=JDDLE(2)
+      DDLMS=JDDLM(1)
+      DDLMM=JDDLM(2)
+      NDDLE = DDLES*NNES+DDLEM*NNEM
 C
       DO 100 I = 1,3
         VECTT(I) = 0.D0
@@ -110,10 +123,11 @@ C
       IF (NNM.NE.0) THEN
 C
       DO 10 J = 1,NDIM
-        DO 20 I = 1,NNES
+        DO 20 I = 1,NDEPLE
 C --- BLOCS ES,CL ; ES,EN ; (ES,SI)
           VV = JACOBI*HPG*COEFFF*(DLAGRC-COEFCA*JEU)*VECTT(J)*FFE(I)
-          II = NDDLSE*(I-1)+J
+          CALL INDENT(I,DDLES,DDLEM,NNES,IIN)
+          II = IIN + J
           VTMP(II) = -VV
           II = II + NDIM
           VTMP(II) = VV
@@ -125,8 +139,8 @@ C --- BLOCS ES,CL ; ES,EN ; (ES,SI)
         DO 30 I = 1,NNM
 C --- BLOCS MA,CL ; MA,EN ; (MA,SI)
           VV = JACOBI*HPG*COEFFF*(DLAGRC-COEFCA*JEU)*VECTT(J)*FFM(I)
-          II = NDDLSE*NNES+NDIM*(NNE-NNES) +
-     &          (2+NSINGM)*NDIM*(I-1)+J
+          CALL INDENT(I,DDLMS,DDLMM,NNMS,IIN)
+          II = NDDLE + IIN + J
           VTMP(II) = VV
           II = II + NDIM
           VTMP(II) = VV
@@ -139,10 +153,11 @@ C --- BLOCS MA,CL ; MA,EN ; (MA,SI)
       ELSE
 C
       DO 60 J = 1,NDIM
-        DO 70 I = 1,NNES
+        DO 70 I = 1,NDEPLE
 C --- BLOCS ES,SI
           VV = JACOBI*HPG*COEFFF*(DLAGRC-COEFCA*JEU)*VECTT(J)*FFE(I)
-          II = NDDLSE*(I-1)+J
+          CALL INDENT(I,DDLES,DDLEM,NNES,IIN)
+          II = IIN + J
           VTMP(II) = RRE * VV
    70   CONTINUE
    60 CONTINUE
@@ -152,8 +167,8 @@ C --------------------- CALCUL DE [L3]----------------------------------
 C
       IF (NVIT.EQ.1) THEN
       DO 40 I = 1,NNC
-        INI=XOULA(CFACE,NFAES,I,JPCAI,TYPMAI)
-        CALL XPLMA2(NDIM,NNE,NNES,NDDLSE,INI,PLI)
+        INI=XOULA(CFACE,NFAES,I,JPCAI,TYPMAI,NCONTA)
+        CALL XPLMA2(NDIM,NNE,NNES,DDLES,INI,PLI)
         DO 50 J = 1,NDIM-1
           II = PLI+J
           VTMP(II) = JACOBI*HPG*TT(J)*FFC(I)/COEFFA

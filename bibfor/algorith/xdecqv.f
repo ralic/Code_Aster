@@ -1,13 +1,13 @@
-      SUBROUTINE XDECQV(IT,CONNEC,LSN,IGEOM,PINTER,NINTER,NPTS,
+      SUBROUTINE XDECQV(NNOSE,IT,CNSET,LSN,IGEOM,PINTER,NINTER,NPTS,
      &                          AINTER,NSE,CNSE,HEAV)
       IMPLICIT NONE
 
       REAL*8        LSN(*)
-      INTEGER       IT,CONNEC(6,6),IGEOM,NINTER,NPTS,NSE,CNSE(6,6)
+      INTEGER       NNOSE,IT,CNSET(*),IGEOM,NINTER,NPTS,NSE,CNSE(6,6)
       CHARACTER*24  PINTER,AINTER,HEAV
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/06/2010   AUTEUR CARON A.CARON 
+C MODIF ALGORITH  DATE 21/12/2010   AUTEUR MASSIN P.MASSIN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -27,8 +27,9 @@ C ======================================================================
 C                      DÉCOUPER LE TETRA EN NSE SOUS-TETRAS
 C
 C     ENTREE
+C       NNOSE    : NOMBRE DE NOEUDS DU SOUS TETRA
 C       IT       : INDICE DU TETRA EN COURS
-C       CONNEC   : CONNECTIVITÉ DES NOEUDS DU TETRA
+C       CNSET    : CONNECTIVITÉ DES NOEUDS DU TETRA
 C       LSN      : VALEURS DE LA LEVEL SET NORMALE
 C       IGEOM    : ADRESSE DES COORDONNÉES DES NOEUDS DE L'ELT PARENT
 C       PINTER   : COORDONNÉES DES POINTS D'INTERSECTION
@@ -62,13 +63,12 @@ C
       INTEGER         JPTINT,JAINT,JHEAV
       INTEGER         IN,INH,I,J,AR(12,3),NBAR,ISE,NDIM,IBID
       INTEGER         A1,A2,A,B,C,IADZI,IAZK24,NDIME,JDIM
-      INTEGER         K,INN,E,E2,NNOP
+      INTEGER         K,E,E2,NNOP
       INTEGER         ZXAIN,XXMMVD,NNOMAX(2)
       CHARACTER*8     TYPMA,NOMA,ELRESE(3)
       LOGICAL         CUT
 
       DATA            ELRESE /'SEG3','TRIA6','TETRA10'/
-      DATA            NNOMAX / 3 , 6 /
 C --------------------------------------------------------------------
       CALL JEMARQ()
 
@@ -95,7 +95,6 @@ C     NDIME = 2 ALORS QUE NDIM = 3
  10   CONTINUE
 
       TYPMA=ELRESE(NDIME)
-      INN = NNOMAX(NDIME)
 
 C     CALCUL DES COORDONNEES ET LSN DU NOEUD 9
       IF (NNOP.EQ.8) THEN
@@ -108,22 +107,23 @@ C     CALCUL DES COORDONNEES ET LSN DU NOEUD 9
       I=1
  1    CONTINUE
 C     (1) RECHERCHE D'UN NOEUD PIVOT (LSN NON NULLE)
-      IF(CONNEC(IT,I).NE.9.AND.LSN(CONNEC(IT,I)).NE.0
-     &                                 .AND.I.LT.INN)THEN
-        DO 30 K=I+1,INN
+      IF(CNSET(NNOSE*(IT-1)+I).NE.9.AND.LSN(CNSET(NNOSE*(IT-1)+I)).NE.0
+     &                                 .AND.I.LT.NNOSE)THEN
+        DO 30 K=I+1,NNOSE
 C       (2) PRODUIT DE CE PIVOT PAR LES AUTRES LSN
-          IF (CONNEC(IT,K).EQ.9) THEN
-            IF ((LSN(CONNEC(IT,I))*XLSN).LT.0.D0) CUT=.TRUE.
-          ELSEIF (CONNEC(IT,K).NE.9) THEN
-            IF ((LSN(CONNEC(IT,I))*LSN(CONNEC(IT,K))).LT.0.D0) THEN
+          IF (CNSET(NNOSE*(IT-1)+K).EQ.9) THEN
+            IF ((LSN(CNSET(NNOSE*(IT-1)+I))*XLSN).LT.0.D0) CUT=.TRUE.
+          ELSEIF (CNSET(NNOSE*(IT-1)+K).NE.9) THEN
+            IF ((LSN(CNSET(NNOSE*(IT-1)+I))*
+     &            LSN(CNSET(NNOSE*(IT-1)+K))).LT.0.D0) THEN
               CUT=.TRUE.
             ENDIF
           ENDIF
  30     CONTINUE
         IF (.NOT.CUT) THEN
           NSE=1
-          DO 31 IN=1,INN
-            CNSE(1,IN)=CONNEC(IT,IN)
+          DO 31 IN=1,NNOSE
+            CNSE(1,IN)=CNSET(NNOSE*(IT-1)+IN)
  31       CONTINUE
         ENDIF
       ELSE 
@@ -141,8 +141,8 @@ C --------------------------------------------------------------------
 C       PAS DE DECOUPAGE
 C         1 SEUL ELEMENT
           NSE=1
-          DO 40 IN=1,INN
-            CNSE(1,IN)=CONNEC(IT,IN)
+          DO 40 IN=1,NNOSE
+            CNSE(1,IN)=CNSET(NNOSE*(IT-1)+IN)
  40       CONTINUE
 C
         ELSEIF (NINTER .EQ.2) THEN
@@ -168,21 +168,21 @@ C
  50         CONTINUE   
             CNSE(1,1)=101
             CNSE(1,2)=102
-            CNSE(1,3)=CONNEC(IT,A)
+            CNSE(1,3)=CNSET(NNOSE*(IT-1)+A)
             CNSE(1,4)=205
             CNSE(1,5)=204
             CNSE(1,6)=202
             CNSE(2,1)=101
             CNSE(2,2)=102
-            CNSE(2,3)=CONNEC(IT,C)
+            CNSE(2,3)=CNSET(NNOSE*(IT-1)+C)
             CNSE(2,4)=205
             CNSE(2,5)=203
             CNSE(2,6)=206
             CNSE(3,1)=101
-            CNSE(3,2)=CONNEC(IT,B)
-            CNSE(3,3)=CONNEC(IT,C)
+            CNSE(3,2)=CNSET(NNOSE*(IT-1)+B)
+            CNSE(3,3)=CNSET(NNOSE*(IT-1)+C)
             CNSE(3,4)=201
-            CNSE(3,5)=CONNEC(IT,E)
+            CNSE(3,5)=CNSET(NNOSE*(IT-1)+E)
             CNSE(3,6)=206
 C
           ELSEIF (NPTS .EQ.1) THEN
@@ -206,23 +206,23 @@ C           CNSE(1,1)=101
             ENDIF
             CNSE(1,1)=NINT(ZR(JAINT-1+ZXAIN*(NPTS-1)+2))
             CNSE(1,2)=102
-            CNSE(1,3)=CONNEC(IT,B)
+            CNSE(1,3)=CNSET(NNOSE*(IT-1)+B)
             CNSE(1,4)=203
             CNSE(1,5)=202
-            CNSE(1,6)=CONNEC(IT,E)
+            CNSE(1,6)=CNSET(NNOSE*(IT-1)+E)
             CNSE(2,1)=NINT(ZR(JAINT-1+ZXAIN*(NPTS-1)+2))
             CNSE(2,2)=102
-            CNSE(2,3)=CONNEC(IT,C)
+            CNSE(2,3)=CNSET(NNOSE*(IT-1)+C)
             CNSE(2,4)=203
             CNSE(2,5)=201
-            CNSE(2,6)=CONNEC(IT,E2)     
+            CNSE(2,6)=CNSET(NNOSE*(IT-1)+E2)     
 
           ELSEIF (NPTS .GE.2) THEN
 C         PAS DE DECOUPAGE
 C         1 SEUL ELEMENT
             NSE=1
-            DO 60 IN=1,INN
-              CNSE(1,IN)=CONNEC(IT,IN)
+            DO 60 IN=1,NNOSE
+              CNSE(1,IN)=CNSET(NNOSE*(IT-1)+IN)
  60         CONTINUE
           ENDIF
 
@@ -232,8 +232,8 @@ C         1 SEUL ELEMENT
 C           PAS DE DECOUPAGE
 C           1 SEUL ELEMENT
             NSE=1
-            DO 70 IN=1,INN
-             CNSE(1,IN)=CONNEC(IT,IN)
+            DO 70 IN=1,NNOSE
+             CNSE(1,IN)=CNSET(NNOSE*(IT-1)+IN)
  70         CONTINUE
 C
           ELSEIF (NPTS .EQ.1) THEN
@@ -255,40 +255,40 @@ C           ON PLACE A,B,C SUR LE TRIA
  80         CONTINUE
             CNSE(1,1)=102
             CNSE(1,2)=103
-            CNSE(1,3)=CONNEC(IT,A)
+            CNSE(1,3)=CNSET(NNOSE*(IT-1)+A)
             CNSE(1,4)=207
             CNSE(1,5)=205
             CNSE(1,6)=203
             CNSE(2,1)=102
             CNSE(2,2)=103
-            CNSE(2,3)=CONNEC(IT,C)
+            CNSE(2,3)=CNSET(NNOSE*(IT-1)+C)
             CNSE(2,4)=207
             CNSE(2,5)=204
             CNSE(2,6)=206
             CNSE(3,1)=102
-            CNSE(3,2)=CONNEC(IT,B)
-            CNSE(3,3)=CONNEC(IT,C)
+            CNSE(3,2)=CNSET(NNOSE*(IT-1)+B)
+            CNSE(3,3)=CNSET(NNOSE*(IT-1)+C)
             CNSE(3,4)=202
-            CNSE(3,5)=CONNEC(IT,E)
+            CNSE(3,5)=CNSET(NNOSE*(IT-1)+E)
             CNSE(3,6)=206
 C
           ELSEIF (NPTS .GE.2) THEN
 C         PAS DE DECOUPAGE
 C         1 SEUL ELEMENT
             NSE=1
-            DO 90 IN=1,INN
-              CNSE(1,IN)=CONNEC(IT,IN)
+            DO 90 IN=1,NNOSE
+              CNSE(1,IN)=CNSET(NNOSE*(IT-1)+IN)
  90         CONTINUE
 
           ENDIF
-C           ENDIF sur NPTS de NINTER=3
+C           ENDIF SUR NPTS DE NINTER=3
 
         ELSE 
 
 C         1 SEUL ELEMENT
           NSE=1
-          DO 100 IN=1,INN
-            CNSE(1,IN)=CONNEC(IT,IN)
+          DO 100 IN=1,NNOSE
+            CNSE(1,IN)=CNSET(NNOSE*(IT-1)+IN)
  100      CONTINUE
 C
         ENDIF
@@ -299,8 +299,8 @@ C
 C         PAS DE DECOUPAGE
 C         1 SEUL ELEMENT
           NSE=1
-          DO 110 IN=1,INN
-            CNSE(1,IN)=CONNEC(IT,IN)
+          DO 110 IN=1,NNOSE
+            CNSE(1,IN)=CNSET(NNOSE*(IT-1)+IN)
  110      CONTINUE
 
          ELSEIF (NINTER .EQ.1) THEN
@@ -314,10 +314,10 @@ C          DECOUPAGE EN 2 ELEMENTS
 C            101 LE POINT D'INTERSECTION
 C            ON SE PLACE DANS LA CONF DE REF (VOIR ALGO)
              CNSE(1,1)=101
-             CNSE(1,2)=CONNEC(IT,A)
+             CNSE(1,2)=CNSET(NNOSE*(IT-1)+A)
              CNSE(1,3)=202
              CNSE(2,1)=101
-             CNSE(2,2)=CONNEC(IT,B)
+             CNSE(2,2)=CNSET(NNOSE*(IT-1)+B)
              CNSE(2,3)=201
            ENDIF
 
@@ -325,8 +325,8 @@ C            ON SE PLACE DANS LA CONF DE REF (VOIR ALGO)
 C        PAS DE DECOUPAGE
 C        1 SEUL ELEMENT
            NSE=1
-           DO 120 IN=1,INN
-             CNSE(1,IN)=CONNEC(IT,IN)
+           DO 120 IN=1,NNOSE
+             CNSE(1,IN)=CNSET(NNOSE*(IT-1)+IN)
  120       CONTINUE
 C
          ENDIF
@@ -350,17 +350,19 @@ C --------------------------------------------------------------------
  300  CONTINUE
 
 C     REMARQUE IMPORTANTE :
-C     IN ON EST SUR UN ELEMENT DE BORD COINCIDANT AVEC L'INTERCE
+C     SI ON EST SUR UN ELEMENT DE BORD COINCIDANT AVEC L'INTERCE
 C     (NDIME = NDIM - 1 ET NPTS = NINTER = NDIM) ALORS ON NE PEUT PAS
 C     DÉTERMINER DE QUEL COTÉ DE L'INTERFACE ON SE TROUVE, CAR ON
 C     EST TOUJOURS SUR L'INTERFACE. LA VALEUR DE ZR(JHEAV-1+ISE)
-C     EST DONC FAUSSE DANS CE CAS : on met 99.
+C     EST DONC FAUSSE DANS CE CAS : ON MET 99.
 C     UNE CORRECTION EST FAITE DANS XORIPE LORS DE L'ORIENTATION
 C     DES NORMALES, OU ON EN PROFITE POUR CORRIGER AUSSI ZR(JHEAV-1+ISE)
       IF (NDIME.EQ.NDIM-1.AND.NPTS.EQ.NINTER.AND.NINTER.EQ.NDIM) THEN
         CALL ASSERT(NSE.EQ.1)
          ZR(JHEAV-1+1)=99.D0
       ENDIF
+
+      CALL JEDETR(AINTER)
 
       CALL JEDEMA()
       END

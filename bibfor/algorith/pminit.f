@@ -2,27 +2,27 @@
      &NOMPAR,ANG,PGL,IROTA,EPSM,SIGM,VIM,VIP,DEFIMP,COEF,INDIMP,
      &FONIMP,CIMPO,KEL,SDDISC,PARCRI,PRED,MATREL,OPTION)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/07/2010   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 20/12/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C TOLE CRP_21 
+C TOLE CRP_21 CRS_1404
       IMPLICIT NONE
 C-----------------------------------------------------------------------
-C     OPERATEUR    CALC_POINT_MAT : INITIALISATIONS 
+C     OPERATEUR    CALC_POINT_MAT : INITIALISATIONS
 C-----------------------------------------------------------------------
 C
 C IN   IMATE  : adresse materiau codé
@@ -85,8 +85,8 @@ C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
       REAL*8       PARCRI(12),PARCON(9),ANGEUL(3)
       DATA NOMEPS/'EPXX','EPYY','EPZZ','EPXY','EPXZ','EPYZ'/
       DATA NOMSIG/'SIXX','SIYY','SIZZ','SIXY','SIXZ','SIYZ'/
-      
-C     INITIALISATIONS      
+
+C     INITIALISATIONS
       NDIM=3
       TYPMOD(1)='3D'
       TYPMOD(2)=' '
@@ -112,7 +112,7 @@ C     LA TABLE CONTIENT L'INSTANT, EPS, SIG, TRACE, VMIS, VARI, NB_ITER
       DO 13 I=1,6
          NOMPAR(1+I)=NOMEPS(I)
          NOMPAR(7+I)=NOMSIG(I)
- 13   CONTINUE    
+ 13   CONTINUE
       NOMPAR(14)='TRACE'
       NOMPAR(15)='VMIS'
       DO 11 I=1,MIN(9,NBVITA)
@@ -127,7 +127,7 @@ C     LA TABLE CONTIENT L'INSTANT, EPS, SIG, TRACE, VMIS, VARI, NB_ITER
       NOMPAR(NBPAR)='NB_ITER'
       CALL TBCRSD(TABLE,'G')
       CALL TBAJPA(TABLE,NBPAR,NOMPAR,TYPPAR)
-    
+
 C     ----------------------------------------
 C     TRAITEMENT DES ANGLES
 C     ----------------------------------------
@@ -176,7 +176,7 @@ C        VERIFS
          PGL(1,2)=SIN(ANG1)
          PGL(2,1)=-SIN(ANG1)
          PGL(3,3)=1.D0
-C VOIR GENERALISATION A 3 ANGLES AVEC CALL MATROT            
+C VOIR GENERALISATION A 3 ANGLES AVEC CALL MATROT
       ENDIF
 
 C     ----------------------------------------
@@ -206,15 +206,15 @@ C     ----------------------------------------
       IF (NBOCC.GT.0) THEN
          CALL GETVR8('VARI_INIT','VALE',1,1,NBVARI,VIM,N1)
       ENDIF
-  
+
       KPG=1
       KSP=1
       CALL R8INIR(7, 0.D0, REP, 1)
       REP(1)=1.D0
       CALL DCOPY(3,ANG,1,REP(2),1)
-      
+
       INSTAM=0.D0
-      
+
 C     ----------------------------------------
 C     MATRICE ELASTIQUE ET COEF POUR ADIMENSIONNALISER
 C     ----------------------------------------
@@ -226,7 +226,7 @@ C     DMAT ECRIT MU POUR LES TERMES DE CISAILLEMENT
         KEL(J,J) = KEL(J,J)*2.D0
         COEF=MAX(COEF,KEL(J,J))
  67   CONTINUE
-      
+
 C     ----------------------------------------
 C     CHARGEMENT
 C     ----------------------------------------
@@ -235,7 +235,7 @@ C     ----------------------------------------
       IEPSI=0
       DO 23 I=1,6
          INDIMP(I)=0
- 23   CONTINUE       
+ 23   CONTINUE
       DO 14 I=1,6
          CALL GETVID(' ',NOMEPS(I),1,1,1,FONEPS(I),N1)
          CALL GETVID(' ',NOMSIG(I),1,1,1,FONSIG(I),N2)
@@ -245,16 +245,16 @@ C     ----------------------------------------
             IEPSI=IEPSI+1
             INDIMP(I)=1
          ELSE
-            CIMPO(I,I)=1.D0      
+            CIMPO(I,I)=1.D0
             FONIMP(I)=FONSIG(I)
             ICONT=ICONT+1
             INDIMP(I)=0
-         ENDIF   
+         ENDIF
   14  CONTINUE
       DEFIMP=0
       IF (IEPSI.EQ.6) DEFIMP=1
 
-C     TRAITEMENT DES RELATIONS LINEAIRES (MOT CLE MATR_C1)    
+C     TRAITEMENT DES RELATIONS LINEAIRES (MOT CLE MATR_C1)
       CALL GETFAC('MATR_C1',NBOCC)
       IF (NBOCC.NE.0) THEN
          DO 55 I=1,NBOCC
@@ -281,7 +281,7 @@ C     TRAITEMENT DES RELATIONS LINEAIRES (MOT CLE MATR_C1)
             FONIMP(ILIGNE)=VALEF
  57      CONTINUE
       ENDIF
-      
+
 C     ----------------------------------------
 C     ECRITURE ETAT INITIAL DANS TABLE
 C     ----------------------------------------
@@ -293,18 +293,18 @@ C     ----------------------------------------
       VR(1)=INSTAM
       VR(NBPAR)=0
       CALL TBAJLI(TABLE,NBPAR,NOMPAR,0,VR,CBID,K8B,0)
-      
+
 C     ----------------------------------------
 C     CREATION SD DISCRETISATION
 C     ----------------------------------------
-      CALL GETVID('INCREMENT','LIST_INST',1,1,1,LISINS,N1)      
-      INSTIN=0.D0    
-      NOMCMD='SIMU_POINT_MAT' 
+      CALL GETVID('INCREMENT','LIST_INST',1,1,1,LISINS,N1)
+      INSTIN=0.D0
+      NOMCMD='SIMU_POINT_MAT'
       CALL NMCRLI(INSTIN,LISINS,SDDISC,DELMIN,NOMCMD)
-        
+
 C     Instructions remlpacant CALL NMCRAR(K8B,SDDISC,DERNI,DELMIN,NOMCMD
 C     on n'a pas le mot-clé ARCHIVAGE dans calc_point_mat.capy,
-C     mais NMCRAR crée d'autre objets utiles au redécoupage 
+C     mais NMCRAR crée d'autre objets utiles au redécoupage
       TPSDIT = SDDISC(1:19)//'.DITR'
       CALL JEVEUO(TPSDIT,'L',JTEMPS)
       CALL JELIRA(TPSDIT,'LONUTI',NBTEMP,K8B)
@@ -317,18 +317,18 @@ C     mais NMCRAR crée d'autre objets utiles au redécoupage
       CALL WKVECT(TPSDII,'V V R8',8,JINFO)
       ZR(JINFO-1 + 1) = 0
       ZR(JINFO-1 + 2) = 1
-      
 
-      
+
+
 C     ----------------------------------------
-C     NEWTON 
+C     NEWTON
 C     ----------------------------------------
-      PRED=1    
+      PRED=1
       CALL GETVTX('NEWTON','PREDICTION',1,1,1,PREDIC,N1)
        CALL DCOPY(6,SIGM,1,VR(8),1)
-      IF (PREDIC.EQ.'ELASTIQUE') PRED=0     
+      IF (PREDIC.EQ.'ELASTIQUE') PRED=0
       MATREL=0
-      OPTION='FULL_MECA'  
+      OPTION='FULL_MECA'
       CALL GETVTX('NEWTON','MATRICE',1,1,1,MATRIC,N1)
       IF (N1.NE.0) THEN
          IF (MATRIC.EQ.'ELASTIQUE') THEN
@@ -336,14 +336,14 @@ C     ----------------------------------------
             PRED=0
             OPTION='RAPH_MECA'
          ENDIF
-      ENDIF   
+      ENDIF
 
 C     ----------------------------------------
 C     LECTURE DES PARAMETRES DE CONVERGENCE
 C     ----------------------------------------
-      CALL NMDOCN(K24BID,PARCRI,PARCON)   
+      CALL NMDOCN(K24BID,PARCRI,PARCON)
 
-C     SUBDIVISION AUTOMATIQUE DU PAS DE TEMPS      
+C     SUBDIVISION AUTOMATIQUE DU PAS DE TEMPS
       CALL NMCRSU(SDDISC,LISINS,PARCRI,NOMCMD)
 
       END

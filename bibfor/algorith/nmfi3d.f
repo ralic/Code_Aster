@@ -4,7 +4,7 @@
      &                  COMPOR,MATSYM,COOPG,TM,TP,CODRET)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 07/12/2010   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ALGORITH  DATE 20/12/2010   AUTEUR PELLET J.PELLET 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
 C COPYRIGHT (C) 2007 NECS - BRUNO ZUBER   WWW.NECS.FR
@@ -22,7 +22,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C TOLE CRP_21
+C TOLE CRP_21 CRS_1404
 
       IMPLICIT NONE
       INTEGER NNO,NDDL,NPG,LGPG,MATE,CODRET
@@ -71,16 +71,16 @@ C-----------------------------------------------------------------------
 
       RESI = OPTION.EQ.'RAPH_MECA'      .OR. OPTION(1:9).EQ.'FULL_MECA'
       RIGI = OPTION(1:9).EQ.'FULL_MECA' .OR. OPTION(1:9).EQ.'RIGI_MECA'
-      
+
 C --- ANGLE DU MOT_CLEF MASSIF (AFFE_CARA_ELEM)
 C --- INITIALISE A R8VIDE (ON NE S'EN SERT PAS)
       CALL R8INIR(3,  R8VIDE(), ANGMAS ,1)
 
       CALL R8INIR(3,0.D0,SUM,1)
       CALL R8INIR(3,0.D0,DSU,1)
-      
+
       IF (RESI) CALL R8INIR(NDDL,0.D0,FINT,1)
-            
+
       IF (RIGI) THEN
         IF (MATSYM) THEN
           CALL R8INIR((NDDL*(NDDL+1))/2,0.D0, KTAN,1)
@@ -96,7 +96,7 @@ C DEPLACEMENTS AUX NOEUDS , AINSI QUE LE POIDS DES PG :
 
         CALL NMFICI(NNO,NDDL,WREF(KPG),VFF(1,KPG),
      &              DFDE(1,1,KPG),GEOM,POIDS,B)
-      
+
 C CALCUL DU SAUT DE DEPLACEMENT - : SUM, ET DE L'INCREMENT : DSU
 C AU POINT DE GAUSS KPG
 
@@ -121,19 +121,19 @@ C -   APPEL A LA LOI DE COMPORTEMENT
      &                RBID,VIM(1,KPG),
      &                OPTION,ANGMAS,COOPG(1,KPG),
      &                SIGMA(1,KPG),VIP(1,KPG),DSIDEP,IBID)
-       
+
         IF (RESI) THEN
-        
+
 C         CONTRAINTES
           DO 11 N = 1,3
             SIGP(N,KPG) = SIGMA(N,KPG)
  11       CONTINUE
-                
+
 C         FORCES INTERIEURES
           DO 20 NI=1,NDDL
             FINT(NI) = FINT(NI) + POIDS*DDOT(3,B(1,NI),1,SIGMA(1,KPG),1)
  20       CONTINUE
- 
+
         ENDIF
 
 C MATRICE TANGENTE
@@ -141,7 +141,7 @@ C MATRICE TANGENTE
         IF (RIGI) THEN
 
           IF (MATSYM) THEN
-          
+
 C           STOCKAGE SYMETRIQUE
             KK = 0
             DO 50 NI=1,NDDL
@@ -154,9 +154,9 @@ C           STOCKAGE SYMETRIQUE
  60           CONTINUE
  52         CONTINUE
  50         CONTINUE
- 
+
           ELSE
-          
+
 C           STOCKAGE COMPLET
             KK = 0
             DO 51 NI=1,NDDL
@@ -169,9 +169,9 @@ C           STOCKAGE COMPLET
  61           CONTINUE
  53         CONTINUE
  51         CONTINUE
- 
+
           ENDIF
-        
+
         ENDIF
 
  10   CONTINUE

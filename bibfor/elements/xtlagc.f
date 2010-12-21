@@ -1,11 +1,11 @@
-      SUBROUTINE XTLAGC(TYPMAI,NDIM  ,NNC   ,NN     ,NNS   ,
+      SUBROUTINE XTLAGC(TYPMAI,NDIM  ,NNC   ,JNN    ,
      &                  NDDLS ,NFACE ,CFACE ,JDEPDE,JPCAI  ,
-     &                  FFC   ,DLAGRC)
+     &                  FFC   ,NCONTA,DLAGRC)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
+C MODIF ELEMENTS  DATE 21/12/2010   AUTEUR MASSIN P.MASSIN 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -23,12 +23,12 @@ C ======================================================================
 C RESPONSABLE ABBAS M.ABBAS
 C
       IMPLICIT NONE
-      INTEGER      NDIM,NNC,NN,NNS,NDDLS
+      INTEGER      NDIM,NNC,JNN(3),JNDDL(2)
       INTEGER      JDEPDE,JPCAI
       REAL*8       FFC(9)
       CHARACTER*8  TYPMAI
       REAL*8       DLAGRC
-      INTEGER      CFACE(5,3),NFACE
+      INTEGER      CFACE(5,3),NFACE,NCONTA
 C      
 C ----------------------------------------------------------------------
 C
@@ -77,7 +77,7 @@ C
 C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
 C
       INTEGER INO
-      INTEGER IN,XOULA,PL
+      INTEGER IN,XOULA,PL,NN,NNS,NDDLS
 C
 C ----------------------------------------------------------------------
 C 
@@ -85,13 +85,16 @@ C
 C
 C --- INITIALISATIONS
 C
+      NN = JNN(1)
+      NNS= JNN(2)
+C
       DLAGRC    = 0.D0
 C 
 C --- LAGRANGE DE CONTACT
 C     
       DO 230 INO = 1,NNC
 C --- XOULA NE SERT PLUS A RIEN AVEC LA FORMULATION NOEUDS SOMMETS !!!
-        IN     = XOULA(CFACE ,NFACE ,INO   ,JPCAI ,TYPMAI)
+        IN     = XOULA(CFACE ,NFACE ,INO   ,JPCAI ,TYPMAI,NCONTA)
         CALL XPLMA2(NDIM  ,NN    ,NNS   ,NDDLS ,IN    ,PL    )
         DLAGRC = DLAGRC+FFC(INO)*ZR(JDEPDE-1+PL+1-1)
  230  CONTINUE

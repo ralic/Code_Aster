@@ -1,10 +1,10 @@
-      SUBROUTINE IMPSDV(SDIMPR,
-     &                  ICOL,VALK,VALR,VALI,MARQ)
+      SUBROUTINE IMPSDV(SDIMPZ,ICOL  ,VALK  ,VALR  ,VALI  ,
+     &                  MARQ  )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 23/09/2008   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 21/12/2010   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -21,12 +21,12 @@ C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C
       IMPLICIT NONE
-      CHARACTER*14 SDIMPR
-      INTEGER      ICOL
-      CHARACTER*16 VALK
-      REAL*8       VALR
-      INTEGER      VALI
-      CHARACTER*1  MARQ
+      CHARACTER*(*) SDIMPZ
+      INTEGER       ICOL
+      CHARACTER*16  VALK
+      REAL*8        VALR
+      INTEGER       VALI
+      CHARACTER*1   MARQ
 C
 C ----------------------------------------------------------------------
 C
@@ -70,6 +70,7 @@ C
       INTEGER      JIMPRR,JIMPRK,JIMPRI
       CHARACTER*24 IMPRER,IMPREK,IMPREI
       INTEGER      NBCOL,FORCOL
+      CHARACTER*14 SDIMPR
 C
 C ----------------------------------------------------------------------
 C
@@ -77,13 +78,14 @@ C
 C
 C ---
 C
-      IMPINF = SDIMPR(1:14)//'INFO'
-      IMPTYP = SDIMPR(1:14)//'DEFI.TYP'
-      IMPCOL = SDIMPR(1:14)//'DEFI.COL'
-      IMPRER = SDIMPR(1:14)//'DEFI.RER'
-      IMPREI = SDIMPR(1:14)//'DEFI.REI'
-      IMPREK = SDIMPR(1:14)//'DEFI.REK'
-      IMPMAR = SDIMPR(1:14)//'DEFI.MAR'
+      SDIMPR = SDIMPZ
+      IMPINF = SDIMPR(1:14)//'.INFO'
+      IMPTYP = SDIMPR(1:14)//'.DEFI.TYP'
+      IMPCOL = SDIMPR(1:14)//'.DEFI.COL'
+      IMPRER = SDIMPR(1:14)//'.DEFI.RER'
+      IMPREI = SDIMPR(1:14)//'.DEFI.REI'
+      IMPREK = SDIMPR(1:14)//'.DEFI.REK'
+      IMPMAR = SDIMPR(1:14)//'.DEFI.MAR'
 
       CALL JEVEUO(IMPINF,'L',JIMPIN)
       CALL JEVEUO(IMPTYP,'L',JIMPTY)
@@ -95,7 +97,7 @@ C
 C
 C --- NOMBRE DE COLONNES
 C
-      NBCOL = ZI(JIMPIN-1+4)
+      NBCOL = ZI(JIMPIN-1+1)
       IF ((ICOL.LE.0).OR.(ICOL.GT.NBCOL)) THEN
         CALL ASSERT(.FALSE.)
       ENDIF
@@ -118,9 +120,6 @@ C
 
       MARQ = ZK8(JIMPMA-1+ICOL)(1:1)
 C
-C ---
-C
- 999  CONTINUE
       CALL JEDEMA()
 
       END

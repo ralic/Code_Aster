@@ -12,28 +12,28 @@
 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 12/07/2010   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 20/12/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C ======================================================================
-C TOLE CRP_21
+C TOLE CRP_21 CRS_1404
 C ======================================================================
 
-C - VARIABLES ENTREE  
+C - VARIABLES ENTREE
       INTEGER DIMDEF,DIMCON,NPG,KPI,NPI,NDIM,NBPHA1,NBPHA2
       INTEGER NBVARI,YAMEC,YATE,YAP1,YAP2,IMATE
       INTEGER ADDEME,ADDEP1,ADDEP2,ADDETE,ADCOP1,ADCOP2,ADDLH1
@@ -55,11 +55,11 @@ C - VARIABLES LOCALES
       INTEGER NVIM,NVIT,NVIH,NVIC,ADVIME,ADVITH,ADVIHY,ADVICO
       INTEGER I,J,F
       INTEGER VIHRHO,VICPHI,VICPVP,VICSAT
-      INTEGER IFA,VICPR1,VICPR2    
+      INTEGER IFA,VICPR1,VICPR2
       REAL*8 T0,P10,P20,PHI0,PVP0,DEPSV,EPSV,DEPS(6)
       REAL*8 T,P1,P2,DT,DP1,DP2,GRAT(3),GRAP1(3),GRAP2(3)
       REAL*8 PVP,PAD,H11,H12,KH,RHO11,PHI
-      REAL*8 SAT,BIOT,RGAZ,SATUR,DSATUR,PESA(3)    
+      REAL*8 SAT,BIOT,RGAZ,SATUR,DSATUR,PESA(3)
       REAL*8 PERMFH, PERMLI, DPERML, PERMGZ,DPERMS,DPERMP,FICK,DFICKT
       REAL*8 LAMBP,DLAMBP, UNSURK, ALPHA, LAMBS, DLAMBS, VISCL,DFICKG
       REAL*8 DVISCL, MAMOLG, LAMBT, DLAMBT, VISCG, DVISCG
@@ -81,7 +81,7 @@ C
 C     BUT:  INTEGRATION DES LOIS DE COMPORTEMENT
 C
 C     L'INTEGRATION DES LOIS DE COMPORTEMENT THM ET D'INTERFACE
-C     PERMET DE CALCULER LES CONTRAINTES GENERALISES ET LES VARIABLES 
+C     PERMET DE CALCULER LES CONTRAINTES GENERALISES ET LES VARIABLES
 C     INTERNES EN CHAQUE POINT D'INTEGRATION
 C     LA ROUTINE RENVOIE EGALEMENT LES RESIDUS ET L'OPERATEUR TANGENT EN
 C     FONCTION DU POINT D'INTEGRATION
@@ -128,15 +128,15 @@ C IN NPG    : NOMBRE DE POINTS DE GAUSS
 C IN NPI    : NOMBRE DE POINTS D'INTEGRATION
 C ====================================================================
 C OUT SIGP  : CONTRAINTES GENERALISES
-C OUT VARIP : VARIABLES INTERNES : 
-C --- VARIABLES 1 A NVIM : VAR. INT MECANIQUES (VOIR LOI DE 
-C                          COMPORTEMENT MECANIQUE) 
+C OUT VARIP : VARIABLES INTERNES :
+C --- VARIABLES 1 A NVIM : VAR. INT MECANIQUES (VOIR LOI DE
+C                          COMPORTEMENT MECANIQUE)
 C --- VARIABLES NVIM+1 A NVIM+NVIH : VAR. INT HYDRAULIQUES
-C                                    V1 RHO_LIQUIDE - RHO_0 
+C                                    V1 RHO_LIQUIDE - RHO_0
 C --- VARIABLES NVIM+NVIH+1 A NVIM+NVIH+NVIC : VAR. INT COUPLAGES
 C                        : V1 : OUVERTURE DE FISSURE
-C                        : V2 : PVP - PVP_0 SI VAPEUR 
-C                        : V3 : SATURATION SI LOI NON SATUREE 
+C                        : V2 : PVP - PVP_0 SI VAPEUR
+C                        : V3 : SATURATION SI LOI NON SATUREE
 C OUT RES   : RESIDU AU POINT D'INTEGRATION
 C OUT DRDE  : OPERATEUR TANGENT AU POINT D'INTEGRATION
 C OUT RETCOM: RETOUR LOI DE COPORTEMENT
@@ -219,7 +219,7 @@ C ======================================================================
 C ======================================================================
 C --- CALCUL DES RESIDUS ET DES MATRICES TANGENTES ---------------------
 C ======================================================================
-    
+
       CALL CALCCO(OPTION,PERMAN,MECA,THMC,THER,HYDR,IMATE,
      +                    NDIM-1,DIMDEF,DIMCON,NBVARI,2,
      +                    YATE,ADDEME,ADCOME,ADVIHY,
@@ -251,8 +251,8 @@ C --- CALCUL DES FLUX HYDRAULIQUES -------------------------------------
 C ======================================================================
 
       FICK = 0.D0
-      DFICKT = 0.D0  
-      DFICKG = 0.D0 
+      DFICKT = 0.D0
+      DFICKG = 0.D0
       DPERML = 0.D0
 
       IF (YAP1.EQ.1) THEN
@@ -276,12 +276,12 @@ C ======================================================================
 
          IF (RESI) THEN
 C - COMPOSANTES CONSTITUANT 1
-           IF (YAP1 .EQ. 1) THEN 
+           IF (YAP1 .EQ. 1) THEN
              SIGP(ADCP11+1) = OUVH*SIGP(ADCP11+1)
              DO 305 F = 1,2
                SIGP(ADCOP1+F-1) = DEFGEP(ADDLH1+1+F)
                SIGP(ADCOP1+F+1)= DEFGEP(ADDLH1-1+F)-DEFGEP(ADDEP1)
- 305         CONTINUE 
+ 305         CONTINUE
            END IF
 C ======================================================================
 C --- CALCUL DU VECTEUR FORCE INTERNE AUX POINTS DE GAUSS --------------
@@ -298,16 +298,16 @@ C - COMPOSANTES MECANIQUES
               RES(1) = RES(1)+SIGP(NDIM+1)
 
 C - COMPOSANTES CONSTITUANT 1
-           IF (YAP1 .EQ. 1) THEN  
+           IF (YAP1 .EQ. 1) THEN
              RES(ADDEP1) = DELTAT*(SIGP(ADCOP1)+SIGP(ADCOP1+1))
-             DO 421 J = 1,NDIM-1 
+             DO 421 J = 1,NDIM-1
                RES(ADDEP1+J) = DELTAT*SIGP(ADCP11+J)
- 421         CONTINUE 
+ 421         CONTINUE
              DO 422 F = 1,2
                RES(ADDLH1+F-1) = -DELTAT*SIGP(ADCOP1+F-1)
                RES(ADDLH1+F+1) = SIGP(ADCOP1+F+1)
- 422         CONTINUE 
-           END IF      
+ 422         CONTINUE
+           END IF
          END IF
 C ======================================================================
 C --- CALCUL DU VECTEUR FORCE INTERNE AUX SOMMETS --------------
@@ -315,7 +315,7 @@ C ======================================================================
          IF ((KPI .GT. NPG) .OR. (NPI .EQ. NPG)) THEN
 
 C - COMPOSANTES CONSTITUANT 1
-           IF (YAP1 .EQ. 1) THEN  
+           IF (YAP1 .EQ. 1) THEN
              RES(ADDEP1) = RES(ADDEP1) - SIGP(ADCP11)
              RES(ADDEP1) = RES(ADDEP1) + SIGM(ADCP11)
            END IF
@@ -329,7 +329,7 @@ C ======================================================================
       IF (RIGI) THEN
 
 C ======================================================================
-C --- D(RESIDU)/D(DEFORMATIONS GENERALISES)------------ 
+C --- D(RESIDU)/D(DEFORMATIONS GENERALISES)------------
 C --- POUR MATRICE DE RIGIDITE------------------------------------------
 C ======================================================================
         IF (KPI .LE. NPG) THEN
@@ -345,7 +345,7 @@ C - LIGNES CORRESPONDANT AUX TERMES HYDRAULIQUES
             DRDE(ADDLH1+F+1,ADDEP1)=-1.D0
             DRDE(ADDLH1+F+1,ADDLH1+F-1)=1.D0
  510      CONTINUE
-          DO 511 I=1,NDIM-1          
+          DO 511 I=1,NDIM-1
             DO 512 J=1,NDIM-1
               IF (THMC.EQ.'GAZ') THEN
                 DRDE(ADDEP1+I,1) = DRDE(ADDEP1+I,1)
@@ -364,16 +364,16 @@ C - LIGNES CORRESPONDANT AUX TERMES HYDRAULIQUES
         END IF
       END IF
 C ======================================================================
-C --- D(RESIDU)/D(DEFORMATIONS GENERALISES)------------ 
+C --- D(RESIDU)/D(DEFORMATIONS GENERALISES)------------
 C --- POUR MATRICE DE MASSE---------------------------------------------
 C ======================================================================
-        IF ((KPI .GT. NPG) .OR. (NPI .EQ. NPG)) THEN  
+        IF ((KPI .GT. NPG) .OR. (NPI .EQ. NPG)) THEN
 
           IF (YAP1 .EQ. 1) THEN
-            DRDE(ADDEP1,ADDEME) = DRDE(ADDEP1,ADDEME) - RHO11 
+            DRDE(ADDEP1,ADDEME) = DRDE(ADDEP1,ADDEME) - RHO11
             DRDE(ADDEP1,ADDEP1) = RHO11*DRDE(ADDEP1,ADDEP1)
-     &                          + DSDE(ADCP11,ADDEP1) 
-          END IF     
+     &                          + DSDE(ADCP11,ADDEP1)
+          END IF
         END IF
 
       END IF

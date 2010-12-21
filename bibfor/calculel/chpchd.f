@@ -3,9 +3,9 @@
       CHARACTER*(*) CHIN,CHOU,BASE,CELMOD,TYPE
 C     -----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 22/03/2010   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 20/12/2010   AUTEUR MEUNIER S.MEUNIER 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -42,10 +42,10 @@ C -----------------------------------------------------------------
 
       INTEGER IB,IRET,NNCP,IBID
       CHARACTER*3 PROL0
-      CHARACTER*8 MA,MA2,TYCHI,NOMGD,NOPAR2,PARAM
+      CHARACTER*8 MA,MA2,TYCHI,NOMGD,PARAM,MOIN
       CHARACTER*16 CAS,OPTION,NOMCMD,KBID
       CHARACTER*19 CESMOD,CES1,CNS1,MNOGA,LIGREL,CES2
-      CHARACTER*24 VALK
+      CHARACTER*24 VALK(4)
 
 C---- COMMUNS NORMALISES  JEVEUX
       INTEGER ZI
@@ -87,7 +87,14 @@ C ---------------------------------------------------------------
         CALL DISMOI('F','NOM_OPTION',CELMOD,'CHAM_ELEM',IB,OPTION,IB)
         CALL DISMOI('F','NOM_PARAM',CELMOD,'CHAM_ELEM',IB,PARAM,IB)
         CALL DISMOI('F','NOM_MAILLA',LIGREL,'LIGREL',IB,MA2,IB)
-        CALL ASSERT(MA.EQ.MA2)
+        IF (MA.NE.MA2) THEN
+          CALL DISMOI('F','NOM_MODELE',LIGREL,'LIGREL',IB,MOIN,IB)
+          VALK(1) = CHIN
+          VALK(2) = MOIN
+          VALK(3) = MA
+          VALK(4) = MA2
+          CALL U2MESK('F','CALCULEL4_59',4,VALK)
+        ENDIF
         CALL CELCES(CELMOD,'V',CESMOD)
       ENDIF
 
@@ -202,8 +209,8 @@ C     ----------------------------------------------------------------
         IF (NNCP.NE.0) THEN
           CALL GETRES(KBID,KBID,NOMCMD)
           IF (NOMCMD.EQ.'CREA_CHAMP') THEN
-            VALK = CHOU(1:8)
-            CALL U2MESK('A','CALCULEL6_77',1,VALK)
+            VALK(1) = CHOU(1:8)
+            CALL U2MESK('A','CALCULEL6_77',1,VALK(1))
           ENDIF
         ENDIF
 
@@ -250,7 +257,5 @@ C       CAS NON ENCORE PROGRAMME
 C     -- MENAGE :
 C     ------------
       IF (TYPE(1:2).EQ.'EL') CALL DETRSD('CHAM_ELEM_S',CESMOD)
-
-   10 CONTINUE
 
       END

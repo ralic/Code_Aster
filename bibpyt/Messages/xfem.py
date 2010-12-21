@@ -1,8 +1,8 @@
-#@ MODIF xfem Messages  DATE 28/09/2010   AUTEUR MASSIN P.MASSIN 
+#@ MODIF xfem Messages  DATE 21/12/2010   AUTEUR MASSIN P.MASSIN 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -23,14 +23,6 @@
 def _(x) : return x
 
 cata_msg={
-
-1: _("""
-  -> Les fissures X-FEM sont surement trop proches.
-     Il faut au minimum 2 mailles entre les fissures.
-  -> Risque & Conseil:
-     Veuillez raffiner le maillage entre les fissures
-     (ou écarter les fissures). 
-"""),
 
 2: _("""
   -> Le calcul de la distance d'un noeud à l'ellipse n'a pas convergé 
@@ -284,12 +276,12 @@ cata_msg={
 """),
 
 40: _("""
-      Le modèle est 3D et la maille %(k1)s est connectée à 2 fissures,
-      le multi-Heaviside n'a pas été généralisé en 3D.
+      La maille %(k1)s doit être enrichie avec plus de 4 fonctions heavisides,
+      le multi-Heaviside est limité à 4 fonctions heaviside, un noeud du maillage
+      ne doit pas être connécté à plus de 4 fissures.
       Pour ne pas activer le multi-Heaviside, les fissures doivent être séparées de 2 mailles 
       minimum. Veuillez raffiner le maillage entre les fissures (ou écarter les fissures).
- """),
-
+"""),
 
 41: _("""
       La maille %(k1)s est quadratique et elle est connectée à 2 fissures,
@@ -298,12 +290,6 @@ cata_msg={
       minimum. Veuillez raffiner le maillage entre les fissures (ou écarter les fissures).
 """),
 
-42: _("""
-      La maille %(k1)s est connectée à 3 fissures,
-      le multi-Heaviside n'a pas été généralisé à plus de 2 fissures.  
-      Pour ne pas activer le multi-Heaviside, les fissures doivent être séparées de 2 mailles 
-      minimum. Veuillez raffiner le maillage entre les fissures (ou écarter les fissures).
-"""),
 
 43: _("""
       Le contact autre que P1P1 est actif et la maille %(k1)s est connectée à 2 fissures,
@@ -322,15 +308,28 @@ cata_msg={
 
 45: _("""
       Le contact est normalement actif sur la maille %(k1)s, or cette maille est connectée à
-       2 fissures. Le multi-Heaviside n'a pas été généralisé au contact.
+      plusieures fissures. Le multi-Heaviside n'a pas été généralisé au contact.
       On désactive le contact sur cette maille, ce qui peut conduire à des résultats faux.
       Pour ne pas activer le multi-Heaviside, les fissures doivent être séparées de 2 mailles 
       minimum. Veuillez raffiner le maillage entre les fissures (ou écarter les fissures).
 """),
 
 46: _("""
-      Un sous-élément de la maille %(k1)s est découpé par 2 fissures différentes,
-      L'intersection entre 2 fissures n'a pas encore été programmé.
+      Les fissures sont mal ordonnées dans le mot clé FISSURE de MODI_MODEL_XFEM
+      
+      L'ordre dans lequel sont définis les fissures avec l'utilisation du mot clé JONCTION impose que %(k1)s doit
+      être donné après %(k2)s. Veiller permuter %(k1)s et %(k2)s dans le mot clé FISSURE de MODI_MODEL_XFEM.
+"""),
+
+47: _("""
+      La fissure %(k1)s est déja attaché à la fissure %(k2)s, on ne peut pas l'attacher à %(k3)s.
+      
+      Il est possible d'attacher globalement %(k1)s à la fois à %(k2)s et %(k3)s,
+      mais il ne faut pas qu'un élément soit connecté à la fois à %(k2)s, %(k3)s et %(k1)s.
+      
+      Pour résoudre ce problème, soit il faut ecarter (ou rafiner le maillage entre) les fissures %(k2)s et %(k3)s.
+      Soit il faut lier la fissure %(k3)s à la fissure %(k2)s en ajoutant une ligne du type
+      JONCTION=_F(FISSURE=%(k2)s,POINT=...) lorsqu'on appelle DEFI_FISS_XFEM pour définir %(k3)s.
 """),
 
 57: _("""

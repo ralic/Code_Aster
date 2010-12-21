@@ -1,17 +1,17 @@
-      SUBROUTINE XSTANO(NOMA,LISNO,NMAFIS,JMAFIS,CNSLT,CNSLN,RAYON,
-     &                  CNXINV,STANO)
+      SUBROUTINE XSTANO(NOMA,LISNO,NMAFIS,JMAFIS,CNSLT,CNSLN,CNSLJ,
+     &                  RAYON,CNXINV,STANO)
       IMPLICIT NONE
 
       REAL*8        RAYON
       INTEGER       NMAFIS,JMAFIS
       CHARACTER*8   NOMA
-      CHARACTER*19  CNSLT,CNSLN,CNXINV
+      CHARACTER*19  CNSLT,CNSLN,CNSLJ,CNXINV
       CHARACTER*24  LISNO,STANO
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 21/09/2010   AUTEUR REZETTE C.REZETTE 
+C MODIF ALGORITH  DATE 21/12/2010   AUTEUR MASSIN P.MASSIN 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -40,6 +40,7 @@ C         NMAFIS : NOMBRE DE MAILLES DE LA ZONE FISSURE
 C         JMAFIS : ADRESSE DES MAILLES DE LA ZONE FISSURE
 C         CNSLT  : LEVEL SET TANGENTE
 C         CNSLN  : LEVEL SET NORMALE
+C         CNSLJ  : LEVEL SET JONCTION
 C         RAYON  : RAYON DE LA ZONE D'ENRICHISSEMENT DES NOEUDS EN FOND
 C                  DE FISSURE
 C         CNXINV : CONNECTIVITE INVERSE
@@ -70,13 +71,16 @@ C
       INTEGER         INO,IMA,NBNOMA,NUNO,NRIEN,NBAR,NA
       INTEGER         NB,NUNOA,NUNOB,ENR,ENR1,ENR2,JDLINO,JMA,JSTANO
       INTEGER         JCONX1,JCONX2,JLTSV,JLNSV,JCOOR,ITYPMA,NDIM
+      INTEGER         JLJSD,JLJSV,NFISS,IFISS
       INTEGER         NBMA,IBID,JLMAF,NMASUP,JMASUP,ISUP,IRET
       REAL*8          MINLSN,MINLST,MAXLSN,MAXLST,LSNA,LSNB,LSTA,LSTB
+      REAL*8          MINLSJ(10),MAXLSJ(10),LSJA(10),LSJB(10),LSJC(10)
       REAL*8          LSNC,LSTC,LSN,A(3),B(3),C(3),R8MAEM,R8PREM,LST
       REAL*8          DDOT,AB(3),AC(3)
       CHARACTER*8     TYPMA,K8B
       CHARACTER*19    MAI,LMAFIS
       CHARACTER*32    JEXATR
+      LOGICAL        LJONC
 C ----------------------------------------------------------------------
 
       CALL JEMARQ()
@@ -91,7 +95,14 @@ C ----------------------------------------------------------------------
 
       CALL JEVEUO(CNSLT//'.CNSV','L',JLTSV)
       CALL JEVEUO(CNSLN//'.CNSV','L',JLNSV)
-
+      CALL JEEXIN(CNSLJ//'.CNSD',IRET)
+      LJONC = .FALSE.
+      IF (IRET.NE.0) THEN
+        LJONC = .TRUE.
+        CALL JEVEUO(CNSLJ//'.CNSD','L',JLJSD)
+        NFISS = ZI(JLJSD-1+2)
+        CALL JEVEUO(CNSLJ//'.CNSV','L',JLJSV)
+      ENDIF
       CALL JEVEUO(NOMA//'.COORDO    .VALE','L',JCOOR)
       MAI=NOMA//'.TYPMAIL'
       CALL JEVEUO(MAI,'L',JMA)
@@ -114,8 +125,13 @@ C     BOUCLE SUR LES NOEUDS DE GROUP_ENRI
         MINLSN=R8MAEM()
         MAXLST=-1*R8MAEM()
         MINLST=R8MAEM()
+        IF (LJONC) THEN
+          DO 201 IFISS = 1,NFISS
+            MAXLSJ(IFISS)=-1*R8MAEM()
+            MINLSJ(IFISS)= R8MAEM()
+ 201      CONTINUE
+        ENDIF
         INO=ZI(JDLINO-1+I)
-
         CALL JELIRA(JEXNUM(CNXINV,INO),'LONMAX',NMASUP,K8B)
         CALL JEVEUO(JEXNUM(CNXINV,INO),'L',JMASUP)
 C
@@ -149,7 +165,12 @@ C         BOUCLE SUR LES ARETES DE LA MAILLE RETENUE
             LSNB=ZR(JLNSV-1+(NUNOB-1)+1)
             LSTA=ZR(JLTSV-1+(NUNOA-1)+1)
             LSTB=ZR(JLTSV-1+(NUNOB-1)+1)
-
+            IF (LJONC) THEN
+              DO 211 IFISS = 1,NFISS
+                LSJA(IFISS)=ZR(JLJSV-1+(NUNOA-1)*NFISS+IFISS)
+                LSJB(IFISS)=ZR(JLJSV-1+(NUNOB-1)*NFISS+IFISS)
+ 211          CONTINUE
+            ENDIF
             IF (LSNA.EQ.0.D0.AND.LSNB.EQ.0.D0) THEN
 C             ON RETIENT LES 2 POINTS A ET B
 C             ET ACTUALISATION DE MIN ET MAX POUR LST
@@ -157,6 +178,18 @@ C             ET ACTUALISATION DE MIN ET MAX POUR LST
               IF (LSTA.GT.MAXLST) MAXLST=LSTA
               IF (LSTB.LT.MINLST) MINLST=LSTB
               IF (LSTB.GT.MAXLST) MAXLST=LSTB
+              IF (LJONC) THEN
+                DO 214 IFISS=1,NFISS
+                  IF (LSJB(IFISS).LT.MINLSJ(IFISS))
+     &                                         MINLSJ(IFISS)=LSJB(IFISS)
+                  IF (LSJB(IFISS).GT.MAXLSJ(IFISS))
+     &                                         MAXLSJ(IFISS)=LSJB(IFISS)
+                  IF (LSJA(IFISS).LT.MINLSJ(IFISS))
+     &                                         MINLSJ(IFISS)=LSJA(IFISS)
+                  IF (LSJA(IFISS).GT.MAXLSJ(IFISS))
+     &                                         MAXLSJ(IFISS)=LSJA(IFISS)
+ 214            CONTINUE
+              ENDIF
             ELSEIF((LSNA*LSNB).LE.0.D0) THEN
 C            CA VEUT DIRE QUE LSN S'ANNULE SUR L'ARETE AU PT C
 C            (RETENU) ET ACTUALISATION DE MIN ET MAX POUR LST EN CE PT
@@ -173,6 +206,16 @@ C               INTERPOLATION DES COORDONNÉES DE C ET DE LST EN C
      &                                  / DDOT(NDIM,AB,1,AB,1)
               IF (LSTC.LT.MINLST) MINLST=LSTC
               IF (LSTC.GT.MAXLST) MAXLST=LSTC
+              IF (LJONC) THEN
+                DO 215 IFISS = 1,NFISS
+                  LSJC(IFISS) = LSJA(IFISS) + (LSJB(IFISS)-LSJA(IFISS))
+     &                     * DDOT(NDIM,AB,1,AC,1) / DDOT(NDIM,AB,1,AB,1)
+                  IF (LSJC(IFISS).LT.MINLSJ(IFISS))
+     &                                         MINLSJ(IFISS)=LSJC(IFISS)
+                  IF (LSJC(IFISS).GT.MAXLSJ(IFISS))
+     &                                         MAXLSJ(IFISS)=LSJC(IFISS)
+ 215            CONTINUE
+              ENDIF
             ELSE
 C             AUCUN POINT DE L'ARETE N'A LSN = 0,ALORS ON RETIENT RIEN
               NRIEN=NRIEN+1
@@ -201,6 +244,22 @@ C       TEST S'IL Y A EU UNE MAILLE SUPPORT TROUVÉE DANS MAFIS
           IF ((MINLSN*MAXLSN.LT.0.D0).AND.(MAXLST.LE.R8PREM())) ENR1=1
           IF ((MINLSN*MAXLSN.LE.R8PREM()).AND.
      &        (MINLST*MAXLST.LE.R8PREM()))                      ENR2=2
+          IF (LJONC) THEN
+C       CORRECTION DU STATUT SI ON EST DU MAUVAIS COTÉ DE LA JONCTION
+            DO 220 IFISS=1,NFISS
+C       LA TOLERANCE PERMET DE FILTRER CERTAIN CAS DE PIVOTS NULS
+              IF (MINLSJ(IFISS).GE.-1.D-4) THEN
+                ENR1=0
+                ENR2=0
+              ENDIF
+C       CORRECTION DU STATUT SI ON EST SUR LA JONCTION
+              IF (ENR2.EQ.2.AND.MINLSJ(IFISS)*MAXLSJ(IFISS).LE.R8PREM())
+     &        THEN
+                ENR2=0
+                IF (MINLSN*MAXLSN.LT.0.D0) ENR1 = 1
+              ENDIF
+ 220        CONTINUE
+          ENDIF
         ENDIF
 
 C       SI ON DEFINIT UN RAYON POUR LA ZONE D'ENRICHISSEMENT SINGULIER

@@ -3,22 +3,23 @@
      &                  FONC,FONO)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 28/09/2010   AUTEUR MASSIN P.MASSIN 
+C MODIF ELEMENTS  DATE 20/12/2010   AUTEUR PELLET J.PELLET 
+C TOLE CRS_1404
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 
       IMPLICIT NONE
@@ -29,15 +30,15 @@ C ======================================================================
       REAL*8        HE
       LOGICAL       FONC,FONO
 C-----------------------------------------------------------------------
-C FONCTION REALISEE : CALCUL DU SECOND MEMBRE AUX PG DU SOUS EL COURANT 
-C                     DANS LE CAS D'UNE FORCE VOLUMIQUE IMPOSEE SUR LES 
+C FONCTION REALISEE : CALCUL DU SECOND MEMBRE AUX PG DU SOUS EL COURANT
+C                     DANS LE CAS D'UNE FORCE VOLUMIQUE IMPOSEE SUR LES
 C                     ELEMENTS X-FEM 2D ET 3D
 C
 C                    OPTIONS  :  CHAR_MECA_FR3D3D
-C                                CHAR_MECA_FR2D2D 
+C                                CHAR_MECA_FR2D2D
 C                                CHAR_MECA_FF3D3D
 C                                CHAR_MECA_FF2D2D
-C                          
+C
 C IN  ELREFP  : ÉLÉMENT DE RÉFÉRENCE PARENT
 C IN  NDIM    : DIMENSION DE L'ESPACE
 C IN  COORSE  : COORDONNÉES DES SOMMETS DU SOUS-ÉLÉMENT
@@ -72,7 +73,7 @@ C---------------- COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*80 ZK80
 C------------FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 
-      
+
       INTEGER I,INO,IG,IER,J,N,IBID
       INTEGER NDIMB,NNO,NNOS,NNOPS,NPGBIS,POS,IRESE
       INTEGER JCOORS,JCOOPG,IPOIDS,IVF,IDFDE,JDFD2,JGANO,KPG
@@ -95,7 +96,7 @@ C-----------------------------------------------------------------------
 C     ADRESSE DES COORD DU SOUS ELT EN QUESTION
       CALL JEVEUO(COORSE,'L',JCOORS)
 
-C     SOUS-ELEMENT DE REFERENCE 
+C     SOUS-ELEMENT DE REFERENCE
       IF (.NOT.ISMALI(ELREFP).AND. NDIM.LE.2) THEN
         IRESE=3
       ELSE
@@ -104,7 +105,7 @@ C     SOUS-ELEMENT DE REFERENCE
       CALL ELREF5(ELRESE(NDIM+IRESE),FAMI(NDIM+IRESE),NDIMB,NNO,NNOS,
      &            NPGBIS,IPOIDS,JCOOPG,IVF,IDFDE,JDFD2,JGANO)
       CALL ASSERT(NDIM.EQ.NDIMB)
-      
+
 C     ------------------------------------------------------------------
 C     BOUCLE SUR LES POINTS DE GAUSS DU SOUS-ELEMENT
 C     ------------------------------------------------------------------
@@ -115,7 +116,7 @@ C       COORDONNÉES DU PT DE GAUSS DANS LA CONFIG RÉELLE DU SE : XG
         CALL VECINI(NDIM,0.D0,XG)
         DO 101 I=1,NDIM
           DO 102 N=1,NNO
-            XG(I) = XG(I) + ZR(IVF-1+NNO*(KPG-1)+N) 
+            XG(I) = XG(I) + ZR(IVF-1+NNO*(KPG-1)+N)
      &                    * ZR(JCOORS-1+NDIM*(N-1)+I)
  102      CONTINUE
  101    CONTINUE
@@ -163,10 +164,10 @@ C       ------------------------------------------
 
         IF (FONC) THEN
 
-C         FORCE AU PG COURANT A PARTIR DE LA FORCE FONCTION PAR ELEMENT 
+C         FORCE AU PG COURANT A PARTIR DE LA FORCE FONCTION PAR ELEMENT
           DO 107 I=1,NDIM
             VALPAR(I) = XG(I)
- 107      CONTINUE  
+ 107      CONTINUE
           VALPAR(NDIM+1) = ZR(ITEMPS)
           NOMPAR(1)='X'
           NOMPAR(2)='Y'
@@ -197,7 +198,7 @@ C           FORCE FOURNIE AU PG
               FORVOL(J) = ZR(IFORC+J-1)
  106        CONTINUE
           ENDIF
-          
+
         ENDIF
 
 
@@ -206,13 +207,13 @@ C       --------------------------------
 
         POS=0
         DO 108 INO = 1,NNOP
-        
+
 C         TERME CLASSIQUE
           DO 109 J=1,NDIM
             POS=POS+1
             ZR(IVECTU-1+POS) = ZR(IVECTU-1+POS)
      &                       + FORVOL(J)*POIDS*FF(INO)
-          
+
  109      CONTINUE
 
 C         TERME HEAVISIDE
@@ -220,26 +221,26 @@ C         TERME HEAVISIDE
             POS=POS+1
             ZR(IVECTU-1+POS) = ZR(IVECTU-1+POS)
      &                       + HE*FORVOL(J)*POIDS*FF(INO)
-     
+
  110      CONTINUE
 
-C         TERME SINGULIER   
+C         TERME SINGULIER
           DO 111 IG=1,NFE
             DO 112 J=1,NDIM
               POS=POS+1
               ZR(IVECTU-1+POS) = ZR(IVECTU-1+POS)
      &                         + FE(IG)*FORVOL(J)*POIDS*FF(INO)
  112        CONTINUE
- 111      CONTINUE 
- 
+ 111      CONTINUE
+
 C         ON SAUTE LES POSITIONS DES LAG DE CONTACT FROTTEMENT
           IF (.NOT.ISMALI(ELREFP).AND.NDIM.EQ.2) THEN
             IF (INO.LE.NNOPS) POS = POS + DDLC
           ELSE
             POS = POS + DDLC
           ENDIF
- 
- 108    CONTINUE 
+
+ 108    CONTINUE
 
 
  10   CONTINUE

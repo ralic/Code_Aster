@@ -1,8 +1,8 @@
-# MODIF  DATE 19/10/2010   AUTEUR DESOZA T.DESOZA 
+# MODIF  DATE 21/12/2010   AUTEUR ABBAS M.ABBAS 
 # TITRE EXTRUSION D'UN LOPIN
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -112,10 +112,9 @@ DDLIMP=AFFE_CHAR_MECA(MODELE=MO,
                       DDL_IMPO=_F(GROUP_NO='LOP_DDL',
                                   DY=1.0,),);
 
-CONTACT = DEFI_CONTACT(MODELE       = MO,
+CONTACT = DEFI_CONTACT(MODELE      = MO,
                       FORMULATION  = 'DISCRETE',
-                      REAC_GEOM='CONTROLE',
-                      NB_ITER_GEOM=2,
+                      LISSAGE      = 'OUI',
                    ZONE=(
                         _F(
                             GLISSIERE     = 'OUI',
@@ -225,9 +224,10 @@ TEST_RESU(RESU=(_F(RESULTAT=U,
                 _F(RESULTAT=U,
                    NUME_ORDRE=3,
                    PARA='ITER_GLOB',
-                   VALE_I=2,
+                   VALE_I=4,
                    CRITERE = 'ABSOLU',        PRECISION = 0.,
-                   REFERENCE='NON_REGRESSION',),
+                   REFERENCE='NON_REGRESSION',
+                   VERSION='10.3.2',),
                 _F(RESULTAT=U,
                    NUME_ORDRE=6,
                    NOM_CHAM='DEPL',
@@ -239,9 +239,10 @@ TEST_RESU(RESU=(_F(RESULTAT=U,
                 _F(RESULTAT=U,
                    NUME_ORDRE=6,
                    PARA='ITER_GLOB',
-                   VALE_I=2,
+                   VALE_I=4,
                    CRITERE = 'ABSOLU',        PRECISION = 0.,
-                   REFERENCE='NON_REGRESSION',),
+                   REFERENCE='NON_REGRESSION',
+                   VERSION='10.3.2',),
                 _F(RESULTAT=U,
                    NUME_ORDRE=8,
                    NOM_CHAM='DEPL',
@@ -253,9 +254,10 @@ TEST_RESU(RESU=(_F(RESULTAT=U,
                 _F(RESULTAT=U,
                    NUME_ORDRE=8,
                    PARA='ITER_GLOB',
-                   VALE_I=2,
+                   VALE_I=4,
                    CRITERE = 'ABSOLU',        PRECISION = 0.,
-                   REFERENCE='NON_REGRESSION',),
+                   REFERENCE='NON_REGRESSION',
+                   VERSION='10.3.2',),
                 _F(RESULTAT=U,
                    NUME_ORDRE=10,
                    NOM_CHAM='DEPL',
@@ -267,9 +269,10 @@ TEST_RESU(RESU=(_F(RESULTAT=U,
                 _F(RESULTAT=U,
                    NUME_ORDRE=10,
                    PARA='ITER_GLOB',
-                   VALE_I=2,
+                   VALE_I=3,
                    CRITERE = 'ABSOLU',        PRECISION = 0.,
-                   REFERENCE='NON_REGRESSION',),
+                   REFERENCE='NON_REGRESSION',
+                   VERSION='10.3.2',),
                 _F(RESULTAT=U,
                    NUME_ORDRE=11,
                    NOM_CHAM='DEPL',
@@ -281,8 +284,9 @@ TEST_RESU(RESU=(_F(RESULTAT=U,
                 _F(RESULTAT=U,
                    NUME_ORDRE=11,
                    PARA='ITER_GLOB',
-                   VALE_I=2,
+                   VALE_I=4,
                    CRITERE = 'ABSOLU',        PRECISION = 0.,
-                   REFERENCE='NON_REGRESSION',),),);
+                   REFERENCE='NON_REGRESSION',
+                   VERSION='10.3.2',),),);
 
 FIN();

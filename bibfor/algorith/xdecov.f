@@ -1,16 +1,19 @@
-      SUBROUTINE XDECOV(IT,CONNEC,LSN,IGEOM,NFISS,
-     &                 PINTER,NINTER,NPTS,AINTER,NSE,CNSE,HEAV)
+      SUBROUTINE XDECOV(NDIM,ELP,NNOP,NNOSE,IT,PINTT,CNSET,
+     &                 HEAVT,NCOMP,LSN,FISCO,IGEOM,NFISS,
+     &                 IFISS,PINTER,NINTER,NPTS,AINTER,NSE,CNSE,HEAV,
+     &                 NFISC)
       IMPLICIT NONE
 
-      REAL*8        LSN(*)
-      INTEGER       IT,CONNEC(6,6),IGEOM,NINTER,NPTS,NSE,CNSE(6,6)
-      INTEGER       NFISS
+      REAL*8        LSN(*),PINTT(*)
+      INTEGER       NDIM,NNOP,NNOSE,IT,CNSET(*),HEAVT(*),NCOMP,IGEOM
+      INTEGER       NINTER,NPTS,NFISS,IFISS,NSE,CNSE(6,6),FISCO(*),NFISC
       CHARACTER*24  PINTER,AINTER,HEAV
+      CHARACTER*8   ELP
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/09/2010   AUTEUR MASSIN P.MASSIN 
+C MODIF ALGORITH  DATE 21/12/2010   AUTEUR MASSIN P.MASSIN 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -26,11 +29,14 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C RESPONSABLE GENIAUT S.GENIAUT
+C TOLE CRP_21
 C                      DÉCOUPER LE TETRA EN NSE SOUS-TETRAS
 C
 C     ENTREE
+C       NNOSE    : NOMBRE DE NOEUDS DU SOUS TETRA
 C       IT       : INDICE DU TETRA EN COURS
-C       CONNEC   : CONNECTIVITÉ DES NOEUDS DU TETRA
+C       CNSET    : CONNECTIVITÉ DES NOEUDS DU TETRA
+C       HEAVT    : FONCTION HEAVYSIDE DES TETRAS
 C       LSN      : VALEURS DE LA LEVEL SET NORMALE
 C       IGEOM    : ADRESSE DES COORDONNÉES DES NOEUDS DE L'ELT PARENT
 C       PINTER   : COORDONNÉES DES POINTS D'INTERSECTION
@@ -60,23 +66,21 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON  /KVARJE/ ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
-      REAL*8          XYZ(4,3),AB(3),AC(3),AD(3),VN(3),PS
-      REAL*8          LSNC,ALPHA,CRILSN
+      REAL*8          XYZ(4,3),AB(3),AC(3),AD(3),VN(3),PS,GEOM(3)
+      REAL*8          SOMLSN(NFISC+1),FF(NNOP),RBID,RBID2(NDIM)
       INTEGER         JPTINT,JAINT,JHEAV
-      INTEGER         IN,INH,I,J,AR(12,3),NBAR,ISE,NDIM,IBID
-      INTEGER         A1,A2,A3,A4,A,B,C,IADZI,IAZK24,NDIME
-      CHARACTER*8     TYPMA,NOMA,ELRESE(3),KBID
-      INTEGER         ZXAIN,XXMMVD,IRET,IFISS
-      PARAMETER       (CRILSN = 1.D-4)
+      INTEGER         IN,INH,I,J,AR(12,3),NBAR,ISE,IBID
+      INTEGER         A1,A2,A3,A4,A,B,C,NDIME
+      CHARACTER*8     TYPMA,ELRESE(3)
+      INTEGER         ZXAIN,XXMMVD
+      LOGICAL        LBID
+
       DATA            ELRESE /'SEG2','TRIA3','TETRA4'/
 C ----------------------------------------------------------------------
 
       CALL JEMARQ()
       CALL ELREF4(' ','RIGI',NDIME,IBID,IBID,IBID,IBID,IBID,IBID,IBID)
       ZXAIN = XXMMVD('ZXAIN')
-      CALL TECAEL(IADZI,IAZK24)
-      NOMA=ZK24(IAZK24)
-      CALL DISMOI('F','DIM_GEOM',NOMA,'MAILLAGE',NDIM,KBID,IRET)
 
 C     ATTENTION, NE PAS CONFONDRE NDIM ET NDIME  !!
 C     NDIM EST LA DIMENSION DU MAILLAGE
@@ -109,8 +113,8 @@ C         INTER DOUTEUSE
           CALL ASSERT (NPTS.EQ.NINTER)
 C         1 SEUL ELEMENT
           NSE=1
-          DO 90 IN=1,3
-            CNSE(1,IN)=CONNEC(IT,IN)
+          DO 90 IN=1,NNOSE
+            CNSE(1,IN)=CNSET(NNOSE*(IT-1)+IN)
  90       CONTINUE
         ELSEIF (NINTER .EQ. 2) THEN
           A1=NINT(ZR(JAINT-1+ZXAIN*(1-1)+1))
@@ -118,22 +122,19 @@ C         1 SEUL ELEMENT
           IF (NPTS .EQ. 2) THEN
 C           1 SEUL ELEMENT
             NSE=1
-            DO 91 IN=1,3
-              CNSE(1,IN)=CONNEC(IT,IN)
+            DO 91 IN=1,NNOSE
+              CNSE(1,IN)=CNSET(NNOSE*(IT-1)+IN)
  91         CONTINUE
           ELSEIF (NPTS .EQ. 1) THEN
 C           2 ELEMENTS
             NSE=2
             CALL ASSERT(A1.EQ.0.AND.A2.NE.0)
-C           101 ET 102 LES 2 POINTS D'INTERSECTION
-C            CNSE(1,1)=101
             CNSE(1,1)=NINT(ZR(JAINT-1+ZXAIN*(NPTS-1)+2))
             CNSE(1,2)=102
-            CNSE(1,3)=CONNEC(IT,AR(A2,1))
-C            CNSE(2,1)=101
+            CNSE(1,3)=CNSET(NNOSE*(IT-1)+AR(A2,1))
             CNSE(2,1)=NINT(ZR(JAINT-1+ZXAIN*(NPTS-1)+2))
             CNSE(2,2)=102
-            CNSE(2,3)=CONNEC(IT,AR(A2,2))
+            CNSE(2,3)=CNSET(NNOSE*(IT-1)+AR(A2,2))
           ELSE
 C           3 ELEMENTS
             NSE=3
@@ -151,21 +152,21 @@ C           ON SE PLACE DANS LA CONF DE REF (VOIR ALGO)
  93         CONTINUE
             CNSE(1,1)=101
             CNSE(1,2)=102
-            CNSE(1,3)=CONNEC(IT,A)
+            CNSE(1,3)=CNSET(NNOSE*(IT-1)+A)
             CNSE(2,1)=101
             CNSE(2,2)=102
-            CNSE(2,3)=CONNEC(IT,C)
+            CNSE(2,3)=CNSET(NNOSE*(IT-1)+C)
             CNSE(3,1)=101
-            CNSE(3,2)=CONNEC(IT,B)
-            CNSE(3,3)=CONNEC(IT,C)
+            CNSE(3,2)=CNSET(NNOSE*(IT-1)+B)
+            CNSE(3,3)=CNSET(NNOSE*(IT-1)+C)
           ENDIF
         ELSEIF (NINTER .EQ. 3) THEN
 C         L'INTERFACE COINCIDE AVEC LE TRIA
           CALL ASSERT (NPTS.EQ.NINTER)
 C         1 SEUL ELEMENT
           NSE=1
-          DO 92 IN=1,3
-            CNSE(1,IN)=CONNEC(IT,IN)
+          DO 92 IN=1,NNOSE
+            CNSE(1,IN)=CNSET(NNOSE*(IT-1)+IN)
  92       CONTINUE
         ELSE
 C         TROP DE POINTS D'INTERSECTION
@@ -180,7 +181,7 @@ C         INTER DOUTEUSE
 C         1 SEUL ELEMENT
           NSE=1
           DO 95 IN=1,2
-            CNSE(1,IN)=CONNEC(IT,IN)
+            CNSE(1,IN)=CNSET(NNOSE*(IT-1)+IN)
  95       CONTINUE
         ELSEIF (NINTER .EQ. 1) THEN
           A1=NINT(ZR(JAINT-1+ZXAIN*(1-1)+1))
@@ -188,7 +189,7 @@ C         1 SEUL ELEMENT
 C           1 SEUL ELEMENT
             NSE=1
             DO 96 IN=1,2
-              CNSE(1,IN)=CONNEC(IT,IN)
+              CNSE(1,IN)=CNSET(NNOSE*(IT-1)+IN)
  96         CONTINUE
           ELSEIF (NPTS .EQ. 0) THEN
 C           2 ELEMENTS
@@ -200,9 +201,9 @@ C           2 ELEMENTS
 C           101 ET 102 LES 2 POINTS D'INTERSECTION
 C           ON SE PLACE DANS LA CONF DE REF (VOIR ALGO)
             CNSE(1,1)=101
-            CNSE(1,2)=CONNEC(IT,A)
+            CNSE(1,2)=CNSET(NNOSE*(IT-1)+A)
             CNSE(2,1)=101
-            CNSE(2,2)=CONNEC(IT,B)
+            CNSE(2,2)=CNSET(NNOSE*(IT-1)+B)
           ENDIF
         ELSEIF (NINTER .EQ. 2) THEN
 C         L'INTERFACE COINCIDE AVEC LE SEG
@@ -210,7 +211,7 @@ C         L'INTERFACE COINCIDE AVEC LE SEG
 C         1 SEUL ELEMENT
           NSE=1
           DO 97 IN=1,2
-            CNSE(1,IN)=CONNEC(IT,IN)
+            CNSE(1,IN)=CNSET(NNOSE*(IT-1)+IN)
  97       CONTINUE
         ELSE
 C         TROP DE POINTS D'INTERSECTION
@@ -230,8 +231,8 @@ C         INTER DOUTEUSE
           CALL ASSERT (NPTS.EQ.NINTER)
 C         ON A UN SEUL ELEMENT
           NSE=1
-          DO 100 IN=1,4
-              CNSE(1,IN)=CONNEC(IT,IN)
+          DO 100 IN=1,NNOSE
+              CNSE(1,IN)=CNSET(NNOSE*(IT-1)+IN)
  100      CONTINUE
 
         ELSEIF (NINTER.EQ.3) THEN
@@ -245,8 +246,8 @@ C         ------------------------------------
           IF (NPTS.EQ.3) THEN
 C           ON A UN SEUL ELEMENT
             NSE=1
-            DO 110 IN=1,4
-              CNSE(1,IN)=CONNEC(IT,IN)
+            DO 110 IN=1,NNOSE
+              CNSE(1,IN)=CNSET(NNOSE*(IT-1)+IN)
  110        CONTINUE
 
           ELSEIF (NPTS.EQ.2) THEN
@@ -259,18 +260,14 @@ C           ON A DEUX SOUS-ELEMENTS
 C           CONNECTIVITE DES NSE PAR RAPPORT AU NUM DE NOEUDS DU PARENT
 C           AVEC 101, 102 ET 103 LES 3 PTS D'INTERSECTION
 C           ON REMPLACE 101 ET 102 PAR LES NUMEROS DES NOEUDS COUP�S
-C            CNSE(1,1)=101
-C            CNSE(1,2)=102
             CNSE(1,1)=NINT(ZR(JAINT-1+2))
             CNSE(1,2)=NINT(ZR(JAINT-1+ZXAIN+2))
             CNSE(1,3)=103
-            CNSE(1,4)=CONNEC(IT,AR(A3,1))
-C            CNSE(2,1)=101
-C            CNSE(2,2)=102
+            CNSE(1,4)=CNSET(NNOSE*(IT-1)+AR(A3,1))
             CNSE(2,1)=NINT(ZR(JAINT-1+2))
             CNSE(2,2)=NINT(ZR(JAINT-1+ZXAIN+2))
             CNSE(2,3)=103
-            CNSE(2,4)=CONNEC(IT,AR(A3,2))
+            CNSE(2,4)=CNSET(NNOSE*(IT-1)+AR(A3,2))
 
           ELSEIF (NPTS.EQ.1) THEN
 C           ON A TROIS SOUS-ELEMENTS
@@ -288,21 +285,18 @@ C           ON SE PLACE DANS LA CONF DE REF (VOIR ALGO)
  40           CONTINUE
  30         CONTINUE
 C           ON REMPLACE 101 PAR LE NUMERO DU NOEUD COUP�
-C            CNSE(1,1)=101
             CNSE(1,1)=NINT(ZR(JAINT-1+2))
             CNSE(1,2)=102
             CNSE(1,3)=103
-            CNSE(1,4)=CONNEC(IT,A)
-C            CNSE(2,1)=101
+            CNSE(1,4)=CNSET(NNOSE*(IT-1)+A)
             CNSE(2,1)=NINT(ZR(JAINT-1+2))
             CNSE(2,2)=102
             CNSE(2,3)=103
-            CNSE(2,4)=CONNEC(IT,C)
-C            CNSE(3,1)=101
+            CNSE(2,4)=CNSET(NNOSE*(IT-1)+C)
             CNSE(3,1)=NINT(ZR(JAINT-1+2))
             CNSE(3,2)=102
-            CNSE(3,3)=CONNEC(IT,B)
-            CNSE(3,4)=CONNEC(IT,C)
+            CNSE(3,3)=CNSET(NNOSE*(IT-1)+B)
+            CNSE(3,4)=CNSET(NNOSE*(IT-1)+C)
 
           ELSEIF (NPTS.EQ.0) THEN
 C           ON A QUATRE SOUS-ELEMENTS
@@ -314,24 +308,27 @@ C           ON A QUATRE SOUS-ELEMENTS
 C           ON A 4 CONFIG POSSIBLES :
             IF (A1.EQ.1.AND.A2.EQ.2.AND.A3.EQ.3) THEN
 C             CONFIGURATION N°1
-              CNSE(1,4)=CONNEC(IT,1)
-              CALL XPENTE(2,CNSE,103,101,102,CONNEC(IT,4),CONNEC(IT,2),
-     &                                                     CONNEC(IT,3))
+              CNSE(1,4)=CNSET(NNOSE*(IT-1)+1)
+              CALL XPENTE(2,CNSE,103,101,102,CNSET(NNOSE*(IT-1)+4),
+     &                    CNSET(NNOSE*(IT-1)+2),CNSET(NNOSE*(IT-1)+3))
             ELSEIF (A1.EQ.1.AND.A2.EQ.4.AND.A3.EQ.5) THEN
 C             CONFIGURATION N°2
-              CNSE(1,4)=CONNEC(IT,2)
-              CALL XPENTE(2,CNSE,CONNEC(IT,1),CONNEC(IT,3),CONNEC(IT,4),
-     &                                                      101,102,103)
+              CNSE(1,4)=CNSET(NNOSE*(IT-1)+2)
+              CALL XPENTE(2,CNSE,CNSET(NNOSE*(IT-1)+1),
+     &                    CNSET(NNOSE*(IT-1)+3),CNSET(NNOSE*(IT-1)+4),
+     &                    101,102,103)
             ELSEIF (A1.EQ.2.AND.A2.EQ.4.AND.A3.EQ.6) THEN
 C             CONFIGURATION N°3
-              CNSE(1,4)=CONNEC(IT,3)
-              CALL XPENTE(2,CNSE,CONNEC(IT,4),CONNEC(IT,2),CONNEC(IT,1),
-     &                                                      103,102,101)
+              CNSE(1,4)=CNSET(NNOSE*(IT-1)+3)
+              CALL XPENTE(2,CNSE,CNSET(NNOSE*(IT-1)+4),
+     &                    CNSET(NNOSE*(IT-1)+2),CNSET(NNOSE*(IT-1)+1),
+     &                    103,102,101)
             ELSEIF (A1.EQ.3.AND.A2.EQ.5.AND.A3.EQ.6) THEN
 C             CONFIGURATION N°4
-              CNSE(1,4)=CONNEC(IT,4)
-              CALL XPENTE(2,CNSE,CONNEC(IT,1),CONNEC(IT,2),CONNEC(IT,3),
-     &                                                      101,102,103)
+              CNSE(1,4)=CNSET(NNOSE*(IT-1)+4)
+              CALL XPENTE(2,CNSE,CNSET(NNOSE*(IT-1)+1),
+     &                    CNSET(NNOSE*(IT-1)+2),CNSET(NNOSE*(IT-1)+3),
+     &                    101,102,103)
             ELSE
 C             PROBLEME DE DECOUPAGE À 3 POINTS
               CALL ASSERT(A1.EQ.1.AND.A2.EQ.2.AND.A3.EQ.3)
@@ -352,30 +349,28 @@ C         ON A SIX SOUS-ELEMENTS (DANS TOUS LES CAS ?)
           NSE=6
           IF (A1.EQ.1.AND.A2.EQ.2.AND.A3.EQ.5.AND.A4.EQ.6) THEN
 C          CONFIGURATION N°1
-           CALL XPENTE(1,CNSE,104,102,CONNEC(IT,3),103,101,CONNEC(IT,2))
-           CALL XPENTE(4,CNSE,CONNEC(IT,1),101,102,CONNEC(IT,4),103,104)
+           CALL XPENTE(1,CNSE,104,102,CNSET(NNOSE*(IT-1)+3),
+     &                 103,101,CNSET(NNOSE*(IT-1)+2))
+           CALL XPENTE(4,CNSE,CNSET(NNOSE*(IT-1)+1),101,102,
+     &                 CNSET(NNOSE*(IT-1)+4),103,104)
           ELSEIF (A1.EQ.1.AND.A2.EQ.3.AND.A3.EQ.4.AND.A4.EQ.6) THEN
 C          CONFIGURATION N°2
-           CALL XPENTE(1,CNSE,101,CONNEC(IT,2),103,102,CONNEC(IT,4),104)
-           CALL XPENTE(4,CNSE,102,101,CONNEC(IT,1),104,103,CONNEC(IT,3))
+           CALL XPENTE(1,CNSE,101,CNSET(NNOSE*(IT-1)+2),103,
+     &                 102,CNSET(NNOSE*(IT-1)+4),104)
+           CALL XPENTE(4,CNSE,102,101,CNSET(NNOSE*(IT-1)+1),
+     &                 104,103,CNSET(NNOSE*(IT-1)+3))
           ELSEIF (A1.EQ.2.AND.A2.EQ.3.AND.A3.EQ.4.AND.A4.EQ.5) THEN
 C          CONFIGURATION N°3
-           CALL XPENTE(1,CNSE,101,103,CONNEC(IT,3),102,104,CONNEC(IT,4))
-           CALL XPENTE(4,CNSE,CONNEC(IT,2),104,103,CONNEC(IT,1),102,101)
+           CALL XPENTE(1,CNSE,101,103,CNSET(NNOSE*(IT-1)+3),
+     &                 102,104,CNSET(NNOSE*(IT-1)+4))
+           CALL XPENTE(4,CNSE,CNSET(NNOSE*(IT-1)+2),104,103,
+     &                 CNSET(NNOSE*(IT-1)+1),102,101)
           ELSE 
 C          PROBLEME DE DECOUPAGE A 4 POINTS
            CALL ASSERT(A1.EQ.1.AND.A2.EQ.2.AND.A3.EQ.5.AND.A4.EQ.6)
           ENDIF
         ENDIF
-
-
       ENDIF
-
-C      WRITE(6,*)'NSE ',NSE
-C      DO 99 ISE=1,NSE
-C          WRITE(6,*)(CNSE(ISE,J),J=1,4)
-C 99   CONTINUE
-C        WRITE(6,*)'  '
 
 C-----------------------------------------------------------------------
 C     VÉRIFICATION DU SENS DES SOUS-ÉLÉMENTS TETRA
@@ -385,16 +380,20 @@ C-----------------------------------------------------------------------
       IF (NDIME.EQ.3) THEN
 
         DO 200 ISE=1,NSE
-           DO 210 IN=1,4
+           DO 210 IN=1,NNOSE
             INH=CNSE(ISE,IN)
             IF (INH.LT.100) THEN
               DO 220 J=1,3
-                XYZ(IN,J)=ZR(IGEOM-1+3*(INH-1)+J)
+                XYZ(IN,J)=ZR(IGEOM-1+NDIM*(INH-1)+J)
  220          CONTINUE
-            ELSE
+            ELSEIF (INH.GT.100.AND.INH.LT.1000) THEN
               DO 221 J=1,3
-                XYZ(IN,J)=ZR(JPTINT-1+3*(INH-100-1)+J)
+                XYZ(IN,J)=ZR(JPTINT-1+NDIM*(INH-100-1)+J)
  221          CONTINUE
+            ELSE
+              DO 222 J=1,3
+                 XYZ(IN,J)=PINTT(NDIM*(INH-1001)+J)
+ 222          CONTINUE
             ENDIF
  210      CONTINUE
 
@@ -408,13 +407,10 @@ C-----------------------------------------------------------------------
           PS=DDOT(3,VN,1,AD,1)
 
           IF (PS.LT.0) THEN
-C           WRITE(6,*)'MAUVAIS SENS DU TETRA'
-C          ON INVERSE LES NOEUDS 3 ET 4
+C          MAUVAIS SENS DU TETRA, ON INVERSE LES NOEUDS 3 ET 4
             INH=CNSE(ISE,3)
             CNSE(ISE,3)=CNSE(ISE,4)
             CNSE(ISE,4)=INH
-          ELSE
-C            WRITE(6,*)'VERIF SENS OK'
           ENDIF
 
  200    CONTINUE
@@ -427,53 +423,72 @@ C             MATRICE DES COORDONNÉES ET FONCTION HEAVYSIDE
 C             ALGO BOOK III (28/04/04)
 C-----------------------------------------------------------------------
 
-      CALL WKVECT(HEAV,'V V R',NSE*NFISS,JHEAV)
-
+      CALL WKVECT(HEAV,'V V R',NSE*IFISS,JHEAV)
       DO 300 ISE=1,NSE
-        DO 310 IN=1,NDIME+1
+        DO 310 I =1,IFISS-1
+C ----- ON RECOPIE LES VALEURS PR�C�DENTES
+          ZR(JHEAV-1+IFISS*(ISE-1)+I)=HEAVT(NCOMP*(I-1)+IT)
+ 310    CONTINUE
+C ----- ON TRAITE LA FISSURE COURANTE
+        CALL VECINI(NFISC+1,0.D0,SOMLSN)
+        DO 320 IN=1,NNOSE
           INH=CNSE(ISE,IN)
           IF (INH.LT.100) THEN
-            DO 330 IFISS=1,NFISS
-              IF (LSN((INH-1)*NFISS+IFISS).LT.0.D0) THEN
-                ZR(JHEAV-1+NFISS*(ISE-1)+IFISS)= -1.D0
-              ELSEIF (LSN((INH-1)*NFISS+IFISS).GT.0.D0) THEN
-                ZR(JHEAV-1+NFISS*(ISE-1)+IFISS)= +1.D0
-              ENDIF
- 330        CONTINUE
+            DO 325 I = 1,NFISC
+              SOMLSN(I) = SOMLSN(I)+LSN((INH-1)*NFISS+FISCO(2*I-1))
+ 325        CONTINUE
+            SOMLSN(NFISC+1) = SOMLSN(NFISC+1)+LSN((INH-1)*NFISS+IFISS)
           ELSE
-            IF (NFISS.GT.1) THEN
-              A1 = NINT(ZR(JAINT-1+ZXAIN*(INH-101)+1))
-              ALPHA = ZR(JAINT-1+ZXAIN*(INH-101)+4)
-     &                  /ZR(JAINT-1+ZXAIN*(INH-101)+3)
-              DO 350 IFISS=1,NFISS
-                LSNC = ALPHA*LSN((CONNEC(IT,AR(A1,2))-1)*NFISS+IFISS)
-     &            + (1-ALPHA)*LSN((CONNEC(IT,AR(A1,1))-1)*NFISS+IFISS)
-                IF (LSNC.LT.-1*CRILSN) THEN
-                  CALL ASSERT(ZR(JHEAV-1+NFISS*(ISE-1)+IFISS).NE.1)
-                  ZR(JHEAV-1+NFISS*(ISE-1)+IFISS)= -1.D0
-                ELSEIF (LSNC.GT.CRILSN) THEN
-                  CALL ASSERT(ZR(JHEAV-1+NFISS*(ISE-1)+IFISS).NE.-1)
-                  ZR(JHEAV-1+NFISS*(ISE-1)+IFISS)= +1.D0
-                ENDIF
- 350          CONTINUE
+C           RECUP DE LA G�OMETRIE
+            IF (INH.GT.1000) THEN
+              DO 330 J=1,NDIM
+                GEOM(J) = PINTT(NDIM*(INH-1001)+J)
+ 330          CONTINUE
+            ELSEIF (INH.LT.1000) THEN
+              DO 340 J=1,NDIM
+                GEOM(J) = ZR(JPTINT-1+NDIM*(INH-101)+J)
+ 340          CONTINUE
             ENDIF
+C           CALCUL DES FF
+            CALL REEREF(ELP,NNOP,IBID,IGEOM,GEOM,IBID,LBID,NDIM,
+     &              RBID,IBID,IBID,IBID,IBID,IBID,IBID,RBID,RBID,'NON',
+     &              RBID2,FF,RBID,RBID,RBID,RBID)
+            DO 350 J=1,NNOP
+              DO 355 I=1,NFISC
+                SOMLSN(I)=SOMLSN(I)+FF(J)*LSN((J-1)*NFISS+FISCO(2*I-1))
+ 355          CONTINUE
+              SOMLSN(NFISC+1) = SOMLSN(NFISC+1)+FF(J)
+     &                          *LSN((J-1)*NFISS+IFISS)
+ 350        CONTINUE
           ENDIF
- 310    CONTINUE
+ 320    CONTINUE
+C
+C       MISE � ZERO POUR LA FONCTION JONCTION AU NIVEAU DU BRANCHEMENT
+C
+        DO 360 I =1,NFISC
+          IF (FISCO(2*I)*SOMLSN(I).GT.0.D0) GOTO 300
+ 360    CONTINUE
+C
+        IF (SOMLSN(NFISC+1).LT.0.D0) THEN
+          ZR(JHEAV-1+IFISS*ISE) = -1.D0
+        ELSEIF (SOMLSN(NFISC+1).GT.0.D0) THEN
+          ZR(JHEAV-1+IFISS*ISE) = +1.D0
+        ELSE
+C       REMARQUE IMPORTANTE :
+C       SI ON EST SUR UN ELEMENT DE BORD COINCIDANT AVEC L'INTERCE
+C       (NDIME = NDIM - 1 ET NPTS = NINTER = NDIM) ALORS ON NE PEUT PAS
+C       DÉTERMINER DE QUEL COTÉ DE L'INTERFACE ON SE TROUVE, CAR
+C       ON EST TOUJOURS SUR L'INTERFACE. LA VALEUR DE ZR(JHEAV-1+ISE)
+C       EST DONC FAUSSE DANS CE CAS : ON MET 99.
+C       UNE CORRECTION EST FAITE DANS XORIPE LORS DE L'ORIENTATION DES
+C       NORMALES, OU ON EN PROFITE POUR CORRIGER AUSSI ZR(JHEAV-1+ISE)
+          CALL ASSERT(NDIME.EQ.NDIM-1.AND.NPTS.EQ.NDIM.AND.NSE.EQ.1)
+          ZR(JHEAV-1+IFISS*ISE) = 99.D0
+        ENDIF
+
  300  CONTINUE
 
-C     REMARQUE IMPORTANTE :
-C     IN ON EST SUR UN ELEMENT DE BORD COINCIDANT AVEC L'INTERCE
-C     (NDIME = NDIM - 1 ET NPTS = NINTER = NDIM) ALORS ON NE PEUT PAS
-C     DÉTERMINER DE QUEL COTÉ DE L'INTERFACE ON SE TROUVE, CAR
-C     ON EST TOUJOURS SUR L'INTERFACE. LA VALEUR DE ZR(JHEAV-1+ISE)
-C     EST DONC FAUSSE DANS CE CAS : ON MET 99.
-C     UNE CORRECTION EST FAITE DANS XORIPE LORS DE L'ORIENTATION
-C     DES NORMALES, OU ON EN PROFITE POUR CORRIGER AUSSI ZR(JHEAV-1+ISE)
-      IF (NDIME.EQ.NDIM-1.AND.NPTS.EQ.NINTER.AND.NINTER.EQ.NDIM) THEN
-        CALL ASSERT(NSE.EQ.1)
-         ZR(JHEAV-1+1)=99.D0
-      ENDIF
-      
+      CALL JEDETR(AINTER)
 
       CALL JEDEMA()
       END

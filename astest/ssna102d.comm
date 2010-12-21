@@ -1,10 +1,10 @@
-# MODIF  DATE 19/10/2010   AUTEUR DESOZA T.DESOZA 
+# MODIF  DATE 21/12/2010   AUTEUR ABBAS M.ABBAS 
 #
 # TITRE CONTACT MULTICORPS ELASTIQUES
 # ssna102d.para = tps_job 70 mem_job 100Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -25,7 +25,7 @@
 #########################################
 # METHODE DE CONTACT : CONTINUE
 
-DEBUT(  CODE=_F( NOM = 'SSNA102D',NIV_PUB_WEB='INTERNET'),IGNORE_ALARM='MECANONLINE5_4',)
+DEBUT(  CODE=_F( NOM = 'SSNA102D',NIV_PUB_WEB='INTERNET'),)
 
 # --------------------------------------------------------------------
 #       LECTURE DU MAILLAGE ET CREATION DE GROUPES DE NOEUDS
@@ -199,17 +199,6 @@ RESU=STAT_NON_LINE(
                                         RESI_GLOB_RELA = 1.E-6,
                                         ITER_GLOB_MAXI = 50,
                                         ARRET = 'OUI'),
-                          AFFICHAGE=(
-                                     _F(NOM_COLONNE='BOUC_GEOM',),
-                                     _F(NOM_COLONNE='BOUC_FROT',),
-                                     _F(NOM_COLONNE='BOUC_CONT',),
-                                     _F(NOM_COLONNE='CTCC_BOUC',INFO_RESIDU='OUI',),
-                                     #_F(NOM_COLONNE='CTCC_NOEU',),
-                                     _F(NOM_COLONNE='ITER_NEWT',),
-                                     _F(NOM_COLONNE='RESI_RELA',INFO_RESIDU='OUI',),
-                                     _F(NOM_COLONNE='RESI_MAXI',),
-                                     _F(NOM_COLONNE='MATR_ASSE',),
-                                     ),
                           INFO=1
                        )
 

@@ -1,21 +1,22 @@
-# MODIF  DATE 10/10/2006   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 20/12/2010   AUTEUR MEUNIER S.MEUNIER 
 # TITRE MODELISATION DE LA DIFFUSION DE L AIR DISSOUS DANS L EAU
+# wtnv131b.para = tps_job 250 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
 
@@ -24,8 +25,8 @@ DEBUT(CODE=_F(NOM='WTNV131B',NIV_PUB_WEB='INTERNET'),);
 #############################
 ############################
 
-                                   
-                                   
+
+
 INST1=DEFI_LIST_REEL(DEBUT=0.0,
                      INTERVALLE=(
                        _F(JUSQU_A=5000000000.,NOMBRE=100,),
@@ -51,7 +52,7 @@ MAIL=DEFI_GROUP( reuse=MAIL,
                                  GROUP_MA='ROCHE'),
                               _F(NOM='GAUCHES',
                                  CRIT_NOEUD='SOMMET',
-                                 GROUP_MA='GAUCHE'),                                 
+                                 GROUP_MA='GAUCHE'),
                                  ),)
 UN=DEFI_CONSTANTE(VALE=1.0,);
 UNDEMI=DEFI_CONSTANTE(VALE=0.5,);
@@ -65,12 +66,12 @@ VISCOGAZ=DEFI_CONSTANTE(VALE=1.E-03,);
 DVISCOL=DEFI_CONSTANTE(VALE=0.0,);
 
 DVISCOG=DEFI_CONSTANTE(VALE=0.0,);
-                      
+
 LI2=DEFI_LIST_REEL(DEBUT=-1.E9,
                       INTERVALLE=(
                                   _F(JUSQU_A=1.E9,
                                      NOMBRE=500,),),);
-                      
+
 LI1=DEFI_LIST_REEL(DEBUT=0.1,
                    INTERVALLE=_F(JUSQU_A=0.99,
                                  PAS=1.E-2,),);
@@ -162,7 +163,7 @@ CHMAT0=AFFE_MATERIAU(MAILLAGE=MAIL,
 
 
 CHAMNO=CREA_CHAMP(MAILLAGE=MAIL,
-                    OPERATION='AFFE', 
+                    OPERATION='AFFE',
                     TYPE_CHAM='NOEU_DEPL_R',
                     AFFE=(
                           _F(TOUT='OUI',
@@ -172,11 +173,11 @@ CHAMNO=CREA_CHAMP(MAILLAGE=MAIL,
                              NOM_CMP='PRE1',
                              VALE=1.E6,),
                              ),);
-                             
 
 
-TIMP=AFFE_CHAR_MECA(MODELE=MODELE,
-               DDL_IMPO=(
+
+TIMP=AFFE_CHAR_CINE(MODELE=MODELE,
+               MECA_IMPO=(
               _F(GROUP_NO=('HAUT','BAS','GAUCHE','DROITE','DEVANT','DERRIERE'),
                       DX=0.0,),
               _F(GROUP_NO=('HAUT','BAS','GAUCHE','DROITE','DEVANT','DERRIERE'),
@@ -189,10 +190,9 @@ TIMP=AFFE_CHAR_MECA(MODELE=MODELE,
                       PRE1=1.E6,),
                       ),
                       );
-               
-                                   
+
 SIGINIT=CREA_CHAMP(MAILLAGE=MAIL,
-                   OPERATION='AFFE', 
+                   OPERATION='AFFE',
                    TYPE_CHAM='CART_SIEF_R',
                    AFFE=(_F(GROUP_MA='BO',
                             NOM_CMP=
@@ -208,7 +208,7 @@ SIGINIT=CREA_CHAMP(MAILLAGE=MAIL,
                              0.0,0.0,0.0,0.0,0.0,
                              0.,0.,0.,0.,0.),),
                              ),  );
-                                   
+
 
 U0=STAT_NON_LINE(MODELE=MODELE,
                  CHAM_MATER=CHMAT0,
@@ -228,10 +228,8 @@ U0=STAT_NON_LINE(MODELE=MODELE,
                                 RESI_GLOB_RELA=1.E-6,
                                 ITER_GLOB_MAXI=80,
                                 ),
-                 SOLVEUR=_F(METHODE='MULT_FRONT',
-                            STOP_SINGULIER='NON',),
                  );
-                                          
+
 
 # X = 0.2
 TEST_RESU(RESU=_F(RESULTAT=U0,
@@ -242,7 +240,7 @@ TEST_RESU(RESU=_F(RESULTAT=U0,
                   VALE=11200.,
                   CRITERE='RELATIF',
                   PRECISION=1.E-2,
-                  REFERENCE='AUTRE_ASTER',),);   
+                  REFERENCE='AUTRE_ASTER',),);
 TEST_RESU(RESU=_F(RESULTAT=U0,
                   NUME_ORDRE=100,
                   NOM_CHAM='DEPL',
@@ -251,7 +249,7 @@ TEST_RESU(RESU=_F(RESULTAT=U0,
                   VALE=12230.,
                   CRITERE='RELATIF',
                   PRECISION=1.E-2,
-                  REFERENCE='AUTRE_ASTER',),);   
+                  REFERENCE='AUTRE_ASTER',),);
 
 
 # X = 0.5
@@ -263,7 +261,7 @@ TEST_RESU(RESU=_F(RESULTAT=U0,
                   VALE=6570.,
                   CRITERE='RELATIF',
                   PRECISION=1.E-2,
-                  REFERENCE='AUTRE_ASTER',),);   
+                  REFERENCE='AUTRE_ASTER',),);
 TEST_RESU(RESU=_F(RESULTAT=U0,
                   NUME_ORDRE=100,
                   NOM_CHAM='DEPL',
@@ -272,7 +270,7 @@ TEST_RESU(RESU=_F(RESULTAT=U0,
                   VALE=8685.,
                   CRITERE='RELATIF',
                   PRECISION=1.E-2,
-                  REFERENCE='AUTRE_ASTER',),);   
+                  REFERENCE='AUTRE_ASTER',),);
 
 TEST_RESU(RESU=_F(RESULTAT=U0,
                   NUME_ORDRE=100,
@@ -282,5 +280,5 @@ TEST_RESU(RESU=_F(RESULTAT=U0,
                   VALE=8741.,
                   CRITERE='RELATIF',
                   PRECISION=1.E-2,
-                  REFERENCE='NON_REGRESSION',),);   
+                  REFERENCE='NON_REGRESSION',),);
 FIN();

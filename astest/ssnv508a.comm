@@ -1,4 +1,4 @@
-# MODIF  DATE 28/09/2010   AUTEUR MASSIN P.MASSIN 
+# MODIF  DATE 21/12/2010   AUTEUR MASSIN P.MASSIN 
 # TITRE BLOC AVEC INTERFACE EN TRACTION ET PRESSION LATERALE SANS CONTACT
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -160,8 +160,8 @@ CH1=AFFE_CHAR_MECA_F(MODELE=MODELEK,
 #----------------------------------------------
 
 L_INS=DEFI_LIST_REEL(DEBUT=0.0,
-                     INTERVALLE=_F(JUSQU_A=3.0,
-                                   NOMBRE=3,),);
+                     INTERVALLE=_F(JUSQU_A=1.0,
+                                   NOMBRE=1,),);
 
 UTOT1=STAT_NON_LINE(MODELE=MODELEK,
                     CHAM_MATER=CHAMPMAT,
@@ -176,9 +176,7 @@ UTOT1=STAT_NON_LINE(MODELE=MODELEK,
                     NEWTON=_F(REAC_ITER=1,),
                     CONVERGENCE=_F(RESI_GLOB_RELA=1E-6,
                                    ARRET='OUI',),
-                    SOLVEUR=_F(METHODE='MUMPS',
-                               PCENT_PIVOT=240,
-                               NPREC=-1.,),
+                    SOLVEUR=_F(METHODE='MUMPS',),
                     INFO=1,);
 
 
@@ -264,7 +262,7 @@ TEST_TABLE(TABLE=DEP2,
            TYPE_TEST='MAX',
            VALE=DXMAX,
            CRITERE='ABSOLU',
-           PRECISION=2.0E-6,
+           PRECISION=2.5E-6,
            REFERENCE='ANALYTIQUE',);
 
 
@@ -273,7 +271,7 @@ TEST_TABLE(TABLE=DEP2,
            TYPE_TEST='MIN',
            VALE=DXMIN,
            CRITERE='ABSOLU',
-           PRECISION=2.0E-6,
+           PRECISION=2.5E-6,
            REFERENCE='ANALYTIQUE',);
 
 
@@ -281,14 +279,14 @@ TEST_RESU(RESU=(_F(  RESULTAT=RES_X1,NUME_ORDRE=1,
                      NOM_CHAM='DEPL',NOM_CMP='DX',
                      TYPE_TEST='SOMM_ABS',
                      CRITERE = 'RELATIF',
-                     VALE = 1.7197E-03,PRECISION=1.E-12,
+                     VALE = 1.7197E-03,PRECISION=1.E-6,
                      REFERENCE = 'NON_REGRESSION',
                      VERSION = '10.2.12'),
                 _F(  RESULTAT=RES_X1,NUME_ORDRE=1,
                      NOM_CHAM='DEPL',NOM_CMP='DY',
                      TYPE_TEST='SOMM_ABS',
                      CRITERE = 'RELATIF',
-                     VALE = 3.8352421875001E-03,PRECISION=1.E-12,
+                     VALE = 3.8352421875001E-03,PRECISION=1.E-6,
                      REFERENCE = 'NON_REGRESSION',
                      VERSION = '10.2.12'),),)
 

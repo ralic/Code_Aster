@@ -2,9 +2,9 @@
      &  PGL,MATERD,MATERF, MATCST,NBCOMM,CPMONO,NDT,NDI,NR,NVI,HSR)
         IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 20/12/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -20,7 +20,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C RESPONSABLE JMBHH01 J.M.PROIX
-C TOLE CRP_20
+C TOLE CRP_20 CRS_1404
 C       ----------------------------------------------------------------
 C       POLYCRISTAL : RECUPERATION DU MATERIAU A T(TEMPD) ET T+DT(TEMPF)
 C                    NB DE CMP DIRECTES/CISAILLEMENT , NB VAR. INTERNES
@@ -226,8 +226,8 @@ C     Boucle sur le nombre de monocristaux
             NECOUL=CPMONO(INDCP+5*(IFA-1)+3)
             NECRIS=CPMONO(INDCP+5*(IFA-1)+4)
             NECRCI=CPMONO(INDCP+5*(IFA-1)+5)
-            
-C           NOMBRE DE MATRICE D'INTERACTION DIFFERENTES            
+
+C           NOMBRE DE MATRICE D'INTERACTION DIFFERENTES
 
 C           COEFFICIENTS MATERIAUX LIES A L'ECOULEMENT
             CALL LCMAFL(FAMI,KPG,KSP,'-',NMATER,IMAT,NECOUL,NBVAL,
@@ -359,7 +359,7 @@ C         termes  SQRT(2) qui ne sont pas mis dans DMAT3D
            DO 70 I=4,6
              KOOH(I,J) = KOOH(I,J)/SQRT(2.D0)
  70        CONTINUE
- 
+
         DO 101 I=1,6
            DO 102 J=1,6
               MATERD(6*(J-1)+I,1)=HOOK(I,J)
@@ -401,7 +401,7 @@ C         termes  SQRT(2) qui ne sont pas mis dans DMAT3D
            DO 701 I=4,6
              KOOH(I,J) = KOOH(I,J)/SQRT(2.D0)
  701        CONTINUE
- 
+
         DO 103 I=1,6
            DO 104 J=1,6
               MATERF(6*(J-1)+I,1)=HOOKF(I,J)

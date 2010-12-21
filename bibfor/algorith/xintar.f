@@ -1,31 +1,32 @@
       SUBROUTINE XINTAR(ELP,NDIM,IA,JTABCO,JTABLS,INTAR)
-      IMPLICIT NONE 
+      IMPLICIT NONE
 
       INTEGER       IA,NDIM,JTABCO,JTABLS
       CHARACTER*8   ELP
       REAL*8        INTAR(NDIM)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 24/08/2010   AUTEUR CARON A.CARON 
+C MODIF ALGORITH  DATE 20/12/2010   AUTEUR PELLET J.PELLET 
+C TOLE CRS_1404
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C                      TROUVER LE PT D'INTERSECTION ENTRE L'ARETE
-C                      ET LA FISSURE 
-C                    
+C                      ET LA FISSURE
+C
 C     ENTREE
 C       ELP     : TYPE DE L'ELEMENT
 C       IA      : NUMERO DE L'ARETE REPEREE SUR L'ELEMENT
@@ -55,11 +56,11 @@ C---------------------------------------------------------------------
       SOL2=0.D0
       CALL VECINI(NDIM,0.D0,XE)
 
-      IF(ELP.EQ.'TR6') THEN  
+      IF(ELP.EQ.'TR6') THEN
         MAX=1.D0
         MIN=0.D0
         IF (IA.EQ.1) THEN
-C ARETE 1-2-4      
+C ARETE 1-2-4
           C1=ZR(JTABLS-1+2)
           C2=ZR(JTABLS-1+4)
           C3=ZR(JTABLS-1+1)
@@ -78,7 +79,7 @@ C ARETE 3-1-6
         B = -C1+4*C2-3*C3
         C = C3
 
-      ELSEIF(ELP.EQ.'SE3')THEN 
+      ELSEIF(ELP.EQ.'SE3')THEN
         MAX=1.D0
         MIN=-1.D0
         C1=ZR(JTABLS-1+1)
@@ -86,13 +87,13 @@ C ARETE 3-1-6
         C3=ZR(JTABLS-1+3)
         A = C1/2+C2/2-C3
         B = (C2-C1)/2
-        C = C3      
+        C = C3
 
       ELSEIF(ELP.EQ.'QU8')THEN
         MAX=1.D0
         MIN=-1.D0
         IF (IA.EQ.1) THEN
-C ARETE 1-2-5     
+C ARETE 1-2-5
           C1=ZR(JTABLS-1+1)
           C2=ZR(JTABLS-1+2)
           C3=ZR(JTABLS-1+5)
@@ -128,8 +129,8 @@ C ARETE 4-1-8
         IF (ABS(D).LE.R8PREM()) THEN
           SOL=-B/(2*A)
         ELSEIF (D.GT.R8PREM()) THEN
-          SOL1=(-B-SQRT(D))/(2*A)            
-          SOL2=(-B+SQRT(D))/(2*A)      
+          SOL1=(-B-SQRT(D))/(2*A)
+          SOL2=(-B+SQRT(D))/(2*A)
           IF (SOL1.GT.MIN .AND. SOL1.LT.MAX) THEN
             SOL=SOL1
           ELSE
@@ -148,12 +149,12 @@ C       LE POLYNOME N'A PAS DE SOLUTION
       IF(ELP.EQ.'TR6')THEN
         NNO=6
         IF (IA.EQ.1) THEN
-C ARETE 1-2-4      
+C ARETE 1-2-4
           XE(1)=SOL
         ELSEIF (IA.EQ.2) THEN
 C ARETE 2-3-5
           XE(1)=SOL
-          XE(2)=1-XE(1)      
+          XE(2)=1-XE(1)
         ELSEIF (IA.EQ.3) THEN
 C ARETE 3-1-6
           XE(2)=SOL
@@ -161,18 +162,18 @@ C ARETE 3-1-6
 
       ELSEIF(ELP.EQ.'SE3')THEN
         NNO=3
-        XE(1)=SOL  
+        XE(1)=SOL
 
       ELSEIF(ELP.EQ.'QU8')THEN
         NNO=8
         IF (IA.EQ.1) THEN
-C ARETE 1-2-5     
+C ARETE 1-2-5
           XE(1)=SOL
           XE(2)=-1
         ELSEIF (IA.EQ.2) THEN
 C ARETE 2-3-6
           XE(1)=1
-          XE(2)=SOL      
+          XE(2)=SOL
         ELSEIF (IA.EQ.3) THEN
 C ARETE 3-4-7
           XE(1)=SOL
