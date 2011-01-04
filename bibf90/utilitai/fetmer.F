@@ -1,9 +1,9 @@
       SUBROUTINE FETMER(IERMPI)
 !-----------------------------------------------------------------------
 !           CONFIGURATION MANAGEMENT OF EDF VERSION                  
-!& MODIF FETMER UTILITAI  DATE 28/09/2009   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+!& MODIF FETMER UTILITAI  DATE 03/01/2011   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 ! ================================================================== 
-! COPYRIGHT (C) 1991 - 2009  EDF R&D              WWW.CODE-ASTER.ORG 
+! COPYRIGHT (C) 1991 - 2011  EDF R&D              WWW.CODE-ASTER.ORG 
 !                                                                    
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR      
 ! MODIFY IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS     
@@ -28,7 +28,7 @@
 !     IN  RANG   : IN	: RANG DU PROCESSEUR
 !     IN  IFM	 : IN	: UNITE LOGIQUE D'IMPRESSION STANDARD
 !----------------------------------------------------------------------
-!C RESPONSABLE ABBAS M.ABBAS
+! RESPONSABLE ABBAS M.ABBAS
 C CORPS DU PROGRAMME
       IMPLICIT NONE
 C DECLARATION PARAMETRES D'APPELS

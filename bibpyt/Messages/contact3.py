@@ -1,8 +1,8 @@
-#@ MODIF contact3 Messages  DATE 19/10/2010   AUTEUR DESOZA T.DESOZA 
+#@ MODIF contact3 Messages  DATE 03/01/2011   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -54,20 +54,6 @@ ne correspond pas à une extrémité du segment toucahnt le fond de fisssure.
 """),
 
 
-13 : _("""
-L'algorithme de Newton a échoué lors de la projection du point de contact de coordonnées
-  (%(r1)s,%(r2)s,%(r3)s)
-sur la maille %(k1)s.
-Erreur de définition de la maille ou projection difficile. Contactez l'assistance dans ce dernier cas.  
-"""),
-
-14 : _("""
-Les vecteurs tangents sont nuls au niveau du projeté du point de contact de coordonnées
-  (%(r1)s,%(r2)s,%(r3)s) 
-sur la maille %(k1)s, 
-Erreur de définition de la maille ou projection difficile. Contactez l'assistance dans ce dernier cas.
-"""),
-
 15 : _("""
 La direction d'appariement fixe données par le vecteur DIRE_APPA est nulle !
 """),
@@ -79,7 +65,7 @@ La méthode d'intégration n'est pas NOEUD, le champ VALE_CONT n'est pas créé.
 
 17 : _("""
 Contact méthode continue.
-Avec un FOND-FISSURE, il est impossible d'utiliser les options suivantes:
+Avec un FOND_FISSURE, il est impossible d'utiliser les options suivantes:
 - LISSAGE = 'OUI' ou/et
 - NORMALE = 'ESCL' ou
 - NORMALE = 'MAIT_ESCL'
@@ -111,10 +97,6 @@ Le statut du contact a changé %(i1)d fois au point de contact numéro %(i2)d sur 
 Présence de flip-flop. 
 """),
 
-29 : _("""
-Nom de la maille : %(k1)s 
-"""),
-
 31 : _("""
 Les vecteurs tangents sont nuls au niveau quand on projette le noeud esclave
 %(k1)s sur la maille %(k2)s
@@ -123,15 +105,6 @@ Les vecteurs tangents sont nuls au niveau quand on projette le noeud esclave
 32: _("""
  Le mot-clef DIST_POUT ne fonctionne qu'avec des sections circulaires définies dans AFFE_CARA_ELEM.
  """),
-
-33 : _("""
-L'erreur suivante est arrivée lors du pré-calcul des normales aux noeuds activées par les options
-- LISSAGE = 'OUI' ou/et
-- NORMALE = 'ESCL' ou
-- NORMALE = 'MAIT_ESCL'
-"""),
-
-
 
 35 : _("""
 Les vecteurs tangents sont nuls au niveau quand on projette le noeud esclave
@@ -157,7 +130,7 @@ Problème pour récupérer l'excentricité de la coque pour la maille  %(k1)s
 """),
 
 43 : _("""
-La normale que vous avez prédéfinie par (VECT_* = 'VECT_Y') n'est pas utilisable en 2D.
+La normale que vous avez prédéfinie par (VECT_* = 'VECT_Y') sur la maille %(k1)s n'est pas utilisable en 2D.
 Utilisez plutôt VECT_* = 'FIXE'
 """),
 
@@ -191,6 +164,15 @@ La maille %(k1)s est de type 'POI1', elle nécessite l'utilisation de l'option
 NORMALE='FIXE' avec une normale non-nulle. 
 """),
 
+61 : _("""
+La maille %(k1)s est de type poutre, elle nécessite la définition d'une base locale.
+Utilisez NORMALE='FIXE' ou NORMALE='VECT_Y' dans DEFI_CONTACT.
+"""),
+
+75 : _("""
+La maille %(k1)s est de type 'POI1', elle ne peut pas être une maille maître.
+"""),
+
 81 : _("""
 Contact.
   -> Il y a trop de réactualisations géométriques.
@@ -199,7 +181,6 @@ Contact.
      Votre maillage est incorrect ou le glissement relatif des deux
      surfaces est trop important.
      Tentez de découper plus finement en temps votre problème ou augmenter ITER_GEOM_MAXI.
- 
 """),
 
 85 : _("""

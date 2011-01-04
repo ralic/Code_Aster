@@ -1,8 +1,8 @@
-#@ MODIF miss_resu_aster Miss  DATE 30/08/2010   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF miss_resu_aster Miss  DATE 03/01/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -70,22 +70,28 @@ def lire_resultat_aster(fich_aster):
         ln += lire_nb_valeurs(fobj, struct.maille_nb * struct.maille_dime, struct.maille_connec, int)
         # mode dynamiques
         ln += lire_nb_valeurs(fobj, struct.noeud_nb * 3, struct.mode_dyna_vale, double,
-                              struct.mode_dyna_nb, 1)
+                              struct.mode_dyna_nb, 1, max_per_line=3)
         # modes dynamiques : fréquence
-        ln += lire_nb_valeurs(fobj, struct.mode_dyna_nb, struct.mode_dyna_freq, double, 1, 1)
+        ln += lire_nb_valeurs(fobj, struct.mode_dyna_nb, struct.mode_dyna_freq, double,
+                              1, 1)
         # modes dynamiques : amortissement
-        ln += lire_nb_valeurs(fobj, struct.mode_dyna_nb, struct.mode_dyna_amor, double, 1, 1)
+        ln += lire_nb_valeurs(fobj, struct.mode_dyna_nb, struct.mode_dyna_amor, double,
+                              1, 1)
         # modes dynamiques : masse
-        ln += lire_nb_valeurs(fobj, struct.mode_dyna_nb, struct.mode_dyna_mass, double, 1, 1)
+        ln += lire_nb_valeurs(fobj, struct.mode_dyna_nb, struct.mode_dyna_mass, double,
+                              1, 1)
         # modes dynamiques : rigidité
-        ln += lire_nb_valeurs(fobj, struct.mode_dyna_nb, struct.mode_dyna_rigi, double, 1, 1)
+        ln += lire_nb_valeurs(fobj, struct.mode_dyna_nb, struct.mode_dyna_rigi, double,
+                              1, 1)
         # mode statiques
         ln += lire_nb_valeurs(fobj, struct.noeud_nb * 3, struct.mode_stat_vale, double,
-                              struct.mode_stat_nb, 1)
+                              struct.mode_stat_nb, 1, max_per_line=3)
         # modes statiques : masse
-        ln += lire_nb_valeurs(fobj, struct.mode_stat_nb ** 2, struct.mode_stat_mass, double, 1, 1)
+        ln += lire_nb_valeurs(fobj, struct.mode_stat_nb ** 2, struct.mode_stat_mass, double,
+                              1, 1)
         # modes statiques : rigidité
-        ln += lire_nb_valeurs(fobj, struct.mode_stat_nb ** 2, struct.mode_stat_rigi, double, 1, 1)
+        ln += lire_nb_valeurs(fobj, struct.mode_stat_nb ** 2, struct.mode_stat_rigi, double,
+                              1, 1)
         # modes couplés
         ln += 1
         lab, nbd, nbs = fobj.readline().split()
@@ -97,7 +103,7 @@ def lire_resultat_aster(fich_aster):
         ln += lire_nb_valeurs(fobj, struct.mode_dyna_nb * struct.mode_stat_nb,
                               struct.coupl_rigi, double, 1, 1)
 
-    except Exception, err:
+    except IOError, err:
         raise aster.error('MISS0_7', vali=ln, valk=str(err))  
     # vérifications
     try:

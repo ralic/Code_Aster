@@ -1,8 +1,8 @@
-#@ MODIF contact Messages  DATE 19/10/2010   AUTEUR DESOZA T.DESOZA 
+#@ MODIF contact Messages  DATE 03/01/2011   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -90,9 +90,6 @@ Vous devez utilisez l'option NORMALE:
 - ou VECT_Y: qui décrit une normale par construction d'un repère basé sur la tangente (voir documentation)
 """),
 
-75 : _("""
-Contact méthodes discrètes. Un POI1 ne peut pas etre une maille maitre.
-"""),
 
 84 : _("""
 Le modèle mélangent des mailles avec des modélisations de dimensions 

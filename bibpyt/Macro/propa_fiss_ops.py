@@ -1,8 +1,8 @@
-#@ MODIF propa_fiss_ops Macro  DATE 07/12/2010   AUTEUR DELMAS J.DELMAS 
+#@ MODIF propa_fiss_ops Macro  DATE 03/01/2011   AUTEUR MACOCCO K.MACOCCO 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -18,7 +18,7 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
 
-from math import atan, atan2, cos, sin
+from math import atan, atan2, cos, sin, log
 
 import numpy as NP
 from Accas import _F
@@ -134,6 +134,29 @@ def recup_Elas(LOI):
         e  = dicmat['E']
         nu = dicmat['NU'] 
       return e,nu,dLoi
+
+def nom_points_fonds(n_taille):
+   """
+   Construction des noms des points en fond de fissure
+   """
+   alphabet            = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'];
+   if n_taille <= 26:
+       return alphabet[:n_taille]
+   else:
+       tab_alphabet        = alphabet  
+       taille_tab_alphabet = int(log(n_taille,26))
+       for l_let1 in range(1,taille_tab_alphabet):
+               for l_let2 in range(26):
+                   for l_let3 in range(26):
+                       tab_alphabet =  tab_alphabet + [tab_alphabet[(l_let1-1)*26+l_let2]+alphabet[l_let3]]       
+       reste1 = int(n_taille-len(tab_alphabet))/26
+       for l_let2 in range(reste1):
+                  for l_let3 in range(26):
+                      tab_alphabet =  tab_alphabet + [tab_alphabet[(taille_tab_alphabet-1)*26+l_let2]+alphabet[l_let3]]
+       reste2 = int(n_taille-len(tab_alphabet))
+       for l_let3 in range(reste2):
+                   tab_alphabet =  tab_alphabet + [tab_alphabet[(taille_tab_alphabet-1)*26+reste1]+alphabet[l_let3]]
+       return tab_alphabet  
     
 #def propa_fiss_ops(self,METHODE_PROPA,TEST_MAIL,INFO,**args):
 def propa_fiss_ops(self,METHODE_PROPA,INFO,**args):
@@ -576,6 +599,7 @@ def propa_fiss_ops(self,METHODE_PROPA,INFO,**args):
            DKmax = 1
         if (coef_C ==None) :
            coef_C = Damax
+        ALPHABET = nom_points_fonds(nbnofo)
         for ifond in range(nbnofo) :
            Xf =  d_coorf['NX%s%i' %(ALPHABET[ifond],it)][0]   
            Yf =  d_coorf['NX%s%i' %(ALPHABET[ifond],it)][1]     
@@ -705,6 +729,7 @@ def propa_fiss_ops(self,METHODE_PROPA,INFO,**args):
         NomNoeudsEnPlus =     ['NXA%i' %(it+1)]
         mm[numfis].cn = NP.concatenate((mm[numfis].cn,LesNoeudsEnPlus))
         mm[numfis].correspondance_noeuds = tuple(linomno + NomNoeudsEnPlus )
+        ALPHABET = nom_points_fonds(1)
         
   # Ajout Maille levre (SEG2)
         NomMaillesEnPlus =     ['MX%s%i' %(ALPHABET[0], it+1)]
@@ -816,6 +841,7 @@ def propa_fiss_ops(self,METHODE_PROPA,INFO,**args):
       P1 = args['POINT_EXTR']
       dpropa = args['DTAN']
       nbpt = args['NB_POINT_FOND']
+      ALPHABET = nom_points_fonds(nbpt)
       Q0 = NP.array([[P0[0]-dpropa[0],P0[1]-dpropa[1],P0[2]-dpropa[2]]])
       
       mm = MAIL_PY()
@@ -906,6 +932,7 @@ def propa_fiss_ops(self,METHODE_PROPA,INFO,**args):
       if abs(verif) > 0.01:
           UTMESS('F','RUPTURE1_52')
       nbpt = args['NB_POINT_FOND']
+      ALPHABET = nom_points_fonds(nbpt)
 
       mm = MAIL_PY()
       mm.__init__()      

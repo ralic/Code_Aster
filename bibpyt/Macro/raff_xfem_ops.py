@@ -1,8 +1,8 @@
-#@ MODIF raff_xfem_ops Macro  DATE 12/10/2010   AUTEUR GENIAUT S.GENIAUT 
+#@ MODIF raff_xfem_ops Macro  DATE 03/01/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -32,7 +32,6 @@ def raff_xfem_ops(self,FISSURE,INFO,**args):
    from types import ListType, TupleType
    from Accas import _F
    from SD.sd_xfem import sd_fiss_xfem
-   from Execution.E_JDC import JDC
    EnumTypes = (ListType, TupleType)
 
    macro = 'RAFF_XFEM'

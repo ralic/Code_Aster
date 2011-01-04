@@ -1,8 +1,8 @@
-#@ MODIF algorith2 Messages  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
+#@ MODIF algorith2 Messages  DATE 03/01/2011   AUTEUR DESROCHES X.DESROCHES 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -79,6 +79,10 @@ Erreur utilisateur dans la commande CREA_RESU / AFFE :
   -> Risque & Conseil :
      Si ce centre de gravité se trouve également sur l'axe du repère, le calcul
      s'arrete en erreur fatale.
+"""),
+
+14 : _("""
+ champ %(k1)s non traité par le changement de repère cylindrique
 """),
 
 15 : _("""

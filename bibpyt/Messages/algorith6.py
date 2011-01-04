@@ -1,8 +1,8 @@
-#@ MODIF algorith6 Messages  DATE 14/12/2010   AUTEUR PELLET J.PELLET 
+#@ MODIF algorith6 Messages  DATE 03/01/2011   AUTEUR SFAYOLLE S.FAYOLLE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -35,6 +35,47 @@ cata_msg = {
 3 : _("""
  -> Les valeurs des paramètres de la loi GLRC_DM entraîne un seuil d'endommagement nul.
  -> Conseil : Modifier les valeurs des paramètres matériaux
+"""),
+
+4 : _("""
+  La valeur de %(k1)s est negative. Les resultats obtenus risquent d'etre inattendus
+"""),
+
+5 : _("""
+ -> La valeur de déformation maximale %(r1)s est inférieur au seuil d'endommagement %(r2)s.
+ -> Le modele GLRC_DM risque de donner des résultats inattendus.
+ -> Conseil : Utilisez une loi élastique ou vérifiez les paramètres d'homogénéisation.
+"""),
+
+6 : _("""
+ -> Le pourcentage des aciers ou l'espace des armatures n'est pas identique dans les deux directions et ne respecte donc pas l'isotropie du modele.
+ -> Le modele GLRC_DM peut donner des résultats innatendus.
+ -> Conseil: Choissisez une autre loi de comportement ou couplez le modele avec un modèle de grille d'acier.
+"""),
+
+7 : _("""
+ -> Il faut définir au moins et seulement une armature d'acier.
+"""),
+
+8 : _("""
+ -> L'objet sd_mater transmit au mot clé MATER de BETON ne contient pas de propriétés élastique.
+ -> Risque & Conseil : Ajouter les propriétés élastique dans le DEFI_MATERIAU du béton.
+"""),
+
+9 : _("""
+ -> L'objet sd_mater transmit au mot clé MATER de BETON ne contient pas de propriétés post-élastique.
+ -> Risque & Conseil : Ajouter les propriétés post-élastique dans le DEFI_MATERIAU du béton.
+"""),
+
+10 : _("""
+ -> L'objet sd_mater transmit au mot clé MATER d'ACIER ne contient pas de propriétés élastique.
+ -> Risque & Conseil : Ajouter les propriétés élastique dans le DEFI_MATERIAU de l'acier.
+"""),
+
+11 : _("""
+ -> Il est impossible d'utiliser PENTE = ACIER_PLAS si la limite élastique de l'acier SY n'est pas défini.
+ -> Risque & Conseil : Ajouter le paramètre SY dans le DEFI_MATERIAU de l'acier
+                       ou n'utilisez pas PENTE = ACIER_PLAS
 """),
 
 13 : _("""

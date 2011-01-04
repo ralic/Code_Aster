@@ -4,9 +4,9 @@
       REAL*8          XYZL(3,4), DEPL(*), PGL(3,3), SIGMA(*)
       CHARACTER*16    NOMTE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 21/07/2009   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF ELEMENTS  DATE 03/01/2011   AUTEUR DESROCHES X.DESROCHES 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -57,7 +57,7 @@ C --------------------------------------------------------------------
       REAL*8   C,S,PI,PHI,EPSL(4),R8PI
       REAL*8   HIC, H, ZMIN,ZIC, VALPU(2), TINF, TMOY, TSUP,TREF
       REAL*8   ZERO, DEUX, SIG, C1, C2, C3
-      REAL*8   E,SIGP(4),SIGL(3),R8DGRD,BETA,ALPH
+      REAL*8   E,SIGP(4),SIGL(3),R8DGRD,BETA,ALPH, EXCEN
       REAL*8   EPS2D(6), KHI(3), DEPF(12), DEPM(8)
       REAL*8   BF(3,3*NNO), BM(3,2*NNO), EPSM(3), EPSTH(4),EPSG(4)
       REAL*8   CARAT3(21),CARAQ4(25),QSI,ETA,JACOB(5)
@@ -102,6 +102,7 @@ C     -- GRANDEURS GEOMETRIQUES :
 C     ---------------------------
       CALL JEVECH ( 'PCACOQU', 'L', ICACOQ )
       H = ZR(ICACOQ)
+      EXCEN = ZR(ICACOQ+5-1)
       IF ( DKT ) THEN
          CALL GTRIA3(XYZL,CARAT3)
       ELSEIF ( DKQ ) THEN
@@ -167,11 +168,11 @@ C       --------------------------------
 C       -- COTE DES POINTS D'INTEGRATION
 C       --------------------------------
             IF (IGAUH.EQ.1) THEN
-              ZIC = ZMIN + (ICOU-1)*HIC
+              ZIC = ZMIN + (ICOU-1)*HIC + EXCEN
             ELSE IF (IGAUH.EQ.2) THEN
-              ZIC = ZMIN + HIC/DEUX + (ICOU-1)*HIC
+              ZIC = ZMIN + HIC/DEUX + (ICOU-1)*HIC + EXCEN
             ELSE
-              ZIC = ZMIN + HIC + (ICOU-1)*HIC
+              ZIC = ZMIN + HIC + (ICOU-1)*HIC + EXCEN
             END IF
 
 C         -- CALCUL DE EPS2D

@@ -1,8 +1,8 @@
-#@ MODIF jeveux Messages  DATE 26/07/2010   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+#@ MODIF jeveux Messages  DATE 03/01/2011   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -300,9 +300,9 @@ cata_msg = {
 
 62 : _("""
  Erreur lors de l'allocation dynamique. Il n'a pas été possible d'allouer 
- une zone mémoire de longueur %(i1)d (octets), on dépasse la limite maximum 
- fixée à %(i2)d (octets) et on occupe déjà %(i3)d (octets).
- La dernière opération de libération mémoire a permis de récupérer %(i4)d (octets). 
+ une zone mémoire de longueur %(i1)d Mo, on dépasse la limite maximum 
+ fixée à %(i2)d Mo et on occupe déjà %(i3)d Mo.
+ La dernière opération de libération mémoire a permis de récupérer %(i4)d Mo. 
 
 """),
 

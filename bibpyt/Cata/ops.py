@@ -1,8 +1,8 @@
-#@ MODIF ops Cata  DATE 09/11/2010   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF ops Cata  DATE 03/01/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
@@ -24,6 +24,7 @@ import types
 import string,linecache,os,traceback,re
 import pickle
 import re
+from pprint import pprint
 
 # Modules Eficas
 import Accas
@@ -45,7 +46,7 @@ except:
    aster_exists = False
 
 
-def commun_DEBUT_POURSUITE(jdc, PAR_LOT, IMPR_MACRO, CODE, DEBUG, IGNORE_ALARM):
+def commun_DEBUT_POURSUITE(jdc, PAR_LOT, IMPR_MACRO, CODE, DEBUG, IGNORE_ALARM, INFO):
    """Fonction sdprod partie commune à DEBUT et POURSUITE.
    (on stocke un entier au lieu du logique)
    """
@@ -55,6 +56,7 @@ def commun_DEBUT_POURSUITE(jdc, PAR_LOT, IMPR_MACRO, CODE, DEBUG, IGNORE_ALARM):
    jdc.sdveri     = int(DEBUG != None and DEBUG['SDVERI'] == 'OUI')
    jdc.fico       = None
    jdc.sd_checker = CheckLog()
+   jdc.info_level = INFO
    if CODE != None:
       jdc.fico = CODE['NOM']
    if aster_exists:
@@ -80,7 +82,7 @@ def commun_DEBUT_POURSUITE(jdc, PAR_LOT, IMPR_MACRO, CODE, DEBUG, IGNORE_ALARM):
       jdc.msg_init = True
 
 
-def DEBUT(self, PAR_LOT, IMPR_MACRO, CODE, DEBUG, IGNORE_ALARM, **args):
+def DEBUT(self, PAR_LOT, IMPR_MACRO, CODE, DEBUG, IGNORE_ALARM, INFO, **args):
    """
        Fonction sdprod de la macro DEBUT
    """
@@ -88,7 +90,7 @@ def DEBUT(self, PAR_LOT, IMPR_MACRO, CODE, DEBUG, IGNORE_ALARM, **args):
    if self.jdc is not self.parent :
       raise Accas.AsException("La commande DEBUT ne peut exister qu'au niveau jdc")
 
-   commun_DEBUT_POURSUITE(self.jdc, PAR_LOT, IMPR_MACRO, CODE, DEBUG, IGNORE_ALARM)
+   commun_DEBUT_POURSUITE(self.jdc, PAR_LOT, IMPR_MACRO, CODE, DEBUG, IGNORE_ALARM, INFO)
 
 
 def build_debut(self,**args):
@@ -111,7 +113,7 @@ def build_debut(self,**args):
    self.definition.op=None
    return ier
 
-def POURSUITE(self, PAR_LOT, IMPR_MACRO, CODE, DEBUG, IGNORE_ALARM, **args):
+def POURSUITE(self, PAR_LOT, IMPR_MACRO, CODE, DEBUG, IGNORE_ALARM, INFO, **args):
    """
        Fonction sdprod de la macro POURSUITE
    """
@@ -119,7 +121,7 @@ def POURSUITE(self, PAR_LOT, IMPR_MACRO, CODE, DEBUG, IGNORE_ALARM, **args):
    if self.jdc is not self.parent :
       raise Accas.AsException("La commande POURSUITE ne peut exister qu'au niveau jdc")
 
-   commun_DEBUT_POURSUITE(self.jdc, PAR_LOT, IMPR_MACRO, CODE, DEBUG, IGNORE_ALARM)
+   commun_DEBUT_POURSUITE(self.jdc, PAR_LOT, IMPR_MACRO, CODE, DEBUG, IGNORE_ALARM, INFO)
    
    if (self.codex and os.path.isfile("glob.1") or os.path.isfile("bhdf.1")):
      # Le module d'execution est accessible et glob.1 est present
@@ -167,8 +169,10 @@ def POURSUITE(self, PAR_LOT, IMPR_MACRO, CODE, DEBUG, IGNORE_ALARM, **args):
      # On supprime du pickle_context les concepts valant None, ca peut 
      # etre le cas des concepts non executés, placés après FIN.
      pickle_context=get_pickled_context()
+     if self.jdc.info_level > 1:
+        UTMESS('I', 'SUPERVIS2_1')
      if pickle_context==None :
-        UTMESS('F','SUPERVIS_86')
+        UTMESS('F', 'SUPERVIS_86')
         return
      self.jdc.restore_pickled_attrs(pickle_context)
      from Cata.cata  import ASSD,entier
@@ -185,22 +189,34 @@ def POURSUITE(self, PAR_LOT, IMPR_MACRO, CODE, DEBUG, IGNORE_ALARM, **args):
             self.jdc.sds_dict[elem] = pickle_context[elem]
             if elem != pickle_context[elem].nom:
                name = re.sub('_([0-9]+)$', '[\\1]', pickle_context[elem].nom)
+               if self.jdc.info_level > 1:
+                  UTMESS('I', 'SUPERVIS2_3',
+                         valk=(elem, type(pickle_context[elem]).__name__.upper()))
                UTMESS('A', 'SUPERVIS_93', valk=(elem, name))
                del pickle_context[elem]
                continue
-            # rétablir le catalogue de SD
-            pickle_context[elem].rebuild_sd()
+            # détecte les incohérences
             if elem in self.g_context.keys():
-               poursu_class=self.g_context[elem].__class__
-               if poursu_class!=pickle_class :
+               poursu_class = self.g_context[elem].__class__
+               if poursu_class != pickle_class :
                   UTMESS('F','SUPERVIS_87',valk=[elem])
                   return
-            elif isinstance(pickle_context[elem],ASSD) and pickle_class not in (CO,entier) : 
+            elif pickle_class not in (CO,entier) : 
             # on n'a pas trouvé le concept dans la base et sa classe est ASSD : ce n'est pas normal
             # sauf dans le cas de CO : il n'a alors pas été typé et c'est normal qu'il soit absent de la base
             # meme situation pour le type 'entier' produit uniquement par DEFI_FICHIER
                UTMESS('F','SUPERVIS_88',valk=[elem,str(pickle_class)])
                return
+            # rétablir le catalogue de SD (pas pour les CO)
+            if pickle_class is not CO:
+               pickle_context[elem].rebuild_sd()
+               if self.jdc.info_level > 1:
+                  UTMESS('I', 'SUPERVIS2_2',
+                         valk=(elem, type(pickle_context[elem]).__name__.upper()))
+            else:
+               if self.jdc.info_level > 1:
+                  UTMESS('I', 'SUPERVIS2_4',
+                         valk=(elem, type(pickle_context[elem]).__name__.upper()))
          if pickle_context[elem]==None : del pickle_context[elem]
      self.g_context.update(pickle_context)
      return

@@ -1,9 +1,9 @@
-#@ MODIF E_JDC Execution  DATE 09/11/2010   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF E_JDC Execution  DATE 03/01/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -47,6 +47,10 @@ class JDC:
    
    # attributs du jdc "picklés" (ceux qui contiennent des infos de l'exécution).
    l_pick_attr = ('memo_sensi', 'catalc')
+
+   def __init__(self):
+      self.info_level = 1
+      self.timer_fin = None
 
    def Exec(self):
       """
@@ -111,8 +115,9 @@ class JDC:
          self.affiche_fin_exec()
          e = self.get_derniere_etape()
          self.traiter_fin_exec("par_lot",e)
-         pass
 
+      if self.info_level > 1:
+         print self.timer_fin
       CONTEXT.unset_current_step()
       return ier
 
@@ -189,6 +194,10 @@ class JDC:
            Cette sauvegarde est réalisée par un pickle du dictionnaire python contenant
            ce contexte.
        """
+       if self.info_level > 1:
+          from Utilitai.as_timer import ASTER_TIMER
+          self.timer_fin = ASTER_TIMER(format='aster')
+          self.timer_fin.Start("pickle")
 
        ###############################################################
        #sauvegarde du pickle
@@ -223,11 +232,17 @@ class JDC:
 
        # On élimine du contexte courant les objets qui ne supportent pas
        # le pickle (version 2.2)
+       if self.info_level > 1:
+          self.timer_fin.Start(" . filter")
        context=self.filter_context(context,mode)
+       if self.info_level > 1:
+          self.timer_fin.Stop(" . filter")
        # Sauvegarde du pickle dans le fichier pick.1 du repertoire de travail
 
        file=open('pick.1','w')
        pickle.dump(context,file)
+       if self.info_level > 1:
+          self.timer_fin.Stop("pickle")
 
    def filter_context(self,context,mode):
        """

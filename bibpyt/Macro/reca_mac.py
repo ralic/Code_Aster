@@ -1,8 +1,8 @@
-#@ MODIF reca_mac Macro  DATE 11/05/2010   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF reca_mac Macro  DATE 03/01/2011   AUTEUR BODEL C.BODEL 
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -23,9 +23,6 @@ de la fenetre graphique d'appariement manuel des MAC pour le
 recalage en dynamique
 '''
 import numpy as NP
-
-from Tkinter import Tk, Frame, StringVar, Entry, Label, Button
-from Meidee.modes import MacWindowFrame
 
 def extract_mac_array( mac_mode ):
 
@@ -52,6 +49,9 @@ def get_modes(resu):
 class fenetre_mac:
 
     def __init__(self,resu1,resu2,mac):
+        from Calc_essai.outils_ihm import MacWindowFrame
+        from Tkinter import Tk, Frame, StringVar, Entry, Label, Button
+
         self.resu1 = resu1
         self.resu2 = resu2
         self.mac = mac

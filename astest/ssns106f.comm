@@ -1,10 +1,10 @@
-# MODIF  DATE 06/12/2010   AUTEUR SFAYOLLE S.FAYOLLE 
+# MODIF  DATE 03/01/2011   AUTEUR GENIAUT S.GENIAUT 
 # RESPONSABLE SFAYOLLE S.FAYOLLE
 # TITRE  : ENDOMMAGEMENT D UNE PLAQUE PLANE SOUS SOLLICITATIONS VARIEES
 # ssns106f.para = tps_job 300 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -253,7 +253,6 @@ RESU1=STAT_NON_LINE(MODELE=MO,
                                   GROUP_MA='DALLE',),
                                _F(RELATION='GRILLE_ISOT_LINE',
                                   ALGO_C_PLAN='ANALYTIQUE',
-                                  RESO_INTE='IMPLICITE',
                                   GROUP_MA=('ACIER1L','ACIER2L','ACIER1T','ACIER2T',),),),
                     INCREMENT=_F(LIST_INST=DEFLIST,
                                  PRECISION=0.1,),

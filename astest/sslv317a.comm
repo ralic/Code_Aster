@@ -1,9 +1,9 @@
-# MODIF  DATE 29/11/2010   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 03/01/2011   AUTEUR MACOCCO K.MACOCCO 
 # TITRE PROPAGATION MIXTE D'UNE FISSURE 3D AVEC X-FEM ET RAFFINEMENT ADAPTATIF
 # sslv317a.para = tps_job 180 mem_job 512Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -51,7 +51,7 @@ x0=0.
 y0=0.
 z0=0.
 rayon = 1e-3
-pfx= 1.2E-01
+pfx= 0.10588E-02
 pfy= 0
 pfz=0
 
@@ -126,7 +126,7 @@ for i_propa in xrange(pas_debut,nb_pas) :
                  ANGLE_EXTR     = 90.,
                  GROUP_MA_FISS  ='FISS',
                  GROUP_MA_FOND  ='FOND',
-                 NB_POINT_FOND  = 20 );
+                 NB_POINT_FOND  = 40 );
 
       DETRUIRE(CONCEPT=_F(NOM=MABID),INFO=1) 
 
@@ -419,17 +419,19 @@ for i_propa in xrange(pas_debut,nb_pas) :
       TEST_TABLE(TABLE=TAB_KG,
                  NOM_PARA='K1_LOCAL',
                  TYPE_TEST='MAX',
-                 VALE=7.92678E+04,
+                 VALE=7.86029E+04,
                  CRITERE='RELATIF',
                  PRECISION=0.02,
+                 VERSION='10.3.2',
                  REFERENCE='NON_REGRESSION');   
 
       TEST_TABLE(TABLE=TAB_KG,
                  NOM_PARA='K1_LOCAL',
                  TYPE_TEST='MIN',
-                 VALE=4.54730E+04,
+                 VALE=4.83556E+04,
                  CRITERE='RELATIF',
                  PRECISION=0.01,
+                 VERSION='10.3.2',                 
                  REFERENCE='NON_REGRESSION');   
 
 #-----------------------------------------------------------------------------------------

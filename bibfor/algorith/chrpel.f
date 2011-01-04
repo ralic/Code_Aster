@@ -1,8 +1,8 @@
       SUBROUTINE CHRPEL(CHAMP1, REPERE, NBCMP, ICHAM, TYPE, NOMCH)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 02/03/2010   AUTEUR MACOCCO K.MACOCCO 
+C MODIF ALGORITH  DATE 03/01/2011   AUTEUR DESROCHES X.DESROCHES 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -58,20 +58,23 @@ C
       INTEGER      IBID  , NBMA  , JCESK , IRET  , INOT  , INBNO
       INTEGER      NDIM  , LICMPU(6), NBM, IDMAIL, NBMAIL, IMAI
       INTEGER      INOEU , IRET0 , IGRNO , IRET1 , NBGNO , IGNO,NNCP,I2
-      INTEGER      IERK
+      INTEGER      IERK,   JNOGA,  MNOGAK, MNOGAD, MNOGAL, MNOGAV, IADR
+      INTEGER      IMAREF, NBNO,   NBPG,   NBNO2,   NBPG2, NUNO  , IPG
       LOGICAL      TEST
       REAL*8       ANGNOT(3), PGL(3,3), VALER(6), VALED(6),DDOT
-      REAL*8       VALR , VALEI(6)
+      REAL*8       VALR , VALEI(6), XX, YY, ZZ, RR, SIGRR, SIGTT
       REAL*8       VALET(6) , EPSI    , XNORMR  , PROSCA,  R8DGRD
       REAL*8       ORIG(3)  , AXEZ(3) , AXER(3) , AXET(3),PGL2(3,3)
       REAL*8       VECTX(3), VECTY(3)
+      REAL*8       X(27), Y(27), Z(27)
+      REAL*8       XPG(27), YPG(27), ZPG(27)
       COMPLEX*16   VALETC(6)
       CHARACTER*1  K1B
       CHARACTER*3  TSCA, ISVECT
-      CHARACTER*8  MA    , K8B, TYPMCL(2), NOMGD
-      CHARACTER*16 OPTION,MOTCLE(2)
-      CHARACTER*19 CHAMS1,CHAMS0
-      CHARACTER*24 LIGREL,MESMAI
+      CHARACTER*8  MA    , K8B, TYPMCL(2), NOMGD, TYCH, PARAM
+      CHARACTER*16 OPTION,MOTCLE(2),NOMCH2
+      CHARACTER*19 CHAMS1,CHAMS0,LIGREL,MANOGA
+      CHARACTER*24 MESMAI
       CHARACTER*24 VALK(3)
 C
       CALL JEMARQ()
@@ -91,6 +94,8 @@ C
            CALL U2MESS('F','ALGORITH2_6')
       ENDIF
 
+      CALL DISMOI ( 'F', 'NOM_LIGREL', CHAMP1, 'CHAM_ELEM',
+     &              IBID, LIGREL, IBID )
 
 C
 C ----- DEFINITION ET CREATION DU CHAM_NO SIMPLE CHAMS1
@@ -142,7 +147,6 @@ C
 
       CALL RELIEM(' ',MA,'NU_MAILLE','MODI_CHAM',ICHAM,2,MOTCLE,TYPMCL,
      &                                                   MESMAI,NBM)
-
       IF (NBM.GT.0) THEN
         NBMAIL = NBM
         CALL JEVEUO(MESMAI,'L',IDMAIL)
@@ -374,6 +378,8 @@ C CHAMP COMPLEXE
          ENDIF
       ELSE
 C REPERE CYLINDRIQUE
+         CALL DISMOI('C','TYPE_CHAMP',CHAMP1,'CHAMP',IBID,
+     &                TYCH, IRET)
          IF (NDIM.EQ.3) THEN
             CALL GETVR8('DEFI_REPERE','ORIGINE',1,1,3,ORIG,IBID)
             IF (IBID.NE.3) THEN
@@ -390,7 +396,7 @@ C REPERE CYLINDRIQUE
             ENDIF
             CALL GETVR8('DEFI_REPERE','AXE_Z',1,1,0,AXEZ,IBID)
             IF (IBID.NE.0) THEN
-               CALL U2MESS('A','ALGORITH2_11')
+               CALL U2MESS('A','ALGORITH2_1')
             ENDIF
             AXEZ(1) = 0.0D0
             AXEZ(2) = 0.0D0
@@ -400,6 +406,25 @@ C REPERE CYLINDRIQUE
          CALL NORMEV(AXEZ,XNORMR)
          CALL JEVEUO ( MA//'.COORDO    .VALE', 'L', AXYZM )
 C
+         MANOGA='&&CHRPEL.MANOGA'
+C
+         IF(NOMCH(1:4).EQ.'SIEF'.OR.NOMCH(1:4).EQ.'SIGM') THEN
+           PARAM='PCONTRR'
+         ELSE IF(NOMCH(1:4).EQ.'EPSI') THEN
+           PARAM='PDEFORR'
+         ELSE IF(NOMCH(1:4).EQ.'EPSP') THEN
+           PARAM='PDEFOPL'
+         ELSE IF(NOMCH(1:4).EQ.'VARI') THEN
+           PARAM='PVARIGR'
+         ELSE
+           CALL U2MESG('F','ALGORITH2_14',1,NOMCH,0,0,0,0.D0)
+         ENDIF
+C  POUR AVOIR DES OPTIONS FIGURANT DANS LES CATALOGUES D ELEMENTS
+         NOMCH2 = NOMCH
+         IF(NOMCH2.EQ.'SIEF_ELGA') NOMCH2='SIEF_ELGA_DEPL'
+         IF(NOMCH2.EQ.'VARI_ELGA') NOMCH2='VARI_ELGA_ELNO'
+C
+         CALL MANOPG(LIGREL,NOMCH2,PARAM,MANOGA)
 C ----- TYPE DE COMPOSANTES
 C
          IF (TYPE(1:4).EQ.'TENS') THEN
@@ -409,6 +434,11 @@ C
                LICMPU(3)=3
                LICMPU(4)=5
             ENDIF
+C
+C  TRAITEMENT DIFFERENT SI CHAMP ELNO OU ELGA
+C
+            IF (TYCH(1:4).EQ.'ELNO') THEN
+C
             DO 20 INEL = 1, NBMAIL
                IF (NBM.NE.0) THEN
                  IMAI = ZI(IDMAIL+INEL-1)
@@ -417,11 +447,12 @@ C
                ENDIF
                NBPT = ZI(JCESD-1+5+4* (IMAI-1)+1)
                NBSP = ZI(JCESD-1+5+4* (IMAI-1)+2)
+               NCMP = ZI(JCESD-1+5+4* (IMAI-1)+3)
                DO 21,IPT = 1,NBPT
                   DO 22,ISP = 1,NBSP
                      TEST = .TRUE.
                      DO 23 II=1,NCMP
-                        CALL CESEXI('C',JCESD,JCESL,IMAI,IPT,ISP,II,IAD)
+                        CALL CESEXI('S',JCESD,JCESL,IMAI,IPT,ISP,II,IAD)
                         IF (IAD.GT.0) THEN
                            TEST = .FALSE.
                         ENDIF
@@ -490,7 +521,7 @@ C
                     IF (TSCA.EQ.'R') THEN
 C CHAMP REEL
                      DO 27 II=1,NCMP
-                        CALL CESEXI('C',JCESD,JCESL,IMAI,IPT,ISP,II,IAD)
+                        CALL CESEXI('S',JCESD,JCESL,IMAI,IPT,ISP,II,IAD)
                         IF (IAD.GT.0) THEN
                            VALET(II)=ZR(JCESV-1+IAD)
                         ELSE
@@ -570,6 +601,192 @@ C
  22               CONTINUE
  21            CONTINUE
  20         CONTINUE
+C
+         ELSE IF (TYCH(1:4).EQ.'ELGA') THEN
+C        ----------------------------
+            CALL JEVEUO(MANOGA//'.CESK','L',MNOGAK)
+            CALL JEVEUO(MANOGA//'.CESD','L',MNOGAD)
+            CALL JEVEUO(MANOGA//'.CESL','L',MNOGAL)
+            CALL JEVEUO(MANOGA//'.CESV','L',MNOGAV)
+            CALL ASSERT(ZK8(MNOGAK).EQ.MA)
+C
+            DO 120 INEL = 1, NBMAIL
+               IF (NBM.NE.0) THEN
+                 IMAI = ZI(IDMAIL+INEL-1)
+               ELSE
+                 IMAI = INEL
+               ENDIF
+C
+C  RECUP DE L'ADRESSE DE LA MATRICE DE PASSAGE NOEUDS ==> GAUSS
+C
+               CALL CESEXI('C',MNOGAD,MNOGAL,IMAI,1,1,1,IAD)
+               IF (IAD.LE.0) GO TO 120
+               IF (NINT(ZR(MNOGAV-1+IAD)).GT.0) THEN
+                  IMAREF=IMAI
+               ELSE
+                  IMAREF=-NINT(ZR(MNOGAV-1+IAD))
+               ENDIF
+               CALL CESEXI('C',MNOGAD,MNOGAL,IMAREF,1,1,1,IAD)
+               IF (IAD.LE.0) GO TO 120
+
+               NBNO2 = NINT(ZR(MNOGAV-1+IAD))
+               NBPG2 = NINT(ZR(MNOGAV-1+IAD+1))
+
+               NBNO = ZI(JCONX2+IMAI) - ZI(JCONX2-1+IMAI)
+               NBPG = ZI(JCESD-1+5+4* (IMAI-1)+1)
+               NBSP = ZI(JCESD-1+5+4* (IMAI-1)+2)
+               NCMP = ZI(JCESD-1+5+4* (IMAI-1)+3)
+               CALL ASSERT(NBNO.EQ.NBNO2)
+               CALL ASSERT(NBPG.EQ.NBPG2)
+C
+C  RECUP DES COORDONNEES DES NOEUDS
+C
+               DO 130 INO=1,NBNO
+                  NUNO = ZI(JCONX1-1+ZI(JCONX2+IMAI-1)+INO-1)
+                  X(INO) = ZR(AXYZM+3*(NUNO-1)  )
+                  Y(INO) = ZR(AXYZM+3*(NUNO-1)+1)
+                  Z(INO) = ZR(AXYZM+3*(NUNO-1)+2)
+ 130           CONTINUE
+C
+C  CALCUL DES COORDONNEES DES POINTS DE GAUSS DE LA MAILLE COURANTE
+C
+               DO 140 IPG=1,NBPG
+                  XX=0.D0
+                  YY=0.D0
+                  ZZ=0.D0
+                  IADR=MNOGAV-1+IAD+1+NBNO*(IPG-1)
+                  DO 141 INO=1,NBNO
+                     XX = XX + X(INO)*ZR(IADR+INO)
+                     YY = YY + Y(INO)*ZR(IADR+INO)
+                     ZZ = ZZ + Z(INO)*ZR(IADR+INO)
+141               CONTINUE
+                  XPG(IPG) = XX
+                  YPG(IPG) = YY
+                  ZPG(IPG) = ZZ
+140            CONTINUE
+
+               DO 121,IPG = 1,NBPG
+                  DO 122,ISP = 1,NBSP
+                     TEST = .TRUE.
+                     DO 123 II=1,NCMP
+                        CALL CESEXI('S',JCESD,JCESL,IMAI,IPG,ISP,II,IAD)
+                        IF (IAD.GT.0) THEN
+                           TEST = .FALSE.
+                        ENDIF
+ 123                  CONTINUE
+                     IF(TEST) GOTO 120
+                     AXER(1) = XPG(IPG) - ORIG(1)
+                     AXER(2) = YPG(IPG) - ORIG(2)
+                     IF (NDIM.EQ.3) THEN
+                        AXER(3) = ZPG(IPG) - ORIG(3)
+                     ELSE
+                        AXER(3) = 0.0D0
+                     ENDIF
+                     PROSCA=DDOT(3,AXER,1,AXEZ,1)
+                     AXER(1) = AXER(1) - PROSCA*AXEZ(1)
+                     AXER(2) = AXER(2) - PROSCA*AXEZ(2)
+                     IF (NDIM.EQ.3) THEN
+                        AXER(3) = AXER(3) - PROSCA*AXEZ(3)
+                     ELSE
+                        AXER(3) = 0.0D0
+                     ENDIF
+                     XNORMR = 0.0D0
+                     CALL NORMEV(AXER,XNORMR)
+                     IF (XNORMR .LT. EPSI) THEN
+                        CALL ASSERT (.FALSE.)
+                     ENDIF
+                     CALL PROVEC(AXEZ,AXER,AXET)
+                     XNORMR = 0.0D0
+                     CALL NORMEV(AXET,XNORMR)
+                     DO 126 I = 1,3
+                        PGL(1,I) = AXER(I)
+                        PGL(2,I) = AXEZ(I)
+                        PGL(3,I) = AXET(I)
+ 126                  CONTINUE
+                    IF (TSCA.EQ.'R') THEN
+C CHAMP REEL
+                     DO 127 II=1,NCMP
+                        CALL CESEXI('S',JCESD,JCESL,IMAI,IPG,ISP,II,IAD)
+                        IF (IAD.GT.0) THEN
+                           VALET(II)=ZR(JCESV-1+IAD)
+                        ELSE
+                           GO TO 120
+                        ENDIF
+ 127                  CONTINUE
+                     VALED(1) = VALET(1)
+                     VALED(2) = VALET(4)
+                     VALED(3) = VALET(2)
+                     VALED(4) = VALET(5)
+                     VALED(5) = VALET(6)
+                     VALED(6) = VALET(3)
+                     CALL UTPSGL(1,3,PGL,VALED,VALET)
+                     VALER(1) = VALET(1)
+                     VALER(2) = VALET(3)
+                     VALER(3) = VALET(6)
+                     VALER(4) = VALET(2)
+                     VALER(5) = VALET(4)
+                     VALER(6) = VALET(5)
+                     DO 128 II=1,NBCMP
+                        CALL CESEXI('C',JCESD,JCESL,IMAI,IPG,ISP,
+     &                              II,IAD)
+                        IF (IAD.GT.0) THEN
+                           ZR(JCESV-1+IAD) = VALER(LICMPU(II))
+                        ELSE
+                           GOTO 120
+                        ENDIF
+ 128                  CONTINUE
+                    ELSE
+C CHAMP COMPLEXE
+                     DO 313 II=1,NCMP
+                        CALL CESEXI('C',JCESD,JCESL,IMAI,IPG,ISP,II,IAD)
+                        IF (IAD.GT.0) THEN
+                           VALETC(II)=ZC(JCESV-1+IAD)
+                        ELSE
+                           GOTO 120
+                        ENDIF
+ 313                 CONTINUE
+                     VALED(1) = DBLE(VALETC(1))
+                     VALED(2) = DBLE(VALETC(4))
+                     VALED(3) = DBLE(VALETC(2))
+                     VALED(4) = DBLE(VALETC(5))
+                     VALED(5) = DBLE(VALETC(6))
+                     VALED(6) = DBLE(VALETC(3))
+                     CALL UTPSGL(1,3,PGL,VALED,VALET)
+                     VALER(1) = VALET(1)
+                     VALER(2) = VALET(3)
+                     VALER(3) = VALET(6)
+                     VALER(4) = VALET(2)
+                     VALER(5) = VALET(4)
+                     VALER(6) = VALET(5)
+C
+                     VALED(1) = DIMAG(VALETC(1))
+                     VALED(2) = DIMAG(VALETC(4))
+                     VALED(3) = DIMAG(VALETC(2))
+                     VALED(4) = DIMAG(VALETC(5))
+                     VALED(5) = DIMAG(VALETC(6))
+                     VALED(6) = DIMAG(VALETC(3))
+                     CALL UTPSGL(1,3,PGL,VALED,VALET)
+                     VALEI(1) = VALET(1)
+                     VALEI(2) = VALET(3)
+                     VALEI(3) = VALET(6)
+                     VALEI(4) = VALET(2)
+                     VALEI(5) = VALET(4)
+                     VALEI(6) = VALET(5)
+C
+                     DO 314 II=1,NBCMP
+                        CALL CESEXI('C',JCESD,JCESL,IMAI,IPG,ISP,
+     &                              II,IAD)
+                        IF (IAD.GT.0) THEN
+                           ZC(JCESV-1+IAD) = DCMPLX(VALER(II),VALEI(II))
+                        ELSE
+                           GOTO 120
+                        ENDIF
+ 314                 CONTINUE
+                    ENDIF
+ 122              CONTINUE
+ 121           CONTINUE
+ 120        CONTINUE
+         ENDIF
          ELSE
 C VECTEUR
             IF (NDIM.EQ.2) THEN
@@ -715,8 +932,6 @@ C CHAMP COMPLEXE
  29         CONTINUE
          ENDIF
       ENDIF
-      CALL DISMOI ( 'F', 'NOM_LIGREL', CHAMP1, 'CHAM_ELEM',
-     &              IBID, LIGREL, IBID )
       CALL DISMOI ( 'F', 'NOM_OPTION', CHAMP1, 'CHAM_ELEM',
      &              IBID, OPTION, IBID )
       CALL CESCEL(CHAMS1,LIGREL,OPTION,' ','OUI',NNCP,'G',CHAMP1,'F',

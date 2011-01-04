@@ -1,8 +1,8 @@
-#@ MODIF miss_utils Miss  DATE 29/09/2010   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF miss_utils Miss  DATE 03/01/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -95,21 +95,27 @@ class MISS_PARAMETER(object):
 
 
 
-def lire_nb_valeurs(file_object, nb, extend_to, conversion, nb_bloc=1, nb_ignore=0):
+def lire_nb_valeurs(file_object, nb, extend_to, conversion,
+                    nb_bloc=1, nb_ignore=0, max_per_line=-1):
     """Lit nb valeurs dans file_object et les ajoute à extend_to
     après les avoir converties en utilisant la fonction conversion.
-    Ignore nb_ignore lignes pour chacun des nb_bloc lus.
+    Ignore nb_ignore lignes pour chacun des nb_bloc lus et lit au
+    maximum max_per_line valeurs par ligne.
     Retourne le nombre de lignes lues."""
+    if max_per_line < 0:
+        max_per_line = nb
     ln = 0
     for i in range(nb_bloc):
         val = []
         for j in range(nb_ignore):
             ln += 1
             ign = file_object.readline()
+            #print "IGNORE", ign
         while len(val) < nb:
             ln += 1
             line = file_object.readline()
-            val.extend([conversion(v) for v in line.split()])
+            add = [conversion(v) for v in line.split()[:max_per_line]]
+            val.extend(add)
         assert len(val) == nb, "%d valeurs attendues, %d valeurs lues" % (nb, len(val))
         extend_to.extend(val)
     return ln

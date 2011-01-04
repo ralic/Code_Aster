@@ -1,8 +1,8 @@
-#@ MODIF soustruc2 Messages  DATE 14/12/2010   AUTEUR PELLET J.PELLET 
+#@ MODIF soustruc2 Messages  DATE 03/01/2011   AUTEUR ANDRIAM H.ANDRIAMBOLOLONA 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -89,5 +89,9 @@ cata_msg={
  On ne peut pas utiliser les résultats obtenus pour des calculs de modification structurale.
 """),
 
+12 : _("""
+frequences non identique pour les differentes interfaces.
+on retient FREQ = %(r1)f
+"""),
 
 }
