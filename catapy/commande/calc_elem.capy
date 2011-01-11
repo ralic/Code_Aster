@@ -1,7 +1,7 @@
-#& MODIF COMMANDE  DATE 07/12/2010   AUTEUR PELLET J.PELLET 
+#& MODIF COMMANDE  DATE 10/01/2011   AUTEUR DELMAS J.DELMAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -111,8 +111,8 @@ CALC_ELEM=OPER(nom="CALC_ELEM",op=58,sd_prod=calc_elem_prod,reentrant='f',
                               #  CRIT
                                  "EQUI_ELNO_SIGM","EQUI_ELGA_SIGM","CRIT_ELNO_RUPT",
                                  "EQUI_ELNO_EPSI","EQUI_ELGA_EPSI","EQUI_ELNO_EPME","EQUI_ELGA_EPME",
-                                 "ENDO_ELGA","ENDO_ELNO_ELGA",
-                                 "ENDO_ELNO_SIGA","ENDO_ELNO_SINO","SIEQ_ELNO_TUYO","EPEQ_ELNO_TUYO",
+                                 "ENDO_ELGA","ENDO_ELNO",
+                                 "SIEQ_ELNO_TUYO","EPEQ_ELNO_TUYO",
                               #  autres
                                  "VALE_NCOU_MAXI","PRME_ELNO","VARC_ELGA"),),
 
@@ -231,8 +231,8 @@ b_charge =BLOC( condition = "OPTION in ('EPME_ELNO_DEPL','EPSI_ELGA_DEPL','EPME_
                OPTION    =SIMP(statut='o',typ='TXM',validators=NoRepeat(),max='**',
                            into=("EQUI_ELNO_SIGM","EQUI_ELGA_SIGM",
                                  "EQUI_ELNO_EPSI","EQUI_ELGA_EPSI","EQUI_ELNO_EPME","EQUI_ELGA_EPME",
-                                 "ENDO_ELGA","ENDO_ELNO_ELGA",
-                                 "ENDO_ELNO_SIGA","ENDO_ELNO_SINO","CRIT_ELNO_RUPT","SIEQ_ELNO_TUYO","EPEQ_ELNO_TUYO",
+                                 "ENDO_ELGA","ENDO_ELNO",
+                                 "CRIT_ELNO_RUPT","SIEQ_ELNO_TUYO","EPEQ_ELNO_TUYO",
                                  ) ),
                 EXCIT           =FACT(statut='f',max='**',fr="charge contenant les temperatures",
                      CHARGE          =SIMP(statut='o',typ=(char_meca,char_ther,char_acou) ),),
@@ -305,8 +305,8 @@ b_charge =BLOC( condition = "OPTION in ('EPME_ELNO_DEPL','EPSI_ELGA_DEPL','EPME_
                                  "QIRE_ELEM_SIGM","QIRE_ELNO_ELEM","QIZ1_ELEM_SIGM","QIZ2_ELEM_SIGM",
                                  "EQUI_ELNO_EPSI","EQUI_ELGA_EPSI","EQUI_ELNO_EPME","EQUI_ELGA_EPME",
                                  "DCHA_ELNO_SIGM","DCHA_ELGA_SIGM","RADI_ELNO_SIGM","RADI_ELGA_SIGM",
-                                 "ENDO_ELGA","ENDO_ELNO_ELGA","INDI_LOCA_ELGA","SING_ELEM",
-                                 "SING_ELNO_ELEM","ENDO_ELNO_SIGA","ENDO_ELNO_SINO",
+                                 "ENDO_ELGA","ENDO_ELNO","INDI_LOCA_ELGA","SING_ELEM",
+                                 "SING_ELNO_ELEM",
                                  "PMPB_ELNO_SIEF","PMPB_ELGA_SIEF","ENEL_ELGA","ENEL_ELNO_ELGA",
                                  "ETOT_ELGA","ETOT_ELNO_ELGA","ETOT_ELEM","VALE_NCOU_MAXI",
                                  "DISS_ELGA","DISS_ELNO_ELGA"),
@@ -418,8 +418,8 @@ b_charge =BLOC( condition = "OPTION in ('EPME_ELNO_DEPL','EPSI_ELGA_DEPL','EPME_
                OPTION    =SIMP(statut='o',typ='TXM',validators=NoRepeat(),max='**',
                            into=("EQUI_ELNO_SIGM","EQUI_ELGA_SIGM",
                                  "EQUI_ELNO_EPSI","EQUI_ELGA_EPSI","EQUI_ELNO_EPME","EQUI_ELGA_EPME",
-                                 "ENDO_ELNO_SIGA","ENDO_ELNO_SINO","CRIT_ELNO_RUPT",
-                                 "ENDO_ELGA","ENDO_ELNO_ELGA",
+                                 "CRIT_ELNO_RUPT",
+                                 "ENDO_ELGA","ENDO_ELNO",
                                  "PMPB_ELNO_SIEF","PMPB_ELGA_SIEF","SIEQ_ELNO_TUYO","EPEQ_ELNO_TUYO",
                                  ) ),
                                  ),
@@ -529,6 +529,7 @@ b_charge =BLOC( condition = "OPTION in ('EPME_ELNO_DEPL','EPSI_ELGA_DEPL','EPME_
          PCENT_PIVOT     =SIMP(statut='f',typ='I',defaut=10,),
          RESI_RELA       =SIMP(statut='f',typ='R',defaut=-1.0,),
          OUT_OF_CORE     =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON")),
+         LIBERE_MEMOIRE =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON")),    
          ),
      ),
 

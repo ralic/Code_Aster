@@ -9,10 +9,10 @@
       REAL*8 CONST(*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 07/09/2009   AUTEUR PELLET J.PELLET 
+C MODIF ALGELINE  DATE 11/01/2011   AUTEUR SELLENET N.SELLENET 
 C RESPONSABLE VABHHTS J.PELLET
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -91,7 +91,7 @@ C     -----------------------------------------------------------------
 C     -----------------------------------------------------------------
       INTEGER JREFAR,JREFA1,JREFAI,IER,IBID,IDLIMA,IER1
       INTEGER I,LRES,NBLOC,JREFA,LGBLOC
-      LOGICAL REUTIL,SYMR,SYMI,IDENOB
+      LOGICAL REUTIL,SYMR,SYMI,IDENOB,MATD
 C     -----------------------------------------------------------------
 
       CALL JEMARQ()
@@ -161,10 +161,12 @@ C     ----------------------------------------------------
       ELSE
         ZK24(JREFAR-1+11)='MPI_INCOMPLET'
       ENDIF
+      MATD = .FALSE.
       CALL DISMOI('F','MATR_DISTR',MAT1,'MATR_ASSE',IBID,
      &            KMATD,IBID)
       IF (KMATD.EQ.'OUI') THEN
-        CALL U2MESS('F','ALGELINE5_1')
+        MATD = .TRUE.
+        ZK24(JREFAR-1+11)='MATR_DISTR'
       ENDIF
       DO 19 I = 2,NBCOMB
         MATI=LIMAT(I)
@@ -176,8 +178,13 @@ C     ----------------------------------------------------
         ENDIF
         CALL DISMOI('F','MATR_DISTR',MATI,'MATR_ASSE',IBID,
      &              KMATD,IBID)
+C       IL EST NECESSAIRE QUE TOUTES LES MATRICES QU'ON CHERCHE A
+C       COMBINER SOIT DU MEME TYPE (SOIT TOUTES DISTRIBUEES,
+C       SOIT TOUTES COMPLETES MAIS SURTOUT PAS DE MELANGE !)
         IF (KMATD.EQ.'OUI') THEN
-          CALL U2MESS('F','ALGELINE5_1')
+          IF ( .NOT.MATD ) CALL ASSERT(.FALSE.)
+        ELSE
+          IF ( MATD ) CALL ASSERT(.FALSE.)
         ENDIF
    19 CONTINUE
 
@@ -214,11 +221,16 @@ C       -------------------------------------------------
         CALL MTDSCR(MATEMP)
         CALL JEVEUO(MATEMP//'.&INT','E',LRES)
         CALL CBVALE(NBCOMB,TYPCST,CONST,ZI(IDLIMA),TYPRES,LRES,
-     &              DDLEXC)
+     &              DDLEXC,MATD)
 
 C ---   CAS OU LES MATRICES A COMBINER N'ONT PAS LE MEME PROFIL :
 C       -------------------------------------------------------
       ELSE
+C       SI LES MATRICES SONT DISTRIBUEE MAIS N'ONT PAS LE MEME
+C       PROFIL, ON PLANTE !
+        IF ( MATD ) THEN
+          CALL U2MESS('F','ALGELINE5_1')
+        ENDIF
         CALL PROSMO(MATEMP,LIMAT,NBCOMB,BASE,NUMEDD,SYMR,TYPRES)
         CALL MTDSCR(MATEMP)
         CALL JEVEUO(MATEMP//'.&INT','E',LRES)

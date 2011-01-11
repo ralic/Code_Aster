@@ -1,7 +1,7 @@
-%& MODIF TYPELEM  DATE 21/12/2010   AUTEUR MASSIN P.MASSIN 
+%& MODIF TYPELEM  DATE 10/01/2011   AUTEUR DELMAS J.DELMAS 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
-% COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+% COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 % THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 % IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 % THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -87,23 +87,23 @@ MODE_LOCAL__
                                         Z        )
     CTEMPSR  = INST_R   ELEM__         (INST     )
     DDL_MECA = DEPL_R   ELNO__ DIFF__
-                                 EN1   (DX   DY   H1X  H1Y  )
-                                 EN2   (DX   DY   H1X  H1Y  H2X  H2Y  )
-                                 EN3   (DX   DY   H1X  H1Y  H2X  H2Y  H3X  H3Y  )
-                                 EN4   (DX   DY   H1X  H1Y  H2X  H2Y  H3X  H3Y  H4X  H4Y  )
-    DDL_MECC = DEPL_R   ELNO__ IDEN__  (DX   DY   )
+                                 EN1   (DX   DY  H1X  H1Y  )
+                                 EN2   (DX   DY  H1X  H1Y  H2X  H2Y  )
+                                 EN3   (DX   DY  H1X  H1Y  H2X  H2Y  H3X  H3Y  )
+                                 EN4   (DX   DY  H1X  H1Y  H2X  H2Y  H3X  H3Y  H4X  H4Y  )
+    DDL_MECC = DEPL_R   ELNO__ IDEN__  (DX   DY  )
     DDL_NOZ1 = SIZZ_R   ELNO__ IDEN__  (SIZZ     )
     E3NEUTI  = NEUT_I   ELEM__         (X[3]     )
     E9NEUTI  = NEUT_I   ELEM__         (X[9]     )
-    E18NEUI  = NEUT_I   ELEM__          (X[18]    )
-    E54NEUI  = NEUT_I   ELEM__          (X[54]    )
+    E18NEUI  = NEUT_I   ELEM__         (X[18]    )
+    E54NEUI  = NEUT_I   ELEM__         (X[54]    )
     E1NEUTR  = NEUT_R   ELEM__         (X1       )
     E4NEUTR  = NEUT_R   ELEM__         (X[4]     )
     E6NEUTR  = NEUT_R   ELEM__         (X[6]     )
-    E12NEUTR = NEUT_R   ELEM__         (X[12]     )
+    E12NEUTR = NEUT_R   ELEM__         (X[12]    )
     E15NEUTR = NEUT_R   ELEM__         (X[15]    )
-    E36NEUTR = NEUT_R   ELEM__         (X[36]     )
-    E22NEUTR = NEUT_R    ELEM__         (X[22]     )
+    E36NEUTR = NEUT_R   ELEM__         (X[36]    )
+    E22NEUTR = NEUT_R    ELEM__        (X[22]    )
     EVOISIN  = VOISIN   ELEM__         (V0       V1       V2       V3       V4       V5
                                         V6       T0       T1       T2       T3       T4
                                         T5       T6       )
@@ -116,7 +116,7 @@ MODE_LOCAL__
     ECONTSE  = NEUT_R   ELEM__         (X[72]    )
     EDCEL_I  = DCEL_I   ELEM__         (NPG_DYN  NCMP_DYN )
     EDEFONO  = EPSI_R   ELNO__ IDEN__  (EPXX     EPYY     EPZZ     EPXY     )
-    EDOMGGA  = DOMMAG   ELGA__ RIGI    (DOMA     )
+    EDOMGGA  = DOMA_R   ELGA__ RIGI    (DOMA     )
     EFORCER  = FORC_R   ELGA__ XFEM    (FX       FY       )
     EGGEOM_R = GEOM_R   ELGA__ RIGI    (X        Y        )
     EGINST_R = INST_R   ELGA__ RIGI    (INST     )

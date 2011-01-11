@@ -1,0 +1,19 @@
+POURSUITE(CODE=_F(NOM='DISTR01A',))
+
+# Uniquement pour les besoins du cas-test.
+# On prend la moyenne pour minimiser l'impact de la valeur près
+# de l'encastrement.
+tabtest=POST_RELEVE_T(ACTION=_F(OPERATION='MOYENNE_ARITH',
+                                INTITULE='Moyenne',
+                                RESULTAT=RESU,
+                                NOM_CHAM='EQUI_NOEU_SIGM',
+                                GROUP_NO='Lsup'),)
+
+TEST_TABLE(TABLE=tabtest,
+           FILTRE=_F(NOM_PARA='CMP',
+                     VALE_K='VMIS'),
+           NOM_PARA='MOYENNE',
+           VALE=F_Norm,
+           REFERENCE='ANALYTIQUE',)
+
+FIN()

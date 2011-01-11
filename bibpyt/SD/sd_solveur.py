@@ -1,8 +1,8 @@
-#@ MODIF sd_solveur SD  DATE 05/10/2009   AUTEUR BOITEAU O.BOITEAU 
+#@ MODIF sd_solveur SD  DATE 10/01/2011   AUTEUR DELMAS J.DELMAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -22,7 +22,7 @@ from SD import *
 
 class sd_solveur(AsBase):
     nomj = SDNom(fin=19)
-    SLVK = AsVK24(SDNom(debut=19), lonmax=11, )
+    SLVK = AsVK24(SDNom(debut=19), lonmax=12, )
     SLVR = AsVR(SDNom(debut=19), lonmax=4, )
     SLVI = AsVI(SDNom(debut=19), lonmax=7, )
 

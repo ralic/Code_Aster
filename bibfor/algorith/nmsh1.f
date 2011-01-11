@@ -5,9 +5,9 @@
      &                   DEPLM,DEPLD,SIGM,VIM,
      &                   SIGP,VIP,FINT,MATUU,CODRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/12/2010   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 10/01/2011   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -120,6 +120,10 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C ---------------------------------------------------------------------
 
 C -----------------------------DECLARATION-----------------------------
+      IF (FORMAL(1).NE.'GDEF_HYPO_ELAS') THEN
+         CALL ASSERT(.FALSE.)
+      END IF
+      
       RBID = R8VIDE()
       RAC2 = SQRT(2.D0)
       NDDL = NDIM*NNO
@@ -201,36 +205,24 @@ C--------------------------------CALCUL DE e~_(n+alpha)-----------
          CALL CALET(NDIM,FM,FMA,FMP,EDPN1,FMAM,FTA,
      &                 ETDPN1,JM,JP)
 C------------------------CALCUL DE L,W ET DE R SI VMIS_CINE_LINE------
-         IF (FORMAL(1).EQ.'GDEF_HYPO_ELAS') THEN
-           CALL CACINA (NDIM,NNO,NPG,LGPG,AXI,GRAND,COMPOR,GEOMM,G,IW,
+         CALL CACINA (NDIM,NNO,NPG,LGPG,AXI,GRAND,COMPOR,GEOMM,G,IW,
      &                   VFF,IDFF,FM,FMA,DEPLD,INSTM,INSTP,VIM(1,G),RP,
      &                   RPA,LAMBP)
-         END IF
 
 C---------------------TRANSFORMATION DES ARG D ENTRE SUBROUTINE NMCOMP
 
-         IF (FORMAL(1).EQ.'SIMO_HUGHES1') THEN
-            CALL PREP1(G,NDIM,NPG,ETDPN1,JM,SIGM,FDA,ETDPNV,
-     &                  SIGMM,TAU,FDAT,CONTM,SIGMAM)
-         ELSE IF (FORMAL(1).EQ.'GDEF_HYPO_ELAS') THEN
-            CALL NMGEOM(NDIM,NNO,.FALSE.,GRAND,GEOMI,G,IW,
-     &            IVF,IDFF,DEPLM,R8BID,DFF,FM,EPSM,R8BID)
-            CALL PREP2(NDIM,NPG,G,RPA,ETDPN1,SIGM,JM,FDA,
-     &              RP,RPAT,ETDM,ETDPNV,SIGMAM,RPT,EPSM,EPSMM)
-         END IF
+         CALL NMGEOM(NDIM,NNO,.FALSE.,GRAND,GEOMI,G,IW,
+     &         IVF,IDFF,DEPLM,R8BID,DFF,FM,EPSM,R8BID)
+         CALL PREP2(NDIM,NPG,G,RPA,ETDPN1,SIGM,JM,FDA,
+     &           RP,RPAT,ETDM,ETDPNV,SIGMAM,RPT,EPSM,EPSMM)
 
 C  **************  COMPORTEMENTS AVEC ECROUISSAGE CINEMATIQUE**********
 C-----------------------TRANSFORMATION DE X : VARIABLE INTERNE---------
-
          IF (NBCIN.GT.0) THEN
-            IF(FORMAL(1).EQ.'SIMO_HUGHES1') THEN
-               CALL VICIN1(NDIM,G,NPG,LGPG,VIM,FDAT,NBCIN,NUMCIN)
-            ELSE
                CALL VICIN2(NDIM,G,NPG,LGPG,VIM,RPT,NBCIN,NUMCIN)
-            END IF
-
-C************************APPEL A LA LOI DE COMPORTEMENT**********
          ENDIF
+         
+C************************APPEL A LA LOI DE COMPORTEMENT**********
          CALL NMCOMP(FAMI,G,1,3,TYPMOD,MATE,COMPOR,CRIT,
      &             INSTM,INSTP,
      &             EPSMM,ETDPNV,SIGMAM,VIM(1,G),OPTION,

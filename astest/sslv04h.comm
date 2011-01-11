@@ -1,9 +1,9 @@
-# MODIF  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 10/01/2011   AUTEUR DELMAS J.DELMAS 
 # TITRE CYLINDRE EN C.P. (TRIA3 QUAD4) AXISYM
 # sslv04h.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -74,20 +74,6 @@ RESU=CALC_ELEM( reuse= RESU ,RESULTAT=RESU ,
 
                              OPTION=('SIGM_ELNO_DEPL',),
                 )
-
-RESU=CALC_ELEM( reuse= RESU, RESULTAT=RESU ,
-                             NUME_ORDRE=1,
-
-                             OPTION=('ENDO_ELNO_SIGA',),
-                )
-
-RESU=CALC_ELEM( reuse= RESU, RESULTAT=RESU ,
-                             NUME_ORDRE=1,
-
-                             OPTION=('ENDO_ELNO_SINO',),
-                )
-
-
 
 TEST_RESU(RESU=(
    # DEPLACEMENTS
@@ -234,26 +220,6 @@ TEST_RESU(RESU=(
  GROUP_NO = 'A',    MAILLE = 'M119',    NOM_CMP = 'SIXY',       VALE = 0.))
            )
 
-TEST_RESU(RESU=(
-
-           _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='ENDO_ELNO_SIGA',
-           CRITERE = 'RELATIF',    PRECISION = 0.15, REFERENCE = 'ANALYTIQUE',
- GROUP_NO = 'A',    MAILLE = 'M119',    NOM_CMP = 'TRIAX',      VALE = 9.5893E-2),
-           _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='ENDO_ELNO_SIGA',
-           CRITERE = 'RELATIF',    PRECISION = 0.01, REFERENCE = 'ANALYTIQUE',
- GROUP_NO = 'A',    MAILLE = 'M119',    NOM_CMP = 'SI_ENDO',      VALE = 130.265))
-           )
-
-TEST_RESU(RESU=(
-
-           _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='ENDO_ELNO_SINO',
-           CRITERE = 'RELATIF',    PRECISION = 0.15, REFERENCE = 'ANALYTIQUE',
- GROUP_NO = 'A',    MAILLE = 'M119',    NOM_CMP = 'TRIAX',      VALE = 9.5893E-2),
-           _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='ENDO_ELNO_SINO',
-           CRITERE = 'RELATIF',    PRECISION = 0.01, REFERENCE = 'ANALYTIQUE',
- GROUP_NO = 'A',    MAILLE = 'M119',    NOM_CMP = 'SI_ENDO',      VALE = 130.265))
-           )
-
 #-----------------------------------------------------------------
 
 TEST_RESU(RESU=(
@@ -270,26 +236,6 @@ TEST_RESU(RESU=(
            _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='SIGM_ELNO_DEPL',
            CRITERE = 'ABSOLU',     PRECISION = 0.15, REFERENCE = 'ANALYTIQUE',
  GROUP_NO = 'B',    MAILLE = 'M1',      NOM_CMP = 'SIXY',       VALE = 0.))
-           )
-
-TEST_RESU(RESU=(
-
-           _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='ENDO_ELNO_SIGA',
-           CRITERE = 'RELATIF',    PRECISION = 0.05, REFERENCE = 'ANALYTIQUE',
- GROUP_NO = 'B',    MAILLE = 'M1',      NOM_CMP = 'TRIAX',      VALE = 3.3333E-1),
-           _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='ENDO_ELNO_SIGA',
-           CRITERE = 'RELATIF',    PRECISION = 0.05, REFERENCE = 'ANALYTIQUE',
- GROUP_NO = 'B',    MAILLE = 'M1',      NOM_CMP = 'SI_ENDO',      VALE = 40.0))
-           )
-
-TEST_RESU(RESU=(
-
-           _F(  RESULTAT = RESU,  NUME_ORDRE=1, NOM_CHAM='ENDO_ELNO_SINO',
-           CRITERE = 'RELATIF',    PRECISION = 0.05, REFERENCE = 'ANALYTIQUE',
- GROUP_NO = 'B',    MAILLE = 'M1',      NOM_CMP = 'TRIAX',      VALE = 3.3333E-1),
-           _F(  RESULTAT = RESU,  NUME_ORDRE=1, NOM_CHAM='ENDO_ELNO_SINO',
-           CRITERE = 'RELATIF',    PRECISION = 0.01, REFERENCE = 'ANALYTIQUE',
- GROUP_NO = 'B',    MAILLE = 'M1',      NOM_CMP = 'SI_ENDO',      VALE = 40.0))
            )
 
 #-----------------------------------------------------------------
@@ -310,26 +256,6 @@ TEST_RESU(RESU=(
  GROUP_NO = 'E',    MAILLE = 'M120',    NOM_CMP = 'SIXY',       VALE = 0.))
            )
 
-TEST_RESU(RESU=(
-
-           _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='ENDO_ELNO_SIGA',
-           CRITERE = 'RELATIF',    PRECISION = 0.15, REFERENCE = 'ANALYTIQUE',
- GROUP_NO = 'E',    MAILLE = 'M120',    NOM_CMP = 'TRIAX',      VALE = 9.5893E-2),
-           _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='ENDO_ELNO_SIGA',
-           CRITERE = 'RELATIF',    PRECISION = 0.01, REFERENCE = 'ANALYTIQUE',
- GROUP_NO = 'E',    MAILLE = 'M120',    NOM_CMP = 'SI_ENDO',      VALE = 130.265))
-           )
-
-TEST_RESU(RESU=(
-
-           _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='ENDO_ELNO_SINO',
-           CRITERE = 'RELATIF',    PRECISION = 0.15, REFERENCE = 'ANALYTIQUE',
- GROUP_NO = 'E',    MAILLE = 'M120',    NOM_CMP = 'TRIAX',      VALE = 9.5893E-2),
-           _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='ENDO_ELNO_SINO',
-           CRITERE = 'RELATIF',    PRECISION = 0.01, REFERENCE = 'ANALYTIQUE',
- GROUP_NO = 'E',    MAILLE = 'M120',    NOM_CMP = 'SI_ENDO',      VALE = 130.265))
-           )
-
 #-----------------------------------------------------------------
 
 TEST_RESU(RESU=(
@@ -346,26 +272,6 @@ TEST_RESU(RESU=(
            _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='SIGM_ELNO_DEPL',
            CRITERE = 'ABSOLU',     PRECISION = 0.15, REFERENCE = 'ANALYTIQUE',
  GROUP_NO = 'F',    MAILLE = 'M5',      NOM_CMP = 'SIXY',       VALE = 0.))
-           )
-
-TEST_RESU(RESU=(
-
-           _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='ENDO_ELNO_SIGA',
-           CRITERE = 'RELATIF',    PRECISION = 0.05, REFERENCE = 'ANALYTIQUE',
- GROUP_NO = 'F',    MAILLE = 'M5',      NOM_CMP = 'TRIAX',      VALE = 3.3333E-1),
-           _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='ENDO_ELNO_SIGA',
-           CRITERE = 'RELATIF',    PRECISION = 0.05,  REFERENCE = 'ANALYTIQUE',
- GROUP_NO = 'F',    MAILLE = 'M5',      NOM_CMP = 'SI_ENDO',      VALE = 40.0))
-           )
-
-TEST_RESU(RESU=(
-
-           _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='ENDO_ELNO_SINO',
-           CRITERE = 'RELATIF',    PRECISION = 0.05, REFERENCE = 'ANALYTIQUE',
- GROUP_NO = 'F',    MAILLE = 'M5',      NOM_CMP = 'TRIAX',      VALE = 3.3333E-1),
-           _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='ENDO_ELNO_SINO',
-           CRITERE = 'RELATIF',    PRECISION = 0.01, REFERENCE = 'ANALYTIQUE',
- GROUP_NO = 'F',    MAILLE = 'M5',      NOM_CMP = 'SI_ENDO',      VALE = 40.0))
            )
 
 #--------------------------------------------------------------------

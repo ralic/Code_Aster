@@ -1,9 +1,9 @@
-# MODIF  DATE 30/08/2010   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 10/01/2011   AUTEUR REZETTE C.REZETTE 
 # TITRE POUTRE COURTE SUR APPUIS SIMPLES
 # sdll01a.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -176,7 +176,6 @@ MODE2=MODE_ITER_INV(  MATR_A=MATASSR2,
 
 #--------------------------------------------------------------------
 
-
 TEST_RESU(RESU=(
    _F(   RESULTAT = MODE1,       PARA = 'FREQ',
            CRITERE = 'RELATIF',     PRECISION = 0.2E-2,
@@ -211,7 +210,11 @@ TEST_RESU(RESU=(
            NUME_ORDRE = 4,       VALE = 2629.2),
    _F(   RESULTAT = MODE2,       PARA = 'FREQ',
            CRITERE = 'RELATIF',     PRECISION = 4.5E-2,
-           NUME_ORDRE = 5,       VALE = 3126.2)) )
+           NUME_ORDRE = 5,       VALE = 3126.2),
+           #----------------------------------            )
+   _F( RESULTAT = MODE4, NOM_CHAM = 'ECIN_ELEM_DEPL', NOM_CMP='TOTALE',
+       MAILLE = 'E101', CRITERE = 'RELATIF',  PRECISION = 0.01,
+       NUME_MODE = 1, POINT=1, REFERENCE='NON_REGRESSION', VALE = 5.13660E+04),),)
 
 FIN()
 #

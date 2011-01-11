@@ -1,8 +1,8 @@
-#@ MODIF simu_point_mat_ops Macro  DATE 05/07/2010   AUTEUR PROIX J-M.PROIX 
+#@ MODIF simu_point_mat_ops Macro  DATE 10/01/2011   AUTEUR PROIX J-M.PROIX 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -436,26 +436,33 @@ def simu_point_mat_ops(self, MATER, INCREMENT,SIGM_IMPOSE,EPSI_IMPOSE,SIGM_INIT,
              lvarc  = args['AFFE_VARC'].List_F()
              nbvarc=len(lvarc)
              for ivarc in range(nbvarc) :
-                  typech = 'NOEU_' + str(lvarc[ivarc]['NOM_VARC']) + '_F'
                   dico={}
-                  __CHVARC=CREA_CHAMP(TYPE_CHAM=typech,
-                                     OPERATION='AFFE', 
-                                     MAILLAGE=__MA, 
-                                     AFFE=_F(MAILLE='VOLUME', 
+                  typech = 'NOEU_' + str(lvarc[ivarc]['NOM_VARC']) + '_R'
+                  labsc=lvarc[ivarc]['VALE_FONC'].Absc()
+                  lordo=lvarc[ivarc]['VALE_FONC'].Ordo()
+                  l_affe_cham=[]
+                  __CHV=[None]*len(labsc)
+                  for it,time in enumerate(labsc):
+                      __CHV[it]=CREA_CHAMP(TYPE_CHAM=typech,
+                                     OPERATION='AFFE',
+                                     MAILLAGE=__MA,
+                                     AFFE=_F(MAILLE='VOLUME',
                                              NOM_CMP=lvarc[ivarc]['NOM_VARC'],
-                                             VALE_F=lvarc[ivarc]['VALE_FONC'],
+                                             VALE=lordo[it],
                                             ),
-                                     ), 
-                  __LIST2  = INCREMENT.List_F()[0]['LIST_INST']
-                  __TEMP=CREA_RESU(OPERATION='AFFE',TYPE_RESU='EVOL_THER',NOM_CHAM='TEMP',
-                                   AFFE = _F(CHAM_GD = __CHVARC,LIST_INST = __LIST2,),
-                                   )
+                                     ),
+                      dicoch={}
+                      dicoch["CHAM_GD"]=__CHV[it]
+                      dicoch["INST"]=time
+                      l_affe_cham.append(dicoch)
+                  __EVOV=CREA_RESU(OPERATION='AFFE',TYPE_RESU='EVOL_VARC',NOM_CHAM=str(lvarc[ivarc]['NOM_VARC']),
+                               AFFE = l_affe_cham)  
                   dico["MAILLE"]='VOLUME'
-                  dico["EVOL"]=__TEMP
+                  dico["EVOL"]=__EVOV
                   dico["NOM_VARC"]=lvarc[ivarc]['NOM_VARC']
                   if lvarc[ivarc]['VALE_REF'] != None:
                      dico["VALE_REF"]=lvarc[ivarc]['VALE_REF']
-             mcvarc.append(dico)
+                  mcvarc.append(dico)
 #      -- Materiau et modele
       if len(mcvarc) > 0 :
          __CHMAT=AFFE_MATERIAU(MAILLAGE=__MA,AFFE = _F(MAILLE='VOLUME',MATER=MATER),

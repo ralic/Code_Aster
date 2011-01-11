@@ -2,10 +2,10 @@
      &                  NBORDR,MODELE,MATE,CARA,NCHAR,CTYP)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 07/12/2010   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 10/01/2011   AUTEUR DELMAS J.DELMAS 
 C TOLE CRP_20
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -93,7 +93,7 @@ C     --- VARIABLES LOCALES ---
       INTEGER NNOEM,NELEM,NDIM,NNCP
 
       CHARACTER*1 BASE,TYPCOE
-      CHARACTER*4 TYPE,K4BID
+      CHARACTER*4 TYPE
       CHARACTER*8 K8B,NOMA,CHAREP
       CHARACTER*8 CARELE,Z1Z2(2),KIORD,KIORDM
       CHARACTER*8 LERES0,BLAN8
@@ -112,7 +112,7 @@ C     --- VARIABLES LOCALES ---
       CHARACTER*24 LIGREL,CHEPSA,K24B
       CHARACTER*24 CHSIG1,CHSIG2,CHVAR1,CHVAR2,NORME,NOMPAR
       CHARACTER*24 LESOPT
-      CHARACTER*24 CHTETA,CHTESE,CHSIGM,DLAGSI,CHDESE,CHSIC
+      CHARACTER*24 CHTESE,CHSIGM,CHDESE,CHSIC
       CHARACTER*24 CHVARI,CHDEPM
       CHARACTER*24 NOMS(2)
       CHARACTER*24 LIGRMO
@@ -1541,57 +1541,14 @@ C           ------------------------------------------------
   380     CONTINUE
           CALL DETRSD('CHAMP_GD','&&ENETOT.CHAMELEM2')
 C     ------------------------------------------------------------------
-C     --- OPTIONS DE CALCUL DU TAUX DE TRIAXIALITE DES CONTRAINTES, ET
-C     --- DE LA CONTRAINTE D'ENDOMMAGEMENT :
-C     ------------------------------------------------------------------
-        ELSEIF (OPTION.EQ.'ENDO_ELNO_SIGA' .OR.
-     &          OPTION.EQ.'ENDO_ELNO_SINO') THEN
-          DO 400,IAUX=1,NBORDR
-            CALL JEMARQ()
-            CALL JERECU('V')
-            IORDR=ZI(JORDR+IAUX-1)
-            CALL MEDOM2(MODELE,MATE,CARA,KCHA,NCHAR,CTYP,RESUCO,IORDR,
-     &                  NBORDR,NPASS,LIGREL)
-            CALL JEVEUO(KCHA,'L',JCHA)
-            CALL MECARA(CARA,EXICAR,CHCARA)
-            CALL MECHC1(SAVCAR,MODELE,MATE,EXICAR,CHCARA)
-            IF (OPTION.EQ.'ENDO_ELNO_SIGA') THEN
-              CALL RSEXC2(1,2,RESUCO,'SIEF_ELGA',IORDR,CHSIG,OPTION,
-     &                    IRET)
-              CALL RSEXC2(2,2,RESUCO,'SIEF_ELGA_DEPL',IORDR,CHSIG,
-     &                    OPTION,IRET)
-              IF (IRET.GT.0) THEN
-                CALL U2MESK('A','CALCULEL3_18',1,OPTION)
-                GOTO 390
-
-              ENDIF
-            ELSE
-              CALL RSEXC2(1,1,RESUCO,'SIGM_ELNO_DEPL',IORDR,CHSIG,
-     &                    OPTION,IRET)
-              IF (IRET.GT.0)GOTO 390
-            ENDIF
-            CALL RSEXC1(LERES1,OPTION,IORDR,CHELEM)
-            IF (EXITIM) THEN
-              CALL RSADPA(RESUCO,'L',1,'INST',IORDR,0,IAINST,K8B)
-              TIME=ZR(IAINST)
-            ELSE
-              TIME=ZERO
-            ENDIF
-            CALL VRCINS(MODELE,MATE,CARA,TIME,CHVARC,CODRET)
-            CALL COENDO(OPTION,MODELE,LIGREL,MATE,CHVARC,CHSIG,CHELEM)
-            CALL RSNOCH(LERES1,OPTION,IORDR,' ')
-  390       CONTINUE
-            CALL JEDEMA()
-  400     CONTINUE
-C     ------------------------------------------------------------------
 C     --- OPTIONS DE CALCUL DE:
 C     ---   * TAUX DE TRIAXIALITE DES CONTRAINTES,
 C     ---   * CONTRAINTE D'ENDOMMAGEMENT,
 C     ---   * ENDOMMAGEMENT DE LEMAITRE-SERMAGE
 C     --- RESPONSABLE DEVELOPPEMENT: FRANCK MEISSONNIER (AMA/T65)
 C     ------------------------------------------------------------------
-        ELSEIF (OPTION.EQ.'ENDO_ELNO_ELGA' .OR.
-     &          OPTION.EQ.'ENDO_ELGA') THEN
+        ELSEIF (OPTION.EQ.'ENDO_ELGA' .OR.
+     &          OPTION.EQ.'ENDO_ELNO') THEN
 C
           IF (NBORDR.EQ.1) THEN
             CALL U2MESK('A','CALCULEL5_63',1,OPTION)
@@ -1696,7 +1653,7 @@ C ---     D'ENDOMMAGEMENT ET DE L'ENDOMMAGEMENT DE LEMAITRE-SERMAGE
 C     -------------------------------------------------------------
               CALL RSEXCH(RESUCO,'COMPORTEMENT',IORDR1,COMPOR,IRET1)
 
-              CALL ENDOLE(OPTION,MODELE,LIGREL,MATE,COMPOR,CHVARC,
+              CALL ENDOLE(OPTION,LIGREL,MATE,COMPOR,CHVARC,
      &                    CHSIG1,CHVAR1,CHVAC2,CHSIG2,CHVAR2,CHEND2,
      &                    CHELE1,CHELE2)
 
@@ -1705,16 +1662,16 @@ C     ----------------------------
               CALL RSNOCH(LERES1,OPTION,IORDR2,' ')
             ENDIF
 C
-C --- B/ TRAITEMENT DE L'OPTION ENDO_ELNO_ELGA
+C --- B/ TRAITEMENT DE L'OPTION ENDO_ELNO
 C     ----------------------------------------
-            IF (OPTION.EQ.'ENDO_ELNO_ELGA') THEN
+            IF (OPTION.EQ.'ENDO_ELNO') THEN
               CALL RSEXC2(1,1,RESUCO,'ENDO_ELGA',IORDR2,CHEND2,OPTION,
      &                    IRET1)
               IF (IRET1.GT.0) THEN
                 CALL U2MESS('F','CALCULEL3_21')
               ENDIF
               CALL RSEXC1(LERES1,OPTION,IORDR2,CHELE2)
-              CALL ENDOLE(OPTION,MODELE,LIGREL,MATE,COMPOR,CHVARC,
+              CALL ENDOLE(OPTION,LIGREL,MATE,COMPOR,CHVARC,
      &                    CHSIG1,CHVAR1,CHVAC2,CHSIG2,CHVAR2,CHEND2,
      &                    CHELE1,CHELE2)
               CALL RSNOCH(LERES1,OPTION,IORDR2,' ')
@@ -2143,8 +2100,6 @@ C    ------------------------------------------------------------------
   660 CONTINUE
 C
 C============= FIN DE LA BOUCLE SUR LES OPTIONS A CALCULER =============
-C
-  670 CONTINUE
 C
       GOTO 690
 

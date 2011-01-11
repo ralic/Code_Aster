@@ -2,9 +2,9 @@
      &                   T,LAMBDA,DEUXMU,LAMF,DEUMUF,GMT,GMC,GF,
      &                   SEUIL,ALF,CRIT,CODRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 07/12/2010   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ELEMENTS  DATE 11/01/2011   AUTEUR SFAYOLLE S.FAYOLLE 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -195,9 +195,9 @@ C--------CALCUL DE DA1,DA2,EPS33
         TOLD = CRIT(3)
         KDMAX = NINT(CRIT(1))
 
-        CALL GLDLOC(LAMBDA,DEUXMU,SEUIL,ALF,GMT,GMC,COF1,VIM
-     &                      ,Q2D,QFF,TR2D,EPS33,DE33D1,DE33D2,
-     &                      KSI2D,DA1,DA2,KDMAX,TOLD,CODRET)
+        CALL GLDLOC(LAMBDA,DEUXMU,SEUIL,ALF,GMT,GMC,COF1,VIM,Q2D,QFF,
+     &              TR2D,EPS33,DE33D1,DE33D2,KSI2D,DA1,DA2,KDMAX,TOLD,
+     &              CODRET)
 
         IF (DA1.LT.VIM(1))DA1 = VIM(1)
         IF (DA2.LT.VIM(2))DA2 = VIM(2)
@@ -221,6 +221,12 @@ C--------CALCUL DE DA1,DA2,EPS33
         ELSE
           VIP(4) = 1.0D0
         ENDIF
+        VIP(5)=1.D0-0.5D0*((1.D0+GMT*DA1)/(1.D0+DA1)
+     &                    +(1.D0+GMT*DA2)/(1.D0+DA2))
+        VIP(6)=1.D0-0.5D0*((1.D0+GMC*DA1)/(1.D0+DA1)
+     &                    +(1.D0+GMC*DA2)/(1.D0+DA2))
+        VIP(7)=1.D0-MAX((1.D0+GF*DA1)/(1.D0+DA1),
+     &                  (1.D0+GF*DA2)/(1.D0+DA2))
       ELSE
         IF(LELAS) THEN
           DA1 = 0.0D0

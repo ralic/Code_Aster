@@ -6,9 +6,9 @@
       CHARACTER*(*) TYPE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 22/06/2010   AUTEUR SELLENET N.SELLENET 
+C MODIF ALGELINE  DATE 11/01/2011   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -81,6 +81,13 @@ C     DEBUT
       CALL JEMARQ()
 C-----------------------------------------------------------------------
       NEQ = ZI(LMAT+2)
+      
+      IF (ZI(LMAT+3).EQ.1) THEN
+        CALL CSMBMD(ZK24(ZI(LMAT+1)),NEQ,VSMB)
+      ELSE IF (ZI(LMAT+3).EQ.2) THEN
+        CALL CSMBMC(ZK24(ZI(LMAT+1)),NEQ,CVSMB)
+      END IF
+      
       NIMPO = ZI(LMAT+7)
       IF (NIMPO.EQ.0) GO TO 10
       

@@ -3,7 +3,7 @@
      &                   LQUALI,RDESQ,TYPE,IETDEB,IETRAT,RCTDEB,LDIST)
       IMPLICIT NONE
 !           CONFIGURATION MANAGEMENT OF EDF VERSION                  
-!& MODIF AMUMPT MUMPS  DATE 03/01/2011   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+!& MODIF AMUMPT MUMPS  DATE 10/01/2011   AUTEUR BOITEAU O.BOITEAU 
 ! ================================================================== 
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D              WWW.CODE-ASTER.ORG 
 !                                                                    
@@ -65,11 +65,13 @@ C============================================================
      &             MONIT(12),IETFIN,IETMAX
       CHARACTER*1  ROUCS(NMXINS),PRECS(NMXINS)
       CHARACTER*4  ETAMS(NMXINS)
+      CHARACTER*8  K8BID
       CHARACTER*14 NONUS(NMXINS)
+      CHARACTER*16 K16BID,NOMCMD
       CHARACTER*19 NOMATS(NMXINS),NOSOLS(NMXINS),KTEMP
       CHARACTER*80 NVERS
       REAL*8       RMONIT(18),RINFOG(100),RCTFIN,RETFIN
-      LOGICAL      LDEBUG
+      LOGICAL      LDEBUG,LCMDE
       COMMON /MUMPSS/ SMPS
       COMMON /MUMPSC/ CMPS
       COMMON /MUMPSD/ DMPS
@@ -95,10 +97,9 @@ C-----------------------------------------------------------------------
       CALL JEMARQ()
       CALL INFNIV(IFM,NIV)
       
-C --- PARAMETRE POUR DEBUGGAGE (ATTENTION IL FAUT INFO=2)
+C --- PARAMETRE POUR DEBUGGAGE
       LDEBUG=.TRUE.
       LDEBUG=.FALSE.
-      IF (LDEBUG.AND.(NIV.NE.2)) CALL ASSERT(.FALSE.)
       
 C       ------------------------------------------------
 C        INITS
@@ -153,277 +154,287 @@ C --- DE MUMPS: DMUMPS_STRUC OU ZMUMPS_STRUC
         CALL ASSERT(.FALSE.)
       ENDIF
 
-C --- VECTEURS DE MONITORING
-      KMONIT(1)='&MUMPS.INFO.MAILLE'
-      KMONIT(2)='&MUMPS.INFO.MEMOIRE'
-      KMONIT(9)='&MUMPS.NB.MAILLE'
-      KMONIT(10)='&MUMPS.INFO.MEM.EIC'
-      KMONIT(11)='&MUMPS.INFO.MEM.EOC'
-      KMONIT(12)='&MUMPS.INFO.MEM.USE'
-
-C --- TEST POUR EVITER LE MONITORING DES CMDES ECLATEES
-C --- ET DE LDLT_SP
-C     LES OBJETS TEMPORAIRES DE MONITORING SONT EFFACES A CHAQUE
+C --- TEST POUR LIMITER LE MONITORING DES CMDES ECLATEES
+C     CAR LES OBJETS TEMPORAIRES DE MONITORING SONT EFFACES A CHAQUE
 C     FIN DE COMMANDE (NUM_DDL/FACTORISER/RESOUDRE)
-      CALL JEEXIN(KMONIT(1),IRET)
-      IF (IRET.EQ.0) GOTO 999
+C --- ON N'AFFICHE LE MONITORING PROPRE A MUMPS QUE SI ON EST DS UNE
+C     COMMANDE AGREGEE ET SI INFO=2
 
-      CALL JEVEUO(KMONIT(1),'E',MONIT(1))
-      CALL JEVEUO(KMONIT(2),'E',MONIT(2))
-      CALL JEVEUO(KMONIT(9),'E',MONIT(9))
-      CALL JEVEUO(KMONIT(10),'E',MONIT(10))
-      CALL JEVEUO(KMONIT(11),'E',MONIT(11))
-      CALL JEVEUO(KMONIT(12),'E',MONIT(12))
-          
+      CALL GETRES(K8BID,K16BID,NOMCMD)
+      IF ((NOMCMD(1:8).EQ.'NUME_DDL').OR.(NOMCMD(1:10).EQ.'FACTORISER')
+     &    .OR.(NOMCMD(1:8).EQ.'RESOUDRE')) THEN
+        LCMDE=.TRUE.
+      ELSE
+        LCMDE=.FALSE.
+      ENDIF
+      
+      IF ((.NOT.LCMDE).AND.(NIV.GE.2)) THEN
+C --- VECTEURS DE MONITORING
+        KMONIT(1)='&MUMPS.INFO.MAILLE'
+        KMONIT(2)='&MUMPS.INFO.MEMOIRE'
+        KMONIT(9)='&MUMPS.NB.MAILLE'
+        KMONIT(10)='&MUMPS.INFO.MEM.EIC'
+        KMONIT(11)='&MUMPS.INFO.MEM.EOC'
+        KMONIT(12)='&MUMPS.INFO.MEM.USE'      
+        CALL JEVEUO(KMONIT(1),'E',MONIT(1))
+        CALL JEVEUO(KMONIT(2),'E',MONIT(2))
+        CALL JEVEUO(KMONIT(9),'E',MONIT(9))
+        CALL JEVEUO(KMONIT(10),'E',MONIT(10))
+        CALL JEVEUO(KMONIT(11),'E',MONIT(11))
+        CALL JEVEUO(KMONIT(12),'E',MONIT(12))
+       ENDIF          
 C       ------------------------------------------------
 C       TRAITEMENTS PROPREMENT DIT
 C       ------------------------------------------------
-      IF (NIV.GE.2) THEN
-        IF (OPTION.EQ.0) THEN
-C --      ON NE FAIT RIEN DE PLUS !
-        ELSE IF (OPTION.EQ.1) THEN
-          IF (LDEBUG) THEN
-            CALL SYSTEM_CLOCK(IETDEB,IETRAT,IETMAX)
-            CALL CPU_TIME(RCTDEB)
-          ENDIF
-        ELSE IF (OPTION.EQ.2) THEN
-          CALL UTTCPU('CPU.AMUMPT','INIT ',' ')
-          CALL UTTCPU('CPU.AMUMPT','DEBUT',' ')
-          IF (LDEBUG) THEN
-            CALL SYSTEM_CLOCK(IETFIN)
-            RETFIN=REAL(IETFIN-IETDEB)/REAL(IETRAT)
-            CALL CPU_TIME(RCTFIN)
-            WRITE(IFM,*)'REMPLISSAGE MATRICE + 2*JJLDYN '
+      IF (OPTION.EQ.0) THEN
+C --    ON NE FAIT RIEN DE PLUS !
+      ELSE IF (OPTION.EQ.1) THEN
+        IF (LDEBUG) THEN
+          CALL SYSTEM_CLOCK(IETDEB,IETRAT,IETMAX)
+          CALL CPU_TIME(RCTDEB)
+        ENDIF
+      ELSE IF (OPTION.EQ.2) THEN
+        CALL UTTCPU('CPU.AMUMPT','INIT ',' ')
+        CALL UTTCPU('CPU.AMUMPT','DEBUT',' ')
+        IF (LDEBUG) THEN
+          CALL SYSTEM_CLOCK(IETFIN)
+          RETFIN=REAL(IETFIN-IETDEB)/REAL(IETRAT)
+          CALL CPU_TIME(RCTFIN)
+          WRITE(IFM,*)'REMPLISSAGE MATRICE + 2*JJLDYN '
      &          //'TEMPS CPU/ELAPSED ',RCTFIN-RCTDEB,RETFIN
-            CALL SYSTEM_CLOCK(IETDEB,IETRAT,IETMAX)
-            CALL CPU_TIME(RCTDEB)
-          ENDIF
+          CALL SYSTEM_CLOCK(IETDEB,IETRAT,IETMAX)
+          CALL CPU_TIME(RCTDEB)
+        ENDIF
 C       -- ON INTERROMPT LA MESURE CPU.RESO.4 PENDANT CPU.RESO.3 :
-          CALL UTTCPU('CPU.RESO.4','FIN',' ')
-          CALL UTTCPU('CPU.RESO.3','DEBUT',' ')
-        ELSE IF (OPTION.EQ.4) THEN
-          CALL UTTCPU('CPU.RESO.3','FIN',' ')
-          CALL UTTCPU('CPU.RESO.4','DEBUT',' ')
-          CALL UTTCPU('CPU.AMUMPT','FIN',' ')
-          CALL UTTCPR('CPU.AMUMPT',6,TEMPS)
+        CALL UTTCPU('CPU.RESO.4','FIN',' ')
+        CALL UTTCPU('CPU.RESO.3','DEBUT',' ')
+      ELSE IF (OPTION.EQ.4) THEN
+        CALL UTTCPU('CPU.RESO.3','FIN',' ')
+        CALL UTTCPU('CPU.RESO.4','DEBUT',' ')
+        CALL UTTCPU('CPU.AMUMPT','FIN',' ')
+        CALL UTTCPR('CPU.AMUMPT',6,TEMPS)
+        IF ((.NOT.LCMDE).AND.(NIV.GE.2)) THEN
           ZI(MONIT(10)+RANG)=INFO(15)
           ZI(MONIT(11)+RANG)=INFO(17)
-          CALL UTTCPU('CPU.AMUMPT','INIT ',' ')
-          CALL UTTCPU('CPU.AMUMPT','DEBUT',' ')
-          IF (LDEBUG) THEN
-            CALL SYSTEM_CLOCK(IETFIN)
-            RETFIN=REAL(IETFIN-IETDEB)/REAL(IETRAT)
-            CALL CPU_TIME(RCTFIN)
-            WRITE(IFM,*)'ANALYSE MUMPS '
+        ENDIF
+        CALL UTTCPU('CPU.AMUMPT','INIT ',' ')
+        CALL UTTCPU('CPU.AMUMPT','DEBUT',' ')
+        IF (LDEBUG) THEN
+          CALL SYSTEM_CLOCK(IETFIN)
+          RETFIN=REAL(IETFIN-IETDEB)/REAL(IETRAT)
+          CALL CPU_TIME(RCTFIN)
+          WRITE(IFM,*)'ANALYSE MUMPS '
      &          //'TEMPS CPU/ELAPSED ',RCTFIN-RCTDEB,RETFIN
-            CALL SYSTEM_CLOCK(IETDEB,IETRAT,IETMAX)
-            CALL CPU_TIME(RCTDEB)
-          ENDIF
-        ELSE IF (OPTION.EQ.6) THEN
-          CALL UTTCPU('CPU.AMUMPT','FIN',' ')
-          CALL UTTCPR('CPU.AMUMPT',6,TEMPS)
+          CALL SYSTEM_CLOCK(IETDEB,IETRAT,IETMAX)
+          CALL CPU_TIME(RCTDEB)
+        ENDIF
+      ELSE IF (OPTION.EQ.6) THEN
+        CALL UTTCPU('CPU.AMUMPT','FIN',' ')
+        CALL UTTCPR('CPU.AMUMPT',6,TEMPS)
+        IF ((.NOT.LCMDE).AND.(NIV.GE.2)) THEN
           ZI(MONIT(2)+RANG)=INFO(9)
           ZI(MONIT(12)+RANG)=INFO(16)
           CALL MPICM2('REDUCE',KMONIT(1))
           CALL MPICM2('REDUCE',KMONIT(2))
-          IF (LDEBUG) THEN
-            CALL SYSTEM_CLOCK(IETFIN)
-            RETFIN=REAL(IETFIN-IETDEB)/REAL(IETRAT)
-            CALL CPU_TIME(RCTFIN)
-            WRITE(IFM,*)'FACTO NUMERIQUE MUMPS '
+        ENDIF
+        IF (LDEBUG) THEN
+          CALL SYSTEM_CLOCK(IETFIN)
+          RETFIN=REAL(IETFIN-IETDEB)/REAL(IETRAT)
+          CALL CPU_TIME(RCTFIN)
+          WRITE(IFM,*)'FACTO NUMERIQUE MUMPS '
      &          //'TEMPS CPU/ELAPSED ',RCTFIN-RCTDEB,RETFIN
-          ENDIF
-        ELSE IF (OPTION.EQ.7) THEN
-          IF (LDEBUG) THEN
-            CALL SYSTEM_CLOCK(IETDEB,IETRAT,IETMAX)
-            CALL CPU_TIME(RCTDEB)
-          ENDIF
-        ELSE IF (OPTION.EQ.8) THEN
-          CALL UTTCPU('CPU.AMUMPT','INIT ',' ')
-          CALL UTTCPU('CPU.AMUMPT','DEBUT',' ')
-          IF (LDEBUG) THEN
-            CALL SYSTEM_CLOCK(IETFIN)
-            RETFIN=REAL(IETFIN-IETDEB)/REAL(IETRAT)
-            CALL CPU_TIME(RCTFIN)
-            WRITE(IFM,*)'PRETRAITEMENTS RHS '
+        ENDIF
+      ELSE IF (OPTION.EQ.7) THEN
+        IF (LDEBUG) THEN
+          CALL SYSTEM_CLOCK(IETDEB,IETRAT,IETMAX)
+          CALL CPU_TIME(RCTDEB)
+        ENDIF
+      ELSE IF (OPTION.EQ.8) THEN
+        CALL UTTCPU('CPU.AMUMPT','INIT ',' ')
+        CALL UTTCPU('CPU.AMUMPT','DEBUT',' ')
+        IF (LDEBUG) THEN
+          CALL SYSTEM_CLOCK(IETFIN)
+          RETFIN=REAL(IETFIN-IETDEB)/REAL(IETRAT)
+          CALL CPU_TIME(RCTFIN)
+          WRITE(IFM,*)'PRETRAITEMENTS RHS '
      &          //'TEMPS CPU/ELAPSED ',RCTFIN-RCTDEB,RETFIN
-            CALL SYSTEM_CLOCK(IETDEB,IETRAT,IETMAX)
-            CALL CPU_TIME(RCTDEB)
-          ENDIF
-        ELSE IF (OPTION.EQ.10) THEN
-          CALL UTTCPU('CPU.AMUMPT','FIN',' ')
-          CALL UTTCPR('CPU.AMUMPT',6,TEMPS)
-          IF (LDEBUG) THEN
-            CALL SYSTEM_CLOCK(IETFIN)
-            RETFIN=REAL(IETFIN-IETDEB)/REAL(IETRAT)
-            CALL CPU_TIME(RCTFIN)
-            WRITE(IFM,*)'DESCENTE-REMONTEE MUMPS '
+          CALL SYSTEM_CLOCK(IETDEB,IETRAT,IETMAX)
+          CALL CPU_TIME(RCTDEB)
+        ENDIF
+      ELSE IF (OPTION.EQ.10) THEN
+        CALL UTTCPU('CPU.AMUMPT','FIN',' ')
+        CALL UTTCPR('CPU.AMUMPT',6,TEMPS)
+        IF (LDEBUG) THEN
+          CALL SYSTEM_CLOCK(IETFIN)
+          RETFIN=REAL(IETFIN-IETDEB)/REAL(IETRAT)
+          CALL CPU_TIME(RCTFIN)
+          WRITE(IFM,*)'DESCENTE-REMONTEE MUMPS '
      &          //'TEMPS CPU/ELAPSED ',RCTFIN-RCTDEB,RETFIN
-            CALL SYSTEM_CLOCK(IETDEB,IETRAT,IETMAX)
-            CALL CPU_TIME(RCTDEB)
-          ENDIF
-        ELSE IF (OPTION.EQ.12) THEN
-          IF (LDEBUG) THEN
-            CALL SYSTEM_CLOCK(IETFIN)
-            RETFIN=REAL(IETFIN-IETDEB)/REAL(IETRAT)
-            CALL CPU_TIME(RCTFIN)
-            WRITE(IFM,*)'POST-TRAITEMENTS SOLUTION '
+          CALL SYSTEM_CLOCK(IETDEB,IETRAT,IETMAX)
+          CALL CPU_TIME(RCTDEB)
+        ENDIF
+      ELSE IF (OPTION.EQ.12) THEN
+        IF (LDEBUG) THEN
+          CALL SYSTEM_CLOCK(IETFIN)
+          RETFIN=REAL(IETFIN-IETDEB)/REAL(IETRAT)
+          CALL CPU_TIME(RCTFIN)
+          WRITE(IFM,*)'POST-TRAITEMENTS SOLUTION '
      &          //'TEMPS CPU/ELAPSED ',RCTFIN-RCTDEB,RETFIN
-          ENDIF
+        ENDIF
+        IF ((NIV.GE.2).AND.(.NOT.LCMDE)) THEN
 C -- COMMUNICATION DES DONNEES DU MONITORING
           CALL MPICM2('REDUCE',KMONIT(10))
           CALL MPICM2('REDUCE',KMONIT(11))
           CALL MPICM2('REDUCE',KMONIT(12))
 C -- AFFICHAGE
-           IF (RANG.EQ.0) THEN
-             WRITE(IFM,*)
-             WRITE(IFM,*)'*********************************************'
+          IF (RANG.EQ.0) THEN
+            WRITE(IFM,*)
+            WRITE(IFM,*)'*********************************************'
      &                  //'*********************************'
-             IF (LDIST) THEN
-               WRITE(IFM,*)' CALCUL MUMPS DISTRIBUE'
-             ELSE
-               WRITE(IFM,*)' CALCUL MUMPS CENTRALISE'
-             ENDIF
-             WRITE(IFM,*)'<MONITORING '//NVERS(1:12)//' >'
-             WRITE(IFM,'(A19,I9)')' TAILLE DU SYSTEME ',N
-             IF (LQUALI) THEN
-               WRITE(IFM,'(A28,1PD11.4,1PD11.4)')'CONDITIONNEMENT'//
+            IF (LDIST) THEN
+              WRITE(IFM,*)' CALCUL MUMPS DISTRIBUE'
+            ELSE
+              WRITE(IFM,*)' CALCUL MUMPS CENTRALISE'
+            ENDIF
+            WRITE(IFM,*)'<MONITORING '//NVERS(1:12)//' >'
+            WRITE(IFM,'(A19,I9)')' TAILLE DU SYSTEME ',N
+            IF (LQUALI) THEN
+              WRITE(IFM,'(A28,1PD11.4,1PD11.4)')'CONDITIONNEMENT'//
      &           '/ERREUR ALGO ',RINFOG(10),RINFOG(7)
-               WRITE(IFM,'(A23,1PD11.4)')'ERREUR SUR LA SOLUTION ',
+              WRITE(IFM,'(A23,1PD11.4)')'ERREUR SUR LA SOLUTION ',
      &           RINFOG(9)
-             ENDIF
-             IAUX1=0
-             IAUX2=0
-             IAUX3=0
-             WRITE(IFM,*)'RANG    '//' NBRE MAILLES    '//
+            ENDIF
+            IAUX1=0
+            IAUX2=0
+            IAUX3=0
+            WRITE(IFM,*)'RANG    '//' NBRE MAILLES    '//
      &         ' NBRE TERMES K    '//' LU FACTEURS'
-             DO K=0,NBPROC-1
-               WRITE(IFM,1001)K,ZI(MONIT(9)+K),ZI(MONIT(1)+K),
+            DO K=0,NBPROC-1
+              WRITE(IFM,1001)K,ZI(MONIT(9)+K),ZI(MONIT(1)+K),
      &                          ZI(MONIT(2)+K)
-               IAUX1=IAUX1+ZI(MONIT(9)+K)
-               IAUX2=IAUX2+ZI(MONIT(1)+K)
-               IAUX3=IAUX3+ZI(MONIT(2)+K)
-             ENDDO
+              IAUX1=IAUX1+ZI(MONIT(9)+K)
+              IAUX2=IAUX2+ZI(MONIT(1)+K)
+              IAUX3=IAUX3+ZI(MONIT(2)+K)
+            ENDDO
 C -- EN CENTRALISE ON NE FAIT PAS LA SOMME
-             IF (.NOT.LDIST) THEN
-               IAUX1=IAUX1/NBPROC
-             ENDIF
+            IF (.NOT.LDIST) IAUX1=IAUX1/NBPROC
 C
-             WRITE(IFM,*)'--------------------------------------------'
+            WRITE(IFM,*)'--------------------------------------------'
      &          //'---------------'
-             WRITE(IFM,1003)IAUX1,IAUX2,IAUX3
-             WRITE(IFM,*)
-             DO I=1,18
-               RMONIT(I)=0.D0
-             ENDDO
+            WRITE(IFM,1003)IAUX1,IAUX2,IAUX3
+            WRITE(IFM,*)
+            DO I=1,18
+              RMONIT(I)=0.D0
+            ENDDO
 
-C            MONITORING MEMOIRE
-             IF (TYPE.EQ.'S') THEN             
-               IBID=SMPSK%ICNTL(22)
-             ELSE IF (TYPE.EQ.'C') THEN
-               IBID=CMPSK%ICNTL(22)
-             ELSE IF (TYPE.EQ.'D') THEN             
-               IBID=DMPSK%ICNTL(22)
-             ELSE IF (TYPE.EQ.'Z') THEN
-               IBID=ZMPSK%ICNTL(22)
-             ELSE
-               CALL ASSERT(.FALSE.)
-             ENDIF
-             IF (IBID.EQ.0) THEN 
-               KTEMP='IN-CORE'
-             ELSE 
-               KTEMP='OUT-OF-CORE'
-             ENDIF
-             WRITE(IFM,*)' MEMOIRE RAM ESTIMEE ET REQUISE 
+C           MONITORING MEMOIRE
+            IF (TYPE.EQ.'S') THEN             
+              IBID=SMPSK%ICNTL(22)
+            ELSE IF (TYPE.EQ.'C') THEN
+              IBID=CMPSK%ICNTL(22)
+            ELSE IF (TYPE.EQ.'D') THEN             
+              IBID=DMPSK%ICNTL(22)
+            ELSE IF (TYPE.EQ.'Z') THEN
+              IBID=ZMPSK%ICNTL(22)
+            ELSE
+              CALL ASSERT(.FALSE.)
+            ENDIF
+            IF (IBID.EQ.0) THEN 
+              KTEMP='IN-CORE'
+            ELSE 
+              KTEMP='OUT-OF-CORE'
+            ENDIF
+            WRITE(IFM,*)' MEMOIRE RAM ESTIMEE ET REQUISE 
      &             PAR MUMPS EN MO(FAC_NUM + RESOL)'
             
-             WRITE(IFM,*)'RANG ASTER : '//
+            WRITE(IFM,*)'RANG ASTER : '//
      &            'ESTIM IN-CORE | ESTIM OUT-OF-CORE | RESOL. '//KTEMP  
              
-C            POUR LE CALCUL DES MOYENNES            
-             RMONIT(1)=0.0
-             RMONIT(2)=0.0
-             RMONIT(3)=0.0
-C            POUR LE CALCUL DES MAX
-             RMONIT(4)=ZI(MONIT(10))
-             RMONIT(5)=ZI(MONIT(11))
-             RMONIT(6)=ZI(MONIT(12))
-C            POUR LES CALCULS DES MIN
-             RMONIT(7)=ZI(MONIT(10))
-             RMONIT(8)=ZI(MONIT(11))
-             RMONIT(9)=ZI(MONIT(12))
-             DO K=0,NBPROC-1
-                WRITE(IFM,1001) K,ZI(MONIT(10)+K),ZI(MONIT(11)+K),
+C           POUR LE CALCUL DES MOYENNES            
+            RMONIT(1)=0.0
+            RMONIT(2)=0.0
+            RMONIT(3)=0.0
+C           POUR LE CALCUL DES MAX
+            RMONIT(4)=ZI(MONIT(10))
+            RMONIT(5)=ZI(MONIT(11))
+            RMONIT(6)=ZI(MONIT(12))
+C           POUR LES CALCULS DES MIN
+            RMONIT(7)=ZI(MONIT(10))
+            RMONIT(8)=ZI(MONIT(11))
+            RMONIT(9)=ZI(MONIT(12))
+            DO K=0,NBPROC-1
+              WRITE(IFM,1001) K,ZI(MONIT(10)+K),ZI(MONIT(11)+K),
      &               ZI(MONIT(12)+K)
-                RMONIT(1)=RMONIT(1)+ZI(MONIT(10)+K)
-                RMONIT(2)=RMONIT(2)+ZI(MONIT(11)+K)
-                RMONIT(3)=RMONIT(3)+ZI(MONIT(12)+K)
-                IF (RMONIT(4) .GT. ZI(MONIT(10)+K))
+              RMONIT(1)=RMONIT(1)+ZI(MONIT(10)+K)
+              RMONIT(2)=RMONIT(2)+ZI(MONIT(11)+K)
+              RMONIT(3)=RMONIT(3)+ZI(MONIT(12)+K)
+              IF (RMONIT(4) .GT. ZI(MONIT(10)+K))
      &               RMONIT(4)=ZI(MONIT(10)+K)
-                IF (RMONIT(5) .GT. ZI(MONIT(11)+K))
+              IF (RMONIT(5) .GT. ZI(MONIT(11)+K))
      &               RMONIT(5)=ZI(MONIT(11)+K)  
-                IF (RMONIT(6) .GT. ZI(MONIT(12)+K))
+              IF (RMONIT(6) .GT. ZI(MONIT(12)+K))
      &               RMONIT(6)=ZI(MONIT(12)+K)
-                IF (RMONIT(7) .LT. ZI(MONIT(10)+K))
+              IF (RMONIT(7) .LT. ZI(MONIT(10)+K))
      &               RMONIT(7)=ZI(MONIT(10)+K)
-                IF (RMONIT(8) .LT. ZI(MONIT(11)+K))
+              IF (RMONIT(8) .LT. ZI(MONIT(11)+K))
      &               RMONIT(8)=ZI(MONIT(11)+K)  
-                IF (RMONIT(9) .LT. ZI(MONIT(12)+K))
+              IF (RMONIT(9) .LT. ZI(MONIT(12)+K))
      &               RMONIT(9)=ZI(MONIT(12)+K)
                 
-             ENDDO
-             RMONIT(1)=RMONIT(1)/NBPROC
-             RMONIT(2)=RMONIT(2)/NBPROC
-             RMONIT(3)=RMONIT(3)/NBPROC
-             WRITE(IFM,*)'------------------------------------------'//
+            ENDDO
+            RMONIT(1)=RMONIT(1)/NBPROC
+            RMONIT(2)=RMONIT(2)/NBPROC
+            RMONIT(3)=RMONIT(3)/NBPROC
+            WRITE(IFM,*)'------------------------------------------'//
      &            '-----------------------------------'
-             WRITE(IFM,1007) RMONIT(1),RMONIT(2),RMONIT(3)
-             WRITE(IFM,*)'------------------------------------------'//
+            WRITE(IFM,1007) RMONIT(1),RMONIT(2),RMONIT(3)
+            WRITE(IFM,*)'------------------------------------------'//
      &            '-----------------------------------'
    
-             WRITE(IFM,1008) RMONIT(4),RMONIT(5),RMONIT(6)
-             WRITE(IFM,*)'------------------------------------------'//
+            WRITE(IFM,1008) RMONIT(4),RMONIT(5),RMONIT(6)
+            WRITE(IFM,*)'------------------------------------------'//
      &            '-----------------------------------'
          
-             WRITE(IFM,1009) RMONIT(7),RMONIT(8),RMONIT(9)
-             WRITE(IFM,*)'------------------------------------------'//
+            WRITE(IFM,1009) RMONIT(7),RMONIT(8),RMONIT(9)
+            WRITE(IFM,*)'------------------------------------------'//
      &            '-----------------------------------'
                    
       
-             WRITE(IFM,*)'*********************************************'
+            WRITE(IFM,*)'*********************************************'
      &                  //'*********************************'
- 1001        FORMAT(' N ',I4,' :    ',I12,'    ',I12,'    ',I12)
- 1002        FORMAT(' N ',I4,' :',1PD10.2,' ',1PD10.2,' ',1PD10.2,7X,
+ 1001       FORMAT(' N ',I4,' :    ',I12,'    ',I12,'    ',I12)
+ 1002       FORMAT(' N ',I4,' :',1PD10.2,' ',1PD10.2,' ',1PD10.2,7X,
      &              1PD10.2,' ',1PD10.2,' ',1PD10.2)
- 1003        FORMAT('TOTAL   : ',I15,' ',I15,' ',I15)
- 1004        FORMAT('MOYENNE :',1PD10.2,' ',1PD10.2,' ',1PD10.2,7X,
+ 1003       FORMAT('TOTAL   : ',I15,' ',I15,' ',I15)
+ 1004       FORMAT('MOYENNE :',1PD10.2,' ',1PD10.2,' ',1PD10.2,7X,
      &              1PD10.2,' ',1PD10.2,' ',1PD10.2)
- 1005        FORMAT('        :',1PD10.2,' ',1PD10.2,' ',1PD10.2,7X,
+ 1005       FORMAT('        :',1PD10.2,' ',1PD10.2,' ',1PD10.2,7X,
      &              1PD10.2,' ',1PD10.2,' ',1PD10.2)
- 1006        FORMAT('        :',1PD10.2,' ',1PD10.2,' ',1PD10.2,7X,
+ 1006       FORMAT('        :',1PD10.2,' ',1PD10.2,' ',1PD10.2,7X,
      &              1PD10.2,' ',1PD10.2,' ',1PD10.2)
-           ENDIF
 
- 1007      FORMAT('MOYENNE :      ',1PD10.2,'      ',1PD10.2,'      ',
-     &            1PD10.2)
- 1008      FORMAT('MINIMUM :      ',1PD10.2,'      ',1PD10.2,'      ',
-     &            1PD10.2)
- 1009      FORMAT('MAXIMUM :      ',1PD10.2,'      ',1PD10.2,'      ',
-     &            1PD10.2)
+ 1007       FORMAT('MOYENNE :      ',1PD10.2,'      ',1PD10.2,'      ',
+     &              1PD10.2)
+ 1008       FORMAT('MINIMUM :      ',1PD10.2,'      ',1PD10.2,'      ',
+     &              1PD10.2)
+ 1009       FORMAT('MAXIMUM :      ',1PD10.2,'      ',1PD10.2,'      ',
+     &              1PD10.2)
+C FIN DU IF RANG
+          ENDIF
 
-           DO I=1,NBPROC
-             ZI(MONIT(1)+I-1)=0
-             ZI(MONIT(2)+I-1)=0
-             ZI(MONIT(10)+I-1)=0
-             ZI(MONIT(11)+I-1)=0
-             ZI(MONIT(12)+I-1)=0             
-           ENDDO
-       
-        ELSE
+          DO I=1,NBPROC
+            ZI(MONIT(1)+I-1)=0
+            ZI(MONIT(2)+I-1)=0
+            ZI(MONIT(10)+I-1)=0
+            ZI(MONIT(11)+I-1)=0
+            ZI(MONIT(12)+I-1)=0             
+          ENDDO
+C FIN DU IF NIV + LCMDE
+        ENDIF 
+      ELSE
 C --- OPTION IMPREVUE
-          CALL ASSERT(.FALSE.)
+        CALL ASSERT(.FALSE.)
 
-        ENDIF
       ENDIF
   999 CALL JEDEMA()
 #endif

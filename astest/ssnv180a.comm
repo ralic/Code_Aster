@@ -1,9 +1,9 @@
-# MODIF  DATE 13/12/2010   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 10/01/2011   AUTEUR REZETTE C.REZETTE 
 # TITRE PRISE EN COMPTE DE LA DILATATION THERMIQUE ET DU FLUAGE DE DESSICCATION DANS LE MODELE BETON_UMLV_FP
-# ssnv180a.para = tps_job 80 mem_job 32Mo ncpus 1 liste_test R
+# ssnv180a.para = tps_job 70 mem_job 32Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -301,8 +301,9 @@ TEST_RESU(RESU=(
           POINT=1,
           NUME_ORDRE=49,
           NOM_CMP = 'EPXX',
-          VALE = 2.80675E-22,
-          PRECISION = 0.001,
+          VALE = 0.,
+          CRITERE='ABSOLU',
+          PRECISION = 1e-8,
           REFERENCE = 'NON_REGRESSION'),
       _F( RESULTAT = U,
           NOM_CHAM = 'EPFD_ELGA',
@@ -310,8 +311,9 @@ TEST_RESU(RESU=(
           POINT=1,
           NUME_ORDRE=49,
           NOM_CMP = 'EPYY',
-          VALE = -3.89732E-22,
-          PRECISION = 0.001,
+          VALE = 0.,
+          CRITERE='ABSOLU',
+          PRECISION = 1e-8,
           REFERENCE = 'NON_REGRESSION'),
       _F( RESULTAT = U,
           NOM_CHAM = 'EPFD_ELGA',

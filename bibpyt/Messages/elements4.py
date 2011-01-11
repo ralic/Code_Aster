@@ -1,8 +1,8 @@
-#@ MODIF elements4 Messages  DATE 04/10/2010   AUTEUR PROIX J-M.PROIX 
+#@ MODIF elements4 Messages  DATE 10/01/2011   AUTEUR DELMAS J.DELMAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -34,30 +34,6 @@ cata_msg = {
 3 : _("""
  pour l'option INDIC_SEUIL, les seules relations admises sont "vmis_isot_line", "vmis_isot_trac"  et "vmis_cine_line" .
 """),
-
-6 : _("""
- le type du champ de contraintes est incompatible avec l'option :  %(k1)s
-"""),
-
-7 : _("""
- pas de contraintes dans PCONTGP
-"""),
-
-8 : _("""
- pas de champ endo_elga dans ptriagp
-"""),
-
-9 : _("""
- pas de champ vari_elga dans pvarimr
-"""),
-
-10 : _("""
- pas de champ vari_elga dans pvaripr
-"""),
-
-11 : _("""
- option non traitée  %(k1)s
- """),
 
 15 : _("""
   deformation :  %(k1)s non implantée sur les éléments "pou_d_tgm" : utiliser PETIT ou GROT_GDEP
@@ -266,10 +242,6 @@ Erreur utilisateur :
 
 Conseil :
  Pour appliquer une telle presssion, il faut utiliser AFFE_CHAR_MECA_F/FORCE_COQUE/PRES
-"""),
-
-98 : _("""
- la contrainte équivalente est nulle pour la maille  %(k1)s
 """),
 
 }

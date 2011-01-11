@@ -4,9 +4,9 @@
       CHARACTER*(*)       MAILLA, MOMANU
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 08/04/2008   AUTEUR MEUNIER S.MEUNIER 
+C MODIF ALGELINE  DATE 11/01/2011   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -41,10 +41,10 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON  /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
       CHARACTER*32     JEXNUM, JEXNOM
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
-      INTEGER       JMAIL, IM, NUMA, JTYP, ITYP, INO, JPT, NNO, IN
+      INTEGER       JMAIL, IM, NUMA, JTYP, ITYP, INO, JPT, IN
       INTEGER       ITTR6, ITTR7, ITQU8, ITQU9, JVALE, NUNO,IATYMA
-      INTEGER       ITSE3,ITSE4
-      REAL*8        CDG(3),DDOT, VALR(3)
+      INTEGER       ITSE3,ITSE4,KNO,K
+      REAL*8        CDG(3),DDOT, VALR(3),W
       CHARACTER*8   MA, NOMAIL, NONO1, NONO2, NONO3
       CHARACTER*24  TYPMAI, CONNEX, COOVAL,CANOMA,CANONO
       CHARACTER*24  VALK(4)
@@ -83,17 +83,14 @@ C     ------------------------------------------------------------------
 
          IF ( ITYP .EQ. ITTR6 ) THEN
             ZI(JTYP) = ITTR7
-            NNO = 6
             INO = 7
 
          ELSEIF ( ITYP .EQ. ITQU8 ) THEN
             ZI(JTYP) = ITQU9
-            NNO = 8
             INO = 9
 
          ELSEIF ( ITYP .EQ. ITSE3 ) THEN
             ZI(JTYP) = ITSE4
-            NNO = 3
             INO = 4
 
          ENDIF
@@ -101,22 +98,44 @@ C     ------------------------------------------------------------------
          CALL JEVEUO ( JEXNUM(CONNEX,NUMA), 'E', JPT )
 
          IF (ITYP.NE.ITSE3) THEN
-
-            CDG(1) = 0.D0
-            CDG(2) = 0.D0
-            CDG(3) = 0.D0
-            DO 20 IN = 1 , NNO
-               NUNO = ZI(JPT+IN-1)
-               CDG(1) = CDG(1) + ZR(JVALE+3*(NUNO-1)  )
-               CDG(2) = CDG(2) + ZR(JVALE+3*(NUNO-1)+1)
-               CDG(3) = CDG(3) + ZR(JVALE+3*(NUNO-1)+2)
-20          CONTINUE
             NUNO = NBNO + IM
-            ZR(JVALE+3*(NUNO-1)  ) = CDG(1) / NNO
-            ZR(JVALE+3*(NUNO-1)+1) = CDG(2) / NNO
-            ZR(JVALE+3*(NUNO-1)+2) = CDG(3) / NNO
-
             ZI(JPT+INO-1) = NUNO
+
+            IF (ITYP.EQ.ITTR6) THEN
+C             -- TRIA6_7
+              DO 777, K=1,3
+                W= 0.D0
+                W= W + ZR(JVALE+3*(ZI(JPT-1+1)-1)-1+K) * (-1.D0/9.D0)
+                W= W + ZR(JVALE+3*(ZI(JPT-1+2)-1)-1+K) * (-1.D0/9.D0)
+                W= W + ZR(JVALE+3*(ZI(JPT-1+3)-1)-1+K) * (-1.D0/9.D0)
+
+                W= W + ZR(JVALE+3*(ZI(JPT-1+4)-1)-1+K) * (4.D0/9.D0)
+                W= W + ZR(JVALE+3*(ZI(JPT-1+5)-1)-1+K) * (4.D0/9.D0)
+                W= W + ZR(JVALE+3*(ZI(JPT-1+6)-1)-1+K) * (4.D0/9.D0)
+
+                ZR(JVALE+3*(NUNO-1)-1+K) = W
+777           CONTINUE
+
+            ELSEIF (ITYP.EQ.ITQU8) THEN
+C             -- QUAD8_9
+              DO 778, K=1,3
+                W= 0.D0
+                W= W + ZR(JVALE+3*(ZI(JPT-1+1)-1)-1+K) * (-1.D0/4.D0)
+                W= W + ZR(JVALE+3*(ZI(JPT-1+2)-1)-1+K) * (-1.D0/4.D0)
+                W= W + ZR(JVALE+3*(ZI(JPT-1+3)-1)-1+K) * (-1.D0/4.D0)
+                W= W + ZR(JVALE+3*(ZI(JPT-1+4)-1)-1+K) * (-1.D0/4.D0)
+
+                W= W + ZR(JVALE+3*(ZI(JPT-1+5)-1)-1+K) * (1.D0/2.D0)
+                W= W + ZR(JVALE+3*(ZI(JPT-1+6)-1)-1+K) * (1.D0/2.D0)
+                W= W + ZR(JVALE+3*(ZI(JPT-1+7)-1)-1+K) * (1.D0/2.D0)
+                W= W + ZR(JVALE+3*(ZI(JPT-1+8)-1)-1+K) * (1.D0/2.D0)
+
+                ZR(JVALE+3*(NUNO-1)-1+K) = W
+778           CONTINUE
+
+            ELSE
+              CALL ASSERT(.FALSE.)
+            ENDIF
 
          ELSE
 

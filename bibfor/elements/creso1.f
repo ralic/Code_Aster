@@ -5,9 +5,9 @@
      &                  ACMA,ACSM,REACRE)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 05/10/2009   AUTEUR BOITEAU O.BOITEAU 
+C MODIF ELEMENTS  DATE 10/01/2011   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -95,37 +95,38 @@ C------------------------------------------------------------------
 C --------------------------------------------------------------
 C CREATION DES DIFFERENTS ATTRIBUTS DE LA S.D. SOLVEUR
 C --------------------------------------------------------------
-      CALL WKVECT(SOLVEU(1:19)//'.SLVK','V V K24',11,ISLVK)
+      CALL WKVECT(SOLVEU(1:19)//'.SLVK','V V K24',12,ISLVK)
       CALL WKVECT(SOLVEU(1:19)//'.SLVR','V V R',4,ISLVR)
       CALL WKVECT(SOLVEU(1:19)//'.SLVI','V V I',7,ISLVI)
 
 C --------------------------------------------------------------
 C REMPLISSAGE DE LA SD SOLVEUR
 C --------------------------------------------------------------
-      ZK24(ISLVK)    = METHOD
-      ZK24(ISLVK+1)  = PRECO
-      ZK24(ISLVK+2)  = VERIF
-      ZK24(ISLVK+3)  = RENUM
-      ZK24(ISLVK+4)  = SYME
-      ZK24(ISLVK+5)  = SDFETI
-      ZK24(ISLVK+6)  = TYREOR
-      ZK24(ISLVK+7)  = SCALIN
-      ZK24(ISLVK+8)  = STOGI
-      ZK24(ISLVK+9)  = ACMA
-      ZK24(ISLVK+10) = ACSM
+      ZK24(ISLVK-1+1)  = METHOD
+      ZK24(ISLVK-1+2)  = PRECO
+      ZK24(ISLVK-1+3)  = VERIF
+      ZK24(ISLVK-1+4)  = RENUM
+      ZK24(ISLVK-1+5)  = SYME
+      ZK24(ISLVK-1+6)  = SDFETI
+      ZK24(ISLVK-1+7)  = TYREOR
+      ZK24(ISLVK-1+8)  = SCALIN
+      ZK24(ISLVK-1+9)  = STOGI
+      ZK24(ISLVK-1+10)  = ACMA
+      ZK24(ISLVK-1+11) = ACSM
+      ZK24(ISLVK-1+12) = 'XXXX'
 
-      ZR(ISLVR)   = EPS
-      ZR(ISLVR+1) = RESIRE
-      ZR(ISLVR+2) = TBLOC
-      ZR(ISLVR+3) = TESTCO
+      ZR(ISLVR-1+1) = EPS
+      ZR(ISLVR-1+2) = RESIRE
+      ZR(ISLVR-1+3) = TBLOC
+      ZR(ISLVR-1+4) = TESTCO
 
-      ZI(ISLVI)   = NPREC
-      ZI(ISLVI+1) = NMAXIT
-      ZI(ISLVI+2) = ISTOP
-      ZI(ISLVI+3) = NIREMP
-      ZI(ISLVI+4) = NBREOR
-      ZI(ISLVI+5) = NBREOI
-      ZI(ISLVI+6) = REACRE
+      ZI(ISLVI-1+1) = NPREC
+      ZI(ISLVI-1+2) = NMAXIT
+      ZI(ISLVI-1+3) = ISTOP
+      ZI(ISLVI-1+4) = NIREMP
+      ZI(ISLVI-1+5) = NBREOR
+      ZI(ISLVI-1+6) = NBREOI
+      ZI(ISLVI-1+7) = REACRE
 
 
 C --------------------------------------------------------------

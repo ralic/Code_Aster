@@ -5,9 +5,9 @@
      &                    DY,R,DRDY,VERJAC,DRDYB)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/12/2010   AUTEUR PELLET J.PELLET 
+C MODIF DEBUG DATE 11/01/2011 AUTEUR SELLENET N.SELLENET
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -59,7 +59,7 @@ C     OUT DRDYB  : MATRICE JACOBIENNE PAR PERTURBATION
 C ----------------------------------------------------------------------
       IMPLICIT NONE
 
-      INTEGER NMAT,NBCOMM(NMAT,3),NR,ILIG,IMPR
+      INTEGER NMAT,NBCOMM(NMAT,3),NR,ILIG,IMPR,VALI(2)
       INTEGER IMAT,I,J,ITMAX,IRET,KPG,KSP,NVI,VERJAC
 
       REAL*8 TOLER,EPSD(6),DEPS(6),VIND(NVI),R8PREM,TIMED,TIMEF,ERR
@@ -70,6 +70,7 @@ C     DIMENSIONNEMENT DYNAMIQUE (MERCI F90)
 
       REAL*8 MATERD(NMAT,2),MATERF(NMAT,2),PGL(3,3),EPS1,EPS2,EPS0
       REAL*8 TOUTMS(5,24,6),HSR(5,24,24),MAXTGT,NORMD1,NORMD2,MAXERR
+      REAL*8 VALR(4)
 
       CHARACTER*8     MOD
       CHARACTER*16    LOI,CPMONO(5*NMAT+1),COMP(*)
@@ -152,8 +153,16 @@ C COMPARAISON DRDY ET DRDYB
            IF(ABS(DRDYB(I,J)).GT.(1.D-9*MAXTGT)) THEN
               ERR=ABS(DRDY(I,J)-DRDYB(I,J))/DRDYB(I,J)
            IF (ERR.GT.1.D-3) THEN
-              write(9,'(A1,E12.5,A5,2(1X,I2),3(A7,E10.3))') 't',TIMEF,
-     &' i,j',i,j,' erjac ',err,' DRDYB ',DRDYB(I,J),' DRDY ',DRDY(I,J)
+C              write(9,'(A1,E12.5,A5,2(1X,I2),3(A7,E10.3))') 't',TIMEF,
+C     &' i,j',i,j,' erjac ',err,' DRDYB ',DRDYB(I,J),' DRDY ',DRDY(I,J)
+              VALI(1) = I
+              VALI(2) = J
+              
+              VALR(1) = TIMEF
+              VALR(2) = ERR
+              VALR(3) = DRDYB(I,J)
+              VALR(4) = DRDY(I,J)
+              CALL U2MESG('I', 'DEBUG_1',0,' ',2,VALI,4,VALR)
               MAXERR=MAX(MAXERR,ABS(ERR))
               IMPR=1
            ENDIF

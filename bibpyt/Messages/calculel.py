@@ -1,8 +1,8 @@
-#@ MODIF calculel Messages  DATE 20/12/2010   AUTEUR PELLET J.PELLET 
+#@ MODIF calculel Messages  DATE 11/01/2011   AUTEUR SELLENET N.SELLENET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -155,8 +155,8 @@ Erreur :
 
 Risques & Conseils :
  Il peut s'agir d'une erreur de programmation.
- Mais ce problème peut aussi se produire si le LIGREL a été entre temps détruit
- et recréé sous le meme nom.
+ Mais ce problème peut aussi se produire si le LIGREL (ou le MODELE)
+ a été entre temps détruit et recréé sous le meme nom.
 """),
 
 20 : _("""

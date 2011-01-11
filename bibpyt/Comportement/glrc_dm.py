@@ -1,8 +1,8 @@
-#@ MODIF glrc_dm Comportement  DATE 07/12/2010   AUTEUR GENIAUT S.GENIAUT 
+#@ MODIF glrc_dm Comportement  DATE 11/01/2011   AUTEUR SFAYOLLE S.FAYOLLE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -31,13 +31,13 @@ loi = LoiComportement(
    de membrane et de flexion dans GLRC_DM est pris en compte, ce qui n'est pas le cas dans GLRC_DAMAGE. 
    Pour les précisions sur la formulation du modèle voir [R7.01.32]""",
    num_lc         = 9999,
-   nb_vari        = 4,
-   nom_vari       = ('ENDOFL+','ENDOFL-','INDIEND1','INDIEND2'),
+   nb_vari        = 7,
+   nom_vari       = ('ENDOFL+','ENDOFL-','INDIEND1','INDIEND2','ADOUTRAC','ADOUCOMP','ADOUFLEX'),
    mc_mater       = ('GLRC_DM'),
    modelisation   = ('DKTG'),
    deformation    = ('PETIT', 'GROT_GDEP'),
    nom_varc       = ('TEMP'),
-   algo_inte         = ('NEWTON',),
+   algo_inte      = ('NEWTON',),
    type_matr_tang = ('PERTURBATION', 'VERIFICATION'),
    proprietes     = None,
 )

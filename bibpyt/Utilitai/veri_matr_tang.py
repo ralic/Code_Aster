@@ -1,8 +1,8 @@
-#@ MODIF veri_matr_tang Utilitai  DATE 11/05/2010   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF veri_matr_tang Utilitai  DATE 10/01/2011   AUTEUR PROIX J-M.PROIX 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -181,7 +181,9 @@ class TANGENT :
          nor_diff= nor_ecart / self.norme
        else :
          nor_diff= 0.
-       return liste_i,liste_j,liste_matt,liste_matp, liste_diff,nor_diff
+       max_diff=0.
+       if (len(liste_diff) > 0 ) : max_diff = NP.max(liste_diff)
+       return liste_i,liste_j,liste_matt,liste_matp, liste_diff,nor_diff,max_diff
  
 
      def Symetrie(self,prec_diff = 1.E-4) :
@@ -196,7 +198,7 @@ class TANGENT :
        """
 
        tran = NP.transpose(self.mat)
-       liste_i,liste_j,liste_matt,liste_matp,liste_diff,nor_diff=self.Difference(tran,affi_ok=0,prec_diff=prec_diff)
+       liste_i,liste_j,liste_matt,liste_matp,liste_diff,nor_diff,max_diff=self.Difference(tran,affi_ok=0,prec_diff=prec_diff)
        
  
 #       if self.norme > self.prec_zero :
@@ -205,7 +207,7 @@ class TANGENT :
 #         return nor_ecart / self.norme
 #       else :
 #         return 0.
-       return liste_i,liste_j,liste_matt,liste_matp, liste_diff,nor_diff
+       return liste_i,liste_j,liste_matt,liste_matp, liste_diff,nor_diff,max_diff
  
      def Sauve(self,nom_fichier) : 
        cPickler.dump(self.__dict__)
@@ -238,14 +240,14 @@ def veri_matr_tang_ops(self,SYMETRIE,DIFFERENCE,PRECISION,**args):
    matp.Aster(suffixe='MATC')                                                       
    prec_diff = PRECISION                                                                                 
    if (SYMETRIE=='OUI') :
-      list1_i,list1_j,list1_matt,list1_matp,list1_diff,symetgt=tgt.Symetrie(prec_diff)                                                        
-      list2_i,list2_j,list2_matt,list2_matp,list2_diff,symeper=matp.Symetrie(prec_diff)                                                       
+      list1_i,list1_j,list1_matt,list1_matp,list1_diff,symetgt,max_diff=tgt.Symetrie(prec_diff)                                                        
+      list2_i,list2_j,list2_matt,list2_matp,list2_diff,symeper,max_diff=matp.Symetrie(prec_diff)                                                       
       print 'Symetrie de la matrice tangente',symetgt                            
       print 'Symetrie de la matrice pr pertubation',symeper                      
-      aster.affiche('MESSAGE',str(tgt.Difference(matp,prec_diff) ))
+      #aster.affiche('MESSAGE',str(tgt.Difference(matp,prec_diff) ))
    if (DIFFERENCE=='OUI'):                                                            
-       liste_i,liste_j,liste_matt,liste_matp,liste_diff,nor_diff=tgt.Difference(matp,prec_diff)
-       print 'différence entre matrice tangente et matrice par pertubation',nor_diff       
+       liste_i,liste_j,liste_matt,liste_matp,liste_diff,nor_diff,max_diff=tgt.Difference(matp,prec_diff)
+       print 'difference entre matrice tangente et matrice par pertubation : norme=',nor_diff,' max=',max_diff  
        TAB_MAT=CREA_TABLE(LISTE=(
                      _F(PARA     ='I',LISTE_I = liste_i),
                      _F(PARA     ='J',LISTE_I = liste_j),
@@ -258,7 +260,7 @@ def veri_matr_tang_ops(self,SYMETRIE,DIFFERENCE,PRECISION,**args):
  
 VERI_MATR_TANG=MACRO(nom="VERI_MATR_TANG",op=veri_matr_tang_ops,sd_prod=table_sdaster,
                        docu="",reentrant='n',
-fr="verification de la matrice tangente : symétrie et différence par rapport a la matrice calculée par perturbation",
+fr="verification de la matrice tangente : symetrie et difference par rapport a la matrice calculee par perturbation",
          regles=(AU_MOINS_UN('SYMETRIE','DIFFERENCE')),
          SYMETRIE        =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON") ),
          DIFFERENCE      =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON") ),

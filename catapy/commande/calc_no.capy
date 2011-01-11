@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 03/01/2011   AUTEUR SFAYOLLE S.FAYOLLE 
+#& MODIF COMMANDE  DATE 10/01/2011   AUTEUR DELMAS J.DELMAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -53,7 +53,7 @@ CALC_NO=OPER(nom="CALC_NO",op= 106,sd_prod=calc_no_prod,reentrant='f',
                                      "DESI_NOEU_DLSI",
                                      "DURT_NOEU_META",
                                      "EFGE_NOEU_CART","EFGE_NOEU_DEPL",
-                                     "ENDO_NOEU_SINO",
+                                     "ENDO_NOEU",
                                      "ENEL_NOEU_ELGA",
                                      "EPMG_NOEU_DEPL",
                                      "EPSA_NOEU",
@@ -90,8 +90,4 @@ CALC_NO=OPER(nom="CALC_NO",op= 106,sd_prod=calc_no_prod,reentrant='f',
          GROUP_MA        =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
          MAILLE          =SIMP(statut='f',typ=ma,validators=NoRepeat(),max='**'),
 
-         GROUP_MA_RESU   =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
-         MAILLE_RESU     =SIMP(statut='f',typ=ma,validators=NoRepeat(),max='**'),
-         GROUP_NO_RESU   =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
-         NOEUD_RESU      =SIMP(statut='f',typ=ma,validators=NoRepeat(),max='**'),
 )  ;

@@ -1,6 +1,6 @@
-# MODIF  DATE 03/01/2011   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+# MODIF  DATE 10/01/2011   AUTEUR DELMAS J.DELMAS 
 # TITRE CALCUL ELASTIQUE D'UN ANNEAU CREUX SOUMIS A UNE PRESSION INTERIEURE
-# perf001e.para = tps_job 450 mem_job 650Mo ncpus 1 liste_test S
+# perf001e.para = tps_job 450 mem_job 800Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG

@@ -3,9 +3,9 @@
       CHARACTER*(*) NOMMAT
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 22/06/2010   AUTEUR SELLENET N.SELLENET 
+C MODIF ALGELINE  DATE 11/01/2011   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -40,7 +40,7 @@ C                2 : COMPLEXE
 C     ZI(+4) : PROPRIETE DE SYMETRIE DE LA MATRICE
 C                0 : QUELCONQUE
 C                1 : SYMETRIQUE
-C     ZI(+5) : INUTILISE
+C     ZI(+5) : NOMBRE LOCAL D'EQUATIONS
 C     ZI(+6) : INUTILISE
 C     ZI(+7) : NOMBRE DE DDLS IMPOSES PAR DES CHARGES CINEMATIQUES DANS
 C              LA MATRICE ASSEMBLEE = NELIM
@@ -75,6 +75,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
 C     ----- PARAMETRES DE DEFINITION DES MATRICES ----------------------
+      INTEGER IMATD
       CHARACTER*2 TYMA
       CHARACTER*4 KBID,DOCU
       CHARACTER*14 NU
@@ -121,11 +122,18 @@ C     ------------
       NU = ZK24(JREFA-1+2)
       NOMSTO = NU//'.SMOS'
 
-C     -- LMAT+2 :
+C     -- LMAT+2 ET +5 :
 C     ------------
       CALL JEVEUO(NOMSTO//'.SMDE','L',JSMDE)
       CALL JEVEUO(NU//'.NUME.NEQU','L',JNEQU)
       ZI(LMAT+2) = ZI(JNEQU-1+1)
+      CALL JEEXIN(NU//'.NUML.NULG',IMATD)
+      IF ( IMATD.NE.0 ) THEN
+        CALL JEVEUO(NU//'.NUML.NEQU','L',JNEQU)
+        ZI(LMAT+5) = ZI(JNEQU-1+1)
+      ELSE
+        ZI(LMAT+5) = ZI(LMAT+2)
+      ENDIF
 
 
 C     -- LMAT+3 :

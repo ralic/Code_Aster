@@ -2,7 +2,7 @@
      &                  IMPR,IFMUMP,PREPOS)
       IMPLICIT NONE
 !           CONFIGURATION MANAGEMENT OF EDF VERSION
-!& MODIF AMUMPZ MUMPS  DATE 03/01/2011   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+!& MODIF AMUMPZ MUMPS  DATE 10/01/2011   AUTEUR DELMAS J.DELMAS 
 ! ==================================================================
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D              WWW.CODE-ASTER.ORG
 !
@@ -88,7 +88,7 @@ C================================================================
       CHARACTER*19 NOMATS(NMXINS),NOMAT,NOSOLS(NMXINS)
       CHARACTER*24 KMONIT(12),KPIV
       REAL*8       EPSMAX,VALR(2),RDESQ,RCTDEB,RBID(1),TEMPS(6),EPSMAT
-      LOGICAL      LQUALI,ELI2LG,LDIST,LRESOL,LMD
+      LOGICAL      LQUALI,ELI2LG,LDIST,LRESOL,LMD,LDECHG
       COMMON /MUMPSZ/ ZMPS
       COMMON /MUMPSH/ NONUS,NOMATS,NOSOLS,ETAMS,ROUCS,PRECS
 C=================================================================
@@ -132,6 +132,8 @@ C --- => LQUALI
       CALL JEVEUO(NOSOLV//'.SLVK','L',JSLVK)
 C --- POUR "ELIMINER" LE 2EME LAGRANGE :
       ELI2LG=ZK24(JSLVK-1+6)(1:3).EQ.'OUI'
+C --- DECHARGEMENT JEVEUX AVANT DE PASSER A MUMPS ?
+      LDECHG=ZK24(JSLVK-1+12)(1:3).EQ.'OUI'
 
 C --- PARAMETRE NPREC
       CALL JEVEUO(NOSOLV//'.SLVI','L',JSLVI)
@@ -180,9 +182,9 @@ C       ------------------------------------------------
         CALL AMUMPT(1,KMONIT,TEMPS,RANG,NBPROC,KXMPS,LQUALI,RDESQ,TYPE,
      &              IETDEB,IETRAT,RCTDEB,LDIST)
         CALL AMUMPM(RANG,LDIST,KXMPS,KMONIT,IMPR,IFMUMP,ELI2LG,TYPE,LMD,
-     &              EPSMAT)
+     &              EPSMAT,LDECHG)
 
-        CALL JJLDYN(0,-1,IBID)
+        IF (LDECHG) CALL JJLDYN(0,-1,IBID)
 
 C       ------------------------------------------------
 C        ANALYSE MUMPS:

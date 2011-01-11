@@ -1,8 +1,8 @@
-#@ MODIF vmis_cine_line Comportement  DATE 07/12/2010   AUTEUR GENIAUT S.GENIAUT 
+#@ MODIF vmis_cine_line Comportement  DATE 10/01/2011   AUTEUR PROIX J-M.PROIX 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -29,7 +29,7 @@ loi = LoiComportement(
    nom_vari       = ('X_XX', 'X_YY', 'X_ZZ', 'X_XY', 'X_XZ', 'X_YZ', 'INDICAT',),
    mc_mater       = ('ELAS', 'ECRO_LINE'),
    modelisation   = ('3D', 'AXIS', 'D_PLAN', '1D'),
-   deformation    = ('PETIT', 'PETIT_REAC', 'GROT_GDEP','SIMO_HUGHES1','GDEF_HYPO_ELAS'),
+   deformation    = ('PETIT', 'PETIT_REAC', 'GROT_GDEP','GDEF_LOG','GDEF_HYPO_ELAS'),
    nom_varc       = ('TEMP',),
    algo_inte         = ('ANALYTIQUE',),
    type_matr_tang = ('PERTURBATION', 'VERIFICATION'),

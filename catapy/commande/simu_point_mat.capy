@@ -1,7 +1,7 @@
-#& MODIF COMMANDE  DATE 07/12/2010   AUTEUR GENIAUT S.GENIAUT 
+#& MODIF COMMANDE  DATE 10/01/2011   AUTEUR PROIX J-M.PROIX 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -70,21 +70,16 @@ SIMU_POINT_MAT=MACRO(nom="SIMU_POINT_MAT", op=simu_point_mat_ops,sd_prod=table_s
    # on permet certaines variables de commandes scalaires, définies par une fonction du temps
    b_EFV = BLOC(condition="SUPPORT ==  'ELEMENT'",fr="variables de commande sur un élément fini",                    
          # un mot clé caché qui ne sert qu'à boucler sur les VARC possibles :
-         LIST_NOM_VARC =SIMP(statut='c',typ='TXM', defaut=("TEMP",)),
+         LIST_NOM_VARC =SIMP(statut='c',typ='TXM', defaut=("TEMP","CORR","IRRA","HYDR","SECH","EPSA",
+                                                           "M_ACIER","M_ZIRC","NEUT1","NEUT2")),
+
          AFFE_VARC    = FACT(statut='f',max='**',
-          NOM_VARC    = SIMP(statut='o',typ='TXM', into=("TEMP",)),
+          NOM_VARC        =SIMP(statut='o',typ='TXM', into=("TEMP","CORR","IRRA","HYDR","SECH","M_ACIER","M_ZIRC",
+                                                            "EPSA","NEUT1","NEUT2")),
           VALE_FONC   = SIMP(statut='o',typ=(fonction_sdaster,formule) ),
           VALE_REF    = SIMP(statut='f',typ='R'),
          ),
-         #  mots clés cachés pour variable de commande TEMP :
-         #  --------------------------------------------------
-         VARC_TEMP    =FACT(statut='d',
-           NOM_VARC        =SIMP(statut='c',typ='TXM',defaut="TEMP"),
-           GRANDEUR        =SIMP(statut='c',typ='TXM',defaut="TEMP_R"),
-           CMP_GD          =SIMP(statut='c',typ='TXM',max=1,min=1,defaut=("TEMP",)),
-           CMP_VARC        =SIMP(statut='c',typ='TXM',max=1,min=1,defaut=("TEMP",)),
-           VALE_DEF        =SIMP(statut='c',typ='R',max=1,min=1,defaut=(0.,)),
-                           ),
+
         SIGM_IMPOSE=FACT(statut='f',
               SIXX = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
               SIYY = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),

@@ -2,9 +2,9 @@
      &                  NBORDR,MODELE,MATE,CARA,NCHAR,CTYP)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 07/12/2010   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 10/01/2011   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -1665,7 +1665,7 @@ C ---     D'ENDOMMAGEMENT ET DE L'ENDOMMAGEMENT DE LEMAITRE-SERMAGE
 C     -------------------------------------------------------------
                 CALL RSEXCH(RESUCO,'COMPORTEMENT',IORDR1,COMPOR,IRET1)
 
-                CALL ENDOLE(OPTION,MODELE,LIGREL,MATE,COMPOR,CHVARC,
+                CALL ENDOLE(OPTION,LIGREL,MATE,COMPOR,CHVARC,
      &                      CHSIG1,CHVAR1,CHVAC2,CHSIG2,CHVAR2,CHEND2,
      &                      CHELE1,CHELE2)
 
@@ -1683,7 +1683,7 @@ C     ----------------------------------------
                   CALL U2MESS('F','CALCULEL3_21')
                 ENDIF
                 CALL RSEXC1(LERES1,OPTION,IORDR2,CHELE2)
-                CALL ENDOLE(OPTION,MODELE,LIGREL,MATE,COMPOR,CHVARC,
+                CALL ENDOLE(OPTION,LIGREL,MATE,COMPOR,CHVARC,
      &                      CHSIG1,CHVAR1,CHVAC2,CHSIG2,CHVAR2,CHEND2,
      &                      CHELE1,CHELE2)
                 CALL RSNOCH(LERES1,OPTION,IORDR2,' ')

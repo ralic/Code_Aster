@@ -1,9 +1,9 @@
-# MODIF  DATE 13/12/2010   AUTEUR DESOZA T.DESOZA 
+# MODIF  DATE 10/01/2011   AUTEUR DELMAS J.DELMAS 
 # TITRE POST-FLAMBEMENT ELASTIQUE D'UNE STRUCTURE EN L
-# ssnl133a.para = tps_job 500 mem_job 128Mo ncpus 1 liste_test S
+# ssnl133a.para = tps_job 1000 mem_job 500Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -18,8 +18,12 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
+# TEMPS SYST IMPORTANT SUITE A L'UTILISATION DE MUMPS ET DES LIBERATIONS
+# MEMOIRES JEVEUX ASSOCIEES VIA LIBERE_MEMOIRE='OUI'. ON COMPARE LES 
+# PERFS AVEC LE CAS D'UNE LIBERATION PLUS CIBLEE: LIBERE_MEMOIRE='NON'.
 
-DEBUT(CODE=_F( NOM = 'SSNL133A',NIV_PUB_WEB='INTERNET',VISU_EFICAS='OUI'),);
+DEBUT(CODE=_F( NOM = 'SSNL133A',NIV_PUB_WEB='INTERNET',VISU_EFICAS='OUI'),
+      IGNORE_ALARM='SUPERVIS_94',);
 
 PRE_GIBI(UNITE_GIBI=17,
          UNITE_MAILLAGE=20,);
@@ -33,7 +37,8 @@ MA=DEFI_GROUP(reuse =MA,
 MO=AFFE_MODELE(MAILLAGE=MA,
                AFFE=_F(TOUT='OUI',
                        PHENOMENE='MECANIQUE',
-                       MODELISATION='POU_D_T_GD',),);
+                       MODELISATION='POU_D_T_GD',
+               ),);
 
 ACIER=DEFI_MATERIAU(ELAS=_F(E=71240.0,
                             NU=0.3,),);
@@ -69,9 +74,13 @@ FORCE_F=DEFI_FONCTION(NOM_PARA='INST',
                       VALE=(0.,0.,10.0,10.0,),);
 tfin = 5.0;
 
+
+
 TEMPS=DEFI_LIST_REEL(DEBUT=0.,
                      INTERVALLE=(_F(JUSQU_A=1.0,
                                     NOMBRE=1,),
+
+
                                  _F(JUSQU_A=tfin,
                                     NOMBRE=20,),),);
 
@@ -79,9 +88,13 @@ DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = TEMPS,
                                      METHODE='AUTO',
                                      PAS_MINI=1.0E-12,),
                         ECHEC=_F(SUBD_METHODE='UNIFORME',
+
                                  SUBD_PAS=4,
                                  SUBD_PAS_MINI = 1e-7),
                         ADAPTATION=_F(EVENEMENT='SEUIL'),)
+
+# CALCUL AVEC DECHARGEMENT TOTAL DES OBJETS JEVEUX AVANT DE PASSER
+# LA MAIN A MUMPS
 
 RESO=STAT_NON_LINE(INFO=1,
                    MODELE=MO,
@@ -99,9 +112,31 @@ RESO=STAT_NON_LINE(INFO=1,
                              REAC_ITER=1,),
                    CONVERGENCE=_F(RESI_GLOB_RELA=1.0E-6,
                                   ITER_GLOB_MAXI=20,),
-                   SOLVEUR=_F(METHODE='LDLT',
-                              STOP_SINGULIER='DECOUPE',
-                              ),);
+                   SOLVEUR=_F(METHODE='MUMPS',
+                              LIBERE_MEMOIRE='OUI',
+                              NPREC=-1,),);
+
+# IDEM AVEC DECHARGEMENT PARTIEL
+RESO2=STAT_NON_LINE(INFO=1,
+                   MODELE=MO,
+                   CHAM_MATER=MAT,
+                   CARA_ELEM=CARA,
+                   EXCIT=(_F(CHARGE=CL,),
+                          _F(CHARGE=FORCE,
+                             FONC_MULT=FORCE_F,),),
+                   COMP_ELAS=_F(RELATION='ELAS_POUTRE_GR',
+                                DEFORMATION='GROT_GDEP',),
+                   INCREMENT=_F(LIST_INST=DEFLIST,
+                                INST_FIN=tfin,
+                                ),
+                   NEWTON=_F(MATRICE='TANGENTE',
+                             REAC_ITER=1,),
+                   CONVERGENCE=_F(RESI_GLOB_RELA=1.0E-6,
+                                  ITER_GLOB_MAXI=20,),
+                   SOLVEUR=_F(METHODE='MUMPS',
+                              LIBERE_MEMOIRE='NON',
+                              NPREC=-1,),);
+
 
 DEPX=RECU_FONCTION(RESULTAT=RESO,
                    TOUT_ORDRE='OUI',
@@ -114,6 +149,19 @@ DEPZ=RECU_FONCTION(RESULTAT=RESO,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DZ',
                    GROUP_NO='PC',);
+
+DEPX2=RECU_FONCTION(RESULTAT=RESO2,
+                   TOUT_ORDRE='OUI',
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   GROUP_NO='PC',);
+
+DEPZ2=RECU_FONCTION(RESULTAT=RESO2,
+                   TOUT_ORDRE='OUI',
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DZ',
+                   GROUP_NO='PC',);
+
 
 IMPR_FONCTION(FORMAT='XMGRACE',
               COURBE=(_F(FONCTION=DEPX,),
@@ -130,6 +178,7 @@ IMPR_RESU(FORMAT='CASTEM',
 
 # ------------------ TESTS DE NON REGRESSION -----------------------
 
+# SUR DEPX/DEPZ
 TEST_FONCTION(VALEUR=(_F(FONCTION=DEPX,
                          VALE_PARA=1.0,
                          VALE_REFE=1.9557897264105E-01,
@@ -234,4 +283,108 @@ TEST_FONCTION(VALEUR=(_F(FONCTION=DEPX,
                          REFERENCE='NON_REGRESSION',
                          VERSION='8.3.2',),),);
 
+# SUR DEPX2/DEPZ2
+TEST_FONCTION(VALEUR=(_F(FONCTION=DEPX2,
+                         VALE_PARA=1.0,
+                         VALE_REFE=1.9557897264105E-01,
+                         CRITERE='RELATIF',
+                         REFERENCE='NON_REGRESSION',
+                         VERSION='8.3.2',),
+                      _F(FONCTION=DEPZ2,
+                         VALE_PARA=1.0,
+                         VALE_REFE=8.1895376497696E-01,
+                         CRITERE='RELATIF',
+                         REFERENCE='NON_REGRESSION',
+                         VERSION='8.3.2',),),);
+
+TEST_FONCTION(VALEUR=(_F(FONCTION=DEPX2,
+                         VALE_PARA=1.2,
+                         VALE_REFE=2.2003741156650E+01,
+                         CRITERE='RELATIF',
+                         REFERENCE='NON_REGRESSION',
+                         VERSION='8.3.2',),
+                      _F(FONCTION=DEPZ2,
+                         VALE_PARA=1.2,
+                         VALE_REFE=4.5086149006060E+01,
+                         CRITERE='RELATIF',
+                         REFERENCE='NON_REGRESSION',
+                         VERSION='8.3.2',),),);
+
+TEST_FONCTION(VALEUR=(_F(FONCTION=DEPX2,
+                         VALE_PARA=1.4,
+                         VALE_REFE=5.1370567219177E+01,
+                         CRITERE='RELATIF',
+                         REFERENCE='NON_REGRESSION',
+                         VERSION='8.3.2',),
+                      _F(FONCTION=DEPZ2,
+                         VALE_PARA=1.4,
+                         VALE_REFE=5.9127395933839E+01,
+                         CRITERE='RELATIF',
+                         REFERENCE='NON_REGRESSION',
+                         VERSION='8.3.2',),),);
+
+TEST_FONCTION(VALEUR=(_F(FONCTION=DEPX2,
+                         VALE_PARA=1.6,
+                         VALE_REFE=7.2308828300357E+01,
+                         CRITERE='RELATIF',
+                         REFERENCE='NON_REGRESSION',
+                         VERSION='8.3.2',),
+                      _F(FONCTION=DEPZ2,
+                         VALE_PARA=1.6,
+                         VALE_REFE=6.1007516217062E+01,
+                         CRITERE='RELATIF',
+                         REFERENCE='NON_REGRESSION',
+                         VERSION='8.3.2',),),);
+
+TEST_FONCTION(VALEUR=(_F(FONCTION=DEPX2,
+                         VALE_PARA=2.0,
+                         VALE_REFE=9.9955783482343E+01,
+                         CRITERE='RELATIF',
+                         REFERENCE='NON_REGRESSION',
+                         VERSION='8.3.2',),
+                      _F(FONCTION=DEPZ2,
+                         VALE_PARA=2.0,
+                         VALE_REFE=5.5986094960435E+01,
+                         CRITERE='RELATIF',
+                         REFERENCE='NON_REGRESSION',
+                         VERSION='8.3.2',),),);
+
+TEST_FONCTION(VALEUR=(_F(FONCTION=DEPX2,
+                         VALE_PARA=3.0,
+                         VALE_REFE=1.3414461679369E+02,
+                         CRITERE='RELATIF',
+                         REFERENCE='NON_REGRESSION',
+                         VERSION='8.3.2',),
+                      _F(FONCTION=DEPZ2,
+                         VALE_PARA=3.0,
+                         VALE_REFE=3.9191654438340E+01,
+                         CRITERE='RELATIF',
+                         REFERENCE='NON_REGRESSION',
+                         VERSION='8.3.2',),),);
+
+TEST_FONCTION(VALEUR=(_F(FONCTION=DEPX2,
+                         VALE_PARA=4.0,
+                         VALE_REFE=1.5069734947084E+02,
+                         CRITERE='RELATIF',
+                         REFERENCE='NON_REGRESSION',
+                         VERSION='8.3.2',),
+                      _F(FONCTION=DEPZ2,
+                         VALE_PARA=4.0,
+                         VALE_REFE=2.7663660137343E+01,
+                         CRITERE='RELATIF',
+                         REFERENCE='NON_REGRESSION',
+                         VERSION='8.3.2',),),);
+
+TEST_FONCTION(VALEUR=(_F(FONCTION=DEPX2,
+                         VALE_PARA=5.0,
+                         VALE_REFE=1.6091941068726E+02,
+                         CRITERE='RELATIF',
+                         REFERENCE='NON_REGRESSION',
+                         VERSION='8.3.2',),
+                      _F(FONCTION=DEPZ2,
+                         VALE_PARA=5.0,
+                         VALE_REFE=2.0201862127005E+01,
+                         CRITERE='RELATIF',
+                         REFERENCE='NON_REGRESSION',
+                         VERSION='8.3.2',),),);
 FIN();

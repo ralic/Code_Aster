@@ -1,9 +1,9 @@
-# MODIF  DATE 30/08/2010   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 10/01/2011   AUTEUR DESOZA T.DESOZA 
 # TITRE ECRASEMENT D'UN ANNEAU ENTRE DEUX PLAQUES AVEC FROTTEMENT.
 # ssnp502c.para = tps_job 100 mem_job 200Mo ncpus 1 liste_test V
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -30,17 +30,20 @@
 
 DEBUT(CODE=_F(NOM='SSNP502C',NIV_PUB_WEB='INTERNET'),);
 
+PRE_GIBI()
+
 MA=LIRE_MAILLAGE();
 
 MA=DEFI_GROUP(reuse =MA,
               MAILLAGE=MA,
               CREA_GROUP_NO=(_F(TOUT_GROUP_MA='OUI',),
-                            _F(NOM='LRESU',
-                               UNION=('LESC','A','D'),),
-                               ),);
+                             _F(OPTION='NOEUD_ORDO',
+                                NOM='LRESU',
+                                GROUP_MA='LESC',
+                                GROUP_NO_ORIG='A',
+                                GROUP_NO_EXTR='D',),),);
 
-
-#----- GRANDEUR PHYSIQUE:  ---
+#----- GRANDEUR PHYSIQUE ------
 
 POLTH=DEFI_MATERIAU(ELAS=_F(E=407.,
                             NU=0.47999999999999998,),);
@@ -92,8 +95,6 @@ CON  = DEFI_CONTACT(MODELE         = MO,
                     FROTTEMENT     = 'COULOMB',
                     REAC_GEOM      = 'CONTROLE',
                     NB_ITER_GEOM   = 2,
-                    REAC_FROT      = 'CONTROLE',
-                    NB_ITER_FROT   = 2,
                     ZONE =(
                            _F(
                              GROUP_MA_ESCL = 'LESC',
@@ -105,6 +106,7 @@ CON  = DEFI_CONTACT(MODELE         = MO,
                              ALGO_FROT     = 'STANDARD',
                              COEF_FROT     = 100.,
                              COULOMB       = 0.4,
+                             SANS_GROUP_NO = ('A','P1'),
                              ),
                           ),
                    );
@@ -249,7 +251,7 @@ TEST_RESU(RESU=_F(RESULTAT=RESU,
                   NOM_CHAM='SIEF_NOEU_ELGA',
                   NOM_CMP='SIYY',
                   VALE=-1.2002526606057E+01,
-                  PRECISION=1.E-5,
+                  PRECISION=3.E-5,
                   REFERENCE='NON_REGRESSION',
                   VERSION='6.3.04',),);
 

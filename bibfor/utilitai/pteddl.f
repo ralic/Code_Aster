@@ -5,9 +5,9 @@
       CHARACTER*8       LNOCMP(*)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 11/01/2011   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -54,11 +54,12 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER       JDESC, NEC, NBEC, GD, IAD, IEC, JNUCMP, INDIK8
       INTEGER       JNUEQ, NLILI, JPRNO, NBNO, IVAL, NCMP, ICOMPT
       INTEGER       ICMP, IEQ, NUCMP, JDEEQ, NLEQ, NUMNO, JLILI, INO
+      INTEGER       IEQL, JNUGL, IMATD
       CHARACTER*8   K8B, NOMMA
       CHARACTER*19  NOMNU, PRNO
       CHARACTER*24  NOLILI
       CHARACTER*24 VALK
-      LOGICAL       EXISDG
+      LOGICAL       EXISDG,MATD
 C     ------------------------------------------------------------------
 C
       CALL JEMARQ()
@@ -70,6 +71,14 @@ C
 C
       NOMNU( 1:14) = NUM
       NOMNU(15:19) = '.NUME'
+      CALL JEEXIN(NOMNU(1:14)//'.NUML.NUGL',IMATD)
+      IF ( IMATD.NE.0 ) THEN
+        CALL JEVEUO(NOMNU(1:14)//'.NUML.NUGL','L',JNUGL)
+        MATD = .TRUE.
+      ELSE
+        JNUGL = 0
+        MATD = .FALSE.
+      ENDIF
 C
 C        CALL JEVEUO ( NOMNU//'.DEEQ', 'L', JDEEQ )
 C        CALL JELIRA ( NOMNU//'.DEEQ', 'LONMAX', NLEQ, K8B )
@@ -88,83 +97,89 @@ C
       ENDIF
 C
       IF ( IDESC .EQ. 1 ) THEN
-         IF ( TYPE(1:8) .EQ. 'NUME_DDL' ) THEN
-            CALL DISMOI('F','NOM_MAILLA',NUM,'NUME_DDL',IBID,NOMMA,IER)
-            CALL DISMOI('F','NUM_GD_SI' ,NUM,'NUME_DDL',GD  ,K8B  ,IER)
-            PRNO( 1:14) = NUM
-            PRNO(15:19) = '.NUME'
-         ELSEIF ( TYPE(1:7) .EQ. 'CHAM_NO' ) THEN
-            CALL DISMOI('F','NOM_MAILLA', NUM,'CHAM_NO',IBID,NOMMA,IER)
-            CALL DISMOI('F','PROF_CHNO' , NUM,'CHAM_NO',IBID,PRNO ,IER)
-            CALL DISMOI('F','NUM_GD'    , NUM,'CHAM_NO',GD  ,K8B  ,IER)
-         ELSE
-            CALL ASSERT(.FALSE.)
-         ENDIF
-         NEC = NBEC( GD )
-         CALL ASSERT (NEC .LE. 10)
+        IF ( TYPE(1:8) .EQ. 'NUME_DDL' ) THEN
+          CALL DISMOI('F','NOM_MAILLA',NUM,'NUME_DDL',IBID,NOMMA,IER)
+          CALL DISMOI('F','NUM_GD_SI' ,NUM,'NUME_DDL',GD  ,K8B  ,IER)
+          PRNO( 1:14) = NUM
+          PRNO(15:19) = '.NUME'
+        ELSEIF ( TYPE(1:7) .EQ. 'CHAM_NO' ) THEN
+          CALL DISMOI('F','NOM_MAILLA', NUM,'CHAM_NO',IBID,NOMMA,IER)
+          CALL DISMOI('F','PROF_CHNO' , NUM,'CHAM_NO',IBID,PRNO ,IER)
+          CALL DISMOI('F','NUM_GD'    , NUM,'CHAM_NO',GD  ,K8B  ,IER)
+        ELSE
+          CALL ASSERT(.FALSE.)
+        ENDIF
+        NEC = NBEC( GD )
+        CALL ASSERT (NEC .LE. 10)
 C
-         CALL JEVEUO(JEXNUM('&CATA.GD.NOMCMP',GD),'L',IAD)
-         CALL JELIRA(JEXNUM('&CATA.GD.NOMCMP',GD),'LONMAX',NCMPMX,K8B)
-         CALL WKVECT( '&&PTEDDL.NUME_CMP','V V I',NCMPMX,JNUCMP)
-         DO 20 I = 0 , NCMPMX-1
-            ZI(JNUCMP+I) = INDIK8(LNOCMP,ZK8(IAD+I),1,NBCMP)
- 20      CONTINUE
+        CALL JEVEUO(JEXNUM('&CATA.GD.NOMCMP',GD),'L',IAD)
+        CALL JELIRA(JEXNUM('&CATA.GD.NOMCMP',GD),'LONMAX',NCMPMX,K8B)
+        CALL WKVECT( '&&PTEDDL.NUME_CMP','V V I',NCMPMX,JNUCMP)
+        DO 20 I = 0 , NCMPMX-1
+          ZI(JNUCMP+I) = INDIK8(LNOCMP,ZK8(IAD+I),1,NBCMP)
+ 20     CONTINUE
 C
-         CALL JEVEUO(PRNO//'.NUEQ','L',JNUEQ)
+        CALL JEVEUO(PRNO//'.NUEQ','L',JNUEQ)
 C
-         CALL JELIRA(PRNO//'.PRNO','NMAXOC',NLILI,K8B)
-         DO 30,I = 1 , NLILI
-            CALL JENUNO(JEXNUM(PRNO//'.LILI',I),NOLILI)
-            CALL JELIRA(JEXNUM(PRNO//'.PRNO',I),'LONMAX',IBID,K8B)
-            IF ( IBID .EQ. 0 ) GO TO 30
-            CALL JEVEUO(JEXNUM(PRNO//'.PRNO',I),'L',JPRNO)
-            IF ( IBID.EQ.1.AND.ZI(JPRNO).EQ.0 ) GO TO 30
+        CALL JELIRA(PRNO//'.PRNO','NMAXOC',NLILI,K8B)
+        DO 30,I = 1 , NLILI
+          CALL JENUNO(JEXNUM(PRNO//'.LILI',I),NOLILI)
+          CALL JELIRA(JEXNUM(PRNO//'.PRNO',I),'LONMAX',IBID,K8B)
+          IF ( IBID .EQ. 0 ) GO TO 30
+          CALL JEVEUO(JEXNUM(PRNO//'.PRNO',I),'L',JPRNO)
+          IF ( IBID.EQ.1.AND.ZI(JPRNO).EQ.0 ) GO TO 30
 C
-C           --RECHERCHE DU NOMBRE DE NOEUDS : NBNO
-            IF (NOLILI(1:8).EQ.'&MAILLA ') THEN
-               CALL JELIRA(NOMMA//'.NOMNOE','NOMMAX',NBNO,K8B)
-            ELSE
-               CALL JEVEUO(NOLILI(1:19)//'.NBNO','L',JLILI)
-               NBNO = ZI(JLILI-1+1)
-            END IF
-            DO 32,INO = 1 , NBNO
-C              NCMP : NOMBRE DE CMPS SUR LE NOEUD INO
-C              IVAL : ADRESSE DU DEBUT DU NOEUD INO DANS .NUEQ
-               IVAL = ZI(JPRNO-1 + (INO-1)* (NEC+2) + 1 )
-               NCMP = ZI(JPRNO-1 + (INO-1)* (NEC+2) + 2 )
-               IF ( NCMP .EQ. 0 ) GO TO 32
-               DO 34 IEC = 1 , NEC
-                  TABEC(IEC)= ZI(JPRNO-1+(INO-1)*(NEC+2)+2+IEC )
- 34            CONTINUE
-               IF (NCMP.EQ.0) GO TO 32
+C          --RECHERCHE DU NOMBRE DE NOEUDS : NBNO
+          IF (NOLILI(1:8).EQ.'&MAILLA ') THEN
+            CALL JELIRA(NOMMA//'.NOMNOE','NOMMAX',NBNO,K8B)
+          ELSE
+            CALL JEVEUO(NOLILI(1:19)//'.NBNO','L',JLILI)
+            NBNO = ZI(JLILI-1+1)
+          END IF
+          DO 62,INO = 1 , NBNO
+C           NCMP : NOMBRE DE CMPS SUR LE NOEUD INO
+C           IVAL : ADRESSE DU DEBUT DU NOEUD INO DANS .NUEQ
+            IVAL = ZI(JPRNO-1 + (INO-1)* (NEC+2) + 1 )
+            NCMP = ZI(JPRNO-1 + (INO-1)* (NEC+2) + 2 )
+            IF ( NCMP .EQ. 0 ) GO TO 62
+            DO 64 IEC = 1 , NEC
+              TABEC(IEC)= ZI(JPRNO-1+(INO-1)*(NEC+2)+2+IEC )
+ 64         CONTINUE
+            IF (NCMP.EQ.0) GO TO 62
 C
-               ICOMPT = 0
-               DO 36 ICMP = 1 , NCMPMX
-                  IF ( EXISDG( TABEC , ICMP ) ) THEN
-                     ICOMPT = ICOMPT + 1
-                     IEQ = ZI(JNUEQ-1+IVAL-1+ICOMPT)
-                     NUCMP = ZI(JNUCMP+ICMP-1)
-                     IF ( NUCMP .GT. 0 ) IVEC(IEQ,NUCMP) = 1
-                  ENDIF
- 36            CONTINUE
- 32         CONTINUE
- 30      CONTINUE
-         CALL JEDETR ( '&&PTEDDL.NUME_CMP' )
- 9999    CONTINUE
+            ICOMPT = 0
+            DO 66 ICMP = 1 , NCMPMX
+              IF ( EXISDG( TABEC , ICMP ) ) THEN
+                ICOMPT = ICOMPT + 1
+                IEQ = ZI(JNUEQ-1+IVAL-1+ICOMPT)
+                NUCMP = ZI(JNUCMP+ICMP-1)
+                IF ( .NOT.MATD ) THEN
+                  IEQL = IEQ
+                ELSE
+                  IEQL = ZI(JNUGL+IEQ-1)
+                ENDIF
+                IF ( NUCMP .GT. 0 ) IVEC(IEQL,NUCMP) = 1
+              ENDIF
+ 66         CONTINUE
+ 62       CONTINUE
+ 30     CONTINUE
+        CALL JEDETR ( '&&PTEDDL.NUME_CMP' )
+ 9999   CONTINUE
 C
 C
       ELSEIF ( IDESC .EQ. 2 ) THEN
+        IF ( MATD ) CALL ASSERT(.FALSE.)
         CALL JEVEUO ( NOMNU//'.DEEQ', 'L', JDEEQ )
         CALL JELIRA ( NOMNU//'.DEEQ', 'LONMAX', NLEQ, K8B )
         NLEQ = NLEQ / 2
 C       VERIFICATION DE LA COMPATIBILITE DU NB D EQUATIONS
         CALL ASSERT( NLEQ .EQ. NEQ )
         DO 40 IEQ = 1 , NEQ
-           NUMNO = ZI(JDEEQ+2*IEQ-1)
-           DO 42 J = 1 , NBCMP
-              IF(LNOCMP(J).EQ.'LAGR'.AND.NUMNO.LT.0) IVEC(IEQ,J)=1
-              IF(LNOCMP(J).EQ.'GENE'.AND.NUMNO.GT.0) IVEC(IEQ,J)=1
- 42        CONTINUE
+          NUMNO = ZI(JDEEQ+2*IEQ-1)
+          DO 42 J = 1 , NBCMP
+            IF(LNOCMP(J).EQ.'LAGR'.AND.NUMNO.LT.0) IVEC(IEQ,J)=1
+            IF(LNOCMP(J).EQ.'GENE'.AND.NUMNO.GT.0) IVEC(IEQ,J)=1
+ 42       CONTINUE
  40     CONTINUE
 C
       ELSE

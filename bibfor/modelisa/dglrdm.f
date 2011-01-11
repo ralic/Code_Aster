@@ -2,7 +2,7 @@
       IMPLICIT NONE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 03/01/2011   AUTEUR SFAYOLLE S.FAYOLLE 
+C MODIF MODELISA  DATE 11/01/2011   AUTEUR SFAYOLLE S.FAYOLLE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -226,6 +226,15 @@ C          ENDIF
      &        (RX(ILIT) .NE. RY(ILIT))) THEN
             CALL U2MESS('A','ALGORITH6_6')
           ENDIF
+C Mise en cohérence avec GLRC_DAMAGE
+C Développement fait pour -0.5<RX<0.5
+C or pour la cohérence avec GLRC_DAMAGE
+C on se met dans le cas -1<RX<1
+C pour repasser dans les conditions initiale on multiplie RX par 1/2
+          RX(ILIT)=RX(ILIT)*0.5D0
+          RY(ILIT)=RY(ILIT)*0.5D0
+C Fin mise en cohérence avec GLRC_DAMAGE
+
           B=EA(ILIT)*(OMX(ILIT)+OMY(ILIT))
 C B1=B1+EA(ILIT)*(RX(ILIT)+RY(ILIT))/2.*(OMX(ILIT)+OMY(ILIT))
 C B1 = 0 du à la symétrie de la plaque

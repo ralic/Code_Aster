@@ -9,9 +9,9 @@ C RESPONSABLE PROIX J-M.PROIX
       
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 10/01/2011   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -45,6 +45,10 @@ C ----------------------------------------------------------------------
              LCOMEL(NCOMEL)=DEFO
           ENDIF
           IF(DEFO.EQ.'GDEF_HYPO_ELAS') THEN
+             NCOMEL=NCOMEL+1
+             LCOMEL(NCOMEL)=DEFO
+          ENDIF
+          IF(DEFO.EQ.'GDEF_LOG') THEN
              NCOMEL=NCOMEL+1
              LCOMEL(NCOMEL)=DEFO
           ENDIF

@@ -1,7 +1,7 @@
-%& MODIF TYPELEM  DATE 07/12/2010   AUTEUR PELLET J.PELLET 
+%& MODIF TYPELEM  DATE 10/01/2011   AUTEUR DELMAS J.DELMAS 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
-% COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
+% COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 % THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 % IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 % THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -142,10 +142,10 @@ MODE_LOCAL__
                                  EN1   (DX       DY       DZ       )
                                  EN2   (         )
     EDEPLPG  = DEPL_R   ELGA__ RIGI    (DX       DY       DZ       )
-    EDOMGGA  = DOMMAG   ELGA__ RIGI    (DOMA     )
-    EDOMGNO  = DOMMAG   ELNO__ IDEN__  (DOMA     )
-    ETRIANO  = DOMMAG   ELNO__ IDEN__  (TRIAX    SI_ENDO  COENDO   DOM_LEM  D_CUMULE )
-    ETRIAPG  = DOMMAG   ELGA__ RIGI    (TRIAX    SI_ENDO  COENDO   DOM_LEM  D_CUMULE )
+    EDOMGGA  = DOMA_R   ELGA__ RIGI    (DOMA     )
+    EDOMGNO  = DOMA_R   ELNO__ IDEN__  (DOMA     )
+    ETRIANO  = ENDO_R   ELNO__ IDEN__  (TRIAX    SI_ENDO  COENDO   DOM_LEM  D_CUMULE )
+    ETRIAPG  = ENDO_R   ELGA__ RIGI    (TRIAX    SI_ENDO  COENDO   DOM_LEM  D_CUMULE )
     EENEDNO  = ENER_R   ELEM__         (TOTALE   )
     EENEDPG  = ENER_R   ELGA__ RIGI    (TOTALE   )
     EENEDNN  = ENER_R   ELNO__ IDEN__  (TOTALE   )
@@ -220,7 +220,6 @@ MODE_LOCAL__
     ECOEQPG  = SIEF_R   ELGA__ RIGI    (VMIS     TRESCA   PRIN_1   PRIN_2   PRIN_3   VMIS_SG
                                         VECT_1_X VECT_1_Y VECT_1_Z VECT_2_X VECT_2_Y VECT_2_Z
                                         VECT_3_X VECT_3_Y VECT_3_Z TRSIG    )
-    ETRIAXS  = SIEF_R   ELNO__ IDEN__  (TRIAX    SI_ENDO  )
     ECONTNO  = SIEF_R   ELNO__ IDEN__  (SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ     )
     ECOEQNO  = SIEF_R   ELNO__ IDEN__  (VMIS     TRESCA   PRIN_1   PRIN_2   PRIN_3   VMIS_SG  TRSIG )
     ESINGUL  = SING_R   ELEM__         (DEGRE   RAPPORT   TAILLE   )
@@ -372,11 +371,9 @@ OPTION__
     ENDO_ELGA           512   IN__   CCOMPOR  PCOMPOR  ECONTPG  PCONTGM  ECONTPG  PCONTGP  CMATERC  PMATERC
                                      ZVARCPG  PVARCPR  ZVARCPG  PVARCMR  ETRIAPG  PTRIAGM  ZVARIPG  PVARIMR
                                      ZVARIPG  PVARIPR
-                              OUT__  ETRIAPG  PTRIAGP
-    ENDO_ELNO_ELGA      512   IN__   ETRIAPG  PTRIAGP
+                              OUT__  ETRIAPG  PTRIAPG
+    ENDO_ELNO           4     IN__   ETRIAPG  PTRIAPG
                               OUT__  ETRIANO  PTRIANO
-    ENDO_ELNO_SIGM      511   IN__   ECONTNO  PCONTNO  ECONTPG  PCONTPG  CMATERC  PMATERC  ZVARCPG  PVARCPR
-                              OUT__  ETRIAXS  PTRIAXS
     ENEL_ELGA           576   IN__   CCAMASS  PCAMASS  ECONTPG  PCONTRR  NGEOMER  PGEOMER  CMATERC  PMATERC
                                      ZVARCPG  PVARCPR  CTEMPSR  PTEMPSR
                               OUT__  EENEDPG  PENERDR

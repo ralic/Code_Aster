@@ -1,8 +1,8 @@
-#@ MODIF algorith16 Messages  DATE 15/11/2010   AUTEUR PELLET J.PELLET 
+#@ MODIF algorith16 Messages  DATE 10/01/2011   AUTEUR PROIX J-M.PROIX 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -337,29 +337,6 @@ cata_msg = {
    - Temps CPU restant :                  %(r2)f
 
  La base globale est sauvegardée, elle contient les pas archivés avant l'arret
-
- """),
-
-69 : _("""
-    %(k1)s: ERREUR
-      - Non convergence a itération maxi : %(i1)d
-      - Convergence régulière mais trop lente
-      - ERREUR > %(r1)f
-      - Diminuer la taille d'incrément
- """),
-
-70 : _("""
-    %(k1)s: ERREUR
-     - Non convergence à itération maxi : %(i1)d
-     - Convergence irrégulière & erreur > %(r1)f
-     - Diminuer la taille d'incrément
- """),
-
-71 : _("""
-    %(k1)s: ERREUR
-     - Non convergence à itération maxi : %(i1)d
-     - ERREUR > %(r1)f
-     - Diminuer la taille d'incrément
 
  """),
 

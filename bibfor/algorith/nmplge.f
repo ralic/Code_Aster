@@ -4,9 +4,9 @@
      &  DFDI2)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 10/01/2011   AUTEUR IDOUX L.IDOUX 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -77,7 +77,7 @@ C ----------------------------------------------------------------------
       REAL*8  RAC2,LC,C,DEPLM(3*27),DEPLD(3*27),DFDI1(27,3)
       REAL*8  R,WG,EPSGM(6,2),EPSGD(6,2),GEPSM(6,3),GEPS(6,3),F(3,3)
       REAL*8  B(6,3,27),DE(6),TAMPON(10),SIGMA(6),DSIDEP(6,6,2),T1,T2
-      REAL*8  P(6,6),SIGMAM(6),PERT
+      REAL*8  P(6,6),SIGMAM(6),PERT,Q(6,6)
       REAL*8  DDOT
 
       PARAMETER (PERT = 1.D-4)
@@ -172,7 +172,6 @@ C      LOI DE COMPORTEMENT
      &          ANGMAS,P,
      &          SIGMA,VIP(1,G),DSIDEP,COD(G))
         IF(COD(G).EQ.1) GOTO 9000
-
 
 C      FORCE INTERIEURE ET DES CONTRAINTES DE CAUCHY
 
@@ -271,6 +270,8 @@ C        MATRICE K:E(KL,N),U(J,M)
 
 
 C        MATRICE K:E(KL,N),E(PQ,M)
+C        A n'affecte pas tous les termes de l'integrale 
+C        (p.189 these VG, ou doc R) FICHE 15979
 
 C        RIGIDITE FICTIVE SI POINT SATURE
           CALL DSCAL(36,1-PERT,P,1)
@@ -278,22 +279,25 @@ C        RIGIDITE FICTIVE SI POINT SATURE
             P(KL,KL) = P(KL,KL) + PERT
  780      CONTINUE
 
-
+          CALL R8INIR(36,0.D0,Q,1)
+          DO 790 I=1,6
+            Q(I,I)=1.D0
+ 790      CONTINUE
           DO 800 N = 1,NNO2
             DO 810 M = 1,NNO2
               T1 = VFF2(N,G)*VFF2(M,G)
+              T2 = 0.D0
               DO 820 I = 1,NDIM
-                T1 = T1 + C*DFDI2(N,I)*DFDI2(M,I)
+                T2 = T2 + C*DFDI2(N,I)*DFDI2(M,I)
  820          CONTINUE
               DO 830 KL = 1,NDIMSI
                 DO 835 PQ = 1,NDIMSI
                   KK = (IE(KL,N)-1)*NDDL + IE(PQ,M)
-                  MATR(KK) = MATR(KK) + WG*T1*P(KL,PQ)
+                  MATR(KK) = MATR(KK) + WG*T1*P(KL,PQ) + WG*T2*Q(KL,PQ)
  835            CONTINUE
  830          CONTINUE
  810        CONTINUE
  800      CONTINUE
-
 
         END IF
 
