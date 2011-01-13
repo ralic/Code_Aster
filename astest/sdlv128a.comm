@@ -1,9 +1,9 @@
-# MODIF  DATE 12/07/2010   AUTEUR BERARD A.BERARD 
+# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
 # TITRE  EXPANSION MODALE SUR UN TUBE 3D A PARTIR DE MESURES EXTENSIOMETRIQUES
 # sdlv128a.para = tps_job 300 mem_job 600Mo mem_aster 40 ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -27,7 +27,7 @@ DEBUT(CODE=_F(NOM='SDLV128A', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'));
 # sur les essasi PHACETIE. 
 # Sur cette maquette, les mesures sont faites avec des jauges extensiometriques collees a 
 # l'interieur du tube. On doit donc realiser une expansion modale a partir de donnees extensiometriques
-# Dans Code_Aster, cette donnee est assimilee a un champ EPSI_NOEU_DEPL.
+# Dans Code_Aster, cette donnee est assimilee a un champ EPSI_NOEU.
 # On realise dans ce cas-test une expansion modale sur une base d'expansion composee de 
 # releves statiques aux points de mesure, 
 # on fabrique une base de releves statiques sur les points de mesure. Probleme : il 
@@ -151,7 +151,7 @@ MODEAIR = CALC_ELEM( reuse    = MODEAIR,
 MODEAIR = CALC_NO( reuse      = MODEAIR,
                    RESULTAT   = MODEAIR,
                    GROUP_MA   = 'TUBE_MA',
-                   OPTION     = 'EPSI_NOEU_DEPL'
+                   OPTION     = 'EPSI_NOEU'
                   );
 
 #IMPR_CO( CONCEPT = _F( NOM = MODEAIR ), UNITE = 9 )
@@ -165,7 +165,7 @@ MODEAIR = CALC_NO( reuse      = MODEAIR,
 # 16 jauges sont colles a l'interieur du tube : 8 mesurent la flexion de la poutre
 # dans la direction X, et 8 autres dans la direction Z (axe dela poutre = Y).
 # La base de deformees statique est fabriquee avec MECA_STATIQUE (problemes rencontres avec 
-# MODE_STATIQUE : impossible de calculer les EPSI_NOEU_DEPL sur la sd resultat.
+# MODE_STATIQUE : impossible de calculer les EPSI_NOEU sur la sd resultat.
 noeud_num_jaug_X = ('N4217','N4237','N4260','N4289','N4319','N4348','N4377','N4406')
 noeud_num_jaug_Z = ('N2886','N2906','N2929','N2958','N2988','N3017','N3046','N3075');
 
@@ -296,7 +296,7 @@ MODESTA = CALC_ELEM( reuse    = MODESTA,
 MODESTA = CALC_NO( reuse    = MODESTA,
                    RESULTAT = MODESTA,
                    GROUP_MA = 'TUBE_MA',
-                   OPTION   = 'EPSI_NOEU_DEPL'
+                   OPTION   = 'EPSI_NOEU'
                   );
 
 NUMSTAT  = DEFI_BASE_MODALE( RITZ = (_F( MODE_MECA  = MODEAIR,
@@ -367,7 +367,7 @@ MASSEXP = ASSE_MATRICE(MATR_ELEM = MELEXP,
 MODESEXP = PROJ_CHAMP( RESULTAT = MODEAIR, 
                       MODELE_1 = MODELNUM,
                       MODELE_2 = MODELEXP,
-                      NOM_CHAM = 'EPSI_NOEU_DEPL',
+                      NOM_CHAM = 'EPSI_NOEU',
                       NUME_DDL = NUMEXP)
 
 
@@ -380,7 +380,7 @@ REGEN = PROJ_MESU_MODAL( MODELE_CALCUL = _F( BASE   = NUMSTAT,
                                              MODELE = MODELNUM),
                          MODELE_MESURE = _F( MESURE   = MODESEXP,
                                              MODELE   = MODELEXP,
-                                             NOM_CHAM = 'EPSI_NOEU_DEPL'),
+                                             NOM_CHAM = 'EPSI_NOEU'),
                          RESOLUTION    = _F( METHODE = 'SVD',
                                              EPS    = 1.0E-5,),
                          NOM_PARA      = ('AMOR_GENE','MASS_GENE','AMOR_REDUIT')

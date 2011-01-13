@@ -1,9 +1,9 @@
-# MODIF  DATE 30/08/2010   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
 # TITRE ETUDE:  ESSAI DE CONSOLIDATION CYCLIQUE DRAINE (MECA PUR)
 # ssnv204a.para = tps_job 100 mem_job 100Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -316,18 +316,18 @@ U2=STAT_NON_LINE(MODELE=MODELE,
 U0=CALC_ELEM(reuse=U0,
 
 
-             OPTION=('SIEF_ELNO_ELGA','VARI_ELNO_ELGA','EPSI_ELNO_DEPL'),
+             OPTION=('SIEF_ELNO','VARI_ELNO_ELGA','EPSI_ELNO_DEPL'),
              RESULTAT=U0);
 
 U0=CALC_NO(reuse=U0,
 
-           OPTION=('SIEF_NOEU_ELGA','VARI_NOEU_ELGA','EPSI_NOEU_DEPL'),
+           OPTION=('SIEF_NOEU','VARI_NOEU_ELGA','EPSI_NOEU'),
            RESULTAT=U0);
 
-TAB_SIG0=POST_RELEVE_T(ACTION=_F(INTITULE='SIEF_NOEU_ELGA',
+TAB_SIG0=POST_RELEVE_T(ACTION=_F(INTITULE='SIEF_NOEU',
                                 GROUP_NO='C',
                                 RESULTAT=U0,
-                                NOM_CHAM='SIEF_NOEU_ELGA',
+                                NOM_CHAM='SIEF_NOEU',
                                 NOM_CMP='SIZZ',
                                 OPERATION='EXTRACTION'));
 
@@ -352,18 +352,18 @@ IMPR_TABLE(TABLE=TAB_VAR0);
 U1=CALC_ELEM(reuse=U1,
 
 
-             OPTION=('SIEF_ELNO_ELGA','VARI_ELNO_ELGA','EPSI_ELNO_DEPL'),
+             OPTION=('SIEF_ELNO','VARI_ELNO_ELGA','EPSI_ELNO_DEPL'),
              RESULTAT=U1);
 
 U1=CALC_NO(reuse=U1,
 
-           OPTION=('SIEF_NOEU_ELGA','VARI_NOEU_ELGA','EPSI_NOEU_DEPL'),
+           OPTION=('SIEF_NOEU','VARI_NOEU_ELGA','EPSI_NOEU'),
            RESULTAT=U1);
 
 TAB_SIG1=POST_RELEVE_T(ACTION=_F(INTITULE='EQUI_NOEU_DEPL',
                                 GROUP_NO='C',
                                 RESULTAT=U1,
-                                NOM_CHAM='SIEF_NOEU_ELGA',
+                                NOM_CHAM='SIEF_NOEU',
                                 NOM_CMP='SIZZ',
                                 OPERATION='EXTRACTION'));
 
@@ -387,18 +387,18 @@ IMPR_TABLE(TABLE=TAB_VAR1);
 U2=CALC_ELEM(reuse=U2,
 
 
-             OPTION=('SIEF_ELNO_ELGA','VARI_ELNO_ELGA','EPSI_ELNO_DEPL'),
+             OPTION=('SIEF_ELNO','VARI_ELNO_ELGA','EPSI_ELNO_DEPL'),
              RESULTAT=U2);
 
 U2=CALC_NO(reuse=U2,
 
-           OPTION=('SIEF_NOEU_ELGA','VARI_NOEU_ELGA','EPSI_NOEU_DEPL'),
+           OPTION=('SIEF_NOEU','VARI_NOEU_ELGA','EPSI_NOEU'),
            RESULTAT=U2);
 
 TAB_SIG2=POST_RELEVE_T(ACTION=_F(INTITULE='EQUI_NOEU_DEPL',
                                 GROUP_NO='C',
                                 RESULTAT=U2,
-                                NOM_CHAM='SIEF_NOEU_ELGA',
+                                NOM_CHAM='SIEF_NOEU',
                                 NOM_CMP='SIZZ',
                                 OPERATION='EXTRACTION'));
 

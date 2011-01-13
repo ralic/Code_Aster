@@ -1,8 +1,8 @@
       SUBROUTINE OP0100()
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 07/09/2010   AUTEUR DESOZA T.DESOZA 
+C MODIF CALCULEL  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -967,20 +967,20 @@ C
                 VALK (3) = NOPASE
                 CALL U2MESG('F', 'SENSIBILITE_8',3,VALK,1,VALI,0,0.D0)
               ENDIF
-              CALL RSEXC2(1,1,LERES0,'EPSI_ELGA_DEPL',IORD,CHEPSE,
+              CALL RSEXC2(1,1,LERES0,'EPSI_ELGA',IORD,CHEPSE,
      &                    OPTIO1,IRET)
               IF (IRET.GT.0) THEN
                 VALI = IORD
-                VALK (1) = 'EPSI_ELGA_DEPL'
+                VALK (1) = 'EPSI_ELGA'
                 VALK (2) = RESUCO
                 VALK (3) = NOPASE
                 CALL U2MESG('F', 'SENSIBILITE_8',3,VALK,1,VALI,0,0.D0)
               ENDIF
-              CALL RSEXC2(1,1,LERES0,'SIEF_ELGA_DEPL',IORD,
+              CALL RSEXC2(1,1,LERES0,'SIEF_ELGA',IORD,
      &                    CHSISE,OPTIO1,IRET)
               IF (IRET.GT.0) THEN
                 VALI = IORD
-                VALK (1) = 'SIEF_ELGA_DEPL'
+                VALK (1) = 'SIEF_ELGA'
                 VALK (2) = RESUCO
                 VALK (3) = NOPASE
                 CALL U2MESG('F', 'SENSIBILITE_8',3,VALK,1,VALI,0,0.D0)

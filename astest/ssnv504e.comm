@@ -1,9 +1,9 @@
-# MODIF  DATE 30/08/2010   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
 # TITRE EXTRUSION D'UN LOPIN CONTACT GLISSIERE
 # ssnv504e.para = tps_job 150 mem_job 300Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -172,11 +172,11 @@ U=STAT_NON_LINE(SOLVEUR=_F(SYME='OUI',),
 U=CALC_ELEM(reuse =U,
 
 
-               OPTION='SIEF_ELNO_ELGA',
+               OPTION='SIEF_ELNO',
                RESULTAT=U,);
 
 U=CALC_NO(reuse =U,
-               OPTION='SIEF_NOEU_ELGA',
+               OPTION='SIEF_NOEU',
                RESULTAT=U,);
 
 DEPLAC=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLAC',
@@ -214,7 +214,7 @@ IMPR_RESU(MODELE=MO,
                   MAILLAGE=MAILL1,
                   NOM_CHAM=('DEPL',
                             'VALE_CONT',
-                            'SIEF_NOEU_ELGA',
+                            'SIEF_NOEU',
                             ),
                   TOUT_ORDRE='OUI',
                   ),);

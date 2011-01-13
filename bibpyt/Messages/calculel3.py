@@ -1,4 +1,4 @@
-#@ MODIF calculel3 Messages  DATE 10/01/2011   AUTEUR DELMAS J.DELMAS 
+#@ MODIF calculel3 Messages  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -43,7 +43,7 @@ cata_msg = {
 """),
 
 5 : _("""
-  pour calculer  %(k1)s  il faut SIEF_ELNO_ELGA ou EFGE_ELNO_DEPL
+  pour calculer  %(k1)s  il faut SIEF_ELNO ou EFGE_ELNO_DEPL
 """),
 
 6 : _("""
@@ -55,7 +55,7 @@ cata_msg = {
 """),
 
 8 : _("""
- les champs SIEF_ELGA_DEPL, SIEF_ELGA, SIGM_ELNO_COQU et SIGM_ELNO_DEPL sont absents :
+ les champs SIEF_ELGA, SIGM_ELNO_COQU et SIGM_ELNO_DEPL sont absents :
  on ne peut pas calculer l'option %(k1)s  avec la SD de type  %(k2)s
 """),
 
@@ -93,7 +93,7 @@ cata_msg = {
 """),
 
 16 : _("""
- Par défaut on utilise l'estimateur basé sur les contraintes lissées version 2 ERZ2_ELEM_SIGM.
+ Par défaut on utilise l'estimateur basé sur les contraintes lissées version 2 ERZ2_ELEM.
 """),
 
 17 : _("""
@@ -149,7 +149,7 @@ cata_msg = {
 29 : _("""
  Il n'y a pas de champ d'énergie dans la structure de donnée résultat.
  On ne calcule pas l'option SING_ELEM.
- Le calcul préalable de l'option  EPOT_ELEM_DEPL ou ETOT_ELEM est OBLIGATOIRE
+ Le calcul préalable de l'option  EPOT_ELEM ou ETOT_ELEM est OBLIGATOIRE
  pour le calcul de cette option.
 """),
 

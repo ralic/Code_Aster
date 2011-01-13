@@ -1,8 +1,8 @@
-# MODIF  DATE 15/04/2008   AUTEUR MAHFOUZ D.MAHFOUZ 
+# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
 # TITRE THERMO-PLASTICITE EN TRACTION SIMPLE (MODELISATION:3D)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -228,21 +228,21 @@ IMPR_RESU(RESU=_F(RESULTAT=U2));
 
 U=CALC_ELEM(reuse =U,
             RESULTAT=U,
-            OPTION=('EPSI_ELNO_DEPL','SIEF_ELNO_ELGA',),);
+            OPTION=('EPSI_ELNO_DEPL','SIEF_ELNO',),);
 
 #
 TEST_RESU(RESU=(
           _F(  RESULTAT = U,   NOM_CHAM = 'EPSI_ELNO_DEPL',  NUME_ORDRE = 1,
             MAILLE = 'M1',NOEUD = 'N1',NOM_CMP = 'EPXX',REFERENCE='ANALYTIQUE', VALE = 8.993E-4),
-          _F(  RESULTAT = U,   NOM_CHAM = 'SIEF_ELNO_ELGA',  NUME_ORDRE = 1,
+          _F(  RESULTAT = U,   NOM_CHAM = 'SIEF_ELNO',  NUME_ORDRE = 1,
             MAILLE = 'M1',NOEUD = 'N1',NOM_CMP = 'SIYY',REFERENCE='ANALYTIQUE', VALE = -100.666),
           _F(  RESULTAT = U,   NOM_CHAM = 'EPSI_ELNO_DEPL',  NUME_ORDRE = 3,
             MAILLE = 'M1',NOEUD = 'N2',NOM_CMP = 'EPXX',REFERENCE='ANALYTIQUE', VALE = 1.098E-3),
-          _F(  RESULTAT = U,   NOM_CHAM = 'SIEF_ELNO_ELGA',  NUME_ORDRE = 3,
+          _F(  RESULTAT = U,   NOM_CHAM = 'SIEF_ELNO',  NUME_ORDRE = 3,
             MAILLE = 'M1',NOEUD = 'N2',NOM_CMP = 'SIYY',REFERENCE='ANALYTIQUE', VALE = -101.2),
           _F(  RESULTAT = U,   NOM_CHAM = 'EPSI_ELNO_DEPL',  NUME_ORDRE = 5,
             MAILLE = 'M1',NOEUD = 'N3',NOM_CMP = 'EPXX',REFERENCE='ANALYTIQUE', VALE = 1.248E-3),
-          _F(  RESULTAT = U,   NOM_CHAM = 'SIEF_ELNO_ELGA',  NUME_ORDRE = 5,
+          _F(  RESULTAT = U,   NOM_CHAM = 'SIEF_ELNO',  NUME_ORDRE = 5,
             MAILLE = 'M1',NOEUD = 'N3',NOM_CMP = 'SIYY',REFERENCE='ANALYTIQUE', VALE = -101.60),));
 
 #  TESTS DES ENERGIES
@@ -262,7 +262,7 @@ TEST_RESU(RESU=_F(RESULTAT=U,
 
 
 
-U=CALC_ELEM( reuse=U, OPTION=( 'EPSP_ELGA','EPME_ELGA_DEPL','EPMG_ELGA_DEPL'),
+U=CALC_ELEM( reuse=U, OPTION=( 'EPSP_ELGA','EPME_ELGA','EPMG_ELGA'),
                           RESULTAT=U, );
 
 TEST_RESU(RESU=(  _F( RESULTAT=U,
@@ -287,7 +287,7 @@ TEST_RESU(RESU=(  _F( RESULTAT=U,
                       CRITERE='RELATIF',),
                    _F(RESULTAT = U,
                       NUME_ORDRE = 5,
-                      NOM_CHAM = 'EPME_ELGA_DEPL',
+                      NOM_CHAM = 'EPME_ELGA',
                       NOM_CMP='EPXX',
                       MAILLE= 'M1',
                       POINT=1,
@@ -297,7 +297,7 @@ TEST_RESU(RESU=(  _F( RESULTAT=U,
                       CRITERE='RELATIF', ),
                    _F( RESULTAT = U,    
                       NUME_ORDRE = 5,
-                      NOM_CHAM = 'EPME_ELGA_DEPL',
+                      NOM_CHAM = 'EPME_ELGA',
                       NOM_CMP='EPYY',
                       MAILLE= 'M1',
                       POINT=1,
@@ -307,7 +307,7 @@ TEST_RESU(RESU=(  _F( RESULTAT=U,
                       CRITERE='RELATIF', ),
                     _F( RESULTAT = U,    
                       NUME_ORDRE = 5,
-                      NOM_CHAM = 'EPMG_ELGA_DEPL',
+                      NOM_CHAM = 'EPMG_ELGA',
                       NOM_CMP='EPXX',
                       MAILLE= 'M1',
                       POINT=1,
@@ -317,7 +317,7 @@ TEST_RESU(RESU=(  _F( RESULTAT=U,
                       CRITERE='RELATIF', ),
                     _F( RESULTAT = U,    
                       NUME_ORDRE = 5,
-                      NOM_CHAM = 'EPMG_ELGA_DEPL',
+                      NOM_CHAM = 'EPMG_ELGA',
                       NOM_CMP='EPYY',
                       MAILLE= 'M1',
                       POINT=1,
@@ -350,13 +350,13 @@ TEST_RESU(RESU=(  _F( RESULTAT=U,
                       REFERENCE='NON_REGRESSION',
                       CRITERE='RELATIF',),));
 
-U=CALC_ELEM( reuse=U, OPTION=('EPME_ELNO_DEPL','EPMG_ELNO_DEPL'),
+U=CALC_ELEM( reuse=U, OPTION=('EPME_ELNO','EPMG_ELNO'),
                           RESULTAT=U, );
 #
 TEST_RESU(RESU=(  
                    _F(  RESULTAT = U,    
                       NUME_ORDRE = 5,
-                      NOM_CHAM = 'EPME_ELNO_DEPL',
+                      NOM_CHAM = 'EPME_ELNO',
                       NOM_CMP='EPXX',
                       MAILLE= 'M1',
                       NOEUD ='N1',
@@ -366,7 +366,7 @@ TEST_RESU(RESU=(
                       CRITERE='RELATIF', ),
                    _F( RESULTAT = U,    
                       NUME_ORDRE = 5,
-                      NOM_CHAM = 'EPME_ELNO_DEPL',
+                      NOM_CHAM = 'EPME_ELNO',
                       NOM_CMP='EPYY',
                       MAILLE= 'M1',
                       NOEUD ='N1',
@@ -376,7 +376,7 @@ TEST_RESU(RESU=(
                       CRITERE='RELATIF', ),
                    _F( RESULTAT = U,    
                       NUME_ORDRE = 5,
-                      NOM_CHAM = 'EPMG_ELNO_DEPL',
+                      NOM_CHAM = 'EPMG_ELNO',
                       NOM_CMP='EPXX',
                       MAILLE= 'M1',
                       NOEUD ='N1',
@@ -386,7 +386,7 @@ TEST_RESU(RESU=(
                       CRITERE='RELATIF', ),
                   _F( RESULTAT = U,    
                       NUME_ORDRE = 5,
-                      NOM_CHAM = 'EPMG_ELNO_DEPL',
+                      NOM_CHAM = 'EPMG_ELNO',
                       NOM_CMP='EPYY',
                       MAILLE= 'M1',
                       NOEUD ='N1',
@@ -409,20 +409,20 @@ TEST_TABLE(TABLE=T_TOT,
 
 U2=CALC_ELEM(reuse =U2,
             RESULTAT=U2,
-            OPTION=('EPSI_ELNO_DEPL','SIEF_ELNO_ELGA',),);
+            OPTION=('EPSI_ELNO_DEPL','SIEF_ELNO',),);
 #
 TEST_RESU(RESU=(
           _F(  RESULTAT =U2,   NOM_CHAM = 'EPSI_ELNO_DEPL',  NUME_ORDRE = 1,
             MAILLE = 'M1',NOEUD = 'N1',NOM_CMP = 'EPXX',REFERENCE='ANALYTIQUE', VALE = 8.993E-4),
-          _F(  RESULTAT =U2,   NOM_CHAM = 'SIEF_ELNO_ELGA',  NUME_ORDRE = 1,
+          _F(  RESULTAT =U2,   NOM_CHAM = 'SIEF_ELNO',  NUME_ORDRE = 1,
             MAILLE = 'M1',NOEUD = 'N1',NOM_CMP = 'SIYY',REFERENCE='ANALYTIQUE', VALE = -100.666),
           _F(  RESULTAT =U2,   NOM_CHAM = 'EPSI_ELNO_DEPL',  NUME_ORDRE = 3,
             MAILLE = 'M1',NOEUD = 'N2',NOM_CMP = 'EPXX',REFERENCE='ANALYTIQUE', VALE = 1.098E-3),
-          _F(  RESULTAT =U2,   NOM_CHAM = 'SIEF_ELNO_ELGA',  NUME_ORDRE = 3,
+          _F(  RESULTAT =U2,   NOM_CHAM = 'SIEF_ELNO',  NUME_ORDRE = 3,
             MAILLE = 'M1',NOEUD = 'N2',NOM_CMP = 'SIYY',REFERENCE='ANALYTIQUE', VALE = -101.2),
           _F(  RESULTAT =U2,   NOM_CHAM = 'EPSI_ELNO_DEPL',  NUME_ORDRE = 5,
             MAILLE = 'M1',NOEUD = 'N3',NOM_CMP = 'EPXX',REFERENCE='ANALYTIQUE', VALE = 1.248E-3),
-          _F(  RESULTAT =U2,   NOM_CHAM = 'SIEF_ELNO_ELGA',  NUME_ORDRE = 5,
+          _F(  RESULTAT =U2,   NOM_CHAM = 'SIEF_ELNO',  NUME_ORDRE = 5,
             MAILLE = 'M1',NOEUD = 'N3',NOM_CMP = 'SIYY',REFERENCE='ANALYTIQUE', VALE = -101.60),));
 
 #  TESTS DES ENERGIES
@@ -442,7 +442,7 @@ TEST_RESU(RESU=_F(RESULTAT=U2,
 
 
 
-U2=CALC_ELEM( reuse=U2, OPTION=( 'EPSP_ELGA','EPME_ELGA_DEPL','EPMG_ELGA_DEPL'),
+U2=CALC_ELEM( reuse=U2, OPTION=( 'EPSP_ELGA','EPME_ELGA','EPMG_ELGA'),
                           RESULTAT=U2, );
 
 TEST_RESU(RESU=(  _F( RESULTAT=U2,
@@ -467,7 +467,7 @@ TEST_RESU(RESU=(  _F( RESULTAT=U2,
                       CRITERE='RELATIF',),
                  _F(  RESULTAT =U2,    
                       NUME_ORDRE = 5,
-                      NOM_CHAM = 'EPME_ELGA_DEPL',
+                      NOM_CHAM = 'EPME_ELGA',
                       NOM_CMP='EPXX',
                       MAILLE= 'M1',
                       POINT=1,
@@ -477,7 +477,7 @@ TEST_RESU(RESU=(  _F( RESULTAT=U2,
                       CRITERE='RELATIF', ),   
                  _F( RESULTAT =U2,    
                       NUME_ORDRE = 5,
-                      NOM_CHAM = 'EPME_ELGA_DEPL',
+                      NOM_CHAM = 'EPME_ELGA',
                       NOM_CMP='EPYY',
                       MAILLE= 'M1',
                       POINT=1,
@@ -487,7 +487,7 @@ TEST_RESU(RESU=(  _F( RESULTAT=U2,
                       CRITERE='RELATIF', ),
                   _F( RESULTAT =U2,    
                       NUME_ORDRE = 5,
-                      NOM_CHAM = 'EPMG_ELGA_DEPL',
+                      NOM_CHAM = 'EPMG_ELGA',
                       NOM_CMP='EPXX',
                       MAILLE= 'M1',
                       POINT=1,
@@ -497,7 +497,7 @@ TEST_RESU(RESU=(  _F( RESULTAT=U2,
                       CRITERE='RELATIF', ),
                   _F( RESULTAT =U2,    
                       NUME_ORDRE = 5,
-                      NOM_CHAM = 'EPMG_ELGA_DEPL',
+                      NOM_CHAM = 'EPMG_ELGA',
                       NOM_CMP='EPYY',
                       MAILLE= 'M1',
                       POINT=1,
@@ -529,12 +529,12 @@ TEST_RESU(RESU=(  _F( RESULTAT=U2,
                       PRECISION= 1E-03,
                       REFERENCE='NON_REGRESSION',
                       CRITERE='RELATIF',),));
-U2=CALC_ELEM( reuse=U2, OPTION=('EPME_ELNO_DEPL','EPMG_ELNO_DEPL'),RESULTAT=U2,);
+U2=CALC_ELEM( reuse=U2, OPTION=('EPME_ELNO','EPMG_ELNO'),RESULTAT=U2,);
 #
 TEST_RESU(RESU=(  
                   _F(  RESULTAT =U2,    
                       NUME_ORDRE = 5,
-                      NOM_CHAM = 'EPME_ELNO_DEPL',
+                      NOM_CHAM = 'EPME_ELNO',
                       NOM_CMP='EPXX',
                       MAILLE= 'M1',
                       NOEUD ='N1',
@@ -544,7 +544,7 @@ TEST_RESU(RESU=(
                       CRITERE='RELATIF', ),
                   _F( RESULTAT =U2,    
                       NUME_ORDRE = 5,
-                      NOM_CHAM = 'EPME_ELNO_DEPL',
+                      NOM_CHAM = 'EPME_ELNO',
                       NOM_CMP='EPYY',
                       MAILLE= 'M1',
                       NOEUD ='N1',
@@ -554,7 +554,7 @@ TEST_RESU(RESU=(
                       CRITERE='RELATIF', ),
                  _F( RESULTAT =U2,    
                       NUME_ORDRE = 5,
-                      NOM_CHAM = 'EPMG_ELNO_DEPL',
+                      NOM_CHAM = 'EPMG_ELNO',
                       NOM_CMP='EPXX',
                       MAILLE= 'M1',
                       NOEUD ='N1',
@@ -564,7 +564,7 @@ TEST_RESU(RESU=(
                       CRITERE='RELATIF', ), 
                   _F( RESULTAT =U2,    
                       NUME_ORDRE = 5,
-                      NOM_CHAM = 'EPMG_ELNO_DEPL',
+                      NOM_CHAM = 'EPMG_ELNO',
                       NOM_CMP='EPYY',
                       MAILLE= 'M1',
                       NOEUD ='N1',

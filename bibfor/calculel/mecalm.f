@@ -2,7 +2,7 @@
      &                  NBORDR,MODELE,MATE,CARA,NCHAR,CTYP)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 10/01/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF CALCULEL  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -367,27 +367,27 @@ C
         IF (IRET.NE.0)GOTO 690
 
 C    ------------------------------------------------------------------
-C    -- OPTIONS "SIGM_ELNO_DEPL","SIEF_ELGA_DEPL","EPSI_ELNO_DEPL",
-C               "EPSI_ELGA_DEPL","EPSG_ELNO_DEPL","EPSG_ELGA_DEPL",
-C               "EPME_ELNO_DEPL","EPME_ELGA_DEPL","EPMG_ELNO_DEPL",
-C               "EPMG_ELGA_DEPL","EFGE_ELNO_DEPL","EPOT_ELEM_DEPL",
-C               "SIPO_ELNO_DEPL","DEGE_ELNO_DEPL",
+C    -- OPTIONS "SIGM_ELNO_DEPL","SIEF_ELGA","EPSI_ELNO_DEPL",
+C               "EPSI_ELGA","EPSG_ELNO","EPSG_ELGA",
+C               "EPME_ELNO","EPME_ELGA","EPMG_ELNO",
+C               "EPMG_ELGA","EFGE_ELNO_DEPL","EPOT_ELEM",
+C               "SIPO_ELNO","DEGE_ELNO",
 C               "EPVC_ELGA","EPVC_ELNO"
 C    ------------------------------------------------------------------
         IF (OPTION.EQ.'SIGM_ELNO_DEPL' .OR.
-     &      OPTION.EQ.'SIEF_ELGA_DEPL' .OR.
+     &      OPTION.EQ.'SIEF_ELGA' .OR.
      &      OPTION.EQ.'EPSI_ELNO_DEPL' .OR.
-     &      OPTION.EQ.'EPSI_ELGA_DEPL' .OR.
-     &      OPTION.EQ.'EPSG_ELNO_DEPL' .OR.
-     &      OPTION.EQ.'EPSG_ELGA_DEPL' .OR.
-     &      OPTION.EQ.'EPME_ELNO_DEPL' .OR.
-     &      OPTION.EQ.'EPME_ELGA_DEPL' .OR. OPTION.EQ.'EPVC_ELNO' .OR.
-     &      OPTION.EQ.'EPVC_ELGA' .OR. OPTION.EQ.'EPMG_ELNO_DEPL' .OR.
-     &      OPTION.EQ.'EPMG_ELGA_DEPL' .OR.
+     &      OPTION.EQ.'EPSI_ELGA' .OR.
+     &      OPTION.EQ.'EPSG_ELNO' .OR.
+     &      OPTION.EQ.'EPSG_ELGA' .OR.
+     &      OPTION.EQ.'EPME_ELNO' .OR.
+     &      OPTION.EQ.'EPME_ELGA' .OR. OPTION.EQ.'EPVC_ELNO' .OR.
+     &      OPTION.EQ.'EPVC_ELGA' .OR. OPTION.EQ.'EPMG_ELNO' .OR.
+     &      OPTION.EQ.'EPMG_ELGA' .OR.
      &      OPTION.EQ.'EFGE_ELNO_DEPL' .OR.
-     &      OPTION.EQ.'EPOT_ELEM_DEPL' .OR.
-     &      OPTION.EQ.'SIPO_ELNO_DEPL' .OR.
-     &      OPTION.EQ.'DEGE_ELNO_DEPL' .OR. OPTION.EQ.'FLHN_ELGA') THEN
+     &      OPTION.EQ.'EPOT_ELEM' .OR.
+     &      OPTION.EQ.'SIPO_ELNO' .OR.
+     &      OPTION.EQ.'DEGE_ELNO' .OR. OPTION.EQ.'FLHN_ELGA') THEN
 
 
 C ---- TRAITEMENT DE L EXCENTREMENT POUR OPTIONS DE POST TRAITEMENT
@@ -399,16 +399,16 @@ C ---- TRAITEMENT DE L EXCENTREMENT POUR OPTIONS DE POST TRAITEMENT
 
           IF (CONCEP.EQ.'DYNA_HARMO') THEN
             IF ((OPTION.EQ.'SIGM_ELNO_DEPL') .OR.
-     &          (OPTION.EQ.'SIPO_ELNO_DEPL') .OR.
+     &          (OPTION.EQ.'SIPO_ELNO') .OR.
      &          (OPTION.EQ.'EFGE_ELNO_DEPL') .OR.
-     &          (OPTION.EQ.'SIEF_ELGA_DEPL') .OR.
-     &          (OPTION.EQ.'SIEF_ELNO_ELGA') .OR.
-     &          (OPTION.EQ.'EPSI_ELGA_DEPL') .OR.
+     &          (OPTION.EQ.'SIEF_ELGA') .OR.
+     &          (OPTION.EQ.'SIEF_ELNO') .OR.
+     &          (OPTION.EQ.'EPSI_ELGA') .OR.
      &          (OPTION.EQ.'EPSI_ELNO_DEPL') .OR.
-     &          (OPTION.EQ.'EPOT_ELEM_DEPL') .OR.
-     &          (OPTION.EQ.'ECIN_ELEM_DEPL') .OR.
+     &          (OPTION.EQ.'EPOT_ELEM') .OR.
+     &          (OPTION.EQ.'ECIN_ELEM') .OR.
      &          (OPTION.EQ.'ENEL_ELGA') .OR.
-     &          (OPTION.EQ.'ENEL_ELNO_ELGA')) THEN
+     &          (OPTION.EQ.'ENEL_ELNO')) THEN
             ELSE
               GOTO 680
 
@@ -416,8 +416,8 @@ C ---- TRAITEMENT DE L EXCENTREMENT POUR OPTIONS DE POST TRAITEMENT
 
           ELSEIF (CONCEP.EQ.'EVOL_NOLI') THEN
             IF (OPTION.EQ.'SIGM_ELNO_DEPL' .OR.
-     &          OPTION.EQ.'SIPO_ELNO_DEPL' .OR.
-     &          OPTION.EQ.'SIEF_ELGA_DEPL' .OR.
+     &          OPTION.EQ.'SIPO_ELNO' .OR.
+     &          OPTION.EQ.'SIEF_ELGA' .OR.
      &          OPTION.EQ.'EFGE_ELNO_DEPL') THEN
               CALL U2MESK('A','CALCULEL2_99',1,OPTION)
               GOTO 660
@@ -580,13 +580,13 @@ C=======================================================================
             CALL VRCREF(MODELE,MATE(1:8),CARA,CHVREF(1:19))
             CALL RSEXCH(RESUCO,'COMPORTEMENT',IORDR,COMPOR,IRET1)
 C -- POUR LES POUTRES MULTIFIBRES ON A BESOIN DE COMPOR ISSU DE MATERIAU
-C     POUR LE CALCUL DES OPTIONS SIEF_ELGA_DEPL ET EFGE_ELNO_DEPL
+C     POUR LE CALCUL DES OPTIONS SIEF_ELGA ET EFGE_ELNO_DEPL
             IF (OPTIO2.EQ.'EFGE_ELNO_DEPL' .OR.
-     &          OPTIO2.EQ.'SIEF_ELGA_DEPL') THEN
+     &          OPTIO2.EQ.'SIEF_ELGA') THEN
               COMPOR=MATE(1:8)//'.COMPOR'
             ENDIF
             IF (OPTION.EQ.'FLHN_ELGA') THEN
-              CALL RSEXC2(1,1,RESUCO,'SIEF_NOEU_ELGA',IORDR,CHSIG,
+              CALL RSEXC2(1,1,RESUCO,'SIEF_NOEU',IORDR,CHSIG,
      &                    OPTION,IRET)
               IF (IRET.GT.0) THEN
                 CALL U2MESK('F','CALCULEL7_1',1,OPTION)
@@ -604,9 +604,9 @@ C     POUR LE CALCUL DES OPTIONS SIEF_ELGA_DEPL ET EFGE_ELNO_DEPL
             CALL JEDEMA()
   100     CONTINUE
 C    ------------------------------------------------------------------
-C    -- OPTION "SIEF_ELNO_ELGA"
+C    -- OPTION "SIEF_ELNO"
 C    ------------------------------------------------------------------
-        ELSEIF (OPTION.EQ.'SIEF_ELNO_ELGA') THEN
+        ELSEIF (OPTION.EQ.'SIEF_ELNO') THEN
           DO 120,IAUX=1,NBORDR
             CALL JEMARQ()
             CALL JERECU('V')
@@ -617,7 +617,7 @@ C    ------------------------------------------------------------------
             CALL MECARA(CARA,EXICAR,CHCARA)
             CALL MECHC1(SAVCAR,MODELE,MATE,EXICAR,CHCARA)
             CALL RSEXC2(1,2,LERES0,'SIEF_ELGA',IORDR,CHSIG,OPTION,IRET1)
-            CALL RSEXC2(2,2,RESUCO,'SIEF_ELGA_DEPL',IORDR,CHSIG,OPTION,
+            CALL RSEXC2(2,2,RESUCO,'SIEF_ELGA',IORDR,CHSIG,OPTION,
      &                  IRET2)
             IF (IRET1.GT.0 .AND. IRET2.GT.0)GOTO 110
             CALL RSEXC1(LERES1,OPTION,IORDR,CHELEM)
@@ -643,7 +643,7 @@ C      A PARTIR DE SIEF_ELGA
             IF (IRET1.EQ.0) THEN
               CALL RSEXCH(RESUCO,'COMPORTEMENT',IORDR,COMPOR,IRET1)
 
-C      A PARTIR DE SIEF_ELGA_DEPL
+C      A PARTIR DE SIEF_ELGA
             ELSEIF (IRET2.EQ.0) THEN
               COMPOR=' '
             ENDIF
@@ -661,9 +661,9 @@ C      A PARTIR DE SIEF_ELGA_DEPL
             CALL JEDEMA()
   120     CONTINUE
 C    ------------------------------------------------------------------
-C    -- OPTION "ECIN_ELEM_DEPL"
+C    -- OPTION "ECIN_ELEM"
 C    ------------------------------------------------------------------
-        ELSEIF (OPTION.EQ.'ECIN_ELEM_DEPL') THEN
+        ELSEIF (OPTION.EQ.'ECIN_ELEM') THEN
           IF (NCHAR.NE.0 .AND. CTYP.NE.'MECA') THEN
             CALL U2MESS('A','CALCULEL2_98')
             GOTO 660
@@ -752,7 +752,7 @@ C    ------------------------------------------------------------------
             CALL RSEXC2(1,1,RESUCO,'DEPL',IORDR,CHAMGD,OPTION,IRET)
             IF (IRET.GT.0)GOTO 150
             CALL RSEXC2(1,2,RESUCO,'SIEF_ELGA',IORDR,CHSIG,OPTION,IRET)
-            CALL RSEXC2(2,2,RESUCO,'SIEF_ELGA_DEPL',IORDR,CHSIG,OPTION,
+            CALL RSEXC2(2,2,RESUCO,'SIEF_ELGA',IORDR,CHSIG,OPTION,
      &                  IRET)
             IF (IRET.GT.0) THEN
               CALL U2MESK('A','CALCULEL3_7',1,OPTION)
@@ -790,7 +790,7 @@ C    ------------------------------------------------------------------
             CALL RSEXC2(1,1,RESUCO,'DEPL',IORDR,CHAMGD,OPTION,IRET)
             IF (IRET.GT.0)GOTO 170
             CALL RSEXC2(1,2,RESUCO,'SIEF_ELGA',IORDR,CHSIG,OPTION,IRET)
-            CALL RSEXC2(2,2,RESUCO,'SIEF_ELGA_DEPL',IORDR,CHSIG,OPTION,
+            CALL RSEXC2(2,2,RESUCO,'SIEF_ELGA',IORDR,CHSIG,OPTION,
      &                  IRET)
             IF (IRET.GT.0) THEN
               CALL U2MESK('A','CALCULEL3_7',1,OPTION)
@@ -829,18 +829,18 @@ C    ------------------------------------------------------------------
   180     CONTINUE
 C    ------------------------------------------------------------------
 C    -- OPTIONS "EQUI_ELGA_EPSI","EQUI_ELGA_EPME","EQUI_ELGA_SIGM",
-C               "EQUI_ELNO_EPSI","EQUI_ELNO_EPME","PMPB_ELGA_SIEF",
-C               "PMPB_ELNO_SIEF","EQUI_ELNO_SIGM","CRIT_ELNO_RUPT"
+C               "EQUI_ELNO_EPSI","EQUI_ELNO_EPME","PMPB_ELGA",
+C               "PMPB_ELNO","EQUI_ELNO_SIGM","CRIT_ELNO"
 C    ------------------------------------------------------------------
         ELSEIF (OPTION.EQ.'EQUI_ELGA_EPSI' .OR.
      &          OPTION.EQ.'EQUI_ELGA_EPME' .OR.
      &          OPTION.EQ.'EQUI_ELGA_SIGM' .OR.
      &          OPTION.EQ.'EQUI_ELNO_EPSI' .OR.
      &          OPTION.EQ.'EQUI_ELNO_EPME' .OR.
-     &          OPTION.EQ.'PMPB_ELGA_SIEF' .OR.
-     &          OPTION.EQ.'PMPB_ELNO_SIEF' .OR.
+     &          OPTION.EQ.'PMPB_ELGA' .OR.
+     &          OPTION.EQ.'PMPB_ELNO' .OR.
      &          OPTION.EQ.'EQUI_ELNO_SIGM' .OR.
-     &          OPTION.EQ.'CRIT_ELNO_RUPT') THEN
+     &          OPTION.EQ.'CRIT_ELNO') THEN
           DO 200,IAUX=1,NBORDR
             CALL JEMARQ()
             CALL JERECU('V')
@@ -854,7 +854,7 @@ C    ------------------------------------------------------------------
             CALL MECARA(CARA,EXICAR,CHCARA)
             CALL MECHC1(SAVCAR,MODELE,MATE,EXICAR,CHCARA)
             IF (OPTION.EQ.'EQUI_ELGA_EPSI') THEN
-              CALL RSEXC2(1,1,RESUCO,'EPSI_ELGA_DEPL',IORDR,CHEPS,
+              CALL RSEXC2(1,1,RESUCO,'EPSI_ELGA',IORDR,CHEPS,
      &                    OPTION,IRET)
               IF (IRET.GT.0)GOTO 190
             ELSEIF (OPTION.EQ.'EQUI_ELNO_EPSI') THEN
@@ -862,11 +862,11 @@ C    ------------------------------------------------------------------
      &                    OPTION,IRET)
               IF (IRET.GT.0)GOTO 190
             ELSEIF (OPTION.EQ.'EQUI_ELGA_EPME') THEN
-              CALL RSEXC2(1,1,RESUCO,'EPME_ELGA_DEPL',IORDR,CHEPS,
+              CALL RSEXC2(1,1,RESUCO,'EPME_ELGA',IORDR,CHEPS,
      &                    OPTION,IRET)
               IF (IRET.GT.0)GOTO 190
             ELSEIF (OPTION.EQ.'EQUI_ELNO_EPME') THEN
-              CALL RSEXC2(1,1,RESUCO,'EPME_ELNO_DEPL',IORDR,CHEPS,
+              CALL RSEXC2(1,1,RESUCO,'EPME_ELNO',IORDR,CHEPS,
      &                    OPTION,IRET)
               IF (IRET.GT.0)GOTO 190
             ELSEIF (OPTION.EQ.'EQUI_ELGA_SIGM') THEN
@@ -875,7 +875,7 @@ C    ------------------------------------------------------------------
               ENDIF
               CALL RSEXC2(1,2,RESUCO,'SIEF_ELGA',IORDR,CHSIG,OPTION,
      &                    IRET)
-              CALL RSEXC2(2,2,RESUCO,'SIEF_ELGA_DEPL',IORDR,CHSIG,
+              CALL RSEXC2(2,2,RESUCO,'SIEF_ELGA',IORDR,CHSIG,
      &                    OPTION,IRET)
               IF (IRET.GT.0) THEN
                 CALL U2MESK('A','CALCULEL3_7',1,OPTION)
@@ -883,19 +883,19 @@ C    ------------------------------------------------------------------
                 GOTO 660
 
               ENDIF
-            ELSEIF (OPTION.EQ.'PMPB_ELGA_SIEF') THEN
+            ELSEIF (OPTION.EQ.'PMPB_ELGA') THEN
               CALL RSEXC2(1,1,RESUCO,'SIEF_ELGA',IORDR,CHSIG,OPTION,
      &                    IRET1)
               IF (IRET1.GT.0)GOTO 190
-            ELSEIF (OPTION.EQ.'PMPB_ELNO_SIEF') THEN
-              CALL RSEXC2(1,1,RESUCO,'SIEF_ELNO_ELGA',IORDR,CHSIG,
+            ELSEIF (OPTION.EQ.'PMPB_ELNO') THEN
+              CALL RSEXC2(1,1,RESUCO,'SIEF_ELNO',IORDR,CHSIG,
      &                    OPTION,IRET1)
               IF (IRET1.GT.0)GOTO 190
             ELSEIF (OPTION.EQ.'EQUI_ELNO_SIGM') THEN
               IF (TYSD.EQ.'FOURIER_ELAS') THEN
                 CALL U2MESK('F','CALCULEL6_83',1,OPTION)
               ENDIF
-              CALL RSEXCH(RESUCO,'SIEF_ELGA_DEPL',IORDR,CHSIG,IRET1)
+              CALL RSEXCH(RESUCO,'SIEF_ELGA',IORDR,CHSIG,IRET1)
               CALL RSEXCH(RESUCO,'SIEF_ELGA',IORDR,CHSIG,IRET2)
               CALL RSEXCH(RESUCO,'SIGM_ELNO_COQU',IORDR,CHSIC,IRET3)
               CALL RSEXCH(RESUCO,'SIGM_ELNO_DEPL',IORDR,CHSIC,IRET4)
@@ -916,7 +916,7 @@ C
      &            TYSD.EQ.'FOURIER_ELAS') THEN
 C          CHAMP D'ENTREE POUR ELEMENTS ISOPARAMETRIQUES
                 IF (IRET1.LE.0) THEN
-                  CALL RSEXCH(RESUCO,'SIEF_ELGA_DEPL',IORDR,CHSIG,K)
+                  CALL RSEXCH(RESUCO,'SIEF_ELGA',IORDR,CHSIG,K)
                 ENDIF
 C          CHAMP D'ENTREE POUR COQUES
                 IF (EXIPLA) THEN
@@ -948,7 +948,7 @@ C          CHAMP D'ENTREE POUR COQUES
                   ENDIF
                 ENDIF
               ENDIF
-            ELSEIF (OPTION.EQ.'CRIT_ELNO_RUPT') THEN
+            ELSEIF (OPTION.EQ.'CRIT_ELNO') THEN
               CALL RSEXC2(1,1,RESUCO,'SIGM_ELNO_DEPL',IORDR,CHSIG,
      &                    OPTION,IRET1)
               IF (IRET1.GT.0)GOTO 190
@@ -993,13 +993,13 @@ C    ------------------------------------------------------------------
      &                  IBID,RBID,CBID,NOMS)
 
             IF ((NOMCHA.EQ.'SIEF_ELGA') .OR.
-     &          (NOMCHA.EQ.'SIEF_ELGA_DEPL')) THEN
+     &          (NOMCHA.EQ.'SIEF_ELGA')) THEN
               CHSIG=CHBID
               CHEPS=' '
               CHSEQ=' '
               CHEEQ=' '
               CHVARI=' '
-            ELSEIF (NOMCHA.EQ.'EPSI_ELGA_DEPL') THEN
+            ELSEIF (NOMCHA.EQ.'EPSI_ELGA') THEN
               CHSIG=' '
               CHEPS=CHBID
               CHSEQ=' '
@@ -1036,15 +1036,15 @@ C    ------------------------------------------------------------------
             CALL JEDEMA()
   220     CONTINUE
 C    ------------------------------------------------------------------
-C    -- OPTION "PROJ_ELEM_SIGM"
+C    -- OPTION "SIRO_ELEM"
 C    ------------------------------------------------------------------
-        ELSEIF (OPTION.EQ.'PROJ_ELEM_SIGM') THEN
+        ELSEIF (OPTION.EQ.'SIRO_ELEM') THEN
           DO 240,IAUX=1,NBORDR
             CALL JERECU('V')
             IORDR=ZI(JORDR+IAUX-1)
             CALL MEDOM2(MODELE,MATE,CARA,KCHA,NCHAR,CTYP,RESUCO,IORDR,
      &                  NBORDR,NPASS,LIGREL)
-            CALL RSEXC2(1,2,RESUCO,'SIEF_ELNO_ELGA',IORDR,CHSIG,OPTION,
+            CALL RSEXC2(1,2,RESUCO,'SIEF_ELNO',IORDR,CHSIG,OPTION,
      &                  IRET1)
             CALL RSEXC2(2,2,RESUCO,'SIGM_ELNO_DEPL',IORDR,CHSIG,OPTION,
      &                  IRET2)
@@ -1055,7 +1055,7 @@ C    ------------------------------------------------------------------
             CALL RSEXC2(1,1,RESUCO,'DEPL',IORDR,CHAMGD,OPTION,IRET)
             CALL RSEXCH(RESUCO,'COMPORTEMENT',IORDR,COMPOR,IRET1)
 
-            OPTIO2='PROJ_ELEM_SIGM'
+            OPTIO2='SIRO_ELEM'
             CALL MEARCC(OPTIO2,MODELE,CHSIG,CHSIGF)
             CALL RSEXC1(LERES1,OPTIO2,IORDR,CHELEM)
             CALL MECALC(OPTIO2,MODELE,CHAMGD,CHGEOM,MATE,CHCARA,K24B,
@@ -1071,13 +1071,13 @@ C    ------------------------------------------------------------------
 C    ------------------------------------------------------------------
 C    -- OPTIONS DES INDICATEURS D'ERREURS
 C    ------------------------------------------------------------------
-        ELSEIF (OPTION.EQ.'ERZ1_ELEM_SIGM' .OR.
-     &          OPTION.EQ.'ERZ2_ELEM_SIGM' .OR.
+        ELSEIF (OPTION.EQ.'ERZ1_ELEM' .OR.
+     &          OPTION.EQ.'ERZ2_ELEM' .OR.
      &          OPTION.EQ.'ERME_ELEM' .OR. OPTION.EQ.'ERME_ELNO' .OR.
-     &          OPTION.EQ.'QIRE_ELEM_SIGM' .OR.
-     &          OPTION.EQ.'QIRE_ELNO_ELEM' .OR.
-     &          OPTION.EQ.'QIZ1_ELEM_SIGM' .OR.
-     &          OPTION.EQ.'QIZ2_ELEM_SIGM') THEN
+     &          OPTION.EQ.'QIRE_ELEM' .OR.
+     &          OPTION.EQ.'QIRE_ELNO' .OR.
+     &          OPTION.EQ.'QIZ1_ELEM' .OR.
+     &          OPTION.EQ.'QIZ2_ELEM') THEN
 C
           CALL MECA01(OPTION,NBORDR,JORDR,NCHAR,JCHA,KCHA,CTYP,TBGRCA,
      &                RESUCO,RESUC1,LERES1,NOMA,MODELE,LIGRMO,MATE,CARA,
@@ -1171,14 +1171,14 @@ C 3 - BOUCLE SUR LES INSTANTS DEMANDES
 C 3.1 - RECUPERATION DE LA CARTE D ERREUR ET D ENERGIE
 C       SI PLUSIEURS INDICATEURS ON PREND PAR DEFAUT
 C       ERME_ELEM SI IL EST PRESENT
-C       ERZ2_ELEM_SIGM PAR RAPPORT A ERZ1_ELEM_SIGM
+C       ERZ2_ELEM PAR RAPPORT A ERZ1_ELEM
 
             ELSE
 
               IRET5=1
               CALL RSEXCH(RESUCO,'ERME_ELEM',IORDR,CHERR1,IRET1)
-              CALL RSEXCH(RESUCO,'ERZ1_ELEM_SIGM',IORDR,CHERR2,IRET2)
-              CALL RSEXCH(RESUCO,'ERZ2_ELEM_SIGM',IORDR,CHERR3,IRET3)
+              CALL RSEXCH(RESUCO,'ERZ1_ELEM',IORDR,CHERR2,IRET2)
+              CALL RSEXCH(RESUCO,'ERZ2_ELEM',IORDR,CHERR3,IRET3)
 
               IF (IRET1.GT.0 .AND. IRET2.GT.0 .AND. IRET3.GT.0) THEN
                 CALL U2MESS('A','CALCULEL3_14')
@@ -1190,7 +1190,7 @@ C       ERZ2_ELEM_SIGM PAR RAPPORT A ERZ1_ELEM_SIGM
             IF (TYSD.EQ.'EVOL_NOLI') THEN
               CALL RSEXCH(RESUCO,'ETOT_ELEM',IORDR,CHENEG,IRET4)
             ELSE
-              CALL RSEXCH(RESUCO,'EPOT_ELEM_DEPL',IORDR,CHENEG,IRET4)
+              CALL RSEXCH(RESUCO,'EPOT_ELEM',IORDR,CHENEG,IRET4)
             ENDIF
             IF (IRET4.GT.0) THEN
               CALL U2MESS('A','CALCULEL3_29')
@@ -1254,9 +1254,9 @@ C 4 - DESTRUCTION DES OBJETS TEMPORAIRES
           CALL JEDETR('&&SINGUM.CONN           ')
           CALL JEDETR('&&SINGUM.CINV           ')
 C    ------------------------------------------------------------------
-C    -- OPTION "SING_ELNO_ELEM"
+C    -- OPTION "SING_ELNO"
 C    ------------------------------------------------------------------
-        ELSEIF (OPTION.EQ.'SING_ELNO_ELEM') THEN
+        ELSEIF (OPTION.EQ.'SING_ELNO') THEN
           DO 280 IAUX=1,NBORDR
             CALL JEMARQ()
             IORDR=ZI(JORDR+IAUX-1)
@@ -1282,7 +1282,7 @@ C 4 - STOCKAGE
 
             CALL RSEXC1(LERES1,OPTION,IORDR,CHELEM)
 
-            CALL CESCEL(CHSINN,LIGRMO(1:19),'SING_ELNO_ELEM','PSINGNO',
+            CALL CESCEL(CHSINN,LIGRMO(1:19),'SING_ELNO','PSINGNO',
      &                  'NON',NNCP,'G',CHELEM(1:19),'F',IBID)
 
             CALL RSNOCH(LERES1,OPTION,IORDR,' ')
@@ -1315,7 +1315,7 @@ C    ------------------------------------------------------------------
             ELSE
               CALL RSEXC2(1,2,RESUCO,'EFGE_ELNO_DEPL',IORDR,CHSIG,
      &                    OPTION,IRET)
-              CALL RSEXC2(2,2,RESUCO,'SIEF_ELNO_ELGA',IORDR,CHSIG,
+              CALL RSEXC2(2,2,RESUCO,'SIEF_ELNO',IORDR,CHSIG,
      &                    OPTION,IRET)
               CALL RSEXC2(1,1,RESUCO,'DEPL',IORDR,CHAMGD,OPTION,IRET)
             ENDIF
@@ -1451,7 +1451,7 @@ C     ------------------------------------------------------------------
 C     --- OPTIONS DE CALCUL DES DENSITES D'ENERGIE TOTALE
 C     ------------------------------------------------------------------
         ELSEIF (OPTION.EQ.'ETOT_ELGA' .OR.
-     &          OPTION.EQ.'ETOT_ELNO_ELGA' .OR.
+     &          OPTION.EQ.'ETOT_ELNO' .OR.
      &          OPTION.EQ.'ETOT_ELEM') THEN
           DO 380,IAUX=1,NBORDR
             CALL JEMARQ()
@@ -1467,7 +1467,7 @@ C ---       RECUPERATION DES CONTRAINTES DE L'INSTANT COURANT :
 C           -------------------------------------------------
             CALL RSEXC2(1,2,RESUCO,'SIEF_ELGA',IORDR,CHSIG,OPTION,IRET1)
             IF (IRET1.GT.0) THEN
-              CALL RSEXC2(2,2,RESUCO,'SIEF_ELGA_DEPL',IORDR,CHSIG,
+              CALL RSEXC2(2,2,RESUCO,'SIEF_ELGA',IORDR,CHSIG,
      &                    OPTION,IRET2)
               IF (IRET2.GT.0) THEN
                 CALL CODENT(IORDR,'G',KIORD)
@@ -1569,7 +1569,7 @@ C --- A11/ RECUPERATION DU CHAMP DE CONTRAINTES 'SIEF_ELGA'
 C          -> CHSIG[1,2] A T- ET T+
               CALL RSEXC2(1,2,RESUCO,'SIEF_ELGA',IORDR1,CHSIG1,OPTION,
      &                    IRET1)
-              CALL RSEXC2(2,2,RESUCO,'SIEF_ELGA_DEPL',IORDR1,CHSIG1,
+              CALL RSEXC2(2,2,RESUCO,'SIEF_ELGA',IORDR1,CHSIG1,
      &                    OPTION,IRET1)
               IF (IRET1.GT.0) THEN
                 CALL U2MESK('A','CALCULEL3_18',1,OPTION)
@@ -1579,7 +1579,7 @@ C          -> CHSIG[1,2] A T- ET T+
 
               CALL RSEXC2(1,2,RESUCO,'SIEF_ELGA',IORDR2,CHSIG2,OPTION,
      &                    IRET2)
-              CALL RSEXC2(2,2,RESUCO,'SIEF_ELGA_DEPL',IORDR2,CHSIG2,
+              CALL RSEXC2(2,2,RESUCO,'SIEF_ELGA',IORDR2,CHSIG2,
      &                    OPTION,IRET2)
               IF (IRET2.GT.0) THEN
                 CALL U2MESK('A','CALCULEL3_18',1,OPTION)
@@ -1731,7 +1731,7 @@ C     ------------------------------------------------------------------
             CALL MECHC1(SAVCAR,MODELE,MATE,EXICAR,CHCARA)
             CALL RSEXCH(RESUCO,'SIEF_ELGA',IORDR,CHSIG,IRET1)
             IF (IRET1.GT.0) THEN
-              CALL RSEXC2(1,1,RESUCO,'SIEF_ELGA_DEPL',IORDR,CHSIG,
+              CALL RSEXC2(1,1,RESUCO,'SIEF_ELGA',IORDR,CHSIG,
      &                    OPTION,IRET2)
               IF (IRET2.GT.0)GOTO 440
             ENDIF
@@ -1769,7 +1769,7 @@ C     ------------------------------------------------------------------
             CALL JEVEUO(KCHA,'L',JCHA)
             CALL MECARA(CARA,EXICAR,CHCARA)
             CALL MECHC1(SAVCAR,MODELE,MATE,EXICAR,CHCARA)
-            CALL RSEXC2(1,1,RESUCO,'EPSI_ELGA_DEPL',IORDR,CHEPS,OPTION,
+            CALL RSEXC2(1,1,RESUCO,'EPSI_ELGA',IORDR,CHEPS,OPTION,
      &                  IRET2)
             IF (IRET2.GT.0)GOTO 460
             CALL RSEXC1(LERES1,OPTION,IORDR,CHELEM)
@@ -1790,9 +1790,9 @@ C     ------------------------------------------------------------------
             CALL JEDEMA()
   470     CONTINUE
 C     ------------------------------------------------------------------
-C     --- OPTION "EPEQ_ELNO_TUYO"
+C     --- OPTION "EPEQ_ELNO"
 C     ------------------------------------------------------------------
-        ELSEIF (OPTION.EQ.'EPEQ_ELNO_TUYO') THEN
+        ELSEIF (OPTION.EQ.'EPEQ_ELNO') THEN
           DO 490,IAUX=1,NBORDR
             CALL JEMARQ()
             CALL JERECU('V')
@@ -1824,9 +1824,9 @@ C     ------------------------------------------------------------------
   490     CONTINUE
 
 C     ------------------------------------------------------------------
-C     --- OPTION "SIEQ_ELNO_TUYO"
+C     --- OPTION "SIEQ_ELNO"
 C     ------------------------------------------------------------------
-        ELSEIF (OPTION.EQ.'SIEQ_ELNO_TUYO') THEN
+        ELSEIF (OPTION.EQ.'SIEQ_ELNO') THEN
           DO 510,IAUX=1,NBORDR
             CALL JEMARQ()
             CALL JERECU('V')
@@ -1940,10 +1940,10 @@ C     ------------------------------------------------------------------
             CALL JEDEMA()
   560     CONTINUE
 C    ------------------------------------------------------------------
-C    -- OPTIONS "ENEL_ELGA" ET "ENEL_ELNO_ELGA"
+C    -- OPTIONS "ENEL_ELGA" ET "ENEL_ELNO"
 C    ------------------------------------------------------------------
         ELSEIF (OPTION.EQ.'ENEL_ELGA' .OR.
-     &          OPTION.EQ.'ENEL_ELNO_ELGA') THEN
+     &          OPTION.EQ.'ENEL_ELNO') THEN
           DO 580,IAUX=1,NBORDR
             CALL JEMARQ()
             CALL JERECU('V')
@@ -1954,7 +1954,7 @@ C    ------------------------------------------------------------------
             CALL MECARA(CARA,EXICAR,CHCARA)
             CALL MECHC1(SAVCAR,MODELE,MATE,EXICAR,CHCARA)
             CALL RSEXC2(1,2,RESUCO,'SIEF_ELGA',IORDR,CHSIG,OPTION,IRET)
-            CALL RSEXC2(2,2,RESUCO,'SIEF_ELGA_DEPL',IORDR,CHSIG,OPTION,
+            CALL RSEXC2(2,2,RESUCO,'SIEF_ELGA',IORDR,CHSIG,OPTION,
      &                  IRET)
             IF (IRET.GT.0) THEN
               CALL U2MESK('A','CALCULEL3_18',1,OPTION)
@@ -1994,10 +1994,10 @@ C    ------------------------------------------------------------------
   580     CONTINUE
 
 C    ------------------------------------------------------------------
-C    -- OPTIONS "DISS_ELGA" ET "DISS_ELNO_ELGA"
+C    -- OPTIONS "DISS_ELGA" ET "DISS_ELNO"
 C    ------------------------------------------------------------------
         ELSEIF (OPTION.EQ.'DISS_ELGA' .OR.
-     &          OPTION.EQ.'DISS_ELNO_ELGA') THEN
+     &          OPTION.EQ.'DISS_ELNO') THEN
           DO 600,IAUX=1,NBORDR
             CALL JEMARQ()
             CALL JERECU('V')
@@ -2034,10 +2034,10 @@ C    ------------------------------------------------------------------
 
 
 C    ------------------------------------------------------------------
-C    -- OPTION "EXTR_ELGA_VARI"
+C    -- OPTION "VAEX_ELGA"
 C    ------------------------------------------------------------------
 
-        ELSEIF (OPTION.EQ.'EXTR_ELGA_VARI') THEN
+        ELSEIF (OPTION.EQ.'VAEX_ELGA') THEN
           DO 620,IAUX=1,NBORDR
             CALL JEMARQ()
             CALL JERECU('V')
@@ -2063,10 +2063,10 @@ C    ------------------------------------------------------------------
   620     CONTINUE
 C      -----------------------------------------------------------------
 C    ------------------------------------------------------------------
-C    -- OPTION "EXTR_ELNO_VARI"
+C    -- OPTION "VAEX_ELNO"
 C    ------------------------------------------------------------------
 
-        ELSEIF (OPTION.EQ.'EXTR_ELNO_VARI') THEN
+        ELSEIF (OPTION.EQ.'VAEX_ELNO') THEN
           DO 640,IAUX=1,NBORDR
             CALL JEMARQ()
             CALL JERECU('V')

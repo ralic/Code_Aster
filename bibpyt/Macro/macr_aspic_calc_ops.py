@@ -1,8 +1,8 @@
-#@ MODIF macr_aspic_calc_ops Macro  DATE 07/12/2010   AUTEUR GENIAUT S.GENIAUT 
+#@ MODIF macr_aspic_calc_ops Macro  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -403,7 +403,7 @@ def macr_aspic_calc_ops(self,TYPE_MAILLAGE,TUBULURE,MAILLAGE,MODELE,CHAM_MATER,C
   nomres = CALC_ELEM( reuse      = nomres,
                       RESULTAT   = nomres ,
                       TOUT_ORDRE = 'OUI'  ,
-                      OPTION     = ('SIEF_ELNO_ELGA','VARI_ELNO_ELGA','EQUI_ELNO_SIGM') ,
+                      OPTION     = ('SIEF_ELNO','VARI_ELNO_ELGA','EQUI_ELNO_SIGM') ,
                       INFO       = INFO ,)
 #
 #-----------------------------------------------------------------------
@@ -436,7 +436,7 @@ def macr_aspic_calc_ops(self,TYPE_MAILLAGE,TUBULURE,MAILLAGE,MODELE,CHAM_MATER,C
       mcsimp['GROUP_NO' ]='LD'+str(i)
       mcfact.append( _F( RESULTAT   = nomres,
                          TOUT_ORDRE ='OUI',
-                         NOM_CHAM   ='SIEF_ELNO_ELGA',
+                         NOM_CHAM   ='SIEF_ELNO',
                          PRECISION  =55.E-1,
                          TOUT_CMP   ='OUI',
                          OPERATION  ='EXTRACTION',**mcsimp))
@@ -463,7 +463,7 @@ def macr_aspic_calc_ops(self,TYPE_MAILLAGE,TUBULURE,MAILLAGE,MODELE,CHAM_MATER,C
         mcsimp['GROUP_NO'   ]='LD'+str(i)
         mcsimp['RESULTAT'   ]=nomres
         mcsimp['TOUT_ORDRE' ]='OUI'
-        mcsimp['NOM_CHAM'   ]='SIEF_ELNO_ELGA'
+        mcsimp['NOM_CHAM'   ]='SIEF_ELNO'
         mcsimp['PRECISION'  ]=55.E-1
         mcsimp['TOUT_CMP'   ]='OUI'
         mcsimp['OPERATION'  ]='EXTRACTION'
@@ -530,7 +530,7 @@ def macr_aspic_calc_ops(self,TYPE_MAILLAGE,TUBULURE,MAILLAGE,MODELE,CHAM_MATER,C
       mcsimp['GROUP_NO'   ]='LI'+str(i)
       mcsimp['RESULTAT'   ]=nomres
       mcsimp['TOUT_ORDRE' ]='OUI'
-      mcsimp['NOM_CHAM'   ]='SIEF_ELNO_ELGA'
+      mcsimp['NOM_CHAM'   ]='SIEF_ELNO'
       mcsimp['PRECISION'  ]=55.E-1
       mcsimp['TOUT_CMP'   ]='OUI'
       mcsimp['REPERE'     ]='LOCAL'
@@ -553,7 +553,7 @@ def macr_aspic_calc_ops(self,TYPE_MAILLAGE,TUBULURE,MAILLAGE,MODELE,CHAM_MATER,C
         mcsimp['GROUP_NO'   ]='LI'+str(i)
         mcsimp['RESULTAT'   ]=nomres
         mcsimp['TOUT_ORDRE' ]='OUI'
-        mcsimp['NOM_CHAM'   ]='SIEF_ELNO_ELGA'
+        mcsimp['NOM_CHAM'   ]='SIEF_ELNO'
         mcsimp['PRECISION'  ]=55.E-1
         mcsimp['TOUT_CMP'   ]='OUI'
         mcsimp['OPERATION'  ]='EXTRACTION'

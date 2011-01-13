@@ -1,4 +1,4 @@
-# MODIF  DATE 10/01/2011   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
 # TITRE ESSAI HYDROSTATIQUE SUIVI D UN TRIAXIAL A SUCCION FIXE
 # wtnv123e.para = tps_job 100 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -337,56 +337,56 @@ U1=STAT_NON_LINE(reuse=U1,
 
 
 U1=CALC_ELEM(  reuse=U1,
-                  OPTION=('SIEF_ELNO_ELGA',
+                  OPTION=('SIEF_ELNO',
                           'VARI_ELNO_ELGA',
                           ),
                   RESULTAT=U1,
                         )
 
 U1=CALC_NO(  reuse=U1,     RESULTAT=U1,
-                       OPTION=( 'SIEF_NOEU_ELGA',
+                       OPTION=( 'SIEF_NOEU',
                        'VARI_NOEU_ELGA',
                            ),
                 )
 
 PCR=CALC_ELEM(RESULTAT=U1,
-              OPTION='EXTR_ELNO_VARI',
+              OPTION='VAEX_ELNO',
               NOM_VARI='PCR'
               );
 
 PCR=CALC_NO(reuse=PCR,
             RESULTAT=PCR,
-            OPTION='EXTR_NOEU_VARI'
+            OPTION='VAEX_NOEU'
             );
 
 INDETA=CALC_ELEM(RESULTAT=U1,
-                 OPTION='EXTR_ELNO_VARI',
+                 OPTION='VAEX_ELNO',
                  NOM_VARI='IND_ETA'
                  );
 
 INDETA=CALC_NO(reuse=INDETA,
                RESULTAT=INDETA,
-               OPTION='EXTR_NOEU_VARI'
+               OPTION='VAEX_NOEU'
                );
 
 SEUIL=CALC_ELEM(RESULTAT=U1,
-                OPTION='EXTR_ELNO_VARI',
+                OPTION='VAEX_ELNO',
                 NOM_VARI='SEUIL_HYD'
                 );
 
 SEUIL=CALC_NO(reuse=SEUIL,
               RESULTAT=SEUIL,
-              OPTION='EXTR_NOEU_VARI'
+              OPTION='VAEX_NOEU'
               );
 
 INDHYD=CALC_ELEM(RESULTAT=U1,
-                 OPTION='EXTR_ELNO_VARI',
+                 OPTION='VAEX_ELNO',
                  NOM_VARI='IND_HYD'
                  );
 
 INDHYD=CALC_NO(reuse=INDHYD,
                RESULTAT=INDHYD,
-               OPTION='EXTR_NOEU_VARI'
+               OPTION='VAEX_NOEU'
                );
 
 #
@@ -400,7 +400,7 @@ TEST_RESU(RESU=(
 
                 _F(    RESULTAT=PCR,
                        NUME_ORDRE=1,
-                       NOM_CHAM='EXTR_ELNO_VARI',
+                       NOM_CHAM='VAEX_ELNO',
                        NOM_CMP='X1',
                        MAILLE='MA1',
                        NOEUD='NO1',
@@ -412,7 +412,7 @@ TEST_RESU(RESU=(
                 _F(    RESULTAT = PCR,
                        REFERENCE = 'NON_REGRESSION',
                        NOEUD = 'NO8',
-                       NOM_CHAM = 'EXTR_NOEU_VARI',
+                       NOM_CHAM = 'VAEX_NOEU',
                        NOM_CMP = 'X1',
                        INST=6.,
                        PRECISION = (1.E-4,1.E-5),
@@ -422,7 +422,7 @@ TEST_RESU(RESU=(
                 _F(    RESULTAT = PCR,
                        REFERENCE = 'NON_REGRESSION',
                        NOEUD = 'NO8',
-                       NOM_CHAM = 'EXTR_NOEU_VARI',
+                       NOM_CHAM = 'VAEX_NOEU',
                        NOM_CMP = 'X1',
                        INST=20.,
                        PRECISION = (1.E-4,1.E-5),
@@ -432,7 +432,7 @@ TEST_RESU(RESU=(
 
                 _F(    RESULTAT=SEUIL,
                        NUME_ORDRE=1,
-                       NOM_CHAM='EXTR_ELNO_VARI',
+                       NOM_CHAM='VAEX_ELNO',
                        NOM_CMP='X1',
                        MAILLE='MA1',
                        NOEUD='NO1',
@@ -444,7 +444,7 @@ TEST_RESU(RESU=(
                 _F(    RESULTAT = SEUIL,
                        REFERENCE = 'NON_REGRESSION',
                        NOEUD = 'NO8',
-                       NOM_CHAM = 'EXTR_NOEU_VARI',
+                       NOM_CHAM = 'VAEX_NOEU',
                        NOM_CMP = 'X1',
                        INST=6.,
                        PRECISION = (1.E-4,1.E-5),
@@ -454,7 +454,7 @@ TEST_RESU(RESU=(
                 _F(    RESULTAT = SEUIL,
                        REFERENCE = 'NON_REGRESSION',
                        NOEUD = 'NO8',
-                       NOM_CHAM = 'EXTR_NOEU_VARI',
+                       NOM_CHAM = 'VAEX_NOEU',
                        NOM_CMP = 'X1',
                        INST=20.,
                        PRECISION = (1.E-4,1.E-5),
@@ -465,7 +465,7 @@ TEST_RESU(RESU=(
 
                 _F(    RESULTAT=INDETA,
                        NUME_ORDRE=24,
-                       NOM_CHAM='EXTR_ELNO_VARI',
+                       NOM_CHAM='VAEX_ELNO',
                        NOM_CMP='X1',
                        MAILLE='MA1',
                        NOEUD='NO1',
@@ -477,7 +477,7 @@ TEST_RESU(RESU=(
                 _F(    RESULTAT = INDETA,
                        REFERENCE = 'NON_REGRESSION',
                        NOEUD = 'NO8',
-                       NOM_CHAM = 'EXTR_NOEU_VARI',
+                       NOM_CHAM = 'VAEX_NOEU',
                        NOM_CMP = 'X1',
                        INST=6.,
                        PRECISION = (1.E-4,1.E-5),
@@ -488,7 +488,7 @@ TEST_RESU(RESU=(
                 _F(    RESULTAT = INDETA,
                        REFERENCE = 'NON_REGRESSION',
                        NOEUD = 'NO8',
-                       NOM_CHAM = 'EXTR_NOEU_VARI',
+                       NOM_CHAM = 'VAEX_NOEU',
                        NOM_CMP = 'X1',
                        INST=20.,
                        PRECISION = (1.E-4,1.E-5),
@@ -499,7 +499,7 @@ TEST_RESU(RESU=(
                 _F(    RESULTAT = INDHYD,
                        REFERENCE = 'NON_REGRESSION',
                        NOEUD = 'NO8',
-                       NOM_CHAM = 'EXTR_NOEU_VARI',
+                       NOM_CHAM = 'VAEX_NOEU',
                        NOM_CMP = 'X1',
                        INST=6.,
                        PRECISION = (1.E-4,1.E-5),
@@ -510,7 +510,7 @@ TEST_RESU(RESU=(
                 _F(    RESULTAT = INDHYD,
                        REFERENCE = 'NON_REGRESSION',
                        NOEUD = 'NO8',
-                       NOM_CHAM = 'EXTR_NOEU_VARI',
+                       NOM_CHAM = 'VAEX_NOEU',
                        NOM_CMP = 'X1',
                        INST=6.,
                        PRECISION = (1.E-4,1.E-5),
@@ -520,7 +520,7 @@ TEST_RESU(RESU=(
 
                 _F(    RESULTAT=INDHYD,
                        NUME_ORDRE=24,
-                       NOM_CHAM='EXTR_ELNO_VARI',
+                       NOM_CHAM='VAEX_ELNO',
                        NOM_CMP='X1',
                        MAILLE='MA1',
                        NOEUD='NO1',

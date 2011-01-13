@@ -1,8 +1,8 @@
-# MODIF  DATE 16/11/2010   AUTEUR AUDEBERT S.AUDEBERT 
+# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
 # TITRE POUTRE ENCASTREE-LIBRE: REPONSE SPECTRALE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -84,8 +84,8 @@ MODE_MEC=MODE_ITER_SIMULT(  MATR_A=RIGIDITE,   MATR_B=MASSE,
 MODE_MEC=NORM_MODE(reuse=MODE_MEC,   MODE=MODE_MEC,   NORME='MASS_GENE',)
 
 MODE_MEC=CALC_ELEM(reuse=MODE_MEC,  RESULTAT=MODE_MEC,
-                         OPTION=('SIEF_ELGA_DEPL',
-                         'EFGE_ELNO_DEPL', 'SIPO_ELNO_DEPL'),)
+                         OPTION=('SIEF_ELGA',
+                         'EFGE_ELNO_DEPL', 'SIPO_ELNO'),)
 
 MODE_MEC=CALC_NO(reuse=MODE_MEC,  RESULTAT=MODE_MEC,
                     OPTION='REAC_NODA',
@@ -96,7 +96,7 @@ MODEMEC2=MODE_ITER_SIMULT(  MATR_A=RIGIDITE,   MATR_B=MASSE,
                               DIM_SOUS_ESPACE = 6) )
 
 MODEMEC2=CALC_ELEM(reuse=MODEMEC2,  RESULTAT=MODEMEC2,
-                         OPTION='SIEF_ELGA_DEPL', )
+                         OPTION='SIEF_ELGA', )
 
 MODEMEC2=CALC_NO(reuse=MODEMEC2,  RESULTAT=MODEMEC2,
                     OPTION='REAC_NODA',
@@ -165,7 +165,7 @@ MODE_STA=MODE_STATIQUE(  MATR_RIGI=RIGIDITE,   MATR_MASS=MASSE,
                                          NOM_DIR = 'Z')) )
 
 MODE_STA=CALC_ELEM(reuse=MODE_STA,  RESULTAT=MODE_STA,
-                         OPTION='SIEF_ELGA_DEPL',)
+                         OPTION='SIEF_ELGA',)
 
 MODE_STA=CALC_NO(reuse=MODE_STA,  RESULTAT=MODE_STA,
                    OPTION='REAC_NODA',
@@ -207,7 +207,7 @@ SISM_SP3=COMB_SISM_MODAL(  MODE_MECA=MODE_MEC,
                            COMB_DIRECTION=_F(  TYPE = 'QUAD'),
                            OPTION=( 'DEPL',  'REAC_NODA',
                                       'EFGE_ELNO_DEPL',
-                                      'SIPO_ELNO_DEPL',  )
+                                      'SIPO_ELNO',  )
                             )
 
 SISMSP32=COMB_SISM_MODAL(  MODE_MECA=MODEMEC2,
@@ -265,22 +265,22 @@ TEST_RESU(RESU=( _F(  RESULTAT = SISM_SP3,  NOM_CHAM = 'REAC_NODA',
                      NOEUD = 'A',     NOM_CMP = 'DRZ',    VALE = 5.91E+05))
                    )
 #
-TEST_RESU(RESU=(_F( RESULTAT= SISM_SP3 , NOM_CHAM= 'SIPO_ELNO_DEPL',
+TEST_RESU(RESU=(_F( RESULTAT= SISM_SP3 , NOM_CHAM= 'SIPO_ELNO',
                    CRITERE= 'RELATIF'  , PRECISION= 0.02,
                    NOEUD_CMP= ( 'COMBI' , 'QUAD', ),
                    MAILLE = 'E01',
                    NOEUD= 'A'    , NOM_CMP= 'SMFY'   , VALE=  4.611E+09),
-                _F( RESULTAT= SISM_SP3 , NOM_CHAM= 'SIPO_ELNO_DEPL',
+                _F( RESULTAT= SISM_SP3 , NOM_CHAM= 'SIPO_ELNO',
                    CRITERE= 'RELATIF' , PRECISION= 0.02,
                    NOEUD_CMP= ( 'COMBI' , 'QUAD', ),
                    MAILLE = 'E01',
                    NOEUD= 'A'    , NOM_CMP= 'SMFZ'   , VALE=  2.98E+10),
-                 _F( RESULTAT= SISM_SP3 , NOM_CHAM= 'SIPO_ELNO_DEPL',
+                 _F( RESULTAT= SISM_SP3 , NOM_CHAM= 'SIPO_ELNO',
                    CRITERE= 'RELATIF' , PRECISION= 0.02,
                    NOEUD_CMP= ( 'COMBI' , 'QUAD', ),
                    MAILLE = 'E01',
                    NOEUD= 'A'    , NOM_CMP= 'SVY'   , VALE=  1.588E+08),
-                 _F( RESULTAT= SISM_SP3 , NOM_CHAM= 'SIPO_ELNO_DEPL',
+                 _F( RESULTAT= SISM_SP3 , NOM_CHAM= 'SIPO_ELNO',
                    CRITERE= 'RELATIF' , PRECISION= 0.03,
                    NOEUD_CMP= ( 'COMBI' , 'QUAD', ),
                    MAILLE = 'E01',

@@ -3,9 +3,9 @@
       CHARACTER*16 OPTION,NOMTE
 C ......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 21/07/2009   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF ELEMENTS  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -23,7 +23,7 @@ C ======================================================================
 C .  - FONCTION REALISEE:  CALCUL  DEFORMATIONS GENERALISEES AUX NOEUDS
 C .                        COQUE 1D
 C .
-C .                        OPTIONS : 'DEGE_ELNO_DEPL  '
+C .                        OPTIONS : 'DEGE_ELNO  '
 C .                        ELEMENT: MECXSE3,METCSE3,METDSE3
 C .
 C .  - ARGUMENTS:

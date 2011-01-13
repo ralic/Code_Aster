@@ -1,9 +1,9 @@
-# MODIF  DATE 07/12/2010   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
 # TITRE ESTIMATEURS D'ERREUR EN QUANTITES D'INTERET POUR LE CALCUL DES FIC
 # zzzz257d.para = tps_job 120 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -163,7 +163,7 @@ IMPR_TABLE(TABLE=POST_K,
 
 RESU=CALC_ELEM(reuse =RESU,
                RESULTAT=RESU,
-               OPTION=('SIEF_ELNO_ELGA',
+               OPTION=('SIEF_ELNO',
                        'ERME_ELEM',),);
 
 # ---------------------------
@@ -187,7 +187,7 @@ RESUDUAL=MECA_STATIQUE(MODELE=MODL,
 
 RESUDUAL=CALC_ELEM(reuse =RESUDUAL,
                    RESULTAT=RESUDUAL,
-                   OPTION=('SIEF_ELNO_ELGA',
+                   OPTION=('SIEF_ELNO',
                            'ERME_ELEM',),);
 
 # ---------------------------
@@ -197,7 +197,7 @@ RESUDUAL=CALC_ELEM(reuse =RESUDUAL,
 RESU=CALC_ELEM(reuse =RESU,
                RESULTAT=RESU,
                TYPE_OPTION='TOUTES',
-               OPTION='QIRE_ELEM_SIGM',
+               OPTION='QIRE_ELEM',
                RESU_DUAL=RESUDUAL,);
 
 # ---------------------------

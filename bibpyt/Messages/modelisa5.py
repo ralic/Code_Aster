@@ -1,8 +1,8 @@
-#@ MODIF modelisa5 Messages  DATE 05/07/2010   AUTEUR SELLENET N.SELLENET 
+#@ MODIF modelisa5 Messages  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -296,7 +296,7 @@ cata_msg = {
 """),
 
 82 : _("""
- le champ des contraintes modales doit etre calcule par <calc_elem> option <sipo_elno_depl>.
+ le champ des contraintes modales doit etre calcule par <calc_elem> option <SIPO_ELNO>.
 """),
 
 83 : _("""

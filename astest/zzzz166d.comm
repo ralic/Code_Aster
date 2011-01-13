@@ -1,8 +1,8 @@
-# MODIF  DATE 19/10/2010   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
 # TITRE CALCUL DE FLUX THERMIQUE (2D AXIS_DIAG)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -71,7 +71,7 @@ RESUL = CREA_RESU(OPERATION='AFFE',
 #
 RESUL = CALC_ELEM(reuse=RESUL,
                  RESULTAT=RESUL,
-                 OPTION=('FLUX_ELGA_TEMP','FLUX_ELNO_TEMP',)
+                 OPTION=('FLUX_ELGA','FLUX_ELNO',)
                 )
 #
 # TEST TEMPERATURE :
@@ -92,78 +92,78 @@ TEST_RESU(RESU=(_F(RESULTAT=RESUL, INST=1., REFERENCE='ANALYTIQUE',
                    GROUP_NO='L', PRECISION=1.0E-3, VALE=25.0))
           )
 #
-# TEST FLUX_ELGA_TEMP :
+# TEST FLUX_ELGA :
 TEST_RESU(RESU=(_F(RESULTAT=RESUL, INST=1., REFERENCE='ANALYTIQUE',
-                   NOM_CHAM='FLUX_ELGA_TEMP', NOM_CMP='FLUX',
+                   NOM_CHAM='FLUX_ELGA', NOM_CMP='FLUX',
                    MAILLE='M1', POINT=1,
                    PRECISION=1.0E-3, VALE=-2.),
                 _F(RESULTAT=RESUL, INST=1., REFERENCE='ANALYTIQUE',
-                   NOM_CHAM='FLUX_ELGA_TEMP', NOM_CMP='FLUY',
+                   NOM_CHAM='FLUX_ELGA', NOM_CMP='FLUY',
                    MAILLE='M1', POINT=1,
                    PRECISION=1.0E-3, VALE=-3.),
 #
                 _F(RESULTAT=RESUL, INST=1., REFERENCE='ANALYTIQUE',
-                   NOM_CHAM='FLUX_ELGA_TEMP', NOM_CMP='FLUX',
+                   NOM_CHAM='FLUX_ELGA', NOM_CMP='FLUX',
                    MAILLE='M820', POINT=1,
                    PRECISION=1.0E-3, VALE=-2.),
                 _F(RESULTAT=RESUL, INST=1., REFERENCE='ANALYTIQUE',
-                   NOM_CHAM='FLUX_ELGA_TEMP', NOM_CMP='FLUY',
+                   NOM_CHAM='FLUX_ELGA', NOM_CMP='FLUY',
                    MAILLE='M820', POINT=1,
                    PRECISION=1.0E-3, VALE=-3.),
 #
                 _F(RESULTAT=RESUL, INST=1., REFERENCE='ANALYTIQUE',
-                   NOM_CHAM='FLUX_ELGA_TEMP', NOM_CMP='FLUX',
+                   NOM_CHAM='FLUX_ELGA', NOM_CMP='FLUX',
                    MAILLE='M1581', POINT=1,
                    PRECISION=1.0E-3, VALE=-2.),
                 _F(RESULTAT=RESUL, INST=1., REFERENCE='ANALYTIQUE',
-                   NOM_CHAM='FLUX_ELGA_TEMP', NOM_CMP='FLUY',
+                   NOM_CHAM='FLUX_ELGA', NOM_CMP='FLUY',
                    MAILLE='M1581', POINT=1,
                    PRECISION=1.0E-3, VALE=-3.),
 #
                 _F(RESULTAT=RESUL, INST=1., REFERENCE='ANALYTIQUE',
-                   NOM_CHAM='FLUX_ELGA_TEMP', NOM_CMP='FLUX',
+                   NOM_CHAM='FLUX_ELGA', NOM_CMP='FLUX',
                    MAILLE='M2400', POINT=1,
                    PRECISION=1.0E-3, VALE=-2.),
                 _F(RESULTAT=RESUL, INST=1., REFERENCE='ANALYTIQUE',
-                   NOM_CHAM='FLUX_ELGA_TEMP', NOM_CMP='FLUY',
+                   NOM_CHAM='FLUX_ELGA', NOM_CMP='FLUY',
                    MAILLE='M2400', POINT=1,
                    PRECISION=1.0E-3, VALE=-3.))
           )
 #
-# TEST FLUX_ELNO_TEMP :
+# TEST FLUX_ELNO :
 TEST_RESU(RESU=(_F(RESULTAT=RESUL, INST=1., REFERENCE='ANALYTIQUE',
-                   NOM_CHAM='FLUX_ELNO_TEMP', NOM_CMP='FLUX',
+                   NOM_CHAM='FLUX_ELNO', NOM_CMP='FLUX',
                    MAILLE='M1', GROUP_NO='A',
                    PRECISION=1.0E-3, VALE=-2.),
                 _F(RESULTAT=RESUL, INST=1., REFERENCE='ANALYTIQUE',
-                   NOM_CHAM='FLUX_ELNO_TEMP', NOM_CMP='FLUY',
+                   NOM_CHAM='FLUX_ELNO', NOM_CMP='FLUY',
                    MAILLE='M1', GROUP_NO='A',
                    PRECISION=1.0E-3, VALE=-3.),
 #
                 _F(RESULTAT=RESUL, INST=1., REFERENCE='ANALYTIQUE',
-                   NOM_CHAM='FLUX_ELNO_TEMP', NOM_CMP='FLUX',
+                   NOM_CHAM='FLUX_ELNO', NOM_CMP='FLUX',
                    MAILLE='M820', GROUP_NO='C',
                    PRECISION=1.0E-3, VALE=-2.),
                 _F(RESULTAT=RESUL, INST=1., REFERENCE='ANALYTIQUE',
-                   NOM_CHAM='FLUX_ELNO_TEMP', NOM_CMP='FLUY',
+                   NOM_CHAM='FLUX_ELNO', NOM_CMP='FLUY',
                    MAILLE='M820', GROUP_NO='C',
                    PRECISION=1.0E-3, VALE=-3.),
 #
                 _F(RESULTAT=RESUL, INST=1., REFERENCE='ANALYTIQUE',
-                   NOM_CHAM='FLUX_ELNO_TEMP', NOM_CMP='FLUX',
+                   NOM_CHAM='FLUX_ELNO', NOM_CMP='FLUX',
                    MAILLE='M1581', GROUP_NO='J',
                    PRECISION=1.0E-3, VALE=-2.),
                 _F(RESULTAT=RESUL, INST=1., REFERENCE='ANALYTIQUE',
-                   NOM_CHAM='FLUX_ELNO_TEMP', NOM_CMP='FLUY',
+                   NOM_CHAM='FLUX_ELNO', NOM_CMP='FLUY',
                    MAILLE='M1581', GROUP_NO='J',
                    PRECISION=1.0E-3, VALE=-3.),
 #
                 _F(RESULTAT=RESUL, INST=1., REFERENCE='ANALYTIQUE',
-                   NOM_CHAM='FLUX_ELNO_TEMP', NOM_CMP='FLUX',
+                   NOM_CHAM='FLUX_ELNO', NOM_CMP='FLUX',
                    MAILLE='M2400', GROUP_NO='L',
                    PRECISION=1.0E-3, VALE=-2.),
                 _F(RESULTAT=RESUL, INST=1., REFERENCE='ANALYTIQUE',
-                   NOM_CHAM='FLUX_ELNO_TEMP', NOM_CMP='FLUY',
+                   NOM_CHAM='FLUX_ELNO', NOM_CMP='FLUY',
                    MAILLE='M2400', GROUP_NO='L',
                    PRECISION=1.0E-3, VALE=-3.))
           )
@@ -193,7 +193,7 @@ RESUQ = CREA_RESU(OPERATION='AFFE',
 #
 RESUQ = CALC_ELEM(reuse=RESUQ,
                  RESULTAT=RESUQ,
-                 OPTION=('FLUX_ELGA_TEMP','FLUX_ELNO_TEMP',)
+                 OPTION=('FLUX_ELGA','FLUX_ELNO',)
                 )
 #
 # TEST TEMPERATURE :
@@ -214,40 +214,40 @@ TEST_RESU(RESU=(_F(RESULTAT=RESUQ, INST=1., REFERENCE='ANALYTIQUE',
                    GROUP_NO='L', PRECISION=1.0E-3, VALE=125.0))
           )
 #
-# TEST FLUX_ELNO_TEMP :
+# TEST FLUX_ELNO :
 TEST_RESU(RESU=(_F(RESULTAT=RESUQ, INST=1., REFERENCE='ANALYTIQUE',
-                   NOM_CHAM='FLUX_ELNO_TEMP', NOM_CMP='FLUX',
+                   NOM_CHAM='FLUX_ELNO', NOM_CMP='FLUX',
                    MAILLE='M1', GROUP_NO='A',
                    PRECISION=5.5E-2, VALE=-4.),
                 _F(RESULTAT=RESUQ, INST=1., REFERENCE='ANALYTIQUE',
-                   NOM_CHAM='FLUX_ELNO_TEMP', NOM_CMP='FLUY',
+                   NOM_CHAM='FLUX_ELNO', NOM_CMP='FLUY',
                    MAILLE='M1', GROUP_NO='A',
                    PRECISION=10.5E-2, VALE=-3.),
 #
                 _F(RESULTAT=RESUQ, INST=1., REFERENCE='ANALYTIQUE',
-                   NOM_CHAM='FLUX_ELNO_TEMP', NOM_CMP='FLUX',
+                   NOM_CHAM='FLUX_ELNO', NOM_CMP='FLUX',
                    MAILLE='M820', GROUP_NO='C',
                    PRECISION=1.5E-2, VALE=-20.),
                 _F(RESULTAT=RESUQ, INST=1., REFERENCE='ANALYTIQUE',
-                   NOM_CHAM='FLUX_ELNO_TEMP', NOM_CMP='FLUY',
+                   NOM_CHAM='FLUX_ELNO', NOM_CMP='FLUY',
                    MAILLE='M820', GROUP_NO='C',
                    PRECISION=10.5E-2, VALE=-3.),
 #
                 _F(RESULTAT=RESUQ, INST=1., REFERENCE='ANALYTIQUE',
-                   NOM_CHAM='FLUX_ELNO_TEMP', NOM_CMP='FLUX',
+                   NOM_CHAM='FLUX_ELNO', NOM_CMP='FLUX',
                    MAILLE='M1581', GROUP_NO='J',
                    PRECISION=5.5E-2, VALE=-4.),
                 _F(RESULTAT=RESUQ, INST=1., REFERENCE='ANALYTIQUE',
-                   NOM_CHAM='FLUX_ELNO_TEMP', NOM_CMP='FLUY',
+                   NOM_CHAM='FLUX_ELNO', NOM_CMP='FLUY',
                    MAILLE='M1581', GROUP_NO='J',
                    PRECISION=1.5E-2, VALE=-30.),
 #
                 _F(RESULTAT=RESUQ, INST=1., REFERENCE='ANALYTIQUE',
-                   NOM_CHAM='FLUX_ELNO_TEMP', NOM_CMP='FLUX',
+                   NOM_CHAM='FLUX_ELNO', NOM_CMP='FLUX',
                    MAILLE='M2400', GROUP_NO='L',
                    PRECISION=1.5E-2, VALE=-20.),
                 _F(RESULTAT=RESUQ, INST=1., REFERENCE='ANALYTIQUE',
-                   NOM_CHAM='FLUX_ELNO_TEMP', NOM_CMP='FLUY',
+                   NOM_CHAM='FLUX_ELNO', NOM_CMP='FLUY',
                    MAILLE='M2400', GROUP_NO='L',
                    PRECISION=1.5E-2, VALE=-30.))
           )

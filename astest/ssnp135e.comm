@@ -1,9 +1,9 @@
-# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
 # TITRE SIMULATION D'UNE PLAQUE TROUEE EN PLASTICITE - METHODE ARLEQUIN
 # ssnp135e.para = tps_job 110 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -151,11 +151,11 @@ RESU=STAT_NON_LINE(MODELE=MOD,
 
 RESU=CALC_ELEM(reuse =RESU,
                RESULTAT=RESU,
-               OPTION=('SIEF_ELNO_ELGA','EQUI_ELNO_SIGM','VARI_ELNO_ELGA',),);
+               OPTION=('SIEF_ELNO','EQUI_ELNO_SIGM','VARI_ELNO_ELGA',),);
 
 RESU=CALC_NO(reuse =RESU,
              RESULTAT=RESU,
-             OPTION=('SIEF_NOEU_ELGA','EQUI_NOEU_SIGM','VARI_NOEU_ELGA',),);
+             OPTION=('SIEF_NOEU','EQUI_NOEU_SIGM','VARI_NOEU_ELGA',),);
 
 RESU=CALC_NO(reuse =RESU,
              RESULTAT=RESU,
@@ -268,7 +268,7 @@ CERCLE=INTE_MAIL_2D(MAILLAGE=MAIL,
 STHETA=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                INTITULE='STHETA',
                                RESULTAT=RESU,
-                               NOM_CHAM='SIEF_ELNO_ELGA',
+                               NOM_CHAM='SIEF_ELNO',
                                INST=1.0,
                                CHEMIN=CERCLE,
                                NOM_CMP=('SIXX','SIYY','SIXY',),
@@ -300,7 +300,7 @@ TEST_TABLE(TABLE=STHETA,
 SYY_A=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                               INTITULE='SYY_A',
                               RESULTAT=RESU,
-                              NOM_CHAM='SIEF_NOEU_ELGA',
+                              NOM_CHAM='SIEF_NOEU',
                               GROUP_NO='GM33',
                               NOM_CMP='SIYY',),);
 
@@ -330,7 +330,7 @@ TEST_TABLE(TABLE=SYY_A,
 SXX_B=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                               INTITULE='SXX_B',
                               RESULTAT=RESU,
-                              NOM_CHAM='SIEF_NOEU_ELGA',
+                              NOM_CHAM='SIEF_NOEU',
                               GROUP_NO='GM32',
                               NOM_CMP='SIXX',),);
 
@@ -441,12 +441,12 @@ RESU=STAT_NON_LINE(reuse =RESU,
 RESU=CALC_ELEM(reuse =RESU,
                RESULTAT=RESU,
                NUME_ORDRE=24,
-               OPTION=('SIEF_ELNO_ELGA','EQUI_ELNO_SIGM','VARI_ELNO_ELGA',),);
+               OPTION=('SIEF_ELNO','EQUI_ELNO_SIGM','VARI_ELNO_ELGA',),);
 
 RESU=CALC_NO(reuse =RESU,
              RESULTAT=RESU,
              NUME_ORDRE=24,
-             OPTION=('SIEF_NOEU_ELGA','EQUI_NOEU_SIGM','VARI_NOEU_ELGA',),);
+             OPTION=('SIEF_NOEU','EQUI_NOEU_SIGM','VARI_NOEU_ELGA',),);
 
 ###
 # A. CONTRAINTES AU BORD DU TROU
@@ -455,7 +455,7 @@ RESU=CALC_NO(reuse =RESU,
 STHETA2=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                 INTITULE='STHETA2',
                                 RESULTAT=RESU,
-                                NOM_CHAM='SIEF_ELNO_ELGA',
+                                NOM_CHAM='SIEF_ELNO',
                                 INST=5.4,
                                 CHEMIN=CERCLE,
                                 NOM_CMP=('SIXX','SIYY','SIXY',),
@@ -478,7 +478,7 @@ TEST_TABLE(TABLE=STHETA2,
 SYY_A2=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                INTITULE='SYY_A2',
                                RESULTAT=RESU,
-                               NOM_CHAM='SIEF_NOEU_ELGA',
+                               NOM_CHAM='SIEF_NOEU',
                                GROUP_NO='GM33',
                                NOM_CMP='SIYY',),);
 
@@ -508,7 +508,7 @@ TEST_TABLE(TABLE=SYY_A2,
 SXX_B2=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                INTITULE='SXX_B2',
                                RESULTAT=RESU,
-                               NOM_CHAM='SIEF_NOEU_ELGA',
+                               NOM_CHAM='SIEF_NOEU',
                                GROUP_NO='GM32',
                                NOM_CMP='SIXX',),);
 

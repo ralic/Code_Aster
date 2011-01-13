@@ -1,10 +1,10 @@
-# MODIF  DATE 18/05/2010   AUTEUR PROIX J-M.PROIX 
+# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
 # ======================================================================
 # TITRE ETUDE  : ESSAI TRIAXIAL DRAINE AVEC LE MODELE DE LAIGLE
 # ssnv158a.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
@@ -126,7 +126,7 @@ U1=STAT_NON_LINE(
 
 U1=CALC_ELEM( reuse=U1,
                             OPTION=(
-                  'SIEF_ELNO_ELGA',  'VARI_ELNO_ELGA',),
+                  'SIEF_ELNO',  'VARI_ELNO_ELGA',),
                           RESULTAT=U1,
               )
 
@@ -204,14 +204,14 @@ U2=STAT_NON_LINE(
               )
 
 U2=CALC_ELEM( reuse      = U2,
-              OPTION     = ('SIEF_ELNO_ELGA',),
+              OPTION     = ('SIEF_ELNO',),
               RESULTAT   = U2,
               )
 
 U2=CALC_NO(  reuse      = U2,
              RESULTAT   = U2,
              TOUT_ORDRE = 'OUI',
-             OPTION     = ('SIEF_NOEU_ELGA',),
+             OPTION     = ('SIEF_NOEU',),
                )
 
 #-------------------------
@@ -229,12 +229,12 @@ RODEPY=RECU_FONCTION(RESULTAT=U2,
                      NOEUD='N4',
                      TITRE='DEP Y',);
 ROSIGX=RECU_FONCTION(RESULTAT=U2,
-                     NOM_CHAM='SIEF_NOEU_ELGA',
+                     NOM_CHAM='SIEF_NOEU',
                      NOM_CMP='SIXX',
                      NOEUD='N4',
                      TITRE='SIG X',);
 ROSIGY=RECU_FONCTION(RESULTAT=U2,
-                     NOM_CHAM='SIEF_NOEU_ELGA',
+                     NOM_CHAM='SIEF_NOEU',
                      NOM_CMP='SIYY',
                      NOEUD='N4',
                      TITRE='SIG Y',);
@@ -246,7 +246,7 @@ TEST_RESU(RESU=(
                       REFERENCE  = 'NON_REGRESSION',
                       VERSION    = '6.2.24',
                       NOEUD      = 'N4',
-                      NOM_CHAM   = 'SIEF_NOEU_ELGA',
+                      NOM_CHAM   = 'SIEF_NOEU',
                       NOM_CMP    = 'SIXX',
                       NUME_ORDRE = 5,
                       PRECISION  = 1.E-3,
@@ -255,7 +255,7 @@ TEST_RESU(RESU=(
                       REFERENCE  = 'NON_REGRESSION',
                       VERSION    = '6.2.24',
                       NOEUD      = 'N4',
-                      NOM_CHAM   = 'SIEF_NOEU_ELGA',
+                      NOM_CHAM   = 'SIEF_NOEU',
                       NOM_CMP    = 'SIXX',
                       NUME_ORDRE = 49,
                       PRECISION  = 1.E-3,
@@ -266,7 +266,7 @@ TEST_RESU(RESU=(
                       REFERENCE  = 'NON_REGRESSION',
                       VERSION    = '6.2.24',
                       NOEUD      = 'N4',
-                      NOM_CHAM   = 'SIEF_NOEU_ELGA',
+                      NOM_CHAM   = 'SIEF_NOEU',
                       NOM_CMP    = 'SIZZ',
                       NUME_ORDRE = 5,
                       PRECISION  = 1.E-3,
@@ -275,7 +275,7 @@ TEST_RESU(RESU=(
                       REFERENCE  = 'NON_REGRESSION',
                       VERSION    = '6.2.24',
                       NOEUD      = 'N4',
-                      NOM_CHAM   = 'SIEF_NOEU_ELGA',
+                      NOM_CHAM   = 'SIEF_NOEU',
                       NOM_CMP    = 'SIZZ',
                       NUME_ORDRE = 49,
                       PRECISION  = 1.E-3,
@@ -286,7 +286,7 @@ TEST_RESU(RESU=(
                       REFERENCE  = 'NON_REGRESSION',
                       VERSION    = '6.2.24',
                       NOEUD      = 'N4',
-                      NOM_CHAM   = 'SIEF_NOEU_ELGA',
+                      NOM_CHAM   = 'SIEF_NOEU',
                       NOM_CMP    = 'SIYY',
                       NUME_ORDRE = 5,
                       PRECISION  = 1.E-3,
@@ -295,7 +295,7 @@ TEST_RESU(RESU=(
                       REFERENCE  = 'NON_REGRESSION',
                       VERSION    = '6.2.24',
                       NOEUD      = 'N4',
-                      NOM_CHAM   = 'SIEF_NOEU_ELGA',
+                      NOM_CHAM   = 'SIEF_NOEU',
                       NOM_CMP    = 'SIYY',
                       NUME_ORDRE = 10,
                       PRECISION  = 1.E-3,
@@ -304,7 +304,7 @@ TEST_RESU(RESU=(
                       REFERENCE  = 'NON_REGRESSION',
                       VERSION    = '6.2.24',
                       NOEUD      = 'N4',
-                      NOM_CHAM   = 'SIEF_NOEU_ELGA',
+                      NOM_CHAM   = 'SIEF_NOEU',
                       NOM_CMP    = 'SIYY',
                       NUME_ORDRE = 16,
                       PRECISION  = 1.E-3,
@@ -313,7 +313,7 @@ TEST_RESU(RESU=(
                       REFERENCE  = 'NON_REGRESSION',
                       VERSION    = '6.2.24',
                       NOEUD      = 'N4',
-                      NOM_CHAM   = 'SIEF_NOEU_ELGA',
+                      NOM_CHAM   = 'SIEF_NOEU',
                       NOM_CMP    = 'SIYY',
                       NUME_ORDRE = 25,
                       PRECISION  = 1.E-3,
@@ -322,7 +322,7 @@ TEST_RESU(RESU=(
                       REFERENCE  = 'NON_REGRESSION',
                       VERSION    = '6.2.24',
                       NOEUD      = 'N4',
-                      NOM_CHAM   = 'SIEF_NOEU_ELGA',
+                      NOM_CHAM   = 'SIEF_NOEU',
                       NOM_CMP    = 'SIYY',
                       NUME_ORDRE = 30,
                       PRECISION  = 1.E-3,
@@ -331,7 +331,7 @@ TEST_RESU(RESU=(
                       REFERENCE  = 'NON_REGRESSION',
                       VERSION    = '6.2.24',
                       NOEUD      = 'N4',
-                      NOM_CHAM   = 'SIEF_NOEU_ELGA',
+                      NOM_CHAM   = 'SIEF_NOEU',
                       NOM_CMP    = 'SIYY',
                       NUME_ORDRE = 40,
                       PRECISION  = 1.E-3,
@@ -340,7 +340,7 @@ TEST_RESU(RESU=(
                       REFERENCE  = 'NON_REGRESSION',
                       VERSION    = '6.2.24',
                       NOEUD      = 'N4',
-                      NOM_CHAM   = 'SIEF_NOEU_ELGA',
+                      NOM_CHAM   = 'SIEF_NOEU',
                       NOM_CMP    = 'SIYY',
                       NUME_ORDRE = 49,
                       PRECISION  = 1.E-3,
@@ -476,14 +476,14 @@ U3=STAT_NON_LINE(
               )
 
 U3=CALC_ELEM( reuse      = U3,
-              OPTION     = ('SIEF_ELNO_ELGA',),
+              OPTION     = ('SIEF_ELNO',),
               RESULTAT   = U3,
               )
 
 U3=CALC_NO(  reuse      = U3,
              RESULTAT   = U3,
              TOUT_ORDRE = 'OUI',
-             OPTION     = ('SIEF_NOEU_ELGA',),
+             OPTION     = ('SIEF_NOEU',),
                )
 
 #-------------------------
@@ -501,12 +501,12 @@ U3=CALC_NO(  reuse      = U3,
 #                     NOEUD='N4',
 #                     TITRE='DEP Y',);
 #ROSIGX=RECU_FONCTION(RESULTAT=U3,
-#                     NOM_CHAM='SIEF_NOEU_ELGA',
+#                     NOM_CHAM='SIEF_NOEU',
 #                     NOM_CMP='SIXX',
 #                     NOEUD='N4',
 #                     TITRE='SIG X',);
 #ROSIGY=RECU_FONCTION(RESULTAT=U3,
-#                     NOM_CHAM='SIEF_NOEU_ELGA',
+#                     NOM_CHAM='SIEF_NOEU',
 #                     NOM_CMP='SIYY',
 #                     NOEUD='N4',
 #                     TITRE='SIG Y',);
@@ -518,7 +518,7 @@ TEST_RESU(RESU=(
                       REFERENCE  = 'NON_REGRESSION',
                       VERSION    = '6.2.24',
                       NOEUD      = 'N4',
-                      NOM_CHAM   = 'SIEF_NOEU_ELGA',
+                      NOM_CHAM   = 'SIEF_NOEU',
                       NOM_CMP    = 'SIXX',
                       NUME_ORDRE = 5,
                       PRECISION  = 1.E-3,
@@ -529,7 +529,7 @@ TEST_RESU(RESU=(
                       REFERENCE  = 'NON_REGRESSION',
                       VERSION    = '6.2.24',
                       NOEUD      = 'N4',
-                      NOM_CHAM   = 'SIEF_NOEU_ELGA',
+                      NOM_CHAM   = 'SIEF_NOEU',
                       NOM_CMP    = 'SIZZ',
                       NUME_ORDRE = 5,
                       PRECISION  = 1.E-3,
@@ -540,7 +540,7 @@ TEST_RESU(RESU=(
                       REFERENCE  = 'NON_REGRESSION',
                       VERSION    = '6.2.24',
                       NOEUD      = 'N4',
-                      NOM_CHAM   = 'SIEF_NOEU_ELGA',
+                      NOM_CHAM   = 'SIEF_NOEU',
                       NOM_CMP    = 'SIYY',
                       NUME_ORDRE = 5,
                       PRECISION  = 1.E-3,
@@ -549,7 +549,7 @@ TEST_RESU(RESU=(
                       REFERENCE  = 'NON_REGRESSION',
                       VERSION    = '6.2.24',
                       NOEUD      = 'N4',
-                      NOM_CHAM   = 'SIEF_NOEU_ELGA',
+                      NOM_CHAM   = 'SIEF_NOEU',
                       NOM_CMP    = 'SIYY',
                       NUME_ORDRE = 10,
                       PRECISION  = 1.E-3,
@@ -648,14 +648,14 @@ U4=STAT_NON_LINE(
               )
 
 U4=CALC_ELEM( reuse      = U4,
-              OPTION     = ('SIEF_ELNO_ELGA',),
+              OPTION     = ('SIEF_ELNO',),
               RESULTAT   = U4,
               )
 
 U4=CALC_NO(  reuse      = U4,
              RESULTAT   = U4,
              TOUT_ORDRE = 'OUI',
-             OPTION     = ('SIEF_NOEU_ELGA',),
+             OPTION     = ('SIEF_NOEU',),
                )
 
 #-------------------------
@@ -673,12 +673,12 @@ U4=CALC_NO(  reuse      = U4,
 #                     NOEUD='N4',
 #                     TITRE='DEP Y',);
 #ROSIGX=RECU_FONCTION(RESULTAT=U4,
-#                     NOM_CHAM='SIEF_NOEU_ELGA',
+#                     NOM_CHAM='SIEF_NOEU',
 #                     NOM_CMP='SIXX',
 #                     NOEUD='N4',
 #                     TITRE='SIG X',);
 #ROSIGY=RECU_FONCTION(RESULTAT=U4,
-#                     NOM_CHAM='SIEF_NOEU_ELGA',
+#                     NOM_CHAM='SIEF_NOEU',
 #                     NOM_CMP='SIYY',
 #                     NOEUD='N4',
 #                     TITRE='SIG Y',);
@@ -690,7 +690,7 @@ TEST_RESU(RESU=(
                       REFERENCE  = 'NON_REGRESSION',
                       VERSION    = '6.2.24',
                       NOEUD      = 'N4',
-                      NOM_CHAM   = 'SIEF_NOEU_ELGA',
+                      NOM_CHAM   = 'SIEF_NOEU',
                       NOM_CMP    = 'SIXX',
                       NUME_ORDRE = 5,
                       PRECISION  = 1.E-3,
@@ -701,7 +701,7 @@ TEST_RESU(RESU=(
                       REFERENCE  = 'NON_REGRESSION',
                       VERSION    = '6.2.24',
                       NOEUD      = 'N4',
-                      NOM_CHAM   = 'SIEF_NOEU_ELGA',
+                      NOM_CHAM   = 'SIEF_NOEU',
                       NOM_CMP    = 'SIZZ',
                       NUME_ORDRE = 5,
                       PRECISION  = 1.E-3,
@@ -712,7 +712,7 @@ TEST_RESU(RESU=(
                       REFERENCE  = 'NON_REGRESSION',
                       VERSION    = '6.2.24',
                       NOEUD      = 'N4',
-                      NOM_CHAM   = 'SIEF_NOEU_ELGA',
+                      NOM_CHAM   = 'SIEF_NOEU',
                       NOM_CMP    = 'SIYY',
                       NUME_ORDRE = 5,
                       PRECISION  = 1.E-3,
@@ -721,7 +721,7 @@ TEST_RESU(RESU=(
                       REFERENCE  = 'NON_REGRESSION',
                       VERSION    = '6.2.24',
                       NOEUD      = 'N4',
-                      NOM_CHAM   = 'SIEF_NOEU_ELGA',
+                      NOM_CHAM   = 'SIEF_NOEU',
                       NOM_CMP    = 'SIYY',
                       NUME_ORDRE = 10,
                       PRECISION  = 1.E-3,

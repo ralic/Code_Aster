@@ -1,9 +1,9 @@
-# MODIF  DATE 07/12/2010   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
 # TITRE CYLINDRE EN INCOMPRESSIBLE (TETRA10) GRANDES DEFORMATIONS
 # ssnv112b.para = tps_job 60 mem_job 200Mo mem_aster 70 ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -140,11 +140,11 @@ EVOL=STAT_NON_LINE(MODELE=MO,
 #            IL FAUDRA COMPLETER LE MAILLAGE UN JOUR. G. NICOLAS.
 EVOL=CALC_ELEM(reuse =EVOL,
                RESULTAT=EVOL,
-               OPTION=('SIEF_ELNO_ELGA','EQUI_ELNO_SIGM','ERME_ELEM','ERME_ELNO',),);
+               OPTION=('SIEF_ELNO','EQUI_ELNO_SIGM','ERME_ELEM','ERME_ELNO',),);
 
 EVOL=CALC_NO(reuse =EVOL,
              RESULTAT=EVOL,
-             OPTION=('SIEF_NOEU_ELGA','EQUI_NOEU_SIGM',),);
+             OPTION=('SIEF_NOEU','EQUI_NOEU_SIGM',),);
 
 #--------------------------------------------------------------
 #       COMPARAISON DES RESULTATS A LA SOLUTION ANALYTIQUE
@@ -192,7 +192,7 @@ TEST_RESU(RESU=(_F(RESULTAT=EVOL,
     # CONTRAINTES
 TEST_RESU(RESU=(_F(RESULTAT=EVOL,
                    INST=1.0,
-                   NOM_CHAM='SIEF_NOEU_ELGA',
+                   NOM_CHAM='SIEF_NOEU',
                    NOM_CMP='SIYY',
                    GROUP_NO='A',
                    VALE=99.9566,
@@ -201,7 +201,7 @@ TEST_RESU(RESU=(_F(RESULTAT=EVOL,
                    REFERENCE='ANALYTIQUE',),
                 _F(RESULTAT=EVOL,
                    INST=1.0,
-                   NOM_CHAM='SIEF_NOEU_ELGA',
+                   NOM_CHAM='SIEF_NOEU',
                    NOM_CMP='SIXX',
                    GROUP_NO='A',
                    VALE=-59.9955,
@@ -210,7 +210,7 @@ TEST_RESU(RESU=(_F(RESULTAT=EVOL,
                    REFERENCE='ANALYTIQUE',),
                 _F(RESULTAT=EVOL,
                    INST=1.0,
-                   NOM_CHAM='SIEF_NOEU_ELGA',
+                   NOM_CHAM='SIEF_NOEU',
                    NOM_CMP='SIZZ',
                    GROUP_NO='A',
                    VALE=19.9326,
@@ -219,7 +219,7 @@ TEST_RESU(RESU=(_F(RESULTAT=EVOL,
                    REFERENCE='ANALYTIQUE',),
                 _F(RESULTAT=EVOL,
                    INST=1.0,
-                   NOM_CHAM='SIEF_NOEU_ELGA',
+                   NOM_CHAM='SIEF_NOEU',
                    NOM_CMP='SIXY',
                    GROUP_NO='A',
                    VALE=0.0,
@@ -228,7 +228,7 @@ TEST_RESU(RESU=(_F(RESULTAT=EVOL,
                    REFERENCE='ANALYTIQUE',),
                 _F(RESULTAT=EVOL,
                    INST=1.0,
-                   NOM_CHAM='SIEF_NOEU_ELGA',
+                   NOM_CHAM='SIEF_NOEU',
                    NOM_CMP='SIXX',
                    GROUP_NO='F',
                    VALE=20.003,
@@ -237,7 +237,7 @@ TEST_RESU(RESU=(_F(RESULTAT=EVOL,
                    REFERENCE='ANALYTIQUE',),
                 _F(RESULTAT=EVOL,
                    INST=1.0,
-                   NOM_CHAM='SIEF_NOEU_ELGA',
+                   NOM_CHAM='SIEF_NOEU',
                    NOM_CMP='SIYY',
                    GROUP_NO='F',
                    VALE=20.003,
@@ -246,7 +246,7 @@ TEST_RESU(RESU=(_F(RESULTAT=EVOL,
                    REFERENCE='ANALYTIQUE',),
                 _F(RESULTAT=EVOL,
                    INST=1.0,
-                   NOM_CHAM='SIEF_NOEU_ELGA',
+                   NOM_CHAM='SIEF_NOEU',
                    NOM_CMP='SIZZ',
                    GROUP_NO='F',
                    VALE=20.003,
@@ -255,7 +255,7 @@ TEST_RESU(RESU=(_F(RESULTAT=EVOL,
                    REFERENCE='ANALYTIQUE',),
                 _F(RESULTAT=EVOL,
                    INST=1.0,
-                   NOM_CHAM='SIEF_NOEU_ELGA',
+                   NOM_CHAM='SIEF_NOEU',
                    NOM_CMP='SIXY',
                    GROUP_NO='F',
                    VALE=-20.003,

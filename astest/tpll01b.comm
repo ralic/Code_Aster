@@ -1,8 +1,8 @@
-# MODIF  DATE 08/11/2007   AUTEUR SALMONA L.SALMONA 
+# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
 # TITRE MUR PLAN EN THERMIQUE STATIONNAIRE (QUAD8/TRIA6)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -65,8 +65,8 @@ TEMPE=THER_LINEAIRE(        MODELE=MOTH,
 
 TEMPE=CALC_ELEM( reuse=TEMPE,
                         RESULTAT=TEMPE,
-                            OPTION=('FLUX_ELNO_TEMP' ,
-                                    'FLUX_ELGA_TEMP',),);
+                            OPTION=('FLUX_ELNO' ,
+                                    'FLUX_ELGA',),);
 
 CHEM2=INTE_MAIL_2D(   MAILLAGE=MAIL,
                       DEFI_SEGMENT=_F( ORIGINE = ( 0.04,  0.07, ),
@@ -76,7 +76,7 @@ CHEM2=INTE_MAIL_2D(   MAILLAGE=MAIL,
 TR1_C=POST_RELEVE_T(    ACTION=_F(  INTITULE = 'FLU_NORM',
                            CHEMIN = CHEM2,
                            RESULTAT = TEMPE,
-                           NOM_CHAM = 'FLUX_ELNO_TEMP',
+                           NOM_CHAM = 'FLUX_ELNO',
                            NUME_ORDRE = 2,
                            TRAC_NOR = 'OUI',
                            NOM_CMP = ( 'FLUX', 'FLUY', ),
@@ -115,13 +115,13 @@ TEST_RESU(RESU=(
    _F( RESULTAT = TEMPE, NUME_ORDRE=2, NOM_CHAM='TEMP', NOEUD = 'N13',
    NOM_CMP = 'TEMP', VALE = 60.0),
 
-   _F( RESULTAT = TEMPE, NUME_ORDRE=2, NOM_CHAM='FLUX_ELNO_TEMP',
+   _F( RESULTAT = TEMPE, NUME_ORDRE=2, NOM_CHAM='FLUX_ELNO',
    MAILLE = 'M1', POINT = 3, NOM_CMP = 'FLUX', VALE = 960.0),
-   _F( RESULTAT = TEMPE, NUME_ORDRE=2, NOM_CHAM='FLUX_ELNO_TEMP',
+   _F( RESULTAT = TEMPE, NUME_ORDRE=2, NOM_CHAM='FLUX_ELNO',
    MAILLE = 'M2', POINT = 2, NOM_CMP = 'FLUY', VALE = 720.0),
-   _F( RESULTAT = TEMPE, NUME_ORDRE=2, NOM_CHAM='FLUX_ELGA_TEMP',
+   _F( RESULTAT = TEMPE, NUME_ORDRE=2, NOM_CHAM='FLUX_ELGA',
    MAILLE = 'M1', POINT = 3, NOM_CMP = 'FLUX', VALE = 960.0),
-   _F( RESULTAT = TEMPE, NUME_ORDRE=2, NOM_CHAM='FLUX_ELGA_TEMP',
+   _F( RESULTAT = TEMPE, NUME_ORDRE=2, NOM_CHAM='FLUX_ELGA',
    MAILLE = 'M2', POINT = 2, NOM_CMP = 'FLUY', VALE = 720.0))
           )
 
@@ -130,16 +130,16 @@ TEST_RESU(RESU=(
 # ----------------------------------------------------------
 
 MACR_ECLA_PG(   MODELE_INIT = MOTH,  RESU_INIT = TEMPE,
-                NOM_CHAM = ('FLUX_ELGA_TEMP',), INST=(0.,10.),
+                NOM_CHAM = ('FLUX_ELGA',), INST=(0.,10.),
                 RESULTAT = CO("U2B"), MAILLAGE = CO("MA2"),
                  )
 
 TEST_RESU(RESU=(
        _F(  RESULTAT = U2B,    NUME_ORDRE = 0,
-         NOM_CHAM = 'FLUX_ELGA_TEMP', TYPE_TEST = 'SOMM_ABS',
+         NOM_CHAM = 'FLUX_ELGA', TYPE_TEST = 'SOMM_ABS',
          VALE = 2.6220503736070E+05),
        _F(  RESULTAT = U2B,    NUME_ORDRE = 2,
-         NOM_CHAM = 'FLUX_ELGA_TEMP', TYPE_TEST = 'SOMM_ABS',
+         NOM_CHAM = 'FLUX_ELGA', TYPE_TEST = 'SOMM_ABS',
          VALE = 2.6220503736070E+05))
          )
 
@@ -153,7 +153,7 @@ CHEM1=INTE_MAIL_2D(   MAILLAGE=MA2,  INFO=2,
 RELTEMP=POST_RELEVE_T(
      ACTION=_F(  CHEMIN = CHEM1,
             INTITULE = 'EXT_FLUX',  RESULTAT = U2B,
-            NOM_CHAM = 'FLUX_ELGA_TEMP',  TOUT_ORDRE = 'OUI',
+            NOM_CHAM = 'FLUX_ELGA',  TOUT_ORDRE = 'OUI',
             TOUT_CMP = 'OUI', OPERATION = 'EXTRACTION')
             )
 
@@ -169,12 +169,12 @@ TEST_TABLE(      TABLE=RELTEMP,       NOM_PARA='ABSC_CURV',
 # pour tester MACR_ECLA_PG sur un ensemble de mailles
 
 MACR_ECLA_PG(   MODELE_INIT = MOTH,  RESU_INIT = TEMPE,
-                NOM_CHAM = ('FLUX_ELGA_TEMP',), INST=(5.,), MAILLE=('M3','M5'),
+                NOM_CHAM = ('FLUX_ELGA',), INST=(5.,), MAILLE=('M3','M5'),
                 RESULTAT = CO("U3B"), MAILLAGE = CO("MA3B"),
                  )
 
 TEST_RESU(RESU=   _F(  RESULTAT = U3B,    NUME_ORDRE = 1,
-         NOM_CHAM = 'FLUX_ELGA_TEMP', NOEUD='N5',NOM_CMP='FLUX',
+         NOM_CHAM = 'FLUX_ELGA', NOEUD='N5',NOM_CMP='FLUX',
          VALE = 9.6038424003079E+02, REFERENCE='NON_REGRESSION',), )
 
 

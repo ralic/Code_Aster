@@ -1,10 +1,10 @@
 
-# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
 # TITRE PLAQUE EN TRACTION - TEST CORR_ACIER EN COQUE_3D
 # ssnl127e.para = tps_job 120 mem_job 240Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -121,10 +121,10 @@ REST=STAT_NON_LINE(MODELE=MO,
 
 REST=CALC_ELEM(reuse =REST,
                RESULTAT=REST,
-               OPTION='SIEF_ELNO_ELGA',);
+               OPTION='SIEF_ELNO',);
 
 NdeU=RECU_FONCTION(RESULTAT=REST,
-                   NOM_CHAM='SIEF_ELNO_ELGA',
+                   NOM_CHAM='SIEF_ELNO',
                    NOM_CMP='NXX',
                    MAILLE='M1',
                    POINT=1,);
@@ -201,10 +201,10 @@ REST2=STAT_NON_LINE(MODELE=MO,
 
 REST2=CALC_ELEM(reuse =REST2,
                 RESULTAT=REST2,
-                OPTION='SIEF_ELNO_ELGA',);
+                OPTION='SIEF_ELNO',);
 
 NdeU2=RECU_FONCTION(RESULTAT=REST2,
-                    NOM_CHAM='SIEF_ELNO_ELGA',
+                    NOM_CHAM='SIEF_ELNO',
                     NOM_CMP='NXX',
                     MAILLE='M1',
                     POINT=1,);
@@ -281,10 +281,10 @@ REST3=STAT_NON_LINE(MODELE=MO,
 
 REST3=CALC_ELEM(reuse =REST3,
                 RESULTAT=REST3,
-                OPTION='SIEF_ELNO_ELGA',);
+                OPTION='SIEF_ELNO',);
 
 NdeU3=RECU_FONCTION(RESULTAT=REST3,
-                    NOM_CHAM='SIEF_ELNO_ELGA',
+                    NOM_CHAM='SIEF_ELNO',
                     NOM_CMP='NXX',
                     MAILLE='M1',
                     POINT=1,);
@@ -317,7 +317,7 @@ IMPR_FONCTION(FORMAT='TABLEAU',
 
 TEST_RESU(RESU=(_F(RESULTAT=REST,
                    INST=0.019,
-                   NOM_CHAM='SIEF_ELNO_ELGA',
+                   NOM_CHAM='SIEF_ELNO',
                    NOM_CMP='NXX',
                    MAILLE='M1',
                    POINT=1,
@@ -326,7 +326,7 @@ TEST_RESU(RESU=(_F(RESULTAT=REST,
                    REFERENCE='NON_REGRESSION',),
                 _F(RESULTAT=REST,
                    INST=0.02,
-                   NOM_CHAM='SIEF_ELNO_ELGA',
+                   NOM_CHAM='SIEF_ELNO',
                    NOM_CMP='NXX',
                    MAILLE='M1',
                    POINT=1,
@@ -337,7 +337,7 @@ TEST_RESU(RESU=(_F(RESULTAT=REST,
 
 TEST_RESU(RESU=(_F(RESULTAT=REST2,
                    INST=0.0164,
-                   NOM_CHAM='SIEF_ELNO_ELGA',
+                   NOM_CHAM='SIEF_ELNO',
                    NOM_CMP='NXX',
                    MAILLE='M1',
                    POINT=1,
@@ -346,7 +346,7 @@ TEST_RESU(RESU=(_F(RESULTAT=REST2,
                    REFERENCE='NON_REGRESSION',),
                 _F(RESULTAT=REST2,
                    INST=0.018,
-                   NOM_CHAM='SIEF_ELNO_ELGA',
+                   NOM_CHAM='SIEF_ELNO',
                    NOM_CMP='NXX',
                    MAILLE='M1',
                    POINT=1,
@@ -357,7 +357,7 @@ TEST_RESU(RESU=(_F(RESULTAT=REST2,
 
 TEST_RESU(RESU=(_F(RESULTAT=REST3,
                    INST=0.0075,
-                   NOM_CHAM='SIEF_ELNO_ELGA',
+                   NOM_CHAM='SIEF_ELNO',
                    NOM_CMP='NXX',
                    MAILLE='M1',
                    POINT=1,
@@ -366,7 +366,7 @@ TEST_RESU(RESU=(_F(RESULTAT=REST3,
                    REFERENCE='NON_REGRESSION',),
                 _F(RESULTAT=REST3,
                    INST=0.008,
-                   NOM_CHAM='SIEF_ELNO_ELGA',
+                   NOM_CHAM='SIEF_ELNO',
                    NOM_CMP='NXX',
                    MAILLE='M1',
                    POINT=1,

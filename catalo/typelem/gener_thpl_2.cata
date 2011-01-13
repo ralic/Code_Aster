@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 10/01/2011   AUTEUR DELMAS J.DELMAS 
+%& MODIF TYPELEM  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -78,13 +78,13 @@ ENTETE__ ELEMENT__ THAXQL9          MAILLE__ QUAD9
    ELREFE__  QU4     GAUSS__  RIGI=FPG4   MASS=FPG4                 NOEU=NOEU
    ELREFE__  SE2     GAUSS__  RIGI=FPG2
    OPTION__   CHAR_THER_TNL           -1
-   OPTION__   DURT_ELNO_META          -1
+   OPTION__   DURT_ELNO          -1
    OPTION__   EPOT_ELEM_TEMP          -1
-   OPTION__   META_ELNO_TEMP          -1
+   OPTION__   META_ELNO          -1
    OPTION__   META_INIT_ELNO          -1
    OPTION__   RIGI_THER_CONV_T        -1
    OPTION__   RIGI_THER_TRANS         -1
-   OPTION__   SOUR_ELGA_ELEC          -1
+   OPTION__   SOUR_ELGA          -1
    OPTION__   CARA_CISA               -1
    OPTION__   CARA_GAUCHI             -1
    OPTION__   CARA_TORSION            -1
@@ -99,13 +99,13 @@ ENTETE__ ELEMENT__ THAXTL6          MAILLE__ TRIA6
    ELREFE__  TR3     GAUSS__  RIGI=FPG3   MASS=FPG3                 NOEU=NOEU
    ELREFE__  SE3     GAUSS__  RIGI=FPG4
    OPTION__   CHAR_THER_TNL           -1
-   OPTION__   DURT_ELNO_META          -1
+   OPTION__   DURT_ELNO          -1
    OPTION__   EPOT_ELEM_TEMP          -1
-   OPTION__   META_ELNO_TEMP          -1
+   OPTION__   META_ELNO          -1
    OPTION__   META_INIT_ELNO          -1
    OPTION__   RIGI_THER_CONV_T        -1
    OPTION__   RIGI_THER_TRANS         -1
-   OPTION__   SOUR_ELGA_ELEC          -1
+   OPTION__   SOUR_ELGA          -1
    OPTION__   CARA_CISA               -1
    OPTION__   CARA_GAUCHI             -1
    OPTION__   CARA_TORSION            -1
@@ -120,13 +120,13 @@ ENTETE__ ELEMENT__ THPLQL9          MAILLE__ QUAD9
    ELREFE__  QU4     GAUSS__  RIGI=FPG4   MASS=FPG4  GANO=NOEU_S    NOEU=NOEU
    ELREFE__  SE2     GAUSS__  RIGI=FPG2
    OPTION__   CHAR_THER_TNL           -1
-   OPTION__   DURT_ELNO_META          -1
+   OPTION__   DURT_ELNO          -1
    OPTION__   EPOT_ELEM_TEMP          -1
-   OPTION__   META_ELNO_TEMP          -1
+   OPTION__   META_ELNO          -1
    OPTION__   META_INIT_ELNO          -1
    OPTION__   RIGI_THER_CONV_T        -1
    OPTION__   RIGI_THER_TRANS         -1
-   OPTION__   SOUR_ELGA_ELEC          -1
+   OPTION__   SOUR_ELGA          -1
    OPTION__   CARA_CISA               -1
    OPTION__   CARA_GAUCHI             -1
    OPTION__   CARA_TORSION            -1
@@ -141,13 +141,13 @@ ENTETE__ ELEMENT__ THPLTL6          MAILLE__ TRIA6
    ELREFE__  TR3     GAUSS__  RIGI=FPG3   MASS=FPG3  GANO=NOEU_S    NOEU=NOEU
    ELREFE__  SE3     GAUSS__  RIGI=FPG4
    OPTION__   CHAR_THER_TNL           -1
-   OPTION__   DURT_ELNO_META          -1
+   OPTION__   DURT_ELNO          -1
    OPTION__   EPOT_ELEM_TEMP          -1
-   OPTION__   META_ELNO_TEMP          -1
+   OPTION__   META_ELNO          -1
    OPTION__   META_INIT_ELNO          -1
    OPTION__   RIGI_THER_CONV_T        -1
    OPTION__   RIGI_THER_TRANS         -1
-   OPTION__   SOUR_ELGA_ELEC          -1
+   OPTION__   SOUR_ELGA          -1
    OPTION__   CARA_CISA               -1
    OPTION__   CARA_GAUCHI             -1
    OPTION__   CARA_TORSION            -1
@@ -257,19 +257,19 @@ OPTION__
                               OUT__  EGNEUT1R PLAGRP   MVECTTR  PRESIDU  MVECTTR  PVECTTR
     COOR_ELGA           479   IN__   NGEOMER  PGEOMER
                               OUT__  EGGEOP_R PCOORPG
-    DETE_ELNO_DLTE      591   IN__   DDL_THER PDLAGTE  NGEOMER  PGEOMER  DDL_THER PTEMPER  NDEPLAR  PVECTTH
+    DETE_ELNO      591   IN__   DDL_THER PDLAGTE  NGEOMER  PGEOMER  DDL_THER PTEMPER  NDEPLAR  PVECTTH
                               OUT__  ETEMPNO  PDETENO
     DLAG_NOEU_TEMP      596   IN__   ETEMPPG  PDEULTG  NGEOMER  PGEOMER  DDL_THER PTEMPER  NDEPLAR  PVECTTH
                               OUT__  DDL_THER PDLAGTE
-    DURT_ELNO_META      551   IN__   CMATERC  PMATERC  EPHASNO_ PPHASIN
+    DURT_ELNO      551   IN__   CMATERC  PMATERC  EPHASNO_ PPHASIN
                               OUT__  EDURTNO  PDURT_R
-    ECIN_ELEM_DEPL      -1    IN__   XXXXXX   XXXXXX
+    ECIN_ELEM      -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
     ENER_ELAS           -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
     ENER_TOTALE         -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
-    EPOT_ELEM_DEPL      -1    IN__   XXXXXX   XXXXXX
+    EPOT_ELEM      -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
     EPOT_ELEM_TEMP      220   IN__   NGEOMER  PGEOMER  CMATERC  PMATERC  DDL_THER PTEMPER  CTEMPSR  PTEMPSR
                               OUT__  EENEDNO  PENERDR
@@ -281,13 +281,13 @@ OPTION__
     FLUX_ELGA_SENS      69    IN__   CCAMASS  PCAMASS  NGEOMER  PGEOMER  CMATERC  PMATERC  CMATERC  PMATSEN
                                      DDL_THER PTEMPER  CTEMPSR  PTEMPSR  DDL_THER PTEMSEN
                               OUT__  EFLUXPG  PFLUX_R
-    FLUX_ELGA_TEMP      69    IN__   CCAMASS  PCAMASS  NGEOMER  PGEOMER  CMATERC  PMATERC  DDL_THER PTEMPER
+    FLUX_ELGA      69    IN__   CCAMASS  PCAMASS  NGEOMER  PGEOMER  CMATERC  PMATERC  DDL_THER PTEMPER
                                      CTEMPSR  PTEMPSR
                               OUT__  EFLUXPG  PFLUX_R
     FLUX_ELNO_SENS      69    IN__   CCAMASS  PCAMASS  NGEOMER  PGEOMER  CMATERC  PMATERC  CMATERC  PMATSEN
                                      DDL_THER PTEMPER  CTEMPSR  PTEMPSR  DDL_THER PTEMSEN
                               OUT__  EFLUXNO  PFLUX_R
-    FLUX_ELNO_TEMP      69    IN__   CCAMASS  PCAMASS  NGEOMER  PGEOMER  CMATERC  PMATERC  DDL_THER PTEMPER
+    FLUX_ELNO      69    IN__   CCAMASS  PCAMASS  NGEOMER  PGEOMER  CMATERC  PMATERC  DDL_THER PTEMPER
                                      CTEMPSR  PTEMPSR
                               OUT__  EFLUXNO  PFLUX_R
     INDIC_ENER          -1    IN__   XXXXXX   XXXXXX
@@ -300,7 +300,7 @@ OPTION__
                               OUT__  XXXXXX   XXXXXX
     MASS_THER           77    IN__   NGEOMER  PGEOMER  CMATERC  PMATERC  CTEMPSR  PTEMPSR
                               OUT__  MMATTTR  PMATTTR
-    META_ELNO_TEMP      67    IN__   CCOMPOR  PCOMPOR  CFTRC    PFTRC    CMATERC  PMATERC  EPHASNO_ PPHASIN
+    META_ELNO      67    IN__   CCOMPOR  PCOMPOR  CFTRC    PFTRC    CMATERC  PMATERC  EPHASNO_ PPHASIN
                                      DDL_THER PTEMPAR  DDL_THER PTEMPER  DDL_THER PTEMPIR  CTEMPSR  PTEMPSR
                               OUT__  EPHASNO_ PPHASNOU
     META_INIT_ELNO      320   IN__   CCOMPOR  PCOMPOR  CMATERC  PMATERC  CPHASIN_ PPHASIN  DDL_THER PTEMPER
@@ -324,7 +324,7 @@ OPTION__
     RIGI_THER_TRANS     501   IN__   NGEOMER  PGEOMER  CMATERC  PMATERC  DDL_THER PTEMPEI  DDL_THER PTEMPER
                                      CTEMPSR  PTEMPSR
                               OUT__  MMATTTR  PMATTTR
-    SOUR_ELGA_ELEC      318   IN__   CCAMASS  PCAMASS  NGEOMER  PGEOMER  CMATERC  PMATERC  DDL_THER PTEMPER
+    SOUR_ELGA      318   IN__   CCAMASS  PCAMASS  NGEOMER  PGEOMER  CMATERC  PMATERC  DDL_THER PTEMPER
                                      CTEMPSR  PTEMPSR
                               OUT__  ESOURCR  PSOUR_R
     SYME_MTNS_R         222   IN__   MMATTSR  PNOSYM

@@ -1,8 +1,8 @@
-#@ MODIF macr_cara_poutre_ops Macro  DATE 13/09/2010   AUTEUR PELLET J.PELLET 
+#@ MODIF macr_cara_poutre_ops Macro  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -317,7 +317,7 @@ def macr_cara_poutre_ops(self,MAILLAGE,SYME_X,SYME_Y,GROUP_MA_BORD,
      __tempe1=CALC_ELEM(reuse=__tempe1,
                        RESULTAT=__tempe1,
                        TOUT_ORDRE='OUI',
-                       OPTION='FLUX_ELNO_TEMP',
+                       OPTION='FLUX_ELNO',
                       )
 
      __chem=INTE_MAIL_2D(MAILLAGE=__nomapi,
@@ -327,7 +327,7 @@ def macr_cara_poutre_ops(self,MAILLAGE,SYME_X,SYME_Y,GROUP_MA_BORD,
      __flun=POST_RELEVE_T(ACTION=_F(INTITULE='FLUX_NORM',
                              CHEMIN=__chem,
                              RESULTAT=__tempe1,
-                             NOM_CHAM='FLUX_ELNO_TEMP',
+                             NOM_CHAM='FLUX_ELNO',
                              TRAC_NOR='OUI',
                              NOM_CMP=('FLUX','FLUY'),
                              OPERATION='MOYENNE'))
@@ -352,7 +352,7 @@ def macr_cara_poutre_ops(self,MAILLAGE,SYME_X,SYME_Y,GROUP_MA_BORD,
            __flun=POST_RELEVE_T(ACTION=_F(INTITULE='FLUX_NORM',
                                           CHEMIN=__chem,
                                           RESULTAT=__tempe1,
-                                          NOM_CHAM='FLUX_ELNO_TEMP',
+                                          NOM_CHAM='FLUX_ELNO',
                                           TRAC_NOR='OUI',
                                           NOM_CMP=('FLUX','FLUY'),
                                           OPERATION='MOYENNE'))
@@ -762,7 +762,7 @@ def macr_cara_poutre_ops(self,MAILLAGE,SYME_X,SYME_Y,GROUP_MA_BORD,
         __tempe1=CALC_ELEM(reuse=__tempe1,
                             RESULTAT=__tempe1,
                             TOUT_ORDRE='OUI',
-                            OPTION='FLUX_ELNO_TEMP',
+                            OPTION='FLUX_ELNO',
                            )
 
         __chem=INTE_MAIL_2D(MAILLAGE=__nomapi,
@@ -772,7 +772,7 @@ def macr_cara_poutre_ops(self,MAILLAGE,SYME_X,SYME_Y,GROUP_MA_BORD,
         __flun=POST_RELEVE_T(ACTION=_F(INTITULE='FLUX_NORM',
                                        CHEMIN=__chem,
                                        RESULTAT=__tempe1,
-                                       NOM_CHAM='FLUX_ELNO_TEMP',
+                                       NOM_CHAM='FLUX_ELNO',
                                        TRAC_NOR='OUI',
                                        NOM_CMP=('FLUX','FLUY'),
                                        OPERATION='MOYENNE'))
@@ -797,7 +797,7 @@ def macr_cara_poutre_ops(self,MAILLAGE,SYME_X,SYME_Y,GROUP_MA_BORD,
               __flun=POST_RELEVE_T(ACTION=_F(INTITULE='FLUX_NORM',
                                              CHEMIN=__chem,
                                              RESULTAT=__tempe1,
-                                             NOM_CHAM='FLUX_ELNO_TEMP',
+                                             NOM_CHAM='FLUX_ELNO',
                                              TRAC_NOR='OUI',
                                              NOM_CMP=('FLUX','FLUY'),
                                              OPERATION='MOYENNE'))

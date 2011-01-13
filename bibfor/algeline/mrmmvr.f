@@ -1,15 +1,15 @@
-      SUBROUTINE MRMMVR(CUMUL,NOMMAT,SMDI,SMHC,NEQ,
-     &                  NEQL,MATD,VECT,XSOL,NBVECT)
+      SUBROUTINE MRMMVR(CUMUL,NOMMAT,SMDI,SMHC,LMATD,
+     &                  NEQ,NEQL,VECT,XSOL,NBVECT)
       IMPLICIT NONE
       CHARACTER*(*) CUMUL
       INTEGER*4 SMHC(*)
       INTEGER SMDI(*),NEQ,NBVECT,NEQL
       CHARACTER*(*) NOMMAT
       REAL*8 VECT(NEQ,NBVECT),XSOL(NEQ,NBVECT)
-      LOGICAL MATD
+      LOGICAL LMATD
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 11/01/2011   AUTEUR SELLENET N.SELLENET 
+C MODIF ALGELINE  DATE 13/01/2011   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -83,12 +83,6 @@ C
    20   CONTINUE
       ENDIF
 
-      IF ( MATD ) THEN
-        REFA = NOM19//'.REFA'
-        CALL JEVEUO(REFA,'L',JREFA)
-        NUMDDL = ZK24(JREFA+2-1)
-        CALL JEVEUO(NUMDDL//'.NUML.NULG','L',JNULG)
-      ENDIF
 
 C     -- VALM(1) : AU DESSUS DE LA DIAGONALE
       CALL JEVEUO(JEXNUM(VALM,1),'L',JVALMS)
@@ -99,46 +93,51 @@ C        -- VALM(2) : AU DESSOUS DE LA DIAGONALE
         JVALMI = JVALMS
       ENDIF
 
-
+      IF ( .NOT.LMATD ) THEN
       DO 50 JVEC = 1,NBVECT
-        IF ( .NOT.MATD ) THEN
-          XSOL(1,JVEC) = XSOL(1,JVEC) + ZR(JVALMS-1+1)*VECT(1,JVEC)
-          DO 40 ILIG = 2,NEQ
-             KDEB = SMDI(ILIG-1) + 1
-             KFIN = SMDI(ILIG) - 1
+        XSOL(1,JVEC) = XSOL(1,JVEC) + ZR(JVALMS-1+1)*VECT(1,JVEC)
+        DO 40 ILIG = 2,NEQ
+          KDEB = SMDI(ILIG-1) + 1
+          KFIN = SMDI(ILIG) - 1
 CCDIR$ IVDEP
-             DO 30 KI = KDEB,KFIN
-               JCOL = SMHC(KI)
-               XSOL(ILIG,JVEC) = XSOL(ILIG,JVEC) +
-     &                           ZR(JVALMI-1+KI)*VECT(JCOL,JVEC)
-               XSOL(JCOL,JVEC) = XSOL(JCOL,JVEC) +
-     &                           ZR(JVALMS-1+KI)*VECT(ILIG,JVEC)
-   30        CONTINUE
-             XSOL(ILIG,JVEC) = XSOL(ILIG,JVEC) +
-     &                         ZR(JVALMS+KFIN)*VECT(ILIG,JVEC)
-   40      CONTINUE
-        ELSE
-          NUMGLO = ZI(JNULG+1-1)
-          XSOL(NUMGLO,JVEC) = XSOL(NUMGLO,JVEC) + 
-     &                        ZR(JVALMS-1+1)*VECT(NUMGLO,JVEC)
-          DO 60 ILIG = 2,NEQL
-             ILIGG = ZI(JNULG+ILIG-1)
-             KDEB = SMDI(ILIG-1) + 1
-             KFIN = SMDI(ILIG) - 1
-CCDIR$ IVDEP
-             DO 70 KI = KDEB,KFIN
-               JCOL = SMHC(KI)
-               JCOLG = ZI(JNULG+JCOL-1)
-               XSOL(ILIGG,JVEC) = XSOL(ILIGG,JVEC) +
-     &                            ZR(JVALMI-1+KI)*VECT(JCOLG,JVEC)
-               XSOL(JCOLG,JVEC) = XSOL(JCOLG,JVEC) +
-     &                            ZR(JVALMS-1+KI)*VECT(ILIGG,JVEC)
-   70        CONTINUE
-             XSOL(ILIGG,JVEC) = XSOL(ILIGG,JVEC) +
-     &                          ZR(JVALMS+KFIN)*VECT(ILIGG,JVEC)
-   60     CONTINUE
-        ENDIF
+          DO 30 KI = KDEB,KFIN
+            JCOL = SMHC(KI)
+            XSOL(ILIG,JVEC) = XSOL(ILIG,JVEC) +
+     &                        ZR(JVALMI-1+KI)*VECT(JCOL,JVEC)
+            XSOL(JCOL,JVEC) = XSOL(JCOL,JVEC) +
+     &                        ZR(JVALMS-1+KI)*VECT(ILIG,JVEC)
+   30     CONTINUE
+          XSOL(ILIG,JVEC) = XSOL(ILIG,JVEC) +
+     &                      ZR(JVALMS+KFIN)*VECT(ILIG,JVEC)
+   40   CONTINUE
    50 CONTINUE
+      ELSE
+      REFA = NOM19//'.REFA'
+      CALL JEVEUO(REFA,'L',JREFA)
+      NUMDDL = ZK24(JREFA+2-1)
+      CALL JEVEUO(NUMDDL//'.NUML.NULG','L',JNULG)
+      DO 60 JVEC = 1,NBVECT
+        NUMGLO = ZI(JNULG+1-1)
+        XSOL(NUMGLO,JVEC) = XSOL(NUMGLO,JVEC) + 
+     &                      ZR(JVALMS-1+1)*VECT(NUMGLO,JVEC)
+        DO 80 ILIG = 2,NEQL
+           ILIGG = ZI(JNULG+ILIG-1)
+           KDEB = SMDI(ILIG-1) + 1
+           KFIN = SMDI(ILIG) - 1
+CCDIR$ IVDEP
+           DO 70 KI = KDEB,KFIN
+             JCOL = SMHC(KI)
+             JCOLG = ZI(JNULG+JCOL-1)
+             XSOL(ILIGG,JVEC) = XSOL(ILIGG,JVEC) +
+     &                          ZR(JVALMI-1+KI)*VECT(JCOLG,JVEC)
+             XSOL(JCOLG,JVEC) = XSOL(JCOLG,JVEC) +
+     &                          ZR(JVALMS-1+KI)*VECT(ILIGG,JVEC)
+   70      CONTINUE
+           XSOL(ILIGG,JVEC) = XSOL(ILIGG,JVEC) +
+     &                        ZR(JVALMS+KFIN)*VECT(ILIGG,JVEC)
+   80   CONTINUE
+   60 CONTINUE
+      ENDIF
 
       CALL JEDEMA()
       END

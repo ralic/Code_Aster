@@ -1,4 +1,4 @@
-# MODIF  DATE 10/01/2011   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
 # ======================================================================
 # TITRE MODELISATION D_PLAN_THHD EN QUAD8
 # ======================================================================
@@ -309,17 +309,17 @@ U0=CALC_NO(reuse =U0,
              RESULTAT=U0,);
 
 DPVP=CALC_ELEM(RESULTAT=U0,
-               OPTION='EXTR_ELNO_VARI',
+               OPTION='VAEX_ELNO',
                NOM_VARI='DPVP'
                )
 DPVP=CALC_NO(reuse=DPVP,
              RESULTAT=DPVP,
-             OPTION='EXTR_NOEU_VARI',
+             OPTION='VAEX_NOEU',
              )
 
-SATLIQ=CALC_ELEM(RESULTAT=U0,OPTION='EXTR_ELNO_VARI',NOM_VARI='SATLIQ')
-SATLIQ=CALC_NO(reuse=SATLIQ,RESULTAT=SATLIQ,OPTION='EXTR_NOEU_VARI',)
-SATEAU=CALC_ELEM(RESULTAT=U0,OPTION='EXTR_ELGA_VARI',NOM_VARI='SATLIQ')
+SATLIQ=CALC_ELEM(RESULTAT=U0,OPTION='VAEX_ELNO',NOM_VARI='SATLIQ')
+SATLIQ=CALC_NO(reuse=SATLIQ,RESULTAT=SATLIQ,OPTION='VAEX_NOEU',)
+SATEAU=CALC_ELEM(RESULTAT=U0,OPTION='VAEX_ELGA',NOM_VARI='SATLIQ')
 
 #################################################
 #IMPR_RESU(RESU=_F(RESULTAT=U0,
@@ -334,7 +334,7 @@ SATEAU=CALC_ELEM(RESULTAT=U0,OPTION='EXTR_ELGA_VARI',NOM_VARI='SATLIQ')
 TEST_RESU(RESU=(
                 _F(RESULTAT=DPVP,
                    INST=1000.0,
-                   NOM_CHAM='EXTR_ELNO_VARI',
+                   NOM_CHAM='VAEX_ELNO',
                    NOM_CMP='X1',
                    MAILLE='M2',
                    NOEUD='N2',
@@ -343,7 +343,7 @@ TEST_RESU(RESU=(
                    REFERENCE='NON_REGRESSION',),
                 _F(RESULTAT=DPVP,
                    INST=1.00000E+04,
-                   NOM_CHAM='EXTR_NOEU_VARI',
+                   NOM_CHAM='VAEX_NOEU',
                    NOM_CMP='X1',
                    NOEUD='N2',
                    VALE=4.59768E+05,
@@ -352,7 +352,7 @@ TEST_RESU(RESU=(
                    VERSION = '7.3.20', ),
                 _F(RESULTAT=SATLIQ,
                    INST=1.00000E+04,
-                   NOM_CHAM='EXTR_NOEU_VARI',
+                   NOM_CHAM='VAEX_NOEU',
                    NOM_CMP='X1',
                    NOEUD='N2',
                    VALE=4.99158E-01,
@@ -361,7 +361,7 @@ TEST_RESU(RESU=(
                    VERSION = '7.3.20', ),
                 _F(RESULTAT=SATEAU,
                    INST=1.00000E+04,
-                   NOM_CHAM='EXTR_ELGA_VARI',
+                   NOM_CHAM='VAEX_ELGA',
                    NOM_CMP='X1',
                    POINT=1,
                    MAILLE='M1',
@@ -491,14 +491,14 @@ U2=STAT_NON_LINE(reuse=U2,
 
 U2=CALC_ELEM(reuse =U2,
              RESULTAT=U2,
-             OPTION='SIEF_ELNO_ELGA',);
+             OPTION='SIEF_ELNO',);
 
 #IMPR_RESU(RESU=_F(RESULTAT=U2),)
 
 TEST_RESU(RESU=(
                 _F(RESULTAT=U2,
                    INST=1.000000000E+04,
-                   NOM_CHAM='SIEF_ELNO_ELGA',
+                   NOM_CHAM='SIEF_ELNO',
                    NOM_CMP='M11',
                    MAILLE='M11',
                    NOEUD='N4',

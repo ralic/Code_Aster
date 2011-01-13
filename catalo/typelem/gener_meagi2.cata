@@ -1,7 +1,7 @@
-%& MODIF TYPELEM  DATE 07/12/2010   AUTEUR PELLET J.PELLET 
+%& MODIF TYPELEM  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
-% COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+% COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 % THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 % IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 % THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -97,13 +97,13 @@ OPTION__
                               OUT__  XXXXXX   XXXXXX
     COOR_ELGA           479   IN__   NGEOMER  PGEOMER
                               OUT__  EGGEOP_R PCOORPG
-    ECIN_ELEM_DEPL      -1    IN__   XXXXXX   XXXXXX
+    ECIN_ELEM      -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
     ENER_ELAS           -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
     ENER_TOTALE         -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
-    EPOT_ELEM_DEPL      -1    IN__   XXXXXX   XXXXXX
+    EPOT_ELEM      -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
     EQUI_ELGA_SIGM      336   IN__   ECONTPG  PCONTRR
                               OUT__  ECOEQPG  PCONTEQ
@@ -146,13 +146,13 @@ OPTION__
                               OUT__  XXXXXX   XXXXXX
     NSPG_NBVA           496   IN__   CCOMPO2  PCOMPOR
                               OUT__  EDCEL_I  PDCEL_I
-    QIRE_ELEM_SIGM      378   IN__   NGEOMER  PGEOMER  CTEMPSR  PTEMPSR  EVOISIN  PVOISIN  CMATERC  PMATERC
+    QIRE_ELEM      378   IN__   NGEOMER  PGEOMER  CTEMPSR  PTEMPSR  EVOISIN  PVOISIN  CMATERC  PMATERC
                                      CREFERI  PFORCEP  CREFERI  PFORCED  CREFERI  PPRESSP  CREFERI  PPRESSD
                                      CPESANR  PPESANRP CPESANR  PPESANRD CROTATR  PROTATRP CROTATR  PROTATRD
                                      EFORCER  PFRVOLUP EFORCER  PFRVOLUD CFORCEF  PFFVOLUD CFORCEF  PFFVOLUP
                                      ECONTNO  PCONTNOP ECONTNO  PCONTNOD CCONSTR  PCONSTR
                               OUT__  EERREUR  PERREUR
-    QIRE_ELNO_ELEM      379   IN__   EERREUR  PERREUR
+    QIRE_ELNO      379   IN__   EERREUR  PERREUR
                               OUT__  EERRENO  PERRENO
     RAPH_MECA           454   IN__   CCARCRI  PCARCRI  CCOMPOR  PCOMPOR  ECONTPG  PCONTMR  DDL_MECA PDEPLMR
                                      DDL_MECA PDEPLPR  NGEOMER  PGEOMER  CTEMPSR  PINSTMR  CTEMPSR  PINSTPR
@@ -179,7 +179,7 @@ OPTION__
                               OUT__  MMATUUR  PMATUUR  MMATUNS  PMATUNS
     SIEF_ELGA_ELNO      98    IN__   ECONTNO  PCONTRR
                               OUT__  ECONTPG  PSIEFGR
-    SIEF_ELNO_ELGA      98    IN__   ECONTPG  PCONTRR
+    SIEF_ELNO      98    IN__   ECONTPG  PCONTRR
                               OUT__  ECONTNO  PSIEFNOR
     SYME_MDNS_R         222   IN__   MMATUNS  PNOSYM
                               OUT__  MMATUUR  PSYM

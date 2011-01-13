@@ -1,4 +1,4 @@
-#@ MODIF simu_point_mat_ops Macro  DATE 10/01/2011   AUTEUR PROIX J-M.PROIX 
+#@ MODIF simu_point_mat_ops Macro  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -625,13 +625,13 @@ def simu_point_mat_ops(self, MATER, INCREMENT,SIGM_IMPOSE,EPSI_IMPOSE,SIGM_INIT,
 
 
       __EVOL1 = CALC_ELEM(reuse = __EVOL1,RESULTAT = __EVOL1,
-        OPTION = ('SIEF_ELNO_ELGA','EPSI_ELNO_DEPL','VARI_ELNO_ELGA'))
+        OPTION = ('SIEF_ELNO','EPSI_ELNO_DEPL','VARI_ELNO_ELGA'))
  
       if MODELISATION=="3D":
           angles=(ANGLE,0,0)
           __EVOL=MODI_REPERE(RESULTAT=__EVOL1, MODI_CHAM=(
               _F(NOM_CHAM='DEPL',NOM_CMP=('DX','DY','DZ'),TYPE_CHAM='VECT_3D',),
-              _F(NOM_CHAM='SIEF_ELNO_ELGA',NOM_CMP=('SIXX','SIYY','SIZZ','SIXY','SIXZ','SIYZ'),TYPE_CHAM='TENS_3D',),
+              _F(NOM_CHAM='SIEF_ELNO',NOM_CMP=('SIXX','SIYY','SIZZ','SIXY','SIXZ','SIYZ'),TYPE_CHAM='TENS_3D',),
               _F(NOM_CHAM='EPSI_ELNO_DEPL',NOM_CMP=('EPXX','EPYY','EPZZ','EPXY','EPXZ','EPYZ'),TYPE_CHAM='TENS_3D',),
                                   ),
                      DEFI_REPERE=_F(REPERE='UTILISATEUR',ANGL_NAUT=angles),);
@@ -639,7 +639,7 @@ def simu_point_mat_ops(self, MATER, INCREMENT,SIGM_IMPOSE,EPSI_IMPOSE,SIGM_INIT,
           angles=ANGLE
           __EVOL=MODI_REPERE(RESULTAT=__EVOL1,MODI_CHAM=(
                      _F(NOM_CHAM='DEPL',NOM_CMP=('DX','DY'),TYPE_CHAM='VECT_2D',),
-                     _F(NOM_CHAM='SIEF_ELNO_ELGA',NOM_CMP=('SIXX','SIYY','SIZZ','SIXY'),TYPE_CHAM='TENS_2D',),
+                     _F(NOM_CHAM='SIEF_ELNO',NOM_CMP=('SIXX','SIYY','SIZZ','SIXY'),TYPE_CHAM='TENS_2D',),
                      _F(NOM_CHAM='EPSI_ELNO_DEPL',NOM_CMP=('EPXX','EPYY','EPZZ','EPXY'),TYPE_CHAM='TENS_2D',),
                                   ),
                      DEFI_REPERE=_F(REPERE='UTILISATEUR',ANGL_NAUT=angles),);
@@ -656,11 +656,11 @@ def simu_point_mat_ops(self, MATER, INCREMENT,SIGM_IMPOSE,EPSI_IMPOSE,SIGM_INIT,
             TOUT_CMP='OUI',OPERATION='EXTRACTION',NOEUD     = 'P0'),))
 
       __REP_SIGM = POST_RELEVE_T(ACTION = (
-          _F(INTITULE  = 'SIGMA',RESULTAT  =  __EVOL,NOM_CHAM  = 'SIEF_ELNO_ELGA',
+          _F(INTITULE  = 'SIGMA',RESULTAT  =  __EVOL,NOM_CHAM  = 'SIEF_ELNO',
             TOUT_CMP  = 'OUI',OPERATION = 'EXTRACTION',NOEUD     = 'P0'),))
  
       __REP_INV = POST_RELEVE_T(ACTION = (
-          _F(INTITULE  = 'INV',RESULTAT  =  __EVOL,NOM_CHAM  = 'SIEF_ELNO_ELGA',
+          _F(INTITULE  = 'INV',RESULTAT  =  __EVOL,NOM_CHAM  = 'SIEF_ELNO',
             INVARIANT  = 'OUI',OPERATION = 'EXTRACTION',NOEUD     = 'P0'),))
  
       __REP_INV=CALC_TABLE( TABLE=__REP_INV,reuse=__REP_INV,

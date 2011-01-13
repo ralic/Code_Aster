@@ -1,9 +1,9 @@
-# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
 # TITRE BARRE ENCASTREE A UNE EXTREMITE ET CHARGEE PAR UNE TRACTION
 # ssnl127d.para = tps_job 120 mem_job 240Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -149,10 +149,10 @@ REST=STAT_NON_LINE(MODELE=MODELE,
                                   ITER_GLOB_MAXI=10),
                    ARCHIVAGE=_F(ARCH_ETAT_INIT='OUI',),);
 
-CALC_ELEM(reuse=REST,RESULTAT=REST,OPTION='SIEF_ELNO_ELGA')
+CALC_ELEM(reuse=REST,RESULTAT=REST,OPTION='SIEF_ELNO')
 
 NdeU=RECU_FONCTION(RESULTAT=REST,
-                   NOM_CHAM='SIEF_ELNO_ELGA',
+                   NOM_CHAM='SIEF_ELNO',
                    NOM_CMP='SIZZ',
                    MAILLE='M1',
                    NOEUD='N1');
@@ -222,10 +222,10 @@ REST2=STAT_NON_LINE(MODELE=MODELE,
                                    ITER_GLOB_ELAS=10),
                     ARCHIVAGE=_F(ARCH_ETAT_INIT='OUI',),);
 
-CALC_ELEM(reuse=REST2,RESULTAT=REST2,OPTION='SIEF_ELNO_ELGA')
+CALC_ELEM(reuse=REST2,RESULTAT=REST2,OPTION='SIEF_ELNO')
 
 NdeU2=RECU_FONCTION(RESULTAT=REST2,
-                    NOM_CHAM='SIEF_ELNO_ELGA',
+                    NOM_CHAM='SIEF_ELNO',
                     NOM_CMP='SIZZ',
                     MAILLE='M1',
                     NOEUD='N1');
@@ -295,10 +295,10 @@ REST3=STAT_NON_LINE(MODELE=MODELE,
                                    ITER_GLOB_ELAS=10),
                     ARCHIVAGE=_F(ARCH_ETAT_INIT='OUI',),);
 
-CALC_ELEM(reuse=REST3,RESULTAT=REST3,OPTION='SIEF_ELNO_ELGA')
+CALC_ELEM(reuse=REST3,RESULTAT=REST3,OPTION='SIEF_ELNO')
 
 NdeU3=RECU_FONCTION(RESULTAT=REST3,
-                    NOM_CHAM='SIEF_ELNO_ELGA',
+                    NOM_CHAM='SIEF_ELNO',
                     NOM_CMP='SIZZ',
                     MAILLE='M1',
                     NOEUD='N1',);
@@ -331,7 +331,7 @@ S=2.8274333882308137e-05
 
 TEST_RESU(RESU=(_F(RESULTAT=REST,
                    INST=0.019,
-                   NOM_CHAM='SIEF_ELNO_ELGA',
+                   NOM_CHAM='SIEF_ELNO',
                    NOM_CMP='SIZZ',
                    MAILLE='M1',
                    NOEUD='N1',
@@ -340,7 +340,7 @@ TEST_RESU(RESU=(_F(RESULTAT=REST,
                    REFERENCE='NON_REGRESSION',),
                 _F(RESULTAT=REST,
                    INST=0.02,
-                   NOM_CHAM='SIEF_ELNO_ELGA',
+                   NOM_CHAM='SIEF_ELNO',
                    NOM_CMP='SIZZ',
                    MAILLE='M1',
                    NOEUD='N1',
@@ -371,7 +371,7 @@ TEST_RESU(RESU=(_F(RESULTAT=REST,
 
 TEST_RESU(RESU=(_F(RESULTAT=REST2,
                    INST=0.0164,
-                   NOM_CHAM='SIEF_ELNO_ELGA',
+                   NOM_CHAM='SIEF_ELNO',
                    NOM_CMP='SIZZ',
                    MAILLE='M1',
                    NOEUD='N1',
@@ -380,7 +380,7 @@ TEST_RESU(RESU=(_F(RESULTAT=REST2,
                    REFERENCE='NON_REGRESSION',),
                 _F(RESULTAT=REST2,
                    INST=0.018,
-                   NOM_CHAM='SIEF_ELNO_ELGA',
+                   NOM_CHAM='SIEF_ELNO',
                    NOM_CMP='SIZZ',
                    MAILLE='M1',
                    NOEUD='N1',
@@ -412,7 +412,7 @@ TEST_RESU(RESU=(_F(RESULTAT=REST2,
 
 TEST_RESU(RESU=(_F(RESULTAT=REST3,
                    INST=7.50000E-03,
-                   NOM_CHAM='SIEF_ELNO_ELGA',
+                   NOM_CHAM='SIEF_ELNO',
                    NOM_CMP='SIZZ',
                    MAILLE='M1',
                    NOEUD='N1',
@@ -421,7 +421,7 @@ TEST_RESU(RESU=(_F(RESULTAT=REST3,
                    REFERENCE='NON_REGRESSION',),
                 _F(RESULTAT=REST3,
                    INST=8.00000E-03,
-                   NOM_CHAM='SIEF_ELNO_ELGA',
+                   NOM_CHAM='SIEF_ELNO',
                    NOM_CMP='SIZZ',
                    MAILLE='M1',
                    NOEUD='N1',

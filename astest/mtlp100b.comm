@@ -1,9 +1,9 @@
-# MODIF  DATE 16/11/2009   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
 # TITRE TREMPE D'UN BARREAU INFINI A SECTION CARREE (3D)
 # mtlp100b.para = tps_job 160 mem_job 300Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
@@ -663,65 +663,65 @@ TEMPE=CALC_META( reuse=TEMPE,   MODELE=MOTH,
 
 TEMPE=CALC_ELEM( reuse=TEMPE,       
                          RESULTAT=TEMPE,
-                           OPTION=('DURT_ELNO_META',),
+                           OPTION=('DURT_ELNO',),
                              INST=( 30.0,  140.0,  300.0,  410.0, )
                    )
 
 TEST_RESU(RESU=( 
 
 # POINT B A 300S PROPORTION DE BAINITE
-         _F(  RESULTAT = TEMPE,  NOM_CHAM = 'META_ELNO_TEMP',
+         _F(  RESULTAT = TEMPE,  NOM_CHAM = 'META_ELNO',
            NUME_ORDRE = 110,  CRITERE = 'ABSOLU',   PRECISION = 5.E-3,
            REFERENCE = 'AUTRE_ASTER',
            MAILLE = 'M19',   NOEUD = 'N19',  NOM_CMP = 'V3',   VALE = 0.6263),
 
 # POINT C A 300S PROPORTION DE BAINITE
-          _F(  RESULTAT = TEMPE,  NOM_CHAM = 'META_ELNO_TEMP',
+          _F(  RESULTAT = TEMPE,  NOM_CHAM = 'META_ELNO',
             NUME_ORDRE = 110,
             REFERENCE = 'AUTRE_ASTER',
             CRITERE = 'ABSOLU',   PRECISION = 2.E-2,
             MAILLE = 'M19',   NOEUD = 'N593',  NOM_CMP = 'V3',   VALE = 0.5334),
 
 # POINT A A 410S PROPORTION DE BAINITE
-          _F(  RESULTAT = TEMPE,  NOM_CHAM = 'META_ELNO_TEMP',
+          _F(  RESULTAT = TEMPE,  NOM_CHAM = 'META_ELNO',
             NUME_ORDRE = 165,  CRITERE = 'ABSOLU',   PRECISION = 3.E-2,
             REFERENCE = 'AUTRE_ASTER',
             MAILLE = 'M13',   NOEUD = 'N13',  NOM_CMP = 'V3',   VALE = 0.7990),
 
 # POINT A A 410S PROPORTION DE MARTENSITE
-          _F(  RESULTAT = TEMPE,  NOM_CHAM = 'META_ELNO_TEMP',
+          _F(  RESULTAT = TEMPE,  NOM_CHAM = 'META_ELNO',
             NUME_ORDRE = 165, CRITERE = 'ABSOLU',   PRECISION = 3.E-2,
             REFERENCE = 'AUTRE_ASTER',
             MAILLE = 'M13',   NOEUD = 'N13',  NOM_CMP = 'V4',   VALE = 0.1996),
 
 # POINT B A 410S PROPORTION DE MARTENSITE
-          _F(  RESULTAT = TEMPE,  NOM_CHAM = 'META_ELNO_TEMP',
+          _F(  RESULTAT = TEMPE,  NOM_CHAM = 'META_ELNO',
             NUME_ORDRE = 165,  CRITERE = 'ABSOLU',   PRECISION = 5.E-3,
             REFERENCE = 'AUTRE_ASTER',
             MAILLE = 'M19',   NOEUD = 'N19',  NOM_CMP = 'V4',   VALE = 0.3715),
 
 # POINT C A 410S PROPORTION DE MARTENSITE ET DURETE
-          _F(  RESULTAT = TEMPE,  NOM_CHAM = 'META_ELNO_TEMP',
+          _F(  RESULTAT = TEMPE,  NOM_CHAM = 'META_ELNO',
             NUME_ORDRE = 165, CRITERE = 'ABSOLU',   PRECISION = 2.E-2,
             REFERENCE = 'AUTRE_ASTER',
             MAILLE = 'M19',   NOEUD = 'N593',  NOM_CMP = 'V4',   VALE = 0.4638),
 
-          _F(  RESULTAT = TEMPE,  NOM_CHAM = 'DURT_ELNO_META',  INST = 30.0,
+          _F(  RESULTAT = TEMPE,  NOM_CHAM = 'DURT_ELNO',  INST = 30.0,
             REFERENCE = 'AUTRE_ASTER',  CRITERE = 'ABSOLU',
             PRECISION = 5.E-3,
             MAILLE = 'M1',   NOEUD = 'N1',  NOM_CMP = 'HV',   VALE = 223.643),
 
-          _F(  RESULTAT = TEMPE,  NOM_CHAM = 'DURT_ELNO_META',  INST = 140.0,
+          _F(  RESULTAT = TEMPE,  NOM_CHAM = 'DURT_ELNO',  INST = 140.0,
             REFERENCE = 'AUTRE_ASTER',
             CRITERE = 'ABSOLU',   PRECISION = 5.E-3,
             MAILLE = 'M1',   NOEUD = 'N1',  NOM_CMP = 'HV',   VALE = 106.430),
 
-          _F(  RESULTAT = TEMPE,  NOM_CHAM = 'DURT_ELNO_META',
+          _F(  RESULTAT = TEMPE,  NOM_CHAM = 'DURT_ELNO',
             NUME_ORDRE = 110, CRITERE = 'ABSOLU',   PRECISION = 5.E-3,
             REFERENCE = 'AUTRE_ASTER',
             MAILLE = 'M1',   NOEUD = 'N1',  NOM_CMP = 'HV',   VALE = 100.),
 
-          _F(  RESULTAT = TEMPE,  NOM_CHAM = 'DURT_ELNO_META',
+          _F(  RESULTAT = TEMPE,  NOM_CHAM = 'DURT_ELNO',
             NUME_ORDRE = 165,
             CRITERE = 'ABSOLU',   PRECISION = 6.5E-1,
             REFERENCE = 'NON_REGRESSION',

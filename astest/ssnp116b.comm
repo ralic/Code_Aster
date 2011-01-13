@@ -1,9 +1,9 @@
-# MODIF  DATE 17/02/2009   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
 # TITRE COUPLAGE FLUAGE/BETON_DOUBLE_DP - TRACTION UNIAXIALE EN D_PLAN
 # ssnp116b.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -227,7 +227,7 @@ COUPLA=STAT_NON_LINE(
                             )
 
 COUPLA=CALC_ELEM(  reuse=COUPLA,
-                   OPTION=( 'SIEF_ELNO_ELGA',
+                   OPTION=( 'SIEF_ELNO',
                             'EPFP_ELNO',
                             'EPSP_ELNO', ),
                    RESULTAT=COUPLA )
@@ -235,7 +235,7 @@ COUPLA=CALC_ELEM(  reuse=COUPLA,
 RELEVE_1=POST_RELEVE_T(ACTION=(
                    _F(  RESULTAT = COUPLA,
                             INTITULE = 'SIEF',
-                            NOM_CHAM = 'SIEF_ELNO_ELGA',
+                            NOM_CHAM = 'SIEF_ELNO',
                             NOM_CMP = 'SIXX',
                             LIST_INST = LINST,
                             PRECISION = 1.E-8,
@@ -306,7 +306,7 @@ TEST_TABLE(  TABLE=RELEVE_1,
 RELEVE_2=POST_RELEVE_T(ACTION=(
                    _F(  RESULTAT = COUPLA,
                             INTITULE = 'SIEF',
-                            NOM_CHAM = 'SIEF_ELNO_ELGA',
+                            NOM_CHAM = 'SIEF_ELNO',
                             NOM_CMP = 'SIXX',
                             LIST_INST = LINST,
                             PRECISION = 1.E-8,
@@ -402,7 +402,7 @@ COUPLA2=STAT_NON_LINE(
 
 COUPLA2=CALC_ELEM(  reuse=COUPLA2,
                     OPTION=( 'EPSI_ELNO_DEPL',
-                             'SIEF_ELNO_ELGA',
+                             'SIEF_ELNO',
                              'EPFP_ELNO',
                              'EPSP_ELNO', ),
                     RESULTAT=COUPLA2 )
@@ -410,7 +410,7 @@ COUPLA2=CALC_ELEM(  reuse=COUPLA2,
 RELEVE_3=POST_RELEVE_T(ACTION=(
                    _F(  RESULTAT = COUPLA2,
                             INTITULE = 'SIEF',
-                            NOM_CHAM = 'SIEF_ELNO_ELGA',
+                            NOM_CHAM = 'SIEF_ELNO',
                             NOM_CMP = 'SIXX',
                             LIST_INST = LINST,
                             PRECISION = 1.E-8,

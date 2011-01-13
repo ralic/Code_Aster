@@ -1,8 +1,8 @@
-# MODIF  DATE 13/09/2010   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
 # TITRE CYLINDRE CREUX ORTHOTROPE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -149,18 +149,18 @@ TEMPE=CALC_ELEM(reuse =TEMPE,
 
                 RESULTAT=TEMPE,
                 NUME_ORDRE=0,
-                OPTION='FLUX_ELNO_TEMP',
+                OPTION='FLUX_ELNO',
 
 );
 
 TEMPE=CALC_NO(reuse =TEMPE,
               RESULTAT=TEMPE,
-              OPTION='FLUX_NOEU_TEMP',);
+              OPTION='FLUX_NOEU',);
 
 FLUYAB=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                INTITULE='FLUYAB',
                                RESULTAT=TEMPE,
-                               NOM_CHAM='FLUX_NOEU_TEMP',
+                               NOM_CHAM='FLUX_NOEU',
                                NUME_ORDRE=0,
                                GROUP_NO=('AB','CD','COUP02',),
                                NOM_CMP=('FLUY','FLUX',),),);

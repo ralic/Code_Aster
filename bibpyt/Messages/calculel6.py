@@ -1,8 +1,8 @@
-#@ MODIF calculel6 Messages  DATE 08/11/2010   AUTEUR PELLET J.PELLET 
+#@ MODIF calculel6 Messages  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -148,7 +148,7 @@ Conseils :
 """),
 
 47: _("""
- champ FLUX_ELNO_TEMP vide pour numéro d'ordre :  %(i1)d
+ champ FLUX_ELNO vide pour numéro d'ordre :  %(i1)d
 """),
 
 49: _("""

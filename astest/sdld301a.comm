@@ -1,10 +1,10 @@
-# MODIF  DATE 23/11/2010   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
 # TITRE SYSTEME 2 MASSES 3 RESSORTS
 #       SYSTEME MASSE-RESSORT A 2 DEGRES DE LIBERTE
 #       ANALYSE SPECTRALE MULTI SUPPORTEE
 # sdld301a.para = tps_job 60 mem_job 250Mo ncpus 1 liste_test S
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -124,7 +124,7 @@ MODES=NORM_MODE(reuse=MODES,
 #
 MODES=CALC_ELEM(reuse=MODES,
                         RESULTAT=MODES,
-                          OPTION=( 'SIEF_ELGA_DEPL',
+                          OPTION=( 'SIEF_ELGA',
                                     'EFGE_ELNO_DEPL',)
                   )
 
@@ -163,7 +163,7 @@ MODE_STA=MODE_STATIQUE(   MATR_RIGI=MATRRIGI,
 #
 MODE_STA=CALC_ELEM(reuse=MODE_STA,
                            RESULTAT=MODE_STA,
-                             OPTION=( 'SIEF_ELGA_DEPL',
+                             OPTION=( 'SIEF_ELGA',
                                       'EFGE_ELNO_DEPL', )
                      )
 
@@ -215,7 +215,7 @@ MODE_CO2=MODE_STATIQUE(   MATR_RIGI=MATRRIGI,
 #
 MODE_CO2=CALC_ELEM(reuse=MODE_CO2,
                            RESULTAT=MODE_CO2,
-                             OPTION=( 'SIEF_ELGA_DEPL',
+                             OPTION=( 'SIEF_ELGA',
                                       'EFGE_ELNO_DEPL', )
                      )
 
@@ -342,7 +342,7 @@ MUQASRS=COMB_SISM_MODAL( MODE_MECA=MODES,
                                           DX = 0.),
                          COMB_MODE=_F(  TYPE = 'SRSS'),
                          OPTION=( 'DEPL',
-                                  'SIEF_ELGA_DEPL',
+                                  'SIEF_ELGA',
                                   'EFGE_ELNO_DEPL',
                                   'FORC_NODA',
                                   'REAC_NODA', )
@@ -382,7 +382,7 @@ MUQAABS=COMB_SISM_MODAL( MODE_MECA=MODES,
                                              DX = 0.),
                          COMB_MODE=_F(  TYPE = 'ABS'),
                          OPTION=( 'DEPL',
-                                  'SIEF_ELGA_DEPL',
+                                  'SIEF_ELGA',
                                   'EFGE_ELNO_DEPL',
                                   'FORC_NODA',
                                   'REAC_NODA', )
@@ -425,7 +425,7 @@ MUQADPC=COMB_SISM_MODAL(
                                           DX = 0.),
                          COMB_MODE=_F(  TYPE = 'DPC'),
                          OPTION=( 'DEPL',
-                                       'SIEF_ELGA_DEPL',
+                                       'SIEF_ELGA',
                                        'EFGE_ELNO_DEPL',
                                        'FORC_NODA',
                                        'REAC_NODA', )
@@ -463,7 +463,7 @@ MUQACQC=COMB_SISM_MODAL( MODE_MECA=MODES,
                                           DX = 0.),
                          COMB_MODE=_F( TYPE = 'CQC'),
                          OPTION=( 'DEPL',
-                                  'SIEF_ELGA_DEPL',
+                                  'SIEF_ELGA',
                                   'EFGE_ELNO_DEPL',
                                   'FORC_NODA',
                                   'REAC_NODA', )
@@ -506,7 +506,7 @@ MUQADSC=COMB_SISM_MODAL( MODE_MECA=MODES,
                          COMB_MODE=_F( TYPE = 'DSC',
                                        DUREE = 15.),
                          OPTION=( 'DEPL',
-                                  'SIEF_ELGA_DEPL',
+                                  'SIEF_ELGA',
                                   'EFGE_ELNO_DEPL',
                                   'FORC_NODA',
                                   'REAC_NODA', )

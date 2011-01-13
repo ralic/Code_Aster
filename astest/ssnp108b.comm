@@ -1,9 +1,9 @@
-# MODIF  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
 # TITRE ELEMENT DE BETON PRECONTRAINT EN COMPRESSION
 # ssnp108b.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -117,20 +117,20 @@ EVOLNOLI=STAT_NON_LINE(
               )
 
 EVOLNOLI=CALC_ELEM( reuse=EVOLNOLI,  RESULTAT=EVOLNOLI,
-                            OPTION='SIEF_ELNO_ELGA',
+                            OPTION='SIEF_ELNO',
               )
 
 EVOLNOLI=CALC_NO( reuse=EVOLNOLI,  RESULTAT=EVOLNOLI,
 #                    GROUP_MA='CABLE',
 #                    MAILLE=('M1','M6'),
-                      OPTION='SIEF_NOEU_ELGA',
+                      OPTION='SIEF_NOEU',
               )
 
 ESSAI1=POST_RELEVE_T(ACTION=(_F(
                               INTITULE='ESSAI1',
                               GROUP_NO = 'CABLE' ,
                               RESULTAT=EVOLNOLI,
-                              NOM_CHAM='SIEF_ELNO_ELGA',
+                              NOM_CHAM='SIEF_ELNO',
                               NUME_ORDRE=1,
                               NOM_CMP='N',
                               OPERATION='EXTRACTION',),
@@ -149,7 +149,7 @@ TEST_RESU(  RESU=_F(  RESULTAT = EVOLNOLI,
                       NUME_ORDRE = 1,
                       GROUP_NO = 'B1',
                       MAILLE = 'M1',
-                      NOM_CHAM = 'SIEF_ELNO_ELGA',
+                      NOM_CHAM = 'SIEF_ELNO',
                       NOM_CMP = 'NXX',
                       PRECISION = 0.020,
                       REFERENCE = 'ANALYTIQUE',
@@ -160,7 +160,7 @@ TEST_RESU(  RESU=_F(  RESULTAT = EVOLNOLI,
                       NUME_ORDRE = 1,
                       GROUP_NO = 'B3',
                       MAILLE = 'M6',
-                      NOM_CHAM = 'SIEF_ELNO_ELGA',
+                      NOM_CHAM = 'SIEF_ELNO',
                       NOM_CMP = 'NXX',
                       PRECISION = 0.020,
                       REFERENCE = 'ANALYTIQUE',
@@ -176,7 +176,7 @@ TEST_RESU(  RESU=_F(  RESULTAT = EVOLNOLI,
 TEST_RESU(  RESU=_F(  RESULTAT = EVOLNOLI,
                       NUME_ORDRE = 1,
                       GROUP_NO = 'C1',
-                      NOM_CHAM = 'SIEF_NOEU_ELGA',
+                      NOM_CHAM = 'SIEF_NOEU',
                       NOM_CMP = 'N',
                       REFERENCE = 'ANALYTIQUE',
                       PRECISION = 0.001,
@@ -185,7 +185,7 @@ TEST_RESU(  RESU=_F(  RESULTAT = EVOLNOLI,
 TEST_RESU(  RESU=_F(  RESULTAT = EVOLNOLI,
                       NUME_ORDRE = 1,
                       GROUP_NO = 'C2',
-                      NOM_CHAM = 'SIEF_NOEU_ELGA',
+                      NOM_CHAM = 'SIEF_NOEU',
                       NOM_CMP = 'N',
                       REFERENCE = 'ANALYTIQUE',
                       PRECISION = 0.002,

@@ -1,4 +1,4 @@
-# MODIF  DATE 10/01/2011   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
 # TITRE POUTRE COURTE SUR APPUIS SIMPLES
 # sdll01a.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -165,7 +165,7 @@ MODE4=CALC_ELEM(      RESULTAT=MODE1,
 
 
 
-                          OPTION='ECIN_ELEM_DEPL'   )
+                          OPTION='ECIN_ELEM'   )
 
 #----- CAS 2
 
@@ -212,7 +212,7 @@ TEST_RESU(RESU=(
            CRITERE = 'RELATIF',     PRECISION = 4.5E-2,
            NUME_ORDRE = 5,       VALE = 3126.2),
            #----------------------------------            )
-   _F( RESULTAT = MODE4, NOM_CHAM = 'ECIN_ELEM_DEPL', NOM_CMP='TOTALE',
+   _F( RESULTAT = MODE4, NOM_CHAM = 'ECIN_ELEM', NOM_CMP='TOTALE',
        MAILLE = 'E101', CRITERE = 'RELATIF',  PRECISION = 0.01,
        NUME_MODE = 1, POINT=1, REFERENCE='NON_REGRESSION', VALE = 5.13660E+04),),)
 

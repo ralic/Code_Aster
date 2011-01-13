@@ -1,9 +1,9 @@
-# MODIF  DATE 08/11/2010   AUTEUR PROIX J-M.PROIX 
+# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
 # TITRE ESSAI DE TRACTION AVEC MEMOIRE MAXI D'ECROUISSAGE
 # ssnd105b.para = tps_job 300 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -301,14 +301,14 @@ VISCOCH=STAT_NON_LINE(reuse =VISCOCH,
 
 VISCMEMO=CALC_ELEM(reuse =VISCMEMO,
                    RESULTAT=VISCMEMO,
-                   OPTION='EPSI_ELGA_DEPL',);
+                   OPTION='EPSI_ELGA',);
 
 VISCOCH=CALC_ELEM(reuse =VISCOCH,
                   RESULTAT=VISCOCH,
-                  OPTION='EPSI_ELGA_DEPL',);
+                  OPTION='EPSI_ELGA',);
 
 FEPXX=RECU_FONCTION(RESULTAT=VISCMEMO,
-                    NOM_CHAM='EPSI_ELGA_DEPL',
+                    NOM_CHAM='EPSI_ELGA',
                     NOM_CMP='EPXX',
                     MAILLE='MA1',INTERPOL='LIN',
                     POINT=1,);
@@ -320,7 +320,7 @@ FSIXX=RECU_FONCTION(RESULTAT=VISCMEMO,
                     POINT=1,);
 
 FEPXX2=RECU_FONCTION(RESULTAT=VISCOCH,
-                     NOM_CHAM='EPSI_ELGA_DEPL',
+                     NOM_CHAM='EPSI_ELGA',
                      NOM_CMP='EPXX',
                      MAILLE='MA1',INTERPOL='LIN',
                      POINT=1,);
@@ -475,11 +475,11 @@ VMISCIN2=STAT_NON_LINE(reuse =VMISCIN2,
 
 VMISCIN2=CALC_ELEM(reuse =VMISCIN2,
                    RESULTAT=VMISCIN2,
-                   OPTION='EPSI_ELGA_DEPL',);
+                   OPTION='EPSI_ELGA',);
 
 
 FEPXX3=RECU_FONCTION(RESULTAT=VMISCIN2,
-                     NOM_CHAM='EPSI_ELGA_DEPL',
+                     NOM_CHAM='EPSI_ELGA',
                      NOM_CMP='EPXX',INTERPOL='LIN',
                      MAILLE='MA1',
                      POINT=1,);

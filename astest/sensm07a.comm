@@ -1,10 +1,10 @@
-# MODIF  DATE 07/12/2010   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
 # RESPONSABLE GNICOLAS G.NICOLAS
 # TITRE SENSIBILITE AUX DONNEES - EXEMPLE D'UTILISATION
 # sensm07a.para = tps_job 60 mem_job 64Mo liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -145,18 +145,18 @@ resultat=CALC_NO(reuse =resultat,
 # 8.2. Les derivees des contraintes aux points de Gauss
 # 8.3. Les derivees des contraintes aux noeuds
 CALC_SENSI(reuse =resultat, RESULTAT=resultat, SENSIBILITE=(E1,E2,E3,PA,PB),
-                 OPTION=('SIEF_ELGA_DEPL','SIGM_ELNO_DEPL','SIGM_NOEU_DEPL'));
+                 OPTION=('SIEF_ELGA','SIGM_ELNO_DEPL','SIGM_NOEU_DEPL'));
 #
 # 9. Impressions des resultats
 #
 # 9.1. Le resultat standard
 IMPR_RESU(RESU=_F(RESULTAT=resultat,
                   SENSIBILITE=(E1,E2,E3,PA,PB),
-                  NOM_CHAM='SIEF_ELGA_DEPL',
+                  NOM_CHAM='SIEF_ELGA',
                   GROUP_MA='ZONE_3',));
 IMPR_RESU(RESU=_F(RESULTAT=resultat,
                   SENSIBILITE=(E1,E2,E3,PA,PB),
-                  NOM_CHAM='SIEF_ELGA_DEPL',
+                  NOM_CHAM='SIEF_ELGA',
                   GROUP_NO='GM1',));
 IMPR_RESU(RESU=_F(RESULTAT=resultat,
                   SENSIBILITE=(E1,E2,E3,PA,PB),
@@ -170,21 +170,21 @@ IMPR_RESU(RESU=_F(RESULTAT=resultat,
 # 9.3. Les valeurs extremes du deplacement et des contraintes dans les
 #
 IMPR_RESU(RESU=_F(RESULTAT=resultat,
-                  NOM_CHAM=('DEPL','SIEF_ELGA_DEPL'),
+                  NOM_CHAM=('DEPL','SIEF_ELGA'),
                   GROUP_MA='ZONE_1',
                   VALE_MAX='OUI',
                   VALE_MIN='OUI',
                   FORMAT_R='1PE12.5'));
 #
 IMPR_RESU(RESU=_F(RESULTAT=resultat,
-                  NOM_CHAM=('DEPL','SIEF_ELGA_DEPL'),
+                  NOM_CHAM=('DEPL','SIEF_ELGA'),
                   GROUP_MA='ZONE_2',
                   VALE_MAX='OUI',
                   VALE_MIN='OUI',
                   FORMAT_R='1PE12.5'));
 #
 IMPR_RESU(RESU=_F(RESULTAT=resultat,
-                  NOM_CHAM=('DEPL','SIEF_ELGA_DEPL'),
+                  NOM_CHAM=('DEPL','SIEF_ELGA'),
                   GROUP_MA='ZONE_3',
                   VALE_MAX='OUI',
                   VALE_MIN='OUI',
@@ -194,7 +194,7 @@ IMPR_RESU(RESU=_F(RESULTAT=resultat,
 #
 IMPR_RESU(RESU=_F(RESULTAT=resultat,
                   SENSIBILITE=(E1,E2,E3,PA,PB),
-                  NOM_CHAM='SIEF_ELGA_DEPL',
+                  NOM_CHAM='SIEF_ELGA',
                   GROUP_MA='ZONE_3',
                   VALE_MAX='OUI',
                   VALE_MIN='OUI',

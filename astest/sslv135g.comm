@@ -1,4 +1,4 @@
-# MODIF  DATE 10/01/2011   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
 # RESPONSABLE ANGLES J.ANGLES
 #
 # TITRE FATIGUE, CHARGEMENT CYCLIQUE : TRACTION-COMPRESSION + CISAILLEMENT
@@ -300,14 +300,14 @@ SOL_NL = STAT_NON_LINE ( TITRE      =
 
 SOL_NL = CALC_ELEM( reuse    = SOL_NL,
                     RESULTAT = SOL_NL,
-                    OPTION   = 'SIEF_ELNO_ELGA',
+                    OPTION   = 'SIEF_ELNO',
                   )
 
 SOL_NL = CALC_NO( reuse    = SOL_NL,
                   RESULTAT = SOL_NL,
                   TOUT = 'OUI',
                   GROUP_MA = ('CUBE'),
-                  OPTION   = 'SIEF_NOEU_ELGA'
+                  OPTION   = 'SIEF_NOEU'
                 )
 
 # CALCUL DE LA FATIGUE SUR L'ENSEMBLE DE LA STRUCTURE AUX POINTS DE GAUSS
@@ -655,7 +655,7 @@ TEST_RESU(CHAM_ELEM=( _F( CHAM_GD = FATI_NL,
 
 TEST_RESU(RESU=( _F( RESULTAT = SOL_NL,
                      INST = 1.0,
-                     NOM_CHAM = 'SIEF_NOEU_ELGA',
+                     NOM_CHAM = 'SIEF_NOEU',
                      NOM_CMP = 'SIXX',
                      NOEUD = 'N214',
                      REFERENCE = 'NON_REGRESSION',
@@ -664,7 +664,7 @@ TEST_RESU(RESU=( _F( RESULTAT = SOL_NL,
                      VALE = 1.0035527116332E+02 ),
                  _F( RESULTAT = SOL_NL,
                      INST = 1.0,
-                     NOM_CHAM = 'SIEF_NOEU_ELGA',
+                     NOM_CHAM = 'SIEF_NOEU',
                      NOM_CMP = 'SIYY',
                      NOEUD = 'N214',
                      REFERENCE = 'NON_REGRESSION',
@@ -673,7 +673,7 @@ TEST_RESU(RESU=( _F( RESULTAT = SOL_NL,
                      VALE = -4.1832534869028E+00 ),
                  _F( RESULTAT = SOL_NL,
                      INST = 1.0,
-                     NOM_CHAM = 'SIEF_NOEU_ELGA',
+                     NOM_CHAM = 'SIEF_NOEU',
                      NOM_CMP = 'SIZZ',
                      NOEUD = 'N214',
                      REFERENCE = 'NON_REGRESSION',
@@ -682,7 +682,7 @@ TEST_RESU(RESU=( _F( RESULTAT = SOL_NL,
                      VALE = 2.8851605298589E+01 ),
                  _F( RESULTAT = SOL_NL,
                      INST = 3.0,
-                     NOM_CHAM = 'SIEF_NOEU_ELGA',
+                     NOM_CHAM = 'SIEF_NOEU',
                      NOM_CMP = 'SIXX',
                      NOEUD = 'N214',
                      REFERENCE = 'NON_REGRESSION',
@@ -691,7 +691,7 @@ TEST_RESU(RESU=( _F( RESULTAT = SOL_NL,
                      VALE = -1.0035527116332E+02 ),
                  _F( RESULTAT = SOL_NL,
                      INST = 3.0,
-                     NOM_CHAM = 'SIEF_NOEU_ELGA',
+                     NOM_CHAM = 'SIEF_NOEU',
                      NOM_CMP = 'SIYY',
                      NOEUD = 'N214',
                      REFERENCE = 'NON_REGRESSION',
@@ -700,7 +700,7 @@ TEST_RESU(RESU=( _F( RESULTAT = SOL_NL,
                      VALE = 4.1832534869010E+00 ),
                  _F( RESULTAT = SOL_NL,
                      INST = 3.0,
-                     NOM_CHAM = 'SIEF_NOEU_ELGA',
+                     NOM_CHAM = 'SIEF_NOEU',
                      NOM_CMP = 'SIZZ',
                      NOEUD = 'N214',
                      REFERENCE = 'NON_REGRESSION',

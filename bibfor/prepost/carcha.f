@@ -5,7 +5,7 @@
       CHARACTER*24 OPTION
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 10/01/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF PREPOST  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -70,10 +70,10 @@ C     CHAMP DE GRANDEUR "SIEF_R"
          TYPCHA = 'ELGA'
          OPTION = 'RAPH_MECA'
          PARAM  = 'PCONTPR'
-      ELSE IF (NOCH.EQ.'SIEF_ELGA_DEPL') THEN
+      ELSE IF (NOCH.EQ.'SIEF_ELGA') THEN
          NOMGD  = 'SIEF_R'
          TYPCHA = 'ELGA'
-         OPTION = 'SIEF_ELGA_DEPL'
+         OPTION = 'SIEF_ELGA'
          PARAM  = 'PCONTPR'
       ELSE IF (NOCH.EQ.'EQUI_ELGA_SIGM') THEN
          NOMGD  = 'SIEF_R'
@@ -83,12 +83,12 @@ C     CHAMP DE GRANDEUR "SIEF_R"
       ELSE IF (NOCH.EQ.'SIEF_ELNO') THEN
          NOMGD  = 'SIEF_R'
          TYPCHA = 'ELNO'
-         OPTION = 'SIEF_ELNO_ELGA'
+         OPTION = 'SIEF_ELNO'
          PARAM  = 'PSIEFNOR'
-      ELSE IF (NOCH.EQ.'SIEF_ELNO_ELGA') THEN
+      ELSE IF (NOCH.EQ.'SIEF_ELNO') THEN
          NOMGD  = 'SIEF_R'
          TYPCHA = 'ELNO'
-         OPTION = 'SIEF_ELNO_ELGA'
+         OPTION = 'SIEF_ELNO'
          PARAM  = 'PSIEFNOR'
       ELSE IF (NOCH.EQ.'EQUI_ELNO_SIGM') THEN
          NOMGD  = 'SIEF_R'
@@ -97,7 +97,7 @@ C     CHAMP DE GRANDEUR "SIEF_R"
       ELSE IF (NOCH.EQ.'SIEF_NOEU') THEN
          NOMGD  = 'SIEF_R'
          TYPCHA = 'NOEU'
-      ELSE IF (NOCH.EQ.'SIEF_NOEU_ELGA') THEN
+      ELSE IF (NOCH.EQ.'SIEF_NOEU') THEN
          NOMGD  = 'SIEF_R'
          TYPCHA = 'NOEU'
       ELSE IF (NOCH.EQ.'SIGM_NOEU_DEPL') THEN
@@ -112,12 +112,12 @@ C     CHAMP DE GRANDEUR "EPSI_R"
       ELSE IF (NOCH.EQ.'EPSI_ELGA') THEN
          NOMGD  = 'EPSI_R'
          TYPCHA = 'ELGA'
-         OPTION = 'EPSI_ELGA_DEPL'
+         OPTION = 'EPSI_ELGA'
          PARAM  = 'PDEFORR'
-      ELSE IF (NOCH.EQ.'EPSI_ELGA_DEPL') THEN
+      ELSE IF (NOCH.EQ.'EPSI_ELGA') THEN
          NOMGD  = 'EPSI_R'
          TYPCHA = 'ELGA'
-         OPTION = 'EPSI_ELGA_DEPL'
+         OPTION = 'EPSI_ELGA'
          PARAM  = 'PDEFORR'
       ELSE IF (NOCH.EQ.'EQUI_ELGA_EPME') THEN
          NOMGD  = 'EPSI_R'
@@ -129,10 +129,10 @@ C     CHAMP DE GRANDEUR "EPSI_R"
          TYPCHA = 'ELGA'
          OPTION = 'EQUI_ELGA_EPSI'
          PARAM  = 'PDEFOEQ'
-      ELSE IF (NOCH.EQ.'EPSG_ELGA_DEPL') THEN
+      ELSE IF (NOCH.EQ.'EPSG_ELGA') THEN
          NOMGD  = 'EPSI_R'
          TYPCHA = 'ELGA'
-         OPTION = 'EPSG_ELGA_DEPL'
+         OPTION = 'EPSG_ELGA'
          PARAM  = 'PDEFORR'
       ELSE IF (NOCH.EQ.'EPSI_ELNO_DEPL') THEN
          NOMGD  = 'EPSI_R'
@@ -160,7 +160,7 @@ C     CHAMP DE GRANDEUR "EPSI_R"
       ELSE IF (NOCH.EQ.'EPSA_NOEU') THEN
          NOMGD  = 'EPSI_R'
          TYPCHA = 'NOEU'
-      ELSE IF (NOCH.EQ.'EPME_ELNO_DEPL') THEN
+      ELSE IF (NOCH.EQ.'EPME_ELNO') THEN
          NOMGD  = 'EPSI_R'
          TYPCHA = 'ELNO'
 C
@@ -183,10 +183,10 @@ C     CHAMP DE GRANDEUR "VARI_R"
       ELSE IF (NOCH.EQ.'VARI_NOEU_ELGA') THEN
          NOMGD  = 'VAR2_R'
          TYPCHA = 'NOEU'
-      ELSE IF (NOCH.EQ.'HYDR_ELNO_ELGA') THEN
+      ELSE IF (NOCH.EQ.'HYDR_ELNO') THEN
          NOMGD  = 'HYDR_R'
          TYPCHA = 'ELNO'
-      ELSE IF (NOCH.EQ.'HYDR_NOEU_ELGA') THEN
+      ELSE IF (NOCH.EQ.'HYDR_NOEU') THEN
          NOMGD  = 'HYDR_R'
          TYPCHA = 'NOEU'
 

@@ -1,4 +1,4 @@
-# MODIF  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
 # RESPONSABLE PROIX J-M.PROIX
 
 DEBUT(CODE=_F(NOM='FORMA01A',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
@@ -6,7 +6,7 @@ DEBUT(CODE=_F(NOM='FORMA01A',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 # forma01a.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -100,24 +100,24 @@ RESU1=MECA_STATIQUE(MODELE=MODMECA,
 
 RESU1=CALC_ELEM(reuse =RESU1,
                 RESULTAT=RESU1,
-                OPTION='SIEF_ELNO_ELGA',);
+                OPTION='SIEF_ELNO',);
 
 RESU1=CALC_NO(reuse =RESU1,
               RESULTAT=RESU1,
-              OPTION='SIEF_NOEU_ELGA',);
+              OPTION='SIEF_NOEU',);
 # ECRITURE DES RESULTATS AU FORMAT RESULTAT
 #
 # VALEURS MIN ET MAX DES EFFORTS
 
 IMPR_RESU(MODELE=MODMECA,
           RESU=(_F(RESULTAT=RESU1,
-                   NOM_CHAM='SIEF_ELNO_ELGA',
+                   NOM_CHAM='SIEF_ELNO',
                    TOUT_CMP='OUI',
                    TOUT='OUI',
                    VALE_MAX='OUI',
                    VALE_MIN='OUI',),
                 _F(RESULTAT=RESU1,
-                   NOM_CHAM='SIEF_ELNO_ELGA',
+                   NOM_CHAM='SIEF_ELNO',
                    TOUT_CMP='OUI',
                    GROUP_NO='PB',),),);
 
@@ -131,7 +131,7 @@ IMPR_RESU(MODELE=MODMECA,
           FORMAT='MED',
           RESU=_F(MAILLAGE=MAIL,
                   RESULTAT=RESU1,
-                  NOM_CHAM=('DEPL','SIEF_ELNO_ELGA',),),);
+                  NOM_CHAM=('DEPL','SIEF_ELNO',),),);
 # COEF DE FLEXIBILITE POUR
 # COMPARAISON AUX COQUES (MODELISATION B) ET TUYAU (MODELISATION D)
 # RAYON DE COURBURE DES COUDES
@@ -173,11 +173,11 @@ RESU2=MECA_STATIQUE(MODELE=MODMECA,
 
 RESU2=CALC_ELEM(reuse =RESU2,
                 RESULTAT=RESU2,
-                OPTION='SIEF_ELNO_ELGA',);
+                OPTION='SIEF_ELNO',);
 
 RESU2=CALC_NO(reuse =RESU2,
               RESULTAT=RESU2,
-              OPTION='SIEF_NOEU_ELGA',);
+              OPTION='SIEF_NOEU',);
 
 IMPR_RESU(RESU=_F(RESULTAT=RESU2,
                   NOM_CHAM='DEPL',
@@ -194,7 +194,7 @@ MAIL=DEFI_GROUP(reuse =MAIL,
 EFGE=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                              INTITULE='EFFORTS',
                              RESULTAT=RESU2,
-                             NOM_CHAM='SIEF_NOEU_ELGA',
+                             NOM_CHAM='SIEF_NOEU',
                              GROUP_NO='TUYAU',
                              TOUT_CMP='OUI',),);
 

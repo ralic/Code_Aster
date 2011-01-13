@@ -1,8 +1,8 @@
       SUBROUTINE TE0156 ( OPTION , NOMTE )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 25/02/2008   AUTEUR FLEJOU J-L.FLEJOU 
+C MODIF ELEMENTS  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -21,13 +21,13 @@ C ======================================================================
       CHARACTER*16        OPTION , NOMTE
 C-----------------------------------------------------------------------
 C REALISE LES OPTIONS :
-C     SIEF_ELNO_ELGA : PASSAGE DU POINT DE GAUSS AUX NOEUD
+C     SIEF_ELNO : PASSAGE DU POINT DE GAUSS AUX NOEUD
 C                      POUR  LES CONTRAINTES DE L'ELEMENT MECA_BARRE
 C     FORC_NODA      : FORCES NODALE DE L'ELEMENT MECA_BARRE
 C
 C ----------------------------------------------------------------------
 C IN OPTION    : K16 :  OPTION DE CALCUL
-C                       'SIEF_ELNO_ELGA' OU 'FORC_NODA' OU
+C                       'SIEF_ELNO' OU 'FORC_NODA' OU
 C                       'REFE_FORC_NODA'
 C IN NOMTE     : K16 : NOM DU TYPE ELEMENT
 C                      'MECA_BARRE'
@@ -71,7 +71,7 @@ C
 102         CONTINUE
 101      CONTINUE
 
-      ELSEIF ( OPTION .EQ. 'SIEF_ELNO_ELGA' ) THEN
+      ELSEIF ( OPTION .EQ. 'SIEF_ELNO' ) THEN
          CALL JEVECH('PCONTRR', 'L',ICONTG)
 C        PARAMETRES EN SORTIE
          CALL JEVECH('PSIEFNOR','E',IVECTU)

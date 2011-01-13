@@ -1,4 +1,4 @@
-#@ MODIF prepost5 Messages  DATE 11/01/2011   AUTEUR SELLENET N.SELLENET 
+#@ MODIF prepost5 Messages  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -29,7 +29,7 @@ cata_msg = {
 """),
 
 2 : _("""
-Champ inexistant SIEF_ELGA ou SIEF_ELGA_DEPL numero d'ordre %(k2)s pour le calcul de l'option %(k3)s
+Champ inexistant SIEF_ELGA ou SIEF_ELGA numero d'ordre %(k2)s pour le calcul de l'option %(k3)s
 """),
 
 3 : _("""

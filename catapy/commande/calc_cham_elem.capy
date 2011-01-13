@@ -1,7 +1,7 @@
-#& MODIF COMMANDE  DATE 07/12/2010   AUTEUR PELLET J.PELLET 
+#& MODIF COMMANDE  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -37,11 +37,11 @@ CALC_CHAM_ELEM=OPER(nom="CALC_CHAM_ELEM",op=38,sd_prod=cham_elem,
 #
 
          OPTION          =SIMP(statut='o',typ='TXM',
-                               into=("FLUX_ELGA_TEMP","FLUX_ELNO_TEMP",
+                               into=("FLUX_ELGA","FLUX_ELNO",
                                      "PRAC_ELNO",
                                      "COOR_ELGA"), ),
 
-         b_thermique  =BLOC(condition="OPTION in ('FLUX_ELNO_TEMP','FLUX_ELGA_TEMP',)",
+         b_thermique  =BLOC(condition="OPTION in ('FLUX_ELNO','FLUX_ELGA',)",
            TEMP            =SIMP(statut='o',typ=(cham_no_sdaster,)),
          ),
 

@@ -3,9 +3,9 @@
       CHARACTER*(*) OPTION,NOMTE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 09/11/2010   AUTEUR TORKHANI M.TORKHANI 
+C MODIF ELEMENTS  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -24,7 +24,7 @@ C     ------------------------------------------------------------------
 C     CALCUL DU VECTEUR ELEMENTAIRE EFFORT GENERALISE
 C     ------------------------------------------------------------------
 C IN  OPTION : K16 : NOM DE L'OPTION A CALCULER
-C                   'SIEF_ELGA_DEPL'
+C                   'SIEF_ELGA'
 C                   'EFGE_ELNO_DEPL'
 C IN  NOMTE  : K16 : NOM DU TYPE D'ELEMENT DISCRET :
 C         MECA_DIS_T_N      MECA_DIS_T_L       MECA_DIS_TR_N
@@ -223,7 +223,7 @@ C     ---- MATRICE RIGIDITE LIGNE > MATRICE RIGIDITE CARRE
       ENDIF
 
 C     --- CALCUL DES VECTEURS ELEMENTAIRES ----
-      IF (OPTION.EQ.'SIEF_ELGA_DEPL') THEN
+      IF (OPTION.EQ.'SIEF_ELGA') THEN
          CALL JEVECH('PCONTRR','E',JEFFO)
          CALL JEVECH('PDEPLAR','L',JDEPL)
 

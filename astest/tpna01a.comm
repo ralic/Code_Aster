@@ -1,8 +1,8 @@
-# MODIF  DATE 03/11/2008   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
 # TITRE PB 2D AXISYMETRIQUE STATIONNAIRE AVEC RAYONNEMENT - QUAD8
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -172,7 +172,7 @@ TEMPE=THER_NON_LINE(MODELE=MOTH,
                     ETAT_INIT=_F(STATIONNAIRE='OUI',),
                     NEWTON=_F(REAC_ITER=1,),
                     TITRE=(' CAS TEST &CODE','&RL COMMANDE &COMMANDE',),
-                    OPTION='FLUX_ELNO_TEMP',);
+                    OPTION='FLUX_ELNO',);
 
 resu=MACR_LIGN_COUPE(RESULTAT=TEMPE,
                      NOM_CHAM='TEMP',
@@ -182,7 +182,7 @@ resu=MACR_LIGN_COUPE(RESULTAT=TEMPE,
                                    COOR_EXTR=(0.391,0.,),),);
 
 resu2=MACR_LIGN_COUPE(RESULTAT=TEMPE,
-                      NOM_CHAM='FLUX_ELNO_TEMP',
+                      NOM_CHAM='FLUX_ELNO',
                       LIGN_COUPE=_F(TYPE='SEGMENT',DISTANCE_MAX=0.001,
                                     NB_POINTS=5,
                                     COOR_ORIG=(0.3,0.,),

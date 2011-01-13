@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 10/01/2011   AUTEUR REZETTE C.REZETTE 
+%& MODIF TYPELEM  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -139,9 +139,9 @@ OPTION__
                               OUT__  MVECTUR  PVECTUR
     COOR_ELGA           478   IN__   NGEOMER  PGEOMER
                               OUT__  EGGEOP_R PCOORPG
-    DEGE_ELNO_DEPL      -1    IN__   XXXXXX   XXXXXX
+    DEGE_ELNO      -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
-    ECIN_ELEM_DEPL      151   IN__   CCAARPO  PCAARPO  CCAGNPO  PCAGNPO  CCAORIE  PCAORIE  DDL_MECA PDEPLAR
+    ECIN_ELEM      151   IN__   CCAARPO  PCAARPO  CCAGNPO  PCAGNPO  CCAORIE  PCAORIE  DDL_MECA PDEPLAR
                                      CFREQR   PFREQR   NGEOMER  PGEOMER  CMASDIA  PMASDIA  CMATERC  PMATERC
                                      ZVARCPG  PVARCPR
                               OUT__  EENECNO  PENERCR
@@ -159,7 +159,7 @@ OPTION__
                               OUT__  XXXXXX   XXXXXX
     ENER_TOTALE         -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
-    EPOT_ELEM_DEPL      151   IN__   CCAARPO  PCAARPO  CCAGNPO  PCAGNPO  CCAORIE  PCAORIE  DDL_MECA PDEPLAR
+    EPOT_ELEM      151   IN__   CCAARPO  PCAARPO  CCAGNPO  PCAGNPO  CCAORIE  PCAORIE  DDL_MECA PDEPLAR
                                      NGEOMER  PGEOMER  CMATERC  PMATERC  ZVARCPG  PVARCPR  ZVARCPG  PVARCRR
                               OUT__  EENEDNO  PENERDR
     FORC_NODA           39    IN__   CCAARPO  PCAARPO  CCAORIE  PCAORIE  EEFGEGA  PCONTMR  NGEOMER  PGEOMER
@@ -203,9 +203,9 @@ OPTION__
                               OUT__  EDCEL_I  PDCEL_I
     PAS_COURANT         404   IN__   CMATERC  PMATERC  NGEOMER  PGEOMER
                               OUT__  ECOURAN  PCOURAN
-    PMPB_ELGA_SIEF      -1    IN__   XXXXXX   XXXXXX
+    PMPB_ELGA      -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
-    PMPB_ELNO_SIEF      -1    IN__   XXXXXX   XXXXXX
+    PMPB_ELNO      -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
     RAPH_MECA           247   IN__   CCAGNPO  PCAGNPO  CCAORIE  PCAORIE  CCARCRI  PCARCRI  CCOMPOR  PCOMPOR
                                      EEFGEGA  PCONTMR  DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  NGEOMER  PGEOMER
@@ -238,13 +238,13 @@ OPTION__
                                      ZVARCPG  PVARCRR  ZVARCPG  PVARCMR  ZVARCPG  PVARCPR
                                      ZVARIPG  PVARIMR
                               OUT__  MMATUUR  PMATUUR
-    SIEF_ELGA_DEPL      144   IN__   CCAARPO  PCAARPO  CCAGNPO  PCAGNPO  CCAORIE  PCAORIE  DDL_MECA PCHDYNR
+    SIEF_ELGA      144   IN__   CCAARPO  PCAARPO  CCAGNPO  PCAGNPO  CCAORIE  PCAORIE  DDL_MECA PCHDYNR
                                      DDL_MECA PDEPLAR  CFORCEF  PFF1D1D  CFORCER  PFR1D1D  NGEOMER  PGEOMER
                                      CMATERC  PMATERC  CPESANR  PPESANR  CSUROPT  PSUROPT  ZVARCPG  PVARCPR
                                      ZVARCPG  PVARCRR
                               OUT__  EEFGEGA  PCONTRR
                                      EEFGEGC  PCONTRC
-    SIEF_ELNO_ELGA      39    IN__   EEFGEGA  PCONTRR
+    SIEF_ELNO      39    IN__   EEFGEGA  PCONTRR
                               OUT__  EEFGENO  PSIEFNOR
                                      EEFGENC  PSIEFNOC
     SIGM_ELNO_CART      39    IN__   CCAARPO  PCAARPO  CCAORIE  PCAORIE  ECONTNO  PCONTRR  NGEOMER  PGEOMER
@@ -256,7 +256,7 @@ OPTION__
                                      CTEMPSR  PTEMPSR  ZVARCPG  PVARCRR
                               OUT__  ECONTNO  PCONTRR
                                      ECONTNC  PCONTRC
-    SIPO_ELNO_DEPL      149   IN__   CABSCUR  PABSCUR  CCAARPO  PCAARPO  CCAGRPO  PCAGEPO  CCAGNPO  PCAGNPO
+    SIPO_ELNO      149   IN__   CABSCUR  PABSCUR  CCAARPO  PCAARPO  CCAGRPO  PCAGEPO  CCAGNPO  PCAGNPO
                                      CCAORIE  PCAORIE  DDL_MECA PCHDYNR  CCOEFC   PCOEFFC  CCOEFR   PCOEFFR
                                      DDL_MECA PDEPLAR  CFORCEF  PFF1D1D  CFORCER  PFR1D1D  NGEOMER  PGEOMER
                                      CMATERC  PMATERC  CPESANR  PPESANR  CSUROPT  PSUROPT  ZVARCPG  PVARCPR

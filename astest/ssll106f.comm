@@ -1,9 +1,9 @@
-# MODIF  DATE 15/11/2010   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
 # RESPONSABLE JMBHH01 J.M.PROIX
 # TITRE TUBE DROIT SOUMIS A PLUSIEURS CHARGEMENTS (ELEMENT TUYAU_3M 4 NOEUDS STAT_NON_LINE)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -136,7 +136,7 @@ U1=STAT_NON_LINE(SOLVEUR=_F(METHODE='MUMPS',PCENT_PIVOT=10),
               )
 
 U1=CALC_ELEM( reuse=U1,
-              OPTION=( 'SIEF_ELNO_ELGA',  'VARI_ELNO_ELGA','DEGE_ELNO_DEPL'),
+              OPTION=( 'SIEF_ELNO',  'VARI_ELNO_ELGA','DEGE_ELNO'),
               RESULTAT=U1, )
 
 TEST_RESU(RESU=(
@@ -150,7 +150,7 @@ _F( RESULTAT = U1, NUME_ORDRE = 2,
       NOM_CMP = 'DY', VALE = 4.14466E-6, PRECISION = 0.01),
 
 _F( RESULTAT = U1, NUME_ORDRE = 2,
-      NOM_CHAM = 'SIEF_ELNO_ELGA', MAILLE = 'M1', POINT = 1,
+      NOM_CHAM = 'SIEF_ELNO', MAILLE = 'M1', POINT = 1,
       NOM_CMP = 'N', VALE = 500., PRECISION = 0.01),
 
 _F( RESULTAT = U1, NUME_ORDRE = 2,
@@ -203,7 +203,7 @@ U2=STAT_NON_LINE(SOLVEUR=_F(METHODE='MUMPS',PCENT_PIVOT=10,),
 
 U2=CALC_ELEM( reuse=U2,
                             OPTION=(
-                  'SIEF_ELNO_ELGA',  'VARI_ELNO_ELGA','DEGE_ELNO_DEPL'),
+                  'SIEF_ELNO',  'VARI_ELNO_ELGA','DEGE_ELNO'),
                           RESULTAT=U2,
               )
 
@@ -249,7 +249,7 @@ U3=STAT_NON_LINE(SOLVEUR=_F(METHODE='MUMPS',PCENT_PIVOT=10),
 
 U3=CALC_ELEM( reuse=U3,
                             OPTION=(
-                  'SIEF_ELNO_ELGA',  'VARI_ELNO_ELGA','DEGE_ELNO_DEPL'),
+                  'SIEF_ELNO',  'VARI_ELNO_ELGA','DEGE_ELNO'),
                           RESULTAT=U3,
               )
 
@@ -295,7 +295,7 @@ U4=STAT_NON_LINE(SOLVEUR=_F(METHODE='MUMPS',PCENT_PIVOT=10,),
 
 U4=CALC_ELEM( reuse=U4,
                             OPTION=(
-                  'SIEF_ELNO_ELGA',  'VARI_ELNO_ELGA','DEGE_ELNO_DEPL'),
+                  'SIEF_ELNO',  'VARI_ELNO_ELGA','DEGE_ELNO'),
                           RESULTAT=U4,
               )
 
@@ -310,7 +310,7 @@ _F( RESULTAT = U4,  NUME_ORDRE = 2,
       NOM_CMP = 'DRY', VALE = 8.21350E-3, PRECISION = 0.01),
 
 _F( RESULTAT = U4, NUME_ORDRE = 2,
-      NOM_CHAM = 'SIEF_ELNO_ELGA', MAILLE = 'M1', GROUP_NO = 'B',
+      NOM_CHAM = 'SIEF_ELNO', MAILLE = 'M1', GROUP_NO = 'B',
       NOM_CMP = 'MT', VALE = 500., PRECISION = 0.01),
 
 _F( RESULTAT = U4, NUME_ORDRE = 2,
@@ -349,7 +349,7 @@ U5=STAT_NON_LINE(SOLVEUR=_F(METHODE='MUMPS',PCENT_PIVOT=10),
 
 U5=CALC_ELEM( reuse=U5,
                             OPTION=(
-                  'SIEF_ELNO_ELGA',  'VARI_ELNO_ELGA','DEGE_ELNO_DEPL'),
+                  'SIEF_ELNO',  'VARI_ELNO_ELGA','DEGE_ELNO'),
                           RESULTAT=U5,
               )
 
@@ -368,7 +368,7 @@ _F( RESULTAT = U5,  NUME_ORDRE = 2,
       NOM_CMP = 'DRY', VALE = 8.42411E-3, PRECISION = 0.01),
 
 _F( RESULTAT = U5,  NUME_ORDRE = 2,
-      NOM_CHAM = 'SIEF_ELNO_ELGA', MAILLE = 'M1', POINT = 1,
+      NOM_CHAM = 'SIEF_ELNO', MAILLE = 'M1', POINT = 1,
       NOM_CMP = 'MFY', VALE = 500., PRECISION = 0.01),
 
 _F( RESULTAT = U5, NUME_ORDRE = 2,
@@ -403,7 +403,7 @@ U6=STAT_NON_LINE(SOLVEUR=_F(METHODE='MUMPS',PCENT_PIVOT=10,),
 
 U6=CALC_ELEM( reuse=U6,
                             OPTION=(
-                  'SIEF_ELNO_ELGA',  'VARI_ELNO_ELGA','DEGE_ELNO_DEPL'),
+                  'SIEF_ELNO',  'VARI_ELNO_ELGA','DEGE_ELNO'),
                           RESULTAT=U6,
               )
 
@@ -422,7 +422,7 @@ _F( RESULTAT = U6,  NUME_ORDRE = 2,
       NOM_CMP = 'DRZ', VALE = 1.05301E-2, PRECISION = 0.01),
 
 _F( RESULTAT = U6,  NUME_ORDRE = 2,
-      NOM_CHAM = 'SIEF_ELNO_ELGA',
+      NOM_CHAM = 'SIEF_ELNO',
       MAILLE = 'M1', POINT = 1,
       NOM_CMP = 'MFZ', VALE = 500., PRECISION = 0.01),
 
@@ -458,7 +458,7 @@ U7=STAT_NON_LINE(SOLVEUR=_F(METHODE='MUMPS',PCENT_PIVOT=10),
 
 U7=CALC_ELEM( reuse=U7,
                             OPTION=(
-                  'SIEF_ELNO_ELGA',  'VARI_ELNO_ELGA',),
+                  'SIEF_ELNO',  'VARI_ELNO_ELGA',),
                           RESULTAT=U7,
               )
 
@@ -483,7 +483,7 @@ _F( RESULTAT = U7, NUME_ORDRE = 2,
 
 
 
-# Solutions analytiques pour les deformations generalisees de poutre DEGE_ELNO_DEPL
+# Solutions analytiques pour les deformations generalisees de poutre DEGE_ELNO
 L=5.0
 E=2.E11
 Nu=0.3
@@ -513,7 +513,7 @@ KYM=500/E/IF
 KZM=500/E/IF
 
 TEST_RESU(RESU=(_F(RESULTAT=U1,NUME_ORDRE = 2,
-                   NOM_CHAM='DEGE_ELNO_DEPL',
+                   NOM_CHAM='DEGE_ELNO',
                    NOM_CMP='EPXX',
                    MAILLE='M1',
                    NOEUD='N1',
@@ -521,7 +521,7 @@ TEST_RESU(RESU=(_F(RESULTAT=U1,NUME_ORDRE = 2,
                    PRECISION=1.E-2,
                    REFERENCE='ANALYTIQUE',),
                 _F(RESULTAT=U2,NUME_ORDRE = 2,
-                   NOM_CHAM='DEGE_ELNO_DEPL',
+                   NOM_CHAM='DEGE_ELNO',
                    MAILLE='M1',
                    NOEUD='N1',
                    NOM_CMP='GAXY',
@@ -529,7 +529,7 @@ TEST_RESU(RESU=(_F(RESULTAT=U1,NUME_ORDRE = 2,
                    PRECISION=23.E-2,
                    REFERENCE='ANALYTIQUE',),
                 _F(RESULTAT=U3,NUME_ORDRE = 2,
-                   NOM_CHAM='DEGE_ELNO_DEPL',
+                   NOM_CHAM='DEGE_ELNO',
                    MAILLE='M1',
                    NOEUD='N1',
                    NOM_CMP='GAXZ',
@@ -537,7 +537,7 @@ TEST_RESU(RESU=(_F(RESULTAT=U1,NUME_ORDRE = 2,
                    PRECISION=23.E-2,
                    REFERENCE='ANALYTIQUE',),
                 _F(RESULTAT=U2,NUME_ORDRE = 2,
-                   NOM_CHAM='DEGE_ELNO_DEPL',
+                   NOM_CHAM='DEGE_ELNO',
                    MAILLE='M1',
                    NOEUD='N1',
                    NOM_CMP='KZ',
@@ -545,7 +545,7 @@ TEST_RESU(RESU=(_F(RESULTAT=U1,NUME_ORDRE = 2,
                    PRECISION=1.E-2,
                    REFERENCE='ANALYTIQUE',),
                 _F(RESULTAT=U3,NUME_ORDRE = 2,
-                   NOM_CHAM='DEGE_ELNO_DEPL',
+                   NOM_CHAM='DEGE_ELNO',
                    MAILLE='M1',
                    NOEUD='N1',
                    NOM_CMP='KY',
@@ -553,7 +553,7 @@ TEST_RESU(RESU=(_F(RESULTAT=U1,NUME_ORDRE = 2,
                    PRECISION=1.E-2,
                    REFERENCE='ANALYTIQUE',),
                _F(RESULTAT=U4,NUME_ORDRE = 2,
-                   NOM_CHAM='DEGE_ELNO_DEPL',
+                   NOM_CHAM='DEGE_ELNO',
                    NOM_CMP='GAT',
                    MAILLE='M1',
                    NOEUD='N1',
@@ -561,7 +561,7 @@ TEST_RESU(RESU=(_F(RESULTAT=U1,NUME_ORDRE = 2,
                    PRECISION=1.E-2,
                    REFERENCE='ANALYTIQUE',),
                 _F(RESULTAT=U5,NUME_ORDRE = 2,
-                   NOM_CHAM='DEGE_ELNO_DEPL',
+                   NOM_CHAM='DEGE_ELNO',
                    MAILLE='M1',
                    NOEUD='N1',
                    NOM_CMP='KY',
@@ -569,7 +569,7 @@ TEST_RESU(RESU=(_F(RESULTAT=U1,NUME_ORDRE = 2,
                    PRECISION=1.E-2,
                    REFERENCE='ANALYTIQUE',),
                 _F(RESULTAT=U6,NUME_ORDRE = 2,
-                   NOM_CHAM='DEGE_ELNO_DEPL',
+                   NOM_CHAM='DEGE_ELNO',
                    MAILLE='M1',
                    NOEUD='N1',
                    NOM_CMP='KZ',

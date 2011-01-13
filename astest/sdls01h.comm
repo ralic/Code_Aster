@@ -1,4 +1,4 @@
-# MODIF  DATE 10/01/2011   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
 # TITRE PLAQUE CARREE MINCE , LIBRE OU ENCASTREE SUR UN BORD
 # sdls01h.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -155,8 +155,8 @@ TEST_RESU(RESU=(
 
 MODE1=CALC_ELEM( reuse=MODE1,            RESULTAT=MODE1,
 
-                       OPTION=( 'EPOT_ELEM_DEPL',
-                                'ECIN_ELEM_DEPL', )           )
+                       OPTION=( 'EPOT_ELEM',
+                                'ECIN_ELEM', )           )
 
 MODE1=NORM_MODE( reuse=MODE1,   MODE=MODE1,
                         NORME='MASS_GENE')
@@ -170,13 +170,13 @@ ECIN1=POST_ELEM(  RESULTAT=MODE1,       MODELE=MO,
                     ENER_CIN=_F(  TOUT = 'OUI')                )
 
 TEST_RESU(RESU=(
-   _F( RESULTAT = MODE1, NOM_CHAM = 'ECIN_ELEM_DEPL', NOM_CMP='TOTALE',
+   _F( RESULTAT = MODE1, NOM_CHAM = 'ECIN_ELEM', NOM_CMP='TOTALE',
        MAILLE = 'MA000001',  CRITERE = 'RELATIF',  PRECISION = 0.1E-2,
        NUME_ORDRE = 1,POINT=1, VALE = 4.89512E-04 , REFERENCE='NON_REGRESSION'),
-   _F( RESULTAT = MODE1, NOM_CHAM='ECIN_ELEM_DEPL', NOM_CMP='MEMBRANE',
+   _F( RESULTAT = MODE1, NOM_CHAM='ECIN_ELEM', NOM_CMP='MEMBRANE',
        MAILLE = 'MA000001',   CRITERE = 'RELATIF',  PRECISION = 0.1E-2,
        NUME_ORDRE = 1,POINT=1,  VALE = 7.13103E-03, REFERENCE='NON_REGRESSION'),
-   _F( RESULTAT = MODE1, NOM_CHAM = 'ECIN_ELEM_DEPL', NOM_CMP='FLEXION',
+   _F( RESULTAT = MODE1, NOM_CHAM = 'ECIN_ELEM', NOM_CMP='FLEXION',
        MAILLE = 'MA000001',   CRITERE = 'RELATIF',  PRECISION = 0.1E-2,
        NUME_ORDRE= 1,POINT=1,VALE= 7.13103E-03,REFERENCE='NON_REGRESSION'),),)
 
@@ -314,8 +314,8 @@ MODE2=NORM_MODE( reuse=MODE2,   MODE=MODE2,
 
 MODE2=CALC_ELEM( reuse=MODE2,            RESULTAT=MODE2,
 
-                       OPTION=( 'EPOT_ELEM_DEPL',
-                                'ECIN_ELEM_DEPL', )           )
+                       OPTION=( 'EPOT_ELEM',
+                                'ECIN_ELEM', )           )
 
 EPOT2=POST_ELEM(  RESULTAT=MODE2,       MODELE=MO,
                      CHAM_MATER=CHMAT,     CARA_ELEM=CARELEM,

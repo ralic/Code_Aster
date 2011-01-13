@@ -1,9 +1,9 @@
-# MODIF  DATE 07/12/2010   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
 # TITRE ESSAI DE RELAXATION EN AXIS VENDOCHAB
 # ssnv126b.para = tps_job 100 mem_job 64Mo liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -282,12 +282,12 @@ SOLNL=STAT_NON_LINE(
 
 SOLNL=CALC_ELEM( reuse=SOLNL,
                             OPTION=(
-                  'SIEF_ELNO_ELGA',  'VARI_ELNO_ELGA',),
+                  'SIEF_ELNO',  'VARI_ELNO_ELGA',),
                           RESULTAT=SOLNL,
               )
 
 TEST_RESU(RESU=(
-   _F(  RESULTAT = SOLNL,  NOM_CHAM = 'SIEF_ELNO_ELGA',  NUME_ORDRE = 50,
+   _F(  RESULTAT = SOLNL,  NOM_CHAM = 'SIEF_ELNO',  NUME_ORDRE = 50,
                  MAILLE = 'MA1',  NOEUD = 'N1',  NOM_CMP = 'SIYY', VALE = 7.59785E1,
          PRECISION = 5.0E-3),
 
@@ -306,7 +306,7 @@ TEST_RESU(RESU=(
                  NOM_CMP = 'V9',            VALE = 1.10134E-1,
          PRECISION = 1.0E-2),
 
-  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'SIEF_ELNO_ELGA',  NUME_ORDRE = 60,
+  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'SIEF_ELNO',  NUME_ORDRE = 60,
                  MAILLE = 'MA1',  NOEUD = 'N1',  NOM_CMP = 'SIYY', VALE = 5.55421E1,
          PRECISION = 1.0E-1),
 

@@ -38,7 +38,7 @@ RESU[nbadap]=CALC_ELEM(reuse =RESU[nbadap],
 
                        RESULTAT=RESU[nbadap],
                        LIST_INST=LI2_BIS,
-                       OPTION='SIEF_ELNO_ELGA',);
+                       OPTION='SIEF_ELNO',);
 
 RESU[nbadap]=CALC_ELEM(reuse =RESU[nbadap],
                        RESULTAT=RESU[nbadap],
@@ -95,7 +95,7 @@ RESU_TOT=CALC_ELEM(reuse =RESU_TOT,
 
                   RESULTAT=RESU_TOT,
                   LIST_INST=LI,
-                  OPTION='SIEF_ELNO_ELGA',);
+                  OPTION='SIEF_ELNO',);
 
 RESU_TOT=CALC_ELEM(reuse =RESU_TOT,
                   RESULTAT=RESU_TOT,

@@ -1,8 +1,8 @@
-#@ MODIF macro_elas_mult_ops Macro  DATE 23/03/2010   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF macro_elas_mult_ops Macro  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -219,7 +219,7 @@ def macro_elas_mult_ops(self,MODELE,CHAM_MATER,CARA_ELEM,NUME_DDL,
            liste_option=m['OPTION']
         for option in liste_option :
            if option in (     'FORC_NODA','REAC_NODA',
-                              'EPSI_NOEU_DEPL','SIGM_NOEU_DEPL','EFGE_NOEU_DEPL',
+                              'EPSI_NOEU','SIGM_NOEU_DEPL','EFGE_NOEU_DEPL',
                               'EQUI_NOEU_SIGM','EQUI_NOEU_EPSI',):
               nbno=nbno+1
               liste_no.append(option)

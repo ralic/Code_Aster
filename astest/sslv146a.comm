@@ -1,9 +1,9 @@
-# MODIF  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
 # TITRE CUBE PLEIN RENFORCE PAR DES ARMATURES SOUS CHARGEMENT TRIAXIAL QUAD4 GRILLE_MEMBRANE
 # sslv146a.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -125,7 +125,7 @@ RESU0=MECA_STATIQUE(    MODELE=LEMOD,       CHAM_MATER=MATAF,
                                CARA_ELEM=LACAR,
                                EXCIT=_F(  CHARGE =ZCHM,    )       )
 RESU0=CALC_ELEM( reuse = RESU0,
-                 OPTION     = ('EPSI_ELGA_DEPL','EPSI_ELNO_DEPL','SIGM_ELNO_DEPL',),
+                 OPTION     = ('EPSI_ELGA','EPSI_ELNO_DEPL','SIGM_ELNO_DEPL',),
                  RESULTAT   = RESU0,
                )
 
@@ -153,7 +153,7 @@ LEDEP=STAT_NON_LINE(
 
 
 LEDEP=CALC_ELEM( reuse = LEDEP,
-                 OPTION     = ('EPSI_ELGA_DEPL','EPSI_ELNO_DEPL','SIEF_ELNO_ELGA', 'VARI_ELNO_ELGA',),
+                 OPTION     = ('EPSI_ELGA','EPSI_ELNO_DEPL','SIEF_ELNO', 'VARI_ELNO_ELGA',),
                  RESULTAT   = LEDEP,
                )
 
@@ -178,7 +178,7 @@ TEST_RESU(RESU=(
 
             _F( RESULTAT = LEDEP,
              INST = 1.,
-             NOM_CHAM = 'EPSI_ELGA_DEPL',
+             NOM_CHAM = 'EPSI_ELGA',
              NOM_CMP = 'EPXX',
              MAILLE = 'MA1',
              POINT = 1,
@@ -187,7 +187,7 @@ TEST_RESU(RESU=(
             ),
             _F( RESULTAT = LEDEP,
              INST = 1.,
-             NOM_CHAM = 'EPSI_ELGA_DEPL',
+             NOM_CHAM = 'EPSI_ELGA',
              NOM_CMP = 'EPXX',
              MAILLE = 'MA2',
              POINT = 1,
@@ -196,7 +196,7 @@ TEST_RESU(RESU=(
             ),
             _F( RESULTAT = LEDEP,
              INST = 1.,
-             NOM_CHAM = 'EPSI_ELGA_DEPL',
+             NOM_CHAM = 'EPSI_ELGA',
              NOM_CMP = 'EPXX',
              MAILLE = 'MA3',
              POINT = 1,
@@ -205,7 +205,7 @@ TEST_RESU(RESU=(
             ),
             _F( RESULTAT = LEDEP,
              INST = 1.,
-             NOM_CHAM = 'EPSI_ELGA_DEPL',
+             NOM_CHAM = 'EPSI_ELGA',
              NOM_CMP = 'EPXX',
              MAILLE = 'MA4',
              POINT = 1,
@@ -214,7 +214,7 @@ TEST_RESU(RESU=(
             ),
             _F( RESULTAT = LEDEP,
              INST = 1.,
-             NOM_CHAM = 'EPSI_ELGA_DEPL',
+             NOM_CHAM = 'EPSI_ELGA',
              NOM_CMP = 'EPXX',
              MAILLE = 'MA5',
              POINT = 1,
@@ -223,7 +223,7 @@ TEST_RESU(RESU=(
             ),
             _F( RESULTAT = LEDEP,
              INST = 1.,
-             NOM_CHAM = 'EPSI_ELGA_DEPL',
+             NOM_CHAM = 'EPSI_ELGA',
              NOM_CMP = 'EPXX',
              MAILLE = 'MA6',
              POINT = 1,
@@ -316,7 +316,7 @@ TEST_RESU(RESU=(
 #
             _F( RESULTAT = LEDEP,
              INST = 1.,
-             NOM_CHAM = 'SIEF_ELNO_ELGA',
+             NOM_CHAM = 'SIEF_ELNO',
              NOM_CMP = 'SIXX',
              MAILLE = 'MA1',
              NOEUD  = 'NO1',
@@ -325,7 +325,7 @@ TEST_RESU(RESU=(
             ),
             _F( RESULTAT = LEDEP,
              INST = 1.,
-             NOM_CHAM = 'SIEF_ELNO_ELGA',
+             NOM_CHAM = 'SIEF_ELNO',
              NOM_CMP = 'SIXX',
              MAILLE = 'MA3',
              NOEUD  = 'NO1',
@@ -334,7 +334,7 @@ TEST_RESU(RESU=(
             ),
             _F( RESULTAT = LEDEP,
              INST = 1.,
-             NOM_CHAM = 'SIEF_ELNO_ELGA',
+             NOM_CHAM = 'SIEF_ELNO',
              NOM_CMP = 'SIXX',
              MAILLE = 'MA5',
              NOEUD  = 'NO1',
@@ -346,7 +346,7 @@ TEST_RESU(RESU=(
 #
             _F( RESULTAT = RESU0,
              INST = 0.,
-             NOM_CHAM = 'EPSI_ELGA_DEPL',
+             NOM_CHAM = 'EPSI_ELGA',
              NOM_CMP = 'EPXX',
              MAILLE = 'MA1',
              POINT = 1,
@@ -355,7 +355,7 @@ TEST_RESU(RESU=(
             ),
             _F( RESULTAT = RESU0,
              INST = 0.,
-             NOM_CHAM = 'EPSI_ELGA_DEPL',
+             NOM_CHAM = 'EPSI_ELGA',
              NOM_CMP = 'EPXX',
              MAILLE = 'MA2',
              POINT = 1,
@@ -364,7 +364,7 @@ TEST_RESU(RESU=(
             ),
             _F( RESULTAT = RESU0,
              INST = 0.,
-             NOM_CHAM = 'EPSI_ELGA_DEPL',
+             NOM_CHAM = 'EPSI_ELGA',
              NOM_CMP = 'EPXX',
              MAILLE = 'MA3',
              POINT = 1,
@@ -373,7 +373,7 @@ TEST_RESU(RESU=(
             ),
             _F( RESULTAT = RESU0,
              INST = 0.,
-             NOM_CHAM = 'EPSI_ELGA_DEPL',
+             NOM_CHAM = 'EPSI_ELGA',
              NOM_CMP = 'EPXX',
              MAILLE = 'MA4',
              POINT = 1,
@@ -382,7 +382,7 @@ TEST_RESU(RESU=(
             ),
             _F( RESULTAT = RESU0,
              INST = 0.,
-             NOM_CHAM = 'EPSI_ELGA_DEPL',
+             NOM_CHAM = 'EPSI_ELGA',
              NOM_CMP = 'EPXX',
              MAILLE = 'MA5',
              POINT = 1,
@@ -391,7 +391,7 @@ TEST_RESU(RESU=(
             ),
             _F( RESULTAT = RESU0,
              INST = 0.,
-             NOM_CHAM = 'EPSI_ELGA_DEPL',
+             NOM_CHAM = 'EPSI_ELGA',
              NOM_CMP = 'EPXX',
              MAILLE = 'MA6',
              POINT = 1,
@@ -429,7 +429,7 @@ TEST_RESU(RESU=(
 #
             _F( RESULTAT = RESU0,
              INST = 0.,
-             NOM_CHAM = 'SIEF_ELGA_DEPL',
+             NOM_CHAM = 'SIEF_ELGA',
              NOM_CMP = 'SIXX',
              MAILLE = 'MA1',
              POINT = 1,
@@ -438,7 +438,7 @@ TEST_RESU(RESU=(
             ),
             _F( RESULTAT = RESU0,
              INST = 0.,
-             NOM_CHAM = 'SIEF_ELGA_DEPL',
+             NOM_CHAM = 'SIEF_ELGA',
              NOM_CMP = 'SIXX',
              MAILLE = 'MA2',
              POINT = 1,
@@ -447,7 +447,7 @@ TEST_RESU(RESU=(
             ),
             _F( RESULTAT = RESU0,
              INST = 0.,
-             NOM_CHAM = 'SIEF_ELGA_DEPL',
+             NOM_CHAM = 'SIEF_ELGA',
              NOM_CMP = 'SIXX',
              MAILLE = 'MA3',
              POINT = 1,
@@ -456,7 +456,7 @@ TEST_RESU(RESU=(
             ),
             _F( RESULTAT = RESU0,
              INST = 0.,
-             NOM_CHAM = 'SIEF_ELGA_DEPL',
+             NOM_CHAM = 'SIEF_ELGA',
              NOM_CMP = 'SIXX',
              MAILLE = 'MA4',
              POINT = 1,
@@ -465,7 +465,7 @@ TEST_RESU(RESU=(
             ),
             _F( RESULTAT = RESU0,
              INST = 0.,
-             NOM_CHAM = 'SIEF_ELGA_DEPL',
+             NOM_CHAM = 'SIEF_ELGA',
              NOM_CMP = 'SIXX',
              MAILLE = 'MA5',
              POINT = 1,
@@ -474,7 +474,7 @@ TEST_RESU(RESU=(
             ),
             _F( RESULTAT = RESU0,
              INST = 0.,
-             NOM_CHAM = 'SIEF_ELGA_DEPL',
+             NOM_CHAM = 'SIEF_ELGA',
              NOM_CMP = 'SIXX',
              MAILLE = 'MA6',
              POINT = 1,

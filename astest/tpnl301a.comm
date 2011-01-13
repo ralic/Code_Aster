@@ -1,9 +1,9 @@
-# MODIF  DATE 07/04/2010   AUTEUR HAELEWYN J.HAELEWYN 
+# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
 # TITRE THERMO-HYDRATATION D'UN CYLINDRE DE BETON 3D 3D_DIAG HEXA8 PENTA6 TETRA4
 # tpnl301a.para = tps_job 1000 mem_job 100Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -360,34 +360,34 @@ TEST_RESU(CHAM_NO=(_F(CHAM_GD=TM1,
 
 RESUTHER=CALC_NO(reuse =RESUTHER,
                  RESULTAT=RESUTHER,
-                 OPTION='HYDR_NOEU_ELGA',);
+                 OPTION='HYDR_NOEU',);
 
 RESUDIAG=CALC_NO(reuse =RESUDIAG,
                  RESULTAT=RESUDIAG,
-                 OPTION='HYDR_NOEU_ELGA',);
+                 OPTION='HYDR_NOEU',);
 
 H49h=CREA_CHAMP(TYPE_CHAM='NOEU_HYDR_R',
                 OPERATION='EXTR',
                 RESULTAT=RESUTHER,
-                NOM_CHAM='HYDR_NOEU_ELGA',
+                NOM_CHAM='HYDR_NOEU',
                 INST=t50h,);
 
 H49D=CREA_CHAMP(TYPE_CHAM='NOEU_HYDR_R',
                 OPERATION='EXTR',
                 RESULTAT=RESUDIAG,
-                NOM_CHAM='HYDR_NOEU_ELGA',
+                NOM_CHAM='HYDR_NOEU',
                 INST=t50h,);
 
 H730h=CREA_CHAMP(TYPE_CHAM='NOEU_HYDR_R',
                  OPERATION='EXTR',
                  RESULTAT=RESUTHER,
-                 NOM_CHAM='HYDR_NOEU_ELGA',
+                 NOM_CHAM='HYDR_NOEU',
                  INST=t730h,);
 
 H730D=CREA_CHAMP(TYPE_CHAM='NOEU_HYDR_R',
                  OPERATION='EXTR',
                  RESULTAT=RESUDIAG,
-                 NOM_CHAM='HYDR_NOEU_ELGA',
+                 NOM_CHAM='HYDR_NOEU',
                  INST=t730h,);
 
 TEST_RESU(CHAM_NO=(_F(CHAM_GD=H49h,

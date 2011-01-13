@@ -1,8 +1,8 @@
-#@ MODIF utilitai3 Messages  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
+#@ MODIF utilitai3 Messages  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -89,7 +89,7 @@ cata_msg = {
 """),
 
 20 : _("""
- le champ de meta_elno_temp:etat_init(num_init) n'existe pas.
+ le champ de META_ELNO:etat_init(num_init) n'existe pas.
 """),
 
 21 : _("""
@@ -337,7 +337,7 @@ cata_msg = {
 """),
 
 88 : _("""
- erreur: le champ epsg_elga_depl n'existe pas
+ erreur: le champ EPSG_ELGA n'existe pas
 """),
 
 89 : _("""

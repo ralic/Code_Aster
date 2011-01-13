@@ -1,9 +1,9 @@
-# MODIF  DATE 26/07/2010   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
 # TITRE CALCUL DE G POUR UN PB ELASTOPLASTIQUE : APPROCHE GTP
 # ssnp102b.para = tps_job 200 mem_job 500Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -147,13 +147,13 @@ UP=STAT_NON_LINE(
 
 UP=CALC_ELEM( reuse=UP,
                             OPTION=(
-                  'SIEF_ELNO_ELGA',  'VARI_ELNO_ELGA',),
+                  'SIEF_ELNO',  'VARI_ELNO_ELGA',),
                           RESULTAT=UP,
               )
 
 UP=CALC_ELEM( reuse=UP,   
                       RESULTAT=UP,
-                       OPTION=('EPSP_ELNO','EPSI_ELGA_DEPL')
+                       OPTION=('EPSP_ELNO','EPSI_ELGA')
                   )
 
               

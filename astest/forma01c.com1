@@ -70,7 +70,7 @@ RESUG=MECA_STATIQUE(MODELE=MOD2,
 
 RESUG=CALC_ELEM(reuse =RESUG,
                 RESULTAT=RESUG,
-                OPTION=('SIEF_ELNO_ELGA','EQUI_ELNO_SIGM',),);
+                OPTION=('SIEF_ELNO','EQUI_ELNO_SIGM',),);
 
 # tests de non régression
 

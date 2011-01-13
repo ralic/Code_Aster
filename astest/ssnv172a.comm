@@ -1,11 +1,11 @@
 
-# MODIF  DATE 14/12/2010   AUTEUR PROIX J-M.PROIX 
+# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
 # TITRE COMPORTEMENTS ELASTOVISCOPLASTIQUES MONOCRISTALLINS
 # RESPONSABLE JMBHH01 J.M.PROIX
 # ssnv172a.para = tps_job 210 mem_job 64Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -453,7 +453,7 @@ IMPLKR=STAT_NON_LINE(MODELE=TROISD,
 
 IMPLKR=CALC_ELEM(reuse =IMPLKR,
                  RESULTAT=IMPLKR,
-                 OPTION=('EPSI_ELGA_DEPL','EPSP_ELGA'),);
+                 OPTION=('EPSI_ELGA','EPSP_ELGA'),);
 
 TEST_RESU(RESU=(_F(RESULTAT=IMPLKR,
                    INST=TFIN3,
@@ -496,7 +496,7 @@ EXPLKR=STAT_NON_LINE(MODELE=TROISD,
 
 EXPLKR=CALC_ELEM(reuse =EXPLKR,
                  RESULTAT=EXPLKR,
-                 OPTION=('EPSI_ELGA_DEPL','EPSP_ELGA'),);
+                 OPTION=('EPSI_ELGA','EPSP_ELGA'),);
 
 
 TEST_RESU(RESU=(_F(RESULTAT=EXPLKR,
@@ -540,7 +540,7 @@ EXPLKRP=STAT_NON_LINE(MODELE=TROISD,
 
 EXPLKRP=CALC_ELEM(reuse =EXPLKRP,
                  RESULTAT=EXPLKRP,
-                 OPTION=('EPSI_ELGA_DEPL','EPSP_ELGA'),);
+                 OPTION=('EPSI_ELGA','EPSP_ELGA'),);
 
 
 TEST_RESU(RESU=(_F(RESULTAT=EXPLKRP,
@@ -581,7 +581,7 @@ SOLCHAB=STAT_NON_LINE(MODELE=TROISD,
 
 SOLCHAB=CALC_ELEM(reuse =SOLCHAB,
                   RESULTAT=SOLCHAB,
-                  OPTION=('EPSI_ELGA_DEPL','EPSP_ELGA',),);
+                  OPTION=('EPSI_ELGA','EPSP_ELGA',),);
 
 TEST_RESU(RESU=(_F(RESULTAT=SOLCHAB,
                    INST=TFIN,
@@ -593,7 +593,7 @@ TEST_RESU(RESU=(_F(RESULTAT=SOLCHAB,
                    REFERENCE='ANALYTIQUE',),
                 _F(RESULTAT=SOLCHAB,
                    INST=TFIN,
-                   NOM_CHAM='EPSI_ELGA_DEPL',
+                   NOM_CHAM='EPSI_ELGA',
                    NOM_CMP='EPXX',
                    MAILLE='MA1',
                    POINT=1,
@@ -631,7 +631,7 @@ IMPL1=STAT_NON_LINE(MODELE=TROISD,INFO=1,
 
 IMPL1=CALC_ELEM(reuse =IMPL1,
                  RESULTAT=IMPL1,
-                 OPTION=('EPSI_ELGA_DEPL','EPSP_ELGA',),);
+                 OPTION=('EPSI_ELGA','EPSP_ELGA',),);
 
                    
 # COMPARAISON A VISC_CIN1_CHAB, MAIS PROBLEME DE SENSIBILITE AU PAS DE 
@@ -647,7 +647,7 @@ TEST_RESU(RESU=(_F(RESULTAT=IMPL1,
                    REFERENCE='ANALYTIQUE',),
                 _F(RESULTAT=IMPL1,
                    INST=TFIN,
-                   NOM_CHAM='EPSI_ELGA_DEPL',
+                   NOM_CHAM='EPSI_ELGA',
                    NOM_CMP='EPXX',
                    MAILLE='MA1',
                    POINT=1,
@@ -687,7 +687,7 @@ IMPL2=STAT_NON_LINE(MODELE=TROISD,INFO=1,
 
 IMPL2=CALC_ELEM(reuse =IMPL2,
                  RESULTAT=IMPL2,
-                 OPTION=('EPSI_ELGA_DEPL','EPSP_ELGA',),);
+                 OPTION=('EPSI_ELGA','EPSP_ELGA',),);
 
                    
 # COMPARASION A IMPL1 : Avec les valeurs des coeffcients de MONO_CINE2, MONO_ISOT2, MONO_VISC2, 
@@ -702,7 +702,7 @@ TEST_RESU(RESU=(_F(RESULTAT=IMPL2,
                    REFERENCE='ANALYTIQUE',),
                 _F(RESULTAT=IMPL2,
                    INST=TFIN,
-                   NOM_CHAM='EPSI_ELGA_DEPL',
+                   NOM_CHAM='EPSI_ELGA',
                    NOM_CMP='EPXX',
                    MAILLE='MA1',
                    POINT=1,
@@ -743,7 +743,7 @@ EXPL1=STAT_NON_LINE(MODELE=TROISD,
 
 EXPL1=CALC_ELEM(reuse =EXPL1,
                 RESULTAT=EXPL1,
-                OPTION=('EPSI_ELGA_DEPL','EPSP_ELGA',),);
+                OPTION=('EPSI_ELGA','EPSP_ELGA',),);
 
                    
 # COMPARASION A VISC_CIN1_CHAB, MAIS PROBLEME DE SENSIBILITE AU PAS DE 
@@ -759,7 +759,7 @@ TEST_RESU(RESU=(_F(RESULTAT=EXPL1,
                    REFERENCE='ANALYTIQUE',),
                 _F(RESULTAT=EXPL1,
                    INST=TFIN,
-                   NOM_CHAM='EPSI_ELGA_DEPL',
+                   NOM_CHAM='EPSI_ELGA',
                    NOM_CMP='EPXX',
                    MAILLE='MA1',
                    POINT=1,
@@ -798,7 +798,7 @@ EXPL2=STAT_NON_LINE(MODELE=TROISD,
 
 EXPL2=CALC_ELEM(reuse =EXPL2,
                  RESULTAT=EXPL2,
-                 OPTION=('EPSI_ELGA_DEPL','EPSP_ELGA',),);
+                 OPTION=('EPSI_ELGA','EPSP_ELGA',),);
 
 TEST_RESU(RESU=(_F(RESULTAT=EXPL2,
                    INST=TFIN,
@@ -810,7 +810,7 @@ TEST_RESU(RESU=(_F(RESULTAT=EXPL2,
                    REFERENCE='ANALYTIQUE',),
                 _F(RESULTAT=EXPL2,
                    INST=TFIN,
-                   NOM_CHAM='EPSI_ELGA_DEPL',
+                   NOM_CHAM='EPSI_ELGA',
                    NOM_CMP='EPXX',
                    MAILLE='MA1',
                    POINT=1,
@@ -850,7 +850,7 @@ EXPL3B=STAT_NON_LINE(MODELE=TROISD,
 
 EXPL3B=CALC_ELEM(reuse =EXPL3B,
                  RESULTAT=EXPL3B,
-                 OPTION=('EPSI_ELGA_DEPL','EPSP_ELGA',),);
+                 OPTION=('EPSI_ELGA','EPSP_ELGA',),);
 
 TEST_RESU(RESU=(_F(RESULTAT=EXPL3B,
                    INST=TFIN3,
@@ -862,7 +862,7 @@ TEST_RESU(RESU=(_F(RESULTAT=EXPL3B,
                    REFERENCE='NON_REGRESSION',),
                 _F(RESULTAT=EXPL3B,
                    INST=TFIN3,
-                   NOM_CHAM='EPSI_ELGA_DEPL',
+                   NOM_CHAM='EPSI_ELGA',
                    NOM_CMP='EPXX',
                    MAILLE='MA1',
                    POINT=1,
@@ -896,7 +896,7 @@ EXPLORTH=STAT_NON_LINE(MODELE=TROISD,
 
 EXPLORTH=CALC_ELEM(reuse =EXPLORTH,
                  RESULTAT=EXPLORTH,
-                 OPTION=('EPSI_ELGA_DEPL'),);
+                 OPTION=('EPSI_ELGA'),);
 
 
 
@@ -910,7 +910,7 @@ TEST_RESU(RESU=(_F(RESULTAT=EXPLORTH,
                    REFERENCE='ANALYTIQUE',),
                 _F(RESULTAT=EXPLORTH,
                    INST=TFIN,
-                   NOM_CHAM='EPSI_ELGA_DEPL',
+                   NOM_CHAM='EPSI_ELGA',
                    NOM_CMP='EPXX',
                    MAILLE='MA1',
                    POINT=1,
@@ -938,7 +938,7 @@ EXPLTOUT=STAT_NON_LINE(MODELE=TROISD,
 
 EXPLTOUT=CALC_ELEM(reuse =EXPLTOUT,
                  RESULTAT=EXPLTOUT,
-                 OPTION=('EPSI_ELGA_DEPL','EPSP_ELGA',),);
+                 OPTION=('EPSI_ELGA','EPSP_ELGA',),);
 
 TEST_RESU(RESU=(_F(RESULTAT=EXPLTOUT,
                    INST=TFIN,
@@ -950,7 +950,7 @@ TEST_RESU(RESU=(_F(RESULTAT=EXPLTOUT,
                    REFERENCE='ANALYTIQUE',),
                 _F(RESULTAT=EXPLTOUT,
                    INST=TFIN,
-                   NOM_CHAM='EPSI_ELGA_DEPL',
+                   NOM_CHAM='EPSI_ELGA',
                    NOM_CMP='EPXX',
                    MAILLE='MA1',
                    POINT=1,
@@ -986,7 +986,7 @@ IMPLORTH=STAT_NON_LINE(MODELE=TROISD,
 
 IMPLORTH=CALC_ELEM(reuse =IMPLORTH,
                  RESULTAT=IMPLORTH,
-                 OPTION=('EPSI_ELGA_DEPL'),);
+                 OPTION=('EPSI_ELGA'),);
 
 
 
@@ -1000,7 +1000,7 @@ TEST_RESU(RESU=(_F(RESULTAT=IMPLORTH,
                    REFERENCE='ANALYTIQUE',),
                 _F(RESULTAT=IMPLORTH,
                    INST=TFIN,
-                   NOM_CHAM='EPSI_ELGA_DEPL',
+                   NOM_CHAM='EPSI_ELGA',
                    NOM_CMP='EPXX',
                    MAILLE='MA1',
                    POINT=1,
@@ -1035,7 +1035,7 @@ IMPLTOUT=STAT_NON_LINE(MODELE=TROISD,
 
 IMPLTOUT=CALC_ELEM(reuse =IMPLTOUT,
                  RESULTAT=IMPLTOUT,
-                 OPTION=('EPSI_ELGA_DEPL','EPSP_ELGA',),);
+                 OPTION=('EPSI_ELGA','EPSP_ELGA',),);
 
 TEST_RESU(RESU=(_F(RESULTAT=IMPLTOUT,
                    INST=TFIN,
@@ -1047,7 +1047,7 @@ TEST_RESU(RESU=(_F(RESULTAT=IMPLTOUT,
                    REFERENCE='ANALYTIQUE',),
                 _F(RESULTAT=IMPLTOUT,
                    INST=TFIN,
-                   NOM_CHAM='EPSI_ELGA_DEPL',
+                   NOM_CHAM='EPSI_ELGA',
                    NOM_CMP='EPXX',
                    MAILLE='MA1',
                    POINT=1,

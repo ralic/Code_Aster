@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 14/12/2010   AUTEUR PROIX J-M.PROIX
+%& MODIF TYPELEM  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 2007 NECS - BRUNO ZUBER   WWW.NECS.FR
@@ -134,15 +134,15 @@ OPTION__
                               OUT__  XXXXXX   XXXXXX
     COOR_ELGA           479   IN__   NGEOMER  PGEOMER
                               OUT__  EGGEOP_R PCOORPG
-    ECIN_ELEM_DEPL      -1    IN__   XXXXXX   XXXXXX
+    ECIN_ELEM      -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
     ENER_ELAS           -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
     ENER_TOTALE         -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
-    EPOT_ELEM_DEPL      -1    IN__   XXXXXX   XXXXXX
+    EPOT_ELEM      -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
-    EPSI_ELGA_DEPL      447   IN__   NDEPLAR  PDEPLAR  NGEOMER  PGEOMER
+    EPSI_ELGA      447   IN__   NDEPLAR  PDEPLAR  NGEOMER  PGEOMER
                               OUT__  EDEFOPG  PDEFORR
                                      EDEFOPC  PDEFORC
     EPSI_ELNO_DEPL      447   IN__   NDEPLAR  PDEPLAR  NGEOMER  PGEOMER
@@ -195,13 +195,13 @@ OPTION__
                               OUT__  EDCEL_I  PDCEL_I
     PAS_COURANT         404   IN__   CMATERC  PMATERC  NGEOMER  PGEOMER
                               OUT__  ECOURAN  PCOURAN
-    QIRE_ELEM_SIGM      378   IN__   NGEOMER  PGEOMER  CTEMPSR  PTEMPSR  EVOISIN  PVOISIN  CMATERC  PMATERC
+    QIRE_ELEM      378   IN__   NGEOMER  PGEOMER  CTEMPSR  PTEMPSR  EVOISIN  PVOISIN  CMATERC  PMATERC
                                      CREFERI  PFORCEP  CREFERI  PFORCED  CREFERI  PPRESSP  CREFERI  PPRESSD
                                      CPESANR  PPESANRP CPESANR  PPESANRD CROTATR  PROTATRP CROTATR  PROTATRD
                                      EFORCER  PFRVOLUP EFORCER  PFRVOLUD CFORCEF  PFFVOLUD CFORCEF  PFFVOLUP
                                      ECONTNO  PCONTNOP ECONTNO  PCONTNOD CCONSTR  PCONSTR
                               OUT__  EERREUR  PERREUR
-    QIRE_ELNO_ELEM      379   IN__   EERREUR  PERREUR
+    QIRE_ELNO      379   IN__   EERREUR  PERREUR
                               OUT__  EERRENO  PERRENO
     RAPH_MECA           213   IN__   CCARCRI  PCARCRI  CCOMPOR  PCOMPOR  ECONTPG  PCONTMR  DDL_MECA PDEPLMR
                                      DDL_MECA PDEPLPR  NGEOMER  PGEOMER  CTEMPSR  PINSTMR  CTEMPSR  PINSTPR
@@ -226,12 +226,12 @@ OPTION__
                               OUT__  MMATUUR  PMATUUR
     SIEF_ELGA_ELNO      98    IN__   ECONTNO  PCONTRR
                               OUT__  ECONTPG  PSIEFGR
-    SIEF_ELNO_ELGA      98    IN__   ECONTPG  PCONTRR
+    SIEF_ELNO      98    IN__   ECONTPG  PCONTRR
                               OUT__  ECONTNO  PSIEFNOR
                                      ECONTNC  PSIEFNOC
     SING_ELEM           99    IN__   NGEOMER  PGEOMER
                               OUT__  ESINGUL  PSING_R
-    SING_ELNO_ELEM      99    IN__   ESINGUL  PSING_R
+    SING_ELNO      99    IN__   ESINGUL  PSING_R
                               OUT__  ESINGNO  PSINGNO
     TOU_INI_ELGA        99    IN__   NGEOMER  PGEOMER
                               OUT__  ECONTPG  PSIEF_R  ZVARIPG  PVARI_R

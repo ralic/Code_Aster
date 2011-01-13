@@ -1,8 +1,8 @@
-# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
 # TITRE THERMO_METALLO_MECANIQUE DECOUPLEE EN TRACTION SIMPLE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -229,7 +229,7 @@ CM2=AFFE_MATERIAU(
                           AFFE_VARC=(_F(TOUT='OUI',
                                        EVOL=TEMPE,
                                        NOM_VARC='M_ACIER',
-                                       NOM_CHAM='META_ELNO_TEMP'),
+                                       NOM_CHAM='META_ELNO'),
                                      _F(TOUT='OUI',
                                        EVOL=TEMPE,
                                        NOM_VARC='TEMP',
@@ -304,14 +304,14 @@ U=STAT_NON_LINE(
 
 U=CALC_ELEM( reuse=U,
                             OPTION=(
-                  'SIEF_ELNO_ELGA',  'VARI_ELNO_ELGA', 'EPSI_ELNO_DEPL'),
+                  'SIEF_ELNO',  'VARI_ELNO_ELGA', 'EPSI_ELNO_DEPL'),
                           RESULTAT=U,
               )
 
 CHVAR47=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='ELNO_VARI_R',
                     RESULTAT=U, NOM_CHAM='VARI_ELNO_ELGA',
                        INST=47. )
-CHSIG47=CREA_CHAMP(NOM_CHAM='SIEF_ELNO_ELGA',
+CHSIG47=CREA_CHAMP(NOM_CHAM='SIEF_ELNO',
                    INST=47.0,
                    TYPE_CHAM='ELNO_SIEF_R',
                    OPERATION='EXTR',
@@ -326,7 +326,7 @@ CHVAR48=CREA_CHAMP(NOM_CHAM='VARI_ELNO_ELGA',
                    TYPE_CHAM='ELNO_VARI_R',
                    OPERATION='EXTR',
                    RESULTAT=U,)
-CHSIG48=CREA_CHAMP(NOM_CHAM='SIEF_ELNO_ELGA',
+CHSIG48=CREA_CHAMP(NOM_CHAM='SIEF_ELNO',
                    INST=48.0,
                    TYPE_CHAM='ELNO_SIEF_R',
                    OPERATION='EXTR',
@@ -346,7 +346,7 @@ CHVAR64=CREA_CHAMP(NOM_CHAM='VARI_ELNO_ELGA',
                    TYPE_CHAM='ELNO_VARI_R',
                    OPERATION='EXTR',
                    RESULTAT=U,)
-CHSIG64=CREA_CHAMP(NOM_CHAM='SIEF_ELNO_ELGA',
+CHSIG64=CREA_CHAMP(NOM_CHAM='SIEF_ELNO',
                    INST=64.0,
                    TYPE_CHAM='ELNO_SIEF_R',
                    OPERATION='EXTR',
@@ -361,7 +361,7 @@ CHVA114=CREA_CHAMP(NOM_CHAM='VARI_ELNO_ELGA',
                    TYPE_CHAM='ELNO_VARI_R',
                    OPERATION='EXTR',
                    RESULTAT=U,)
-CHSI114=CREA_CHAMP(NOM_CHAM='SIEF_ELNO_ELGA',
+CHSI114=CREA_CHAMP(NOM_CHAM='SIEF_ELNO',
                    INST=114.0,
                    TYPE_CHAM='ELNO_SIEF_R',
                    OPERATION='EXTR',
@@ -377,7 +377,7 @@ CHVA206=CREA_CHAMP(NOM_CHAM='VARI_ELNO_ELGA',
                    OPERATION='EXTR',
                    INST=206.0,
                    RESULTAT=U,)
-CHSI206=CREA_CHAMP(NOM_CHAM='SIEF_ELNO_ELGA',
+CHSI206=CREA_CHAMP(NOM_CHAM='SIEF_ELNO',
                    TYPE_CHAM='ELNO_SIEF_R',
                    OPERATION='EXTR',
                    INST=206.,
@@ -392,7 +392,7 @@ CHEP251=CREA_CHAMP(NOM_CHAM='EPSI_ELNO_DEPL',
                    OPERATION='EXTR',
                    INST=251.,
                    RESULTAT=U,)
-CHSI251=CREA_CHAMP(NOM_CHAM='SIEF_ELNO_ELGA',
+CHSI251=CREA_CHAMP(NOM_CHAM='SIEF_ELNO',
                    TYPE_CHAM='ELNO_SIEF_R',
                    OPERATION='EXTR',
                    INST=251.,
@@ -407,7 +407,7 @@ CHVA296=CREA_CHAMP(NOM_CHAM='VARI_ELNO_ELGA',
                    OPERATION='EXTR',
                    INST=296.,
                    RESULTAT=U,)
-CHSI296=CREA_CHAMP(NOM_CHAM='SIEF_ELNO_ELGA',
+CHSI296=CREA_CHAMP(NOM_CHAM='SIEF_ELNO',
                    TYPE_CHAM='ELNO_SIEF_R',
                    OPERATION='EXTR',
                    INST=296.,

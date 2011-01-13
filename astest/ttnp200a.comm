@@ -1,4 +1,4 @@
-# MODIF  DATE 10/01/2011   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
 # TITRE TEST DE NON-REGRESSION D'ASTER : THERMIQUE PLAN
 # RESPONSABLE VABHHTS J.PELLET
 # ttnp200a.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test R
@@ -230,12 +230,12 @@ POT_ELRE=CREA_RESU(OPERATION='AFFE', TYPE_RESU='EVOL_THER',
                                  )
 CALC_ELEM(reuse=POT_ELRE,
           RESULTAT=POT_ELRE,
-          OPTION='SOUR_ELGA_ELEC',
+          OPTION='SOUR_ELGA',
           )
 
 TEST_RESU(RESU=(
       _F( RESULTAT = POT_ELRE,
-          NOM_CHAM = 'SOUR_ELGA_ELEC',
+          NOM_CHAM = 'SOUR_ELGA',
           MAILLE = 'M101',
           POINT=1,
           NUME_ORDRE=1,
@@ -247,7 +247,7 @@ TEST_RESU(RESU=(
 )
 
 CHELEM1=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='ELGA_SOUR_R',
-                     NOM_CHAM='SOUR_ELGA_ELEC',RESULTAT=POT_ELRE,
+                     NOM_CHAM='SOUR_ELGA',RESULTAT=POT_ELRE,
                      NUME_ORDRE=1)
 
 LR1=DEFI_LIST_REEL(         DEBUT=0.3,
@@ -391,8 +391,8 @@ THL10=THER_LINEAIRE(        MODELE=MO,
                            ETAT_INIT=_F( VALE = 0.) )
 
 THL10=CALC_ELEM(reuse=THL10,
-                          OPTION=( 'FLUX_ELNO_TEMP',
-                                   'FLUX_ELGA_TEMP',  ),
+                          OPTION=( 'FLUX_ELNO',
+                                   'FLUX_ELGA',  ),
                     RESULTAT=THL10               )
 
 THL10=CALC_META( reuse=THL10,  MODELE=MO,
@@ -421,7 +421,7 @@ THNL6=THER_NON_LINE(        MODELE=MO,
                           PARM_THETA=1.,
                            ARCHIVAGE=_F(  PAS_ARCH = 2),
                            ETAT_INIT=_F( VALE = 0.),
-                          OPTION=( 'FLUX_ELGA_TEMP', 'FLUX_ELNO_TEMP',))
+                          OPTION=( 'FLUX_ELGA', 'FLUX_ELNO',))
 
 THNL6=CALC_META( reuse=THNL6,  MODELE=MO,
                      CHAM_MATER=CHMATNL,
@@ -445,7 +445,7 @@ TEST_RESU(RESU=(
                           _F(
                      RESULTAT = THL10,
                      NUME_ORDRE = 0,
-                     NOM_CHAM = 'META_ELNO_TEMP',
+                     NOM_CHAM = 'META_ELNO',
                      TYPE_TEST = 'SOMM_ABS',
                      VALE = 1.9073400000000E+03   ,
                      REFERENCE = 'NON_REGRESSION',
@@ -453,7 +453,7 @@ TEST_RESU(RESU=(
                          _F(
                      RESULTAT = THL10,
                      NUME_ORDRE = 0,
-                     NOM_CHAM = 'FLUX_ELGA_TEMP',
+                     NOM_CHAM = 'FLUX_ELGA',
                      TYPE_TEST = 'SOMM_ABS',
                      CRITERE = 'ABSOLU',
                      VALE = 0.0000000000000E+00   ,
@@ -462,7 +462,7 @@ TEST_RESU(RESU=(
                           _F(
                      RESULTAT = THL10,
                      NUME_ORDRE = 0,
-                     NOM_CHAM = 'FLUX_ELNO_TEMP',
+                     NOM_CHAM = 'FLUX_ELNO',
                      TYPE_TEST = 'SOMM_ABS',
                      CRITERE = 'ABSOLU',
                      VALE = 0.0000000000000E+00   ,
@@ -479,7 +479,7 @@ TEST_RESU(RESU=(
                           _F(
                      RESULTAT = THL10,
                      NUME_ORDRE = 1,
-                     NOM_CHAM = 'META_ELNO_TEMP',
+                     NOM_CHAM = 'META_ELNO',
                      TYPE_TEST = 'SOMM_ABS',
                      VALE = 3.1705446525346E+03   ,
                      REFERENCE = 'NON_REGRESSION',
@@ -488,7 +488,7 @@ TEST_RESU(RESU=(
                            _F(
                      RESULTAT = THL10,
                      NUME_ORDRE = 1,
-                     NOM_CHAM = 'FLUX_ELGA_TEMP',
+                     NOM_CHAM = 'FLUX_ELGA',
                      TYPE_TEST = 'SOMM_ABS',
                      VALE = 1.1958951732415E+03   ,
                      REFERENCE = 'NON_REGRESSION',
@@ -496,7 +496,7 @@ TEST_RESU(RESU=(
                            _F(
                      RESULTAT = THL10,
                      NUME_ORDRE = 1,
-                     NOM_CHAM = 'FLUX_ELNO_TEMP',
+                     NOM_CHAM = 'FLUX_ELNO',
                      TYPE_TEST = 'SOMM_ABS',
                      VALE = 1.3424228249702E+03   ,
                      REFERENCE = 'NON_REGRESSION',
@@ -512,7 +512,7 @@ TEST_RESU(RESU=(
                           _F(
                      RESULTAT = THL10,
                      NUME_ORDRE = 2,
-                     NOM_CHAM = 'META_ELNO_TEMP',
+                     NOM_CHAM = 'META_ELNO',
                      TYPE_TEST = 'SOMM_ABS',
                      VALE = 3.3327413189499E+03   ,
                      REFERENCE = 'NON_REGRESSION',
@@ -520,7 +520,7 @@ TEST_RESU(RESU=(
                           _F(
                      RESULTAT = THL10,
                      NUME_ORDRE = 2,
-                     NOM_CHAM = 'FLUX_ELGA_TEMP',
+                     NOM_CHAM = 'FLUX_ELGA',
                      TYPE_TEST = 'SOMM_ABS',
                      VALE = 1.2425453951744E+03   ,
                      REFERENCE = 'NON_REGRESSION',
@@ -528,7 +528,7 @@ TEST_RESU(RESU=(
                           _F(
                      RESULTAT = THL10,
                      NUME_ORDRE = 2,
-                     NOM_CHAM = 'FLUX_ELNO_TEMP',
+                     NOM_CHAM = 'FLUX_ELNO',
                      TYPE_TEST = 'SOMM_ABS',
                      VALE = 1.3973527879425E+03   ,
                      REFERENCE = 'NON_REGRESSION',
@@ -553,7 +553,7 @@ TEST_RESU(RESU=(
                           _F(
                      RESULTAT = THNL6,
                      NUME_ORDRE = 0,
-                     NOM_CHAM = 'META_ELNO_TEMP',
+                     NOM_CHAM = 'META_ELNO',
                      TYPE_TEST = 'SOMM_ABS',
                      VALE = 1.9073400000000E+03   ,
                      REFERENCE = 'NON_REGRESSION',
@@ -561,7 +561,7 @@ TEST_RESU(RESU=(
                            _F(
                      RESULTAT = THNL6,
                      NUME_ORDRE = 0,
-                     NOM_CHAM = 'FLUX_ELGA_TEMP',
+                     NOM_CHAM = 'FLUX_ELGA',
                      TYPE_TEST = 'SOMM_ABS',
                      CRITERE = 'ABSOLU',
                      VALE = 0.0000000000000E+00   ,
@@ -570,7 +570,7 @@ TEST_RESU(RESU=(
                           _F(
                      RESULTAT = THNL6,
                      NUME_ORDRE = 0,
-                     NOM_CHAM = 'FLUX_ELNO_TEMP',
+                     NOM_CHAM = 'FLUX_ELNO',
                      TYPE_TEST = 'SOMM_ABS',
                      CRITERE = 'ABSOLU',
                      VALE = 0.0000000000000E+00   ,
@@ -587,7 +587,7 @@ TEST_RESU(RESU=(
                           _F(
                      RESULTAT = THNL6,
                      NUME_ORDRE = 1,
-                     NOM_CHAM = 'META_ELNO_TEMP',
+                     NOM_CHAM = 'META_ELNO',
                      TYPE_TEST = 'SOMM_ABS',
                      VALE = 3.0713435316231E+03   ,
                      REFERENCE = 'NON_REGRESSION',
@@ -595,7 +595,7 @@ TEST_RESU(RESU=(
                           _F(
                      RESULTAT = THNL6,
                      NUME_ORDRE = 1,
-                     NOM_CHAM = 'FLUX_ELGA_TEMP',
+                     NOM_CHAM = 'FLUX_ELGA',
                      TYPE_TEST = 'SOMM_ABS',
                      VALE = 1.0692623176536E+03   ,
                      REFERENCE = 'NON_REGRESSION',
@@ -603,7 +603,7 @@ TEST_RESU(RESU=(
                           _F(
                      RESULTAT = THNL6,
                      NUME_ORDRE = 1,
-                     NOM_CHAM = 'FLUX_ELNO_TEMP',
+                     NOM_CHAM = 'FLUX_ELNO',
                      TYPE_TEST = 'SOMM_ABS',
                      VALE = 1.1704429327732E+03   ,
                      REFERENCE = 'NON_REGRESSION',

@@ -1,8 +1,8 @@
-#@ MODIF calculel7 Messages  DATE 08/11/2010   AUTEUR DESROCHES X.DESROCHES 
+#@ MODIF calculel7 Messages  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -25,7 +25,7 @@ cata_msg = {
 
 
 1 : _("""
-  pour calculer  %(k1)s  il faut SIEF_NOEU_ELGA 
+  pour calculer  %(k1)s  il faut SIEF_NOEU 
 """),
 
 2 : _("""

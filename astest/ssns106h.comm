@@ -1,10 +1,10 @@
-# MODIF  DATE 06/12/2010   AUTEUR SFAYOLLE S.FAYOLLE 
+# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
 # RESPONSABLE SFAYOLLE S.FAYOLLE
 # TITRE  : ENDOMMAGEMENT D UNE PLAQUE PLANE SOUS SOLLICITATIONS VARIEES
 # ssns106h.para = tps_job 120 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -456,14 +456,14 @@ RESU_L1=CALC_NO(reuse =RESU_L1,
 
 RESU_L1=CALC_ELEM(reuse =RESU_L1,
                   RESULTAT=RESU_L1,
-                  OPTION='DEGE_ELNO_DEPL',);
+                  OPTION='DEGE_ELNO',);
 
 # -- POST TRAITEMENT --
 
 EPS=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                             INTITULE='TABEPS',
                             RESULTAT=RESU_L1,
-                            NOM_CHAM='DEGE_ELNO_DEPL',
+                            NOM_CHAM='DEGE_ELNO',
                             NOEUD='N2',
                             TOUT_CMP='OUI',),);
 

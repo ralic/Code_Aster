@@ -1,10 +1,10 @@
-# MODIF  DATE 14/12/2010   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
 # RESPONSABLE GNICOLAS G.NICOLAS
 # TITRE Maillage adaptatif thermo-mecanique sur une culasse fissuree
 # forma05b.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -161,7 +161,7 @@ for num_calc in range(0,nb_calc1) :
 
                   OPTION=(
 # LISSAGE DES FLUX
-                       'FLUX_ELNO_TEMP',
+                       'FLUX_ELNO',
 # CALCUL DE L'INDICATEUR PAR ELEMENTS ET AUX NOEUDS PAR ELEM
                        'ERTH_ELEM',
                        'ERTH_ELNO',),);
@@ -171,7 +171,7 @@ for num_calc in range(0,nb_calc1) :
    IMPR_RESU(MODELE=MOT[num_calc],FORMAT='CASTEM',UNITE=55,
             RESU=_F(MAILLAGE=MAT[num_calc],
                     RESULTAT=TEMP[num_calc],
-                    NOM_CHAM=('TEMP','FLUX_ELNO_TEMP',
+                    NOM_CHAM=('TEMP','FLUX_ELNO',
                               'ERTH_ELNO',)
                      ),);
    DEFI_FICHIER(ACTION='LIBERER',UNITE=55)
@@ -223,7 +223,7 @@ for num_calc in range(0,nb_calc1) :
                   TOUT_ORDRE='OUI',
                   OPTION=(
 # LISSAGE DES CONTRAINTES SI STAT_NON_LINE
-                       'SIEF_ELNO_ELGA',
+                       'SIEF_ELNO',
 # CALCUL DE L'INDICATEUR EN RESIDU PAR ELEM ET AUX NOEUDS PAR ELEM
                        'ERME_ELEM',
                        'ERME_ELNO',),);
@@ -233,7 +233,7 @@ for num_calc in range(0,nb_calc1) :
    IMPR_RESU(MODELE=MOM[num_calc],FORMAT='CASTEM',UNITE=56,
             RESU=_F(MAILLAGE=MAM[num_calc],
                     RESULTAT=DEPLA[num_calc],
-                    NOM_CHAM=('DEPL','SIEF_ELNO_ELGA',
+                    NOM_CHAM=('DEPL','SIEF_ELNO',
                               'ERME_ELNO')
                      ),);
    DEFI_FICHIER(ACTION='LIBERER',UNITE=56)

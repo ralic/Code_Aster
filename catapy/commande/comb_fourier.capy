@@ -1,7 +1,7 @@
-#& MODIF COMMANDE  DATE 09/11/2010   AUTEUR DELMAS J.DELMAS 
+#& MODIF COMMANDE  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -23,5 +23,5 @@ COMB_FOURIER=OPER(nom="COMB_FOURIER",op= 161,sd_prod=comb_fourier,
          RESULTAT        =SIMP(statut='o',typ=(fourier_elas,fourier_ther),),
          ANGL            =SIMP(statut='o',typ='R',max='**'),
          NOM_CHAM        =SIMP(statut='o',typ='TXM',validators=NoRepeat(),max=6,
-             into=("DEPL","REAC_NODA","SIEF_ELGA_DEPL","EPSI_ELNO_DEPL","SIGM_ELNO_DEPL","TEMP","FLUX_ELNO_TEMP"),),
+             into=("DEPL","REAC_NODA","SIEF_ELGA","EPSI_ELNO_DEPL","SIGM_ELNO_DEPL","TEMP","FLUX_ELNO"),),
 ) ;

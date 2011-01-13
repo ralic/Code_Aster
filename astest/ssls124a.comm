@@ -1,10 +1,10 @@
-# MODIF  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
 # RESPONSABLE JMBHH01 J.M.PROIX
 # TITRE PLAQUE EN FLEXION AVEC DIVERS ELANCEMENTS. MODELISATION SHB8 MAILLAGE REGULIER
 # ssls124a.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -82,7 +82,7 @@ RESU31=MECA_STATIQUE(MODELE=MODMEC31,
 
 RESU31=CALC_ELEM(reuse =RESU31,
                  RESULTAT=RESU31,
-                 OPTION=('SIEF_ELNO_ELGA','EQUI_ELGA_SIGM','EQUI_ELNO_SIGM',),);
+                 OPTION=('SIEF_ELNO','EQUI_ELGA_SIGM','EQUI_ELNO_SIGM',),);
 Iy = ((((b * h) * h) * h) / 12.0);
 
 Uz = ((((((F * L) * L) * L) / 3.0) / YG) / Iy);
@@ -135,7 +135,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU31,
 
 TEST_RESU(RESU=(_F(RESULTAT=RESU31,
                    NUME_ORDRE=1,
-                   NOM_CHAM='SIEF_ELGA_DEPL',
+                   NOM_CHAM='SIEF_ELGA',
                    NOM_CMP='SIYY',
                    MAILLE='M1',
                    POINT=1,
@@ -144,7 +144,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU31,
                    REFERENCE='ANALYTIQUE',),
                 _F(RESULTAT=RESU31,
                    NUME_ORDRE=1,
-                   NOM_CHAM='SIEF_ELGA_DEPL',
+                   NOM_CHAM='SIEF_ELGA',
                    NOM_CMP='SIYY',
                    MAILLE='M1',
                    POINT=2,
@@ -153,7 +153,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU31,
                    REFERENCE='ANALYTIQUE',),
                 _F(RESULTAT=RESU31,
                    NUME_ORDRE=1,
-                   NOM_CHAM='SIEF_ELGA_DEPL',
+                   NOM_CHAM='SIEF_ELGA',
                    NOM_CMP='SIYY',
                    MAILLE='M1',
                    POINT=3,
@@ -163,7 +163,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU31,
                    REFERENCE='ANALYTIQUE',),
                 _F(RESULTAT=RESU31,
                    NUME_ORDRE=1,
-                   NOM_CHAM='SIEF_ELGA_DEPL',
+                   NOM_CHAM='SIEF_ELGA',
                    NOM_CMP='SIYY',
                    MAILLE='M1',
                    POINT=4,
@@ -172,7 +172,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU31,
                    REFERENCE='ANALYTIQUE',),
                 _F(RESULTAT=RESU31,
                    NUME_ORDRE=1,
-                   NOM_CHAM='SIEF_ELGA_DEPL',
+                   NOM_CHAM='SIEF_ELGA',
                    NOM_CMP='SIYY',
                    MAILLE='M1',
                    POINT=5,
@@ -182,7 +182,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU31,
 
 TEST_RESU(RESU=(_F(RESULTAT=RESU31,
                    NUME_ORDRE=1,
-                   NOM_CHAM='SIEF_ELNO_ELGA',
+                   NOM_CHAM='SIEF_ELNO',
                    NOM_CMP='SIYY',
                    MAILLE='M1',
                    NOEUD='N43',
@@ -191,7 +191,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU31,
                    REFERENCE='ANALYTIQUE',),
                 _F(RESULTAT=RESU31,
                    NUME_ORDRE=1,
-                   NOM_CHAM='SIEF_ELNO_ELGA',
+                   NOM_CHAM='SIEF_ELNO',
                    NOM_CMP='SIYY',
                    MAILLE='M1',
                    NOEUD='N39',

@@ -2,10 +2,10 @@
       IMPLICIT NONE
       CHARACTER*16        OPTION , NOMTE
 C     ----------------------------------------------------------------
-C MODIF ELEMENTS  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
+C MODIF ELEMENTS  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -29,7 +29,7 @@ C                 AVEC CISAILLEMENT  (EPAISSE)      DKQ    DSQ ET Q4G
 C
 C        RIGI_MECA       MASS_MECA
 C        RIGI_MECA_SENSI RIGI_MECA_SENS_C
-C        EPOT_ELEM_DEPL  ECIN_ELEM_DEPL
+C        EPOT_ELEM  ECIN_ELEM
 C        MASS_INER
 C          -----------------------------------------------------------
 C                                              TRIANGLE
@@ -157,7 +157,7 @@ C
       IF ( OPTION.EQ.'RIGI_MECA'      .OR.
      &     OPTION.EQ.'RIGI_MECA_SENSI' .OR.
      &     OPTION.EQ.'RIGI_MECA_SENS_C' .OR.
-     &     OPTION.EQ.'EPOT_ELEM_DEPL' ) THEN
+     &     OPTION.EQ.'EPOT_ELEM' ) THEN
 C     --------------------------------------
 C
         IF (NOMTE.EQ.'MEDKTR3') THEN
@@ -212,7 +212,7 @@ C PASSAGE VECTEUR - MATRICE
           CALL JEVECH('PMATUUR','E',JMATR)
           CALL UTPSLG(NNO,6,PGL,MATLOC,ZR(JMATR))
 
-        ELSE IF (OPTION.EQ.'EPOT_ELEM_DEPL') THEN
+        ELSE IF (OPTION.EQ.'EPOT_ELEM') THEN
           CALL JEVECH('PENERDR','E',JENER)
           DO 10 I = 1,3
             ZR(JENER-1+I) = ENER(I)
@@ -225,7 +225,7 @@ C
      &         OPTION.EQ.'MASS_MECA_DIAG' .OR.
      &         OPTION.EQ.'MASS_MECA_EXPLI' .OR.
      &         OPTION.EQ.'M_GAMMA'        .OR.
-     &         OPTION.EQ.'ECIN_ELEM_DEPL' ) THEN
+     &         OPTION.EQ.'ECIN_ELEM' ) THEN
 C     ------------------------------------------
         IF (NOMTE.EQ.'MEDKTR3') THEN
           CALL DKTMAS ( XYZL, OPTION, PGL, MATLOC, ENER, MULTIC)
@@ -241,7 +241,7 @@ C     ------------------------------------------
         IF (OPTION.EQ.'MASS_MECA') THEN
           CALL JEVECH('PMATUUR','E',JMATR)
           CALL UTPSLG(NNO,6,PGL,MATLOC,ZR(JMATR))
-        ELSE IF (OPTION.EQ.'ECIN_ELEM_DEPL') THEN
+        ELSE IF (OPTION.EQ.'ECIN_ELEM') THEN
           CALL JEVECH('PENERCR','E',JENER)
           CALL JEVECH('PFREQR','L',JFREQ)
           DO 20 I = 1,3
@@ -350,7 +350,7 @@ C
         END IF
 C
 C
-      ELSEIF ( OPTION.EQ.'SIEF_ELNO_ELGA' ) THEN
+      ELSEIF ( OPTION.EQ.'SIEF_ELNO' ) THEN
 C     ------------------------------------------
           CALL TECACH('NNN','PCOMPOR',1,ICOMPO,IRET)
           CALL JEVECH ( 'PCONTRR', 'L', ICONTP )

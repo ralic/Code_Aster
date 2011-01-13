@@ -1,9 +1,9 @@
-# MODIF  DATE 07/04/2010   AUTEUR HAELEWYN J.HAELEWYN 
+# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
 # TITRE THERMO-HYDRATATION EN ADIABATIQUE 2D AXIS AXIS_DIAG QUAD4 TRIA3
 # ttnl03b.para = tps_job 300 mem_job 250Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -326,38 +326,38 @@ TEST_RESU(CHAM_NO=(_F(CHAM_GD=T05,
                       PRECISION=1E-9,
                       REFERENCE='NON_REGRESSION',),),);
 
-# TESTS DE HYDR_ELNO_ELGA ET HYDR_NOEU_ELGA
+# TESTS DE HYDR_ELNO ET HYDR_NOEU
 
 RESUTHYD=CALC_NO(reuse =RESUTHYD,
                  RESULTAT=RESUTHYD,
-                 OPTION='HYDR_NOEU_ELGA',);
+                 OPTION='HYDR_NOEU',);
 
 RESUDIAG=CALC_NO(reuse =RESUDIAG,
                  RESULTAT=RESUDIAG,
-                 OPTION='HYDR_NOEU_ELGA',);
+                 OPTION='HYDR_NOEU',);
 
 HYDRELNO=CREA_CHAMP(TYPE_CHAM='ELNO_HYDR_R',
                     OPERATION='EXTR',
                     RESULTAT=RESUTHYD,
-                    NOM_CHAM='HYDR_ELNO_ELGA',
+                    NOM_CHAM='HYDR_ELNO',
                     NUME_ORDRE=120,);
 
 HYDELNOD=CREA_CHAMP(TYPE_CHAM='ELNO_HYDR_R',
                     OPERATION='EXTR',
                     RESULTAT=RESUDIAG,
-                    NOM_CHAM='HYDR_ELNO_ELGA',
+                    NOM_CHAM='HYDR_ELNO',
                     NUME_ORDRE=120,);
 
 HYDRNOEU=CREA_CHAMP(TYPE_CHAM='NOEU_HYDR_R',
                     OPERATION='EXTR',
                     RESULTAT=RESUTHYD,
-                    NOM_CHAM='HYDR_NOEU_ELGA',
+                    NOM_CHAM='HYDR_NOEU',
                     NUME_ORDRE=120,);
 
 HYDNOEUD=CREA_CHAMP(TYPE_CHAM='NOEU_HYDR_R',
                     OPERATION='EXTR',
                     RESULTAT=RESUDIAG,
-                    NOM_CHAM='HYDR_NOEU_ELGA',
+                    NOM_CHAM='HYDR_NOEU',
                     NUME_ORDRE=120,);
 
 TEST_RESU(CHAM_ELEM=(_F(CHAM_GD=HYDRELNO,
@@ -516,7 +516,7 @@ RESUMECA=STAT_NON_LINE(MODELE=MOMECA,
 
 RESUMECA=CALC_ELEM(reuse =RESUMECA,
                    RESULTAT=RESUMECA,
-                   OPTION=('SIEF_ELNO_ELGA','VARI_ELNO_ELGA',),);
+                   OPTION=('SIEF_ELNO','VARI_ELNO_ELGA',),);
 
 #
 

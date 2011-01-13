@@ -1,4 +1,4 @@
-# MODIF  DATE 10/01/2011   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
 # TITRE CALCUL ELECTRIQUE ET THERMIQUE D'UN CYLINDRE
 # tpll101b.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -60,11 +60,11 @@ POT_ELRE=THER_LINEAIRE(MODELE=MO,
 POT_ELRE=CALC_ELEM(reuse =POT_ELRE,
                    RESULTAT=POT_ELRE,
                    INST=0.0,
-                   OPTION='SOUR_ELGA_ELEC',);
+                   OPTION='SOUR_ELGA',);
 
 TEST_RESU(RESU=(
       _F( RESULTAT = POT_ELRE,
-          NOM_CHAM = 'SOUR_ELGA_ELEC',
+          NOM_CHAM = 'SOUR_ELGA',
           MAILLE = 'M834',
           POINT=1,
           NUME_ORDRE=0,
@@ -78,7 +78,7 @@ TEST_RESU(RESU=(
 SOURCE=CREA_CHAMP(TYPE_CHAM='ELGA_SOUR_R',
                   OPERATION='EXTR',
                   RESULTAT=POT_ELRE,
-                  NOM_CHAM='SOUR_ELGA_ELEC',
+                  NOM_CHAM='SOUR_ELGA',
                   NUME_ORDRE=0,);
 
 # CALCUL THERMIQUE

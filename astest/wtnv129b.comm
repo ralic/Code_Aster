@@ -1,9 +1,9 @@
-# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
 # TITRE : ESSAI TRIAXIAL 3D NON DRAINE AVEC LE MODELE DE HOEK_BROWN
 # wtnv129b.para = tps_job 80 mem_job 32Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -217,7 +217,7 @@ U1=STAT_NON_LINE(
 
 U1=CALC_ELEM( reuse=U1,
                             OPTION=(
-                  'SIEF_ELNO_ELGA',  'VARI_ELNO_ELGA',),
+                  'SIEF_ELNO',  'VARI_ELNO_ELGA',),
                           RESULTAT=U1,
               )                   
 
@@ -298,14 +298,14 @@ U2=STAT_NON_LINE(
       
 
 U2=CALC_ELEM( reuse      = U2,
-              OPTION     = ('SIEF_ELNO_ELGA',),
+              OPTION     = ('SIEF_ELNO',),
               RESULTAT   = U2,
               )
 
 U2=CALC_NO(  reuse      = U2,
              RESULTAT   = U2,
              TOUT_ORDRE = 'OUI',
-             OPTION     = ('SIEF_NOEU_ELGA',),
+             OPTION     = ('SIEF_NOEU',),
                )
                                            
 #
@@ -318,7 +318,7 @@ TEST_RESU(RESU=(
 # CONTRAINTE SIXX
                 _F(  RESULTAT = U2,    
                        NOEUD = 'NO8',      
-                       NOM_CHAM = 'SIEF_NOEU_ELGA',    
+                       NOM_CHAM = 'SIEF_NOEU',    
                        NOM_CMP = 'SIXX',     
                        INST = 2.40,  
                        PRECISION = 1.E-5,   
@@ -328,7 +328,7 @@ TEST_RESU(RESU=(
                      ),
                  _F(  RESULTAT = U2,   
                        NOEUD = 'NO8',      
-                       NOM_CHAM = 'SIEF_NOEU_ELGA',    
+                       NOM_CHAM = 'SIEF_NOEU',    
                        NOM_CMP = 'SIXX',     
                        INST = 2.70,  
                        PRECISION = 1.E-5,   
@@ -338,7 +338,7 @@ TEST_RESU(RESU=(
                      ),
                  _F(  RESULTAT = U2,   
                        NOEUD = 'NO8',      
-                       NOM_CHAM = 'SIEF_NOEU_ELGA',    
+                       NOM_CHAM = 'SIEF_NOEU',    
                        NOM_CMP = 'SIXX',     
                        INST = 2.90,  
                        PRECISION = 1.E-5,   
@@ -348,7 +348,7 @@ TEST_RESU(RESU=(
                      ),
                  _F(  RESULTAT = U2,   
                        NOEUD = 'NO8',      
-                       NOM_CHAM = 'SIEF_NOEU_ELGA',    
+                       NOM_CHAM = 'SIEF_NOEU',    
                        NOM_CMP = 'SIXX',     
                        INST = 3.10,  
                        PRECISION = 1.E-5,   
@@ -358,7 +358,7 @@ TEST_RESU(RESU=(
                      ),
                  _F(  RESULTAT = U2,   
                        NOEUD = 'NO8',      
-                       NOM_CHAM = 'SIEF_NOEU_ELGA',    
+                       NOM_CHAM = 'SIEF_NOEU',    
                        NOM_CMP = 'SIXX',     
                        INST = 3.30,  
                        PRECISION = 1.E-5,   
@@ -368,7 +368,7 @@ TEST_RESU(RESU=(
                      ),
                  _F(  RESULTAT = U2,   
                        NOEUD = 'NO8',      
-                       NOM_CHAM = 'SIEF_NOEU_ELGA',    
+                       NOM_CHAM = 'SIEF_NOEU',    
                        NOM_CMP = 'SIXX',     
                        INST = 4.0,  
                        PRECISION = 3.E-3,   
@@ -381,7 +381,7 @@ TEST_RESU(RESU=(
 # CONTRAINTE SIYY
                 _F(  RESULTAT = U2,    
                        NOEUD = 'NO8',      
-                       NOM_CHAM = 'SIEF_NOEU_ELGA',    
+                       NOM_CHAM = 'SIEF_NOEU',    
                        NOM_CMP = 'SIYY',     
                        INST = 2.40,  
                        PRECISION = 1.E-5,   
@@ -391,7 +391,7 @@ TEST_RESU(RESU=(
                      ),
                  _F(  RESULTAT = U2,   
                        NOEUD = 'NO8',      
-                       NOM_CHAM = 'SIEF_NOEU_ELGA',    
+                       NOM_CHAM = 'SIEF_NOEU',    
                        NOM_CMP = 'SIYY',     
                        INST = 2.70,  
                        PRECISION = 1.E-5,   
@@ -401,7 +401,7 @@ TEST_RESU(RESU=(
                      ),
                  _F(  RESULTAT = U2,   
                        NOEUD = 'NO8',      
-                       NOM_CHAM = 'SIEF_NOEU_ELGA',    
+                       NOM_CHAM = 'SIEF_NOEU',    
                        NOM_CMP = 'SIYY',     
                        INST = 2.90,  
                        PRECISION = 1.E-5,   
@@ -411,7 +411,7 @@ TEST_RESU(RESU=(
                      ),
                  _F(  RESULTAT = U2,   
                        NOEUD = 'NO8',      
-                       NOM_CHAM = 'SIEF_NOEU_ELGA',    
+                       NOM_CHAM = 'SIEF_NOEU',    
                        NOM_CMP = 'SIYY',     
                        INST = 3.10,  
                        PRECISION = 1.E-5,   
@@ -421,7 +421,7 @@ TEST_RESU(RESU=(
                      ),
                  _F(  RESULTAT = U2,   
                        NOEUD = 'NO8',      
-                       NOM_CHAM = 'SIEF_NOEU_ELGA',    
+                       NOM_CHAM = 'SIEF_NOEU',    
                        NOM_CMP = 'SIYY',     
                        INST = 3.30,  
                        PRECISION = 1.E-5,   
@@ -431,7 +431,7 @@ TEST_RESU(RESU=(
                      ),
                  _F(  RESULTAT = U2,   
                        NOEUD = 'NO8',      
-                       NOM_CHAM = 'SIEF_NOEU_ELGA',    
+                       NOM_CHAM = 'SIEF_NOEU',    
                        NOM_CMP = 'SIYY',     
                        INST = 4.0,  
                        PRECISION = 3.E-3,   
@@ -443,7 +443,7 @@ TEST_RESU(RESU=(
 # CONTRAINTE SIZZ
                  _F(  RESULTAT = U2,   
                        NOEUD = 'NO8',      
-                       NOM_CHAM = 'SIEF_NOEU_ELGA',    
+                       NOM_CHAM = 'SIEF_NOEU',    
                        NOM_CMP = 'SIZZ',     
                        INST = 2.40,  
                        PRECISION = 1.E-5,   
@@ -453,7 +453,7 @@ TEST_RESU(RESU=(
                      ),
                  _F(  RESULTAT = U2,   
                        NOEUD = 'NO8',      
-                       NOM_CHAM = 'SIEF_NOEU_ELGA',    
+                       NOM_CHAM = 'SIEF_NOEU',    
                        NOM_CMP = 'SIZZ',     
                        INST = 2.70,  
                        PRECISION = 1.E-5,   
@@ -463,7 +463,7 @@ TEST_RESU(RESU=(
                      ),
                  _F(  RESULTAT = U2,   
                        NOEUD = 'NO8',      
-                       NOM_CHAM = 'SIEF_NOEU_ELGA',    
+                       NOM_CHAM = 'SIEF_NOEU',    
                        NOM_CMP = 'SIZZ',     
                        INST = 2.90,  
                        PRECISION = 1.E-5,   
@@ -473,7 +473,7 @@ TEST_RESU(RESU=(
                      ),
                  _F(  RESULTAT = U2,   
                        NOEUD = 'NO8',      
-                       NOM_CHAM = 'SIEF_NOEU_ELGA',    
+                       NOM_CHAM = 'SIEF_NOEU',    
                        NOM_CMP = 'SIZZ',     
                        INST = 3.10,  
                        PRECISION = 1.E-5,   
@@ -483,7 +483,7 @@ TEST_RESU(RESU=(
                      ),
                  _F(  RESULTAT = U2,   
                        NOEUD = 'NO8',      
-                       NOM_CHAM = 'SIEF_NOEU_ELGA',    
+                       NOM_CHAM = 'SIEF_NOEU',    
                        NOM_CMP = 'SIZZ',     
                        INST = 3.30,  
                        PRECISION = 1.E-5,   
@@ -493,7 +493,7 @@ TEST_RESU(RESU=(
                      ),
                  _F(  RESULTAT = U2,   
                        NOEUD = 'NO8',      
-                       NOM_CHAM = 'SIEF_NOEU_ELGA',    
+                       NOM_CHAM = 'SIEF_NOEU',    
                        NOM_CMP = 'SIZZ',     
                        INST = 4.0,  
                        PRECISION = 1.E-4,   

@@ -1,10 +1,10 @@
-# MODIF  DATE 17/02/2009   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
 # RESPONSABLE JOUMANA J.EL-GHARIB
 # TITRE CAS TEST TRIAXIAL NON DRAINE AVEC CAM_CLAY EN 3D
 # wtnv122a.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -291,14 +291,14 @@ U1=STAT_NON_LINE(reuse=U1,
               )
 
 U1=CALC_ELEM(  reuse=U1,
-                  OPTION=('SIEF_ELNO_ELGA',
+                  OPTION=('SIEF_ELNO',
                           'VARI_ELNO_ELGA',
                           ),
                   RESULTAT=U1,
                         )
 
 U1=CALC_NO(  reuse=U1,     RESULTAT=U1,
-                       OPTION=( 'SIEF_NOEU_ELGA',
+                       OPTION=( 'SIEF_NOEU',
                        'VARI_NOEU_ELGA',
                            ),
                 )
@@ -312,7 +312,7 @@ TEST_RESU(RESU=(
 # CONTRAINTE SIXX
                 _F(  RESULTAT = U1,
                        NOEUD = 'NO8',
-                       NOM_CHAM = 'SIEF_NOEU_ELGA',
+                       NOM_CHAM = 'SIEF_NOEU',
                        NOM_CMP = 'SIXX',
                        INST = 3.,
                        REFERENCE='NON_REGRESSION',
@@ -321,7 +321,7 @@ TEST_RESU(RESU=(
                      ),
                  _F(  RESULTAT = U1,
                        NOEUD = 'NO8',
-                       NOM_CHAM = 'SIEF_NOEU_ELGA',
+                       NOM_CHAM = 'SIEF_NOEU',
                        NOM_CMP = 'SIXX',
                        INST = 6.,
                        REFERENCE='NON_REGRESSION',
@@ -330,7 +330,7 @@ TEST_RESU(RESU=(
                      ),
                  _F(  RESULTAT = U1,
                        NOEUD = 'NO8',
-                       NOM_CHAM = 'SIEF_NOEU_ELGA',
+                       NOM_CHAM = 'SIEF_NOEU',
                        NOM_CMP = 'SIXX',
                        INST = 15.,
                        REFERENCE='NON_REGRESSION',
@@ -339,7 +339,7 @@ TEST_RESU(RESU=(
                      ),
                  _F(  RESULTAT = U1,
                        NOEUD = 'NO8',
-                       NOM_CHAM = 'SIEF_NOEU_ELGA',
+                       NOM_CHAM = 'SIEF_NOEU',
                        NOM_CMP = 'SIXX',
                        INST = 20.,
                        REFERENCE='NON_REGRESSION',
@@ -350,7 +350,7 @@ TEST_RESU(RESU=(
 # CONTRAINTE SIYY
                 _F(  RESULTAT = U1,
                        NOEUD = 'NO8',
-                       NOM_CHAM = 'SIEF_NOEU_ELGA',
+                       NOM_CHAM = 'SIEF_NOEU',
                        NOM_CMP = 'SIYY',
                        INST = 3.,
                        REFERENCE='NON_REGRESSION',
@@ -359,7 +359,7 @@ TEST_RESU(RESU=(
                      ),
                  _F(  RESULTAT = U1,
                        NOEUD = 'NO8',
-                       NOM_CHAM = 'SIEF_NOEU_ELGA',
+                       NOM_CHAM = 'SIEF_NOEU',
                        NOM_CMP = 'SIYY',
                        INST = 6.,
                        REFERENCE='NON_REGRESSION',
@@ -368,7 +368,7 @@ TEST_RESU(RESU=(
                      ),
                  _F(  RESULTAT = U1,
                        NOEUD = 'NO8',
-                       NOM_CHAM = 'SIEF_NOEU_ELGA',
+                       NOM_CHAM = 'SIEF_NOEU',
                        NOM_CMP = 'SIYY',
                        INST = 15.,
                        REFERENCE='NON_REGRESSION',
@@ -377,7 +377,7 @@ TEST_RESU(RESU=(
                      ),
                  _F(  RESULTAT = U1,
                        NOEUD = 'NO8',
-                       NOM_CHAM = 'SIEF_NOEU_ELGA',
+                       NOM_CHAM = 'SIEF_NOEU',
                        NOM_CMP = 'SIYY',
                        INST = 20.,
                        REFERENCE='NON_REGRESSION',
@@ -388,7 +388,7 @@ TEST_RESU(RESU=(
 # CONTRAINTE SIZZ
                 _F(  RESULTAT = U1,
                        NOEUD = 'NO8',
-                       NOM_CHAM = 'SIEF_NOEU_ELGA',
+                       NOM_CHAM = 'SIEF_NOEU',
                        NOM_CMP = 'SIZZ',
                        INST = 3.,
                        REFERENCE='NON_REGRESSION',
@@ -397,7 +397,7 @@ TEST_RESU(RESU=(
                      ),
                  _F(  RESULTAT = U1,
                        NOEUD = 'NO8',
-                       NOM_CHAM = 'SIEF_NOEU_ELGA',
+                       NOM_CHAM = 'SIEF_NOEU',
                        NOM_CMP = 'SIZZ',
                        INST = 6.,
                        REFERENCE='NON_REGRESSION',
@@ -406,7 +406,7 @@ TEST_RESU(RESU=(
                      ),
                  _F(  RESULTAT = U1,
                        NOEUD = 'NO8',
-                       NOM_CHAM = 'SIEF_NOEU_ELGA',
+                       NOM_CHAM = 'SIEF_NOEU',
                        NOM_CMP = 'SIZZ',
                        INST = 15.,
                        REFERENCE='NON_REGRESSION',
@@ -415,7 +415,7 @@ TEST_RESU(RESU=(
                      ),
                  _F(  RESULTAT = U1,
                        NOEUD = 'NO8',
-                       NOM_CHAM = 'SIEF_NOEU_ELGA',
+                       NOM_CHAM = 'SIEF_NOEU',
                        NOM_CMP = 'SIZZ',
                        INST = 20.,
                        REFERENCE='NON_REGRESSION',

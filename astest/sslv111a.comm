@@ -1,8 +1,8 @@
-# MODIF  DATE 07/12/2010   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
 # TITRE ESTIMATEUR D'ERREUR SUR UNE PLAQUE TROUEE EN TRACTION
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -99,8 +99,8 @@ RESU=MECA_STATIQUE(     MODELE=MO,
 RESU=CALC_ELEM(  reuse=RESU,
                       TOUT_ORDRE='OUI',
                           OPTION=(
-                                  'ERZ1_ELEM_SIGM',
-                                  'ERZ2_ELEM_SIGM',
+                                  'ERZ1_ELEM',
+                                  'ERZ2_ELEM',
                                   'SIGM_ELNO_DEPL',
                                   'ERME_ELEM',
                                   'ERME_ELNO',
@@ -190,21 +190,21 @@ IMPR_RESU(   MODELE=MO,
          NUME_ORDRE = 1, SOUS_TITRE = 'CONTRAINTES AUX NOEUDS ZZ2',
          VALE_MAX = 'OUI', VALE_MIN = 'OUI'),
 
-     _F( RESULTAT = RESU, NOM_CHAM = 'ERZ1_ELEM_SIGM',
+     _F( RESULTAT = RESU, NOM_CHAM = 'ERZ1_ELEM',
          NUME_ORDRE = 1, SOUS_TITRE = 'ESTIMATEUR D''ERREUR ZZ1',
          VALE_MAX = 'OUI', VALE_MIN = 'OUI'),
 
-      _F( RESULTAT = RESU, NOM_CHAM = 'ERZ1_ELEM_SIGM',
+      _F( RESULTAT = RESU, NOM_CHAM = 'ERZ1_ELEM',
          NUME_ORDRE = 1, SOUS_TITRE = (
 'ESTIMATEUR D''ERREUR ZZ1:LISTE DES MAILLES OU L''ERREUR RELATIVE ',
 'EST SUPERIEURE A 10 POUR CENT',         ),
         BORNE_INF = 10., NOM_CMP = 'NUEST'),
 
-       _F( RESULTAT = RESU, NOM_CHAM = 'ERZ2_ELEM_SIGM',
+       _F( RESULTAT = RESU, NOM_CHAM = 'ERZ2_ELEM',
          NUME_ORDRE = 1, SOUS_TITRE = 'ESTIMATEUR D''ERREUR ZZ2',
       VALE_MAX = 'OUI', VALE_MIN = 'OUI'),
 
-       _F( RESULTAT = RESU, NOM_CHAM = 'ERZ2_ELEM_SIGM',
+       _F( RESULTAT = RESU, NOM_CHAM = 'ERZ2_ELEM',
          NUME_ORDRE = 1, SOUS_TITRE = (
 'ESTIMATEUR D''ERREUR ZZ2:LISTE DES MAILLES OU L''ERREUR RELATIVE ',
 'EST SUPERIEURE A 10 POUR CENT',     ),
@@ -222,16 +222,16 @@ IMPR_RESU(   MODELE=MO,
             )
 
 TEST_RESU(RESU=(
-            _F( RESULTAT = RESU, NOM_CHAM = 'ERZ1_ELEM_SIGM', NUME_ORDRE = 1,
+            _F( RESULTAT = RESU, NOM_CHAM = 'ERZ1_ELEM', NUME_ORDRE = 1,
              CRITERE = 'ABSOLU',     PRECISION = 0.001,
              MAILLE = 'M1',  POINT = 1, NOM_CMP = 'ERREST', VALE = 0.),
-            _F( RESULTAT = RESU, NOM_CHAM = 'ERZ1_ELEM_SIGM', NUME_ORDRE = 1,
+            _F( RESULTAT = RESU, NOM_CHAM = 'ERZ1_ELEM', NUME_ORDRE = 1,
              CRITERE = 'ABSOLU',     PRECISION = 10.,
              MAILLE = 'M1',  POINT = 1, NOM_CMP = 'NUEST',  VALE = 0.),
-            _F( RESULTAT = RESU, NOM_CHAM = 'ERZ2_ELEM_SIGM', NUME_ORDRE = 1,
+            _F( RESULTAT = RESU, NOM_CHAM = 'ERZ2_ELEM', NUME_ORDRE = 1,
              CRITERE = 'ABSOLU',     PRECISION = 0.001,
              MAILLE = 'M1',  POINT = 1, NOM_CMP = 'ERREST', VALE = 0.),
-            _F( RESULTAT = RESU, NOM_CHAM = 'ERZ2_ELEM_SIGM', NUME_ORDRE = 1,
+            _F( RESULTAT = RESU, NOM_CHAM = 'ERZ2_ELEM', NUME_ORDRE = 1,
              CRITERE = 'ABSOLU',     PRECISION = 10.,
              MAILLE = 'M1',   POINT = 1, NOM_CMP = 'NUEST', VALE = 0.),
             _F( RESULTAT = RESU, NOM_CHAM = 'ERME_ELEM', NUME_ORDRE = 1,

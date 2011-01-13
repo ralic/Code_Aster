@@ -1,8 +1,8 @@
-# MODIF  DATE 28/01/2008   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
 # TITRE ESSAI DE DEPLACEMENT IMPOSE SUR UNE BARRE (PINTO)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -597,7 +597,7 @@ LEDEP=STAT_NON_LINE( reuse=LEDEP,
               )
 
 LEDEP=CALC_ELEM( reuse=LEDEP,
-                            OPTION='SIEF_ELNO_ELGA',
+                            OPTION='SIEF_ELNO',
                           RESULTAT=LEDEP,
               )
 
@@ -611,7 +611,7 @@ TEST_RESU(RESU=(
 
             _F( RESULTAT = LEDEP, REFERENCE='ANALYTIQUE',
              INST = 0.001,
-             NOM_CHAM = 'SIEF_ELNO_ELGA',
+             NOM_CHAM = 'SIEF_ELNO',
              NOM_CMP = 'N',
              MAILLE = 'M1',
              NOEUD = 'N1',
@@ -619,7 +619,7 @@ TEST_RESU(RESU=(
              PRECISION = 0.01),
             _F( RESULTAT = LEDEP, REFERENCE='ANALYTIQUE',
              INST = 0.0023,
-             NOM_CHAM = 'SIEF_ELNO_ELGA',
+             NOM_CHAM = 'SIEF_ELNO',
              NOM_CMP = 'N',
              MAILLE = 'M1',
              NOEUD = 'N1',
@@ -627,7 +627,7 @@ TEST_RESU(RESU=(
              PRECISION = 0.01),
             _F( RESULTAT = LEDEP, REFERENCE='ANALYTIQUE',
              INST = 0.03,
-             NOM_CHAM = 'SIEF_ELNO_ELGA',
+             NOM_CHAM = 'SIEF_ELNO',
              NOM_CMP = 'N',
              MAILLE = 'M1',
              NOEUD = 'N1',
@@ -635,7 +635,7 @@ TEST_RESU(RESU=(
              PRECISION = 0.01),
             _F( RESULTAT = LEDEP, REFERENCE='ANALYTIQUE',
              INST = 0.2,
-             NOM_CHAM = 'SIEF_ELNO_ELGA',
+             NOM_CHAM = 'SIEF_ELNO',
              NOM_CMP = 'N',
              MAILLE = 'M1',
              NOEUD = 'N1',
@@ -643,7 +643,7 @@ TEST_RESU(RESU=(
              PRECISION = 0.01),
             _F( RESULTAT = LEDEP, REFERENCE='ANALYTIQUE',
              INST = 0.4,
-             NOM_CHAM = 'SIEF_ELNO_ELGA',
+             NOM_CHAM = 'SIEF_ELNO',
              NOM_CMP = 'N',
              MAILLE = 'M1',
              NOEUD = 'N1',
@@ -651,7 +651,7 @@ TEST_RESU(RESU=(
              PRECISION = 0.01),
             _F( RESULTAT = LEDEP, REFERENCE='ANALYTIQUE',
              INST = 6.4,
-             NOM_CHAM = 'SIEF_ELNO_ELGA',
+             NOM_CHAM = 'SIEF_ELNO',
              NOM_CMP = 'N',
              MAILLE = 'M1',
              NOEUD = 'N1',
@@ -659,7 +659,7 @@ TEST_RESU(RESU=(
              PRECISION = 0.01),
             _F( RESULTAT = LEDEP, REFERENCE='ANALYTIQUE',
              INST = 7.92,
-             NOM_CHAM = 'SIEF_ELNO_ELGA',
+             NOM_CHAM = 'SIEF_ELNO',
              NOM_CMP = 'N',
              MAILLE = 'M1',
              NOEUD = 'N1',
@@ -667,7 +667,7 @@ TEST_RESU(RESU=(
              PRECISION = 0.01),
             _F( RESULTAT = LEDEP, REFERENCE='ANALYTIQUE',
              INST = 17.,
-             NOM_CHAM = 'SIEF_ELNO_ELGA',
+             NOM_CHAM = 'SIEF_ELNO',
              NOM_CMP = 'N',
              MAILLE = 'M1',
              NOEUD = 'N1',
@@ -675,7 +675,7 @@ TEST_RESU(RESU=(
              PRECISION = 0.001),
             _F( RESULTAT = LEDEP, REFERENCE='ANALYTIQUE',
              INST = 19.,
-             NOM_CHAM = 'SIEF_ELNO_ELGA',
+             NOM_CHAM = 'SIEF_ELNO',
              NOM_CMP = 'N',
              MAILLE = 'M1',
              NOEUD = 'N1',
@@ -683,7 +683,7 @@ TEST_RESU(RESU=(
              PRECISION = 0.01),
             _F( RESULTAT = LEDEP, REFERENCE='ANALYTIQUE',
              INST = 20.,
-             NOM_CHAM = 'SIEF_ELNO_ELGA',
+             NOM_CHAM = 'SIEF_ELNO',
              NOM_CMP = 'N',
              MAILLE = 'M1',
              NOEUD = 'N1',
@@ -691,7 +691,7 @@ TEST_RESU(RESU=(
              PRECISION = 0.01),
             _F( RESULTAT = LEDEP, REFERENCE='ANALYTIQUE',
              INST = 21.,
-             NOM_CHAM = 'SIEF_ELNO_ELGA',
+             NOM_CHAM = 'SIEF_ELNO',
              NOM_CMP = 'N',
              MAILLE = 'M1',
              NOEUD = 'N1',
@@ -699,7 +699,7 @@ TEST_RESU(RESU=(
              PRECISION = 0.01),
             _F( RESULTAT = LEDEP, REFERENCE='ANALYTIQUE',
              INST = 22.,
-             NOM_CHAM = 'SIEF_ELNO_ELGA',
+             NOM_CHAM = 'SIEF_ELNO',
              NOM_CMP = 'N',
              MAILLE = 'M1',
              NOEUD = 'N1',
@@ -707,7 +707,7 @@ TEST_RESU(RESU=(
              PRECISION = 0.01),
             _F( RESULTAT = LEDEP, REFERENCE='ANALYTIQUE',
              INST = 25.,
-             NOM_CHAM = 'SIEF_ELNO_ELGA',
+             NOM_CHAM = 'SIEF_ELNO',
              NOM_CMP = 'N',
              MAILLE = 'M1',
              NOEUD = 'N1',
@@ -715,7 +715,7 @@ TEST_RESU(RESU=(
              PRECISION = 0.01),
             _F( RESULTAT = LEDEP, REFERENCE='ANALYTIQUE',
              INST = 50.,
-             NOM_CHAM = 'SIEF_ELNO_ELGA',
+             NOM_CHAM = 'SIEF_ELNO',
              NOM_CMP = 'N',
              MAILLE = 'M1',
              NOEUD = 'N1',

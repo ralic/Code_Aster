@@ -1,4 +1,4 @@
-# MODIF  DATE 10/01/2011   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
 # TITRE MODELISATION DES SOUS PRESSION D'UN BARRAGE 3D A L'AIDE DES ELEMENT DE JOINT ET DE LA LOI JOINT_MECA_RUPT
 # ssnp142b.para = tps_job 500 mem_job 350Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -227,12 +227,12 @@ U_M=CALC_ELEM(reuse =U_M,
 U_M=CALC_ELEM(reuse =U_M,
 
               RESULTAT=U_M,
-              OPTION='SIEF_ELNO_ELGA',
+              OPTION='SIEF_ELNO',
               NOM_CHAM='SIEF_ELGA',GROUP_MA='JOINT');
 
 U_M=CALC_NO(reuse =U_M,
             RESULTAT=U_M,
-            OPTION=('VARI_NOEU_ELGA','SIEF_NOEU_ELGA'),
+            OPTION=('VARI_NOEU_ELGA','SIEF_NOEU'),
             GROUP_MA='JOINT');
 
 # SAUT NORMALE DANS LE JOINT
@@ -248,7 +248,7 @@ SAUT_M=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
 SIGN_M=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                INTITULE='SIG_N',
                                RESULTAT=U_M,
-                               NOM_CHAM='SIEF_NOEU_ELGA',
+                               NOM_CHAM='SIEF_NOEU',
                                INST=tfin,
                                GROUP_NO = ('JOINT_H',),
                                NOM_CMP='SIGN'),);
@@ -264,12 +264,12 @@ U_F=CALC_ELEM(reuse =U_F,
 U_F=CALC_ELEM(reuse =U_F,
 
               RESULTAT=U_F,
-              OPTION='SIEF_ELNO_ELGA',
+              OPTION='SIEF_ELNO',
               NOM_CHAM='SIEF_ELGA',GROUP_MA='JOINT');
 
 U_F=CALC_NO(reuse =U_F,
             RESULTAT=U_F,
-            OPTION=('VARI_NOEU_ELGA','SIEF_NOEU_ELGA'),
+            OPTION=('VARI_NOEU_ELGA','SIEF_NOEU'),
             GROUP_MA='JOINT');
 
 # SAUT NORMALE DANS LE JOINT
@@ -285,7 +285,7 @@ SAUT_F=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
 SIGN_F=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                INTITULE='SIG_N',
                                RESULTAT=U_F,
-                               NOM_CHAM='SIEF_NOEU_ELGA',
+                               NOM_CHAM='SIEF_NOEU',
                                INST=tfin,
                                GROUP_NO = ('JOINT_H',),
                                NOM_CMP='SIGN'),);

@@ -1,9 +1,9 @@
-# MODIF  DATE 17/02/2009   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
 # TITRE THERMO_METALLO_MECANIQUE COUPLEE EN TRACTION SIMPLE
 # hsnv102b.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -288,7 +288,7 @@ CM2=AFFE_MATERIAU(
                           AFFE_VARC=(_F(TOUT='OUI',
                                 EVOL=TEMPE,
                                 NOM_VARC='M_ACIER',
-                                NOM_CHAM='META_ELNO_TEMP'),
+                                NOM_CHAM='META_ELNO'),
                                     _F(TOUT='OUI',
                                 EVOL=TEMPE,
                                 NOM_VARC='TEMP',
@@ -343,7 +343,7 @@ U=STAT_NON_LINE(
 
 U=CALC_ELEM( reuse=U,
                             OPTION=(
-                  'SIEF_ELNO_ELGA',  'VARI_ELNO_ELGA',),
+                  'SIEF_ELNO',  'VARI_ELNO_ELGA',),
                           RESULTAT=U,
                )
 
@@ -356,7 +356,7 @@ RESULTAT=U, NOM_CHAM='VARI_ELNO_ELGA',
                        INST=24. )
 
 CHSIG24=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='ELNO_SIEF_R',
-RESULTAT=U, NOM_CHAM='SIEF_ELNO_ELGA',
+RESULTAT=U, NOM_CHAM='SIEF_ELNO',
                        INST=24. )
 
 CHEPS24=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='ELNO_EPSI_R',
@@ -368,7 +368,7 @@ RESULTAT=U, NOM_CHAM='VARI_ELNO_ELGA',
                        INST=26. )
 
 CHSIG26=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='ELNO_SIEF_R',
-RESULTAT=U, NOM_CHAM='SIEF_ELNO_ELGA',
+RESULTAT=U, NOM_CHAM='SIEF_ELNO',
                        INST=26. )
 
 CHEPS26=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='ELNO_EPSI_R',
@@ -380,7 +380,7 @@ RESULTAT=U, NOM_CHAM='VARI_ELNO_ELGA',
                        INST=40. )
 
 CHSIG40=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='ELNO_SIEF_R',
-RESULTAT=U, NOM_CHAM='SIEF_ELNO_ELGA',
+RESULTAT=U, NOM_CHAM='SIEF_ELNO',
                        INST=40. )
 
 CHEPS40=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='ELNO_EPSI_R',
@@ -392,7 +392,7 @@ RESULTAT=U, NOM_CHAM='VARI_ELNO_ELGA',
                        INST=90. )
 
 CHSIG90=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='ELNO_SIEF_R',
-RESULTAT=U, NOM_CHAM='SIEF_ELNO_ELGA',
+RESULTAT=U, NOM_CHAM='SIEF_ELNO',
                        INST=90. )
 
 CHEPS90=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='ELNO_EPSI_R',

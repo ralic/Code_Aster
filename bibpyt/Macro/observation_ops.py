@@ -1,8 +1,8 @@
-#@ MODIF observation_ops Macro  DATE 14/12/2010   AUTEUR PELLET J.PELLET 
+#@ MODIF observation_ops Macro  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -145,7 +145,7 @@ def observation_ops(self,
     resu_epsi = None
     if EPSI_MOYENNE != None :
       for nomcham in NOM_CHAM:
-        if nomcham == 'EPSI_NOEU_DEPL':
+        if nomcham == 'EPSI_NOEU':
           if isinstance( RESULTAT, dyna_harmo):
             TYPE_CHAM  = 'NOEU_EPSI_C'
           else:
@@ -210,7 +210,7 @@ def observation_ops(self,
                           'INTITULE' : str('R'+str(nb_mcfact)),
                           'FORMAT_C' : 'REEL',
                           'NOEUD' : l_noeud,
-                          'NOM_CHAM'  : 'EPSI_NOEU_DEPL',
+                          'NOM_CHAM'  : 'EPSI_NOEU',
                           'RESULTAT'  : RESULTAT,
                           'NUME_ORDRE'  : num_ordr,
                         }
@@ -220,7 +220,7 @@ def observation_ops(self,
                           'INTITULE' : str('I'+str(nb_mcfact)),
                           'FORMAT_C' : 'IMAG',
                           'NOEUD' : l_noeud,
-                          'NOM_CHAM'  : 'EPSI_NOEU_DEPL',
+                          'NOM_CHAM'  : 'EPSI_NOEU',
                           'RESULTAT'  : RESULTAT,
                           'NUME_ORDRE'  : num_ordr,
                          }
@@ -230,7 +230,7 @@ def observation_ops(self,
                           'OPERATION' : 'EXTRACTION',
                           'INTITULE' : str(nb_mcfact),
                           'NOEUD' : l_noeud,
-                          'NOM_CHAM'  : 'EPSI_NOEU_DEPL',
+                          'NOM_CHAM'  : 'EPSI_NOEU',
                           'RESULTAT'  : RESULTAT,
                           'NUME_ORDRE'  : num_ordr,
                          }
@@ -352,7 +352,7 @@ def observation_ops(self,
                           MODELE = MODELE_1,
                           PROL_ZERO = 'OUI',
                           TYPE_CHAM  = TYPE_CHAM,
-                          OPTION   = 'EPSI_NOEU_DEPL',
+                          OPTION   = 'EPSI_NOEU',
                           **argsa
                           );
 
@@ -388,11 +388,11 @@ def observation_ops(self,
 
          liste.append(mcfact2)
 
-        resu_epsi = 'EPSI_NOEU_DEPL'
+        resu_epsi = 'EPSI_NOEU'
         RESU = CREA_RESU(
                               OPERATION = 'AFFE',
                               TYPE_RESU = TYPE_RESU,
-                              NOM_CHAM  = 'EPSI_NOEU_DEPL',
+                              NOM_CHAM  = 'EPSI_NOEU',
                               AFFE      = liste,
                              );
 
@@ -408,7 +408,7 @@ def observation_ops(self,
                   TYPE_CHAM = 'NOEU_DEPL_C'
              else:
                   TYPE_CHAM = 'NOEU_DEPL_R'
-     elif nomcham == 'EPSI_NOEU_DEPL':
+     elif nomcham == 'EPSI_NOEU':
              if isinstance( RESULTAT, dyna_harmo):
                TYPE_CHAM  = 'NOEU_EPSI_C'
              else:
@@ -421,7 +421,7 @@ def observation_ops(self,
 #***********************************************
 
      if PROJECTION == 'OUI':
-      if resu_epsi and nomcham == 'EPSI_NOEU_DEPL':
+      if resu_epsi and nomcham == 'EPSI_NOEU':
         __proj = PROJ_CHAMP(METHODE='COLLOCATION',
                           RESULTAT = RESU,
                           MODELE_1 = MODELE_1,
@@ -439,7 +439,7 @@ def observation_ops(self,
                          )
       modele = MODELE_2
      else:
-      if resu_epsi and nomcham == 'EPSI_NOEU_DEPL':
+      if resu_epsi and nomcham == 'EPSI_NOEU':
         __proj = RESU
       else:
         __proj = RESULTAT
@@ -475,9 +475,9 @@ def observation_ops(self,
           nom_cmp = modif_rep['NOM_CMP']
 
           if type_cham == 'TENS_2D':
-                nomchamx = 'EPSI_NOEU_DEPL'
+                nomchamx = 'EPSI_NOEU'
           elif type_cham == 'TENS_3D':
-                nomchamx = 'EPSI_NOEU_DEPL'
+                nomchamx = 'EPSI_NOEU'
           else:
                 nomchamx = 'DEPL'
 
@@ -638,7 +638,7 @@ def observation_ops(self,
                 mcfact1 = {}
 
                 atraiter = None
-                if filtre['DDL_ACTIF'][0][0] == 'E' and nomcham == 'EPSI_NOEU_DEPL':
+                if filtre['DDL_ACTIF'][0][0] == 'E' and nomcham == 'EPSI_NOEU':
                    atraiter = nomcham
                 elif filtre['DDL_ACTIF'][0][0] == 'D' and nomcham == 'DEPL':
                    atraiter = nomcham
@@ -663,7 +663,7 @@ def observation_ops(self,
                                        ASSE      = filtres
                                        );
 
-              elif nomcham == 'EPSI_NOEU_DEPL':
+              elif nomcham == 'EPSI_NOEU':
                 __chamf[ind] = CREA_CHAMP(TYPE_CHAM = TYPE_CHAM,
                                        OPERATION = 'ASSE',
                                        PROL_ZERO = 'OUI',
@@ -674,7 +674,7 @@ def observation_ops(self,
                 valk = []
                 valk.append(nomcham)
                 valk.append('DEPL VITE ACCE')
-                valk.append('EPSI_NOEU_DEPL')
+                valk.append('EPSI_NOEU')
                 UTMESS('F','OBSERVATION_6',valk)
 
               argsr = {}

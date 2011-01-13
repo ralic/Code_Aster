@@ -1,4 +1,4 @@
-# MODIF  DATE 03/01/2011   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
 # RESPONSABLE SFAYOLLE S.FAYOLLE
 # TITRE  : ENDOMMAGEMENT D UNE PLAQUE PLANE SOUS SOLLICITATIONS VARIEES
 # ssns106f.para = tps_job 300 mem_job 256Mo ncpus 1 liste_test S
@@ -455,17 +455,17 @@ TEST_TABLE(TABLE=TFXA4_G0,
 RESU1=CALC_ELEM(reuse =RESU1,
                 RESULTAT=RESU1,
                 GROUP_MA='DALLE',
-                OPTION=('VARI_ELNO_ELGA','ENEL_ELGA','ENEL_ELNO_ELGA',),);
+                OPTION=('VARI_ELNO_ELGA','ENEL_ELGA','ENEL_ELNO',),);
 
 RESU1=CALC_ELEM(reuse =RESU1,
                 RESULTAT=RESU1,
                 GROUP_MA=('ACIER1L','ACIER2L','ACIER1T','ACIER2T',),
-                OPTION='SIEF_ELNO_ELGA',);
+                OPTION='SIEF_ELNO',);
 
 RESU_G=CALC_ELEM(reuse =RESU_G,
                  RESULTAT=RESU_G,
                  GROUP_MA='DALLE_G',
-                 OPTION=('DEGE_ELNO_DEPL','SIEF_ELNO_ELGA','VARI_ELNO_ELGA','ENEL_ELGA','ENEL_ELNO_ELGA',),);
+                 OPTION=('DEGE_ELNO','SIEF_ELNO','VARI_ELNO_ELGA','ENEL_ELGA','ENEL_ELNO',),);
 
 TRAV_G=POST_ELEM(TRAV_EXT=_F(),
                  RESULTAT=RESU_G,);
@@ -481,7 +481,7 @@ ENEL_G3 = 815.1048;
 
 TEST_RESU(RESU=(_F(RESULTAT=RESU_G,
                    INST=ttel,
-                   NOM_CHAM='ENEL_ELNO_ELGA',
+                   NOM_CHAM='ENEL_ELNO',
                    NOM_CMP='TOTALE',
                    MAILLE='GM1',
                    NOEUD='N2',
@@ -490,7 +490,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU_G,
                    REFERENCE='AUTRE_ASTER',),
                 _F(RESULTAT=RESU_G,
                    INST=ttel,
-                   NOM_CHAM='ENEL_ELNO_ELGA',
+                   NOM_CHAM='ENEL_ELNO',
                    NOM_CMP='MEMBRANE',
                    MAILLE='GM1',
                    NOEUD='N2',
@@ -518,7 +518,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU_G,
                    REFERENCE='ANALYTIQUE',),
                 _F(RESULTAT=RESU_G,
                    INST=tten,
-                   NOM_CHAM='ENEL_ELNO_ELGA',
+                   NOM_CHAM='ENEL_ELNO',
                    NOM_CMP='TOTALE',
                    MAILLE='GM1',
                    NOEUD='N2',

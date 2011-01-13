@@ -1,9 +1,9 @@
-# MODIF  DATE 30/08/2010   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
 # TITRE CYLINDRE SOUMIS A CHOC THERMIQUE ET CHARGEMENT MECANIQUE
 # ssnv301b.para = tps_job 90 mem_job 64Mo ncpus 1 liste_test V
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -503,7 +503,7 @@ CALCNL=STAT_NON_LINE(
 
 CALCNL=CALC_ELEM( reuse=CALCNL,
                             OPTION=(
-                  'SIEF_ELNO_ELGA',  'VARI_ELNO_ELGA',),
+                  'SIEF_ELNO',  'VARI_ELNO_ELGA',),
                           RESULTAT=CALCNL,
 
 
@@ -515,7 +515,7 @@ CALCNL=CALC_NO( reuse=CALCNL,   RESULTAT=CALCNL,
 
 TEST_RESU(RESU=(
           _F(  RESULTAT = CALCNL,
-            NOM_CHAM = 'SIEF_ELNO_ELGA',
+            NOM_CHAM = 'SIEF_ELNO',
             NUME_ORDRE = 3,
             MAILLE = 'MA000090',
             NOEUD = 'NO000222',
@@ -525,7 +525,7 @@ TEST_RESU(RESU=(
             VALE = 1.20472E8),
 
           _F(  RESULTAT = CALCNL,
-            NOM_CHAM = 'SIEF_ELNO_ELGA',
+            NOM_CHAM = 'SIEF_ELNO',
             NUME_ORDRE = 3,
             MAILLE = 'MA000101',
             NOEUD = 'NO000164',
@@ -535,7 +535,7 @@ TEST_RESU(RESU=(
             VALE = 1.65934E8),
 
           _F(  RESULTAT = CALCNL,
-            NOM_CHAM = 'SIEF_ELNO_ELGA',
+            NOM_CHAM = 'SIEF_ELNO',
             NUME_ORDRE = 4,
             MAILLE = 'MA000090',
             NOEUD = 'NO000222',
@@ -545,7 +545,7 @@ TEST_RESU(RESU=(
             VALE = 1.39164E8),
 
           _F(  RESULTAT = CALCNL,
-            NOM_CHAM = 'SIEF_ELNO_ELGA',
+            NOM_CHAM = 'SIEF_ELNO',
             NUME_ORDRE = 4,
             MAILLE = 'MA000101',
             NOEUD = 'NO000164',
@@ -555,7 +555,7 @@ TEST_RESU(RESU=(
             VALE = 1.64031E8),
 
           _F(  RESULTAT = CALCNL,
-            NOM_CHAM = 'SIEF_ELNO_ELGA',
+            NOM_CHAM = 'SIEF_ELNO',
             NUME_ORDRE = 5,
             MAILLE = 'MA000090',
             NOEUD = 'NO000222',
@@ -565,7 +565,7 @@ TEST_RESU(RESU=(
             VALE = 1.28421E8),
 
           _F(  RESULTAT = CALCNL,
-            NOM_CHAM = 'SIEF_ELNO_ELGA',
+            NOM_CHAM = 'SIEF_ELNO',
             NUME_ORDRE = 5,
             MAILLE = 'MA000101',
             NOEUD = 'NO000164',

@@ -1,9 +1,9 @@
-# MODIF  DATE 13/09/2010   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
 # TITRE BIBLIO_49 FISSURE RADIALE EXTERNE SOUMIS A UN CHOC THERMIQUE
 # hpla310a.para = tps_job 220 mem_job 300Mo ncpus 1 liste_test V
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 #              SEE THE FILE "LICENSE.TERMS" FOR INFORMATION ON USAGE AND
 #              REDISTRIBUTION OF THIS FILE.
 # ======================================================================
@@ -269,7 +269,7 @@ CHDEP1A=MECA_STATIQUE(        MODELE=MO,
 CALC_ELEM( reuse= CHDEP1A ,RESULTAT= CHDEP1A ,
 
 
-                                  OPTION=( 'EPSI_ELGA_DEPL',
+                                  OPTION=( 'EPSI_ELGA',
                                            'SIGM_ELNO_DEPL',
                                            'EQUI_ELNO_SIGM',
                                          )
@@ -336,7 +336,7 @@ SOLVEUR=_F(SYME='OUI',),
 
 CALC_ELEM( reuse=CHDEP1B,
                             OPTION=(
-                  'SIEF_ELNO_ELGA',  'VARI_ELNO_ELGA',),
+                  'SIEF_ELNO',  'VARI_ELNO_ELGA',),
                           RESULTAT=CHDEP1B,
 
                         CHAM_MATER=CHMTB1
@@ -440,7 +440,7 @@ CHDEP2A=MECA_STATIQUE(         MODELE=MO,
 CALC_ELEM( reuse= CHDEP2A ,RESULTAT= CHDEP2A ,
 
 
-                                   OPTION=( 'EPSI_ELGA_DEPL',
+                                   OPTION=( 'EPSI_ELGA',
                                             'SIGM_ELNO_DEPL',
                                             'EQUI_ELNO_SIGM',
                                           )
@@ -500,7 +500,7 @@ SOLVEUR=_F(SYME='OUI',),
 
 CALC_ELEM( reuse=CHDEP2B,
                             OPTION=(
-                  'SIEF_ELNO_ELGA',  'VARI_ELNO_ELGA',),
+                  'SIEF_ELNO',  'VARI_ELNO_ELGA',),
                           RESULTAT=CHDEP2B,
 
                         CHAM_MATER=CHMTB2
@@ -604,7 +604,7 @@ CHDEP3A=MECA_STATIQUE(         MODELE=MO,
 CALC_ELEM( reuse= CHDEP3A ,RESULTAT= CHDEP3A ,
 
 
-                                   OPTION=( 'EPSI_ELGA_DEPL',
+                                   OPTION=( 'EPSI_ELGA',
                                             'SIGM_ELNO_DEPL',
                                             'EQUI_ELNO_SIGM',
                                           )
@@ -664,7 +664,7 @@ SOLVEUR=_F(SYME='OUI',),
 
 CALC_ELEM( reuse=CHDEP3B,
                             OPTION=(
-                  'SIEF_ELNO_ELGA',  'VARI_ELNO_ELGA',),
+                  'SIEF_ELNO',  'VARI_ELNO_ELGA',),
                           RESULTAT=CHDEP3B,
 
                         CHAM_MATER=CHMTB3

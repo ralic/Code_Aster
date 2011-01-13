@@ -1,10 +1,10 @@
-# MODIF  DATE 20/03/2008   AUTEUR MAHFOUZ D.MAHFOUZ 
+# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
 # RESPONSABLE ROMEO R.FERNANDES
 # ======================================================================
 # TITRE ETUDE : ESSAI BIAXIAL DRAINE (MODELISATION D_PLAN)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -120,13 +120,13 @@ U2       = STAT_NON_LINE(
                         )
        
 U2       = CALC_ELEM( reuse      = U2,
-                      OPTION     = ('SIEF_ELNO_ELGA','VARI_ELNO_ELGA'),
+                      OPTION     = ('SIEF_ELNO','VARI_ELNO_ELGA'),
                       RESULTAT   = U2,
                     );
 
 U2       = CALC_NO( reuse    = U2,     
                     RESULTAT = U2,
-                    OPTION   = ( 'SIEF_NOEU_ELGA', 'VARI_NOEU_ELGA')
+                    OPTION   = ( 'SIEF_NOEU', 'VARI_NOEU_ELGA')
                   )
 
 TEST_RESU( RESU = (
@@ -137,7 +137,7 @@ TEST_RESU( RESU = (
                       REFERENCE  = 'NON_REGRESSION',
                       VERSION    = '7.2.6',
                       NOEUD      = 'N4',
-                      NOM_CHAM   = 'SIEF_NOEU_ELGA',
+                      NOM_CHAM   = 'SIEF_NOEU',
                       NOM_CMP    = 'SIXX',
                       INST       = 2.0,
                       PRECISION  = 1.E-3,
@@ -149,7 +149,7 @@ TEST_RESU( RESU = (
                       REFERENCE  = 'NON_REGRESSION',
                       VERSION    = '7.2.6',
                       NOEUD      = 'N4',
-                      NOM_CHAM   = 'SIEF_NOEU_ELGA',
+                      NOM_CHAM   = 'SIEF_NOEU',
                       NOM_CMP    = 'SIYY',
                       INST       = 1.07000,
                       PRECISION  = 1.E-3,
@@ -158,7 +158,7 @@ TEST_RESU( RESU = (
                       REFERENCE  = 'NON_REGRESSION',
                       VERSION    = '7.2.6',
                       NOEUD      = 'N4',
-                      NOM_CHAM   = 'SIEF_NOEU_ELGA',
+                      NOM_CHAM   = 'SIEF_NOEU',
                       NOM_CMP    = 'SIYY',
                       INST       = 1.1600,
                       PRECISION  = 1.E-3,
@@ -167,7 +167,7 @@ TEST_RESU( RESU = (
                       REFERENCE  = 'NON_REGRESSION',
                       VERSION    = '7.2.6',
                       NOEUD      = 'N4',
-                      NOM_CHAM   = 'SIEF_NOEU_ELGA',
+                      NOM_CHAM   = 'SIEF_NOEU',
                       NOM_CMP    = 'SIYY',
                       INST       = 1.3400,
                       PRECISION  = 1.E-3,
@@ -176,7 +176,7 @@ TEST_RESU( RESU = (
                       REFERENCE  = 'NON_REGRESSION',
                       VERSION    = '7.2.6',
                       NOEUD      = 'N4',
-                      NOM_CHAM   = 'SIEF_NOEU_ELGA',
+                      NOM_CHAM   = 'SIEF_NOEU',
                       NOM_CMP    = 'SIYY',
                       INST       = 1.5300,
                       PRECISION  = 1.E-3,
@@ -265,7 +265,7 @@ TEST_RESU( RESU = (
 #SIGMA  = POST_RELEVE_T( ACTION = _F( INTITULE  = 'SIGMA',
 #           RESULTAT  =  U2,
 #           NOEUD  = 'N4',
-#           NOM_CHAM  = 'SIEF_ELNO_ELGA',
+#           NOM_CHAM  = 'SIEF_ELNO',
 #           TOUT_CMP  = 'OUI',
 #           OPERATION = 'EXTRACTION',),);
 #

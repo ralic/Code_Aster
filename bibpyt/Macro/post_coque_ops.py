@@ -1,8 +1,8 @@
-#@ MODIF post_coque_ops Macro  DATE 11/10/2010   AUTEUR DESROCHES X.DESROCHES 
+#@ MODIF post_coque_ops Macro  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -60,9 +60,9 @@ def post_coque_ops(self,RESULTAT,COOR_POINT,CHAM,NUME_ORDRE,INST,
       if not INST in dico2['INST'] :
           UTMESS('F','POST0_20',valr=INST)
     else :
-      if not NUME_ORDRE in dico['SIEF_ELNO_ELGA'] :
+      if not NUME_ORDRE in dico['SIEF_ELNO'] :
         if NUME_ORDRE in dico['DEPL'] :        
-          CALC_ELEM(RESULTAT=RESULTAT,reuse=RESULTAT,OPTION='SIEF_ELNO_ELGA',
+          CALC_ELEM(RESULTAT=RESULTAT,reuse=RESULTAT,OPTION='SIEF_ELNO',
                     NUME_ORDRE=NUME_ORDRE)
         else :
           UTMESS('F','POST0_19',vali=NUME_ORDRE)
@@ -100,7 +100,7 @@ def post_coque_ops(self,RESULTAT,COOR_POINT,CHAM,NUME_ORDRE,INST,
                                                                      
     # Appel MACR_LIGN_COUPE :
     motscles={}
-    if   CHAM=='EFFORT'      : motscles['NOM_CHAM']   ='SIEF_ELNO_ELGA'
+    if   CHAM=='EFFORT'      : motscles['NOM_CHAM']   ='SIEF_ELNO'
     if   CHAM=='DEFORMATION' : motscles['NOM_CHAM']   ='EPSI_ELNO_DEPL'
 
     if CHAM=='EFFORT' :

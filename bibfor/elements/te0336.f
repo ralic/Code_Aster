@@ -1,9 +1,9 @@
       SUBROUTINE TE0336 ( OPTION , NOMTE )
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 14/12/2010   AUTEUR PROIX J-M.PROIX 
+C MODIF ELEMENTS  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
@@ -24,13 +24,13 @@ C     BUT:       POUR LES ELEMENTS ISOPARAMETRIQUES 2D , CALCUL DES
 C                GRANDEURS EQUIVALENTES SUIVANTES
 C                AUX POINTS DE GAUSS :
 C                    POUR LES CONTRAINTES  A PARTIR DE SIEF_ELGA
-C                                                   OU SIEF_ELGA_DEPL
-C                    POUR LES DEFORMATIONS A PARTIR DE EPSI_ELGA_DEPL
-C                                                   OU EPME_ELGA_DEPL
+C                                                   OU SIEF_ELGA
+C                    POUR LES DEFORMATIONS A PARTIR DE EPSI_ELGA
+C                                                   OU EPME_ELGA
 C                    (POUR LES DEFORMATIONS HORS THERMIQUES)
 C                AUX NOEUDS :
 C                    POUR LES DEFORMATIONS A PARTIR DE EPSI_ELNO_DEPL
-C                                                   OU EPME_ELNO_DEPL
+C                                                   OU EPME_ELNO
 C                    (POUR LES DEFORMATIONS HORS THERMIQUES)
 C                DANS CET ORDRE :
 C

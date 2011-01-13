@@ -1,9 +1,9 @@
-# MODIF  DATE 09/11/2010   AUTEUR GNICOLAS G.NICOLAS 
+# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
 # TITRE COUPLAGE ASTER_HOMARD - CAS BIDIMENSIONNEL
 # zzzz121a.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -142,7 +142,7 @@ for k in range(1,10):
    RESU[k]=CALC_ELEM(       reuse=RESU[k],
                             RESULTAT=RESU[k],
                             OPTION=( 'SIGM_ELNO_DEPL',
-                                     'ERZ1_ELEM_SIGM', )
+                                     'ERZ1_ELEM', )
                     )
 #
 # 4.8. IMPRESSIONS POUR CREER LA BASE DU CAS-TEST HOMARD med_2d_carre_d1 A L'ITERATION K
@@ -150,7 +150,7 @@ for k in range(1,10):
 ###   nomfic="MED_%d" %k
 ###   DEFI_FICHIER (UNITE=40+k,FICHIER='nomfic');
 ###   IMPR_RESU ( UNITE=40+k, FORMAT='MED', RESU=_F(
-###               RESULTAT=RESU[k], NOM_CHAM='ERZ1_ELEM_SIGM', NOM_CMP='ERREST'  ) ) ;
+###               RESULTAT=RESU[k], NOM_CHAM='ERZ1_ELEM', NOM_CMP='ERREST'  ) ) ;
 #
 # 4.9. Extraction du deplacement au noeud "OPPOSE" dans une table
 #
@@ -205,7 +205,7 @@ for k in range(1,10):
               MAILLAGE_N = M[k],
               MAILLAGE_NP1 = M[k+1],
               RESULTAT_N = RESU[k],
-              NOM_CHAM = 'ERZ1_ELEM_SIGM',
+              NOM_CHAM = 'ERZ1_ELEM',
               NOM_CMP='ERREST',
               CRIT_RAFF_PE = 0.10,
               NIVE_MAX = 5,

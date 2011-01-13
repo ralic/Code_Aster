@@ -1,10 +1,10 @@
 
-# MODIF  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
+# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
 # TITRE ESSAI DE FLUAGE PROPRE (MODELE GRANGER_FP_INDT : INDEPDT TEMPER.1D)
 # ssnv142c.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -180,11 +180,11 @@ U=STAT_NON_LINE(MODELE=MO,
 
 U=CALC_ELEM(reuse =U,
             RESULTAT=U,
-            OPTION='SIEF_ELNO_ELGA',);
+            OPTION='SIEF_ELNO',);
 
 U=CALC_NO(reuse =U,
           RESULTAT=U,
-          OPTION='SIEF_NOEU_ELGA',);
+          OPTION='SIEF_NOEU',);
 # S=0.02
 
 TEST_RESU(RESU=(_F(RESULTAT=U,
@@ -196,7 +196,7 @@ TEST_RESU(RESU=(_F(RESULTAT=U,
                    REFERENCE='ANALYTIQUE',),
                 _F(RESULTAT=U,
                    NUME_ORDRE=74,
-                   NOM_CHAM='SIEF_NOEU_ELGA',
+                   NOM_CHAM='SIEF_NOEU',
                    NOM_CMP='N',
                    GROUP_NO='B',
                    VALE=-0.4,

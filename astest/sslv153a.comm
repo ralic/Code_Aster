@@ -1,9 +1,9 @@
-# MODIF  DATE 07/12/2010   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
 # RESPONSABLE GNICOLAS G.NICOLAS
 # TITRE INDICATEUR D'ERREUR MAILLES VOLUMIQUES ET FONCTIONS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -146,12 +146,12 @@ SOLUPR=MECA_STATIQUE(MODELE=MODE,
 SOLUPR=CALC_ELEM(reuse =SOLUPR,
                  RESULTAT=SOLUPR,
                  TYPE_OPTION='SIGM_MASSIF',
-                 OPTION='SIEF_ELNO_ELGA',);
+                 OPTION='SIEF_ELNO',);
 ##IMPR_RESU(
 ##FORMAT='RESULTAT',
 ##
 ##RESU=_F(RESULTAT=SOLUPR,
-##NOM_CHAM='SIEF_ELNO_ELGA',),
+##NOM_CHAM='SIEF_ELNO',),
 ##);
 
 
@@ -216,7 +216,7 @@ SOLUDU=MECA_STATIQUE(MODELE=MODE,
 SOLUDU=CALC_ELEM(reuse =SOLUDU,
                  RESULTAT=SOLUDU,
                  TYPE_OPTION='SIGM_MASSIF',
-                 OPTION='SIEF_ELNO_ELGA',);
+                 OPTION='SIEF_ELNO',);
 
 SOLUDU=CALC_ELEM(reuse =SOLUDU,
                  RESULTAT=SOLUDU,
@@ -244,17 +244,17 @@ SOLUDU=CALC_NO(reuse =SOLUDU,
 
 SOLUPR=CALC_ELEM(reuse =SOLUPR,
                  RESULTAT=SOLUPR,
-                 OPTION=('QIRE_ELEM_SIGM','QIRE_ELNO_ELEM',),
+                 OPTION=('QIRE_ELEM','QIRE_ELNO',),
                  RESU_DUAL=SOLUDU,);
 
 SOLUPR=CALC_NO(reuse =SOLUPR,
                RESULTAT=SOLUPR,
-               OPTION='QIRE_NOEU_ELEM',);
+               OPTION='QIRE_NOEU',);
 ##IMPR_RESU(
 ##FORMAT='RESULTAT',
 ##
 ##RESU=_F(RESULTAT=SOLUPR,
-##NOM_CHAM=('QIRE_ELEM_SIGM','QIRE_ELNO_ELEM','QIRE_NOEU_ELEM',),
+##NOM_CHAM=('QIRE_ELEM','QIRE_ELNO','QIRE_NOEU',),
 ##NOM_CMP='ERREST',),
 ##);
 
@@ -293,7 +293,7 @@ TEST_RESU(RESU=(_F(RESULTAT=SOLUPR,
                    VERSION='9.05.02',),
                 _F(RESULTAT=SOLUPR,
                    NUME_ORDRE=1,
-                   NOM_CHAM='QIRE_NOEU_ELEM',
+                   NOM_CHAM='QIRE_NOEU',
                    NOM_CMP='ERREST',
                    GROUP_NO='MESURE',
                    VALE=-4623.29451753,
@@ -377,7 +377,7 @@ SOLUPR=MECA_STATIQUE(MODELE=MODE,
 SOLUPR=CALC_ELEM(reuse =SOLUPR,
                  RESULTAT=SOLUPR,
                  TYPE_OPTION='SIGM_MASSIF',
-                 OPTION='SIEF_ELNO_ELGA',);
+                 OPTION='SIEF_ELNO',);
 
 SOLUPR=CALC_ELEM(reuse =SOLUPR,
                  RESULTAT=SOLUPR,
@@ -425,7 +425,7 @@ SOLUDU=MECA_STATIQUE(MODELE=MODE,
 SOLUDU=CALC_ELEM(reuse =SOLUDU,
                  RESULTAT=SOLUDU,
                  TYPE_OPTION='SIGM_MASSIF',
-                 OPTION='SIEF_ELNO_ELGA',);
+                 OPTION='SIEF_ELNO',);
 
 SOLUDU=CALC_ELEM(reuse =SOLUDU,
                  RESULTAT=SOLUDU,
@@ -442,12 +442,12 @@ SOLUDU=CALC_NO(reuse =SOLUDU,
 
 SOLUPR=CALC_ELEM(reuse =SOLUPR,
                  RESULTAT=SOLUPR,
-                 OPTION=('QIRE_ELEM_SIGM','QIRE_ELNO_ELEM',),
+                 OPTION=('QIRE_ELEM','QIRE_ELNO',),
                  RESU_DUAL=SOLUDU,);
 
 SOLUPR=CALC_NO(reuse =SOLUPR,
                RESULTAT=SOLUPR,
-               OPTION='QIRE_NOEU_ELEM',);
+               OPTION='QIRE_NOEU',);
 
 # C.4. Test de non regression
 
@@ -483,7 +483,7 @@ TEST_RESU(RESU=(_F(RESULTAT=SOLUPR,
                    VERSION='9.05.02',),
                 _F(RESULTAT=SOLUPR,
                    NUME_ORDRE=1,
-                   NOM_CHAM='QIRE_NOEU_ELEM',
+                   NOM_CHAM='QIRE_NOEU',
                    NOM_CMP='ERREST',
                    GROUP_NO='MESURE',
                    VALE=-4623.29451753,

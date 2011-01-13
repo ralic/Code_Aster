@@ -1,9 +1,9 @@
-# MODIF  DATE 05/10/2010   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
 # TITRE PLAQUE  MINCE ENCASTREE SOUMISE A UN GRADIENT THERMIQUE
 # hsls01b.para = tps_job 60 mem_job 160Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 #              SEE THE FILE "LICENSE.TERMS" FOR INFORMATION ON USAGE AND
 #              REDISTRIBUTION OF THIS FILE.
 # ======================================================================
@@ -116,7 +116,7 @@ MESTA2=STAT_NON_LINE(     MODELE=MOD,
                    )
 
 MESTA2=CALC_ELEM( reuse=MESTA2, RESULTAT=MESTA2,
-                  OPTION=('SIEF_ELNO_ELGA','SIGM_ELNO_COQU')
+                  OPTION=('SIEF_ELNO','SIGM_ELNO_COQU')
                 )
 
 DEP1=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
@@ -131,14 +131,14 @@ MESTAT=CREA_RESU(  OPERATION='AFFE', TYPE_RESU='EVOL_ELAS',  NOM_CHAM='DEPL',
                             MODELE=MOD, CHAM_MATER=CHMAT, CARA_ELEM=CARA2, ),
                  )
 MESTAT=CREA_RESU(  reuse=MESTAT,
-                   OPERATION='AFFE', TYPE_RESU='EVOL_ELAS',  NOM_CHAM='SIEF_ELGA_DEPL',
+                   OPERATION='AFFE', TYPE_RESU='EVOL_ELAS',  NOM_CHAM='SIEF_ELGA',
                    AFFE=_F( INST = 1.,  CHAM_GD = SIE1,
                             MODELE=MOD, CHAM_MATER=CHMAT, CARA_ELEM=CARA2, ),
                  )
 
 MESTAT=CALC_ELEM( reuse=MESTAT, RESULTAT=MESTAT,
 
-                  OPTION=('SIGM_ELNO_DEPL','EFGE_ELNO_DEPL','SIEF_ELNO_ELGA'),
+                  OPTION=('SIGM_ELNO_DEPL','EFGE_ELNO_DEPL','SIEF_ELNO'),
                 )
 
 # ------------------------------------------------------------------
@@ -155,13 +155,13 @@ TEST_RESU(RESU=(
              ),)
 
 TEST_RESU(RESU=(
-          _F(  RESULTAT = MESTA2,  NOM_CHAM = 'SIEF_ELNO_ELGA',  NUME_ORDRE = 1,   TYPE_TEST='MAX',
+          _F(  RESULTAT = MESTA2,  NOM_CHAM = 'SIEF_ELNO',  NUME_ORDRE = 1,   TYPE_TEST='MAX',
                   NOM_CMP = 'MXX',         VALE = MOM1, REFERENCE='ANALYTIQUE'),
-          _F(  RESULTAT = MESTA2,  NOM_CHAM = 'SIEF_ELNO_ELGA',  NUME_ORDRE = 1,   TYPE_TEST='MAX',
+          _F(  RESULTAT = MESTA2,  NOM_CHAM = 'SIEF_ELNO',  NUME_ORDRE = 1,   TYPE_TEST='MAX',
                   NOM_CMP = 'MYY',         VALE = MOM1, REFERENCE='ANALYTIQUE'),
-          _F(  RESULTAT = MESTA2,  NOM_CHAM = 'SIEF_ELNO_ELGA',  NUME_ORDRE = 1,   TYPE_TEST='MIN',
+          _F(  RESULTAT = MESTA2,  NOM_CHAM = 'SIEF_ELNO',  NUME_ORDRE = 1,   TYPE_TEST='MIN',
                   NOM_CMP = 'MXX',         VALE = MOM1, REFERENCE='ANALYTIQUE'),
-          _F(  RESULTAT = MESTA2,  NOM_CHAM = 'SIEF_ELNO_ELGA',  NUME_ORDRE = 1,   TYPE_TEST='MIN',
+          _F(  RESULTAT = MESTA2,  NOM_CHAM = 'SIEF_ELNO',  NUME_ORDRE = 1,   TYPE_TEST='MIN',
                   NOM_CMP = 'MYY',         VALE = MOM1, REFERENCE='ANALYTIQUE'),
           ),)
 

@@ -1,9 +1,9 @@
-# MODIF  DATE 09/11/2009   AUTEUR MEUNIER S.MEUNIER 
+# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
 # TITRE PLAQUE FISSUREE 2D EN MODE 1 - METHODE ARLEQUIN
 # sslp108c.para = tps_job 200 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -100,11 +100,11 @@ RESU=STAT_NON_LINE(MODELE=MODARL,
 
 RESU=CALC_ELEM(reuse =RESU,
                RESULTAT=RESU,
-               OPTION=('EQUI_ELNO_SIGM','SIEF_ELNO_ELGA','EPSP_ELNO','VARI_ELNO_ELGA',),);
+               OPTION=('EQUI_ELNO_SIGM','SIEF_ELNO','EPSP_ELNO','VARI_ELNO_ELGA',),);
 
 RESU=CALC_NO(reuse =RESU,
              RESULTAT=RESU,
-             OPTION=('EQUI_NOEU_SIGM','SIEF_NOEU_ELGA','EPSP_NOEU','VARI_NOEU_ELGA',),);
+             OPTION=('EQUI_NOEU_SIGM','SIEF_NOEU','EPSP_NOEU','VARI_NOEU_ELGA',),);
 
 LIGAM=INTE_MAIL_2D(MAILLAGE=MAIL,
                    DEFI_CHEMIN=_F(GROUP_MA='LPOP11',),);
@@ -115,7 +115,7 @@ BHAUT=INTE_MAIL_2D(MAILLAGE=MAIL,
 SIYY_LIG=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                  INTITULE='SIYY_LIG',
                                  RESULTAT=RESU,
-                                 NOM_CHAM='SIEF_NOEU_ELGA',
+                                 NOM_CHAM='SIEF_NOEU',
                                  INST=10.0,
                                  CHEMIN=LIGAM,
                                  NOM_CMP='SIYY',

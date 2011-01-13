@@ -1,8 +1,8 @@
-# MODIF  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
 # TITRE  :  MODELISATION D UNE COQUE DOUBLEMENT SINUSOIDALE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -104,11 +104,11 @@ SNL1=STAT_NON_LINE(MODELE=MODELE,
 
 SNL1=CALC_ELEM(reuse =SNL1,
                RESULTAT=SNL1,
-               OPTION='SIEF_ELNO_ELGA',);
+               OPTION='SIEF_ELNO',);
 
 SNL1=CALC_NO(reuse =SNL1,
              RESULTAT=SNL1,
-             OPTION=('FORC_NODA','SIEF_NOEU_ELGA'),
+             OPTION=('FORC_NODA','SIEF_NOEU'),
              );
 
 SNL3=STAT_NON_LINE(MODELE=MODELE,
@@ -122,11 +122,11 @@ SNL3=STAT_NON_LINE(MODELE=MODELE,
 
 SNL3=CALC_ELEM(reuse =SNL3,
                RESULTAT=SNL3,
-               OPTION='SIEF_ELNO_ELGA',);
+               OPTION='SIEF_ELNO',);
 
 SNL3=CALC_NO(reuse =SNL3,
              RESULTAT=SNL3,
-             OPTION=('FORC_NODA','SIEF_NOEU_ELGA'),
+             OPTION=('FORC_NODA','SIEF_NOEU'),
              );
 
 PSNL1=POST_RELEVE_T(ACTION=(_F(INTITULE='PSNL1_GAUCHE',
@@ -215,7 +215,7 @@ TEST_TABLE(       TABLE=PSNL1,
 
 TEST_RESU(RESU=(_F(RESULTAT=SNL1,
                    NUME_ORDRE=1,
-                   NOM_CHAM='SIEF_NOEU_ELGA',
+                   NOM_CHAM='SIEF_NOEU',
                    NOM_CMP='NXX',
                    GROUP_NO='A',
                    VALE=2.50331639552E+01,
@@ -227,7 +227,7 @@ TEST_RESU(RESU=(_F(RESULTAT=SNL1,
 
 TEST_RESU(RESU=(_F(RESULTAT=SNL1,
                    NUME_ORDRE=1,
-                   NOM_CHAM='SIEF_NOEU_ELGA',
+                   NOM_CHAM='SIEF_NOEU',
                    NOM_CMP='NXX',
                    GROUP_NO='D',
                    VALE=2.50228554928E+01,
@@ -290,7 +290,7 @@ TEST_TABLE(       TABLE=PSNL3,
 TEST_RESU(RESU=(_F(RESULTAT=SNL3,
                   NUME_ORDRE=1,
                   NOM_CMP='NXX',
-                  NOM_CHAM='SIEF_NOEU_ELGA',
+                  NOM_CHAM='SIEF_NOEU',
                   GROUP_NO='A',
                   CRITERE='RELATIF',
                   PRECISION=0.09,
@@ -299,7 +299,7 @@ TEST_RESU(RESU=(_F(RESULTAT=SNL3,
                   _F(RESULTAT=SNL3,
                   NUME_ORDRE=1,
                   NOM_CMP='NXX',
-                  NOM_CHAM='SIEF_NOEU_ELGA',
+                  NOM_CHAM='SIEF_NOEU',
                   GROUP_NO='D',
                   CRITERE='RELATIF',
                   PRECISION=0.10,
@@ -318,11 +318,11 @@ RESU1=MECA_STATIQUE(MODELE=MODELE,
 
 RESU1=CALC_ELEM(reuse =RESU1,
                 RESULTAT=RESU1,
-                OPTION=('EFGE_ELNO_DEPL','SIEF_ELNO_ELGA',),);
+                OPTION=('EFGE_ELNO_DEPL','SIEF_ELNO',),);
 
 RESU1=CALC_NO(reuse =RESU1,
               RESULTAT=RESU1,
-              OPTION=('FORC_NODA','SIEF_NOEU_ELGA',),
+              OPTION=('FORC_NODA','SIEF_NOEU',),
               );
 
 RESU3=MECA_STATIQUE(MODELE=MODELE,
@@ -333,11 +333,11 @@ RESU3=MECA_STATIQUE(MODELE=MODELE,
 
 RESU3=CALC_ELEM(reuse =RESU3,
                 RESULTAT=RESU3,
-                OPTION='SIEF_ELNO_ELGA',);
+                OPTION='SIEF_ELNO',);
 
 RESU3=CALC_NO(reuse =RESU3,
               RESULTAT=RESU3,
-              OPTION=('FORC_NODA','SIEF_NOEU_ELGA',),
+              OPTION=('FORC_NODA','SIEF_NOEU',),
               );
 
 PSL1=POST_RELEVE_T(ACTION=(_F(INTITULE='PSL1_GAUCHE',
@@ -428,7 +428,7 @@ TEST_TABLE(       TABLE=PSL1,
 
 TEST_RESU(RESU=(_F(RESULTAT=RESU1,
                    NUME_ORDRE=1,
-                   NOM_CHAM='SIEF_NOEU_ELGA',
+                   NOM_CHAM='SIEF_NOEU',
                    NOM_CMP='NXX',
                    GROUP_NO='A',
                    VALE=2.50331639552E+01,
@@ -440,7 +440,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU1,
 
 TEST_RESU(RESU=(_F(RESULTAT=RESU1,
                    NUME_ORDRE=1,
-                   NOM_CHAM='SIEF_NOEU_ELGA',
+                   NOM_CHAM='SIEF_NOEU',
                    NOM_CMP='NXX',
                    GROUP_NO='D',
                    VALE=2.50228554928E+01,
@@ -503,7 +503,7 @@ TEST_TABLE(       TABLE=PSL3,
 TEST_RESU(RESU=(_F(RESULTAT=RESU3,
                   NUME_ORDRE=1,
                   NOM_CMP='NXX',
-                  NOM_CHAM='SIEF_NOEU_ELGA',
+                  NOM_CHAM='SIEF_NOEU',
                   GROUP_NO='A',
                   CRITERE='RELATIF',
                   PRECISION=0.09,
@@ -512,7 +512,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU3,
                   _F(RESULTAT=RESU3,
                   NUME_ORDRE=1,
                   NOM_CMP='NXX',
-                  NOM_CHAM='SIEF_NOEU_ELGA',
+                  NOM_CHAM='SIEF_NOEU',
                   GROUP_NO='D',
                   CRITERE='RELATIF',
                   PRECISION=0.10,

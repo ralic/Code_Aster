@@ -1,21 +1,21 @@
-#@ MODIF prepost4 Messages  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
+#@ MODIF prepost4 Messages  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # RESPONSABLE DELMAS J.DELMAS
 
@@ -108,7 +108,7 @@ cata_msg = {
 """),
 
 28 : _("""
- les champs de contraintes aux points de gauss sigm_noeu_depl ou sief_noeu_elga sief_noeu_elga n'ont pas ete calcules.
+ les champs de contraintes aux points de gauss sigm_noeu_depl ou SIEF_NOEU sief_noeu_elga n'ont pas été calculés.
 """),
 
 29 : _("""
@@ -124,11 +124,11 @@ cata_msg = {
 """),
 
 32 : _("""
- le champ de contraintes aux points de gauss sief_elga ou sief_elga_depl n'a pas ete calcule.
+ le champ de contraintes aux points de gauss  SIEF_ELGA n'a pas été calcule.
 """),
 
 33 : _("""
- le champ de deformations aux points de gauss epsi_elga_depl n'a pas ete calcule.
+ le champ de deformations aux points de gauss EPSI_ELGA n'a pas ete calcule.
 """),
 
 34 : _("""
@@ -140,7 +140,7 @@ cata_msg = {
 """),
 
 36 : _("""
- les champs de contraintes aux noeuds sigm_noeu_depl ou sief_noeu_elga n'ont pas ete calcules.
+ les champs de contraintes aux noeuds SIGM_NOEU_DEPL ou SIEF_NOEU n'ont pas été calculés.
 """),
 
 37 : _("""
@@ -148,11 +148,11 @@ cata_msg = {
 """),
 
 38 : _("""
- le champ de contraintes aux noeuds sief_noeu_elga n'a pas ete calcule.
+ le champ de contraintes aux noeuds SIEF_NOEU n'a pas été calcule.
 """),
 
 39 : _("""
- le champ de deformations aux noeuds epsi_noeu_depl n'a pas ete calcule.
+ le champ de deformations aux noeuds EPSI_NOEU n'a pas ete calcule.
 """),
 
 40 : _("""

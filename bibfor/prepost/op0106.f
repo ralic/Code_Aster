@@ -1,7 +1,7 @@
       SUBROUTINE OP0106()
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 10/01/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF PREPOST  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -266,6 +266,8 @@ C ------- MAILLES QUI PARTICIPENT A LA MOYENNE
 
    70   CONTINUE
         OPTIO2=OPTION(1:5)//'ELNO'//OPTION(10:16)
+        IF (OPTIO2.EQ.'EPSI_ELNO') OPTIO2='EPSI_ELNO_DEPL'
+
         CALL RSEXCH(RESUCO,OPTIO2,ZI(JORDR),CHELEM,IRET)
         IF (IRET.NE.0) THEN
           CALL CODENT(ZI(JORDR),'G',KIORD)
@@ -303,6 +305,7 @@ C  POUR THM ET TANT QUE LE NETTOYAGE N A PAS ETE FAIT
         IF (OPTION(6:9).EQ.'NOEU') THEN
 C       ================================================================
           OPTIO2=OPTION(1:5)//'ELNO'//OPTION(10:16)
+          IF (OPTIO2.EQ.'EPSI_ELNO') OPTIO2='EPSI_ELNO_DEPL'
           IF (OPTION(6:14).EQ.'NOEU_DEPL') THEN
             I=1
   120       CONTINUE
@@ -450,7 +453,7 @@ C       ================================================================
 
             CALL RSEXCH(RESUCO,'SIEF_ELGA',IORDR,SIGMA,IRET)
             IF (IRET.NE.0) THEN
-              CALL RSEXCH(RESUCO,'SIEF_ELGA_DEPL',IORDR,SIGMA,IRET2)
+              CALL RSEXCH(RESUCO,'SIEF_ELGA',IORDR,SIGMA,IRET2)
               IF (IRET2.NE.0) THEN
                 CALL CODENT(IORDR,'G',KIORD)
                 VALK(1)=KIORD

@@ -1,8 +1,8 @@
-#@ MODIF stanley_engine Stanley  DATE 14/12/2010   AUTEUR PELLET J.PELLET 
+#@ MODIF stanley_engine Stanley  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -1260,7 +1260,7 @@ class SELECTION:
   """
 
 
-#  NonDeveloppePG = "Fonctionnalite non developpee : seules les options 'SIEF_ELGA', 'VARI_ELGA', 'SIEF_ELGA_TEMP' et 'FLUX_ELGA_TEMP' peuvent etre visualisees aux points de Gauss."
+#  NonDeveloppePG = "Fonctionnalite non developpee : seules les options 'SIEF_ELGA', 'VARI_ELGA', 'SIEF_ELGA_TEMP' et 'FLUX_ELGA' peuvent etre visualisees aux points de Gauss."
   NonDeveloppeRS = "Fonctionnalite non developpee : seuls les resultats de type 'EVOL_ELAS', 'EVOL_THER', 'EVOL_NOLI', 'DYNA_TRANS', 'DYNA_HARMO', 'MODE_MECA' et 'EVOL_CHAR' sont geres."
 
   comb_tracables = {      # Combinaisons (type_champ, type_geom) tracables -> outil de trace

@@ -1,9 +1,9 @@
-# MODIF  DATE 14/12/2009   AUTEUR MEUNIER S.MEUNIER 
+# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
 # TITRE POUTRE CONSOLE 3D/PLAQUE
 # sslv152b.para = tps_job 320 mem_job 284Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -137,11 +137,11 @@ RESU=STAT_NON_LINE(MODELE=MOD,
 
 RESU=CALC_ELEM(reuse =RESU,
                RESULTAT=RESU,
-               OPTION='SIEF_ELNO_ELGA',);
+               OPTION='SIEF_ELNO',);
 
 RESU=CALC_NO(reuse =RESU,
              RESULTAT=RESU,
-             OPTION='SIEF_NOEU_ELGA',);
+             OPTION='SIEF_NOEU',);
 
 X = 9.5;
 
@@ -166,7 +166,7 @@ TEST_TABLE(TABLE=DPL_2D,
 SIXX_Z=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                INTITULE='SIXX',
                                RESULTAT=RESU,
-                               NOM_CHAM='SIEF_NOEU_ELGA',
+                               NOM_CHAM='SIEF_NOEU',
                                INST=3.,
                                GROUP_NO='GM_HBADR',
                                NOM_CMP='SIXX',),);

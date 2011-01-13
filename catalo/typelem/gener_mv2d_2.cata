@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 10/01/2011   AUTEUR DELMAS J.DELMAS 
+%& MODIF TYPELEM  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -176,17 +176,17 @@ OPTION__
                               OUT__  MVECTDR  PVECTUR
     COOR_ELGA           479   IN__   NGEOMER  PGEOMER
                               OUT__  EGGEOP_R PCOORPG
-    ECIN_ELEM_DEPL      -1    IN__   XXXXXX   XXXXXX
+    ECIN_ELEM      -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
     ENDO_ELNO           -1    IN__   XXXXXX   XXXXXX  OUT__  XXXXXX   XXXXXX
     ENER_ELAS           -1    IN__   XXXXXX   XXXXXX  OUT__  XXXXXX   XXXXXX
     ENER_TOTALE         -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
-    EPOT_ELEM_DEPL      -1    IN__   XXXXXX   XXXXXX
+    EPOT_ELEM      -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
-    EPSG_ELGA_DEPL      -1    IN__   XXXXXX   XXXXXX  OUT__  XXXXXX   XXXXXX
-    EPSG_ELNO_DEPL      -1    IN__   XXXXXX   XXXXXX  OUT__  XXXXXX   XXXXXX
-    EPSI_ELGA_DEPL      -1    IN__   XXXXXX   XXXXXX  OUT__  XXXXXX   XXXXXX
+    EPSG_ELGA      -1    IN__   XXXXXX   XXXXXX  OUT__  XXXXXX   XXXXXX
+    EPSG_ELNO      -1    IN__   XXXXXX   XXXXXX  OUT__  XXXXXX   XXXXXX
+    EPSI_ELGA      -1    IN__   XXXXXX   XXXXXX  OUT__  XXXXXX   XXXXXX
     EPSI_ELNO_DEPL      -1    IN__   XXXXXX   XXXXXX  OUT__  XXXXXX   XXXXXX
     EQUI_ELGA_EPSI      -1    IN__   XXXXXX   XXXXXX  OUT__  XXXXXX   XXXXXX
     EQUI_ELGA_SIGM      -1    IN__   XXXXXX   XXXXXX  OUT__  XXXXXX   XXXXXX
@@ -238,8 +238,8 @@ OPTION__
                                      DDL_MECA PDDEPLR  DDL_MECA PDEPL0R  DDL_MECA PDEPL1R  DDL_MECA PDEPLMR
                                      NGEOMER  PGEOMER  CMATERC  PMATERC  CTYPEPI  PTYPEPI  ZVARIPG  PVARIMR
                               OUT__  ECOPILO  PCOPILO
-    QIRE_ELEM_SIGM      -1    IN__   XXXXXX   XXXXXX  OUT__  XXXXXX   XXXXXX
-    QIRE_ELNO_ELEM      -1    IN__   XXXXXX   XXXXXX  OUT__  XXXXXX   XXXXXX
+    QIRE_ELEM      -1    IN__   XXXXXX   XXXXXX  OUT__  XXXXXX   XXXXXX
+    QIRE_ELNO      -1    IN__   XXXXXX   XXXXXX  OUT__  XXXXXX   XXXXXX
     RAPH_MECA           545   IN__   CCAMASS  PCAMASS  CCARCRI  PCARCRI  CCOMPOR  PCOMPOR  ECONTPG  PCONTMR
                                      DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  NGEOMER  PGEOMER  CTEMPSR  PINSTMR
                                      CTEMPSR  PINSTPR  CMATERC  PMATERC  ZVARCPG  PVARCMR  ZVARCPG  PVARCPR
@@ -261,11 +261,11 @@ OPTION__
                               OUT__  MMATUNS PMATUNS MMATUUR  PMATUUR
     SYME_MDNS_R         -1    IN__   XXXXXX   XXXXXX  OUT__  XXXXXX   XXXXXX
     SIEF_ELGA_ELNO      -1    IN__   XXXXXX   XXXXXX  OUT__  XXXXXX   XXXXXX
-    SIEF_ELNO_ELGA      98    IN__   ECONTPG  PCONTRR
+    SIEF_ELNO      98    IN__   ECONTPG  PCONTRR
                               OUT__  ECONTNO  PSIEFNOR
     SING_ELEM           99    IN__   NGEOMER  PGEOMER
                               OUT__  ESINGUL  PSING_R
-    SING_ELNO_ELEM      99    IN__   ESINGUL  PSING_R
+    SING_ELNO      99    IN__   ESINGUL  PSING_R
                               OUT__  ESINGNO  PSINGNO
     TOU_INI_ELGA        99    IN__   NGEOMER  PGEOMER
                               OUT__  EDOMGGA  PDOMMAG  EGGEOM_R PGEOM_R  EGINST_R PINST_R  EGNEUT_F PNEUT_F

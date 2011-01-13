@@ -1,9 +1,9 @@
-# MODIF  DATE 07/12/2010   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
 # RESPONSABLE F6BHHBO P.DEBONNIERES
 # TITRE CAVITE 2D CALCUL DE SENSIBILITE (LOI DE DRUCKER-PRAGER)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -203,10 +203,10 @@ RES=STAT_NON_LINE(MODELE=MODEMECA,
                   SENSIBILITE=tuple(PS),)
 
 RES=CALC_ELEM(reuse=RES,RESULTAT=RES,
-              OPTION=('SIEF_ELNO_ELGA','VARI_ELNO_ELGA'),)
+              OPTION=('SIEF_ELNO','VARI_ELNO_ELGA'),)
 
 CALC_SENSI(reuse=RES,RESULTAT=RES, SENSIBILITE=tuple(PS),
-              OPTION=('SIEF_ELNO_ELGA','VARI_ELNO_ELGA'),
+              OPTION=('SIEF_ELNO','VARI_ELNO_ELGA'),
              )
 
 # extraction des derivees a tester
@@ -230,7 +230,7 @@ TNSIXX = POST_RELEVE_T(ACTION=_F(INTITULE='SIXX',
                                  NOEUD='N48',
                                  MAILLE='M90',
                                  RESULTAT=RES,
-                                 NOM_CHAM='SIEF_ELNO_ELGA',
+                                 NOM_CHAM='SIEF_ELNO',
                                  NOM_CMP='SIXX',
                                  SENSIBILITE=tuple(PS),
                                  OPERATION='EXTRACTION',),)
@@ -239,7 +239,7 @@ TNSIYY = POST_RELEVE_T(ACTION=_F(INTITULE='SIYY',
                                  NOEUD='N48',
                                  MAILLE='M90',
                                  RESULTAT=RES,
-                                 NOM_CHAM='SIEF_ELNO_ELGA',
+                                 NOM_CHAM='SIEF_ELNO',
                                  NOM_CMP='SIYY',
                                  SENSIBILITE=tuple(PS),
                                  OPERATION='EXTRACTION',),)
@@ -248,7 +248,7 @@ TNSIXY = POST_RELEVE_T(ACTION=_F(INTITULE='SIXY',
                                  NOEUD='N48',
                                  MAILLE='M90',
                                  RESULTAT=RES,
-                                 NOM_CHAM='SIEF_ELNO_ELGA',
+                                 NOM_CHAM='SIEF_ELNO',
                                  NOM_CMP='SIXY',
                                  SENSIBILITE=tuple(PS),
                                  OPERATION='EXTRACTION',),)
@@ -257,7 +257,7 @@ TNSIZZ = POST_RELEVE_T(ACTION=_F(INTITULE='SIZZ',
                                  NOEUD='N48',
                                  MAILLE='M90',
                                  RESULTAT=RES,
-                                 NOM_CHAM='SIEF_ELNO_ELGA',
+                                 NOM_CHAM='SIEF_ELNO',
                                  NOM_CMP='SIZZ',
                                  SENSIBILITE=tuple(PS),
                                  OPERATION='EXTRACTION',),)
@@ -417,11 +417,11 @@ for i in range(n):
 
   RES2[i]=CALC_ELEM(reuse=RES2[i],
                     RESULTAT=RES2[i],
-                    OPTION=('SIEF_ELNO_ELGA','VARI_ELNO_ELGA'),)
+                    OPTION=('SIEF_ELNO','VARI_ELNO_ELGA'),)
 
   RES3[i]=CALC_ELEM(reuse=RES3[i],
                     RESULTAT=RES3[i],
-                    OPTION=('SIEF_ELNO_ELGA','VARI_ELNO_ELGA'),)
+                    OPTION=('SIEF_ELNO','VARI_ELNO_ELGA'),)
 
   # extraction des valeurs en P - epsilon et P + epsilon
   TDXM[i] = POST_RELEVE_T(ACTION=_F(INTITULE='DX',
@@ -454,14 +454,14 @@ for i in range(n):
                                    NOEUD='N48',
                                    MAILLE='M90',
                                    RESULTAT=RES3[i],
-                                   NOM_CHAM='SIEF_ELNO_ELGA',
+                                   NOM_CHAM='SIEF_ELNO',
                                    NOM_CMP='SIXX',
                                    OPERATION='EXTRACTION',),)
   TSIXXP[i] = POST_RELEVE_T(ACTION=_F(INTITULE='SIXX',
                                    NOEUD='N48',
                                    MAILLE='M90',
                                    RESULTAT=RES2[i],
-                                   NOM_CHAM='SIEF_ELNO_ELGA',
+                                   NOM_CHAM='SIEF_ELNO',
                                    NOM_CMP='SIXX',
                                    OPERATION='EXTRACTION',),)
 
@@ -469,14 +469,14 @@ for i in range(n):
                                    NOEUD='N48',
                                    MAILLE='M90',
                                    RESULTAT=RES3[i],
-                                   NOM_CHAM='SIEF_ELNO_ELGA',
+                                   NOM_CHAM='SIEF_ELNO',
                                    NOM_CMP='SIYY',
                                    OPERATION='EXTRACTION',),)
   TSIYYP[i] = POST_RELEVE_T(ACTION=_F(INTITULE='SIYY',
                                    NOEUD='N48',
                                    MAILLE='M90',
                                    RESULTAT=RES2[i],
-                                   NOM_CHAM='SIEF_ELNO_ELGA',
+                                   NOM_CHAM='SIEF_ELNO',
                                    NOM_CMP='SIYY',
                                    OPERATION='EXTRACTION',),)
 
@@ -484,14 +484,14 @@ for i in range(n):
                                    NOEUD='N48',
                                    MAILLE='M90',
                                    RESULTAT=RES3[i],
-                                   NOM_CHAM='SIEF_ELNO_ELGA',
+                                   NOM_CHAM='SIEF_ELNO',
                                    NOM_CMP='SIXY',
                                    OPERATION='EXTRACTION',),)
   TSIXYP[i] = POST_RELEVE_T(ACTION=_F(INTITULE='SIXY',
                                    NOEUD='N48',
                                    MAILLE='M90',
                                    RESULTAT=RES2[i],
-                                   NOM_CHAM='SIEF_ELNO_ELGA',
+                                   NOM_CHAM='SIEF_ELNO',
                                    NOM_CMP='SIXY',
                                    OPERATION='EXTRACTION',),)
 
@@ -499,14 +499,14 @@ for i in range(n):
                                    NOEUD='N48',
                                    MAILLE='M90',
                                    RESULTAT=RES3[i],
-                                   NOM_CHAM='SIEF_ELNO_ELGA',
+                                   NOM_CHAM='SIEF_ELNO',
                                    NOM_CMP='SIZZ',
                                    OPERATION='EXTRACTION',),)
   TSIZZP[i] = POST_RELEVE_T(ACTION=_F(INTITULE='SIZZ',
                                    NOEUD='N48',
                                    MAILLE='M90',
                                    RESULTAT=RES2[i],
-                                   NOM_CHAM='SIEF_ELNO_ELGA',
+                                   NOM_CHAM='SIEF_ELNO',
                                    NOM_CMP='SIZZ',
                                    OPERATION='EXTRACTION',),)
 

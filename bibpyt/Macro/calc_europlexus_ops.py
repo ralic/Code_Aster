@@ -1,8 +1,8 @@
-#@ MODIF calc_europlexus_ops Macro  DATE 11/05/2010   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF calc_europlexus_ops Macro  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -1815,7 +1815,7 @@ class EUROPLEXUS:
     
     # Dictionnaire permettant de traduire le champ epx en med au nom asscie dans aster
 # AA    epx2aster = {'CONTRAINTE':'SIEF_ELGA','ECROUISSAGE':'VARI_ELGA'}
-    epx2aster = {'CONTRAINTE':'SIEF_ELGA','DEFORMATION':'EPSI_ELGA_DEPL','ECROUISSAGE':'VARI_ELGA'}
+    epx2aster = {'CONTRAINTE':'SIEF_ELGA','DEFORMATION':'EPSI_ELGA','ECROUISSAGE':'VARI_ELGA'}
 
 # AA : desactive pour le moment
 #     # Enrichir la liste format_med par les champs aux pts de gauss
@@ -2299,7 +2299,7 @@ class EUROPLEXUS:
         # resu = CREA_RESU(reuse=resu,
             # OPERATION = 'AFFE',
             # TYPE_RESU = 'EVOL_NOLI',
-            # NOM_CHAM  = 'EPSI_ELGA_DEPL',
+            # NOM_CHAM  = 'EPSI_ELGA',
             # AFFE = dicAffe2)
         resu = CREA_RESU(reuse=resu,
             OPERATION = 'AFFE',

@@ -3,9 +3,9 @@
       CHARACTER*16        OPTION , NOMTE
 C ......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 15/04/2008   AUTEUR MAHFOUZ D.MAHFOUZ 
+C MODIF ELEMENTS  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -25,13 +25,13 @@ C     BUT: CALCUL DES DEFORMATIONS AUX POINTS D'INTEGRATION
 C          OU AUX NOEUDS DES ELEMENTS ISOPARAMETRIQUES 2D
 C
 C          OPTIONS : 'EPSI_ELNO_DEPL'
-C                    'EPSI_ELGA_DEPL'
-C                    'EPSG_ELNO_DEPL'
-C                    'EPSG_ELGA_DEPL'
-C                    'EPME_ELNO_DEPL  '
-C                    'EPME_ELGA_DEPL  '
-C                    'EPMG_ELNO_DEPL  '
-C                    'EPMG_ELGA_DEPL  '
+C                    'EPSI_ELGA'
+C                    'EPSG_ELNO'
+C                    'EPSG_ELGA'
+C                    'EPME_ELNO  '
+C                    'EPME_ELGA  '
+C                    'EPMG_ELNO  '
+C                    'EPMG_ELGA  '
 C
 C     ENTREES  ---> OPTION : OPTION DE CALCUL
 C              ---> NOMTE  : NOM DU TYPE ELEMENT

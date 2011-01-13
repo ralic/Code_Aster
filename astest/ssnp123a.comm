@@ -1,8 +1,8 @@
-# MODIF  DATE 07/12/2010   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
 # TITRE PLAQUE ENTAILLEE EN ELASTOPLASTICITE (ELEMENTS QUAD4 SI)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -84,7 +84,7 @@ RESU=STAT_NON_LINE(MODELE=MO,
 RESU=CALC_ELEM(reuse =RESU,
 
                RESULTAT=RESU,
-               OPTION=('SIEF_ELNO_ELGA',
+               OPTION=('SIEF_ELNO',
                        'ERME_ELEM',
                        'ERME_ELNO',
                       ),
@@ -92,7 +92,7 @@ RESU=CALC_ELEM(reuse =RESU,
 
 RESU=CALC_NO(reuse =RESU,
              RESULTAT=RESU,
-             OPTION='SIEF_NOEU_ELGA',);
+             OPTION='SIEF_NOEU',);
 
 ECHAN=INTE_MAIL_2D(MAILLAGE=MA,
                    DEFI_SEGMENT=_F(ORIGINE=(0.0,1.0,),
@@ -103,7 +103,7 @@ ECHAN=INTE_MAIL_2D(MAILLAGE=MA,
 S_T=POST_RELEVE_T(ACTION=_F(INTITULE='S_EXT',
                             CHEMIN=ECHAN,
                             RESULTAT=RESU,
-                            NOM_CHAM='SIEF_NOEU_ELGA',
+                            NOM_CHAM='SIEF_NOEU',
                             INST=1.0,
                             CRITERE='RELATIF',
                             NOM_CMP='SIYY',
@@ -198,7 +198,7 @@ TEST_RESU(RESU=(
 TEST_RESU(RESU=(
            _F( RESULTAT = RESU,
                INST = 1.,
-               NOM_CHAM = 'SIEF_ELNO_ELGA',
+               NOM_CHAM = 'SIEF_ELNO',
                CRITERE = 'RELATIF',
                PRECISION = 0.0001,
                NOEUD= 'N6',
@@ -212,7 +212,7 @@ TEST_RESU(RESU=(
 TEST_RESU(RESU=(
            _F( RESULTAT = RESU,
                INST = 1.,
-               NOM_CHAM = 'SIEF_ELNO_ELGA',
+               NOM_CHAM = 'SIEF_ELNO',
                CRITERE = 'RELATIF',
                PRECISION = 0.0001,
                NOEUD= 'N6',

@@ -1,10 +1,10 @@
       SUBROUTINE OP0038()
       IMPLICIT NONE
 C ----------------------------------------------------------------------
-C MODIF CALCULEL  DATE 07/12/2010   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -110,8 +110,8 @@ C
 
 C        -- OPTIONS DE THERMIQUE:
 C        ------------------------
-      IF (OPTION.EQ.'FLUX_ELNO_TEMP' .OR.
-     &    OPTION.EQ.'FLUX_ELGA_TEMP') THEN
+      IF (OPTION.EQ.'FLUX_ELNO' .OR.
+     &    OPTION.EQ.'FLUX_ELGA') THEN
         CHAMGD = ' '
         CHTREF = ' '
         IBID = 0
@@ -121,7 +121,7 @@ C        ------------------------
      &              CHELEM,K24B,LIGREL,BASE,K24B,K24B,K24B,K24B,K24B,
      &              K24B,K8BID,IBID,K24B,IRET)
 
-      ELSE IF (OPTION.EQ.'SOUR_ELGA_ELEC') THEN
+      ELSE IF (OPTION.EQ.'SOUR_ELGA') THEN
         CHAMGD = ' '
         CHTREF = ' '
         IBID = 0

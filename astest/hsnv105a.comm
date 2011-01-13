@@ -1,8 +1,8 @@
-# MODIF  DATE 08/11/2007   AUTEUR SALMONA L.SALMONA 
+# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
 # TITRE ESSAI DE TRACTION-CISAILLEMENT (MISES ECROUISSAGE ISOTROPE)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
@@ -221,7 +221,7 @@ CM=AFFE_MATERIAU(
                 AFFE_VARC=(_F(TOUT='OUI',
                              EVOL=TEMPE,
                              NOM_VARC='M_ACIER',
-                             NOM_CHAM='META_ELNO_TEMP'),
+                             NOM_CHAM='META_ELNO'),
                            _F(TOUT='OUI',
                              EVOL=TEMPE,
                              NOM_VARC='TEMP',
@@ -317,7 +317,7 @@ U=STAT_NON_LINE(
 
 U=CALC_ELEM( reuse=U,
                             OPTION=(
-                  'SIEF_ELNO_ELGA',  'VARI_ELNO_ELGA',),
+                  'SIEF_ELNO',  'VARI_ELNO_ELGA',),
                           RESULTAT=U,
                )
 
@@ -331,7 +331,7 @@ TEST_RESU(RESU=(
               
                 _F( 
                 RESULTAT = U,
-                NOM_CHAM = 'SIEF_ELNO_ELGA',
+                NOM_CHAM = 'SIEF_ELNO',
                 MAILLE = 'CUBE',
                 NOEUD = 'NO2',
                 INST = 10.,
@@ -339,7 +339,7 @@ TEST_RESU(RESU=(
                 VALE = 151.2),
                 _F( 
                 RESULTAT = U,
-                NOM_CHAM = 'SIEF_ELNO_ELGA',
+                NOM_CHAM = 'SIEF_ELNO',
                 MAILLE = 'CUBE',
                 NOEUD = 'NO2',
                 INST = 10.,
@@ -373,7 +373,7 @@ TEST_RESU(RESU=(
 
                 _F( 
                 RESULTAT = U,
-                NOM_CHAM = 'SIEF_ELNO_ELGA',
+                NOM_CHAM = 'SIEF_ELNO',
                 MAILLE = 'CUBE',
                 NOEUD = 'NO2',
                 INST = 30.,
@@ -381,7 +381,7 @@ TEST_RESU(RESU=(
                 VALE = 151.2),
                 _F( 
                 RESULTAT = U,
-                NOM_CHAM = 'SIEF_ELNO_ELGA',
+                NOM_CHAM = 'SIEF_ELNO',
                 MAILLE = 'CUBE',
                 NOEUD = 'NO2',
                 INST = 30.,
@@ -413,7 +413,7 @@ TEST_RESU(RESU=(
                 VALE = 4.80271E-2),
                 _F( 
                 RESULTAT = U,
-                NOM_CHAM = 'SIEF_ELNO_ELGA',
+                NOM_CHAM = 'SIEF_ELNO',
                 MAILLE = 'CUBE',
                 NOEUD = 'NO2',
                 INST = 60.,
@@ -421,7 +421,7 @@ TEST_RESU(RESU=(
                 VALE = 151.2),
                 _F( 
                 RESULTAT = U,
-                NOM_CHAM = 'SIEF_ELNO_ELGA',
+                NOM_CHAM = 'SIEF_ELNO',
                 MAILLE = 'CUBE',
                 NOEUD = 'NO2',
                 INST = 60.,

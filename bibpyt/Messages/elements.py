@@ -1,8 +1,8 @@
-#@ MODIF elements Messages  DATE 22/11/2010   AUTEUR FLEJOU J-L.FLEJOU 
+#@ MODIF elements Messages  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -240,7 +240,7 @@ Conseil :
      SIGM_ELNO_DEPL. Les seuls comportements autorisés sont :
      ELAS, ELAS_COQUE, ou ELAS_ORTH
   -> Risque & Conseil :
-     Pour les autres comportements, utiliser SIEF_ELNO_ELGA (efforts)
+     Pour les autres comportements, utiliser SIEF_ELNO (efforts)
      ou SIGM_ELNO_COQU (contraintes en un point de l'épaisseur).
 """),
 

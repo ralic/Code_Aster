@@ -1,4 +1,4 @@
-# MODIF  DATE 10/01/2011   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
 # TITRE PRISE EN COMPTE DE LA DILATATION THERMIQUE ET DU FLUAGE DE DESSICCATION DANS LE MODELE BETON_UMLV_FP
 # ssnv180a.para = tps_job 70 mem_job 32Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -123,7 +123,7 @@ HYDRF=CREA_CHAMP(TYPE_CHAM='NOEU_HYDR_R',
 
 HYDR1=CREA_RESU(OPERATION='AFFE',
                 TYPE_RESU='EVOL_THER',
-                NOM_CHAM='HYDR_NOEU_ELGA',
+                NOM_CHAM='HYDR_NOEU',
                 AFFE=(
                 _F(CHAM_GD=HYDRI,
                    INST=0.0,),
@@ -159,7 +159,7 @@ CM=AFFE_MATERIAU(MAILLAGE=M,
                  AFFE_VARC=(_F(TOUT='OUI',
                                EVOL=HYDR1,
                                NOM_VARC='HYDR',
-                               NOM_CHAM='HYDR_NOEU_ELGA',
+                               NOM_CHAM='HYDR_NOEU',
                                PROL_GAUCHE='CONSTANT',
                                PROL_DROITE='CONSTANT'),
                             _F(TOUT='OUI',

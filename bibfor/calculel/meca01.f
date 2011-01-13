@@ -5,9 +5,9 @@
      &                    TYPESE, NPASS,  CODRET )
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 07/12/2010   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -281,7 +281,7 @@ C S'IL EXISTE ON RECUPERE SON NOM SYMBOLIQUE
             IBID = IORDR+1-JAUX
             CALL RSEXC2(1,2,RESUCO,'SIGM_ELNO_DEPL',IBID,K24B,
      &                  OPTION,IRET)
-            CALL RSEXC2(2,2,RESUCO,'SIEF_ELNO_ELGA',IBID,K24B,
+            CALL RSEXC2(2,2,RESUCO,'SIEF_ELNO',IBID,K24B,
      &                  OPTION,IRET)
 
 C--- SI AUCUN CHAMP N'EXISTE, ON SORT
@@ -442,10 +442,10 @@ C
  11     CONTINUE
 C
 C=======================================================================
-C 4. OPTION "QIRE_ELEM_SIGM"
+C 4. OPTION "QIRE_ELEM"
 C=======================================================================
 C
-      ELSE IF ( OPTION.EQ.'QIRE_ELEM_SIGM' ) THEN
+      ELSE IF ( OPTION.EQ.'QIRE_ELEM' ) THEN
 
 C 4.1. ==> PREALABLES
 C 4.1.1. ==> RECUPERE LES NOMS DES SD RESULTAT
@@ -491,7 +491,7 @@ C 4.2.3. ==> VERIFIE L'EXISTENCE DU CHAMP DANS LE RESUPRIM
 C          S'IL EXISTE RECUPERE SON NOM SYMBOLIQUE
           CALL RSEXC2(1,2,RESUP,'SIGM_ELNO_DEPL',IORDR,CHSIGP,
      &                OPTION,IRET)
-          CALL RSEXC2(2,2,RESUP,'SIEF_ELNO_ELGA',IORDR,CHSIGP,
+          CALL RSEXC2(2,2,RESUP,'SIEF_ELNO',IORDR,CHSIGP,
      &                OPTION,IRET)
 
 C         SI AUCUN CHAMP N'EXISTE, ON SORT
@@ -501,7 +501,7 @@ C 4.2.4. ==> VERIFIE L'EXISTENCE DU CHAMP DANS LE RESUDUAL
 C         S'IL EXISTE RECUPERE SON NOM SYMBOLIQUE
           CALL RSEXC2(1,2,RESUD,'SIGM_ELNO_DEPL',IORDR,CHSIGD,
      &                OPTION,IRET)
-          CALL RSEXC2(2,2,RESUD,'SIEF_ELNO_ELGA',IORDR,CHSIGD,
+          CALL RSEXC2(2,2,RESUD,'SIEF_ELNO',IORDR,CHSIGD,
      &                OPTION,IRET)
 
 C         SI AUCUN CHAMP N'EXISTE, ON SORT
@@ -569,17 +569,17 @@ C
    12   CONTINUE
 C
 C=======================================================================
-C 5. OPTION "QIRE_ELNO_ELEM"
+C 5. OPTION "QIRE_ELNO"
 C=======================================================================
 C
-      ELSE IF ( OPTION.EQ.'QIRE_ELNO_ELEM' ) THEN
+      ELSE IF ( OPTION.EQ.'QIRE_ELNO' ) THEN
 C
         DO 13 , IAUX = 1 , NBORDR
 C
           CALL JEMARQ()
 C
           IORDR = ZI(JORDR+IAUX-1)
-          CALL RSEXC2(1,1,RESUCO,'QIRE_ELEM_SIGM',IORDR,CHERRE,
+          CALL RSEXC2(1,1,RESUCO,'QIRE_ELEM',IORDR,CHERRE,
      &                OPTION,IRET1)
 C
           IF (IRET1.EQ.0) THEN
@@ -593,11 +593,11 @@ C
  13     CONTINUE
 C
 C=======================================================================
-C 6. OPTIONS "QIZ1_ELEM_SIGM" ET "QIZ2_ELEM_SIGM"
+C 6. OPTIONS "QIZ1_ELEM" ET "QIZ2_ELEM"
 C=======================================================================
 C
-      ELSE IF ( OPTION.EQ.'QIZ1_ELEM_SIGM' .OR.
-     &          OPTION.EQ.'QIZ2_ELEM_SIGM' ) THEN
+      ELSE IF ( OPTION.EQ.'QIZ1_ELEM' .OR.
+     &          OPTION.EQ.'QIZ2_ELEM' ) THEN
 
 C 6.1. ==> RECUPERE LES NOMS DES SD RESULTAT
         CALL GETVID(' ','RESULTAT' ,1,1,1,RESUP,NP)
@@ -633,7 +633,7 @@ C 6.2.4. ==> RECUPERE SON NOM SYMBOLIQUE DU CHAMP DE CONTRAINTES CALCULE
 C            DANS LE RESUPRIM
           CALL RSEXC2(1,2,RESUP,'SIEF_ELGA',IORDR,CHSIGP,OPTION,
      &                IRET)
-          CALL RSEXC2(2,2,RESUP,'SIEF_ELGA_DEPL',IORDR,CHSIGP,
+          CALL RSEXC2(2,2,RESUP,'SIEF_ELGA',IORDR,CHSIGP,
      &                OPTION,IRET)
           IF ( IRET.GT.0 ) GO TO 6299
 
@@ -641,7 +641,7 @@ C 6.2.5 ==> RECUPERE SON NOM SYMBOLIQUE DU CHAMP DE CONTRAINTES CALCULE
 C           DANS LE RESUDUAL
           CALL RSEXC2(1,2,RESUD,'SIEF_ELGA',IORDR,CHSIGD,
      &                OPTION,IRET)
-          CALL RSEXC2(2,2,RESUD,'SIEF_ELGA_DEPL',IORDR,CHSIGD,
+          CALL RSEXC2(2,2,RESUD,'SIEF_ELGA',IORDR,CHSIGD,
      &                OPTION,IRET)
           IF (IRET.GT.0) GO TO 6299
 
@@ -671,11 +671,11 @@ C
  14     CONTINUE
 C
 C=======================================================================
-C 7. OPTIONS "ERZ1_ELEM_SIGM" ET "ERZ2_ELEM_SIGM"
+C 7. OPTIONS "ERZ1_ELEM" ET "ERZ2_ELEM"
 C=======================================================================
 C
-      ELSE IF ( OPTION.EQ.'ERZ1_ELEM_SIGM' .OR.
-     &          OPTION.EQ.'ERZ2_ELEM_SIGM' ) THEN
+      ELSE IF ( OPTION.EQ.'ERZ1_ELEM' .OR.
+     &          OPTION.EQ.'ERZ2_ELEM' ) THEN
 C
         DO 15 , IAUX = 1 , NBORDR
 C
@@ -690,7 +690,7 @@ C
           CALL MECHC1(SAVCAR,MODELE,MATE,EXICAR,CHCARA)
           CALL RSEXC2(1,2,RESUCO,'SIEF_ELGA',IORDR,CHSIG,OPTION,
      &                IRET)
-          CALL RSEXC2(2,2,RESUCO,'SIEF_ELGA_DEPL',IORDR,CHSIG,
+          CALL RSEXC2(2,2,RESUCO,'SIEF_ELGA',IORDR,CHSIG,
      &                OPTION,IRET)
           IF (IRET.GT.0) THEN
             CALL U2MESK('A','CALCULEL3_7',1,OPTION)

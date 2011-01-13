@@ -1,9 +1,9 @@
-# MODIF  DATE 22/06/2009   AUTEUR MEUNIER S.MEUNIER 
+# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
 # TITRE SIMULATION D'UNE PLAQUE TROUEE EN ELASTICITE - METHODE ARLEQUIN
 # ssnp135b.para = tps_job 300 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -121,11 +121,11 @@ RESU=STAT_NON_LINE(MODELE=MOD,
 
 RESU=CALC_ELEM(reuse =RESU,
                RESULTAT=RESU,
-               OPTION=('SIEF_ELNO_ELGA','EQUI_ELNO_SIGM',),);
+               OPTION=('SIEF_ELNO','EQUI_ELNO_SIGM',),);
 
 RESU=CALC_NO(reuse =RESU,
              RESULTAT=RESU,
-             OPTION=('SIEF_NOEU_ELGA','EQUI_NOEU_SIGM',),);
+             OPTION=('SIEF_NOEU','EQUI_NOEU_SIGM',),);
 
 ###
 # A. SIGMA THETA AU BORD DU TROU
@@ -137,7 +137,7 @@ CERCLE=INTE_MAIL_2D(MAILLAGE=MAIL,
 STHETA=POST_RELEVE_T(ACTION=_F(INTITULE='STHETA',
                                CHEMIN=CERCLE,
                                RESULTAT=RESU,
-                               NOM_CHAM='SIEF_ELNO_ELGA',
+                               NOM_CHAM='SIEF_ELNO',
                                NOM_CMP=('SIXX','SIYY','SIXY',),
                                REPERE='POLAIRE',
                                OPERATION='EXTRACTION',),);
@@ -313,11 +313,11 @@ RESU2=MECA_STATIQUE(MODELE=MOD,
 
 RESU2=CALC_ELEM(reuse =RESU2,
                RESULTAT=RESU2,
-               OPTION=('SIEF_ELNO_ELGA','EQUI_ELNO_SIGM',),);
+               OPTION=('SIEF_ELNO','EQUI_ELNO_SIGM',),);
 
 RESU2=CALC_NO(reuse =RESU2,
              RESULTAT=RESU2,
-             OPTION=('SIEF_NOEU_ELGA','EQUI_NOEU_SIGM',),);
+             OPTION=('SIEF_NOEU','EQUI_NOEU_SIGM',),);
 
 ###
 # A. SIGMA THETA AU BORD DU TROU
@@ -329,7 +329,7 @@ CERCLE2=INTE_MAIL_2D(MAILLAGE=MAIL,
 STHETA2=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                INTITULE='STHETA2',
                                RESULTAT=RESU2,
-                               NOM_CHAM='SIEF_ELNO_ELGA',
+                               NOM_CHAM='SIEF_ELNO',
                                CHEMIN=CERCLE2,
                                NOM_CMP=('SIXX','SIYY','SIXY',),
                                REPERE='POLAIRE',),);

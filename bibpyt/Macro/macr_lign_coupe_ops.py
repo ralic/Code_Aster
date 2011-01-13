@@ -1,8 +1,8 @@
-#@ MODIF macr_lign_coupe_ops Macro  DATE 14/12/2010   AUTEUR PELLET J.PELLET 
+#@ MODIF macr_lign_coupe_ops Macro  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -133,7 +133,7 @@ def crea_resu_local(self,dime,NOM_CHAM,m,resin,mail,nomgrma):
        elif dime ==3 :
           LCMP=['DX','DY','DZ']
           TYPE_CHAM='VECT_3D'
-  elif NOM_CHAM in ('SIGM_NOEU_DEPL','SIEF_ELNO_ELGA','SIGM_NOEU_ELGA','SIGM_NOEU_COQU','SIGM_ELNO_DEPL'):
+  elif NOM_CHAM in ('SIGM_NOEU_DEPL','SIEF_ELNO','SIGM_NOEU_ELGA','SIGM_NOEU_COQU','SIGM_ELNO_DEPL'):
        if dime == 2:
           LCMP=['SIXX','SIYY','SIZZ','SIXY']
           TYPE_CHAM='TENS_2D'
@@ -831,7 +831,7 @@ def macr_lign_coupe_ops(self,RESULTAT,CHAM_GD,UNITE_MAILLAGE,LIGN_COUPE,
 
   if AsType(RESULTAT).__name__ in ('evol_elas','evol_noli') :
 
-   if  NOM_CHAM in ('DEPL','SIEF_ELNO_ELGA','SIGM_NOEU_DEPL','SIGM_NOEU_ELGA','SIGM_NOEU_COQU','SIGM_ELNO_DEPL'):icham=1
+   if  NOM_CHAM in ('DEPL','SIEF_ELNO','SIGM_NOEU_DEPL','SIGM_NOEU_ELGA','SIGM_NOEU_COQU','SIGM_ELNO_DEPL'):icham=1
    iocc=0
    for m in LIGN_COUPE :
 

@@ -1,8 +1,8 @@
       SUBROUTINE TE0086 ( OPTION , NOMTE )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 31/03/2008   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -22,7 +22,7 @@ C ======================================================================
 C ......................................................................
 C    - FONCTION REALISEE:  CALCUL DES CONTRAINTES EN 2D
 C                          OPTION : 'SIGM_ELNO_DEPL  '
-C                             OU  : 'SIEF_ELGA_DEPL  '
+C                             OU  : 'SIEF_ELGA  '
 C
 C    - ARGUMENTS:
 C        DONNEES:      OPTION       -->  OPTION DE CALCUL

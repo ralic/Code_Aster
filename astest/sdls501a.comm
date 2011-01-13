@@ -1,5 +1,5 @@
 
-# MODIF  DATE 30/08/2010   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
 # RESPONSABLE ADBHHPM P.MASSIN
 # DATE   : 24/03/2000
 # AUTEUR : F. LEBOUVIER (DELTACAD)
@@ -7,7 +7,7 @@
 # sdls501a.para = tps_job 60 mem_job 300Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -134,7 +134,7 @@ MODE=MODE_ITER_SIMULT(MATR_A=MAT_AS_R,
 
 MODE=CALC_ELEM(reuse=MODE,RESULTAT=MODE,
 
-                OPTION=('SIEF_ELGA_DEPL','ETOT_ELEM','ETOT_ELGA','ETOT_ELNO_ELGA'),
+                OPTION=('SIEF_ELGA','ETOT_ELEM','ETOT_ELGA','ETOT_ELNO'),
                 );
 
 DEPL=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
@@ -154,7 +154,7 @@ ELAS=CREA_RESU(OPERATION='AFFE',
 
 ELAS=CALC_ELEM(reuse =ELAS,
                RESULTAT=ELAS,
-               OPTION=('SIEF_ELGA_DEPL','ETOT_ELGA','ETOT_ELNO_ELGA','ETOT_ELEM',),);
+               OPTION=('SIEF_ELGA','ETOT_ELGA','ETOT_ELNO','ETOT_ELEM',),);
 
 #
 #---------------------------------------------------------------------
@@ -203,7 +203,7 @@ TEST_RESU(RESU=(_F(RESULTAT=ELAS,
                    VERSION='8.0.15',),
                 _F(RESULTAT=ELAS,
                    NUME_ORDRE=1,
-                   NOM_CHAM='ETOT_ELNO_ELGA',
+                   NOM_CHAM='ETOT_ELNO',
                    NOM_CMP='TOTALE',
                    MAILLE='MA25',
                    NOEUD='NO100',
@@ -232,7 +232,7 @@ TEST_RESU(RESU=(_F(RESULTAT=MODE,
                    REFERENCE='AUTRE_ASTER',),
                 _F(RESULTAT=MODE,
                    NUME_ORDRE=1,
-                   NOM_CHAM='ETOT_ELNO_ELGA',
+                   NOM_CHAM='ETOT_ELNO',
                    NOM_CMP='TOTALE',
                    MAILLE='MA25',
                    NOEUD='NO100',

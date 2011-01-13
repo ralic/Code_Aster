@@ -1,9 +1,9 @@
-# MODIF  DATE 07/12/2010   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
 # TITRE CYLINDRE EN C.P. (TET10)
 # sslv04d.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -71,7 +71,7 @@ CALC_ELEM( reuse= RESU ,RESULTAT= RESU ,
                       OPTION=('EPSI_ELNO_DEPL', 'SIGM_ELNO_DEPL',))
 
 CALC_NO( reuse=RESU,                      RESULTAT=RESU,
-                     OPTION=('EPSI_NOEU_DEPL', 'SIGM_NOEU_DEPL',))
+                     OPTION=('EPSI_NOEU', 'SIGM_NOEU_DEPL',))
 
 TEST_RESU(RESU=(
    # DEPLACEMENTS
@@ -120,16 +120,16 @@ TEST_RESU(RESU=(
 
 
            _F(        CRITERE = 'RELATIF',    PRECISION = 1.E-2,
- RESULTAT = RESU, NOM_CHAM = 'EPSI_NOEU_DEPL',   NUME_ORDRE = 1,
+ RESULTAT = RESU, NOM_CHAM = 'EPSI_NOEU',   NUME_ORDRE = 1,
  GROUP_NO = 'A',    VALE = -4.5E-4,      NOM_CMP = 'EPXX'),
            _F(     CRITERE = 'RELATIF',    PRECISION = 1.E-2,
- RESULTAT = RESU, NOM_CHAM = 'EPSI_NOEU_DEPL',   NUME_ORDRE = 1,
+ RESULTAT = RESU, NOM_CHAM = 'EPSI_NOEU',   NUME_ORDRE = 1,
  GROUP_NO = 'A',         NOM_CMP = 'EPYY',       VALE = 5.9E-4),
            _F(     CRITERE = 'ABSOLU',     PRECISION = 1.E-4,
- RESULTAT = RESU, NOM_CHAM = 'EPSI_NOEU_DEPL',   NUME_ORDRE = 1,
+ RESULTAT = RESU, NOM_CHAM = 'EPSI_NOEU',   NUME_ORDRE = 1,
  GROUP_NO = 'A',         NOM_CMP = 'EPZZ',       VALE = 0.),
            _F(     CRITERE = 'ABSOLU',     PRECISION = 1.E-4,
- RESULTAT = RESU, NOM_CHAM = 'EPSI_NOEU_DEPL',   NUME_ORDRE = 1,
+ RESULTAT = RESU, NOM_CHAM = 'EPSI_NOEU',   NUME_ORDRE = 1,
  GROUP_NO = 'A',         NOM_CMP = 'EPXY',       VALE = 0.))
            )
 
@@ -139,16 +139,16 @@ TEST_RESU(RESU=(
 
 
            _F(   CRITERE = 'RELATIF',    PRECISION = 1.E-2,
- RESULTAT = RESU, NOM_CHAM = 'EPSI_NOEU_DEPL',   NUME_ORDRE = 1,
+ RESULTAT = RESU, NOM_CHAM = 'EPSI_NOEU',   NUME_ORDRE = 1,
  GROUP_NO = 'B',     NOM_CMP = 'EPXX',       VALE = -0.6E-4),
            _F(   CRITERE = 'RELATIF',    PRECISION = 1.E-2,
- RESULTAT = RESU, NOM_CHAM = 'EPSI_NOEU_DEPL',   NUME_ORDRE = 1,
+ RESULTAT = RESU, NOM_CHAM = 'EPSI_NOEU',   NUME_ORDRE = 1,
  GROUP_NO = 'B',     NOM_CMP = 'EPYY',       VALE = 2.E-4),
            _F(   CRITERE = 'ABSOLU',     PRECISION = 1.E-4,
- RESULTAT = RESU, NOM_CHAM = 'EPSI_NOEU_DEPL',   NUME_ORDRE = 1,
+ RESULTAT = RESU, NOM_CHAM = 'EPSI_NOEU',   NUME_ORDRE = 1,
  GROUP_NO = 'B',     NOM_CMP = 'EPZZ',       VALE = 0.),
            _F(   CRITERE = 'ABSOLU',     PRECISION = 1.E-4,
- RESULTAT = RESU, NOM_CHAM = 'EPSI_NOEU_DEPL',   NUME_ORDRE = 1,
+ RESULTAT = RESU, NOM_CHAM = 'EPSI_NOEU',   NUME_ORDRE = 1,
  GROUP_NO = 'B',     NOM_CMP = 'EPXY',       VALE = 0.))
            )
 
@@ -158,16 +158,16 @@ TEST_RESU(RESU=(
 
 
            _F(    CRITERE = 'RELATIF',    PRECISION = 5.E-2,
- RESULTAT = RESU, NOM_CHAM = 'EPSI_NOEU_DEPL',   NUME_ORDRE = 1,
+ RESULTAT = RESU, NOM_CHAM = 'EPSI_NOEU',   NUME_ORDRE = 1,
  GROUP_NO = 'E',       NOM_CMP = 'EPXX',       VALE = 0.7E-4),
            _F(    CRITERE = 'RELATIF',    PRECISION = 2.E-2,
- RESULTAT = RESU, NOM_CHAM = 'EPSI_NOEU_DEPL',   NUME_ORDRE = 1,
+ RESULTAT = RESU, NOM_CHAM = 'EPSI_NOEU',   NUME_ORDRE = 1,
  GROUP_NO = 'E',     NOM_CMP = 'EPYY',       VALE = 0.7E-4),
            _F(   CRITERE = 'ABSOLU',     PRECISION = 1.E-4,
- RESULTAT = RESU, NOM_CHAM = 'EPSI_NOEU_DEPL',   NUME_ORDRE = 1,
+ RESULTAT = RESU, NOM_CHAM = 'EPSI_NOEU',   NUME_ORDRE = 1,
  GROUP_NO = 'E',        NOM_CMP = 'EPZZ',       VALE = 0.),
            _F(    CRITERE = 'RELATIF',    PRECISION = 1.E-2,
- RESULTAT = RESU, NOM_CHAM = 'EPSI_NOEU_DEPL',   NUME_ORDRE = 1,
+ RESULTAT = RESU, NOM_CHAM = 'EPSI_NOEU',   NUME_ORDRE = 1,
  GROUP_NO = 'E',       NOM_CMP = 'EPXY',       VALE = -5.2E-4))
            )
 
@@ -177,16 +177,16 @@ TEST_RESU(RESU=(
 
 
            _F(  CRITERE = 'RELATIF',    PRECISION = 2.E-2,
- RESULTAT = RESU, NOM_CHAM = 'EPSI_NOEU_DEPL',   NUME_ORDRE = 1,
+ RESULTAT = RESU, NOM_CHAM = 'EPSI_NOEU',   NUME_ORDRE = 1,
  GROUP_NO = 'F',       NOM_CMP = 'EPXX',       VALE = 0.7E-4),
            _F(    CRITERE = 'RELATIF',    PRECISION = 2.E-2,
- RESULTAT = RESU, NOM_CHAM = 'EPSI_NOEU_DEPL',   NUME_ORDRE = 1,
+ RESULTAT = RESU, NOM_CHAM = 'EPSI_NOEU',   NUME_ORDRE = 1,
  GROUP_NO = 'F',      NOM_CMP = 'EPYY',       VALE = 0.7E-4),
            _F(    CRITERE = 'ABSOLU',     PRECISION = 1.E-4,
- RESULTAT = RESU, NOM_CHAM = 'EPSI_NOEU_DEPL',   NUME_ORDRE = 1,
+ RESULTAT = RESU, NOM_CHAM = 'EPSI_NOEU',   NUME_ORDRE = 1,
  GROUP_NO = 'F',       NOM_CMP = 'EPZZ',       VALE = 0.),
            _F(    CRITERE = 'RELATIF',    PRECISION = 1.E-2,
- RESULTAT = RESU, NOM_CHAM = 'EPSI_NOEU_DEPL',   NUME_ORDRE = 1,
+ RESULTAT = RESU, NOM_CHAM = 'EPSI_NOEU',   NUME_ORDRE = 1,
  GROUP_NO = 'F',      NOM_CMP = 'EPXY',       VALE = -1.3E-4))
            )
 
@@ -266,16 +266,16 @@ TEST_RESU(RESU=(
 #
 
 CALC_ELEM(reuse= RESU , RESULTAT= RESU,
-                        OPTION=('SIEF_ELNO_ELGA'));
+                        OPTION=('SIEF_ELNO'));
 
 CALC_ELEM(reuse= RESU ,
           RESULTAT= RESU ,
           GROUP_MA='PRES',
-          OPTION='PROJ_ELEM_SIGM',);
+          OPTION='SIRO_ELEM',);
 
 
 
-# TEST DU CHAMP 'PROJ_ELEM_SIGM'
+# TEST DU CHAMP 'SIRO_ELEM'
 # MAILLE M1093 PRES DU POINT A
 
 TEST_RESU(RESU=(
@@ -283,7 +283,7 @@ TEST_RESU(RESU=(
               REFERENCE ='ANALYTIQUE',
               PRECISION = 1.E-2,
               RESULTAT  = RESU,
-              NOM_CHAM = 'PROJ_ELEM_SIGM',
+              NOM_CHAM = 'SIRO_ELEM',
               NUME_ORDRE = 1,
               POINT  = 1,
               MAILLE='M1111',
@@ -293,7 +293,7 @@ TEST_RESU(RESU=(
               REFERENCE ='ANALYTIQUE',
               PRECISION = 3.,
               RESULTAT  = RESU,
-              NOM_CHAM = 'PROJ_ELEM_SIGM',
+              NOM_CHAM = 'SIRO_ELEM',
               NUME_ORDRE = 1,
               POINT  = 1,
               MAILLE='M1111',
@@ -303,7 +303,7 @@ TEST_RESU(RESU=(
               REFERENCE ='ANALYTIQUE',
               PRECISION = 1.,
               RESULTAT  = RESU,
-              NOM_CHAM = 'PROJ_ELEM_SIGM',
+              NOM_CHAM = 'SIRO_ELEM',
               NUME_ORDRE = 1,
               POINT  = 1,
               MAILLE='M1111',
@@ -311,14 +311,14 @@ TEST_RESU(RESU=(
               NOM_CMP = 'SIG_NZ'),
            ),)
 
-# TEST DU CHAMP 'PROJ_ELEM_SIGM'
+# TEST DU CHAMP 'SIRO_ELEM'
 
 TEST_RESU(RESU=(
            _F(CRITERE   = 'ABSOLU',
               REFERENCE ='ANALYTIQUE',
               PRECISION = 4.,
               RESULTAT  = RESU,
-              NOM_CHAM = 'PROJ_ELEM_SIGM',
+              NOM_CHAM = 'SIRO_ELEM',
               NUME_ORDRE = 1,
               POINT  = 1,
               MAILLE='M1111',
@@ -328,7 +328,7 @@ TEST_RESU(RESU=(
               REFERENCE ='ANALYTIQUE',
               PRECISION = 1.E-2,
               RESULTAT  = RESU,
-              NOM_CHAM = 'PROJ_ELEM_SIGM',
+              NOM_CHAM = 'SIRO_ELEM',
               NUME_ORDRE = 1,
               POINT  = 1,
               MAILLE='M1111',
@@ -338,7 +338,7 @@ TEST_RESU(RESU=(
               REFERENCE ='ANALYTIQUE',
               PRECISION = 1.,
               RESULTAT  = RESU,
-              NOM_CHAM = 'PROJ_ELEM_SIGM',
+              NOM_CHAM = 'SIRO_ELEM',
               NUME_ORDRE = 1,
               POINT  = 1,
               MAILLE='M1111',
@@ -346,14 +346,14 @@ TEST_RESU(RESU=(
               NOM_CMP = 'SIG_TZ'),
            ),)
 
-# TEST DU CHAMP 'PROJ_ELEM_SIGM'
+# TEST DU CHAMP 'SIRO_ELEM'
 
 TEST_RESU(RESU=(
            _F(CRITERE   = 'ABSOLU',
               REFERENCE ='ANALYTIQUE',
               PRECISION = 1.E-2,
               RESULTAT  = RESU,
-              NOM_CHAM = 'PROJ_ELEM_SIGM',
+              NOM_CHAM = 'SIRO_ELEM',
               NUME_ORDRE = 1,
               POINT  = 1,
               MAILLE='M1111',
@@ -363,7 +363,7 @@ TEST_RESU(RESU=(
               REFERENCE ='ANALYTIQUE',
               PRECISION = 1.E-2,
               RESULTAT  = RESU,
-              NOM_CHAM = 'PROJ_ELEM_SIGM',
+              NOM_CHAM = 'SIRO_ELEM',
               NUME_ORDRE = 1,
               POINT  = 1,
               MAILLE='M1111',
@@ -373,7 +373,7 @@ TEST_RESU(RESU=(
               REFERENCE ='ANALYTIQUE',
               PRECISION = 1.,
               RESULTAT  = RESU,
-              NOM_CHAM = 'PROJ_ELEM_SIGM',
+              NOM_CHAM = 'SIRO_ELEM',
               NUME_ORDRE = 1,
               POINT  = 1,
               MAILLE='M1111',
@@ -381,14 +381,14 @@ TEST_RESU(RESU=(
               NOM_CMP = 'SIG_T1Z'),
            ),)
 
-# TEST DU CHAMP 'PROJ_ELEM_SIGM'
+# TEST DU CHAMP 'SIRO_ELEM'
 
 TEST_RESU(RESU=(
            _F(CRITERE   = 'ABSOLU',
               REFERENCE ='ANALYTIQUE',
               PRECISION = 4.5,
               RESULTAT  = RESU,
-              NOM_CHAM = 'PROJ_ELEM_SIGM',
+              NOM_CHAM = 'SIRO_ELEM',
               NUME_ORDRE = 1,
               POINT  = 1,
               MAILLE='M1111',
@@ -398,7 +398,7 @@ TEST_RESU(RESU=(
               REFERENCE ='ANALYTIQUE',
               PRECISION = 1.E-2,
               RESULTAT  = RESU,
-              NOM_CHAM = 'PROJ_ELEM_SIGM',
+              NOM_CHAM = 'SIRO_ELEM',
               NUME_ORDRE = 1,
               POINT  = 1,
               MAILLE='M1111',
@@ -408,7 +408,7 @@ TEST_RESU(RESU=(
               REFERENCE ='ANALYTIQUE',
               PRECISION = 1.E-1,
               RESULTAT  = RESU,
-              NOM_CHAM = 'PROJ_ELEM_SIGM',
+              NOM_CHAM = 'SIRO_ELEM',
               NUME_ORDRE = 1,
               POINT  = 1,
               MAILLE='M1111',
@@ -423,7 +423,7 @@ TEST_RESU(RESU=(
               REFERENCE ='ANALYTIQUE',
               PRECISION = 14.E-2,
               RESULTAT  = RESU,
-              NOM_CHAM = 'PROJ_ELEM_SIGM',
+              NOM_CHAM = 'SIRO_ELEM',
               NUME_ORDRE = 1,
               POINT  = 1,
               MAILLE='M1093',
@@ -433,7 +433,7 @@ TEST_RESU(RESU=(
               REFERENCE ='ANALYTIQUE',
               PRECISION = 5.E-2,
               RESULTAT  = RESU,
-              NOM_CHAM = 'PROJ_ELEM_SIGM',
+              NOM_CHAM = 'SIRO_ELEM',
               NUME_ORDRE = 1,
               POINT  = 1,
               MAILLE='M1093',
@@ -443,7 +443,7 @@ TEST_RESU(RESU=(
               REFERENCE ='ANALYTIQUE',
               PRECISION = 1.,
               RESULTAT  = RESU,
-              NOM_CHAM = 'PROJ_ELEM_SIGM',
+              NOM_CHAM = 'SIRO_ELEM',
               NUME_ORDRE = 1,
               POINT  = 1,
               MAILLE='M1093',
@@ -451,14 +451,14 @@ TEST_RESU(RESU=(
               NOM_CMP = 'SIG_NZ'),
            ),)
 
-# TEST DU CHAMP 'PROJ_ELEM_SIGM'
+# TEST DU CHAMP 'SIRO_ELEM'
 
 TEST_RESU(RESU=(
            _F(CRITERE   = 'RELATIF',
               REFERENCE ='ANALYTIQUE',
               PRECISION = 5.E-2,
               RESULTAT  = RESU,
-              NOM_CHAM = 'PROJ_ELEM_SIGM',
+              NOM_CHAM = 'SIRO_ELEM',
               NUME_ORDRE = 1,
               POINT  = 1,
               MAILLE='M1093',
@@ -468,7 +468,7 @@ TEST_RESU(RESU=(
               REFERENCE ='ANALYTIQUE',
               PRECISION = 5.E-2,
               RESULTAT  = RESU,
-              NOM_CHAM = 'PROJ_ELEM_SIGM',
+              NOM_CHAM = 'SIRO_ELEM',
               NUME_ORDRE = 1,
               POINT  = 1,
               MAILLE='M1093',
@@ -478,7 +478,7 @@ TEST_RESU(RESU=(
               REFERENCE ='ANALYTIQUE',
               PRECISION = 1.5,
               RESULTAT  = RESU,
-              NOM_CHAM = 'PROJ_ELEM_SIGM',
+              NOM_CHAM = 'SIRO_ELEM',
               NUME_ORDRE = 1,
               POINT  = 1,
               MAILLE='M1093',
@@ -486,14 +486,14 @@ TEST_RESU(RESU=(
               NOM_CMP = 'SIG_TZ'),
            ),)
 
-# TEST DU CHAMP 'PROJ_ELEM_SIGM'
+# TEST DU CHAMP 'SIRO_ELEM'
 
 TEST_RESU(RESU=(
            _F(CRITERE   = 'ABSOLU',
               REFERENCE ='ANALYTIQUE',
               PRECISION = 1.E-2,
               RESULTAT  = RESU,
-              NOM_CHAM = 'PROJ_ELEM_SIGM',
+              NOM_CHAM = 'SIRO_ELEM',
               NUME_ORDRE = 1,
               POINT  = 1,
               MAILLE='M1093',
@@ -503,7 +503,7 @@ TEST_RESU(RESU=(
               REFERENCE ='ANALYTIQUE',
               PRECISION = 1.E-2,
               RESULTAT  = RESU,
-              NOM_CHAM = 'PROJ_ELEM_SIGM',
+              NOM_CHAM = 'SIRO_ELEM',
               NUME_ORDRE = 1,
               POINT  = 1,
               MAILLE='M1093',
@@ -513,7 +513,7 @@ TEST_RESU(RESU=(
               REFERENCE ='ANALYTIQUE',
               PRECISION = 1.5,
               RESULTAT  = RESU,
-              NOM_CHAM = 'PROJ_ELEM_SIGM',
+              NOM_CHAM = 'SIRO_ELEM',
               NUME_ORDRE = 1,
               POINT  = 1,
               MAILLE='M1093',
@@ -521,14 +521,14 @@ TEST_RESU(RESU=(
               NOM_CMP = 'SIG_T1Z'),
            ),)
 
-# TEST DU CHAMP 'PROJ_ELEM_SIGM'
+# TEST DU CHAMP 'SIRO_ELEM'
 
 TEST_RESU(RESU=(
            _F(CRITERE   = 'RELATIF',
               REFERENCE ='ANALYTIQUE',
               PRECISION = 5.E-2,
               RESULTAT  = RESU,
-              NOM_CHAM = 'PROJ_ELEM_SIGM',
+              NOM_CHAM = 'SIRO_ELEM',
               NUME_ORDRE = 1,
               POINT  = 1,
               MAILLE='M1093',
@@ -538,7 +538,7 @@ TEST_RESU(RESU=(
               REFERENCE ='ANALYTIQUE',
               PRECISION = 4.E-2,
               RESULTAT  = RESU,
-              NOM_CHAM = 'PROJ_ELEM_SIGM',
+              NOM_CHAM = 'SIRO_ELEM',
               NUME_ORDRE = 1,
               POINT  = 1,
               MAILLE='M1093',
@@ -548,7 +548,7 @@ TEST_RESU(RESU=(
               REFERENCE ='ANALYTIQUE',
               PRECISION = 2.,
               RESULTAT  = RESU,
-              NOM_CHAM = 'PROJ_ELEM_SIGM',
+              NOM_CHAM = 'SIRO_ELEM',
               NUME_ORDRE = 1,
               POINT  = 1,
               MAILLE='M1093',

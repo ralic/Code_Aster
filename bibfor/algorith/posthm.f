@@ -6,9 +6,9 @@
       CHARACTER*16 OPTION
 C =====================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 25/08/2008   AUTEUR KHAM M.KHAM 
+C MODIF ALGORITH  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -80,7 +80,7 @@ C =====================================================================
          CALL ASSERT(NNO  .LE. NNOMAX)
          CALL ASSERT(NPG  .LE. NPGMAX)
          CALL ASSERT(NNOS .LE. NNOSMA)
-         IF (OPTION .EQ. 'SIEF_ELNO_ELGA  ') THEN
+         IF (OPTION .EQ. 'SIEF_ELNO  ') THEN
 C =====================================================================
 C --- ON VERIFIE QUE LES DIMENSIONNEMENTS SONT A JOUR -----------------
 C =====================================================================

@@ -1,9 +1,9 @@
-# MODIF  DATE 18/01/2010   AUTEUR MACOCCO K.MACOCCO 
+# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
 
 # TITRE PLAQUE ENCASTREE SOUSMISE A UNE FLEXION PAR DES POUTRES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -138,7 +138,7 @@ RESU1=STAT_NON_LINE(MODELE=MO,
                    INFO=1,);
 
 RESU1=CALC_ELEM(reuse =RESU1,
-               OPTION=('SIEF_ELNO_ELGA','VARI_ELNO_ELGA',),
+               OPTION=('SIEF_ELNO','VARI_ELNO_ELGA',),
                RESULTAT=RESU1,);
 
 TEST_RESU(RESU=(_F(RESULTAT=RESU1,
@@ -159,7 +159,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU1,
                    PRECISION=0.001,),
                 _F(RESULTAT=RESU1,
                    NUME_ORDRE=2,
-                   NOM_CHAM='SIEF_ELNO_ELGA',
+                   NOM_CHAM='SIEF_ELNO',
                    NOM_CMP='N',
                    MAILLE='M21',
                    NOEUD='N3',
@@ -168,7 +168,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU1,
                    PRECISION=0.01,),
                 _F(RESULTAT=RESU1,
                    NUME_ORDRE=2,
-                   NOM_CHAM='SIEF_ELNO_ELGA',
+                   NOM_CHAM='SIEF_ELNO',
                    NOM_CMP='N',
                    MAILLE='M22',
                    NOEUD='N1',
@@ -196,7 +196,7 @@ RESU2=STAT_NON_LINE(MODELE=MO,
                    INFO=1,);
 
 RESU2=CALC_ELEM(reuse =RESU2,
-               OPTION=('SIEF_ELNO_ELGA','VARI_ELNO_ELGA',),
+               OPTION=('SIEF_ELNO','VARI_ELNO_ELGA',),
                RESULTAT=RESU2,);
 
 TEST_RESU(RESU=(_F(RESULTAT=RESU2,
@@ -217,7 +217,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU2,
                    PRECISION=0.001,),
                 _F(RESULTAT=RESU2,
                    NUME_ORDRE=2,
-                   NOM_CHAM='SIEF_ELNO_ELGA',
+                   NOM_CHAM='SIEF_ELNO',
                    NOM_CMP='N',
                    MAILLE='M21',
                    NOEUD='N3',
@@ -226,7 +226,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU2,
                    PRECISION=0.01,),
                 _F(RESULTAT=RESU2,
                    NUME_ORDRE=2,
-                   NOM_CHAM='SIEF_ELNO_ELGA',
+                   NOM_CHAM='SIEF_ELNO',
                    NOM_CMP='N',
                    MAILLE='M22',
                    NOEUD='N1',

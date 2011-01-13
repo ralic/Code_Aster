@@ -1,4 +1,4 @@
-# MODIF  DATE 30/08/2010   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
 # RESPONSABLE ADBHHPM P.MASSIN
 # DATE   : 08/06/2000
 # AUTEUR : F. LEBOUVIER (DELTACAD)
@@ -6,7 +6,7 @@
 # ssls502b.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -203,7 +203,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU,
                    REFERENCE='SOURCE_EXTERNE',),
                 _F(RESULTAT=RESU,
                    NUME_ORDRE=1,
-                   NOM_CHAM='SIEF_ELGA_DEPL',
+                   NOM_CHAM='SIEF_ELGA',
                    NOM_CMP='SIXX',
                    MAILLE='M368',
                    POINT=1,
@@ -213,7 +213,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU,
                    REFERENCE='NON_REGRESSION',),
                 _F(RESULTAT=RESU,
                    NUME_ORDRE=1,
-                   NOM_CHAM='SIEF_ELGA_DEPL',
+                   NOM_CHAM='SIEF_ELGA',
                    NOM_CMP='SIYY',
                    MAILLE='M368',
                    POINT=1,

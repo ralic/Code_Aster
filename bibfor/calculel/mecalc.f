@@ -5,10 +5,10 @@
      &                  CHVARI,COMPOR,CHTESE,CHDESE,NOPASE,
      &                  TYPESE,CHACSE,CODRET)
 C ----------------------------------------------------------------------
-C MODIF CALCULEL  DATE 07/12/2010   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
 C TOLE CRP_20 CRP_21
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -43,7 +43,7 @@ C IN  : NOPASE : NOM DU PARAMETRE SENSIBLE
 C IN  : TYPESE : TYPE DE PARAMETRE SENSIBLE
 C OUT : CHELEM : CHAMELEM RESULTAT
 C OUT : CHELEX : CHAMELEM RESULTAT POUR L'OPTION 'SIEF_SENO_SEGA'
-C                PRODUIT LORS DU CALCUL DE L'OPTION 'SIEF_ELNO_ELGA'
+C                PRODUIT LORS DU CALCUL DE L'OPTION 'SIEF_ELNO'
 C                POUR X-FEM UNIQUEMENT
 C OUT : CODRET : CODE DE RETOUR (0 SI TOUT VA BIEN)
 C   -------------------------------------------------------------------
@@ -153,8 +153,8 @@ C         IL FAUT DONC APPELER CESVAR SYSTEMATIQUEMENT
           CALL COPISD('CHAM_ELEM_S','V',CANBVA,CHELE2)
           CALL DETRSD('CHAM_ELEM_S',CANBVA)
 
-        ELSE IF ((OPTIO2.EQ.'EPSI_ELGA_DEPL') .OR.
-     &           (OPTIO2.EQ.'SIEF_ELGA_DEPL')) THEN
+        ELSE IF ((OPTIO2.EQ.'EPSI_ELGA') .OR.
+     &           (OPTIO2.EQ.'SIEF_ELGA')) THEN
           CANBSP = '&&'//NOMPRO//'.NBSP'
           CALL EXISD('CHAM_ELEM_S',CANBSP,IRET1)
           IF (IRET1.NE.1) CALL CESVAR(CAREL,' ',LIGREL,CANBSP)
@@ -182,7 +182,7 @@ C ----------------------------------------------------------------------
            CALL AJCHCA('PVARIPR',CHDEPL,LPAIN,LCHIN,NBIN,MAXIN,'N')
            CALL AJCHCA('PCONTPR',CHSIG, LPAIN,LCHIN,NBIN,MAXIN,'N')
            LPAOUT(1) = 'PINDLOC'
-        ELSE IF (OPTIO2.EQ.'CRIT_ELNO_RUPT') THEN
+        ELSE IF (OPTIO2.EQ.'CRIT_ELNO') THEN
           LPAIN(1) = 'PCONCOR'
           LPAOUT(1) = 'PCRITER'
         ELSE IF (OPTIO2.EQ.'VARI_ELNO_TUYO') THEN
@@ -208,30 +208,30 @@ CJMP    POUR LE MOMENT ON PASSE A LA FOIS LE CHAMP DEPL CI-DESSOUS
 CJMP    PUIS LE CHAMPS CHSIG ASSOCIE A LA FOIS A PCONTRR ET PSIEFNOR
           LPAIN(1) = 'PDEPLAR'
           LPAOUT(1) = 'PEFFORR'
-        ELSE IF (OPTIO2.EQ.'DETE_ELNO_DLTE') THEN
+        ELSE IF (OPTIO2.EQ.'DETE_ELNO') THEN
           LPAIN(1) = 'PTEMPER'
           LPAOUT(1) = 'PDETENO'
           INDMEC = .FALSE.
-        ELSE IF (OPTIO2.EQ.'DEDE_ELNO_DLDE') THEN
+        ELSE IF (OPTIO2.EQ.'DEDE_ELNO') THEN
           LPAIN(1) = 'PDEPLAR'
           LPAOUT(1) = 'PDEDENO'
         ELSE IF (OPTIO2.EQ.'DLSI_ELGA_DEPL') THEN
           LPAIN(1) = 'PDEPLAR'
           LPAOUT(1) = 'PDLAGSG'
-        ELSE IF (OPTIO2.EQ.'DESI_ELNO_DLSI') THEN
+        ELSE IF (OPTIO2.EQ.'DESI_ELNO') THEN
           LPAIN(1) = 'PDLAGSI'
           LPAOUT(1) = 'PDESINO'
         ELSE IF (OPTIO2.EQ.'ENEL_ELGA' .OR.
-     &           OPTIO2.EQ.'ENEL_ELNO_ELGA') THEN
+     &           OPTIO2.EQ.'ENEL_ELNO') THEN
           LPAIN(1) = 'PDEPLAR'
           LPAOUT(1) = 'PENERDR'
         ELSE IF (OPTIO2.EQ.'DISS_ELGA' .OR.
-     &           OPTIO2.EQ.'DISS_ELNO_ELGA') THEN
+     &           OPTIO2.EQ.'DISS_ELNO') THEN
           LPAOUT(1) = 'PDISSDR'
         ELSE IF (OPTIO2.EQ.'EQUI_ELNO_SIGM' .OR.
      &           OPTIO2.EQ.'EQUI_ELGA_SIGM' .OR.
-     &           OPTIO2.EQ.'PMPB_ELGA_SIEF' .OR.
-     &           OPTIO2.EQ.'PMPB_ELNO_SIEF') THEN
+     &           OPTIO2.EQ.'PMPB_ELGA' .OR.
+     &           OPTIO2.EQ.'PMPB_ELNO') THEN
           LPAOUT(1) = 'PCONTEQ'
         ELSE IF (OPTIO2.EQ.'EQUI_ELNO_EPSI' .OR.
      &           OPTIO2.EQ.'EQUI_ELGA_EPSI' .OR.
@@ -240,7 +240,7 @@ CJMP    PUIS LE CHAMPS CHSIG ASSOCIE A LA FOIS A PCONTRR ET PSIEFNOR
           LPAIN(1) = 'PDEFORR'
           LCHIN(1) = CHEPS
           LPAOUT(1) = 'PDEFOEQ'
-        ELSE IF (OPTIO2.EQ.'PROJ_ELEM_SIGM') THEN
+        ELSE IF (OPTIO2.EQ.'SIRO_ELEM') THEN
           LPAIN(1) = 'PSIG3D'
           LCHIN(1) = CHSIG
           LPAIN(2) = 'PGEOMER'
@@ -255,7 +255,7 @@ CJMP    PUIS LE CHAMPS CHSIG ASSOCIE A LA FOIS A PCONTRR ET PSIEFNOR
           ELSE IF (OPTIO2.EQ.'SIGM_ELNO_TUYO') THEN
             LPAIN(1) = 'PVARINR'
             LPAOUT(1) = 'PSIGNOD'
-          ELSE IF (OPTIO2.EQ.'SIEF_ELNO_ELGA') THEN
+          ELSE IF (OPTIO2.EQ.'SIEF_ELNO') THEN
             LPAIN(1) = 'PDEPLPR'
             LPAOUT(1) = 'PSIEFNOR'
           ELSE IF (OPTIO2.EQ.'FLHN_ELGA') THEN
@@ -263,16 +263,16 @@ CJMP    PUIS LE CHAMPS CHSIG ASSOCIE A LA FOIS A PCONTRR ET PSIEFNOR
             LCHIN(2) = CHSIG
             NBIN = 2
             LPAOUT(1) = 'PFLHN'
-          ELSE IF (OPTIO2.EQ.'DEGE_ELNO_DEPL') THEN
+          ELSE IF (OPTIO2.EQ.'DEGE_ELNO') THEN
             LPAOUT(1) = 'PDEFOGR'
           ELSE IF (OPTIO2.EQ.'EPSI_ELNO_DEPL' .OR.
-     &             OPTIO2.EQ.'EPSI_ELGA_DEPL' .OR.
-     &             OPTIO2.EQ.'EPSG_ELNO_DEPL' .OR.
-     &             OPTIO2.EQ.'EPSG_ELGA_DEPL' .OR.
-     &             OPTIO2.EQ.'EPME_ELNO_DEPL' .OR.
-     &             OPTIO2.EQ.'EPME_ELGA_DEPL' .OR.
-     &             OPTIO2.EQ.'EPMG_ELNO_DEPL' .OR.
-     &             OPTIO2.EQ.'EPMG_ELGA_DEPL' .OR.
+     &             OPTIO2.EQ.'EPSI_ELGA' .OR.
+     &             OPTIO2.EQ.'EPSG_ELNO' .OR.
+     &             OPTIO2.EQ.'EPSG_ELGA' .OR.
+     &             OPTIO2.EQ.'EPME_ELNO' .OR.
+     &             OPTIO2.EQ.'EPME_ELGA' .OR.
+     &             OPTIO2.EQ.'EPMG_ELNO' .OR.
+     &             OPTIO2.EQ.'EPMG_ELGA' .OR.
      &             OPTIO2.EQ.'EPFP_ELGA'      .OR.
      &             OPTIO2.EQ.'EPFP_ELNO'      .OR.
      &             OPTIO2.EQ.'EPFD_ELGA'      .OR.
@@ -284,30 +284,30 @@ CJMP    PUIS LE CHAMPS CHSIG ASSOCIE A LA FOIS A PCONTRR ET PSIEFNOR
           ELSE IF (OPTIO2.EQ.'EPVC_ELNO' .OR.
      &             OPTIO2.EQ.'EPVC_ELGA') THEN
             LPAOUT(1) = 'PDEFOVC'
-          ELSE IF (OPTIO2.EQ.'EPOT_ELEM_DEPL' .OR.
+          ELSE IF (OPTIO2.EQ.'EPOT_ELEM' .OR.
      &             OPTIO2.EQ.'EPOT_ELEM_TEMP') THEN
             LPAOUT(1) = 'PENERDR'
-          ELSE IF (OPTIO2.EQ.'ECIN_ELEM_DEPL') THEN
+          ELSE IF (OPTIO2.EQ.'ECIN_ELEM') THEN
             LPAOUT(1) = 'PENERCR'
           ELSE IF (OPTIO2.EQ.'EPSI_ELNO_TUYO') THEN
             LPAIN(1) = 'PDEFORR'
             LCHIN(1) =  CHEPS
             LPAOUT(1) = 'PDEFONO'
-          ELSE IF (OPTIO2.EQ.'EPEQ_ELNO_TUYO') THEN
+          ELSE IF (OPTIO2.EQ.'EPEQ_ELNO') THEN
             LPAIN(1) = 'PDEFOEQ'
             LCHIN(1) =  CH2
             LPAOUT(1) = 'PDENOEQ'
-          ELSE IF (OPTIO2.EQ.'SIEQ_ELNO_TUYO') THEN
+          ELSE IF (OPTIO2.EQ.'SIEQ_ELNO') THEN
             LPAIN(1) = 'PCONTEQ'
             LCHIN(1) =  CH1
             LPAOUT(1) = 'PCOEQNO'
-          ELSE IF (OPTIO2.EQ.'FLUX_ELNO_TEMP' .OR.
-     &             OPTIO2.EQ.'FLUX_ELGA_TEMP') THEN
+          ELSE IF (OPTIO2.EQ.'FLUX_ELNO' .OR.
+     &             OPTIO2.EQ.'FLUX_ELGA') THEN
             LPAOUT(1) = 'PFLUX_R'
             INDMEC = .FALSE.
-          ELSE IF (OPTIO2.EQ.'SOUR_ELGA_ELEC') THEN
+          ELSE IF (OPTIO2.EQ.'SOUR_ELGA') THEN
             LPAOUT(1) = 'PSOUR_R'
-          ELSE IF (OPTIO2.EQ.'DURT_ELNO_META') THEN
+          ELSE IF (OPTIO2.EQ.'DURT_ELNO') THEN
             LPAIN(1) = 'PPHASIN'
             LCHIN(1) = CHMETA
             LPAOUT(1) = 'PDURT_R'
@@ -330,7 +330,7 @@ CJMP    PUIS LE CHAMPS CHSIG ASSOCIE A LA FOIS A PCONTRR ET PSIEFNOR
             LCHIN(5) = CHNUMC
             NBIN = 5
             LPAOUT(1) = 'PMINMAX'
-          ELSE IF (OPTIO2.EQ.'EXTR_ELGA_VARI') THEN
+          ELSE IF (OPTIO2.EQ.'VAEX_ELGA') THEN
              NOMA=CHGEOM(1:8)
              CALL GETVTX(' ','NOM_VARI',0,1,1,VARI,IBID)
              CALL MECACT('V',CHNOVA,'MAILLA',NOMA,'NEUT_K24',1,'Z1',
@@ -341,7 +341,7 @@ CJMP    PUIS LE CHAMPS CHSIG ASSOCIE A LA FOIS A PCONTRR ET PSIEFNOR
             LPAIN(2) = 'PNOVARI'
             LCHIN(2) = CHNOVA
             NBIN =2
-          ELSE IF (OPTIO2.EQ.'EXTR_ELNO_VARI') THEN
+          ELSE IF (OPTIO2.EQ.'VAEX_ELNO') THEN
              NOMA=CHGEOM(1:8)
              CALL GETVTX(' ','NOM_VARI',0,1,1,VARI,IBID)
              CALL MECACT('V',CHNOVA,'MAILLA',NOMA,'NEUT_K24',1,'Z1',
@@ -360,19 +360,19 @@ C ----------------------------------------------------------------------
             CALL DISMOI('F','EXI_POUX',NOMODE,'MODELE',IBID,POUX,IER)
 C ----------------------------------------------------------------------
             IF (OPTIO2.EQ.'SIGM_ELNO_DEPL' .OR.
-     &          OPTIO2.EQ.'SIPO_ELNO_DEPL' .OR.
-     &          OPTIO2.EQ.'SIEF_ELGA_DEPL') THEN
+     &          OPTIO2.EQ.'SIPO_ELNO' .OR.
+     &          OPTIO2.EQ.'SIEF_ELGA') THEN
               LPAOUT(1) = 'PCONTRR'
               IF (POUX.EQ.'OUI') THEN
                 CALL MECHPO('&&MECHPO',CHARGE,MODELE,CHDEP2,
      &                      CHDYNR,SUROPT,LPAIN(NBIN+1),LCHIN(NBIN+1),
      &                      NB,TYPCOE,ALPHA,CALPHA)
                 NBIN = NBIN + NB
-                IF (OPTIO2.EQ.'SIPO_ELNO_DEPL') THEN
+                IF (OPTIO2.EQ.'SIPO_ELNO') THEN
                   LPAOUT(1) = 'PCONTPO'
                 END IF
               END IF
-            ELSE IF (OPTIO2.EQ.'SIPO_ELNO_DEPL') THEN
+            ELSE IF (OPTIO2.EQ.'SIPO_ELNO') THEN
               LPAIN(1) = 'PDEPLAR'
               LPAOUT(1) = 'PCONTRR'
               IF (POUX.EQ.'OUI') THEN
@@ -422,9 +422,9 @@ C ----------------------------------------------------------------------
      &              'N')
 
 C       SI LE MODELE EST X-FEM, AJOUT DES PARAMETRES POUR LE CALCUL DE
-C       'SIEF_ELNO_ELGA' (ET 'SIEF_SENO_SEGA')
+C       'SIEF_ELNO' (ET 'SIEF_SENO_SEGA')
         CALL JEEXIN(MODELE(1:8)//'.FISS',IFISS)
-        IF (IFISS.NE.0.AND.OPTION.EQ.'SIEF_ELNO_ELGA') THEN
+        IF (IFISS.NE.0.AND.OPTION.EQ.'SIEF_ELNO') THEN
           CHXFEM(1)=MODELE(1:8)//'.TOPOSE.CNS'
           CHXFEM(2)=MODELE(1:8)//'.TOPOSE.LON'
           CHXFEM(3)=CHELEX
@@ -492,6 +492,8 @@ C         -- DERIVEE LAGRANGIENNE
         ELSE IF (TYPESE.EQ.3) THEN
           IF (OPTIO2(1:4).EQ.'EPSI') GO TO 20
           IF (OPTIO2(11:14).EQ.'ELGA') GO TO 20
+          IF (OPTIO2.EQ.'SIEF_ELNO') GO TO 20
+
 C         -- SENSIBILITE PAR RAPPORT A UNE CARACTERISTIQUE MATERIAU
 C            DETERMINATION DU CHAMP MATERIAU A PARTIR DE LA CARTE CODEE
           MATERI = CHMATE(1:8)
@@ -514,6 +516,7 @@ C         -- ON RAJOUTE LPAIN LIES AU MATERIAU ET AU CHAMP DERIVES
           END IF
 C         -- REDEFINITION DE L'OPTION
           OPTIO2(1:14) = OPTIO2(1:10)//'SENS'
+          OPTIO2(10:10) = '_'
           IF (OPTIO2(1:4).NE.'FLUX') THEN
 C           -- GLUTE MECALM.F : IL FAUT PERMUTER PDEPLAR ET PDEPSEN
             I1=INDIK8(LPAIN,'PDEPSEN',1,NBIN)
@@ -533,9 +536,9 @@ C           -- GLUTE MECALM.F : IL FAUT PERMUTER PDEPLAR ET PDEPSEN
           CODRET = 1
           CALL U2MESK('A','CALCULEL2_89',1,OPTIO2)
         END IF
-C     POUR 'SIEF_ELNO_ELGA' CAS X-FEM, ON VERIFIE LA PRESENCE DU CHAMP
+C     POUR 'SIEF_ELNO' CAS X-FEM, ON VERIFIE LA PRESENCE DU CHAMP
 C     SUPPLEMENTAIRE "DE CONTRAINTES AUX NOEUDS PAR SOUS ELEMENTS"
-        IF (IFISS.NE.0.AND.OPTION.EQ.'SIEF_ELNO_ELGA') THEN
+        IF (IFISS.NE.0.AND.OPTION.EQ.'SIEF_ELNO') THEN
           CALL EXISD('CHAMP_GD',LCHOUT(2),IRET)
           IF (IRET.EQ.0) THEN
             CODRET = 1

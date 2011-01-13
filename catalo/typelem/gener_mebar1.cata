@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 10/01/2011   AUTEUR REZETTE C.REZETTE 
+%& MODIF TYPELEM  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -125,7 +125,7 @@ OPTION__
                               OUT__  MVECTUR  PVECTUR
     COOR_ELGA           478   IN__   NGEOMER  PGEOMER
                               OUT__  EGGEOP_R PCOORPG
-    ECIN_ELEM_DEPL      154   IN__   CCAGNBA  PCAGNBA  CCAORIE  PCAORIE  DDL_MECA PDEPLAR  CFREQR   PFREQR
+    ECIN_ELEM      154   IN__   CCAGNBA  PCAGNBA  CCAORIE  PCAORIE  DDL_MECA PDEPLAR  CFREQR   PFREQR
                                      NGEOMER  PGEOMER  CMATERC  PMATERC
                               OUT__  EENECNO  PENERCR
     EFGE_ELNO_CART      -1    IN__   XXXXXX   XXXXXX
@@ -138,7 +138,7 @@ OPTION__
                               OUT__  XXXXXX   XXXXXX
     ENER_TOTALE         -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
-    EPOT_ELEM_DEPL      154   IN__   CCAGNBA  PCAGNBA  CCAORIE  PCAORIE  DDL_MECA PDEPLAR  NGEOMER  PGEOMER
+    EPOT_ELEM      154   IN__   CCAGNBA  PCAGNBA  CCAORIE  PCAORIE  DDL_MECA PDEPLAR  NGEOMER  PGEOMER
                                      CMATERC  PMATERC  ZVARCPG  PVARCPR  ZVARCPG  PVARCRR
                               OUT__  EENEDNO  PENERDR
     EPSI_ELNO_DEPL      154   IN__   CCAORIE  PCAORIE  DDL_MECA PDEPLAR  NGEOMER  PGEOMER
@@ -215,11 +215,11 @@ OPTION__
                                      CTEMPSR  PINSTMR  CTEMPSR  PINSTPR  CMATERC  PMATERC  ZVARCPG  PVARCRR
                                      ZVARCPG  PVARCMR  ZVARCPG  PVARCPR  ZVARIPG  PVARIMR
                               OUT__  MMATUUR  PMATUUR
-    SIEF_ELGA_DEPL      154   IN__   CCAGNBA  PCAGNBA  CCAORIE  PCAORIE  DDL_MECA PDEPLAR  NGEOMER  PGEOMER
+    SIEF_ELGA      154   IN__   CCAGNBA  PCAGNBA  CCAORIE  PCAORIE  DDL_MECA PDEPLAR  NGEOMER  PGEOMER
                                      CMATERC  PMATERC  ZVARCPG  PVARCPR  ZVARCPG  PVARCRR
                               OUT__  EEFGEGA  PCONTRR
                                      EEFGEGC  PCONTRC
-    SIEF_ELNO_ELGA      156   IN__   EEFGEGA  PCONTRR
+    SIEF_ELNO      156   IN__   EEFGEGA  PCONTRR
                               OUT__  EEFGENO  PSIEFNOR
                                      EEFGENC  PSIEFNOC
     SIGM_ELNO_DEPL      154   IN__   CCAGNBA  PCAGNBA  CCAORIE  PCAORIE  DDL_MECA PDEPLAR  NGEOMER  PGEOMER

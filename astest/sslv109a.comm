@@ -1,8 +1,8 @@
-# MODIF  DATE 27/07/2009   AUTEUR DESROCHES X.DESROCHES 
+# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
 # TITRE CYLINDRE SOUMIS A UNE PRESSION EN MODE 1 FOURIER (TRIA6)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -92,7 +92,7 @@ TEST_TABLE(       TABLE=T_ENER,
 # ----------------------------------------------------------------------
 
 FO_ELAS1=CALC_ELEM(reuse=FO_ELAS1,   RESULTAT=FO_ELAS1,
-                         OPTION=( 'SIGM_ELNO_DEPL', 'SIEF_ELGA_DEPL', ),
+                         OPTION=( 'SIGM_ELNO_DEPL', 'SIEF_ELGA', ),
                        )
 
 FO_ELAS1=CALC_NO(reuse=FO_ELAS1,   RESULTAT=FO_ELAS1,
@@ -196,7 +196,7 @@ ANGL2=135.
 
 CO_FOUR1=COMB_FOURIER(   RESULTAT=FO_ELAS1,
                             NOM_CHAM=( 'DEPL',  'REAC_NODA',
-                      'SIEF_ELGA_DEPL', 'SIGM_ELNO_DEPL', ),
+                      'SIEF_ELGA', 'SIGM_ELNO_DEPL', ),
                                 ANGL=( ANGL1,  ANGL2,  )
                         )
 

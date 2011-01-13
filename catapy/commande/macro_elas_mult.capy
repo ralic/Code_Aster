@@ -1,7 +1,7 @@
-#& MODIF COMMANDE  DATE 07/12/2010   AUTEUR PELLET J.PELLET 
+#& MODIF COMMANDE  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -47,17 +47,17 @@ MACRO_ELAS_MULT=MACRO(nom="MACRO_ELAS_MULT",op=macro_elas_mult_ops,sd_prod=macro
            TYPE_MODE       =SIMP(statut='f',typ='TXM',defaut="SYME",into=("SYME","ANTI","TOUS") ),
            CHAR_MECA       =SIMP(statut='f',typ=(char_meca),validators=NoRepeat(),max='**'),
            OPTION          =SIMP(statut='f',typ='TXM',validators=NoRepeat(),max='**',
-                                 into=("EFGE_ELNO_DEPL","EPOT_ELEM_DEPL","SIGM_ELNO_DEPL","SIEF_ELGA_DEPL",
-                                       "SIGM_ELNO_CART","EFGE_ELNO_CART","DEGE_ELNO_DEPL","EPSI_ELNO_DEPL",
-                                       "EPSI_ELGA_DEPL","EPSG_ELNO_DEPL","EPSG_ELGA_DEPL","EPSP_ELNO","EPSP_ELGA",
-                                       "ECIN_ELEM_DEPL","FLUX_ELGA_TEMP","FLUX_ELNO_TEMP","SOUR_ELGA_ELEC",
+                                 into=("EFGE_ELNO_DEPL","EPOT_ELEM","SIGM_ELNO_DEPL","SIEF_ELGA",
+                                       "SIGM_ELNO_CART","EFGE_ELNO_CART","DEGE_ELNO","EPSI_ELNO_DEPL",
+                                       "EPSI_ELGA","EPSG_ELNO","EPSG_ELGA","EPSP_ELNO","EPSP_ELGA",
+                                       "ECIN_ELEM","FLUX_ELGA","FLUX_ELNO","SOUR_ELGA",
                                        "PRAC_ELNO","INTE_ELNO",
-                                       "SIGM_NOZ1_ELGA","ERZ1_ELEM_SIGM","SIGM_NOZ2_ELGA",
-                                       "ERZ2_ELEM_SIGM","VNOR_ELEM_DEPL","ERME_ELNO",
+                                       "SIGM_NOZ1_ELGA","ERZ1_ELEM","SIGM_NOZ2_ELGA",
+                                       "ERZ2_ELEM","VNOR_ELEM_DEPL","ERME_ELNO",
                                        "ERME_ELEM","EQUI_ELNO_SIGM","EQUI_ELGA_SIGM","EQUI_ELNO_EPSI",
-                                       "QIRE_ELEM_SIGM","QIRE_ELNO_ELEM","QIZ1_ELEM_SIGM","QIZ2_ELEM_SIGM",
-                                       "EQUI_ELGA_EPSI","FORC_NODA","REAC_NODA","EPSI_NOEU_DEPL","SIGM_NOEU_DEPL",
-                                       "EFGE_NOEU_DEPL","EQUI_NOEU_SIGM","EQUI_NOEU_EPSI","FLUX_NOEU_TEMP") ),
+                                       "QIRE_ELEM","QIRE_ELNO","QIZ1_ELEM","QIZ2_ELEM",
+                                       "EQUI_ELGA_EPSI","FORC_NODA","REAC_NODA","EPSI_NOEU","SIGM_NOEU_DEPL",
+                                       "EFGE_NOEU_DEPL","EQUI_NOEU_SIGM","EQUI_NOEU_EPSI","FLUX_NOEU") ),
            NUME_COUCHE     =SIMP(statut='f',typ='I',defaut=1),
            NIVE_COUCHE     =SIMP(statut='f',typ='TXM',defaut="MOY",into=("SUP","INF","MOY")),
            SOUS_TITRE      =SIMP(statut='f',typ='TXM',max='**'),

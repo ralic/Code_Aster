@@ -1,9 +1,9 @@
-# MODIF  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
 # TITRE THERMO-PLASTICITE EN TRACTION SIMPLE (MODELISATION:3D)
 # hsnv100g.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -152,7 +152,7 @@ U=STAT_NON_LINE(
 #
 U=CALC_ELEM( reuse=U,
                             OPTION=(  'EPSI_ELNO_DEPL',
-                  'SIEF_ELNO_ELGA',  'VARI_ELNO_ELGA',),
+                  'SIEF_ELNO',  'VARI_ELNO_ELGA',),
                           RESULTAT=U,
 
               )
@@ -163,19 +163,19 @@ TEST_RESU(RESU=(
             NOEUD = 'N1', NOM_CMP = 'TEMP', VALE = 90.,REFERENCE='ANALYTIQUE', ),
           _F(  RESULTAT = U,   NOM_CHAM = 'EPSI_ELNO_DEPL',  NUME_ORDRE = 1,
             MAILLE = 'M1',NOEUD = 'N1',NOM_CMP = 'EPXX',REFERENCE='ANALYTIQUE', VALE = 8.6666E-4),
-          _F(  RESULTAT = U,   NOM_CHAM = 'SIEF_ELNO_ELGA',  NUME_ORDRE = 1,
+          _F(  RESULTAT = U,   NOM_CHAM = 'SIEF_ELNO',  NUME_ORDRE = 1,
             MAILLE = 'M1',NOEUD = 'N1',NOM_CMP = 'SIYY',REFERENCE='ANALYTIQUE', VALE = -133.333),
           _F(  RESULTAT = U,   NOM_CHAM = 'EPSI_ELNO_DEPL',  NUME_ORDRE = 3,
             MAILLE = 'M1',NOEUD = 'N2',NOM_CMP = 'EPXX',REFERENCE='ANALYTIQUE', VALE = 1.1000E-3),
           _F(  RESULTAT = U,   NOM_CHAM = 'VARI_ELNO_ELGA',  NUME_ORDRE = 3,
             MAILLE = 'M1',NOEUD = 'N2',NOM_CMP = 'V1',REFERENCE='ANALYTIQUE', VALE = 3.0000E-4),
-          _F(  RESULTAT = U,   NOM_CHAM = 'SIEF_ELNO_ELGA',  NUME_ORDRE = 3,
+          _F(  RESULTAT = U,   NOM_CHAM = 'SIEF_ELNO',  NUME_ORDRE = 3,
             MAILLE = 'M1',NOEUD = 'N2',NOM_CMP = 'SIYY',REFERENCE='ANALYTIQUE', VALE = -100.),
           _F(  RESULTAT = U,   NOM_CHAM = 'EPSI_ELNO_DEPL',  NUME_ORDRE = 5,
             MAILLE = 'M1',NOEUD = 'N3',NOM_CMP = 'EPXX',REFERENCE='ANALYTIQUE', VALE = 1.2750E-3),
           _F(  RESULTAT = U,   NOM_CHAM = 'VARI_ELNO_ELGA',  NUME_ORDRE = 5,
             MAILLE = 'M1',NOEUD = 'N3',NOM_CMP = 'V1',REFERENCE='ANALYTIQUE', VALE = 5.2500E-4),
-          _F(  RESULTAT = U,   NOM_CHAM = 'SIEF_ELNO_ELGA',  NUME_ORDRE = 5,
+          _F(  RESULTAT = U,   NOM_CHAM = 'SIEF_ELNO',  NUME_ORDRE = 5,
             MAILLE = 'M1',NOEUD = 'N3',NOM_CMP = 'SIYY',REFERENCE='ANALYTIQUE', VALE = -75.000))
                                                                      )
 

@@ -1,9 +1,9 @@
-# MODIF  DATE 23/11/2010   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
 # TITRE POUTRE ENCASTREE-LIBRE: REPONSE SPECTRALE
 # sdll23c.para = tps_job 60 mem_job 270Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -86,8 +86,8 @@ MODE_MEC=MODE_ITER_SIMULT(  MATR_A=RIGIDITE,   MATR_B=MASSE,
 MODE_MEC=NORM_MODE(reuse=MODE_MEC,   MODE=MODE_MEC,   NORME='MASS_GENE',)
 
 MODE_MEC=CALC_ELEM(reuse=MODE_MEC,  RESULTAT=MODE_MEC,
-                         MODELE=MODELE,      OPTION=('SIEF_ELGA_DEPL',
-                         'EFGE_ELNO_DEPL', 'SIPO_ELNO_DEPL'),
+                         MODELE=MODELE,      OPTION=('SIEF_ELGA',
+                         'EFGE_ELNO_DEPL', 'SIPO_ELNO'),
                          CHAM_MATER=CH_MATE,   CARA_ELEM=CARA_ELE    )
 
 MODE_MEC=CALC_NO(reuse=MODE_MEC,  RESULTAT=MODE_MEC,
@@ -143,7 +143,7 @@ MODE_STA=MODE_STATIQUE(  MATR_RIGI=RIGIDITE,   MATR_MASS=MASSE,
                                          NOM_DIR = 'Z')) )
 
 MODE_STA=CALC_ELEM(reuse=MODE_STA,  RESULTAT=MODE_STA,
-                         MODELE=MODELE,      OPTION='SIEF_ELGA_DEPL',
+                         MODELE=MODELE,      OPTION='SIEF_ELGA',
                          CHAM_MATER=CH_MATE,   CARA_ELEM=CARA_ELE    )
 
 MODE_STA=CALC_NO(reuse=MODE_STA,  RESULTAT=MODE_STA,
@@ -189,7 +189,7 @@ SISM_SP3=COMB_SISM_MODAL(  MODE_MECA=MODE_MEC,
                            COMB_DIRECTION=_F(  TYPE = 'QUAD'),
                            OPTION=( 'DEPL',  'REAC_NODA',
                                       'EFGE_ELNO_DEPL',
-                                      'SIPO_ELNO_DEPL',  )
+                                      'SIPO_ELNO',  )
                             )
 
 
@@ -227,19 +227,19 @@ TEST_RESU(RESU=( _F(  RESULTAT = SISM_SP3,  NOM_CHAM = 'REAC_NODA',
                      NOEUD = 'A',     NOM_CMP = 'DRZ',    VALE = 5.6297469517745E+05))
                    )
 #
-TEST_RESU(RESU=(_F( RESULTAT= SISM_SP3 , NOM_CHAM= 'SIPO_ELNO_DEPL',
+TEST_RESU(RESU=(_F( RESULTAT= SISM_SP3 , NOM_CHAM= 'SIPO_ELNO',
                    NOEUD_CMP= ( 'COMBI' , 'QUAD', ),
                    MAILLE = 'E01',
                    NOEUD= 'A'    , NOM_CMP= 'SMFY'   , VALE=  4.6117462564375E+09),
-                _F( RESULTAT= SISM_SP3 , NOM_CHAM= 'SIPO_ELNO_DEPL',
+                _F( RESULTAT= SISM_SP3 , NOM_CHAM= 'SIPO_ELNO',
                    NOEUD_CMP= ( 'COMBI' , 'QUAD', ),
                    MAILLE = 'E01',
                    NOEUD= 'A'    , NOM_CMP= 'SMFZ'   , VALE=   2.9794825166173E+10),
-                 _F( RESULTAT= SISM_SP3 , NOM_CHAM= 'SIPO_ELNO_DEPL',
+                 _F( RESULTAT= SISM_SP3 , NOM_CHAM= 'SIPO_ELNO',
                    NOEUD_CMP= ( 'COMBI' , 'QUAD', ),
                    MAILLE = 'E01',
                    NOEUD= 'A'    , NOM_CMP= 'SVY'   , VALE= 1.9063128148933E+08),
-                 _F( RESULTAT= SISM_SP3 , NOM_CHAM= 'SIPO_ELNO_DEPL',
+                 _F( RESULTAT= SISM_SP3 , NOM_CHAM= 'SIPO_ELNO',
                    NOEUD_CMP= ( 'COMBI' , 'QUAD', ),
                    MAILLE = 'E01',
                    NOEUD= 'A'    , NOM_CMP= 'SVZ'   , VALE=  4.1786782760899E+06)),

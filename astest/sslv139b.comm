@@ -1,10 +1,10 @@
 
-# MODIF  DATE 30/08/2010   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
 # TITRE : FLAMBEMENT D'UNE PLAQUE CIRCULAIRE SOUMISE A UNE
 # sslv139b.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -74,12 +74,12 @@ ELAS=MACRO_ELAS_MULT(MODELE=MODMECA,
                      CAS_CHARGE=_F(MODE_FOURIER=0,
                                    TYPE_MODE='SYME',
                                    CHAR_MECA=CHAR,
-                                   OPTION='SIEF_ELGA_DEPL',),);
+                                   OPTION='SIEF_ELGA',),);
 
 SIG=CREA_CHAMP(TYPE_CHAM='ELGA_SIEF_R',
                OPERATION='EXTR',
                RESULTAT=ELAS,
-               NOM_CHAM='SIEF_ELGA_DEPL',
+               NOM_CHAM='SIEF_ELGA',
                TYPE_MAXI='MINI',
                TYPE_RESU='VALE',);
 
@@ -127,7 +127,7 @@ MODE=CALC_ELEM(reuse =MODE,
 
 
                RESULTAT=MODE,
-               OPTION=('SIEF_ELGA_DEPL','ETOT_ELGA','ETOT_ELNO_ELGA','ETOT_ELEM',),);
+               OPTION=('SIEF_ELGA','ETOT_ELGA','ETOT_ELNO','ETOT_ELEM',),);
 
 DEPL=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
                 OPERATION='EXTR',
@@ -146,7 +146,7 @@ EVOLELAS=CREA_RESU(OPERATION='AFFE',
 
 EVOLELAS=CALC_ELEM(reuse =EVOLELAS,
                    RESULTAT=EVOLELAS,
-                   OPTION=('SIEF_ELGA_DEPL','ETOT_ELGA','ETOT_ELNO_ELGA','ETOT_ELEM',),);
+                   OPTION=('SIEF_ELGA','ETOT_ELGA','ETOT_ELNO','ETOT_ELEM',),);
 
 RES_NORM=NORM_MODE(MODE=RESULT,
                    NORME='TRAN',);
@@ -195,7 +195,7 @@ TEST_RESU(RESU=(_F(RESULTAT=EVOLELAS,
                    VERSION='8.0.15',),
                 _F(RESULTAT=EVOLELAS,
                    NUME_ORDRE=1,
-                   NOM_CHAM='ETOT_ELNO_ELGA',
+                   NOM_CHAM='ETOT_ELNO',
                    NOM_CMP='TOTALE',
                    MAILLE='M3',
                    NOEUD='N10',
@@ -221,7 +221,7 @@ TEST_RESU(RESU=(_F(RESULTAT=MODE,
                    REFERENCE='AUTRE_ASTER',),
                 _F(RESULTAT=MODE,
                    NUME_ORDRE=1,
-                   NOM_CHAM='ETOT_ELNO_ELGA',
+                   NOM_CHAM='ETOT_ELNO',
                    NOM_CMP='TOTALE',
                    MAILLE='M3',
                    NOEUD='N10',

@@ -1,9 +1,9 @@
-# MODIF  DATE 07/12/2010   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
 # TITRE DETECTION DES SINGULARITES DANS UNE PLAQUE FISSUREE (QUAD8)
 # ssnp130d.para = tps_job 60 mem_job 200Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -74,8 +74,8 @@ DEPLA=CALC_ELEM(reuse =DEPLA,
                 RESULTAT=DEPLA,
                 INST=1.,
                 PREC_ERR=1.2,
-                OPTION=('SIEF_ELNO_ELGA','ERME_ELEM','ERME_ELNO','ETOT_ELEM',
-                        'SING_ELEM','SING_ELNO_ELEM'),);
+                OPTION=('SIEF_ELNO','ERME_ELEM','ERME_ELNO','ETOT_ELEM',
+                        'SING_ELEM','SING_ELNO'),);
 
 # TEST DE SING_ELEM VALEUR MAX ET MIN DES 2 COMPOSANTES
 
@@ -218,11 +218,11 @@ TEST_RESU(RESU=(_F(RESULTAT=DEPLA,
                    PRECISION=0.02,
                    REFERENCE='NON_REGRESSION',),),);
 
-# TEST DE SING_ELNO_ELEM
+# TEST DE SING_ELNO
 
 TEST_RESU(RESU=(_F(RESULTAT=DEPLA,
                    INST=1.0,
-                   NOM_CHAM='SING_ELNO_ELEM',
+                   NOM_CHAM='SING_ELNO',
                    NOM_CMP='DEGRE',
                    TYPE_TEST='MAX',
                    VALE=2.0,
@@ -231,7 +231,7 @@ TEST_RESU(RESU=(_F(RESULTAT=DEPLA,
                    REFERENCE='NON_REGRESSION',),
                 _F(RESULTAT=DEPLA,
                    INST=1.0,
-                   NOM_CHAM='SING_ELNO_ELEM',
+                   NOM_CHAM='SING_ELNO',
                    NOM_CMP='DEGRE',
                    TYPE_TEST='MIN',
                    VALE=0.51,
@@ -240,7 +240,7 @@ TEST_RESU(RESU=(_F(RESULTAT=DEPLA,
                    REFERENCE='NON_REGRESSION',),
                _F(RESULTAT=DEPLA,
                    INST=1.0,
-                   NOM_CHAM='SING_ELNO_ELEM',
+                   NOM_CHAM='SING_ELNO',
                    NOM_CMP='RAPPORT',
                    TYPE_TEST='MAX',
                    VALE=1.15,
@@ -249,7 +249,7 @@ TEST_RESU(RESU=(_F(RESULTAT=DEPLA,
                    REFERENCE='NON_REGRESSION',),
                _F(RESULTAT=DEPLA,
                    INST=1.0,
-                   NOM_CHAM='SING_ELNO_ELEM',
+                   NOM_CHAM='SING_ELNO',
                    NOM_CMP='RAPPORT',
                    TYPE_TEST='MIN',
                    VALE=0.16,
@@ -258,7 +258,7 @@ TEST_RESU(RESU=(_F(RESULTAT=DEPLA,
                    REFERENCE='NON_REGRESSION',),
                _F(RESULTAT=DEPLA,
                    INST=1.0,
-                   NOM_CHAM='SING_ELNO_ELEM',
+                   NOM_CHAM='SING_ELNO',
                    NOM_CMP='TAILLE',
                    TYPE_TEST='MAX',
                    VALE=4.56,
@@ -267,7 +267,7 @@ TEST_RESU(RESU=(_F(RESULTAT=DEPLA,
                    REFERENCE='NON_REGRESSION',),
                _F(RESULTAT=DEPLA,
                    INST=1.0,
-                   NOM_CHAM='SING_ELNO_ELEM',
+                   NOM_CHAM='SING_ELNO',
                    NOM_CMP='TAILLE',
                    TYPE_TEST='MIN',
                    VALE=0.259,

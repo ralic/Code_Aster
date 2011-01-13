@@ -6,9 +6,9 @@
       
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 20/04/2010   AUTEUR JAUBERT A.JAUBERT 
+C MODIF ELEMENTS  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -29,7 +29,7 @@ C ======================================================================
 
 C =====================================================================
 C    - FONCTION REALISEE: FULL_MECA, RIGI_MECA, RAPH_MECA, FORC_NODA
-C                         VARI_ELNO_ELGA,SIEF_ELNO_ELGA 
+C                         VARI_ELNO_ELGA,SIEF_ELNO 
 C    - ARGUMENTS:
 C        DONNEES:      OPTION       -->  OPTION DE CALCUL
 C                      NOMTE        -->  NOM DU TYPE ELEMENT
@@ -252,9 +252,9 @@ C ======================================================================
       END IF
 
 C ======================================================================
-C --- 4. OPTION : SIEF_ELNO_ELGA ---------------------------------------
+C --- 4. OPTION : SIEF_ELNO ---------------------------------------
 C ======================================================================
-      IF (OPTION .EQ. 'SIEF_ELNO_ELGA') THEN
+      IF (OPTION .EQ. 'SIEF_ELNO') THEN
         CALL JEVECH('PCONTRR','L',ICHG)
         CALL JEVECH('PSIEFNOR','E',ICHN)
 
@@ -266,7 +266,7 @@ C ======================================================================
       END IF
 
 C ======================================================================
-C --- 5. OPTION : SIEF_ELNO_ELGA ---------------------------------------
+C --- 5. OPTION : SIEF_ELNO ---------------------------------------
 C ======================================================================
       IF (OPTION .EQ. 'VARI_ELNO_ELGA') THEN
         CALL JEVECH('PVARIGR','L',ICHG)

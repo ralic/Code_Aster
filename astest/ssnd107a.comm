@@ -1,10 +1,10 @@
-# MODIF  DATE 11/05/2010   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
 # RESPONSABLE PROIX J-M.PROIX
 # TITRE TRACTIONS-ROTATIONS MULTIPLES GDEF_HYPOELAS CINEMATIQUE
 # ssnd107a.para = tps_job 120 mem_job 64Mo mem_aster 50 ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -177,11 +177,11 @@ for icomp,comp in enumerate(compor) :
 
                              
     resu[icomp]=CALC_ELEM(reuse =resu[icomp], RESULTAT=resu[icomp],
-               OPTION=('EQUI_ELGA_SIGM','EPSG_ELGA_DEPL'));
+               OPTION=('EQUI_ELGA_SIGM','EPSG_ELGA'));
 
     vmis[icomp]=RECU_FONCTION(RESULTAT=resu[icomp],NOM_CHAM='EQUI_ELGA_SIGM',
                               NOM_CMP='VMIS',MAILLE='M2',POINT=1,);
-    epsg[icomp]=RECU_FONCTION(RESULTAT=resu[icomp],NOM_CHAM='EPSG_ELGA_DEPL',
+    epsg[icomp]=RECU_FONCTION(RESULTAT=resu[icomp],NOM_CHAM='EPSG_ELGA',
                               NOM_CMP='EPZZ',MAILLE='M2',POINT=1,);
     TEST_FONCTION(VALEUR=(_F(FONCTION=vmis[icomp],
                          NOM_PARA='INST',

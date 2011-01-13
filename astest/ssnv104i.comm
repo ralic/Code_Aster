@@ -1,10 +1,10 @@
-# MODIF  DATE 13/12/2010   AUTEUR DESOZA T.DESOZA 
+# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
 #  CAS_TEST  : SSNV104I
 #  TITRE : CONTACT DE DEUX SPHERES
 # ssnv104i.para = tps_job 60 mem_job 100Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -175,7 +175,7 @@ RESU=STAT_NON_LINE(SOLVEUR=_F(SYME='OUI',),
                             );
 
 RESU=CALC_ELEM(reuse =RESU,
-               OPTION=('SIEF_ELNO_ELGA','VARI_ELNO_ELGA'),
+               OPTION=('SIEF_ELNO','VARI_ELNO_ELGA'),
                RESULTAT=RESU,);
 #
 #
@@ -193,7 +193,7 @@ SIELGA=CREA_CHAMP(TYPE_CHAM='ELGA_SIEF_R',
 SIELNO=CREA_CHAMP(TYPE_CHAM='ELNO_SIEF_R',
                   OPERATION='EXTR',
                   RESULTAT=RESU,
-                  NOM_CHAM='SIEF_ELNO_ELGA',
+                  NOM_CHAM='SIEF_ELNO',
                   INST=1.,);
 #_____________________________________________________________________
 #

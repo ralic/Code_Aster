@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 10/01/2011   AUTEUR DELMAS J.DELMAS 
+%& MODIF TYPELEM  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -173,19 +173,19 @@ OPTION__
     DCHA_ELNO_SIGM      489   IN__   ECONTPG  PCONTMR  ECONTPG  PCONTPR  CSOUSOP  PNEUK24  ZVARIPG  PVARIMR
                                      ZVARIPG  PVARIPR
                               OUT__  ZVARINO  PVARIMO
-    DEDE_ELNO_DLDE      557   IN__   NDEPLAR  PDEPLAR  NDEPLAR  PDLAGDE  NGEOMER  PGEOMER  NDEPLAR  PVECTTH
+    DEDE_ELNO      557   IN__   NDEPLAR  PDEPLAR  NDEPLAR  PDLAGDE  NGEOMER  PGEOMER  NDEPLAR  PVECTTH
                               OUT__  EDEULNO  PDEDENO
-    DESI_ELNO_DLSI      559   IN__   ECONTNO  PCONTRR  ECONTPG  PDLAGSI  NGEOMER  PGEOMER  NDEPLAR  PVECTTH
+    DESI_ELNO      559   IN__   ECONTNO  PCONTRR  ECONTPG  PDLAGSI  NGEOMER  PGEOMER  NDEPLAR  PVECTTH
                               OUT__  ECONTNO  PDESINO
     DLSI_ELGA_DEPL      558   IN__   NDEPLAR  PDEPLAR  NDEPLAR  PDLAGDE  ZVARCPG  PVARCPR  NGEOMER  PGEOMER
                                      CMATERC  PMATERC  ZVARCPG  PVARCPR  CTEMPSR  PTEMPSR  NDEPLAR  PVECTTH
                               OUT__  ECONTPG  PDLAGSG
-    ECIN_ELEM_DEPL      -1    IN__   XXXXXX   XXXXXX
+    ECIN_ELEM      -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
     ENEL_ELGA           575   IN__   CCAMASS  PCAMASS  ECONTPG  PCONTRR  NGEOMER  PGEOMER  CMATERC  PMATERC
                                      ZVARCPG  PVARCPR  CTEMPSR  PTEMPSR
                               OUT__  EENEDPG  PENERDR
-    ENEL_ELNO_ELGA      575   IN__   CCAMASS  PCAMASS  ECONTPG  PCONTRR  NGEOMER  PGEOMER  CMATERC  PMATERC
+    ENEL_ELNO      575   IN__   CCAMASS  PCAMASS  ECONTPG  PCONTRR  NGEOMER  PGEOMER  CMATERC  PMATERC
                                      ZVARCPG  PVARCPR  CTEMPSR  PTEMPSR
                               OUT__  EENEDNN  PENERDR
     ENER_ELAS           490   IN__   CCOMPOR  PCOMPOR  ECONTPG  PCONTPR  NDEPLAR  PDEPLR   NGEOMER  PGEOMER
@@ -195,22 +195,22 @@ OPTION__
                                      NDEPLAR  PDEPLR   NGEOMER  PGEOMER  CMATERC  PMATERC  ZVARCPG  PVARCPR
                                      ZVARCPG  PVARCRR   ZVARIPG  PVARIPR
                               OUT__  EENEDNO  PENERD1
-    EPME_ELGA_DEPL      -1    IN__   XXXXXX   XXXXXX
+    EPME_ELGA      -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
-    EPME_ELNO_DEPL      -1    IN__   XXXXXX   XXXXXX
+    EPME_ELNO      -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
-    EPMG_ELGA_DEPL      -1    IN__   XXXXXX   XXXXXX
+    EPMG_ELGA      -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
-    EPMG_ELNO_DEPL      -1    IN__   XXXXXX   XXXXXX
+    EPMG_ELNO      -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
-    EPOT_ELEM_DEPL      286   IN__   CCAMASS  PCAMASS  NDEPLAR  PDEPLAR  NGEOMER  PGEOMER  CMATERC  PMATERC
+    EPOT_ELEM      286   IN__   CCAMASS  PCAMASS  NDEPLAR  PDEPLAR  NGEOMER  PGEOMER  CMATERC  PMATERC
                                      ZVARCPG  PVARCPR  ZVARCPG  PVARCRR
                               OUT__  EENEDNO  PENERDR
-    EPSG_ELGA_DEPL      -1    IN__   XXXXXX   XXXXXX
+    EPSG_ELGA      -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
-    EPSG_ELNO_DEPL      -1    IN__   XXXXXX   XXXXXX
+    EPSG_ELNO      -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
-    EPSI_ELGA_DEPL      87    IN__   CCOMPOR  PCOMPOR  NDEPLAR  PDEPLAR  NGEOMER  PGEOMER  ZVARCPG  PVARCPR
+    EPSI_ELGA      87    IN__   CCOMPOR  PCOMPOR  NDEPLAR  PDEPLAR  NGEOMER  PGEOMER  ZVARCPG  PVARCPR
                                      CMATERC  PMATERC  ZVARCPG  PVARCPR  CTEMPSR  PTEMPSR  ZVARCPG  PVARCRR
                               OUT__  EDEFOPG  PDEFORR
                                      EDEFOPC  PDEFORC
@@ -340,7 +340,7 @@ OPTION__
                               OUT__  MMATUNS  PMATUNS
     SIEF_ELGA_ELNO      98    IN__   ECONTNO  PCONTRR
                               OUT__  ECONTPG  PSIEFGR
-    SIEF_ELNO_ELGA      98    IN__   ECONTPG  PCONTRR
+    SIEF_ELNO      98    IN__   ECONTPG  PCONTRR
                               OUT__  ECONTNO  PSIEFNOR
                                      ECONTNC  PSIEFNOC
     SIGM_ELNO_DEPL      -1    IN__   XXXXXX   XXXXXX

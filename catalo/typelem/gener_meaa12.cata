@@ -1,7 +1,7 @@
-%& MODIF TYPELEM  DATE 18/05/2010   AUTEUR MEUNIER S.MEUNIER 
+%& MODIF TYPELEM  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
-% COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
+% COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 % THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 % IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 % THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -100,17 +100,17 @@ OPTION__
                               OUT__  XXXXXX   XXXXXX
     COOR_ELGA           479   IN__   NGEOMER  PGEOMER
                               OUT__  EGGEOP_R PCOORPG
-    ECIN_ELEM_DEPL      -1    IN__   XXXXXX   XXXXXX
+    ECIN_ELEM      -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
     ENER_ELAS           -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
     ENER_TOTALE         -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
-    EPOT_ELEM_DEPL      -1    IN__   XXXXXX   XXXXXX
+    EPOT_ELEM      -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
-    EXTR_ELGA_VARI      549   IN__   CCOMPOR  PCOMPOR  E1NEUTK  PNOVARI  ZVARIPG  PVARIGR
+    VAEX_ELGA      549   IN__   CCOMPOR  PCOMPOR  E1NEUTK  PNOVARI  ZVARIPG  PVARIGR
                               OUT__  E1GNEUT  PVARIGS
-    EXTR_ELNO_VARI      549   IN__   CCOMPOR  PCOMPOR  E1NEUTK  PNOVARI  ZVARINO  PVARINR
+    VAEX_ELNO      549   IN__   CCOMPOR  PCOMPOR  E1NEUTK  PNOVARI  ZVARINO  PVARINR
                               OUT__  E1NNEUT  PVARINS
     FORC_NODA           600   IN__   ECONTPG  PCONTMR  NGEOMER  PGEOMER  CTEMPSR  PINSTMR  CTEMPSR  PINSTPR
                                      CMATERC  PMATERC
@@ -147,7 +147,7 @@ OPTION__
                                      CMATERC  PMATERC  ZVARCPG  PVARCRR  ZVARCPG  PVARCMR  ZVARCPG  PVARCPR
                                      ZVARIPG  PVARIMR
                               OUT__  MMATUNS  PMATUNS
-    SIEF_ELNO_ELGA      600   IN__   ECONTPG  PCONTRR
+    SIEF_ELNO      600   IN__   ECONTPG  PCONTRR
                               OUT__  ECONTNO  PSIEFNOR
                                      ECONTNC  PSIEFNOC
     SYME_MDNS_R         222   IN__   MMATUNS  PNOSYM

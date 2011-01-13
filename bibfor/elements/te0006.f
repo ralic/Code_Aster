@@ -1,9 +1,9 @@
       SUBROUTINE TE0006(OPTION,NOMTE)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 21/05/2007   AUTEUR FERNANDES R.FERNANDES 
+C MODIF ELEMENTS  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -94,9 +94,9 @@ C ======================================================================
      +               NDDLS,NDDLM,AXI,REGULA,ZR(IDEPLM),ZR(ICONTM),
      +               ZI(IMATE),ZR(IVECTU))
 C ======================================================================
-C --- OPTION : SIEF_ELNO_ELGA ------------------------------------------
+C --- OPTION : SIEF_ELNO ------------------------------------------
 C ======================================================================
-      ELSE IF (OPTION.EQ.'SIEF_ELNO_ELGA') THEN
+      ELSE IF (OPTION.EQ.'SIEF_ELNO') THEN
          NCMP = DIMCON
          CALL PPGAN2(JGANO,NCMP,ZR(ICHG),ZR(ICHN))
 C ======================================================================
@@ -106,9 +106,9 @@ C ======================================================================
          READ (ZK16(ICOMPO+1),'(I16)') NCMP
          CALL PPGAN2(JGANO,NCMP,ZR(ICHG),ZR(ICHN))
 C ======================================================================
-C --- OPTION : EPSI_ELGA_DEPL ------------------------------------------
+C --- OPTION : EPSI_ELGA ------------------------------------------
 C ======================================================================
-      ELSE IF (OPTION.EQ.'EPSI_ELGA_DEPL') THEN
+      ELSE IF (OPTION.EQ.'EPSI_ELGA') THEN
          CALL EPSREG(NPI,IPOIDS,IPOID2,IVF,IVF2,IDFDE,IDFDE2,
      +               ZR(IGEOM),DIMDEF,DIMUEL,NDIM,NDDLS,NDDLM,NNO,NNOS,
      +               NNOM,AXI,REGULA,ZR(IDEPLP),ZR(IDEFO))

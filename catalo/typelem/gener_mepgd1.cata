@@ -1,7 +1,7 @@
-%& MODIF TYPELEM  DATE 07/12/2010   AUTEUR PELLET J.PELLET 
+%& MODIF TYPELEM  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
-% COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
+% COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 % THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 % IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 % THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -106,9 +106,9 @@ OPTION__
                               OUT__  MVECTUR  PVECTUR
     COOR_ELGA           478   IN__   NGEOMER  PGEOMER
                               OUT__  EGGEOP_R PCOORPG
-    DEGE_ELNO_DEPL      -1    IN__   XXXXXX   XXXXXX
+    DEGE_ELNO      -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
-    ECIN_ELEM_DEPL      -1    IN__   XXXXXX   XXXXXX
+    ECIN_ELEM      -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
     EFGE_ELNO_CART      380   IN__   CCAORIE  PCAORIE  CCAORIE  PCAORIR  DDL_MECA PDEPLAR  NGEOMER  PGEOMER
                                      ECONTNO  PSIEFNOR
@@ -119,7 +119,7 @@ OPTION__
                               OUT__  XXXXXX   XXXXXX
     ENER_TOTALE         -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
-    EPOT_ELEM_DEPL      -1    IN__   XXXXXX   XXXXXX
+    EPOT_ELEM      -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
     FORC_NODA           393   IN__   CCAORIE  PCAORIE  EEFGEGA  PCONTMR  DDL_MECA PDEPLMR  DDL_MECA PDEPLPR
                                      NGEOMER  PGEOMER
@@ -155,9 +155,9 @@ OPTION__
                               OUT__  EDCEL_I  PDCEL_I
     PAS_COURANT         404   IN__   CMATERC  PMATERC  NGEOMER  PGEOMER
                               OUT__  ECOURAN  PCOURAN
-    PMPB_ELGA_SIEF      -1    IN__   XXXXXX   XXXXXX
+    PMPB_ELGA      -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
-    PMPB_ELNO_SIEF      -1    IN__   XXXXXX   XXXXXX
+    PMPB_ELNO      -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
     RAPH_MECA           390   IN__   DDL_MECA PACCKM1  DDL_MECA PACCPLU  CCAGNPO  PCAGNPO  CCAORIE  PCAORIE
                                      CCOMPOR  PCOMPOR  DDL_MECA PDDEPLA  DDL_MECA PDEPKM1  DDL_MECA PDEPLMR
@@ -189,16 +189,16 @@ OPTION__
                                      ZVARCPG  PVARCRR  ZVARCPG  PVARCMR  ZVARCPG  PVARCPR
                                      ZVARIPG  PVARIMP  DDL_MECA PVITKM1  DDL_MECA PVITPLU
                               OUT__  MMATUNS  PMATUNS
-    SIEF_ELGA_DEPL      -1    IN__   XXXXXX   XXXXXX
+    SIEF_ELGA      -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
-    SIEF_ELNO_ELGA      394   IN__   EEFGEGA  PCONTRR
+    SIEF_ELNO      394   IN__   EEFGEGA  PCONTRR
                               OUT__  ECONTNO  PSIEFNOR
                                      ECONTNC  PSIEFNOC
     SIGM_ELNO_CART      -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
     SIGM_ELNO_DEPL      -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
-    SIPO_ELNO_DEPL      -1    IN__   XXXXXX   XXXXXX
+    SIPO_ELNO      -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
     SYME_MDNS_R         222   IN__   MMATUNS  PNOSYM
                               OUT__  MMATUUR  PSYM

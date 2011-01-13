@@ -1,4 +1,4 @@
-# MODIF  DATE 10/01/2011   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
 # TITRE PLAQUE SOUS PRESSION SINUS COMPARAISON ENTRE TRANSITOIRE ET HARMONIQUE
 # sdls113a.para = tps_job 150 mem_job 1024Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -167,15 +167,15 @@ DYNATRAN=CALC_ELEM(reuse =DYNATRAN,
                PRECISION=1.E-6,
                CRITERE='ABSOLU',
                OPTION=(
-                        'SIEF_ELGA_DEPL',
-                        'SIEF_ELNO_ELGA',
+                        'SIEF_ELGA',
+                        'SIEF_ELNO',
                         'SIGM_ELNO_DEPL',
                          'EPSI_ELNO_DEPL',
-                         'EPSI_ELGA_DEPL',
-                         'EPOT_ELEM_DEPL',
-                         'ECIN_ELEM_DEPL',
+                         'EPSI_ELGA',
+                         'EPOT_ELEM',
+                         'ECIN_ELEM',
                          'ENEL_ELGA',
-                         'ENEL_ELNO_ELGA',
+                         'ENEL_ELNO',
                        ),
                );
 
@@ -200,25 +200,25 @@ DYNHASS=CALC_ELEM(reuse =DYNHASS,
                CRITERE='ABSOLU',
                PRECISION=1.E-3,
                OPTION=(
-                        'SIEF_ELGA_DEPL',
-                        'SIEF_ELNO_ELGA',
+                        'SIEF_ELGA',
+                        'SIEF_ELNO',
                         'SIGM_ELNO_DEPL',
                          'EPSI_ELNO_DEPL',
-                         'EPSI_ELGA_DEPL',
-                         'EPOT_ELEM_DEPL',
-                         'ECIN_ELEM_DEPL',
+                         'EPSI_ELGA',
+                         'EPOT_ELEM',
+                         'ECIN_ELEM',
                          'ENEL_ELGA',
-                         'ENEL_ELNO_ELGA',
+                         'ENEL_ELNO',
                        ),
           );
 
-IMPR_RESU(RESU=_F(RESULTAT=DYNHASS, NOM_CHAM=('ECIN_ELEM_DEPL'),),)
+IMPR_RESU(RESU=_F(RESULTAT=DYNHASS, NOM_CHAM=('ECIN_ELEM'),),)
 
 TEST_RESU(RESU=(
-   _F(RESULTAT = DYNATRAN, NOM_CHAM='ECIN_ELEM_DEPL', NOM_CMP='TOTALE',
+   _F(RESULTAT = DYNATRAN, NOM_CHAM='ECIN_ELEM', NOM_CMP='TOTALE',
        MAILLE = 'M194',  CRITERE = 'RELATIF',  PRECISION = 0.1E-2,
        NUME_ORDRE = 1, POINT=1,VALE = 1.78915E-06 , REFERENCE='NON_REGRESSION'),
-   _F(RESULTAT = DYNHASS, NOM_CHAM='ECIN_ELEM_DEPL', NOM_CMP='TOTALE',
+   _F(RESULTAT = DYNHASS, NOM_CHAM='ECIN_ELEM', NOM_CMP='TOTALE',
        MAILLE = 'M194',  CRITERE = 'RELATIF',  PRECISION = 0.1E-2,
        NUME_ORDRE = 1, POINT=1,VALE = 1.91599E-06 , REFERENCE='NON_REGRESSION'),
     ),)
@@ -273,7 +273,7 @@ TEST_FONCTION(VALEUR=_F(FONCTION=DHX11,
 
 SIT1=RECU_FONCTION (RESULTAT = DYNATRAN,
                     NOM_CMP = 'SIXX',
-                    NOM_CHAM = 'SIEF_ELGA_DEPL',
+                    NOM_CHAM = 'SIEF_ELGA',
                     MAILLE = 'M194',
                     POINT=1,
                     NUME_ORDRE=range(1,archsize),
@@ -283,7 +283,7 @@ SIH1=RECU_FONCTION (RESULTAT = DYNHASS,
                     NOM_CMP = 'SIXX',
                     MAILLE = 'M194',
                     POINT=1,
-                    NOM_CHAM = 'SIEF_ELGA_DEPL',
+                    NOM_CHAM = 'SIEF_ELGA',
                     NUME_ORDRE=1,
                       );
 
@@ -313,7 +313,7 @@ TEST_FONCTION(VALEUR=_F(FONCTION=SIH11,
 
 SET1=RECU_FONCTION (RESULTAT = DYNATRAN,
                     NOM_CMP = 'SIXX',
-                    NOM_CHAM = 'SIEF_ELNO_ELGA',
+                    NOM_CHAM = 'SIEF_ELNO',
                     MAILLE = 'M194',
                     NOEUD='N1328',
                     NUME_ORDRE=range(1,archsize),
@@ -323,7 +323,7 @@ SEH1=RECU_FONCTION (RESULTAT = DYNHASS,
                     NOM_CMP = 'SIXX',
                     MAILLE = 'M194',
                     NOEUD='N1328',
-                    NOM_CHAM = 'SIEF_ELNO_ELGA',
+                    NOM_CHAM = 'SIEF_ELNO',
                     NUME_ORDRE=1,
                       );
 
@@ -392,7 +392,7 @@ TEST_FONCTION(VALEUR=_F(FONCTION=EPH11,
 
 EGT1=RECU_FONCTION (RESULTAT = DYNATRAN,
                     NOM_CMP = 'EPXX',
-                    NOM_CHAM = 'EPSI_ELGA_DEPL',
+                    NOM_CHAM = 'EPSI_ELGA',
                     MAILLE = 'M194',
                     POINT=1,
                     NUME_ORDRE=range(1,archsize),
@@ -402,7 +402,7 @@ EGH1=RECU_FONCTION (RESULTAT = DYNHASS,
                     NOM_CMP = 'EPXX',
                     MAILLE = 'M194',
                     POINT=1,
-                    NOM_CHAM = 'EPSI_ELGA_DEPL',
+                    NOM_CHAM = 'EPSI_ELGA',
                     NUME_ORDRE=1,
                       );
 

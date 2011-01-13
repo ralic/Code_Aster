@@ -1,4 +1,4 @@
-# MODIF  DATE 10/01/2011   AUTEUR PROIX J-M.PROIX 
+# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
 # RESPONSABLE PROIX J-M.PROIX
 # TITRE TRACTIONS-ROTATIONS MULTIPLES GDEF_LOG EN 3D CINEMATIQUE
 # ssnd107b.para = tps_job 120 mem_job 64Mo mem_aster 50 ncpus 1 liste_test R
@@ -192,11 +192,11 @@ for icomp,comp in enumerate(compor) :
 
                              
     resu[icomp]=CALC_ELEM(reuse =resu[icomp], RESULTAT=resu[icomp],
-               OPTION=('EQUI_ELGA_SIGM','EPSG_ELGA_DEPL'));
+               OPTION=('EQUI_ELGA_SIGM','EPSG_ELGA'));
 
     vmis[icomp]=RECU_FONCTION(RESULTAT=resu[icomp],NOM_CHAM='EQUI_ELGA_SIGM',
                               NOM_CMP='VMIS',MAILLE='M2',POINT=1,);
-    epsg[icomp]=RECU_FONCTION(RESULTAT=resu[icomp],NOM_CHAM='EPSG_ELGA_DEPL',
+    epsg[icomp]=RECU_FONCTION(RESULTAT=resu[icomp],NOM_CHAM='EPSG_ELGA',
                               NOM_CMP='EPZZ',MAILLE='M2',POINT=1,);
     TEST_FONCTION(VALEUR=(_F(FONCTION=vmis[icomp],
                          NOM_PARA='INST',

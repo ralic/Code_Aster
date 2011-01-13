@@ -1,4 +1,4 @@
-# MODIF  DATE 10/01/2011   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
 # RESPONSABLE GNICOLAS G.NICOLAS
 # TITRE DERIVEES PAR RAPPORT A UNE VARIATION DE DOMAINE.
 # hpla101b.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test R
@@ -114,7 +114,7 @@ RE_THE_1=THER_LINEAIRE(MODELE=MOD_THER,
 
 
 CALC_SENSI(reuse =RE_THE_1, RESULTAT=RE_THE_1, SENSIBILITE=THETA,
-                 OPTION=('DETE_ELNO_DLTE','DETE_NOEU_DLTE'),);
+                 OPTION=('DETE_ELNO','DETE_NOEU'),);
 
 #
 # 5.2.2. EN STATIONNAIRE
@@ -126,7 +126,7 @@ RE_THE_2=THER_LINEAIRE(MODELE=MOD_THER,
 
 
 CALC_SENSI(reuse =RE_THE_2, RESULTAT=RE_THE_2, SENSIBILITE=THETA,
-                 OPTION=('DETE_ELNO_DLTE','DETE_NOEU_DLTE'),);
+                 OPTION=('DETE_ELNO','DETE_NOEU'),);
 
 #
 # 5.3. TESTS DES RESULTATS SUR LES DERIVEES EULERIENNES
@@ -144,7 +144,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RE_THE_1,
                 _F(RESULTAT=RE_THE_1,
                    SENSIBILITE=THETA,
                    NUME_ORDRE=1,
-                   NOM_CHAM='DETE_NOEU_DLTE',
+                   NOM_CHAM='DETE_NOEU',
                    NOM_CMP='TEMP',
                    GROUP_NO='TEST',
                    VALE = 3.13361E+01,
@@ -164,7 +164,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RE_THE_1,
                 _F(RESULTAT=RE_THE_2,
                    SENSIBILITE=THETA,
                    NUME_ORDRE=0,
-                   NOM_CHAM='DETE_NOEU_DLTE',
+                   NOM_CHAM='DETE_NOEU',
                    NOM_CMP='TEMP',
                    GROUP_NO='TEST',
                    VALE=0.0,
@@ -214,10 +214,10 @@ RE_MEC_1=MECA_STATIQUE(MODELE=MOD_MECA,
                        LIST_INST=LIST_INS,
                        SENSIBILITE=THETA,);
 
-#CALC_ELEM(reuse =RE_MEC_1, RESULTAT=RE_MEC_1, OPTION=('SIEF_ELGA_DEPL',),)
+#CALC_ELEM(reuse =RE_MEC_1, RESULTAT=RE_MEC_1, OPTION=('SIEF_ELGA',),)
 
 CALC_SENSI(reuse =RE_MEC_1, RESULTAT=RE_MEC_1, SENSIBILITE=THETA,
-                 OPTION=('DEDE_ELNO_DLDE','SIEF_ELGA_DEPL','DESI_ELNO_DLSI','DEDE_NOEU_DLDE','DESI_NOEU_DLSI',),);
+                 OPTION=('DEDE_ELNO','SIEF_ELGA','DESI_ELNO','DEDE_NOEU','DESI_NOEU',),);
 
 #
 # 6.2.2. EN STATIONNAIRE
@@ -236,10 +236,10 @@ RE_MEC_2=MECA_STATIQUE(MODELE=MOD_MECA,
                        SENSIBILITE=THETA,);
 
 
-#CALC_ELEM(reuse =RE_MEC_2,RESULTAT=RE_MEC_2, OPTION=('SIEF_ELGA_DEPL',))
+#CALC_ELEM(reuse =RE_MEC_2,RESULTAT=RE_MEC_2, OPTION=('SIEF_ELGA',))
 
 CALC_SENSI(reuse =RE_MEC_2, RESULTAT=RE_MEC_2, SENSIBILITE=THETA,
-                 OPTION=('DEDE_ELNO_DLDE','SIEF_ELGA_DEPL','DESI_ELNO_DLSI','DEDE_NOEU_DLDE','DESI_NOEU_DLSI',),);
+                 OPTION=('DEDE_ELNO','SIEF_ELGA','DESI_ELNO','DEDE_NOEU','DESI_NOEU',),);
 
 #
 # 6.3. TESTS DES RESULTATS SUR LES DERIVEES EULERIENNES
@@ -248,7 +248,7 @@ TEST_RESU(RESU=(
                 _F(RESULTAT=RE_MEC_2,
                    SENSIBILITE=THETA,
                    NUME_ORDRE=1,
-                   NOM_CHAM='DEDE_ELNO_DLDE',
+                   NOM_CHAM='DEDE_ELNO',
                    NOM_CMP='DX',
                    MAILLE='MA29',
                    NOEUD='NO1',
@@ -259,7 +259,7 @@ TEST_RESU(RESU=(
                 _F(RESULTAT=RE_MEC_2,
                    SENSIBILITE=THETA,
                    NUME_ORDRE=1,
-                   NOM_CHAM='DESI_ELNO_DLSI',
+                   NOM_CHAM='DESI_ELNO',
                    NOM_CMP='SIYY',
                    MAILLE='MA29',
                    NOEUD='NO1',
@@ -270,7 +270,7 @@ TEST_RESU(RESU=(
                 _F(RESULTAT=RE_THE_2,
                    SENSIBILITE=THETA,
                    NUME_ORDRE=0,
-                   NOM_CHAM='DETE_ELNO_DLTE',
+                   NOM_CHAM='DETE_ELNO',
                    NOM_CMP='TEMP',
                    MAILLE='MA29',
                    NOEUD='NO1',
@@ -281,7 +281,7 @@ TEST_RESU(RESU=(
                 _F(RESULTAT=RE_MEC_1,
                    SENSIBILITE=THETA,
                    NUME_ORDRE=2,
-                   NOM_CHAM='DEDE_NOEU_DLDE',
+                   NOM_CHAM='DEDE_NOEU',
                    NOM_CMP='DX',
                    GROUP_NO='TEST',
                    VALE=0.04639904,
@@ -291,7 +291,7 @@ TEST_RESU(RESU=(
                 _F(RESULTAT=RE_MEC_1,
                    SENSIBILITE=THETA,
                    NUME_ORDRE=2,
-                   NOM_CHAM='DEDE_NOEU_DLDE',
+                   NOM_CHAM='DEDE_NOEU',
                    NOM_CMP='DY',
                    GROUP_NO='TEST',
                    VALE=0.002842913,
@@ -301,7 +301,7 @@ TEST_RESU(RESU=(
                 _F(RESULTAT=RE_MEC_1,
                    SENSIBILITE=THETA,
                    NUME_ORDRE=2,
-                   NOM_CHAM='DESI_NOEU_DLSI',
+                   NOM_CHAM='DESI_NOEU',
                    NOM_CMP='SIXX',
                    GROUP_NO='TEST',
                    VALE=-2562.515,
@@ -311,7 +311,7 @@ TEST_RESU(RESU=(
                 _F(RESULTAT=RE_MEC_1,
                    SENSIBILITE=THETA,
                    NUME_ORDRE=2,
-                   NOM_CHAM='DESI_NOEU_DLSI',
+                   NOM_CHAM='DESI_NOEU',
                    NOM_CMP='SIYY',
                    GROUP_NO='TEST',
                    VALE = -7.896569E+00,
@@ -321,7 +321,7 @@ TEST_RESU(RESU=(
                 _F(RESULTAT=RE_MEC_1,
                    SENSIBILITE=THETA,
                    NUME_ORDRE=2,
-                   NOM_CHAM='DESI_NOEU_DLSI',
+                   NOM_CHAM='DESI_NOEU',
                    NOM_CMP='SIXY',
                    GROUP_NO='TEST',
                    VALE = 2.999038E+00,
@@ -331,7 +331,7 @@ TEST_RESU(RESU=(
                 _F(RESULTAT=RE_MEC_1,
                    SENSIBILITE=THETA,
                    NUME_ORDRE=2,
-                   NOM_CHAM='DESI_NOEU_DLSI',
+                   NOM_CHAM='DESI_NOEU',
                    NOM_CMP='SIZZ',
                    GROUP_NO='TEST',
                    VALE=1568.869,
@@ -341,7 +341,7 @@ TEST_RESU(RESU=(
                 _F(RESULTAT=RE_MEC_2,
                    SENSIBILITE=THETA,
                    NUME_ORDRE=1,
-                   NOM_CHAM='DEDE_NOEU_DLDE',
+                   NOM_CHAM='DEDE_NOEU',
                    NOM_CMP='DX',
                    GROUP_NO='TEST',
                    VALE=-0.00339062,
@@ -351,7 +351,7 @@ TEST_RESU(RESU=(
                 _F(RESULTAT=RE_MEC_2,
                    SENSIBILITE=THETA,
                    NUME_ORDRE=1,
-                   NOM_CHAM='DEDE_NOEU_DLDE',
+                   NOM_CHAM='DEDE_NOEU',
                    NOM_CMP='DY',
                    GROUP_NO='TEST',
                    VALE=0.0001881595,
@@ -361,7 +361,7 @@ TEST_RESU(RESU=(
                 _F(RESULTAT=RE_MEC_2,
                    SENSIBILITE=THETA,
                    NUME_ORDRE=1,
-                   NOM_CHAM='DESI_NOEU_DLSI',
+                   NOM_CHAM='DESI_NOEU',
                    NOM_CMP='SIXX',
                    GROUP_NO='TEST',
                    VALE=-240.7831,
@@ -371,7 +371,7 @@ TEST_RESU(RESU=(
                 _F(RESULTAT=RE_MEC_2,
                    SENSIBILITE=THETA,
                    NUME_ORDRE=1,
-                   NOM_CHAM='DESI_NOEU_DLSI',
+                   NOM_CHAM='DESI_NOEU',
                    NOM_CMP='SIYY',
                    GROUP_NO='TEST',
                    VALE=60.70897,
@@ -381,7 +381,7 @@ TEST_RESU(RESU=(
                 _F(RESULTAT=RE_MEC_2,
                    SENSIBILITE=THETA,
                    NUME_ORDRE=1,
-                   NOM_CHAM='DESI_NOEU_DLSI',
+                   NOM_CHAM='DESI_NOEU',
                    NOM_CMP='SIXY',
                    GROUP_NO='TEST',
                    VALE=102.9897,
@@ -391,7 +391,7 @@ TEST_RESU(RESU=(
                 _F(RESULTAT=RE_MEC_2,
                    SENSIBILITE=THETA,
                    NUME_ORDRE=1,
-                   NOM_CHAM='DESI_NOEU_DLSI',
+                   NOM_CHAM='DESI_NOEU',
                    NOM_CMP='SIZZ',
                    GROUP_NO='TEST',
                    VALE=-222.3308,

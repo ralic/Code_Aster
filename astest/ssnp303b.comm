@@ -1,8 +1,8 @@
-# MODIF  DATE 30/08/2010   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
 # TITRE PLAQUE CARREE EN TRACTION
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -121,7 +121,7 @@ CALCNL=STAT_NON_LINE(
 
 CALCNL=CALC_ELEM( reuse=CALCNL,
                             OPTION=(
-                  'SIEF_ELNO_ELGA',  'VARI_ELNO_ELGA',),
+                  'SIEF_ELNO',  'VARI_ELNO_ELGA',),
                           RESULTAT=CALCNL,
 
                         CHAM_MATER=MATER
@@ -135,7 +135,7 @@ CALCNL=CALC_ELEM( reuse=CALCNL,
 
 TEST_RESU(RESU=(
           _F(  RESULTAT = CALCNL,
-            NOM_CHAM = 'SIEF_ELNO_ELGA',
+            NOM_CHAM = 'SIEF_ELNO',
             NUME_ORDRE = 60,
             MAILLE = 'MA1',
             NOEUD = 'NO1',
@@ -145,7 +145,7 @@ TEST_RESU(RESU=(
             VALE = 0.1500000E1),
 
           _F(  RESULTAT = CALCNL,
-            NOM_CHAM = 'SIEF_ELNO_ELGA',
+            NOM_CHAM = 'SIEF_ELNO',
             NUME_ORDRE = 60,
             MAILLE = 'MA1',
             NOEUD = 'NO1',
@@ -154,7 +154,7 @@ TEST_RESU(RESU=(
             VALE = 6.938894E-18),
 
           _F(  RESULTAT = CALCNL,
-            NOM_CHAM = 'SIEF_ELNO_ELGA',
+            NOM_CHAM = 'SIEF_ELNO',
             NUME_ORDRE = 60,
             MAILLE = 'MA2',
             NOEUD = 'NO1',
@@ -164,7 +164,7 @@ TEST_RESU(RESU=(
             VALE = 0.9000000E0),
 
           _F(  RESULTAT = CALCNL,
-            NOM_CHAM = 'SIEF_ELNO_ELGA',
+            NOM_CHAM = 'SIEF_ELNO',
             NUME_ORDRE = 60,
             MAILLE = 'MA2',
             NOEUD = 'NO1',
@@ -173,7 +173,7 @@ TEST_RESU(RESU=(
             VALE = -1.040834E-17),
 
           _F(  RESULTAT = CALCNL,
-            NOM_CHAM = 'SIEF_ELNO_ELGA',
+            NOM_CHAM = 'SIEF_ELNO',
             NUME_ORDRE = 60,
             MAILLE = 'MA3',
             NOEUD = 'NO1',
@@ -183,7 +183,7 @@ TEST_RESU(RESU=(
             VALE = 0.6000000E0),
 
           _F(  RESULTAT = CALCNL,
-            NOM_CHAM = 'SIEF_ELNO_ELGA',
+            NOM_CHAM = 'SIEF_ELNO',
             NUME_ORDRE = 60,
             MAILLE = 'MA3',
             NOEUD = 'NO1',
@@ -193,7 +193,7 @@ TEST_RESU(RESU=(
 
 
           _F(  RESULTAT = CALCNL,
-            NOM_CHAM = 'SIEF_ELNO_ELGA',
+            NOM_CHAM = 'SIEF_ELNO',
             NUME_ORDRE = 120,
             MAILLE = 'MA1',
             NOEUD = 'NO1',
@@ -203,7 +203,7 @@ TEST_RESU(RESU=(
             VALE = 0.3000000E1),
 
           _F(  RESULTAT = CALCNL,
-            NOM_CHAM = 'SIEF_ELNO_ELGA',
+            NOM_CHAM = 'SIEF_ELNO',
             NUME_ORDRE = 120,
             MAILLE = 'MA1',
             NOEUD = 'NO1',
@@ -212,7 +212,7 @@ TEST_RESU(RESU=(
             VALE = 4.861944E-13),
 
           _F(  RESULTAT = CALCNL,
-            NOM_CHAM = 'SIEF_ELNO_ELGA',
+            NOM_CHAM = 'SIEF_ELNO',
             NUME_ORDRE = 120,
             MAILLE = 'MA2',
             NOEUD = 'NO1',
@@ -222,7 +222,7 @@ TEST_RESU(RESU=(
             VALE = 0.1800000E1),
 
           _F(  RESULTAT = CALCNL,
-            NOM_CHAM = 'SIEF_ELNO_ELGA',
+            NOM_CHAM = 'SIEF_ELNO',
             NUME_ORDRE = 120,
             MAILLE = 'MA2',
             NOEUD = 'NO1',
@@ -231,7 +231,7 @@ TEST_RESU(RESU=(
             VALE = -2.081668E-17),
 
           _F(  RESULTAT = CALCNL,
-            NOM_CHAM = 'SIEF_ELNO_ELGA',
+            NOM_CHAM = 'SIEF_ELNO',
             NUME_ORDRE = 120,
             MAILLE = 'MA3',
             NOEUD = 'NO1',
@@ -241,7 +241,7 @@ TEST_RESU(RESU=(
             VALE = 0.1200000E1),
 
           _F(  RESULTAT = CALCNL,
-            NOM_CHAM = 'SIEF_ELNO_ELGA',
+            NOM_CHAM = 'SIEF_ELNO',
             NUME_ORDRE = 120,
             MAILLE = 'MA3',
             NOEUD = 'NO1',
@@ -251,7 +251,7 @@ TEST_RESU(RESU=(
 
 
           _F(  RESULTAT = CALCNL,
-            NOM_CHAM = 'SIEF_ELNO_ELGA',
+            NOM_CHAM = 'SIEF_ELNO',
             NUME_ORDRE = 180,
             MAILLE = 'MA1',
             NOEUD = 'NO1',
@@ -261,7 +261,7 @@ TEST_RESU(RESU=(
             VALE = 0.3147155E1),
 
           _F(  RESULTAT = CALCNL,
-            NOM_CHAM = 'SIEF_ELNO_ELGA',
+            NOM_CHAM = 'SIEF_ELNO',
             NUME_ORDRE = 180,
             MAILLE = 'MA1',
             NOEUD = 'NO1',
@@ -271,7 +271,7 @@ TEST_RESU(RESU=(
             VALE = 3.199571E-1),
 
           _F(  RESULTAT = CALCNL,
-            NOM_CHAM = 'SIEF_ELNO_ELGA',
+            NOM_CHAM = 'SIEF_ELNO',
             NUME_ORDRE = 180,
             MAILLE = 'MA2',
             NOEUD = 'NO1',
@@ -281,7 +281,7 @@ TEST_RESU(RESU=(
             VALE = 0.3511707E1),
 
           _F(  RESULTAT = CALCNL,
-            NOM_CHAM = 'SIEF_ELNO_ELGA',
+            NOM_CHAM = 'SIEF_ELNO',
             NUME_ORDRE = 180,
             MAILLE = 'MA2',
             NOEUD = 'NO1',
@@ -291,7 +291,7 @@ TEST_RESU(RESU=(
             VALE = -1.900098E-1),
 
           _F(  RESULTAT = CALCNL,
-            NOM_CHAM = 'SIEF_ELNO_ELGA',
+            NOM_CHAM = 'SIEF_ELNO',
             NUME_ORDRE = 180,
             MAILLE = 'MA3',
             NOEUD = 'NO1',
@@ -301,7 +301,7 @@ TEST_RESU(RESU=(
             VALE = 0.2341138E1),
 
           _F(  RESULTAT = CALCNL,
-            NOM_CHAM = 'SIEF_ELNO_ELGA',
+            NOM_CHAM = 'SIEF_ELNO',
             NUME_ORDRE = 180,
             MAILLE = 'MA3',
             NOEUD = 'NO1',
@@ -312,7 +312,7 @@ TEST_RESU(RESU=(
 
 
           _F(  RESULTAT = CALCNL,
-            NOM_CHAM = 'SIEF_ELNO_ELGA',
+            NOM_CHAM = 'SIEF_ELNO',
             NUME_ORDRE = 240,
             MAILLE = 'MA1',
             NOEUD = 'NO1',
@@ -322,7 +322,7 @@ TEST_RESU(RESU=(
             VALE = 0.3252919E1),
 
           _F(  RESULTAT = CALCNL,
-            NOM_CHAM = 'SIEF_ELNO_ELGA',
+            NOM_CHAM = 'SIEF_ELNO',
             NUME_ORDRE = 240,
             MAILLE = 'MA1',
             NOEUD = 'NO1',
@@ -332,7 +332,7 @@ TEST_RESU(RESU=(
             VALE = 5.950074E-1),
 
           _F(  RESULTAT = CALCNL,
-            NOM_CHAM = 'SIEF_ELNO_ELGA',
+            NOM_CHAM = 'SIEF_ELNO',
             NUME_ORDRE = 240,
             MAILLE = 'MA2',
             NOEUD = 'NO1',
@@ -342,7 +342,7 @@ TEST_RESU(RESU=(
             VALE = 0.5814267E1),
 
           _F(  RESULTAT = CALCNL,
-            NOM_CHAM = 'SIEF_ELNO_ELGA',
+            NOM_CHAM = 'SIEF_ELNO',
             NUME_ORDRE = 240,
             MAILLE = 'MA2',
             NOEUD = 'NO1',
@@ -352,7 +352,7 @@ TEST_RESU(RESU=(
             VALE = -3.523377E-1),
 
           _F(  RESULTAT = CALCNL,
-            NOM_CHAM = 'SIEF_ELNO_ELGA',
+            NOM_CHAM = 'SIEF_ELNO',
             NUME_ORDRE = 240,
             MAILLE = 'MA3',
             NOEUD = 'NO1',
@@ -362,7 +362,7 @@ TEST_RESU(RESU=(
             VALE = 0.3878832E1),
 
           _F(  RESULTAT = CALCNL,
-            NOM_CHAM = 'SIEF_ELNO_ELGA',
+            NOM_CHAM = 'SIEF_ELNO',
             NUME_ORDRE = 240,
             MAILLE = 'MA3',
             NOEUD = 'NO1',
@@ -373,7 +373,7 @@ TEST_RESU(RESU=(
 
 
           _F(  RESULTAT = CALCNL,
-            NOM_CHAM = 'SIEF_ELNO_ELGA',
+            NOM_CHAM = 'SIEF_ELNO',
             NUME_ORDRE = 300,
             MAILLE = 'MA1',
             NOEUD = 'NO1',
@@ -383,7 +383,7 @@ TEST_RESU(RESU=(
             VALE = 0.3213822E1),
 
           _F(  RESULTAT = CALCNL,
-            NOM_CHAM = 'SIEF_ELNO_ELGA',
+            NOM_CHAM = 'SIEF_ELNO',
             NUME_ORDRE = 300,
             MAILLE = 'MA1',
             NOEUD = 'NO1',
@@ -393,7 +393,7 @@ TEST_RESU(RESU=(
             VALE = 4.873069E-1),
 
           _F(  RESULTAT = CALCNL,
-            NOM_CHAM = 'SIEF_ELNO_ELGA',
+            NOM_CHAM = 'SIEF_ELNO',
             NUME_ORDRE = 300,
             MAILLE = 'MA2',
             NOEUD = 'NO1',
@@ -403,7 +403,7 @@ TEST_RESU(RESU=(
             VALE = 0.6017834E1),
 
           _F(  RESULTAT = CALCNL,
-            NOM_CHAM = 'SIEF_ELNO_ELGA',
+            NOM_CHAM = 'SIEF_ELNO',
             NUME_ORDRE = 300,
             MAILLE = 'MA2',
             NOEUD = 'NO1',
@@ -413,7 +413,7 @@ TEST_RESU(RESU=(
             VALE = 3.174572E-2),
 
           _F(  RESULTAT = CALCNL,
-            NOM_CHAM = 'SIEF_ELNO_ELGA',
+            NOM_CHAM = 'SIEF_ELNO',
             NUME_ORDRE = 300,
             MAILLE = 'MA3',
             NOEUD = 'NO1',
@@ -423,7 +423,7 @@ TEST_RESU(RESU=(
             VALE = 0.5768340E1),
 
           _F(  RESULTAT = CALCNL,
-            NOM_CHAM = 'SIEF_ELNO_ELGA',
+            NOM_CHAM = 'SIEF_ELNO',
             NUME_ORDRE = 300,
             MAILLE = 'MA3',
             NOEUD = 'NO1',
@@ -434,7 +434,7 @@ TEST_RESU(RESU=(
 
 
           _F(  RESULTAT = CALCNL,
-            NOM_CHAM = 'SIEF_ELNO_ELGA',
+            NOM_CHAM = 'SIEF_ELNO',
             NUME_ORDRE = 360,
             MAILLE = 'MA1',
             NOEUD = 'NO1',
@@ -444,7 +444,7 @@ TEST_RESU(RESU=(
             VALE = 0.32092970E1),
 
           _F(  RESULTAT = CALCNL,
-            NOM_CHAM = 'SIEF_ELNO_ELGA',
+            NOM_CHAM = 'SIEF_ELNO',
             NUME_ORDRE = 360,
             MAILLE = 'MA1',
             NOEUD = 'NO1',
@@ -454,7 +454,7 @@ TEST_RESU(RESU=(
             VALE = 4.753345E-1),
 
           _F(  RESULTAT = CALCNL,
-            NOM_CHAM = 'SIEF_ELNO_ELGA',
+            NOM_CHAM = 'SIEF_ELNO',
             NUME_ORDRE = 360,
             MAILLE = 'MA2',
             NOEUD = 'NO1',
@@ -464,7 +464,7 @@ TEST_RESU(RESU=(
             VALE = 0.6149462E1),
 
           _F(  RESULTAT = CALCNL,
-            NOM_CHAM = 'SIEF_ELNO_ELGA',
+            NOM_CHAM = 'SIEF_ELNO',
             NUME_ORDRE = 360,
             MAILLE = 'MA2',
             NOEUD = 'NO1',
@@ -474,7 +474,7 @@ TEST_RESU(RESU=(
             VALE = 3.048490E-1),
 
           _F(  RESULTAT = CALCNL,
-            NOM_CHAM = 'SIEF_ELNO_ELGA',
+            NOM_CHAM = 'SIEF_ELNO',
             NUME_ORDRE = 360,
             MAILLE = 'MA3',
             NOEUD = 'NO1',
@@ -484,7 +484,7 @@ TEST_RESU(RESU=(
             VALE = 0.7571241E1),
 
           _F(  RESULTAT = CALCNL,
-            NOM_CHAM = 'SIEF_ELNO_ELGA',
+            NOM_CHAM = 'SIEF_ELNO',
             NUME_ORDRE = 360,
             MAILLE = 'MA3',
             NOEUD = 'NO1',

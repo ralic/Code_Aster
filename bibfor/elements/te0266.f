@@ -1,8 +1,8 @@
       SUBROUTINE TE0266 ( OPTION , NOMTE )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/04/2004   AUTEUR JMBHH01 J.M.PROIX 
+C MODIF ELEMENTS  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
@@ -21,7 +21,7 @@ C ======================================================================
       CHARACTER*16        OPTION , NOMTE
 C ......................................................................
 C    - FONCTION REALISEE:  CALCUL DE FLUX AUX POINTS DE GAUSS
-C                          OPTION : 'FLUX_ELGA_TEMP  '
+C                          OPTION : 'FLUX_ELGA  '
 C                             ELEMENTS FOURIER
 C
 C    - ARGUMENTS:

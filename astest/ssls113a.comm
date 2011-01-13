@@ -1,9 +1,9 @@
 
-# MODIF  DATE 11/02/2008   AUTEUR MACOCCO K.MACOCCO 
+# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
 # TITRE PLAQUE STRATIFIEE EN FLEXION - DKT
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -340,7 +340,7 @@ STA1=MECA_STATIQUE(MODELE=MO,
 STA1=CALC_ELEM(reuse =STA1,
                RESULTAT=STA1,
                TYPE_OPTION='SIGM_STRUCT',
-               OPTION=('SIEF_ELNO_ELGA','EFGE_ELNO_DEPL',),
+               OPTION=('SIEF_ELNO','EFGE_ELNO_DEPL',),
                );
 # ______________________________________________________________________
 
@@ -353,7 +353,7 @@ STA2=MECA_STATIQUE(MODELE=MO,
 STA2=CALC_ELEM(reuse =STA2,
                RESULTAT=STA2,
                TYPE_OPTION='SIGM_STRUCT',
-               OPTION=('SIEF_ELNO_ELGA','EFGE_ELNO_DEPL',),
+               OPTION=('SIEF_ELNO','EFGE_ELNO_DEPL',),
                );
 
 # ______________________________________________________________________

@@ -5,9 +5,9 @@
 C TOLE CRP_20
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 07/12/2010   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -334,12 +334,12 @@ C
             CALL MECHN2(NOMA,CHNUMC,CHFREQ)
 
 C    ------------------------------------------------------------------
-C    -- OPTIONS "FLUX_ELNO_TEMP","FLUX_ELGA_TEMP","SOUR_ELGA_ELEC"
+C    -- OPTIONS "FLUX_ELNO","FLUX_ELGA","SOUR_ELGA"
 C    ------------------------------------------------------------------
 
-            IF (OPTION.EQ.'FLUX_ELNO_TEMP' .OR.
-     &              OPTION.EQ.'FLUX_ELGA_TEMP' .OR.
-     &              OPTION.EQ.'SOUR_ELGA_ELEC') THEN
+            IF (OPTION.EQ.'FLUX_ELNO' .OR.
+     &              OPTION.EQ.'FLUX_ELGA' .OR.
+     &              OPTION.EQ.'SOUR_ELGA') THEN
 
 C ---- VERIF SENSIBILITE
               IF (TYPESE.EQ.-1) THEN
@@ -471,9 +471,9 @@ C NOTATION DE LA SD RESULTAT LERES1
    80         CONTINUE
 
 C    ------------------------------------------------------------------
-C    -- OPTION "DETE_ELNO_DLTE"
+C    -- OPTION "DETE_ELNO"
 C    ------------------------------------------------------------------
-            ELSEIF (OPTION.EQ.'DETE_ELNO_DLTE') THEN
+            ELSEIF (OPTION.EQ.'DETE_ELNO') THEN
 C ---- VERIF SENSIBILITE
               IF (TYPESE.NE.-1) THEN
                 CODSEN=2
@@ -509,11 +509,11 @@ C ---- VERIF SENSIBILITE FIN
   100         CONTINUE
 
 C    ----------------------------------------------------
-C    -- OPTIONS " DURT_ELGA_META","DURT_ELNO_META"
+C    -- OPTIONS " DURT_ELGA_META","DURT_ELNO"
 C    ----------------------------------------------------
 
             ELSEIF (OPTION.EQ.'DURT_ELGA_META' .OR.
-     &              OPTION.EQ.'DURT_ELNO_META') THEN
+     &              OPTION.EQ.'DURT_ELNO') THEN
 
 C ---- VERIF SENSIBILITE
               IF (TYPESE.NE.0) THEN
@@ -534,7 +534,7 @@ C ---- VERIF SENSIBILITE FIN
                 CALL MECHC1(SAVCAR,MODELE,MATE,EXICAR,CHCARA)
                 CALL RSEXC2(1,1,RESUCO,'TEMP',IORDR,CHTEMP,OPTION,IRET)
                 IF (IRET.GT.0)GOTO 110
-                CALL RSEXC2(1,1,RESUCO,'META_ELNO_TEMP',IORDR,CHMETA,
+                CALL RSEXC2(1,1,RESUCO,'META_ELNO',IORDR,CHMETA,
      &                      OPTION,IRET2)
                 IF (IRET2.GT.0)GOTO 110
                 CALL RSEXC1(LERES1,OPTION,IORDR,CHELEM)

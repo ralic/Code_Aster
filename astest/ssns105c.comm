@@ -1,9 +1,9 @@
-# MODIF  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
 # TITRE TEST NAPPE D'ARMATURE (MODELISATION GRILLE)
 # ssns105c.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -503,7 +503,7 @@ TEST_RESU(RESU=(
             ),
             _F( RESULTAT = LEDEPE,
              INST = 0.,
-             NOM_CHAM = 'SIEF_ELGA_DEPL',
+             NOM_CHAM = 'SIEF_ELGA',
              NOM_CMP = 'SIXX',
              MAILLE = 'MA1',
              POINT = 1,
@@ -512,7 +512,7 @@ TEST_RESU(RESU=(
             ),
             _F( RESULTAT = LEDEPE,
              INST = 0.,
-             NOM_CHAM = 'SIEF_ELGA_DEPL',
+             NOM_CHAM = 'SIEF_ELGA',
              NOM_CMP = 'SIXX',
              MAILLE = 'MA3',
              POINT = 1,
@@ -521,7 +521,7 @@ TEST_RESU(RESU=(
             ),
             _F( RESULTAT = LEDEPE,
              INST = 0.,
-             NOM_CHAM = 'SIEF_ELGA_DEPL',
+             NOM_CHAM = 'SIEF_ELGA',
              NOM_CMP = 'SIZZ',
              MAILLE = 'MA3',
              POINT = 1,
@@ -530,7 +530,7 @@ TEST_RESU(RESU=(
             ),
             _F( RESULTAT = LEDEPE,
              INST = 0.,
-             NOM_CHAM = 'SIEF_ELGA_DEPL',
+             NOM_CHAM = 'SIEF_ELGA',
              NOM_CMP = 'SIXZ',
              MAILLE = 'MA3',
              POINT = 1,

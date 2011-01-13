@@ -17,7 +17,7 @@ MODE_CO=MODE_STATIQUE(MATR_MASS=MATRMASS,
 
 MODE_CO=CALC_ELEM(reuse =MODE_CO,
                   RESULTAT=MODE_CO,
-                  OPTION=('SIEF_ELGA_DEPL','EFGE_ELNO_DEPL'),);
+                  OPTION=('SIEF_ELGA','EFGE_ELNO_DEPL'),);
 
 MODE_CO=CALC_NO(reuse =MODE_CO,
                 RESULTAT=MODE_CO,

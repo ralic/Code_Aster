@@ -2,7 +2,7 @@
      &                  NBORDR,MODELE,MATE,CARA,NCHAR,CTYP)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 10/01/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF CALCULEL  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -477,38 +477,38 @@ C
           IF (IRET.NE.0)GOTO 740
 
 C    ------------------------------------------------------------------
-C    -- OPTIONS "SIGM_ELNO_DEPL","SIEF_ELGA_DEPL","EPSI_ELNO_DEPL",
-C               "EPSI_ELGA_DEPL","EPSG_ELNO_DEPL","EPSG_ELGA_DEPL",
-C               "EPME_ELNO_DEPL","EPME_ELGA_DEPL","EPMG_ELNO_DEPL",
-C               "EPMG_ELGA_DEPL","EFGE_ELNO_DEPL","EPOT_ELEM_DEPL",
-C               "SIPO_ELNO_DEPL","DEGE_ELNO_DEPL",
+C    -- OPTIONS "SIGM_ELNO_DEPL","SIEF_ELGA","EPSI_ELNO_DEPL",
+C               "EPSI_ELGA","EPSG_ELNO","EPSG_ELGA",
+C               "EPME_ELNO","EPME_ELGA","EPMG_ELNO",
+C               "EPMG_ELGA","EFGE_ELNO_DEPL","EPOT_ELEM",
+C               "SIPO_ELNO","DEGE_ELNO",
 C               "SIGM_ELNO_SIEF","SIPO_ELNO_SIEF",
 C               "EPVC_ELGA","EPVC_ELNO"
 C    ------------------------------------------------------------------
           IF (OPTION.EQ.'SIGM_ELNO_DEPL' .OR.
-     &        OPTION.EQ.'SIEF_ELGA_DEPL' .OR.
+     &        OPTION.EQ.'SIEF_ELGA' .OR.
      &        OPTION.EQ.'EPSI_ELNO_DEPL' .OR.
-     &        OPTION.EQ.'EPSI_ELGA_DEPL' .OR.
-     &        OPTION.EQ.'EPSG_ELNO_DEPL' .OR.
-     &        OPTION.EQ.'EPSG_ELGA_DEPL' .OR.
-     &        OPTION.EQ.'EPME_ELNO_DEPL' .OR.
-     &        OPTION.EQ.'EPME_ELGA_DEPL' .OR. OPTION.EQ.'EPVC_ELNO' .OR.
-     &        OPTION.EQ.'EPVC_ELGA' .OR. OPTION.EQ.'EPMG_ELNO_DEPL' .OR.
-     &        OPTION.EQ.'EPMG_ELGA_DEPL' .OR.
+     &        OPTION.EQ.'EPSI_ELGA' .OR.
+     &        OPTION.EQ.'EPSG_ELNO' .OR.
+     &        OPTION.EQ.'EPSG_ELGA' .OR.
+     &        OPTION.EQ.'EPME_ELNO' .OR.
+     &        OPTION.EQ.'EPME_ELGA' .OR. OPTION.EQ.'EPVC_ELNO' .OR.
+     &        OPTION.EQ.'EPVC_ELGA' .OR. OPTION.EQ.'EPMG_ELNO' .OR.
+     &        OPTION.EQ.'EPMG_ELGA' .OR.
      &        OPTION.EQ.'EFGE_ELNO_DEPL' .OR.
-     &        OPTION.EQ.'EPOT_ELEM_DEPL' .OR.
-     &        OPTION.EQ.'SIPO_ELNO_DEPL' .OR.
-     &        OPTION.EQ.'DEGE_ELNO_DEPL' .OR.
+     &        OPTION.EQ.'EPOT_ELEM' .OR.
+     &        OPTION.EQ.'SIPO_ELNO' .OR.
+     &        OPTION.EQ.'DEGE_ELNO' .OR.
      &        OPTION.EQ.'SIGM_ELNO_SIEF' .OR. OPTION.EQ.'FLHN_ELGA' .OR.
      &        OPTION.EQ.'SIPO_ELNO_SIEF') THEN
 
 C ---- VERIF SENSIBILITE
             IF (OPTION.EQ.'EPSI_ELNO_DEPL' .OR.
-     &          OPTION.EQ.'EPSI_ELGA_DEPL' .OR.
+     &          OPTION.EQ.'EPSI_ELGA' .OR.
      &          OPTION.EQ.'SIGM_ELNO_DEPL' .OR.
-     &          OPTION.EQ.'SIEF_ELGA_DEPL' .OR.
+     &          OPTION.EQ.'SIEF_ELGA' .OR.
      &          OPTION.EQ.'EFGE_ELNO_DEPL' .OR.
-     &          OPTION.EQ.'SIPO_ELNO_DEPL') THEN
+     &          OPTION.EQ.'SIPO_ELNO') THEN
               IF (TYPESE.EQ.4) THEN
                 CODSEN=1
               ENDIF
@@ -529,16 +529,16 @@ C ---- TRAITEMENT DE L EXCENTREMENT POUR OPTIONS DE POST TRAITEMENT
 
             IF (CONCEP.EQ.'DYNA_HARMO') THEN
               IF ((OPTION.EQ.'SIGM_ELNO_DEPL') .OR.
-     &            (OPTION.EQ.'SIPO_ELNO_DEPL') .OR.
+     &            (OPTION.EQ.'SIPO_ELNO') .OR.
      &            (OPTION.EQ.'EFGE_ELNO_DEPL') .OR.
-     &            (OPTION.EQ.'SIEF_ELGA_DEPL') .OR.
-     &            (OPTION.EQ.'SIEF_ELNO_ELGA') .OR.
-     &            (OPTION.EQ.'EPSI_ELGA_DEPL') .OR.
+     &            (OPTION.EQ.'SIEF_ELGA') .OR.
+     &            (OPTION.EQ.'SIEF_ELNO') .OR.
+     &            (OPTION.EQ.'EPSI_ELGA') .OR.
      &            (OPTION.EQ.'EPSI_ELNO_DEPL') .OR.
-     &            (OPTION.EQ.'EPOT_ELEM_DEPL') .OR.
-     &            (OPTION.EQ.'ECIN_ELEM_DEPL') .OR.
+     &            (OPTION.EQ.'EPOT_ELEM') .OR.
+     &            (OPTION.EQ.'ECIN_ELEM') .OR.
      &            (OPTION.EQ.'ENEL_ELGA') .OR.
-     &            (OPTION.EQ.'ENEL_ELNO_ELGA')) THEN
+     &            (OPTION.EQ.'ENEL_ELNO')) THEN
               ELSE
                 GOTO 730
 
@@ -546,8 +546,8 @@ C ---- TRAITEMENT DE L EXCENTREMENT POUR OPTIONS DE POST TRAITEMENT
 
             ELSEIF (CONCEP.EQ.'EVOL_NOLI') THEN
               IF (OPTION.EQ.'SIGM_ELNO_DEPL' .OR.
-     &            OPTION.EQ.'SIPO_ELNO_DEPL' .OR.
-     &            OPTION.EQ.'SIEF_ELGA_DEPL' .OR.
+     &            OPTION.EQ.'SIPO_ELNO' .OR.
+     &            OPTION.EQ.'SIEF_ELGA' .OR.
      &            OPTION.EQ.'EFGE_ELNO_DEPL') THEN
                 CALL U2MESK('A','CALCULEL2_99',1,OPTION)
                 GOTO 710
@@ -558,7 +558,7 @@ C ---- TRAITEMENT DE L EXCENTREMENT POUR OPTIONS DE POST TRAITEMENT
             OPTIO2=OPTION
 
             IF (TYPESE.EQ.-1) THEN
-              IF (OPTIO2.EQ.'SIEF_ELGA_DEPL') THEN
+              IF (OPTIO2.EQ.'SIEF_ELGA') THEN
                 OPTIO2='DLSI_ELGA_DEPL'
               ENDIF
             ENDIF
@@ -740,14 +740,14 @@ C=======================================================================
               CALL VRCREF(MODELE,MATE(1:8),CARA,CHVREF(1:19))
               CALL RSEXCH(RESUCO,'COMPORTEMENT',IORDR,COMPOR,IRET1)
 C -- POUR LES POUTRES MULTIFIBRES ON A BESOIN DE COMPOR ISSU DE MATERIAU
-C     POUR LE CALCUL DES OPTIONS SIEF_ELGA_DEPL ET EFGE_ELNO_DEPL
+C     POUR LE CALCUL DES OPTIONS SIEF_ELGA ET EFGE_ELNO_DEPL
               IF (OPTIO2.EQ.'EFGE_ELNO_DEPL' .OR.
-     &            OPTIO2.EQ.'SIEF_ELGA_DEPL') THEN
+     &            OPTIO2.EQ.'SIEF_ELGA') THEN
                 COMPOR=MATE(1:8)//'.COMPOR'
               ENDIF
               IF (OPTION.EQ.'SIGM_ELNO_SIEF' .OR.
      &            OPTION.EQ.'SIPO_ELNO_SIEF') THEN
-                CALL RSEXC2(1,2,RESUCO,'SIEF_ELNO_ELGA',IORDR,CHSIG,
+                CALL RSEXC2(1,2,RESUCO,'SIEF_ELNO',IORDR,CHSIG,
      &                      OPTION,IRET1)
                 CALL RSEXC2(2,2,RESUCO,'EFGE_ELNO_DEPL',IORDR,CHSIG,
      &                      OPTION,IRET2)
@@ -759,7 +759,7 @@ C     POUR LE CALCUL DES OPTIONS SIEF_ELGA_DEPL ET EFGE_ELNO_DEPL
                 ENDIF
               ENDIF
               IF (OPTION.EQ.'FLHN_ELGA') THEN
-                CALL RSEXC2(1,1,RESUCO,'SIEF_NOEU_ELGA',IORDR,CHSIG,
+                CALL RSEXC2(1,1,RESUCO,'SIEF_NOEU',IORDR,CHSIG,
      &                      OPTION,IRET)
                 IF (IRET.GT.0) THEN
                   CALL U2MESK('F','CALCULEL7_1',1,OPTION)
@@ -784,9 +784,9 @@ C     POUR LE CALCUL DES OPTIONS SIEF_ELGA_DEPL ET EFGE_ELNO_DEPL
               CALL JEDEMA()
   110       CONTINUE
 C    ------------------------------------------------------------------
-C    -- OPTION "SIEF_ELNO_ELGA"
+C    -- OPTION "SIEF_ELNO"
 C    ------------------------------------------------------------------
-          ELSEIF (OPTION.EQ.'SIEF_ELNO_ELGA') THEN
+          ELSEIF (OPTION.EQ.'SIEF_ELNO') THEN
 C ---- VERIF SENSIBILITE
             IF (TYPESE.EQ.4) THEN
               CODSEN=1
@@ -804,7 +804,7 @@ C ---- VERIF SENSIBILITE FIN
               CALL MECHC1(SAVCAR,MODELE,MATE,EXICAR,CHCARA)
               CALL RSEXC2(1,2,LERES0,'SIEF_ELGA',IORDR,CHSIG,OPTION,
      &                    IRET1)
-              CALL RSEXC2(2,2,RESUCO,'SIEF_ELGA_DEPL',IORDR,CHSIG,
+              CALL RSEXC2(2,2,RESUCO,'SIEF_ELGA',IORDR,CHSIG,
      &                    OPTION,IRET2)
               IF (IRET1.GT.0 .AND. IRET2.GT.0)GOTO 120
               CALL RSEXC1(LERES1,OPTION,IORDR,CHELEM)
@@ -830,7 +830,7 @@ C      A PARTIR DE SIEF_ELGA
               IF (IRET1.EQ.0) THEN
                 CALL RSEXCH(RESUCO,'COMPORTEMENT',IORDR,COMPOR,IRET1)
 
-C      A PARTIR DE SIEF_ELGA_DEPL
+C      A PARTIR DE SIEF_ELGA
               ELSEIF (IRET2.EQ.0) THEN
                 COMPOR=' '
               ENDIF
@@ -848,9 +848,9 @@ C      A PARTIR DE SIEF_ELGA_DEPL
               CALL JEDEMA()
   130       CONTINUE
 C    ------------------------------------------------------------------
-C    -- OPTION "ECIN_ELEM_DEPL"
+C    -- OPTION "ECIN_ELEM"
 C    ------------------------------------------------------------------
-          ELSEIF (OPTION.EQ.'ECIN_ELEM_DEPL') THEN
+          ELSEIF (OPTION.EQ.'ECIN_ELEM') THEN
 C ---- VERIF SENSIBILITE
             IF (TYPESE.NE.0) THEN
               CODSEN=1
@@ -954,7 +954,7 @@ C ---- VERIF SENSIBILITE FIN
               IF (IRET.GT.0)GOTO 160
               CALL RSEXC2(1,2,RESUCO,'SIEF_ELGA',IORDR,CHSIG,OPTION,
      &                    IRET)
-              CALL RSEXC2(2,2,RESUCO,'SIEF_ELGA_DEPL',IORDR,CHSIG,
+              CALL RSEXC2(2,2,RESUCO,'SIEF_ELGA',IORDR,CHSIG,
      &                    OPTION,IRET)
               IF (IRET.GT.0) THEN
                 CALL U2MESK('A','CALCULEL3_7',1,OPTION)
@@ -1000,7 +1000,7 @@ C ---- VERIF SENSIBILITE FIN
               IF (IRET.GT.0)GOTO 180
               CALL RSEXC2(1,2,RESUCO,'SIEF_ELGA',IORDR,CHSIG,OPTION,
      &                    IRET)
-              CALL RSEXC2(2,2,RESUCO,'SIEF_ELGA_DEPL',IORDR,CHSIG,
+              CALL RSEXC2(2,2,RESUCO,'SIEF_ELGA',IORDR,CHSIG,
      &                    OPTION,IRET)
               IF (IRET.GT.0) THEN
                 CALL U2MESK('A','CALCULEL3_7',1,OPTION)
@@ -1042,18 +1042,18 @@ C ---- VERIF SENSIBILITE FIN
   190       CONTINUE
 C    ------------------------------------------------------------------
 C    -- OPTIONS "EQUI_ELGA_EPSI","EQUI_ELGA_EPME","EQUI_ELGA_SIGM",
-C               "EQUI_ELNO_EPSI","EQUI_ELNO_EPME","PMPB_ELGA_SIEF",
-C               "PMPB_ELNO_SIEF","EQUI_ELNO_SIGM","CRIT_ELNO_RUPT"
+C               "EQUI_ELNO_EPSI","EQUI_ELNO_EPME","PMPB_ELGA",
+C               "PMPB_ELNO","EQUI_ELNO_SIGM","CRIT_ELNO"
 C    ------------------------------------------------------------------
           ELSEIF (OPTION.EQ.'EQUI_ELGA_EPSI' .OR.
      &            OPTION.EQ.'EQUI_ELGA_EPME' .OR.
      &            OPTION.EQ.'EQUI_ELGA_SIGM' .OR.
      &            OPTION.EQ.'EQUI_ELNO_EPSI' .OR.
      &            OPTION.EQ.'EQUI_ELNO_EPME' .OR.
-     &            OPTION.EQ.'PMPB_ELGA_SIEF' .OR.
-     &            OPTION.EQ.'PMPB_ELNO_SIEF' .OR.
+     &            OPTION.EQ.'PMPB_ELGA' .OR.
+     &            OPTION.EQ.'PMPB_ELNO' .OR.
      &            OPTION.EQ.'EQUI_ELNO_SIGM' .OR.
-     &            OPTION.EQ.'CRIT_ELNO_RUPT') THEN
+     &            OPTION.EQ.'CRIT_ELNO') THEN
 C ---- VERIF SENSIBILITE
             IF (TYPESE.NE.0) THEN
               CODSEN=1
@@ -1073,7 +1073,7 @@ C ---- VERIF SENSIBILITE FIN
               CALL MECARA(CARA,EXICAR,CHCARA)
               CALL MECHC1(SAVCAR,MODELE,MATE,EXICAR,CHCARA)
               IF (OPTION.EQ.'EQUI_ELGA_EPSI') THEN
-                CALL RSEXC2(1,1,RESUCO,'EPSI_ELGA_DEPL',IORDR,CHEPS,
+                CALL RSEXC2(1,1,RESUCO,'EPSI_ELGA',IORDR,CHEPS,
      &                      OPTION,IRET)
                 IF (IRET.GT.0)GOTO 200
               ELSEIF (OPTION.EQ.'EQUI_ELNO_EPSI') THEN
@@ -1081,11 +1081,11 @@ C ---- VERIF SENSIBILITE FIN
      &                      OPTION,IRET)
                 IF (IRET.GT.0)GOTO 200
               ELSEIF (OPTION.EQ.'EQUI_ELGA_EPME') THEN
-                CALL RSEXC2(1,1,RESUCO,'EPME_ELGA_DEPL',IORDR,CHEPS,
+                CALL RSEXC2(1,1,RESUCO,'EPME_ELGA',IORDR,CHEPS,
      &                      OPTION,IRET)
                 IF (IRET.GT.0)GOTO 200
               ELSEIF (OPTION.EQ.'EQUI_ELNO_EPME') THEN
-                CALL RSEXC2(1,1,RESUCO,'EPME_ELNO_DEPL',IORDR,CHEPS,
+                CALL RSEXC2(1,1,RESUCO,'EPME_ELNO',IORDR,CHEPS,
      &                      OPTION,IRET)
                 IF (IRET.GT.0)GOTO 200
               ELSEIF (OPTION.EQ.'EQUI_ELGA_SIGM') THEN
@@ -1094,7 +1094,7 @@ C ---- VERIF SENSIBILITE FIN
                 ENDIF
                 CALL RSEXC2(1,2,RESUCO,'SIEF_ELGA',IORDR,CHSIG,OPTION,
      &                      IRET)
-                CALL RSEXC2(2,2,RESUCO,'SIEF_ELGA_DEPL',IORDR,CHSIG,
+                CALL RSEXC2(2,2,RESUCO,'SIEF_ELGA',IORDR,CHSIG,
      &                      OPTION,IRET)
                 IF (IRET.GT.0) THEN
                   CALL U2MESK('A','CALCULEL3_7',1,OPTION)
@@ -1102,19 +1102,19 @@ C ---- VERIF SENSIBILITE FIN
                   GOTO 710
 
                 ENDIF
-              ELSEIF (OPTION.EQ.'PMPB_ELGA_SIEF') THEN
+              ELSEIF (OPTION.EQ.'PMPB_ELGA') THEN
                 CALL RSEXC2(1,1,RESUCO,'SIEF_ELGA',IORDR,CHSIG,OPTION,
      &                      IRET1)
                 IF (IRET1.GT.0)GOTO 200
-              ELSEIF (OPTION.EQ.'PMPB_ELNO_SIEF') THEN
-                CALL RSEXC2(1,1,RESUCO,'SIEF_ELNO_ELGA',IORDR,CHSIG,
+              ELSEIF (OPTION.EQ.'PMPB_ELNO') THEN
+                CALL RSEXC2(1,1,RESUCO,'SIEF_ELNO',IORDR,CHSIG,
      &                      OPTION,IRET1)
                 IF (IRET1.GT.0)GOTO 200
               ELSEIF (OPTION.EQ.'EQUI_ELNO_SIGM') THEN
                 IF (TYSD.EQ.'FOURIER_ELAS') THEN
                   CALL U2MESK('F','CALCULEL6_83',1,OPTION)
                 ENDIF
-                CALL RSEXCH(RESUCO,'SIEF_ELGA_DEPL',IORDR,CHSIG,IRET1)
+                CALL RSEXCH(RESUCO,'SIEF_ELGA',IORDR,CHSIG,IRET1)
                 CALL RSEXCH(RESUCO,'SIEF_ELGA',IORDR,CHSIG,IRET2)
                 CALL RSEXCH(RESUCO,'SIGM_ELNO_COQU',IORDR,CHSIC,IRET3)
                 CALL RSEXCH(RESUCO,'SIGM_ELNO_DEPL',IORDR,CHSIC,IRET4)
@@ -1135,7 +1135,7 @@ C
      &              TYSD.EQ.'FOURIER_ELAS') THEN
 C          CHAMP D'ENTREE POUR ELEMENTS ISOPARAMETRIQUES
                   IF (IRET1.LE.0) THEN
-                    CALL RSEXCH(RESUCO,'SIEF_ELGA_DEPL',IORDR,CHSIG,K)
+                    CALL RSEXCH(RESUCO,'SIEF_ELGA',IORDR,CHSIG,K)
                   ENDIF
 C          CHAMP D'ENTREE POUR COQUES
                   IF (EXIPLA) THEN
@@ -1167,7 +1167,7 @@ C          CHAMP D'ENTREE POUR COQUES
                     ENDIF
                   ENDIF
                 ENDIF
-              ELSEIF (OPTION.EQ.'CRIT_ELNO_RUPT') THEN
+              ELSEIF (OPTION.EQ.'CRIT_ELNO') THEN
                 CALL RSEXC2(1,1,RESUCO,'SIGM_ELNO_DEPL',IORDR,CHSIG,
      &                      OPTION,IRET1)
                 IF (IRET1.GT.0)GOTO 200
@@ -1218,13 +1218,13 @@ C ---- VERIF SENSIBILITE FIN
      &                    IBID,RBID,CBID,NOMS)
 
               IF ((NOMCHA.EQ.'SIEF_ELGA') .OR.
-     &            (NOMCHA.EQ.'SIEF_ELGA_DEPL')) THEN
+     &            (NOMCHA.EQ.'SIEF_ELGA')) THEN
                 CHSIG=CHBID
                 CHEPS=' '
                 CHSEQ=' '
                 CHEEQ=' '
                 CHVARI=' '
-              ELSEIF (NOMCHA.EQ.'EPSI_ELGA_DEPL') THEN
+              ELSEIF (NOMCHA.EQ.'EPSI_ELGA') THEN
                 CHSIG=' '
                 CHEPS=CHBID
                 CHSEQ=' '
@@ -1262,9 +1262,9 @@ C ---- VERIF SENSIBILITE FIN
               CALL JEDEMA()
   230       CONTINUE
 C    ------------------------------------------------------------------
-C    -- OPTION "PROJ_ELEM_SIGM"
+C    -- OPTION "SIRO_ELEM"
 C    ------------------------------------------------------------------
-          ELSEIF (OPTION.EQ.'PROJ_ELEM_SIGM') THEN
+          ELSEIF (OPTION.EQ.'SIRO_ELEM') THEN
 C ---- VERIF SENSIBILITE
             IF (TYPESE.NE.0) THEN
               CODSEN=1
@@ -1276,7 +1276,7 @@ C ---- VERIF SENSIBILITE FIN
               IORDR=ZI(JORDR+IAUX-1)
               CALL MEDOM2(MODELE,MATE,CARA,KCHA,NCHAR,CTYP,RESUCO,IORDR,
      &                    NBORDR,NPASS,LIGREL)
-              CALL RSEXC2(1,2,RESUCO,'SIEF_ELNO_ELGA',IORDR,CHSIG,
+              CALL RSEXC2(1,2,RESUCO,'SIEF_ELNO',IORDR,CHSIG,
      &                    OPTION,IRET1)
               CALL RSEXC2(2,2,RESUCO,'SIGM_ELNO_DEPL',IORDR,CHSIG,
      &                    OPTION,IRET2)
@@ -1287,7 +1287,7 @@ C ---- VERIF SENSIBILITE FIN
               CALL RSEXC2(1,1,RESUCO,'DEPL',IORDR,CHAMGD,OPTION,IRET)
               CALL RSEXCH(RESUCO,'COMPORTEMENT',IORDR,COMPOR,IRET1)
 
-              OPTIO2='PROJ_ELEM_SIGM'
+              OPTIO2='SIRO_ELEM'
               CALL MEARCC(OPTIO2,MODELE,CHSIG,CHSIGF)
               CALL RSEXC1(LERES1,OPTIO2,IORDR,CHELEM)
               CALL MECALC(OPTIO2,MODELE,CHAMGD,CHGEOM,MATE,CHCARA,K24B,
@@ -1328,7 +1328,7 @@ C ---- VERIF SENSIBILITE FIN
               ELSE
                 CALL RSEXC2(1,2,RESUCO,'EFGE_ELNO_DEPL',IORDR,CHSIG,
      &                      OPTION,IRET)
-                CALL RSEXC2(2,2,RESUCO,'SIEF_ELNO_ELGA',IORDR,CHSIG,
+                CALL RSEXC2(2,2,RESUCO,'SIEF_ELNO',IORDR,CHSIG,
      &                      OPTION,IRET)
                 CALL RSEXC2(1,1,RESUCO,'DEPL',IORDR,CHAMGD,OPTION,IRET)
               ENDIF
@@ -1406,7 +1406,7 @@ C     ------------------------------------------------------------------
 C     --- OPTIONS DE CALCUL DES DENSITES D'ENERGIE TOTALE
 C     ------------------------------------------------------------------
           ELSEIF (OPTION.EQ.'ETOT_ELGA' .OR.
-     &            OPTION.EQ.'ETOT_ELNO_ELGA' .OR.
+     &            OPTION.EQ.'ETOT_ELNO' .OR.
      &            OPTION.EQ.'ETOT_ELEM') THEN
 C ---- VERIF SENSIBILITE
             IF (TYPESE.NE.0) THEN
@@ -1429,7 +1429,7 @@ C           -------------------------------------------------
               CALL RSEXC2(1,2,RESUCO,'SIEF_ELGA',IORDR,CHSIG,OPTION,
      &                    IRET1)
               IF (IRET1.GT.0) THEN
-                CALL RSEXC2(2,2,RESUCO,'SIEF_ELGA_DEPL',IORDR,CHSIG,
+                CALL RSEXC2(2,2,RESUCO,'SIEF_ELGA',IORDR,CHSIG,
      &                      OPTION,IRET2)
                 IF (IRET2.GT.0) THEN
                   CALL CODENT(IORDR,'G',KIORD)
@@ -1527,7 +1527,7 @@ C ---- VERIF SENSIBILITE FIN
               IF (OPTION.EQ.'ENDO_ELNO_SIGA') THEN
                 CALL RSEXC2(1,2,RESUCO,'SIEF_ELGA',IORDR,CHSIG,OPTION,
      &                      IRET)
-                CALL RSEXC2(2,2,RESUCO,'SIEF_ELGA_DEPL',IORDR,CHSIG,
+                CALL RSEXC2(2,2,RESUCO,'SIEF_ELGA',IORDR,CHSIG,
      &                      OPTION,IRET)
                 IF (IRET.GT.0) THEN
                   CALL U2MESK('A','CALCULEL3_18',1,OPTION)
@@ -1581,7 +1581,7 @@ C --- A11/ RECUPERATION DU CHAMP DE CONTRAINTES 'SIEF_ELGA'
 C          -> CHSIG[1,2] A T- ET T+
                 CALL RSEXC2(1,2,RESUCO,'SIEF_ELGA',IORDR1,CHSIG1,OPTION,
      &                      IRET1)
-                CALL RSEXC2(2,2,RESUCO,'SIEF_ELGA_DEPL',IORDR1,CHSIG1,
+                CALL RSEXC2(2,2,RESUCO,'SIEF_ELGA',IORDR1,CHSIG1,
      &                      OPTION,IRET1)
                 IF (IRET1.GT.0) THEN
                   CALL U2MESK('A','CALCULEL3_18',1,OPTION)
@@ -1591,7 +1591,7 @@ C          -> CHSIG[1,2] A T- ET T+
 
                 CALL RSEXC2(1,2,RESUCO,'SIEF_ELGA',IORDR2,CHSIG2,OPTION,
      &                      IRET2)
-                CALL RSEXC2(2,2,RESUCO,'SIEF_ELGA_DEPL',IORDR2,CHSIG2,
+                CALL RSEXC2(2,2,RESUCO,'SIEF_ELGA',IORDR2,CHSIG2,
      &                      OPTION,IRET2)
                 IF (IRET2.GT.0) THEN
                   CALL U2MESK('A','CALCULEL3_18',1,OPTION)
@@ -1756,7 +1756,7 @@ C ---- VERIF SENSIBILITE FIN
               CALL MECHC1(SAVCAR,MODELE,MATE,EXICAR,CHCARA)
               CALL RSEXCH(RESUCO,'SIEF_ELGA',IORDR,CHSIG,IRET1)
               IF (IRET1.GT.0) THEN
-                CALL RSEXC2(1,1,RESUCO,'SIEF_ELGA_DEPL',IORDR,CHSIG,
+                CALL RSEXC2(1,1,RESUCO,'SIEF_ELGA',IORDR,CHSIG,
      &                      OPTION,IRET2)
                 IF (IRET2.GT.0)GOTO 450
               ENDIF
@@ -1800,7 +1800,7 @@ C ---- VERIF SENSIBILITE FIN
               CALL JEVEUO(KCHA,'L',JCHA)
               CALL MECARA(CARA,EXICAR,CHCARA)
               CALL MECHC1(SAVCAR,MODELE,MATE,EXICAR,CHCARA)
-              CALL RSEXC2(1,1,RESUCO,'EPSI_ELGA_DEPL',IORDR,CHEPS,
+              CALL RSEXC2(1,1,RESUCO,'EPSI_ELGA',IORDR,CHEPS,
      &                    OPTION,IRET2)
               IF (IRET2.GT.0)GOTO 470
               CALL RSEXC1(LERES1,OPTION,IORDR,CHELEM)
@@ -1822,9 +1822,9 @@ C ---- VERIF SENSIBILITE FIN
               CALL JEDEMA()
   480       CONTINUE
 C     ------------------------------------------------------------------
-C     --- OPTION "EPEQ_ELNO_TUYO"
+C     --- OPTION "EPEQ_ELNO"
 C     ------------------------------------------------------------------
-          ELSEIF (OPTION.EQ.'EPEQ_ELNO_TUYO') THEN
+          ELSEIF (OPTION.EQ.'EPEQ_ELNO') THEN
 C ---- VERIF SENSIBILITE
             IF (TYPESE.NE.0) THEN
               CODSEN=1
@@ -1863,9 +1863,9 @@ C ---- VERIF SENSIBILITE FIN
   500       CONTINUE
 
 C     ------------------------------------------------------------------
-C     --- OPTION "SIEQ_ELNO_TUYO"
+C     --- OPTION "SIEQ_ELNO"
 C     ------------------------------------------------------------------
-          ELSEIF (OPTION.EQ.'SIEQ_ELNO_TUYO') THEN
+          ELSEIF (OPTION.EQ.'SIEQ_ELNO') THEN
 C ---- VERIF SENSIBILITE
             IF (TYPESE.NE.0) THEN
               CODSEN=1
@@ -2008,10 +2008,10 @@ C ---- VERIF SENSIBILITE FIN
               CALL JEDEMA()
   570       CONTINUE
 C    ------------------------------------------------------------------
-C    -- OPTIONS "ENEL_ELGA" ET "ENEL_ELNO_ELGA"
+C    -- OPTIONS "ENEL_ELGA" ET "ENEL_ELNO"
 C    ------------------------------------------------------------------
           ELSEIF (OPTION.EQ.'ENEL_ELGA' .OR.
-     &            OPTION.EQ.'ENEL_ELNO_ELGA') THEN
+     &            OPTION.EQ.'ENEL_ELNO') THEN
 C ---- VERIF SENSIBILITE
             IF (TYPESE.NE.0) THEN
               CODSEN=1
@@ -2029,7 +2029,7 @@ C ---- VERIF SENSIBILITE FIN
               CALL MECHC1(SAVCAR,MODELE,MATE,EXICAR,CHCARA)
               CALL RSEXC2(1,2,RESUCO,'SIEF_ELGA',IORDR,CHSIG,OPTION,
      &                    IRET)
-              CALL RSEXC2(2,2,RESUCO,'SIEF_ELGA_DEPL',IORDR,CHSIG,
+              CALL RSEXC2(2,2,RESUCO,'SIEF_ELGA',IORDR,CHSIG,
      &                    OPTION,IRET)
               IF (IRET.GT.0) THEN
                 CALL U2MESK('A','CALCULEL3_18',1,OPTION)
@@ -2071,9 +2071,9 @@ C ---- VERIF SENSIBILITE FIN
               CALL JEDEMA()
   590       CONTINUE
 C    ------------------------------------------------------------------
-C    -- OPTION "DEDE_ELNO_DLDE"
+C    -- OPTION "DEDE_ELNO"
 C    ------------------------------------------------------------------
-          ELSEIF (OPTION.EQ.'DEDE_ELNO_DLDE') THEN
+          ELSEIF (OPTION.EQ.'DEDE_ELNO') THEN
 C ---- VERIF SENSIBILITE
             IF (TYPESE.NE.-1) THEN
               CODSEN=2
@@ -2108,9 +2108,9 @@ C ---- VERIF SENSIBILITE FIN
   610       CONTINUE
 
 C    ------------------------------------------------------------------
-C    -- OPTION "DESI_ELNO_DLSI"
+C    -- OPTION "DESI_ELNO"
 C    ------------------------------------------------------------------
-          ELSEIF (OPTION.EQ.'DESI_ELNO_DLSI') THEN
+          ELSEIF (OPTION.EQ.'DESI_ELNO') THEN
 C ---- VERIF SENSIBILITE
             IF (TYPESE.NE.-1) THEN
               CODSEN=2
@@ -2124,7 +2124,7 @@ C ---- VERIF SENSIBILITE FIN
               CALL MEDOM2(MODELE,MATE,CARA,KCHA,NCHAR,CTYP,RESUCO,IORDR,
      &                    NBORDR,NPASS,LIGREL)
               CALL JEVEUO(KCHA,'L',JCHA)
-              CALL RSEXC2(1,1,LERES0,'SIEF_ELGA_DEPL',IORDR,DLAGSI,
+              CALL RSEXC2(1,1,LERES0,'SIEF_ELGA',IORDR,DLAGSI,
      &                    OPTION,IRET)
               IF (IRET.GT.0)GOTO 620
               CALL RSEXC2(1,1,RESUCO,'SIGM_ELNO_DEPL',IORDR,CHSIGM,
@@ -2143,10 +2143,10 @@ C ---- VERIF SENSIBILITE FIN
   630       CONTINUE
 
 C    ------------------------------------------------------------------
-C    -- OPTIONS "DISS_ELGA" ET "DISS_ELNO_ELGA"
+C    -- OPTIONS "DISS_ELGA" ET "DISS_ELNO"
 C    ------------------------------------------------------------------
           ELSEIF (OPTION.EQ.'DISS_ELGA' .OR.
-     &            OPTION.EQ.'DISS_ELNO_ELGA') THEN
+     &            OPTION.EQ.'DISS_ELNO') THEN
 C ---- VERIF SENSIBILITE
             IF (TYPESE.NE.0) THEN
               CODSEN=1
@@ -2191,10 +2191,10 @@ C ---- VERIF SENSIBILITE FIN
 
 
 C    ------------------------------------------------------------------
-C    -- OPTION "EXTR_ELGA_VARI"
+C    -- OPTION "VAEX_ELGA"
 C    ------------------------------------------------------------------
 
-          ELSEIF (OPTION.EQ.'EXTR_ELGA_VARI') THEN
+          ELSEIF (OPTION.EQ.'VAEX_ELGA') THEN
 C ---- VERIF SENSIBILITE
             IF (TYPESE.NE.0) THEN
               CODSEN=1
@@ -2227,10 +2227,10 @@ C ---- VERIF SENSIBILITE FIN
   670       CONTINUE
 C      -----------------------------------------------------------------
 C    ------------------------------------------------------------------
-C    -- OPTION "EXTR_ELNO_VARI"
+C    -- OPTION "VAEX_ELNO"
 C    ------------------------------------------------------------------
 
-          ELSEIF (OPTION.EQ.'EXTR_ELNO_VARI') THEN
+          ELSEIF (OPTION.EQ.'VAEX_ELNO') THEN
 C ---- VERIF SENSIBILITE
             IF (TYPESE.NE.0) THEN
               CODSEN=1

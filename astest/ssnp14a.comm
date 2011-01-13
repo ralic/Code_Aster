@@ -1,4 +1,4 @@
-# MODIF  DATE 10/01/2011   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
 # TITRE ESSAI DE TRACTION-CISAILLEMENT (MISES ECROUISSAGE CINEMATIQUE)
 # ssnp14a.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -125,7 +125,7 @@ U=STAT_NON_LINE(
 U=CALC_ELEM( reuse=U,
                             RESULTAT=U,
                               OPTION=( 'VARI_ELNO_ELGA',
-                                       'SIEF_ELNO_ELGA',
+                                       'SIEF_ELNO',
                                        'EPSI_ELNO_DEPL',  )   )
 
 U=CALC_ELEM( reuse=U,
@@ -154,10 +154,10 @@ TEST_RESU(RESU=(
        MAILLE = 'CUBE',    NOEUD='NO2',                 NOM_CMP = 'V1',
        CRITERE = 'RELATIF',PRECISION = 0.1E-2,   REFERENCE='NON_REGRESSION',
        VALE = 0.877871),
-     _F(  RESULTAT = U,      NOM_CHAM = 'SIEF_ELNO_ELGA',   INST = 1.,
+     _F(  RESULTAT = U,      NOM_CHAM = 'SIEF_ELNO',   INST = 1.,
        MAILLE = 'CUBE',   NOEUD = 'NO2',                NOM_CMP = 'SIXX',
        VALE = 151.2),
-     _F(  RESULTAT = U,      NOM_CHAM = 'SIEF_ELNO_ELGA',   INST = 1.,
+     _F(  RESULTAT = U,      NOM_CHAM = 'SIEF_ELNO',   INST = 1.,
        MAILLE = 'CUBE',   NOEUD = 'NO2',                NOM_CMP = 'SIXY',
        VALE = 93.1),
      _F(  RESULTAT = U,      NOM_CHAM = 'EPSI_ELNO_DEPL',   INST = 1.,

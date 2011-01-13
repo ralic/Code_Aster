@@ -1,9 +1,9 @@
-# MODIF  DATE 11/10/2010   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
 # TITRE FERRAILLAGE D'UNE CUVE CARREE SELON LA METHODE DE CAPRA ET MAURY
 # ssls135a.para = tps_job 30 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -137,7 +137,7 @@ Solution=MECA_STATIQUE(MODELE=FEMLin,
 # calculs elementaires, en complement de resultats
 Solution=CALC_ELEM(reuse =Solution,
                    RESULTAT=Solution,
-                   OPTION=('SIEF_ELNO_ELGA','SIGM_ELNO_DEPL','EFGE_ELNO_DEPL',),);
+                   OPTION=('SIEF_ELNO','SIGM_ELNO_DEPL','EFGE_ELNO_DEPL',),);
 
 # calculs supplementaires pour le ferraillage
 Solution=CALC_FERRAILLAGE(reuse =Solution,

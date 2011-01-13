@@ -1,7 +1,7 @@
-%& MODIF TYPELEM  DATE 14/09/2010   AUTEUR KHAM M.KHAM 
+%& MODIF TYPELEM  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
-% COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+% COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 % THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 % IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 % THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -92,21 +92,21 @@ OPTION__
 % Garder commentarisé cette option pout utiliser le modèle de second-gradient avec la pesanteur
 %    CHAR_MECA_PESA_R     -1   IN__   NGEOMER  PGEOMER  CMATERC  PMATERC  CPESANR  PPESANR
 %                              OUT__  MVECTUR  PVECTUR
-    ECIN_ELEM_DEPL      -1    IN__   XXXXXX   XXXXXX
+    ECIN_ELEM      -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
     ENER_ELAS           -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
     ENER_TOTALE         -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
-    EPOT_ELEM_DEPL      -1    IN__   XXXXXX   XXXXXX
+    EPOT_ELEM      -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
-    EPSI_ELGA_DEPL        5   IN__   DDL_MECA PDEPLAR  NGEOMER  PGEOMER
+    EPSI_ELGA        5   IN__   DDL_MECA PDEPLAR  NGEOMER  PGEOMER
                               OUT__  EDEFOPG  PDEFORR
     EPSI_ELNO_DEPL       -1   IN__   DDL_MECA PDEPLAR  NGEOMER  PGEOMER
                               OUT__  EDEFONO  PDEFORR
-    EXTR_ELGA_VARI      549   IN__   CCOMPOR  PCOMPOR  E1NEUTK  PNOVARI  ZVARIPG  PVARIGR
+    VAEX_ELGA      549   IN__   CCOMPOR  PCOMPOR  E1NEUTK  PNOVARI  ZVARIPG  PVARIGR
                               OUT__  E1GNEUT  PVARIGS
-    EXTR_ELNO_VARI      549   IN__   CCOMPOR  PCOMPOR  E1NEUTK  PNOVARI  ZVARINO  PVARINR
+    VAEX_ELNO      549   IN__   CCOMPOR  PCOMPOR  E1NEUTK  PNOVARI  ZVARINO  PVARINR
                               OUT__  E1NNEUT  PVARINS
     FORC_NODA             5   IN__   ECONTPG  PCONTMR  DDL_MECA PDEPLMR  NGEOMER  PGEOMER  CCOMPOR  PCOMPOR
                                      CMATERC  PMATERC
@@ -133,7 +133,7 @@ OPTION__
     RIGI_MECA_TANG        5   IN__   CCOMPOR  PCOMPOR  ECONTPG  PCONTMR  DDL_MECA PDEPLMR  DDL_MECA PDEPLPR
                                      NGEOMER  PGEOMER  CMATERC  PMATERC  ZVARIPG  PVARIMR
                               OUT__  MMATUNS  PMATUNS
-    SIEF_ELNO_ELGA        5   IN__   CCOMPOR  PCOMPOR  ECONTPG  PCONTRR
+    SIEF_ELNO        5   IN__   CCOMPOR  PCOMPOR  ECONTPG  PCONTRR
                               OUT__  ECONTNO  PSIEFNOR
                                      ECONTNC  PSIEFNOC
     SYME_MDNS_R         222   IN__   MMATUNS  PNOSYM

@@ -1,8 +1,8 @@
-# MODIF  DATE 30/08/2010   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
 # TITRE FOND DE RESERVOIR EPAIS PRESSURISE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -89,7 +89,7 @@ CALCNL=STAT_NON_LINE(
 
 CALCNL=CALC_ELEM( reuse=CALCNL,
                             OPTION=(
-                  'SIEF_ELNO_ELGA',  'VARI_ELNO_ELGA',),
+                  'SIEF_ELNO',  'VARI_ELNO_ELGA',),
                           RESULTAT=CALCNL,
 
                         CHAM_MATER=MATER
@@ -97,7 +97,7 @@ CALCNL=CALC_ELEM( reuse=CALCNL,
 
 TEST_RESU(RESU=(
           _F(  RESULTAT = CALCNL,
-            NOM_CHAM = 'SIEF_ELNO_ELGA',
+            NOM_CHAM = 'SIEF_ELNO',
             NUME_ORDRE = 50,
             MAILLE = 'MA000544',
             NOEUD = 'NO002329',
@@ -107,7 +107,7 @@ TEST_RESU(RESU=(
             VALE = 29956.8811158),
 
           _F(  RESULTAT = CALCNL,
-            NOM_CHAM = 'SIEF_ELNO_ELGA',
+            NOM_CHAM = 'SIEF_ELNO',
             NUME_ORDRE = 50,
             MAILLE = 'MA000264',
             NOEUD = 'NO001139',
@@ -117,7 +117,7 @@ TEST_RESU(RESU=(
             VALE = -35102.1469563),
 
           _F(  RESULTAT = CALCNL,
-            NOM_CHAM = 'SIEF_ELNO_ELGA',
+            NOM_CHAM = 'SIEF_ELNO',
             NUME_ORDRE = 50,
             MAILLE = 'MA000008',
             NOEUD = 'NO000017',
@@ -127,7 +127,7 @@ TEST_RESU(RESU=(
             VALE = 27441.4178),
 
           _F(  RESULTAT = CALCNL,
-            NOM_CHAM = 'SIEF_ELNO_ELGA',
+            NOM_CHAM = 'SIEF_ELNO',
             NUME_ORDRE = 50,
             MAILLE = 'MA000537',
             NOEUD = 'NO002313',
@@ -137,7 +137,7 @@ TEST_RESU(RESU=(
             VALE = 28848.9338),
 
           _F(  RESULTAT = CALCNL,
-            NOM_CHAM = 'SIEF_ELNO_ELGA',
+            NOM_CHAM = 'SIEF_ELNO',
             NUME_ORDRE = 50,
             MAILLE = 'MA000393',
             NOEUD = 'NO001701',
@@ -147,7 +147,7 @@ TEST_RESU(RESU=(
             VALE = 34186.2896),
 
           _F(  RESULTAT = CALCNL,
-            NOM_CHAM = 'SIEF_ELNO_ELGA',
+            NOM_CHAM = 'SIEF_ELNO',
             NUME_ORDRE = 50,
             MAILLE = 'MA000329',
             NOEUD = 'NO001429',
@@ -157,7 +157,7 @@ TEST_RESU(RESU=(
             VALE = -18439.4893),
 
           _F(  RESULTAT = CALCNL,
-            NOM_CHAM = 'SIEF_ELNO_ELGA',
+            NOM_CHAM = 'SIEF_ELNO',
             NUME_ORDRE = 50,
             MAILLE = 'MA000193',
             NOEUD = 'NO000851',
@@ -167,7 +167,7 @@ TEST_RESU(RESU=(
             VALE = -15728.5059),
 
           _F(  RESULTAT = CALCNL,
-            NOM_CHAM = 'SIEF_ELNO_ELGA',
+            NOM_CHAM = 'SIEF_ELNO',
             NUME_ORDRE = 50,
             MAILLE = 'MA000001',
             NOEUD = 'NO000001',

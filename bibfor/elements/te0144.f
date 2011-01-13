@@ -3,9 +3,9 @@
       CHARACTER*(*)       OPTION , NOMTE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -27,7 +27,7 @@ C       - DU VECTEUR ELEMENTAIRE CONTRAINTE
 C     POUR LES ELEMENTS DE POUTRE D'EULER ET DE TIMOSHENKO.
 C     ------------------------------------------------------------------
 C IN  OPTION : K16 : NOM DE L'OPTION A CALCULER
-C        'SIEF_ELGA_DEPL'
+C        'SIEF_ELGA'
 C IN  NOMTE  : K16 : NOM DU TYPE ELEMENT
 C        'MECA_POU_D_E' : POUTRE DROITE D'EULER       (SECTION VARIABLE)
 C        'MECA_POU_D_T' : POUTRE DROITE DE TIMOSHENKO (SECTION VARIABLE)
@@ -76,7 +76,7 @@ C     ------------------------------------------------------------------
       NCC  = 6
 C     ------------------------------------------------------------------
 C
-      IF ( OPTION .EQ. 'SIEF_ELGA_DEPL' ) THEN
+      IF ( OPTION .EQ. 'SIEF_ELGA' ) THEN
          CALL JEVECH('PCONTRR','E',JEFFO)
       ELSE
 C OPTION NON PROGRAMMEE

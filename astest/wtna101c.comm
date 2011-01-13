@@ -1,11 +1,11 @@
-# MODIF  DATE 26/01/2010   AUTEUR FERNANDES R.FERNANDES 
+# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
 # RESPONSABLE ROMEO R.FERNANDES
 # ======================================================================
 # TITRE ETUDE  : ESSAI TRIAXIAL NON DRAINE AVEC LE MODELE DE TYPE
 # wtna101c.para = tps_job 380 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -147,7 +147,7 @@ U1       = STAT_NON_LINE(
                         )
 
 U1       = CALC_ELEM( reuse      = U1,
-                      OPTION     = ( 'SIEF_ELNO_ELGA', 'VARI_ELNO_ELGA',),
+                      OPTION     = ( 'SIEF_ELNO', 'VARI_ELNO_ELGA',),
                       RESULTAT   = U1,
                     )
 
@@ -195,13 +195,13 @@ U2       = STAT_NON_LINE( MODELE     = MODELE,
                         )
 
 U2       = CALC_ELEM( reuse      = U2,
-                      OPTION     = ('SIEF_ELNO_ELGA','VARI_ELNO_ELGA'),
+                      OPTION     = ('SIEF_ELNO','VARI_ELNO_ELGA'),
                       RESULTAT   = U2,
                     );
 
 U2       = CALC_NO( reuse    = U2,     
                     RESULTAT = U2,
-                    OPTION   = ( 'SIEF_NOEU_ELGA', 'VARI_NOEU_ELGA')
+                    OPTION   = ( 'SIEF_NOEU', 'VARI_NOEU_ELGA')
                   )
 
 #
@@ -215,7 +215,7 @@ TEST_RESU(RESU=(
 ###########################
                 _F(  RESULTAT = U2,    
                        NOEUD = 'NO8',      
-                       NOM_CHAM = 'SIEF_NOEU_ELGA',    
+                       NOM_CHAM = 'SIEF_NOEU',    
                        NOM_CMP = 'SIXX',     
                        INST = 1.004000, 
                        PRECISION  = 5.E-2, 
@@ -225,7 +225,7 @@ TEST_RESU(RESU=(
                      ),
                  _F(  RESULTAT = U2,   
                        NOEUD = 'NO8',      
-                       NOM_CHAM = 'SIEF_NOEU_ELGA',    
+                       NOM_CHAM = 'SIEF_NOEU',    
                        NOM_CMP = 'SIXX',     
                        NUME_ORDRE = 3,  
                        PRECISION  = 5.E-2, 
@@ -235,7 +235,7 @@ TEST_RESU(RESU=(
                      ),
                  _F(  RESULTAT = U2,   
                        NOEUD = 'NO8',      
-                       NOM_CHAM = 'SIEF_NOEU_ELGA',    
+                       NOM_CHAM = 'SIEF_NOEU',    
                        NOM_CMP = 'SIXX',     
                        NUME_ORDRE = 5,
                        PRECISION  = 5.E-2, 
@@ -245,7 +245,7 @@ TEST_RESU(RESU=(
                      ),
                  _F(  RESULTAT = U2,   
                        NOEUD = 'NO8',      
-                       NOM_CHAM = 'SIEF_NOEU_ELGA',    
+                       NOM_CHAM = 'SIEF_NOEU',    
                        NOM_CMP = 'SIXX',     
                        NUME_ORDRE = 9,
                        PRECISION  = 5.E-2,
@@ -258,7 +258,7 @@ TEST_RESU(RESU=(
 ###########################
                 _F(  RESULTAT = U2,    
                        NOEUD = 'NO8',      
-                       NOM_CHAM = 'SIEF_NOEU_ELGA',    
+                       NOM_CHAM = 'SIEF_NOEU',    
                        NOM_CMP = 'SIZZ',       
                        INST = 1.004000,
                        PRECISION  = 5.E-2, 
@@ -268,7 +268,7 @@ TEST_RESU(RESU=(
                      ),
                  _F(  RESULTAT = U2,   
                        NOEUD = 'NO8',      
-                       NOM_CHAM = 'SIEF_NOEU_ELGA',    
+                       NOM_CHAM = 'SIEF_NOEU',    
                        NOM_CMP = 'SIZZ',     
                        NUME_ORDRE = 3,  
                        PRECISION  = 5.E-2, 
@@ -278,7 +278,7 @@ TEST_RESU(RESU=(
                      ),
                  _F(  RESULTAT = U2,   
                        NOEUD = 'NO8',      
-                       NOM_CHAM = 'SIEF_NOEU_ELGA',    
+                       NOM_CHAM = 'SIEF_NOEU',    
                        NOM_CMP = 'SIZZ',     
                        NUME_ORDRE = 5,  
                        PRECISION  = 5.E-2, 
@@ -288,7 +288,7 @@ TEST_RESU(RESU=(
                      ),
                  _F(  RESULTAT = U2,   
                        NOEUD = 'NO8',      
-                       NOM_CHAM = 'SIEF_NOEU_ELGA',    
+                       NOM_CHAM = 'SIEF_NOEU',    
                        NOM_CMP = 'SIZZ',     
                        NUME_ORDRE = 9,  
                        PRECISION  = 5.E-2, 
@@ -346,7 +346,7 @@ TEST_RESU(RESU=(
 #SIGMA  = POST_RELEVE_T( ACTION = _F( INTITULE  = 'SIGMA',
 #           RESULTAT  =  U2,
 #           NOEUD  = 'NO8',
-#           NOM_CHAM  = 'SIEF_NOEU_ELGA',
+#           NOM_CHAM  = 'SIEF_NOEU',
 #           TOUT_CMP  = 'OUI',
 #           OPERATION = 'EXTRACTION',),);
 #

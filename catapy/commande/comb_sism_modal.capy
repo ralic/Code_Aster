@@ -1,7 +1,7 @@
-#& MODIF COMMANDE  DATE 09/11/2010   AUTEUR DELMAS J.DELMAS 
+#& MODIF COMMANDE  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -115,9 +115,9 @@ COMB_SISM_MODAL=OPER(nom="COMB_SISM_MODAL",op= 109,sd_prod=mode_meca,
            DZ              =SIMP(statut='f',typ='R' ),
          ),
          OPTION          =SIMP(statut='o',typ='TXM',validators=NoRepeat(),max=9,
-                               into=("DEPL","VITE","ACCE_ABSOLU","SIGM_ELNO_DEPL","SIEF_ELGA_DEPL",
+                               into=("DEPL","VITE","ACCE_ABSOLU","SIGM_ELNO_DEPL","SIEF_ELGA",
                                      "EFGE_ELNO_DEPL","REAC_NODA","FORC_NODA","EFGE_ELNO_CART",
-                                     "SIPO_ELNO_DEPL") ),
+                                     "SIPO_ELNO") ),
          INFO            =SIMP(statut='f',typ='I',defaut= 1,into=( 1 , 2 ) ),
          IMPRESSION      =FACT(statut='f',max='**',
            regles=(EXCLUS('TOUT','NIVEAU'),),

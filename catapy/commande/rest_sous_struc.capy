@@ -1,7 +1,7 @@
-#& MODIF COMMANDE  DATE 09/11/2010   AUTEUR DELMAS J.DELMAS 
+#& MODIF COMMANDE  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -67,7 +67,7 @@ REST_SOUS_STRUC=OPER(nom="REST_SOUS_STRUC",op=  77,sd_prod=rest_sous_struc_prod,
          TOUT_CHAM       =SIMP(statut='f',typ='TXM',into=("OUI",) ),
          b_nom_cham=BLOC(condition="TOUT_CHAM == None",
              NOM_CHAM        =SIMP(statut='f',typ='TXM',validators=NoRepeat(),max=8,defaut="ACCE",   
-                               into=("DEPL","VITE","ACCE","ACCE_ABSOLU","EFGE_ELNO_DEPL","SIPO_ELNO_DEPL",                 
+                               into=("DEPL","VITE","ACCE","ACCE_ABSOLU","EFGE_ELNO_DEPL","SIPO_ELNO",                 
                                      "SIGM_ELNO_DEPL","FORC_NODA",) ),),
          GROUP_NO        =SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**'),
          NOEUD           =SIMP(statut='f',typ=no  ,validators=NoRepeat(),max='**'),

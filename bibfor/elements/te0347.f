@@ -1,8 +1,8 @@
       SUBROUTINE TE0347(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 25/02/2008   AUTEUR FLEJOU J-L.FLEJOU 
+C MODIF ELEMENTS  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -21,7 +21,7 @@ C ======================================================================
       CHARACTER*16 OPTION,NOMTE
 C ----------------------------------------------------------------------
 C     FONCTION REALISEE:  CALCUL DES OPTIONS :
-C     SIEF_ELNO_ELGA, FORC_NODA ET VARI_ELNO_ELGA
+C     SIEF_ELNO, FORC_NODA ET VARI_ELNO_ELGA
 C     ELEMENT  POU_D_TG POU_D_T POU_D_E
 C     POUR LES VARIABLES INTERNES :
 C       - COMPORTEMENT VMIS_POU*
@@ -144,7 +144,7 @@ C        POUR LE POINT 2
 
 C
 C
-      ELSEIF ( OPTION .EQ. 'SIEF_ELNO_ELGA' .OR.
+      ELSEIF ( OPTION .EQ. 'SIEF_ELNO' .OR.
      &         OPTION .EQ. 'FORC_NODA'      ) THEN
 C        --------------------------------------
 C        POUR LES CONTRAINTES ET LES FORC_NODA
@@ -193,7 +193,7 @@ C
                REAGEO = ZK16(ICOMPO+2)(6:10) .EQ. '_REAC'
             ENDIF
 C
-            IF (OPTION.EQ.'SIEF_ELNO_ELGA') THEN
+            IF (OPTION.EQ.'SIEF_ELNO') THEN
                CALL JEVECH ( 'PCONTRR' , 'L', ICGP   )
                CALL JEVECH ( 'PDEPPLU' , 'L', IDEPLP )
                CALL JEVECH ( 'PSIEFNOR', 'E', ICONTN )
@@ -295,14 +295,14 @@ C
 C             --- ON CALCULE LE RESIDU DANS LE REPERE GLOBAL :
 C            ---------------------------------------------------
 C
-C             POUR LES SIEF_ELNO_ELGA
+C             POUR LES SIEF_ELNO
 C
 C             ---  ON CHANGE LE SIGNE DU NOEUD 1 :
 C             ------------------------------------
 C
             IF ( OPTION .EQ. 'FORC_NODA' ) THEN
                CALL UTPVLG ( NNO,NC,PGL,RESIDU(1),ZR(ICONTN))
-            ELSEIF ( OPTION .EQ. 'SIEF_ELNO_ELGA' ) THEN
+            ELSEIF ( OPTION .EQ. 'SIEF_ELNO' ) THEN
                DO 70 I = 1,NC
                   ZR(ICONTN-1+I) = -RESIDU(I)
 70             CONTINUE
@@ -314,7 +314,7 @@ C
 C       - COMPORTEMENT ELAS : NPG=2 : RECOPIE DES POINTS 1 ET 2
 C                             NPG=3 : RECOPIE DES POINTS 1 ET 3
 C        QUI CONTIENNENT DEJA LES EFFORTS AUX NOEUDS
-            IF ( OPTION .EQ. 'SIEF_ELNO_ELGA' ) THEN
+            IF ( OPTION .EQ. 'SIEF_ELNO' ) THEN
                CALL JEVECH('PCONTRR' , 'L', ICGP   )
                CALL JEVECH('PSIEFNOR', 'E', ICONTN )
                IF ( NPG .EQ. 2 ) THEN

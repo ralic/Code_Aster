@@ -1,8 +1,8 @@
-# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
 # TITRE ESSAI DE THERMO-PLASTICITE (MISES ECR. ISOT. LINE)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -433,7 +433,7 @@ U=STAT_NON_LINE(
               )
 
 CALC_ELEM( reuse=U,
-                            OPTION='SIEF_ELNO_ELGA',
+                            OPTION='SIEF_ELNO',
                           RESULTAT=U,
               )
 
@@ -443,7 +443,7 @@ TEST_RESU(RESU=(
 
             _F( RESULTAT = U,
              INST = 1.,
-             NOM_CHAM = 'SIEF_ELNO_ELGA',
+             NOM_CHAM = 'SIEF_ELNO',
              NOM_CMP = 'N',
              MAILLE = 'BARR1',
              NOEUD = 'N2',
@@ -451,7 +451,7 @@ TEST_RESU(RESU=(
              PRECISION = 0.001),
             _F( RESULTAT = U,
              INST = 1.,
-             NOM_CHAM = 'SIEF_ELNO_ELGA',
+             NOM_CHAM = 'SIEF_ELNO',
              NOM_CMP = 'N',
              MAILLE = 'BARR2',
              NOEUD = 'N4',
@@ -459,7 +459,7 @@ TEST_RESU(RESU=(
              PRECISION = 0.001),
             _F( RESULTAT = U,
              INST = 1.,
-             NOM_CHAM = 'SIEF_ELNO_ELGA',
+             NOM_CHAM = 'SIEF_ELNO',
              NOM_CMP = 'N',
              MAILLE = 'BARR3',
              NOEUD = 'N6',
@@ -467,7 +467,7 @@ TEST_RESU(RESU=(
              PRECISION = 0.001),
             _F( RESULTAT = U,
              INST = 2.,
-             NOM_CHAM = 'SIEF_ELNO_ELGA',
+             NOM_CHAM = 'SIEF_ELNO',
              NOM_CMP = 'N',
              MAILLE = 'BARR1',
              NOEUD = 'N2',
@@ -475,7 +475,7 @@ TEST_RESU(RESU=(
              PRECISION = 0.001),
             _F( RESULTAT = U,
              INST = 2.,
-             NOM_CHAM = 'SIEF_ELNO_ELGA',
+             NOM_CHAM = 'SIEF_ELNO',
              NOM_CMP = 'N',
              MAILLE = 'BARR2',
              NOEUD = 'N4',
@@ -483,7 +483,7 @@ TEST_RESU(RESU=(
              PRECISION = 0.001),
             _F( RESULTAT = U,
              INST = 2.,
-             NOM_CHAM = 'SIEF_ELNO_ELGA',
+             NOM_CHAM = 'SIEF_ELNO',
              NOM_CMP = 'N',
              MAILLE = 'BARR3',
              NOEUD = 'N6',
@@ -491,7 +491,7 @@ TEST_RESU(RESU=(
              PRECISION = 0.001),
             _F( RESULTAT = U,
              INST = 3.,
-             NOM_CHAM = 'SIEF_ELNO_ELGA',
+             NOM_CHAM = 'SIEF_ELNO',
              NOM_CMP = 'N',
              MAILLE = 'BARR1',
              NOEUD = 'N2',
@@ -499,7 +499,7 @@ TEST_RESU(RESU=(
              PRECISION = 0.001),
             _F( RESULTAT = U,
              INST = 3.,
-             NOM_CHAM = 'SIEF_ELNO_ELGA',
+             NOM_CHAM = 'SIEF_ELNO',
              NOM_CMP = 'N',
              MAILLE = 'BARR2',
              NOEUD = 'N4',
@@ -507,7 +507,7 @@ TEST_RESU(RESU=(
              PRECISION = 0.001),
             _F( RESULTAT = U,
              INST = 3.,
-             NOM_CHAM = 'SIEF_ELNO_ELGA',
+             NOM_CHAM = 'SIEF_ELNO',
              NOM_CMP = 'N',
              MAILLE = 'BARR3',
              NOEUD = 'N6',
@@ -515,7 +515,7 @@ TEST_RESU(RESU=(
              PRECISION = 0.001),
             _F( RESULTAT = U,
              INST = 4.,
-             NOM_CHAM = 'SIEF_ELNO_ELGA',
+             NOM_CHAM = 'SIEF_ELNO',
              NOM_CMP = 'N',
              MAILLE = 'BARR1',
              NOEUD = 'N2',
@@ -523,7 +523,7 @@ TEST_RESU(RESU=(
              PRECISION = 0.001),
             _F( RESULTAT = U,
              INST = 4.,
-             NOM_CHAM = 'SIEF_ELNO_ELGA',
+             NOM_CHAM = 'SIEF_ELNO',
              NOM_CMP = 'N',
              MAILLE = 'BARR2',
              NOEUD = 'N4',
@@ -531,7 +531,7 @@ TEST_RESU(RESU=(
              PRECISION = 0.001),
             _F( RESULTAT = U,
              INST = 4.,
-             NOM_CHAM = 'SIEF_ELNO_ELGA',
+             NOM_CHAM = 'SIEF_ELNO',
              NOM_CMP = 'N',
              MAILLE = 'BARR3',
              NOEUD = 'N6',
@@ -539,7 +539,7 @@ TEST_RESU(RESU=(
              PRECISION = 0.001),
             _F( RESULTAT = U,
              INST = 5.,
-             NOM_CHAM = 'SIEF_ELNO_ELGA',
+             NOM_CHAM = 'SIEF_ELNO',
              NOM_CMP = 'N',
              MAILLE = 'BARR1',
              NOEUD = 'N2',
@@ -547,7 +547,7 @@ TEST_RESU(RESU=(
              PRECISION = 0.001),
             _F( RESULTAT = U,
              INST = 5.,
-             NOM_CHAM = 'SIEF_ELNO_ELGA',
+             NOM_CHAM = 'SIEF_ELNO',
              NOM_CMP = 'N',
              MAILLE = 'BARR2',
              NOEUD = 'N4',
@@ -555,7 +555,7 @@ TEST_RESU(RESU=(
              PRECISION = 0.001),
             _F( RESULTAT = U,
              INST = 5.,
-             NOM_CHAM = 'SIEF_ELNO_ELGA',
+             NOM_CHAM = 'SIEF_ELNO',
              NOM_CMP = 'N',
              MAILLE = 'BARR3',
              NOEUD = 'N6',

@@ -1,9 +1,9 @@
-# MODIF  DATE 07/12/2010   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
 # TITRE DETECTION DES SINGULARITES DANS UNE PLAQUE FISSUREE (TRIA3)
 # ssnp130a.para = tps_job 60 mem_job 200Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -79,7 +79,7 @@ DEPLA=STAT_NON_LINE(MODELE=MO,
 DEPLA=CALC_ELEM(reuse =DEPLA,
                 RESULTAT=DEPLA,
                 INST=1.,
-                OPTION=('SIEF_ELNO_ELGA','ERME_ELEM','ETOT_ELEM',),);
+                OPTION=('SIEF_ELNO','ERME_ELEM','ETOT_ELEM',),);
 
 # DEFINITION DU PROBLEME DUAL
 
@@ -97,7 +97,7 @@ RESUD=STAT_NON_LINE(MODELE=MO,
 RESUD=CALC_ELEM(reuse =RESUD,
                 RESULTAT=RESUD,
                 INST=1.,
-                OPTION=('SIEF_ELNO_ELGA','ERME_ELEM',),);
+                OPTION=('SIEF_ELNO','ERME_ELEM',),);
 
 # POST-TRAITEMENT AVEC L'ERREUR EN QUANTITE D'INTERET
 
@@ -106,8 +106,8 @@ DEPLA=CALC_ELEM(reuse =DEPLA,
                 INST=1.,
                 RESU_DUAL=RESUD,
                 PREC_ERR=0.8,
-                TYPE_ESTI='QIRE_ELEM_SIGM',
-                OPTION=('QIRE_ELEM_SIGM','SING_ELEM','SING_ELNO_ELEM',),);
+                TYPE_ESTI='QIRE_ELEM',
+                OPTION=('QIRE_ELEM','SING_ELEM','SING_ELNO',),);
 
 # TEST DE SING_ELEM VALEUR MAX ET MIN DES 2 COMPOSANTES
 
@@ -262,11 +262,11 @@ TEST_RESU(RESU=(_F(RESULTAT=DEPLA,
                    REFERENCE='NON_REGRESSION',
                    VERSION='10.00.19',),),);
 
-# TEST DE SING_ELNO_ELEM
+# TEST DE SING_ELNO
 
 TEST_RESU(RESU=(_F(RESULTAT=DEPLA,
                    INST=1.0,
-                   NOM_CHAM='SING_ELNO_ELEM',
+                   NOM_CHAM='SING_ELNO',
                    NOM_CMP='DEGRE',
                    TYPE_TEST='MAX',
                    VALE=1.0,
@@ -275,7 +275,7 @@ TEST_RESU(RESU=(_F(RESULTAT=DEPLA,
                    REFERENCE='NON_REGRESSION',),
                 _F(RESULTAT=DEPLA,
                    INST=1.0,
-                   NOM_CHAM='SING_ELNO_ELEM',
+                   NOM_CHAM='SING_ELNO',
                    NOM_CMP='DEGRE',
                    TYPE_TEST='MIN',
                    VALE=0.5,
@@ -284,7 +284,7 @@ TEST_RESU(RESU=(_F(RESULTAT=DEPLA,
                    REFERENCE='NON_REGRESSION',),
                 _F(RESULTAT=DEPLA,
                    INST=1.0,
-                   NOM_CHAM='SING_ELNO_ELEM',
+                   NOM_CHAM='SING_ELNO',
                    NOM_CMP='RAPPORT',
                    TYPE_TEST='MAX',
                    VALE=7.3626543806501E+00,
@@ -294,7 +294,7 @@ TEST_RESU(RESU=(_F(RESULTAT=DEPLA,
                    VERSION='10.00.20',),
                 _F(RESULTAT=DEPLA,
                    INST=1.0,
-                   NOM_CHAM='SING_ELNO_ELEM',
+                   NOM_CHAM='SING_ELNO',
                    NOM_CMP='RAPPORT',
                    TYPE_TEST='MIN',
                    VALE=1.0310743656741E+00,
@@ -304,7 +304,7 @@ TEST_RESU(RESU=(_F(RESULTAT=DEPLA,
                    VERSION='10.00.20',),
                 _F(RESULTAT=DEPLA,
                    INST=1.0,
-                   NOM_CHAM='SING_ELNO_ELEM',
+                   NOM_CHAM='SING_ELNO',
                    NOM_CMP='TAILLE',
                    TYPE_TEST='MAX',
                    VALE=1.6918129088007E+00,
@@ -314,7 +314,7 @@ TEST_RESU(RESU=(_F(RESULTAT=DEPLA,
                    VERSION='10.00.20',),
                 _F(RESULTAT=DEPLA,
                    INST=1.0,
-                   NOM_CHAM='SING_ELNO_ELEM',
+                   NOM_CHAM='SING_ELNO',
                    NOM_CMP='TAILLE',
                    TYPE_TEST='MIN',
                    VALE=2.9500698175388E-02,

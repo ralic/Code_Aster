@@ -1,7 +1,7 @@
-%& MODIF TYPELEM  DATE 07/12/2010   AUTEUR PELLET J.PELLET 
+%& MODIF TYPELEM  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
-% COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
+% COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 % THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 % IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 % THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -88,30 +88,30 @@ OPTION__
                               OUT__  MVECTTR  PVECTTR
     COOR_ELGA           479   IN__   NGEOMER  PGEOMER
                               OUT__  EGGEOP_R PCOORPG
-    DETE_ELNO_DLTE      -1    IN__   XXXXXX   XXXXXX
+    DETE_ELNO      -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
     DLAG_NOEU_TEMP      -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
-    DURT_ELNO_META      551   IN__   CMATERC  PMATERC  EPHASNO_ PPHASIN
+    DURT_ELNO      551   IN__   CMATERC  PMATERC  EPHASNO_ PPHASIN
                               OUT__  EDURTNO  PDURT_R
-    ECIN_ELEM_DEPL      -1    IN__   XXXXXX   XXXXXX
+    ECIN_ELEM      -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
     ENER_ELAS           -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
     ENER_TOTALE         -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
-    EPOT_ELEM_DEPL      -1    IN__   XXXXXX   XXXXXX
+    EPOT_ELEM      -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
     ERTH_ELEM           -1    IN__   XXXXXX   XXXXXX    OUT__  XXXXXX   XXXXXX
     ERTH_ELNO           -1    IN__   XXXXXX   XXXXXX    OUT__  XXXXXX   XXXXXX
     FLUX_ELGA_SENS      -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
-    FLUX_ELGA_TEMP      266   IN__   NGEOMER  PGEOMER  CHARMON  PHARMON  CMATERC  PMATERC  DDL_THER PTEMPER
+    FLUX_ELGA      266   IN__   NGEOMER  PGEOMER  CHARMON  PHARMON  CMATERC  PMATERC  DDL_THER PTEMPER
                                      CTEMPSR  PTEMPSR
                               OUT__  EFLUXPG  PFLUX_R
     FLUX_ELNO_SENS      -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
-    FLUX_ELNO_TEMP      265   IN__   NGEOMER  PGEOMER  CHARMON  PHARMON  CMATERC  PMATERC  DDL_THER PTEMPER
+    FLUX_ELNO      265   IN__   NGEOMER  PGEOMER  CHARMON  PHARMON  CMATERC  PMATERC  DDL_THER PTEMPER
                                      CTEMPSR  PTEMPSR
                               OUT__  EFLUXNO  PFLUX_R
     INDIC_ENER          -1    IN__   XXXXXX   XXXXXX
@@ -124,7 +124,7 @@ OPTION__
                               OUT__  XXXXXX   XXXXXX
     MASS_THER           -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
-    META_ELNO_TEMP      67    IN__   CCOMPOR  PCOMPOR  CFTRC    PFTRC    CMATERC  PMATERC  EPHASNO_ PPHASIN
+    META_ELNO      67    IN__   CCOMPOR  PCOMPOR  CFTRC    PFTRC    CMATERC  PMATERC  EPHASNO_ PPHASIN
                                      DDL_THER PTEMPAR  DDL_THER PTEMPER  DDL_THER PTEMPIR  CTEMPSR  PTEMPSR
                               OUT__  EPHASNO_ PPHASNOU
     META_INIT_ELNO      320   IN__   CCOMPOR  PCOMPOR  CMATERC  PMATERC  CPHASIN_ PPHASIN  DDL_THER PTEMPER

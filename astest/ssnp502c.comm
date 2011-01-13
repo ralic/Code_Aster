@@ -1,4 +1,4 @@
-# MODIF  DATE 10/01/2011   AUTEUR DESOZA T.DESOZA 
+# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
 # TITRE ECRASEMENT D'UN ANNEAU ENTRE DEUX PLAQUES AVEC FROTTEMENT.
 # ssnp502c.para = tps_job 100 mem_job 200Mo ncpus 1 liste_test V
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -147,7 +147,7 @@ RESU=STAT_NON_LINE(MODELE=MO,
 RESU=CALC_ELEM(reuse =RESU,
 
 
-               OPTION='SIEF_ELNO_ELGA',
+               OPTION='SIEF_ELNO',
                RESULTAT=RESU,);
 
 RESU=CALC_NO(reuse =RESU,
@@ -159,7 +159,7 @@ RESU=CALC_NO(reuse =RESU,
 
 RESU=CALC_NO(reuse =RESU,
              RESULTAT=RESU,
-             OPTION='SIEF_NOEU_ELGA',
+             OPTION='SIEF_NOEU',
              CHAM_MATER=CHMAT );
 
 
@@ -173,7 +173,7 @@ TAB_REAC=POST_RELEVE_T(ACTION=_F(INTITULE='MESSAGE',
 TAB_PRES=POST_RELEVE_T(ACTION=_F(INTITULE='MESSAGE',
                                  GROUP_NO='LRESU',
                                  RESULTAT=RESU,
-                                 NOM_CHAM='SIEF_NOEU_ELGA',
+                                 NOM_CHAM='SIEF_NOEU',
                                  INST=4.0,
                                  NOM_CMP=('SIYY','SIXY'),
                                  OPERATION='EXTRACTION',),);
@@ -238,7 +238,7 @@ TEST_RESU(RESU=_F(RESULTAT=RESU,
 TEST_RESU(RESU=_F(RESULTAT=RESU,
                   GROUP_NO='A',
                   INST=2.,
-                  NOM_CHAM='SIEF_NOEU_ELGA',
+                  NOM_CHAM='SIEF_NOEU',
                   NOM_CMP='SIYY',
                   VALE=-1.5321643718937E+01,
                   PRECISION=1.E-5,
@@ -248,7 +248,7 @@ TEST_RESU(RESU=_F(RESULTAT=RESU,
 TEST_RESU(RESU=_F(RESULTAT=RESU,
                   GROUP_NO='A',
                   INST=4.,
-                  NOM_CHAM='SIEF_NOEU_ELGA',
+                  NOM_CHAM='SIEF_NOEU',
                   NOM_CMP='SIYY',
                   VALE=-1.2002526606057E+01,
                   PRECISION=3.E-5,

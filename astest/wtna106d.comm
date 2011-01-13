@@ -1,4 +1,4 @@
-# MODIF  DATE 10/01/2011   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
 # ======================================================================
 # TITRE MODELISATION D_PLAN_THHD EN QUAD8
 # wtna106d.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
@@ -320,17 +320,17 @@ U0=CALC_NO(reuse =U0,
              RESULTAT=U0,);
 
 DPVP=CALC_ELEM(RESULTAT=U0,
-               OPTION='EXTR_ELNO_VARI',
+               OPTION='VAEX_ELNO',
                NOM_VARI='DPVP'
                )
 DPVP=CALC_NO(reuse=DPVP,
              RESULTAT=DPVP,
-             OPTION='EXTR_NOEU_VARI',
+             OPTION='VAEX_NOEU',
              )
 
-SATLIQ=CALC_ELEM(RESULTAT=U0,OPTION='EXTR_ELNO_VARI',NOM_VARI='SATLIQ')
-SATLIQ=CALC_NO(reuse=SATLIQ,RESULTAT=SATLIQ,OPTION='EXTR_NOEU_VARI',)
-SATEAU=CALC_ELEM(RESULTAT=U0,OPTION='EXTR_ELGA_VARI',NOM_VARI='SATLIQ')
+SATLIQ=CALC_ELEM(RESULTAT=U0,OPTION='VAEX_ELNO',NOM_VARI='SATLIQ')
+SATLIQ=CALC_NO(reuse=SATLIQ,RESULTAT=SATLIQ,OPTION='VAEX_NOEU',)
+SATEAU=CALC_ELEM(RESULTAT=U0,OPTION='VAEX_ELGA',NOM_VARI='SATLIQ')
 
 #################################################
 IMPR_RESU(RESU=_F(RESULTAT=U0,
@@ -345,7 +345,7 @@ IMPR_RESU(RESU=_F(RESULTAT=U0,
 TEST_RESU(RESU=(
                 _F(RESULTAT=DPVP,
                    INST=100.0,
-                   NOM_CHAM='EXTR_ELNO_VARI',
+                   NOM_CHAM='VAEX_ELNO',
                    NOM_CMP='X1',
                    MAILLE='M2',
                    NOEUD='N2',
@@ -354,7 +354,7 @@ TEST_RESU(RESU=(
                    REFERENCE='NON_REGRESSION',),
                 _F(RESULTAT=DPVP,
                    INST=1000.,
-                   NOM_CHAM='EXTR_NOEU_VARI',
+                   NOM_CHAM='VAEX_NOEU',
                    NOM_CMP='X1',
                    NOEUD='N2',
                    VALE=4.1324E+05,
@@ -363,7 +363,7 @@ TEST_RESU(RESU=(
                    VERSION = '9.2.18', ),
                 _F(RESULTAT=SATLIQ,
                    INST=1000.,
-                   NOM_CHAM='EXTR_NOEU_VARI',
+                   NOM_CHAM='VAEX_NOEU',
                    NOM_CMP='X1',
                    NOEUD='N2',
                    VALE=4.99219E-01,
@@ -372,7 +372,7 @@ TEST_RESU(RESU=(
                    VERSION = '9.2.18', ),
                 _F(RESULTAT=SATEAU,
                    INST=1000.,
-                   NOM_CHAM='EXTR_ELGA_VARI',
+                   NOM_CHAM='VAEX_ELGA',
                    NOM_CMP='X1',
                    POINT=1,
                    MAILLE='M1',

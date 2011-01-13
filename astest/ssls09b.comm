@@ -1,9 +1,9 @@
-# MODIF  DATE 07/12/2010   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
 # TITRE CYLINDRE MINCE SOUS SON POIDS PROPRE (AXIS) - ANCIEN SSLP09b
 # ssls09b.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -189,7 +189,7 @@ DEF_PESA=STAT_NON_LINE(MODELE=MODELE,
 
 DEF_PESA=CALC_ELEM(reuse =DEF_PESA,
                RESULTAT=DEF_PESA,
-               OPTION=('SIEF_ELNO_ELGA',
+               OPTION=('SIEF_ELNO',
                        'ERME_ELEM',
                        'ERME_ELNO',
                       ),
@@ -246,7 +246,7 @@ TEST_RESU(RESU=(_F(RESULTAT=DEF_PESA,
 
 TEST_RESU(RESU=(_F(RESULTAT=DEF_PESA,
                    NUME_ORDRE=1,
-                   NOM_CHAM='SIEF_ELNO_ELGA',
+                   NOM_CHAM='SIEF_ELNO',
                           MAILLE = 'M4',
                           NOEUD = 'N51',
                           NOM_CMP = 'SIYY',
@@ -255,7 +255,7 @@ TEST_RESU(RESU=(_F(RESULTAT=DEF_PESA,
                           PRECISION = 0.0001),
                 _F(RESULTAT=DEF_PESA,
                    NUME_ORDRE=1,
-                   NOM_CHAM='SIEF_ELNO_ELGA',
+                   NOM_CHAM='SIEF_ELNO',
                           MAILLE = 'M4',
                           NOEUD = 'N1',
                           NOM_CMP = 'SIXX',
@@ -265,7 +265,7 @@ TEST_RESU(RESU=(_F(RESULTAT=DEF_PESA,
                           CRITERE = 'ABSOLU'),
                _F(RESULTAT=DEF_PESA,
                    NUME_ORDRE=1,
-                   NOM_CHAM='SIEF_ELNO_ELGA',
+                   NOM_CHAM='SIEF_ELNO',
                           MAILLE = 'M4',
                           NOEUD = 'N51',
                           NOM_CMP = 'SIXX',

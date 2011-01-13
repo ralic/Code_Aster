@@ -4,10 +4,10 @@
 C =====================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C =====================================================================
-C MODIF ELEMENTS  DATE 04/10/2010   AUTEUR MEUNIER S.MEUNIER 
+C MODIF ELEMENTS  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
 C RESPONSABLE UFBHHLL C.CHAVANT
 C =====================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -384,9 +384,9 @@ C ======================================================================
      &              ZR(ICONTM))
       END IF
 C ======================================================================
-C --- 7. OPTION : SIEF_ELNO_ELGA ---------------------------------------
+C --- 7. OPTION : SIEF_ELNO ---------------------------------------
 C ======================================================================
-      IF (OPTION.EQ.'SIEF_ELNO_ELGA  ') THEN
+      IF (OPTION.EQ.'SIEF_ELNO  ') THEN
          NCMP = DIMCON
          CALL JEVECH('PCONTRR', 'L',ICHG)
          CALL JEVECH('PSIEFNOR','E',ICHN)
@@ -408,9 +408,9 @@ C ======================================================================
          CALL POSTHM(OPTION,MODINT,JGANO,NCMP,NVIM,ZR(ICHG),ZR(ICHN))
       END IF
 C ======================================================================
-C --- 9. OPTION : EPSI_ELGA_DEPL OU EPSI_ELNO_DEPL ---------------------
+C --- 9. OPTION : EPSI_ELGA OU EPSI_ELNO_DEPL ---------------------
 C ======================================================================
-      IF ((OPTION.EQ.'EPSI_ELGA_DEPL') .OR.
+      IF ((OPTION.EQ.'EPSI_ELGA') .OR.
      &    (OPTION.EQ.'EPSI_ELNO_DEPL')) THEN
 
          CALL JEVECH('PGEOMER','L',IGEOM)

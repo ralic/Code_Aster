@@ -1,9 +1,9 @@
-# MODIF  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
 # TITRE ESSAI DE TRACTION-CISAILLEMENT (MISES ECR. ISOT. COQUE 3D)
 # ssnp15e.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -117,7 +117,7 @@ U=CALC_ELEM( reuse=U,  RESULTAT=U,
              TOUT_ORDRE='OUI',
              REPE_COQUE =_F( NUME_COUCHE=1,
                              NIVE_COUCHE='SUP', ),
-             OPTION=('VARI_ELNO_ELGA', 'SIEF_ELNO_ELGA', 'SIGM_ELNO_COQU' ),
+             OPTION=('VARI_ELNO_ELGA', 'SIEF_ELNO', 'SIGM_ELNO_COQU' ),
              )
 
 TEST_RESU(RESU=(
@@ -188,32 +188,32 @@ TEST_RESU(RESU=(_F(
             )
 
 TEST_RESU(RESU=(_F(
-                   RESULTAT = U,  NOM_CHAM = 'SIEF_ELNO_ELGA',
+                   RESULTAT = U,  NOM_CHAM = 'SIEF_ELNO',
                    MAILLE = 'MA1',  NOEUD = 'NO1',
                    INST = 1.,     NOM_CMP = 'NXX',
                    VALE = 1.512E+02,      PRECISION = 1.E-02),
                   _F(
-                   RESULTAT = U,   NOM_CHAM = 'SIEF_ELNO_ELGA',
+                   RESULTAT = U,   NOM_CHAM = 'SIEF_ELNO',
                    MAILLE = 'MA1',   NOEUD = 'NO1',
                    INST = 1.,      NOM_CMP = 'NXY',
                    VALE = 0.931E+02,      PRECISION = 1.E-02),
                   _F(
-                   RESULTAT = U,   NOM_CHAM = 'SIEF_ELNO_ELGA',
+                   RESULTAT = U,   NOM_CHAM = 'SIEF_ELNO',
                    MAILLE = 'MA1',   NOEUD = 'NO3',
                    INST = 1.,      NOM_CMP = 'NXX',
                    VALE = 1.512E+02,      PRECISION = 1.E-02),
                   _F(
-                   RESULTAT = U,   NOM_CHAM = 'SIEF_ELNO_ELGA',
+                   RESULTAT = U,   NOM_CHAM = 'SIEF_ELNO',
                    MAILLE = 'MA1',  NOEUD = 'NO3',
                    INST = 1.,      NOM_CMP = 'NXY',
                    VALE = 0.931E+02,      PRECISION = 1.E-02),
                   _F(
-                   RESULTAT = U,   NOM_CHAM = 'SIEF_ELNO_ELGA',
+                   RESULTAT = U,   NOM_CHAM = 'SIEF_ELNO',
                    MAILLE = 'MA2',   NOEUD = 'NO3',
                    INST = 1.,      NOM_CMP = 'NXX',
                    VALE = 1.512E+02,      PRECISION = 1.E-02),
                   _F(
-                   RESULTAT = U,   NOM_CHAM = 'SIEF_ELNO_ELGA',
+                   RESULTAT = U,   NOM_CHAM = 'SIEF_ELNO',
                    MAILLE = 'MA2',   NOEUD = 'NO3',
                    INST = 1.,      NOM_CMP = 'NXY',
                    VALE = 0.931E+02,      PRECISION = 1.E-02))

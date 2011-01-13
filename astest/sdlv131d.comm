@@ -1,9 +1,9 @@
-# MODIF  DATE 14/12/2010   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
 # TITRE  : POUTRE EN TRACTION (ELEMENTS VOLUMIQUES)
 # sdlv131d.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -130,11 +130,11 @@ if modes:
   MODES=CALC_ELEM( reuse=MODES,RESULTAT=MODES,
 
 
-                   OPTION=('EPSI_ELGA_DEPL','EPSI_ELNO_DEPL',),
+                   OPTION=('EPSI_ELGA','EPSI_ELNO_DEPL',),
                )
 
   MODES=CALC_NO( reuse=MODES, RESULTAT=MODES,
-                 OPTION=('EPSI_NOEU_DEPL', )
+                 OPTION=('EPSI_NOEU', )
                      )
 
 projection = 0
@@ -155,7 +155,7 @@ if projection:
                    MODELE_2 = MODLMESU,
                    PROJECTION = 'OUI',
                    TOUT_ORDRE = 'OUI',
-                   NOM_CHAM = 'EPSI_NOEU_DEPL',
+                   NOM_CHAM = 'EPSI_NOEU',
                    EPSI_MOYENNE = (  # pour JAUGE : une occ par jauge
                               _F( GROUP_MA='SURF3',SEUIL_VARI=(0.1,),MASQUE=('EPYY','EPXY','EPXZ','EPYZ'),),
                               _F( GROUP_MA='SURF4',MASQUE=('EPZZ','EPXY','EPXZ','EPYZ'),),
@@ -167,10 +167,10 @@ if projection:
                               ),
                    FILTRE =(
                               _F( GROUP_NO = 'P3',
-                                NOM_CHAM = 'EPSI_NOEU_DEPL',
+                                NOM_CHAM = 'EPSI_NOEU',
                                 DDL_ACTIF = ('EPXX','EPZZ',),),
                               _F( GROUP_NO = 'P4',
-                                NOM_CHAM = 'EPSI_NOEU_DEPL',
+                                NOM_CHAM = 'EPSI_NOEU',
                                 DDL_ACTIF = ('EPXX','EPYY',),),
                               ),
                   );
@@ -181,10 +181,10 @@ if projection:
                    MODELE_2 = MODLMESU,
                    PROJECTION = 'OUI',
                    TOUT_ORDRE = 'OUI',
-                   NOM_CHAM = ('EPSI_NOEU_DEPL','DEPL'),
+                   NOM_CHAM = ('EPSI_NOEU','DEPL'),
                    FILTRE =(
                               _F( GROUP_NO = 'P3',
-                                NOM_CHAM = 'EPSI_NOEU_DEPL',
+                                NOM_CHAM = 'EPSI_NOEU',
                                 DDL_ACTIF = ('EPXX','EPZZ',),),
                               _F( GROUP_NO = 'P3',
                                 NOM_CHAM = 'DEPL',
@@ -199,7 +199,7 @@ else:
                    MODELE_2 = MODEL,
                    PROJECTION = 'NON',
                    TOUT_ORDRE = 'OUI',
-                   NOM_CHAM = 'EPSI_NOEU_DEPL',
+                   NOM_CHAM = 'EPSI_NOEU',
                    MATR_A=M_AS_RIG,
                    MATR_B=M_AS_MAS,
                    EPSI_MOYENNE = (  # pour JAUGE : une occ par jauge
@@ -217,10 +217,10 @@ else:
                               ),
                    FILTRE = (
                               _F( GROUP_NO = 'P3',
-                                  NOM_CHAM = 'EPSI_NOEU_DEPL',
+                                  NOM_CHAM = 'EPSI_NOEU',
                                   DDL_ACTIF = ('EPXX','EPZZ',),),
                               _F( GROUP_NO = 'P4',
-                                  NOM_CHAM = 'EPSI_NOEU_DEPL',
+                                  NOM_CHAM = 'EPSI_NOEU',
                                   DDL_ACTIF = ('EPXX','EPYY',),),
                              ),
                   );
@@ -233,10 +233,10 @@ else:
                    TOUT_ORDRE = 'OUI',
                    MATR_A=M_AS_RIG,
                    MATR_B=M_AS_MAS,
-                   NOM_CHAM = ('DEPL','EPSI_NOEU_DEPL'),
+                   NOM_CHAM = ('DEPL','EPSI_NOEU'),
                    FILTRE = (
                               _F( GROUP_NO = 'P3',
-                                  NOM_CHAM = 'EPSI_NOEU_DEPL',
+                                  NOM_CHAM = 'EPSI_NOEU',
                                   DDL_ACTIF = ('EPXX','EPZZ',),),
                               _F( GROUP_NO = 'P3',
                                   NOM_CHAM = 'DEPL',
@@ -253,31 +253,31 @@ else:
 modes = 1
 if modes:
   TEST_RESU(RESU=(
-       _F( RESULTAT = OBSJAU,        NOM_CHAM = 'EPSI_NOEU_DEPL',
+       _F( RESULTAT = OBSJAU,        NOM_CHAM = 'EPSI_NOEU',
              NOM_CMP = 'EPXX',    GROUP_NO = 'P3',
              REFERENCE = 'NON_REGRESSION',
              CRITERE = 'RELATIF',    PRECISION = 1.E-3,
              NUME_MODE = 1,                 VALE = 1.012),
-       _F( RESULTAT = OBSJAU,        NOM_CHAM = 'EPSI_NOEU_DEPL',
+       _F( RESULTAT = OBSJAU,        NOM_CHAM = 'EPSI_NOEU',
              NOM_CMP = 'EPZZ',    GROUP_NO = 'P3',
              REFERENCE = 'NON_REGRESSION',
              CRITERE = 'RELATIF',    PRECISION = 1.E-3,
              NUME_MODE = 1,                 VALE = -3.063E-1),
 
 # rotation 90 degres : EPXX <-> EPYY
-       _F( RESULTAT = OBSJAU,        NOM_CHAM = 'EPSI_NOEU_DEPL',
+       _F( RESULTAT = OBSJAU,        NOM_CHAM = 'EPSI_NOEU',
              NOM_CMP = 'EPYY',    GROUP_NO = 'P4',
              REFERENCE = 'NON_REGRESSION',
              CRITERE = 'RELATIF',    PRECISION = 1.E-3,
              NUME_MODE = 1,                 VALE = 1.017),
-       _F( RESULTAT = OBSJAU,        NOM_CHAM = 'EPSI_NOEU_DEPL',
+       _F( RESULTAT = OBSJAU,        NOM_CHAM = 'EPSI_NOEU',
              NOM_CMP = 'EPXX',    GROUP_NO = 'P4',
              REFERENCE = 'NON_REGRESSION',
              CRITERE = 'RELATIF',    PRECISION = 1.E-3,
              NUME_MODE = 1,                 VALE = -3.118E-1),
 
 # observation mixte
-       _F( RESULTAT = OBSMXT,        NOM_CHAM = 'EPSI_NOEU_DEPL',
+       _F( RESULTAT = OBSMXT,        NOM_CHAM = 'EPSI_NOEU',
              NOM_CMP = 'EPXX',    GROUP_NO = 'P3',
              REFERENCE = 'NON_REGRESSION',
              CRITERE = 'RELATIF',    PRECISION = 1.E-3,

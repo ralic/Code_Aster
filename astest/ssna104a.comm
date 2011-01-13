@@ -1,10 +1,10 @@
-# MODIF  DATE 17/02/2009   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
 # RESPONSABLE F6BHHBO P.DEBONNIERES
 # TITRE CYLINDRE CREUX VISCOPLASTICITE LINEAIRE, PRESSION INTERNE
 # ssna104a.para = tps_job 130 mem_job 300Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
@@ -101,10 +101,10 @@ RESU = STAT_NON_LINE (MODELE = MO,
 
 RESU = CALC_ELEM( reuse= RESU,
                   RESULTAT = RESU,
-                  OPTION = 'SIEF_ELNO_ELGA',)
+                  OPTION = 'SIEF_ELNO',)
 RESU = CALC_NO ( reuse= RESU,
                   RESULTAT = RESU,
-                  OPTION = 'SIEF_NOEU_ELGA',)
+                  OPTION = 'SIEF_NOEU',)
 
 
 TEST_RESU( 
@@ -117,7 +117,7 @@ TEST_RESU(
                    REFERENCE='ANALYTIQUE'),
                 _F(RESULTAT = RESU,
                    NUME_ORDRE =115,
-                   NOM_CHAM ='SIEF_NOEU_ELGA',
+                   NOM_CHAM ='SIEF_NOEU',
                    GROUP_NO ='B',
                    NOM_CMP ='SIXX',
                    VALE= 0.,
@@ -125,7 +125,7 @@ TEST_RESU(
                    REFERENCE='ANALYTIQUE'),
                  _F(RESULTAT = RESU,
                    NUME_ORDRE =115,
-                   NOM_CHAM ='SIEF_NOEU_ELGA',
+                   NOM_CHAM ='SIEF_NOEU',
                    GROUP_NO ='B',
                    NOM_CMP ='SIYY',
                    VALE= 2.7912E-4,
@@ -133,7 +133,7 @@ TEST_RESU(
                    REFERENCE='ANALYTIQUE'),
                  _F(RESULTAT = RESU,
                    NUME_ORDRE =115,
-                   NOM_CHAM ='SIEF_NOEU_ELGA',
+                   NOM_CHAM ='SIEF_NOEU',
                    GROUP_NO ='B',
                    NOM_CMP ='SIZZ',
                    VALE= 6.666E-4,

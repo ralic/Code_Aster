@@ -131,7 +131,7 @@ for IP in range (NB_GRAINS):
                                 GROUP_MA = 'GM'+str(IP+1),
 				),)
   EPS[IP]=POST_ELEM( RESULTAT=SOLNL,
-                   INTEGRALE=_F(NOM_CHAM='EPSI_ELGA_DEPL',
+                   INTEGRALE=_F(NOM_CHAM='EPSI_ELGA',
                                 NOM_CMP=('EPXX','EPYY','EPZZ'),
                                 GROUP_MA = 'GM'+str(IP+1),
 				),)

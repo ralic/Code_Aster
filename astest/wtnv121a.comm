@@ -1,4 +1,4 @@
-# MODIF  DATE 10/01/2011   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
 # RESPONSABLE JOUMANA J.EL-GHARIB
 # TITRE MOUILLAGE D'UNE COLONNE EN BETON AVEC LOI D'ENDOMMMAGEMENT
 # wtnv121a.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
@@ -295,30 +295,30 @@ REPONSE=STAT_NON_LINE( MODELE     = MO,
 REPONSE=CALC_ELEM(reuse =REPONSE,
                RESULTAT=REPONSE,
                PRECISION = 1.E-10,
-               OPTION=('SIEF_ELNO_ELGA','VARI_ELNO_ELGA'),
+               OPTION=('SIEF_ELNO','VARI_ELNO_ELGA'),
                TOUT='OUI');
 
 REPONSE=CALC_NO(reuse =REPONSE,
                RESULTAT=REPONSE,
                PRECISION = 1.E-10,
-               OPTION=('SIEF_NOEU_ELGA','VARI_NOEU_ELGA'),
+               OPTION=('SIEF_NOEU','VARI_NOEU_ELGA'),
                TOUT='OUI');
 
 ENDO=CALC_ELEM(RESULTAT=REPONSE,
-               OPTION='EXTR_ELNO_VARI',
+               OPTION='VAEX_ELNO',
                NOM_VARI='D'
                );
 
 ENDO=CALC_NO(reuse=ENDO,
              RESULTAT=ENDO,
-             OPTION='EXTR_NOEU_VARI'
+             OPTION='VAEX_NOEU'
              );
 
 TEST_RESU(RESU=(
 # ENDOMMAGEMENT
                  _F(  RESULTAT=ENDO,
                        NUME_ORDRE=1,
-                       NOM_CHAM='EXTR_ELNO_VARI',
+                       NOM_CHAM='VAEX_ELNO',
                        NOM_CMP='X1',
                        MAILLE='M10',
                        NOEUD='N90',
@@ -328,7 +328,7 @@ TEST_RESU(RESU=(
                      ),
                  _F(  RESULTAT = ENDO,
                        GROUP_NO = 'E',
-                       NOM_CHAM = 'EXTR_NOEU_VARI',
+                       NOM_CHAM = 'VAEX_NOEU',
                        NOM_CMP = 'X1',
                        INST = 0.5,
                        REFERENCE='NON_REGRESSION',
@@ -337,7 +337,7 @@ TEST_RESU(RESU=(
                      ),
                  _F(  RESULTAT = ENDO,
                        GROUP_NO = 'E',
-                       NOM_CHAM = 'EXTR_NOEU_VARI',
+                       NOM_CHAM = 'VAEX_NOEU',
                        NOM_CMP = 'X1',
                        INST = 1.0,
                        REFERENCE='NON_REGRESSION',
@@ -351,7 +351,7 @@ TEST_RESU(RESU=(
 # CONTRAINTE SIZZ
                 _F(  RESULTAT = REPONSE,
                        GROUP_NO = 'E',
-                       NOM_CHAM = 'SIEF_NOEU_ELGA',
+                       NOM_CHAM = 'SIEF_NOEU',
                        NOM_CMP = 'SIZZ',
                        INST = 0.5,
                        REFERENCE='NON_REGRESSION',
@@ -360,7 +360,7 @@ TEST_RESU(RESU=(
                      ),
                 _F(  RESULTAT = REPONSE,
                        GROUP_NO = 'E',
-                       NOM_CHAM = 'SIEF_NOEU_ELGA',
+                       NOM_CHAM = 'SIEF_NOEU',
                        NOM_CMP = 'SIZZ',
                        INST = 1.,
                        REFERENCE='NON_REGRESSION',

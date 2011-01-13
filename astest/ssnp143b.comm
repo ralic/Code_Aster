@@ -1,9 +1,9 @@
-# MODIF  DATE 30/08/2010   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
 # TITRE VALIDATION DU CLAVAGE EN 3D POUR LA LOI DE JOINT DE PLOT DES BARRAGES
 # ssnp143b.para = tps_job 700 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -159,13 +159,13 @@ U_1=CALC_ELEM(reuse =U_1,
 U_1=CALC_ELEM(reuse =U_1,
 
               RESULTAT=U_1,
-              OPTION='SIEF_ELNO_ELGA',
+              OPTION='SIEF_ELNO',
               NOM_CHAM='SIEF_ELGA',GROUP_MA='JOINT');
 
 
 U_1=CALC_NO(reuse =U_1,
             RESULTAT=U_1,
-            OPTION=('VARI_NOEU_ELGA','SIEF_NOEU_ELGA'),
+            OPTION=('VARI_NOEU_ELGA','SIEF_NOEU'),
             GROUP_MA='JOINT');
 
 
@@ -186,7 +186,7 @@ VAR_AV=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
 SIG_AV=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                INTITULE='SIG_N',
                                RESULTAT=U_1,
-                               NOM_CHAM='SIEF_NOEU_ELGA',
+                               NOM_CHAM='SIEF_NOEU',
                                INST=av_cla,
                                GROUP_NO = ('JOINT_D'),
                                NOM_CMP='SIGN'),);
@@ -209,7 +209,7 @@ VAR_AP=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
 SIG_AP=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                INTITULE='SIG_N',
                                RESULTAT=U_1,
-                               NOM_CHAM='SIEF_NOEU_ELGA',
+                               NOM_CHAM='SIEF_NOEU',
                                INST=ap_cla,
                                GROUP_NO = ('JOINT_D',),
                                NOM_CMP='SIGN'),);

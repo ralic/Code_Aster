@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 14/12/2010   AUTEUR PROIX J-M.PROIX
+%& MODIF TYPELEM  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 2007 NECS - BRUNO ZUBER   WWW.NECS.FR
@@ -74,13 +74,13 @@ OPTION__
                               OUT__  XXXXXX   XXXXXX
     COOR_ELGA           488   IN__   NGEOMER  PGEOMER
                               OUT__  EGGEOP_R PCOORPG
-    ECIN_ELEM_DEPL      -1    IN__   XXXXXX   XXXXXX
+    ECIN_ELEM      -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
     ENER_ELAS           -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
     ENER_TOTALE         -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
-    EPOT_ELEM_DEPL      -1    IN__   XXXXXX   XXXXXX
+    EPOT_ELEM      -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
     FORC_NODA           207   IN__   ECONTPG  PCONTMR  NGEOMER  PGEOMER
                               OUT__  MVECTUR  PVECTUR
@@ -126,7 +126,7 @@ OPTION__
                                      CTEMPSR  PINSTMR  CTEMPSR  PINSTPR  CMATERC  PMATERC  ZVARIPG  PVARIMR
                                      CCARCRI  PCARCRI  ZVARCPG  PVARCMR  ZVARCPG  PVARCPR
                               OUT__  MMATUUR  PMATUUR  MMATUNS  PMATUNS
-    SIEF_ELNO_ELGA      122   IN__   ECONTPG  PCONTRR
+    SIEF_ELNO      122   IN__   ECONTPG  PCONTRR
                               OUT__  ECONTNC  PSIEFNOC ECONTNO  PSIEFNOR
     SYME_MDNS_R         222   IN__   MMATUNS  PNOSYM
                               OUT__  MMATUUR  PSYM

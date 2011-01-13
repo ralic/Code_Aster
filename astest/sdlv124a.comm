@@ -1,4 +1,4 @@
-# MODIF  DATE 10/01/2011   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
 # TITRE PAVE SOUS PRESSION SINUS COMPARAISON ENTRE TRANSITOIRE ET HARMONIQUE
 # sdlv124a.para = tps_job 660 mem_job 1000Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -171,21 +171,21 @@ DYNATRAN=CALC_ELEM(reuse =DYNATRAN,
                 PRECISION=1.E-6,
                CRITERE='ABSOLU',
                OPTION=(
-                        'SIEF_ELGA_DEPL',
-                        'SIEF_ELNO_ELGA',
+                        'SIEF_ELGA',
+                        'SIEF_ELNO',
                         'SIGM_ELNO_DEPL',
                          'EPSI_ELNO_DEPL',
-                         'EPSI_ELGA_DEPL',
-                         'EPOT_ELEM_DEPL',
-                         'ECIN_ELEM_DEPL',
+                         'EPSI_ELGA',
+                         'EPOT_ELEM',
+                         'ECIN_ELEM',
                          'ENEL_ELGA',
-                         'ENEL_ELNO_ELGA',
+                         'ENEL_ELNO',
                        ),
                );
                
 
 TEST_RESU(RESU=(
-   _F(RESULTAT = DYNATRAN, NOM_CHAM='ECIN_ELEM_DEPL', NOM_CMP='TOTALE',
+   _F(RESULTAT = DYNATRAN, NOM_CHAM='ECIN_ELEM', NOM_CMP='TOTALE',
        MAILLE = 'M1145',  CRITERE = 'RELATIF',  PRECISION = 0.1E-2,
        NUME_ORDRE = 1,POINT=1, VALE = 7.02862E-07 , REFERENCE='NON_REGRESSION'),
     ),)
@@ -231,15 +231,15 @@ DYNHASS=CALC_ELEM(reuse =DYNHASS,
                CRITERE='ABSOLU',
                PRECISION=1.E-3,
                OPTION=(
-                        'SIEF_ELGA_DEPL',
-                        'SIEF_ELNO_ELGA',
+                        'SIEF_ELGA',
+                        'SIEF_ELNO',
                         'SIGM_ELNO_DEPL',
                          'EPSI_ELNO_DEPL',
-                         'EPSI_ELGA_DEPL',
-                         'EPOT_ELEM_DEPL',
-                         'ECIN_ELEM_DEPL',
+                         'EPSI_ELGA',
+                         'EPOT_ELEM',
+                         'ECIN_ELEM',
                          'ENEL_ELGA',
-                         'ENEL_ELNO_ELGA',
+                         'ENEL_ELNO',
                        ),
           );
 
@@ -291,15 +291,15 @@ if plus:
                CRITERE='ABSOLU',
                MAILLE = 'M1145',
                OPTION=(
-                        'SIEF_ELGA_DEPL',
-                        'SIEF_ELNO_ELGA',
+                        'SIEF_ELGA',
+                        'SIEF_ELNO',
                         'SIGM_ELNO_DEPL',
                          'EPSI_ELNO_DEPL',
-                         'EPSI_ELGA_DEPL',
-                         'EPOT_ELEM_DEPL',
-                         'ECIN_ELEM_DEPL',
+                         'EPSI_ELGA',
+                         'EPOT_ELEM',
+                         'ECIN_ELEM',
                          'ENEL_ELGA',
-                         'ENEL_ELNO_ELGA',
+                         'ENEL_ELNO',
                        ),
                );
                
@@ -319,15 +319,15 @@ DYNHPHY=CALC_ELEM(reuse =DYNHPHY,
                CRITERE='ABSOLU',
                PRECISION=1.E-3,
                OPTION=(
-                        'SIEF_ELGA_DEPL',
-                        'SIEF_ELNO_ELGA',
+                        'SIEF_ELGA',
+                        'SIEF_ELNO',
                         'SIGM_ELNO_DEPL',
                          'EPSI_ELNO_DEPL',
-                         'EPSI_ELGA_DEPL',
-                         'EPOT_ELEM_DEPL',
-                         'ECIN_ELEM_DEPL',
+                         'EPSI_ELGA',
+                         'EPOT_ELEM',
+                         'ECIN_ELEM',
                          'ENEL_ELGA',
-                         'ENEL_ELNO_ELGA',
+                         'ENEL_ELNO',
                        ),
                      );
 
@@ -431,7 +431,7 @@ SIT1=RECU_FONCTION (RESULTAT = DYNATRAN,
                     NOM_CMP = 'SIXX',
                     MAILLE = 'M1145',
                     POINT=1,
-                    NOM_CHAM = 'SIEF_ELGA_DEPL',
+                    NOM_CHAM = 'SIEF_ELGA',
                     TOUT_ORDRE = 'OUI',
                     );
                       
@@ -439,7 +439,7 @@ SIH1=RECU_FONCTION (RESULTAT = DYNHASS,
                     NOM_CMP = 'SIXX',
                     MAILLE = 'M1145',
                     POINT=1,
-                    NOM_CHAM = 'SIEF_ELGA_DEPL',
+                    NOM_CHAM = 'SIEF_ELGA',
                     TOUT_ORDRE = 'OUI');
                       
 # CALCUL DE LA VALEUR MAX SUR N PERIODE
@@ -470,7 +470,7 @@ SET1=RECU_FONCTION (RESULTAT = DYNATRAN,
                     NOM_CMP = 'SIXX',
                     MAILLE = 'M1145',
                     NOEUD='N627',
-                    NOM_CHAM = 'SIEF_ELNO_ELGA',
+                    NOM_CHAM = 'SIEF_ELNO',
                     TOUT_ORDRE = 'OUI',
                     );
                       
@@ -478,7 +478,7 @@ SEH1=RECU_FONCTION (RESULTAT = DYNHASS,
                     NOM_CMP = 'SIXX',
                     MAILLE = 'M1145',
                     NOEUD='N627',
-                    NOM_CHAM = 'SIEF_ELNO_ELGA',
+                    NOM_CHAM = 'SIEF_ELNO',
                     TOUT_ORDRE = 'OUI');
                       
 # CALCUL DE LA VALEUR MAX SUR N PERIODE
@@ -548,7 +548,7 @@ EGT1=RECU_FONCTION (RESULTAT = DYNATRAN,
                     NOM_CMP = 'EPXX',
                     MAILLE = 'M1145',
                     POINT=1,
-                    NOM_CHAM = 'EPSI_ELGA_DEPL',
+                    NOM_CHAM = 'EPSI_ELGA',
                     TOUT_ORDRE = 'OUI',
                     );
                       
@@ -556,7 +556,7 @@ EGH1=RECU_FONCTION (RESULTAT = DYNHASS,
                     NOM_CMP = 'EPXX',
                     MAILLE = 'M1145',
                     POINT=1,
-                    NOM_CHAM = 'EPSI_ELGA_DEPL',
+                    NOM_CHAM = 'EPSI_ELGA',
                     TOUT_ORDRE = 'OUI');
                       
 # CALCUL DE LA VALEUR MAX SUR N PERIODE

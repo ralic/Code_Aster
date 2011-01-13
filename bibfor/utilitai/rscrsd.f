@@ -4,7 +4,7 @@
       INTEGER NBORDR
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 10/01/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF UTILITAI  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -41,7 +41,7 @@ C ----------------------------------------------------------------------
 C     ------------------------------------------------------------------
 C                      C H A M P _ M E C A N I Q U E
 C     ------------------------------------------------------------------
-      PARAMETER (NCMEC1=42)
+      PARAMETER (NCMEC1=39)
       PARAMETER (NCMEC2=54)
       PARAMETER (NCMEC3=41)
       PARAMETER (NCMECA=NCMEC1+NCMEC2+NCMEC3)
@@ -78,27 +78,26 @@ C      '1234567890123456','1234567890123456','1234567890123456',
      & 'DEPL',            'VITE',            'ACCE','DEPL_ABSOLU',
      & 'VITE_ABSOLU',     'ACCE_ABSOLU',     'EFGE_ELNO_DEPL',
      & 'EFGE_NOEU_DEPL',  'EFGE_ELNO_CART',  'EFGE_NOEU_CART',
-     & 'EPSI_ELGA_DEPL',  'EPSI_ELNO_DEPL',  'EPSI_NOEU_DEPL',
-     & 'EPSI_ELNO_TUYO',  'SIEF_ELGA',       'SIEF_ELGA_DEPL',
-     & 'SIEF_ELNO_ELGA',  'SIEF_NOEU_ELGA',  'SIEF_ELNO',
+     & 'EPSI_ELGA',  'EPSI_ELNO_DEPL',  'EPSI_NOEU',
+     & 'EPSI_ELNO_TUYO',  'SIEF_ELGA',  'SIEF_ELNO',
      & 'SIEF_NOEU',       'SIGM_ELNO_DEPL',  'SIGM_NOEU_DEPL',
-     & 'EPEQ_ELNO_TUYO',  'SIEQ_ELNO_TUYO',  'SIGM_ELNO_CART',
+     & 'EPEQ_ELNO',  'SIEQ_ELNO',  'SIGM_ELNO_CART',
      & 'SIGM_NOEU_CART',  'SIGM_NOZ1_ELGA',  'SIGM_NOZ2_ELGA',
-     & 'SIPO_ELNO_DEPL',  'SIPO_NOEU_DEPL',  'EQUI_ELGA_SIGM',
+     & 'SIPO_ELNO',  'SIPO_NOEU',  'EQUI_ELGA_SIGM',
      & 'EQUI_ELNO_SIGM',  'EQUI_NOEU_SIGM',  'EQUI_ELGA_EPSI',
      & 'EQUI_ELNO_EPSI',  'EQUI_NOEU_EPSI',  'ALPH0_ELGA_EPSP',
      & 'ALPHP_ELGA_ALPH0','VARI_NON_LOCAL',  'LANL_ELGA',
-     & 'PROJ_ELEM_SIGM',  'FLHN_ELGA'/
+     & 'SIRO_ELEM',  'FLHN_ELGA'/
 C
 C      '1234567890123456','1234567890123456','1234567890123456',
       DATA CHMEC2/
-     & 'DEGE_ELNO_DEPL',  'DEGE_NOEU_DEPL',  'EPOT_ELEM_DEPL',
-     & 'ECIN_ELEM_DEPL',  'FORC_NODA',       'REAC_NODA',
+     & 'DEGE_ELNO',  'DEGE_NOEU',  'EPOT_ELEM',
+     & 'ECIN_ELEM',  'FORC_NODA',       'REAC_NODA',
      & 'ERME_ELEM',       'ERME_ELNO',       'ERME_NOEU',
-     & 'ERZ1_ELEM_SIGM',  'ERZ2_ELEM_SIGM',  'QIRE_ELEM_SIGM',
-     & 'QIRE_ELNO_ELEM',  'QIRE_NOEU_ELEM',  'QIZ1_ELEM_SIGM',
-     & 'QIZ2_ELEM_SIGM',  'EPSG_ELGA_DEPL',  'EPSG_ELNO_DEPL',
-     & 'EPSG_NOEU_DEPL',  'EPSP_ELGA',       'EPSP_ELNO',
+     & 'ERZ1_ELEM',  'ERZ2_ELEM',  'QIRE_ELEM',
+     & 'QIRE_ELNO',  'QIRE_NOEU',  'QIZ1_ELEM',
+     & 'QIZ2_ELEM',  'EPSG_ELGA',  'EPSG_ELNO',
+     & 'EPSG_NOEU',  'EPSP_ELGA',       'EPSP_ELNO',
      & 'EPSP_NOEU',       'VARI_ELGA',       'VARI_ELNO',
      & 'VARI_NOEU',       'VARI_ELNO_ELGA',  'VARI_NOEU_ELGA',
      & 'VARI_ELNO_TUYO',  'EPSA_ELNO',       'EPSA_NOEU',
@@ -106,26 +105,26 @@ C      '1234567890123456','1234567890123456','1234567890123456',
      & 'DCHA_NOEU_SIGM',  'RADI_ELGA_SIGM',  'RADI_ELNO_SIGM',
      & 'RADI_NOEU_SIGM',
      & 'PRME_ELNO',       'SIGM_ELNO_COQU',
-     & 'EPME_ELNO_DEPL',  'EPME_ELGA_DEPL',  'EPMG_ELNO_DEPL',
-     & 'EPMG_ELGA_DEPL',  'ENEL_ELGA',       'ENEL_ELNO_ELGA',
-     & 'ENEL_NOEU_ELGA',  'SIGM_NOEU_COQU',  'SIGM_ELNO_TUYO',
-     & 'EPMG_NOEU_DEPL',  'SING_ELEM',       'SING_ELNO_ELEM',
-     & 'DISS_ELGA',       'DISS_ELNO_ELGA',  'DISS_NOEU_ELGA'/
+     & 'EPME_ELNO',  'EPME_ELGA',  'EPMG_ELNO',
+     & 'EPMG_ELGA',  'ENEL_ELGA',       'ENEL_ELNO',
+     & 'ENEL_NOEU',  'SIGM_NOEU_COQU',  'SIGM_ELNO_TUYO',
+     & 'EPMG_NOEU',  'SING_ELEM',       'SING_ELNO',
+     & 'DISS_ELGA',       'DISS_ELNO',  'DISS_NOEU'/
 C
 C      '1234567890123456','1234567890123456','1234567890123456',
       DATA CHMEC3/
      & 'EQUI_ELGA_EPME',  'EQUI_ELNO_EPME',   'EQUI_NOEU_EPME',
-     & 'DEDE_ELNO_DLDE',  'DEDE_NOEU_DLDE',   'DESI_ELNO_DLSI',
-     & 'DESI_NOEU_DLSI',  'PMPB_ELGA_SIEF',   'PMPB_ELNO_SIEF',
-     & 'PMPB_NOEU_SIEF',  'EPFP_ELNO',
+     & 'DEDE_ELNO',  'DEDE_NOEU',   'DESI_ELNO',
+     & 'DESI_NOEU',  'PMPB_ELGA',   'PMPB_ELNO',
+     & 'PMPB_NOEU',  'EPFP_ELNO',
      & 'EPFP_ELGA',       'EPFD_ELNO',        'EPFD_ELGA',
      & 'EPVC_ELNO',       'EPVC_ELGA',        'VALE_CONT',
-     & 'VARI_ELNO_COQU',  'CRIT_ELNO_RUPT',   'ETOT_ELGA',
-     & 'ETOT_ELNO_ELGA',  'ETOT_ELEM',        'VALE_NCOU_MAXI',
+     & 'VARI_ELNO_COQU',  'CRIT_ELNO',   'ETOT_ELGA',
+     & 'ETOT_ELNO',  'ETOT_ELEM',        'VALE_NCOU_MAXI',
      & 'MODE_FLAMB',
      & 'ENDO_ELGA',       'ENDO_ELNO',        'ENDO_NOEU',
-     & 'INDI_LOCA_ELGA',  'EXTR_ELGA_VARI',   'EXTR_ELNO_VARI',
-     & 'EXTR_NOEU_VARI',  'MODE_MECA',        'SIEF_SENO_SEGA',
+     & 'INDI_LOCA_ELGA',  'VAEX_ELGA',   'VAEX_ELNO',
+     & 'VAEX_NOEU',  'MODE_MECA',        'SIEF_SENO_SEGA',
      & 'COHE_ELGA',       'INDC_ELGA',        'SECO_ELGA',
      & 'VARC_ELGA',       'FERRAILLAGE',      'EPVC_NOEU',
      & 'EPFD_NOEU',       'EPFP_NOEU'/
@@ -134,11 +133,11 @@ C                      C H A M P _ T H E R M I Q U E
 C     ------------------------------------------------------------------
 C      '1234567890123456','1234567890123456','1234567890123456',
       DATA CHTHER/
-     & 'TEMP',            'FLUX_ELGA_TEMP',  'FLUX_ELNO_TEMP',
-     & 'FLUX_NOEU_TEMP',  'META_ELGA_TEMP',  'META_ELNO_TEMP',
-     & 'META_NOEU_TEMP',  'DURT_ELNO_META',
-     & 'DURT_NOEU_META',  'HYDR_ELNO_ELGA',  'SOUR_ELGA_ELEC',
-     & 'HYDR_NOEU_ELGA',  'DETE_ELNO_DLTE',  'DETE_NOEU_DLTE',
+     & 'TEMP',            'FLUX_ELGA',  'FLUX_ELNO',
+     & 'FLUX_NOEU',  'META_ELGA_TEMP',  'META_ELNO',
+     & 'META_NOEU',  'DURT_ELNO',
+     & 'DURT_NOEU',  'HYDR_ELNO',  'SOUR_ELGA',
+     & 'HYDR_NOEU',  'DETE_ELNO',  'DETE_NOEU',
      & 'COMPORTHER',      'ERTH_ELEM',       'ERTH_ELNO',
      & 'ERTH_NOEU'/
 C     ------------------------------------------------------------------
@@ -146,8 +145,8 @@ C                      C H A M P _ V A R C
 C     ------------------------------------------------------------------
 C      '1234567890123456','1234567890123456','1234567890123456',
       DATA CHVARC/
-     & 'IRRA',            'TEMP',            'HYDR_ELNO_ELGA',
-     & 'HYDR_NOEU_ELGA',  'EPSA_ELNO',       'META_ELNO_TEMP'/
+     & 'IRRA',            'TEMP',            'HYDR_ELNO',
+     & 'HYDR_NOEU',  'EPSA_ELNO',       'META_ELNO'/
 C     ------------------------------------------------------------------
 C                      C H A M P _ A C O U S T I Q U E
 C     ------------------------------------------------------------------

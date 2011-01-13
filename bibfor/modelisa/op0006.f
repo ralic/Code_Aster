@@ -2,9 +2,9 @@
       IMPLICIT   NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 19/10/2010   AUTEUR DELMAS J.DELMAS 
+C MODIF MODELISA  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -247,15 +247,15 @@ C           -- NOM_CHAMP (VALEUR PAR DEFAUT) :
               IF (NOVARC.EQ.'SECH') THEN
                 NOMCHA='TEMP'
               ELSEIF (NOVARC.EQ.'HYDR')  THEN
-                NOMCHA='HYDR_ELNO_ELGA'
+                NOMCHA='HYDR_ELNO'
               ELSEIF (NOVARC.EQ.'HYDR')   THEN
                 NOMCHA='EPSA'
               ELSEIF (NOVARC.EQ.'EPSA_ELNO') THEN
                 NOMCHA='NEUT'
               ELSEIF (NOVARC.EQ.'M_ACIER') THEN
-                NOMCHA='META_ELNO_TEMP'
+                NOMCHA='META_ELNO'
               ELSEIF (NOVARC.EQ.'M_ZIRC') THEN
-                NOMCHA='META_ELNO_TEMP'
+                NOMCHA='META_ELNO'
               ELSEIF (NOVARC(1:4).EQ.'NEUT') THEN
                 NOMCHA='NEUT'
               ELSE

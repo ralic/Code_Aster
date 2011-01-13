@@ -1,10 +1,10 @@
 
-# MODIF  DATE 07/12/2010   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
 # TITRE ESSAI DE RELAXATION EN 3D VENDOCHAB
 # ssnv126a.para = tps_job 80 mem_job 64Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -294,11 +294,11 @@ SOLNL=STAT_NON_LINE(SOLVEUR=_F(METHODE='MUMPS',PCENT_PIVOT=10,),MODELE=EPD3,
 
 SOLNL=CALC_ELEM(reuse =SOLNL,
                 RESULTAT=SOLNL,
-                OPTION=('SIEF_ELNO_ELGA','VARI_ELNO_ELGA',),);
+                OPTION=('SIEF_ELNO','VARI_ELNO_ELGA',),);
 
 TEST_RESU(RESU=(_F(RESULTAT=SOLNL,
                    NUME_ORDRE=20,
-                   NOM_CHAM='SIEF_ELNO_ELGA',
+                   NOM_CHAM='SIEF_ELNO',
                    NOM_CMP='SIZZ',
                    MAILLE='MA1',
                    NOEUD='N1',
@@ -330,7 +330,7 @@ TEST_RESU(RESU=(_F(RESULTAT=SOLNL,
                    PRECISION=0.005,),
                 _F(RESULTAT=SOLNL,
                    NUME_ORDRE=30,
-                   NOM_CHAM='SIEF_ELNO_ELGA',
+                   NOM_CHAM='SIEF_ELNO',
                    NOM_CMP='SIZZ',
                    MAILLE='MA1',
                    NOEUD='N1',
@@ -362,7 +362,7 @@ TEST_RESU(RESU=(_F(RESULTAT=SOLNL,
                    PRECISION=0.005,),
                 _F(RESULTAT=SOLNL,
                    NUME_ORDRE=40,
-                   NOM_CHAM='SIEF_ELNO_ELGA',
+                   NOM_CHAM='SIEF_ELNO',
                    NOM_CMP='SIZZ',
                    MAILLE='MA1',
                    NOEUD='N1',
@@ -394,7 +394,7 @@ TEST_RESU(RESU=(_F(RESULTAT=SOLNL,
                    PRECISION=0.005,),
                 _F(RESULTAT=SOLNL,
                    NUME_ORDRE=50,
-                   NOM_CHAM='SIEF_ELNO_ELGA',
+                   NOM_CHAM='SIEF_ELNO',
                    NOM_CMP='SIZZ',
                    MAILLE='MA1',
                    NOEUD='N1',
@@ -426,7 +426,7 @@ TEST_RESU(RESU=(_F(RESULTAT=SOLNL,
                    PRECISION=0.01,),
                 _F(RESULTAT=SOLNL,
                    NUME_ORDRE=60,
-                   NOM_CHAM='SIEF_ELNO_ELGA',
+                   NOM_CHAM='SIEF_ELNO',
                    NOM_CMP='SIZZ',
                    MAILLE='MA1',
                    NOEUD='N1',

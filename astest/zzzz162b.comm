@@ -1,4 +1,4 @@
-# MODIF  DATE 10/01/2011   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
 # TITRE VALIDATION LIRE_RESU AU FORMAT MED
 # zzzz162b.para = tps_job 60 mem_job 100Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -165,7 +165,7 @@ U=STAT_NON_LINE(MODELE=MOMECA,
 
 U=CALC_ELEM(reuse =U,
             RESULTAT=U,
-            OPTION=('EPSI_ELNO_DEPL','SIEF_ELNO_ELGA','VARI_ELNO_ELGA',),);
+            OPTION=('EPSI_ELNO_DEPL','SIEF_ELNO','VARI_ELNO_ELGA',),);
 
 DEFI_FICHIER(UNITE=71,
              FICHIER='MED_71',
@@ -183,7 +183,7 @@ UUU=LIRE_RESU(TYPE_RESU='EVOL_NOLI',
               _F(NOM_CHAM='DEPL',
                  NOM_CHAM_MED='U_______DEPL____________________',),
               _F(NOM_CHAM='SIEF_ELNO',
-                 NOM_CHAM_MED='U_______SIEF_ELNO_ELGA__________',),),
+                 NOM_CHAM_MED='U_______SIEF_ELNO_______________',),),
               TOUT_ORDRE='OUI',);
 
 #
@@ -218,7 +218,7 @@ MOMECA2=AFFE_MODELE(MAILLAGE=MAIL2,
 SIGMRELU=LIRE_CHAMP(MAILLAGE=MAIL2,
                     FORMAT='MED',
                     UNITE=71,
-                    NOM_MED='U_______SIEF_ELNO_ELGA__________',
+                    NOM_MED='U_______SIEF_ELNO_______________',
                     NOM_CMP_IDEM='OUI',
                     NUME_PT=1,
                     NUME_ORDRE=1,
@@ -276,7 +276,7 @@ HELNO1=CREA_CHAMP(TYPE_CHAM='ELNO_HYDR_R',
 
 RESHYD=CREA_RESU(OPERATION='AFFE',
                  TYPE_RESU='EVOL_THER',
-                 NOM_CHAM='HYDR_ELNO_ELGA',
+                 NOM_CHAM='HYDR_ELNO',
                  AFFE=(
                  _F(CHAM_GD=HELNO0,
                     INST=0.0,),
@@ -285,7 +285,7 @@ RESHYD=CREA_RESU(OPERATION='AFFE',
 
 RESHYD=CALC_NO(reuse =RESHYD,
                RESULTAT=RESHYD,
-               OPTION='HYDR_NOEU_ELGA',);
+               OPTION='HYDR_NOEU',);
 
 IMPR_RESU(FORMAT='MED',
           UNITE=72,
@@ -296,35 +296,35 @@ LUHYD=LIRE_RESU(TYPE_RESU='EVOL_THER',
                 MODELE=MOTHER,
                 UNITE=72,
                 FORMAT_MED=(
-                _F(NOM_CHAM='HYDR_ELNO_ELGA',
+                _F(NOM_CHAM='HYDR_ELNO',
                    NOM_RESU='RESHYD',),
-                _F(NOM_CHAM='HYDR_NOEU_ELGA',
+                _F(NOM_CHAM='HYDR_NOEU',
                    NOM_RESU='RESHYD',),),
                 TOUT_ORDRE='OUI',);
 
 TEST_RESU(RESU=(_F(RESULTAT=LUHYD,
                    NUME_ORDRE=1,
-                   NOM_CHAM='HYDR_ELNO_ELGA',
+                   NOM_CHAM='HYDR_ELNO',
                    NOM_CMP='HYDR',
                    MAILLE='M1',
                    NOEUD='N1',
                    VALE=0,),
                 _F(RESULTAT=LUHYD,
                    NUME_ORDRE=1,
-                   NOM_CHAM='HYDR_NOEU_ELGA',
+                   NOM_CHAM='HYDR_NOEU',
                    NOM_CMP='HYDR',
                    NOEUD='N1',
                    VALE=0,),
                 _F(RESULTAT=LUHYD,
                    INST=90,
-                   NOM_CHAM='HYDR_ELNO_ELGA',
+                   NOM_CHAM='HYDR_ELNO',
                    NOM_CMP='HYDR',
                    MAILLE='M1',
                    NOEUD='N1',
                    VALE=1.0,),
                 _F(RESULTAT=LUHYD,
                    INST=90,
-                   NOM_CHAM='HYDR_NOEU_ELGA',
+                   NOM_CHAM='HYDR_NOEU',
                    NOM_CMP='HYDR',
                    NOEUD='N1',
                    VALE=1.0,),),);

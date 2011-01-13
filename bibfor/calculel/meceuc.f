@@ -10,9 +10,9 @@
       CHARACTER*(*) LCHIN(*),LCHOU(*),LPAIN(*),LPAOU(*),LIGREL
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 08/11/2010   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -99,16 +99,16 @@ C
 
 C     1. CHAMP COMPLEXE = DEPL
 C     -----------------------------------------------
-      IF ((OPTIO2.EQ.'SIEF_ELGA_DEPL') .OR.
+      IF ((OPTIO2.EQ.'SIEF_ELGA') .OR.
      &    (OPTIO2.EQ.'SIGM_ELNO_DEPL') .OR.
      &    (OPTIO2.EQ.'EPSI_ELNO_DEPL') .OR.
-     &    (OPTIO2.EQ.'EPSI_ELGA_DEPL') .OR.
+     &    (OPTIO2.EQ.'EPSI_ELGA') .OR.
      &    (OPTIO2.EQ.'EFGE_ELNO_DEPL') .OR.
      &    (OPTIO2.EQ.'EFGE_ELNO_SENS') .OR.
-     &    (OPTIO2.EQ.'SIPO_ELNO_DEPL') .OR.
+     &    (OPTIO2.EQ.'SIPO_ELNO') .OR.
      &    (OPTIO2.EQ.'SIPO_ELNO_SENS') .OR.
-     &    (OPTIO2.EQ.'EPOT_ELEM_DEPL') .OR.
-     &    (OPTIO2.EQ.'ECIN_ELEM_DEPL')) THEN
+     &    (OPTIO2.EQ.'EPOT_ELEM') .OR.
+     &    (OPTIO2.EQ.'ECIN_ELEM')) THEN
         DO 10 I=1,NIN
           IF (LPAIN(I).EQ.'PDEPLAR')INDIC1=I
    10   CONTINUE
@@ -182,8 +182,8 @@ C         -- CALCUL 2EME PARTIE (I):
 
 
 C         -- ASSEMBLAGE (R,I) OU CUMUL (R+I) :
-          IF ((OPTIO2.EQ.'EPOT_ELEM_DEPL') .OR.
-     &        (OPTIO2.EQ.'ECIN_ELEM_DEPL')) THEN
+          IF ((OPTIO2.EQ.'EPOT_ELEM') .OR.
+     &        (OPTIO2.EQ.'ECIN_ELEM')) THEN
             CALL BARYCH(CH1,CH2,1.D0,1.D0,LCHOU(1),'G')
           ELSE
             CALL ASSACH(CH1,CH2,'G',LCHOU(1))
@@ -198,8 +198,8 @@ C         -- ASSEMBLAGE (R,I) OU CUMUL (R+I) :
 C     2. CHAMP COMPLEXE = SIEF
 C     -----------------------------------------------
       ELSEIF ((OPTIO2.EQ.'ENEL_ELGA') .OR.
-     &        (OPTIO2.EQ.'ENEL_ELNO_ELGA') .OR.
-     &        (OPTIO2.EQ.'SIEF_ELNO_ELGA')) THEN
+     &        (OPTIO2.EQ.'ENEL_ELNO') .OR.
+     &        (OPTIO2.EQ.'SIEF_ELNO')) THEN
 
 
         DO 50 I=1,NIN
@@ -245,7 +245,7 @@ C         -- CALCUL 2EME PARTIE (I):
 
 
 C         -- ASSEMBLAGE (R,I) OU CUMUL (R+I) :
-          IF (OPTIO2.EQ.'SIEF_ELNO_ELGA') THEN
+          IF (OPTIO2.EQ.'SIEF_ELNO') THEN
             CALL ASSACH(CH1,CH2,'G',LCHOU(1))
           ELSE
             CALL BARYCH(CH1,CH2,1.D0,1.D0,LCHOU(1),'G')

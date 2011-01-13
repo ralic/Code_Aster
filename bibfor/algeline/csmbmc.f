@@ -4,7 +4,7 @@
       COMPLEX*16 VSMB(*)
       INTEGER NEQ
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 11/01/2011   AUTEUR SELLENET N.SELLENET 
+C MODIF ALGELINE  DATE 13/01/2011   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -46,7 +46,7 @@ C-----------------------------------------------------------------------
 C-----------------------------------------------------------------------
 C     VARIABLES LOCALES
 C-----------------------------------------------------------------------
-      INTEGER JCCID,IEQ,JREFA,JNUGL
+      INTEGER JCCID,IEQ,JREFA,JNUGL,ICCID
       CHARACTER*14 NU
       CHARACTER*19 MAT
 C-----------------------------------------------------------------------
@@ -60,6 +60,9 @@ C-----------------------------------------------------------------------
         NU = ZK24(JREFA-1+2)(1:14)
         CALL JEVEUO(NU//'.NUML.NUGL','L',JNUGL)
         
+        CALL JEEXIN(MAT//'.CCID',ICCID)
+        
+        IF ( ICCID.NE.0 ) THEN
         CALL JEVEUO(MAT//'.CCID','L',JCCID)
         DO 10 IEQ = 1,NEQ
 C         SI LE DDL NE N'APPARTIENT PAS AU PROC COURANT ET QU'IL Y A 
@@ -70,6 +73,7 @@ C         LE PROC QUI POSSEDE EFFECTIVEMENT LE DDL BLOQUE
             VSMB(IEQ) = 0.D0
           END IF
    10   CONTINUE
+        ENDIF
       ENDIF
 
       CALL JEDEMA()

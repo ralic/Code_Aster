@@ -1,9 +1,9 @@
-# MODIF  DATE 20/07/2010   AUTEUR MAHFOUZ D.MAHFOUZ 
+# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
 # TITRE CYLINDRE CREUX THERMOELASTIQUE PESANT EN ROTATION UNIFORME
 # hpla100a.para = tps_job 60 mem_job 300Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -149,7 +149,7 @@ DEPLPES=MECA_STATIQUE(
 
 CALC_ELEM( reuse= DEPLPES ,RESULTAT= DEPLPES ,
 
-                  OPTION=('SIGM_ELNO_DEPL', 'EPME_ELNO_DEPL',
+                  OPTION=('SIGM_ELNO_DEPL', 'EPME_ELNO',
                                             'EPSI_ELNO_DEPL',),
              REPE_COQUE=_F(NIVE_COUCHE='INF',),
                          )
@@ -163,7 +163,7 @@ DEPLROT=MECA_STATIQUE(
 
 CALC_ELEM( reuse= DEPLROT ,RESULTAT= DEPLROT ,
 
-                  OPTION=('SIGM_ELNO_DEPL', 'EPME_ELNO_DEPL',
+                  OPTION=('SIGM_ELNO_DEPL', 'EPME_ELNO',
                                             'EPSI_ELNO_DEPL',),
              REPE_COQUE=_F(NIVE_COUCHE='INF',),
                          )
@@ -177,7 +177,7 @@ DEPLDIL=MECA_STATIQUE(
 
 CALC_ELEM( reuse= DEPLDIL ,RESULTAT= DEPLDIL ,
 
-                  OPTION=('SIGM_ELNO_DEPL', 'EPME_ELNO_DEPL',
+                  OPTION=('SIGM_ELNO_DEPL', 'EPME_ELNO',
                                             'EPSI_ELNO_DEPL',),
                    REPE_COQUE=_F(NIVE_COUCHE='INF',),
                          )
@@ -191,7 +191,7 @@ DEPLDI2=MECA_STATIQUE(
 
 CALC_ELEM( reuse= DEPLDI2 ,RESULTAT= DEPLDI2 ,
 
-                  OPTION=('SIGM_ELNO_DEPL', 'EPME_ELNO_DEPL',
+                  OPTION=('SIGM_ELNO_DEPL', 'EPME_ELNO',
                                             'EPSI_ELNO_DEPL',),
                    REPE_COQUE=_F(NIVE_COUCHE='INF',),
                          )
@@ -271,10 +271,10 @@ TEST_RESU(RESU=(
 
       # DEFORMATIONS 'VRAIES' EN PEAU
             _F(  RESULTAT = DEPLDIL,  CRITERE = 'RELATIF',   PRECISION = 1.E-5,
-             NUME_ORDRE = 1,     MAILLE = 'M1',  NOM_CHAM = 'EPME_ELNO_DEPL',
+             NUME_ORDRE = 1,     MAILLE = 'M1',  NOM_CHAM = 'EPME_ELNO',
               GROUP_NO = 'A',    NOM_CMP = 'EPYY',  VALE = 5.E-6),
             _F(  RESULTAT = DEPLDI2,  CRITERE = 'RELATIF',   PRECISION = 1.E-5,
-             NUME_ORDRE = 1,     MAILLE = 'M1',  NOM_CHAM = 'EPME_ELNO_DEPL',
+             NUME_ORDRE = 1,     MAILLE = 'M1',  NOM_CHAM = 'EPME_ELNO',
               GROUP_NO = 'A',    NOM_CMP = 'EPYY',  VALE = -1.E-6))
             )
 

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 10/01/2011   AUTEUR DELMAS J.DELMAS 
+#& MODIF COMMANDE  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -175,7 +175,7 @@ THER_NON_LINE=OPER(nom="THER_NON_LINE",op= 186,sd_prod=evol_ther,reentrant='f',
          ),
          TITRE           =SIMP(statut='f',typ='TXM',max='**'),
          OPTION          =SIMP(statut='f',typ='TXM',validators=NoRepeat(),max=2,
-                               into=("FLUX_ELGA_TEMP","FLUX_ELNO_TEMP") ),
+                               into=("FLUX_ELGA","FLUX_ELNO") ),
          INFO            =SIMP(statut='f',typ='I',into=(1,2) ),
 
 )  ;

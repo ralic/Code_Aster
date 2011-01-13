@@ -1,9 +1,9 @@
-# MODIF  DATE 02/02/2010   AUTEUR IDOUX L.IDOUX 
+# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
 # TITRE TEST DE FONDATION FILANTE AVEC LA LOI DE CAMCLAY EN MECANIQUE DRAINE
 # ssnp136a.para = tps_job 370 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -262,7 +262,7 @@ VARINI=CREA_CHAMP(INFO=1,
 # 
 # resu0=CALC_ELEM(reuse =resu0,
 #                 RESULTAT=resu0,
-#                 OPTION='SIEF_ELNO_ELGA');
+#                 OPTION='SIEF_ELNO');
 # 
 # DETRUIRE(CONCEPT=_F(NOM=('PCRY','PCR1','PCR2','SIEF1',
 #                          'SIEF2','CHXN','CHXG')));
@@ -306,7 +306,7 @@ VARINI=CREA_CHAMP(INFO=1,
 # TAB_SIEF=POST_RELEVE_T(ACTION=_F(INTITULE='SIEF',
 #                              CHEMIN=coupe3,
 #                              RESULTAT=resu0,
-#                              NOM_CHAM='SIEF_ELNO_ELGA',
+#                              NOM_CHAM='SIEF_ELNO',
 #                              NOM_CMP=('SIXX','SIYY','SIZZ'),
 #                              OPERATION='EXTRACTION'));
 #                              
@@ -354,7 +354,7 @@ resu1=STAT_NON_LINE(MODELE    =MODMEC1,
                     
 resu1=CALC_ELEM(reuse   =resu1,
                 RESULTAT=resu1,
-                OPTION  =('SIEF_ELNO_ELGA','VARI_ELNO_ELGA'));
+                OPTION  =('SIEF_ELNO','VARI_ELNO_ELGA'));
 
 # DETRUIRE(CONCEPT=_F(NOM=('coupe1','coupe2','coupe3','TAB_DEP1',
 #                          'TAB_DEP2','TAB_DEP3','TAB_SIEF',
@@ -380,7 +380,7 @@ resu1=CALC_ELEM(reuse   =resu1,
 # TAB_SIEF=POST_RELEVE_T(ACTION=_F(INTITULE='SIEF',
 #                                  CHEMIN=coupe1,
 #                                  RESULTAT=resu1,
-#                                  NOM_CHAM='SIEF_ELNO_ELGA',
+#                                  NOM_CHAM='SIEF_ELNO',
 #                                  TOUT_CMP='OUI',
 #                                  #NOM_CMP=('SIXX','SIYY','SIZZ'),
 #                                  OPERATION='EXTRACTION'));
@@ -413,7 +413,7 @@ resu1=CALC_ELEM(reuse   =resu1,
 # TAB_SIEF=POST_RELEVE_T(ACTION=_F(INTITULE='SIEF',
 #                                  CHEMIN=coupe2,
 #                                  RESULTAT=resu1,
-#                                  NOM_CHAM='SIEF_ELNO_ELGA',
+#                                  NOM_CHAM='SIEF_ELNO',
 #                                  TOUT_CMP='OUI',
 #                                  #NOM_CMP=('SIXX','SIYY','SIZZ'),
 #                                  OPERATION='EXTRACTION'));
@@ -463,7 +463,7 @@ resu2=STAT_NON_LINE(MODELE    =MODMEC1,
 #--------------------------------------------------------------------
 
 resu2=CALC_ELEM(reuse   =resu2,
-                OPTION  =('SIEF_ELNO_ELGA','VARI_ELNO_ELGA'),
+                OPTION  =('SIEF_ELNO','VARI_ELNO_ELGA'),
                 RESULTAT=resu2);
 
 resu2=CALC_NO(reuse   =resu2,
@@ -621,7 +621,7 @@ b_fonda=INTE_MAIL_2D(MAILLAGE=MAILLAGE,
 T_FORCE=POST_RELEVE_T(INFO=1,
                       ACTION=_F(INTITULE ='RESULTANTE',
                                 RESULTAT =resu2,
-                                NOM_CHAM ='SIEF_ELNO_ELGA',
+                                NOM_CHAM ='SIEF_ELNO',
                                 CHEMIN   =b_fonda,
                                 NOM_CMP  ='SIYY',
                                 OPERATION='MOYENNE'));
@@ -704,7 +704,7 @@ TEST_TABLE(TABLE    =T_FORCE,
 #                   NOM_CHAM='DEPL',
 #                   MAILLAGE=MAILLAGE,),
 #                 _F(RESULTAT=resu2,
-#                   NOM_CHAM='SIEF_ELNO_ELGA',
+#                   NOM_CHAM='SIEF_ELNO',
 #                   MAILLAGE=MAILLAGE,
 #                   NOM_CMP=('SIXX','SIYY','SIZZ'),),
 #                 _F(RESULTAT=resu2,

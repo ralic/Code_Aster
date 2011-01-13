@@ -3,9 +3,9 @@
      +                  IDEFO)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 14/12/2010   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -100,7 +100,7 @@ C ======================================================================
          CALL JEVECH('PGEOMER','L',IGEOM  )
          CALL JEVECH('PMATERC','L',IMATE  )
          CALL JEVECH('PVECTUR','E',IVECTU )
-      ELSE IF (OPTION.EQ.'SIEF_ELNO_ELGA' ) THEN
+      ELSE IF (OPTION.EQ.'SIEF_ELNO' ) THEN
          CALL JEVECH('PCOMPOR', 'L',ICOMPO)
          CALL JEVECH('PCONTRR', 'L',ICHG  )
          CALL JEVECH('PSIEFNOR','E',ICHN  )
@@ -108,7 +108,7 @@ C ======================================================================
          CALL JEVECH('PCOMPOR', 'L',ICOMPO)
          CALL JEVECH('PVARIGR', 'L',ICHG  )
          CALL JEVECH('PVARINR', 'E',ICHN  )
-      ELSE IF (OPTION.EQ.'EPSI_ELGA_DEPL' ) THEN
+      ELSE IF (OPTION.EQ.'EPSI_ELGA' ) THEN
          CALL JEVECH('PGEOMER','L',IGEOM  )
          CALL JEVECH('PDEPLAR','L',IDEPLP )
          CALL JEVECH('PDEFORR','E',IDEFO  )

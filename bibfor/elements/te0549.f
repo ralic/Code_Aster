@@ -3,9 +3,9 @@
       CHARACTER*16 OPTION,NOMTE
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 16/08/2005   AUTEUR ROMEO R.FERNANDES 
+C MODIF ELEMENTS  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -56,7 +56,7 @@ C ======================================================================
       CALL JEVECH('PNOVARI','L',INOVA )
       CALL JEVECH('PCOMPOR','L',ICOMPO)
 
-      IF (OPTION.EQ.'EXTR_ELGA_VARI') THEN
+      IF (OPTION.EQ.'VAEX_ELGA') THEN
 
          CALL JEVECH('PVARIGR','L',ICHG )
          CALL JEVECH('PVARIGS','E',ICHGS)
@@ -75,7 +75,7 @@ C ======================================================================
   40        CONTINUE
          ENDIF
 
-      ELSE IF (OPTION.EQ.'EXTR_ELNO_VARI') THEN
+      ELSE IF (OPTION.EQ.'VAEX_ELNO') THEN
       
          CALL JEVECH('PVARINR','L',ICHG)
          CALL JEVECH('PVARINS','E',ICHGS)

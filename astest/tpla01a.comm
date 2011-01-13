@@ -1,9 +1,9 @@
-# MODIF  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
 # TITRE CYLINDRE CREUX EN THERMIQUE STATIONNAIRE (TRIA3/QUAD4 AXIS)
 # tpla01a.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -52,7 +52,7 @@ TEMPE=THER_LINEAIRE(       MODELE=MOTH,
                         )
 
 TEMPE=CALC_ELEM( reuse= TEMPE ,RESULTAT= TEMPE ,
-                 OPTION=('FLUX_ELNO_TEMP',),
+                 OPTION=('FLUX_ELNO',),
                 )
 TEST_RESU(RESU=(
 
@@ -69,7 +69,7 @@ TEST_RESU(RESU=(
        MAILLE    = 'M1',
        NOEUD     = 'N1',
        NUME_ORDRE=2,
-       NOM_CHAM='FLUX_ELNO_TEMP',
+       NOM_CHAM='FLUX_ELNO',
        NOM_CMP   = 'FLUX',
        VALE      = 1729.91,
        PRECISION = 1.E-2,
@@ -78,7 +78,7 @@ TEST_RESU(RESU=(
        MAILLE    = 'M1',
        NOEUD     = 'N1',
        NUME_ORDRE=2,
-       NOM_CHAM='FLUX_ELNO_TEMP',
+       NOM_CHAM='FLUX_ELNO',
        NOM_CMP   = 'FLUY',
        VALE      = 0.0,
        CRITERE   = 'ABSOLU',
@@ -88,7 +88,7 @@ TEST_RESU(RESU=(
        MAILLE    = 'M20',
        NOEUD     = 'N41',
        NUME_ORDRE=2,
-       NOM_CHAM='FLUX_ELNO_TEMP',
+       NOM_CHAM='FLUX_ELNO',
        NOM_CMP   = 'FLUX',
        VALE      = 1482.78,
        PRECISION = 1.E-2,
@@ -97,7 +97,7 @@ TEST_RESU(RESU=(
        MAILLE    = 'M20',
        NOEUD     = 'N41',
        NUME_ORDRE=2,
-       NOM_CHAM='FLUX_ELNO_TEMP',
+       NOM_CHAM='FLUX_ELNO',
        NOM_CMP   = 'FLUY',
        VALE      = 0.0,
        CRITERE   = 'ABSOLU',
@@ -107,7 +107,7 @@ TEST_RESU(RESU=(
        MAILLE    = 'M21',
        NOEUD     = 'N43',
        NUME_ORDRE=2,
-       NOM_CHAM='FLUX_ELNO_TEMP',
+       NOM_CHAM='FLUX_ELNO',
        NOM_CMP   = 'FLUX',
        VALE      = 1729.91,
        PRECISION = 1.E-2,
@@ -116,7 +116,7 @@ TEST_RESU(RESU=(
        MAILLE    = 'M21',
        NOEUD     = 'N43',
        NUME_ORDRE=2,
-       NOM_CHAM='FLUX_ELNO_TEMP',
+       NOM_CHAM='FLUX_ELNO',
        NOM_CMP   = 'FLUY',
        VALE      = 0.0,
        CRITERE   = 'ABSOLU',
@@ -125,7 +125,7 @@ TEST_RESU(RESU=(
    _F( RESULTAT   = TEMPE,
        MAILLE    = 'M8',
        NUME_ORDRE=2,
-       NOM_CHAM='FLUX_ELNO_TEMP',
+       NOM_CHAM='FLUX_ELNO',
        NOEUD     = 'N17',
        NOM_CMP   = 'FLUX',
        VALE      = 1621.79,
@@ -134,7 +134,7 @@ TEST_RESU(RESU=(
    _F( RESULTAT   = TEMPE,
        MAILLE    = 'M8',
        NUME_ORDRE=2,
-       NOM_CHAM='FLUX_ELNO_TEMP',
+       NOM_CHAM='FLUX_ELNO',
        NOEUD     = 'N17',
        NOM_CMP   = 'FLUY',
        VALE      = 0.0,
@@ -145,7 +145,7 @@ TEST_RESU(RESU=(
        MAILLE    = 'M9',
        NOEUD     = 'N17',
        NUME_ORDRE=2,
-       NOM_CHAM='FLUX_ELNO_TEMP',
+       NOM_CHAM='FLUX_ELNO',
        NOM_CMP   = 'FLUX',
        VALE      = 1621.79,
        PRECISION = 1.E-2,
@@ -153,7 +153,7 @@ TEST_RESU(RESU=(
    _F( RESULTAT   = TEMPE,
        MAILLE    = 'M9',
        NUME_ORDRE=2,
-       NOM_CHAM='FLUX_ELNO_TEMP',
+       NOM_CHAM='FLUX_ELNO',
        NOEUD     = 'N17',
        NOM_CMP   = 'FLUY',
        VALE      = 0.0,
@@ -234,10 +234,10 @@ TEMP2=THER_LINEAIRE(        MODELE=MOTH,
 #
 
 TEMP2=CALC_ELEM(  reuse=TEMP2,   NUME_ORDRE=2,
-                       OPTION='FLUX_ELNO_TEMP', RESULTAT=TEMP2)
+                       OPTION='FLUX_ELNO', RESULTAT=TEMP2)
 
 F2=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='ELNO_FLUX_R',
-NOM_CHAM='FLUX_ELNO_TEMP', RESULTAT=TEMP2,
+NOM_CHAM='FLUX_ELNO', RESULTAT=TEMP2,
                    NUME_ORDRE=2)
 
 TEST_RESU(

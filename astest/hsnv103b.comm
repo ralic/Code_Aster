@@ -1,8 +1,8 @@
-# MODIF  DATE 08/11/2007   AUTEUR SALMONA L.SALMONA 
+# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
 # TITRE THERMO_METALLO_MECANIQUE EN DEFORMATIONS PLANES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -236,7 +236,7 @@ CM2=AFFE_MATERIAU(
                         AFFE_VARC=(_F(TOUT='OUI',
                                      EVOL=TEMPE,
                                      NOM_VARC='M_ACIER',
-                                     NOM_CHAM='META_ELNO_TEMP'),
+                                     NOM_CHAM='META_ELNO'),
                                    _F(TOUT='OUI',
                                      EVOL=TEMPE,
                                      NOM_VARC='TEMP',
@@ -285,11 +285,11 @@ U=CALC_ELEM( reuse=U,
                             RESULTAT=U,
 
                               OPTION=( 'EPSI_ELNO_DEPL',
-                              'SIEF_ELNO_ELGA',  'VARI_ELNO_ELGA',)
+                              'SIEF_ELNO',  'VARI_ELNO_ELGA',)
                       )
 
 TEST_RESU(RESU=(
-           _F(  RESULTAT = U,  NOM_CHAM = 'SIEF_ELNO_ELGA',  INST = 60.,
+           _F(  RESULTAT = U,  NOM_CHAM = 'SIEF_ELNO',  INST = 60.,
              CRITERE = 'RELATIF', PRECISION = 2.E-5,
              MAILLE = 'M1', NOEUD = 'N13',  NOM_CMP = 'SIZZ',  VALE = 265.73E+6),
            _F(  RESULTAT = U,  NOM_CHAM = 'VARI_ELNO_ELGA',  INST = 60.,
@@ -299,7 +299,7 @@ TEST_RESU(RESU=(
            _F(  RESULTAT = U,  NOM_CHAM = 'VARI_ELNO_ELGA',  INST = 89.,
              CRITERE = 'RELATIF', PRECISION = 1.E-5,
              MAILLE = 'M1', NOEUD = 'N13',  NOM_CMP = 'V5',    VALE = 5.7213E-3),
-           _F(  RESULTAT = U,  NOM_CHAM = 'SIEF_ELNO_ELGA',  INST = 89.,
+           _F(  RESULTAT = U,  NOM_CHAM = 'SIEF_ELNO',  INST = 89.,
              CRITERE = 'RELATIF', PRECISION = 4.E-4,
              MAILLE = 'M1', NOEUD = 'N13',  NOM_CMP = 'SIZZ',  VALE = -13.545E+6),
            _F(  RESULTAT = U,  NOM_CHAM = 'EPSI_ELNO_DEPL',  INST = 89.,
@@ -312,14 +312,14 @@ TEST_RESU(RESU=(
            _F(  RESULTAT = U,  NOM_CHAM = 'EPSI_ELNO_DEPL',  INST = 112.,
              CRITERE = 'RELATIF', PRECISION = 2.E-4,
              MAILLE = 'M1', NOEUD = 'N13',  NOM_CMP = 'EPYY',  VALE = -8.9197E-3),
-           _F(  RESULTAT = U,  NOM_CHAM = 'SIEF_ELNO_ELGA',  INST = 112.,
+           _F(  RESULTAT = U,  NOM_CHAM = 'SIEF_ELNO',  INST = 112.,
              CRITERE = 'RELATIF', PRECISION = 5.E-4,
              MAILLE = 'M1', NOEUD = 'N13',  NOM_CMP = 'SIZZ',  VALE = -101.39E+6),
 
            _F(  RESULTAT = U,  NOM_CHAM = 'EPSI_ELNO_DEPL',  INST = 176.,
              CRITERE = 'RELATIF', PRECISION = 4.E-4,
              MAILLE = 'M1', NOEUD = 'N13',  NOM_CMP = 'EPYY',  VALE = -1.5884E-2),
-           _F(  RESULTAT = U,  NOM_CHAM = 'SIEF_ELNO_ELGA',  INST = 176.,
+           _F(  RESULTAT = U,  NOM_CHAM = 'SIEF_ELNO',  INST = 176.,
              CRITERE = 'RELATIF', PRECISION = 1.E-5,
              MAILLE = 'M1', NOEUD = 'N13',  NOM_CMP = 'SIZZ',  VALE = 130.72E+6),
            _F(  RESULTAT = U,  NOM_CHAM = 'VARI_ELNO_ELGA',  INST = 176.,

@@ -3,9 +3,9 @@
      +                  INTERP,AXI,REGULA,DEPLP,DEFGEP)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/12/2010   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -29,7 +29,7 @@ C ======================================================================
       REAL*8       GEOM(NDIM,*),DEPLP(DIMUEL),DEFGEP(NPI*DIMDEF)
       CHARACTER*2  INTERP
 C ======================================================================
-C --- BUT : CALCUL DE EPSI_ELGA_DEPL -----------------------------------
+C --- BUT : CALCUL DE EPSI_ELGA -----------------------------------
 C ======================================================================
       INTEGER      KPI,I,N
       REAL*8       POIDS,POIDS2,B(DIMDEF,DIMUEL)

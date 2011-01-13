@@ -1,4 +1,4 @@
-# MODIF  DATE 10/01/2011   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
 # TITRE ESSAI DE TRACTION-CISAILLEMENT (MISES ECROUISSAGE ISOTROPE)
 # ssnp15f.para = tps_job 100 mem_job 100Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -181,13 +181,13 @@ U2=STAT_NON_LINE(
               )
 
 U=CALC_ELEM( reuse=U,
-                            OPTION=('EPSI_ELGA_DEPL',
-                  'SIEF_ELNO_ELGA',  'VARI_ELNO_ELGA',),
+                            OPTION=('EPSI_ELGA',
+                  'SIEF_ELNO',  'VARI_ELNO_ELGA',),
                           RESULTAT=U,
               )
 U2=CALC_ELEM( reuse=U2,
-                            OPTION=('EPSI_ELGA_DEPL',
-                  'SIEF_ELNO_ELGA',  'VARI_ELNO_ELGA',),
+                            OPTION=('EPSI_ELGA',
+                  'SIEF_ELNO',  'VARI_ELNO_ELGA',),
                           RESULTAT=U2,
               )
 
@@ -215,7 +215,7 @@ TEST_RESU(RESU=(
 
                 _F(
                 RESULTAT = U,
-                NOM_CHAM = 'SIEF_ELNO_ELGA',
+                NOM_CHAM = 'SIEF_ELNO',
                 MAILLE = 'CUBE',
                 NOEUD = 'NO2',
                 INST = 1.,
@@ -223,7 +223,7 @@ TEST_RESU(RESU=(
                 VALE = 151.2),
                 _F(
                 RESULTAT = U,
-                NOM_CHAM = 'SIEF_ELNO_ELGA',
+                NOM_CHAM = 'SIEF_ELNO',
                 MAILLE = 'CUBE',
                 NOEUD = 'NO2',
                 INST = 1.,
@@ -369,7 +369,7 @@ U=CALC_ELEM( reuse=U,
 
 U=CALC_ELEM( reuse=U,
                          RESULTAT=U,
-                           OPTION='ETOT_ELNO_ELGA'
+                           OPTION='ETOT_ELNO'
                      )
 
 U2=CALC_ELEM( reuse=U2,
@@ -379,7 +379,7 @@ U2=CALC_ELEM( reuse=U2,
 
 U2=CALC_ELEM( reuse=U2,
                          RESULTAT=U2,
-                           OPTION='ETOT_ELNO_ELGA'
+                           OPTION='ETOT_ELNO'
                      )
 U2=CALC_ELEM( reuse=U2,
                          RESULTAT=U2,

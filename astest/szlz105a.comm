@@ -1,8 +1,8 @@
-# MODIF  DATE 04/03/2009   AUTEUR ANGLES J.ANGLES 
+# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
 # TITRE FATIGUE-COMPTAGE DE CYCLES RAINFLOW-DOMMAGE-EQUIVALENTS-C_PLAN
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -107,7 +107,7 @@ DEPL=MECA_STATIQUE(
                                LIST_INST=LINST                       )
 
 DEPL=CALC_ELEM( reuse=DEPL,
-                                    OPTION=(   'EPSI_ELGA_DEPL',
+                                    OPTION=(   'EPSI_ELGA',
                                                'EPSI_ELNO_DEPL',
                                                'SIGM_ELNO_DEPL',  ),
                                   RESULTAT=DEPL )

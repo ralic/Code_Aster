@@ -1,9 +1,9 @@
-# MODIF  DATE 07/12/2010   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
 # TITRE POUTRE ENCASTREE A UNE EXTREMITE ET CHARGEE PAR UNE TRACTION
 # ssnl106c.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -103,20 +103,20 @@ REST=STAT_NON_LINE(
               )
 
 CALC_ELEM( reuse=REST,RESULTAT=REST,
-           OPTION=( 'SIEF_ELNO_ELGA',  'VARI_ELNO_ELGA',),
+           OPTION=( 'SIEF_ELNO',  'VARI_ELNO_ELGA',),
               )
 
 CALC_ELEM( reuse=REST,   RESULTAT=REST,
-                       OPTION='DEGE_ELNO_DEPL'    )
+                       OPTION='DEGE_ELNO'    )
 
 DEGE_21=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='ELNO_EPSI_R',
-NOM_CHAM='DEGE_ELNO_DEPL', RESULTAT=REST,
+NOM_CHAM='DEGE_ELNO', RESULTAT=REST,
                        NUME_ORDRE=21
                            )
 
 TEST_RESU(RESU=(_F( RESULTAT = REST,
                  NUME_ORDRE = 11,
-                 NOM_CHAM = 'SIEF_ELNO_ELGA',
+                 NOM_CHAM = 'SIEF_ELNO',
                  REFERENCE = 'ANALYTIQUE',
                  NOEUD = 'R3',
                  MAILLE = 'SR2',
@@ -125,7 +125,7 @@ TEST_RESU(RESU=(_F( RESULTAT = REST,
                  PRECISION = 1.E-3),
            _F( RESULTAT = REST,
                  NUME_ORDRE = 21,
-                 NOM_CHAM = 'SIEF_ELNO_ELGA',
+                 NOM_CHAM = 'SIEF_ELNO',
                  NOEUD = 'R3',
                  MAILLE = 'SR2',
                  NOM_CMP = 'N',
@@ -134,7 +134,7 @@ TEST_RESU(RESU=(_F( RESULTAT = REST,
                  PRECISION = 1.E-3),
            _F( RESULTAT = REST,
                  NUME_ORDRE = 11,
-                 NOM_CHAM = 'SIEF_ELNO_ELGA',
+                 NOM_CHAM = 'SIEF_ELNO',
                  NOEUD = 'C3',
                  MAILLE = 'SC2',
                  NOM_CMP = 'N',
@@ -143,7 +143,7 @@ TEST_RESU(RESU=(_F( RESULTAT = REST,
                  PRECISION = 1.E-3),
            _F( RESULTAT = REST,
                  NUME_ORDRE = 21,
-                 NOM_CHAM = 'SIEF_ELNO_ELGA',
+                 NOM_CHAM = 'SIEF_ELNO',
                  NOEUD = 'C3',
                  MAILLE = 'SC2',
                  NOM_CMP = 'N',
@@ -223,66 +223,66 @@ RESM=STAT_NON_LINE(
               )
 
 CALC_ELEM( reuse=RESM,RESULTAT=RESM,
-            OPTION=('SIEF_ELNO_ELGA',  'VARI_ELNO_ELGA',),
+            OPTION=('SIEF_ELNO',  'VARI_ELNO_ELGA',),
               )
 
 CALC_ELEM( reuse=RESM,   RESULTAT=RESM,
-                       OPTION='DEGE_ELNO_DEPL'    )
+                       OPTION='DEGE_ELNO'    )
 
 # RESULTATS EN PLASTICITE PARFAITE
 
 
 TEST_RESU(RESU=(
-           _F( RESULTAT = RESM, NOM_CHAM = 'SIEF_ELNO_ELGA',
+           _F( RESULTAT = RESM, NOM_CHAM = 'SIEF_ELNO',
                  NOEUD = 'R3', MAILLE = 'SR2', NOM_CMP = 'MFZ',
                  REFERENCE = 'ANALYTIQUE',
                  NUME_ORDRE = 1, VALE = 0.10000E+6, PRECISION = 1.E-3),
-           _F( RESULTAT = RESM, NOM_CHAM = 'SIEF_ELNO_ELGA',
+           _F( RESULTAT = RESM, NOM_CHAM = 'SIEF_ELNO',
                  NOEUD = 'R3', MAILLE = 'SR2', NOM_CMP = 'MFZ',
                  REFERENCE = 'ANALYTIQUE',
                  NUME_ORDRE = 21, VALE = 0.14800E+6, PRECISION = 1.E-2),
-           _F( RESULTAT = RESM, NOM_CHAM = 'SIEF_ELNO_ELGA',
+           _F( RESULTAT = RESM, NOM_CHAM = 'SIEF_ELNO',
                  NOEUD = 'R3', MAILLE = 'SR2', NOM_CMP = 'MFZ',
                  REFERENCE = 'ANALYTIQUE',
                  NUME_ORDRE = 31, VALE = 0.14950E+6, PRECISION = 1.E-2),
-           _F( RESULTAT = RESM, NOM_CHAM = 'DEGE_ELNO_DEPL',
+           _F( RESULTAT = RESM, NOM_CHAM = 'DEGE_ELNO',
                  NOEUD = 'C3', MAILLE = 'SC2', NOM_CMP = 'KZ',
                  REFERENCE = 'ANALYTIQUE',
                  NUME_ORDRE = 31, VALE = 7.50000E-02),
  # LA CHARGE LIMITE VAUT 0.15E+6
 
-           _F( RESULTAT = RESM, NOM_CHAM = 'SIEF_ELNO_ELGA',
+           _F( RESULTAT = RESM, NOM_CHAM = 'SIEF_ELNO',
                  NOEUD = 'R3', MAILLE = 'SR2', NOM_CMP = 'MFZ',
                  REFERENCE = 'ANALYTIQUE',
                  NUME_ORDRE = 41, VALE = 0.14988E+6, PRECISION = 1.E-2),
-           _F( RESULTAT = RESM, NOM_CHAM = 'SIEF_ELNO_ELGA',
+           _F( RESULTAT = RESM, NOM_CHAM = 'SIEF_ELNO',
                  NOEUD = 'C3', MAILLE = 'SC2', NOM_CMP = 'MFZ',
                  REFERENCE = 'ANALYTIQUE',
                  NUME_ORDRE = 1, VALE = 0.11781E+6, PRECISION = 1.E-3),
-           _F( RESULTAT = RESM, NOM_CHAM = 'SIEF_ELNO_ELGA',
+           _F( RESULTAT = RESM, NOM_CHAM = 'SIEF_ELNO',
                  NOEUD = 'C3', MAILLE = 'SC2', NOM_CMP = 'MFZ',
                  REFERENCE = 'ANALYTIQUE',
                  NUME_ORDRE = 21, VALE = 0.19602E+6, PRECISION = 1.E-2),
-           _F( RESULTAT = RESM, NOM_CHAM = 'SIEF_ELNO_ELGA',
+           _F( RESULTAT = RESM, NOM_CHAM = 'SIEF_ELNO',
                  NOEUD = 'C3', MAILLE = 'SC2', NOM_CMP = 'MFZ',
                  REFERENCE = 'ANALYTIQUE',
                  NUME_ORDRE = 31, VALE = 0.19900E+6, PRECISION = 1.E-2),
  # LA CHARGE LIMITE VAUT 0.2E+6
 
-           _F( RESULTAT = RESM, NOM_CHAM = 'SIEF_ELNO_ELGA',
+           _F( RESULTAT = RESM, NOM_CHAM = 'SIEF_ELNO',
                  NOEUD = 'C3', MAILLE = 'SC2', NOM_CMP = 'MFZ',
                  REFERENCE = 'ANALYTIQUE',
                  NUME_ORDRE = 41, VALE = 0.19975E+6, PRECISION = 1.E-2),
 
 # LA CHARGE LIMITE DANS L'AUTRE SENS VAUT -0.15E+6
 
-           _F( RESULTAT = RESM, NOM_CHAM = 'SIEF_ELNO_ELGA',
+           _F( RESULTAT = RESM, NOM_CHAM = 'SIEF_ELNO',
                  NOEUD = 'R3', MAILLE = 'SR2', NOM_CMP = 'MFZ',
                  REFERENCE = 'ANALYTIQUE',
                  NUME_ORDRE = 71, VALE = -0.15E+6, PRECISION = 1.E-2),
 # LA CHARGE LIMITE DANS L'AUTRE SENS VAUT -0.2E+6
 
-           _F( RESULTAT = RESM, NOM_CHAM = 'SIEF_ELNO_ELGA',
+           _F( RESULTAT = RESM, NOM_CHAM = 'SIEF_ELNO',
                  NOEUD = 'C3', MAILLE = 'SC2', NOM_CMP = 'MFZ',
                  REFERENCE = 'ANALYTIQUE',
                  NUME_ORDRE = 71, VALE = -0.2E+6, PRECISION = 1.E-2))
