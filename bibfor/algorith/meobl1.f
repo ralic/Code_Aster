@@ -1,10 +1,10 @@
       SUBROUTINE MEOBL1 (EPS,B,D,DELTAB,DELTAD,MULT,LAMBDA,
-     &                    MU,ECROB,ECROD,ALPHA,K1,K2,DSIDEP)
+     &                    MU,ECROB,ECROD,ALPHA,K1,K2,BDIM,DSIDEP)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 18/05/2010   AUTEUR IDOUX L.IDOUX 
+C MODIF ALGORITH  DATE 17/01/2011   AUTEUR IDOUX L.IDOUX 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -25,21 +25,14 @@ C ======================================================================
       REAL*8            EPS(6),B(6),D,DSIDEP(6,6)
       REAL*8            DELTAB(6),DELTAD,MULT
       REAL*8            LAMBDA,MU,ALPHA,K1,K2,ECROB,ECROD
+      INTEGER           BDIM
 
 C--CALCUL DE LA MATRICE TANGENTE POUR LA LOI ENDO_ORTHO_BETON
-C
-C
-C
-C
-C
 C-------------------------------------------------------------
 
-
-      LOGICAL       IRET
-
-      INTEGER       I,J,K
+      INTEGER       I,J
       REAL*8        UN,DEUX
-      REAL*8        FB(6),TREPS,FD
+      REAL*8        FB(6),TREPS,FD,FBM(6)
       REAL*8        DFMF,TDFBDB(6,6),TDFBDE(6,6)
       REAL*8        TDFDDE(6),TDFDDD
       REAL*8        INTERD,INTERT(6),INTERG
@@ -47,7 +40,7 @@ C-------------------------------------------------------------
       REAL*8        MATB(6),MATD(6)
       REAL*8        FBS,DELTAS
       REAL*8        FBSM,SDFBDB,SDFBDE(6)
-      REAL*8        COUPL,DCRIT(6)
+      REAL*8        COUPL,DCRIT(6),NOFBM
 
       UN=1.D0
       DEUX=2.D0
@@ -57,27 +50,16 @@ C-------------------------------------------------------
 C----CALCUL DE FB: FORCE THERMO ASSOCIEE A
 C-------------------ENDOMMAGEMENT ANISOTROPE DE TRACTION
 
-       CALL CEOBFB(B,EPS,LAMBDA,MU,ECROB,FB)
+       CALL CEOBFB(B,EPS,LAMBDA,MU,ECROB,BDIM,FB,NOFBM,FBM)
 
        FBS=FB(1)
-
+       FBSM=FBM(1)
        DELTAS=DELTAB(1)
 
-       IF (FBS.LT.0.D0) THEN
-         FBSM=FBS
-       ELSE
-         FBSM=0.D0
-       ENDIF
-
-
-C----CALCUL DE FD: FORCE THERMO ASSOCIEE A
+C----CALCUL DE FD: PARTIE POSITIVE DE LA FORCE THERMO ASSOCIEE A
 C-------------------ENDOMMAGEMENT ISOTROPE DE COMPRESSION
 
         CALL CEOBFD(D,EPS,LAMBDA,MU,ECROD,FD)
-        IF (FD.LT.0.D0) THEN
-          FD=0.D0
-        ENDIF
-
 
 C---CALCUL DE DERIVEES UTILES----------------------------------
 
@@ -101,17 +83,13 @@ C---CALCUL DE DERIVEES UTILES----------------------------------
       DCRIT(5)=0.D0
       DCRIT(6)=0.D0
 
-
-
       CALL DFBDB(3,B,EPS,DEUX*MU,LAMBDA,ECROB,TDFBDB)
       CALL DFBDE(3,B,EPS,DEUX*MU,LAMBDA,TDFBDE)
 
-            SDFBDB=TDFBDB(1,1)
+      SDFBDB=TDFBDB(1,1)
 
       CALL DFDDE(EPS,D,3,LAMBDA,MU,TDFDDE)
       CALL DFDDD(EPS,D,3,LAMBDA,MU,ECROD,TDFDDD)
-
-
 
       DO 381 I=1,6
         SDFBDE(I)=TDFBDE(1,I)
@@ -142,22 +120,14 @@ C---CALCUL DE KSI ET PSI
      &                  +(UN-ALPHA)*DELTAS*TDFDDE(J)
  313  CONTINUE
 
-
        KSI=ALPHA*DELTAD*DFMF*SDFBDB-(UN-ALPHA)*FD
      &              +INTERG*INTERD
-
-
-
 
        IF (KSI.NE.0.D0) THEN
          IKSI=UN/KSI
        ELSE
          CALL U2MESS('F','ALGORITH4_54')
        ENDIF
-
-
-
-
 
 C-- ! ksi n est plus disponible
 
@@ -213,6 +183,5 @@ C-- ! ksi n est plus disponible
  661     CONTINUE
 
       ENDIF
-
 
       END

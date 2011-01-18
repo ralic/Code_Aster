@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 18/01/2011   AUTEUR DESOZA T.DESOZA 
 # TITRE CONTACT DE HERTZ ENTRE 2 DEMI-SPHERES
 # perf005f.para = tps_job 9000 mem_job 2048Mo ncpus 1 liste_test P
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -24,10 +24,7 @@
 #       METHODE CONTINUE
 #---------------------------------------------------------------------------
 
-DEBUT(CODE=_F(NOM='PERF005F',NIV_PUB_WEB='INTERNET'),
-      #MEMOIRE=_F(PARTITION=0.99,TAILLE=400,TYPE_ALLOCATION=4,),
-      MEMOIRE=_F(DYNAMIQUE=400,),
-      )
+DEBUT(CODE=_F(NOM='PERF005F',NIV_PUB_WEB='INTERNET'),)
 
 MA=LIRE_MAILLAGE(FORMAT='MED')
 
@@ -41,8 +38,8 @@ MO=AFFE_MODELE(MAILLAGE=MA,
                        PHENOMENE='MECANIQUE',
                        MODELISATION='3D',),);
 
-MA=MODI_MAILLAGE(reuse =MA, MAILLAGE=MA, ORIE_PEAU_3D=_F(GROUP_MA='SESC',), );
-MA=MODI_MAILLAGE(reuse =MA, MAILLAGE=MA, ORIE_PEAU_3D=_F(GROUP_MA='SMAI',), );
+MA=MODI_MAILLAGE(reuse =MA, MAILLAGE=MA, ORIE_PEAU_3D=_F(GROUP_MA=('SESC','SMAI',),), );
+
 #_____________________________________________________________________
 #
 #                    DEFINITION DES MATERIAUX
@@ -69,6 +66,7 @@ CHA2 = DEFI_CONTACT(MODELE      = MO,
                     RESI_GEOM = 0.05,
                     ZONE = _F(GROUP_MA_MAIT='SMAI',
                               GROUP_MA_ESCL='SESC',
+                              CONTACT_INIT='INTERPENETRE',
                             ),
                     ); 
 
@@ -98,7 +96,6 @@ RESU=STAT_NON_LINE(SOLVEUR=_F(METHODE='GCPC',
                    INCREMENT=_F(LIST_INST=L_INST,),
                    NEWTON=_F(MATRICE='ELASTIQUE',
                              REAC_INCR=0,),
-                   CONVERGENCE=_F(RESI_GLOB_MAXI=1.0E-6,),
                             );
 
 RESU=CALC_ELEM(reuse =RESU, OPTION=('SIEF_ELNO'), RESULTAT=RESU,);
@@ -111,11 +108,5 @@ SIELNO=CREA_CHAMP(TYPE_CHAM='NOEU_SIEF_R', OPERATION='EXTR', RESULTAT=RESU,
 
 TEST_RESU(CHAM_NO=_F(CHAM_GD=SIELNO, GROUP_NO='G1', NOM_CMP='SIYY', VALE=-2798.300,
                      CRITERE='RELATIF', PRECISION=0.05, REFERENCE='ANALYTIQUE',),);
-
-if 0 : # pour compter les noeuds en contact (ceux qui ont CONT != 0.) :
-    XXX=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_INFC_R', INFO=2,
-                     NOM_CHAM='VALE_CONT', RESULTAT=RESU, NUME_ORDRE=1)
-    # pour compter les noeuds en contact, on peut faire :
-    #    cat xxxx.mess |  grep 'N[0-9]* *| *0"backslash".[1-9]' | wc -l
 
 FIN();

@@ -1,11 +1,11 @@
       SUBROUTINE MEOBG1 (EPS,EPSG,B,D,DELTAB,DELTAD,MULT,
-     &             LAMBDA,MU,ECROB,ECROD,ALPHA,K1,K2,DSIDEP)
+     &             LAMBDA,MU,ECROB,ECROD,ALPHA,K1,K2,BDIM,DSIDEP)
 
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 18/05/2010   AUTEUR IDOUX L.IDOUX 
+C MODIF ALGORITH  DATE 17/01/2011   AUTEUR IDOUX L.IDOUX 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -21,26 +21,20 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 
-
       IMPLICIT NONE
 
       REAL*8            EPS(6),EPSG(6),B(6),D,DSIDEP(6,6)
-      REAL*8            EPSGM(6),DELTAB(6),DELTAD,MULT
+      REAL*8            DELTAB(6),DELTAD,MULT
       REAL*8            LAMBDA,MU,ALPHA,K1,K2,ECROB,ECROD
+      INTEGER           BDIM
 
 C--CALCUL DE LA MATRICE TANGENTE POUR LA LOI ENDO_ORTHO_BETON
 C  VERSION NON LOCALE
-C
-C
-C
-C
 C-------------------------------------------------------------
 
-      LOGICAL            IRET
-
-      INTEGER            I,J,K
+      INTEGER            I,J
       REAL*8             UN,DEUX
-      REAL*8             FB(6),TREPSG,FD
+      REAL*8             FB(6),TREPSG,FD,FBM(6)
       REAL*8             DFMF,TDFBDB(6,6),TDFBDE(6,6)
       REAL*8             TDFDDE(6),TDFDDD
       REAL*8             INTERD,INTERT(6),INTERG
@@ -49,7 +43,7 @@ C-------------------------------------------------------------
       REAL*8             FBS,DELTAS
       REAL*8             FBSM,SDFBDB,SDFBDE(6)
       REAL*8             DSIGB(6,6),DSIGD(6),DIB(6)
-      REAL*8             COUPL,DCRIT(6)
+      REAL*8             COUPL,DCRIT(6),NOFBM
 
       UN=1.D0
       DEUX=2.D0
@@ -59,27 +53,16 @@ C-------------------------------------------------------
 C----CALCUL DE FB: FORCE THERMO ASSOCIEE A
 C-------------------ENDOMMAGEMENT ANISOTROPE DE TRACTION
       
-       CALL CEOBFB(B,EPSG,LAMBDA,MU,ECROB,FB)
+       CALL CEOBFB(B,EPSG,LAMBDA,MU,ECROB,BDIM,FB,NOFBM,FBM)
 
        FBS=FB(1)
-
+       FBSM=FBM(1)
        DELTAS=DELTAB(1)
 
-       IF (FBS.LT.0.D0) THEN
-         FBSM=FBS
-       ELSE
-         FBSM=0.D0
-       ENDIF
-
-C----CALCUL DE FD: FORCE THERMO ASSOCIEE A
+C----CALCUL DE FD: PARTIE POSITIVE DE LA FORCE THERMO ASSOCIEE A
 C-------------------ENDOMMAGEMENT ISOTROPE DE COMPRESSION
 
        CALL CEOBFD(D,EPSG,LAMBDA,MU,ECROD,FD)
-C Rajout du test sur le signe de FD
-       IF (FD.LT.0.D0) THEN
-          FD=0.D0
-       ENDIF
-
 
 C---CALCUL DE DERIVEES UTILES----------------------------------
 

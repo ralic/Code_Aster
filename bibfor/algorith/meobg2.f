@@ -1,10 +1,10 @@
       SUBROUTINE MEOBG2 (EPS,EPSG,B,D,DELTAB,DELTAD,MULT,
-     &              LAMBDA,MU,ECROB,ECROD,ALPHA,K1,K2,DSIDEP)
+     &              LAMBDA,MU,ECROB,ECROD,ALPHA,K1,K2,BDIM,DSIDEP)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 18/05/2010   AUTEUR IDOUX L.IDOUX 
+C MODIF ALGORITH  DATE 17/01/2011   AUTEUR IDOUX L.IDOUX 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -25,25 +25,22 @@ C ======================================================================
       REAL*8            EPS(6),EPSG(6),B(6),D,DSIDEP(6,6)
       REAL*8            DELTAB(6),DELTAD,MULT
       REAL*8            LAMBDA,MU,ALPHA,K1,K2,ECROB,ECROD
+      INTEGER           BDIM
 
 C--CALCUL DE LA MATRICE TANGENTE POUR LA LOI ENDO_ORTHO_BETON
 C  VERSION NON LOCALE
-C
-C
-C
-C
 C-------------------------------------------------------------
 
-      INTEGER            I,J,K,T2(2,2),IRET
+      INTEGER            I,J,K,IRET
       REAL*8             RAC2,NOFBM,UN,DEUX
       REAL*8             FB(6),TREPSG,FD
       REAL*8             DFMF(3,3),TDFBDB(6,6),TDFBDE(6,6)
       REAL*8             TDFDDE(6),TDFDDD
       REAL*8             INTERD(3),INTERT(6),INTERG(3)
       REAL*8             PSI(3,6),KSI(3,3),IKSI(3,3)
-      REAL*8             MATB(3,6),MATD(6),TOTO
-      REAL*8             FBS(3),VECFBS(2,2),VALFBS(2),DELTAS(3)
-      REAL*8             FBSM(3),SDFBDB(3,3),SDFBDE(3,6)
+      REAL*8             MATB(3,6),MATD(6)
+      REAL*8             FBS(3),DELTAS(3)
+      REAL*8             FBSM(6),SDFBDB(3,3),SDFBDE(3,6)
       REAL*8             DSIGB(6,6),DSIGD(6),DIB(3,6)
       REAL*8             COUPL,DCRIT(6),DET
 
@@ -51,17 +48,12 @@ C-------------------------------------------------------------
       RAC2=SQRT(DEUX)
       UN=1.D0
 
-      T2(1,1)=1
-      T2(2,2)=2
-      T2(1,2)=3
-      T2(2,1)=3
-
 C-------------------------------------------------------
 C-------------------------------------------------------
 C----CALCUL DE FB: FORCE THERMO ASSOCIEE A
 C-------------------ENDOMMAGEMENT ANISOTROPE DE TRACTION
 
-       CALL CEOBFB(B,EPSG,LAMBDA,MU,ECROB,FB)
+       CALL CEOBFB(B,EPSG,LAMBDA,MU,ECROB,BDIM,FB,NOFBM,FBSM)
 
        FBS(1)=FB(1)
        FBS(2)=FB(2)
@@ -71,30 +63,10 @@ C-------------------ENDOMMAGEMENT ANISOTROPE DE TRACTION
        DELTAS(2)=DELTAB(2)
        DELTAS(3)=DELTAB(4)
 
-      CALL DIAGO2(FBS,VECFBS,VALFBS)
-
-      DO 29 I=1,2
-        IF (VALFBS(I).GT.0.D0) THEN
-          VALFBS(I)=0.D0
-        ENDIF
-  29  CONTINUE
-      CALL R8INIR(3,0.D0,FBSM,1)
-      DO 26 I=1,2
-        DO 27 J=I,2
-          DO 28 K=1,2
-        FBSM(T2(I,J))=FBSM(T2(I,J))+VECFBS(I,K)*VALFBS(K)*VECFBS(J,K)
-  28      CONTINUE
-  27    CONTINUE
-  26  CONTINUE
-
-C----CALCUL DE FD: FORCE THERMO ASSOCIEE A
+C----CALCUL DE FD: PARTIE POSITIVE DE LA FORCE THERMO ASSOCIEE A
 C-------------------ENDOMMAGEMENT ISOTROPE DE COMPRESSION
 
         CALL CEOBFD(D,EPSG,LAMBDA,MU,ECROD,FD)
-C Rajout du test sur le signe de FD
-        IF (FD.LT.0.D0) THEN
-          FD=0.D0
-        ENDIF
 
 C---CALCUL DE DERIVEES UTILES----------------------------------
 

@@ -1,9 +1,9 @@
       SUBROUTINE IMPCOD(COLONN,ICOD  )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 21/12/2010   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 17/01/2011   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -68,10 +68,10 @@ C
       DATA MOTCLE(20)       / 'BOUC_GEOM'/
       DATA MOTCLE(21)       / 'BOUC_FROT'/
       DATA MOTCLE(22)       / 'BOUC_CONT'/
-      DATA MOTCLE(23)       / 'SUIV_1'/
-      DATA MOTCLE(24)       / 'SUIV_2'/
-      DATA MOTCLE(25)       / 'SUIV_3'/
-      DATA MOTCLE(26)       / 'SUIV_4'/
+      DATA MOTCLE(23)       / '&&&&&&&&&'/
+      DATA MOTCLE(24)       / '&&&&&&&&&'/
+      DATA MOTCLE(25)       / '&&&&&&&&&'/
+      DATA MOTCLE(26)       / '&&&&&&&&&'/
       DATA MOTCLE(27)       / 'ITER_FETI'/
       DATA MOTCLE(28)       / 'BOUC_VALE'/
       DATA MOTCLE(29)       / 'BOUC_NOEU'/
@@ -82,11 +82,10 @@ C
 C ----------------------------------------------------------------------
 C
       ICOD = 0
-
       DO 10 I = 1,ZDEF
         IF (COLONN(1:9).EQ.MOTCLE(I)) THEN
           ICOD     = I
         ENDIF
    10 CONTINUE
-
+C
       END

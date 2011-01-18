@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 17/01/2011   AUTEUR ABBAS M.ABBAS 
 # TITRE COMPARAISON AVEC LA SOLUTION ANALYTIQUE D'UNE PLAQUE (DKT) EN TRACTION
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -180,8 +180,9 @@ RESU1 = DYNA_NON_LINE(
                        ARCHIVAGE=_F(LIST_INST=LARCH,),
                        OBSERVATION=(_F(NOM_CHAM='DEPL',
                                        NOM_CMP='DX',
+                                       EVAL_CHAM='VALE',
                                        LIST_INST= LARCH,
-                                       NOEUD='N1',SUIVI_DDL='NON'),),
+                                       NOEUD='N1'),),
                      );
 
 # Calcul implicite HHT complet faiblement amorti
@@ -210,7 +211,7 @@ RESU2 = DYNA_NON_LINE(
                        OBSERVATION=( _F(NOM_CHAM='DEPL',
                                         NOM_CMP='DX',
                                         LIST_INST= LARCH,
-                                        NOEUD='N1',SUIVI_DDL='NON'),),
+                                        NOEUD='N1',),),
                        CONVERGENCE=_F(ITER_GLOB_MAXI=0,),
                      );
 
@@ -254,7 +255,7 @@ RESU3 = DYNA_NON_LINE(
                        OBSERVATION=( _F(NOM_CHAM='DEPL',
                                         NOM_CMP='DX',
                                         LIST_INST= LARCH,
-                                        NOEUD='N1',SUIVI_DDL='NON'),),
+                                        NOEUD='N1',),),
                        CONVERGENCE=_F(ITER_GLOB_MAXI=0,),
                      );
 

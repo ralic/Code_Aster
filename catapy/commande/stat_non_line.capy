@@ -1,7 +1,7 @@
-#& MODIF COMMANDE  DATE 21/12/2010   AUTEUR ABBAS M.ABBAS 
+#& MODIF COMMANDE  DATE 17/01/2011   AUTEUR ABBAS M.ABBAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -42,8 +42,11 @@ STAT_NON_LINE=OPER(nom="STAT_NON_LINE",op=70,sd_prod=evol_noli,
                 SUPER_MAILLE=SIMP(statut='f',typ=ma,validators=NoRepeat(),max='**',),
                 FONC_MULT   =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
               ),
+#-------------------------------------------------------------------               
          COMP_INCR       =C_COMP_INCR(),
+#-------------------------------------------------------------------          
          COMP_ELAS       =C_COMP_ELAS('STAT_NON_LINE'),
+#-------------------------------------------------------------------          
          b_reuse =BLOC(condition = "reuse",fr="en mode concept reentrant : ETAT_INIT obligatoire",
            ETAT_INIT       =FACT(statut='o',
              regles=(AU_MOINS_UN('EVOL_NOLI','DEPL','SIGM','VARI',),
@@ -86,95 +89,33 @@ STAT_NON_LINE=OPER(nom="STAT_NON_LINE",op=70,sd_prod=evol_noli,
              NUME_DIDI       =SIMP(statut='f',typ='I'),
              INST_ETAT_INIT  =SIMP(statut='f',typ='R'),
          ),),
+#-------------------------------------------------------------------            
          INCREMENT       =C_INCREMENT(),
- 
-#         **C_ALGO_RESOLUTION()
-         METHODE = SIMP(statut='d',typ='TXM',defaut="NEWTON",into=("NEWTON","IMPL_EX")),
-         b_meth_newton = BLOC(condition = "METHODE == 'NEWTON'",
-                           NEWTON = C_NEWTON(),
-                        ),
-         b_meth_impl_ex = BLOC(condition = "METHODE == 'IMPL_EX'",
-                           IMPL_EX = C_IMPL_EX(),
-                        ),
- 
+#-------------------------------------------------------------------   
+         METHODE         =SIMP(statut='d',typ='TXM',defaut="NEWTON",into=("NEWTON","IMPL_EX")),
+             b_meth_newton = BLOC(condition = "METHODE == 'NEWTON'",
+                                  NEWTON = C_NEWTON(),
+                                  ),
+            b_meth_impl_ex = BLOC(condition = "METHODE == 'IMPL_EX'",
+                                  IMPL_EX = C_IMPL_EX(),
+                          ),
+#-------------------------------------------------------------------    
          RECH_LINEAIRE   =C_RECH_LINEAIRE(),
-         
-         PILOTAGE        =FACT(statut='f',
-           regles=(EXCLUS('NOEUD','GROUP_NO'),PRESENT_ABSENT('TOUT','GROUP_MA','MAILLE'),),
-           TYPE    =SIMP(statut='o',typ='TXM',into=("DDL_IMPO","LONG_ARC","PRED_ELAS","DEFORMATION","ANA_LIM") ),
-           COEF_MULT       =SIMP(statut='f',typ='R',defaut= 1.0E+0),
-           EVOL_PARA       =SIMP(statut='f',typ='TXM',defaut="SANS", into=("SANS","CROISSANT","DECROISSANT") ),
-           
-           
-           ETA_PILO_MAX    =SIMP(statut='f',typ='R'),
-           ETA_PILO_MIN    =SIMP(statut='f',typ='R'),
-           ETA_PILO_R_MAX  =SIMP(statut='f',typ='R'),
-           ETA_PILO_R_MIN  =SIMP(statut='f',typ='R'),
-           PROJ_BORNES     =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON")),
-           SELECTION       =SIMP(statut='f',typ='TXM',defaut="NORM_INCR_DEPL", into=("RESIDU","ANGL_INCR_DEPL","NORM_INCR_DEPL") ),
-           TOUT            =SIMP(statut='f',typ='TXM',into=("OUI",) ),
-           GROUP_MA        =SIMP(statut='f',typ=grma ,validators=NoRepeat(),max='**'),
-           MAILLE          =SIMP(statut='f',typ=ma   ,validators=NoRepeat(),max='**'),
-           NOEUD           =SIMP(statut='f',typ=no   ,validators=NoRepeat(),max='**'),
-           GROUP_NO        =SIMP(statut='f',typ=grno ,validators=NoRepeat(),max='**'),
-           NOM_CMP         =SIMP(statut='f',typ='TXM',max='**'),
-                         ),
-                         
+#-------------------------------------------------------------------            
+         PILOTAGE        =C_PILOTAGE(),
+#-------------------------------------------------------------------                         
          CONVERGENCE     =C_CONVERGENCE(),
- 
+#------------------------------------------------------------------- 
          SOLVEUR         =C_SOLVEUR(),
-          
-         ARCHIVAGE       =FACT(statut='f',
-           regles=(EXCLUS('PAS_ARCH','LIST_INST','INST'),
-                   EXCLUS('ARCH_ETAT_INIT','NUME_INIT'), ),
-           LIST_INST       =SIMP(statut='f',typ=(listr8_sdaster) ),
-           INST            =SIMP(statut='f',typ='R',validators=NoRepeat(),max='**' ),
-           PAS_ARCH        =SIMP(statut='f',typ='I' ),
-           PRECISION       =SIMP(statut='f',typ='R',defaut= 1.0E-6),
-           ARCH_ETAT_INIT  =SIMP(statut='f',typ='TXM',into=("OUI",)),
-           NUME_INIT       =SIMP(statut='f',typ='I'),
-           DETR_NUME_SUIV  =SIMP(statut='f',typ='TXM',into=("OUI",)),
-           CHAM_EXCLU      =SIMP(statut='f',typ='TXM',validators=NoRepeat(),max='**',
-                                 into=("DEPL","SIEF_ELGA","VARI_ELGA",)),
-         ),
-         OBSERVATION     =FACT(statut='f',max='**',
-           NOM_CMP         =SIMP(statut='o',typ='TXM',max='**'),
-           SUIVI_DDL       =SIMP(statut='f',typ='TXM',defaut="NON",max=1,into=("OUI","NON")),
-         b_suivi          =BLOC(condition = "SUIVI_DDL == 'OUI' ",
-                                regles=(UN_PARMI('NOEUD','MAILLE','GROUP_NO','GROUP_MA','VALE_MIN','VALE_MAX'),
-                                                  PRESENT_PRESENT('MAILLE','POINT'),),
-             NOEUD           =SIMP(statut='f',typ=no  ,validators=NoRepeat(),max='**'),
-             GROUP_NO        =SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**'),
-             POINT           =SIMP(statut='f',typ='I' ,validators=NoRepeat(),max='**'),
-             MAILLE          =SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**'),
-             NOM_CHAM        =SIMP(statut='o',typ='TXM',validators=NoRepeat(),max=1,
-                                   into=("DEPL","VITE","ACCE","SIEF_ELGA",
-                                         "VARI_ELGA","FORC_NODA","DEPL_ABSOLU","VITE_ABSOLU","ACCE_ABSOLU",)),
-             GROUP_MA        =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
-             NUME_SUIVI      =SIMP(statut='o',typ='I' ,min=1,max=4),
-             VALE_MAX        =SIMP(statut='f',typ='TXM',validators=NoRepeat(),max=1,into=("OUI",) ),
-             VALE_MIN        =SIMP(statut='f',typ='TXM',validators=NoRepeat(),max=1,into=("OUI",) ),),
-         b_non_suivi      =BLOC(condition = "SUIVI_DDL == 'NON' ",
-                                regles=(UN_PARMI('NOEUD','GROUP_NO','MAILLE'),PRESENT_PRESENT('MAILLE','POINT'),),
-             NOEUD           =SIMP(statut='f',typ=no  ,validators=NoRepeat(),max='**'),
-             GROUP_NO        =SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**'),
-             POINT           =SIMP(statut='f',typ='I' ,validators=NoRepeat(),max='**'),
-             MAILLE          =SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**'),
-             NOM_CHAM        =SIMP(statut='o',typ='TXM',validators=NoRepeat(),max='**',into=("DEPL","VITE","ACCE","SIEF_ELGA",
-                                              "VARI_ELGA","DEPL_ABSOLU","VITE_ABSOLU","ACCE_ABSOLU","VALE_CONT")),
-             INST            =SIMP(statut='f',typ='R',validators=NoRepeat(),max='**' ),
-             LIST_INST       =SIMP(statut='f',typ=listr8_sdaster),
-             PAS_OBSE        =SIMP(statut='f',typ='I'),
-             LIST_ARCH       =SIMP(statut='f',typ=listis_sdaster),
-             CRITERE         =SIMP(statut='f',typ='TXM',defaut="RELATIF",into=("RELATIF","ABSOLU") ),
-             b_prec_rela=BLOC(condition="(CRITERE=='RELATIF')",
-                PRECISION       =SIMP(statut='f',typ='R',defaut= 1.E-6,),),
-             b_prec_abso=BLOC(condition="(CRITERE=='ABSOLU')",
-                PRECISION       =SIMP(statut='o',typ='R',),),),
-         ),
-
+#-------------------------------------------------------------------
+         OBSERVATION     =C_OBSERVATION(),
+#-------------------------------------------------------------------
+         SUIVI_DDL       =C_SUIVI_DDL(),
+#-------------------------------------------------------------------          
+         ARCHIVAGE       =C_ARCHIVAGE('STAT_NON_LINE'),
+#-------------------------------------------------------------------   
          AFFICHAGE      = C_AFFICHAGE(),
-
+#-------------------------------------------------------------------   
          CRIT_FLAMB     =FACT(statut='f',min=1,max=1,
            NB_FREQ         =SIMP(statut='f',typ='I',max=1,defaut=3),
            CHAR_CRIT       =SIMP(statut='f',typ='R',min=2,max=2,defaut=(-10.0,10),

@@ -1,4 +1,4 @@
-#@ MODIF calculel Messages  DATE 11/01/2011   AUTEUR SELLENET N.SELLENET 
+#@ MODIF calculel Messages  DATE 18/01/2011   AUTEUR MEUNIER S.MEUNIER 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -132,10 +132,6 @@ Conseil :
     - température
     - température de référence
     - coefficient de dilatation
-"""),
-
-16 : _("""
- type de maille indisponible
 """),
 
 17 : _("""

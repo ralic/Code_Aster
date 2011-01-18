@@ -1,9 +1,9 @@
-# MODIF  DATE 13/04/2010   AUTEUR BOITEAU O.BOITEAU 
+# MODIF  DATE 18/01/2011   AUTEUR BOITEAU O.BOITEAU 
 # TITRE VALIDATION DU SOLVEUR MUMPS EN PARALLELE AVEC MATRICE CENTRALISEE
-# mumps05a.para = tps_job 2600 mem_job 15800Mo mem_aster 52 mpi_nbcpu 1 mpi_nbnoeud 1 ncpus 2 liste_test M
+# mumps05a.para = tps_job 3000 mem_job 15800Mo mem_aster 52 mpi_nbcpu 1 mpi_nbnoeud 1 ncpus 2 liste_test MI
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -28,6 +28,8 @@
 #   IN_CORE/OUT_OF_CORE. ON TESTE AUSSI LA FONCTIONNALITE MATR_DISTRIBUEE
 #   ON PANACHE LE SOLVEUR MUMPS ET LE SOLVEUR FETI EN PARALLELE POUR
 #   VALIDER LEUR INTER-OPERABILITE.
+#   ON TESTE AUSSI, SUR LA PREMIERE CONFIGURATION, LES RENUMEROTEURS
+#   METIS ET SCOTCH.
 #   PARALLELE: VALEUR CONSEILLEE 8 PROCS
 #########################################################################
 #
@@ -53,11 +55,14 @@ mem_pivot = 40;
 #
 # Choix de la methode de renumeration
 meth_renum = 'METIS';
+meth_renu2 = 'SCOTCH';
+
 #
 # Mode verbeux 1/2
 niv_info = 2
 #
-DEBUT(CODE=_F( NOM = 'MUMPS05A',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F( NOM = 'MUMPS05A',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'),
+            MESURE_TEMPS=_F(NIVE_DETAIL=2))
 
 PRE_GIBI();
 
@@ -99,8 +104,8 @@ TPS=DEFI_LIST_REEL(DEBUT=0.0,
                    INTERVALLE=_F(JUSQU_A=1,
                                  NOMBRE=1,),);
 
-# 1.1 : AVEC CHARGE DUALISEE ET MUMPS CENTRALISE
-#-----------------------------------------------
+# 1.1 : AVEC CHARGE DUALISEE ET MUMPS CENTRALISE + METIS
+#----------------------------------------------------------
 
 MODI_MODELE(reuse=MO, MODELE=MO, PARTITION=_F(PARALLELISME='CENTRALISE'))
 
@@ -135,6 +140,42 @@ TEST_RESU(RESU=_F(RESULTAT=MECAC,
                   CRITERE='ABSOLU',
                   PRECISION=1e-08,
                   REFERENCE='ANALYTIQUE',),);
+
+# 1.2 : AVEC CHARGE DUALISEE ET MUMPS CENTRALISE + SCOTCH
+#--------------------------------------------------------
+
+MECAC2=MECA_STATIQUE(INFO=niv_info,
+                     MODELE=MO,
+                     CHAM_MATER=CHAM_MAT,
+                     EXCIT=(_F(CHARGE=CHARF,),
+                            _F(CHARGE=CHARD,),),
+                     OPTION='SANS',
+                     SOLVEUR=_F(METHODE=solveur,
+                                RENUM=meth_renu2,
+                                RESI_RELA=-1.0,
+                                PCENT_PIVOT=mem_pivot,
+                                OUT_OF_CORE='OUI',
+                                NPREC=-1,
+                                ),);
+
+TEST_RESU(RESU=_F(RESULTAT=MECAC2,
+                  NUME_ORDRE=1,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DZ',
+                  GROUP_NO='D',
+                  VALE=0.1,
+                  REFERENCE='ANALYTIQUE',),);
+
+TEST_RESU(RESU=_F(RESULTAT=MECAC2,
+                  NUME_ORDRE=1,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DX',
+                  GROUP_NO='D',
+                  VALE=0.0,
+                  CRITERE='ABSOLU',
+                  PRECISION=1e-08,
+                  REFERENCE='ANALYTIQUE',),);
+
 # 2.1 : AVEC CHARGE DUALISEE ET MUMPS DISTRIBUE PAR MAILLES
 #       EQUILIBRAGE DE CHARGE AUTOMATIQUE
 #----------------------------------------------------------

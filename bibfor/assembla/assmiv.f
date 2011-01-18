@@ -3,9 +3,9 @@
       IMPLICIT REAL*8(A-H,O-Z)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 07/09/2010   AUTEUR DESOZA T.DESOZA 
+C MODIF ASSEMBLA  DATE 18/01/2011   AUTEUR MEUNIER S.MEUNIER 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -44,10 +44,6 @@ C IN  K4 MOTCLE : 'ZERO' OU 'CUMU'
 C IN  I  TYPE   : TYPE DU VECTEUR ASSEMBLE : 1 --> REEL
 C                                            2 --> COMPLEXE
 C
-C  S'IL EXISTE UN OBJET '&&POIDS_MAILLE' VR, PONDERATIONS POUR CHAQUE
-C  MAILLE, ON S'EN SERT POUR LES OPTIONS RAPH_MECA ET FULL_MECA
-C
-C ----------------------------------------------------------------------
 C ----------------------------------------------------------------------
 C     FONCTIONS JEVEUX
 C ----------------------------------------------------------------------
@@ -82,9 +78,9 @@ C ---------------------------------------------------------------------
       CHARACTER*14 NUDEV
       CHARACTER*19 VECAS,VPROF,VECEL
       CHARACTER*24 KMAILA,K24PRN,KNULIL,KVELIL,KVEREF,KVEDSC,RESU,NOMLI,
-     &             KNEQUA,KVALE,NOMOPT
+     &             KNEQUA,KVALE
       CHARACTER*1 K1BID
-      INTEGER ADMODL,LCMODL,NBEC,EPDMS,JPDMS,IEXI
+      INTEGER ADMODL,LCMODL,NBEC,IEXI
       LOGICAL LDIST
 C ----------------------------------------------------------------------
 C     FONCTIONS LOCALES D'ACCES AUX DIFFERENTS CHAMPS DES
@@ -279,15 +275,6 @@ C     ------------------------
             RESU=ZK24(IDLRES+IRESU-1)
             CALL JEVEUO(RESU(1:19)//'.NOLI','L',IAD)
             NOMLI=ZK24(IAD)
-            NOMOPT=ZK24(IAD+1)
-
-            IF (NOMOPT(1:9).EQ.'FULL_MECA' .OR.
-     &          NOMOPT(1:9).EQ.'RAPH_MECA') THEN
-              CALL JEEXIN('&&POIDS_MAILLE',EPDMS)
-              IF (EPDMS.GT.0) CALL JEVEUO('&&POIDS_MAILLE','L',JPDMS)
-            ELSE
-              EPDMS=0
-            ENDIF
 
             CALL JENONU(JEXNOM(KVELIL,NOMLI),ILIVE)
             CALL JENONU(JEXNOM(KNULIL,NOMLI),ILINU)
@@ -316,7 +303,6 @@ C     ------------------------
                   ENDIF
 
                   IF (NUMA.GT.0) THEN
-                    IF (EPDMS.GT.0)R=R*ZR(JPDMS-1+NUMA)
                     IL=0
                     DO 50 K1=1,NNOE
                       N1=ZI(ICONX1-1+ZI(ICONX2+NUMA-1)+K1-1)

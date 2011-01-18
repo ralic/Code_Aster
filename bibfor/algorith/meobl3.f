@@ -1,10 +1,10 @@
       SUBROUTINE MEOBL3 (EPS,B,D,DELTAB,DELTAD,MULT,LAMBDA,
-     &                    MU,ECROB,ECROD,ALPHA,K1,K2,DSIDEP)
+     &                    MU,ECROB,ECROD,ALPHA,K1,K2,BDIM,DSIDEP)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 18/05/2010   AUTEUR IDOUX L.IDOUX 
+C MODIF ALGORITH  DATE 17/01/2011   AUTEUR IDOUX L.IDOUX 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -24,18 +24,14 @@ C ======================================================================
       REAL*8            EPS(6),B(6),D,DSIDEP(6,6)
       REAL*8            DELTAB(6),DELTAD,MULT
       REAL*8            LAMBDA,MU,ALPHA,K1,K2,ECROB,ECROD
+      INTEGER           BDIM
 
 C--CALCUL DE LA MATRICE TANGENTE POUR LA LOI ENDO_ORTHO_BETON
-C
-C
-C
-C
-C
 C-------------------------------------------------------------
 
-      INTEGER            I,J,K,T(3,3),IRET
+      INTEGER            I,J,K,IRET
       REAL*8             RAC2,NOFBM,UN,DET,DEUX
-      REAL*8             FB(6),FBM(6),VECFB(3,3),VALFB(3)
+      REAL*8             FB(6),FBM(6)
       REAL*8             TREPS,FD
       REAL*8             DFBMDF(6,6),TDFBDB(6,6),TDFBDE(6,6)
       REAL*8             TDFDDE(6),TDFDDD
@@ -48,45 +44,17 @@ C-------------------------------------------------------------
       DEUX=2.D0
       RAC2=SQRT(DEUX)
 
-      T(1,1)=1
-      T(2,2)=2
-      T(3,3)=3
-      T(1,2)=4
-      T(2,1)=4
-      T(1,3)=5
-      T(3,1)=5
-      T(2,3)=6
-      T(3,2)=6
-
 C-------------------------------------------------------
 C-------------------------------------------------------
 C----CALCUL DE FB: FORCE THERMO ASSOCIEE A
 C-------------------ENDOMMAGEMENT ANISOTROPE DE TRACTION
 
-      CALL CEOBFB(B,EPS,LAMBDA,MU,ECROB,FB)
+      CALL CEOBFB(B,EPS,LAMBDA,MU,ECROB,BDIM,FB,NOFBM,FBM)
 
-      CALL DIAGO3(FB,VECFB,VALFB)
-      DO 29 I=1,3
-        IF (VALFB(I).GT.0.D0) THEN
-          VALFB(I)=0.D0
-        ENDIF
-  29  CONTINUE
-      CALL R8INIR(6,0.D0,FBM,1)
-      DO 26 I=1,3
-        DO 27 J=I,3
-          DO 28 K=1,3
-            FBM(T(I,J))=FBM(T(I,J))+VECFB(I,K)*VALFB(K)*VECFB(J,K)
-  28      CONTINUE
-  27    CONTINUE
-  26  CONTINUE
-
-C----CALCUL DE FD: FORCE THERMO ASSOCIEE A
+C----CALCUL DE FD: PARTIE POSITIVE DE LA FORCE THERMO ASSOCIEE A
 C-------------------ENDOMMAGEMENT ISOTROPE DE COMPRESSION
 
         CALL CEOBFD(D,EPS,LAMBDA,MU,ECROD,FD)
-        IF (FD.LT.0.D0) THEN
-          FD=0.D0
-        ENDIF
 
 C---CALCUL DE DERIVEES UTILES----------------------------------
 

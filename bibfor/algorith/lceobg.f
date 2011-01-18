@@ -2,9 +2,9 @@
      &                   VIM, OPTION, SIGP, VIP,  DSIDEP, PROJ, IRET)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 18/05/2010   AUTEUR IDOUX L.IDOUX 
+C MODIF ALGORITH  DATE 17/01/2011   AUTEUR IDOUX L.IDOUX 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -27,7 +27,6 @@ C ======================================================================
       REAL*8             EPSTM(12), DEPST(12), VIM(7), CRIT(*)
       REAL*8             SIGP(6), VIP(7), DSIDEP(6,6,2), PROJ(6,6)
 
-
 C ----------------------------------------------------------------------
 C     LOI DE COMPORTEMENT DU MODELE D'ENDOMMAGEMENT ANISOTROPE
 C     VERSION NON LOCALE AVEC MODELISATION GRAD_EPSI
@@ -35,15 +34,15 @@ C
 C IN  NDIM    : DIMENSION DE L'ESPACE
 C IN  TYPMOD  : TYPE DE MODELISATION
 C IN  IMATE   : NATURE DU MATERIAU
-C IN  CRIT   : CRITERES DE CONVERGENCE LOCAUX
-C IN  EPSMA    : DEFORMATION EN T- REPERE GLOBAL
+C IN  CRIT    : CRITERES DE CONVERGENCE LOCAUX
+C IN  EPSMA   : DEFORMATION EN T- REPERE GLOBAL
 C IN  DEPS    : INCREMENT DE DEFORMATION
 C IN  VIM     : VARIABLES INTERNES EN T-
 C IN  OPTION  : OPTION DEMANDEE
 C                 RIGI_MECA_TANG ->     DSIDEP
 C                 FULL_MECA      -> SIG DSIDEP VIP
 C                 RAPH_MECA      -> SIG        VIP
-C OUT SIGM     : CONTRAINTE
+C OUT SIGM    : CONTRAINTE
 C OUT VIP     : VARIABLES INTERNES
 C                 1 A 6   -> TENSEUR D'ENDOMMAGEMENT DE TRACTION
 C                 7       -> ENDOMMAGEMENT DE COMPRESSION
@@ -55,49 +54,34 @@ C TOLE CRP_20
 
       LOGICAL     RIGI, RESI, ELAS,REINIT
       LOGICAL     TOTAL,TOT1,TOT2,TOT3,DBLOQ
-      INTEGER     NDIMSI,I,J,K,L,P,Q,M,N, COMPTE,T(3,3)
+      INTEGER     NDIMSI,I,J,K,L,P,Q,M,N,T(3,3)
       INTEGER     BDIM,R1(6),R2(6)
 
       INTEGER     INTMAX
       REAL*8      TOLER
 
-      REAL*8      TREPS,TREB, COPLAN,TOTO(3,3),TREM
       REAL*8      EPS(6),EPSM(6),EPSG(6),EPSMG(6),DEPSG(6),DEPS(6)
-      REAL*8      CC(6),CPE(6),CCP(6),RESB(6)
-      REAL*8      KRON(6),MULT,SEUIL,UN,DEUX
+      REAL*8      KRON(6),MULT,SEUIL,UN,DEUX,TREPS,TREB,CC(6)
       REAL*8      RAC2,BOBO(6,6),ZOZO(6,6),ZAZA(6,6)
       REAL*8      RTEMP1,RTEMP2,RTEMP3,RTEMP4,RTEMP5,RTEMP6
       REAL*8      E, NU, ALPHA, LAMBDA, MU
-      REAL*8      B(6),IB(6),BM(6),BR(6),IBR(6),DB(6)
+      REAL*8      B(6),BM(6),BR(6),RTEMP,SIGM(6)
       REAL*8      RK,RK1,RK2,TREPSM,ECROB,ECROD
-      REAL*8      TATA,TITI,NORMRB,RTEMP
-      REAL*8      VECC(3,3),VECEPS(3,3)
-      REAL*8      VALEPS(3),VPEM(3),VALCC(3)
-      REAL*8      DSIDB(6,6),DFDB(6,6),LOLO(6,6),LILI(6,6),LALA(6,6)
-      REAL*8      FDB(6),FDE(6),DBDE(6,6),NUMER
-      REAL*8      TEM(3,3),TEME(6,6)
-      REAL*8      SIGM(6)
-      REAL*8      DTREM(6),DTREME(6)
-      REAL*8      RESD,ENE,DCOEFD,DDCOED,DFDDD,PSI
-      REAL*8      INTER1,INTER2,INTER3,INTER4
       REAL*8      DM,D,VECB(3,3),VALB(3),TOLB
       REAL*8      INTERM(3,3),EPI(6),BMR(6),EPSR(6)
       REAL*8      INTERA(3,3),EPA(6),EPSL(6)
       REAL*8      VECBR(3,3),VALBR(3),BINTER(6)
-      REAL*8      AD,ADD,ADDD
-      REAL*8      DELTAB(6),DELTAD
+      REAL*8      DELTAB(6),DELTAD,AD
       REAL*8      INTERB(3,3),EPIB(6)
-      REAL*8      DSIINT(6,6),DSIMED(6,6),TREPSG
+      REAL*8      DSIINT(6,6),DSIMED(6,6)
       REAL*8      TR(6),VECP(9),VPP(3),ARRET,PROJT(6,6)
       REAL*8      VECPIK,VECPJL,VECPJK,VECPIL
-
 
       CHARACTER*2 CODRET(6)
       CHARACTER*8 NOMRES(6)
       REAL*8       VALRES(6)
 
-      REAL*8      DDOT,R8PREM
-
+      REAL*8      R8PREM
 
       DATA  KRON/1.D0,1.D0,1.D0,0.D0,0.D0,0.D0/
 
@@ -113,7 +97,6 @@ C TOLE CRP_20
       T(3,2)=6
       T(3,3)=3
 
-
       R1(1)=2
       R1(2)=3
       R1(3)=1
@@ -127,7 +110,6 @@ C TOLE CRP_20
       R2(4)=5
       R2(5)=6
       R2(6)=4
-
 
       RAC2=SQRT(DEUX)
       TOLB=1.D-2
@@ -254,7 +236,6 @@ C -- SEPARATION DE EPSM/EPSRM, DEPS/DEPSR DANS EPSTM,DEPST
         DEPSG(I)=DEPST(I+6)
  312  CONTINUE
 
-
       IF (RESI) THEN
 C      MISE A JOUR DES DEFORMATIONS MECANIQUES
         DO 1 K = 1, NDIMSI
@@ -296,7 +277,6 @@ C-------------------------------------------------
       DM=VIM(7)
       D=DM
 
-
 C------------------------------------------------------------------
 C-- VERIFICATION SUR LES VALEURS PROPRES DE L ENDOMMAGEMENT
 C-- DE TRACTION ET SUR L ENDOMMAGEMENT DE COMPRESSION POUR BLOQUAGE
@@ -323,7 +303,6 @@ C-------------------------------------------------
         ENDIF
         SEUIL=RK-RK1*TREPSM*(ATAN2(-TREPSM/RK2,UN))
 
-
       IF (RESI) THEN
 
 C----------------------------------------------------------------
@@ -333,7 +312,7 @@ C----------------------------------------------------------------
       IF (BDIM.EQ.3) THEN
         CALL LCEOB3(INTMAX,TOLER,EPSG,BM,DM,
      &              LAMBDA,MU,ALPHA,ECROB,ECROD,SEUIL,
-     &              B,D,MULT,ELAS,DBLOQ,IRET)
+     &              BDIM,B,D,MULT,ELAS,DBLOQ,IRET)
 
 C--VERIF SUR ENDO FINAL POUR VOIR SI ENDO DEPASSE 1 OU PAS
 C-- SI ENDO DEPASSE 1 PLUS QUE TOLERANCE ON PASSE DANS LCEOBB
@@ -380,7 +359,6 @@ C-- QUI DECOUPE L INCREMENT DE CHARGE POUR ALLER DOUCEMENT A ENDO=1
      &                RK,RK1,RK2,
      &                B,D,MULT,ELAS,DBLOQ,IRET)
         ENDIF
-
 
 C----------------------------------------------------------------
 C----CAS OU 1 VALEUR PROPRE EST NULLE----------------------------
@@ -431,7 +409,7 @@ C-- ON RESTREINT L ESPACE CAR L ENDO N EVOLUE PLUS DANS 2 DIRECTIONS
 
         CALL LCEOB2(INTMAX,TOLER,EPSR,BMR,DM,
      &              LAMBDA,MU,ALPHA,ECROB,ECROD,SEUIL,
-     &              BR,D,MULT,ELAS,DBLOQ,IRET)
+     &              BDIM,BR,D,MULT,ELAS,DBLOQ,IRET)
 
 C--VERIF SUR ENDO FINAL POUR VOIR SI ENDO DEPASSE 1 OU PAS
 C-- SI ENDO DEPASSE 1 PLUS QUE TOLERANCE ON PASSE DANS LCEOBB
@@ -556,7 +534,7 @@ C-- ON RESTREINT L ESPACE CAR L ENDO N EVOLUE PLUS DANS UNE DIRECTION
 
         CALL LCEOB1(INTMAX,TOLER,EPSR,BMR,DM,
      &              LAMBDA,MU,ALPHA,ECROB,ECROD,SEUIL,
-     &              BR,D,MULT,ELAS,DBLOQ,IRET)
+     &              BDIM,BR,D,MULT,ELAS,DBLOQ,IRET)
 
 C--VERIF SUR ENDO FINAL POUR VOIR SI ENDO DEPASSE 1 OU PAS
 C-- SI ENDO DEPASSE 1 PLUS QUE TOLERANCE ON PASSE DANS LCEOBB
@@ -606,7 +584,6 @@ C-- ENSUITE ON REVIENT AU 3D DANS REPERE INITIAL
         ENDIF
       ENDIF
 
-
       CALL SIGEOB(EPS,B,D,3,LAMBDA,MU,SIGM)
       DO 893 I=1,6
         SIGP(I)=SIGM(I)
@@ -614,15 +591,9 @@ C-- ENSUITE ON REVIENT AU 3D DANS REPERE INITIAL
 
       ENDIF
 
-
-
 C ======================================================================
 C                            MATRICE TANGENTE
 C ======================================================================
-
-
-
-
 
 C-ON VERIFIE L ETAT DE B ET D FINAUX POUR CALCUL MATRICE TANGENTE
 
@@ -650,11 +621,7 @@ C-ON VERIFIE L ETAT DE B ET D FINAUX POUR CALCUL MATRICE TANGENTE
 
         ELSE
 
-
       AD=(UN-D)**DEUX
-
-
-
 
 C -- DSIGMA/DEPS A B CONSTANT---------------------------------
 
@@ -756,7 +723,6 @@ C -- DSIGMA/DEPS A B CONSTANT---------------------------------
      &                     (B(T(M,P))*KRON(T(Q,N))+KRON(T(M,P))*
      &                     B(T(Q,N)))*B(T(I,K))))*RTEMP2*RTEMP3*RTEMP6
 
-
   114                CONTINUE
   113              CONTINUE
   112            CONTINUE
@@ -765,13 +731,11 @@ C -- DSIGMA/DEPS A B CONSTANT---------------------------------
   109      CONTINUE
   108    CONTINUE
 
-
         DO 115 I=1,6
           DO 116 J=1,6
             DSIDEP(I,J,1)=DSIDEP(I,J,1)+MU/DEUX*BOBO(I,J)
  116      CONTINUE
  115    CONTINUE
-
 
         IF (OPTION(10:14).NE.'_ELAS') THEN
         IF (.NOT.ELAS) THEN
@@ -784,8 +748,8 @@ C -- DSIGMA/DEPS A B CONSTANT---------------------------------
  250        CONTINUE
             DELTAD=D-DM
 
-            CALL MEOBG3(EPS,EPSG,B,D,DELTAB,DELTAD,MULT,
-     &           LAMBDA,MU,ECROB,ECROD,ALPHA,RK1,RK2,DSIDEP(1,1,2))
+            CALL MEOBG3(EPS,EPSG,B,D,DELTAB,DELTAD,MULT,LAMBDA,
+     &           MU,ECROB,ECROD,ALPHA,RK1,RK2,BDIM,DSIDEP(1,1,2))
           ELSEIF (BDIM.EQ.2) THEN
 
              CALL DIAGO3(B,VECB,VALB)
@@ -858,8 +822,8 @@ C -- DSIGMA/DEPS A B CONSTANT---------------------------------
 
              ENDIF
 
-            CALL MEOBG2(EPSL,EPSR,BR,D,DELTAB,DELTAD,MULT,
-     &            LAMBDA,MU,ECROB,ECROD,ALPHA,RK1,RK2,DSIINT)
+            CALL MEOBG2(EPSL,EPSR,BR,D,DELTAB,DELTAD,MULT,LAMBDA,
+     &            MU,ECROB,ECROD,ALPHA,RK1,RK2,BDIM,DSIINT)
 
             IF (TOT1) THEN
               DO 811 I=1,6
@@ -911,7 +875,6 @@ C -- DSIGMA/DEPS A B CONSTANT---------------------------------
  815          CONTINUE
             ENDIF
 
-
             DO 850 I=1,3
             DO 851 J=I,3
               IF (I.EQ.J) THEN
@@ -943,8 +906,6 @@ C -- DSIGMA/DEPS A B CONSTANT---------------------------------
 852         CONTINUE
 851         CONTINUE
 850         CONTINUE
-
-
 
           ELSEIF (BDIM.EQ.1) THEN
 
@@ -1014,9 +975,8 @@ C -- DSIGMA/DEPS A B CONSTANT---------------------------------
 
              ENDIF
 
-            CALL MEOBG1(EPSL,EPSR,B,D,DELTAB,DELTAD,MULT,
-     &          LAMBDA,MU,ECROB,ECROD,ALPHA,RK1,RK2,DSIINT)
-
+            CALL MEOBG1(EPSL,EPSR,B,D,DELTAB,DELTAD,MULT,LAMBDA,
+     &          MU,ECROB,ECROD,ALPHA,RK1,RK2,BDIM,DSIINT)
 
             IF (TOT1) THEN
               DO 611 I=1,6
@@ -1068,7 +1028,6 @@ C -- DSIGMA/DEPS A B CONSTANT---------------------------------
  615          CONTINUE
             ENDIF
 
-
             DO 650 I=1,3
             DO 651 J=I,3
               IF (I.EQ.J) THEN
@@ -1101,14 +1060,10 @@ C -- DSIGMA/DEPS A B CONSTANT---------------------------------
 651         CONTINUE
 650         CONTINUE
 
-
-
-
           ENDIF
 
         ENDIF
         ENDIF
-
 
       ENDIF
       ENDIF

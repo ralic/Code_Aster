@@ -1,10 +1,10 @@
       SUBROUTINE MEOBL2 (EPS,B,D,DELTAB,DELTAD,MULT,LAMBDA,
-     &                    MU,ECROB,ECROD,ALPHA,K1,K2,DSIDEP)
+     &                    MU,ECROB,ECROD,ALPHA,K1,K2,BDIM,DSIDEP)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 18/05/2010   AUTEUR IDOUX L.IDOUX 
+C MODIF ALGORITH  DATE 17/01/2011   AUTEUR IDOUX L.IDOUX 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -25,38 +25,30 @@ C ======================================================================
       REAL*8            EPS(6),B(6),D,DSIDEP(6,6)
       REAL*8            DELTAB(6),DELTAD,MULT
       REAL*8            LAMBDA,MU,ALPHA,K1,K2,ECROB,ECROD
+      INTEGER           BDIM
 
 C--CALCUL DE LA MATRICE TANGENTE POUR LA LOI ENDO_ORTHO_BETON
-C
-C
-C
-C
-C
 C-------------------------------------------------------------
 
-      INTEGER            I,J,K,T2(2,2),IRET
+      INTEGER            I,J,K,IRET
       REAL*8             RAC2,NOFBM,UN,DET,DEUX,FB(6)
       REAL*8             TREPS,FD,DFMF(3,3),TDFBDB(6,6),TDFBDE(6,6)
       REAL*8             TDFDDE(6),TDFDDD,INTERD(3),INTERT(6),INTERG(3)
       REAL*8             PSI(3,6),KSI(3,3),IKSI(3,3),MATB(3,6),MATD(6)
-      REAL*8             FBS(3),VECFBS(2,2),VALFBS(2),DELTAS(3)
-      REAL*8             FBSM(3),SDFBDB(3,3),SDFBDE(3,6)
+      REAL*8             FBS(3),DELTAS(3)
+      REAL*8             FBSM(6),SDFBDB(3,3),SDFBDE(3,6)
       REAL*8             COUPL,DCRIT(6)
 
       DEUX=2.D0
       RAC2=SQRT(DEUX)
       UN=1.D0
-      T2(1,1)=1
-      T2(2,2)=2
-      T2(1,2)=3
-      T2(2,1)=3
 
 C-------------------------------------------------------
 C-------------------------------------------------------
 C----CALCUL DE FB: FORCE THERMO ASSOCIEE A
 C-------------------ENDOMMAGEMENT ANISOTROPE DE TRACTION
 
-       CALL CEOBFB(B,EPS,LAMBDA,MU,ECROB,FB)
+       CALL CEOBFB(B,EPS,LAMBDA,MU,ECROB,BDIM,FB,NOFBM,FBSM)
 
        FBS(1)=FB(1)
        FBS(2)=FB(2)
@@ -66,29 +58,10 @@ C-------------------ENDOMMAGEMENT ANISOTROPE DE TRACTION
        DELTAS(2)=DELTAB(2)
        DELTAS(3)=DELTAB(4)
 
-      CALL DIAGO2(FBS,VECFBS,VALFBS)
-
-      DO 29 I=1,2
-        IF (VALFBS(I).GT.0.D0) THEN
-          VALFBS(I)=0.D0
-        ENDIF
-  29  CONTINUE
-      CALL R8INIR(3,0.D0,FBSM,1)
-      DO 26 I=1,2
-        DO 27 J=I,2
-          DO 28 K=1,2
-        FBSM(T2(I,J))=FBSM(T2(I,J))+VECFBS(I,K)*VALFBS(K)*VECFBS(J,K)
-  28      CONTINUE
-  27    CONTINUE
-  26  CONTINUE
-
-C----CALCUL DE FD: FORCE THERMO ASSOCIEE A
+C----CALCUL DE FD: PARTIE POSITIVE DE LA FORCE THERMO ASSOCIEE A
 C-------------------ENDOMMAGEMENT ISOTROPE DE COMPRESSION
 
         CALL CEOBFD(D,EPS,LAMBDA,MU,ECROD,FD)
-        IF (FD.LT.0.D0) THEN
-          FD=0.D0
-        ENDIF
 
 C---CALCUL DE DERIVEES UTILES----------------------------------
 
@@ -129,20 +102,18 @@ C----CALCUL DE LA DERIVEE DU SEUIL---------------------
         SDFBDE(3,I)=TDFBDE(4,I)
  381  CONTINUE
 
-
-        FBSM(3)=RAC2*FBSM(3)
-        DELTAS(3)=DELTAS(3)*RAC2
+      FBSM(3)=RAC2*FBSM(3)
+      DELTAS(3)=DELTAS(3)*RAC2
 
       CALL DFDDE(EPS,D,3,LAMBDA,MU,TDFDDE)
       CALL DFDDD(EPS,D,3,LAMBDA,MU,ECROD,TDFDDD)
 
-         NOFBM=FBSM(1)**2+FBSM(2)**2+FBSM(3)**2
+      NOFBM=FBSM(1)**2+FBSM(2)**2+FBSM(3)**2
 
       COUPL=SQRT(ALPHA*NOFBM+(UN-ALPHA)*FD**DEUX)
       CALL R8INIR(36,0.D0,DSIDEP,1)
 
        IF ((FD.NE.0.D0).AND.(NOFBM.NE.0.D0)) THEN
-
 
 C---CALCUL DE DBDE ET DDDE-------------------------------------
 
@@ -163,8 +134,6 @@ C---CALCUL DE KSI ET PSI
  111    CONTINUE
  110  CONTINUE
 
-
-
       DO 310 I=1,3
         INTERG(I)=DELTAS(I)/FD-ALPHA*FBSM(I)/(UN-ALPHA)/FD/TDFDDD
         DO 311 J=1,3
@@ -180,7 +149,6 @@ C---CALCUL DE KSI ET PSI
  313    CONTINUE
  310  CONTINUE
 
-
       DO 120 I=1,3
         KSI(I,I)=KSI(I,I)-(UN-ALPHA)*FD
  120  CONTINUE
@@ -195,14 +163,12 @@ C---CALCUL DE KSI ET PSI
  331    CONTINUE
  130  CONTINUE
 
-
       CALL R8INIR(9,0.D0,IKSI,1)
       DO 140 I=1,3
         IKSI(I,I)=1.D0
  140  CONTINUE
 
       CALL MGAUSS('NFVP',KSI,IKSI,3,3,3,DET,IRET)
-
 
 C-- ! ksi n est plus disponible
 
@@ -230,9 +196,6 @@ C         WRITE(6,*) 'DID(',I,',',J,')=', DSIDEP(I,J),';'
  203             CONTINUE
  202           CONTINUE
  201   CONTINUE
-
-
-
 
        ELSEIF ((FD.EQ.0.D0).AND.(NOFBM.NE.0.D0)) THEN
 
@@ -293,7 +256,5 @@ C         WRITE(6,*) 'DID(',I,',',J,')=', DSIDEP(I,J),';'
  661     CONTINUE
 
       ENDIF
-
-
 
       END

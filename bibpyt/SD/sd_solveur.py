@@ -1,4 +1,4 @@
-#@ MODIF sd_solveur SD  DATE 10/01/2011   AUTEUR DELMAS J.DELMAS 
+#@ MODIF sd_solveur SD  DATE 18/01/2011   AUTEUR BOITEAU O.BOITEAU 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -34,7 +34,7 @@ class sd_solveur(AsBase):
         if method == 'MUMPS' :
             assert slvk[1] in ('AUTO', 'SANS'), slvk
             assert slvk[2] in ('NONSYM', 'SYMGEN', 'SYMDEF', 'AUTO'), slvk
-            assert slvk[3] in ('AMD','AMF','PORD','METIS','QAMD','AUTO'), slvk
+            assert slvk[3] in ('AMD','AMF','PORD','METIS','QAMD','AUTO','SCOTCH'), slvk
             assert slvk[4] in ('OUI', 'NON'), slvk
             assert slvk[5] in ('OUI', 'NON'), slvk
         else :

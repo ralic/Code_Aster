@@ -1,0 +1,152 @@
+      SUBROUTINE NMEXT2(NOMA  ,CHAMP ,NBCMP ,NBNO  ,EXTRCH,
+     &                  EXTRCP,LISTNO,LISTCP,CHNOEU)
+C
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ALGORITH  DATE 17/01/2011   AUTEUR ABBAS M.ABBAS 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C ======================================================================
+C RESPONSABLE ABBAS M.ABBAS
+C
+      IMPLICIT      NONE
+      INTEGER       NBCMP,NBNO
+      CHARACTER*8   NOMA
+      CHARACTER*8   EXTRCP,EXTRCH
+      CHARACTER*24  LISTNO,LISTCP
+      CHARACTER*19  CHAMP,CHNOEU
+C
+C ----------------------------------------------------------------------
+C
+C ROUTINE *_NON_LINE (EXTRACTION - UTILITAIRE)
+C
+C EXTRAIRE LES VALEURS - CAS DES CHAMPS AUX NOEUDS
+C
+C ----------------------------------------------------------------------
+C
+C
+C IN  NOMA   : NOM DU MAILLAGE
+C IN  CHAMP  : CHAMP OBSERVE
+C IN  NBCMP  : NOMBRE DE COMPOSANTES DANS LA SD
+C IN  NBNO   : NOMBRE DE NOEUDS DANS LA SD
+C IN  EXTRCH : TYPE D'EXTRACTION SUR LE CHAMP
+C IN  EXTRCP : TYPE D'EXTRACTION SUR LES COMPOSANTES
+C IN  LISTNO : LISTE CONTENANT LES NOEUDS
+C IN  LISTCP : LISTE DES COMPOSANTES
+C IN  CHNOEU : VECTEUR DE TRAVAIL CHAMPS AUX NOEUDS
+C
+C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
+C
+      CHARACTER*32 JEXNUM
+      INTEGER      ZI
+      COMMON  / IVARJE / ZI(1)
+      REAL*8       ZR
+      COMMON  / RVARJE / ZR(1)
+      COMPLEX*16   ZC
+      COMMON  / CVARJE / ZC(1)
+      LOGICAL      ZL
+      COMMON  / LVARJE / ZL(1)
+      CHARACTER*8  ZK8
+      CHARACTER*16    ZK16
+      CHARACTER*24        ZK24
+      CHARACTER*32            ZK32
+      CHARACTER*80                ZK80
+      COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
+C
+C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
+C
+      INTEGER      NPARX
+      PARAMETER    (NPARX=20)
+      REAL*8       VALRES(NPARX)
+C
+      INTEGER      JNOEU,JNO
+      INTEGER      INO,INOR,NUMNOE
+      CHARACTER*8  NOMNOE
+      INTEGER      IVALCP,NVALCP
+      REAL*8       VALR,VAL2R
+C
+C ----------------------------------------------------------------------
+C
+      CALL JEMARQ()
+C
+C --- ACCES AU CHAMP DE TRAVAIL
+C
+      CALL JEVEUO(CHNOEU,'E',JNOEU)
+      CALL ASSERT(NBCMP.LE.NPARX)   
+C
+C --- ACCES LISTE DES NOEUDS    
+C
+      CALL JEVEUO(LISTNO,'L',JNO  )
+C
+C --- BOUCLE SUR LES NOEUDS
+C
+      DO 20 INO = 1,NBNO
+C
+C ----- NOEUD COURANT    
+C
+        NUMNOE  = ZI(JNO-1+INO)
+        CALL JENUNO(JEXNUM(NOMA(1:8)//'.NOMNOE',NUMNOE),NOMNOE)
+C
+C ----- EXTRACTION DES VALEURS AUX NOEUDS
+C
+        CALL NMEXTI(NOMNOE,CHAMP ,NBCMP ,LISTCP,EXTRCP,
+     &              NVALCP,VALRES)
+        IF (EXTRCH.EQ.'VALE') THEN
+          INOR   = INO
+        ELSE
+          INOR   = 1
+        ENDIF      
+C
+C ----- AFFECTATION DES VALEURS AUX NOEUDS
+C
+        DO 35 IVALCP = 1,NVALCP
+          VALR   = ZR(JNOEU+IVALCP-1
+     &                     +NBNO*(INOR-1))
+          VAL2R  = VALRES(IVALCP) 
+          IF (EXTRCH.EQ.'VALE') THEN
+            ZR(JNOEU+IVALCP-1
+     &              +NBCMP*(INOR-1)) = VAL2R
+          ELSEIF (EXTRCH.EQ.'MIN') THEN 
+            ZR(JNOEU+IVALCP-1
+     &              +NBCMP*(INOR-1)) = MIN(VAL2R,VALR)
+          ELSEIF (EXTRCH.EQ.'MAX') THEN 
+            ZR(JNOEU+IVALCP-1
+     &              +NBCMP*(INOR-1)) = MAX(VAL2R,VALR)          
+          ELSEIF (EXTRCH.EQ.'MOY') THEN
+            ZR(JNOEU+IVALCP-1
+     &              +NBCMP*(INOR-1)) = VALR+VAL2R
+          ELSE
+            CALL ASSERT(.FALSE.)
+          ENDIF
+  35    CONTINUE
+  20  CONTINUE
+C
+C --- CALCUL DE LA MOYENNE SUR LES NOEUDS
+C
+      IF (EXTRCH.EQ.'MOY') THEN
+        INOR = 1
+        DO 25 IVALCP = 1,NVALCP
+          VALR   = ZR(JNOEU+IVALCP-1
+     &                     +NBCMP*(INOR-1))
+          IF (NBNO.NE.0) THEN
+            ZR(JNOEU+IVALCP-1
+     &              +NBCMP*(INOR-1)) = VALR/NBNO
+          ENDIF  
+  25    CONTINUE
+      ENDIF
+C
+      CALL JEDEMA()
+C
+      END

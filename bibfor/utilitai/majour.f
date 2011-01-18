@@ -1,10 +1,10 @@
-      SUBROUTINE MAJOUR(NEQ   ,REAROT,INDRO ,CHAINI,CHADEL,
+      SUBROUTINE MAJOUR(NEQ   ,LGROT ,SDNUME,CHAINI,CHADEL,
      &                  COEF  ,CHAMAJ)
 C      
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 23/09/2008   AUTEUR ABBAS M.ABBAS 
+C MODIF UTILITAI  DATE 17/01/2011   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -21,9 +21,9 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C
       IMPLICIT NONE
-      LOGICAL       REAROT
+      CHARACTER*19  SDNUME
+      LOGICAL       LGROT
       INTEGER       NEQ
-      INTEGER       INDRO(*)
       REAL*8        CHAINI(*),CHADEL(*),CHAMAJ(*),COEF      
 C 
 C ----------------------------------------------------------------------
@@ -43,33 +43,54 @@ C   EST CELUI DU PRODUIT DE LA ROTATION DEFINIE DANS CHAINI PAR
 C   COEF FOIS L'INCREMENT DE ROTATION DEFINI DANS CHADEL.
 C
 C IN  NEQ    : LONGUEUR DES CHAM_NO
-C IN  REAROT : TRUE  S'IL Y A DES DDL DE GRDE ROTATION
+C IN  SDNUME : SD NUMEROTATION
+C IN  LGROT  : TRUE  S'IL Y A DES DDL DE GRDE ROTATION
 C                       FALSE SINON
-C IN  INDRO  : VECTEUR DONNANT LE TYPE DES DDL:
-C                 0: TRANSLATION OU PETITE ROTATION
-C                 1: GRANDE ROTATION
 C IN  CHAINI : CHAM_NO DONNE
 C IN  CHADEL : CHAM_NO DONNE
 C IN  COEF   : REEL DONNE
 C OUT CHAMAJ : CHAM_NO MIS A JOUR
-C      
-C ----------------------------------------------------------------------
 C
-      INTEGER IRAN(3),I,ICOMP
+C -------------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ----------------
+C
+      INTEGER            ZI
+      COMMON  / IVARJE / ZI(1)
+      REAL*8             ZR
+      COMMON  / RVARJE / ZR(1)
+      COMPLEX*16         ZC
+      COMMON  / CVARJE / ZC(1)
+      LOGICAL            ZL
+      COMMON  / LVARJE / ZL(1)
+      CHARACTER*8        ZK8
+      CHARACTER*16                ZK16
+      CHARACTER*24                          ZK24
+      CHARACTER*32                                    ZK32
+      CHARACTER*80                                              ZK80
+      COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
+C
+C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
+C
+      INTEGER IRAN(3),I,ICOMP,INDRO
       REAL*8  THETA(3),DELDET(3)
 C      
 C ----------------------------------------------------------------------
 C
-      IF (.NOT.REAROT) THEN
+      CALL JEMARQ()
+C      
+      IF (LGROT) THEN
+        CALL JEVEUO(SDNUME//'.NDRO','L',INDRO)
+      ENDIF      
+C
+      IF (.NOT.LGROT) THEN
         DO 10 I=1,NEQ
           CHAMAJ(I) = CHAINI(I) + COEF*CHADEL(I)
 10      CONTINUE
       ELSE
         ICOMP = 0
         DO 20 I=1,NEQ
-          IF (INDRO(I).EQ.0) THEN
+          IF (ZI(INDRO+I-1).EQ.0) THEN
             CHAMAJ(I)     = CHAINI(I) + COEF*CHADEL(I)
-          ELSE IF (INDRO(I).EQ.1) THEN     
+          ELSE IF (ZI(INDRO+I-1).EQ.1) THEN     
             ICOMP         = ICOMP + 1
             IRAN(ICOMP)   = I
             THETA(ICOMP)  = CHAINI(I)
@@ -83,4 +104,6 @@ C
           ENDIF
 20      CONTINUE
       ENDIF
+      
+      CALL JEDEMA()
       END

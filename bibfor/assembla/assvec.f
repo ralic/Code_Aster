@@ -3,9 +3,9 @@
       IMPLICIT NONE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 04/10/2010   AUTEUR PELLET J.PELLET 
+C MODIF ASSEMBLA  DATE 18/01/2011   AUTEUR MEUNIER S.MEUNIER 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -40,12 +40,6 @@ C IN  K4 MOTCLE : 'ZERO' (ARGUMENT INUTILE)
 C IN  I  TYPE   : TYPE DU VECTEUR ASSEMBLE : 1 --> REEL
 C                                            2 --> COMPLEXE
 C
-C  S'IL EXISTE UN OBJET '&&POIDS_MAILLE' VR, PONDERATIONS POUR CHAQUE
-C  MAILLE, ON S'EN SERT POUR LES OPTIONS RAPH_MECA ET FULL_MECA
-C
-C----------------------------------------------------------------------
-C     FONCTIONS JEVEUX
-C ----------------------------------------------------------------------
 C ----------------------------------------------------------------------
 C     COMMUNS   JEVEUX
 C ----------------------------------------------------------------------
@@ -80,10 +74,10 @@ C ---------------------------------------------------------------------
       CHARACTER*19 K19B,VECAS,VPROF,VECEL,A19,B19,C19
       CHARACTER*24 METHOD,SDFETI,K24B,SDFETS,KMAILA,K24PRN,KNUEQ,
      &             KNULIL,KVELIL,KVEREF,KVEDSC,RESU,NOMLI,
-     &             KVALE,NOMOPT,NOMLOG,NOMLID,INFOFE,SDFETA
+     &             KVALE,NOMLOG,NOMLID,INFOFE,SDFETA
       CHARACTER*32 JEXNUM,JEXNOM,JEXATR
       LOGICAL      LFETI,LLIMO,LLICH,LLICHD,IDDOK,LFEL2,LLICHP,LFETIC,
-     &             LSAUTE,LBID,LGOTO,LDIST,LARLQ
+     &             LSAUTE,LBID,LGOTO,LDIST
       INTEGER I,I1,IACONX,IAD,IAD1,IADLIE,IADNEM,IALCHA
       INTEGER IAMAIL,IANCMP,IANMCR,IANUEQ,IANULO,IAPROL,IAPSDL,IASSSA
       INTEGER ICHAR,ICMP,ICONX1,ICONX2,IDDESC,IDLRES
@@ -94,12 +88,12 @@ C ---------------------------------------------------------------------
       INTEGER LGNCMP,MODE,N1,NBCHAR,NBELM,NBNO,NBNOSS
       INTEGER NBRESU,NBSMA,NBSSA,NCMP,NCMPEL,NDDL1,NEL,NEQUA
       INTEGER NM,NMXCMP,NNOE,NUGD,NUMA,IEXI,JRELR,K,JVALE1,JVALE2
-      INTEGER      ICODLA(NBECMX),ICODGE(NBECMX),NBEC,EPDMS,JPDMS,NBSD,
+      INTEGER      ICODLA(NBECMX),ICODGE(NBECMX),NBEC,NBSD,
      &             IDIME,IDD,ILIGRP,IFETN,IFETC,IREFN,NBREFN,
      &             ADMODL,LCMODL,IRET1,IFEL1,IFEL2,IFEL3,
      &             IINF,IFCPU,IBID,IFM,NIV,ILIMPI,IFEL4,IFEL5,ILIMPB,
      &             IRET2,IRET3,IAUX1,JFEL4,IAUX2,IAUX3,COMPT,
-     &             NIVMPI,RANG,NBLOG,NBPROC,IADD
+     &             NIVMPI,RANG,NBLOG,NBPROC
 
       REAL*8       TEMPS(6),RBID
       INTEGER VALI(4)
@@ -337,7 +331,7 @@ C SEQUENTIELLE) ET L'ADEQUATION "RANG DU PROCESSEUR-NUMERO DU SD"
 
         IF (LFETI) CALL JEMARQ()
 C CALCUL TEMPS
-        IF ((NIV.GE.2).OR.(LFETIC)) THEN
+        IF ((NIV.GE.2).OR.LFETIC) THEN
           CALL UTTCPU('CPU.ASSVEC','INIT ',' ')
           CALL UTTCPU('CPU.ASSVEC','DEBUT',' ')
         ENDIF
@@ -512,31 +506,6 @@ C==========================
               CALL JEVEUO(RESU(1:19)//'.NOLI','L',IAD)
 C NOM DU LIGREL GLOBAL
               NOMLI = ZK24(IAD)
-              NOMOPT = ZK24(IAD+1)
-
-C --- TEST EXISTENCE &&POIDS_MAILLE (ARLEQUIN)
-              CALL JEEXIN('&&POIDS_MAILLE',EPDMS)
-              IF (EPDMS.GT.0) THEN
-                IF ( (NOMOPT(1:9).EQ.'FULL_MECA').OR.
-     &               (NOMOPT(1:9).EQ.'RAPH_MECA').OR.
-     &               (NOMOPT(1:9).EQ.'FORC_NODA')) THEN
-                  CALL JEVEUO('&&POIDS_MAILLE','L',JPDMS)
-                  LARLQ = .TRUE.
-                ELSEIF ( (NOMOPT(1:9 ).EQ.'CHAR_MECA') .OR.
-     &                   (NOMOPT(1:10).EQ.'MECA_DDLI_').OR.
-     &                   (NOMOPT(1:8) .EQ.'MECA_BU_')  .OR.
-     &                   (NOMOPT(1:10).EQ.'MECA_BTLA_')) THEN
-                  LARLQ = .FALSE.
-                ELSEIF ( (NOMOPT(1:9 ).EQ.'CHAR_MECA').OR.
-     &                   (NOMOPT(1:8) .EQ.'MECA_BU_') .OR.
-     &                   (NOMOPT(1:10).EQ.'MECA_BTLA_')) THEN
-                  LARLQ = .FALSE.
-                ELSE
-                  CALL U2MESK('F','DVP_99',1,NOMOPT)
-                ENDIF
-              ELSE
-                LARLQ = .FALSE.
-              ENDIF
 
 C--------- POUR FETI & LIGREL TARDIF: DEBUT
 C RECHERCHE D'OBJET TEMPORAIRE SI FETI
@@ -600,13 +569,10 @@ C LIGREL DE MODELE
               ENDIF
 C--------- POUR FETI & LIGREL TARDIF: FIN
 
-C---- TEST EXISTENCE &&POIDS_MAILLE
-C------------------------------
-
 C ILIVE: INDICE DANS LIST_RESU (GLOBAL) DES VECT_ELEM.LILI DU NOMLI
 C ILINU: INDICE DANS PROF_CHNO.LILI (GLOBAL OU LOCAL) DU NOMLI
               CALL JENONU(JEXNOM(KVELIL,NOMLI),ILIVE)
-              IF ((LLICHD).AND.(IDD.NE.0)) THEN
+              IF (LLICHD.AND.(IDD.NE.0)) THEN
                 CALL JENONU(JEXNOM(KNULIL,NOMLID),ILINU)
               ELSE
                 CALL JENONU(JEXNOM(KNULIL,NOMLI),ILINU)
@@ -642,7 +608,7 @@ C NUMA : NUMERO DE LA MAILLE
      &                     ZI(ZI(IADLIE+3* (ILIVE-1)+2)+IGR-1)+IEL-1)
 
 C MONITORING
-                    IF ((INFOFE(5:5).EQ.'T') .AND. (LFETI)) THEN
+                    IF ((INFOFE(5:5).EQ.'T') .AND.LFETI) THEN
                       WRITE(IFM,*)'<FETI/ASSVEC>','IDD',IDD,'LIGREL',
      &                  NOMLI,'ILIVE',ILIVE,'RANG',RANG
                       WRITE(IFM,*)'IGR',IGR,'IEL',IEL,'NUMA',NUMA
@@ -703,7 +669,6 @@ C SI MAILLE TARDIVE: ELLES SONT TRAITEES PAR LE PROC 0
 C---- LIGREL DE MODELE:
 C--------------------
                     IF (NUMA.GT.0) THEN
-                      IF (LARLQ) R=R*ZR(JPDMS-1+NUMA)
                       IL = 0
                       DO 120 K1 = 1,NNOE
                         N1 = ZI(ICONX1-1+ZI(ICONX2+NUMA-1)+K1-1)
@@ -830,7 +795,7 @@ C NOEUD TARDIF
 
 C--------- POUR FETI & LIGREL TARDIF: DEBUT
 C SI POUR FETI, NOEUD TARDIF DUPLIQUE, VERITABLE N1 DANS LE LIGREL DUPL
-                          IF ((LLICHP).AND.(IDD.NE.0)) THEN
+                          IF (LLICHP.AND.(IDD.NE.0)) THEN
                             IAUX1=ZI(IFEL3+2*(N1-1)+1)
                             IF (IAUX1.GT.0) THEN
 C C'EST UN NOEUD TARDIF LIE A UN DDL PHYSIQUE NON SUR L'INTERFACE
@@ -961,7 +926,7 @@ C MONITORING
         IF ((INFOFE(3:3).EQ.'T').AND.(IDD.EQ.NBSD))
      &    CALL UTIMSD(IFM,2,.FALSE.,.TRUE.,VECAS(1:19),1,' ')
 
-        IF ((NIV.GE.2).OR.(LFETIC)) THEN
+        IF ((NIV.GE.2).OR.LFETIC) THEN
           CALL UTTCPU('CPU.ASSVEC','FIN',' ')
           CALL UTTCPR('CPU.ASSVEC',6,TEMPS)
           IF (NIV.GE.2) WRITE(IFM,'(A44,D11.4,D11.4)')

@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 17/01/2011   AUTEUR ABBAS M.ABBAS 
 # TITRE ESSAI DE TRACTION CISAILLEMENT EN 3D (VISCOCHAB / VISC_CIN2_MEMO)
 # ssnv118d.para = tps_job 100 mem_job 64Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -226,6 +226,9 @@ TEST_RESU(RESU=(
                                                     PRECISION = 1.E-2))
                                                                      )
 
+NORME = FORMULE(VALE='sqrt(DX*DX+DY*DY+DZ*DZ)',
+              NOM_PARA=('DX','DY','DZ',));
+
 SOLMEMO=STAT_NON_LINE(
                              TITRE='TEST TRAC MODELE VISCOCHAB',
                             MODELE=TROISD,
@@ -254,26 +257,46 @@ SOLMEMO=STAT_NON_LINE(
                 ITER_GLOB_MAXI = 40,
                 RESI_GLOB_RELA = 1.0E-06),
                 ARCHIVAGE=_F(LIST_INST=LARCH),
-                       OBSERVATION=(_F(NOM_CMP='V1',  
-                                       SUIVI_DDL='OUI',
+                OBSERVATION=(_F(NOM_CMP='V1',
                                        NOM_CHAM='VARI_ELGA',
-                                       NUME_SUIVI=1,
-                                       VALE_MAX='OUI',),
-                                    _F(NOM_CMP='V2',
-                                       SUIVI_DDL='OUI',
-                                       NOM_CHAM='VARI_ELGA',
-                                       NUME_SUIVI=2,
-                                       VALE_MAX='OUI',),
-                                    _F(NOM_CMP='V16',
-                                       SUIVI_DDL='OUI',
-                                       NOM_CHAM='VARI_ELGA',
-                                       NUME_SUIVI=3,
-                                       VALE_MAX='OUI',),
-                                    _F(NOM_CMP='V17',
-                                       SUIVI_DDL='OUI',
-                                       NOM_CHAM='VARI_ELGA',
-                                       NUME_SUIVI=4,
-                                       VALE_MAX='OUI',),),);
+                                       TOUT = 'OUI',
+                                       EVAL_ELGA       ='MAX'
+                                       ),
+                                    _F(NOM_CMP='SIXX',
+                                       NOM_CHAM='SIEF_ELGA',
+                                       TOUT = 'OUI',
+                                       EVAL_ELGA       ='MAX',
+                                       PAS_OBSE = 2,
+                                       ),   
+                                    _F(NOM_CMP='DX',
+                                       NOM_CHAM='DEPL',
+                                       TOUT = 'OUI',
+                                       ),                                         
+                                    _F(NOM_CMP='DY',
+                                       NOM_CHAM='DEPL',
+                                       TOUT = 'OUI',
+                                       ),  
+                                    _F(NOM_CMP='DZ',
+                                       NOM_CHAM='DEPL',
+                                       TOUT = 'OUI',
+                                       ),  
+                                    _F(
+                                    NOM_CMP=('DX','DY','DZ',),
+                                    EVAL_CMP = 'FORMULE',
+                                    FORMULE = NORME,
+                                       NOM_CHAM='DEPL',
+                                       TOUT = 'OUI',
+                                       ),                                                                                                                      
+                                    ),
+                            SUIVI_DDL=( 
+                                    _F(
+                                    NOM_CMP=('DX','DY','DZ',),
+                                    EVAL_CMP = 'FORMULE',
+                                    FORMULE = NORME,
+                                       NOM_CHAM='DEPL',
+                                       NOEUD           ='N1',
+                                       ),                                                                                                        
+                                    ),);
 
 SOLMEMO=CALC_ELEM( reuse=SOLMEMO,
                        OPTION=( 'EPSI_ELNO_DEPL',

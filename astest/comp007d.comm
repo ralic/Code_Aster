@@ -1,0 +1,289 @@
+# MODIF  DATE 18/01/2011   AUTEUR PROIX J-M.PROIX 
+# RESPONSABLE PROIX J-M.PROIX
+# TITRE : VARIATION TEMPERATURE DANS LE COMPORTEMENT 'ELAS_VMIS_TRAC' sous COMP_ELAS
+# comp007d.para = tps_job 300 mem_job 512Mo ncpus 1 liste_test S
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+# CAS-TEST DE REFERENCE : HSNV120A
+#===================================================================== 
+
+DEBUT(CODE=_F(NOM='COMP007D',NIV_PUB_WEB='INTERNET'),PAR_LOT='NON')
+import numpy as N
+
+
+TREF = 20.
+
+T0 = TREF
+Tmax = 500.
+
+
+ZERO =DEFI_CONSTANTE(VALE=0.0);
+
+UN =DEFI_CONSTANTE(VALE=1.0);
+
+tmax =1.
+ 
+NCAL =20
+
+compor='ELAS_VMIS_TRAC'
+
+YOUN=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(TREF, 200000.,
+                                         500., 100000.,                                   
+                                           ),);
+ALPH=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(TREF, 1.E-4,
+                                         500., 2.E-4,
+                                           ),);
+
+#   necessaire pour l'interpolation de la courbe de traction
+SY0=1000.
+SY1=800.
+E0=YOUN(TREF)
+E1=YOUN(500.)
+eps0=SY0/E0
+eps1=SY1/E1
+
+
+FCT1=DEFI_FONCTION(
+               NOM_PARA='EPSI',
+               PROL_GAUCHE='LINEAIRE',
+               PROL_DROITE='LINEAIRE',
+               VALE=(
+               eps0,    SY0,
+               1.005,    3000.,
+               )
+             )
+
+FCT2=DEFI_FONCTION(
+               NOM_PARA='EPSI',
+               PROL_GAUCHE='LINEAIRE', 
+               PROL_DROITE='LINEAIRE',
+               VALE=(
+               eps1,     SY1,
+               1.005,    2000.,
+               )
+             )
+
+CTRACB=DEFI_NAPPE(   NOM_PARA='TEMP',  
+                     PROL_DROITE='CONSTANT',
+                     PARA=(TREF,500.,),
+                     FONCTION=(FCT1,FCT2,) )
+
+# fonctions Sigma=F(Epsilon_p)
+FP1=DEFI_FONCTION(
+               NOM_PARA='EPSI',
+               PROL_GAUCHE='LINEAIRE',
+               PROL_DROITE='LINEAIRE',
+               VALE=(
+               0.,    SY0,
+               1.005-3000./E0,    3000.,
+               )
+             )
+FP2=DEFI_FONCTION(
+               NOM_PARA='EPSI',
+               PROL_GAUCHE='LINEAIRE',
+               PROL_DROITE='LINEAIRE',
+               VALE=(
+               eps1-SY1/E1,     SY1,
+               1.005-2000./E1,    2000.,
+               )
+             )
+#  nappe Sigma(epsp, Temp) necessaire pour l'interpolation de la courbe de traction
+
+RP=DEFI_NAPPE(   NOM_PARA='TEMP',  
+                 PROL_DROITE='CONSTANT',
+                           PARA=(TREF,500.,),
+                           FONCTION=(FP1,FP2,)            )
+
+
+
+MATERI=DEFI_MATERIAU(ELAS_FO=_F(E=YOUN,
+                                NU=ZERO,
+                                TEMP_DEF_ALPHA=TREF,
+                                ALPHA=ALPH,),
+                     TRACTION=_F(SIGM=CTRACB));
+
+
+
+# definition explicite de la liste d'instants
+# pour que CALC_FONCTION/COMB fonctionne
+tmax =1.
+NCAL =20
+time = 0.
+linst=[0.]
+for i in range(NCAL):
+          timem = time           
+          time = timem + tmax/NCAL
+          linst.append(time)
+L_INST=DEFI_LIST_REEL( VALE=linst)
+
+
+TIMP=DEFI_FONCTION(
+                      NOM_PARA='INST',  NOM_RESU='TEMP',
+                       VALE=(  0. , TREF, 1. , 500.)
+                        )
+
+U=SIMU_POINT_MAT(COMP_ELAS=_F(RELATION=compor,),
+                 MATER=MATERI,
+                 SUPPORT='ELEMENT',
+                   AFFE_VARC=(
+                   _F(  NOM_VARC='TEMP',
+                        VALE_FONC=TIMP,
+                        VALE_REF=TREF),
+                        ),
+                 INCREMENT=_F(LIST_INST=L_INST,),
+                 NEWTON=_F(PREDICTION='ELASTIQUE',
+                           MATRICE='TANGENTE',
+                           REAC_ITER=1,),
+                 EPSI_IMPOSE=_F(EPXX=ZERO,),
+                 INFO=1,);
+
+IMPR_TABLE(TABLE=U,);
+
+time = 0.
+
+def EXTR_FONC_NAP(nappe,temp,YOUN) :
+    # interpolation dans une nappe pour une temperature donnee
+    # en sortie courbe de traction a cette temperature
+    epsmax=1.
+    npas=200
+    l=N.array(range(0,npas))
+    labs=[]
+    lsig=[]
+    lepsp=l*epsmax/npas
+    for epsp in lepsp :
+       y=nappe(temp, epsp)
+       lsig.append(y)
+       labs.append(epsp+y/YOUN(temp))
+    fonc=DEFI_FONCTION(NOM_PARA='EPSI',ABSCISSE=labs,ORDONNEE=lsig)
+    return fonc
+
+#  Formules pour la comparaison calcul 1  / calcul 2
+#
+def verif(VAL_CAL,VAL_REF):
+   if abs(VAL_REF) > 1.E-30 :
+      diff=abs (VAL_CAL - VAL_REF)/VAL_REF
+   else :
+      diff=abs (VAL_CAL - VAL_REF)
+   return diff
+   
+VERIF=FORMULE(NOM_PARA=('VAL_REF', 'VAL_CAL'),VALE='verif(VAL_CAL,VAL_REF)')
+            #  VALE='abs (VAL_CAL - VAL_REF)/max(VAL_REF')
+
+MATER  = [None]*(NCAL+1)
+RESU   = [None]*(NCAL+1)
+
+Nbvari=2
+
+epsi=1.E-10
+
+time=0.0
+
+for i in range(1,NCAL+1):
+          
+          timem = time 
+          
+         # time = timem + tmax/NCAL
+          time =linst[i]
+            
+          Ti = T0 + time/tmax * (Tmax - T0)
+          
+          Tm = T0 + timem/tmax * (Tmax - T0)
+
+          # deformation mecanique imposee correspondant a la deformation thermique du premier calcul
+
+          epsimp =DEFI_CONSTANTE(VALE=-ALPH(Ti)*(Ti - TREF));
+
+          print 'i=',i, ' instant=', time, ' Temperature=',Ti                  
+
+          COU_TRAC=EXTR_FONC_NAP(RP,Ti,YOUN)
+
+          MATER[i]=DEFI_MATERIAU(ELAS =_F(E=YOUN(Ti), 
+                                          NU=0.,
+                                          ALPHA=0.),
+                                          TRACTION=_F(SIGM=COU_TRAC))
+
+          list = DEFI_LIST_REEL(DEBUT=timem,
+                      INTERVALLE=(_F(JUSQU_A=time,NOMBRE=1,),),);
+
+          RESU[i]=SIMU_POINT_MAT(COMP_ELAS=_F(RELATION=compor,),
+                                 MATER=MATER[i],
+                                 SUPPORT='ELEMENT',
+                                 INCREMENT=_F(LIST_INST = list, ),
+                                 NEWTON=_F( PREDICTION='ELASTIQUE',
+                                             MATRICE='TANGENTE',
+                                             REAC_ITER=1,),
+                                 EPSI_IMPOSE=_F(EPXX=epsimp),
+                                 INFO=1,);
+
+          # IMPR_TABLE(TABLE=RESU[i]);
+
+          DETRUIRE ( CONCEPT =  _F (NOM =epsimp),);
+          DETRUIRE ( CONCEPT =  _F (NOM =list),);
+          DETRUIRE ( CONCEPT =  _F (NOM =COU_TRAC),);
+
+
+          # Tests des differences entre les deux resultats : U et RESU[I]
+
+          NOMPARA='VMIS'
+          TCOMPR =CALC_TABLE(TABLE=U,INFO=2,ACTION=(
+                                _F(OPERATION='FILTRE',NOM_PARA=('INST'),VALE=time,),
+                                _F(OPERATION='EXTR',NOM_PARA=('INST',NOMPARA),),
+                                _F(OPERATION='RENOMME',NOM_PARA=(NOMPARA, 'VAL_CAL'),),
+                                _F(OPERATION='COMB',TABLE=RESU[i],NOM_PARA=('INST'),),
+                                _F(OPERATION='EXTR',NOM_PARA=('INST',NOMPARA, 'VAL_CAL'),),
+                                _F(OPERATION='RENOMME',NOM_PARA=(NOMPARA, 'VAL_REF'),),
+                                _F(OPERATION='OPER',NOM_PARA='DIFF',FORMULE=VERIF),
+                                   ),)                  
+          TEST_TABLE( TABLE   = TCOMPR,NOM_PARA  = 'DIFF',
+              TYPE_TEST = 'MAX',VALE      = 0.,CRITERE   = 'ABSOLU',PRECISION = 1.E-6,
+              REFERENCE = 'AUTRE_ASTER',)                            
+          DETRUIRE ( CONCEPT =  _F (NOM =TCOMPR),INFO=1);
+                    
+          NOMPARA='TRACE'
+          TCOMPR =CALC_TABLE(TABLE=U,ACTION=(
+                                _F(OPERATION='FILTRE',NOM_PARA=('INST'),VALE=time,),
+                                _F(OPERATION='EXTR',NOM_PARA=('INST',NOMPARA),),
+                                _F(OPERATION='RENOMME',NOM_PARA=(NOMPARA, 'VAL_CAL'),),
+                                _F(OPERATION='COMB',TABLE=RESU[i],NOM_PARA=('INST'),),
+                                _F(OPERATION='EXTR',NOM_PARA=('INST',NOMPARA, 'VAL_CAL'),),
+                                _F(OPERATION='RENOMME',NOM_PARA=(NOMPARA, 'VAL_REF'),),
+                                _F(OPERATION='OPER',NOM_PARA='DIFF',FORMULE=VERIF),
+                                   ),)
+                                                  
+          TEST_TABLE( TABLE   = TCOMPR,NOM_PARA  = 'DIFF',
+              TYPE_TEST = 'MAX',VALE      = 0.,CRITERE   = 'ABSOLU',PRECISION = 1.E-6,
+              REFERENCE = 'AUTRE_ASTER',)
+          DETRUIRE ( CONCEPT =  _F (NOM =TCOMPR),INFO=1);
+
+          NOMPARA='V1'
+          TCOMPR =CALC_TABLE(TABLE=U,ACTION=(
+                                _F(OPERATION='FILTRE',NOM_PARA=('INST'),VALE=time,),
+                                _F(OPERATION='EXTR',NOM_PARA=('INST',NOMPARA),),
+                                _F(OPERATION='RENOMME',NOM_PARA=(NOMPARA, 'VAL_CAL'),),
+                                _F(OPERATION='COMB',TABLE=RESU[i],NOM_PARA=('INST'),),
+                                _F(OPERATION='EXTR',NOM_PARA=('INST',NOMPARA, 'VAL_CAL'),),
+                                _F(OPERATION='RENOMME',NOM_PARA=(NOMPARA, 'VAL_REF'),),
+                                _F(OPERATION='OPER',NOM_PARA='DIFF',FORMULE=VERIF),
+                                   ),)
+                                                  
+          TEST_TABLE( TABLE   = TCOMPR,NOM_PARA  = 'DIFF',
+              TYPE_TEST = 'MAX',VALE      = 0.,CRITERE   = 'ABSOLU',PRECISION = 1.E-6,
+              REFERENCE = 'AUTRE_ASTER',)
+          DETRUIRE ( CONCEPT =  _F (NOM =TCOMPR),INFO=1);
+
+FIN();

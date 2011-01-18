@@ -3,9 +3,9 @@
 
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 18/05/2010   AUTEUR IDOUX L.IDOUX 
+C MODIF ALGORITH  DATE 17/01/2011   AUTEUR IDOUX L.IDOUX 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -20,7 +20,6 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
-
 
       IMPLICIT NONE
       CHARACTER*8        TYPMOD(*)
@@ -53,34 +52,31 @@ C TOLE CRP_20
 
       LOGICAL     RIGI, RESI, ELAS,REINIT
       LOGICAL     TOTAL,TOT1,TOT2,TOT3,DBLOQ
-      INTEGER     NDIMSI,I,J,K,L,P,Q,M,N, COMPTE,T(3,3)
+      INTEGER     NDIMSI,I,J,K,L,P,Q,M,N,T(3,3)
       INTEGER     BDIM,R1(6),R2(6)
 
       INTEGER     INTMAX
       REAL*8      TOLER
 
-      REAL*8      TREPS,TREB,TREM,EPS(6),CC(6),CCP(6)
+      REAL*8      TREPS,TREB,EPS(6),CC(6)
       REAL*8      KRON(6),MULT,SEUIL,RK,RK1,RK2,UN,DEUX
       REAL*8      RAC2,BOBO(6,6),ZOZO(6,6),ZAZA(6,6)
       REAL*8      RTEMP1,RTEMP2,RTEMP3,RTEMP4,RTEMP5,RTEMP6
       REAL*8      E, NU, ALPHA, LAMBDA, MU,ECROB,ECROD
-      REAL*8      B(6),IB(6),BM(6),BR(6),IBR(6),DB(6)
-      REAL*8      VECC(3,3),VECEPS(3,3),TREPSM
-      REAL*8      VALEPS(3),VPEM(3),VALCC(3)
-      REAL*8      DM,D,VECB(3,3),VALB(3),TOLB
-      REAL*8      INTERM(3,3),EPI(6),BMR(6),EPSR(6),BMRS,EPSRS,BRS
+      REAL*8      B(6),BM(6),BR(6)
+      REAL*8      DM,D,VECB(3,3),VALB(3),TOLB,TREPSM
+      REAL*8      INTERM(3,3),EPI(6),BMR(6),EPSR(6)
       REAL*8      VECBR(3,3),VALBR(3),BINTER(6),AD
       REAL*8      DELTAB(6),DELTAD,DSISUP(6,6)
       REAL*8      INTERB(3,3),EPIB(6)
       REAL*8      DSIINT(6,6),DSIMED(6,6)
       REAL*8      VECEPM(3,3),VALEPM(3)
       
-      
       CHARACTER*2 CODRET(6)
       CHARACTER*8 NOMRES(6)
       REAL*8       VALRES(6)
 
-      REAL*8      R8DOT,R8PREM
+      REAL*8      R8PREM
      
       DATA  KRON/1.D0,1.D0,1.D0,0.D0,0.D0,0.D0/
 
@@ -235,8 +231,6 @@ C-------------------------------------------------
         ENDIF
         SEUIL=RK-RK1*TREPSM*(ATAN2(-TREPSM/RK2,UN))
 
-        
-
       IF (RESI) THEN
 C----------------------------------------------------------------
 C----CAS OU LES 3 VALEURS PROPRES D ENDO TRACTION SONT NON NULLES
@@ -245,7 +239,7 @@ C----------------------------------------------------------------
       IF (BDIM.EQ.3) THEN
         CALL LCEOB3(INTMAX,TOLER,EPS,BM,DM,
      &              LAMBDA,MU,ALPHA,ECROB,ECROD,SEUIL,
-     &              B,D,MULT,ELAS,DBLOQ,IRET)
+     &              BDIM,B,D,MULT,ELAS,DBLOQ,IRET)
 C--VERIF SUR ENDO FINAL POUR VOIR SI ENDO DEPASSE 1 OU PAS
 C-- SI ENDO DEPASSE 1 PLUS QUE TOLERANCE ON PASSE DANS LCEOBB
 C-- QUI DECOUPE L INCREMENT DE CHARGE POUR ALLER DOUCEMENT A ENDO=1
@@ -286,7 +280,6 @@ C-- QUI DECOUPE L INCREMENT DE CHARGE POUR ALLER DOUCEMENT A ENDO=1
      &                 RK,RK1,RK2,
      &                 B,D,MULT,ELAS,DBLOQ,IRET)
         ENDIF
-
 
 C----------------------------------------------------------------
 C----CAS OU 1 VALEUR PROPRE EST NULLE----------------------------
@@ -337,7 +330,7 @@ C-- ON RESTREINT L ESPACE CAR L ENDO N EVOLUE PLUS DANS 2 DIRECTIONS
 
         CALL LCEOB2(INTMAX,TOLER,EPSR,BMR,DM,
      &              LAMBDA,MU,ALPHA,ECROB,ECROD,SEUIL,
-     &              BR,D,MULT,ELAS,DBLOQ,IRET)
+     &              BDIM,BR,D,MULT,ELAS,DBLOQ,IRET)
 C--VERIF SUR ENDO FINAL POUR VOIR SI ENDO DEPASSE 1 OU PAS
 C-- SI ENDO DEPASSE 1 PLUS QUE TOLERANCE ON PASSE DANS LCEOBB
 C-- QUI DECOUPE L INCREMENT DE CHARGE POUR ALLER DOUCEMENT A ENDO=1
@@ -453,7 +446,7 @@ C-- ON RESTREINT L ESPACE CAR L ENDO N EVOLUE PLUS DANS UNE DIRECTION
  
         CALL LCEOB1(INTMAX,TOLER,EPSR,BMR,DM,
      &              LAMBDA,MU,ALPHA,ECROB,ECROD,SEUIL,
-     &              BR,D,MULT,ELAS,DBLOQ,IRET)
+     &              BDIM,BR,D,MULT,ELAS,DBLOQ,IRET)
 C--VERIF SUR ENDO FINAL POUR VOIR SI ENDO DEPASSE 1 OU PAS
 C-- SI ENDO DEPASSE 1 PLUS QUE TOLERANCE ON PASSE DANS LCEOBB
 C-- QUI DECOUPE L INCREMENT DE CHARGE POUR ALLER DOUCEMENT A ENDO=1
@@ -496,7 +489,6 @@ C-- ENSUITE ON REVIENT AU 3D DANS REPERE INITIAL
 
       ENDIF
 
-
 C-----------------------------------------------------
 C--ON RECUPERE L ENDOMMAGEMENT ET LA CONTRAINTE
 C-----------------------------------------------------
@@ -510,27 +502,11 @@ C-----------------------------------------------------
       CALL SIGEOB(EPS,B,D,3,LAMBDA,MU,SIGM)
       ENDIF
 
-
-
 C ================================================================
 C                            MATRICE TANGENTE
 C ================================================================
 
-
-
-
-
 C-on verifie l etat de B et D finaux pour calcul matrice tangente
-
-C       CALL DIAGO3(B,VECB,VALB)
-C       BDIM=3
-C       DO 281 I=1,3
-C         IF (VALB(I).EQ.0) THEN
-C           BDIM=BDIM-1
-C         ENDIF
-C  281  CONTINUE
-
-
 
       IF (RIGI) THEN
 
@@ -673,8 +649,8 @@ C -- DSIGMA/DEPS A ENDOMMAGEMENT CONSTANT = MATRICE SECANTE----
   250                CONTINUE
                    DELTAD=D-DM
  
-              CALL MEOBL3(EPS,B,D,DELTAB,DELTAD,MULT,
-     &                    LAMBDA,MU,ECROB,ECROD,ALPHA,RK1,RK2,DSISUP)
+              CALL MEOBL3(EPS,B,D,DELTAB,DELTAD,MULT,LAMBDA,
+     &                    MU,ECROB,ECROD,ALPHA,RK1,RK2,BDIM,DSISUP)
  
             ELSEIF (BDIM.EQ.2) THEN
  
@@ -741,9 +717,8 @@ C -- DSIGMA/DEPS A ENDOMMAGEMENT CONSTANT = MATRICE SECANTE----
         
                  ENDIF
  
- 
-                 CALL MEOBL2(EPSR,BR,D,DELTAB,DELTAD,MULT,
-     &                    LAMBDA,MU,ECROB,ECROD,ALPHA,RK1,RK2,DSIINT)
+                 CALL MEOBL2(EPSR,BR,D,DELTAB,DELTAD,MULT,LAMBDA,
+     &                    MU,ECROB,ECROD,ALPHA,RK1,RK2,BDIM,DSIINT)
  
             IF (TOT1) THEN
               DO 811 I=1,6
@@ -828,9 +803,6 @@ C -- DSIGMA/DEPS A ENDOMMAGEMENT CONSTANT = MATRICE SECANTE----
  851             CONTINUE
  850             CONTINUE
  
- 
- 
- 
 C--------------------------------------------------------
 C--------------------------------------------------------
  
@@ -895,8 +867,8 @@ C--------------------------------------------------------
         
               ENDIF
  
-             CALL MEOBL1(EPSR,B,D,DELTAB,DELTAD,MULT,
-     &                    LAMBDA,MU,ECROB,ECROD,ALPHA,RK1,RK2,DSIINT)
+             CALL MEOBL1(EPSR,B,D,DELTAB,DELTAD,MULT,LAMBDA,
+     &                    MU,ECROB,ECROD,ALPHA,RK1,RK2,BDIM,DSIINT)
              
              IF (TOT1) THEN
                DO 611 I=1,6
@@ -948,9 +920,7 @@ C--------------------------------------------------------
   615               CONTINUE
              ENDIF  
  
- 
              CALL R8INIR(36,0.D0,DSISUP,1)
- 
  
              DO 650 I=1,3
              DO 651 J=I,3
@@ -993,8 +963,6 @@ C--------------------------------------------------------
                  DSIDEP(I,J)=DSIDEP(I,J)+DSISUP(I,J)
   121           CONTINUE
   120         CONTINUE
-
-
 
       ENDIF
       ENDIF

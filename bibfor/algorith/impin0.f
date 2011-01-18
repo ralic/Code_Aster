@@ -2,9 +2,9 @@
      &                  LINFRE,UNITE )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 21/12/2010   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 17/01/2011   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -25,8 +25,7 @@ C
       INTEGER      ZDEF
       CHARACTER*16 MOTFAC
       LOGICAL      LINFRE
-      CHARACTER*24 SDSUIV     
-      CHARACTER*19 COLACT
+      CHARACTER*19 SDSUIV,COLACT
       INTEGER      NBSUIV,UNITE
 C
 C ----------------------------------------------------------------------
@@ -68,8 +67,8 @@ C
       INTEGER      IMPTMP
       CHARACTER*3  CMP
       INTEGER      NOC
-      CHARACTER*24 SUIINF
-      INTEGER      JSUIIN      
+      CHARACTER*24 OBSINF
+      INTEGER      JOBSIN      
 C      
 C ----------------------------------------------------------------------
 C      
@@ -84,9 +83,9 @@ C
 C
 C --- NOMBRE DE SUIVI_DDL
 C
-      SUIINF = SDSUIV(1:14)//'.NBSUIV'
-      CALL JEVEUO(SUIINF,'L'  ,JSUIIN)
-      NBSUIV = ZI(JSUIIN+1-1)
+      OBSINF = SDSUIV(1:14)//'     .INFO'
+      CALL JEVEUO(OBSINF,'L',JOBSIN)
+      NBSUIV = ZI(JOBSIN+1-1)
 C
 C --- INFO SUR LES RESIDUS      
 C

@@ -1,8 +1,8 @@
       SUBROUTINE INIVEC(VEC,NEQ,ID,NBCP)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 18/01/2011   AUTEUR MEUNIER S.MEUNIER 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -22,7 +22,7 @@ C    P. RICHARD     DATE 27/11/90
 C-----------------------------------------------------------------------
 C  BUT:  INITIALISER TOUTES LES COMPOSANTES D'UN VECTEUR A ZERO SAUF
 C   CELLES D'UNE LISTE EGALES A UN
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C
 C-----------------------------------------------------------------------
 C
@@ -33,10 +33,9 @@ C NBCP     /I/: NOMBRE DE COMPOSANTES A INITIALISER A UN
 C
 C-----------------------------------------------------------------------
 C
+      INTEGER I,J,NBCP,ID(NBCP),NEQ
       REAL*8 VEC(NEQ)
-      INTEGER ID(NBCP)
 C
-C-----------------------------------------------------------------------
 C-----------------------------------------------------------------------
 C
       DO 10 I=1,NEQ
@@ -51,5 +50,4 @@ C
         ENDIF
  20   CONTINUE
 C
- 9999 CONTINUE
       END

@@ -1,0 +1,169 @@
+      SUBROUTINE NMEXTP(MOTFAC,IOCC  ,NOMCHA,CHAMP ,LISTPI,
+     &                  LISTSP,NBPI  ,NBSPI ,EXTRGA)
+C
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ALGORITH  DATE 17/01/2011   AUTEUR ABBAS M.ABBAS 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C ======================================================================
+C RESPONSABLE ABBAS M.ABBAS
+C
+      IMPLICIT      NONE     
+      CHARACTER*16  MOTFAC
+      INTEGER       IOCC
+      CHARACTER*16  NOMCHA
+      CHARACTER*19  CHAMP
+      CHARACTER*8   EXTRGA
+      CHARACTER*24  LISTPI,LISTSP
+      INTEGER       NBPI,NBSPI
+C
+C ----------------------------------------------------------------------
+C
+C ROUTINE *_NON_LINE (EXTRACTION - LECTURE)
+C
+C CAS DES CHAM_ELGA
+C LECTURE DU TYPE D'EXTRACTION POUR CHAM_ELGA
+C
+C ----------------------------------------------------------------------
+C
+C
+C IN  MOTFAC : MOT-FACTEUR POUR LIRE 
+C IN  IOCC   : OCCURRENCE DU MOT-CLEF FACTEUR MOTFAC
+C IN  CHAMP  : CHAMP EXEMPLE POUR VERIF COMPOSANTE
+C IN  NOMCHA : NOM DU CHAMP
+C IN  LISTPI : LISTE CONTENANT LES POINTS D'EXTRACTION
+C IN  LISTSP : LISTE CONTENANT LES SOUSPOINTS D'EXTRACTION
+C OUT EXTRGA : TYPE D'EXTRACTION
+C                'MIN'  VALEUR MINI SUR TOUS LES POINTS DE GAUSS
+C                'MAX'  VALEUR MAXI SUR TOUS LES POINTS DE GAUSS
+C                'MOY'  VALEUR MOYENNE SUR TOUS LES POINTS DE GAUSS
+C                'VALE' VALEUR SUR POINT/SOUS_POINTS DONNES
+C OUT NBPI   : NOMBRE DE POINTS D'INTEGRATION A EXTRAIRE
+C OUT NBSPI  : NOMBRE DE SOUS-POINTS D'INTEGRATION A EXTRAIRE
+C
+C
+C -------------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ----------------
+C
+      INTEGER            ZI
+      COMMON  / IVARJE / ZI(1)
+      REAL*8             ZR
+      COMMON  / RVARJE / ZR(1)
+      COMPLEX*16         ZC
+      COMMON  / CVARJE / ZC(1)
+      LOGICAL            ZL
+      COMMON  / LVARJE / ZL(1)
+      CHARACTER*8        ZK8
+      CHARACTER*16                ZK16
+      CHARACTER*24                          ZK24
+      CHARACTER*32                                    ZK32
+      CHARACTER*80                                              ZK80
+      COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
+C
+C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
+C
+      INTEGER      JPI,JSPI
+      INTEGER      IPI,ISPI
+      INTEGER      IBID,N1,N2,N3
+      INTEGER      NTPT,NTSPT
+      CHARACTER*16 VALK(2)
+      CHARACTER*19 CHELES
+      INTEGER      JCESD
+C
+C ----------------------------------------------------------------------
+C
+      CALL JEMARQ()        
+C
+C --- INITIALISATIONS
+C
+      CHELES = '&&NMEXTP.CHEL.TRAV' 
+      NBPI   = 0
+      NBSPI  = 0
+C
+C --- CONVERSION EN CHAM_ELEM_S
+C
+      CALL SDMPIC('CHAM_ELEM',CHAMP )
+      CALL CELCES(CHAMP ,'V',CHELES)
+      CALL JEVEUO(CHELES(1:19)//'.CESD','L',JCESD)
+C
+C --- LECTURE TYPE EXTRACTION
+C
+      CALL GETVTX(MOTFAC,'EVAL_ELGA',IOCC,1,1,EXTRGA,N1    )
+      IF (N1.EQ.0) THEN
+        EXTRGA = 'VALE'
+        CALL U2MESK('A', 'EXTRACTION_6',1,NOMCHA)
+      ENDIF
+C
+C --- MAX. DE POINTS/SOUS-POINTS SUR LE CHAMP
+C
+      NTPT   = ZI(JCESD+3-1)
+      NTSPT  = ZI(JCESD+4-1)      
+C
+C --- COMPTE NOMBRE DE POINTS
+C
+      IF (EXTRGA.EQ.'VALE') THEN
+        CALL GETVIS(MOTFAC,'POINT'     ,IOCC,1,0,IBID  ,N2    )
+        CALL GETVIS(MOTFAC,'SOUS_POINT',IOCC,1,0,IBID  ,N3    )
+        IF (N2.EQ.0) THEN
+          CALL U2MESK('F', 'EXTRACTION_7',2,VALK)
+        ENDIF  
+        NBPI   = -N2
+        IF ((N2.NE.0).AND.(N3.EQ.0)) THEN
+          NBSPI  = NTSPT
+        ELSE
+          NBSPI  = -N3
+        ENDIF        
+      ELSE
+        NBPI   = NTPT
+        NBSPI  = NTSPT
+      ENDIF
+C
+C --- PLAFONNEMENT
+C      
+      IF (NBPI.GT.NTPT)   NBPI  = NTPT
+      IF (NBSPI.GT.NTSPT) NBSPI = NTSPT
+C
+C --- CREATION SD
+C
+      CALL WKVECT(LISTPI,'V V I',NBPI  ,JPI   )
+      IF (NBSPI.NE.0) THEN
+        CALL WKVECT(LISTSP,'V V I',NBSPI ,JSPI  )
+      ENDIF
+C
+C --- REMPLISSAGE SD
+C
+      IF (EXTRGA.EQ.'VALE') THEN
+        CALL GETVIS(MOTFAC,'POINT'     ,IOCC,1,NBPI  ,ZI(JPI),N2    )
+        IF (NBSPI.NE.0) THEN
+          CALL GETVIS(MOTFAC,'SOUS_POINT',IOCC,1,NBSPI ,ZI(JSPI),N3   )
+          IF (N3.EQ.0) THEN
+            DO 132 ISPI = 1,NBSPI
+              ZI(JSPI-1+ISPI ) = ISPI
+ 132        CONTINUE          
+          ENDIF
+        ENDIF
+      ELSE
+        DO 31 IPI = 1,NBPI
+          ZI(JPI-1+IPI ) = IPI
+  31    CONTINUE
+        DO 32 ISPI = 1,NBSPI
+          ZI(JSPI-1+ISPI ) = ISPI
+  32    CONTINUE
+      ENDIF
+C    
+      CALL JEDETR(CHELES)
+      CALL JEDEMA()
+C
+      END

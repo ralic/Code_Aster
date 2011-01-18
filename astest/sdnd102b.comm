@@ -1,9 +1,9 @@
-# MODIF  DATE 30/11/2009   AUTEUR DESOZA T.DESOZA 
+# MODIF  DATE 17/01/2011   AUTEUR ABBAS M.ABBAS 
 # TITRE TEST DU MULTI-APPUIS SUR UN SYSTEME MASSES-RESSORTS NON LINEAIRE
 # sdnd102b.para = tps_job 430 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
@@ -262,27 +262,28 @@ TRAN_DY=DYNA_NON_LINE(MODELE=MODELE,
                       SOLVEUR=_F(METHODE='LDLT',
                                  RENUM='RCMK',),
                       CONVERGENCE=_F(RESI_GLOB_RELA=1.E-8,
-                                     ITER_GLOB_MAXI=20,),
+                                     ITER_GLOB_MAXI=20,),        
                       OBSERVATION=(_F(NOM_CMP='DX',
-                                      SUIVI_DDL='NON',
-                                      NOEUD='NO1',
-                                      NOM_CHAM=('DEPL_ABSOLU','VITE_ABSOLU',),
-                                      LIST_INST=L_INST,),
-                                   _F(NOM_CMP='DX',
-                                      SUIVI_DDL='NON',
-                                      NOEUD='NO1',
-                                      NOM_CHAM='VITE_ABSOLU',),
-                                   _F(NOM_CMP='DX',
-                                      SUIVI_DDL='OUI',
                                       NOEUD='NO1',
                                       NOM_CHAM='DEPL_ABSOLU',
-                                      NUME_SUIVI=1,),
+                                      LIST_INST=L_INST,),
                                    _F(NOM_CMP='DX',
-                                      SUIVI_DDL='OUI',
                                       NOEUD='NO1',
-                                      NOM_CHAM=('DEPL_ABSOLU','VITE_ABSOLU',),
-                                      NUME_SUIVI=1,),),
-                      ARCHIVAGE=_F(LIST_INST=L_INST2,),);
+                                      NOM_CHAM='VITE_ABSOLU',
+                                      LIST_INST=L_INST,),
+                                   _F(NOM_CMP='DX',
+                                      NOEUD='NO1',
+                                      NOM_CHAM='VITE_ABSOLU',),
+                                  ),
+                      SUIVI_DDL=(_F(NOM_CMP='DX',
+                                    NOEUD='NO1',
+                                    NOM_CHAM='DEPL_ABSOLU',),
+                                 _F(NOM_CMP='DX',
+                                    NOEUD='NO1',
+                                    NOM_CHAM='VITE_ABSOLU',),
+                                 ),
+                      ARCHIVAGE=_F(LIST_INST=L_INST2,), 
+);
 
 TAB_OBS=RECU_TABLE(CO=TRAN_DY,
                    NOM_TABLE='OBSERVATION',);
@@ -295,6 +296,8 @@ TEST_TABLE(TABLE=TAB_OBS,
            FILTRE=(_F(NOM_PARA='NOM_CHAM',
                       CRIT_COMP='EQ',
                       VALE_K='DEPL_ABSOLU',),
+                   _F(NOM_PARA='NOM_OBJET',
+                     VALE_K='VALEUR',),     
                    _F(NOM_PARA='INST',
                       CRIT_COMP='EQ',
                       VALE=0.01,),),

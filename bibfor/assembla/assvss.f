@@ -2,9 +2,9 @@
      &                  INSTAP)
       IMPLICIT REAL*8 (A-H,O-Z)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 02/02/2010   AUTEUR SELLENET N.SELLENET 
+C MODIF ASSEMBLA  DATE 18/01/2011   AUTEUR MEUNIER S.MEUNIER 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -25,7 +25,7 @@ C TOLE CRP_20
       CHARACTER*4 MOTCLE
       CHARACTER*24 FOMULT
       INTEGER TYPE
-      REAL*8 R,INSTAP
+      REAL*8 INSTAP
 C ----------------------------------------------------------------------
 C OUT K19 VEC   : NOM DU CHAM_NO RESULTAT
 C                CHAM_NO ::= CHAM_NO_GD + OBJETS PROVISOIRES POUR L'ASS.
@@ -38,9 +38,6 @@ C IN  K24 FOMULT: TABLEAU DE FONCTIONS MULTIPLICATRICES DE CHARGES
 C IN  R8 INSTAP : INSTANT D'INTERPOLATION
 C IN  I  TYPE   : TYPE DU VECTEUR ASSEMBLE : 1 --> REEL
 C                                            2 --> COMPLEXE
-C
-C  S'IL EXISTE UN OBJET '&&POIDS_MAILLE' VR, PONDERATIONS POUR CHAQUE
-C  MAILLE, ON S'EN SERT POUR LES OPTIONS RAPH_MECA ET FULL_MECA
 C
 C----------------------------------------------------------------------
 C     FONCTIONS JEVEUX
@@ -64,31 +61,28 @@ C ----------------------------------------------------------------------
 C ----------------------------------------------------------------------
 C     COMMUNS   LOCAUX DE L'OPERATEUR ASSE_VECTEUR
 C ----------------------------------------------------------------------
-      INTEGER GD,NEC,NLILI,DIGDEL
+      INTEGER GD,NEC,NLILI
 C ---------------------------------------------------------------------
 C     VARIABLES LOCALES
 C ---------------------------------------------------------------------
       PARAMETER (NBECMX=10)
 
-      CHARACTER*1  K1BID,BAS
+      CHARACTER*1  BAS
       CHARACTER*8  NOMSD,K8BID,MA,MO,MO2,NOGDSI,NOGDCO,NOMCAS,
      &             KBID
       CHARACTER*11 K11B
       CHARACTER*14 K14B,NUDEV
       CHARACTER*19 K19B,VECAS,VPROF
       CHARACTER*24 METHOD,SDFETI,K24B,SDFETS,KNUEQ,KMAILA,K24PRN,
-     &             KVELIL,KVEREF,KVEDSC,RESU,NOMLI,KNEQUA,
-     &             KVALE,NOMOPT,NOMLOG,NOMLID,INFOFE,SDFETA
-C      CHARACTER*24 KNULIL
+     &             KVELIL,KVEREF,KVEDSC,KNEQUA,
+     &             KVALE,NOMLOG,INFOFE,SDFETA
       CHARACTER*32 JEXNUM,JEXNOM,JEXATR
-      LOGICAL      LFETI,LLIMO,LLICH,LLICHD,IDDOK,LFEL2,LLICHP,LFETIC,
-     &             LSAUTE
-      INTEGER      ICODLA(NBECMX),ICODGE(NBECMX),NBEC,EPDMS,JPDMS,NBSD,
-     &             IDIME,IDD,ILIGRP,IFETN,IFETC,IREFN,NBREFN,ILIGRT,
-     &             ADMODL,LCMODL,ILIGRB,IRET1,ILIGRC,IFEL1,IFEL2,IFEL3,
-     &             IINF,IFCPU,IBID,IFM,NIV,ILIMPI,IFEL4,IFEL5,ILIMPB,
-     &             IRET2,IRET3,IAUX1,JFEL4,IAUX2,IAUX3,IAUX4,COMPT,
-     &             NIVMPI,RANG,NBLOG,JFONCT
+      LOGICAL      LFETI,IDDOK,LFETIC
+      INTEGER      ICODLA(NBECMX),ICODGE(NBECMX),NBEC,NBSD,
+     &             IDIME,IDD,ILIGRP,IFETN,IFETC,IREFN,NBREFN,
+     &             ADMODL,LCMODL,
+     &             IINF,IFCPU,IBID,IFM,NIV,ILIMPI,ILIMPB,
+     &             NIVMPI,RANG,JFONCT
       REAL*8       TEMPS(6),RBID,RCOEF
 C ----------------------------------------------------------------------
 C     FONCTIONS LOCALES D'ACCES AUX DIFFERENTS CHAMPS DES
@@ -277,7 +271,7 @@ C SEQUENTIELLE) ET L'ADEQUATION "RANG DU PROCESSEUR-NUMERO DU SD"
 
         IF (LFETI) CALL JEMARQ()
 C CALCUL TEMPS
-        IF ((NIV.GE.2).OR.(LFETIC)) THEN
+        IF ((NIV.GE.2).OR.LFETIC) THEN
           CALL UTTCPU('CPU.ASSVSS','INIT',' ')
           CALL UTTCPU('CPU.ASSVSS','DEBUT',' ')
         ENDIF
@@ -370,9 +364,7 @@ C       ----------------------------------------------------------
           CALL JEVEUO(MO//'.MODELE    .SSSA','L',IASSSA)
           CALL SSVALV('DEBUT',NOMCAS,MO,MA,0,IDRESL,NCMPEL)
           CALL JELIRA(VECEL//'.RELC','NUTIOC',NBCHAR,KBID)
-C            WRITE(6,*) 'NBCHAR ',NBCHAR
           CALL JEVEUO(FOMULT,'L',JFONCT)
-C            WRITE(6,*) 'FOMULT ',(ZK24(JFONCT+ICHAR-1),ICHAR=1,NBCHAR)
 
           DO 90 ICHAR = 1,NBCHAR
             CALL JENUNO(JEXNUM(VECEL//'.RELC',ICHAR),NOMCAS)
@@ -383,7 +375,6 @@ C            WRITE(6,*) 'FOMULT ',(ZK24(JFONCT+ICHAR-1),ICHAR=1,NBCHAR)
               CALL FOINTE('F ',ZK24(JFONCT+ICHAR-1)(1:8),1,'INST',
      &                    INSTAP,RCOEF,IERD)
             ENDIF
-C              WRITE(6,*) 'ICHAR NOMCAS RCOEF ',ICHAR,NOMCAS,RCOEF
             DO 80 IMA = 1,NBSMA
 C             -- ON N'ASSEMBLE QUE LES SSS VRAIMENT ACTIVES :
               IF (ZI(IASSSA-1+IMA).EQ.0) GO TO 80
@@ -455,7 +446,7 @@ C MONITORING
         IF ((INFOFE(3:3).EQ.'T').AND.(IDD.EQ.NBSD))
      &    CALL UTIMSD(IFM,2,.FALSE.,.TRUE.,VECAS(1:19),1,' ')
 
-        IF ((NIV.GE.2).OR.(LFETIC)) THEN
+        IF ((NIV.GE.2).OR.LFETIC) THEN
           CALL UTTCPU('CPU.ASSVSS','FIN',' ')
           CALL UTTCPR('CPU.ASSVSS',6,TEMPS)
           IF (NIV.GE.2) WRITE(IFM,'(A44,D11.4,D11.4)')

@@ -1,0 +1,150 @@
+      SUBROUTINE NMEXT0(TYPCHA,NBMA  ,NBNO  ,NBPI  ,NBSPI ,
+     &                  NBCMP ,CHNOEU,CHGAUS,CHELGA,EXTRGA,
+     &                  EXTRCH)
+C
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ALGORITH  DATE 17/01/2011   AUTEUR ABBAS M.ABBAS 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C ======================================================================
+C RESPONSABLE ABBAS M.ABBAS
+C
+      IMPLICIT      NONE
+      INTEGER       NBNO,NBMA
+      INTEGER       NBPI,NBSPI,NBCMP
+      CHARACTER*4   TYPCHA
+      CHARACTER*8   EXTRGA,EXTRCH
+      CHARACTER*19  CHGAUS,CHNOEU,CHELGA
+C
+C ----------------------------------------------------------------------
+C
+C ROUTINE *_NON_LINE (EXTRACTION - UTILITAIRE)
+C
+C EXTRAIRE LES VALEURS - CREATION SD DONNEES TEMPORAIRES
+C
+C ----------------------------------------------------------------------
+C
+C
+C IN  TYPCHA : TYPE DU CHAMP
+C IN  NBNO   : NOMBRE DE NOEUDS DANS LA SD
+C IN  NBMA   : NOMBRE DE MAILLES DANS LA SD
+C IN  NBPI   : NOMBRE DE POINTS D'INTEGRATION 
+C IN  NBSPI  : NOMBRE DE SOUS-POINTS D'INTEGRATION
+C IN  NBCMP  : NOMBRE DE COMPOSANTES
+C IN  EXTRGA : TYPE D'EXTRACTION SUR UNE MAILLE
+C IN  EXTRCH : TYPE D'EXTRACTION SUR LE CHAMP
+C IN  CHNOEU : VECTEUR DE TRAVAIL CHAMPS AUX NOEUDS
+C IN  CHELGA : VECTEUR DE TRAVAIL CHAMPS AUX ELEMENTS
+C IN  CHGAUS : VECTEUR DE TRAVAIL CHAMPS AUX POINTS DE GAUSS
+C
+C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
+C
+      INTEGER      ZI
+      COMMON  / IVARJE / ZI(1)
+      REAL*8       ZR
+      COMMON  / RVARJE / ZR(1)
+      COMPLEX*16   ZC
+      COMMON  / CVARJE / ZC(1)
+      LOGICAL      ZL
+      COMMON  / LVARJE / ZL(1)
+      CHARACTER*8  ZK8
+      CHARACTER*16    ZK16
+      CHARACTER*24        ZK24
+      CHARACTER*32            ZK32
+      CHARACTER*80                ZK80
+      COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
+C
+C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
+C
+      REAL*8       R8MAEM,INITCH,INITGA
+      INTEGER      INO,IMA,ICMP,IPI,ISPI
+      INTEGER      JELGA,JGAUS,JNOEU
+C
+C ----------------------------------------------------------------------
+C
+      CALL JEMARQ()
+C
+C --- CREATION DES VECTEURS DE TRAVAIL
+C
+      IF (TYPCHA.EQ.'NOEU') THEN
+        CALL WKVECT(CHNOEU,'V V R',NBNO*NBCMP,JNOEU)
+      ELSEIF (TYPCHA.EQ.'ELGA') THEN
+        CALL WKVECT(CHGAUS,'V V R',NBPI*NBSPI*NBCMP,JGAUS)
+        CALL WKVECT(CHELGA,'V V R',NBMA*NBPI*NBSPI*NBCMP,JELGA)
+      ELSE
+        CALL ASSERT(.FALSE.)
+      ENDIF
+C
+      IF (EXTRCH.EQ.'MAX') THEN
+        INITCH = -R8MAEM()
+      ELSEIF (EXTRCH.EQ.'MIN') THEN
+        INITCH = +R8MAEM()
+      ELSEIF (EXTRCH.EQ.'VALE') THEN
+        INITCH = 0.D0
+      ELSEIF (EXTRCH.EQ.'MOY') THEN
+        INITCH = 0.D0
+      ELSE
+        CALL ASSERT(.FALSE.)
+      ENDIF
+C
+      IF (TYPCHA.EQ.'ELGA') THEN
+        IF (EXTRGA.EQ.'MAX') THEN
+          INITGA = -R8MAEM()
+        ELSEIF (EXTRGA.EQ.'MIN') THEN
+          INITGA = +R8MAEM()
+        ELSEIF (EXTRGA.EQ.'VALE') THEN
+          INITGA = 0.D0
+        ELSEIF (EXTRGA.EQ.'MOY') THEN
+          INITGA = 0.D0
+        ELSE
+          CALL ASSERT(.FALSE.)
+        ENDIF
+      ENDIF
+C
+C --- INITIALISATION: CHAMP AUX NOEUDS
+C
+      IF (TYPCHA.EQ.'NOEU') THEN
+        DO 20 INO = 1,NBNO
+          DO 21 ICMP = 1,NBCMP
+            ZR(JNOEU+NBCMP*(INO-1)
+     &              +ICMP-1) = INITCH
+  21      CONTINUE    
+  20    CONTINUE    
+      ENDIF
+C
+C --- INITIALISATION: CHAMP AUX ELEMENTS
+C
+      IF (TYPCHA.EQ.'ELGA') THEN
+        DO 60 IMA = 1,NBMA
+          DO 61 IPI = 1,NBPI
+            DO 62 ISPI = 1,NBSPI
+              DO 63 ICMP = 1,NBCMP
+                 ZR(JELGA+NBCMP*NBPI*NBSPI*(IMA-1)
+     &                   +NBPI*NBSPI*(ICMP-1)
+     &                   +NBSPI*(IPI-1)
+     &                   +(ISPI-1)) = INITCH
+                 ZR(JGAUS+NBPI*NBSPI*(ICMP-1)
+     &                   +NBSPI*(IPI-1)
+     &                   +(ISPI-1)) = INITGA
+  63          CONTINUE
+  62        CONTINUE
+  61      CONTINUE 
+  60    CONTINUE
+      ENDIF
+C
+      CALL JEDEMA()
+C
+      END

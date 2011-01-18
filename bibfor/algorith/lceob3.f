@@ -1,11 +1,11 @@
        SUBROUTINE LCEOB3 (INTMAX,TOLE,EPS,BM,DM,
      &                     LAMBDA,MU,ALPHA,ECROB,ECROD,
-     &                     SEUIL,B,D,MULT,ELAS,DBLOQ,IRET)
+     &                     SEUIL,BDIM,B,D,MULT,ELAS,DBLOQ,IRET)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 31/05/2010   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 17/01/2011   AUTEUR IDOUX L.IDOUX 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -27,7 +27,7 @@ C ======================================================================
       REAL*8             LAMBDA,MU,ALPHA,SEUIL,ECROB,ECROD
       REAL*8             TOLE
 
-      INTEGER            INTMAX,IRET
+      INTEGER            INTMAX,IRET,BDIM
 
       LOGICAL            ELAS,DBLOQ
 C ----------------------------------------------------------------------
@@ -38,49 +38,39 @@ C
 C
 C
 C  IN INTMAX  : NBRE D'ITERATION MAX POUR LE NEWTON LOCAL
-C  IN TOLE   : RESIDU TOLERE POUR LE NEWTON LOCAL
-C  IN  NDIM    : DIMENSION DE L'ESPACE
+C  IN TOLE    : RESIDU TOLERE POUR LE NEWTON LOCAL
+C  IN  BDIM   : DIMENSION DE L'ESPACE
 C  IN  CRIT   : CRITERES DE CONVERGENCE LOCAUX
-C  IN  EPSM    : DEFORMATION EN T- REPERE GLOBAL
-C  IN  DEPS    : INCREMENT DE DEFORMATION
-C  IN  BM DM     : VARIABLES INTERNES EN T-
-C  IN LAMBDA     : /
-C  IN MU        : / COEFFICIENTS DE LAME
-C  IN  ALPHA    : /
-C  IN  ECROB    : /
-C  IN  ECROD    : / PARAMETRES DU MODELE
-C  IN  SEUIL    : SEUIL DU CRITERE D'ENDOMMAGEMENT
+C  IN  EPSM   : DEFORMATION EN T- REPERE GLOBAL
+C  IN  DEPS   : INCREMENT DE DEFORMATION
+C  IN  BM DM  : VARIABLES INTERNES EN T-
+C  IN LAMBDA  : /
+C  IN MU      : / COEFFICIENTS DE LAME
+C  IN  ALPHA  : /
+C  IN  ECROB  : /
+C  IN  ECROD  : / PARAMETRES DU MODELE
+C  IN  SEUIL  : SEUIL DU CRITERE D'ENDOMMAGEMENT
+C  IN  BDIM   : DIMENSION DE L ESPACE
 C
-C OUT  B D     : VARIABLES INTERNES EN T+
-C OUT MULT     : MULTIPLICATEUR PLASTIQUE DU PRINCIPE DE NORMALITE
-C OUT ELAS     : ELASTIQUE OU DISSIPATION?
-C OUT DBLOQ    : BLOQUAGE DE L'ENDOMMAGEMENT DE COMPRESSION
-C OUT IRET     : CODE RETOUR
+C OUT  B D    : VARIABLES INTERNES EN T+
+C OUT MULT    : MULTIPLICATEUR PLASTIQUE DU PRINCIPE DE NORMALITE
+C OUT ELAS    : ELASTIQUE OU DISSIPATION?
+C OUT DBLOQ   : BLOQUAGE DE L'ENDOMMAGEMENT DE COMPRESSION
+C OUT IRET    : CODE RETOUR
 C ----------------------------------------------------------------------
 
       INTEGER     I,J,K,COMPTE,IRET1
-      INTEGER     T(3,3)
 
       REAL*8      FB(6),DB(6),FD,DD,FBM(6),RESB(6)
       REAL*8      RAC2,UN,DEUX
       REAL*8      RTEMP2,RTEMP3,DELTA1(6),DELTA2
       REAL*8      DDG,TOLC,DET,TATA,NORMRB,RTEMP,CRIT
       REAL*8      MTE1(6,6),MTE2(6,6)
-      REAL*8      VECFB(3,3),VALFB(3)
       REAL*8      KSI(6,6),IKSI(6,6),TOTI(6,6),IDE(6,6)
       REAL*8      TEME(6,6),COUPL
       REAL*8      RESD,DFDDD,PSI
       REAL*8      INTER1,INTER2,INTER3,INTER4
 
-      T(1,1)=1
-      T(1,2)=4
-      T(1,3)=5
-      T(2,1)=4
-      T(2,2)=2
-      T(2,3)=6
-      T(3,1)=5
-      T(3,2)=6
-      T(3,3)=3
       DEUX=2.D0
       RAC2=SQRT(DEUX)
       TOLC=SEUIL*TOLE
@@ -99,36 +89,15 @@ C-------------------------------------------------------
 C----CALCUL DE FB: FORCE THERMO ASSOCIEE A
 C-------------------ENDOMMAGEMENT ANISOTROPE DE TRACTION
 
-      CALL CEOBFB(B,EPS,LAMBDA,MU,ECROB,FB)
+      CALL CEOBFB(B,EPS,LAMBDA,MU,ECROB,BDIM,FB,RTEMP,FBM)
 
-      CALL DIAGO3(FB,VECFB,VALFB)
-      RTEMP=0.D0
-      DO 29 I=1,3
-        IF (VALFB(I).GT.0.D0) THEN
-          VALFB(I)=0.D0
-        ENDIF
-        RTEMP=RTEMP+VALFB(I)*VALFB(I)
-  29  CONTINUE
-      CALL R8INIR(6,0.D0,FBM,1)
-      DO 26 I=1,3
-        DO 27 J=I,3
-          DO 28 K=1,3
-            FBM(T(I,J))=FBM(T(I,J))+VECFB(I,K)*VALFB(K)*VECFB(J,K)
-  28      CONTINUE
-  27    CONTINUE
-  26  CONTINUE
-
-
-C----CALCUL DE FD: FORCE THERMO ASSOCIEE A
+C----CALCUL DE FD: PARTIE POSITIVE DE LA FORCE THERMO ASSOCIEE A
 C-------------------ENDOMMAGEMENT ISOTROPE DE COMPRESSION
 
       IF (DBLOQ) THEN
         FD=0.D0
       ELSE
         CALL CEOBFD(D,EPS,LAMBDA,MU,ECROD,FD)
-        IF (FD.LT.0.D0) THEN
-          FD=0.D0
-        ENDIF
       ENDIF
 
 C----CALCUL DU CRITERE-------------------------------------
@@ -289,35 +258,13 @@ C peut etre resolu. On sort pour enclencher la decoupe du pas de temps
 
 C----CALCUL DE FB DANS NEWTON---------------------------
 
-            CALL CEOBFB(B,EPS,LAMBDA,MU,ECROB,FB)
-
-            CALL DIAGO3(FB,VECFB,VALFB)
-            RTEMP=0.D0
-
-            DO 129 I=1,3
-              IF (VALFB(I).GT.0.D0) THEN
-                VALFB(I)=0.D0
-              ENDIF
-              RTEMP=RTEMP+VALFB(I)*VALFB(I)
- 129        CONTINUE
-
-            CALL R8INIR(6,0.D0,FBM,1)
-            DO 126 I=1,3
-              DO 127 J=I,3
-                DO 128 K=1,3
-            FBM(T(I,J))=FBM(T(I,J))+VECFB(I,K)*VALFB(K)*VECFB(J,K)
- 128            CONTINUE
- 127          CONTINUE
- 126        CONTINUE
+            CALL CEOBFB(B,EPS,LAMBDA,MU,ECROB,BDIM,FB,RTEMP,FBM)
 
 C----CALCUL DE FD DANS NEWTON----------------------------
             IF (DBLOQ) THEN
               FD=0.D0
             ELSE
               CALL CEOBFD(D,EPS,LAMBDA,MU,ECROD,FD)
-              IF(FD.LT.0.D0) THEN
-                FD=0.D0
-              ENDIF
             ENDIF
 
 C----CALCUL DU CRITERE-------------------------------------

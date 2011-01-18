@@ -1,8 +1,8 @@
-#@ MODIF calculel2 Messages  DATE 20/12/2010   AUTEUR MEUNIER S.MEUNIER 
+#@ MODIF calculel2 Messages  DATE 18/01/2011   AUTEUR MEUNIER S.MEUNIER 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -148,10 +148,6 @@ Erreur lors d'une transformation de cham_no_s en cham_no :
 
 30: _("""
   on n'arrive pas a etendre la carte:  %(k1)s
-"""),
-
-31: _("""
- maille  %(k1)s  indisponible
 """),
 
 33: _("""

@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 18/01/2011   AUTEUR DESOZA T.DESOZA 
 # TITRE CONTACT DE HERTZ ENTRE 2 DEMI-SPHERES
 # perf005a.para = tps_job 60 mem_job 42Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -22,7 +22,7 @@
 #       (ISSU DE SSNV104I)
 #---------------------------------------------------------------------------
 
-DEBUT(CODE=_F(NOM='PERF005A',NIV_PUB_WEB='INTERNET'),MEMOIRE=_F(DYNAMIQUE=400,),)
+DEBUT(CODE=_F(NOM='PERF005A',NIV_PUB_WEB='INTERNET'),)
 
 MA=LIRE_MAILLAGE(FORMAT='MED')
 
@@ -36,8 +36,8 @@ MO=AFFE_MODELE(MAILLAGE=MA,
                        PHENOMENE='MECANIQUE',
                        MODELISATION='3D',),);
 
-MA=MODI_MAILLAGE(reuse =MA, MAILLAGE=MA, ORIE_PEAU_3D=_F(GROUP_MA='SESC',), );
-MA=MODI_MAILLAGE(reuse =MA, MAILLAGE=MA, ORIE_PEAU_3D=_F(GROUP_MA='SMAI',), );
+MA=MODI_MAILLAGE(reuse =MA, MAILLAGE=MA, ORIE_PEAU_3D=_F(GROUP_MA=('SESC','SMAI',),), );
+
 #_____________________________________________________________________
 #
 #                    DEFINITION DES MATERIAUX
@@ -99,12 +99,5 @@ SIELNO=CREA_CHAMP(TYPE_CHAM='NOEU_SIEF_R', OPERATION='EXTR', RESULTAT=RESU,
 
 TEST_RESU(CHAM_NO=_F(CHAM_GD=SIELNO, GROUP_NO='G1', NOM_CMP='SIYY', VALE=-2798.300,
                      CRITERE='RELATIF', PRECISION=0.16, REFERENCE='ANALYTIQUE',),);
-
-if 0 : # pour compter les noeuds en contact (ceux qui ont CONT != 0.) :
-    XXX=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_INFC_R', INFO=2,
-                     NOM_CHAM='VALE_CONT', RESULTAT=RESU, NUME_ORDRE=1)
-    # pour compter les noeuds en contact, on peut faire :
-    #    cat xxxx.mess |  grep 'N[0-9]* *| *0"backslash".[1-9]' | wc -l
-
 
 FIN();

@@ -3,7 +3,7 @@
      &                   LQUALI,RDESQ,TYPE,IETDEB,IETRAT,RCTDEB,LDIST)
       IMPLICIT NONE
 !           CONFIGURATION MANAGEMENT OF EDF VERSION                  
-!& MODIF AMUMPT MUMPS  DATE 10/01/2011   AUTEUR BOITEAU O.BOITEAU 
+!& MODIF AMUMPT MUMPS  DATE 18/01/2011   AUTEUR DESOZA T.DESOZA 
 ! ================================================================== 
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D              WWW.CODE-ASTER.ORG 
 !                                                                    
@@ -169,20 +169,25 @@ C     COMMANDE AGREGEE ET SI INFO=2
       ENDIF
       
       IF ((.NOT.LCMDE).AND.(NIV.GE.2)) THEN
-C --- VECTEURS DE MONITORING
+C ---   VECTEURS DE MONITORING
         KMONIT(1)='&MUMPS.INFO.MAILLE'
         KMONIT(2)='&MUMPS.INFO.MEMOIRE'
         KMONIT(9)='&MUMPS.NB.MAILLE'
         KMONIT(10)='&MUMPS.INFO.MEM.EIC'
         KMONIT(11)='&MUMPS.INFO.MEM.EOC'
         KMONIT(12)='&MUMPS.INFO.MEM.USE'      
+
+C ---   TEST POUR EVITER LE MONITORING LORSQUE LDLT_SP EST UTILISE
+        CALL JEEXIN(KMONIT(1),IRET)
+        IF (IRET.EQ.0) GOTO 999
+
         CALL JEVEUO(KMONIT(1),'E',MONIT(1))
         CALL JEVEUO(KMONIT(2),'E',MONIT(2))
         CALL JEVEUO(KMONIT(9),'E',MONIT(9))
         CALL JEVEUO(KMONIT(10),'E',MONIT(10))
         CALL JEVEUO(KMONIT(11),'E',MONIT(11))
         CALL JEVEUO(KMONIT(12),'E',MONIT(12))
-       ENDIF          
+      ENDIF          
 C       ------------------------------------------------
 C       TRAITEMENTS PROPREMENT DIT
 C       ------------------------------------------------

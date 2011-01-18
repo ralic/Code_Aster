@@ -1,9 +1,9 @@
       SUBROUTINE IMPREF(ICOD  ,SDSUIV,TITRE ,FORMA )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 21/12/2010   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 17/01/2011   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -22,7 +22,7 @@ C RESPONSABLE ABBAS M.ABBAS
 C
       IMPLICIT NONE
       INTEGER      ICOD
-      CHARACTER*24 SDSUIV
+      CHARACTER*19 SDSUIV
       CHARACTER*16 TITRE(3)
       INTEGER      FORMA
 C
@@ -69,7 +69,9 @@ C
       PARAMETER    (ZDEF=32)
       INTEGER      J,ISUIV
       CHARACTER*16 TITCOL(3,ZDEF)
-      INTEGER      FORCOL(ZDEF)
+      INTEGER      FORCOL(ZDEF)      
+      CHARACTER*24 DDLTIT
+      INTEGER      JDDLTI
 
 
       DATA (TITCOL(J,1),J=1,3)/ '   ITERATIONS   ',
@@ -203,26 +205,26 @@ C
       DATA FORCOL(22) /1/
 
 
-      DATA (TITCOL(J,23),J=1,3)/ '   SUIVI DDL    ',
-     &                           '      01        ',
+      DATA (TITCOL(J,23),J=1,3)/ '                ',
+     &                           '                ',
      &                           '                '/
       DATA FORCOL(23) /2/
 
 
-      DATA (TITCOL(J,24),J=1,3)/ '   SUIVI DDL    ',
-     &                           '      02        ',
+      DATA (TITCOL(J,24),J=1,3)/ '                ',
+     &                           '                ',
      &                           '                '/
       DATA FORCOL(24) /2/
 
 
-      DATA (TITCOL(J,25),J=1,3)/ '   SUIVI DDL    ',
-     &                           '      03        ',
+      DATA (TITCOL(J,25),J=1,3)/ '                ',
+     &                           '                ',
      &                           '                '/     
       DATA FORCOL(25) /2/
 
 
-      DATA (TITCOL(J,26),J=1,3)/ '   SUIVI DDL    ',
-     &                           '      04        ',
+      DATA (TITCOL(J,26),J=1,3)/ '                ',
+     &                           '                ',
      &                           '                '/     
       DATA FORCOL(26) /2/
 
@@ -263,20 +265,24 @@ C ----------------------------------------------------------------------
 C 
       CALL JEMARQ()  
 C
-      IF ((ICOD.LE.0).OR.(ICOD.GT.32)) THEN
+      IF (ICOD.GT.32) THEN
         WRITE(6,*) 'ICOD:',ICOD
         CALL ASSERT(.FALSE.)
       ENDIF
-
-      FORMA   = FORCOL(ICOD)
-
-      IF ((ICOD.GE.23).AND.(ICOD.LE.26)) THEN
-        ISUIV  = (ICOD-22)
-        CALL SUIIMP(SDSUIV,ISUIV ,3   ,TITRE )
+C
+      IF (ICOD.LT.0) THEN
+        ISUIV    = -ICOD
+        DDLTIT   = SDSUIV(1:14)//'     .TITR'
+        CALL JEVEUO(DDLTIT,'L',JDDLTI)   
+        TITRE(1) = ZK16(JDDLTI+3*(ISUIV-1)+1-1)
+        TITRE(2) = ZK16(JDDLTI+3*(ISUIV-1)+2-1)
+        TITRE(3) = ZK16(JDDLTI+3*(ISUIV-1)+3-1)
+        FORMA    = 2
       ELSE
         TITRE(1) = TITCOL(1,ICOD)
         TITRE(2) = TITCOL(2,ICOD)
         TITRE(3) = TITCOL(3,ICOD)
+        FORMA    = FORCOL(ICOD)
       ENDIF
 
       CALL JEDEMA()

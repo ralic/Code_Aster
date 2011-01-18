@@ -1,8 +1,8 @@
-#@ MODIF observation Messages  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
+#@ MODIF observation Messages  DATE 17/01/2011   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -19,43 +19,29 @@
 # ======================================================================
 # RESPONSABLE DELMAS J.DELMAS
 
+
 def _(x) : return x
 
 cata_msg = {
 
-1 : _("""
- l'entité  %(k1)s  n'est pas possible  %(k2)s 
-"""),
-
-2 : _("""
- erreur dans les données  d'observation
- le noeud  %(k1)s n'existe pas dans  %(k2)s 
-"""),
-
 3 : _("""
- erreur dans les données d'observation
- le GROUP_NO  %(k1)s n'existe pas dans  %(k2)s 
+Il y aura, au maximum, %(i1)d observations à chaque instant sélectionné pour cela.
 """),
 
 4 : _("""
- erreur dans les données d'observation
- la maille  %(k1)s n'existe pas dans  %(k2)s 
+Il y a %(i1)d observations et on ne peut pas en faire plus de %(i2)d.
 """),
 
 5 : _("""
- erreur dans les données d'observation
- le GROUP_MA  %(k1)s n'existe pas dans  %(k2)s 
+On ne peut faire plus de %(i1)d SUIVI_DDL.
+Le nombre de SUIVI_DDL permis dépend de l'affichage du tableau de convergence et donc des fonctionnalités activées.
 """),
 
 6 : _("""
- erreur dans les données d'observation
+ Erreur dans les données d'observation
  pour "NOM_CHAM"  %(k1)s , il faut renseigner  %(k2)s ou  %(k3)s 
 """),
 
-7 : _("""
- erreur dans les données d'observation
- pour "NOM_CHAM"  %(k1)s , il faut renseigner  %(k2)s et  %(k3)s 
-"""),
 
 8 : _("""
  Variation de la déformation supérieure au seuil fixé :
@@ -65,38 +51,10 @@ cata_msg = {
     numéro ordre : %(i1)d
 """),
 
-45 : _("""
-Les champs de type absolu ne sont accessibles qu'en présence de modes statiques
+37 : _("""
+  %(i1)d observations réalisées pour ce pas de temps
 """),
 
-49 : _("""
- il faut definir "LIST_ARCH" ou "LIST_INST" ou "INST" ou "PAS_OBSE"
- au premier mot cle facteur "OBSERVATION"
-"""),
 
-50 : _("""
- seule la valeur de "LIST_ARCH" ou "LIST_INST" ou "INST" ou "PAS_OBSE"
- du premier mot cle facteur "OBSERVATION" est prise en compte
-"""),
-
-79 : _("""
- DDL inconnu sur le noeud ou la maille specifiée pour le suivi
-"""),
-
-85 : _("""
-Le nombre de SUIVI_DDL est limité à 4.
-"""),
-
-86 : _("""
-Mélange de champs de nature différente dans le meme mot-clé facteur SUIVI.
-"""),
-
-87 : _("""
-Mélange de champs de nature différente dans le meme mot-clé facteur OBSERVATION
-"""),
-
-99: _("""
- le champ %(k1)s est incompatible avec la commande  %(k2)s
-"""),
 
 }

@@ -1,0 +1,2114 @@
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR abbas        ABBAS Mickael          DATE 01/17/2011 - 04:01:57
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 014246 DU 2009-11-30 16:15:13
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+    Rxc3xa9xc3xa9criture de l'observation du suivi ddl en 10
+FONCTIONNALITE
+   But
+   ===
+   
+   Permettre de faire des OBSERVATION et des SUIVI_DDL avec des formules sur les composantes.
+   
+   
+   On peut ainsi observer des champs aux noeuds (DEPL, VITE, etc) et des champs aux points de
+   gauss
+   (VARI_ELGA, SIEF_ELGA).
+   OBSERVATION et SUIVI_DDL ont une partie commune: l'extraction des valeurs.
+   
+   OBSERVATION fonctionne avec STAT_NON_LINE, DYNA_NON_LINE et THER_NON_LINE. C'est désormais
+   une table "container".
+   SUIVI_DDL  fonctionne avec STAT_NON_LINE et DYNA_NON_LINE (pas THER_NON_LINE car
+   l'affichage de cette dernière commande n'est pas encore "au niveau" de ce qui se fait dans
+   OP0070).
+   
+   Champs aux noeuds
+   =================
+   
+   Extraire une composante (EVAL_CMP='VALE') ou une formule (EVAL_CMP='FORMULE') sur les
+   composantes en un ou plusieurs noeuds (EVAL_CHAMP='VALE'), ou par opération entre un ou
+   plusieurs nœuds (EVAL_CHAMP=MIN/MAX/MOY)
+   
+   Choix du champ: NOM_CHAM
+   Choix de la composante: EVAL_CMP + NOM_CMP
+    Si EVAL_CMP = 'VALE' on extrait les valeurs des composantes (pas plus de 20)
+    Si EVAL_CMP = 'FORMULE' on applique une FORMULE sur les composantes (ex: norme, Von
+   Mises, etc., à définir par la commande FORMULE)
+   Sur un groupe de noeuds (donné par NOEUD/GROUP_NO/MAILLE/GROUP_MA/TOUT='OUI')
+   Choix de l'extraction sur le champ: VALE/MIN/MAX/MOY
+   
+   Champs aux points de Gauss
+   ==========================
+   
+   Pareil que NOEU, sauf qu'on peut choisir un POINT/SOUS_POINT d'intégration ou le
+   MAX/MIN/MOY sur tous les POINT/SOUS-POINT d'une maille.
+   
+   Sélection des instants
+   ======================
+   
+   Pour SUIVI_DDL, on n'a pas le choix: le calcul et l'affichage seront faits à chaque
+   itération de Newton
+   Pour l'OBSERVATION, on peut donner une liste d'instants (LIST_INST/INST) ou une fréquence
+   d'observation (PAS_OBSE)
+   
+   Spécifique SUIVI_DDL:
+   =====================
+   
+   On peut donner le titre de la colonne dans TITRE.
+   Sinon, il y aura seulement un numéro
+   
+   Affichages
+   ==========
+   
+   Pour l'OBSERVATION, on indique en début d'OP0070:
+   Il y aura 34 observations à chaque instant sélectionné pour cela.
+   Puis, à chaque pas de temps:
+   33 observations réalisées pour ce pas de temps
+   Pour SUIVI_DDL, rien à faire: on voir les colonnes
+   
+   
+   Réalisation
+   ===========
+   
+   Ajout de 34 routines fortran
+   Résorption de toutes les anciennes routines (en particulier celles commençant par DYO*)
+   
+   Écriture des procédures d'extraction: nmext*.f
+   
+   Pour la gestion des liste d'instants et d'observation (PAS_OBSE), on prépare des routines
+   génériques qui serviront partout dans OP0070 (pour l'OBSERVATION, l'ARCHIVAGE, le
+   CRIT_FLAMB,; etc.)
+   nmcrit.f:C ROUTINE *_NON_LINE (UTILITAIRE - SELEC. INST.)
+   nmcrpa.f:C ROUTINE *_NON_LINE (UTILITAIRE - SELEC. INST.)
+   nmcrpo.f:C ROUTINE *_NON_LINE (UTILITAIRE - SELEC. INST.)
+   nmcrpp.f:C ROUTINE *_NON_LINE (UTILITAIRE - SELEC. INST.)
+   nmcrpx.f:C ROUTINE *_NON_LINE (UTILITAIRE - SELEC. INST.)
+   Ces routines lisent les données utilisateurs (LIST_INST/INST/PAS_*/PRECISION/CRITERE) et
+   créent les structure de données idoines.
+   La routine NMCRIT permet de dire si l'instant courant est sélectionné.
+   
+   CAPY: création de catalogues communs c_observation, c_suivi_ddl
+   Bonus;: création de c_pilotage et c_archivage
+   
+   PY: création et/ou modification de observation.py, suividdl.py et extraction.py
+   
+   Validation
+   ==========
+   
+   Modification de la syntaxe sur :
+   fdnv100a,hsnv125c,hsnv125e,perfe03a,sdls115a,sdls115b,sdnd102b,ssep001a,ssep002a.code
+   ssnd105a,ssnd105b,ssnv104e,ssnv118d,wtnp120a,wtnp120b,wtnp120c,wtnp120d,wtnp123a.code
+   wtnp123b,wtnp123c,wtnp123d,ttnl02a
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.51.03
+VALIDATION
+    liste OBSERVATION+SUIVI_DDL+restreinte
+NB_JOURS_TRAV  : 25.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 016052 DU 2010-12-10 14:22:26
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+    MECA_NON_LINE : transformer la table simple OBSERVATION en table_container
+FONCTIONNALITE
+   Afin de préparer les fiches issue14849 et issue12440 (entre autres), cette fiche propose
+   de transformer la table d'OBSERVATION d'OP0070 en table_container.
+   
+   Désormais, OBSERVATION est une table container. Pour l'instant, elle ne contient que les
+   valeurs extraites (donc des purs réels)
+   Nous avons donc trois colonnes supplémentaires:
+   - NOM_OBJET: 'VALEUR'
+   - NOM_SD = ' '
+   - TYPE_SD = 'R'
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.51.03
+VALIDATION
+    aucune
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012948 DU 2008-12-05 15:18:08
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+    AR01 - STAT_NON_LINE/OBSERVATION : suivre la moyenne de champs sur un groupe de mailles ?
+FONCTIONNALITE
+   Dans le cadre de la ré-écriture de l'OBSERVATION (fiche issue14246), je reprend à mon
+   compte cette fiche.
+   
+   Il serait désormais possible d'appliquer des formules sur les SIEF_ELGA, VARI_ELGA et DEPL
+   (VITE/ACCE).
+   Que ce soit dans l'OBSERVATION ou le SUIVI_DDL.
+   
+   Pour plsu de détails, voir issue14246
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.51.03
+VALIDATION
+    liste OBSERVATION+restreinte
+NB_JOURS_TRAV  : 5.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 015532 DU 2010-09-10 12:39:35
+TYPE anomalie concernant Code_Aster (VERSION 9.1)
+TITRE
+    SUIVI_DDL : FORC_NODA possible dans le catalogue mais non implantxc3xa9
+FONCTIONNALITE
+   Thomas se plaint:
+   
+   Dans le catalogue on permet de "suivre" FORC_NODA au cours du calcul (SUIVI_DDL='OUI')
+   mais dans le fortran ce n'est pas prévu d'où une erreur (et pan le CALL ASSERT !)
+   
+   On rebranche FORC_NODA dans SUIVI_DDL et OBSERVATION.
+   A noter que FORC_NODA contient les efforts intérieurs (Bt.sigma) + les forces de
+   frottement (méthode discrète) + les forces de contact/frottement (XFEM et méthode continue)
+   
+   On valide dans ssnv118d.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.51.03
+VALIDATION
+    ssnv118d
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 016192 DU 2011-01-13 10:13:09
+TYPE express concernant Code_Aster (VERSION 9.1)
+TITRE
+    Identification des DDL dans OP0070
+FONCTIONNALITE
+   Pour préparer la restitution de J.Beaurain sur la formulation de l'endommagement aux
+   nœuds, cette fiche fait évoluer la prise en compte des grandes rotations dans SNL/DNL.
+   
+   Actuellement, la SD SDNURO permet de repérer les degrés de grandes rotations pour faire la
+   mise à jour du vecteur des inconnues nodales.
+   Cette fiche étend le périmètre d'utilisation de cette SD:
+   - extension de SDNURO pour le repérage d'autres composantes que DRX/DRY/DRZ
+   - modification des routines de MàJ du vecteur des inconnues nodales
+   - utilisation des routines utilitaires dédiées dans la routine de préparation nurota.f de
+   SDNURO
+   
+   Désormais, on utilise la SD de nom SDNUME.
+   Dans la routine NMNUME.F (appelée dasn NMINIT), on crée les SD nécessaires pour repérer
+   les DDL qui vont bien.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    liste restreinte
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR boiteau      BOITEAU Olivier        DATE 01/18/2011 - 10:10:44
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 016171 DU 2011-01-07 16:07:51
+TYPE anomalie concernant Code_Aster (VERSION 9.1)
+TITRE
+    Problème  critère de Sturm + MUMPS + parallélisme
+FONCTIONNALITE
+   PROBLEME
+   ========
+         En calcul modal, le test de Sturm n'est pas consistant entre le mode seq et
+         le mode parallèle lorsqu'on utilise le solveur MUMPS + le renuméroteur METIS
+         sur le cas-test zzzz200c.
+   
+   ANALYSE
+   ========
+   En cherchant des cas-tests modaux pour blinder l'introduction du // ds la calcul
+   modal avec MUMPS, je suis tombé sur un pb que je redoutais avec le cas-test 
+   zzzz200c.
+          
+      --> MUMPS a un comportement légèrement différent en seq et en //
+          quant à la fourniture d'un ingrédient indispensable à l'utilisation std
+          de MODE_ITER_SIMULT (option BANDE et/ou test de Sturm): le nbre de
+          pivots négatifs de le factorisée.
+   
+   * zzzz200c: GEP de taille 20 000 avec seulement 125 ddls actifs (énormément de
+     blocage via des Lagranges). On cherche les 12 modes les plus petits.
+   
+   * Ce pb a déjà été souligné par un pro du calcul modal (post du 14/06/08 de Meerber
+   gen sur le forum MUMPS), mais sans succès je crois. L'utilisateur MUMPS n'a 
+   guère de moyens clairs pour agir directement ou indirectement sur ce critère.
+   
+   * L'utilisateur Aster peut contourner le pb (repasser en seq ou utiliser MULT_FRONT,
+   débrancher le critère de Sturm, ne pas utiliser l'option 'BANDE', changer les 
+   parametres du solveur..) mais ces solutions ne devraient être qu'exceptionnelles !
+   
+   * Les matrices traitées ici sont régulières donc il n'y a pas d'interférences entre
+     cet output fournit par MUMPS et sa fonctionnalité de détection de singularité (
+     qu'on ne peut pas débrancher en modal car c'est une fonctionnalité indispensable
+     sauf en mettant NPREC à une valeur très grande).
+   
+   * Le pb ne se pose qu'avec la combinaison METIS + PRETRAITEMENTS. Si on débranche ces
+    derniers ou si on change de renuméroteur, cela marche: le run seq et le // ont le
+    même comportement.
+   
+    --> J'ai soumis le pb à l'équipe MUMPS. Cette fiche a servi à tracer nos échanges et
+     nos analyses/tests. L'équipe MUMPS a la matrice pour continuer à investiguer.
+   
+    --> Conclusion: je restitue ce cas-test ds la base parallèle pour tester le modal en
+      parallèle avec le renuméroteur PORD (cela permet de tester explicitement ce 
+      renuméroteur car la plupart des cas-tests MUMPS utilise la valeur 'AUTO')
+      Je note ds son entête sa particularité numérique vis-à-vis de MUMPS (STURM et
+      PCENT_PIVOT).
+      A utiliser avec 2 process MPI.
+   
+   SOURCE RESTITUEE
+   ================
+     cas-test zzzz200c.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    informatique, non-regression
+NB_JOURS_TRAV  : 2.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013095 DU 2009-01-28 14:18:31
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+    SV99 - Activation du renumxc3xa9roteur SCOTCH dans MUMPS
+FONCTIONNALITE
+   EVOLUTION
+   =========
+      Upgrade de version de SCOTCH: 4.0  -> 5.1.11
+      Activation du renuméroteur SCOTCH avec le solveur linéaire MUMPS. 
+   
+   ANALYSE
+   =======
+   Depuis qqes temps, les développements det outil en tant que renuméroteur sont devenus plus
+   mâtures. Son équipe de dévt s'est gréer. C'est désormais un outil de classe mondial:
+         - fiable, robuste, documenté et testé pour un usage industriel,
+         - avec une équipe, une stratégie et une vision long terme (pérénité),
+         - qui rivalise avec les meilleurs (METIS, Mondriaan, Zoltan...),
+         - que privilégie certaines équipes développant des solveurs: MUMPS, Pastix, HIPS...
+         - METIS n'est plus maintenu/developpé --> SCOTCH est sa relève !
+   
+   Les versions de MUMPS et de SCOTCH sont sur mon compte BULL: MUMPS4.9.2 et scotcth_5...
+   
+   IMPACT UTILISATEUR
+   ==================
+       Je rajoute la valeur SCOTCH à la liste des renuméroteurs dispo avec MUMPS.
+   
+   VALIDATION  (seq et // sur Bull)
+   ==========
+       En fait aucun renuméroteur (à part parfois METIS) n'est explicitement testé avec MUMPS
+   et je me suis aperçut (notamment en calcul modal) que ce paramètre pouvait avoir son impor
+   tance pour la fiabilité/perf des résultats.
+      Je rajoute donc qqes calculs:
+        mumps01a --> test MECA_STATIQUE + symetrique réel:   MUMPS avec les 6 renuméroteurs,
+        mumps03a -->  cmde éclatées + sym complexe       :    idem
+        mumps04a --> STAT_NON_LINE + non sym réel        : METIS + SCOTCH
+        mumps05a --> gros calcul sur un cube             : METIS + SCOTCH
+   
+       Temps de la partie solveur linéaire (MUMPS):
+          METIS:  214s
+          SCOTCH: 271s
+   
+   SOURCES RESTITUEES
+   ==================
+   
+   CAPY
+   calc_elem.capy       c_solveur.capy         dyna_line_tran.capy   macro_matr_asse.capy  
+   mode_iter_simult.capy  ther_lineaire.capy
+   calc_forc_ajou.capy  defi_base_modale.capy  dyna_tran_modal.capy  meca_statique.capy    
+   mode_statique.capy     ther_non_line.capy
+   calc_matr_ajou.capy  dyna_line_harm.capy    impr_sturm.capy       mode_iter_inv.capy    
+   nume_ddl.capy          ther_non_line_mo.capy
+   
+   PY
+   sd_solveur.py
+   
+   TEST
+   mumps01a  mumps03a  mumps04a mumps05a
+   
+   CONFIG
+   config.txt  config.mpi
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : U4.50.01
+VALIDATION
+    informatique, non-regression, fonctionnel
+NB_JOURS_TRAV  : 3.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR desroches    DESROCHES Xavier       DATE 01/17/2011 - 03:32:42
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 015290 DU 2010-07-01 15:15:05
+TYPE evolution concernant Code_Aster (VERSION )
+TMA : DeltaCad
+TITRE
+    QUA03 Couverture de code DKTG
+FONCTIONNALITE
+   Objectif : vérification de l'option EPSI_ELNO_DEPL pour la 
+   modélisation DKTG
+   
+   Réalisation : on ajoute
+   - dans le cas-test  ssls126a "Flexion d'une dalle en béton 
+   armé (modèle GLRC) appuyée sur deux cotés" le calcul de 
+   l'option et on vérifie la valeur de la déformation EPXX par 
+   rapport a la solution analytique
+   - dans la doc V3.03.126 du cas-test le résultat
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : V3.03.126
+VALIDATION
+    ssls126a
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 015288 DU 2010-07-01 15:02:57
+TYPE evolution concernant Code_Aster (VERSION )
+TMA : DeltaCad
+TITRE
+    QUA03 Couverture de code POST_RELEVE_T
+FONCTIONNALITE
+   On regroupe les deux fiches suivantes
+    - 15288 : QUA03: Couverture de code POST_RELEVE_T :
+               - extraction sur un maillage à cotés courbes
+               - repère 'UTILISATEUR'
+               - calcul du TRESCA moyen
+    - 15289 : QUA03: Couverture de code AFFE_CHAR_MECA
+               - LIAISON_GROUP 'DNOR'
+   
+   Le test de LIAISON_GROUP 'DNOR' a fait apparaitre un bug dans CALIAG que l'on 
+   corrige (en V9 aussi).
+   
+   On ajoute une nouvelle modélisation au cas-test ZZZZ136D, qui reprend les 
+   besoins de validation des 2 commandes. 
+   
+   Dans ce cas-test on modélise une structure 2D (voir figure ci-jointe) 
+   
+   => Conditions
+     - Coté AD : encastrement
+     - Coté BC : pression imposée et déplacement suivant y nul
+     - Coté EF : on impose une liaison du type
+        AFFE_CHAR_MECA(LIAISON_GROUP=_F( DDL_1='DNOR',...),...)
+   
+   => Post-traitement POST_RELEVE_T
+     - Extraction d'une containte sur le coté courbe AB 
+     - Calcule dans le repère utilisateur sur le coté EF du déplacement
+     - Calcul du TRESCA moyen
+        a) CALC_ELEM calcule EQUI_ELNO_SIGM sur la structure
+        b) POST_RELEVE_T ( OPERATION="MOYENNE" sur la composante TRESCA 
+   du champ EQUI_ELNO_SIGM"
+      
+   => Vérification des résultats 
+   mise en place de TEST_RESU de non-regression sur les calculs 
+   effectués par POST_RELEVE_T
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : V1.01.136 V3.03.126
+VALIDATION
+    ZZZZ136D SSLS126A
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 015289 DU 2010-07-01 15:10:52
+TYPE evolution concernant Code_Aster (VERSION )
+TMA : DeltaCad
+TITRE
+    QUA03 Couverture de code AFFE_CHAR_MECA
+FONCTIONNALITE
+   Cette fiche est réalisée dans la fiche 15288
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    sans
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 016120 DU 2010-12-23 16:30:04
+TYPE anomalie concernant Code_Aster (VERSION 9.1)
+TITRE
+    Contraintes xc3xa9quivalentes en AXI Fourier
+FONCTIONNALITE
+   Calcul AXIS_FOURIER :
+   le calcul plante lors du calcul des contraintes équivalentes avec le message :
+   
+   <CALCULEL2_71>                                                                  
+      ! on ne trouve pas dans les arguments de la routine CALCUL de champ à 
+   associer au parametre: PCONTRR !
+   option:EQUI_ELNO_SIGM                                                           
+   type_element:MEFOTR3  
+   
+   Le champ de contraintes existe bien mais il est ELNO au lieu d'être ELGA, 
+   nécessaire pour calculer les équivalents. En calculant SIEF_ELGA, le calcul
+   est OK.
+   
+   On le précise dans la doc U de Fourier U2.07.01.
+   
+   Néanmoins le message émis par CALCUL n'est pas le bon. On devrait avoir "le 
+   champ n'est pas de bon type", car un champ de contraintes existe bien. J'émets 
+   donc une fiche pour que Jacques regarde s'il peut améliorer les 
+   choses.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : U2.07.01
+VALIDATION
+    fichiers associxc3xa9s xc3xa0 la fiche
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR desoza       DE SOZA Thomas         DATE 01/18/2011 - 06:48:50
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 016202 DU 2011-01-14 08:40:45
+TYPE express concernant Code_Aster (VERSION 9.1)
+TITRE
+    Monitoring MUMPS et LDLT_SP
+FONCTIONNALITE
+   Lorsque l'on utilise le préconditionneur 'LDLT_SP' avec les solveurs itératifs 'GCPC' et
+   'PETSC', on ne crée pas les objets de monitoring de MUMPS (qui est utilisé par LDLT_SP
+   rappelons-le).
+   Du coup depuis la 10.3.5 et la petite modif autour du monitoring, les tests petsc01* qui
+   sont en INFO=2 et qui utilisent 'LDLT_SP' plantent en erreur JEVEUX (objet inexistant).
+   
+   Je protège le monitoring (par un test d'existence dans AMUMPT.F) pour que cela marche à
+   nouveau.
+   
+   Remarque : on ne le détecte pas avec les tests car PETSc ne tourne que en parallèle, et en
+   parallèle les tests sont actuellement cassés pour une autre raison.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    petsc01*
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 016180 DU 2011-01-10 17:53:26
+TYPE anomalie concernant Code_Aster (VERSION 9.1)
+TITRE
+    Contact - Couverture de code
+FONCTIONNALITE
+   Anomalie
+   ========
+   
+   La couverture de code consécutive à la stabilisation de la version 10.3 a montré
+   concernant le contact :
+   - qu'une routine n'était plus appelée. Il s'agit de VTGAXP qui est devenue une branche
+   morte et que l'on supprime donc.
+   - que les routines CUIMP1/CUDISD ne sont pas appelées par les tests. C'est normal car
+   elles ne sont activées qu'en INFO=2 (Débogage). On les déplace donc dans le répertoire debug.
+   - que la routine MMCPOU devenue entre temps APCPOU n'était pas appelée. C'est sur ce
+   dernier point que se concentre cette fiche.
+   
+   Cas de la routine APCPOU
+   ------------------------
+   
+   APCPOU permet de construire le repère local (tangentes et normale) aux noeuds maîtres et
+   esclaves des surfaces de contact pour les poutres. Le repère local aux noeuds ne sert que
+   lorsque l'on fait :
+   - du lissage
+   - que l'on sélectionne une normale autre que 'MAIT' c'est à dire 'ESCL' ou bien
+   'MAIT_ESCL' (moyenne des maîtres et des esclaves)
+   
+   Le repère local des poutres étant construit grâce à l'aide de l'utilisateur (donnée de la
+   seconde tangente via VECT_Y), le lissage comme la normale 'MAIT_ESCL' n'est pas possible
+   avec les éléments de poutre. En pratique cela signifie que le repère local n'est construit
+   que lorsque la normale servant à l'écriture des conditions de contact est la normale 'ESCL'.
+   
+   Si on fait ainsi dans le test SSNV505H on voit que le test se plante en FPE (erreur
+   numérique).
+   
+   Analyse & Correction
+   --------------------
+   
+   Actuellement le calcul du repère local des poutres pour la surface esclave est mal
+   programmé. On ne calcule en particulier pas la 1ère tangente (celle suivant l'axe de la
+   poutre) ce qui rend impossible toute détermination de la normale.
+   On corrige en 3 étapes :
+   1. On appelle le Newton de projection pour déterminer la 1ère tangente
+   2. On fait le produit vectoriel TAU2^TAU1 pour obtenir la normale intérieure
+   3. Dans le calcul proprement dit des normales esclaves (normales aux noeuds), on fait bien
+   en sorte que le second vecteur tangent est bien redéfini à la valeur de VECT_Y. En effet
+   les tangentes sont reconstruites à partir de la normale et rien n'implique que l'on
+   retrouve TAU2=VECT_Y.
+   
+   Validation
+   ----------
+   
+   Dans SSNV505H, on rajoute un calcul avec la normale 'ESCL'. On teste par de la
+   non-régression (j'ai vérifié visuellement que la solution était cohérente). La
+   non-régression est justifiée par le fait que la réponse de la structure est différente
+   suivant le choix de la normale (c'est connu sur ce test, un des seuls pour la validation
+   du contact entre poutres).
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    astout contact
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 016090 DU 2010-12-16 17:49:20
+TYPE anomalie concernant Code_Aster (VERSION 9.1)
+TITRE
+    En NEW10.3.2, les cas-tests feti009a,petsc01a, b, c, d,	e, f et g s'arretent en erreur fatale sur Bull MPI.
+FONCTIONNALITE
+   Anomalie
+   ========
+   
+   En NEW10.3.2, les cas-tests feti009a,petsc01a, b, c, d,	e, f et g s'arretent en erreur
+   fatale sur Bull MPI.
+   
+   Analyse
+   =======
+   
+   Ces tests s'arrêtent tous dans AFFE_MODELE car le mode de partitionnement ne permet pas de
+   distribuer un GREL à chaque processeur.
+   
+   On change donc le mode de partitionnement par défaut ('GROUP_ELEM') et on en profite pour
+   utiliser tous les modes de partitionnement disponibles ('CENTRALISE', 'MAIL_CONTIGU' et
+   'MAIL_DISPERSE'). On profite aussi de l'occasion pour enlever les paramètres MPI dans les
+   .para séquentiels de petsc01a, b et c.
+   
+   Il existe par ailleurs une variable non initialisée dans l'interface MUMPS (seulement
+   depuis la 10.3.5) qui provoque une erreur JEVEUX lors des libérations ciblées.
+   
+   Impact : amumpm.F
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    astout mpi
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 016212 DU 2011-01-14 18:29:39
+TYPE express concernant Code_Aster (VERSION 9.1)
+TITRE
+    Mise au propre des tests de perf contact
+FONCTIONNALITE
+   Express
+   =======
+   
+   On nettoie les fichiers de commandes des tests de perf du contact (PERF005).
+   On supprime en particulier :
+   - le paramétrage mémoire DYNAMIQUE=400
+   - les blocs if 0: pour afficher le nombre de noeuds de contact
+   - le paramètre RESI_GEOM inutile
+   
+   On profite aussi de l'occasion pour activer le contact dès le début dans les modélisation
+   D-E-F ce qui diminue le temps de calcul.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    perf005
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR idoux        IDOUX Ludovic          DATE 17/01/2011 - 14:46:24
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 016142 DU 2011-01-04 14:12:49
+TYPE anomalie concernant Code_Aster (VERSION 10.4)
+TITRE
+    bug ENDO_ORTH_BETON matrice singulixc3xa8re dans le calcul de la matrice tangente
+FONCTIONNALITE
+   Probl�me :
+   On a r�alis� un calcul sur un �l�ment cube o� tous les ddl sont impos�s � 0, sauf les ddl
+   selon DX sur une face. On s'arr�te lors du calcul de la matrice tangente dans mgauss.f au
+   moment d'une �tape interm�diaire d'inversion de matrice.
+   Ci-joint, le fichier .mess du calcul.
+   
+   
+   Explication :
+   Lors du calcul de la matrice tangente, on a besoin de savoir quels sont les endommagements
+   potentiellement activ�s, � l'aide du calcul des forces thermodynamiques FD et FB li�es aux
+   endommagements de compression d et de traction B. La relation logique est la suivante : D
+   est actif si FD > 0. Un test est r�alis� sur FD : FD = max (FD, 0.D0).
+   En th�orie, le fait d'imposer les ddl � 0 (hormis ceux selon DX pour faire une traction
+   selon cet axe) conduit � une force thermodynamique FD exactement nulle. Or, on obtient des
+   valeurs de FD non nulles et positives de l'ordre de 10E-30. 
+   Par la suite, on calcule diff�remment la matrice tangente selon les cas. On se trouve ici
+   dans le mauvais cas de calcul, et on aboutit au probl�me de matrice singuli�re.
+   A noter que ce probl�me ne peut pas conduire � des r�sultats faux. Le syndrome est
+   uniquement un arr�t en erreur du calcul.
+   
+   
+   Solution :
+   FD est calcul� comme la diff�rence entre la force qui tend � endommager et une force
+   bloqu�e li�e � l'�tat d'endommagement actuel (�a permet de faire l'�crouissage du domaine
+   de r�versibilit�). Ce deuxi�me terme vaut : GAMMAD * D, o� GAMMAD est en Pascal et est un
+   param�tre mat�riau. 
+   On change le calcul de la partie positive de FD par : FD = max(R8PREM*GAMMAD,FD).
+   Ainsi, on ne consid�re un endommagement de compression actif que lorsque FD est
+   num�riquement significatif par rapport � GAMMAD. 
+   Cette correction m'a amen� � consid�rer que l'organisation des sources pouvaient �tre un
+   peu am�lior�es en briques fonctionnelles.
+   J'ai donc r�alis� un peu de m�nage + un peu de r�organisation des briques de calcul pour
+   condenser et clarifier l'int�gration de la loi de comportement pour tout ce qui touche au
+   calcul des forces thermodynamiques.
+   
+   
+   Validation :
+   On utilise SSNV217A
+   C'est un calcul de tractions simples et dune compression successives selon plusieurs
+   directions. On modifie la premi�re phase (traction simple selon X) pour se mettre dans le
+   cas du plantage.
+   Avant les modifs, le calcul s'arr�te en erreur.
+   Avec la surcharge, le calcul va jusqu'au bout. On doit changer les valeurs de non
+   r�gression de la premi�re et de la seconde phase du calcul puisqu'on a chang� les
+   conditions limites. Les valeurs de r�f�rence des phases 3 et 4 restent identiques.
+   
+   
+   Sources modifi�es :
+   CEOBFB.F
+   CEOBFD.F
+   LCEOB1.F
+   LCEOB2.F
+   LCEOB3.F
+   LCEOBB.F
+   LCEOBG.F
+   LCEOBL.F
+   MEOBG1.F
+   MEOBG2.F
+   MEOBG3.F
+   MEOBL1.F
+   MEOBL2.F
+   MEOBL3.F
+   
+   
+   Cas-test et impact documentation :
+   SSNV217A
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : V6.04.217
+VALIDATION
+    cas-test SSNV217A modifixc3xa9
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR meunier      MEUNIER Sébastien     DATE 01/18/2011 - 08:28:36
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 016196 DU 2011-01-13 11:13:39
+TYPE express concernant Code_Aster (VERSION 10.3)
+TITRE
+    Calcul EPSI_ELNO_DEPL en THM
+FONCTIONNALITE
+   Constat :
+   =========
+   
+   Dans te0600, pour le calcul de EPSI_ELNO_DEPL en THM, on procède de la manière suivante :
+   
+       CALL PPGAN2(JGANO,6,EPSM,EPSNO)
+       DO 300 INO = 1,NNO
+         DO 310 ISIG = 1,6
+           ZR(IDEFO+6*(INO-1)+ISIG-1) = EPSNO(6*(INO-1)+ISIG)
+   310   CONTINUE
+   300 CONTINUE
+   
+   Les déformations aux noeuds sont donc calculées et stockées dans un tableau intermédiaire
+   EPSNO, puis on recopie le tableau EPSNO dans le tableau ZR.
+   
+   Evolution réalisée :
+   ====================
+   
+   Cela n'a pas d'intérêt de passer par un tableau intermédiaire et fait perdre du temps. On
+   remplace donc ces lignes Fortran simplement par :
+   
+   CALL PPGAN2(JGANO,6,EPSM,ZR(IDEFO))
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    6 tests THM appelant epsi_elno_depl
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 015653 DU 2010-10-01 13:14:19
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+    Rxc3xa9sorption de la mxc3xa9thode Arlequin
+FONCTIONNALITE
+   Problème :
+   ==========
+   Suite à la note H-T64-2010-00903-FR sur les besoins en raccords de modèles dans Aster, on
+   a montré que la méthode Arlequin ne présente pas d'intérêt pour nos applications
+   actuellement en quasi-statique.
+   
+   De plus, elle est complètement bugguée (cf fiches anomalies 15026, 14552, 14308, 14015,
+   13978, 13952, 12738, 12388, 11470, 10288, 10287). La correction de ces fiches
+   nécessiterait de tout reprogrammer.
+   
+   Solution :
+   ==========
+   On résorbe la méthode Arlequin.
+   
+   Les documentations modifiées sont :
+   
+   AFFE_CHAR_MECA : U4.44.01.
+   SDs souterraines : D4.01.02
+   Introduction au Code_Aster : u1.02.00
+   Introduire une maille : d5.02.02
+   Utilisation de XFEM : u2.05.02
+   solveur : u4.50.01
+   mumps : r6.02.03
+   feti : r6.01.03
+   
+   Il faudra également supprimer les documentations :
+   D4.06.25, R3.03.08, V3.02.108, V3.04.145, V3.04.152, V6.03.135, V6.03.141
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : u4.44.01,d4.01.02,u1.02.00,d5.02.02,u2.05.02,u4.50.01
+VALIDATION
+    aucune
+NB_JOURS_TRAV  : 2.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 016074 DU 2010-12-16 10:30:35
+TYPE anomalie concernant Code_Aster (VERSION 9.1)
+TITRE
+    En NEW10.3.2, le cas-test sslp104b s'arrete en erreur fatale sur Bull, Calibre5,  Rocks et Aster4.
+FONCTIONNALITE
+   Cette anomalie n'existe plus car on supprime le test, suite à la résorption de la méthode Arlequin.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    aucune
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 015026 DU 2010-05-04 13:54:25
+TYPE anomalie concernant Code_Aster (VERSION 9.1)
+TITRE
+    ARLEQUIN - conditions limites
+FONCTIONNALITE
+   Il n'y a plus de problème avec le mot-clef COND_LIM d'Arlequin car la méthode Arlequin est
+   résorbée (fiche 15653).
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    aucune
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 014552 DU 2010-02-03 09:12:40
+TYPE anomalie concernant Code_Aster (VERSION 9.1)
+TITRE
+    ARLEQUIN - raccord coque-coque
+FONCTIONNALITE
+   Il n'y a plus de problème avec Arlequin et les raccords de coques dans Code_Aster car la
+   méthode Arlequin est résorbée du code. On dispose de plus d'un autre outil pour raccorder
+   les coques avec du 3D (mot-clef MASSIF_COQUE de affe_char_meca, fiche 13381)
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    aucune
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 014308 DU 2009-12-16 11:00:17
+TYPE anomalie concernant Code_Aster (VERSION 10.3)
+TITRE
+    ARLEQUIN - ssnp141
+FONCTIONNALITE
+   Problème :
+   ==========
+   
+   On ne trouve pas la solution analytique d'une poutre en flexion avec un raccord Arlequin
+   
+   Solution :
+   ==========
+   
+   Il n'y a plus de problème avec ce test car on résorbe la méthode Arlequin du code (fiche
+   15653) et on résorbe ce test également.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    aucune
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 014064 DU 2009-10-19 13:22:24
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+    FUTUR - Crxc3xa9ation du maillage d'intxc3xa9gration
+FONCTIONNALITE
+   Idée d'évolution :
+   ==================
+   
+   L'objectif de cette fiche est de pouvoir introduire un maillage spécifique pour
+   l'intégration des matrices de couplage de la méthode Arlequin. Ce maillage serait créé en
+   dehors d'Aster, lu dans le fichier de commandes par la commande LIRE_MAILLAGE et serait un
+   argument d'entrée pour AFFE_CHAR_MECA.
+   
+   Traitement :
+   ============
+   
+   On ne fait pas car on résorbe la méthode Arlequin du code (fiche 15653).
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    aucune
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 014015 DU 2009-10-09 15:17:20
+TYPE anomalie concernant Code_Aster (VERSION 10.3)
+TITRE
+    Cas-test poutre arlequin en quadratique
+FONCTIONNALITE
+   Problème :
+   ==========
+   
+   Dans le test Arlequin ssnp141a, si on transforme le maillage dans le fichier de commandes
+   de linéaire
+   à quadratique, les résultats sont fortement NOOK.
+   
+   Solution :
+   ==========
+   
+   Il n'y a plus de problème car la méthode Arlequin est résorbée du code (fiche 15653) et on
+   supprime ce test.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    aucune
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013978 DU 2009-10-05 11:40:50
+TYPE anomalie concernant Code_Aster (VERSION 10.3)
+TITRE
+    Modelisation arlequin avec maillage hexaedrique
+FONCTIONNALITE
+   Problème :
+   ==========
+   
+   Cette fiche fait suite au problème rencontré sur le cas-test sslv151a identique au
+   cas-test sslp104b hormis le maillage (maillage avec Salomé 100% hexaèdres, maillage avec
+   Gibi prismes+hexaèdres).
+   
+   Il s'agit d'une console 3D en flexion encastrée d'un coté et soumise à une force
+   surfacique de l'autre. 
+   Le fichier de commande est identique dans les deux cas-tests (meme type de liaison).
+   Avec le nouveau maillage généré avec la plate-forme Salomé, le test analytique concernant
+   la flèche est très satisfaisant (maillage avec Salomé 6.89E-04%, maillage avec Gibi
+   0.894%) mais très décevant concernant le test sur la contrainte au niveau de
+   l'encastrement (maillage avec Salomé -2.462%, maillage avec Gibi -1.520%).
+   Plusieurs tests ont été réalisés afin de mettre en évidence une anomalie
+   sousjacente sans résultat:
+   - Le rafinement des maillages a permis une convergence de la flèche mais pas celles des
+   contraintes
+   - Le tracé de la contrainte SIZZ suivant le long d'une arete ayant la meme direction que
+   la force exercée a montré une anomalie. Ce tracé ne montre pas la linéarité à laquelle on
+   s'attend. 
+   - Lorsque la modélisation est réalisée sans la méthode arlequin le résultat est correct et
+   les valeurs aussi.
+   Une poursuite des travaux facile à réaliser serait de mixer les deux types de maillages
+   (Gibi Salomé) afin de comprendre.
+   
+   Solution :
+   ==========
+   Il n'y a plus de problème avec le test sslp104 car on supprime la méthode Arlequin du code
+   (fiche 15653) et on supprime ce test également.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    aucune
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013952 DU 2009-09-28 16:15:44
+TYPE anomalie concernant Code_Aster (VERSION 10.3)
+TITRE
+    Arlequin : appariemment faux (2xc3xa8me problxc3xa8me) => RESU_FAUX
+FONCTIONNALITE
+   Problème :
+   ==========
+   
+   On constate de nombreux bugs variés sur l'appariement et la pondération des mailles dans
+   Arlequin.
+   
+   Solution :
+   ==========
+   
+   Il n'y a plus aucun problème car on résorbe la méthode Arlequin du code (fiche 15653).
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    aucune
+NB_JOURS_TRAV  : 3.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013330 DU 2009-04-21 11:26:18
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+    Arlequin - mise en boites et appariement des mailles
+FONCTIONNALITE
+   Idée d'évolution :
+   ==================
+   
+   Dans la méthode Arlequin, la première étape consiste à repérer les relations entre les 2
+   ensembles de mailles données par l'utilisateur. On dit que 2 mailles sont en relation s'il
+   existe une intersection "surfacique" en 2D ou "volumique" en 3D. On parle également
+   d'appariement de mailles.
+   
+   Pour résoudre ce problème non linéaire difficile a priori, une solution a été proposée par
+   G. Rateau : la mise en boites. Cet algorithme est détaillé dans sa thèse. Cependant, cet
+   algorithme conduit à des appariements de mailles érronés et donc à des résultats faux. Sur
+   certains cas où on dispose de résultats analytiques (cf travaux A. Berard), si on rétablit
+   l'appariement, on retrouve les valeurs correctes pour les matrices de couplage.
+   
+   L'objectif de cette fiche est donc de revoir complètement l'algorithme d'appariement des
+   mailles. On ne touche pas a priori à la mise en boites (qui elle, semble correcte) mais on
+   l'exploite différemment pour en déduire des résultats d'appariement de mailles correctes.
+   
+   Traitement :
+   ============
+   
+   On ne fait pas car on résorbe la méthode Arlequin du code (fiche 15653).
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    aucune
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013239 DU 2009-03-23 16:35:46
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+    Arlequin - traitement des noeuds coincidents
+FONCTIONNALITE
+   Idée d'évolution :
+   ==================
+   
+   La méthode Arlequin est conçue et programmée à l'origine pour traiter 2 maillages
+   foncièrement différents. La méthode doit être adaptée et revue en profondeur pour pouvoir
+   traiter convenablement le cas de 2 maillages assez voisins géométriquement. Cela pourrait
+   servir à la méthode Arlequin mais également pour la programmation de la méthode de
+   projection de champs par la méthode de minimisation proposée par N. Tardieu (thèse A. Berard)
+   
+   On pense par exemple au cas de maillages ayant des noeuds ou des arêtes en commun.
+   
+   La phase de mise en boîtes est probablement à l'origine de certains résultats faux dans de
+   tels cas et l'algorithmie doit en être sans doute modifiée.
+   
+   Traitement :
+   ===========
+   
+   On ne fait pas car on résorbe la méthode Arlequin du code (fiche 15653).
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    aucune
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012738 DU 2008-10-28 11:47:51
+TYPE anomalie concernant Code_Aster (VERSION 10.3)
+TITRE
+    Arlequin - Rxc3xa9sultats faux et forte sensibilitxc3xa9 au solveur
+FONCTIONNALITE
+   Problème :
+   ==========
+   En passant le test sslp104b de linéaire en quadratique, avec du Arlequin, le test_resu sur
+   les déplacements
+   devient fortement faux.
+   
+   Solution :
+   =========
+   
+   Il n'y a plus de problème car on supprime la méthode Arlequin du code (fiche 15653).
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    aucune
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012388 DU 2008-08-21 17:28:34
+TYPE anomalie concernant Code_Aster (VERSION 10.3)
+TITRE
+    ARLEQUIN - bug raccord 3D/coque
+FONCTIONNALITE
+   Problème :
+   ==========
+   En voulant tester les raccords 3D - coque avec Arlequin, on tombe face à de nombreux bugs
+   ou difficultés et les tests terminent en erreur :
+   
+      !------------------------------------------------------------------------!
+      ! <F> <JEVEUX_25>                                                        !
+      !                                                                        !
+      !                                                                        !
+      !      Nom de collection ou de répertoire inexistant : >ð§ÆK7@.NOMNOE< !
+      !                                                                        !
+      !                                                                        !
+      !                                                                        !
+      ! Cette erreur est fatale. Le code s'arrete.                             !
+      !------------------------------------------------------------------------!
+   
+   Un listing des difficultés rencontrées :
+   
+   1. dans lisnor, on trie mal les mailles pour le calcul des tangentes. On doit normalement
+   exclure les mailles de bord.
+   
+   2. Dans Arlequin, on a besoin d'éléments un peu "particuliers" de type QUAD6, HEXA16,
+   HEXA18, PENTA14 pour la mise en boîte des éléments de coque en 1D ou en 2D. On utilise les
+   fonctions de forme et leurs dérivées. L'accès aux fonctions de forme est pour l'instant
+   bridé. Pourquoi ?
+   
+   Solution :
+   ==========
+   
+   On résorbe la méthode Arlequin du code (fiche 15653).
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    aucune
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012382 DU 2008-08-19 11:22:43
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+    ARLEQUIN - impression maillage zone de collage
+FONCTIONNALITE
+   Idée d'évolution :
+   ==================
+   
+   Dans la méthode Arlequin, l'impression du maillage de la zone de collage est très utile
+   pour le développeur mais inutile pour l'utilisateur moyen. A l'heure actuelle,
+   l'impression du maillage au format gmsh est déclenchée par le mot-clef simple UNITE_GMSH.
+   
+   Après discussion avec Nicolas Tardieu, il me semble intéressant de modifier la manière
+   d'imprimer ce maillage. On propose, en sortie d'Arlequin, de créer un nouveau concept
+   maillage au format MED, via le mot-clef MAIL_COL qui serait caché (statut='c') à
+   l'utilisateur.
+   
+   Au passage, il serait bon de faire le tri entre les noeuds des maillages superposés
+   originaux (group_ma_1 et group_ma_2) et les "pseudo-noeuds" du "pseudo-maillage" créés
+   pour l'intégration numérique. En effet, les affichages des noeuds se superposant, les
+   numéros des noeuds sont régulièrement illisibles.
+   
+   L'intérêt de cette fiche serait que :
+   1. au format MED, l'affichage se ferait plus sûrement et plus rapidement qu'au format
+   gmsh. Parfois, avec gmsh, curieusement, le maillage ne s'affiche pas dans le .msh
+   2. on sortirait un concept maillage "propre" de affe_char_meca, qu'on pourrait ensuite
+   manipuler, imprimer etc ...
+   
+   Traitement :
+   ============
+   
+   On ne fait pas car la méthode Arlequin est résorbée du code (fiche 15653).
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    aucune
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011470 DU 2007-11-16 09:23:13
+TYPE anomalie concernant Code_Aster (VERSION 10.3)
+TITRE
+    Mxc3xa9thode ARLEQUIN : anomalies dans une xc3xa9tude de coude avec sous-xc3xa9paisseur
+FONCTIONNALITE
+   Problème :
+   ==========
+   
+   Une étude a été menée sur un tube (ou à un coude) avec une sous-épaisseur elliptique,
+   bloqué en une extrémité et sollicité par un torseur d’effort à l’autre extrémité. Les
+   maillages sont quadratiques et générés par MACR_ASCOUF_MAIL.
+   Dans plusieurs cas, des anomalies ont été constatées :
+   - présence de sur-contraintes importantes dans la zone de collage, ces sur-contraintes
+   étant très dépendantes du raffinement du maillage "sain" ;
+   - résultats faux dans le cas d'un maillage "sain" trop raffinée : la déformée d'ensemble
+   obtenue est irréaliste ;
+   - résultats faux dans le cas d'une pression interne : cette anomalie a déjà été signalée
+   dans la fiche 10288.
+   
+   Par ailleurs, les performances de la commande AFFE_CHAR_MECA / ARLEQUIN ne sont pas du
+   tout satisfaisantes et ne permettent pas de faire des études sur des maillages un peu
+   volumineux.
+   
+   Solution :
+   ==========
+   
+   On résorbe la méthode Arlequin du code (fiche 15653)
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    aucune
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010288 DU 2006-11-21 16:16:04
+TYPE anomalie concernant Code_Aster (VERSION 10.3)
+TITRE
+    AFFE_CHAR_MECA option Arlequin : resultats faux
+FONCTIONNALITE
+   Problème :
+   ==========
+   
+   On desire effectuer un calcul de tube sous pression interne en positionnant un
+   defaut traversant sur celui-ci via la methode Arlequin. Le modele se compose
+   donc d'un tube sain (dit modele grossier) et d'un patch (dit modele fin)
+   comportant le bloc defaut et une zone de raccordement. Les resultats obtenus
+   par un calcul elastique sont surprenants : les deplacements du bloc et de la
+   zone de collage sont aberrants et sans rapport avec la solution obtenue sur
+   le tube sain : la deformee du modele fin ne donne pas l'effet de gonflement
+   attendu. On note que des calculs menes avec une zone de collage plus raffine
+   corrigent ce probleme, on voit donc que le resultat depend fortement du choix
+   du collage...
+   
+   Solution :
+   ==========
+   
+   On résorbe la méthode Arlequin du code.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    aucune
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 010287 DU 2006-11-21 16:05:53
+TYPE anomalie concernant Code_Aster (VERSION 10.3)
+TITRE
+    AFFE_CHAR_MECA / option ARLEQUIN : bouclage infini
+FONCTIONNALITE
+   Problème :
+   ==========
+   
+   Bouclage infini dans une étude industrielle de tube sous pression comprenant une charge
+   Arlequin
+   
+   Solution :
+   ==========
+   
+   On résorbe la méthode Arlequin du code (fiche 15653).
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    aucune
+NB_JOURS_TRAV  : 4.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 009399 DU 2006-01-25 17:03:14
+TYPE evolution concernant Documentation (VERSION *)
+TITRE
+    ARLEQUIN - Guide d'utilisation
+FONCTIONNALITE
+   Evolution souhaitée :
+   =====================
+   
+   Une documentation d'utilisation d'Arlequin
+   
+   Traitement :
+   ============
+   
+   On résorbe la méthode Arlequin (voir fiche 15653).
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    aucune
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR proix        PROIX Jean-Michel      DATE 01/18/2011 - 08:13:40
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 016203 DU 2011-01-14 09:01:28
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+    utilisation de GDEF_LOG dans le cas de la loi META_LEMA_ANI
+FONCTIONNALITE
+   Possibilité d'utiliser GDEF_LOG  avec le comportement anisotrope 
+   META_LEMA_ANI et avec les comportements disponibles en 
+   contrainte planes (analytiques)
+   
+   
+   D'après l'article de Miehe, Apel et Lambrecht, le modèle de 
+   grandes déformations
+   logarithmiques qu'ils proposent, et qui a été introduit en 
+   10.3.5 sous le nom GDEF_LOG,
+   fonctionne pour des matériaux anisotropes, ainsi que pour les 
+   coques.
+   
+   On restitue donc la possibilité de l'activer avec META_LEMA_ANI, 
+   ce qui pourra être utile
+   pour le projet Crocodile 3, suivant le demande de Philippe. Un 
+   test a été réalisé sur un
+   cylindre en expansion, en comparaison avec GREEN_REAC.
+   
+   Pour valider ce développement (il suffit de permettre GDEF_LOG 
+   dans meta_lema_ani.py, et
+   d'ajouter l'appel à LCEGEO dans nmdlog), on introduit une 
+   nouvelle modélisation (C) au
+   HSNV136, teste qui valide META_LEMA_ANI dans une situation 
+   isotrope. Les résultats sont
+   quasi identiques à la modélisation A (PETIT_REAC) mais avec une 
+   meilleure convergence. A
+   terme, dans le cadre de CROCODILE, il faudra introduire un vrai 
+   test anisotrope.
+   
+   On permet aussi l'utilisation de GDEF_LOG en contraintes planes. 
+   Cela ne fonctionne pas
+   pour les coques (il faut pour cela modifier la programmation 
+   plur prendre en compte le
+   tenseur métrique relatif aux coordonnées curvilignes de la 
+   coque), mais cela fonctionne
+   bien en C_PLAN.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : V7.22.136
+VALIDATION
+    hsnv136c
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 016207 DU 2011-01-14 10:28:13
+TYPE express concernant Code_Aster (VERSION 9.1)
+TITRE
+    Couverture de code :validation de NAUEUL
+FONCTIONNALITE
+   Suite à l'examen de la couverture de la programmation par les tests, Nicolas m'a demandé
+   de valider les routines angrot
+   angvec
+   naueul
+   
+   Celles-ci sont utilisées par l'interface zmat - aster (routine nmzmat) dans le cas où
+   l'utilisateur fournit des angles nautiques : elles transforment ces angles en angles
+   d'Euler. Il suffit de modifier légèrement le test Zmat004 pour les tester. La doc n'est
+   pas impactée
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    zmat004a
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR elgharib     EL-GHARIB Joumana      DATE 01/18/2011 - 08:13:40
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 015625 DU 2010-09-28 15:12:03
+TYPE evolution concernant Code_Aster (VERSION 7.0)
+TMA : DeltaCad
+TITRE
+    Validation des lois de comportement en température
+FONCTIONNALITE
+   Ce travail rentre dans le cadre du projet LOCO - livrable B3.
+   
+   Validation de la bonne prise en compte de la température dans les lois 
+   de comportement.
+   Cette validation concerne les petites déformations et la modélisation 
+   BARRE.
+   Elle exclut les grandes déformations, et les lois de sols et roches.
+   
+   Les tests proposés valident la bonne prise en compte de la dilatation 
+   thermique, et la bonne prise en compte de la variation des paramètres 
+   matériaux en fonction de la température.
+   
+   Le travail est découpé en deux lots d'après le cahier des charges:
+   
+   > Lot 1 : 
+    - lois de comportement élastique (4 lois)
+    - lois de comportement elastoplastique (5 lois)
+    - lois de comportement pour la modélisation BARRE (6 lois)
+   
+   > Lot 2 : 
+    - lois de comportement élastoviscoplastique (11 lois)
+    - lois de comportement pour le béton (6 lois)
+    - lois de comportement prenant en compte les transformations 
+   métallurgiques (5 lois)
+   
+   
+   Le travail sur le lot1 s'achève par une restitution des cas tests 
+   courant janvier 2011.
+   Il a nécessité l'émission des fiches 16146, 16147, 16148 et 16149.
+   
+   16146:
+   Evolution de ELAS_ORTH pour la prise en compte de la dépendance des 
+   coefficients à la
+   température. Cas test ok.
+   
+   16147:
+   Le cas test relatif à ROUSS_PR ne sera pas fait dans le lot1 car les 
+   coefficients de la
+   loi ne dépendent pas de la température. Question à instruire ou 
+   traiter dans le cadre de
+   la fiche 16147 qui  conclut quant à l'évolution des lois ROUSS_PR et 
+   ROUSS_VISC ou par la
+   mise en place momentanément d'un message d'alarme. Décalage possible 
+   vers le lot2.
+   
+   16148:
+   Décalage du lot1 vers le lot2  de la finalisation du cas test relatif 
+   à la loi
+   IRRA3M afin d'avoir le temps de le finaliser proprement suite à la 
+   réalisation de la fiche
+   (16148 réalisée: SIMU_POINT_MAT: ajouts des variables de commandes).
+   
+   16149:
+   Modélisation Barre et VMIS_ASYM_LINE : prise en compte incorrecte de 
+   la dépendance à la
+   température. Emission d'un message d'alarme sur la non prise en compte 
+   de la température par le module d'Young. Pas de cas test fourni.
+   
+   Suite à ces fiches, et par rapport au cahier des charges, les tests 
+   relatifs aux lois : ROUSS_PR, IRRA3M et VMIS_ASYM_LINE ne sont pas 
+   réalisés pour les raisons suivantes : 
+   ROUSS_PR (l'évolution de la loi est nécessaire au préalable) 
+   IRRA3M (le test est décalé au lot2 malgré la réalisation de la fiche 
+   16148)
+   VMIS_ASYM_LINE (pas de test possible)
+   
+   lot 1: Liste des cas-tests restitués
+   
+       - Lois de comportement elastique:
+            comp007a : ELAS
+   	 comp007b : ELAS_VMIS_LINE
+   	 comp007c : ELAS_VMIS_TRAC
+   	 comp007d : ELAS_VMIS_PUIS
+   
+       - lois de comportement elastoplastique 
+            comp008a : ELAS(isotrope)
+   	 comp008b : ELAS(orthotrope)
+   	 comp008e : VENDOCHAB
+   
+       - lois de comportement pour la modélisation BARRE
+            comp009a : ELAS
+   	 comp009b : VMIS_ISOT_LINE
+   	 comp009c : VMIS_ISOT_TRAC 
+   	 comp009d : VMIS_CINE_LINE
+   	 comp009f : PINTO_MENEGOTTO
+   
+   On ouvre une nouvelle fiche pour la réalisation du lot2: 16191.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : V6.07.107, V6.07.108
+VALIDATION
+    comp007a,b,c,d,comp008a,b,e,comp009a,b,c,d,f,
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR sfayolle     FAYOLLE Sebastien      DATE 01/17/2011 - 03:20:06
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 016195 DU 2011-01-13 10:40:34
+TYPE express concernant Code_Aster (VERSION 10.3)
+TITRE
+    Incohxc3xa9rence dans le TE0409
+FONCTIONNALITE
+   Problème
+   ~~~~~~~~
+   
+   Il y a une incohérence dans le TE0409 dans la façon de gérer le cas où l'utilisateur
+   défini COMP_ELAS dans STAT_NON_LINE. En effet lors de la première vérification, on ne
+   renvoie pas de message d'erreur si RELATION = ELAS_COQUE (LCOELA = .TRUE.) or l'appel à
+   DXGLRC est protégé si on a pas COMP_INCR.
+   
+           LRGM = OPTION.EQ.'RIGI_MECA       '
+   
+           IF(.NOT. LRGM) THEN
+             ...
+             CALL JEVECH('PCOMPOR','L',ICOMPO)
+             COMP3 = ZK16(ICOMPO+3)
+   
+             IF (COMP3.EQ.'COMP_ELAS') THEN
+                IF (.NOT.LCOELA) THEN
+                  CALL U2MESS('F','ELEMENTS2_90')
+                ENDIF
+             ENDIF
+             ...
+           ELSE
+             COMP3  = 'COMP_INCR       '
+             COMPOR = 'GLRC_DM         '
+           ENDIF
+   
+           IF (NOMTE.EQ.'MEDKTG3') THEN
+             IF (COMP3(1:9).EQ.'COMP_INCR') THEN
+               CALL DXGLRC(...)
+             ELSEIF (COMP3 (1:9).EQ.'COMP_ELAS') THEN
+               CALL U2MESS('F','ELEMENTS3_92')
+             ENDIF
+           ELSE IF (NOMTE.EQ.'MEDKQG4') THEN
+             IF (COMP3(1:9).EQ.'COMP_INCR') THEN
+               CALL DXGLRC(...)
+             ELSEIF (COMP3 (1:9).EQ.'COMP_ELAS') THEN
+               CALL U2MESS('F','ELEMENTS3_92')
+             ENDIF
+           ELSE
+             CALL U2MESK('F','ELEMENTS2_74',1,NOMTE)
+           END IF
+   
+   Solution
+   ~~~~~~~~
+   
+   On supprime la tolérance en ELAS_COQUE
+   On en profite pour renommer quelques variables
+   
+   Impacts
+   ~~~~~~~
+   
+   te0409.f
+   
+   Validation
+   ~~~~~~~~~~
+   
+   Cas test GLRC_XXX
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    cas test GLRC
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 016166 DU 2011-01-07 08:34:13
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+    Fusionner massgd et massup
+FONCTIONNALITE
+   Évolution
+   ~~~~~~~~~
+   
+   La routine massgd sert à créer la matrice de masse dans le cas de l'utilisation d'une
+   formulation GRAD_EPSI ou GRAD_VARI
+   
+   La routine massup sert à créer la matrice de masse dans le cas de l'utilisation d'une
+   formulation XX_INCO_XX
+   
+   Le principe est le même mais la routine massgd ne prend pas en compte le cas AXIS et la
+   routine massup ne calcul pas les options MASS_MECA_DIAG et MASS_MECA_EXPLI.
+   
+   L'objectif de cette fiche est d'enrichir massup pour le calcul des options MASS_MECA_DIAG
+   et MASS_MECA_EXPLI et de résorber massgd.
+   
+   Solution
+   ~~~~~~~~
+   
+   La routine massup a été enrichie pour calculer les options MASS_MECA_DIAG et MASS_MECA_EXPLI.
+   La routine massgd est supprimée
+   
+   Il est a noter que les développements dans massup sont identiques à une partie du code du
+   TE0012 dans le cas de la THM. Il y a de grande chance que d'autres routines face les mêmes
+   opérations ailleurs XFEM, THM, contact continu,...
+   
+   Impacts
+   ~~~~~~~
+   
+   massup.f
+   te0113.f
+   te0120.f
+   te0123.f
+   te0545.f
+   
+   Validation
+   ~~~~~~~~~~
+   
+   Cas test zzzz254a
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    zzzz254a
+NB_JOURS_TRAV  : 0.2
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 016197 DU 2011-01-13 16:29:13
+TYPE express concernant Code_Aster (VERSION 10.3)
+TITRE
+    Nettoyage CEPS33
+FONCTIONNALITE
+   Problème
+   ~~~~~~~~
+   
+   Dans le cadre des rapprochements des sources de GLRC_DM avec les futurs développements de
+   Christelle, elle s'est rendue compte que deux arguments de sortie de la routine CEPS33 ne
+   servent
+   à rien. On les supprime.
+   
+   Solution
+   ~~~~~~~~
+   
+   Avant
+   
+   SUBROUTINE CEPS33 (LAMBDA,DEUXMU,TR2D,D1,D2,GMT,GMC,EPS33,DE33D1,DE33D2,KSI2D,DKSI1,DKSI2)
+   
+   Après
+   
+   SUBROUTINE CEPS33 (LAMBDA,DEUXMU,TR2D,D1,D2,GMT,GMC,EPS33,DE33D1,DE33D2,KSI2D)
+   
+   Impact
+   ~~~~~~
+   
+   ceps33.f, gldloc.f, lcgldm.f
+   
+   Validation
+   ~~~~~~~~~~
+   
+   Cas test GLRC_DM
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    cas test GLRC
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+
+
+
+========================================================================
+=== Recapitulation des operations demandees pour toutes les restitutions
+========================================================================
+
+
+    TYPE Action    unite                      user      Auteur         nblg  ajout suppr.
+
+ CASTEST AJOUT comp007a                        proix J-M.PROIX          173    173      0
+ CASTEST AJOUT comp007b                        proix J-M.PROIX          226    226      0
+ CASTEST AJOUT comp007c                        proix J-M.PROIX          231    231      0
+ CASTEST AJOUT comp007d                        proix J-M.PROIX          289    289      0
+ CASTEST AJOUT comp008a                        proix J-M.PROIX          191    191      0
+ CASTEST AJOUT comp008b                        proix J-M.PROIX          225    225      0
+ CASTEST AJOUT comp008e                        proix J-M.PROIX          235    235      0
+ CASTEST AJOUT comp009a                        proix J-M.PROIX          333    333      0
+ CASTEST AJOUT comp009b                        proix J-M.PROIX          386    386      0
+ CASTEST AJOUT comp009c                        proix J-M.PROIX          471    471      0
+ CASTEST AJOUT comp009d                        proix J-M.PROIX          414    414      0
+ CASTEST AJOUT comp009f                        proix J-M.PROIX          399    399      0
+ CASTEST AJOUT hsnv136c                        proix J-M.PROIX          225    225      0
+ CASTEST AJOUT zzzz136d                     courtois M.COURTOIS         107    107      0
+ CASTEST MODIF fdnv100a                        abbas M.ABBAS            330      3      3
+ CASTEST MODIF feti009a                       desoza T.DESOZA           219     10      4
+ CASTEST MODIF hsnv125c                        abbas M.ABBAS            623     11     11
+ CASTEST MODIF hsnv125e                        abbas M.ABBAS            440     24     21
+ CASTEST MODIF mumps01a                      boiteau O.BOITEAU          219     54      9
+ CASTEST MODIF mumps03a                      boiteau O.BOITEAU          210    105     12
+ CASTEST MODIF mumps04a                      boiteau O.BOITEAU          487     78     16
+ CASTEST MODIF mumps05a                      boiteau O.BOITEAU          449     47      6
+ CASTEST MODIF perf005a                       desoza T.DESOZA           103      4     11
+ CASTEST MODIF perf005b                       desoza T.DESOZA           109      5     11
+ CASTEST MODIF perf005c                       desoza T.DESOZA           114      4      9
+ CASTEST MODIF perf005d                       desoza T.DESOZA           111      5     15
+ CASTEST MODIF perf005e                       desoza T.DESOZA           111      5     15
+ CASTEST MODIF perf005f                       desoza T.DESOZA           112      5     14
+ CASTEST MODIF perfe03a                        abbas M.ABBAS            334     18     16
+ CASTEST MODIF petsc01a                       desoza T.DESOZA           110     15      3
+ CASTEST MODIF petsc01b                       desoza T.DESOZA           108      5      3
+ CASTEST MODIF petsc01c                       desoza T.DESOZA           117      5      3
+ CASTEST MODIF petsc01d                       desoza T.DESOZA           113     15      3
+ CASTEST MODIF petsc01e                       desoza T.DESOZA           109      5      3
+ CASTEST MODIF petsc01f                       desoza T.DESOZA           118      5      3
+ CASTEST MODIF petsc01g                       desoza T.DESOZA           158     15      3
+ CASTEST MODIF sdls115a                        abbas M.ABBAS            430      5      4
+ CASTEST MODIF sdls115b                        abbas M.ABBAS            298     24      9
+ CASTEST MODIF sdnd102b                        abbas M.ABBAS            618     16     13
+ CASTEST MODIF sdns106e                     sfayolle S.FAYOLLE          333      2      2
+ CASTEST MODIF ssep001a                        abbas M.ABBAS            179      8      7
+ CASTEST MODIF ssep002a                        abbas M.ABBAS            183      8      7
+ CASTEST MODIF ssls126a                     courtois M.COURTOIS         311     23      1
+ CASTEST MODIF ssnd105a                        abbas M.ABBAS            209     24     23
+ CASTEST MODIF ssns106a                     sfayolle S.FAYOLLE          986      1      1
+ CASTEST MODIF ssns106b                     sfayolle S.FAYOLLE         1359      2      2
+ CASTEST MODIF ssns106c                     sfayolle S.FAYOLLE         1512      2      2
+ CASTEST MODIF ssns106d                     sfayolle S.FAYOLLE          445      2      2
+ CASTEST MODIF ssns106e                     sfayolle S.FAYOLLE          558      2      2
+ CASTEST MODIF ssns106f                     sfayolle S.FAYOLLE          598      1      1
+ CASTEST MODIF ssns106g                     sfayolle S.FAYOLLE          412      1      1
+ CASTEST MODIF ssns106h                     sfayolle S.FAYOLLE          803      1      1
+ CASTEST MODIF ssns106i                     sfayolle S.FAYOLLE          851      1      1
+ CASTEST MODIF ssns106j                     sfayolle S.FAYOLLE         1121      1      1
+ CASTEST MODIF ssnv104e                        abbas M.ABBAS            444     19     12
+ CASTEST MODIF ssnv118d                        abbas M.ABBAS            343     42     19
+ CASTEST MODIF ssnv217a                        idoux L.IDOUX            236     13      7
+ CASTEST MODIF ttnl02a                         abbas M.ABBAS            200      6      2
+ CASTEST MODIF wtnp120a                        abbas M.ABBAS            736      1      1
+ CASTEST MODIF wtnp120b                        abbas M.ABBAS            725      1      1
+ CASTEST MODIF wtnp120c                        abbas M.ABBAS            732      1      1
+ CASTEST MODIF wtnp120d                        abbas M.ABBAS            577      1      1
+ CASTEST MODIF wtnp123a                        abbas M.ABBAS            750      2      2
+ CASTEST MODIF wtnp123b                        abbas M.ABBAS            580      2      2
+ CASTEST MODIF wtnp123c                        abbas M.ABBAS            581      2      2
+ CASTEST MODIF wtnp123d                        abbas M.ABBAS            542      2      2
+ CASTEST MODIF zmat004a                        proix J-M.PROIX          518      2      2
+ CASTEST MODIF zzzz200c                      boiteau O.BOITEAU          481     10      2
+ CASTEST SUPPR sslp104b.comm                 meunier S.MEUNIER          146      0    146
+ CASTEST SUPPR sslp104d.comm                 meunier S.MEUNIER          250      0    250
+ CASTEST SUPPR sslp108a.comm                 meunier S.MEUNIER          231      0    231
+ CASTEST SUPPR sslp108b.comm                 meunier S.MEUNIER          327      0    327
+ CASTEST SUPPR sslp108c.comm                 meunier S.MEUNIER          365      0    365
+ CASTEST SUPPR sslp313c.comm                 meunier S.MEUNIER          302      0    302
+ CASTEST SUPPR sslp313f.comm                 meunier S.MEUNIER          343      0    343
+ CASTEST SUPPR sslv145a.comm                 meunier S.MEUNIER          338      0    338
+ CASTEST SUPPR sslv152a.comm                 meunier S.MEUNIER          207      0    207
+ CASTEST SUPPR sslv152b.comm                 meunier S.MEUNIER          186      0    186
+ CASTEST SUPPR ssnp135a.comm                 meunier S.MEUNIER          163      0    163
+ CASTEST SUPPR ssnp135b.comm                 meunier S.MEUNIER          472      0    472
+ CASTEST SUPPR ssnp135c.comm                 meunier S.MEUNIER          481      0    481
+ CASTEST SUPPR ssnp135d.comm                 meunier S.MEUNIER          432      0    432
+ CASTEST SUPPR ssnp135e.comm                 meunier S.MEUNIER          543      0    543
+ CASTEST SUPPR ssnp141a.comm                 meunier S.MEUNIER          251      0    251
+ CASTEST SUPPR ssnp141b.comm                 meunier S.MEUNIER          264      0    264
+CATALOGU MODIF typelem/gener_me3d_3          meunier S.MEUNIER         1823   1185     19
+CATALOPY AJOUT commun/c_archivage              abbas M.ABBAS             64     64      0
+CATALOPY AJOUT commun/c_observation            abbas M.ABBAS             82     82      0
+CATALOPY AJOUT commun/c_pilotage               abbas M.ABBAS             40     40      0
+CATALOPY AJOUT commun/c_suivi_ddl              abbas M.ABBAS             73     73      0
+CATALOPY MODIF commande/affe_char_meca       meunier S.MEUNIER          736      3     18
+CATALOPY MODIF commande/calc_elem            boiteau O.BOITEAU          540      2      2
+CATALOPY MODIF commande/calc_forc_ajou       boiteau O.BOITEAU          107      2      2
+CATALOPY MODIF commande/calc_matr_ajou       boiteau O.BOITEAU           99      2      2
+CATALOPY MODIF commande/defi_base_modale     boiteau O.BOITEAU           90      2      2
+CATALOPY MODIF commande/dyna_line_harm       boiteau O.BOITEAU          142      3      3
+CATALOPY MODIF commande/dyna_line_tran       boiteau O.BOITEAU          195      2      2
+CATALOPY MODIF commande/dyna_non_line          abbas M.ABBAS            223     11     61
+CATALOPY MODIF commande/dyna_tran_modal      boiteau O.BOITEAU          258      2      2
+CATALOPY MODIF commande/impr_sturm           boiteau O.BOITEAU           65      2      2
+CATALOPY MODIF commande/macro_matr_asse      boiteau O.BOITEAU          113      2      2
+CATALOPY MODIF commande/meca_statique        boiteau O.BOITEAU          132      2      2
+CATALOPY MODIF commande/mode_iter_inv        boiteau O.BOITEAU          145      3      3
+CATALOPY MODIF commande/mode_iter_simult     boiteau O.BOITEAU          197      3      3
+CATALOPY MODIF commande/mode_statique        boiteau O.BOITEAU          153      2      2
+CATALOPY MODIF commande/nume_ddl             boiteau O.BOITEAU           44      3      3
+CATALOPY MODIF commande/stat_non_line          abbas M.ABBAS            153     21     80
+CATALOPY MODIF commande/ther_lineaire        boiteau O.BOITEAU          137      2      2
+CATALOPY MODIF commande/ther_non_line          abbas M.ABBAS            158      9     32
+CATALOPY MODIF commande/ther_non_line_mo     boiteau O.BOITEAU          104      2      2
+CATALOPY MODIF commun/c_solveur              boiteau O.BOITEAU          105      2      2
+FORTRAN90 MODIF mumps/amumpm                   desoza T.DESOZA           700     16     11
+FORTRAN90 MODIF mumps/amumpt                   desoza T.DESOZA           446      6      1
+ FORTRAN AJOUT algorith/nmcrdd                 abbas M.ABBAS            146    146      0
+ FORTRAN AJOUT algorith/nmcrdn                 abbas M.ABBAS             94     94      0
+ FORTRAN AJOUT algorith/nmcrit                 abbas M.ABBAS            113    113      0
+ FORTRAN AJOUT algorith/nmcroi                 abbas M.ABBAS             84     84      0
+ FORTRAN AJOUT algorith/nmcrot                 abbas M.ABBAS            114    114      0
+ FORTRAN AJOUT algorith/nmcrpa                 abbas M.ABBAS            130    130      0
+ FORTRAN AJOUT algorith/nmcrpm                 abbas M.ABBAS             63     63      0
+ FORTRAN AJOUT algorith/nmcrpo                 abbas M.ABBAS            111    111      0
+ FORTRAN AJOUT algorith/nmcrpp                 abbas M.ABBAS            114    114      0
+ FORTRAN AJOUT algorith/nmcrpx                 abbas M.ABBAS            143    143      0
+ FORTRAN AJOUT algorith/nmext0                 abbas M.ABBAS            150    150      0
+ FORTRAN AJOUT algorith/nmext1                 abbas M.ABBAS             87     87      0
+ FORTRAN AJOUT algorith/nmext2                 abbas M.ABBAS            152    152      0
+ FORTRAN AJOUT algorith/nmext3                 abbas M.ABBAS            282    282      0
+ FORTRAN AJOUT algorith/nmext4                 abbas M.ABBAS            298    298      0
+ FORTRAN AJOUT algorith/nmextc                 abbas M.ABBAS            125    125      0
+ FORTRAN AJOUT algorith/nmextd                 abbas M.ABBAS             84     84      0
+ FORTRAN AJOUT algorith/nmexte                 abbas M.ABBAS            110    110      0
+ FORTRAN AJOUT algorith/nmextf                 abbas M.ABBAS             58     58      0
+ FORTRAN AJOUT algorith/nmexti                 abbas M.ABBAS            120    120      0
+ FORTRAN AJOUT algorith/nmextj                 abbas M.ABBAS            133    133      0
+ FORTRAN AJOUT algorith/nmextk                 abbas M.ABBAS            216    216      0
+ FORTRAN AJOUT algorith/nmextl                 abbas M.ABBAS            153    153      0
+ FORTRAN AJOUT algorith/nmextn                 abbas M.ABBAS             84     84      0
+ FORTRAN AJOUT algorith/nmexto                 abbas M.ABBAS            115    115      0
+ FORTRAN AJOUT algorith/nmextp                 abbas M.ABBAS            169    169      0
+ FORTRAN AJOUT algorith/nmextr                 abbas M.ABBAS            228    228      0
+ FORTRAN AJOUT algorith/nmextt                 abbas M.ABBAS             77     77      0
+ FORTRAN AJOUT algorith/nmextv                 abbas M.ABBAS             92     92      0
+ FORTRAN AJOUT algorith/nmnume                 abbas M.ABBAS             91     91      0
+ FORTRAN AJOUT algorith/nmobs2                 abbas M.ABBAS            267    267      0
+ FORTRAN AJOUT algorith/nmobse                 abbas M.ABBAS            219    219      0
+ FORTRAN AJOUT algorith/nmobsz                 abbas M.ABBAS            240    240      0
+ FORTRAN AJOUT algorith/nmsui3                 abbas M.ABBAS            208    208      0
+ FORTRAN AJOUT algorith/nmsuiv                 abbas M.ABBAS            209    209      0
+ FORTRAN AJOUT algorith/nmsuiy                 abbas M.ABBAS             76     76      0
+ FORTRAN AJOUT algorith/ntcrob                 abbas M.ABBAS            124    124      0
+ FORTRAN AJOUT algorith/ntobsv                 abbas M.ABBAS             71     71      0
+ FORTRAN DEPLA algorith/cudisd                debug/ desoza          T.DESOZA            80      0      0
+ FORTRAN MODIF algorith/aptgem                desoza T.DESOZA           212     11      8
+ FORTRAN MODIF algorith/aptgnn                desoza T.DESOZA           228     13      3
+ FORTRAN MODIF algorith/aptgno                desoza T.DESOZA           115      9      4
+ FORTRAN MODIF algorith/ceobfb                 idoux L.IDOUX            179     78     10
+ FORTRAN MODIF algorith/ceobfd                 idoux L.IDOUX             74     13      6
+ FORTRAN MODIF algorith/diinit                 abbas M.ABBAS            115     22     13
+ FORTRAN MODIF algorith/dyobar                 abbas M.ABBAS             79      3    452
+ FORTRAN MODIF algorith/exfonc                 abbas M.ABBAS            269      6      6
+ FORTRAN MODIF algorith/impcod                 abbas M.ABBAS             91      7      8
+ FORTRAN MODIF algorith/impdef                 abbas M.ABBAS             85      4      4
+ FORTRAN MODIF algorith/impin0                 abbas M.ABBAS            117      8      9
+ FORTRAN MODIF algorith/impini                 abbas M.ABBAS            159      4      4
+ FORTRAN MODIF algorith/implec                 abbas M.ABBAS            115      4      7
+ FORTRAN MODIF algorith/impref                 abbas M.ABBAS            289     24     18
+ FORTRAN MODIF algorith/impsdr                 abbas M.ABBAS            143      8      2
+ FORTRAN MODIF algorith/impstd                 abbas M.ABBAS            200      2      2
+ FORTRAN MODIF algorith/impsui                 abbas M.ABBAS             90     12     10
+ FORTRAN MODIF algorith/inivec               meunier S.MEUNIER           53      4      6
+ FORTRAN MODIF algorith/isfonc                 abbas M.ABBAS            178      4      4
+ FORTRAN MODIF algorith/lceob1                 idoux L.IDOUX            219     14     30
+ FORTRAN MODIF algorith/lceob2                 idoux L.IDOUX            333     14     64
+ FORTRAN MODIF algorith/lceob3                 idoux L.IDOUX            299      9     62
+ FORTRAN MODIF algorith/lceobb                 idoux L.IDOUX            486      6     12
+ FORTRAN MODIF algorith/lceobg                 idoux L.IDOUX           1071     17     62
+ FORTRAN MODIF algorith/lceobl                 idoux L.IDOUX            969     17     49
+ FORTRAN MODIF algorith/lobs                   abbas M.ABBAS            101     39     45
+ FORTRAN MODIF algorith/majdva                 abbas M.ABBAS            150      6      6
+ FORTRAN MODIF algorith/meobg1                 idoux L.IDOUX            196     11     28
+ FORTRAN MODIF algorith/meobg2                 idoux L.IDOUX            271     10     38
+ FORTRAN MODIF algorith/meobg3                 idoux L.IDOUX            228      9     50
+ FORTRAN MODIF algorith/meobl1                 idoux L.IDOUX            187     10     41
+ FORTRAN MODIF algorith/meobl2                 idoux L.IDOUX            260      9     48
+ FORTRAN MODIF algorith/meobl3                 idoux L.IDOUX            228      8     40
+ FORTRAN MODIF algorith/ndnpas                 abbas M.ABBAS            591      5      5
+ FORTRAN MODIF algorith/nmcere                 abbas M.ABBAS            219     11     17
+ FORTRAN MODIF algorith/nmcese                 abbas M.ABBAS            176      7      6
+ FORTRAN MODIF algorith/nmceta                 abbas M.ABBAS            241      7      7
+ FORTRAN MODIF algorith/nmcrob                 abbas M.ABBAS            158     86     41
+ FORTRAN MODIF algorith/nmdepl                 abbas M.ABBAS            232      9      9
+ FORTRAN MODIF algorith/nmdlog                 proix J-M.PROIX          170     11      8
+ FORTRAN MODIF algorith/nmdocc                 proix J-M.PROIX          258      4      2
+ FORTRAN MODIF algorith/nmdoch               meunier S.MEUNIER          555      6     39
+ FORTRAN MODIF algorith/nmfcor                 abbas M.ABBAS            206      2      3
+ FORTRAN MODIF algorith/nmfonc                 abbas M.ABBAS            519     16     11
+ FORTRAN MODIF algorith/nmimpi                 abbas M.ABBAS            113      3      3
+ FORTRAN MODIF algorith/nminit                 abbas M.ABBAS            272     18     21
+ FORTRAN MODIF algorith/nmmajc                 abbas M.ABBAS            221     15     15
+ FORTRAN MODIF algorith/nmmaji                 abbas M.ABBAS             95      9     18
+ FORTRAN MODIF algorith/nmnpas                 abbas M.ABBAS            183     10     10
+ FORTRAN MODIF algorith/nmobsv                 abbas M.ABBAS            102     54     24
+ FORTRAN MODIF algorith/nmpich                 abbas M.ABBAS            139      6      5
+ FORTRAN MODIF algorith/nmprof                 abbas M.ABBAS             97      2      2
+ FORTRAN MODIF algorith/nmreli                 abbas M.ABBAS            117      6      6
+ FORTRAN MODIF algorith/nmrelp                 abbas M.ABBAS            377     10     10
+ FORTRAN MODIF algorith/nmrepl                 abbas M.ABBAS            373      7      7
+ FORTRAN MODIF algorith/ntinit                 abbas M.ABBAS            249     10     13
+ FORTRAN MODIF algorith/op0025                 abbas M.ABBAS            341      5      5
+ FORTRAN MODIF algorith/op0070                 abbas M.ABBAS            567     13     13
+ FORTRAN MODIF algorith/op0186                 abbas M.ABBAS            662     13     13
+ FORTRAN MODIF algorith/te0123              sfayolle S.FAYOLLE          229      4      4
+ FORTRAN MODIF algorith/tiinit                 abbas M.ABBAS            109     13     13
+ FORTRAN MODIF assembla/assma3               meunier S.MEUNIER          387     13     19
+ FORTRAN MODIF assembla/assmam               meunier S.MEUNIER          830     13     29
+ FORTRAN MODIF assembla/assmiv               meunier S.MEUNIER          370      4     18
+ FORTRAN MODIF assembla/assvec               meunier S.MEUNIER          997     11     46
+ FORTRAN MODIF assembla/assvss               meunier S.MEUNIER          497     15     24
+ FORTRAN MODIF calculel/meca01               meunier S.MEUNIER          726      2     10
+ FORTRAN MODIF calculel/op0100               meunier S.MEUNIER         1075      2      9
+ FORTRAN MODIF elements/ceps33              sfayolle S.FAYOLLE           70      3      3
+ FORTRAN MODIF elements/gldloc              sfayolle S.FAYOLLE          153      4      4
+ FORTRAN MODIF elements/lcgldm              sfayolle S.FAYOLLE          466      5      9
+ FORTRAN MODIF elements/massup              sfayolle S.FAYOLLE          205     47      7
+ FORTRAN MODIF elements/te0100                 proix J-M.PROIX          328      2      2
+ FORTRAN MODIF elements/te0113              sfayolle S.FAYOLLE          206      4      4
+ FORTRAN MODIF elements/te0120              sfayolle S.FAYOLLE          108      3      1
+ FORTRAN MODIF elements/te0139                 proix J-M.PROIX          303      2      2
+ FORTRAN MODIF elements/te0409              sfayolle S.FAYOLLE          363     52     58
+ FORTRAN MODIF elements/te0545              sfayolle S.FAYOLLE          190      4      4
+ FORTRAN MODIF elements/te0600               meunier S.MEUNIER          440      6     11
+ FORTRAN MODIF modelisa/caliag              courtois M.COURTOIS         473      4      6
+ FORTRAN MODIF modelisa/charme               meunier S.MEUNIER          318      2     22
+ FORTRAN MODIF utilitai/initia                 abbas M.ABBAS             75      8      8
+ FORTRAN MODIF utilitai/majour                 abbas M.ABBAS            109     37     14
+ FORTRAN MODIF utilitai/nurota                 abbas M.ABBAS            275      9     15
+ FORTRAN SUPPR algeline/mmprod               meunier S.MEUNIER          245      0    245
+ FORTRAN SUPPR algeline/mtprod               meunier S.MEUNIER          247      0    247
+ FORTRAN SUPPR algeline/vtgaxp                desoza T.DESOZA           152      0    152
+ FORTRAN SUPPR algorith/dyobs1                 abbas M.ABBAS            336      0    336
+ FORTRAN SUPPR algorith/dyobs2                 abbas M.ABBAS            348      0    348
+ FORTRAN SUPPR algorith/dyobs3                 abbas M.ABBAS            192      0    192
+ FORTRAN SUPPR algorith/dyobs4                 abbas M.ABBAS            106      0    106
+ FORTRAN SUPPR algorith/dyobse                 abbas M.ABBAS            164      0    164
+ FORTRAN SUPPR algorith/dyoext                 abbas M.ABBAS            150      0    150
+ FORTRAN SUPPR algorith/suiimp                 abbas M.ABBAS            142      0    142
+ FORTRAN SUPPR calculel/appaim               meunier S.MEUNIER          143      0    143
+ FORTRAN SUPPR calculel/arbrcr               meunier S.MEUNIER          123      0    123
+ FORTRAN SUPPR calculel/arbrds               meunier S.MEUNIER           46      0     46
+ FORTRAN SUPPR calculel/arbrim               meunier S.MEUNIER          127      0    127
+ FORTRAN SUPPR calculel/arface               meunier S.MEUNIER          141      0    141
+ FORTRAN SUPPR calculel/arlap0               meunier S.MEUNIER          257      0    257
+ FORTRAN SUPPR calculel/arlap1               meunier S.MEUNIER          469      0    469
+ FORTRAN SUPPR calculel/arlapf               meunier S.MEUNIER          153      0    153
+ FORTRAN SUPPR calculel/arlbsp               meunier S.MEUNIER           90      0     90
+ FORTRAN SUPPR calculel/arlcar               meunier S.MEUNIER           71      0     71
+ FORTRAN SUPPR calculel/arlcmo               meunier S.MEUNIER          100      0    100
+ FORTRAN SUPPR calculel/arlcou               meunier S.MEUNIER          119      0    119
+ FORTRAN SUPPR calculel/arlcvp               meunier S.MEUNIER           88      0     88
+ FORTRAN SUPPR calculel/arldsd               meunier S.MEUNIER           98      0     98
+ FORTRAN SUPPR calculel/arlgdg               meunier S.MEUNIER          143      0    143
+ FORTRAN SUPPR calculel/arlgei               meunier S.MEUNIER          101      0    101
+ FORTRAN SUPPR calculel/arlger               meunier S.MEUNIER          107      0    107
+ FORTRAN SUPPR calculel/arlimp               meunier S.MEUNIER           95      0     95
+ FORTRAN SUPPR calculel/arlnim               meunier S.MEUNIER          145      0    145
+ FORTRAN SUPPR calculel/arlpan               meunier S.MEUNIER          192      0    192
+ FORTRAN SUPPR calculel/arlpar               meunier S.MEUNIER          206      0    206
+ FORTRAN SUPPR calculel/arlpnd               meunier S.MEUNIER          584      0    584
+ FORTRAN SUPPR calculel/arlsup               meunier S.MEUNIER          219      0    219
+ FORTRAN SUPPR calculel/arlt2r               meunier S.MEUNIER           65      0     65
+ FORTRAN SUPPR calculel/arltim               meunier S.MEUNIER          150      0    150
+ FORTRAN SUPPR calculel/bissec               meunier S.MEUNIER          352      0    352
+ FORTRAN SUPPR calculel/boitea               meunier S.MEUNIER          124      0    124
+ FORTRAN SUPPR calculel/boitel               meunier S.MEUNIER          184      0    184
+ FORTRAN SUPPR calculel/boite                meunier S.MEUNIER          109      0    109
+ FORTRAN SUPPR calculel/boiteq               meunier S.MEUNIER          491      0    491
+ FORTRAN SUPPR calculel/boitfi               meunier S.MEUNIER          279      0    279
+ FORTRAN SUPPR calculel/cerne                meunier S.MEUNIER           78      0     78
+ FORTRAN SUPPR calculel/cfamil               meunier S.MEUNIER          103      0    103
+ FORTRAN SUPPR calculel/cocoqu               meunier S.MEUNIER           87      0     87
+ FORTRAN SUPPR calculel/conoeu               meunier S.MEUNIER           65      0     65
+ FORTRAN SUPPR calculel/coquno               meunier S.MEUNIER          135      0    135
+ FORTRAN SUPPR calculel/cosoli               meunier S.MEUNIER           64      0     64
+ FORTRAN SUPPR calculel/cotang               meunier S.MEUNIER          354      0    354
+ FORTRAN SUPPR calculel/dedans               meunier S.MEUNIER           80      0     80
+ FORTRAN SUPPR calculel/elbord               meunier S.MEUNIER          379      0    379
+ FORTRAN SUPPR calculel/forme0               meunier S.MEUNIER          145      0    145
+ FORTRAN SUPPR calculel/forme1               meunier S.MEUNIER          162      0    162
+ FORTRAN SUPPR calculel/forme2               meunier S.MEUNIER           89      0     89
+ FORTRAN SUPPR calculel/forme3               meunier S.MEUNIER          130      0    130
+ FORTRAN SUPPR calculel/forme4               meunier S.MEUNIER           67      0     67
+ FORTRAN SUPPR calculel/formen               meunier S.MEUNIER          183      0    183
+ FORTRAN SUPPR calculel/grmaim               meunier S.MEUNIER          140      0    140
+ FORTRAN SUPPR calculel/grmama               meunier S.MEUNIER          206      0    206
+ FORTRAN SUPPR calculel/hasard               meunier S.MEUNIER           91      0     91
+ FORTRAN SUPPR calculel/isbord               meunier S.MEUNIER           55      0     55
+ FORTRAN SUPPR calculel/isbox                meunier S.MEUNIER           63      0     63
+ FORTRAN SUPPR calculel/lisnor               meunier S.MEUNIER          272      0    272
+ FORTRAN SUPPR calculel/minclu               meunier S.MEUNIER          142      0    142
+ FORTRAN SUPPR calculel/minter               meunier S.MEUNIER          131      0    131
+ FORTRAN SUPPR calculel/morsim               meunier S.MEUNIER          152      0    152
+ FORTRAN SUPPR calculel/nafint               meunier S.MEUNIER          228      0    228
+ FORTRAN SUPPR calculel/nbare                meunier S.MEUNIER           57      0     57
+ FORTRAN SUPPR calculel/nbsom                meunier S.MEUNIER           57      0     57
+ FORTRAN SUPPR calculel/noareq               meunier S.MEUNIER          215      0    215
+ FORTRAN SUPPR calculel/nopan                meunier S.MEUNIER          579      0    579
+ FORTRAN SUPPR calculel/npgaus               meunier S.MEUNIER          106      0    106
+ FORTRAN SUPPR calculel/panarq               meunier S.MEUNIER          152      0    152
+ FORTRAN SUPPR calculel/panno                meunier S.MEUNIER          125      0    125
+ FORTRAN SUPPR calculel/pfamil               meunier S.MEUNIER          162      0    162
+ FORTRAN SUPPR calculel/pforme               meunier S.MEUNIER           79      0     79
+ FORTRAN SUPPR calculel/pgauss               meunier S.MEUNIER           67      0     67
+ FORTRAN SUPPR calculel/quadim               meunier S.MEUNIER          225      0    225
+ FORTRAN SUPPR calculel/refere               meunier S.MEUNIER          152      0    152
+ FORTRAN SUPPR calculel/smplx2               meunier S.MEUNIER          157      0    157
+ FORTRAN SUPPR calculel/sommet               meunier S.MEUNIER           66      0     66
+ FORTRAN SUPPR calculel/tangnt               meunier S.MEUNIER          142      0    142
+ FORTRAN SUPPR elements/arlapl               meunier S.MEUNIER          145      0    145
+ FORTRAN SUPPR elements/arltds               meunier S.MEUNIER          102      0    102
+ FORTRAN SUPPR elements/arlteb               meunier S.MEUNIER          138      0    138
+ FORTRAN SUPPR elements/arltec               meunier S.MEUNIER           95      0     95
+ FORTRAN SUPPR elements/arlted               meunier S.MEUNIER          172      0    172
+ FORTRAN SUPPR elements/arltem               meunier S.MEUNIER          139      0    139
+ FORTRAN SUPPR elements/arlten               meunier S.MEUNIER           90      0     90
+ FORTRAN SUPPR elements/arltep               meunier S.MEUNIER          135      0    135
+ FORTRAN SUPPR elements/bmatf1               meunier S.MEUNIER          102      0    102
+ FORTRAN SUPPR elements/bmatfr               meunier S.MEUNIER           89      0     89
+ FORTRAN SUPPR elements/massgd              sfayolle S.FAYOLLE          195      0    195
+ FORTRAN SUPPR elements/te0119               meunier S.MEUNIER          137      0    137
+ FORTRAN SUPPR modelisa/arete3               meunier S.MEUNIER          120      0    120
+ FORTRAN SUPPR modelisa/arlapp               meunier S.MEUNIER           94      0     94
+ FORTRAN SUPPR modelisa/arlas0               meunier S.MEUNIER          126      0    126
+ FORTRAN SUPPR modelisa/arlas1               meunier S.MEUNIER          108      0    108
+ FORTRAN SUPPR modelisa/arlas2               meunier S.MEUNIER          153      0    153
+ FORTRAN SUPPR modelisa/arlas3               meunier S.MEUNIER          170      0    170
+ FORTRAN SUPPR modelisa/arlas4               meunier S.MEUNIER          251      0    251
+ FORTRAN SUPPR modelisa/arlas9               meunier S.MEUNIER          102      0    102
+ FORTRAN SUPPR modelisa/arlass               meunier S.MEUNIER           81      0     81
+ FORTRAN SUPPR modelisa/arlast               meunier S.MEUNIER          293      0    293
+ FORTRAN SUPPR modelisa/arlbbs               meunier S.MEUNIER          138      0    138
+ FORTRAN SUPPR modelisa/arlbo0               meunier S.MEUNIER          143      0    143
+ FORTRAN SUPPR modelisa/arlboi               meunier S.MEUNIER          103      0    103
+ FORTRAN SUPPR modelisa/arlch0               meunier S.MEUNIER          154      0    154
+ FORTRAN SUPPR modelisa/arlch1               meunier S.MEUNIER          110      0    110
+ FORTRAN SUPPR modelisa/arlch2               meunier S.MEUNIER          143      0    143
+ FORTRAN SUPPR modelisa/arlch3               meunier S.MEUNIER          109      0    109
+ FORTRAN SUPPR modelisa/arlch4               meunier S.MEUNIER          155      0    155
+ FORTRAN SUPPR modelisa/arlcha               meunier S.MEUNIER          349      0    349
+ FORTRAN SUPPR modelisa/arlchi               meunier S.MEUNIER          414      0    414
+ FORTRAN SUPPR modelisa/arlclc               meunier S.MEUNIER          151      0    151
+ FORTRAN SUPPR modelisa/arlclr               meunier S.MEUNIER          222      0    222
+ FORTRAN SUPPR modelisa/arlcol               meunier S.MEUNIER          112      0    112
+ FORTRAN SUPPR modelisa/arlcp1               meunier S.MEUNIER          443      0    443
+ FORTRAN SUPPR modelisa/arlcp2               meunier S.MEUNIER          161      0    161
+ FORTRAN SUPPR modelisa/arlcpl               meunier S.MEUNIER          124      0    124
+ FORTRAN SUPPR modelisa/arldeg               meunier S.MEUNIER          113      0    113
+ FORTRAN SUPPR modelisa/arlelt               meunier S.MEUNIER          129      0    129
+ FORTRAN SUPPR modelisa/arlfa0               meunier S.MEUNIER          268      0    268
+ FORTRAN SUPPR modelisa/arlfa1               meunier S.MEUNIER          295      0    295
+ FORTRAN SUPPR modelisa/arlfc1               meunier S.MEUNIER          338      0    338
+ FORTRAN SUPPR modelisa/arlfc2               meunier S.MEUNIER          390      0    390
+ FORTRAN SUPPR modelisa/arlfg                meunier S.MEUNIER          117      0    117
+ FORTRAN SUPPR modelisa/arlflt               meunier S.MEUNIER           61      0     61
+ FORTRAN SUPPR modelisa/arlgrc               meunier S.MEUNIER           91      0     91
+ FORTRAN SUPPR modelisa/arlgri               meunier S.MEUNIER          113      0    113
+ FORTRAN SUPPR modelisa/arlgrm               meunier S.MEUNIER          139      0    139
+ FORTRAN SUPPR modelisa/arlicp               meunier S.MEUNIER           97      0     97
+ FORTRAN SUPPR modelisa/arllcc               meunier S.MEUNIER          236      0    236
+ FORTRAN SUPPR modelisa/arllec               meunier S.MEUNIER          138      0    138
+ FORTRAN SUPPR modelisa/arllpo               meunier S.MEUNIER          137      0    137
+ FORTRAN SUPPR modelisa/arlmaf               meunier S.MEUNIER          131      0    131
+ FORTRAN SUPPR modelisa/arlmai               meunier S.MEUNIER          446      0    446
+ FORTRAN SUPPR modelisa/arlmas               meunier S.MEUNIER          285      0    285
+ FORTRAN SUPPR modelisa/arlmax               meunier S.MEUNIER          115      0    115
+ FORTRAN SUPPR modelisa/arlmdi               meunier S.MEUNIER          101      0    101
+ FORTRAN SUPPR modelisa/arlmed               meunier S.MEUNIER           86      0     86
+ FORTRAN SUPPR modelisa/arlmod               meunier S.MEUNIER           65      0     65
+ FORTRAN SUPPR modelisa/arlmol               meunier S.MEUNIER          178      0    178
+ FORTRAN SUPPR modelisa/arlmom               meunier S.MEUNIER          126      0    126
+ FORTRAN SUPPR modelisa/arlnor               meunier S.MEUNIER           86      0     86
+ FORTRAN SUPPR modelisa/arlpon               meunier S.MEUNIER          108      0    108
+ FORTRAN SUPPR modelisa/arlte                meunier S.MEUNIER          144      0    144
+ FORTRAN SUPPR modelisa/arltii               meunier S.MEUNIER           75      0     75
+ FORTRAN SUPPR modelisa/arltmm               meunier S.MEUNIER          174      0    174
+ FORTRAN SUPPR modelisa/arlver               meunier S.MEUNIER          234      0    234
+ FORTRAN SUPPR modelisa/boit2d               meunier S.MEUNIER          320      0    320
+ FORTRAN SUPPR modelisa/boit3d               meunier S.MEUNIER          349      0    349
+ FORTRAN SUPPR modelisa/boitcr               meunier S.MEUNIER          143      0    143
+ FORTRAN SUPPR modelisa/boitds               meunier S.MEUNIER           46      0     46
+ FORTRAN SUPPR modelisa/caarle               meunier S.MEUNIER          284      0    284
+ FORTRAN SUPPR modelisa/echmap               meunier S.MEUNIER          251      0    251
+ FORTRAN SUPPR modelisa/echmc2               meunier S.MEUNIER           85      0     85
+ FORTRAN SUPPR modelisa/echmc3               meunier S.MEUNIER          442      0    442
+ FORTRAN SUPPR modelisa/echmco               meunier S.MEUNIER          201      0    201
+ FORTRAN SUPPR modelisa/intinc               meunier S.MEUNIER          180      0    180
+ FORTRAN SUPPR modelisa/intmad               meunier S.MEUNIER          390      0    390
+ FORTRAN SUPPR modelisa/intmam               meunier S.MEUNIER          543      0    543
+ FORTRAN SUPPR modelisa/intsma               meunier S.MEUNIER          242      0    242
+ FORTRAN SUPPR modelisa/nbareq               meunier S.MEUNIER           66      0     66
+ FORTRAN SUPPR modelisa/nbpan                meunier S.MEUNIER           62      0     62
+ FORTRAN SUPPR modelisa/noare                meunier S.MEUNIER          476      0    476
+ FORTRAN SUPPR modelisa/nocoqu               meunier S.MEUNIER          168      0    168
+ FORTRAN SUPPR modelisa/oriem2               meunier S.MEUNIER          180      0    180
+ FORTRAN SUPPR modelisa/oriem3               meunier S.MEUNIER          196      0    196
+ FORTRAN SUPPR modelisa/plcent               meunier S.MEUNIER          107      0    107
+ FORTRAN SUPPR modelisa/plint2               meunier S.MEUNIER          397      0    397
+ FORTRAN SUPPR modelisa/plint3               meunier S.MEUNIER          694      0    694
+ FORTRAN SUPPR modelisa/pltri2               meunier S.MEUNIER          248      0    248
+ FORTRAN SUPPR modelisa/pltri3               meunier S.MEUNIER          194      0    194
+ FORTRAN SUPPR modelisa/plvol2               meunier S.MEUNIER          110      0    110
+ FORTRAN SUPPR modelisa/plvol3               meunier S.MEUNIER           75      0     75
+ FORTRAN SUPPR modelisa/tmacoq               meunier S.MEUNIER           83      0     83
+ FORTRAN SUPPR utilitai/arldbg               meunier S.MEUNIER          452      0    452
+ FORTRAN SUPPR utilitai/inimai               meunier S.MEUNIER          157      0    157
+ FORTRAN SUPPR utilitai/prove2               meunier S.MEUNIER           36      0     36
+ FORTRAN SUPPR utilitai/prove3               meunier S.MEUNIER           41      0     41
+  PYTHON AJOUT Messages/extraction             abbas M.ABBAS             83     83      0
+  PYTHON AJOUT Messages/listinst               abbas M.ABBAS             43     43      0
+  PYTHON MODIF Comportement/meta_lema_ani      proix J-M.PROIX           39      3      3
+  PYTHON MODIF Messages/algorith10             abbas M.ABBAS            291      2     10
+  PYTHON MODIF Messages/algorith7              proix J-M.PROIX          194      3      3
+  PYTHON MODIF Messages/calculel2            meunier S.MEUNIER          430      2      6
+  PYTHON MODIF Messages/calculel5            meunier S.MEUNIER          372      2      7
+  PYTHON MODIF Messages/calculel             meunier S.MEUNIER          400      1      5
+  PYTHON MODIF Messages/charges              meunier S.MEUNIER           73      2      6
+  PYTHON MODIF Messages/dvp                  meunier S.MEUNIER           76      2      6
+  PYTHON MODIF Messages/mecanonline6           abbas M.ABBAS            196      3      2
+  PYTHON MODIF Messages/observation            abbas M.ABBAS             60     10     52
+  PYTHON MODIF SD/sd_solveur                 boiteau O.BOITEAU           43      2      2
+  PYTHON SUPPR Messages/arlequindebg2        meunier S.MEUNIER            0      0      0
+  PYTHON SUPPR Messages/arlequindebg         meunier S.MEUNIER            0      0      0
+  PYTHON SUPPR Messages/arlequin             meunier S.MEUNIER            0      0      0
+
+
+        nb unites  nb lignes  ajouts  suppr.  difference
+ AJOUT :   58        9640      9640             +9640
+ MODIF :  173       56818      3021    2498      +523
+ SUPPR :  200       37198             37198    -37198
+ DEPLA :    1          80 
+         ----      ------     ------  ------   ------
+ TOTAL :  432      103736     12661   39696    -27035 

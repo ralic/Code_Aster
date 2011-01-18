@@ -4,9 +4,9 @@
      &                     IRET)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 18/05/2010   AUTEUR IDOUX L.IDOUX 
+C MODIF ALGORITH  DATE 17/01/2011   AUTEUR IDOUX L.IDOUX 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -33,9 +33,7 @@ C ======================================================================
 C ----------------------------------------------------------------------
 C     LOI DE COMPORTEMENT DU MODELE D'ENDOMMAGEMENT ANISOTROPE
 C     ROUTINE DE DECOUPAGE DE L'INCREMENT DE CHARGE LORSQUE
-C     L4ENDOMMAGEMENT APPROCHE DE 1
-C
-C
+C     L ENDOMMAGEMENT APPROCHE DE 1
 C
 C  IN INTMAX  : NBRE D'ITERATION MAX POUR LE NEWTON LOCAL
 C  IN TOLER   : RESIDU TOLERE POUR LE NEWTON LOCAL
@@ -137,8 +135,7 @@ C----CAS OU LES 3 VALEURS PROPRES SONT NON NULLES---------------------
 
               CALL LCEOB3(INTMAX,TOLER,EPST,BM,DM,
      &                    LAMBDA,MU,ALPHA,ECROB,ECROD,
-     &                    SEUIL,B,D,MULT,ELAS,DBLOQ,IRET)
-
+     &                    SEUIL,BDIM,B,D,MULT,ELAS,DBLOQ,IRET)
 
               CALL DIAGO3(B,VECB,VALB)
                REINIT=.FALSE.
@@ -207,9 +204,7 @@ C----CAS OU LES 3 VALEURS PROPRES SONT NON NULLES---------------------
                   EPST(I)=EPSF(I)
  901            CONTINUE
 
-
               ENDIF
-
 
 C----CAS OU 1 VALEUR PROPRE EST NULLE---------------------------------
 
@@ -270,7 +265,7 @@ C----CAS OU 1 VALEUR PROPRE EST NULLE---------------------------------
 
             CALL LCEOB2(INTMAX,TOLER,EPSR,BMR,DM,
      &                 LAMBDA,MU,ALPHA,ECROB,ECROD,
-     &                 SEUIL,BR,D,MULT,ELAS,DBLOQ,IRET)
+     &                 SEUIL,BDIM,BR,D,MULT,ELAS,DBLOQ,IRET)
 
             CALL DIAGO3(BR,VECBR,VALBR)
 
@@ -368,7 +363,6 @@ C----CAS OU 1 VALEUR PROPRE EST NULLE---------------------------------
               GOTO 999
              ENDIF
 
-
 C---- CAS OU 2 VALEURS PROPRES SONT NULLES-----------------------------
 
                 ELSEIF (BDIM.EQ.1) THEN
@@ -423,7 +417,7 @@ C---- CAS OU 2 VALEURS PROPRES SONT NULLES-----------------------------
 
                CALL LCEOB1(INTMAX,TOLER,EPSR,BMR,DM,
      &                     LAMBDA,MU,ALPHA,ECROB,ECROD,
-     &                     SEUIL,BR,D,MULT,ELAS,DBLOQ,IRET)
+     &                     SEUIL,BDIM,BR,D,MULT,ELAS,DBLOQ,IRET)
 
                   IF (COMPTE.LT.100) THEN
 

@@ -1,10 +1,10 @@
       SUBROUTINE MEOBG3 (EPS,EPSG,B,D,DELTAB,DELTAD,MULT,
-     &                 LAMBDA,MU,ECROB,ECROD,ALPHA,K1,K2,DSIDEP)
+     &                 LAMBDA,MU,ECROB,ECROD,ALPHA,K1,K2,BDIM,DSIDEP)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 18/05/2010   AUTEUR IDOUX L.IDOUX 
+C MODIF ALGORITH  DATE 17/01/2011   AUTEUR IDOUX L.IDOUX 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -25,21 +25,18 @@ C ======================================================================
       REAL*8            EPS(6),EPSG(6),B(6),D,DSIDEP(6,6)
       REAL*8            DELTAB(6),DELTAD,MULT
       REAL*8            LAMBDA,MU,ALPHA,K1,K2,ECROB,ECROD
+      INTEGER           BDIM
 
 C--CALCUL DE LA MATRICE TANGENTE POUR LA LOI ENDO_ORTHO_BETON
 C  VERSION NON LOCALE
-C
-C
-C
-C
 C-------------------------------------------------------------
 
-      INTEGER           I,J,K,T(3,3),IRET
+      INTEGER           I,J,K,IRET
       REAL*8             RAC2,NOFBM,UN,DEUX
-      REAL*8             DET,FB(6),FBM(6),VECFB(3,3),VALFB(3)
+      REAL*8             DET,FB(6),FBM(6)
       REAL*8             TREPSG,FD
       REAL*8             DFBMDF(6,6),TDFBDB(6,6),TDFBDE(6,6)
-      REAL*8             TDFDDE(6),TDFDDD,TOTO
+      REAL*8             TDFDDE(6),TDFDDD
       REAL*8             INTERD(6),INTERT(6),INTERG(6)
       REAL*8             PSI(6,6),KSI(6,6),IKSI(6,6)
       REAL*8             MATB(6,6),MATD(6)
@@ -49,50 +46,20 @@ C-------------------------------------------------------------
       DEUX=2.D0
       RAC2=SQRT(DEUX)
       UN=1.D0
-      T(1,1)=1
-      T(2,2)=2
-      T(3,3)=3
-      T(1,2)=4
-      T(2,1)=4
-      T(1,3)=5
-      T(3,1)=5
-      T(2,3)=6
-      T(3,2)=6
 
       CALL R8INIR(36,0.D0,DSIDEP,1)
-
 
 C-------------------------------------------------------
 C-------------------------------------------------------
 C----CALCUL DE FB: FORCE THERMO ASSOCIEE A
 C-------------------ENDOMMAGEMENT ANISOTROPE DE TRACTION
 
-      CALL CEOBFB(B,EPSG,LAMBDA,MU,ECROB,FB)
+      CALL CEOBFB(B,EPSG,LAMBDA,MU,ECROB,BDIM,FB,NOFBM,FBM)
 
-      CALL DIAGO3(FB,VECFB,VALFB)
-      DO 29 I=1,3
-        IF (VALFB(I).GT.0.D0) THEN
-          VALFB(I)=0.D0
-        ENDIF
-  29  CONTINUE
-      CALL R8INIR(6,0.D0,FBM,1)
-      DO 26 I=1,3
-        DO 27 J=I,3
-          DO 28 K=1,3
-            FBM(T(I,J))=FBM(T(I,J))+VECFB(I,K)*VALFB(K)*VECFB(J,K)
-  28      CONTINUE
-  27    CONTINUE
-  26  CONTINUE
-
-
-C----CALCUL DE FD: FORCE THERMO ASSOCIEE A
+C----CALCUL DE FD: PARTIE POSITIVE DE LA FORCE THERMO ASSOCIEE A
 C-------------------ENDOMMAGEMENT ISOTROPE DE COMPRESSION
 
         CALL CEOBFD(D,EPSG,LAMBDA,MU,ECROD,FD)
-C Rajout du test sur le signe de FD
-        IF (FD.LT.0.D0) THEN
-          FD=0.D0
-        ENDIF
 
 C---CALCUL DE DERIVEES UTILES----------------------------------
 
@@ -166,7 +133,6 @@ C---CALCUL DE KSI ET PSI
  131    CONTINUE
  130  CONTINUE
 
-
       CALL R8INIR(36,0.D0,IKSI,1)
       DO 140 I=1,6
         IKSI(I,I)=1.D0
@@ -175,7 +141,6 @@ C---CALCUL DE KSI ET PSI
       CALL MGAUSS('NCVP',KSI,IKSI,6,6,6,DET,IRET)
 
       IF (IRET.NE.0) GOTO 999
-
 
 C-- ! ksi n est plus disponible
 
@@ -202,13 +167,10 @@ C-- ! ksi n est plus disponible
  202           CONTINUE
  201   CONTINUE
 
-
-
        ELSEIF ((FD.EQ.0.D0).AND.(NOFBM.NE.0.D0)) THEN
 
          CALL R8INIR(36,0.D0,KSI,1)
          CALL R8INIR(36,0.D0,PSI,1)
-
 
          DO 500 I=1,6
            DO 501 J=1,6
@@ -258,9 +220,6 @@ C-- ! ksi n est plus disponible
      &                      *DCRIT(J)/FD)/TDFDDD
  662             CONTINUE
  661     CONTINUE
-
-
-
 
       ENDIF
 

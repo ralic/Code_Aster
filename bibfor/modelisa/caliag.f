@@ -1,7 +1,7 @@
       SUBROUTINE CALIAG(FONREZ,CHARGZ)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -19,7 +19,7 @@ C ======================================================================
       IMPLICIT REAL*8 (A-H,O-Z)
       CHARACTER*(*) FONREZ,CHARGZ
 C ----------------------------------------------------------------------
-C MODIF MODELISA  DATE 26/07/2010   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF MODELISA  DATE 17/01/2011   AUTEUR COURTOIS M.COURTOIS 
 
 C     CREER LES CARTES CHAR.CHME.CMULT ET CHAR.CHME.CIMPO
 C          ET REMPLIR LIGRCH, POUR LE MOT-CLE LIAISON_GROUP
@@ -377,8 +377,7 @@ C --- PREMIER NOEUD DE LA RELATION ---
             ZK8(IDNOMD+K-1) = NOMDEP
             ZI(IDIMEN+K-1) = IDIM
             DO 100 I = 1,IDIM
-              ZR(IDIREC+3* (K-1)+I-1) = ZR(IDCONR-1+ (2*3+1)* (J-1)+I)
-C     +                                ZR(IDCONR-1+(2*IDIM+1)*(J-1)+I)
+              ZR(IDIREC+3* (K-1)+I-1) = ZR(IDCONR-1+(2*IDIM+1)* (J-1)+I)
   100       CONTINUE
           ELSE
             DO 110 I = 1,NDDL1
@@ -403,8 +402,7 @@ C --- DEUXIEME NOEUD DE LA RELATION ---
             ZK8(IDNOMD+K-1) = NOMDEP
             ZI(IDIMEN+K-1) = IDIM
             DO 120 I = 1,IDIM
-              ZR(IDIREC+3* (K-1)+I-1) = ZR(IDCONR-1+ (2*3+1)* (J-1)+3+I)
-C     +                          ZR(IDCONR-1+(2*IDIM+1)*(J-1)+IDIM+I)
+        ZR(IDIREC+3* (K-1)+I-1) = ZR(IDCONR-1+ (2*IDIM+1)* (J-1)+IDIM+I)
   120       CONTINUE
           ELSE
             DO 130 I = 1,NDDL2

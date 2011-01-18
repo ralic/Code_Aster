@@ -4,7 +4,7 @@
 C =====================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C =====================================================================
-C MODIF ELEMENTS  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 18/01/2011   AUTEUR MEUNIER S.MEUNIER 
 C RESPONSABLE UFBHHLL C.CHAVANT
 C =====================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -55,11 +55,11 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C =====================================================================
       INTEGER MECANI(5),PRESS1(7),PRESS2(7),TEMPE(5),DIMUEL
-      INTEGER DIMDEP,DIMDEF,DIMCON,NBVARI,NDDLS,NDDLM,II,INO
+      INTEGER DIMDEP,DIMDEF,DIMCON,NBVARI,NDDLS,NDDLM,II
       INTEGER NMEC,NP1,NP2,I,NCMP,NNOS,ICHG,ICHN
       INTEGER JTAB(7),IGAU,ISIG,NNOM
       REAL*8 DEFGEP(21),DEFGEM(21),DFDBID(27),POIDS
-      REAL*8 DFDI(20,3),DFDI2(20,3),B(21,120),EPSM(405),EPSNO(405)
+      REAL*8 DFDI(20,3),DFDI2(20,3),B(21,120),EPSM(405)
       REAL*8 DRDS(22,31),DRDSR(21,31),DSDE(31,21)
       REAL*8 R(22),SIGBAR(21),C(21),CK(21),CS(21)
       CHARACTER*3 MODINT
@@ -384,7 +384,7 @@ C ======================================================================
      &              ZR(ICONTM))
       END IF
 C ======================================================================
-C --- 7. OPTION : SIEF_ELNO ---------------------------------------
+C --- 7. OPTION : SIEF_ELNO --------------------------------------------
 C ======================================================================
       IF (OPTION.EQ.'SIEF_ELNO  ') THEN
          NCMP = DIMCON
@@ -408,7 +408,7 @@ C ======================================================================
          CALL POSTHM(OPTION,MODINT,JGANO,NCMP,NVIM,ZR(ICHG),ZR(ICHN))
       END IF
 C ======================================================================
-C --- 9. OPTION : EPSI_ELGA OU EPSI_ELNO_DEPL ---------------------
+C --- 9. OPTION : EPSI_ELGA OU EPSI_ELNO_DEPL---------------------------
 C ======================================================================
       IF ((OPTION.EQ.'EPSI_ELGA') .OR.
      &    (OPTION.EQ.'EPSI_ELNO_DEPL')) THEN
@@ -431,12 +431,7 @@ C ======================================================================
   210          CONTINUE
   200       CONTINUE
          ELSE IF (OPTION(6:9).EQ.'ELNO') THEN
-            CALL PPGAN2(JGANO,6,EPSM,EPSNO)
-            DO 300 INO = 1,NNO
-               DO 310 ISIG = 1,6
-                  ZR(IDEFO+6*(INO-1)+ISIG-1) = EPSNO(6*(INO-1)+ISIG)
-  310          CONTINUE
-  300       CONTINUE
+            CALL PPGAN2(JGANO,6,EPSM,ZR(IDEFO))
          ELSE
             CALL ASSERT(.FALSE.)
          ENDIF

@@ -1,0 +1,414 @@
+# MODIF  DATE 18/01/2011   AUTEUR PROIX J-M.PROIX 
+# RESPONSABLE PROIX J-M.PROIX
+# TITRE : VARIATION TEMPERATURE DANS LE COMPORTEMENT BARRE 'VMIS_CINE_LINE'
+# comp009d.para = tps_job 120 mem_job 64Mo ncpus 1 liste_test S
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+# CAS-TEST DE REFERENCE : SSNL112B
+#===================================================================== 
+
+DEBUT(CODE=_F(NOM='COMP009D',NIV_PUB_WEB='INTERNET'),PAR_LOT='OUI')
+
+MA=LIRE_MAILLAGE();
+
+import numpy as N             
+
+epsi=1.E-10
+
+TREF = 20.
+
+T0 = TREF
+Tmax = 500.
+
+tmax =1.
+
+NCAL = 20
+
+
+ZERO =DEFI_CONSTANTE(VALE=0.0);
+
+UN =DEFI_CONSTANTE(VALE=1.0);
+
+compor='VMIS_CINE_LINE'
+
+Nbvari=7
+
+
+YOUN=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(TREF, 2.E11,
+                                         500., 1.E11,
+                                           ),);
+ALPH=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(TREF, 1.E-5,
+                                         500., 2.E-5,
+                                           ),);
+
+SIGY=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(TREF, 2.E8,
+                                          500.,1.E8,))
+
+DSDE=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(TREF, 2.E9,
+                                          500.,1.E9,
+                                           ),);
+
+MATER=DEFI_MATERIAU(ELAS_FO=_F(E=YOUN,
+                               NU=ZERO,
+                               TEMP_DEF_ALPHA=TREF,
+                               ALPHA=ALPH,),
+                  ECRO_LINE_FO=_F(D_SIGM_EPSI=DSDE,
+                                  SY=SIGY,),
+                  );
+
+CHMATER=AFFE_MATERIAU(MAILLAGE=MA,
+                      AFFE=_F(TOUT='OUI',
+                              MATER=MATER,),);
+
+MOMECA=AFFE_MODELE(MAILLAGE=MA,
+                   AFFE=_F(TOUT='OUI',
+                           PHENOMENE='MECANIQUE',
+                           MODELISATION='BARRE',),);
+
+CARAELEM=AFFE_CARA_ELEM(MODELE=MOMECA,
+                        BARRE=_F(MAILLE='M1',
+                                 SECTION='GENERALE',
+                                 CARA='A',
+                                 VALE=1.0,),);
+
+# definition explicite de la liste d'instants
+# pour que CALC_FONCTION/COMB fonctionne
+tmax =1.
+NCAL =20
+time = 0.
+linst=[0.]
+for i in range(NCAL):
+          timem = time           
+          time = timem + tmax/NCAL
+          linst.append(time)
+L_INST=DEFI_LIST_REEL( VALE=linst)
+
+TIMP=DEFI_FONCTION(
+                      NOM_PARA='INST',  NOM_RESU='TEMP',
+                       VALE=(  0. , TREF, 1. , 500.)
+                        )
+
+
+CHP_TEMP=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_F',
+                    OPERATION='AFFE',
+                    MAILLAGE=MA,
+                    AFFE=_F(TOUT='OUI',
+                            NOM_CMP='TEMP',
+                            VALE_F=TIMP,),);
+
+RTEMP=CREA_RESU(OPERATION='AFFE',
+                TYPE_RESU='EVOL_THER',
+                NOM_CHAM='TEMP',
+                AFFE=_F(CHAM_GD=CHP_TEMP,
+                        LIST_INST=L_INST,),);
+
+CHMTH=AFFE_MATERIAU(MAILLAGE=MA,
+                      AFFE=_F(TOUT='OUI',
+                              MATER=MATER,),
+                      AFFE_VARC=_F(NOM_VARC='TEMP',VALE_REF=TREF,TOUT='OUI',EVOL=RTEMP,NOM_CHAM='TEMP',),)
+
+LIAISON=AFFE_CHAR_MECA(MODELE=MOMECA,
+                       DDL_IMPO=(_F(NOEUD='N3',
+                                    DX=0.0,
+                                    DY=0.0,
+                                    DZ=0.0,),
+                                 _F(NOEUD='N7',
+                                    DX=0.0,
+                                    DY=0.0,
+                                    DZ=0.0,),
+                                    ),);
+                                    
+U=STAT_NON_LINE(MODELE=MOMECA,
+                CHAM_MATER=CHMTH,
+                CARA_ELEM=CARAELEM,
+                EXCIT=(_F(CHARGE=LIAISON,),
+                    ),          
+                COMP_INCR=_F(RELATION=compor,
+      ),
+                INCREMENT=_F(LIST_INST=L_INST,),
+                NEWTON=_F(REAC_INCR=1,
+                          REAC_ITER=1,),
+);
+
+TABU=CREA_TABLE(
+                 RESU=_F(RESULTAT=U, 
+                         TOUT='OUI',
+                         TOUT_CMP='OUI',
+                         NOM_CHAM='SIEF_ELGA',),
+                )
+
+TABU_VAR=CREA_TABLE(
+                     RESU=_F(RESULTAT=U,
+                             TOUT='OUI',
+                             NOM_CMP=('V1','V2','V3','V4','V5','V6','V7'),
+                             NOM_CHAM='VARI_ELGA',),
+                    )
+
+IMPR_TABLE(TABLE = TABU_VAR);
+
+U=CALC_ELEM(reuse =U,
+               RESULTAT=U,
+               OPTION=('SIEF_ELNO',
+                       ),);
+
+U=CALC_NO(reuse =U,
+               RESULTAT=U,
+               OPTION=('SIEF_NOEU',
+                       ),);
+
+
+SIGN3=POST_RELEVE_T(ACTION=_F(INTITULE='N_N3',
+                                NOEUD='N3',
+                                RESULTAT=U,
+                                NOM_CHAM='SIEF_NOEU',
+                                NOM_CMP='N',
+                                OPERATION='EXTRACTION',),);
+
+IMPR_TABLE(TABLE=SIGN3);
+
+
+# IMPR_RESU(RESU=(_F(RESULTAT=U,)))
+
+
+MATER  = [None]*(NCAL+1)
+CHMTH  = [None]*(NCAL+1)
+CHRGE  = [None]*(NCAL+1)
+RESU   = [None]*(NCAL+1)
+UTAB2  = [None]*(NCAL+1)
+SN3    = [None]*(NCAL+1)
+VARN3  = [None]*(NCAL+1)
+
+time = 0.
+
+#  Formules pour la comparaison calcul 1  / calcul 2
+#
+def verif(VAL_CAL,VAL_REF):
+   if abs(VAL_REF) > 1.E-30 :
+      diff=abs (VAL_CAL - VAL_REF)/VAL_REF
+   else :
+      diff=abs (VAL_CAL - VAL_REF)
+   return diff
+   
+VERIF=FORMULE(NOM_PARA=('VAL_REF', 'VAL_CAL'),VALE='verif(VAL_CAL,VAL_REF)')
+            #  VALE='abs (VAL_CAL - VAL_REF)/max(VAL_REF')
+
+
+for i in range(1,NCAL+1):
+          
+          timem = time 
+          
+         # time = timem + tmax/NCAL
+          time =linst[i]
+            
+          Ti = T0 + time/tmax * (Tmax - T0)
+          
+          Tm = T0 + timem/tmax * (Tmax - T0)
+          
+          # deformation mecanique imposee correspondant a la deformation thermique du premier calcul
+          
+          epsimp =DEFI_CONSTANTE(VALE=-ALPH(Ti)*(Ti - TREF));
+
+          print 'i=',i, ' instant=', time, ' Temperature=',Ti
+          
+          # variation des coef du comportement avec la temperature
+          # correction eventuelle des valeurs initiales du temps ti 
+                                    
+          MATER[i]=DEFI_MATERIAU(ELAS =_F(E=YOUN(Ti), NU=0., ALPHA=0.),
+                                          ECRO_LINE=_F(D_SIGM_EPSI=DSDE(Ti),SY=SIGY(Ti),),
+                                );
+
+          list = DEFI_LIST_REEL(DEBUT=timem,
+                      INTERVALLE=(_F(JUSQU_A=time,NOMBRE=1,),),);
+          
+          CHMTH[i]=AFFE_MATERIAU(MAILLAGE=MA,
+                      AFFE=_F(TOUT='OUI',
+                              MATER=MATER[i],),);
+
+          LIAISON2=AFFE_CHAR_MECA(MODELE=MOMECA,
+                       DDL_IMPO=(_F(NOEUD='N3',
+                                    DX=0.0,
+                                    DY=0.0,
+                                    DZ=0.0,),
+                                 _F(NOEUD='N7',
+                                    DX=0.0,
+                                    DY=0.0,),
+                                    ),);
+                                    
+          CHRGE[i]=AFFE_CHAR_MECA_F(MODELE=MOMECA,
+                       DDL_IMPO=(_F(NOEUD='N7',
+                                    DZ=epsimp,),),);
+                                    
+         
+          if i == 1 :
+ 
+              RESU[i]=STAT_NON_LINE(MODELE=MOMECA,
+                                 CHAM_MATER=CHMTH[i],
+                                 CARA_ELEM=CARAELEM,
+                                 EXCIT=(_F(CHARGE=CHRGE[i]),
+                                        _F(CHARGE=LIAISON2),),
+                                 COMP_INCR=_F(RELATION=compor,),
+                                 INCREMENT=_F(LIST_INST=list,),
+                                 NEWTON=_F(REAC_INCR=1,
+                                 REAC_ITER=1,),
+                                 );
+          else :
+
+             # Faux en PAR_LOT='OUI' car la formule est evaluee avec le dernier i
+             # NOR = FORMULE(NOM_PARA='N',VALE='YOUN(Ti)/YOUN(Tm)*N')
+             # donc il faut faire au choix :
+              NOR = FORMULE(NOM_PARA='N',VALE='YOUN(%f)/YOUN(%f)*N' % (Ti, Tm))
+             # ou bien :
+             # NOR = FORMULE(NOM_PARA='N',VALE='YOUN(%(Ti)f)/YOUN(%(Tm)f)*N' \
+             #    % { 'Ti' : Ti, 'Tm' : Tm })
+              SIG1=CREA_CHAMP(OPERATION='AFFE', TYPE_CHAM='ELGA_NEUT_F',
+                              MODELE=MOMECA,  PROL_ZERO='OUI',   INFO=1,
+                              AFFE=_F( TOUT = 'OUI', NOM_CMP = ('X1'),
+                                          VALE_F  = (NOR)))
+
+              SIG2=CREA_CHAMP(OPERATION='EVAL', TYPE_CHAM='ELGA_NEUT_R', INFO=1,
+                              CHAM_F=SIG1,  CHAM_PARA=SM   )
+
+              SM1  =CREA_CHAMP(OPERATION='ASSE', TYPE_CHAM='ELGA_SIEF_R',
+                                MODELE=MOMECA,  PROL_ZERO='OUI',
+                                ASSE=_F( TOUT = 'OUI',   CHAM_GD = SIG2,
+                                NOM_CMP = ('X1',  ),
+                                NOM_CMP_RESU = ('N')))
+
+              # idem NOR CORCIN = FORMULE(NOM_PARA='V1',VALE='DSDE(Ti)/DSDE(Tm)*V1')
+              CORCIN = FORMULE(NOM_PARA='V1',VALE='DSDE(%f)/DSDE(%f)*V1' % (Ti, Tm))
+
+              VINT1=CREA_CHAMP(OPERATION='AFFE', TYPE_CHAM='ELGA_NEUT_F',
+                              MODELE=MOMECA,  PROL_ZERO='OUI',   INFO=1,
+                              AFFE=_F( TOUT = 'OUI', NOM_CMP = ('X1'), VALE_F  = (CORCIN)))
+
+              VINT2=CREA_CHAMP(OPERATION='EVAL', TYPE_CHAM='ELGA_NEUT_R', INFO=1,
+                              CHAM_F=VINT1,  CHAM_PARA=VM   )
+
+              VM1  =CREA_CHAMP(OPERATION='ASSE', TYPE_CHAM='ELGA_VARI_R',
+                                MODELE=MOMECA,  PROL_ZERO='OUI',
+                                ASSE=(
+                                _F( TOUT = 'OUI',   CHAM_GD = VINT2,NOM_CMP = ('X1',  ),NOM_CMP_RESU = ('V1')),
+                                _F( TOUT = 'OUI',   CHAM_GD = VM , NOM_CMP=('V2','V3','V4','V5','V6','V7'),),
+                                ))
+                                
+              RESU[i]=STAT_NON_LINE(MODELE=MOMECA,
+                             CHAM_MATER=CHMTH[i],
+                             CARA_ELEM=CARAELEM,
+                             EXCIT=(_F(CHARGE=CHRGE[i]),_F(CHARGE=LIAISON2),),
+                             ETAT_INIT = _F(DEPL=EM, SIGM= SM1, VARI = VM1),
+                             COMP_INCR=_F(RELATION=compor,),
+                             INCREMENT=_F(LIST_INST=list,),
+                             NEWTON=_F(REAC_INCR=1,
+                             REAC_ITER=1,),
+                            );
+  
+              DETRUIRE ( CONCEPT =  _F (NOM =EM),);
+              DETRUIRE ( CONCEPT =  _F (NOM =SM1),);
+              DETRUIRE ( CONCEPT =  _F (NOM =SM),);
+              DETRUIRE ( CONCEPT =  _F (NOM =VM),);
+              DETRUIRE ( CONCEPT =  _F (NOM =NOR),);
+              DETRUIRE ( CONCEPT =  _F (NOM =SIG1),);
+              DETRUIRE ( CONCEPT =  _F (NOM =SIG2),);
+              DETRUIRE ( CONCEPT =  _F (NOM =CORCIN),);
+              DETRUIRE ( CONCEPT =  _F (NOM =VINT1),);
+              DETRUIRE ( CONCEPT =  _F (NOM =VINT2),);
+              DETRUIRE ( CONCEPT =  _F (NOM =VM1),);
+
+          RESU[i]=CALC_ELEM(reuse =RESU[i],
+           RESULTAT=RESU[i],
+           OPTION=('SIEF_ELNO',
+                   ),);
+
+          RESU[i]=CALC_NO(reuse =RESU[i],
+           RESULTAT=RESU[i],
+           OPTION=('SIEF_NOEU',
+                   ),);
+
+          EM  = CREA_CHAMP(  TYPE_CHAM = 'NOEU_DEPL_R',
+                               OPERATION = 'EXTR',
+                               RESULTAT  = RESU[i],
+                               NOM_CHAM  = 'DEPL',
+                               NUME_ORDRE = 1)
+
+          SM  = CREA_CHAMP(  TYPE_CHAM = 'ELGA_SIEF_R',
+                               OPERATION = 'EXTR',
+                               RESULTAT  = RESU[i],
+                               NOM_CHAM  = 'SIEF_ELGA',
+                               NUME_ORDRE = 1)
+ 
+          VM = CREA_CHAMP(TYPE_CHAM='ELGA_VARI_R',
+                           OPERATION='EXTR',
+                           RESULTAT=RESU[i],
+                           NOM_CHAM='VARI_ELGA',
+                           NUME_ORDRE=1,  );                                                                   
+          
+          DETRUIRE ( CONCEPT =  _F (NOM =epsimp),);
+          DETRUIRE ( CONCEPT =  _F (NOM =list),);
+          DETRUIRE ( CONCEPT =  _F (NOM =CHRGE[i]),);
+          DETRUIRE ( CONCEPT =  _F (NOM =LIAISON2),);
+
+          IMPR_RESU(RESU=(_F(RESULTAT=RESU[i])))
+          
+          SN3[i]=POST_RELEVE_T(ACTION=_F(INTITULE='N_N3',
+                                NOEUD='N3',
+                                RESULTAT=RESU[i],
+                                NOM_CHAM='SIEF_NOEU',
+                                NOM_CMP='N',
+                                OPERATION='EXTRACTION',),);
+
+          VARN3[i]=CREA_TABLE(
+                             RESU=_F(RESULTAT=RESU[i],
+                             TOUT='OUI',
+                             NOM_CMP=('V1','V2','V3','V4','V5','V6','V7'),
+                             NOM_CHAM='VARI_ELGA',),
+                    )
+
+          IMPR_TABLE(TABLE=VARN3[i])
+          NOMPARA='N'
+          TCOMPR =CALC_TABLE(TABLE=SIGN3,ACTION=(
+                                _F(OPERATION='FILTRE',NOM_PARA=('INST'),VALE=time,),
+                                _F(OPERATION='EXTR',NOM_PARA=('INST',NOMPARA),),
+                                _F(OPERATION='RENOMME',NOM_PARA=(NOMPARA, 'VAL_CAL'),),
+                                _F(OPERATION='COMB',TABLE=SN3[i],NOM_PARA=('INST'),),
+                                _F(OPERATION='EXTR',NOM_PARA=('INST',NOMPARA, 'VAL_CAL'),),
+                                _F(OPERATION='RENOMME',NOM_PARA=(NOMPARA, 'VAL_REF'),),
+                                _F(OPERATION='OPER',NOM_PARA='DIFF',FORMULE=VERIF),
+                                   ),)                  
+
+          TEST_TABLE( TABLE   = TCOMPR,NOM_PARA  = 'DIFF',
+              TYPE_TEST = 'MAX',VALE      = 0.,CRITERE   = 'ABSOLU',PRECISION = 1.E-6,
+              REFERENCE = 'AUTRE_ASTER',)                            
+          DETRUIRE ( CONCEPT =  _F (NOM =TCOMPR),);
+
+          NOMPARA='V1'
+          TCOMPR =CALC_TABLE(TABLE=TABU_VAR,ACTION=(
+                                _F(OPERATION='FILTRE',NOM_PARA=('INST'),VALE=time,),
+                                _F(OPERATION='EXTR',NOM_PARA=('INST',NOMPARA),),
+                                _F(OPERATION='RENOMME',NOM_PARA=(NOMPARA, 'VAL_CAL'),),
+                                _F(OPERATION='COMB',TABLE=VARN3[i],NOM_PARA=('INST'),),
+                                _F(OPERATION='EXTR',NOM_PARA=('INST',NOMPARA, 'VAL_CAL'),),
+                                _F(OPERATION='RENOMME',NOM_PARA=(NOMPARA, 'VAL_REF'),),
+                                _F(OPERATION='OPER',NOM_PARA='DIFF',FORMULE=VERIF),
+                                   ),)                  
+
+          TEST_TABLE( TABLE   = TCOMPR,NOM_PARA  = 'DIFF',
+              TYPE_TEST = 'MAX',VALE      = 0.,CRITERE   = 'ABSOLU',PRECISION = 1.E-6,
+              REFERENCE = 'AUTRE_ASTER',)                            
+          DETRUIRE ( CONCEPT =  _F (NOM =TCOMPR),);
+
+FIN();

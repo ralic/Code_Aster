@@ -1,6 +1,6 @@
       SUBROUTINE TE0120(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 11/01/2011   AUTEUR SFAYOLLE S.FAYOLLE 
+C MODIF ELEMENTS  DATE 17/01/2011   AUTEUR SFAYOLLE S.FAYOLLE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -80,6 +80,7 @@ C - 2 DEPLACEMENTS + 1 PRES
             DLNS = 3
           ELSEIF (NOMTE(1:5).EQ.'MIAX_' .OR.
      &            NOMTE(1:5).EQ.'MIPL_') THEN
+C - 2 DEPLACEMENTS + 1 PRES + 1 GONF
             DLNS = 4
           ELSE
             CALL ASSERT(.FALSE.)
@@ -89,6 +90,7 @@ C - 3 DEPLACEMENTS + 1 PRES
           IF (NOMTE(1:6).EQ.'MINCUP') THEN
             DLNS = 4
           ELSEIF (NOMTE(1:5).EQ.'MINC_') THEN
+C - 3 DEPLACEMENTS + 1 PRES + 1 GONF
             DLNS = 5
           ELSE
             CALL ASSERT(.FALSE.)

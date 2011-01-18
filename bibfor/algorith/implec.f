@@ -2,9 +2,9 @@
      &                  UNITE )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 21/12/2010   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 17/01/2011   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -22,10 +22,9 @@ C ======================================================================
 C RESPONSABLE ABBAS M.ABBAS
 C
       IMPLICIT NONE
-      CHARACTER*24 SDSUIV
       INTEGER      FONACT(*)
       INTEGER      ZDEF,NCOL,UNITE
-      CHARACTER*19 COLACT
+      CHARACTER*19 SDSUIV,COLACT
 C
 C ----------------------------------------------------------------------
 C
@@ -62,12 +61,10 @@ C
 C
 C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
 C
-      INTEGER      I,NBOCC,ICOL,NBCOL
+      INTEGER      NBOCC,ICOL
       CHARACTER*16 MOTFAC
       LOGICAL      LINFRE,LUNITE
       INTEGER      NBSUIV
-      CHARACTER*16 TYPM(40)
-      CHARACTER*9  COLONN
 C      
 C ----------------------------------------------------------------------
 C      

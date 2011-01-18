@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 17/01/2011   AUTEUR ABBAS M.ABBAS 
 # RESPONSABLE ABBAS M.ABBAS
 # AUTEUR : M. ZARROUG
 # DATE   : 18/12/2000
@@ -90,26 +90,33 @@ RESU=STAT_NON_LINE(MODELE=MO,
                    CONTACT  = CHA1,          
                    COMP_ELAS=_F(RELATION='ELAS',),
                    INCREMENT=_F(LIST_INST=L_INST,),
+                   
                    OBSERVATION=(_F(NOM_CHAM='DEPL',
-                                   NOM_CMP='DY',PAS_OBSE=1,
-                                   NOEUD='N81',
-                                   SUIVI_DDL='NON'),
+                                   NOM_CMP='DY',
+                                   PAS_OBSE=1,
+                                   NOEUD='N81',),
                                 _F(NOM_CHAM='SIEF_ELGA',
                                    POINT = 1,
                                    NOM_CMP='SIYY',
-                                   MAILLE='M1',
-                                   SUIVI_DDL='NON'),
-                                _F(NUME_SUIVI = 1,
+                                   MAILLE='M1',),), 
+                   
+                   SUIVI_DDL=(_F(
+                                   NOM_CHAM   = 'FORC_NODA',
+                                   NOM_CMP    = 'DX',
+                                   TOUT = 'OUI',
+                                   EVAL_CHAM='MAX',), 
+                                _F(
                                    NOM_CHAM   = 'SIEF_ELGA',
                                    NOM_CMP    = 'SIXX',
                                    MAILLE     = 'M1',
-                                   POINT      = 1,
-                                   SUIVI_DDL='OUI',),      
-                                _F(NUME_SUIVI = 2,
+                                   POINT      = 1,),      
+                                _F(
                                    NOM_CHAM   = 'SIEF_ELGA',
                                    NOM_CMP='SIXX',
-                                   VALE_MAX='OUI',
-                                   SUIVI_DDL='OUI')),      
+                                   TOUT = 'OUI',
+                                   EVAL_CHAM='MAX',
+                                   EVAL_ELGA='MAX',
+                                   )),      
                    AFFICHAGE=(_F(INFO_RESIDU='OUI',
                                  UNITE=37,),),
                    NEWTON=_F(MATRICE='TANGENTE',

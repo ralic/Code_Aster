@@ -2,7 +2,7 @@
      &                  TYPE,LMD,EPSMAT,LDECHG)
       IMPLICIT NONE
 !           CONFIGURATION MANAGEMENT OF EDF VERSION
-!& MODIF AMUMPM MUMPS  DATE 10/01/2011   AUTEUR DELMAS J.DELMAS 
+!& MODIF AMUMPM MUMPS  DATE 18/01/2011   AUTEUR DESOZA T.DESOZA 
 ! ==================================================================
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D              WWW.CODE-ASTER.ORG
 !
@@ -80,7 +80,7 @@ C============================================================
       COMMON /MUMPSD/ DMPS
       COMMON /MUMPSZ/ ZMPS
       COMMON /MUMPSH/ NONUS,NOMATS,NOSOLS,ETAMS,ROUCS,PRECS
-      
+
 C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
       INTEGER*4 ZI4
       COMMON  /I4VAJE/ZI4(1)
@@ -137,6 +137,21 @@ C --- DE MUMPS: DMUMPS_STRUC OU ZMUMPS_STRUC
 
       IF (LMD) CALL JEVEUO(NONU//'.NUML.NULG','L',JNULOGL)
 
+!     ------------------------------------------
+!     DETERMINATION DE LA SYMETRIE DE LA MATRICE
+!     ------------------------------------------
+      CALL JELIRA(NOMAT//'.VALM','NMAXOC',NVALE,KBID)
+! --- LMNSY EST INDEPENDANT DE XMPSK%SYM POUR POUVOIR TRAITER
+! --- DES CAS SYMETRIQUES EN MUMPS NON SYMETRIQUE
+      IF (NVALE.EQ.1) THEN
+         LMNSY=.FALSE.
+      ELSE IF (NVALE.EQ.2) THEN
+         LMNSY=.TRUE.
+      ELSE
+         CALL ASSERT(.FALSE.)
+      ENDIF
+!
+
 C       ------------------------------------------------
 C        LECTURE D'ADRESSES ET DE PARAMETRES PRELIMINAIRES
 C       ------------------------------------------------
@@ -162,16 +177,6 @@ C --- CALCUL DE NZ2
         CALL ASSERT(NZ.LE.NSMHC)
         NZ2=NZ
         IF (SYM.EQ.0) NZ2=2*NZ-N
-        CALL JELIRA(NOMAT//'.VALM','NMAXOC',NVALE,KBID)
-C --- LMNSY EST INDEPENDANT DE XMPSK%SYM POUR POUVOIR TRAITER
-C --- DES CAS SYM EN MUMPS NON SYMETRIQUE
-        IF (NVALE.EQ.1) THEN
-          LMNSY=.FALSE.
-        ELSE IF (NVALE.EQ.2) THEN
-          LMNSY=.TRUE.
-        ELSE
-          CALL ASSERT(.FALSE.)
-        ENDIF
 
         CALL JEVEUO(JEXNUM(NOMAT//'.VALM',1),'L',JVALE)
         CALL JELIRA(JEXNUM(NOMAT//'.VALM',1),'LONMAX',NLONG,KBID)
@@ -210,7 +215,7 @@ C         PAQUETS SUR TOUS LES AUTRES PROCS.
 C       EN DISTRIBUE (LDIST=.TRUE.): CHAQUE PROC FOURNIT LES TERMES
 C         DONT IL A LA RESPONSABILITE.
 C       ------------------------------------------------
-      
+
       IF (((RANG.EQ.0).AND.(.NOT.LDIST)).OR.(LDIST)) THEN
         NZLOC=0
         JCOLL=1
@@ -266,11 +271,11 @@ C -- SOUS LA DIAGONALE :
           ENDIF
         ENDDO
         NZ2=NZLOC
-        IF (NIV.GE.2) 
+        IF (NIV.GE.2)
      &    WRITE(IFM,*)'<AMUMPM> PROC/NZLOC/NFILTR',RANG,NZLOC,NFILTR
       ENDIF
 
-C  -- DECHARGEMENT GLOBAL POUR LAISSER LE PLUS DE MEMOIRE POSSIBLE A 
+C  -- DECHARGEMENT GLOBAL POUR LAISSER LE PLUS DE MEMOIRE POSSIBLE A
 C  -- MUMPS. MAIS CELA PEUT ETRE COUTEUX EN // AVEC DES ACCES DISQUES
 C  -- LENTS OU EN SEQ, SI ON FAIT DE NBREUSES FACTORISATIONS.
 
@@ -346,7 +351,7 @@ C       ------------------------------------------------
             CALL ASSERT(.FALSE.)
           ENDIF
         ENDIF
-            
+
 C       ------------------------------------------------
 C       REMPLISSAGE EFFECTIF DES TERMES DE LA MATRICE
 C       ------------------------------------------------
@@ -394,7 +399,7 @@ C --- PARTIE TRIANGULAIRE SUPERIEURE
             JCOLG=ILIGG
             ILIGG=COLTMP
           ENDIF
-          
+
 C ---- TERME NON NUL
           IF (LNN) THEN
             ITERM=ITERM+1
@@ -559,7 +564,7 @@ C NSELLENET
           ENDIF
 C ---FIN DE LA BOUCLE SUR NZ
         ENDDO
-      
+
         CALL ASSERT(ITERM.LE.NZ2)
         NZ2=ITERM
         IF (LDIST) THEN
@@ -672,20 +677,20 @@ C FIN DU IF LDIST
 C --- NETTOYAGE VECTEUR TEMPORAIRE LOCAL
       CALL JEEXIN(KFILTR,IRET)
       IF (IRET.NE.0) CALL JEDETR(KFILTR)
-      
-C --- DECHARGEMENT CIBLE D'OBJETS JEVEUX      
+
+C --- DECHARGEMENT CIBLE D'OBJETS JEVEUX
       IF (.NOT.LDECHG) THEN
         CALL JELIBD(NONU//'.SMOS.SMDI',LTOT)
         CALL JELIBD(NONU//'.SMOS.SMHC',LTOT)
         CALL JELIBD(NONU//'.NUME.DEEQ',LTOT)
-        CALL JELIBD(NONU//'.NUME.NUEQ',LTOT)    
+        CALL JELIBD(NONU//'.NUME.NUEQ',LTOT)
         CALL JELIBD(NONU//'.NUME.LILI',LTOT)
         CALL JELIBD(JEXNUM(NOMAT//'.VALM',1),LTOT)
         IF (LMNSY) CALL JELIBD(JEXNUM(NOMAT//'.VALM',2),LTOT)
         IF (LMD) THEN
           CALL JELIBD(NONU//'.NUML.NULG',LTOT)
-	  CALL JELIBD(NONU//'.NUML.DELG',LTOT)
-	ELSE
+          CALL JELIBD(NONU//'.NUML.DELG',LTOT)
+        ELSE
           CALL JELIBD(NONU//'.NUME.DELG',LTOT)
         ENDIF
       ENDIF

@@ -1,8 +1,8 @@
-# MODIF  DATE 27/04/2010   AUTEUR DESOZA T.DESOZA 
+# MODIF  DATE 17/01/2011   AUTEUR ABBAS M.ABBAS 
 # TITRE COMPARAISON AVEC LA SOLUTION ANALYTIQUE D'UNE PLAQUE (DKT) EN TRACTION
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -171,8 +171,11 @@ RESU1 = DYNA_NON_LINE(
                        ARCHIVAGE=_F(LIST_INST=LARCH,),
                        OBSERVATION=(_F(NOM_CHAM='DEPL',
                                        NOM_CMP='DX',
+                                       EVAL_CHAM='VALE',
                                        LIST_INST= LOBS1a,
-                                       NOEUD='N1',SUIVI_DDL='NON'),),
+                                       NOEUD='N1'),),
+                       
+            
                      );
 
 # Calcul explicite MASS_DIAG = NON
@@ -198,8 +201,9 @@ RESU1 = DYNA_NON_LINE( reuse=RESU1,
                        ARCHIVAGE=_F(LIST_INST=LARCH,),
                        OBSERVATION=(_F(NOM_CHAM='DEPL',
                                        NOM_CMP='DX',
+                                       EVAL_CHAM='VALE',
                                        LIST_INST= LOBS1b,
-                                       NOEUD='N1',SUIVI_DDL='NON'),),
+                                       NOEUD='N1'),),
                      );
 
 # Calcul explicite MASS_DIAG = OUI
@@ -223,8 +227,9 @@ RESU2 = DYNA_NON_LINE(
                        ARCHIVAGE=_F(LIST_INST=LARCH,),
                        OBSERVATION=(_F(NOM_CHAM='DEPL',
                                        NOM_CMP='DX',
+                                       EVAL_CHAM='VALE',
                                        LIST_INST= LARCH,
-                                       NOEUD='N1',SUIVI_DDL='NON'),),
+                                       NOEUD='N1'),),
                      );
 
 # --------------------- TESTS -------------------------
@@ -259,10 +264,15 @@ TAB_OBS = RECU_TABLE (CO = RESU1,
 
 IMPR_TABLE(TABLE=TAB_OBS);
 
+
 TEST_TABLE(TABLE=TAB_OBS,
-           FILTRE=_F(NOM_PARA='INST',
+           FILTRE=(_F(NOM_PARA='INST',
                      CRIT_COMP='EQ',
-                     VALE=9.0E-4,),
+                     VALE=3.0E-4,),
+                   _F(NOM_PARA='NOM_OBJET',
+                     VALE_K='VALEUR',),  
+                    
+                     ),
            NOM_PARA='VALE',
            VALE=2.46867E-20,
            CRITERE='ABSOLU',
@@ -271,9 +281,14 @@ TEST_TABLE(TABLE=TAB_OBS,
 
 
 TEST_TABLE(TABLE=TAB_OBS,
-           FILTRE=_F(NOM_PARA='INST',
+           FILTRE=(_F(NOM_PARA='INST',
                      CRIT_COMP='EQ',
-                     VALE=1.2E-3,),
+                     VALE=9.0E-4,),
+                   _F(NOM_PARA='NOM_OBJET',
+                     VALE_K='VALEUR',),  
+                    
+                     ),  
+                     
            NOM_PARA='VALE',
            VALE=5.61805E-20,
            CRITERE='ABSOLU',

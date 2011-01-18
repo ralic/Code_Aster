@@ -11,7 +11,7 @@ C              IL FAUT APPELER SON "CHAPEAU" : ASMATR.
       CHARACTER*4 MOTCLE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 10/01/2011   AUTEUR BOITEAU O.BOITEAU 
+C MODIF ASSEMBLA  DATE 18/01/2011   AUTEUR MEUNIER S.MEUNIER 
 C RESPONSABLE PELLET J.PELLET
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -49,9 +49,6 @@ C                        MATR_ASSE EXISTE ON L'ENRICHI
 C IN  I   ITYSCA  : TYPE (R/C) DE LA MATR_ASSE
 C                          1 --> REELLES
 C                          2 --> COMPLEXES
-
-C  SI IL EXISTE UN OBJET '&&POIDS_MAILLE' VR CONTENANT
-C  DES PONDERATIONS POUR CHAQUE MAILLE, ON S'EN SERT.
 C-----------------------------------------------------------------------
       INTEGER ZI
       COMMON /IVARJE/ZI(1)
@@ -81,10 +78,10 @@ C-----------------------------------------------------------------------
       REAL*8       C1,TEMPS(6),RBID
 
       LOGICAL ACREER,CUMUL,DBG,IDDOK,LBID,LFETI,LFETIC
-      LOGICAL LGOTO,LLICH,LLICHD,LLICHP,LLIMO,LDIST,LPDMS
+      LOGICAL LGOTO,LLICH,LLICHD,LLICHP,LLIMO,LDIST
       LOGICAL LMASYM,LMESYM,ZEROBJ
 
-      INTEGER ADMODL,EPDMS,I
+      INTEGER ADMODL,I
       INTEGER IAD,JDESC
       INTEGER JADLI,JADNE,JNUEQ,JNULO1,JNULO2
       INTEGER JPOSD1,JPOSD2,JTMP2,LGTMP2
@@ -95,7 +92,7 @@ C-----------------------------------------------------------------------
       INTEGER ILI,JFNUSD,ILIMA,ILIMAT,ILIMO,ILIMPI,ILINU
       INTEGER IMAT,JNUMSD,JREFN,IRESU
       INTEGER IRET,IRET1,IRET2,IRET3,ITBLOC
-      INTEGER JPDMS,JREFA,JSMDE,JSMDI,JSMHC,JVALM(2)
+      INTEGER JREFA,JSMDE,JSMDI,JSMHC,JVALM(2)
       INTEGER LCMODL,MODE,N1,NBELM,NBEC,NBNO,DIGDEL
       INTEGER NBLC,NBNOMX,NBNOSS,NBRESU,NBSD
       INTEGER NCMP,NBVEL,NEC,NEL,NEQU,NBPROC
@@ -309,18 +306,6 @@ C        POUR CHAQUE PROC
       CALL GETRES(K8BID,K16BID,NOMCMD)
       IF (NOMCMD(1:12).EQ.'ASSE_MATRICE') LDIST=.FALSE.
 
-C ------------------------------------------------------------------
-C     -- METHODE ARLEQUIN :
-C        CALCUL DE :
-C           * LPDMS : .TRUE. : ILFAUT TENIR COMPTE DU POIDS DES MAILLES
-C           * JPDMS : ADRESSE DE '&&POIDS_MAILLE'
-C ------------------------------------------------------------------
-      CALL JEEXIN('&&POIDS_MAILLE',EPDMS)
-      LPDMS=(EPDMS.GT.0)
-      IF (LPDMS) CALL JEVEUO('&&POIDS_MAILLE','L',JPDMS)
-
-
-
 C     -- ALLOCATION DES OBJETS .NUMLOX ET .POSDDX:
 C     ----------------------------------------------
 C     50 EST SUPPOSE ETRE LE + GD NOMBRE DE NOEUDS D'UNE MAILLE
@@ -431,7 +416,7 @@ C SEQUENTIELLE) ET L'ADEQUATION "RANG DU PROCESSEUR-NUMERO DU SD"
 
         IF (IDDOK) THEN
           IF (LFETI) CALL JEMARQ()
-          IF ((NIV.GE.2) .OR. (LFETIC)) THEN
+          IF ((NIV.GE.2) .OR.LFETIC) THEN
             CALL UTTCPU('CPU.ASSMAM','INIT ',' ')
             CALL UTTCPU('CPU.ASSMAM','DEBUT',' ')
           ENDIF
@@ -490,7 +475,7 @@ C         -------------------------------------
           ENDIF
 
 C         -- SI FETI ET DOMAINE GLOBAL ON N'A RIEN A ASSEMBLER :
-          IF ((LFETI) .AND. (IDD.EQ.0)) GOTO 110
+          IF (LFETI.AND. (IDD.EQ.0)) GOTO 110
 
 
 
@@ -607,7 +592,6 @@ C             -- NOM DU LIGREL
 
               CALL DISMOI('F','EXI_VF',LIGRE1,'LIGREL',IBID,EXIVF,IERD)
               IF (EXIVF.EQ.'OUI') THEN
-                CALL ASSERT(.NOT.LPDMS)
                 CALL ASSERT(.NOT.LMASYM)
                 CALL JEVEUO(LIGRE1//'.REPE','L',JREPE)
                 CALL JEVEUO(MA//'.VGE.PTVOIS','L',JPTVOI)
@@ -621,7 +605,7 @@ C             -------------------------
               LLICH=.FALSE.
               LLICHD=.FALSE.
               LLICHP=.FALSE.
-              IF ((LFETI) .AND. (IDD.NE.0)) THEN
+              IF (LFETI.AND. (IDD.NE.0)) THEN
 C               RECHERCHE D'OBJET TEMPORAIRE SI FETI
                 NOMLOG=LIGRE1//'.FEL1'
                 CALL JEEXIN(NOMLOG,IRET1)
@@ -679,7 +663,7 @@ C                     -- LIGREL DE CHARGE NON DUPLIQUE
 
 
 C               -- MONITORING:
-              IF ((INFOFE(5:5).EQ.'T') .AND. (LFETI)) THEN
+              IF ((INFOFE(5:5).EQ.'T') .AND.LFETI) THEN
                 WRITE (IFM,*)'**************** IDD ',IDD
                 WRITE (IFM,*)'<FETI/ASSMAM> ILIMO',ILIMO,'ILIMA',ILIMA
                 WRITE (IFM,*)'<FETI/ASSMAM> LIGRE1/2 ',LIGRE1,LIGRE2
@@ -719,14 +703,14 @@ C                 NOMBRE D'ELEMENTS DU GREL IGR DU LIGREL LIGRE1/ILIMA
 C                 BOUCLE SUR LES ELEMENTS DU GREL
 C                 ================================
                   DO 50 IEL=1,NEL
-                    CALL ASSMA3(LMASYM,LMESYM,TT,MAT19,NU14,MATEL,
+                    CALL ASSMA3(LMASYM,LMESYM,TT,
      &                          IGR,IEL,C1,RANG,IFEL2,IFEL3,IFEL4,IFEL5,
-     &                          IFM,JFNUSD,JNUEQ,JNUMSD,JPDMS,JRESL,
+     &                          IFM,JFNUSD,JNUEQ,JNUMSD,JRESL,
      &                          JRSVI,NBVEL,NNOE,LFETI,LLICH,LLICHD,
-     &                          LLICHP,LLIMO,LDIST,LPDMS,ILIMA,JADLI,
+     &                          LLICHP,LLIMO,LDIST,ILIMA,JADLI,
      &                          JADNE,JPRN1,JPRN2,JNULO1,JNULO2,JPOSD1,
      &                          JPOSD2,ADMODL,LCMODL,MODE,NEC,NMXCMP,
-     &                          NCMP,NBLC,JSMHC,JSMDI,ICONX1,ICONX2,
+     &                          NCMP,JSMHC,JSMDI,ICONX1,ICONX2,
      &                          LIGRE1,LIGRE2,INFOFE,JTMP2,LGTMP2,JVALM,
      &                          ILINU,IDD,ELLAGR,EXIVF,JDESC,
      &                          JREPE,JPTVOI,JELVOI,CODVOI)
@@ -763,7 +747,7 @@ C         -- MONITORING:
      &        .FALSE.,.TRUE.,MATDEV,1,' ')
           IF ((INFOFE(3:3).EQ.'T') .AND. (IDD.EQ.NBSD)) CALL UTIMSD(IFM,
      &        2,.FALSE.,.TRUE.,MATDEV,1,' ')
-          IF ((NIV.GE.2) .OR. (LFETIC)) THEN
+          IF ((NIV.GE.2) .OR.LFETIC) THEN
             CALL UTTCPU('CPU.ASSMAM','FIN',' ')
             CALL UTTCPR('CPU.ASSMAM',6,TEMPS)
             IF (NIV.GE.2)WRITE (IFM,'(A44,D11.4,D11.4)')
