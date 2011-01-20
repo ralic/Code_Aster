@@ -1,6 +1,6 @@
       SUBROUTINE AFDI3D(IREP,ETA,CAR,VAL,JDC,JDV,IVR,IV,
      &                  KMA,NCMP,NTP,JDCINF,JDVINF,ISYM,IFM)
-      IMPLICIT   NONE
+      IMPLICIT       NONE
       INTEGER        IREP,JDV(3),JDC(3),IVR(*),IV,NCMP,NTP,IFM
       INTEGER        ISYM,JDCINF,JDVINF
       REAL*8         ETA,VAL(*)
@@ -8,9 +8,9 @@
       CHARACTER*(*)  CAR
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 20/07/2009   AUTEUR FLEJOU J-L.FLEJOU 
+C MODIF MODELISA  DATE 19/01/2011   AUTEUR MASSIN P.MASSIN 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -46,15 +46,18 @@ C --- -- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32                                ZK32
       CHARACTER*80                                         ZK80
       COMMON / KVARJE / ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
-      CHARACTER*32      JEXNOM, JEXNUM
 C --- --  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
 C --- ---------------------------------------------------------------
-      INTEGER      J, L
+      INTEGER      J, L,DIMMAT
       CHARACTER*7  KI
+      REAL*8       R8BID
       LOGICAL      NONSYM
 C --- ---------------------------------------------------------------
 C
+
+      CALL INFDIS('DMXM',DIMMAT,R8BID)
+
 C     BOUCLE SUR LES TYPES DE MATRICE (K,M,A)
 C
       DO 200 J = 1 , 3
@@ -65,10 +68,13 @@ C        REPERE GLOBAL OU REPERE LOCAL)
 C        MATRICE SYMETRIQUE OU PAS
          ZK8(JDCINF+J+2) = 'SYM'//KMA(J)//'    '
          ZR (JDVINF+J+2) = ISYM
+C        TYPE DE LA MATRICE
+         ZK8(JDCINF+J+5) = 'DIS'//KMA(J)//'    '
+         ZR (JDVINF+J+5) = 1.0D0
 C        COEFFICIENT AMORTISSEMENT HYSTERETIQUE
          IF (CAR(1:1).EQ.'K')THEN
-            ZK8(JDCINF+6) = 'ETAK    '
-            ZR (JDVINF+6) = ETA
+            ZK8(JDCINF+9) = 'ETAK    '
+            ZR (JDVINF+9) = ETA
          ENDIF
          NONSYM = ( ISYM .EQ. 2 )
 C
@@ -76,7 +82,7 @@ C
 C
 C        NCMP : NOMBRE DE COMPOSANTES DE LA MATRICE NON-SYMETRIQUE
 C
-         DO 100 L = 1 , 144
+         DO 100 L = 1 , DIMMAT
             CALL CODENT(L,'G',KI)
             ZK8(JDC(J)+L-1) = KMA(J)//KI
             ZR (JDV(J)+L-1) = 0.D0

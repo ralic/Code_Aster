@@ -1,9 +1,9 @@
       SUBROUTINE TE0044(OPTION,NOMTE)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT      NONE
       CHARACTER*(*) OPTION,NOMTE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 19/01/2011   AUTEUR MASSIN P.MASSIN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -33,29 +33,27 @@ C         MECA_DIS_TR_N
 C         MECA_DIS_TR_L
 
 C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
-      CHARACTER*32 JEXNUM,JEXNOM,JEXR8,JEXATR
-      INTEGER ZI
+C      CHARACTER*32 JEXNUM,JEXNOM,JEXR8,JEXATR
+      INTEGER        ZI
       COMMON /IVARJE/ZI(1)
-      REAL*8 ZR
+      REAL*8         ZR
       COMMON /RVARJE/ZR(1)
-      COMPLEX*16 ZC
+      COMPLEX*16     ZC
       COMMON /CVARJE/ZC(1)
-      LOGICAL ZL
+      LOGICAL        ZL
       COMMON /LVARJE/ZL(1)
-      CHARACTER*8 ZK8
-      CHARACTER*16 ZK16
-      CHARACTER*24 ZK24
-      CHARACTER*32 ZK32
-      CHARACTER*80 ZK80
+      CHARACTER*8    ZK8
+      CHARACTER*16          ZK16
+      CHARACTER*24                  ZK24
+      CHARACTER*32                          ZK32
+      CHARACTER*80                                  ZK80
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
-
-      REAL*8 ALPHA,BETA,GAMMA,R8BID
-      REAL*8 UL(12),PGL(3,3),KLC(12,12),MAT(144)
-      INTEGER INFODI
-      CHARACTER*16 CH16,CI16,NOMCMD,TYPRES
+      REAL*8       R8BID,UL(12),PGL(3,3),KLC(12,12),MAT(144)
+      INTEGER      INFODI,NBTERM,NNO,NC,NDIM,ITYPE,NEQ,KANL,IREP,I,IIFF
+      INTEGER      LORIE,LDEPL,JENDE,LDIS,JFREQ
+      CHARACTER*16 CH16,NOMCMD,TYPRES
       CHARACTER*19 NOMFON
-      CHARACTER*24 VALK(2)
 
 C     ------------------------------------------------------------------
 
@@ -70,158 +68,18 @@ C     ------------------------------------------------------------------
             CALL U2MESK('F','ELEMENTS2_47',1,OPTION)
          ENDIF
       ENDIF
-      IF (NOMTE.EQ.'MECA_DIS_TR_L') THEN
-         IF (INFODI.EQ.1) THEN
-            NBTERM = 78
-            NNO = 2
-            NC = 6
-            NEQ = 12
-            ITYPE = 41
-            KANL = 0
-            NDIM = 3
-         ELSEIF (INFODI.EQ.2) THEN
-            NBTERM = 144
-            NNO = 2
-            NC = 6
-            NEQ = 12
-            ITYPE = 43
-            KANL = 0
-            NDIM = 3
-         ENDIF
-      ELSE IF (NOMTE.EQ.'MECA_DIS_TR_N') THEN
-         IF (INFODI.EQ.1) THEN
-            NBTERM = 21
-            NNO = 1
-            NC = 6
-            NEQ = 6
-            ITYPE = 21
-            KANL = 0
-            NDIM = 3
-         ELSEIF (INFODI.EQ.2) THEN
-            NBTERM = 36
-            NNO = 1
-            NC = 6
-            NEQ = 6
-            ITYPE = 23
-            KANL = 0
-            NDIM = 3
-         ENDIF
-      ELSE IF (NOMTE.EQ.'MECA_DIS_T_L') THEN
-         IF (INFODI.EQ.1) THEN
-            NBTERM = 21
-            NNO = 2
-            NC = 3
-            NEQ = 6
-            ITYPE = 40
-            KANL = 0
-            NDIM = 3
-         ELSEIF (INFODI.EQ.2) THEN
-            NBTERM = 36
-            NNO = 2
-            NC = 3
-            NEQ = 6
-            ITYPE = 42
-            KANL = 0
-            NDIM = 3
-         ENDIF
-      ELSE IF (NOMTE.EQ.'MECA_DIS_T_N') THEN
-         IF (INFODI.EQ.1) THEN
-            NBTERM = 6
-            NNO = 1
-            NC = 3
-            NEQ = 3
-            ITYPE = 20
-            KANL = 0
-            NDIM = 3
-         ELSEIF (INFODI.EQ.2) THEN
-            NBTERM = 9
-            NNO = 1
-            NC = 3
-            NEQ = 3
-            ITYPE = 22
-            KANL = 0
-            NDIM = 3
-         ENDIF
-      ELSE IF (NOMTE.EQ.'MECA_2D_DIS_TR_L') THEN
-         IF (INFODI.EQ.1) THEN
-            NBTERM = 21
-            NNO = 2
-            NC = 3
-            NEQ = 6
-            ITYPE = 41
-            KANL = 0
-            NDIM = 2
-         ELSEIF (INFODI.EQ.2) THEN
-            NBTERM = 36
-            NNO = 2
-            NC = 3
-            NEQ = 6
-            ITYPE = 43
-            KANL = 0
-            NDIM = 2
-         ENDIF
-      ELSE IF (NOMTE.EQ.'MECA_2D_DIS_TR_N') THEN
-         IF (INFODI.EQ.1) THEN
-            NBTERM = 6
-            NNO = 1
-            NC = 3
-            NEQ = 3
-            ITYPE = 21
-            KANL = 0
-            NDIM = 2
-         ELSEIF (INFODI.EQ.2) THEN
-            NBTERM = 9
-            NNO = 1
-            NC = 3
-            NEQ = 3
-            ITYPE = 23
-            KANL = 0
-            NDIM = 2
-         ENDIF
-      ELSE IF (NOMTE.EQ.'MECA_2D_DIS_T_L') THEN
-         IF (INFODI.EQ.1) THEN
-            NBTERM = 10
-            NNO = 2
-            NC = 2
-            NEQ = 4
-            ITYPE = 40
-            KANL = 0
-            NDIM = 2
-         ELSEIF (INFODI.EQ.2) THEN
-            NBTERM = 16
-            NNO = 2
-            NC = 2
-            NEQ = 4
-            ITYPE = 42
-            KANL = 0
-            NDIM = 2
-         ENDIF
-      ELSE IF (NOMTE.EQ.'MECA_2D_DIS_T_N') THEN
-         IF (INFODI.EQ.1) THEN
-            NBTERM = 3
-            NNO = 1
-            NC = 2
-            NEQ = 2
-            ITYPE = 20
-            KANL = 0
-            NDIM = 2
-         ELSEIF (INFODI.EQ.2) THEN
-            NBTERM = 4
-            NNO = 1
-            NC = 2
-            NEQ = 2
-            ITYPE = 22
-            KANL = 0
-            NDIM = 2
-         ENDIF
-      ELSE
-         CH16 = OPTION
-         CI16 = NOMTE
-         VALK(1) = CH16
-         VALK(2) = CI16
-         CALL U2MESK('F','ELEMENTS2_89', 2 ,VALK)
-      END IF
 
+C --- INFORMATIONS SUR LES DISCRETS :
+C        NBTERM   = NOMBRE DE COEFFICIENTS DANS K
+C        NNO      = NOMBRE DE NOEUDS
+C        NC       = NOMBRE DE COMPOSANTE PAR NOEUD
+C        NDIM     = DIMENSION DE L'ELEMENT
+C        ITYPE    = TYPE DE L'ELEMENT
+      CALL INFTED(NOMTE,INFODI,NBTERM,NNO,NC,NDIM,ITYPE)
+      NEQ = NNO*NC
+
+C     TYPE DE LA MATRICE DE MASSE
+      KANL = 0
 C     --- MATRICE DE ROTATION PGL ---
       CALL JEVECH('PCAORIE','L',LORIE)
       CALL MATROT(ZR(LORIE),PGL)
@@ -319,7 +177,6 @@ C        --- ENERGIE CINETIQUE  ---
 
       ELSE
          CH16 = OPTION
-         CI16 = NOMTE
          CALL U2MESK('F','ELEMENTS2_47',1,CH16)
       ENDIF
       END

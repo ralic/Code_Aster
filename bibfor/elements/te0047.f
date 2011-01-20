@@ -4,9 +4,9 @@
       CHARACTER*(*) OPTIOZ,NOMTEZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 28/06/2010   AUTEUR FLEJOU J-L.FLEJOU 
+C MODIF ELEMENTS  DATE 19/01/2011   AUTEUR MASSIN P.MASSIN 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -43,7 +43,7 @@ C IN  : OPTIOZ : NOM DE L'OPTION A CALCULER
 C       NOMTEZ : NOM DU TYPE_ELEMENT
 C ----------------------------------------------------------------------
 
-C **************** DEBUT COMMUNS NORMALISES JEVEUX *********************
+C --- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER         ZI
       COMMON /IVARJE/ ZI(1)
       REAL*8 ZR
@@ -58,33 +58,32 @@ C **************** DEBUT COMMUNS NORMALISES JEVEUX *********************
       CHARACTER*32                           ZK32
       CHARACTER*80                                   ZK80
       COMMON /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
-C ***************** FIN COMMUNS NORMALISES JEVEUX **********************
+C --- FIN COMMUNS NORMALISES  JEVEUX  --------------------------
 
 
 C *************** DECLARATION DES VARIABLES LOCALES ********************
 
-      REAL*8 ANG(3),PGL(3,3),KLV(78),KLV2(78),KLV3(144),XD(3)
+      REAL*8 ANG(3),PGL(3,3),KLV(78),KLV2(78),XD(3)
       REAL*8 UGM(12),UGP(12),DUG(12),COORG(12)
       REAL*8 ULM(12),ULP(12),DUL(12),KTY2,DVL(12),DPE(12),DVE(12)
       REAL*8 VARMO(7),VARPL(7),VARIPC(7)
       REAL*8 DTEMPS,TEMPER,IRRAP,R8BID
       REAL*8 DDOT,DULY,FOR2,FOR3,PLOUF,TET1,TET2,VARIP,XL,XL0,XL2
+      REAL*8 ZERO,MOINS1
 
       INTEGER NBT,NNO,NC,NEQ,IGEOM,ICONTM,IDEPLM,IDEPLP,ICOMPO,LORIEN
       INTEGER I,JDC,IREP,IMAT,IFONO,ICONTP,ILOGIC,IITER,IMATE,IVARIM
-      INTEGER IRMETG,ITERAT,IVARIP,NDIM,JCRET,IBID
+      INTEGER IRMETG,ITERAT,IVARIP,NDIM,JCRET,ITYPE
       INTEGER IADZI,IAZK24
-      INTEGER II,JTP,JTM,IDEPEN,IRET,IRET2,IVITEN,IVITP,JINST
+      INTEGER II,JTP,JTM,IDEPEN,IRET,IRET2,IVITEN,IVITP,JINST,INFODI
 
-      CHARACTER*8 NOMAIL
       CHARACTER*4 FAMI
+      CHARACTER*24 MESSAK(5)
 
       LOGICAL PREAC
 
-      CHARACTER*24 MESSAK(5)
-
-      REAL*8 ZERO,MOINS1
       PARAMETER (ZERO = 0.0D0, MOINS1=-1.0D0)
+
 C  ===========================================================
 C
 C         COMPORTEMENT NON-LINEAIRE POUR LES DISCRETS
@@ -177,65 +176,21 @@ C *********** FIN DES DECLARATIONS DES VARIABLES LOCALES ***************
 C ********************* DEBUT DE LA SUBROUTINE *************************
 
       FAMI = 'RIGI'
-C --- DEFINITIONS DE PARAMETRES : NBT = NOMBRE DE COEFFICIENTS DANS K
-C                                 NEQ = NOMBRE DE DDL EN DEPLACEMENT
       OPTION = OPTIOZ
-      NOMTE = NOMTEZ
+      NOMTE  = NOMTEZ
 
-      NDIM = 3
-      IF      (NOMTE.EQ.'MECA_DIS_TR_L') THEN
-         NBT  = 78
-         NNO  = 2
-         NC   = 6
-         NEQ  = 12
-      ELSE IF (NOMTE.EQ.'MECA_DIS_TR_N') THEN
-         NBT  = 21
-         NNO  = 1
-         NC   = 6
-         NEQ  = 6
-      ELSE IF (NOMTE.EQ.'MECA_DIS_T_L') THEN
-         NBT  = 21
-         NNO  = 2
-         NC   = 3
-         NEQ  = 6
-      ELSE IF (NOMTE.EQ.'MECA_DIS_T_N') THEN
-         NBT  = 6
-         NNO  = 1
-         NC   = 3
-         NEQ  = 3
-      ELSE IF (NOMTE.EQ.'MECA_2D_DIS_T_N') THEN
-         NBT  = 3
-         NNO  = 1
-         NC   = 2
-         NEQ  = 2
-         NDIM = 2
-      ELSE IF (NOMTE.EQ.'MECA_2D_DIS_T_L') THEN
-         NBT  = 10
-         NNO  = 2
-         NC   = 2
-         NEQ  = 4
-         NDIM = 2
-      ELSE IF (NOMTE.EQ.'MECA_2D_DIS_TR_N') THEN
-         NBT  = 6
-         NNO  = 1
-         NC   = 3
-         NEQ  = 3
-         NDIM = 2
-      ELSE IF (NOMTE.EQ.'MECA_2D_DIS_TR_L') THEN
-         NBT  = 21
-         NNO  = 2
-         NC   = 3
-         NEQ  = 6
-         NDIM = 2
-      ELSE
-         MESSAK(1) = NOMTE
-         MESSAK(2) = OPTION
-         MESSAK(3) = '????????'
-         MESSAK(4) = '????????'
-         CALL TECAEL ( IADZI, IAZK24 )
-         MESSAK(5) = ZK24(IAZK24-1+3)
-        CALL U2MESK('F','DISCRETS_9',5,MESSAK)
-      END IF
+C     LES DISCRETS SONT OBLIGATOIREMENT SYMETRIQUES
+      CALL INFDIS('SYMK',INFODI,R8BID)
+      CALL ASSERT( INFODI.EQ.1 )
+
+C --- INFORMATIONS SUR LES DISCRETS :
+C        NBT   = NOMBRE DE COEFFICIENTS DANS K
+C        NNO   = NOMBRE DE NOEUDS
+C        NC    = NOMBRE DE COMPOSANTE PAR NOEUD
+C        NDIM  = DIMENSION DE L'ELEMENT
+C        ITYPE = TYPE DE L'ELEMENT
+      CALL INFTED(NOMTE,INFODI,NBT,NNO,NC,NDIM,ITYPE)
+      NEQ = NNO*NC
 
 C --- RECUPERATION DES ADRESSES JEVEUX
       CALL JEVECH('PGEOMER','L',IGEOM)
@@ -387,9 +342,6 @@ C ======================================================================
 C                      COMPORTEMENT ELASTIQUE
 C ======================================================================
       IF (ZK16(ICOMPO).EQ.'ELAS') THEN
-C ------ UNIQUEMENT LES MATRICES SYMETRIQUES
-         CALL INFDIS('SYMK',IBID,R8BID)
-         CALL ASSERT( IBID.EQ.1 )
 C ------ PARAMETRES EN ENTREE
          CALL JEVECH('PCADISK','L',JDC)
          CALL INFDIS('REPK',IREP,R8BID)
@@ -436,9 +388,6 @@ C ======================================================================
 C            DEBUT COMPORTEMENT DIS_VISC : DISCRET_NON_LINE
 C ======================================================================
       IF (ZK16(ICOMPO).EQ.'DIS_VISC') THEN
-C ------ UNIQUEMENT LES MATRICES SYMETRIQUES
-         CALL INFDIS('SYMK',IBID,R8BID)
-         CALL ASSERT( IBID.EQ.1 )
 C ------ RECUPERATION DU MATERIAU
          CALL JEVECH('PMATERC','L',IMATE)
 
@@ -528,9 +477,6 @@ C ======================================================================
 C            DEBUT COMPORTEMENT DIS_ECRO_CINE : DISCRET_NON_LINE
 C ======================================================================
       IF (ZK16(ICOMPO).EQ.'DIS_ECRO_CINE') THEN
-C ------ UNIQUEMENT LES MATRICES SYMETRIQUES
-         CALL INFDIS('SYMK',IBID,R8BID)
-         CALL ASSERT( IBID.EQ.1 )
 C ------ RECUPERATION DU MATERIAU
          CALL JEVECH('PMATERC','L',IMATE)
 
@@ -616,9 +562,6 @@ C ======================================================================
 C            DEBUT COMPORTEMENT DIS_BILI_ELAS : DISCRET_NON_LINE
 C ======================================================================
       IF (ZK16(ICOMPO).EQ.'DIS_BILI_ELAS') THEN
-C ------ UNIQUEMENT LES MATRICES SYMETRIQUES
-         CALL INFDIS('SYMK',IBID,R8BID)
-         CALL ASSERT( IBID.EQ.1 )
 C ------ RECUPERATION DU MATERIAU
          CALL JEVECH('PMATERC','L',IMATE)
 
@@ -752,9 +695,6 @@ C ======================================================================
 C                    COMPORTEMENT ARMEMENT
 C ======================================================================
       IF (ZK16(ICOMPO).EQ.'ARME') THEN
-C ------ UNIQUEMENT LES MATRICES SYMETRIQUES
-         CALL INFDIS('SYMK',IBID,R8BID)
-         CALL ASSERT( IBID.EQ.1 )
 C ---    PARAMETRES EN ENTREE
          CALL JEVECH('PCADISK','L',JDC)
          CALL INFDIS('REPK',IREP,R8BID)
@@ -806,7 +746,7 @@ C ======================================================================
             MESSAK(5) = ZK24(IAZK24-1+3)
             CALL U2MESK('F','DISCRETS_11',5,MESSAK)
          ENDIF
-C
+C ---    PARAMETRES EN ENTREE
          CALL JEVECH('PMATERC','L',IMATE)
          CALL JEVECH('PVARIMR','L',IVARIM)
          CALL JEVECH('PINSTPR','L',JTP)
@@ -846,9 +786,6 @@ C ======================================================================
 C                    COMPORTEMENT CHOC
 C ======================================================================
       IF (ZK16(ICOMPO).EQ.'DIS_CHOC') THEN
-C ------ UNIQUEMENT LES MATRICES SYMETRIQUES
-         CALL INFDIS('SYMK',IBID,R8BID)
-         CALL ASSERT( IBID.EQ.1 )
 C ---    PARAMETRES EN ENTREE
          CALL JEVECH('PCADISK','L',JDC)
          CALL INFDIS('REPK',IREP,R8BID)
@@ -923,10 +860,7 @@ C ======================================================================
 C  COMPORTEMENT DIS_GOUJON : APPLICATION : GOUJ2ECH
 C ======================================================================
       IF (ZK16(ICOMPO) (1:10).EQ.'DIS_GOUJ2E') THEN
-C ------ UNIQUEMENT LES MATRICES SYMETRIQUES
-         CALL INFDIS('SYMK',IBID,R8BID)
-         CALL ASSERT( IBID.EQ.1 )
-C
+C ---    PARAMETRES EN ENTREE
          CALL JEVECH('PCADISK','L',JDC)
 C        MATRICE DE RIGIDITE EN REPERE LOCAL
          CALL INFDIS('REPK',IREP,R8BID)

@@ -1,0 +1,123 @@
+      SUBROUTINE XMMAB6(NDIM  ,NNOL ,NNOF, PLA,
+     &                    IPGF,IVFF  ,FFC   ,JAC  ,
+     &                    NOEUD ,TAU1,TAU2,
+     &                    IFA,CFACE,LACT ,
+     &                    MMAT )
+
+      IMPLICIT NONE
+      INTEGER     NDIM,NNOL,NNOF,IVFF,IPGF
+      INTEGER     CFACE(5,3),IFA
+      INTEGER     PLA(27),LACT(8)
+      REAL*8      MMAT(204,204)
+      REAL*8      FFC(8),JAC,TAU1(3),TAU2(3)
+      LOGICAL     NOEUD
+
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ALGORITH  DATE 19/01/2011   AUTEUR MASSIN P.MASSIN 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C ======================================================================
+
+C
+C ROUTINE CONTACT (METHODE XFEM HPP - CALCUL ELEM.)
+C
+C --- CALCUL DE LA MATRICE F - CAS SANS CONTACT
+C      
+C ----------------------------------------------------------------------
+C
+C IN  NDIM   : DIMENSION DE L'ESPACE
+C IN  NNOL   : NOMBRE DE NOEUDS PORTEURS DE DDLC
+C IN  NNOF   : NOMBRE DE NOEUDS DE LA FACETTE DE CONTACT
+C IN  PLA    : PLACE DES LAMBDAS DANS LA MATRICE
+C IN  IPGF   : NUMÉRO DU POINTS DE GAUSS
+C IN  IVFF   : ADRESSE DANS ZR DU TABLEAU FF(INO,IPG)
+C IN  FFC    : FONCTIONS DE FORME DE L'ELEMENT DE CONTACT
+C IN  JAC    : PRODUIT DU JACOBIEN ET DU POIDS
+C IN  NOEUD  : INDICATEUR FORMULATION (T=NOEUDS , F=ARETE)
+C IN  TAU1   : TANGENTE A LA FACETTE AU POINT DE GAUSS
+C IN  TAU2   : TANGENTE A LA FACETTE AU POINT DE GAUSS
+C IN  IFA    : INDICE DE LA FACETTE COURANTE
+C IN  CFACE  : CONNECTIVITÉ DES NOEUDS DES FACETTES
+C IN  LACT   : LISTE DES LAGRANGES ACTIFS
+C I/O MMAT   : MATRICE ELEMENTAITRE DE CONTACT/FROTTEMENT 
+C
+C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX --------------------
+C
+      INTEGER ZI
+      COMMON /IVARJE/ZI(1)
+      REAL*8 ZR
+      COMMON /RVARJE/ZR(1)
+      COMPLEX*16 ZC
+      COMMON /CVARJE/ZC(1)
+      LOGICAL ZL
+      COMMON /LVARJE/ZL(1)
+      CHARACTER*8 ZK8
+      CHARACTER*16 ZK16
+      CHARACTER*24 ZK24
+      CHARACTER*32 ZK32
+      CHARACTER*80 ZK80
+      COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
+
+C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX --------------------
+C
+      INTEGER I,J,K,L,NLI,NLJ
+      INTEGER PLI,PLJ
+      REAL*8  FFI,FFJ,METR(2,2),DDOT
+C
+C ----------------------------------------------------------------------
+
+
+      DO 150 I = 1,NNOL
+        PLI=PLA(I)
+        IF (NOEUD) THEN
+          FFI=FFC(I)
+          NLI=LACT(I)
+          IF (NLI.EQ.0) GOTO 150
+        ELSE
+          FFI=ZR(IVFF-1+NNOF*(IPGF-1)+I)
+          NLI=CFACE(IFA,I)
+        ENDIF
+
+        DO 151 J = 1,NNOL
+          PLJ=PLA(J)
+          IF (NOEUD) THEN
+            FFJ=FFC(J)
+            NLJ=LACT(J)
+            IF (NLJ.EQ.0) GOTO 151
+          ELSE
+            FFJ=ZR(IVFF-1+NNOF*(IPGF-1)+J)
+            NLJ=CFACE(IFA,J)
+          ENDIF
+C
+C --- MÉTRIQUE DE LA BASE COVARIANTE AUX PTS D'INTERSECT
+C
+          METR(1,1)=DDOT(NDIM,TAU1(1),1,TAU1(1),1)
+          IF (NDIM.EQ.3) THEN
+            METR(1,2)=DDOT(NDIM,TAU1(1),1,TAU2(1),1)
+            METR(2,1)=DDOT(NDIM,TAU2(1),1,TAU1(1),1)
+            METR(2,2)=DDOT(NDIM,TAU2(1),1,TAU2(1),1)
+          ENDIF
+
+          DO 152 K = 1,NDIM-1
+            DO 153 L = 1,NDIM-1
+              MMAT(PLI+K,PLJ+L) = MMAT(PLI+K,PLJ+L)+ 
+     &                            FFI * FFJ * METR(K,L) * JAC        
+ 153        CONTINUE
+ 152      CONTINUE
+ 151    CONTINUE
+ 150  CONTINUE
+
+      END

@@ -1,9 +1,9 @@
        SUBROUTINE TE0366(OPTION,NOMTE)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 21/12/2010   AUTEUR MASSIN P.MASSIN 
+C MODIF ELEMENTS  DATE 19/01/2011   AUTEUR MASSIN P.MASSIN 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -75,7 +75,7 @@ C
       REAL*8       RRE,RRM,JEU,R8BID
       REAL*8       DDEPLE(3),DDEPLM(3),DLAGRC,DLAGRF(2)
       LOGICAL      LPENAF,LESCLX,LMAITX,LCONTX
-      INTEGER      NCONTA,IBID,NPTE
+      INTEGER      CONTAC,IBID,NPTE
       INTEGER      NDEPLE,NNE(3),NNM(3),DDLE(2),DDLM(2)
       REAL*8       FFEC(8)
 C ----------------------------------------------------------------------
@@ -87,7 +87,7 @@ C
       CALL XMELET(NOMTE , TYPMAI , TYPMAE ,TYPMAM ,TYPMAC  ,
      &                  NDIM  , NDDL   , NNE   , NNM  , 
      &                  NNC   , DDLE  , DDLM  ,
-     &                  NCONTA, NDEPLE , NSINGE, NSINGM)
+     &                  CONTAC, NDEPLE , NSINGE, NSINGM)
 
       CALL ASSERT(NDDL.LE.N)
 C
@@ -183,15 +183,15 @@ C --- SI ON EST EN LINEAIRE, ON IMPOSE QUE LE NB DE NOEUDS DE CONTACTS
 C --- ET LES FFS LAGRANGES DE CONTACT SONT IDENTIQUES A CEUX
 C --- DES DEPLACEMENTS DANS LA MAILLE ESCLAVE POUR LE CALCUL DES CONTRIB
 C
-      IF (NCONTA.EQ.1) THEN
+      IF (CONTAC.EQ.1) THEN
         NNC   = NNE(2)
-        CALL XLACTI(TYPMAI,NINTER,JPCAI,LACT,NLACT)
+        CALL XLACTI(TYPMAI,NINTER,JPCAI,CONTAC,LACT,NLACT)
         CALL XMOFFC(LACT,NLACT,NNC,FFE,FFC)
-      ELSEIF (NCONTA.EQ.3) THEN
+      ELSEIF (CONTAC.EQ.3) THEN
         NNC   = NNE(2)
-        CALL ELELIN(NCONTA,TYPMAE,TYPMEC,IBID,IBID)
+        CALL ELELIN(CONTAC,TYPMAE,TYPMEC,IBID,IBID)
         CALL ELRFVF(TYPMEC,COORE,NNC,FFEC,IBID)
-        CALL XLACTI(TYPMAI,NINTER,JPCAI,LACT,NLACT)
+        CALL XLACTI(TYPMAI,NINTER,JPCAI,CONTAC,LACT,NLACT)
         CALL XMOFFC(LACT,NLACT,NNC,FFEC,FFC)
       ELSE
         CALL ELRFVF(TYPMAC,COORC,NNC,FFC,NNC)
@@ -222,7 +222,7 @@ C
      &                NFAES ,CFACE ,HPG   ,FFC   ,FFE   ,
      &                FFM   ,JACOBI,JPCAI ,COEFCA,NORM  ,
      &                TYPMAI,NSINGE,NSINGM,RRE   ,RRM   ,
-     &                NCONTA,DDLE,DDLM,MMAT  )
+     &                CONTAC,DDLE,DDLM,MMAT  )
 
 C     
         ELSE IF (INDCO .EQ. 0) THEN
@@ -232,7 +232,7 @@ C --- CALCUL DE LA MATRICE C - CAS SANS CONTACT
 C
             CALL XMMAA0(NDIM  ,NNC   ,NNE  ,HPG   ,
      &                  NFAES ,CFACE ,FFC   ,JACOBI,JPCAI ,
-     &                  COEFCA,TYPMAI,DDLE,NCONTA,MMAT  )
+     &                  COEFCA,TYPMAI,DDLE,CONTAC,MMAT  )
           ENDIF
         ELSE
           CALL ASSERT(.FALSE.)
@@ -244,7 +244,7 @@ C --- CALCUL DES INCREMENTS - LAGRANGE DE CONTACT
 C  
         CALL XTLAGC(TYPMAI,NDIM  ,NNC   ,NNE    ,
      &              DDLE(1),NFAES ,CFACE ,JDEPDE,JPCAI  ,
-     &              FFC   ,NCONTA,DLAGRC)
+     &              FFC   ,CONTAC,DLAGRC)
          
         IF (COEFFF.EQ.0.D0) INDCO = 0
         IF (DLAGRC.EQ.0.D0) INDCO = 0
@@ -258,7 +258,7 @@ C
             CALL XMMAB0(NDIM  ,NNC   ,NNE  ,NFAES ,
      &                  JPCAI ,HPG   ,FFC   ,JACOBI,COEFCA,
      &                  TYPMAI,CFACE ,TAU1  ,TAU2  ,DDLE,
-     &                  NCONTA,MMAT  )
+     &                  CONTAC,MMAT  )
           ENDIF
         ELSE IF (INDCO.EQ.1) THEN
 C
@@ -273,7 +273,7 @@ C --- CALCUL DES INCREMENTS - LAGRANGE DE FROTTEMENT
 C      
           CALL XTLAGF(TYPMAI,NDIM  ,NNC   ,NNE    ,
      &                DDLE,NFAES ,CFACE ,JDEPDE,JPCAI  ,
-     &                FFC   ,NCONTA,DLAGRF)
+     &                FFC   ,CONTAC,DLAGRF)
 C      
 C --- ON CALCULE L'ETAT DE CONTACT ADHERENT OU GLISSANT
 C      
@@ -300,7 +300,7 @@ C
      &                  FFM   ,JACOBI,JPCAI ,DLAGRC,COEFCA,   
      &                  JEU   ,COEFFA,COEFFF,TAU1  ,TAU2  ,
      &                  RESE  ,MPROJT,NORM  ,TYPMAI,NSINGE,
-     &                  NSINGM,RRE   ,RRM   ,NVIT  ,NCONTA,
+     &                  NSINGM,RRE   ,RRM   ,NVIT  ,CONTAC,
      &                  DDLE,DDLM,MMAT  )
 C                  
           ELSE IF (INADH.EQ.0) THEN
@@ -312,7 +312,7 @@ C
      &                  FFM   ,JACOBI,JPCAI, DLAGRC,COEFCA,   
      &                  JEU   ,COEFFA,COEFFF,TAU1  ,TAU2  ,
      &                  RESE  ,NRESE ,MPROJT,NORM  ,TYPMAI,
-     &                  NSINGE,NSINGM,RRE,RRM,NVIT,NCONTA,
+     &                  NSINGE,NSINGM,RRE,RRM,NVIT,CONTAC,
      &                  DDLE,DDLM,MMAT  )
           END IF
         ELSE
@@ -327,7 +327,7 @@ C --- SUPPRESSION DES DDLS SUPERFLUS (CONTACT ET XHTC)
 C
       LESCLX = NSINGE.EQ.1.AND.NNM(1).NE.0
       LMAITX = NSINGM.EQ.1
-      IF (NCONTA.EQ.1 .OR. NCONTA.EQ.3) THEN
+      IF (CONTAC.EQ.1 .OR. CONTAC.EQ.3) THEN
         LCONTX = NLACT.LT.NNE(2)
       ENDIF
 

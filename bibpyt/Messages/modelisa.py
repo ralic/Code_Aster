@@ -1,21 +1,21 @@
-#@ MODIF modelisa Messages  DATE 14/10/2010   AUTEUR BOYERE E.BOYERE 
+#@ MODIF modelisa Messages  DATE 19/01/2011   AUTEUR MASSIN P.MASSIN 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # RESPONSABLE DELMAS J.DELMAS
 
@@ -39,12 +39,12 @@ cata_msg = {
 
 4 : _("""
  mauvaise définition pour l'abscisse curviligne
- détection de plusieurs chemins. 
+ détection de plusieurs chemins.
 """),
 
 5 : _("""
   le groupe de maille que vous donnez ne correspond pas
-  au modèle de structure que vous étudiez  
+  au modèle de structure que vous étudiez
 """),
 
 6 : _("""
@@ -53,14 +53,6 @@ cata_msg = {
 
 7 : _("""
  BARRE : une erreur a été détectée lors de l'affectation des valeurs dans le tampon
-"""),
-
-8 : _("""
- on interdit d'avoir sur un maillage 2D des éléments discrets 2D et 3D
-"""),
-
-9 : _("""
- on interdit d'avoir sur un maillage 3D des éléments discrets 2D
 """),
 
 10 : _("""
@@ -133,7 +125,7 @@ cata_msg = {
 """),
 
 26 : _("""
-  Il y a un probleme lors de l'affectation du mot clé MODI_METRIQUE sur la maille %(k1)s 
+  Il y a un probleme lors de l'affectation du mot clé MODI_METRIQUE sur la maille %(k1)s
 """),
 
 27 : _("""
@@ -239,7 +231,7 @@ cata_msg = {
  barre :
  occurence  %(k1)s
  section " %(k2)s
- argument "hy" ou "hz" incompatible avec "h" 
+ argument "hy" ou "hz" incompatible avec "h"
 """),
 
 48 : _("""
@@ -259,7 +251,7 @@ cata_msg = {
  barre :
  occurence  %(k1)s
  "cara" : nombre de valeurs entrees incorrect
- il en faut  %(k2)s 
+ il en faut  %(k2)s
 """),
 
 51 : _("""
@@ -285,12 +277,8 @@ cata_msg = {
  coque : avec un excentrement, la prise en compte des termes d'inertie de rotation est obligatoire.
 """),
 
-55 : _("""
- absence d elements discrets dans le modele
-"""),
-
 56 : _("""
- impossibilite, la maille  %(k1)s  doit etre une maille de type  %(k2)s , et elle est de type :  %(k3)s  pour la caracteristique  %(k4)s 
+ impossibilite, la maille  %(k1)s  doit etre une maille de type  %(k2)s , et elle est de type :  %(k3)s  pour la caracteristique  %(k4)s
 """),
 
 57 : _("""
@@ -360,7 +348,7 @@ cata_msg = {
  barre :
  maille  %(k1)s
  section generale
- il manque la caracteristique  %(k2)s 
+ il manque la caracteristique  %(k2)s
 """),
 
 71 : _("""
@@ -374,7 +362,7 @@ cata_msg = {
  barre :
  maille  %(k1)s
  section rectangle
- il manque  la caracteristique  %(k2)s 
+ il manque  la caracteristique  %(k2)s
 """),
 
 73 : _("""
@@ -388,7 +376,7 @@ cata_msg = {
  barre :
  maille  %(k1)s
  section cercle
- il manque  la caracteristique  %(k2)s 
+ il manque  la caracteristique  %(k2)s
 """),
 
 75 : _("""
@@ -409,28 +397,28 @@ cata_msg = {
  poutre :
  maille  %(k1)s
  section generale
- il manque la caracteristique  %(k2)s 
+ il manque la caracteristique  %(k2)s
 """),
 
 78 : _("""
  poutre :
  maille  %(k1)s
  section generale
- element poutre de timoshenko : il manque la caracteristique  %(k2)s 
+ element poutre de timoshenko : il manque la caracteristique  %(k2)s
 """),
 
 79 : _("""
  poutre :
  maille  %(k1)s
  section rectangle
- il manque  la caracteristique  %(k2)s 
+ il manque  la caracteristique  %(k2)s
 """),
 
 80 : _("""
  poutre :
  maille  %(k1)s
  section cercle
- il manque la caracteristique  %(k2)s 
+ il manque la caracteristique  %(k2)s
 """),
 
 81 : _("""
@@ -486,7 +474,7 @@ cata_msg = {
 
 89 : _("""
  orientation :
- pas d affectation d orientation du type  %(k1)s  sur le noeud  %(k2)s 
+ pas d affectation d orientation du type  %(k1)s  sur le noeud  %(k2)s
 """),
 
 90 : _("""
@@ -524,7 +512,7 @@ cata_msg = {
 """),
 
 98 : _("""
- type de coefficient inconnu: %(k1)s 
+ type de coefficient inconnu: %(k1)s
 """),
 
 }

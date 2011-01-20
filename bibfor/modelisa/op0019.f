@@ -1,9 +1,9 @@
       SUBROUTINE OP0019()
-      
-C MODIF MODELISA  DATE 14/09/2010   AUTEUR REZETTE C.REZETTE 
+
+C MODIF MODELISA  DATE 19/01/2011   AUTEUR MASSIN P.MASSIN 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -20,10 +20,28 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C ----------------------------------------------------------------------
 C TOLE CRP_20
-
+C
 C                O P E R A T E U R    AFFE_CARA_ELEM
-
+C
 C ----------------------------------------------------------------------
+      IMPLICIT  NONE
+C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
+      CHARACTER*32   JEXNOM
+      INTEGER        ZI
+      COMMON /IVARJE/ZI(1)
+      REAL*8         ZR
+      COMMON /RVARJE/ZR(1)
+      COMPLEX*16     ZC
+      COMMON /CVARJE/ZC(1)
+      LOGICAL        ZL
+      COMMON /LVARJE/ZL(1)
+      CHARACTER*8    ZK8
+      CHARACTER*16          ZK16
+      CHARACTER*24                  ZK24
+      CHARACTER*32                          ZK32
+      CHARACTER*80                                  ZK80
+      COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
+C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 C     NBEPO  : NOMBRE D'ELEMENTS DE TYPE "POUTRE"
 C     NBEDI  : NOMBRE D'ELEMENTS DE TYPE "DISCRET"
 C     NBECO  : NOMBRE D'ELEMENTS DE TYPE "COQUE"
@@ -32,258 +50,249 @@ C     NBEBA  : NOMBRE D'ELEMENTS DE TYPE "BARRE"
 C     NBEMA  : NOMBRE D'ELEMENTS DE TYPE "MASSIF"
 C     NBEGB  : NOMBRE D'ELEMENTS DE TYPE "GRILLE"
 C     NBMCF  : NOMBRE DE MOTS CLES FACTEUR DE L'OPERATEUR
+      INTEGER     NBEPO,NBEDI,NBECO,NBECA,NBEBA,NBEMA,NBEGB,NBTEL,NBMCF
+      INTEGER     NBEL1,NBEL2
+      PARAMETER  (NBEPO=13,NBEDI=8,NBECO=26,NBECA=2)
+      PARAMETER  (NBEBA=2,NBEMA=53,NBEGB=6)
+      PARAMETER  (NBTEL=NBEPO+NBEDI+NBECO+NBECA+NBEBA+NBEMA+NBEGB)
+      PARAMETER  (NBMCF=13,NBEL1=51,NBEL2=59)
 C ----------------------------------------------------------------------
-      IMPLICIT REAL*8 (A-H,O-Z)
-C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
-      INTEGER ZI
-      COMMON /IVARJE/ZI(1)
-      REAL*8 ZR
-      COMMON /RVARJE/ZR(1)
-      COMPLEX*16 ZC
-      COMMON /CVARJE/ZC(1)
-      LOGICAL ZL
-      COMMON /LVARJE/ZL(1)
-      CHARACTER*8 ZK8
-      CHARACTER*16 ZK16
-      CHARACTER*24 ZK24
-      CHARACTER*32 ZK32
-      CHARACTER*80 ZK80
-      COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
-      CHARACTER*32 JEXNOM
-C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 
+      INTEGER        NBMCLE(NBMCF),NBOCC(NBMCF),IVR(3),NBCART,IRET,I
+      INTEGER        NTYELE(NBTEL),NBVER,NLM,NLG,LXC,LXO,NLN,NLJ,LXA
+      INTEGER        LXK,LXB,LXM,LXPF,LXGB,LMAX,IFM,NIV,LXP,NBVM,LXD
+      INTEGER        NBOCCD,LXRP,NOEMAF,LXRM,NOEMF2,NBMAIL,NBMTRD
+      INTEGER        NPOUTR,NDISCR,NCOQUE,NCABLE,NBARRE,NMASSI,NGRILL
+      INTEGER        NGRIBT,ICLF,IOC,ICLE,NG,NOCACO,NOCAGB
+      INTEGER        JDNM,IXNW,JDLN,JDLM,JDLS
 
-      PARAMETER (NBEPO=13,NBEDI=8,NBECO=26,NBECA=2)
-      PARAMETER (NBEBA=2,NBEMA=53,NBEGB=6)
-      PARAMETER (NBTEL=NBEPO+NBEDI+NBECO+NBECA+NBEBA+NBEMA+NBEGB)
-      PARAMETER (NBMCF=13,NBEL1=51,NBEL2=59)
+      CHARACTER*1    K1BID
+      CHARACTER*6    KIOC
+      CHARACTER*8    VER(3),NOMU,NOMO,NOMA
+      CHARACTER*16   CONCEP,CMD,MCLF(NBMCF),MCLE(4),K16BID
+      CHARACTER*16   NOMELE(NBTEL),NOMEL1(NBEL1),NOMEL2(NBEL2)
+      CHARACTER*19   CARTCF
+      CHARACTER*24   MLGNMA,MODNOM,MODNEM,TMPLST,TMPLMA,TMPLNO,TMPNCF
 
-      INTEGER NBMCLE(NBMCF),NBOCC(NBMCF),IVR(3)
-      INTEGER NTYELE(NBTEL)
-      CHARACTER*1 K1BID
-      CHARACTER*6 KIOC
-      CHARACTER*8 VER(3),NOMU,NOMO,NOMA
-      CHARACTER*16 CONCEP,CMD,MCLF(NBMCF),MCLE(4)
-      CHARACTER*16 NOMELE(NBTEL),NOMEL1(NBEL1),NOMEL2(NBEL2)
-      CHARACTER*24 MLGNMA
-      CHARACTER*24 MODNOM,MODNEM,TMPLST,TMPLMA,TMPLNO
-      CHARACTER*19 CARTCF
-      CHARACTER*24 TMPNCF
-      INTEGER NBCART
+      DATA MCLE   /  'GROUP_MA        ','MAILLE          ',
+     &               'GROUP_NO        ','NOEUD           '/
 
-      DATA MCLE/'GROUP_MA        ','MAILLE          ',
-     &     'GROUP_NO        ','NOEUD           '/
+      DATA MCLF   /  'POUTRE          ','COQUE           ',
+     &               'DISCRET         ','ORIENTATION     ',
+     &               'DEFI_ARC        ','CABLE           ',
+     &               'BARRE           ','MASSIF          ',
+     &               'POUTRE_FLUI     ','RIGI_PARASOL    ',
+     &               'GRILLE          ','RIGI_MISS_3D    ',
+     &               'DISCRET_2D      '/
 
-      DATA MCLF/'POUTRE          ','COQUE           ',
-     &     'DISCRET         ','ORIENTATION     ','DEFI_ARC        ',
-     &     'CABLE           ','BARRE           ','MASSIF          ',
-     &     'POUTRE_FLUI     ','RIGI_PARASOL    ',
-     &     'GRILLE          ','RIGI_MISS_3D    ','DISCRET_2D      '/
+      DATA NOMEL1 /         'MECA_POU_D_T    ','MECA_POU_D_E    ',
+     &   'MECA_POU_D_T_GD ','MECA_POU_C_T    ','MEFS_POU_D_T    ',
+     &   'MECA_POU_D_TG   ','MECA_POHO_HEXA8 ','MECA_POHO_HEXA20',
+     &   'MET3SEG3        ','MET6SEG3        ','MET3SEG4        ',
+     &   'MECA_POU_D_EM   ','MECA_POU_D_TGM  ','MECA_DIS_T_N    ',
+     &   'MECA_DIS_T_L    ','MECA_DIS_TR_N   ','MECA_DIS_TR_L   ',
+     &   'MECA_2D_DIS_T_N ','MECA_2D_DIS_T_L ','MECA_2D_DIS_TR_N',
+     &   'MECA_2D_DIS_TR_L','THCOTR3         ','THCOTR6         ',
+     &   'THCOQU4         ','THCOQU8         ','THCOTR7         ',
+     &   'THCOQU9         ','MEDKTR3         ','MEDSTR3         ',
+     &   'MEDKQU4         ','MEDSQU4         ','MEQ4QU4         ',
+     &   'MECXSE3         ','MEDKTG3         ','MEDKQG4         ',
+     &   'METCSE3         ','METDSE3         ','THCASE3         ',
+     &   'THCPSE3         ','MEC3QU9H        ','MEC3TR7H        ',
+     &   'MEBODKT         ','MEBODST         ','MEBOQ4G         ',
+     &   'MEBOCQ3         ','THCOSE3         ','THCOSE2         ',
+     &   'MECABL2         ','MEPOULI         ','MECA_BARRE      ',
+     &   'MECA_2D_BARRE   '/
 
-      DATA NOMEL1/'MECA_POU_D_T    ','MECA_POU_D_E    ',
-     &     'MECA_POU_D_T_GD ','MECA_POU_C_T    ',
-     &     'MEFS_POU_D_T    ','MECA_POU_D_TG   ','MECA_POHO_HEXA8 ',
-     &     'MECA_POHO_HEXA20','MET3SEG3        ','MET6SEG3        ',
-     &     'MET3SEG4','MECA_POU_D_EM   ','MECA_POU_D_TGM  ',
-     &     'MECA_DIS_T_N    ','MECA_DIS_T_L    ',
-     &     'MECA_DIS_TR_N   ','MECA_DIS_TR_L   ','MECA_2D_DIS_T_N ',
-     &     'MECA_2D_DIS_T_L ','MECA_2D_DIS_TR_N','MECA_2D_DIS_TR_L',
-     &     'THCOTR3         ','THCOTR6         ','THCOQU4         ',
-     &     'THCOQU8         ','THCOTR7         ','THCOQU9         ',
-     &     'MEDKTR3         ','MEDSTR3         ','MEDKQU4         ',
-     &     'MEDSQU4         ','MEQ4QU4         ','MECXSE3         ',
-     &     'MEDKTG3         ','MEDKQG4         ',
-     &     'METCSE3         ','METDSE3         ','THCASE3         ',
-     &     'THCPSE3         ','MEC3QU9H        ','MEC3TR7H        ',
-     &     'MEBODKT         ','MEBODST         ','MEBOQ4G         ',
-     &     'MEBOCQ3         ','THCOSE3         ','THCOSE2         ',
-     &     'MECABL2         ','MEPOULI         ','MECA_BARRE      ',
-     &     'MECA_2D_BARRE   '/
-
-      DATA NOMEL2/ 'MECA_HEXA8      ','MECA_PENTA6     ',
-     &     'MECA_PENTA18    ','MECA_TETRA4     ','MECA_HEXA27     ',
-     &     'MECA_HEXA20     ','MECA_PENTA15    ','MECA_TETRA10    ',
-     &     'MECA_PYRAM5     ','MECA_PYRAM13    ','MECA_HEXS8      ',
-     &     'MECA_HEXS20     ','MEAXTR3         ','MEAXQU4         ',
-     &     'MEAXTR6         ','MEAXQU8         ','MEAXQU9         ',
-     &     'MEDPTR3         ','MEDPQU4         ','MEDPTR6         ',
-     &     'MEDPQU8         ','MEDPQU9         ','MECPTR3         ',
-     &     'MECPQU4         ','MECPTR6         ','MECPQU8         ',
-     &     'MECPQU9         ','THER_HEXA8      ','THER_PENTA6     ',
-     &     'THER_TETRA4     ','THER_PYRAM5     ','THER_HEXA27     ',
-     &     'THER_HEXA20     ','THER_PENTA15    ','THER_TETRA10    ',
-     &     'THER_PYRAM13    ','THAXTR3         ','THAXQU4         ',
-     &     'THAXTR6         ','THAXQU8         ','THAXQU9         ',
-     &     'THPLTR3         ','THPLQU4         ','THPLTR6         ',
-     &     'THPLQU8         ','THPLQU9         ','MET3SEG3        ',
-     &     'MET6SEG3        ','MET3SEG4        ','HM_DPQ8S        ',
-     &     'HM_AXIS_QU8S    ','HM_DPTR6S       ','HM_AXIS_TR6S    ',
-     &     'MEGCQU4         ','MEGMTR3         ','MEGMQU4         ',
-     &     'MEGMTR6         ','MEGMQU8         ','MEGCTR3         '/
-      DATA NBMCLE/2,2,4,4,2,2,2,2,2,1,2,0,4/
+      DATA NOMEL2 /         'MECA_HEXA8      ','MECA_PENTA6     ',
+     &   'MECA_PENTA18    ','MECA_TETRA4     ','MECA_HEXA27     ',
+     &   'MECA_HEXA20     ','MECA_PENTA15    ','MECA_TETRA10    ',
+     &   'MECA_PYRAM5     ','MECA_PYRAM13    ','MECA_HEXS8      ',
+     &   'MECA_HEXS20     ','MEAXTR3         ','MEAXQU4         ',
+     &   'MEAXTR6         ','MEAXQU8         ','MEAXQU9         ',
+     &   'MEDPTR3         ','MEDPQU4         ','MEDPTR6         ',
+     &   'MEDPQU8         ','MEDPQU9         ','MECPTR3         ',
+     &   'MECPQU4         ','MECPTR6         ','MECPQU8         ',
+     &   'MECPQU9         ','THER_HEXA8      ','THER_PENTA6     ',
+     &   'THER_TETRA4     ','THER_PYRAM5     ','THER_HEXA27     ',
+     &   'THER_HEXA20     ','THER_PENTA15    ','THER_TETRA10    ',
+     &   'THER_PYRAM13    ','THAXTR3         ','THAXQU4         ',
+     &   'THAXTR6         ','THAXQU8         ','THAXQU9         ',
+     &   'THPLTR3         ','THPLQU4         ','THPLTR6         ',
+     &   'THPLQU8         ','THPLQU9         ','MET3SEG3        ',
+     &   'MET6SEG3        ','MET3SEG4        ','HM_DPQ8S        ',
+     &   'HM_AXIS_QU8S    ','HM_DPTR6S       ','HM_AXIS_TR6S    ',
+     &   'MEGCQU4         ','MEGMTR3         ','MEGMQU4         ',
+     &   'MEGMTR6         ','MEGMQU8         ','MEGCTR3         '/
+      DATA NBMCLE /  2,2,4,4,2,2,2,2,2,1,2,0,4/
 C     ------------------------------------------------------------------
-
       CALL JEMARQ()
-
       IRET=0
+C --- ------------------------------------------------------------------
 C --- INITIALISATION DE  NOMELE
       DO 10 I = 1,NBEL1
-        NOMELE(I) = NOMEL1(I)
+         NOMELE(I) = NOMEL1(I)
    10 CONTINUE
       DO 20 I = 1,NBEL2
-        NOMELE(I+NBEL1) = NOMEL2(I)
+         NOMELE(I+NBEL1) = NOMEL2(I)
    20 CONTINUE
 
+C --- ------------------------------------------------------------------
 C --- RECUPERATION DES ARGUMENTS  DE LA COMMANDE
       CALL GETRES(NOMU,CONCEP,CMD)
 
+C --- ------------------------------------------------------------------
 C --- VERIFICATIONS SUPPLEMENTAIRES DE SYNTAXE
       CALL GETVTX(' ','VERIF',1,1,2,VER,NBVER)
       DO 30 I = 1,3
-        IVR(I) = 0
+         IVR(I) = 0
    30 CONTINUE
       IF (NBVER.GT.0) THEN
-        DO 40 I = 1,NBVER
-          IF (VER(I).EQ.'MAILLE  ') IVR(1) = 1
-          IF (VER(I).EQ.'NOEUD   ') IVR(2) = 1
-   40   CONTINUE
+         DO 40 I = 1,NBVER
+            IF (VER(I).EQ.'MAILLE  ') IVR(1) = 1
+            IF (VER(I).EQ.'NOEUD   ') IVR(2) = 1
+   40    CONTINUE
       ELSE IF (NBVER.LT.0) THEN
-        CALL U2MESS('F','MODELISA5_55')
+         CALL U2MESS('F','MODELISA5_55')
       END IF
 
       DO 50 I = 1,NBMCF
-        CALL GETFAC(MCLF(I),NBOCC(I))
+         CALL GETFAC(MCLF(I),NBOCC(I))
    50 CONTINUE
 
-C     VERIFICATION DE LA SYNTAXE DES ELEMENTS POUTRE :
-C     ------------------------------------------------
+C --- ------------------------------------------------------------------
+C --- VERIFICATION DE LA SYNTAXE DES ELEMENTS POUTRE
       LXP = 0
       IF (NBOCC(1).NE.0) THEN
-        CALL ACEVPO(NBOCC(1),NLM,NLG,IRET)
-        LXP = MAX(NLM,NLG)
+         CALL ACEVPO(NBOCC(1),NLM,NLG,IRET)
+         LXP = MAX(NLM,NLG)
       END IF
 
-C     VERIFICATION DE LA SYNTAXE DES ELEMENTS COQUE :
-C     ------------------------------------------------
+C --- ------------------------------------------------------------------
+C --- VERIFICATION DE LA SYNTAXE DES ELEMENTS COQUE
       LXC = 0
       IF (NBOCC(2).NE.0) THEN
-        CALL ACEVCO(NBOCC(2),NLM,NLG,IRET)
-        LXC = MAX(NLM,NLG)
+         CALL ACEVCO(NBOCC(2),NLM,NLG,IRET)
+         LXC = MAX(NLM,NLG)
       END IF
 
-C     VERIFICATION DE LA SYNTAXE DES ORIENTATIONS DES ELEMENTS :
-C     ----------------------------------------------------------
+C --- ------------------------------------------------------------------
+C --- VERIFICATION DE LA SYNTAXE DES ORIENTATIONS DES ELEMENTS
       LXO = 0
       IF (NBOCC(4).NE.0) THEN
-        CALL ACEVOR(NBOCC(4),NLM,NLG,NLN,NLJ,IRET)
-        LXO = MAX(NLM,NLN,NLJ,NLG)
+         CALL ACEVOR(NBOCC(4),NLM,NLG,NLN,NLJ,IRET)
+         LXO = MAX(NLM,NLN,NLJ,NLG)
       END IF
 
-C     VERIFICATION DE LA SYNTAXE DES POUTRES COURBES :
-C     ------------------------------------------------
+C --- ------------------------------------------------------------------
+C --- VERIFICATION DE LA SYNTAXE DES POUTRES COURBES
       LXA = 0
       IF (NBOCC(5).NE.0) THEN
-        CALL ACEVPC(NBOCC(5),NLM,NLG,IRET)
-        LXA = MAX(NLM,NLG)
+         CALL ACEVPC(NBOCC(5),NLM,NLG,IRET)
+         LXA = MAX(NLM,NLG)
       END IF
 
-C     VERIFICATION DE LA SYNTAXE DES ELEMENTS CABLE :
-C     -----------------------------------------------
+C --- ------------------------------------------------------------------
+C --- VERIFICATION DE LA SYNTAXE DES ELEMENTS CABLE
       LXK = 0
       IF (NBOCC(6).NE.0) THEN
-        CALL ACEVCA(NBOCC(6),NLM,NLG,IRET)
-        LXK = MAX(NLM,NLG)
+         CALL ACEVCA(NBOCC(6),NLM,NLG,IRET)
+         LXK = MAX(NLM,NLG)
       END IF
 
-C     VERIFICATION DE LA SYNTAXE DES ELEMENTS BARRE :
-C     ------------------------------------------------
+C --- ------------------------------------------------------------------
+C --- VERIFICATION DE LA SYNTAXE DES ELEMENTS BARRE
       LXB = 0
       IF (NBOCC(7).NE.0) THEN
-        CALL ACEVBA(NBOCC(7),NLM,NLG,IRET)
-        LXB = MAX(NLM,NLG)
+         CALL ACEVBA(NBOCC(7),NLM,NLG,IRET)
+         LXB = MAX(NLM,NLG)
       END IF
 
-C     VERIFICATION DE LA SYNTAXE DES ELEMENTS MASSIF :
-C     ------------------------------------------------
+C --- ------------------------------------------------------------------
+C --- VERIFICATION DE LA SYNTAXE DES ELEMENTS MASSIF :
       LXM = 0
       IF (NBOCC(8).NE.0) THEN
-        CALL ACEVMA(NBOCC(8),NLM,NLG)
-        LXM = MAX(NLM,NLG)
+         CALL ACEVMA(NBOCC(8),NLM,NLG)
+         LXM = MAX(NLM,NLG)
       END IF
 
-C     VERIFICATION DE LA SYNTAXE DES ELEMENTS POUTRE_FLUI :
-C     -----------------------------------------------------
+C --- ------------------------------------------------------------------
+C --- VERIFICATION DE LA SYNTAXE DES ELEMENTS POUTRE_FLUI
       LXPF = 0
       IF (NBOCC(9).NE.0) THEN
-        IF (NBOCC(1).EQ.0) THEN
-          CALL U2MESS('F','MODELISA5_56')
-        END IF
-        CALL ACEVPF(NBOCC(9),NLM,NLG)
-        LXPF = MAX(NLM,NLG)
+         IF (NBOCC(1).EQ.0) THEN
+            CALL U2MESS('F','MODELISA5_56')
+         END IF
+         CALL ACEVPF(NBOCC(9),NLM,NLG)
+         LXPF = MAX(NLM,NLG)
       END IF
 
-C     VERIFICATION DE LA SYNTAXE DES ELEMENTS "GRILLE" :
-C     --------------------------------------------------
+C --- ------------------------------------------------------------------
+C --- VERIFICATION DE LA SYNTAXE DES ELEMENTS "GRILLE"
       LXGB = 0
       IF (NBOCC(11).NE.0) THEN
-        CALL ACEVGB(NBOCC(11),NLM,NLG)
-        LXGB = MAX(NLM,NLG)
+         CALL ACEVGB(NBOCC(11),NLM,NLG)
+         LXGB = MAX(NLM,NLG)
       END IF
 
-
-C --- LONGUEUR MAXIMUM D UNE LISTE DE MAILLE/NOEUD/GROUP_MA/GROUP_NO :
-C     ----------------------------------------------------------------
+C --- ------------------------------------------------------------------
+C --- LONGUEUR MAXIMUM D UNE LISTE DE MAILLE/NOEUD/GROUP_MA/GROUP_NO
       LMAX = MAX(1,LXP,LXC,LXO,LXA,LXK,LXB,LXM,LXPF,LXGB)
 
-
-
-C     RECUPERATION DU NIVEAU D'IMPRESSION
-C     -----------------------------------
+C --- ------------------------------------------------------------------
+C --- RECUPERATION DU NIVEAU D'IMPRESSION
       CALL INFMAJ
       CALL INFNIV(IFM,NIV)
       IF (NIV.EQ.2) IVR(3) = 1
 
+C --- ------------------------------------------------------------------
 C --- RECONSTRUCTION DES NOMS JEVEUX DU CONCEPT MODELE
       CALL GETVID(' ','MODELE',1,1,1,NOMO,NBVM)
       MODNOM = NOMO//'.MODELE    .LGRF'
       MODNEM = NOMO//'.MODELE    .NEMA'
 
+C --- ------------------------------------------------------------------
 C --- RECUPERATION DU NOM DU MAILLAGE ASSOCIE
       CALL JEVEUO(MODNOM,'L',JDNM)
       NOMA = ZK8(JDNM)
 
+C --- ------------------------------------------------------------------
 C --- RECONSTRUCTION DES NOMS JEVEUX DU CONCEPT MAILLAGE ASSOCIE
       MLGNMA = NOMA//'.NOMMAI'
 
-C     VERIFICATION DE LA SYNTAXE DES ELEMENTS DISCRET :
-C     -------------------------------------------------
+C --- ------------------------------------------------------------------
+C --- VERIFICATION DE LA SYNTAXE DES ELEMENTS DISCRET
       LXD = 0
       IF (NBOCC(3).NE.0 .OR. NBOCC(13).NE.0) THEN
-        NBOCCD = NBOCC(3) + NBOCC(13)
-        CALL ACEVDI(NBOCCD,NOMA,NOMO,NLM,NLG,NLN,NLJ,IRET)
-        LXD = MAX(NLM,NLN,NLG,NLJ)
-        LMAX = MAX(LMAX,LXD)
+         NBOCCD = NBOCC(3) + NBOCC(13)
+         IF ( NBOCC(3) .NE.0 ) K16BID = MCLF(3)
+         IF ( NBOCC(13).NE.0 ) K16BID = MCLF(13)
+         CALL ACEVDI(NBOCCD,NOMA,NOMO,K16BID,NLM,NLG,NLN,NLJ,IRET)
+         LXD  = MAX(NLM,NLN,NLG,NLJ)
+         LMAX = MAX(LMAX,LXD)
       END IF
 
-C     VERIFICATION DE LA DIMENSION DES RAIDEURS REPARTIES :
-C     -------------------------------------------------
+C --- ------------------------------------------------------------------
+C --- VERIFICATION DE LA DIMENSION DES RAIDEURS REPARTIES
       LXRP = 0
       IF (NBOCC(10).NE.0) THEN
-        CALL ACEVRP(NBOCC(10),NOMA,LXRP,NOEMAF,IRET)
-        LMAX = MAX(LMAX,LXRP)
+         CALL ACEVRP(NBOCC(10),NOMA,LXRP,NOEMAF,IRET)
+         LMAX = MAX(LMAX,LXRP)
       END IF
 
-C     VERIFICATION DE LA DIMENSION DES RAIDEURS MISS :
-C     -------------------------------------------------
+C --- ------------------------------------------------------------------
+C --- VERIFICATION DE LA DIMENSION DES RAIDEURS MISS
       LXRM = 0
       IF (NBOCC(12).NE.0) THEN
-        CALL ACEVRM(NBOCC(12),NOMA,LXRM,NOEMF2,IRET)
-        LMAX = MAX(LMAX,LXRM)
+         CALL ACEVRM(NBOCC(12),NOMA,LXRM,NOEMF2,IRET)
+         LMAX = MAX(LMAX,LXRM)
       END IF
 
+C --- ------------------------------------------------------------------
 C --- RECUPERATION DU NB DE MAILLES INITIALES (MAILLAGE)
       CALL JELIRA(MLGNMA,'NOMMAX',NBMAIL,K1BID)
 
+C --- ------------------------------------------------------------------
 C --- RECUPERATION DU NB DE MAILLES TARDIVES  (MODELE)
       TMPLST = NOMU//'.LISTE'
       TMPLMA = NOMU//'.AFFEMAI'
@@ -291,49 +300,51 @@ C --- RECUPERATION DU NB DE MAILLES TARDIVES  (MODELE)
       NBMTRD = 0
       CALL JEEXIN(MODNEM,IXNW)
       IF (IXNW.NE.0) THEN
-        CALL JELIRA(MODNEM,'NMAXOC',NBMTRD,K1BID)
-        CALL WKVECT(TMPLNO,'V V I',NBMTRD,JDLN)
+         CALL JELIRA(MODNEM,'NMAXOC',NBMTRD,K1BID)
+         CALL WKVECT(TMPLNO,'V V I',NBMTRD,JDLN)
       END IF
       CALL WKVECT(TMPLMA,'V V I',NBMAIL,JDLM)
       CALL WKVECT(TMPLST,'V V K8',LMAX,JDLS)
 
+C --- ------------------------------------------------------------------
 C --- RECUPERATION DES NUMEROS DES TYPES ELEMENTS
       DO 60 I = 1,NBTEL
-        CALL JENONU(JEXNOM('&CATA.TE.NOMTE',NOMELE(I)),NTYELE(I))
+         CALL JENONU(JEXNOM('&CATA.TE.NOMTE',NOMELE(I)),NTYELE(I))
    60 CONTINUE
 
-C --- COMPTEUR D'ELEMENTS ET VERIFICATION COHERENCE DES AFFECTATIONS :
-C     ----------------------------------------------------------------
+C --- ------------------------------------------------------------------
+C --- COMPTEUR D'ELEMENTS ET VERIFICATION COHERENCE DES AFFECTATIONS
       CALL ACECEL(NOMA,NOMO,NBOCC,NBEPO,NBEDI,NBECO,NBECA,NBEBA,NBEMA,
      &            NBTEL,NTYELE,NPOUTR,NDISCR,NCOQUE,NCABLE,
      &            NBARRE,NMASSI,NGRILL,NGRIBT,JDLM,JDLN,IRET)
       IF (IRET.NE.0) THEN
-        CALL U2MESS('F','MODELISA5_57')
+         CALL U2MESS('F','MODELISA5_57')
       END IF
 
+C --- ------------------------------------------------------------------
 C --- VERIFICATION DE L'EXISTENCE DES MAILLES/NOEUDS/GROUPES DECLARES
-C     ---------------------------------------------------------------
       DO 100 ICLF = 1,NBMCF
-        DO 90 IOC = 1,NBOCC(ICLF)
-          CALL CODENT(IOC,'G',KIOC)
-          DO 80 ICLE = 1,NBMCLE(ICLF)
-            CALL GETVTX(MCLF(ICLF),MCLE(ICLE),IOC,1,LMAX,ZK8(JDLS),NG)
-            CALL VERIMA(NOMA, ZK8(JDLS), NG, MCLE(ICLE))
-   80     CONTINUE
-   90   CONTINUE
+         DO 90 IOC = 1,NBOCC(ICLF)
+            CALL CODENT(IOC,'G',KIOC)
+            DO 80 ICLE = 1,NBMCLE(ICLF)
+               CALL GETVTX(MCLF(ICLF),MCLE(ICLE),IOC,1,LMAX,
+     &                     ZK8(JDLS),NG)
+               CALL VERIMA(NOMA, ZK8(JDLS), NG, MCLE(ICLE))
+   80       CONTINUE
+   90    CONTINUE
   100 CONTINUE
 
+C --- ------------------------------------------------------------------
 C --- VERIFICATION DE LA BONNE  AFFECTATION  DES  CARACTERISTIQUES
 C     POUR TOUTES LES MAILLES ET NOEUDS AFFECTES , IMPR SI DEMANDE
-C     INCREMENTATION DES COMPTEURS D APPELS A NOCART(DISCRET,COQUE,
-C     DEFI_ARC,CABLE,POUTRE,BARRE) :
-C     -----------------
+C     INCREMENTATION DES COMPTEURS D APPELS A NOCART (DISCRET,COQUE,
+C     DEFI_ARC,CABLE,POUTRE,BARRE)
       IRET=0
       CALL ACEINC(NOMA,NOMO,NBMCF,MCLF,NTYELE,NBOCC,IVR,NBEPO,
      &            NBEDI,NBECO,NBECA,NBEBA,NBEMA,NBEGB,NBTEL,
      &            NOCACO,NOCAGB,JDLM,JDLN,LMAX,IRET)
       IF (IRET.NE.0) THEN
-        CALL U2MESS('F','MODELISA5_59')
+         CALL U2MESS('F','MODELISA5_59')
       END IF
 C     FABRICATION DE LA CARTE COMMUNE A TOUS LES ELEMENTS LINEIQUE
 C     S'IL Y EN A D'AFFECTE
@@ -355,100 +366,104 @@ C     S'IL Y EN A D'AFFECTE
          CALL U2MESS('A','MODELISA5_62')
       ENDIF
 
+C --- ------------------------------------------------------------------
 C --- AFFECTATION DES ORIENTATIONS AUX ELEMENTS POUTRES ET DISCRETS  ET
-C     BARRES ET AFFECTATION DE LA CARTE ORIENTATION :
-C     -----------------------------------------------
+C     BARRES ET AFFECTATION DE LA CARTE ORIENTATION
       IF (NBOCC(1).NE.0 .OR. NBOCC(3).NE.0 .OR. NBOCC(13).NE.0 .OR.
      &    NBOCC(7).NE.0 .OR. NBOCC(10).NE.0) THEN
-        CALL ACEAOR(NOMA,NOMO,LMAX,NBEPO,NBEDI,NBTEL,NTYELE,NOMELE,IVR,
-     &              IFM,NBOCC)
+         CALL ACEAOR(NOMA,NOMO,LMAX,NBEPO,NBEDI,NBTEL,NTYELE,NOMELE,
+     &               IVR,IFM,NBOCC)
       END IF
 
-C --- AFFECTATION DES CARACTERISTIQUES AUX ELEMENTS POUTRES :
-C     -------------------------------------------------------
+C --- ------------------------------------------------------------------
+C --- AFFECTATION DES CARACTERISTIQUES AUX ELEMENTS POUTRES
       IF (NBOCC(1).NE.0) THEN
-        CALL ACEAPO(NOMA,NOMO,LMAX,NPOUTR,NBOCC(1),NBEPO,NTYELE,IVR,IFM,
-     &              JDLM)
+         CALL ACEAPO(NOMA,NOMO,LMAX,NPOUTR,NBOCC(1),NBEPO,NTYELE,
+     &               IVR,IFM,JDLM)
       END IF
 
-C --- AFFECTATION DES EPAISSEURS/COURBURES/ANGLES AUX ELEMENTS COQUES :
-C     -----------------------------------------------------------------
+C --- ------------------------------------------------------------------
+C --- AFFECTATION DES EPAISSEURS/COURBURES/ANGLES AUX ELEMENTS COQUES
       IF (NBOCC(2).NE.0) THEN
         CALL ACEACO(NOMU,NOMA,LMAX,NOCAGB,NBOCC(2))
       END IF
 
-C --- AFFECTATION DES MATRICES AUX ELEMENTS DISCRETS :
-C     ------------------------------------------------
+C --- ------------------------------------------------------------------
+C --- AFFECTATION DES MATRICES AUX ELEMENTS DISCRETS
       IF (NBOCC(3).NE.0 .OR. NBOCC(13).NE.0) THEN
-        NBOCCD = NBOCC(3) + NBOCC(13)
-        CALL ACEADI(NOMA,NOMO,LMAX,NBOCCD,IVR,IFM)
+         NBOCCD = NBOCC(3) + NBOCC(13)
+         IF ( NBOCC(3) .NE.0 ) K16BID = MCLF(3)
+         IF ( NBOCC(13).NE.0 ) K16BID = MCLF(13)
+         CALL ACEADI(NOMA,NOMO,K16BID,LMAX,NBOCCD,IVR,IFM)
       END IF
 
-C --- AFFECTATION DES COURBURES AUX ELEMENTS POUTRES COURBES :
-C     --------------------------------------------------------
+C --- ------------------------------------------------------------------
+C --- AFFECTATION DES COURBURES AUX ELEMENTS POUTRES COURBES
       IF (NBOCC(5).NE.0) THEN
-        CALL ACEAPC(NOMU,NOMA,LMAX,NBOCC(5))
+         CALL ACEAPC(NOMU,NOMA,LMAX,NBOCC(5))
       END IF
 
+C --- ------------------------------------------------------------------
 C --- AFFECTATION DES SECTIONS AUX ELEMENTS CABLE :
-C     ---------------------------------------------
       IF (NBOCC(6).NE.0) THEN
-        CALL ACEACA(NOMU,NOMA,LMAX,NBOCC(6))
+         CALL ACEACA(NOMU,NOMA,LMAX,NBOCC(6))
       END IF
 
-C --- AFFECTATION DES CARACTERISTIQUES AUX ELEMENTS BARRE :
-C     -----------------------------------------------------
+C --- ------------------------------------------------------------------
+C --- AFFECTATION DES CARACTERISTIQUES AUX ELEMENTS BARRE
       IF (NBOCC(7).NE.0) THEN
-        CALL ACEABA(NOMA,NOMO,LMAX,NBARRE,NBOCC(7),NBTEL,NTYELE,IVR,IFM,
-     &              JDLM)
+         CALL ACEABA(NOMA,NOMO,LMAX,NBARRE,NBOCC(7),NBTEL,NTYELE,
+     &               IVR,IFM,JDLM)
       END IF
 
-C --- AFFECTATION DES REPERES AUX ELEMENTS THERMIQUES ET MECANIQUES  :
-C     -----------------------------------------------------------------
+C --- ------------------------------------------------------------------
+C --- AFFECTATION DES REPERES AUX ELEMENTS THERMIQUES ET MECANIQUES
       IF (NBOCC(8).NE.0) THEN
-        CALL ACEAMA(NOMU,NOMA,LMAX,NBOCC(8))
+         CALL ACEAMA(NOMU,NOMA,LMAX,NBOCC(8))
       END IF
 
-C --- AFFECTATION DES REPERES AUX ELEMENTS POUTRE_FLUI  :
-C     ---------------------------------------------------
+C --- ------------------------------------------------------------------
+C --- AFFECTATION DES REPERES AUX ELEMENTS POUTRE_FLUI
       IF (NBOCC(9).NE.0) THEN
-        CALL ACEAPF(NOMU,NOMA,LMAX,NBOCC(9))
+         CALL ACEAPF(NOMU,NOMA,LMAX,NBOCC(9))
       END IF
 
-C --- AFFECTATION DES MATRICES AUX RAIDEURS REPARTIES :
-C     ------------------------------------------------
+C --- ------------------------------------------------------------------
+C --- AFFECTATION DES MATRICES AUX RAIDEURS REPARTIES
       IF (NBOCC(10).NE.0) THEN
-        CALL ACEARP(NOMA,NOMO,LMAX,NOEMAF,NBOCC(10),IVR,IFM)
+         CALL ACEARP(NOMA,NOMO,LMAX,NOEMAF,NBOCC(10),IVR,IFM)
       END IF
 
+C --- ------------------------------------------------------------------
 C --- AFFECTATION DES CARACTERISTIQUES POUR L'ELEMENT "GRILLE"
-C     --------------------------------------------------------
       IF (NBOCC(11).NE.0) THEN
-        CALL ACEAGB(NOMU,NOMA,LMAX,NOCACO,NBOCC(11))
+         CALL ACEAGB(NOMU,NOMA,LMAX,NOCACO,NBOCC(11))
       END IF
 
-C --- AFFECTATION DES MATRICES AUX RAIDEURS MISS :
-C     ------------------------------------------------
+C --- ------------------------------------------------------------------
+C --- AFFECTATION DES MATRICES AUX RAIDEURS MISS
       IF (NBOCC(12).NE.0) THEN
-        CALL ACEARM(NOMA,NOMO,LMAX,NOEMF2,NBOCC(12),IVR,IFM)
+         CALL ACEARM(NOMA,NOMO,LMAX,NOEMF2,NBOCC(12),IVR,IFM)
       END IF
 
-C     COMPACTAGE DE LA CARTE : '.CVENTCXF'
+C --- ------------------------------------------------------------------
+C --- COMPACTAGE DE LA CARTE : '.CVENTCXF'
       IF (NBCART.GT.0) THEN
-        CALL TECART(CARTCF)
-C     DESTRUCTION DES CHAMPS
-        TMPNCF = CARTCF//'.NCMP'
-        CALL JEDETR(TMPNCF)
-        TMPNCF = CARTCF//'.VALV'
-        CALL JEDETR(TMPNCF)
+         CALL TECART(CARTCF)
+C        DESTRUCTION DES CHAMPS
+         TMPNCF = CARTCF//'.NCMP'
+         CALL JEDETR(TMPNCF)
+         TMPNCF = CARTCF//'.VALV'
+         CALL JEDETR(TMPNCF)
       END IF
 
-C --- TRAITEMENT DES MOTS CLES MULTIFIBRE ET GEOM_FIBRE
-C     + TRAITEMENT DES MOTS CLES :
-C           COQUE  /COQUE_NCOU
-C           GRILLE /COQUE_NCOU
-C           POUTRE /TUYAU_NCOU
-C           POUTRE /TUYAU_NSEC
+C --- ------------------------------------------------------------------
+C --- TRAITEMENT DES MOTS CLES
+C           MULTIFIBRE  /  GEOM_FIBRE
+C           COQUE       /  COQUE_NCOU
+C           GRILLE      /  COQUE_NCOU
+C           POUTRE      /  TUYAU_NCOU
+C           POUTRE      /  TUYAU_NSEC
 C     ----------------------------------------------------------
       CALL PMFD00()
 

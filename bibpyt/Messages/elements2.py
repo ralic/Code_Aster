@@ -1,21 +1,21 @@
-#@ MODIF elements2 Messages  DATE 04/10/2010   AUTEUR PROIX J-M.PROIX 
+#@ MODIF elements2 Messages  DATE 19/01/2011   AUTEUR MASSIN P.MASSIN 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # RESPONSABLE DELMAS J.DELMAS
 
@@ -36,7 +36,7 @@ cata_msg = {
 """),
 
 32 : _("""
- comportement non trouve: %(k1)s 
+ comportement non trouve: %(k1)s
 """),
 
 33 : _("""
@@ -78,7 +78,7 @@ cata_msg = {
 """),
 
 43 : _("""
- noeuds confondus pour la maille:  %(k1)s 
+ noeuds confondus pour la maille:  %(k1)s
 """),
 
 44 : _("""
@@ -86,7 +86,7 @@ cata_msg = {
 """),
 
 45 : _("""
- on n'a pas trouvé de variable interne correspondante a la déformation plastique équivalente cumulée 
+ on n'a pas trouvé de variable interne correspondante a la déformation plastique équivalente cumulée
 """),
 
 46 : _("""
@@ -167,7 +167,7 @@ cata_msg = {
 """),
 
 73 : _("""
- comportement non traite:  %(k1)s 
+ comportement non traite:  %(k1)s
 """),
 
 74 : _("""
@@ -183,7 +183,7 @@ cata_msg = {
 """),
 
 80 : _("""
- éléments de poutre noeuds confondus pour un élément:  %(k1)s 
+ éléments de poutre noeuds confondus pour un élément:  %(k1)s
 """),
 
 81 : _("""
@@ -195,7 +195,7 @@ cata_msg = {
 """),
 
 83 : _("""
- poutre section variable/constante  passage par section homothetique avec a1 = a2 
+ poutre section variable/constante  passage par section homothetique avec a1 = a2
 """),
 
 84 : _("""
@@ -208,14 +208,6 @@ cata_msg = {
 
 86 : _("""
  non prevu pour les sections generales
-"""),
-
-88 : _("""
- element discret " %(k1)s " inconnu.
-"""),
-
-89 : _("""
- element discret (te0044): l'option " %(k1)s " est inconnue pour le type " %(k2)s "
 """),
 
 90 : _("""

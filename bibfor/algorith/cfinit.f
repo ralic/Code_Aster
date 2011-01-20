@@ -2,9 +2,9 @@
      &                  SDDYNA,SDDISC,VALINC)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 14/09/2010   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 19/01/2011   AUTEUR MASSIN P.MASSIN 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -78,7 +78,8 @@ C
       INTEGER      ZTABF ,ZETAT      
       LOGICAL      ISFONC,NDYNLO,LDYNA
       LOGICAL      CFDISL,LELTC,LCTCD,LTFCM,LCTCC,LXFCM
-      CHARACTER*19 DEPMOI,VITPLU,ACCPLU      
+      CHARACTER*19 DEPMOI,VITPLU,ACCPLU,XSEUCO,XSEUCP
+      CHARACTER*19 XINDCO,XMEMCO,XINDCP,XMEMCP      
 C
 C ----------------------------------------------------------------------
 C
@@ -170,9 +171,19 @@ C
             ZR(JTABF+ZTABF*(IPC-1)+23) = ZR(JETAT-1+ZETAT*(IPC-1)+3)
             ZR(JTABF+ZTABF*(IPC-1)+17) = ZR(JETAT-1+ZETAT*(IPC-1)+4)
   100     CONTINUE
-        ENDIF                  
+         ELSE
+           XINDCO = RESOCO(1:14)//'.XFIN'
+           XMEMCO = RESOCO(1:14)//'.XMEM'    
+           XINDCP = RESOCO(1:14)//'.XFIP'
+           XMEMCP = RESOCO(1:14)//'.XMEP'
+           XSEUCO = RESOCO(1:14)//'.XFSE'
+           XSEUCP = RESOCO(1:14)//'.XFSP'           
+           CALL COPISD('CHAMP_GD','V',XINDCP,XINDCO) 
+           CALL COPISD('CHAMP_GD','V',XMEMCP,XMEMCO)
+           CALL COPISD('CHAMP_GD','V',XSEUCP,XSEUCO)
+         ENDIF
       ENDIF
-                
+                         
 C 
       CALL JEDEMA()
 

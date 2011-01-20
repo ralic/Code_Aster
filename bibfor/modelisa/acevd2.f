@@ -1,12 +1,13 @@
-      SUBROUTINE ACEVD2(NOMA,NOMO,LMAX,NBOCC)
-      IMPLICIT REAL*8 (A-H,O-Z)
+      SUBROUTINE ACEVD2(NOMA,NOMO,MCF,LMAX,NBOCC)
+      IMPLICIT          NONE
       INTEGER           LMAX,NBOCC
       CHARACTER*8       NOMA,NOMO
+      CHARACTER*(*)     MCF
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 19/10/2010   AUTEUR DELMAS J.DELMAS 
+C MODIF MODELISA  DATE 19/01/2011   AUTEUR MASSIN P.MASSIN 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -21,40 +22,44 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C ----------------------------------------------------------------------
-C     AFFE_CARA_ELEM
-C     TEST DES CARACTERISTIQUES POUR LES ELEMENTS DISCRET
-C ----------------------------------------------------------------------
-C IN  : NOMA   : NOM DU MAILLAGE
-C IN  : NOMO   : NOM DU MODELE
-C IN  : LMAX   : NOMBRE MAX DE MAILLE OU GROUPE DE MAILLE
-C IN  : NBOCC  : NOMBRE D'OCCURENCES DU MOT CLE DISCRET
-C ----------------------------------------------------------------------
-C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
-      INTEGER          ZI
-      COMMON  /IVARJE/ ZI(1)
-      REAL*8           ZR
-      COMMON  /RVARJE/ ZR(1)
-      COMPLEX*16       ZC
-      COMMON  /CVARJE/ ZC(1)
-      LOGICAL          ZL
-      COMMON  /LVARJE/ ZL(1)
-      CHARACTER*8      ZK8
-      CHARACTER*16            ZK16
-      CHARACTER*24                    ZK24
-      CHARACTER*32                            ZK32
-      CHARACTER*80                                    ZK80
-      COMMON  /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
-      CHARACTER*32     JEXNUM, JEXNOM
-C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
-      PARAMETER    ( NBCAR = 100 )
-      CHARACTER*8  K8B, NOMU, CAR(NBCAR)
-      CHARACTER*16 TOU, CONCEP, CMD, MCF
-      CHARACTER*24 TMPDIS, MLGGNO, MLGNNO
-      CHARACTER*24 MODNEM
-      CHARACTER*1 K1BID
-      CHARACTER*24  GRPMA
-C     ------------------------------------------------------------------
+C --- ------------------------------------------------------------------
+C        AFFE_CARA_ELEM
+C           TEST DES CARACTERISTIQUES POUR LES ELEMENTS DISCRET
+C --- ------------------------------------------------------------------
+C IN
+C     NOMA     : NOM DU MAILLAGE
+C     NOMO     : NOM DU MODELE
+C     MCF      :  MOT CLEF
+C     LMAX     : NOMBRE MAX DE MAILLE OU GROUPE DE MAILLE
+C     NBOCC    : NOMBRE D'OCCURENCES DU MOT CLE DISCRET
+C --- ------------------------------------------------------------------
+C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
+      CHARACTER*32 JEXNOM
+      INTEGER        ZI
+      COMMON /IVARJE/ZI(1)
+      REAL*8         ZR
+      COMMON /RVARJE/ZR(1)
+      COMPLEX*16     ZC
+      COMMON /CVARJE/ZC(1)
+      LOGICAL        ZL
+      COMMON /LVARJE/ZL(1)
+      CHARACTER*8    ZK8
+      CHARACTER*16          ZK16
+      CHARACTER*24                  ZK24
+      CHARACTER*32                          ZK32
+      CHARACTER*80                                  ZK80
+      COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
+C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
+      INTEGER        NBCAR
+      PARAMETER     (NBCAR=100)
+      INTEGER        IER,I3D,I2D,NDIM,NBMTRD,IOC,NG,NM,NJ,NN,NCAR,ICAR
+      INTEGER        II,NBMA,IALIMA,NBNOGR,KK,IBID
+      INTEGER        IXNW,JDNW,JDDI,JDLS,JDGN
+      CHARACTER*1    K1BID
+      CHARACTER*8    K8B,NOMU,CAR(NBCAR)
+      CHARACTER*16   CONCEP,CMD
+      CHARACTER*24   TMPDIS,MLGGNO,MLGNNO,MODNEM,GRPMA
+C --- ------------------------------------------------------------------
 C
       CALL JEMARQ()
       CALL GETRES(NOMU,CONCEP,CMD)
@@ -64,40 +69,11 @@ C
       MODNEM = NOMO//'.MODELE    .NEMA'
       GRPMA  = NOMA//'.GROUPEMA       '
 C
-      I3D = 0
-      I2D = 0
+C --- VERIFICATION DES DIMENSIONS / MODELISATIONS
+      IER = 0
+      CALL VERDIS(NOMO,NOMA,'F',I3D,I2D,NDIM,IER)
+      CALL ASSERT( (MCF.EQ.'DISCRET_2D').OR.(MCF.EQ.'DISCRET') )
 C
-C --- RECUPERATION DE LA DIMENSION DU MAILLAGE
-      NDIM1 = 3
-      CALL DISMOI('F','Z_CST',NOMO,'MODELE',IBID,K8B,IER)
-      IF ( K8B(1:3) .EQ. 'OUI' )  NDIM1 = 2
-C
-C --- ON REGARDE SI LE MODELE COMPORTE DES ELEMENTS DISCRETS 3D
-      CALL MODEXI(NOMO,'DIS_',I3D)
-C
-C --- ON REGARDE SI LE MODELE COMPORTE DES ELEMENTS DISCRETS 2D
-      CALL MODEXI(NOMO,'2D_DIS_',I2D)
-C
-C --- ON INTERDIT SUR UN MAILLAGE 2D D'AVOIR DES ELEMENTS DISCRETS
-C --- 2D ET 3D
-      IF (I2D.EQ.1.AND.I3D.EQ.1.AND.NDIM1.EQ.2) THEN
-          CALL U2MESS('F','MODELISA_8')
-      ENDIF
-C
-C --- ON INTERDIT SUR UN MAILLAGE 3D D'AVOIR DES ELEMENTS DISCRET_2D
-      IF (I2D.EQ.1.AND.NDIM1.EQ.3) THEN
-          CALL U2MESS('F','MODELISA_9')
-      ENDIF
-C
-C --- DIMENSION DU PROBLEME
-      MCF = ' '
-      IF (I3D.EQ.1) THEN
-        NDIM = 3
-        MCF = 'DISCRET'
-      ELSEIF (I2D.EQ.1) THEN
-        NDIM = 2
-        MCF = 'DISCRET_2D'
-      ENDIF
       CALL JEEXIN(MODNEM,IXNW)
       NBMTRD = 0
       IF (IXNW.NE.0) THEN
@@ -111,31 +87,31 @@ C
 C --- BOUCLE SUR LES OCCURENCES DE DISCRET
       DO 30 IOC = 1 , NBOCC
          CALL GETVEM(NOMA,'GROUP_MA',MCF,'GROUP_MA',
-     &                                 IOC,1,LMAX,ZK8(JDLS),NG)
+     &               IOC,1,LMAX,ZK8(JDLS),NG)
          CALL GETVEM(NOMA,'MAILLE',MCF,'MAILLE',
-     &                                 IOC,1,LMAX,ZK8(JDLS),NM)
+     &               IOC,1,LMAX,ZK8(JDLS),NM)
          CALL GETVEM(NOMA,'GROUP_NO',MCF,'GROUP_NO',
-     &                                 IOC,1,LMAX,ZK8(JDLS),NJ)
-         CALL GETVEM(NOMA,'NOEUD',MCF,'NOEUD',IOC,1,LMAX,ZK8(JDLS),NN)
+     &               IOC,1,LMAX,ZK8(JDLS),NJ)
+         CALL GETVEM(NOMA,'NOEUD',MCF,'NOEUD',
+     &               IOC,1,LMAX,ZK8(JDLS),NN)
          CALL GETVTX(MCF,'CARA'     ,IOC,1,NBCAR,CAR      ,NCAR)
 C
-
          IF (NCAR.GT.NCAR) CALL ASSERT(.FALSE.)
-
          DO 25 ICAR=1,NCAR
-         IF (CAR(ICAR)(3:4).EQ.'TR') GOTO 28
-   25    CONTINUE
+            IF (CAR(ICAR)(3:4).EQ.'TR') GOTO 28
+25       CONTINUE
 C
          GOTO 30
-   28    CONTINUE
+28       CONTINUE
 C
 C ---    "GROUP_MA" = TOUTES LES MAILLES DE TOUS LES GROUPES DE MAILLES
          IF (NG.GT.0) THEN
-           DO 38 II = 1 , NG
-             CALL JELIRA(JEXNOM(GRPMA,ZK8(JDLS+II-1)),'LONUTI',NBMA,K8B)
-             CALL JEVEUO(JEXNOM(GRPMA,ZK8(JDLS+II-1)),'L',IALIMA)
-             CALL ACEVTR(NOMA,NOMO,2,ZK8(1),ZI(IALIMA),NBMA,NDIM)
- 38        CONTINUE
+            DO 38 II = 1 , NG
+               CALL JELIRA(JEXNOM(GRPMA,ZK8(JDLS+II-1)),'LONUTI',
+     &                     NBMA,K8B)
+               CALL JEVEUO(JEXNOM(GRPMA,ZK8(JDLS+II-1)),'L',IALIMA)
+               CALL ACEVTR(NOMA,NOMO,2,ZK8(1),ZI(IALIMA),NBMA,NDIM)
+38          CONTINUE
          ENDIF
 C
 C ---   "MAILLE" = TOUTES LES MAILLES  DE LA LISTE DE MAILLES
@@ -148,27 +124,27 @@ C ---    SI DES MAILLES TARDIVES EXISTENT POUR CE MODELE :
 C ---       "GROUP_NO" = TOUTES LES MAILLES TARDIVES  DE LA LISTE
 C                                                  DE GROUPES DE NOEUDS
             IF (NJ.GT.0) THEN
-               DO 42 I = 1 , NJ
-                  CALL JEVEUO(JEXNOM(MLGGNO,ZK8(JDLS+I-1)),'L',JDGN)
-                  CALL JELIRA(JEXNOM(MLGGNO,ZK8(JDLS+I-1)),'LONUTI',
-     &                                                  NBNOGR,K1BID)
-                  CALL CRLINU ( 'NUM', MLGNNO, NBNOGR, ZI(JDGN), K8B,
-     &                           NBMTRD, ZI(JDNW), ZI(JDDI), KK )
+               DO 42 II = 1 , NJ
+                  CALL JEVEUO(JEXNOM(MLGGNO,ZK8(JDLS+II-1)),'L',JDGN)
+                  CALL JELIRA(JEXNOM(MLGGNO,ZK8(JDLS+II-1)),'LONUTI',
+     &                        NBNOGR,K1BID)
+                  CALL CRLINU('NUM',MLGNNO,NBNOGR,ZI(JDGN),K8B,
+     &                        NBMTRD,ZI(JDNW),ZI(JDDI),KK)
                   IF (KK.GT.0) THEN
-                       CALL ACEVTR(NOMA,NOMO,2,ZK8(1),ZI(JDDI),KK,NDIM)
+                     CALL ACEVTR(NOMA,NOMO,2,ZK8(1),ZI(JDDI),KK,NDIM)
                   ENDIF
- 42            CONTINUE
+42             CONTINUE
             ENDIF
 C ---       "NOEUD" = TOUTES LES MAILLES TARDIVES  DE LA LISTE DE NOEUDS
             IF (NN.GT.0) THEN
-               CALL CRLINU ( 'NOM', MLGNNO, NN, IBID, ZK8(JDLS),
-     &                        NBMTRD, ZI(JDNW), ZI(JDDI), KK )
+               CALL CRLINU('NOM', MLGNNO, NN, IBID, ZK8(JDLS),
+     &                     NBMTRD, ZI(JDNW), ZI(JDDI), KK )
                IF (KK.GT.0) THEN
-                       CALL ACEVTR(NOMA,NOMO,2,ZK8(1),ZI(JDDI),KK,NDIM)
+                  CALL ACEVTR(NOMA,NOMO,2,ZK8(1),ZI(JDDI),KK,NDIM)
                ENDIF
             ENDIF
          ENDIF
- 30   CONTINUE
+30    CONTINUE
 C
       IF (IXNW.NE.0) CALL JEDETR(TMPDIS)
       CALL JEDETR('&&TMPDISCRET')

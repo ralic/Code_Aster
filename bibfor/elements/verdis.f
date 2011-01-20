@@ -1,0 +1,100 @@
+      SUBROUTINE VERDIS(MODEL,NOMAIL,FOUE,I3D,I2D,NDIM,IER)
+      IMPLICIT          NONE
+      CHARACTER*1       FOUE
+      CHARACTER*8       MODEL,NOMAIL
+      INTEGER           I3D,I2D,NDIM,IER
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ELEMENTS  DATE 19/01/2011   AUTEUR MASSIN P.MASSIN 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C ======================================================================
+C RESPONSABLE MASSIN P.MASSIN
+C --- ------------------------------------------------------------------
+C
+C      VERIFICATION DE LA COHERENCE ENTRE LA DIMENSION DES DISCRETS
+C      ET LA DIMENSION DU MODELE
+C
+C --- ------------------------------------------------------------------
+C
+C IN
+C     MODEL : NOM DU MODELE
+C     FOUE  : ARRET <F> OU <E>
+C     IER   : NOMBRE D'ERREUR PRECEDENTE
+C OUT
+C     I3D   : =0 PAS DE DISCRET 3D, =1 DISCRET 3D
+C     I2D   : =0 PAS DE DISCRET 2D, =1 DISCRET 2D
+C     NDIM  : DIMENSION DU MODELE
+C     IER   : ERREUR PRECEDENTE + NOUVELLE ERREUR
+C
+C --- ------------------------------------------------------------------
+      CHARACTER*8 K8BID,KMESS
+      INTEGER     IERD,IBID,DIMMAI,DIMMOD
+C --- ------------------------------------------------------------------
+C
+C --- RECUPERATION DE LA DIMENSION DU MAILLAGE
+      CALL DISMOI('F','DIM_GEOM_B',NOMAIL,'MAILLAGE',DIMMAI,K8BID,IERD)
+C --- RECUPERATION DE LA DIMENSION DU MODELE
+      CALL DISMOI('F','DIM_GEOM',MODEL,'MODELE',DIMMOD,K8BID,IERD)
+C     SI DIMMAI=DIMMOD
+      IF ( DIMMAI.EQ.DIMMOD ) THEN
+         NDIM = DIMMAI
+      ELSE
+         IBID = DIMMOD
+C        IBID  =   1  : 1D
+C              =   2  : 2D
+C              =   3  : 3D
+C              = 120  : 1D+2D     MELANGE
+C              = 103  : 1D+3D     MELANGE
+C              =  23  : 2D+3D     MELANGE
+C              = 123  : 1D+2D+3D  MELANGE
+C        IBID>3 ==> MELANGE DE MODELISATIONS ==> MESSAGE AFFE_MODELE
+         IF (IBID.GT.3) CALL U2MESS('A','MODELISA4_4')
+C
+         NDIM = IBID
+         IF (IBID.GE.100) THEN
+            IBID = IBID - 100
+            NDIM = 1
+         ENDIF
+         IF (IBID.GE.20) THEN
+            IBID = IBID - 20
+            NDIM = 2
+         ENDIF
+         IF (IBID.EQ.3) NDIM = 3
+      ENDIF
+C     LA DIMENSION C'EST 2D OU 3D : TOUS LES AUTRES CAS SONT EXCLUS
+      IF  ( (NDIM.NE.2).AND.(NDIM.NE.3) ) THEN
+         CALL CODENT(DIMMOD,'G',KMESS)
+         CALL U2MESK(FOUE,'DISCRETS_20',1,KMESS)
+         IER = IER + 1
+      ENDIF
+
+C --- LE MODELE COMPORTE T-IL DES ELEMENTS DISCRETS 3D
+      CALL MODEXI(MODEL,'DIS_',I3D)
+C --- LE MODELE COMPORTE T-IL DES ELEMENTS DISCRETS 2D
+      CALL MODEXI(MODEL,'2D_DIS_',I2D)
+
+C --- IL FAUT DES DISCRETS DANS LA MODELISATION
+      IF ( (I3D.EQ.0).AND.(I2D.EQ.0) ) THEN
+         CALL U2MESS(FOUE,'DISCRETS_17')
+         IER = IER + 1
+      ENDIF
+C --- PAS DE DISCRET 2D ET 3D SUR UN MODELE
+      IF ( (I3D.EQ.1).AND.(I2D.EQ.1) ) THEN
+         CALL U2MESS(FOUE,'DISCRETS_16')
+         IER = IER + 1
+      ENDIF
+C
+      END

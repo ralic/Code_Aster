@@ -1,12 +1,13 @@
-      SUBROUTINE ACEADI(NOMA,NOMO,LMAX,NBOCC,IVR,IFM)
-      IMPLICIT REAL*8 (A-H,O-Z)
-      INTEGER         LMAX,NBOCC,IVR(*),IFM
-      CHARACTER*8     NOMA,NOMO
+      SUBROUTINE ACEADI(NOMA,NOMO,MCF,LMAX,NBOCC,IVR,IFM)
+      IMPLICIT       NONE
+      CHARACTER*8    NOMA,NOMO
+      INTEGER        LMAX,NBOCC,IVR(*),IFM
+      CHARACTER*(*)  MCF
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 19/10/2010   AUTEUR DELMAS J.DELMAS 
+C MODIF MODELISA  DATE 19/01/2011   AUTEUR MASSIN P.MASSIN 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -49,26 +50,28 @@ C --- -- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32                            ZK32
       CHARACTER*80                                    ZK80
       COMMON  /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
-      CHARACTER*32     JEXNUM, JEXNOM
+      CHARACTER*32  JEXNOM
 C --- --  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
+      INTEGER        NBCAR,NBVAL,NRD
       PARAMETER    ( NBCAR = 100 , NBVAL = 1000 , NRD = 2 )
-      INTEGER      JDC(3), JDV(3), NVALF,LVAL
-      INTEGER      JDCINF,  JDVINF
-      REAL*8       VAL(NBVAL), ETA
-      CHARACTER*1  KMA(3), K1BID
-      CHARACTER*6  KI
-      CHARACTER*8  K8B, NOMU
-      CHARACTER*9  CAR(NBCAR)
-      CHARACTER*16 SEC, REP, TOU, REPDIS(NRD), CONCEP, CMD, MCF, K16BID
-      CHARACTER*16 SYM, SYMDIS(NRD)
-      CHARACTER*19 CART(3), LIGMO, K19B, CARTDI
-      CHARACTER*24 TMPND(3), TMPVD(3)
-      CHARACTER*24 TMPDIS, MLGGNO, MLGNNO, TMCINF, TMVINF, MODNEM
+      INTEGER        JDC(3),JDV(3),NVALF,DIMMAT,DIMCAR,NM,II,L,IV,NDIM
+      INTEGER        JDCINF,JDVINF,NBORM,NBORP,NCMP,KK,IBID,NBNOGR,NN
+      INTEGER        NSYM,NETA,NREP,LVAL,JDNW,NCARAC,I3D,I2D,IER
+      INTEGER        IXNW,NBMTRD,JDDI,JDLS,I,J,IOC,IREP,ISYM,NG,NJ,NCAR
+      INTEGER        NVAL,JVALV,JDGN
+      REAL*8         VAL(NBVAL),ETA,R8BID
+      CHARACTER*1    KMA(3), K1BID
+      CHARACTER*6    KI
+      CHARACTER*8    K8B, NOMU
+      CHARACTER*9    CAR(NBCAR)
+      CHARACTER*16   REP,REPDIS(NRD),CONCEP,CMD,SYM,SYMDIS(NRD)
+      CHARACTER*19   CART(3),LIGMO,K19B,CARTDI
+      CHARACTER*24   TMPND(3),TMPVD(3),TMPDIS,MLGGNO,MLGNNO
+      CHARACTER*24   TMCINF,TMVINF,MODNEM
 C
       DATA REPDIS /'GLOBAL          ','LOCAL           '/
       DATA SYMDIS /'OUI             ','NON             '/
       DATA KMA    /'K','M','A'/
-
 C --- --------------------------------------------------------------
 C
       CALL JEMARQ()
@@ -78,41 +81,12 @@ C
       MLGNNO = NOMA//'.NOMNOE'
       LIGMO  = NOMO//'.MODELE    '
       MODNEM = NOMO//'.MODELE    .NEMA'
-      I3D = 0
-      I2D = 0
+
+C --- VERIFICATION DES DIMENSIONS / MODELISATIONS
+      IER = 0
+      CALL VERDIS(NOMO,NOMA,'F',I3D,I2D,NDIM,IER)
+      CALL ASSERT( (MCF.EQ.'DISCRET_2D').OR.(MCF.EQ.'DISCRET') )
 C
-C --- RECUPERATION DE LA DIMENSION DU MAILLAGE
-      NDIM1 = 3
-      CALL DISMOI('F','Z_CST',NOMO,'MODELE',IBID,K8B,IER)
-      IF ( K8B(1:3) .EQ. 'OUI' )  NDIM1 = 2
-C
-C --- ON REGARDE SI LE MODELE COMPORTE DES ELEMENTS DISCRETS 3D
-      CALL MODEXI(NOMO,'DIS_',I3D)
-C
-C --- ON REGARDE SI LE MODELE COMPORTE DES ELEMENTS DISCRETS 2D
-      CALL MODEXI(NOMO,'2D_DIS_',I2D)
-C
-C --- ON INTERDIT SUR UN MAILLAGE 2D D'AVOIR DES ELEMENTS DISCRETS
-C --- 2D ET 3D
-      IF (I2D.EQ.1.AND.I3D.EQ.1.AND.NDIM1.EQ.2) THEN
-          CALL U2MESS('F','MODELISA_8')
-      ENDIF
-C
-C --- ON INTERDIT SUR UN MAILLAGE 3D D'AVOIR DES ELEMENTS DISCRETS
-C --- 2D
-      IF (I2D.EQ.1.AND.NDIM1.EQ.3) THEN
-          CALL U2MESS('F','MODELISA_9')
-      ENDIF
-C
-C --- DIMENSION DU PROBLEME
-      MCF  = ' '
-      IF (I3D.EQ.1) THEN
-        NDIM = 3
-        MCF  = 'DISCRET'
-      ELSEIF (I2D.EQ.1) THEN
-        NDIM = 2
-        MCF  = 'DISCRET_2D'
-      ENDIF
       CALL JEEXIN(MODNEM,IXNW)
       NBMTRD = 0
       IF (IXNW.NE.0) THEN
@@ -131,19 +105,23 @@ C     CARTE INFO POUR TOUS LES DISCRETS
       TMVINF = CARTDI//'.VALV'
       CALL JEVEUO(TMCINF,'E',JDCINF)
       CALL JEVEUO(TMVINF,'E',JDVINF)
-C     PAR DEFAUT POUR M, A, K : REPERE GLOBAL , MATRICE SYMETRIQUE
+C     PAR DEFAUT POUR M, A, K :
+C        REPERE GLOBAL, MATRICE SYMETRIQUE, PAS AFFECTEE
+      CALL INFDIS('DIMC',DIMCAR,R8BID)
       DO 200 I = 1 , 3
          ZK8(JDCINF+I-1) = 'REP'//KMA(I)//'    '
          ZR (JDVINF+I-1) = 1.D0
          ZK8(JDCINF+I+2) = 'SYM'//KMA(I)//'    '
          ZR (JDVINF+I+2) = 1.D0
+         ZK8(JDCINF+I+5) = 'DIS'//KMA(I)//'    '
+         ZR (JDVINF+I+5) = 0.0D0
 200   CONTINUE
-      ZK8(JDCINF+6) = 'ETAK    '
-      ZR (JDVINF+6) = 0.D0
+      ZK8(JDCINF+9) = 'ETAK    '
+      ZR (JDVINF+9) = 0.D0
 C
-      CALL NOCART(CARTDI,1,' ',' ',0,' ',0,' ',7)
+      CALL NOCART(CARTDI,1,' ',' ',0,' ',0,' ',DIMCAR)
       IF (IXNW.NE.0) THEN
-         CALL NOCART(CARTDI,-1,' ',' ',0,' ',0,LIGMO,7)
+         CALL NOCART(CARTDI,-1,' ',' ',0,' ',0,LIGMO,DIMCAR)
       ENDIF
       DO 220 I = 1, 3
 C        CARTE POUR LES DISCRETS
@@ -158,15 +136,16 @@ C
 C --- AFFECTATION SYSTEMATIQUE DE VALEURS NULLES DANS LES CARTES
 C     POUR TOUTES LES MAILLES AFIN DE POUVOIR CALCULER LES MATRICES
 C     K,M,A DANS TOUS LES CAS DANS LE REPERE GLOBAL PAR DEFAUT
+      CALL INFDIS('DMXM',DIMMAT,R8BID)
       DO 20 I = 1 , 3
-         DO 22 J = 1 , 144
+         DO 22 J = 1 , DIMMAT
             CALL CODENT(J,'G',KI)
             ZR(JDV(I)+J-1)  = 0.D0
             ZK8(JDC(I)+J-1) = KMA(I)//KI
 22       CONTINUE
-         CALL NOCART(CART(I),  1,' ',' ',0,' ',0,' ',144)
+         CALL NOCART(CART(I),  1,' ',' ',0,' ',0,' ',DIMMAT)
          IF (IXNW.NE.0) THEN
-            CALL NOCART(CART(I),  -1,' ',' ',0,' ',0,LIGMO,144)
+            CALL NOCART(CART(I),  -1,' ',' ',0,' ',0,LIGMO,DIMMAT)
          ENDIF
 20    CONTINUE
 
@@ -228,7 +207,7 @@ C
                WRITE(IFM,1000) REP,'NON-SYMETRIQUE',IOC
             ENDIF
 1000        FORMAT(/,3X,
-     &      '<DISCRET> MATRICES (REPERE ',A6,') '
+     &      '<DISCRET> MATRICES (REPERE ',A6,') ',
      &      'AFFECTEES AUX ELEMENTS DISCRETS ',
      &      '(TYPE ',A,'), OCCURENCE ',I4)
          ENDIF
@@ -242,7 +221,7 @@ C ---    "GROUP_MA" = TOUTES LES MAILLES DE TOUS LES GROUPES DE MAILLES
      &                     JDCINF,JDVINF,ISYM,IFM)
                DO 38 II = 1 , NG
                   CALL NOCART(CARTDI, 2,ZK8(JDLS+II-1),' ',0,' ',0,
-     &                        ' ',7)
+     &                        ' ',DIMCAR)
                   CALL NOCART(CART(L),2,ZK8(JDLS+II-1),' ',0,' ',0,
      &                        ' ',NCMP)
 38             CONTINUE
@@ -256,7 +235,8 @@ C ---   "MAILLE" = TOUTES LES MAILLES  DE LA LISTE DE MAILLES
                CALL AFFDIS(NDIM,IREP,ETA,CAR(I),VAL,JDC,JDV,
      &                     IVR,IV,KMA,NCMP,L,
      &                     JDCINF,JDVINF,ISYM,IFM)
-               CALL NOCART(CARTDI, 3,' ','NOM',NM,ZK8(JDLS),0,' ',7)
+               CALL NOCART(CARTDI, 3,' ','NOM',NM,ZK8(JDLS),0,' ',
+     &                     DIMCAR)
                CALL NOCART(CART(L),3,' ','NOM',NM,ZK8(JDLS),0,' ',
      &                     NCMP)
 40          CONTINUE
@@ -280,7 +260,7 @@ C                    LA LISTE DE GROUPES DE NOEUDS
      &                              IVR,IV,KMA,NCMP,L,
      &                              JDCINF,JDVINF,ISYM,IFM)
                         CALL NOCART(CARTDI, -3,' ','NUM',KK,' ',
-     &                              ZI(JDDI),LIGMO,7)
+     &                              ZI(JDDI),LIGMO,DIMCAR)
                         CALL NOCART(CART(L),-3,' ','NUM',KK,' ',
      &                              ZI(JDDI),LIGMO,NCMP)
  44                  CONTINUE
@@ -298,7 +278,7 @@ C ---       "NOEUD" = TOUS LES NOEUDS TARDIFS DE LA LISTE DE NOEUDS
      &                           IVR,IV,KMA,NCMP,L,
      &                           JDCINF,JDVINF,ISYM,IFM)
                      CALL NOCART(CARTDI, -3,' ','NUM',KK,' ',ZI(JDDI),
-     &                           LIGMO,7)
+     &                           LIGMO,DIMCAR)
                      CALL NOCART(CART(L),-3,' ','NUM',KK,' ',ZI(JDDI),
      &                           LIGMO,NCMP)
  46               CONTINUE

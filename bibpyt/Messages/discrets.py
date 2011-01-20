@@ -1,8 +1,8 @@
-#@ MODIF discrets Messages  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
+#@ MODIF discrets Messages  DATE 19/01/2011   AUTEUR MASSIN P.MASSIN 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -65,7 +65,6 @@ Pour Info :
    Maille   : <%(k5)s>
 """),
 
-
 7 : _("""
 Le Comportement <%(k4)s> affecté à un DISCRET est non valide
 Les comportements valides sont :
@@ -90,14 +89,6 @@ Pour Info :
    Maille   : <%(k5)s>
 """),
 
-9 : _("""
-L'élément DISCRET de modèle <%(k1)s> est inconnu.
-
-Pour Info :
-   Modèle   : <%(k1)s>, Option   : <%(k2)s>
-   Maille   : <%(k5)s>
-"""),
-
 10 : _("""
 Pour l'élément DISCRET de modèle <%(k1)s> la matrice de décharge est non développée.
 
@@ -106,7 +97,6 @@ Pour Info :
    Comport. : <%(k3)s>, Relation : <%(k4)s>
    Maille   : <%(k5)s>
 """),
-
 
 11 : _("""
 La loi <%(k4)s> doit etre utilisée avec des éléments du type DIS_TR_L : élément SEG2 + modélisation DIS_TR
@@ -117,5 +107,37 @@ Pour Info :
    Maille   : <%(k5)s>
 """),
 
+12 : _("""
+La commande %(k4)s ne sait pas traiter les matrices non-symétriques, pour l'option %(k1)s.
+Message de la routine %(k3)s, pour l'élément %(k2)s.
+"""),
+
+13 : _("""
+L'élément %(k1)s est inconnu pour la maille %(k3)s.
+Message de la routine %(k2)s.
+"""),
+
+14 : _("""
+L'option %(k1)s est inconnue pour l'élément %(k2)s.
+Message de la routine %(k3)s.
+"""),
+
+15 : _("""
+L'option %(k1)s ne sait pas traiter l'élément %(k2)s.
+Message de la routine %(k3)s.
+"""),
+
+16 : _("""
+Il est interdit d'avoir des éléments discrets 2D et 3D dans un modèle.
+"""),
+
+17 : _("""
+Votre modélisation ne comporte pas d'élément discret.
+"""),
+
+20 : _("""
+Votre modélisation doit être soit 2D soit 3D.
+Il est interdit d'avoir des discrets sur une modélisation %(k1)s.
+"""),
 
 }

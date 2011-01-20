@@ -2,9 +2,9 @@
      &                  CHELEM)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/09/2010   AUTEUR MASSIN P.MASSIN 
+C MODIF ALGORITH  DATE 19/01/2011   AUTEUR MASSIN P.MASSIN 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -67,7 +67,7 @@ C
 C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
 C
       INTEGER       NBCMP
-      PARAMETER     (NBCMP = 10)
+      PARAMETER     (NBCMP = 11)
       CHARACTER*8   LICMP(NBCMP)
 C
       INTEGER       IFM,NIV
@@ -79,14 +79,14 @@ C
       INTEGER       JGRP,JINDIC
       CHARACTER*19  CHELSI
       REAL*8        MMINFR,COEFCR,COEFFF,COEFFR,INTEGR,COECHE
-      REAL*8        COCAUS,COFAUS,COCAUP,COFAUP,RELATI
+      REAL*8        COCAUS,COFAUS,COCAUP,COFAUP,RELATI,CZMFER
       CHARACTER*19  VALK(2)
       INTEGER       VALI(1)
-      INTEGER      JMAIL,ITYELE
+      INTEGER       JMAIL,ITYELE
       CHARACTER*16  TYPELE
 C
       DATA LICMP    /'RHON','MU','RHOTK','INTEG','COECH',
-     &         'COSTCO','COSTFR','COPECO','COPEFR','RELA'/
+     &    'COSTCO','COSTFR','COPECO','COPEFR','RELA','CZMFE'/
 C
 C ----------------------------------------------------------------------
 C
@@ -151,6 +151,7 @@ C
         COCAUP  = MMINFR(DEFICO,'COEF_PENA_CONT',IZONE )
         COFAUP  = MMINFR(DEFICO,'COEF_PENA_FROT',IZONE )
         RELATI  = MMINFR(DEFICO,'RELATION'      ,IZONE )
+        CZMFER  = MMINFR(DEFICO,'CZM_FERMETURE' ,IZONE )        
 C
 C --- ACCES AU CHAMP INDICATEUR
 C
@@ -283,7 +284,18 @@ C
                 CALL U2MESG('F','CATAELEM_20',2,VALK,1,VALI,0,0.D0)
               ENDIF
                 ZL(JCESL-1-IAD) = .TRUE.
-                ZR(JCESV-1-IAD) = RELATI            
+                ZR(JCESV-1-IAD) = RELATI  
+                 
+              CALL CESEXI('C',JCESD,JCESL,IMA,1,1,11,IAD)
+              IF (IAD.GE.0) THEN
+                VALI(1) = 6
+                VALK(1) = CHELSI(1:19)
+                VALK(2) = 'ELEM'
+                CALL U2MESG('F','CATAELEM_20',2,VALK,1,VALI,0,0.D0)
+              ENDIF
+                ZL(JCESL-1-IAD) = .TRUE.
+                ZR(JCESV-1-IAD) = CZMFER
+                                                             
  120       CONTINUE
           ENDIF
  1000    CONTINUE

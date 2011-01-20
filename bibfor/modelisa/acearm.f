@@ -1,9 +1,8 @@
-      SUBROUTINE ACEARM(NOMA,NOMO,LMAX,NOEMAF,NBOCC,IVR,
-     +                  IFM)
+      SUBROUTINE ACEARM(NOMA,NOMO,LMAX,NOEMAF,NBOCC,IVR,IMPR)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 06/07/2009   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 19/01/2011   AUTEUR MASSIN P.MASSIN 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -18,9 +17,9 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-      IMPLICIT REAL*8 (A-H,O-Z)
-      INTEGER           LMAX,NBOCC,IVR(*)
-      CHARACTER*8       NOMA,NOMO
+      IMPLICIT     NONE
+      INTEGER      LMAX,NBOCC,IVR(*),NOEMAF,IMPR
+      CHARACTER*8  NOMA,NOMO
 C ----------------------------------------------------------------------
 C     AFFE_CARA_ELEM
 C     AFFECTATION DES CARACTERISTIQUES POUR LES ELEMENTS DISCRET
@@ -48,15 +47,20 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON  /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
       CHARACTER*32     JEXNUM, JEXNOM
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
-      PARAMETER    ( NRD = 2 )
-      INTEGER      JDC(3), JDV(3), ULISOP
-      REAL*8       ETA, VALE(3)
+      INTEGER      NRD,IUNIFI
+      PARAMETER    (NRD=2)
+      INTEGER      JDC(3),JDV(3),ULISOP,DIMCAR,IRGMA,IRGM2,IRGM3,IRPTO
+      INTEGER      IRLTO,ITBMP,NDIM,IXCI,JDCINF,JDVINF,I,IXCKMA,IOC
+      INTEGER      IREP,ISYM,IMPRIS,NU,NFR,NGP,NGL,IFREQ,NMA,LDGM,NBPO
+      INTEGER      IN,NFREQ,IV,JD,NCMP,L,NBLI,NCMP2,IBID,IER
+      REAL*8       ETA,VALE(3),R8BID,FREQ,COEF
       CHARACTER*1  KMA(3)
-      CHARACTER*8  NOGP, NOMMAI, NOGL, K8B, NOMU
+      CHARACTER*8  NOGP,NOMMAI,NOGL,K8B,NOMU
       CHARACTER*9  CARA
-      CHARACTER*16 REP, REPDIS(NRD), CONCEP, CMD, K16NOM
-      CHARACTER*19 CART(3), CARTDI
-      CHARACTER*24 TMPND(3), TMPVD(3), MLGNMA, TMCINF,TMVINF
+      CHARACTER*16 REP,REPDIS(NRD),CONCEP,CMD,K16NOM
+      CHARACTER*19 CART(3),CARTDI
+      CHARACTER*24 TMPND(3),TMPVD(3),MLGNMA,TMCINF,TMVINF
+C
       DATA REPDIS  /'GLOBAL          ','LOCAL           '/
       DATA KMA     /'K','M','A'/
 C     ------------------------------------------------------------------
@@ -70,12 +74,24 @@ C
       CALL WKVECT('&&TMPRIPTO','V V R',3*NOEMAF,IRPTO)
       CALL WKVECT('&&TMPRILTO','V V R',3*NOEMAF,IRLTO)
       CALL WKVECT('&&TMPTABMP','V V K8',LMAX,ITBMP)
-      IFM = IUNIFI('MESSAGE')
+      IMPR = IUNIFI('MESSAGE')
 C
-C --- RECUPERATION DE LA DIMENSION DU MAILLAGE
-      NDIM = 3
-C      CALL DISMOI('F','Z_CST',NOMO,'MODELE',IBID,K8B,IER)
-C      IF ( K8B(1:3) .EQ. 'OUI' )  NDIM = 2
+C --- RECUPERATION DE LA DIMENSION DU MODELE
+      CALL DISMOI('F','DIM_GEOM',NOMO,'MODELE',IBID,K8B,IER)
+      NDIM=IBID
+      IF (IBID.GE.100) THEN
+         IBID = IBID - 100
+         NDIM=1
+      ENDIF
+      IF (IBID.GE.20) THEN
+         IBID = IBID - 20
+         NDIM=2
+      ENDIF
+      IF (IBID.EQ.3) THEN
+         NDIM=3
+      ENDIF
+C     POUR MISS3D C'EST OBLIGATOIREMENT DU 3D
+      CALL ASSERT( NDIM.EQ.3 )
 C
 C --- CONSTRUCTION DES CARTES ET ALLOCATION
       CARTDI = NOMU//'.CARDINFO'
@@ -87,15 +103,19 @@ C     SI LA CARTE N'EXISTE PAS ON LA CREE
 C
       CALL JEVEUO(TMCINF,'E',JDCINF)
       CALL JEVEUO(TMVINF,'E',JDVINF)
-C     PAR DEFAUT POUR M, A, K : REPERE GLOBAL , MATRICE SYMETRIQUE
+C     PAR DEFAUT POUR M, A, K :
+C        REPERE GLOBAL, MATRICE SYMETRIQUE, PAS AFFECTEE
+      CALL INFDIS('DIMC',DIMCAR,R8BID)
       DO 200 I = 1 , 3
          ZK8(JDCINF+I-1) = 'REP'//KMA(I)//'    '
          ZR (JDVINF+I-1) = 1.D0
          ZK8(JDCINF+I+2) = 'SYM'//KMA(I)//'    '
          ZR (JDVINF+I+2) = 1.D0
+         ZK8(JDCINF+I+5) = 'DIS'//KMA(I)//'    '
+         ZR (JDVINF+I+5) = 0.D0
 200   CONTINUE
-      ZK8(JDCINF+6) = 'ETAK    '
-      ZR (JDVINF+6) = 0.D0
+      ZK8(JDCINF+9) = 'ETAK    '
+      ZR (JDVINF+9) = 0.D0
 
       DO 220 I = 1 , 3
          CART(I)  = NOMU//'.CARDISC'//KMA(I)
@@ -117,10 +137,10 @@ C        PAR DEFAUT ON EST DANS LE REPERE GLOBAL, MATRICES SYMETRIQUES
          IREP = 1
          ISYM = 1
          REP = REPDIS(1)
-         CALL GETVIS('RIGI_MISS_3D','UNITE_RESU_IMPE',IOC,1,1,IFMIS,NU)
+         CALL GETVIS('RIGI_MISS_3D','UNITE_RESU_IMPE',IOC,1,1,IMPRIS,NU)
          K16NOM = ' '
-         IF ( ULISOP ( IFMIS, K16NOM ) .EQ. 0 )  THEN
-           CALL ULOPEN ( IFMIS,' ',' ','NEW','O')
+         IF ( ULISOP ( IMPRIS, K16NOM ) .EQ. 0 )  THEN
+            CALL ULOPEN ( IMPRIS,' ',' ','NEW','O')
          ENDIF
          CALL GETVR8('RIGI_MISS_3D','FREQ_EXTR',IOC,1,1,FREQ,NFR)
          CALL GETVTX('RIGI_MISS_3D','GROUP_MA_POI1',IOC,1,1,NOGP,NGP)
@@ -129,64 +149,64 @@ C        PAR DEFAUT ON EST DANS LE REPERE GLOBAL, MATRICES SYMETRIQUES
             IF (REP.EQ.REPDIS(I)) IREP = I
  32      CONTINUE
          IF (IVR(3).EQ.1) THEN
-            WRITE(IFM,1000)REP,IOC
+            WRITE(IMPR,1000)REP,IOC
  1000       FORMAT(/,3X,
      &            '<DISCRET> MATRICES AFFECTEES AUX ELEMENTS DISCRET ',
      &                                '(REPERE ',A6,'), OCCURENCE ',I4)
          ENDIF
-         CALL IRMIFR(IFMIS,FREQ,IFREQ,NFREQ)
+         CALL IRMIFR(IMPRIS,FREQ,IFREQ,NFREQ)
 C
 C ---    "GROUP_MA" = TOUTES LES MAILLES DE TOUS LES GROUPES DE MAILLES
          IF (NGL.NE.0) THEN
-           CALL RIGMI2(NOMA,NOGL,IFREQ,NFREQ,IFMIS,ZR(IRGM2),
+            CALL RIGMI2(NOMA,NOGL,IFREQ,NFREQ,IMPRIS,ZR(IRGM2),
      &                 ZR(IRGM3),ZR(IRLTO))
          ENDIF
          CARA = 'K_T_D_N'
          IF (NGP.NE.0) THEN
-           CALL JELIRA(JEXNOM(NOMA//'.GROUPEMA',NOGP),'LONMAX',
-     &                 NMA,K8B)
-           CALL JEVEUO(JEXNOM(NOMA//'.GROUPEMA',NOGP),'L',LDGM)
-           NBPO = NMA
-           CALL RIGMI1(NOMA,NOGP,IFREQ,NFREQ,IFMIS,ZR(IRGMA),
-     &                 ZR(IRGM3),ZR(IRPTO))
-           DO 21 IN = 0,NMA-1
-            CALL JENUNO(JEXNUM(MLGNMA,ZI(LDGM+IN)),NOMMAI)
-            ZK8(ITBMP+IN) = NOMMAI
- 21        CONTINUE
-           DO 41 I = 1,NBPO
-             IV = 1
-             JD = ITBMP + I - 1
-             CALL AFFDIS(NDIM,IREP,ETA,CARA,ZR(IRGMA+3*I-3),JDC,
-     &                   JDV,IVR,IV,KMA,NCMP,L,
-     &                   JDCINF,JDVINF,ISYM,IFM)
-             CALL NOCART(CARTDI ,3,' ','NOM',1,ZK8(JD),0,' ',7)
-             CALL NOCART(CART(L),3,' ','NOM',1,ZK8(JD),0,' ',NCMP)
- 41        CONTINUE
+            CALL JELIRA(JEXNOM(NOMA//'.GROUPEMA',NOGP),'LONMAX',
+     &                  NMA,K8B)
+            CALL JEVEUO(JEXNOM(NOMA//'.GROUPEMA',NOGP),'L',LDGM)
+            NBPO = NMA
+            CALL RIGMI1(NOMA,NOGP,IFREQ,NFREQ,IMPRIS,ZR(IRGMA),
+     &                  ZR(IRGM3),ZR(IRPTO))
+            DO 21 IN = 0,NMA-1
+               CALL JENUNO(JEXNUM(MLGNMA,ZI(LDGM+IN)),NOMMAI)
+               ZK8(ITBMP+IN) = NOMMAI
+ 21         CONTINUE
+            DO 41 I = 1,NBPO
+               IV = 1
+               JD = ITBMP + I - 1
+               CALL AFFDIS(NDIM,IREP,ETA,CARA,ZR(IRGMA+3*I-3),JDC,
+     &                     JDV,IVR,IV,KMA,NCMP,L,
+     &                     JDCINF,JDVINF,ISYM,IMPR)
+               CALL NOCART(CARTDI ,3,' ','NOM',1,ZK8(JD),0,' ',DIMCAR)
+               CALL NOCART(CART(L),3,' ','NOM',1,ZK8(JD),0,' ',NCMP)
+ 41         CONTINUE
          ENDIF
 C
          CARA = 'K_T_D_L'
          IF (NGL.NE.0) THEN
-           COEF=20.D0
-           CALL JELIRA(JEXNOM(NOMA//'.GROUPEMA',NOGL),'LONMAX',
-     &                 NMA,K8B)
-           CALL JEVEUO(JEXNOM(NOMA//'.GROUPEMA',NOGL),'L',LDGM)
-           NBLI = NMA
-           DO 22 IN = 0,NMA-1
-            CALL JENUNO(JEXNUM(MLGNMA,ZI(LDGM+IN)),NOMMAI)
-            ZK8(ITBMP+IN) = NOMMAI
- 22        CONTINUE
-           CALL R8INIR(3,0.D0,VALE,1)
-           DO 42 I = 1,NBLI
-             IV = 1
-             JD = ITBMP + I - 1
-             VALE(1)=-ZR(IRGM2+3*I-3)*COEF
-             VALE(2)=-ZR(IRGM2+3*I-2)*COEF
-             VALE(3)=-ZR(IRGM2+3*I-1)*COEF
-             CALL AFFDIS(NDIM,IREP,ETA,CARA,VALE,JDC,JDV,
-     &                   IVR,IV,KMA,NCMP2,L,JDCINF,JDVINF,ISYM,IFM)
-             CALL NOCART(CARTDI ,3,' ','NOM',1,ZK8(JD),0,' ',7)
-             CALL NOCART(CART(L),3,' ','NOM',1,ZK8(JD),0,' ',NCMP2)
- 42        CONTINUE
+            COEF=20.D0
+            CALL JELIRA(JEXNOM(NOMA//'.GROUPEMA',NOGL),'LONMAX',
+     &                  NMA,K8B)
+            CALL JEVEUO(JEXNOM(NOMA//'.GROUPEMA',NOGL),'L',LDGM)
+            NBLI = NMA
+            DO 22 IN = 0,NMA-1
+               CALL JENUNO(JEXNUM(MLGNMA,ZI(LDGM+IN)),NOMMAI)
+               ZK8(ITBMP+IN) = NOMMAI
+ 22         CONTINUE
+            CALL R8INIR(3,0.D0,VALE,1)
+            DO 42 I = 1,NBLI
+               IV = 1
+               JD = ITBMP + I - 1
+               VALE(1)=-ZR(IRGM2+3*I-3)*COEF
+               VALE(2)=-ZR(IRGM2+3*I-2)*COEF
+               VALE(3)=-ZR(IRGM2+3*I-1)*COEF
+               CALL AFFDIS(NDIM,IREP,ETA,CARA,VALE,JDC,JDV,
+     &                     IVR,IV,KMA,NCMP2,L,JDCINF,JDVINF,ISYM,IMPR)
+               CALL NOCART(CARTDI ,3,' ','NOM',1,ZK8(JD),0,' ',DIMCAR)
+               CALL NOCART(CART(L),3,' ','NOM',1,ZK8(JD),0,' ',NCMP2)
+ 42         CONTINUE
          ENDIF
  30   CONTINUE
 C

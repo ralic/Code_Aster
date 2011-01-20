@@ -1,12 +1,12 @@
       SUBROUTINE ACEARP(NOMA,NOMO,LMAX,NOEMAF,NBOCC,IVR,IFM)
-      IMPLICIT          NONE
-      INTEGER           IFM,LMAX,NOEMAF,NBOCC,IVR(*)
-      CHARACTER*8       NOMA,NOMO
+      IMPLICIT      NONE
+      INTEGER       IFM,LMAX,NOEMAF,NBOCC,IVR(*)
+      CHARACTER*8   NOMA,NOMO
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 19/07/2010   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 19/01/2011   AUTEUR MASSIN P.MASSIN 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -58,9 +58,9 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER      IXCI,IXCKMA,IXNW,J,JD,JDDI,JDLS,JDNW,JJ,JN,K,KK
       INTEGER      L,LDGM,LDNM,LOKM,LOREP,NBMTRD,NBNMA
       INTEGER      NBNO,NBNOEU,NBORM,NC,NCAR,NCARAC,NCMP
-      INTEGER      NDIM,NG,NGP,NMA,NREP,NUMNOE,NVAL
+      INTEGER      NDIM,NG,NGP,NMA,NREP,NUMNOE,NVAL,DIMCAR
 
-      REAL*8       VAL(NBVAL), ETA, VALE(6),RIROT(3)
+      REAL*8       VAL(NBVAL), ETA, VALE(6),RIROT(3),R8BID
       CHARACTER*1  KMA(3), K1BID
       CHARACTER*8  NOMNOE, NOGP, NOMMAI, K8BID, NOMU, CAR(NBCAR)
       CHARACTER*16 REP, REPDIS(NRD), CONCEP, CMD
@@ -115,9 +115,8 @@ C
       IFM = IUNIFI('MESSAGE')
 C
 C --- RECUPERATION DE LA DIMENSION GEOMETRIQUE DU MODELE
-      NDIM = 3
-
       CALL DISMOI('F','DIM_GEOM',NOMO,'MODELE',IBID,K8BID,IER)
+      NDIM=IBID
       IF (IBID.GE.100) THEN
          IBID = IBID - 100
          NDIM=1
@@ -129,6 +128,8 @@ C --- RECUPERATION DE LA DIMENSION GEOMETRIQUE DU MODELE
       IF (IBID.EQ.3) THEN
          NDIM=3
       ENDIF
+C     POUR LES DISCRETS C'EST OBLIGATOIREMENT DU 2D OU 3D
+      CALL ASSERT( (NDIM.EQ.2).OR.(NDIM.EQ.3) )
 C
 C --- CONSTRUCTION DES CARTES ET ALLOCATION
       CARTDI = NOMU//'.CARDINFO'
@@ -140,15 +141,19 @@ C     SI LA CARTE N'EXISTE PAS ON LA CREE
 C
       CALL JEVEUO(TMCINF,'E',JDCINF)
       CALL JEVEUO(TMVINF,'E',JDVINF)
-C     PAR DEFAUT POUR M, A, K : REPERE GLOBAL , MATRICE SYMETRIQUE
+C     PAR DEFAUT POUR M, A, K :
+C        REPERE GLOBAL, MATRICE SYMETRIQUE, PAS AFFECTEE
+      CALL INFDIS('DIMC',DIMCAR,R8BID)
       DO 200 I = 1 , 3
          ZK8(JDCINF+I-1) = 'REP'//KMA(I)//'    '
          ZR (JDVINF+I-1) = 1.D0
          ZK8(JDCINF+I+2) = 'SYM'//KMA(I)//'    '
          ZR (JDVINF+I+2) = 1.D0
+         ZK8(JDCINF+I+5) = 'DIS'//KMA(I)//'    '
+         ZR (JDVINF+I+5) = 0.D0
 200   CONTINUE
-      ZK8(JDCINF+6) = 'ETAK    '
-      ZR (JDVINF+6) = 0.D0
+      ZK8(JDCINF+9) = 'ETAK    '
+      ZR (JDVINF+9) = 0.D0
 C
       DO 220 I = 1 , 3
          CART(I)  = NOMU//'.CARDISC'//KMA(I)
@@ -384,8 +389,10 @@ C
                   CALL AFFDIS(NDIM,IREP,ETA,CAR(NC),ZR(IRGNO+6*I-6),
      &                        JDC,JDV,IVR,IV,KMA,NCMP,L,
      &                        JDCINF,JDVINF,ISYM,IFM)
-                  CALL NOCART(CARTDI, 3,' ','NOM',1,ZK8(JD),0,' ',7)
-                  CALL NOCART(CART(L),3,' ','NOM',1,ZK8(JD),0,' ',NCMP)
+                  CALL NOCART(CARTDI, 3,' ','NOM',1,ZK8(JD),0,' ',
+     &                        DIMCAR)
+                  CALL NOCART(CART(L),3,' ','NOM',1,ZK8(JD),0,' ',
+     &                        NCMP)
  28            CONTINUE
             ELSE
                LOKM   = 0
@@ -428,7 +435,7 @@ C
      &                        JDC,JDV,IVR,IV,KMA,NCMP,L,
      &                        JDCINF,JDVINF,ISYM,IFM)
                   CALL NOCART(CARTDI, -3,' ','NUM',KK,' ',ZI(JDDI),
-     &                        LIGMO,7)
+     &                        LIGMO,DIMCAR)
                   CALL NOCART(CART(L),-3,' ','NUM',KK,' ',ZI(JDDI),
      &                        LIGMO,NCMP)
  36            CONTINUE

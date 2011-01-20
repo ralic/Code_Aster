@@ -1,4 +1,4 @@
-%& MODIF COMPELEM  DATE 10/01/2011   AUTEUR DELMAS J.DELMAS 
+%& MODIF COMPELEM  DATE 19/01/2011   AUTEUR MASSIN P.MASSIN 
 % RESPONSABLE PROIX
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
@@ -169,15 +169,19 @@ GRANDEUR_SIMPLE__
          REPK  : Type de repère pour les raideurs
          REPM  : Type de repère pour les masses
          REPA  : Type de repère pour les amortissements
-      SYM(K;M;A) Ssi =1 symétrique, si =2 non-symétrique
+      SYM(K;M;A) si =1 symétrique, si =2 non-symétrique
          SYMK  : Type de matrice de raideur
          SYMM  : Type de matrice de MASSE
          SYMA  : Type de matrice de d'amortissement
+      DIS(K;M;A) si =0, pas de caractéristiques, si =1 caractéristiques
+         DISK  : Discret avec des caractéristique de raideur
+         DISM  : Discret avec des caractéristique de masse
+         DISA  : Discret avec des caractéristique de d'amortissement
 
       ETAK  : Coefficient d'amortissement hystérétique
               uniquement sur les matrices de raideurs
 >>
-    CINFDI   = R   REPK  REPM  REPA  SYMK  SYMM  SYMA  ETAK
+    CINFDI   = R   REPK  REPM  REPA  SYMK  SYMM  SYMA  DISK  DISM  DISA  ETAK
 
 %
 %   POUR LES DISCRETS : FIN
@@ -2081,9 +2085,10 @@ FORC_C   = C    FX       FY       FZ       MX       MY       MZ       BX       R
        CPECO  : coefficient de pénalisation du contact, COEF_PENA_CONT
        CPEFR  : coefficient de pénalisation du frottement, COEF_PENA_CONT
        RELA   : gère l''activation des lois cohésives avec X-FEM
+       CZMFE  : activation de la loi cohesive en fermeture
 >>
     XCONTAC  = R      RHON     MU       RHOTK     INTEG    COECH    COSTCO   COSTFR
-                      COPECO   COPEFR   RELA
+                      COPECO   COPEFR   RELA      CZMFE
 
 GRANDEUR_ELEMENTAIRE__
    MDEP_C 2 DEPL_C   DEPL_C   MS

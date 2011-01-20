@@ -1,0 +1,514 @@
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR caron        CARON Axelle           DATE 01/19/2011 - 12:59:29
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 016100 DU 2010-12-20 13:37:28
+TYPE anomalie concernant Code_Aster (VERSION 11.1)
+TITRE
+    Restituer ssnv507{g,h,i}
+FONCTIONNALITE
+   RESTITUTION DES CAS TESTS DE VALIDATION DU DEVELOPPEMENT DES ELEMENTS P2P1
+   (CONTACT SANS FROTTEMENT) EN XFEM QUADRATIQUES (issue 15203)
+   
+   
+   CAS TESTS :
+   ------------
+   Validation sur le test de la rotation d'une inclusion rigide avec X-FEM (ssnv507) :
+   ssnv507g : Q4 / G_ROT / contact
+   ssnv507h : Q8 / G_ROT / contact
+   ssnv507i : T6 / G_ROT / contact
+   Les tests g,h,i sont inspirés de l'article de I.Nistor (An X-FEM approach for large
+   sliding contact along discontinuities). Les travaux avaient été effectués avec des
+   éléments P1P1A et n'avaient pas été restitués dans la base. Sachant que les éléments
+   Lagranges aux arêtes feront l'objet d'une future résorbtion (fiche 13388), ils ne font pas
+   partie de cette restitution.
+   
+   Les cas tests avec contact sont difficiles à faire passer du fait :
+   - de la non correspondance géométrique des facettes maîtres-esclaves avec la rotation
+   - de la lenteur des calculs
+   - du raffinement nécessaire à l'obtention de résultats satisfaisants
+   Ces difficultés sont plus significatives sur des maillages triangles que sur des
+   quadrangles (car plus de facettes de contact), c'est la raison pour laquelle je choisis de
+   ne restituer que le maillage quadrangle en linéaire.
+   
+   DOCUMENTATION :
+   ---------------
+   v6.04.507
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : V6.04.507
+VALIDATION
+    ssnv507g ssnv507h ssnv507i
+NB_JOURS_TRAV  : 10.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 016130 DU 2011-01-03 08:18:22
+TYPE evolution concernant Code_Aster (VERSION 10.4)
+TITRE
+    X-FEM : fractionner les TE de contact frottement
+FONCTIONNALITE
+   RESTRUCTURATION DES TE DE CONTACT FROTTEMENT XFEM HPP POUR EN AMELIORER LA LISIBILITE
+   
+   Problème :
+   ----------
+   Les routines TE de calcul des matrices/vecteurs XFEM sont devenues très volumineuses
+   (proches des 1000 lignes) suite aux différentes évolutions du contact XFEM (pénalisation,
+   éléments quadratiques). De nombreux travaux sont en prévision afin d'apporter de nouvelles
+   fonctionnalités au contact XFEM (P2P2, éléments cohésifs, multi-fissuration). Ces
+   développements nuiront à la lisibilité de ces routines et rendront leur extensibilité plus
+   difficile.
+   
+   Solution :
+   ----------
+   Les routines TE du contact sont construites par blocs. Il suffit de transporter ces
+   différents blocs dans de nouvelles routines. J'ai pris comme référence les TE de calcul
+   des matrices/vecteurs XFEM en grands glissements qui font appel à des routines intitulées
+   xmmaai, xmmabi, xmveci et xmvefi.
+   
+   Impact fortran :
+   ----------------
+   te0533.f fait appel aux nouvelles routines suivantes :
+   - xminte.f : retourne le nom de la famille de point de gauss sur la facette de contact
+   - xmmaa4.f : calcvul de la matrice C (cas sans contact)
+   - xmmaa3.f : calcul des matrices A, AT, AU (cas du contact)
+   - xmmab6.f : calcul de la matrice F (cas sans contact)
+   - xmmsa3.f : calcul du saut
+   - xmmsa2.f : calcul du saut de déplacement équivalent
+   - xmmco1.f : calcul des matrices de cohesion
+   - xmmsa1.f : calcul des incréments de déplacement et de LAGS_F1
+   - xmmab3.f : calcul des matrices B et BT
+   - xmmab4.f : calcul de la matrice BU
+   - xmmab5.f : calcul de F (cas glissant ou penalisation non seule)
+   
+   Remarque : schéma simplifié de la construction du TE0533 et de ses modules joint ainsi que
+   le fortran
+   
+   te0534.f fait appel aux nouvelles routines suivantes :
+   - xminte.f
+   - xmvec3.f : calcul du vecteur LN2 (sans contact)
+   - xmmsa3.f
+   - xmvec2.f : calcul des vecteurs LN1 et LN2 (cas avec contact)
+   - xmvef4.f : calcul du vecteur LN3 (cas sans contact)
+   - xmmsa2.f
+   - xmvco1.f : calcul des seconds membres de cohesion
+   - xmvef2.f : calcul du vecteur LN1 (cas avec contact)
+   - xmvef3.f : calcul du vecteur LN3 (cas avec contact)
+   
+   Remarque : les descriptions des matrices/ vecteurs de contact frottement sont données dans
+   la doc R7.02.12
+   
+   Modifications des routines de contact par rapport au type de contact :
+   xlacti.f : passer le type de contact en argument
+   xteini.f : on intègre l'évaluation du type de contact (comme dans xmelet son équivalent GG)
+   
+   Ces deux dernières modifications impactent les routines suivantes :
+   xpoajd  te0289  te0440  te0538
+   te0036  te0297  te0441  te0539
+   te0037  te0363  te0519  te0542
+   te0046  te0366  te0532  te0548
+   te0288  te0367  te0536
+   
+   xplmat.f : coquille dans le calcul de la place du ddl de contact
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    tous les tests de contact xfem
+NB_JOURS_TRAV  : 20.0
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR massin       MASSIN Patrick         DATE 01/19/2011 - 12:59:29
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 016175 DU 2011-01-07 17:45:39
+TYPE evolution concernant Code_Aster (VERSION 11.1)
+TITRE
+    X-FEM : prise en compte du contact via les lois cohxc3xa9sives (CZM)
+FONCTIONNALITE
+   X-FEM : prise en compte du contact via les lois cohésives 
+   (CZM)
+   
+   fonctionnalité :
+   
+   Le but de cette fiche est de permettre l'utilisation avec X-
+   FEM des lois cohésives existantes de Code_Aster seule, sans 
+   mixité avec du contact (i.e. la refermeture est prise en 
+   compte par la loi cohésive et non par un algo de traitement 
+   du contact). Le but est de permettre toutes les 
+   utilisations: 
+   cohésif seul en ouverture et fermeture
+   cohésif en ouverture, contact en fermeture. 
+   Ceci permet d'être aussi iso-fonctionnel avec les éléments 
+   FEM classiques.
+   
+   Pour ceci on introduit dans l'opérateur DEFI_CONTACT une 
+   nouvelle valeur 'CZM' pour l'algorithme de contact :
+   
+   FORMULATION='XFEM',
+   FROTTEMENT='SANS',
+   ZONE=_F(ALGO_CONT='CZM',
+                   RELATION='relation déjà existante pour les 
+   éléments CZM FEM',
+                  
+        ),
+   
+   1/ Dans ce cas, on passe dans la boucle sur les statuts de 
+   contact, mais on y fait une seule itération où l'on impose 
+   le maintien de tous les statuts à 0. La loi de comportement 
+   locale est inchangée entre FEM et X-FEM, mais la tangente 
+   globale est modifiée suivant les situations de contact, 
+   pour tenir compte de certaines simplifications suivant ces 
+   situations (le passage local global est équivalent à un 
+   changement de repère). On pourra chercher à avoir un 
+   formalisme unifié ultérieurement (matrice globale 
+   construite de manière unique, quelle que soit la situation 
+   de contact, à partir de la matrive locale).
+   
+   2/ On prend en compte la remarque de Nicolas Tardieu qui 
+   permet de ne pas activer le frottement. La boucle de 
+   réactualisation des variables internes cohésives est 
+   devenue indépendante de celle du frottement, ce qui est 
+   nettement plus propre. On duplique le champ de variables 
+   internes au début du pas de temps. A chaque itération sur 
+   les statuts de contact, on stocke les variables internes 
+   actualisées dans le champ dupliqué. A la fin de chaque pas 
+   de temps convergé, on remplace le champ de variables 
+   internes par le champ dupliqué.
+   
+   3/ Modification du vocabulaire pour les valeurs du mot-clé 
+   gérant l'activation des lois cohésives en X-FEM : on 
+   remplace 'CZM_XFEM' par le vocabulaire déjà en vigueur pour 
+   les éléments FEM 'CZM_EXP_REG' (remarque de Samuel Géniaut).
+   
+   développements connexes :
+   
+   création et initialisation de tous les champs liés au 
+   contact XFEM regroupée sur une routine xmele1.f prenant en 
+   argument les noms de paramètre et d'option, afin de 
+   clarifier le code.
+   
+   impact sources :
+   
+   CATALO
+   
+   grandeur_simple__.cata, gener_mecpl2_xhc.cata, 
+   gener_medpl2_xhc.cata,  gener_me_xhc.cata,
+   xcvbca.cata, xreacl.cata : ajout d'une composante CZMFE 
+   dans la grandeur XCONTAC (données du contact XFEM), valant 
+   1 si le contact est géré par la loi cohésive (0 sinon). 
+   Déplacement des paramètres liés à l'actualisation variable 
+   interne de XREACL vers XCVBCA
+   
+   CATAPY
+   
+   MODIF defi_contact.capy : ajout de la nouvelle valeur 
+   ALGO_CONT='CZM'. Dans ce cas, les mots-clés CONTACT_INIT, 
+   GLISSIERE et tous les mots-clé relatifs au frottement ne 
+   sont pas lus.
+   
+   FORTRAN
+   
+   MODIF cazocx.f attribution de l'entier 4 dans la SD contact 
+   si ALGO_CONT = 'CZM' et non lecture des mots clés inutiles.
+   
+   MODIF mminfp.f, xmele2.f ajout d'une 
+   question 'CZM_FERMETURE' sur la SD contact et mise à 1. de 
+   la composante CZMFE si elle retourne une réponse positive
+   (0 sinon). 
+   
+   SUPPR xmele3, xmele4, xmele5 MODIF xmele1, xmelem : 
+   clarification de la création et initialisation des champs 
+   liés au contact XFEM. Duplication champ de variables 
+   internes.
+   
+   MODIF nmctcf.f, nmtble.f, xreacl.f, te05348.f  : 
+   suppression de la fonction d'actualisation de la variable 
+   interne cohésive, donc de l'argument SD matériau.
+   
+   MODIF nmctcc.f, nmtble.f, xmmbca.f, te0532.f : ajout de 
+   cette fonction d'actualisation, donc passage de 
+   l'information matériau et stockage du résultat dans le 
+   champ dupliqué. Maintien statuts de contact à 0 si cohésif 
+   en fermeture.
+   
+   MODIF cfmxpo.f AJOUT xmdeco.f : fin d'un pas de temps 
+   convergé, écrasement du champ de variables internes 
+   cohésives avec le champ dupliqué. 
+   
+   MODIF xmveco1.f, xmmco1.f : ajout d'un terme de 
+   pénalisation dans la loi cohésive
+   
+   Validation :
+   
+   ssnp144a, ssnp144e, ssnp144l. Modification de vocabulaire 
+   sur tous les ssnp144.Relation 'CZM_EXP_REG' 
+   remplaçant 'CZM_XFEM' dans DEFI_CONTACT.
+   
+   Impact documentaire : R7.02.12, U4.44.11, V6.03.144
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : R7.02.12, U4.44.11, V6.03.144
+VALIDATION
+    Test ssnp144 analytique
+NB_JOURS_TRAV  : 10.0
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR flejou       FLEJOU Jean Luc        DATE 01/19/2011 - 12:59:30
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 016134 DU 2011-01-03 14:26:06
+TYPE anomalie concernant Code_Aster (VERSION 10.3)
+TITRE
+    [FORUM] Message peu sympathique dans AFFE_CARA_ELEM
+FONCTIONNALITE
+   AFFE_CARA_ELEM : plantage quand on affecte des discrets, alors qu'il n'y en a pas dans le
+   modèle.
+   
+   Il manque des tests de cohérences entre les dimensions des discrets, la dimension du
+   modèle et les mots clefs DISCRET, DISCRET_2D.
+   Si les mots clefs 'DISCRET' ou 'DISCRET_2D' sont dans AFFE_CARA_ELEM. Il faut respecter
+   les règles suivantes :
+   - il faut des discrets dans la modélisation.
+   - pas de discret 2D et 3D dans un modèle.
+   - pas de discret 2D dans un modèle 3D.
+   - pas de discret 3D dans un modèle 2D.
+   
+   Il est impossible de vérifier la condition, pas de discret 2D dans un modèle 3D, à cause
+   des mélanges de modélisations qui sont autorisés dans Code_Aster. Il est dans ce cas
+   impossible de connaître la véritable dimension souhaitée par l'utilisateur. Dans ce cas on
+   émet le message MODELISA4_4 (mélange de modélisation déjà émis par AFFE_MODELE).
+   
+   Il faut blinder :
+   - les routines : op0019, acevdi, aceadi, acevd2
+   - le catalogue : affe_cara_elem
+   
+   Ajout de la routine VERDIS : vérification de la cohérence entre la dimension des discrets
+   et la dimension du modèle.
+   - récupération de la dimension du maillage : DISMOI(..,'DIM_GEOM_B'..)
+   - récupération de la dimension du modele   : DISMOI(..,'DIM_GEOM'..)
+   - c'est 2D ou 3D, tous les autres cas sont exclus pour les discrets
+   U2MESK(..,'DISCRETS_20',..)
+   - le modèle comporte t-il des éléments discrets 3D
+   - le modèle comporte t-il des éléments discrets 2D
+   - il faut des discrets dans la modélisation : U2MESS(..,'DISCRETS_17')
+   - pas de discret 2D et 3D dans un modèle : U2MESS(..,'DISCRETS_16')
+   
+   Modification dans :
+   - affe_cara_elem.capy : ajout de la règle EXCLUS('DISCRET','DISCRET_2D')
+   - discrets.py : ajout des messages 16,17,20
+   - modelisa.py : suppression des messages 8,9,55
+   - acevdi, aceadi, acevd2 : ajout des appels à VERDIS. Suppression des lignes devenues
+   inutiles.
+   - op0019 : passage du mot clef 'DISCRET' ou 'DISCRET_2D' à acevdi, aceadi.
+   
+   Vérifications :
+   - passage des tests Aster, discrets et poutres car TE communes (463 tests)
+   - passage de l'étude jointe, pour validation des messages.
+   - cas test perso pour déclencher les messages.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    cas test perso, aster, xc3xa9tude jointe
+NB_JOURS_TRAV  : 2.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 016139 DU 2011-01-03 18:01:30
+TYPE anomalie concernant Code_Aster (VERSION 10.3)
+TITRE
+    DIS_TR and STAT_NON_LINE
+FONCTIONNALITE
+   Lorsqu'un utilisateur fait :
+   rot=AFFE_CHAR_MECA(
+       MODELE=FEMLin, ROTATION=_F(GROUP_MA=('CIL','FL',),
+       VITESSE=10, AXE=(1,0,0,),),);
+   Il a l'impression de faire le calcul seulement sur les mailles CIL et FL. Et bien non, le
+   calcul est fait sur toutes les mailles avec 0 partout, sauf pour CIL et FL où l'on prend
+   les valeurs indiquées.
+   
+   Il est donc impossible de faire un calcul avec les DIS_TR dans un modèle, il y aura
+   toujours le message d'erreur :
+   ! <EXCEPTION> <CALCULEL_30>                                                              
+   ! Erreur utilisateur :                                                                   
+   !   -> Le TYPE_ELEMENT MECA_DIS_T_N  ne sait pas encore calculer
+   l'OPTION:CHAR_MECA_ROTA_R.            
+   
+   Pour pouvoir continuer les calculs, la seule solution est de créer un 'te' qui vérifiera
+   que le oméga est nul sur l'élément. Donc pour un discret :
+   - de raideur ou d'amortissement, on passe sans rien dire, on retourne un vecteur nul.
+   - de masse : on retourne un vecteur nul si oméga est nul sinon on arrête l'utilisateur par
+   le message <CALCULEL_30>.
+   
+   Impacts :
+   - Tous les catalogues de discrets ==> ajout du mode local ROTA_R, et compléter
+   CHAR_MECA_ROTA_R
+   - Informations supplémentaires dans la carte CINFDI. cela permet de savoir si le discret a
+   été affecté dans AFFE_CARA_ELEM par des caractéristiques de type M,K,A.
+   - Modification de CINFDI dans grandeur_simple__.cata
+   - Modification afdi2d, afdi3d, acearp, acearm pour initialiser et affecter la carte
+   CINFDI. Un peu de ménage en passant.
+   - TE0043 ajout de l'option CHAR_MECA_ROTA_R pour tous les discrets.
+   - Ajout de INFTED : routine qui donne pour les discrets et les poutres : nombre de noeuds,
+   nombre de composantes, dimension de l'élément, ...
+   - TE0039, TE0041, TE0042, TE0043, TE0044, TE0045, TE0047 : modification des appels à
+   INFDIS. Dans ces routine étaient codés en dur le nombre de noeuds, de composantes, ....
+   Appel à INFTED, suppression des lignes de codes inutiles et grand nettoyage.
+   
+   
+   Validations
+   - Pas de cas test car l'option n'est pas développé.
+   - Validation du développement sur l'étude du forum. Vérifier qu'elle s'arrête avec
+   <CALCULEL_30> si on met des discrets de masse avec un oméga non nul et que cela passe dans
+   les autres cas.
+   - Passages de tous les cas test discrets et poutres car TE communes (463 cas tests).
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    cas test perso, aster, xc3xa9tude jointe
+NB_JOURS_TRAV  : 2.5
+--------------------------------------------------------------------------------
+
+
+
+========================================================================
+=== Recapitulation des operations demandees pour toutes les restitutions
+========================================================================
+
+
+    TYPE Action    unite                      user      Auteur         nblg  ajout suppr.
+
+ CASTEST AJOUT ssnv507g                       massin P.MASSIN           223    223      0
+ CASTEST AJOUT ssnv507h                       massin P.MASSIN           223    223      0
+ CASTEST AJOUT ssnv507i                       massin P.MASSIN           223    223      0
+ CASTEST MODIF ssnp144a                       massin P.MASSIN           476      5      9
+ CASTEST MODIF ssnp144b                       massin P.MASSIN           488      3      3
+ CASTEST MODIF ssnp144c                       massin P.MASSIN           491      3      3
+ CASTEST MODIF ssnp144d                       massin P.MASSIN           483      3      3
+ CASTEST MODIF ssnp144e                       massin P.MASSIN           478      5      9
+ CASTEST MODIF ssnp144f                       massin P.MASSIN           477      3      3
+ CASTEST MODIF ssnp144g                       massin P.MASSIN           475      3      3
+ CASTEST MODIF ssnp144h                       massin P.MASSIN           476      3      3
+ CASTEST MODIF ssnp144i                       massin P.MASSIN           479      3      3
+ CASTEST MODIF ssnp144j                       massin P.MASSIN           487      3      3
+ CASTEST MODIF ssnp144k                       massin P.MASSIN           477      4      4
+ CASTEST MODIF ssnp144l                       massin P.MASSIN           305      6     12
+CATALOGU MODIF compelem/grandeur_simple__     massin P.MASSIN          2109      9      4
+CATALOGU MODIF options/char_meca_rota_r       massin P.MASSIN            50      4      3
+CATALOGU MODIF options/xcvbca                 massin P.MASSIN            52      8      2
+CATALOGU MODIF options/xreacl                 massin P.MASSIN            39      5      6
+CATALOGU MODIF typelem/gener_me2dt0           massin P.MASSIN           187      5      4
+CATALOGU MODIF typelem/gener_me2dt1           massin P.MASSIN           200      5      4
+CATALOGU MODIF typelem/gener_me2tr0           massin P.MASSIN           186      5      4
+CATALOGU MODIF typelem/gener_me2tr1           massin P.MASSIN           200      5      4
+CATALOGU MODIF typelem/gener_me_xhc           massin P.MASSIN           345     15     10
+CATALOGU MODIF typelem/gener_mecpl2_xhc       massin P.MASSIN           326     17      7
+CATALOGU MODIF typelem/gener_medit0           massin P.MASSIN           199      5      4
+CATALOGU MODIF typelem/gener_medit1           massin P.MASSIN           204      7      8
+CATALOGU MODIF typelem/gener_medpl2_xhc       massin P.MASSIN           323     12      6
+CATALOGU MODIF typelem/gener_medtr0           massin P.MASSIN           205      9     11
+CATALOGU MODIF typelem/gener_medtr1           massin P.MASSIN           217      8     11
+CATALOPY MODIF commande/affe_cara_elem        massin P.MASSIN           589      4      3
+CATALOPY MODIF commande/defi_contact          massin P.MASSIN           570     24     18
+ FORTRAN AJOUT algorith/xmdeco                massin P.MASSIN            78     78      0
+ FORTRAN AJOUT algorith/xmmaa3                massin P.MASSIN           200    200      0
+ FORTRAN AJOUT algorith/xmmaa4                massin P.MASSIN            81     81      0
+ FORTRAN AJOUT algorith/xmmab3                massin P.MASSIN           159    159      0
+ FORTRAN AJOUT algorith/xmmab4                massin P.MASSIN           124    124      0
+ FORTRAN AJOUT algorith/xmmab5                massin P.MASSIN           131    131      0
+ FORTRAN AJOUT algorith/xmmab6                massin P.MASSIN           123    123      0
+ FORTRAN AJOUT algorith/xmmco1                massin P.MASSIN           131    131      0
+ FORTRAN AJOUT algorith/xmmsa1                massin P.MASSIN           155    155      0
+ FORTRAN AJOUT algorith/xmmsa2                massin P.MASSIN           192    192      0
+ FORTRAN AJOUT algorith/xmmsa3                massin P.MASSIN            87     87      0
+ FORTRAN AJOUT algorith/xmvco1                massin P.MASSIN           174    174      0
+ FORTRAN AJOUT algorith/xmvec2                massin P.MASSIN           153    153      0
+ FORTRAN AJOUT algorith/xmvec3                massin P.MASSIN           108    108      0
+ FORTRAN AJOUT algorith/xmvef2                massin P.MASSIN           156    156      0
+ FORTRAN AJOUT algorith/xmvef3                massin P.MASSIN           127    127      0
+ FORTRAN AJOUT algorith/xmvef4                massin P.MASSIN           116    116      0
+ FORTRAN AJOUT elements/infted                massin P.MASSIN           253    253      0
+ FORTRAN AJOUT elements/verdis                massin P.MASSIN           100    100      0
+ FORTRAN AJOUT elements/xminte                massin P.MASSIN            63     63      0
+ FORTRAN MODIF algorith/cfinit                massin P.MASSIN           190     14      3
+ FORTRAN MODIF algorith/cfmxpo                massin P.MASSIN           108      6      3
+ FORTRAN MODIF algorith/mminfp                massin P.MASSIN           755     14      3
+ FORTRAN MODIF algorith/nmctcc                massin P.MASSIN           159      7      6
+ FORTRAN MODIF algorith/nmctcf                massin P.MASSIN           179      5      6
+ FORTRAN MODIF algorith/nmrefe                massin P.MASSIN           215      5      3
+ FORTRAN MODIF algorith/nmtble                massin P.MASSIN           208      5      5
+ FORTRAN MODIF algorith/xlacti                massin P.MASSIN           108      4      4
+ FORTRAN MODIF algorith/xmele1                massin P.MASSIN           191     30     22
+ FORTRAN MODIF algorith/xmele2                massin P.MASSIN           316     17      5
+ FORTRAN MODIF algorith/xmelem                massin P.MASSIN           134     33     31
+ FORTRAN MODIF algorith/xmmbca                massin P.MASSIN           235     18      7
+ FORTRAN MODIF algorith/xplmat                massin P.MASSIN            72      7      7
+ FORTRAN MODIF algorith/xreacl                massin P.MASSIN           179      7     17
+ FORTRAN MODIF elements/infdis                massin P.MASSIN           129     44     18
+ FORTRAN MODIF elements/te0036                massin P.MASSIN           506     13     12
+ FORTRAN MODIF elements/te0037                massin P.MASSIN           339      9      8
+ FORTRAN MODIF elements/te0039                massin P.MASSIN           626    119    199
+ FORTRAN MODIF elements/te0041                massin P.MASSIN           499     37    128
+ FORTRAN MODIF elements/te0042                massin P.MASSIN           152     15    137
+ FORTRAN MODIF elements/te0043                massin P.MASSIN           251    129    188
+ FORTRAN MODIF elements/te0044                massin P.MASSIN           182     18    161
+ FORTRAN MODIF elements/te0045                massin P.MASSIN           301     95    253
+ FORTRAN MODIF elements/te0046                massin P.MASSIN           188      4      3
+ FORTRAN MODIF elements/te0047                massin P.MASSIN           925     24     90
+ FORTRAN MODIF elements/te0288                massin P.MASSIN           236      5      4
+ FORTRAN MODIF elements/te0289                massin P.MASSIN           181      3      2
+ FORTRAN MODIF elements/te0297                massin P.MASSIN           321      4      5
+ FORTRAN MODIF elements/te0363                massin P.MASSIN           244     11     11
+ FORTRAN MODIF elements/te0366                massin P.MASSIN           362     17     17
+ FORTRAN MODIF elements/te0367                massin P.MASSIN           337     15     15
+ FORTRAN MODIF elements/te0440                massin P.MASSIN           177      4      3
+ FORTRAN MODIF elements/te0441                massin P.MASSIN           195      4      3
+ FORTRAN MODIF elements/te0519                massin P.MASSIN           153      4      3
+ FORTRAN MODIF elements/te0532                massin P.MASSIN           353    118     93
+ FORTRAN MODIF elements/te0533                massin P.MASSIN           515    190    760
+ FORTRAN MODIF elements/te0534                massin P.MASSIN           491    167    589
+ FORTRAN MODIF elements/te0536                massin P.MASSIN           129      4      3
+ FORTRAN MODIF elements/te0538                massin P.MASSIN           126      4      3
+ FORTRAN MODIF elements/te0539                massin P.MASSIN           331      4      3
+ FORTRAN MODIF elements/te0542                massin P.MASSIN           122      4      3
+ FORTRAN MODIF elements/te0548                massin P.MASSIN           200     33    171
+ FORTRAN MODIF elements/xbsig2                massin P.MASSIN           219      4      4
+ FORTRAN MODIF elements/xteini                massin P.MASSIN           158     50     25
+ FORTRAN MODIF modelisa/aceadi                massin P.MASSIN           304     42     62
+ FORTRAN MODIF modelisa/acearm                massin P.MASSIN           228     52     32
+ FORTRAN MODIF modelisa/acearp                massin P.MASSIN           480     19     12
+ FORTRAN MODIF modelisa/acevd2                massin P.MASSIN           153     50     74
+ FORTRAN MODIF modelisa/acevdi                massin P.MASSIN           166     46     77
+ FORTRAN MODIF modelisa/afdi2d                massin P.MASSIN           215     13      7
+ FORTRAN MODIF modelisa/afdi3d                massin P.MASSIN           244     13      7
+ FORTRAN MODIF modelisa/cazocx                massin P.MASSIN           303     19     14
+ FORTRAN MODIF modelisa/op0019                massin P.MASSIN           471    138    123
+ FORTRAN MODIF prepost/xpoajd                 massin P.MASSIN           296     18     26
+ FORTRAN MODIF prepost/xpoajm                 massin P.MASSIN           225     10      9
+ FORTRAN MODIF prepost/xpomax                 massin P.MASSIN           530      6      5
+  PYTHON MODIF Messages/discrets              massin P.MASSIN           143     34     12
+  PYTHON MODIF Messages/elements2             massin P.MASSIN           217      2     10
+  PYTHON MODIF Messages/modelisa              massin P.MASSIN           518      2     14
+
+
+        nb unites  nb lignes  ajouts  suppr.  difference
+ AJOUT :   23        3380      3380             +3380
+ MODIF :   88       28083      1979    3687     -1708
+ SUPPR :    0           0                 0        +0
+ DEPLA :    0           0 
+         ----      ------     ------  ------   ------
+ TOTAL :  111       31463      5359    3687     +1672 

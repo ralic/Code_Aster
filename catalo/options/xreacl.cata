@@ -1,8 +1,8 @@
-%& MODIF OPTIONS  DATE 05/10/2010   AUTEUR SELLENET N.SELLENET 
+%& MODIF OPTIONS  DATE 19/01/2011   AUTEUR MASSIN P.MASSIN 
 % RESPONSABLE GENIAUT
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
-% COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
+% COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 % THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 % IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 % THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -17,6 +17,9 @@
 % ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 %    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 % ======================================================================
+% Attention : le champ PSEUIL est un champ a sous-points
+% pour les elements de contact XFEM (xhc,xhtc,xtc)
+% ======================================================================
 XREACL
 
 OPTION__
@@ -29,12 +32,8 @@ OPTION__
         PPINTER  NEUT_R
         PGEOMER  GEOM_R
         PLSN     NEUT_R
-        PLST     NEUT_R
-        PCOHES   NEUT_R
-        PMATERC  ADRSJEVE
+        PLST     NEUT_R        
         PBASECO  NEUT_R
 
    OUT__
         PSEUIL  NEUT_R ELEM__
-        PCOHESO  NEUT_R ELEM__
-

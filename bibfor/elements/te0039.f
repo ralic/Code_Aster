@@ -1,5 +1,5 @@
       SUBROUTINE TE0039(OPTION,NOMTE)
-C MODIF ELEMENTS  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 19/01/2011   AUTEUR MASSIN P.MASSIN 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,8 +18,8 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CRP_20
-      IMPLICIT NONE
-      CHARACTER*16 OPTION,NOMTE
+      IMPLICIT       NONE
+      CHARACTER*16   OPTION,NOMTE
 C ----------------------------------------------------------------------
 C IN OPTION    : K16 :  OPTION DE CALCUL
 C     'SIEF_ELNO'
@@ -71,7 +71,7 @@ C     ------------------------------------------------------------------
 
       CHARACTER*2  BL2,CODRES(NBRES)
       CHARACTER*8  NOMRES(NBRES),NOMPAR,NOMAIL
-      CHARACTER*16 CH16
+      CHARACTER*16 CH16,KMESS(5)
 
       REAL*8   VALRES(NBRES),MATK(78),ALFAY,ALFAZ,XNU,XL,XIZ,XIY2,XIY
       REAL*8   XFLZ,XFLY,XFL,UN,ZERO,DEUX,XJX,A,A2,XIZ2
@@ -88,7 +88,7 @@ C     ------------------------------------------------------------------
       INTEGER  NCC,NNOC,LORIEN,J,IND,LRCOU,LX,IDEFI,NBPAR,LMATER,IN
       INTEGER  LSECT2,LSECT,LSECR,I,IVECTU,ICONTG,NEQ,NC,NNO,ITSEC
       INTEGER  IELEM,IREPE,NDIM,IRET,ICONTN,IADZI,IAZK24,IREFCO
-      INTEGER  NEQ1,IPLOUF,NPG
+      INTEGER  NEQ1,IPLOUF,NPG,INFODI,ITYPE
       INTEGER  IGEOM,IDEPLM,IDEPLP,ICOMPO,NBT,JDC,IREP,IFONO,ILOGIC
       LOGICAL  AUNOEU
 
@@ -97,96 +97,28 @@ C     ------------------------------------------------------------------
 
       CALL JEMARQ()
       BL2 = '  '
-      IELEM = 0
-      IREPE = 0
-      IF (NOMTE.EQ.'MECA_POU_D_T') THEN
-         IELEM = 1
-         NNO   = 2
-         NC    = 6
-         NEQ   = 12
-         NDIM  = 3
-      ELSE IF (NOMTE.EQ.'MECA_POU_D_E') THEN
-         IELEM = 1
-         NNO   = 2
-         NC    = 6
-         NEQ   = 12
-         NDIM  = 3
-      ELSE IF (NOMTE.EQ.'MECA_POU_D_EM') THEN
-         IELEM = 1
-         NNO   = 2
-         NC    = 6
-         NEQ   = 12
-         NDIM  = 3
-      ELSE IF (NOMTE.EQ.'MECA_POU_C_T') THEN
-         IELEM = 1
-         NNO   = 2
-         NC    = 6
-         NEQ   = 12
-         NDIM  = 3
-      ELSE IF ( (NOMTE.EQ.'MECA_POU_D_TG') .OR.
-     &          (NOMTE.EQ.'MECA_POU_D_TGM') ) THEN
-         NNO   = 2
-         NC    = 7
-         NEQ   = 14
-         NDIM  = 3
-      ELSE IF (NOMTE.EQ.'MECA_DIS_TR_L') THEN
-         IELEM = 1
-         NNO   = 2
-         NC    = 6
-         NEQ   = 12
-         NDIM  = 3
-         NBT   = 78
-      ELSE IF (NOMTE.EQ.'MECA_DIS_TR_N') THEN
-         NNO   = 1
-         NC    = 6
-         NEQ   = 6
-         NDIM  = 3
-         NBT   = 21
-      ELSE IF (NOMTE.EQ.'MECA_DIS_T_L') THEN
-         IELEM = 1
-         NNO   = 2
-         NC    = 3
-         NEQ   = 6
-         NDIM  = 3
-         NBT   = 21
-      ELSE IF (NOMTE.EQ.'MECA_DIS_T_N') THEN
-         NNO   = 1
-         NC    = 3
-         NEQ   = 3
-         NDIM  = 3
-         NBT   = 6
-      ELSE IF (NOMTE.EQ.'MECA_2D_DIS_TR_L') THEN
-         IELEM = 1
-         NNO   = 2
-         NC    = 3
-         NEQ   = 6
-         NDIM  = 2
-      ELSE IF (NOMTE.EQ.'MECA_2D_DIS_TR_N') THEN
-         NNO   = 1
-         NC    = 3
-         NEQ   = 3
-         NDIM  = 2
-      ELSE IF (NOMTE.EQ.'MECA_2D_DIS_T_L') THEN
-         IELEM = 1
-         NNO   = 2
-         NC    = 2
-         NEQ   = 4
-         NDIM  = 2
-      ELSE IF (NOMTE.EQ.'MECA_2D_DIS_T_N') THEN
-         NNO   = 1
-         NC    = 2
-         NEQ   = 2
-         NDIM  = 2
-      ELSE
-         CH16 = NOMTE
-         CALL U2MESK('F','ELEMENTS2_42',1,CH16)
+      INFODI = 1
+      IREPE  = 0
+C     MATRICE DE RAIDEUR SYMETRIQUE OU PAS, SEULEMENT POUR LES DISCRETS
+      IF ( (NOMTE(1:9) .EQ.'MECA_DIS_').OR.
+     &     (NOMTE(1:12).EQ.'MECA_2D_DIS_') ) THEN
+         CALL INFDIS('SYMK',INFODI,R8BID)
+      ENDIF
+C     RECUPERE LES INFORMATIONS SUR LES ELEMENTS
+      CALL INFTED(NOMTE,INFODI,NBT,NNO,NC,NDIM,ITYPE)
+      NEQ = NNO*NC
+C     ELEMENT A 1 NOEUD OU 3PTS DE GAUSS : IELEM=0
+      IELEM = 1
+      IF ( (NOMTE.EQ.'MECA_POU_D_TG').OR.
+     &     (NOMTE.EQ.'MECA_POU_D_TGM').OR.
+     &     (NNO.EQ.1) ) THEN
+         IELEM = 0
       END IF
-
 C     NOMBRE DE POINTS DE GAUSS DE L'ELEMENT
       CALL ELREF4(' ','RIGI',IPLOUF,IPLOUF,IPLOUF,
      &            NPG,IPLOUF,IPLOUF,IPLOUF,IPLOUF)
-
-
+C
+C --- ------------------------------------------------------------------
       IF ( OPTION(1:14) .EQ. 'REFE_FORC_NODA' ) THEN
          CALL JEVECH('PREFCO', 'L',IREFCO)
          CALL JEVECH('PVECTUR','E',IVECTU)
@@ -217,22 +149,27 @@ C     NOMBRE DE POINTS DE GAUSS DE L'ELEMENT
                ZR(IVECTU+(IN-1)*NC+1)=ZR(IREFCO)
                ZR(IVECTU+(IN-1)*NC+2)=ZR(IREFCO)
 206         CONTINUE
+         ELSE
+            KMESS(1) = OPTION
+            KMESS(2) = NOMTE
+            KMESS(3) = 'TE0039'
+            CALL U2MESK('F','DISCRETS_15',2,KMESS)
          ENDIF
-
-      ELSEIF (OPTION.EQ.'SIEF_ELNO') THEN
+C --- ------------------------------------------------------------------
+      ELSE IF (OPTION.EQ.'SIEF_ELNO') THEN
          CALL JEVECH('PCONTRR','L',ICONTG)
          CALL JEVECH('PSIEFNOR','E',IVECTU)
          DO 10 I = 1,NEQ
             ZR(IVECTU-1+I) = ZR(ICONTG-1+I)
 10       CONTINUE
-
+C --- ------------------------------------------------------------------
       ELSE IF (OPTION.EQ.'SIEF_ELGA_ELNO') THEN
          CALL JEVECH('PCONTRR','L',ICONTN)
          CALL JEVECH('PSIEFGR','E',IVECTU)
          DO 20 I = 1,NEQ
             ZR(IVECTU-1+I) = ZR(ICONTN-1+I)
 20       CONTINUE
-
+C --- ------------------------------------------------------------------
       ELSE IF ((OPTION.EQ.'PMPB_ELNO') .OR.
      &         (OPTION.EQ.'PMPB_ELGA')) THEN
 C        VERIF DU NOMBRE DE POINT DE GAUUS
@@ -267,7 +204,6 @@ C        MX, MY, MZ : MOMENTS DE TORSION ET FLEXION
          CALL JEVECH('PCONTEQ','E',IVECTU)
          CALL JEVECH('PCAGNPO','L',LSECT)
          CALL JEVECH('PCAGEPO','L',LSECR)
-
 C        --- CARACTERISTIQUES GENERALES DES SECTIONS ---
          LSECT = LSECT - 1
 C        --- SECTION INITIALE ---
@@ -279,7 +215,7 @@ C        --- SECTION FINALE ---
          A2     = ZR(LSECT2+1)
          XIY2   = ZR(LSECT2+2)
          XIZ2   = ZR(LSECT2+3)
-
+C
          LSECR = LSECR - 1
          ITSEC = NINT(ZR(LSECR+13))
          IF (ITSEC.EQ.1) THEN
@@ -338,8 +274,90 @@ C           DES CARACTERISTIQUES MECANIQUE
             ZR(IVECTU+4) = PM(3)
             ZR(IVECTU+5) = PMPB(3)
          ENDIF
+C --- ------------------------------------------------------------------
+      ELSE IF (OPTION.EQ.'FONL_NOEU') THEN
+         CALL JEVECH('PGEOMER','L',IGEOM)
+         CALL JEVECH('PDEPLMR','L',IDEPLM)
+         CALL JEVECH('PDEPLPR','L',IDEPLP)
+         CALL JEVECH('PCOMPOR','L',ICOMPO)
+         CALL JEVECH('PMATERC','L',LMATER)
+         IF (NOMTE(1:10).EQ.'MECA_DIS_T') THEN
+C           PARAMETRES EN ENTREE
+            CALL JEVECH('PCAORIE','L',LORIEN)
+            CALL MATROT(ZR(LORIEN),PGL)
+C           DEPLACEMENTS DANS LE REPERE GLOBAL
+C                 UGM = DEPLACEMENT PRECEDENT
+C                 DUG = INCREMENT DE DEPLACEMENT
+C                 UGP = DEPLACEMENT COURANT
+            DO 300 I = 1,NEQ
+               DUG(I) = ZR(IDEPLP+I-1)
+               UGP(I) = ZR(IDEPLM+I-1) + DUG(I)
+300         CONTINUE
+C           DEPLACEMENTS DANS LE REPERE LOCAL
+C              ULM = DEPLACEMENT PRECEDENT    = PLG * UGM
+C              DUL = INCREMENT DE DEPLACEMENT = PLG * DUG
+C              ULP = DEPLACEMENT COURANT      = PLG * UGP
+            IF (NDIM.EQ.3) THEN
+               CALL UTPVGL(NNO,NC,PGL,DUG,DUL)
+               CALL UTPVGL(NNO,NC,PGL,UGP,ULP)
+            ELSE IF (NDIM.EQ.2) THEN
+               CALL UT2VGL(NNO,NC,PGL,DUG,DUL)
+               CALL UT2VGL(NNO,NC,PGL,UGP,ULP)
+            END IF
+C           SEUL LE CAS SYMETRIQUE EST TRAITE
+            CALL INFDIS('SYMK',IPLOUF,R8BID)
+            IF (IPLOUF.NE.1) THEN
+               KMESS(1) = OPTION
+               KMESS(2) = NOMTE
+               KMESS(3) = 'TE0039'
+               KMESS(4) = ' '
+               CALL U2MESK('F','DISCRETS_12',4,KMESS)
+            ENDIF
+C
+            CALL JEVECH('PCADISK','L',JDC)
+            CALL INFDIS('REPK',IREP,R8BID)
+            CALL DCOPY(NBT,ZR(JDC),1,KLV,1)
+            IF (IREP.EQ.1) THEN
+               CALL UTPSGL(NNO,NC,PGL,ZR(JDC),KLV)
+            END IF
+            IF (ZK16(ICOMPO).EQ.'DIS_CHOC') THEN
+               DO 301 I = 1,7
+                  VARMO(I) = 0.D0
+301            CONTINUE
+               DO 401 I = 1,12
+                  DVL(I) = 0.D0
+                  DPE(I) = 0.D0
+                  DVE(I) = 0.D0
+401            CONTINUE
+C              RELATION DE COMPORTEMENT DE CHOC : FORCES NODALES
+               CALL JEVECH('PVECTUR','E',IFONO)
+               DO 501 I = 1,NEQ
+                  ZR(IFONO+I-1) = 0.D0
+                  SIM(I) = 0.D0
+501            CONTINUE
+C
+               ILOGIC = 0
+               PLOUF = 0.D0
+               CALL DISIEF(NBT,NEQ,NNO,NC,PGL,KLV,ULP,SIM,ILOGIC,
+     &                  PLOUF,PLOUF,SIP,FONO,PLOUF,PLOUF)
+               CALL DICHOC(NBT,NEQ,NNO,NC,ZI(LMATER),DUL,ULP,
+     &                  ZR(IGEOM),PGL,KLV,KTY2,DULY,DVL,DPE,DVE,
+     &                  FOR2,FOR3,VARMO,VARPL)
+               ILOGIC = 2
+               CALL DISIEF(NBT,NEQ,NNO,NC,PGL,KLV,ULP,SIM,ILOGIC,
+     &                  KTY2,DULY,SIP,ZR(IFONO),FOR2,FOR3)
+               DO 601 I = 1,NEQ
+                  ZR(IFONO+I-1) = ZR(IFONO+I-1)-FONO(I)
+601            CONTINUE
+               IF (NNO.EQ.2) THEN
+                  DO 602 I = 1,NC
+                     ZR(IFONO+I-1) = 0.D0
+602               CONTINUE
+               ENDIF
+            ENDIF
+         ENDIF
       ELSE
-
+C --- ------------------------------------------------------------------
          IF (OPTION.EQ.'SIGM_ELNO_CART') THEN
             CALL JEVECH('PCONTRR','L',ICONTG)
             CALL JEVECH('PCONTGL','E',IVECTU)
@@ -348,7 +366,7 @@ C           DES CARACTERISTIQUES MECANIQUE
             DO 30 IN = 1,NEQ1
                FS(IN) = ZR(ICONTG+IN-1)
 30          CONTINUE
-
+C --- ------------------------------------------------------------------
          ELSE IF (OPTION.EQ.'EFGE_ELNO_CART') THEN
             CALL JEVECH('PCONTRR','L',ICONTG)
             CALL JEVECH('PEFFORR','E',IVECTU)
@@ -356,7 +374,7 @@ C           DES CARACTERISTIQUES MECANIQUE
                FS(IN) = ZR(ICONTG+IN-1)
 40          CONTINUE
             CALL TECACH('NNN','PCAORIR',1,IREPE,IRET)
-
+C --- ------------------------------------------------------------------
          ELSE IF (OPTION.EQ.'FORC_NODA') THEN
             CALL JEVECH('PCONTMR','L',ICONTG)
             CALL JEVECH('PVECTUR','E',IVECTU)
@@ -380,8 +398,8 @@ C                 3 POINTS DE GAUSS : C'EST LE 1 ET LE 3
 65                CONTINUE
                ENDIF
             END IF
+C --- ------------------------------------------------------------------
          ELSE IF (OPTION.EQ.'CHAR_MECA_EPSI_R') THEN
-
 C           --- CARACTERISTIQUES MATERIAUX ---
             CALL JEVECH('PMATERC','L',LMATER)
             NBPAR  = 0
@@ -394,7 +412,6 @@ C           --- CARACTERISTIQUES MATERIAUX ---
             NOMRES(2) = 'NU'
             NOMRES(3) = 'ALPHA'
             NOMRES(4) = 'RHO'
-
             CALL RCVALA(ZI(LMATER),' ','ELAS',NBPAR,NOMPAR,VALPAR,2,
      &                  NOMRES,VALRES,CODRES,'FM')
             CALL RCVALA(ZI(LMATER),' ','ELAS',NBPAR,NOMPAR,VALPAR,2,
@@ -404,7 +421,6 @@ C           --- CARACTERISTIQUES MATERIAUX ---
             E   = VALRES(1)
             XNU = VALRES(2)
             G = E/ (DEUX* (UN+XNU))
-
 C           --- CARACTERISTIQUES GENERALES DES SECTIONS ---
             CALL JEVECH('PCAGNPO','L',LSECT)
             LSECT = LSECT - 1
@@ -415,7 +431,7 @@ C           --- SECTION INITIALE ---
             ALFAY = ZR(LSECT+4)
             ALFAZ = ZR(LSECT+5)
             XJX   = ZR(LSECT+8)
-
+C
             IF ( (NOMTE.NE.'MECA_POU_D_TG') .AND.
      &           (NOMTE.NE.'MECA_POU_D_TGM') ) THEN
 C              --- SECTION FINALE ---
@@ -423,16 +439,12 @@ C              --- SECTION FINALE ---
                A2     = ZR(LSECT2+1)
                XIY2   = ZR(LSECT2+2)
                XIZ2   = ZR(LSECT2+3)
-            END IF
-
+            ENDIF
             CALL JEVECH('PEPSINR','L',IDEFI)
-
             CALL JEVECH('PVECTUR','E',IVECTU)
-
             EPX = ZR(IDEFI)
             XKY = ZR(IDEFI+1)
             XKZ = ZR(IDEFI+2)
-
             IF (NOMTE.NE.'MECA_POU_C_T') THEN
                FS(1) = E*A*EPX
                FS(2) = 0.D0
@@ -440,7 +452,6 @@ C              --- SECTION FINALE ---
                FS(4) = 0.D0
                FS(5) = E*XIY*XKY
                FS(6) = E*XIZ*XKZ
-
                IF ( (NOMTE.EQ.'MECA_POU_D_TG').OR.
      &              (NOMTE.EQ.'MECA_POU_D_TGM') )THEN
                   FS( 7) = 0.D0
@@ -480,9 +491,8 @@ C                 RECUPERATION DES CARACTERISTIQUES DES FIBRES
                FS(4) = -FS(4)
                FS(5) = -FS(5)
                FS(6) = -FS(6)
-
             ELSE IF (NOMTE.EQ.'MECA_POU_C_T') THEN
-C              COORDONNEES DES NOEUDS ---
+C              COORDONNEES DES NOEUDS
                CALL JEVECH('PGEOMER','L',LX)
                LX = LX - 1
                XL = SQRT( (ZR(LX+4)-ZR(LX+1))**2 +
@@ -510,7 +520,6 @@ C              COORDONNEES DES NOEUDS ---
                XIZ  = XIZ/XFLZ
                XIY2 = XIY2/XFLY
                XIZ2 = XIZ2/XFLZ
-
                CALL PTKA10(MATK,E,A,XIY,XIZ,XJX,G,ALFAY,ALFAZ,RAD,ANG,1)
 C              REMPLISSAGE DE LA MATRICE CARREE
                IND = 0
@@ -541,17 +550,14 @@ C              CALCUL DES FORCES INDUITES ---
 110            CONTINUE
             END IF
          ELSE
-            IF (OPTION.EQ.'FONL_NOEU') GOTO 800
             CH16 = OPTION
             CALL U2MESK('F','ELEMENTS2_47',1,CH16)
          END IF
 C        RECUPERATION DES ORIENTATIONS ALPHA,BETA,GAMMA
          CALL JEVECH('PCAORIE','L',LORIEN)
-
 C        MATRICE DE ROTATION MGL
          IF (NOMTE.EQ.'MECA_POU_C_T') THEN
-C           POUTRE COURBE DE TIMOSKENKO A 6 DDL
-C           COORDONNEES DES NOEUDS
+C           POUTRE COURBE DE TIMOSKENKO A 6 DDL: COORDONNEES DES NOEUDS
             CALL JEVECH('PGEOMER','L',LX)
             LX = LX - 1
             XL = SQRT( (ZR(LX+4)-ZR(LX+1))**2 +
@@ -616,91 +622,5 @@ C           COORDONNEES DES NOEUDS
             END IF
          END IF
       END IF
-800   CONTINUE
-C
-      IF (OPTION.EQ.'FONL_NOEU') THEN
-         CALL JEVECH('PGEOMER','L',IGEOM)
-         CALL JEVECH('PDEPLMR','L',IDEPLM)
-         CALL JEVECH('PDEPLPR','L',IDEPLP)
-         CALL JEVECH('PCOMPOR','L',ICOMPO)
-         CALL JEVECH('PMATERC','L',LMATER)
-         IF (NOMTE(1:10).EQ.'MECA_DIS_T') THEN
-C           PARAMETRES EN ENTREE
-            CALL JEVECH('PCAORIE','L',LORIEN)
-            CALL MATROT(ZR(LORIEN),PGL)
-C           DEPLACEMENTS DANS LE REPERE GLOBAL
-C                 UGM = DEPLACEMENT PRECEDENT
-C                 DUG = INCREMENT DE DEPLACEMENT
-C                 UGP = DEPLACEMENT COURANT
-            DO 300 I = 1,NEQ
-               DUG(I) = ZR(IDEPLP+I-1)
-               UGP(I) = ZR(IDEPLM+I-1) + DUG(I)
-300         CONTINUE
-
-C           DEPLACEMENTS DANS LE REPERE LOCAL
-C              ULM = DEPLACEMENT PRECEDENT    = PLG * UGM
-C              DUL = INCREMENT DE DEPLACEMENT = PLG * DUG
-C              ULP = DEPLACEMENT COURANT      = PLG * UGP
-            IF (NDIM.EQ.3) THEN
-               CALL UTPVGL(NNO,NC,PGL,DUG,DUL)
-               CALL UTPVGL(NNO,NC,PGL,UGP,ULP)
-            ELSE IF (NDIM.EQ.2) THEN
-               CALL UT2VGL(NNO,NC,PGL,DUG,DUL)
-               CALL UT2VGL(NNO,NC,PGL,UGP,ULP)
-            END IF
-C           SEUL LE CAS SYMETRIQUE EST TRAITE
-            CALL INFDIS('SYMK',IPLOUF,R8BID)
-            CALL ASSERT( IPLOUF .EQ. 1 )
-C
-            CALL JEVECH('PCADISK','L',JDC)
-            CALL INFDIS('REPK',IREP,R8BID)
-            CALL DCOPY(NBT,ZR(JDC),1,KLV,1)
-            IF (IREP.EQ.1) THEN
-               CALL UTPSGL(NNO,NC,PGL,ZR(JDC),KLV)
-            END IF
-            IF (ZK16(ICOMPO).EQ.'DIS_CHOC') THEN
-               DO 301 I = 1,7
-                  VARMO(I) = 0.D0
-301            CONTINUE
-               DO 401 I = 1,12
-                  DVL(I) = 0.D0
-                  DPE(I) = 0.D0
-                  DVE(I) = 0.D0
-401            CONTINUE
-C              RELATION DE COMPORTEMENT DE CHOC
-C              CALCUL DES FORCES NODALES
-               CALL JEVECH('PVECTUR','E',IFONO)
-C
-               DO 501 I = 1,NEQ
-                  ZR(IFONO+I-1) = 0.D0
-                  SIM(I) = 0.D0
-501            CONTINUE
-
-               ILOGIC = 0
-               PLOUF = 0.D0
-               CALL DISIEF(NBT,NEQ,NNO,NC,PGL,KLV,ULP,SIM,ILOGIC,
-     &                  PLOUF,PLOUF,SIP,FONO,PLOUF,PLOUF)
-
-               CALL DICHOC(NBT,NEQ,NNO,NC,ZI(LMATER),DUL,ULP,
-     &                  ZR(IGEOM),PGL,KLV,KTY2,DULY,DVL,DPE,DVE,
-     &                  FOR2,FOR3,VARMO,VARPL)
-               ILOGIC = 2
-
-               CALL DISIEF(NBT,NEQ,NNO,NC,PGL,KLV,ULP,SIM,ILOGIC,
-     &                  KTY2,DULY,SIP,ZR(IFONO),FOR2,FOR3)
-               DO 601 I = 1,NEQ
-                  ZR(IFONO+I-1) = ZR(IFONO+I-1)-FONO(I)
-601            CONTINUE
-               IF (NNO.EQ.2) THEN
-                  DO 602 I = 1,NC
-                     ZR(IFONO+I-1) = 0.D0
-602               CONTINUE
-               ENDIF
-
-            ENDIF
-C           FIN DU COMPORTEMENT CHOC
-         ENDIF
-C        FIN DES MECA_DIS_T
-      ENDIF
       CALL JEDEMA()
       END

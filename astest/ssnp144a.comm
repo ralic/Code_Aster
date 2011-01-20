@@ -1,9 +1,9 @@
-# MODIF  DATE 21/09/2010   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 19/01/2011   AUTEUR MASSIN P.MASSIN 
 # TITRE ZONE COHESIVE CZM_EXP_REG AVEC X-FEM
 # ssnp144a.para = tps_job 300 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -94,18 +94,14 @@ MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,
 CTXFEM = DEFI_CONTACT(
             MODELE         = MODELEK,
             FORMULATION    = 'XFEM',
-            FROTTEMENT     = 'COULOMB',
+            FROTTEMENT     = 'SANS',
             ITER_CONT_MAXI=4,
-            ITER_FROT_MAXI=6,
-            ZONE=(_F(  INTEGRATION='GAUSS',                                    
-                       COULOMB=1.0, 
-                       CONTACT_INIT='NON',
-                       COEF_FROT=1000.,                                     
-                       COEF_CONT=100.,   
+            ZONE=(_F(  INTEGRATION='GAUSS',  
                        COEF_ECHELLE=1.,
+                       ALGO_CONT='CZM',
                        FISS_MAIT = FISS,
                        ALGO_LAGR='NON',
-                       RELATION='CZM_XFEM',),),);
+                       RELATION='CZM_EXP_REG',),),);
                        
 CHXFEM=AFFE_CHAR_MECA(MODELE=MODELEK,
                       LIAISON_XFEM='OUI',
