@@ -3,9 +3,9 @@
      &                 LSN,LST,IDECPG,IGTHET,FNO,NFISS,JFISNO)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 21/12/2010   AUTEUR MASSIN P.MASSIN 
+C MODIF ELEMENTS  DATE 25/01/2011   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -87,24 +87,30 @@ C------------FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       REAL*8   EPS(6),BASLOG(9),E1(3),E2(3),NORME,E3(3),P(3,3)
       REAL*8   DET,INVP(3,3),AG(3),VGL(3),XLG,YLG,RG,TG,RBID1(4)
       REAL*8   DGDPO(4,2),DGDLO(4,3),COURB(3,3,3),DU1DM(3,3),DU2DM(3,3)
-      REAL*8   DU3DM(3,3),GRAD(NDIM,NDIM),DUDM(3,3),POIDS,RBID2(4)
+      REAL*8   DU3DM(3,3),GRAD(NDIM,NDIM),DUDM(3,3),POIDS,RBID2(4),RBID
       REAL*8   DTDM(3,3),TZERO(3),DZERO(3,4),LSNG,LSTG,TH,RBID3(4)
       REAL*8   DUDME(3,4),DTDME(3,4),DU1DME(3,4),DU2DME(3,4),DU3DME(3,4)
-      REAL*8   U1L(3),U2L(3),U3L(3),U1(3),U2(3),U3(3)
+      REAL*8   U1L(3),U2L(3),U3L(3),U1(3),U2(3),U3(3), UR, R
       REAL*8   DEPLA(3),THETA(3),TGUDM(3),TPN(27),TREF,TEMPG
       REAL*8   TTRGU,TTRGV,DFDM(3,4),CS,COEF,PULS
       CHARACTER*2  CODRET(3)
       CHARACTER*8  NOMRES(3),ELRESE(6),FAMI(6)
-      LOGICAL  LCOUR,GRDEPL,LTEATT
+      LOGICAL  LCOUR,GRDEPL,LTEATT, AXI
       INTEGER       IRESE,NNOPS,IBID
       LOGICAL       ISMALI
-      INTEGER       DDLN,NNON,INDENN
+      INTEGER       DDLN,NNON,INDENN,MXSTAC
+      PARAMETER      (MXSTAC=1000)
 
       DATA     NOMRES /'E','NU','ALPHA'/
       DATA     ELRESE /'SE2','TR3','TE4','SE3','TR6','TE4'/
       DATA     FAMI   /'BID','XINT','XINT','BID','XINT','XINT'/
 
       CALL JEMARQ()
+C     VERIF QUE LES TABLEAUX LOCAUX DYNAMIQUES NE SONT PAS TROP GRANDS
+C     (VOIR CRS 1404)
+
+      CALL ASSERT(NNOP.LE.MXSTAC)
+      CALL ASSERT((3*NDIM*NNOP).LE.MXSTAC)
 
       GRDEPL=.FALSE.
 
@@ -116,14 +122,16 @@ C     NOMBRE DE DDL DE DEPLACEMENT À CHAQUE NOEUD SOMMET
 
 C     NOMBRE DE DDL TOTAL (DEPL+CONTACT) À CHAQUE NOEUD SOMMET
       DDLS=DDLD+DDLC
-
+      
 C     NOMBRE DE COMPOSANTES DE PHEAVTO (DANS LE CATALOGUE)
       CALL TECACH('OOO','PHEAVTO',2,JTAB,IRET)
       NCOMP = JTAB(2)
 
 C     ELEMENT DE REFERENCE PARENT : RECUP DE NNOPS
       CALL ELREF4(' ','RIGI',IBID,IBID,NNOPS,IBID,IBID,IBID,IBID,IBID)
-
+      
+      AXI = LTEATT(' ','AXIS','OUI')
+      
       IF (.NOT.ISMALI(ELREFP).AND. NDIM.LE.2) THEN
         IRESE=3
       ELSE
@@ -203,7 +211,8 @@ C       RECUPERATION DES DONNEES MATERIAUX
         K3A   = ALPHA * E / (1.D0-2.D0*NU)
 
         IF ( NDIM.EQ.3.OR.
-     &       NDIM.EQ.2.AND.LTEATT(' ','D_PLAN','OUI')) THEN
+     &       (NDIM.EQ.2.AND.LTEATT(' ','D_PLAN','OUI')).OR.
+     &        AXI) THEN
 
           LAMBDA = NU*E/((1.D0+NU)*(1.D0-2.D0*NU))
           MU = E/(2.D0*(1.D0+NU))
@@ -238,7 +247,8 @@ C       COORDONNÉES DU PT DE GAUSS DANS LE REPÈRE RÉEL : XG
  101    CONTINUE
 
 C       CALCUL DES FF
-        CALL REEREF(ELREFP,NNOP,NNOPS,IGEOM,XG,IDEPL,GRDEPL,NDIM,HE,
+        CALL REEREF(ELREFP,AXI, NNOP,NNOPS,IGEOM,XG,IDEPL,GRDEPL,
+     &              NDIM,HE,RBID, RBID,
      &              FISNO,NFISS,NFH,NFE,DDLS,DDLM,FE,DGDGL,'NON',
      &              XE,FF,DFDI,F,EPS,GRAD)
 
@@ -248,7 +258,7 @@ C       ON ENVOIE DFDM3D/DFDM2D AVEC LES COORD DU SS-ELT
      &                                      RBID1,RBID2,RBID3,POIDS)
         IF (NDIM.EQ.2) CALL DFDM2D(NNO,KPG,IPOIDS,IDFDE,ZR(JCOORS),
      &                                      RBID1,RBID2,POIDS)
-
+     
 C       --------------------------------------
 C       1) COORDONNÉES POLAIRES ET BASE LOCALE
 C       --------------------------------------
@@ -266,6 +276,35 @@ C       BASE LOCALE ET LEVEL SETS AU POINT DE GAUSS
             E2(I) = E2(I) + BASLOC(3*NDIM*(INO-1)+I+2*NDIM) * FF(INO)
  110      CONTINUE
  100    CONTINUE
+C 
+C -     CALCUL DE LA DISTANCE A L'AXE (AXISYMETRIQUE)
+C       ET DU DEPL. RADIAL
+        IF (AXI) THEN
+          R  = 0.D0
+          UR = 0.D0
+          DO 1000 INO=1,NNOP
+            R  = R  + FF(INO)*ZR(IGEOM-1+2*(INO-1)+1)
+            UR = UR + FF(INO)*ZR(IDEPL-1+DDLS*(INO-1)+1)
+            DO 1001 IG=1,NFH         
+              UR = UR + FF(INO)
+     &                   *ZR(IDEPL-1+DDLS*(INO-1)+NDIM*IG+1)
+     &                   *HE(FISNO(INO,IG))
+ 1001       CONTINUE 
+            DO 1002 IG=1,NFE
+                UR = UR + FF(INO)
+     &                   *ZR(IDEPL-1+DDLS*(INO-1)+NDIM*(NFH+IG)+1)
+     &                   *FE(IG)
+ 1002       CONTINUE
+
+1000      CONTINUE
+
+        IF (AXI) THEN
+          POIDS= POIDS * R
+        ENDIF
+C Si R négative, on s'arrete        
+
+          CALL ASSERT(R.GT.0D0)
+        ENDIF
 
 C       NORMALISATION DE LA BASE
         CALL NORMEV(E1,NORME)
@@ -384,7 +423,10 @@ C       DÉRIVÉES DES FONCTIONS D'ENRICHISSEMENT DANS LA BASE GLOBALE
  220    CONTINUE
 
 C       CALCUL DU GRAD DE U AU POINT DE GAUSS
-        CALL REEREF(ELREFP,NNOP,NNOPS,IGEOM,XG,IDEPL,GRDEPL,NDIM,HE,
+
+C 
+        CALL REEREF(ELREFP,AXI,NNOP,NNOPS,IGEOM,XG,IDEPL,GRDEPL,
+     &              NDIM,HE,UR, R,
      &              FISNO,NFISS,NFH,NFE,DDLS,DDLM,FE,DGDGL,'OUI',
      &              XE,FF,DFDI,F,EPS,GRAD)
 
@@ -431,7 +473,7 @@ C       TEMPERATURE AU POINT DE GAUSS
  401      CONTINUE
  400    CONTINUE
 
-C       -----------------------------------------------------
+C       ------------------------------------------------
 C       5) CALCUL DES CHAMPS AUXILIAIRES ET DE LEURS DERIVEES 
 C       -----------------------------------------------------
 
@@ -483,7 +525,11 @@ C           VALEUR DE LA FORCE DANS LA QUATRIEME COLONNE :
      &                  FNO(NDIM*(INO-1)+J)*FF(INO)
 610       CONTINUE
 600     CONTINUE
-
+C 
+        IF (AXI) THEN
+            DFDM(3,3)= DFDM(1,4)/R
+        ENDIF
+C 
 C       ---------------------------------------------
 C       7) CALCUL DE G, K1, K2, K3 AU POINT DE GAUSS
 C       --------------------------------------------
@@ -514,7 +560,15 @@ C       EX : DUDM DE DIM (3,3) -> DUDME DE DIM (3,4)
           DU2DME(I,4) = U2(I)
           DU3DME(I,4) = U3(I)
  700    CONTINUE
-
+C 
+        IF (AXI) THEN
+            DUDME(3,3) = DUDME(1,4)/R
+            DTDME(3,3) = DTDME(1,4)/R
+            DU1DME(3,3) = DU1DME(1,4)/R
+            DU2DME(3,3) = DU2DME(1,4)/R
+            DU3DME(3,3) = DU3DME(1,4)/R
+        ENDIF
+C 
         IF (NDIM.EQ.3) THEN
 
           CALL GBIL3D(DUDME,DUDME,DTDME,DFDM,DFDM,TGUDM,TGUDM,
@@ -544,23 +598,23 @@ C         POUR G, COEF = 2
           COEF = 2.D0
           CS = 1.D0
           CALL GBILIN('XFEM',IPG,ZI(IMATE),DUDME,DUDME,DTDME,DFDM,
-     &              TGUDM,POIDS,C1,C2,C3,CS,TH,COEF,RHO,PULS,.FALSE.,G)
+     &              TGUDM,POIDS,C1,C2,C3,CS,TH,COEF,RHO,PULS,AXI,G)
 
 C         POUR K1, COEF = 1
           COEF = 1.D0
           CS = 0.5D0
           CALL GBILIN('XFEM',IPG,ZI(IMATE),DUDME,DU1DME,DTDME,DFDM,
-     &              TGUDM,POIDS,C1,C2,C3,CS,TH,COEF,RHO,PULS,.FALSE.,K1)
+     &              TGUDM,POIDS,C1,C2,C3,CS,TH,COEF,RHO,PULS,AXI,K1)
           K1 = K1*COEFK
 
 C         POUR K2, COEF = 1
           COEF = 1.D0
           CS = 0.5D0
           CALL GBILIN('XFEM',IPG,ZI(IMATE),DUDME,DU2DME,DTDME,DFDM,
-     &              TGUDM,POIDS,C1,C2,C3,CS,TH,COEF,RHO,PULS,.FALSE.,K2)
+     &              TGUDM,POIDS,C1,C2,C3,CS,TH,COEF,RHO,PULS,AXI,K2)
           K2 = K2*COEFK
           IF (E3(3).LT.0) K2=-K2
-
+       
           ZR(IGTHET)   = ZR(IGTHET)   + G
           ZR(IGTHET+1) = ZR(IGTHET+1) + K1/SQRT(COEFK)
           ZR(IGTHET+2) = ZR(IGTHET+2) + K2/SQRT(COEFK)

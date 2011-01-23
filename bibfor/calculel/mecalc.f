@@ -5,7 +5,7 @@
      &                  CHVARI,COMPOR,CHTESE,CHDESE,NOPASE,
      &                  TYPESE,CHACSE,CODRET)
 C ----------------------------------------------------------------------
-C MODIF CALCULEL  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 25/01/2011   AUTEUR PELLET J.PELLET 
 C TOLE CRP_20 CRP_21
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -176,7 +176,7 @@ C ----------------------------------------------------------------------
         IF (OPTIO2.EQ.'VARI_ELNO_ELGA') THEN
           LPAIN(1) = 'PVARIGR'
           LPAOUT(1) = 'PVARINR'
-        ELSE IF (OPTIO2.EQ.'INDI_LOCA_ELGA') THEN
+        ELSE IF (OPTIO2.EQ.'INDL_ELGA') THEN
            CALL AJCHCA('PMATERC',CHMATE,LPAIN,LCHIN,NBIN,MAXIN,'N')
            CALL AJCHCA('PCOMPOR',COMPOR,LPAIN,LCHIN,NBIN,MAXIN,'N')
            CALL AJCHCA('PVARIPR',CHDEPL,LPAIN,LCHIN,NBIN,MAXIN,'N')

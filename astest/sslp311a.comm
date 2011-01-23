@@ -1,8 +1,8 @@
-# MODIF  DATE 07/04/2008   AUTEUR GALENNE E.GALENNE 
+# MODIF  DATE 25/01/2011   AUTEUR MACOCCO K.MACOCCO 
 # TITRE BIBLIO_65 FISSURE CENTRALE DANS UN BIMATERIAU
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
@@ -90,7 +90,6 @@ THETA01A=CALC_THETA(    MODELE=MO,
 G01A=CALC_G(    RESULTAT=CHAMDEPL,
                 NUME_ORDRE=1,
                 THETA=_F(THETA=THETA01A),
-                SYME_CHAR='SANS'
                       )
 
 #
@@ -114,7 +113,6 @@ THETA01B=CALC_THETA(    MODELE=MO,
 G01B=CALC_G(    RESULTAT=CHAMDEPL,
                 NUME_ORDRE=1,
                 THETA=_F(THETA=THETA01B),
-                SYME_CHAR='SANS'
                       )
 
 #
@@ -137,7 +135,6 @@ THETA01C=CALC_THETA(    MODELE=MO,
 G01C=CALC_G(    RESULTAT=CHAMDEPL,
                 NUME_ORDRE=1,
                 THETA=_F(THETA=THETA01C),
-                SYME_CHAR='SANS'
                       )
 
 #
@@ -162,7 +159,6 @@ THETA01D=CALC_THETA(    MODELE=MO,
 G01D=CALC_G(    RESULTAT=CHAMDEPL,
                 NUME_ORDRE=1,
                 THETA=_F(THETA=THETA01D),
-                SYME_CHAR='SANS'
                       )
 
 #
@@ -194,7 +190,6 @@ THETA02A=CALC_THETA(    MODELE=MO,
 G02A=CALC_G(    RESULTAT=CHAMDEPL,
                 NUME_ORDRE=1,
                 THETA=_F(THETA=THETA02A),
-                SYME_CHAR='SANS'
                       )
 
 #
@@ -218,7 +213,6 @@ THETA02B=CALC_THETA(    MODELE=MO,
 G02B=CALC_G(    RESULTAT=CHAMDEPL,
                 NUME_ORDRE=1,
                 THETA=_F(THETA=THETA02B),
-                SYME_CHAR='SANS'
                      )
 
 #
@@ -241,7 +235,6 @@ THETA02C=CALC_THETA(    MODELE=MO,
 G02C=CALC_G(    RESULTAT=CHAMDEPL,
                 NUME_ORDRE=1,
                 THETA=_F(THETA=THETA02C),
-                SYME_CHAR='SANS'
                       )
 
 #
@@ -264,7 +257,6 @@ THETA02D=CALC_THETA(    MODELE=MO,
 G02D=CALC_G(    RESULTAT=CHAMDEPL,
                 NUME_ORDRE=1,
                 THETA=_F(THETA=THETA02D),
-                SYME_CHAR='SANS'
                       )
 
 #

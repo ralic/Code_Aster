@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+%& MODIF TYPELEM  DATE 25/01/2011   AUTEUR PELLET J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -54,7 +54,7 @@ MODE_LOCAL__
     NGEOMER  = GEOM_R   ELNO__ IDEN__  (X        Y        )
     EGGEOM_R = GEOM_R   ELGA__ RIGI    (X        Y        )
     ENGEOM_R = GEOM_R   ELNO__ IDEN__  (X        Y        )
-    EGINDLO  = IND_LOCA ELGA__ RIGI    (INDICE   DIR1     DIR2     DIR3     DIR4     )
+    EGINDLO  = INDL_R ELGA__ RIGI    (INDICE   DIR1     DIR2     DIR3     DIR4     )
     EGINST_R = INST_R   ELGA__ RIGI    (INST     )
     ENINST_R = INST_R   ELNO__ IDEN__  (INST     )
     EGNEUT_F = NEUT_F   ELGA__ RIGI    (X[30]    )
@@ -89,7 +89,7 @@ OPTION__
                               OUT__  XXXXXX   XXXXXX
     CHAR_LIMITE         -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
-% Garder commentarisé cette option pout utiliser le modèle de second-gradient avec la pesanteur
+% Garder commentarisé cette option pour utiliser le modèle de second-gradient avec la pesanteur
 %    CHAR_MECA_PESA_R     -1   IN__   NGEOMER  PGEOMER  CMATERC  PMATERC  CPESANR  PPESANR
 %                              OUT__  MVECTUR  PVECTUR
     ECIN_ELEM      -1    IN__   XXXXXX   XXXXXX
@@ -115,7 +115,7 @@ OPTION__
                                      NGEOMER  PGEOMER  CMATERC  PMATERC  ZVARIPG  PVARIMR
                               OUT__  ECODRET  PCODRET  ECONTPG  PCONTPR  MMATUNS  PMATUNS  ZVARIPG  PVARIPR
                                      MVECTUR  PVECTUR
-    INDI_LOCA_ELGA      30    IN__   CCOMPOR  PCOMPOR  ECONTPG  PCONTPR  CMATERC  PMATERC  ZVARIPG  PVARIPR
+    INDL_ELGA      30    IN__   CCOMPOR  PCOMPOR  ECONTPG  PCONTPR  CMATERC  PMATERC  ZVARIPG  PVARIPR
                               OUT__  EGINDLO  PINDLOC
     INDIC_ENER          -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX

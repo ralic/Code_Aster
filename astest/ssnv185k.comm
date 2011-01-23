@@ -1,9 +1,9 @@
-# MODIF  DATE 21/09/2010   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 25/01/2011   AUTEUR MACOCCO K.MACOCCO 
 # TITRE FISSURE DEBOUCHANTE DANS UNE PLAQUE 3D DE LARGEUR
 # ssnv185k.para = tps_job 100 mem_job 1024Mo mem_aster 70 ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -194,15 +194,12 @@ SIF1 = [None]*nbc
 for i in range(0,nbc) :
 
    SIF1[i]=CALC_G(RESULTAT=UTOT1,
-                 SYME_CHAR='SANS',
-                 COMP_ELAS=_F(RELATION='ELAS',),
                  OPTION='CALC_K_G',
                  THETA=_F(FISSURE=FISS1,
                           R_INF=RI[i],
                           R_SUP=RS[i],),
                  LISSAGE=_F(LISSAGE_THETA='LAGRANGE',
-                            LISSAGE_G='LAGRANGE',),
-                 INFO=1,);
+                            LISSAGE_G='LAGRANGE',),);
 
    IMPR_TABLE(TABLE=SIF1[i],);
 
@@ -211,15 +208,12 @@ SIF2 = [None]*nbc
 for i in range(0,nbc) :
 
    SIF2[i]=CALC_G(RESULTAT=UTOT1,
-                 SYME_CHAR='SANS',
-                 COMP_ELAS=_F(RELATION='ELAS',),
                  OPTION='CALC_K_G',
                  THETA=_F(FISSURE=FISS2,
                           R_INF=RI[i],
                           R_SUP=RS[i],),
                  LISSAGE=_F(LISSAGE_THETA='LAGRANGE',
-                            LISSAGE_G='LAGRANGE',),
-                 INFO=1,);
+                            LISSAGE_G='LAGRANGE',),);
 
    IMPR_TABLE(TABLE=SIF2[i],);
 
@@ -236,7 +230,7 @@ else :
 
 for i in range(0,nbc) :
    TEST_TABLE(TABLE=SIF1[i],
-              NOM_PARA='K1_LOCAL',
+              NOM_PARA='K1',
               TYPE_TEST='MAX',
               VALE=K1REF,
               CRITERE='RELATIF',
@@ -244,7 +238,7 @@ for i in range(0,nbc) :
               REFERENCE='ANALYTIQUE',);
 
    TEST_TABLE(TABLE=SIF1[i],
-              NOM_PARA='K1_LOCAL',
+              NOM_PARA='K1',
               TYPE_TEST='MIN',
               VALE=K1REF,
               CRITERE='RELATIF',
@@ -253,7 +247,7 @@ for i in range(0,nbc) :
 
 for i in range(0,nbc) :
    TEST_TABLE(TABLE=SIF2[i],
-              NOM_PARA='K1_LOCAL',
+              NOM_PARA='K1',
               TYPE_TEST='MAX',
               VALE=K1REF,
               CRITERE='RELATIF',
@@ -261,7 +255,7 @@ for i in range(0,nbc) :
               REFERENCE='ANALYTIQUE',);
 
    TEST_TABLE(TABLE=SIF2[i],
-              NOM_PARA='K1_LOCAL',
+              NOM_PARA='K1',
               TYPE_TEST='MIN',
               VALE=K1REF,
               CRITERE='RELATIF',

@@ -11,9 +11,9 @@
 
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/12/2010   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 25/01/2011   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -85,7 +85,9 @@ C
       REAL*8          HE,FE(4),DGDGL(4,3)
       REAL*8          XE(3),F(3,3),DFDIC(27,3)
       REAL*8          EPS(6),GRAD(3,3)
-
+      
+      LOGICAL         LTEATT, AXI
+      
       PARAMETER       (NBNOMX = 27)
 C ----------------------------------------------------------------------
 
@@ -93,6 +95,9 @@ C ----------------------------------------------------------------------
 
       CALL ELREF4(ELC,FPG,NDIMF,NNOF,IBID,IBID,IPOIDF,IVFF,
      &                                             IDFDEF,IBID)
+     
+      AXI = LTEATT(' ','AXIS','OUI')
+     
       CALL ASSERT(NNOF.EQ.3)
       CALL ASSERT(NDIM.EQ.3)
 
@@ -197,7 +202,8 @@ C         ESSAI AVEC LE PROJETE DE OY
        CALL PROVEC(ND1,TAU1,TAU2)
       ENDIF
 
-      CALL REEREF(ELREFP,NNO,NNO,IGEOM,G,IBID,.FALSE.,NDIM,HE,
+      CALL REEREF(ELREFP,AXI,NNO,NNO,IGEOM,G,IBID,.FALSE.,
+     &             NDIM,HE, RBID, RBID,
      &             IBID,IBID,DDLH,NFE,DDLS,DDLM,FE,DGDGL,CINEM,
      &             XE,FFP,DFDI,F,EPS,GRAD)
 
@@ -208,7 +214,8 @@ C         ESSAI AVEC LE PROJETE DE OY
 C     CALCUL DES FF DE L'ÉLÉMENT DE CONTACT EN CE POINT DE GAUSS
       CALL ELELIN(3,ELREFC,K8BID,NNOC,IBID)
 
-      CALL REEREF(ELREFC,NNOC,NNOC,IGEOM,G,IBID,.FALSE.,NDIM,HE,
+      CALL REEREF(ELREFC,AXI, NNOC,NNOC,IGEOM,G,IBID,.FALSE.,
+     &             NDIM,HE,RBID, RBID,
      &             IBID,IBID,DDLH,NFE,DDLS,DDLM,FE,DGDGL,CINEM,
      &             XE,FFPC,DFDIC,F,EPS,GRAD)
 

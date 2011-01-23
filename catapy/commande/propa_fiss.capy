@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 03/01/2011   AUTEUR MACOCCO K.MACOCCO 
+#& MODIF COMMANDE  DATE 25/01/2011   AUTEUR MACOCCO K.MACOCCO 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -100,7 +100,6 @@ PROPA_FISS=MACRO(nom="PROPA_FISS",op=propa_fiss_ops,sd_prod=propa_fiss_prod,
                                 FISS_ACTUELLE  = SIMP(statut='o',typ=fiss_xfem,max=1),
                                 MAIL_PROPAGE  = SIMP(statut='f',typ=CO,max=1),
                                 TABLE          = SIMP(statut='o',typ=table_sdaster,max=1),
-                                METHODE_POSTK  = SIMP(statut='f',typ='I',into=(1,2,3),max=1),
                                 DTAN_ORIG      = SIMP(statut='f',typ='R',max=3),
                                 DTAN_EXTR      = SIMP(statut='f',typ='R',max=3),
                                                     ),

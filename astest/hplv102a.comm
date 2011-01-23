@@ -1,9 +1,9 @@
 
-# MODIF  DATE 23/02/2010   AUTEUR HAELEWYN J.HAELEWYN 
+# MODIF  DATE 25/01/2011   AUTEUR MACOCCO K.MACOCCO 
 # TITRE CALCUL DE G THERMO-ELASTIQUE EN MILIEU INFINI
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -145,9 +145,7 @@ CHAM1=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',  OPERATION='EXTR',
 
 G1=CALC_G(        THETA=_F(THETA=CHAM1),
                   RESULTAT=RESU,NUME_ORDRE=1,
-                  EXCIT=_F(CHARGE=CH,),
-                  COMP_ELAS=_F(RELATION='ELAS',
-                               DEFORMATION='PETIT',),);
+                  EXCIT=_F(CHARGE=CH,),);
 
 THETA2=CALC_THETA(MODELE=MO,
                   DIRECTION=(1.0,0.0,0.0,),
@@ -158,9 +156,7 @@ THETA2=CALC_THETA(MODELE=MO,
 
 G2=CALC_G(        THETA=_F(THETA=THETA2),
                   RESULTAT=RESU,NUME_ORDRE=1,
-                  EXCIT=_F(CHARGE=CH,),
-                  COMP_ELAS=_F(RELATION='ELAS',
-                               DEFORMATION='PETIT',),);
+                  EXCIT=_F(CHARGE=CH,),);
 
 THETA3=CALC_THETA(MODELE=MO,
                   DIRECTION=(1.0,0.0,0.0,),
@@ -171,9 +167,7 @@ THETA3=CALC_THETA(MODELE=MO,
 
 G3=CALC_G(        THETA=_F(THETA=THETA3),
                   RESULTAT=RESU,NUME_ORDRE=1,
-                  EXCIT=_F(CHARGE=CH,),
-                  COMP_ELAS=_F(RELATION='ELAS',
-                               DEFORMATION='PETIT',),);
+                  EXCIT=_F(CHARGE=CH,),);
 
 THETA4=CALC_THETA(MODELE=MO,
                   DIRECTION=(1.0,0.0,0.0,),
@@ -184,9 +178,7 @@ THETA4=CALC_THETA(MODELE=MO,
 
 G4=CALC_G(        THETA=_F(THETA=THETA4),
                   RESULTAT=RESU,NUME_ORDRE=1,
-                  EXCIT=_F(CHARGE=CH,),
-                  COMP_ELAS=_F(RELATION='ELAS',
-                               DEFORMATION='PETIT',),);
+                  EXCIT=_F(CHARGE=CH,),);
 #--------------------------------------------------------------------
 #            TEST DES RESULTATS DE G                                #
 #--------------------------------------------------------------------

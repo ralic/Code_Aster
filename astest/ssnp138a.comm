@@ -1,9 +1,9 @@
-# MODIF  DATE 21/09/2010   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 25/01/2011   AUTEUR MACOCCO K.MACOCCO 
 # TITRE FISSURE INCLINEE EN 2D AVEC X-FEM
 # ssnp138a.para = tps_job 360 mem_job 256Mo mem_aster 50 ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -187,16 +187,13 @@ for i in range(nbcalc) :
   for j in range(0,nbc) :
     k = i*nbc + j
     SIF_1[k]=CALC_G(RESULTAT=UTOT1[i],
-                   SYME_CHAR='SANS',
                    OPTION='CALC_K_G',
                    THETA=_F(FISSURE=FISS[i],
-                            NUME_FOND=1,
                             R_INF=RI[j],
                             R_SUP=RS[j],),
                    INFO=2);
 
     SIF_2[k]=CALC_G(RESULTAT=UTOT1[i],
-                   SYME_CHAR='SANS',
                    OPTION='CALC_K_G',
                    THETA=_F(FISSURE=FISS[i],
                             NUME_FOND=2,
@@ -205,10 +202,7 @@ for i in range(nbcalc) :
                    INFO=2);
 
     TG_1[k]=CALC_G(RESULTAT=UTOT1[i],
-                   SYME_CHAR='SANS',
-                   OPTION='CALC_G',
                    THETA=_F(FISSURE=FISS[i],
-                            NUME_FOND=1,
                             R_INF=RI[j],
                             R_SUP=RS[j],),
                    INFO=2);
@@ -281,41 +275,27 @@ for i in range(nbcalc) :
   IMPR_TABLE(TABLE = PK[i])
   
   TEST_TABLE(TABLE=PK[i],
-              NOM_PARA='K1_MAX',
+              NOM_PARA='K1',
               VALE=K1REF,
               CRITERE='RELATIF',
               PRECISION=0.15,
-              REFERENCE='ANALYTIQUE',
-              FILTRE=( 
-#                        _F(  NOM_PARA = 'PT_FOND',  
-#                             VALE_I = 1,      ),
-                       _F(  NOM_PARA = 'METHODE',  
-                            VALE_I = 3,      ),     ),);
+              REFERENCE='ANALYTIQUE');
+
   if K2REF != 0. :
     TEST_TABLE(TABLE=PK[i],
-              NOM_PARA='K2_MAX',
+              NOM_PARA='K2',
               VALE=K2REF,
               CRITERE='RELATIF',
               PRECISION=0.16,
-              REFERENCE='ANALYTIQUE',
-              FILTRE=(
-#                        _F(  NOM_PARA = 'PT_FOND',  
-#                             VALE_I = 1,      ),
-                       _F(  NOM_PARA = 'METHODE',  
-                            VALE_I = 3,      ),     ),);
+              REFERENCE='ANALYTIQUE');
   
   else :
     TEST_TABLE(TABLE=PK[i],
-              NOM_PARA='K2_MAX',
+              NOM_PARA='K2',
               VALE=K2REF,
               CRITERE='ABSOLU',
               PRECISION=K1REF/1000.,
-              REFERENCE='ANALYTIQUE',
-              FILTRE=(
-#                        _F(  NOM_PARA = 'PT_FOND',  
-#                             VALE_I = 1,      ),
-                       _F(  NOM_PARA = 'METHODE',  
-                            VALE_I = 3,      ),     ),);
+              REFERENCE='ANALYTIQUE');
   
  
 

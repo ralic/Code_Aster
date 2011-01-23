@@ -1,4 +1,4 @@
-#@ MODIF miss_resu_aster Miss  DATE 03/01/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF miss_resu_aster Miss  DATE 25/01/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -70,7 +70,8 @@ def lire_resultat_aster(fich_aster):
         ln += lire_nb_valeurs(fobj, struct.maille_nb * struct.maille_dime, struct.maille_connec, int)
         # mode dynamiques
         ln += lire_nb_valeurs(fobj, struct.noeud_nb * 3, struct.mode_dyna_vale, double,
-                              struct.mode_dyna_nb, 1, max_per_line=3)
+                              struct.mode_dyna_nb, 1, max_per_line=3,
+                              regexp_label="MODE +DYNA")
         # modes dynamiques : fréquence
         ln += lire_nb_valeurs(fobj, struct.mode_dyna_nb, struct.mode_dyna_freq, double,
                               1, 1)
@@ -85,7 +86,8 @@ def lire_resultat_aster(fich_aster):
                               1, 1)
         # mode statiques
         ln += lire_nb_valeurs(fobj, struct.noeud_nb * 3, struct.mode_stat_vale, double,
-                              struct.mode_stat_nb, 1, max_per_line=3)
+                              struct.mode_stat_nb, 1, max_per_line=3,
+                              regexp_label="MODE +STAT +INTER")
         # modes statiques : masse
         ln += lire_nb_valeurs(fobj, struct.mode_stat_nb ** 2, struct.mode_stat_mass, double,
                               1, 1)
@@ -121,8 +123,7 @@ def lire_resultat_aster(fich_aster):
 
 
 class STRUCT_RESULTAT:
-    """Simple conteneur.
-    """
+    """Simple conteneur."""
     titre = ""
     noeud_nb = 0
     noeud_coor = []
@@ -147,18 +148,33 @@ class STRUCT_RESULTAT:
 
 
     def check(self):
+        """Vérifications."""
         assert len(self.noeud_coor) == self.noeud_nb * 3
         assert len(self.maille_connec) == self.maille_nb * self.maille_dime
-        assert len(self.mode_dyna_vale) == self.mode_dyna_nb * self.noeud_nb * 3
+        assert len(self.mode_dyna_vale) == 0 \
+            or len(self.mode_dyna_vale) == self.mode_dyna_nb * self.noeud_nb * 3
         assert len(self.mode_dyna_freq) == self.mode_dyna_nb
         assert len(self.mode_dyna_amor) == self.mode_dyna_nb
         assert len(self.mode_dyna_mass) == self.mode_dyna_nb
         assert len(self.mode_dyna_rigi) == self.mode_dyna_nb
-        assert len(self.mode_stat_vale) == self.mode_stat_nb * self.noeud_nb * 3
+        assert len(self.mode_stat_vale) == 0 \
+            or len(self.mode_stat_vale) == self.mode_stat_nb * self.noeud_nb * 3
         assert len(self.mode_stat_mass) == self.mode_stat_nb ** 2
         assert len(self.mode_stat_rigi) == self.mode_stat_nb ** 2
         assert self.coupl_nb == (self.mode_dyna_nb, self.mode_stat_nb)
         assert len(self.coupl_mass) == self.mode_dyna_nb * self.mode_stat_nb
         assert len(self.coupl_rigi) == self.mode_dyna_nb * self.mode_stat_nb
 
+
+    def repr(self):
+        """Pour deboggage"""
+        txt = []
+        for attr in dir(self):
+            val = getattr(self, attr)
+            if attr.startswith('_') or callable(val):
+                continue
+            if type(val) in (list, tuple):
+                val = val[:8]
+            txt.append("%-14s : %s" % (attr, val))
+        return os.linesep.join(txt)
 

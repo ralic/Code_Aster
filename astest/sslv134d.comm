@@ -1,9 +1,9 @@
-# MODIF  DATE 07/12/2010   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 25/01/2011   AUTEUR MACOCCO K.MACOCCO 
 # TITRE CALCUL 3D DE G FISSURE CIRCULAIRE EN MILIEU INFINI
 # sslv134d.para = tps_job 120 mem_job 250Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
@@ -223,7 +223,7 @@ GLOC1=CALC_G(THETA=_F(FOND_FISS=FISS,
 TEST_TABLE(TABLE=GLOC1,
            FILTRE=_F(NOM_PARA='NOEUD',
                      VALE_K='N49',),
-           NOM_PARA='G_LOCAL',
+           NOM_PARA='G',
            VALE=GLOC1REF,
            PRECISION=0.03,
            REFERENCE='ANALYTIQUE',);
@@ -231,7 +231,7 @@ TEST_TABLE(TABLE=GLOC1,
 TEST_TABLE(TABLE=GLOC1,
            FILTRE=_F(NOM_PARA='NOEUD',
                      VALE_K='N1710',),
-           NOM_PARA='G_LOCAL',
+           NOM_PARA='G',
            VALE=GLOC1REF,
            PRECISION=0.02,
            REFERENCE='ANALYTIQUE',);
@@ -239,7 +239,7 @@ TEST_TABLE(TABLE=GLOC1,
 TEST_TABLE(TABLE=GLOC1,
            FILTRE=_F(NOM_PARA='NOEUD',
                      VALE_K='N77',),
-           NOM_PARA='G_LOCAL',
+           NOM_PARA='G',
            VALE=GLOC1REF,
            PRECISION=0.03,
            REFERENCE='ANALYTIQUE',);
@@ -328,201 +328,44 @@ TABK1A3=POST_K1_K2_K3(MODELISATION='3D',
 K1 = 1595769.0;
 
 # ---------------
-
 TEST_TABLE(TABLE=TABK1A1,
-           FILTRE=_F(NOM_PARA='METHODE',
-                     VALE_I=1,),
-           NOM_PARA='K1_MAX',
+           NOM_PARA='K1',
            VALE=K1,
-           PRECISION=0.01,
+           PRECISION=0.05,
            REFERENCE='AUTRE_ASTER',);
 
 TEST_TABLE(TABLE=TABK1A1,
-           FILTRE=_F(NOM_PARA='METHODE',
-                     VALE_I=1,),
-           NOM_PARA='K1_MIN',
-           VALE=K1,
-           PRECISION=0.007,
-           REFERENCE='AUTRE_ASTER',);
-
-TEST_TABLE(TABLE=TABK1A1,
-           FILTRE=_F(NOM_PARA='METHODE',
-                     VALE_I=1,),
-           NOM_PARA='G_MAX',
+           NOM_PARA='G',
            VALE=GLOC1REF,
-           PRECISION=0.015,
-           REFERENCE='AUTRE_ASTER',);
-
-TEST_TABLE(TABLE=TABK1A1,
-           FILTRE=_F(NOM_PARA='METHODE',
-                     VALE_I=1,),
-           NOM_PARA='G_MIN',
-           VALE=GLOC1REF,
-           PRECISION=0.01,
-           REFERENCE='AUTRE_ASTER',);
-
-TEST_TABLE(TABLE=TABK1A1,
-           FILTRE=_F(NOM_PARA='METHODE',
-                     VALE_I=2,),
-           NOM_PARA='K1_MAX',
-           VALE=K1,
-           PRECISION=0.003,
-           REFERENCE='AUTRE_ASTER',);
-
-TEST_TABLE(TABLE=TABK1A1,
-           FILTRE=_F(NOM_PARA='METHODE',
-                     VALE_I=2,),
-           NOM_PARA='K1_MIN',
-           VALE=K1,
-           PRECISION=0.08,
-           REFERENCE='AUTRE_ASTER',);
-
-TEST_TABLE(TABLE=TABK1A1,
-           FILTRE=_F(NOM_PARA='METHODE',
-                     VALE_I=2,),
-           NOM_PARA='G_MAX',
-           VALE=GLOC1REF,
-           PRECISION=0.005,
-           REFERENCE='AUTRE_ASTER',);
-
-TEST_TABLE(TABLE=TABK1A1,
-           FILTRE=_F(NOM_PARA='METHODE',
-                     VALE_I=2,),
-           NOM_PARA='G_MIN',
-           VALE=GLOC1REF,
-           PRECISION=0.14,
+           PRECISION=0.1,
            REFERENCE='AUTRE_ASTER',);
 
 # ---------------
 
 TEST_TABLE(TABLE=TABK1A2,
-           FILTRE=_F(NOM_PARA='METHODE',
-                     VALE_I=1,),
-           NOM_PARA='K1_MAX',
+           NOM_PARA='K1',
            VALE=K1,
-           PRECISION=0.01,
+           PRECISION=0.05,
            REFERENCE='AUTRE_ASTER',);
 
 TEST_TABLE(TABLE=TABK1A2,
-           FILTRE=_F(NOM_PARA='METHODE',
-                     VALE_I=1,),
-           NOM_PARA='K1_MIN',
-           VALE=K1,
-           PRECISION=0.004,
-           REFERENCE='AUTRE_ASTER',);
-
-TEST_TABLE(TABLE=TABK1A2,
-           FILTRE=_F(NOM_PARA='METHODE',
-                     VALE_I=1,),
-           NOM_PARA='G_MAX',
+           NOM_PARA='G',
            VALE=GLOC1REF,
-           PRECISION=0.015,
-           REFERENCE='AUTRE_ASTER',);
-
-TEST_TABLE(TABLE=TABK1A2,
-           FILTRE=_F(NOM_PARA='METHODE',
-                     VALE_I=1,),
-           NOM_PARA='G_MIN',
-           VALE=GLOC1REF,
-           PRECISION=0.008,
-           REFERENCE='AUTRE_ASTER',);
-
-TEST_TABLE(TABLE=TABK1A2,
-           FILTRE=_F(NOM_PARA='METHODE',
-                     VALE_I=2,),
-           NOM_PARA='K1_MAX',
-           VALE=K1,
-           PRECISION=0.003,
-           REFERENCE='AUTRE_ASTER',);
-
-TEST_TABLE(TABLE=TABK1A2,
-           FILTRE=_F(NOM_PARA='METHODE',
-                     VALE_I=2,),
-           NOM_PARA='K1_MIN',
-           VALE=K1,
-           PRECISION=0.08,
-           REFERENCE='AUTRE_ASTER',);
-
-TEST_TABLE(TABLE=TABK1A2,
-           FILTRE=_F(NOM_PARA='METHODE',
-                     VALE_I=2,),
-           NOM_PARA='G_MAX',
-           VALE=GLOC1REF,
-           PRECISION=0.005,
-           REFERENCE='AUTRE_ASTER',);
-
-TEST_TABLE(TABLE=TABK1A2,
-           FILTRE=_F(NOM_PARA='METHODE',
-                     VALE_I=2,),
-           NOM_PARA='G_MIN',
-           VALE=GLOC1REF,
-           PRECISION=0.14,
+           PRECISION=0.1,
            REFERENCE='AUTRE_ASTER',);
 
 # ---------------
 
 TEST_TABLE(TABLE=TABK1A3,
-           FILTRE=_F(NOM_PARA='METHODE',
-                     VALE_I=1,),
-           NOM_PARA='K1_MAX',
+           NOM_PARA='K1',
            VALE=K1,
-           PRECISION=0.007,
+           PRECISION=0.05,
            REFERENCE='AUTRE_ASTER',);
 
 TEST_TABLE(TABLE=TABK1A3,
-           FILTRE=_F(NOM_PARA='METHODE',
-                     VALE_I=1,),
-           NOM_PARA='K1_MIN',
-           VALE=K1,
-           PRECISION=0.004,
-           REFERENCE='AUTRE_ASTER',);
-
-TEST_TABLE(TABLE=TABK1A3,
-           FILTRE=_F(NOM_PARA='METHODE',
-                     VALE_I=1,),
-           NOM_PARA='G_MAX',
+           NOM_PARA='G',
            VALE=GLOC1REF,
-           PRECISION=0.015,
-           REFERENCE='AUTRE_ASTER',);
-
-TEST_TABLE(TABLE=TABK1A3,
-           FILTRE=_F(NOM_PARA='METHODE',
-                     VALE_I=1,),
-           NOM_PARA='G_MIN',
-           VALE=GLOC1REF,
-           PRECISION=0.011,
-           REFERENCE='AUTRE_ASTER',);
-
-TEST_TABLE(TABLE=TABK1A3,
-           FILTRE=_F(NOM_PARA='METHODE',
-                     VALE_I=2,),
-           NOM_PARA='K1_MAX',
-           VALE=K1,
-           PRECISION=0.008,
-           REFERENCE='AUTRE_ASTER',);
-
-TEST_TABLE(TABLE=TABK1A3,
-           FILTRE=_F(NOM_PARA='METHODE',
-                     VALE_I=2,),
-           NOM_PARA='K1_MIN',
-           VALE=K1,
-           PRECISION=0.08,
-           REFERENCE='AUTRE_ASTER',);
-
-TEST_TABLE(TABLE=TABK1A3,
-           FILTRE=_F(NOM_PARA='METHODE',
-                     VALE_I=2,),
-           NOM_PARA='G_MAX',
-           VALE=GLOC1REF,
-           PRECISION=0.005,
-           REFERENCE='AUTRE_ASTER',);
-
-TEST_TABLE(TABLE=TABK1A3,
-           FILTRE=_F(NOM_PARA='METHODE',
-                     VALE_I=2,),
-           NOM_PARA='G_MIN',
-           VALE=GLOC1REF,
-           PRECISION=0.14,
+           PRECISION=0.1,
            REFERENCE='AUTRE_ASTER',);
 
 # EMPLOI DE FORMULE POUR DEFINIR LA TORSION
@@ -589,7 +432,7 @@ GLOC3=CALC_G(THETA=_F(FOND_FISS=FISS,
 TEST_TABLE(TABLE=GLOC3,
            FILTRE=_F(NOM_PARA='NOEUD',
                      VALE_K='N49',),
-           NOM_PARA='G_LOCAL',
+           NOM_PARA='G',
            VALE=GLOC3REF,
            PRECISION=0.03,
            REFERENCE='ANALYTIQUE',);
@@ -597,7 +440,7 @@ TEST_TABLE(TABLE=GLOC3,
 TEST_TABLE(TABLE=GLOC3,
            FILTRE=_F(NOM_PARA='NOEUD',
                      VALE_K='N1710',),
-           NOM_PARA='G_LOCAL',
+           NOM_PARA='G',
            VALE=GLOC3REF,
            PRECISION=0.02,
            REFERENCE='ANALYTIQUE',);
@@ -605,7 +448,7 @@ TEST_TABLE(TABLE=GLOC3,
 TEST_TABLE(TABLE=GLOC3,
            FILTRE=_F(NOM_PARA='NOEUD',
                      VALE_K='N77',),
-           NOM_PARA='G_LOCAL',
+           NOM_PARA='G',
            VALE=GLOC3REF,
            PRECISION=0.03,
            REFERENCE='ANALYTIQUE',);
@@ -695,200 +538,46 @@ K3 = -1063846.0;
 # ---------------
 
 TEST_TABLE(TABLE=TABK3A1,
-           FILTRE=_F(NOM_PARA='METHODE',
-                     VALE_I=1,),
-           NOM_PARA='K3_MAX',
+           NOM_PARA='K3',
            VALE=K3,
-           PRECISION=0.01,
+           PRECISION=0.09,
            REFERENCE='AUTRE_ASTER',);
 
 TEST_TABLE(TABLE=TABK3A1,
-           FILTRE=_F(NOM_PARA='METHODE',
-                     VALE_I=1,),
-           NOM_PARA='K3_MIN',
-           VALE=K3,
-           PRECISION=0.01,
-           REFERENCE='AUTRE_ASTER',);
-
-TEST_TABLE(TABLE=TABK3A1,
-           FILTRE=_F(NOM_PARA='METHODE',
-                     VALE_I=1,),
-           NOM_PARA='G_MAX',
+           NOM_PARA='G',
            VALE=GLOC3REF,
-           PRECISION=0.01,
-           REFERENCE='AUTRE_ASTER',);
-
-TEST_TABLE(TABLE=TABK3A1,
-           FILTRE=_F(NOM_PARA='METHODE',
-                     VALE_I=1,),
-           NOM_PARA='G_MIN',
-           VALE=GLOC3REF,
-           PRECISION=0.015,
-           REFERENCE='AUTRE_ASTER',);
-
-TEST_TABLE(TABLE=TABK3A1,
-           FILTRE=_F(NOM_PARA='METHODE',
-                     VALE_I=2,),
-           NOM_PARA='K3_MAX',
-           VALE=K3,
-           PRECISION=0.025,
-           REFERENCE='AUTRE_ASTER',);
-
-TEST_TABLE(TABLE=TABK3A1,
-           FILTRE=_F(NOM_PARA='METHODE',
-                     VALE_I=2,),
-           NOM_PARA='K3_MIN',
-           VALE=K3,
-           PRECISION=0.12,
-           REFERENCE='AUTRE_ASTER',);
-
-TEST_TABLE(TABLE=TABK3A1,
-           FILTRE=_F(NOM_PARA='METHODE',
-                     VALE_I=2,),
-           NOM_PARA='G_MAX',
-           VALE=GLOC3REF,
-           PRECISION=0.05,
-           REFERENCE='AUTRE_ASTER',);
-
-TEST_TABLE(TABLE=TABK3A1,
-           FILTRE=_F(NOM_PARA='METHODE',
-                     VALE_I=2,),
-           NOM_PARA='G_MIN',
-           VALE=GLOC3REF,
-           PRECISION=0.22,
+           PRECISION=0.165,
            REFERENCE='AUTRE_ASTER',);
 
 # ---------------
 
+
 TEST_TABLE(TABLE=TABK3A2,
-           FILTRE=_F(NOM_PARA='METHODE',
-                     VALE_I=1,),
-           NOM_PARA='K3_MAX',
+           NOM_PARA='K3',
            VALE=K3,
-           PRECISION=0.01,
+           PRECISION=0.09,
            REFERENCE='AUTRE_ASTER',);
 
 TEST_TABLE(TABLE=TABK3A2,
-           FILTRE=_F(NOM_PARA='METHODE',
-                     VALE_I=1,),
-           NOM_PARA='K3_MIN',
-           VALE=K3,
-           PRECISION=0.01,
-           REFERENCE='AUTRE_ASTER',);
-
-TEST_TABLE(TABLE=TABK3A2,
-           FILTRE=_F(NOM_PARA='METHODE',
-                     VALE_I=1,),
-           NOM_PARA='G_MAX',
+           NOM_PARA='G',
            VALE=GLOC3REF,
-           PRECISION=0.01,
-           REFERENCE='AUTRE_ASTER',);
-
-TEST_TABLE(TABLE=TABK3A2,
-           FILTRE=_F(NOM_PARA='METHODE',
-                     VALE_I=1,),
-           NOM_PARA='G_MIN',
-           VALE=GLOC3REF,
-           PRECISION=0.015,
-           REFERENCE='AUTRE_ASTER',);
-
-TEST_TABLE(TABLE=TABK3A2,
-           FILTRE=_F(NOM_PARA='METHODE',
-                     VALE_I=2,),
-           NOM_PARA='K3_MAX',
-           VALE=K3,
-           PRECISION=0.03,
-           REFERENCE='AUTRE_ASTER',);
-
-TEST_TABLE(TABLE=TABK3A2,
-           FILTRE=_F(NOM_PARA='METHODE',
-                     VALE_I=2,),
-           NOM_PARA='K3_MIN',
-           VALE=K3,
-           PRECISION=0.12,
-           REFERENCE='AUTRE_ASTER',);
-
-TEST_TABLE(TABLE=TABK3A2,
-           FILTRE=_F(NOM_PARA='METHODE',
-                     VALE_I=2,),
-           NOM_PARA='G_MAX',
-           VALE=GLOC3REF,
-           PRECISION=0.05,
-           REFERENCE='AUTRE_ASTER',);
-
-TEST_TABLE(TABLE=TABK3A2,
-           FILTRE=_F(NOM_PARA='METHODE',
-                     VALE_I=2,),
-           NOM_PARA='G_MIN',
-           VALE=GLOC3REF,
-           PRECISION=0.22,
+           PRECISION=0.165,
            REFERENCE='AUTRE_ASTER',);
 
 # ---------------
 
 TEST_TABLE(TABLE=TABK3A3,
-           FILTRE=_F(NOM_PARA='METHODE',
-                     VALE_I=1,),
-           NOM_PARA='K3_MAX',
+           NOM_PARA='K3',
            VALE=K3,
-           PRECISION=0.01,
+           PRECISION=0.09,
            REFERENCE='AUTRE_ASTER',);
 
 TEST_TABLE(TABLE=TABK3A3,
-           FILTRE=_F(NOM_PARA='METHODE',
-                     VALE_I=1,),
-           NOM_PARA='K3_MIN',
-           VALE=K3,
-           PRECISION=0.01,
-           REFERENCE='AUTRE_ASTER',);
-
-TEST_TABLE(TABLE=TABK3A3,
-           FILTRE=_F(NOM_PARA='METHODE',
-                     VALE_I=1,),
-           NOM_PARA='G_MAX',
+           NOM_PARA='G',
            VALE=GLOC3REF,
-           PRECISION=0.01,
+           PRECISION=0.165,
            REFERENCE='AUTRE_ASTER',);
 
-TEST_TABLE(TABLE=TABK3A3,
-           FILTRE=_F(NOM_PARA='METHODE',
-                     VALE_I=1,),
-           NOM_PARA='G_MIN',
-           VALE=GLOC3REF,
-           PRECISION=0.015,
-           REFERENCE='AUTRE_ASTER',);
-
-TEST_TABLE(TABLE=TABK3A3,
-           FILTRE=_F(NOM_PARA='METHODE',
-                     VALE_I=2,),
-           NOM_PARA='K3_MAX',
-           VALE=K3,
-           PRECISION=0.025,
-           REFERENCE='AUTRE_ASTER',);
-
-TEST_TABLE(TABLE=TABK3A3,
-           FILTRE=_F(NOM_PARA='METHODE',
-                     VALE_I=2,),
-           NOM_PARA='K3_MIN',
-           VALE=K3,
-           PRECISION=0.12,
-           REFERENCE='AUTRE_ASTER',);
-
-TEST_TABLE(TABLE=TABK3A3,
-           FILTRE=_F(NOM_PARA='METHODE',
-                     VALE_I=2,),
-           NOM_PARA='G_MAX',
-           VALE=GLOC3REF,
-           PRECISION=0.05,
-           REFERENCE='AUTRE_ASTER',);
-
-TEST_TABLE(TABLE=TABK3A3,
-           FILTRE=_F(NOM_PARA='METHODE',
-                     VALE_I=2,),
-           NOM_PARA='G_MIN',
-           VALE=GLOC3REF,
-           PRECISION=0.22,
-           REFERENCE='AUTRE_ASTER',);
 
 DEP13=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
                  OPTION='DEPL',
@@ -927,7 +616,7 @@ GLOC13=CALC_G(THETA=_F(FOND_FISS=FISS,
 TEST_TABLE(TABLE=GLOC13,
            FILTRE=_F(NOM_PARA='NOEUD',
                      VALE_K='N49',),
-           NOM_PARA='G_LOCAL',
+           NOM_PARA='G',
            VALE=GL13REF,
            PRECISION=0.03,
            REFERENCE='ANALYTIQUE',);
@@ -935,7 +624,7 @@ TEST_TABLE(TABLE=GLOC13,
 TEST_TABLE(TABLE=GLOC13,
            FILTRE=_F(NOM_PARA='NOEUD',
                      VALE_K='N1710',),
-           NOM_PARA='G_LOCAL',
+           NOM_PARA='G',
            VALE=GL13REF,
            PRECISION=0.02,
            REFERENCE='ANALYTIQUE',);
@@ -943,7 +632,7 @@ TEST_TABLE(TABLE=GLOC13,
 TEST_TABLE(TABLE=GLOC13,
            FILTRE=_F(NOM_PARA='NOEUD',
                      VALE_K='N77',),
-           NOM_PARA='G_LOCAL',
+           NOM_PARA='G',
            VALE=GL13REF,
            PRECISION=0.03,
            REFERENCE='ANALYTIQUE',);
@@ -1026,35 +715,9 @@ TABK13A3=POST_K1_K2_K3(MODELISATION='3D',
 # ---------------
 
 TEST_TABLE(TABLE=TABK13A1,
-           FILTRE=_F(NOM_PARA='METHODE',
-                     VALE_I=1,),
-           NOM_PARA='K1_MAX',
+           NOM_PARA='K1',
            VALE=K1,
-           PRECISION=0.01,
-           REFERENCE='AUTRE_ASTER',);
-
-TEST_TABLE(TABLE=TABK13A1,
-           FILTRE=_F(NOM_PARA='METHODE',
-                     VALE_I=1,),
-           NOM_PARA='K1_MIN',
-           VALE=K1,
-           PRECISION=0.007,
-           REFERENCE='AUTRE_ASTER',);
-
-TEST_TABLE(TABLE=TABK13A1,
-           FILTRE=_F(NOM_PARA='METHODE',
-                     VALE_I=2,),
-           NOM_PARA='K1_MAX',
-           VALE=K1,
-           PRECISION=0.003,
-           REFERENCE='AUTRE_ASTER',);
-
-TEST_TABLE(TABLE=TABK13A1,
-           FILTRE=_F(NOM_PARA='METHODE',
-                     VALE_I=2,),
-           NOM_PARA='K1_MIN',
-           VALE=K1,
-           PRECISION=0.08,
+           PRECISION=0.02,
            REFERENCE='AUTRE_ASTER',);
 
 # TEST DE K1
@@ -1062,69 +725,17 @@ TEST_TABLE(TABLE=TABK13A1,
 # ---------------
 
 TEST_TABLE(TABLE=TABK13A2,
-           FILTRE=_F(NOM_PARA='METHODE',
-                     VALE_I=1,),
-           NOM_PARA='K1_MAX',
+           NOM_PARA='K1',
            VALE=K1,
-           PRECISION=0.01,
-           REFERENCE='AUTRE_ASTER',);
-
-TEST_TABLE(TABLE=TABK13A2,
-           FILTRE=_F(NOM_PARA='METHODE',
-                     VALE_I=1,),
-           NOM_PARA='K1_MIN',
-           VALE=K1,
-           PRECISION=0.004,
-           REFERENCE='AUTRE_ASTER',);
-
-TEST_TABLE(TABLE=TABK13A2,
-           FILTRE=_F(NOM_PARA='METHODE',
-                     VALE_I=2,),
-           NOM_PARA='K1_MAX',
-           VALE=K1,
-           PRECISION=0.003,
-           REFERENCE='AUTRE_ASTER',);
-
-TEST_TABLE(TABLE=TABK13A2,
-           FILTRE=_F(NOM_PARA='METHODE',
-                     VALE_I=2,),
-           NOM_PARA='K1_MIN',
-           VALE=K1,
-           PRECISION=0.08,
+           PRECISION=0.02,
            REFERENCE='AUTRE_ASTER',);
 
 # ---------------
 
 TEST_TABLE(TABLE=TABK13A3,
-           FILTRE=_F(NOM_PARA='METHODE',
-                     VALE_I=1,),
-           NOM_PARA='K1_MAX',
+           NOM_PARA='K1',
            VALE=K1,
-           PRECISION=0.007,
-           REFERENCE='AUTRE_ASTER',);
-
-TEST_TABLE(TABLE=TABK13A3,
-           FILTRE=_F(NOM_PARA='METHODE',
-                     VALE_I=1,),
-           NOM_PARA='K1_MIN',
-           VALE=K1,
-           PRECISION=0.004,
-           REFERENCE='AUTRE_ASTER',);
-
-TEST_TABLE(TABLE=TABK13A3,
-           FILTRE=_F(NOM_PARA='METHODE',
-                     VALE_I=2,),
-           NOM_PARA='K1_MAX',
-           VALE=K1,
-           PRECISION=0.008,
-           REFERENCE='AUTRE_ASTER',);
-
-TEST_TABLE(TABLE=TABK13A3,
-           FILTRE=_F(NOM_PARA='METHODE',
-                     VALE_I=2,),
-           NOM_PARA='K1_MIN',
-           VALE=K1,
-           PRECISION=0.08,
+           PRECISION=0.02,
            REFERENCE='AUTRE_ASTER',);
 
 # TEST DE K3 ET G
@@ -1132,199 +743,44 @@ TEST_TABLE(TABLE=TABK13A3,
 # ---------------
 
 TEST_TABLE(TABLE=TABK13A1,
-           FILTRE=_F(NOM_PARA='METHODE',
-                     VALE_I=1,),
-           NOM_PARA='K3_MAX',
+           NOM_PARA='K3',
            VALE=K3,
-           PRECISION=0.01,
+           PRECISION=0.09,
            REFERENCE='AUTRE_ASTER',);
 
 TEST_TABLE(TABLE=TABK13A1,
-           FILTRE=_F(NOM_PARA='METHODE',
-                     VALE_I=1,),
-           NOM_PARA='K3_MIN',
-           VALE=K3,
-           PRECISION=0.01,
-           REFERENCE='AUTRE_ASTER',);
-
-TEST_TABLE(TABLE=TABK13A1,
-           FILTRE=_F(NOM_PARA='METHODE',
-                     VALE_I=1,),
-           NOM_PARA='G_MAX',
+           NOM_PARA='G',
            VALE=GL13REF,
-           PRECISION=0.01,
+           PRECISION=0.08,
            REFERENCE='AUTRE_ASTER',);
 
-TEST_TABLE(TABLE=TABK13A1,
-           FILTRE=_F(NOM_PARA='METHODE',
-                     VALE_I=1,),
-           NOM_PARA='G_MIN',
-           VALE=GL13REF,
-           PRECISION=0.015,
-           REFERENCE='AUTRE_ASTER',);
-
-TEST_TABLE(TABLE=TABK13A1,
-           FILTRE=_F(NOM_PARA='METHODE',
-                     VALE_I=2,),
-           NOM_PARA='K3_MAX',
-           VALE=K3,
-           PRECISION=0.025,
-           REFERENCE='AUTRE_ASTER',);
-
-TEST_TABLE(TABLE=TABK13A1,
-           FILTRE=_F(NOM_PARA='METHODE',
-                     VALE_I=2,),
-           NOM_PARA='K3_MIN',
-           VALE=K3,
-           PRECISION=0.12,
-           REFERENCE='AUTRE_ASTER',);
-
-TEST_TABLE(TABLE=TABK13A1,
-           FILTRE=_F(NOM_PARA='METHODE',
-                     VALE_I=2,),
-           NOM_PARA='G_MAX',
-           VALE=GL13REF,
-           PRECISION=0.05,
-           REFERENCE='AUTRE_ASTER',);
-
-TEST_TABLE(TABLE=TABK13A1,
-           FILTRE=_F(NOM_PARA='METHODE',
-                     VALE_I=2,),
-           NOM_PARA='G_MIN',
-           VALE=GL13REF,
-           PRECISION=0.22,
-           REFERENCE='AUTRE_ASTER',);
 
 # ---------------
 
 TEST_TABLE(TABLE=TABK13A2,
-           FILTRE=_F(NOM_PARA='METHODE',
-                     VALE_I=1,),
-           NOM_PARA='K3_MAX',
+           NOM_PARA='K3',
            VALE=K3,
-           PRECISION=0.01,
+           PRECISION=0.09,
            REFERENCE='AUTRE_ASTER',);
 
 TEST_TABLE(TABLE=TABK13A2,
-           FILTRE=_F(NOM_PARA='METHODE',
-                     VALE_I=1,),
-           NOM_PARA='K3_MIN',
-           VALE=K3,
-           PRECISION=0.01,
-           REFERENCE='AUTRE_ASTER',);
-
-TEST_TABLE(TABLE=TABK13A2,
-           FILTRE=_F(NOM_PARA='METHODE',
-                     VALE_I=1,),
-           NOM_PARA='G_MAX',
+           NOM_PARA='G',
            VALE=GL13REF,
-           PRECISION=0.01,
-           REFERENCE='AUTRE_ASTER',);
-
-TEST_TABLE(TABLE=TABK13A2,
-           FILTRE=_F(NOM_PARA='METHODE',
-                     VALE_I=1,),
-           NOM_PARA='G_MIN',
-           VALE=GL13REF,
-           PRECISION=0.015,
-           REFERENCE='AUTRE_ASTER',);
-
-TEST_TABLE(TABLE=TABK13A2,
-           FILTRE=_F(NOM_PARA='METHODE',
-                     VALE_I=2,),
-           NOM_PARA='K3_MAX',
-           VALE=K3,
-           PRECISION=0.03,
-           REFERENCE='AUTRE_ASTER',);
-
-TEST_TABLE(TABLE=TABK13A2,
-           FILTRE=_F(NOM_PARA='METHODE',
-                     VALE_I=2,),
-           NOM_PARA='K3_MIN',
-           VALE=K3,
-           PRECISION=0.12,
-           REFERENCE='AUTRE_ASTER',);
-
-TEST_TABLE(TABLE=TABK13A2,
-           FILTRE=_F(NOM_PARA='METHODE',
-                     VALE_I=2,),
-           NOM_PARA='G_MAX',
-           VALE=GL13REF,
-           PRECISION=0.05,
-           REFERENCE='AUTRE_ASTER',);
-
-TEST_TABLE(TABLE=TABK13A2,
-           FILTRE=_F(NOM_PARA='METHODE',
-                     VALE_I=2,),
-           NOM_PARA='G_MIN',
-           VALE=GL13REF,
-           PRECISION=0.22,
+           PRECISION=0.08,
            REFERENCE='AUTRE_ASTER',);
 
 # ---------------
 
 TEST_TABLE(TABLE=TABK13A3,
-           FILTRE=_F(NOM_PARA='METHODE',
-                     VALE_I=1,),
-           NOM_PARA='K3_MAX',
+           NOM_PARA='K3',
            VALE=K3,
-           PRECISION=0.01,
+           PRECISION=0.09,
            REFERENCE='AUTRE_ASTER',);
 
 TEST_TABLE(TABLE=TABK13A3,
-           FILTRE=_F(NOM_PARA='METHODE',
-                     VALE_I=1,),
-           NOM_PARA='K3_MIN',
-           VALE=K3,
-           PRECISION=0.01,
-           REFERENCE='AUTRE_ASTER',);
-
-TEST_TABLE(TABLE=TABK13A3,
-           FILTRE=_F(NOM_PARA='METHODE',
-                     VALE_I=1,),
-           NOM_PARA='G_MAX',
+           NOM_PARA='G',
            VALE=GL13REF,
-           PRECISION=0.01,
-           REFERENCE='AUTRE_ASTER',);
-
-TEST_TABLE(TABLE=TABK13A3,
-           FILTRE=_F(NOM_PARA='METHODE',
-                     VALE_I=1,),
-           NOM_PARA='G_MIN',
-           VALE=GL13REF,
-           PRECISION=0.015,
-           REFERENCE='AUTRE_ASTER',);
-
-TEST_TABLE(TABLE=TABK13A3,
-           FILTRE=_F(NOM_PARA='METHODE',
-                     VALE_I=2,),
-           NOM_PARA='K3_MAX',
-           VALE=K3,
-           PRECISION=0.025,
-           REFERENCE='AUTRE_ASTER',);
-
-TEST_TABLE(TABLE=TABK13A3,
-           FILTRE=_F(NOM_PARA='METHODE',
-                     VALE_I=2,),
-           NOM_PARA='K3_MIN',
-           VALE=K3,
-           PRECISION=0.12,
-           REFERENCE='AUTRE_ASTER',);
-
-TEST_TABLE(TABLE=TABK13A3,
-           FILTRE=_F(NOM_PARA='METHODE',
-                     VALE_I=2,),
-           NOM_PARA='G_MAX',
-           VALE=GL13REF,
-           PRECISION=0.05,
-           REFERENCE='AUTRE_ASTER',);
-
-TEST_TABLE(TABLE=TABK13A3,
-           FILTRE=_F(NOM_PARA='METHODE',
-                     VALE_I=2,),
-           NOM_PARA='G_MIN',
-           VALE=GL13REF,
-           PRECISION=0.22,
+           PRECISION=0.9,
            REFERENCE='AUTRE_ASTER',);
 
 ### TEST VALEUR ESTIMATEUR D'ERREUR EN RESIDU

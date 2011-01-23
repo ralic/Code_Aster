@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 25/01/2011   AUTEUR MACOCCO K.MACOCCO 
 # TITRE CALCUL DES FACTEURS D INTENSITE DES CONTRAINTES 
 # sdls114a.para = tps_job 240 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -155,7 +155,6 @@ GLMO1=CALC_G(OPTION='K_G_MODA',
              RESULTAT=MODE,
              TOUT_MODE = 'OUI',
              THETA=_F(FOND_FISS=FF1,
-                      MODULE=1.0,
                       R_INF=5.E-6,
                       R_SUP=5.E-5,
                       DIRECTION = (-1.0, 0.0, 0.0),),
@@ -217,9 +216,7 @@ for i in range(0,5) :
              );
              
    TEST_TABLE(TABLE=T1_K[i],
-              NOM_PARA='K1_MAX',
-              FILTRE=_F(NOM_PARA = 'METHODE',
-                         VALE_I = 3),  
+              NOM_PARA='K1',
               VALE=Ku_ref[i],
               PRECISION=0.001,
               REFERENCE = 'NON_REGRESSION',
@@ -287,7 +284,6 @@ GLMO2=CALC_G(NUME_MODE = 1,
              OPTION='K_G_MODA',
              RESULTAT=MODE,
              THETA=_F(FOND_FISS=FF1,
-                      MODULE=1.0,
                       R_INF=5.E-6,
                       R_SUP=5.E-5,
                       DIRECTION = (-1.0, 0.0, 0.0),),
@@ -305,7 +301,6 @@ TEST_TABLE(TABLE=GLMO2,
 GLMO3=CALC_G(OPTION='K_G_MODA',
              RESULTAT=MODE,
              FREQ = 3.46915E+03,
-             CRITERE='RELATIF',
              PRECISION=1.E-3,
              THETA=_F(THETA=THET1,
                       FOND_FISS = FF1),);

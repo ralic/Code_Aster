@@ -1,9 +1,9 @@
-#@ MODIF imprime Lecture_Cata_Ele  DATE 11/10/2010   AUTEUR PELLET J.PELLET 
+#@ MODIF imprime Lecture_Cata_Ele  DATE 25/01/2011   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE VABHHTS J.PELLET
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -1027,7 +1027,7 @@ def degenerise(capy):
                 capy.te[capy.dicte[note]]=cata2
                 if dicte2.has_key(note):
                    if dicte2[note]=='a':
-                       ERR.mess('A','Le TYPE_ELEM__: '+note+' est re-défini en tant que TYPE_GENE__')
+                       ERR.mess('E','Le TYPE_ELEM__: '+note+' est re-défini en tant que TYPE_GENE__')
                        dicte2[note]='b'
                    elif dicte2[note]=='b':
                        ERR.mess('E','Le TYPE_ELEM__: '+note+' est défini plusieurs fois en tant que TYPE_GENE__')

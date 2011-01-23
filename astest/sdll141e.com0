@@ -1,0 +1,58 @@
+POURSUITE(CODE=_F(NOM='SDLL141E'), PAR_LOT='NON',DEBUG=_F(SDVERI='OUI'))
+
+
+#-------------------------------------------------------------------------------
+# 2 Validation des commandes  APPL_CINE_MATR et APPL_CINE_SCMB :
+#--------------------------------------------------------
+
+# 2.1 : rigidite et chargement :
+#-------------------------------------------------
+CHC2=AFFE_CHAR_CINE(MODELE=MODELE,
+                    MECA_IMPO=_F(GROUP_NO='PALIER_A', DX=1.e-4, DY=0.,  DZ=0., DRX=0., DRY=0., DRZ=0. ),)
+
+CHF2=AFFE_CHAR_MECA(MODELE=MODELE, FORCE_NODALE=_F(GROUP_NO='PALIER_B', FX=1000. ),)
+
+MEL2=CALC_MATR_ELEM( MODELE=MODELE, CHAM_MATER=CHMAT, CARA_ELEM=CARELEM, OPTION='RIGI_MECA')
+NU2=NUME_DDL(MATR_RIGI=MEL2 )
+RIGI2=ASSE_MATRICE(MATR_ELEM=MEL2,NUME_DDL=NU2, CHAR_CINE=CHC2)
+
+
+VEL2=CALC_VECT_ELEM(OPTION='CHAR_MECA', CHARGE=CHF2, CHAM_MATER=CHMAT,)
+VAS2=ASSE_VECTEUR(VECT_ELEM=VEL2, NUME_DDL=NU2,);
+
+
+# 2.2 : resolution faite avec aster (reference) :
+#-------------------------------------------------
+VCIN2=CALC_CHAR_CINE(NUME_DDL=NU2,  CHAR_CINE=CHC2)
+RIGI2=FACTORISER(reuse =RIGI2, MATR_ASSE=RIGI2,)
+SOL2=RESOUDRE(MATR=RIGI2, CHAM_NO=VAS2, CHAM_CINE=VCIN2 )
+TEST_RESU(CHAM_NO=_F(CHAM_GD=SOL2, GROUP_NO='PALIER_B',   NOM_CMP='DY',
+                     VALE=-1.979032593416E-03 , PRECISION=1.E-9, REFERENCE='NON_REGRESSION',))
+
+
+
+# 2.3 : resolution faite avec python :
+#-------------------------------------------------
+RIGI2=APPL_CINE_MATR(reuse=RIGI2,MATR_ASSE=RIGI2)
+VAS2=APPL_CINE_SCMB(reuse=VAS2,MATR=RIGI2,CHAM_NO=VAS2,CHAM_CINE=VCIN2)
+
+import numpy.linalg as LA
+
+RIGI2P=RIGI2.EXTR_MATR()
+VAS2P=VAS2.VALE.get()
+SOL2P=LA.solve(RIGI2P, VAS2P)
+
+# TEST_RESU
+# la valeur de DY(PALIER_B) se trouve a l'indice 110 dans .VALE :
+
+TAB1=CREA_TABLE(LISTE=(_F(PARA='TEST',  TYPE_K='K8', LISTE_K='DY',),
+                       _F(PARA='VALEUR',             LISTE_R=SOL2P[109]),),)
+
+
+TEST_TABLE(TABLE=TAB1, FILTRE=_F(NOM_PARA='TEST',VALE_K='DY',),
+           NOM_PARA='VALEUR', VALE=-1.979032593416E-03,  REFERENCE='AUTRE_ASTER', PRECISION=1.E-9)
+
+
+
+
+FIN();

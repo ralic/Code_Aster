@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 25/01/2011   AUTEUR PELLET J.PELLET 
 # TITRE POUTRE ENCASTREE ET MASSE CONCENTREE SOUMISE A UNE FORCE
 # sdlx302a.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -178,12 +178,12 @@ MODE1=CALC_ELEM(reuse=MODE1,   RESULTAT=MODE1,
                       OPTION=( 'EFGE_ELNO_DEPL', 'SIPO_ELNO',
                                'SIGM_ELNO_DEPL', 'SIEF_ELGA',),
 
-                      CARA_ELEM=CARAELEM  )
+                      )
 
 MODE1=CALC_NO(reuse=MODE1,     RESULTAT=MODE1,
                                    OPTION='FORC_NODA',
 
-                      CARA_ELEM=CARAELEM       )
+                      )
 
 #
 # TEST_RESU

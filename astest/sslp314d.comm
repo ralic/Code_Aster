@@ -1,8 +1,8 @@
-# MODIF  DATE 15/12/2009   AUTEUR CAO B.CAO 
+# MODIF  DATE 25/01/2011   AUTEUR MACOCCO K.MACOCCO 
 # TITRE MURAKAMI 8.20 FISSURE DEVIEE A L'INTERFACE ENTRE DEUX DEMI-PLANS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
@@ -101,18 +101,15 @@ THETA0=CALC_THETA(       MODELE=MO,
 G0=CALC_G(         RESULTAT=CHAMDEPL,
                    NUME_ORDRE=1,
                    THETA=_F(THETA=THETA0),
-                   SYME_CHAR='SANS'
                     )
 
 #
 GK01=CALC_G(       RESULTAT=CHAMDEPL,
                    NUME_ORDRE=1,
-                   THETA=_F(   MODULE = 1.,
-                               R_INF = 1.25E-5,
+                   THETA=_F(   R_INF = 1.25E-5,
                                R_SUP = 5.E-4,
                                DIRECTION=(-0.707106781, 0.707106781, 0.,),
                                FOND_FISS=FOND1),
-                   SYME_CHAR='SANS',
                    OPTION='CALC_K_G'
                       )
 

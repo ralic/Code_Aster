@@ -1,9 +1,9 @@
-# MODIF  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 25/01/2011   AUTEUR MACOCCO K.MACOCCO 
 # TITRE CALCUL 3D DE G FISSURE CIRCULAIRE EN MILIEU INFINI
 # sslv134c.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -38,7 +38,9 @@ MO=AFFE_MODELE(  MAILLAGE=MA,
 
 MAT=DEFI_MATERIAU(ELAS=_F(  E = 2.E11,
                              NU = 0.3,
-                             ALPHA = 0.) )
+                             ALPHA = 0.,
+                             RHO = 7850,
+                     ) )
 
 CHMAT=AFFE_MATERIAU(  MAILLAGE=MA,
                        AFFE=_F(  TOUT = 'OUI',
@@ -80,18 +82,16 @@ THETA01=CALC_THETA(    MODELE=MO,
                          DIRECTION=(1., 0., 0.,)
                      )
 
-G0=CALC_G        (       OPTION='CALC_G',
-                         RESULTAT=CHAMDEPL,
+G0=CALC_G        (       RESULTAT=CHAMDEPL,
                          NUME_ORDRE = 1,INFO=2,
                          THETA=_F(THETA=THETA01),
-                         SYME_CHAR='SANS'
                      )
 
               
 GK0=CALC_G(THETA=_F(FOND_FISS=FISS,THETA=THETA01,),
           RESULTAT=CHAMDEPL,
           NUME_ORDRE=1,
-          SYME_CHAR='SANS',INFO=2,
+          INFO=2,
           OPTION='CALC_K_G',);
           
 IMPR_TABLE(TABLE=GK0,),
@@ -179,51 +179,105 @@ TEST_TABLE(       TABLE=GK0,
                  PRECISION=0.0001        )
                  
 TEST_TABLE(       TABLE=TABL_K1,
-                        FILTRE=_F(  NOM_PARA = 'METHODE',
-                                 VALE_I = 1),
                       REFERENCE='ANALYTIQUE',
-                       NOM_PARA='K1_MAX',
-                           VALE=K1,
-                      PRECISION=0.017           )
-
-TEST_TABLE(       TABLE=TABL_K1,
-                        FILTRE=_F(  NOM_PARA = 'METHODE',
-                                 VALE_I = 1),
-                      REFERENCE='ANALYTIQUE',
-                       NOM_PARA='K1_MIN',
-                           VALE=K1,
-                      PRECISION=0.007           )
-
-TEST_TABLE(       TABLE=TABL_K1,
-                        FILTRE=_F(  NOM_PARA = 'METHODE',
-                                 VALE_I = 2),
-                      REFERENCE='ANALYTIQUE',
-                       NOM_PARA='G_MAX',
-                           VALE=GLOC,
-                      PRECISION=0.02           )
-
-TEST_TABLE(       TABLE=TABL_K1,
-                        FILTRE=_F(  NOM_PARA = 'METHODE',
-                                 VALE_I = 2),
-                      REFERENCE='ANALYTIQUE',
-                       NOM_PARA='G_MIN',
-                           VALE=GLOC,
-                      PRECISION=0.05           )
-
-TEST_TABLE(       TABLE=TABL_K1,
-                        FILTRE=_F(  NOM_PARA = 'METHODE',
-                                 VALE_I = 3),
-                      REFERENCE='ANALYTIQUE',
-                       NOM_PARA='K1_MAX',
+                       NOM_PARA='K1',
                            VALE=K1,
                       PRECISION=0.015           )
 
 TEST_TABLE(       TABLE=TABL_K1,
-                        FILTRE=_F(  NOM_PARA = 'METHODE',
-                                 VALE_I = 3),
                       REFERENCE='ANALYTIQUE',
-                       NOM_PARA='G_MAX',
+                       NOM_PARA='G',
                            VALE=GLOC,
                       PRECISION=0.03           )
+                      
+                      
+# -------------------------------------------------------------
+#           ON AJOUTE LA ROTATION POUR CALCULER K
+#                    SOUS LA FORCE CONTRIGUGE 
+# -------------------------------------------------------------
+# LA VITESSE DE TOTATIO EST 150 TRS/MINUTE
+VAL_ROT = 15.708
+
+CHAR_ROT=AFFE_CHAR_MECA(  MODELE=MO,
+                        DDL_IMPO=(
+                          _F(  GROUP_NO = ('LP8P9', 'LP8P9S',), DX = 0.),
+                          _F(  GROUP_NO = 'LP0P11',  DY = 0.)  ),
+                          
+                        FORCE_CONTOUR=(
+                          _F(  GROUP_MA = 'LP9P10',  FY = 1.E6),
+                          _F(  GROUP_MA = 'LP9P10S', FY = -1.E6)),
+                         
+                        ROTATION=_F(VITESSE = VAL_ROT,
+                                AXE = (0.,1.,0.,),
+                                CENTRE =(0.,0.,0.,),
+                                  ), 
+
+                                 );  
+                                              
+L_INST=DEFI_LIST_REEL(DEBUT=0.0,
+                      INTERVALLE=_F(JUSQU_A=1.0,
+                                    NOMBRE=1,),);
+                   
+DEPL_ROT=STAT_NON_LINE(MODELE=MO,
+                   CHAM_MATER=CHMAT,
+                   EXCIT=_F(CHARGE=CHAR_ROT,), 
+                   COMP_ELAS=_F(RELATION='ELAS',
+                                ),
+                   INCREMENT=_F(LIST_INST=L_INST,
+                                ),
+                   CONVERGENCE = _F(ITER_GLOB_MAXI = 100,),
+                   NEWTON=_F(REAC_ITER=1,),
+                   ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA',),
+                   INFO=1,);  
+                                
+IMPR_RESU(FORMAT='MED',UNITE=80,RESU=_F(RESULTAT=DEPL_ROT));
+
+G1=CALC_G        (       OPTION='CALC_G',
+                         RESULTAT=DEPL_ROT,
+                         NUME_ORDRE = 1,INFO=2,
+                         THETA=_F(THETA=THETA01),
+                         SYME_CHAR='SANS'
+                     )
+
+              
+GK1=CALC_G(THETA=_F(FOND_FISS=FISS,THETA=THETA01,),
+          RESULTAT=DEPL_ROT,
+          NUME_ORDRE=1,
+          SYME_CHAR='SANS',INFO=2,
+          OPTION='CALC_K_G',);
+          
+IMPR_TABLE(TABLE=GK1,),
+
+# POST_K1_K2_K3
+
+DEPH2=POST_RELEVE_T( ACTION=_F(  INTITULE = 'TAB2',
+                                GROUP_NO = 'L1SUP',
+                                RESULTAT = DEPL_ROT,
+                                NOM_CHAM = 'DEPL',
+                                NOM_CMP = ('DX', 'DY',),
+                                OPERATION = 'EXTRACTION')
+                      )
+
+
+DEPB2=POST_RELEVE_T( ACTION=_F(  INTITULE = 'TAB1',
+                                GROUP_NO = 'L1INF',
+                                RESULTAT = DEPL_ROT,
+                                NOM_CHAM = 'DEPL',
+                                NOM_CMP = ('DX', 'DY',),
+                                OPERATION = 'EXTRACTION')
+                      )
+
+TABL_K2=POST_K1_K2_K3(  MODELISATION='AXIS',
+                        TABL_DEPL_SUP=DEPH2,
+                        TABL_DEPL_INF=DEPB2,
+                        INFO=2,
+                        MATER=MAT,
+                        ABSC_CURV_MAXI=RSUP,
+                        VECT_K1=(0., 1., 0.,)
+                     )
+
+IMPR_TABLE( TABLE=TABL_K2, ),
+
+
 FIN()
 #

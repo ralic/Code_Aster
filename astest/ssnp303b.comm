@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 25/01/2011   AUTEUR PELLET J.PELLET 
 # TITRE PLAQUE CARREE EN TRACTION
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -123,16 +123,11 @@ CALCNL=CALC_ELEM( reuse=CALCNL,
                             OPTION=(
                   'SIEF_ELNO',  'VARI_ELNO_ELGA',),
                           RESULTAT=CALCNL,
-
-                        CHAM_MATER=MATER
               )
-
 CALCNL=CALC_ELEM( reuse=CALCNL,
-
                                     OPTION='EPSI_ELNO_DEPL',
                                   RESULTAT=CALCNL
                      )
-
 TEST_RESU(RESU=(
           _F(  RESULTAT = CALCNL,
             NOM_CHAM = 'SIEF_ELNO',

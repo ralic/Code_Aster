@@ -2,7 +2,7 @@
       IMPLICIT NONE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 19/01/2011   AUTEUR MASSIN P.MASSIN 
+C MODIF ELEMENTS  DATE 25/01/2011   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -71,8 +71,8 @@ C------------FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       REAL*8        Y(3),XG(4),RBID,FE(4),XE(2),LSNG,LSTG,RG,TG
       REAL*8        PRES,FF(27),A(3),B(3),C(3),AB(3),AC(3)
       REAL*8        ND(3),NORME,NAB,RB1(3),RB2(3),GLOC(2),N(3),CISA
-      REAL*8        AN(3),POIDS,DDOT,FORREP(3),VF
-      LOGICAL       LBID,ISMALI
+      REAL*8        AN(3),POIDS,DDOT,FORREP(3),VF, R
+      LOGICAL       LBID,ISMALI,AXI,LTEATT
       REAL*8        RB3,RB4,KSIB,KSIG,DX,DY,DFF(1,3),SEG(3),R8PREM,JAC
       INTEGER       KK
       DATA          ELRESE /'SE2','TR3','SE3','TR3'/
@@ -86,6 +86,8 @@ C     ELEMENT DE REFERENCE PARENT
       CALL ELREF4(' ','RIGI',NDIME,NNOP,NNOPS,IBID,IBID,IBID,IBID,IBID)
       CALL ASSERT(NDIME.EQ.1.OR.NDIME.EQ.2)
 
+      AXI = LTEATT(' ','AXIS','OUI')
+      
 C     DIMENSION DE L'ESPACE
       CALL TECAEL(IADZI,IAZK24)
       NOMA=ZK24(IAZK24)
@@ -115,7 +117,7 @@ C      CALL XTEINI(NOMTE,DDLH,NFE,IBID,IBID,IBID,IBID,IBID)
       IFISS = 1
       CALL TEATTR (NOMTE,'S','XFEM',ENR,IER)
       IF (ENR(1:2).EQ.'XH') THEN
-C       NOMBRE DE FISSURES
+C --- NOMBRE DE FISSURES
         CALL TECACH('NOO','PHEAVTO',7,JTAB,IRET)
         NCOMP = JTAB(2)
         NFISS = JTAB(7)
@@ -128,8 +130,9 @@ C
       IF (ENR(1:2).EQ.'XT'.OR.ENR(3:3).EQ.'T') THEN
         NFE = 4
       ENDIF
+      
       CALL ASSERT(NFE.GT.0.OR.NFH.GT.0)
-
+      
 C-----------------------------------------------------------------------
 C     RECUPERATION DES ENTREES / SORTIE
 C-----------------------------------------------------------------------
@@ -286,7 +289,17 @@ C       COORDONNÉES DES NOEUDS DE L'ELREFP DANS LE REPÈRE LOCAL
 C-----------------------------------------------------------------------
 C         BOUCLE SUR LES POINTS DE GAUSS DU SOUS-ELT
 C-----------------------------------------------------------------------
-
+C -     CALCUL DE LA DISTANCE A L'AXE (AXISYMETRIQUE)
+        IF (AXI) THEN
+          R  = 0.D0
+          DO 1000 INO=1,NNOP
+            R  = R  + FF(INO)*ZR(IGEOM-1+2*(INO-1)+1)
+1000      CONTINUE
+          CALL ASSERT(R.GT.0D0)
+C          ATTENTION : LE POIDS N'EST PAS X R
+C          CE SERA FAIT PLUS TARD AVEC JAC = JAC X R
+        ENDIF
+        
         DO 200 KPG=1,NPG
 
 C         CALCUL DU POIDS : POIDS = POIDS DE GAUSS * DET(J)
@@ -297,7 +310,11 @@ C         CALCUL DU POIDS : POIDS = POIDS DE GAUSS * DET(J)
             CALL DFDM1D(NNO,ZR(IPOIDS-1+KPG),ZR(IDFDE+KK),ZR(JCORLO),
      &            RB1,RB2,POIDS,RB3,RB4)
           ENDIF
-
+        
+C MODIFIER LE JAC
+        IF (AXI) THEN
+          JAC= JAC * R
+        ENDIF
 C         COORDONNÉES RÉELLES LOCALES DU POINT DE GAUSS
           CALL VECINI(NDIME,0.D0,GLOC)
           DO 210 J=1,NNO
@@ -334,9 +351,11 @@ C           CALL ELRFDF(ELREF,KSIG,NDIME*NNO,DFF1,IB1,IB2)
           ENDIF
 
 C         JUSTE POUR CALCULER LES FF AUX NOEUDS DE L'ELREFP
-          CALL REEREF(ELREFP,NNOP,IBID,IGEOLO,GLOC,IBID,.FALSE.,NDIME,
-     &                 RBID,IBID,IBID,IBID,IBID,IBID,IBID,RBID,RBID,
-     &                'NON',XE,FF,RBID,RBID,RBID,RBID)
+
+          CALL REEREF(ELREFP,AXI,NNOP,IBID,IGEOLO,GLOC,IBID,.FALSE.,
+     &                   NDIME,RBID,RBID,RBID,IBID,IBID,IBID,
+     &                   IBID,IBID,IBID,RBID,RBID,
+     &                  'NON',XE,FF,RBID,RBID,RBID,RBID)
 
 C         COORDONNES REELLES DU POINT DE GAUSS
           CALL VECINI(4,0.D0,XG)

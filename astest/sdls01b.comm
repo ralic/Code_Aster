@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 25/01/2011   AUTEUR PELLET J.PELLET 
 # TITRE PLAQUE CARREE MINCE , LIBRE OU ENCASTREE SUR UN BORD (ROTATION)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -202,7 +202,6 @@ DYNHARM=CALC_ELEM(reuse=DYNHARM,     RESULTAT=DYNHARM,
                               OPTION=( 'SIEF_ELGA',
                                        'SIGM_ELNO_DEPL',
                                        'EFGE_ELNO_DEPL',  ),
-                               CARA_ELEM=CARELEM
                        )
 DYNHARM=CALC_NO(reuse =DYNHARM,
               RESULTAT=DYNHARM,

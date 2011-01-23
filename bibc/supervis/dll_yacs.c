@@ -1,7 +1,7 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF dll_yacs supervis  DATE 25/10/2010   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF dll_yacs supervis  DATE 25/01/2011   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
-/* COPYRIGHT (C) 1991 - 2010  EDF R&D              WWW.CODE-ASTER.ORG */
+/* COPYRIGHT (C) 1991 - 2011  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
 /* THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR      */
 /* MODIFY IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS     */
@@ -16,19 +16,28 @@
 /* ALONG WITH THIS PROGRAM; IF NOT, WRITE TO : EDF R&D CODE_ASTER,    */
 /*    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.     */
 /* ================================================================== */
+/* RESPONSABLE COURTOIS M.COURTOIS */
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <dlfcn.h>
 
 #include <Python.h>
 
 #include "aster.h"
 #include "aster_fort.h"
+#include "aster_utils.h"
 #include "definition_pt.h"
 
 #include "dll_register.h"
 
+/* XXX to move into definition.h */
+#define xstr(s)                 str(s)
+#define str(s)                  #s
+#define S_FUNC(UN,LN)           xstr(F_FUNC(UN,LN))
+
+
+#ifdef _POSIX
+#include <dlfcn.h>
 PyObject* get_dll_register_dict();
 
 
@@ -77,7 +86,7 @@ void load_yacs_lib()
         char *nompal, STRING_SIZE lnompal, INTEGER4 *info) = NULL;
     /* string sizes are fixed : lnomvar=144, lnompal=8 */
     if ( iret == 0 ) {
-        strcpy(symbol, "cpech_");
+        strcpy(symbol, S_FUNC(CPECH,cpech));
         printf("searching symbol '%s'... ", symbol);
         dlerror();    /* Clear any existing error */
 
@@ -103,7 +112,7 @@ void load_yacs_lib()
         DOUBLE *paramr, INTEGER4 *info) = NULL;
     /* string sizes are fixed : lnomvar=144 */
     if ( iret == 0 ) {
-        strcpy(symbol, "cpedb_");
+        strcpy(symbol, S_FUNC(CPEDB,cpedb));
         printf("searching symbol '%s'... ", symbol);
         dlerror();    /* Clear any existing error */
 
@@ -129,7 +138,7 @@ void load_yacs_lib()
         INTEGER4 *parami, INTEGER4 *info) = NULL;
     /* string sizes are fixed : lnomvar=144 */
     if ( iret == 0 ) {
-        strcpy(symbol, "cpeen_");
+        strcpy(symbol, S_FUNC(CPEEN,cpeen));
         printf("searching symbol '%s'... ", symbol);
         dlerror();    /* Clear any existing error */
 
@@ -155,7 +164,7 @@ void load_yacs_lib()
         char *nompal, STRING_SIZE lnompal, INTEGER4 *info) = NULL;
     /* string sizes are fixed : lnomvar=144, lnompal=8 */
     if ( iret == 0 ) {
-        strcpy(symbol, "cplch_");
+        strcpy(symbol, S_FUNC(CPLCH,cplch));
         printf("searching symbol '%s'... ", symbol);
         dlerror();    /* Clear any existing error */
 
@@ -181,7 +190,7 @@ void load_yacs_lib()
         DOUBLE *paramr, INTEGER4 *info) = NULL;
     /* string sizes are fixed : lnomvar=144 */
     if ( iret == 0 ) {
-        strcpy(symbol, "cpldb_");
+        strcpy(symbol, S_FUNC(CPLDB,cpldb));
         printf("searching symbol '%s'... ", symbol);
         dlerror();    /* Clear any existing error */
 
@@ -207,7 +216,7 @@ void load_yacs_lib()
         INTEGER4 *parami, INTEGER4 *info) = NULL;
     /* string sizes are fixed : lnomvar=144 */
     if ( iret == 0 ) {
-        strcpy(symbol, "cplen_");
+        strcpy(symbol, S_FUNC(CPLEN,cplen));
         printf("searching symbol '%s'... ", symbol);
         dlerror();    /* Clear any existing error */
 
@@ -239,7 +248,7 @@ void load_yacs_lib()
         free(valk);  // unreachable
     }
 }
-
+#endif
 
 /* *********************************************************************
  * 
@@ -250,10 +259,12 @@ void load_yacs_lib()
 /* SUBROUTINE CPECH */
 void DEFPPPPSPSP(CPECH,cpech,
         INTEGER *icompo, INTEGER4 *cpiter, REAL4 *tf, INTEGER4 *numpas,
-        char *nomvar, STRING_SIZE lnomvar, INTEGER4 *idim,
-        char *nompal, STRING_SIZE lnompal, INTEGER4 *info )
+        char *fnomvar, STRING_SIZE lnomvar, INTEGER4 *idim,
+        char *fnompal, STRING_SIZE lnompal, INTEGER4 *info )
 {
+#ifdef _POSIX
     char symbol[12];
+    char *nomvar, *nompal;
     PyObject* DLL_DICT;
     void DEF_P_PPPPSPSP(*f_cpech,
         INTEGER *icompo, INTEGER4 *cpiter, REAL4 *tf, INTEGER4 *numpas,
@@ -261,7 +272,7 @@ void DEFPPPPSPSP(CPECH,cpech,
         char *nompal, STRING_SIZE lnompal, INTEGER4 *info) = NULL;
     DLL_DICT = get_dll_register_dict();
 
-    strcpy(symbol, "cpech_");
+    strcpy(symbol, S_FUNC(CPECH,cpech));
     if ( ! libsymb_is_known(DLL_DICT, LIB_YACS, symbol) ) {
         load_yacs_lib();
     }
@@ -270,18 +281,25 @@ void DEFPPPPSPSP(CPECH,cpech,
 
     //assert lnomvar == 144 !
     //assert lnompal ==  8!
+    nomvar = MakeCStrFromFStr(fnomvar, lnomvar);
+    nompal = MakeCStrFromFStr(fnompal, lnompal);
     CALL_P_PPPPSPSP(*f_cpech, icompo, cpiter, tf, numpas,
                               nomvar, idim, nompal, info );
+    FreeCStr(nomvar);
+    FreeCStr(nompal);
+#endif
 }
 
 
 /* SUBROUTINE CPEDB */
 void DEFPPPPSPPP(CPEDB,cpedb,
         INTEGER *icompo, INTEGER4 *cpiter, DOUBLE *tf, INTEGER4 *numpas,
-        char *nomvar, STRING_SIZE lnomvar, INTEGER4 *idim,
+        char *fnomvar, STRING_SIZE lnomvar, INTEGER4 *idim,
         DOUBLE *paramr, INTEGER4 *info )
 {
+#ifdef _POSIX
     char symbol[12];
+    char *nomvar;
     PyObject* DLL_DICT;
     void DEF_P_PPPPSPPP(*f_cpedb,
         INTEGER *icompo, INTEGER4 *cpiter, DOUBLE *tf, INTEGER4 *numpas,
@@ -289,7 +307,7 @@ void DEFPPPPSPPP(CPEDB,cpedb,
         DOUBLE *paramr, INTEGER4 *info) = NULL;
     DLL_DICT = get_dll_register_dict();
 
-    strcpy(symbol, "cpedb_");
+    strcpy(symbol, S_FUNC(CPEDB,cpedb));
     if ( ! libsymb_is_known(DLL_DICT, LIB_YACS, symbol) ) {
         load_yacs_lib();
     }
@@ -297,18 +315,23 @@ void DEFPPPPSPPP(CPEDB,cpedb,
     f_cpedb = libsymb_get_symbol(DLL_DICT, LIB_YACS, symbol);
 
     //assert lnomvar == 144 !
+    nomvar = MakeCStrFromFStr(fnomvar, lnomvar);
     CALL_P_PPPPSPPP(*f_cpedb, icompo, cpiter, tf, numpas,
                               nomvar, idim, paramr, info );
+    FreeCStr(nomvar);
+#endif
 }
 
 
 /* SUBROUTINE CPEEN */
 void DEFPPPPSPPP(CPEEN,cpeen,
         INTEGER *icompo, INTEGER4 *cpiter, REAL4 *tf, INTEGER4 *numpas,
-        char *nomvar, STRING_SIZE lnomvar, INTEGER4 *idim,
+        char *fnomvar, STRING_SIZE lnomvar, INTEGER4 *idim,
         INTEGER4 *parami, INTEGER4 *info )
 {
+#ifdef _POSIX
     char symbol[12];
+    char *nomvar;
     PyObject* DLL_DICT;
     void DEF_P_PPPPSPPP(*f_cpeen,
         INTEGER *icompo, INTEGER4 *cpiter, REAL4 *tf, INTEGER4 *numpas,
@@ -316,7 +339,7 @@ void DEFPPPPSPPP(CPEEN,cpeen,
         INTEGER4 *parami, INTEGER4 *info) = NULL;
     DLL_DICT = get_dll_register_dict();
 
-    strcpy(symbol, "cpeen_");
+    strcpy(symbol, S_FUNC(CPEEN,cpeen));
     if ( ! libsymb_is_known(DLL_DICT, LIB_YACS, symbol) ) {
         load_yacs_lib();
     }
@@ -324,18 +347,23 @@ void DEFPPPPSPPP(CPEEN,cpeen,
     f_cpeen = libsymb_get_symbol(DLL_DICT, LIB_YACS, symbol);
 
     //assert lnomvar == 144 !
+    nomvar = MakeCStrFromFStr(fnomvar, lnomvar);
     CALL_P_PPPPSPPP(*f_cpeen, icompo, cpiter, tf, numpas,
                               nomvar, idim, parami, info );
+    FreeCStr(nomvar);
+#endif
 }
 
 
 /* SUBROUTINE CPLCH */
 void DEFPPPPPSPPSP(CPLCH,cplch,
         INTEGER *icompo, INTEGER4 *cpiter, REAL4 *ti, REAL4 *tf, INTEGER4 *numpas,
-        char *nomvar, STRING_SIZE lnomvar, INTEGER4 *idim, INTEGER4 *taille,
-        char *nompal, STRING_SIZE lnompal, INTEGER4 *info )
+        char *fnomvar, STRING_SIZE lnomvar, INTEGER4 *idim, INTEGER4 *taille,
+        char *fnompal, STRING_SIZE lnompal, INTEGER4 *info )
 {
+#ifdef _POSIX
     char symbol[12];
+    char *nomvar, *nompal;
     PyObject* DLL_DICT;
     void DEF_P_PPPPPSPPSP(*f_cplch,
         INTEGER *icompo, INTEGER4 *cpiter, REAL4 *ti, REAL4 *tf, INTEGER4 *numpas,
@@ -343,7 +371,7 @@ void DEFPPPPPSPPSP(CPLCH,cplch,
         char *nompal, STRING_SIZE lnompal, INTEGER4 *info) = NULL;
     DLL_DICT = get_dll_register_dict();
 
-    strcpy(symbol, "cplch_");
+    strcpy(symbol, S_FUNC(CPLCH,cplch));
     if ( ! libsymb_is_known(DLL_DICT, LIB_YACS, symbol) ) {
         load_yacs_lib();
     }
@@ -352,18 +380,25 @@ void DEFPPPPPSPPSP(CPLCH,cplch,
 
     //assert lnomvar == 144 !
     //assert lnompal ==  8!
+    nomvar = MakeCStrFromFStr(fnomvar, lnomvar);
+    nompal = MakeCStrFromFStr(fnompal, lnompal);
     CALL_P_PPPPPSPPSP(*f_cplch, icompo, cpiter, ti, tf, numpas,
                                nomvar, idim, taille, nompal, info );
+    FreeCStr(nomvar);
+    FreeCStr(nompal);
+#endif
 }
 
 
 /* SUBROUTINE CPLDB */
 void DEFPPPPPSPPPP(CPLDB,cpldb,
         INTEGER *icompo, INTEGER4 *cpiter, DOUBLE *ti, DOUBLE *tf, INTEGER4 *numpas,
-        char *nomvar, STRING_SIZE lnomvar, INTEGER4 *idim, INTEGER4 *taille,
+        char *fnomvar, STRING_SIZE lnomvar, INTEGER4 *idim, INTEGER4 *taille,
         DOUBLE *paramr, INTEGER4 *info )
 {
+#ifdef _POSIX
     char symbol[12];
+    char *nomvar;
     PyObject* DLL_DICT;
     void DEF_P_PPPPPSPPPP(*f_cpldb,
         INTEGER *icompo, INTEGER4 *cpiter, DOUBLE *ti, DOUBLE *tf, INTEGER4 *numpas,
@@ -371,7 +406,7 @@ void DEFPPPPPSPPPP(CPLDB,cpldb,
         DOUBLE *paramr, INTEGER4 *info) = NULL;
     DLL_DICT = get_dll_register_dict();
 
-    strcpy(symbol, "cpldb_");
+    strcpy(symbol, S_FUNC(CPLDB,cpldb));
     if ( ! libsymb_is_known(DLL_DICT, LIB_YACS, symbol) ) {
         load_yacs_lib();
     }
@@ -379,18 +414,23 @@ void DEFPPPPPSPPPP(CPLDB,cpldb,
     f_cpldb = libsymb_get_symbol(DLL_DICT, LIB_YACS, symbol);
 
     //assert lnomvar == 144 !
+    nomvar = MakeCStrFromFStr(fnomvar, lnomvar);
     CALL_P_PPPPPSPPPP(*f_cpldb, icompo, cpiter, ti, tf, numpas,
                                nomvar, idim, taille, paramr, info );
+    FreeCStr(nomvar);
+#endif
 }
 
 
 /* SUBROUTINE CPLEN */
 void DEFPPPPPSPPPP(CPLEN,cplen,
         INTEGER *icompo, INTEGER4 *cpiter, REAL4 *ti, REAL4 *tf, INTEGER4 *numpas,
-        char *nomvar, STRING_SIZE lnomvar, INTEGER4 *idim, INTEGER4 *taille,
+        char *fnomvar, STRING_SIZE lnomvar, INTEGER4 *idim, INTEGER4 *taille,
         INTEGER4 *parami, INTEGER4 *info )
 {
+#ifdef _POSIX
     char symbol[12];
+    char *nomvar;
     PyObject* DLL_DICT;
     void DEF_P_PPPPPSPPPP(*f_cplen,
         INTEGER *icompo, INTEGER4 *cpiter, REAL4 *ti, REAL4 *tf, INTEGER4 *numpas,
@@ -398,7 +438,7 @@ void DEFPPPPPSPPPP(CPLEN,cplen,
         INTEGER4 *parami, INTEGER4 *info) = NULL;
     DLL_DICT = get_dll_register_dict();
 
-    strcpy(symbol, "cplen_");
+    strcpy(symbol, S_FUNC(CPLEN,cplen));
     if ( ! libsymb_is_known(DLL_DICT, LIB_YACS, symbol) ) {
         load_yacs_lib();
     }
@@ -406,8 +446,11 @@ void DEFPPPPPSPPPP(CPLEN,cplen,
     f_cplen = libsymb_get_symbol(DLL_DICT, LIB_YACS, symbol);
 
     //assert lnomvar == 144 !
+    nomvar = MakeCStrFromFStr(fnomvar, lnomvar);
     CALL_P_PPPPPSPPPP(*f_cplen, icompo, cpiter, ti, tf, numpas,
                                nomvar, idim, taille, parami, info );
+    FreeCStr(nomvar);
+#endif
 }
 
 

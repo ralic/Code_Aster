@@ -1,8 +1,8 @@
-#@ MODIF post_k1_k2_k3_ops Macro  DATE 14/12/2010   AUTEUR PELLET J.PELLET 
+#@ MODIF post_k1_k2_k3_ops Macro  DATE 25/01/2011   AUTEUR MACOCCO K.MACOCCO 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -37,6 +37,7 @@ def veri_tab(tab,nom,ndim) :
       if 'COOR_Z' not in tab.para :
           label='COOR_Z'
           UTMESS('F','RUPTURE0_2',valk=[label,nom])
+
 
 #--------------------------------------------------------------------------------------------------------------- 
 
@@ -1449,6 +1450,77 @@ def get_meth3(self,abscs,coefg,coefg3,kgsig,isig,saut2,INFO,ndim) :
 
 #---------------------------------------------------------------------------------------------------------------
 
+def get_erreur(self,ndim,__tabi) :
+
+      """retourne l'erreur selon les méthodes"""
+      from Accas import _F
+      import aster
+      import string
+      import numpy as NP
+
+      CREA_TABLE    = self.get_cmd('CREA_TABLE')
+      CALC_TABLE    = self.get_cmd('CALC_TABLE')
+      DETRUIRE      = self.get_cmd('DETRUIRE')
+      FORMULE       = self.get_cmd('FORMULE')
+
+      labels = ['K1_MAX', 'K1_MIN', 'K2_MAX', 'K2_MIN', 'K3_MAX', 'K3_MIN']
+      index = 2
+      if ndim == 3:
+         index = 3
+      py_tab = __tabi.EXTR_TABLE()
+
+      nlines = len(py_tab.values()[py_tab.values().keys()[0]])     
+      err = NP.zeros((index, nlines/3))
+      kmax = [0.] * index
+      kmin = [0.] * index
+      for i in range(nlines/3):
+         for j in range(index):
+            kmax[j] = max(__tabi[labels[  2*j], 3*i+1], __tabi[labels[  2*j], 3*i+2], __tabi[labels[  2*j], 3*i+3])
+            kmin[j] = min(__tabi[labels[2*j+1], 3*i+1], __tabi[labels[2*j+1], 3*i+2], __tabi[labels[2*j+1], 3*i+3])
+         kmaxmax = max(kmax)
+         if NP.fabs(kmaxmax) > 1e-15:
+            for j in range(index):
+               err[j,i] = (kmax[j] - kmin[j]) / kmaxmax
+      
+      # filter method 3 line
+      __tabi = CALC_TABLE(TABLE=__tabi,reuse=__tabi, ACTION=(_F(OPERATION='FILTRE',CRIT_COMP='EQ',VALE = 3, NOM_PARA='METHODE')),INFO=1)
+
+      # rename k parameters
+      __tabi = CALC_TABLE(TABLE=__tabi,reuse=__tabi, ACTION=(_F(OPERATION='RENOMME',NOM_PARA=('K1_MAX','K1')),_F(OPERATION='RENOMME',NOM_PARA=('K2_MAX','K2')),_F(OPERATION='RENOMME',NOM_PARA=('G_MAX','G'))),INFO=1)
+      if ndim == 3:
+        __tabi = CALC_TABLE(TABLE=__tabi,reuse=__tabi, ACTION=(_F(OPERATION='RENOMME',NOM_PARA=('K3_MAX','K3'))),INFO=1)
+
+      # create error
+      if ndim != 3:
+         tab_int = CREA_TABLE(LISTE=(_F(LISTE_R=(tuple(__tabi.EXTR_TABLE().values()['G_MIN'])), PARA='G_MIN'),_F(LISTE_R=(tuple(err[0].tolist())), PARA='ERR_K1'),_F(LISTE_R=(tuple(err[1].tolist())), PARA='ERR_K2')))
+      else:
+         tab_int = CREA_TABLE(LISTE=(_F(LISTE_R=(tuple(__tabi.EXTR_TABLE().values()['G_MIN'])), PARA='G_MIN'),_F(LISTE_R=(tuple(err[0].tolist())), PARA='ERR_K1'),_F(LISTE_R=(tuple(err[1].tolist())), PARA='ERR_K2'),_F(LISTE_R=(tuple(err[2].tolist())), PARA='ERR_K3')))
+
+      # add error
+      __tabi = CALC_TABLE(TABLE=__tabi,reuse=__tabi,ACTION=(_F(OPERATION='COMB',NOM_PARA='G_MIN',TABLE=tab_int)),INFO=1)
+      DETRUIRE(CONCEPT=(_F(NOM=tab_int)),INFO=1)
+      
+      # remove kj_min + sort data
+      params = ()
+      if ('INST' in __tabi.EXTR_TABLE().para) : params = ('INST',)
+      if ('NOEUD_FOND' in __tabi.EXTR_TABLE().para) : 
+          params =  params + ('NOEUD_FOND',)
+      elif ('PT_FOND' in __tabi.EXTR_TABLE().para) :
+          params =  params + ('PT_FOND',)
+
+      if ('ABSC_CURV' in __tabi.EXTR_TABLE().para) : 
+          params = params + ('ABSC_CURV',)
+      
+      params = params + ('K1', 'ERR_K1', 'K2', 'ERR_K2',)
+      if ndim == 3: params = params + ('K3', 'ERR_K3', 'G',)
+      else: params = params + ('G',)
+      
+      __tabi = CALC_TABLE(TABLE=__tabi,reuse=__tabi,ACTION=(_F(OPERATION='EXTR',NOM_PARA=tuple(params))),INFO=1)      
+
+      return __tabi
+
+#---------------------------------------------------------------------------------------------------------------
+
 def get_tabout(self,kg,TITRE,FOND_FISS,MODELISATION,FISSURE,ndim,ino,inst,iord,
                Lnofon,dicoF,absfon,Nnoff,tabout) :
 
@@ -1460,7 +1532,7 @@ def get_tabout(self,kg,TITRE,FOND_FISS,MODELISATION,FISSURE,ndim,ino,inst,iord,
       CREA_TABLE    = self.get_cmd('CREA_TABLE')
       DETRUIRE      = self.get_cmd('DETRUIRE')
       CALC_TABLE    = self.get_cmd('CALC_TABLE')
-
+      
 
       mcfact=[]
 
@@ -1496,19 +1568,22 @@ def get_tabout(self,kg,TITRE,FOND_FISS,MODELISATION,FISSURE,ndim,ino,inst,iord,
 
       if  (ino==0 and iord==0) and inst==None :
          tabout=CREA_TABLE(LISTE=mcfact,TITRE = titre)
+         get_erreur(self,ndim,tabout)
       elif iord==0 and ino==0 and inst!=None :
          mcfact=[_F(PARA='INST'  ,LISTE_R=[inst,]*3      )]+mcfact
          tabout=CREA_TABLE(LISTE=mcfact,TITRE = titre)
+         get_erreur(self,ndim,tabout)
       else :
          if inst!=None :
             mcfact=[_F(PARA='INST'  ,LISTE_R=[inst,]*3     )]+mcfact
          __tabi=CREA_TABLE(LISTE=mcfact,)
-         npara = ['K1_MAX','METHODE']
+         npara = ['K1']
          if inst!=None :
             npara.append('INST')
          if FOND_FISS and MODELISATION=='3D' :
             npara.append('NOEUD_FOND')
 
+         get_erreur(self,ndim,__tabi)
          tabout=CALC_TABLE(reuse = tabout,
                            TABLE = tabout,
                            TITRE = titre,
@@ -1567,7 +1642,6 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
    MACR_LIGN_COUPE  = self.get_cmd('MACR_LIGN_COUPE')
    AFFE_MODELE      = self.get_cmd('AFFE_MODELE')
    PROJ_CHAMP       = self.get_cmd('PROJ_CHAMP')
-     
 #   ------------------------------------------------------------------
 #                         CARACTERISTIQUES MATERIAUX
 #   ------------------------------------------------------------------
@@ -1925,9 +1999,8 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
       tabout=CALC_TABLE(reuse=tabout,
                         TABLE=tabout,
                         ACTION=_F(OPERATION = 'TRI',
-                                  NOM_PARA=('INST','ABSC_CURV','METHODE'),
+                                  NOM_PARA=('INST','ABSC_CURV'),
                                   ORDRE='CROISSANT'))
-
 
    return ier
  

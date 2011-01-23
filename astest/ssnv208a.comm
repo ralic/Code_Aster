@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 25/01/2011   AUTEUR PELLET J.PELLET 
 # TITRE ETUDE:  ESSAI BIAXIAL DRAINE SUR SABLE D'HOSTUN
 # ssnv208a.para = tps_job 160 mem_job 200Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -165,7 +165,7 @@ U1=CALC_ELEM(reuse=U1,
 
 
              OPTION=('SIEF_ELNO','VARI_ELNO_ELGA',
-                     'EPSI_ELNO_DEPL','INDI_LOCA_ELGA'),
+                     'EPSI_ELNO_DEPL','INDL_ELGA'),
              RESULTAT=U1);
 
 U1=CALC_NO(reuse=U1,
@@ -537,7 +537,7 @@ TEST_TABLE(TABLE=TAB_VARI,
 TEST_RESU(RESU=(
                 _F(RESULTAT=U1,
                    NUME_ORDRE=100,
-                   NOM_CHAM='INDI_LOCA_ELGA',
+                   NOM_CHAM='INDL_ELGA',
                    NOM_CMP='INDICE',
                    MAILLE='M1',
                    POINT=1,
@@ -547,7 +547,7 @@ TEST_RESU(RESU=(
                    VERSION = '9.2.20', ),
                 _F(RESULTAT=U1,
                    NUME_ORDRE=100,
-                   NOM_CHAM='INDI_LOCA_ELGA',
+                   NOM_CHAM='INDL_ELGA',
                    NOM_CMP='DIR1',
                    MAILLE='M1',
                    POINT=1,
@@ -558,7 +558,7 @@ TEST_RESU(RESU=(
                    VERSION = '9.2.20', ),
                 _F(RESULTAT=U1,
                    NUME_ORDRE=100,
-                   NOM_CHAM='INDI_LOCA_ELGA',
+                   NOM_CHAM='INDL_ELGA',
                    NOM_CMP='DIR2',
                    MAILLE='M1',
                    POINT=1,
@@ -569,7 +569,7 @@ TEST_RESU(RESU=(
                    VERSION = '9.2.20', ),
                 _F(RESULTAT=U1,
                    NUME_ORDRE=100,
-                   NOM_CHAM='INDI_LOCA_ELGA',
+                   NOM_CHAM='INDL_ELGA',
                    NOM_CMP='DIR3',
                    MAILLE='M1',
                    POINT=1,
@@ -580,7 +580,7 @@ TEST_RESU(RESU=(
                    VERSION = '9.2.20', ),
                 _F(RESULTAT=U1,
                    NUME_ORDRE=100,
-                   NOM_CHAM='INDI_LOCA_ELGA',
+                   NOM_CHAM='INDL_ELGA',
                    NOM_CMP='DIR4',
                    MAILLE='M1',
                    POINT=1,

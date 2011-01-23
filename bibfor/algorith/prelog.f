@@ -1,8 +1,8 @@
       SUBROUTINE PRELOG(NDIM,NNO,AXI,GRAND,VFF,GEOMI,G,IW,IDFDE,
      &                  DEPLM,DEPLT,SIGM,LGPG,VIM,GN,FETA,XI,ME,
-     &                  R,W,DFF,FM,FP,JM,JP,EPSML,DEPS,TN,RESI,PES)
+     &                  R,W,DFF,FM,FP,EPSML,DEPS,TN,RESI,PES)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 10/01/2011   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 25/01/2011   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -59,8 +59,8 @@ C
       INTEGER I,NDIM,NNO,G,IW,IDFDE,LGPG,IVTN
       REAL*8 VFF(NNO),DEPLM(NDIM*NNO),DFF(NNO,*),SIGM(2*NDIM)
       REAL*8 GEOMI(*),W,PES(6,6),VIM(LGPG)
-      REAL*8 FM(3,3),FP(3,3),DEPLT(NDIM*NNO),JM
-      REAL*8 JP,R,EPSML(6),EPSPL(6),PE(3,3,3,3),TBID(6)
+      REAL*8 FM(3,3),FP(3,3),DEPLT(NDIM*NNO)
+      REAL*8 R,EPSML(6),EPSPL(6),PE(3,3,3,3),TBID(6)
       REAL*8 TN(6),DEPS(6),T(6),TL(3,3,3,3)
 C      REAL*8 PES1(6,6),PK2(6),R8BID,PES0(6,6),RAC2
 C      REAL*8 PEM(3,3,3,3),MEM(3,3,3,3),FETAM(4),XIM(3,3),GNM(3,3)
@@ -74,18 +74,6 @@ C ---------------------------------------------------------------------
       CALL NMEPSI(NDIM,NNO,AXI,GRAND,VFF,R,DFF,DEPLM,FM,TBID)
       CALL NMEPSI(NDIM,NNO,AXI,GRAND,VFF,R,DFF,DEPLT,FP,TBID)
       
-C     DETERMINANT DE LA MATRICE F A L INSTANT T+ 
-      IF (NDIM.EQ.3) THEN
-      JP = FP(1,1)*(FP(2,2)*FP(3,3)-FP(2,3)*FP(3,2))
-     &   - FP(2,1)*(FP(1,2)*FP(3,3)-FP(1,3)*FP(3,2))
-     &   + FP(3,1)*(FP(1,2)*FP(2,3)-FP(1,3)*FP(2,2))
-      JM = FM(1,1)*(FM(2,2)*FM(3,3)-FM(2,3)*FM(3,2))
-     &   - FM(2,1)*(FM(1,2)*FM(3,3)-FM(1,3)*FM(3,2))
-     &   + FM(3,1)*(FM(1,2)*FM(2,3)-FM(1,3)*FM(2,2))
-      ELSE
-         JP = FP(3,3)*(FP(1,1)*FP(2,2)-FP(1,2)*FP(2,1))
-         JM = FM(3,3)*(FM(1,1)*FM(2,2)-FM(1,2)*FM(2,1))
-      ENDIF
 
       CALL DEFLOG(NDIM,FM,EPSML,PE,GN,FETA,XI,ME, 0,T,TL)
       IF (RESI) THEN

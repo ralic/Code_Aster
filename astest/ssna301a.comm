@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 25/01/2011   AUTEUR PELLET J.PELLET 
 # TITRE FOND DE RESERVOIR EPAIS PRESSURISE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -91,10 +91,7 @@ CALCNL=CALC_ELEM( reuse=CALCNL,
                             OPTION=(
                   'SIEF_ELNO',  'VARI_ELNO_ELGA',),
                           RESULTAT=CALCNL,
-
-                        CHAM_MATER=MATER
               )
-
 TEST_RESU(RESU=(
           _F(  RESULTAT = CALCNL,
             NOM_CHAM = 'SIEF_ELNO',

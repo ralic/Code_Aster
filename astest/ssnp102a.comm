@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 25/01/2011   AUTEUR MACOCCO K.MACOCCO 
 # TITRE CALCUL DE G POUR UN PB ELASTOPLASTIQUE : APPROCHE GTP
 # ssnp102a.para = tps_job 80 mem_job 100Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -279,9 +279,7 @@ G1=CALC_G(
             RESULTAT=UP,
             THETA=_F(THETA=THET1),
             SYME_CHAR='SYME',
-            COMP_INCR=_F(RELATION = 'VMIS_ISOT_TRAC',
-                         DEFORMATION = 'PETIT'),
-            OPTION='CALC_G'
+            COMP_INCR=_F(RELATION = 'VMIS_ISOT_TRAC'),
              );
 
 
@@ -289,28 +287,22 @@ G2=CALC_G(
             RESULTAT=UP,
             THETA=_F(THETA=THET2),
             SYME_CHAR='SYME',
-            COMP_INCR=_F(RELATION = 'VMIS_ISOT_TRAC',
-                         DEFORMATION = 'PETIT'),
-            OPTION='CALC_G'
+            COMP_INCR=_F(RELATION = 'VMIS_ISOT_TRAC'),
              );
 
 G3=CALC_G(  
             RESULTAT=UP,
             THETA=_F(THETA=THET3),
             SYME_CHAR='SYME',
-            COMP_INCR=_F(RELATION = 'VMIS_ISOT_TRAC',
-                         DEFORMATION = 'PETIT'),
-            OPTION='CALC_G'
+            COMP_INCR=_F(RELATION = 'VMIS_ISOT_TRAC'),
              );
 
 G4=CALC_G(  
             RESULTAT=UP,
             THETA=_F(THETA=THET4),
             SYME_CHAR='SYME',
-            COMP_INCR=_F(RELATION = 'VMIS_ISOT_TRAC',
-                         DEFORMATION = 'PETIT'),
-            OPTION='CALC_G'
-             );                                          
+            COMP_INCR=_F(RELATION = 'VMIS_ISOT_TRAC'),
+             );
 
 #
 # ****************************************************************

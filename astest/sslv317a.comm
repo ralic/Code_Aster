@@ -1,4 +1,4 @@
-# MODIF  DATE 03/01/2011   AUTEUR MACOCCO K.MACOCCO 
+# MODIF  DATE 25/01/2011   AUTEUR MACOCCO K.MACOCCO 
 # TITRE PROPAGATION MIXTE D'UNE FISSURE 3D AVEC X-FEM ET RAFFINEMENT ADAPTATIF
 # sslv317a.para = tps_job 180 mem_job 512Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -402,9 +402,7 @@ for i_propa in xrange(pas_debut,nb_pas) :
    # les K sont en Pa.sqrt(m)
    TAB_KG=CALC_G( RESULTAT=RESU,
                   OPTION='CALC_K_G',
-                  LISSAGE = _F(LISSAGE_THETA='LEGENDRE',
-                               LISSAGE_G='LEGENDRE',
-                               DEGRE=3),
+                  LISSAGE = _F(DEGRE=3),
                   THETA = _F(R_INF=rinf,
                              R_SUP=rsup,
                              FISSURE=FISS,),);
@@ -417,7 +415,7 @@ for i_propa in xrange(pas_debut,nb_pas) :
    if i_propa == nb_pas-1 :
    
       TEST_TABLE(TABLE=TAB_KG,
-                 NOM_PARA='K1_LOCAL',
+                 NOM_PARA='K1',
                  TYPE_TEST='MAX',
                  VALE=7.86029E+04,
                  CRITERE='RELATIF',
@@ -426,7 +424,7 @@ for i_propa in xrange(pas_debut,nb_pas) :
                  REFERENCE='NON_REGRESSION');   
 
       TEST_TABLE(TABLE=TAB_KG,
-                 NOM_PARA='K1_LOCAL',
+                 NOM_PARA='K1',
                  TYPE_TEST='MIN',
                  VALE=4.83556E+04,
                  CRITERE='RELATIF',

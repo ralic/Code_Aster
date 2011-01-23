@@ -1,9 +1,9 @@
-# MODIF  DATE 21/09/2010   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 25/01/2011   AUTEUR MACOCCO K.MACOCCO 
 # TITRE PROPAGATION D'UNE FISSURE X-FEM DEBOUCHANTE SOLLICITEE EN MODE I
 # sslp320b.para = tps_job 200 mem_job 150Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -155,8 +155,6 @@ for i in range(1,NPAS+1) :
                          );
 
     SIF[i]=CALC_G        (RESULTAT=RESU[i],
-                         SYME_CHAR='SANS',
-                         COMP_ELAS=_F(RELATION='ELAS',),
                          OPTION='CALC_K_G',
                          THETA=_F( FISSURE=FISS[i-1],
                                    R_INF=RI,

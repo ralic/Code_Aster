@@ -1,4 +1,4 @@
-#@ MODIF GDEF_LOG Comportement  DATE 10/01/2011   AUTEUR PROIX J-M.PROIX 
+#@ MODIF GDEF_LOG Comportement  DATE 25/01/2011   AUTEUR PROIX J-M.PROIX 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -26,7 +26,7 @@ loi = LoiComportement(
    num_lc         = 9999,
    nb_vari        = 6,
    nom_vari       = ('SH1','SH2','SH3','SH4','SH5','SH6'),
-   modelisation   = ('3D', 'AXIS', 'D_PLAN'),
+   modelisation   = ('3D', 'AXIS', 'D_PLAN','C_PLAN'),
    deformation    = 'GDEF_LOG',
    algo_inte      = ('SANS_OBJET'),
    nom_varc       = None,

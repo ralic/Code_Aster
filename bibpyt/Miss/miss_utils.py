@@ -1,4 +1,4 @@
-#@ MODIF miss_utils Miss  DATE 03/01/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF miss_utils Miss  DATE 25/01/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -21,7 +21,7 @@
 
 """Module d'utilitaires pour la gestion des calculs Miss3D.
 
-Les objets définis sont :
+Les objets/fonctions définis sont :
     dict_format     : formats d'impression des réels et des entiers
     _print          : fonction d'impression
     MISS_PARAMETERS : rassemble les paramètres pour un calcul
@@ -44,6 +44,11 @@ dict_format = {
     'sI' : "%6d",
 }
 
+DEBUG = False
+def set_debug(value):
+    """Positionne la variable de déboggage"""
+    global DEBUG
+    DEBUG = value
 
 
 def _print(*args):
@@ -96,7 +101,8 @@ class MISS_PARAMETER(object):
 
 
 def lire_nb_valeurs(file_object, nb, extend_to, conversion,
-                    nb_bloc=1, nb_ignore=0, max_per_line=-1):
+                    nb_bloc=1, nb_ignore=0, max_per_line=-1,
+                    regexp_label=None):
     """Lit nb valeurs dans file_object et les ajoute à extend_to
     après les avoir converties en utilisant la fonction conversion.
     Ignore nb_ignore lignes pour chacun des nb_bloc lus et lit au
@@ -105,19 +111,39 @@ def lire_nb_valeurs(file_object, nb, extend_to, conversion,
     if max_per_line < 0:
         max_per_line = nb
     ln = 0
+    _printDBG("LIRE_NB_VALEURS nb=", nb, ", nb_bloc=", nb_bloc, ", nb_ignore=", nb_ignore)
     for i in range(nb_bloc):
         val = []
-        for j in range(nb_ignore):
+        j = 0
+        label = []
+        while j < nb_ignore:
             ln += 1
-            ign = file_object.readline()
-            #print "IGNORE", ign
+            line = file_object.readline()
+            if line.strip() == '':
+                continue
+            j += 1
+            label.append(line)
+        if nb_ignore:
+            _printDBG("IGNORE", label)
+            slabel = ''.join(label)
+            if regexp_label:
+                mat = re.search(regexp_label, slabel, re.M)
+                if mat is None:
+                    _printDBG("LABEL", regexp_label, "non trouve, recule de",
+                              nb_ignore, "lignes.", i, "bloc(s) lu(s).")
+                    curpos = file_object.tell()
+                    file_object.seek(curpos - len(slabel))
+                    return 0
         while len(val) < nb:
             ln += 1
             line = file_object.readline()
+            if line.strip() == '':
+                continue
             add = [conversion(v) for v in line.split()[:max_per_line]]
             val.extend(add)
         assert len(val) == nb, "%d valeurs attendues, %d valeurs lues" % (nb, len(val))
         extend_to.extend(val)
+        _printDBG("BLOC", i, ",", nb, "valeurs lues, debut :", repr(val[:3]))
     return ln
 
 
@@ -157,4 +183,10 @@ def double(string):
     """
     return float(string.replace("D", "e"))
 
+
+def _printDBG(*args):
+    """Print debug informations."""
+    if not DEBUG:
+        return
+    _print(*args)
 

@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 25/01/2011   AUTEUR MACOCCO K.MACOCCO 
 # TITRE ESTIMATEURS D'ERREUR EN QUANTITES D'INTERET POUR LE CALCUL DES FIC
 # zzzz257a.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -228,18 +228,14 @@ RESU=CALC_ELEM(reuse =RESU,
 # ---------------------------
 
 TEST_TABLE(TABLE=POST_K,
-           FILTRE=_F(NOM_PARA='METHODE',
-                     VALE_I=3,),
-           NOM_PARA='K1_MAX',
+           NOM_PARA='K1',
            VALE=9.37,
            CRITERE='RELATIF',
            PRECISION=0.075,
            REFERENCE='ANALYTIQUE',);
 
 TEST_TABLE(TABLE=POST_K,
-           FILTRE=_F(NOM_PARA='METHODE',
-                     VALE_I=3,),
-           NOM_PARA='K1_MAX',
+           NOM_PARA='K1',
            VALE=10.0677,
            CRITERE='RELATIF',
            PRECISION=1.E-6,

@@ -1,8 +1,8 @@
-# MODIF  DATE 30/08/2010   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 25/01/2011   AUTEUR PELLET J.PELLET 
 # TITRE  POUTRE ANALYSE HARMONIQUE MAILLAGE FIN POU_D_E
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -138,10 +138,8 @@ DYNA_F=DYNA_LINE_HARM(  MATR_MASS=MASSE,
 
 DYNA_F=CALC_ELEM(reuse=DYNA_F,
                         RESULTAT=DYNA_F,  OPTION='EFGE_ELNO_DEPL',
-                           CARA_ELEM=CARA_ELE   )
-
+)
 #
-
 TEST_RESU(RESU=(   _F(  RESULTAT = DYNA_F,             NUME_ORDRE = 1,
                        MAILLE='M18',                   GROUP_NO='B',
                        NOM_CHAM = 'EFGE_ELNO_DEPL',   NOM_CMP = 'N',
@@ -189,10 +187,8 @@ DYNA_FL=DYNA_LINE_HARM(  MATR_MASS=MASSE,
 
 DYNA_FL=CALC_ELEM(reuse=DYNA_FL,
                          RESULTAT=DYNA_FL,  OPTION='EFGE_ELNO_DEPL',
-                            CARA_ELEM=CARA_ELE   )
-
+)
 #
-
 TEST_RESU(RESU=(   _F(  RESULTAT = DYNA_FL,           NUME_ORDRE = 1,
                        MAILLE='M18',                  GROUP_NO='B',
                        NOM_CHAM = 'EFGE_ELNO_DEPL',  NOM_CMP = 'VY',
@@ -250,10 +246,8 @@ DYNA_AF=DYNA_LINE_HARM(  MATR_MASS=MASSE,
 
 DYNA_AF=CALC_ELEM(reuse=DYNA_AF,
                          RESULTAT=DYNA_AF,  OPTION='EFGE_ELNO_DEPL',
-                            CARA_ELEM=CARA_ELE   )
-
+)
 #
-
 TEST_RESU(RESU=(   _F(  RESULTAT = DYNA_AF,           NUME_ORDRE = 1,
                        MAILLE='M18',                  GROUP_NO='B',
                        NOM_CHAM = 'EFGE_ELNO_DEPL',  NOM_CMP = 'N',
@@ -307,14 +301,11 @@ DYNA_AFL=DYNA_LINE_HARM(  MATR_MASS=MASSE,
 
 DYNA_AFL=CALC_ELEM(reuse=DYNA_AFL,
                           RESULTAT=DYNA_AFL,  OPTION='EFGE_ELNO_DEPL',
-                             CARA_ELEM=CARA_ELE )
-
+)
 DYNA_AFL=CALC_NO(reuse=DYNA_AFL,
                           RESULTAT=DYNA_AFL,  OPTION='EFGE_NOEU_DEPL',
-                             CARA_ELEM=CARA_ELE )
-
+)
 #
-
 TEST_RESU(RESU=(   _F(  RESULTAT = DYNA_AFL,          NUME_ORDRE = 1,
                                          GROUP_NO='B',
                        NOM_CHAM = 'EFGE_NOEU_DEPL',  NOM_CMP = 'VY',

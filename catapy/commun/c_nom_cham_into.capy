@@ -1,4 +1,4 @@
-#& MODIF COMMUN  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+#& MODIF COMMUN  DATE 25/01/2011   AUTEUR PELLET J.PELLET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -126,7 +126,7 @@ def C_NOM_CHAM_INTO() : return  ("ACCE",    #COMMUN#
                         "GRAD_NOEU_THETA",
                         "HYDR_ELNO",
                         "HYDR_NOEU",
-                        "INDI_LOCA_ELGA",
+                        "INDL_ELGA",
                         "INTE_ELNO",
                         "INTE_NOEU",
                         "IRRA",

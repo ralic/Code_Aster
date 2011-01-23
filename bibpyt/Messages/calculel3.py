@@ -1,4 +1,4 @@
-#@ MODIF calculel3 Messages  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+#@ MODIF calculel3 Messages  DATE 25/01/2011   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -283,10 +283,6 @@ Risques & conseils :
   Vérifiez le comportement affecté sur cette maille.
 """),
 
-
-
-
-
 50 : _("""
  La commande a besoin d'un nom de modèle.
 """),
@@ -315,6 +311,16 @@ Risques & conseils :
 54 : _("""
  longueurs des modes locaux imcompatibles entre eux.
 """),
+
+55 : _("""
+Erreur utilisateur dans CALC_ELEM:
+  Pour pouvoir calculer EQUI_ELNO_SIGM sur un concept de type comb_fourier,
+  il faut avoir calculé au préalable l'option 'SIEF_ELGA'
+"""),
+
+
+
+
 
 57 : _("""
  on ne sait pas moyenner cette composante negative

@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 25/01/2011   AUTEUR PELLET J.PELLET 
 # TITRE POUTRE DROITE APPUYEE EN SES DEUX EXTREMITES SOUMISE A UN
 # ssll102i.para = tps_job 60 mem_job 300Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -109,11 +109,8 @@ MEST1=CALC_ELEM( reuse=MEST1,
                            OPTION=('SIEF_ELNO',
                                    )
                    )
-
 MEST1=CALC_NO( reuse=MEST1,
-                         RESULTAT=MEST1,EXCIT=(
-                            _F( CHARGE = CHARG1),
-                                  _F( CHARGE = CHARG2)),
+                         RESULTAT=MEST1,
                            OPTION=('FORC_NODA','REAC_NODA',
                                    'SIEF_NOEU',
                                    )
@@ -189,17 +186,12 @@ MEST1B=CALC_ELEM( reuse=MEST1B,
                          RESULTAT=MEST1B,
                            OPTION=('EFGE_ELNO_DEPL', )
                    )
-
 MEST1B=CALC_NO( reuse=MEST1B,
-                         RESULTAT=MEST1B,EXCIT=(
-                            _F( CHARGE = CHARG1),
-                                  _F( CHARGE = CHARG2)),
+                         RESULTAT=MEST1B,
                            OPTION=('FORC_NODA','REAC_NODA',
                                    'EFGE_NOEU_DEPL',
                                    )
                    )
-
-
 TEST_RESU(   RESU=_F( RESULTAT = MEST1B,
                     NOM_CHAM = 'DEPL',
                     NUME_ORDRE = 1,

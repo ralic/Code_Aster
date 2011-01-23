@@ -2,7 +2,7 @@
      &                  NBORDR,MODELE,MATE,CARA,NCHAR,CTYP)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 25/01/2011   AUTEUR PELLET J.PELLET 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -891,16 +891,16 @@ C    ------------------------------------------------------------------
               CALL RSEXC2(1,1,RESUCO,'SIEF_ELNO',IORDR,CHSIG,
      &                    OPTION,IRET1)
               IF (IRET1.GT.0)GOTO 190
+
+
             ELSEIF (OPTION.EQ.'EQUI_ELNO_SIGM') THEN
-              IF (TYSD.EQ.'FOURIER_ELAS') THEN
-                CALL U2MESK('F','CALCULEL6_83',1,OPTION)
-              ENDIF
+              IF (TYSD.EQ.'FOURIER_ELAS') CALL U2MESK('F',
+     &            'CALCULEL6_83',1,OPTION)
               CALL RSEXCH(RESUCO,'SIEF_ELGA',IORDR,CHSIG,IRET1)
-              CALL RSEXCH(RESUCO,'SIEF_ELGA',IORDR,CHSIG,IRET2)
               CALL RSEXCH(RESUCO,'SIGM_ELNO_COQU',IORDR,CHSIC,IRET3)
               CALL RSEXCH(RESUCO,'SIGM_ELNO_DEPL',IORDR,CHSIC,IRET4)
 C
-              IF (IRET1.GT.0 .AND. IRET2.GT.0 .AND. IRET3.GT.0 .AND.
+              IF (IRET1.GT.0 .AND. IRET3.GT.0 .AND.
      &            IRET4.GT.0) THEN
                 VALKM(1)=OPTION
                 VALKM(2)=TYSD
@@ -914,10 +914,12 @@ C
      &            TYPEMO(1:8).EQ.'MODE_DYN') .OR.
      &            TYSD.EQ.'COMB_FOURIER' .OR.
      &            TYSD.EQ.'FOURIER_ELAS') THEN
-C          CHAMP D'ENTREE POUR ELEMENTS ISOPARAMETRIQUES
-                IF (IRET1.LE.0) THEN
-                  CALL RSEXCH(RESUCO,'SIEF_ELGA',IORDR,CHSIG,K)
+
+C             -- POUR COMB_FOURIER, IL PEUT NE PAS EXISTER SIEF_ELGA:
+                IF (TYSD.EQ.'COMB_FOURIER' .AND. IRET1.GT.0) THEN
+                  CALL U2MESS('F','CALCULEL3_55')
                 ENDIF
+
 C          CHAMP D'ENTREE POUR COQUES
                 IF (EXIPLA) THEN
                   IF (IRET4.GT.0) THEN
@@ -948,6 +950,8 @@ C          CHAMP D'ENTREE POUR COQUES
                   ENDIF
                 ENDIF
               ENDIF
+
+
             ELSEIF (OPTION.EQ.'CRIT_ELNO') THEN
               CALL RSEXC2(1,1,RESUCO,'SIGM_ELNO_DEPL',IORDR,CHSIG,
      &                    OPTION,IRET1)

@@ -1,6 +1,7 @@
       SUBROUTINE XMOIMP(NH8,NH20,NP6,NP15,NP5,NP13,NT4,NT10,NCPQ4,NCPQ8,
      &         NCPT3,NCPT6,NDPQ4,NDPQ8,NDPT3,NDPT6,NF4,NF8,NF3,NF6,NPF2,
-     &            NPF3,NH8X,NP6X,NP5X,NT4X,NCPQ4X,NCPT3X,NDPQ4X,NDPT3X)
+     &            NPF3,NH8X,NP6X,NP5X,NT4X,NCPQ4X,NCPT3X,NDPQ4X,NDPT3X, 
+     &            NAXT3,NAXQ4,NAXQ8,NAXT6, NAX2, NAX3)
       IMPLICIT NONE
 
       INTEGER       NH8(11),NH20(7),NP6(11),NP15(7),NP5(11),NP13(7)
@@ -9,11 +10,12 @@
       INTEGER       NDPQ8(7),NDPT3(11),NDPT6(7),NF4(11),NF8(7),NF3(11)
       INTEGER       NF6(7),NPF2(11),NPF3(7),NH8X(7),NP6X(7),NP5X(7)
       INTEGER       NT4X(7),NCPQ4X(7),NCPT3X(7),NDPQ4X(7),NDPT3X(7)
+      INTEGER       NAXT3(7),NAXQ4(7),NAXQ8(7),NAXT6(7),NAX2(7),NAX3(7)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 21/12/2010   AUTEUR MASSIN P.MASSIN 
+C MODIF MODELISA  DATE 25/01/2011   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -82,13 +84,13 @@ C
      &    WRITE(IFM,808)'PENTA15' ,NP15(1) ,NP15(2) ,NP15(3),
      &                             NP15(4) ,NP15(5) ,NP15(6)
       IF(NP5(7).NE.0) WRITE(IFM,809)'PYRAM5'  ,
-     &    NP5(1)  ,NP5(2)  ,NP5(3)  ,NP5(4)  ,NP5(5)  ,NP5(6),
+     &    NP5(1)  ,NP5(2)  ,NP5(3)  ,NP5(4)  ,NP5(5) ,NP5(6),
      &    NP5(8)  ,NP5(9)  ,NP5(10) ,NP5(11)
       IF(NP13(7).NE.0)
      &    WRITE(IFM,808)'PYRAM13' ,NP13(1) ,NP13(2) ,NP13(3),
      &                             NP13(4) ,NP13(5) ,NP13(6)
       IF(NT4(7).NE.0) WRITE(IFM,809)'TETRA4'  ,
-     &    NT4(1)  ,NT4(2)  ,NT4(3)  ,NT4(4)  ,NT4(5)  ,NT4(6),
+     &    NT4(1)  ,NT4(2)  ,NT4(3)  ,NT4(4)  ,NT4(5) ,NT4(6),
      &    NT4(8)  ,NT4(9)  ,NT4(10) ,NT4(11)
       IF(NT10(7).NE.0)
      &    WRITE(IFM,808)'TETRA10' ,NT10(1) ,NT10(2) ,NT10(3),
@@ -117,7 +119,19 @@ C
       IF(NDPT6(7).NE.0)
      &    WRITE(IFM,808)'DP TRIA6',NDPT6(1),NDPT6(2),NDPT6(3),
      &                             NDPT6(4),NDPT6(5),NDPT6(6)
-      IF(NF4(7).NE.0) WRITE(IFM,809)'FACE4',
+      IF(NAXQ4(7).NE.0) WRITE(IFM,809)'AXI QUAD4',
+     &    NAXQ4(1),NAXQ4(2),NAXQ4(3),NAXQ4(4),NAXQ4(5),NAXQ4(6)
+
+      IF(NAXQ8(7).NE.0)
+     &    WRITE(IFM,808)'AXI QUAD8',NAXQ8(1),NAXQ8(2),NAXQ8(3),
+     &                             NAXQ8(4),NAXQ8(5),NAXQ8(6)
+      IF(NAXT3(7).NE.0) WRITE(IFM,808)'AXI TRIA3',
+     &    NAXT3(1),NAXT3(2),NAXT3(3),NAXT3(4),NAXT3(5),NAXT3(6)
+
+      IF(NAXT6(7).NE.0)
+     &    WRITE(IFM,808)'AXI TRIA6',NAXT6(1),NAXT6(2),NAXT6(3),
+     &                             NAXT6(4),NAXT6(5),NAXT6(6)
+            IF(NF4(7).NE.0) WRITE(IFM,809)'FACE4',
      &    NF4(1)  ,NF4(2)  ,NF4(3)  ,NF4(4)  ,NF4(5)  ,NF4(6),
      &    NF4(8)  ,NF4(9)  ,NF4(10) ,NF4(11)
       IF(NF8(7).NE.0)
@@ -132,6 +146,10 @@ C
      &    NPF2(8) ,NPF2(9) ,NPF2(10),NPF2(11)
       IF(NPF3(7).NE.0)
      &    WRITE(IFM,808)'ARETE 3' ,NPF3(1) ,NPF3(2) ,NPF3(3)
+      IF(NAX2(7).NE.0)
+     &    WRITE(IFM,808)'ARETE-AXI 2' ,NAX2(1) ,NAX2(2) ,NAX2(3)
+      IF(NAX3(7).NE.0)
+     &    WRITE(IFM,808)'ARETE-AXI 3' ,NAX3(1) ,NAX3(2) ,NAX3(3)
       IF(NH8X(7).NE.0) WRITE(IFM,808)'CONTACT HEXA8  ARET',
      &    NH8X(1),NH8X(2),NH8X(3),NH8X(4),NH8X(5),NH8X(6)
       IF(NP6X(7).NE.0) WRITE(IFM,808)'CONTACT PENTA6 ARET',
@@ -154,7 +172,8 @@ C
      &        + NP5(7) + NP13(7) + NT4(7) + NT10(7)
      &        + NCPQ4(7) + NCPQ8(7) + NCPT3(7) + NCPT6(7)
      &        + NDPQ4(7) + NDPQ8(7) + NDPT3(7) + NDPT6(7)
-
+     &        + NAXQ4(7) + NAXQ8(7) + NAXT3(7) + NAXT6(7)
+     
       NBELXC=   NH8X(7) + NP6X(7) + NT4X(7)
      &        + NCPQ4X(7) + NCPT3X(7) + NDPQ4X(7) + NDPT3X(7)
 

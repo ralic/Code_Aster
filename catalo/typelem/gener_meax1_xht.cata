@@ -1,0 +1,85 @@
+%& MODIF TYPELEM  DATE 25/01/2011   AUTEUR PELLET J.PELLET 
+%            CONFIGURATION MANAGEMENT OF EDF VERSION
+% ======================================================================
+% COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+% THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+% IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+% THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+% (AT YOUR OPTION) ANY LATER VERSION.                                   
+%                                                                       
+% THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+% WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+% MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+% GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+%                                                                       
+% YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+% ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+%    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+% ======================================================================
+% RESPONSABLE TRAN
+GENER_MEAX1_XHT
+TYPE_GENE__
+
+%  CATALOGUES DES ELEMENTS 2D X-FEM HEAVISIDE-CRACKTIP DE BORD SANS CONTACT
+
+ENTETE__ ELEMENT__ MEAXSE2_XHT     MAILLE__ SEG2
+   ELREFE__ SE2      GAUSS__  RIGI=FPG2
+   ATTRIBUT__  BORD=OUI  XFEM=XHT
+ENTETE__ ELEMENT__ MEAXSE3_XHT     MAILLE__ SEG3
+   ELREFE__ SE3      GAUSS__  RIGI=FPG4
+   ELREFE__ SE2      GAUSS__  RIGI=FPG2
+   ATTRIBUT__  BORD=OUI  XFEM=XHT
+
+MODE_LOCAL__
+    DDL_MECA = DEPL_R   ELNO__ IDEN__  (DX     DY      H1X     H1Y
+                                        E1X     E1Y      E2X     E2Y
+                                        E3X     E3Y      E4X     E4Y      )
+    CFORCEF  = FORC_F   ELEM__         (FX       FY       )
+    NFORCER  = FORC_R   ELNO__ IDEN__  (FX       FY       )
+    EFORCNO  = FORC_R   ELNO__ IDEN__  (FX       FY       )
+    NGEOMER  = GEOM_R   ELNO__ IDEN__  (X        Y       )
+    CTEMPSR  = INST_R   ELEM__         (INST     )
+    CPRESSF  = PRES_F   ELEM__         (PRES     CISA    )
+    EPRESNO  = PRES_R   ELNO__ IDEN__  (PRES     CISA    )
+    CPRES_R  = PRES_R   ELEM__         (PRES     CISA    )
+    N1NEUT_R = NEUT_R   ELNO__ IDEN__  (X1       )
+    E2NEUTI = NEUT_I    ELEM__         (X[2])
+    E8NEUTI = NEUT_I    ELEM__         (X[8])
+    E18NEUI = NEUT_I    ELEM__         (X[18])
+
+    E12NEUTR = NEUT_R    ELEM__        (X[12])
+    E15NEUTR = NEUT_R    ELEM__        (X[15])
+    STANO_I  = NEUT_I   ELNO__ IDEN__  (X1       )
+
+VECTEUR__
+    MVECTUR = VDEP_R DDL_MECA
+
+MATRICE__
+    MMATUUR = MDEP_R DDL_MECA DDL_MECA
+
+OPTION__
+    CHAR_MECA_FF1D2D    36    IN__   CFORCEF  PFF1D2D  NGEOMER  PGEOMER  CTEMPSR  PTEMPSR  E12NEUTR PPINTTO
+                                     E18NEUI  PCNSETO  E2NEUTI  PHEAVTO  E8NEUTI  PLONCHA  N1NEUT_R PLSN
+                                     N1NEUT_R PLST     STANO_I  PSTANO
+                              OUT__  MVECTUR  PVECTUR
+    CHAR_MECA_FR1D2D    36    IN__   NFORCER  PFR1D2D  NGEOMER  PGEOMER  E12NEUTR PPINTTO
+                                     E18NEUI  PCNSETO  E2NEUTI  PHEAVTO  E8NEUTI  PLONCHA  N1NEUT_R PLSN
+                                     N1NEUT_R PLST     STANO_I  PSTANO
+                              OUT__  MVECTUR  PVECTUR
+    CHAR_MECA_PRES_F    36    IN__   NGEOMER  PGEOMER  CPRESSF  PPRESSF  CTEMPSR  PTEMPSR  E12NEUTR PPINTTO
+                                     E18NEUI  PCNSETO  E2NEUTI  PHEAVTO  E8NEUTI  PLONCHA  N1NEUT_R PLSN
+                                     N1NEUT_R PLST     STANO_I  PSTANO
+                              OUT__  MVECTUR  PVECTUR
+    CHAR_MECA_PRES_R    36    IN__   NGEOMER  PGEOMER  EPRESNO  PPRESSR  E12NEUTR PPINTTO  E18NEUI  PCNSETO
+                                     E2NEUTI  PHEAVTO  E8NEUTI  PLONCHA  N1NEUT_R PLSN     N1NEUT_R PLST
+                                     STANO_I  PSTANO
+                              OUT__  MVECTUR  PVECTUR
+    TOPOSE              514   IN__   NGEOMER  PGEOMER  N1NEUT_R PLEVSET
+                              OUT__  E12NEUTR PPINTTO  E18NEUI  PCNSETO   E2NEUTI  PHEAVTO  E8NEUTI  PLONCHA
+                                     E15NEUTR PAINTER
+    TOU_INI_ELNO        99    IN__   NGEOMER  PGEOMER
+                              OUT__  EPRESNO  PPRES_R
+    TOU_INI_ELEM        99    IN__   NGEOMER  PGEOMER
+                              OUT__  CPRES_R  PPRES_R
+    FULL_MECA           99    IN__   N1NEUT_R PLSN     N1NEUT_R PLST     STANO_I  PSTANO
+                              OUT__  MVECTUR  PVECTUR

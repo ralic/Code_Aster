@@ -1,4 +1,4 @@
-%& MODIF COMPELEM  DATE 19/01/2011   AUTEUR MASSIN P.MASSIN 
+%& MODIF COMPELEM  DATE 25/01/2011   AUTEUR PELLET J.PELLET 
 % RESPONSABLE PROIX
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
@@ -1184,14 +1184,14 @@ FORC_C   = C    FX       FY       FZ       MX       MY       MZ       BX       R
 >>
     IMPE_R   = R    IMPE
 
-<<  IND_LOCA type:R Indicateur de localisation
+<<  INDL_R type:R Indicateur de localisation
         INDICE : indicateur de contact
         DIR1   : première direction de localisation
         DIR2   : deuxième direction de localisation
         DIR3   : troisième direction de localisation
         DIR4   : quatrième direction de localisation
 >>
-    IND_LOCA   = R   INDICE    DIR1     DIR2     DIR3    DIR4
+    INDL_R   = R   INDICE    DIR1     DIR2     DIR3    DIR4
 
 <<  INFC_R Type:R Informations relatives au contact
        CONT   : indicateur de contact

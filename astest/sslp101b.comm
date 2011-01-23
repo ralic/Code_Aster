@@ -1,8 +1,8 @@
-# MODIF  DATE 23/11/2009   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 25/01/2011   AUTEUR MACOCCO K.MACOCCO 
 # TITRE PLAQUE FISSUREE EN TRACTION (CALCUL DE G, K1 ET K2)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -96,14 +96,11 @@ G1=CALC_G(              RESULTAT=CHAMDEPL,
                         NUME_ORDRE=1,
                         THETA=_F(THETA=THETA1),
 #                        EXCIT=_F(CHARGE=CHFONC,),
-                        SYME_CHAR='SYME',
-                        COMP_ELAS=_F( RELATION = 'ELAS',
-                                   DEFORMATION = 'PETIT'),)
+                        SYME_CHAR='SYME',)
 
 GK1=CALC_G(             RESULTAT=CHAMDEPL,
                         NUME_ORDRE=1,
-                        THETA=_F(MODULE = 1.,
-                                 R_INF = 22.04078,
+                        THETA=_F(R_INF = 22.04078,
                                  R_SUP = 30.,
                                  DIRECTION=( 1., 0., 0.,),
                                  FOND_FISS=FOND),
@@ -117,14 +114,11 @@ G2=CALC_G(              RESULTAT=CHAMDEPL,
                         NUME_ORDRE=1,
                         THETA=_F(THETA=THETA2),
 #                        EXCIT=_F(CHARGE=CHFONC,),
-                        SYME_CHAR='SYME',
-                        COMP_ELAS=_F( RELATION = 'ELAS',
-                                   DEFORMATION = 'PETIT'),)
+                        SYME_CHAR='SYME',)
 
 GK2=CALC_G(             RESULTAT=CHAMDEPL,
                         NUME_ORDRE=1,
                         THETA=_F(
-                                 MODULE = 1.,
                                  R_SUP = 22.04078,
                                  R_INF = 15.3061094,
                                  DIRECTION=( 1., 0., 0.,),
@@ -137,14 +131,11 @@ G3=CALC_G(              RESULTAT=CHAMDEPL,
                         NUME_ORDRE=1,
                         THETA=_F(THETA=THETA3),
 #                        EXCIT=_F(CHARGE=CHFONC,),
-                        SYME_CHAR='SYME',
-                        COMP_ELAS=_F( RELATION = 'ELAS',
-                                   DEFORMATION = 'PETIT'), )
+                        SYME_CHAR='SYME',)
 
 GK3=CALC_G(             RESULTAT=CHAMDEPL,
                         NUME_ORDRE=1,
                         THETA=_F(
-                                 MODULE = 1.,
                                  R_INF = 9.79591846,
                                  R_SUP = 15.3061094,
                                  DIRECTION=( 1., 0., 0.,),
@@ -157,14 +148,11 @@ G4=CALC_G(              RESULTAT=CHAMDEPL,
                         NUME_ORDRE=1,
                         THETA=_F(THETA=THETA4),
 #                        EXCIT=_F(CHARGE=CHFONC,),
-                        SYME_CHAR='SYME',
-                        COMP_ELAS=_F( RELATION = 'ELAS',
-                                   DEFORMATION = 'PETIT'), )
+                        SYME_CHAR='SYME',)
 
 GK4=CALC_G(              RESULTAT=CHAMDEPL,
                          NUME_ORDRE=1,
                          THETA=_F(
-                                 MODULE = 1.,
                                  R_SUP = 9.79591846,
                                  R_INF = 5.510197639,
                                  DIRECTION=( 1., 0., 0.,),
@@ -177,14 +165,11 @@ G5=CALC_G(               RESULTAT=CHAMDEPL,
                          NUME_ORDRE=1,
                          THETA=_F(THETA=THETA5),
 #                         EXCIT=_F(CHARGE=CHFONC,),
-                         SYME_CHAR='SYME',
-                         COMP_ELAS=_F( RELATION = 'ELAS',
-                                   DEFORMATION = 'PETIT'), )
+                         SYME_CHAR='SYME',)
 
 GK5=CALC_G(              RESULTAT=CHAMDEPL,
                          NUME_ORDRE=1,
                          THETA=_F(
-                                 MODULE = 1.,
                                  R_INF = 2.448979377,
                                  R_SUP = 5.510197639,
                                  DIRECTION=( 1., 0., 0.,),
@@ -197,14 +182,11 @@ G6=CALC_G(               RESULTAT=CHAMDEPL,
                          NUME_ORDRE=1,
                          THETA=_F(THETA=THETA6),
 #                         EXCIT=_F(CHARGE=CHFONC,),
-                         SYME_CHAR='SYME',
-                         COMP_ELAS=_F( RELATION = 'ELAS',
-                                   DEFORMATION = 'PETIT'),)
+                         SYME_CHAR='SYME',)
 
 GK6=CALC_G(              RESULTAT=CHAMDEPL,
                          NUME_ORDRE=1,
                             THETA=_F(
-                                MODULE = 1.,
                                 R_SUP = 2.448979377,
                                 R_INF = 0.61225116,
                                 DIRECTION=( 1., 0., 0.,),

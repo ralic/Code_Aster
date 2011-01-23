@@ -1,8 +1,8 @@
-# MODIF  DATE 21/09/2010   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 25/01/2011   AUTEUR MACOCCO K.MACOCCO 
 # TITRE FISSURE DEBOUCHANTE DANS UNE PLAQUE 3D DE LARGEUR FINIE AVEC X-FEM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -192,8 +192,6 @@ SIF4 = [None]*(nbc)
 for i in range(0,nbc) :
 
    SIF[i]=CALC_G(RESULTAT=UTOT1,
-                 SYME_CHAR='SANS',
-                 COMP_ELAS=_F(RELATION='ELAS',),
                  OPTION='CALC_K_G',
                  THETA=_F(FISSURE=FISS,
                           R_INF=RI[i],
@@ -205,8 +203,6 @@ for i in range(0,nbc) :
    IMPR_TABLE(TABLE=SIF[i],);
 
    SIF2[i]=CALC_G(RESULTAT=UTOT1,
-                 SYME_CHAR='SANS',
-                 COMP_ELAS=_F(RELATION='ELAS',),
                  OPTION='CALC_K_G',
                  THETA=_F(FISSURE=FISS,
                           R_INF=RI[i],
@@ -218,28 +214,22 @@ for i in range(0,nbc) :
    IMPR_TABLE(TABLE=SIF2[i],);
 
    SIF3[i]=CALC_G(RESULTAT=UTOT3,
-                  SYME_CHAR='SANS',
-                  COMP_ELAS=_F(RELATION='ELAS',),
                   OPTION='CALC_K_G',
                   LISSAGE = _F(LISSAGE_THETA='LAGRANGE',
                                LISSAGE_G='LAGRANGE',),
                   THETA=_F(R_INF=RI[i],
                            R_SUP=RS[i],
-                  FISSURE=FISS,),
-                  INFO=1,);
+                  FISSURE=FISS,),);
 
    IMPR_TABLE(TABLE=SIF3[i],);
 
    SIF4[i]=CALC_G(RESULTAT=UTOT4,
-                  SYME_CHAR='SANS',
-                  COMP_ELAS=_F(RELATION='ELAS',),
                   OPTION='CALC_K_G',
                   LISSAGE = _F(LISSAGE_THETA='LAGRANGE',
                                LISSAGE_G='LAGRANGE',),
                   THETA=_F(R_INF=RI[i],
                            R_SUP=RS[i],
-                  FISSURE=FISS,),
-                  INFO=1,);
+                  FISSURE=FISS,),);
 
    IMPR_TABLE(TABLE=SIF4[i],);
 
@@ -273,7 +263,7 @@ K1REF4F=4.52e6
 
 for i in range(0,nbc) :
    TEST_TABLE(TABLE=SIF[i],
-              NOM_PARA='K1_LOCAL',
+              NOM_PARA='K1',
               TYPE_TEST='MAX',
               VALE=K1REF,
               CRITERE='RELATIF',
@@ -281,7 +271,7 @@ for i in range(0,nbc) :
               REFERENCE='ANALYTIQUE',);
 
    TEST_TABLE(TABLE=SIF[i],
-              NOM_PARA='K1_LOCAL',
+              NOM_PARA='K1',
               TYPE_TEST='MIN',
               VALE=K1REF,
               CRITERE='RELATIF',
@@ -289,7 +279,7 @@ for i in range(0,nbc) :
               REFERENCE='ANALYTIQUE',);
 
    TEST_TABLE(TABLE=SIF2[i],
-              NOM_PARA='K1_LOCAL',
+              NOM_PARA='K1',
               TYPE_TEST='MAX',
               VALE=K1REF,
               CRITERE='RELATIF',
@@ -298,7 +288,7 @@ for i in range(0,nbc) :
               VERSION='8.03.09');
 
    TEST_TABLE(TABLE=SIF2[i],
-              NOM_PARA='K1_LOCAL',
+              NOM_PARA='K1',
               TYPE_TEST='MIN',
               VALE=K1REF,
               CRITERE='RELATIF',
@@ -307,7 +297,7 @@ for i in range(0,nbc) :
               VERSION='8.03.09');
 
    TEST_TABLE(TABLE=SIF3[i],
-              NOM_PARA='K1_LOCAL',
+              NOM_PARA='K1',
               TYPE_TEST='MAX',               
               VALE=K1REF,
               CRITERE='RELATIF',
@@ -315,7 +305,7 @@ for i in range(0,nbc) :
               REFERENCE='ANALYTIQUE',);
 
    TEST_TABLE(TABLE=SIF3[i],
-              NOM_PARA='K1_LOCAL',
+              NOM_PARA='K1',
               TYPE_TEST='MIN',               
               VALE=K1REF,
               CRITERE='RELATIF',
@@ -323,7 +313,7 @@ for i in range(0,nbc) :
               REFERENCE='ANALYTIQUE',);
 
    TEST_TABLE(TABLE=SIF4[i],
-              NOM_PARA='K1_LOCAL',
+              NOM_PARA='K1',
               FILTRE=_F(NOM_PARA='NUM_PT',VALE_I=1,),
               VALE=K1REF4I,
               CRITERE='RELATIF',
@@ -331,7 +321,7 @@ for i in range(0,nbc) :
               REFERENCE='AUTRE_ASTER',);
 
    TEST_TABLE(TABLE=SIF4[i],
-              NOM_PARA='K1_LOCAL',
+              NOM_PARA='K1',
               FILTRE=_F(NOM_PARA='NUM_PT',VALE_I=6,),
               VALE=K1REF4F,
               CRITERE='RELATIF',
@@ -339,7 +329,7 @@ for i in range(0,nbc) :
               REFERENCE='AUTRE_ASTER',);
 
 TEST_TABLE(TABLE=SIF[nbc],
-           NOM_PARA='K1_LOCAL',
+           NOM_PARA='K1',
            TYPE_TEST='MAX',
            VALE=K1REF,
            CRITERE='RELATIF',
@@ -347,7 +337,7 @@ TEST_TABLE(TABLE=SIF[nbc],
            REFERENCE='ANALYTIQUE',);
 
 TEST_TABLE(TABLE=SIF[nbc],
-           NOM_PARA='K1_LOCAL',
+           NOM_PARA='K1',
            TYPE_TEST='MIN',
            VALE=K1REF,
            CRITERE='RELATIF',
@@ -373,13 +363,11 @@ PK=POST_K1_K2_K3(MODELISATION='3D',
 IMPR_TABLE(TABLE = PK)
 
 TEST_TABLE( TABLE=PK,
-            NOM_PARA='K1_MAX',
+            NOM_PARA='K1',
             FILTRE=(_F( NOM_PARA = 'PT_FOND',  
                         VALE_I = 1,  ),
                     _F( NOM_PARA = 'INST',  
-                        VALE = 1.,  ),
-                    _F( NOM_PARA = 'METHODE',  
-                        VALE_I = 3,  ),),
+                        VALE = 1.,  ),),
             VALE=K1REF,
             PRECISION=0.03,
             REFERENCE='ANALYTIQUE' )

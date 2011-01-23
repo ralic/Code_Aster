@@ -1,8 +1,8 @@
-%& MODIF COMPELEM  DATE 21/12/2010   AUTEUR MASSIN P.MASSIN 
+%& MODIF COMPELEM  DATE 25/01/2011   AUTEUR PELLET J.PELLET 
 % ======================================================================
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
-% COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+% COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 % THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 % IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 % THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -603,6 +603,35 @@ PHENOMENE_MODELISATION__
 
 %-------------------------------------------------------------------
 % modelisations 2d X-FEM non affectables par AFFE_MODELE
+       MODELISATION__ 'AXIS_XH'         DIM__ 2 2   CODE__ 'AX1'
+              ATTRIBUT__  NBSIGM=X4 AXIS=OUI  TYPMOD=AXIS
+              MAILLE__ TRIA6     ELEMENT__ MEAXTR6_XH
+              MAILLE__ TRIA6     ELEMENT__ MEAXTR6_XH_X
+              MAILLE__ TRIA3     ELEMENT__ MEAXTR3_XH
+              MAILLE__ QUAD8     ELEMENT__ MEAXQU8_XH
+              MAILLE__ QUAD8     ELEMENT__ MEAXQU8_XH_X
+              MAILLE__ QUAD4     ELEMENT__ MEAXQU4_XH
+              MAILLE__ SEG3      ELEMENT__ MEAXSE3_XH
+              MAILLE__ SEG2      ELEMENT__ MEAXSE2_XH
+
+         MODELISATION__ 'AXIS_XHT'        DIM__ 2 2   CODE__ 'AX3'
+              ATTRIBUT__  NBSIGM=X4 AXIS=OUI TYPMOD=AXIS
+              MAILLE__ TRIA3     ELEMENT__ MEAXTR3_XHT
+              MAILLE__ QUAD4     ELEMENT__ MEAXQU4_XHT
+              MAILLE__ SEG3      ELEMENT__ MEAXSE3_XHT
+              MAILLE__ SEG2      ELEMENT__ MEAXSE2_XHT
+              MAILLE__ TRIA6     ELEMENT__ MEAXTR6_XHT_X
+              MAILLE__ QUAD8     ELEMENT__ MEAXQU8_XHT_X
+
+         MODELISATION__ 'AXIS_XT'         DIM__ 2 2   CODE__ 'AX2'
+              ATTRIBUT__  NBSIGM=X4 AXIS=OUI  TYPMOD=AXIS
+              MAILLE__ TRIA3     ELEMENT__ MEAXTR3_XT
+              MAILLE__ QUAD4     ELEMENT__ MEAXQU4_XT
+              MAILLE__ SEG3      ELEMENT__ MEAXSE3_XT
+              MAILLE__ SEG2      ELEMENT__ MEAXSE2_XT
+              MAILLE__ TRIA6     ELEMENT__ MEAXTR6_XT_X
+              MAILLE__ QUAD8     ELEMENT__ MEAXQU8_XT_X
+
        MODELISATION__ 'C_PLAN_XH'         DIM__ 2 2   CODE__ 'CX1'
               ATTRIBUT__  NBSIGM=X4 C_PLAN=OUI  TYPMOD=C_PLAN
               MAILLE__ TRIA6     ELEMENT__ MECPTR6_XH

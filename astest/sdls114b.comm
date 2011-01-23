@@ -1,9 +1,9 @@
-# MODIF  DATE 21/09/2010   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 25/01/2011   AUTEUR MACOCCO K.MACOCCO 
 # TITRE CALCUL DES FACTEURS D INTENSITE DES CONTRAINTES 
 # sdls114b.para = tps_job 210 mem_job 256Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -221,7 +221,7 @@ Kg_ref =[4.7767E+09,7.2709E+09,5.88088E+10,-2.8887E+11,-8.1421E+10]
 for i in range(0,5) :
    imode = i + 1
    TEST_TABLE(TABLE=GLMO1,
-              NOM_PARA='K1_LOCAL',
+              NOM_PARA='K1',
               FILTRE=(_F(NOM_PARA = 'NUME_MODE',
                          VALE_I = imode),
                       _F(NOM_PARA = 'NUM_PT',
@@ -232,10 +232,8 @@ for i in range(0,5) :
              );
              
    TEST_TABLE(TABLE=T1_K[i],
-              NOM_PARA='K1_MAX',
-              FILTRE=(_F(NOM_PARA = 'METHODE',
-                        VALE_I = 3), 
-                      _F(NOM_PARA = 'ABSC_CURV',
+              NOM_PARA='K1',
+              FILTRE=(_F(NOM_PARA = 'ABSC_CURV',
                          VALE = 2.00000E-03),),
               VALE=Ku_ref[i],
               PRECISION=1.E-5,
@@ -285,7 +283,7 @@ KT1 = POST_K_TRANS(RESU_TRANS = RES_DYNA,
                               
 IMPR_TABLE(TABLE=KT1,TRI=_F(NOM_PARA=('ABSC_CURV','INST'),ORDRE='CROISSANT'),)
 TEST_TABLE(TABLE=KT1,
-           NOM_PARA='K1_LOCAL',
+           NOM_PARA='K1',
            FILTRE=(_F(NOM_PARA = 'INST',
                       VALE = 1.25000E-03),
                     _F(NOM_PARA = 'NUM_PT',
@@ -303,7 +301,7 @@ KT2 = POST_K_TRANS(RESU_TRANS = RES_DYNA,
                               
 IMPR_TABLE(TABLE=KT2,TRI=_F(NOM_PARA=('ABSC_CURV','INST'),ORDRE='CROISSANT'),)
 TEST_TABLE(TABLE=KT2,
-           NOM_PARA='K1_LOCAL',
+           NOM_PARA='K1',
            FILTRE=(_F(NOM_PARA = 'INST',
                       VALE = 1.25000E-03),
                     _F(NOM_PARA = 'NUM_PT',

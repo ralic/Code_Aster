@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 25/01/2011   AUTEUR PELLET J.PELLET 
 # TITRE BARRE EN COMPRESSION  -  CALCUL 2D CONTRAINTES PLANES
 # ssnp305a.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test V
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -97,20 +97,14 @@ CALCNL=CALC_ELEM( reuse=CALCNL,
                             OPTION=(
                   'SIEF_ELNO',  'VARI_ELNO_ELGA',),
                           RESULTAT=CALCNL,
-
-                        CHAM_MATER=MATER
               )
-
 CALCNL=CALC_ELEM( reuse=CALCNL,
                            RESULTAT=CALCNL,
-
                              OPTION='EPSI_ELNO_DEPL'
                       )
-
 CALCNL=CALC_NO( reuse=CALCNL,           RESULTAT=CALCNL,
                                 OPTION='FORC_NODA',
                    )
-
 TEST_RESU(RESU=(
           _F(  RESULTAT = CALCNL,
             NOM_CHAM = 'FORC_NODA',

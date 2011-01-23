@@ -1,9 +1,9 @@
-# MODIF  DATE 21/09/2010   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 25/01/2011   AUTEUR MACOCCO K.MACOCCO 
 # TITRE FISSURATION A PROPAGATION IMPOSEE AVEC XFEM
 # sslv316e.para = tps_job 500 mem_job 512Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -118,8 +118,8 @@ beta=30.0/180.0*3.1415
 
 # FUNCTION POUR IMPOSER L'ANGLE DE PROPAGATION CI-DESSUS
 # DANS LA TABLE ISSUE PAR CALC_G
-ZERO=FORMULE(NOM_PARA='G_LOCAL',
-             VALE='0.0*G_LOCAL+beta',);
+ZERO=FORMULE(NOM_PARA='G',
+             VALE='0.0*G+beta',);
 
 L_INS1=DEFI_LIST_REEL(DEBUT=0.0,INTERVALLE=_F(JUSQU_A=3.0,NOMBRE=3,),);
 RI = 0.2
@@ -144,27 +144,22 @@ for i in range(nbcalc) :
                          INFO=1,);
 
    SIF[i]=CALC_G        (RESULTAT=RESU[i],
-                         SYME_CHAR='SANS',
-                         COMP_ELAS=_F(RELATION='ELAS',),
                          OPTION='CALC_K_G',
                          THETA=_F( FISSURE=FISS[i],
                                    R_INF=RI,
                                    R_SUP=RS,),
-                         LISSAGE=_F( LISSAGE_THETA='LEGENDRE',
-                                     LISSAGE_G='LEGENDRE',
-                                     DEGRE=0,),
-                         INFO=1,);
+                         LISSAGE=_F( DEGRE=0,),);
 
 #  ON MODIFIE LA TABLE DES SIF POUR IMPOSER L'ANGLE VOULU
    SIF1[i] = CALC_TABLE(TABLE=SIF[i],
                    ACTION=(_F(OPERATION='EXTR',
                              NOM_PARA=('NUME_ORDRE','INST','NUM_PT',
-                                       'ABSC_CURV','K1_LOCAL','K2_LOCAL',
-                                       'K3_LOCAL','G_LOCAL','G_IRWIN','NUME_FOND'),
+                                       'ABSC_CURV','K1','K2',
+                                       'K3','G','G_IRWIN','NUME_FOND'),
                              ),
                           _F(OPERATION='OPER',
                              FORMULE=ZERO,
-                             NOM_PARA='BETA_LOCAL',),
+                             NOM_PARA='BETA',),
                           ),
                         );
 

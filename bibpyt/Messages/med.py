@@ -1,8 +1,8 @@
-#@ MODIF med Messages  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
+#@ MODIF med Messages  DATE 24/01/2011   AUTEUR SELLENET N.SELLENET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -458,8 +458,8 @@ cata_msg = {
 """),
 
 82 : _("""
-  -> L'objet  %(k1)s  n'existe pas.
-  -> Risque & Conseil:
+  -> Le champ %(k1)s n'est associé à aucun modèle.
+  -> Conseil :
      Veuillez renseigner le modèle.
 """),
 

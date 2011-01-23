@@ -1,8 +1,8 @@
-#@ MODIF miss_fichier_sol Miss  DATE 30/08/2010   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF miss_fichier_sol Miss  DATE 25/01/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -110,7 +110,7 @@ def fichier_sol(tab, param=None):
         if param['DREF']:
             content.append(("DREF" + sfmt) % param['DREF'])
         if param['SPEC_MAX']:
-            content.append(("SPEC" + sfmt + " %d") % (param['SPEC_MAX'], param['SPEC_NB']))
+            content.append(("SPEC" + sfmt + " / %d") % (param['SPEC_MAX'], param['SPEC_NB']))
         else:
             content.append("SPEC AUTO")
         content.append(("OFFSET" + sfmt + " / %d") % (param['OFFSET_MAX'], param['OFFSET_NB']))

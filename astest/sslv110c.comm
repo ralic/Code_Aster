@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 25/01/2011   AUTEUR MACOCCO K.MACOCCO 
 # TITRE  FISSURE SEMI-ELLIPTIQUE AVEC MILIEU INFINI
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -112,29 +112,21 @@ THETA0=CALC_THETA(   OPTION='COURONNE',   MODELE=MO,  FOND_FISS=FISS1,
 
 G0=CALC_G( RESULTAT=RESU,SYME_CHAR='SYME',
                        OPTION='CALC_G_GLOB',
-                      COMP_ELAS=_F( RELATION = 'ELAS',
-                                 DEFORMATION = 'PETIT'),
                      THETA=_F(THETA=THETA0),  )
 
 
 GLOC0=CALC_G( RESULTAT=RESU,SYME_CHAR='SYME',
                         THETA=_F(FOND_FISS=FISS1,R_SUP_FO=RSUP0,   R_INF_FO=RINF0),
                         LISSAGE=_F(DEGRE=7),
-                         COMP_ELAS=_F( RELATION = 'ELAS',
-                                    DEFORMATION = 'PETIT'),
                      )
 
 DGE=CALC_G(RESULTAT=RESU, SYME_CHAR='SYME',
                        OPTION='CALC_G_GLOB',
-                      COMP_ELAS=_F( RELATION = 'ELAS',
-                                 DEFORMATION = 'PETIT'),
               SENSIBILITE = (YOUNG,),
                      THETA=_F(THETA=THETA0,))
 
 DGF=CALC_G(RESULTAT=RESU, SYME_CHAR='SYME',
                        OPTION='CALC_G_GLOB',
-                      COMP_ELAS=_F( RELATION = 'ELAS',
-                                 DEFORMATION = 'PETIT'),
               SENSIBILITE = (FZ,),
                      THETA=_F(THETA=THETA0, ))
 
@@ -149,8 +141,6 @@ THETA1=CALC_THETA(   OPTION='COURONNE',   MODELE=MO,  FOND_FISS=FISS1,
 
 G1=CALC_G(RESULTAT=RESU,SYME_CHAR='SYME',
                        OPTION='CALC_G_GLOB',
-                     COMP_ELAS=_F( RELATION = 'ELAS',
-                                DEFORMATION = 'PETIT'),
              THETA=_F(THETA=THETA1,))
 
 
@@ -158,23 +148,17 @@ GLOC1=CALC_G(RESULTAT=RESU,
                        THETA=_F(FOND_FISS=FISS1,R_SUP_FO=RSUP1,R_INF_FO=RINF1,),
                        SYME_CHAR='SYME',
                        LISSAGE=_F(DEGRE=7),
-                       COMP_ELAS=_F( RELATION = 'ELAS',
-                                   DEFORMATION = 'PETIT'),
                        )
 
 DGE1=CALC_G(
                       RESULTAT=RESU, SYME_CHAR='SYME',
                       OPTION='CALC_G_GLOB',
-                      COMP_ELAS=_F( RELATION = 'ELAS',
-                                    DEFORMATION = 'PETIT'),
                       SENSIBILITE = (YOUNG,),
                       THETA=_F(THETA=THETA1,    ))
 
 DGF1=CALC_G(
                       RESULTAT=RESU, SYME_CHAR='SYME',
                       OPTION='CALC_G_GLOB',
-                      COMP_ELAS=_F( RELATION = 'ELAS',
-                                    DEFORMATION = 'PETIT'),
                       SENSIBILITE = (FZ,),
                       THETA=_F(THETA=THETA1,    ))
 
@@ -190,31 +174,23 @@ THETA2=CALC_THETA(   OPTION='COURONNE', MODELE=MO, FOND_FISS=FISS1,
 
 G2=CALC_G(   RESULTAT=RESU,  SYME_CHAR='SYME',
                        OPTION='CALC_G_GLOB',
-                     COMP_ELAS=_F( RELATION = 'ELAS',
-                                   DEFORMATION = 'PETIT'),
                      THETA=_F(THETA=THETA2,    ))
 
 GLOC2=CALC_G(  RESULTAT=RESU,
                        THETA=_F(FOND_FISS=FISS1,R_SUP_FO=RSUP2,R_INF_FO=RINF2),
                        SYME_CHAR='SYME',
                        LISSAGE=_F(DEGRE=7),
-                       COMP_ELAS=_F( RELATION = 'ELAS',
-                                     DEFORMATION = 'PETIT'),
                         )
 
 DGE2=CALC_G(
                       RESULTAT=RESU, SYME_CHAR='SYME',
                        OPTION='CALC_G_GLOB',
-                      COMP_ELAS=_F( RELATION = 'ELAS',
-                                    DEFORMATION = 'PETIT'),
                       SENSIBILITE = (YOUNG,),
                       THETA=_F(THETA=THETA2,    ))
 
 DGF2=CALC_G(
                       RESULTAT=RESU, SYME_CHAR='SYME',
                        OPTION='CALC_G_GLOB',
-                      COMP_ELAS=_F( RELATION = 'ELAS',
-                                    DEFORMATION = 'PETIT'),
                       SENSIBILITE = (FZ,),
                       THETA=_F(THETA=THETA2,    ))
 
@@ -303,7 +279,7 @@ TEST_TABLE(TABLE=DGF2,
 TEST_TABLE(      TABLE=GLOC0,
                    FILTRE=_F(  NOM_PARA = 'NOEUD',
                             VALE_K = 'NO1099'),
-                 NOM_PARA='G_LOCAL',
+                 NOM_PARA='G',
                       REFERENCE='ANALYTIQUE',
                       VALE=7.171E-5,
                  PRECISION=5.E-2      )
@@ -311,7 +287,7 @@ TEST_TABLE(      TABLE=GLOC0,
 TEST_TABLE(      TABLE=GLOC1,
                    FILTRE=_F(  NOM_PARA = 'NOEUD',
                             VALE_K = 'NO1099'),
-                 NOM_PARA='G_LOCAL',
+                 NOM_PARA='G',
                       REFERENCE='ANALYTIQUE',
                       VALE=7.171E-5,
                  PRECISION=5.E-2      )
@@ -319,7 +295,7 @@ TEST_TABLE(      TABLE=GLOC1,
 TEST_TABLE(      TABLE=GLOC2,
                    FILTRE=_F(  NOM_PARA = 'NOEUD',
                             VALE_K = 'NO1099'),
-                 NOM_PARA='G_LOCAL',
+                 NOM_PARA='G',
                       REFERENCE='ANALYTIQUE',
                       VALE=7.171E-5,
                  PRECISION=5.E-2      )
@@ -332,7 +308,7 @@ TEST_TABLE(      TABLE=GLOC2,
 TEST_TABLE(      TABLE=GLOC0,
                    FILTRE=_F(  NOM_PARA = 'NOEUD',
                             VALE_K = 'NO1259'),
-                 NOM_PARA='G_LOCAL',
+                 NOM_PARA='G',
                       REFERENCE='ANALYTIQUE',
                       VALE=1.721E-5,
                  PRECISION=1.4E-1      )
@@ -340,7 +316,7 @@ TEST_TABLE(      TABLE=GLOC0,
 TEST_TABLE(      TABLE=GLOC1,
                    FILTRE=_F(  NOM_PARA = 'NOEUD',
                             VALE_K = 'NO1259'),
-                 NOM_PARA='G_LOCAL',
+                 NOM_PARA='G',
                       REFERENCE='ANALYTIQUE',
                       VALE=1.721E-5,
                  PRECISION=8.7E-2      )
@@ -348,7 +324,7 @@ TEST_TABLE(      TABLE=GLOC1,
 TEST_TABLE(      TABLE=GLOC2,
                    FILTRE=_F(  NOM_PARA = 'NOEUD',
                             VALE_K = 'NO1259'),
-                 NOM_PARA='G_LOCAL',
+                 NOM_PARA='G',
                       REFERENCE='ANALYTIQUE',
                       VALE=1.721E-5,
                  PRECISION=1.4E-1      )
@@ -361,7 +337,7 @@ TEST_TABLE(      TABLE=GLOC2,
 TEST_TABLE(      TABLE=GLOC0,
                    FILTRE=_F(  NOM_PARA = 'NOEUD',
                             VALE_K = 'NO1179'),
-                 NOM_PARA='G_LOCAL',
+                 NOM_PARA='G',
                       REFERENCE='ANALYTIQUE',
                       VALE=5.215E-5,
                  PRECISION=5.E-2      )
@@ -369,7 +345,7 @@ TEST_TABLE(      TABLE=GLOC0,
 TEST_TABLE(      TABLE=GLOC1,
                    FILTRE=_F(  NOM_PARA = 'NOEUD',
                             VALE_K = 'NO1179'),
-                 NOM_PARA='G_LOCAL',
+                 NOM_PARA='G',
                       REFERENCE='ANALYTIQUE',
                       VALE=5.215E-5,
                  PRECISION=5.E-2      )
@@ -377,7 +353,7 @@ TEST_TABLE(      TABLE=GLOC1,
 TEST_TABLE(      TABLE=GLOC2,
                    FILTRE=_F(  NOM_PARA = 'NOEUD',
                             VALE_K = 'NO1179'),
-                 NOM_PARA='G_LOCAL',
+                 NOM_PARA='G',
                       VALE=5.215E-5,
                       REFERENCE='ANALYTIQUE',
                  PRECISION=5.E-2      )

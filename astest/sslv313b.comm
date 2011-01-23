@@ -1,8 +1,8 @@
-# MODIF  DATE 21/09/2010   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 25/01/2011   AUTEUR MACOCCO K.MACOCCO 
 # TITRE TUBE SOUS PRESSION FISSURE - VALIDATION DE LA METHODE X-FEM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -182,7 +182,7 @@ KGLOC1=CALC_G(           RESULTAT=CHAMDEPL,
 IMPR_TABLE(TABLE=KGLOC1);
 
 TEST_TABLE( TABLE=KGLOC1,
-            NOM_PARA='K1_LOCAL',
+            NOM_PARA='K1',
             FILTRE=_F(  NOM_PARA = 'NUM_PT',  
                             VALE_I = 1,      ),
             REFERENCE='AUTRE_ASTER',
@@ -190,7 +190,7 @@ TEST_TABLE( TABLE=KGLOC1,
             PRECISION=0.055     )
 
 TEST_TABLE( TABLE=KGLOC1,
-            NOM_PARA='G_LOCAL',
+            NOM_PARA='G',
             FILTRE=_F(  NOM_PARA = 'NUM_PT',  
                             VALE_I = 1,      ),
             REFERENCE='AUTRE_ASTER',
@@ -208,20 +208,16 @@ TABL_K=POST_K1_K2_K3(  MODELISATION='3D',
 IMPR_TABLE(TABLE=TABL_K)
 
 TEST_TABLE( TABLE=TABL_K,
-            NOM_PARA='K1_MAX',
-            FILTRE=(_F(  NOM_PARA = 'METHODE',  
-                        VALE_I = 3,      ),
-                     _F(  NOM_PARA = 'PT_FOND',  
+            NOM_PARA='K1',
+            FILTRE=(_F(  NOM_PARA = 'PT_FOND',  
                             VALE_I = 1,      ),),
             REFERENCE='AUTRE_ASTER',
             VALE= 1.15799E+06 ,
             PRECISION=0.03     )
 
 TEST_TABLE( TABLE=TABL_K,
-            NOM_PARA='K1_MAX',
-            FILTRE=(_F(  NOM_PARA = 'METHODE',  
-                        VALE_I = 3,      ),
-                     _F(  NOM_PARA = 'PT_FOND',  
+            NOM_PARA='K1',
+            FILTRE=(_F(  NOM_PARA = 'PT_FOND',  
                             VALE_I = 1,      ),),
             REFERENCE='NON_REGRESSION',
             VALE= 1.17593E+06 ,

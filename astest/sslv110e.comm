@@ -1,8 +1,8 @@
-# MODIF  DATE 06/05/2008   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 25/01/2011   AUTEUR MACOCCO K.MACOCCO 
 # TITRE  FISSURE SEMI-ELLIPTIQUE AVEC MILIEU INFINI
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
@@ -119,20 +119,14 @@ THETA1=CALC_THETA(   OPTION='COURONNE',
 G1=CALC_G(        OPTION='CALC_G_GLOB',
                   RESULTAT=CHAMDEPL,NUME_ORDRE=1,
                   THETA=_F(THETA=THETA1),
-                  EXCIT=_F(CHARGE=CHFONC,),
-                  COMP_ELAS=_F( RELATION = 'ELAS',     
-                                DEFORMATION = 'PETIT',  ), )
+                  EXCIT=_F(CHARGE=CHFONC,),)
 
 GLOC1=CALC_G(         RESULTAT=CHAMDEPL,
                       TOUT_ORDRE='OUI',
                       THETA=_F(FOND_FISS=FISS1,
                                R_SUP_FO=RSUP1,
                                R_INF_FO=RINF1),
-                      LISSAGE=_F(DEGRE=7,
-                                 LISSAGE_THETA='LEGENDRE',
-                                 LISSAGE_G='LEGENDRE',),
-                      COMP_ELAS=_F( RELATION = 'ELAS',     
-                                    DEFORMATION = 'PETIT',  ),
+                      LISSAGE=_F(DEGRE=7,),
                       )
 
 #----------------------------------------------------------------------
@@ -151,20 +145,14 @@ THETA2=CALC_THETA(   OPTION='COURONNE',
 G2=CALC_G(          OPTION='CALC_G_GLOB',
                     RESULTAT=CHAMDEPL,NUME_ORDRE=1,
                     THETA=_F(THETA=THETA2),
-                    EXCIT=_F(CHARGE=CHFACER,),
-                    COMP_ELAS=_F( RELATION = 'ELAS',     
-                                 DEFORMATION = 'PETIT',  ),)
+                    EXCIT=_F(CHARGE=CHFACER,),)
 
 GLOC2=CALC_G(         RESULTAT=CHAMDEPL,
                       TOUT_ORDRE='OUI',
                       THETA=_F(FOND_FISS=FISS1,
                                R_SUP_FO=RSUP2,
                                R_INF_FO=RINF2),
-                      LISSAGE=_F(DEGRE=7,
-                                 LISSAGE_THETA='LEGENDRE',
-                                 LISSAGE_G='LEGENDRE',),
-                      COMP_ELAS=_F( RELATION = 'ELAS',     
-                                    DEFORMATION = 'PETIT',  ),
+                      LISSAGE=_F(DEGRE=7,),
                         )
 
 #----------------------------------------------------------------------
@@ -183,9 +171,7 @@ THETA3=CALC_THETA(   OPTION='COURONNE',
 G3=CALC_G(          OPTION='CALC_G_GLOB',
                     RESULTAT=CHAMDEPL,NUME_ORDRE=1,
                     THETA=_F(THETA=THETA3),
-                    EXCIT=_F(CHARGE=CHFACEF,),
-                    COMP_ELAS=_F( RELATION = 'ELAS',     
-                                  DEFORMATION = 'PETIT',  ), )
+                    EXCIT=_F(CHARGE=CHFACEF,),)
 
 GLOC3=CALC_G(         RESULTAT=CHAMDEPL,
                       TOUT_ORDRE='OUI',
@@ -193,8 +179,6 @@ GLOC3=CALC_G(         RESULTAT=CHAMDEPL,
                                R_SUP_FO=RSUP3,
                                R_INF_FO=RINF3),
                       LISSAGE=_F(DEGRE=7),
-                      COMP_ELAS=_F( RELATION = 'ELAS',     
-                                    DEFORMATION = 'PETIT',  ),
                         )
 
 #
@@ -206,10 +190,7 @@ GLOC4=CALC_G(         RESULTAT=CHAMDEPL,
                       THETA=_F(FOND_FISS=FISS1,
                                R_SUP_FO=RSUP2,
                                R_INF_FO=RINF2),
-                      LISSAGE=_F(LISSAGE_THETA='LAGRANGE',
-                                 LISSAGE_G='LEGENDRE',),
-                      COMP_ELAS=_F( RELATION = 'ELAS',     
-                                    DEFORMATION = 'PETIT',  ),
+                      LISSAGE=_F(LISSAGE_THETA='LAGRANGE',),
                       )
 
 #
@@ -223,8 +204,6 @@ GLOC5=CALC_G(         RESULTAT=CHAMDEPL,
                                R_INF_FO=RINF2),
                       LISSAGE=_F(LISSAGE_THETA='LAGRANGE',
                                  LISSAGE_G='LAGRANGE'),
-                      COMP_ELAS=_F( RELATION = 'ELAS',     
-                                    DEFORMATION = 'PETIT',  ),
                         )
 
 GLOC55=CALC_G(         RESULTAT=CHAMDEPL,
@@ -235,8 +214,6 @@ GLOC55=CALC_G(         RESULTAT=CHAMDEPL,
                                R_INF_FO=RINF2),
                       LISSAGE=_F(LISSAGE_THETA='LAGRANGE',
                                  LISSAGE_G='LAGRANGE'),
-                      COMP_ELAS=_F( RELATION = 'ELAS',     
-                                    DEFORMATION = 'PETIT',  ),
                         )
 
 #
@@ -249,9 +226,7 @@ GLOC6=CALC_G(         RESULTAT=CHAMDEPL,
                                R_SUP_FO=RSUP2,
                                R_INF_FO=RINF2),
                       LISSAGE=_F(LISSAGE_THETA='LAGRANGE',
-                                 LISSAGE_G='LAGRANGE_NO_NO'),
-                      COMP_ELAS=_F( RELATION = 'ELAS',     
-                                   DEFORMATION = 'PETIT',  ), )
+                                 LISSAGE_G='LAGRANGE_NO_NO'),)
 
 #----------------------------------------------------------------------
 #              TEST DE G
@@ -283,7 +258,7 @@ TEST_TABLE(       TABLE=G3,
 TEST_TABLE(      TABLE=GLOC1,
                    FILTRE=_F(  NOM_PARA = 'NOEUD',  
                             VALE_K = 'NO1099',      ),
-                 NOM_PARA='G_LOCAL',
+                 NOM_PARA='G',
                       VALE=3.582E-5,
                  PRECISION=5.E-2,
                  REFERENCE='ANALYTIQUE'      )
@@ -291,7 +266,7 @@ TEST_TABLE(      TABLE=GLOC1,
 TEST_TABLE(      TABLE=GLOC2,
                    FILTRE=_F(  NOM_PARA = 'NOEUD',  
                             VALE_K = 'NO1099',      ),
-                 NOM_PARA='G_LOCAL',
+                 NOM_PARA='G',
                       VALE=3.582E-5,
                  PRECISION=5.E-2,
                  REFERENCE='ANALYTIQUE'      )
@@ -299,7 +274,7 @@ TEST_TABLE(      TABLE=GLOC2,
 TEST_TABLE(      TABLE=GLOC3,
                    FILTRE=_F(  NOM_PARA = 'NOEUD',  
                             VALE_K = 'NO1099',      ),
-                 NOM_PARA='G_LOCAL',
+                 NOM_PARA='G',
                       VALE=3.3598088955088E-05,
                  PRECISION=5.E-7,
                  REFERENCE='ANALYTIQUE'      )
@@ -307,7 +282,7 @@ TEST_TABLE(      TABLE=GLOC3,
 TEST_TABLE(      TABLE=GLOC4,
                    FILTRE=_F(  NOM_PARA = 'NOEUD',  
                             VALE_K = 'NO1099',      ),
-                 NOM_PARA='G_LOCAL',
+                 NOM_PARA='G',
                       VALE=3.582E-5,
                  PRECISION=7.E-2,
                  REFERENCE='ANALYTIQUE'      )
@@ -315,7 +290,7 @@ TEST_TABLE(      TABLE=GLOC4,
 TEST_TABLE(      TABLE=GLOC5,
                    FILTRE=_F(  NOM_PARA = 'NOEUD',  
                             VALE_K = 'NO1099',      ),
-                 NOM_PARA='G_LOCAL',
+                 NOM_PARA='G',
                       VALE=3.582E-5,
                  PRECISION=5.E-2,
                  REFERENCE='ANALYTIQUE'      )
@@ -323,7 +298,7 @@ TEST_TABLE(      TABLE=GLOC5,
 TEST_TABLE(      TABLE=GLOC55,
                    FILTRE=_F(  NOM_PARA = 'NOEUD',  
                             VALE_K = 'NO1099',      ),
-                 NOM_PARA='G_LOCAL',
+                 NOM_PARA='G',
                       VALE=7.617E-6,
                  PRECISION=5.E-2,
                  REFERENCE='NON_REGRESSION'      )
@@ -331,7 +306,7 @@ TEST_TABLE(      TABLE=GLOC55,
 TEST_TABLE(      TABLE=GLOC6,
                    FILTRE=_F(  NOM_PARA = 'NOEUD',  
                             VALE_K = 'NO1099',      ),
-                 NOM_PARA='G_LOCAL',
+                 NOM_PARA='G',
                       VALE=3.582E-5,
                  PRECISION=5.E-2,
                  REFERENCE='ANALYTIQUE'      )
@@ -344,42 +319,42 @@ TEST_TABLE(      TABLE=GLOC6,
 TEST_TABLE(      TABLE=GLOC1,
                    FILTRE=_F(  NOM_PARA = 'NOEUD',  
                             VALE_K = 'NO1179',      ),
-                 NOM_PARA='G_LOCAL',
+                 NOM_PARA='G',
                       VALE=2.605E-5,
                  PRECISION=5.E-2      )
 
 TEST_TABLE(      TABLE=GLOC2,
                    FILTRE=_F(  NOM_PARA = 'NOEUD',  
                             VALE_K = 'NO1179',      ),
-                 NOM_PARA='G_LOCAL',
+                 NOM_PARA='G',
                       VALE=2.605E-5,
                  PRECISION=5.E-2      )
 
 TEST_TABLE(      TABLE=GLOC3,
                    FILTRE=_F(  NOM_PARA = 'NOEUD',  
                             VALE_K = 'NO1179',      ),
-                 NOM_PARA='G_LOCAL',
+                 NOM_PARA='G',
                       VALE=2.605E-5,
                  PRECISION=5.E-2      )
 
 TEST_TABLE(      TABLE=GLOC4,
                    FILTRE=_F(  NOM_PARA = 'NOEUD',  
                             VALE_K = 'NO1179',      ),
-                 NOM_PARA='G_LOCAL',
+                 NOM_PARA='G',
                       VALE=2.605E-5,
                  PRECISION=5.E-2      )
 
 TEST_TABLE(      TABLE=GLOC5,
                    FILTRE=_F(  NOM_PARA = 'NOEUD',  
                             VALE_K = 'NO1179',      ),
-                 NOM_PARA='G_LOCAL',
+                 NOM_PARA='G',
                       VALE=2.605E-5,
                  PRECISION=7.E-2      )
 
 TEST_TABLE(      TABLE=GLOC6,
                    FILTRE=_F(  NOM_PARA = 'NOEUD',  
                             VALE_K = 'NO1179',      ),
-                 NOM_PARA='G_LOCAL',
+                 NOM_PARA='G',
                       VALE=2.605E-5,
                  PRECISION=5.E-2      )
 

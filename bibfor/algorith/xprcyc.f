@@ -7,9 +7,9 @@
       REAL*8         DAMAX,DT,DAFISS
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 24/11/2010   AUTEUR MICOL A.MICOL 
+C MODIF ALGORITH  DATE 25/01/2011   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -691,7 +691,7 @@ C                RETRIEVE THE FIRST VALUE OF G FOR THE CURRENT POINT
                    VAPACR(1)=1
                    VAPACR(2)=I
                    CALL TBLIVA(TABLE,3,LIPACR,VAPACR,R8B,CBID,K8B,K8B,
-     &                      R8B,'G_LOCAL',CTYPE,VALI,G1,VALC,VALK,IRET)
+     &                      R8B,'G',CTYPE,VALI,G1,VALC,VALK,IRET)
                    IF (IRET.EQ.2) THEN
                       VINT(1) = NFON
                       VINT(2) = PIECE
@@ -705,7 +705,7 @@ C                  RETREIVE THE FIRST VALUE OF BETA FOR THE CURRENT
 C                  POINT
                    IF (STORE) THEN
                    CALL TBLIVA(TABLE,3,LIPACR,VAPACR,R8B,CBID,K8B,K8B,
-     &                R8B,'BETA_LOCAL',CTYPE,VALI,BETA1,VALC,VALK,IRET)
+     &                R8B,'BETA',CTYPE,VALI,BETA1,VALC,VALK,IRET)
                    CALL ASSERT(IRET.EQ.0)
                    ENDIF
 
@@ -715,7 +715,7 @@ C                     RETRIEVE THE SECOND VALUE OF G FOR THE CURRENT
 C                     POINT
                       VAPACR(1)=2
                       CALL TBLIVA(TABLE,3,LIPACR,VAPACR,R8B,CBID,K8B,
-     &                          K8B,R8B,'G_LOCAL',CTYPE,VALI,G2,VALC,
+     &                          K8B,R8B,'G',CTYPE,VALI,G2,VALC,
      &                          VALK,IRET)
                       IF (IRET.EQ.2) THEN
                          G2=0
@@ -729,7 +729,7 @@ C                     RETREIVE THE SECOND VALUE OF BETA FOR THE CURRENT
 C                     POINT
                       IF (STORE) THEN
                          CALL TBLIVA(TABLE,3,LIPACR,VAPACR,R8B,CBID,K8B,
-     &                       K8B,R8B,'BETA_LOCAL',CTYPE,VALI,BETA2,VALC,
+     &                       K8B,R8B,'BETA',CTYPE,VALI,BETA2,VALC,
      &                       VALK,IRET)
                          IF (IRET.EQ.2) THEN
                             BETA2=BETA1
@@ -743,7 +743,7 @@ C                     CHECK THAT ONLY TWO VALUES ARE GIVEN FOR EACH
 C                     POINT ON THE FRONT
                       VAPACR(1)=3
                       CALL TBLIVA(TABLE,3,LIPACR,VAPACR,R8B,CBID,K8B,
-     &                           K8B,R8B,'G_LOCAL',CTYPE,VALI,JR,VALC,
+     &                           K8B,R8B,'G',CTYPE,VALI,JR,VALC,
      &                           VALK,IRET)
                       IF (IRET.EQ.0) CALL U2MESS('F','XFEM2_68')
 
@@ -754,7 +754,7 @@ C                     ONE VALUE MUST BE GIVEN IN THE SIF TABLE
 C                     (REFERENCE LOAD CASE).
                       VAPACR(1)=2
                       CALL TBLIVA(TABLE,3,LIPACR,VAPACR,R8B,CBID,K8B,
-     &                           K8B,R8B,'G_LOCAL',CTYPE,VALI,JR,VALC,
+     &                           K8B,R8B,'G',CTYPE,VALI,JR,VALC,
      &                           VALK,IRET)
                       IF (IRET.EQ.0) CALL U2MESS('F','XFEM2_82')
 
@@ -845,7 +845,7 @@ C               CHECK THAT THE TABLE DOES NOT CONTAIN ANY OTHER VALUE
                 VAPACR(1)=1
                 VAPACR(2)=SIFVAL+1
                 CALL TBLIVA(TABLE,3,LIPACR,VAPACR,R8B,CBID,K8B,K8B,R8B,
-     &                      'G_LOCAL',CTYPE,VALI,G1,VALC,VALK,IRET)
+     &                      'G',CTYPE,VALI,G1,VALC,VALK,IRET)
                 IF (IRET.EQ.0) CALL U2MESS('F','XFEM2_80')
               ENDIF
 

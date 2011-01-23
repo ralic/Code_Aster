@@ -1,9 +1,9 @@
-# MODIF  DATE 21/09/2010   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 25/01/2011   AUTEUR MACOCCO K.MACOCCO 
 # TITRE EPROUVETTE AVEC FISSURE CENTRALE XFEM
 # ssnv192a.para = tps_job 130 mem_job 512Mo mem_aster 50 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -316,13 +316,10 @@ SIF2 = [None]*n
 
 for i in range(0,n) :
    SIF1[i]=CALC_G(RESULTAT=RESU1,
-               SYME_CHAR='SANS',
-               COMP_ELAS=_F(RELATION='ELAS',),
                OPTION='CALC_K_G',
                THETA=_F( FISSURE=FISS,
                          R_INF=RI[i],
                          R_SUP=RS[i],
-                         NUME_FOND=1,
                         ),
                LISSAGE=_F( LISSAGE_THETA='LAGRANGE',
                            LISSAGE_G='LAGRANGE',
@@ -332,8 +329,6 @@ for i in range(0,n) :
    IMPR_TABLE(TABLE=SIF1[i],);
 
    SIF2[i]=CALC_G(RESULTAT=RESU1,
-               SYME_CHAR='SANS',
-               COMP_ELAS=_F(RELATION='ELAS',),
                OPTION='CALC_K_G',
                THETA=_F( FISSURE=FISS,
                          R_INF=RI[i],
@@ -355,14 +350,14 @@ K1REF =  P/(B*sqrt(W))*FAW;
 # FISSURE 1
 for i in range(0,n) :
    TEST_TABLE(TABLE=SIF1[i],
-              NOM_PARA='K1_LOCAL',
+              NOM_PARA='K1',
               TYPE_TEST='MIN',
               VALE=K1REF,
               CRITERE='RELATIF',
               PRECISION=0.03,
               REFERENCE='ANALYTIQUE',);
    TEST_TABLE(TABLE=SIF1[i],
-              NOM_PARA='K1_LOCAL',
+              NOM_PARA='K1',
               TYPE_TEST='MAX',
               VALE=K1REF,
               CRITERE='RELATIF',
@@ -372,14 +367,14 @@ for i in range(0,n) :
 # FISSURE 2
 for i in range(0,n) :
    TEST_TABLE(TABLE=SIF2[i],
-              NOM_PARA='K1_LOCAL',
+              NOM_PARA='K1',
               TYPE_TEST='MIN',
               VALE=K1REF,
               CRITERE='RELATIF',
               PRECISION=0.03,
               REFERENCE='ANALYTIQUE',);
    TEST_TABLE(TABLE=SIF2[i],
-              NOM_PARA='K1_LOCAL',
+              NOM_PARA='K1',
               TYPE_TEST='MAX',
               VALE=K1REF,
               CRITERE='RELATIF',
@@ -414,35 +409,27 @@ PK2=POST_K1_K2_K3(  MODELISATION='3D',
 IMPR_TABLE(TABLE=PK2);
 
 TEST_TABLE(   TABLE=PK1,
-              FILTRE= _F(NOM_PARA = 'METHODE',
-                         VALE_I = 3),
-              NOM_PARA='K1_MAX',
+              NOM_PARA='K1',
               TYPE_TEST='MIN',
               VALE=K1REF,
               PRECISION=0.12 ,
               REFERENCE='ANALYTIQUE'      )
 
 TEST_TABLE(   TABLE=PK1,
-              FILTRE= _F(NOM_PARA = 'METHODE',
-                         VALE_I = 3),
-              NOM_PARA='K1_MAX',
+              NOM_PARA='K1',
               TYPE_TEST='MAX',
               VALE=K1REF,
               PRECISION=0.12 ,
               REFERENCE='ANALYTIQUE'      )         
 TEST_TABLE(   TABLE=PK2,
-              FILTRE= _F(NOM_PARA = 'METHODE',
-                         VALE_I = 3),
-              NOM_PARA='K1_MAX',
+              NOM_PARA='K1',
               TYPE_TEST='MIN',
               VALE=K1REF,
               PRECISION=0.12 ,
               REFERENCE='ANALYTIQUE'      )
 
 TEST_TABLE(   TABLE=PK2,
-              FILTRE= _F(NOM_PARA = 'METHODE',
-                         VALE_I = 3),
-              NOM_PARA='K1_MAX',
+              NOM_PARA='K1',
               TYPE_TEST='MAX',
               VALE=K1REF,
               PRECISION=0.12 ,

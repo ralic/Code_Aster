@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+#& MODIF COMMANDE  DATE 25/01/2011   AUTEUR PELLET J.PELLET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -52,7 +52,6 @@ CALC_NO=OPER(nom="CALC_NO",op= 106,sd_prod=calc_no_prod,reentrant='f',
                                      "ENDO_NOEU",
                                      "ENEL_NOEU",
                                      "EPMG_NOEU",
-                                     "EPSA_NOEU",
                                      "EPSG_NOEU",
                                      "EPSI_NOEU",
                                      "EPSP_NOEU"     ,
@@ -69,7 +68,7 @@ CALC_NO=OPER(nom="CALC_NO",op= 106,sd_prod=calc_no_prod,reentrant='f',
                                      "SIEF_NOEU",
                                      "SIGM_NOEU_CART","SIGM_NOEU_COQU","SIGM_NOEU_DEPL",
                                      "SIPO_NOEU",
-                                     "VARI_NOEU","VAEX_NOEU","VARI_NOEU_ELGA","DISS_NOEU",) ),
+                                     "VAEX_NOEU","VARI_NOEU_ELGA","DISS_NOEU",) ),
 
 
          MODELE          =SIMP(statut='f',typ=modele_sdaster),

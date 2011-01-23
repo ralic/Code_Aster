@@ -1,8 +1,8 @@
-# MODIF  DATE 30/08/2010   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 25/01/2011   AUTEUR PELLET J.PELLET 
 # TITRE    : PATIN GLISSANT SUR UN PLAN RIGIDE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -166,14 +166,8 @@ U_NOR=STAT_NON_LINE(MODELE=MODE,
 
 U_NOR=CALC_NO(reuse =U_NOR,
               RESULTAT=U_NOR,
-
-
               OPTION='REAC_NODA',
-              EXCIT=(_F(CHARGE=PNOR,
-                        FONC_MULT=RAMPE,),
-                     _F(CHARGE=COND_LIM,),),
               );
-
 # CHARGEMENT 2
 U_99=STAT_NON_LINE(MODELE=MODE,
                    CHAM_MATER=CM,
@@ -195,16 +189,8 @@ U_99=STAT_NON_LINE(MODELE=MODE,
 
 U_99=CALC_NO(reuse =U_99,
              RESULTAT=U_99,
-
-
              OPTION='REAC_NODA',
-             EXCIT=(_F(CHARGE=PNOR,
-                       FONC_MULT=RAMPE,),
-                    _F(CHARGE=PTAN_99,
-                       FONC_MULT=RAMPE,),
-                    _F(CHARGE=COND_LIM,),),
-              );
-
+             );
 # CHARGEMENT 3
 U_101=STAT_NON_LINE(MODELE=MODE,
                     CHAM_MATER=CM,
@@ -228,20 +214,11 @@ U_101=STAT_NON_LINE(MODELE=MODE,
 
 U_101=CALC_NO(reuse =U_101,
               RESULTAT=U_101,
-
-
               OPTION='REAC_NODA',
-              EXCIT=(_F(CHARGE=PNOR,
-                        FONC_MULT=RAMPE,),
-                     _F(CHARGE=PTAN_101,
-                        FONC_MULT=RAMPE,),
-                     _F(CHARGE=COND_LIM,),),
-              );
-
+             );
 #---------------------------------------------------------------------
 #                         VERIFICATION DES RESULTATS
 #---------------------------------------------------------------------
-
 # CHARGEMENT 1
 TEST_RESU(RESU=(_F(RESULTAT=U_NOR,
                    INST=1.,

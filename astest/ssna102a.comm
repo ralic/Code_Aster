@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 25/01/2011   AUTEUR PELLET J.PELLET 
 #
 # TITRE CONTACT MULTICORPS ELASTIQUES
 # ssna102a.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
@@ -196,7 +196,7 @@ SOLVEUR=_F(SYME='OUI',),
                           _F(  CHARGE = BLOQ),
                                 _F(  CHARGE = DEPL,   FONC_MULT = FONC),
                                 _F(  CHARGE = LIAI),),
-                          CONTACT  = CONT,      
+                          CONTACT  = CONT,
                           COMP_ELAS=_F(  RELATION = 'ELAS'),
                           NEWTON=_F(  MATRICE = 'ELASTIQUE'),
                           INCREMENT=_F(  LIST_INST = LINST),
@@ -228,12 +228,7 @@ RESU=CALC_NO( reuse=RESU,  RESULTAT=RESU,
 #
 
 
-RESU=CALC_NO( reuse=RESU,  RESULTAT=RESU,  EXCIT=(
-                     _F(  CHARGE = BLOQ),
-                           _F(  CHARGE = DEPL,
-                             FONC_MULT = FONC),
-                           _F(  CHARGE = LIAI),
-                          ),
+RESU=CALC_NO( reuse=RESU,  RESULTAT=RESU,
                      OPTION='REAC_NODA'
                   )
 
@@ -330,7 +325,7 @@ RESU2=STAT_NON_LINE(
                           _F(  CHARGE = BLOQ),
                                 _F(  CHARGE = DEPL,   FONC_MULT = FONC),
                                 _F(  CHARGE = LIAI),),
-                          CONTACT  = CONT2,      
+                          CONTACT  = CONT2,
                           COMP_ELAS=_F(  RELATION = 'ELAS'),
                           NEWTON=_F(  MATRICE = 'ELASTIQUE'),
                           INCREMENT=_F(  LIST_INST = LINST),

@@ -1,8 +1,8 @@
-#@ MODIF utilitai Messages  DATE 26/10/2010   AUTEUR BOITEAU O.BOITEAU 
+#@ MODIF utilitai Messages  DATE 24/01/2011   AUTEUR BOITEAU O.BOITEAU 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -233,7 +233,17 @@ cata_msg = {
 """),
 
 
-
+56 : _("""
+ Le partitionneur SCOTCH a fait remonter l'erreur %(i1)s. SVP contacter l'équipe de
+ développement.
+ Pour contourner ce problème, vous pouvez néanmoins: 
+   - changer de partitionneur (METHODE=KMETIS ou PMETIS),
+   - modifier les paramètres numériques du partitionnement (mot-clés TRAITER_BORDS,
+           POIDS_MAILLES, GROUPAGE...),
+   - générer votre partionnement manuellement (autant de groupes de mailles et de 
+      groupes de mailles bords que de sous-domaines) et les donner à l'opérateur
+     dédié: DEFI_PART_FETI_OPS.    
+"""),
 
 
 57 : _("""

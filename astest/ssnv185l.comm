@@ -1,8 +1,8 @@
-# MODIF  DATE 21/09/2010   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 25/01/2011   AUTEUR MACOCCO K.MACOCCO 
 # TITRE FISSURE DEBOUCHANTE DANS UNE PLAQUE 3D DE LARGEUR FINIE AVEC X-FEM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -310,8 +310,6 @@ SIF3 = [None]*nbc
 for i in range(0,nbc) :
 
    SIF2[i]=CALC_G(RESULTAT=UTOT2,
-                  SYME_CHAR='SANS',
-                  COMP_ELAS=_F(RELATION='ELAS',),
                   OPTION='CALC_K_G',
                   THETA=_F(FISSURE=FISS,
                            R_INF=RI[i],
@@ -323,8 +321,6 @@ for i in range(0,nbc) :
    IMPR_TABLE(TABLE=SIF2[i],);
 
    SIF3[i]=CALC_G(RESULTAT=UTOT3,
-                  SYME_CHAR='SANS',
-                  COMP_ELAS=_F(RELATION='ELAS',),
                   OPTION='CALC_K_G',
                   THETA=_F(FISSURE=FISS,
                            R_INF=RI[i],
@@ -346,7 +342,7 @@ prec_k2 = 0.015
 for i in range(0,nbc) :
 
    TEST_TABLE(TABLE=SIF2[i],
-              NOM_PARA='K1_LOCAL',
+              NOM_PARA='K1',
               TYPE_TEST='MAX',
               VALE=K1REF2,
               CRITERE='ABSOLU',
@@ -354,7 +350,7 @@ for i in range(0,nbc) :
               REFERENCE='ANALYTIQUE',);
 
    TEST_TABLE(TABLE=SIF2[i],
-              NOM_PARA='K1_LOCAL',
+              NOM_PARA='K1',
               TYPE_TEST='MIN',
               VALE=K1REF2,
               CRITERE='ABSOLU',
@@ -362,7 +358,7 @@ for i in range(0,nbc) :
               REFERENCE='ANALYTIQUE',);
 
    TEST_TABLE(TABLE=SIF2[i],
-              NOM_PARA='K2_LOCAL',
+              NOM_PARA='K2',
               TYPE_TEST='MAX',
               VALE=K2REF2,
               CRITERE='RELATIF',
@@ -370,7 +366,7 @@ for i in range(0,nbc) :
               REFERENCE='ANALYTIQUE',);
 
    TEST_TABLE(TABLE=SIF2[i],
-              NOM_PARA='K2_LOCAL',
+              NOM_PARA='K2',
               TYPE_TEST='MIN',
               VALE=K2REF2,
               CRITERE='RELATIF',
@@ -378,7 +374,7 @@ for i in range(0,nbc) :
               REFERENCE='ANALYTIQUE',);
 
    TEST_TABLE(TABLE=SIF2[i],
-              NOM_PARA='K3_LOCAL',
+              NOM_PARA='K3',
               TYPE_TEST='MAX',
               VALE=K3REF2,
               CRITERE='ABSOLU',
@@ -386,7 +382,7 @@ for i in range(0,nbc) :
               REFERENCE='ANALYTIQUE',);
 
    TEST_TABLE(TABLE=SIF2[i],
-              NOM_PARA='K3_LOCAL',
+              NOM_PARA='K3',
               TYPE_TEST='MIN',
               VALE=K3REF2,
               CRITERE='ABSOLU',
@@ -406,7 +402,7 @@ prec_k3 = 0.08
 for i in range(0,nbc) :
 
    TEST_TABLE(TABLE=SIF3[i],
-              NOM_PARA='K1_LOCAL',
+              NOM_PARA='K1',
               TYPE_TEST='MAX',
               VALE=K1REF3,
               CRITERE='ABSOLU',
@@ -414,7 +410,7 @@ for i in range(0,nbc) :
               REFERENCE='ANALYTIQUE',);
 
    TEST_TABLE(TABLE=SIF3[i],
-              NOM_PARA='K1_LOCAL',
+              NOM_PARA='K1',
               TYPE_TEST='MIN',
               VALE=K1REF3,
               CRITERE='ABSOLU',
@@ -422,7 +418,7 @@ for i in range(0,nbc) :
               REFERENCE='ANALYTIQUE',);
 
    TEST_TABLE(TABLE=SIF3[i],
-              NOM_PARA='K2_LOCAL',
+              NOM_PARA='K2',
               TYPE_TEST='MAX',
               VALE=K2REF3,
               CRITERE='ABSOLU',
@@ -430,7 +426,7 @@ for i in range(0,nbc) :
               REFERENCE='ANALYTIQUE',);
 
    TEST_TABLE(TABLE=SIF3[i],
-              NOM_PARA='K2_LOCAL',
+              NOM_PARA='K2',
               TYPE_TEST='MIN',
               VALE=K2REF3,
               CRITERE='ABSOLU',
@@ -438,7 +434,7 @@ for i in range(0,nbc) :
               REFERENCE='ANALYTIQUE',);
 
    TEST_TABLE(TABLE=SIF3[i],
-              NOM_PARA='K3_LOCAL',
+              NOM_PARA='K3',
               TYPE_TEST='MAX',
               VALE=K3REF3,
               CRITERE='RELATIF',
@@ -446,7 +442,7 @@ for i in range(0,nbc) :
               REFERENCE='ANALYTIQUE',);
 
    TEST_TABLE(TABLE=SIF3[i],
-              NOM_PARA='K3_LOCAL',
+              NOM_PARA='K3',
               TYPE_TEST='MIN',
               VALE=K3REF3,
               CRITERE='RELATIF',

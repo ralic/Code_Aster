@@ -1,9 +1,9 @@
-# MODIF  DATE 21/09/2010   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 25/01/2011   AUTEUR MACOCCO K.MACOCCO 
 # TITRE FISSURE DEBOUCHANTE DANS UNE PLAQUE 3D DE LARGEUR FINIE AVEC X-FEM
 # ssnv185g.para = tps_job 310 mem_job 1024Mo mem_aster 70 ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -247,28 +247,22 @@ SIF = [None]*(nbc+1)
 for i in range(0,nbc) :
 
    SIF[i]=CALC_G(RESULTAT=UTOT1,
-                 SYME_CHAR='SANS',
-                 COMP_ELAS=_F(RELATION='ELAS',),
                  OPTION='CALC_K_G',
                  THETA=_F(FISSURE=FISS,
                           R_INF=RI[i],
                           R_SUP=RS[i],),
                  LISSAGE=_F(LISSAGE_THETA='LAGRANGE',
-                            LISSAGE_G='LAGRANGE',),
-                 INFO=1,);
+                            LISSAGE_G='LAGRANGE',),);
 
    IMPR_TABLE(TABLE=SIF[i],);
 
 SIF[nbc]=CALC_G(RESULTAT=UTOT1,
-                SYME_CHAR='SANS',
-                COMP_ELAS=_F(RELATION='ELAS',),
                 OPTION='CALC_K_G',
                 THETA=_F(FISSURE=FISS,
                          R_INF=RI[0],
                          R_SUP=RS[0],),
                 LISSAGE=_F(LISSAGE_THETA='LAGRANGE',
-                           LISSAGE_G='LAGRANGE_NO_NO',),
-                INFO=1,);
+                           LISSAGE_G='LAGRANGE_NO_NO',),);
 
 IMPR_TABLE(TABLE=SIF[nbc],);
 
@@ -276,7 +270,7 @@ GREF=0.
 
 for i in range(0,nbc+1) :
    TEST_TABLE(TABLE=SIF[i],
-              NOM_PARA='G_LOCAL',
+              NOM_PARA='G',
               TYPE_TEST='MAX',
               VALE=GREF,
               CRITERE='ABSOLU',
@@ -284,7 +278,7 @@ for i in range(0,nbc+1) :
               REFERENCE='ANALYTIQUE',);
 
    TEST_TABLE(TABLE=SIF[i],
-              NOM_PARA='G_LOCAL',
+              NOM_PARA='G',
               TYPE_TEST='MIN',
               VALE=GREF,
               CRITERE='ABSOLU',
@@ -304,8 +298,8 @@ PK=POST_K1_K2_K3(MODELISATION='3D',
 
 IMPR_TABLE(TABLE = PK)
 TEST_TABLE(TABLE=PK,
-           FILTRE=(_F(NOM_PARA='METHODE',VALE_I=3),_F(NOM_PARA='PT_FOND',VALE_I=1)),
-           NOM_PARA='G_MAX',
+           FILTRE=(_F(NOM_PARA='PT_FOND',VALE_I=1),),
+           NOM_PARA='G',
            VALE= 0.,
            CRITERE='ABSOLU',
            PRECISION=1.e-6,);

@@ -1,8 +1,8 @@
-#@ MODIF post_k_trans_ops Macro  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
+#@ MODIF post_k_trans_ops Macro  DATE 25/01/2011   AUTEUR MACOCCO K.MACOCCO 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -186,9 +186,9 @@ def post_k_trans_ops(self,RESU_TRANS,K_MODAL,TOUT_ORDRE, NUME_ORDRE, LIST_ORDRE,
   if F3D : 
     K3mod = [None]*n_mode*nbno
     K3t = [None]*nbarch*nbno
-    k1 = 'K1_LOCAL'
-    k2 = 'K2_LOCAL'
-    k3 = 'K3_LOCAL'
+    k1 = 'K1'
+    k2 = 'K2'
+    k3 = 'K3'
   else :
     k1 = 'K1'
     k2 = 'K2'

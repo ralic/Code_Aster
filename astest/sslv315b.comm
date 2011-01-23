@@ -1,9 +1,9 @@
-# MODIF  DATE 21/09/2010   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 25/01/2011   AUTEUR MACOCCO K.MACOCCO 
 # TITRE PROPAGATION DE FISSURE DEBOUCHANTE DANS UNE PLAQUE 3D DE LARGEUR FINIE AVEC X-FEM
 # sslv315b.para = tps_job 260 mem_job 1024Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -135,16 +135,11 @@ for i in range(nbcalc) :
                          INFO=1,);
 
    SIF[i]=CALC_G        (RESULTAT=RESU[i],
-                         SYME_CHAR='SANS',
-                         COMP_ELAS=_F(RELATION='ELAS',),
                          OPTION='CALC_K_G',
                          THETA=_F( FISSURE=FF[i],
                                    R_INF=RI,
                                    R_SUP=RS,),
-                         LISSAGE=_F( LISSAGE_THETA='LEGENDRE',
-                                     LISSAGE_G='LEGENDRE',
-                                     DEGRE=0,),
-                         INFO=1,);
+                         LISSAGE=_F( DEGRE=0,),);
 
    IMPR_TABLE(TABLE=SIF[i],);
 

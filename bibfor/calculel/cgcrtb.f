@@ -1,9 +1,9 @@
       SUBROUTINE CGCRTB(LATABL,OPTIO1,DIME,LMELAS,TROIDL,NBPRUP,
      &                  NOPRUP,TYPRUP)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 24/08/2009   AUTEUR GENIAUT S.GENIAUT 
+C MODIF CALCULEL  DATE 25/01/2011   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -72,7 +72,7 @@ C
           TYPRUP(4) = 'I'
           NOPRUP(5) = 'ABSC_CURV'
           TYPRUP(5) = 'R'
-          NOPRUP(6) = 'G_LOCAL'
+          NOPRUP(6) = 'G'
           TYPRUP(6) = 'R'   
       ELSEIF((OPTIO1.EQ.'CALC_G_X').AND. DIME.EQ.2)THEN
           NBPRUP = 4
@@ -101,7 +101,7 @@ C
           TYPRUP(3) = 'K8'
           NOPRUP(4) = 'ABSC_CURV'
           TYPRUP(4) = 'R'
-          NOPRUP(5) = 'G_LOCAL'
+          NOPRUP(5) = 'G'
           TYPRUP(5) = 'R'
       ELSEIF (OPTIO1.EQ.'CALC_DG_E'
      &   .OR. OPTIO1.EQ.'CALC_DGG_E') THEN
@@ -234,15 +234,15 @@ C
           TYPRUP(4) = 'I'
           NOPRUP(5) = 'ABSC_CURV'
           TYPRUP(5) = 'R'
-          NOPRUP(6) = 'K1_LOCAL'
+          NOPRUP(6) = 'K1'
           TYPRUP(6) = 'R'
-          NOPRUP(7) = 'K2_LOCAL'
+          NOPRUP(7) = 'K2'
           TYPRUP(7) = 'R'
-          NOPRUP(8) = 'K3_LOCAL'
+          NOPRUP(8) = 'K3'
           TYPRUP(8) = 'R'
-          NOPRUP(9) = 'G_LOCAL'
+          NOPRUP(9) = 'G'
           TYPRUP(9) = 'R'
-          NOPRUP(10) = 'BETA_LOCAL'
+          NOPRUP(10) = 'BETA'
           TYPRUP(10) = 'R'
           NOPRUP(11) = 'G_IRWIN'
           TYPRUP(11) = 'R'
@@ -291,15 +291,15 @@ C
           TYPRUP(2) = 'I'
           NOPRUP(3) = 'ABSC_CURV'
           TYPRUP(3) = 'R'
-          NOPRUP(4) = 'K1_LOCAL'
+          NOPRUP(4) = 'K1'
           TYPRUP(4) = 'R'
-          NOPRUP(5) = 'K2_LOCAL'
+          NOPRUP(5) = 'K2'
           TYPRUP(5) = 'R'
-          NOPRUP(6) = 'K3_LOCAL'
+          NOPRUP(6) = 'K3'
           TYPRUP(6) = 'R'
-          NOPRUP(7) = 'G_LOCAL'
+          NOPRUP(7) = 'G'
           TYPRUP(7) = 'R'
-          NOPRUP(8) = 'BETA_LOCAL'
+          NOPRUP(8) = 'BETA'
           TYPRUP(8) = 'R'
           NOPRUP(9) = 'G_IRWIN'
           TYPRUP(9) = 'R'

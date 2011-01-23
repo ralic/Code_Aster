@@ -1,8 +1,8 @@
-# MODIF  DATE 30/08/2010   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 25/01/2011   AUTEUR PELLET J.PELLET 
 # TITRE  POUTRE ANALYSE HARMONIQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -120,10 +120,8 @@ DYNA_F1=DYNA_LINE_HARM(  MATR_MASS=MASS1,
 
 DYNA_F1=CALC_ELEM(reuse=DYNA_F1,
                          RESULTAT=DYNA_F1,  OPTION='EFGE_ELNO_DEPL',
-                            CARA_ELEM=CARA_ELE   )
-
+)
 #
-
 TEST_RESU(RESU=(   _F(  RESULTAT = DYNA_F1,             NUME_ORDRE = 1,
                        MAILLE = 'E1',                   NOEUD = 'N2',
                        NOM_CHAM = 'EFGE_ELNO_DEPL',   NOM_CMP = 'N',
@@ -199,8 +197,7 @@ DYNA_F2=DYNA_LINE_HARM(  MATR_MASS=MASS2,
 
 DYNA_F2=CALC_ELEM(reuse=DYNA_F2,
                         RESULTAT=DYNA_F2,  OPTION='EFGE_ELNO_DEPL',
-                           CARA_ELEM=CARA_ELE   )
-
+)
 TEST_RESU(RESU=(   _F(  RESULTAT = DYNA_F2,            NUME_ORDRE = 1,
                        MAILLE = 'E1',                   NOEUD = 'N2',
                        NOM_CHAM = 'EFGE_ELNO_DEPL',   NOM_CMP = 'N',
@@ -237,10 +234,8 @@ DYNA_AF1=DYNA_LINE_HARM( MATR_MASS=MASS1,
 
 DYNA_AF1=CALC_ELEM(reuse=DYNA_AF1,
                           RESULTAT=DYNA_AF1,  OPTION='EFGE_ELNO_DEPL',
-                             CARA_ELEM=CARA_ELE )
-
+)
 #
-
 TEST_RESU(RESU=(   _F(  RESULTAT = DYNA_AF1,           NUME_ORDRE = 1,
                        MAILLE = 'E1',                  NOEUD = 'N2',
                        NOM_CHAM = 'EFGE_ELNO_DEPL',  NOM_CMP = 'N',
@@ -281,10 +276,8 @@ DYNA_AF2=DYNA_LINE_HARM( MATR_MASS=MASS2,
 
 DYNA_AF2=CALC_ELEM(reuse=DYNA_AF2,
                          RESULTAT=DYNA_AF2,  OPTION='EFGE_ELNO_DEPL',
-                            CARA_ELEM=CARA_ELE   )
-
+)
 #
-
 TEST_RESU(RESU=(   _F(  RESULTAT = DYNA_AF2,           NUME_ORDRE = 1,
                        MAILLE = 'E1',                  NOEUD = 'N2',
                        NOM_CHAM = 'EFGE_ELNO_DEPL',  NOM_CMP = 'N',

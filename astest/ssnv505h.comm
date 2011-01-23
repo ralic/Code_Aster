@@ -1,9 +1,9 @@
-# MODIF  DATE 21/12/2010   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 24/01/2011   AUTEUR DESOZA T.DESOZA 
 # TITRE VALIDATION DE POU_D_TGM
 # ssnv505h.para = tps_job 550 mem_job 256Mo ncpus 1 liste_test V
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -37,6 +37,16 @@ PRE_GIBI();
 #Acquisition du maillage des poutres encastrees
 
 MAILL1=LIRE_MAILLAGE();
+
+MAILL1=MODI_MAILLAGE(reuse=MAILL1,
+                     MAILLAGE=MAILL1,
+                     ORIE_LIGNE=(_F(GROUP_MA='POU1',
+                                    VECT_TANG=( 1,0,0),
+                                    GROUP_NO='A',),
+                                 _F(GROUP_MA='POU2',
+                                    VECT_TANG=(-1,0,0),
+                                    GROUP_NO='B',),
+                                 ),);
 
 MAILL1=DEFI_GROUP(reuse =MAILL1,
                   MAILLAGE=MAILL1,
@@ -193,7 +203,7 @@ T_DEP_LA=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL',
 #IMPR_TABLE(TABLE=T_REA_LA,);
 #IMPR_TABLE(TABLE=T_DEP_LA,);
 
-#IMPR_RESU(FORMAT='GMSH',UNITE=37,RESU=_F(RESULTAT=ULAG,NOM_CHAM='DEPL'))
+#IMPR_RESU(FORMAT='MED',RESU=_F(RESULTAT=ULAG))
 
 TEST_TABLE(TABLE=T_REA_LA,
            NOM_PARA='DY',
@@ -348,42 +358,45 @@ TEST_TABLE(TABLE=T_REA_CO,
            REFERENCE='NON_REGRESSION',
            VERSION='8.3.7',);
 #
-# ---- METHODE CONTRAINTE ----
+# ---- METHODE CONTINUE AVEC NORMALE ESCLAVE ----
 #      __________________
 
-
-CHSIG= DEFI_CONTACT(MODELE         = MODE,
-                    FORMULATION    = 'CONTINUE',
+CHESCL= DEFI_CONTACT(MODELE         = MODE,
+                    FORMULATION     = 'CONTINUE',
+                    ITER_CONT_TYPE  = 'MULT',
+                    ITER_CONT_MULT  = 4,
                     ZONE =(
                            _F(
                               GROUP_MA_MAIT  = 'POU1',
                               GROUP_MA_ESCL  = 'POU2',
-                              VECT_MAIT      = 'VECT_Y',
-                              MAIT_VECT_Y    = (0.,0.,-1.,),
                               DIST_MAIT      = F_DIST_M,
                               DIST_ESCL      = F_DIST_E,
+                              NORMALE        = 'ESCL',
+                              VECT_ESCL      = 'VECT_Y',
+                              ESCL_VECT_Y    = (0.,0.,-1.,),
                              ),
                           ),
                    );
 
-USIG=STAT_NON_LINE(MODELE=MODE,
+UESCL=STAT_NON_LINE(MODELE=MODE,
                 CHAM_MATER=CM,
                 CARA_ELEM=CHAMPCAR,
                 EXCIT=(_F(CHARGE=COND_LIM,),
                        _F(CHARGE=CH1,
                           FONC_MULT=RAMPE,),
                       ),
-                CONTACT  = CHSIG,
+                CONTACT  = CHESCL,
                 SOLVEUR=_F(RENUM='MDA'),
                 COMP_INCR=_F(RELATION='MULTIFIBRE'),
                 INCREMENT=_F(LIST_INST=L_INST,
+                             INST_FIN=0.94,
                              ),
                 NEWTON=_F(REAC_ITER=1,),
                 CONVERGENCE=_F(ITER_GLOB_MAXI=50,),
                 INFO=1,);
 
-USIG=CALC_NO(reuse =USIG,
-          RESULTAT=USIG,
+UESCL=CALC_NO(reuse =UESCL,
+          RESULTAT=UESCL,
 
           OPTION='FORC_NODA',
 
@@ -392,65 +405,67 @@ USIG=CALC_NO(reuse =USIG,
 
 # ---- TABLEAUX ----
 
-T_REA_SI=POST_RELEVE_T(ACTION=_F(INTITULE='REAC',
+T_REA_ES=POST_RELEVE_T(ACTION=_F(INTITULE='REAC',
                                  GROUP_NO=('A','B'),
-                                 RESULTAT=USIG,
+                                 RESULTAT=UESCL,
                                  NOM_CHAM='FORC_NODA',
                                  RESULTANTE='DY',
                                  OPERATION='EXTRACTION',),);
 
-T_DEP_SI=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL',
+T_DEP_ES=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL',
                                  GROUP_NO=('C','A1','B1'),
-                                 RESULTAT=USIG,
+                                 RESULTAT=UESCL,
                                  NOM_CHAM='DEPL',
                                  TOUT_CMP='OUI',
                                  OPERATION='EXTRACTION',),);
 
-IMPR_TABLE(TABLE=T_REA_SI,);
-IMPR_TABLE(TABLE=T_DEP_SI,);
+IMPR_TABLE(TABLE=T_REA_ES,);
+IMPR_TABLE(TABLE=T_DEP_ES,);
 
-TEST_TABLE(TABLE=T_REA_SI,
+IMPR_RESU(FORMAT='MED',RESU=_F(RESULTAT=UESCL))
+
+TEST_TABLE(TABLE=T_REA_ES,
            NOM_PARA='DY',
            FILTRE=_F(NOM_PARA='INST',
                      VALE=0.2),
-           VALE=3.11885E2,
+           VALE=311.88546925897,
            PRECISION=0.1E-2,
            REFERENCE='NON_REGRESSION',
-           VERSION='8.3.7',);
+           VERSION='10.3.7',);
 
-TEST_TABLE(TABLE=T_REA_SI,
+TEST_TABLE(TABLE=T_REA_ES,
            NOM_PARA='DY',
            FILTRE=_F(NOM_PARA='INST',
                      VALE=0.4),
-           VALE=1.21043E3,
+           VALE=1273.7681520779,
            PRECISION=0.1E-2,
            REFERENCE='NON_REGRESSION',
-           VERSION='8.3.7',);
+           VERSION='10.3.7',);
 
-TEST_TABLE(TABLE=T_REA_SI,
+TEST_TABLE(TABLE=T_REA_ES,
            NOM_PARA='DY',
            FILTRE=_F(NOM_PARA='INST',
                      VALE=0.6),
-           VALE=2.43195E3,
+           VALE=3036.8846196129,
            PRECISION=0.1E-2,
            REFERENCE='NON_REGRESSION',
-           VERSION='10.1.4',);
+           VERSION='10.3.7',);
 
-TEST_TABLE(TABLE=T_REA_SI,
+TEST_TABLE(TABLE=T_REA_ES,
            NOM_PARA='DY',
            FILTRE=_F(NOM_PARA='INST',
                      VALE=0.8),
-           VALE=2085.1589042336,
+           VALE=4817.1535229181,
            PRECISION=0.1E-2,
            REFERENCE='NON_REGRESSION',
-           VERSION='10.3.2',);
+           VERSION='10.3.7',);
 
-TEST_TABLE(TABLE=T_REA_SI,
+TEST_TABLE(TABLE=T_REA_ES,
            NOM_PARA='DY',
            FILTRE=_F(NOM_PARA='INST',
-                     VALE=1.),
-           VALE=2.34233E3,
+                     VALE=0.94),
+           VALE=6256.0715858421,
            PRECISION=0.1E-2,
            REFERENCE='NON_REGRESSION',
-           VERSION='10.1.4',);
+           VERSION='10.3.7',);
 FIN();

@@ -1,8 +1,8 @@
-# MODIF  DATE 24/08/2010   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 25/01/2011   AUTEUR MACOCCO K.MACOCCO 
 # TITRE  MURAKAMI 11.39 FISSURE CIRCULAIRE AU CENTRE D'UNE SPHERE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
@@ -188,7 +188,7 @@ FOND=DEFI_FOND_FISS(    MAILLAGE=MA,
 G00=CALC_G(
                       RESULTAT=RESU,
                       NUME_ORDRE=1,
-                      THETA=_F(FOND_FISS=FOND,MODULE = 1., 
+                      THETA=_F(FOND_FISS=FOND,
                           R_INF = 2.5E-5, R_SUP = 2.75E-5,
                           DIRECTION=(1., 0., 0.,),),
                       EXCIT=_F(CHARGE=CH,),
@@ -199,7 +199,7 @@ G00=CALC_G(
 G01=CALC_G(   
                  RESULTAT=RESU,
                  NUME_ORDRE=1,
-                 THETA=_F(FOND_FISS=FOND,MODULE = 1., 
+                 THETA=_F(FOND_FISS=FOND,
                           R_INF = 2.75E-5, R_SUP = 3.E-5,
                           DIRECTION=(1., 0., 0.,),),
                  EXCIT=_F(CHARGE=CH,),
@@ -210,7 +210,7 @@ G01=CALC_G(
 G02=CALC_G(    
                 RESULTAT=RESU,
                 NUME_ORDRE=1,
-                THETA=_F(FOND_FISS=FOND,MODULE = 1., 
+                THETA=_F(FOND_FISS=FOND,
                           R_INF = 3.E-5, R_SUP = 3.25E-5,
                           DIRECTION=(1., 0., 0.,),),
                 EXCIT=_F(CHARGE=CH,),
@@ -221,7 +221,7 @@ G02=CALC_G(
 G03=CALC_G(   
                  RESULTAT=RESU,
                  NUME_ORDRE=1,
-                 THETA=_F(FOND_FISS=FOND,MODULE = 1., 
+                 THETA=_F(FOND_FISS=FOND,
                           R_INF = 3.25E-5, R_SUP = 3.5E-5,
                           DIRECTION=(1., 0., 0.,),),
                  EXCIT=_F(CHARGE=CH,),
@@ -267,7 +267,7 @@ TEST_TABLE(       TABLE=G03,
 KG=CALC_G(RESULTAT=RESU,
              NUME_ORDRE=1,
              OPTION='CALC_K_G',
-             THETA=_F(FOND_FISS=FOND,MODULE = 1., 
+             THETA=_F(FOND_FISS=FOND,
                  R_INF = 1.E-6, R_SUP = 2.5E-5,
                  DIRECTION=(1., 0., 0.,),),
              EXCIT=_F(CHARGE=CH,),

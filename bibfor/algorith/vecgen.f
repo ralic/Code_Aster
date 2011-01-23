@@ -1,8 +1,8 @@
       SUBROUTINE VECGEN(NOMRES,NUMEG)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 18/10/2010   AUTEUR NISTOR I.NISTOR 
+C MODIF ALGORITH  DATE 25/01/2011   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -54,19 +54,18 @@ C
       CHARACTER*6 PGC
       CHARACTER*8 NOMRES,NUMEG,MODGEN,NOMSST,NOM2MB,NOMDDL,SSTOLD
       CHARACTER*8 BASMOD,TYPVE
-      CHARACTER*9 OPTION
       CHARACTER*16 MOTFAC
-      CHARACTER*19 PROFG,CHASOU,MOTCLE
+      CHARACTER*19 PROFG,CHASOU
       CHARACTER*24 RESDSC,RESREF,RESVAL
       CHARACTER*24 VALK(3)
       CHARACTER*24 CHADSC,CHALIS,CHAVAL
       CHARACTER*24 NUCHAR,NUBAMO
-      CHARACTER*24 NOMCHA,DEEQ,TYPEBA
+      CHARACTER*24 NOMCHA,DEEQ,TYPEBA,SELIAI,SIZLIA,SST
       REAL*8       DDOT
       CHARACTER*8 KBID
       COMPLEX*16  CBID
-      CHARACTER*16 NOMCON,NOMOPE
-      INTEGER      GD, GD0,NBLIA,IBID
+      INTEGER      GD, GD0,NBLIA,IBID,ELIM,NEQET,NEQRED,LMAPRO,LSILIA,
+     &             LSST,NBSST,I1,J1
       INTEGER VALI(3)
       CHARACTER*1 K1BID
 C
@@ -75,36 +74,67 @@ C-----------------------------------------------------------------------
 C-----------------------------------------------------------------------
 C
       CALL JEMARQ()
+C
+C-----------------------------------------------------------------------
+C     A/ RECUPERATION DU MODELE GENERALISE
+C-----------------------------------------------------------------------
+C
+      PROFG = NUMEG//'      .NUME'
+      CALL JEVEUO(PROFG//'.REFN','E',LLREF)
+      MODGEN = ZK24(LLREF) (1:8)
+      
+C     0/ TEST SI ON ELIMINE LES CONTRAINTES
+C     =====================================
+
+      ELIM=0
+      SELIAI=NUMEG(1:8)//'      .ELIM.BASE'
+      SIZLIA=NUMEG(1:8)//'      .ELIM.TAIL'
+      SST=   NUMEG(1:8)//'      .ELIM.NOMS'
+      CALL JEEXIN(SELIAI,ELIM)
+C
+C     RECUPERATION DE LA BASE SI ELIMINATION
+C 
+      IF (ELIM .NE. 0) THEN 
+        CALL JELIRA(MODGEN//'      .MODG.SSNO','NOMMAX',NBSST,K1BID)
+        NEQET=0
+        CALL JEVEUO(NUMEG//'      .NUME.NEQU','L',IBID)
+        NEQRED=ZI(IBID)
+        CALL JEVEUO(SELIAI,'L',LMAPRO)
+        CALL JEVEUO(SIZLIA,'L',LSILIA)
+        CALL JEVEUO(SST,'L',LSST)
+        DO 9 I=1,NBSST
+          NEQET=NEQET+ZI(LSILIA+I-1)
+   9    CONTINUE
+      ENDIF
+            
 C     1/ LECTURE ET STOCKAGE DES INFORMATIONS
 C     =======================================
-C
+
 C-----------------------------------------------------------------------
 C     1.1/ RECUPERATION CONCEPTS AMONT
 C-----------------------------------------------------------------------
 C
 C     NOMBRE DE SOUS-STRUCTURES SOUMISES A CHARGEMENTS
-C
       CALL GETFAC('CHAR_SOUS_STRUC',NBCHAR)
 C
-      PROFG = NUMEG//'      .NUME'
-C     VERIFIER QUE LA NUMEROTATION EST COHERENTE
-      CALL JENONU(JEXNOM(PROFG//'.LILI','LIAISONS'),IBID)
-      CALL JELIRA(JEXNUM(PROFG//'.PRNO',IBID),'LONMAX',NBLIA,K1BID)
-      IF (NBLIA.EQ.1) THEN
-        CALL U2MESS('F','ALGORITH_32')
-      ENDIF
-
+      IF (ELIM .EQ. 0) THEN
+C       VERIFIER QUE LA NUMEROTATION EST COHERENTE
+        CALL JENONU(JEXNOM(PROFG//'.LILI','LIAISONS'),IBID)
+        CALL JELIRA(JEXNUM(PROFG//'.PRNO',IBID),'LONMAX',NBLIA,K1BID)
+        IF (NBLIA.EQ.1) THEN
+          CALL U2MESS('F','ALGORITH_32')
+        ENDIF
 C
-C     VERIFIER QUE LE NOMBRE NBCHAR DE SOUS-STRUCTURES CHARGEES EST
-C     INFERIEUR AU NOMBRE TOTAL NBSST DE SOUS-STRUCTURES
-C
-      CALL JENONU(JEXNOM(PROFG//'.LILI','&SOUSSTR'),IBID)
-      CALL JELIRA(JEXNUM(PROFG//'.ORIG',IBID),'LONMAX',NBSST,K1BID)
-      IF (NBCHAR.GT.NBSST) THEN
-        VALI (1) = NBCHAR
-        VALI (2) = NBSST
-        CALL U2MESG('F','ALGORITH15_69',0,' ',2,VALI,0,0.D0)
-      END IF
+C       VERIFIER QUE LE NOMBRE NBCHAR DE SOUS-STRUCTURES CHARGEES EST
+C       INFERIEUR AU NOMBRE TOTAL NBSST DE SOUS-STRUCTURES
+        CALL JENONU(JEXNOM(PROFG//'.LILI','&SOUSSTR'),IBID)
+        CALL JELIRA(JEXNUM(PROFG//'.ORIG',IBID),'LONMAX',NBSST,K1BID)
+        IF (NBCHAR.GT.NBSST) THEN
+          VALI (1) = NBCHAR
+          VALI (2) = NBSST
+          CALL U2MESG('F','ALGORITH15_69',0,' ',2,VALI,0,0.D0)
+        ENDIF
+      ENDIF 
 C
 C-----------------------------------------------------------------------
 C     1.2/ CREATION DE LA STRUCTURE DE DONNEES NOMRES
@@ -127,7 +157,6 @@ C
 C     NOTONS QUE DANS LE .REFE, LE MAILLAGE EST REMPLACE PAR LE MODELE
 C     GENERALISE.
 C
-C
       RESDSC = NOMRES//'           .DESC'
       RESREF = NOMRES//'           .REFE'
       RESVAL = NOMRES//'           .VALE'
@@ -144,12 +173,10 @@ C
 C
 C     RECUPERATION DU NOMBRE TOTAL DE D.D.L. GENERALISES, POUR
 C     L'ALLOCATION DU .VALE.
-C
       CALL JEVEUO(PROFG//'.NEQU','L',LLNEQ)
       NEQGEN = ZI(LLNEQ)
 C
       CALL WKVECT(RESVAL,'G V R',NEQGEN,LRVAL)
-C
       CALL WKVECT(CHADSC,'V V I',1,LDDESC)
 C
       CALL JECREC(CHALIS,'V V K8','NO','CONTIG','CONSTANT',3)
@@ -157,8 +184,6 @@ C
       CALL JECROC(JEXNOM(CHALIS,'VECTASS'))
       CALL JECROC(JEXNOM(CHALIS,'NUMEDDL'))
       CALL JEECRA(JEXNOM(CHALIS,'SOUSSTR'),'LONMAX',NBCHAR,' ')
-
-
 C
       CALL JEVEUO(JEXNOM(CHALIS,'SOUSSTR'),'E',LDNSST)
       CALL JEVEUO(JEXNOM(CHALIS,'VECTASS'),'E',LDNVEC)
@@ -171,24 +196,14 @@ C     1.3/ REMPLISSAGE DES INFORMATIONS DE NOMRES
 C-----------------------------------------------------------------------
 C
 C     ECRITURE DU .DESC DANS LE .ELEM
-C
       ZI(LDDESC) = NBCHAR
 C
 C     ECRITURE DES INFORMATIONS DANS CHARLIS
-C
       MOTFAC = 'CHAR_SOUS_STRUC'
 C
-C-----------------------------------------------------------------------
-C     A/ RECUPERATION DU MODELE GENERALISE
-C-----------------------------------------------------------------------
-C
-      CALL JEVEUO(PROFG//'.REFN','E',LLREF)
-      MODGEN = ZK24(LLREF) (1:8)
-C
 C     BOUCLE SUR LES SOUS-STRUCTURES CHARGEES
-C
       DO 10 I = 1,NBCHAR
-C
+
 C-----------------------------------------------------------------------
 C     B/ RECUPERATION DU NOM DE LA SOUS-STRUCTURE ET ECRITURE DANS
 C        LE .LICH.
@@ -201,11 +216,9 @@ C
           VALI (2) = 1
           VALI (3) = IOC
           CALL U2MESG('F','ALGORITH15_70',0,' ',3,VALI,0,0.D0)
-
         ELSE
           CALL GETVTX(MOTFAC,'SOUS_STRUC',I,1,1,NOMSST,IOC)
         END IF
-C
         ZK8(LDNSST+I-1) = NOMSST
 C
 C-----------------------------------------------------------------------
@@ -220,7 +233,6 @@ C
           VALI (2) = 1
           VALI (3) = IOC
           CALL U2MESG('F','ALGORITH15_71',0,' ',3,VALI,0,0.D0)
-
         ELSE
           CALL GETVID(MOTFAC,'VECT_ASSE',I,1,1,NOM2MB,IOC)
           CALL CHPVER('F',NOM2MB,'NOEU','DEPL_R',IER)
@@ -238,7 +250,6 @@ C
           VALK (1) = NOM2MB
           CALL U2MESG('F','ALGORITH15_72',1,VALK,0,0,0,0.D0)
         END IF
-C
         CALL JEVEUO(NOM2MB//'           .REFE','L',LREFE)
         NUCHAR = ZK24(LREFE+1)
 C
@@ -248,9 +259,7 @@ C
         IF (I.EQ.1) THEN
           GD0 = GD
         END IF
-C
         SSTOLD='        '
-
         IF (GD.NE.GD0) THEN
           VALI (1) = GD0
           VALI (2) = GD
@@ -258,7 +267,6 @@ C
           VALK (2) = NOMSST
           CALL U2MESG('F+','ALGORITH15_73',2,VALK,2,VALI,0,0.D0)
         END IF
-C
         GD0 = GD
         SSTOLD = NOMSST
         ZK8(LDNVEC+I-1) = NOM2MB
@@ -293,31 +301,23 @@ C
         END IF
 C
 C     COPIE DU NUME_DDL DANS LE .LICH
-C
         ZK8(LDNDDL+I-1) = NUBAMO(1:8)
-C
    10 CONTINUE
-C
-C
+   
 C     ECRITURE DU .REFE
-C
       ZK24(LLREF) = MODGEN
       ZK24(LRREF+1) = PROFG
-C
+
 C     ECRITURE DU .DESC
-C
       ZI(LRDESC) = GD
       ZI(LRDESC+1) = 1
-C
-C
-C
+
 C     2/ PROJECTION DES CHARGEMENTS SUR LES BASES MODALES
 C     ===================================================
 C
 C-----------------------------------------------------------------------
 C     BOUCLES SUR LES SOUS-STRUCTURES CHARGEES
 C-----------------------------------------------------------------------
-C
       DO 50 I = 1,NBCHAR
 C
 C-----------------------------------------------------------------------
@@ -325,136 +325,136 @@ C     2.1/ RECUPERATION D'INFORMATIONS DE BASE
 C-----------------------------------------------------------------------
 C
 C     NOMS STOCKES DANS LE .LICH
-C
         NOMSST = ZK8(LDNSST+I-1)
         NOM2MB = ZK8(LDNVEC+I-1)
         NOMDDL = ZK8(LDNDDL+I-1)
 C
 C     RECUPERATION DE LA BASE MODALE ASSOCIEE A LA SOUS-STRUCTURE
-C
         CALL MGUTDM(MODGEN,NOMSST,0,'NOM_BASE_MODALE',IBID,BASMOD)
 C
 C     NOMBRE DE MODES NBMOD DE LA BASE MODALE
-C
         CALL RSORAC(BASMOD,'LONUTI',IBID,RBID,KBID,CBID,RBID,KBID,NBMOD,
      &              1,IBID)
-C
-C
+
 C     RECUPERATION DU .VALE ASSOCIE AU SECOND MEMBRE
-C
         CALL JEVEUO(NOM2MB//'           .VALE','L',LADRVE)
         CALL JELIRA(NOM2MB//'           .VALE','TYPE',IBID,TYPVE)
-C
+
 C     NOMBRE D'EQUATIONS DU SYSTEME PHYSIQUE, POUR LA SOUS-STRUCTURE
-C
         CALL DISMOI('F','NB_EQUA',NOMDDL,'NUME_DDL',NEQ,KBID,IRET)
-C
+
 C     POSITIONNEMENT DANS LE .DEEQ, AFIN DE DISPOSER DES CORRESPONDANCES
 C     ENTRE NUMEROS D'EQUATIONS ET NOEUDS ET D.D.L.
-C
         DEEQ = NOMDDL//'      .NUME.DEEQ'
         CALL JEVEUO(DEEQ,'L',IDDEEQ)
-C
+
 C-----------------------------------------------------------------------
 C     2.2/ CREATION DE L'OBJET CHARGEMENT PROJETE DU .VALE
 C-----------------------------------------------------------------------
-C
-        CALL JECROC(JEXNOM(CHAVAL,NOMSST))
+
+        CALL JECROC(JEXNOM(CHAVAL,NOMSST))     
         CALL JEECRA(JEXNOM(CHAVAL,NOMSST),'LONMAX',NBMOD,' ')
-C
-C
+
 C-----------------------------------------------------------------------
 C     2.3/ PROJECTION EFFECTIVE
 C-----------------------------------------------------------------------
-C
+
 C     ALLOCATION DE LA PLACE POUR UN VECTEUR TEMPORAIRE
-C
         CALL WKVECT('&&'//PGC//'.VECTA','V V R',NEQ,IDVECT)
-C
+
 C     ACCES AU CHAMP DE CHARVAL ASSOCIE A NOMSST
-C
         CALL JEVEUO(JEXNOM(CHAVAL,NOMSST),'E',IAVALE)
-C
+
 C     BOUCLE SUR LES MODES
-C
         DO 20 J = 1,NBMOD
-C
+        
 C     EXTRACTION DU CHAMP DE DEPLACEMENTS ASSOCIE AU MODE J
-C
           CALL RSEXCH(BASMOD,'DEPL',J,NOMCHA,IRET)
-C
           NOMCHA = NOMCHA(1:19)//'.VALE'
-          CALL JEVEUO(NOMCHA,'L',IADMOD)
+          CALL JEVEUO(NOMCHA,'L',IADMOD)          
 C
 C     RECOPIE DU CHAMP DANS LE VECTEUR TEMPORAIRE
-C
           CALL DCOPY(NEQ,ZR(IADMOD),1,ZR(IDVECT),1)
-C
-C
+
 C     MISE A ZERO DES D.D.L. DE LAGRANGE
-C
           CALL ZERLAG(ZR(IDVECT),NEQ,ZI(IDDEEQ))
-C
+
 C     PRODUIT SCALAIRE SECOND MEMBRE ET MODE
-C
           ZR(IAVALE+J-1) = DDOT(NEQ,ZR(IDVECT),1,ZR(LADRVE),1)
 C
    20   CONTINUE
-C
         CALL JEDETR('&&'//PGC//'.VECTA')
-C
    50 CONTINUE
-C
-C
-
-C
+   
 C     3/ ASSEMBLAGE
 C     =============
-C
+
 C     ACCES AU PRNO DU PROF_CHNO GENERALISE, POUR LES SOUS-STRUCTURES.
-C
       CALL JENONU(JEXNOM(PROFG//'.LILI','&SOUSSTR'),IBID)
       CALL JEVEUO(JEXNUM(PROFG//'.PRNO',IBID),'L',LDPRS)
-C
+
 C     ACCES AUX NOMS DES SOUS-STRUCTURES CHARGEES
-C
       CALL JEVEUO(JEXNOM(CHALIS,'SOUSSTR'),'L',LDSTR)
-C
+
 C     BOUCLE SUR LES SOUS-STRUCTURES CHARGEES
-C
-      DO 100 I = 1,NBCHAR
-C
+      DO 200 I = 1,NBCHAR
+
 C     RECUPERATION DU NOM DE LA SOUS-STRUCTURE ET DU CHARGEMENT
 C     PROJETE ASSOCIE.
-C
         NOMSST = ZK8(LDSTR+I-1)
-C
+
 C     RECUPERATION DU NUMERO GLOBAL DE LA SOUS-STRUCTURE
-C
-        CALL JENONU(JEXNOM(MODGEN//'      .MODG.SSNO',NOMSST),NUSST)
-C
+        IF (ELIM .EQ. 0) THEN
+          CALL JENONU(JEXNOM(MODGEN//'      .MODG.SSNO',NOMSST),NUSST)
+        ELSE
+C     CAS OU ON RECOURS A L'ELIMINATION                
+          DO 60 I1=1,NBSST
+            IF ( ZK8(LSST+I1-1) .EQ. NOMSST ) THEN
+              NUSST=I1
+            ENDIF  
+  60      CONTINUE   
+        ENDIF  
+
 C     RECUPERATION DU D.D.L. GENERALISE DE DEPART ET DU NOMBRE TOTAL
 C     DE D.D.L., ASSOCIES A LA SOUS-STRUCTURE.
-C
-        NDDL0 = ZI(LDPRS+2*NUSST-2)
-        NBMOD = ZI(LDPRS+2*NUSST-1)
-C
+        IF (ELIM .EQ. 0) THEN
+          NDDL0 = ZI(LDPRS+2*NUSST-2)
+          NBMOD = ZI(LDPRS+2*NUSST-1)
+        ELSE
+C     CAS OU ON RECOURS A L'ELIMINATION                
+          NDDL0=0
+          NBMOD=0
+          DO 70 I1=1,NUSST-1    
+            NDDL0 = NDDL0 + ZI(LSILIA+I1-1)
+   70     CONTINUE     
+          NBMOD = ZI(LSILIA+NUSST-1)
+        ENDIF
+
 C     ASSEMBLAGE DES VALEURS DE CHARGEMENT
 C
 C     LE VECTEUR GLOBAL EST POSITIONNE EN ZR(LRVAL) (DANS RESVAL)
 C     CELUI LOCAL A LA SOUS-STRUCTURE EN ZR(IDVALE)
-C
         CALL JEVEUO(JEXNOM(CHAVAL,NOMSST),'L',IDVALE)
 C
 C     BOUCLE SUR LES MODES DE LA SOUS-STRUCTURE
-C
-        DO 60 J = 1,NBMOD
-          IPOS = (NDDL0-1) + (J-1)
-          ZR(LRVAL+IPOS) = ZR(LRVAL+IPOS) + ZR(IDVALE+J-1)
-   60   CONTINUE
-C
-C
-  100 CONTINUE
-C
+        IF (ELIM .EQ. 0) THEN
+          DO 80 J = 1,NBMOD
+            IPOS=(NDDL0 - 1) + (J - 1)
+            ZR(LRVAL+IPOS) = ZR(LRVAL+IPOS) + ZR(IDVALE+J-1)
+   80     CONTINUE
+        ELSE
+C     CAS OU ON RECOURS A L'ELIMINATION   
+C     ON RE PROJETTE SUR LA BASE T : F_proj = T^t * (Phi^t * F) 
+          DO 100 J1 = 1,NEQRED
+            ZR(LRVAL+J1-1)=0.0D0
+            DO 90 I1=1,NBMOD
+            ZR(LRVAL+J1-1) = ZR(LRVAL+J1-1) + 
+     &                       ZR(IDVALE+I1-1)*
+     &                       ZR(LMAPRO+(J1-1)*NEQET+NDDL0+I1-1)
+   90       CONTINUE  
+  100     CONTINUE
+        ENDIF          
+  200 CONTINUE
+
       CALL JEDEMA()
       END

@@ -1,10 +1,10 @@
-# MODIF  DATE 26/10/2009   AUTEUR SFAYOLLE S.FAYOLLE 
+# MODIF  DATE 25/01/2011   AUTEUR PELLET J.PELLET 
 # ======================================================================
-# TITRE CAS-TEST POUR LA VALIDATION DE l'OPTION INDI_LOCA_ELGA POUR ----
+# TITRE CAS-TEST POUR LA VALIDATION DE l'OPTION INDL_ELGA POUR ----
 # ssnp125a.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -168,20 +168,20 @@ except aster.NonConvergenceError:
 
 U = CALC_ELEM(
               reuse      = U,
-              OPTION     = ('INDI_LOCA_ELGA',),
+              OPTION     = ('INDL_ELGA',),
               RESULTAT   = U,
               NUME_ORDRE = (19,last_iter),
               );
 ############################################################
 #IMPR_RESU(RESU=_F(RESULTAT=U,
 #                  NUME_ORDRE = (19,last_iter),
-#                  NOM_CHAM   = ('INDI_LOCA_ELGA',),),);
+#                  NOM_CHAM   = ('INDL_ELGA',),),);
 ############################################################
 
 TEST_RESU(RESU=(
                 _F(RESULTAT=U,
                    NUME_ORDRE=19,
-                   NOM_CHAM='INDI_LOCA_ELGA',
+                   NOM_CHAM='INDL_ELGA',
                    NOM_CMP='INDICE',
                    MAILLE='M1',
                    POINT=1,
@@ -191,7 +191,7 @@ TEST_RESU(RESU=(
                    VERSION = '7.2.23', ),
                 _F(RESULTAT=U,
                    NUME_ORDRE=19,
-                   NOM_CHAM='INDI_LOCA_ELGA',
+                   NOM_CHAM='INDL_ELGA',
                    NOM_CMP='DIR1',
                    MAILLE='M1',
                    POINT=1,
@@ -202,7 +202,7 @@ TEST_RESU(RESU=(
                    
                 _F(RESULTAT=U,
                    NUME_ORDRE=19,
-                   NOM_CHAM='INDI_LOCA_ELGA',
+                   NOM_CHAM='INDL_ELGA',
                    NOM_CMP='INDICE',
                    MAILLE='M1',
                    POINT=2,
@@ -212,7 +212,7 @@ TEST_RESU(RESU=(
                    VERSION = '7.2.23', ),
                 _F(RESULTAT=U,
                    NUME_ORDRE=19,
-                   NOM_CHAM='INDI_LOCA_ELGA',
+                   NOM_CHAM='INDL_ELGA',
                    NOM_CMP='DIR2',
                    MAILLE='M1',
                    POINT=2,
@@ -223,7 +223,7 @@ TEST_RESU(RESU=(
                    
                 _F(RESULTAT=U,
                    NUME_ORDRE=19,
-                   NOM_CHAM='INDI_LOCA_ELGA',
+                   NOM_CHAM='INDL_ELGA',
                    NOM_CMP='INDICE',
                    MAILLE='M1',
                    POINT=3,
@@ -233,7 +233,7 @@ TEST_RESU(RESU=(
                    VERSION = '7.2.23', ),
                 _F(RESULTAT=U,
                    NUME_ORDRE=19,
-                   NOM_CHAM='INDI_LOCA_ELGA',
+                   NOM_CHAM='INDL_ELGA',
                    NOM_CMP='DIR3',
                    MAILLE='M1',
                    POINT=3,
@@ -244,7 +244,7 @@ TEST_RESU(RESU=(
                    
                 _F(RESULTAT=U,
                    NUME_ORDRE=19,
-                   NOM_CHAM='INDI_LOCA_ELGA',
+                   NOM_CHAM='INDL_ELGA',
                    NOM_CMP='INDICE',
                    MAILLE='M1',
                    POINT=4,
@@ -254,7 +254,7 @@ TEST_RESU(RESU=(
                    VERSION = '7.2.23', ),
                 _F(RESULTAT=U,
                    NUME_ORDRE=19,
-                   NOM_CHAM='INDI_LOCA_ELGA',
+                   NOM_CHAM='INDL_ELGA',
                    NOM_CMP='DIR4',
                    MAILLE='M1',
                    POINT=4,
@@ -265,7 +265,7 @@ TEST_RESU(RESU=(
                    
                 _F(RESULTAT=U,
                    NUME_ORDRE=19,
-                   NOM_CHAM='INDI_LOCA_ELGA',
+                   NOM_CHAM='INDL_ELGA',
                    NOM_CMP='INDICE',
                    MAILLE='M1',
                    POINT=5,
@@ -275,7 +275,7 @@ TEST_RESU(RESU=(
                    VERSION = '7.2.23', ),
                 _F(RESULTAT=U,
                    NUME_ORDRE=19,
-                   NOM_CHAM='INDI_LOCA_ELGA',
+                   NOM_CHAM='INDL_ELGA',
                    NOM_CMP='INDICE',
                    MAILLE='M1',
                    POINT=6,
@@ -285,7 +285,7 @@ TEST_RESU(RESU=(
                    VERSION = '7.2.23', ),
                 _F(RESULTAT=U,
                    NUME_ORDRE=19,
-                   NOM_CHAM='INDI_LOCA_ELGA',
+                   NOM_CHAM='INDL_ELGA',
                    NOM_CMP='INDICE',
                    MAILLE='M1',
                    POINT=7,
@@ -295,7 +295,7 @@ TEST_RESU(RESU=(
                    VERSION = '7.2.23', ),
                 _F(RESULTAT=U,
                    NUME_ORDRE=19,
-                   NOM_CHAM='INDI_LOCA_ELGA',
+                   NOM_CHAM='INDL_ELGA',
                    NOM_CMP='INDICE',
                    MAILLE='M1',
                    POINT=8,
@@ -305,7 +305,7 @@ TEST_RESU(RESU=(
                    VERSION = '7.2.23', ),
                 _F(RESULTAT=U,
                    NUME_ORDRE=19,
-                   NOM_CHAM='INDI_LOCA_ELGA',
+                   NOM_CHAM='INDL_ELGA',
                    NOM_CMP='INDICE',
                    MAILLE='M1',
                    POINT=9,
@@ -316,7 +316,7 @@ TEST_RESU(RESU=(
                    
                 _F(RESULTAT=U,
                    NUME_ORDRE=19,
-                   NOM_CHAM='INDI_LOCA_ELGA',
+                   NOM_CHAM='INDL_ELGA',
                    NOM_CMP='INDICE',
                    MAILLE='M11',
                    POINT=1,
@@ -326,7 +326,7 @@ TEST_RESU(RESU=(
                    VERSION = '7.2.23', ),
                 _F(RESULTAT=U,
                    NUME_ORDRE=19,
-                   NOM_CHAM='INDI_LOCA_ELGA',
+                   NOM_CHAM='INDL_ELGA',
                    NOM_CMP='DIR1',
                    MAILLE='M11',
                    POINT=1,
@@ -337,7 +337,7 @@ TEST_RESU(RESU=(
                    
                 _F(RESULTAT=U,
                    NUME_ORDRE=last_iter,
-                   NOM_CHAM='INDI_LOCA_ELGA',
+                   NOM_CHAM='INDL_ELGA',
                    NOM_CMP='INDICE',
                    MAILLE='M1',
                    POINT=1,
@@ -347,7 +347,7 @@ TEST_RESU(RESU=(
                    VERSION = '7.2.23', ),
                 _F(RESULTAT=U,
                    NUME_ORDRE=last_iter,
-                   NOM_CHAM='INDI_LOCA_ELGA',
+                   NOM_CHAM='INDL_ELGA',
                    NOM_CMP='DIR1',
                    MAILLE='M1',
                    POINT=1,
@@ -358,7 +358,7 @@ TEST_RESU(RESU=(
                    
                 _F(RESULTAT=U,
                    NUME_ORDRE=last_iter,
-                   NOM_CHAM='INDI_LOCA_ELGA',
+                   NOM_CHAM='INDL_ELGA',
                    NOM_CMP='INDICE',
                    MAILLE='M1',
                    POINT=2,
@@ -368,7 +368,7 @@ TEST_RESU(RESU=(
                    VERSION = '7.2.23', ),
                 _F(RESULTAT=U,
                    NUME_ORDRE=last_iter,
-                   NOM_CHAM='INDI_LOCA_ELGA',
+                   NOM_CHAM='INDL_ELGA',
                    NOM_CMP='DIR2',
                    MAILLE='M1',
                    POINT=2,
@@ -379,7 +379,7 @@ TEST_RESU(RESU=(
                    
                 _F(RESULTAT=U,
                    NUME_ORDRE=last_iter,
-                   NOM_CHAM='INDI_LOCA_ELGA',
+                   NOM_CHAM='INDL_ELGA',
                    NOM_CMP='INDICE',
                    MAILLE='M1',
                    POINT=3,
@@ -389,7 +389,7 @@ TEST_RESU(RESU=(
                    VERSION = '7.2.23', ),
                 _F(RESULTAT=U,
                    NUME_ORDRE=last_iter,
-                   NOM_CHAM='INDI_LOCA_ELGA',
+                   NOM_CHAM='INDL_ELGA',
                    NOM_CMP='DIR3',
                    MAILLE='M1',
                    POINT=3,
@@ -400,7 +400,7 @@ TEST_RESU(RESU=(
                    
                 _F(RESULTAT=U,
                    NUME_ORDRE=last_iter,
-                   NOM_CHAM='INDI_LOCA_ELGA',
+                   NOM_CHAM='INDL_ELGA',
                    NOM_CMP='INDICE',
                    MAILLE='M1',
                    POINT=4,
@@ -410,7 +410,7 @@ TEST_RESU(RESU=(
                    VERSION = '7.2.23', ),
                 _F(RESULTAT=U,
                    NUME_ORDRE=last_iter,
-                   NOM_CHAM='INDI_LOCA_ELGA',
+                   NOM_CHAM='INDL_ELGA',
                    NOM_CMP='DIR4',
                    MAILLE='M1',
                    POINT=4,
@@ -421,7 +421,7 @@ TEST_RESU(RESU=(
                    
                 _F(RESULTAT=U,
                    NUME_ORDRE=last_iter,
-                   NOM_CHAM='INDI_LOCA_ELGA',
+                   NOM_CHAM='INDL_ELGA',
                    NOM_CMP='INDICE',
                    MAILLE='M1',
                    POINT=5,
@@ -431,7 +431,7 @@ TEST_RESU(RESU=(
                    VERSION = '7.2.23', ),
                 _F(RESULTAT=U,
                    NUME_ORDRE=last_iter,
-                   NOM_CHAM='INDI_LOCA_ELGA',
+                   NOM_CHAM='INDL_ELGA',
                    NOM_CMP='INDICE',
                    MAILLE='M1',
                    POINT=6,
@@ -441,7 +441,7 @@ TEST_RESU(RESU=(
                    VERSION = '7.2.23', ),
                 _F(RESULTAT=U,
                    NUME_ORDRE=last_iter,
-                   NOM_CHAM='INDI_LOCA_ELGA',
+                   NOM_CHAM='INDL_ELGA',
                    NOM_CMP='INDICE',
                    MAILLE='M1',
                    POINT=7,
@@ -451,7 +451,7 @@ TEST_RESU(RESU=(
                    VERSION = '7.2.23', ),
                 _F(RESULTAT=U,
                    NUME_ORDRE=last_iter,
-                   NOM_CHAM='INDI_LOCA_ELGA',
+                   NOM_CHAM='INDL_ELGA',
                    NOM_CMP='INDICE',
                    MAILLE='M1',
                    POINT=8,
@@ -461,7 +461,7 @@ TEST_RESU(RESU=(
                    VERSION = '7.2.23', ),
                 _F(RESULTAT=U,
                    NUME_ORDRE=last_iter,
-                   NOM_CHAM='INDI_LOCA_ELGA',
+                   NOM_CHAM='INDL_ELGA',
                    NOM_CMP='INDICE',
                    MAILLE='M1',
                    POINT=9,
@@ -472,7 +472,7 @@ TEST_RESU(RESU=(
                    
                 _F(RESULTAT=U,
                    NUME_ORDRE=last_iter,
-                   NOM_CHAM='INDI_LOCA_ELGA',
+                   NOM_CHAM='INDL_ELGA',
                    NOM_CMP='INDICE',
                    MAILLE='M11',
                    POINT=1,
@@ -482,7 +482,7 @@ TEST_RESU(RESU=(
                    VERSION = '7.2.23', ),
                 _F(RESULTAT=U,
                    NUME_ORDRE=last_iter,
-                   NOM_CHAM='INDI_LOCA_ELGA',
+                   NOM_CHAM='INDL_ELGA',
                    NOM_CMP='DIR1',
                    MAILLE='M11',
                    POINT=1,

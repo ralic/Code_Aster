@@ -1,25 +1,25 @@
-# MODIF  DATE 07/12/2010   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 25/01/2011   AUTEUR PELLET J.PELLET 
 # TITRE TEST DE LA LOI JOINT_MECA_FROT SUR LES ELEMENTS DE JOINT PENTA6
 # ssnp118r.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
-# ce cas test sort la courbe de chargement tangentiel (aller-retour) du joint frottant ferme 
+# ce cas test sort la courbe de chargement tangentiel (aller-retour) du joint frottant ferme
 DEBUT(CODE=_F( NOM = 'SSNP118R',NIV_PUB_WEB='INTERNET',VISU_EFICAS='OUI'),PAR_LOT='OUI',IGNORE_ALARM=('MODELISA4_9','CALCULEL_7'))
 # ON IGNORE LES ALARMES SUR LA MAILLE DE JOINT DEGENERE (AVEC DES NOEUDS CONFONDUS)
 
@@ -28,9 +28,9 @@ DEBUT(CODE=_F( NOM = 'SSNP118R',NIV_PUB_WEB='INTERNET',VISU_EFICAS='OUI'),PAR_LO
 insfin=60
 # SEUIL DE FROTTEMENT
 sigma_seuil=1.
-# REGULARISATION NORMALE DE LA COURBE FORCE-DEPLACEMENT NORMALE 
+# REGULARISATION NORMALE DE LA COURBE FORCE-DEPLACEMENT NORMALE
 k_n=0.1
-# REGULARISATION TANGENTIELLE DE LA COURBE FORCE-DEPLACEMENT NORMALE 
+# REGULARISATION TANGENTIELLE DE LA COURBE FORCE-DEPLACEMENT NORMALE
 k_t=0.15
 # COEFFICIENT DE FROTTEMENT
 mu=0.2
@@ -82,7 +82,7 @@ MO=AFFE_MODELE(
               )
 
 
-# LES PARAMETRE MATERIAU 
+# LES PARAMETRE MATERIAU
 MAT=DEFI_MATERIAU(ELAS=_F(E=2000.,
                           NU=0.0,),
                   JOINT_MECA_FROT=_F(K_N=k_n,
@@ -120,20 +120,20 @@ TRAC_1=AFFE_CHAR_MECA(MODELE=MO,
                                    DY=sin(angle),
                                    DZ=0,
                                    ),);
-                 
+
 
 
 # CREATION DE LISTE D'INSTANT
 L_INST=DEFI_LIST_REEL(VALE=range(insfin+1))
 
 
-FCT1=DEFI_FONCTION(NOM_PARA='INST',VALE=( 0.,0., 
+FCT1=DEFI_FONCTION(NOM_PARA='INST',VALE=( 0.,0.,
                                         insfin/4,-delta_n, # compression normale du joint
                                         insfin,-delta_n,), # maintien du chargement normale patiel
                   PROL_DROITE='LINEAIRE',);
 
 
-#----------------------------------------------------------------------------------  
+#----------------------------------------------------------------------------------
 # CALCUL AVEC CHARGEMENT EN MODE I
 #-----------------------------------------------------------------------------------
 
@@ -155,27 +155,27 @@ U_1=STAT_NON_LINE(MODELE=MO,
                   );
 
 
-# CHARGEMENT MODE II EN MAINTENANT LA COMPRESSION NORMALE 
-F2DX=DEFI_FONCTION(NOM_PARA='INST',VALE=( 0.,0., 
+# CHARGEMENT MODE II EN MAINTENANT LA COMPRESSION NORMALE
+F2DX=DEFI_FONCTION(NOM_PARA='INST',VALE=( 0.,0.,
                                         insfin/4,-delta_n*cos(angle),                    # compression normale
                                         insfin/2,-delta_n*cos(angle)-delta_t*sin(angle), # cisaillement tangentiel
-                                        3*insfin/4,-delta_n*cos(angle)+delta_t*sin(angle), # cisaillement tangentiel                                        
+                                        3*insfin/4,-delta_n*cos(angle)+delta_t*sin(angle), # cisaillement tangentiel
                                         insfin,  -delta_n*cos(angle)-delta_t*sin(angle)),# cisaillement tangentiel reverse
                   PROL_DROITE='LINEAIRE',);
-                  
-F2DY=DEFI_FONCTION(NOM_PARA='INST',VALE=( 0.,0., 
+
+F2DY=DEFI_FONCTION(NOM_PARA='INST',VALE=( 0.,0.,
                                         insfin/4,-delta_n*sin(angle),                    # fermeture normale
                                         insfin/2,-delta_n*sin(angle)+delta_t*cos(angle), # cisaillement tangentiel
-                                        3*insfin/4,-delta_n*sin(angle)-delta_t*cos(angle), # cisaillement tangentiel                                        
+                                        3*insfin/4,-delta_n*sin(angle)-delta_t*cos(angle), # cisaillement tangentiel
                                         insfin,  -delta_n*sin(angle)+delta_t*cos(angle)),# cisaillement tangentiel reverse
                   PROL_DROITE='LINEAIRE',);
-                  
+
 F2DZ=DEFI_FONCTION(NOM_PARA='INST',VALE=( 0.,0., # AVANCEMENT DANS LA TROISIEME DIRECTION
                                           insfin/2,delta_n/3,
                                           insfin,delta_n,
                                         ),
                   PROL_DROITE='LINEAIRE',);
-                  
+
 TRAC_2=AFFE_CHAR_MECA_F(MODELE=MO,
                       DDL_IMPO=(_F(GROUP_NO='DROITE',
                                     DX=F2DX,
@@ -185,7 +185,7 @@ TRAC_2=AFFE_CHAR_MECA_F(MODELE=MO,
                       );
 
 
-#----------------------------------------------------------------------------------  
+#----------------------------------------------------------------------------------
 # CALCUL AVEC CHARGEMENT EN MODE II
 #-----------------------------------------------------------------------------------
 
@@ -208,36 +208,28 @@ U_1=STAT_NON_LINE(reuse=U_1,
                   );
 
 
-                              
+
 #################################################################
-#---------------------------------------------------------------------------------- 
-# TESTS CALCUL 
+#----------------------------------------------------------------------------------
+# TESTS CALCUL
 #-----------------------------------------------------------------------------------
 # calcul de l'ouverture tangentiel du joint V8=delta_tang a partir de ces valeurs aux points Gausse
 U_1=CALC_ELEM(reuse =U_1,
-              MODELE=MO,
               RESULTAT=U_1,
               OPTION='VARI_ELNO_ELGA',
               NOM_CHAM='VARI_ELGA',
-              NOM_CMP='V8',);   
-              
-# calcul de l'ouverture tangentiel du joint aux noeuds pour le groupe de maille "Gauche" 
+              NOM_CMP='V8',);
+# calcul de l'ouverture tangentiel du joint aux noeuds pour le groupe de maille "Gauche"
 U_1=CALC_NO(reuse =U_1,
             RESULTAT=U_1,
             OPTION='VARI_NOEU_ELGA',
-            );          
-              
+            );
 # calcul de la force nodale du paroi qu'on tire
 U_1=CALC_NO(reuse =U_1,
             RESULTAT=U_1,
             OPTION='FORC_NODA',
-            MODELE=MO,
-            CHAM_MATER=CM,
             );
-          
-       
-
-# FORCE NODALE RESULTANTE  celons direction x et y : (F_X,F_Y) 
+# FORCE NODALE RESULTANTE  celons direction x et y : (F_X,F_Y)
 TFORCE=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                INTITULE='F_PILOTE',
                                RESULTAT=U_1,
@@ -245,18 +237,18 @@ TFORCE=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                TOUT_ORDRE='OUI',
                                GROUP_NO='DROITE',
                                RESULTANTE=('DX','DY'),),);
-                               
 
-# projecteur sur la direction tangente 
+
+# projecteur sur la direction tangente
 PNOR = FORMULE(VALE='-DX*sin(angle)+DY*cos(angle)',
-              NOM_PARA=('DX','DY',),); 
-                           
-# rajout d'une cologne dans le tableau avec la partie tangente de la force nodale                              
+              NOM_PARA=('DX','DY',),);
+
+# rajout d'une cologne dans le tableau avec la partie tangente de la force nodale
 TFORCE=CALC_TABLE(reuse =TFORCE,
                   TABLE=TFORCE,
                   ACTION=_F(OPERATION='OPER',
                             FORMULE=PNOR,
-                            NOM_PARA='F_T',),);                                                           
+                            NOM_PARA='F_T',),);
 
 # DEPLACEMENT DU NOEUD P_HAUT
 TDEPL=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
@@ -276,15 +268,15 @@ TDELTA_T=POST_RELEVE_T(ACTION=_F(OPERATION='MOYENNE',
                               GROUP_NO='GAUCHE',
                               NOM_CMP='V8',),);
 
-# filtrage juste de la valeur moyenne                              
+# filtrage juste de la valeur moyenne
 TDELTA_T=CALC_TABLE(reuse =TDELTA_T,
                  TABLE=TDELTA_T,
                  ACTION=_F(OPERATION='FILTRE',
                            NOM_PARA='QUANTITE',
-                           VALE_K='MOMENT_0',),);  
+                           VALE_K='MOMENT_0',),);
 ###################################################
 
-           
+
 # la manipulation pour imprimer la courbe force-deplacement au format XMGRACE
 FT=RECU_FONCTION(TABLE=TFORCE,
                   PARA_X='INST',
@@ -310,7 +302,7 @@ TEST_FONCTION(VALEUR=(_F(FONCTION=FT,
                         VALE_PARA=insfin/4,
                         VALE_REFE=0,
                         PRECISION=sigma_seuil*1e-5,
-                        CRITERE   = 'ABSOLU',                        
+                        CRITERE   = 'ABSOLU',
                         REFERENCE='NON_REGRESSION',),
                      _F(FONCTION=FT,
                         NOM_PARA='INST',
@@ -343,9 +335,9 @@ IMPR_TABLE(TABLE=TDEPL,
 # impression de deplacements normals
 IMPR_TABLE(TABLE=TDELTA_T,
            NOM_PARA='V8',
-           );                             
+           );
 
-              
+
 
 #IMPR_RESU(FORMAT='GMSH',RESU=(_F(RESULTAT=U_1,NOM_CHAM='DEPL',TYPE_CHAM='VECT_2D',NOM_CMP=('DX','DY'))))
 #IMPR_RESU(FORMAT='GMSH',RESU=(_F(RESULTAT=U_1,NOM_CHAM='VARI_ELGA',NOM_CMP=('V1','V2','V3','V7','V8'))))

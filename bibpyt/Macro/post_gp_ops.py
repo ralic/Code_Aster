@@ -1,8 +1,8 @@
-#@ MODIF post_gp_ops Macro  DATE 30/08/2010   AUTEUR MACOCCO K.MACOCCO 
+#@ MODIF post_gp_ops Macro  DATE 25/01/2011   AUTEUR MACOCCO K.MACOCCO 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -639,8 +639,8 @@ def post_gp_ops(self, **args):
                tab=mergeLineInTable(tab, t_relev, nb_noeuds_fissure)
 
             # en 3D, le paramètre R n'intervient pas
-            tab.fromfunction(new_para, fKj, ('G_LOCAL', 'YOUNG', 'NU'))
-            tab.Renomme('G_LOCAL', 'G_%d' % (k + 1))
+            tab.fromfunction(new_para, fKj, ('G', 'YOUNG', 'NU'))
+            tab.Renomme('G', 'G_%d' % (k + 1))
 
          l_tabi.append(tab)
       

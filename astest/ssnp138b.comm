@@ -1,9 +1,9 @@
-# MODIF  DATE 21/09/2010   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 25/01/2011   AUTEUR MACOCCO K.MACOCCO 
 # TITRE FISSURE INCLINEE EN 2D AVEC X-FEM, CHARGEMENTS VOLUMIQUES
 # ssnp138b.para = tps_job 120 mem_job 256Mo mem_aster 50 ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -128,7 +128,7 @@ K1_2=[ 5013.586 , 2592.142]
 # G SUR LE FOND 1 POUR LES DEUX ANGLES
 GR  =[1.1488233E-04 , 5.186283E-05]
 
-# K1_MAX SUR LE FOND 2 (POST_K1_K2_K3 METHODE 3) POUR LES DEUX ANGLES
+# K1 SUR LE FOND 2 (POST_K1_K2_K3) POUR LES DEUX ANGLES
 PK  =[4462.55 , 2279.5566]
 
 SI1CH1 = [None]*(nbcalc)
@@ -216,16 +216,13 @@ for i in range(nbcalc) :
 
 # CAS DU PREMIER CHARGEMENT    
   SI1CH1[i]=CALC_G(RESULTAT=UTOT1[i],
-                 SYME_CHAR='SANS',
                  OPTION='CALC_K_G',
                  THETA=_F(FISSURE=FISS[i],
-                          NUME_FOND=1,
                           R_INF=RI,
                           R_SUP=RS,),
                  INFO=2);
 
   SI2CH1[i]=CALC_G(RESULTAT=UTOT1[i],
-                 SYME_CHAR='SANS',
                  OPTION='CALC_K_G',
                  THETA=_F(FISSURE=FISS[i],
                           NUME_FOND=2,
@@ -234,26 +231,20 @@ for i in range(nbcalc) :
                  INFO=2);
 
   TG1CH1[i]=CALC_G(RESULTAT=UTOT1[i],
-                 SYME_CHAR='SANS',
-                 OPTION='CALC_G',
                  THETA=_F(FISSURE=FISS[i],
-                          NUME_FOND=1,
                           R_INF=RI,
                           R_SUP=RS,),
                  INFO=2);
                  
 # CAS DU DEUXIEME CHARGEMENT    
   SI1CH2[i]=CALC_G(RESULTAT=UTOT2[i],
-                 SYME_CHAR='SANS',
                  OPTION='CALC_K_G',
                  THETA=_F(FISSURE=FISS[i],
-                          NUME_FOND=1,
                           R_INF=RI,
                           R_SUP=RS,),
                  INFO=2);
 
   SI2CH2[i]=CALC_G(RESULTAT=UTOT2[i],
-                 SYME_CHAR='SANS',
                  OPTION='CALC_K_G',
                  THETA=_F(FISSURE=FISS[i],
                           NUME_FOND=2,
@@ -262,10 +253,7 @@ for i in range(nbcalc) :
                  INFO=2);
 
   TG1CH2[i]=CALC_G(RESULTAT=UTOT2[i],
-                 SYME_CHAR='SANS',
-                 OPTION='CALC_G',
                  THETA=_F(FISSURE=FISS[i],
-                          NUME_FOND=1,
                           R_INF=RI,
                           R_SUP=RS,),
                  INFO=2);
@@ -339,19 +327,17 @@ for i in range(nbcalc) :
   IMPR_TABLE(TABLE = PK2[i]);
   
   TEST_TABLE(TABLE=PK1[i],
-              NOM_PARA='K1_MAX',
+              NOM_PARA='K1',
               VALE=PK[i],
               CRITERE='RELATIF',
               REFERENCE='NON_REGRESSION',
-              FILTRE=(_F(NOM_PARA='METHODE',VALE_I = 3))
               );
   
   TEST_TABLE(TABLE=PK2[i],
-              NOM_PARA='K1_MAX',
+              NOM_PARA='K1',
               VALE=PK[i],
               CRITERE='RELATIF',
               REFERENCE='NON_REGRESSION',
-              FILTRE=(_F(NOM_PARA='METHODE',VALE_I = 3))
               );
  
 

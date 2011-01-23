@@ -1,6 +1,6 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 24/01/2011   AUTEUR TARDIEU N.TARDIEU 
 # TITRE MODELISATION DU GONFLEMENT DE L ARGILE GONFLANTE (3D THH2MS)
-# wtnv136c.para = tps_job 150 mem_job 128Mo liste_test S
+# wtnv136c.para = tps_job 150 mem_job 128Mo mpi_nbcpu 1 liste_test I
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG

@@ -1,4 +1,4 @@
-#@ MODIF calculel Messages  DATE 18/01/2011   AUTEUR MEUNIER S.MEUNIER 
+#@ MODIF calculel Messages  DATE 25/01/2011   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -185,6 +185,21 @@ Erreur utilisateur dans PROJ_SPEC_BASE :
 
 Conseil :
  Dans la commande AFFE_MODELE (ou MODI_MODELE), il faut utiliser PARTITION='CENTRALISE'
+"""),
+
+26 : _("""
+Les commandes CALC_ELEM et CALC_NO ne doivent pas etre utilisées en "reuse" lorsque
+l'on utilise l'un des mots clés suivants :
+  * MODELE
+  * CHAM_MATER
+  * CARA_ELEM
+  * EXCIT
+  * GROUP_MA / MAILLE
+
+Risques & conseils :
+  Si on utilise de tels mots clés, la structure de données enrichie manque de cohérence.
+  Par exemple, le champ de déplacement DEPL a pu etre calculé avec un champ de matériau,
+  alors que le champ d'énergie cinétique ECIN_ELEM_DEPL est calculé avec un autre champ de matériau.
 """),
 
 

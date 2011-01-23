@@ -1,5 +1,5 @@
 
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 25/01/2011   AUTEUR PROIX J-M.PROIX 
 # TITRE COMPORTEMENTS ELASTOVISCOPLASTIQUES MONOCRISTALLINS
 # RESPONSABLE JMBHH01 J.M.PROIX
 # ssnv172a.para = tps_job 210 mem_job 64Mo ncpus 1 liste_test R
@@ -186,6 +186,24 @@ ACIER=DEFI_MATERIAU(ELAS=_F(E=145200.0,
                                   GM=0.0,
                                   PM=0.0,
                                   C=0.0,),);
+ACIER2=DEFI_MATERIAU(ELAS=_F(E=145200.0,
+                            NU=0.0,
+                            ALPHA=0.),
+                    MONO_VISC2=_F(N=10.0,
+                                  K=40.0,
+                                  C=10.0,
+                                  D=0.0,
+                                  A=0.0,),
+                    MONO_ISOT2=_F(R_0=75.5,
+                                  Q1=9.77,
+                                  B1=19.34,
+                                  H=0.0,
+                                  Q2=0.0,
+                                  B2=0.0,),
+                    MONO_CINE2=_F(D=36.68,
+                                  GM=10.0,
+                                  PM=0.10,
+                                  C=10.0,),);
 
 ACIERT=DEFI_MATERIAU(ELAS=_F(E=145200.0,
                             NU=0.0,
@@ -221,7 +239,7 @@ ACIERT=DEFI_MATERIAU(ELAS=_F(E=145200.0,
                                   
 # MATERIAU DEFINI POUR LE COMPORTEMENT  DD_KR
 
-ACIER2=DEFI_MATERIAU(ELAS=_F(E=275200.,
+ACIERKR=DEFI_MATERIAU(ELAS=_F(E=275200.,
                             NU=0.3,
                             ALPHA=0.),
                    MONO_DD_KR=_F(K      = 8.62E-5,
@@ -289,6 +307,14 @@ MAT=AFFE_MATERIAU(MAILLAGE=CUBE,
                   AFFE=_F(TOUT='OUI',
                           MATER=ACIER,),);
                           
+MAT2=AFFE_MATERIAU(MAILLAGE=CUBE,
+                        AFFE_VARC=(_F(TOUT='OUI',
+                                     CHAMP_GD=TEMPE,
+                                     NOM_VARC='TEMP',
+                                     VALE_REF=0),),
+                  AFFE=_F(TOUT='OUI',
+                          MATER=ACIER2,),);
+                          
 MATT=AFFE_MATERIAU(MAILLAGE=CUBE,
                         AFFE_VARC=(_F(TOUT='OUI',
                                      CHAMP_GD=TEMPE,
@@ -297,13 +323,13 @@ MATT=AFFE_MATERIAU(MAILLAGE=CUBE,
                   AFFE=_F(TOUT='OUI',
                           MATER=ACIERT,),);
                           
-MAT2=AFFE_MATERIAU(MAILLAGE=CUBE,
+MATKR=AFFE_MATERIAU(MAILLAGE=CUBE,
                         AFFE_VARC=(_F(TOUT='OUI',
                                      CHAMP_GD=TEMPE,
                                      NOM_VARC='TEMP',
                                      VALE_REF=0),),
                   AFFE=_F(TOUT='OUI',
-                          MATER=ACIER2,),);
+                          MATER=ACIERKR,),);
 MAT3=AFFE_MATERIAU(MAILLAGE=CUBE,
                         AFFE_VARC=(_F(TOUT='OUI',
                                      CHAMP_GD=TEMPE,
@@ -354,7 +380,14 @@ COMPOR1=DEFI_COMPOR(MONOCRISTAL=(_F(MATER=ACIER,
                                     ELAS='ELAS',
                                     FAMI_SYST_GLIS='UNIAXIAL',),),);
 
-COMPOR2=DEFI_COMPOR(MONOCRISTAL=(_F(MATER=ACIER,
+COMPOR12=DEFI_COMPOR(MONOCRISTAL=(_F(MATER=ACIER,
+                                    ECOULEMENT='MONO_VISC2',
+                                    ECRO_ISOT='MONO_ISOT2',
+                                    ECRO_CINE='MONO_CINE2',
+                                    ELAS='ELAS',
+                                    FAMI_SYST_GLIS='UNIAXIAL',),),);
+                          
+COMPOR2=DEFI_COMPOR(MONOCRISTAL=(_F(MATER=ACIER2,
                                     ECOULEMENT='MONO_VISC2',
                                     ECRO_ISOT='MONO_ISOT2',
                                     ECRO_CINE='MONO_CINE2',
@@ -414,7 +447,7 @@ COMPORT=DEFI_COMPOR(MONOCRISTAL=(_F(MATER=ACIERT,
                           
 
 
-COMPORKR=DEFI_COMPOR(MONOCRISTAL=(_F(MATER=ACIER2,
+COMPORKR=DEFI_COMPOR(MONOCRISTAL=(_F(MATER=ACIERKR,
                                     ECOULEMENT='MONO_DD_KR',
                                     ELAS='ELAS',
                                     FAMI_SYST_GLIS='BCC24',),),);
@@ -433,7 +466,7 @@ ORIENKR=AFFE_CARA_ELEM(MODELE=TROISD,
 
 
 IMPLKR=STAT_NON_LINE(MODELE=TROISD,
-                     CHAM_MATER=MAT2,
+                     CHAM_MATER=MATKR,
                      CARA_ELEM=ORIENKR,
                      EXCIT=(_F(CHARGE=TRAC3,
                                FONC_MULT=COEF,
@@ -477,7 +510,7 @@ TEST_RESU(RESU=(_F(RESULTAT=IMPLKR,
 
 
 EXPLKR=STAT_NON_LINE(MODELE=TROISD,
-                     CHAM_MATER=MAT2,
+                     CHAM_MATER=MATKR,
                      CARA_ELEM=ORIENKR,
                      EXCIT=(_F(CHARGE=TRAC3,
                                FONC_MULT=COEF,
@@ -520,7 +553,7 @@ TEST_RESU(RESU=(_F(RESULTAT=EXPLKR,
 
 
 EXPLKRP=STAT_NON_LINE(MODELE=TROISD,
-                     CHAM_MATER=MAT2,
+                     CHAM_MATER=MATKR,
                      CARA_ELEM=ORIENKR,
                      EXCIT=(_F(CHARGE=TRAC3,
                                FONC_MULT=COEF,
@@ -667,14 +700,16 @@ TEST_RESU(RESU=(_F(RESULTAT=IMPL1,
                    
                           
 # IMPLICITE : TEST DE MONO_VISC2, MONO_LINE2, MONO_CIN2
+# COMPARASION A IMPL1 : Avec les valeurs des coeffcients de MONO_CINE2, MONO_ISOT2, MONO_VISC2, 
+#                            on doit trouver la meme solution
 
-IMPL2=STAT_NON_LINE(MODELE=TROISD,INFO=1,
+IMPL12=STAT_NON_LINE(MODELE=TROISD,INFO=1,
                      CHAM_MATER=MAT,
                      EXCIT=(_F(CHARGE=TRAC,
                                FONC_MULT=COEF,
                                TYPE_CHARGE='FIXE_CSTE',),),
                      COMP_INCR=(_F(RELATION='MONOCRISTAL',
-                                   COMPOR=COMPOR2,
+                                   COMPOR=COMPOR12,
                                    DEFORMATION='PETIT',
                                    ITER_INTE_MAXI=100,
                                    RESI_INTE_RELA=1.E-9,
@@ -685,14 +720,14 @@ IMPL2=STAT_NON_LINE(MODELE=TROISD,INFO=1,
                      ARCHIVAGE=_F(LIST_INST=LINST,),
                                      );
 
-IMPL2=CALC_ELEM(reuse =IMPL2,
-                 RESULTAT=IMPL2,
+IMPL12=CALC_ELEM(reuse =IMPL12,
+                 RESULTAT=IMPL12,
                  OPTION=('EPSI_ELGA','EPSP_ELGA',),);
 
                    
 # COMPARASION A IMPL1 : Avec les valeurs des coeffcients de MONO_CINE2, MONO_ISOT2, MONO_VISC2, 
 #                            on doit trouver la meme solution
-TEST_RESU(RESU=(_F(RESULTAT=IMPL2,
+TEST_RESU(RESU=(_F(RESULTAT=IMPL12,
                    INST=TFIN,
                    NOM_CHAM='SIEF_ELGA',
                    NOM_CMP='SIXX',
@@ -700,7 +735,7 @@ TEST_RESU(RESU=(_F(RESULTAT=IMPL2,
                    POINT=1,
                    VALE=-95.5,
                    REFERENCE='ANALYTIQUE',),
-                _F(RESULTAT=IMPL2,
+                _F(RESULTAT=IMPL12,
                    INST=TFIN,
                    NOM_CHAM='EPSI_ELGA',
                    NOM_CMP='EPXX',
@@ -708,7 +743,7 @@ TEST_RESU(RESU=(_F(RESULTAT=IMPL2,
                    POINT=1,
                    VALE=-6.7624E-04,
                    REFERENCE='AUTRE_ASTER',),
-                _F(RESULTAT=IMPL2,
+                _F(RESULTAT=IMPL12,
                    INST=TFIN,
                    NOM_CHAM='EPSP_ELGA',
                    NOM_CMP='EPXX',
@@ -779,13 +814,13 @@ TEST_RESU(RESU=(_F(RESULTAT=EXPL1,
 
 # EXPLICITE RUNGE_KUTTA : TEST DE MONO_VISC2, MONO_LINE2, MONO_CIN2
 
-EXPL2=STAT_NON_LINE(MODELE=TROISD,
+EXPL12=STAT_NON_LINE(MODELE=TROISD,
                      CHAM_MATER=MAT,
                      EXCIT=(_F(CHARGE=TRAC,
                                FONC_MULT=COEF,
                                TYPE_CHARGE='FIXE_CSTE',),),
                      COMP_INCR=(_F(RELATION='MONOCRISTAL',
-                                   COMPOR=COMPOR2,
+                                   COMPOR=COMPOR12,
                                    ITER_INTE_MAXI=100,
                                    ITER_INTE_PAS=4,
                                    ALGO_INTE='RUNGE_KUTTA',
@@ -796,11 +831,11 @@ EXPL2=STAT_NON_LINE(MODELE=TROISD,
                                 REAC_ITER=0,),),
                      );
 
-EXPL2=CALC_ELEM(reuse =EXPL2,
-                 RESULTAT=EXPL2,
+EXPL12=CALC_ELEM(reuse =EXPL12,
+                 RESULTAT=EXPL12,
                  OPTION=('EPSI_ELGA','EPSP_ELGA',),);
 
-TEST_RESU(RESU=(_F(RESULTAT=EXPL2,
+TEST_RESU(RESU=(_F(RESULTAT=EXPL12,
                    INST=TFIN,
                    NOM_CHAM='SIEF_ELGA',
                    NOM_CMP='SIXX',
@@ -808,7 +843,7 @@ TEST_RESU(RESU=(_F(RESULTAT=EXPL2,
                    POINT=1,
                    VALE=-95.5,
                    REFERENCE='ANALYTIQUE',),
-                _F(RESULTAT=EXPL2,
+                _F(RESULTAT=EXPL12,
                    INST=TFIN,
                    NOM_CHAM='EPSI_ELGA',
                    NOM_CMP='EPXX',
@@ -816,7 +851,7 @@ TEST_RESU(RESU=(_F(RESULTAT=EXPL2,
                    POINT=1,
                    VALE=-0.00067575375081,
                    REFERENCE='NON_REGRESSION',),
-                _F(RESULTAT=EXPL2,
+                _F(RESULTAT=EXPL12,
                    INST=TFIN,
                    NOM_CHAM='EPSP_ELGA',
                    NOM_CMP='EPXX',
@@ -1055,6 +1090,59 @@ TEST_RESU(RESU=(_F(RESULTAT=IMPLTOUT,
                    REFERENCE='NON_REGRESSION',),),);
 
 
+# IMPLICITE : TEST DE MONO_VISC2, MONO_LINE2, MONO_CIN2
+# COMPARASION A IMPL1 : Avec les valeurs des coeffcients de MONO_CINE2, MONO_ISOT2, MONO_VISC2, 
+#                            on doit trouver la meme solution
+
+IMPL2=STAT_NON_LINE(MODELE=TROISD,INFO=1,
+                     CHAM_MATER=MAT2,
+                     EXCIT=(_F(CHARGE=TRAC,
+                               FONC_MULT=COEF,
+                               TYPE_CHARGE='FIXE_CSTE',),),
+                     COMP_INCR=(_F(RELATION='MONOCRISTAL',
+                                   COMPOR=COMPOR2,
+                                   DEFORMATION='PETIT',
+                                   ITER_INTE_MAXI=200,
+                                   RESI_INTE_RELA=1.E-6,
+                                   ITER_INTE_PAS=10,
+                                   TOUT='OUI',),),
+                     INCREMENT=(_F(LIST_INST=LINST,),),
+                     NEWTON=(_F(REAC_ITER=1,PREDICTION='EXTRAPOL'),),
+                     ARCHIVAGE=_F(LIST_INST=LINST,),
+                                     );
+
+IMPL2=CALC_ELEM(reuse =IMPL2,
+                 RESULTAT=IMPL2,
+                 OPTION=('EPSI_ELGA','EPSP_ELGA',),);
+
+                   
+# test de non regression de MONO_CINE2, MONO_ISOT2, MONO_VISC2 
+TEST_RESU(RESU=(_F(RESULTAT=IMPL2,
+                   INST=TFIN,
+                   NOM_CHAM='SIEF_ELGA',
+                   NOM_CMP='SIXX',
+                   MAILLE='MA1',
+                   POINT=1,
+                   VALE=-95.5,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=IMPL2,
+                   INST=TFIN,
+                   NOM_CHAM='EPSI_ELGA',
+                   NOM_CMP='EPXX',
+                   MAILLE='MA1',
+                   POINT=1,
+                   VALE=-6.7624E-04,
+                   REFERENCE='AUTRE_ASTER',),
+                _F(RESULTAT=IMPL2,
+                   INST=TFIN,
+                   NOM_CHAM='EPSP_ELGA',
+                   NOM_CMP='EPXX',
+                   MAILLE='MA1',
+                   POINT=1,
+                   VALE=-1.8528E-05,
+                   PRECISION=(0.001,0.0001,),
+                   REFERENCE='AUTRE_ASTER',),),);
+                   
 FIN();
 
                    

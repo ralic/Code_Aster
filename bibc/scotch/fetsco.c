@@ -1,7 +1,7 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF fetsco scotch  DATE 19/10/2010   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF fetsco scotch  DATE 24/01/2011   AUTEUR BOITEAU O.BOITEAU */
 /* ================================================================== */
-/* COPYRIGHT (C) 1991 - 2005  EDF R&D              WWW.CODE-ASTER.ORG */
+/* COPYRIGHT (C) 1991 - 2011  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
 /* THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR      */
 /* MODIFY IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS     */
@@ -20,26 +20,35 @@
 #include "aster.h"
 
 #ifndef _DISABLE_SCOTCH
-#include "common.h"
 #include "scotch.h"
 #endif
 
 
-void DEFPPPPPPPPP(FETSCO,fetsco, INTEGER *nbmato, INTEGER *nblien,
+void DEFPPPPPPPPPP(FETSCO,fetsco, INTEGER *nbmato, INTEGER *nblien,
                                  int *connect, int *idconnect, INTEGER *nbpart,
-                                 int *mapsd, int *edlo, int *velo, INTEGER *ier)
+                                 int *mapsd, int *edlo, int *velo, 
+				 INTEGER *numver, INTEGER *ier)
 {
 #ifndef _DISABLE_SCOTCH
-  int err;
+  int err,numv;
+  int version=0;
+  int release=0;
+  int patch=0;
   SCOTCH_Graph        grafdat;
   SCOTCH_Arch         archdat; 
   SCOTCH_Strat        mapstrat;  
   SCOTCH_Mapping      mapdat;  
 
-  err=0;
 
+  err=0;
   err = SCOTCH_graphInit (&grafdat);
-  
+
+/* Cet appel a SCOTCH_version n'est licite qu'à partir de la v5.0.0*/  
+  if ( err== 0){
+    SCOTCH_version(&version,&release,&patch);
+/*    printf("SCOTCH VERSION= %d.%d.%d\n",version,release,patch);
+    printf("\n");*/
+  }  
   if ( err == 0 )
     err = SCOTCH_graphBuild(&grafdat,1,(int)*nbmato,idconnect,NULL,velo,NULL,(int)*nblien,connect,edlo);
 
@@ -68,6 +77,8 @@ void DEFPPPPPPPPP(FETSCO,fetsco, INTEGER *nbmato, INTEGER *nblien,
     SCOTCH_graphExit    (&grafdat);
   }
   
+   numv=version*10000+release*100+patch;
+  *numver = (INTEGER)numv;
   *ier = (INTEGER)err;
 #endif
 }

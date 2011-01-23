@@ -1,9 +1,9 @@
       SUBROUTINE TE0030(OPTION,NOMTE)
 C =====================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 21/07/2009   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF ELEMENTS  DATE 25/01/2011   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -22,7 +22,7 @@ C =====================================================================
       IMPLICIT NONE
       CHARACTER*16 OPTION,NOMTE
 C =====================================================================
-C    - FONCTION REALISEE:  CALCUL DE L'OPTIONS INDI_LOCA_ELGA
+C    - FONCTION REALISEE:  CALCUL DE L'OPTIONS INDL_ELGA
 C                          QUI EST UN INDICATEUR SUR LA LOCALISATION
 C                          AUX POINTS DE GAUSS
 C    - ARGUMENTS:
@@ -57,11 +57,11 @@ C =====================================================================
       LOGICAL      LTEATT
 C =====================================================================
 C --- RINDIC EST LE NOMBRE DE PARAMETRE DE LOCALISATION DEFINIT -------
-C --- SOUS LE MOT-CLE IND_LOCA DANS GRANDEUR_SIMPLE.CATA --------------
+C --- SOUS LE MOT-CLE INDL_R DANS GRANDEUR_SIMPLE.CATA --------------
 C =====================================================================
       PARAMETER ( RINDIC  = 5 )
 C =====================================================================
-      IF ( OPTION.EQ.'INDI_LOCA_ELGA' ) THEN
+      IF ( OPTION.EQ.'INDL_ELGA' ) THEN
 C =====================================================================
 C --- VERIFICATION DE COHERENCE ---------------------------------------
 C --- LE TENSEUR ACOUSTIQUE EST DEVELOPPE EN 2D UNIQUEMENT ------------

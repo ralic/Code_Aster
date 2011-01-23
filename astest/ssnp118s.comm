@@ -1,22 +1,22 @@
-# MODIF  DATE 14/12/2010   AUTEUR PROIX J-M.PROIX 
+# MODIF  DATE 25/01/2011   AUTEUR PELLET J.PELLET 
 # TITRE TEST DE LA LOI JOINT_MECA_RUPT SUR LES ELEMENTS DE JOINT HYME QUAD8
 # ssnp118s.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
 DEBUT(CODE=_F( NOM = 'SSNP118S',NIV_PUB_WEB='INTERNET',VISU_EFICAS='OUI'),PAR_LOT='OUI',IGNORE_ALARM=('MODELISA4_9'))
@@ -38,18 +38,18 @@ k_t=2*k_n
 sigma_max = 1.E5
 
 # PRESSION DE FLUIDE EN ENTREE
-press = 5.E2 
+press = 5.E2
 
 # FORCE DE CHARGEMENT MAXIMALE (RESISTANCE A LA TRACTION)
 forc_max = (sigma_max - press)*A_carre
 
 # REGULARISATION D'ENDOMMAGEMENT TANGENTIELE
-# 0 => RUPTURE TANGENTIEL IMEDIATEMENT APRES L'OUVERTURE 
+# 0 => RUPTURE TANGENTIEL IMEDIATEMENT APRES L'OUVERTURE
 # 1 => RUPTURES TANGENTIEL ET NORMALE SIMULTANEES
 # 2 => PAS D'ENDOMMAGEMENT TANGENTIEL
 alpha = 1.5
 
-# PARAMETRE DE LISSAGE DE RUPTURE FRAGILE 
+# PARAMETRE DE LISSAGE DE RUPTURE FRAGILE
 # 0 - PENTE INFINIE (RUPTURE ABRUPTE)
 # 1 - PENTE DE CHARGEMENT
 # \INFINITY - PENTE ZERO (RUPTURE A L'INFINI)
@@ -77,7 +77,7 @@ U_max=(1.+pena_rupture)*(forc_max/A_carre + press)/k_n
 
 # L'OUVERTURE CORRESPONDANTE A L'ENDOMMAGEMENT PARTIEL
 beta=0.2
-U_endo=beta*U_elas+(1-beta)*U_max 
+U_endo=beta*U_elas+(1-beta)*U_max
 
 # VERIFICATION D'ABSENCE DE SNAP-BACK GLOBAL
 assert(young > L_carre*k_n/pena_rupture)
@@ -90,11 +90,11 @@ MA=CREA_MAILLAGE(MAILLAGE  = MA0, LINE_QUAD = _F(TOUT='OUI'))
 
 MA=DEFI_GROUP(reuse =MA,
               MAILLAGE=MA,
-              
+
               CREA_GROUP_NO=(_F(NOEUD=('NO4','NO2','NS2'),
                                 NOM='DROITE',),
                               _F(NOEUD=('NO1','NO3','NS4'),
-                                NOM='GAUCHE',),                            
+                                NOM='GAUCHE',),
                                ),);
 
 MA=MODI_MAILLAGE(reuse =MA,
@@ -133,14 +133,14 @@ MAT_JOI=DEFI_MATERIAU(
                                    K_T=k_t,
                                    SIGM_MAX=sigma_max,
                                    PENA_RUPTURE=pena_rupture,
-                                   ALPHA=alpha, 
+                                   ALPHA=alpha,
                                    PENA_CONTACT=pena_contact ,
                                    RHO_FLUIDE=1000., #kg/m^3
                                    VISC_FLUIDE=1.E-3, #Pa.s
                                    OUV_MIN=1.E-10 #m
                           ),)
-                          
-  
+
+
 CM=AFFE_MATERIAU(MAILLAGE=MA,
                  AFFE=(
                       _F(MAILLE='CUBE',MATER = MAT_CUB),
@@ -154,7 +154,7 @@ LIAISON=AFFE_CHAR_MECA(
     _F(MAILLE='GAUCHE2', DX=0, DY=0),
     )
   )
-  
+
 ###################################################################################
 #----------------------------------------------------------------------------------
 # CALCUL AVEC CHARGEMENT EN MODE I PURE
@@ -171,19 +171,19 @@ TRAC_1=AFFE_CHAR_MECA(
   )
 
 # LE MAILLAGE COMPORTE DEUX NOEUD DE PRESSION : NS5 ET NS7
-# ON IMPOSE UNE PRESSION SUR LE NS5 ET ON TESTE LA VALEUR DE LA PRESSION SUR NS7  
+# ON IMPOSE UNE PRESSION SUR LE NS5 ET ON TESTE LA VALEUR DE LA PRESSION SUR NS7
 
 PAM_J = AFFE_CHAR_MECA(
   MODELE = MO,
   DDL_IMPO = (_F(NOEUD='NS5', PRE1=press ))
   );
-  
-# CREATION DE LISTE D'INSTANT                                   
+
+# CREATION DE LISTE D'INSTANT
 L_INST=DEFI_LIST_REEL(VALE=range(insfin+1))
 
-# LISTE D'INSTANTS POUR LES TESTS DE RESULTATS 
-linst=[0,insfin/4,insfin/2,3*insfin/4,insfin]        
-FCT=DEFI_FONCTION(NOM_PARA='INST',VALE=(linst[0], 0., 
+# LISTE D'INSTANTS POUR LES TESTS DE RESULTATS
+linst=[0,insfin/4,insfin/2,3*insfin/4,insfin]
+FCT=DEFI_FONCTION(NOM_PARA='INST',VALE=(linst[0], 0.,
                                         linst[1], U_elas,              # TRACTION ELASTIQUE
                                         linst[2], U_endo,              # TRACTION JUSQU'A ENDOMMAGEMENT PARTIEL
                                         linst[3],-U_elas,              # DECHARGEMENT COMPRESSION
@@ -212,20 +212,17 @@ U_HM=STAT_NON_LINE(
   )
 
 
-#---------------------------------------------------------------------------------- 
+#----------------------------------------------------------------------------------
 # POST TRAITEMENT MODE I PURE
-#-----------------------------------------------------------------------------------      
-              
+#-----------------------------------------------------------------------------------
+
 # CALCUL DE LA FORCE NODALE
 U_HM=CALC_NO(reuse =U_HM,
             RESULTAT=U_HM,
             OPTION='FORC_NODA',
             MAILLE='CUBE',
-            MODELE=MO,
-            CHAM_MATER=CM,
             );
-          
-# VECTEUR-FORCE NODALE RESULTANTE : (F_X,F_Y) 
+# VECTEUR-FORCE NODALE RESULTANTE : (F_X,F_Y)
 TFORCE=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                INTITULE='F_PILOTE',
                                RESULTAT=U_HM,
@@ -233,18 +230,18 @@ TFORCE=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                TOUT_ORDRE='OUI',
                                GROUP_NO='DROITE',
                                RESULTANTE=('DX','DY'),),);
-                               
 
-# PROJECTEUR SUR LA NORMALE 
+
+# PROJECTEUR SUR LA NORMALE
 PNOR = FORMULE(VALE='DX*cos(angle)+DY*sin(angle)',
-              NOM_PARA=('DX','DY',),); 
-                           
-# INSERTION D'UNE COLONNE AVEC LA PROJECTION NORMALE DE LA FORCE NODALE                              
+              NOM_PARA=('DX','DY',),);
+
+# INSERTION D'UNE COLONNE AVEC LA PROJECTION NORMALE DE LA FORCE NODALE
 TFORCE=CALC_TABLE(reuse =TFORCE,
                   TABLE=TFORCE,
                   ACTION=_F(OPERATION='OPER',
                             FORMULE=PNOR,
-                            NOM_PARA='F_N',),);                                                           
+                            NOM_PARA='F_N',),);
 
 # DEPLACEMENT DU NOEUD EN_HAUT
 TDELTA_N=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
@@ -254,18 +251,18 @@ TDELTA_N=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                               TOUT_ORDRE='OUI',
                               NOEUD='NO2',
                               NOM_CMP=('DX','DY',),),);
-                              
-# INSERTION D'UNE COLONNE AVEC LA PROJECTION NORMALE DE DEPLACEMENT                              
+
+# INSERTION D'UNE COLONNE AVEC LA PROJECTION NORMALE DE DEPLACEMENT
 TDELTA_N=CALC_TABLE(reuse =TDELTA_N,
                     TABLE=TDELTA_N,
                     ACTION=_F(OPERATION='OPER',
                             FORMULE=PNOR,
-                            NOM_PARA='U_N',),);                                     
+                            NOM_PARA='U_N',),);
 
 #----------------------------------------------------------------------------------
 # IMPRESSION DE RESULTAT CALCUL MODE I PURE
 #-----------------------------------------------------------------------------------
-            
+
 
 
 # LA MANIPULATION POUR IMPRIMER LA COURBE FORCE-DEPLACEMENT AU FORMAT XMGRACE
@@ -277,11 +274,11 @@ DN=RECU_FONCTION(TABLE=TDELTA_N,
                   PARA_X='INST',
                   PARA_Y='U_N',);
 
-  
+
 #----------------------------------------------------------------------------------
 # TESTS CALCUL MODE I PURE
 #-----------------------------------------------------------------------------------
-            
+
 # COURBE FORCE-DEPLACEMENT JOINT+CUBE EST TESTEE :
 # VALEUR DE CHARGEMENT MAXIMALE  (FORC_MAX)
 # VALEUR A ENDOMMAGEMENT PARTIEL (FORC_ENDO)
@@ -332,7 +329,7 @@ IMPR_FONCTION(FORMAT='TABLEAU',
                         FONC_Y=FN,
                         LEGENDE='Force Deplacement',),
              );
-          
+
 # EN MODE INTERACTIF SEULEMENT
 #IMPR_FONCTION(FORMAT='XMGRACE',
 #              PILOTE='INTERACTIF',

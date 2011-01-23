@@ -5,7 +5,7 @@
      &                   DEPLM,DEPLD,SIGM,VIM,
      &                   SIGP,VIP,FINT,MATUU,CODRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 18/01/2011   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 25/01/2011   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -75,7 +75,7 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       CHARACTER*80                                              ZK80
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
-      LOGICAL GRAND, AXI, RESI, RIGI, MATSYM
+      LOGICAL GRAND, AXI, RESI, RIGI, MATSYM, CPLAN
       PARAMETER (GRAND = .TRUE.)
       INTEGER G,I,NDDL,COD(27),IVF
       INTEGER NDIM,NNO,NPG,MATE,LGPG,CODRET,IW,IDFF
@@ -102,6 +102,7 @@ C -----------------------------DECLARATION-----------------------------
                              
 C     AFFECTATION DES VARIABLES LOGIQUES  OPTIONS ET MODELISATION
       AXI  = TYPMOD(1).EQ.'AXIS'
+      CPLAN= TYPMOD(1).EQ.'C_PLAN'
       RESI = OPTION(1:4).EQ.'RAPH' .OR. OPTION(1:4).EQ.'FULL'
       RIGI = OPTION(1:4).EQ.'RIGI' .OR. OPTION(1:4).EQ.'FULL'
             
@@ -139,7 +140,7 @@ C---      CALCUL DE F_N, F_N+1 PAR RAPPORT A GEOMI GEOM INITIAL
          CALL PRELOG(NDIM,NNO,AXI,GRAND,VFF(1,G),GEOMI,G,IW,IDFF,
      &               DEPLM,DEPLT,SIGM(1,G),LGPG,VIM(1,G),
      &               GN,FETA,XI,ME,
-     &               R,POIDS,DFF,FM,FP,JM,JP,EPSML,DEPS,TN,RESI,PES)
+     &               R,POIDS,DFF,FM,FP,EPSML,DEPS,TN,RESI,PES)
      
          CALL R8INIR(36,0.D0,DTDE,1)
          CALL R8INIR(6,0.D0,TP,1)
@@ -157,8 +158,9 @@ C       TEST SUR LES CODES RETOUR DE LA LOI DE COMPORTEMENT
             ENDIF 
          ENDIF
 
-         CALL POSLOG(RESI,RIGI,TN,TP,VFF,DFF,FM,JM,POIDS,LGPG,VIP(1,G),
-     &               NNO,NDIM,FP,JP,PES,AXI,G,R,DTDE,MATSYM,SIGM(1,G),
+         CALL POSLOG(RESI,RIGI,TN,TP,VFF,DFF,FM,POIDS,LGPG,VIP(1,G),
+     &               NNO,NDIM,FP,PES,AXI,G,R,DTDE,MATSYM,SIGM(1,G),
+     &               CPLAN,FAMI,MATE,INSTP,ANGMAS,
      &               GN,FETA,XI,ME, SIGP(1,G),FINT,MATUU )
 
  10   CONTINUE

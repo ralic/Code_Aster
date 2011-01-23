@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 25/01/2011   AUTEUR PELLET J.PELLET 
 # TITRE ROCKING OF A 2D BLOCK RESTING ON A GROUND TABLE
 # sdnv105c.para = tps_job 2020 mem_job 1024Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -497,8 +497,7 @@ u_lacher=CALC_NO(reuse =u_lacher,
                  RESULTAT=u_lacher,
                  TOUT_ORDRE='OUI',
                  OPTION='FORC_NODA',
-                 MODELE=MO,
-                 CHAM_MATER=CHMAT);
+                          );
 
 #B_tr_ext=POST_ELEM(TRAV_EXT=_F(),
 #                   RESULTAT=u_lacher,

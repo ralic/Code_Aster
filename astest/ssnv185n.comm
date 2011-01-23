@@ -1,9 +1,9 @@
-# MODIF  DATE 28/09/2010   AUTEUR MASSIN P.MASSIN 
+# MODIF  DATE 25/01/2011   AUTEUR MACOCCO K.MACOCCO 
 # TITRE FISSURE DEBOUCHANTE DANS UNE PLAQUE 3D DE LARGEUR FINIE AVEC X-FEM
 # ssnv185n.para = tps_job 1600 mem_job 1024Mo memjeveux_stat 1024 ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -167,8 +167,6 @@ SIF2= [None]*(nbc+1)
 for i in range(0,nbc) :
 
    SIF[i]=CALC_G(RESULTAT=UTOT1,
-                 SYME_CHAR='SANS',
-                 COMP_ELAS=_F(RELATION='ELAS',),
                  OPTION='CALC_K_G',
                  THETA=_F(FISSURE=FISS,
                           R_INF=RI[i],
@@ -180,8 +178,6 @@ for i in range(0,nbc) :
    IMPR_TABLE(TABLE=SIF[i],);
 
    SIF2[i]=CALC_G(RESULTAT=UTOT1,
-                 SYME_CHAR='SANS',
-                 COMP_ELAS=_F(RELATION='ELAS',),
                  OPTION='CALC_K_G',
                  THETA=_F(FISSURE=FISS,
                           R_INF=RI[i],
@@ -193,8 +189,6 @@ for i in range(0,nbc) :
    IMPR_TABLE(TABLE=SIF2[i],);
 
 SIF[nbc]=CALC_G(     RESULTAT=UTOT1,
-                     SYME_CHAR='SANS',
-                     COMP_ELAS=_F(RELATION='ELAS',),
                      OPTION='CALC_K_G',
                      THETA=_F(FISSURE=FISS,
                               R_INF=RI[0],
@@ -206,8 +200,6 @@ SIF[nbc]=CALC_G(     RESULTAT=UTOT1,
 IMPR_TABLE(TABLE=SIF[nbc],);
 
 SIF2[nbc]=CALC_G(    RESULTAT=UTOT1,
-                     SYME_CHAR='SANS',
-                     COMP_ELAS=_F(RELATION='ELAS',),
                      OPTION='CALC_K_G',
                      THETA=_F(FISSURE=FISS,
                               R_INF=RI[0],
@@ -227,7 +219,7 @@ K1REF=-PRES*sqrt(pi*a)*fab
 
 for i in range(0,nbc+1) :
    TEST_TABLE(TABLE=SIF[i],
-              NOM_PARA='K1_LOCAL',
+              NOM_PARA='K1',
               TYPE_TEST='MAX',
               VALE=K1REF,
               CRITERE='RELATIF',
@@ -235,7 +227,7 @@ for i in range(0,nbc+1) :
               REFERENCE='ANALYTIQUE',);
 
    TEST_TABLE(TABLE=SIF[i],
-              NOM_PARA='K1_LOCAL',
+              NOM_PARA='K1',
               TYPE_TEST='MIN',
               VALE=K1REF,
               CRITERE='RELATIF',
@@ -243,7 +235,7 @@ for i in range(0,nbc+1) :
               REFERENCE='ANALYTIQUE',);
 
    TEST_TABLE(TABLE=SIF2[i],
-              NOM_PARA='K1_LOCAL',
+              NOM_PARA='K1',
               TYPE_TEST='MAX',
               VALE=K1REF,
               CRITERE='RELATIF',
@@ -251,7 +243,7 @@ for i in range(0,nbc+1) :
               REFERENCE='ANALYTIQUE',);
 
    TEST_TABLE(TABLE=SIF2[i],
-              NOM_PARA='K1_LOCAL',
+              NOM_PARA='K1',
               TYPE_TEST='MIN',
               VALE=K1REF,
               CRITERE='RELATIF',
@@ -278,13 +270,11 @@ PK=POST_K1_K2_K3(MODELISATION='3D',
 IMPR_TABLE(TABLE = PK)
 
 TEST_TABLE( TABLE=PK,
-            NOM_PARA='K1_MAX',
+            NOM_PARA='K1',
             FILTRE=(_F( NOM_PARA = 'PT_FOND',
                         VALE_I = 1,  ),
                     _F( NOM_PARA = 'INST',
-                        VALE = 1.,  ),
-                    _F( NOM_PARA = 'METHODE',
-                        VALE_I = 3,  ),),
+                        VALE = 1.,  ),),
             VALE=K1REF,
             PRECISION=0.035,
             REFERENCE='ANALYTIQUE' )

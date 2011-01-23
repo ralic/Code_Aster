@@ -1,9 +1,9 @@
-# MODIF  DATE 07/12/2010   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 25/01/2011   AUTEUR MACOCCO K.MACOCCO 
 # TITRE PLAQUE FISSUREE EN THERMOELASTICITE: CALCUL DE DG
 # hplp100b.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -173,9 +173,7 @@ THETAF=CALC_THETA(      MODELE=MO,
 G1=CALC_G(RESULTAT = OUTMES,
                   THETA=_F(THETA=THETAF),
                   EXCIT=(_F(CHARGE=CH),_F(CHARGE=F1),_F(CHARGE=F2),),
-                  SYME_CHAR='SYME',
-                  COMP_ELAS=_F( RELATION = 'ELAS',
-                              DEFORMATION = 'PETIT'),)
+                  SYME_CHAR='SYME',)
 IMPR_TABLE(TABLE=G1)
 
 G1=CALC_G(reuse=G1,
@@ -183,9 +181,7 @@ G1=CALC_G(reuse=G1,
                   RESULTAT=OUTMES,
                   THETA=_F(THETA=THETAF),
                   EXCIT=(_F(CHARGE=CH),_F(CHARGE=F1),_F(CHARGE=F2),),
-                  SYME_CHAR='SYME',
-                  COMP_ELAS=_F( RELATION = 'ELAS',
-                                DEFORMATION = 'PETIT'),)
+                  SYME_CHAR='SYME',)
 
 IMPR_TABLE(TABLE=G1,SENSIBILITE=(THETAS,))
 
@@ -193,8 +189,7 @@ G2=CALC_G(RESULTAT=OUTMES,
                   THETA=_F(THETA=THETAF),
                   EXCIT=_F(CHARGE=CH,),
                   SYME_CHAR='SYME',
-                  COMP_ELAS=_F( RELATION = 'ELAS',
-                              DEFORMATION = 'GROT_GDEP'),
+                  COMP_ELAS=_F(DEFORMATION = 'GROT_GDEP'),
                   ETAT_INIT=_F( SIGM = SIG3))
 IMPR_TABLE(TABLE=G2)
 
@@ -204,8 +199,7 @@ G2=CALC_G( reuse=G2,
                    THETA=_F(THETA=THETAF),
                    EXCIT=_F( CHARGE=CH,),
                    SYME_CHAR='SYME',
-                   COMP_ELAS=_F( RELATION = 'ELAS',
-                                   DEFORMATION = 'GROT_GDEP'),
+                   COMP_ELAS=_F(DEFORMATION = 'GROT_GDEP'),
                    ETAT_INIT=_F( SIGM = SIG3))
 IMPR_TABLE(TABLE=G2,SENSIBILITE=(THETAS,))
 
@@ -317,18 +311,13 @@ F21=AFFE_CHAR_MECA_F(           MODELE=MO1,
 G3=CALC_G(       RESULTAT = OUTMES1,
                             THETA=_F(THETA=THETAF),
                         EXCIT=(_F(CHARGE=CH1),_F(CHARGE=F11),_F(CHARGE=F21),),
-                        SYME_CHAR='SYME',
-                        COMP_ELAS=_F( RELATION = 'ELAS',
-                                   DEFORMATION = 'PETIT'),
-                           OPTION='CALC_G')
+                        SYME_CHAR='SYME',)
 
 G4=CALC_G(         RESULTAT = OUTMES1,
                             THETA=_F(THETA=THETAF),
                            EXCIT=_F(CHARGE=CH1,),
                         SYME_CHAR='SYME',
-                        COMP_ELAS=_F( RELATION = 'ELAS',
-                                   DEFORMATION = 'GROT_GDEP'),
-                           OPTION='CALC_G',
+                        COMP_ELAS=_F(DEFORMATION = 'GROT_GDEP'),
                        ETAT_INIT=_F( SIGM = SIG6))
 
 # -------------------------------------------------------------- #

@@ -8,9 +8,9 @@
       CHARACTER*(*)       NOMZ
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 14/10/2008   AUTEUR REZETTE C.REZETTE 
+C MODIF PREPOST  DATE 25/01/2011   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -47,7 +47,7 @@ C              SI ORIE_PEAU_2D ("GROUP_MA_SURF"):
 C                  = LISTE DES MAILLES SURFACIQUES
 C                    UTILES A LA REORIENTATION
 C              SINON: MAILVO N'EST PAS UTILISE
-C     NBMAVO : NB DE MAILLES DE MAILVO 
+C     NBMAVO : NB DE MAILLES DE MAILVO
 C
 C   ORGANISATION
 C   ------------
@@ -107,7 +107,6 @@ C
 C
 C --- DIMENSIONNEMENT DE LA SD
 C
-CCC      CALL WKVECT ( '&&UTMAVO.TRAV1', 'V V I', 1000, JTR1 )
       CALL WKVECT ( '&&UTMAVO.TRAV2', 'V V I', NLIMA, JTR2 )
       NARE = 0
       DO 100 I = 1, NLIMA
@@ -121,6 +120,12 @@ CCC      CALL WKVECT ( '&&UTMAVO.TRAV1', 'V V I', 1000, JTR1 )
             ADRA  = ZI(ADRVLC+NUNO-1)
             DO 120 J = 1 , NBMAN
                II = ZI(ACNCIN+ADRA-1+J-1)
+C              -- SI UN NOEUD EST ORPHELIN : II=0
+C                 (PAS D'OBJET JEVEUX DE LONG=0)
+               IF (II.EQ.0) THEN
+                 CALL ASSERT(NBMAN.EQ.1)
+                 GOTO 120
+               ENDIF
                IF(NBMAVO.EQ.0)THEN
                  IMA=II
                ELSE
@@ -149,11 +154,9 @@ CCC      CALL WKVECT ( '&&UTMAVO.TRAV1', 'V V I', 1000, JTR1 )
                   CALL U2MESK('F','PREPOST4_89',1,TYPE)
                ENDIF
                DO 122 K = 1 , NBMAT
-CCC                  IF ( ZI(JTR1-1+K) .EQ. IMA ) GOTO 120
                   IF ( JTR1(K) .EQ. IMA ) GOTO 120
  122           CONTINUE
                NBMAT = NBMAT + 1
-CCC               ZI(JTR1-1+NBMAT) = IMA
                JTR1(NBMAT) = IMA
  120        CONTINUE
  110     CONTINUE
@@ -190,6 +193,8 @@ C
             ADRA  = ZI(ADRVLC+NUNO-1)
             DO 220 J = 1 , NBMAN
                II = ZI(ACNCIN+ADRA-1+J-1)
+               IF (II.EQ.0)  GOTO 220
+
                IF(NBMAVO.EQ.0)THEN
                  IMA=II
                ELSE

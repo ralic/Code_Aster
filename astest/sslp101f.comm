@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 25/01/2011   AUTEUR MACOCCO K.MACOCCO 
 # TITRE PLAQUE FISSUREE EN TRACTION (CALCUL DES DERIVEES DE G)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -78,17 +78,12 @@ FOND=DEFI_FOND_FISS(   MAILLAGE=MA,
 G1=CALC_G(              RESULTAT=CHAMDEPL,
                         NUME_ORDRE=1,
                         THETA=_F(THETA=THETA1),
-                        SYME_CHAR='SYME',
-                        COMP_ELAS=_F( RELATION = 'ELAS',
-                                   DEFORMATION = 'PETIT'),)
+                        SYME_CHAR='SYME',)
 
 DGE1=CALC_G(            RESULTAT=CHAMDEPL,
                         THETA=_F(THETA=THETA1),
                         SENSIBILITE = (YOUNG,),
-                        SYME_CHAR='SYME',
-                        COMP_ELAS=_F( RELATION = 'ELAS',
-                                   DEFORMATION = 'PETIT'),
-                    )
+                        SYME_CHAR='SYME',)
 
 TEST_TABLE(            TABLE=DGE1,
                        SENSIBILITE = (YOUNG,),
@@ -100,10 +95,7 @@ TEST_TABLE(            TABLE=DGE1,
 DGF1=CALC_G(            RESULTAT=CHAMDEPL,
                         THETA=_F(THETA=THETA1),
                         SENSIBILITE = (FORC,),
-                        SYME_CHAR='SYME',
-                        COMP_ELAS=_F( RELATION = 'ELAS',
-                                   DEFORMATION = 'PETIT'),
-                    )
+                        SYME_CHAR='SYME',)
 
 TEST_TABLE(            TABLE=DGF1,
                        SENSIBILITE = (FORC,),
@@ -116,26 +108,20 @@ TEST_TABLE(            TABLE=DGF1,
 # CALCUL K1 ET DERIVEES
 #-----------------------------------------------------------------------
 GK1=CALC_G(             RESULTAT=CHAMDEPL,
-                        THETA=_F(    MODULE = 1.,
-                                     R_INF = 22.04078,
+                        THETA=_F(    R_INF = 22.04078,
                                      R_SUP = 30.,
                                      DIRECTION=( 1., 0., 0.,),
                                      FOND_FISS=FOND),
                         SYME_CHAR='SYME',
-                        COMP_ELAS=_F( RELATION = 'ELAS',
-                                      DEFORMATION = 'PETIT'),
                          OPTION='CALC_K_G')
 
 DGKE1=CALC_G(           SENSIBILITE = (YOUNG,),
                         RESULTAT=CHAMDEPL,
-                        THETA=_F(    MODULE = 1.,
-                                     R_INF = 22.04078,
+                        THETA=_F(    R_INF = 22.04078,
                                      R_SUP = 30.,
                                      DIRECTION=( 1., 0., 0.,),
                                      FOND_FISS=FOND),
                         SYME_CHAR='SYME',
-                        COMP_ELAS=_F( RELATION = 'ELAS',
-                                   DEFORMATION = 'PETIT'),
                         OPTION='CALC_K_G')
 
 TEST_TABLE(            TABLE=DGKE1,
@@ -151,14 +137,11 @@ TEST_TABLE(            TABLE=DGKE1,
 
 DGKF1=CALC_G(           SENSIBILITE = (FORC,),
                         RESULTAT=CHAMDEPL,
-                        THETA=_F(    MODULE = 1.,
-                                     R_INF = 22.04078,
+                        THETA=_F(    R_INF = 22.04078,
                                      R_SUP = 30.,
                                      DIRECTION=( 1., 0., 0.,),
                                      FOND_FISS=FOND),
                         SYME_CHAR='SYME',
-                        COMP_ELAS=_F( RELATION = 'ELAS',
-                                   DEFORMATION = 'PETIT'),
                         OPTION='CALC_K_G')
 
 
@@ -190,14 +173,11 @@ CALC_SENSI(reuse=CHAMDEP,RESULTAT=CHAMDEP, SENSIBILITE = (YOUNG,PRES),
 
 DGKP1=CALC_G(            SENSIBILITE = (PRES,),
                          RESULTAT=CHAMDEP,
-                         THETA=_F(   MODULE = 1.,
-                                     R_INF = 22.04078,
+                         THETA=_F(   R_INF = 22.04078,
                                      R_SUP = 30.,
                                      DIRECTION=( 1., 0., 0.,),
                                      FOND_FISS=FOND),
                          SYME_CHAR='SYME',
-                         COMP_ELAS=_F( RELATION = 'ELAS',
-                                   DEFORMATION = 'PETIT'),
                          OPTION='CALC_K_G')
 
 
@@ -214,17 +194,12 @@ TEST_TABLE(            TABLE=DGKP1,
 G2=CALC_G(              RESULTAT=CHAMDEPL,
                         NUME_ORDRE=1,
                         THETA=_F(THETA=THETA2),
-                        SYME_CHAR='SYME',
-                        COMP_ELAS=_F( RELATION = 'ELAS',
-                                   DEFORMATION = 'PETIT'),)
+                        SYME_CHAR='SYME',)
 
 DGE2=CALC_G(            RESULTAT=CHAMDEPL,
                         THETA=_F(THETA=THETA2),
                         SENSIBILITE = (YOUNG,),
-                        SYME_CHAR='SYME',
-                        COMP_ELAS=_F( RELATION = 'ELAS',
-                                   DEFORMATION = 'PETIT'),
-                     )
+                        SYME_CHAR='SYME',)
 
 TEST_TABLE(             TABLE=DGE2,
                         SENSIBILITE = (YOUNG,),
@@ -236,10 +211,7 @@ TEST_TABLE(             TABLE=DGE2,
 DGF2=CALC_G(            RESULTAT=CHAMDEPL,
                         THETA=_F(THETA=THETA2),
                         SENSIBILITE = (FORC,),
-                        SYME_CHAR='SYME',
-                        COMP_ELAS=_F( RELATION = 'ELAS',
-                                   DEFORMATION = 'PETIT'),
-                    )
+                        SYME_CHAR='SYME',)
 
 TEST_TABLE(             TABLE=DGF2,
                         SENSIBILITE = (FORC,),
@@ -252,17 +224,12 @@ TEST_TABLE(             TABLE=DGF2,
 G1P=CALC_G(             RESULTAT=CHAMDEPL,
                         NUME_ORDRE=1,
                         THETA=_F(THETA=THETA1),
-                        SYME_CHAR='SYME',
-                        COMP_ELAS=_F( RELATION = 'ELAS',
-                                   DEFORMATION = 'PETIT'),)
+                        SYME_CHAR='SYME',)
 
 DGE1P=CALC_G(           RESULTAT=CHAMDEP,
                         THETA=_F(THETA=THETA1),
                         SENSIBILITE = (YOUNG,),
-                        SYME_CHAR='SYME',
-                        COMP_ELAS=_F( RELATION = 'ELAS',
-                                   DEFORMATION = 'PETIT'),
-                     )
+                        SYME_CHAR='SYME',)
 
 
 TEST_TABLE(            TABLE=DGE1P,
@@ -275,10 +242,7 @@ TEST_TABLE(            TABLE=DGE1P,
 DGF1P=CALC_G(          RESULTAT=CHAMDEP,
                        THETA=_F(THETA=THETA1),
                        SENSIBILITE = (PRES,),
-                       SYME_CHAR='SYME',
-                       COMP_ELAS=_F( RELATION = 'ELAS',
-                                   DEFORMATION = 'PETIT'),
-                     )
+                       SYME_CHAR='SYME',)
 
 
 TEST_TABLE(           TABLE=DGF1P,
@@ -291,18 +255,13 @@ TEST_TABLE(           TABLE=DGF1P,
 G2P=CALC_G(           RESULTAT=CHAMDEPL,
                       NUME_ORDRE=1,
                       THETA=_F(THETA=THETA2),
-                      SYME_CHAR='SYME',
-                      COMP_ELAS=_F( RELATION = 'ELAS',
-                                   DEFORMATION = 'PETIT'),)
+                      SYME_CHAR='SYME',)
 
 
 DGE2P=CALC_G(          RESULTAT=CHAMDEP,
                        THETA=_F(THETA=THETA2),
                        SENSIBILITE = (YOUNG,),
-                       SYME_CHAR='SYME',
-                       COMP_ELAS=_F( RELATION = 'ELAS',
-                                   DEFORMATION = 'PETIT'),
-                     )
+                       SYME_CHAR='SYME',)
 
 
 TEST_TABLE(            TABLE=DGE2P,
@@ -315,10 +274,7 @@ TEST_TABLE(            TABLE=DGE2P,
 DGF2P=CALC_G(          RESULTAT=CHAMDEP,
                        THETA=_F(THETA=THETA2),
                        SENSIBILITE = (PRES,),
-                       SYME_CHAR='SYME',
-                       COMP_ELAS=_F( RELATION = 'ELAS',
-                                   DEFORMATION = 'PETIT'),
-                     )
+                       SYME_CHAR='SYME',)
 
 
 TEST_TABLE(            TABLE=DGF2P,

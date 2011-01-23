@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 25/01/2011   AUTEUR MACOCCO K.MACOCCO 
 # TITRE PLAQUE FISSUREE AVEC PRESSION LEVRE FISSURE (CALCUL G,K1,K2 )
 # sslp101c.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -106,13 +106,10 @@ FOND=DEFI_FOND_FISS( MAILLAGE=MA,
 
 G1=CALC_G(              RESULTAT=RESU,
                         THETA=_F(THETA=THETA1),
-                        SYME_CHAR='SYME',
-                        COMP_ELAS=_F( RELATION = 'ELAS',
-                                      DEFORMATION = 'PETIT'), )
+                        SYME_CHAR='SYME',)
 
 GK1=CALC_G(                  RESULTAT=RESU,
                              THETA=_F(
-                                 MODULE = 1.,
                                  R_INF = 22.04078,
                                  R_SUP = 30.,
                                  DIRECTION=( 1., 0., 0.,),
@@ -122,13 +119,10 @@ GK1=CALC_G(                  RESULTAT=RESU,
 
 G2=CALC_G(                  RESULTAT=RESU,
                             THETA=_F(THETA=THETA2),
-                            SYME_CHAR='SYME',
-                            COMP_ELAS=_F( RELATION = 'ELAS',
-                                          DEFORMATION = 'PETIT'), )
+                            SYME_CHAR='SYME',)
 
 GK2=CALC_G(                  RESULTAT=RESU,
                              THETA=_F(
-                                  MODULE = 1.,
                                   R_SUP = 22.04078,
                                   R_INF = 15.3061094,
                                   DIRECTION=( 1., 0., 0.,),
@@ -138,13 +132,10 @@ GK2=CALC_G(                  RESULTAT=RESU,
 
 G3=CALC_G(                  RESULTAT=RESU,
                             THETA=_F(THETA=THETA3),
-                            SYME_CHAR='SYME',
-                            COMP_ELAS=_F( RELATION = 'ELAS',
-                                          DEFORMATION = 'PETIT'),)
+                            SYME_CHAR='SYME',)
 
 GK3=CALC_G(                  RESULTAT=RESU,
                              THETA=_F(
-                                  MODULE = 1.,
                                   R_INF = 9.79591846,
                                   R_SUP = 15.3061094,
                                   DIRECTION=( 1., 0., 0.,),
@@ -154,13 +145,10 @@ GK3=CALC_G(                  RESULTAT=RESU,
 
 G4=CALC_G(                  RESULTAT=RESU,
                             THETA=_F(THETA=THETA4),
-                            SYME_CHAR='SYME',
-                            COMP_ELAS=_F( RELATION = 'ELAS',
-                                          DEFORMATION = 'PETIT'),)
+                            SYME_CHAR='SYME',)
 
 GK4=CALC_G(                  RESULTAT=RESU,
                              THETA=_F(
-                                  MODULE = 1.,
                                   R_SUP = 9.79591846,
                                   R_INF = 5.510197639,
                                   DIRECTION=( 1., 0., 0.,),
@@ -170,13 +158,10 @@ GK4=CALC_G(                  RESULTAT=RESU,
 
 G5=CALC_G(                  RESULTAT=RESU,
                             THETA=_F(THETA=THETA5),
-                            SYME_CHAR='SYME',
-                            COMP_ELAS=_F( RELATION = 'ELAS',
-                                          DEFORMATION = 'PETIT'),)
+                            SYME_CHAR='SYME',)
 
 GK5=CALC_G(                  RESULTAT=RESU,
                              THETA=_F(
-                                  MODULE = 1.,
                                   R_INF = 2.448979377,
                                   R_SUP = 5.510197639,
                                   DIRECTION=( 1., 0., 0.,),
@@ -186,13 +171,10 @@ GK5=CALC_G(                  RESULTAT=RESU,
 
 G6=CALC_G(                  RESULTAT=RESU,
                             THETA=_F(THETA=THETA6),
-                            SYME_CHAR='SYME',
-                            COMP_ELAS=_F( RELATION = 'ELAS',
-                                          DEFORMATION = 'PETIT'), )
+                            SYME_CHAR='SYME',)
 
 GK6=CALC_G(                  RESULTAT=RESU,
                              THETA=_F(
-                                  MODULE = 1.,
                                   R_SUP = 2.448979377,
                                   R_INF = 0.61225116,
                                   DIRECTION=( 1., 0., 0.,),

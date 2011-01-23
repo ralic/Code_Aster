@@ -1,8 +1,8 @@
-#@ MODIF rupture1 Messages  DATE 04/10/2010   AUTEUR PROIX J-M.PROIX 
+#@ MODIF rupture1 Messages  DATE 25/01/2011   AUTEUR MACOCCO K.MACOCCO 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -290,21 +290,13 @@ Remplacer si possible le comportement élastoplastique (COMP_INCR) par un comport
 """),
 
 44: _("""
-Les paramètres K1_MAX et/ou G_MAX sont absents du tableau des facteurs d'intensité des
+Les paramètres K1 et/ou G sont absents du tableau des facteurs d'intensité des
 contraintes fourni.
 -> Risque et Conseil :
 Le mot clé METHODE_POSTK doit être fourni si et seulement si la table TABLE a été 
 calculée avec l'opérateur POST_K1_K2_K3. 
 """),
 
-45: _("""
-La table des facteurs d'intensité des contraintes fournie ne contient pas au moins un
-des paramètres suivants : K1_LOCAL, G_LOCAL, BETA_LOCAL.
--> Risque et Conseil :
-Vérifier que la table a été correctement calculée par l'opérateur CALC_G (option 
-CALC_K_G). Si la table a été calculée avec l'opérateur POST_K1_K2_K3, le mot clé 
-METHODE_POSTK doit être fourni.
-"""),
 
 46: _("""
 Le taux de restitution d'énergie G est négatif sur certains des noeuds du fond de fissure :

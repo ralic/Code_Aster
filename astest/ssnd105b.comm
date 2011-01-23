@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 25/01/2011   AUTEUR PELLET J.PELLET 
 # TITRE ESSAI DE TRACTION AVEC MEMOIRE MAXI D'ECROUISSAGE
 # ssnd105b.para = tps_job 300 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -186,26 +186,28 @@ VISCMEMO=STAT_NON_LINE(MODELE=TROISD,
                        NEWTON=_F(PREDICTION='ELASTIQUE',
                                  REAC_ITER=1,),
                        RECH_LINEAIRE=_F(ITER_LINE_MAXI=5,),
-                       OBSERVATION=(_F(NOM_CMP='V1',
-                                       SUIVI_DDL='OUI',
-                                       NOM_CHAM='VARI_ELGA',
-                                       NUME_SUIVI=1,
-                                       VALE_MAX='OUI',),
-                                    _F(NOM_CMP='V2',
-                                       SUIVI_DDL='OUI',
-                                       NOM_CHAM='VARI_ELGA',
-                                       NUME_SUIVI=2,
-                                       VALE_MAX='OUI',),
-                                    _F(NOM_CMP='V16',
-                                       SUIVI_DDL='OUI',
-                                       NOM_CHAM='VARI_ELGA',
-                                       NUME_SUIVI=3,
-                                       VALE_MAX='OUI',),
-                                    _F(NOM_CMP='SIXX',
-                                       SUIVI_DDL='OUI',
-                                       NOM_CHAM='SIEF_ELGA',
-                                       NUME_SUIVI=4,
-                                       VALE_MAX='OUI',),),);
+                       SUIVI_DDL=(_F(NOM_CMP    ='V1',
+                                 NOM_CHAM   ='VARI_ELGA',
+                                 TOUT       = 'OUI',
+                                 EVAL_ELGA  ='MAX',
+                                 EVAL_CHAM ='MAX',),
+                              _F(NOM_CMP    ='V2',
+                                 NOM_CHAM   ='VARI_ELGA',
+                                 TOUT       = 'OUI',
+                                 EVAL_ELGA  ='MAX',
+                                 EVAL_CHAM ='MAX',),
+                              _F(NOM_CMP    ='V16',
+                                 NOM_CHAM   ='VARI_ELGA',
+                                 TOUT       = 'OUI',
+                                 EVAL_ELGA  ='MAX',
+                                 EVAL_CHAM ='MAX',),   
+                              _F(NOM_CMP    ='SIXX',
+                                 NOM_CHAM   ='SIEF_ELGA',
+                                 TOUT       = 'OUI',
+                                 EVAL_ELGA  ='MAX',
+                                 EVAL_CHAM ='MAX',),   
+                                 ), 
+                       );
 
 VISCMEMO=STAT_NON_LINE(reuse =VISCMEMO,
                        MODELE=TROISD,
@@ -219,26 +221,32 @@ VISCMEMO=STAT_NON_LINE(reuse =VISCMEMO,
                        INCREMENT=_F(LIST_INST=LINST2,
                                     INST_FIN=TFIN,),
                        NEWTON=_F(REAC_ITER=1,),
-                       OBSERVATION=(_F(NOM_CMP='V1',
-                                       SUIVI_DDL='OUI',
+                       
+                       
+                       SUIVI_DDL=(_F(  NOM_CMP='V1',
                                        NOM_CHAM='VARI_ELGA',
-                                       NUME_SUIVI=1,
-                                       VALE_MAX='OUI',),
+                                       TOUT       = 'OUI',
+                                       EVAL_CHAM='MAX',
+                                       EVAL_ELGA='MAX',),
                                     _F(NOM_CMP='V2',
-                                       SUIVI_DDL='OUI',
                                        NOM_CHAM='VARI_ELGA',
-                                       NUME_SUIVI=2,
-                                       VALE_MAX='OUI',),
+                                       TOUT       = 'OUI',
+                                       EVAL_CHAM='MAX',
+                                       EVAL_ELGA='MAX',),
                                     _F(NOM_CMP='V16',
-                                       SUIVI_DDL='OUI',
                                        NOM_CHAM='VARI_ELGA',
-                                       NUME_SUIVI=3,
-                                       VALE_MAX='OUI',),
+                                       TOUT       = 'OUI',
+                                       EVAL_CHAM='MAX',
+                                       EVAL_ELGA='MAX',),
                                     _F(NOM_CMP='V17',
-                                       SUIVI_DDL='OUI',
                                        NOM_CHAM='VARI_ELGA',
-                                       NUME_SUIVI=4,
-                                       VALE_MAX='OUI',),),);
+                                       TOUT       = 'OUI',
+                                       EVAL_CHAM='MAX',
+                                       EVAL_ELGA='MAX',),
+                                    ),
+                                       
+                                       
+                      );
 
 #   V1 = p
 #   V23 = epspxx
@@ -261,16 +269,22 @@ VISCOCH=STAT_NON_LINE(MODELE=TROISD,
                       NEWTON=_F(PREDICTION='ELASTIQUE',
                                 REAC_ITER=1,),
                       RECH_LINEAIRE=_F(ITER_LINE_MAXI=5,),
-                      OBSERVATION=(_F(NOM_CMP='V1',
-                                      SUIVI_DDL='OUI',
-                                      NOM_CHAM='VARI_ELGA',
-                                      NUME_SUIVI=1,
-                                      VALE_MAX='OUI',),
-                                   _F(NOM_CMP='V2',
-                                      SUIVI_DDL='OUI',
-                                      NOM_CHAM='VARI_ELGA',
-                                      NUME_SUIVI=2,
-                                      VALE_MAX='OUI',),),);
+                      
+                      SUIVI_DDL=(_F(
+                                    NOM_CMP='V1',
+                                    TOUT='OUI',
+                                    NOM_CHAM='VARI_ELGA',  
+                                    EVAL_CHAM='MAX',
+                                       EVAL_ELGA='MAX',),
+                                 _F(
+                                    NOM_CMP='V2',
+                                    TOUT='OUI',
+                                    NOM_CHAM='VARI_ELGA',
+                                    EVAL_CHAM='MAX',
+                                    EVAL_ELGA='MAX',),
+                                ),
+                      
+                      );
 
 VISCOCH=STAT_NON_LINE(reuse =VISCOCH,
                       MODELE=TROISD,
@@ -284,16 +298,22 @@ VISCOCH=STAT_NON_LINE(reuse =VISCOCH,
                       INCREMENT=_F(LIST_INST=LINST2,
                                    INST_FIN=TFIN,),
                       NEWTON=_F(REAC_ITER=1,),
-                      OBSERVATION=(_F(NOM_CMP='V1',
-                                      SUIVI_DDL='OUI',
-                                      NOM_CHAM='VARI_ELGA',
-                                      NUME_SUIVI=1,
-                                      VALE_MAX='OUI',),
-                                   _F(NOM_CMP='V2',
-                                      SUIVI_DDL='OUI',
-                                      NOM_CHAM='VARI_ELGA',
-                                      NUME_SUIVI=2,
-                                      VALE_MAX='OUI',),),);
+                      
+                      SUIVI_DDL=(_F(
+                                    NOM_CMP='V1',
+                                    TOUT       = 'OUI',
+                                    NOM_CHAM='VARI_ELGA',  
+                                    EVAL_CHAM='MAX',
+                                    EVAL_ELGA='MAX',),
+                                 _F(
+                                    NOM_CMP='V2',
+                                    TOUT       = 'OUI',
+                                    NOM_CHAM='VARI_ELGA',
+                                    EVAL_CHAM='MAX',
+                                    EVAL_ELGA='MAX',),
+                                ),
+                      
+                      );
 
 #################################
 # TEST_RESU
@@ -434,16 +454,19 @@ VMISCIN2=STAT_NON_LINE(MODELE=TROISD,
                        NEWTON=_F(PREDICTION='ELASTIQUE',
                                  REAC_ITER=1,),
                        RECH_LINEAIRE=_F(ITER_LINE_MAXI=5,),
-                       OBSERVATION=(_F(NOM_CMP='V1',
-                                       SUIVI_DDL='OUI',
-                                       NOM_CHAM='VARI_ELGA',
-                                       NUME_SUIVI=1,
-                                       VALE_MAX='OUI',),
-                                    _F(NOM_CMP='V2',
-                                       SUIVI_DDL='OUI',
-                                       NOM_CHAM='VARI_ELGA',
-                                       NUME_SUIVI=2,
-                                       VALE_MAX='OUI',),),);
+                       SUIVI_DDL=(_F(
+                                    NOM_CMP='V1',
+                                    TOUT       = 'OUI',
+                                    NOM_CHAM='VARI_ELGA',  
+                                    EVAL_CHAM='MAX',
+                                    EVAL_ELGA='MAX',),
+                                 _F(
+                                    NOM_CMP='V2',
+                                    TOUT       = 'OUI',
+                                    NOM_CHAM='VARI_ELGA',
+                                    EVAL_CHAM='MAX',
+                                    EVAL_ELGA='MAX',),
+                                ),);
 
 VMISCIN2=STAT_NON_LINE(reuse =VMISCIN2,
                        MODELE=TROISD,
@@ -457,16 +480,22 @@ VMISCIN2=STAT_NON_LINE(reuse =VMISCIN2,
                       INCREMENT=_F(LIST_INST=LINST2,
                                    INST_FIN=TFIN,),
                        NEWTON=_F(REAC_ITER=1,),
-                       OBSERVATION=(_F(NOM_CMP='V1',
-                                       SUIVI_DDL='OUI',
-                                       NOM_CHAM='VARI_ELGA',
-                                       NUME_SUIVI=1,
-                                       VALE_MAX='OUI',),
-                                    _F(NOM_CMP='V2',
-                                       SUIVI_DDL='OUI',
-                                       NOM_CHAM='VARI_ELGA',
-                                       NUME_SUIVI=2,
-                                       VALE_MAX='OUI',),),);
+                       SUIVI_DDL=(_F(
+                                    NOM_CMP='V1',
+                                    TOUT       = 'OUI',
+                                    NOM_CHAM='VARI_ELGA',  
+                                    EVAL_CHAM='MAX',
+                                    EVAL_ELGA='MAX',),
+                                 _F(
+                                    NOM_CMP='V2',
+                                    TOUT       = 'OUI',
+                                    NOM_CHAM='VARI_ELGA',
+                                    EVAL_CHAM='MAX',
+                                    EVAL_ELGA='MAX',),
+                                ),
+                                       
+                                       
+                                       );
 
 
 #################################
