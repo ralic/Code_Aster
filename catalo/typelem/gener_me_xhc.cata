@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 19/01/2011   AUTEUR MASSIN P.MASSIN 
+%& MODIF TYPELEM  DATE 01/02/2011   AUTEUR MASSIN P.MASSIN 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -343,3 +343,10 @@ OPTION__
                                      CONTX_R  PDONCO   E18NEUTR PPINTER  NGEOMER  PGEOMER  N1NEUT_R PLSN 
                                      N1NEUT_R PLST     E54NEUTR PBASECO
                               OUT__  E1NEUTR  PSEUIL
+    PILO_PRED_XLAS      547   IN__   CBORNPI  PBORNPI  CCDTAU   PCDTAU   CCOMPOR  PCOMPOR  ECONTPG  PCONTMR
+                                     DDL_MECA PDEPLMR  DDL_MECA PDDEPLR  NGEOMER  PGEOMER  CMATERC  PMATERC
+                                     CTYPEPI  PTYPEPI  ZVARIPG  PVARIMR  CCAMASS  PCAMASS  E1NEUTI  PINDCOI
+                                     CONTX_R  PDONCO   N1NEUT_R PLST     N1NEUT_R PLSN     E18NEUTR PPINTER
+                                     E30NEUTR PAINTER  E15NEUTI PCFACE   E3NEUTI PLONCHA  E54NEUTR PBASECO
+                                     E1NEUTR  PCOHES   DDL_MECA PDEPL0R  DDL_MECA PDEPL1R
+                              OUT__  ECOPILO  PCOPILO                          

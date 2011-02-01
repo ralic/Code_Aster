@@ -10,7 +10,7 @@
      &                   IREDST,DREDST,
      &                   COEFM,LIAD,INUMOR,IDESCF,
      &                   NOFDEP,NOFVIT,NOFACC,NOMFON,PSIDEL,MONMOT,
-     &                   NBPAL,NUMDDL,DTSTO,TCF,TFIN,VROTAT,PRDEFF,
+     &                   NBPAL,DTSTO,TCF,VROTAT,PRDEFF,
      &                   NOMRES)
 C
       IMPLICIT     REAL*8 (A-H,O-Z)
@@ -22,7 +22,7 @@ C
      &             TEMSTO(*),FCHOST(*),DCHOST(*),VCHOST(*),DREDST(*),
      &             PREC,RBID,DPLMOD(NBCHOC,NEQGEN,*),
      &             DPLRED(*),DPLREV(*)
-      REAL*8       DT,DTSTO,TCF,TFIN,VROTAT,CONV
+      REAL*8       DT,DTSTO,TCF,VROTAT,CONV
       CHARACTER*8  BASEMO,NOECHO(NBCHOC,*),FONRED(*),FONREV(*)
       CHARACTER*8  NOMRES,MONMOT
       CHARACTER*16 TYPBAS
@@ -32,13 +32,12 @@ C
       INTEGER      LIAD(*),INUMOR(*),IDESCF(*)
       INTEGER      NBPAL
       CHARACTER*8  NOFDEP(*),NOFVIT(*),NOFACC(*),NOMFON(*)
-      CHARACTER*14 NUMDDL
 C
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/10/2010   AUTEUR BOITEAU O.BOITEAU 
+C MODIF ALGORITH  DATE 31/01/2011   AUTEUR GREFFET N.GREFFET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -126,19 +125,19 @@ C
       CHARACTER*8 TRAN
       CHARACTER*19 MATPRE,MATASM
 C     ------------------------------------------------------------------
-      INTEGER       PALMAX 
-      PARAMETER (PALMAX=20)
-      CHARACTER*6   TYPAL(PALMAX)
-      CHARACTER*3   FINPAL(PALMAX)
-      
-      INTEGER       DIMNAS
-      PARAMETER (DIMNAS=6)  
-      INTEGER       NOPAL(PALMAX) 
-      CHARACTER*6  CNPAL(PALMAX)    
-
-      INTEGER       IADRI,IADRK,IAPP
       INTEGER       ETAUSR
-      CHARACTER*24  CPAL, NPAL   
+C
+      INTEGER       PALMAX
+      PARAMETER (PALMAX=20)
+      INTEGER       IADRK,IAPP
+      INTEGER       DIMNAS
+      PARAMETER     (DIMNAS=8)  
+      CHARACTER*3   FINPAL(PALMAX)
+      CHARACTER*6   TYPAL(PALMAX)
+      CHARACTER*8   CNPAL(PALMAX)
+      CHARACTER*24  CPAL
+C
+C
       CALL JEMARQ()
       ZERO = 0.D0
       RBID = ZERO
@@ -273,8 +272,8 @@ C
      &            NBREDE,DPLRED,PARRED,FONRED,ZR(JREDR),ZI(JREDI),
      &            NBREVI,DPLREV,FONREV,
      &            TINIT,NOFDEP,NOFVIT,NOFACC,NBEXCI,PSIDEL,MONMOT,
-     &            1,0,0,NUMDDL,DT,DTSTO,TCF,TFIN,VROTAT,
-     &           NOPAL, TYPAL, FINPAL,CNPAL,PRDEFF,CONV)
+     &            1,0,DT,DTSTO,TCF,VROTAT,
+     &            TYPAL, FINPAL,CNPAL,PRDEFF,CONV)
         IF(CONV.LE.0.D0) CALL U2MESS('F','EDYOS_46')
 
 C
@@ -289,14 +288,8 @@ C   COUPLAGE AVEC EDYOS
 C
         IF (NBPAL .GT. 0 ) THEN
           CPAL='C_PAL'
-          NPAL='N_PAL'
-C     RECUPERATION DES DONNEES ENTIERES SUR LES PALIERS 
+C     RECUPERATION DES DONNEES SUR LES PALIERS 
 C     -------------------------------------------------     
-          CALL JEVEUO(NPAL,'L',IADRI)
-          DO 11 IAPP=1,NBPAL
-            NOPAL(IAPP)=ZI(IADRI+1+(IAPP-1))
-  11      CONTINUE   
-C     RECUPERATION DES DONNEES ENTIERES SUR LES PALIERS            
           CALL JEVEUO(CPAL,'L',IADRK)
           DO 21 IAPP=1,NBPAL
             TYPAL(IAPP)=ZK8(IADRK+(IAPP-1))(1:6)
@@ -316,8 +309,8 @@ C
      &            NBREDE,DPLRED,PARRED,FONRED,ZR(JREDR),ZI(JREDI),
      &            NBREVI,DPLREV,FONREV,
      &            TINIT,NOFDEP,NOFVIT,NOFACC,NBEXCI,PSIDEL,MONMOT,
-     &            1,NBPAL,NEQ,NUMDDL,DT,DTSTO,TCF,TFIN,VROTAT,
-     &           NOPAL, TYPAL, FINPAL,CNPAL,PRDEFF,CONV)
+     &            1,NBPAL,DT,DTSTO,TCF,VROTAT,
+     &            TYPAL, FINPAL,CNPAL,PRDEFF,CONV)
         IF(CONV.LE.0.D0) CALL U2MESS('F','EDYOS_46')
 
 C
@@ -393,8 +386,8 @@ C
      &                  ZR(JCHOR), NBREDE,DPLRED,PARRED,FONRED,
      &                  ZR(JREDR),ZI(JREDI),NBREVI,DPLREV,FONREV,
      &                  TEMPS,NOFDEP,NOFVIT,NOFACC,NBEXCI,PSIDEL,MONMOT,
-     &                  (I+1),NBPAL,NEQ,NUMDDL,DT,DTSTO,TCF,TFIN,VROTAT,
-     &                  NOPAL, TYPAL, FINPAL,CNPAL,PRDEFF,CONV)
+     &                  (I+1),NBPAL,DT,DTSTO,TCF,VROTAT,
+     &                  TYPAL, FINPAL,CNPAL,PRDEFF,CONV)
             IF(CONV.LE.0.D0) CALL U2MESS('F','EDYOS_46')
 C
 C           --- ACCELERATIONS GENERALISEES ---
@@ -434,8 +427,8 @@ C
      &               ZR(JCHOR), NBREDE,DPLRED,PARRED,FONRED,
      &               ZR(JREDR),ZI(JREDI),NBREVI,DPLREV,FONREV,
      &               TEMPS,NOFDEP,NOFVIT,NOFACC,NBEXCI,PSIDEL,MONMOT,
-     &               (I+1),NBPAL,NEQ,NUMDDL,DT,DTSTO,TCF,TFIN,VROTAT,
-     &               NOPAL, TYPAL, FINPAL,CNPAL,PRDEFF,CONV)
+     &               (I+1),NBPAL,DT,DTSTO,TCF,VROTAT,
+     &               TYPAL, FINPAL,CNPAL,PRDEFF,CONV)
          IF(CONV.LE.0.D0) CALL U2MESS('F','EDYOS_46')
 C
 C        --- ACCELERATIONS GENERALISEES ---

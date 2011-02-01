@@ -1,4 +1,4 @@
-#@ MODIF calc_europlexus_ops Macro  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+#@ MODIF calc_europlexus_ops Macro  DATE 31/01/2011   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -116,7 +116,7 @@ def calc_europlexus_ops(self,MODELE,CARA_ELEM,CHAM_MATER,EXCIT,FONC_PARASOL=None
 
   # Ligne de commande d'Europlexus
   if args.has_key('LOGICIEL'): EXEC = args['LOGICIEL']
-  else: EXEC = '/home/europlex/EPXD/EUROPLEXUS_GESTION/runepx_d'
+  else: EXEC = '/home/europlex/EPXD/bin/europlexus'
   if debug: print 'args_keys : %s'%args.keys()
   if args.has_key('PAS_NBRE_COURBE') :
      if debug: print 'PAS NBRE COURBE = ok (%s)'%args['PAS_NBRE_COURBE']
@@ -2316,7 +2316,10 @@ class EUROPLEXUS:
   def lancer_calcul(self,fichier_med='auto'):
 
      fichier_epx = self.nom_fichiers['COMMANDE']
-     EXEC_LOGICIEL(LOGICIEL='cd %s ; unset TMPDIR ; %s -usetmpdir %s ; iret=$? ; cd %s ; echo "Code_Retour Europlexus : $iret" ; exit 0' % (self.pwd + self.REPE, self.EXEC, fichier_epx, self.pwd),
+#     EXEC_LOGICIEL(LOGICIEL='cd %s ; unset TMPDIR ; %s -usetmpdir %s ; iret=$? ; cd %s ; echo "Code_Retour Europlexus : $iret" ; exit 0' % (self.pwd + self.REPE, self.EXEC, fichier_epx, self.pwd),
+#                   CODE_RETOUR_MAXI=-1,
+#                   INFO=2)
+     EXEC_LOGICIEL(LOGICIEL='cd %s ; unset TMPDIR ; %s %s ; iret=$? ; cd %s ; echo "Code_Retour Europlexus : $iret" ; exit 0' % (self.pwd + self.REPE, self.EXEC, fichier_epx, self.pwd),
                    CODE_RETOUR_MAXI=-1,
                    INFO=2)
 

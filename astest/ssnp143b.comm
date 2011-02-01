@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 31/01/2011   AUTEUR PELLET J.PELLET 
 # TITRE VALIDATION DU CLAVAGE EN 3D POUR LA LOI DE JOINT DE PLOT DES BARRAGES
 # ssnp143b.para = tps_job 700 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -154,13 +154,13 @@ U_1=CALC_ELEM(reuse =U_1,
 
               RESULTAT=U_1,
               OPTION='VARI_ELNO_ELGA',
-              NOM_CHAM='VARI_ELGA',GROUP_MA='JOINT');
+              GROUP_MA='JOINT');
 
 U_1=CALC_ELEM(reuse =U_1,
 
               RESULTAT=U_1,
               OPTION='SIEF_ELNO',
-              NOM_CHAM='SIEF_ELGA',GROUP_MA='JOINT');
+              GROUP_MA='JOINT');
 
 
 U_1=CALC_NO(reuse =U_1,

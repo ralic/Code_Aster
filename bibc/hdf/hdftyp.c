@@ -1,7 +1,7 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF hdftyp hdf  DATE 19/10/2010   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF hdftyp hdf  DATE 31/01/2011   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
-/* COPYRIGHT (C) 1991 - 2003  EDF R&D              WWW.CODE-ASTER.ORG */
+/* COPYRIGHT (C) 1991 - 2011  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
 /* THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR      */
 /* MODIFY IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS     */
@@ -35,12 +35,14 @@
 #endif
 #define FALSE   0
 
-INTEGER DEFPSPS(HDFTYP, hdftyp, INTEGER *idf, char *nomgr, STRING_SIZE ln, INTEGER *nbnom, char *typ, STRING_SIZE ltp)
+INTEGER DEFPSPS(HDFTYP, hdftyp, INTEGER *idf, char *nomgr, STRING_SIZE ln,
+                                INTEGER *nbnom, char *typ, STRING_SIZE ltp)
 {
 #ifndef _DISABLE_HDF5
   hid_t idfic;
+  herr_t indx;
   char *nomg, *pt, *ptype; 
-  int indx,j,ind;
+  int j,ind;
   int k, ll;
   void *malloc(size_t size);
   

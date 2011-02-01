@@ -1,4 +1,4 @@
-#@ MODIF med Messages  DATE 24/01/2011   AUTEUR SELLENET N.SELLENET 
+#@ MODIF med Messages  DATE 01/02/2011   AUTEUR SELLENET N.SELLENET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -347,7 +347,7 @@ cata_msg = {
      Les éléments du modèle fourni ont pour support géométrique des 
      mailles ne figurant pas dans le fichier med.
      Par exemple, il y %(i1)s mailles de types %(k1)s dans le fichier med,
-     alors que le modèle en contient %(i2)s. 
+     alors que le modèle en contient %(i2)s.
   -> Risque & Conseil :
      Veuillez fournir un modèle dont le maillage correspond à celui présent
      dans le fichier med.
@@ -358,10 +358,10 @@ cata_msg = {
 """),
 
 61 : _("""
-     Le maillage contenu dans le fichier med contient beaucoup plus de mailles
-     que celui associé au modèle fourni. 
+     Le maillage contenu dans le fichier med contient plus de mailles
+     que celui associé au maillage fourni par le modèle.
      Par exemple, on dénombre %(i1)s mailles de types %(k1)s dans le maillage
-     med, alors que le modèle n'en contient que %(i2)s ! 
+     med, alors que le modèle n'en contient que %(i2)s !
   -> Risque & Conseil :
      Veuillez vérifier que le modèle fourni ne résulte pas d'une restriction,
      ou que l'un des maillages est quadratique et l'autre linéaire.

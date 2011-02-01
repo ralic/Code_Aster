@@ -1,4 +1,4 @@
-# MODIF  DATE 25/01/2011   AUTEUR MACOCCO K.MACOCCO 
+# MODIF  DATE 31/01/2011   AUTEUR MACOCCO K.MACOCCO 
 # TITRE PROPAGATION DE FISSURE DEBOUCHANTE DANS UNE PLAQUE TROUEE 2D DE LARGEUR FINIE AVEC X-FEM
 # sslp315b.para = tps_job 80 mem_job 500Mo mem_aster 50 ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -106,7 +106,6 @@ for i in range(0,nb_pas) :
                       MODELISATION='D_PLAN',
                       MATER = ACIER,
                       FISSURE=FISS[i],
-                      MAILLAGE = MAST,
                       ABSC_CURV_MAXI=3.,
                       INFO=2,);
 

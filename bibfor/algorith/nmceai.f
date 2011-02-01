@@ -1,10 +1,10 @@
       SUBROUTINE NMCEAI(NUMEDD,DEPDEL,DEPPR1,DEPPR2,DEPOLD,
-     &                  SDPILO,RHO   ,ETA   ,F     )
+     &                  SDPILO,RHO,ETA,ISXFE,F,INDIC)
 C 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 03/11/2010   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 01/02/2011   AUTEUR MASSIN P.MASSIN 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -22,6 +22,7 @@ C ======================================================================
 C RESPONSABLE ABBAS M.ABBAS
 C
       IMPLICIT NONE
+      INTEGER       INDIC
       CHARACTER*24  NUMEDD
       CHARACTER*19  SDPILO,DEPDEL,DEPOLD,DEPPR1,DEPPR2
       REAL*8        ETA,RHO,F
@@ -43,7 +44,10 @@ C IN  DEPPR1 : INCREMENT DE DEPLACEMENT K-1.F_DONNE
 C IN  DEPPR2 : INCREMENT DE DEPLACEMENT K-1.F_PILO
 C IN  RHO    : PARAMETRE DE RECHERCHE LINEAIRE
 C IN  ETA    : PARAMETRE DE PILOTAGE
+C IN  ISXFE  : INDIQUE SI LE MODELE EST UN MODELE XFEM
 C OUT F      : VALEUR DU CRITERE 
+C OUT INDIC  : 0 CRITERE NON UTILISABLE
+C              1 CRITERE UTILISABLE
 C
 C -------------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ----------------
 C
@@ -65,27 +69,42 @@ C
 C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
 C
       CHARACTER*8   K8BID
-      REAL*8        SCA ,NODUP ,COEF
-      INTEGER       JDEPDE,JDU0,JDU1,JDEPOL
-      INTEGER       NEQ,IRET,I
-      CHARACTER*19  SELPIL
-      INTEGER       JPLSL
+      REAL*8        SCA,NODUP,COEF,NODUP1,NODUP2
+      INTEGER       JDEPDE,JDU0,JDU1,JDEPOL,JPLTK,JPLIR
+      INTEGER       NEQ,IRET,I,J,IBID
+      CHARACTER*19  PROFCH,CHAPIL,CHAPIC,SELPIL
+      INTEGER       JCOEE,JCOEF,IDEEQ,JPLSL
+      REAL*8        DN,DC,DP,DA
+      LOGICAL       ISXFE
 C
 C ----------------------------------------------------------------------
 C
       CALL JEMARQ()
+      
+      IF(ISXFE) THEN    
+        CHAPIL = SDPILO(1:14)//'.PLCR'
+        CALL JEVEUO(CHAPIL(1:19)//'.VALE','L',JCOEF)
+        CHAPIC = SDPILO(1:14)//'.PLCI'
+        CALL JEVEUO(CHAPIC(1:19)//'.VALE','L',JCOEE)
+      ELSE
 C
-C --- INITIALISATIONS
+C --- ACCES VECTEUR DE SELCTION CMP DX/DY/DZ
+C       
+        SELPIL = SDPILO(1:14)//'.PLSL'
+        CALL JEVEUO(SELPIL(1:19)//'.VALE','L',JPLSL)      
+      ENDIF
+      
+C
+C --- INITIALISATIONS--------------------------------
 C
       SCA    = 0.D0
       NODUP  = 0.D0
+      NODUP1 = 0.D0
+      NODUP2 = 0.D0
       F      = 0.D0
       CALL DISMOI('F','NB_EQUA',NUMEDD,'NUME_DDL',NEQ,K8BID,IRET)
-C
-C --- ACCES VECTEUR DE SELCTION CMP DX/DY/DZ
-C      
-      SELPIL = SDPILO(1:14)//'.PLSL'
-      CALL JEVEUO(SELPIL(1:19)//'.VALE','L',JPLSL)
+      CALL DISMOI('F','PROF_CHNO',DEPDEL,'CHAM_NO' ,IBID  ,PROFCH,IRET)
+      CALL JEVEUO(PROFCH(1:19)//'.DEEQ','L',IDEEQ)
 C
 C --- ACCES AUX VECTEURS SOLUTIONS
 C      
@@ -93,22 +112,68 @@ C
       CALL JEVEUO(DEPPR1(1:19)//'.VALE','L',JDU0)
       CALL JEVEUO(DEPPR2(1:19)//'.VALE','L',JDU1)
       CALL JEVEUO(DEPOLD(1:19)//'.VALE','L',JDEPOL)  
+      
 C
 C --- CALCUL DE L'ANGLE
-C      
-      DO 25 I = 1,NEQ
-       COEF   = ZR(JPLSL-1+I)
-       SCA    = SCA    + (ZR(JDEPOL+I-1)*(ZR(JDEPDE+I-1)
-     &                 +  RHO*ZR(JDU0+I-1)
-     &                 +  ETA*ZR(JDU1+I-1)))*COEF
-       NODUP  = NODUP  + (ZR(JDEPDE+I-1)
+C     
+      IF(ISXFE) THEN
+      DO 26 I = 1,NEQ
+         IF(ZI(IDEEQ-1+2*I).GT.0) THEN
+            IF(ZR(JCOEE+I-1).EQ.0.D0) THEN
+                SCA    = SCA    + ZR(JDEPOL+I-1)*
+     &            ZR(JCOEF+I-1)**2*(ZR(JDEPDE+I-1)
+     &                          + RHO*ZR(JDU0+I-1)
+     &                          + ETA*ZR(JDU1+I-1))
+                NODUP1  = NODUP1 +
+     &             ZR(JCOEF+I-1)**2*(ZR(JDEPDE+I-1)
+     &                           + RHO*ZR(JDU0+I-1)
+     &                           + ETA*ZR(JDU1+I-1))**2
+                NODUP2  = NODUP2 +
+     &           ZR(JCOEF+I-1)**2*ZR(JDEPOL+I-1)**2
+            ELSE
+            DA  = 0.D0
+            DN  = 0.D0
+            DC  = 0.D0
+            DP  = 0.D0
+            DO 30 J = I+1,NEQ
+               IF(ZR(JCOEE+I-1).EQ.ZR(JCOEE+J-1)) THEN
+               DA = DA + ZR(JCOEF+I-1)*ZR(JDEPOL+I-1)+
+     &                  ZR(JCOEF+J-1)*ZR(JDEPOL+J-1)
+                       DN = DN + ZR(JCOEF+I-1)*ZR(JDEPDE+I-1)+
+     &                  ZR(JCOEF+J-1)*ZR(JDEPDE+J-1)
+                       DC = DC + ZR(JCOEF+I-1)*ZR(JDU0-1+I)+
+     &                  ZR(JCOEF+J-1)*ZR(JDU0-1+J)
+                       DP = DP + ZR(JCOEF+I-1)*ZR(JDU1-1+I)+
+     &                  ZR(JCOEF+J-1)*ZR(JDU1-1+J)
+                 ENDIF
+ 30            CONTINUE
+               SCA    = SCA    + DA*(DN+RHO*DC+ETA*DP)
+               NODUP1  = NODUP1 + (DN+RHO*DC+ETA*DP)**2
+               NODUP2  = NODUP2 + DA**2
+            ENDIF
+         ENDIF
+ 26   CONTINUE
+      NODUP = NODUP1*NODUP2
+      ELSE
+         DO 25 I = 1,NEQ
+         COEF   = ZR(JPLSL-1+I)
+         SCA    = SCA + (ZR(JDEPOL+I-1)*(ZR(JDEPDE+I-1)
      &                 + RHO*ZR(JDU0+I-1)
-     &                 + ETA*ZR(JDU1+I-1))**2    
- 25   CONTINUE
-C   
-
-      F   = SCA / SQRT(NODUP)
-      F   = -F
+     &                 +  ETA*ZR(JDU1+I-1)))*COEF
+            NODUP  = NODUP  + (ZR(JDEPDE+I-1)
+     &                 + RHO*ZR(JDU0+I-1)
+     &                 + ETA*ZR(JDU1+I-1))**2
+ 25      CONTINUE
+      ENDIF
+ 
+      IF(NODUP.EQ.0.D0) THEN
+       INDIC = 0
+       F  = 0.D0
+      ELSE
+       INDIC = 1
+       F   = SCA / SQRT(NODUP)
+      ENDIF
+       F   = -F
 C
       CALL JEDEMA()
       END

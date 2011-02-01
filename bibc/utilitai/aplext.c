@@ -1,7 +1,7 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF APLEXT UTILITAI  DATE 07/04/2009   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF APLEXT UTILITAI  DATE 31/01/2011   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
-/* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
+/* COPYRIGHT (C) 1991 - 2011  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
 /* THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR      */
 /* MODIFY IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS     */
@@ -34,7 +34,7 @@ extern int errno;
 #include <sys/wait.h>
 #include <signal.h>
 
-#elif defined(_WIN32)
+#elif defined(_WINDOWS)
 #include <process.h>
 
 #endif
@@ -53,8 +53,8 @@ void DEFPPSP(APLEXT, aplext, INTEGER *niv, INTEGER *nbd ,char *nom ,STRING_SIZE 
 #endif
    *ier = 0;
    if (*nbd > 100){
-      fprintf(stderr,"\nLe nombre d'arguments d'appel (%ld) est supérieur à 99\n",*nbd);
-      fprintf(stdout,"\nLe nombre d'arguments d'appel (%ld) est supérieur à 99\n",*nbd);
+      fprintf(stderr,"\nLe nombre d'arguments d'appel (%ld) est superieur a 99\n",*nbd);
+      fprintf(stdout,"\nLe nombre d'arguments d'appel (%ld) est superieur a 99\n",*nbd);
       *ier = 1;
 #ifdef _POSIX
       fflush(stderr);
@@ -136,7 +136,7 @@ void DEFPPSP(APLEXT, aplext, INTEGER *niv, INTEGER *nbd ,char *nom ,STRING_SIZE 
                 msg=(char *)strerror(errno);
                 fprintf(stdout,"\n%s\n",msg);
                 fprintf(stderr,"\n%s\n",msg);
-		}
+        }
        else {
 /*
    Examen du code retour avec détection des signaux

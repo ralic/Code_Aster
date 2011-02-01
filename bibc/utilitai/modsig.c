@@ -1,8 +1,8 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF modsig utilitai  DATE 07/04/2009   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF modsig utilitai  DATE 31/01/2011   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
-/* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
+/* COPYRIGHT (C) 1991 - 2011  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
 /* THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR      */
 /* MODIFY IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS     */
@@ -43,7 +43,7 @@
 
 #include "aster.h"
 
-#ifdef _WIN32
+#ifdef _WINDOWS
 #include <float.h>
 #endif
 
@@ -97,7 +97,7 @@ void DEFPS(MODSIG, modsig, INTEGER *enable, char *TypeErreur, STRING_SIZE lte)
    else if ( valsig[2] < 0 ) {ieee_handler("clear","division",hanfpe);}
 #elif defined _POSIX
    signal(SIGFPE,  hanfpe);
-#elif defined _WIN32
+#elif defined _WINDOWS
    unsigned int  _controlfp (unsigned int new, unsigned int mask);
    void _fpreset(void);
    static unsigned int valsig[3];

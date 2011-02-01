@@ -2,7 +2,7 @@
      &                  NBORDR,MODELE,MATE,CARA,NCHAR,CTYP)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 25/01/2011   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 01/02/2011   AUTEUR DELMAS J.DELMAS 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -51,19 +51,19 @@ C     --- ARGUMENTS ---
       LOGICAL NEWCAL
 C
 C     ----- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
-      INTEGER ZI
+      INTEGER        ZI
       COMMON /IVARJE/ZI(1)
-      REAL*8 ZR
+      REAL*8         ZR
       COMMON /RVARJE/ZR(1)
-      COMPLEX*16 ZC
+      COMPLEX*16     ZC
       COMMON /CVARJE/ZC(1)
-      LOGICAL ZL
+      LOGICAL        ZL
       COMMON /LVARJE/ZL(1)
-      CHARACTER*8 ZK8
-      CHARACTER*16 ZK16
-      CHARACTER*24 ZK24
-      CHARACTER*32 ZK32,JEXNOM
-      CHARACTER*80 ZK80
+      CHARACTER*8    ZK8
+      CHARACTER*16          ZK16
+      CHARACTER*24                  ZK24
+      CHARACTER*32                          ZK32,JEXNOM
+      CHARACTER*80                                  ZK80
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C     ----- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C
@@ -78,7 +78,7 @@ C     --- VARIABLES LOCALES ---
       INTEGER LREFE,LVALE,LDEPL,LFREQ,LACCE
       INTEGER IORDR,IORDR1,IORDR2,JORDR,IORDRM
       INTEGER IRET,IRET1,IRET2,IRET3,IRET4,IRET5,IERD,IRETER
-      INTEGER NH,NOR,NBOPT,NEQ,NBCHRE,IER,IFISS
+      INTEGER NH,NBOPT,NEQ,NBCHRE,IER,IFISS
       INTEGER IADOU,IADIN,IPUIS
       INTEGER IAUX,II,III,IB,J,K,IBID,IE
       INTEGER IOCC,IOPT,IAINST
@@ -144,9 +144,10 @@ C     --- VARIABLES LOCALES ---
       CALL JEMARQ()
       CALL GETRES(K8B,K16B,NOMCMD)
       CALL JERECU('V')
-
-      BLAN16=' '
-      BLAN24=' '
+C               1234567890123456
+      BLAN16 = '                '
+C               123456789012345678901234
+      BLAN24 = '                        '
       LESOPT='&&'//NOMPRO//'.LES_OPTION'
       NH=0
       CHAMGD=BLAN24
@@ -196,7 +197,6 @@ C     ON RECUPERE LE TYPE DE MODE: DYNAMIQUE OU STATIQUE
         TYPEMO=ZK16(LTYMO)
       ENDIF
 
-      CALL GETVTX(' ','NORME',1,1,1,NORME,NOR)
       CALL JEVEUO(KNUM,'L',JORDR)
       NUORD=ZI(JORDR)
       CALL JEVEUO(KCHA,'L',JCHA)
@@ -1410,15 +1410,14 @@ C     ------------------------------------------------------------------
 C     --- OPTIONS DE CALCUL DES INDICATEURS LOCAUX DE DECHARGE ET DE
 C     --- PERTE DE RADIALITE :
 C     ------------------------------------------------------------------
-        ELSEIF (OPTION.EQ.'DCHA_ELGA_SIGM' .OR.
-     &          OPTION.EQ.'DCHA_ELNO_SIGM' .OR.
-     &          OPTION.EQ.'RADI_ELGA_SIGM' .OR.
-     &          OPTION.EQ.'RADI_ELNO_SIGM') THEN
+          ELSE IF (OPTION.EQ.'DERA_ELGA' .OR.
+     &             OPTION.EQ.'DERA_ELNO') THEN
+
           IF (NBORDR.EQ.1) THEN
             CALL U2MESK('A','CALCULEL5_63',1,OPTION)
             GOTO 660
-
           ENDIF
+
           DO 360,IAUX=1,NBORDR-1
             CALL JEMARQ()
             CALL JERECU('V')
@@ -1429,24 +1428,30 @@ C     ------------------------------------------------------------------
             CALL JEVEUO(KCHA,'L',JCHA)
             CALL MECARA(CARA,EXICAR,CHCARA)
             CALL MECHC1(SAVCAR,MODELE,MATE,EXICAR,CHCARA)
+            
             CALL RSEXC2(1,1,RESUCO,'SIEF_ELGA',IORDR1,CHSIG1,OPTION,
      &                  IRET1)
             CALL RSEXC2(1,1,RESUCO,'SIEF_ELGA',IORDR2,CHSIG2,OPTION,
      &                  IRET2)
             IF (IRET1.GT.0 .OR. IRET2.GT.0)GOTO 350
-            IF (NORME.EQ.'VMIS_CINE' .OR. NORME.EQ.'TOTAL_CINE') THEN
-              CALL RSEXC2(1,1,RESUCO,'VARI_ELGA',IORDR1,CHVAR1,OPTION,
+            
+            CALL RSEXC2(1,1,RESUCO,'VARI_ELGA',IORDR1,CHVAR1,OPTION,
      &                    IRET1)
-              CALL RSEXC2(1,1,RESUCO,'VARI_ELGA',IORDR2,CHVAR2,OPTION,
+            CALL RSEXC2(1,1,RESUCO,'VARI_ELGA',IORDR2,CHVAR2,OPTION,
      &                    IRET2)
-              IF (IRET1.GT.0 .OR. IRET2.GT.0)GOTO 350
-            ELSE
-              CHVAR1=' '
-              CHVAR2=' '
-            ENDIF
+            IF (IRET1.GT.0 .OR. IRET2.GT.0) THEN
+                CHVAR1 = ' '
+                CHVAR2 = ' '
+            END IF
+            
+            CALL RSEXCH(RESUCO,'COMPORTEMENT',IORDR1,COMPOR,IRET1)
+
+            CALL RSEXCH(RESUCO,'DERA_ELGA',IORDR1,CHELE2,IRET1)
+            
             CALL RSEXC1(LERES1,OPTION,IORDR1,CHELEM)
-            CALL INDRAD(OPTION,NORME,MODELE,LIGREL,CHSIG1,CHSIG2,CHVAR1,
-     &                  CHVAR2,CHELEM)
+            CALL INDRAD(OPTION,COMPOR,LIGREL,CHSIG1,CHSIG2,
+     &                    CHVAR1,CHVAR2,CHELE2,CHELEM)
+
             CALL RSNOCH(RESUCO,OPTION,IORDR1,' ')
   350       CONTINUE
             CALL JEDEMA()

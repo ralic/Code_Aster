@@ -1,7 +1,7 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF hdfopf hdf  DATE 19/10/2010   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF hdfopf hdf  DATE 31/01/2011   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
-/* COPYRIGHT (C) 1991 - 2003  EDF R&D              WWW.CODE-ASTER.ORG */
+/* COPYRIGHT (C) 1991 - 2011  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
 /* THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR      */
 /* MODIFY IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS     */
@@ -47,7 +47,7 @@ INTEGER DEFS(HDFOPF, hdfopf, char *nomfic, STRING_SIZE ln)
   while (nomf[k] == ' ') { k--;}
   nomf[k+1] = '\0';
   if ( (idfic = H5Fopen(nomf, H5F_ACC_RDONLY, H5P_DEFAULT)) >= 0) 
-    iret = (long) idfic;
+    iret = (INTEGER) idfic;
   free (nomf);
 #else
   CALL_U2MESS("F", "FERMETUR_3");

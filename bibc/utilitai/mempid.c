@@ -1,7 +1,7 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF MEMPID utilitai  DATE 26/07/2010   AUTEUR LEFEBVRE J-P.LEFEBVRE */
+/* MODIF MEMPID utilitai  DATE 31/01/2011   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
-/* COPYRIGHT (C) 1991 - 2009  EDF R&D              WWW.CODE-ASTER.ORG */
+/* COPYRIGHT (C) 1991 - 2011  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
 /* THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR      */
 /* MODIFY IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS     */
@@ -17,13 +17,17 @@
 /*    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.     */
 /* ================================================================== */
 /* RESPONSABLE LEFEBVRE J-P.LEFEBVRE */
+#include "aster.h"
+
+#ifdef _POSIX
 #include <stdio.h>
 #include <stdlib.h>
 #include <fcntl.h>
 #include <string.h>
 #include <sys/types.h>
 #include <unistd.h>
-#include "aster.h"
+#endif
+
 /*
 ** Cette fonction permet de consulter le systeme de fichier /proc sous Unix
 ** et renvoie la memoire en octets consommee par le processus.
@@ -34,36 +38,36 @@
 */
 INTEGER DEFP (MEMPID, mempid, INTEGER *val) 
 {
-        static char filename[80];
-        static char sbuf[1024];
-        char* S;
-	int fd, num_read;
-	long *numpro,lmem;
+    static char filename[80];
+    static char sbuf[1024];
+    char* S;
+    int fd, num_read;
+    long numpro,lmem;
 #ifdef _POSIX
-        pid_t getpid(void);
-	
-	numpro = getpid();
+    pid_t getpid(void);
+    
+    numpro = (long)getpid();
 
-        sprintf(filename, "/proc/%ld/status", numpro);
-        fd = open(filename, O_RDONLY, 0);
-        if (fd==-1) return -1;
-	num_read=read(fd,sbuf,(sizeof sbuf)-1);
-/*	printf (" contenu du buffer = %s\n",sbuf);*/ 	
-        close(fd);
-	
-        S=strstr(sbuf,"VmData:")+8;
-        val[0] = atoi(S); 
+    sprintf(filename, "/proc/%ld/status", numpro);
+    fd = open(filename, O_RDONLY, 0);
+    if (fd==-1) return -1;
+    num_read=read(fd,sbuf,(sizeof sbuf)-1);
+/*  printf (" contenu du buffer = %s\n",sbuf); */   
+    close(fd);
 
-	S=strstr(sbuf,"VmSize:")+8;
-        val[1] = atoi(S); 
+    S=strstr(sbuf,"VmData:")+8;
+    val[0] = (INTEGER)atoi(S); 
 
-	if ( strstr(sbuf,"VmPeak:") != NULL ) {
-	   S=strstr(sbuf,"VmPeak:")+8;
-           val[2] = atoi(S);
-	} else {
-	   val[2] = -1 ;  
-        }
-	  
+    S=strstr(sbuf,"VmSize:")+8;
+    val[1] = (INTEGER)atoi(S); 
+
+    if ( strstr(sbuf,"VmPeak:") != NULL ) {
+        S=strstr(sbuf,"VmPeak:")+8;
+        val[2] = atoi(S);
+    } else {
+        val[2] = -1 ;  
+    }
+      
         S=strstr(sbuf,"VmStk:")+7;
         lmem = atoi(S);
         return lmem ;
@@ -71,9 +75,9 @@ INTEGER DEFP (MEMPID, mempid, INTEGER *val)
 /* 
 ** Pour retourner des valeurs sous Windows
 */
-        val[0] = 0 ;
-	val[1] = 0 ;
-	val[2] = 0 ;
-        return -1 ;
+    val[0] = 0 ;
+    val[1] = 0 ;
+    val[2] = 0 ;
+    return -1 ;
 #endif
 }

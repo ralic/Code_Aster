@@ -1,4 +1,4 @@
-# MODIF  DATE 25/01/2011   AUTEUR MACOCCO K.MACOCCO 
+# MODIF  DATE 31/01/2011   AUTEUR MACOCCO K.MACOCCO 
 # TITRE  FISSURE SEMI-ELLIPTIQUE AVEC MILIEU INFINI
 # sslv110f.para = tps_job 450 mem_job 1200Mo mem_aster 40 ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -133,7 +133,6 @@ IMPR_TABLE(TABLE=SIFTH,);
 SIFK1=POST_K1_K2_K3(  MODELISATION='3D',
                         FISSURE=FISS,
                         INFO=2,
-                        MAILLAGE=MA1,
                         MATER=MAT,
                         RESULTAT=UTOT1,
                         ABSC_CURV_MAXI=1.5,

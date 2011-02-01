@@ -1,7 +1,7 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF dll_register include  DATE 24/08/2010   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF dll_register include  DATE 31/01/2011   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
-/* COPYRIGHT (C) 1991 - 2010  EDF R&D              WWW.CODE-ASTER.ORG */
+/* COPYRIGHT (C) 1991 - 2011  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
 /* THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR      */
 /* MODIFY IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS     */
@@ -37,20 +37,22 @@
 #define DR_ASSERT(cond)
 #endif
 
-#include "aster.h"
 
 /*
  *   PUBLIC FUNCTIONS
  * 
  */
 
+// to avoid mistake when casting to pointer on function
+#define FUNC_PTR            void (*)(void *)
+
 int libsymb_register(PyObject* dict, const char* libname, const char* symbname,
-                     void* handle, void (*symbol)() );
+                     void* handle, FUNC_PTR);
 int libsymb_release(PyObject* dict, const char* libname, const char* symbname);
 int libsymb_is_known(PyObject* dict, const char* libname, const char* symbname);
 void* libsymb_get_handle(PyObject* dict, const char* libname, const char* symbname);
 void* libsymb_get_symbol(PyObject* dict, const char* libname, const char* symbname);
-void libsymb_apply_on_all(PyObject* dict, void (*function)(void *handle), int release);
+void libsymb_apply_on_all(PyObject* dict, FUNC_PTR, int release);
 
 void NULL_FUNCTION();
 
@@ -61,7 +63,6 @@ void NULL_FUNCTION();
 
 PyObject* _libsymb_to_key(const char* libname, const char* symbname);
 void* _libsymb_get_object(PyObject* dict, const char* libname, const char* symbname, int index);
-
 
 /* FIN DLL_REGISTER_H */
 #endif

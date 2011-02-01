@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 25/01/2011   AUTEUR MACOCCO K.MACOCCO 
+#& MODIF COMMANDE  DATE 31/01/2011   AUTEUR MACOCCO K.MACOCCO 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -40,7 +40,17 @@ POST_K1_K2_K3=MACRO(nom="POST_K1_K2_K3",op=post_k1_k2_k3_ops,sd_prod=table_sdast
          NB_NOEUD_COUPE=SIMP(statut='f',typ='I',defaut=5,val_min = 3),
 
 #        bloc correspondant a la donnee du fond de fissure pour les fissures maillees
-         b_fond_fiss   =BLOC (condition="(FOND_FISS!= None)",
+         b_fond_fiss_res   =BLOC (condition="((FOND_FISS!= None)and(RESULTAT!= None))",
+                         TYPE_MAILLAGE = SIMP(statut='f',typ='TXM',into=("LIBRE","REGLE"),defaut="REGLE"),
+                         NOEUD         = SIMP(statut='f',typ=no  ,validators=NoRepeat(),max='**'),
+                         GROUP_NO      = SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**'),
+                         SANS_NOEUD    = SIMP(statut='f',typ=no  ,validators=NoRepeat(),max='**'),
+                         SANS_GROUP_NO = SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**'),
+                         TOUT          = SIMP(statut='f',typ='TXM',into=("OUI",) ),
+                         EVOL_THER     = SIMP(statut='f',typ=(evol_ther),fr="Température sur le fond de fissure")
+                         ),
+
+         b_fond_fiss_tab   =BLOC (condition="((FOND_FISS!= None)and(TABL_DEPL_SUP!= None)and(RESULTAT== None))",
                          MAILLAGE      = SIMP(statut='o',typ=maillage_sdaster),
                          TYPE_MAILLAGE = SIMP(statut='f',typ='TXM',into=("LIBRE","REGLE"),defaut="REGLE"),
                          NOEUD         = SIMP(statut='f',typ=no  ,validators=NoRepeat(),max='**'),
@@ -51,13 +61,21 @@ POST_K1_K2_K3=MACRO(nom="POST_K1_K2_K3",op=post_k1_k2_k3_ops,sd_prod=table_sdast
                          EVOL_THER     = SIMP(statut='f',typ=(evol_ther),fr="Température sur le fond de fissure")
                          ),
 #        bloc correspondant a la donnee de la fissure pour les fissures X-FEM
-         b_fissure     =BLOC (condition="(FISSURE!= None)",
+         b_fissure_res     =BLOC (condition="((FISSURE!= None)and(RESULTAT!= None))",
+                         NB_POINT_FOND = SIMP(statut='f',typ='I' ,),
+                         NUME_FOND     = SIMP(statut='f',typ='I',defaut=1),
+                         DTAN_ORIG     = SIMP(statut='f',typ='R',max='**'),
+                         DTAN_EXTR     = SIMP(statut='f',typ='R',max='**'),
+                         ),
+
+         b_fissure_tab     =BLOC (condition="((FISSURE!= None)and(TABL_DEPL_SUP!= None)and(RESULTAT== None))",
                          MAILLAGE      = SIMP(statut='o',typ=maillage_sdaster),
                          NB_POINT_FOND = SIMP(statut='f',typ='I' ,),
                          NUME_FOND     = SIMP(statut='f',typ='I',defaut=1),
                          DTAN_ORIG     = SIMP(statut='f',typ='R',max='**'),
                          DTAN_EXTR     = SIMP(statut='f',typ='R',max='**'),
                          ),
+
          MATER         =SIMP(statut='o',typ=mater_sdaster,
                              fr="Matériau homogène et isotrope cohérent avec celui utilisé pour le calcul des déplacements"),
          RESULTAT      =SIMP(statut='f',typ=(evol_elas,evol_noli),

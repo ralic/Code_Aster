@@ -1,7 +1,7 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF MEMDIS UTILITAI  DATE 07/04/2009   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF MEMDIS UTILITAI  DATE 31/01/2011   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
-/* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
+/* COPYRIGHT (C) 1991 - 2011  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
 /* THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR      */
 /* MODIFY IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS     */
@@ -34,10 +34,10 @@ INTEGER DEFPPPP(MEMDIS, memdis, INTEGER *L, INTEGER **iadm, INTEGER *taille_mo, 
    long dim , delta ;
    long *retour ;
    void *malloc(size_t size);
-   dim = *L ;
+   dim = (long)*L ;
    delta = 262144 ;
    do {
-      retour = (long * ) malloc(dim*sizeof(long));
+      retour = (long * ) malloc(dim*sizeof(INTEGER));
       dim  = dim - delta ;
       }
    while ( (retour == NULL) && (dim > 0)) ;
@@ -48,8 +48,8 @@ INTEGER DEFPPPP(MEMDIS, memdis, INTEGER *L, INTEGER **iadm, INTEGER *taille_mo, 
       taille_mo = 0; 
       }
    else {
-      *iadm = retour;
-      *taille_mo = (long) (dim*sizeof(long));
+      *iadm = (INTEGER *)retour;
+      *taille_mo = (INTEGER) (dim*sizeof(INTEGER));
       }
    return (INTEGER)( dim ) ;
 }

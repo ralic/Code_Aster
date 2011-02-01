@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 19/01/2011   AUTEUR MASSIN P.MASSIN 
+%& MODIF TYPELEM  DATE 01/02/2011   AUTEUR MASSIN P.MASSIN 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -207,12 +207,12 @@ OPTION__
     CHAR_MECA_CONT      534   IN__   NGEOMER  PGEOMER  DDL_MECA PDEPL_M  DDL_MECA PDEPL_P  I1NEUT_I PINDCOI
                                      CONTX_R  PDONCO   N1NEUT_R PLST     E6NEUTR  PPINTER  E15NEUTR PAINTER
                                      E3NEUTI  PCFACE   E3NEUTI  PLONCHA  E12NEUTR  PBASECO  E1NEUTR  PSEUIL
-                                     E3NEUTR  PCOHES   CMATERC  PMATERC
+                                     E1NEUTR  PCOHES   CMATERC  PMATERC
                               OUT__  MVECTUR  PVECTUR
     CHAR_MECA_FROT      534   IN__   NGEOMER  PGEOMER  DDL_MECA PDEPL_M  DDL_MECA PDEPL_P  I1NEUT_I PINDCOI
                                      CONTX_R  PDONCO   N1NEUT_R PLST     E6NEUTR  PPINTER  E15NEUTR PAINTER
                                      E3NEUTI  PCFACE   E3NEUTI  PLONCHA  E12NEUTR PBASECO  E1NEUTR  PSEUIL
-                                     E3NEUTR  PCOHES   CMATERC  PMATERC
+                                     E1NEUTR  PCOHES   CMATERC  PMATERC
                               OUT__  MVECTUR  PVECTUR
     CHAR_MECA_TEMP_R    99    IN__   CCAMASS  PCAMASS  CCOMPOR  PCOMPOR  NGEOMER  PGEOMER  CMATERC  PMATERC
                                      ZVARCPG  PVARCPR  CTEMPSR  PTEMPSR  ZVARCPG  PVARCRR
@@ -270,12 +270,12 @@ OPTION__
     RIGI_CONT           533   IN__   NGEOMER  PGEOMER  DDL_MECA PDEPL_M  DDL_MECA PDEPL_P  I1NEUT_I PINDCOI
                                      CONTX_R  PDONCO   N1NEUT_R PLST     N1NEUT_R PLSN     E6NEUTR  PPINTER
                                      E15NEUTR PAINTER  E3NEUTI  PCFACE   E3NEUTI  PLONCHA  E12NEUTR  PBASECO
-                                     E1NEUTR  PSEUIL   E3NEUTR  PCOHES   CMATERC  PMATERC
+                                     E1NEUTR  PSEUIL   E1NEUTR  PCOHES   CMATERC  PMATERC
                               OUT__  MMATUUR  PMATUUR  MMATUNS  PMATUNS
     RIGI_FROT           533   IN__   NGEOMER  PGEOMER  DDL_MECA PDEPL_M  DDL_MECA PDEPL_P  I1NEUT_I PINDCOI
                                      CONTX_R  PDONCO   N1NEUT_R PLST     N1NEUT_R PLSN     E6NEUTR  PPINTER
                                      E15NEUTR PAINTER  E3NEUTI  PCFACE   E3NEUTI  PLONCHA  E12NEUTR  PBASECO
-                                     E1NEUTR  PSEUIL   E3NEUTR  PCOHES   CMATERC  PMATERC
+                                     E1NEUTR  PSEUIL   E1NEUTR  PCOHES   CMATERC  PMATERC
                               OUT__  MMATUUR  PMATUUR  MMATUNS  PMATUNS
     RIGI_MECA           81    IN__   CCAMASS  PCAMASS  NGEOMER  PGEOMER  ZVARCPG  PVARCPR  CMATERC  PMATERC
                               OUT__  MMATUUR  PMATUUR
@@ -308,8 +308,8 @@ OPTION__
     XCVBCA              532   IN__   NGEOMER  PGEOMER  DDL_MECA PDEPL_M  DDL_MECA PDEPL_P  I1NEUT_I PINDCOI
                                      N1NEUT_R PLST     E6NEUTR  PPINTER  E15NEUTR PAINTER  E3NEUTI  PCFACE
                                      E3NEUTI  PLONCHA  CONTX_R  PDONCO   I1NEUT_I PGLISS   I1NEUT_I PMEMCON
-                                     E3NEUTR  PCOHES   E12NEUTR  PBASECO CMATERC  PMATERC  
-                              OUT__  I1NEUT_I PINCOCA  I1NEUT_I PINDCOO  I1NEUT_I PINDMEM  E3NEUTR  PCOHESO  
+                                     E1NEUTR  PCOHES   E12NEUTR  PBASECO CMATERC  PMATERC  
+                              OUT__  I1NEUT_I PINCOCA  I1NEUT_I PINDCOO  I1NEUT_I PINDMEM  E1NEUTR  PCOHESO  
     XFEM_SMPLX_INIT     118   IN__   NGEOMER  PGEOMER
                               OUT__  E1NEUTR  PMEAST   N2NEUT_R PNIELNO
     XFEM_SMPLX_CALC     118   IN__   N1NEUT_R PLSNO    N2NEUT_R PGRLS    E1NEUTR  PGRANDF  N2NEUT_R PNIELNO
@@ -321,3 +321,10 @@ OPTION__
                                      CONTX_R  PDONCO   E6NEUTR  PPINTER  NGEOMER  PGEOMER  N1NEUT_R PLSN     
                                      N1NEUT_R PLST     E12NEUTR  PBASECO 
                               OUT__  E1NEUTR  PSEUIL
+    PILO_PRED_XLAS      547   IN__   CBORNPI  PBORNPI  CCDTAU   PCDTAU   CCOMPOR  PCOMPOR  ECONTPG  PCONTMR
+                                     DDL_MECA PDEPLMR  DDL_MECA PDDEPLR  NGEOMER  PGEOMER  CMATERC  PMATERC
+                                     CTYPEPI  PTYPEPI  ZVARIPG  PVARIMR  CCAMASS  PCAMASS  I1NEUT_I PINDCOI
+                                     CONTX_R  PDONCO   N1NEUT_R PLST     N1NEUT_R PLSN     E6NEUTR  PPINTER
+                                     E15NEUTR PAINTER  E3NEUTI  PCFACE   E3NEUTI  PLONCHA  E12NEUTR  PBASECO
+                                     E1NEUTR  PCOHES   DDL_MECA PDEPL0R  DDL_MECA PDEPL1R
+                              OUT__  ECOPILO  PCOPILO

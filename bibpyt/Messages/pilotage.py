@@ -1,8 +1,8 @@
-#@ MODIF pilotage Messages  DATE 03/11/2010   AUTEUR ABBAS M.ABBAS 
+#@ MODIF pilotage Messages  DATE 01/02/2011   AUTEUR MASSIN P.MASSIN 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -52,15 +52,49 @@ cata_msg = {
 """),
 
 55 : _("""
- La liste des composantes est vide pour le pilotage LONG_ARC.
+ La liste des directions est vide pour le mot-clef %(k1)s pour le pilotage %(k2)s.
 """),
 
 56 : _("""
- Il faut une et une seule composante de nom NOM_CMP pour le pilotage de type DDL_IMPO.
+ Il faut une et une seule direction pour le mot-clef %(k1)s pour le pilotage de type %(k2)s.
 """),
 
 57 : _("""
  Il faut plus d'un noeud pour le pilotage LONG_ARC.
+"""),
+
+58 : _("""
+ Renseigner le mot clef FISSURE du mot clef facteur PILOTAGE pour le pilotage
+  SAUT_IMPO ou SAUT_L_ARC.
+"""),
+
+59 : _("""
+ Renseigner le mot-clé FISSURE du mot-clé facteur PILOTAGE avec les sélections
+  ANGL_INCR_DEPL ou NORM_INCR_DEPL avec un modèle X-FEM.
+"""),
+
+60 : _("""
+ Les types de pilotage SAUT_IMPO et SAUT_L_ARC ne sont disponibles qu'avec un
+ modèle X-FEM.
+"""),
+
+61 : _("""
+ Le noeud pilote %(i1)d n appartient pas à une arete intersectée par la fissure
+"""),
+
+62 : _("""
+ Il y a plus de noeuds utilisateur que d'arêtes vitales. 
+ Dimininuer le nombre de noeuds pilotés.
+"""),
+
+63 : _("""
+ Les noeuds pilotés %(i1)d et %(i2)d sont deux extrémités d'une arete intersectee.
+ Il est conseillé d'entrer des noeuds qui sont tous du meme coté de la fissure.
+"""),
+
+64 : _("""
+ Les noeuds pilot??s %(i1)d et %(i2)d sont deux extr??mit??s d'une arete intersectee.
+ Il est conseill?? d'entrer des noeuds qui sont tous du meme cot?? de la fissure.
 """),
 
 83 : _("""

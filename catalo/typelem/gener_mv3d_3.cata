@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+%& MODIF TYPELEM  DATE 01/02/2011   AUTEUR DELMAS J.DELMAS 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -124,6 +124,8 @@ MODE_LOCAL__
     ECONTNO  = SIEF_R   ELNO__ IDEN__  (SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ     DISS)
     ECONTNC  = SIEF_C   ELNO__ IDEN__  (SIXX     SIYY     SIZZ     SIXY     SIXZ     SIYZ     DISS)
     ECOEQNO  = SIEF_R   ELNO__ IDEN__  (VMIS     TRESCA   PRIN_1   PRIN_2   PRIN_3   VMIS_SG  )
+    EDERAPG  = DERA_R   ELGA__ RIGI    (DCHA_V   DCHA_T   RADI_V   RADI_T   )
+    EDERANO  = DERA_R   ELNO__ IDEN__  (DCHA_V   DCHA_T   RADI_V   RADI_T   )
     ESINGUL  = SING_R   ELEM__         (DEGRE   RAPPORT   TAILLE   )
     ESINGNO  = SING_R   ELNO__ IDEN__  (DEGRE   RAPPORT   TAILLE   )
     CPENALI  = VALO_R   ELEM__         (VALEUR   )
@@ -151,7 +153,6 @@ MATRICE__
     MMATVVR = MVAR_R DDL_NLOC DDL_NLOC
 
 OPTION__
-    VERI_JACOBIEN      328    IN__   NGEOMER  PGEOMER     OUT__  ECODRET  PCODRET
     ADD_SIGM            -1    IN__   XXXXXX   XXXXXX  OUT__  XXXXXX   XXXXXX
     AMOR_MECA           50    IN__   NGEOMER  PGEOMER  MMATUUR  PMASSEL  CMATERC  PMATERC  MMATUNS  PRIGINS
                                      ZVARCPG  PVARCPR
@@ -193,22 +194,22 @@ OPTION__
                               OUT__  MVECTDR  PVECTUR
     COOR_ELGA           488   IN__   NGEOMER  PGEOMER
                               OUT__  EGGEOP_R PCOORPG
-    DCHA_ELGA_SIGM      -1    IN__   XXXXXX   XXXXXX  OUT__  XXXXXX   XXXXXX
-    DCHA_ELNO_SIGM      -1    IN__   XXXXXX   XXXXXX  OUT__  XXXXXX   XXXXXX
-    ECIN_ELEM      -1    IN__   XXXXXX   XXXXXX  OUT__  XXXXXX   XXXXXX
+    DERA_ELGA           -1    IN__   XXXXXX   XXXXXX  OUT__  XXXXXX   XXXXXX
+    DERA_ELNO           -1    IN__   XXXXXX   XXXXXX  OUT__  XXXXXX   XXXXXX
+    ECIN_ELEM           -1    IN__   XXXXXX   XXXXXX  OUT__  XXXXXX   XXXXXX
     ENDO_ELNO           -1    IN__   XXXXXX   XXXXXX  OUT__  XXXXXX   XXXXXX
     ENEL_ELGA           -1    IN__   XXXXXX   XXXXXX  OUT__  XXXXXX   XXXXXX
-    ENEL_ELNO      -1    IN__   XXXXXX   XXXXXX  OUT__  XXXXXX   XXXXXX
+    ENEL_ELNO           -1    IN__   XXXXXX   XXXXXX  OUT__  XXXXXX   XXXXXX
     ENER_ELAS           -1    IN__   XXXXXX   XXXXXX  OUT__  XXXXXX   XXXXXX
     ENER_TOTALE         -1    IN__   XXXXXX   XXXXXX  OUT__  XXXXXX   XXXXXX
-    EPME_ELGA      -1    IN__   XXXXXX   XXXXXX  OUT__  XXXXXX   XXXXXX
-    EPME_ELNO      -1    IN__   XXXXXX   XXXXXX  OUT__  XXXXXX   XXXXXX
-    EPMG_ELGA      -1    IN__   XXXXXX   XXXXXX  OUT__  XXXXXX   XXXXXX
-    EPMG_ELNO      -1    IN__   XXXXXX   XXXXXX  OUT__  XXXXXX   XXXXXX
-    EPOT_ELEM      -1    IN__   XXXXXX   XXXXXX  OUT__  XXXXXX   XXXXXX
-    EPSG_ELGA      -1    IN__   XXXXXX   XXXXXX  OUT__  XXXXXX   XXXXXX
-    EPSG_ELNO      -1    IN__   XXXXXX   XXXXXX  OUT__  XXXXXX   XXXXXX
-    EPSI_ELGA      -1    IN__   XXXXXX   XXXXXX  OUT__  XXXXXX   XXXXXX
+    EPME_ELGA           -1    IN__   XXXXXX   XXXXXX  OUT__  XXXXXX   XXXXXX
+    EPME_ELNO           -1    IN__   XXXXXX   XXXXXX  OUT__  XXXXXX   XXXXXX
+    EPMG_ELGA           -1    IN__   XXXXXX   XXXXXX  OUT__  XXXXXX   XXXXXX
+    EPMG_ELNO           -1    IN__   XXXXXX   XXXXXX  OUT__  XXXXXX   XXXXXX
+    EPOT_ELEM           -1    IN__   XXXXXX   XXXXXX  OUT__  XXXXXX   XXXXXX
+    EPSG_ELGA           -1    IN__   XXXXXX   XXXXXX  OUT__  XXXXXX   XXXXXX
+    EPSG_ELNO           -1    IN__   XXXXXX   XXXXXX  OUT__  XXXXXX   XXXXXX
+    EPSI_ELGA           -1    IN__   XXXXXX   XXXXXX  OUT__  XXXXXX   XXXXXX
     EPSI_ELNO_DEPL      -1    IN__   XXXXXX   XXXXXX  OUT__  XXXXXX   XXXXXX
     EPSP_ELGA           -1    IN__   XXXXXX   XXXXXX  OUT__  XXXXXX   XXXXXX
     EPSP_ELNO           -1    IN__   XXXXXX   XXXXXX  OUT__  XXXXXX   XXXXXX
@@ -264,10 +265,8 @@ OPTION__
                                      DDL_MECA PDDEPLR  DDL_MECA PDEPL0R  DDL_MECA PDEPL1R  DDL_MECA PDEPLMR
                                      NGEOMER  PGEOMER  CMATERC  PMATERC  CTYPEPI  PTYPEPI  ZVARIPG  PVARIMR
                               OUT__  ECOPILO  PCOPILO
-    QIRE_ELEM      -1    IN__   XXXXXX   XXXXXX  OUT__  XXXXXX   XXXXXX
-    QIRE_ELNO      -1    IN__   XXXXXX   XXXXXX  OUT__  XXXXXX   XXXXXX
-    RADI_ELGA_SIGM      -1    IN__   XXXXXX   XXXXXX  OUT__  XXXXXX   XXXXXX
-    RADI_ELNO_SIGM      -1    IN__   XXXXXX   XXXXXX  OUT__  XXXXXX   XXXXXX
+    QIRE_ELEM           -1    IN__   XXXXXX   XXXXXX  OUT__  XXXXXX   XXXXXX
+    QIRE_ELNO           -1    IN__   XXXXXX   XXXXXX  OUT__  XXXXXX   XXXXXX
     RAPH_MECA           545   IN__   CCAMASS  PCAMASS  CCARCRI  PCARCRI  CCOMPOR  PCOMPOR  ECONTPG  PCONTMR
                                      DDL_MECA PDEPLMR  DDL_MECA PDEPLPR  NGEOMER  PGEOMER  CTEMPSR  PINSTMR
                                      CTEMPSR  PINSTPR  CMATERC  PMATERC  ZVARCPG  PVARCMR  ZVARCPG  PVARCPR
@@ -293,18 +292,18 @@ OPTION__
                                      ZVARCPG  PVARCRR  ZVARIPG  PVARIMR
                               OUT__  MMATUNS PMATUNS MMATUUR  PMATUUR
     SYME_MDNS_R         -1    IN__   XXXXXX   XXXXXX  OUT__  XXXXXX   XXXXXX
-    SIEF_ELGA      -1    IN__   XXXXXX   XXXXXX  OUT__  XXXXXX   XXXXXX
+    SIEF_ELGA           -1    IN__   XXXXXX   XXXXXX  OUT__  XXXXXX   XXXXXX
     SIEF_ELGA_ELNO      -1    IN__   XXXXXX   XXXXXX  OUT__  XXXXXX   XXXXXX
     SIEF_ELGA_SENS      -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
-    SIEF_ELNO      98    IN__   ECONTPG  PCONTRR
+    SIEF_ELNO           98    IN__   ECONTPG  PCONTRR
                               OUT__  ECONTNO  PSIEFNOR
     SIGM_ELNO_DEPL      -1    IN__   XXXXXX   XXXXXX  OUT__  XXXXXX   XXXXXX
     SIGM_ELNO_SENS      -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
     SING_ELEM           99    IN__   NGEOMER  PGEOMER
                               OUT__  ESINGUL  PSING_R
-    SING_ELNO      99    IN__   ESINGUL  PSING_R
+    SING_ELNO           99    IN__   ESINGUL  PSING_R
                               OUT__  ESINGNO  PSINGNO
     TOU_INI_ELGA        99    IN__   NGEOMER  PGEOMER
                               OUT__  EDOMGGA  PDOMMAG  EGGEOM_R PGEOM_R  EGINST_R PINST_R  EGNEUT_F PNEUT_F
@@ -317,4 +316,6 @@ OPTION__
                               OUT__  ZVARIPG  PVARIGR
     VARI_ELNO_ELGA      20    IN__   CCOMPOR  PCOMPOR  ZVARIPG  PVARIGR
                               OUT__  ZVARINO  PVARINR
+    VERI_JACOBIEN      328    IN__   NGEOMER  PGEOMER
+                              OUT__  ECODRET  PCODRET
     WEIBULL             -1    IN__   XXXXXX   XXXXXX  OUT__  XXXXXX   XXXXXX

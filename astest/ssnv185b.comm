@@ -1,4 +1,4 @@
-# MODIF  DATE 25/01/2011   AUTEUR MACOCCO K.MACOCCO 
+# MODIF  DATE 31/01/2011   AUTEUR MACOCCO K.MACOCCO 
 # TITRE FISSURE DEBOUCHANTE DANS UNE PLAQUE 3D DE LARGEUR FINIE AVEC X-FEM
 # ssnv185b.para = tps_job 250 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -258,7 +258,6 @@ TEST_TABLE(TABLE=GLagr,
 #------------------------------------------------------------------------
 
 PK=POST_K1_K2_K3(MODELISATION='3D',
-                     MAILLAGE=MAILLAG1,
                      MATER=ACIER,
                      FISSURE = FISS,
                      DTAN_ORIG = (0,-1,0),

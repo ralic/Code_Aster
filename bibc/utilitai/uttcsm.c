@@ -1,8 +1,8 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF UTTCSM UTILITAI  DATE 07/09/2009   AUTEUR PELLET J.PELLET */
+/* MODIF UTTCSM UTILITAI  DATE 31/01/2011   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
-/* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
+/* COPYRIGHT (C) 1991 - 2011  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
 /* THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR      */
 /* MODIFY IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS     */
@@ -50,26 +50,29 @@
 
 void DEFP(UTTCSM, uttcsm, DOUBLE *t_csm)
 {
+    DOUBLE elaps;
 
+#ifdef _POSIX
+/* calcul de elaps avec gettimeofday  */
+    struct timeval tv;
+    struct timezone tz;
+    gettimeofday(&tv,&tz);
+    elaps=(DOUBLE) tv.tv_sec + (DOUBLE) tv.tv_usec / 1000000.;
+
+#else
 /* calcul de elaps : date depuis epoch en secondes
    ce nombre est stocké dans un double
-   Sur calibre5, la valeur semble s'incrémenter de seconde en seconde : elaps est enfait un entier !
-time_t t1, t0, *pt1 ;
-DOUBLE elaps;
-t0=0;
-t1=time(NULL);
-elaps=difftime(t1,t0);
+   Parfois à la seconde près.
+   Sous WIN, gettimeofday n'existe pas.
+   Une implémentation : http://www.suacommunity.com/dictionary/gettimeofday-entry.php
 */
+    time_t t1, t0, *pt1 ;
+    t0=0;
+    t1=time(NULL);
+    elaps=difftime(t1,t0);
+#endif
 
-
-/* calcul de elaps avec gettimeofday  */
-DOUBLE elaps;
-struct timeval tv;
-struct timezone tz;
-gettimeofday(&tv,&tz);
-elaps=(DOUBLE) tv.tv_sec + (DOUBLE) tv.tv_usec / 1000000.;
-
-t_csm[2]=elaps;
+    t_csm[2]=elaps;
 
 
 #ifdef _POSIX

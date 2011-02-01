@@ -1,4 +1,4 @@
-#@ MODIF calculel5 Messages  DATE 18/01/2011   AUTEUR MEUNIER S.MEUNIER 
+#@ MODIF calculel5 Messages  DATE 31/01/2011   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -22,6 +22,18 @@
 def _(x) : return x
 
 cata_msg = {
+
+1 : _("""
+Erreur utilisateur dans MODI_MAILLAGE / DEFORME :
+  Le fichier de déplacement fourni est associé au maillage : %(k2)s
+  Alors que le maillage à déformer est : %(k1)s
+
+  Il faut que ces 2 maillages soient les mêmes.
+
+Conseils :
+  Pour créer un champ de déplacement adapté au maillage %(k1)s, on peut utiliser
+  la commande PROJ_CHAMP.
+"""),
 
 2 : _("""
  pour les options de thermique, il y a encore a travailler !!

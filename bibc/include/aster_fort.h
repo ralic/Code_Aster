@@ -1,7 +1,7 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF aster_fort include  DATE 19/10/2010   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF aster_fort include  DATE 31/01/2011   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
-/* COPYRIGHT (C) 1991 - 2010  EDF R&D              WWW.CODE-ASTER.ORG */
+/* COPYRIGHT (C) 1991 - 2011  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
 /* THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR      */
 /* MODIFY IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS     */
@@ -133,7 +133,7 @@ extern void DEFSPPSPPPSP(RSACPA,rsacpa,char *, STRING_SIZE, INTEGER *, INTEGER *
 
 /* particulier car on passe les longueurs des chaines en dur */
 extern void DEFSPSPPPS(RSACCH,rsacch,char *, STRING_SIZE, INTEGER *, char *,STRING_SIZE,INTEGER *, INTEGER *, INTEGER *, char *,STRING_SIZE);
-#ifdef _POSIX
+#ifdef _STRLEN_AT_END
 #define CALL_RSACCH(nomsd, numch, nomch, nbord, liord, nbcmp, liscmp) \
                   F_FUNC(RSACCH,rsacch)(nomsd,numch,nomch,nbord,liord,nbcmp,liscmp, strlen(nomsd),16,8)
 #else
@@ -157,7 +157,7 @@ extern void DEFSS(U2MESS, u2mess, char *, STRING_SIZE, char *, STRING_SIZE);
 /* particulier car on fixe les longueurs des chaines valk */
 #define VALK_SIZE 128
 extern void DEFSSPSPPPP(U2MESG, u2mesg, char *, STRING_SIZE, char *, STRING_SIZE, INTEGER *, char *, STRING_SIZE, INTEGER *, INTEGER *, INTEGER *, DOUBLE *);
-#ifdef _POSIX
+#ifdef _STRLEN_AT_END
 #define CALL_U2MESG(cod, idmess, nk, valk, ni, vali, nr, valr) \
                 F_FUNC(U2MESG, u2mesg)(cod, idmess, nk, valk, ni, vali, nr, valr, strlen(cod), strlen(idmess), VALK_SIZE)
 #else

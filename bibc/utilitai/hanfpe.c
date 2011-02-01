@@ -1,8 +1,8 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF hanfpe utilitai  DATE 07/04/2009   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF hanfpe utilitai  DATE 31/01/2011   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
-/* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
+/* COPYRIGHT (C) 1991 - 2011  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
 /* THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR      */
 /* MODIFY IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS     */
@@ -35,7 +35,7 @@
 #include <siginfo.h>
 #include <ucontext.h>
    void hanfpe (int sig, siginfo_t *sip, ucontext_t *uap)
-#elif defined _POSIX
+#else
    void hanfpe (int sig)
 #endif
 {

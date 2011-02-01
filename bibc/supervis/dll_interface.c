@@ -1,7 +1,7 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF dll_interface supervis  DATE 25/10/2010   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF dll_interface supervis  DATE 31/01/2011   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
-/* COPYRIGHT (C) 1991 - 2010  EDF R&D              WWW.CODE-ASTER.ORG */
+/* COPYRIGHT (C) 1991 - 2011  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
 /* THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR      */
 /* MODIFY IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS     */
@@ -19,7 +19,6 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <dlfcn.h>
 
 #include <Python.h>
 
@@ -28,6 +27,10 @@
 #include "definition_pt.h"
 
 #include "dll_register.h"
+
+#ifdef _POSIX
+#include <dlfcn.h>
+#endif
 
 /* *********************************************************************
  * 
@@ -59,11 +62,13 @@ PyObject* get_dll_register_dict()
 
 void STDCALL(DLLCLS, dllcls)()
 {
+#ifdef _POSIX
     /* Unload all components
      */
     dll_init();
-    libsymb_apply_on_all(DLL_DICT, (void*)dlclose, 1);
+    libsymb_apply_on_all(DLL_DICT, (FUNC_PTR)dlclose, 1);
     Py_DECREF(DLL_DICT);
     DLL_DICT = NULL;
+#endif
 }
 

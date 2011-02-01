@@ -1,10 +1,10 @@
-      SUBROUTINE ENVDEP(NUMPAS,NBPAL,DT,DTSTO,NEQ,TEMPS,
-     &      DEP,VIT,NUMDDL,VROTAT,NOPAL, TYPAL, FINPAL,PRDEFF,CNPAL)
+      SUBROUTINE ENVDEP(NUMPAS,NBPAL,DT,DTSTO,TEMPS,
+     &                  DEP,VIT,VROTAT,FINPAL,PRDEFF)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ECHANGE  DATE 16/02/2010   AUTEUR GREFFET N.GREFFET 
+C MODIF ECHANGE  DATE 31/01/2011   AUTEUR GREFFET N.GREFFET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -233,9 +233,8 @@ C TOLE CRP_4 CRP_6  CRS_512
 
 C     ARGUMENTS
 C     =========
-      INTEGER       NUMPAS, NEQ, NBPAL
+      INTEGER       NUMPAS, NBPAL
       REAL*8        TEMPS, DEP(NBPAL,*),VIT(NBPAL,*),DT,DTSTO,VROTAT
-      CHARACTER*14  NUMDDL
       LOGICAL       PRDEFF
 
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
@@ -254,28 +253,22 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32 ZK32
       CHARACTER*80 ZK80
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
-      CHARACTER*32     JEXNUM, JEXNOM
 
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
 
 
 C     VARIABLES INTERNES
 C     ==================
-      INTEGER       IFM, NIV,L,CONV
+      INTEGER       IFM, NIV
       CHARACTER*8   NOMPRG
       PARAMETER(NOMPRG='ENVDEP')
 
-      CHARACTER*3   COMP(6)
-      INTEGER       NNO,NDDL
       INTEGER*4     IPAT,IPAL,INFO,NPAS
       REAL*8        VITPAL(6),DEPPAL(6),TR8
       REAL*8        POSVIT(11),RZPR
       INTEGER*4     ONZE
       PARAMETER  (ONZE=11)  
-      REAL*8        PI
-C      PARAMETER (PI=3.14159265359)   
-C      PARAMETER (PI=3.14116)                
-      
+      REAL*8        R8PI,PI
       
 C     ANCIENS INCLUDE (CALCIUM.H)
 C     ===========================
@@ -288,28 +281,23 @@ C     ===========================
 
 C     COMMON
 C     ======
-      INTEGER     ICOMPO
-   
-      INTEGER       PALMAX 
+      INTEGER       ICOMPO   
+      INTEGER       PALMAX
       PARAMETER (PALMAX=20)
-      CHARACTER*6   TYPAL(PALMAX)
+      INTEGER       IADR
       CHARACTER*3   FINPAL(PALMAX)
-      
-      INTEGER       NOPAL(PALMAX) 
-      CHARACTER*6  CNPAL(PALMAX)    
-
-      INTEGER       IADR,IADRI,IADRK,IAPP
-      CHARACTER*24  AYACS   
+      CHARACTER*24  AYACS
 C
 C     DEBUT SSP
 C     =========
 C
       CALL JEMARQ()
+      NIV = 0
       CALL INFDBG('YACS_EDYOS',IFM,NIV)
 C
 C     initialisation de pi
 C     --------------------
-      PI = ATAN(1.D0)*4.D0  
+      PI = R8PI()  
 C      
 C     ASSIGNATION DES NOMS POUR LES ADRESSES DANS LES COMMON ASTER
 C     ------------------------------------------------------------ 
@@ -329,15 +317,6 @@ C
 C     RZPR: ROTATION INITIALE (PAS UTILISÉE PAR EDYOS (XAV))
 C     ------------------------------------------------------
       RZPR =0.D0
-C      
-C     RECHERCHE DES DDL CONCERNES POUR LES VALEURS EN SORTIE
-C     ------------------------------------------------------
-      COMP(1)='DX'
-      COMP(2)='DY'
-      COMP(3)='DZ'
-      COMP(4)='DRX'
-      COMP(5)='DRY'
-      COMP(6)='DRZ'
 C
 C     REMPLISSAGE DU VECTEUR POSVIT POUR EDYOS
 C     ----------------------------------------

@@ -1,10 +1,10 @@
-      SUBROUTINE NMPILA(NUMEDD,SDPILO,DTAU  ,DEPDEL,DDEPL0,
+      SUBROUTINE NMPILA(NUMEDD,SDPILO,ISXFE,DTAU  ,DEPDEL,DDEPL0,
      &                  DDEPL1,NBEFFE,ETA   ,PILCVG)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/03/2010   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 01/02/2011   AUTEUR MASSIN P.MASSIN 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -27,6 +27,7 @@ C
       CHARACTER*24 NUMEDD
       CHARACTER*19 DDEPL0,DDEPL1,DEPDEL     
       REAL*8       DTAU, ETA(2)
+      LOGICAL      ISXFE
 C 
 C ----------------------------------------------------------------------
 C
@@ -39,6 +40,7 @@ C
 C
 C IN  NUMEDD : NUME_DDL
 C IN  SDPILO : SD PILOTAGE
+C IN  ISXFE  : INDIQUE S'IL S'AGIT D'UN MODELE XFEM
 C IN  DEPDEL : INCREMENT DE DEPLACEMENT DEPUIS DEBUT PAS DE TEMPS
 C IN  DDEPL0 : INCREMENT DE DEPLACEMENT K-1.F_DONNE
 C IN  DDEPL1 : INCREMENT DE DEPLACEMENT K-1.F_PILO
@@ -65,14 +67,14 @@ C
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C
 C ---------- FIN  DECLARATIONS  NORMALISEES  JEVEUX -------------------
-C
-      INTEGER      I, NRAC
-      REAL*8       R0, R1, R2, DTAU2, RAC(2)
-      INTEGER      JDEP0,JDEP1,JDEPDE,JCOEF
+
+      INTEGER      I, J ,NRAC
+      REAL*8       R0, D0, R1, D1, R2, DTAU2, RAC(2),SIGN
+      INTEGER      JDEP0,JDEP1,JDEPDE,JCOEF,JCOEE
       INTEGER      NEQ,IRET
       CHARACTER*8  K8BID      
       INTEGER      IFM,NIV
-      CHARACTER*19 CHAPIL      
+      CHARACTER*19 CHAPIL,CHAPIC      
 C
 C ----------------------------------------------------------------------
 C
@@ -87,13 +89,17 @@ C
 C
 C --- INITIALISATIONS
 C
-      PILCVG = 0 
+      PILCVG = 0
+      IF(ISXFE) THEN
+      SIGN = DTAU/ABS(DTAU)
+      SIGN = 1.D0
+      ENDIF
       DTAU2 = DTAU**2
       R0    = - DTAU2
       R1    = 0.D0
       R2    = 0.D0
       CALL DISMOI('F','NB_EQUA',NUMEDD,'NUME_DDL',NEQ,K8BID,IRET)
-C
+C      
 C --- ACCES OBJETS JEVEUX
 C
       CALL JEVEUO(DDEPL0(1:19)//'.VALE','L',JDEP0)
@@ -101,27 +107,61 @@ C
       CALL JEVEUO(DEPDEL(1:19)//'.VALE','L',JDEPDE)
       CHAPIL = SDPILO(1:14)//'.PLCR'
       CALL JEVEUO(CHAPIL(1:19)//'.VALE','L',JCOEF)
+      IF(ISXFE) THEN
+      CHAPIC = SDPILO(1:14)//'.PLCI'
+      CALL JEVEUO(CHAPIC(1:19)//'.VALE','L',JCOEE)
+      ENDIF
+      
+
 C
 C --- CALCUL DES COEFFICIENTS DU POLYNOME DE DEGRE 2
-C
-      DO 10 I = 1, NEQ
-        R0 = R0 + ZR(JCOEF+I-1) * 
+      IF(ISXFE) THEN
+      DO 20 I = 1, NEQ
+        IF(ZR(JCOEE+I-1).EQ.0.D0) THEN
+          R0 = R0 + ZR(JCOEF+I-1)**2*
      &      (ZR(JDEPDE+I-1)+ZR(JDEP0+I-1))**2
-        R1 = R1 + ZR(JCOEF+I-1) * 
+          R1 = R1 + SIGN*ZR(JCOEF+I-1)**2*
      &      (ZR(JDEPDE+I-1)+ZR(JDEP0+I-1))*ZR(JDEP1+I-1)
-        R2 = R2 + ZR(JCOEF+I-1) *
+          R2 = R2 + ZR(JCOEF+I-1)**2*
      &       ZR(JDEP1+I-1) * ZR(JDEP1+I-1)
- 10   CONTINUE
+        ELSE
+          D0  = 0.D0
+          D1  = 0.D0         
+          DO 30 J = I+1, NEQ
+             IF(ZR(JCOEE+I-1).EQ.ZR(JCOEE+J-1)) THEN    
+                D0 = D0 + 
+     &       ZR(JCOEF+I-1)*(ZR(JDEPDE+I-1)+ZR(JDEP0+I-1))+   
+     &       ZR(JCOEF+J-1)*(ZR(JDEPDE+J-1)+ZR(JDEP0+J-1))
+                D1 = D1 + ZR(JCOEF+I-1)*ZR(JDEP1+I-1)+
+     &               ZR(JCOEF+J-1)*ZR(JDEP1+J-1)
+             ENDIF
+ 30       CONTINUE 
+          R0 = R0 + D0**2
+          R1 = R1 + SIGN*D1*D0
+          R2 = R2 + D1**2         
+        ENDIF
+ 20   CONTINUE
+      ELSE
+         DO 10 I = 1, NEQ
+           R0 = R0 + ZR(JCOEF+I-1) * 
+     &      (ZR(JDEPDE+I-1)+ZR(JDEP0+I-1))**2
+           R1 = R1 + ZR(JCOEF+I-1) * 
+     &      (ZR(JDEPDE+I-1)+ZR(JDEP0+I-1))*ZR(JDEP1+I-1)
+           R2 = R2 + ZR(JCOEF+I-1) *
+     &       ZR(JDEP1+I-1) * ZR(JDEP1+I-1)
+ 10      CONTINUE
+      ENDIF
+ 
       R1 = 2.D0*R1
       IF (R2.EQ.0) THEN
         CALL ASSERT(.FALSE.)
       ENDIF 
       IF (NIV.GE.2) THEN
-        WRITE (IFM,*) '<PILOTAGE> ...... EQUATION X+BX+C: ',R1/R2,R0/R2
+        WRITE (IFM,*) '<PILOTAGE> ....EQUATION X2+BX+C: ',R1/R2,R0/R2
       ENDIF          
 C
 C --- RESOLUTION DE L'EQUATION DE DEGRE DEUX
-C
+
       CALL ZEROP2(R1/R2,R0/R2,RAC,NRAC)
 C         
       IF (NRAC.EQ.0) THEN

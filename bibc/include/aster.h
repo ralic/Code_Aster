@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF aster include  DATE 24/01/2011   AUTEUR BOITEAU O.BOITEAU */
+/* MODIF aster include  DATE 31/01/2011   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2011  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -30,7 +30,9 @@
    --          DEBUT aster.h          --
    ------------------------------------- */
 
+#ifndef min
 #define min(A,B)  ((A) < (B) ? (A) : (B))
+#endif
 
 /* pour indiquer le statut des arguments des fonctions. */
 
@@ -75,6 +77,13 @@ extern DOUBLE STDCALL(R8PI,r8pi)();
         }
 
 #define EstValide(c) (isprint((int)c) && (isalnum((int)c) || (c=='_') || (c==' ')))
+
+
+/* deprecated functions on Windows */
+#ifdef _WINDOWS
+#define strdup _strdup
+#endif
+
 
 /* -------------------------------------
    --           FIN  aster.h          --

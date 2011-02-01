@@ -2,9 +2,9 @@
       IMPLICIT      NONE
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 19/10/2010   AUTEUR DESOZA T.DESOZA 
+C MODIF ALGORITH  DATE 01/02/2011   AUTEUR MASSIN P.MASSIN 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -71,7 +71,7 @@ C
       PARAMETER   (LEEVR=4,LEEVK=3,LESUR=8)
       PARAMETER   (LAEVR=5,LATPR=6,LATPK=4)
 
-      INTEGER      IRET,N,JLIR
+      INTEGER      IRET,N,JLIR,JPIL
       INTEGER      JEEVR,JEEVK,JESUR,JAEVR,JATPR,JATPK
       CHARACTER*8  K8BID
 C
@@ -154,7 +154,9 @@ C     ------------------------------------------------------------------
      &              QUEST.EQ.'SUBD_ITER_IGNO'.OR.
      &              QUEST.EQ.'SUBD_ITER_FIN'.OR.
      &              QUEST.EQ.'SUBD_ITER_PLUS'.OR.
-     &              QUEST.EQ.'VERIF_EVEN'.OR.
+     &              QUEST.EQ.'CHOIX_SOLU_PILO'.OR.
+     &              QUEST.EQ.'ESSAI_ITER_PILO'.OR.          
+     &              QUEST.EQ.'VERIF_EVEN'.OR.    
      &              QUEST.EQ.'NB_OCC')
         
         IF (QUEST.EQ.'NB_OCC') THEN
@@ -168,6 +170,7 @@ C     ------------------------------------------------------------------
           IF (N.EQ.1) VALK = 'DIVERGENCE_ERRE'
           IF (N.EQ.2) VALK = 'DELTA_GRANDEUR'
           IF (N.EQ.3) VALK = 'COLLISION'
+          IF (N.EQ.4) VALK = 'DIVE_ITER_PILO'
 
         ELSEIF (QUEST.EQ.'VERIF_EVEN') THEN
           CALL JEVEUO(SD//'.EEVR',GETSET,JEEVR)
@@ -251,6 +254,25 @@ C     ------------------------------------------------------------------
           CALL JEVEUO(SD//'.ESUR',GETSET,JESUR)
           VALR = ZR(JESUR-1+LESUR*(IOCC-1)+8)
           VALI = NINT(VALR)
+          
+        ELSEIF (QUEST.EQ.'CHOIX_SOLU_PILO') THEN
+          CALL JEVEUO(SD//'.EPIL',GETSET,JPIL)
+          N = ZI(JPIL)
+          IF(GETSET.EQ.'L') THEN
+            IF(N.EQ.1) VALK = 'NATUREL'
+            IF(N.EQ.2) VALK = 'AUTRE'
+          ELSE IF(GETSET.EQ.'E') THEN
+            IF(VALK.EQ.'NATUREL') ZI(JPIL)=1
+            IF(VALK.EQ.'AUTRE') ZI(JPIL)=2                     
+          ENDIF
+          
+        ELSEIF (QUEST.EQ.'ESSAI_ITER_PILO') THEN
+          CALL JEVEUO(SD//'.EPIL',GETSET,JPIL)
+          IF(GETSET.EQ.'L') THEN
+            VALI = ZI(JPIL+1)
+          ELSE IF(GETSET.EQ.'E') THEN
+            ZI(JPIL+1) = VALI                     
+          ENDIF                  
         
         ENDIF
 
@@ -269,7 +291,7 @@ C     ------------------------------------------------------------------
      &              QUEST.EQ.'PCENT_AUGM'.OR.
      &              QUEST.EQ.'VALE_REF'.OR.
      &              QUEST.EQ.'NOM_CHAM'.OR.
-     &              QUEST.EQ.'NOM_CMP'.OR.
+     &              QUEST.EQ.'NOM_CMP'.OR.     
      &              QUEST.EQ.'NU_CMP'.OR.
      &              QUEST.EQ.'NB_ITER_NEWTON_REF'.OR.
      &              QUEST.EQ.'NB_OCC')

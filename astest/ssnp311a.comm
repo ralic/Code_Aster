@@ -1,4 +1,4 @@
-# MODIF  DATE 25/01/2011   AUTEUR MACOCCO K.MACOCCO 
+# MODIF  DATE 31/01/2011   AUTEUR MACOCCO K.MACOCCO 
 # TITRE BIBLIO_131 FISSURE EN MODE 2 D'UNE EPROUVETTE ELASTOPLASTIQUE
 # ssnp311a.para = tps_job 190 mem_job 128Mo ncpus 1 liste_test V
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -179,8 +179,6 @@ CHAMDEPL=CALC_ELEM( reuse=CHAMDEPL,
                             OPTION=(
                   'SIEF_ELNO',  'VARI_ELNO_ELGA',),
                           RESULTAT=CHAMDEPL,
-
-                        CHAM_MATER=CHMAT
               )
 
 #

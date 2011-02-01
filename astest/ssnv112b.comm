@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 31/01/2011   AUTEUR COURTOIS M.COURTOIS 
 # TITRE CYLINDRE EN INCOMPRESSIBLE (TETRA10) GRANDES DEFORMATIONS
 # ssnv112b.para = tps_job 60 mem_job 200Mo mem_aster 70 ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -334,9 +334,9 @@ TEST_RESU(RESU=_F(RESULTAT=EVOL,
                   NOM_CMP='NUEST',
                   MAILLE='M537',
                   POINT=1,
-                  VALE=2.1937947611240,
+                  VALE=2.193794,
                   CRITERE='RELATIF',
-                  PRECISION=6.E-7,
+                  PRECISION=1.E-6,
                   REFERENCE='NON_REGRESSION',
                   VERSION='9.05.04',),);
 
@@ -346,9 +346,9 @@ TEST_RESU(RESU=_F(RESULTAT=EVOL,
                   NOM_CMP='ERREST',
                   MAILLE='M537',
                   GROUP_NO='A',
-                  VALE=6.6736644029739E-04,
+                  VALE=6.673664E-04,
                   CRITERE='RELATIF',
-                  PRECISION=6.E-7,
+                  PRECISION=1.E-6,
                   REFERENCE='NON_REGRESSION',
                   VERSION='9.05.04',),);
 

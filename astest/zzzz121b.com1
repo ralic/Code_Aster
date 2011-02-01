@@ -1,0 +1,110 @@
+# TITRE COUPLAGE ASTER_HOMARD - CAS TRIDIMENSIONNEL
+#       Controle de POURSUITE en adaptation de maillage
+#       Ce cas est purement informatique
+POURSUITE( CODE=_F(  NOM = 'ZZZZ121B',) )
+#
+# 21. ADAPTATION DU MAILLAGE DE CINQ VERS SIX
+#    . UNIFORME
+#    . EN LIMITANT LE RAFFINEMENT PAR UN DIAMETRE MINIMAL DE 0.5
+#    . MISE A JOUR DU CHAMP DE DEPLACEMENT EN FILTRANT PAR LES COMPOSANTES
+
+MACR_ADAP_MAIL(MAILLAGE_N=MCINQ,
+               MAILLAGE_NP1=CO('MSIX'),
+               ADAPTATION='RAFFINEMENT_UNIFORME',
+               DIAM_MIN=0.5,
+               MAJ_CHAM=(_F(CHAM_MAJ=CO('D6DX'),
+                           TYPE_CHAM='NOEU_DEPL_R',
+                           RESULTAT=RESUCINQ,
+                           NOM_CHAM='DEPL',
+                           NUME_ORDRE=1,
+                           NOM_CMP='DX',),
+                         _F(CHAM_MAJ=CO('D6DYDZ'),
+                           TYPE_CHAM='NOEU_DEPL_R',
+                           RESULTAT=RESUCINQ,
+                           NOM_CHAM='DEPL',
+                           NUME_ORDRE=1,
+                           NOM_CMP=('DY','DZ'),),
+                         _F(CHAM_MAJ=CO('D6'),
+                           TYPE_CHAM='NOEU_DEPL_R',
+                           RESULTAT=RESUCINQ,
+                           NOM_CHAM='DEPL',
+                           NUME_ORDRE=1,),),
+               );
+#  AVEC LES IMPRESSIONS SUIVANTES, ON PEUT CONTROLER QU'INTERPOLER TOUTES LES
+#  LES COMPOSANTES ENSEMBLE OU SEPAREMENT PRODUIT LES MEMES CHAMPS
+#IMPR_RESU(RESU=(_F(CHAM_GD=D6DX,),),);
+#IMPR_RESU(RESU=(_F(CHAM_GD=D6DYDZ,),),);
+#IMPR_RESU(RESU=(_F(CHAM_GD=D6,),),);
+#
+# 22. CALCUL SUR LE MAILLAGE SIX
+# 22.1. MODELE MECANIQUE
+
+MODESIX=AFFE_MODELE(MAILLAGE=MSIX,
+                     AFFE=_F(TOUT='OUI',
+                             PHENOMENE='MECANIQUE',
+                             MODELISATION='3D',),);
+#
+# 22.2. MISE EN PLACE DES MATERIAUX
+
+MATESIX=AFFE_MATERIAU(MAILLAGE=MSIX,
+                       AFFE=(_F(GROUP_MA='MOITIE1',
+                                MATER=MATER1,),
+                             _F(GROUP_MA='MOITIE2',
+                                MATER=MATER2,),),);
+#
+# 22.3. CHARGEMENTS
+
+CHARSIX=AFFE_CHAR_MECA(MODELE=MODESIX,
+                        PESANTEUR=_F(GRAVITE=9.81,
+                                     DIRECTION=(0.,0.,-1.,),),
+                        DDL_IMPO=(_F(GROUP_NO='J',
+                                    DZ=0.,),
+                                  _F(GROUP_MA='O_I',
+                                     DX=0.,
+                                     DY=0.,
+                                     DZ=0.,),),
+                        FORCE_FACE=_F(GROUP_MA='Z_1',
+                                      FZ=FORCE_Z,),
+                        PRES_REP=(_F(GROUP_MA='Y_0',
+                                     PRES=PRES_0,),
+                                  _F(GROUP_MA='BORD_EXT',
+                                     PRES=PRES_0,),),);
+#
+# 22.4. RESOLUTION
+
+RESUSIX=MECA_STATIQUE(MODELE=MODESIX,
+                       CHAM_MATER=MATESIX,
+                       EXCIT=_F(CHARGE=CHARSIX,),);
+#
+# 23. TEST DE NON REGRESSION
+
+TEST_RESU(CHAM_NO=(_F(CHAM_GD=D6DX,
+                     GROUP_NO='OPPOSE',
+                     NOM_CMP='DX',
+                     VALE=2.84756126E-02,
+                     CRITERE='RELATIF',
+                     PRECISION=1E-06,
+                     REFERENCE='NON_REGRESSION',
+                     VERSION='10.03.03',),
+                   _F(CHAM_GD=D6DYDZ,
+                     GROUP_NO='OPPOSE',
+                     NOM_CMP='DZ',
+                     VALE=-5.46210778E-02,
+                     CRITERE='RELATIF',
+                     PRECISION=1E-06,
+                     REFERENCE='NON_REGRESSION',
+                     VERSION='10.03.03',),),
+          RESU=_F(RESULTAT=RESUSIX,
+                  NUME_ORDRE=1,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DZ',
+                  GROUP_NO='OPPOSE',
+                  VALE=-1.96521135E-01,
+                  CRITERE='RELATIF',
+                  PRECISION=1E-06,
+                  REFERENCE='NON_REGRESSION',
+                  VERSION='10.03.02',),);
+
+###IMPR_RESU(FORMAT='MED',RESU=_F(RESULTAT=RESUSIX,),);
+
+FIN();

@@ -1,8 +1,8 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF IODR utilitai  DATE 07/04/2009   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF IODR utilitai  DATE 31/01/2011   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
-/* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
+/* COPYRIGHT (C) 1991 - 2011  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
 /* THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR      */
 /* MODIFY IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS     */
@@ -147,7 +147,8 @@ void DEFSPPPP(READDR, readdr, char *dfname, STRING_SIZE len_dfname, void *buf,
                               INTEGER *nbytes, INTEGER *irec, INTEGER *ierr)
 {
     long offset;
-    long iu,nbval,nbseek;
+    long iu,nbseek;
+    INTEGER nbval;
     char fname[24];
 
     *ierr = 0;
@@ -170,7 +171,7 @@ void DEFSPPPP(READDR, readdr, char *dfname, STRING_SIZE len_dfname, void *buf,
     }
     offset = (*irec-1)*nenr[iu]+OFF_INIT;
     nbseek=fseek(fpfile[iu],offset, SEEK_SET);
-    nbval=fread(buf,1,*nbytes,fpfile[iu]);
+    nbval=(INTEGER)fread(buf,1,(size_t)(*nbytes),fpfile[iu]);
  if ( nbval != *nbytes ) {*ierr = -4;}
 
 }
@@ -179,7 +180,8 @@ void DEFSPPPPPP(WRITDR, writdr, char *dfname, STRING_SIZE len_dfname, void *buf,
             INTEGER *nbytes, INTEGER *irec, INTEGER *indic, INTEGER *s, INTEGER *ierr)
 {
     long offset;
-    long iu,nbval,nbseek,nbwrite;
+    long iu,nbseek,nbwrite;
+    INTEGER nbval;
     char fname[24];
 
 
@@ -203,7 +205,7 @@ void DEFSPPPPPP(WRITDR, writdr, char *dfname, STRING_SIZE len_dfname, void *buf,
     }
     offset = (*irec-1)*(nenr[iu])+OFF_INIT;
     nbseek=fseek(fpfile[iu],offset, SEEK_SET);
-    nbval=fwrite(buf,1,*nbytes,fpfile[iu]);
+    nbval=(INTEGER)fwrite(buf,1,(size_t)(*nbytes),fpfile[iu]);
 
     if ( nbval != *nbytes ) {*ierr = -4;}
 }

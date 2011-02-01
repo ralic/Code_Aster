@@ -1,9 +1,9 @@
-# MODIF  DATE 07/12/2010   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 31/01/2011   AUTEUR NICOLAS G.NICOLAS 
 # TITRE COUPLAGE ASTER_HOMARD - CAS TRIDIMENSIONNEL
 # zzzz121b.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -455,6 +455,7 @@ TEST_RESU(CHAM_NO=_F(CHAM_GD=DEPLTROI,
 #     . RAFFINEMENT SELON LA VALEUR RELATIVE DE l'INDICATEUR
 #     . SELECTION DE L'INDICATEUR PAR LA DERIVEE D'UN CHAMP DE GRANDEUR
 #     . MISE A JOUR DE LA DERIVEE D'UN CHAMP DE GRANDEUR
+#     . MISE A JOUR EN AUTO ET EN ISO-P2
 
 MACR_ADAP_MAIL(MAILLAGE_N=MTROI,
                MAILLAGE_NP1=CO('MQUAT'),
@@ -472,13 +473,53 @@ MACR_ADAP_MAIL(MAILLAGE_N=MTROI,
                             NOM_CHAM='DEPL',
                             SENSIBILITE=FZ,
                             NUME_ORDRE=1,),
-                         _F(CHAM_MAJ=CO('U___QUAT'),
+                         _F(CHAM_MAJ=CO('U_4_AUTO'),
                             TYPE_CHAM='NOEU_DEPL_R',
                             RESULTAT=RESUTROI,
                             NOM_CHAM='DEPL',
-                            NUME_ORDRE=1,),),
+                            NUME_ORDRE=1,
+                            TYPE_MAJ='AUTO',),
+                         _F(CHAM_MAJ=CO('U_4_ISP2'),
+                            TYPE_CHAM='NOEU_DEPL_R',
+                            RESULTAT=RESUTROI,
+                            NOM_CHAM='DEPL',
+                            NUME_ORDRE=1,
+                            TYPE_MAJ='ISOP2',),),
                NOMBRE='OUI',
                PROP_CALCUL='OUI',);
+#
+#    TEST DE NON REGRESSION SUR L'INTERPOLATION P2 ou ISO-P2
+
+#    ON CREE UN GROUPE DE NOEUD CONTENANT UN NOEUD CREE AU MILIEU D'UNE ARETE.
+#    CETTE POSITION PERMET DE COMPARER LES 2 TYPES D'INTERPOLATION : AUTOMATIQUE, DONC P2, ET ISO-P2
+#    CELA PERMET DE S'AFFRANCHIR D'EVENTUELS CHANGEMENTS DE
+#    NUMEROTATION DES NOEUDS DANS HOMARD ET DE PERENISER LES TESTS
+#    REMARQUE : LE NOM EST CELUI DU NOEUD POUR LA VERSION 10.03.04
+#
+MQUAT=DEFI_GROUP( reuse =MQUAT,
+                  MAILLAGE=MQUAT,
+                  CREA_GROUP_NO=_F(NOM='N120',
+                                   OPTION='ENV_SPHERE',
+                                   POINT=(0.625,0.125,1.),
+                                   PRECISION=1/200.,
+                                   RAYON=1/200.),);
+
+TEST_RESU(CHAM_NO=(_F(CHAM_GD=U_4_AUTO,
+                     GROUP_NO='N120',
+                     NOM_CMP='DZ',
+                     VALE=0.189165296,
+                     CRITERE='RELATIF',
+                     PRECISION=1E-06,
+                     REFERENCE='NON_REGRESSION',
+                     VERSION='10.03.04',),
+                   _F(CHAM_GD=U_4_ISP2,
+                     GROUP_NO='N120',
+                     NOM_CMP='DZ',
+                     VALE=0.194256871,
+                     CRITERE='RELATIF',
+                     PRECISION=1E-06,
+                     REFERENCE='NON_REGRESSION',
+                     VERSION='10.03.04',),),),
 #
 # 14. CALCUL SUR LE MAILLAGE QUAT
 # 14.1. MODELE MECANIQUE
@@ -703,4 +744,5 @@ TEST_TABLE(TABLE=MCGCINQ,
 ###IMPR_RESU(FORMAT='MED',
 ###          RESU=_F(RESULTAT=RESUCINQ,),);
 
-FIN();
+FIN(FORMAT_HDF='OUI',);
+#FIN();

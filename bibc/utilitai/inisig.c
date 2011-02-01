@@ -1,8 +1,8 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF inisig utilitai  DATE 06/09/2010   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF inisig utilitai  DATE 31/01/2011   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
-/* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
+/* COPYRIGHT (C) 1991 - 2011  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
 /* THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR      */
 /* MODIFY IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS     */
@@ -34,6 +34,7 @@
 #include "aster_fort.h"
 
 extern int errno;
+void abort();
 
 void hancpu (int sig);
 
@@ -46,20 +47,21 @@ void hancpu (int sig);
 #include <siginfo.h>
 #include <sigfpe.h>
 #include <limits.h>
-  void stptrap ( int sig) ;
+  void stptrap(int sig);
+  void interrupt_sigsegv(int sig);
 
-#elif defined _WIN32
+#elif defined _WINDOWS
 #include <float.h>
-  void  hanfpe (int sig);
+  void hanfpe(int sig);
   void stptrap(int sig);
 
 #elif defined _POSIX
-  void hanfpe (int sig);
-  void stptrap ( int sig) ;
-  void stpusr1 ( int sig) ;
+  void hanfpe(int sig);
+  void stptrap(int sig);
+  void stpusr1(int sig);
 #endif
 
-#if defined LINUX
+#if defined GNU_LINUX
 #define _GNU_SOURCE 1
 #include <fenv.h>
 #endif
@@ -75,6 +77,10 @@ void STDCALL(INISIG, inisig)()
    extern struct sigfpe_template sigfpe_[_N_EXCEPTION_TYPES+1];
    extern int inifpe(void);
 #endif
+#if defined _WINDOWS
+    unsigned int cw, cwOrig;
+#endif
+
 /*            */
 /* CPU LIMITE */
 /*            */
@@ -94,18 +100,20 @@ void STDCALL(INISIG, inisig)()
 #elif defined IRIX
    ier=inifpe();
 
-#elif defined LINUX
+#elif defined GNU_LINUX
 
    /* Enable some exceptions. At startup all exceptions are masked. */
    feenableexcept(FE_DIVBYZERO|FE_OVERFLOW|FE_INVALID);
 
    signal(SIGFPE,  hanfpe);
 
-#elif defined _WIN32
-#define _EXC_MASK  _EM_INEXACT + _EM_UNDERFLOW
-   unsigned int  _controlfp (unsigned int new, unsigned int mask);
-   _controlfp(_EXC_MASK,_MCW_EM);
-   signal(SIGFPE,  hanfpe);
+#elif defined _WINDOWS
+    _clearfp();
+    cw = _controlfp(0, 0);
+    cw &=~( EM_OVERFLOW | EM_ZERODIVIDE );
+    cwOrig = _controlfp(cw, MCW_EM);
+
+    signal(SIGFPE, hanfpe);
 #else
    signal(SIGFPE,  hanfpe);
 #endif
@@ -129,7 +137,7 @@ void STDCALL(INISIG, inisig)()
 void stptrap (int sig)
 {
   CALL_U2MESS("I", "SUPERVIS_97");
-  exit(1);
+  exit(EXIT_FAILURE);
 }
 
 

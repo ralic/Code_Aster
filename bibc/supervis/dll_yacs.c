@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF dll_yacs supervis  DATE 25/01/2011   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF dll_yacs supervis  DATE 31/01/2011   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2011  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -29,11 +29,6 @@
 #include "definition_pt.h"
 
 #include "dll_register.h"
-
-/* XXX to move into definition.h */
-#define xstr(s)                 str(s)
-#define str(s)                  #s
-#define S_FUNC(UN,LN)           xstr(F_FUNC(UN,LN))
 
 
 #ifdef _POSIX
@@ -97,7 +92,7 @@ void load_yacs_lib()
             printf("found\n");
             /* register yacs function */
             if ( libsymb_register(DLL_DICT, LIB_YACS, symbol,
-                                  yacs_handle, (void*)f_cpech) ) {
+                                  yacs_handle, (FUNC_PTR)f_cpech) ) {
                 printf("Registering '%s' and '%s' failed!\n", LIB_YACS, symbol);
             }
         }
@@ -123,7 +118,7 @@ void load_yacs_lib()
             printf("found\n");
             /* register yacs function */
             if ( libsymb_register(DLL_DICT, LIB_YACS, symbol,
-                                  yacs_handle, (void*)f_cpedb) ) {
+                                  yacs_handle, (FUNC_PTR)f_cpedb) ) {
                 printf("Registering '%s' and '%s' failed!\n", LIB_YACS, symbol);
             }
         }
@@ -149,7 +144,7 @@ void load_yacs_lib()
             printf("found\n");
             /* register yacs function */
             if ( libsymb_register(DLL_DICT, LIB_YACS, symbol,
-                                  yacs_handle, (void*)f_cpeen) ) {
+                                  yacs_handle, (FUNC_PTR)f_cpeen) ) {
                 printf("Registering '%s' and '%s' failed!\n", LIB_YACS, symbol);
             }
         }
@@ -175,7 +170,7 @@ void load_yacs_lib()
             printf("found\n");
             /* register yacs function */
             if ( libsymb_register(DLL_DICT, LIB_YACS, symbol,
-                                  yacs_handle, (void*)f_cplch) ) {
+                                  yacs_handle, (FUNC_PTR)f_cplch) ) {
                 printf("Registering '%s' and '%s' failed!\n", LIB_YACS, symbol);
             }
         }
@@ -201,7 +196,7 @@ void load_yacs_lib()
             printf("found\n");
             /* register yacs function */
             if ( libsymb_register(DLL_DICT, LIB_YACS, symbol,
-                                  yacs_handle, (void*)f_cpldb) ) {
+                                  yacs_handle, (FUNC_PTR)f_cpldb) ) {
                 printf("Registering '%s' and '%s' failed!\n", LIB_YACS, symbol);
             }
         }
@@ -227,7 +222,7 @@ void load_yacs_lib()
             printf("found\n");
             /* register yacs function */
             if ( libsymb_register(DLL_DICT, LIB_YACS, symbol,
-                                  yacs_handle, (void*)f_cplen) ) {
+                                  yacs_handle, (FUNC_PTR)f_cplen) ) {
                 printf("Registering '%s' and '%s' failed!\n", LIB_YACS, symbol);
             }
         }

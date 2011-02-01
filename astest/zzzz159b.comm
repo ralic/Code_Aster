@@ -1,6 +1,8 @@
-# MODIF  DATE 25/01/2011   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 31/01/2011   AUTEUR COURTOIS M.COURTOIS 
 # TITRE TEST DE LA MACRO COMMANDE DE RECALAGE
-# zzzz159b.para = tps_job 600 mem_job 300Mo mem_aster 10 ncpus 1 liste_test S
+# 4 calculs esclaves distribues : ncpus = 4 + 1 (maitre),
+# on met 4 car c'est une limite courante en interactif (interactif_nbpmax)
+# zzzz159b.para = tps_job 600 mem_job 300Mo mem_aster 10 ncpus 4 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG

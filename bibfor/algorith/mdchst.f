@@ -11,9 +11,9 @@
       CHARACTER*16        TYPNUM, TYPFRO
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/02/2010   AUTEUR GREFFET N.GREFFET 
+C MODIF ALGORITH  DATE 31/01/2011   AUTEUR GREFFET N.GREFFET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -82,28 +82,23 @@ C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
 C     ------------------------------------------------------------------
 C  COUPLAGE EDYOS
 C  =>
-      INTEGER       IPAT,IPAL,INFO,IDIM,ICOMP,NLU,NNO,NDDL,IERR
+      INTEGER       IPAT,IPAL,NNO,NDDL
 C     ANCIENS INCLUDE (CALCIUM.H)
 C     ===========================
-      INTEGER       LENVAR
-      PARAMETER (LENVAR = 144)
-      CHARACTER*(LENVAR) NOMVAR
       CHARACTER*3   COMP(6)
 C     DECLARATIONS POUR "COMMON" JEVEUX
 C     =================================
-      INTEGER     ICOMPO
-      INTEGER       NBPAL,IFR
+      INTEGER       NBPAL
    
       INTEGER       PALMAX 
       PARAMETER (PALMAX=20)
       
       INTEGER       DIMNAS
-      PARAMETER (DIMNAS=6)  
-      INTEGER       NOPAL(PALMAX) 
-      CHARACTER*6  CNPAL(PALMAX)    
+      PARAMETER     (DIMNAS=8)  
+      CHARACTER*8   CNPAL(PALMAX)    
 
-      INTEGER       IADR,IADRI,IADRK,IAPP
-      CHARACTER*24  CPAL, NPAL,AYACS   
+      INTEGER       IADRK
+      CHARACTER*24  CPAL   
 C      
       CALL JEMARQ()
       CALL GETFAC ( 'CHOC'     , NBCHOC )
@@ -424,8 +419,17 @@ C    COUPLAGE EDYOS
           CNPAL(IPAL)=ZK8(IADRK+(IPAL-1)+2*PALMAX)(1:DIMNAS)
  21     CONTINUE
         DO 22 IPAL = 1, NBPAL
+          CALL UTNONO(' ',MAILLA,'NOEUD',CNPAL(IPAL),NOMNO1,IRET)
+          IF (IRET.EQ.10) THEN
+C            CALL U2MESK('F','ELEMENTS_67',1,NOMGR2)
+            NOMNO1 = CNPAL(IPAL)
+          ELSEIF (IRET.EQ.1) THEN
+            VALK (1) = CNPAL(IPAL)
+            VALK (2) = NOMNO1
+            CALL U2MESG('A', 'ALGORITH13_41',2,VALK,0,0,0,0.D0)
+          ENDIF
           DO 23 IPAT = 1, 6
-            CALL POSDDL('NUME_DDL',NUMDDL,CNPAL(IPAL),
+            CALL POSDDL('NUME_DDL',NUMDDL,NOMNO1,
      &                   COMP(IPAT),NNO,NDDL)
             DDLCHO(6*(IPAL-1)+IPAT) = NDDL
  23      CONTINUE

@@ -1,7 +1,7 @@
       SUBROUTINE NMDOCH(LISCHA,NBPASE,IEXCIT,EXCIT ,INPSCO)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 18/01/2011   AUTEUR MEUNIER S.MEUNIER 
+C MODIF ALGORITH  DATE 01/02/2011   AUTEUR MASSIN P.MASSIN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -200,7 +200,7 @@ C
               NBINFO = 1
               CALL LISCLI(EXCIT ,ICH   ,NOMCH1,NOMFC1,NBINFO,
      &                    INFOC1,IVAL1 )
-              IF (INFOC1(1:5).NE.'CINE_') THEN
+              IF (INFOC1(1:5).NE.'CINE_'.AND.NOMCH1.NE.' ') THEN
                 INCHA1 = INCHA1 + 1
                 CALL LISCAD(LISCH2,INCHA1,NOMCH1,NOMFC1,NBINFO,
      &                      INFOC1,IVAL1 )
@@ -547,9 +547,6 @@ C
           END IF
         ENDIF
       ENDIF
-C
       CALL JEDETR(LISDBL)
-C
-
       CALL JEDEMA()
       END

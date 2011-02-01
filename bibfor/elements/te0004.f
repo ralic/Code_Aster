@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 10/01/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF ELEMENTS  DATE 01/02/2011   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -55,6 +55,16 @@ C
       CHARACTER*4 FAMI
 C
 C ----------------------------------------------------------------------
+C
+C    -------------------------------------------------------------------
+C    -- OPTION "DERA_ELNO"
+C    -------------------------------------------------------------------
+
+      IF (OPTION.EQ.'DERA_ELNO') THEN
+        FAMI = 'RIGI'
+        CALL TECACH('OOO','PDERAPG',7,ITAB,IRET)
+        CALL JEVECH ('PDERANO','E',IOUTNO)
+      ENDIF
 C
 C    -------------------------------------------------------------------
 C    -- OPTION "ENDO_ELNO"

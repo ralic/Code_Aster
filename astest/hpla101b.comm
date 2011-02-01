@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 31/01/2011   AUTEUR TARDIEU N.TARDIEU 
 # RESPONSABLE GNICOLAS G.NICOLAS
 # TITRE DERIVEES PAR RAPPORT A UNE VARIATION DE DOMAINE.
 # hpla101b.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test R
@@ -274,9 +274,9 @@ TEST_RESU(RESU=(
                    NOM_CMP='TEMP',
                    MAILLE='MA29',
                    NOEUD='NO1',
-                   VALE=(-2.16571e-13,-5.58473e-13),
-                   CRITERE='RELATIF',
-                   PRECISION=1e-05,
+                   VALE=(0.,0.),
+                   CRITERE='ABSOLU',
+                   PRECISION=1e-12,
                    REFERENCE='NON_REGRESSION',),
                 _F(RESULTAT=RE_MEC_1,
                    SENSIBILITE=THETA,

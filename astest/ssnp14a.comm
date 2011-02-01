@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 01/02/2011   AUTEUR DELMAS J.DELMAS 
 # TITRE ESSAI DE TRACTION-CISAILLEMENT (MISES ECROUISSAGE CINEMATIQUE)
 # ssnp14a.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -23,211 +23,250 @@
 # ELASTOPLASTICITE  CINEMATIQUE VON MISES
 #......................................................................
 
-DEBUT(CODE=_F(NOM='SSNP14A', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NOM='SSNP14A',
+              NIV_PUB_WEB='INTERNET',),
+      DEBUG=_F(SDVERI='OUI',),);
 
-MA=LIRE_MAILLAGE( )
+MA=LIRE_MAILLAGE();
 
-MO=AFFE_MODELE(   MAILLAGE=MA,
-                              VERIF='MAILLE',
-                               AFFE=_F(   TOUT = 'OUI',
-                                       PHENOMENE = 'MECANIQUE',
-                                       MODELISATION = '3D')
-                        )
+MO=AFFE_MODELE(MAILLAGE=MA,
+               VERIF='MAILLE',
+               AFFE=_F(TOUT='OUI',
+                       PHENOMENE='MECANIQUE',
+                       MODELISATION='3D',),);
 
-ACIER=DEFI_MATERIAU(        ELAS=_F(  E = 195000.,
-                                         NU = 0.3),
-                             ECRO_LINE=_F(  D_SIGM_EPSI = 1930.,
-                                         SY = 181.)
-                          )
+ACIER=DEFI_MATERIAU(ELAS=_F(E=195000.,
+                            NU=0.3,),
+                    ECRO_LINE=_F(D_SIGM_EPSI=1930.,
+                                 SY=181.,),);
 
-CM=AFFE_MATERIAU(   MAILLAGE=MA,
-                                 AFFE=_F(  TOUT = 'OUI',
-                                        MATER = ACIER)
-                          )
+CM=AFFE_MATERIAU(MAILLAGE=MA,
+                 AFFE=_F(TOUT='OUI',
+                         MATER=ACIER,),);
 
-SIGMA_F=DEFI_FONCTION(      NOM_PARA='INST',
-                              PROL_DROITE='EXCLU',
-                             PROL_GAUCHE='EXCLU',
-                                    VALE=( 0.0,    0.0,
-                                           1.0,  151.2,
-                                           2.0,  257.2,
-                                           3.0,  259.3,
-                                           4.0,    0.0,
-                                         )
-                          )
+SIGMA_F=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.0,0.0,
+                            1.0,151.2,
+                            2.0,257.2,
+                            3.0,259.3,
+                            4.0,0.0,
+                            ),PROL_DROITE='EXCLU',PROL_GAUCHE='EXCLU',);
 
-TAU_F=DEFI_FONCTION(      NOM_PARA='INST',
-                              PROL_DROITE='EXCLU',
-                             PROL_GAUCHE='EXCLU',
-                                    VALE=( 0.0,    0.0,
-                                           1.0,   93.1,
-                                           2.0,   33.1,
-                                           3.0,    0.0,
-                                           4.0,    0.0,
-                                         )
-                          )
+TAU_F=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.0,0.0,
+                          1.0,93.1,
+                          2.0,33.1,
+                          3.0,0.0,
+                          4.0,0.0,
+                          ),PROL_DROITE='EXCLU',PROL_GAUCHE='EXCLU',);
 
-TRACTION=AFFE_CHAR_MECA(        MODELE=MO,
-                               FORCE_FACE=_F(  MAILLE = 'GAUCHE',
-                                            FX = -1.)
-                           )
+TRACTION=AFFE_CHAR_MECA(MODELE=MO,
+                        FORCE_FACE=_F(MAILLE='GAUCHE',
+                                      FX=-1.,),);
 
-CISAIL=AFFE_CHAR_MECA(        MODELE=MO,FORCE_FACE=(
+CISAIL=AFFE_CHAR_MECA(MODELE=MO,
+                      FORCE_FACE=(_F(MAILLE='GAUCHE',
+                                     FY=-1.,),
+                                  _F(MAILLE='DROITE',
+                                     FY=1.,),
+                                  _F(MAILLE='HAUT',
+                                     FX=1.,),
+                                  _F(MAILLE='BAS',
+                                     FX=-1.,),),);
 
-                                  _F(  MAILLE = 'GAUCHE',          FY = -1.),
-                                  _F(  MAILLE = 'DROITE',          FY = 1.),
-                                  _F(  MAILLE = 'HAUT',    FX = 1.),
-                                  _F(  MAILLE = 'BAS',     FX = -1.))
-                           )
+LIAISON=AFFE_CHAR_MECA(MODELE=MO,
+                       DDL_IMPO=(_F(NOEUD='NO4',
+                                    DX=0.,
+                                    DY=0.,),
+                                 _F(NOEUD='NO8',
+                                    DX=0.,
+                                    DY=0.,
+                                    DZ=0.,),
+                                 _F(NOEUD='NO2',
+                                    DX=0.,),
+                                 _F(NOEUD='NO6',
+                                    DX=0.,),),);
 
-LIAISON=AFFE_CHAR_MECA(      MODELE=MO,DDL_IMPO=(
+L_INST=DEFI_LIST_REEL(DEBUT=0.0,
+                      INTERVALLE=(_F(JUSQU_A=0.1,
+                                     NOMBRE=1,),
+                                  _F(JUSQU_A=0.9,
+                                     NOMBRE=1,),
+                                  _F(JUSQU_A=1.0,
+                                     NOMBRE=1,),
+                                  _F(JUSQU_A=2.0,
+                                     NOMBRE=1,),
+                                  _F(JUSQU_A=3.0,
+                                     NOMBRE=1,),
+                                  _F(JUSQU_A=4.0,
+                                     NOMBRE=1,),),);
 
-                               _F(  NOEUD = 'NO4',   DX = 0.,  DY = 0.),
-                               _F(  NOEUD = 'NO8',   DX = 0.,  DY = 0.,  DZ = 0.),
-                               _F(  NOEUD = 'NO2',   DX = 0.),
-                               _F(  NOEUD = 'NO6',   DX = 0.))
-                           )
+U=STAT_NON_LINE(MODELE=MO,
+                CHAM_MATER=CM,
+                EXCIT=(_F(CHARGE=LIAISON,),
+                       _F(CHARGE=TRACTION,
+                          FONC_MULT=SIGMA_F,),
+                       _F(CHARGE=CISAIL,
+                          FONC_MULT=TAU_F,),),
+                COMP_INCR=_F(RELATION='VMIS_CINE_LINE',),
+                INCREMENT=_F(LIST_INST=L_INST,),
+                NEWTON=_F(MATRICE='TANGENTE',
+                          REAC_ITER=3,),
+                RECH_LINEAIRE=_F(ITER_LINE_MAXI=5,),
+                CONVERGENCE=_F(ITER_GLOB_MAXI=10,),
+                ARCHIVAGE=_F(LIST_INST=L_INST,),);
 
-L_INST=DEFI_LIST_REEL(   DEBUT=0.0,INTERVALLE=(
-                               _F(  JUSQU_A = 0.1,   NOMBRE = 1),
-                                          _F(  JUSQU_A = 0.9,   NOMBRE = 1),
-                                          _F(  JUSQU_A = 1.0,   NOMBRE = 1),
-                                          _F(  JUSQU_A = 2.0,   NOMBRE = 1),
-                                          _F(  JUSQU_A = 3.0,   NOMBRE = 1),
-                                          _F(  JUSQU_A = 4.0,   NOMBRE = 1))
-                           )
+U=CALC_ELEM(reuse =U,
+            RESULTAT=U,
+            OPTION=('VARI_ELNO_ELGA','SIEF_ELNO','EPSI_ELNO_DEPL',),);
 
-U=STAT_NON_LINE(
-                            MODELE=MO,
-                        CHAM_MATER=CM,
-                         COMP_INCR=_F(
-                RELATION = 'VMIS_CINE_LINE'),
-                         INCREMENT=_F(
-                LIST_INST = L_INST,),
-                         ARCHIVAGE=_F(
-                LIST_INST = L_INST),
-                            NEWTON=_F(
-                MATRICE = 'TANGENTE',
-                REAC_ITER = 3),
-                       CONVERGENCE=_F(
-                #RESI_GLOB_MAXI   : 1.E-3
-                ITER_GLOB_MAXI = 10),EXCIT=(
-                             _F(
-                CHARGE = LIAISON), _F(
-                CHARGE = TRACTION,
-                FONC_MULT = SIGMA_F), _F(
-                CHARGE = CISAIL,
-                FONC_MULT = TAU_F)),
-                     RECH_LINEAIRE=_F(
-                ITER_LINE_MAXI = 5)
-              )
+U=CALC_ELEM(reuse =U,
+            RESULTAT=U,
+            OPTION=('DERA_ELGA','DERA_ELNO',),);
 
-U=CALC_ELEM( reuse=U,
-                            RESULTAT=U,
-                              OPTION=( 'VARI_ELNO_ELGA',
-                                       'SIEF_ELNO',
-                                       'EPSI_ELNO_DEPL',  )   )
+U=CALC_NO(reuse =U,
+          RESULTAT=U,
+          INST=1.,
+          OPTION='VARI_NOEU_ELGA',);
 
-U=CALC_ELEM( reuse=U,
-                           RESULTAT=U,
-                             OPTION=( 'DCHA_ELGA_SIGM',
-                                      'DCHA_ELNO_SIGM',
-                                      'RADI_ELNO_SIGM',  ),
-                              NORME='VMIS_CINE'         )
+VARI=CREA_CHAMP(TYPE_CHAM='ELNO_VARI_R',
+                OPERATION='EXTR',
+                RESULTAT=U,
+                NOM_CHAM='VARI_ELNO_ELGA',
+                INST=1.,);
 
-U=CALC_NO( reuse=U,     RESULTAT=U,
-                              INST=1.,
-                            OPTION='VARI_NOEU_ELGA'     )
+VARI_N=CREA_CHAMP(TYPE_CHAM='NOEU_VAR2_R',
+                  OPERATION='EXTR',
+                  RESULTAT=U,
+                  NOM_CHAM='VARI_NOEU_ELGA',
+                  INST=1.,);
 
-VARI=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='ELNO_VARI_R',
-      NOM_CHAM='VARI_ELNO_ELGA', RESULTAT=U,  INST=1. )
-
-VARI_N=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_VAR2_R',
-        NOM_CHAM='VARI_NOEU_ELGA', RESULTAT=U,  INST=1. )
-
-TEST_RESU(RESU=(
-     _F(  RESULTAT = U,      NOM_CHAM = 'DCHA_ELGA_SIGM',  NUME_ORDRE = 1,
-       MAILLE = 'CUBE',    POINT=1,                     NOM_CMP = 'V1',
-       CRITERE = 'RELATIF',PRECISION = 0.1E-2,   REFERENCE='NON_REGRESSION',
-       VALE = 0.877871),
-     _F(  RESULTAT = U,      NOM_CHAM = 'DCHA_ELNO_SIGM',  NUME_ORDRE = 1,
-       MAILLE = 'CUBE',    NOEUD='NO2',                 NOM_CMP = 'V1',
-       CRITERE = 'RELATIF',PRECISION = 0.1E-2,   REFERENCE='NON_REGRESSION',
-       VALE = 0.877871),
-     _F(  RESULTAT = U,      NOM_CHAM = 'SIEF_ELNO',   INST = 1.,
-       MAILLE = 'CUBE',   NOEUD = 'NO2',                NOM_CMP = 'SIXX',
-       VALE = 151.2),
-     _F(  RESULTAT = U,      NOM_CHAM = 'SIEF_ELNO',   INST = 1.,
-       MAILLE = 'CUBE',   NOEUD = 'NO2',                NOM_CMP = 'SIXY',
-       VALE = 93.1),
-     _F(  RESULTAT = U,      NOM_CHAM = 'EPSI_ELNO_DEPL',   INST = 1.,
-       MAILLE = 'CUBE',   NOEUD = 'NO2',                NOM_CMP = 'EPXX',
-       VALE = 1.48297E-2),
-     _F(  RESULTAT = U,      NOM_CHAM = 'EPSI_ELNO_DEPL',   INST = 1.,
-       MAILLE = 'CUBE',   NOEUD = 'NO2',                NOM_CMP = 'EPXY',
-       VALE = 1.36014E-2),
-     _F(  RESULTAT = U,      NOM_CHAM = 'VARI_ELNO_ELGA',   INST = 1.,
-       MAILLE = 'CUBE',   NOEUD = 'NO2',   NOM_CMP = 'V2',
-       VALE = -9.13200),
-     _F(  RESULTAT = U,      NOM_CHAM = 'VARI_ELNO_ELGA',   INST = 1.,
-       MAILLE = 'CUBE',   NOEUD = 'NO2',   NOM_CMP = 'V4',
-       VALE = 1.68688E+01),
-     _F(  RESULTAT = U,      NOM_CHAM = 'VARI_ELNO_ELGA',   INST = 1.,
-       MAILLE = 'CUBE',   NOEUD = 'NO2',   NOM_CMP = 'V7',
-       VALE = 1.),
-     _F(  RESULTAT = U,      NOM_CHAM = 'RADI_ELNO_SIGM',   NUME_ORDRE = 1,
-       MAILLE = 'CUBE',   NOEUD = 'NO2',   NOM_CMP = 'V1',
-       VALE = 0.,     CRITERE = 'ABSOLU'),
-     _F(  RESULTAT = U,      NOM_CHAM = 'RADI_ELNO_SIGM',   NUME_ORDRE = 2,
-       MAILLE = 'CUBE',   NOEUD = 'NO4',   NOM_CMP = 'V1',
-       VALE = 0.,     CRITERE = 'ABSOLU')),
-
-     CHAM_ELEM=_F(  CHAM_GD = VARI,
-       MAILLE = 'CUBE',   NOEUD = 'NO2',   NOM_CMP = 'V2',
-       VALE = -9.13200)
-            )
+TEST_RESU(CHAM_ELEM=_F(CHAM_GD=VARI,
+                       MAILLE='CUBE',
+                       NOEUD='NO2',
+                       NOM_CMP='V2',
+                       VALE=-9.132,),
+          RESU=(_F(RESULTAT=U,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='DERA_ELGA',
+                   NOM_CMP='DCHA_V',
+                   MAILLE='CUBE',
+                   POINT=1,
+                   VALE=0.877871,
+                   CRITERE='RELATIF',
+                   PRECISION=0.001,
+                   REFERENCE='NON_REGRESSION',),
+                _F(RESULTAT=U,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='DERA_ELNO',
+                   NOM_CMP='DCHA_V',
+                   MAILLE='CUBE',
+                   NOEUD='NO2',
+                   VALE=0.877871,
+                   CRITERE='RELATIF',
+                   PRECISION=0.001,
+                   REFERENCE='NON_REGRESSION',),
+                _F(RESULTAT=U,
+                   INST=1.0,
+                   NOM_CHAM='SIEF_ELNO',
+                   NOM_CMP='SIXX',
+                   MAILLE='CUBE',
+                   NOEUD='NO2',
+                   VALE=151.2,),
+                _F(RESULTAT=U,
+                   INST=1.0,
+                   NOM_CHAM='SIEF_ELNO',
+                   NOM_CMP='SIXY',
+                   MAILLE='CUBE',
+                   NOEUD='NO2',
+                   VALE=93.1,),
+                _F(RESULTAT=U,
+                   INST=1.0,
+                   NOM_CHAM='EPSI_ELNO_DEPL',
+                   NOM_CMP='EPXX',
+                   MAILLE='CUBE',
+                   NOEUD='NO2',
+                   VALE=0.0148297,),
+                _F(RESULTAT=U,
+                   INST=1.0,
+                   NOM_CHAM='EPSI_ELNO_DEPL',
+                   NOM_CMP='EPXY',
+                   MAILLE='CUBE',
+                   NOEUD='NO2',
+                   VALE=0.0136014,),
+                _F(RESULTAT=U,
+                   INST=1.0,
+                   NOM_CHAM='VARI_ELNO_ELGA',
+                   NOM_CMP='V2',
+                   MAILLE='CUBE',
+                   NOEUD='NO2',
+                   VALE=-9.132,),
+                _F(RESULTAT=U,
+                   INST=1.0,
+                   NOM_CHAM='VARI_ELNO_ELGA',
+                   NOM_CMP='V4',
+                   MAILLE='CUBE',
+                   NOEUD='NO2',
+                   VALE=16.8688,),
+                _F(RESULTAT=U,
+                   INST=1.0,
+                   NOM_CHAM='VARI_ELNO_ELGA',
+                   NOM_CMP='V7',
+                   MAILLE='CUBE',
+                   NOEUD='NO2',
+                   VALE=1.0,),
+                _F(RESULTAT=U,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='DERA_ELNO',
+                   NOM_CMP='RADI_V',
+                   MAILLE='CUBE',
+                   NOEUD='NO2',
+                   VALE=0.0,
+                   CRITERE='ABSOLU',),
+                _F(RESULTAT=U,
+                   NUME_ORDRE=2,
+                   NOM_CHAM='DERA_ELNO',
+                   NOM_CMP='RADI_V',
+                   MAILLE='CUBE',
+                   NOEUD='NO4',
+                   VALE=0.0,
+                   CRITERE='ABSOLU',),),);
 
 #=========================================
 
+TR1=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
+                            INTITULE='EXTR_EPSI',
+                            RESULTAT=U,
+                            NOM_CHAM='EPSI_ELNO_DEPL',
+                            INST=1.,
+                            NOEUD='NO2',
+                            NOM_CMP=('EPXX','EPXY',),),);
 
-TR1=POST_RELEVE_T(
-        ACTION=_F(  INTITULE = 'EXTR_EPSI',
-                 NOEUD = 'NO2',
-                 RESULTAT = U,
-                 NOM_CHAM = 'EPSI_ELNO_DEPL',
-                 INST = 1.,
-                 NOM_CMP = ( 'EPXX', 'EPXY', ),
-                 OPERATION = 'EXTRACTION')   )
+TR2=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
+                            INTITULE='VARI 1 2',
+                            CHAM_GD=VARI_N,
+                            NOEUD='NO2',
+                            NOM_CMP=('V1','V2',),),);
 
-TR2=POST_RELEVE_T(
-        ACTION=_F(  INTITULE = 'VARI 1 2',
-                 NOEUD = 'NO2',
-                 CHAM_GD = VARI_N,
-                 NOM_CMP = ( 'V1', 'V2',),
-                 OPERATION = 'EXTRACTION')   )
+TR3=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
+                            INTITULE='VARI',
+                            CHAM_GD=VARI,
+                            NOEUD='NO2',
+                            TOUT_CMP='OUI',),);
 
-TR3=POST_RELEVE_T(
-        ACTION=_F(  INTITULE = 'VARI',
-                 NOEUD = 'NO2',
-                 CHAM_GD = VARI,
-                 TOUT_CMP = 'OUI',
-                 OPERATION = 'EXTRACTION')   )
+TR4=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
+                            INTITULE='VARI 2 5',
+                            CHAM_GD=VARI,
+                            NOEUD='NO2',
+                            NOM_CMP=('V2','V5',),),);
 
-TR4=POST_RELEVE_T(
-        ACTION=_F(  INTITULE = 'VARI 2 5',
-                 NOEUD = 'NO2',
-                 CHAM_GD = VARI,
-                 NOM_CMP = ( 'V2',  'V5', ),
-                 OPERATION = 'EXTRACTION')   )
+TR5=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
+                            INTITULE='VARI 137',
+                            CHAM_GD=VARI,
+                            NOEUD='NO2',
+                            NOM_CMP=('V1','V3','V7',),),);
 
-TR5=POST_RELEVE_T(
-        ACTION=_F(  INTITULE = 'VARI 137',
-                 NOEUD = 'NO2',
-                 CHAM_GD = VARI,
-                 NOM_CMP = ( 'V1',  'V3',  'V7', ),
-                 OPERATION = 'EXTRACTION')   )
+IMPR_TABLE(TABLE=TR5,);
 
-IMPR_TABLE(TABLE=TR5)
+FIN();
 
-FIN()
 #
+

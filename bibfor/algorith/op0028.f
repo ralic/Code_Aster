@@ -1,9 +1,9 @@
       SUBROUTINE OP0028()
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 19/10/2010   AUTEUR DESOZA T.DESOZA 
+C MODIF ALGORITH  DATE 01/02/2011   AUTEUR MASSIN P.MASSIN 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -217,6 +217,7 @@ C                                            = 0 SI DIVERGENCE_ITER
 C                                            = 1 SI DIVERGENCE_ERRE
 C                                            = 2 SI DELTA_GRANDEUR
 C                                            = 3 COLLISION
+C                                            = 4 SI DIVE_ITER_PILO
 C     ZR(JEEVR-1 + LEEVR*(IOCC-1) + 2) <===> 'CRIT_COMP'
 C                                               = 1 SI 'LT'
 C                                               = 2 SI 'GT'
@@ -265,6 +266,9 @@ C         CRIT_COMP = 'GT' EN DUR -> 2
           ZK16(JEEVK-1+LEEVK*(IOCC-1)+3)=NOCMP
         ELSEIF (EVEN.EQ.'COLLISION') THEN
           ZR(JEEVR-1+LEEVR*(IOCC-1)+1)=3.D0
+        ELSEIF(EVEN.EQ.'DIVE_ITER_PILO') THEN
+          ZR(JEEVR-1+LEEVR*(IOCC-1)+1)=4.D0          
+        ELSE
           CALL ASSERT(.FALSE.)
         ENDIF
 

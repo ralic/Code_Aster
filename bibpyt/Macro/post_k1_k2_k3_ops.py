@@ -1,4 +1,4 @@
-#@ MODIF post_k1_k2_k3_ops Macro  DATE 25/01/2011   AUTEUR MACOCCO K.MACOCCO 
+#@ MODIF post_k1_k2_k3_ops Macro  DATE 31/01/2011   AUTEUR MACOCCO K.MACOCCO 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -263,12 +263,16 @@ def get_coor_libre(self,Lnoff,RESULTAT,ndim):
 
 #--------------------------------------------------------------------------------------------------------------- 
 
-def get_Plev(self,MAILLAGE,ListmaS,RESULTAT):
+def get_Plev(self,ListmaS,RESULTAT):
          """ retourne les coordonnes d'un point quelconque des levres pr determination sens de propagation"""
          import numpy as NP
          from Accas import _F
+         import aster
          POST_RELEVE_T    = self.get_cmd('POST_RELEVE_T')
          DETRUIRE         = self.get_cmd('DETRUIRE')
+
+         iret,ibid,nom_ma = aster.dismoi('F','NOM_MAILLA',RESULTAT.nom,'RESULTAT')
+         MAILLAGE = self.get_concept(nom_ma.strip())
 
          cmail=MAILLAGE.NOMMAI.get()
          for i in range(len(cmail)) :
@@ -582,23 +586,30 @@ def verif_resxfem(self,RESULTAT) :
 
 #--------------------------------------------------------------------------------------------------------------- 
 
-def get_resxfem(self,xcont,RESULTAT,MAILLAGE,MODELISATION,MODEL) :
+def get_resxfem(self,xcont,RESULTAT,MODELISATION,MODEL) :
       """ retourne le resultat """
       from Accas import _F
+      import aster
 
       AFFE_MODELE      = self.get_cmd('AFFE_MODELE')
       PROJ_CHAMP       = self.get_cmd('PROJ_CHAMP')
       DETRUIRE         = self.get_cmd('DETRUIRE')
+      CREA_MAILLAGE    = self.get_cmd('CREA_MAILLAGE')
 
+      iret,ibid,nom_ma = aster.dismoi('F','NOM_MAILLA',RESULTAT.nom,'RESULTAT')
       if xcont[0] == 0 :
          __RESX = RESULTAT
 
 #     XFEM + contact : il faut reprojeter sur le maillage lineaire
       elif xcont[0] != 0 :
-         __MODLINE=AFFE_MODELE(MAILLAGE=MAILLAGE,
+         MAILL1 = self.get_concept(nom_ma.strip())
+         MAILL2 = CREA_MAILLAGE(MAILLAGE = MAILL1,
+                               QUAD_LINE =_F(TOUT = 'OUI',),);
+
+         __MODLINE=AFFE_MODELE(MAILLAGE=MAILL2,
                                AFFE=(_F(TOUT='OUI',
                                         PHENOMENE='MECANIQUE',
-                                        MODELISATION=MODELISATION,),),);        
+                                        MODELISATION=MODELISATION,),),); 
 
          __RESX=PROJ_CHAMP(METHODE='COLLOCATION',
                            TYPE_CHAM='NOEU',
@@ -606,6 +617,7 @@ def get_resxfem(self,xcont,RESULTAT,MAILLAGE,MODELISATION,MODEL) :
                            RESULTAT=RESULTAT,
                            MODELE_1=MODEL,
                            MODELE_2=__MODLINE, );   
+
 
 #        Rq : on ne peut pas détruire __MODLINE ici car on en a besoin lors du MACR_LIGN_COUP qui suivra
       
@@ -1515,7 +1527,7 @@ def get_erreur(self,ndim,__tabi) :
       if ndim == 3: params = params + ('K3', 'ERR_K3', 'G',)
       else: params = params + ('G',)
       
-      __tabi = CALC_TABLE(TABLE=__tabi,reuse=__tabi,ACTION=(_F(OPERATION='EXTR',NOM_PARA=tuple(params))),INFO=1)      
+      __tabi = CALC_TABLE(TABLE=__tabi,reuse=__tabi,ACTION=(_F(OPERATION='EXTR',NOM_PARA=tuple(params))),INFO=1,TITRE="CALCUL DES FACTEURS D'INTENSITE DES CONTRAINTES PAR LA METHODE POST_K1_K2_K3")      
 
       return __tabi
 
@@ -1732,7 +1744,12 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
 
    if FOND_FISS : 
 
-      MAILLAGE = args['MAILLAGE']
+      if RESULTAT :
+        iret,ibid,nom_ma = aster.dismoi('F','NOM_MAILLA',RESULTAT.nom,'RESULTAT')
+        MAILLAGE = self.get_concept(nom_ma.strip())
+      else:
+        MAILLAGE = args['MAILLAGE']
+
       NB_NOEUD_COUPE = args['NB_NOEUD_COUPE']
 
 #     Verification du type des mailles de FOND_FISS
@@ -1775,7 +1792,7 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
          d_coorf = get_coor_libre(self,Lnoff,RESULTAT,ndim)
 
 #        Coordonnee d un pt quelconque des levres pour determination sens de propagation
-         Plev = get_Plev(self,MAILLAGE,ListmaS,RESULTAT)
+         Plev = get_Plev(self,ListmaS,RESULTAT)
 
 #        Calcul des normales a chaque noeud du fond
          if ndim == 3 :
@@ -1831,7 +1848,12 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
 
    elif FISSURE :
 
-      MAILLAGE = args['MAILLAGE']
+      if RESULTAT :
+        iret,ibid,nom_ma = aster.dismoi('F','NOM_MAILLA',RESULTAT.nom,'RESULTAT')
+        MAILLAGE = self.get_concept(nom_ma.strip())
+      else:
+        MAILLAGE = args['MAILLAGE']
+
       DTAN_ORIG = args['DTAN_ORIG']
       DTAN_EXTR = args['DTAN_EXTR']
       dmax  = PREC_VIS_A_VIS * ABSC_CURV_MAXI
@@ -1842,7 +1864,7 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
          UTMESS('F','RUPTURE0_4')
 
 #     Recuperation du resultat
-      __RESX = get_resxfem(self,xcont,RESULTAT,MAILLAGE,MODELISATION,MODEL)
+      __RESX = get_resxfem(self,xcont,RESULTAT,MODELISATION,MODEL)
 
 #     Recuperation des coordonnees des points du fond de fissure (x,y,z,absc_curv)
       (Coorfo, Vpropa, Nnoff) = get_coor_xfem(args,FISSURE,ndim)

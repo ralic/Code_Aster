@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 19/01/2011   AUTEUR MASSIN P.MASSIN 
+C MODIF ELEMENTS  DATE 01/02/2011   AUTEUR MASSIN P.MASSIN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -70,7 +70,7 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX --------------------
       REAL*8       PREC,ND(3),DN,SAUT(3),LAMBDA,LST,R,RR,E,G(3),RBID
       REAL*8       BETASQ,ALPHA0,P(3,3),PP(3,3),DSIDEP(6,6),TAU1(3)
       REAL*8       TAU2(3),ALPHA,DNOR(3),DTANG(3),KA,AM3(3)
-      REAL*8       VALRES(3),RELA,COHES(60)            
+      REAL*8       VALRES(3),RELA,COHES(60),INDIC,R8BID            
       PARAMETER    (PREC=1.D-16)
       LOGICAL      IMPRIM,NOEUD
       PARAMETER    (BETASQ=1.D0)
@@ -247,14 +247,13 @@ C
                R=ABS(LST)
                RR=SQRT(R)
            ENDIF
-           
            CALL XMMSA3(NDIM,NNO,NNOS,FFP,IDEPL,IDEPL,
      &          NFH,SINGU,RR,DDLS,DDLM,SAUT)
      
            DO 12 J=1,NDIM
              SAUT(J)=SAUT(J)/2.D0
-12         CONTINUE          
-          
+12         CONTINUE
+
            IF(CZMFE.EQ.1.D0) THEN
               ZI(JOUT2-1+ISSPG) = 0
               ZI(JOUT3-1+ISSPG) = 0          
@@ -327,11 +326,11 @@ C         IMPRESSION (2EME PARTIE)
           ENDIF 
                    
           IF(RELA.EQ.1.D0) THEN
-              
+              INDIC=0.D0
               CALL XMMSA2(NDIM,NNOL,NNOF,IPGF,IVFF,
      &             ZI(IMATE),FFC,SAUT,NOEUD,ND,TAU1,
      &             TAU2,IFA,CFACE,LACT,COHES(ISSPG),
-     &             BETASQ,ALPHA0,ALPHA,DSIDEP,
+     &             BETASQ,INDIC,ALPHA,DSIDEP,
      &             PP,DNOR,DTANG,P,KA,AM3)
      
               IF (ALPHA.GT.ZR(JCOHES-1+ISSPG)) THEN

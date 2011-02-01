@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 19/01/2011   AUTEUR MASSIN P.MASSIN 
+C MODIF ELEMENTS  DATE 01/02/2011   AUTEUR MASSIN P.MASSIN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -218,7 +218,7 @@ C
      &                     NOMRES,VALRES,CODRET, 'FM' )
         ALPHA0=(VALRES(1)/VALRES(2))*VALRES(3)
         IF(CZMFE.EQ.1.D0) THEN
-          CSTACO=1.D0
+          CSTACO=E/VALRES(3)
           LPENAC=.FALSE.
         ENDIF
       ENDIF
@@ -389,7 +389,6 @@ C     ........................................
 C
             IF (INDCO(ISSPG).EQ.0) THEN
               IF (NVIT.NE.0) THEN
-
                 CALL XMMSA3(NDIM,NNO,NNOS,FFP,IDEPL,IDEPM,
      &                      NFH,SINGU,RR,DDLS,DDLM,SAUT)
 C
@@ -407,7 +406,6 @@ C
 C
 C --- CALCUL DU SAUT DE DEPLACEMENT EQUIVALENT [[UEG]]
 C
-             
               CALL XMMSA3(NDIM,NNO,NNOS,FFP,IDEPL,IDEPM,
      &                    NFH,SINGU,RR,DDLS,DDLM,SAUT)
 C

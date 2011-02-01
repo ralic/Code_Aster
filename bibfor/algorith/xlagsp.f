@@ -2,10 +2,10 @@
      &                  NLISEQ,NLISRL,NLISCO,NBASCO)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/12/2010   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 01/02/2011   AUTEUR MASSIN P.MASSIN 
 C TOLE CRS_1404
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -77,7 +77,7 @@ C
       INTEGER      NUNOB,NUNOM,NOMIL,NUNOAA,NUNOBB
       INTEGER      IA,IIA,IA1,IA2,I,J,IRET,IMA,JMA,IBID
       INTEGER      JCONX1,JCONX2,JMAIL
-      INTEGER      JCNSV,JCNSL
+      INTEGER      JCNSV,JCNSL,NPIL,GETEXM
       REAL*8       C(NDIM),CC(NDIM)
       CHARACTER*8   K8BID,TYPMA
       INTEGER      IFM,NIV
@@ -227,6 +227,15 @@ C
           CALL JEVEUO(NOMO(1:8)//'.XFEM_CONT','L',JXC)
           IF (ZI(JXC).EQ.3) MAQUA=.FALSE.
           IF (.NOT.MAQUA) EXILI=.TRUE.
+          IF(GETEXM('PILOTAGE','DIRE_PILO').EQ.1) THEN 
+             CALL GETVTX('PILOTAGE','DIRE_PILO',1,1,0,K8BID,NPIL)
+             NPIL=-NPIL
+             IF(NPIL.GE.1) THEN
+                EXILI=.TRUE.
+                MAQUA=.FALSE.
+             ENDIF
+          ENDIF
+          
 C
 C --- RECUPERATION DU NOMBRE DE POINT D'INTERSECTIONS
 C
@@ -246,13 +255,30 @@ C
             CALL CESEXI('S',JCESD3,JCESL3,IMA,1,1,ZXAIN*(PINT-1)+1,IAD3)
             CALL ASSERT(IAD3.GT.0)
             IA=NINT(ZR(JCESV3-1+IAD3))
+C - SI PILOTAGE ET NOEUD INTERSECTE, ON L AJOUTE
+            IF(GETEXM('PILOTAGE','DIRE_PILO').EQ.1) THEN 
+                CALL GETVTX('PILOTAGE','DIRE_PILO',1,1,0,K8BID,NPIL)
+                NPIL=-NPIL
+                IF(NPIL.GE.1) THEN
+                   IF(IA.EQ.0) THEN
+                       CALL CESEXI('S',JCESD3,JCESL3,IMA,1,1,
+     &                              ZXAIN*(PINT-1)+2,IAD3)
+                       NA=NINT(ZR(JCESV3-1+IAD3))
+                       NB=NA
+                   ELSE
+                       NA = AR(IA,1)
+                       NB = AR(IA,2)
+                   ENDIF
+                ENDIF
 C --- SI CE N'EST PAS UNE ARETE COUPEE, ON SORT
-            IF (IA.EQ.0) GOTO 110
+            ELSE 
+               IF (IA.EQ.0) GOTO 110  
+               NA = AR(IA,1)
+               NB = AR(IA,2)
+            ENDIF
 C
 C --- RECUPERATION DES NOEUDS
 C
-            NA    = AR(IA,1)
-            NB    = AR(IA,2)
             NUNOA = ZI(JCONX1-1+ZI(JCONX2+IMA-1)+NA-1)
             NUNOB = ZI(JCONX1-1+ZI(JCONX2+IMA-1)+NB-1)
             IF (.NOT.MAQUA) THEN

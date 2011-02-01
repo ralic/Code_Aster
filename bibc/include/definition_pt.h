@@ -1,7 +1,7 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF definition_pt include  DATE 19/10/2010   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF definition_pt include  DATE 31/01/2011   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
-/* COPYRIGHT (C) 1991 - 2010  EDF R&D              WWW.CODE-ASTER.ORG */
+/* COPYRIGHT (C) 1991 - 2011  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
 /* THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR      */
 /* MODIFY IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS     */
@@ -22,8 +22,8 @@
 #ifndef DEFINITION_PT_H
 #define DEFINITION_PT_H
 
-/* Appels et signatures _POSIX */
-#if defined _POSIX
+/* Appels et signatures avec strlen en fin de liste */
+#ifdef _STRLEN_AT_END
 #define DEF_P_PPPPSPSP(NAME,a,b,c,d,e,le,f,g,lg,h)               (NAME)(a,b,c,d,e,f,g,h,le,lg)
 #define CALL_P_PPPPSPSP(NAME,a,b,c,d,e,f,g,h)                    (NAME)(a,b,c,d,e,f,g,h,strlen(e),strlen(g))
 #define DEF_P_PPPPSPPP(NAME,a,b,c,d,e,le,f,g,h)               (NAME)(a,b,c,d,e,f,g,h,le)
@@ -36,8 +36,8 @@
 #define DEFUMAT(NAME,a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,ls,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,I,J,K)               (NAME)(a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,I,J,K,ls)
 #define CALLUMAT(NAME,a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,I,J,K)                 (NAME)(a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F,G,H,I,J,K,strlen(s))
 
-/* Déclarations et appels _WIN32 */
-#elif defined _WIN32
+/* Appels et signatures avec strlen juste après le pointeur de chaine */
+#else
 #define DEF_P_PPPPSPSP(NAME,a,b,c,d,e,le,f,g,lg,h)               (NAME)(a,b,c,d,e,le,f,g,lg,h)
 #define CALL_P_PPPPSPSP(NAME,a,b,c,d,e,f,g,h)                    (NAME)(a,b,c,d,e,strlen(e),f,g,strlen(g),h)
 #define DEF_P_PPPPSPPP(NAME,a,b,c,d,e,le,f,g,h)               (NAME)(a,b,c,d,e,le,f,g,h)

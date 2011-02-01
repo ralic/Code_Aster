@@ -1,7 +1,7 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF hdftsd hdf  DATE 19/10/2010   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF hdftsd hdf  DATE 31/01/2011   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
-/* COPYRIGHT (C) 1991 - 2003  EDF R&D              WWW.CODE-ASTER.ORG */
+/* COPYRIGHT (C) 1991 - 2011  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
 /* THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR      */
 /* MODIFY IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS     */
@@ -53,11 +53,11 @@ INTEGER DEFPSPP(HDFTSD, hdftsd, INTEGER *iddat, char *type, STRING_SIZE lt, INTE
   for (k=1;k<lt;k++) {
     *(type+k)=' ';
   }
-  if ((*ltype = (int)H5Tget_size(datatype))>=0 ) {
+  if ((*ltype = (INTEGER)H5Tget_size(datatype))>=0 ) {
     if ((dataspace = H5Dget_space(id))>=0 ) { 
       if ((rank = H5Sget_simple_extent_ndims(dataspace))==1) {
         status = H5Sget_simple_extent_dims(dataspace, dims_out, NULL);
-        *lv = (long)dims_out[0];  
+        *lv = (INTEGER)dims_out[0];  
         H5Sclose(dataspace);
         iret=0;
       }

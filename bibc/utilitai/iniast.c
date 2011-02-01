@@ -1,7 +1,7 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF iniast utilitai  DATE 07/04/2009   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF iniast utilitai  DATE 31/01/2011   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
-/* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
+/* COPYRIGHT (C) 1991 - 2011  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
 /* THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR      */
 /* MODIFY IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS     */
@@ -29,9 +29,9 @@ extern void DEFPPPSP(VERSIO, versio, INTEGER *, INTEGER *, INTEGER *, char *, ST
 extern void DEFP(DATE, date, INTEGER *v);
 #define CALL_DATE(a) CALLP(DATE,date,a)
 
-INTEGER DEFPPP(INIAST, iniast, long *r1, long *r2, long *r3)
+INTEGER DEFPPP(INIAST, iniast, INTEGER *r1, INTEGER *r2, INTEGER *r3)
 {
-   long ier,ivers,iutil,iniv,ilog,v[6],vrand;
+   INTEGER ivers, iutil, iniv, ilog, v[6], vrand;
    int a1,a2,a3,delta;
    char vdate[17] = "                 ";
 #ifndef _NO_EXPIR
@@ -51,10 +51,9 @@ INTEGER DEFPPP(INIAST, iniast, long *r1, long *r2, long *r3)
 #endif
    }
    srand( (unsigned int) v[4]+v[5] );
-   vrand = rand();
+   vrand = (INTEGER)rand();
    *r1 = vrand * (ivers+a1);
    *r2 = vrand * (iutil+a2);
    *r3 = vrand * (iniv +a3);
-   ier = 0;
    return vrand;
 }

@@ -1,7 +1,7 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF HPALLOC UTILITAI  DATE 18/05/2010   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF HPALLOC UTILITAI  DATE 31/01/2011   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
-/* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
+/* COPYRIGHT (C) 1991 - 2011  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
 /* THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR      */
 /* MODIFY IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS     */
@@ -25,16 +25,20 @@ void DEFPPPP(HPALLOC, hpalloc, void **addr,INTEGER *length, INTEGER *errcode, IN
     if ( *length <= 0 ) {
         *errcode = -1;
     }
-    else {
-        *addr = (void *)malloc(*length * sizeof(long));
-        if ( *addr == (void *)0 ) {
+    else
+    {
+        *addr = (void *)malloc(*length * sizeof(INTEGER));
+        if ( *addr == (void *)0 )
+        {
             *errcode = -2;
         }
-        else {
+        else
+        {
             *errcode = 0;
         }
     }
-    if ( *errcode != 0 && *abrt != 0 ) {
-        abort();
+    if ( *errcode != 0 && *abrt != 0 )
+    {
+     abort();
     }
 }

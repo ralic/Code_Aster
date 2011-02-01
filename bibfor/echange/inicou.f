@@ -1,9 +1,9 @@
       SUBROUTINE INICOU(NBPAS, TINIT, TFIN, DT, DTSTO, VROTAT)  
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ECHANGE  DATE 16/02/2010   AUTEUR GREFFET N.GREFFET 
+C MODIF ECHANGE  DATE 31/01/2011   AUTEUR GREFFET N.GREFFET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -106,7 +106,7 @@ C ! NOMPAL      !CHARACTER*8! NOM DU PALIER CONSIDERE (ENVOYE A EDYOS) !
 C !             !           !                                          !
 C ! TYPPAL      !CHARACTER*6! TYPE DU PALIER CONSIDERE (RECU D'EDYOS)  !
 C !             !           !                                          !
-C ! PARAMR(5)   !  REEL*8   ! PARAMETRES DE TYPE REEL ENVOYES A EDYOS  !
+C ! PARAMR(6)   !  REEL*8   ! PARAMETRES DE TYPE REEL ENVOYES A EDYOS  !
 C !             !           ! (TINIT, TFIN, DT, DTSTO, VROTAT)         !
 C !             !           !                                          !
 C ! PARAMI(2)   !  ENTIER   ! PARAMETRES DE TYPE ENTIER ENVOYES A EDYOS!
@@ -210,7 +210,7 @@ C TOLE CRS_512 CRP_4
 
 C     ARGUMENTS
 C     =========
-      REAL*8        VROTAT, TINIT, TFIN ,DT , DTSTO
+      REAL*8        VROTAT, TINIT, TFIN ,DT , DTSTO, TMIN
       INTEGER       NBPAS     
 
 
@@ -230,39 +230,30 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32 ZK32
       CHARACTER*80 ZK80
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
-      CHARACTER*32     JEXNUM, JEXNOM
-
+C
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
-
-
-
 C     COMMON
 C     ======
-      INTEGER     ICOMPO
+      INTEGER       ICOMPO
       INTEGER       NBPAL
-    
+C    
       INTEGER       PALMAX 
       PARAMETER (PALMAX=20)
       CHARACTER*3   FINPAL(PALMAX)
-
-      
-
 C     VARIABLES INTERNES
 C     ==================
       CHARACTER*8   NOMPRG
       PARAMETER(NOMPRG='INICOU')
 
       INTEGER       IFM, NIV
-      INTEGER*4     IAPP, NUMPAS, INFO , LONG , NLU, PARAMI(2)
-      INTEGER*4     UN, DEUX, CINQ
-      PARAMETER (UN = 1, DEUX=2, CINQ=5)      
-      REAL*8        TR8 , PARAMR(5)  
+      INTEGER*4     IAPP, NUMPAS, INFO, NLU, PARAMI(2)
+      INTEGER*4     UN, DEUX, SIX
+      PARAMETER (UN = 1, DEUX=2, SIX=6)      
       REAL*4        TR4
+      REAL*8        TR8 , PARAMR(SIX)  
       CHARACTER*6   TYPPAL
       CHARACTER*8   NOMPAL 
 C
-      
-
 C     ANCIENS INCLUDE (CALCIUM.H)
 C     ===========================
       INTEGER*4     LENVAR
@@ -270,18 +261,17 @@ C     ===========================
       CHARACTER*(LENVAR) NOMVAR
       INTEGER*4     CPITER
       PARAMETER (CPITER= 41)
-
 C
       INTEGER       IADR,IADRI,IADRK
-      INTEGER       ZCPAL,ZNPAL  
       CHARACTER*24  CPAL, NPAL,AYACS   
-     
-
 C        
 C                          
 C======================================================================
+C
+      TMIN=1.D-11
 
       CALL JEMARQ()
+      NIV = 0
       CALL INFDBG('YACS_EDYOS',IFM,NIV)
       
       
@@ -314,7 +304,7 @@ C     -------------------------------------------------
 C     RECUPERATION DES DONNEES ENTIERES SUR LES PALIERS            
       CALL JEVEUO(CPAL,'L',IADRK)
       DO 20 IAPP=1,NBPAL
-          FINPAL(IAPP)=ZK8(IADRK+(IAPP-1)+PALMAX)(1:3)
+          FINPAL(IAPP)=ZK8(IADRK+(IAPP-1)+PALMAX)
   20  CONTINUE
 
 
@@ -330,8 +320,7 @@ C
      &  WRITE(IFM,*)'ASTEREDYOS: ',NOMPRG,'  NUM_PAS = ',NUMPAS,' ==='
       
       
-C     DEBUT DE LA BOUCLE SUR LES PALIERS      
-       
+C     DEBUT DE LA BOUCLE SUR LES PALIERS
       DO 100 IAPP = 1 , NBPAL
 C
 C        CREATION DU NOM DE VARIABLE YACS POUR LE NOM DU PALIER
@@ -342,9 +331,9 @@ C
 C        --------   ENVOI DU NOM DU PALIER A EDYOS -------------
 C
          IF (NIV.GE.2) THEN
-           WRITE(IFM,'(A17,3X,A12)')'ASTEREDYOS: VARIABLE1: ',NOMVAR
+           WRITE(IFM,'(A23,3X,A12)')'ASTEREDYOS: VARIABLE1: ',NOMVAR
+           WRITE(IFM,'(A23,3X,A12)')'ASTEREDYOS: NOMPALIER: ',NOMPAL
          ENDIF
-   
          INFO = 0
          CALL CPECH (ICOMPO,CPITER,TR4,NUMPAS,NOMVAR,UN,
      &               NOMPAL,INFO)
@@ -361,12 +350,12 @@ C
 C        CREATION DU NOM DE VARIABLE YACS POUR LE TYPE DU PALIER
 C 
          NOMVAR='TYPE_'//NOMPAL
-         TYPPAL='        '
+         TYPPAL='      '
  
 C
 C        ----------  RECEPTION DU TYPE DU PALIER FROM EDYOS ----------
 C
-         CALL CPLCH (ICOMPO,CPITER,TR8,TR8,NUMPAS,NOMVAR,UN,
+         CALL CPLCH (ICOMPO,CPITER,TR4,TR4,NUMPAS,NOMVAR,UN,
      &               NLU,TYPPAL,INFO)
          CALL ERRCOU (NOMPRG,NUMPAS,NOMVAR,INFO,UN,NLU)
 
@@ -376,30 +365,25 @@ C
      &        TYPPAL(1:6)
          ENDIF
 
-
 C        -------ENVOI DES PARAMETRES REELS A EDYOS------------
 
 
          PARAMR ( 1 ) =  TINIT
          PARAMR ( 2 ) =  TFIN
-       
-CPAT 03/11/08 - BIDOUILLE POUR ACCORDER LES INSTANTS ENTRE EDYOS & ASTER
-C         PARAMR ( 2 ) =  TFIN-DT
-CPAT 03/11/08   
- 
          PARAMR ( 3 ) =  DT
          PARAMR ( 4 ) =  DTSTO
          PARAMR ( 5 ) =  VROTAT
-
+         PARAMR ( 6 ) =  TMIN
+         DTSTO=DT 
          NOMVAR='PARAMREEL'//FINPAL(IAPP)
 C
-         CALL CPEDB (ICOMPO,CPITER,TR8,NUMPAS,NOMVAR,CINQ,
+         CALL CPEDB (ICOMPO,CPITER,TR8,NUMPAS,NOMVAR,SIX,
      &               PARAMR,INFO)
-         CALL ERRCOU (NOMPRG,NUMPAS,NOMVAR,INFO,CINQ,CINQ)
+         CALL ERRCOU (NOMPRG,NUMPAS,NOMVAR,INFO,SIX,SIX)
 
 
 C        ECRITURE DES PARAMETRES ENVOYES 
-         IF (NIV.GE.2) THEN
+         IF (NIV.GE.0) THEN
            WRITE(IFM,*)'ASTEREDYOS :',NOMPRG,
      &       '- ASTER - ENVOI PARAMR A EDYOS'
            WRITE(IFM,*)'ASTEREDYOS : ',NOMPRG,' - TEMPS INITIAL : ',
@@ -411,6 +395,8 @@ C        ECRITURE DES PARAMETRES ENVOYES
            WRITE(IFM,*)'ASTEREDYOS : ',NOMPRG,' - PAS STOCKAGE : ',
      &        PARAMR(4)
            WRITE(IFM,*)'ASTEREDYOS : ',NOMPRG,' - OMEGA : ',PARAMR(5)
+           WRITE(IFM,*)'ASTEREDYOS : ',NOMPRG,' - PAS MINIMUM  : ',
+     &        PARAMR(6)     
          ENDIF
 C
 

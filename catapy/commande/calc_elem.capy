@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 25/01/2011   AUTEUR PELLET J.PELLET 
+#& MODIF COMMANDE  DATE 31/01/2011   AUTEUR PELLET J.PELLET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -116,6 +116,8 @@ CALC_ELEM=OPER(nom="CALC_ELEM",op=58,sd_prod=calc_elem_prod,reentrant='f',
                               #  autres
                                  "VALE_NCOU_MAXI","PRME_ELNO","VARC_ELGA"),),
 
+#              Les 2 mots cles suivants ne sont utiles qu' a l'option VALE_NCOU_MAXI
+#              mais  on est obligé de les laisser ici a cause des blocs
                NOM_CHAM  =SIMP(statut='f',typ='TXM',fr="nom du champ pour VALE_NCOU_MAXI", ),
                NOM_CMP   =SIMP(statut='f',typ='TXM',fr="nom de la composante pour VALE_NCOU_MAXI",  ),
 
@@ -315,6 +317,8 @@ b_charge =BLOC( condition = "OPTION in ('EPME_ELNO','EPSI_ELGA','EPME_ELGA','EPS
                                  into=("VMIS","TOTAL","VMIS_CINE","TOTAL_CINE"),
                                  fr="Type de norme pour les options RADI_ et DCHA_"),
 
+#              Les 2 mots cles suivants ne sont utiles qu' a l'option VALE_NCOU_MAXI
+#              mais  on est obligé de les laisser ici a cause des blocs
                NOM_CHAM  =SIMP(statut='f',typ='TXM',fr="Nom du champ pour VALE_NCOU_MAXI"),
                NOM_CMP   =SIMP(statut='f',typ='TXM',fr="Nom de la composante pour VALE_NCOU_MAXI"),
 
@@ -529,7 +533,7 @@ b_charge =BLOC( condition = "OPTION in ('EPME_ELNO','EPSI_ELGA','EPME_ELGA','EPS
          PCENT_PIVOT     =SIMP(statut='f',typ='I',defaut=10,),
          RESI_RELA       =SIMP(statut='f',typ='R',defaut=-1.0,),
          OUT_OF_CORE     =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON")),
-         LIBERE_MEMOIRE =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON")),    
+         LIBERE_MEMOIRE =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON")),
          ),
      ),
 

@@ -1,28 +1,28 @@
-#@ MODIF macr_adap_mail_ops Macro  DATE 04/10/2010   AUTEUR GNICOLAS G.NICOLAS 
+#@ MODIF macr_adap_mail_ops Macro  DATE 31/01/2011   AUTEUR NICOLAS G.NICOLAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                   
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # RESPONSABLE GNICOLAS G.NICOLAS
 #
 """
 Traitement des macros MACR_ADAP_MAIL/MACR_INFO_MAIL
 """
-__revision__ = "V1.4"
+__revision__ = "V1.5"
 #
 def macr_adap_mail_ops ( self,
                          INFO, VERSION_HOMARD, MAILLAGE_FRONTIERE,
@@ -46,14 +46,14 @@ def macr_adap_mail_ops ( self,
 #  2. Les caracteristiques d'un passage sont conservees dans un dictionnaire. Il y a autant de
 #     dictionnaires que de sollicitations pour une serie d'adaptation. L'ensemble de ces dictionnaires
 #     est conserve dans la liste Liste_Passages. Cette liste est necessairement globale pour pouvoir
-#     la retrouver e chaque nouveau passage.
+#     la retrouver a chaque nouveau passage.
 #     Description du dictionnaire de passages :
 #        dico["Maillage_0"]             = o ; string ; nom du concept du maillage initial de la serie d'adaptation
 #        dico["Maillage_NP1"]           = o ; string ; nom du concept du dernier maillage adapte
 #        dico["Rep_Calc_HOMARD_global"] = o ; string ; Nom global du repertoire de calcul pour HOMARD
 #        dico["Rep_Calc_HOMARD_local"]  = o ; string ; Nom local du repertoire de calcul pour HOMARD
 #                                                      depuis le repertoire de calcul pour ASTER
-#        dico["niter"]                  = o ; entier ; numero d'iteration
+#        dico["niter"]                  = o ; entier ; numero d'iteration de depart
 #
 #  3. Les caracteristiques d'un maillage sont conservees dans un dictionnaire. Il y a autant de
 #     dictionnaires que de maillages manipules. L'ensemble de ces dictionnaires est conserve
@@ -72,13 +72,13 @@ def macr_adap_mail_ops ( self,
 #        dico["RESULTAT"]     = f ; concept ASTER du resutat associe
 #        dico["NOM_CHAM"]     = f ; string ; Nom ASTER du champ
 #        dico["CHAM_GD"]      = f ; concept ASTER du champ de grandeur associee
-#        dico["COMPOSANTE"]   = f ; liste ; Liste des noms ASTER des composante de l'indicateur
+#        dico["COMPOSANTE"]   = f ; liste ; Liste des noms ASTER des composantes du champ
 #        dico["NUME_ORDRE"]   = f ; entier ; Numero d'ordre du champ
 #        dico["INST"]         = f ; entier ; Instant du champ
 #        dico["PRECISION"]    = f ; entier ; Precision sur l'instant du champ
 #        dico["CRITERE"]      = f ; entier ; Critere de precision sur l'instant du champ
 #        dico["CHAM_MAJ"]     = f ; string ; Nom ASTER du champ interpole sur le nouveau maillage
-#        dico["NOM_MED"]      = o ; string ; Nom MED du champ
+#        dico["NOM_CHAM_MED"] = o ; string ; Nom MED du champ
 #        dico["SENSIBILITE"]  = f ; string ; Nom du parametre sensible associe
 #
 #  5. Signification de INFO
@@ -90,16 +90,20 @@ def macr_adap_mail_ops ( self,
 #                2nd niveau de message pour l'execution de HOMARD
 #
   from Accas import _F
-  from Macro import creation_donnees_homard 
+  from Macro import creation_donnees_homard
   from Utilitai.Utmess     import UTMESS, MasquerAlarme, RetablirAlarme
-  import aster 
+  import aster
   import string
   import os
+  import cPickle
+  from glob import glob
+  import tarfile
   from types import ListType, TupleType
   EnumTypes = (ListType, TupleType)
 #gn  import shutil
 #
   global Liste_Passages
+  global numero_passage_fonction
 #
 #====================================================================
 # 1. Prealables
@@ -109,15 +113,64 @@ def macr_adap_mail_ops ( self,
 #
   self.set_icmd(1)
 #
-# 1.2. ==> Numero du passage dans cette macro
+# 1.2. ==> Initialisations de parametres Aster
+#
+  repertoire_outils = aster.repout()
+  Rep_Calc_ASTER = os.getcwd()
+  if ( INFO >= 3 ) : print os.listdir(Rep_Calc_ASTER)
+#
+# Remarque : le nom pick.homard.tar est obligatoire car ASTK rapatrie dans la base tous les fichiers en pick.*
+  fichier_archive = os.path.join(Rep_Calc_ASTER, "pick.homard.tar")
+#gn  print "fichier_archive = ",fichier_archive
+#
+# 1.3. ==> Numero du passage dans cette macro
 #
   try :
-    self.jdc.indice_macro_homard = self.jdc.indice_macro_homard + 1
+    numero_passage_fonction = numero_passage_fonction + 1
   except :
-    self.jdc.indice_macro_homard = 1
+    numero_passage_fonction = 1
+#gn  print "numero_passage_fonction = ",numero_passage_fonction
+#
+# 1.4. ==> Au tout premier passage
+#
+  if numero_passage_fonction == 1 :
+#
     Liste_Passages = []
-  numero_passage_fonction = self.jdc.indice_macro_homard
-###  print "numero_passage_fonction = ",numero_passage_fonction
+#
+# 1.4.2. ==> Avec un fichier de reprise : on recupere les repertoires archives
+#
+    if os.path.isfile(fichier_archive) :
+#
+#     Extraction de l'archive
+#     Remarque : a partir de python 2.5 on pourra utiliser extractall
+      if ( INFO >= 3 ) : print "Extraction de l'archive", fichier_archive
+      file = tarfile.open(fichier_archive, "r")
+      for tarinfo in file :
+        if ( INFO >= 3 ) : print tarinfo.name, "is", tarinfo.size, "bytes in size and is",
+        if tarinfo.isreg():
+          if ( INFO >= 3 ) : print "a regular file."
+          file.extract(tarinfo.name)
+        elif tarinfo.isdir():
+          if ( INFO >= 3 ) : print "a directory."
+          file.extract(tarinfo.name)
+        else:
+          if ( INFO >= 3 ) : print "something else."
+      if ( INFO >= 3 ) : print os.listdir(Rep_Calc_ASTER)
+#     Liste de tous les repertoires d'adaptation qui ont ete recuperes
+      laux = glob("*_ADAP_*")
+#     On prend le fichier pickle du 1er repertoire (ce sont tous les memes),
+#     puis on recupere la liste des passages
+      fic = os.path.join(Rep_Calc_ASTER, laux[0], "pick.1")
+      file = open(fic, "r")
+      laux = cPickle.load(file)
+      file.close()
+#     Pour chaque cas, mise a jour du repertoire global
+      for dico in laux :
+        Rep_Calc_HOMARD_local  = dico["Rep_Calc_HOMARD_local"]
+        dico["Rep_Calc_HOMARD_global"] = os.path.join(Rep_Calc_ASTER, Rep_Calc_HOMARD_local)
+        Liste_Passages.append(dico)
+#
+  if ( INFO >= 3 ) : print "Liste_Passages = ", Liste_Passages
 #
 # 1.3. ==> On importe les definitions des commandes a utiliser dans la macro
 #
@@ -127,15 +180,11 @@ def macr_adap_mail_ops ( self,
   LIRE_MAILLAGE   = self.get_cmd("LIRE_MAILLAGE")
   LIRE_CHAMP      = self.get_cmd("LIRE_CHAMP")
 #
-# 1.4. ==> Le nom du programme HOMARD a lancer
-#
-  repertoire_outils = aster.repout()
-  homard            = repertoire_outils + "homard"
-#
 # 1.5. ==> Initialisations
 #
   codret_partiel = [0]
-  Rep_Calc_ASTER = os.getcwd()
+#
+  homard          = repertoire_outils + "homard"
 #
   liste_maillages = []
   liste_champs    = []
@@ -167,7 +216,6 @@ def macr_adap_mail_ops ( self,
 # 2.1.1. ==> Les concepts "maillage"
 #
 #gn    print "\n.. Debut de 2.1.1"
-#    for mot_cle in ["MAILLAGE_N" , "MAILLAGE_NP1"] :
     for mot_cle in ["MAILLAGE_N" , "MAILLAGE_NP1" , "MAILLAGE_NP1_ANNEXE"] :
 #gn      print "\nmot_cle = ",mot_cle
       dico = {}
@@ -184,7 +232,7 @@ def macr_adap_mail_ops ( self,
 #gn      print "dico = ",dico
       liste_maillages.append(dico)
 #
-# 2.1.2. ==> L'eventuel indicateur d'erreur
+# 2.1.2. ==> L'eventuel pilotage de l'adaptation
 #
 #gn    print "\n.. Debut de 2.1.2"
 #gn    print "args = ", args
@@ -192,11 +240,8 @@ def macr_adap_mail_ops ( self,
       dico = {}
       dico["Type_Champ"] = "INDICATEUR"
       if ( args["RESULTAT_N"] != None ) :
-        lresu = 1
         dico["RESULTAT"]   = args["RESULTAT_N"]
-        noresu = dico["RESULTAT"].nom
         dico["NOM_CHAM"]   = args["NOM_CHAM"]
-        nomsym = dico["NOM_CHAM"]
         if ( args["NUME_ORDRE"] != None ) :
           dico["NUME_ORDRE"] = args["NUME_ORDRE"]
         if ( args["INST"] != None ) :
@@ -207,19 +252,13 @@ def macr_adap_mail_ops ( self,
         if ( args["SENSIBILITE"] != None ) :
           dico["SENSIBILITE"] = args["SENSIBILITE"]
       else :
-        lresu = 0
         dico["CHAM_GD"] = args["CHAM_GD"]
-        noresu = dico["CHAM_GD"].nom
-        nomsym = " "
 #gn      print "dico = ", dico
 #
-      if dico.has_key("SENSIBILITE") :
-        nopase = dico["SENSIBILITE"].nom
-      else :
-        nopase = " "
-#gn      print "Avant appel a aster.mdnoch, lresu = ",lresu,", noresu =", noresu ,", nomsym = ", nomsym ,", nopase = ", nopase
-      dico["NOM_MED"] = aster.mdnoch ( lresu, noresu, nomsym, nopase )
-#gn      print "==> dico[\"NOM_MED\"] = ", dico["NOM_MED"]
+      nom_cham_med_fichier = "champ___________________________"
+#                             12345678901234567890123456789012
+      dico["NOM_CHAM_MED"] = nom_cham_med_fichier
+#gn      print "==> dico[\"NOM_CHAM_MED\"] = ", dico["NOM_CHAM_MED"]
 #
       if args.has_key("NOM_CMP") :
         if args["NOM_CMP"] is not None :
@@ -237,7 +276,6 @@ def macr_adap_mail_ops ( self,
 ###      print dico
 #
 # 2.1.3. ==> Les champs a mettre a jour
-#
 #gn     print "\n.. Debut de 2.1.3."
 #
     if args.has_key("MAJ_CHAM") :
@@ -247,15 +285,19 @@ def macr_adap_mail_ops ( self,
       else :
         les_champs = args["MAJ_CHAM"]
 #
+      dico_interp = {}
+      dico_interp["AUTO"] = 0
+      dico_interp["ISOP2"] = 3
+#
+      iaux = 0
       for maj_cham in les_champs :
-#gn        print maj_cham
+#gn        print "maj_cham :", maj_cham
 #gn        print type(maj_cham)
 #
         dico = {}
         dico["Type_Champ"] = "CHAMP_MAJ"
         l_aux = [ "CHAM_MAJ", "TYPE_CHAM" ]
         if ( maj_cham["RESULTAT"] != None ) :
-          lresu = 1
           l_aux.append("RESULTAT")
           l_aux.append("NOM_CHAM")
           if ( maj_cham["NUME_ORDRE"] != None ) :
@@ -265,28 +307,37 @@ def macr_adap_mail_ops ( self,
             for cle in [ "PRECISION", "CRITERE" ] :
               if ( maj_cham[cle] != None ) :
                 dico[cle] = maj_cham[cle]
-          noresu = maj_cham["RESULTAT"].nom
-          nomsym = maj_cham["NOM_CHAM"]
           if ( maj_cham["SENSIBILITE"] != None ) :
             dico["SENSIBILITE"] = maj_cham["SENSIBILITE"]
         else :
-          lresu = 0
           l_aux.append("CHAM_GD")
-          noresu = maj_cham["CHAM_GD"].nom
-          nomsym = " "
         for cle in l_aux :
           dico[cle] = maj_cham[cle]
 #gn        print "dico = ", dico
 #
-        if dico.has_key("SENSIBILITE") :
-          nopase = dico["SENSIBILITE"].nom
-        else :
-          nopase = " "
-#gn        print "Avant appel a aster.mdnoch, lresu = ",lresu,", noresu =", noresu ,", nomsym = ", nomsym ,", nopase = ", nopase
-        dico["NOM_MED"] = aster.mdnoch ( lresu, noresu, nomsym, nopase )
-#gn        print "==> dico[\"NOM_MED\"] = ", dico["NOM_MED"]
+        if maj_cham["NOM_CMP"] is not None :
+          if not type(maj_cham["NOM_CMP"]) in EnumTypes :
+            l_aux = [maj_cham["NOM_CMP"]]
+          else :
+            l_aux = []
+            les_composantes = maj_cham["NOM_CMP"]
+            for composante in les_composantes :
+              l_aux.append(composante)
+          dico["COMPOSANTE"] = l_aux
+#gn          print "COMPOSANTEmaj_cham", dico["COMPOSANTE"]
 #
-###        print dico
+#gn        print "dico = ", dico
+        iaux += 1
+        la_chaine = '%08d' % iaux
+        nom_cham_med_fichier = "champ___________________" + la_chaine
+#                               123456789012345678901234    56789012
+        dico["NOM_CHAM_MED"] = nom_cham_med_fichier
+#gn        print "==> dico[\"NOM_CHAM_MED\"] = ", dico["NOM_CHAM_MED"]
+#
+        dico["TYPE_MAJ"] = dico_interp[maj_cham["TYPE_MAJ"]]
+#gn        print "==> dico[\"TYPE_MAJ\"] = ", dico["TYPE_MAJ"]
+#
+#gn        print "dico :", dico
         liste_champs.append(dico)
 #
 # 2.1.4. ==> Les zones de raffinement
@@ -300,8 +351,7 @@ def macr_adap_mail_ops ( self,
         les_zones = args["ZONE"]
 #
         for zone in les_zones :
-###          print zone
-###          print type(zone)
+###          print zone, "de type", type(zone)
           dico = {}
           for aux in l_aux :
             if ( zone[aux] != None ) :
@@ -389,7 +439,6 @@ def macr_adap_mail_ops ( self,
       UTMESS('I','HOMARD0_6')
     else :
       UTMESS('A','HOMARD0_7')
-#    UTMESS('I','HOMARD0_6',valk='glop')
 #
 #====================================================================
 # 3. Preparation du lancement des commandes
@@ -399,7 +448,7 @@ def macr_adap_mail_ops ( self,
 #          . Memorisation des noms ASTER du maillage en entree et en sortie (sous forme string)
 #
 #          On cree une nouvelle liste des dictionnaires decrivant les maillages
-#          et e la fin on ecrase l'ancienne liste par cette nouvelle.
+#          et a la fin on ecrase l'ancienne liste par cette nouvelle.
 #
 #gn  print "\n.. Debut de 3.1."
 #
@@ -446,6 +495,7 @@ def macr_adap_mail_ops ( self,
 #              le cas, cela veut dire que l'adaptation en cours est la suite d'une
 #              precedente. On doit donc utiliser le meme repertoire. Le numero
 #              d'iteration est celui de l'adaptation precedente augmente de 1.
+#              Si on n'a rien trouve, c'est que l'on demarre un nouveau cas.
 #
 #gn    print "\.. Debut de 3.2.2.1."
 #
@@ -459,16 +509,20 @@ def macr_adap_mail_ops ( self,
 #
 #gn    print "\.. Debut de 3.2.2.2."
 #
-# 3.2.2.2.1. ==> Enregistrement d'un nouveau cas de figure
+# 3.2.2.2.1. ==> Enregistrement d'un nouveau cas
+#                On emet une alarme si il existe deja un cas pour etre certain
+#                que l'utilisateur ne s'est pas trompe dans l'enchainement
 #
     if ( niter == 0 ) :
+      for dico in Liste_Passages :
+        UTMESS("A", 'HOMARD0_9', valk=(Nom_Concept_Maillage_N, Nom_Concept_Maillage_NP1, dico["Maillage_NP1"], dico["Maillage_0"]), vali=dico["niter"]+1 )
       dico = {}
-      dico["Maillage_0"]   = Nom_Concept_Maillage_N
-      dico["Maillage_NP1"] = Nom_Concept_Maillage_NP1
-      dico["Maillage_NP1_ANNEXE"] = Nom_Concept_Maillage_NP1_ANNEXE
+      dico["Maillage_0"]             = Nom_Concept_Maillage_N
+      dico["Maillage_NP1"]           = Nom_Concept_Maillage_NP1
+      dico["Maillage_NP1_ANNEXE"]    = Nom_Concept_Maillage_NP1_ANNEXE
       dico["Rep_Calc_HOMARD_local"]  = Rep_Calc_HOMARD_local
       dico["Rep_Calc_HOMARD_global"] = Rep_Calc_HOMARD_global
-      dico["niter"]        = niter
+      dico["niter"]                  = niter
       Liste_Passages.append(dico)
 #
 # 3.2.2.2.2. ==> Modification du cas en cours
@@ -477,16 +531,20 @@ def macr_adap_mail_ops ( self,
       l_aux = []
       for dico in Liste_Passages :
         if ( dico["Maillage_NP1"] == Nom_Concept_Maillage_N ) :
-          dico["Maillage_NP1"] = Nom_Concept_Maillage_NP1
+          dico["Maillage_NP1"]        = Nom_Concept_Maillage_NP1
           dico["Maillage_NP1_ANNEXE"] = Nom_Concept_Maillage_NP1_ANNEXE
-          dico["niter"]        = niter
+          dico["niter"]               = niter
         l_aux.append(dico)
-      Liste_Passages = l_aux
+      Liste_Passages = []
+      for dico in l_aux :
+        Liste_Passages.append(dico)
+#
+#gn    print "Apres 3.2.2.2. Liste_Passages = ", Liste_Passages
 #
 ###  print "niter = ", niter, ", Rep_Calc_HOMARD_global = ", Rep_Calc_HOMARD_global
 #
-# 3.2.3. Creation du repertoire pour homard
-#        attention : on ne fait cette creation qu'une seule fois par cas
+# 3.2.3. Le repertoire pour homard
+#        Attention : on ne fait cette creation qu'une seule fois par cas
 #                    d'adaptation ou d'information
 #
 #gn  print "\.. Debut de 3.2.3."
@@ -499,6 +557,11 @@ def macr_adap_mail_ops ( self,
       self.cr.warn("Code d'erreur de mkdir : " + str(codret_partiel[0]) + " : " + codret_partiel[1])
       UTMESS("F", 'HOMARD0_4', valk=Rep_Calc_HOMARD_global)
 #
+  else :
+#
+    if not os.path.isdir(Rep_Calc_HOMARD_global) :
+      UTMESS("F", 'HOMARD0_8', valk=Rep_Calc_HOMARD_global)
+#
 #====================================================================
 # 4. Ecriture des commandes de creation des donnees MED
 #====================================================================
@@ -506,20 +569,20 @@ def macr_adap_mail_ops ( self,
 #gn  print "\.. Debut de 4."
 #
 #  On doit ecrire : le maillage,
-#                   le champ d'indicateur d'erreur
-#                   les champs e convertir
+#                   le champ de pilotage de l'adaptation
+#                   les champs a convertir
 #  Remarque : on met tout dans le meme fichier
 #
 #  Chacune de ces ecritures est optionnelle selon le contexte.
 #
 # 4.1. ==> Noms des fichiers d'ASTER vers HOMARD et eventuellement de HOMARD vers ASTER
-#          Remarque : aujourd'hui, les ecritures ou les lectures au format MED se font obligatoirement sur
-#                     un fichier de nom fort.n, place dans le repertoire de calcul
+#          Remarque : aujourd'hui, les ecritures ou les lectures au format MED se font obligatoirement
+#                     dans un fichier de nom fort.n, place dans le repertoire de calcul
 ##
 # 4.1.1. ==> D'ASTER vers HOMARD
 #
   unite_fichier_aster_vers_homard = 1787 + 2*numero_passage_fonction
-  fichier_aster_vers_homard = os.path.join(Rep_Calc_ASTER,"fort." + str(unite_fichier_aster_vers_homard))
+  fichier_aster_vers_homard = os.path.join(Rep_Calc_ASTER, "fort." + str(unite_fichier_aster_vers_homard))
 ###  print "fichier_aster_vers_homard = ",fichier_aster_vers_homard
 #
 # 4.1.2. ==> De HOMARD vers ASTER
@@ -552,33 +615,31 @@ def macr_adap_mail_ops ( self,
       motscfa["RESU"] = _F( INFO_MAILLAGE=infomail,
                           **motscsi )
 #
-      IMPR_RESU ( INFO = infocomm, 
+      IMPR_RESU ( INFO = infocomm,
                   FORMAT ='MED', UNITE = unite_fichier_aster_vers_homard,
                   **motscfa )
 #
 # 4.4. Le(s) champ(s)
-#        Attention : il se peut que l'on demande la mise a jour du champ qui a servi comme
-#                    indicateur d'erreur. Si c'est le cas, il ne faut pas demander son
+#        Attention : il se peut que l'on demande la mise à jour du champ qui a servi comme
+#                    pilotage de l'adaptation. Si c'est le cas, il ne faut pas demander son
 #                    impression sinon il y a plantage d'IMPR_RESU qui ne sait pas substituer
 #                    deux champs. D'ailleurs, c'est plus economique ainsi !
-#        Remarque : pour l'adaptation, on peut ne demander qu'un nombre reduit de composante du
-#                   champ d'indicateur.
-#                   s'il y a demande de mise a jour, toutes les composantes sont concernees. Il faut
-#                   donc dans ce cas imprimer le champ total.
+#        Remarque : pour l'adaptation ou les champs a mettre a jour, on peut ne demander
+#                   qu'un nombre reduit de composantes.
 #        dico["Type_Champ"]   = o ; string ; "INDICATEUR" ou "CHAMP_MAJ"
 #        dico["RESULTAT"]     = f ; concept ASTER du resutat associe
 #        dico["NOM_CHAM"]     = f ; string ; Nom ASTER du champ
 #        dico["CHAM_GD"]      = f ; concept ASTER du champ de grandeur associee
-#        dico["COMPOSANTE"]   = f ; liste ; Liste des noms ASTER des composante de l'indicateur
+#        dico["COMPOSANTE"]   = f ; liste ; Liste des noms ASTER des composante du champ
 #        dico["NUME_ORDRE"]   = f ; entier ; Numero d'ordre du champ
 #        dico["INST"]         = f ; entier ; Instant du champ
 #        dico["PRECISION"]    = f ; entier ; Precision sur l'instant du champ
 #        dico["CRITERE"]      = f ; entier ; Critere de precision sur l'instant du champ
 #        dico["CHAM_MAJ"]     = f ; string ; Nom ASTER du champ interpole sur le nouveau maillage
-#        dico["NOM_MED"]      = o ; string ; Nom MED du champ
+#        dico["NOM_CHAM_MED"] = o ; string ; Nom MED du champ
 #        dico["SENSIBILITE"]  = f ; string ; Nom du parametre sensible associe
 #
-# 4.4.1. Recherche d'un doublon eventuel sur le champ d'indicateur d'erreur
+# 4.4.1. Recherche d'un doublon eventuel sur le champ de pilotage de l'adaptation
 #
 #gn  print "dico_indi = ",dico_indi
   if len(dico_indi) > 0 :
@@ -595,11 +656,11 @@ def macr_adap_mail_ops ( self,
 #
   liste_champs_imprime = []
   for dico in liste_champs :
-###    print "\n.... dico = ",dico
-#   Pour un champ e mettre e jour, on a toujours impression
+#gn    print "\n.... dico = ",dico
+#   Pour un champ a mettre a jour, on a toujours impression
     if ( dico["Type_Champ"] == "CHAMP_MAJ" ) :
       liste_champs_imprime.append(dico)
-#     Si le champ d'indicateur n'a toujours pas ete repere comme champ e mettre e jour :
+#     Si le champ de pilotage de l'adaptation n'a toujours pas ete repere comme champ a mettre a jour :
       if not indic_est_deja_imprime :
 #       Est-ce le meme champ ?
         on_a_le_champ = 1
@@ -636,11 +697,14 @@ def macr_adap_mail_ops ( self,
                   if ( dico_indi[cle] != dico[cle] ) :
                     on_a_le_champ = 0
                     break
+#       Le champ de pilotage fait partie des champs mis a jour : on le note
+#       et on utilise le meme nom de champ MED
         if on_a_le_champ :
+          dico_indi["NOM_CHAM_MED"] = dico["NOM_CHAM_MED"]
           indic_est_deja_imprime = 1
-###  print "\n\nFin de la boucle .. indic_est_deja_imprime = ",indic_est_deja_imprime
-#   Si le champ d'indicateur n'a pas ete repere comme champ e mettre e jour, il faut
-#   l'inclure dans les champs e imprimer
+#gn  print "\n\nFin de la boucle .. indic_est_deja_imprime = ",indic_est_deja_imprime
+#   Si le champ de pilotage de l'adaptation n'a pas ete repere comme champ a mettre a jour,
+#   il faut l'inclure dans les champs e imprimer
   if not indic_est_deja_imprime :
     liste_champs_imprime.append(dico_indi)
 #
@@ -649,7 +713,7 @@ def macr_adap_mail_ops ( self,
 #
   for dico in liste_champs_imprime :
     motscsi = {}
-    for cle in [ "RESULTAT", "NOM_CHAM", "CHAM_GD", "NUME_ORDRE", "INST", "PRECISION", "CRITERE" ] :
+    for cle in [ "RESULTAT", "NOM_CHAM", "CHAM_GD", "NUME_ORDRE", "INST", "PRECISION", "CRITERE", "NOM_CHAM_MED" ] :
       if dico.has_key(cle) :
         if ( dico[cle] != None ) :
           motscsi[cle] = dico[cle]
@@ -666,7 +730,7 @@ def macr_adap_mail_ops ( self,
                       )
 #gn    print ".. motscfa = ",motscfa
 #
-    IMPR_RESU ( INFO = infocomm, 
+    IMPR_RESU ( INFO = infocomm,
                 FORMAT ='MED', UNITE = unite_fichier_aster_vers_homard,
                 **motscfa )
 #
@@ -702,12 +766,12 @@ def macr_adap_mail_ops ( self,
     dico_configuration[ "NOM_MED_"+dico["Type_Maillage"] ] = dico["NOM_MED"]
 #gn  print dico_configuration
 #
-# 5.3. ==> Les caracteristiques de l'eventuel indicateur d'erreur
+# 5.3. ==> Les caracteristiques de l'eventuel pilotage de l'adaptation
 #
   for dico in liste_champs :
     dico_aux = {}
     if ( dico["Type_Champ"] == "INDICATEUR" ) :
-      l_aux = [ "NOM_MED" ]
+      l_aux = [ "NOM_CHAM_MED" ]
       if dico.has_key("COMPOSANTE") :
         l_aux.append("COMPOSANTE")
       if dico.has_key("NUME_ORDRE") :
@@ -733,13 +797,13 @@ def macr_adap_mail_ops ( self,
 ###  if dico_configuration.has_key("Zones_raffinement") :
 ###    print "dico_configuration[Zones_raffinement] = ", dico_configuration["Zones_raffinement"]
 #
-# 5.5. ==> La mise a jour de champs
+# 5.5. ==> Les eventuelles mises a jour de champs
 #
   prem = 1
   for dico in liste_champs :
     dico_aux = {}
     if ( dico["Type_Champ"] == "CHAMP_MAJ" ) :
-      l_aux = [ "NOM_MED", "COMPOSANTE" ]
+      l_aux = [ "NOM_CHAM_MED", "COMPOSANTE", "TYPE_MAJ" ]
       if dico.has_key("NUME_ORDRE") :
         l_aux.append("NUME_ORDRE")
       else :
@@ -789,7 +853,6 @@ def macr_adap_mail_ops ( self,
 # 5.8. ==> Impression eventuelle des fichiers crees
 #
 #gn  print "Repertoire ",Rep_Calc_HOMARD_global
-#gn  os.system("ls -la "+Rep_Calc_HOMARD_global)
   if ( INFO >= 4 ) :
     l_aux = ["HOMARD.Donnees" , "HOMARD.Configuration"]
   else :
@@ -814,13 +877,7 @@ def macr_adap_mail_ops ( self,
 #====================================================================
 # 6. Ecriture de la commande d'execution de homard
 #====================================================================
-#
-#
 #gn  print "\.. Debut de 6."
-#gn  os.system("cp " + Rep_Calc_HOMARD_global + "/../fort.17* $HOME/aster")
-#gn  os.system("cp " + Rep_Calc_HOMARD_global + "/HOMARD.Configuration $HOME/aster/HOMARD.Configuration"+str(niter))
-#gn  fichier_aster_vers_homard_2 = os.path.join("/tmp" , "fort." + str(unite_fichier_aster_vers_homard))
-#gn  shutil.copyfile(fichier_aster_vers_homard, fichier_aster_vers_homard_2)
 #
   if ( INFO == 1 ) :
     iaux = INFO
@@ -838,25 +895,18 @@ def macr_adap_mail_ops ( self,
 #gn  import time
 #gn  time.sleep(3600)
 #
-#gn  if ( mode_homard == "ADAP" ) :
-#gn    fichier_homard_vers_aster_2 = os.path.join("/tmp" , "fort." + str(unite_fichier_homard_vers_aster))
-#gn    shutil.copyfile(fichier_homard_vers_aster, fichier_homard_vers_aster_2)
-#gn    fichier_homard_vers_aster_2_1 = os.path.join("/tmp" , "fort." + str(unite_fichier_homard_vers_aster)+".1")
-#gn    os.system("/local00/Logiciels/med-2.3.1/Linux/bin/mdump "+fichier_homard_vers_aster_2+">"+fichier_homard_vers_aster_2_1+"</tmp/donn1")
-#gn    fichier_homard_vers_aster_2_2 = os.path.join("/tmp" , "fort." + str(unite_fichier_homard_vers_aster)+".2")
-#gn    os.system("/local00/Logiciels/med-2.3.1/Linux/bin/mdump "+fichier_homard_vers_aster_2+">"+fichier_homard_vers_aster_2_2+"</tmp/donn2")
-#
 #====================================================================
 # 7. ==> Ecriture de la commande de lecture des resultats med
 #        Remarque :
 #        La fonction self.DeclareOut(a,b) fonctionne ainsi :
 #        a est une chaine de caracteres
 #        b est la variable declaree dans la commande
-#        le but est de associer le contenu de b e la variable locale qui sera designee par a
+#        le but est de associer le contenu de b a la variable locale qui sera designee par a
 #        Exemple :
-#        self.DeclareOut("maillage_a_lire",args["MAILLAGE_NP1"])
-#        ==> la variable maillage_a_lire est identifiee e l'argument "MAILLAGE_NP1"
+#        self.DeclareOut("maillage_a_lire", args["MAILLAGE_NP1"])
+#        ==> la variable maillage_a_lire est identifiee a l'argument "MAILLAGE_NP1"
 #====================================================================
+#gn  print "\.. Debut de 7."
 #
   if ( mode_homard in [ "ADAP", "MODI" ] ) :
 #
@@ -891,7 +941,6 @@ def macr_adap_mail_ops ( self,
     for dico in liste_champs :
       if ( dico["Type_Champ"] == "CHAMP_MAJ" ) :
 #gn        print dico
-        self.DeclareOut("champ_maj", dico["CHAM_MAJ"])
         motscsi = {}
         for cle in [ "NUME_ORDRE", "INST", "PRECISION", "CRITERE" ] :
           if dico.has_key(cle) :
@@ -901,11 +950,12 @@ def macr_adap_mail_ops ( self,
           motscsi["NUME_PT"] = dico["NUME_ORDRE"]
 #gn        print "MAILLAGE = ",maillage_np1
 #gn        print "NOM_MAIL_MED = ",maillage_np1_nom_med
-#gn        print "NOM_MED = ",dico["NOM_MED"]
+#gn        print "NOM_CHAM_MED = ",dico["NOM_CHAM_MED"]
 #gn        print "TYPE_CHAM =", dico["TYPE_CHAM"]
+        self.DeclareOut("champ_maj", dico["CHAM_MAJ"])
         champ_maj = LIRE_CHAMP ( UNITE = unite_fichier_homard_vers_aster, FORMAT = "MED",
                                  MAILLAGE = maillage_np1, NOM_MAIL_MED=maillage_np1_nom_med,
-                                 NOM_MED = dico["NOM_MED"], NOM_CMP_IDEM = "OUI", TYPE_CHAM = dico["TYPE_CHAM"],
+                                 NOM_MED = dico["NOM_CHAM_MED"], NOM_CMP_IDEM = "OUI", TYPE_CHAM = dico["TYPE_CHAM"],
                                  INFO = infocomm, **motscsi )
 #
 #====================================================================
@@ -915,6 +965,7 @@ def macr_adap_mail_ops ( self,
 #    On doit imperativement garder le dernier fichier homard produit
 #    En mode d'information, on garde egalement les fichiers textes
 #====================================================================
+#gn  print "\.. Debut de 8."
 #
   l_aux = [fichier_aster_vers_homard]
   if ( mode_homard in [ "ADAP", "MODI" ] ) :
@@ -929,7 +980,6 @@ def macr_adap_mail_ops ( self,
   if ( mode_homard == "ADAP" ) :
     fic = os.path.join(Rep_Calc_HOMARD_global, fic_homard_niterp1)
     l_aux_bis.append(fic)
-#gn  os.system("cp " + Rep_Calc_HOMARD_global + "/* $HOME/aster")
 #
   for fic in l_aux :
     if ( INFO >= 3 ) :
@@ -944,10 +994,44 @@ def macr_adap_mail_ops ( self,
           self.cr.warn("Code d'erreur de remove : " + str(codret_partiel[0]) + " : " + codret_partiel[1])
           UTMESS("F", 'HOMARD0_5', valk=fic)
 #
+# Liberation du fichier de ASTER vers HOMARD
+#
+  DEFI_FICHIER ( ACTION= "LIBERER",
+                 UNITE = unite_fichier_aster_vers_homard,
+                 INFO = infocomm )
 #gn  print "Repertoire ",Rep_Calc_HOMARD_global
 #gn  print os.listdir(Rep_Calc_HOMARD_global)
 #gn  print "Repertoire ",Rep_Calc_ASTER
 #gn  print os.listdir(Rep_Calc_ASTER)
+#
+#====================================================================
+# 9. Archivage des repertoires d'adaptation en vue de poursuite
+#====================================================================
+#gn  print "\.. Debut de 9."
+#
+#
+  if ( INFO >= 3 ) : print os.listdir(Rep_Calc_ASTER)
+  if ( INFO >= 3 ) : print "Archivage dans", fichier_archive
+  laux = []
+  for dico in Liste_Passages :
+#   Memorisation du nom du repertoire local pour ce cas d'adaptation
+    Rep_Calc_HOMARD_local  = dico["Rep_Calc_HOMARD_local"]
+    laux.append(Rep_Calc_HOMARD_local)
+#   Memorisation de la liste des passages
+#   Remarque : c'est fait a chaque repertoire pour faciliter le decodage ensuite
+    Rep_Calc_HOMARD_global = dico["Rep_Calc_HOMARD_global"]
+    fic = os.path.join(Rep_Calc_HOMARD_global, "pick.1")
+    file = open(fic, "w")
+    cPickle.dump(Liste_Passages, file)
+    file.close()
+# Si on a au moins un cas d'adaptation, archivage
+  if len(laux) > 0 :
+    file = tarfile.open(fichier_archive, "w")
+    for rep in laux :
+      if ( INFO >= 3 ) : print ".. Insertion de", rep
+      file.add(rep)
+    file.close()
+  if ( INFO >= 3 ) : print os.listdir(Rep_Calc_ASTER)
 #
 #====================================================================
 #  C'est fini !
@@ -959,3 +1043,6 @@ def macr_adap_mail_ops ( self,
 #gn  time.sleep(3600)
 #
   return
+
+
+

@@ -1,4 +1,4 @@
-#@ MODIF mecanonline6 Messages  DATE 17/01/2011   AUTEUR ABBAS M.ABBAS 
+#@ MODIF mecanonline6 Messages  DATE 01/02/2011   AUTEUR MASSIN P.MASSIN 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -191,6 +191,8 @@ cata_msg = {
     Le résidu de type <%(k1)s> vaut %(r1)19.12e au noeud et degré de liberté <%(k2)s> 
 """),
 
-
+37 : _("""
+  Pilotage : suite à la non-convergence, choix de la solution rejetée initialement.
+"""),
 
 }

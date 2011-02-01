@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 01/02/2011   AUTEUR DELMAS J.DELMAS 
 # TITRE PLAQUE EN COMPRESSION SOUMISE A UNE PRESSION VARIANT
 # ssnp111a.para = tps_job 60 mem_job 160Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -25,211 +25,176 @@
 # ELEMENTS QUAD8, QUAD9, TRIA6
 #.....................................................................
 
-DEBUT(CODE=_F(NOM='SSNP111A', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NOM='SSNP111A',
+              NIV_PUB_WEB='INTERNET',),
+      DEBUG=_F(SDVERI='OUI',),);
 
-PRE_GIBI()
+PRE_GIBI();
 
-MAYA=LIRE_MAILLAGE( )
+MAYA=LIRE_MAILLAGE();
 
-MAYA=DEFI_GROUP(  reuse=MAYA,   MAILLAGE=MAYA,
-                             CREA_GROUP_NO=_F(  GROUP_MA = 'A4A1')
-                         )
+MAYA=DEFI_GROUP(reuse =MAYA,
+                MAILLAGE=MAYA,
+                CREA_GROUP_NO=_F(GROUP_MA='A4A1',),);
 
-MAYA2=CREA_MAILLAGE(    MAILLAGE=MAYA,
-                           MODI_MAILLE=_F(  GROUP_MA = 'S1',
-                                         OPTION = 'QUAD8_9')
-                       )
+MAYA2=CREA_MAILLAGE(MAILLAGE=MAYA,
+                    MODI_MAILLE=_F(GROUP_MA='S1',
+                                   OPTION='QUAD8_9',),);
 
-MODEL=AFFE_MODELE(    MAILLAGE=MAYA2,
-                                VERIF='MAILLE',
-                                 AFFE=_F(  TOUT = 'OUI',
-                                        PHENOMENE = 'MECANIQUE',
-                                        MODELISATION = 'C_PLAN')
-                         )
+MODEL=AFFE_MODELE(MAILLAGE=MAYA2,
+                  VERIF='MAILLE',
+                  AFFE=_F(TOUT='OUI',
+                          PHENOMENE='MECANIQUE',
+                          MODELISATION='C_PLAN',),);
 
-ACIER=DEFI_MATERIAU(        ELAS=_F(  E = 200000.,
-                                     NU = 0.,
-                                     ALPHA = 1.E-6),
-                          ECRO_LINE=_F(  D_SIGM_EPSI = 1930.,
-                                      SY = 181.)
-                      )
+ACIER=DEFI_MATERIAU(ELAS=_F(E=200000.,
+                            NU=0.,
+                            ALPHA=1.E-6,),
+                    ECRO_LINE=_F(D_SIGM_EPSI=1930.,
+                                 SY=181.,),);
 
-MATER=AFFE_MATERIAU(   MAILLAGE=MAYA2,
-                                AFFE=_F(  TOUT = 'OUI',
-                                       MATER = ACIER)
-                         )
+MATER=AFFE_MATERIAU(MAILLAGE=MAYA2,
+                    AFFE=_F(TOUT='OUI',
+                            MATER=ACIER,),);
 
-PRES_FO=DEFI_FONCTION(       NOM_PARA='Y',
-                                   VALE=( 0.,  0.,
-                                         30., 300.,)
-                        )
+PRES_FO=DEFI_FONCTION(NOM_PARA='Y',VALE=(0.,0.,
+                            30.,300.,
+                            ),);
 
-TRAC_FO=DEFI_FONCTION(       NOM_PARA='INST',
-                             PROL_DROITE='EXCLU',
-                            PROL_GAUCHE='EXCLU',
-                                   VALE=( 0.,      0.,
-                                          1.,      1., )
-                        )
+TRAC_FO=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.,0.,
+                            1.,1.,
+                            ),PROL_DROITE='EXCLU',PROL_GAUCHE='EXCLU',);
 
-TRAC_F=AFFE_CHAR_MECA_F(        MODELE=MODEL,
-                                 PRES_REP=_F(  GROUP_MA = 'A2A3',
-                                            PRES = PRES_FO)
-                        )
+TRAC_F=AFFE_CHAR_MECA_F(MODELE=MODEL,
+                        PRES_REP=_F(GROUP_MA='A2A3',
+                                    PRES=PRES_FO,),);
 
-CONDLIM=AFFE_CHAR_MECA(     MODELE=MODEL,DDL_IMPO=(
-                               _F(  GROUP_NO = 'A4A1',
-                                           DX = 0.),
-                             _F(  GROUP_NO = ('A1','A4',),  DY = 0.))
-                          )
+CONDLIM=AFFE_CHAR_MECA(MODELE=MODEL,
+                       DDL_IMPO=(_F(GROUP_NO='A4A1',
+                                    DX=0.,),
+                                 _F(GROUP_NO=('A1','A4',),
+                                    DY=0.,),),);
 
-CAT=DEFI_LIST_REEL(    DEBUT=0.0,
-                          INTERVALLE=_F(  JUSQU_A = 1.,     NOMBRE = 10)
-                      )
+CAT=DEFI_LIST_REEL(DEBUT=0.0,
+                   INTERVALLE=_F(JUSQU_A=1.,
+                                 NOMBRE=10,),);
 
-CALCNL=STAT_NON_LINE(
-                            MODELE=MODEL,
-                        CHAM_MATER=MATER,
-                         COMP_INCR=_F(
-                RELATION = 'VMIS_ISOT_LINE',
-                DEFORMATION = 'PETIT'),
-                         INCREMENT=_F(
-                LIST_INST = CAT),
-                            NEWTON=_F(
-                MATRICE = 'TANGENTE',
-                REAC_INCR = 1,
-                REAC_ITER = 1),
-                       CONVERGENCE=_F(
-                RESI_GLOB_RELA = 1.E-4),EXCIT=(
-                             _F(
-                CHARGE = CONDLIM), _F(
-                CHARGE = TRAC_F,
-                FONC_MULT = TRAC_FO)),
-                     RECH_LINEAIRE=_F(
-                ITER_LINE_MAXI = 3)
-              )
+CALCNL=STAT_NON_LINE(MODELE=MODEL,
+                     CHAM_MATER=MATER,
+                     EXCIT=(_F(CHARGE=CONDLIM,),
+                            _F(CHARGE=TRAC_F,
+                               FONC_MULT=TRAC_FO,),),
+                     COMP_INCR=_F(RELATION='VMIS_ISOT_LINE',
+                                  DEFORMATION='PETIT',),
+                     INCREMENT=_F(LIST_INST=CAT,),
+                     NEWTON=_F(REAC_INCR=1,
+                               MATRICE='TANGENTE',
+                               REAC_ITER=1,),
+                     RECH_LINEAIRE=_F(ITER_LINE_MAXI=3,),
+                     CONVERGENCE=_F(RESI_GLOB_RELA=1.E-4,),);
 
-CALCNL=CALC_ELEM( reuse=CALCNL,
-                                  RESULTAT=CALCNL,
-                                  OPTION=( 'SIEF_ELNO',
-                                           'VARI_ELNO_ELGA',
-                                           'DCHA_ELGA_SIGM',
-                                           'RADI_ELGA_SIGM',
-                                           'DCHA_ELNO_SIGM',
-                                           'RADI_ELNO_SIGM',
-                                           'EPSP_ELGA',
-                                           'EPSP_ELNO',      )
-                     )
+CALCNL=CALC_ELEM(reuse =CALCNL,
+                 RESULTAT=CALCNL,
+                 OPTION=('SIEF_ELNO','VARI_ELNO_ELGA','DERA_ELGA','DERA_ELNO','EPSP_ELGA','EPSP_ELNO',),);
 
-TEST_RESU(RESU=(
+TEST_RESU(RESU=(_F(RESULTAT=CALCNL,
+                   NUME_ORDRE=7,
+                   NOM_CHAM='DERA_ELGA',
+                   NOM_CMP='DCHA_V',
+                   MAILLE='M1',
+                   POINT=1,
+                   VALE=0.867857,
+                   CRITERE='RELATIF',
+                   PRECISION=0.001,
+                   REFERENCE='NON_REGRESSION',),
+                _F(RESULTAT=CALCNL,
+                   NUME_ORDRE=7,
+                   NOM_CHAM='DERA_ELNO',
+                   NOM_CMP='DCHA_V',
+                   MAILLE='M1',
+                   NOEUD='N601',
+                   VALE=0.891978,
+                   CRITERE='RELATIF',
+                   PRECISION=0.001,
+                   REFERENCE='NON_REGRESSION',),
+                _F(RESULTAT=CALCNL,
+                   NUME_ORDRE=7,
+                   NOM_CHAM='DERA_ELGA',
+                   NOM_CMP='RADI_V',
+                   MAILLE='M1',
+                   POINT=1,
+                   VALE=0.00339734,
+                   CRITERE='RELATIF',
+                   PRECISION=0.001,
+                   REFERENCE='NON_REGRESSION',),
+                _F(RESULTAT=CALCNL,
+                   NUME_ORDRE=10,
+                   NOM_CHAM='SIEF_ELNO',
+                   NOM_CMP='SIXX',
+                   MAILLE='M400',
+                   NOEUD='N2',
+                   VALE=-300.0,
+                   CRITERE='RELATIF',
+                   PRECISION=0.003,),
+                _F(RESULTAT=CALCNL,
+                   NUME_ORDRE=10,
+                   NOM_CHAM='EPSP_ELNO',
+                   NOM_CMP='EPXX',
+                   MAILLE='M400',
+                   NOEUD='N2',
+                   VALE=-0.0616,
+                   CRITERE='RELATIF',
+                   PRECISION=0.007,),
+                _F(RESULTAT=CALCNL,
+                   NUME_ORDRE=10,
+                   NOM_CHAM='VARI_ELNO_ELGA',
+                   NOM_CMP='V1',
+                   MAILLE='M400',
+                   NOEUD='N2',
+                   VALE=0.0616,
+                   PRECISION=0.007,),
+                _F(RESULTAT=CALCNL,
+                   NUME_ORDRE=10,
+                   NOM_CHAM='VARI_ELNO_ELGA',
+                   NOM_CMP='V2',
+                   MAILLE='M400',
+                   NOEUD='N2',
+                   VALE=1.0,),
+                _F(RESULTAT=CALCNL,
+                   NUME_ORDRE=10,
+                   NOM_CHAM='SIEF_ELNO',
+                   NOM_CMP='SIXX',
+                   MAILLE='M20',
+                   NOEUD='N51',
+                   VALE=0.0,
+                   CRITERE='ABSOLU',
+                   PRECISION=1.4,),
+                _F(RESULTAT=CALCNL,
+                   NUME_ORDRE=10,
+                   NOM_CHAM='EPSP_ELNO',
+                   NOM_CMP='EPXX',
+                   MAILLE='M20',
+                   NOEUD='N51',
+                   VALE=0.0,
+                   CRITERE='ABSOLU',),
+                _F(RESULTAT=CALCNL,
+                   NUME_ORDRE=10,
+                   NOM_CHAM='VARI_ELNO_ELGA',
+                   NOM_CMP='V1',
+                   MAILLE='M20',
+                   NOEUD='N51',
+                   VALE=0.0,
+                   CRITERE='ABSOLU',),
+                _F(RESULTAT=CALCNL,
+                   NUME_ORDRE=10,
+                   NOM_CHAM='VARI_ELNO_ELGA',
+                   NOM_CMP='V2',
+                   MAILLE='M20',
+                   NOEUD='N51',
+                   VALE=0.0,
+                   CRITERE='ABSOLU',),),);
 
-          _F(  RESULTAT = CALCNL,
-            NOM_CHAM = 'DCHA_ELGA_SIGM',
-            NUME_ORDRE = 7,
-            MAILLE = 'M1',
-            POINT=1,
-            NOM_CMP = 'V1',
-            CRITERE = 'RELATIF',
-            PRECISION = 0.1E-2,
-            REFERENCE='NON_REGRESSION',
-            VALE = 0.867857),
+FIN();
 
-          _F(  RESULTAT = CALCNL,
-            NOM_CHAM = 'DCHA_ELNO_SIGM',
-            NUME_ORDRE = 7,
-            MAILLE = 'M1',
-            NOEUD = 'N601',
-            NOM_CMP = 'V1',
-            CRITERE = 'RELATIF',
-            PRECISION = 0.1E-2,
-            REFERENCE='NON_REGRESSION',
-            VALE = 0.891978),
-
-          _F(  RESULTAT = CALCNL,
-            NOM_CHAM = 'RADI_ELGA_SIGM',
-            NUME_ORDRE = 7,
-            MAILLE = 'M1',
-            POINT=1,
-            NOM_CMP = 'V1',
-            CRITERE = 'RELATIF',
-            PRECISION = 0.1E-2,
-            REFERENCE='NON_REGRESSION',
-            VALE = 3.39734E-03),
-
-          _F(  RESULTAT = CALCNL,
-            NOM_CHAM = 'SIEF_ELNO',
-            NUME_ORDRE = 10,
-            MAILLE = 'M400',
-            NOEUD = 'N2',
-            NOM_CMP = 'SIXX',
-            CRITERE = 'RELATIF',
-            PRECISION = 0.3E-2,
-            VALE = -300.),
-
-          _F(  RESULTAT = CALCNL,
-            NOM_CHAM = 'EPSP_ELNO',
-            NUME_ORDRE = 10,
-            MAILLE = 'M400',
-            NOEUD = 'N2',
-            NOM_CMP = 'EPXX',
-            CRITERE = 'RELATIF',
-            PRECISION = 0.007,
-            VALE = -6.16E-02),
-
-          _F(  RESULTAT = CALCNL,
-            NOM_CHAM = 'VARI_ELNO_ELGA',
-            NUME_ORDRE = 10,
-            MAILLE = 'M400',
-            NOEUD = 'N2',
-            NOM_CMP = 'V1',
-            PRECISION = 0.007,
-            VALE = 6.16E-02),
-
-          _F(  RESULTAT = CALCNL,
-            NOM_CHAM = 'VARI_ELNO_ELGA',
-            NUME_ORDRE = 10,
-            MAILLE = 'M400',
-            NOEUD = 'N2',
-            NOM_CMP = 'V2',
-            VALE = 1.0),
-
-
-          _F(  RESULTAT = CALCNL,
-            NOM_CHAM = 'SIEF_ELNO',
-            NUME_ORDRE = 10,
-            MAILLE = 'M20',
-            NOEUD = 'N51',
-            NOM_CMP = 'SIXX',
-            CRITERE = 'ABSOLU',
-            PRECISION = 1.4,
-            VALE = 0.),
-
-          _F(  RESULTAT = CALCNL,
-            NOM_CHAM = 'EPSP_ELNO',
-            NUME_ORDRE = 10,
-            MAILLE = 'M20',
-            NOEUD = 'N51',
-            NOM_CMP = 'EPXX',
-            CRITERE = 'ABSOLU',
-            VALE = 0.),
-
-          _F(  RESULTAT = CALCNL,
-            NOM_CHAM = 'VARI_ELNO_ELGA',
-            NUME_ORDRE = 10,
-            MAILLE = 'M20',
-            NOEUD = 'N51',
-            NOM_CMP = 'V1',
-            CRITERE = 'ABSOLU',
-            VALE = 0.),
-
-          _F(  RESULTAT = CALCNL,
-            NOM_CHAM = 'VARI_ELNO_ELGA',
-            NUME_ORDRE = 10,
-            MAILLE = 'M20',
-            NOEUD = 'N51',
-            NOM_CMP = 'V2',
-            CRITERE = 'ABSOLU',
-            VALE = 0.))
-          )
-
-FIN()
 #
+

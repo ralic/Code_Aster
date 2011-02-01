@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 18/01/2011   AUTEUR BOITEAU O.BOITEAU 
+#& MODIF COMMANDE  DATE 31/01/2011   AUTEUR GREFFET N.GREFFET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -25,7 +25,7 @@ DYNA_TRAN_MODAL=OPER(nom="DYNA_TRAN_MODAL",op=  74,sd_prod=tran_gene,
       regles=(EXCLUS('AMOR_REDUIT','AMOR_GENE','LIST_AMOR'),
               PRESENT_ABSENT('MODE_STAT','MODE_CORR'),),
          METHODE         =SIMP(statut='f',typ='TXM',defaut="EULER",
-                               into=("EULER","NEWMARK","DEVOGE","ADAPT","ITMI") ),
+                               into=("EULER","NEWMARK","DEVOGE","ADAPT_ORDRE1","ADAPT_ORDRE2","ITMI") ),
          MASS_GENE       =SIMP(statut='o',typ=matr_asse_gene_r ),
          RIGI_GENE       =SIMP(statut='o',typ=matr_asse_gene_r ),
          AMOR_GENE       =SIMP(statut='f',typ=matr_asse_gene_r ),
@@ -37,7 +37,17 @@ DYNA_TRAN_MODAL=OPER(nom="DYNA_TRAN_MODAL",op=  74,sd_prod=tran_gene,
          COUPLAGE_EDYOS     =FACT(statut='f',max=1,         
                              VITE_ROTA          = SIMP(statut='o',typ='R' ),
                              PAS_TPS_EDYOS      = SIMP(statut='o',typ='R' ),
-                             UNITE              = SIMP(statut='f',typ='I',defaut=45),
+         ),
+
+         PALIER_EDYOS      =FACT(statut='f',max='**',
+         regles=(PRESENT_ABSENT('UNITE','GROUP_NO'),
+                 PRESENT_ABSENT('UNITE','TYPE_EDYOS'),
+                 EXCLUS('GROUP_NO','NOEUD'),),
+                                     UNITE       = SIMP(statut='f',typ='I',),
+                                     GROUP_NO    = SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**'),
+                                     NOEUD       = SIMP(statut='f',typ=no),
+                                     TYPE_EDYOS  = SIMP(statut='f',typ='TXM',
+                                     into=("PAPANL","PAFINL","PACONL","PAHYNL",),),
          ),
 
          ETAT_INIT       =FACT(statut='f',

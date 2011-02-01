@@ -2,11 +2,11 @@
      &                  COMPOR,LISCHA,CARCRI,FONACT,DEFICO,
      &                  ITERAT,SDNUME,SDPILO,VALINC,SOLALG,
      &                  VEELEM,VEASSE,SDTIME,OFFSET,TYPSEL,
-     &                  LICITE,RHO   ,ETA   ,ETAF  ,RESIDU,
-     &                  LDCCVG,PILCVG)
+     &                  SDDISC,LICITE,RHO   ,ETA   ,ETAF  ,
+     &                  RESIDU,LDCCVG,PILCVG)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION 
-C MODIF ALGORITH  DATE 17/01/2011   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 01/02/2011   AUTEUR MASSIN P.MASSIN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -30,7 +30,7 @@ C
       INTEGER       FONACT(*)
       INTEGER       ITERAT
       REAL*8        RHO, OFFSET,ETA(2)
-      CHARACTER*19  LISCHA,SDNUME,SDPILO
+      CHARACTER*19  LISCHA,SDNUME,SDPILO,SDDISC
       CHARACTER*24  MODELE,NUMEDD,MATE  ,CARELE,COMREF,COMPOR
       CHARACTER*24  CARCRI,DEFICO
       CHARACTER*19  VEELEM(*),VEASSE(*)
@@ -71,6 +71,7 @@ C IN  TYPSEL : TYPE DE SELECTION PILOTAGE
 C                'ANGL_INCR_DEPL'
 C                'NORM_INCR_DEPL'
 C                'RESIDU'
+C IN  SDDISC : SD DISCRETISATION
 C IN  SDTIME : SD TIMER
 C IN  LICITE : CODE RETOUR PILOTAGE DES DEUX PARAMETRES DE PILOTAGE
 C IN  RHO    : PARAMETRE DE RECHERCHE_LINEAIRE
@@ -106,10 +107,13 @@ C
 C
 C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
 C
-      INTEGER      LDCCV1,LDCCV2
-      REAL*8       F(2)
-      CHARACTER*19 DEPOLD,DEPDEL,DEPPR1,DEPPR2
-      INTEGER      IFM,NIV
+      INTEGER       LDCCV1,LDCCV2,IERM,INDIC,JPLIR,JPLTK
+      REAL*8        F(2),R8BID,TMP,RES(2)
+      CHARACTER*8   K8BID,CHOIX,TXT
+      CHARACTER*19  DEPOLD,DEPDEL,DEPPR1,DEPPR2
+      CHARACTER*24  TYPPIL
+      INTEGER       IFM,NIV,IB,IBID
+      LOGICAL       SWLOUN,ISXFE
 C
 C ----------------------------------------------------------------------
 C
@@ -118,8 +122,23 @@ C
 C
 C --- INITIALISATIONS
 C
+      SWLOUN=.FALSE.
+      CALL EXIXFE(MODELE,IERM)
+      ISXFE=(IERM.EQ.1)
+      CALL JEVEUO(SDPILO(1:19)//'.PLIR','L',JPLIR)
+      CALL JEVEUO(SDPILO(1:19)//'.PLTK','L',JPLTK)      
+      TYPPIL=ZK24(JPLTK)
+      IF(TYPSEL.EQ.'ANGL_INCR_DEPL'.AND.(TYPPIL.EQ.'LONG_ARC'
+     &   .OR.TYPPIL.EQ.'SAUT_LONG_ARC')) THEN
+         IF ( ZR(JPLIR)*ZR(JPLIR-1+6).LT.0.D0) THEN
+           SWLOUN=.TRUE.
+         ENDIF 
+      ENDIF       
+      
       F(1)   = 0.D0
-      F(2)   = 0.D0   
+      F(2)   = 0.D0
+      RES(1) = 0.D0
+      RES(2) = 0.D0         
       LDCCV1 = 0
       LDCCV2 = 0  
 C
@@ -134,14 +153,20 @@ C --- CHOIX DE ETA SI NECESSAIRE (I.E. SI NBEFFE > 1)
 C
       IF (TYPSEL.EQ.'ANGL_INCR_DEPL') THEN
         CALL NMCEAI(NUMEDD,DEPDEL,DEPPR1,DEPPR2,DEPOLD,
-     &              SDPILO,RHO   ,ETA(1),F(1))
+     &              SDPILO,RHO   ,ETA(1),ISXFE,F(1),INDIC)
         CALL NMCEAI(NUMEDD,DEPDEL,DEPPR1,DEPPR2,DEPOLD,
-     &              SDPILO,RHO   ,ETA(2),F(2))      
+     &              SDPILO,RHO   ,ETA(2),ISXFE,F(2),INDIC)
+        IF(INDIC.EQ.0) THEN
+           CALL NMCENI(NUMEDD,DEPDEL,DEPPR1,DEPPR2,RHO,
+     &              SDPILO,ETA(1),ISXFE,F(1) )
+           CALL NMCENI(NUMEDD,DEPDEL,DEPPR1,DEPPR2,RHO,
+     &              SDPILO,ETA(2),ISXFE,F(2) )         
+        ENDIF      
       ELSE IF (TYPSEL.EQ.'NORM_INCR_DEPL') THEN
-        CALL NMCENI(NUMEDD,DEPDEL,DEPPR1,DEPPR2,RHO   ,
-     &              SDPILO,ETA(1),F(1) )
-        CALL NMCENI(NUMEDD,DEPDEL,DEPPR1,DEPPR2,RHO   ,
-     &              SDPILO,ETA(2),F(2) )  
+        CALL NMCENI(NUMEDD,DEPDEL,DEPPR1,DEPPR2,RHO,
+     &              SDPILO,ETA(1),ISXFE,F(1) )
+        CALL NMCENI(NUMEDD,DEPDEL,DEPPR1,DEPPR2,RHO,
+     &              SDPILO,ETA(2),ISXFE,F(2) )  
 C
       ELSE IF (TYPSEL.EQ.'RESIDU') THEN 
         CALL NMCERE(MODELE,NUMEDD,MATE  ,CARELE,COMREF,
@@ -157,6 +182,23 @@ C
       ELSE
         CALL ASSERT(.FALSE.)
       ENDIF
+      
+      CALL UTDIDT('L',SDDISC,'ECHE',IB,'CHOIX_SOLU_PILO',
+     &             R8BID,IBID,CHOIX)
+      CALL ASSERT(CHOIX.EQ.'NATUREL'.OR.CHOIX.EQ.'AUTRE') 
+      
+      RES(1)=F(1)
+      RES(2)=F(2)
+      IF(CHOIX.EQ.'AUTRE'.OR.SWLOUN) THEN
+          TMP  = F(1)
+          F(1) = F(2)
+          F(2) = TMP
+          TXT = 'NATUREL'
+          IF(CHOIX.EQ.'AUTRE') THEN
+              CALL UTDIDT('E',SDDISC,'ECHE',IB,
+     &         'CHOIX_SOLU_PILO',R8BID,IBID,TXT)
+          ENDIF                                  
+      ENDIF                   
 C
 C --- CHOIX DE LA FONCTION MINI
 C      
@@ -164,12 +206,12 @@ C
         ETAF   = ETA(1)
         PILCVG = LICITE(1)
         LDCCVG = LDCCV1
-        RESIDU = F(1)
+        RESIDU = RES(1)
       ELSE
         ETAF   = ETA(2)
         PILCVG = LICITE(2)
         LDCCVG = LDCCV2
-        RESIDU = F(2)
+        RESIDU = RES(2)
       ENDIF
 C
       CALL JEDEMA()

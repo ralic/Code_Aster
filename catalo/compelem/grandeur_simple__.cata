@@ -1,4 +1,4 @@
-%& MODIF COMPELEM  DATE 25/01/2011   AUTEUR PELLET J.PELLET 
+%& MODIF COMPELEM  DATE 01/02/2011   AUTEUR DELMAS J.DELMAS 
 % RESPONSABLE PROIX
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
@@ -692,6 +692,14 @@ GRANDEUR_SIMPLE__
                     V32      V33      PRES11   PRES12   PRES13   PRES21   PRES22   PRES23
                     PRES31   PRES32   PRES33   SIGN     SITX     SITY     LH1      SIXX
                     SIYY     SIZZ     SIXY
+
+<<  DERA_R Type:R indicateur local de décharge et de perte de radialité
+       DCHA_V : indicateur local de décharge avec la norme de Von Mises
+       DCHA_T : indicateur local de décharge  avec la norme totale
+       RADI_V : indicateur de perte de radialité avec la norme de Von Mises
+       RADI_T : indicateur de perte de radialité avec la norme totale
+>>
+    DERA_R   = R    DCHA_V   DCHA_T   RADI_V   RADI_T
 
 <<  DISS_R Type:R énergie dissipée
        TOTALE : dissipation cumulée (endommagement plus plasticité)

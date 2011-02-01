@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 01/02/2011   AUTEUR DELMAS J.DELMAS 
 # TITRE ESSAI DE TRACTION-CISAILLEMENT (MISES ECROUISSAGE ISOTROPE)
 # ssnp15a.para = tps_job 60 mem_job 100Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -19,642 +19,519 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
-DEBUT(CODE=_F(NOM='SSNP15A', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='NON'))
+DEBUT(CODE=_F(NOM='SSNP15A',
+              NIV_PUB_WEB='INTERNET',),
+      DEBUG=_F(SDVERI='NON',),);
 
 #......................................................................
 # PLAQUE CARREE EN TRACTION CISAILLEMENT CALCUL 3D
 # ELASTOPLASTICITE  ISOTROPE VON MISES
 #......................................................................
 
-MA=LIRE_MAILLAGE( )
+MA=LIRE_MAILLAGE();
 
-MO=AFFE_MODELE(
+MO=AFFE_MODELE(MAILLAGE=MA,
+               VERIF='MAILLE',
+               AFFE=_F(TOUT='OUI',
+                       PHENOMENE='MECANIQUE',
+                       MODELISATION='3D',),);
 
-               MAILLAGE=MA,
-                 VERIF='MAILLE',
+ACIER=DEFI_MATERIAU(ELAS=_F(E=195000.,
+                            NU=0.3,),
+                    ECRO_LINE=_F(D_SIGM_EPSI=1930.,
+                                 SY=181.,),
+                    PRAGER=_F(C=0.,),);
 
-                AFFE=_F(
-                TOUT = 'OUI',
-                PHENOMENE = 'MECANIQUE',
-                MODELISATION = '3D')
-              )
+CM=AFFE_MATERIAU(MAILLAGE=MA,
+                 AFFE=_F(TOUT='OUI',
+                         MATER=ACIER,),);
 
-ACIER=DEFI_MATERIAU(
+SIGMA_F=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.0,0.0,
+                            1.0,151.2,
+                            2.0,257.2,
+                            3.0,0.0,
+                            ),PROL_DROITE='EXCLU',PROL_GAUCHE='EXCLU',);
 
+TAU_F=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.0,0.0,
+                          1.0,93.1,
+                          2.0,33.1,
+                          3.0,0.0,
+                          ),PROL_DROITE='EXCLU',PROL_GAUCHE='EXCLU',);
 
-                ELAS=_F(
-                E = 195000.,
-                NU = 0.3),
+TRACTION=AFFE_CHAR_MECA(MODELE=MO,
+                        FORCE_FACE=_F(MAILLE='GAUCHE',
+                                      FX=-1.,),);
 
-                ECRO_LINE=_F(
-                D_SIGM_EPSI = 1930.,
-                SY = 181.),
+CISAIL=AFFE_CHAR_MECA(MODELE=MO,
+                      FORCE_FACE=(_F(MAILLE='GAUCHE',
+                                     FY=-1.,),
+                                  _F(MAILLE='DROITE',
+                                     FY=1.,),
+                                  _F(MAILLE='HAUT',
+                                     FX=1.,),
+                                  _F(MAILLE='BAS',
+                                     FX=-1.,),),);
 
-                PRAGER=_F(C=0.)
-              )
+LIAISON=AFFE_CHAR_MECA(MODELE=MO,
+                       DDL_IMPO=(_F(NOEUD='NO4',
+                                    DX=0.,
+                                    DY=0.,),
+                                 _F(NOEUD='NO8',
+                                    DX=0.,
+                                    DY=0.,
+                                    DZ=0.,),
+                                 _F(NOEUD='NO2',
+                                    DX=0.,),
+                                 _F(NOEUD='NO6',
+                                    DX=0.,),),);
 
-CM=AFFE_MATERIAU(
+L_INST=DEFI_LIST_REEL(DEBUT=0.0,
+                      INTERVALLE=(_F(JUSQU_A=0.1,
+                                     NOMBRE=1,),
+                                  _F(JUSQU_A=0.9,
+                                     NOMBRE=10,),
+                                  _F(JUSQU_A=1.0,
+                                     NOMBRE=1,),
+                                  _F(JUSQU_A=2.0,
+                                     NOMBRE=40,),
+                                  _F(JUSQU_A=3.0,
+                                     NOMBRE=1,),),);
 
-               MAILLAGE=MA,
+U=STAT_NON_LINE(MODELE=MO,
+                CHAM_MATER=CM,
+                EXCIT=(_F(CHARGE=LIAISON,),
+                       _F(CHARGE=TRACTION,
+                          FONC_MULT=SIGMA_F,),
+                       _F(CHARGE=CISAIL,
+                          FONC_MULT=TAU_F,),),
+                COMP_INCR=_F(RELATION='VMIS_ISOT_LINE',),
+                INCREMENT=_F(LIST_INST=L_INST,),
+                NEWTON=_F(MATRICE='ELASTIQUE',
+                          REAC_ITER=3,),
+                RECH_LINEAIRE=_F(ITER_LINE_MAXI=5,
+                                 RHO_MAX=150,),
+                CONVERGENCE=_F(RESI_GLOB_MAXI=1.E-3,
+                               ITER_GLOB_MAXI=10,),);
 
-                AFFE=_F(
-                TOUT = 'OUI',
-                MATER = ACIER)
-              )
+U2=STAT_NON_LINE(MODELE=MO,
+                 CHAM_MATER=CM,
+                 EXCIT=(_F(CHARGE=LIAISON,),
+                        _F(CHARGE=TRACTION,
+                           FONC_MULT=SIGMA_F,),
+                        _F(CHARGE=CISAIL,
+                           FONC_MULT=TAU_F,),),
+                 COMP_INCR=_F(RELATION='VMIS_ECMI_LINE',),
+                 INCREMENT=_F(LIST_INST=L_INST,),
+                 NEWTON=_F(MATRICE='ELASTIQUE',
+                           REAC_ITER=3,),
+                 RECH_LINEAIRE=_F(ITER_LINE_MAXI=5,
+                                  RHO_MAX=150,),
+                 CONVERGENCE=_F(RESI_GLOB_MAXI=1.E-3,
+                                ITER_GLOB_MAXI=10,),);
 
-SIGMA_F=DEFI_FONCTION(
+U=CALC_ELEM(reuse =U,
+            RESULTAT=U,
+            OPTION=('EPSI_ELGA','SIEF_ELNO','VARI_ELNO_ELGA',),);
 
-                 NOM_PARA='INST',
-               PROL_DROITE='EXCLU',
-              PROL_GAUCHE='EXCLU',
+U2=CALC_ELEM(reuse =U2,
+             RESULTAT=U2,
+             OPTION=('EPSI_ELGA','SIEF_ELNO','VARI_ELNO_ELGA',),);
 
-                VALE=(
-                0.0,    0.0,
-                1.0,  151.2,
-                2.0,  257.2,
-                3.0,    0.0,
-                )
-              )
+U=CALC_ELEM(reuse =U,
+            RESULTAT=U,
+            OPTION='EPSP_ELGA',);
 
-TAU_F=DEFI_FONCTION(
+U=CALC_ELEM(reuse =U,
+            RESULTAT=U,
+            OPTION='EPSI_ELNO_DEPL',);
 
-                 NOM_PARA='INST',
-               PROL_DROITE='EXCLU',
-              PROL_GAUCHE='EXCLU',
+VARI=CREA_CHAMP(TYPE_CHAM='ELNO_VARI_R',
+                OPERATION='EXTR',
+                RESULTAT=U,
+                NOM_CHAM='VARI_ELNO_ELGA',
+                INST=1.,);
 
-                VALE=(
-                0.0,    0.0,
-                1.0,   93.1,
-                2.0,   33.1,
-                3.0,    0.0,
-                )
-              )
-
-TRACTION=AFFE_CHAR_MECA(
-
-                      MODELE=MO,
-
-                FORCE_FACE=_F(
-                MAILLE = 'GAUCHE',
-                FX = -1.)
-              )
-
-CISAIL=AFFE_CHAR_MECA(
-
-                      MODELE=MO,FORCE_FACE=(
-
-                _F( MAILLE = 'GAUCHE',          FY = -1.),
-                _F( MAILLE = 'DROITE',          FY = 1.),
-                _F( MAILLE = 'HAUT',    FX = 1.),
-                _F( MAILLE = 'BAS',     FX = -1.))
-              )
-
-LIAISON=AFFE_CHAR_MECA(
-
-               MODELE=MO,DDL_IMPO=(
-
-                _F( NOEUD = 'NO4',     DX = 0.,  DY = 0.),
-                _F( NOEUD = 'NO8',     DX = 0.,  DY = 0.,  DZ = 0.),
-                _F( NOEUD = 'NO2',     DX = 0.),
-                _F( NOEUD = 'NO6',     DX = 0.))
-              )
-
-L_INST=DEFI_LIST_REEL(
-
-               DEBUT=0.0,INTERVALLE=(
-                _F( JUSQU_A = 0.1,     NOMBRE = 1),
-                _F( JUSQU_A = 0.9,     NOMBRE = 10),
-                _F( JUSQU_A = 1.0,     NOMBRE = 1),
-                _F( JUSQU_A = 2.0,     NOMBRE = 40),
-                _F( JUSQU_A = 3.0,     NOMBRE = 1))
-              )
-
-U=STAT_NON_LINE(
-                            MODELE=MO,
-                        CHAM_MATER=CM,EXCIT=(
-                             _F(
-                CHARGE = LIAISON), _F(
-                CHARGE = TRACTION,
-                FONC_MULT = SIGMA_F), _F(
-                CHARGE = CISAIL,
-                FONC_MULT = TAU_F)),
-                         COMP_INCR=_F(
-                RELATION = 'VMIS_ISOT_LINE'),
-                         INCREMENT=_F(
-                LIST_INST = L_INST),
-                            NEWTON=_F(
-                MATRICE = 'ELASTIQUE',
-                REAC_ITER = 3),
-                       CONVERGENCE=_F(
-                RESI_GLOB_MAXI = 1.E-3,
-                ITER_GLOB_MAXI = 10),
-                     RECH_LINEAIRE=_F(
-                     RHO_MAX=150,
-                ITER_LINE_MAXI = 5)
-              )
-U2=STAT_NON_LINE(
-                            MODELE=MO,
-                        CHAM_MATER=CM,EXCIT=(
-                             _F(
-                CHARGE = LIAISON), _F(
-                CHARGE = TRACTION,
-                FONC_MULT = SIGMA_F), _F(
-                CHARGE = CISAIL,
-                FONC_MULT = TAU_F)),
-                         COMP_INCR=_F(
-                RELATION = 'VMIS_ECMI_LINE'),
-                         INCREMENT=_F(
-                LIST_INST = L_INST),
-                            NEWTON=_F(
-                MATRICE = 'ELASTIQUE',
-                REAC_ITER = 3),
-                       CONVERGENCE=_F(
-                RESI_GLOB_MAXI = 1.E-3,
-                ITER_GLOB_MAXI = 10),
-                     RECH_LINEAIRE=_F(
-                     RHO_MAX=150,
-                ITER_LINE_MAXI = 5)
-              )
-
-U=CALC_ELEM( reuse=U,
-                            OPTION=('EPSI_ELGA',
-                  'SIEF_ELNO',  'VARI_ELNO_ELGA',),
-                          RESULTAT=U,
-              )
-U2=CALC_ELEM( reuse=U2,
-                            OPTION=('EPSI_ELGA',
-                  'SIEF_ELNO',  'VARI_ELNO_ELGA',),
-                          RESULTAT=U2,
-              )
-
-U=CALC_ELEM(
-              reuse=U,
-                  RESULTAT=U,
-                   OPTION='EPSP_ELGA'
-              )
-
-U=CALC_ELEM(
-              reuse=U,
-                  RESULTAT=U,
-                   OPTION='EPSI_ELNO_DEPL'
-              )
-
-VARI=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='ELNO_VARI_R',
-NOM_CHAM='VARI_ELNO_ELGA',
-              RESULTAT=U,
-              INST=1.
-              )
-
-TEST_RESU(RESU=(
-
-                _F(
-                RESULTAT = U,
-                NOM_CHAM = 'SIEF_ELNO',
-                MAILLE = 'CUBE',
-                NOEUD = 'NO2',
-                INST = 1.,
-                NOM_CMP = 'SIXX',
-                VALE = 151.2),
-                _F(
-                RESULTAT = U,
-                NOM_CHAM = 'SIEF_ELNO',
-                MAILLE = 'CUBE',
-                NOEUD = 'NO2',
-                INST = 1.,
-                NOM_CMP = 'SIXY',
-                VALE = 93.1),
-                _F(
-                RESULTAT = U,
-                NOM_CHAM = 'EPSI_ELNO_DEPL',
-                MAILLE = 'CUBE',
-                NOEUD = 'NO2',
-                INST = 1.,
-                NOM_CMP = 'EPXX',
-                VALE = 1.48297E-2),
-                _F(
-                RESULTAT = U,
-                NOM_CHAM = 'EPSI_ELNO_DEPL',
-                MAILLE = 'CUBE',
-                NOEUD = 'NO2',
-                INST = 1.,
-                NOM_CMP = 'EPXY',
-                VALE = 1.36014E-2),
-                _F(
-                RESULTAT = U,
-                NOM_CHAM = 'EPSP_ELGA',
-                MAILLE = 'CUBE',
-                POINT = 1,
-                INST = 1.,
-                NOM_CMP = 'EPXX',
-                VALE = 1.4054E-2),
-                _F(
-                RESULTAT = U,
-                NOM_CHAM = 'EPSP_ELGA',
-                MAILLE = 'CUBE',
-                POINT = 1,
-                INST = 1.,
-                NOM_CMP = 'EPXY',
-                VALE = 1.2981E-2),
-                _F(
-                RESULTAT = U,
-                NOM_CHAM = 'VARI_ELNO_ELGA',
-                MAILLE = 'CUBE',
-                NOEUD = 'NO2',
-                INST = 1.,
-                NOM_CMP = 'V1',
-                VALE = 2.05473E-2),
-                _F(
-                RESULTAT = U,
-                NOM_CHAM = 'VARI_ELNO_ELGA',
-                MAILLE = 'CUBE',
-                NOEUD = 'NO2',
-                INST = 1.,
-                NOM_CMP = 'V2',
-                VALE = 1.),
-#
-                _F(
-                RESULTAT = U,
-                NOM_CHAM = 'EPSI_ELNO_DEPL',
-                MAILLE = 'CUBE',
-                NOEUD = 'NO2',
-                INST = 2.,
-                NOM_CMP = 'EPXX',
-                VALE = 3.5265E-2,
-                PRECISION = 1.E-2),
-                _F(
-                RESULTAT = U,
-                NOM_CHAM = 'EPSI_ELNO_DEPL',
-                MAILLE = 'CUBE',
-                NOEUD = 'NO2',
-                INST = 2.,
-                NOM_CMP = 'EPXY',
-                VALE = 2.0471E-2,
-                PRECISION = 1.E-2),
-                _F(
-                RESULTAT = U,
-                NOM_CHAM = 'EPSP_ELGA',
-                MAILLE = 'CUBE',
-                POINT = 1,
-                INST = 2.,
-                NOM_CMP = 'EPXX',
-                VALE = 3.3946E-2,
-                PRECISION = 1.E-2),
-                _F(
-                RESULTAT = U,
-                NOM_CHAM = 'EPSP_ELGA',
-                MAILLE = 'CUBE',
-                POINT = 1,
-                INST = 2.,
-                NOM_CMP = 'EPXY',
-                VALE = 2.0250E-2,
-                PRECISION = 1.E-2),
-                _F(
-                RESULTAT = U,
-                NOM_CHAM = 'VARI_ELNO_ELGA',
-                MAILLE = 'CUBE',
-                NOEUD = 'NO2',
-                INST = 2.,
-                NOM_CMP = 'V1',
-                VALE = 4.2329E-2,
-                PRECISION = 1.E-2)),
-#
-
-                CHAM_ELEM=_F(
-                CHAM_GD = VARI,
-                MAILLE = 'CUBE',
-                NOEUD = 'NO2',
-                NOM_CMP = 'V1',
-                VALE = 2.05473E-2)
-              )
+TEST_RESU(CHAM_ELEM=_F(CHAM_GD=VARI,
+                       MAILLE='CUBE',
+                       NOEUD='NO2',
+                       NOM_CMP='V1',
+                       VALE=0.0205473,),
+          RESU=(_F(RESULTAT=U,
+                   INST=1.0,
+                   NOM_CHAM='SIEF_ELNO',
+                   NOM_CMP='SIXX',
+                   MAILLE='CUBE',
+                   NOEUD='NO2',
+                   VALE=151.2,),
+                _F(RESULTAT=U,
+                   INST=1.0,
+                   NOM_CHAM='SIEF_ELNO',
+                   NOM_CMP='SIXY',
+                   MAILLE='CUBE',
+                   NOEUD='NO2',
+                   VALE=93.1,),
+                _F(RESULTAT=U,
+                   INST=1.0,
+                   NOM_CHAM='EPSI_ELNO_DEPL',
+                   NOM_CMP='EPXX',
+                   MAILLE='CUBE',
+                   NOEUD='NO2',
+                   VALE=0.0148297,),
+                _F(RESULTAT=U,
+                   INST=1.0,
+                   NOM_CHAM='EPSI_ELNO_DEPL',
+                   NOM_CMP='EPXY',
+                   MAILLE='CUBE',
+                   NOEUD='NO2',
+                   VALE=0.0136014,),
+                _F(RESULTAT=U,
+                   INST=1.0,
+                   NOM_CHAM='EPSP_ELGA',
+                   NOM_CMP='EPXX',
+                   MAILLE='CUBE',
+                   POINT=1,
+                   VALE=0.014054,),
+                _F(RESULTAT=U,
+                   INST=1.0,
+                   NOM_CHAM='EPSP_ELGA',
+                   NOM_CMP='EPXY',
+                   MAILLE='CUBE',
+                   POINT=1,
+                   VALE=0.012981,),
+                _F(RESULTAT=U,
+                   INST=1.0,
+                   NOM_CHAM='VARI_ELNO_ELGA',
+                   NOM_CMP='V1',
+                   MAILLE='CUBE',
+                   NOEUD='NO2',
+                   VALE=0.0205473,),
+                _F(RESULTAT=U,
+                   INST=1.0,
+                   NOM_CHAM='VARI_ELNO_ELGA',
+                   NOM_CMP='V2',
+                   MAILLE='CUBE',
+                   NOEUD='NO2',
+                   VALE=1.0,),
+                _F(RESULTAT=U,
+                   INST=2.0,
+                   NOM_CHAM='EPSI_ELNO_DEPL',
+                   NOM_CMP='EPXX',
+                   MAILLE='CUBE',
+                   NOEUD='NO2',
+                   VALE=0.035265,
+                   PRECISION=0.01,),
+                _F(RESULTAT=U,
+                   INST=2.0,
+                   NOM_CHAM='EPSI_ELNO_DEPL',
+                   NOM_CMP='EPXY',
+                   MAILLE='CUBE',
+                   NOEUD='NO2',
+                   VALE=0.020471,
+                   PRECISION=0.01,),
+                _F(RESULTAT=U,
+                   INST=2.0,
+                   NOM_CHAM='EPSP_ELGA',
+                   NOM_CMP='EPXX',
+                   MAILLE='CUBE',
+                   POINT=1,
+                   VALE=0.033946,
+                   PRECISION=0.01,),
+                _F(RESULTAT=U,
+                   INST=2.0,
+                   NOM_CHAM='EPSP_ELGA',
+                   NOM_CMP='EPXY',
+                   MAILLE='CUBE',
+                   POINT=1,
+                   VALE=0.02025,
+                   PRECISION=0.01,),
+                _F(RESULTAT=U,
+                   INST=2.0,
+                   NOM_CHAM='VARI_ELNO_ELGA',
+                   NOM_CMP='V1',
+                   MAILLE='CUBE',
+                   NOEUD='NO2',
+                   VALE=0.042329,
+                   PRECISION=0.01,),),);
 
 # TEST DES INDICATEURS DE CHARGE - DECHARGE
 
+U=CALC_ELEM(reuse =U,
+            RESULTAT=U,
+            OPTION=('DERA_ELGA','DERA_ELNO',),);
 
-U=CALC_ELEM( reuse=U,
-                         RESULTAT=U,
-                           OPTION='RADI_ELNO_SIGM',
-                            NORME='VMIS'
-                     )
+U=CALC_ELEM(reuse =U,
+            RESULTAT=U,
+            OPTION='ETOT_ELGA',);
 
-U=CALC_ELEM( reuse=U,
-                         RESULTAT=U,
-                           OPTION='RADI_ELGA_SIGM',
-                            NORME='VMIS'
-                     )
+U=CALC_ELEM(reuse =U,
+            RESULTAT=U,
+            OPTION='ETOT_ELNO',);
 
-U=CALC_ELEM( reuse=U,
-                         RESULTAT=U,
-                           OPTION='DCHA_ELGA_SIGM'
-                     )
+U2=CALC_ELEM(reuse =U2,
+             RESULTAT=U2,
+             OPTION='ETOT_ELGA',);
 
-U=CALC_ELEM( reuse=U,
-                         RESULTAT=U,
-                           OPTION='DCHA_ELNO_SIGM'
-                     )
+U2=CALC_ELEM(reuse =U2,
+             RESULTAT=U2,
+             OPTION='ETOT_ELNO',);
 
-U=CALC_ELEM( reuse=U,
-                         RESULTAT=U,
-                           OPTION='ETOT_ELGA'
-                     )
+U2=CALC_ELEM(reuse =U2,
+             RESULTAT=U2,
+             OPTION='ETOT_ELEM',);
 
-U=CALC_ELEM( reuse=U,
-                         RESULTAT=U,
-                           OPTION='ETOT_ELNO'
-                     )
+ENER_TOT=POST_ELEM(ENER_TOTALE=_F(TOUT='OUI',),
+                   RESULTAT=U,
+                   TOUT_ORDRE='OUI',);
 
-U2=CALC_ELEM( reuse=U2,
-                         RESULTAT=U2,
-                           OPTION='ETOT_ELGA'
-                     )
-
-U2=CALC_ELEM( reuse=U2,
-                         RESULTAT=U2,
-                           OPTION='ETOT_ELNO'
-                     )
-U2=CALC_ELEM( reuse=U2,
-                         RESULTAT=U2,
-                           OPTION='ETOT_ELEM'
-                     )
-ENER_TOT=POST_ELEM(     RESULTAT=U,
-                         TOUT_ORDRE='OUI',
-                        ENER_TOTALE=_F( TOUT = 'OUI')
-                      )
-
-ENER_TO2=POST_ELEM(     RESULTAT=U2,
-                         TOUT_ORDRE='OUI',
-                        ENER_TOTALE=_F(  TOUT = 'OUI')
-                      )
+ENER_TO2=POST_ELEM(ENER_TOTALE=_F(TOUT='OUI',),
+                   RESULTAT=U2,
+                   TOUT_ORDRE='OUI',);
 
 TEST_TABLE(TABLE=ENER_TO2,
-          FILTRE=(
-                 _F(  NOM_PARA = 'INST',
-                          VALE = 0.1),),
-          NOM_PARA='TOTALE',
-          REFERENCE = 'AUTRE_ASTER',
-          CRITERE='RELATIF',
-          VALE=1.16403E-03  )
-
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=0.1,),
+           NOM_PARA='TOTALE',
+           VALE=0.00116403,
+           CRITERE='RELATIF',
+           REFERENCE='AUTRE_ASTER',);
 
 TEST_TABLE(TABLE=ENER_TO2,
-          FILTRE=(
-                 _F(  NOM_PARA = 'INST',
-                          VALE = 0.9),),
-          NOM_PARA='TOTALE',
-          REFERENCE = 'AUTRE_ASTER',
-          CRITERE='RELATIF',
-          VALE= 1.84340  )
-
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=0.9,),
+           NOM_PARA='TOTALE',
+           VALE=1.8434,
+           CRITERE='RELATIF',
+           REFERENCE='AUTRE_ASTER',);
 
 TEST_TABLE(TABLE=ENER_TO2,
-          FILTRE=(
-                 _F(  NOM_PARA = 'INST',
-                          VALE = 2.0),),
-          NOM_PARA='TOTALE',
-          REFERENCE = 'AUTRE_ASTER',
-          CRITERE='RELATIF',
-          VALE= 9.58487  )
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=2.0,),
+           NOM_PARA='TOTALE',
+           VALE=9.58487,
+           CRITERE='RELATIF',
+           REFERENCE='AUTRE_ASTER',);
 
 TEST_TABLE(TABLE=ENER_TO2,
-          FILTRE=(
-                 _F(  NOM_PARA = 'INST',
-                          VALE =3.0 ),),
-          NOM_PARA='TOTALE',
-          REFERENCE = 'AUTRE_ASTER',
-          CRITERE='RELATIF',
-          VALE=  9.40794 )
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=3.0,),
+           NOM_PARA='TOTALE',
+           VALE=9.40794,
+           CRITERE='RELATIF',
+           REFERENCE='AUTRE_ASTER',);
 
-IND_ENER=POST_ELEM(     RESULTAT=U,
-                         NUME_ORDRE=(12,52,53,),
-                        INDIC_ENER=_F(  TOUT = 'OUI')
-                      )
+IND_ENER=POST_ELEM(INDIC_ENER=_F(TOUT='OUI',),
+                   RESULTAT=U,
+                   NUME_ORDRE=(12,52,53,),);
 
-IND_SEUI=POST_ELEM(    RESULTAT=U,
-                         NUME_ORDRE=(12,52,53,),
-                        INDIC_SEUIL=_F(  TOUT = 'OUI')
-                      )
-TEST_RESU(RESU=(
-                _F(
-                RESULTAT = U,
-                NOM_CHAM = 'DCHA_ELGA_SIGM',
-                NUME_ORDRE = 2,
-                MAILLE = 'CUBE',
-                POINT=1,
-                NOM_CMP = 'V1',
-                CRITERE = 'RELATIF',
-                PRECISION = 0.1E-2,
-                REFERENCE='NON_REGRESSION',
-                VALE = 0.307692),
-                _F(
-                RESULTAT = U,
-                NOM_CHAM = 'DCHA_ELNO_SIGM',
-                NUME_ORDRE = 2,
-                MAILLE = 'CUBE',
-                NOEUD='NO2',
-                NOM_CMP = 'V1',
-                CRITERE = 'RELATIF',
-                PRECISION = 0.1E-2,
-                REFERENCE='NON_REGRESSION',
-                VALE = 0.307692),
-                _F(
-                RESULTAT = U,
-                NOM_CHAM = 'RADI_ELGA_SIGM',
-                NUME_ORDRE = 2,
-                MAILLE = 'CUBE',
-                POINT=1,
-                NOM_CMP = 'V1',
-                CRITERE = 'RELATIF',
-                PRECISION = 0.1E-2,
-                REFERENCE='NON_REGRESSION',
-                VALE = (2.22045E-16,1.11e-16),),
-                _F(
-                RESULTAT = U2,
-                NOM_CHAM = 'ETOT_ELGA',
-                MAILLE = 'CUBE',
-                POINT = 1,
-                INST = 0.1,
-                REFERENCE = 'AUTRE_ASTER',
-                CRITERE = 'RELATIF',
-                NOM_CMP = 'TOTALE',
-                VALE = 1.16403E-03),
-                _F(
-                RESULTAT = U2,
-                NOM_CHAM = 'ETOT_ELGA',
-                MAILLE = 'CUBE',
-                POINT = 1,
-                INST = 0.9,
-                REFERENCE = 'AUTRE_ASTER',
-                CRITERE = 'RELATIF',
-                NOM_CMP = 'TOTALE',
-                VALE = 1.84340 ),
-                _F(
-                RESULTAT = U2,
-                NOM_CHAM = 'ETOT_ELGA',
-                MAILLE = 'CUBE',
-                POINT = 1,
-                INST = 2.0,
-                REFERENCE = 'AUTRE_ASTER',
-                CRITERE = 'RELATIF',
-                NOM_CMP = 'TOTALE',
-                VALE = 9.58487 ),
-                _F(
-                RESULTAT = U2,
-                NOM_CHAM = 'ETOT_ELGA',
-                MAILLE = 'CUBE',
-                POINT = 1,
-                INST = 3.0,
-                REFERENCE = 'AUTRE_ASTER',
-                CRITERE = 'RELATIF',
-                NOM_CMP = 'TOTALE',
-                VALE =  9.40794),
-                _F(
-                RESULTAT = U2,
-                NOM_CHAM = 'ETOT_ELNO',
-                MAILLE = 'CUBE',
-                NOEUD = 'NO2',
-                INST = 0.1,
-                REFERENCE = 'AUTRE_ASTER',
-                CRITERE = 'RELATIF',
-                NOM_CMP = 'TOTALE',
-                VALE = 1.16403E-03),
-                _F(
-                RESULTAT = U2,
-                NOM_CHAM = 'ETOT_ELNO',
-                MAILLE = 'CUBE',
-                NOEUD = 'NO2',
-                INST = 0.9,
-                REFERENCE = 'AUTRE_ASTER',
-                CRITERE = 'RELATIF',
-                NOM_CMP = 'TOTALE',
-                VALE = 1.84340 ),
-                _F(
-                RESULTAT = U2,
-                NOM_CHAM = 'ETOT_ELNO',
-                MAILLE = 'CUBE',
-                NOEUD = 'NO2',
-                INST = 2.0,
-                REFERENCE = 'AUTRE_ASTER',
-                CRITERE = 'RELATIF',
-                NOM_CMP = 'TOTALE',
-                VALE = 9.58487 ),
-                _F(
-                RESULTAT = U2,
-                NOM_CHAM = 'ETOT_ELNO',
-                MAILLE = 'CUBE',
-                NOEUD = 'NO2',
-                INST = 3.0,
-                REFERENCE = 'AUTRE_ASTER',
-                CRITERE = 'RELATIF',
-                NOM_CMP = 'TOTALE',
-                VALE =  9.40794),
-                _F(
-                RESULTAT = U2,
-                NOM_CHAM = 'ETOT_ELEM',
-                MAILLE = 'CUBE',
-                INST = 0.1,
-                REFERENCE = 'AUTRE_ASTER',
-                CRITERE = 'RELATIF',
-                NOM_CMP = 'TOTALE',
-                VALE = 1.16403E-03),
-                _F(
-                RESULTAT = U2,
-                NOM_CHAM = 'ETOT_ELEM',
-                MAILLE = 'CUBE',
-                INST = 0.9,
-                REFERENCE = 'AUTRE_ASTER',
-                CRITERE = 'RELATIF',
-                NOM_CMP = 'TOTALE',
-                VALE = 1.84340 ),
-                _F(
-                RESULTAT = U2,
-                NOM_CHAM = 'ETOT_ELEM',
-                MAILLE = 'CUBE',
-                INST = 2.0,
-                REFERENCE = 'AUTRE_ASTER',
-                CRITERE = 'RELATIF',
-                NOM_CMP = 'TOTALE',
-                VALE = 9.58487 ),
-                _F(
-                RESULTAT = U2,
-                NOM_CHAM = 'ETOT_ELEM',
-                MAILLE = 'CUBE',
-                INST = 3.0,
-                REFERENCE = 'AUTRE_ASTER',
-                CRITERE = 'RELATIF',
-                NOM_CMP = 'TOTALE',
-                VALE =  9.40794),
-                _F(
-                RESULTAT = U,
-                NOM_CHAM = 'RADI_ELNO_SIGM',
-                MAILLE = 'CUBE',
-                NOEUD = 'NO4',
-                NUME_ORDRE = 2,
-                REFERENCE = 'ANALYTIQUE',
-                CRITERE = 'ABSOLU',
-                NOM_CMP = 'V1',
-                VALE = 0.))
-              )
+IND_SEUI=POST_ELEM(INDIC_SEUIL=_F(TOUT='OUI',),
+                   RESULTAT=U,
+                   NUME_ORDRE=(12,52,53,),);
 
-TEST_TABLE(     TABLE=IND_ENER,FILTRE=(
-                 _F(  NOM_PARA = 'NUME_ORDRE',
-                          VALE_I = 12),
-                        _F(  NOM_PARA = 'LIEU',
-                          VALE_K = 'MA')),
-               NOM_PARA='INDIC_ENER',
-                REFERENCE = 'ANALYTIQUE',
-                CRITERE='ABSOLU',
-                   VALE=0.                   )
+TEST_RESU(RESU=(_F(RESULTAT=U,
+                   NUME_ORDRE=2,
+                   NOM_CHAM='DERA_ELGA',
+                   NOM_CMP='DCHA_V',
+                   MAILLE='CUBE',
+                   POINT=1,
+                   VALE=0.307692,
+                   CRITERE='RELATIF',
+                   PRECISION=0.001,
+                   REFERENCE='NON_REGRESSION',),
+                _F(RESULTAT=U,
+                   NUME_ORDRE=2,
+                   NOM_CHAM='DERA_ELNO',
+                   NOM_CMP='DCHA_V',
+                   MAILLE='CUBE',
+                   NOEUD='NO2',
+                   VALE=0.307692,
+                   CRITERE='RELATIF',
+                   PRECISION=0.001,
+                   REFERENCE='NON_REGRESSION',),
+                _F(RESULTAT=U,
+                   NUME_ORDRE=2,
+                   NOM_CHAM='DERA_ELGA',
+                   NOM_CMP='RADI_V',
+                   MAILLE='CUBE',
+                   POINT=1,
+                   VALE=1.11e-16,
+                   CRITERE='ABSOLU',
+                   REFERENCE='NON_REGRESSION',),
+                _F(RESULTAT=U2,
+                   INST=0.1,
+                   NOM_CHAM='ETOT_ELGA',
+                   NOM_CMP='TOTALE',
+                   MAILLE='CUBE',
+                   POINT=1,
+                   VALE=0.00116403,
+                   CRITERE='RELATIF',
+                   REFERENCE='AUTRE_ASTER',),
+                _F(RESULTAT=U2,
+                   INST=0.9,
+                   NOM_CHAM='ETOT_ELGA',
+                   NOM_CMP='TOTALE',
+                   MAILLE='CUBE',
+                   POINT=1,
+                   VALE=1.8434,
+                   CRITERE='RELATIF',
+                   REFERENCE='AUTRE_ASTER',),
+                _F(RESULTAT=U2,
+                   INST=2.0,
+                   NOM_CHAM='ETOT_ELGA',
+                   NOM_CMP='TOTALE',
+                   MAILLE='CUBE',
+                   POINT=1,
+                   VALE=9.58487,
+                   CRITERE='RELATIF',
+                   REFERENCE='AUTRE_ASTER',),
+                _F(RESULTAT=U2,
+                   INST=3.0,
+                   NOM_CHAM='ETOT_ELGA',
+                   NOM_CMP='TOTALE',
+                   MAILLE='CUBE',
+                   POINT=1,
+                   VALE=9.40794,
+                   CRITERE='RELATIF',
+                   REFERENCE='AUTRE_ASTER',),
+                _F(RESULTAT=U2,
+                   INST=0.1,
+                   NOM_CHAM='ETOT_ELNO',
+                   NOM_CMP='TOTALE',
+                   MAILLE='CUBE',
+                   NOEUD='NO2',
+                   VALE=0.00116403,
+                   CRITERE='RELATIF',
+                   REFERENCE='AUTRE_ASTER',),
+                _F(RESULTAT=U2,
+                   INST=0.9,
+                   NOM_CHAM='ETOT_ELNO',
+                   NOM_CMP='TOTALE',
+                   MAILLE='CUBE',
+                   NOEUD='NO2',
+                   VALE=1.8434,
+                   CRITERE='RELATIF',
+                   REFERENCE='AUTRE_ASTER',),
+                _F(RESULTAT=U2,
+                   INST=2.0,
+                   NOM_CHAM='ETOT_ELNO',
+                   NOM_CMP='TOTALE',
+                   MAILLE='CUBE',
+                   NOEUD='NO2',
+                   VALE=9.58487,
+                   CRITERE='RELATIF',
+                   REFERENCE='AUTRE_ASTER',),
+                _F(RESULTAT=U2,
+                   INST=3.0,
+                   NOM_CHAM='ETOT_ELNO',
+                   NOM_CMP='TOTALE',
+                   MAILLE='CUBE',
+                   NOEUD='NO2',
+                   VALE=9.40794,
+                   CRITERE='RELATIF',
+                   REFERENCE='AUTRE_ASTER',),
+                _F(RESULTAT=U2,
+                   INST=0.1,
+                   NOM_CHAM='ETOT_ELEM',
+                   NOM_CMP='TOTALE',
+                   MAILLE='CUBE',
+                   VALE=0.00116403,
+                   CRITERE='RELATIF',
+                   REFERENCE='AUTRE_ASTER',),
+                _F(RESULTAT=U2,
+                   INST=0.9,
+                   NOM_CHAM='ETOT_ELEM',
+                   NOM_CMP='TOTALE',
+                   MAILLE='CUBE',
+                   VALE=1.8434,
+                   CRITERE='RELATIF',
+                   REFERENCE='AUTRE_ASTER',),
+                _F(RESULTAT=U2,
+                   INST=2.0,
+                   NOM_CHAM='ETOT_ELEM',
+                   NOM_CMP='TOTALE',
+                   MAILLE='CUBE',
+                   VALE=9.58487,
+                   CRITERE='RELATIF',
+                   REFERENCE='AUTRE_ASTER',),
+                _F(RESULTAT=U2,
+                   INST=3.0,
+                   NOM_CHAM='ETOT_ELEM',
+                   NOM_CMP='TOTALE',
+                   MAILLE='CUBE',
+                   VALE=9.40794,
+                   CRITERE='RELATIF',
+                   REFERENCE='AUTRE_ASTER',),
+                _F(RESULTAT=U,
+                   NUME_ORDRE=2,
+                   NOM_CHAM='DERA_ELNO',
+                   NOM_CMP='RADI_V',
+                   MAILLE='CUBE',
+                   NOEUD='NO4',
+                   VALE=0.0,
+                   CRITERE='ABSOLU',
+                   REFERENCE='ANALYTIQUE',),),);
 
-TEST_TABLE(     TABLE=IND_ENER,FILTRE=(
-                 _F(  NOM_PARA = 'NUME_ORDRE',
-                          VALE_I = 52),
-                        _F(  NOM_PARA = 'LIEU',
-                          VALE_K = 'MA')),
-               NOM_PARA='INDIC_ENER',
-               REFERENCE = 'ANALYTIQUE',
-               PRECISION=0.03,
-                   VALE=3.26E-2               )
+TEST_TABLE(TABLE=IND_ENER,
+           FILTRE=(_F(NOM_PARA='NUME_ORDRE',
+                      VALE_I=12,),
+                   _F(NOM_PARA='LIEU',
+                      VALE_K='MA',),),
+           NOM_PARA='INDIC_ENER',
+           VALE=0.0,
+           CRITERE='ABSOLU',
+           REFERENCE='ANALYTIQUE',);
 
-TEST_TABLE(     TABLE=IND_ENER,FILTRE=(
-                 _F(  NOM_PARA = 'NUME_ORDRE',
-                          VALE_I = 53),
-                        _F(  NOM_PARA = 'LIEU',
-                          VALE_K = 'MA')),
-               NOM_PARA='INDIC_ENER',
-               REFERENCE = 'ANALYTIQUE',
-               PRECISION=0.03,
-                   VALE=4.69E-2               )
+TEST_TABLE(TABLE=IND_ENER,
+           FILTRE=(_F(NOM_PARA='NUME_ORDRE',
+                      VALE_I=52,),
+                   _F(NOM_PARA='LIEU',
+                      VALE_K='MA',),),
+           NOM_PARA='INDIC_ENER',
+           VALE=0.0326,
+           PRECISION=0.03,
+           REFERENCE='ANALYTIQUE',);
 
-TEST_TABLE(     TABLE=IND_SEUI,FILTRE=(
-                 _F(  NOM_PARA = 'NUME_ORDRE',
-                          VALE_I = 12),
-                        _F(  NOM_PARA = 'LIEU',
-                          VALE_K = 'MA')),
-               NOM_PARA='INDIC_SEUIL',
-                REFERENCE = 'ANALYTIQUE',
-                CRITERE='ABSOLU',
-                   VALE=0.                    )
+TEST_TABLE(TABLE=IND_ENER,
+           FILTRE=(_F(NOM_PARA='NUME_ORDRE',
+                      VALE_I=53,),
+                   _F(NOM_PARA='LIEU',
+                      VALE_K='MA',),),
+           NOM_PARA='INDIC_ENER',
+           VALE=0.0469,
+           PRECISION=0.03,
+           REFERENCE='ANALYTIQUE',);
 
-TEST_TABLE(     TABLE=IND_SEUI,FILTRE=(
-                 _F(  NOM_PARA = 'NUME_ORDRE',
-                          VALE_I = 52),
-                        _F(  NOM_PARA = 'LIEU',
-                          VALE_K = 'MA')),
-               REFERENCE = 'ANALYTIQUE',
-               PRECISION=0.01,
-               NOM_PARA='INDIC_SEUIL',
-                   VALE=9.71E-2               )
+TEST_TABLE(TABLE=IND_SEUI,
+           FILTRE=(_F(NOM_PARA='NUME_ORDRE',
+                      VALE_I=12,),
+                   _F(NOM_PARA='LIEU',
+                      VALE_K='MA',),),
+           NOM_PARA='INDIC_SEUIL',
+           VALE=0.0,
+           CRITERE='ABSOLU',
+           REFERENCE='ANALYTIQUE',);
 
-TEST_TABLE(     TABLE=IND_SEUI,FILTRE=(
-                 _F(  NOM_PARA = 'NUME_ORDRE',
-                          VALE_I = 53),
-                        _F(  NOM_PARA = 'LIEU',
-                          VALE_K = 'MA')),
-               NOM_PARA='INDIC_SEUIL',
-               REFERENCE = 'ANALYTIQUE',
-               PRECISION=0.01,
-                   VALE=1.                    )
+TEST_TABLE(TABLE=IND_SEUI,
+           FILTRE=(_F(NOM_PARA='NUME_ORDRE',
+                      VALE_I=52,),
+                   _F(NOM_PARA='LIEU',
+                      VALE_K='MA',),),
+           NOM_PARA='INDIC_SEUIL',
+           VALE=0.0971,
+           PRECISION=0.01,
+           REFERENCE='ANALYTIQUE',);
 
-FIN()
+TEST_TABLE(TABLE=IND_SEUI,
+           FILTRE=(_F(NOM_PARA='NUME_ORDRE',
+                      VALE_I=53,),
+                   _F(NOM_PARA='LIEU',
+                      VALE_K='MA',),),
+           NOM_PARA='INDIC_SEUIL',
+           VALE=1.0,
+           PRECISION=0.01,
+           REFERENCE='ANALYTIQUE',);
+
+FIN();
+
 #
 #
 #
@@ -917,3 +794,4 @@ FIN()
 #      WRITE (6,*) '  O -> ',INDENO
 #
 #      END
+

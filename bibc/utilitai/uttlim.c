@@ -1,8 +1,8 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF UTTLIM UTILITAI  DATE 07/04/2009   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF UTTLIM UTILITAI  DATE 31/01/2011   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
-/* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
+/* COPYRIGHT (C) 1991 - 2011  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
 /* THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR      */
 /* MODIFY IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS     */
@@ -18,18 +18,21 @@
 /*    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.     */
 /* ================================================================== */
 /* ------------------------------------------------------------------ */
-/* temps (sec)  maxi pour ce processus                    	*/
+/* temps (sec)  maxi pour ce processus                      */
 extern char g_tpmax[];
 
 #include <string.h>
 #include <stdio.h>
 
+#include "aster.h"
+
+#ifdef _USE_RLIMIT
 #include <sys/time.h>
 #include <sys/resource.h>
+#endif
+
 #include <float.h>
 #include <limits.h>
-
-#include "aster.h"
 
 void DEFP(UTTLIM, uttlim, DOUBLE *t_lim)
 {

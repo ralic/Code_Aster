@@ -1,6 +1,6 @@
-# MODIF  DATE 19/01/2011   AUTEUR MASSIN P.MASSIN 
+# MODIF  DATE 01/02/2011   AUTEUR MASSIN P.MASSIN 
 # TITRE ZONE COHESIVE CZM_EXP_REG AVEC X-FEM
-# ssnp144h.para = tps_job 300 mem_job 128Mo ncpus 1 liste_test S
+# ssnp144d.para = tps_job 360 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -28,11 +28,14 @@ PRE_GIBI();
 
 MAILLAG1=LIRE_MAILLAGE();
 
+MAILLAG2=CREA_MAILLAGE(MAILLAGE=MAILLAG1,
+                       );
+
 #----------------------------------------------
 #                   MODELE ET FISSURE
 #----------------------------------------------
 
-MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAG1,
+MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAG2,
                      AFFE=(_F(GROUP_MA='VOL',
                               PHENOMENE='MECANIQUE',
                               MODELISATION='3D',),
@@ -40,8 +43,8 @@ MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAG1,
                               PHENOMENE='MECANIQUE',
                               MODELISATION='3D',),),);
 
-MAILLAG1=DEFI_GROUP(reuse =MAILLAG1,
-                    MAILLAGE=MAILLAG1,
+MAILLAG2=DEFI_GROUP(reuse =MAILLAG2,
+                    MAILLAGE=MAILLAG2,
                     INFO=2,
                     CREA_GROUP_NO=(_F(GROUP_MA='VOL',
                                       NOM='VOL',),
@@ -68,6 +71,7 @@ MAILLAG1=DEFI_GROUP(reuse =MAILLAG1,
                                    _F(NOM='GN',
                                       UNION=('FISS_INF','FISS_SUP'),),),);
 
+
 # FORME ANALYTIQUE POUR LA FISSURE
 
 LN=FORMULE(NOM_PARA=('X','Y','Z'),VALE='Z-12.5 ');
@@ -75,39 +79,37 @@ LN=FORMULE(NOM_PARA=('X','Y','Z'),VALE='Z-12.5 ');
 FISS=DEFI_FISS_XFEM(MODELE=MODELEIN,
                     TYPE_DISCONTINUITE='INTERFACE',
                     DEFI_FISS=_F(FONC_LN=LN,),
-                    INFO=1,);
-
+                    GROUP_MA_ENRI='VOL',
+                    INFO=1,);                                        
 #-------------------------------------------------
-#                  CONTACT
+#                   CONTACT
 #-------------------------------------------------
 
 MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,
                          FISSURE=FISS,
-                         CONTACT='P1P1',);
+                         CONTACT='P1P1',                         
+                         );
 
 CTXFEM = DEFI_CONTACT(
             MODELE         = MODELEK,
             FORMULATION    = 'XFEM',
-            FROTTEMENT     = 'COULOMB',
+            FROTTEMENT     = 'SANS',
             ITER_CONT_MAXI=4,
-            ITER_FROT_MAXI=6,
             ZONE=(
-                  _F(  INTEGRATION='GAUSS',                                    
-                       COULOMB=1.0, 
-                       CONTACT_INIT='NON',
-                       COEF_FROT=1000.,                                     
-                       COEF_CONT=100.,   
-                       COEF_ECHELLE=1.,
-                       FISS_MAIT = FISS,
-                       ALGO_LAGR='VERSION2',
-                       RELATION='CZM_EXP_REG',  
-                      ),
-                       ), ),
-
+                  _F(INTEGRATION='GAUSS',                                   
+                     ALGO_CONT='CZM',  
+                     COEF_ECHELLE=1.,
+                     FISS_MAIT = FISS,
+                     ALGO_LAGR='VERSION2',
+                     RELATION='CZM_EXP_REG',),),);
+                       
 CHXFEM=AFFE_CHAR_MECA(MODELE=MODELEK,
                       LIAISON_XFEM='OUI',
-                      CONTACT_XFEM=CTXFEM,);
+                      CONTACT_XFEM=CTXFEM,
+                      INFO=2,);
+                      
 
+           
 #----------------------------------------------
 #                   MATERIAU
 #----------------------------------------------
@@ -119,12 +121,12 @@ MATE=DEFI_MATERIAU(ELAS=_F(E=E,
                     RUPT_FRAG=_F(GC=0.9E3,
                                  SIGM_C=1.1E6,
                                  PENA_ADHERENCE=1.0E-3),
-                                 );
-
-CHAMPMA=AFFE_MATERIAU(MAILLAGE=MAILLAG1,
+                   );
+CHAMPMA=AFFE_MATERIAU(MAILLAGE=MAILLAG2,
                        MODELE=MODELEK,
-                      AFFE=_F(GROUP_MA='VOL',
-                              MATER=MATE,),);
+                       AFFE=(_F(GROUP_MA='VOL',MATER=MATE,),
+                            ),
+                      );
 
 #----------------------------------------------
 #                   CHARGEMENTS
@@ -152,12 +154,13 @@ L_INST=DEFI_LIST_REEL(DEBUT=0.,
                                   _F(JUSQU_A=15,
                                      NOMBRE=10,),
                                     ),);
-
 LINST=[0.5 , 0.75 , 2. , 3.5 , 4.5 , 5.5 , 7. , 9.5 , 12 , 15 ]
-nbc=len(LINST)
-LCOEF=[3.6667E6 ,-3.6667E6 , 3.6667E6 , 2.00109149453E3 ,
--2000. , 2000. , 2000. , -2000., 2000. , 2000. ]
-                                    
+
+LCOEF=[1.83335E6 ,-1.83335E6 , 1.83335E6 , 1000.54574726 ,
+-1000. , 1000. , 1000. , -1000., 1000. , 1000. ]   
+nbc=len(LINST)                                 
+DEPZ1 = 1.0;
+
 #----------------MODE-I------------------------
                                     
 DEPZ1 = 1.0;
@@ -200,6 +203,8 @@ CH22=AFFE_CHAR_MECA(MODELE=MODELEK,
                                         COEF_MULT_2=  -1.,
                                         COEF_IMPO= 0.,),),
                                         );
+
+
 #--------------------------------------------------------
 #                       CALCUL - MODE I
 #--------------------------------------------------------
@@ -215,16 +220,22 @@ UTOT1=STAT_NON_LINE(MODELE=MODELEK,
                     INCREMENT=_F(LIST_INST=L_INST,
                                  INST_FIN=0.5,),
                     NEWTON=_F(REAC_ITER=1,),
-                    PILOTAGE=_F(TYPE='DDL_IMPO',
-                                COEF_MULT=3.6667E6,
-                                NOEUD='N31',
-                                NOM_CMP='H1Z',),
+                    PILOTAGE=_F(TYPE='SAUT_LONG_ARC',
+                                COEF_MULT=1.83335E6,
+                                ETA_PILO_R_MIN=0.0,
+                                SELECTION='ANGL_INCR_DEPL',
+                                GROUP_NO='FISS_SUP',
+                                FISSURE=FISS,
+                                DIRE_PILO='DNOR',),
                     CONVERGENCE=_F(RESI_GLOB_RELA=1.E-6,
                                    ITER_GLOB_MAXI=30,
                                    ARRET='OUI',),
-                    SOLVEUR=_F(METHODE='MUMPS',),
+                    SOLVEUR=_F(METHODE='MUMPS',
+                               NPREC=-1,
+                               ),
                     ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA',),
-                    INFO=1,); 
+                    INFO=1,);
+
 for i in range(1,nbc) :
   UTOT1=STAT_NON_LINE(reuse =UTOT1,
                     ETAT_INIT=_F(EVOL_NOLI=UTOT1,),
@@ -233,22 +244,27 @@ for i in range(1,nbc) :
                     EXCIT=(_F(CHARGE=CHXFEM,),
                            _F(CHARGE=CH1,
                               TYPE_CHARGE='FIXE_PILO',),),
-                    CONTACT =  CTXFEM,  
+                    CONTACT = CTXFEM,  
                     COMP_ELAS=_F(RELATION='ELAS',
                                  GROUP_MA='VOL',),
                     INCREMENT=_F(LIST_INST=L_INST,
                                  INST_FIN=LINST[i],),
                     NEWTON=_F(REAC_ITER=1,),
-                    PILOTAGE=_F(TYPE='DDL_IMPO',
+                    PILOTAGE=_F(TYPE='SAUT_LONG_ARC',
+                                GROUP_NO='FISS_SUP',
+                                SELECTION='ANGL_INCR_DEPL',                                
                                 COEF_MULT=LCOEF[i],
-                                NOEUD='N31',
-                                NOM_CMP='H1Z',),
+                                FISSURE=FISS,
+                                DIRE_PILO='DNOR',),
                     CONVERGENCE=_F(RESI_GLOB_RELA=1.E-6,
                                    ITER_GLOB_MAXI=30,
                                    ARRET='OUI',),
-                    SOLVEUR=_F(METHODE='MUMPS',),
+                    SOLVEUR=_F(METHODE='MUMPS',
+                               NPREC=-1,
+                               ),
                     ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA',),
-                    INFO=1,); 
+                    INFO=1,);
+
 #--------------------------------------------------------
 #                      CALCUL - MODE II
 #--------------------------------------------------------
@@ -256,7 +272,7 @@ for i in range(1,nbc) :
 UTOT2=STAT_NON_LINE(MODELE=MODELEK,
                     CHAM_MATER=CHAMPMA,
                     EXCIT=(_F(CHARGE=CHXFEM,),
-                                       _F(CHARGE=CH22,),
+                           _F(CHARGE=CH22,),
                            _F(CHARGE=CH21,
                               TYPE_CHARGE='FIXE_PILO',),),
                     CONTACT =  CTXFEM,  
@@ -265,17 +281,21 @@ UTOT2=STAT_NON_LINE(MODELE=MODELEK,
                     INCREMENT=_F(LIST_INST=L_INST,
                                  INST_FIN=0.5,),
                     NEWTON=_F(REAC_ITER=1,),
-                    PILOTAGE=_F(TYPE='DDL_IMPO',
-                                COEF_MULT=3.6667E6,
-                                NOEUD='N31',
-                                NOM_CMP='H1X',),
+                    PILOTAGE=_F(TYPE='SAUT_LONG_ARC',
+                                ETA_PILO_R_MIN=0.0,
+                                COEF_MULT=1.83335E6,
+                                SELECTION='ANGL_INCR_DEPL',
+                                GROUP_NO='FISS_SUP',
+                                FISSURE=FISS,
+                                DIRE_PILO='DTAN2',),
                     CONVERGENCE=_F(RESI_GLOB_RELA=1.E-6,
                                    ITER_GLOB_MAXI=30,
                                    ARRET='OUI',),
                     SOLVEUR=_F(METHODE='MUMPS',
-                               PCENT_PIVOT=70,),
+                               PCENT_PIVOT=50,),
                     ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA',),
                     INFO=1,); 
+
 for i in range(1,nbc) :
    UTOT2=STAT_NON_LINE(
                     reuse =UTOT2,
@@ -292,21 +312,23 @@ for i in range(1,nbc) :
                     INCREMENT=_F(LIST_INST=L_INST,
                                  INST_FIN=LINST[i],),
                     NEWTON=_F(REAC_ITER=1,),
-                    PILOTAGE=_F(TYPE='DDL_IMPO',
+                    PILOTAGE=_F(TYPE='SAUT_LONG_ARC',
+                                GROUP_NO='FISS_SUP',
+                                SELECTION='ANGL_INCR_DEPL',                                
                                 COEF_MULT=LCOEF[i],
-                                NOEUD='N31',
-                                NOM_CMP='H1X',
-                               ),
+                                FISSURE=FISS,
+                                DIRE_PILO='DTAN2',),
                     CONVERGENCE=_F(RESI_GLOB_RELA=1.E-6,
                                    ITER_GLOB_MAXI=30,
                                    ARRET='OUI',),
                     SOLVEUR=_F(METHODE='MUMPS',
-                               PCENT_PIVOT=70,),
+                               PCENT_PIVOT=50,),
                     ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA',),
                     INFO=1,);
 # -------------------------------------------------------------
 #            POST-TRAITEMENT POUR LA VISUALISATION X-FEM
 # -------------------------------------------------------------
+
 MA_XFEM=POST_MAIL_XFEM(
                        MODELE        = MODELEK,
                        )
@@ -336,10 +358,11 @@ RESXFEM2=POST_CHAM_XFEM(
                         
                         RESULTAT=UTOT2,
                         MODELE_VISU=MOD_VISU,);
+                        
 #--------------------------------------------------------
 #                  VALIDATION DES RESULTATS
 #--------------------------------------------------------
-TOLE=5E-7 
+TOLE=1.0E-7 
 
 LLAG=[3.66296853301E+05 ,
  1.8314842665E+05 ,
@@ -351,7 +374,6 @@ LLAG=[3.66296853301E+05 ,
  4686.28108785798 ,
  28117.686527187 ,
  718.731177854856 ]
- 
 LDEP=[1.36362396705485E-07 ,
  6.818119835274E-08 ,
  4.0908719011645E-07 ,
@@ -461,6 +483,7 @@ for i in range(0,nbc) :
    TEST_TABLE(TABLE=TAB4[i],
               NOM_PARA='H1X',
               TYPE_TEST='MAX',
+              VALE_ABS='OUI',              
               VALE=LDEP[i],
               CRITERE='RELATIF',
               PRECISION=TOLE,
@@ -469,8 +492,9 @@ for i in range(0,nbc) :
    TEST_TABLE(TABLE=TAB4[i],
               NOM_PARA='H1X',
               TYPE_TEST='MIN',
+              VALE_ABS='OUI',              
               VALE=LDEP[i],
               CRITERE='RELATIF',
               PRECISION=TOLE,
-              REFERENCE='ANALYTIQUE',);
+              REFERENCE='ANALYTIQUE',); 
 FIN();

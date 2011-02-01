@@ -1,8 +1,8 @@
 /* -------------------------------------------------------------------- */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF UTTRST UTILITAI  DATE 14/09/2009   AUTEUR PELLET J.PELLET */
+/* MODIF UTTRST UTILITAI  DATE 31/01/2011   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
-/* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
+/* COPYRIGHT (C) 1991 - 2011  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
 /* THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR      */
 /* MODIFY IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS     */
@@ -21,15 +21,17 @@
 /* temps(sec) total restant pour ce processus              */
 #include "aster.h"
 
-void DEFP(UTTLIM, uttlim, DOUBLE *);
-void DEFP(UTTCSM, uttcsm, DOUBLE *);
+extern void DEFP(UTTLIM, uttlim, DOUBLE *);
+extern void DEFP(UTTCSM, uttcsm, DOUBLE *);
+#define CALL_UTTLIM(a) CALLP(UTTLIM,uttlim,a)
+#define CALL_UTTCSM(a) CALLP(UTTCSM,uttcsm,a)
 
 
 void DEFP(UTTRST, uttrst, DOUBLE *t_rst)
 {
   DOUBLE t_csm[3] , t_lim;
-  uttcsm_ (t_csm);
-  uttlim_ (&t_lim);
+  CALL_UTTCSM(t_csm);
+  CALL_UTTLIM(&t_lim);
   *t_rst = t_lim - t_csm[0] - t_csm[1];
 }
 

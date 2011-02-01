@@ -1,7 +1,7 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF dll_zmat supervis  DATE 25/10/2010   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF dll_zmat supervis  DATE 31/01/2011   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
-/* COPYRIGHT (C) 1991 - 2010  EDF R&D              WWW.CODE-ASTER.ORG */
+/* COPYRIGHT (C) 1991 - 2011  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
 /* THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR      */
 /* MODIFY IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS     */
@@ -19,7 +19,6 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <dlfcn.h>
 
 #include <Python.h>
 
@@ -29,7 +28,8 @@
 
 #include "dll_register.h"
 
-void dll_init();
+#ifdef _POSIX
+#include <dlfcn.h>
 PyObject* get_dll_register_dict();
 
 
@@ -42,6 +42,7 @@ PyObject* get_dll_register_dict();
 #define SYMB_Zmatbase ""
 #define LIB_Zmat "libzAster.so"
 #define SYMB_Zmat "zaster_"
+#define SYMB_Zini "zasini_"
 
 /* declaration of pointers to ZMAT functions */
 #define ZMAT_ARGUMENTS ( \
@@ -62,6 +63,7 @@ void load_zmat_lib()
     void *zmat_handle;
     void *zmatbase_handle;
     void (*f_zaster) ZMAT_ARGUMENTS = NULL;
+    void (*f_zasini) () = NULL;
     PyObject* DLL_DICT;
     DLL_DICT = get_dll_register_dict();
     
@@ -79,18 +81,26 @@ void load_zmat_lib()
         printf("%s\n", dlerror());
         CALL_U2MESS("F", "FERMETUR_4");
     }
-    printf("searching symbol '%s'... ", SYMB_Zmat);
     dlerror();    /* Clear any existing error */
 
+    /* zaster */
+    printf("searching symbol '%s'... ", SYMB_Zmat);
     *(void **) (&f_zaster) = dlsym(zmat_handle, SYMB_Zmat);
-
+    if ((error = dlerror()) != NULL)  {
+        printf("%s\n", error);
+        CALL_U2MESS("F", "FERMETUR_4");
+    }
+    
+    /* zasini */
+    printf("searching symbol '%s'... ", SYMB_Zini);
+    *(void **) (&f_zasini) = dlsym(zmat_handle, SYMB_Zini);
     if ((error = dlerror()) != NULL)  {
         printf("%s\n", error);
         CALL_U2MESS("F", "FERMETUR_4");
     }
     printf("found\n");
     
-    /* register ZMAT libs */
+    /* register ZMAT lib and symbols */
     if ( libsymb_register(DLL_DICT, LIB_Zmatbase, SYMB_Zmatbase,
                             zmatbase_handle, (void*)NULL_FUNCTION) ) {
         printf("Registering '%s' and '%s' failed!\n", LIB_Zmatbase, SYMB_Zmatbase);
@@ -99,7 +109,12 @@ void load_zmat_lib()
                             zmat_handle, (void*)f_zaster) ) {
         printf("Registering '%s' and '%s' failed!\n", LIB_Zmat, SYMB_Zmat);
     }
+    if ( libsymb_register(DLL_DICT, LIB_Zmat, SYMB_Zini,
+                            zmat_handle, (void*)f_zasini) ) {
+        printf("Registering '%s' and '%s' failed!\n", LIB_Zmat, SYMB_Zini);
+    }
 }
+#endif
 
 
 void STDCALL(ZASWRP, zaswrp) (
@@ -108,12 +123,12 @@ void STDCALL(ZASWRP, zaswrp) (
     DOUBLE* epsm, DOUBLE* deps, DOUBLE* sigm, DOUBLE* vim, INTEGER* nopt, DOUBLE* angmas, DOUBLE* sigp, DOUBLE* vip,
     DOUBLE* dsidep, INTEGER* codret )
 {
+#ifdef _POSIX
     /* ZASter WRaPper : wrapper to Zaster C++ function through the function pointer
      * Load the library if necessary (at the first call).
     */
     void (*f_zaster) ZMAT_ARGUMENTS = NULL;
     PyObject* DLL_DICT;
-    dll_init();
     DLL_DICT = get_dll_register_dict();
     
     if ( ! libsymb_is_known(DLL_DICT, LIB_Zmat, SYMB_Zmat) ) {
@@ -126,7 +141,25 @@ void STDCALL(ZASWRP, zaswrp) (
                 nvarcm, nomvar, varplu, varmoi, varref,
                 epsm, deps, sigm, vim, nopt, angmas, sigp, vip,
                 dsidep, codret );
+#endif
 }
 
+void STDCALL(ZASWRI,zaswri) ()
+{
+#ifdef _POSIX
+    /* ZASter WRapper Init : wrapper to Zasini C++ function
+    */
+    void (*f_zasini) () = NULL;
+    PyObject* DLL_DICT;
+    DLL_DICT = get_dll_register_dict();
+    
+    if ( ! libsymb_is_known(DLL_DICT, LIB_Zmat, SYMB_Zini) ) {
+        load_zmat_lib();
+    }
+    
+    f_zasini = libsymb_get_symbol(DLL_DICT, LIB_Zmat, SYMB_Zini);
 
+    (*f_zasini)();
+#endif
+}
 

@@ -1,4 +1,4 @@
-#& MODIF COMMUN  DATE 25/01/2011   AUTEUR PELLET J.PELLET 
+#& MODIF COMMUN  DATE 01/02/2011   AUTEUR DELMAS J.DELMAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -26,9 +26,9 @@ def C_NOM_CHAM_INTO() : return  ("ACCE",    #COMMUN#
                         "COMPORTEMENT",
                         "COMPORTHER",
                         "CRIT_ELNO",
-                        "DCHA_ELGA_SIGM",
-                        "DCHA_ELNO_SIGM",
-                        "DCHA_NOEU_SIGM",
+                        "DERA_ELGA",
+                        "DERA_ELNO",
+                        "DERA_NOEU",
                         "DEDE_ELNO",
                         "DEDE_NOEU",
                         "DEGE_ELNO",
@@ -143,9 +143,6 @@ def C_NOM_CHAM_INTO() : return  ("ACCE",    #COMMUN#
                         "PRAC_ELNO",
                         "PRAC_NOEU",
                         "SIRO_ELEM",
-                        "RADI_ELGA_SIGM",
-                        "RADI_ELNO_SIGM",
-                        "RADI_NOEU_SIGM",
                         "REAC_NODA",
                         "SIEF_ELGA",
                         "SIEF_ELNO",

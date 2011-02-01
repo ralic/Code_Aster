@@ -14,9 +14,9 @@
       LOGICAL            LAMOR, LFLU
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/02/2010   AUTEUR GREFFET N.GREFFET 
+C MODIF ALGORITH  DATE 31/01/2011   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -212,7 +212,7 @@ C
       IF (TYPNUM.EQ.'NUME_DDL_SDASTER') THEN
 C         ----------------------------
          CALL MDCHST ( NUMDDL, TYPNUM, IMODE, IAMOR, PULSAT, MASGEN,
-     &                 AMOGEN, LFLU, NBNLI, NBPAL, NOECHO, LOGCHO, 
+     &                 AMOGEN, LFLU, NBNLI, NBPAL, NOECHO, LOGCHO,
      &                PARCHO, INTITU, ZI(JDDL), IER )
 C
 C --- CALCUL PAR SOUS-STRUCTURATION
@@ -244,26 +244,26 @@ C
         IF (INFO.EQ.2) THEN
           VALI = I
           VALK = NOECHO(I,1)
-          CALL U2MESG('I+','ALGORITH16_2',1,VALK,1,VALI,0,0.D0)
+          CALL U2MESG('I','ALGORITH16_2',1,VALK,1,VALI,0,0.D0)
           IF (TYPNUM(1:13).EQ.'NUME_DDL_GENE') THEN
             VALK = NOECHO(I,2)
-            CALL U2MESG('I+','ALGORITH16_3',1,VALK,0,0,0,0.D0)
+            CALL U2MESG('I','ALGORITH16_3',1,VALK,0,0,0,0.D0)
           ENDIF
           VALR (1) = PARCHO(I,8)
           VALR (2) = PARCHO(I,9)
           VALR (3) = PARCHO(I,10)
-          CALL U2MESG('I+','ALGORITH16_4',0,' ',0,0,3,VALR)
+          CALL U2MESG('I','ALGORITH16_4',0,' ',0,0,3,VALR)
           IF ( NOECHO(I,9)(1:2).EQ.'BI') THEN
             VALK = NOECHO(I,5)
-            CALL U2MESG('I+','ALGORITH16_5',1,VALK,0,0,0,0.D0)
+            CALL U2MESG('I','ALGORITH16_5',1,VALK,0,0,0,0.D0)
             IF (TYPNUM(1:13).EQ.'NUME_DDL_GENE') THEN
               VALK = NOECHO(I,6)
-              CALL U2MESG('I+','ALGORITH16_3',1,VALK,0,0,0,0.D0)
+              CALL U2MESG('I','ALGORITH16_3',1,VALK,0,0,0,0.D0)
             ENDIF
             VALR (1) = PARCHO(I,11)
             VALR (2) = PARCHO(I,12)
             VALR (3) = PARCHO(I,13)
-            CALL U2MESG('I+','ALGORITH16_4',0,' ',0,0,3,VALR)
+            CALL U2MESG('I','ALGORITH16_4',0,' ',0,0,3,VALR)
           ENDIF
           VALR (1) = CTANG
           VALR (2) = PARCHO(I,14)
@@ -275,7 +275,7 @@ C
           VALR (8) = PARCHO(I,20)
           VALR (9) = PARCHO(I,21)
           VALR (10)= PARCHO(I,22)
-          CALL U2MESG('I+','ALGORITH16_8',0,' ',0,0,10,VALR)
+          CALL U2MESG('I','ALGORITH16_8',0,' ',0,0,10,VALR)
           IF ( NOECHO(I,9)(1:2).EQ.'BI') THEN
              XJEU = (PARCHO(I,11)-PARCHO(I,8))**2 +
      &              (PARCHO(I,12)-PARCHO(I,9))**2 +
@@ -286,7 +286,7 @@ C
                 XJEU = SQRT(XJEU)
              ENDIF
              VALR (1) = XJEU
-             CALL U2MESG('I+','ALGORITH16_9',0,' ',0,0,1,VALR)
+             CALL U2MESG('I','ALGORITH16_9',0,' ',0,0,1,VALR)
           ENDIF
           CALL U2MESG('I','VIDE_1',0,' ',0,0,0,0.D0)
         ENDIF

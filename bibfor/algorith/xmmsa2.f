@@ -14,7 +14,7 @@
       LOGICAL     NOEUD
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 19/01/2011   AUTEUR MASSIN P.MASSIN 
+C MODIF ALGORITH  DATE 01/02/2011   AUTEUR MASSIN P.MASSIN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -90,7 +90,7 @@ C
       INTEGER      I,J,K,NLI
       REAL*8       FFI,VIM(9),VIP(9),TAU11(3),TAU22(3)
       REAL*8       AM2D(2),DAM2D(2),DSID2D(6,6),DAM(3)
-      REAL*8       SIGMA(6),SQRNOR,SQRTAN
+      REAL*8       SIGMA(6),SQRNOR,SQRTAN,R8PREM,EPS
       CHARACTER*16 OPTION
 C ----------------------------------------------------------------------
 C
@@ -124,8 +124,7 @@ C
             TAU11(J)=TAU11(J)+FFI*TAU1(J)
           ENDIF
 311     CONTINUE
-310   CONTINUE
-
+310   CONTINUE           
 
       DO 218 I=1,NDIM
         DTANG(I) = 0.D0
@@ -142,7 +141,7 @@ C
         DAM(1) = AM(1)
         DAM(2) = AM(2)
         DAM(3) = AM(3)  
- 218  CONTINUE
+ 218  CONTINUE             
 C                
 C --- L'INTERPENETRATION CORRESPOND A SAUT<0 DANS LCEJEX
 C
@@ -154,39 +153,44 @@ C
       SQRTAN=0.D0
       DO 214 I=2,NDIM
          SQRTAN=SQRTAN+AM(I)**2
-214   CONTINUE            
-      SQRNOR=MAX(AM(1),0.0D0)**2
-      ALPHA = SQRT(SQRNOR+BETASQ*SQRTAN)             
-      KA=MAX(ALPHA0,COHES)        
+214   CONTINUE
+      EPS=R8PREM()            
+      SQRNOR=(MAX(AM(1),EPS))**2
+      ALPHA = SQRT(SQRNOR+BETASQ*SQRTAN) 
+      
+      IF(ALPHA0.NE.0.D0) THEN           
+          KA=MAX(ALPHA0,COHES)        
 C                
 C VIM = VARIABLES INTERNES UTILISEES DANS LCEJEX
 C.............VIM(1): SEUIL, PLUS GRANDE NORME DU SAUT
 C.............VIM(2): INDICATEUR DE DISSIPATION (0 : NON, 1 : OUI)
 
-      VIM(1)=COHES
+         VIM(1)=COHES
               
-      IF ( ALPHA.LE.KA ) THEN   
-        VIM(2) = 0
-      ELSE
-        VIM(2) = 1
-      ENDIF
+         IF ( ALPHA.LE.KA ) THEN   
+           VIM(2) = 0
+         ELSE
+           VIM(2) = 1
+         ENDIF
                
-      OPTION='RIGI_MECA'
+         OPTION='RIGI_MECA'
 C
-      IF (NDIM.EQ.2) THEN
-        AM2D(1)=AM(1)
-        AM2D(2)=AM(2)              
-        DAM2D(1)=DAM(1)
-        DAM2D(2)=DAM(2)
-        CALL LCEJEX('RIGI',IPGF,1,2,IMATE,OPTION,AM2D,
-     &              DAM2D,SIGMA,DSID2D,VIM,VIP)
-        DSIDEP(1,1)=DSID2D(1,1)
-        DSIDEP(1,2)=DSID2D(1,2)
-        DSIDEP(2,1)=DSID2D(2,1)
-        DSIDEP(2,2)=DSID2D(2,2)
-      ELSE IF (NDIM.EQ.3) THEN
-        CALL LCEJEX('RIGI',IPGF,1,3,IMATE,OPTION,AM, 
-     &              DAM,SIGMA,DSIDEP,VIM,VIP)
-      ENDIF     
+         IF (NDIM.EQ.2) THEN
+           AM2D(1)=AM(1)
+           AM2D(2)=AM(2)              
+           DAM2D(1)=DAM(1)
+           DAM2D(2)=DAM(2)
+           CALL LCEJEX('RIGI',IPGF,1,2,IMATE,OPTION,
+     &             AM2D,DAM2D,SIGMA,DSID2D,VIM,VIP)
+           DSIDEP(1,1)=DSID2D(1,1)
+           DSIDEP(1,2)=DSID2D(1,2)
+           DSIDEP(2,1)=DSID2D(2,1)
+           DSIDEP(2,2)=DSID2D(2,2)
+         ELSE IF (NDIM.EQ.3) THEN
+           CALL LCEJEX('RIGI',IPGF,1,3,IMATE,OPTION,
+     &             AM,DAM,SIGMA,DSIDEP,VIM,VIP)
+         ENDIF
+      
+      ENDIF          
 C
       END

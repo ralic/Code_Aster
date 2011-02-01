@@ -1,4 +1,4 @@
-# MODIF  DATE 10/01/2011   AUTEUR BOITEAU O.BOITEAU 
+# MODIF  DATE 31/01/2011   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 # TITRE CALCUL DES FREQUENCES PROPRES D'UN ANNEAU CIRCULAIRE MINCE   
 # sdll11a.para = tps_job 300 mem_job 130Mo ncpus 1 liste_test V
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -40,6 +40,7 @@ STRUCTUR=AFFE_MODELE(    MAILLAGE=MAYA,
                                AFFE=_F(  TOUT = 'OUI',
                                       MODELISATION = '3D',
                                       PHENOMENE = 'MECANIQUE'),
+                           PARTITION=_F(PARALLELISME='CENTRALISE'),
                             )
 
 # CALCUL DES MATRICES ELEMENTAIRES DE RIGIDITE ET DE MASSE

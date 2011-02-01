@@ -1,8 +1,8 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF astermodule supervis  DATE 07/12/2010   AUTEUR GENIAUT S.GENIAUT */
+/* MODIF astermodule supervis  DATE 31/01/2011   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
-/* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
+/* COPYRIGHT (C) 1991 - 2011  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
 /* THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR      */
 /* MODIFY IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS     */
@@ -51,9 +51,9 @@ void converltx( _IN int nval, _IN PyObject *tup, _OUT char *val, _IN STRING_SIZE
 void TraitementFinAster( _IN int val ) ;
 
 PyObject * MakeTupleString(long nbval,char *kval,STRING_SIZE lkval,INTEGER *lval);
-PyObject * MakeListString( long nbval,char *kval,STRING_SIZE lkval );
-PyObject * MakeTupleInt(long nbval,long* kval);
-PyObject * MakeListInt(long nbval,long* kval);
+PyObject * MakeListString(long nbval,char *kval,STRING_SIZE lkval );
+PyObject * MakeTupleInt(long nbval, INTEGER* kval);
+PyObject * MakeListInt(long nbval, INTEGER* kval);
 PyObject * MakeTupleFloat(long nbval,DOUBLE* kval);
 PyObject * MakeListFloat(long nbval,DOUBLE* kval);
 
@@ -233,7 +233,7 @@ void DEFPSPSPPPP(UEXCEP,uexcep, _IN INTEGER *exc_type,
     PyTuple_SetItem( exception_args, (Py_ssize_t)2, tup_vali );
     PyTuple_SetItem( exception_args, (Py_ssize_t)3, tup_valr );
 
-    TraiteErreur(*exc_type);
+    TraiteErreur((int)*exc_type);
 }
 
 
@@ -335,20 +335,20 @@ void DEFSSPPPPP(GETLTX,getltx,_IN char *motfac,_IN STRING_SIZE lfac,
                                                         ASSERT(EstPret(motcle,lcle)!=0);
         mcs=fstr2(motcle,lcle);
                                                         ASSERT(mcs!=(char*)0);
-        ioc=*iocc ;
+        ioc=(int)*iocc ;
         ioc=ioc-1 ;
                                                         ASSERT(commande!=(PyObject*)0);
-        res=PyObject_CallMethod(commande,"getltx","ssiii",mfc,mcs,ioc,*iarg,*mxval);
+        res=PyObject_CallMethod(commande,"getltx","ssiii",mfc,mcs,ioc,(int)*iarg,(int)*mxval);
 
         /*  si le retour est NULL : exception Python a transferer
             normalement a l appelant mais FORTRAN ??? */
         if (res == NULL)MYABORT("erreur dans la partie Python");
 
-        ok = PyArg_ParseTuple(res,"lO",nbval,&tup);
+        ok = PyArg_ParseTuple(res,"iO",&nval,&tup);
         if (!ok)MYABORT("erreur dans la partie Python");
 
-        nval=*nbval;
-        if(*nbval < 0)nval=*mxval;
+        *nbval = (INTEGER)nval;
+        if( nval < 0 ) nval=(int)*mxval;
         convert(nval,tup,isval);
         Py_DECREF(res);                /*  decrement sur le refcount du retour */
         return ;
@@ -409,7 +409,7 @@ void DEFSP(GETFAC,getfac,_IN char *nomfac, _IN STRING_SIZE lfac, _OUT INTEGER *o
             normalement a l appelant mais FORTRAN ??? */
         if (res == NULL)MYABORT("erreur dans la partie Python");
 
-        *occu=PyInt_AsLong(res);
+        *occu=(INTEGER)PyInt_AsLong(res);
 
         Py_DECREF(res);                /*  decrement sur le refcount du retour */
         return ;
@@ -445,15 +445,15 @@ int conv_un_c8( _IN PyObject *tup, _OUT DOUBLE *val)
         /* Enrichissement des complexes stockes dans val a partir du tuple tup */
 
         char *repres = (char*)0 ; /* representation "RI" (reelle/imaginaire) ou "MP" (module phase) */
-        DOUBLE x = 0.0 ;
-        DOUBLE y = 0.0 ;
-        DOUBLE *rho = &x ;
-        DOUBLE *theta = &y ;
+        double x = 0.0 ;
+        double y = 0.0 ;
+        double *rho = &x ;
+        double *theta = &y ;
         if(PyComplex_Check(tup)||PyFloat_Check(tup)||PyLong_Check(tup)||PyInt_Check(tup)){
            /* On est dans le cas d'un objet Python complexe */
            /* representation : partie reelle/partie imaginaire */
-           *val    =PyComplex_RealAsDouble(tup)  ;
-           *(val+1)=PyComplex_ImagAsDouble(tup)  ;
+           *val    =(DOUBLE)PyComplex_RealAsDouble(tup)  ;
+           *(val+1)=(DOUBLE)PyComplex_ImagAsDouble(tup)  ;
         }
         else if(PyTuple_Check(tup)){
            /* On est dans le cas d'un complexe représenté par un triplet : "RI" ou "MP",x,y */
@@ -462,13 +462,13 @@ int conv_un_c8( _IN PyObject *tup, _OUT DOUBLE *val)
                                                                                      ASSERT((strcmp(repres,"RI")==0)||(strcmp(repres,"MP")==0)) ;
            if (strcmp(repres,"RI")==0){
                 /* representation : partie reelle/partie imaginaire */
-                *val    =x ;
-                *(val+1)=y ;
+                *val    =(DOUBLE)x ;
+                *(val+1)=(DOUBLE)y ;
            }
            else{
                 /* representation RHO,THETA (les angles sont fournis en degres) */
-                *val    =*rho * cos( *theta /180. * R8PI()) ;
-                *(val+1)=*rho * sin( *theta /180. * R8PI()) ;
+                *val    =(DOUBLE)(*rho * cos( *theta /180. * R8PI()) );
+                *(val+1)=(DOUBLE)(*rho * sin( *theta /180. * R8PI()) );
            }
         }
         else {
@@ -493,7 +493,7 @@ void convr8( _IN int nval, _IN PyObject *tup, _OUT DOUBLE *val)
         }
         for(i=0;i<nval;i++){
                 v=PyTuple_GetItem(tup,i);
-                val[i]=PyFloat_AsDouble(v);
+                val[i]=(DOUBLE)PyFloat_AsDouble(v);
         }
         return ;
 }
@@ -514,7 +514,7 @@ void convert( _IN int nval, _IN PyObject *tup, _OUT INTEGER *val)
         }
         for(i=0;i<nval;i++){
                 v=PyTuple_GetItem(tup,i);
-                val[i]=PyInt_AsLong(v);
+                val[i]=(INTEGER)PyInt_AsLong(v);
         }
         return ;
 }
@@ -629,7 +629,7 @@ void STDCALL(GETRAN,getran)(_OUT DOUBLE *rval)
         ok = PyArg_ParseTuple(res,"O",&val);
         if(!ok)MYABORT("erreur dans la partie Python");
 
-        *rval=PyFloat_AsDouble(val);
+        *rval=(DOUBLE)PyFloat_AsDouble(val);
 
         Py_DECREF(res);                /*  decrement sur le refcount du retour */
         return ;
@@ -645,7 +645,7 @@ void DEFP(INIRAN,iniran,_IN INTEGER *jump)
         */
         PyObject *res  = (PyObject*)0 ;
 
-        res=PyObject_CallMethod(commande,"iniran","i",*jump);
+        res=PyObject_CallMethod(commande,"iniran","i",(int)*jump);
         Py_DECREF(res);                /*  decrement sur le refcount du retour */
         return ;
 }
@@ -710,7 +710,7 @@ void DEFPS(GETMAT,getmat,_OUT INTEGER *nbarg,_OUT char *motcle,_IN STRING_SIZE l
 
         if(!PyArg_ParseTuple(res,"O",&lnom)) MYABORT("erreur dans la partie Python");
         nval=PyList_Size(lnom);
-        *nbarg = nval ;
+        *nbarg = (INTEGER)nval ;
 
         if ( nval > 0 ){
                 converltx(nval,lnom,motcle,lcle); /* conversion  */
@@ -752,20 +752,20 @@ void DEFSPPSSP(GETMJM,getmjm,_IN char *nomfac,_IN STRING_SIZE lfac,
         int        ioc = 0 ;
                                                                         ASSERT(ltyp>0);
         for ( k=0 ;k<ltyp ; k++ ) type[k]=' ' ;
-        ioc=*iocc ;
+        ioc=(int)*iocc ;
         ioc=ioc-1 ;
                                                                         ASSERT(commande!=(PyObject*)0);
-        res=PyObject_CallMethod(commande,"getmjm","sii",fstr2(nomfac,lfac),ioc,*nbval);
+        res=PyObject_CallMethod(commande,"getmjm","sii",fstr2(nomfac,lfac),ioc,(int)*nbval);
         /*  si le retour est NULL : exception Python a transferer
             normalement a l appelant mais FORTRAN ??? */
         if (res == NULL)MYABORT("erreur dans la partie Python");
         /*  si non impression du retour */
 
         if(!PyArg_ParseTuple(res,"OO",&lnom,&lty)) MYABORT("erreur dans la partie Python");
-        nval=PyList_Size(lnom);
-        *nbarg = (nval > *nbval) ? -nval : nval ;
+        nval=(int)PyList_Size(lnom);
+        *nbarg = (INTEGER)( (nval > *nbval) ? -nval : nval );
                                                                         ASSERT(((nval<=*nbval)&&(*nbarg==nval))||(*nbarg==-nval)) ;
-        if(*nbarg < 0)nval=*nbval;
+        if(*nbarg < 0)nval=(int)*nbval;
 
         if ( nval > 0 ){
                 converltx(nval,lnom,motcle,lcle); /* conversion  */
@@ -925,20 +925,20 @@ void DEFSSPPPPP(GETVC8,getvc8,_IN char *motfac,_IN STRING_SIZE lfac,
                 MYABORT( "erreur d'utilisation detectee") ;
         }
 
-        ioc=*iocc ;
+        ioc=(int)*iocc ;
         ioc=ioc-1 ;
                                                         ASSERT(commande!=(PyObject*)0);
-        res=PyObject_CallMethod(commande,"getvc8","ssiii",mfc,mcs,ioc,*iarg,*mxval);
+        res=PyObject_CallMethod(commande,"getvc8","ssiii",mfc,mcs,ioc,(int)*iarg,(int)*mxval);
 
         /*  si le retour est NULL : exception Python a transferer
             normalement a l appelant mais FORTRAN ??? */
         if (res == NULL)MYABORT("erreur dans la partie Python");
                                                         ASSERT(PyTuple_Check(res)) ;
-        ok = PyArg_ParseTuple(res,"lO",nbval,&tup);
+        ok = PyArg_ParseTuple(res,"iO",&nval,&tup);
         if(!ok)MYABORT("erreur dans la partie Python");
 
-        nval=*nbval;
-        if(*nbval < 0)nval=*mxval;
+        *nbval = (INTEGER)nval;
+        if ( nval < 0 ) nval=(int)*mxval;
         convc8(nval,tup,val);
 
         Py_DECREF(res);
@@ -993,19 +993,19 @@ void DEFSSPPPPP(GETVR8,getvr8,_IN char *motfac,_IN STRING_SIZE lfac,
                 printf( "             mot-cle simple  : %s\n",mcs) ;
                 MYABORT( "erreur d'utilisation detectee") ;
         }
-        ioc=*iocc ;
+        ioc=(int)*iocc ;
         ioc=ioc-1 ;
                                                         ASSERT(commande!=(PyObject*)0);
-        res=PyObject_CallMethod(commande,"getvr8","ssiii",mfc,mcs,ioc,*iarg,*mxval);
+        res=PyObject_CallMethod(commande,"getvr8","ssiii",mfc,mcs,ioc,(int)*iarg,(int)*mxval);
         /*  si le retour est NULL : exception Python a transferer
             normalement a l appelant mais FORTRAN ??? */
         if (res == NULL)MYABORT("erreur dans la partie Python");
                                                        ASSERT(PyTuple_Check(res)) ;
-        ok = PyArg_ParseTuple(res,"lO",nbval,&tup);
+        ok = PyArg_ParseTuple(res,"iO",&nval,&tup);
         if(!ok)MYABORT("erreur dans la partie Python");
 
-        nval=*nbval;
-        if(*nbval < 0)nval=*mxval;
+        *nbval=(INTEGER)nval;
+        if ( nval < 0 ) nval=(int)*mxval;
         if ( nval>0 ){
                 convr8(nval,tup,val);
         }
@@ -1029,20 +1029,20 @@ void DEFSSPSPPPP(UTPRIN,utprin, _IN char *typmess, _IN STRING_SIZE ltype,
         char *kvar;
         int i;
 
-        tup_valk = PyTuple_New( *nbk ) ;
+        tup_valk = PyTuple_New( (Py_ssize_t)*nbk ) ;
         for(i=0;i<*nbk;i++){
            kvar = valk + i*lvk;
-           PyTuple_SetItem( tup_valk, i, PyString_FromStringAndSize(kvar,lvk) ) ;
+           PyTuple_SetItem( tup_valk, i, PyString_FromStringAndSize(kvar,(Py_ssize_t)lvk) ) ;
         }
     
-        tup_vali = PyTuple_New( *nbi ) ;    
+        tup_vali = PyTuple_New( (Py_ssize_t)*nbi ) ;    
         for(i=0;i<*nbi;i++){
-           PyTuple_SetItem( tup_vali, i, PyInt_FromLong(vali[i]) ) ;
+           PyTuple_SetItem( tup_vali, i, PyInt_FromLong((long)vali[i]) ) ;
         }
     
-        tup_valr = PyTuple_New( *nbr ) ;
+        tup_valr = PyTuple_New( (Py_ssize_t)*nbr ) ;
         for(i=0;i<*nbr;i++){
-           PyTuple_SetItem( tup_valr, i, PyFloat_FromDouble(valr[i]) ) ;
+           PyTuple_SetItem( tup_valr, i, PyFloat_FromDouble((double)valr[i]) ) ;
         }
 
         res=PyObject_CallMethod(static_module,"MessageLog","s#s#OOO",typmess,ltype,idmess,lidmess,tup_valk,tup_vali,tup_valr);
@@ -1073,10 +1073,10 @@ void DEFPP(CHKMSG,chkmsg, _IN INTEGER *info_alarm, _OUT INTEGER *iret)
 
    mess_log = PyObject_GetAttrString(static_module, "MessageLog");
    if (!mess_log) {
-      MYABORT("erreur lors de l'accès a l'objet MessageLog.");
+      MYABORT("erreur lors de l'acces a l'objet MessageLog.");
    }
 
-   res = PyObject_CallMethod(mess_log, "check_counter", "i", *info_alarm);
+   res = PyObject_CallMethod(mess_log, "check_counter", "i", (int)*info_alarm);
    if (!res) {
       MYABORT("erreur lors de l'appel a la methode MessageLog.check_counter");
    }
@@ -1125,14 +1125,14 @@ void DEFSPSPPSP(FIINTF,fiintf,_IN char *nomfon,_IN STRING_SIZE lfon,
         int lsret;
         int i;
                                                         ASSERT(commande!=(PyObject*)0);
-        tup_par = PyTuple_New( *nbpu ) ;
-        tup_val = PyTuple_New( *nbpu ) ;
+        tup_par = PyTuple_New( (Py_ssize_t)*nbpu ) ;
+        tup_val = PyTuple_New( (Py_ssize_t)*nbpu ) ;
         for(i=0;i<*nbpu;i++){
            kvar = param + i*lpara;
-           PyTuple_SetItem( tup_par, i, PyString_FromStringAndSize(kvar,lpara) ) ;
+           PyTuple_SetItem( tup_par, i, PyString_FromStringAndSize(kvar,(Py_ssize_t)lpara) ) ;
         }
         for(i=0;i<*nbpu;i++){
-           PyTuple_SetItem( tup_val, i, PyFloat_FromDouble(val[i]) ) ;
+           PyTuple_SetItem( tup_val, i, PyFloat_FromDouble((double)val[i]) ) ;
         }
 
         tup3 = PyObject_CallMethod(commande,"fiintf","s#OO",nomfon,lfon,tup_par,tup_val);
@@ -1147,10 +1147,10 @@ void DEFSPSPPSP(FIINTF,fiintf,_IN char *nomfon,_IN STRING_SIZE lfon,
         BLANK(msgerr, lmsg);
         if ( *iret == 0 ) {
            if (PyComplex_Check(res)) {
-               *resu    = PyComplex_RealAsDouble(res);
-               *(resu+1)= PyComplex_ImagAsDouble(res);
+               *resu    = (DOUBLE)PyComplex_RealAsDouble(res);
+               *(resu+1)= (DOUBLE)PyComplex_ImagAsDouble(res);
            } else if (PyFloat_Check(res) || PyLong_Check(res) || PyInt_Check(res)) {
-               *resu    = PyFloat_AsDouble(res);
+               *resu    = (DOUBLE)PyFloat_AsDouble(res);
            } else {
               *iret = 4;
            }
@@ -1216,20 +1216,20 @@ void DEFSSPPPPP(GETVIS,getvis,_IN char *motfac,_IN STRING_SIZE lfac,
                 printf( "             mot-cle simple  : %s\n",mcs) ;
                 MYABORT( "erreur d'utilisation detectee") ;
         }
-        ioc=*iocc ;
+        ioc=(int)*iocc ;
         ioc=ioc-1 ;
                                                         ASSERT(commande!=(PyObject*)0);
-        res=PyObject_CallMethod(commande,"getvis","ssiii",mfc,mcs,ioc,*iarg,*mxval);
+        res=PyObject_CallMethod(commande,"getvis","ssiii",mfc,mcs,ioc,*iarg,(int)*mxval);
 
         /*  si le retour est NULL : exception Python a transferer
             normalement a l appelant mais FORTRAN ??? */
         if (res == NULL)MYABORT("erreur dans la partie Python");
 
-        ok = PyArg_ParseTuple(res,"lO",nbval,&tup);
+        ok = PyArg_ParseTuple(res,"iO",&nval,&tup);
         if (!ok)MYABORT("erreur dans la partie Python");
 
-        nval=*nbval;
-        if(*nbval < 0)nval=*mxval;
+        *nbval = (INTEGER)nval;
+        if ( nval < 0 ) nval=(int)*mxval;
         convert(nval,tup,val);
 
         Py_DECREF(res);                /*  decrement sur le refcount du retour */
@@ -1299,20 +1299,20 @@ void DEFSSPPPPP(GETVLS,getvls,_IN char *motfac,_IN STRING_SIZE lfac,
                 MYABORT( "erreur d'utilisation detectee") ;
         }
 
-        ioc=*iocc ;
+        ioc=(int)*iocc ;
         ioc=ioc-1 ;
                                                         ASSERT(commande!=(PyObject*)0);
-        res=PyObject_CallMethod(commande,"getvls","ssiii",mfc,mcs,ioc,*iarg,*mxval);
+        res=PyObject_CallMethod(commande,"getvls","ssiii",mfc,mcs,ioc,(int)*iarg,(int)*mxval);
 
         /*  si le retour est NULL : exception Python a transferer
             normalement a l appelant mais FORTRAN ??? */
         if (res == NULL)MYABORT("erreur dans la partie Python");
 
-        ok = PyArg_ParseTuple(res,"lO",nbval,&tup);
+        ok = PyArg_ParseTuple(res,"iO",&nval,&tup);
         if (!ok)MYABORT("erreur dans la partie Python");
 
-        nval=*nbval;
-        if(*nbval < 0)nval=*mxval;
+        *nbval=(INTEGER)nval;
+        if ( nval < 0 ) nval=(int)*mxval;
         convert(nval,tup,val);
 
         Py_DECREF(res);                /*  decrement sur le refcount du retour */
@@ -1372,10 +1372,10 @@ void DEFSSPPPSP(GETVTX,getvtx,_IN char *motfac,_IN STRING_SIZE lfac,
                 printf( "             mot-cle simple  : %s\n",mcs) ;
                 MYABORT( "erreur d'utilisation detectee") ;
         }
-        ioc=*iocc ;
+        ioc=(int)*iocc ;
         ioc=ioc-1 ;
                                                         ASSERT(commande!=(PyObject*)0);
-        res=PyObject_CallMethod(commande,"getvtx","ssiii",mfc,mcs,ioc,*iarg,*mxval);
+        res=PyObject_CallMethod(commande,"getvtx","ssiii",mfc,mcs,ioc,(int)*iarg,(int)*mxval);
 
         /*  si le retour est NULL : exception Python a transferer
             normalement a l appelant mais FORTRAN ??? */
@@ -1388,13 +1388,12 @@ void DEFSSPPPSP(GETVTX,getvtx,_IN char *motfac,_IN STRING_SIZE lfac,
                 MYABORT("erreur dans la partie Python");
         }
 
-        ok = PyArg_ParseTuple(res,"lO",nbval,&tup);
+        ok = PyArg_ParseTuple(res,"iO",&nval,&tup);
         if (!ok)MYABORT("erreur au decodage d'une chaine dans le module C aster.getvtx");
 
-        nval=*nbval;
-        if(*nbval < 0)nval=*mxval;
-
-        if( nval > 0 ){
+        *nbval=(INTEGER)nval;
+        if ( nval < 0 ) nval=(int)*mxval;
+        if ( nval > 0 ){
                 convertxt(nval,tup,txval,ltx);
         }
 
@@ -1454,20 +1453,20 @@ void DEFSSPPPSP(GETVID,getvid,_IN char *motfac,_IN STRING_SIZE lfac,
                 printf( "             mot-cle simple  : %s\n",mcs) ;
                 MYABORT( "erreur d'utilisation detectee") ;
         }
-        ioc=*iocc ;
+        ioc=(int)*iocc ;
         ioc=ioc-1 ;
                                                         ASSERT(commande!=(PyObject*)0);
-        res=PyObject_CallMethod(commande,"getvid","ssiii",mfc,mcs,ioc,*iarg,*mxval);
+        res=PyObject_CallMethod(commande,"getvid","ssiii",mfc,mcs,ioc,(int)*iarg,(int)*mxval);
 
         /*  si le retour est NULL : exception Python a transferer
             normalement a l appelant mais FORTRAN ??? */
         if (res == NULL)MYABORT("erreur dans la partie Python");
 
-        ok = PyArg_ParseTuple(res,"lO",nbval,&tup);
+        ok = PyArg_ParseTuple(res,"iO",&nval,&tup);
         if (!ok)MYABORT("erreur dans la partie Python");
 
-        nval=*nbval;
-        if(*nbval < 0)nval=*mxval;
+        *nbval=(INTEGER)nval;
+        if ( nval < 0 ) nval=(int)*mxval;
         if ( nval > 0 ){
                 convertxt(nval,tup,txval,ltx);
         }
@@ -1489,10 +1488,7 @@ void DEFPPP(SMCDEL,smcdel,INTEGER *iold,INTEGER *inew,INTEGER *ierusr)
         */
         PyObject *res  = (PyObject*)0 ;
 
-        /*
-           Normalement on doit utiliser l dans le format pour des entiers de type long (INTEGER==long)
-        */
-        res=PyObject_CallMethod(commande,"smcdel","ll",*iold,*inew);
+        res=PyObject_CallMethod(commande,"smcdel","ii",(int)*iold,(int)*inew);
 
         /*
             Si le retour est NULL : une exception a ete levee dans le code Python appele
@@ -1500,7 +1496,7 @@ void DEFPPP(SMCDEL,smcdel,INTEGER *iold,INTEGER *inew,INTEGER *ierusr)
             On produit donc un abort en ecrivant des messages sur la stdout
         */
         if (res == NULL)MYABORT("erreur a l appel de smcdel dans la partie Python");
-        *ierusr=*ierusr+PyInt_AsLong(res);
+        *ierusr = *ierusr + (INTEGER)PyInt_AsLong(res);
         Py_DECREF(res);
 }
 
@@ -1551,10 +1547,10 @@ PyObject * MakeTupleString(long nbval,char *kval,STRING_SIZE lkval,INTEGER *lval
       return PyString_FromStringAndSize(deb, FindLength(deb,len));
    }
    else{
-      PyObject *t=PyTuple_New(nbval);
+      PyObject *t=PyTuple_New((Py_ssize_t)nbval);
       for(i=0;i<nbval;i++){
          if (lval) {
-            len = lval[i];
+            len = (int)lval[i];
          } else {
             len = lkval;
          }
@@ -1584,7 +1580,7 @@ PyObject * MakeListString( long nbval,char *kval,STRING_SIZE lkval )
    */
    int i;
    char *deb=kval;
-   PyObject *l=PyList_New(nbval);
+   PyObject *l=PyList_New((Py_ssize_t)nbval);
    for(i=0;i<nbval;i++){
       if( PyList_SetItem(l,i,PyString_FromStringAndSize(deb,FindLength(deb,lkval)))) {
          Py_DECREF(l);
@@ -1597,25 +1593,25 @@ PyObject * MakeListString( long nbval,char *kval,STRING_SIZE lkval )
 
 
 /* ------------------------------------------------------------------ */
-PyObject * MakeTupleInt(long nbval,long* kval)
+PyObject * MakeTupleInt(long nbval,INTEGER* kval)
 {
    /*
             Entrees:
                nbval nombre d'entiers dans kval
-               kval  tableau de nbval long FORTRAN
+               kval  tableau de nbval INTEGER FORTRAN
             Sorties:
                RETOUR fonction : tuple de int Python de longueur nbval
             Fonction:
-               Convertir un tableau de long FORTRAN en un tuple de int Python de meme longueur
+               Convertir un tableau de INTEGER FORTRAN en un tuple de int Python de meme longueur
    */
    int i;
    if(nbval == 1){
       return PyInt_FromLong(*kval);
    }
    else{
-      PyObject * t=PyTuple_New(nbval);
+      PyObject * t=PyTuple_New((Py_ssize_t)nbval);
       for(i=0;i<nbval;i++){
-         if(PyTuple_SetItem(t,i,PyInt_FromLong(kval[i]))) {
+         if(PyTuple_SetItem(t,i,PyInt_FromLong((long)kval[i]))) {
          Py_DECREF(t);
          return NULL;
          }
@@ -1625,21 +1621,21 @@ PyObject * MakeTupleInt(long nbval,long* kval)
 }
 
 /* ------------------------------------------------------------------ */
-PyObject * MakeListInt(long nbval,long* kval)
+PyObject * MakeListInt(long nbval,INTEGER* kval)
 {
    /*
             Entrees:
                nbval nombre d'entiers dans kval
-               kval  tableau de nbval long FORTRAN
+               kval  tableau de nbval INTEGER FORTRAN
             Sorties:
                RETOUR fonction : liste de int Python de longueur nbval
             Fonction:
-               Convertir un tableau de long FORTRAN en une liste de int Python de meme longueur
+               Convertir un tableau de INTEGER FORTRAN en une liste de int Python de meme longueur
    */
    int i;
-   PyObject *l=PyList_New(nbval);
+   PyObject *l=PyList_New((Py_ssize_t)nbval);
    for(i=0;i<nbval;i++){
-      if (PyList_SetItem(l,i,PyInt_FromLong(kval[i]))) {
+      if (PyList_SetItem(l,i,PyInt_FromLong((long)kval[i]))) {
          Py_DECREF(l);
          return NULL;
       }
@@ -1661,12 +1657,12 @@ PyObject * MakeTupleFloat(long nbval,DOUBLE * kval)
    */
    int i;
    if(nbval == 1){
-      return PyFloat_FromDouble(*kval);
+      return PyFloat_FromDouble((double)*kval);
    }
    else{
-      PyObject * t=PyTuple_New(nbval);
+      PyObject * t=PyTuple_New((Py_ssize_t)nbval);
       for(i=0;i<nbval;i++){
-         if(PyTuple_SetItem(t,i,PyFloat_FromDouble(kval[i]))) {
+         if(PyTuple_SetItem(t,i,PyFloat_FromDouble((double)kval[i]))) {
             Py_DECREF(t);
             return NULL;
          }
@@ -1688,9 +1684,9 @@ PyObject * MakeListFloat(long nbval,DOUBLE * kval)
                Convertir un tableau de double FORTRAN en une liste de float Python de meme longueur
    */
    int i;
-   PyObject *l=PyTuple_New(nbval);
+   PyObject *l=PyTuple_New((Py_ssize_t)nbval);
    for(i=0;i<nbval;i++){
-      if(PyList_SetItem(l,i,PyFloat_FromDouble(kval[i]))) {
+      if(PyList_SetItem(l,i,PyFloat_FromDouble((double)kval[i]))) {
          Py_DECREF(l);
          return NULL;
       }
@@ -1713,7 +1709,7 @@ void STDCALL(PUTVIR,putvir) (_IN INTEGER *ival)
    */
    PyObject *res = (PyObject*)0 ;
 
-   res = PyObject_CallMethod(commande,"putvir","i",*ival);
+   res = PyObject_CallMethod(commande,"putvir","i",(int)*ival);
    /*
          Si le retour est NULL : une exception a ete levee dans le code Python appele
          Cette exception est a transferer normalement a l appelant mais FORTRAN ???
@@ -1754,7 +1750,7 @@ void DEFSSP(GCUCON,gcucon, _IN char *resul, STRING_SIZE lresul,
    if (res == NULL)
             MYABORT("erreur a l appel de gcucon dans la partie Python");
 
-   *ier = PyInt_AsLong(res);
+   *ier = (INTEGER)PyInt_AsLong(res);
    Py_DECREF(res);
 }
 
@@ -1781,7 +1777,7 @@ void DEFPSP(GCUCDT,gcucdt,INTEGER *icmd,char *resul,STRING_SIZE lresul,INTEGER *
                 detruits
         */
         PyObject * res = (PyObject*)0 ;
-        res = PyObject_CallMethod(commande,"gcucon","ls#s",*icmd,resul,lresul,"");
+        res = PyObject_CallMethod(commande,"gcucon","is#s",(int)*icmd,resul,lresul,"");
         /*
            Si le retour est NULL : une exception a ete levee dans le code Python appele
             Cette exception est a transferer normalement a l appelant mais FORTRAN ???
@@ -1790,7 +1786,7 @@ void DEFPSP(GCUCDT,gcucdt,INTEGER *icmd,char *resul,STRING_SIZE lresul,INTEGER *
         if (res == NULL)
                 MYABORT("erreur a l appel de gcucdt dans la partie Python");
 
-        *ier = PyInt_AsLong(res);
+        *ier = (INTEGER)PyInt_AsLong(res);
         /*
                 ier= -1 indique que le concept existe mais d'un autre type. On doit donc
                 retourner 1
@@ -1822,6 +1818,7 @@ void DEFSSPPP(GETTVC,gettvc,_IN char * nom,STRING_SIZE lnom,
         PyObject * res = (PyObject*)0 ;
         PyObject * valeur = (PyObject*)0 ;
         int ok=0;
+        int iret;
         *ier=0;
         res = PyObject_CallMethod(commande,"gettvc","s#",nom,lnom);
         /*
@@ -1832,14 +1829,15 @@ void DEFSSPPP(GETTVC,gettvc,_IN char * nom,STRING_SIZE lnom,
         if (res == NULL)
                 MYABORT("erreur a l appel de gettvc dans la partie Python");
 
-        ok=PyArg_ParseTuple(res, "lO",ier,&valeur);
+        ok=PyArg_ParseTuple(res, "iO",&iret,&valeur);
+        *ier=(INTEGER)iret;
         if(!ok)MYABORT("erreur dans gettvc_ ");
         if(PyInt_Check(valeur)){
-          *ival=PyInt_AsLong(valeur);
+          *ival=(INTEGER)PyInt_AsLong(valeur);
           strncpy(ctyp,"IS  ",4);
         }
         else if(PyFloat_Check(valeur)){
-          *rval=PyFloat_AsDouble(valeur);
+          *rval=(DOUBLE)PyFloat_AsDouble(valeur);
           strncpy(ctyp,"R8  ",4);
         }
         else{
@@ -1869,7 +1867,7 @@ void DEFP(GCECDU,gcecdu, INTEGER *numint)
         if (res == NULL)
                 MYABORT("erreur a l appel de gcecdu dans la partie Python");
 
-        *numint = PyInt_AsLong(res);
+        *numint = (INTEGER)PyInt_AsLong(res);
         Py_DECREF(res);
 }
 
@@ -1975,17 +1973,21 @@ PyObject *args;
         char *ktype;
         char *groups;
         PyObject *list;
-        INTEGER nval=0;
+        int inval=0;
+        INTEGER nval;
         int long_nomcham=8;
-        INTEGER itopo;
+        int itopo;
+        INTEGER topo;
         void *malloc(size_t size);
 
-        if (!PyArg_ParseTuple(args, "sssslO:prepcompcham",&nomce,&nomcs,&nomcmp,&ktype,&itopo,&list)) return NULL;
+        if (!PyArg_ParseTuple(args, "ssssiO:prepcompcham",&nomce,&nomcs,&nomcmp,&ktype,&itopo,&list)) return NULL;
 
-        nval=PyList_Size(list);
-        if (nval > 0) {
-          groups = (char *)malloc(nval*long_nomcham*sizeof(char));
-          converltx(nval,list,groups,long_nomcham); /* conversion  */
+        inval=PyList_Size(list);
+        nval=(INTEGER)inval;
+        topo=(INTEGER)itopo;
+        if (inval > 0) {
+          groups = (char *)malloc(inval*long_nomcham*sizeof(char));
+          converltx(inval,list,groups,long_nomcham); /* conversion  */
         }
         /* on ne peut passer a fortran une chaine non allouee
            a cause du strlen() que l'on va faire dessus au moment du passage
@@ -1994,12 +1996,11 @@ PyObject *args;
         else {
           groups = (char *)malloc(long_nomcham*sizeof(char));
           BLANK(groups, long_nomcham);
-          
         }
 
         try(1){
           CALL_JEMARQ();
-          CALL_PRCOCH(nomce,nomcs,nomcmp,ktype,&itopo,&nval,groups);
+          CALL_PRCOCH(nomce,nomcs,nomcmp,ktype,&topo,&nval,groups);
           Py_INCREF( Py_None ) ;
           CALL_JEDEMA();
           free(groups);
@@ -2031,29 +2032,28 @@ PyObject *args;
         INTEGER *l;
         INTEGER4 *i4;
         char *kvar;
-        PyObject *tup;
+        PyObject *tup=NULL;
         INTEGER lcon, iob;
-        INTEGER ishf=0;
-        INTEGER ilng=0;
+        int ishf=0, ilng=0;
+        INTEGER shf;
+        INTEGER lng;
         INTEGER ctype=0;
         int i, ksize=0;
         char *iaddr;
 
-        if (!PyArg_ParseTuple(args, "s|ll:getvectjev",&nomsd,&ishf,&ilng)) return NULL;
+        if (!PyArg_ParseTuple(args, "s|ii:getvectjev",&nomsd,&ishf,&ilng)) return NULL;
         nomsd32[32] = '\0';
         CSTRING_FCPY(nomsd32, 32, nomsd);
         nomob[8] = '\0';
+        shf = (INTEGER)ishf;
+        lng = (INTEGER)ilng;
 
         try(1){
           iob=0 ;
           CALL_JEMARQ();
-          CALL_GETCON(nomsd32,&iob,&ishf,&ilng,&ctype,&lcon,&iaddr,nomob);
+          CALL_GETCON(nomsd32,&iob,&shf,&lng,&ctype,&lcon,&iaddr,nomob);
           if(ctype < 0){
-            /* Erreur */
-/*            PyErr_SetString(PyExc_KeyError, "Concept inexistant");
-            CALL_JEDEMA();
-            return NULL;*/
-            /* vecteur jeveux inexistant : retourne None */
+            /* Erreur : vecteur jeveux inexistant, on retourne None */
             Py_INCREF( Py_None ) ;
             CALL_JEDEMA();
             return Py_None;
@@ -2065,33 +2065,33 @@ PyObject *args;
           else if(ctype == 1){
             /* REEL */
             f = (DOUBLE *)iaddr;
-            tup = PyTuple_New( lcon ) ;
+            tup = PyTuple_New( (Py_ssize_t)lcon ) ;
             for(i=0;i<lcon;i++){
-               PyTuple_SetItem( tup, i, PyFloat_FromDouble(f[i]) ) ;
+               PyTuple_SetItem( tup, i, PyFloat_FromDouble((double)f[i]) ) ;
             }
           }
           else if(ctype == 2){
             /* ENTIER */
             l = (INTEGER*)iaddr;
-            tup = PyTuple_New( lcon ) ;
+            tup = PyTuple_New( (Py_ssize_t)lcon ) ;
             for(i=0;i<lcon;i++){
-               PyTuple_SetItem( tup, i, PyInt_FromLong(l[i]) ) ;
+               PyTuple_SetItem( tup, i, PyInt_FromLong((long)l[i]) ) ;
             }
           }
           else if(ctype == 9){
             /* ENTIER COURT */
             i4 = (INTEGER4*)iaddr;
-            tup = PyTuple_New( lcon ) ;
+            tup = PyTuple_New( (Py_ssize_t)lcon ) ;
             for(i=0; i<lcon; i++){
-               PyTuple_SetItem( tup, i, PyInt_FromLong(i4[i]) ) ;
+               PyTuple_SetItem( tup, i, PyInt_FromLong((long)i4[i]) ) ;
             }
           }
           else if(ctype == 3){
             /* COMPLEXE */
             f = (DOUBLE *)iaddr;
-            tup = PyTuple_New( lcon ) ;
+            tup = PyTuple_New( (Py_ssize_t)lcon ) ;
             for(i=0;i<lcon;i++){
-               PyTuple_SetItem( tup, i, PyComplex_FromDoubles(f[2*i],f[2*i+1]) ) ;
+               PyTuple_SetItem( tup, i, PyComplex_FromDoubles((double)f[2*i], (double)f[2*i+1]) ) ;
             }
           }
           else if (ctype == 4 || ctype == 5 || ctype == 6 || ctype == 7 || ctype == 8) {
@@ -2103,7 +2103,7 @@ PyObject *args;
                     case 8 : ksize = 80; break;
                 }
                 /* CHAINE DE CARACTERES */
-                tup = PyTuple_New( lcon ) ;
+                tup = PyTuple_New( (Py_ssize_t)lcon ) ;
                 for(i=0; i<lcon; i++){
                    kvar = iaddr + i*ksize;
                    PyTuple_SetItem( tup, i, PyString_FromStringAndSize(kvar, ksize) ) ;
@@ -2140,7 +2140,7 @@ PyObject *args;
         INTEGER *l;
         INTEGER4 *i4;
         char *kvar;
-        PyObject *tup, *dico, *key;
+        PyObject *tup=NULL, *dico, *key;
         INTEGER iob,j,ishf,ilng;
         INTEGER lcon;
         INTEGER ctype=0;
@@ -2170,7 +2170,7 @@ PyObject *args;
                 ilng=0 ;
                 CALL_GETCON(nomsd32,&j,&ishf,&ilng,&ctype,&lcon,&iaddr,nomob);
                 if(nomob[0] == ' '){
-                    key=PyInt_FromLong(j);
+                    key=PyInt_FromLong( (long)j );
                 }
                 else {
                     key=PyString_FromStringAndSize(nomob,8);
@@ -2187,36 +2187,36 @@ PyObject *args;
                 else if(ctype == 1){
                     /* REEL */
                     f = (DOUBLE *)iaddr;
-                    tup = PyTuple_New( lcon ) ;
+                    tup = PyTuple_New( (Py_ssize_t)lcon ) ;
                     for(i=0;i<lcon;i++){
-                       PyTuple_SetItem( tup, i, PyFloat_FromDouble(f[i]) ) ;
+                       PyTuple_SetItem( tup, i, PyFloat_FromDouble((double)f[i]) ) ;
                     }
                     PyDict_SetItem(dico,key,tup);
                 }
                 else if(ctype == 2){
                     /* ENTIER */
                     l = (INTEGER*)iaddr;
-                    tup = PyTuple_New( lcon ) ;
+                    tup = PyTuple_New( (Py_ssize_t)lcon ) ;
                     for(i=0;i<lcon;i++){
-                       PyTuple_SetItem( tup, i, PyInt_FromLong(l[i]) ) ;
+                       PyTuple_SetItem( tup, i, PyInt_FromLong((long)l[i]) ) ;
                     }
                     PyDict_SetItem(dico,key,tup);
                 }
                 else if(ctype == 9){
                     /* ENTIER COURT */
                     i4 = (INTEGER4*)iaddr;
-                    tup = PyTuple_New( lcon ) ;
+                    tup = PyTuple_New( (Py_ssize_t)lcon ) ;
                     for(i=0; i<lcon; i++){
-                       PyTuple_SetItem( tup, i, PyInt_FromLong(i4[i]) ) ;
+                       PyTuple_SetItem( tup, i, PyInt_FromLong((long)i4[i]) ) ;
                     }
                     PyDict_SetItem(dico,key,tup);
                 }
                 else if(ctype == 3){
                     /* COMPLEXE */
                     f = (DOUBLE *)iaddr;
-                    tup = PyTuple_New( lcon ) ;
+                    tup = PyTuple_New( (Py_ssize_t)lcon ) ;
                     for(i=0;i<lcon;i++){
-                       PyTuple_SetItem( tup, i, PyComplex_FromDoubles(f[2*i],f[2*i+1]) ) ;
+                       PyTuple_SetItem( tup, i, PyComplex_FromDoubles((double)f[2*i], (double)f[2*i+1]) ) ;
                     }
                     PyDict_SetItem(dico,key,tup);
                 }
@@ -2229,7 +2229,7 @@ PyObject *args;
                         case 8 : ksize = 80; break;
                     }
                     /* CHAINE DE CARACTERES */
-                    tup = PyTuple_New( lcon ) ;
+                    tup = PyTuple_New( (Py_ssize_t)lcon ) ;
                     for(i=0; i<lcon; i++){
                        kvar = iaddr + i*ksize;
                        PyTuple_SetItem( tup, i, PyString_FromStringAndSize(kvar, ksize) ) ;
@@ -2262,8 +2262,8 @@ Renvoie le contenu d'un objet python dans un vecteur jeveux.\n\
 \
     nomsd   : nom du vecteur jeveux\n\
     nbval   : nombre de valeurs\n\
-    indices : indices dans le vecteur (commence à 1, de longueur nbval)\n\
-    reel    : valeurs réelles ou parties réelles en cas de complexes (de longueur nbval)\n\
+    indices : indices dans le vecteur (commence a 1, de longueur nbval)\n\
+    reel    : valeurs reelles ou parties reelles en cas de complexes (de longueur nbval)\n\
     imag    : parties imaginaires en cas de complexes (de longueur nbval)\n\
     num     : 1.\n\
 ";
@@ -2280,23 +2280,24 @@ PyObject *args;
         DOUBLE *valr;
         DOUBLE *valc;
         INTEGER *ind;
+        int nind, inum;
         INTEGER num;
         INTEGER nbind;
-        unsigned int nind  = 0 ;
         int ok        = 0 ;
         INTEGER iret=0;
         void *malloc(size_t size);
     
-        ok = PyArg_ParseTuple(args, "slOOOl",&nomsd,&nbind,&tupi,&tupr,&tupc,&num);
+        ok = PyArg_ParseTuple(args, "siOOOi",&nomsd,&nind,&tupi,&tupr,&tupc,&inum);
         if (!ok)MYABORT("erreur dans la partie Python");
         nomsd32[32] = '\0';
         CSTRING_FCPY(nomsd32, 32, nomsd);
 
-        nind = (unsigned int)(nbind);
-
-        ind = (INTEGER *)malloc((nind)*sizeof(INTEGER));
-        valr = (DOUBLE *)malloc((nind)*sizeof(DOUBLE));
-        valc = (DOUBLE *)malloc((nind)*sizeof(DOUBLE));
+        nbind=(INTEGER)nind;
+        num=(INTEGER)inum;
+        
+        ind = (INTEGER *)malloc((size_t)nind*sizeof(INTEGER));
+        valr = (DOUBLE *)malloc((size_t)nind*sizeof(DOUBLE));
+        valc = (DOUBLE *)malloc((size_t)nind*sizeof(DOUBLE));
 
         if ( nind>0 ){
                  convert(nind,tupi,ind);
@@ -2346,23 +2347,23 @@ PyObject *args;
         DOUBLE *valr;
         DOUBLE *valc;
         INTEGER *ind;
+        int nind, inum;
         INTEGER num;
         INTEGER nbind;
-        unsigned int nind  = 0 ;
         int ok        = 0 ;
         INTEGER iret=0;
         void *malloc(size_t size);
 
-        ok = PyArg_ParseTuple(args, "slOOOl",&nomsd,&nbind,&tupi,&tupr,&tupc,&num);
+        ok = PyArg_ParseTuple(args, "siOOOi",&nomsd,&nind,&tupi,&tupr,&tupc,&inum);
         if (!ok)MYABORT("erreur dans la partie Python");
         nomsd32[32] = '\0';
         CSTRING_FCPY(nomsd32, 32, nomsd);
+        nbind=(INTEGER)nind;
+        num=(INTEGER)inum;
 
-        nind = (unsigned int)(nbind);
-
-        ind = (INTEGER *)malloc((nind)*sizeof(INTEGER));
-        valr = (DOUBLE *)malloc((nind)*sizeof(DOUBLE));
-        valc = (DOUBLE *)malloc((nind)*sizeof(DOUBLE));
+        ind = (INTEGER *)malloc((size_t)nind*sizeof(INTEGER));
+        valr = (DOUBLE *)malloc((size_t)nind*sizeof(DOUBLE));
+        valc = (DOUBLE *)malloc((size_t)nind*sizeof(DOUBLE));
 
         if ( nind>0 ){
                  convert(nind,tupi,ind);
@@ -2429,8 +2430,9 @@ PyObject *args;
    char *nomsd, *mode, *liscmp, *nom, nomsd32[33], *cmp;
    char *kval, *kvar;
    char nomch[16], nomva[16];
-   int i, lo, icode, ctype, ksize, ksizemax=80;
-   PyObject *dico, *liste, *key;
+   int i, lo, ksize=0, ksizemax=80, inbord;
+   INTEGER icode, ctype;
+   PyObject *dico=NULL, *liste, *key;
    char blanc[80];
    void *malloc(size_t size);
 
@@ -2452,21 +2454,23 @@ PyObject *args;
    nbchmx = val[0];
    nbpamx = val[1];
    nbord  = val[2];
+   inbord = (int)nbord;
 
    if (strcmp(mode,"CHAMPS") == 0 || strcmp(mode,"COMPOSANTES") == 0) {
 /* Construction du dictionnaire : cle d'acces = nom du champ */
-     liord  = (INTEGER *)malloc(nbord*sizeof(INTEGER));
+     liord  = (INTEGER *)malloc(inbord*sizeof(INTEGER));
      liscmp = (char *)malloc(500*8*sizeof(char));
      dico = PyDict_New();
      for (numch=1; numch<=nbchmx; numch++) {
        CALL_RSACCH(nomsd32, &numch, nomch, &nbord, liord, &nbcmp, liscmp);
+       inbord = (int)nbord;
        lo = 16;
        while (nomch[lo-1] == ' ')  lo--;
        key = PyString_FromStringAndSize(nomch,lo);
        liste = PyList_New(0);
        if (strcmp(mode,"CHAMPS") == 0) {
-              for (i=0; i<nbord; i++)
-                PyList_Append(liste,PyInt_FromLong(liord[i]));
+              for (i=0; i<inbord; i++)
+                PyList_Append(liste,PyInt_FromLong((long)liord[i]));
        }
 
        if (strcmp(mode,"COMPOSANTES") == 0) {
@@ -2492,9 +2496,9 @@ PyObject *args;
             icode = 0;
         }
 /* Extraction des paramètres ou variables d'accès */
-          ival  = (INTEGER *)malloc(nbord*sizeof(INTEGER));
-          rval  = (DOUBLE *)malloc(nbord*sizeof(DOUBLE) );
-          kval  = (char *)malloc(nbord*ksizemax*sizeof(char));
+          ival  = (INTEGER *)malloc(inbord*sizeof(INTEGER));
+          rval  = (DOUBLE *)malloc(inbord*sizeof(DOUBLE) );
+          kval  = (char *)malloc(inbord*ksizemax*sizeof(char));
 
           dico = PyDict_New();
           for (numva=0; numva<=nbpamx; numva++)
@@ -2513,18 +2517,18 @@ PyObject *args;
                 return NULL;
             }
             else if (ctype == 1) {
-                for (i=0; i<nbord; i++) {
+                for (i=0; i<inbord; i++) {
                     if (rval[i] != CALL_R8VIDE() ) {
-                        PyList_Append(liste, PyFloat_FromDouble(rval[i]));
+                        PyList_Append(liste, PyFloat_FromDouble((double)rval[i]));
                     } else {
                         PyList_Append(liste, Py_None);
                     }
                 }
             }
             else if (ctype == 2) {
-                for (i=0; i<nbord; i++) {
+                for (i=0; i<inbord; i++) {
                     if (ival[i] != CALL_ISNNEM() ) {
-                        PyList_Append(liste, PyInt_FromLong(ival[i]));
+                        PyList_Append(liste, PyInt_FromLong((long)ival[i]));
                     } else {
                         PyList_Append(liste, Py_None);
                     }
@@ -2538,7 +2542,7 @@ PyObject *args;
                     case 7 : ksize = 32; break;
                     case 8 : ksize = 80; break;
                 }
-                for (i=0; i<nbord; i++) {
+                for (i=0; i<inbord; i++) {
                     kvar = kval + i*ksizemax;
                     if ( strncmp(kvar, blanc, ksize) != 0 ) {
                         PyList_Append(liste, PyString_FromStringAndSize(kvar, ksize));
@@ -2572,10 +2576,14 @@ PyObject *args;
         PyObject *temp;
         INTEGER jxvrf=1 ; /* FORTRAN_TRUE */
         INTEGER iertot=0 ;
-        INTEGER icmd=0 ;
-        INTEGER ipass=0 ;
+        INTEGER cmd=0 ;
+        INTEGER pass=0 ;
+        int ipass=0, icmd=0, ijxvrf;
 
-        if (!PyArg_ParseTuple(args, "Olll",&temp,&jxvrf,&ipass,&icmd)) return NULL;
+        if (!PyArg_ParseTuple(args, "Oiii",&temp,&ijxvrf,&ipass,&icmd)) return NULL;
+        jxvrf = (INTEGER)ijxvrf;
+        pass = (INTEGER)ipass;
+        cmd = (INTEGER)icmd;
         /* On empile le nouvel appel */
         commande=empile(temp);
 
@@ -2592,10 +2600,10 @@ PyObject *args;
 
         try(1){
                 /*  appel du sous programme expass pour verif ou exec */
-                CALL_EXPASS (&jxvrf,&ipass,&icmd,&iertot);
+                CALL_EXPASS (&jxvrf,&pass,&cmd,&iertot);
                 /* On depile l appel */
                 commande = depile();
-                return PyInt_FromLong(iertot); /*  retour de la fonction oper sous la forme d un entier */
+                return PyInt_FromLong((long)iertot); /*  retour de la fonction oper sous la forme d un entier */
         }
         finally{
                 /* On depile l appel */
@@ -2613,12 +2621,16 @@ PyObject *args;
 {
         PyObject *temp;
         INTEGER ier=0 ;
-        INTEGER icmd=0 ;
+        INTEGER cmd=0 ;
         INTEGER oper=0 ;
-        INTEGER ipass=0 ;
+        INTEGER pass=0 ;
+        int ipass=0, icmd=0, ioper=0;
         char *cmdusr="                                                                          ";
 
-        if (!PyArg_ParseTuple(args, "Olll",&temp,&icmd,&ipass,&oper)) return NULL;
+        if (!PyArg_ParseTuple(args, "Oiii",&temp,&icmd,&ipass,&ioper)) return NULL;
+        pass=(INTEGER)ipass;
+        cmd=(INTEGER)icmd;
+        oper=(INTEGER)ioper;
 
         /* On empile le nouvel appel */
         commande=empile(temp);
@@ -2635,10 +2647,10 @@ PyObject *args;
 
         try(1){
                 /*  appel du sous programme opsexe */
-                CALL_OPSEXE (&icmd,&ipass,&oper,cmdusr,&ier);
+                CALL_OPSEXE (&cmd,&pass,&oper,cmdusr,&ier);
                 /* On depile l appel */
                 commande = depile();
-                return PyInt_FromLong(ier); /*  retour de la fonction oper sous la forme d un entier */
+                return PyInt_FromLong((long)ier); /*  retour de la fonction oper sous la forme d un entier */
         }
         finally{
                 /* On depile l appel */
@@ -2696,7 +2708,7 @@ INTEGER DEFS(JDCGET,jdcget,char *attr, STRING_SIZE l_attr)
    if (!PyInt_Check(val))
       MYABORT("Seuls les attributs de type entier peuvent etre recuperes !");
 
-   value = PyInt_AsLong(val);
+   value = (INTEGER)PyInt_AsLong(val);
 
    Py_XDECREF(jdc);
    Py_XDECREF(val);
@@ -2716,7 +2728,7 @@ void DEFSP(JDCSET,jdcset,char *attr, STRING_SIZE l_attr, INTEGER *value)
    if (jdc == NULL)
       MYABORT("Impossible de recuperer l'attribut 'jdc' !");
 
-   res = PyObject_CallMethod(jdc, "set_jdc_attr", "s#l", attr, l_attr, *value);
+   res = PyObject_CallMethod(jdc, "set_jdc_attr", "s#i", attr, l_attr, (int)*value);
    if (res == NULL)
       MYABORT("erreur dans JDCSET");
 
@@ -2764,7 +2776,7 @@ PyObject *args;
       INTEGER lng=0;
       char tmp[16+1];
       char *comport;
-      PyObject *res;
+      PyObject *res=NULL;
 
       BLANK(tmp, 16);
       tmp[16] = '\0';
@@ -2772,7 +2784,7 @@ PyObject *args;
       if (!PyArg_ParseTuple(args, "|s#:onFatalError",&comport ,&len)) return NULL;
       if (len == -1 || len == 0) {
             CALL_ONERRF(" ", tmp, &lng);
-            res = PyString_FromStringAndSize(tmp, (int)lng);
+            res = PyString_FromStringAndSize(tmp, (Py_ssize_t)lng);
 
       } else if (strcmp(comport,"ABORT")==0 || strcmp(comport, "EXCEPTION")==0 || strcmp(comport, "EXCEPTION+VALID")==0 || strcmp(comport, "INIT")==0) {
             CALL_ONERRF(comport, tmp, &lng);
@@ -2795,9 +2807,11 @@ PyObject *args;
         char *name;
         char *acces;
         char *autor;
-        INTEGER unit=0 ;
+        int iunit=0;
+        INTEGER unit ;
 
-        if (!PyArg_ParseTuple(args, "ssssl:ulopen",&fichie,&name,&acces,&autor,&unit)) return NULL;
+        if (!PyArg_ParseTuple(args, "ssssi:ulopen",&fichie,&name,&acces,&autor,&iunit)) return NULL;
+        unit=(INTEGER)iunit;
         CALL_ULOPEN (&unit,fichie,name,acces,autor);
 
         Py_INCREF( Py_None ) ;
@@ -2810,9 +2824,11 @@ static PyObject * aster_fclose(self, args)
 PyObject *self; /* Not used */
 PyObject *args;
 {
-        INTEGER unit=0 ;
+        int iunit=0;
+        INTEGER unit ;
 
-        if (!PyArg_ParseTuple(args, "l:fclose",&unit)) return NULL;
+        if (!PyArg_ParseTuple(args, "i:fclose",&iunit)) return NULL;
+        unit=(INTEGER)iunit;
         CALL_FCLOSE (&unit);
 
         Py_INCREF( Py_None ) ;
@@ -2834,7 +2850,7 @@ PyObject *args;
         BLANK(nom,128);
         nom[128]='\0';
         CALL_REPOUT (&maj,&lnom,nom);
-        temp= PyString_FromStringAndSize(nom,FindLength(nom,lnom));
+        temp= PyString_FromStringAndSize(nom,FindLength(nom, (Py_ssize_t)lnom));
         return temp;
 }
 
@@ -2852,7 +2868,7 @@ PyObject *args;
         BLANK(nom,128);
         nom[128]='\0';
         CALL_REPDEX (&maj,&lnom,nom);
-        temp= PyString_FromStringAndSize(nom,FindLength(nom,lnom));
+        temp= PyString_FromStringAndSize(nom,FindLength(nom, (Py_ssize_t)lnom));
         return temp;
 }
 
@@ -2891,6 +2907,7 @@ PyObject *args;
    PyObject *t_nompar, *t_valpar, *t_nomres;
    PyObject *t_valres, *t_codret;
    PyObject *t_res;
+   int inbres, inbpar;
    INTEGER nbpar, nbres;
    char *nompar, *nomres, *codret;
    DOUBLE *valpar, *valres;
@@ -2903,26 +2920,28 @@ PyObject *args;
                   &t_nompar, &t_valpar, &t_nomres, &stop)) return NULL;
 
    /* Conversion en tableaux de chaines et réels */
-   nbpar = PyTuple_Size(t_nompar);
-   nompar = (char *)malloc(long_nompar*nbpar*sizeof(char));
-   convertxt(nbpar, t_nompar, nompar, long_nompar);
+   inbpar = PyTuple_Size(t_nompar);
+   nbpar = (INTEGER)inbpar;
+   nompar = (char *)malloc(long_nompar*inbpar*sizeof(char));
+   convertxt(inbpar, t_nompar, nompar, long_nompar);
 
-   valpar = (DOUBLE *)malloc(nbpar*sizeof(DOUBLE));
-   convr8(nbpar, t_valpar, valpar);
+   valpar = (DOUBLE *)malloc(inbpar*sizeof(DOUBLE));
+   convr8(inbpar, t_valpar, valpar);
 
-   nbres = PyTuple_Size(t_nomres);
-   nomres = (char *)malloc(long_nomres*nbres*sizeof(char));
-   convertxt(nbres, t_nomres, nomres, long_nomres);
+   inbres = PyTuple_Size(t_nomres);
+   nbres = (INTEGER)inbres;
+   nomres = (char *)malloc(long_nomres*inbres*sizeof(char));
+   convertxt(inbres, t_nomres, nomres, long_nomres);
 
    /* allocation des variables de sortie */
-   valres = (DOUBLE *)malloc(nbres*sizeof(DOUBLE));
-   codret = (char *)malloc(long_codret*nbres*sizeof(char));
+   valres = (DOUBLE *)malloc(inbres*sizeof(DOUBLE));
+   codret = (char *)malloc(long_codret*inbres*sizeof(char));
 
    CALL_RCVALE(nommat, phenom, &nbpar, nompar, valpar, &nbres, nomres, valres, codret, stop);
 
    /* création des tuples de sortie */
-   t_valres = MakeTupleFloat(nbres, valres);
-   t_codret = MakeTupleString(nbres, codret, long_codret, NULL);
+   t_valres = MakeTupleFloat((long)inbres, valres);
+   t_codret = MakeTupleString((long)inbres, codret, long_codret, NULL);
 
    /* retour de la fonction */
    t_res = PyTuple_New(2);
@@ -2977,7 +2996,7 @@ PyObject *args;
 
     CALL_DISMOI(codme1, question32, concept32, typeconcept32, &repi, repk, &iret);
 
-    return Py_BuildValue("lls", iret, repi, repk);
+   return Py_BuildValue("iis", (int)iret, (int)repi, repk);
 }
 
 /* ---------------------------------------------------------------------- */
@@ -2991,11 +3010,13 @@ static PyObject * aster_matfpe(self, args)
 PyObject *self; /* Not used */
 PyObject *args;
 {
-   long actif;
+   int iactif;
+   INTEGER actif;
 
-   if (!PyArg_ParseTuple(args, "l:matfpe", &actif)) return NULL;
+   if (!PyArg_ParseTuple(args, "i:matfpe", &iactif)) return NULL;
 
-   if (actif >= -1  && actif <= 1) {
+   if (iactif >= -1  && iactif <= 1) {
+      actif = (INTEGER)iactif;
       CALL_MATFPE(&actif);
    } else {
       MYABORT("Valeur incorrecte : seuls -1 et 1 sont valides.");
@@ -3022,7 +3043,7 @@ PyObject *args;
         BLANK(n1,8);strncpy(n1,nomast,lon1);
         CALL_MDNOMA (nomamd,&lnomam,n1,&codret);
 
-        temp= PyString_FromStringAndSize(nomamd,FindLength(nomamd,lnomam));
+        temp= PyString_FromStringAndSize(nomamd,FindLength(nomamd, (Py_ssize_t)lnomam));
         return temp;
 }
 
@@ -3034,6 +3055,7 @@ PyObject *args;
       PyObject *temp = (PyObject*)0 ;
       INTEGER lnochm=0;
       INTEGER lresu ;
+      int ilresu;
       char *noresu;
       char *nomsym;
       char *nopase;
@@ -3041,14 +3063,15 @@ PyObject *args;
       int lon1,lon2,lon3;
       char nochmd[33],n1[33],n2[17],n3[9];
 
-      if (!PyArg_ParseTuple(args, "ls#s#s#",&lresu,&noresu,&lon1,&nomsym,&lon2,&nopase,&lon3)) return NULL;
+      if (!PyArg_ParseTuple(args, "is#s#s#",&ilresu,&noresu,&lon1,&nomsym,&lon2,&nopase,&lon3)) return NULL;
       BLANK(nochmd,32);
       nochmd[32]='\0';
       BLANK(n1,32);strncpy(n1,noresu,lon1);
       BLANK(n2,16);strncpy(n2,nomsym,lon2);
       BLANK(n3,8); strncpy(n3,nopase,lon3);
+      lresu = (INTEGER)ilresu;
       CALL_MDNOCH (nochmd,&lnochm,&lresu,n1,n2,n3,&codret);
-      temp= PyString_FromStringAndSize(nochmd,FindLength(nochmd,lnochm));
+      temp= PyString_FromStringAndSize(nochmd,FindLength(nochmd, (Py_ssize_t)lnochm));
       return temp;
 }
 
@@ -3080,23 +3103,23 @@ int RecupNomCas(void)
    INTEGER *iarg       = (INTEGER*)&un ;
    INTEGER *mxval      = (INTEGER*)&un ;
    INTEGER nbval       = 1 ;
-   int ltx       = 8 ;
-   INTEGER longueur[1] ;
+   int lng;
+   INTEGER longueur;
    void *malloc(size_t size);
                                                    ASSERT(commande!=(PyObject*)0);
-   CALL_GETLTX ( "CODE","NOM",iocc,iarg,mxval, longueur ,&nbval) ;
+   CALL_GETLTX ( "CODE","NOM",iocc,iarg,mxval, &longueur ,&nbval) ;
+   lng = (int)longueur;
    if(nbval == 0){
       /* Le mot cle NOM n'a pas ete fourni on donne un nom
          par defaut au nom du cas */
       NomCas = strdup("??????");
    }
    else if(nbval > 0){
-                                                   ASSERT(longueur[0]>0);
-      NomCas = (char*)(malloc((longueur[0]+1)*sizeof(char))) ;
-      BLANK(NomCas,longueur[0]); /* initialisation a blanc */
-      NomCas[longueur[0]]='\0';
+                                                   ASSERT(lng>0);
+      NomCas = (char*)(malloc((lng+1)*sizeof(char))) ;
+      BLANK(NomCas, lng); /* initialisation a blanc */
+      NomCas[lng]='\0';
                                                    ASSERT(NomCas!=(char*)0);
-      ltx = longueur[0];
       CALL_GETVTX ( "CODE","NOM",iocc,iarg,mxval, NomCas ,&nbval) ;
    }
    else{
@@ -3118,14 +3141,16 @@ PyObject *args;
         */
         PyObject *temp = (PyObject*)0 ;
         PyObject *concepts = (PyObject*)0 ;
-        INTEGER ipass=0;
+        int ipass=0;
+        INTEGER pass;
         INTEGER lot=1 ; /* FORTRAN_TRUE */
         INTEGER ier=0 ;
         INTEGER lonuti=0 ;
         static int nbPassages=0 ;
                                                                 ASSERT((nbPassages==1)||(commande==(PyObject*)0));
         nbPassages++ ;
-        if (!PyArg_ParseTuple(args, "Ol",&temp,&ipass)) return NULL;
+        if (!PyArg_ParseTuple(args, "Oi",&temp,&ipass)) return NULL;
+        pass = (INTEGER)ipass;
 
         /* On empile le nouvel appel */
         commande=empile(temp);
@@ -3148,14 +3173,14 @@ PyObject *args;
                 /*  contient le nombre de concepts crees dans le      */
                 /*  calcul precedent)                                 */
 
-                CALL_POURSU (&ipass,&ier,&lonuti);
+                CALL_POURSU (&pass,&ier,&lonuti);
 
 
                 /* recuperation de la liste des concepts dans une     */
                 /* string python                                      */
 
-                concepts=PyString_FromStringAndSize(NULL,lonuti*80);
-                CALL_GCCPTS (PyString_AsString(concepts),80);
+                concepts=PyString_FromStringAndSize(NULL, (Py_ssize_t)(lonuti*80) );
+                CALL_GCCPTS (PyString_AsString(concepts), 80);
         }
         finally{
                 /* On depile l appel */
@@ -3181,7 +3206,7 @@ PyObject *args;
 
           /*  retour de la fonction poursu sous la forme
            *  d'un tuple de trois entiers et un objet */
-          return Py_BuildValue("(iiiN)",lot ,ier,lonuti,concepts );
+          return Py_BuildValue("(iiiN)", (int)lot, (int)ier, (int)lonuti, concepts );
         }
 }
 
@@ -3191,13 +3216,15 @@ PyObject *self; /* Not used */
 PyObject *args;
 {
         PyObject *temp = (PyObject*)0 ;
-        INTEGER ipass=0;
+        int ipass=0;
+        INTEGER pass;
         INTEGER lot=1 ; /* FORTRAN_TRUE */
         INTEGER ier=0 ;
         static int nbPassages=0 ;
                                                                 ASSERT((nbPassages==1)||(commande==(PyObject*)0));
         nbPassages++ ;
-        if (!PyArg_ParseTuple(args, "Ol",&temp,&ipass)) return NULL;
+        if (!PyArg_ParseTuple(args, "Oi",&temp,&ipass)) return NULL;
+        pass = (INTEGER)ipass;
 
         /* On empile le nouvel appel */
         commande=empile(temp);
@@ -3214,9 +3241,8 @@ PyObject *args;
         fflush(stdout) ;
 
         try(1){
-                /* appel de la commande debut
-                 * DEBUT ne traite pas lot : argument supprimé */
-                CALL_DEBUT (&ipass,&ier);
+                /*  appel de la commande debut */
+                CALL_DEBUT (&pass,&ier);
         }
         finally{
                 /* On depile l appel */
@@ -3238,7 +3264,7 @@ PyObject *args;
           /* On depile l appel */
           commande = depile();
           /*  retour de la fonction debut sous la forme d un tuple de deux entiers */
-          return Py_BuildValue("(ii)",lot ,ier );
+          return Py_BuildValue("(ii)", (int)lot, (int)ier );
         }
 }
 
@@ -3248,9 +3274,11 @@ PyObject *self; /* Not used */
 PyObject *args;
 {
    INTEGER ier=0 ;
-   INTEGER dbg=0 ; /* FORTRAN_FALSE */
+   int idbg=0;
+   INTEGER dbg ; /* FORTRAN_FALSE */
 
-   if (!PyArg_ParseTuple(args, "l",&dbg)) return NULL;
+   if (!PyArg_ParseTuple(args, "i",&idbg)) return NULL;
+   dbg = (INTEGER)idbg;
 
    /* initialisation de la variable `static_module` */
    static_module = PyImport_ImportModule("Execution.E_Global");
@@ -3266,7 +3294,7 @@ PyObject *args;
    /* jeveux est parti ! */
    jeveux_status = 1;
 
-return PyInt_FromLong(ier);
+return PyInt_FromLong((long)ier);
 }
 
 
@@ -3292,7 +3320,7 @@ static PyObject *jeveux_getobjects( PyObject* self, PyObject* args)
     nmax = 0;
     /* premier appel avec nmax==0 pour connaitre le total */
     CALL_JELST3( base, dummy, &nmax, &total );
-    tmpsize = 24*total*sizeof(char);
+    tmpsize = 24*(int)total*sizeof(char);
     tmp = (char*)malloc( tmpsize+1 );
     memset( tmp, ' ', tmpsize );
     tmp[tmpsize] = 0;
@@ -3300,7 +3328,7 @@ static PyObject *jeveux_getobjects( PyObject* self, PyObject* args)
     /* second appel après allocation mémoire */
     CALL_JELST3( base, tmp, &nmax, &total );
     
-    the_list = PyList_New(total);
+    the_list = PyList_New( (Py_ssize_t)total);
     for( i=0, ptr=tmp; i<total;++i, ptr+=24 ) {
         pystr = PyString_FromStringAndSize( ptr, 24 );
         PyList_SetItem( the_list, i, pystr );
@@ -3323,7 +3351,7 @@ static PyObject *jeveux_getattr( PyObject* self, PyObject* args)
         return NULL;
     CALL_JELIRA( nomobj, attr, &intval, charval );
     
-    return Py_BuildValue( "is", intval, charval );
+    return Py_BuildValue( "is", (int)intval, charval );
 }
 
 
@@ -3367,11 +3395,11 @@ PyObject *args;
    rval = (DOUBLE *)malloc((longueur)*sizeof(DOUBLE));
    CALL_JEINFO(rval);
 
-   tup = PyTuple_New( longueur ) ;
+   tup = PyTuple_New( (Py_ssize_t)longueur ) ;
    for(i=0; i < longueur; i++) {
-      PyTuple_SetItem( tup, i, PyFloat_FromDouble( rval[i] )) ;
+      PyTuple_SetItem( tup, i, PyFloat_FromDouble( (double)rval[i] )) ;
    }
-   free((void *)rval);
+   free((char *)rval);
 
    return tup;
 }
@@ -3396,7 +3424,7 @@ PyObject *args;
     icode = 1;
     CALL_GCUGEN( &icode, nomsd, typsd, oper, &icmdt );
     
-    return PyInt_FromLong( icmdt );
+    return PyInt_FromLong( (long)icmdt );
 }
 
 /* ------------------------------------------------------------------ */
@@ -3488,15 +3516,15 @@ void DEFSSPSSS(PSGEMC,psgemc, _IN  char *nosimp, STRING_SIZE lnosimp,
 
    if (*nbmocl == 0) {
       /* Seul nbmocl est modifié (1er appel) */
-      *nbmocl = PyTuple_Size(tmocl);
+      *nbmocl = (INTEGER)PyTuple_Size(tmocl);
    } else {
       /* On remplit les vecteurs limocl, livale, limofa (2ème appel) */
-      if (*nbmocl != PyTuple_Size(tmocl)) {
+      if (*nbmocl != (INTEGER)PyTuple_Size(tmocl)) {
          MYABORT("erreur dans psgemc : nbmocl n'a pas la bonne valeur !");
       }
-      convertxt(*nbmocl, tmocl, limocl, l1);
-      convertxt(*nbmocl, tvale, livale, l2);
-      convertxt(*nbmocl, tmofa, limofa, l3);
+      convertxt((int)*nbmocl, tmocl, limocl, l1);
+      convertxt((int)*nbmocl, tvale, livale, l2);
+      convertxt((int)*nbmocl, tmofa, limofa, l3);
    }
 
    Py_XDECREF(memo_sensi);
@@ -3556,16 +3584,16 @@ void DEFSPSP(PSINFO,psinfo, _IN  char *nomsd, STRING_SIZE lnomsd,
    result = PyTuple_GetItem(tup2, 1);
    size_result = PyTuple_Size(result);
 
-   *iderive = PyInt_AsLong(indic);
+   *iderive = (INTEGER)PyInt_AsLong(indic);
    if (*nbstse == 0) {
       /* Seul nbstse est modifié (1er appel) */
-      *nbstse = size_result / 2;
+      *nbstse = (INTEGER)size_result / 2;
    } else {
       /* On remplit le vecteur nostnc (2ème appel) */
-      if (*nbstse != size_result / 2) {
+      if (*nbstse != (INTEGER)size_result / 2) {
          MYABORT("erreur dans psinfo : nbstse n'a pas la bonne valeur !");
       }
-      convertxt(size_result, result, nostnc, lnostnc);
+      convertxt((int)size_result, result, nostnc, lnostnc);
    }
 
    Py_XDECREF(memo_sensi);
@@ -3596,7 +3624,7 @@ void DEFPSS(LCCREE, lccree, _IN INTEGER *nbkit,
 
    catalc = GetJdcAttr("catalc");
    /* transforme le tableau de chaines fortran en tuple */
-   tup_kit = MakeTupleString(*nbkit, lkit, llkit, NULL);
+   tup_kit = MakeTupleString((long)*nbkit, lkit, llkit, NULL);
 
    res = PyObject_CallMethod(catalc, "create", "O", tup_kit);
    if (res == NULL) {
@@ -3629,7 +3657,7 @@ void DEFSS(LCALGO, lcalgo, _IN char *compor, STRING_SIZE lcompor,
    catalc = GetJdcAttr("catalc");
    res = PyObject_CallMethod(catalc, "get_algo", "s#", compor, lcompor);
    if (res == NULL) {
-      MYABORT("Echec lors de la recuperation du premier algorithme d'intégration (lcalgo/get_algo) !");
+      MYABORT("Echec lors de la recuperation du premier algorithme d'integration (lcalgo/get_algo) !");
    }
 
    convertxt(1, res, algo, lalgo);
@@ -3657,8 +3685,8 @@ void DEFSPP(LCINFO, lcinfo, _IN char *compor, STRING_SIZE lcompor,
       MYABORT("Echec lors de la recuperation des informations sur le comportement (lcinfo/get_info) !");
    }
 
-   *numlc  = PyInt_AsLong(PyTuple_GetItem(res, 0));
-   *nbvari = PyInt_AsLong(PyTuple_GetItem(res, 1));
+   *numlc  = (INTEGER)PyInt_AsLong(PyTuple_GetItem(res, 0));
+   *nbvari = (INTEGER)PyInt_AsLong(PyTuple_GetItem(res, 1));
 
    Py_XDECREF(res);
    Py_XDECREF(catalc);
@@ -3683,7 +3711,7 @@ void DEFSPS(LCVARI, lcvari, _IN char *compor, STRING_SIZE lcompor,
       MYABORT("Echec lors de la recuperation des noms des variables internes du comportement (lcvari/get_vari) !");
    }
 
-   convertxt(*nbvari, res, nomvar, lnomvar);
+   convertxt((int)*nbvari, res, nomvar, lnomvar);
 
    Py_XDECREF(res);
    Py_XDECREF(catalc);
@@ -3708,7 +3736,7 @@ void DEFSSSP(LCTEST, lctest, _IN char *compor, STRING_SIZE lcompor,
       MYABORT("Echec lors du test d'une propriete du comportement (lctest/query) !");
    }
 
-   *iret = PyInt_AsLong(res);
+   *iret = (INTEGER)PyInt_AsLong(res);
 
    Py_XDECREF(res);
    Py_XDECREF(catalc);
@@ -3819,7 +3847,7 @@ void initvers(PyObject *dict)
     date[16] = '\0';
 
     CALL_VERSIO(&vers,&util,&nivo,date,&exploi);
-    sprintf(rev,"%ld.%ld.%ld",vers,util,nivo);
+    sprintf(rev,"%ld.%ld.%ld", (long)vers, (long)util, (long)nivo);
     PyDict_SetItemString(dict, "__version__", v = PyString_FromString(rev));
     Py_XDECREF(v);
 }
@@ -3837,7 +3865,7 @@ DL_EXPORT(void) initaster()
         PyObject *d = (PyObject*)0 ;
 
         /* Create the module and add the functions */
-        m = Py_InitModule3("aster", aster_methods,aster_module_documentation);
+        m = Py_InitModule3("aster", aster_methods, aster_module_documentation);
 
         /* Add some symbolic constants to the module */
         d = PyModule_GetDict(m);
@@ -3928,6 +3956,6 @@ void DEFP(GETCMC,getcmc,INTEGER *icmc)
         if (res == NULL)
                 MYABORT("erreur a l appel de getcmc dans la partie Python");
 
-        *icmc = PyInt_AsLong(res);
+        *icmc = (INTEGER)PyInt_AsLong(res);
         Py_DECREF(res);
 }

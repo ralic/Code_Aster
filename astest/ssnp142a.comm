@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 31/01/2011   AUTEUR PELLET J.PELLET 
 # TITRE MODELISATION DES SOUS PRESSION D'UN BARRAGE 2D A L'AIDE DES ELEMENT DE JOINT ET DE LA LOI JOINT_MECA_RUPT
 # ssnp142a.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -224,13 +224,13 @@ U_M=CALC_ELEM(reuse =U_M,
 
               RESULTAT=U_M,
               OPTION='VARI_ELNO_ELGA',
-              NOM_CHAM='VARI_ELGA',GROUP_MA='JOINT');
+              GROUP_MA='JOINT');
 
 U_M=CALC_ELEM(reuse =U_M,
 
               RESULTAT=U_M,
               OPTION='SIEF_ELNO',
-              NOM_CHAM='SIEF_ELGA',GROUP_MA='JOINT');
+              GROUP_MA='JOINT');
 
 U_M=CALC_NO(reuse =U_M,
             RESULTAT=U_M,
@@ -261,13 +261,13 @@ U_F=CALC_ELEM(reuse =U_F,
 
               RESULTAT=U_F,
               OPTION='VARI_ELNO_ELGA',
-              NOM_CHAM='VARI_ELGA',GROUP_MA='JOINT');
+              GROUP_MA='JOINT');
 
 U_F=CALC_ELEM(reuse =U_F,
 
               RESULTAT=U_F,
               OPTION='SIEF_ELNO',
-              NOM_CHAM='SIEF_ELGA',GROUP_MA='JOINT');
+              GROUP_MA='JOINT');
 
 U_F=CALC_NO(reuse =U_F,
             RESULTAT=U_F,

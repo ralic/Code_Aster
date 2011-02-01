@@ -2,9 +2,9 @@
       IMPLICIT NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
+C MODIF ALGORITH  DATE 31/01/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -53,7 +53,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       REAL*8 R8B,DEBUT,FIN,PAS,XXX,XPDT,TOLER,DERPAS
-      REAL*8 VALR
+      REAL*8 VALR(3)
       INTEGER IFM,NIV,NV,NBVALE,NDIM,JPAS,JNBP,JBOR,JVAL,KVAL,I
       INTEGER VALI
       INTEGER N1,NBOCC,NSUP,IOCC,NP,NBPAS,NBVAL,IINTER,ICO,J
@@ -109,7 +109,14 @@ C       ---------------------------------------------------------
           IF (NP.EQ.1) THEN
             IF (PAS.EQ.0.D0) CALL U2MESS('F','ALGORITH9_16')
 
-            NBPAS = NINT((FIN-DEBUT)/PAS)
+            XPDT = (FIN-DEBUT)/PAS
+            IF (XPDT.LE.(1.D0-TOLER)) THEN
+              VALR(1) = DEBUT
+              VALR(2) = FIN
+              VALR(3) = PAS
+              CALL U2MESR('F', 'ALGORITH9_15', 3, VALR)
+            ENDIF
+            NBPAS = NINT(XPDT)
             IF (NBPAS.LE.0) CALL U2MESS('F','ALGORITH9_17')
 
             DERPAS = FIN - (DEBUT+ (NBPAS-1)*PAS)
@@ -153,7 +160,7 @@ C             -- CREATION D'UN INTERVALLE SUPPLEMENTAIRE:
               ZR(JBOR-1+IINTER+1) = FIN
               NBVAL = NBVAL + 1
 
-              VALR = PAS
+              VALR(1) = PAS
               VALI = IOCC
               CALL U2MESG('A', 'ALGORITH13_82',0,' ',1,VALI,1,VALR)
 

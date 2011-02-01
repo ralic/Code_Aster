@@ -1,7 +1,7 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF hdfwsv hdf  DATE 19/10/2010   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF hdfwsv hdf  DATE 31/01/2011   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
-/* COPYRIGHT (C) 1991 - 2003  EDF R&D              WWW.CODE-ASTER.ORG */
+/* COPYRIGHT (C) 1991 - 2011  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
 /* THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR      */
 /* MODIFY IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS     */
@@ -34,14 +34,16 @@
 #endif
 #include <stdlib.h>
 
-INTEGER DEFPSSSPSP(HDFWSV, hdfwsv, INTEGER *idf, char *nomg, STRING_SIZE lg, char *nomdts, STRING_SIZE ln, char *type, STRING_SIZE lt, INTEGER *ltype, char *sv, STRING_SIZE toto, INTEGER *lsv)
+INTEGER DEFPSSSPSP(HDFWSV, hdfwsv, INTEGER *idf, char *nomg, STRING_SIZE lg,
+                                   char *nomdts, STRING_SIZE ln, char *type, STRING_SIZE lt,
+                                   INTEGER *ltype, char *sv, STRING_SIZE toto, INTEGER *lsv)
 {
 #ifndef _DISABLE_HDF5
   hid_t idfic,datatype,dataspace,dataset,type_id;
   herr_t iret;
   hsize_t dimsf[1];
-  int istat,lg2,lmot;
-  char *nomd,*vtype,*mot,*pmot;
+  int lg2,lmot;
+  char *nomd,*vtype,*mot=NULL,*pmot;
   int k;
   void *malloc(size_t size);
   
@@ -75,22 +77,22 @@ INTEGER DEFPSSSPSP(HDFWSV, hdfwsv, INTEGER *idf, char *nomg, STRING_SIZE lg, cha
 /*
  *   Type à déterminer en fonction de l'argument type 
 */
-  dimsf[0] = *lsv;
-  if        ((istat=strcmp(vtype,"R"))==0) {
+  dimsf[0] = (hsize_t)*lsv;
+  if        (strcmp(vtype,"R") == 0) {
     type_id = H5T_NATIVE_DOUBLE; 
-  } else if ((istat=strcmp(vtype,"C"))==0) {    
+  } else if (strcmp(vtype,"C") == 0) {    
     type_id = H5T_NATIVE_DOUBLE; 
-    dimsf[0] = *lsv;
-  } else if ((istat=strcmp(vtype,"I"))==0) {    
+    dimsf[0] = (hsize_t)*lsv;
+  } else if (strcmp(vtype,"I") == 0) {    
     type_id = H5T_NATIVE_LONG; 
-  } else if ((istat=strcmp(vtype,"S"))==0) {    
+  } else if (strcmp(vtype,"S") == 0) {    
     type_id = H5T_NATIVE_INT; 
-  } else if ((istat=strcmp(vtype,"L"))==0) {    
+  } else if (strcmp(vtype,"L") == 0) {    
     type_id = H5T_NATIVE_HBOOL; 
-  } else if ((istat=strcmp(vtype,"K"))==0) {    
+  } else if (strcmp(vtype,"K") == 0) {    
     type_id = H5T_FORTRAN_S1; 
     pmot = (char *) sv;
-    lmot = *lsv*(*ltype);
+    lmot = (int)( *lsv * (*ltype));
     mot = (char *) malloc(lmot*sizeof(char));
     for (k=0;k<*lsv;k++) {
         mot[k] = *pmot;
@@ -99,10 +101,10 @@ INTEGER DEFPSSSPSP(HDFWSV, hdfwsv, INTEGER *idf, char *nomg, STRING_SIZE lg, cha
   } else {
     return -1 ;
   }     
-  if ((istat=strcmp(vtype,"K"))==0) { 
+  if (type_id == H5T_FORTRAN_S1) { 
     if ((datatype = H5Tcopy(type_id))<0 )   
       return -1 ;
-    if ((istat=strcmp(vtype,"K"))==0) {
+    if (type_id == H5T_FORTRAN_S1) {
       if ((iret = H5Tset_size(datatype,*ltype)) <0 ) return -1; 
       if ((iret = H5Tset_strpad(datatype, H5T_STR_SPACEPAD)) <0 ) return -1;  
     }
@@ -120,14 +122,14 @@ INTEGER DEFPSSSPSP(HDFWSV, hdfwsv, INTEGER *idf, char *nomg, STRING_SIZE lg, cha
     return -1 ;
   if ((iret = H5Sclose(dataspace))<0 )
     return -1 ;
-  if ((istat=strcmp(vtype,"K"))==0) { 
+  if (type_id == H5T_FORTRAN_S1) { 
     if ((iret = H5Tclose(datatype))<0 )
       return -1 ;
   }  
 
   free(nomd);
   free(vtype);
-  if ((istat=strcmp(vtype,"K"))==0) { free(mot);}
+  if (type_id == H5T_FORTRAN_S1) { free(mot);}
 #else
   CALL_U2MESS("F", "FERMETUR_3");
 #endif

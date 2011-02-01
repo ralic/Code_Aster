@@ -1,7 +1,7 @@
-#& MODIF COMMANDE  DATE 23/11/2010   AUTEUR COURTOIS M.COURTOIS 
+#& MODIF COMMANDE  DATE 01/02/2011   AUTEUR MASSIN P.MASSIN 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -76,7 +76,7 @@ DEFI_LIST_INST=OPER(nom="DEFI_LIST_INST",op=  28,sd_prod=list_inst,reentrant='n'
 
     ECHEC  =FACT(statut='d',max='**',
 
-        EVENEMENT     =SIMP(statut='f',typ='TXM',into=("ERREUR","DELTA_GRANDEUR"),defaut="ERREUR",max=1 ),
+        EVENEMENT     =SIMP(statut='f',typ='TXM',into=("ERREUR","DELTA_GRANDEUR","DIVE_ITER_PILO"),defaut="ERREUR",max=1 ),
 
         b_edelta           =BLOC(condition = "EVENEMENT == 'DELTA_GRANDEUR' ",fr=" ",
 #      event-driven : on sous-decoupe si l'increment d'une composante d'un champ depasse le seuil

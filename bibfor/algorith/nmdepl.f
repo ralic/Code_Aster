@@ -7,7 +7,7 @@
      &                  CONV  )
 C     
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 17/01/2011   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 01/02/2011   AUTEUR MASSIN P.MASSIN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -170,9 +170,10 @@ C
         IF (LPILO) THEN
           CALL NMPICH(MODELE,NUMEDD,MATE  ,CARELE,COMREF,
      &                COMPOR,LISCHA,CARCRI,FONACT,DEFICO,
-     &                SDPILO,ITERAT,SDNUME,DELTAT,VALINC,
-     &                SOLALG,VEELEM,VEASSE,SDTIME,ETA   ,
-     &                RHO   ,OFFSET,LDCCVG,PILCVG)
+     &                RESOCO,SDPILO,ITERAT,SDNUME,DELTAT,
+     &                VALINC,SOLALG,VEELEM,VEASSE,SDTIME,
+     &                SDDISC,ETA   ,RHO   ,OFFSET,LDCCVG,
+     &                PILCVG)
           IF (PILCVG .EQ. 1) THEN
             GOTO 9999
           ENDIF             
@@ -185,9 +186,10 @@ C
           CALL NMREPL(MODELE,NUMEDD,MATE  ,CARELE,COMREF,
      &                COMPOR,LISCHA,PARMET,CARCRI,FONACT,
      &                ITERAT,SDPILO,SDNUME,SDDYNA,METHOD,
-     &                DEFICO,DELTAT,VALINC,SOLALG,VEELEM,
-     &                VEASSE,SDTIME,ETAN  ,CONV  ,ETA   ,
-     &                RHO   ,OFFSET,LDCCVG,PILCVG)
+     &                DEFICO,RESOCO,DELTAT,VALINC,SOLALG,
+     &                VEELEM,VEASSE,SDTIME,SDDISC,ETAN  ,
+     &                CONV  ,ETA   ,RHO   ,OFFSET,LDCCVG,
+     &                PILCVG)
         ELSE
           CALL NMRELI(MODELE,NUMEDD,MATE  ,CARELE,COMREF,
      &                COMPOR,LISCHA,CARCRI,FONACT,ITERAT,

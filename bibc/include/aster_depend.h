@@ -1,7 +1,7 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF aster_depend include  DATE 19/10/2010   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF aster_depend include  DATE 31/01/2011   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
-/* COPYRIGHT (C) 1991 - 2006  EDF R&D              WWW.CODE-ASTER.ORG */
+/* COPYRIGHT (C) 1991 - 2011  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
 /* THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR      */
 /* MODIFY IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS     */
@@ -24,8 +24,10 @@
    --          DEBUT aster_depend.h          --
    --------------------------------------------
 
+_POSIX et _WINDOWS doivent être exclusifs.
+
 Dans les routines C, ne pas utiliser les noms de plates-formes,
-se ramener à _POSIX/_WIN32/_USE_64_BITS.
+se ramener à _POSIX/_WINDOWS et +/- _USE_64_BITS.
 
 Pour les cas (rares) d'adhérence système (constantes, signaux),
 on se limite à SOLARIS, LINUX, IRIX (cas particuliers à
@@ -40,46 +42,95 @@ Compatibilité ascendantes :
  TRU64      => _POSIX, _USE_64_BITS
  SOLARIS    => _POSIX
  SOLARIS64  => _POSIX, SOLARIS, _USE_64_BITS
- PPRO_NT    => _WIN32
+ PPRO_NT    => _WINDOWS
+ (_)WIN32   => _WINDOWS
 
 */
 
-#if defined WIN32 || PPRO_NT || _WIN32
-#ifndef _WIN32
-#define _WIN32
+/* XXX backward compatibility layer */
+#if defined _WIN32
+#ifndef _WINDOWS
+#define _WINDOWS
 #endif
-#else
+#endif
+
+#if defined P_LINUX || LINUX || LINUX64 || HPUX || IRIX || IRIX64 || SOLARIS || SOLARIS64 || TRU64
 #define _POSIX
 #endif
 
-#ifdef HPUX
-#define _NO_UNDERSCORE
-#endif
-
-#if defined P_LINUX || LINUX64
-#define LINUX
+#if defined LINUX64 || IRIX64 || SOLARIS64 || TRU64
+#define _USE_64_BITS
 #endif
 
 #if defined IRIX64
 #define IRIX
+#define _NOT_GNU
 #endif
 
 #if defined SOLARIS64
 #define SOLARIS
+#define _NOT_GNU
 #endif
 
-/* plates-formes 32/64 bits */
+#ifdef HPUX
+#define _NO_UNDERSCORE
+#define _NOT_GNU
+#endif
 
+/* XXX end backward compatibility */
+
+
+
+/* MS Windows platforms */
+#if defined _WINDOWS
+#define _IGNORE_RLIMIT
+
+/* win64 - use LLP64 model */
+#ifdef _USE_64_BITS
+#define _STRLEN_AT_END
+#define _USE_LONG_LONG_INT
+
+#else
+/* win32 */
+#define _USE_STDCALL
+
+#endif
+
+#else
+/* Linux & Unix platforms */
+#ifndef _POSIX
+#define _POSIX
+#endif
+#define _STRLEN_AT_END
+
+/* Linux but not Unix - see inisig.c */
+#ifndef _NOT_GNU
+#define GNU_LINUX
+#endif
+
+
+/* end platforms type */
+#endif
+
+
+/* plates-formes 64 bits */
 #if defined _USE_64_BITS || LINUX64 || TRU64 || SOLARIS64 || IRIX64
 /* pour compatibilité si on arrive avec LINUX64 */
 #ifndef _USE_64_BITS
 #define _USE_64_BITS
 #endif
+
+#ifdef _USE_LONG_LONG_INT
+#define INTEGER long long
+#define STRING_SIZE size_t
+#else
 #define INTEGER long
+#define STRING_SIZE unsigned int
+#endif
+
 #define INTEGER4 int
 #define LONG_INTEGER_BITS 64
 #define LONG_INTEGER_MOTS 8
-#define STRING_SIZE unsigned int
 #define DOUBLE double
 #define REAL4 float
 #define LONG_REAL_MOTS 8
@@ -88,6 +139,7 @@ Compatibilité ascendantes :
 #define INTEGER_NB_CHIFFRES_SIGNIFICATIFS 19
 #define REAL_NB_CHIFFRES_SIGNIFICATIFS    16
 
+/* plates-formes 32 bits */
 #else
 #define INTEGER long
 #define INTEGER4 int
@@ -135,15 +187,22 @@ Compatibilité ascendantes :
 #define REP_DON "/aster/donnees/"
 #endif
 
+/* --- TODO COMPTABILITY (remove _WIN32) --- */
+#if defined _WINDOWS
+#ifndef _WIN32
+#define _WIN32
+#endif
+#endif
+
 
 /* --------------------------------------------
    --      TEST DES VALEURS OBLIGATOIRES     --
    -------------------------------------------- */
-#if ! defined _POSIX && ! defined _WIN32
-#error ERREUR au moins un parmi _POSIX or _WIN32 !!
+#if ! defined _POSIX && ! defined _WINDOWS
+#error ERREUR au moins un parmi _POSIX or _WINDOWS !!
 #endif
-#if defined _POSIX && defined _WIN32
-#error ERREUR seulement un parmi _POSIX or _WIN32 !!
+#if defined _POSIX && defined _WINDOWS
+#error ERREUR seulement un parmi _POSIX or _WINDOWS !!
 #endif
 
 /* --------------------------------------------

@@ -1,4 +1,4 @@
-# MODIF  DATE 25/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 31/01/2011   AUTEUR PELLET J.PELLET 
 # TITRE TEST DE LA LOI JOINT_MECA_FROT SUR LES ELEMENTS DE JOINT PENTA6
 # ssnp118r.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -217,8 +217,7 @@ U_1=STAT_NON_LINE(reuse=U_1,
 U_1=CALC_ELEM(reuse =U_1,
               RESULTAT=U_1,
               OPTION='VARI_ELNO_ELGA',
-              NOM_CHAM='VARI_ELGA',
-              NOM_CMP='V8',);
+              );
 # calcul de l'ouverture tangentiel du joint aux noeuds pour le groupe de maille "Gauche"
 U_1=CALC_NO(reuse =U_1,
             RESULTAT=U_1,

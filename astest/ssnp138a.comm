@@ -1,4 +1,4 @@
-# MODIF  DATE 25/01/2011   AUTEUR MACOCCO K.MACOCCO 
+# MODIF  DATE 31/01/2011   AUTEUR MACOCCO K.MACOCCO 
 # TITRE FISSURE INCLINEE EN 2D AVEC X-FEM
 # ssnp138a.para = tps_job 360 mem_job 256Mo mem_aster 50 ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -263,7 +263,6 @@ for i in range(nbcalc) :
 
   # K1 SUR LE 2EME FOND
   PK[i]=POST_K1_K2_K3(MODELISATION='D_PLAN',
-                     MAILLAGE=MAILLAGE,
                      MATER=ACIER,
                      FISSURE = FISS[i],
                      NUME_FOND = 2,

@@ -1,8 +1,8 @@
-#@ MODIF edyos Messages  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
+#@ MODIF edyos Messages  DATE 31/01/2011   AUTEUR GREFFET N.GREFFET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -219,11 +219,7 @@ cata_msg={
 """),
 
 43 : _("""   
-      Attention, le nombre de palier dépasse 10 => vérifiez les données
-"""),
-
-44 : _("""   
-      Problème noeud du palier %(i1)d = %(i2)d
+      Attention, le nombre maximal de palier est 20 
 """),
 
 45 : _("""   
@@ -232,14 +228,26 @@ cata_msg={
 
 46 : _("""   
       Le code EDYOS n'a pas convergé
-      Avc le schéma en temps d'Euler, on ne sous-divise pas le pas de temps
+      Avec le schéma en temps d'Euler, on ne sous-divise pas le pas de temps
       Le calcul s'arrête donc
       Conseil : tester le schéma en temps adaptatif
 """),
 
 47 : _("""   
       Le code EDYOS n'a pas convergé
-      Avc le schéma en temps adaptatif, on va tenter de diminuer le pas de temps
+      Avec le schéma en temps adaptatif, on va tenter de diminuer le pas de temps
+"""),
+
+48 : _("""   
+      Erreur de syntaxe pour le couplage avec EDYOS :
+      Il faut obligatoirement renseigner COUPLAGE_EDYOS et PALIERS_EDYOS
+"""),
+
+49 : _("""   
+      Erreur de syntaxe pour le couplage avec EDYOS :
+      Pour le mot-clé PALIERS_EDYOS dans le cas où l'on utilise TYPE_EDYOS, 
+      il faut donner à chaque occurrence soit le GROUP_NO du palier, soit son NOEUD.
+      
 """),
 
 }

@@ -1,7 +1,7 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF dll_umat supervis  DATE 25/10/2010   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF dll_umat supervis  DATE 31/01/2011   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
-/* COPYRIGHT (C) 1991 - 2010  EDF R&D              WWW.CODE-ASTER.ORG */
+/* COPYRIGHT (C) 1991 - 2011  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
 /* THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR      */
 /* MODIFY IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS     */
@@ -19,7 +19,6 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <dlfcn.h>
 
 #include <Python.h>
 
@@ -28,6 +27,9 @@
 #include "definition_pt.h"
 
 #include "dll_register.h"
+
+#ifdef _POSIX
+#include <dlfcn.h>
 
 PyObject* get_dll_register_dict();
 
@@ -104,10 +106,11 @@ void load_umat_lib(const char* libname, const char* symbol)
 
     /* register these UMAT lib */
     if ( libsymb_register(DLL_DICT, libname, symbol,
-                            umat_handle, (void*)f_umat) ) {
+                            umat_handle, (FUNC_PTR)f_umat) ) {
         printf("Registering of '%s' and '%s' failed!\n", libname, symbol);
     }
 }
+#endif
 
 
 void DEFUMATWRAP(UMATWP, umatwp,
@@ -121,6 +124,7 @@ void DEFUMATWRAP(UMATWP, umatwp,
     DOUBLE* celent, DOUBLE* dfgrd0, DOUBLE* dfgrd1, INTEGER* noel, INTEGER* npt, INTEGER* layer,
         INTEGER* kspt, INTEGER* kstep, INTEGER* kinc )
 {
+#ifdef _POSIX
     /* UMAT WraPper : wrapper to the UMAT function through the function pointer
      * Load the library if necessary (at the first call).
     */
@@ -160,6 +164,9 @@ void DEFUMATWRAP(UMATWP, umatwp,
         stran, dstran, time, dtime, temp, dtemp, predef, dpred, cmname, 
         ndi, nshr, ntens, nstatv, props, nprops, coords, drot, pnewdt, 
         celent, dfgrd0, dfgrd1, noel, npt, layer, kspt, kstep, kinc );
+#else
+    printf("Not available under Windows.\n");
+    abort();
+#endif
 }
-
 

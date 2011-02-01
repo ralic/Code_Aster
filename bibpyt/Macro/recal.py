@@ -1,8 +1,8 @@
-#@ MODIF recal Macro  DATE 16/11/2010   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF recal Macro  DATE 31/01/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -135,7 +135,7 @@ def make_include_files(UNITE_INCLUDE, calcul, parametres):
        sys.path.append(os.path.join(ASTER_ROOT, 'lib', 'python%s.%s' % (sys.version_info[0], sys.version_info[1] ) , 'site-packages'))
    except: pass
    try:
-       from asrun.utils import find_command, search_enclosed
+       from asrun.common.utils import find_command, search_enclosed
    except Exception, e:
        print e
        UTMESS('F','RECAL0_99')
@@ -676,8 +676,7 @@ class CALCULS_ASTER:
         try:
             from asrun.run          import AsRunFactory
             from asrun.profil       import ASTER_PROFIL
-            from asrun.common_func  import get_hostrc
-            from asrun.utils        import get_timeout
+            from asrun.repart       import get_hostrc
             from asrun.parametric   import is_list_of_dict
             from asrun.thread       import Dispatcher
             from asrun.distrib      import DistribParametricTask
@@ -755,7 +754,7 @@ class CALCULS_ASTER:
         hostrc = get_hostrc(run, prof)
 
         # timeout before rejected a job
-        timeout = get_timeout(prof)
+        timeout = prof.get_timeout()
 
 
         # Ajout des impressions de tables a la fin du .comm

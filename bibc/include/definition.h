@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF definition include  DATE 24/01/2011   AUTEUR BOITEAU O.BOITEAU */
+/* MODIF definition include  DATE 31/01/2011   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2011  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -46,21 +46,31 @@
 
 /* Appels : minuscules/majuscules, avec/sans underscore */
 #if defined _POSIX
-#define F_FUNC(UN,LN)                            _(LN,_)
+#define F_FUNC(UN,LN)           _(LN,_)
 
 #if defined _NO_UNDERSCORE
-#define F_FUNC(UN,LN)                            LN
+#define F_FUNC(UN,LN)           LN
 #endif
 
 #elif defined _WIN32
-#define F_FUNC(UN,LN)                            UN
+#define F_FUNC(UN,LN)           UN
 
 #endif
 
+/* http://gcc.gnu.org/onlinedocs/cpp/Stringification.html */
+#define xstr(s)                 str(s)
+#define str(s)                  #s
+#define S_FUNC(UN,LN)           xstr(F_FUNC(UN,LN))
 
-/* Appels et signatures _POSIX */
-#if defined _POSIX
+/* STDCALL for "old" windows version */
+#ifdef _USE_STDCALL
+#define STDCALL(UN,LN)   __stdcall F_FUNC(UN,LN)
+#else
 #define STDCALL(UN,LN)   F_FUNC(UN,LN)
+#endif
+
+/* Appels et signatures avec strlen en fin de liste */
+#ifdef _STRLEN_AT_END
 
 #define DEFP(UN,LN,a)               STDCALL(UN,LN)(a)
 #define CALLP(UN,LN,a)              F_FUNC(UN,LN)(a)

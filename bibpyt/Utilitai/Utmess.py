@@ -1,8 +1,8 @@
-#@ MODIF Utmess Utilitai  DATE 30/08/2010   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF Utmess Utilitai  DATE 31/01/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -112,6 +112,9 @@ class MESSAGE_LOGGER:
         c'est l'appelant qui devra s'en charger (dans le C a priori).
         'print_as' : cf. print_buffer_content.
         """
+        # le '+' n'a pas de sens pour les messages 'I'.
+        if code == "I+":
+            code = "I"
         # récupération du texte du message
         dictmess = self.get_message(code, idmess, valk, vali, valr)
         

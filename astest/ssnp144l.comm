@@ -1,4 +1,4 @@
-# MODIF  DATE 19/01/2011   AUTEUR MASSIN P.MASSIN 
+# MODIF  DATE 01/02/2011   AUTEUR MASSIN P.MASSIN 
 # TITRE ZONE COHESIVE CZM_EXP_REG AVEC X-FEM
 # ssnp144l.para = tps_job 300 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -173,10 +173,11 @@ UTOT1=STAT_NON_LINE(MODELE=MODELEK,
                     INCREMENT=_F(LIST_INST=L_INST,
                                  INST_FIN=0.5,),
                     NEWTON=_F(REAC_ITER=1,),
-                    PILOTAGE=_F(TYPE='DDL_IMPO',
-                                COEF_MULT=3.6667E6,
+                    PILOTAGE=_F(TYPE='SAUT_IMPO',
+                                COEF_MULT=1.83335E6,
                                 NOEUD='N6',
-                                NOM_CMP='H1Y',),
+                                FISSURE=FISS,
+                                DIRE_PILO='DY',),
                     CONVERGENCE=_F(RESI_GLOB_RELA=1.E-6,
                                    ITER_GLOB_MAXI=30,
                                    ARRET='OUI',),
@@ -198,10 +199,11 @@ UTOT1=STAT_NON_LINE(reuse =UTOT1,
                     INCREMENT=_F(LIST_INST=L_INST,
                                  INST_FIN=1.,),
                     NEWTON=_F(REAC_ITER=1,),
-                    PILOTAGE=_F(TYPE='DDL_IMPO',
-                                COEF_MULT=-1.83335E6,
+                    PILOTAGE=_F(TYPE='SAUT_IMPO',
+                                COEF_MULT=-9.16675E5,
                                 NOEUD='N6',
-                                NOM_CMP='H1Y',),
+                                FISSURE=FISS,
+                                DIRE_PILO='DY',),
                     CONVERGENCE=_F(RESI_GLOB_RELA=1.E-6,
                                    ITER_GLOB_MAXI=30,
                                    ARRET='OUI',),
@@ -231,8 +233,8 @@ MOD_VISU=AFFE_MODELE(MAILLAGE=MA_XFEM,
                              PHENOMENE='MECANIQUE',
                              MODELISATION='C_PLAN',),);
 
-RESXFEM1=POST_CHAM_XFEM(MAILLAGE_SAIN=MAILLAG1,
-                        RESULTAT=UTOT1,
+RESXFEM1=POST_CHAM_XFEM(RESULTAT=UTOT1,
+                        MAILLAGE_SAIN=MAILLAG1,
                         MODELE_VISU=MOD_VISU,);
 #--------------------------------------------------------
 #                  VALIDATION DES RESULTATS

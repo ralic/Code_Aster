@@ -1,7 +1,7 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF CPFILE UTILITAI  DATE 07/04/2009   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF CPFILE UTILITAI  DATE 31/01/2011   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
-/* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
+/* COPYRIGHT (C) 1991 - 2011  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
 /* THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR      */
 /* MODIFY IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS     */
@@ -28,7 +28,7 @@ void DEFSSS(CPFILE, cpfile, char *action, STRING_SIZE la, char *nom1, STRING_SIZ
    char nomcmd[165];char *ncmd;
    long i,l,ldeb,num;
    int ier;
-#ifdef _WIN32
+#ifdef _WINDOWS
    num = _flushall();
    ldeb = 5;
    if ( *action == 'C' ) {ncmd = "copy ";}
@@ -79,7 +79,7 @@ void DEFSSS(CPFILE, cpfile, char *action, STRING_SIZE la, char *nom1, STRING_SIZ
    if ( ier == -1 ) {
         perror("\n<cpfile> code retour system");
    } 
-#ifdef _WIN32
+#ifdef _WINDOWS
    num = _flushall();
 #else
    num = fflush(stderr);

@@ -1,4 +1,4 @@
-# MODIF  DATE 18/01/2011   AUTEUR PROIX J-M.PROIX 
+# MODIF  DATE 01/02/2011   AUTEUR PROIX J-M.PROIX 
 # RESPONSABLE PROIX J-M.PROIX
 # TITRE : VARIATION TEMPERATURE DANS LE COMPORTEMENT 'ELAS' ORTHOTROPE sous COMP_INCR
 # comp008b.para = tps_job 300 mem_job 512Mo ncpus 1 liste_test S
@@ -23,15 +23,9 @@
 # CAS-TEST DE REFERENCE : SSLS101E
 #===================================================================== 
 
-DEBUT(CODE=_F(NOM='COMP008B',NIV_PUB_WEB='INTERNET'),PAR_LOT='NON')
 
-import numpy as N
+DEBUT(CODE=_F(NOM='COMP008B',NIV_PUB_WEB='INTERNET'),)
 
-
-MATER  = [None]*20
-RESU   = [None]*20
-
-epsi = 1.E-10
 
 TINF1=45
 TSUP1=65.
@@ -62,9 +56,6 @@ UN   =DEFI_CONSTANTE(VALE=1.0);
 # 
 # INITIALISATIONS
 
-tmax = 1.
-
-NCAL = 20
 
 compor='ELAS'
 
@@ -117,109 +108,39 @@ MATERI=DEFI_MATERIAU(  ELAS_ORTH_FO=_F(E_L   = YOUN_L,
                                        ALPHA_N = ALPHA2,), 
                     );
 
-L_INST=DEFI_LIST_REEL(DEBUT=0.0,
-                      INTERVALLE=(_F(JUSQU_A=1,
-                                     NOMBRE=NCAL,),
-                                    ),);
 
-TIMP=DEFI_FONCTION(
-                      NOM_PARA='INST',  NOM_RESU='TEMP',
-                       VALE=(  0. , TREF, 1. , Tmax)
-                   )
+tfin = 1.
 
-U=SIMU_POINT_MAT(COMP_INCR=_F(RELATION=compor,),
-                 MATER=MATERI,
-                 SUPPORT='ELEMENT',
-                   AFFE_VARC=(
-                   _F(  NOM_VARC='TEMP',
-                        VALE_FONC=TIMP,
-                        VALE_REF=TREF),
-                        ),
-                 INCREMENT=_F(LIST_INST=L_INST,),
-                 NEWTON=_F(PREDICTION='ELASTIQUE',
-                           MATRICE='TANGENTE',
-                           REAC_ITER=1,),
-                 EPSI_IMPOSE=_F(EPXX=ZERO,),
-                 INFO=1,);
+NCAL = 5
+LMAT2  = [None]*(NCAL)
+time=0.
+for i in range(NCAL):        
+    timem = time     
+    time = timem + tfin/NCAL
+    Ti = T0 + time/tfin * (Tmax - T0)
+    Tm = T0 + timem/tfin * (Tmax - T0)
+    LMAT2[i]=DEFI_MATERIAU(ELAS_ORTH=_F(E_L   = YOUN_L(Ti),
+                                       E_T   = YOUN_T(Ti), 
+                                       E_N   = YOUN_L(Ti),
+                                       NU_LN = 0., 
+                                       NU_LT = 0., 
+                                       NU_TN = 0.,
+                                       G_LT  = MCISA_1(Ti),  
+                                       G_LN  = MCISA_2(Ti), 
+                                       G_TN  = MCISA_1(Ti),
+                                       ALPHA_L = 0.,
+                                       ALPHA_T = 0.,
+                                       ALPHA_N = 0.,), 
+                                );
 
-IMPR_TABLE(TABLE=U,);
+############################################################################
+# MACRO pour test thermoplastique
 
+tabresu=TEST_COMPOR(
+              MATER=MATERI,COMP_INCR=_F(RELATION=compor),
+              LIST_MATER=LMAT2,ALPHA=ALPHA1,YOUNG=YOUN_L,TEMP_INIT=T0,TEMP_FIN=Tmax,
+              NEWTON=_F(REAC_ITER=1),
+              NB_VARI=0,)
+IMPR_TABLE(TABLE=tabresu)
 
-SXM = 0.
-EXM=0.
-
-time = 0.
-
-
-for i in range(NCAL):
-          
-          timem = time 
-          
-          time = timem + tmax/NCAL
-            
-          Ti = T0 + time/tmax * (Tmax - T0)
-          
-          Tm = T0 + timem/tmax * (Tmax - T0)
-          
-          # deformation mecanique imposee correspondant a la deformation thermique du premier calcul
-          
-          epsimp =DEFI_CONSTANTE(VALE=-ALPHA1(Ti)*(Ti - TREF));
-
-          print 'i=',i, ' instant=', time, ' Temperature=',Ti
-          
-          # variation des coef du comportement avec la temperature
-          # correction eventuelle des valeurs initiales du temps ti 
-          
-          if i > 0 :
-             SXM = SXM *(YOUN_L(Ti)/YOUN_L(Tm))
-             
-          MATER[i]=DEFI_MATERIAU(  ELAS_ORTH=_F( E_L     = YOUN_L(Ti), 
-                                                 E_T     = YOUN_T(Ti),
-                                                 E_N     = YOUN_L(Ti),
-                                                 NU_LN   = 0., 
-                                                 NU_LT   = 0., 
-                                                 NU_TN   = 0.,
-                                                 G_LT  = MCISA_1(Ti),  
-                                                 G_LN  = MCISA_2(Ti), 
-                                                 G_TN  = MCISA_1(Ti),
-                                                 ALPHA_L = 0.,
-                                                 ALPHA_T = 0.,
-                                                 ALPHA_N = 0.,),
-                                  );
-
-          list = DEFI_LIST_REEL(DEBUT=timem,
-                      INTERVALLE=(_F(JUSQU_A=time,NOMBRE=1,),),);
-                                     
-          RESU[i]=SIMU_POINT_MAT(COMP_INCR=_F(RELATION=compor,),
-                                 MATER=MATER[i],
-                                 SUPPORT='ELEMENT',
-                                 INCREMENT=_F(LIST_INST = list, ),
-                                 NEWTON=_F( PREDICTION='ELASTIQUE',
-                                             MATRICE='TANGENTE',
-                                             REAC_ITER=1,),
-                                 EPSI_IMPOSE=_F(EPXX=epsimp),
-                                 SIGM_INIT=_F(SIXX=SXM),
-                                 EPSI_INIT=_F(EPXX=EXM, EPYY=0.,EPZZ=0.,EPXY=0.,EPXZ=0.,EPYZ=0.),
-                                 INFO=1,);
-                                 
-           # recuperation des valeurs initiales du futur pas de temps dans la table resultat
-          
-          EXM = RESU[i]['EPXX',1]
-             
-          SXM = RESU[i]['SIXX',1]
-          
-          #IMPR_TABLE(TABLE=RESU[i]);
-          
-          DETRUIRE ( CONCEPT =  _F (NOM =epsimp),);
-          DETRUIRE ( CONCEPT =  _F (NOM =list),);
-          
-          TEST_TABLE(TABLE=RESU[i],
-                     NOM_PARA='VMIS',VALE=U['VMIS',i+1],
-                     FILTRE=_F(NOM_PARA='INST',VALE=time),
-                     REFERENCE='AUTRE_ASTER',);
-
-          TEST_TABLE(TABLE=RESU[i],
-                     NOM_PARA='TRACE',VALE=U['TRACE',i+1],
-                     FILTRE=_F(NOM_PARA='INST',VALE=time),
-                     REFERENCE='AUTRE_ASTER',);
 FIN();

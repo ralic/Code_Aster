@@ -1,9 +1,9 @@
-# MODIF  DATE 15/06/2010   AUTEUR MACOCCO K.MACOCCO 
+# MODIF  DATE 31/01/2011   AUTEUR GREFFET N.GREFFET 
 # TITRE CALCUL DE LA PUISSANCE D'USURE D'UN PATIN FROTTANT
 # sdnd104a.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
@@ -155,7 +155,7 @@ RIGIDGEN=PROJ_MATR_BASE(  BASE=MODES,
 PLANZ=DEFI_OBSTACLE(   TYPE='PLAN_Z' )
 
 #
-DYNAMOA1=DYNA_TRAN_MODAL(       METHODE='ADAPT',
+DYNAMOA1=DYNA_TRAN_MODAL(       METHODE='ADAPT_ORDRE2',
                                 MASS_GENE=MASSEGEN,
                                 RIGI_GENE=RIGIDGEN,
                                AMOR_REDUIT=0.,
@@ -218,7 +218,7 @@ DYNAMOE1=DYNA_TRAN_MODAL(       METHODE='EULER',
                            )
 
 #
-DYNAMOA2=DYNA_TRAN_MODAL(       METHODE='ADAPT',
+DYNAMOA2=DYNA_TRAN_MODAL(       METHODE='ADAPT_ORDRE2',
                                 MASS_GENE=MASSEGEN,
                                 RIGI_GENE=RIGIDGEN,
                                AMOR_REDUIT=0.,
@@ -281,7 +281,7 @@ DYNAMOE2=DYNA_TRAN_MODAL(       METHODE='EULER',
                            )
 
 #
-DYNAMOA3=DYNA_TRAN_MODAL(       METHODE='ADAPT',
+DYNAMOA3=DYNA_TRAN_MODAL(       METHODE='ADAPT_ORDRE2',
                                 MASS_GENE=MASSEGEN,
                                 RIGI_GENE=RIGIDGEN,
                                AMOR_REDUIT=0.,
@@ -344,7 +344,7 @@ DYNAMOE3=DYNA_TRAN_MODAL(       METHODE='EULER',
                            )
 
 #
-DYNAMOA4=DYNA_TRAN_MODAL(       METHODE='ADAPT',
+DYNAMOA4=DYNA_TRAN_MODAL(       METHODE='ADAPT_ORDRE2',
                                 MASS_GENE=MASSEGEN,
                                 RIGI_GENE=RIGIDGEN,
                                AMOR_REDUIT=0.,

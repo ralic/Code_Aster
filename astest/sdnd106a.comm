@@ -1,9 +1,9 @@
-# MODIF  DATE 11/05/2010   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 31/01/2011   AUTEUR GREFFET N.GREFFET 
 # TITRE FRICTION SLIDER WITH STATIC AND DYNAMIC FRICTION COEFFICIENTS 
 # sdnd106a.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -120,7 +120,7 @@ duration = 0.35;
 time_step = 1.e-04;
 
 RESU_GEN=DYNA_TRAN_MODAL(
-                         METHODE='ADAPT',
+                         METHODE='ADAPT_ORDRE2',
                          MASS_GENE=M_GENERA,
                          RIGI_GENE=K_GENERA,
                          INCREMENT=_F(INST_INIT=0.,

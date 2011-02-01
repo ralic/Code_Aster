@@ -1,4 +1,4 @@
-# MODIF  DATE 25/01/2011   AUTEUR MACOCCO K.MACOCCO 
+# MODIF  DATE 31/01/2011   AUTEUR MACOCCO K.MACOCCO 
 # TITRE ESTIMATEURS D'ERREUR EN QUANTITES D'INTERET POUR LE CALCUL DES FIC
 # zzzz257d.para = tps_job 120 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -149,7 +149,6 @@ FISS=DEFI_FOND_FISS(MAILLAGE=MAIB,
 # c'est le vecteur pour l'ouverture en mode I
 POST_K=POST_K1_K2_K3(MODELISATION='3D',
                      FOND_FISS=FISS,
-                     MAILLAGE=MAIB,
                      TYPE_MAILLAGE='LIBRE',
                      MATER=MATE,
                      RESULTAT=RESU,

@@ -1,9 +1,9 @@
-      SUBROUTINE PIPEBA(NDIM,MATE, SUP, SUD, VIM, DTAU, COPILO)
+        SUBROUTINE PIPEBA(NDIM,MATE,SUP,SUD,VIM,DTAU,COPILO)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 07/07/2008   AUTEUR LAVERNE J.LAVERNE 
+C MODIF ALGORITH  DATE 01/02/2011   AUTEUR MASSIN P.MASSIN 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -21,7 +21,8 @@ C ======================================================================
 
       IMPLICIT NONE
       INTEGER MATE,NDIM
-      REAL*8 SUP(NDIM), SUD(NDIM), VIM(*),DTAU, COPILO(2,3)
+      REAL*8  SUP(NDIM), SUD(NDIM), VIM,DTAU, COPILO(2,3)
+      
 C-----------------------------------------------------------------------
 C
 C PILOTAGE PRED_ELAS POUR LES LOIS COHESIVES CZM_LIN_REG ET CZM_EXP_REG
@@ -48,8 +49,8 @@ C INITIALISATION
       CALL RCVALA (MATE,' ','RUPT_FRAG',0,' ',0.D0,3,NOM,VAL,COD,'F ')
       LC   = VAL(1)/VAL(2)
       K0   = VAL(1)/VAL(2)*VAL(3)
-      KA   = MAX(VIM(1),K0)
-      KREF = MAX(KA,LC)
+      KA   = MAX(VIM,K0)
+      KREF = MAX(LC,KA)
 
       C  = DTAU*KREF + KA
 
@@ -64,7 +65,7 @@ C    PORTION EN COMPRESSION : FEL = (ABS(SU(2)) - KA ) / KREF
 C    ON INCLUT EGALEMENT UN SAFE-GUARD SU_N > -KREF CAR AU-DELA CE SONT
 C    DES SOLUTIONS TRES FORTEMENT EN COMPRESSION QUI FONT EXPLOSER LA
 C    PENALISATION
-
+C 
       P0=0.D0
       P1=0.D0
       P2=0.D0
@@ -113,18 +114,18 @@ C    RECHERCHE DES SOLUTIONS
       CALL ZEROP2(2*P1/P2, (P0-C**2)/P2, RAC, NRAC)
       IF (NRAC.LE.1) GOTO 2000
 
-      IF (SUP(1)+RAC(2)*SUD(1) .GT. 0) THEN
+      IF (SUP(1)+RAC(2)*SUD(1).GT.0) THEN            
         OK(3)  = 1
         ETA(3) = RAC(2)
         A1(3)  = (P1+P2*ETA(3))/(KREF*C)
         A0(3)  = DTAU-ETA(3)*A1(3)
       END IF
 
-      IF (SUP(1)+RAC(1)*SUD(1) .GT. 0) THEN
+      IF (SUP(1)+RAC(1)*SUD(1).GT. 0) THEN     
         OK(4)  = 1
         ETA(4) = RAC(1)
         A1(4)  = (P1+P2*ETA(4))/(KREF*C)
-        A0(4)  = DTAU-ETA(4)*A1(4)
+        A0(4)  = DTAU-ETA(4)*A1(4)      
       END IF
 
  2000 CONTINUE
@@ -159,21 +160,25 @@ C    ON RANGE LES SOLUTIONS DANS L'ORDRE CROISSANT (SI NECESSAIRE)
           TMP = COPILO(2,1)
           COPILO(2,1) = COPILO(2,2)
           COPILO(2,2) = TMP
-        END IF
+        END IF 
       END IF
 
 
-C    TRAITEMENT EN L'ABSENCE DE SOLUTION  -> MINIMISATION
+C    TRAITEMENT EN L'ABSENCE DE SOLUTION
       IF (NSOL .EQ. 0) THEN
-        IF (P2 .LT. (1.D0/R8GAEM()**0.5D0)) THEN
-          ETAMIN = 0
-        ELSE
-          ETAMIN = - P1/P2
-        END IF
-
-        COPILO(1,1) = (SQRT(P0+2*P1*ETAMIN+P2*ETAMIN**2) - KA)/KREF
-        COPILO(1,3) = ETAMIN
-      END IF
-
-
+C    SI DEPLACEMENT PILOTE NUL ET SAUT EQ INFERIEUR A DTAU
+C    ON IGNORE LE POINT POUR LA RESOLUTION GLOBALE       
+        IF (P2 .LE. (1.D0/R8GAEM()**0.5D0)
+     &      .AND.(SQRT(P0)).LE.DTAU) THEN
+          COPILO(1,1) = 0.D0
+          COPILO(1,2) = 0.D0      
+          COPILO(2,1) = 0.D0
+          COPILO(2,2) = 0.D0
+C DANS LES AUTRE CAS COURBE TJS SUPERIEURE A DTAU : ON PLANTE          
+        ELSE      
+          COPILO(1,1) = 1.D0
+          COPILO(1,3) = 1.D0 
+        ENDIF            
+      END IF  
+          
       END

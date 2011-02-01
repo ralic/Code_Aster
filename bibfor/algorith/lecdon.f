@@ -1,10 +1,11 @@
-      SUBROUTINE LECDON(UNITPA,PRDEFF) 
+      SUBROUTINE LECDON(FICEXT,UNITPA,PRDEFF) 
       IMPLICIT          NONE
       INTEGER           UNITPA
+      LOGICAL           PRDEFF,FICEXT
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/02/2010   AUTEUR GREFFET N.GREFFET 
+C MODIF ALGORITH  DATE 31/01/2011   AUTEUR GREFFET N.GREFFET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -60,8 +61,6 @@ C ! IPAL     !  ENTIER     !  INDICE DE BOUCLE SUR LES PALIERS        !
 C !          !             !                                          !
 C ! NUMPAL   !  ENTIER     !  NUMERO DU PALIER LU                     !
 C !          !             !                                          !
-C ! NUMNOD   !  ENTIER     !  NUMERO DU NOEUD ASTER ASSOCIE AU PALIER !
-C !          !             !                                          !
 C ! NOMPRG   !  CHARACTER  !  NOM DU SSP (POUR ECRITURE DANS ERRCOU)  !
 C !          !             !                                          !
 C ! PALMAX   !  ENTIER     !  NOMBRE MAXIMUM DE PALIERS (PARAMETER)   !
@@ -114,7 +113,6 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32 ZK32
       CHARACTER*80 ZK80
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
-      CHARACTER*32     JEXNUM, JEXNOM
 
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
 
@@ -127,11 +125,8 @@ C     ==================
 C     
       CHARACTER*1       CARAC1 
       CHARACTER*2       CARAC2
-      CHARACTER*3       CARAC3
-      CHARACTER*4       CARAC4
-      CHARACTER*5       CARAC5
 C
-      INTEGER           IPAL, NUMPAL, NUMNOD
+      INTEGER           IPAL, NUMPAL, NGR, N2
       INTEGER           NBPAL, IRET
       CHARACTER*6       CTYPE
 C    
@@ -139,17 +134,14 @@ C
       PARAMETER (PALMAX=20)
       CHARACTER*6       TYPPAL(PALMAX)
       CHARACTER*3       FINPAL(PALMAX)
-      CHARACTER*6  CNPAL(PALMAX)    
+      CHARACTER*8       CNPAL(PALMAX),CNOD, K8B   
 C
       INTEGER           ZCPAL, ZNPAL  
-      INTEGER           IADR, IADRI, IADRK
-      INTEGER           VALI(2)
       CHARACTER*16      K16NOM
       CHARACTER*24      CPAL, NPAL
-
-      LOGICAL           PRDEFF
 C
       CALL JEMARQ()
+      NIV = 0
       CALL INFDBG('YACS_EDYOS',IFM,NIV)
 C
 C     ASSIGNATION DES NOMS POUR LES ADRESSES DANS LES COMMON ASTER
@@ -171,6 +163,8 @@ C     --------------------------------------------
       ELSE
         CALL JEVEUO(NPAL,'E',ZNPAL)
       ENDIF
+
+      IF ( FICEXT ) THEN
 C   
 C     LECTURE DU FICHIER FIC_DON
 C     -------------------------- 
@@ -184,6 +178,7 @@ C     --------------------------
       READ(UNITPA,*)NBPAL
       IF (NIV.GE.2)
      & WRITE(IFM,*)'ASTEREDYOS: ',NOMPRG,' ON A LU NBPAL =',NBPAL
+      IF (NBPAL.GT.PALMAX) CALL U2MESS('F','EDYOS_43')
 C 
 C     REMPLISSAGE "COMMON" ASTER POUR LE NOMBRE DE PALIERS 
 C     ----------------------------------------------------
@@ -192,37 +187,19 @@ C
 C     BOUCLE DE LECTURE SUR LES PALIERS
 C     ---------------------------------
       DO 100 IPAL=1,NBPAL
-         READ(UNITPA,*)NUMPAL,NUMNOD,CTYPE
+         CNOD='        '
+         READ(UNITPA,*)NUMPAL,CNOD,CTYPE
          TYPPAL(NUMPAL)=CTYPE
+         CNPAL(IPAL)=CNOD
+C
          IF(IPAL.LT.10)THEN
            WRITE(CARAC1,'(I1)')IPAL
            FINPAL(IPAL)='_'//CARAC1
          ELSE
-           CALL U2MESS('F','EDYOS_43')
            WRITE(CARAC2,'(I2)')IPAL
            FINPAL(IPAL)='_'//CARAC2
          ENDIF
 C 
-         IF(NUMNOD.LT.10)THEN
-           WRITE(CARAC1,'(I1)')NUMNOD
-           CNPAL(IPAL)='N'//CARAC1
-         ELSEIF(NUMNOD.GE.10 .AND. NUMNOD.LT.100)THEN
-           WRITE(CARAC2,'(I2)')NUMNOD
-           CNPAL(IPAL)='N'//CARAC2
-         ELSEIF(NUMNOD.GE.100 .AND. NUMNOD.LT.1000)THEN
-           WRITE(CARAC3,'(I3)')NUMNOD
-           CNPAL(IPAL)='N'//CARAC3
-         ELSEIF(NUMNOD.GE.1000 .AND. NUMNOD.LT.10000)THEN
-           WRITE(CARAC4,'(I4)')NUMNOD
-           CNPAL(IPAL)='N'//CARAC4
-         ELSEIF(NUMNOD.GE.10000 .AND. NUMNOD.LT.100000)THEN
-           WRITE(CARAC5,'(I5)')NUMNOD
-           CNPAL(IPAL)='N'//CARAC5         
-         ELSE
-           VALI(1) = IPAL
-           VALI(2) = NUMNOD
-           CALL U2MESG('F','EDYOS_44',0,' ',2,VALI,0,0.D0)
-         ENDIF
 C
 C   REMPLISSAGE "COMMON" ASTER POUR LES PALIERS (TYPE,TERMINAISON,NOEUD)
 C   --------------------------------------------------------------------
@@ -235,19 +212,12 @@ C   --------------------------------------------------------------------
 C 
 C   REMPLISSAGE "COMMON" ASTER POUR LES NUMEROS DES NOEUDS DES PALIERS 
 C   ------------------------------------------------------------------
-         ZI(ZNPAL+1+(IPAL-1))=NUMNOD
+         ZI(ZNPAL+1+(IPAL-1))=IPAL
  100  CONTINUE    
 C
 C     FIN DE BOUCLE DE LECTURE SUR LES PALIERS
 C     ----------------------------------------
-C     Lecture de fic_don pour voir si on n'envoie pas de dep
-C     et on prend des efforts nuls    
-C      READ(UNILECT,*)IEFF
       PRDEFF = .TRUE.
-C      if(IEFF.EQ.99)then
-C         prend_efforts=.False.
-C         WRITE(IFM,*)'ASTEREDYOS: NO COUPLAGE '
-C      endif
 C 
 C     ECRITURE DES VARIABLES LUES 
 C     ---------------------------     
@@ -263,6 +233,64 @@ C     ---------------------------
 C
       IF ( ULISOP ( UNITPA, K16NOM ) .NE. 0 )
      &   CALL ULOPEN ( -UNITPA,' ',' ','NEW','O')
+      
+      ELSE
+C
+C   LECTURE DES INFOS DEPUIS LE FICHIER DE COMMANDE
+C   --------------------------------------------------------------------
+        CALL GETFAC( 'PALIER_EDYOS' , NBPAL )
+        IF (NBPAL.GT.PALMAX) CALL U2MESS('F','EDYOS_43')
+        ZI(ZNPAL)=NBPAL
+        DO 201 IPAL = 1, NBPAL
+          CALL GETVTX('PALIER_EDYOS','GROUP_NO',IPAL,1,0,K8B,N2)
+          IF ( ABS(N2) .EQ. 0 ) THEN
+            CALL GETVTX('PALIER_EDYOS','NOEUD',IPAL,1,0,K8B,N2)
+            IF ( ABS(N2) .EQ. 0 ) THEN
+              CALL U2MESS('F','EDYOS_49')
+            ELSE
+              NGR = -N2
+              NGR = 1
+              CALL GETVTX('PALIER_EDYOS','NOEUD',IPAL,1,NGR,
+     &                 CNPAL(IPAL),N2)              
+            ENDIF
+          ELSE
+            NGR = -N2
+            NGR = 1
+            CALL GETVTX('PALIER_EDYOS','GROUP_NO',IPAL,1,NGR,
+     &                 CNPAL(IPAL),N2)
+          ENDIF
+          CALL GETVTX('PALIER_EDYOS','TYPE_EDYOS',IPAL,1,NGR,
+     &                 CTYPE,N2)
+          ZK8(ZCPAL+(2*PALMAX)+(IPAL-1))=CNPAL(IPAL)
+          ZK8(ZCPAL+(IPAL-1))=CTYPE
+ 201    CONTINUE
+
+          NIV = 3
+      
+        DO 101 IPAL=1,NBPAL
+C
+          IF(IPAL.LT.10)THEN
+            WRITE(CARAC1,'(I1)')IPAL
+            FINPAL(IPAL)='_'//CARAC1
+          ELSE
+            WRITE(CARAC2,'(I2)')IPAL
+            FINPAL(IPAL)='_'//CARAC2
+          ENDIF
+          ZK8(ZCPAL+PALMAX+(IPAL-1))=FINPAL(IPAL)
+          IF (NIV.GE.2) 
+     &      WRITE(IFM,*)'ASTEREDYOS : LECDON : CTYPE - FINPAL - CNPAL=',
+     &      ZK8(ZCPAL+(IPAL-1)),' -- ',FINPAL(IPAL),' -- ',
+     &      ZK8(ZCPAL+(2*PALMAX)+(IPAL-1))
+          ZI(ZNPAL+1+(IPAL-1))=IPAL
+ 101    CONTINUE
+        IF (NIV.GE.2) THEN
+          WRITE(IFM,*)'ASTEREDYOS: ',NOMPRG,
+     &              ' - FIN LECTURE ARGUMENTS PALIERS '
+          WRITE(IFM,*)'ASTEREDYOS: ',NOMPRG,' - NOMBRE PALIERS: ',NBPAL
+        ENDIF
+      ENDIF
+      
+      
       CALL JEDEMA()
 C
       END

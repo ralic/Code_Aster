@@ -1,4 +1,4 @@
-# MODIF  DATE 25/01/2011   AUTEUR MACOCCO K.MACOCCO 
+# MODIF  DATE 31/01/2011   AUTEUR MACOCCO K.MACOCCO 
 # TITRE MURAKAMI 4.2 FISSURE INCLINEE DANS UNE PLAQUE ILLIMITEE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -108,7 +108,6 @@ TABL_K=POST_K1_K2_K3(  MODELISATION='C_PLAN',
                         MATER=MAT,
                         RESULTAT = CHAMDEPL,
                         FOND_FISS = FOND1,
-                        MAILLAGE = MA,
                         ABSC_CURV_MAXI = 7.51000E-05,
                         VECT_K1        = ( 0., 1., 0., )
                        )

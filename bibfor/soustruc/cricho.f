@@ -4,9 +4,9 @@
       IMPLICIT  REAL*8  (A-H,O-Z)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SOUSTRUC  DATE 13/10/2010   AUTEUR BOITEAU O.BOITEAU 
+C MODIF SOUSTRUC  DATE 31/01/2011   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -110,10 +110,10 @@ C
             CT=0.D0
             CEF=0.D0
             IC=4*JJ-3
-            CALL U2MESG('I+','SOUSTRUC_91',0,' ',0,0,0,0.D0)
+            CALL U2MESG('I','SOUSTRUC_91',0,' ',0,0,0,0.D0)
             IF (INFO.GE.2) THEN
                VALK = NOECHO(I,IC)
-               CALL U2MESG('I+','SOUSTRUC_85',1,VALK,0,0,0,0.D0)
+               CALL U2MESG('I','SOUSTRUC_85',1,VALK,0,0,0,0.D0)
             ENDIF
 C     CREATION DE FIMPO : FORCE UNITAIRE AU NOEUD DE CHOC (N)
             CALL U2MESG('I','SOUSTRUC_92',0,' ',0,0,0,0.D0)
@@ -226,10 +226,10 @@ C      ON ORDONNE SELON LES SOUPLESSES DECROISSANTES
             VALK = NOECHO(I,IC)
             VALR (1) = CT
             VALR (2) = CEF
-            CALL U2MESG('I+','SOUSTRUC_94',1,VALK,0,0,2,VALR)
+            CALL U2MESG('I','SOUSTRUC_94',1,VALK,0,0,2,VALR)
             TX = SOUP*PARCHO(I,2)*(1.D0-CT)
             VALR (1) = TX
-            CALL U2MESG('I+','SOUSTRUC_95',0,' ',0,0,1,VALR)
+            CALL U2MESG('I','SOUSTRUC_95',0,' ',0,0,1,VALR)
             SEUIL=MAX(SEUIL,TX)
             TX = SOUP*CT*PARCHO(I,2)
             VALR (1) = TX
@@ -239,7 +239,7 @@ C
  20     CONTINUE
 
         IF (INFO.GE.2) THEN
-          CALL U2MESG('I+','SOUSTRUC_97',0,' ',0,0,0,0.D0)
+          CALL U2MESG('I','SOUSTRUC_97',0,' ',0,0,0,0.D0)
           MATUV = .FALSE.
           NM = NBLIG
           M = NEQ
@@ -271,13 +271,13 @@ C CONDITIONNEMENT
           IF ( MMIN .LE. EPS ) THEN
             VALR (1) = MMIN
             VALR (2) = EPS
-            CALL U2MESG('I+','SOUSTRUC_98',0,' ',0,0,2,VALR)
+            CALL U2MESG('I','SOUSTRUC_98',0,' ',0,0,2,VALR)
             MMIN = EPS
           ENDIF
           SCOND = MMAX/MMIN
 C
           VALR (1) = SCOND
-          CALL U2MESG('I+','SOUSTRUC_99',0,' ',0,0,1,VALR)
+          CALL U2MESG('I','SOUSTRUC_99',0,' ',0,0,1,VALR)
           DO 51 JJ = 1,NBMODE
             ZR(JNORMY-1+JJ)=DDOT(NEQ,BMODAL(1,JJ),1,BMODAL(1,JJ),1)
 51        CONTINUE
@@ -313,7 +313,7 @@ C CONDITIONNEMENT
               VALI = J
               VALR (1) = MMIN
               VALR (2) = EPS
-              CALL U2MESG('I+','SOUSTRUC2_1',0,' ',1,VALI,2,VALR)
+              CALL U2MESG('I','SOUSTRUC2_1',0,' ',1,VALI,2,VALR)
               MMIN = EPS
             ENDIF
             ZR(JEFLOC-1+J) = MMAX/MMIN
@@ -329,7 +329,7 @@ C      ON ORDONNE SELON LA PARTICIPATION DECROISSANTE
           DO 72 J = 1,NBMODE
             VALI = INDIC(J)
             VALR (1) = ZR(JEFLOC-1+INDIC(J))
-            CALL U2MESG('I+','SOUSTRUC2_2',0,' ',1,VALI,1,VALR)
+            CALL U2MESG('I','SOUSTRUC2_2',0,' ',1,VALI,1,VALR)
  72       CONTINUE
 C
           CALL U2MESG('I','SOUSTRUC2_3',0,' ',0,0,0,0.D0)

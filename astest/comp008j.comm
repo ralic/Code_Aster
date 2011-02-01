@@ -1,0 +1,135 @@
+# MODIF  DATE 01/02/2011   AUTEUR PROIX J-M.PROIX 
+# RESPONSABLE PROIX J-M.PROIX
+# TITRE : VARIATION TEMPERATURE DANS LE COMPORTEMENT 'VISC_CIN1_CHAB' 
+# comp008j.para = tps_job 120 mem_job 64Mo ncpus 1 liste_test S
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+# CAS-TEST DE REFERENCE : 
+#===================================================================== 
+
+DEBUT(CODE=_F(NOM='COMP008J',NIV_PUB_WEB='INTERNET'),IMPR_MACRO='NON')
+#=====================================================================
+#               INITIALISATIONS
+#=====================================================================
+#
+TREF = 0.
+
+T0 = TREF
+Tmax = 500.
+
+tfin = 1.
+
+NCAL = 10
+
+
+ZERO =DEFI_CONSTANTE(VALE=0.0);
+
+UN =DEFI_CONSTANTE(VALE=1.0);
+
+compor='VISC_CIN1_CHAB'
+
+NB_VARI=8
+
+
+#=====================================================================
+#               MATERIAU  FONCTION  DE  LA  TEMPERATURE
+#=====================================================================
+YOUN=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(T0, 200000.,
+                                         Tmax, 100000.,                                   
+                                           ),);
+ALPH=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(T0, 1.E-5,
+                                        Tmax, 2.E-5,
+                                           ),);
+
+Rinf =DEFI_FONCTION(NOM_PARA='TEMP',VALE=(T0, 300.,
+                                          Tmax,150.,
+                                           ),);
+
+SIGY=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(T0, 100.,
+                                         Tmax, 50.,
+                                           ),);
+
+b=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(T0, 12.,
+                                      Tmax, 5.,
+                                           ),);
+C_PRAG=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(T0, 2000.,
+                                           Tmax, 500.,
+                                           ),);
+
+Gamma0=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(T0, 45.,
+                                           Tmax, 75.,
+                                           ),);
+
+Nlem =DEFI_FONCTION(NOM_PARA='TEMP',VALE=(T0, 24.,
+                                          Tmax,16.,
+                                           ),);
+
+UNSURK =DEFI_FONCTION(NOM_PARA='TEMP',VALE=(T0, 1./100.,
+                                            Tmax,1./150.,
+                                           ),);
+
+MATERI=DEFI_MATERIAU(ELAS_FO=_F(E=YOUN,
+                               NU=ZERO,
+                               TEMP_DEF_ALPHA=TREF,
+                               ALPHA=ALPH,),
+                    CIN1_CHAB_FO=_F(R_I  = Rinf,
+                                  R_0  = SIGY,
+                                  B    = b,
+                                  C_I  = C_PRAG,
+                                  G_0  = Gamma0,
+                                  K = UN,
+                                  W = ZERO,
+                                  A_I = UN,
+                                        ),                         
+                     LEMAITRE_FO =_F(N=Nlem,
+                                     UN_SUR_K=UNSURK,
+                                     UN_SUR_M=ZERO),
+                  );
+
+LMAT2  = [None]*(NCAL)
+time=0.
+for i in range(NCAL):        
+    timem = time     
+    time = timem + tfin/NCAL
+    Ti = T0 + time/tfin * (Tmax - T0)
+    Tm = T0 + timem/tfin * (Tmax - T0)
+    LMAT2[i]=DEFI_MATERIAU(ELAS =_F(E=YOUN(Ti),
+                                        NU=0.,
+                                        ALPHA=0.,),
+                           CIN1_CHAB=_F(R_I  = Rinf(Ti),
+                                        R_0  = SIGY(Ti),
+                                        B    = b(Ti),
+                                        C_I  = C_PRAG(Ti),
+                                        G_0  = Gamma0(Ti),
+                                                       ),                      
+                           LEMAITRE  =_F(N=Nlem(Ti),
+                                         UN_SUR_K=UNSURK(Ti) ),
+                                );
+
+############################################################################
+# MACRO pour test thermoplastique
+
+tabresu=TEST_COMPOR(
+              MATER=MATERI,COMP_INCR=_F(RELATION=compor),
+              LIST_MATER=LMAT2,ALPHA=ALPH,YOUNG=YOUN,TEMP_INIT=T0,TEMP_FIN=Tmax,NEWTON=_F(REAC_ITER=1),
+              NB_VARI=NB_VARI,
+              )
+
+IMPR_TABLE(TABLE=tabresu)
+
+FIN();
