@@ -1,4 +1,4 @@
-# MODIF  DATE 25/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # RESPONSABLE SFAYOLLE S.FAYOLLE
 # TITRE  : ENDOMMAGEMENT D UNE PLAQUE PLANE SOUS SOLLICITATIONS VARIEES
 # ssns106h.para = tps_job 120 mem_job 64Mo ncpus 1 liste_test S
@@ -426,12 +426,12 @@ RESU_G1=STAT_NON_LINE(MODELE=MO_G,
 RESU_G1=CALC_ELEM(reuse =RESU_G1,
 
                   RESULTAT=RESU_G1,
-                  OPTION='VARI_ELNO_ELGA',);
+                  OPTION='VARI_ELNO',);
 
 RESU_G1=CALC_NO(reuse =RESU_G1,
                 RESULTAT=RESU_G1,
                 PRECISION=1.E-3,
-                OPTION=('FORC_NODA','VARI_NOEU_ELGA',),
+                OPTION=('FORC_NODA','VARI_NOEU',),
                           );
 
 RESU_L1=STAT_NON_LINE(MODELE=MO_L,
@@ -509,7 +509,7 @@ TFXA6_G1=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
 TD_G1=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                               INTITULE='A4FX',
                               RESULTAT=RESU_G1,
-                              NOM_CHAM='VARI_NOEU_ELGA',
+                              NOM_CHAM='VARI_NOEU',
                               GROUP_NO='A4',
                               NOM_CMP=('V1','V2',),),);
 

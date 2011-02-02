@@ -1,6 +1,6 @@
       SUBROUTINE TE0347(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,7 +21,7 @@ C ======================================================================
       CHARACTER*16 OPTION,NOMTE
 C ----------------------------------------------------------------------
 C     FONCTION REALISEE:  CALCUL DES OPTIONS :
-C     SIEF_ELNO, FORC_NODA ET VARI_ELNO_ELGA
+C     SIEF_ELNO, FORC_NODA ET VARI_ELNO
 C     ELEMENT  POU_D_TG POU_D_T POU_D_E
 C     POUR LES VARIABLES INTERNES :
 C       - COMPORTEMENT VMIS_POU*
@@ -109,7 +109,7 @@ C
 302         CONTINUE
 301      CONTINUE
 
-      ELSEIF ( OPTION .EQ. 'VARI_ELNO_ELGA  ' ) THEN
+      ELSEIF ( OPTION .EQ. 'VARI_ELNO  ' ) THEN
 C     --------------------------------------
          CALL JEVECH ( 'PVARIGR', 'L', ICHG   )
          CALL JEVECH ( 'PCOMPOR', 'L', ICOMPO )

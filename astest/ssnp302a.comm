@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # TITRE PLAQUE CARREE EN TRACTION SOUMIS A UN CHAMP DE TEMPERATURE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -124,12 +124,12 @@ CALCNL=STAT_NON_LINE(   MODELE=MODEL,
 
 CALCNL=CALC_ELEM( reuse=CALCNL,
                             OPTION=(
-                  'SIEF_ELNO',  'VARI_ELNO_ELGA',),
+                  'SIEF_ELNO',  'VARI_ELNO',),
                           RESULTAT=CALCNL,
               )
 
 CALCNL=CALC_ELEM( reuse=CALCNL,
-                                    OPTION='EPSI_ELNO_DEPL',
+                                    OPTION='EPSI_ELNO',
                                   RESULTAT=CALCNL
                      )
 

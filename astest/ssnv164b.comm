@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # TITRE MISE EN TENSION DE CABLES DE PRECONTRAINTES DANS UNE POUTRE 3D
 # ssnv164b.para = tps_job 170 mem_job 256Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -246,7 +246,7 @@ RES1 =  CALC_PRECONT(  reuse=RES1,
 #--------------------------------------
 
 RES1=CALC_ELEM(reuse =RES1,
-               OPTION=('SIEF_ELNO','EQUI_ELNO_SIGM'),
+               OPTION=('SIEF_ELNO','SIEQ_ELNO'),
                RESULTAT=RES1,);
 
 #  cable 1 - inst 300s

@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # TITRE  ESSAI DE TRACTION-CISAILLEMENT 3D (VISC_TAHERI)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -181,7 +181,7 @@ SOLNL=STAT_NON_LINE(
 
 SOLNL=CALC_ELEM( reuse=SOLNL,
                             OPTION=(
-                  'SIEF_ELNO',  'VARI_ELNO_ELGA',),
+                  'SIEF_ELNO',  'VARI_ELNO',),
                           RESULTAT=SOLNL,
               )
 
@@ -197,7 +197,7 @@ TEST_RESU(RESU=(
            )
 
 SOLNL=CALC_ELEM( reuse=SOLNL,
-                                    OPTION='EPSI_ELNO_DEPL',
+                                    OPTION='EPSI_ELNO',
                                   RESULTAT=SOLNL )
 
 SOLNL=CALC_ELEM( reuse=SOLNL,
@@ -210,10 +210,10 @@ SOLNL=CALC_ELEM( reuse=SOLNL,
 
 TEST_RESU(RESU=(
 
-  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'EPSI_ELNO_DEPL',  NUME_ORDRE = 6,
+  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'EPSI_ELNO',  NUME_ORDRE = 6,
                  MAILLE = 'MA1',  NOEUD = 'NO1',  NOM_CMP = 'EPXX',  VALE = 1.721E-2),
 
-  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'EPSI_ELNO_DEPL',  NUME_ORDRE = 6,
+  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'EPSI_ELNO',  NUME_ORDRE = 6,
                  MAILLE = 'MA1',  NOEUD = 'NO1',  NOM_CMP = 'EPXY',  VALE = 2.573E-2),
 
   _F(  RESULTAT = SOLNL,  NOM_CHAM = 'EPSP_ELGA',       NUME_ORDRE = 6,
@@ -228,10 +228,10 @@ TEST_RESU(RESU=(
   _F(  RESULTAT = SOLNL,  NOM_CHAM = 'EPSP_ELNO',       NUME_ORDRE = 6,
                  MAILLE = 'MA1',  NOEUD = 'NO1',  NOM_CMP = 'EPXY',  VALE = 2.515E-2),
 
-  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'VARI_ELNO_ELGA',  NUME_ORDRE = 6,
+  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'VARI_ELNO',  NUME_ORDRE = 6,
                  MAILLE = 'MA1',  NOEUD = 'NO1',  NOM_CMP = 'V1', VALE = 3.356E-2),
 
-  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'VARI_ELNO_ELGA',  NUME_ORDRE = 6,
+  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'VARI_ELNO',  NUME_ORDRE = 6,
                  MAILLE = 'MA1',  NOEUD = 'NO1',  NOM_CMP = 'V2', VALE = 1.760E+2))
          )
 

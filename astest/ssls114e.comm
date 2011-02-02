@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # TITRE (NON REGRESSION SUR QUART DE VIROLE CYLINDRIQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -88,11 +88,11 @@ RESP=MECA_STATIQUE(         MODELE=MO,    CHAM_MATER=CM,EXCIT=(
                         )
 
 CALC_ELEM( reuse= RESP ,RESULTAT= RESP ,
-                           OPTION='SIGM_ELNO_DEPL'
+                           OPTION='SIGM_ELNO'
                         )
 
 CALC_NO( reuse=RESP,   RESULTAT=RESP,
-                      OPTION='SIGM_NOEU_DEPL'
+                      OPTION='SIGM_NOEU'
                  )
 
 TEST_RESU(RESU=(
@@ -167,66 +167,66 @@ TEST_RESU(RESU=(
      # FEUILLET_MOYEN SIGMA THETA THETA
      # A
             _F(  RESULTAT = RESP,       NUME_ORDRE = 1,
-              NOM_CHAM = 'SIGM_NOEU_DEPL',
+              NOM_CHAM = 'SIGM_NOEU',
               CRITERE = 'RELATIF',  PRECISION = 0.083,
               GROUP_NO = 'PA',         NOM_CMP = 'SIYY',     VALE = 194.93754),
      # B
             _F(  RESULTAT = RESP,      NUME_ORDRE = 1,
-              NOM_CHAM = 'SIGM_NOEU_DEPL',
+              NOM_CHAM = 'SIGM_NOEU',
               CRITERE = 'RELATIF',  PRECISION = 0.083,
               GROUP_NO = 'PB',         NOM_CMP = 'SIYY',     VALE = 194.93754),
      # C
             _F(  RESULTAT = RESP,       NUME_ORDRE = 1,
-              NOM_CHAM = 'SIGM_NOEU_DEPL',
+              NOM_CHAM = 'SIGM_NOEU',
               CRITERE = 'RELATIF',  PRECISION = 0.083,
               GROUP_NO = 'PC',         NOM_CMP = 'SIXX',     VALE = 194.93754),
      # D
             _F(  RESULTAT = RESP,       NUME_ORDRE = 1,
-              NOM_CHAM = 'SIGM_NOEU_DEPL',
+              NOM_CHAM = 'SIGM_NOEU',
               CRITERE = 'RELATIF',  PRECISION = 0.083,
               GROUP_NO = 'PD',         NOM_CMP = 'SIXX',     VALE = 194.93754),
 
      # FEUILLET_INF SIGMA THETA THETA
      # A
             _F(  RESULTAT = RESP,       NUME_ORDRE = 1,
-              NOM_CHAM = 'SIGM_NOEU_DEPL',
+              NOM_CHAM = 'SIGM_NOEU',
               CRITERE = 'RELATIF',  PRECISION = 0.09,
               GROUP_NO = 'PA_INF',     NOM_CMP = 'SIYY',     VALE = 200.125),
      # B
             _F(  RESULTAT = RESP,      NUME_ORDRE = 1,
-              NOM_CHAM = 'SIGM_NOEU_DEPL',
+              NOM_CHAM = 'SIGM_NOEU',
               CRITERE = 'RELATIF',  PRECISION = 0.09,
               GROUP_NO = 'PB_INF',     NOM_CMP = 'SIYY',     VALE = 200.125),
      # C
             _F(  RESULTAT = RESP,       NUME_ORDRE = 1,
-              NOM_CHAM = 'SIGM_NOEU_DEPL',
+              NOM_CHAM = 'SIGM_NOEU',
               CRITERE = 'RELATIF',  PRECISION = 0.09,
               GROUP_NO = 'PC_INF',     NOM_CMP = 'SIXX',     VALE = 200.125),
      # D
             _F(  RESULTAT = RESP,       NUME_ORDRE = 1,
-              NOM_CHAM = 'SIGM_NOEU_DEPL',
+              NOM_CHAM = 'SIGM_NOEU',
               CRITERE = 'RELATIF',  PRECISION = 0.09,
               GROUP_NO = 'PD_INF',     NOM_CMP = 'SIXX',     VALE = 200.125),
 
      # FEUILLET_SUP SIGMA THETA THETA
      # A
             _F(  RESULTAT = RESP,       NUME_ORDRE = 1,
-              NOM_CHAM = 'SIGM_NOEU_DEPL',
+              NOM_CHAM = 'SIGM_NOEU',
               CRITERE = 'RELATIF',  PRECISION = 0.08,
               GROUP_NO = 'PA_SUP',     NOM_CMP = 'SIYY',     VALE = 190.125),
      # B
             _F(  RESULTAT = RESP,      NUME_ORDRE = 1,
-              NOM_CHAM = 'SIGM_NOEU_DEPL',
+              NOM_CHAM = 'SIGM_NOEU',
               CRITERE = 'RELATIF',  PRECISION = 0.08,
               GROUP_NO = 'PB_SUP',     NOM_CMP = 'SIYY',     VALE = 190.125),
      # C
             _F(  RESULTAT = RESP,       NUME_ORDRE = 1,
-              NOM_CHAM = 'SIGM_NOEU_DEPL',
+              NOM_CHAM = 'SIGM_NOEU',
               CRITERE = 'RELATIF',  PRECISION = 0.08,
               GROUP_NO = 'PC_SUP',     NOM_CMP = 'SIXX',     VALE = 190.125),
      # D
             _F(  RESULTAT = RESP,       NUME_ORDRE = 1,
-              NOM_CHAM = 'SIGM_NOEU_DEPL',
+              NOM_CHAM = 'SIGM_NOEU',
               CRITERE = 'RELATIF',  PRECISION = 0.08,
               GROUP_NO = 'PD_SUP',     NOM_CMP = 'SIXX',     VALE = 190.125))
     )
@@ -246,11 +246,11 @@ RESQ=MECA_STATIQUE(    MODELE=MO,        CHAM_MATER=CM,EXCIT=(
                         )
 
 CALC_ELEM( reuse= RESQ ,RESULTAT= RESQ ,
-                            OPTION=('EPSI_ELNO_DEPL', 'SIGM_ELNO_DEPL',)
+                            OPTION=('EPSI_ELNO', 'SIGM_ELNO',)
                         )
 
 CALC_NO( reuse=RESQ,   RESULTAT=RESQ,
-                     OPTION=('EPSI_NOEU', 'SIGM_NOEU_DEPL',)
+                     OPTION=('EPSI_NOEU', 'SIGM_NOEU',)
                  )
 
 TEST_RESU(RESU=(
@@ -325,66 +325,66 @@ TEST_RESU(RESU=(
      # FEUILLET_MOYEN SIGMA THETA THETA
      # A
             _F(  RESULTAT = RESP,       NUME_ORDRE = 1,
-              NOM_CHAM = 'SIGM_NOEU_DEPL',
+              NOM_CHAM = 'SIGM_NOEU',
               CRITERE = 'RELATIF',  PRECISION = 0.083,
               GROUP_NO = 'PA',         NOM_CMP = 'SIYY',     VALE = 194.93754),
      # B
             _F(  RESULTAT = RESP,      NUME_ORDRE = 1,
-              NOM_CHAM = 'SIGM_NOEU_DEPL',
+              NOM_CHAM = 'SIGM_NOEU',
               CRITERE = 'RELATIF',  PRECISION = 0.083,
               GROUP_NO = 'PB',         NOM_CMP = 'SIYY',     VALE = 194.93754),
      # C
             _F(  RESULTAT = RESP,       NUME_ORDRE = 1,
-              NOM_CHAM = 'SIGM_NOEU_DEPL',
+              NOM_CHAM = 'SIGM_NOEU',
               CRITERE = 'RELATIF',  PRECISION = 0.083,
               GROUP_NO = 'PC',         NOM_CMP = 'SIXX',     VALE = 194.93754),
      # D
             _F(  RESULTAT = RESP,       NUME_ORDRE = 1,
-              NOM_CHAM = 'SIGM_NOEU_DEPL',
+              NOM_CHAM = 'SIGM_NOEU',
               CRITERE = 'RELATIF',  PRECISION = 0.083,
               GROUP_NO = 'PD',         NOM_CMP = 'SIXX',     VALE = 194.93754),
 
      # FEUILLET_INF SIGMA THETA THETA
      # A
             _F(  RESULTAT = RESP,       NUME_ORDRE = 1,
-              NOM_CHAM = 'SIGM_NOEU_DEPL',
+              NOM_CHAM = 'SIGM_NOEU',
               CRITERE = 'RELATIF',  PRECISION = 0.09,
               GROUP_NO = 'PA_INF',     NOM_CMP = 'SIYY',     VALE = 200.125),
      # B
             _F(  RESULTAT = RESP,      NUME_ORDRE = 1,
-              NOM_CHAM = 'SIGM_NOEU_DEPL',
+              NOM_CHAM = 'SIGM_NOEU',
               CRITERE = 'RELATIF',  PRECISION = 0.09,
               GROUP_NO = 'PB_INF',     NOM_CMP = 'SIYY',     VALE = 200.125),
      # C
             _F(  RESULTAT = RESP,       NUME_ORDRE = 1,
-              NOM_CHAM = 'SIGM_NOEU_DEPL',
+              NOM_CHAM = 'SIGM_NOEU',
               CRITERE = 'RELATIF',  PRECISION = 0.09,
               GROUP_NO = 'PC_INF',     NOM_CMP = 'SIXX',     VALE = 200.125),
      # D
             _F(  RESULTAT = RESP,       NUME_ORDRE = 1,
-              NOM_CHAM = 'SIGM_NOEU_DEPL',
+              NOM_CHAM = 'SIGM_NOEU',
               CRITERE = 'RELATIF',  PRECISION = 0.09,
               GROUP_NO = 'PD_INF',     NOM_CMP = 'SIXX',     VALE = 200.125),
 
      # FEUILLET_SUP SIGMA THETA THETA
      # A
             _F(  RESULTAT = RESP,       NUME_ORDRE = 1,
-              NOM_CHAM = 'SIGM_NOEU_DEPL',
+              NOM_CHAM = 'SIGM_NOEU',
               CRITERE = 'RELATIF',  PRECISION = 0.08,
               GROUP_NO = 'PA_SUP',     NOM_CMP = 'SIYY',     VALE = 190.125),
      # B
             _F(  RESULTAT = RESP,      NUME_ORDRE = 1,
-              NOM_CHAM = 'SIGM_NOEU_DEPL',
+              NOM_CHAM = 'SIGM_NOEU',
               CRITERE = 'RELATIF',  PRECISION = 0.08,
               GROUP_NO = 'PB_SUP',     NOM_CMP = 'SIYY',     VALE = 190.125),
      # C
             _F(  RESULTAT = RESP,       NUME_ORDRE = 1,
-              NOM_CHAM = 'SIGM_NOEU_DEPL',
+              NOM_CHAM = 'SIGM_NOEU',
               CRITERE = 'RELATIF',  PRECISION = 0.08,
               GROUP_NO = 'PC_SUP',     NOM_CMP = 'SIXX',     VALE = 190.125),
      # D
             _F(  RESULTAT = RESP,       NUME_ORDRE = 1,
-              NOM_CHAM = 'SIGM_NOEU_DEPL',
+              NOM_CHAM = 'SIGM_NOEU',
               CRITERE = 'RELATIF',  PRECISION = 0.08,
               GROUP_NO = 'PD_SUP',     NOM_CMP = 'SIXX',     VALE = 190.125))
     )

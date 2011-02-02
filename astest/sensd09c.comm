@@ -1,5 +1,5 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
-# TITRE SENSIBILITE EFGE_ELNO_DEPL / SIPO_ELNO
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# TITRE SENSIBILITE EFGE_ELNO / SIPO_ELNO
 # sensd09c.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -103,17 +103,17 @@ DYT=DYNA_LINE_TRAN(MODELE=MO,CHAM_MATER=CHMAT,CARA_ELEM=CARELE,
 DYT = CALC_ELEM(
                  reuse = DYT,
                  RESULTAT= DYT,NUME_ORDRE=20,
-                 OPTION = ('EFGE_ELNO_DEPL','SIPO_ELNO',),
+                 OPTION = ('EFGE_ELNO','SIPO_ELNO',),
                  );
 
 CALC_SENSI(reuse = DYT,RESULTAT= DYT,NUME_ORDRE=20,SENSIBILITE=(PS[0],PS[1]),
-                 OPTION = ('EFGE_ELNO_DEPL','SIPO_ELNO',),
+                 OPTION = ('EFGE_ELNO','SIPO_ELNO',),
                  );
 
 T_REF_EF=POST_RELEVE_T(ACTION=_F(INTITULE='SENSIBILITE',
                       NOEUD=('NO6'),MAILLE='EL6',
                       RESULTAT=DYT,
-                      NOM_CHAM='EFGE_ELNO_DEPL',
+                      NOM_CHAM='EFGE_ELNO',
                       NUME_ORDRE=20,
                       NOM_CMP='MFY',
                       OPERATION='EXTRACTION',
@@ -123,7 +123,7 @@ TSREF_EF=POST_RELEVE_T(ACTION=_F(INTITULE='SENSIBILITE',
                       SENSIBILITE=tuple(PS),
                       NOEUD='NO6',MAILLE='EL6',
                       RESULTAT=DYT,
-                      NOM_CHAM='EFGE_ELNO_DEPL',
+                      NOM_CHAM='EFGE_ELNO',
                       NUME_ORDRE=20,
                       NOM_CMP='MFY',
                       OPERATION='EXTRACTION',
@@ -192,15 +192,15 @@ for i in range(n):
   DYTD[i] = CALC_ELEM(
                  reuse = DYTD[i],
                  RESULTAT= DYTD[i],
-                 OPTION = ('EFGE_ELNO_DEPL','SIPO_ELNO',),
+                 OPTION = ('EFGE_ELNO','SIPO_ELNO',),
                  );
 
-# pour EFGE_ELNO_DEPL
+# pour EFGE_ELNO
 
   T_DEF[i]=POST_RELEVE_T(ACTION=_F(INTITULE='SENSIBILITE',
                                   NOEUD=('NO6'),MAILLE='EL6',
                                   RESULTAT=DYTD[i],
-                                  NOM_CHAM='EFGE_ELNO_DEPL',
+                                  NOM_CHAM='EFGE_ELNO',
                                   NUME_ORDRE=20,
                                   NOM_CMP='MFY',
                                   OPERATION='EXTRACTION',
@@ -293,37 +293,37 @@ for i in range(n):
 
 TEST_RESU(RESU=(
                 _F(RESULTAT=DYT,NUME_ORDRE=20,
-                   NOM_CHAM='EFGE_ELNO_DEPL',NOEUD= 'NO6',MAILLE='EL5',
+                   NOM_CHAM='EFGE_ELNO',NOEUD= 'NO6',MAILLE='EL5',
                    CRITERE='RELATIF',PRECISION=1.E-5,
                    NOM_CMP='VZ',
                    VALE=(-5.E+04),REFERENCE='NON_REGRESSION',VERSION='9.0.23'),
 
                 _F(RESULTAT=DYT,NUME_ORDRE=20,
-                   NOM_CHAM='EFGE_ELNO_DEPL',NOEUD= 'NO6',MAILLE='EL5',
+                   NOM_CHAM='EFGE_ELNO',NOEUD= 'NO6',MAILLE='EL5',
                    CRITERE='ABSOLU',PRECISION=1.E-10,
                    NOM_CMP='VZ',SENSIBILITE=PS_0,
                    VALE=(9.48437E-21),REFERENCE='NON_REGRESSION',VERSION='9.0.23'),
 
                 _F(RESULTAT=DYT,NUME_ORDRE=20,
-                   NOM_CHAM='EFGE_ELNO_DEPL',NOEUD= 'NO6',MAILLE='EL5',
+                   NOM_CHAM='EFGE_ELNO',NOEUD= 'NO6',MAILLE='EL5',
                    CRITERE='ABSOLU',PRECISION=1.E-10,
                    NOM_CMP='VZ',SENSIBILITE=PS_1,
                    VALE=(0.E+00),REFERENCE='NON_REGRESSION',VERSION='9.0.23'),
 
                 _F(RESULTAT=DYT,NUME_ORDRE=20,
-                   NOM_CHAM='EFGE_ELNO_DEPL',NOEUD= 'NO6',MAILLE='EL5',
+                   NOM_CHAM='EFGE_ELNO',NOEUD= 'NO6',MAILLE='EL5',
                    CRITERE='RELATIF',PRECISION=1.E-5,
                    NOM_CMP='MFY',
                    VALE=(-1.49805E+03),REFERENCE='NON_REGRESSION',VERSION='9.0.23'),
 
                 _F(RESULTAT=DYT,NUME_ORDRE=20,
-                   NOM_CHAM='EFGE_ELNO_DEPL',NOEUD= 'NO6',MAILLE='EL5',
+                   NOM_CHAM='EFGE_ELNO',NOEUD= 'NO6',MAILLE='EL5',
                    CRITERE='ABSOLU',PRECISION=1.E-10,
                    NOM_CMP='MFY',SENSIBILITE=PS_0,
                    VALE=(1.00054E-08),REFERENCE='NON_REGRESSION',VERSION='9.0.23'),
 
                 _F(RESULTAT=DYT,NUME_ORDRE=20,
-                   NOM_CHAM='EFGE_ELNO_DEPL',NOEUD= 'NO6',MAILLE='EL5',
+                   NOM_CHAM='EFGE_ELNO',NOEUD= 'NO6',MAILLE='EL5',
                    CRITERE='ABSOLU',PRECISION=1.E-10,
                    NOM_CMP='MFY',SENSIBILITE=PS_1,
                    VALE=(0.E+00),REFERENCE='NON_REGRESSION',VERSION='9.0.23'),

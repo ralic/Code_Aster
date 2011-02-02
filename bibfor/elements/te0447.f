@@ -1,6 +1,6 @@
        SUBROUTINE TE0447 ( OPTION , NOMTE )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -24,7 +24,7 @@ C ......................................................................
 C    - FONCTION REALISEE:  CALCUL DES DEFORMATIONS ELEMENTAIRES 2D
 C                          DES ELEMENTS ISOPARAMETRIQUES
 C                          OPTION : 'EPSI_ELGA      '
-C                          OPTION : 'EPSI_ELNO_DEPL      '
+C                          OPTION : 'EPSI_ELNO      '
 
 C
 C    - ARGUMENTS:

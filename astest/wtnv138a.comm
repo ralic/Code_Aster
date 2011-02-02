@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # ======================================================================
 # TITRE ETUDE  : ESSAI TRIAXIAL NON DRAINE AVEC VISC_DRUC_PRAG
 # wtnv138a.para = tps_job 300 mem_job 128Mo ncpus 1 liste_test S
@@ -198,13 +198,13 @@ U1=STAT_NON_LINE(
 
 U1=CALC_ELEM( reuse=U1,
                             OPTION=(
-                  'SIEF_ELNO',  'VARI_ELNO_ELGA',),
+                  'SIEF_ELNO',  'VARI_ELNO',),
                           RESULTAT=U1,
               )
 
 U1=CALC_NO( reuse=U1,
                             OPTION=(
-                  'SIEF_NOEU',  'VARI_NOEU_ELGA',),
+                  'SIEF_NOEU',  'VARI_NOEU',),
                           RESULTAT=U1,
               )
                          
@@ -285,13 +285,13 @@ U2=STAT_NON_LINE(
               )
 
 U2=CALC_ELEM( reuse=U2,
-              OPTION=('SIEF_ELNO','EQUI_ELNO_SIGM','VARI_ELNO_ELGA'),
+              OPTION=('SIEF_ELNO','SIEQ_ELNO','VARI_ELNO'),
               RESULTAT=U2,
             )
 
 U2=CALC_NO(  reuse=U2,
              RESULTAT=U2,
-             OPTION=( 'SIEF_NOEU','EQUI_NOEU_SIGM', 'VARI_NOEU_ELGA')
+             OPTION=( 'SIEF_NOEU','SIEQ_NOEU', 'VARI_NOEU')
           )
 
 

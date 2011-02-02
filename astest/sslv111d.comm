@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # TITRE ESTIMATEUR D'ERREUR SUR UNE PLAQUE TROUEE EN TRACTION
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -97,18 +97,18 @@ RESU=CALC_ELEM(  reuse=RESU,
                           OPTION=(
                                   'ERZ1_ELEM',
                                   'ERZ2_ELEM',
-                                  'SIGM_ELNO_DEPL',
+                                  'SIGM_ELNO',
                                   'ERME_ELEM',
                                  ),
                       RESULTAT=RESU
                         )
 
 SIGZZ1=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_SIEF_R',
-NOM_CHAM='SIGM_NOZ1_ELGA', RESULTAT=RESU, NUME_ORDRE=1
+NOM_CHAM='SIZ1_ELGA', RESULTAT=RESU, NUME_ORDRE=1
                         )
 
 SIGZZ2=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_SIEF_R',
-NOM_CHAM='SIGM_NOZ2_ELGA', RESULTAT=RESU, NUME_ORDRE=1
+NOM_CHAM='SIZ2_ELGA', RESULTAT=RESU, NUME_ORDRE=1
                         )
 
 TEST_RESU(CHAM_NO=(
@@ -176,10 +176,10 @@ TEST_RESU(CHAM_NO=(
            )
 
 IMPR_RESU(   MODELE=MO,RESU=(
-     _F( RESULTAT = RESU, NOM_CHAM = 'SIGM_NOZ1_ELGA',
+     _F( RESULTAT = RESU, NOM_CHAM = 'SIZ1_ELGA',
          NUME_ORDRE = 1, SOUS_TITRE = 'CONTRAINTES AUX NOEUDS ZZ1',
           VALE_MAX = 'OUI', VALE_MIN = 'OUI'),
-     _F( RESULTAT = RESU, NOM_CHAM = 'SIGM_NOZ2_ELGA',
+     _F( RESULTAT = RESU, NOM_CHAM = 'SIZ2_ELGA',
          NUME_ORDRE = 1, SOUS_TITRE = 'CONTRAINTES AUX NOEUDS ZZ2',
          VALE_MAX = 'OUI', VALE_MIN = 'OUI'),
 

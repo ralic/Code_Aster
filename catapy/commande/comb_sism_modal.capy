@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+#& MODIF COMMANDE  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -115,8 +115,8 @@ COMB_SISM_MODAL=OPER(nom="COMB_SISM_MODAL",op= 109,sd_prod=mode_meca,
            DZ              =SIMP(statut='f',typ='R' ),
          ),
          OPTION          =SIMP(statut='o',typ='TXM',validators=NoRepeat(),max=9,
-                               into=("DEPL","VITE","ACCE_ABSOLU","SIGM_ELNO_DEPL","SIEF_ELGA",
-                                     "EFGE_ELNO_DEPL","REAC_NODA","FORC_NODA","EFGE_ELNO_CART",
+                               into=("DEPL","VITE","ACCE_ABSOLU","SIGM_ELNO","SIEF_ELGA",
+                                     "EFGE_ELNO","REAC_NODA","FORC_NODA","EFCA_ELNO",
                                      "SIPO_ELNO") ),
          INFO            =SIMP(statut='f',typ='I',defaut= 1,into=( 1 , 2 ) ),
          IMPRESSION      =FACT(statut='f',max='**',

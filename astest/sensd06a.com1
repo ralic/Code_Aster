@@ -102,13 +102,13 @@ for i in range(n):
 
                  RESULTAT = DYTD[i],
 
-                 OPTION = 'SIGM_ELNO_DEPL',
+                 OPTION = 'SIGM_ELNO',
                  );
 
   TDIFC[i]=POST_RELEVE_T(ACTION=_F(INTITULE='SENSIBILITE',
                                 GROUP_NO=('OPPOSE'),
                                 RESULTAT=DYTD[i],
-                                NOM_CHAM='SIGM_ELNO_DEPL',
+                                NOM_CHAM='SIGM_ELNO',
                                 NUME_ORDRE=10,
                                 MAILLE ='M14',
                                 NOM_CMP = 'SIXX',
@@ -184,7 +184,7 @@ DYTFX = CALC_ELEM(
 
                  RESULTAT = DYTFX,
 
-                 OPTION = 'SIGM_ELNO_DEPL',
+                 OPTION = 'SIGM_ELNO',
                  );
 
 DYTFY=DYNA_LINE_TRAN(MODELE=MO,CHAM_MATER=CHMAT,
@@ -198,18 +198,18 @@ DYTFY = CALC_ELEM(
 
                  RESULTAT = DYTFY,
 
-                 OPTION = 'SIGM_ELNO_DEPL',
+                 OPTION = 'SIGM_ELNO',
                  );
 
 OPPSXX = RECU_FONCTION(RESULTAT=DYTFX,
-                     NOM_CHAM='SIGM_ELNO_DEPL',
+                     NOM_CHAM='SIGM_ELNO',
                      MAILLE ='M14',
                      NOM_CMP = 'SIXX',
                      GROUP_NO='OPPOSE',
                      INTERPOL='LIN',);
 
 OPPSYY = RECU_FONCTION(RESULTAT=DYTFY,
-                     NOM_CHAM='SIGM_ELNO_DEPL',
+                     NOM_CHAM='SIGM_ELNO',
                      MAILLE ='M14',
                      NOM_CMP = 'SIYY',
                      GROUP_NO='OPPOSE',
@@ -249,14 +249,14 @@ TEST_RESU(RESU=(
 
                 _F(RESULTAT = DYT,   NUME_ORDRE = 10,
                     SENSIBILITE=(PS_2),
-                    NOM_CHAM = 'SIGM_ELNO_DEPL',   GROUP_NO = 'OPPOSE',
+                    NOM_CHAM = 'SIGM_ELNO',   GROUP_NO = 'OPPOSE',
                     CRITERE = 'RELATIF', PRECISION = 5.E-3,MAILLE ='M14',
                     NOM_CMP = 'SIXX',    VALE = 3.29,
                     REFERENCE = 'NON_REGRESSION',VERSION='7.1.13'),
 
                 _F(RESULTAT = DYT,   NUME_ORDRE = 10,
                     SENSIBILITE=(PS_3),
-                    NOM_CHAM = 'SIGM_ELNO_DEPL',   GROUP_NO = 'OPPOSE',
+                    NOM_CHAM = 'SIGM_ELNO',   GROUP_NO = 'OPPOSE',
                     CRITERE = 'RELATIF', PRECISION = 5.E-3,MAILLE ='M14',
                     NOM_CMP = 'SIYY',    VALE = 3.46,
                     REFERENCE = 'NON_REGRESSION',VERSION='7.1.13'),

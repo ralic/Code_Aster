@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # TITRE POUTRE CANTILEVER EN GRANDE ROTATION SOUMISE A UN MOMENT
 # ssnl103a.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -86,7 +86,7 @@ RESU=STAT_NON_LINE(
 
 RESU=CALC_ELEM( reuse=RESU,
                             OPTION=(
-                  'SIEF_ELNO',  'VARI_ELNO_ELGA',),
+                  'SIEF_ELNO',  'VARI_ELNO',),
                           RESULTAT=RESU,
               )
 

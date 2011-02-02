@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # TITRE : CALCUL DU RETRAIT DE DESSICCATION ET D'HYDRATATION
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -159,11 +159,11 @@ U=STAT_NON_LINE( MODELE=MO,
                                ITER_GLOB_MAXI=25,),);
 U=CALC_ELEM(reuse =U,
              RESULTAT = U,
-             OPTION=('EPSI_ELNO_DEPL','EPSP_ELNO','SIEF_ELNO','VARI_ELNO_ELGA'),         )
+             OPTION=('EPSI_ELNO','EPSP_ELNO','SIEF_ELNO','VARI_ELNO'),         )
 
 U=CALC_NO(reuse =U,
              RESULTAT = U,
-             OPTION=('EPSI_NOEU','SIEF_NOEU','EPSP_NOEU','VARI_NOEU_ELGA'),         )
+             OPTION=('EPSI_NOEU','SIEF_NOEU','EPSP_NOEU','VARI_NOEU'),         )
 
 TEST_RESU(RESU=(
   _F(  RESULTAT = U,  NOM_CHAM = 'EPSI_NOEU', INST = 3600.,
@@ -190,7 +190,7 @@ TEST_RESU(RESU=(
          NOM_CMP = 'EPYY',   NOEUD = 'N5',
          PRECISION = 1.E-6,  REFERENCE = 'ANALYTIQUE',
          VALE = 0., CRITERE = 'ABSOLU'),
-  _F(  RESULTAT = U,  NOM_CHAM = 'VARI_NOEU_ELGA', INST = 3600.,
+  _F(  RESULTAT = U,  NOM_CHAM = 'VARI_NOEU', INST = 3600.,
          NOM_CMP = 'V22',   NOEUD = 'N5',
          PRECISION = 1.E-6,  REFERENCE = 'ANALYTIQUE',
          VALE = 0., CRITERE = 'ABSOLU'),

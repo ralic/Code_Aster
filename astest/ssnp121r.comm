@@ -1,4 +1,4 @@
-# MODIF  DATE 25/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # TITRE CONTACT DE DEUX BLOCS (PENTA)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -119,11 +119,11 @@ RESU=STAT_NON_LINE (MODELE     = MO,
 
 RESU=CALC_ELEM( reuse=RESU,
              RESULTAT=RESU,
-               OPTION=('SIEF_ELNO','EQUI_ELNO_SIGM'));
+               OPTION=('SIEF_ELNO','SIEQ_ELNO'));
 
 RESU=CALC_NO( reuse=RESU,
            RESULTAT=RESU,
-             OPTION=('SIEF_NOEU','EQUI_NOEU_SIGM'));
+             OPTION=('SIEF_NOEU','SIEQ_NOEU'));
 
 SIELNO=CREA_CHAMP(  OPERATION='EXTR',
                     TYPE_CHAM='ELNO_SIEF_R',

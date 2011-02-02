@@ -1,4 +1,4 @@
-# MODIF  DATE 25/01/2011   AUTEUR MACOCCO K.MACOCCO 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # TITRE CALCUL DE G POUR UN PB ELASTOPLASTIQUE : APPROCHE GTP
 # ssnp102a.para = tps_job 80 mem_job 100Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -143,7 +143,7 @@ UP=STAT_NON_LINE(
 
 UP=CALC_ELEM( reuse=UP,
                             OPTION=(
-                  'SIEF_ELNO',  'VARI_ELNO_ELGA',),
+                  'SIEF_ELNO',  'VARI_ELNO',),
                           RESULTAT=UP,
               )
 
@@ -178,7 +178,7 @@ UP2=STAT_NON_LINE(
 
 UP2=CALC_ELEM( reuse=UP2,
                             OPTION=(
-                  'SIEF_ELNO',  'VARI_ELNO_ELGA',),
+                  'SIEF_ELNO',  'VARI_ELNO',),
                           RESULTAT=UP2,
               )
 

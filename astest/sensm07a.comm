@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # RESPONSABLE GNICOLAS G.NICOLAS
 # TITRE SENSIBILITE AUX DONNEES - EXEMPLE D'UTILISATION
 # sensm07a.para = tps_job 60 mem_job 64Mo liste_test R
@@ -136,16 +136,16 @@ resultat=MECA_STATIQUE(MODELE=modele,
 #
 resultat=CALC_ELEM(reuse =resultat,
                    RESULTAT=resultat,
-                   OPTION=('SIGM_ELNO_DEPL','ERME_ELEM'));
+                   OPTION=('SIGM_ELNO','ERME_ELEM'));
 #
 resultat=CALC_NO(reuse =resultat,
                  RESULTAT=resultat,
-                 OPTION='SIGM_NOEU_DEPL');
+                 OPTION='SIGM_NOEU');
 #
 # 8.2. Les derivees des contraintes aux points de Gauss
 # 8.3. Les derivees des contraintes aux noeuds
 CALC_SENSI(reuse =resultat, RESULTAT=resultat, SENSIBILITE=(E1,E2,E3,PA,PB),
-                 OPTION=('SIEF_ELGA','SIGM_ELNO_DEPL','SIGM_NOEU_DEPL'));
+                 OPTION=('SIEF_ELGA','SIGM_ELNO','SIGM_NOEU'));
 #
 # 9. Impressions des resultats
 #
@@ -204,7 +204,7 @@ IMPR_RESU(RESU=_F(RESULTAT=resultat,
 #
 TEST_RESU(RESU=_F(RESULTAT=resultat,
                   SENSIBILITE=E3,
-                  NOM_CHAM='SIGM_NOEU_DEPL',NOM_CMP='SIXX',
+                  NOM_CHAM='SIGM_NOEU',NOM_CMP='SIXX',
                   NUME_ORDRE=1,GROUP_NO='COIN_BD',
                   VALE=3.160121E-5,CRITERE='RELATIF',PRECISION=1e-05,
                   REFERENCE='NON_REGRESSION', VERSION = '7.01.09'));

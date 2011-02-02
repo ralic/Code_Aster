@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 01/02/2011   AUTEUR DELMAS J.DELMAS 
+#& MODIF COMMANDE  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -48,7 +48,7 @@ CALC_NO=OPER(nom="CALC_NO",op= 106,sd_prod=calc_no_prod,reentrant='f',
                                into=("FORC_NODA","REAC_NODA",
                                      "DERA_NOEU",
                                      "DURT_NOEU",
-                                     "EFGE_NOEU_CART","EFGE_NOEU_DEPL",
+                                     "EFCA_NOEU","EFGE_NOEU",
                                      "ENDO_NOEU",
                                      "ENEL_NOEU",
                                      "EPMG_NOEU",
@@ -56,7 +56,7 @@ CALC_NO=OPER(nom="CALC_NO",op= 106,sd_prod=calc_no_prod,reentrant='f',
                                      "EPSI_NOEU",
                                      "EPSP_NOEU"     ,
                                      "EPVC_NOEU","EPFD_NOEU","EPFP_NOEU","EPFP_NOEU",
-                                     "EQUI_NOEU_EPME","EQUI_NOEU_EPSI","EQUI_NOEU_SIGM",
+                                     "EPMQ_NOEU","EPEQ_NOEU","SIEQ_NOEU",
                                      "ERME_NOEU","ERTH_NOEU","QIRE_NOEU",
                                      "FLUX_NOEU",
                                      "HYDR_NOEU",
@@ -65,9 +65,9 @@ CALC_NO=OPER(nom="CALC_NO",op= 106,sd_prod=calc_no_prod,reentrant='f',
                                      "PMPB_NOEU",
                                      "PRAC_NOEU",
                                      "SIEF_NOEU",
-                                     "SIGM_NOEU_CART","SIGM_NOEU_COQU","SIGM_NOEU_DEPL",
+                                     "SICA_NOEU","SICO_NOEU","SIGM_NOEU",
                                      "SIPO_NOEU",
-                                     "VAEX_NOEU","VARI_NOEU_ELGA","DISS_NOEU",) ),
+                                     "VAEX_NOEU","VARI_NOEU","DISS_NOEU",) ),
 
 
          MODELE          =SIMP(statut='f',typ=modele_sdaster),

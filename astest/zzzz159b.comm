@@ -1,4 +1,4 @@
-# MODIF  DATE 31/01/2011   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # TITRE TEST DE LA MACRO COMMANDE DE RECALAGE
 # 4 calculs esclaves distribues : ncpus = 4 + 1 (maitre),
 # on met 4 car c'est une limite courante en interactif (interactif_nbpmax)

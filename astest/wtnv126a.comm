@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # TITRE REPONSE A DES CHEMINS MIXTES DE SATURATION - CONSOLIDATION EN 3D
 # wtnv126a.para = tps_job 160 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -448,13 +448,13 @@ U1=CALC_ELEM(reuse =U1,
                PRECISION = 1.E-10,
 
 
-               OPTION=('SIEF_ELNO','VARI_ELNO_ELGA'),);
+               OPTION=('SIEF_ELNO','VARI_ELNO'),);
 
 U1=CALC_NO(reuse =U1,
                RESULTAT=U1,
                PRECISION = 1.E-10,
 
-               OPTION=('SIEF_NOEU','VARI_NOEU_ELGA'),);
+               OPTION=('SIEF_NOEU','VARI_NOEU'),);
 
 
 
@@ -518,13 +518,13 @@ U2=CALC_ELEM(reuse =U2,
                PRECISION = 1.E-10,
 
 
-               OPTION=('SIEF_ELNO','VARI_ELNO_ELGA'),);
+               OPTION=('SIEF_ELNO','VARI_ELNO'),);
 
 U2=CALC_NO(reuse =U2,
                RESULTAT=U2,
                PRECISION = 1.E-10,
 
-               OPTION=('SIEF_NOEU','VARI_NOEU_ELGA'),);
+               OPTION=('SIEF_NOEU','VARI_NOEU'),);
 
 
 # DEUXIEME MOUILLAGE
@@ -582,13 +582,13 @@ U3=CALC_ELEM(reuse =U3,
                PRECISION = 1.E-10,
 
 
-               OPTION=('SIEF_ELNO','VARI_ELNO_ELGA'),);
+               OPTION=('SIEF_ELNO','VARI_ELNO'),);
 
 U3=CALC_NO(reuse =U3,
                RESULTAT=U3,
                PRECISION = 1.E-10,
 
-               OPTION=('SIEF_NOEU','VARI_NOEU_ELGA'),);
+               OPTION=('SIEF_NOEU','VARI_NOEU'),);
 
 # PREMIER TEST AU PREMIER POINT D ARRIVEE
 
@@ -610,7 +610,7 @@ TEST_RESU(RESU=(
                 _F(    RESULTAT = U1,
                        REFERENCE = 'ANALYTIQUE',
                        NOEUD = 'NO8',
-                       NOM_CHAM = 'VARI_NOEU_ELGA',
+                       NOM_CHAM = 'VARI_NOEU',
                        NOM_CMP = 'V1',
                        INST=12.,
                        PRECISION = (1.E-5, 1.E-6),
@@ -620,7 +620,7 @@ TEST_RESU(RESU=(
                 _F(    RESULTAT = U1,
                        REFERENCE = 'ANALYTIQUE',
                        NOEUD = 'NO8',
-                       NOM_CHAM = 'VARI_NOEU_ELGA',
+                       NOM_CHAM = 'VARI_NOEU',
                        NOM_CMP = 'V2',
                        INST=12.,
                        PRECISION = (1.E-5, 1.E-6),
@@ -630,7 +630,7 @@ TEST_RESU(RESU=(
                 _F(    RESULTAT = U1,
                        REFERENCE = 'ANALYTIQUE',
                        NOEUD = 'NO8',
-                       NOM_CHAM = 'VARI_NOEU_ELGA',
+                       NOM_CHAM = 'VARI_NOEU',
                        NOM_CMP = 'V4',
                        INST=12.,
                        PRECISION = (1.E-5, 1.E-6),
@@ -658,7 +658,7 @@ TEST_RESU(RESU=(
                 _F(    RESULTAT = U3,
                        REFERENCE = 'ANALYTIQUE',
                        NOEUD = 'NO8',
-                       NOM_CHAM = 'VARI_NOEU_ELGA',
+                       NOM_CHAM = 'VARI_NOEU',
                        NOM_CMP = 'V1',
                        INST=12.,
                        PRECISION = (1.E-5, 1.E-6),
@@ -668,7 +668,7 @@ TEST_RESU(RESU=(
                 _F(    RESULTAT = U3,
                        REFERENCE = 'ANALYTIQUE',
                        NOEUD = 'NO8',
-                       NOM_CHAM = 'VARI_NOEU_ELGA',
+                       NOM_CHAM = 'VARI_NOEU',
                        NOM_CMP = 'V2',
                        INST=12.,
                        PRECISION = (1.E-5, 1.E-6),
@@ -678,7 +678,7 @@ TEST_RESU(RESU=(
                 _F(    RESULTAT = U3,
                        REFERENCE = 'ANALYTIQUE',
                        NOEUD = 'NO8',
-                       NOM_CHAM = 'VARI_NOEU_ELGA',
+                       NOM_CHAM = 'VARI_NOEU',
                        NOM_CMP = 'V4',
                        INST=12.,
                        PRECISION = (1.E-5, 1.E-6),
@@ -742,13 +742,13 @@ U4=CALC_ELEM(reuse =U4,
                PRECISION = 1.E-10,
 
 
-               OPTION=('SIEF_ELNO','VARI_ELNO_ELGA'),);
+               OPTION=('SIEF_ELNO','VARI_ELNO'),);
 
 U4=CALC_NO(reuse =U4,
                RESULTAT=U4,
                PRECISION = 1.E-10,
 
-               OPTION=('SIEF_NOEU','VARI_NOEU_ELGA'),);
+               OPTION=('SIEF_NOEU','VARI_NOEU'),);
 
 # PREMIER TEST AU DEUXIEME POINT D ARRIVEE
 
@@ -769,7 +769,7 @@ TEST_RESU(RESU=(
                 _F(    RESULTAT = U4,
                        REFERENCE = 'ANALYTIQUE',
                        NOEUD = 'NO8',
-                       NOM_CHAM = 'VARI_NOEU_ELGA',
+                       NOM_CHAM = 'VARI_NOEU',
                        NOM_CMP = 'V1',
                        INST=12.,
                        PRECISION = (1.E-5, 1.E-6),
@@ -779,7 +779,7 @@ TEST_RESU(RESU=(
                 _F(    RESULTAT = U4,
                        REFERENCE = 'ANALYTIQUE',
                        NOEUD = 'NO8',
-                       NOM_CHAM = 'VARI_NOEU_ELGA',
+                       NOM_CHAM = 'VARI_NOEU',
                        NOM_CMP = 'V2',
                        INST=12.,
                        PRECISION = (1.E-5,1.E-6),
@@ -789,7 +789,7 @@ TEST_RESU(RESU=(
                 _F(    RESULTAT = U4,
                        REFERENCE = 'ANALYTIQUE',
                        NOEUD = 'NO8',
-                       NOM_CHAM = 'VARI_NOEU_ELGA',
+                       NOM_CHAM = 'VARI_NOEU',
                        NOM_CMP = 'V4',
                        INST=12.,
                        PRECISION = (1.E-5,1.E-6),
@@ -817,7 +817,7 @@ TEST_RESU(RESU=(
                 _F(    RESULTAT = U1,
                        REFERENCE = 'ANALYTIQUE',
                        NOEUD = 'NO8',
-                       NOM_CHAM = 'VARI_NOEU_ELGA',
+                       NOM_CHAM = 'VARI_NOEU',
                        NOM_CMP = 'V1',
                        INST=24.,
                        PRECISION = (1.E-3, 1.E-6),
@@ -827,7 +827,7 @@ TEST_RESU(RESU=(
                 _F(    RESULTAT = U1,
                        REFERENCE = 'ANALYTIQUE',
                        NOEUD = 'NO8',
-                       NOM_CHAM = 'VARI_NOEU_ELGA',
+                       NOM_CHAM = 'VARI_NOEU',
                        NOM_CMP = 'V2',
                        INST=24.,
                        PRECISION =( 1.E-5, 1.E-6),
@@ -838,7 +838,7 @@ TEST_RESU(RESU=(
                 _F(    RESULTAT = U1,
                        REFERENCE = 'ANALYTIQUE',
                        NOEUD = 'NO8',
-                       NOM_CHAM = 'VARI_NOEU_ELGA',
+                       NOM_CHAM = 'VARI_NOEU',
                        NOM_CMP = 'V4',
                        INST=24.,
                        PRECISION = (1.E-5, 1.E-6),

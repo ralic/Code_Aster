@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # TITRE TREILLIS DE BARRES SOUS TROIS SOLLICITATIONS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -84,7 +84,7 @@ STATIQU1=MECA_STATIQUE(  MODELE=MODELE,
                               EXCIT=_F(   CHARGE = CHARGE_1),
                               CHAM_MATER=CH_MATM,  CARA_ELEM=CARA_ELE)
 
-STATIQU1=CALC_ELEM(reuse=STATIQU1,    OPTION='EFGE_ELNO_DEPL',
+STATIQU1=CALC_ELEM(reuse=STATIQU1,    OPTION='EFGE_ELNO',
                            RESULTAT=STATIQU1)
 
 ###------------------------------------------------------------------###
@@ -105,7 +105,7 @@ STATIQU2=MECA_STATIQUE(  MODELE=MODELE,
                               EXCIT=_F(   CHARGE = CHARGE_2),
                               CHAM_MATER=CH_MATER,  CARA_ELEM=CARA_ELE)
 
-STATIQU2=CALC_ELEM(reuse=STATIQU2,    OPTION='EFGE_ELNO_DEPL',
+STATIQU2=CALC_ELEM(reuse=STATIQU2,    OPTION='EFGE_ELNO',
                            RESULTAT=STATIQU2)
 
 STATIQU2=CALC_NO(reuse=STATIQU2,  OPTION='FORC_NODA',
@@ -127,7 +127,7 @@ STATIQU3=MECA_STATIQUE(  MODELE=MODELE,
                               EXCIT=_F(   CHARGE = CHARGE_3),
                               CHAM_MATER=CH_MATER,  CARA_ELEM=CARA_ELE)
 
-STATIQU3=CALC_ELEM(reuse=STATIQU3,    OPTION='EFGE_ELNO_DEPL',
+STATIQU3=CALC_ELEM(reuse=STATIQU3,    OPTION='EFGE_ELNO',
                            RESULTAT=STATIQU3)
 
 ###------------------------------------------------------------------###
@@ -149,12 +149,12 @@ STATIQU4=MECA_STATIQUE(  MODELE=MODELE,
                              EXCIT=_F(   CHARGE = CHARGE_4),
                               CHAM_MATER=CH_MATM,  CARA_ELEM=CARA_ELE)
 
-STATIQU4=CALC_ELEM( reuse=STATIQU4,    OPTION='EFGE_ELNO_DEPL',
+STATIQU4=CALC_ELEM( reuse=STATIQU4,    OPTION='EFGE_ELNO',
                             RESULTAT=STATIQU4)
 
 #----------------------------------------------------------------------#
 IMPR_RESU ( RESU=_F( RESULTAT=STATIQU1, NUME_ORDRE=1,NOEUD='N01',
-                     NOM_CHAM=('DEPL','EFGE_ELNO_DEPL'),
+                     NOM_CHAM=('DEPL','EFGE_ELNO'),
                      NOM_CMP=('DY','N'), ), )
 #----------------------------------------------------------------------#
 
@@ -162,13 +162,13 @@ VECAS1 =CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
                     RESULTAT=STATIQU1, NUME_ORDRE=1,NOM_CHAM='DEPL' )
 
 EFFOGE1=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='ELNO_SIEF_R',
-                    RESULTAT=STATIQU1, NUME_ORDRE=1,NOM_CHAM='EFGE_ELNO_DEPL' )
+                    RESULTAT=STATIQU1, NUME_ORDRE=1,NOM_CHAM='EFGE_ELNO' )
 
 VECAS2 =CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
                     RESULTAT=STATIQU2, NUME_ORDRE=1,NOM_CHAM='DEPL' )
 
 EFFOGE2=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='ELNO_SIEF_R',
-                    RESULTAT=STATIQU2, NUME_ORDRE=1,NOM_CHAM='EFGE_ELNO_DEPL' )
+                    RESULTAT=STATIQU2, NUME_ORDRE=1,NOM_CHAM='EFGE_ELNO' )
 
 FORCNO2=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
                     RESULTAT=STATIQU2, NUME_ORDRE=1,NOM_CHAM='FORC_NODA' )
@@ -180,13 +180,13 @@ VECAS3 =CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
                     RESULTAT=STATIQU3, NUME_ORDRE=1,NOM_CHAM='DEPL'  )
 
 EFFOGE3=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='ELNO_SIEF_R',
-                    RESULTAT=STATIQU3, NUME_ORDRE=1,NOM_CHAM='EFGE_ELNO_DEPL'  )
+                    RESULTAT=STATIQU3, NUME_ORDRE=1,NOM_CHAM='EFGE_ELNO'  )
 
 VECAS4 =CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
                     RESULTAT=STATIQU4, NUME_ORDRE=1,NOM_CHAM='DEPL' )
 
 EFFOGE4=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='ELNO_SIEF_R',
-                    RESULTAT=STATIQU4, NUME_ORDRE=1,NOM_CHAM='EFGE_ELNO_DEPL' )
+                    RESULTAT=STATIQU4, NUME_ORDRE=1,NOM_CHAM='EFGE_ELNO' )
 
 #----------------------------------------------------------------------#
 # --->> TEST_RESU AVEC UNE ELEVATION DE TEMPERATURE DE 30 DEGRES

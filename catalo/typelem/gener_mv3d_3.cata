@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 01/02/2011   AUTEUR DELMAS J.DELMAS 
+%& MODIF TYPELEM  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -210,15 +210,15 @@ OPTION__
     EPSG_ELGA           -1    IN__   XXXXXX   XXXXXX  OUT__  XXXXXX   XXXXXX
     EPSG_ELNO           -1    IN__   XXXXXX   XXXXXX  OUT__  XXXXXX   XXXXXX
     EPSI_ELGA           -1    IN__   XXXXXX   XXXXXX  OUT__  XXXXXX   XXXXXX
-    EPSI_ELNO_DEPL      -1    IN__   XXXXXX   XXXXXX  OUT__  XXXXXX   XXXXXX
+    EPSI_ELNO      -1    IN__   XXXXXX   XXXXXX  OUT__  XXXXXX   XXXXXX
     EPSP_ELGA           -1    IN__   XXXXXX   XXXXXX  OUT__  XXXXXX   XXXXXX
     EPSP_ELNO           -1    IN__   XXXXXX   XXXXXX  OUT__  XXXXXX   XXXXXX
-    EQUI_ELGA_EPME      -1    IN__   XXXXXX   XXXXXX  OUT__  XXXXXX   XXXXXX
-    EQUI_ELGA_EPSI      -1    IN__   XXXXXX   XXXXXX  OUT__  XXXXXX   XXXXXX
-    EQUI_ELGA_SIGM      -1    IN__   XXXXXX   XXXXXX  OUT__  XXXXXX   XXXXXX
-    EQUI_ELNO_EPME      -1    IN__   XXXXXX   XXXXXX  OUT__  XXXXXX   XXXXXX
-    EQUI_ELNO_EPSI      -1    IN__   XXXXXX   XXXXXX  OUT__  XXXXXX   XXXXXX
-    EQUI_ELNO_SIGM      -1    IN__   XXXXXX   XXXXXX  OUT__  XXXXXX   XXXXXX
+    EPMQ_ELGA      -1    IN__   XXXXXX   XXXXXX  OUT__  XXXXXX   XXXXXX
+    EPEQ_ELGA      -1    IN__   XXXXXX   XXXXXX  OUT__  XXXXXX   XXXXXX
+    SIEQ_ELGA      -1    IN__   XXXXXX   XXXXXX  OUT__  XXXXXX   XXXXXX
+    EPMQ_ELNO      -1    IN__   XXXXXX   XXXXXX  OUT__  XXXXXX   XXXXXX
+    EPEQ_ELNO      -1    IN__   XXXXXX   XXXXXX  OUT__  XXXXXX   XXXXXX
+    SIEQ_ELNO      -1    IN__   XXXXXX   XXXXXX  OUT__  XXXXXX   XXXXXX
     ERME_ELEM           -1    IN__   XXXXXX   XXXXXX  OUT__  XXXXXX   XXXXXX
     ERME_ELNO           -1    IN__   XXXXXX   XXXXXX  OUT__  XXXXXX   XXXXXX
     FORC_NODA           508   IN__   ECONTPG  PCONTMR  DDL_MECA PDEPLMR  NGEOMER  PGEOMER  CCARCRI  PCARCRI
@@ -298,7 +298,7 @@ OPTION__
                               OUT__  XXXXXX   XXXXXX
     SIEF_ELNO           98    IN__   ECONTPG  PCONTRR
                               OUT__  ECONTNO  PSIEFNOR
-    SIGM_ELNO_DEPL      -1    IN__   XXXXXX   XXXXXX  OUT__  XXXXXX   XXXXXX
+    SIGM_ELNO      -1    IN__   XXXXXX   XXXXXX  OUT__  XXXXXX   XXXXXX
     SIGM_ELNO_SENS      -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
     SING_ELEM           99    IN__   NGEOMER  PGEOMER
@@ -314,7 +314,7 @@ OPTION__
                                      ENNEUT_F PNEUT_F  ENNEUT_R PNEUT_R  ECONTNO  PSIEF_R  ZVARINO  PVARI_R
     VARI_ELGA_ELNO      20    IN__   CCOMPOR  PCOMPOR  ZVARINO  PVARINR
                               OUT__  ZVARIPG  PVARIGR
-    VARI_ELNO_ELGA      20    IN__   CCOMPOR  PCOMPOR  ZVARIPG  PVARIGR
+    VARI_ELNO      20    IN__   CCOMPOR  PCOMPOR  ZVARIPG  PVARIGR
                               OUT__  ZVARINO  PVARINR
     VERI_JACOBIEN      328    IN__   NGEOMER  PGEOMER
                               OUT__  ECODRET  PCODRET

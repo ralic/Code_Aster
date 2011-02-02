@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # RESPONSABLE ADBHHPM P.MASSIN
 # DATE   : 08/06/2000
 # AUTEUR : F. LEBOUVIER (DELTACAD)
@@ -93,7 +93,7 @@ RESU=CALC_ELEM(reuse =RESU,
 
                RESULTAT=RESU,
                TOUT_ORDRE='OUI',
-               OPTION='SIGM_ELNO_DEPL',
+               OPTION='SIGM_ELNO',
                REPE_COQUE =_F( NUME_COUCHE=1,
                                NIVE_COUCHE='SUP',),);
 
@@ -117,7 +117,7 @@ DEP_NORM=POST_RELEVE_T(ACTION=_F(INTITULE='TAB_NORM',
 SIGMA=POST_RELEVE_T(ACTION=_F(INTITULE='TAB_SIGM ',
                               GROUP_NO='CD',
                               RESULTAT=RESU,
-                              NOM_CHAM='SIGM_ELNO_DEPL',
+                              NOM_CHAM='SIGM_ELNO',
                               TOUT_CMP='OUI',
                               OPERATION='EXTRACTION',),);
 
@@ -185,7 +185,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU,
 
 TEST_RESU(RESU=(_F(RESULTAT=RESU,
                    NUME_ORDRE=1,
-                   NOM_CHAM='SIGM_ELNO_DEPL',
+                   NOM_CHAM='SIGM_ELNO',
                    NOM_CMP='SIXX',
                    MAILLE='M368',
                    GROUP_NO='F',
@@ -194,7 +194,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU,
                    REFERENCE='SOURCE_EXTERNE',),
                 _F(RESULTAT=RESU,
                    NUME_ORDRE=1,
-                   NOM_CHAM='SIGM_ELNO_DEPL',
+                   NOM_CHAM='SIGM_ELNO',
                    NOM_CMP='SIYY',
                    MAILLE='M368',
                    GROUP_NO='F',
@@ -258,7 +258,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU,
 
 TEST_RESU(RESU=(_F(RESULTAT=RESU,
                    NUME_ORDRE=1,
-                   NOM_CHAM='SIGM_ELNO_DEPL',
+                   NOM_CHAM='SIGM_ELNO',
                    NOM_CMP='SIXX',
                    MAILLE='M368',
                    GROUP_NO='F',
@@ -267,7 +267,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU,
                    REFERENCE='ANALYTIQUE',),
                 _F(RESULTAT=RESU,
                    NUME_ORDRE=1,
-                   NOM_CHAM='SIGM_ELNO_DEPL',
+                   NOM_CHAM='SIGM_ELNO',
                    NOM_CMP='SIYY',
                    MAILLE='M368',
                    GROUP_NO='F',

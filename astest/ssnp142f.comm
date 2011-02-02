@@ -1,4 +1,4 @@
-# MODIF  DATE 31/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # TITRE MODELISATION DES SOUS PRESSION D'UN BARRAGE 3D A L'AIDE DES ELEMENTS DE JOINT HYME ET DE LA LOI JOINT_MECA_RUPT
 # ssnp142f.para = tps_job 200 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -213,7 +213,7 @@ U_HM=STAT_NON_LINE(MODELE=MO,
 
 U_HM=CALC_ELEM(reuse =U_HM,
                RESULTAT=U_HM,
-               OPTION='VARI_ELNO_ELGA',
+               OPTION='VARI_ELNO',
                GROUP_MA='JOINT');
 
 U_HM=CALC_ELEM(reuse =U_HM,
@@ -223,14 +223,14 @@ U_HM=CALC_ELEM(reuse =U_HM,
 
 U_HM=CALC_NO(reuse =U_HM,
              RESULTAT=U_HM,
-             OPTION=('VARI_NOEU_ELGA','SIEF_NOEU'),
+             OPTION=('VARI_NOEU','SIEF_NOEU'),
              GROUP_MA='JOINT');
 
 # SAUT NORMAL DANS LE JOINT
 SAUTHM=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                INTITULE='SAUT_N',
                                RESULTAT=U_HM,
-                               NOM_CHAM='VARI_NOEU_ELGA',
+                               NOM_CHAM='VARI_NOEU',
                                INST=tfin,
                                GROUP_NO=('JOINT_H',),
                                NOM_CMP='V7',),);
@@ -248,7 +248,7 @@ SNT_HM=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
 SNM_HM=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                INTITULE='SIG_N_MECA',
                                RESULTAT=U_HM,
-                               NOM_CHAM='VARI_NOEU_ELGA',
+                               NOM_CHAM='VARI_NOEU',
                                INST=tfin,
                                GROUP_NO = ('JOINT_H',),
                                NOM_CMP='V11'),);

@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # TITRE TEST DE FONDATION FILANTE AVEC LA LOI DE CAMCLAY EN MECANIQUE DRAINE
 # ssnp136a.para = tps_job 370 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -354,7 +354,7 @@ resu1=STAT_NON_LINE(MODELE    =MODMEC1,
                     
 resu1=CALC_ELEM(reuse   =resu1,
                 RESULTAT=resu1,
-                OPTION  =('SIEF_ELNO','VARI_ELNO_ELGA'));
+                OPTION  =('SIEF_ELNO','VARI_ELNO'));
 
 # DETRUIRE(CONCEPT=_F(NOM=('coupe1','coupe2','coupe3','TAB_DEP1',
 #                          'TAB_DEP2','TAB_DEP3','TAB_SIEF',
@@ -388,7 +388,7 @@ resu1=CALC_ELEM(reuse   =resu1,
 # TAB_VARI=POST_RELEVE_T(ACTION=_F(INTITULE='VARI',
 #                                  CHEMIN=coupe1,
 #                                  RESULTAT=resu1,
-#                                  NOM_CHAM='VARI_ELNO_ELGA',
+#                                  NOM_CHAM='VARI_ELNO',
 #                                  NOM_CMP=('V1','V3','V4','V5','V6','V7'),
 #                                  OPERATION='EXTRACTION'));
 # 
@@ -421,7 +421,7 @@ resu1=CALC_ELEM(reuse   =resu1,
 # TAB_VARI=POST_RELEVE_T(ACTION=_F(INTITULE='VARI',
 #                                  CHEMIN=coupe2,
 #                                  RESULTAT=resu1,
-#                                  NOM_CHAM='VARI_ELNO_ELGA',
+#                                  NOM_CHAM='VARI_ELNO',
 #                                  NOM_CMP=('V1','V3','V4','V5','V6','V7'),
 #                                  OPERATION='EXTRACTION'));
 # 
@@ -463,11 +463,11 @@ resu2=STAT_NON_LINE(MODELE    =MODMEC1,
 #--------------------------------------------------------------------
 
 resu2=CALC_ELEM(reuse   =resu2,
-                OPTION  =('SIEF_ELNO','VARI_ELNO_ELGA'),
+                OPTION  =('SIEF_ELNO','VARI_ELNO'),
                 RESULTAT=resu2);
 
 resu2=CALC_NO(reuse   =resu2,
-              OPTION  ='VARI_NOEU_ELGA',
+              OPTION  ='VARI_NOEU',
               RESULTAT=resu2);
 
 
@@ -476,17 +476,17 @@ resu2=CALC_NO(reuse   =resu2,
 # V3 = P         V4 = Q
 # V5 = EPSVP     V6 = EPSDEVP
 # V7 = Indice des vides
-T_VARI_O=POST_RELEVE_T(ACTION=_F(INTITULE ='VARI_NOEU_ELGA',
+T_VARI_O=POST_RELEVE_T(ACTION=_F(INTITULE ='VARI_NOEU',
                                  GROUP_NO ='O',
                                  RESULTAT =resu2,
-                                 NOM_CHAM ='VARI_NOEU_ELGA',
+                                 NOM_CHAM ='VARI_NOEU',
                                  NOM_CMP  =('V1','V2','V3','V4','V5','V6','V7'),
                                  OPERATION='EXTRACTION'));
 
-T_VARI_A=POST_RELEVE_T(ACTION=_F(INTITULE ='VARI_NOEU_ELGA',
+T_VARI_A=POST_RELEVE_T(ACTION=_F(INTITULE ='VARI_NOEU',
                                  GROUP_NO ='A',
                                  RESULTAT =resu2,
-                                 NOM_CHAM ='VARI_NOEU_ELGA',
+                                 NOM_CHAM ='VARI_NOEU',
                                  NOM_CMP  =('V1','V2','V3','V4','V5','V6','V7'),
                                  OPERATION='EXTRACTION'));
                                  
@@ -708,7 +708,7 @@ TEST_TABLE(TABLE    =T_FORCE,
 #                   MAILLAGE=MAILLAGE,
 #                   NOM_CMP=('SIXX','SIYY','SIZZ'),),
 #                 _F(RESULTAT=resu2,
-#                   NOM_CHAM='VARI_ELNO_ELGA',
+#                   NOM_CHAM='VARI_ELNO',
 #                   MAILLAGE=MAILLAGE)));
 
 FIN();

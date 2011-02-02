@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # TITRE  : POUTRE EN TRACTION (ELEMENTS VOLUMIQUES)
 # sdlv131a.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -128,7 +128,7 @@ if statique:
                         ),)
 
   CALC_ELEM( reuse= REPSTA ,RESULTAT= REPSTA ,
-             OPTION=('EPSI_ELGA','EPSI_ELNO_DEPL',),
+             OPTION=('EPSI_ELGA','EPSI_ELNO',),
                         )
 
   REPSTA=CALC_NO( reuse=REPSTA,    RESULTAT=REPSTA,

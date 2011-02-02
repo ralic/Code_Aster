@@ -1,22 +1,22 @@
       SUBROUTINE TE0336 ( OPTION , NOMTE )
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C ----------------------------------------------------------------------
       IMPLICIT REAL*8 (A-H,O-Z)
@@ -29,7 +29,7 @@ C                    POUR LES DEFORMATIONS A PARTIR DE EPSI_ELGA
 C                                                   OU EPME_ELGA
 C                    (POUR LES DEFORMATIONS HORS THERMIQUES)
 C                AUX NOEUDS :
-C                    POUR LES DEFORMATIONS A PARTIR DE EPSI_ELNO_DEPL
+C                    POUR LES DEFORMATIONS A PARTIR DE EPSI_ELNO
 C                                                   OU EPME_ELNO
 C                    (POUR LES DEFORMATIONS HORS THERMIQUES)
 C                DANS CET ORDRE :
@@ -49,11 +49,11 @@ C                        . 2EME INV. * SIGNE (1ER.INV.) (= 1 VALEUR)
 C                        . DIRECTIONS DES DEFORMATIONS EQUIVALENTES
 C                                                       (= 3*3 VALEURS)
 C
-C     OPTIONS :  'EQUI_ELGA_SIGM'
-C                'EQUI_ELNO_EPSI'
-C                'EQUI_ELGA_EPSI'
-C                'EQUI_ELNO_EPME'
-C                'EQUI_ELGA_EPME'
+C     OPTIONS :  'SIEQ_ELGA'
+C                'EPEQ_ELNO'
+C                'EPEQ_ELGA'
+C                'EPMQ_ELNO'
+C                'EPMQ_ELGA'
 C
 C     ENTREES :  OPTION : OPTION DE CALCUL
 C                NOMTE  : NOM DU TYPE ELEMENT
@@ -103,24 +103,24 @@ C
 
       CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO)
 
-      IF ( OPTION(11:14) .EQ. 'EPSI' )  THEN
+      IF ( OPTION(1:4) .EQ. 'EPEQ' )  THEN
           NCEQ = 14
           NCMP = 5
-      ELSEIF ( OPTION(11:14) .EQ. 'EPME' )  THEN
+      ELSEIF ( OPTION(1:4) .EQ. 'EPMQ' )  THEN
           NCEQ = 5
           NCMP = 5
-      ELSE IF (OPTION(11:14) .EQ. 'SIGM' )  THEN
+      ELSE IF (OPTION(1:4) .EQ. 'SIEQ' )  THEN
           NCEQ = 16
           NCMP = 7
       ENDIF
 C
-      IF      ( OPTION(11:14) .EQ. 'EPSI' ) THEN
+      IF      ( OPTION(1:4) .EQ. 'EPEQ' ) THEN
           CALL JEVECH('PDEFORR','L',IDEFO)
           CALL JEVECH('PDEFOEQ','E',IEQUIF)
-      ELSEIF  ( OPTION(11:14) .EQ. 'EPME' ) THEN
+      ELSEIF  ( OPTION(1:4) .EQ. 'EPMQ' ) THEN
           CALL JEVECH('PDEFORR','L',IDEFO)
           CALL JEVECH('PDEFOEQ','E',IEQUIF)
-      ELSE IF ( OPTION(11:14) .EQ. 'SIGM' ) THEN
+      ELSE IF ( OPTION(1:4) .EQ. 'SIEQ' ) THEN
           CALL JEVECH('PCONTRR','L',ICONT)
           CALL JEVECH('PCONTEQ','E',IEQUIF)
       ENDIF
@@ -135,7 +135,7 @@ C
 C
 C -       DEFORMATIONS
 C
-          IF ( OPTION(11:14) .EQ. 'EPSI' )  THEN
+          IF ( OPTION(1:4) .EQ. 'EPEQ' )  THEN
               DO 101 KP = 1,NPG
                   IDCP = (KP-1) * NCEQ
                   DO 107 I = 1,4
@@ -148,7 +148,7 @@ C
 C
 C -       DEFORMATIONS HORS THERMIQUES
 C
-          ELSEIF ( OPTION(11:14) .EQ. 'EPME' )  THEN
+          ELSEIF ( OPTION(1:4) .EQ. 'EPMQ' )  THEN
               DO 102 KP = 1,NPG
                   IDCP = (KP-1) * NCEQ
                   DO 108 I = 1,4
@@ -161,7 +161,7 @@ C
 C
 C -       CONTRAINTES
 C
-          ELSE IF ( OPTION(11:14) .EQ. 'SIGM' )  THEN
+          ELSE IF ( OPTION(1:4) .EQ. 'SIEQ' )  THEN
               DO 103 KP = 1,NPG
                   IDCP = (KP-1) * NCEQ
                   DO 109 I = 1,4
@@ -191,7 +191,7 @@ C
 C
 C -       DEFORMATIONS
 C
-          IF ( OPTION(11:14) .EQ. 'EPSI' )  THEN
+          IF ( OPTION(1:4) .EQ. 'EPEQ' )  THEN
               DO 201 INO = 1,NNO
                   IDCP = (INO-1) * NCMP
                   DO 207 I = 1,4
@@ -204,7 +204,7 @@ C
 C
 C -       DEFORMATIONS
 C
-          ELSEIF ( OPTION(11:14) .EQ. 'EPME' )  THEN
+          ELSEIF ( OPTION(1:4) .EQ. 'EPMQ' )  THEN
               DO 202 INO = 1,NNO
                   IDCP = (INO-1) * NCMP
                   DO 208 I = 1,4
@@ -218,7 +218,7 @@ C
 C
 C -       STOCKAGE
 C
-          IF ( OPTION(11:14) .NE. 'SIGM' )  THEN
+          IF ( OPTION(1:4) .NE. 'SIEQ' )  THEN
              DO 400 INO = 1,NNO
                 DO 500 J   = 1,NCMP
                     ZR(IEQUIF+NCMP*(INO-1)-1+J) = EQNO(NCMP*(INO-1)+J)

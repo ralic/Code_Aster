@@ -1,9 +1,9 @@
-# MODIF  DATE 14/06/2010   AUTEUR TARDIEU N.TARDIEU 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # TITRE DSR3 SANS RENUM/AFFE_CHAR_MECA/MECA_STAT(GCPC)
 # gcpc002c.para = tps_job 250 mem_job 800Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -63,7 +63,7 @@ VECAS=MECA_STATIQUE(MODELE=MO,
 
 VECAS=CALC_ELEM(reuse =VECAS,
                 RESULTAT=VECAS,
-                OPTION='SIGM_ELNO_DEPL',);
+                OPTION='SIGM_ELNO',);
 
 VECAS2=MECA_STATIQUE(MODELE=MO,
                     CHAM_MATER=CHMAT,
@@ -362,7 +362,7 @@ TEST_RESU(RESU=(_F(RESULTAT=VECAS,
 
 TEST_RESU(RESU=(_F(RESULTAT=VECAS,
                    NUME_ORDRE=1,
-                   NOM_CHAM='SIGM_ELNO_DEPL',
+                   NOM_CHAM='SIGM_ELNO',
                    NOM_CMP='SIXX',
                    MAILLE='MA4204',
                    NOEUD='NO15854',
@@ -371,7 +371,7 @@ TEST_RESU(RESU=(_F(RESULTAT=VECAS,
                    REFERENCE='SOURCE_EXTERNE',),
                 _F(RESULTAT=VECAS,
                    NUME_ORDRE=1,
-                   NOM_CHAM='SIGM_ELNO_DEPL',
+                   NOM_CHAM='SIGM_ELNO',
                    NOM_CMP='SIXY',
                    MAILLE='MA4204',
                    NOEUD='NO15854',
@@ -380,7 +380,7 @@ TEST_RESU(RESU=(_F(RESULTAT=VECAS,
                    REFERENCE='SOURCE_EXTERNE',),
                 _F(RESULTAT=VECAS,
                    NUME_ORDRE=1,
-                   NOM_CHAM='SIGM_ELNO_DEPL',
+                   NOM_CHAM='SIGM_ELNO',
                    NOM_CMP='SIYY',
                    MAILLE='MA4204',
                    NOEUD='NO15854',
@@ -389,7 +389,7 @@ TEST_RESU(RESU=(_F(RESULTAT=VECAS,
                    REFERENCE='SOURCE_EXTERNE',),
                 _F(RESULTAT=VECAS,
                    NUME_ORDRE=1,
-                   NOM_CHAM='SIGM_ELNO_DEPL',
+                   NOM_CHAM='SIGM_ELNO',
                    NOM_CMP='SIXZ',
                    MAILLE='MA4204',
                    NOEUD='NO15854',
@@ -398,7 +398,7 @@ TEST_RESU(RESU=(_F(RESULTAT=VECAS,
                    REFERENCE='SOURCE_EXTERNE',),
                 _F(RESULTAT=VECAS,
                    NUME_ORDRE=1,
-                   NOM_CHAM='SIGM_ELNO_DEPL',
+                   NOM_CHAM='SIGM_ELNO',
                    NOM_CMP='SIYZ',
                    MAILLE='MA4204',
                    NOEUD='NO15854',
@@ -407,7 +407,7 @@ TEST_RESU(RESU=(_F(RESULTAT=VECAS,
                    REFERENCE='SOURCE_EXTERNE',),
                 _F(RESULTAT=VECAS,
                    NUME_ORDRE=1,
-                   NOM_CHAM='SIGM_ELNO_DEPL',
+                   NOM_CHAM='SIGM_ELNO',
                    NOM_CMP='SIZZ',
                    MAILLE='MA4204',
                    NOEUD='NO15854',

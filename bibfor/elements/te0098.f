@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 C ......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,7 +22,7 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 
 C     FONCTION REALISEE:  CALCUL DES CHAMELEM AUX NOEUDS A PARTIR DES
-C     VALEURS AUX POINTS DE GAUSS ( SIEF_ELNO VARI_ELNO_ELGA )
+C     VALEURS AUX POINTS DE GAUSS ( SIEF_ELNO VARI_ELNO )
 C                         CALCUL DES CHAMELEM AUX POINTS DE GAUSS A
 C     PARTIR DES VALEURS AUX NOEUDS ( SIEF_ELGA_ELNO VARI_ELGA_ELNO )
 C     ELEMENTS 2D ET 2D AXISYMETRIQUE
@@ -93,7 +93,7 @@ C     ---------------------------------------
         LGPG=NCMP
 
 
-      ELSE IF (OPTION.EQ.'VARI_ELNO_ELGA  ') THEN
+      ELSE IF (OPTION.EQ.'VARI_ELNO  ') THEN
 C     ---------------------------------------
 
         CALL JEVECH('PVARIGR','L',ICHG)

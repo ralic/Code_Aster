@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # TITRE CABLE DE PRECONTRAINTE DANS UNE POUTRE DROITE EN BETON
 # ssnv137a.para = tps_job 60 mem_job 96Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -126,13 +126,13 @@ EVOLNOLI=STAT_NON_LINE(
               )
 
 EVOLNOLI=CALC_ELEM( reuse=EVOLNOLI,
-                            OPTION=('SIEF_ELNO','EQUI_ELGA_SIGM'),
+                            OPTION=('SIEF_ELNO','SIEQ_ELGA'),
                           RESULTAT=EVOLNOLI,
               )
 
 
 IMPR_RESU(RESU=(_F(RESULTAT=EVOLNOLI,
-NOM_CHAM='EQUI_ELGA_SIGM',GROUP_MA='POUTRE'),
+NOM_CHAM='SIEQ_ELGA',GROUP_MA='POUTRE'),
 _F(RESULTAT=EVOLNOLI,
 NOM_CHAM='SIEF_ELGA',GROUP_MA='POUTRE'),),);
 
@@ -675,7 +675,7 @@ TEST_RESU(   RESU=(_F(  RESULTAT = EVOLNOLI,
                       NUME_ORDRE = 1,
                       MAILLE = 'HX010101',
                       POINT=1,
-                      NOM_CHAM = 'EQUI_ELGA_SIGM',
+                      NOM_CHAM = 'SIEQ_ELGA',
                       NOM_CMP = 'VECT_1_X',
                       CRITERE = 'RELATIF',
                       PRECISION = 1.0E-7,
@@ -685,7 +685,7 @@ TEST_RESU(   RESU=(_F(  RESULTAT = EVOLNOLI,
                       NUME_ORDRE = 1,
                       MAILLE = 'HX010101',
                       POINT=1,
-                      NOM_CHAM = 'EQUI_ELGA_SIGM',
+                      NOM_CHAM = 'SIEQ_ELGA',
                       NOM_CMP = 'VECT_1_Y',
                       CRITERE = 'ABSOLU',
                       PRECISION = 1.0E-7,
@@ -695,7 +695,7 @@ TEST_RESU(   RESU=(_F(  RESULTAT = EVOLNOLI,
                       NUME_ORDRE = 1,
                       MAILLE = 'HX010101',
                       POINT=1,
-                      NOM_CHAM = 'EQUI_ELGA_SIGM',
+                      NOM_CHAM = 'SIEQ_ELGA',
                       NOM_CMP = 'VECT_1_Z',
                       CRITERE = 'ABSOLU',
                       REFERENCE='ANALYTIQUE',

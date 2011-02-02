@@ -3,9 +3,9 @@
       CHARACTER*16 OPTION,NOMTE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 03/07/2007   AUTEUR FERNANDES R.FERNANDES 
+C MODIF ELEMENTS  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -25,7 +25,7 @@ C ----------------------------------------------------------------------
 C     BUT:       POUR LES ELEMENTS QUASI-INCOMPRESSIBLES 3D , CALCUL DES
 C                GRANDEURS EQUIVALENTES SUIVANTES
 C                AUX NOEUDS :
-C                    POUR LES DEFORMATIONS A PARTIR DE EPSI_ELNO_DEPL
+C                    POUR LES DEFORMATIONS A PARTIR DE EPSI_ELNO
 C
 C                DANS CET ORDRE :
 C
@@ -34,7 +34,7 @@ C                        . SECOND INVARIANT             (= 1 VALEUR)
 C                        . DEFORMATIONS PRINCIPALES     (= 3 VALEURS)
 C                        . 2EME INV. * SIGNE (1ER.INV.) (= 1 VALEUR)
 
-C     OPTIONS :  'EQUI_ELNO_EPSI'
+C     OPTIONS :  'EPEQ_ELNO'
 
 C ----------------------------------------------------------------------
 C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
@@ -70,7 +70,7 @@ C     ------------------------------------------------------------------
 C -   DEFORMATIONS EQUIVALENTES AUX NOEUDS :
 C     ------------------------------------
 
-      IF (OPTION(11:14).EQ.'EPSI') THEN
+      IF (OPTION(1:4).EQ.'EPEQ') THEN
 
         CALL JEVECH('PDEFORR','L',IDEFO)
         CALL JEVECH('PDEFOEQ','E',IEQUIF)

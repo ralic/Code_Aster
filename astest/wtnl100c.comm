@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # ======================================================================
 # TITRE  - CONSOLIDATION TERZAGHI 2D Q8
 # wtnl100c.para = tps_job 90 mem_job 128Mo ncpus 1 liste_test R
@@ -140,7 +140,7 @@ RESU1=STAT_NON_LINE(MODELE=MODELE,
 #############################################
 
 RESU1=CALC_ELEM( reuse      = RESU1,
-              OPTION     = ('SIEF_ELNO','VARI_ELNO_ELGA','EQUI_ELNO_SIGM'),
+              OPTION     = ('SIEF_ELNO','VARI_ELNO','SIEQ_ELNO'),
               RESULTAT   = RESU1,
 
 
@@ -148,7 +148,7 @@ RESU1=CALC_ELEM( reuse      = RESU1,
 
 RESU1= CALC_NO( reuse    = RESU1,
                    RESULTAT = RESU1,
-                   OPTION   = ( 'SIEF_NOEU', 'VARI_NOEU_ELGA')
+                   OPTION   = ( 'SIEF_NOEU', 'VARI_NOEU')
                   )
 ##########################################################
 # EXEMPLE DE POST-TRAITEMENT D ISOVALEURS POUR MODELISATION SELECTIVE #
@@ -217,7 +217,7 @@ SIGMA2=POST_RELEVE_T(ACTION=_F(INTITULE='SIGMA',
 VARIN2=POST_RELEVE_T(ACTION=_F(INTITULE='VARI',
                                RESULTAT=RESU1,
                                               GROUP_NO = 'BORDVERT',
-                               NOM_CHAM='VARI_NOEU_ELGA',
+                               NOM_CHAM='VARI_NOEU',
                                TOUT_CMP='OUI',
                                               INST=(0.0001,0.001,0.01,0.1,1.0,10.0,50.21276596,100.0,193.75,250.0,),
                                OPERATION='EXTRACTION',),);
@@ -556,7 +556,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU1,
 TEST_RESU(RESU=(
                 _F(RESULTAT=RESU1,
                    NUME_ORDRE=10,
-                   NOM_CHAM='EQUI_ELNO_SIGM',
+                   NOM_CHAM='SIEQ_ELNO',
                    NOM_CMP='VMIS',
                    MAILLE='MA16',
                    NOEUD='NO50',
@@ -567,7 +567,7 @@ TEST_RESU(RESU=(
 
                 _F(RESULTAT=RESU1,
                    NUME_ORDRE=10,
-                   NOM_CHAM='EQUI_ELNO_SIGM',
+                   NOM_CHAM='SIEQ_ELNO',
                    NOM_CMP='VMIS_SG',
                    MAILLE='MA16',
                    NOEUD='NO50',
@@ -578,7 +578,7 @@ TEST_RESU(RESU=(
 
                 _F(RESULTAT=RESU1,
                    NUME_ORDRE=10,
-                   NOM_CHAM='EQUI_ELNO_SIGM',
+                   NOM_CHAM='SIEQ_ELNO',
                    NOM_CMP='PRIN_1',
                    MAILLE='MA16',
                    NOEUD='NO50',
@@ -589,7 +589,7 @@ TEST_RESU(RESU=(
 
                 _F(RESULTAT=RESU1,
                    NUME_ORDRE=10,
-                   NOM_CHAM='EQUI_ELNO_SIGM',
+                   NOM_CHAM='SIEQ_ELNO',
                    NOM_CMP='PRIN_2',
                    MAILLE='MA16',
                    NOEUD='NO50',
@@ -601,7 +601,7 @@ TEST_RESU(RESU=(
 
                 _F(RESULTAT=RESU1,
                    NUME_ORDRE=10,
-                   NOM_CHAM='EQUI_ELNO_SIGM',
+                   NOM_CHAM='SIEQ_ELNO',
                    NOM_CMP='PRIN_3',
                    MAILLE='MA16',
                    NOEUD='NO50',
@@ -613,7 +613,7 @@ TEST_RESU(RESU=(
 
                 _F(RESULTAT=RESU1,
                    NUME_ORDRE=10,
-                   NOM_CHAM='EQUI_ELNO_SIGM',
+                   NOM_CHAM='SIEQ_ELNO',
                    NOM_CMP='TRESCA',
                    MAILLE='MA16',
                    NOEUD='NO50',

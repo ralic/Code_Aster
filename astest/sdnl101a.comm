@@ -1,5 +1,5 @@
 
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # TITRE PORTEE DE CABLES SOUMISE A DES EFFORTS ELECTRODYNAMIQUES
 # sdnl101a.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -281,7 +281,7 @@ RESU=STAT_NON_LINE(reuse =RESU,
 
 RESU=CALC_ELEM(reuse =RESU,
                RESULTAT=RESU,
-               OPTION=('SIEF_ELNO','VARI_ELNO_ELGA',),);
+               OPTION=('SIEF_ELNO','VARI_ELNO',),);
 #--------------------------------------------------------------------
 
 TEST_RESU(RESU=(_F(RESULTAT=RESU,

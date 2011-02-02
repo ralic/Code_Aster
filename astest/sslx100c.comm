@@ -1,8 +1,8 @@
-# MODIF  DATE 09/05/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # TITRE MELANGE 3D-PLAQUE-POUTRE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -227,14 +227,14 @@ DEPF=CALC_ELEM(reuse =DEPF,
                RESULTAT=DEPF,
                NUME_ORDRE=1,
                GROUP_MA='GRMA2',
-               OPTION='EFGE_ELNO_DEPL',
+               OPTION='EFGE_ELNO',
                );
 
 DEPF=CALC_ELEM(reuse =DEPF,
                RESULTAT=DEPF,
                NUME_ORDRE=1,
                GROUP_MA='GRMA2',
-               OPTION='SIGM_ELNO_DEPL',
+               OPTION='SIGM_ELNO',
                REPE_COQUE=_F(NIVE_COUCHE='SUP',),
                );
 
@@ -242,7 +242,7 @@ DEPF=CALC_ELEM(reuse =DEPF,
                RESULTAT=DEPF,
                NUME_ORDRE=1,
                GROUP_MA='GRMA2',
-               OPTION='EPSI_ELNO_DEPL',
+               OPTION='EPSI_ELNO',
                REPE_COQUE=_F(NIVE_COUCHE='SUP',),
                );
 
@@ -250,14 +250,14 @@ DEPC=CALC_ELEM(reuse =DEPC,
                RESULTAT=DEPC,
                NUME_ORDRE=1,
                GROUP_MA='GRMA2',
-               OPTION='EFGE_ELNO_DEPL',
+               OPTION='EFGE_ELNO',
                );
 
 DEPC=CALC_ELEM(reuse =DEPC,
                RESULTAT=DEPC,
                NUME_ORDRE=1,
                GROUP_MA='GRMA2',
-               OPTION='SIGM_ELNO_DEPL',
+               OPTION='SIGM_ELNO',
                REPE_COQUE=_F(NIVE_COUCHE='SUP',),
                );
 
@@ -265,13 +265,13 @@ DEPC=CALC_ELEM(reuse =DEPC,
                RESULTAT=DEPC,
                NUME_ORDRE=1,
                GROUP_MA='GRMA2',
-               OPTION='EPSI_ELNO_DEPL',
+               OPTION='EPSI_ELNO',
                REPE_COQUE=_F(NIVE_COUCHE='SUP',),
                );
 
 TEST_RESU(RESU=(_F(RESULTAT=DEPF,
                    NUME_ORDRE=1,
-                   NOM_CHAM='EFGE_ELNO_DEPL',
+                   NOM_CHAM='EFGE_ELNO',
                    NOM_CMP='MXX',
                    MAILLE='S1',
                    NOEUD='N28',
@@ -280,7 +280,7 @@ TEST_RESU(RESU=(_F(RESULTAT=DEPF,
                    PRECISION=0.005,),
                 _F(RESULTAT=DEPF,
                    NUME_ORDRE=1,
-                   NOM_CHAM='SIGM_ELNO_DEPL',
+                   NOM_CHAM='SIGM_ELNO',
                    NOM_CMP='SIXX',
                    MAILLE='S1',
                    NOEUD='N28',
@@ -289,7 +289,7 @@ TEST_RESU(RESU=(_F(RESULTAT=DEPF,
                    PRECISION=0.005,),
                 _F(RESULTAT=DEPF,
                    NUME_ORDRE=1,
-                   NOM_CHAM='EPSI_ELNO_DEPL',
+                   NOM_CHAM='EPSI_ELNO',
                    NOM_CMP='EPXX',
                    MAILLE='S1',
                    NOEUD='N28',
@@ -298,7 +298,7 @@ TEST_RESU(RESU=(_F(RESULTAT=DEPF,
                    PRECISION=0.005,),
                 _F(RESULTAT=DEPC,
                    NUME_ORDRE=1,
-                   NOM_CHAM='EFGE_ELNO_DEPL',
+                   NOM_CHAM='EFGE_ELNO',
                    NOM_CMP='MXX',
                    MAILLE='S1',
                    NOEUD='N28',
@@ -307,7 +307,7 @@ TEST_RESU(RESU=(_F(RESULTAT=DEPF,
                    PRECISION=0.005,),
                 _F(RESULTAT=DEPC,
                    NUME_ORDRE=1,
-                   NOM_CHAM='SIGM_ELNO_DEPL',
+                   NOM_CHAM='SIGM_ELNO',
                    NOM_CMP='SIXX',
                    MAILLE='S1',
                    NOEUD='N28',
@@ -316,7 +316,7 @@ TEST_RESU(RESU=(_F(RESULTAT=DEPF,
                    PRECISION=0.005,),
                 _F(RESULTAT=DEPC,
                    NUME_ORDRE=1,
-                   NOM_CHAM='EPSI_ELNO_DEPL',
+                   NOM_CHAM='EPSI_ELNO',
                    NOM_CMP='EPXX',
                    MAILLE='S1',
                    NOEUD='N28',

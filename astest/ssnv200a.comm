@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # TITRE  ESSAI DE TRACTION-CISAILLEMENT 3D (VISC_TAHERI)
 # ssnv200a.para = tps_job 60 mem_job 100Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -157,8 +157,8 @@ SOLNL1=STAT_NON_LINE(
 
 SOLNL1=CALC_ELEM( reuse=SOLNL1,     RESULTAT=SOLNL1,
                                OPTION=( 'SIEF_ELNO',
-                                        'VARI_ELNO_ELGA',
-                                        'EPSI_ELNO_DEPL',
+                                        'VARI_ELNO',
+                                        'EPSI_ELNO',
                                         'EPSP_ELGA',
                                         'EPSP_ELNO',
                                       )
@@ -170,12 +170,12 @@ ENGENDRE_TEST (  CO = SOLNL1, )
 TEST_RESU(RESU=(
 
   _F(  REFERENCE = 'NON_REGRESSION',
-         RESULTAT = SOLNL1,  NOM_CHAM = 'EPSI_ELNO_DEPL',  NUME_ORDRE = 6,
+         RESULTAT = SOLNL1,  NOM_CHAM = 'EPSI_ELNO',  NUME_ORDRE = 6,
          MAILLE = 'MA1',  NOEUD = 'NO1',  NOM_CMP = 'EPXX',  VALE = 2.0E-05,
          PRECISION = 1.E-10),
 
   _F(  REFERENCE = 'NON_REGRESSION',
-         RESULTAT = SOLNL1,  NOM_CHAM = 'EPSI_ELNO_DEPL',  NUME_ORDRE = 6,
+         RESULTAT = SOLNL1,  NOM_CHAM = 'EPSI_ELNO',  NUME_ORDRE = 6,
          MAILLE = 'MA1',  NOEUD = 'NO1',  NOM_CMP = 'EPXY',  VALE = 2.60E-5,
          PRECISION = 1.E-10),
 
@@ -199,12 +199,12 @@ TEST_RESU(RESU=(
          REFERENCE = 'NON_REGRESSION',       VALE = 0.0,
          PRECISION = 1.E-10),
 
-  _F(  RESULTAT = SOLNL1,  NOM_CHAM = 'VARI_ELNO_ELGA',  NUME_ORDRE = 6,
+  _F(  RESULTAT = SOLNL1,  NOM_CHAM = 'VARI_ELNO',  NUME_ORDRE = 6,
          MAILLE = 'MA1',  NOEUD = 'NO1',  NOM_CMP = 'V1', CRITERE = 'ABSOLU',
          REFERENCE = 'NON_REGRESSION',        VALE = 0.0,
          PRECISION = 1.E-10),
 
-  _F(  RESULTAT = SOLNL1,  NOM_CHAM = 'VARI_ELNO_ELGA',  NUME_ORDRE = 6,
+  _F(  RESULTAT = SOLNL1,  NOM_CHAM = 'VARI_ELNO',  NUME_ORDRE = 6,
          MAILLE = 'MA1',  NOEUD = 'NO1',  NOM_CMP = 'V2',
          REFERENCE = 'NON_REGRESSION',        VALE = 64.800195094755,
          PRECISION = 5.E-6))

@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # TITRE TREILLIS DE BARRES ARTICULEES TRAITE UNIQUEMENT DES LIAISONS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -391,7 +391,7 @@ STNL1=STAT_NON_LINE(
 
 STNL1=CALC_ELEM( reuse=STNL1,
                             OPTION=(
-                  'SIEF_ELNO',  'VARI_ELNO_ELGA',),
+                  'SIEF_ELNO',  'VARI_ELNO',),
                           RESULTAT=STNL1,
               )
 
@@ -415,7 +415,7 @@ STL1 = CREA_RESU(OPERATION='AFFE',
 
 STL1=CALC_ELEM(reuse=STL1, RESULTAT=STL1,
                INST=0.,
-               OPTION='EFGE_ELNO_DEPL'
+               OPTION='EFGE_ELNO'
                       )
 
 #
@@ -443,7 +443,7 @@ TEST_RESU(CHAM_NO=(   _F(  CHAM_GD = DEPL1,
                         REFERENCE = 'AUTRE_ASTER')),RESU=(
             _F(  RESULTAT = STL1,
                         INST=0.,
-                        NOM_CHAM='EFGE_ELNO_DEPL',
+                        NOM_CHAM='EFGE_ELNO',
                         NOM_CMP = 'N',
                         MAILLE = 'CD',
                         NOEUD = 'C3',
@@ -451,7 +451,7 @@ TEST_RESU(CHAM_NO=(   _F(  CHAM_GD = DEPL1,
                         REFERENCE = 'AUTRE_ASTER'),
                       _F(  RESULTAT = STL1,
                         INST=0.,
-                        NOM_CHAM='EFGE_ELNO_DEPL',
+                        NOM_CHAM='EFGE_ELNO',
                         NOM_CMP = 'MFZ',
                         MAILLE = 'CD',
                         NOEUD = 'C3',
@@ -459,7 +459,7 @@ TEST_RESU(CHAM_NO=(   _F(  CHAM_GD = DEPL1,
                         REFERENCE = 'AUTRE_ASTER'),
                       _F(  RESULTAT = STL1,
                         INST=0.,
-                        NOM_CHAM='EFGE_ELNO_DEPL',
+                        NOM_CHAM='EFGE_ELNO',
                         NOM_CMP = 'N',
                         MAILLE = 'BD',
                         NOEUD = 'D4',
@@ -467,7 +467,7 @@ TEST_RESU(CHAM_NO=(   _F(  CHAM_GD = DEPL1,
                         REFERENCE = 'AUTRE_ASTER'),
                       _F(  RESULTAT = STL1,
                         INST=0.,
-                        NOM_CHAM='EFGE_ELNO_DEPL',
+                        NOM_CHAM='EFGE_ELNO',
                         NOM_CMP = 'MFZ',
                         MAILLE = 'BD',
                         NOEUD = 'D4',

@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # RESPONSABLE ROMEO R.FERNANDES
 # ======================================================================
 # TITRE ETUDE : ESSAI BIAXIAL DRAINE NON LOCAL
@@ -124,13 +124,13 @@ U2       = STAT_NON_LINE(
                         )
 
 U2       = CALC_ELEM( reuse      = U2,
-                      OPTION     = ('SIEF_ELNO','VARI_ELNO_ELGA'),
+                      OPTION     = ('SIEF_ELNO','VARI_ELNO'),
                       RESULTAT   = U2,
                     );
 
 U2       = CALC_NO( reuse    = U2,
                     RESULTAT = U2,
-                    OPTION   = ( 'SIEF_NOEU', 'VARI_NOEU_ELGA')
+                    OPTION   = ( 'SIEF_NOEU', 'VARI_NOEU')
                   )
 
 TEST_RESU( RESU = (
@@ -192,7 +192,7 @@ TEST_RESU( RESU = (
                       REFERENCE  = 'NON_REGRESSION',
                       VERSION    = '7.2.6',
                       NOEUD      = 'N4',
-                      NOM_CHAM   = 'VARI_NOEU_ELGA',
+                      NOM_CHAM   = 'VARI_NOEU',
                       NOM_CMP    = 'V1',
                       CRITERE    = 'ABSOLU',
                       INST       = 1.07000,
@@ -202,7 +202,7 @@ TEST_RESU( RESU = (
                       REFERENCE  = 'NON_REGRESSION',
                       VERSION    = '7.2.6',
                       NOEUD      = 'N4',
-                      NOM_CHAM   = 'VARI_NOEU_ELGA',
+                      NOM_CHAM   = 'VARI_NOEU',
                       NOM_CMP    = 'V1',
                       INST       = 1.1600,
                       PRECISION  = 1.E-3,
@@ -211,7 +211,7 @@ TEST_RESU( RESU = (
                       REFERENCE  = 'NON_REGRESSION',
                       VERSION    = '7.2.6',
                       NOEUD      = 'N4',
-                      NOM_CHAM   = 'VARI_NOEU_ELGA',
+                      NOM_CHAM   = 'VARI_NOEU',
                       NOM_CMP    = 'V1',
                       INST       = 1.3400,
                       PRECISION  = 1.E-3,
@@ -220,7 +220,7 @@ TEST_RESU( RESU = (
                       REFERENCE  = 'NON_REGRESSION',
                       VERSION    = '7.2.6',
                       NOEUD      = 'N4',
-                      NOM_CHAM   = 'VARI_NOEU_ELGA',
+                      NOM_CHAM   = 'VARI_NOEU',
                       NOM_CMP    = 'V1',
                       INST       = 1.5300,
                       PRECISION  = 1.E-3,
@@ -276,7 +276,7 @@ TEST_RESU( RESU = (
 #DEFORMAT = POST_RELEVE_T( ACTION = _F( INTITULE  = 'DEFORMATION',
 #                                       RESULTAT  =  U2,
 #                                       NOEUD     = 'N4',
-#                                       NOM_CHAM  = 'VARI_ELNO_ELGA',
+#                                       NOM_CHAM  = 'VARI_ELNO',
 #                                       TOUT_CMP  = 'OUI',
 #                                       OPERATION = 'EXTRACTION',),);
 #

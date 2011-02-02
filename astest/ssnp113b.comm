@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # TITRE ROTATION DES CONTRAINTES PRINCIPALES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -155,14 +155,14 @@ RES1=STAT_NON_LINE(reuse     = RES1,
 RES1=CALC_ELEM( reuse  = RES1,
                 RESULTAT=RES1,
                 NUME_ORDRE = (10,25,310),
-                OPTION=('EPSI_ELNO_DEPL','SIEF_ELNO',
-                        'VARI_ELNO_ELGA'),
+                OPTION=('EPSI_ELNO','SIEF_ELNO',
+                        'VARI_ELNO'),
                 );
 RES1=CALC_NO  ( reuse  = RES1,
                 RESULTAT=RES1,
                 NUME_ORDRE = (10,25,310),
                 OPTION=('EPSI_NOEU','SIEF_NOEU',
-                        'VARI_NOEU_ELGA'),
+                        'VARI_NOEU'),
                 );                         
 TEST_RESU(RESU=(
 #  NUMERO ORDRE = 10            
@@ -184,7 +184,7 @@ TEST_RESU(RESU=(
           _F( RESULTAT = RES1, NUME_ORDRE = 10, NOM_CHAM = 'SIEF_NOEU',NOM_CMP = 'SIXY',
                 NOEUD = 'N1',    MAILLE = 'M1', REFERENCE = 'SOURCE_EXTERNE',               
                 CRITERE = 'ABSOLU',   PRECISION = 1.E-8, VALE = 0., ),
-         _F( RESULTAT = RES1, NUME_ORDRE = 10, NOM_CHAM = 'VARI_NOEU_ELGA',NOM_CMP = 'V1',
+         _F( RESULTAT = RES1, NUME_ORDRE = 10, NOM_CHAM = 'VARI_NOEU',NOM_CMP = 'V1',
                  NOEUD = 'N1',    MAILLE = 'M1', REFERENCE = 'SOURCE_EXTERNE',               
                 CRITERE = 'ABSOLU',   PRECISION = 1.E-8, VALE = 0., ),  
                 
@@ -207,7 +207,7 @@ TEST_RESU(RESU=(
           _F( RESULTAT = RES1, NUME_ORDRE = 25, NOM_CHAM = 'SIEF_NOEU',NOM_CMP = 'SIXY',
                 NOEUD = 'N1',    MAILLE = 'M1', REFERENCE = 'SOURCE_EXTERNE',               
                 CRITERE = 'RELATIF',   PRECISION = 1.E-3, VALE = 6.33546E5, ),
-         _F( RESULTAT = RES1, NUME_ORDRE = 25, NOM_CHAM = 'VARI_NOEU_ELGA',NOM_CMP = 'V1',
+         _F( RESULTAT = RES1, NUME_ORDRE = 25, NOM_CHAM = 'VARI_NOEU',NOM_CMP = 'V1',
                  NOEUD = 'N1',    MAILLE = 'M1', REFERENCE = 'SOURCE_EXTERNE',               
                 CRITERE = 'RELATIF',   PRECISION = 1.E-3, VALE = 0.66211, ),                                 
 
@@ -230,7 +230,7 @@ TEST_RESU(RESU=(
           _F( RESULTAT = RES1, NUME_ORDRE = 310, NOM_CHAM = 'SIEF_NOEU',NOM_CMP = 'SIXY',
                 NOEUD = 'N1',    MAILLE = 'M1', REFERENCE = 'SOURCE_EXTERNE',               
                 CRITERE = 'RELATIF',   PRECISION = 1.E-3, VALE = 2.16210E5, ),
-         _F( RESULTAT = RES1, NUME_ORDRE = 310, NOM_CHAM = 'VARI_NOEU_ELGA',NOM_CMP = 'V1',
+         _F( RESULTAT = RES1, NUME_ORDRE = 310, NOM_CHAM = 'VARI_NOEU',NOM_CMP = 'V1',
                  NOEUD = 'N1',    MAILLE = 'M1', REFERENCE = 'SOURCE_EXTERNE',               
                 CRITERE = 'RELATIF',   PRECISION = 1.E-3, VALE = 0.99423, ),                         
                   ))

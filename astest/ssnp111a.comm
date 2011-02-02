@@ -1,4 +1,4 @@
-# MODIF  DATE 01/02/2011   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # TITRE PLAQUE EN COMPRESSION SOUMISE A UNE PRESSION VARIANT
 # ssnp111a.para = tps_job 60 mem_job 160Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -95,7 +95,7 @@ CALCNL=STAT_NON_LINE(MODELE=MODEL,
 
 CALCNL=CALC_ELEM(reuse =CALCNL,
                  RESULTAT=CALCNL,
-                 OPTION=('SIEF_ELNO','VARI_ELNO_ELGA','DERA_ELGA','DERA_ELNO','EPSP_ELGA','EPSP_ELNO',),);
+                 OPTION=('SIEF_ELNO','VARI_ELNO','DERA_ELGA','DERA_ELNO','EPSP_ELGA','EPSP_ELNO',),);
 
 TEST_RESU(RESU=(_F(RESULTAT=CALCNL,
                    NUME_ORDRE=7,
@@ -147,7 +147,7 @@ TEST_RESU(RESU=(_F(RESULTAT=CALCNL,
                    PRECISION=0.007,),
                 _F(RESULTAT=CALCNL,
                    NUME_ORDRE=10,
-                   NOM_CHAM='VARI_ELNO_ELGA',
+                   NOM_CHAM='VARI_ELNO',
                    NOM_CMP='V1',
                    MAILLE='M400',
                    NOEUD='N2',
@@ -155,7 +155,7 @@ TEST_RESU(RESU=(_F(RESULTAT=CALCNL,
                    PRECISION=0.007,),
                 _F(RESULTAT=CALCNL,
                    NUME_ORDRE=10,
-                   NOM_CHAM='VARI_ELNO_ELGA',
+                   NOM_CHAM='VARI_ELNO',
                    NOM_CMP='V2',
                    MAILLE='M400',
                    NOEUD='N2',
@@ -179,7 +179,7 @@ TEST_RESU(RESU=(_F(RESULTAT=CALCNL,
                    CRITERE='ABSOLU',),
                 _F(RESULTAT=CALCNL,
                    NUME_ORDRE=10,
-                   NOM_CHAM='VARI_ELNO_ELGA',
+                   NOM_CHAM='VARI_ELNO',
                    NOM_CMP='V1',
                    MAILLE='M20',
                    NOEUD='N51',
@@ -187,7 +187,7 @@ TEST_RESU(RESU=(_F(RESULTAT=CALCNL,
                    CRITERE='ABSOLU',),
                 _F(RESULTAT=CALCNL,
                    NUME_ORDRE=10,
-                   NOM_CHAM='VARI_ELNO_ELGA',
+                   NOM_CHAM='VARI_ELNO',
                    NOM_CMP='V2',
                    MAILLE='M20',
                    NOEUD='N51',

@@ -1,4 +1,4 @@
-# MODIF  DATE 31/01/2011   AUTEUR GREFFET N.GREFFET 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # TITRE CHOC D UNE POUTRE SUR UN APPUI : SOUS-STRUCTURATION
 # sdnl104b.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -433,11 +433,11 @@ resu_dy1=REST_GENE_PHYS(   RESU_GENE=TRAN_GE1,
 
 resu_dy=CALC_ELEM(RESULTAT= resu_dy1,
                    MODELE=BARRE,CHAM_MATER=CHMAT,CARA_ELEM=CARA,
-                   OPTION='SIGM_ELNO_DEPL')
+                   OPTION='SIGM_ELNO')
 
 
 TEST_RESU( RESU=_F( RESULTAT = resu_dy,
-                  NOM_CHAM = 'SIGM_ELNO_DEPL',
+                  NOM_CHAM = 'SIGM_ELNO',
                   INST = 0.00000E+00,
                   CRITERE = 'RELATIF',    PRECISION = 9.E-3,
                   NOEUD = 'N1',MAILLE='S1',   NOM_CMP = 'SIXX',

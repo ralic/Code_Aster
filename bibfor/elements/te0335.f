@@ -1,7 +1,7 @@
       SUBROUTINE TE0335(OPTION,NOMTE)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -30,7 +30,7 @@ C                    POUR LES DEFORMATIONS A PARTIR DE EPSI_ELGA
 C                                                   OU EPME_ELGA
 C                    (POUR LES DEFORMATIONS HORS THERMIQUES)
 C                AUX NOEUDS :
-C                    POUR LES DEFORMATIONS A PARTIR DE EPSI_ELNO_DEPL
+C                    POUR LES DEFORMATIONS A PARTIR DE EPSI_ELNO
 C                                                   OU EPME_ELNO
 C                    (POUR LES DEFORMATIONS HORS THERMIQUES)
 
@@ -41,21 +41,21 @@ C                        . VON MISES                    (= 1 VALEUR)
 C                        . TRESCA                       (= 1 VALEUR)
 C                        . CONTRAINTES PRINCIPALES      (= 3 VALEURS)
 C                        . VON-MISES * SIGNE (PRESSION) (= 1 VALEUR)
-C                        . DIRECTION DES CONTRAINTES PRINCIPALES 
+C                        . DIRECTION DES CONTRAINTES PRINCIPALES
 C                                                       (=3*3 VALEURS)
 C                        . TRACE                        (= 1 VALEUR)
 C               . DEFORMATIONS EQUIVALENTES  :
 C                        . SECOND INVARIANT             (= 1 VALEUR)
 C                        . DEFORMATIONS PRINCIPALES     (= 3 VALEURS)
 C                        . 2EME INV. * SIGNE (1ER.INV.) (= 1 VALEUR)
-C                        . DIRECTION DES DEFORMATIONS PRINCIPALES 
+C                        . DIRECTION DES DEFORMATIONS PRINCIPALES
 C                                                       (=3*3 VALEURS)
 
-C     OPTIONS :  'EQUI_ELGA_SIGM'
-C                'EQUI_ELNO_EPSI'
-C                'EQUI_ELGA_EPSI'
-C                'EQUI_ELNO_EPME'
-C                'EQUI_ELGA_EPME'
+C     OPTIONS :  'SIEQ_ELGA'
+C                'EPEQ_ELNO'
+C                'EPEQ_ELGA'
+C                'EPMQ_ELNO'
+C                'EPMQ_ELGA'
 
 C     ENTREES :  OPTION : OPTION DE CALCUL
 C                NOMTE  : NOM DU TYPE ELEMENT
@@ -102,13 +102,13 @@ C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 
       IF (NBVA .EQ. 0) NBVA = 4
 
-      IF (OPTION(11:14).EQ.'EPSI') THEN
+      IF (OPTION(1:4).EQ.'EPEQ') THEN
         NCEQ = 14
         NCMP = 5
-      ELSE IF (OPTION(11:14).EQ.'EPME') THEN
+      ELSE IF (OPTION(1:4).EQ.'EPMQ') THEN
         NCEQ = 5
         NCMP = 5
-      ELSE IF (OPTION(11:14).EQ.'SIGM') THEN
+      ELSE IF (OPTION(1:4).EQ.'SIEQ') THEN
         NCEQ = 16
         NCMP = 7
       END IF
@@ -116,13 +116,13 @@ C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
       CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO)
 
 
-      IF (OPTION(11:14).EQ.'EPSI') THEN
+      IF (OPTION(1:4).EQ.'EPEQ') THEN
         CALL JEVECH('PDEFORR','L',IDEFO)
         CALL JEVECH('PDEFOEQ','E',IEQUIF)
-      ELSE IF (OPTION(11:14).EQ.'EPME') THEN
+      ELSE IF (OPTION(1:4).EQ.'EPMQ') THEN
         CALL JEVECH('PDEFORR','L',IDEFO)
         CALL JEVECH('PDEFOEQ','E',IEQUIF)
-      ELSE IF (OPTION(11:14).EQ.'SIGM') THEN
+      ELSE IF (OPTION(1:4).EQ.'SIEQ') THEN
         CALL JEVECH('PCONTRR','L',ICONT)
         CALL JEVECH('PCONTEQ','E',IEQUIF)
       END IF
@@ -140,7 +140,7 @@ C -   DEFORMATIONS ET CONTRAINTES EQUIVALENTES AUX POINTS DE GAUSS
 
 C -       DEFORMATIONS
 
-        IF (OPTION(11:14).EQ.'EPSI') THEN
+        IF (OPTION(1:4).EQ.'EPEQ') THEN
           DO 30 KP = 1,NPG
             IDCP = (KP-1)*NCEQ
             CALL FGEQUI(ZR(IDEFO+ (KP-1)*6),'EPSI_DIR',3,EQPG(IDCP+1))
@@ -148,7 +148,7 @@ C -       DEFORMATIONS
 
 C -       DEFORMATIONS HORS THERMIQUES
 
-        ELSE IF (OPTION(11:14).EQ.'EPME') THEN
+        ELSE IF (OPTION(1:4).EQ.'EPMQ') THEN
           DO 40 KP = 1,NPG
             IDCP = (KP-1)*NCEQ
             CALL FGEQUI(ZR(IDEFO+ (KP-1)*6),'EPSI',3,EQPG(IDCP+1))
@@ -156,7 +156,7 @@ C -       DEFORMATIONS HORS THERMIQUES
 
 C -       CONTRAINTES
 
-        ELSE IF (OPTION(11:14).EQ.'SIGM') THEN
+        ELSE IF (OPTION(1:4).EQ.'SIEQ') THEN
           DO 50 KP = 1,NPG
             IDCP = (KP-1)*NCEQ
           CALL FGEQUI(ZR(ICONT+ (KP-1)*NBVA),'SIGM_DIR',3,EQPG(IDCP+1))
@@ -177,7 +177,7 @@ C -   DEFORMATIONS ET CONTRAINTES EQUIVALENTES AUX NOEUDS
 
 C -       DEFORMATIONS
 
-        IF (OPTION(11:14).EQ.'EPSI') THEN
+        IF (OPTION(1:4).EQ.'EPEQ') THEN
           DO 80 INO = 1,NNO
             IDCP = (INO-1)*NCMP
             CALL FGEQUI(ZR(IDEFO+ (INO-1)*6),'EPSI',3,EQNO(IDCP+1))
@@ -185,7 +185,7 @@ C -       DEFORMATIONS
 
 C -       DEFORMATIONS HORS THERMIQUES
 
-        ELSE IF (OPTION(11:14).EQ.'EPME') THEN
+        ELSE IF (OPTION(1:4).EQ.'EPMQ') THEN
           DO 90 INO = 1,NNO
             IDCP = (INO-1)*NCMP
             CALL FGEQUI(ZR(IDEFO+ (INO-1)*6),'EPSI',3,EQNO(IDCP+1))

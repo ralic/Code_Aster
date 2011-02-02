@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # TITRE CONTACT AVEC FROTTEMENT D'UNE PLAQUE SUR UN PLAN RIGIDE
 # ssnv128b.para = tps_job 190 mem_job 300Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -132,7 +132,7 @@ U2M=STAT_NON_LINE(SOLVEUR=_F(SYME='OUI',),
                )
 #
 U2M=CALC_ELEM(reuse=U2M,
-              OPTION=('SIEF_ELNO', 'VARI_ELNO_ELGA',),
+              OPTION=('SIEF_ELNO', 'VARI_ELNO',),
               RESULTAT=U2M,
              )
 #
@@ -214,7 +214,7 @@ U2L=STAT_NON_LINE(MODELE    = MO,
                )
 #
 U2L=CALC_ELEM(reuse=U2L,
-              OPTION=('SIEF_ELNO', 'VARI_ELNO_ELGA',),
+              OPTION=('SIEF_ELNO', 'VARI_ELNO',),
               RESULTAT=U2L,
              )
 #
@@ -295,7 +295,7 @@ U3M=STAT_NON_LINE(SOLVEUR=_F(SYME='OUI',),
                )
 #
 U3M=CALC_ELEM(reuse=U3M,
-            OPTION=('SIEF_ELNO', 'VARI_ELNO_ELGA',),
+            OPTION=('SIEF_ELNO', 'VARI_ELNO',),
             RESULTAT=U3M,
            )
 #
@@ -377,7 +377,7 @@ U3L=STAT_NON_LINE(MODELE      = MO,
                )
 #
 U3L=CALC_ELEM(reuse=U3L,
-            OPTION=('SIEF_ELNO', 'VARI_ELNO_ELGA',),
+            OPTION=('SIEF_ELNO', 'VARI_ELNO',),
             RESULTAT=U3L,
            )
 #

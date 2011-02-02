@@ -1,10 +1,10 @@
 
-# MODIF  DATE 30/08/2010   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # RESPONSABLE JMBHH01 J.M.PROIX
 # TITRE PLAQUE STRATIFIEE EN FLEXION - DST -
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -228,25 +228,25 @@ DEP=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
 
 
 EFINF=CALC_ELEM(GROUP_MA='PLAQ1',
-                OPTION='EFGE_ELNO_DEPL',
+                OPTION='EFGE_ELNO',
                 RESULTAT=MESTAT,
                 REPE_COQUE=_F(PLAN='MAIL',),);
 
 EFSUP=CALC_ELEM(GROUP_MA='PLAQ2',
-                OPTION='EFGE_ELNO_DEPL',
+                OPTION='EFGE_ELNO',
                 RESULTAT=MESTAT,
                 REPE_COQUE=_F(PLAN='MAIL',),);
 
 CALC_NO(reuse =EFINF,
               RESULTAT=EFINF,
-              OPTION='EFGE_NOEU_DEPL',
+              OPTION='EFGE_NOEU',
 
 
               GROUP_MA='PLAQ1',);
 
 CALC_NO(reuse =EFSUP,
               RESULTAT=EFSUP,
-              OPTION='EFGE_NOEU_DEPL',
+              OPTION='EFGE_NOEU',
 
 
               GROUP_MA='PLAQ2',);
@@ -254,12 +254,12 @@ CALC_NO(reuse =EFSUP,
 EFNINF=CREA_CHAMP(TYPE_CHAM='NOEU_SIEF_R',
                   OPERATION='EXTR',
                   RESULTAT=EFINF,
-                  NOM_CHAM='EFGE_NOEU_DEPL',);
+                  NOM_CHAM='EFGE_NOEU',);
 
 EFNSUP=CREA_CHAMP(TYPE_CHAM='NOEU_SIEF_R',
                   OPERATION='EXTR',
                   RESULTAT=EFSUP,
-                  NOM_CHAM='EFGE_NOEU_DEPL',);
+                  NOM_CHAM='EFGE_NOEU',);
 
 EFF=CREA_CHAMP(TYPE_CHAM='NOEU_SIEF_R',
                OPERATION='ASSE',
@@ -321,12 +321,12 @@ MESTAT1=MECA_STATIQUE(MODELE=MO1,
                        EXCIT=_F(CHARGE=CHME1,),);
 
 CALC_ELEM( reuse= MESTAT1 ,RESULTAT= MESTAT1 ,
-           OPTION='EFGE_ELNO_DEPL',
+           OPTION='EFGE_ELNO',
            REPE_COQUE=_F(PLAN='MAIL',),);
 
 CALC_NO(reuse =MESTAT1,
                 RESULTAT=MESTAT1,
-                OPTION='EFGE_NOEU_DEPL',
+                OPTION='EFGE_NOEU',
                 );
 
 DEP1=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
@@ -337,7 +337,7 @@ DEP1=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
 EFF1=CREA_CHAMP(TYPE_CHAM='NOEU_SIEF_R',
                 OPERATION='EXTR',
                 RESULTAT=MESTAT1,
-                NOM_CHAM='EFGE_NOEU_DEPL',);
+                NOM_CHAM='EFGE_NOEU',);
 # ______________________________________________________________________
 #
 # REFERENCE : BICOUCHE

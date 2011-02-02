@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # TITRE CYLINDRE EN INCOMPRESSIBLE GRANDES DEFORMATIONS (HEXA20) 3D
 # ssnv112a.para = tps_job 60 mem_job 128Mo mem_aster 95 ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -103,11 +103,11 @@ EVOL=STAT_NON_LINE(MODELE=MO,INFO=2,
 #            IL FAUDRA COMPLETER LE MAILLAGE UN JOUR. G. NICOLAS.
 EVOL=CALC_ELEM(reuse =EVOL,
                RESULTAT=EVOL,
-               OPTION=('SIEF_ELNO','EQUI_ELNO_SIGM','ERME_ELEM','ERME_ELNO',),);
+               OPTION=('SIEF_ELNO','SIEQ_ELNO','ERME_ELEM','ERME_ELNO',),);
 
 EVOL=CALC_NO(reuse =EVOL,
              RESULTAT=EVOL,
-             OPTION=('SIEF_NOEU','EQUI_NOEU_SIGM',),);
+             OPTION=('SIEF_NOEU','SIEQ_NOEU',),);
 
 #--------------------------------------------------------------
 #       COMPARAISON DES RESULTATS A LA SOLUTION ANALYTIQUE
@@ -226,7 +226,7 @@ TEST_RESU(RESU=(_F(RESULTAT=EVOL,
 
 TEST_RESU(RESU=(_F(RESULTAT=EVOL,
                    INST=1.0,
-                   NOM_CHAM='EQUI_NOEU_SIGM',
+                   NOM_CHAM='SIEQ_NOEU',
                    NOM_CMP='VMIS',
                    MAILLE='M1',
                    GROUP_NO='A',
@@ -236,7 +236,7 @@ TEST_RESU(RESU=(_F(RESULTAT=EVOL,
                    REFERENCE='ANALYTIQUE',),
                 _F(RESULTAT=EVOL,
                    INST=1.0,
-                   NOM_CHAM='EQUI_NOEU_SIGM',
+                   NOM_CHAM='SIEQ_NOEU',
                    NOM_CMP='TRESCA',
                    MAILLE='M1',
                    GROUP_NO='A',
@@ -246,7 +246,7 @@ TEST_RESU(RESU=(_F(RESULTAT=EVOL,
                    REFERENCE='ANALYTIQUE',),
                 _F(RESULTAT=EVOL,
                    INST=1.0,
-                   NOM_CHAM='EQUI_NOEU_SIGM',
+                   NOM_CHAM='SIEQ_NOEU',
                    NOM_CMP='PRIN_1',
                    MAILLE='M1',
                    GROUP_NO='A',
@@ -256,7 +256,7 @@ TEST_RESU(RESU=(_F(RESULTAT=EVOL,
                    REFERENCE='ANALYTIQUE',),
                 _F(RESULTAT=EVOL,
                    INST=1.0,
-                   NOM_CHAM='EQUI_NOEU_SIGM',
+                   NOM_CHAM='SIEQ_NOEU',
                    NOM_CMP='PRIN_2',
                    MAILLE='M1',
                    GROUP_NO='A',
@@ -266,7 +266,7 @@ TEST_RESU(RESU=(_F(RESULTAT=EVOL,
                    REFERENCE='ANALYTIQUE',),
                 _F(RESULTAT=EVOL,
                    INST=1.0,
-                   NOM_CHAM='EQUI_NOEU_SIGM',
+                   NOM_CHAM='SIEQ_NOEU',
                    NOM_CMP='PRIN_3',
                    MAILLE='M1',
                    GROUP_NO='A',
@@ -276,7 +276,7 @@ TEST_RESU(RESU=(_F(RESULTAT=EVOL,
                    REFERENCE='ANALYTIQUE',),
                 _F(RESULTAT=EVOL,
                    INST=1.0,
-                   NOM_CHAM='EQUI_NOEU_SIGM',
+                   NOM_CHAM='SIEQ_NOEU',
                    NOM_CMP='VMIS_SG',
                    MAILLE='M1',
                    GROUP_NO='A',

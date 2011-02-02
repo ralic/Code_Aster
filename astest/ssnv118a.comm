@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # TITRE ESSAI DE TRACTION CISAILLEMENT EN 3D (VISCOCHAB)
 # ssnv118a.para = tps_job 60 mem_job 64Mo liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -166,8 +166,8 @@ SOLNL=STAT_NON_LINE(
               )
 
 SOLNL=CALC_ELEM( reuse=SOLNL,
-                       OPTION=( 'EPSI_ELNO_DEPL',
-                                'SIEF_ELNO',  'VARI_ELNO_ELGA',),
+                       OPTION=( 'EPSI_ELNO',
+                                'SIEF_ELNO',  'VARI_ELNO',),
                      RESULTAT=SOLNL,
                            INST=10.,
               )
@@ -179,39 +179,39 @@ TEST_RESU(RESU=(
   _F(  RESULTAT = SOLNL,  NOM_CHAM = 'SIEF_ELNO',  NUME_ORDRE = 11,
                  MAILLE = 'MA1',  NOEUD = 'N1',  NOM_CMP = 'SIXY',  VALE = 6.00000E+1),
 
-  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'EPSI_ELNO_DEPL',  NUME_ORDRE = 11,
+  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'EPSI_ELNO',  NUME_ORDRE = 11,
                  MAILLE = 'MA1',  NOEUD = 'N1',  NOM_CMP = 'EPXX',  VALE = 1.49455E-2,
                                                     PRECISION = 1.1E-2),
 
-  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'EPSI_ELNO_DEPL',  NUME_ORDRE = 11,
+  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'EPSI_ELNO',  NUME_ORDRE = 11,
                  MAILLE = 'MA1',  NOEUD = 'N1',  NOM_CMP = 'EPXY',  VALE = 0.888453E-2,
                                                     PRECISION = 1.1E-2),
 
-  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'VARI_ELNO_ELGA',  NUME_ORDRE = 11,
+  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'VARI_ELNO',  NUME_ORDRE = 11,
                MAILLE = 'MA1',  NOEUD = 'N1',
                NOM_CMP = 'V1',             VALE = 0.124955E+2,
                                                     PRECISION = 5.E-3),
 
-  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'VARI_ELNO_ELGA',  NUME_ORDRE = 11,
+  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'VARI_ELNO',  NUME_ORDRE = 11,
                MAILLE = 'MA1',  NOEUD = 'N1',
                NOM_CMP = 'V7',             VALE = 0.300352E+2),
 
-  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'VARI_ELNO_ELGA',  NUME_ORDRE = 11,
+  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'VARI_ELNO',  NUME_ORDRE = 11,
                MAILLE = 'MA1',  NOEUD = 'N1',
                NOM_CMP = 'V13',             VALE = 0.169235E-01,
                                                     PRECISION = 1.E-2),
 
-  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'VARI_ELNO_ELGA',  NUME_ORDRE = 11,
+  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'VARI_ELNO',  NUME_ORDRE = 11,
                MAILLE = 'MA1',  NOEUD = 'N1',
                NOM_CMP = 'V14',             VALE = 0.836836E+01,
                                                     PRECISION = 1.E-2),
 
-  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'VARI_ELNO_ELGA',  NUME_ORDRE = 11,
+  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'VARI_ELNO',  NUME_ORDRE = 11,
                MAILLE = 'MA1',  NOEUD = 'N1',
                NOM_CMP = 'V15',             VALE = 0.676633E-3,
                                                     PRECISION = 1.E-2),
 
-  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'VARI_ELNO_ELGA',  NUME_ORDRE = 11,
+  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'VARI_ELNO',  NUME_ORDRE = 11,
                MAILLE = 'MA1',  NOEUD = 'N1',
                NOM_CMP = 'V16',             VALE = 0.133485E-1,
                                                     PRECISION = 1.E-2))

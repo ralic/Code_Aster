@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # TITRE CYLINDRE EN C.P. (TRIA6 QUAD8) TEST ORIE_PRES_2D
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -66,11 +66,11 @@ RESU=MECA_STATIQUE(         MODELE=MO,    CHAM_MATER=CM,
 
 CALC_ELEM( reuse= RESU ,RESULTAT= RESU ,
 
-                      OPTION=( 'EPSI_ELNO_DEPL', 'SIGM_ELNO_DEPL',)
+                      OPTION=( 'EPSI_ELNO', 'SIGM_ELNO',)
                     )
 
 CALC_NO( reuse=RESU,                      RESULTAT=RESU,
-                     OPTION=('EPSI_NOEU', 'SIGM_NOEU_DEPL',))
+                     OPTION=('EPSI_NOEU', 'SIGM_NOEU',))
 
 TEST_RESU(RESU=(
    # DEPLACEMENTS
@@ -95,64 +95,64 @@ _F(  RESULTAT = RESU, NOM_CHAM = 'DEPL',  CRITERE = 'RELATIF', PRECISION = 1.E-2
 
 TEST_RESU(RESU=(
 
-           _F(  RESULTAT = RESU, NOM_CHAM = 'SIGM_NOEU_DEPL', NUME_ORDRE = 1,
+           _F(  RESULTAT = RESU, NOM_CHAM = 'SIGM_NOEU', NUME_ORDRE = 1,
   CRITERE = 'RELATIF',    PRECISION = 1.E-2,
  GROUP_NO = 'A',       NOM_CMP = 'SIXX',      VALE = -60.),
-           _F(  RESULTAT = RESU, NOM_CHAM = 'SIGM_NOEU_DEPL', NUME_ORDRE = 1,
+           _F(  RESULTAT = RESU, NOM_CHAM = 'SIGM_NOEU', NUME_ORDRE = 1,
   CRITERE = 'RELATIF',    PRECISION = 1.E-2,
  GROUP_NO = 'A',       NOM_CMP = 'SIYY',      VALE = 100.),
-           _F(  RESULTAT = RESU, NOM_CHAM = 'SIGM_NOEU_DEPL', NUME_ORDRE = 1,
+           _F(  RESULTAT = RESU, NOM_CHAM = 'SIGM_NOEU', NUME_ORDRE = 1,
   CRITERE = 'ABSOLU',     PRECISION = 0.001,
  GROUP_NO = 'A',        NOM_CMP = 'SIZZ',      VALE = 0.),
-           _F(  RESULTAT = RESU, NOM_CHAM = 'SIGM_NOEU_DEPL', NUME_ORDRE = 1,
+           _F(  RESULTAT = RESU, NOM_CHAM = 'SIGM_NOEU', NUME_ORDRE = 1,
   CRITERE = 'ABSOLU',     PRECISION = 0.3,
  GROUP_NO = 'A',        NOM_CMP = 'SIXY',      VALE = 0.))
            )
 
 TEST_RESU(RESU=(
 
-           _F(  RESULTAT = RESU, NOM_CHAM = 'SIGM_NOEU_DEPL', NUME_ORDRE = 1,
+           _F(  RESULTAT = RESU, NOM_CHAM = 'SIGM_NOEU', NUME_ORDRE = 1,
   CRITERE = 'ABSOLU',     PRECISION = 0.1,
  GROUP_NO = 'B',        NOM_CMP = 'SIXX',      VALE = 0.),
-           _F(  RESULTAT = RESU, NOM_CHAM = 'SIGM_NOEU_DEPL', NUME_ORDRE = 1,
+           _F(  RESULTAT = RESU, NOM_CHAM = 'SIGM_NOEU', NUME_ORDRE = 1,
   CRITERE = 'RELATIF',    PRECISION = 5.E-3,
  GROUP_NO = 'B',       NOM_CMP = 'SIYY',      VALE = 40.),
-           _F(  RESULTAT = RESU, NOM_CHAM = 'SIGM_NOEU_DEPL', NUME_ORDRE = 1,
+           _F(  RESULTAT = RESU, NOM_CHAM = 'SIGM_NOEU', NUME_ORDRE = 1,
   CRITERE = 'ABSOLU',     PRECISION = 0.015,
  GROUP_NO = 'B',      NOM_CMP = 'SIZZ',      VALE = 0.),
-           _F(  RESULTAT = RESU, NOM_CHAM = 'SIGM_NOEU_DEPL', NUME_ORDRE = 1,
+           _F(  RESULTAT = RESU, NOM_CHAM = 'SIGM_NOEU', NUME_ORDRE = 1,
   CRITERE = 'ABSOLU',     PRECISION = 0.1,
  GROUP_NO = 'B',        NOM_CMP = 'SIXY',      VALE = 0.))
            )
 
 TEST_RESU(RESU=(
 
-           _F(  RESULTAT = RESU, NOM_CHAM = 'SIGM_NOEU_DEPL', NUME_ORDRE = 1,
+           _F(  RESULTAT = RESU, NOM_CHAM = 'SIGM_NOEU', NUME_ORDRE = 1,
   CRITERE = 'RELATIF',    PRECISION = 5.E-2,
  GROUP_NO = 'E',   NOM_CMP = 'SIXX',      VALE = 20.),
-           _F(  RESULTAT = RESU, NOM_CHAM = 'SIGM_NOEU_DEPL', NUME_ORDRE = 1,
+           _F(  RESULTAT = RESU, NOM_CHAM = 'SIGM_NOEU', NUME_ORDRE = 1,
   CRITERE = 'RELATIF',    PRECISION = 5.E-2,
  GROUP_NO = 'E',   NOM_CMP = 'SIYY',      VALE = 20.),
-           _F(  RESULTAT = RESU, NOM_CHAM = 'SIGM_NOEU_DEPL', NUME_ORDRE = 1,
+           _F(  RESULTAT = RESU, NOM_CHAM = 'SIGM_NOEU', NUME_ORDRE = 1,
   CRITERE = 'ABSOLU',     PRECISION = 0.001,
  GROUP_NO = 'E',   NOM_CMP = 'SIZZ',      VALE = 0.),
-           _F(  RESULTAT = RESU, NOM_CHAM = 'SIGM_NOEU_DEPL', NUME_ORDRE = 1,
+           _F(  RESULTAT = RESU, NOM_CHAM = 'SIGM_NOEU', NUME_ORDRE = 1,
   CRITERE = 'RELATIF',    PRECISION = 1.E-2,
  GROUP_NO = 'E',   NOM_CMP = 'SIXY',      VALE = -80.))
            )
 
 TEST_RESU(RESU=(
 
-           _F(  RESULTAT = RESU, NOM_CHAM = 'SIGM_NOEU_DEPL', NUME_ORDRE = 1,
+           _F(  RESULTAT = RESU, NOM_CHAM = 'SIGM_NOEU', NUME_ORDRE = 1,
   CRITERE = 'RELATIF',    PRECISION = 1.E-2,
  GROUP_NO = 'F',  NOM_CMP = 'SIXX',      VALE = 20.),
-           _F(  RESULTAT = RESU, NOM_CHAM = 'SIGM_NOEU_DEPL', NUME_ORDRE = 1,
+           _F(  RESULTAT = RESU, NOM_CHAM = 'SIGM_NOEU', NUME_ORDRE = 1,
   CRITERE = 'RELATIF',    PRECISION = 1.E-2,
  GROUP_NO = 'F',  NOM_CMP = 'SIYY',      VALE = 20.),
-           _F(  RESULTAT = RESU, NOM_CHAM = 'SIGM_NOEU_DEPL', NUME_ORDRE = 1,
+           _F(  RESULTAT = RESU, NOM_CHAM = 'SIGM_NOEU', NUME_ORDRE = 1,
   CRITERE = 'ABSOLU',     PRECISION = 0.001,
  GROUP_NO = 'F',  NOM_CMP = 'SIZZ',      VALE = 0.),
-           _F(  RESULTAT = RESU, NOM_CHAM = 'SIGM_NOEU_DEPL', NUME_ORDRE = 1,
+           _F(  RESULTAT = RESU, NOM_CHAM = 'SIGM_NOEU', NUME_ORDRE = 1,
   CRITERE = 'RELATIF',    PRECISION = 1.E-3,
  GROUP_NO = 'F',  NOM_CMP = 'SIXY',      VALE = -20.))
            )

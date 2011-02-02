@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # TITRE PROBLEME DE HOVGAARD: CALCUL MODAL ET CALCUL SPECTRAL
 # ======================================================================
 # sdlx02a.para = tps_job 60 mem_job 400Mo ncpus 1 liste_test R
@@ -100,7 +100,7 @@ MODE_DIA=MODE_ITER_SIMULT(  MATR_A=RIGIDITE,   MATR_B=MASSE_DI,
 MODE_DIA=NORM_MODE(reuse=MODE_DIA,   MODE=MODE_DIA,   NORME='TRAN_ROTA',)
 
 MODE_DIA=CALC_ELEM(reuse=MODE_DIA,  RESULTAT=MODE_DIA,
-                         OPTION=( 'SIEF_ELGA', 'EFGE_ELNO_DEPL', ),)
+                         OPTION=( 'SIEF_ELGA', 'EFGE_ELNO', ),)
 
 MODE_DIA=CALC_NO(reuse=MODE_DIA,  RESULTAT=MODE_DIA,
                  OPTION='REAC_NODA', )
@@ -166,7 +166,7 @@ IMPR_TABLE ( TABLE = T_RELE,
              NOM_PARA = ('NOEUD','NUME_ORDRE','DX','DY','DZ','NOEUD_CMP',), )
 
 MODE_STA=CALC_ELEM(reuse=MODE_STA,  RESULTAT=MODE_STA,
-                         OPTION=( 'SIEF_ELGA', 'EFGE_ELNO_DEPL', ), )
+                         OPTION=( 'SIEF_ELGA', 'EFGE_ELNO', ), )
 
 MODE_STA=CALC_NO(reuse=MODE_STA,  RESULTAT=MODE_STA,
                     OPTION='REAC_NODA',)
@@ -206,7 +206,7 @@ SISM_SPE=COMB_SISM_MODAL(  MODE_MECA=MODE_DIA,
                            ECHELLE = ( 1.,  1.,  0.5, )),
                            COMB_MODE=_F(  TYPE = 'SRSS'),
                            COMB_DIRECTION=_F(  TYPE = 'QUAD'),
-                           OPTION=( 'DEPL',  'EFGE_ELNO_DEPL', 
+                           OPTION=( 'DEPL',  'EFGE_ELNO', 
                                       'REAC_NODA', )
                             )
 
@@ -294,60 +294,60 @@ TEST_RESU(RESU=( _F(  RESULTAT = SISM_SPE,  NOM_CHAM = 'REAC_NODA',
                      NOEUD = 'N1500',  NOM_CMP = 'DRZ',  VALE = 4.903E+03))
             )
 
-TEST_RESU(RESU=( _F(  RESULTAT = SISM_SPE,  NOM_CHAM = 'EFGE_ELNO_DEPL',
+TEST_RESU(RESU=( _F(  RESULTAT = SISM_SPE,  NOM_CHAM = 'EFGE_ELNO',
                      NOEUD_CMP = ( 'COMBI',  'QUAD', ), MAILLE = 'E2',
                      NOEUD = 'N300',  NOM_CMP = 'N',     VALE = 5.599E+02),
-                   _F(  RESULTAT = SISM_SPE,  NOM_CHAM = 'EFGE_ELNO_DEPL',
+                   _F(  RESULTAT = SISM_SPE,  NOM_CHAM = 'EFGE_ELNO',
                      NOEUD_CMP = ( 'COMBI',  'QUAD', ), MAILLE = 'E2',
                      NOEUD = 'N300',  NOM_CMP = 'VY',    VALE = 4.308E+02),
-                   _F(  RESULTAT = SISM_SPE,  NOM_CHAM = 'EFGE_ELNO_DEPL',
+                   _F(  RESULTAT = SISM_SPE,  NOM_CHAM = 'EFGE_ELNO',
                      NOEUD_CMP = ( 'COMBI',  'QUAD', ), MAILLE = 'E2',
                      NOEUD = 'N300',  NOM_CMP = 'VZ',    VALE = 9.149E+02),
-                   _F(  RESULTAT = SISM_SPE,  NOM_CHAM = 'EFGE_ELNO_DEPL',
+                   _F(  RESULTAT = SISM_SPE,  NOM_CHAM = 'EFGE_ELNO',
                      NOEUD_CMP = ( 'COMBI',  'QUAD', ), MAILLE = 'E2',
                      NOEUD = 'N300',  NOM_CMP = 'MT',    VALE = 9.325E+02),
-                   _F(  RESULTAT = SISM_SPE,  NOM_CHAM = 'EFGE_ELNO_DEPL',
+                   _F(  RESULTAT = SISM_SPE,  NOM_CHAM = 'EFGE_ELNO',
                      NOEUD_CMP = ( 'COMBI',  'QUAD', ), MAILLE = 'E2',
                      NOEUD = 'N300',  NOM_CMP = 'MFY',   VALE = 5.873E+02),
-                   _F(  RESULTAT = SISM_SPE,  NOM_CHAM = 'EFGE_ELNO_DEPL',
+                   _F(  RESULTAT = SISM_SPE,  NOM_CHAM = 'EFGE_ELNO',
                      NOEUD_CMP = ( 'COMBI',  'QUAD', ), MAILLE = 'E2',
                      NOEUD = 'N300',  NOM_CMP = 'MFZ',   VALE = 6.204E+02),
 
-                   _F(  RESULTAT = SISM_SPE,  NOM_CHAM = 'EFGE_ELNO_DEPL',
+                   _F(  RESULTAT = SISM_SPE,  NOM_CHAM = 'EFGE_ELNO',
                      NOEUD_CMP = ( 'COMBI',  'QUAD', ), MAILLE = 'E7',
                      NOEUD = 'N700',  NOM_CMP = 'N',     VALE = 1.625E+03),
-                   _F(  RESULTAT = SISM_SPE,  NOM_CHAM = 'EFGE_ELNO_DEPL',
+                   _F(  RESULTAT = SISM_SPE,  NOM_CHAM = 'EFGE_ELNO',
                      NOEUD_CMP = ( 'COMBI',  'QUAD', ), MAILLE = 'E7',
                      NOEUD = 'N700',  NOM_CMP = 'VY',    VALE = 1.367E+03),
-                   _F(  RESULTAT = SISM_SPE,  NOM_CHAM = 'EFGE_ELNO_DEPL',
+                   _F(  RESULTAT = SISM_SPE,  NOM_CHAM = 'EFGE_ELNO',
                      NOEUD_CMP = ( 'COMBI',  'QUAD', ), MAILLE = 'E7',
                      NOEUD = 'N700',  NOM_CMP = 'VZ',    VALE = 2.254E+02),
-                   _F(  RESULTAT = SISM_SPE,  NOM_CHAM = 'EFGE_ELNO_DEPL',
+                   _F(  RESULTAT = SISM_SPE,  NOM_CHAM = 'EFGE_ELNO',
                      NOEUD_CMP = ( 'COMBI',  'QUAD', ), MAILLE = 'E7',
                      NOEUD = 'N700',  NOM_CMP = 'MT',    VALE = 6.496E+02),
-                   _F(  RESULTAT = SISM_SPE,  NOM_CHAM = 'EFGE_ELNO_DEPL',
+                   _F(  RESULTAT = SISM_SPE,  NOM_CHAM = 'EFGE_ELNO',
                      NOEUD_CMP = ( 'COMBI',  'QUAD', ), MAILLE = 'E7',
                      NOEUD = 'N700',  NOM_CMP = 'MFY',   VALE = 4.998E+02),
-                   _F(  RESULTAT = SISM_SPE,  NOM_CHAM = 'EFGE_ELNO_DEPL',
+                   _F(  RESULTAT = SISM_SPE,  NOM_CHAM = 'EFGE_ELNO',
                      NOEUD_CMP = ( 'COMBI',  'QUAD', ), MAILLE = 'E7',
                      NOEUD = 'N700',  NOM_CMP = 'MFZ',   VALE = 9.087E+02),
 
-                   _F(  RESULTAT = SISM_SPE,  NOM_CHAM = 'EFGE_ELNO_DEPL',
+                   _F(  RESULTAT = SISM_SPE,  NOM_CHAM = 'EFGE_ELNO',
                      NOEUD_CMP = ( 'COMBI',  'QUAD', ), MAILLE = 'E11',
                      NOEUD = 'N1100', NOM_CMP = 'N',     VALE = 1.652E+03),
-                   _F(  RESULTAT = SISM_SPE,  NOM_CHAM = 'EFGE_ELNO_DEPL',
+                   _F(  RESULTAT = SISM_SPE,  NOM_CHAM = 'EFGE_ELNO',
                      NOEUD_CMP = ( 'COMBI',  'QUAD', ), MAILLE = 'E11',
                      NOEUD = 'N1100', NOM_CMP = 'VY',    VALE = 3.177E+03),
-                   _F(  RESULTAT = SISM_SPE,  NOM_CHAM = 'EFGE_ELNO_DEPL',
+                   _F(  RESULTAT = SISM_SPE,  NOM_CHAM = 'EFGE_ELNO',
                      NOEUD_CMP = ( 'COMBI',  'QUAD', ), MAILLE = 'E11',
                      NOEUD = 'N1100', NOM_CMP = 'VZ',    VALE = 7.957E+02),
-                   _F(  RESULTAT = SISM_SPE,  NOM_CHAM = 'EFGE_ELNO_DEPL',
+                   _F(  RESULTAT = SISM_SPE,  NOM_CHAM = 'EFGE_ELNO',
                      NOEUD_CMP = ( 'COMBI',  'QUAD', ), MAILLE = 'E11',
                      NOEUD = 'N1100', NOM_CMP = 'MT',    VALE = 1.706E+02),
-                   _F(  RESULTAT = SISM_SPE,  NOM_CHAM = 'EFGE_ELNO_DEPL',
+                   _F(  RESULTAT = SISM_SPE,  NOM_CHAM = 'EFGE_ELNO',
                      NOEUD_CMP = ( 'COMBI',  'QUAD', ), MAILLE = 'E11',
                      NOEUD = 'N1100', NOM_CMP = 'MFY',   VALE = 9.247E+02),
-                   _F(  RESULTAT = SISM_SPE,  NOM_CHAM = 'EFGE_ELNO_DEPL',
+                   _F(  RESULTAT = SISM_SPE,  NOM_CHAM = 'EFGE_ELNO',
                      NOEUD_CMP = ( 'COMBI',  'QUAD', ), MAILLE = 'E11',
                      NOEUD = 'N1100', NOM_CMP = 'MFZ',   VALE = 2.150E+03))
             )
@@ -367,7 +367,7 @@ SISM_SIS=COMB_SISM_MODAL(  MODE_MECA=MODE_DIA,
                                      ECHELLE = ( 1.,  1.,  1., )),
                            COMB_MODE=_F(  TYPE = 'SRSS'),
                            COMB_DIRECTION=_F(  TYPE = 'QUAD'),
-                           OPTION=( 'DEPL',  'EFGE_ELNO_DEPL', 
+                           OPTION=( 'DEPL',  'EFGE_ELNO', 
                                       'REAC_NODA', )
                             )
 
@@ -407,41 +407,41 @@ TEST_RESU(RESU=( _F(  RESULTAT = SISM_SIS,  NOM_CHAM = 'DEPL',
                      NOEUD_CMP = ( 'COMBI',  'QUAD', ),
                      NOEUD = 'N1500', NOM_CMP = 'DRZ',   VALE = 4.903E+03),
 
-                   _F(  RESULTAT = SISM_SIS,  NOM_CHAM = 'EFGE_ELNO_DEPL',
+                   _F(  RESULTAT = SISM_SIS,  NOM_CHAM = 'EFGE_ELNO',
                      NOEUD_CMP = ( 'COMBI',  'QUAD', ), MAILLE = 'E1',
                      NOEUD = 'N100',  NOM_CMP = 'N',     VALE = 5.646E+02),
-                   _F(  RESULTAT = SISM_SIS,  NOM_CHAM = 'EFGE_ELNO_DEPL',
+                   _F(  RESULTAT = SISM_SIS,  NOM_CHAM = 'EFGE_ELNO',
                      NOEUD_CMP = ( 'COMBI',  'QUAD', ), MAILLE = 'E1',
                      NOEUD = 'N100',  NOM_CMP = 'VY',    VALE = 1.241E+03),
-                   _F(  RESULTAT = SISM_SIS,  NOM_CHAM = 'EFGE_ELNO_DEPL',
+                   _F(  RESULTAT = SISM_SIS,  NOM_CHAM = 'EFGE_ELNO',
                      NOEUD_CMP = ( 'COMBI',  'QUAD', ), MAILLE = 'E1',
                      NOEUD = 'N100',  NOM_CMP = 'VZ',    VALE = 2.132E+03),
-                   _F(  RESULTAT = SISM_SIS,  NOM_CHAM = 'EFGE_ELNO_DEPL',
+                   _F(  RESULTAT = SISM_SIS,  NOM_CHAM = 'EFGE_ELNO',
                      NOEUD_CMP = ( 'COMBI',  'QUAD', ), MAILLE = 'E1',
                      NOEUD = 'N200',  NOM_CMP = 'MT',    VALE = 9.362E+02),
-                   _F(  RESULTAT = SISM_SIS,  NOM_CHAM = 'EFGE_ELNO_DEPL',
+                   _F(  RESULTAT = SISM_SIS,  NOM_CHAM = 'EFGE_ELNO',
                      NOEUD_CMP = ( 'COMBI',  'QUAD', ), MAILLE = 'E1',
                      NOEUD = 'N200',  NOM_CMP = 'MFY',   VALE = 1.857E+03),
-                   _F(  RESULTAT = SISM_SIS,  NOM_CHAM = 'EFGE_ELNO_DEPL',
+                   _F(  RESULTAT = SISM_SIS,  NOM_CHAM = 'EFGE_ELNO',
                      NOEUD_CMP = ( 'COMBI',  'QUAD', ), MAILLE = 'E1',
                      NOEUD = 'N200',  NOM_CMP = 'MFZ',   VALE = 7.596E+02),
 
-                   _F(  RESULTAT = SISM_SIS,  NOM_CHAM = 'EFGE_ELNO_DEPL',
+                   _F(  RESULTAT = SISM_SIS,  NOM_CHAM = 'EFGE_ELNO',
                      NOEUD_CMP = ( 'COMBI',  'QUAD', ), MAILLE = 'E10',
                      NOEUD = 'N1000', NOM_CMP = 'N',     VALE = 2.454E+03),
-                   _F(  RESULTAT = SISM_SIS,  NOM_CHAM = 'EFGE_ELNO_DEPL',
+                   _F(  RESULTAT = SISM_SIS,  NOM_CHAM = 'EFGE_ELNO',
                      NOEUD_CMP = ( 'COMBI',  'QUAD', ), MAILLE = 'E10',
                      NOEUD = 'N1000', NOM_CMP = 'VY',    VALE = 1.997E+03),
-                   _F(  RESULTAT = SISM_SIS,  NOM_CHAM = 'EFGE_ELNO_DEPL',
+                   _F(  RESULTAT = SISM_SIS,  NOM_CHAM = 'EFGE_ELNO',
                      NOEUD_CMP = ( 'COMBI',  'QUAD', ), MAILLE = 'E10',
                      NOEUD = 'N1000', NOM_CMP = 'VZ',    VALE = 5.050E+02),
-                   _F(  RESULTAT = SISM_SIS,  NOM_CHAM = 'EFGE_ELNO_DEPL',
+                   _F(  RESULTAT = SISM_SIS,  NOM_CHAM = 'EFGE_ELNO',
                      NOEUD_CMP = ( 'COMBI',  'QUAD', ), MAILLE = 'E10',
                      NOEUD = 'N1100', NOM_CMP = 'MT',    VALE = 1.706E+02),
-                   _F(  RESULTAT = SISM_SIS,  NOM_CHAM = 'EFGE_ELNO_DEPL',
+                   _F(  RESULTAT = SISM_SIS,  NOM_CHAM = 'EFGE_ELNO',
                      NOEUD_CMP = ( 'COMBI',  'QUAD', ), MAILLE = 'E10',
                      NOEUD = 'N1100', NOM_CMP = 'MFY',   VALE = 9.251E+02),
-                   _F(  RESULTAT = SISM_SIS,  NOM_CHAM = 'EFGE_ELNO_DEPL',
+                   _F(  RESULTAT = SISM_SIS,  NOM_CHAM = 'EFGE_ELNO',
                      NOEUD_CMP = ( 'COMBI',  'QUAD', ), MAILLE = 'E10',
                      NOEUD = 'N1100', NOM_CMP = 'MFZ',   VALE = 2.151E+03))
             )

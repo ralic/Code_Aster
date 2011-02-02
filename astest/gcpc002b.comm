@@ -1,9 +1,9 @@
-# MODIF  DATE 19/10/2010   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # TITRE  DSR3 - RENUM RCMK / AFFE_CHAR_MECA / SOLVE
 # gcpc002b.para = tps_job 150 mem_job 500Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -84,7 +84,7 @@ RESU=CREA_RESU(OPERATION='AFFE',
 RESU=CALC_ELEM(reuse =RESU,
                RESULTAT=RESU,
                INST=0.,
-               OPTION='SIGM_ELNO_DEPL',);
+               OPTION='SIGM_ELNO',);
 
 TEST_RESU(CHAM_NO=(_F(CHAM_GD=DEP,
                       NOEUD='NO13943',
@@ -291,7 +291,7 @@ TEST_RESU(CHAM_NO=(_F(CHAM_GD=DEP,
 
 TEST_RESU(RESU=(_F(RESULTAT=RESU,
                    INST=0.0,
-                   NOM_CHAM='SIGM_ELNO_DEPL',
+                   NOM_CHAM='SIGM_ELNO',
                    NOM_CMP='SIXX',
                    MAILLE='MA4204',
                    NOEUD='NO15854',
@@ -300,7 +300,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU,
                    REFERENCE='SOURCE_EXTERNE',),
                 _F(RESULTAT=RESU,
                    INST=0.0,
-                   NOM_CHAM='SIGM_ELNO_DEPL',
+                   NOM_CHAM='SIGM_ELNO',
                    NOM_CMP='SIXY',
                    MAILLE='MA4204',
                    NOEUD='NO15854',
@@ -309,7 +309,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU,
                    REFERENCE='SOURCE_EXTERNE',),
                 _F(RESULTAT=RESU,
                    INST=0.0,
-                   NOM_CHAM='SIGM_ELNO_DEPL',
+                   NOM_CHAM='SIGM_ELNO',
                    NOM_CMP='SIYY',
                    MAILLE='MA4204',
                    NOEUD='NO15854',
@@ -318,7 +318,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU,
                    REFERENCE='SOURCE_EXTERNE',),
                 _F(RESULTAT=RESU,
                    INST=0.0,
-                   NOM_CHAM='SIGM_ELNO_DEPL',
+                   NOM_CHAM='SIGM_ELNO',
                    NOM_CMP='SIXZ',
                    MAILLE='MA4204',
                    NOEUD='NO15854',
@@ -327,7 +327,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU,
                    REFERENCE='SOURCE_EXTERNE',),
                 _F(RESULTAT=RESU,
                    INST=0.0,
-                   NOM_CHAM='SIGM_ELNO_DEPL',
+                   NOM_CHAM='SIGM_ELNO',
                    NOM_CMP='SIYZ',
                    MAILLE='MA4204',
                    NOEUD='NO15854',
@@ -336,7 +336,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU,
                    REFERENCE='SOURCE_EXTERNE',),
                 _F(RESULTAT=RESU,
                    INST=0.0,
-                   NOM_CHAM='SIGM_ELNO_DEPL',
+                   NOM_CHAM='SIGM_ELNO',
                    NOM_CMP='SIZZ',
                    MAILLE='MA4204',
                    NOEUD='NO15854',

@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # TITRE ETUDE : ESSAI BIAXIAL DRAINE (MODELISATION D_PLAN)
 # ssnd104b.para = tps_job 360 mem_job 50Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -125,13 +125,13 @@ U3       = STAT_NON_LINE(
                         )
        
 U3       = CALC_ELEM( reuse      = U3,
-                      OPTION     = ('EPSI_ELGA','EPSI_ELNO_DEPL','SIEF_ELNO','VARI_ELNO_ELGA'),
+                      OPTION     = ('EPSI_ELGA','EPSI_ELNO','SIEF_ELNO','VARI_ELNO'),
                       RESULTAT   = U3,
                     );
     
 U3       = CALC_NO( reuse    = U3,     
                     RESULTAT = U3,
-                    OPTION   = ('SIEF_NOEU','VARI_NOEU_ELGA')
+                    OPTION   = ('SIEF_NOEU','VARI_NOEU')
                   )
   
 TEST_RESU( RESU = (
@@ -176,7 +176,7 @@ TEST_RESU( RESU = (
                  _F(  RESULTAT   = U3,
                       REFERENCE  = 'NON_REGRESSION',
                       NOEUD      = 'N4',
-                      NOM_CHAM   = 'VARI_NOEU_ELGA',
+                      NOM_CHAM   = 'VARI_NOEU',
                       NOM_CMP    = 'V1',
                       CRITERE    = 'ABSOLU',
                       INST       = 1.07000,
@@ -185,7 +185,7 @@ TEST_RESU( RESU = (
                  _F(  RESULTAT   = U3,
                       REFERENCE  = 'NON_REGRESSION', 
                       NOEUD      = 'N4',
-                      NOM_CHAM   = 'VARI_NOEU_ELGA',
+                      NOM_CHAM   = 'VARI_NOEU',
                       NOM_CMP    = 'V1',
                       INST       = 1.1600,
                       PRECISION  = 1.E-3,
@@ -193,7 +193,7 @@ TEST_RESU( RESU = (
                  _F(  RESULTAT   = U3,
                       REFERENCE  = 'NON_REGRESSION',
                       NOEUD      = 'N4',
-                      NOM_CHAM   = 'VARI_NOEU_ELGA',
+                      NOM_CHAM   = 'VARI_NOEU',
                       NOM_CMP    = 'V1',
                       INST       = 1.3400,
                       PRECISION  = 1.E-3,
@@ -201,7 +201,7 @@ TEST_RESU( RESU = (
                  _F(  RESULTAT   = U3,
                       REFERENCE  = 'NON_REGRESSION',
                       NOEUD      = 'N4',
-                      NOM_CHAM   = 'VARI_NOEU_ELGA',
+                      NOM_CHAM   = 'VARI_NOEU',
                       NOM_CMP    = 'V1',
                       INST       = 1.5300,
                       PRECISION  = 1.E-3,
@@ -280,12 +280,12 @@ U4       = STAT_NON_LINE(
                         )
        
 U4       = CALC_ELEM( reuse      = U4,
-                      OPTION     = ('EPSI_ELGA','EPSI_ELNO_DEPL','SIEF_ELNO','VARI_ELNO_ELGA'),
+                      OPTION     = ('EPSI_ELGA','EPSI_ELNO','SIEF_ELNO','VARI_ELNO'),
                       RESULTAT   = U4,
                     );
 U4       = CALC_NO( reuse    = U4,     
                     RESULTAT = U4,
-                    OPTION   = ('SIEF_NOEU','VARI_NOEU_ELGA')
+                    OPTION   = ('SIEF_NOEU','VARI_NOEU')
                   )
   
 TEST_RESU( RESU = (
@@ -330,7 +330,7 @@ TEST_RESU( RESU = (
                  _F(  RESULTAT   = U4,
                       REFERENCE  = 'NON_REGRESSION',
                       NOEUD      = 'N4',
-                      NOM_CHAM   = 'VARI_NOEU_ELGA',
+                      NOM_CHAM   = 'VARI_NOEU',
                       NOM_CMP    = 'V1',
                       CRITERE    = 'ABSOLU',
                       INST       = 1.07000,
@@ -339,7 +339,7 @@ TEST_RESU( RESU = (
                  _F(  RESULTAT   = U4,
                       REFERENCE  = 'NON_REGRESSION', 
                       NOEUD      = 'N4',
-                      NOM_CHAM   = 'VARI_NOEU_ELGA',
+                      NOM_CHAM   = 'VARI_NOEU',
                       NOM_CMP    = 'V1',
                       INST       = 1.1600,
                       PRECISION  = 1.E-3,
@@ -347,7 +347,7 @@ TEST_RESU( RESU = (
                  _F(  RESULTAT   = U4,
                       REFERENCE  = 'NON_REGRESSION',
                       NOEUD      = 'N4',
-                      NOM_CHAM   = 'VARI_NOEU_ELGA',
+                      NOM_CHAM   = 'VARI_NOEU',
                       NOM_CMP    = 'V1',
                       INST       = 1.3400,
                       PRECISION  = 1.E-3,
@@ -355,7 +355,7 @@ TEST_RESU( RESU = (
                  _F(  RESULTAT   = U4,
                       REFERENCE  = 'NON_REGRESSION',
                       NOEUD      = 'N4',
-                      NOM_CHAM   = 'VARI_NOEU_ELGA',
+                      NOM_CHAM   = 'VARI_NOEU',
                       NOM_CMP    = 'V1',
                       INST       = 1.5300,
                       PRECISION  = 1.E-3,

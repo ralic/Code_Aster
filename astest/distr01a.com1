@@ -6,7 +6,7 @@ POURSUITE(CODE=_F(NOM='DISTR01A',))
 tabtest=POST_RELEVE_T(ACTION=_F(OPERATION='MOYENNE_ARITH',
                                 INTITULE='Moyenne',
                                 RESULTAT=RESU,
-                                NOM_CHAM='EQUI_NOEU_SIGM',
+                                NOM_CHAM='SIEQ_NOEU',
                                 GROUP_NO='Lsup'),)
 
 TEST_TABLE(TABLE=tabtest,

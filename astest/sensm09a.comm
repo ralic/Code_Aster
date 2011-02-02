@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # RESPONSABLE F6BHHBO P.DEBONNIERES
 # TITRE CYLINDRE INFINI SOUS PRESSION (PLAST VON-MISES ISOT LINEAIRE)
 # sensm09a.para = tps_job 60 mem_job 64Mo liste_test S
@@ -322,15 +322,15 @@ U= STAT_NON_LINE ( reuse=U,
 
 
 U=CALC_ELEM( reuse=U,
-             OPTION=('SIEF_ELNO',  'VARI_ELNO_ELGA',),
+             OPTION=('SIEF_ELNO',  'VARI_ELNO',),
              RESULTAT=U,
               )
 
 CALC_SENSI(reuse=U, RESULTAT=U, SENSIBILITE=(PS_E,PS_DSDE,PS_SIGY,PS_DY),
-             OPTION=('SIEF_ELNO',  'VARI_ELNO_ELGA',),)
+             OPTION=('SIEF_ELNO',  'VARI_ELNO',),)
 
 U=CALC_ELEM(reuse=U,         RESULTAT=U,
-                OPTION='EPSI_ELNO_DEPL')
+                OPTION='EPSI_ELNO')
 
 U=CALC_ELEM(reuse=U,         RESULTAT=U,
                 OPTION='EPSP_ELNO')
@@ -434,7 +434,7 @@ TEST_RESU(RESU=(
       INST = 60.,
       NOEUD = 'N221',
       MAILLE = 'M75',
-      NOM_CHAM = 'VARI_ELNO_ELGA',
+      NOM_CHAM = 'VARI_ELNO',
       CRITERE = 'RELATIF', PRECISION = 1.E-4,
       NOM_CMP = 'V1',   SENSIBILITE = PS_SIGY,
       VALE = -4.5622E-4, REFERENCE = 'AUTRE_ASTER' ),
@@ -442,7 +442,7 @@ TEST_RESU(RESU=(
       INST = 60.,
       NOEUD = 'N212',
       MAILLE = 'M75',
-      NOM_CHAM = 'VARI_ELNO_ELGA',
+      NOM_CHAM = 'VARI_ELNO',
       CRITERE = 'RELATIF', PRECISION = 1.E-4,
       NOM_CMP = 'V1',   SENSIBILITE = PS_SIGY,
       VALE = -4.50133E-4, REFERENCE = 'AUTRE_ASTER' ),

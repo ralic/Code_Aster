@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 C.......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -24,7 +24,7 @@ C ======================================================================
 C     BUT: CALCUL DES DEFORMATIONS AUX POINTS D'INTEGRATION
 C          OU AUX NOEUDS DES ELEMENTS ISOPARAMETRIQUES 3D
 
-C          OPTIONS : 'EPSI_ELNO_DEPL'
+C          OPTIONS : 'EPSI_ELNO'
 C                    'EPSI_ELGA'
 C                    'EPSG_ELNO'
 C                    'EPSG_ELGA'

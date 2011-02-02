@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # TITRE POUTRE ENCASTREE A UNE EXTREMITE ET CHARGEE PAR UNE TRACTION
 # ssnl106b.para = tps_job 120 mem_job 256Mo mem_aster 50 ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -103,7 +103,7 @@ REST=STAT_NON_LINE(
               )
 
 CALC_ELEM( reuse=REST,RESULTAT=REST,
-        OPTION=('SIEF_ELNO',  'VARI_ELNO_ELGA',),
+        OPTION=('SIEF_ELNO',  'VARI_ELNO',),
               )
 
 CALC_ELEM( reuse=REST,   RESULTAT=REST,
@@ -156,7 +156,7 @@ TEST_RESU(RESU=(_F( RESULTAT = REST,
                  PRECISION = 1.E-3),
            _F( RESULTAT = REST,
                  NUME_ORDRE = 21,
-                 NOM_CHAM = 'VARI_ELNO_ELGA',
+                 NOM_CHAM = 'VARI_ELNO',
                  NOEUD = 'C3',
                  MAILLE = 'SC2',
                  NOM_CMP = 'V6',
@@ -164,7 +164,7 @@ TEST_RESU(RESU=(_F( RESULTAT = REST,
                  PRECISION = 1.E-3),
            _F( RESULTAT = REST,
                  NUME_ORDRE = 21,
-                 NOM_CHAM = 'VARI_ELNO_ELGA',
+                 NOM_CHAM = 'VARI_ELNO',
                  NOEUD = 'C3',
                  MAILLE = 'SC2',
                  NOM_CMP = 'V7',
@@ -238,7 +238,7 @@ RESM=STAT_NON_LINE(
               )
 
 CALC_ELEM( reuse=RESM,RESULTAT=RESM,
-          OPTION=('SIEF_ELNO',  'VARI_ELNO_ELGA',),
+          OPTION=('SIEF_ELNO',  'VARI_ELNO',),
               )
 
 CALC_ELEM( reuse=RESM,   RESULTAT=RESM,

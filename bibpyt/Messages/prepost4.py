@@ -1,4 +1,4 @@
-#@ MODIF prepost4 Messages  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+#@ MODIF prepost4 Messages  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -108,7 +108,7 @@ cata_msg = {
 """),
 
 28 : _("""
- les champs de contraintes aux points de gauss sigm_noeu_depl ou SIEF_NOEU sief_noeu_elga n'ont pas été calculés.
+ les champs de contraintes aux points de gauss SIGM_NOEU ou SIEF_NOEU sief_noeu_elga n'ont pas été calculés.
 """),
 
 29 : _("""
@@ -140,7 +140,7 @@ cata_msg = {
 """),
 
 36 : _("""
- les champs de contraintes aux noeuds SIGM_NOEU_DEPL ou SIEF_NOEU n'ont pas été calculés.
+ les champs de contraintes aux noeuds SIGM_NOEU ou SIEF_NOEU n'ont pas été calculés.
 """),
 
 37 : _("""

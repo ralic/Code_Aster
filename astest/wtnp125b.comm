@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # TITRE   TEST HM, 2D , MODELISATION THMC=LIQU_SATU
 # wtnp125b.para = tps_job 350 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -315,11 +315,11 @@ U_1=CALC_ELEM(reuse =U_1,
                 GROUP_MA='FISSURE',
                   RESULTAT=U_1,
                   TOUT_ORDRE='OUI',
-                  OPTION=('SIEF_ELNO','VARI_ELNO_ELGA',),);
+                  OPTION=('SIEF_ELNO','VARI_ELNO',),);
 
 TEST_RESU(RESU=_F(RESULTAT=U_1,
                   NUME_ORDRE=25,  
-                  NOM_CHAM='VARI_ELNO_ELGA',
+                  NOM_CHAM='VARI_ELNO',
                   NOM_CMP='V3',
                   MAILLE='M853',
                   NOEUD='NS1674',
@@ -330,7 +330,7 @@ TEST_RESU(RESU=_F(RESULTAT=U_1,
 
 TEST_RESU(RESU=_F(RESULTAT=U_1,
                   NUME_ORDRE=50,  
-                  NOM_CHAM='VARI_ELNO_ELGA',
+                  NOM_CHAM='VARI_ELNO',
                   NOM_CMP='V3',
                   MAILLE='M853',
                   NOEUD='NS1674',

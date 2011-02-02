@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # RESPONSABLE JMBHH01 J.M.PROIX
 # TITRE TUBE DROIT SOUMIS A PLUSIEURS CHARGEMENTS ELEMENT TUYAU_3M 3 NOEUDS STAT_NON_LINE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -139,7 +139,7 @@ U1=STAT_NON_LINE(
 
 U1=CALC_ELEM( reuse=U1,
                             OPTION=(
-                  'SIEF_ELNO',  'VARI_ELNO_ELGA','DEGE_ELNO'),
+                  'SIEF_ELNO',  'VARI_ELNO','DEGE_ELNO'),
                           RESULTAT=U1,
               )
 
@@ -168,7 +168,7 @@ U2=STAT_NON_LINE(
 
 U2=CALC_ELEM( reuse=U2,
                             OPTION=(
-                  'SIEF_ELNO',  'VARI_ELNO_ELGA','DEGE_ELNO'),
+                  'SIEF_ELNO',  'VARI_ELNO','DEGE_ELNO'),
                           RESULTAT=U2,
               )
 
@@ -197,7 +197,7 @@ U3=STAT_NON_LINE(
 
 U3=CALC_ELEM( reuse=U3,
                             OPTION=(
-                  'SIEF_ELNO',  'VARI_ELNO_ELGA','DEGE_ELNO',),
+                  'SIEF_ELNO',  'VARI_ELNO','DEGE_ELNO',),
                           RESULTAT=U3,
               )
 
@@ -226,7 +226,7 @@ U4=STAT_NON_LINE(
 
 U4=CALC_ELEM( reuse=U4,
                             OPTION=(
-                  'SIEF_ELNO',  'VARI_ELNO_ELGA','DEGE_ELNO',),
+                  'SIEF_ELNO',  'VARI_ELNO','DEGE_ELNO',),
                           RESULTAT=U4,
               )
 
@@ -255,7 +255,7 @@ U5=STAT_NON_LINE(
 
 U5=CALC_ELEM( reuse=U5,
                             OPTION=(
-                  'SIEF_ELNO',  'VARI_ELNO_ELGA','DEGE_ELNO',),
+                  'SIEF_ELNO',  'VARI_ELNO','DEGE_ELNO',),
                           RESULTAT=U5,
               )
 
@@ -284,7 +284,7 @@ U6=STAT_NON_LINE(
 
 U6=CALC_ELEM( reuse=U6,
                             OPTION=(
-                  'SIEF_ELNO',  'VARI_ELNO_ELGA','DEGE_ELNO',),
+                  'SIEF_ELNO',  'VARI_ELNO','DEGE_ELNO',),
                           RESULTAT=U6,
               )
 
@@ -313,7 +313,7 @@ U7=STAT_NON_LINE(
 
 U7=CALC_ELEM( reuse=U7,
                             OPTION=(
-                  'SIEF_ELNO',  'VARI_ELNO_ELGA',),
+                  'SIEF_ELNO',  'VARI_ELNO',),
                           RESULTAT=U7,
               )
 

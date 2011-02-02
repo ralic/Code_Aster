@@ -1,4 +1,4 @@
-#@ MODIF post_bordet_ops Macro  DATE 31/01/2011   AUTEUR PELLET J.PELLET 
+#@ MODIF post_bordet_ops Macro  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -110,7 +110,7 @@ COEF_MULT,**args):
 #contrainte principale max
    __RESU=CALC_ELEM(
             RESULTAT=self['RESULTAT'],
-            OPTION='EQUI_ELGA_SIGM' );
+            OPTION='SIEQ_ELGA' );
 #deformation plastique
    __RESU=CALC_ELEM(
             reuse=__RESU,
@@ -194,7 +194,7 @@ COEF_MULT,**args):
                 RESULTAT=__RESU,
                 OPERATION='EXTR',
                 NUME_ORDRE=ordre,
-                NOM_CHAM='EQUI_ELGA_SIGM',);
+                NOM_CHAM='SIEQ_ELGA',);
 
       __EPSP[ordre]=CREA_CHAMP(TYPE_CHAM='ELGA_EPSI_R',
                 RESULTAT=__RESU,

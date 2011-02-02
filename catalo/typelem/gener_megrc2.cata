@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+%& MODIF TYPELEM  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -96,7 +96,7 @@ OPTION__
     ECIN_ELEM      432   IN__   CCACOQU  PCACOQU  NGEOMER  PGEOMER  CMATERC  PMATERC  DDL_MECA PDEPLAR
                                      ZVARCPG  PVARCPR  CFREQR   PFREQR
                               OUT__  EENECNO  PENERCR
-    EFGE_ELNO_DEPL      -1    IN__   XXXXXX   XXXXXX
+    EFGE_ELNO      -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
     ENER_ELAS           -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
@@ -107,7 +107,7 @@ OPTION__
                               OUT__  EENEDNO  PENERDR
     EPSI_ELGA      431   IN__   CCACOQU  PCACOQU  DDL_MECA PDEPLAR  NGEOMER  PGEOMER
                               OUT__  EDEFOPG  PDEFORR
-    EPSI_ELNO_DEPL      431   IN__   CCACOQU  PCACOQU  DDL_MECA PDEPLAR  NGEOMER  PGEOMER
+    EPSI_ELNO      431   IN__   CCACOQU  PCACOQU  DDL_MECA PDEPLAR  NGEOMER  PGEOMER
                               OUT__  EDEFONO  PDEFORR
     FORC_NODA           431   IN__   CCACOQU  PCACOQU  ECONTPG  PCONTMR  NGEOMER  PGEOMER
                               OUT__  MVECTUR  PVECTUR
@@ -187,18 +187,18 @@ OPTION__
     SIEF_ELNO      98    IN__   ECONTPG  PCONTRR
                               OUT__  ECONTNO  PSIEFNOR
                                      ECONTNC  PSIEFNOC
-    SIGM_ELNO_COQU      -1    IN__   XXXXXX   XXXXXX
+    SICO_ELNO      -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
-    SIGM_ELNO_DEPL      431   IN__   CCACOQU  PCACOQU  DDL_MECA PDEPLAR  NGEOMER  PGEOMER  CMATERC  PMATERC
+    SIGM_ELNO      431   IN__   CCACOQU  PCACOQU  DDL_MECA PDEPLAR  NGEOMER  PGEOMER  CMATERC  PMATERC
                                      ZVARCPG  PVARCPR  ZVARCPG  PVARCRR  CTEMPSR  PTEMPSR
                               OUT__  ECONTNO  PCONTRR
     TOU_INI_ELEM        99    IN__   NGEOMER  PGEOMER
                               OUT__  ENBSP_I  PNBSP_I
     TOU_INI_ELGA        99    IN__   NGEOMER  PGEOMER
                               OUT__  ECONTPG  PSIEF_R  ZVARIPG  PVARI_R
-    VARI_ELNO_COQU      -1    IN__   XXXXXX   XXXXXX
+    VACO_ELNO      -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
-    VARI_ELNO_ELGA      98    IN__   CCOMPOR  PCOMPOR  ZVARIPG  PVARIGR
+    VARI_ELNO      98    IN__   CCOMPOR  PCOMPOR  ZVARIPG  PVARIGR
                               OUT__  ZVARINO  PVARINR
     WEIBULL             -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX

@@ -1,4 +1,4 @@
-# MODIF  DATE 25/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # TITRE  POUTRE ANALYSE HARMONIQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -119,12 +119,12 @@ DYNA_F1=DYNA_LINE_HARM(  MATR_MASS=MASS1,
 
 
 DYNA_F1=CALC_ELEM(reuse=DYNA_F1,
-                         RESULTAT=DYNA_F1,  OPTION='EFGE_ELNO_DEPL',
+                         RESULTAT=DYNA_F1,  OPTION='EFGE_ELNO',
 )
 #
 TEST_RESU(RESU=(   _F(  RESULTAT = DYNA_F1,             NUME_ORDRE = 1,
                        MAILLE = 'E1',                   NOEUD = 'N2',
-                       NOM_CHAM = 'EFGE_ELNO_DEPL',   NOM_CMP = 'N',
+                       NOM_CHAM = 'EFGE_ELNO',   NOM_CMP = 'N',
                        VALE_C = 3000.E0+0.E0j,   PRECISION = 5.E-4),
                      _F(  RESULTAT = DYNA_F1,  NUME_ORDRE = 1,  NOEUD = 'N2',
                        NOM_CHAM = 'DEPL',  NOM_CMP = 'DX',
@@ -196,11 +196,11 @@ DYNA_F2=DYNA_LINE_HARM(  MATR_MASS=MASS2,
                          )
 
 DYNA_F2=CALC_ELEM(reuse=DYNA_F2,
-                        RESULTAT=DYNA_F2,  OPTION='EFGE_ELNO_DEPL',
+                        RESULTAT=DYNA_F2,  OPTION='EFGE_ELNO',
 )
 TEST_RESU(RESU=(   _F(  RESULTAT = DYNA_F2,            NUME_ORDRE = 1,
                        MAILLE = 'E1',                   NOEUD = 'N2',
-                       NOM_CHAM = 'EFGE_ELNO_DEPL',   NOM_CMP = 'N',
+                       NOM_CHAM = 'EFGE_ELNO',   NOM_CMP = 'N',
                        VALE_C = 0.E0+3000.E0j,    PRECISION = 5.E-4),
                      _F(  RESULTAT = DYNA_F2, NUME_ORDRE = 1,  NOEUD = 'N2',
                        NOM_CHAM = 'DEPL',  NOM_CMP = 'DX',
@@ -233,12 +233,12 @@ DYNA_AF1=DYNA_LINE_HARM( MATR_MASS=MASS1,
 #
 
 DYNA_AF1=CALC_ELEM(reuse=DYNA_AF1,
-                          RESULTAT=DYNA_AF1,  OPTION='EFGE_ELNO_DEPL',
+                          RESULTAT=DYNA_AF1,  OPTION='EFGE_ELNO',
 )
 #
 TEST_RESU(RESU=(   _F(  RESULTAT = DYNA_AF1,           NUME_ORDRE = 1,
                        MAILLE = 'E1',                  NOEUD = 'N2',
-                       NOM_CHAM = 'EFGE_ELNO_DEPL',  NOM_CMP = 'N',
+                       NOM_CHAM = 'EFGE_ELNO',  NOM_CMP = 'N',
                        VALE_C = 2.9879E3-1.897E2j,
                        PRECISION = 5.E-4),
                      _F(  RESULTAT = DYNA_AF1,  NUME_ORDRE = 1,  NOEUD = 'N2',
@@ -275,12 +275,12 @@ DYNA_AF2=DYNA_LINE_HARM( MATR_MASS=MASS2,
 #
 
 DYNA_AF2=CALC_ELEM(reuse=DYNA_AF2,
-                         RESULTAT=DYNA_AF2,  OPTION='EFGE_ELNO_DEPL',
+                         RESULTAT=DYNA_AF2,  OPTION='EFGE_ELNO',
 )
 #
 TEST_RESU(RESU=(   _F(  RESULTAT = DYNA_AF2,           NUME_ORDRE = 1,
                        MAILLE = 'E1',                  NOEUD = 'N2',
-                       NOM_CHAM = 'EFGE_ELNO_DEPL',  NOM_CMP = 'N',
+                       NOM_CHAM = 'EFGE_ELNO',  NOM_CMP = 'N',
                        VALE_C = 1.897E2+2.9879E3j,
                        PRECISION = 5.E-4),
                      _F(  RESULTAT = DYNA_AF2,  NUME_ORDRE = 1,  NOEUD = 'N2',

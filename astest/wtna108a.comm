@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # TITRE CONDITION DE SUINTEMENT SUR UN BLOC SATURE
 # wtna108a.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -186,7 +186,7 @@ IMPR_RESU(RESU=_F( RESULTAT  =  MESTAT,
                    ),)
 
 MESTAT=CALC_ELEM( reuse      = MESTAT,
-              OPTION     = ('SIEF_ELNO','VARI_ELNO_ELGA','EQUI_ELNO_SIGM'),
+              OPTION     = ('SIEF_ELNO','VARI_ELNO','SIEQ_ELNO'),
               RESULTAT   = MESTAT,
 
 
@@ -194,13 +194,13 @@ MESTAT=CALC_ELEM( reuse      = MESTAT,
 
 MESTAT= CALC_NO( reuse    = MESTAT,
                    RESULTAT = MESTAT,
-                   OPTION   = ( 'SIEF_NOEU', 'VARI_NOEU_ELGA','EQUI_NOEU_SIGM')
+                   OPTION   = ( 'SIEF_NOEU', 'VARI_NOEU','SIEQ_NOEU')
                   )
 
 IMPR_RESU(RESU=_F( RESULTAT = MESTAT,
                    IMPR_COOR = 'OUI',
                    NUME_ORDRE = 3,
-                   NOM_CHAM ='EQUI_NOEU_SIGM',
+                   NOM_CHAM ='SIEQ_NOEU',
                    ),)
 
 IMPR_RESU(RESU=_F( RESULTAT = MESTAT,
@@ -214,7 +214,7 @@ IMPR_RESU(RESU=_F( RESULTAT = MESTAT,
                    IMPR_COOR = 'OUI',
                    NUME_ORDRE = 3,
                    GROUP_NO  = 'SOM_GM14',
-                   NOM_CHAM ='VARI_NOEU_ELGA',
+                   NOM_CHAM ='VARI_NOEU',
                    ),)
 
 TEST_RESU(RESU=_F(RESULTAT=MESTAT,
@@ -238,7 +238,7 @@ TEST_RESU(RESU=_F(RESULTAT=MESTAT,
 TEST_RESU(RESU=(
                 _F(RESULTAT=MESTAT,
                   NUME_ORDRE=3,
-                  NOM_CHAM='EQUI_ELNO_SIGM',
+                  NOM_CHAM='SIEQ_ELNO',
                   NOM_CMP='VMIS',
                   MAILLE='M12',
                   NOEUD='N28',
@@ -247,7 +247,7 @@ TEST_RESU(RESU=(
                   VERSION = '9.2.18', ),
                 _F(RESULTAT=MESTAT,
                   NUME_ORDRE=3,
-                  NOM_CHAM='EQUI_ELNO_SIGM',
+                  NOM_CHAM='SIEQ_ELNO',
                   NOM_CMP='TRESCA',
                   MAILLE='M12',
                   NOEUD='N28',
@@ -256,7 +256,7 @@ TEST_RESU(RESU=(
                   VERSION = '9.2.18', ),
                 _F(RESULTAT=MESTAT,
                   NUME_ORDRE=3,
-                  NOM_CHAM='EQUI_ELNO_SIGM',
+                  NOM_CHAM='SIEQ_ELNO',
                   NOM_CMP='PRIN_1',
                   MAILLE='M12',
                   NOEUD='N28',
@@ -265,7 +265,7 @@ TEST_RESU(RESU=(
                   VERSION = '9.2.18', ),
                 _F(RESULTAT=MESTAT,
                   NUME_ORDRE=3,
-                  NOM_CHAM='EQUI_ELNO_SIGM',
+                  NOM_CHAM='SIEQ_ELNO',
                   NOM_CMP='PRIN_2',
                   MAILLE='M12',
                   NOEUD='N28',
@@ -274,7 +274,7 @@ TEST_RESU(RESU=(
                   VERSION = '9.2.18', ),
                 _F(RESULTAT=MESTAT,
                   NUME_ORDRE=3,
-                  NOM_CHAM='EQUI_ELNO_SIGM',
+                  NOM_CHAM='SIEQ_ELNO',
                   NOM_CMP='PRIN_3',
                   MAILLE='M12',
                   NOEUD='N28',
@@ -283,7 +283,7 @@ TEST_RESU(RESU=(
                   VERSION = '9.2.18', ),
                 _F(RESULTAT=MESTAT,
                   NUME_ORDRE=3,
-                  NOM_CHAM='EQUI_ELNO_SIGM',
+                  NOM_CHAM='SIEQ_ELNO',
                   NOM_CMP='VMIS_SG',
                   MAILLE='M12',
                   NOEUD='N28',
@@ -295,7 +295,7 @@ TEST_RESU(RESU=(
 TEST_RESU(RESU=(
                 _F(RESULTAT=MESTAT,
                   NUME_ORDRE=3,
-                  NOM_CHAM='EQUI_NOEU_SIGM',
+                  NOM_CHAM='SIEQ_NOEU',
                   NOM_CMP='VMIS',
                   MAILLE='M12',
                   NOEUD='N28',
@@ -304,7 +304,7 @@ TEST_RESU(RESU=(
                   VERSION = '9.2.18', ),
                 _F(RESULTAT=MESTAT,
                   NUME_ORDRE=3,
-                  NOM_CHAM='EQUI_NOEU_SIGM',
+                  NOM_CHAM='SIEQ_NOEU',
                   NOM_CMP='TRESCA',
                   MAILLE='M12',
                   NOEUD='N28',
@@ -313,7 +313,7 @@ TEST_RESU(RESU=(
                   VERSION = '9.2.18', ),
                 _F(RESULTAT=MESTAT,
                   NUME_ORDRE=3,
-                  NOM_CHAM='EQUI_NOEU_SIGM',
+                  NOM_CHAM='SIEQ_NOEU',
                   NOM_CMP='PRIN_1',
                   MAILLE='M12',
                   NOEUD='N28',
@@ -322,7 +322,7 @@ TEST_RESU(RESU=(
                   VERSION = '9.2.18', ),
                 _F(RESULTAT=MESTAT,
                   NUME_ORDRE=3,
-                  NOM_CHAM='EQUI_NOEU_SIGM',
+                  NOM_CHAM='SIEQ_NOEU',
                   NOM_CMP='PRIN_2',
                   MAILLE='M12',
                   NOEUD='N28',
@@ -331,7 +331,7 @@ TEST_RESU(RESU=(
                   VERSION = '9.2.18', ),
                 _F(RESULTAT=MESTAT,
                   NUME_ORDRE=3,
-                  NOM_CHAM='EQUI_NOEU_SIGM',
+                  NOM_CHAM='SIEQ_NOEU',
                   NOM_CMP='PRIN_3',
                   MAILLE='M12',
                   NOEUD='N28',
@@ -340,7 +340,7 @@ TEST_RESU(RESU=(
                   VERSION = '9.2.18', ),
                 _F(RESULTAT=MESTAT,
                   NUME_ORDRE=3,
-                  NOM_CHAM='EQUI_NOEU_SIGM',
+                  NOM_CHAM='SIEQ_NOEU',
                   NOM_CMP='VMIS_SG',
                   MAILLE='M12',
                   NOEUD='N28',

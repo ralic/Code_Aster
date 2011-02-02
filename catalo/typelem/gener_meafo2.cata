@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+%& MODIF TYPELEM  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -126,20 +126,20 @@ OPTION__
                               OUT__  EENEDNO  PENERDR
     EPSI_ELGA      -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
-    EPSI_ELNO_DEPL      114   IN__   DDL_MECA PDEPLAR  NGEOMER  PGEOMER  CHARMON  PHARMON
+    EPSI_ELNO      114   IN__   DDL_MECA PDEPLAR  NGEOMER  PGEOMER  CHARMON  PHARMON
                               OUT__  EDEFONO  PDEFORR
                                      EDEFONC  PDEFORC
-    EQUI_ELGA_EPME      -1    IN__   EDEFOPG  PDEFORR
+    EPMQ_ELGA      -1    IN__   EDEFOPG  PDEFORR
                               OUT__  EDFEQPG  PDEFOEQ
-    EQUI_ELGA_EPSI      -1    IN__   EDEFOPG  PDEFORR
+    EPEQ_ELGA      -1    IN__   EDEFOPG  PDEFORR
                               OUT__  EDFEQPG  PDEFOEQ
-    EQUI_ELGA_SIGM      335   IN__   ECONTPG  PCONTRR
+    SIEQ_ELGA      335   IN__   ECONTPG  PCONTRR
                               OUT__  ECOEQPG  PCONTEQ
-    EQUI_ELNO_EPME      -1    IN__   EDEFONO  PDEFORR
+    EPMQ_ELNO      -1    IN__   EDEFONO  PDEFORR
                               OUT__  EDFEQNO  PDEFOEQ
-    EQUI_ELNO_EPSI      -1    IN__   EDEFONO  PDEFORR
+    EPEQ_ELNO      -1    IN__   EDEFONO  PDEFORR
                               OUT__  EDFEQNO  PDEFOEQ
-    EQUI_ELNO_SIGM      330   IN__   ECONTPG  PCONTRR
+    SIEQ_ELNO      330   IN__   ECONTPG  PCONTRR
                               OUT__  ECOEQNO  PCONTEQ
     ETOT_ELEM           575   IN__   ECONTPG  PCONTMR  ECONTPG  PCONTPR  DDL_MECA PDEPLM   DDL_MECA PDEPLR
                                      NGEOMER  PGEOMER  CHARMON  PHARMON
@@ -184,7 +184,7 @@ OPTION__
                                      ECONTPC  PCONTRC
     SIEF_ELGA_SENS      -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
-    SIGM_ELNO_DEPL      116   IN__   CCAMASS  PCAMASS  DDL_MECA PDEPLAR  NGEOMER  PGEOMER  CHARMON  PHARMON
+    SIGM_ELNO      116   IN__   CCAMASS  PCAMASS  DDL_MECA PDEPLAR  NGEOMER  PGEOMER  CHARMON  PHARMON
                                      CMATERC  PMATERC  ZVARCPG  PVARCPR  ZVARCPG  PVARCRR
                               OUT__  ECONTNO  PCONTRR
                                      ECONTNC  PCONTRC

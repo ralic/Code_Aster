@@ -1,6 +1,6 @@
       SUBROUTINE TE0020(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,7 +21,7 @@ C ======================================================================
       CHARACTER*16 OPTION,NOMTE
 C ----------------------------------------------------------------------
 C     FONCTION REALISEE:  CALCUL DES CHAMELEM AUX NOEUDS A PARTIR DES
-C     VALEURS AUX POINTS DE GAUSS (SIEF_ELNO VARI_ELNO_ELGA)
+C     VALEURS AUX POINTS DE GAUSS (SIEF_ELNO VARI_ELNO)
 C                         CALCUL DES CHAMELEM AUX POINTS DE GAUSS A
 C     PARTIR DES VALEURS AUX NOEUDS ( SIEF_ELGA_ELNO VARI_ELGA_ELNO )
 C     ELEMENTS 3D
@@ -85,7 +85,7 @@ C     ---------------------------------------------
         LGPG2 = NCMP
 
 
-      ELSE IF (OPTION.EQ.'VARI_ELNO_ELGA  ') THEN
+      ELSE IF (OPTION.EQ.'VARI_ELNO  ') THEN
 C     ---------------------------------------------
 
         CALL JEVECH('PVARIGR','L',ICHG)
@@ -108,7 +108,7 @@ C     ---------------------------------------------
         CALL TECACH('OON','PVARIGR',7,JTAB,IRET)
         LGPG2 = MAX(JTAB(6),1)*JTAB(7)
 
-C       -- POUR VARI_ELNO_ELGA : LGPG1 PEUT ETRE TROP
+C       -- POUR VARI_ELNO : LGPG1 PEUT ETRE TROP
 C          GRAND DU FAIT DE LIRE_RESU.
 C          LGPG2 EST EN REVANCHE FORCEMENT COHERENT
 C          AVEC LA LOI DE COMPORTEMENT.

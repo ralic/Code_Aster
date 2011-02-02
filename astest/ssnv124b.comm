@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # TITRE CALCUL DE CHARGE LIMITE EN 3D - METHODE DE NORTON-HOFF
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -119,7 +119,7 @@ ECHL = POST_ELEM(
 RESU=CALC_ELEM(reuse=RESU,
                       RESULTAT=RESU,
 
-                        OPTION=('EPSI_ELNO_DEPL',
+                        OPTION=('EPSI_ELNO',
                                 'SIEF_ELNO',
                                 'ERME_ELEM',
                                 'ERME_ELNO',),
@@ -147,7 +147,7 @@ TEST_TABLE(      TABLE=ECHL,
 TEST_RESU(RESU=(
 
  _F(   CRITERE = 'RELATIF',    PRECISION = 1.E-4,
-         RESULTAT = RESU, NOM_CHAM = 'EPSI_ELNO_DEPL',  NUME_ORDRE = 1,
+         RESULTAT = RESU, NOM_CHAM = 'EPSI_ELNO',  NUME_ORDRE = 1,
          NOEUD = 'N1', MAILLE = 'MA1', NOM_CMP = 'EPXX', VALE = 0.04807692)
   ))
 #---------------------------------------------------------------

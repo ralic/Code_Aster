@@ -1,4 +1,4 @@
-# MODIF  DATE 31/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # TITRE VALIDATION DU CLAVAGE EN 2D POUR LA LOI DE JOINT DE PLOT DES BARRAGES
 # ssnp143a.para = tps_job 200 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -150,7 +150,7 @@ U_1=STAT_NON_LINE(MODELE=MO,
 U_1=CALC_ELEM(reuse =U_1,
 
               RESULTAT=U_1,
-              OPTION='VARI_ELNO_ELGA',
+              OPTION='VARI_ELNO',
               GROUP_MA='JOINT');
 
 U_1=CALC_ELEM(reuse =U_1,
@@ -162,7 +162,7 @@ U_1=CALC_ELEM(reuse =U_1,
 
 U_1=CALC_NO(reuse =U_1,
             RESULTAT=U_1,
-            OPTION=('VARI_NOEU_ELGA','SIEF_NOEU'),
+            OPTION=('VARI_NOEU','SIEF_NOEU'),
             GROUP_MA='JOINT');
 
 
@@ -173,7 +173,7 @@ U_1=CALC_NO(reuse =U_1,
 VAR_AV=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                INTITULE='SAUT_N',
                                RESULTAT=U_1,
-                               NOM_CHAM='VARI_NOEU_ELGA',
+                               NOM_CHAM='VARI_NOEU',
                                INST=av_cla,
                                GROUP_NO='JOINT_D',
                                NOM_CMP=('V7','V10'),),);
@@ -196,7 +196,7 @@ SIG_AV=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
 VAR_AP=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                INTITULE='SAUT_N',
                                RESULTAT=U_1,
-                               NOM_CHAM='VARI_NOEU_ELGA',
+                               NOM_CHAM='VARI_NOEU',
                                INST=ap_cla,
                                GROUP_NO='JOINT_D',
                                NOM_CMP=('V7','V10')),);

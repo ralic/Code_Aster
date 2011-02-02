@@ -1,9 +1,9 @@
-# MODIF  DATE 30/08/2010   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # TITRE PROPAGATION DYNAMIQUE D'UNE FISSURE
 # sdns105a.para = tps_job 180 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -183,13 +183,13 @@ evol=DYNA_NON_LINE(MODELE=MODELE,
 evol = CALC_ELEM   (   reuse      = evol    ,
 
 
-                       OPTION     = ('VARI_ELNO_ELGA'),
+                       OPTION     = ('VARI_ELNO'),
                        RESULTAT   = evol    ,);
 
 
 evol   = CALC_NO    (  reuse      = evol,
                        TOUT_ORDRE = 'OUI'    ,
-                       OPTION     = 'VARI_NOEU_ELGA',
+                       OPTION     = 'VARI_NOEU',
                        RESULTAT   = evol   ,);
 
 
@@ -205,7 +205,7 @@ TEST_RESU(RESU=(
                 _F(    RESULTAT = evol,
                        REFERENCE = 'NON_REGRESSION',
                        NOEUD = 'N6',
-                       NOM_CHAM = 'VARI_NOEU_ELGA',
+                       NOM_CHAM = 'VARI_NOEU',
                        NOM_CMP = 'V2',
                        INST=0.00825,
                        PRECISION = 1.E-5,
@@ -215,7 +215,7 @@ TEST_RESU(RESU=(
                 _F(    RESULTAT = evol,
                        REFERENCE = 'NON_REGRESSION',
                        NOEUD = 'N116',
-                       NOM_CHAM = 'VARI_NOEU_ELGA',
+                       NOM_CHAM = 'VARI_NOEU',
                        NOM_CMP = 'V2',
                        INST=0.00825,
                        PRECISION = 1.E-5,
@@ -224,7 +224,7 @@ TEST_RESU(RESU=(
                 _F(    RESULTAT = evol,
                        REFERENCE = 'NON_REGRESSION',
                        NOEUD = 'N110',
-                       NOM_CHAM = 'VARI_NOEU_ELGA',
+                       NOM_CHAM = 'VARI_NOEU',
                        NOM_CMP = 'V2',
                        INST=0.00825,
                        PRECISION = 1.E-5,
@@ -233,7 +233,7 @@ TEST_RESU(RESU=(
                 _F(    RESULTAT = evol,
                        REFERENCE = 'NON_REGRESSION',
                        NOEUD = 'N106',
-                       NOM_CHAM = 'VARI_NOEU_ELGA',
+                       NOM_CHAM = 'VARI_NOEU',
                        NOM_CMP = 'V2',
                        INST=0.00825,
                        PRECISION = 1.E-5,
@@ -242,7 +242,7 @@ TEST_RESU(RESU=(
                 _F(    RESULTAT = evol,
                        REFERENCE = 'NON_REGRESSION',
                        NOEUD = 'N101',
-                       NOM_CHAM = 'VARI_NOEU_ELGA',
+                       NOM_CHAM = 'VARI_NOEU',
                        NOM_CMP = 'V2',
                        INST=0.00825,
                        CRITERE = ('ABSOLU','RELATIF'),
@@ -253,7 +253,7 @@ TEST_RESU(RESU=(
                 _F(    RESULTAT = evol,
                        REFERENCE = 'NON_REGRESSION',
                        NOEUD = 'N6',
-                       NOM_CHAM = 'VARI_NOEU_ELGA',
+                       NOM_CHAM = 'VARI_NOEU',
                        NOM_CMP = 'V4',
                        INST=0.00825,
                        PRECISION = 1.E-3,
@@ -263,7 +263,7 @@ TEST_RESU(RESU=(
                 _F(    RESULTAT = evol,
                        REFERENCE = 'NON_REGRESSION',
                        NOEUD = 'N116',
-                       NOM_CHAM = 'VARI_NOEU_ELGA',
+                       NOM_CHAM = 'VARI_NOEU',
                        NOM_CMP = 'V4',
                        INST=0.00825,
                        PRECISION = 1.E-3,
@@ -272,7 +272,7 @@ TEST_RESU(RESU=(
                 _F(    RESULTAT = evol,
                        REFERENCE = 'NON_REGRESSION',
                        NOEUD = 'N110',
-                       NOM_CHAM = 'VARI_NOEU_ELGA',
+                       NOM_CHAM = 'VARI_NOEU',
                        NOM_CMP = 'V4',
                        INST=0.00825,
                        PRECISION = 1.E-3,
@@ -281,7 +281,7 @@ TEST_RESU(RESU=(
                 _F(    RESULTAT = evol,
                        REFERENCE = 'NON_REGRESSION',
                        NOEUD = 'N106',
-                       NOM_CHAM = 'VARI_NOEU_ELGA',
+                       NOM_CHAM = 'VARI_NOEU',
                        NOM_CMP = 'V4',
                        INST=0.00825,
                        PRECISION = 1.E-3,
@@ -290,7 +290,7 @@ TEST_RESU(RESU=(
                 _F(    RESULTAT = evol,
                        REFERENCE = 'NON_REGRESSION',
                        NOEUD = 'N101',
-                       NOM_CHAM = 'VARI_NOEU_ELGA',
+                       NOM_CHAM = 'VARI_NOEU',
                        NOM_CMP = 'V4',
                        INST=0.00825,
                        PRECISION = 1.E-3,

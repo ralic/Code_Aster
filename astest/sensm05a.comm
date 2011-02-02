@@ -1,9 +1,9 @@
-# MODIF  DATE 07/12/2010   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # RESPONSABLE PABHHHH N. TARDIEU
 # TITRE SENSIBILITE AUX DONNEES MATERIAUX EN MECA_STATIQUE ORTHOTROPE 3D
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -112,11 +112,11 @@ RES=MECA_STATIQUE(MODELE=MODEMECA,
                    SENSIBILITE=tuple(PS),
                   );
 
-RES = CALC_ELEM( reuse = RES, RESULTAT = RES, OPTION = ('EPSI_ELNO_DEPL','SIGM_ELNO_DEPL') );
+RES = CALC_ELEM( reuse = RES, RESULTAT = RES, OPTION = ('EPSI_ELNO','SIGM_ELNO') );
 
 
 CALC_SENSI( reuse = RES, RESULTAT = RES, SENSIBILITE=tuple(PS),
-                 OPTION =('EPSI_ELNO_DEPL', 'SIGM_ELNO_DEPL'),
+                 OPTION =('EPSI_ELNO', 'SIGM_ELNO'),
                  );
 
 TAB_REF=POST_RELEVE_T(ACTION=_F(INTITULE='SENSIBILITE',
@@ -140,7 +140,7 @@ TA_R_EP=POST_RELEVE_T(ACTION=_F(INTITULE='SENSIBILITE',
                             NOEUD='N256',
                             MAILLE='M82',
                             RESULTAT=RES,
-                            NOM_CHAM='EPSI_ELNO_DEPL',
+                            NOM_CHAM='EPSI_ELNO',
                             NUME_ORDRE=1,
                             NOM_CMP='EPXY',
                             OPERATION='EXTRACTION',),);
@@ -149,7 +149,7 @@ TA_R_EPS=POST_RELEVE_T(ACTION=_F(INTITULE='SENSIBILITE',
                             NOEUD='N256',
                             MAILLE='M82',
                             RESULTAT=RES,
-                            NOM_CHAM='EPSI_ELNO_DEPL',
+                            NOM_CHAM='EPSI_ELNO',
                             NUME_ORDRE=1,
                             SENSIBILITE=tuple(PS),
                             NOM_CMP='EPXY',
@@ -159,7 +159,7 @@ TA_R_SI=POST_RELEVE_T(ACTION=_F(INTITULE='SENSIBILITE',
                             NOEUD='N256',
                             MAILLE='M82',
                             RESULTAT=RES,
-                            NOM_CHAM='SIGM_ELNO_DEPL',
+                            NOM_CHAM='SIGM_ELNO',
                             NUME_ORDRE=1,
                             NOM_CMP='SIYY',
                             OPERATION='EXTRACTION',),);
@@ -168,7 +168,7 @@ TA_R_SIS=POST_RELEVE_T(ACTION=_F(INTITULE='SENSIBILITE',
                             NOEUD='N256',
                             MAILLE='M82',
                             RESULTAT=RES,
-                            NOM_CHAM='SIGM_ELNO_DEPL',
+                            NOM_CHAM='SIGM_ELNO',
                             NUME_ORDRE=1,
                             SENSIBILITE=tuple(PS),
                             NOM_CMP='SIYY',

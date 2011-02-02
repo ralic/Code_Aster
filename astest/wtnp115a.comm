@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # TITRE DESATURATION D UN MILIEU POREUX SANS AIR SUR CELLULE UNIAIRE
 # wtnp115a.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -231,7 +231,7 @@ U0=CALC_ELEM(reuse =U0,
 
 
              TOUT_ORDRE='OUI',
-             OPTION=('SIEF_ELNO','VARI_ELNO_ELGA'),
+             OPTION=('SIEF_ELNO','VARI_ELNO'),
              RESULTAT=U0,);
 
 
@@ -257,7 +257,7 @@ TEST_RESU(RESU=_F(RESULTAT=U0,
 
 TEST_RESU(RESU=_F(RESULTAT=U0,
                   NUME_ORDRE=1,
-                  NOM_CHAM='VARI_ELNO_ELGA',
+                  NOM_CHAM='VARI_ELNO',
                   NOM_CMP='V3',
                   NOEUD='N1',
                   MAILLE='M1',

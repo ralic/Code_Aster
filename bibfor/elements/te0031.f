@@ -2,7 +2,7 @@
       IMPLICIT NONE
       CHARACTER*16        OPTION , NOMTE
 C     ----------------------------------------------------------------
-C MODIF ELEMENTS  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -144,7 +144,7 @@ C       ----------------------------------
         ENDIF
       ENDIF
 C
-      IF ( OPTION.NE.'VARI_ELNO_ELGA' ) THEN
+      IF ( OPTION.NE.'VARI_ELNO' ) THEN
          CALL JEVECH('PGEOMER','L',JGEOM)
          IF (NNO.EQ.3) THEN
             CALL DXTPGL ( ZR(JGEOM), PGL )
@@ -362,7 +362,7 @@ C     ------------------------------------------
           CALL PPGAN2 ( JGANO, 6, EFFGT, ZR(ICHN) )
 C
 C
-      ELSEIF ( OPTION.EQ.'VARI_ELNO_ELGA' ) THEN
+      ELSEIF ( OPTION.EQ.'VARI_ELNO' ) THEN
 C     ------------------------------------------
           CALL JEVECH ( 'PVARIGR', 'L', ICHG )
           CALL JEVECH ( 'PVARINR', 'E', ICHN )

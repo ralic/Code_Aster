@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # ======================================================================
 # TEST DU MODELE VISCOPLASTIQUE LETK
 # TITRE ETUDE  : ESSAI TRIAXIAL DRAINE AVEC LE MODELE VISCOPLASTIQUE DU CIH LETK
@@ -148,14 +148,14 @@ IMPR_RESU(MODELE=MODELE,
 
 U1=CALC_ELEM( reuse=U1,
                             OPTION=(
-                  'SIEF_ELNO',  'VARI_ELNO_ELGA',),
+                  'SIEF_ELNO',  'VARI_ELNO',),
                           RESULTAT=U1,
               )
 
 U1=CALC_NO(  reuse      = U1,
              RESULTAT   = U1,
              TOUT_ORDRE = 'OUI',
-             OPTION     = ('SIEF_NOEU','VARI_NOEU_ELGA'),
+             OPTION     = ('SIEF_NOEU','VARI_NOEU'),
                )
 
 #***********************************************************************
@@ -243,14 +243,14 @@ U2=STAT_NON_LINE(
               )
 
 U2=CALC_ELEM( reuse      = U2,
-              OPTION     = ('SIEF_ELNO','VARI_ELNO_ELGA'),
+              OPTION     = ('SIEF_ELNO','VARI_ELNO'),
               RESULTAT   = U2,
               )
 
 U2=CALC_NO(  reuse      = U2,
              RESULTAT   = U2,
              TOUT_ORDRE = 'OUI',
-             OPTION     = ('SIEF_NOEU','VARI_NOEU_ELGA'),
+             OPTION     = ('SIEF_NOEU','VARI_NOEU'),
                )
 
 
@@ -270,10 +270,10 @@ tab_sigm=POST_RELEVE_T(ACTION=_F(INTITULE='SIEF_NOEU',
                                 LIST_INST=ARCHI,
                                 OPERATION='EXTRACTION'));
 IMPR_TABLE(TABLE=tab_sigm);
-tab_vari=POST_RELEVE_T(ACTION=_F(INTITULE='VARI_NOEU_ELGA',
+tab_vari=POST_RELEVE_T(ACTION=_F(INTITULE='VARI_NOEU',
                                 NOEUD='N4',
                                 RESULTAT=U2,
-                                NOM_CHAM='VARI_NOEU_ELGA',
+                                NOM_CHAM='VARI_NOEU',
                                 TOUT_CMP='OUI',
                                 LIST_INST=ARCHI,
                                 OPERATION='EXTRACTION'));

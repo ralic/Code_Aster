@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # RESPONSABLE F6BHHBO P.DEBONNIERES
 # TITRE CAVITE 2D CALCUL DE SENSIBILITE (LOI DE DRUCKER-PRAGER)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -203,10 +203,10 @@ RES=STAT_NON_LINE(MODELE=MODEMECA,
                   SENSIBILITE=tuple(PS),)
 
 RES=CALC_ELEM(reuse=RES,RESULTAT=RES,
-              OPTION=('SIEF_ELNO','VARI_ELNO_ELGA'),)
+              OPTION=('SIEF_ELNO','VARI_ELNO'),)
 
 CALC_SENSI(reuse=RES,RESULTAT=RES, SENSIBILITE=tuple(PS),
-              OPTION=('SIEF_ELNO','VARI_ELNO_ELGA'),
+              OPTION=('SIEF_ELNO','VARI_ELNO'),
              )
 
 # extraction des derivees a tester
@@ -266,7 +266,7 @@ TNVAR = POST_RELEVE_T(ACTION=_F(INTITULE='VAR1',
                                  NOEUD='N48',
                                  MAILLE='M90',
                                  RESULTAT=RES,
-                                 NOM_CHAM='VARI_ELNO_ELGA',
+                                 NOM_CHAM='VARI_ELNO',
                                  NOM_CMP='V1',
                                  SENSIBILITE=tuple(PS),
                                  OPERATION='EXTRACTION',),)
@@ -417,11 +417,11 @@ for i in range(n):
 
   RES2[i]=CALC_ELEM(reuse=RES2[i],
                     RESULTAT=RES2[i],
-                    OPTION=('SIEF_ELNO','VARI_ELNO_ELGA'),)
+                    OPTION=('SIEF_ELNO','VARI_ELNO'),)
 
   RES3[i]=CALC_ELEM(reuse=RES3[i],
                     RESULTAT=RES3[i],
-                    OPTION=('SIEF_ELNO','VARI_ELNO_ELGA'),)
+                    OPTION=('SIEF_ELNO','VARI_ELNO'),)
 
   # extraction des valeurs en P - epsilon et P + epsilon
   TDXM[i] = POST_RELEVE_T(ACTION=_F(INTITULE='DX',
@@ -514,14 +514,14 @@ for i in range(n):
                                    NOEUD='N48',
                                    MAILLE='M90',
                                    RESULTAT=RES3[i],
-                                   NOM_CHAM='VARI_ELNO_ELGA',
+                                   NOM_CHAM='VARI_ELNO',
                                    NOM_CMP='V1',
                                    OPERATION='EXTRACTION',),)
   TVARP[i] = POST_RELEVE_T(ACTION=_F(INTITULE='VAR1',
                                    NOEUD='N48',
                                    MAILLE='M90',
                                    RESULTAT=RES2[i],
-                                   NOM_CHAM='VARI_ELNO_ELGA',
+                                   NOM_CHAM='VARI_ELNO',
                                    NOM_CMP='V1',
                                    OPERATION='EXTRACTION',),)
 

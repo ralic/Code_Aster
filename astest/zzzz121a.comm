@@ -1,4 +1,4 @@
-# MODIF  DATE 31/01/2011   AUTEUR NICOLAS G.NICOLAS 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # TITRE COUPLAGE ASTER_HOMARD - CAS BIDIMENSIONNEL
 # zzzz121a.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -141,7 +141,7 @@ for k in range(1,10):
 #
    RESU[k]=CALC_ELEM(       reuse=RESU[k],
                             RESULTAT=RESU[k],
-                            OPTION=( 'SIGM_ELNO_DEPL',
+                            OPTION=( 'SIGM_ELNO',
                                      'ERZ1_ELEM', )
                     )
 #

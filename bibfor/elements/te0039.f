@@ -1,5 +1,5 @@
       SUBROUTINE TE0039(OPTION,NOMTE)
-C MODIF ELEMENTS  DATE 19/01/2011   AUTEUR MASSIN P.MASSIN 
+C MODIF ELEMENTS  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -23,12 +23,12 @@ C TOLE CRP_20
 C ----------------------------------------------------------------------
 C IN OPTION    : K16 :  OPTION DE CALCUL
 C     'SIEF_ELNO'
-C     'EQUI_ELNO_SIGM'
-C     'EQUI_ELGA_SIGM'
-C     'EFGE_ELNO_CART'
+C     'SIEQ_ELNO'
+C     'SIEQ_ELGA'
+C     'EFCA_ELNO'
 C     'FORC_NODA'
 C     'REFE_FORC_NODA'
-C     'SIGM_ELNO_CART'
+C     'SICA_ELNO'
 C     'CHAR_MECA_EPSI_R'
 C     'PMPB_ELGA'
 C     'FONL_NOEU'
@@ -358,7 +358,7 @@ C
          ENDIF
       ELSE
 C --- ------------------------------------------------------------------
-         IF (OPTION.EQ.'SIGM_ELNO_CART') THEN
+         IF (OPTION.EQ.'SICA_ELNO') THEN
             CALL JEVECH('PCONTRR','L',ICONTG)
             CALL JEVECH('PCONTGL','E',IVECTU)
             NEQ1 = NEQ
@@ -367,7 +367,7 @@ C --- ------------------------------------------------------------------
                FS(IN) = ZR(ICONTG+IN-1)
 30          CONTINUE
 C --- ------------------------------------------------------------------
-         ELSE IF (OPTION.EQ.'EFGE_ELNO_CART') THEN
+         ELSE IF (OPTION.EQ.'EFCA_ELNO') THEN
             CALL JEVECH('PCONTRR','L',ICONTG)
             CALL JEVECH('PEFFORR','E',IVECTU)
             DO 40 IN = 1,NEQ
@@ -585,7 +585,7 @@ C           POUTRE COURBE DE TIMOSKENKO A 6 DDL: COORDONNEES DES NOEUDS
             CALL MATROT(ZR(LORIEN),PGL)
             IF (NDIM.EQ.3) THEN
                IF ( NOMTE(1:13).EQ.'MECA_POU_D_TG' .AND.
-     &              OPTION.EQ.'EFGE_ELNO_CART') THEN
+     &              OPTION.EQ.'EFCA_ELNO') THEN
                   CALL UTPVLG(NNO,NC,PGL,FS,FSS)
                   IF (IREPE.NE.0) THEN
                      CALL MATROT(ZR(IREPE),PGL)
@@ -596,7 +596,7 @@ C           POUTRE COURBE DE TIMOSKENKO A 6 DDL: COORDONNEES DES NOEUDS
                      ZR(IVECTU-1+IN+6) = FSS(IN+7)
 120               CONTINUE
                ELSE IF ( NOMTE(1:13).EQ.'MECA_POU_D_TG' .AND.
-     &              OPTION.EQ.'SIGM_ELNO_CART') THEN
+     &              OPTION.EQ.'SICA_ELNO') THEN
                   CALL UTPVLG(NNO,6,PGL,FS,FSS)
                   IF (IREPE.NE.0) THEN
                      CALL MATROT(ZR(IREPE),PGL)

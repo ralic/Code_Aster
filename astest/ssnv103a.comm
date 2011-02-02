@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # TITRE  ESSAI DE TRACTION-CISAILLEMENT 3D (ROUSSELIER_FO)
 # ssnv103a.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -400,7 +400,7 @@ SOLNL=STAT_NON_LINE(
 
 SOLNL=CALC_ELEM( reuse=SOLNL,
                             OPTION=(
-                  'SIEF_ELNO',  'VARI_ELNO_ELGA',),
+                  'SIEF_ELNO',  'VARI_ELNO',),
                           RESULTAT=SOLNL,
               )
 
@@ -417,22 +417,22 @@ TEST_RESU(RESU=(
 
 SOLNL=CALC_ELEM(  reuse=SOLNL,
                                  RESULTAT=SOLNL,
-                                   OPTION='EPSI_ELNO_DEPL'  )
+                                   OPTION='EPSI_ELNO'  )
 
 TEST_RESU(RESU=(
   _F(  RESULTAT = SOLNL,  NOM_CHAM = 'SIEF_ELNO',  NUME_ORDRE = 8,
          MAILLE = 'MA1',    NOEUD = 'NO1',               NOM_CMP = 'SIXX',
          PRECISION = 5.E-4,  VALE = 409.707),
 
-  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'EPSI_ELNO_DEPL',  NUME_ORDRE = 8,
+  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'EPSI_ELNO',  NUME_ORDRE = 8,
          MAILLE = 'MA1',    NOEUD = 'NO1',               NOM_CMP = 'EPXX',
          PRECISION = 2.E-3,  VALE = 0.0783),
 
-  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'EPSI_ELNO_DEPL',  NUME_ORDRE = 8,
+  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'EPSI_ELNO',  NUME_ORDRE = 8,
          MAILLE = 'MA1',    NOEUD = 'NO1',               NOM_CMP = 'EPXY',
          PRECISION = 2.E-3,  VALE = 0.1170),
 
-  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'VARI_ELNO_ELGA',  NUME_ORDRE = 8,
+  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'VARI_ELNO',  NUME_ORDRE = 8,
          MAILLE = 'MA1',    NOEUD = 'NO1',               NOM_CMP = 'V1',
          PRECISION = 1.E-3,  VALE = 0.1526))
 

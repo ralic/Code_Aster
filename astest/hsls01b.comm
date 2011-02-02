@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # TITRE PLAQUE  MINCE ENCASTREE SOUMISE A UN GRADIENT THERMIQUE
 # hsls01b.para = tps_job 60 mem_job 160Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -116,7 +116,7 @@ MESTA2=STAT_NON_LINE(     MODELE=MOD,
                    )
 
 MESTA2=CALC_ELEM( reuse=MESTA2, RESULTAT=MESTA2,
-                  OPTION=('SIEF_ELNO','SIGM_ELNO_COQU')
+                  OPTION=('SIEF_ELNO','SICO_ELNO')
                 )
 
 DEP1=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
@@ -138,19 +138,19 @@ MESTAT=CREA_RESU(  reuse=MESTAT,
 
 MESTAT=CALC_ELEM( reuse=MESTAT, RESULTAT=MESTAT,
 
-                  OPTION=('SIGM_ELNO_DEPL','EFGE_ELNO_DEPL','SIEF_ELNO'),
+                  OPTION=('SIGM_ELNO','EFGE_ELNO','SIEF_ELNO'),
                 )
 
 # ------------------------------------------------------------------
 
 TEST_RESU(RESU=(
-            _F(  RESULTAT = MESTAT,  NOM_CHAM = 'EFGE_ELNO_DEPL',  NUME_ORDRE = 1,   TYPE_TEST='MAX',
+            _F(  RESULTAT = MESTAT,  NOM_CHAM = 'EFGE_ELNO',  NUME_ORDRE = 1,   TYPE_TEST='MAX',
                   NOM_CMP = 'MXX',         VALE = MOM1, REFERENCE='ANALYTIQUE'),
-           _F(  RESULTAT = MESTAT,  NOM_CHAM = 'EFGE_ELNO_DEPL',  NUME_ORDRE = 1,   TYPE_TEST='MAX',
+           _F(  RESULTAT = MESTAT,  NOM_CHAM = 'EFGE_ELNO',  NUME_ORDRE = 1,   TYPE_TEST='MAX',
                   NOM_CMP = 'MYY',         VALE = MOM1, REFERENCE='ANALYTIQUE'),
-          _F(  RESULTAT = MESTAT,  NOM_CHAM = 'EFGE_ELNO_DEPL',  NUME_ORDRE = 1,   TYPE_TEST='MIN',
+          _F(  RESULTAT = MESTAT,  NOM_CHAM = 'EFGE_ELNO',  NUME_ORDRE = 1,   TYPE_TEST='MIN',
                   NOM_CMP = 'MXX',         VALE = MOM1, REFERENCE='ANALYTIQUE'),
-           _F(  RESULTAT = MESTAT,  NOM_CHAM = 'EFGE_ELNO_DEPL',  NUME_ORDRE = 1,   TYPE_TEST='MIN',
+           _F(  RESULTAT = MESTAT,  NOM_CHAM = 'EFGE_ELNO',  NUME_ORDRE = 1,   TYPE_TEST='MIN',
                   NOM_CMP = 'MYY',         VALE = MOM1, REFERENCE='ANALYTIQUE'),
              ),)
 

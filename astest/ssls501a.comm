@@ -1,11 +1,11 @@
-# MODIF  DATE 03/07/2007   AUTEUR SALMONA L.SALMONA 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # RESPONSABLE ADBHHPM P.MASSIN
 # DATE   : 26/04/2000
 # AUTEUR : F. LEBOUVIER (DELTACAD)
 # TITRE  : CYLINDRE INFINIMENT LONG SOUMIS A DEUX LIGNES DE CHARGE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -93,7 +93,7 @@ RESUL=MECA_STATIQUE(       MODELE=MO,
 
 #
 RESUL=CALC_ELEM( reuse=RESUL,     RESULTAT=RESUL,
-                           OPTION='EFGE_ELNO_DEPL'
+                           OPTION='EFGE_ELNO'
                     )
 #
 #---------------------------------------------------------------------
@@ -111,12 +111,12 @@ TEST_RESU(RESU=(
            NOM_CMP = 'DX',          VALE = 12.255E-03,
            PRECISION = 0.02,          CRITERE = 'RELATIF'),
 
-     _F( RESULTAT = RESUL,         NOM_CHAM = 'EFGE_ELNO_DEPL',
+     _F( RESULTAT = RESUL,         NOM_CHAM = 'EFGE_ELNO',
            NUME_ORDRE = 1,             MAILLE = 'M32',
            GROUP_NO = 'A',
            NOM_CMP = 'NXX',           VALE = 0.0,
            PRECISION = 0.2,          CRITERE = 'ABSOLU'),
-_F( RESULTAT = RESUL,         NOM_CHAM = 'EFGE_ELNO_DEPL',
+_F( RESULTAT = RESUL,         NOM_CHAM = 'EFGE_ELNO',
            NUME_ORDRE = 1,             MAILLE = 'M32',
            GROUP_NO = 'A',
            NOM_CMP = 'MXX',          VALE = -0.477,

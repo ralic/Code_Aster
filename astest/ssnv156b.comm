@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # TITRE COLONNE PLASTIQUE A GRADIENT SOUS CHARGE VOLUMIQUE (D_PLAN)
 # ssnv156b.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -164,16 +164,16 @@ EVOL = STAT_NON_LINE(
 EVOL = CALC_ELEM (reuse = EVOL,
   RESULTAT   = EVOL,
   OPTION     = ('SIEF_ELNO',
-#                'EPSI_ELNO_DEPL',
-#                'EQUI_ELNO_SIGM',
-                'VARI_ELNO_ELGA')
+#                'EPSI_ELNO',
+#                'SIEQ_ELNO',
+                'VARI_ELNO')
   )
 
 EVOL = CALC_NO (reuse = EVOL,
   RESULTAT = EVOL,
-  OPTION   = ('VARI_NOEU_ELGA',
+  OPTION   = ('VARI_NOEU',
               'SIEF_NOEU',
-#              'EQUI_NOEU_SIGM',
+#              'SIEQ_NOEU',
 #              'EPSI_NOEU'
               )
    )
@@ -185,7 +185,7 @@ TEST_RESU(
   RESU = _F(
     RESULTAT   = EVOL,
     NUME_ORDRE = 2,
-    NOM_CHAM   = 'VARI_NOEU_ELGA',
+    NOM_CHAM   = 'VARI_NOEU',
     NOM_CMP    = 'V1',
     GROUP_NO   = 'MESURE',
     REFERENCE  = 'ANALYTIQUE',
@@ -223,7 +223,7 @@ TEST_RESU(
   RESU = _F(
     RESULTAT   = EVOL,
     NUME_ORDRE = 3,
-    NOM_CHAM   = 'VARI_NOEU_ELGA',
+    NOM_CHAM   = 'VARI_NOEU',
     NOM_CMP    = 'V1',
     GROUP_NO   = 'MESURE',
     REFERENCE  = 'ANALYTIQUE',
@@ -261,7 +261,7 @@ TEST_RESU(
   RESU = _F(
     RESULTAT   = EVOL,
     NUME_ORDRE = 4,
-    NOM_CHAM   = 'VARI_NOEU_ELGA',
+    NOM_CHAM   = 'VARI_NOEU',
     NOM_CMP    = 'V1',
     GROUP_NO   = 'MESURE',
     REFERENCE  = 'ANALYTIQUE',
@@ -299,7 +299,7 @@ TEST_RESU(
   RESU = _F(
     RESULTAT   = EVOL,
     NUME_ORDRE = 5,
-    NOM_CHAM   = 'VARI_NOEU_ELGA',
+    NOM_CHAM   = 'VARI_NOEU',
     NOM_CMP    = 'V1',
     GROUP_NO   = 'MESURE',
     REFERENCE  = 'ANALYTIQUE',

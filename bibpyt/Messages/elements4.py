@@ -1,4 +1,4 @@
-#@ MODIF elements4 Messages  DATE 10/01/2011   AUTEUR DELMAS J.DELMAS 
+#@ MODIF elements4 Messages  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -40,7 +40,7 @@ cata_msg = {
 """),
 
 16 : _("""
- option "vari_elno_elga" impossible actuellement
+ option "VARI_ELNO" impossible actuellement
 """),
 
 31 : _("""

@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # TITRE THERMO-PLASTICITE EN TRACTION SIMPLE (AXIS_INCO)
 # hsnv100k.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -150,7 +150,7 @@ U=STAT_NON_LINE(MODELE=MOMECA,
 
 U=CALC_ELEM(reuse =U,
             RESULTAT=U,
-            OPTION=('EPSI_ELNO_DEPL','SIEF_ELNO','VARI_ELNO_ELGA',),);
+            OPTION=('EPSI_ELNO','SIEF_ELNO','VARI_ELNO',),);
 
 #
 
@@ -162,7 +162,7 @@ TEST_RESU(RESU=(_F(RESULTAT=TEMPE,
                    VALE=90.0,),
                 _F(RESULTAT=U,
                    NUME_ORDRE=1,
-                   NOM_CHAM='EPSI_ELNO_DEPL',
+                   NOM_CHAM='EPSI_ELNO',
                    NOM_CMP='EPXX',
                    MAILLE='M5',
                    NOEUD='N3',
@@ -176,14 +176,14 @@ TEST_RESU(RESU=(_F(RESULTAT=TEMPE,
                    VALE=-133.333,),
                 _F(RESULTAT=U,
                    NUME_ORDRE=3,
-                   NOM_CHAM='EPSI_ELNO_DEPL',
+                   NOM_CHAM='EPSI_ELNO',
                    NOM_CMP='EPZZ',
                    MAILLE='M5',
                    NOEUD='N4',
                    VALE=0.0011,),
                 _F(RESULTAT=U,
                    NUME_ORDRE=3,
-                   NOM_CHAM='VARI_ELNO_ELGA',
+                   NOM_CHAM='VARI_ELNO',
                    NOM_CMP='V1',
                    MAILLE='M5',
                    NOEUD='N4',
@@ -197,14 +197,14 @@ TEST_RESU(RESU=(_F(RESULTAT=TEMPE,
                    VALE=-100.0,),
                 _F(RESULTAT=U,
                    NUME_ORDRE=5,
-                   NOM_CHAM='EPSI_ELNO_DEPL',
+                   NOM_CHAM='EPSI_ELNO',
                    NOM_CMP='EPZZ',
                    MAILLE='M5',
                    NOEUD='N1',
                    VALE=0.001275,),
                 _F(RESULTAT=U,
                    NUME_ORDRE=5,
-                   NOM_CHAM='VARI_ELNO_ELGA',
+                   NOM_CHAM='VARI_ELNO',
                    NOM_CMP='V1',
                    MAILLE='M5',
                    NOEUD='N1',

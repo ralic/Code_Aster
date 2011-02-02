@@ -1,5 +1,5 @@
 
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # TITRE TEST THM, D_PLAN_DPTR6
 # wtnv109c.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -201,7 +201,7 @@ TEST_RESU(RESU=_F(RESULTAT=MESTAT,
                   REFERENCE='ANALYTIQUE',),);
 
 MESTAT=CALC_ELEM(reuse =MESTAT,
-                 OPTION=('SIEF_ELNO','VARI_ELNO_ELGA'),
+                 OPTION=('SIEF_ELNO','VARI_ELNO'),
                  RESULTAT=MESTAT,);
 
 

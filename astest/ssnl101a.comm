@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # TITRE COMPORTEMENT NON-LINEAIRE D'UN ELEMENT D'ARMEMENT DE LIGNE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -82,7 +82,7 @@ STATNL=STAT_NON_LINE(SOLVEUR=_F(METHODE='MUMPS',PCENT_PIVOT=10,),
 
 STATNL=CALC_ELEM( reuse=STATNL,
                             OPTION=(
-                  'SIEF_ELNO',  'VARI_ELNO_ELGA',),
+                  'SIEF_ELNO',  'VARI_ELNO',),
                           RESULTAT=STATNL,
               )
 
@@ -98,13 +98,13 @@ TEST_RESU(RESU=(
                     RESULTAT = STATNL, NOM_CHAM = 'DEPL', NOM_CMP = 'DY',
               NUME_ORDRE = 10, NOEUD = 'N3', VALE = 0.700308),
               _F(
-        RESULTAT = STATNL, NOM_CHAM = 'VARI_ELNO_ELGA', NOM_CMP = 'V1',
+        RESULTAT = STATNL, NOM_CHAM = 'VARI_ELNO', NOM_CMP = 'V1',
         NUME_ORDRE = 2, MAILLE = 'D1', NOEUD = 'N3', VALE = 6.84138E-2),
               _F(
-        RESULTAT = STATNL, NOM_CHAM = 'VARI_ELNO_ELGA', NOM_CMP = 'V1',
+        RESULTAT = STATNL, NOM_CHAM = 'VARI_ELNO', NOM_CMP = 'V1',
         NUME_ORDRE = 8, MAILLE = 'D1', NOEUD = 'N3', VALE = 4.13241E-1),
               _F(
-        RESULTAT = STATNL, NOM_CHAM = 'VARI_ELNO_ELGA', NOM_CMP = 'V1',
+        RESULTAT = STATNL, NOM_CHAM = 'VARI_ELNO', NOM_CMP = 'V1',
         NUME_ORDRE = 10, MAILLE = 'D1', NOEUD = 'N3', VALE = 6.52E-1))
 
           )

@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # ======================================================================
 # TITRE MODELISATION DE LA DIFFUSION DE L AIR DISSOUS DANS L EAU
 # wtna104b.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
@@ -237,7 +237,7 @@ U0=STAT_NON_LINE(MODELE=MODELE,
 
 U0=CALC_ELEM(reuse =U0,
              TOUT_ORDRE='OUI',
-             OPTION=('SIEF_ELNO','VARI_ELNO_ELGA'),
+             OPTION=('SIEF_ELNO','VARI_ELNO'),
              RESULTAT=U0,);
 
 

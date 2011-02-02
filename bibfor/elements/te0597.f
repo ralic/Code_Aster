@@ -1,6 +1,6 @@
       SUBROUTINE TE0597(OPTION,NOMTE)
       IMPLICIT NONE
-C MODIF ELEMENTS  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,7 +21,7 @@ C ======================================================================
 C ......................................................................
 
 C    - FONCTION REALISEE:  CALCUL DES OPTIONS ESPI_ELNO_TUYO
-C                          SIGM_ELNO_TUYO ET VARI_ELNO_TUYO
+C                          SITU_ELNO ET VATU_ELNO
 C                          POUR UN TUYAU DROIT
 C                          ELEMENT: METUSEG3 MET6SEG3
 
@@ -133,7 +133,7 @@ C ---- REPERAGE POSITION OMEGA
         VPG(I) = 0.D0
    30 CONTINUE
 
-       IF (OPTION.EQ.'VARI_ELNO_TUYO') THEN
+       IF (OPTION.EQ.'VATU_ELNO') THEN
         CALL JEVECH('PVARIGR','L',JIN)
         CALL JEVECH('PCOMPOR','L',ICOMPO)
 
@@ -216,17 +216,17 @@ C      POUR NE PAS SUPPRIMER LA SAVANTE PROGRAMMATION DE PATRICK
 
   100   CONTINUE
 
-       ELSE IF ((OPTION.EQ.'EPSI_ELNO_TUYO') .OR.
-     &         (OPTION.EQ.'SIGM_ELNO_TUYO')) THEN
+       ELSE IF ((OPTION.EQ.'EPTU_ELNO') .OR.
+     &         (OPTION.EQ.'SITU_ELNO')) THEN
 
-         IF ((OPTION.EQ.'EPSI_ELNO_TUYO')) THEN
+         IF ((OPTION.EQ.'EPTU_ELNO')) THEN
 
 C ======== RAPPEL DES DEFORMATIONS ====================
 
           CALL JEVECH('PDEFORR','L',JIN)
 
           CALL JEVECH('PDEFONO','E',JCONN)
-         ELSE IF (OPTION.EQ.'SIGM_ELNO_TUYO') THEN
+         ELSE IF (OPTION.EQ.'SITU_ELNO') THEN
 
 C ======== RAPPEL DES CONTRAINTES ====================
 
@@ -298,10 +298,10 @@ C      POUR NE PAS SUPPRIMER LA SAVANTE PROGRAMMATION DE PATRICK
 
   170   CONTINUE
 
-       ELSE IF ((OPTION.EQ.'EPEQ_ELNO') .OR.
-     &         (OPTION.EQ.'SIEQ_ELNO')) THEN
+       ELSE IF ((OPTION.EQ.'EPTQ_ELNO') .OR.
+     &         (OPTION.EQ.'SITQ_ELNO')) THEN
 
-         IF (OPTION.EQ.'EPEQ_ELNO') THEN
+         IF (OPTION.EQ.'EPTQ_ELNO') THEN
 
 C ======== RAPPEL DES CONTRAINTES ====================
 
@@ -309,7 +309,7 @@ C ======== RAPPEL DES CONTRAINTES ====================
 
           CALL JEVECH('PDENOEQ','E',JCONN)
 
-         ELSE IF (OPTION.EQ.'SIEQ_ELNO') THEN
+         ELSE IF (OPTION.EQ.'SITQ_ELNO') THEN
 
 C ======== RAPPEL DES CONTRAINTES ====================
 

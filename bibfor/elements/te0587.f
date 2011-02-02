@@ -1,6 +1,6 @@
       SUBROUTINE TE0587(OPTION,NOMTE)
       IMPLICIT NONE
-C MODIF ELEMENTS  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,7 +22,7 @@ C TOLE CRP_20
       CHARACTER*16 OPTION,NOMTE
 C ......................................................................
 
-C    - FONCTION REALISEE:  CALCUL DES OPTIONS VARI_ELNO_ELGA ET
+C    - FONCTION REALISEE:  CALCUL DES OPTIONS VARI_ELNO ET
 C      SIEF_ELNO POUR U
 C                          ELEMENT: METUSEG3
 
@@ -137,7 +137,7 @@ C  FONCTIONS DE FORMES AUX POINT DE GAUSS
    50 CONTINUE
 
 
-      IF (OPTION(1:9).EQ.'VARI_ELNO') THEN
+      IF (OPTION.EQ.'VARI_ELNO') THEN
 C     -------------------------------------
         CALL JEVECH('PVARIGR','L',JIN)
 
@@ -216,7 +216,7 @@ C BOUCLE SUR LES POINTS DE SIMPSON SUR LA CIRCONFERENCE
 C  FIN STOCKAGE
 
 
-      ELSE IF (OPTION(1:9).EQ.'SIEF_ELNO') THEN
+      ELSE IF (OPTION.EQ.'SIEF_ELNO') THEN
 C     ------------------------------------------
 
         CALL JEVECH('PGEOMER','L',IGEOM)
@@ -435,13 +435,14 @@ C  =========================================
 
 
 C=======================================================================
-      ELSE IF (OPTION(1:9).EQ.'EQUI_ELGA') THEN
+      ELSE IF (OPTION.EQ.'EPEQ_ELGA'.OR.OPTION.EQ.'SIEQ_ELGA') THEN
+
 C=======================================================================
 
 
 C ======== RAPPEL DES CONTRAINTES ====================
 
-        IF (OPTION.EQ.'EQUI_ELGA_SIGM') THEN
+        IF (OPTION.EQ.'SIEQ_ELGA') THEN
           CALL JEVECH('PCONTRR','L',JIN)
           CALL JEVECH('PCONTEQ','E',JOUT)
         ELSE
@@ -478,7 +479,7 @@ C BOUCLE SUR LES POINTS DE SIMPSON SUR LA CIRCONFERENCE
               SIG(5) = ZR(INDICE+5)
               SIG(6) = ZR(INDICE+6)
 
-              IF (OPTION.EQ.'EQUI_ELGA_SIGM') THEN
+              IF (OPTION.EQ.'SIEQ_ELGA') THEN
                 CALL FGEQUI(SIG,'SIGM',3,VEQG)
                 ZR(JOUT-1+3*KPGS-2) = VEQG(1)
                 ZR(JOUT-1+3*KPGS-1) = VEQG(6)
@@ -497,7 +498,7 @@ C  =========================================
 
 
 C=======================================================================
-      ELSE IF (OPTION.EQ.'VALE_NCOU_MAXI') THEN
+      ELSE IF (OPTION.EQ.'SPMX_ELGA') THEN
 C=======================================================================
 
 C ======== RAPPEL DES CONTRAINTES ====================
@@ -506,7 +507,7 @@ C ======== RAPPEL DES CONTRAINTES ====================
         CALL JEVECH('PNOMCMP','L',JNOM)
         NOMCHA = ZK24(JNOM)
         NOMCMP = ZK24(JNOM+1)
-        IF (NOMCHA(1:9).EQ.'SIEF_ELGA') THEN
+        IF (NOMCHA.EQ.'SIEF_ELGA') THEN
           CALL JEVECH('PCONTRR','L',JIN)
           NBCMP = 6
           IF (NOMCMP(1:4).EQ.'SIXX') THEN
@@ -525,7 +526,7 @@ C ======== RAPPEL DES CONTRAINTES ====================
             CALL U2MESK('A','ELEMENTS4_47',1,NOMCMP)
             GO TO 350
           END IF
-        ELSE IF (NOMCHA.EQ.'EQUI_ELGA_SIGM') THEN
+        ELSE IF (NOMCHA.EQ.'SIEQ_ELGA') THEN
           CALL JEVECH('PCONTEQ','L',JIN)
           NBCMP = 3
           IF (NOMCMP(1:4).EQ.'VMIS') THEN
@@ -557,7 +558,7 @@ C ======== RAPPEL DES CONTRAINTES ====================
             CALL U2MESK('A','ELEMENTS4_47',1,NOMCMP)
             GO TO 350
           END IF
-        ELSE IF (NOMCHA.EQ.'EQUI_ELGA_EPSI') THEN
+        ELSE IF (NOMCHA.EQ.'EPEQ_ELGA') THEN
           CALL JEVECH('PDEFOEQ','L',JIN)
           NBCMP = 2
           IF (NOMCMP(1:6).EQ.'INVA_2') THEN

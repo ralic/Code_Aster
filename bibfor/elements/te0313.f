@@ -6,7 +6,7 @@
       
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -29,7 +29,7 @@ C ======================================================================
 
 C =====================================================================
 C    - FONCTION REALISEE: FULL_MECA, RIGI_MECA, RAPH_MECA, FORC_NODA
-C                         VARI_ELNO_ELGA,SIEF_ELNO 
+C                         VARI_ELNO,SIEF_ELNO 
 C    - ARGUMENTS:
 C        DONNEES:      OPTION       -->  OPTION DE CALCUL
 C                      NOMTE        -->  NOM DU TYPE ELEMENT
@@ -268,7 +268,7 @@ C ======================================================================
 C ======================================================================
 C --- 5. OPTION : SIEF_ELNO ---------------------------------------
 C ======================================================================
-      IF (OPTION .EQ. 'VARI_ELNO_ELGA') THEN
+      IF (OPTION .EQ. 'VARI_ELNO') THEN
         CALL JEVECH('PVARIGR','L',ICHG)
         CALL JEVECH('PVARINR','E',ICHN)
 

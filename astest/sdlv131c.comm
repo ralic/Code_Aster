@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # TITRE  : POUTRE EN TRACTION (ELEMENTS VOLUMIQUES)
 # sdlv131c.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -137,7 +137,7 @@ if dynatrans:
                        )
 
   CALC_ELEM( reuse= DYNATRAN ,RESULTAT= DYNATRAN ,
-             OPTION=('EPSI_ELGA','EPSI_ELNO_DEPL',),
+             OPTION=('EPSI_ELGA','EPSI_ELNO',),
                         )
 
   DYNATRAN=CALC_NO( reuse=DYNATRAN, RESULTAT=DYNATRAN,

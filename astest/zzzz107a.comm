@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # TITRE TEST DE LA RECUPERATION DES EXCEPTIONS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -374,7 +374,7 @@ except aster.error, err:
                                      OPERATION='EXTRACTION',),);
 STATNL=CALC_ELEM(reuse =STATNL,
                  RESULTAT=STATNL,
-                 OPTION=('SIEF_ELNO','VARI_ELNO_ELGA',),);
+                 OPTION=('SIEF_ELNO','VARI_ELNO',),);
 #
 IMPR_RESU(RESU=_F( RESULTAT = STATNL, ), )
 
@@ -422,7 +422,7 @@ TEST_RESU(RESU=(_F(RESULTAT = STATNL,
                    REFERENCE='AUTRE_ASTER'),
                 _F(RESULTAT=STATNL,
                    NUME_ORDRE=2,
-                   NOM_CHAM='VARI_ELNO_ELGA',
+                   NOM_CHAM='VARI_ELNO',
                    NOM_CMP='V1',
                    MAILLE='D1',
                    NOEUD='N3',
@@ -437,7 +437,7 @@ TEST_RESU(RESU=(_F(RESULTAT = STATNL,
                    VALE=1.07417,
                    REFERENCE='AUTRE_ASTER'),
                 _F(RESULTAT = STATNL,
-                   NOM_CHAM = 'VARI_ELNO_ELGA',
+                   NOM_CHAM = 'VARI_ELNO',
                    NOM_CMP = 'V1',
                    NUME_ORDRE = 11,
                    MAILLE = 'D1',

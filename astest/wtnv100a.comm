@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # ======================================================================
 # TITRE ETUDE  : ESSAI TRIAXIAL NON DRAINE
 # wtnv100a.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
@@ -110,7 +110,7 @@ U1=STAT_NON_LINE(
 
 U1=CALC_ELEM( reuse=U1,
                             OPTION=(
-                  'SIEF_ELNO',  'VARI_ELNO_ELGA',),
+                  'SIEF_ELNO',  'VARI_ELNO',),
                           RESULTAT=U1,
               )
 
@@ -187,7 +187,7 @@ U2=STAT_NON_LINE(
 
 U2=CALC_ELEM( reuse=U2,
                             OPTION=(
-                  'SIEF_ELNO',  'VARI_ELNO_ELGA',),
+                  'SIEF_ELNO',  'VARI_ELNO',),
                           RESULTAT=U2,
               )
 
@@ -207,7 +207,7 @@ U2=CALC_ELEM( reuse=U2,
 
 U2=CALC_ELEM( reuse=U2,     RESULTAT=U2,
                     NUME_ORDRE=(1, 2, 3, 4, 8, 23,),
-                        OPTION=('EPSI_ELNO_DEPL', )
+                        OPTION=('EPSI_ELNO', )
                 )
 
 U2=CALC_NO(  reuse=U2,     RESULTAT=U2,

@@ -1,4 +1,4 @@
-# MODIF  DATE 31/01/2011   AUTEUR MACOCCO K.MACOCCO 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # TITRE VALIDATION DE L'OPERATEUR POST_RCCM / option = 'AMORCAGE'
 # rccm09b.para = tps_job 90 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -95,15 +95,15 @@ RESU1=MECA_STATIQUE(MODELE=MODEMECA,
                               _F(CHARGE=FORC_IMP,FONC_MULT = FMUL1),),
                   );
 RESU1=CALC_ELEM(reuse=RESU1, RESULTAT=RESU1,
-                OPTION='SIGM_ELNO_DEPL',);                                           
+                OPTION='SIGM_ELNO',);                                           
 
 RESU1=CALC_NO(reuse=RESU1, RESULTAT=RESU1,
-              OPTION='SIGM_NOEU_DEPL',);  
+              OPTION='SIGM_NOEU',);  
                                                        
 Xo = 143. ;
 Xr = Xo - rayon ;                 
 TAB_SIG1 = MACR_LIGN_COUPE( RESULTAT=RESU1,
-                            NOM_CHAM='SIGM_NOEU_DEPL',
+                            NOM_CHAM='SIGM_NOEU',
                             LIGN_COUPE=_F(TYPE='ARC',
                                           NB_POINTS= 16,
                                           COOR_ORIG= (Xr, 0.),
@@ -154,13 +154,13 @@ RESU2=MECA_STATIQUE(MODELE=MODEMECA,
                            _F(CHARGE=FORC_IMP,FONC_MULT = FMUL2),),
                   );
 RESU2=CALC_ELEM(reuse=RESU2, RESULTAT=RESU2,
-                OPTION='SIGM_ELNO_DEPL',);                                           
+                OPTION='SIGM_ELNO',);                                           
 
 RESU2=CALC_NO(reuse=RESU2, RESULTAT=RESU2,
-              OPTION='SIGM_NOEU_DEPL',);                                           
+              OPTION='SIGM_NOEU',);                                           
                
 TAB_SIG2 = MACR_LIGN_COUPE( RESULTAT=RESU2,
-                            NOM_CHAM='SIGM_NOEU_DEPL',
+                            NOM_CHAM='SIGM_NOEU',
                             LIGN_COUPE=_F(TYPE='ARC',
                                           NB_POINTS= 16,
                                           COOR_ORIG= (Xr, 0.),

@@ -1,4 +1,4 @@
-# MODIF  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # RESPONSABLE PROIX J-M.PROIX
 
 DEBUT(CODE=_F(NOM='FORMA01B',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
@@ -6,7 +6,7 @@ DEBUT(CODE=_F(NOM='FORMA01B',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 # forma01b.para = tps_job 60 mem_job 255Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -126,7 +126,7 @@ RESU1=CALC_ELEM(reuse =RESU1,
                 RESULTAT=RESU1,
                 REPE_COQUE=_F(NIVE_COUCHE='INF',
                               VECTEUR=(0.,0.,1.,),),
-                OPTION=('SIGM_ELNO_DEPL','EQUI_ELNO_SIGM',),);
+                OPTION=('SIGM_ELNO','SIEQ_ELNO',),);
 
 
 IMPR_RESU(MODELE=MODMECA,
@@ -134,7 +134,7 @@ IMPR_RESU(MODELE=MODMECA,
           RESU=(_F(RESULTAT=RESU1,
                    NOM_CHAM='DEPL',),
                 _F(RESULTAT=RESU1,
-                   NOM_CHAM='EQUI_ELNO_SIGM',),
+                   NOM_CHAM='SIEQ_ELNO',),
                    ),);
 
 IMPR_RESU(MODELE=MODMECA,
@@ -238,7 +238,7 @@ MAIL=DEFI_GROUP(reuse =MAIL,
 
 
 
-RESU2=CALC_ELEM(OPTION='SIGM_ELNO_DEPL',
+RESU2=CALC_ELEM(OPTION='SIGM_ELNO',
                  RESULTAT=RESU2,reuse=RESU2,
                  GROUP_MA='TUBEH',
                  REPE_COQUE=(_F(GROUP_MA='TUBEH',NIVE_COUCHE='MOY',VECTEUR=(0.,1.,0.)),
@@ -253,7 +253,7 @@ Sxx=PRES*RMOY/EPTUB
 
 TEST_RESU(RESU=_F(RESULTAT=RESU2,
                    NUME_ORDRE=1,
-                   NOM_CHAM='SIGM_ELNO_DEPL',
+                   NOM_CHAM='SIGM_ELNO',
                    NOM_CMP='SIXX',TYPE_TEST='MAX',
                    VALE=Sxx,PRECISION=0.01,
                    REFERENCE='ANALYTIQUE'),)

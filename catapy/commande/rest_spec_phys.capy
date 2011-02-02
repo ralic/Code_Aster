@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+#& MODIF COMMANDE  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -32,8 +32,8 @@ REST_SPEC_PHYS=OPER(nom="REST_SPEC_PHYS",op= 148,sd_prod=table_fonction,
          MAILLE          =SIMP(statut='f',typ=ma   ,max='**'),
          NOM_CMP         =SIMP(statut='o',typ='TXM',max='**'),  
          NOM_CHAM        =SIMP(statut='o',typ='TXM',validators=NoRepeat(),max=7,    
-                               into=("DEPL","VITE","ACCE","EFGE_ELNO_DEPL",
-                                     "SIPO_ELNO","SIGM_ELNO_DEPL","FORC_NODA") ),
+                               into=("DEPL","VITE","ACCE","EFGE_ELNO",
+                                     "SIPO_ELNO","SIGM_ELNO","FORC_NODA") ),
          MODE_STAT       =SIMP(statut='f',typ=mode_meca ),
          EXCIT           =FACT(statut='f',
            NOEUD           =SIMP(statut='o',typ=no   ,max='**'),

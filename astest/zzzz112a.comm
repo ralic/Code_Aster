@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # TITRE TUBE FIN CIRCULAIRE SOUS PRESSION
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -134,7 +134,7 @@ RESU2=MECA_STATIQUE(    MODELE=MODAST,   CHAM_MATER=CHMAT,
                          )
 
 RESU2=CALC_ELEM( reuse=RESU2,           RESULTAT=RESU2,
-                          OPTION='SIGM_ELNO_DEPL',
+                          OPTION='SIGM_ELNO',
                        LIST_INST=L_INST
                    )
 
@@ -151,7 +151,7 @@ RESU2=CALC_ELEM( reuse=RESU2,           RESULTAT=RESU2,
 #   DE SIGNE MAIS LE TE
 #
 TEST_RESU(RESU=(
-    _F(  RESULTAT = RESU2,  NOM_CHAM = 'SIGM_ELNO_DEPL',  INST = 1.,
+    _F(  RESULTAT = RESU2,  NOM_CHAM = 'SIGM_ELNO',  INST = 1.,
       MAILLE = 'M1',  NOEUD = 'N1',  NOM_CMP = 'SIYY',  VALE = 100.,
       PRECISION = 0.03,
       REFERENCE = 'AUTRE_ASTER'),
@@ -206,7 +206,7 @@ RESU3=MECA_STATIQUE(    MODELE=MODAST,   CHAM_MATER=CHMAT,
                          )
 
 RESU3=CALC_ELEM( reuse=RESU3,           RESULTAT=RESU3,
-                          OPTION='SIGM_ELNO_DEPL',
+                          OPTION='SIGM_ELNO',
                        LIST_INST=L_INST2
                    )
 
@@ -224,7 +224,7 @@ RESU3=CALC_ELEM( reuse=RESU3,           RESULTAT=RESU3,
 #
 
 TEST_RESU(RESU=(
-    _F(  RESULTAT = RESU3,  NOM_CHAM = 'SIGM_ELNO_DEPL',  INST = 1.,
+    _F(  RESULTAT = RESU3,  NOM_CHAM = 'SIGM_ELNO',  INST = 1.,
       MAILLE = 'M1',  NOEUD = 'N1',  NOM_CMP = 'SIYY',  VALE = 100.,
       PRECISION = 0.03,
       REFERENCE = 'AUTRE_ASTER'),

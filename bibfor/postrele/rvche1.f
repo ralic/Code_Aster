@@ -4,7 +4,7 @@
       CHARACTER*(*)       CHELEZ, NOMJV
       REAL*8              PGL(3,3)
 C ----------------------------------------------------------------------
-C MODIF POSTRELE  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+C MODIF POSTRELE  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -73,15 +73,15 @@ C
       IF ( NEC .GT. 10 ) CALL U2MESS('F','POSTRELE_53')
 C
       CALL DISMOI('F','NOM_OPTION', CHELEZ, 'CHAM_ELEM',IBID,OPTION,IER)
-       IF  ( OPTION .EQ. 'SIGM_ELNO_DEPL'  .OR.
+       IF  ( OPTION .EQ. 'SIGM_ELNO'  .OR.
      &      OPTION .EQ. 'SIEF_ELNO'  )THEN
 C         COMPOSANTE:  SIXX SIYY SIZZ SIXY SIXZ SIYZ
-       ELSEIF ( OPTION .EQ. 'EPSI_ELNO_DEPL'  .OR.
+       ELSEIF ( OPTION .EQ. 'EPSI_ELNO'  .OR.
      &         OPTION .EQ. 'EPSG_ELNO'  .OR.
      &         OPTION .EQ. 'EPME_ELNO'  .OR.
      &         OPTION .EQ. 'EPMG_ELNO'  )THEN
 C         COMPOSANTE:  EPXX EPYY EPZZ EPXY EPXZ EPYZ
-       ELSE IF ( OPTION .EQ. 'EFGE_ELNO_DEPL' ) THEN
+       ELSE IF ( OPTION .EQ. 'EFGE_ELNO' ) THEN
 C         COMPOSANTE:  NXX NYY NXY MXX MYY MXY
        ELSE IF ( OPTION .EQ. 'DEGE_ELNO' ) THEN
 C         COMPOSANTE:  N  VY VZ MT MFY MFZ

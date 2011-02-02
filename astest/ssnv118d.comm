@@ -1,4 +1,4 @@
-# MODIF  DATE 17/01/2011   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # TITRE ESSAI DE TRACTION CISAILLEMENT EN 3D (VISCOCHAB / VISC_CIN2_MEMO)
 # ssnv118d.para = tps_job 100 mem_job 64Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -185,8 +185,8 @@ SOLNL=STAT_NON_LINE(
               )
 
 SOLNL=CALC_ELEM( reuse=SOLNL,
-                       OPTION=( 'EPSI_ELNO_DEPL',
-                                'SIEF_ELNO',  'VARI_ELNO_ELGA',),
+                       OPTION=( 'EPSI_ELNO',
+                                'SIEF_ELNO',  'VARI_ELNO',),
                      RESULTAT=SOLNL,
                            INST=10.,
               )
@@ -198,29 +198,29 @@ TEST_RESU(RESU=(
   _F(  RESULTAT = SOLNL,  NOM_CHAM = 'SIEF_ELNO',  NUME_ORDRE = 11,REFERENCE='NON_REGRESSION',
                  MAILLE = 'MA1',  NOEUD = 'N1',  NOM_CMP = 'SIXY',  VALE = 6.00000E+1),
 
-  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'EPSI_ELNO_DEPL',  NUME_ORDRE = 11,
+  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'EPSI_ELNO',  NUME_ORDRE = 11,
                  MAILLE = 'MA1',  NOEUD = 'N1',  NOM_CMP = 'EPXX',  VALE = 1.6769512418890E-02,
                                                     REFERENCE='NON_REGRESSION',),
 
-  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'EPSI_ELNO_DEPL',  NUME_ORDRE = 11,REFERENCE='NON_REGRESSION',
+  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'EPSI_ELNO',  NUME_ORDRE = 11,REFERENCE='NON_REGRESSION',
                  MAILLE = 'MA1',  NOEUD = 'N1',  NOM_CMP = 'EPXY',  VALE = 9.9789488283526E-03,
                                                     PRECISION = 1.1E-2),
                                                     
-  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'VARI_ELNO_ELGA',  NUME_ORDRE = 11,
+  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'VARI_ELNO',  NUME_ORDRE = 11,
                MAILLE = 'MA1',  NOEUD = 'N1',
                NOM_CMP = 'V13',             VALE = 1.9142489181422E-02,REFERENCE='NON_REGRESSION',),
 
-  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'VARI_ELNO_ELGA',  NUME_ORDRE = 11,REFERENCE='NON_REGRESSION',
+  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'VARI_ELNO',  NUME_ORDRE = 11,REFERENCE='NON_REGRESSION',
                MAILLE = 'MA1',  NOEUD = 'N1',
                NOM_CMP = 'V14',             VALE = 9.5061733417098E+00,
                                                     PRECISION = 1.E-2),
 
-  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'VARI_ELNO_ELGA',  NUME_ORDRE = 11,REFERENCE='NON_REGRESSION',
+  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'VARI_ELNO',  NUME_ORDRE = 11,REFERENCE='NON_REGRESSION',
                MAILLE = 'MA1',  NOEUD = 'N1',
                NOM_CMP = 'V15',             VALE = 7.6569956682344E-04,
                                                     PRECISION = 1.E-2),
 
-  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'VARI_ELNO_ELGA',  NUME_ORDRE = 11,REFERENCE='NON_REGRESSION',
+  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'VARI_ELNO',  NUME_ORDRE = 11,REFERENCE='NON_REGRESSION',
                MAILLE = 'MA1',  NOEUD = 'N1',
                NOM_CMP = 'V16',             VALE = 1.5074149396844E-02,
                                                     PRECISION = 1.E-2))
@@ -299,8 +299,8 @@ SOLMEMO=STAT_NON_LINE(
                                     ),);
 
 SOLMEMO=CALC_ELEM( reuse=SOLMEMO,
-                       OPTION=( 'EPSI_ELNO_DEPL',
-                                'SIEF_ELNO',  'VARI_ELNO_ELGA',),
+                       OPTION=( 'EPSI_ELNO',
+                                'SIEF_ELNO',  'VARI_ELNO',),
                      RESULTAT=SOLMEMO,
                            INST=10.,
               )
@@ -312,27 +312,27 @@ TEST_RESU(RESU=(
   _F(  RESULTAT = SOLMEMO,  NOM_CHAM = 'SIEF_ELNO',  NUME_ORDRE = 11,REFERENCE='NON_REGRESSION',
                  MAILLE = 'MA1',  NOEUD = 'N1',  NOM_CMP = 'SIXY',  VALE = 6.00000E+1),
 
-  _F(  RESULTAT = SOLMEMO,  NOM_CHAM = 'EPSI_ELNO_DEPL',  NUME_ORDRE = 11,REFERENCE='AUTRE_ASTER',
+  _F(  RESULTAT = SOLMEMO,  NOM_CHAM = 'EPSI_ELNO',  NUME_ORDRE = 11,REFERENCE='AUTRE_ASTER',
                  MAILLE = 'MA1',  NOEUD = 'N1',  NOM_CMP = 'EPXX',  VALE = 1.6769512418890E-02,
                                                     PRECISION = 1.1E-2),
 
-  _F(  RESULTAT = SOLMEMO,  NOM_CHAM = 'EPSI_ELNO_DEPL',  NUME_ORDRE = 11,REFERENCE='AUTRE_ASTER',
+  _F(  RESULTAT = SOLMEMO,  NOM_CHAM = 'EPSI_ELNO',  NUME_ORDRE = 11,REFERENCE='AUTRE_ASTER',
                  MAILLE = 'MA1',  NOEUD = 'N1',  NOM_CMP = 'EPXY',  VALE = 9.9789488283526E-03,
                                                     PRECISION = 1.1E-2),
 
-  _F(  RESULTAT = SOLMEMO,  NOM_CHAM = 'VARI_ELNO_ELGA',  NUME_ORDRE = 11,REFERENCE='AUTRE_ASTER',
+  _F(  RESULTAT = SOLMEMO,  NOM_CHAM = 'VARI_ELNO',  NUME_ORDRE = 11,REFERENCE='AUTRE_ASTER',
                MAILLE = 'MA1',  NOEUD = 'N1',
                NOM_CMP = 'V1',             VALE = 1.9142489181422E-02,PRECISION = 1.E-3),
                
-  _F(  RESULTAT = SOLMEMO,  NOM_CHAM = 'VARI_ELNO_ELGA',  NUME_ORDRE = 11,REFERENCE='AUTRE_ASTER',
+  _F(  RESULTAT = SOLMEMO,  NOM_CHAM = 'VARI_ELNO',  NUME_ORDRE = 11,REFERENCE='AUTRE_ASTER',
                MAILLE = 'MA1',  NOEUD = 'N1',
                NOM_CMP = 'V15',             VALE = 9.5061733417098E+00,PRECISION = 1.E-3),
                
-  _F(  RESULTAT = SOLMEMO,  NOM_CHAM = 'VARI_ELNO_ELGA',  NUME_ORDRE = 11,REFERENCE='AUTRE_ASTER',
+  _F(  RESULTAT = SOLMEMO,  NOM_CHAM = 'VARI_ELNO',  NUME_ORDRE = 11,REFERENCE='AUTRE_ASTER',
                MAILLE = 'MA1',  NOEUD = 'N1',
                NOM_CMP = 'V16',             VALE = 7.6569956682344E-04,PRECISION = 1.E-3),
                
-  _F(  RESULTAT = SOLMEMO,  NOM_CHAM = 'VARI_ELNO_ELGA',  NUME_ORDRE = 11,REFERENCE='AUTRE_ASTER',
+  _F(  RESULTAT = SOLMEMO,  NOM_CHAM = 'VARI_ELNO',  NUME_ORDRE = 11,REFERENCE='AUTRE_ASTER',
                MAILLE = 'MA1',  NOEUD = 'N1',
                NOM_CMP = 'V17',             VALE = 1.5074149396844E-02,PRECISION = 3.E-3),
                

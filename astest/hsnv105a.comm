@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # TITRE ESSAI DE TRACTION-CISAILLEMENT (MISES ECROUISSAGE ISOTROPE)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -317,14 +317,14 @@ U=STAT_NON_LINE(
 
 U=CALC_ELEM( reuse=U,
                             OPTION=(
-                  'SIEF_ELNO',  'VARI_ELNO_ELGA',),
+                  'SIEF_ELNO',  'VARI_ELNO',),
                           RESULTAT=U,
                )
 
 U=CALC_ELEM(
               reuse=U,
                   RESULTAT=U,
-                   OPTION='EPSI_ELNO_DEPL',
+                   OPTION='EPSI_ELNO',
                )
 
 TEST_RESU(RESU=(
@@ -347,7 +347,7 @@ TEST_RESU(RESU=(
                 VALE = 93.1),
                 _F( 
                 RESULTAT = U,
-                NOM_CHAM = 'EPSI_ELNO_DEPL',
+                NOM_CHAM = 'EPSI_ELNO',
                 MAILLE = 'CUBE',
                 NOEUD = 'NO2',
                 INST = 10.,
@@ -355,7 +355,7 @@ TEST_RESU(RESU=(
                 VALE = 2.43329E-2),
                 _F( 
                 RESULTAT = U,
-                NOM_CHAM = 'EPSI_ELNO_DEPL',
+                NOM_CHAM = 'EPSI_ELNO',
                 MAILLE = 'CUBE',
                 NOEUD = 'NO2',
                 INST = 10.,
@@ -364,7 +364,7 @@ TEST_RESU(RESU=(
 
                 _F( 
                 RESULTAT = U,
-                NOM_CHAM = 'EPSI_ELNO_DEPL',
+                NOM_CHAM = 'EPSI_ELNO',
                 MAILLE = 'CUBE',
                 NOEUD = 'NO2',
                 INST = 10.,
@@ -389,7 +389,7 @@ TEST_RESU(RESU=(
                 VALE = 93.1),
                 _F( 
                 RESULTAT = U,
-                NOM_CHAM = 'EPSI_ELNO_DEPL',
+                NOM_CHAM = 'EPSI_ELNO',
                 MAILLE = 'CUBE',
                 NOEUD = 'NO2',
                 INST = 30.,
@@ -397,7 +397,7 @@ TEST_RESU(RESU=(
                 VALE = 5.21027E-2),
                 _F( 
                 RESULTAT = U,
-                NOM_CHAM = 'EPSI_ELNO_DEPL',
+                NOM_CHAM = 'EPSI_ELNO',
                 MAILLE = 'CUBE',
                 NOEUD = 'NO2',
                 INST = 30.,
@@ -405,7 +405,7 @@ TEST_RESU(RESU=(
                 VALE = -2.589626E-2),
                 _F( 
                 RESULTAT = U,
-                NOM_CHAM = 'EPSI_ELNO_DEPL',
+                NOM_CHAM = 'EPSI_ELNO',
                 MAILLE = 'CUBE',
                 NOEUD = 'NO2',
                 INST = 30.,
@@ -429,7 +429,7 @@ TEST_RESU(RESU=(
                 VALE = 93.1),
                 _F( 
                 RESULTAT = U,
-                NOM_CHAM = 'EPSI_ELNO_DEPL',
+                NOM_CHAM = 'EPSI_ELNO',
                 MAILLE = 'CUBE',
                 NOEUD = 'NO2',
                 INST = 60.,
@@ -437,7 +437,7 @@ TEST_RESU(RESU=(
                 VALE = 5.95571E-2),
                 _F( 
                 RESULTAT = U,
-                NOM_CHAM = 'EPSI_ELNO_DEPL',
+                NOM_CHAM = 'EPSI_ELNO',
                 MAILLE = 'CUBE',
                 NOEUD = 'NO2',
                 INST = 60.,
@@ -445,7 +445,7 @@ TEST_RESU(RESU=(
                 VALE = -2.96235E-2),
                 _F( 
                 RESULTAT = U,
-                NOM_CHAM = 'EPSI_ELNO_DEPL',
+                NOM_CHAM = 'EPSI_ELNO',
                 MAILLE = 'CUBE',
                 NOEUD = 'NO2',
                 INST = 60.,

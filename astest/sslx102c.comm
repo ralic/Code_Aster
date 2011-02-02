@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # TITRE TUYAUTERIE COUDEE EN FLEXION
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -69,7 +69,7 @@ MEL=CALC_MATR_ELEM(
 RESU=MECA_STATIQUE(  MODELE=MO,
                           CHAM_MATER=CHMAT,   CARA_ELEM=CAREL,
                          EXCIT=_F(  CHARGE = CHAR1)
-                    #    OPTION:('EFGE_ELNO_DEPL'
+                    #    OPTION:('EFGE_ELNO'
                      #           'SIEF_ELGA')
                     )
 

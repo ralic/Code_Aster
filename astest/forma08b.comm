@@ -1,10 +1,10 @@
-# MODIF  DATE 14/12/2010   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # RESPONSABLE sellali N.SELLALI
 # TITRE CORRIGE DU TP3D DE LA FORMATION POST TRAITEMENT
 # forma08b.para = tps_job 60 mem_job 100Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -253,8 +253,8 @@ TEST_TABLE(      TABLE=TMM2,       NOM_PARA='DY',
 
 RESU=CALC_ELEM(reuse =RESU,
                RESULTAT=RESU,
-               OPTION=('SIGM_ELNO_DEPL',
-                       'EQUI_ELNO_SIGM',
+               OPTION=('SIGM_ELNO',
+                       'SIEQ_ELNO',
                        'ERME_ELEM',
                        'ERME_ELNO',),);
 
@@ -319,8 +319,8 @@ IMPR_RESU(MODELE=MODMECA,FORMAT='CASTEM',
           RESU=_F( MAILLAGE=MAIL,
                    RESULTAT=RESU,
                    NOM_CHAM=('DEPL',
-                            'SIGM_ELNO_DEPL',
-                            'EQUI_ELNO_SIGM',
+                            'SIGM_ELNO',
+                            'SIEQ_ELNO',
                             'ERME_ELNO',
                             'FORC_NODA',
                             'REAC_NODA',),),);
@@ -371,7 +371,7 @@ DEPSUP=POST_RELEVE_T(ACTION=_F(INTITULE='GEN_SUP',
 SIGSUP=POST_RELEVE_T(ACTION=_F(INTITULE='GENE_SUP',
                                 GROUP_NO='GENSUP',
                                 RESULTAT=RESU,
-                                NOM_CHAM='SIGM_ELNO_DEPL',
+                                NOM_CHAM='SIGM_ELNO',
                                 NOM_CMP='SIXX',
                                 OPERATION='EXTRACTION',),);
 #
@@ -412,14 +412,14 @@ LEXT=INTE_MAIL_3D(MAILLAGE=MAIL,
 SIGLINT=POST_RELEVE_T(ACTION=_F(INTITULE='SIG_LINT ',
                                 CHEMIN=LINT,
                                 RESULTAT=RESU,
-                                NOM_CHAM='SIGM_ELNO_DEPL',
+                                NOM_CHAM='SIGM_ELNO',
                                 TOUT_CMP='OUI',
                                 OPERATION='EXTRACTION',),);
 
 SIGLEXT=POST_RELEVE_T(ACTION=_F(INTITULE='SIG_LEXT ',
                                 CHEMIN=LEXT,
                                 RESULTAT=RESU,
-                                NOM_CHAM='SIGM_ELNO_DEPL',
+                                NOM_CHAM='SIGM_ELNO',
                                 TOUT_CMP='OUI',
                                 OPERATION='EXTRACTION',),);
 
@@ -441,14 +441,14 @@ IMPR_TABLE(TABLE=SIGLEXT,);
 SIGMOY4=POST_RELEVE_T(ACTION=_F(INTITULE='SMOY_D4',
                                 GROUP_NO='D4',
                                 RESULTAT=RESU,
-                                NOM_CHAM='SIGM_ELNO_DEPL',
+                                NOM_CHAM='SIGM_ELNO',
                                 TOUT_CMP='OUI',
                                 OPERATION='MOYENNE',),);
 #
 SIGMOY6=POST_RELEVE_T(ACTION=_F(INTITULE='SMOY_D6',
                                 GROUP_NO='D6',
                                 RESULTAT=RESU,
-                                NOM_CHAM='SIGM_ELNO_DEPL',
+                                NOM_CHAM='SIGM_ELNO',
                                 TOUT_CMP='OUI',
                                 OPERATION='MOYENNE',),);
 

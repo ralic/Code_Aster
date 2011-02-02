@@ -13,7 +13,7 @@ C
 C
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+C MODIF POSTRELE  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -159,13 +159,13 @@ C
 10          CONTINUE
             CALL JEDETR ( NOMOB1 )
       ELSE IF ( (NIN .NE. 0) .OR. (NEP .NE. 0) ) THEN
-          IF  ((OPTION .EQ. 'SIGM_ELNO_DEPL') .OR.
+          IF  ((OPTION .EQ. 'SIGM_ELNO') .OR.
      &        (OPTION .EQ. 'SIEF_ELNO') .OR.
-     &        (OPTION .EQ. 'EPSI_ELNO_DEPL') .OR.
+     &        (OPTION .EQ. 'EPSI_ELNO') .OR.
      &        (OPTION .EQ. 'EPSG_ELNO') .OR.
      &        (OPTION .EQ. 'EPME_ELNO') .OR.
      &        (OPTION .EQ. 'EPMG_ELNO') .OR.
-     &        (OPTION .EQ. 'SIGM_NOEU_DEPL') .OR.
+     &        (OPTION .EQ. 'SIGM_NOEU') .OR.
      &        (OPTION .EQ. 'SIEF_NOEU') .OR.
      &        (OPTION .EQ. 'EPSI_NOEU') .OR.
      &        (OPTION .EQ. 'EPSG_NOEU') .OR.
@@ -175,8 +175,8 @@ C
             DO 20, I = 1, 6, 1
                ZK8(AVK8 + I-1) = ZK8(ACPGD + I-1)
 20          CONTINUE
-          ELSE IF  ((OPTION .EQ. 'EFGE_ELNO_DEPL') .OR.
-     &             (OPTION .EQ. 'EFGE_NOEU_DEPL')) THEN
+          ELSE IF  ((OPTION .EQ. 'EFGE_ELNO') .OR.
+     &             (OPTION .EQ. 'EFGE_NOEU')) THEN
             CALL WKVECT(NOMOJB,'V V K8',6,AVK8)
             DO 21, I = 1, 6, 1
                ZK8(AVK8 + I-1) = ZK8(ACPGD + 13 + I-1)
@@ -193,16 +193,16 @@ C
             IRET = 0
               VALK (1) = OPTION
               VALK (2) = ' '
-              VALK (3) = 'SIGM_ELNO_DEPL'
+              VALK (3) = 'SIGM_ELNO'
               VALK (4) = 'SIEF_ELNO'
-              VALK (5) = 'EPSI_ELNO_DEPL'
+              VALK (5) = 'EPSI_ELNO'
               VALK (6) = 'EPSG_ELNO'
               VALK (7) = 'EPME_ELNO'
               VALK (8) = 'EPMG_ELNO'
               VALK (9) = 'EPSI_ELNO_ELGA'
               VALK (10) = 'DEGE_ELNO'
-              VALK (11) = 'EFGE_ELNO_DEPL'
-              VALK (12) = 'SIGM_NOEU_DEPL'
+              VALK (11) = 'EFGE_ELNO'
+              VALK (12) = 'SIGM_NOEU'
               VALK (13) = 'SIEF_NOEU'
               VALK (14) = 'EPSI_NOEU'
               VALK (15) = 'EPSG_NOEU'
@@ -210,7 +210,7 @@ C
               VALK (17) = 'EPMG_NOEU'
               VALK (18) = 'EPSI_NOEU_ELGA'
               VALK (19) = 'DEGE_NOEU'
-              VALK (20) = 'EFGE_NOEU_DEPL'
+              VALK (20) = 'EFGE_NOEU'
             CALL U2MESG('F', 'POSTRELE_33',20,VALK,1,IOCC,0,0.D0)
          ENDIF
 C
@@ -224,13 +224,13 @@ C
             DO 32, I = 1, 3, 1
                ZK8(AVK8 + I-1) = ZK8(ACPGD + I-1)
 32          CONTINUE
-          ELSE IF  ((OPTION .EQ. 'SIGM_ELNO_DEPL') .OR.
+          ELSE IF  ((OPTION .EQ. 'SIGM_ELNO') .OR.
      &             (OPTION .EQ. 'SIEF_ELNO') .OR.
-     &             (OPTION .EQ. 'EPSI_ELNO_DEPL') .OR.
+     &             (OPTION .EQ. 'EPSI_ELNO') .OR.
      &             (OPTION .EQ. 'EPSG_ELNO') .OR.
      &             (OPTION .EQ. 'EPME_ELNO') .OR.
      &             (OPTION .EQ. 'EPMG_ELNO') .OR.
-     &             (OPTION .EQ. 'SIGM_NOEU_DEPL') .OR.
+     &             (OPTION .EQ. 'SIGM_NOEU') .OR.
      &             (OPTION .EQ. 'SIEF_NOEU') .OR.
      &             (OPTION .EQ. 'EPSI_NOEU') .OR.
      &             (OPTION .EQ. 'EPSG_NOEU') .OR.
@@ -249,8 +249,8 @@ C
                ZK8(AVK8 + I-1) = ZK8(ACPGD + I+6-1)
 40          CONTINUE
             IRET = 0
-          ELSE IF  ((OPTION .EQ. 'EFGE_ELNO_DEPL') .OR.
-     &             (OPTION .EQ. 'EFGE_NOEU_DEPL')) THEN
+          ELSE IF  ((OPTION .EQ. 'EFGE_ELNO') .OR.
+     &             (OPTION .EQ. 'EFGE_NOEU')) THEN
             CALL WKVECT(NOMOJB,'V V K8',6,AVK8)
             DO 41, I = 1, 6, 1
                ZK8(AVK8 + I-1) = ZK8(ACPGD + I+13-1)
@@ -260,22 +260,22 @@ C
            IRET = 0
               VALK (1) = OPTION
               VALK (2) = ' '
-              VALK (3) = 'SIGM_ELNO_DEPL'
+              VALK (3) = 'SIGM_ELNO'
               VALK (4) = 'SIEF_ELNO'
-              VALK (5) = 'EPSI_ELNO_DEPL'
+              VALK (5) = 'EPSI_ELNO'
               VALK (6) = 'EPSG_ELNO'
               VALK (7) = 'EPME_ELNO'
               VALK (8) = 'EPMG_ELNO'
               VALK (9) = 'DEGE_ELNO'
-              VALK (10) = 'EFGE_ELNO_DEPL'
-              VALK (11) = 'SIGM_NOEU_DEPL'
+              VALK (10) = 'EFGE_ELNO'
+              VALK (11) = 'SIGM_NOEU'
               VALK (12) = 'SIEF_NOEU'
               VALK (13) = 'EPSI_NOEU'
               VALK (14) = 'EPSG_NOEU'
               VALK (15) = 'EPME_NOEU_DEPL'
               VALK (16) = 'EPMG_NOEU'
               VALK (17) = 'DEGE_NOEU'
-              VALK (18) = 'EFGE_NOEU_DEPL'
+              VALK (18) = 'EFGE_NOEU'
               VALK (19) = ' '
               VALK (20) = 'FLUX_R'
             CALL U2MESG('F', 'POSTRELE_34',20,VALK,1,IOCC,0,0.D0)
@@ -333,13 +333,13 @@ C
                ZI(AVICP + PT-1) = 3
                PT = PT + 1
             ENDIF
-          ELSE IF ( (OPTION .EQ. 'SIGM_ELNO_DEPL') .OR.
+          ELSE IF ( (OPTION .EQ. 'SIGM_ELNO') .OR.
      &             (OPTION .EQ. 'SIEF_ELNO') .OR.
-     &             (OPTION .EQ. 'EPSI_ELNO_DEPL') .OR.
+     &             (OPTION .EQ. 'EPSI_ELNO') .OR.
      &             (OPTION .EQ. 'EPSG_ELNO') .OR.
      &             (OPTION .EQ. 'EPME_ELNO') .OR.
      &             (OPTION .EQ. 'EPMG_ELNO') .OR.
-     &             (OPTION .EQ. 'SIGM_NOEU_DEPL') .OR.
+     &             (OPTION .EQ. 'SIGM_NOEU') .OR.
      &             (OPTION .EQ. 'SIEF_NOEU') .OR.
      &             (OPTION .EQ. 'EPSI_NOEU') .OR.
      &             (OPTION .EQ. 'EPSG_NOEU') .OR.
@@ -365,8 +365,8 @@ C
                CALL I2TRGI(ZI(AVICP),ZI(AVINEW),3,PT)
             ENDIF
             CALL JEDETR(NOMNEW)
-          ELSE IF  ((OPTION .EQ. 'EFGE_ELNO_DEPL') .OR.
-     &             (OPTION .EQ. 'EFGE_NOEU_DEPL')) THEN
+          ELSE IF  ((OPTION .EQ. 'EFGE_ELNO') .OR.
+     &             (OPTION .EQ. 'EFGE_NOEU')) THEN
             CALL WKVECT(NOMOJB,'V V K8',6,AVK8)
             DO 42, I = 1, 6, 1
                ZK8(AVK8 + I-1) = ZK8(ACPGD + 13 + I-1)
@@ -415,23 +415,23 @@ C
            IRET = 0
               VALK (1) = OPTION
               VALK (2) = ' '
-              VALK (3) = 'SIGM_ELNO_DEPL'
+              VALK (3) = 'SIGM_ELNO'
               VALK (4) = 'SIEF_ELNO'
-              VALK (5) = 'EPSI_ELNO_DEPL'
+              VALK (5) = 'EPSI_ELNO'
               VALK (6) = 'EPSG_ELNO'
               VALK (7) = 'EPME_ELNO'
               VALK (8) = 'EPMG_ELNO'
               VALK (9) = 'DEGE_ELNO'
-              VALK (10) = 'EFGE_ELNO_DEPL'
+              VALK (10) = 'EFGE_ELNO'
               VALK (11) = 'DEGE_ELNO'
-              VALK (12) = 'SIGM_NOEU_DEPL'
+              VALK (12) = 'SIGM_NOEU'
               VALK (13) = 'SIEF_NOEU'
               VALK (14) = 'EPSI_NOEU'
               VALK (15) = 'EPSG_NOEU'
               VALK (16) = 'EPME_NOEU_DEPL'
               VALK (17) = 'EPMG_NOEU'
               VALK (18) = 'DEGE_NOEU'
-              VALK (19) = 'EFGE_NOEU_DEPL'
+              VALK (19) = 'EFGE_NOEU'
               VALK (20) = 'DEGE_NOEU'
               VALK (21) = ' '
               VALK (22) = 'DEPL_R'
@@ -682,7 +682,7 @@ C          /* CHGT DE REPERE POUR SIGMA, EPSI, (N,M) OU (E,K) */
               IRET = 0
               VALK (1) = NOMGD
               VALK (2) = 'SIEF_R '
-              VALK (3) = 'SIGM_ELNO_DEPL'
+              VALK (3) = 'SIGM_ELNO'
               VALK (4) = 'EPSI_R '
               VALK (5) = 'EP.._ELNO_DEPL'
               VALK (6) = 'DEGE_ELNO'

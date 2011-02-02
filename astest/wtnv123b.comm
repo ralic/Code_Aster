@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # ======================================================================
 # TITRE ESSAI HYDROSTATIQUE SUIVI D UN TRIAXIAL A SUCCION FIXE
 # wtnv123b.para = tps_job 180 mem_job 300Mo mem_aster 50 ncpus 1 liste_test S
@@ -341,14 +341,14 @@ U1=STAT_NON_LINE(reuse=U1,
 
 U1=CALC_ELEM(  reuse=U1,
                   OPTION=('SIEF_ELNO',
-                          'VARI_ELNO_ELGA',
+                          'VARI_ELNO',
                           ),
                   RESULTAT=U1,
                         )
 
 U1=CALC_NO(  reuse=U1,     RESULTAT=U1,
                        OPTION=( 'SIEF_NOEU',
-                       'VARI_NOEU_ELGA',
+                       'VARI_NOEU',
                            ),
                 )
 
@@ -383,7 +383,7 @@ TEST_RESU(RESU=(
                 _F(    RESULTAT = U1,
                        REFERENCE = 'NON_REGRESSION',
                        NOEUD = 'NO8',
-                       NOM_CHAM = 'VARI_NOEU_ELGA',
+                       NOM_CHAM = 'VARI_NOEU',
                        NOM_CMP = 'V1',
                        INST=6.,
                        PRECISION = (1.E-4,1.E-5),
@@ -393,7 +393,7 @@ TEST_RESU(RESU=(
                 _F(    RESULTAT = U1,
                        REFERENCE = 'NON_REGRESSION',
                        NOEUD = 'NO8',
-                       NOM_CHAM = 'VARI_NOEU_ELGA',
+                       NOM_CHAM = 'VARI_NOEU',
                        NOM_CMP = 'V1',
                        INST=20.,
                        PRECISION =(1.E-4,1.E-5),
@@ -403,7 +403,7 @@ TEST_RESU(RESU=(
                 _F(    RESULTAT = U1,
                        REFERENCE = 'NON_REGRESSION',
                        NOEUD = 'NO8',
-                       NOM_CHAM = 'VARI_NOEU_ELGA',
+                       NOM_CHAM = 'VARI_NOEU',
                        NOM_CMP = 'V2',
                        INST=6.,
                        PRECISION = (1.E-4,1.E-5),
@@ -413,7 +413,7 @@ TEST_RESU(RESU=(
                 _F(    RESULTAT = U1,
                        REFERENCE = 'NON_REGRESSION',
                        NOEUD = 'NO8',
-                       NOM_CHAM = 'VARI_NOEU_ELGA',
+                       NOM_CHAM = 'VARI_NOEU',
                        NOM_CMP = 'V2',
                        INST=20.,
                        PRECISION = (1.E-4,1.E-5),
@@ -423,7 +423,7 @@ TEST_RESU(RESU=(
                 _F(    RESULTAT = U1,
                        REFERENCE = 'NON_REGRESSION',
                        NOEUD = 'NO8',
-                       NOM_CHAM = 'VARI_NOEU_ELGA',
+                       NOM_CHAM = 'VARI_NOEU',
                        NOM_CMP = 'V3',
                        INST=6.,
                        PRECISION = (1.E-4,1.E-5),
@@ -433,7 +433,7 @@ TEST_RESU(RESU=(
                 _F(    RESULTAT = U1,
                        REFERENCE = 'NON_REGRESSION',
                        NOEUD = 'NO8',
-                       NOM_CHAM = 'VARI_NOEU_ELGA',
+                       NOM_CHAM = 'VARI_NOEU',
                        NOM_CMP = 'V3',
                        INST=20.,
                        PRECISION = (1.E-4,1.E-5),
@@ -444,7 +444,7 @@ TEST_RESU(RESU=(
                 _F(    RESULTAT = U1,
                        REFERENCE = 'NON_REGRESSION',
                        NOEUD = 'NO8',
-                       NOM_CHAM = 'VARI_NOEU_ELGA',
+                       NOM_CHAM = 'VARI_NOEU',
                        NOM_CMP = 'V4',
                        INST=6.,
                        PRECISION = (1.E-4,1.E-5),
@@ -455,7 +455,7 @@ TEST_RESU(RESU=(
                 _F(    RESULTAT = U1,
                        REFERENCE = 'NON_REGRESSION',
                        NOEUD = 'NO8',
-                       NOM_CHAM = 'VARI_NOEU_ELGA',
+                       NOM_CHAM = 'VARI_NOEU',
                        NOM_CMP = 'V4',
                        INST=20.,
                        PRECISION = (1.E-4,1.E-5),

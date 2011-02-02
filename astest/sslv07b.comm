@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # TITRE PARALLELIPIPEDE SOUS SON PROPRE POIDS (HEXA8 FIN)
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -65,7 +65,7 @@ DEP1=MECA_STATIQUE(    MODELE=MO,     CHAM_MATER=CHMAT,EXCIT=(
                        )
 
 CALC_ELEM( reuse= DEP1 ,RESULTAT= DEP1 ,
-                          OPTION=( 'SIGM_ELNO_DEPL', 'EPOT_ELEM',)
+                          OPTION=( 'SIGM_ELNO', 'EPOT_ELEM',)
                        )
 
 DEP2=MECA_STATIQUE(     MODELE=MO,     CHAM_MATER=CHMAT,EXCIT=(
@@ -81,7 +81,7 @@ DEP2=MECA_STATIQUE(     MODELE=MO,     CHAM_MATER=CHMAT,EXCIT=(
 CALC_ELEM(     reuse=DEP2,
                          RESULTAT=DEP2,        NUME_ORDRE=1,
 
-   OPTION=( 'EPOT_ELEM', 'SIGM_ELNO_DEPL',   'ERME_ELEM',
+   OPTION=( 'EPOT_ELEM', 'SIGM_ELNO',   'ERME_ELEM',
                                                 'ERME_ELNO',))
 
 
@@ -123,7 +123,7 @@ TEST_RESU(CHAM_NO=(
               NOEUD = 'N527',     NOM_CMP = 'DZ',            VALE = -1.291241E-6)),RESU=(
      # CONTRAINTES
 
-            _F(  RESULTAT = DEP1, NUME_ORDRE = 1, NOM_CHAM = 'SIGM_ELNO_DEPL',
+            _F(  RESULTAT = DEP1, NUME_ORDRE = 1, NOM_CHAM = 'SIGM_ELNO',
               CRITERE = 'RELATIF',   PRECISION = 1.1E-1,
               MAILLE = 'HEX336',
         NOEUD = 'N533',     NOM_CMP = 'SIZZ',          VALE = 2.29554E5),

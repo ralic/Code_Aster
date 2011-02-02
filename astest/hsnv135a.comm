@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # TITRE TUBE SOUS PRESSION A TEMPERATURE VARIABLE 
 # hsnv135a.para = tps_job 60 mem_job 100Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -181,7 +181,7 @@ U=CALC_ELEM(reuse=U,
             RESULTAT=U,
             OPTION=('SIEF_ELNO',
                     'EPSI_ELGA',
-                    'EPSI_ELNO_DEPL'),)
+                    'EPSI_ELNO'),)
 
 U=CALC_NO(reuse =U,
           RESULTAT=U,

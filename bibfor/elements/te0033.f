@@ -2,7 +2,7 @@
       IMPLICIT  NONE
       CHARACTER*16        OPTION, NOMTE
 C     ------------------------------------------------------------------
-C MODIF ELEMENTS  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -24,9 +24,9 @@ C     CALCUL DE CONTRAINTES, DEFORMATIONS, EFFORTS ET DEFORMATIONS
 C     GENERALISES POUR LES ELEMENTS DKT, DKTG, DST, DKQ, DSQ ET Q4G
 C     POUR UN MATERIAU ISOTROPE OU MULTICOUCHE
 C         OPTIONS TRAITEES  ==>  SIEF_ELGA
-C                                EFGE_ELNO_DEPL
-C                                SIGM_ELNO_DEPL
-C                                EPSI_ELNO_DEPL
+C                                EFGE_ELNO
+C                                SIGM_ELNO
+C                                EPSI_ELNO
 C                                DEGE_ELNO
 C     IN   K16   OPTION : NOM DE L'OPTION A CALCULER
 C     IN   K16   NOMTE  : NOM DU TYPE_ELEMENT
@@ -74,9 +74,9 @@ C
       CALL ELREF4(' ',FAMI,NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDX,JGANO)
 C
       IF (OPTION.NE.'SIEF_ELGA  ' .AND.
-     &    OPTION.NE.'EFGE_ELNO_DEPL  ' .AND.
-     &    OPTION.NE.'SIGM_ELNO_DEPL  ' .AND.
-     &    OPTION.NE.'EPSI_ELNO_DEPL  ' .AND.
+     &    OPTION.NE.'EFGE_ELNO  ' .AND.
+     &    OPTION.NE.'SIGM_ELNO  ' .AND.
+     &    OPTION.NE.'EPSI_ELNO  ' .AND.
      &    OPTION.NE.'DEGE_ELNO  ') THEN
 CC OPTION DE CALCUL INVALIDE
         CALL ASSERT(.FALSE.)

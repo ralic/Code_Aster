@@ -1,9 +1,9 @@
-# MODIF  DATE 13/09/2010   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # TITRE PLAQUE TRAPEZOIDALE SOUS POIDS PROPRE (PESANTEUR)
 # sslp301a.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test V
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -75,7 +75,7 @@ NOM_CHAM='DEPL', RESULTAT=DEF,
 DEF=CALC_ELEM( reuse= DEF ,RESULTAT= DEF ,
 
 
-                              OPTION=('SIGM_ELNO_DEPL',),
+                              OPTION=('SIGM_ELNO',),
                 )
 
 #
@@ -95,7 +95,7 @@ TEST_RESU(   RESU=_F(  RESULTAT = DEF,
                           MAILLE = 'M19',
                           NOEUD = 'N11',
                           NUME_ORDRE=1,
-                          NOM_CHAM='SIGM_ELNO_DEPL',
+                          NOM_CHAM='SIGM_ELNO',
                           NOM_CMP = 'SIXY',
                           VALE = -19.9E4,
                           PRECISION = 0.001)

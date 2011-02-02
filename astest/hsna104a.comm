@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # TITRE DETENSIONNEMENT DE JOINTS HETEROGENES SOUDES PAR FRICTION
 # hsna104a.para = tps_job 600 mem_job 500Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -728,14 +728,14 @@ U=CALC_ELEM(reuse =U,
 
             RESULTAT=U,
             NUME_ORDRE=26,
-            OPTION=('SIEF_ELNO','EQUI_ELNO_SIGM',),
+            OPTION=('SIEF_ELNO','SIEQ_ELNO',),
 
 );
 
 U=CALC_NO(reuse =U,
           RESULTAT=U,
           NUME_ORDRE=26,
-          OPTION=('SIEF_NOEU','EQUI_NOEU_SIGM',),);
+          OPTION=('SIEF_NOEU','SIEQ_NOEU',),);
 #################################################################
 
 

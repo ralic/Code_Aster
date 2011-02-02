@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # TITRE - REEEQUILIBRAGE GRAVITAIRE D UNE COLONNE - MODELISATION HHD
 # wtnp118a.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -231,7 +231,7 @@ RESU0=CALC_ELEM(reuse =RESU0,
 
 
              TOUT_ORDRE='OUI',
-             OPTION=('SIEF_ELNO','VARI_ELNO_ELGA'),
+             OPTION=('SIEF_ELNO','VARI_ELNO'),
              RESULTAT=RESU0,);
 
 TEST_RESU(RESU=_F(RESULTAT=RESU0,
@@ -294,7 +294,7 @@ IMPR_TABLE(TABLE=PR2,
 PV3=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL',
                             GROUP_NO=('BAS'),
                             RESULTAT=RESU0,
-                            NOM_CHAM='VARI_ELNO_ELGA',
+                            NOM_CHAM='VARI_ELNO',
                             INST=(0.02,0.1, 0.5,1. ),
                             NOM_CMP=('V3'),
                             OPERATION='EXTRACTION',),);

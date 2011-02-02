@@ -1,10 +1,10 @@
-# MODIF  DATE 29/11/2010   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # RESPONSABLE ABBAS M.ABBAS
 # TITRE  CONTACT ENTRE DEUX PLAQUES EN APPUI SIMPLE
 # ssnv129e.para = tps_job 60 mem_job 300Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -138,12 +138,12 @@ RESU=STAT_NON_LINE(SOLVEUR=_F(METHODE='MUMPS',PCENT_PIVOT=10, SYME='OUI',
 
 RESU=CALC_ELEM(reuse =RESU,
                RESULTAT=RESU,
-               OPTION='SIGM_ELNO_COQU',
+               OPTION='SICO_ELNO',
                REPE_COQUE=_F(NIVE_COUCHE='INF'),);
 
 RESU=CALC_NO(reuse =RESU,
              RESULTAT=RESU,
-             OPTION='SIGM_NOEU_COQU',);
+             OPTION='SICO_NOEU',);
 
 IMPR_RESU(MODELE=MO,
           FORMAT='GMSH',
@@ -151,7 +151,7 @@ IMPR_RESU(MODELE=MO,
           RESU=(_F(RESULTAT=RESU,
                    NOM_CHAM='DEPL',),
                 _F(RESULTAT=RESU,
-                   NOM_CHAM='SIGM_NOEU_COQU',
+                   NOM_CHAM='SICO_NOEU',
                    NOM_CMP=('SIXX','SIYY','SIXY',),)
                 ));
 
@@ -166,7 +166,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU,
                    REFERENCE='ANALYTIQUE',),
                 _F(RESULTAT=RESU,
                    NUME_ORDRE=1,
-                   NOM_CHAM='SIGM_NOEU_COQU',
+                   NOM_CHAM='SICO_NOEU',
                    NOM_CMP='SIYY',
                    GROUP_NO='CENTE1',
                    VALE=7648100000.0,
@@ -176,7 +176,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU,
 
 TEST_RESU(RESU=(_F(RESULTAT=RESU,
                    NUME_ORDRE=1,
-                   NOM_CHAM='SIGM_NOEU_COQU',
+                   NOM_CHAM='SICO_NOEU',
                    NOM_CMP='SIXY',
                    GROUP_NO='A1',
                    VALE=-3.2916909693770E+09,
@@ -186,7 +186,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU,
                    ),
                 _F(RESULTAT=RESU,
                    NUME_ORDRE=1,
-                   NOM_CHAM='SIGM_NOEU_COQU',
+                   NOM_CHAM='SICO_NOEU',
                    NOM_CMP='SIXY',
                    GROUP_NO='A3',
                    VALE=-3.2916909693770E+09,
@@ -196,7 +196,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU,
                    ),
                 _F(RESULTAT=RESU,
                    NUME_ORDRE=1,
-                   NOM_CHAM='SIGM_NOEU_COQU',
+                   NOM_CHAM='SICO_NOEU',
                    NOM_CMP='SIXY',
                    GROUP_NO='B1',
                    VALE=3.2916909693770E+09,
@@ -206,7 +206,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU,
                    ),
                 _F(RESULTAT=RESU,
                    NUME_ORDRE=1,
-                   NOM_CHAM='SIGM_NOEU_COQU',
+                   NOM_CHAM='SICO_NOEU',
                    NOM_CMP='SIXY',
                    GROUP_NO='B3',
                    VALE=3.2916909693770E+09,

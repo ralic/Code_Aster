@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # TITRE  THERMO_METALLO_MECANIQUE EN TRACTION SIMPLE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -301,12 +301,12 @@ U=STAT_NON_LINE(reuse=U,
 U=CALC_ELEM(reuse=U,
         RESULTAT=U,
           OPTION=('SIEF_ELNO',
-                  'VARI_ELNO_ELGA',),)
+                  'VARI_ELNO',),)
 
 U=CALC_NO(reuse=U,
       RESULTAT=U,
         OPTION=('SIEF_NOEU',
-                'VARI_NOEU_ELGA',))
+                'VARI_NOEU',))
 
 CHSIY11=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='NOEU_SIEF_R',
 RESULTAT=U, NOM_CHAM='SIEF_NOEU',
@@ -317,7 +317,7 @@ RESULTAT=U, NOM_CHAM='DEPL',
                        INST=1.1 )
 
 CHVAR11=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='NOEU_VAR2_R',
-RESULTAT=U, NOM_CHAM='VARI_NOEU_ELGA',
+RESULTAT=U, NOM_CHAM='VARI_NOEU',
                        INST=1.1 )
 
 CHSIY14=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='NOEU_SIEF_R',
@@ -329,7 +329,7 @@ RESULTAT=U, NOM_CHAM='DEPL',
                        INST=1.4 )
 
 CHVAR14=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='NOEU_VAR2_R',
-RESULTAT=U, NOM_CHAM='VARI_NOEU_ELGA',
+RESULTAT=U, NOM_CHAM='VARI_NOEU',
                        INST=1.4)
 
 CHSIY20=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='NOEU_SIEF_R',
@@ -341,7 +341,7 @@ RESULTAT=U, NOM_CHAM='DEPL',
                        INST=2. )
 
 CHVAR20=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='NOEU_VAR2_R',
-RESULTAT=U, NOM_CHAM='VARI_NOEU_ELGA',
+RESULTAT=U, NOM_CHAM='VARI_NOEU',
                        INST=2.)
 
 #------------------------------------------------------------------

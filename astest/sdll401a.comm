@@ -1,8 +1,8 @@
-# MODIF  DATE 19/10/2010   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # TITRE POUTRE SOUMISE A UNE FORCE SINUSOIDALE REPARTIE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -157,8 +157,8 @@ DYN_FX=CALC_ELEM(MODELE=MO,
                  RESULTAT=DYNFX,
                  EXCIT=_F( CHARGE = REPFX,
                            FONC_MULT = fCOS),
-                 OPTION=('EFGE_ELNO_DEPL',
-                         'SIGM_ELNO_DEPL',
+                 OPTION=('EFGE_ELNO',
+                         'SIGM_ELNO',
                                   )
                     )
 
@@ -168,7 +168,7 @@ DYN_FX=CALC_ELEM(MODELE=MO,
 # T = 0.3333 S
 #
 TEST_RESU(   RESU=_F( RESULTAT = DYN_FX,
-                    NOM_CHAM = 'EFGE_ELNO_DEPL',
+                    NOM_CHAM = 'EFGE_ELNO',
                     NUME_ORDRE = 1,
                     MAILLE = 'S01',
                     NOEUD = 'N01',
@@ -182,7 +182,7 @@ TEST_RESU(   RESU=_F( RESULTAT = DYN_FX,
 # T = 0.6666 S
 #
 TEST_RESU(   RESU=_F( RESULTAT = DYN_FX,
-                    NOM_CHAM = 'EFGE_ELNO_DEPL',
+                    NOM_CHAM = 'EFGE_ELNO',
                     NUME_ORDRE = 2,
                     MAILLE = 'S01',
                     NOEUD = 'N01',
@@ -198,7 +198,7 @@ TEST_RESU(   RESU=_F( RESULTAT = DYN_FX,
 # T = 0.3333 S
 #
 TEST_RESU(   RESU=_F( RESULTAT = DYN_FX,
-                    NOM_CHAM = 'EFGE_ELNO_DEPL',
+                    NOM_CHAM = 'EFGE_ELNO',
                     NUME_ORDRE = 1,
                     MAILLE = 'S01',
                     NOEUD = 'N02',
@@ -211,7 +211,7 @@ TEST_RESU(   RESU=_F( RESULTAT = DYN_FX,
 # T = 0.6666 S
 #
 TEST_RESU(   RESU=_F( RESULTAT = DYN_FX,
-                    NOM_CHAM = 'EFGE_ELNO_DEPL',
+                    NOM_CHAM = 'EFGE_ELNO',
                     NUME_ORDRE = 2,
                     MAILLE = 'S01',
                     NOEUD = 'N02',
@@ -287,8 +287,8 @@ DYNP_F20=CALC_ELEM( MODELE=MO,
                     RESULTAT=DYNPOF20,
                     EXCIT=_F( CHARGE = PONF20,
                               FONC_MULT = fCOS),
-                    OPTION=('EFGE_ELNO_DEPL',
-                            'SIGM_ELNO_DEPL',
+                    OPTION=('EFGE_ELNO',
+                            'SIGM_ELNO',
                                      )
                     )
 
@@ -298,7 +298,7 @@ DYNP_F20=CALC_ELEM( MODELE=MO,
 # T = 0.3333 S
 #
 TEST_RESU(   RESU=_F( RESULTAT = DYNP_F20,
-                    NOM_CHAM = 'EFGE_ELNO_DEPL',
+                    NOM_CHAM = 'EFGE_ELNO',
                     NUME_ORDRE = 1,
                     MAILLE = 'S01',
                     NOEUD = 'N01',
@@ -312,7 +312,7 @@ TEST_RESU(   RESU=_F( RESULTAT = DYNP_F20,
 # T = 0.6666 S
 #
 TEST_RESU(   RESU=_F( RESULTAT = DYNP_F20,
-                    NOM_CHAM = 'EFGE_ELNO_DEPL',
+                    NOM_CHAM = 'EFGE_ELNO',
                     NUME_ORDRE = 2,
                     MAILLE = 'S01',
                     NOEUD = 'N01',
@@ -341,8 +341,8 @@ DYNP_M20=CALC_ELEM( MODELE=MO,
                     RESULTAT=DYNPOM20,
                     EXCIT=_F( CHARGE = PONM20,
                               FONC_MULT = fCOS),
-                    OPTION=('EFGE_ELNO_DEPL',
-                            'SIGM_ELNO_DEPL',
+                    OPTION=('EFGE_ELNO',
+                            'SIGM_ELNO',
                                      )
                     )
 
@@ -353,7 +353,7 @@ DYNP_M20=CALC_ELEM( MODELE=MO,
 # T = 0.3333 S
 #
 TEST_RESU(   RESU=_F( RESULTAT = DYNP_M20,
-                    NOM_CHAM = 'EFGE_ELNO_DEPL',
+                    NOM_CHAM = 'EFGE_ELNO',
                     NUME_ORDRE = 1,
                     MAILLE = 'S01',
                     NOEUD = 'N01',
@@ -367,7 +367,7 @@ TEST_RESU(   RESU=_F( RESULTAT = DYNP_M20,
 # T = 0.6666 S
 #
 TEST_RESU(   RESU=_F( RESULTAT = DYNP_M20,
-                    NOM_CHAM = 'EFGE_ELNO_DEPL',
+                    NOM_CHAM = 'EFGE_ELNO',
                     NUME_ORDRE = 2,
                     MAILLE = 'S01',
                     NOEUD = 'N01',

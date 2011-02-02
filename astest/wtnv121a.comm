@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # RESPONSABLE JOUMANA J.EL-GHARIB
 # TITRE MOUILLAGE D'UNE COLONNE EN BETON AVEC LOI D'ENDOMMMAGEMENT
 # wtnv121a.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
@@ -295,13 +295,13 @@ REPONSE=STAT_NON_LINE( MODELE     = MO,
 REPONSE=CALC_ELEM(reuse =REPONSE,
                RESULTAT=REPONSE,
                PRECISION = 1.E-10,
-               OPTION=('SIEF_ELNO','VARI_ELNO_ELGA'),
+               OPTION=('SIEF_ELNO','VARI_ELNO'),
                TOUT='OUI');
 
 REPONSE=CALC_NO(reuse =REPONSE,
                RESULTAT=REPONSE,
                PRECISION = 1.E-10,
-               OPTION=('SIEF_NOEU','VARI_NOEU_ELGA'),
+               OPTION=('SIEF_NOEU','VARI_NOEU'),
                TOUT='OUI');
 
 ENDO=CALC_ELEM(RESULTAT=REPONSE,
@@ -411,7 +411,7 @@ TEST_RESU(RESU=(
 # ENDOMMAGEMENT
                  _F(  RESULTAT = REPONSE,
                        GROUP_NO = 'E',
-                       NOM_CHAM = 'VARI_NOEU_ELGA',
+                       NOM_CHAM = 'VARI_NOEU',
                        NOM_CMP = 'V1',
                        INST = 0.5,
                        REFERENCE='NON_REGRESSION',
@@ -420,7 +420,7 @@ TEST_RESU(RESU=(
                      ),
                  _F(  RESULTAT = REPONSE,
                        GROUP_NO = 'E',
-                       NOM_CHAM = 'VARI_NOEU_ELGA',
+                       NOM_CHAM = 'VARI_NOEU',
                        NOM_CMP = 'V1',
                        INST = 1.0,
                        REFERENCE='NON_REGRESSION',

@@ -3,7 +3,7 @@
      +                  IDEFO)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -51,7 +51,7 @@ C ======================================================================
       JCRET =ISMAEM()
       IDEFO =ISMAEM()
 C ======================================================================
-      IF (OPTION.EQ.'EPSI_ELNO_DEPL'.OR.
+      IF (OPTION.EQ.'EPSI_ELNO'.OR.
      +    OPTION.EQ.'CHAR_MECA_PESA_R') THEN
 C OPTION NON PROGRAMMEE
           CALL ASSERT(.FALSE.)
@@ -104,7 +104,7 @@ C ======================================================================
          CALL JEVECH('PCOMPOR', 'L',ICOMPO)
          CALL JEVECH('PCONTRR', 'L',ICHG  )
          CALL JEVECH('PSIEFNOR','E',ICHN  )
-      ELSE IF (OPTION.EQ.'VARI_ELNO_ELGA' ) THEN
+      ELSE IF (OPTION.EQ.'VARI_ELNO' ) THEN
          CALL JEVECH('PCOMPOR', 'L',ICOMPO)
          CALL JEVECH('PVARIGR', 'L',ICHG  )
          CALL JEVECH('PVARINR', 'E',ICHN  )

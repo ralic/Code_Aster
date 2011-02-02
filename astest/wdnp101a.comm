@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # TITRE SOLLICITATION SISMIQUE D UNE COLONNE DE SOL 
 #  APRES CONSTRUCTION PAR COUCHES AVEC LOI DE HUJEUX
 # wdnp101a.para = tps_job 1000 mem_job 128Mo ncpus 1 liste_test S
@@ -320,7 +320,7 @@ VAR[0]=CREA_CHAMP(INFO=2,
 
 U[0]=CALC_ELEM(reuse=U[0],
                GROUP_MA=list_group_ma[0:2],
-               OPTION=('SIEF_ELNO','VARI_ELNO_ELGA'),
+               OPTION=('SIEF_ELNO','VARI_ELNO'),
                RESULTAT=U[0]);
 
 
@@ -523,7 +523,7 @@ for n in range(1,nbcouche-1):
 
     U[n]=CALC_ELEM(reuse=U[n],
                    GROUP_MA=list_group_ma[0:n+2],
-                   OPTION=('SIEF_ELNO','VARI_ELNO_ELGA'),
+                   OPTION=('SIEF_ELNO','VARI_ELNO'),
                    RESULTAT=U[n]);
                    
 #    IMPR_RESU(RESU=_F(CHAM_GD=DEP[n]));

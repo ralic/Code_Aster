@@ -2,7 +2,7 @@
 C_____________________________________________________________________
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -136,7 +136,7 @@ C
          OPTION = 'RAPH_MECA'
          PARAM  = 'PVARIPR'
 C       ELSE IF (TYCH(1:9).EQ.'ELGA_EQUI_R') THEN
-C          OPTION = 'EQUI_ELGA_SIGM'
+C          OPTION = 'SIEQ_ELGA'
 C          PARAM  = 'PCONTEQ'
       ELSE IF (TYCH(1:4).EQ.'ELGA') THEN
 C        AUTRES CHAMPS ELGA : NON PREVU

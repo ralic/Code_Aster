@@ -1,9 +1,9 @@
-# MODIF  DATE 12/04/2010   AUTEUR MICHEL S.MICHEL 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # TITRE VALIDATION DE LA LOI ENDO_SCALAIRE MODELISATION GRAD_VARI
 # ssnp146a.para = tps_job 70 mem_job 32Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -200,31 +200,31 @@ EVOL1 = STAT_NON_LINE(
 
 EVOL0 = CALC_ELEM(reuse    = EVOL0,
                  RESULTAT = EVOL0,
-                 OPTION   = 'VARI_ELNO_ELGA',)
+                 OPTION   = 'VARI_ELNO',)
 
 EVOL0 = CALC_NO(reuse    = EVOL0,
                RESULTAT = EVOL0,
-               OPTION   = 'VARI_NOEU_ELGA',)
+               OPTION   = 'VARI_NOEU',)
 
 EVOL1 = CALC_ELEM(reuse    = EVOL1,
                  RESULTAT = EVOL1,
-                 OPTION   = 'VARI_ELNO_ELGA',)
+                 OPTION   = 'VARI_ELNO',)
 
 EVOL1 = CALC_NO(reuse    = EVOL1,
                RESULTAT = EVOL1,
-               OPTION   = 'VARI_NOEU_ELGA',)
+               OPTION   = 'VARI_NOEU',)
 
 # -----------------------------------------------------
 #     EXTRACTION SUR LA FACE DROITE DU QUADGRANGLE
 # -----------------------------------------------------
 
 RESU0 = MACR_LIGN_COUPE(RESULTAT   = EVOL0,
-                       NOM_CHAM   = 'VARI_NOEU_ELGA',
+                       NOM_CHAM   = 'VARI_NOEU',
                        LIGN_COUPE = _F(TYPE = 'GROUP_NO',
                                        GROUP_NO = 'DRO',),)
                                        
 RESU1 = MACR_LIGN_COUPE(RESULTAT   = EVOL1,
-                       NOM_CHAM   = 'VARI_NOEU_ELGA',
+                       NOM_CHAM   = 'VARI_NOEU',
                        LIGN_COUPE = _F(TYPE = 'GROUP_NO',
                                        GROUP_NO = 'DRO',),)
 

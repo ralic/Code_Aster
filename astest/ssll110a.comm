@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # TITRE 3 BARRES EN U SOUMISES A LA PESANTEUR
 # ssll110a.para = tps_job 60 mem_job 300Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -70,10 +70,10 @@ STATIQU1=MECA_STATIQUE(CHAM_MATER=CH_MATER,
 
 STATIQU1=CALC_ELEM(reuse =STATIQU1,
                    RESULTAT=STATIQU1,
-                   OPTION=('EFGE_ELNO_DEPL','EPSI_ELNO_DEPL'),
+                   OPTION=('EFGE_ELNO','EPSI_ELNO'),
                    );
 
-TEST_RESU(RESU=_F(NOM_CHAM='EFGE_ELNO_DEPL',
+TEST_RESU(RESU=_F(NOM_CHAM='EFGE_ELNO',
                   RESULTAT=STATIQU1,
                   MAILLE='M1',
                   REFERENCE='ANALYTIQUE',
@@ -82,7 +82,7 @@ TEST_RESU(RESU=_F(NOM_CHAM='EFGE_ELNO_DEPL',
                   NUME_ORDRE=1,
                   NOEUD='N1',),);
 
-TEST_RESU(RESU=_F(NOM_CHAM='EFGE_ELNO_DEPL',
+TEST_RESU(RESU=_F(NOM_CHAM='EFGE_ELNO',
                   RESULTAT=STATIQU1,
                   MAILLE='M3',
                   REFERENCE='ANALYTIQUE',
@@ -91,7 +91,7 @@ TEST_RESU(RESU=_F(NOM_CHAM='EFGE_ELNO_DEPL',
                   NUME_ORDRE=1,
                   NOEUD='N4',),);
 
-TEST_RESU(RESU=_F(NOM_CHAM='EPSI_ELNO_DEPL',
+TEST_RESU(RESU=_F(NOM_CHAM='EPSI_ELNO',
                   RESULTAT=STATIQU1,
                   MAILLE='M1',
                   REFERENCE='ANALYTIQUE',
@@ -100,7 +100,7 @@ TEST_RESU(RESU=_F(NOM_CHAM='EPSI_ELNO_DEPL',
                   NUME_ORDRE=1,
                   NOEUD='N1',),);
 
-TEST_RESU(RESU=_F(NOM_CHAM='EPSI_ELNO_DEPL',
+TEST_RESU(RESU=_F(NOM_CHAM='EPSI_ELNO',
                   RESULTAT=STATIQU1,
                   MAILLE='M3',
                   REFERENCE='ANALYTIQUE',

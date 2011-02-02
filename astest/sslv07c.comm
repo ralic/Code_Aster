@@ -1,8 +1,8 @@
-# MODIF  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # TITRE PARALLELIPIPEDE SOUS SON PROPRE POIDS (HEXA8 FIN)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -65,7 +65,7 @@ RESU=MECA_STATIQUE(MODELE=MO,
 
 RESU=CALC_ELEM( reuse= RESU ,RESULTAT= RESU ,
 
-                             OPTION=('SIGM_ELNO_DEPL',),
+                             OPTION=('SIGM_ELNO',),
                 )
 
 #---------------------------------------------------------------------
@@ -114,7 +114,7 @@ TEST_RESU(RESU=(
               NOEUD = 'N527',     NOM_CMP = 'DZ',            VALE = -1.291241E-6),
      # CONTRAINTES
 
-            _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='SIGM_ELNO_DEPL',
+            _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='SIGM_ELNO',
               CRITERE = 'RELATIF',   PRECISION = 1.1E-1,
               MAILLE = 'HEX336', NOEUD = 'N533',     NOM_CMP = 'SIZZ',   VALE = 2.29554E5)
                )

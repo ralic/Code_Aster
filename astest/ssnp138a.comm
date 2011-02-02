@@ -1,4 +1,4 @@
-# MODIF  DATE 31/01/2011   AUTEUR MACOCCO K.MACOCCO 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # TITRE FISSURE INCLINEE EN 2D AVEC X-FEM
 # ssnp138a.para = tps_job 360 mem_job 256Mo mem_aster 50 ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -319,14 +319,14 @@ RES_XFEM=POST_CHAM_XFEM(MODELE_VISU   = MOD_VISU,
 
 RES_XFEM=CALC_ELEM(reuse =RES_XFEM,
                    RESULTAT=RES_XFEM,
-                   OPTION=('EQUI_ELGA_SIGM','EQUI_ELNO_SIGM'));
+                   OPTION=('SIEQ_ELGA','SIEQ_ELNO'));
 
 RES_XFEM=CALC_NO(reuse =RES_XFEM,
                  RESULTAT=RES_XFEM,
-                 OPTION=('EQUI_NOEU_SIGM'));
+                 OPTION=('SIEQ_NOEU'));
 
 IMPR_RESU(FORMAT='GMSH',RESU=(_F(MAILLAGE=MA_XFEM,RESULTAT=RES_XFEM,NOM_CHAM='DEPL',NOM_CMP=('DX','DY')),
-                              _F(RESULTAT=RES_XFEM,NOM_CHAM='EQUI_NOEU_SIGM',NOM_CMP='VMIS'),
+                              _F(RESULTAT=RES_XFEM,NOM_CHAM='SIEQ_NOEU',NOM_CMP='VMIS'),
                                ),  );
 
 

@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # TITRE PLAQUE CIRCULAIRE POSEE     SOUS PRESSION DKT    50 N - 76 TRIA3
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -74,27 +74,27 @@ RESU=MECA_STATIQUE(     MODELE=MODEL,
                              )
 
 CALC_ELEM( reuse= RESU ,RESULTAT= RESU ,
-           OPTION=( 'EFGE_ELNO_DEPL','EPOT_ELEM', )
+           OPTION=( 'EFGE_ELNO','EPOT_ELEM', )
                              )
 
 #
 #--------------------------------------------------------
 #
-# TEST DE L'OPTION EQUI_ELNO_SIGM EN ELASTICITE
+# TEST DE L'OPTION SIEQ_ELNO EN ELASTICITE
 #
 CALC_ELEM( reuse=RESU, RESULTAT=RESU,
-           OPTION='SIGM_ELNO_DEPL',
+           OPTION='SIGM_ELNO',
            REPE_COQUE=_F( NIVE_COUCHE='INF',),)
 
 #
 CALC_ELEM( reuse=RESU, RESULTAT=RESU,
-           OPTION='EQUI_ELNO_SIGM',    )
+           OPTION='SIEQ_ELNO',    )
 
 #
 SVM=POST_RELEVE_T(    ACTION=_F(  NOEUD = ( 'O',  'A',  'B',  'C',  'D',  'E',  'F', ),
                                   INTITULE = 'SIGM_VM',
                                   RESULTAT = RESU,
-                                  NOM_CHAM = 'EQUI_ELNO_SIGM',
+                                  NOM_CHAM = 'SIEQ_ELNO',
                                   NOM_CMP = 'VMIS',
                                   OPERATION = 'EXTRACTION')      )
 
@@ -145,7 +145,7 @@ TEST_RESU(RESU=(
           )
 
 EFFORT=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='ELNO_SIEF_R',
-                   RESULTAT=RESU, NOM_CHAM='EFGE_ELNO_DEPL',
+                   RESULTAT=RESU, NOM_CHAM='EFGE_ELNO',
                          NUME_ORDRE=1                )
 
 #--------------------------------------------------------------------
@@ -454,27 +454,27 @@ STAT_NON_LINE( reuse=U3,
               )
 
 CALC_ELEM( reuse=U3, RESULTAT=U3,
-           OPTION=('SIEF_ELNO',  'VARI_ELNO_ELGA',),
+           OPTION=('SIEF_ELNO',  'VARI_ELNO',),
               )
 
 #--------------------------------------------------------
 #
-# TEST DE L'OPTION EQUI_ELNO_SIGM EN PLASTICITE
+# TEST DE L'OPTION SIEQ_ELNO EN PLASTICITE
 
 CALC_ELEM( reuse=U3,  RESULTAT=U3,
            NUME_ORDRE=4,
-           OPTION='SIGM_ELNO_COQU',
+           OPTION='SICO_ELNO',
            REPE_COQUE =_F( NUME_COUCHE=1,
                            NIVE_COUCHE='INF',),        )
 
 CALC_ELEM( reuse=U3, RESULTAT=U3,
            NUME_ORDRE=4,
-           OPTION='EQUI_ELNO_SIGM'  )
+           OPTION='SIEQ_ELNO'  )
 #
 SVMP=POST_RELEVE_T(    ACTION=_F(  NOEUD = ( 'O',  'A',  'B',  'C',  'D',  'E',  'F', ),
                                   INTITULE = 'SIG_VM_P',
                                   RESULTAT = U3,
-                                  NOM_CHAM = 'EQUI_ELNO_SIGM',
+                                  NOM_CHAM = 'SIEQ_ELNO',
                                   NOM_CMP = 'VMIS',
                                   OPERATION = 'EXTRACTION')      )
 #

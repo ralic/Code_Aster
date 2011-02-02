@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # TITRE THERMO_METALLO_MECANIQUE EDGAR
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -311,8 +311,8 @@ U=STAT_NON_LINE(  MODELE=MO,  CHAM_MATER=CM2,EXCIT=(
            )
 
 U=CALC_ELEM( reuse=U,
-                      RESULTAT=U,    OPTION=('EPSI_ELNO_DEPL',
-      'SIEF_ELNO', 'VARI_ELNO_ELGA',),
+                      RESULTAT=U,    OPTION=('EPSI_ELNO',
+      'SIEF_ELNO', 'VARI_ELNO',),
          )
 
 CHSIG120=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='ELNO_SIEF_R',
@@ -320,7 +320,7 @@ CHSIG120=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='ELNO_SIEF_R',
                        INST=120. )
 
 CHEPS120=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='ELNO_EPSI_R',
-                     RESULTAT=U, NOM_CHAM='EPSI_ELNO_DEPL',
+                     RESULTAT=U, NOM_CHAM='EPSI_ELNO',
                        INST=120. )
 
 #------------------------------------------------------------------

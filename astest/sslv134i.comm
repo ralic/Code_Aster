@@ -1,4 +1,4 @@
-# MODIF  DATE 25/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # TITRE CALCUL K_I EN X-FEM AXI-SYMMETRIQUE
 # sslv134i.para = tps_job 150 mem_job 512Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -123,7 +123,6 @@ IMPR_TABLE(TABLE=TAB,);
 
 SIF=POST_K1_K2_K3(MODELISATION='AXIS',
                     FISSURE=FISS,
-                    MAILLAGE=MA_XFEM,
                     MATER=MA,
                     RESULTAT=RESU,
                     ABSC_CURV_MAXI=0.3,
@@ -229,7 +228,6 @@ IMPR_TABLE(TABLE=TAB_ROT,);
 
 SIF_ROT=POST_K1_K2_K3(MODELISATION='AXIS',
                     FISSURE=FISS,
-                    MAILLAGE=MA_XFEM,
                     MATER=MA,
                     RESULTAT=RESU_ROT,
                     ABSC_CURV_MAXI=0.3,

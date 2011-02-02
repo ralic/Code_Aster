@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # TITRE MODELISATION DE LA DIFFUSION DE L AIR DISSOUS DANS L EAU
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -232,16 +232,16 @@ U0=STAT_NON_LINE(MODELE=MODELE,
                  );
                                           
 U0=CALC_ELEM( reuse=U0,
-              OPTION=('SIEF_ELNO','EQUI_ELNO_SIGM'),
+              OPTION=('SIEF_ELNO','SIEQ_ELNO'),
               RESULTAT=U0,
             )
 
 U0=CALC_NO(  reuse=U0,     
              RESULTAT=U0,
-             OPTION=( 'SIEF_NOEU','EQUI_NOEU_SIGM')
+             OPTION=( 'SIEF_NOEU','SIEQ_NOEU')
           )
 
-IMPR_RESU(RESU=_F(RESULTAT=U0,NOM_CHAM='EQUI_ELNO_SIGM'))
+IMPR_RESU(RESU=_F(RESULTAT=U0,NOM_CHAM='SIEQ_ELNO'))
 
 # X = 0.2
 TEST_RESU(RESU=_F(RESULTAT=U0,
@@ -297,7 +297,7 @@ TEST_RESU(RESU=_F(RESULTAT=U0,
 
 TEST_RESU(RESU=_F(RESULTAT=U0,
                   NUME_ORDRE=58,
-                  NOM_CHAM='EQUI_ELNO_SIGM',
+                  NOM_CHAM='SIEQ_ELNO',
                   NOM_CMP='VMIS',
                   MAILLE = 'M1',
                   NOEUD='N88',
@@ -309,7 +309,7 @@ TEST_RESU(RESU=_F(RESULTAT=U0,
 
 TEST_RESU(RESU=_F(RESULTAT=U0,
                   NUME_ORDRE=58,
-                  NOM_CHAM='EQUI_ELNO_SIGM',
+                  NOM_CHAM='SIEQ_ELNO',
                   NOM_CMP='TRESCA',
                   MAILLE = 'M1',
                   NOEUD='N88',
@@ -321,7 +321,7 @@ TEST_RESU(RESU=_F(RESULTAT=U0,
 
 TEST_RESU(RESU=_F(RESULTAT=U0,
                   NUME_ORDRE=58,
-                  NOM_CHAM='EQUI_NOEU_SIGM',
+                  NOM_CHAM='SIEQ_NOEU',
                   NOM_CMP='VMIS',
                   NOEUD='N88',
                   VALE=1.31915E+02,
@@ -332,7 +332,7 @@ TEST_RESU(RESU=_F(RESULTAT=U0,
 
 TEST_RESU(RESU=_F(RESULTAT=U0,
                   NUME_ORDRE=58,
-                  NOM_CHAM='EQUI_NOEU_SIGM',
+                  NOM_CHAM='SIEQ_NOEU',
                   NOM_CMP='TRESCA',
                   NOEUD='N88',
                   VALE=1.41003E+02,

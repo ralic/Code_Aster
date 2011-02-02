@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # TITRE VALIDATION DE PROJ_MESU_MODAL : CAS 3D, BASE (MODE_MECA)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -122,11 +122,11 @@ MODES=MODE_ITER_SIMULT(      MATR_A=RIGIASSE,
 
 #
 MODES=CALC_ELEM( reuse=MODES,    RESULTAT=MODES,
-                          OPTION='SIGM_ELNO_DEPL'                    )
+                          OPTION='SIGM_ELNO'                    )
 
 #
 MODES=CALC_NO( reuse=MODES,    RESULTAT=MODES,
-                        OPTION='SIGM_NOEU_DEPL'                      )
+                        OPTION='SIGM_NOEU'                      )
 
 #
 # DEFINITION DU MAILLAGE DE MESURE
@@ -285,7 +285,7 @@ REPONS=CALC_ELEM( RESULTAT=REPONSE,
                             MODELE=MODELE,
                         CHAM_MATER=MATER,
                          LIST_INST=LTEMPS,
-                            OPTION='EPSI_ELNO_DEPL'                  )
+                            OPTION='EPSI_ELNO'                  )
 
 #
 REPONS=CALC_NO( reuse=REPONS,   RESULTAT=REPONS,
@@ -297,17 +297,17 @@ REPON=CALC_ELEM( RESULTAT=REPONSE,
                           MODELE=MODELE,
                         CHAM_MATER=MATER,
                          LIST_INST=LTEMPS,
-                            OPTION='SIGM_ELNO_DEPL'                  )
+                            OPTION='SIGM_ELNO'                  )
 
 #
 REPON=CALC_NO( reuse=REPON,   RESULTAT=REPON,
                       LIST_INST=LTEMPS,
-                         OPTION='SIGM_NOEU_DEPL'                     )
+                         OPTION='SIGM_NOEU'                     )
 
 SIXX4=POST_RELEVE_T(ACTION=_F(INTITULE='SIXX4',
                       GROUP_NO=('NRES4'),
                       RESULTAT=REPON,
-                      NOM_CHAM='SIGM_NOEU_DEPL',
+                      NOM_CHAM='SIGM_NOEU',
                       TOUT_ORDRE='OUI',
                       NOM_CMP='SIXX',
                       OPERATION='EXTRACTION',
@@ -476,32 +476,32 @@ TEST_RESU(RESU=(  _F( RESULTAT = REPONSE,      GROUP_NO = 'NRES2',
                NUME_ORDRE = 250,              VALE = 1.68078E-04),
 #
          _F( RESULTAT = REPON,          GROUP_NO = 'NRES2',
-               NOM_CHAM = 'SIGM_NOEU_DEPL', NOM_CMP = 'SIXX',
+               NOM_CHAM = 'SIGM_NOEU', NOM_CMP = 'SIXX',
                CRITERE = 'RELATIF',        PRECISION = 1.E-2,
                NUME_ORDRE = 90,               VALE = 5.01195E+07),
 #
          _F( RESULTAT = REPON,          GROUP_NO = 'NRES2',
-               NOM_CHAM = 'SIGM_NOEU_DEPL', NOM_CMP = 'SIXX',
+               NOM_CHAM = 'SIGM_NOEU', NOM_CMP = 'SIXX',
                CRITERE = 'RELATIF',        PRECISION = 1.E-2,
                NUME_ORDRE = 170,              VALE = 7.71733E+07),
 #
          _F( RESULTAT = REPON,          GROUP_NO = 'NRES2',
-               NOM_CHAM = 'SIGM_NOEU_DEPL', NOM_CMP = 'SIXX',
+               NOM_CHAM = 'SIGM_NOEU', NOM_CMP = 'SIXX',
                CRITERE = 'RELATIF',        PRECISION = 1.E-2,
                NUME_ORDRE = 250,              VALE = 1.38989E+07),
 #
          _F( RESULTAT = REPON,          GROUP_NO = 'NRES4',
-               NOM_CHAM = 'SIGM_NOEU_DEPL', NOM_CMP = 'SIXX',
+               NOM_CHAM = 'SIGM_NOEU', NOM_CMP = 'SIXX',
                CRITERE = 'RELATIF',        PRECISION = 1.E-2,
                NUME_ORDRE = 90,               VALE = 4.64966E+07),
 #
          _F( RESULTAT = REPON,          GROUP_NO = 'NRES4',
-               NOM_CHAM = 'SIGM_NOEU_DEPL', NOM_CMP = 'SIXX',
+               NOM_CHAM = 'SIGM_NOEU', NOM_CMP = 'SIXX',
                CRITERE = 'RELATIF',        PRECISION = 1.E-2,
                NUME_ORDRE = 170,              VALE = 6.67109E+07),
 #
          _F( RESULTAT = REPON,          GROUP_NO = 'NRES4',
-               NOM_CHAM = 'SIGM_NOEU_DEPL', NOM_CMP = 'SIXX',
+               NOM_CHAM = 'SIGM_NOEU', NOM_CMP = 'SIXX',
                CRITERE = 'RELATIF',        PRECISION = 1.E-2,
                NUME_ORDRE = 250,              VALE = 4.29307E+07)))
 

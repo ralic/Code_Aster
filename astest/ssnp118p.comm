@@ -1,4 +1,4 @@
-# MODIF  DATE 31/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # TITRE TEST DE LA LOI JOINT_MECA_FROT SUR LES ELEMENTS DE JOINT QUAD4
 # ssnp118p.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -361,12 +361,12 @@ U_2=STAT_NON_LINE(
 # CALCUL DE L'OUVERTURE TANGENTIEL DU JOINT V8=DELTA_TANG A PARTIR DE CES VALEURS AUX POINTS GAUSSE
 U_2=CALC_ELEM(reuse =U_2,
               RESULTAT=U_2,
-              OPTION='VARI_ELNO_ELGA',
+              OPTION='VARI_ELNO',
               );
 # CALCUL DE L'OUVERTURE TANGENTIEL DU JOINT AUX NOEUDS
 U_2=CALC_NO(reuse =U_2,
             RESULTAT=U_2,
-            OPTION='VARI_NOEU_ELGA',
+            OPTION='VARI_NOEU',
             );
 # CALCUL DE LA FORCE NODALE
 U_2=CALC_NO(reuse =U_2,
@@ -412,7 +412,7 @@ TDEPLT=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
 TDELTA_T=POST_RELEVE_T(ACTION=_F(OPERATION='MOYENNE',
                               INTITULE='DELTA_T',
                               RESULTAT=U_2,
-                              NOM_CHAM='VARI_NOEU_ELGA',
+                              NOM_CHAM='VARI_NOEU',
                               TOUT_ORDRE='OUI',
                               GROUP_NO='GAUCHE',
                               NOM_CMP='V8',),);

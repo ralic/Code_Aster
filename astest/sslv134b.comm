@@ -1,4 +1,4 @@
-# MODIF  DATE 31/01/2011   AUTEUR MACOCCO K.MACOCCO 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # TITRE CALCUL 3D DE G FISSURE CIRCULAIRE EN MILIEU INFINI
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -71,17 +71,17 @@ CHAMDEPL=MECA_STATIQUE(MODELE=MO,
                               _F(CHARGE=SYMETR2,),),);
 
 CHAMDEPL=CALC_ELEM( reuse=CHAMDEPL,
-                           OPTION='SIGM_ELNO_DEPL',
+                           OPTION='SIGM_ELNO',
                          RESULTAT=CHAMDEPL )
 
 CHAMDEPL=CALC_NO( reuse=CHAMDEPL,
-                           OPTION='SIGM_NOEU_DEPL',
+                           OPTION='SIGM_NOEU',
                          RESULTAT=CHAMDEPL )
 
 
 
 TB2=MACR_LIGN_COUPE( RESULTAT= CHAMDEPL,
-                     NOM_CHAM= 'SIGM_NOEU_DEPL',
+                     NOM_CHAM= 'SIGM_NOEU',
                      LIGN_COUPE = _F( TYPE='ARC',
                                       NB_POINTS= 16,
                                       CENTRE= (0. , 2., 0.), #N1710
@@ -115,7 +115,7 @@ TEST_TABLE(  TABLE=TB2,
              PRECISION=0.00001)
 
 TB2L=MACR_LIGN_COUPE( RESULTAT= CHAMDEPL,
-                     NOM_CHAM= 'SIGM_NOEU_DEPL',
+                     NOM_CHAM= 'SIGM_NOEU',
                      LIGN_COUPE = _F( TYPE='ARC',
                                       NB_POINTS= 16,
                                       CENTRE= (0. , 2., 0.), #N1710

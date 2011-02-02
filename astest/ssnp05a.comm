@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # RESPONSABLE F6BHHBO P.DEBONNIERES
 # TITRE ESSAI DE TRACTION-CISAILLEMENT (VISCOELASTICITE CYRANO3)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -211,11 +211,11 @@ U=STAT_NON_LINE(MODELE=MO,
 
 U=CALC_ELEM(reuse =U,
             RESULTAT=U,
-            OPTION=('SIEF_ELNO','VARI_ELNO_ELGA',),);
+            OPTION=('SIEF_ELNO','VARI_ELNO',),);
 
 U=CALC_ELEM(reuse =U,
             RESULTAT=U,
-            OPTION=('EPSI_ELNO_DEPL','EPSP_ELNO',),);
+            OPTION=('EPSI_ELNO','EPSP_ELNO',),);
 
 TEST_RESU(RESU=(_F(RESULTAT=U,
                    NUME_ORDRE=20,
@@ -410,11 +410,11 @@ U2=STAT_NON_LINE(MODELE=MO,
 
 U2=CALC_ELEM(reuse =U2,
              RESULTAT=U2,
-             OPTION=('SIEF_ELNO','VARI_ELNO_ELGA',),);
+             OPTION=('SIEF_ELNO','VARI_ELNO',),);
 
 U2=CALC_ELEM(reuse =U2,
              RESULTAT=U2,
-             OPTION=('EPSI_ELNO_DEPL','EPSP_ELNO',),);
+             OPTION=('EPSI_ELNO','EPSP_ELNO',),);
 
 TEST_RESU(RESU=(_F(RESULTAT=U2,
                    INST=16.5,
@@ -434,7 +434,7 @@ TEST_RESU(RESU=(_F(RESULTAT=U2,
                    REFERENCE='AUTRE_ASTER',),
                 _F(RESULTAT=U2,
                    INST=16.5,
-                   NOM_CHAM='EPSI_ELNO_DEPL',
+                   NOM_CHAM='EPSI_ELNO',
                    NOM_CMP='EPXY',
                    MAILLE='M1',
                    NOEUD='N3',

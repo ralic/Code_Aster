@@ -1,4 +1,4 @@
-# MODIF  DATE 25/01/2011   AUTEUR MACOCCO K.MACOCCO 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # TITRE PROPAGATION MIXTE D'UNE FISSURE 3D AVEC X-FEM ET RAFFINEMENT ADAPTATIF
 # sslv317a.para = tps_job 180 mem_job 512Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -385,7 +385,7 @@ for i_propa in xrange(pas_debut,nb_pas) :
    # Contraintes equivalentes
    RES_XFEM=CALC_ELEM(reuse =RES_XFEM,
                       RESULTAT=RES_XFEM,
-                      OPTION=('EQUI_ELGA_SIGM', 'EQUI_ELNO_SIGM'))
+                      OPTION=('SIEQ_ELGA', 'SIEQ_ELNO'))
 
    DEFI_FICHIER(ACTION='ASSOCIER',UNITE=100+i_propa,FICHIER='./REPE_OUT/resu_iter_'+str(i_propa)+'.med')
 

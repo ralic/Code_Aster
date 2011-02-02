@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # TITRE TRACTION BIAXIALE EN 3D - COMPORTEMENT BETON_DOUBLE_DP
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -228,12 +228,12 @@ SOLNL=STAT_NON_LINE(
 
 SOLNL=CALC_ELEM( reuse=SOLNL,
                             OPTION=(
-                  'SIEF_ELNO',  'VARI_ELNO_ELGA',),
+                  'SIEF_ELNO',  'VARI_ELNO',),
                           RESULTAT=SOLNL,
               )
 
 SOLNL=CALC_ELEM(     reuse=SOLNL,          
-                                   OPTION='EPSI_ELNO_DEPL',
+                                   OPTION='EPSI_ELNO',
                                  RESULTAT=SOLNL )
 
 TEST_RESU(RESU=(
@@ -245,11 +245,11 @@ TEST_RESU(RESU=(
          NOM_CMP = 'SIZZ',  MAILLE = 'MA1',              NOEUD = 'N1',
          PRECISION = 5.E-3,  REFERENCE = 'ANALYTIQUE',
          VALE = 2.4215600071372),
-  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'EPSI_ELNO_DEPL', NUME_ORDRE = 10,
+  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'EPSI_ELNO', NUME_ORDRE = 10,
          NOM_CMP = 'EPYY',  MAILLE = 'MA1',              NOEUD = 'N1',
          PRECISION = 5.E-3,  REFERENCE = 'ANALYTIQUE',
          VALE = 8.2632922444453E-04),
-  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'VARI_ELNO_ELGA', NUME_ORDRE = 10,
+  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'VARI_ELNO', NUME_ORDRE = 10,
          NOM_CMP = 'V2',    MAILLE = 'MA1',              NOEUD = 'N1',
          PRECISION = 5.E-3,  REFERENCE = 'ANALYTIQUE',
          VALE = 1.0503909336682E-02))
@@ -264,11 +264,11 @@ TEST_RESU(RESU=(
          NOM_CMP = 'SIZZ',  MAILLE = 'MA1',              NOEUD = 'N1',
          PRECISION = 5.E-3,  REFERENCE = 'ANALYTIQUE',
          VALE = 1.3893554155076),
-  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'EPSI_ELNO_DEPL', NUME_ORDRE = 20,
+  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'EPSI_ELNO', NUME_ORDRE = 20,
          NOM_CMP = 'EPYY',  MAILLE = 'MA1',              NOEUD = 'N1',
          PRECISION = 5.E-3,  REFERENCE = 'ANALYTIQUE',
          VALE = 1.6976133527795E-03),
-  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'VARI_ELNO_ELGA', NUME_ORDRE = 20,
+  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'VARI_ELNO', NUME_ORDRE = 20,
          NOM_CMP = 'V2',    MAILLE = 'MA1',              NOEUD = 'N1',
          PRECISION = 5.E-3,  REFERENCE = 'ANALYTIQUE',
          VALE = 2.1104814690295E-02))
@@ -283,11 +283,11 @@ TEST_RESU(RESU=(
          NOM_CMP = 'SIZZ',  MAILLE = 'MA1',              NOEUD = 'N1',
          PRECISION = 5.E-3,  REFERENCE = 'ANALYTIQUE',
          VALE = 0.35589090916157),
-  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'EPSI_ELNO_DEPL', NUME_ORDRE = 30,
+  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'EPSI_ELNO', NUME_ORDRE = 30,
          NOM_CMP = 'EPYY',  MAILLE = 'MA1',              NOEUD = 'N1',
          PRECISION = 5.E-3,  REFERENCE = 'ANALYTIQUE',
          VALE = 2.5689508512255E-03),
-  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'VARI_ELNO_ELGA', NUME_ORDRE = 30,
+  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'VARI_ELNO', NUME_ORDRE = 30,
          NOM_CMP = 'V2',    MAILLE = 'MA1',              NOEUD = 'N1',
          PRECISION = 5.E-3,  REFERENCE = 'ANALYTIQUE',
          VALE = 3.1705738948203E-02))
@@ -304,17 +304,17 @@ TEST_RESU(RESU=(
          PRECISION = 5.E-3,  REFERENCE = 'NON_REGRESSION',  
          VERSION = '5.4.12',
          VALE = -4.5192025041116E+01),
-  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'EPSI_ELNO_DEPL', NUME_ORDRE = 40,
+  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'EPSI_ELNO', NUME_ORDRE = 40,
          NOM_CMP = 'EPYY',  MAILLE = 'MA1',              NOEUD = 'N1',
          PRECISION = 5.E-3,  REFERENCE = 'NON_REGRESSION',  
          VERSION = '5.4.12',
          VALE = 4.4466314069855E-02),
-  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'VARI_ELNO_ELGA', NUME_ORDRE = 40,
+  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'VARI_ELNO', NUME_ORDRE = 40,
          NOM_CMP = 'V1',    MAILLE = 'MA1',              NOEUD = 'N1',
          PRECISION = 5.E-3,  REFERENCE = 'NON_REGRESSION',  
          VERSION = '5.4.12',
          VALE = 3.2808425480716E-02),
-  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'VARI_ELNO_ELGA', NUME_ORDRE = 40,
+  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'VARI_ELNO', NUME_ORDRE = 40,
          NOM_CMP = 'V2',    MAILLE = 'MA1',              NOEUD = 'N1',
          PRECISION = 5.E-3,  REFERENCE = 'ANALYTIQUE',
          VALE = 3.1705738948203E-02))

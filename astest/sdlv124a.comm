@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # TITRE PAVE SOUS PRESSION SINUS COMPARAISON ENTRE TRANSITOIRE ET HARMONIQUE
 # sdlv124a.para = tps_job 660 mem_job 1000Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -173,8 +173,8 @@ DYNATRAN=CALC_ELEM(reuse =DYNATRAN,
                OPTION=(
                         'SIEF_ELGA',
                         'SIEF_ELNO',
-                        'SIGM_ELNO_DEPL',
-                         'EPSI_ELNO_DEPL',
+                        'SIGM_ELNO',
+                         'EPSI_ELNO',
                          'EPSI_ELGA',
                          'EPOT_ELEM',
                          'ECIN_ELEM',
@@ -233,8 +233,8 @@ DYNHASS=CALC_ELEM(reuse =DYNHASS,
                OPTION=(
                         'SIEF_ELGA',
                         'SIEF_ELNO',
-                        'SIGM_ELNO_DEPL',
-                         'EPSI_ELNO_DEPL',
+                        'SIGM_ELNO',
+                         'EPSI_ELNO',
                          'EPSI_ELGA',
                          'EPOT_ELEM',
                          'ECIN_ELEM',
@@ -293,8 +293,8 @@ if plus:
                OPTION=(
                         'SIEF_ELGA',
                         'SIEF_ELNO',
-                        'SIGM_ELNO_DEPL',
-                         'EPSI_ELNO_DEPL',
+                        'SIGM_ELNO',
+                         'EPSI_ELNO',
                          'EPSI_ELGA',
                          'EPOT_ELEM',
                          'ECIN_ELEM',
@@ -321,8 +321,8 @@ DYNHPHY=CALC_ELEM(reuse =DYNHPHY,
                OPTION=(
                         'SIEF_ELGA',
                         'SIEF_ELNO',
-                        'SIGM_ELNO_DEPL',
-                         'EPSI_ELNO_DEPL',
+                        'SIGM_ELNO',
+                         'EPSI_ELNO',
                          'EPSI_ELGA',
                          'EPOT_ELEM',
                          'ECIN_ELEM',
@@ -509,7 +509,7 @@ EPT1=RECU_FONCTION (RESULTAT = DYNATRAN,
                     NOM_CMP = 'EPXX',
                     MAILLE = 'M1145',
                     NOEUD='N627',
-                    NOM_CHAM = 'EPSI_ELNO_DEPL',
+                    NOM_CHAM = 'EPSI_ELNO',
                     TOUT_ORDRE = 'OUI',
                     );
                       
@@ -517,7 +517,7 @@ EPH1=RECU_FONCTION (RESULTAT = DYNHASS,
                     NOM_CMP = 'EPXX',
                     MAILLE = 'M1145',
                     NOEUD='N627',
-                    NOM_CHAM = 'EPSI_ELNO_DEPL',
+                    NOM_CHAM = 'EPSI_ELNO',
                     TOUT_ORDRE = 'OUI');
                       
 # CALCUL DE LA VALEUR MAX SUR N PERIODE

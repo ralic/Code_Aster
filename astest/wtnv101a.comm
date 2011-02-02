@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # ======================================================================
 # TITRE ETUDE  : ESSAI TRIAXIAL NON DRAINE AVEC LE MODELE DE LAIGLE
 # wtnv101a.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
@@ -196,7 +196,7 @@ U1=STAT_NON_LINE(
 
 U1=CALC_ELEM( reuse=U1,
                             OPTION=(
-                  'SIEF_ELNO',  'VARI_ELNO_ELGA',),
+                  'SIEF_ELNO',  'VARI_ELNO',),
                           RESULTAT=U1,
               )
 
@@ -255,13 +255,13 @@ U2=STAT_NON_LINE(
               )
 
 U2=CALC_ELEM( reuse=U2,
-              OPTION=('SIEF_ELNO','EQUI_ELNO_SIGM'),
+              OPTION=('SIEF_ELNO','SIEQ_ELNO'),
               RESULTAT=U2,
             )
 
 U2=CALC_NO(  reuse=U2,
              RESULTAT=U2,
-             OPTION=( 'SIEF_NOEU','EQUI_NOEU_SIGM')
+             OPTION=( 'SIEF_NOEU','SIEQ_NOEU')
           )
 
 #
@@ -433,7 +433,7 @@ TEST_RESU(RESU=(
                  _F(  RESULTAT = U2,
                        MAILLE = 'MA1',
                        NOEUD = 'NO8',
-                       NOM_CHAM = 'EQUI_ELNO_SIGM',
+                       NOM_CHAM = 'SIEQ_ELNO',
                        NOM_CMP = 'VMIS',
                        INST = 1.02,
                        PRECISION = 1.E-5,
@@ -444,7 +444,7 @@ TEST_RESU(RESU=(
                  _F(  RESULTAT = U2,
                        MAILLE = 'MA1',
                        NOEUD = 'NO8',
-                       NOM_CHAM = 'EQUI_ELNO_SIGM',
+                       NOM_CHAM = 'SIEQ_ELNO',
                        NOM_CMP = 'TRESCA',
                        INST = 1.04,
                        PRECISION = 1.E-5,
@@ -455,7 +455,7 @@ TEST_RESU(RESU=(
                  _F(  RESULTAT = U2,
                        MAILLE = 'MA1',
                        NOEUD = 'NO8',
-                       NOM_CHAM = 'EQUI_ELNO_SIGM',
+                       NOM_CHAM = 'SIEQ_ELNO',
                        NOM_CMP = 'PRIN_1',
                        INST = 1.20,
                        PRECISION = 1.E-5,
@@ -466,7 +466,7 @@ TEST_RESU(RESU=(
                  _F(  RESULTAT = U2,
                        MAILLE = 'MA1',
                        NOEUD = 'NO8',
-                       NOM_CHAM = 'EQUI_ELNO_SIGM',
+                       NOM_CHAM = 'SIEQ_ELNO',
                        NOM_CMP = 'PRIN_2',
                        INST = 1.5,
                        PRECISION = 1.E-5,
@@ -477,7 +477,7 @@ TEST_RESU(RESU=(
                  _F(  RESULTAT = U2,
                        MAILLE = 'MA1',
                        NOEUD = 'NO8',
-                       NOM_CHAM = 'EQUI_ELNO_SIGM',
+                       NOM_CHAM = 'SIEQ_ELNO',
                        NOM_CMP = 'PRIN_3',
                        INST = 2.0,
                        PRECISION = 1.E-5,
@@ -488,7 +488,7 @@ TEST_RESU(RESU=(
                  _F(  RESULTAT = U2,
                        MAILLE = 'MA1',
                        NOEUD = 'NO8',
-                       NOM_CHAM = 'EQUI_ELNO_SIGM',
+                       NOM_CHAM = 'SIEQ_ELNO',
                        NOM_CMP = 'VMIS_SG',
                        INST = 2.0,
                        PRECISION = 1.E-5,
@@ -499,7 +499,7 @@ TEST_RESU(RESU=(
 
                  _F(  RESULTAT = U2,
                        NOEUD = 'NO8',
-                       NOM_CHAM = 'EQUI_NOEU_SIGM',
+                       NOM_CHAM = 'SIEQ_NOEU',
                        NOM_CMP = 'VMIS',
                        INST = 1.02,
                        PRECISION = 1.E-5,
@@ -509,7 +509,7 @@ TEST_RESU(RESU=(
                      ),
                  _F(  RESULTAT = U2,
                        NOEUD = 'NO8',
-                       NOM_CHAM = 'EQUI_NOEU_SIGM',
+                       NOM_CHAM = 'SIEQ_NOEU',
                        NOM_CMP = 'TRESCA',
                        INST = 1.04,
                        PRECISION = 1.E-5,
@@ -519,7 +519,7 @@ TEST_RESU(RESU=(
                      ),
                  _F(  RESULTAT = U2,
                        NOEUD = 'NO8',
-                       NOM_CHAM = 'EQUI_NOEU_SIGM',
+                       NOM_CHAM = 'SIEQ_NOEU',
                        NOM_CMP = 'PRIN_1',
                        INST = 1.20,
                        PRECISION = 1.E-5,
@@ -529,7 +529,7 @@ TEST_RESU(RESU=(
                      ),
                  _F(  RESULTAT = U2,
                        NOEUD = 'NO8',
-                       NOM_CHAM = 'EQUI_NOEU_SIGM',
+                       NOM_CHAM = 'SIEQ_NOEU',
                        NOM_CMP = 'PRIN_2',
                        INST = 1.5,
                        PRECISION = 1.E-5,
@@ -539,7 +539,7 @@ TEST_RESU(RESU=(
                      ),
                  _F(  RESULTAT = U2,
                        NOEUD = 'NO8',
-                       NOM_CHAM = 'EQUI_NOEU_SIGM',
+                       NOM_CHAM = 'SIEQ_NOEU',
                        NOM_CMP = 'PRIN_3',
                        INST = 2.0,
                        PRECISION = 1.E-5,
@@ -549,7 +549,7 @@ TEST_RESU(RESU=(
                      ),
                  _F(  RESULTAT = U2,
                        NOEUD = 'NO8',
-                       NOM_CHAM = 'EQUI_NOEU_SIGM',
+                       NOM_CHAM = 'SIEQ_NOEU',
                        NOM_CMP = 'VMIS_SG',
                        INST = 2.0,
                        PRECISION = 1.E-5,

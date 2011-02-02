@@ -1,4 +1,4 @@
-#@ MODIF elements Messages  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+#@ MODIF elements Messages  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -237,16 +237,16 @@ Conseil :
 
 51 : _("""
   -> Le type de comportement %(k1)s n'est pas prévu pour le calcul de
-     SIGM_ELNO_DEPL. Les seuls comportements autorisés sont :
+     SIGM_ELNO. Les seuls comportements autorisés sont :
      ELAS, ELAS_COQUE, ou ELAS_ORTH
   -> Risque & Conseil :
      Pour les autres comportements, utiliser SIEF_ELNO (efforts)
-     ou SIGM_ELNO_COQU (contraintes en un point de l'épaisseur).
+     ou SICO_ELNO (contraintes en un point de l'épaisseur).
 """),
 
 52 : _("""
   -> Le type de comportement %(k1)s n'est pas prévu pour le calcul de
-     SIGM_ELNO_DEPL avec chargement thermique. Les seuls comportements autorisés sont :
+     SIGM_ELNO avec chargement thermique. Les seuls comportements autorisés sont :
      ELAS, ou ELAS_ORTH
 """),
 

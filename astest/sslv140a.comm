@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # TITRE CALCUL DE MODULES EFFECTIFS EN PYTHON
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -117,7 +117,7 @@ MESTX=MECA_STATIQUE(MODELE=MO,
                    EXCIT=_F(CHARGE=CHARGX,),);
 
 MESTX=CALC_ELEM(reuse =MESTX,
-               RESULTAT=MESTX,OPTION='EQUI_ELGA_SIGM');
+               RESULTAT=MESTX,OPTION='SIEQ_ELGA');
 
 
 
@@ -127,7 +127,7 @@ INT_SIXX=POST_ELEM(MODELE=MO,
                    INTEGRALE=(_F(NOM_CHAM='SIEF_ELGA',
                                 NOM_CMP=('SIXX'),
                                 TOUT='OUI'),
-                              _F(NOM_CHAM='EQUI_ELGA_SIGM',
+                              _F(NOM_CHAM='SIEQ_ELGA',
                                  NOM_CMP=('VMIS'),
                                  TOUT='OUI'),),)
 
@@ -152,7 +152,7 @@ CONTR2=CREA_CHAMP(TYPE_CHAM='ELGA_SIEF_R',
                   OPERATION='EXTR',
                   RESULTAT=MESTX,
                   INFO = 2,
-                  NOM_CHAM='EQUI_ELGA_SIGM',);
+                  NOM_CHAM='SIEQ_ELGA',);
                  
 
 INT_SIX2=POST_ELEM(MODELE=MO,
@@ -166,7 +166,7 @@ IMPR_TABLE(TABLE=INT_SIX2)
 INT_SIX3=POST_ELEM(MODELE=MO,
                    RESULTAT=MESTX,
                    NUME_ORDRE=1,
-                   INTEGRALE=_F(NOM_CHAM='EQUI_ELGA_SIGM',
+                   INTEGRALE=_F(NOM_CHAM='SIEQ_ELGA',
                                 NOM_CMP=('VMIS'),
                                 TOUT='OUI'),)
 IMPR_TABLE(TABLE=INT_SIX3)

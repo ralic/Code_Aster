@@ -5,7 +5,7 @@
       CHARACTER*24 OPTION
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+C MODIF PREPOST  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -75,10 +75,10 @@ C     CHAMP DE GRANDEUR "SIEF_R"
          TYPCHA = 'ELGA'
          OPTION = 'SIEF_ELGA'
          PARAM  = 'PCONTPR'
-      ELSE IF (NOCH.EQ.'EQUI_ELGA_SIGM') THEN
+      ELSE IF (NOCH.EQ.'SIEQ_ELGA') THEN
          NOMGD  = 'SIEF_R'
          TYPCHA = 'ELGA'
-         OPTION = 'EQUI_ELGA_SIGM'
+         OPTION = 'SIEQ_ELGA'
          PARAM  = 'PCONTEQ'
       ELSE IF (NOCH.EQ.'SIEF_ELNO') THEN
          NOMGD  = 'SIEF_R'
@@ -90,23 +90,23 @@ C     CHAMP DE GRANDEUR "SIEF_R"
          TYPCHA = 'ELNO'
          OPTION = 'SIEF_ELNO'
          PARAM  = 'PSIEFNOR'
-      ELSE IF (NOCH.EQ.'EQUI_ELNO_SIGM') THEN
+      ELSE IF (NOCH.EQ.'SIEQ_ELNO') THEN
          NOMGD  = 'SIEF_R'
          TYPCHA = 'ELNO'
-         OPTION = 'EQUI_ELNO_SIGM'
+         OPTION = 'SIEQ_ELNO'
       ELSE IF (NOCH.EQ.'SIEF_NOEU') THEN
          NOMGD  = 'SIEF_R'
          TYPCHA = 'NOEU'
       ELSE IF (NOCH.EQ.'SIEF_NOEU') THEN
          NOMGD  = 'SIEF_R'
          TYPCHA = 'NOEU'
-      ELSE IF (NOCH.EQ.'SIGM_NOEU_DEPL') THEN
+      ELSE IF (NOCH.EQ.'SIGM_NOEU') THEN
          NOMGD  = 'SIEF_R'
          TYPCHA = 'NOEU'
-      ELSE IF (NOCH.EQ.'EQUI_NOEU_SIGM') THEN
+      ELSE IF (NOCH.EQ.'SIEQ_NOEU') THEN
          NOMGD  = 'SIEF_R'
          TYPCHA = 'NOEU'
-         OPTION = 'EQUI_NOEU_SIGM'
+         OPTION = 'SIEQ_NOEU'
 C
 C     CHAMP DE GRANDEUR "EPSI_R"
       ELSE IF (NOCH.EQ.'EPSI_ELGA') THEN
@@ -119,35 +119,35 @@ C     CHAMP DE GRANDEUR "EPSI_R"
          TYPCHA = 'ELGA'
          OPTION = 'EPSI_ELGA'
          PARAM  = 'PDEFORR'
-      ELSE IF (NOCH.EQ.'EQUI_ELGA_EPME') THEN
+      ELSE IF (NOCH.EQ.'EPMQ_ELGA') THEN
          NOMGD  = 'EPSI_R'
          TYPCHA = 'ELGA'
-         OPTION = 'EQUI_ELGA_EPME'
+         OPTION = 'EPMQ_ELGA'
          PARAM  = 'PDEFOEQ'
-      ELSE IF (NOCH.EQ.'EQUI_ELGA_EPSI') THEN
+      ELSE IF (NOCH.EQ.'EPEQ_ELGA') THEN
          NOMGD  = 'EPSI_R'
          TYPCHA = 'ELGA'
-         OPTION = 'EQUI_ELGA_EPSI'
+         OPTION = 'EPEQ_ELGA'
          PARAM  = 'PDEFOEQ'
       ELSE IF (NOCH.EQ.'EPSG_ELGA') THEN
          NOMGD  = 'EPSI_R'
          TYPCHA = 'ELGA'
          OPTION = 'EPSG_ELGA'
          PARAM  = 'PDEFORR'
-      ELSE IF (NOCH.EQ.'EPSI_ELNO_DEPL') THEN
+      ELSE IF (NOCH.EQ.'EPSI_ELNO') THEN
          NOMGD  = 'EPSI_R'
          TYPCHA = 'ELNO'
-         OPTION = 'EPSI_ELNO_DEPL'
+         OPTION = 'EPSI_ELNO'
          PARAM  = 'PDEFORR'
-      ELSE IF (NOCH.EQ.'EPSI_ELNO_TUYO') THEN
+      ELSE IF (NOCH.EQ.'EPTU_ELNO') THEN
          NOMGD  = 'EPSI_R'
          TYPCHA = 'ELNO'
-         OPTION = 'EPSI_ELNO_TUYO'
+         OPTION = 'EPTU_ELNO'
          PARAM  = 'PDEFONO'
       ELSE IF (NOCH.EQ.'EPSA_ELNO') THEN
          NOMGD  = 'EPSI_R'
          TYPCHA = 'ELNO'
-         OPTION = 'EPSI_ELNO_DEPL'
+         OPTION = 'EPSI_ELNO'
          PARAM  = 'PDEFORR'
       ELSE IF (NOCH.EQ.'EPSP_ELNO') THEN
          NOMGD  = 'EPSI_R'
@@ -173,14 +173,14 @@ C     CHAMP DE GRANDEUR "VARI_R"
       ELSE IF (NOCH.EQ.'VARI_ELNO') THEN
          NOMGD  = 'VARI_R'
          TYPCHA = 'ELNO'
-         OPTION = 'VARI_ELNO_ELGA'
+         OPTION = 'VARI_ELNO'
          PARAM  = 'PVARINR'
-      ELSE IF (NOCH.EQ.'VARI_ELNO_ELGA') THEN
+      ELSE IF (NOCH.EQ.'VARI_ELNO') THEN
          NOMGD  = 'VARI_R'
          TYPCHA = 'ELNO'
-         OPTION = 'VARI_ELNO_ELGA'
+         OPTION = 'VARI_ELNO'
          PARAM  = 'PVARINR'
-      ELSE IF (NOCH.EQ.'VARI_NOEU_ELGA') THEN
+      ELSE IF (NOCH.EQ.'VARI_NOEU') THEN
          NOMGD  = 'VAR2_R'
          TYPCHA = 'NOEU'
       ELSE IF (NOCH.EQ.'HYDR_ELNO') THEN

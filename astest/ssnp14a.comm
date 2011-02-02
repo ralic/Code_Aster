@@ -1,4 +1,4 @@
-# MODIF  DATE 01/02/2011   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # TITRE ESSAI DE TRACTION-CISAILLEMENT (MISES ECROUISSAGE CINEMATIQUE)
 # ssnp14a.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -116,7 +116,7 @@ U=STAT_NON_LINE(MODELE=MO,
 
 U=CALC_ELEM(reuse =U,
             RESULTAT=U,
-            OPTION=('VARI_ELNO_ELGA','SIEF_ELNO','EPSI_ELNO_DEPL',),);
+            OPTION=('VARI_ELNO','SIEF_ELNO','EPSI_ELNO',),);
 
 U=CALC_ELEM(reuse =U,
             RESULTAT=U,
@@ -125,18 +125,18 @@ U=CALC_ELEM(reuse =U,
 U=CALC_NO(reuse =U,
           RESULTAT=U,
           INST=1.,
-          OPTION='VARI_NOEU_ELGA',);
+          OPTION='VARI_NOEU',);
 
 VARI=CREA_CHAMP(TYPE_CHAM='ELNO_VARI_R',
                 OPERATION='EXTR',
                 RESULTAT=U,
-                NOM_CHAM='VARI_ELNO_ELGA',
+                NOM_CHAM='VARI_ELNO',
                 INST=1.,);
 
 VARI_N=CREA_CHAMP(TYPE_CHAM='NOEU_VAR2_R',
                   OPERATION='EXTR',
                   RESULTAT=U,
-                  NOM_CHAM='VARI_NOEU_ELGA',
+                  NOM_CHAM='VARI_NOEU',
                   INST=1.,);
 
 TEST_RESU(CHAM_ELEM=_F(CHAM_GD=VARI,
@@ -180,35 +180,35 @@ TEST_RESU(CHAM_ELEM=_F(CHAM_GD=VARI,
                    VALE=93.1,),
                 _F(RESULTAT=U,
                    INST=1.0,
-                   NOM_CHAM='EPSI_ELNO_DEPL',
+                   NOM_CHAM='EPSI_ELNO',
                    NOM_CMP='EPXX',
                    MAILLE='CUBE',
                    NOEUD='NO2',
                    VALE=0.0148297,),
                 _F(RESULTAT=U,
                    INST=1.0,
-                   NOM_CHAM='EPSI_ELNO_DEPL',
+                   NOM_CHAM='EPSI_ELNO',
                    NOM_CMP='EPXY',
                    MAILLE='CUBE',
                    NOEUD='NO2',
                    VALE=0.0136014,),
                 _F(RESULTAT=U,
                    INST=1.0,
-                   NOM_CHAM='VARI_ELNO_ELGA',
+                   NOM_CHAM='VARI_ELNO',
                    NOM_CMP='V2',
                    MAILLE='CUBE',
                    NOEUD='NO2',
                    VALE=-9.132,),
                 _F(RESULTAT=U,
                    INST=1.0,
-                   NOM_CHAM='VARI_ELNO_ELGA',
+                   NOM_CHAM='VARI_ELNO',
                    NOM_CMP='V4',
                    MAILLE='CUBE',
                    NOEUD='NO2',
                    VALE=16.8688,),
                 _F(RESULTAT=U,
                    INST=1.0,
-                   NOM_CHAM='VARI_ELNO_ELGA',
+                   NOM_CHAM='VARI_ELNO',
                    NOM_CMP='V7',
                    MAILLE='CUBE',
                    NOEUD='NO2',
@@ -235,7 +235,7 @@ TEST_RESU(CHAM_ELEM=_F(CHAM_GD=VARI,
 TR1=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                             INTITULE='EXTR_EPSI',
                             RESULTAT=U,
-                            NOM_CHAM='EPSI_ELNO_DEPL',
+                            NOM_CHAM='EPSI_ELNO',
                             INST=1.,
                             NOEUD='NO2',
                             NOM_CMP=('EPXX','EPXY',),),);

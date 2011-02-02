@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # TITRE COUPLAGE FLUAGE/BETON_DOUBLE_DP - TRACTION UNIAXIALE EN D_PLAN
 # ssnp116b.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -401,7 +401,7 @@ COUPLA2=STAT_NON_LINE(
               )
 
 COUPLA2=CALC_ELEM(  reuse=COUPLA2,
-                    OPTION=( 'EPSI_ELNO_DEPL',
+                    OPTION=( 'EPSI_ELNO',
                              'SIEF_ELNO',
                              'EPFP_ELNO',
                              'EPSP_ELNO', ),

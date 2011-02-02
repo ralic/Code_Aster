@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # TITRE POUTRE ENCASTREE A UNE EXTREMITE ET CHARGEE PAR UNE TRACTION
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -108,7 +108,7 @@ REST=DYNA_NON_LINE(
 
 REST=CALC_ELEM( reuse=REST,
                             OPTION=(
-                  'SIEF_ELNO',  'VARI_ELNO_ELGA',),
+                  'SIEF_ELNO',  'VARI_ELNO',),
                           RESULTAT=REST,
               )
 
@@ -158,7 +158,7 @@ TEST_RESU(RESU=(_F( RESULTAT = REST,
                  PRECISION = 1.E-3),
            _F( RESULTAT = REST,
                  NUME_ORDRE = 21,
-                 NOM_CHAM = 'VARI_ELNO_ELGA',
+                 NOM_CHAM = 'VARI_ELNO',
                  NOEUD = 'C3',
                  MAILLE = 'SC2',
                  NOM_CMP = 'V6',
@@ -166,7 +166,7 @@ TEST_RESU(RESU=(_F( RESULTAT = REST,
                  PRECISION = 1.E-3),
            _F( RESULTAT = REST,
                  NUME_ORDRE = 21,
-                 NOM_CHAM = 'VARI_ELNO_ELGA',
+                 NOM_CHAM = 'VARI_ELNO',
                  NOEUD = 'C3',
                  MAILLE = 'SC2',
                  NOM_CMP = 'V7',

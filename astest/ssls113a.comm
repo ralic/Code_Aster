@@ -1,5 +1,5 @@
 
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # TITRE PLAQUE STRATIFIEE EN FLEXION - DKT
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -340,7 +340,7 @@ STA1=MECA_STATIQUE(MODELE=MO,
 STA1=CALC_ELEM(reuse =STA1,
                RESULTAT=STA1,
                TYPE_OPTION='SIGM_STRUCT',
-               OPTION=('SIEF_ELNO','EFGE_ELNO_DEPL',),
+               OPTION=('SIEF_ELNO','EFGE_ELNO',),
                );
 # ______________________________________________________________________
 
@@ -353,7 +353,7 @@ STA2=MECA_STATIQUE(MODELE=MO,
 STA2=CALC_ELEM(reuse =STA2,
                RESULTAT=STA2,
                TYPE_OPTION='SIGM_STRUCT',
-               OPTION=('SIEF_ELNO','EFGE_ELNO_DEPL',),
+               OPTION=('SIEF_ELNO','EFGE_ELNO',),
                );
 
 # ______________________________________________________________________
@@ -367,7 +367,7 @@ STA3=MECA_STATIQUE(MODELE=MO3,
 STA3=CALC_ELEM(reuse =STA3,
                RESULTAT=STA3,
                TYPE_OPTION='SIGM_STRUCT',
-               OPTION=('EFGE_ELNO_DEPL',),
+               OPTION=('EFGE_ELNO',),
                );
 
 
@@ -452,25 +452,25 @@ TEST_RESU(RESU=(_F(RESULTAT=STA1,NOM_CHAM='DEPL',NUME_ORDRE=1,REFERENCE='AUTRE_A
                       NOEUD='N10',
                       NOM_CMP='DRY',
                       VALE=-0.0507935,),
-                     _F(RESULTAT=STA1,NOM_CHAM='EFGE_ELNO_DEPL',NUME_ORDRE=1,REFERENCE='AUTRE_ASTER',
+                     _F(RESULTAT=STA1,NOM_CHAM='EFGE_ELNO',NUME_ORDRE=1,REFERENCE='AUTRE_ASTER',
                         MAILLE='M5',
                         NOEUD='N1',
                         NOM_CMP='MXX',
                         VALE=2.316277e-05,
                         PRECISION=0.01,),
-                     _F(RESULTAT=STA1,NOM_CHAM='EFGE_ELNO_DEPL',NUME_ORDRE=1,REFERENCE='AUTRE_ASTER',
+                     _F(RESULTAT=STA1,NOM_CHAM='EFGE_ELNO',NUME_ORDRE=1,REFERENCE='AUTRE_ASTER',
                         MAILLE='M5',
                         NOEUD='N1',
                         NOM_CMP='MYY',
                         VALE=-0.000248875,
                         PRECISION=0.01,),
-                     _F(RESULTAT=STA2,NOM_CHAM='EFGE_ELNO_DEPL',NUME_ORDRE=1,REFERENCE='AUTRE_ASTER',
+                     _F(RESULTAT=STA2,NOM_CHAM='EFGE_ELNO',NUME_ORDRE=1,REFERENCE='AUTRE_ASTER',
                         MAILLE='M5',
                         NOEUD='N1',
                         NOM_CMP='MXX',
                         VALE=2.316277e-05,
                         PRECISION=0.01,),
-                     _F(RESULTAT=STA2,NOM_CHAM='EFGE_ELNO_DEPL',NUME_ORDRE=1,REFERENCE='AUTRE_ASTER',
+                     _F(RESULTAT=STA2,NOM_CHAM='EFGE_ELNO',NUME_ORDRE=1,REFERENCE='AUTRE_ASTER',
                         MAILLE='M5',
                         NOEUD='N1',
                         NOM_CMP='MYY',

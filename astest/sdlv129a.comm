@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # TITRE FATIGUE VIBRATOIRE D'UNE AUBE DE VENTILATEUR
 # sdlv129a.para = tps_job 100 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -61,14 +61,14 @@ RES_STAT=MECA_STATIQUE(MODELE=MO,
                         );
 
 RES_STAT=CALC_ELEM( reuse=RES_STAT,
-                       OPTION=(  'SIGM_ELNO_DEPL',
-                                'EQUI_ELGA_SIGM', 'EQUI_ELNO_SIGM',  ),
+                       OPTION=(  'SIGM_ELNO',
+                                'SIEQ_ELGA', 'SIEQ_ELNO',  ),
                      RESULTAT=RES_STAT )
 
 
 TEST_RESU(RESU=_F(RESULTAT=RES_STAT,
                   NUME_ORDRE=1,
-                  NOM_CHAM='EQUI_ELNO_SIGM',
+                  NOM_CHAM='SIEQ_ELNO',
                   NOM_CMP='VMIS_SG',
                   MAILLE='M294',
                   NOEUD = 'N111',
@@ -78,7 +78,7 @@ TEST_RESU(RESU=_F(RESULTAT=RES_STAT,
 
 TEST_RESU(RESU=_F(RESULTAT=RES_STAT,
                   NUME_ORDRE=1,
-                  NOM_CHAM='EQUI_ELNO_SIGM',
+                  NOM_CHAM='SIEQ_ELNO',
                   NOM_CMP='VMIS',
                   MAILLE='M294',
                   NOEUD = 'N111',
@@ -106,13 +106,13 @@ MODE=MODE_ITER_SIMULT(    MATR_A=A,     MATR_B=B,
              VERI_MODE=_F( SEUIL=1E-05),)
 
 MODE=CALC_ELEM( reuse=MODE,
-                       OPTION=( 'SIGM_ELNO_DEPL', 'SIEF_ELGA', 
-                                'EQUI_ELGA_SIGM','EQUI_ELNO_SIGM',   ),
+                       OPTION=( 'SIGM_ELNO', 'SIEF_ELGA', 
+                                'SIEQ_ELGA','SIEQ_ELNO',   ),
                      RESULTAT=MODE )
 
 TEST_RESU(RESU=_F(RESULTAT=MODE,
                   NUME_MODE=1,
-                  NOM_CHAM='EQUI_ELNO_SIGM',
+                  NOM_CHAM='SIEQ_ELNO',
                   NOM_CMP='VMIS_SG',
                   MAILLE='M294',
                   NOEUD = 'N111',
@@ -122,7 +122,7 @@ TEST_RESU(RESU=_F(RESULTAT=MODE,
 
 TEST_RESU(RESU=_F(RESULTAT=MODE,
                   NUME_MODE=2,
-                  NOM_CHAM='EQUI_ELNO_SIGM',
+                  NOM_CHAM='SIEQ_ELNO',
                   NOM_CMP='VMIS_SG',
                   MAILLE='M294',
                   NOEUD = 'N111',
@@ -132,7 +132,7 @@ TEST_RESU(RESU=_F(RESULTAT=MODE,
                              
 TEST_RESU(RESU=_F(RESULTAT=MODE,
                   NUME_MODE=1,
-                  NOM_CHAM='EQUI_ELNO_SIGM',
+                  NOM_CHAM='SIEQ_ELNO',
                   NOM_CMP='VMIS',
                   MAILLE='M294',
                   NOEUD = 'N111',
@@ -142,7 +142,7 @@ TEST_RESU(RESU=_F(RESULTAT=MODE,
 
 TEST_RESU(RESU=_F(RESULTAT=MODE,
                   NUME_MODE=2,
-                  NOM_CHAM='EQUI_ELNO_SIGM',
+                  NOM_CHAM='SIEQ_ELNO',
                   NOM_CMP='VMIS',
                   MAILLE='M294',
                   NOEUD = 'N111',

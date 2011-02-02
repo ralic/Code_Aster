@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 #
 # TITRE    ESSAI TRIAXIAL NON DRAINE CYCLIQUE AVEC LA LOI
 # wtnv134a.para = tps_job 250 mem_job 391Mo ncpus 1 liste_test S
@@ -296,12 +296,12 @@ U1=STAT_NON_LINE(MODELE=MODELE,
 U1=CALC_ELEM(reuse      = U1,
 
 
-             OPTION     = ('SIEF_ELNO','EPSI_ELNO_DEPL','VARI_ELNO_ELGA'),
+             OPTION     = ('SIEF_ELNO','EPSI_ELNO','VARI_ELNO'),
              RESULTAT   = U1);
 
 U1=CALC_NO(reuse      = U1,
 
-           OPTION     = ('SIEF_NOEU','EPSI_NOEU','VARI_NOEU_ELGA'),
+           OPTION     = ('SIEF_NOEU','EPSI_NOEU','VARI_NOEU'),
            RESULTAT   = U1);
 
 
@@ -312,10 +312,10 @@ TAB_SIG=POST_RELEVE_T(ACTION=_F(INTITULE = 'SIEF_NOEU',
                                 INVARIANT = 'OUI',
                                 OPERATION= 'EXTRACTION'));
 
-TAB_VAR=POST_RELEVE_T(ACTION=_F(INTITULE = 'VARI_NOEU_ELGA',
+TAB_VAR=POST_RELEVE_T(ACTION=_F(INTITULE = 'VARI_NOEU',
                                 GROUP_NO = 'C',
                                 RESULTAT = U1,
-                                NOM_CHAM = 'VARI_NOEU_ELGA',
+                                NOM_CHAM = 'VARI_NOEU',
                                 NOM_CMP  = ('V1','V2','V3','V4','V5','V6',
                                             'V7','V8','V23'),
                                 OPERATION= 'EXTRACTION'));
@@ -627,12 +627,12 @@ U2=STAT_NON_LINE(MODELE=MODELE,
 U2=CALC_ELEM(reuse      = U2,
 
 
-             OPTION     = ('SIEF_ELNO','EPSI_ELNO_DEPL','VARI_ELNO_ELGA'),
+             OPTION     = ('SIEF_ELNO','EPSI_ELNO','VARI_ELNO'),
              RESULTAT   = U2);
 
 U2=CALC_NO(reuse      = U2,
 
-           OPTION     = ('SIEF_NOEU','EPSI_NOEU','VARI_NOEU_ELGA'),
+           OPTION     = ('SIEF_NOEU','EPSI_NOEU','VARI_NOEU'),
            RESULTAT   = U2);
 
 TAB_SIG2=POST_RELEVE_T(ACTION=_F(INTITULE = 'SIEF_NOEU',
@@ -661,10 +661,10 @@ TAB_SIG2=CALC_TABLE(reuse=TAB_SIG2,
                                FORMULE  =SIGMA_D,
                                NOM_PARA ='SIGMA_D',),),);
 
-TAB_VAR2=POST_RELEVE_T(ACTION=_F(INTITULE = 'VARI_NOEU_ELGA',
+TAB_VAR2=POST_RELEVE_T(ACTION=_F(INTITULE = 'VARI_NOEU',
                                  GROUP_NO = 'C',
                                  RESULTAT = U2,
-                                 NOM_CHAM = 'VARI_NOEU_ELGA',
+                                 NOM_CHAM = 'VARI_NOEU',
                                  NOM_CMP  = ('V1','V2','V3','V4','V5','V6',
                                             'V7','V8','V23'),
                                  OPERATION= 'EXTRACTION'));

@@ -1,4 +1,4 @@
-#@ MODIF macr_ascouf_calc_ops Macro  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+#@ MODIF macr_ascouf_calc_ops Macro  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -402,7 +402,7 @@ def macr_ascouf_calc_ops(self,TYPE_MAILLAGE,CL_BOL_P2_GV,MAILLAGE,MODELE,CHAM_MA
   nomres = CALC_ELEM( reuse      = nomres,
                       RESULTAT   = nomres ,
                       TOUT_ORDRE = 'OUI'  ,
-                      OPTION     = ('SIEF_ELNO','EQUI_ELNO_SIGM') ,
+                      OPTION     = ('SIEF_ELNO','SIEQ_ELNO') ,
                       INFO       = INFO   ,)
 #
 #     --- post-traitements ---

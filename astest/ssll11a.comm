@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # TITRE TREILLIS DE BARRES ARTICULEES SOUS CHARGE PONCTUELLE
 # ssll11a.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -141,20 +141,20 @@ RESU1=MECA_STATIQUE(  MODELE=MODELE,
                            CHAM_MATER=CHMAT,   CARA_ELEM=CAREL,
                            EXCIT=_F(  CHARGE = CHARGE)             )
 
-# SIGM_ELNO_DEPL PRODUIT MAINTENANT DES CONTRAINTES SIXX COMBINANT
+# SIGM_ELNO PRODUIT MAINTENANT DES CONTRAINTES SIXX COMBINANT
 # L'EFFORT NORMAL ET LA FLEXION : COMME IL N'Y A PAS DE ROTULES
 # LA FLEXION EST NON NEGLIGEABLE
 
 
 RESU1=CALC_ELEM(reuse=RESU1,
-                      OPTION=( 'SIPO_ELNO', 'SIGM_ELNO_DEPL', ),
+                      OPTION=( 'SIPO_ELNO', 'SIGM_ELNO', ),
                       RESULTAT=RESU1                             )
 
 RESU1=CALC_ELEM(reuse=RESU1,
-                      OPTION='SIGM_ELNO_CART',
+                      OPTION='SICA_ELNO',
                       RESULTAT=RESU1                             )
 
-RESU1=CALC_NO(reuse=RESU1,  OPTION='SIGM_NOEU_CART',
+RESU1=CALC_NO(reuse=RESU1,  OPTION='SICA_NOEU',
                     RESULTAT=RESU1                               )
 
 #---------------------------------------------------------------------
@@ -171,23 +171,23 @@ MAILLE = 'BD', NOEUD = 'D',    NOM_CMP = 'SN',    VALE = -2.08067E+08, REFERENCE
             )
 
 TEST_RESU(RESU=(
-     _F(  RESULTAT = RESU1,   NOM_CHAM = 'SIGM_ELNO_CART',  NUME_ORDRE = 1, MAILLE= 'AC',
+     _F(  RESULTAT = RESU1,   NOM_CHAM = 'SICA_ELNO',  NUME_ORDRE = 1, MAILLE= 'AC',
        NOEUD = 'A',    NOM_CMP = 'SIXX',  VALE = 4.90478E+07,  REFERENCE= 'NON_REGRESSION'),
-     _F(  RESULTAT = RESU1,   NOM_CHAM = 'SIGM_NOEU_CART',  NUME_ORDRE = 1,
+     _F(  RESULTAT = RESU1,   NOM_CHAM = 'SICA_NOEU',  NUME_ORDRE = 1,
        NOEUD = 'A',    NOM_CMP = 'SIXX',    VALE = 4.90478E+07, REFERENCE= 'ANALYTIQUE'),
-     _F(  RESULTAT = RESU1,   NOM_CHAM = 'SIGM_NOEU_CART',  NUME_ORDRE = 1,
+     _F(  RESULTAT = RESU1,   NOM_CHAM = 'SICA_NOEU',  NUME_ORDRE = 1,
        NOEUD = 'A',    NOM_CMP = 'SIYY',    VALE = 4.90478E+07, REFERENCE= 'ANALYTIQUE'),
-     _F(  RESULTAT = RESU1,   NOM_CHAM = 'SIGM_NOEU_CART',  NUME_ORDRE = 1,
+     _F(  RESULTAT = RESU1,   NOM_CHAM = 'SICA_NOEU',  NUME_ORDRE = 1,
        NOEUD = 'A',    NOM_CMP = 'SIXY',    VALE = 2.41620E+03, REFERENCE= 'ANALYTIQUE'),
-     _F(  RESULTAT = RESU1,   NOM_CHAM = 'SIGM_NOEU_CART',  NUME_ORDRE = 1,
+     _F(  RESULTAT = RESU1,   NOM_CHAM = 'SICA_NOEU',  NUME_ORDRE = 1,
        NOEUD = 'A',    NOM_CMP = 'SIXZ',    VALE = 2.41620E+03, REFERENCE= 'ANALYTIQUE'),
-     _F(  RESULTAT = RESU1,   NOM_CHAM = 'SIGM_NOEU_CART',  NUME_ORDRE = 1,
+     _F(  RESULTAT = RESU1,   NOM_CHAM = 'SICA_NOEU',  NUME_ORDRE = 1,
        NOEUD = 'B',    NOM_CMP = 'SIXX',    VALE = -6.34170E+07, REFERENCE= 'ANALYTIQUE'),
-     _F(  RESULTAT = RESU1,   NOM_CHAM = 'SIGM_NOEU_CART',  NUME_ORDRE = 1,
+     _F(  RESULTAT = RESU1,   NOM_CHAM = 'SICA_NOEU',  NUME_ORDRE = 1,
        NOEUD = 'B',    NOM_CMP = 'SIYY',    VALE = -9.03343E+07, REFERENCE= 'ANALYTIQUE'),
-     _F(  RESULTAT = RESU1,   NOM_CHAM = 'SIGM_NOEU_CART',  NUME_ORDRE = 1,
+     _F(  RESULTAT = RESU1,   NOM_CHAM = 'SICA_NOEU',  NUME_ORDRE = 1,
        NOEUD = 'B',    NOM_CMP = 'SIXY',    VALE = -9.86483E+03, REFERENCE= 'ANALYTIQUE'),
-     _F(  RESULTAT = RESU1,   NOM_CHAM = 'SIGM_NOEU_CART',  NUME_ORDRE = 1,
+     _F(  RESULTAT = RESU1,   NOM_CHAM = 'SICA_NOEU',  NUME_ORDRE = 1,
        NOEUD = 'B',    NOM_CMP = 'SIXZ',    VALE = 1.20101E+03, REFERENCE= 'ANALYTIQUE'))
             )
 
@@ -207,7 +207,7 @@ IMPR_TABLE( TABLE = T1 )  ;
 
 T2 = POST_RELEVE_T ( ACTION=_F( INTITULE = 'SIGM',
                                 OPERATION = 'EXTREMA',
-                                NOM_CHAM = 'SIGM_ELNO_DEPL',
+                                NOM_CHAM = 'SIGM_ELNO',
                                 TOUT_CMP = 'OUI',
                                 RESULTAT = RESU1       ), )  ;
 IMPR_TABLE( TABLE = T2 )  ;

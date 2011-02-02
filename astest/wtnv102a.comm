@@ -1,10 +1,10 @@
-# MODIF  DATE 10/05/2010   AUTEUR GRANET S.GRANET 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # ======================================================================
 # TITRE DESATURATION D UN MILIEU POREUX SANS AIR
 # wtnv102a.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -270,12 +270,12 @@ U0=STAT_NON_LINE(MODELE=MODELE,
                  );
 U0=CALC_ELEM(reuse =U0,
              TOUT_ORDRE='OUI',
-             OPTION=('VARI_ELNO_ELGA'),
+             OPTION=('VARI_ELNO'),
              RESULTAT=U0,);
 
 U0=CALC_NO(reuse =U0,
              TOUT_ORDRE='OUI',
-             OPTION=('VARI_NOEU_ELGA'),
+             OPTION=('VARI_NOEU'),
              RESULTAT=U0,);
 
 #################################################
@@ -284,14 +284,14 @@ U0=CALC_NO(reuse =U0,
 #                  GROUP_NO=('BO',),),);
 #
 #IMPR_RESU(RESU=_F(RESULTAT=U0,
-#                  NOM_CHAM='VARI_NOEU_ELGA',
+#                  NOM_CHAM='VARI_NOEU',
 #                  GROUP_NO=('BO',),),);
 #################################################
 
 TEST_RESU(RESU=(
                 _F(RESULTAT=U0,
                    NUME_ORDRE=1,
-                   NOM_CHAM='VARI_NOEU_ELGA',
+                   NOM_CHAM='VARI_NOEU',
                    NOM_CMP='V3',
                    NOEUD='N2',
                    VALE=5.68983E+04,
@@ -300,7 +300,7 @@ TEST_RESU(RESU=(
                    VERSION = '7.3.20', ),
                 _F(RESULTAT=U0,
                    NUME_ORDRE=1,
-                   NOM_CHAM='VARI_NOEU_ELGA',
+                   NOM_CHAM='VARI_NOEU',
                    NOM_CMP='V4',
                    NOEUD='N2',
                    VALE=5.00011E-01,

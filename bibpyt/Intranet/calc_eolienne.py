@@ -1,4 +1,4 @@
-#@ MODIF calc_eolienne Intranet  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+#@ MODIF calc_eolienne Intranet  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -1307,11 +1307,11 @@ def macr_calc_eolienne_ops(self, INFO, MONOPODE, EXEC_MAILLAGE, AFFE_MATERIAU, C
                         );
       RESU=CALC_ELEM( reuse =RESU,
                       RESULTAT=RESU,
-                      OPTION=('SIGM_ELNO_DEPL','EQUI_ELNO_SIGM',),)
+                      OPTION=('SIGM_ELNO','SIEQ_ELNO',),)
 
       RESU = CALC_NO( reuse =RESU,
                       RESULTAT=RESU,
-                      OPTION=('SIGM_NOEU_DEPL','EQUI_NOEU_SIGM',),);
+                      OPTION=('SIGM_NOEU','SIEQ_NOEU',),);
 
     if MODELISATION == '3D' :
       RESU=MECA_STATIQUE( MODELE=__MO[j],
@@ -1324,11 +1324,11 @@ def macr_calc_eolienne_ops(self, INFO, MONOPODE, EXEC_MAILLAGE, AFFE_MATERIAU, C
       RESU=CALC_ELEM( reuse =RESU,
                       RESULTAT=RESU,
                       REPE_COQUE=_F(NIVE_COUCHE='MOY',),
-                      OPTION=('SIGM_ELNO_DEPL','EQUI_ELNO_SIGM',));
+                      OPTION=('SIGM_ELNO','SIEQ_ELNO',));
 
       RESU = CALC_NO( reuse =RESU,
                       RESULTAT=RESU,
-                      OPTION=('SIGM_NOEU_DEPL','EQUI_NOEU_SIGM',),);
+                      OPTION=('SIGM_NOEU','SIEQ_NOEU',),);
 
 # 2.13 ==> Preparation du modele de reference si modelisation 3D calcul de la fatigue
 
@@ -1342,7 +1342,7 @@ def macr_calc_eolienne_ops(self, INFO, MONOPODE, EXEC_MAILLAGE, AFFE_MATERIAU, C
                                  AFFE     = motscles['AFFE_MATERIAU'],)
 
       RESPRO = PROJ_CHAMP( METHODE  = 'COLLOCATION',
-                           NOM_CHAM = 'SIGM_NOEU_DEPL',
+                           NOM_CHAM = 'SIGM_NOEU',
                            RESULTAT = RESU,
                            MODELE_1 = __MO[j],
                            MODELE_2 = MOREF,
@@ -1355,7 +1355,7 @@ def macr_calc_eolienne_ops(self, INFO, MONOPODE, EXEC_MAILLAGE, AFFE_MATERIAU, C
       SIG_PRO = CREA_CHAMP( TYPE_CHAM  = 'NOEU_SIEF_R',
                             OPERATION  = 'EXTR',
                             RESULTAT   =  RESPRO  ,
-                            NOM_CHAM   = 'SIGM_NOEU_DEPL',
+                            NOM_CHAM   = 'SIGM_NOEU',
                             NUME_ORDRE = 1,
                           )
 
@@ -1363,7 +1363,7 @@ def macr_calc_eolienne_ops(self, INFO, MONOPODE, EXEC_MAILLAGE, AFFE_MATERIAU, C
         RESREF = CREA_RESU(
                             OPERATION = 'AFFE',
                             TYPE_RESU = 'EVOL_ELAS',
-                            NOM_CHAM  = 'SIGM_NOEU_DEPL',
+                            NOM_CHAM  = 'SIGM_NOEU',
                             AFFE      = _F( CHAM_GD = SIG_PRO,
                                             INST = (inst), ),
                           )
@@ -1371,7 +1371,7 @@ def macr_calc_eolienne_ops(self, INFO, MONOPODE, EXEC_MAILLAGE, AFFE_MATERIAU, C
         RESREF = CREA_RESU( reuse = RESREF,
                             OPERATION = 'AFFE',
                             TYPE_RESU = 'EVOL_ELAS',
-                            NOM_CHAM  = 'SIGM_NOEU_DEPL',
+                            NOM_CHAM  = 'SIGM_NOEU',
                             AFFE      = _F( CHAM_GD = SIG_PRO,
                                             INST = (inst), ),
                           )
@@ -1418,10 +1418,10 @@ def macr_calc_eolienne_ops(self, INFO, MONOPODE, EXEC_MAILLAGE, AFFE_MATERIAU, C
           unitr = UNIT_4B
         if MODELISATION == '3D':
              motscles['IMPRESSION'].append(_F(MAILLAGE=MA[j],RESULTAT=RESU,
-                                             NOM_CHAM=('DEPL','SIGM_ELNO_DEPL','EQUI_ELNO_SIGM',),) )
+                                             NOM_CHAM=('DEPL','SIGM_ELNO','SIEQ_ELNO',),) )
         if MODELISATION == 'COQUE':
              motscles['IMPRESSION'].append(_F(MAILLAGE=MA2[j],RESULTAT=RESU,
-                                           NOM_CHAM=('DEPL','SIGM_ELNO_DEPL','EQUI_ELNO_SIGM',),) )
+                                           NOM_CHAM=('DEPL','SIGM_ELNO','SIEQ_ELNO',),) )
         if MODELISATION == 'POUTRE':
              motscles['IMPRESSION'].append(_F(MAILLAGE=MA[j],RESULTAT=RESU,
                                            NOM_CHAM=('DEPL',),) )

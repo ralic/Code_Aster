@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # TITRE TUBE FIN CIRCULAIRE SOUS PRESSION
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -105,7 +105,7 @@ RESU2=MECA_STATIQUE(        MODELE=MODAST,
 RESU2=CALC_ELEM( reuse=RESU2,
                          RESULTAT=RESU2,
                         LIST_INST=L_INST,
-                           OPTION='SIGM_ELNO_DEPL'
+                           OPTION='SIGM_ELNO'
                      )
 
 # TEST_RESU PAR RAPPORT A LA SOLUTION ANALYTIQUE
@@ -131,7 +131,7 @@ TEST_RESU(RESU=( _F(  RESULTAT = RESU2,
                    PRECISION = 0.04),
             _F(  RESULTAT = RESU2,
                    INST = 1.,
-                   NOM_CHAM = 'SIGM_ELNO_DEPL',
+                   NOM_CHAM = 'SIGM_ELNO',
                    MAILLE = 'M1',
                    NOEUD = 'N1',
                    NOM_CMP = 'SIYY',
@@ -153,14 +153,14 @@ RESU_NL=STAT_NON_LINE(        MODELE=MODAST,
 
 RESU_NL=CALC_ELEM( reuse=RESU_NL,
                             OPTION=(
-                  'SIEF_ELNO',  'VARI_ELNO_ELGA',),
+                  'SIEF_ELNO',  'VARI_ELNO',),
                           RESULTAT=RESU_NL,
               )
 
 RESU_NL=CALC_ELEM( reuse=RESU_NL,
                            RESULTAT=RESU_NL,
                                INST=1.,
-                             OPTION='SIGM_ELNO_COQU'
+                             OPTION='SICO_ELNO'
                      )
 
 # TEST_RESU PAR RAPPORT A LA SOLUTION ANALYTIQUE
@@ -185,7 +185,7 @@ TEST_RESU(RESU=( _F(  RESULTAT = RESU_NL,
                    PRECISION = 0.04),
             _F(  RESULTAT = RESU_NL,
                    INST = 1.,
-                   NOM_CHAM = 'SIGM_ELNO_COQU',
+                   NOM_CHAM = 'SICO_ELNO',
                    MAILLE = 'M1',
                    NOEUD = 'N1',
                    NOM_CMP = 'SIYY',

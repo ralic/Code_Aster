@@ -1,6 +1,6 @@
       SUBROUTINE TE0431(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -89,10 +89,10 @@ C - PARAMETRES EN ENTREE
         CALL JEVECH('PPESANR','L',IPESA)       
       ELSE IF (OPTION.EQ.'CHAR_MECA_TEMP_R'.OR.
      &         OPTION.EQ.'SIEF_ELGA'.OR.
-     &         OPTION.EQ.'SIGM_ELNO_DEPL'.OR.
+     &         OPTION.EQ.'SIGM_ELNO'.OR.
      &         OPTION.EQ.'EPOT_ELEM') THEN
         IF (OPTION.EQ.'SIEF_ELGA'.OR.
-     &      OPTION.EQ.'SIGM_ELNO_DEPL'.OR.
+     &      OPTION.EQ.'SIGM_ELNO'.OR.
      &      OPTION.EQ.'EPOT_ELEM') THEN
           CALL JEVECH('PDEPLAR','L',IDEPL)
         ENDIF 
@@ -125,7 +125,7 @@ C --- ORIENTATION DU MASSIF
           ENDIF
         ENDIF
       ELSE IF ((OPTION.EQ.'EPSI_ELGA').OR.
-     &         (OPTION.EQ.'EPSI_ELNO_DEPL')) THEN
+     &         (OPTION.EQ.'EPSI_ELNO')) THEN
 
         CALL JEVECH('PDEPLAR','L',IDEPL)
         CALL R8INIR(9,0.D0,EPSG,1)
@@ -159,14 +159,14 @@ C      ESTIMATION VARIABLES INTERNES A L'ITERATION PRECEDENTE
 
 
       IF ((OPTION.EQ.'EPSI_ELGA').OR.
-     &    (OPTION.EQ.'EPSI_ELNO_DEPL')) THEN
+     &    (OPTION.EQ.'EPSI_ELNO')) THEN
 
         CALL JEVECH('PDEFORR','E',IDEFO)
 
       ENDIF
       
       IF (OPTION.EQ.'SIEF_ELGA'.OR.
-     &    OPTION.EQ.'SIGM_ELNO_DEPL') THEN
+     &    OPTION.EQ.'SIGM_ELNO') THEN
         CALL JEVECH('PCONTRR','E',ICONTP)
         CALL R8INIR(9,0.D0,SIGG,1)
       ENDIF
@@ -351,7 +351,7 @@ C - CALCUL DE LA DEFORMATION DEPS11
 C - SIEF_ELGA
 
         IF (OPTION.EQ.'SIEF_ELGA'.OR.
-     &      OPTION.EQ.'SIGM_ELNO_DEPL'.OR.
+     &      OPTION.EQ.'SIGM_ELNO'.OR.
      &      OPTION.EQ.'EPOT_ELEM') THEN
 
           EPSM=0.D0
@@ -378,10 +378,10 @@ C - SIEF_ELGA
 
         ENDIF
 
-C - EPSI_ELGA, EPSI_ELNO_DEPL
+C - EPSI_ELGA, EPSI_ELNO
 C --------------------------------
         IF ((OPTION.EQ.'EPSI_ELGA').OR.
-     &      (OPTION.EQ.'EPSI_ELNO_DEPL')) THEN
+     &      (OPTION.EQ.'EPSI_ELNO')) THEN
           
           DO 30 I=1,NNO
             DO 30 J=1,NDDL
@@ -390,7 +390,7 @@ C --------------------------------
 
         ENDIF
         
-C - EPSI_ELGA, EPSI_ELNO_DEPL
+C - EPSI_ELGA, EPSI_ELNO
 C --------------------------------
         IF (OPTION.EQ.'MASS_INER') THEN
           VOLUME = VOLUME + ZR(IPOIDS+KPG-1)*DENSIT*JAC
@@ -467,12 +467,12 @@ C                 STOCKAGE EN TENANT COMPTE DE LA SYMETRIE
           DO 510 KPG=1,NPG
             ZR(ICONTP+KPG-1)=SIGG(KPG)
 510       CONTINUE
-      ELSEIF (OPTION.EQ.'SIGM_ELNO_DEPL') THEN
+      ELSEIF (OPTION.EQ.'SIGM_ELNO') THEN
           CALL PPGAN2( JGANO, 1, SIGG, ZR(ICONTP) )
       ENDIF
 
       IF ((OPTION.EQ.'EPSI_ELGA').OR.
-     &    (OPTION.EQ.'EPSI_ELNO_DEPL')) THEN
+     &    (OPTION.EQ.'EPSI_ELNO')) THEN
         IF ( OPTION(6:9) .EQ. 'ELNO' ) THEN
           CALL PPGAN2( JGANO, 1, EPSG, ZR(IDEFO) )
         ELSE

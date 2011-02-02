@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # RESPONSABLE F6BHHBO P.DEBONNIERES
 # TITRE ETUDE  : ESSAI TRIAXIAL AVEC LE MODELE DE TYPE (3D)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -162,10 +162,10 @@ RES = STAT_NON_LINE(MODELE = MODEMECA,
                    SENSIBILITE= tuple(PS),
                   )
 RES=CALC_ELEM(reuse=RES,RESULTAT=RES,
-              OPTION=('SIEF_ELNO','VARI_ELNO_ELGA'),)
+              OPTION=('SIEF_ELNO','VARI_ELNO'),)
 
 CALC_SENSI(reuse=RES,RESULTAT=RES, SENSIBILITE=tuple(PS),
-              OPTION=('SIEF_ELNO','VARI_ELNO_ELGA'),
+              OPTION=('SIEF_ELNO','VARI_ELNO'),
               )
 
 # Extraction de contrainte ZZ et de sa derivee
@@ -192,7 +192,7 @@ TVARN = POST_RELEVE_T(ACTION=_F(INTITULE='SENSIBILITE',
                                NOEUD='NO1',
                                MAILLE='MA1',
                                RESULTAT=RES,
-                               NOM_CHAM='VARI_ELNO_ELGA',
+                               NOM_CHAM='VARI_ELNO',
                                NOM_CMP='V1',
                                OPERATION='EXTRACTION',),);
 
@@ -201,7 +201,7 @@ TVARN = POST_RELEVE_T(reuse=TVARN,
                                NOEUD='NO1',
                                MAILLE='MA1',
                                RESULTAT=RES,
-                               NOM_CHAM='VARI_ELNO_ELGA',
+                               NOM_CHAM='VARI_ELNO',
                                NOM_CMP='V1',
                                SENSIBILITE=tuple(PS),
                                OPERATION='EXTRACTION',),);
@@ -275,7 +275,7 @@ for i in range(n):
 
    RES[i]=CALC_ELEM(reuse=RES[i],
                     RESULTAT=RES[i],
-                    OPTION=('SIEF_ELNO','VARI_ELNO_ELGA'),)
+                    OPTION=('SIEF_ELNO','VARI_ELNO'),)
 
    # Extraction de la contrainte ZZ avec P + epsilon
    TSIGP[i]=POST_RELEVE_T(ACTION=_F(INTITULE='SENSIBILITE',
@@ -341,7 +341,7 @@ for i in range(n):
                                     NOEUD='NO1',
                                     MAILLE='MA1',
                                     RESULTAT=RES[i],
-                                    NOM_CHAM='VARI_ELNO_ELGA',
+                                    NOM_CHAM='VARI_ELNO',
                                     NOM_CMP='V1',
                                     OPERATION='EXTRACTION',),)
 

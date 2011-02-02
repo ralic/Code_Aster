@@ -3,7 +3,7 @@
       CHARACTER*(*) OPTION,NOMTE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 19/01/2011   AUTEUR MASSIN P.MASSIN 
+C MODIF ELEMENTS  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -25,7 +25,7 @@ C     CALCUL DU VECTEUR ELEMENTAIRE EFFORT GENERALISE
 C     ------------------------------------------------------------------
 C IN  OPTION : K16 : NOM DE L'OPTION A CALCULER
 C                   'SIEF_ELGA'
-C                   'EFGE_ELNO_DEPL'
+C                   'EFGE_ELNO'
 C IN  NOMTE  : K16 : NOM DU TYPE D'ELEMENT DISCRET :
 C         MECA_DIS_T_N      MECA_DIS_T_L       MECA_DIS_TR_N
 C         MECA_DIS_TR_L
@@ -118,7 +118,7 @@ C        --- VECTEUR DEPLACEMENT LOCAL  ULR = PGL * UG  ---
 C        --- VECTEUR EFFORT      LOCAL  FLR = KLC * ULR  ---
          CALL PMAVEC('ZERO',NEQ,KLC,ULR,FLR)
 
-      ELSE IF (OPTION.EQ.'EFGE_ELNO_DEPL') THEN
+      ELSE IF (OPTION.EQ.'EFGE_ELNO') THEN
          CALL JEVECH('PEFFORR','E',JEFFO)
          CALL JEVECH('PDEPLAR','L',JDEPL)
 

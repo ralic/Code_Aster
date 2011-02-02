@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # TITRE ESSAI DE THERMOPLASTICITE (MISES ECR. ECMI.)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -166,7 +166,7 @@ CALC_ELEM( reuse= UELAS ,RESULTAT= UELAS ,
 
 
                   LIST_INST=LINST,
-                 OPTION='SIGM_ELNO_DEPL'
+                 OPTION='SIGM_ELNO'
 
                )
 

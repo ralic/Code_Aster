@@ -4,7 +4,7 @@
 C =====================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C =====================================================================
-C MODIF ELEMENTS  DATE 18/01/2011   AUTEUR MEUNIER S.MEUNIER 
+C MODIF ELEMENTS  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 C RESPONSABLE UFBHHLL C.CHAVANT
 C =====================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -394,9 +394,9 @@ C ======================================================================
          CALL POSTHM(OPTION,MODINT,JGANO,NCMP,NVIM,ZR(ICHG),ZR(ICHN))
       ENDIF
 C ======================================================================
-C --- 8. OPTION : VARI_ELNO_ELGA ---------------------------------------
+C --- 8. OPTION : VARI_ELNO ---------------------------------------
 C ======================================================================
-      IF (OPTION.EQ.'VARI_ELNO_ELGA  ') THEN
+      IF (OPTION.EQ.'VARI_ELNO  ') THEN
          CALL JEVECH('PVARIGR','L',ICHG)
          CALL JEVECH('PVARINR','E',ICHN)
 
@@ -408,10 +408,10 @@ C ======================================================================
          CALL POSTHM(OPTION,MODINT,JGANO,NCMP,NVIM,ZR(ICHG),ZR(ICHN))
       END IF
 C ======================================================================
-C --- 9. OPTION : EPSI_ELGA OU EPSI_ELNO_DEPL---------------------------
+C --- 9. OPTION : EPSI_ELGA OU EPSI_ELNO---------------------------
 C ======================================================================
       IF ((OPTION.EQ.'EPSI_ELGA') .OR.
-     &    (OPTION.EQ.'EPSI_ELNO_DEPL')) THEN
+     &    (OPTION.EQ.'EPSI_ELNO')) THEN
 
          CALL JEVECH('PGEOMER','L',IGEOM)
          CALL JEVECH('PDEPLAR','L',IDEPLA)

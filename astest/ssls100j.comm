@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # TITRE PLAQUE CIRCULAIRE ENCASTREE SOUMISE A UNE PRESSION UNIFORME
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -69,21 +69,21 @@ RESU=MECA_STATIQUE(    MODELE=MODEL, CHAM_MATER=CHMAT,
 RESU=CALC_ELEM(reuse=RESU,     RESULTAT=RESU,
                REPE_COQUE=_F(NIVE_COUCHE='SUP',
                              ANGL_REP = (180., 0.,),),
-               OPTION=('SIGM_ELNO_DEPL','EPSI_ELNO_DEPL',),
+               OPTION=('SIGM_ELNO','EPSI_ELNO',),
                );
 
 RESU=CALC_ELEM(reuse=RESU,     RESULTAT=RESU,
-                        OPTION=('EFGE_ELNO_DEPL','DEGE_ELNO',),
+                        OPTION=('EFGE_ELNO','DEGE_ELNO',),
                );
 
 TEST_RESU(RESU=(_F(
-                   RESULTAT = RESU,  NOM_CHAM = 'SIGM_ELNO_DEPL',
+                   RESULTAT = RESU,  NOM_CHAM = 'SIGM_ELNO',
                    MAILLE = 'STU',  NOEUD = 'O',
                    NOM_CMP = 'SIXX',
                    NUME_ORDRE = 1,
                    VALE = -4.905E+01, PRECISION = 1.E-02),
                   _F(
-                   RESULTAT = RESU,  NOM_CHAM = 'SIGM_ELNO_DEPL',
+                   RESULTAT = RESU,  NOM_CHAM = 'SIGM_ELNO',
                    MAILLE = 'STU',  NOEUD = 'O',
                    NOM_CMP = 'SIYY',
                    NUME_ORDRE = 1,
@@ -113,7 +113,7 @@ RELEVE_2=POST_RELEVE_T( ACTION=(
                             INTITULE = 'EFGE_DEP',
                             RESULTAT = RESU,
                             NUME_ORDRE=1,
-                            NOM_CHAM='EFGE_ELNO_DEPL',
+                            NOM_CHAM='EFGE_ELNO',
                             NOM_CMP = 'MYY',
                             OPERATION = 'EXTRACTION'))
                           )
@@ -147,22 +147,22 @@ TEST_RESU(RESU=(
               CRITERE = 'RELATIF',   PRECISION = 5.E-3, MAILLE = 'KLM',
               NOEUD = 'D',        NOM_CMP = 'KYY',   VALE = -511.875E-0),
      # EFFORTS GENERALISES
-            _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='EFGE_ELNO_DEPL',
+            _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='EFGE_ELNO',
               CRITERE = 'RELATIF',   PRECISION = 2.E-2, MAILLE = 'ABC',
               NOEUD = 'A',        NOM_CMP = 'MXX',   VALE = 0.12500E-0),
-            _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='EFGE_ELNO_DEPL',
+            _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='EFGE_ELNO',
               CRITERE = 'RELATIF',   PRECISION = 2.E-2, MAILLE = 'ABC',
               NOEUD = 'A',        NOM_CMP = 'MYY',   VALE = 0.03750E-0),
-            _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='EFGE_ELNO_DEPL',
+            _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='EFGE_ELNO',
               CRITERE = 'RELATIF',   PRECISION = 5.E-3, MAILLE = 'IJK',
               NOEUD = 'D',        NOM_CMP = 'MYY',   VALE = -0.05156E-0),
-            _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='EFGE_ELNO_DEPL',
+            _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='EFGE_ELNO',
               CRITERE = 'RELATIF',   PRECISION = 7.E-3, MAILLE = 'KLM',
               NOEUD = 'D',        NOM_CMP = 'MYY',   VALE = -0.05156E-0),
-            _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='EFGE_ELNO_DEPL',
+            _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='EFGE_ELNO',
               CRITERE = 'RELATIF',   PRECISION = 1.E-2, MAILLE = 'STU',
               NOEUD = 'O',        NOM_CMP = 'MXX',   VALE = -0.08125E-0),
-            _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='EFGE_ELNO_DEPL',
+            _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='EFGE_ELNO',
               CRITERE = 'RELATIF',   PRECISION = 1.E-2, MAILLE = 'STU',
               NOEUD = 'O',        NOM_CMP = 'MYY',   VALE = -0.08125E-0))
             )

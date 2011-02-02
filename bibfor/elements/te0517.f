@@ -1,6 +1,6 @@
       SUBROUTINE TE0517(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,7 +22,7 @@ C ======================================================================
       CHARACTER*16 OPTION,NOMTE
 C ----------------------------------------------------------------------
 C     CALCUL DES OPTIONS POUR L'ELEMENT POU_D_TGM (MULTI-FIBRES)
-C        VARI_ELNO_ELGA
+C        VARI_ELNO
 C        SIEF_ELNO
 C        FORC_NODA
 C
@@ -122,7 +122,7 @@ C       POUR LE POINT 2
       ENDIF
 
 C     --------------------------------------
-      IF ( OPTION .EQ. 'VARI_ELNO_ELGA' ) THEN
+      IF ( OPTION .EQ. 'VARI_ELNO' ) THEN
 C  CETTE OPTION EXISTE DANS LE CATALOGUE :
 C  A QUOI SERT-ELLE, POUR CET ELEMENT ?
          CALL U2MESS('F','ELEMENTS4_16')

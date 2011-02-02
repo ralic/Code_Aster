@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # ======================================================================
 # TITRE RESATURATION D UNE COLONNE TEST HMD, 2D ,
 # wtnp112h.para = tps_job 130 mem_job 128Mo ncpus 1 liste_test S
@@ -240,7 +240,7 @@ RESU0=CALC_ELEM(reuse =RESU0,
 
 
              TOUT_ORDRE='OUI',
-             OPTION=('SIEF_ELNO','VARI_ELNO_ELGA'),
+             OPTION=('SIEF_ELNO','VARI_ELNO'),
              RESULTAT=RESU0,);
 
 TRB=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL',
@@ -258,7 +258,7 @@ IMPR_TABLE(TABLE=TRB,
 TRV=POST_RELEVE_T(ACTION=_F(INTITULE='DEPL',
                             GROUP_NO=('BAS'),
                             RESULTAT=RESU0,
-                            NOM_CHAM='VARI_ELNO_ELGA',
+                            NOM_CHAM='VARI_ELNO',
                             INST = 36000,
                             NOM_CMP=('V4'),
                             OPERATION='EXTRACTION',),);

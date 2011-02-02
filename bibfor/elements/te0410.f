@@ -1,6 +1,6 @@
       SUBROUTINE TE0410 ( OPTIOZ , NOMTZ )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,10 +22,10 @@ C ======================================================================
       CHARACTER*16    OPTION , NOMTE
 C     ----------------------------------------------------------------
 C     CALCUL DES OPTIONS DES ELEMENTS DE COQUE 3D
-C                EPSI_ELNO_DEPL
-C                SIGM_ELNO_DEPL
+C                EPSI_ELNO
+C                SIGM_ELNO
 C                SIEF_ELGA
-C                EFGE_ELNO_DEPL
+C                EFGE_ELNO
 C
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       CHARACTER*32       JEXNUM , JEXNOM , JEXR8 , JEXATR

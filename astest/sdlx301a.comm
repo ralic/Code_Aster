@@ -1,5 +1,5 @@
 
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # TITRE BATIMENT SOUMIS A UNE EXCITATION SISMIQUE
 # VERSION B de ce test : ajout de poutres afin de lier les DRZ
 #                        entre poteaux et plaques
@@ -185,7 +185,7 @@ IMPR_RESU(MODELE=MO,
 #                                              
 MODE1=CALC_ELEM(reuse =MODE1,
                 RESULTAT=MODE1,
-                OPTION=('SIEF_ELGA','EFGE_ELNO_DEPL',),);
+                OPTION=('SIEF_ELGA','EFGE_ELNO',),);
 #
 
 MODE1=CALC_NO(reuse =MODE1,
@@ -648,7 +648,7 @@ MODE_STA=MODE_STATIQUE(MATR_RIGI=RIGIDITE,
 
 MODE_STA=CALC_ELEM(reuse =MODE_STA,
                    RESULTAT=MODE_STA,
-                   OPTION=('SIEF_ELGA','EFGE_ELNO_DEPL',),);
+                   OPTION=('SIEF_ELGA','EFGE_ELNO',),);
 #
 
 MODE_STA=CALC_NO(reuse =MODE_STA,
@@ -672,7 +672,7 @@ SISMC=COMB_SISM_MODAL(MODE_MECA=MODE1,
                                ECHELLE=1.0,
                                NATURE='DEPL',),
                       COMB_MODE=_F(TYPE='CQC',),
-                      OPTION=('DEPL','REAC_NODA','EFGE_ELNO_DEPL',),
+                      OPTION=('DEPL','REAC_NODA','EFGE_ELNO',),
                       IMPRESSION=_F(),);
 #
 
@@ -687,7 +687,7 @@ SISMS=COMB_SISM_MODAL(MODE_MECA=MODE1,
                                ECHELLE=1.0,
                                NATURE='DEPL',),
                       COMB_MODE=_F(TYPE='SRSS',),
-                      OPTION=('DEPL','REAC_NODA','EFGE_ELNO_DEPL',),
+                      OPTION=('DEPL','REAC_NODA','EFGE_ELNO',),
                       IMPRESSION=_F(),);
 #
 
@@ -703,7 +703,7 @@ SISMR=COMB_SISM_MODAL(MODE_MECA=MODE1,
                                NATURE='DEPL',),
                       COMB_MODE=_F(TYPE='DSC',
                                    DUREE=30.0,),
-                      OPTION=('DEPL','REAC_NODA','EFGE_ELNO_DEPL',),
+                      OPTION=('DEPL','REAC_NODA','EFGE_ELNO',),
                       IMPRESSION=_F(),);
 #
 
@@ -726,7 +726,7 @@ REACMOC=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
 EFGEMOC=CREA_CHAMP(TYPE_CHAM='ELNO_SIEF_R',
                    OPERATION='EXTR',
                    RESULTAT=SISMC,
-                   NOM_CHAM='EFGE_ELNO_DEPL',
+                   NOM_CHAM='EFGE_ELNO',
                    NOEUD_CMP=('DIR','X',),
                    TITRE='CONTRAINTES',);
 #
@@ -750,7 +750,7 @@ REACMOS=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
 EFGEMOS=CREA_CHAMP(TYPE_CHAM='ELNO_SIEF_R',
                    OPERATION='EXTR',
                    RESULTAT=SISMS,
-                   NOM_CHAM='EFGE_ELNO_DEPL',
+                   NOM_CHAM='EFGE_ELNO',
                    NOEUD_CMP=('DIR','X',),
                    TITRE='CONTRAINTES',);
 #
@@ -774,7 +774,7 @@ REACMOR=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
 EFGEMOR=CREA_CHAMP(TYPE_CHAM='ELNO_SIEF_R',
                    OPERATION='EXTR',
                    RESULTAT=SISMR,
-                   NOM_CHAM='EFGE_ELNO_DEPL',
+                   NOM_CHAM='EFGE_ELNO',
                    NOEUD_CMP=('DIR','X',),
                    TITRE='CONTRAINTES',);
 #

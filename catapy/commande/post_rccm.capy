@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+#& MODIF COMMANDE  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -200,7 +200,7 @@ POST_RCCM=OPER(nom="POST_RCCM",op= 165,sd_prod=table_sdaster,
            b_extrac        =BLOC(condition="RESULTAT != None",
                                  fr="extraction d un champ de grandeur",
              regles=(UN_PARMI('TOUT_ORDRE','NUME_ORDRE','INST','NOEUD_CMP'),),
-             NOM_CHAM        =SIMP(statut='o',typ='TXM',into=("EFGE_ELNO_DEPL","SIEF_ELNO"),),
+             NOM_CHAM        =SIMP(statut='o',typ='TXM',into=("EFGE_ELNO","SIEF_ELNO"),),
              TOUT_ORDRE      =SIMP(statut='f',typ='TXM',into=("OUI",) ),
              NUME_ORDRE      =SIMP(statut='f',typ='I',),
              INST            =SIMP(statut='f',typ='R',),

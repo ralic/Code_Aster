@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # TITRE POUTRE COURTE SUR APPUIS SIMPLES
 # sdll01a.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -153,13 +153,13 @@ MODE1=CALC_ELEM( reuse=MODE1,     RESULTAT=MODE1,
 
 
 
-                          OPTION='SIGM_ELNO_DEPL'   )
+                          OPTION='SIGM_ELNO'   )
 
 MODE3=CALC_ELEM(      RESULTAT=MODE1,
 
 
 
-                          OPTION='SIGM_ELNO_DEPL'   )
+                          OPTION='SIGM_ELNO'   )
 
 MODE4=CALC_ELEM(      RESULTAT=MODE1,
 

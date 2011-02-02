@@ -1,4 +1,4 @@
-#@ MODIF post_coque_ops Macro  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+#@ MODIF post_coque_ops Macro  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -72,36 +72,36 @@ def post_coque_ops(self,RESULTAT,COOR_POINT,CHAM,NUME_ORDRE,INST,
     if CHAM=='DEFORMATION':
       if NUME_ORDRE:
         __ressup=CALC_ELEM(RESULTAT=RESULTAT,
-                  OPTION='EPSI_ELNO_DEPL',REPE_COQUE=_F(NIVE_COUCHE='SUP'),
+                  OPTION='EPSI_ELNO',REPE_COQUE=_F(NIVE_COUCHE='SUP'),
                   NUME_ORDRE=NUME_ORDRE)
         __resinf=CALC_ELEM(RESULTAT=RESULTAT,
-                  OPTION='EPSI_ELNO_DEPL',REPE_COQUE=_F(NIVE_COUCHE='INF'),
+                  OPTION='EPSI_ELNO',REPE_COQUE=_F(NIVE_COUCHE='INF'),
                   NUME_ORDRE=NUME_ORDRE)
         __epssup=CREA_CHAMP(RESULTAT=__ressup,TYPE_CHAM='ELNO_EPSI_R',
-                  OPERATION='EXTR',NOM_CHAM='EPSI_ELNO_DEPL',
+                  OPERATION='EXTR',NOM_CHAM='EPSI_ELNO',
                   NUME_ORDRE=NUME_ORDRE)
         __epsinf=CREA_CHAMP(RESULTAT=__resinf,TYPE_CHAM='ELNO_EPSI_R',
-                  OPERATION='EXTR',NOM_CHAM='EPSI_ELNO_DEPL',
+                  OPERATION='EXTR',NOM_CHAM='EPSI_ELNO',
                   NUME_ORDRE=NUME_ORDRE)
       else :
         __ressup=CALC_ELEM(RESULTAT=RESULTAT,
-                  OPTION='EPSI_ELNO_DEPL',REPE_COQUE=_F(NIVE_COUCHE='SUP'),
+                  OPTION='EPSI_ELNO',REPE_COQUE=_F(NIVE_COUCHE='SUP'),
                   INST=INST)
         __resinf=CALC_ELEM(RESULTAT=RESULTAT,
-                  OPTION='EPSI_ELNO_DEPL',REPE_COQUE=_F(NIVE_COUCHE='INF'),
+                  OPTION='EPSI_ELNO',REPE_COQUE=_F(NIVE_COUCHE='INF'),
                   INST=INST)
         __epssup=CREA_CHAMP(RESULTAT=__ressup,TYPE_CHAM='ELNO_EPSI_R',
-                  OPERATION='EXTR',NOM_CHAM='EPSI_ELNO_DEPL',
+                  OPERATION='EXTR',NOM_CHAM='EPSI_ELNO',
                   INST=INST)
         __epsinf=CREA_CHAMP(RESULTAT=__resinf,TYPE_CHAM='ELNO_EPSI_R',
-                  OPERATION='EXTR',NOM_CHAM='EPSI_ELNO_DEPL',
+                  OPERATION='EXTR',NOM_CHAM='EPSI_ELNO',
                   INST=INST)
 
                                                                      
     # Appel MACR_LIGN_COUPE :
     motscles={}
     if   CHAM=='EFFORT'      : motscles['NOM_CHAM']   ='SIEF_ELNO'
-    if   CHAM=='DEFORMATION' : motscles['NOM_CHAM']   ='EPSI_ELNO_DEPL'
+    if   CHAM=='DEFORMATION' : motscles['NOM_CHAM']   ='EPSI_ELNO'
 
     if CHAM=='EFFORT' :
       motscles['LIGN_COUPE']=[]

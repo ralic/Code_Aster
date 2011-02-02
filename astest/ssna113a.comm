@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # TITRE : EPROUVETTE ENTAILLE EN VISCOPLASTICITE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -134,7 +134,7 @@ UR = STAT_NON_LINE (
 
 UR = CALC_ELEM ( reuse = UR,
                  OPTION = ('SIEF_ELNO',
-                           'VARI_ELNO_ELGA',),
+                           'VARI_ELNO',),
                  RESULTAT = UR,);
                  
 
@@ -177,7 +177,7 @@ UL = STAT_NON_LINE (
 
 UL = CALC_ELEM ( reuse = UL,
                  OPTION = ('SIEF_ELNO',
-                           'VARI_ELNO_ELGA',),
+                           'VARI_ELNO',),
                  RESULTAT = UL,);
                  
 

@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 
 #  TITRE : CONTACT DE DEUX SPHERES
 # ssnv104j.para = tps_job 120 mem_job 100Mo ncpus 1 liste_test S
@@ -179,7 +179,7 @@ RESU=STAT_NON_LINE(SOLVEUR=_F(SYME='OUI',),
                             );
 
 RESU=CALC_ELEM(reuse =RESU,
-               OPTION=('SIEF_ELNO','VARI_ELNO_ELGA'),
+               OPTION=('SIEF_ELNO','VARI_ELNO'),
                RESULTAT=RESU,);
 
 SIELGA=CREA_CHAMP(TYPE_CHAM='ELGA_SIEF_R',

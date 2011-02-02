@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # TITRE CHAUFFAGE D UN MILIEU POREUX DESATURE AVEC AIR DISSOUS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -227,7 +227,7 @@ U0=STAT_NON_LINE(MODELE=MODELE,
                  );
 U0=CALC_ELEM(reuse =U0,
              TOUT_ORDRE='OUI',
-             OPTION=('SIEF_ELNO','VARI_ELNO_ELGA'),
+             OPTION=('SIEF_ELNO','VARI_ELNO'),
              RESULTAT=U0,);
 
 
@@ -272,7 +272,7 @@ TEST_RESU(RESU=_F(RESULTAT=U0,
                   REFERENCE='NON_REGRESSION',),);
 TEST_RESU(RESU=_F(RESULTAT=U0,
                   NUME_ORDRE=1,
-                  NOM_CHAM='VARI_ELNO_ELGA',
+                  NOM_CHAM='VARI_ELNO',
                   NOM_CMP='V4',
                   NOEUD='N1',
                   MAILLE='M1',

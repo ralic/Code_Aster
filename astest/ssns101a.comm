@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # RESPONSABLE JMBHH01 J.M.PROIX
 # TITRE CLAQUAGE  CALOTTE CYLINDRIQUE SHB8  
 # ssns101a.para = tps_job 100 mem_job 128Mo ncpus 1 liste_test S
@@ -106,7 +106,7 @@ NONLIN=STAT_NON_LINE(MODELE=MODMECA,
                                     ITER_GLOB_MAXI=25,),);
 
 NONLIN=CALC_ELEM(reuse=NONLIN, RESULTAT=NONLIN,
-                    OPTION=('SIEF_ELNO','EQUI_ELGA_SIGM','EQUI_ELNO_SIGM'),
+                    OPTION=('SIEF_ELNO','SIEQ_ELGA','SIEQ_ELNO'),
                     );
                     
                     

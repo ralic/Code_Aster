@@ -1,9 +1,9 @@
-# MODIF  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # TITRE  CONTACT MAILLE TRIA7, MODELISATION COQUE_3D
 # ssnv129b.para = tps_job 250 mem_job 300Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -139,19 +139,19 @@ RESU=STAT_NON_LINE(SOLVEUR=_F(SYME='OUI',),
 
 RESU=CALC_ELEM(reuse =RESU,
                RESULTAT=RESU,
-               OPTION='SIGM_ELNO_COQU',
+               OPTION='SICO_ELNO',
                REPE_COQUE=_F(NIVE_COUCHE='INF'),);
 
 RESU=CALC_NO(reuse =RESU,
              RESULTAT=RESU,
-             OPTION='SIGM_NOEU_COQU',
+             OPTION='SICO_NOEU',
              );
 
 IMPR_RESU(MODELE=MO,
           FORMAT='GMSH',
           UNITE=37,
           RESU=_F(RESULTAT=RESU,
-                  NOM_CHAM=('DEPL','SIGM_NOEU_COQU',),),);
+                  NOM_CHAM=('DEPL','SICO_NOEU',),),);
 
 TEST_RESU(RESU=(_F(RESULTAT=RESU,
                    NUME_ORDRE=1,
@@ -164,7 +164,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU,
                    REFERENCE='ANALYTIQUE',),
                 _F(RESULTAT=RESU,
                    NUME_ORDRE=1,
-                   NOM_CHAM='SIGM_NOEU_COQU',
+                   NOM_CHAM='SICO_NOEU',
                    NOM_CMP='SIYY',
                    GROUP_NO='CENTE1',
                    VALE=7.6275e9,
@@ -175,7 +175,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU,
 
 TEST_RESU(RESU=(_F(RESULTAT=RESU,
                    NUME_ORDRE=1,
-                   NOM_CHAM='SIGM_NOEU_COQU',
+                   NOM_CHAM='SICO_NOEU',
                    NOM_CMP='SIYY',
                    GROUP_NO='A1',
                    VALE=-4.4943602357159E+05,
@@ -185,7 +185,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU,
                    VERSION = '9.1.22',),
                 _F(RESULTAT=RESU,
                    NUME_ORDRE=1,
-                   NOM_CHAM='SIGM_NOEU_COQU',
+                   NOM_CHAM='SICO_NOEU',
                    NOM_CMP='SIYY',
                    GROUP_NO='A3',
                    VALE=4.1184276536402E+05,
@@ -195,7 +195,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU,
                    VERSION = '9.1.22',),  
                 _F(RESULTAT=RESU,
                    NUME_ORDRE=1,
-                   NOM_CHAM='SIGM_NOEU_COQU',
+                   NOM_CHAM='SICO_NOEU',
                    NOM_CMP='SIYY',
                    GROUP_NO='B1',
                    VALE=-4.4943602349259E+05,
@@ -205,7 +205,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU,
                    VERSION = '9.1.22',),  
                 _F(RESULTAT=RESU,
                    NUME_ORDRE=1,
-                   NOM_CHAM='SIGM_NOEU_COQU',
+                   NOM_CHAM='SICO_NOEU',
                    NOM_CMP='SIYY',
                    GROUP_NO='B3',
                    VALE=4.1184276528115E+05,

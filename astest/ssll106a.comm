@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # RESPONSABLE JMBHH01 J.M.PROIX
 # TITRE TUBE DROIT SOUMIS A PLUSIEURS CHARGEMENTS (ELEMENT TUYAU_3M 3 NOEUDS) MACRO_ELAS_MULT
 # ssll106a.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
@@ -181,7 +181,7 @@ RESU=MACRO_ELAS_MULT(      MODELE=MO,
                                           CHAR_MECA = CHAR1,
                                           SOUS_TITRE = 'FX LOCAL',
                                           OPTION = ('EPSI_ELGA', 'SIEF_ELGA',
-                                                    'EFGE_ELNO_DEPL','DEGE_ELNO'
+                                                    'EFGE_ELNO','DEGE_ELNO'
                                           )),
                                       _F(NOM_CAS = 'CHARGE NUMERO 2',
                                          CHAR_MECA = CHAR2,
@@ -197,21 +197,21 @@ RESU=MACRO_ELAS_MULT(      MODELE=MO,
                                        CHAR_MECA = CHAR4,
                                        SOUS_TITRE = 'MX LOCAL',
                                        OPTION = ('EPSI_ELGA', 'SIEF_ELGA','DEGE_ELNO',
-                                                 'EFGE_ELNO_DEPL',
+                                                 'EFGE_ELNO',
                                         )),
                    _F(
             NOM_CAS = 'CHARGE NUMERO 5',
             CHAR_MECA = CHAR5,
             SOUS_TITRE = 'MY LOCAL ',
             OPTION = ('EPSI_ELGA', 'SIEF_ELGA','DEGE_ELNO',
-                         'EFGE_ELNO_DEPL',
+                         'EFGE_ELNO',
                          )),
                    _F(
             NOM_CAS = 'CHARGE NUMERO 6',
             CHAR_MECA = CHAR6,
             SOUS_TITRE = 'MZ LOCAL ',
             OPTION = ('EPSI_ELGA', 'SIEF_ELGA','DEGE_ELNO',
-                         'EFGE_ELNO_DEPL',
+                         'EFGE_ELNO',
                          )),
                    _F(
            NOM_CAS = 'CHARGE NUMERO 7',
@@ -225,19 +225,19 @@ RESU=MACRO_ELAS_MULT(      MODELE=MO,
             CHAR_MECA = CHAR8,
             SOUS_TITRE = 'GRAVITE',
             OPTION = ('EPSI_ELGA', 'SIEF_ELGA',
-                      'EFGE_ELNO_DEPL',)),
+                      'EFGE_ELNO',)),
                    _F(
            NOM_CAS = 'CHARGE NUMERO 9',
             CHAR_MECA = CHAR9,
             SOUS_TITRE = 'LINEIQUE',
             OPTION = ('EPSI_ELGA', 'SIEF_ELGA',
-                      'EFGE_ELNO_DEPL',)),
+                      'EFGE_ELNO',)),
                    _F(
            NOM_CAS = 'CHARGE NUMERO91',
             CHAR_MECA = CHAR9B,
             SOUS_TITRE = 'LINEIQUE',
             OPTION = ('EPSI_ELGA', 'SIEF_ELGA',
-                      'EFGE_ELNO_DEPL',)),
+                      'EFGE_ELNO',)),
                       )
                              )
 
@@ -261,7 +261,7 @@ _F( RESULTAT = RESU, NOM_CHAM = 'EPSI_ELGA',
       NOM_CMP = 'EPXX', REFERENCE='ANALYTIQUE',VALE = 1.38155E-6, PRECISION = 0.01,
       NOM_CAS = 'CHARGE NUMERO 1 '),
 
-_F( RESULTAT = RESU, NOM_CHAM = 'EFGE_ELNO_DEPL',
+_F( RESULTAT = RESU, NOM_CHAM = 'EFGE_ELNO',
       MAILLE = 'M18', POINT = 1,
       NOM_CMP = 'N', REFERENCE='ANALYTIQUE',VALE = 500., PRECISION = 0.01,
       NOM_CAS = 'CHARGE NUMERO 1 '))
@@ -330,7 +330,7 @@ _F( RESULTAT = RESU, NOM_CHAM = 'EPSI_ELGA',
       NOM_CMP = 'EPXY', REFERENCE='ANALYTIQUE',VALE = -1.0946E-4, PRECISION = 0.01,
       NOM_CAS = 'CHARGE NUMERO 4 '),
 
-_F( RESULTAT = RESU, NOM_CHAM = 'EFGE_ELNO_DEPL',
+_F( RESULTAT = RESU, NOM_CHAM = 'EFGE_ELNO',
       MAILLE = 'M18', POINT = 1,
       NOM_CMP = 'MT', REFERENCE='ANALYTIQUE',VALE = 500., PRECISION = 0.01,
       NOM_CAS = 'CHARGE NUMERO 4 '))
@@ -365,7 +365,7 @@ _F( RESULTAT = RESU, NOM_CHAM = 'EPSI_ELGA',
       NOM_CMP = 'EPXX', REFERENCE='ANALYTIQUE',VALE = 6.74E-5, PRECISION = 0.01,
       NOM_CAS = 'CHARGE NUMERO 5 '),
 
-_F( RESULTAT = RESU, NOM_CHAM = 'EFGE_ELNO_DEPL',
+_F( RESULTAT = RESU, NOM_CHAM = 'EFGE_ELNO',
       MAILLE = 'M18', POINT = 1,
       NOM_CMP = 'MFY', REFERENCE='ANALYTIQUE',VALE = 500., PRECISION = 0.01,
       NOM_CAS = 'CHARGE NUMERO 5 '))
@@ -400,7 +400,7 @@ _F( RESULTAT = RESU, NOM_CHAM = 'EPSI_ELGA',
       NOM_CMP = 'EPXX', REFERENCE='ANALYTIQUE',VALE = 6.74E-5, PRECISION = 0.01,
       NOM_CAS = 'CHARGE NUMERO 6 '),
 
-_F( RESULTAT = RESU, NOM_CHAM = 'EFGE_ELNO_DEPL',
+_F( RESULTAT = RESU, NOM_CHAM = 'EFGE_ELNO',
       MAILLE = 'M18', POINT = 1,
       NOM_CMP = 'MFZ', REFERENCE='ANALYTIQUE',VALE = 500., PRECISION = 0.01,
       NOM_CAS = 'CHARGE NUMERO 6 '))
@@ -448,12 +448,12 @@ _F( RESULTAT = RESU, NOM_CHAM = 'DEPL', GROUP_NO = 'B',
       NOM_CMP = 'DZ', REFERENCE='ANALYTIQUE',VALE = -4.646E-2, PRECISION = 0.01,
       NOM_CAS = 'CHARGE NUMERO 8 '),
 
-_F( RESULTAT = RESU, NOM_CHAM = 'EFGE_ELNO_DEPL',
+_F( RESULTAT = RESU, NOM_CHAM = 'EFGE_ELNO',
       MAILLE = 'M18', POINT = 1,
       NOM_CMP = 'N', REFERENCE='ANALYTIQUE',VALE = 500., PRECISION = 0.01,
       NOM_CAS = 'CHARGE NUMERO 8 '),
 
-_F( RESULTAT = RESU, NOM_CHAM = 'EFGE_ELNO_DEPL',
+_F( RESULTAT = RESU, NOM_CHAM = 'EFGE_ELNO',
       MAILLE = 'M1', POINT = 1,
       NOM_CMP = 'MFY', REFERENCE='ANALYTIQUE',VALE = 1.7643E+3, PRECISION = 0.03,
       NOM_CAS = 'CHARGE NUMERO 8 '))
@@ -474,12 +474,12 @@ _F( RESULTAT = RESU, NOM_CHAM = 'DEPL', GROUP_NO = 'B',
       NOM_CMP = 'DZ', REFERENCE='ANALYTIQUE',VALE = -4.646E-2, PRECISION = 0.01,
       NOM_CAS = 'CHARGE NUMERO 9 '),
 
-_F( RESULTAT = RESU, NOM_CHAM = 'EFGE_ELNO_DEPL',
+_F( RESULTAT = RESU, NOM_CHAM = 'EFGE_ELNO',
       MAILLE = 'M18', POINT = 1,
       NOM_CMP = 'N', REFERENCE='ANALYTIQUE',VALE = 500., PRECISION = 0.01,
       NOM_CAS = 'CHARGE NUMERO 9 '),
 
-_F( RESULTAT = RESU, NOM_CHAM = 'EFGE_ELNO_DEPL',
+_F( RESULTAT = RESU, NOM_CHAM = 'EFGE_ELNO',
       MAILLE = 'M1', POINT = 1,
       NOM_CMP = 'MFY', REFERENCE='ANALYTIQUE',VALE = 1.7643E+3, PRECISION = 0.03,
       NOM_CAS = 'CHARGE NUMERO 9 '))
@@ -501,12 +501,12 @@ _F( RESULTAT = RESU, NOM_CHAM = 'DEPL', GROUP_NO = 'B',
       NOM_CMP = 'DZ', REFERENCE='ANALYTIQUE',VALE = -4.646E-2, PRECISION = 0.01,
       NOM_CAS = 'CHARGE NUMERO91'),
 
-_F( RESULTAT = RESU, NOM_CHAM = 'EFGE_ELNO_DEPL',
+_F( RESULTAT = RESU, NOM_CHAM = 'EFGE_ELNO',
       MAILLE = 'M18', POINT = 1,
       NOM_CMP = 'N', REFERENCE='ANALYTIQUE',VALE = 500., PRECISION = 0.01,
       NOM_CAS = 'CHARGE NUMERO91'),
 
-_F( RESULTAT = RESU, NOM_CHAM = 'EFGE_ELNO_DEPL',
+_F( RESULTAT = RESU, NOM_CHAM = 'EFGE_ELNO',
       MAILLE = 'M1', POINT = 1,
       NOM_CMP = 'MFY', REFERENCE='ANALYTIQUE',VALE = 1.7643E+3, PRECISION = 0.03,
       NOM_CAS = 'CHARGE NUMERO91'))
@@ -657,7 +657,7 @@ REST=MECA_STATIQUE(             MODELE=MO,
 CALC_ELEM( reuse= REST ,RESULTAT= REST ,
 
                   OPTION=('EPSI_ELGA',
-                          'EFGE_ELNO_DEPL', )
+                          'EFGE_ELNO', )
                         )
 
 CALC_NO(reuse=REST,

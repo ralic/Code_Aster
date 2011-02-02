@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # TITRE NON-REGRESSION THERMO-ELASTICITE POUR TOUTES COQUES SURFACIQUES
 # RESPONSABLE VABHHTS J.PELLET
 # ssls200a.para = tps_job 60 mem_job 250Mo ncpus 1 liste_test R
@@ -163,7 +163,7 @@ MESTAT=MECA_STATIQUE(MODELE=MO,
 
 MESTAT=CALC_ELEM(reuse =MESTAT,
                  RESULTAT=MESTAT,
-                 OPTION=('SIEF_ELGA','SIGM_ELNO_DEPL','EPSI_ELNO_DEPL','EFGE_ELNO_DEPL',),);
+                 OPTION=('SIEF_ELGA','SIGM_ELNO','EPSI_ELNO','EFGE_ELNO',),);
 
 MESTAT=CALC_ELEM(reuse =MESTAT,
                  RESULTAT=MESTAT,
@@ -172,7 +172,7 @@ MESTAT=CALC_ELEM(reuse =MESTAT,
 
 MESTAT=CALC_NO(reuse =MESTAT,
                RESULTAT=MESTAT,
-               OPTION=('EPSI_NOEU','SIGM_NOEU_DEPL',),);
+               OPTION=('EPSI_NOEU','SIGM_NOEU',),);
 
 ENGENDRE_TEST(CO=MESTAT,);
 
@@ -185,14 +185,14 @@ TEST_RESU(RESU=(_F(RESULTAT=MESTAT,
                    REFERENCE='NON_REGRESSION',),
                 _F(RESULTAT=MESTAT,
                    NUME_ORDRE=1,
-                   NOM_CHAM='EFGE_ELNO_DEPL',
+                   NOM_CHAM='EFGE_ELNO',
                    TYPE_TEST='SOMM_ABS',
                    VALE=172671.402159,
                    PRECISION=1e-10,
                    REFERENCE='NON_REGRESSION',),
                 _F(RESULTAT=MESTAT,
                    NUME_ORDRE=1,
-                   NOM_CHAM='EPSI_ELNO_DEPL',
+                   NOM_CHAM='EPSI_ELNO',
                    TYPE_TEST='SOMM_ABS',
                    VALE=29086.9233306,
                    PRECISION=1e-10,
@@ -213,14 +213,14 @@ TEST_RESU(RESU=(_F(RESULTAT=MESTAT,
                    REFERENCE='NON_REGRESSION',),
                 _F(RESULTAT=MESTAT,
                    NUME_ORDRE=1,
-                   NOM_CHAM='SIGM_ELNO_DEPL',
+                   NOM_CHAM='SIGM_ELNO',
                    TYPE_TEST='SOMM_ABS',
                    VALE=225807.085034,
                    PRECISION=1e-10,
                    REFERENCE='NON_REGRESSION',),
                 _F(RESULTAT=MESTAT,
                    NUME_ORDRE=1,
-                   NOM_CHAM='SIGM_NOEU_DEPL',
+                   NOM_CHAM='SIGM_NOEU',
                    TYPE_TEST='SOMM_ABS',
                    VALE=56853.4965839,
                    PRECISION=1e-10,

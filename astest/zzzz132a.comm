@@ -1,9 +1,9 @@
-# MODIF  DATE 13/10/2008   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # RESPONSABLE DURAND C.DURAND
 # TITRE VALIDATION DE NON REGRESSION DE LA LECTURE DE DONNEES MED
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -138,8 +138,8 @@ MECATER=MECA_STATIQUE(        MODELE=MODEMECA,
 CALC_ELEM( reuse= MECATER ,RESULTAT= MECATER ,         
                             
                              LIST_INST=L_INST,
-                                OPTION=( 'SIGM_ELNO_DEPL',
-                                         'EPSI_ELNO_DEPL', )
+                                OPTION=( 'SIGM_ELNO',
+                                         'EPSI_ELNO', )
                          )
 
 TEST_RESU(RESU=(
@@ -157,7 +157,7 @@ TEST_RESU(RESU=(
           VALE     = 4.26518E-05),
     _F( RESULTAT = MECATER,
           NUME_ORDRE = 21,
-          NOM_CHAM = 'SIGM_ELNO_DEPL',
+          NOM_CHAM = 'SIGM_ELNO',
           MAILLE = 'M16',
           NOEUD = 'N377',
           NOM_CMP = 'SIYY',

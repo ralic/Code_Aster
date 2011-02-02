@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # TITRE COMPORTEMENT NON-LINEAIRE D UN ASSEMBLAGE DE CORNIERE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -87,7 +87,7 @@ STATNL=STAT_NON_LINE(
 
 STATNL=CALC_ELEM( reuse=STATNL,
                             OPTION=(
-                  'SIEF_ELNO',  'VARI_ELNO_ELGA',),
+                  'SIEF_ELNO',  'VARI_ELNO',),
                           RESULTAT=STATNL,
               )
 
@@ -117,7 +117,7 @@ TEST_RESU(RESU=(
   NUME_ORDRE = 12, NOEUD = 'N3', VALE = 5.35978E-4),
 
               _F(
-   RESULTAT = STATNL, NOM_CHAM = 'VARI_ELNO_ELGA', NOM_CMP = 'V1',
+   RESULTAT = STATNL, NOM_CHAM = 'VARI_ELNO', NOM_CMP = 'V1',
    NUME_ORDRE = 2, MAILLE = 'D1', NOEUD = 'N3', VALE = 9.65742E-2),
 
               _F(
@@ -125,7 +125,7 @@ TEST_RESU(RESU=(
    NUME_ORDRE = 3, MAILLE = 'D1', POINT = 2, VALE = 1.07417),
 
               _F(
-   RESULTAT = STATNL, NOM_CHAM = 'VARI_ELNO_ELGA', NOM_CMP = 'V1',
+   RESULTAT = STATNL, NOM_CHAM = 'VARI_ELNO', NOM_CMP = 'V1',
    NUME_ORDRE = 11, MAILLE = 'D1', NOEUD = 'N3', VALE = 9.65742E-2),
 
               _F(

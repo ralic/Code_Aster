@@ -1,10 +1,10 @@
 
-# MODIF  DATE 02/02/2010   AUTEUR IDOUX L.IDOUX 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # TITRE PLAQUE CIRCULAIRE ENCASTREE SOUS PRESSION DST  170 N - 296 TRIA3
 # ssls100f.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -297,13 +297,13 @@ TEST_RESU(RESU=(_F(RESULTAT=DEP,
 DEP=CALC_ELEM(reuse =DEP,
               RESULTAT=DEP,
               NUME_ORDRE=1,
-              OPTION='EFGE_ELNO_DEPL',);
+              OPTION='EFGE_ELNO',);
 #--------------------------------------------------------------------
 
 RELEVE_1=POST_RELEVE_T(ACTION=_F(INTITULE='EFGE_R',
                                  NOEUD=('O','A','B','C','D','E','F',),
                                  RESULTAT=DEP,
-                                 NOM_CHAM='EFGE_ELNO_DEPL',
+                                 NOM_CHAM='EFGE_ELNO',
                                  NUME_ORDRE=1,
                                  NOM_CMP=('MXX','MYY',),
                                  OPERATION='EXTRACTION',),);

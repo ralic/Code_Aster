@@ -1,4 +1,4 @@
-#@ MODIF macro_elas_mult_ops Macro  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+#@ MODIF macro_elas_mult_ops Macro  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -219,8 +219,8 @@ def macro_elas_mult_ops(self,MODELE,CHAM_MATER,CARA_ELEM,NUME_DDL,
            liste_option=m['OPTION']
         for option in liste_option :
            if option in (     'FORC_NODA','REAC_NODA',
-                              'EPSI_NOEU','SIGM_NOEU_DEPL','EFGE_NOEU_DEPL',
-                              'EQUI_NOEU_SIGM','EQUI_NOEU_EPSI',):
+                              'EPSI_NOEU','SIGM_NOEU','EFGE_NOEU',
+                              'SIEQ_NOEU','EPEQ_NOEU',):
               nbno=nbno+1
               liste_no.append(option)
            else:

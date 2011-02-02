@@ -1,5 +1,5 @@
       SUBROUTINE TE0415(OPTIOZ,NOMTZ)
-C MODIF ELEMENTS  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,7 +22,7 @@ C TOLE CRP_20
       CHARACTER*16 OPTION,NOMTE
 C     ----------------------------------------------------------------
 C     CALCUL DES OPTIONS DES ELEMENTS DE COQUE 3D
-C     OPTIONS : SIEF_ELNO , VARI_ELNO_ELGA
+C     OPTIONS : SIEF_ELNO , VARI_ELNO
 C          -----------------------------------------------------------
 
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
@@ -77,7 +77,7 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
         NSO = 3
       END IF
       IF (OPTION(1:9).EQ.'SIEF_ELNO' .OR.
-     &    OPTION.EQ.'SIGM_ELNO_COQU') THEN
+     &    OPTION.EQ.'SICO_ELNO') THEN
 
         CALL JEVECH('PGEOMER','L',JGEOM)
         CALL JEVECH('PCACOQU','L',JCARA)
@@ -121,7 +121,7 @@ C
    40     CONTINUE
    50   CONTINUE
         NCMP = 6
-        IF (OPTION.EQ.'SIGM_ELNO_COQU') THEN
+        IF (OPTION.EQ.'SICO_ELNO') THEN
           IF (ZK16(ICOMPO+2).EQ.'GROT_GDEP') THEN
             LGREEN = .TRUE.
           ENDIF
@@ -183,7 +183,7 @@ C --- AU REPERE UTILISATEUR :
 C     ---------------------
         CALL VDREPE(NOMTE,MATEVN,MATEVG)
 
-         IF (OPTION.EQ.'SIGM_ELNO_COQU') THEN
+         IF (OPTION.EQ.'SICO_ELNO') THEN
 
 C --- PASSAGE DU VECTEUR DES CONTRAINTES DEFINI AUX NOEUDS
 C --- DE L'ELEMENT DU REPERE INTRINSEQUE AU REPERE UTILISATEUR :
@@ -246,7 +246,7 @@ C     --------------------------------------------------------
           CALL VDEFRO(NB2,MATEVN,EFFGT,ZR(JEFFG))
         END IF
 
-       ELSE IF (OPTION.EQ.'VARI_ELNO_ELGA') THEN
+       ELSE IF (OPTION.EQ.'VARI_ELNO') THEN
 
 
         CALL JEVECH('PVARIGR','L',ICHG)
@@ -389,7 +389,7 @@ C -- STOCKAGE DANS PVARINR : PAR NOEUD DU PREMIER AU DERNIER
 
 C ------------------------------------------------------------
 
-       ELSE IF (OPTION.EQ.'VARI_ELNO_COQU') THEN
+       ELSE IF (OPTION.EQ.'VACO_ELNO') THEN
 
         CALL JEVECH('PNUMCOR','L',JNUMC)
         ICOU = ZI(JNUMC)

@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # RESPONSABLE JMBHH01 J.M.PROIX
 # TITRE TUBE DROIT SOUMIS A PLUSIEURS CHARGEMENTS (ELEMENT TUYAU_3M 4 NOEUDS STAT_NON_LINE)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -136,7 +136,7 @@ U1=STAT_NON_LINE(SOLVEUR=_F(METHODE='MUMPS',PCENT_PIVOT=10),
               )
 
 U1=CALC_ELEM( reuse=U1,
-              OPTION=( 'SIEF_ELNO',  'VARI_ELNO_ELGA','DEGE_ELNO'),
+              OPTION=( 'SIEF_ELNO',  'VARI_ELNO','DEGE_ELNO'),
               RESULTAT=U1, )
 
 TEST_RESU(RESU=(
@@ -161,7 +161,7 @@ _F( RESULTAT = U1, NUME_ORDRE = 2,
 
 U1=CALC_ELEM( reuse=U1,
                     TOUT_ORDRE='OUI',
-                   OPTION=('SIGM_ELNO_TUYO',),
+                   OPTION=('SITU_ELNO',),
                    REPE_COQUE =_F( NUME_COUCHE=1,
                                    NIVE_COUCHE='SUP',
                                    ANGLE=90, ),
@@ -170,7 +170,7 @@ U1=CALC_ELEM( reuse=U1,
 
 U1=CALC_ELEM( reuse=U1,
                     TOUT_ORDRE='OUI',
-                   OPTION=('VARI_ELNO_TUYO',),
+                   OPTION=('VATU_ELNO',),
                    REPE_COQUE =_F( NUME_COUCHE=1,
                                    NIVE_COUCHE='SUP',
                                    ANGLE=90, ),
@@ -203,7 +203,7 @@ U2=STAT_NON_LINE(SOLVEUR=_F(METHODE='MUMPS',PCENT_PIVOT=10,),
 
 U2=CALC_ELEM( reuse=U2,
                             OPTION=(
-                  'SIEF_ELNO',  'VARI_ELNO_ELGA','DEGE_ELNO'),
+                  'SIEF_ELNO',  'VARI_ELNO','DEGE_ELNO'),
                           RESULTAT=U2,
               )
 
@@ -249,7 +249,7 @@ U3=STAT_NON_LINE(SOLVEUR=_F(METHODE='MUMPS',PCENT_PIVOT=10),
 
 U3=CALC_ELEM( reuse=U3,
                             OPTION=(
-                  'SIEF_ELNO',  'VARI_ELNO_ELGA','DEGE_ELNO'),
+                  'SIEF_ELNO',  'VARI_ELNO','DEGE_ELNO'),
                           RESULTAT=U3,
               )
 
@@ -295,7 +295,7 @@ U4=STAT_NON_LINE(SOLVEUR=_F(METHODE='MUMPS',PCENT_PIVOT=10,),
 
 U4=CALC_ELEM( reuse=U4,
                             OPTION=(
-                  'SIEF_ELNO',  'VARI_ELNO_ELGA','DEGE_ELNO'),
+                  'SIEF_ELNO',  'VARI_ELNO','DEGE_ELNO'),
                           RESULTAT=U4,
               )
 
@@ -349,7 +349,7 @@ U5=STAT_NON_LINE(SOLVEUR=_F(METHODE='MUMPS',PCENT_PIVOT=10),
 
 U5=CALC_ELEM( reuse=U5,
                             OPTION=(
-                  'SIEF_ELNO',  'VARI_ELNO_ELGA','DEGE_ELNO'),
+                  'SIEF_ELNO',  'VARI_ELNO','DEGE_ELNO'),
                           RESULTAT=U5,
               )
 
@@ -403,7 +403,7 @@ U6=STAT_NON_LINE(SOLVEUR=_F(METHODE='MUMPS',PCENT_PIVOT=10,),
 
 U6=CALC_ELEM( reuse=U6,
                             OPTION=(
-                  'SIEF_ELNO',  'VARI_ELNO_ELGA','DEGE_ELNO'),
+                  'SIEF_ELNO',  'VARI_ELNO','DEGE_ELNO'),
                           RESULTAT=U6,
               )
 
@@ -458,7 +458,7 @@ U7=STAT_NON_LINE(SOLVEUR=_F(METHODE='MUMPS',PCENT_PIVOT=10),
 
 U7=CALC_ELEM( reuse=U7,
                             OPTION=(
-                  'SIEF_ELNO',  'VARI_ELNO_ELGA',),
+                  'SIEF_ELNO',  'VARI_ELNO',),
                           RESULTAT=U7,
               )
 

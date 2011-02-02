@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # TITRE ESSAI DE TRACTION-CISAILLEMENT EN CONTRAINTES PLANES (TAHERI)
 # ssnv102b.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -120,13 +120,13 @@ SOLNL=STAT_NON_LINE(
 
 SOLNL=CALC_ELEM( reuse=SOLNL,
                             OPTION=(
-                  'SIEF_ELNO',  'VARI_ELNO_ELGA',),
+                  'SIEF_ELNO',  'VARI_ELNO',),
                           RESULTAT=SOLNL,
               )
 
 SOLNL=CALC_ELEM(  reuse=SOLNL,
                                  RESULTAT=SOLNL,
-                                   OPTION='EPSI_ELNO_DEPL'  )
+                                   OPTION='EPSI_ELNO'  )
 
 SOLNL=CALC_ELEM( reuse=SOLNL,
                                     OPTION='EPSP_ELGA',
@@ -138,11 +138,11 @@ SOLNL=CALC_ELEM( reuse=SOLNL,
 
 TEST_RESU(RESU=(
 
-  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'EPSI_ELNO_DEPL',  INST = 1.,
+  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'EPSI_ELNO',  INST = 1.,
          PRECISION = 0.025,
          MAILLE = 'MA1',  NOEUD = 'NO4',  NOM_CMP = 'EPXX',  VALE = 1.721E-2),
 
-  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'EPSI_ELNO_DEPL',  INST = 1.,
+  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'EPSI_ELNO',  INST = 1.,
          PRECISION = 0.025,
          MAILLE = 'MA1',  NOEUD = 'NO4',  NOM_CMP = 'EPXY',  VALE = 2.573E-2),
 
@@ -162,16 +162,16 @@ TEST_RESU(RESU=(
          PRECISION = 0.025,
          MAILLE = 'MA1',  NOEUD = 'NO4',  NOM_CMP = 'EPXY',  VALE = 2.515E-2),
 
-#  RESU:( RESULTAT:SOLNL  NOM_CHAM:'VARI_ELNO_ELGA'  INST: 1.
+#  RESU:( RESULTAT:SOLNL  NOM_CHAM:'VARI_ELNO'  INST: 1.
 #         MAILLE:MA1  NOEUD:NO4 NOM_CMP:'V2' VALE:3.354E-2 )
 
-#  RESU:( RESULTAT:SOLNL  NOM_CHAM:'VARI_ELNO_ELGA'  INST: 1.
+#  RESU:( RESULTAT:SOLNL  NOM_CHAM:'VARI_ELNO'  INST: 1.
 #         MAILLE:MA1  NOEUD:NO4  NOM_CMP:'V9'  VALE:1.677E-2 )
 
-#  RESU:( RESULTAT:SOLNL  NOM_CHAM:'VARI_ELNO_ELGA'  INST: 1.
+#  RESU:( RESULTAT:SOLNL  NOM_CHAM:'VARI_ELNO'  INST: 1.
 #         MAILLE:MA1  NOEUD:NO4 NOM_CMP:'V12' VALE:3.558E-2 )
 
-  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'VARI_ELNO_ELGA',   INST = 1.,
+  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'VARI_ELNO',   INST = 1.,
          MAILLE = 'MA1',   NOEUD = 'NO4', NOM_CMP = 'V2', VALE = 1.760E+2))
         )
 

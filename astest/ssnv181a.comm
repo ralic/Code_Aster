@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # TITRE VERIFICATION DE LA BONNE PRISE EN COMPTE DU CISAILLEMENT DANS LE MODELE BETON_UMLV_FP
 # ssnv181a.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -161,11 +161,11 @@ U=CALC_ELEM(reuse =U,
 
 
             RESULTAT=U,
-            OPTION=('SIEF_ELNO','EPSI_ELNO_DEPL',),);
+            OPTION=('SIEF_ELNO','EPSI_ELNO',),);
 
 TEST_RESU(RESU=(
       _F( RESULTAT = U,
-          NOM_CHAM = 'EPSI_ELNO_DEPL',
+          NOM_CHAM = 'EPSI_ELNO',
           MAILLE = 'M1',
           NOEUD = 'N6',
           INST = 64800.,
@@ -174,7 +174,7 @@ TEST_RESU(RESU=(
           PRECISION = 0.005,
           REFERENCE = 'ANALYTIQUE'),
       _F( RESULTAT = U,
-          NOM_CHAM = 'EPSI_ELNO_DEPL',
+          NOM_CHAM = 'EPSI_ELNO',
           MAILLE = 'M1',
           NOEUD = 'N6',
           INST = 648000.,
@@ -183,7 +183,7 @@ TEST_RESU(RESU=(
           PRECISION = 0.005,
           REFERENCE = 'ANALYTIQUE'),
       _F( RESULTAT = U,
-          NOM_CHAM = 'EPSI_ELNO_DEPL',
+          NOM_CHAM = 'EPSI_ELNO',
           MAILLE = 'M1',
           NOEUD = 'N6',
           INST = 6480000.,
@@ -192,7 +192,7 @@ TEST_RESU(RESU=(
           PRECISION = 0.005,
           REFERENCE = 'ANALYTIQUE'),
       _F( RESULTAT = U,
-          NOM_CHAM = 'EPSI_ELNO_DEPL',
+          NOM_CHAM = 'EPSI_ELNO',
           MAILLE = 'M1',
           NOEUD = 'N6',
           INST = 64800000.,

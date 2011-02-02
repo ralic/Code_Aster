@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # TITRE ESSAI DE RELAXATION EN AXIS VENDOCHAB
 # ssnv126b.para = tps_job 100 mem_job 64Mo liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -282,7 +282,7 @@ SOLNL=STAT_NON_LINE(
 
 SOLNL=CALC_ELEM( reuse=SOLNL,
                             OPTION=(
-                  'SIEF_ELNO',  'VARI_ELNO_ELGA',),
+                  'SIEF_ELNO',  'VARI_ELNO',),
                           RESULTAT=SOLNL,
               )
 
@@ -291,17 +291,17 @@ TEST_RESU(RESU=(
                  MAILLE = 'MA1',  NOEUD = 'N1',  NOM_CMP = 'SIYY', VALE = 7.59785E1,
          PRECISION = 5.0E-3),
 
-  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'VARI_ELNO_ELGA',  NUME_ORDRE = 50,
+  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'VARI_ELNO',  NUME_ORDRE = 50,
                  MAILLE = 'MA1',  NOEUD = 'N1',
                  NOM_CMP = 'V7',            VALE = 2.76079E-3,
          PRECISION = 5.0E-3),
 
-  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'VARI_ELNO_ELGA',  NUME_ORDRE = 50,
+  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'VARI_ELNO',  NUME_ORDRE = 50,
                  MAILLE = 'MA1',  NOEUD = 'N1',
                  NOM_CMP = 'V8',            VALE = 2.7478E-3,
          PRECISION = 5.0E-3),
 
-  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'VARI_ELNO_ELGA',  NUME_ORDRE = 50,
+  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'VARI_ELNO',  NUME_ORDRE = 50,
                  MAILLE = 'MA1',  NOEUD = 'N1',
                  NOM_CMP = 'V9',            VALE = 1.10134E-1,
          PRECISION = 1.0E-2),
@@ -310,17 +310,17 @@ TEST_RESU(RESU=(
                  MAILLE = 'MA1',  NOEUD = 'N1',  NOM_CMP = 'SIYY', VALE = 5.55421E1,
          PRECISION = 1.0E-1),
 
-  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'VARI_ELNO_ELGA',  NUME_ORDRE = 60,
+  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'VARI_ELNO',  NUME_ORDRE = 60,
                  MAILLE = 'MA1',  NOEUD = 'N1',
                  NOM_CMP = 'V7',            VALE = 2.81478E-3,
          PRECISION = 5.0E-3),
 
-  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'VARI_ELNO_ELGA',  NUME_ORDRE = 60,
+  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'VARI_ELNO',  NUME_ORDRE = 60,
                  MAILLE = 'MA1',  NOEUD = 'N1',
                  NOM_CMP = 'V8',            VALE = 2.79276E-3,
          PRECISION = 5.0E-3),
 
-  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'VARI_ELNO_ELGA',  NUME_ORDRE = 60,
+  _F(  RESULTAT = SOLNL,  NOM_CHAM = 'VARI_ELNO',  NUME_ORDRE = 60,
                  MAILLE = 'MA1',  NOEUD = 'N1',
                  NOM_CMP = 'V9',            VALE = 2.81316E-1,
          PRECISION = 1.0E-1))

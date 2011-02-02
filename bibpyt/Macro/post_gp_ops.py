@@ -1,4 +1,4 @@
-#@ MODIF post_gp_ops Macro  DATE 25/01/2011   AUTEUR MACOCCO K.MACOCCO 
+#@ MODIF post_gp_ops Macro  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -238,7 +238,7 @@ def post_gp_ops(self, **args):
    
    if self['TRAC_COMP']=='OUI':
       # prise en compte de la traction-compression dans le calcul de l'energie
-      resu2=CALC_ELEM(OPTION=('EQUI_ELNO_SIGM'),
+      resu2=CALC_ELEM(OPTION=('SIEQ_ELNO'),
                      RESULTAT=self['RESULTAT'],
                      )
                      
@@ -315,7 +315,7 @@ def post_gp_ops(self, **args):
             
             l_enel = T_el[kk].TOTALE.values()
             
-            # signe de la trace <=> signe de la composante VMIS_SG du tenseur EQUI_ELNO_SIGM,
+            # signe de la trace <=> signe de la composante VMIS_SG du tenseur SIEQ_ELNO,
             # mais E_enel est par element => on fait une moyenne sur les noeuds de l'element
             
             list_no = []
@@ -335,7 +335,7 @@ def post_gp_ops(self, **args):
                
                __VM=RECU_FONCTION(RESULTAT=resu2,
                                     TOUT_INST='OUI',
-                                    NOM_CHAM='EQUI_ELNO_SIGM',
+                                    NOM_CHAM='SIEQ_ELNO',
                                     NOM_CMP='VMIS_SG',
                                     MAILLE=elem,
                                     NOEUD=noeud);

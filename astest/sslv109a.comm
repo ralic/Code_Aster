@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # TITRE CYLINDRE SOUMIS A UNE PRESSION EN MODE 1 FOURIER (TRIA6)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -92,7 +92,7 @@ TEST_TABLE(       TABLE=T_ENER,
 # ----------------------------------------------------------------------
 
 FO_ELAS1=CALC_ELEM(reuse=FO_ELAS1,   RESULTAT=FO_ELAS1,
-                         OPTION=( 'SIGM_ELNO_DEPL', 'SIEF_ELGA', ),
+                         OPTION=( 'SIGM_ELNO', 'SIEF_ELGA', ),
                        )
 
 FO_ELAS1=CALC_NO(reuse=FO_ELAS1,   RESULTAT=FO_ELAS1,
@@ -105,7 +105,7 @@ FO_ELAS1=CALC_NO(reuse=FO_ELAS1,   RESULTAT=FO_ELAS1,
 
 SIGMA=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='ELNO_SIEF_R',
                     RESULTAT=FO_ELAS1, NUME_MODE=1,
-                    NOM_CHAM='SIGM_ELNO_DEPL' ),
+                    NOM_CHAM='SIGM_ELNO' ),
 
 TEST_RESU(RESU=(
             _F(  RESULTAT = FO_ELAS1,       NUME_MODE = NUM_HARM,
@@ -158,33 +158,33 @@ TEST_RESU(RESU=(
             NOEUD = 'N15',   NOM_CMP = 'DZ',    VALE = 0.9977916666666,   ),) )
 
 TEST_RESU(RESU=(
-          _F(  RESULTAT = FO_ELAS1, NUME_MODE=1, NOM_CHAM='SIGM_ELNO_DEPL',
+          _F(  RESULTAT = FO_ELAS1, NUME_MODE=1, NOM_CHAM='SIGM_ELNO',
             MAILLE = 'M1',   NOEUD = 'N3',    NOM_CMP = 'SIYY',   VALE = -1.,    ),
-          _F(  RESULTAT = FO_ELAS1, NUME_MODE=1, NOM_CHAM='SIGM_ELNO_DEPL',
+          _F(  RESULTAT = FO_ELAS1, NUME_MODE=1, NOM_CHAM='SIGM_ELNO',
           CRITERE = 'ABSOLU', MAILLE = 'M2',   NOEUD = 'N7',    NOM_CMP = 'SIYY',
           VALE = 0.,     ),
-          _F(  RESULTAT = FO_ELAS1, NUME_MODE=1, NOM_CHAM='SIGM_ELNO_DEPL',
+          _F(  RESULTAT = FO_ELAS1, NUME_MODE=1, NOM_CHAM='SIGM_ELNO',
           CRITERE = 'ABSOLU', MAILLE = 'M3',   NOEUD = 'N7',    NOM_CMP = 'SIYY',
           VALE = 0.,     ),
-          _F(  RESULTAT = FO_ELAS1, NUME_MODE=1, NOM_CHAM='SIGM_ELNO_DEPL',
+          _F(  RESULTAT = FO_ELAS1, NUME_MODE=1, NOM_CHAM='SIGM_ELNO',
           CRITERE = 'ABSOLU', MAILLE = 'M4',   NOEUD = 'N7',    NOM_CMP = 'SIYY',
           VALE = 0.,     ),
-          _F(  RESULTAT = FO_ELAS1, NUME_MODE=1, NOM_CHAM='SIGM_ELNO_DEPL',
+          _F(  RESULTAT = FO_ELAS1, NUME_MODE=1, NOM_CHAM='SIGM_ELNO',
             MAILLE = 'M2',   NOEUD = 'N8',    NOM_CMP = 'SIYY',   VALE = -0.5,   ),
-          _F(  RESULTAT = FO_ELAS1, NUME_MODE=1, NOM_CHAM='SIGM_ELNO_DEPL',
+          _F(  RESULTAT = FO_ELAS1, NUME_MODE=1, NOM_CHAM='SIGM_ELNO',
             MAILLE = 'M3',   NOEUD = 'N8',    NOM_CMP = 'SIYY',   VALE = -0.5,   ),
-          _F(  RESULTAT = FO_ELAS1, NUME_MODE=1, NOM_CHAM='SIGM_ELNO_DEPL',
+          _F(  RESULTAT = FO_ELAS1, NUME_MODE=1, NOM_CHAM='SIGM_ELNO',
             MAILLE = 'M1',   NOEUD = 'N9',    NOM_CMP = 'SIYY',   VALE = -1.,    ),
-          _F(  RESULTAT = FO_ELAS1, NUME_MODE=1, NOM_CHAM='SIGM_ELNO_DEPL',
+          _F(  RESULTAT = FO_ELAS1, NUME_MODE=1, NOM_CHAM='SIGM_ELNO',
             MAILLE = 'M2',   NOEUD = 'N9',    NOM_CMP = 'SIYY',   VALE = -1.,    ),
-          _F(  RESULTAT = FO_ELAS1, NUME_MODE=1, NOM_CHAM='SIGM_ELNO_DEPL',
+          _F(  RESULTAT = FO_ELAS1, NUME_MODE=1, NOM_CHAM='SIGM_ELNO',
             MAILLE = 'M3',   NOEUD = 'N9',    NOM_CMP = 'SIYY',   VALE = -1.,    ),
-          _F(  RESULTAT = FO_ELAS1, NUME_MODE=1, NOM_CHAM='SIGM_ELNO_DEPL',
+          _F(  RESULTAT = FO_ELAS1, NUME_MODE=1, NOM_CHAM='SIGM_ELNO',
           CRITERE = 'ABSOLU',   PRECISION = 2.E-3, MAILLE = 'M4',   NOEUD = 'N13',
           NOM_CMP = 'SIYY',   VALE = 0.,     ),
-          _F(  RESULTAT = FO_ELAS1, NUME_MODE=1, NOM_CHAM='SIGM_ELNO_DEPL',
+          _F(  RESULTAT = FO_ELAS1, NUME_MODE=1, NOM_CHAM='SIGM_ELNO',
             MAILLE = 'M3',   NOEUD = 'N15',   NOM_CMP = 'SIYY',   VALE = -1.,    ),
-          _F(  RESULTAT = FO_ELAS1, NUME_MODE=1, NOM_CHAM='SIGM_ELNO_DEPL',
+          _F(  RESULTAT = FO_ELAS1, NUME_MODE=1, NOM_CHAM='SIGM_ELNO',
           PRECISION = 2.E-3,  MAILLE = 'M4',   NOEUD = 'N15',   NOM_CMP = 'SIYY',
           VALE = -1.,    ))
           )
@@ -196,13 +196,13 @@ ANGL2=135.
 
 CO_FOUR1=COMB_FOURIER(   RESULTAT=FO_ELAS1,
                             NOM_CHAM=( 'DEPL',  'REAC_NODA',
-                      'SIEF_ELGA', 'SIGM_ELNO_DEPL', ),
+                      'SIEF_ELGA', 'SIGM_ELNO', ),
                                 ANGL=( ANGL1,  ANGL2,  )
                         )
 
 CO_FOUR1=CALC_ELEM(reuse =CO_FOUR1,
                    RESULTAT=CO_FOUR1,
-                   OPTION=('EQUI_ELGA_SIGM','EQUI_ELNO_SIGM',),);
+                   OPTION=('SIEQ_ELGA','SIEQ_ELNO',),);
 
 TEST_RESU(RESU=(
             _F(  RESULTAT = CO_FOUR1,
@@ -227,86 +227,86 @@ TEST_RESU(RESU=(
 
 TEST_RESU(RESU=(
          _F(  RESULTAT = CO_FOUR1,
-           NOM_CHAM = 'SIGM_ELNO_DEPL',    ANGL = ANGL1,
+           NOM_CHAM = 'SIGM_ELNO',    ANGL = ANGL1,
          MAILLE = 'M1',   NOEUD = 'N3',    NOM_CMP = 'SIYY',   VALE = -0.7071068,  ),
          _F(  RESULTAT = CO_FOUR1,      CRITERE = 'ABSOLU',
-           NOM_CHAM = 'SIGM_ELNO_DEPL',    ANGL = ANGL1,
+           NOM_CHAM = 'SIGM_ELNO',    ANGL = ANGL1,
          MAILLE = 'M2',   NOEUD = 'N7',    NOM_CMP = 'SIYY',   VALE = 0.,          ),
          _F(  RESULTAT = CO_FOUR1,      CRITERE = 'ABSOLU',
-           NOM_CHAM = 'SIGM_ELNO_DEPL',    ANGL = ANGL1,
+           NOM_CHAM = 'SIGM_ELNO',    ANGL = ANGL1,
          MAILLE = 'M3',   NOEUD = 'N7',    NOM_CMP = 'SIYY',   VALE = 0.,          ),
          _F(  RESULTAT = CO_FOUR1,      CRITERE = 'ABSOLU',
-           NOM_CHAM = 'SIGM_ELNO_DEPL',    ANGL = ANGL1,
+           NOM_CHAM = 'SIGM_ELNO',    ANGL = ANGL1,
          MAILLE = 'M4',   NOEUD = 'N7',    NOM_CMP = 'SIYY',   VALE = 0.,          ),
          _F(  RESULTAT = CO_FOUR1,
-           NOM_CHAM = 'SIGM_ELNO_DEPL',    ANGL = ANGL1,
+           NOM_CHAM = 'SIGM_ELNO',    ANGL = ANGL1,
          MAILLE = 'M2',   NOEUD = 'N8',    NOM_CMP = 'SIYY',   VALE = -0.3535534,  ),
          _F(  RESULTAT = CO_FOUR1,
-           NOM_CHAM = 'SIGM_ELNO_DEPL',    ANGL = ANGL1,
+           NOM_CHAM = 'SIGM_ELNO',    ANGL = ANGL1,
          MAILLE = 'M3',   NOEUD = 'N8',    NOM_CMP = 'SIYY',   VALE = -0.3535534,  ),
           _F(  RESULTAT = CO_FOUR1,
-          NOM_CHAM = 'SIGM_ELNO_DEPL',    ANGL = ANGL1,
+          NOM_CHAM = 'SIGM_ELNO',    ANGL = ANGL1,
          MAILLE = 'M1',   NOEUD = 'N9',    NOM_CMP = 'SIYY',   VALE = -0.7071068,  ),
          _F(  RESULTAT = CO_FOUR1,
-           NOM_CHAM = 'SIGM_ELNO_DEPL',    ANGL = ANGL1,
+           NOM_CHAM = 'SIGM_ELNO',    ANGL = ANGL1,
          MAILLE = 'M2',   NOEUD = 'N9',    NOM_CMP = 'SIYY',   VALE = -0.7071068,  ),
          _F(  RESULTAT = CO_FOUR1,
-           NOM_CHAM = 'SIGM_ELNO_DEPL',    ANGL = ANGL1,
+           NOM_CHAM = 'SIGM_ELNO',    ANGL = ANGL1,
          MAILLE = 'M3',   NOEUD = 'N9',    NOM_CMP = 'SIYY',   VALE = -0.7071068,  ),
          _F(  RESULTAT = CO_FOUR1,      CRITERE = 'ABSOLU',
-           NOM_CHAM = 'SIGM_ELNO_DEPL',    ANGL = ANGL1,
+           NOM_CHAM = 'SIGM_ELNO',    ANGL = ANGL1,
           MAILLE = 'M4',   NOEUD = 'N13',   NOM_CMP = 'SIYY',   VALE = 0.,         ),
          _F(  RESULTAT = CO_FOUR1,
-           NOM_CHAM = 'SIGM_ELNO_DEPL',    ANGL = ANGL1,
+           NOM_CHAM = 'SIGM_ELNO',    ANGL = ANGL1,
          MAILLE = 'M3',   NOEUD = 'N15',   NOM_CMP = 'SIYY',   VALE = -0.7071068,  ),
          _F(  RESULTAT = CO_FOUR1,      PRECISION = 2.E-3,
-           NOM_CHAM = 'SIGM_ELNO_DEPL',    ANGL = ANGL1,
+           NOM_CHAM = 'SIGM_ELNO',    ANGL = ANGL1,
          MAILLE = 'M4',   NOEUD = 'N15',   NOM_CMP = 'SIYY',   VALE = -0.7071068,  ),
 
          _F(  RESULTAT = CO_FOUR1,
-           NOM_CHAM = 'SIGM_ELNO_DEPL',    ANGL = ANGL2,
+           NOM_CHAM = 'SIGM_ELNO',    ANGL = ANGL2,
          MAILLE = 'M1',   NOEUD = 'N3',    NOM_CMP = 'SIYY',   VALE = 0.7071068,   ),
          _F(  RESULTAT = CO_FOUR1,      CRITERE = 'ABSOLU',
-           NOM_CHAM = 'SIGM_ELNO_DEPL',    ANGL = ANGL2,
+           NOM_CHAM = 'SIGM_ELNO',    ANGL = ANGL2,
          MAILLE = 'M2',   NOEUD = 'N7',    NOM_CMP = 'SIYY',   VALE = 0.,          ),
          _F(  RESULTAT = CO_FOUR1,      CRITERE = 'ABSOLU',
-           NOM_CHAM = 'SIGM_ELNO_DEPL',    ANGL = ANGL2,
+           NOM_CHAM = 'SIGM_ELNO',    ANGL = ANGL2,
          MAILLE = 'M3',   NOEUD = 'N7',    NOM_CMP = 'SIYY',   VALE = 0.,          ),
          _F(  RESULTAT = CO_FOUR1,      CRITERE = 'ABSOLU',
-           NOM_CHAM = 'SIGM_ELNO_DEPL',    ANGL = ANGL2,
+           NOM_CHAM = 'SIGM_ELNO',    ANGL = ANGL2,
          MAILLE = 'M4',   NOEUD = 'N7',    NOM_CMP = 'SIYY',   VALE = 0.,          ),
          _F(  RESULTAT = CO_FOUR1,
-           NOM_CHAM = 'SIGM_ELNO_DEPL',    ANGL = ANGL2,
+           NOM_CHAM = 'SIGM_ELNO',    ANGL = ANGL2,
          MAILLE = 'M2',   NOEUD = 'N8',    NOM_CMP = 'SIYY',   VALE = 0.3535534,   ),
          _F(  RESULTAT = CO_FOUR1,
-           NOM_CHAM = 'SIGM_ELNO_DEPL',    ANGL = ANGL2,
+           NOM_CHAM = 'SIGM_ELNO',    ANGL = ANGL2,
          MAILLE = 'M3',   NOEUD = 'N8',    NOM_CMP = 'SIYY',   VALE = 0.3535534,   ),
          _F(  RESULTAT = CO_FOUR1,
-           NOM_CHAM = 'SIGM_ELNO_DEPL',    ANGL = ANGL2,
+           NOM_CHAM = 'SIGM_ELNO',    ANGL = ANGL2,
          MAILLE = 'M1',   NOEUD = 'N9',    NOM_CMP = 'SIYY',   VALE = 0.7071068,   ),
          _F(  RESULTAT = CO_FOUR1,
-           NOM_CHAM = 'SIGM_ELNO_DEPL',    ANGL = ANGL2,
+           NOM_CHAM = 'SIGM_ELNO',    ANGL = ANGL2,
          MAILLE = 'M2',   NOEUD = 'N9',    NOM_CMP = 'SIYY',   VALE = 0.7071068,   ),
          _F(  RESULTAT = CO_FOUR1,
-           NOM_CHAM = 'SIGM_ELNO_DEPL',    ANGL = ANGL2,
+           NOM_CHAM = 'SIGM_ELNO',    ANGL = ANGL2,
          MAILLE = 'M3',   NOEUD = 'N9',    NOM_CMP = 'SIYY',   VALE = 0.7071068,   ),
          _F(  RESULTAT = CO_FOUR1,      CRITERE = 'ABSOLU',
-           NOM_CHAM = 'SIGM_ELNO_DEPL',    ANGL = ANGL2,
+           NOM_CHAM = 'SIGM_ELNO',    ANGL = ANGL2,
          MAILLE = 'M4',   NOEUD = 'N13',   NOM_CMP = 'SIYY',   VALE = 0.,          ),
          _F(  RESULTAT = CO_FOUR1,
-           NOM_CHAM = 'SIGM_ELNO_DEPL',    ANGL = ANGL2,
+           NOM_CHAM = 'SIGM_ELNO',    ANGL = ANGL2,
          MAILLE = 'M3',   NOEUD = 'N15',   NOM_CMP = 'SIYY',   VALE = 0.7071068,   ),
       _F(  RESULTAT = CO_FOUR1,      PRECISION = 2.E-3,
-        NOM_CHAM = 'SIGM_ELNO_DEPL',    ANGL = ANGL2,
+        NOM_CHAM = 'SIGM_ELNO',    ANGL = ANGL2,
          MAILLE = 'M4',   NOEUD = 'N15',   NOM_CMP = 'SIYY',   VALE = 0.7071068,   ))
          )
 
 TEST_RESU(RESU=(
          _F(  RESULTAT = CO_FOUR1,REFERENCE='NON_REGRESSION',
-           NOM_CHAM = 'EQUI_ELNO_SIGM',    ANGL = ANGL1,
+           NOM_CHAM = 'SIEQ_ELNO',    ANGL = ANGL1,
          MAILLE = 'M1',   NOEUD = 'N3',    NOM_CMP = 'VMIS',   VALE = 0.707110,  ),
          _F(  RESULTAT = CO_FOUR1,REFERENCE='NON_REGRESSION',
-           NOM_CHAM = 'EQUI_ELNO_SIGM',    ANGL = ANGL1,
+           NOM_CHAM = 'SIEQ_ELNO',    ANGL = ANGL1,
           MAILLE = 'M1',   NOEUD = 'N6',    NOM_CMP = 'TRESCA',   VALE = 0.707110,  ),
            ))
 
@@ -320,7 +320,7 @@ DEP45=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
 
 SIG45=CREA_CHAMP(OPERATION='EXTR',TYPE_CHAM='ELNO_SIEF_R',
                   RESULTAT=CO_FOUR1,ANGL=ANGL1,
-                  NOM_CHAM='SIGM_ELNO_DEPL'),
+                  NOM_CHAM='SIGM_ELNO'),
 
 
 DEP135=CREA_CHAMP(OPERATION='EXTR',TYPE_CHAM='NOEU_DEPL_R',
@@ -329,7 +329,7 @@ DEP135=CREA_CHAMP(OPERATION='EXTR',TYPE_CHAM='NOEU_DEPL_R',
 
 SIG135=CREA_CHAMP(OPERATION='EXTR',TYPE_CHAM='ELNO_SIEF_R',
                   RESULTAT=CO_FOUR1,ANGL=ANGL2,
-                  NOM_CHAM='SIGM_ELNO_DEPL'),
+                  NOM_CHAM='SIGM_ELNO'),
 
 
 DEPRZ = CREA_CHAMP(OPERATION='ASSE',MODELE=MO,TYPE_CHAM='NOEU_DEPL_R',
@@ -359,7 +359,7 @@ TEST_RESU(CHAM_NO=(
              NOEUD = 'N13',   NOM_CMP = 'DZ',    VALE = 0.,    ))  )
 
 SIGRZ = CREA_CHAMP(OPERATION='ASSE',MODELE=MO,TYPE_CHAM='ELNO_SIEF_R',
-                   OPTION='SIGM_ELNO_DEPL',
+                   OPTION='SIGM_ELNO',
                    ASSE=(_F( CHAM_GD=SIG45,TOUT='OUI',CUMUL='OUI',COEF_R=1.),
                          _F( CHAM_GD=SIG135,TOUT='OUI',CUMUL='OUI',COEF_R=1.),),)
 
@@ -465,7 +465,7 @@ TEST_RESU(CHAM_ELEM=(
             MAILLE = 'M4',   NOEUD = 'N15',   NOM_CMP = 'SIXY',   VALE = 0.,    )) )
 
 SIGTH = CREA_CHAMP(OPERATION='ASSE',MODELE=MO,TYPE_CHAM='ELNO_SIEF_R',
-                   OPTION='SIGM_ELNO_DEPL',
+                   OPTION='SIGM_ELNO',
                    ASSE=(_F( CHAM_GD=SIG45,TOUT='OUI',CUMUL='OUI',COEF_R=1.),
                          _F( CHAM_GD=SIG135,TOUT='OUI',CUMUL='OUI',COEF_R=-1.),),)
 

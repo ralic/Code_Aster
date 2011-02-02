@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # TITRE PARALLEPEPIPEDE SOUS SON PROPRE POIDS (HEXA20 GROSSIER)
 # sslv07a.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -160,7 +160,7 @@ RESU=MECA_STATIQUE(MODELE=MO,
 
 
 RESU=CALC_ELEM( reuse= RESU ,RESULTAT= RESU ,
-                OPTION=('SIGM_ELNO_DEPL',),
+                OPTION=('SIGM_ELNO',),
                 )
 
 DEPLA=CREA_CHAMP( OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
@@ -433,7 +433,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU,
                       PRECISION=0.001,),
                      _F(RESULTAT=RESU,
                         NUME_ORDRE=1,
-                        NOM_CHAM='SIGM_ELNO_DEPL',
+                        NOM_CHAM='SIGM_ELNO',
                         MAILLE='M10',
                         NOEUD='N77',
                         NOM_CMP='SIZZ',
@@ -442,7 +442,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU,
                         PRECISION=0.001,),
                      _F(RESULTAT=RESU,
                         NUME_ORDRE=1,
-                        NOM_CHAM='SIGM_ELNO_DEPL',
+                        NOM_CHAM='SIGM_ELNO',
                         MAILLE='M6',
                         NOEUD='N96',
                         NOM_CMP='SIZZ',
@@ -569,11 +569,11 @@ TEST_TABLE(   TABLE=TB1,
 
 RESU=CALC_NO( reuse= RESU ,RESULTAT= RESU ,
                 NUME_ORDRE=1,
-                OPTION=('SIGM_NOEU_DEPL',),
+                OPTION=('SIGM_NOEU',),
                 )
 
 TB11=MACR_LIGN_COUPE( RESULTAT= RESU,
-                     NOM_CHAM= 'SIGM_NOEU_DEPL',
+                     NOM_CHAM= 'SIGM_NOEU',
                      LIGN_COUPE = _F(
                                       TYPE='GROUP_NO',
                                       GROUP_NO='ABSANSA',
@@ -596,7 +596,7 @@ TEST_TABLE(    TABLE=TB11,
 
 
 TB12=MACR_LIGN_COUPE( RESULTAT= RESU,
-                     NOM_CHAM= 'SIGM_NOEU_DEPL',
+                     NOM_CHAM= 'SIGM_NOEU',
                      LIGN_COUPE = _F( TYPE='GROUP_MA',
                                       GROUP_MA='B12',
                                       MAILLAGE=MA,
@@ -618,14 +618,14 @@ TEST_TABLE(    TABLE=TB12,
           )
 
 
-# MACR_LIGN_COUPE et champ 'SIGM_NOEU_DEPL' d'un concept CHAM_GD :
+# MACR_LIGN_COUPE et champ 'SIGM_NOEU' d'un concept CHAM_GD :
 #---------------------------------------------------------------
 
-CHR=CREA_CHAMP(TYPE_CHAM='NOEU_SIEF_R',RESULTAT=RESU,NOM_CHAM='SIGM_NOEU_DEPL',
+CHR=CREA_CHAMP(TYPE_CHAM='NOEU_SIEF_R',RESULTAT=RESU,NOM_CHAM='SIGM_NOEU',
                OPERATION='EXTR',NUME_ORDRE=1)
 
 TBCH=MACR_LIGN_COUPE( CHAM_GD=CHR, MODELE=MO,
-                     NOM_CHAM= 'SIGM_NOEU_DEPL',
+                     NOM_CHAM= 'SIGM_NOEU',
                      LIGN_COUPE = _F( NB_POINTS= 4,TYPE='SEGMENT',
                                       COOR_ORIG= (0.0, 0.0, 1.5),
                                       COOR_EXTR= (0.0, 0.5, 1.5),
@@ -654,11 +654,11 @@ TEST_TABLE(    TABLE=TBCH,
           )
 
 
-# MACR_LIGN_COUPE et champ 'SIGM_NOEU_DEPL' extrait d'un RESULTAT:
+# MACR_LIGN_COUPE et champ 'SIGM_NOEU' extrait d'un RESULTAT:
 #----------------------------------------------------------------
 
 TB2=MACR_LIGN_COUPE( RESULTAT= RESU,
-                     NOM_CHAM= 'SIGM_NOEU_DEPL',
+                     NOM_CHAM= 'SIGM_NOEU',
                      LIGN_COUPE = _F( NB_POINTS= 4,
                                       TYPE='SEGMENT',
                                       COOR_ORIG= (0.0, 0.0, 1.5),
@@ -730,7 +730,7 @@ TEST_TABLE(    TABLE=TAB2,
 # validation de MACR_LIGN_COUPE en repere local
 
 TB3=MACR_LIGN_COUPE( RESULTAT= RESU,
-                     NOM_CHAM= 'SIGM_NOEU_DEPL',
+                     NOM_CHAM= 'SIGM_NOEU',
                      LIGN_COUPE = _F( NB_POINTS= 4,VECT_Y=(-1.,0.,0.),
                                       TYPE='SEGMENT',REPERE='LOCAL',
                                       COOR_ORIG= (0.0, 0.0, 1.5),
@@ -865,7 +865,7 @@ TEST_TABLE(    TABLE=TAB6,
 # ------------------------------------------------------------
 
 TB5=MACR_LIGN_COUPE( RESULTAT= RESU,
-                     NOM_CHAM= 'SIGM_NOEU_DEPL',
+                     NOM_CHAM= 'SIGM_NOEU',
                      LIGN_COUPE =( _F( NB_POINTS= 4,VECT_Y=(0.,0.,1.),
                                       TYPE='SEGMENT',REPERE='LOCAL',
                                       COOR_ORIG= (0.0, 0.0, 0.0),

@@ -37,13 +37,13 @@ for i in range(n):
   RES2[i]= CALC_ELEM(
                  reuse = RES2[i],
                  RESULTAT = RES2[i],
-                 OPTION = 'EPSI_ELNO_DEPL'
+                 OPTION = 'EPSI_ELNO'
                  );
 
   RES2[i]= CALC_ELEM(
                  reuse = RES2[i],
                  RESULTAT = RES2[i],
-                 OPTION = 'SIGM_ELNO_DEPL')
+                 OPTION = 'SIGM_ELNO')
 
   TB_DY[i]=POST_RELEVE_T(ACTION=_F(INTITULE='SENSIBILITE',
                                GROUP_NO=('OPPOSE'),
@@ -92,7 +92,7 @@ for i in range(n):
                                NOEUD='N256',
                                MAILLE='M82',
                                RESULTAT=RES2[i],
-                               NOM_CHAM='EPSI_ELNO_DEPL',
+                               NOM_CHAM='EPSI_ELNO',
                                NUME_ORDRE=1,
                                NOM_CMP='EPXY',
                                OPERATION='EXTRACTION',),);
@@ -138,7 +138,7 @@ for i in range(n):
                                NOEUD='N256',
                                MAILLE='M82',
                                RESULTAT=RES2[i],
-                               NOM_CHAM='SIGM_ELNO_DEPL',
+                               NOM_CHAM='SIGM_ELNO',
                                NUME_ORDRE=1,
                                NOM_CMP='SIYY',
                                OPERATION='EXTRACTION',),);
@@ -257,37 +257,37 @@ TEST_RESU(RESU=(
 TEST_RESU(RESU=(
      _F(  RESULTAT = RES,   NUME_ORDRE = 1,
           SENSIBILITE=PS_2,
-          NOM_CHAM = 'EPSI_ELNO_DEPL',  NOEUD = 'N256' ,
+          NOM_CHAM = 'EPSI_ELNO',  NOEUD = 'N256' ,
           CRITERE = 'RELATIF', PRECISION = 1.E-4,MAILLE ='M82',
           NOM_CMP = 'EPXY',    VALE = -1.2698419373902E-11,
           REFERENCE = 'NON_REGRESSION' ),
      _F(  RESULTAT = RES,   NUME_ORDRE = 1,
           SENSIBILITE=PS_3,
-          NOM_CHAM = 'EPSI_ELNO_DEPL',   NOEUD = 'N256',
+          NOM_CHAM = 'EPSI_ELNO',   NOEUD = 'N256',
           CRITERE = 'RELATIF', PRECISION = 1.E-4,MAILLE ='M82',
           NOM_CMP = 'EPXY',    VALE = -3.5836848704063E-06,
           REFERENCE = 'NON_REGRESSION' ),
      _F(  RESULTAT = RES,   NUME_ORDRE = 1,
           SENSIBILITE=PS_6,
-          NOM_CHAM = 'EPSI_ELNO_DEPL',   NOEUD = 'N256',
+          NOM_CHAM = 'EPSI_ELNO',   NOEUD = 'N256',
           CRITERE = 'RELATIF', PRECISION = 1.E-4,MAILLE ='M82',
           NOM_CMP = 'EPXY',    VALE = -1.3187809605825E-10,
           REFERENCE = 'NON_REGRESSION' ),
      _F(  RESULTAT = RES,   NUME_ORDRE = 1,
           SENSIBILITE=PS_2,
-          NOM_CHAM = 'SIGM_ELNO_DEPL',  NOEUD = 'N256' ,
+          NOM_CHAM = 'SIGM_ELNO',  NOEUD = 'N256' ,
           CRITERE = 'RELATIF', PRECISION = 1.E-4,MAILLE ='M82',
           NOM_CMP = 'SIYY',    VALE = -4.4117698496351E-04,
           REFERENCE = 'NON_REGRESSION' ),
      _F(  RESULTAT = RES,   NUME_ORDRE = 1,
           SENSIBILITE=PS_3,
-          NOM_CHAM = 'SIGM_ELNO_DEPL',   NOEUD = 'N256',
+          NOM_CHAM = 'SIGM_ELNO',   NOEUD = 'N256',
           CRITERE = 'RELATIF', PRECISION = 1.E-4,MAILLE ='M82',
           NOM_CMP = 'SIYY',    VALE = -1.6089388160469E+02,
           REFERENCE = 'NON_REGRESSION' ),
      _F(  RESULTAT = RES,   NUME_ORDRE = 1,
           SENSIBILITE=PS_6,
-          NOM_CHAM = 'SIGM_ELNO_DEPL',   NOEUD = 'N256',
+          NOM_CHAM = 'SIGM_ELNO',   NOEUD = 'N256',
           CRITERE = 'RELATIF', PRECISION = 1.E-4,MAILLE ='M82',
           NOM_CMP = 'SIYY',    VALE = 1.8009447746660E-05,
           REFERENCE = 'NON_REGRESSION' ),

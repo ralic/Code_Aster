@@ -1,4 +1,4 @@
-# MODIF  DATE 25/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # TITRE MODELISATION TUYAU_3M 4NOEUDS POUTRE DROITE ANALYSE HARMONIQUE
 # shll101d.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -141,14 +141,14 @@ DYNA_F=DYNA_LINE_HARM(  MATR_MASS=MASSE,
 
 
 DYNA_F=CALC_ELEM(reuse=DYNA_F,
-                        RESULTAT=DYNA_F,  OPTION='EFGE_ELNO_DEPL',
+                        RESULTAT=DYNA_F,  OPTION='EFGE_ELNO',
 )
 DYNA_F=CALC_NO(reuse=DYNA_F,
-                          RESULTAT=DYNA_F,  OPTION='EFGE_NOEU_DEPL',
+                          RESULTAT=DYNA_F,  OPTION='EFGE_NOEU',
 )
 TEST_RESU(RESU=(   _F(  RESULTAT = DYNA_F,             NUME_ORDRE = 1,
                                           GROUP_NO='B',
-                       NOM_CHAM = 'EFGE_NOEU_DEPL',   NOM_CMP = 'N',
+                       NOM_CHAM = 'EFGE_NOEU',   NOM_CMP = 'N',
                        VALE_C = 3000.E0+0.E0j,   REFERENCE='AUTRE_ASTER',PRECISION= 5.E-4),
                      _F(  RESULTAT = DYNA_F,  NUME_ORDRE = 1,  GROUP_NO='B',
                        NOM_CHAM = 'DEPL',  NOM_CMP = 'DX',
@@ -192,15 +192,15 @@ DYNA_FL=DYNA_LINE_HARM(  MATR_MASS=MASSE,
 #
 
 DYNA_FL=CALC_ELEM(reuse=DYNA_FL,
-                         RESULTAT=DYNA_FL,  OPTION='EFGE_ELNO_DEPL',
+                         RESULTAT=DYNA_FL,  OPTION='EFGE_ELNO',
 )
 #
 DYNA_FL=CALC_NO(reuse=DYNA_FL,
-                          RESULTAT=DYNA_FL,  OPTION='EFGE_NOEU_DEPL',
+                          RESULTAT=DYNA_FL,  OPTION='EFGE_NOEU',
 )
 TEST_RESU(RESU=(   _F(  RESULTAT = DYNA_FL,           NUME_ORDRE = 1,
                                          GROUP_NO='B',
-                       NOM_CHAM = 'EFGE_NOEU_DEPL',  NOM_CMP = 'VY',
+                       NOM_CHAM = 'EFGE_NOEU',  NOM_CMP = 'VY',
                        VALE_C = 3000.E0+0.E0j,    REFERENCE='AUTRE_ASTER',PRECISION= 0.02),
                      _F(  RESULTAT = DYNA_FL,  NUME_ORDRE = 1,  GROUP_NO='B',
                        NOM_CHAM = 'DEPL',  NOM_CMP = 'DY',
@@ -258,15 +258,15 @@ DYNA_AF=DYNA_LINE_HARM(  MATR_MASS=MASSE,
 #
 
 DYNA_AF=CALC_ELEM(reuse=DYNA_AF,
-                         RESULTAT=DYNA_AF,  OPTION='EFGE_ELNO_DEPL',
+                         RESULTAT=DYNA_AF,  OPTION='EFGE_ELNO',
 )
 #
 DYNA_AF=CALC_NO(reuse=DYNA_AF,
-                          RESULTAT=DYNA_AF,  OPTION='EFGE_NOEU_DEPL',
+                          RESULTAT=DYNA_AF,  OPTION='EFGE_NOEU',
 )
 TEST_RESU(RESU=(   _F(  RESULTAT = DYNA_AF,           NUME_ORDRE = 1,
                                          GROUP_NO='B',
-                       NOM_CHAM = 'EFGE_NOEU_DEPL',  NOM_CMP = 'N',
+                       NOM_CHAM = 'EFGE_NOEU',  NOM_CMP = 'N',
                        VALE_C = 2.9879E3-1.897E2j,
                        REFERENCE='AUTRE_ASTER',PRECISION= 7.E-4),
                      _F(  RESULTAT = DYNA_AF,  NUME_ORDRE = 1,  GROUP_NO='B',
@@ -319,21 +319,21 @@ DYNA_AFL=DYNA_LINE_HARM(  MATR_MASS=MASSE,
 
 
 DYNA_AFL=CALC_ELEM(reuse=DYNA_AFL,
-                          RESULTAT=DYNA_AFL,  OPTION='EFGE_ELNO_DEPL',
+                          RESULTAT=DYNA_AFL,  OPTION='EFGE_ELNO',
 )
 #
 DYNA_AFL=CALC_NO(reuse=DYNA_AFL,
-                          RESULTAT=DYNA_AFL,  OPTION='EFGE_NOEU_DEPL',
+                          RESULTAT=DYNA_AFL,  OPTION='EFGE_NOEU',
 )
 #
 TEST_RESU(RESU=(   _F(  RESULTAT = DYNA_AFL,          NUME_ORDRE = 1,
                                          GROUP_NO='B',
-                       NOM_CHAM = 'EFGE_NOEU_DEPL',  NOM_CMP = 'VY',
+                       NOM_CHAM = 'EFGE_NOEU',  NOM_CMP = 'VY',
                        VALE_C = 2.9868951093362E+03-1.2441983057240E+02j,
                        REFERENCE='AUTRE_ASTER',PRECISION= 0.03),
                      _F(  RESULTAT = DYNA_AFL,          NUME_ORDRE = 1,
                                       GROUP_NO='A',
-                       NOM_CHAM = 'EFGE_NOEU_DEPL',  NOM_CMP = 'MFZ',
+                       NOM_CHAM = 'EFGE_NOEU',  NOM_CMP = 'MFZ',
                        VALE_C = 9.6397865167429E+03+6.7370390082881E+02j,
                        REFERENCE='AUTRE_ASTER',PRECISION= 0.02),
                      _F(  RESULTAT = DYNA_AFL,  NUME_ORDRE = 1,  GROUP_NO='B',

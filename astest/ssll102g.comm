@@ -1,9 +1,9 @@
-# MODIF  DATE 14/10/2010   AUTEUR BOYERE E.BOYERE 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # TITRE POUTRE DROITE APPUYEE EN SES DEUX EXTREMITES SOUMISE A UN
 # ssll102g.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -108,8 +108,8 @@ MEST1=MECA_STATIQUE(        MODELE=MO,
 #
 MEST1=CALC_ELEM( reuse=MEST1,
                          RESULTAT=MEST1,
-                           OPTION=('EFGE_ELNO_DEPL',
-                                  # 'SIGM_ELNO_DEPL'
+                           OPTION=('EFGE_ELNO',
+                                  # 'SIGM_ELNO'
                                    )
                    )
 
@@ -126,7 +126,7 @@ TEST_RESU(   RESU=_F( RESULTAT = MEST1,
 
 #
 TEST_RESU(   RESU=_F( RESULTAT = MEST1,
-                    NOM_CHAM = 'EFGE_ELNO_DEPL',
+                    NOM_CHAM = 'EFGE_ELNO',
                     NUME_ORDRE = 1,
                     NOM_CMP = 'VY',
                     MAILLE = 'S11',
@@ -138,7 +138,7 @@ TEST_RESU(   RESU=_F( RESULTAT = MEST1,
 
 #
 TEST_RESU(   RESU=_F( RESULTAT = MEST1,
-                    NOM_CHAM = 'EFGE_ELNO_DEPL',
+                    NOM_CHAM = 'EFGE_ELNO',
                     NUME_ORDRE = 1,
                     NOM_CMP = 'VY',
                     MAILLE = 'S110',
@@ -150,7 +150,7 @@ TEST_RESU(   RESU=_F( RESULTAT = MEST1,
 
 #
 TEST_RESU(   RESU=_F( RESULTAT = MEST1,
-                    NOM_CHAM = 'EFGE_ELNO_DEPL',
+                    NOM_CHAM = 'EFGE_ELNO',
                     NUME_ORDRE = 1,
                     NOM_CMP = 'MFZ',
                     MAILLE = 'S17',

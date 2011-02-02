@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # ======================================================================
 # TEST DU MODELE VISCOPLASTIQUE VISC_DRUC_PRAG
 # TITRE ETUDE  : ESSAI TRIAXIAL DRAINE AVEC VISC_DRUC_PRAG 
@@ -136,14 +136,14 @@ IMPR_RESU(MODELE=MODELE,
 
 U1=CALC_ELEM( reuse=U1,
                             OPTION=(
-                  'SIEF_ELNO',  'VARI_ELNO_ELGA',),
+                  'SIEF_ELNO',  'VARI_ELNO',),
                           RESULTAT=U1,
               )
 
 U1=CALC_NO(  reuse      = U1,
              RESULTAT   = U1,
              TOUT_ORDRE = 'OUI',
-             OPTION     = ('SIEF_NOEU','VARI_NOEU_ELGA'),
+             OPTION     = ('SIEF_NOEU','VARI_NOEU'),
                )
 
 #***********************************************************************
@@ -220,14 +220,14 @@ U2=STAT_NON_LINE(
 
 
 U2=CALC_ELEM( reuse      = U2,
-              OPTION     = ('SIEF_ELNO','VARI_ELNO_ELGA'),
+              OPTION     = ('SIEF_ELNO','VARI_ELNO'),
               RESULTAT   = U2,
               )
 
 U2=CALC_NO(  reuse      = U2,
              RESULTAT   = U2,
              TOUT_ORDRE = 'OUI',
-             OPTION     = ('SIEF_NOEU','VARI_NOEU_ELGA'),
+             OPTION     = ('SIEF_NOEU','VARI_NOEU'),
                )
 
 

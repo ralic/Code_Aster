@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # TITRE VALIDATION DU CALCUL DE LA MATRICE DE MASSE AVEC UNE MODELISATION A GRADIENT
 # zzzz254a.para = tps_job 300 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -92,11 +92,11 @@ TEST_RESU(OBJET=_F(NOM='MAT            .M01.RESL',
 
 #RESU=CALC_ELEM(reuse =RESU,
 #               RESULTAT=RESU,
-#               OPTION=('VARI_ELNO_ELGA','SIEF_ELNO',),);
+#               OPTION=('VARI_ELNO','SIEF_ELNO',),);
 #IMPR_RESU(FORMAT='MED',
 #          RESU=_F(MAILLAGE=MAILLAGE,
 #                  RESULTAT=RESU,
-#                  NOM_CHAM=('VARI_ELNO_ELGA','SIEF_ELNO','DEPL',),),);
+#                  NOM_CHAM=('VARI_ELNO','SIEF_ELNO','DEPL',),),);
 #MATER2=DEFI_MATERIAU(ELAS=_F(E=30000.0,
 #                             NU=0.2,
 #                             RHO=2764.0,),
@@ -130,6 +130,6 @@ TEST_RESU(OBJET=_F(NOM='MAT            .M01.RESL',
 #                                    FORMULATION='DEPLACEMENT',),);
 #RESU2=CALC_ELEM(reuse =RESU2,
 #                RESULTAT=RESU2,
-#                OPTION=('VARI_ELNO_ELGA','SIEF_ELNO',),);
+#                OPTION=('VARI_ELNO','SIEF_ELNO',),);
 
 FIN();

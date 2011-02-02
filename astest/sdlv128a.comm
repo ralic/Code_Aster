@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # TITRE  EXPANSION MODALE SUR UN TUBE 3D A PARTIR DE MESURES EXTENSIOMETRIQUES
 # sdlv128a.para = tps_job 300 mem_job 600Mo mem_aster 40 ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -145,7 +145,7 @@ MODEAIR = EXTR_MODE( FILTRE_MODE = _F( MODE = MODEAIRt,
 MODEAIR = CALC_ELEM( reuse    = MODEAIR,
                      RESULTAT = MODEAIR,
                      GROUP_MA = 'TUBE_MA',
-                     OPTION   = 'EPSI_ELNO_DEPL'
+                     OPTION   = 'EPSI_ELNO'
                     );
 
 MODEAIR = CALC_NO( reuse      = MODEAIR,
@@ -290,7 +290,7 @@ MODESTA = CREA_RESU( OPERATION = 'AFFE',
 MODESTA = CALC_ELEM( reuse    = MODESTA,
                      RESULTAT = MODESTA,
                      GROUP_MA = 'TUBE_MA',
-                     OPTION   = 'EPSI_ELNO_DEPL'
+                     OPTION   = 'EPSI_ELNO'
                 );
                                 
 MODESTA = CALC_NO( reuse    = MODESTA,

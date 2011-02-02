@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 01/02/2011   AUTEUR DELMAS J.DELMAS 
+%& MODIF TYPELEM  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -194,7 +194,7 @@ OPTION__
                                      CMATERC  PMATERC  ZVARCPG  PVARCPR  CTEMPSR  PTEMPSR  ZVARCPG  PVARCRR
                               OUT__  EDEFOPG  PDEFORR
                                      EDEFOPC  PDEFORC
-    EPSI_ELNO_DEPL      87    IN__   CCOMPOR  PCOMPOR  NDEPLAR  PDEPLAR  NGEOMER  PGEOMER  ZVARCPG  PVARCPR
+    EPSI_ELNO      87    IN__   CCOMPOR  PCOMPOR  NDEPLAR  PDEPLAR  NGEOMER  PGEOMER  ZVARCPG  PVARCPR
                                      CMATERC  PMATERC  ZVARCPG  PVARCPR  CTEMPSR  PTEMPSR  ZVARCPG  PVARCRR
                               OUT__  EDEFONO  PDEFORR
                                      EDEFONC  PDEFORC
@@ -206,17 +206,17 @@ OPTION__
                                      CMATERC  PMATERC  ZVARCPG  PVARCPR
                                      CTEMPSR  PTEMPSR  ZVARCPG  PVARCRR   ZVARIPG  PVARIGR
                               OUT__  EDEFONO  PDEFOPL
-    EQUI_ELGA_EPME      336   IN__   EDEFOPG  PDEFORR
+    EPMQ_ELGA      336   IN__   EDEFOPG  PDEFORR
                               OUT__  EDFEQPG  PDEFOEQ
-    EQUI_ELGA_EPSI      336   IN__   EDEFOPG  PDEFORR
+    EPEQ_ELGA      336   IN__   EDEFOPG  PDEFORR
                               OUT__  EDFEQPG  PDEFOEQ
-    EQUI_ELGA_SIGM      336   IN__   ECONTPG  PCONTRR
+    SIEQ_ELGA      336   IN__   ECONTPG  PCONTRR
                               OUT__  ECOEQPG  PCONTEQ
-    EQUI_ELNO_EPME      336   IN__   EDEFONO  PDEFORR
+    EPMQ_ELNO      336   IN__   EDEFONO  PDEFORR
                               OUT__  EDFEQNO  PDEFOEQ
-    EQUI_ELNO_EPSI      336   IN__   EDEFONO  PDEFORR
+    EPEQ_ELNO      336   IN__   EDEFONO  PDEFORR
                               OUT__  EDFEQNO  PDEFOEQ
-    EQUI_ELNO_SIGM      330   IN__   ECONTPG  PCONTRR
+    SIEQ_ELNO      330   IN__   ECONTPG  PCONTRR
                               OUT__  ECOEQNO  PCONTEQ
     ERME_ELEM           -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
@@ -309,7 +309,7 @@ OPTION__
     SIEF_ELNO           98    IN__   ECONTPG  PCONTRR
                               OUT__  ECONTNO  PSIEFNOR
                                      ECONTNC  PSIEFNOC
-    SIGM_ELNO_DEPL      -1    IN__   XXXXXX   XXXXXX
+    SIGM_ELNO      -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
     SIGM_ELNO_SENS      -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
@@ -321,7 +321,7 @@ OPTION__
                                      ENNEUT_F PNEUT_F  ENNEUT_R PNEUT_R  ECONTNO  PSIEF_R  ZVARINO  PVARI_R
     VARI_ELGA_ELNO      98    IN__   CCOMPOR  PCOMPOR  ZVARINO  PVARINR
                               OUT__  ZVARIPG  PVARIGR
-    VARI_ELNO_ELGA      98    IN__   CCOMPOR  PCOMPOR  ZVARIPG  PVARIGR
+    VARI_ELNO      98    IN__   CCOMPOR  PCOMPOR  ZVARIPG  PVARIGR
                               OUT__  ZVARINO  PVARINR
     VERI_JACOBIEN      328    IN__   NGEOMER  PGEOMER
                               OUT__  ECODRET  PCODRET

@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # TITRE Exemple d'etude parametrique
 # distr01a.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -86,11 +86,11 @@ RESU=MECA_STATIQUE(MODELE=MODE,
 
 RESU=CALC_ELEM(reuse=RESU,
                RESULTAT=RESU,
-               OPTION=('SIGM_ELNO_DEPL','EQUI_ELNO_SIGM',),)
+               OPTION=('SIGM_ELNO','SIEQ_ELNO',),)
 
 RESU=CALC_NO(reuse=RESU,
              RESULTAT=RESU,
-             OPTION=('SIGM_NOEU_DEPL', 'EQUI_NOEU_SIGM', ),)
+             OPTION=('SIGM_NOEU', 'SIEQ_NOEU', ),)
 
 # Pour recuperer un fichier pour chaque cas de calcul, il est necessaire
 # de l'ecrire dans REPE_OUT. On retrouvera le fichier dans
@@ -102,12 +102,12 @@ IMPR_RESU(FORMAT='MED',
           UNITE=80,
           RESU=_F(MAILLAGE=MAIL,
                   RESULTAT=RESU,
-                  NOM_CHAM=('SIEF_ELGA','EQUI_NOEU_SIGM','DEPL',),),)
+                  NOM_CHAM=('SIEF_ELGA','SIEQ_NOEU','DEPL',),),)
 
 VMIS=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                              INTITULE='Contraintes',
                              RESULTAT=RESU,
-                             NOM_CHAM='EQUI_NOEU_SIGM',
+                             NOM_CHAM='SIEQ_NOEU',
                              GROUP_NO='Lsup',
                              NOM_CMP='VMIS',),)
 

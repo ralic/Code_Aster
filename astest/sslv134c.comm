@@ -1,4 +1,4 @@
-# MODIF  DATE 31/01/2011   AUTEUR MACOCCO K.MACOCCO 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # TITRE CALCUL 3D DE G FISSURE CIRCULAIRE EN MILIEU INFINI
 # sslv134c.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -63,7 +63,7 @@ CHAMDEPL=MECA_STATIQUE(        MODELE=MO,
                            )
 
 CHAMDEPL=CALC_ELEM( reuse=CHAMDEPL,
-                           OPTION='SIGM_ELNO_DEPL',
+                           OPTION='SIGM_ELNO',
                          RESULTAT=CHAMDEPL )
 
 FISS=DEFI_FOND_FISS(    MAILLAGE=MA,

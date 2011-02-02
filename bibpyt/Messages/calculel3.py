@@ -1,4 +1,4 @@
-#@ MODIF calculel3 Messages  DATE 25/01/2011   AUTEUR PELLET J.PELLET 
+#@ MODIF calculel3 Messages  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -43,7 +43,7 @@ cata_msg = {
 """),
 
 5 : _("""
-  pour calculer  %(k1)s  il faut SIEF_ELNO ou EFGE_ELNO_DEPL
+  pour calculer  %(k1)s  il faut SIEF_ELNO ou EFGE_ELNO
 """),
 
 6 : _("""
@@ -55,17 +55,17 @@ cata_msg = {
 """),
 
 8 : _("""
- les champs SIEF_ELGA, SIGM_ELNO_COQU et SIGM_ELNO_DEPL sont absents :
+ les champs SIEF_ELGA, SICO_ELNO et SIGM_ELNO sont absents :
  on ne peut pas calculer l'option %(k1)s  avec la SD de type  %(k2)s
 """),
 
 9 : _("""
- Le champ  SIGM_ELNO_DEPL est absent :
+ Le champ  SIGM_ELNO est absent :
  on ne peut pas calculer l'option %(k1)s  avec la SD de type  %(k2)s.
 """),
 
 10 : _("""
- Le champ  SIGM_ELNO_COQU est absent :
+ Le champ  SICO_ELNO est absent :
  on ne peut pas calculer l'option %(k1)s  avec la SD de type  %(k2)s.
 """),
 
@@ -314,7 +314,7 @@ Risques & conseils :
 
 55 : _("""
 Erreur utilisateur dans CALC_ELEM:
-  Pour pouvoir calculer EQUI_ELNO_SIGM sur un concept de type comb_fourier,
+  Pour pouvoir calculer SIEQ_ELNO sur un concept de type comb_fourier,
   il faut avoir calculé au préalable l'option 'SIEF_ELGA'
 """),
 

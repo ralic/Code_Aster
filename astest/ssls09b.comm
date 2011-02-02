@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # TITRE CYLINDRE MINCE SOUS SON POIDS PROPRE (AXIS) - ANCIEN SSLP09b
 # ssls09b.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -85,7 +85,7 @@ DEF=CALC_ELEM(reuse =DEF,
 
 
               RESULTAT=DEF,
-              OPTION='SIGM_ELNO_DEPL',
+              OPTION='SIGM_ELNO',
 
 );
 #
@@ -127,7 +127,7 @@ TEST_RESU(RESU=(   _F(  RESULTAT = DEF,
                           MAILLE = 'M4',
                           NOEUD = 'N51',
                           NUME_ORDRE=1,
-                          NOM_CHAM='SIGM_ELNO_DEPL',
+                          NOM_CHAM='SIGM_ELNO',
                           NOM_CMP = 'SIYY',
                           REFERENCE='ANALYTIQUE',
                           VALE = -3.14E5,
@@ -136,7 +136,7 @@ TEST_RESU(RESU=(   _F(  RESULTAT = DEF,
                           MAILLE = 'M4',
                           NOEUD = 'N1',
                           NUME_ORDRE=1,
-                          NOM_CHAM='SIGM_ELNO_DEPL',
+                          NOM_CHAM='SIGM_ELNO',
                           NOM_CMP = 'SIXX',
                           REFERENCE='ANALYTIQUE',
                           VALE = 0.,
@@ -146,7 +146,7 @@ TEST_RESU(RESU=(   _F(  RESULTAT = DEF,
                           MAILLE = 'M4',
                           NOEUD = 'N101',
                           NUME_ORDRE=1,
-                          NOM_CHAM='SIGM_ELNO_DEPL',
+                          NOM_CHAM='SIGM_ELNO',
                           NOM_CMP = 'SIXX',
                           REFERENCE='ANALYTIQUE',
                           VALE = 0.,
@@ -156,7 +156,7 @@ TEST_RESU(RESU=(   _F(  RESULTAT = DEF,
                           MAILLE = 'M4',
                           NOEUD = 'N51',
                           NUME_ORDRE=1,
-                          NOM_CHAM='SIGM_ELNO_DEPL',
+                          NOM_CHAM='SIGM_ELNO',
                           NOM_CMP = 'SIXX',
                           REFERENCE='ANALYTIQUE',
                           VALE = 0.,

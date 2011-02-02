@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # TITRE 2D_DISCRET EN NON-LINEAIRE -
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -65,7 +65,7 @@ DEP=MECA_STATIQUE(MODELE=MOD, CARA_ELEM=CELEM,
 
 CALC_ELEM( reuse= DEP ,RESULTAT= DEP ,
                      OPTION=(
-                                                'EFGE_ELNO_DEPL',))
+                                                'EFGE_ELNO',))
 
 L_INST=DEFI_LIST_REEL(
               DEBUT=0.0,INTERVALLE=(

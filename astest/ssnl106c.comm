@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # TITRE POUTRE ENCASTREE A UNE EXTREMITE ET CHARGEE PAR UNE TRACTION
 # ssnl106c.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -103,7 +103,7 @@ REST=STAT_NON_LINE(
               )
 
 CALC_ELEM( reuse=REST,RESULTAT=REST,
-           OPTION=( 'SIEF_ELNO',  'VARI_ELNO_ELGA',),
+           OPTION=( 'SIEF_ELNO',  'VARI_ELNO',),
               )
 
 CALC_ELEM( reuse=REST,   RESULTAT=REST,
@@ -223,7 +223,7 @@ RESM=STAT_NON_LINE(
               )
 
 CALC_ELEM( reuse=RESM,RESULTAT=RESM,
-            OPTION=('SIEF_ELNO',  'VARI_ELNO_ELGA',),
+            OPTION=('SIEF_ELNO',  'VARI_ELNO',),
               )
 
 CALC_ELEM( reuse=RESM,   RESULTAT=RESM,

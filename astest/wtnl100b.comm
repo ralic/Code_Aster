@@ -1,5 +1,5 @@
 
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # TITRE  - CONSOLIDATION DE TERZAGHI  CAS 3D
 # wtnl100b.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -130,7 +130,7 @@ RESU1=STAT_NON_LINE(MODELE=MODELE,
                     SOLVEUR=_F(METHODE='LDLT',),);
 
 RESU1=CALC_ELEM(reuse =RESU1,
-                OPTION=('SIEF_ELNO','EQUI_ELNO_SIGM'),
+                OPTION=('SIEF_ELNO','SIEQ_ELNO'),
                 RESULTAT=RESU1,);
 
 
@@ -280,7 +280,7 @@ TEST_RESU(RESU=(
 
                 _F(RESULTAT=RESU1,
                    NUME_ORDRE=1,
-                   NOM_CHAM='EQUI_ELNO_SIGM',
+                   NOM_CHAM='SIEQ_ELNO',
                    NOM_CMP='VMIS',
                    MAILLE = 'MA16',
                    NOEUD='NO83',
@@ -290,7 +290,7 @@ TEST_RESU(RESU=(
                    REFERENCE='NON_REGRESSION'),
                 _F(RESULTAT=RESU1,
                    NUME_ORDRE=1,
-                   NOM_CHAM='EQUI_ELNO_SIGM',
+                   NOM_CHAM='SIEQ_ELNO',
                    NOM_CMP='TRESCA',
                    MAILLE = 'MA16',
                    NOEUD='NO83',
@@ -300,7 +300,7 @@ TEST_RESU(RESU=(
                    REFERENCE='NON_REGRESSION'),
                 _F(RESULTAT=RESU1,
                    NUME_ORDRE=1,
-                   NOM_CHAM='EQUI_ELNO_SIGM',
+                   NOM_CHAM='SIEQ_ELNO',
                    NOM_CMP='PRIN_1',
                    MAILLE = 'MA16',
                    NOEUD='NO83',
@@ -310,7 +310,7 @@ TEST_RESU(RESU=(
                    REFERENCE='NON_REGRESSION'),
                 _F(RESULTAT=RESU1,
                    NUME_ORDRE=1,
-                   NOM_CHAM='EQUI_ELNO_SIGM',
+                   NOM_CHAM='SIEQ_ELNO',
                    NOM_CMP='PRIN_2',
                    MAILLE = 'MA16',
                    NOEUD='NO83',
@@ -321,7 +321,7 @@ TEST_RESU(RESU=(
                    REFERENCE='NON_REGRESSION'),
                 _F(RESULTAT=RESU1,
                    NUME_ORDRE=1,
-                   NOM_CHAM='EQUI_ELNO_SIGM',
+                   NOM_CHAM='SIEQ_ELNO',
                    NOM_CMP='PRIN_3',
                    MAILLE = 'MA16',
                    NOEUD='NO83',
@@ -331,7 +331,7 @@ TEST_RESU(RESU=(
                    REFERENCE='NON_REGRESSION'),
                 _F(RESULTAT=RESU1,
                    NUME_ORDRE=1,
-                   NOM_CHAM='EQUI_ELNO_SIGM',
+                   NOM_CHAM='SIEQ_ELNO',
                    NOM_CMP='VMIS_SG',
                    MAILLE = 'MA16',
                    NOEUD='NO83',

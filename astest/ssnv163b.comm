@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # RESPONSABLE YLEPAPE Y.LEPAPE
 # TITRE ESSAI DE FLUAGE PROPRE (MODELE UMLV)
 # ssnv163b.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test S
@@ -164,14 +164,14 @@ U=STAT_NON_LINE( MODELE=MO,
               )
 
 U=CALC_ELEM( reuse=U,
-             OPTION=('SIEF_ELNO','VARI_ELNO_ELGA','EPSI_ELNO_DEPL'),
+             OPTION=('SIEF_ELNO','VARI_ELNO','EPSI_ELNO'),
              RESULTAT=U,
            )
 
 
 TEST_RESU(RESU=(
       _F( RESULTAT = U,
-          NOM_CHAM = 'EPSI_ELNO_DEPL',
+          NOM_CHAM = 'EPSI_ELNO',
           MAILLE = 'M1',
           NOEUD = 'N3',
           INST = 0.,
@@ -181,7 +181,7 @@ TEST_RESU(RESU=(
           PRECISION = 0.0,
           REFERENCE = 'ANALYTIQUE'),
       _F( RESULTAT = U,
-          NOM_CHAM = 'EPSI_ELNO_DEPL',
+          NOM_CHAM = 'EPSI_ELNO',
           MAILLE = 'M1',
           NOEUD = 'N3',
           INST = 1.,
@@ -190,7 +190,7 @@ TEST_RESU(RESU=(
           PRECISION = 0.005,
           REFERENCE = 'ANALYTIQUE'),
       _F( RESULTAT = U,
-          NOM_CHAM = 'EPSI_ELNO_DEPL',
+          NOM_CHAM = 'EPSI_ELNO',
           MAILLE = 'M1',
           NOEUD = 'N3',
           INST = 97041.,
@@ -199,7 +199,7 @@ TEST_RESU(RESU=(
           PRECISION = 0.005,
           REFERENCE = 'ANALYTIQUE'),
       _F( RESULTAT = U,
-          NOM_CHAM = 'EPSI_ELNO_DEPL',
+          NOM_CHAM = 'EPSI_ELNO',
           MAILLE = 'M1',
           NOEUD = 'N3',
           INST = 1.8389E+06,
@@ -208,7 +208,7 @@ TEST_RESU(RESU=(
           PRECISION = 0.005,
           REFERENCE = 'ANALYTIQUE'),
       _F( RESULTAT = U,
-          NOM_CHAM = 'EPSI_ELNO_DEPL',
+          NOM_CHAM = 'EPSI_ELNO',
           MAILLE = 'M1',
           NOEUD = 'N3',
           INST = 8.64E6,

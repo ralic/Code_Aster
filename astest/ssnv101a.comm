@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # TITRE ESSAI DE TRACTION-CISAILLEMENT 3D (CHABOCHE_FO)
 # ssnv101a.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -107,8 +107,8 @@ TEST_RESU(RESU=(
 
 SOLNL=CALC_ELEM( reuse=SOLNL,
                             RESULTAT=SOLNL,
-                              OPTION=( 'VARI_ELNO_ELGA',
-                                       'EPSI_ELNO_DEPL',
+                              OPTION=( 'VARI_ELNO',
+                                       'EPSI_ELNO',
                                        'SIEF_ELNO',
                                        'EPSP_ELGA',)
                       )
@@ -119,15 +119,15 @@ TEST_RESU(RESU=(
              MAILLE = 'MA1',  NOEUD = 'NO1',  NOM_CMP = 'SIXX',  VALE = 1.435E+2),
 
            _F(  RESULTAT = SOLNL,          NUME_ORDRE = 13,
-             NOM_CHAM = 'EPSI_ELNO_DEPL',  PRECISION = 1.1E-02,
+             NOM_CHAM = 'EPSI_ELNO',  PRECISION = 1.1E-02,
              MAILLE = 'MA1',  NOEUD = 'NO1',  NOM_CMP = 'EPXX',  VALE = 9.709E-2),
 
            _F(  RESULTAT = SOLNL,          NUME_ORDRE = 13,
-             NOM_CHAM = 'EPSI_ELNO_DEPL',  PRECISION = 1.1E-02,
+             NOM_CHAM = 'EPSI_ELNO',  PRECISION = 1.1E-02,
              MAILLE = 'MA1',  NOEUD = 'NO1',  NOM_CMP = 'EPXY',  VALE = 1.454E-1),
 
            _F(  RESULTAT = SOLNL,          NUME_ORDRE = 13,
-             NOM_CHAM = 'VARI_ELNO_ELGA', PRECISION = 1.1E-02,
+             NOM_CHAM = 'VARI_ELNO', PRECISION = 1.1E-02,
              MAILLE = 'MA1',  NOEUD = 'NO1',  NOM_CMP = 'V1',  VALE = 1.922E-1))
            )
 

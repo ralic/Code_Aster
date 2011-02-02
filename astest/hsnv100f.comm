@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # TITRE THERMO-PLASTICITE EN TRACTION SIMPLE (MODELISATION:POU_D_E)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -143,7 +143,7 @@ U=STAT_NON_LINE(
 
 #
 U=CALC_ELEM( reuse=U,
-                            OPTION=('SIEF_ELNO',  'VARI_ELNO_ELGA'),
+                            OPTION=('SIEF_ELNO',  'VARI_ELNO'),
                           RESULTAT=U,
               )
 

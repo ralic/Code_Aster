@@ -1,9 +1,9 @@
-# MODIF  DATE 19/10/2010   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # TITRE REPONSE HARMONIQUE CYLINDRE EN D.P. (TRIA6 QUAD8) AXISYM
 # shlv100i.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -110,7 +110,7 @@ DEP=CREA_RESU(OPERATION='AFFE',
 
 
 DEP=CALC_ELEM(reuse=DEP, RESULTAT=DEP,
-              OPTION='SIGM_ELNO_DEPL',
+              OPTION='SIGM_ELNO',
               INST=0.,)
 
 #--------------------------------------------------------------------
@@ -119,7 +119,7 @@ RELEVE_1=POST_RELEVE_T(
                  NOEUD = ('N8', 'N174', 'N5', 'N170', 'N3', 'N159',),
                  RESULTAT = DEP,
                  INST=0.,
-                 NOM_CHAM='SIGM_ELNO_DEPL',
+                 NOM_CHAM='SIGM_ELNO',
                  NOM_CMP = ('SIXX', 'SIYY', 'SIZZ', 'SIXY',),
                  OPERATION = 'EXTRACTION') )
 
@@ -158,81 +158,81 @@ TEST_RESU(CHAM_NO=(
    # CONTRAINTES
 
 
-            _F(  RESULTAT = DEP, INST=0., NOM_CHAM='SIGM_ELNO_DEPL',
+            _F(  RESULTAT = DEP, INST=0., NOM_CHAM='SIGM_ELNO',
             CRITERE = 'RELATIF',  PRECISION = 1.E-2,
 MAILLE = 'M2',     GROUP_NO = 'A',        NOM_CMP = 'SIXX',         VALE = -1.),
-            _F(  RESULTAT = DEP, INST=0., NOM_CHAM='SIGM_ELNO_DEPL',
+            _F(  RESULTAT = DEP, INST=0., NOM_CHAM='SIGM_ELNO',
             CRITERE = 'RELATIF',  PRECISION = 1.E-2,
 MAILLE = 'M2',     GROUP_NO = 'A',        NOM_CMP = 'SIYY',         VALE = 0.20055),
-            _F(  RESULTAT = DEP, INST=0., NOM_CHAM='SIGM_ELNO_DEPL',
+            _F(  RESULTAT = DEP, INST=0., NOM_CHAM='SIGM_ELNO',
             CRITERE = 'RELATIF',  PRECISION = 1.E-2,
 MAILLE = 'M2',     GROUP_NO = 'A',        NOM_CMP = 'SIZZ',         VALE = 1.6685),
-            _F(  RESULTAT = DEP, INST=0., NOM_CHAM='SIGM_ELNO_DEPL',
+            _F(  RESULTAT = DEP, INST=0., NOM_CHAM='SIGM_ELNO',
             CRITERE = 'ABSOLU',   PRECISION = 1.E-2,
 MAILLE = 'M2',     GROUP_NO = 'A',        NOM_CMP = 'SIXY',         VALE = 0.),
 #
-            _F(  RESULTAT = DEP, INST=0., NOM_CHAM='SIGM_ELNO_DEPL',
+            _F(  RESULTAT = DEP, INST=0., NOM_CHAM='SIGM_ELNO',
             CRITERE = 'ABSOLU',   PRECISION = 1.E-2,
 MAILLE = 'M59',     GROUP_NO = 'B',        NOM_CMP = 'SIXX',        VALE = 0.),
-            _F(  RESULTAT = DEP, INST=0., NOM_CHAM='SIGM_ELNO_DEPL',
+            _F(  RESULTAT = DEP, INST=0., NOM_CHAM='SIGM_ELNO',
             CRITERE = 'RELATIF',  PRECISION = 1.E-2,
 MAILLE = 'M59',     GROUP_NO = 'B',        NOM_CMP = 'SIYY',        VALE = 0.20021),
-            _F(  RESULTAT = DEP, INST=0., NOM_CHAM='SIGM_ELNO_DEPL',
+            _F(  RESULTAT = DEP, INST=0., NOM_CHAM='SIGM_ELNO',
             CRITERE = 'RELATIF',  PRECISION = 1.E-2,
 MAILLE = 'M59',     GROUP_NO = 'B',        NOM_CMP = 'SIZZ',        VALE = 0.66738),
-            _F(  RESULTAT = DEP, INST=0., NOM_CHAM='SIGM_ELNO_DEPL',
+            _F(  RESULTAT = DEP, INST=0., NOM_CHAM='SIGM_ELNO',
             CRITERE = 'ABSOLU',   PRECISION = 1.E-2,
 MAILLE = 'M59',     GROUP_NO = 'B',        NOM_CMP = 'SIXY',        VALE = 0.),
 #
-            _F(  RESULTAT = DEP, INST=0., NOM_CHAM='SIGM_ELNO_DEPL',
+            _F(  RESULTAT = DEP, INST=0., NOM_CHAM='SIGM_ELNO',
             CRITERE = 'RELATIF',  PRECISION = 1.E-2,
 MAILLE = 'M1',     GROUP_NO = 'C',        NOM_CMP = 'SIXX',         VALE = -1.),
-            _F(  RESULTAT = DEP, INST=0., NOM_CHAM='SIGM_ELNO_DEPL',
+            _F(  RESULTAT = DEP, INST=0., NOM_CHAM='SIGM_ELNO',
             CRITERE = 'RELATIF',  PRECISION = 1.E-2,
 MAILLE = 'M1',     GROUP_NO = 'C',        NOM_CMP = 'SIYY',         VALE = 0.20055),
-            _F(  RESULTAT = DEP, INST=0., NOM_CHAM='SIGM_ELNO_DEPL',
+            _F(  RESULTAT = DEP, INST=0., NOM_CHAM='SIGM_ELNO',
             CRITERE = 'RELATIF',  PRECISION = 1.E-2,
 MAILLE = 'M1',     GROUP_NO = 'C',        NOM_CMP = 'SIZZ',         VALE = 1.6685),
-            _F(  RESULTAT = DEP, INST=0., NOM_CHAM='SIGM_ELNO_DEPL',
+            _F(  RESULTAT = DEP, INST=0., NOM_CHAM='SIGM_ELNO',
             CRITERE = 'ABSOLU',   PRECISION = 1.E-2,
 MAILLE = 'M1',     GROUP_NO = 'C',        NOM_CMP = 'SIXY',         VALE = 0.),
 #
-            _F(  RESULTAT = DEP, INST=0., NOM_CHAM='SIGM_ELNO_DEPL',
+            _F(  RESULTAT = DEP, INST=0., NOM_CHAM='SIGM_ELNO',
             CRITERE = 'ABSOLU',   PRECISION = 1.E-2,
 MAILLE = 'M55',     GROUP_NO = 'D',        NOM_CMP = 'SIXX',        VALE = 0.),
-            _F(  RESULTAT = DEP, INST=0., NOM_CHAM='SIGM_ELNO_DEPL',
+            _F(  RESULTAT = DEP, INST=0., NOM_CHAM='SIGM_ELNO',
             CRITERE = 'RELATIF',  PRECISION = 1.E-2,
 MAILLE = 'M55',     GROUP_NO = 'D',        NOM_CMP = 'SIYY',        VALE = 0.20021),
-            _F(  RESULTAT = DEP, INST=0., NOM_CHAM='SIGM_ELNO_DEPL',
+            _F(  RESULTAT = DEP, INST=0., NOM_CHAM='SIGM_ELNO',
             CRITERE = 'RELATIF',  PRECISION = 1.E-2,
 MAILLE = 'M55',     GROUP_NO = 'D',        NOM_CMP = 'SIZZ',        VALE = 0.66738),
-            _F(  RESULTAT = DEP, INST=0., NOM_CHAM='SIGM_ELNO_DEPL',
+            _F(  RESULTAT = DEP, INST=0., NOM_CHAM='SIGM_ELNO',
             CRITERE = 'ABSOLU',   PRECISION = 1.E-2,
 MAILLE = 'M55',     GROUP_NO = 'D',        NOM_CMP = 'SIXY',        VALE = 0.),
 #
-            _F(  RESULTAT = DEP, INST=0., NOM_CHAM='SIGM_ELNO_DEPL',
+            _F(  RESULTAT = DEP, INST=0., NOM_CHAM='SIGM_ELNO',
             CRITERE = 'RELATIF',  PRECISION = 1.E-2,
 MAILLE = 'M1',     GROUP_NO = 'E',        NOM_CMP = 'SIXX',         VALE = -1.),
-            _F(  RESULTAT = DEP, INST=0., NOM_CHAM='SIGM_ELNO_DEPL',
+            _F(  RESULTAT = DEP, INST=0., NOM_CHAM='SIGM_ELNO',
             CRITERE = 'RELATIF',  PRECISION = 1.E-2,
 MAILLE = 'M1',     GROUP_NO = 'E',        NOM_CMP = 'SIYY',        VALE = 0.20055),
-            _F(  RESULTAT = DEP, INST=0., NOM_CHAM='SIGM_ELNO_DEPL',
+            _F(  RESULTAT = DEP, INST=0., NOM_CHAM='SIGM_ELNO',
             CRITERE = 'RELATIF',  PRECISION = 1.E-2,
 MAILLE = 'M1',     GROUP_NO = 'E',        NOM_CMP = 'SIZZ',         VALE = 1.6685),
-            _F(  RESULTAT = DEP, INST=0., NOM_CHAM='SIGM_ELNO_DEPL',
+            _F(  RESULTAT = DEP, INST=0., NOM_CHAM='SIGM_ELNO',
             CRITERE = 'ABSOLU',   PRECISION = 1.E-2,
 MAILLE = 'M1',     GROUP_NO = 'E',        NOM_CMP = 'SIXY',         VALE = 0.),
 #
-            _F(  RESULTAT = DEP, INST=0., NOM_CHAM='SIGM_ELNO_DEPL',
+            _F(  RESULTAT = DEP, INST=0., NOM_CHAM='SIGM_ELNO',
             CRITERE = 'ABSOLU',   PRECISION = 1.E-2,
 MAILLE = 'M56',     GROUP_NO = 'F',        NOM_CMP = 'SIXX',        VALE = 0.),
-            _F(  RESULTAT = DEP, INST=0., NOM_CHAM='SIGM_ELNO_DEPL',
+            _F(  RESULTAT = DEP, INST=0., NOM_CHAM='SIGM_ELNO',
             CRITERE = 'RELATIF',  PRECISION = 1.E-2,
 MAILLE = 'M56',     GROUP_NO = 'F',        NOM_CMP = 'SIYY',        VALE = 0.20021),
-            _F(  RESULTAT = DEP, INST=0., NOM_CHAM='SIGM_ELNO_DEPL',
+            _F(  RESULTAT = DEP, INST=0., NOM_CHAM='SIGM_ELNO',
             CRITERE = 'RELATIF',  PRECISION = 1.E-2,
 MAILLE = 'M56',     GROUP_NO = 'F',        NOM_CMP = 'SIZZ',        VALE = 0.66738),
-            _F(  RESULTAT = DEP , INST=0., NOM_CHAM='SIGM_ELNO_DEPL',
+            _F(  RESULTAT = DEP , INST=0., NOM_CHAM='SIGM_ELNO',
             CRITERE = 'ABSOLU',   PRECISION = 1.E-2,
 MAILLE = 'M56',     GROUP_NO = 'F',        NOM_CMP = 'SIXY',        VALE = 0.))
 #

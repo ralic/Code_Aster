@@ -1,7 +1,7 @@
       SUBROUTINE TE0005(OPTION,NOMTE)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -100,9 +100,9 @@ C ======================================================================
          NCMP = DIMCON
          CALL PPGAN2(JGANO,NCMP,ZR(ICHG),ZR(ICHN))
 C ======================================================================
-C --- OPTION : VARI_ELNO_ELGA ------------------------------------------
+C --- OPTION : VARI_ELNO ------------------------------------------
 C ======================================================================
-      ELSE IF (OPTION.EQ.'VARI_ELNO_ELGA') THEN
+      ELSE IF (OPTION.EQ.'VARI_ELNO') THEN
          READ (ZK16(ICOMPO+1),'(I16)') NCMP
          CALL PPGAN2(JGANO,NCMP,ZR(ICHG),ZR(ICHN))
 C ======================================================================

@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # TITRE CYLINDRE CREUX THERMOELASTIQUE PESANT EN ROTATION UNIFORME
 # hpla100c.para = tps_job 60 mem_job 100Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -175,7 +175,7 @@ SIGMA=CREA_CHAMP(TYPE_CHAM='ELGA_SIEF_R',
                  );
 
 CALC_ELEM( reuse= DEPLPES ,RESULTAT= DEPLPES ,
-           OPTION=('EFGE_ELNO_DEPL','SIGM_ELNO_DEPL',),
+           OPTION=('EFGE_ELNO','SIGM_ELNO',),
            REPE_COQUE=_F(NIVE_COUCHE='INF',),
                          )
 
@@ -189,7 +189,7 @@ DEPLROT=MECA_STATIQUE(
                          )
 
 CALC_ELEM( reuse= DEPLROT ,RESULTAT= DEPLROT ,
-           OPTION=('EFGE_ELNO_DEPL','SIGM_ELNO_DEPL',),
+           OPTION=('EFGE_ELNO','SIGM_ELNO',),
            REPE_COQUE=_F(NIVE_COUCHE='INF',),
                          )
 
@@ -222,7 +222,7 @@ CALC_ELEM( reuse= DEPLDIL ,RESULTAT= DEPLDIL ,
                          )
 
 CALC_ELEM( reuse= DEPLDIL ,RESULTAT= DEPLDIL ,
-           OPTION=('EFGE_ELNO_DEPL','SIGM_ELNO_DEPL',),
+           OPTION=('EFGE_ELNO','SIGM_ELNO',),
 
            REPE_COQUE=_F(NIVE_COUCHE='INF',),
                          )
@@ -253,7 +253,7 @@ CALC_ELEM( reuse= DEPLDILT ,RESULTAT= DEPLDILT ,
                          )
 
 CALC_ELEM( reuse= DEPLDILT ,RESULTAT= DEPLDILT ,
-           OPTION=('EFGE_ELNO_DEPL','SIGM_ELNO_DEPL',),
+           OPTION=('EFGE_ELNO','SIGM_ELNO',),
 
              REPE_COQUE=_F(NIVE_COUCHE='INF',),
                          )
@@ -269,7 +269,7 @@ DEPLDI2=MECA_STATIQUE(
 
 
 CALC_ELEM( reuse= DEPLDI2 ,RESULTAT= DEPLDI2 ,
-           OPTION=('EFGE_ELNO_DEPL','SIGM_ELNO_DEPL',),
+           OPTION=('EFGE_ELNO','SIGM_ELNO',),
            REPE_COQUE=_F(NIVE_COUCHE='INF',),
                          )
 
@@ -282,7 +282,7 @@ DEPLDI2T=MECA_STATIQUE(
                          )
 
 CALC_ELEM( reuse= DEPLDI2T ,RESULTAT= DEPLDI2T ,
-           OPTION=('EFGE_ELNO_DEPL','SIGM_ELNO_DEPL',),
+           OPTION=('EFGE_ELNO','SIGM_ELNO',),
            REPE_COQUE=_F(NIVE_COUCHE='INF',),
                          )
 
@@ -333,45 +333,45 @@ TEST_RESU(RESU=(
 #
     # EFFORTS GENERALISES
              _F(  RESULTAT = DEPLPES,  CRITERE = 'RELATIF',   PRECISION = 3.E-4,
-        NUME_ORDRE = 1,     MAILLE = 'MA000004', NOM_CHAM = 'EFGE_ELNO_DEPL',
+        NUME_ORDRE = 1,     MAILLE = 'MA000004', NOM_CHAM = 'EFGE_ELNO',
                NOEUD = 'NO000072', NOM_CMP = 'NYY',   VALE = 8.00000E-4),
              _F(  RESULTAT = DEPLPES,  CRITERE = 'RELATIF',   PRECISION = 3.E-4,
-        NUME_ORDRE = 1,     MAILLE = 'MA000032', NOM_CHAM = 'EFGE_ELNO_DEPL',
+        NUME_ORDRE = 1,     MAILLE = 'MA000032', NOM_CHAM = 'EFGE_ELNO',
                NOEUD = 'NO000039', NOM_CMP = 'NYY',   VALE = 8.00000E-4),
 #
              _F(  RESULTAT = DEPLROT,  CRITERE = 'RELATIF',   PRECISION = 1.E-5,
-        NUME_ORDRE = 1,     MAILLE = 'MA000001', NOM_CHAM = 'EFGE_ELNO_DEPL',
+        NUME_ORDRE = 1,     MAILLE = 'MA000001', NOM_CHAM = 'EFGE_ELNO',
                NOEUD = 'NO000001', NOM_CMP = 'NYY',   VALE = 0.96000E-3),
              _F(  RESULTAT = DEPLROT,  CRITERE = 'RELATIF',   PRECISION = 1.E-5,
-        NUME_ORDRE = 1,     MAILLE = 'MA000029', NOM_CHAM = 'EFGE_ELNO_DEPL',
+        NUME_ORDRE = 1,     MAILLE = 'MA000029', NOM_CHAM = 'EFGE_ELNO',
                NOEUD = 'NO000033', NOM_CMP = 'NYY',   VALE = 0.96000E-3),
 #
              _F(  RESULTAT = DEPLDIL,  CRITERE = 'RELATIF',   PRECISION = 1.E-5,
-        NUME_ORDRE = 1,     MAILLE = 'MA000001', NOM_CHAM = 'EFGE_ELNO_DEPL',
+        NUME_ORDRE = 1,     MAILLE = 'MA000001', NOM_CHAM = 'EFGE_ELNO',
                NOEUD = 'NO000001', NOM_CMP = 'MYY',   VALE = -2.38095E-1),
              _F(  RESULTAT = DEPLDIL,  CRITERE = 'RELATIF',   PRECISION = 1.E-5,
-        NUME_ORDRE = 1,     MAILLE = 'MA000029', NOM_CHAM = 'EFGE_ELNO_DEPL',
+        NUME_ORDRE = 1,     MAILLE = 'MA000029', NOM_CHAM = 'EFGE_ELNO',
                NOEUD = 'NO000033', NOM_CMP = 'MYY',   VALE = -2.38095E-1),
 #
              _F(  RESULTAT = DEPLDILT,  CRITERE = 'RELATIF',   PRECISION = 1.E-5,
-        NUME_ORDRE = 1,     MAILLE = 'MA000001', NOM_CHAM = 'EFGE_ELNO_DEPL',
+        NUME_ORDRE = 1,     MAILLE = 'MA000001', NOM_CHAM = 'EFGE_ELNO',
                NOEUD = 'NO000001', NOM_CMP = 'MYY',   VALE = -2.38095E-1),
              _F(  RESULTAT = DEPLDILT,  CRITERE = 'RELATIF',   PRECISION = 1.E-5,
-        NUME_ORDRE = 1,     MAILLE = 'MA000029', NOM_CHAM = 'EFGE_ELNO_DEPL',
+        NUME_ORDRE = 1,     MAILLE = 'MA000029', NOM_CHAM = 'EFGE_ELNO',
                NOEUD = 'NO000033', NOM_CMP = 'MYY',   VALE = -2.38095E-1),
 #
              _F(  RESULTAT = DEPLDI2,  CRITERE = 'RELATIF',   PRECISION = 1.E-5,
-        NUME_ORDRE = 1,     MAILLE = 'MA000001', NOM_CHAM = 'EFGE_ELNO_DEPL',
+        NUME_ORDRE = 1,     MAILLE = 'MA000001', NOM_CHAM = 'EFGE_ELNO',
                NOEUD = 'NO000001', NOM_CMP = 'NYY',   VALE = -0.20000E+0),
              _F(  RESULTAT = DEPLDI2,  CRITERE = 'RELATIF',   PRECISION = 1.E-5,
-        NUME_ORDRE = 1,     MAILLE = 'MA000029', NOM_CHAM = 'EFGE_ELNO_DEPL',
+        NUME_ORDRE = 1,     MAILLE = 'MA000029', NOM_CHAM = 'EFGE_ELNO',
                NOEUD = 'NO000033', NOM_CMP = 'NYY',   VALE = -0.20000E+0),
 #
              _F(  RESULTAT = DEPLDI2T,  CRITERE = 'RELATIF',   PRECISION = 1.E-5,
-        NUME_ORDRE = 1,     MAILLE = 'MA000001', NOM_CHAM = 'EFGE_ELNO_DEPL',
+        NUME_ORDRE = 1,     MAILLE = 'MA000001', NOM_CHAM = 'EFGE_ELNO',
                NOEUD = 'NO000001', NOM_CMP = 'NYY',   VALE = -0.20000E+0),
              _F(  RESULTAT = DEPLDI2T,  CRITERE = 'RELATIF',   PRECISION = 1.E-5,
-        NUME_ORDRE = 1,     MAILLE = 'MA000029', NOM_CHAM = 'EFGE_ELNO_DEPL',
+        NUME_ORDRE = 1,     MAILLE = 'MA000029', NOM_CHAM = 'EFGE_ELNO',
                NOEUD = 'NO000033', NOM_CMP = 'NYY',   VALE = -0.20000E+0),
 #
      # CONTRAINTES AUX PTS DE GAUSS SUR LES SOUS POINTS
@@ -383,17 +383,17 @@ TEST_RESU(RESU=(
                POINT = 2,SOUS_POINT = 1, NOM_CMP = 'SIXX',  VALE = 1.015881E-04),
      # CONTRAINTES EN PEAU MOYENNE
            _F(  RESULTAT = DEPLPES,  CRITERE = 'RELATIF',   PRECISION = 2.6E-2,
-        NUME_ORDRE = 1,     MAILLE = 'MA000004', NOM_CHAM = 'SIGM_ELNO_DEPL',
+        NUME_ORDRE = 1,     MAILLE = 'MA000004', NOM_CHAM = 'SIGM_ELNO',
                NOEUD = 'NO000072', NOM_CMP = 'SIYY',  VALE = 8.00000E-4),
             _F(  RESULTAT = DEPLPES,  CRITERE = 'RELATIF',   PRECISION = 2.6E-2,
-        NUME_ORDRE = 1,     MAILLE = 'MA000032', NOM_CHAM = 'SIGM_ELNO_DEPL',
+        NUME_ORDRE = 1,     MAILLE = 'MA000032', NOM_CHAM = 'SIGM_ELNO',
               NOEUD = 'NO000039', NOM_CMP = 'SIYY',  VALE = 8.00000E-4),
 #
             _F(  RESULTAT = DEPLROT,  CRITERE = 'RELATIF',   PRECISION = 2.6E-2,
-        NUME_ORDRE = 1,     MAILLE = 'MA000001', NOM_CHAM = 'SIGM_ELNO_DEPL',
+        NUME_ORDRE = 1,     MAILLE = 'MA000001', NOM_CHAM = 'SIGM_ELNO',
               NOEUD = 'NO000001', NOM_CMP = 'SIYY',  VALE = 0.98460E-3),
             _F(  RESULTAT = DEPLROT,  CRITERE = 'RELATIF',   PRECISION = 2.6E-2,
-        NUME_ORDRE = 1,     MAILLE = 'MA000029', NOM_CHAM = 'SIGM_ELNO_DEPL',
+        NUME_ORDRE = 1,     MAILLE = 'MA000029', NOM_CHAM = 'SIGM_ELNO',
               NOEUD = 'NO000033', NOM_CMP = 'SIYY',  VALE = 0.98460E-3),
 #
             _F(  RESULTAT = DEPLDIL,  REFERENCE = 'ANALYTIQUE',
@@ -403,10 +403,10 @@ TEST_RESU(RESU=(
         NUME_ORDRE = 1,     MAILLE = 'MA000011', NOM_CHAM = 'SIEF_ELGA',
                POINT = 6,SOUS_POINT = 1, NOM_CMP = 'SIXX',  VALE = 1.428571E+0),
             _F(  RESULTAT = DEPLDIL,  CRITERE = 'RELATIF',   PRECISION = 1.E-5,
-        NUME_ORDRE = 1,     MAILLE = 'MA000001', NOM_CHAM = 'SIGM_ELNO_DEPL',
+        NUME_ORDRE = 1,     MAILLE = 'MA000001', NOM_CHAM = 'SIGM_ELNO',
               NOEUD = 'NO000001', NOM_CMP = 'SIYY',  VALE = 1.428571E+0),
             _F(  RESULTAT = DEPLDIL,  CRITERE = 'RELATIF',   PRECISION = 1.E-5,
-        NUME_ORDRE = 1,     MAILLE = 'MA000029', NOM_CHAM = 'SIGM_ELNO_DEPL',
+        NUME_ORDRE = 1,     MAILLE = 'MA000029', NOM_CHAM = 'SIGM_ELNO',
               NOEUD = 'NO000033', NOM_CMP = 'SIYY',  VALE = 1.428571E+0),
 #
             _F(  RESULTAT = DEPLDILT,  REFERENCE = 'ANALYTIQUE',
@@ -416,10 +416,10 @@ TEST_RESU(RESU=(
         NUME_ORDRE = 1,     MAILLE = 'MA000021', NOM_CHAM = 'SIEF_ELGA',
                POINT = 1,SOUS_POINT = 1, NOM_CMP = 'SIXX',  VALE = 1.428571E+0),
             _F(  RESULTAT = DEPLDILT,  CRITERE = 'RELATIF',   PRECISION = 1.E-5,
-        NUME_ORDRE = 1,     MAILLE = 'MA000001', NOM_CHAM = 'SIGM_ELNO_DEPL',
+        NUME_ORDRE = 1,     MAILLE = 'MA000001', NOM_CHAM = 'SIGM_ELNO',
               NOEUD = 'NO000001', NOM_CMP = 'SIYY',  VALE = 1.428571E+0),
             _F(  RESULTAT = DEPLDILT,  CRITERE = 'RELATIF',   PRECISION = 1.E-5,
-        NUME_ORDRE = 1,     MAILLE = 'MA000029', NOM_CHAM = 'SIGM_ELNO_DEPL',
+        NUME_ORDRE = 1,     MAILLE = 'MA000029', NOM_CHAM = 'SIGM_ELNO',
               NOEUD = 'NO000033', NOM_CMP = 'SIYY',  VALE = 1.428571E+0),
 #
             _F(  RESULTAT = DEPLDI2,  REFERENCE = 'ANALYTIQUE',
@@ -429,17 +429,17 @@ TEST_RESU(RESU=(
         NUME_ORDRE = 1,     MAILLE = 'MA000021', NOM_CHAM = 'SIEF_ELGA',
                POINT = 3,SOUS_POINT = 1, NOM_CMP = 'SIXX',  VALE = -0.19780+0),
             _F(  RESULTAT = DEPLDI2,  CRITERE = 'RELATIF',   PRECISION = 4.E-4,
-        NUME_ORDRE = 1,     MAILLE = 'MA000001', NOM_CHAM = 'SIGM_ELNO_DEPL',
+        NUME_ORDRE = 1,     MAILLE = 'MA000001', NOM_CHAM = 'SIGM_ELNO',
               NOEUD = 'NO000001', NOM_CMP = 'SIYY',  VALE = -0.19780E+0),
             _F(  RESULTAT = DEPLDI2,  CRITERE = 'RELATIF',   PRECISION = 4.E-4,
-        NUME_ORDRE = 1,     MAILLE = 'MA000029', NOM_CHAM = 'SIGM_ELNO_DEPL',
+        NUME_ORDRE = 1,     MAILLE = 'MA000029', NOM_CHAM = 'SIGM_ELNO',
               NOEUD = 'NO000033', NOM_CMP = 'SIYY',  VALE = -0.19780E+0),
 #
             _F(  RESULTAT = DEPLDI2T,  CRITERE = 'RELATIF',   PRECISION = 4.E-4,
-        NUME_ORDRE = 1,     MAILLE = 'MA000001', NOM_CHAM = 'SIGM_ELNO_DEPL',
+        NUME_ORDRE = 1,     MAILLE = 'MA000001', NOM_CHAM = 'SIGM_ELNO',
               NOEUD = 'NO000001', NOM_CMP = 'SIYY',  VALE = -0.19780E+0),
             _F(  RESULTAT = DEPLDI2T,  CRITERE = 'RELATIF',   PRECISION = 4.E-4,
-        NUME_ORDRE = 1,     MAILLE = 'MA000029', NOM_CHAM = 'SIGM_ELNO_DEPL',
+        NUME_ORDRE = 1,     MAILLE = 'MA000029', NOM_CHAM = 'SIGM_ELNO',
               NOEUD = 'NO000033', NOM_CMP = 'SIYY',  VALE = -0.19780E+0))
             )
 
@@ -500,7 +500,7 @@ U=STAT_NON_LINE(            MODELE=MO,
               )
 
 CALC_ELEM( reuse=U, RESULTAT=U,
-           OPTION=('SIEF_ELNO',  'VARI_ELNO_ELGA',),  )
+           OPTION=('SIEF_ELNO',  'VARI_ELNO',),  )
 
 
 V=STAT_NON_LINE(            MODELE=MO,
@@ -518,7 +518,7 @@ V=STAT_NON_LINE(            MODELE=MO,
               )
 
 CALC_ELEM( reuse=V, RESULTAT=V,
-           OPTION=( 'SIEF_ELNO',  'VARI_ELNO_ELGA',), )
+           OPTION=( 'SIEF_ELNO',  'VARI_ELNO',), )
 
 W=STAT_NON_LINE(           MODELE=MO,
                         CHAM_MATER=CHMAT3,
@@ -535,7 +535,7 @@ W=STAT_NON_LINE(           MODELE=MO,
               )
 
 CALC_ELEM( reuse=W, RESULTAT=W,
-           OPTION=('SIEF_ELNO',  'VARI_ELNO_ELGA',), )
+           OPTION=('SIEF_ELNO',  'VARI_ELNO',), )
 
 # ------------------------------------------------------------------
 

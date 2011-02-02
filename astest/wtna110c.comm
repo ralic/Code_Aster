@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # TITRE MODELISATION DU GONFLEMENT DE L ARGILE GONFLANTE (AXI THH2MS)
 # wtna110c.para = tps_job 150 mem_job 128Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -355,13 +355,13 @@ U2=STAT_NON_LINE(
 U2=CALC_ELEM(reuse =U2,
 
 
-                OPTION=('SIEF_ELNO','VARI_ELNO_ELGA'),
+                OPTION=('SIEF_ELNO','VARI_ELNO'),
                 RESULTAT=U2,);
 
 
 U2=CALC_NO(reuse=U2,
 
-                OPTION=('SIEF_NOEU','VARI_NOEU_ELGA',),
+                OPTION=('SIEF_NOEU','VARI_NOEU',),
                 RESULTAT=U2)
 
 
@@ -406,9 +406,9 @@ IMPR_TABLE(TABLE=DEPL,
 
 
 SAT=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
-                            INTITULE='VARI_NOEU_ELGA',
+                            INTITULE='VARI_NOEU',
                             RESULTAT=U2,
-                            NOM_CHAM='VARI_NOEU_ELGA',
+                            NOM_CHAM='VARI_NOEU',
                             NOEUD='N3',
                             NOM_CMP=('V4',),),);
 

@@ -1,9 +1,9 @@
-# MODIF  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # TITRE TRACTION ELASTIQUE COQUES 3D CALCUL DES CONTRAINTES DE CAUCHY
 # ssnv152a.para = tps_job 60 mem_job 300Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -174,7 +174,7 @@ VT=STAT_NON_LINE( reuse=VT,
 
 VT=CALC_ELEM(reuse=VT,
                          RESULTAT=VT,
-                      OPTION=('VARI_ELNO_ELGA', 'SIGM_ELNO_COQU',)
+                      OPTION=('VARI_ELNO', 'SICO_ELNO',)
                    )
 
 TEST_RESU(RESU=(
@@ -194,7 +194,7 @@ TEST_RESU(RESU=(
 #               PRECISION = ( 3.1E-2, 1.E-4, ),
                VALE = 2.1E4),
               _F(
-               RESULTAT = VT,     NOM_CHAM = 'SIGM_ELNO_COQU', NUME_ORDRE = 21,
+               RESULTAT = VT,     NOM_CHAM = 'SICO_ELNO', NUME_ORDRE = 21,
                MAILLE = 'M1',    POINT = 1,   NOM_CMP = 'SIXX',
 #               PRECISION = ( 1.5E-2, 1.E-4, ),
                VALE = 2.31E4))

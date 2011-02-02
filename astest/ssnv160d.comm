@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # RESPONSABLE JOUMANA J. EL GHARIB
 # TITRE TEST HYDROSTATIQUE  CAM_CLAY en AXISYMETRIQUE
 # ssnv160d.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test S
@@ -241,13 +241,13 @@ TDEP=(5000.,6500.,7000.,7500.,8000.,8500.,9000.,9500.)
 
 RESU1=CALC_ELEM(  reuse=RESU1, 
                   OPTION=('SIEF_ELNO',
-                          'VARI_ELNO_ELGA',
-                          'EPSI_ELNO_DEPL',
+                          'VARI_ELNO',
+                          'EPSI_ELNO',
                           'EPSP_ELNO'),
                   RESULTAT=RESU1
                         )
 RESU1=CALC_NO(  reuse=RESU1,
-                OPTION=('SIEF_NOEU','VARI_NOEU_ELGA',
+                OPTION=('SIEF_NOEU','VARI_NOEU',
                         'EPSI_NOEU'),
                 RESULTAT=RESU1 
                         )

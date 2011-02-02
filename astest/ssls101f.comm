@@ -1,9 +1,9 @@
-# MODIF  DATE 02/02/2010   AUTEUR IDOUX L.IDOUX 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # TITRE PLAQUE CIRCULAIRE POSEE     SOUS PRESSION DST  170 N - 296 TRIA3
 # ssls101f.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -215,7 +215,7 @@ TEST_TABLE(      TABLE=EPOT_PE,
 #--------------------------------------------------------------------
 
 DEPR=CALC_ELEM( reuse= DEPR ,RESULTAT= DEPR ,
-                         OPTION=('EFGE_ELNO_DEPL',),
+                         OPTION=('EFGE_ELNO',),
                 )
 
 #--------------------------------------------------------------------
@@ -224,7 +224,7 @@ RELEVE_1=POST_RELEVE_T(
                             INTITULE = 'EFGE',
                             RESULTAT = DEPR,
                             NUME_ORDRE=1,
-                            NOM_CHAM='EFGE_ELNO_DEPL',
+                            NOM_CHAM='EFGE_ELNO',
                             NOM_CMP = ( 'MXX', 'MYY', ),
                             OPERATION = 'EXTRACTION')
                           )

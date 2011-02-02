@@ -1,4 +1,4 @@
-# MODIF  DATE 31/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # TITRE MODELISATION DE LA RUPTURE D'UN BARRAGE 3D A L'AIDE DES ELEMENT DE JOINT ET DE LA LOI JOINT_MECA_FROT
 # ssnp142d.para = tps_job 300 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -187,7 +187,7 @@ U_F=STAT_NON_LINE(MODELE=MO,
 U_F=CALC_ELEM(reuse =U_F,
 
               RESULTAT=U_F,
-              OPTION='VARI_ELNO_ELGA',
+              OPTION='VARI_ELNO',
               GROUP_MA='JOINT');
 
 U_F=CALC_ELEM(reuse =U_F,
@@ -198,14 +198,14 @@ U_F=CALC_ELEM(reuse =U_F,
 
 U_F=CALC_NO(reuse =U_F,
             RESULTAT=U_F,
-            OPTION=('VARI_NOEU_ELGA','SIEF_NOEU'),
+            OPTION=('VARI_NOEU','SIEF_NOEU'),
             GROUP_MA='JOINT');
 
 # SAUT NORMALE DANS LE JOINT
 SAUT_F=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                INTITULE='SAUT_N',
                                RESULTAT=U_F,
-                               NOM_CHAM='VARI_NOEU_ELGA',
+                               NOM_CHAM='VARI_NOEU',
                                INST=tfin,
                                GROUP_NO=('JOINT_H',),
                                NOM_CMP='V7',),);

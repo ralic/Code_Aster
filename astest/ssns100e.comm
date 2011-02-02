@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # TITRE COMPORTEMENT NON LINEAIRE D'UNE NAPPE D'ARMATURES SELON X SOUS CHARGEMENT THERMIQUE. GRILLE_PINTO_MEN  TEMPERATURE IMPOSEE PAR NAPPE
 # ssns100e.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -176,7 +176,7 @@ LEDEP=STAT_NON_LINE(
 
 LEDEP=CALC_ELEM( reuse=LEDEP,
                             OPTION=(
-                  'SIEF_ELNO',  'VARI_ELNO_ELGA',),
+                  'SIEF_ELNO',  'VARI_ELNO',),
                           RESULTAT=LEDEP,
               )
 
@@ -187,14 +187,14 @@ LEDEP=CALC_ELEM( reuse=LEDEP,
 #
 
 
-# SIGM_ELNO_COQU DEVIENT INUTILE POUR LES GRILLES
+# SICO_ELNO DEVIENT INUTILE POUR LES GRILLES
 #LEDEP=CALC_ELEM(reuse=LEDEP,      RESULTAT=LEDEP,
-#                               OPTION='SIGM_ELNO_COQU')
+#                               OPTION='SICO_ELNO')
 
 #LEDEP=CALC_ELEM(reuse=LEDEP,
 #                      TOUT_ORDRE='OUI',
 #                     OPTION=('DEGE_ELNO',
-#                             'EPSI_ELNO_DEPL',),
+#                             'EPSI_ELNO',),
 #                      RESULTAT=LEDEP
 #                       )
 

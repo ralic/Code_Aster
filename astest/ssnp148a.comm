@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # TITRE  CALCUL DU FACTEUR D'INTENSITE DE CONTRAINTES PAR LA REGULARISATION DES
 # ssnp148a.para = tps_job 300 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -225,7 +225,7 @@ EVOEL=STAT_NON_LINE(SOLVEUR=_F(METHODE='MULT_FRONT',),
 #                RESULTAT=EVOEL,
 #                CHAM_MATER=MAT,
 #                MODELE=MO_MECA,
-#                OPTION=('SIEF_ELNO', 'VARI_ELNO_ELGA'),
+#                OPTION=('SIEF_ELNO', 'VARI_ELNO'),
 #      );
 
 #IMPR_RESU(MODELE=MO_MECA,
@@ -233,7 +233,7 @@ EVOEL=STAT_NON_LINE(SOLVEUR=_F(METHODE='MULT_FRONT',),
 #          UNITE=56,
 #          RESU=_F(MAILLAGE=MAIL,
 #                  RESULTAT=EVOEL,
-#                  NOM_CHAM=('VARI_ELNO_ELGA','DEPL')
+#                  NOM_CHAM=('VARI_ELNO','DEPL')
 #                 ),
 #         );
 

@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # TITRE SOUS STRUCTURATION DYNAMIQUE : PLAQUE MINCE LIBRE ET ENCASTREE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -479,7 +479,7 @@ MODGL22=CALC_ELEM( MODELE=MODELE1,
                        CHAM_MATER=MATSQUEL,
                        CARA_ELEM=CARSQUEL,
                       TOUT_ORDRE='OUI',
-                          OPTION='SIGM_ELNO_DEPL',
+                          OPTION='SIGM_ELNO',
                          RESULTAT=MODGL2 )
 
 #

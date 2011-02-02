@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # RESPONSABLE F6BHHBO P.DEBONNIERES
 # TITRE PLAQUE SOUS PRESSION EN DP (PLASTICITE DRUCKER-PRAGER)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -109,10 +109,10 @@ RESUS=STAT_NON_LINE(MODELE=MO,
                    SENSIBILITE=FORCES,
                    INFO=1);
 
-RESUS=CALC_ELEM( reuse=RESUS, OPTION=( 'SIEF_ELNO',  'VARI_ELNO_ELGA',), RESULTAT=RESUS,)
+RESUS=CALC_ELEM( reuse=RESUS, OPTION=( 'SIEF_ELNO',  'VARI_ELNO',), RESULTAT=RESUS,)
 
 CALC_SENSI( reuse=RESUS, RESULTAT=RESUS, SENSIBILITE=FORCES,
-                            OPTION=( 'SIEF_ELNO',  'VARI_ELNO_ELGA',),
+                            OPTION=( 'SIEF_ELNO',  'VARI_ELNO',),
               )
 
 # Extraction de contrainte YY et de sa derivee
@@ -139,7 +139,7 @@ TVARN = POST_RELEVE_T(ACTION=_F(INTITULE='SENSIBILITE',
                                NOEUD='N1',
                                MAILLE='M1',
                                RESULTAT=RESUS,
-                               NOM_CHAM='VARI_ELNO_ELGA',
+                               NOM_CHAM='VARI_ELNO',
                                NOM_CMP='V1',
                                OPERATION='EXTRACTION',),);
 
@@ -148,7 +148,7 @@ TVARN = POST_RELEVE_T(reuse=TVARN,
                                NOEUD='N1',
                                MAILLE='M1',
                                RESULTAT=RESUS,
-                               NOM_CHAM='VARI_ELNO_ELGA',
+                               NOM_CHAM='VARI_ELNO',
                                NOM_CMP='V1',
                                SENSIBILITE=FORCES,
                                OPERATION='EXTRACTION',),);
@@ -190,7 +190,7 @@ RESU2 = STAT_NON_LINE(MODELE=MO,
 
 RESU2=CALC_ELEM( reuse=RESU2,
                             OPTION=(
-                  'SIEF_ELNO',  'VARI_ELNO_ELGA',),
+                  'SIEF_ELNO',  'VARI_ELNO',),
                           RESULTAT=RESU2,
               )
 
@@ -278,7 +278,7 @@ TVARP=POST_RELEVE_T(ACTION=_F(INTITULE='SENSIBILITE',
                               NOEUD='N1',
                               MAILLE='M1',
                               RESULTAT=RESU2,
-                              NOM_CHAM='VARI_ELNO_ELGA',
+                              NOM_CHAM='VARI_ELNO',
                               NOM_CMP='V1',
                               OPERATION='EXTRACTION',),)
 

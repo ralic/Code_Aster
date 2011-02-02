@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # TITRE ESSAI HYDROSTATIQUE SUIVI D UN TRIAXIAL A SUCCION FIXE
 # wtnv123f.para = tps_job 200 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -286,14 +286,14 @@ U1=STAT_NON_LINE(ETAT_INIT = _F(SIGM=SIGINIT,DEPL=DEPINIT),
 
 U1=CALC_ELEM(  reuse=U1,
                   OPTION=('SIEF_ELNO',
-                          'VARI_ELNO_ELGA',
+                          'VARI_ELNO',
                           ),
                   RESULTAT=U1,
                         )
 
 U1=CALC_NO(  reuse=U1,     RESULTAT=U1,
                        OPTION=( 'SIEF_NOEU',
-                       'VARI_NOEU_ELGA',
+                       'VARI_NOEU',
                            ),
                 )
 

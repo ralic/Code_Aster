@@ -1,10 +1,10 @@
-# MODIF  DATE 07/12/2010   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # RESPONSABLE GNICOLAS G.NICOLAS
 # TITRE TEST DE HOMARD AVEC DES QUADRANGLES
 # zzzz121d.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -198,7 +198,7 @@ RESU_0=CALC_ELEM(reuse =RESU_0,
 
 
                  RESULTAT=RESU_0,
-                 OPTION=('SIGM_ELNO_DEPL','ERME_ELEM',),
+                 OPTION=('SIGM_ELNO','ERME_ELEM',),
 
 );
 #
@@ -206,7 +206,7 @@ RESU_0=CALC_ELEM(reuse =RESU_0,
 
 RESU_0=CALC_NO(reuse =RESU_0,
                RESULTAT=RESU_0,
-               OPTION='SIGM_NOEU_DEPL',);
+               OPTION='SIGM_NOEU',);
 #
 # 3.7. Impressions pour creer la base du cas-test homard sfr_mix_2d_zzzz121d_d1 a l'iteration 0
 ##IMPR_RESU(
@@ -277,7 +277,7 @@ RESU_1=CALC_ELEM(reuse =RESU_1,
 
 
                  RESULTAT=RESU_1,
-                 OPTION=('SIGM_ELNO_DEPL','ERME_ELEM',),
+                 OPTION=('SIGM_ELNO','ERME_ELEM',),
 
 );
 #
@@ -285,7 +285,7 @@ RESU_1=CALC_ELEM(reuse =RESU_1,
 
 RESU_1=CALC_NO(reuse =RESU_1,
                RESULTAT=RESU_1,
-               OPTION='SIGM_NOEU_DEPL',);
+               OPTION='SIGM_NOEU',);
 #
 # 5.7. Impressions pour creer la base du cas-test homard sfr_mix_2d_zzzz121d_d1 a l'iteration 1
 ##IMPR_RESU(
@@ -362,7 +362,7 @@ RESU_2=CALC_ELEM(reuse =RESU_2,
 
 
                  RESULTAT=RESU_2,
-                 OPTION=('SIGM_ELNO_DEPL','ERME_ELEM',),
+                 OPTION=('SIGM_ELNO','ERME_ELEM',),
 
 );
 #
@@ -370,7 +370,7 @@ RESU_2=CALC_ELEM(reuse =RESU_2,
 
 RESU_2=CALC_NO(reuse =RESU_2,
                RESULTAT=RESU_2,
-               OPTION='SIGM_NOEU_DEPL',);
+               OPTION='SIGM_NOEU',);
 #
 # 7.7. Impressions pour creer la base du cas-test homard sfr_mix_2d_zzzz121d_d1 a l'iteration 2
 ##IMPR_RESU(
@@ -440,7 +440,7 @@ RESU_3=CALC_ELEM(reuse =RESU_3,
 
 
                  RESULTAT=RESU_3,
-                 OPTION='SIGM_ELNO_DEPL',
+                 OPTION='SIGM_ELNO',
 
 );
 #
@@ -448,7 +448,7 @@ RESU_3=CALC_ELEM(reuse =RESU_3,
 
 RESU_3=CALC_NO(reuse =RESU_3,
                RESULTAT=RESU_3,
-               OPTION='SIGM_NOEU_DEPL',);
+               OPTION='SIGM_NOEU',);
 #
 # N. Tests de non regression
 
@@ -462,7 +462,7 @@ TEST_RESU(CHAM_NO=_F(CHAM_GD=DEPL_1_2,
                      VERSION='7.03.18',),
           RESU=(_F(RESULTAT=RESU_1,
                    NUME_ORDRE=1,
-                   NOM_CHAM='SIGM_NOEU_DEPL',
+                   NOM_CHAM='SIGM_NOEU',
                    NOM_CMP='SIXX',
                    GROUP_NO='GNP20',
                    VALE=0.8364656,
@@ -472,7 +472,7 @@ TEST_RESU(CHAM_NO=_F(CHAM_GD=DEPL_1_2,
                    VERSION='7.03.18',),
                 _F(RESULTAT=RESU_2,
                    NUME_ORDRE=1,
-                   NOM_CHAM='SIGM_NOEU_DEPL',
+                   NOM_CHAM='SIGM_NOEU',
                    NOM_CMP='SIXX',
                    GROUP_NO='GNP20',
                    VALE=0.50229053,
@@ -482,7 +482,7 @@ TEST_RESU(CHAM_NO=_F(CHAM_GD=DEPL_1_2,
                    VERSION='10.00.27',),
                 _F(RESULTAT=RESU_3,
                    NUME_ORDRE=1,
-                   NOM_CHAM='SIGM_NOEU_DEPL',
+                   NOM_CHAM='SIGM_NOEU',
                    NOM_CMP='SIXX',
                    GROUP_NO='GNP20',
                    VALE=5.1272201e-01,
@@ -492,7 +492,7 @@ TEST_RESU(CHAM_NO=_F(CHAM_GD=DEPL_1_2,
                    VERSION='9.05.10',),
                 _F(RESULTAT=RESU_1,
                    NUME_ORDRE=1,
-                   NOM_CHAM='SIGM_NOEU_DEPL',
+                   NOM_CHAM='SIGM_NOEU',
                    NOM_CMP='SIXX',
                    GROUP_NO='GNP21',
                    VALE=1.5763891,
@@ -502,7 +502,7 @@ TEST_RESU(CHAM_NO=_F(CHAM_GD=DEPL_1_2,
                    VERSION='9.05.10',),
                 _F(RESULTAT=RESU_2,
                    NUME_ORDRE=1,
-                   NOM_CHAM='SIGM_NOEU_DEPL',
+                   NOM_CHAM='SIGM_NOEU',
                    NOM_CMP='SIXX',
                    GROUP_NO='GNP21',
                    VALE=1.5904140,
@@ -512,7 +512,7 @@ TEST_RESU(CHAM_NO=_F(CHAM_GD=DEPL_1_2,
                    VERSION='9.05.10',),
                 _F(RESULTAT=RESU_3,
                    NUME_ORDRE=1,
-                   NOM_CHAM='SIGM_NOEU_DEPL',
+                   NOM_CHAM='SIGM_NOEU',
                    NOM_CMP='SIXX',
                    GROUP_NO='GNP21',
                    VALE=1.7902384,

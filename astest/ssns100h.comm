@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # TITRE COMPORTEMENT NON LINEAIRE D'UNE NAPPE D'ARMATURES SELON X  SOUS CHARGEMENT THERMIQUE. GRILLE_PINTO_MEN
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -767,7 +767,7 @@ LEDEP=STAT_NON_LINE( reuse=LEDEP,
 
 LEDEP=CALC_ELEM( reuse=LEDEP,
                             OPTION=(
-                  'SIEF_ELNO',  'VARI_ELNO_ELGA',),
+                  'SIEF_ELNO',  'VARI_ELNO',),
                           RESULTAT=LEDEP,
               )
 
@@ -777,13 +777,13 @@ LEDEP=CALC_ELEM( reuse=LEDEP,
 # -------------------------------------------------
 #
 
-# SIGM_ELNO_COQU DEVIENT INUTILE POUR LES GRILLES
+# SICO_ELNO DEVIENT INUTILE POUR LES GRILLES
 #LEDEP=CALC_ELEM(reuse=LEDEP,     RESULTAT=LEDEP,
-#                              OPTION='SIGM_ELNO_COQU'
+#                              OPTION='SICO_ELNO'
 #                       )
 
 LEDEP=CALC_ELEM(reuse=LEDEP,     RESULTAT=LEDEP,
-                              OPTION='EPSI_ELNO_DEPL'
+                              OPTION='EPSI_ELNO'
                        )
 
 #
@@ -926,7 +926,7 @@ TEST_RESU(RESU=(
 
             _F( RESULTAT = LEDEP,
              INST = 0.001,
-             NOM_CHAM = 'EPSI_ELNO_DEPL',
+             NOM_CHAM = 'EPSI_ELNO',
              NOM_CMP = 'EPXX',
              MAILLE = 'MA1',
              NOEUD = 'NO2',
@@ -935,7 +935,7 @@ TEST_RESU(RESU=(
             ),
             _F( RESULTAT = LEDEP,
              INST = 0.0023,
-             NOM_CHAM = 'EPSI_ELNO_DEPL',
+             NOM_CHAM = 'EPSI_ELNO',
              NOM_CMP = 'EPXX',
              MAILLE = 'MA1',
              NOEUD = 'NO2',
@@ -944,7 +944,7 @@ TEST_RESU(RESU=(
             ),
             _F( RESULTAT = LEDEP,
              INST = 0.03,
-             NOM_CHAM = 'EPSI_ELNO_DEPL',
+             NOM_CHAM = 'EPSI_ELNO',
              NOM_CMP = 'EPXX',
              MAILLE = 'MA1',
              NOEUD = 'NO2',
@@ -953,7 +953,7 @@ TEST_RESU(RESU=(
             ),
             _F( RESULTAT = LEDEP,
              INST = 0.2,
-             NOM_CHAM = 'EPSI_ELNO_DEPL',
+             NOM_CHAM = 'EPSI_ELNO',
              NOM_CMP = 'EPXX',
              MAILLE = 'MA1',
              NOEUD = 'NO2',
@@ -962,7 +962,7 @@ TEST_RESU(RESU=(
             ),
             _F( RESULTAT = LEDEP,
              INST = 0.4,
-             NOM_CHAM = 'EPSI_ELNO_DEPL',
+             NOM_CHAM = 'EPSI_ELNO',
              NOM_CMP = 'EPXX',
              MAILLE = 'MA1',
              NOEUD = 'NO2',
@@ -971,7 +971,7 @@ TEST_RESU(RESU=(
             ),
             _F( RESULTAT = LEDEP,
              INST = 6.4,
-             NOM_CHAM = 'EPSI_ELNO_DEPL',
+             NOM_CHAM = 'EPSI_ELNO',
              NOM_CMP = 'EPXX',
              MAILLE = 'MA1',
              NOEUD = 'NO2',
@@ -980,7 +980,7 @@ TEST_RESU(RESU=(
             ),
             _F( RESULTAT = LEDEP,
              INST = 7.92,
-             NOM_CHAM = 'EPSI_ELNO_DEPL',
+             NOM_CHAM = 'EPSI_ELNO',
              NOM_CMP = 'EPXX',
              MAILLE = 'MA1',
              NOEUD = 'NO2',
@@ -989,7 +989,7 @@ TEST_RESU(RESU=(
             ),
             _F( RESULTAT = LEDEP,
              INST = 17.,
-             NOM_CHAM = 'EPSI_ELNO_DEPL',
+             NOM_CHAM = 'EPSI_ELNO',
              NOM_CMP = 'EPXX',
              MAILLE = 'MA1',
              NOEUD = 'NO2',
@@ -998,7 +998,7 @@ TEST_RESU(RESU=(
             ),
             _F( RESULTAT = LEDEP,
              INST = 19.,
-             NOM_CHAM = 'EPSI_ELNO_DEPL',
+             NOM_CHAM = 'EPSI_ELNO',
              NOM_CMP = 'EPXX',
              MAILLE = 'MA1',
              NOEUD = 'NO2',
@@ -1007,7 +1007,7 @@ TEST_RESU(RESU=(
             ),
             _F( RESULTAT = LEDEP,
              INST = 20.,
-             NOM_CHAM = 'EPSI_ELNO_DEPL',
+             NOM_CHAM = 'EPSI_ELNO',
              NOM_CMP = 'EPXX',
              MAILLE = 'MA1',
              NOEUD = 'NO2',
@@ -1016,7 +1016,7 @@ TEST_RESU(RESU=(
             ),
             _F( RESULTAT = LEDEP,
              INST = 21.,
-             NOM_CHAM = 'EPSI_ELNO_DEPL',
+             NOM_CHAM = 'EPSI_ELNO',
              NOM_CMP = 'EPXX',
              MAILLE = 'MA1',
              NOEUD = 'NO2',
@@ -1025,7 +1025,7 @@ TEST_RESU(RESU=(
             ),
             _F( RESULTAT = LEDEP,
              INST = 22.,
-             NOM_CHAM = 'EPSI_ELNO_DEPL',
+             NOM_CHAM = 'EPSI_ELNO',
              NOM_CMP = 'EPXX',
              MAILLE = 'MA1',
              NOEUD = 'NO2',
@@ -1034,7 +1034,7 @@ TEST_RESU(RESU=(
             ),
             _F( RESULTAT = LEDEP,
              INST = 25.,
-             NOM_CHAM = 'EPSI_ELNO_DEPL',
+             NOM_CHAM = 'EPSI_ELNO',
              NOM_CMP = 'EPXX',
              MAILLE = 'MA1',
              NOEUD = 'NO2',
@@ -1043,7 +1043,7 @@ TEST_RESU(RESU=(
             ),
             _F( RESULTAT = LEDEP,
              INST = 50.,
-             NOM_CHAM = 'EPSI_ELNO_DEPL',
+             NOM_CHAM = 'EPSI_ELNO',
              NOM_CMP = 'EPXX',
              MAILLE = 'MA1',
              NOEUD = 'NO2',

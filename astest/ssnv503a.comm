@@ -1,8 +1,8 @@
-# MODIF  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # TITRE    : PATIN GLISSANT SUR UN PLAN RIGIDE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -165,7 +165,7 @@ U_NOR=CALC_NO(reuse =U_NOR, RESULTAT=U_NOR,
               OPTION='REAC_NODA',   );
 
 U_NOR=CALC_ELEM(reuse =U_NOR, RESULTAT=U_NOR,
-                OPTION='VARI_ELNO_ELGA',   );
+                OPTION='VARI_ELNO',   );
 
 # CHARGEMENT 2
 U_99=STAT_NON_LINE(MODELE=MODE,
@@ -273,7 +273,7 @@ TU_NOR=POST_RELEVE_T(ACTION=_F(INTITULE='FORCE',
 TU_VARI=POST_RELEVE_T(ACTION=_F(INTITULE='VARI',
                                 GROUP_NO='LESC',
                                 RESULTAT=U_NOR,
-                                NOM_CHAM='VARI_ELNO_ELGA',
+                                NOM_CHAM='VARI_ELNO',
                                 NOM_CMP='V1',
                                 OPERATION='MOYENNE',
                                 INST=1.),);

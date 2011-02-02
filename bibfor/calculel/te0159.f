@@ -1,6 +1,6 @@
       SUBROUTINE TE0159(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -65,7 +65,7 @@ C     -----------------------------------------------
         END IF
 
 
-       ELSE IF (OPTION.EQ.'VARI_ELNO_ELGA') THEN
+       ELSE IF (OPTION.EQ.'VARI_ELNO') THEN
 C     -----------------------------------------------
         CALL JEVECH('PVARIGR','L',IVARGA)
         CALL JEVECH('PVARINR','E',IVARNO)

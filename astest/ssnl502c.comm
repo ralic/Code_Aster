@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # RESPONSABLE ADBHHPM P.MASSIN 
 # DATE   : 23/07/2001
 # AUTEUR : F. LEBOUVIER (DELTACAD) 
@@ -253,7 +253,7 @@ RESULT= CALC_ELEM (reuse=RESULT ,
                                   );
 
 RESULT= CALC_ELEM (reuse=RESULT ,
-                  OPTION     ='EFGE_ELNO_CART',
+                  OPTION     ='EFCA_ELNO',
                   RESULTAT   = RESULT,
                   TOUT_ORDRE = 'OUI',
                              );
@@ -284,7 +284,7 @@ DEPX=RECU_FONCTION (   RESULTAT = RESULT,
 MYY=RECU_FONCTION (   RESULTAT = RESULT,
                           NOM_CMP = 'MY',
                           MAILLE = 'M1',
-                          NOM_CHAM = 'EFGE_ELNO_CART',
+                          NOM_CHAM = 'EFCA_ELNO',
                           GROUP_NO = 'A',
                           TOUT_ORDRE = 'OUI')
                

@@ -1,4 +1,4 @@
-#@ MODIF macr_aspic_calc_ops Macro  DATE 25/01/2011   AUTEUR MACOCCO K.MACOCCO 
+#@ MODIF macr_aspic_calc_ops Macro  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -403,7 +403,7 @@ def macr_aspic_calc_ops(self,TYPE_MAILLAGE,TUBULURE,MAILLAGE,MODELE,CHAM_MATER,C
   nomres = CALC_ELEM( reuse      = nomres,
                       RESULTAT   = nomres ,
                       TOUT_ORDRE = 'OUI'  ,
-                      OPTION     = ('SIEF_ELNO','VARI_ELNO_ELGA','EQUI_ELNO_SIGM') ,
+                      OPTION     = ('SIEF_ELNO','VARI_ELNO','SIEQ_ELNO') ,
                       INFO       = INFO ,)
 #
 #-----------------------------------------------------------------------
@@ -831,7 +831,7 @@ def macr_aspic_calc_ops(self,TYPE_MAILLAGE,TUBULURE,MAILLAGE,MODELE,CHAM_MATER,C
       if IMPRESSION['NOM_CHAM']!=None :
          if type(IMPRESSION['NOM_CHAM']) in (types.TupleType,types.ListType) : ncham= IMPRESSION['NOM_CHAM']
          else                                                                : ncham=[IMPRESSION['NOM_CHAM'],]
-      if    len(ncham)==3       : motscles['NOM_CHAM'  ]=('DEPL','EQUI_ELNO_SIGM')
+      if    len(ncham)==3       : motscles['NOM_CHAM'  ]=('DEPL','SIEQ_ELNO')
       elif (len(ncham)==1) and (ncham[0][:4]!='TEMP')  :
                                   motscles['NOM_CHAM'  ]= ncham[0]
       elif (len(ncham)==2) and (ncham[0][:4]!='TEMP') and (ncham[1][:4]!='TEMP')  :

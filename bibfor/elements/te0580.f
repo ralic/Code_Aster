@@ -1,9 +1,9 @@
       SUBROUTINE TE0580 ( OPTION, NOMTE )
       IMPLICIT  NONE
       CHARACTER*16        OPTION, NOMTE
-C MODIF ELEMENTS  DATE 14/12/2010   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -19,7 +19,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C     ------------------------------------------------------------------
-C     OPTION: SIGM_ELNO_COQU ET VARI_ELNO_COQU
+C     OPTION: SICO_ELNO ET VACO_ELNO
 C     ------------------------------------------------------------------
 C     ----- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       INTEGER ZI
@@ -58,7 +58,7 @@ C
       NORDO = ZI(JNUMC+1)
       NUSP = 3*(ICOU-1) + NORDO +2
 C
-       IF (OPTION.EQ.'SIGM_ELNO_COQU') THEN
+       IF (OPTION.EQ.'SICO_ELNO') THEN
 C                          --------------
         CALL JEVECH('PSIGNOD','E',JSIGM)
         CALL JEVECH('PGEOMER','L',JGEOM)
@@ -82,7 +82,7 @@ C       -- PASSAGE GAUSS -> NOEUDS :
 C       -- PASSAGE DANS LE REPERE DE L'UTILISATEUR :
         CALL DXSIRO ( NNO, T2EV, VNO, ZR(JSIGM) )
 C
-       ELSE IF (OPTION.EQ.'VARI_ELNO_COQU') THEN
+       ELSE IF (OPTION.EQ.'VACO_ELNO') THEN
 C                               --------------
         CALL JEVECH('PVARINR','E',JVARN)
         CALL TECACH('OON','PVARIGR',7,JTAB,IRET)

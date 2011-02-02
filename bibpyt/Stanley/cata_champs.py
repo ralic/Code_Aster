@@ -1,4 +1,4 @@
-#@ MODIF cata_champs Stanley  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+#@ MODIF cata_champs Stanley  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -137,29 +137,29 @@ class CATA_CHAMPS :
     self('FLUX_ELNO', 'ELNO',['TEMP'],                      "Flux thermique aux noeuds par element")
     self('FLUX_NOEU', 'NOEU',['FLUX_ELNO'],            "Flux thermique aux noeuds")
     self('FLUX_ELGA', 'ELGA',[],                            "Flux thermique aux points de Gauss")
-    self('VARI_ELNO_ELGA', 'ELNO',['VARI_ELGA'],                 "Variables internes aux noeuds par element")
-    self('VARI_NOEU_ELGA', 'NOEU',['VARI_ELNO_ELGA'],            "Variables internes aux noeuds")
-    self('EQUI_ELGA_SIGM', 'ELGA',['SIEF_ELGA',],"Invariants des contraintes aux points de Gauss")
-    self('EQUI_ELNO_SIGM', 'ELNO',['SIEF_ELNO', 'SIGM_ELNO_COQU'], "Invariants des contraintes aux noeuds par element")
-    self('EQUI_NOEU_SIGM', 'NOEU',['EQUI_ELNO_SIGM'],            "Invariants des contraintes aux noeuds")
+    self('VARI_ELNO', 'ELNO',['VARI_ELGA'],                 "Variables internes aux noeuds par element")
+    self('VARI_NOEU', 'NOEU',['VARI_ELNO'],            "Variables internes aux noeuds")
+    self('SIEQ_ELGA', 'ELGA',['SIEF_ELGA',],"Invariants des contraintes aux points de Gauss")
+    self('SIEQ_ELNO', 'ELNO',['SIEF_ELNO', 'SICO_ELNO'], "Invariants des contraintes aux noeuds par element")
+    self('SIEQ_NOEU', 'NOEU',['SIEQ_ELNO'],            "Invariants des contraintes aux noeuds")
     self('EPSI_ELGA', 'ELGA',['DEPL'],                      "Deformations aux points de Gauss")
-    self('EPSI_ELNO_DEPL', 'ELNO',['DEPL'],                      "Deformations aux noeuds par elements")
-    self('EPSI_NOEU', 'NOEU',['EPSI_ELNO_DEPL'],            "Deformations aux noeuds")
+    self('EPSI_ELNO', 'ELNO',['DEPL'],                      "Deformations aux noeuds par elements")
+    self('EPSI_NOEU', 'NOEU',['EPSI_ELNO'],            "Deformations aux noeuds")
     self('EPSG_ELGA', 'ELGA',['DEPL'],                      "Deformations de Green aux points de Gauss")
     self('EPSG_ELNO', 'ELNO',['DEPL'],                      "Deformations de Green aux noeuds par elements")
     self('EPSG_NOEU', 'NOEU',['EPSG_ELNO'],            "Deformations de Green aux noeuds")
     self('EPME_ELNO', 'ELNO',['DEPL'],                      "Deformations mecaniques aux noeuds par elements")
-    self('EQUI_ELGA_EPSI', 'ELGA',['EPSI_ELGA'],            "Invariants des deformations aux points de Gauss")
-    self('EQUI_ELNO_EPSI', 'ELNO',['EPSI_ELNO_DEPL'],            "Invariants des deformations aux noeuds par element")
-    self('EQUI_NOEU_EPSI', 'NOEU',['EQUI_ELNO_EPSI'],            "Invariants des deformations aux noeuds")
+    self('EPEQ_ELGA', 'ELGA',['EPSI_ELGA'],            "Invariants des deformations aux points de Gauss")
+    self('EPEQ_ELNO', 'ELNO',['EPSI_ELNO'],            "Invariants des deformations aux noeuds par element")
+    self('EPEQ_NOEU', 'NOEU',['EPEQ_ELNO'],            "Invariants des deformations aux noeuds")
 
 # indicateurs d erreur
     self('ERME_ELEM', 'ELEM',['SIEF_ELNO'],                 "Indicateurs d'erreur en résidu par élément")
     self('ERME_ELNO', 'ELNO',['ERME_ELEM'],                      "Indicateurs d'erreur en résidu aux noeuds par élément")
     self('QIRE_ELEM', 'ELEM',[],                            "Indicateurs d'erreur en quantités d'intéret en résidu par élément")
     self('QIRE_ELNO', 'ELNO',['QIRE_ELEM'],            "Indicateurs d'erreur en quantités d'intéret en résidu aux noeuds par élément")
-    self('SIGM_NOZ1_ELGA', 'ELEM',['SIEF_ELGA',],"Champ de contraintes lissées Zhu-Zienkiewicz 1 aux noeuds")
-    self('SIGM_NOZ2_ELGA', 'ELEM',['SIEF_ELGA',],"Champ de contraintes lissées Zhu-Zienkiewicz 2 aux noeuds")
+    self('SIZ1_ELGA', 'ELEM',['SIEF_ELGA',],"Champ de contraintes lissées Zhu-Zienkiewicz 1 aux noeuds")
+    self('SIZ2_ELGA', 'ELEM',['SIEF_ELGA',],"Champ de contraintes lissées Zhu-Zienkiewicz 2 aux noeuds")
     self('ERZ1_ELEM', 'ELEM',['DEPL'],                      "Indicateurs d'erreur Zhu-Zienkiewicz 1 par élément")
     self('ERZ2_ELEM', 'ELEM',['DEPL'],                      "Indicateurs d'erreur Zhu-Zienkiewicz 2 par élément")
     self('QIZ1_ELEM', 'ELEM',[],                            "Indicateurs d'erreur en quantités d'intéret Zhu-Zienkiewicz 1 par élément")
@@ -179,18 +179,18 @@ class CATA_CHAMPS :
 
 # lineaire
     # contraintes
-    self('SIGM_ELNO_DEPL', 'ELNO',['DEPL'],                      "Contraintes aux noeuds par element en lineaire")
+    self('SIGM_ELNO', 'ELNO',['DEPL'],                      "Contraintes aux noeuds par element en lineaire")
     self('SIPO_ELNO', 'ELNO',['DEPL'],                      "Contraintes aux noeuds par element pour les elements Poutres")
-    self('SIGM_ELNO_TUYO', 'ELNO',[],                            "Etat de contrainte dans un element de tuyau")
+    self('SITU_ELNO', 'ELNO',[],                            "Etat de contrainte dans un element de tuyau")
     # efforts
-    self('EFGE_ELNO_DEPL', 'ELNO',['DEPL'],                      "Efforts generalises aux noeuds par element")
+    self('EFGE_ELNO', 'ELNO',['DEPL'],                      "Efforts generalises aux noeuds par element")
     # déformations
     self('DEGE_ELNO', 'ELNO',[],                            "Deformation generalisee calculee a partir des deplacements pour les elements de structures")
 
 
 # non lineaire
-    self('SIGM_ELNO_COQU', 'ELNO',['SIEF_ELGA', 'SIEF_ELGA'], "Contraintes aux noeuds par element pour les elements Coques")
-    self('VARI_ELNO_COQU', 'ELNO',['VARI_ELGA'],                   "Variables internes aux noeuds par element pour les elements Coques")
+    self('SICO_ELNO', 'ELNO',['SIEF_ELGA', 'SIEF_ELGA'], "Contraintes aux noeuds par element pour les elements Coques")
+    self('VACO_ELNO', 'ELNO',['VARI_ELGA'],                   "Variables internes aux noeuds par element pour les elements Coques")
 
     self('EPSP_ELNO',      'ELNO',['SIEF_ELGA', 'DEPL'],         "Deformations plastiques aux noeuds par element")
     self('EPSP_ELGA',      'ELGA',['SIEF_ELGA', 'DEPL'],         "Deformations plastiques aux points de Gauss")

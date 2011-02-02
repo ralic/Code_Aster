@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # TITRE VALIDATION DE LA MODELISATION AXIS_GRAD_VARI
 # comp005c.para = tps_job 120 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -206,7 +206,7 @@ for j in range(0,len(comportement)):
 
 
                   RESULTAT  =U[i],
-                  OPTION    =('SIEF_ELNO','VARI_ELNO_ELGA'),
+                  OPTION    =('SIEF_ELNO','VARI_ELNO'),
                    );
 
 
@@ -215,7 +215,7 @@ for j in range(0,len(comportement)):
                 reuse = U[i],
 
                 RESULTAT  =U[i],
-                OPTION    =('SIEF_NOEU','VARI_NOEU_ELGA','FORC_NODA'),
+                OPTION    =('SIEF_NOEU','VARI_NOEU','FORC_NODA'),
                 );
 
 
@@ -393,7 +393,7 @@ for i in range(0,len(modelisation)):
 
 
                 RESULTAT  =U[i],
-                OPTION    =('SIEF_ELNO','VARI_ELNO_ELGA'),
+                OPTION    =('SIEF_ELNO','VARI_ELNO'),
                  );
 
 
@@ -402,7 +402,7 @@ for i in range(0,len(modelisation)):
               reuse = U[i],
 
               RESULTAT  =U[i],
-              OPTION    =('SIEF_NOEU','VARI_NOEU_ELGA','FORC_NODA'),
+              OPTION    =('SIEF_NOEU','VARI_NOEU','FORC_NODA'),
               );
 
 

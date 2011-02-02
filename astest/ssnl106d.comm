@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # TITRE POUTRE ENCASTREE A UNE EXTREMITE ET CHARGEE PAR UNE TRACTION
 # ssnl106d.para = tps_job 60 mem_job 100Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -103,7 +103,7 @@ REST=STAT_NON_LINE(MODELE=MO,
 
 REST=CALC_ELEM(reuse =REST,
                RESULTAT=REST,
-               OPTION=('SIEF_ELNO','VARI_ELNO_ELGA','DEGE_ELNO',),);
+               OPTION=('SIEF_ELNO','VARI_ELNO','DEGE_ELNO',),);
 
 REST=CALC_NO(reuse =REST,
              RESULTAT=REST,
@@ -112,7 +112,7 @@ REST=CALC_NO(reuse =REST,
 REST=CALC_ELEM(reuse =REST,
                RESULTAT=REST,
                TOUT_ORDRE='OUI',
-               OPTION='SIGM_ELNO_TUYO',
+               OPTION='SITU_ELNO',
                REPE_COQUE =_F( NUME_COUCHE=3,
                                NIVE_COUCHE='SUP',
                                ANGLE=90,),);
@@ -120,7 +120,7 @@ REST=CALC_ELEM(reuse =REST,
 REST=CALC_ELEM(reuse =REST,
                RESULTAT=REST,
                TOUT_ORDRE='OUI',
-               OPTION=('EPSI_ELNO_TUYO','EPEQ_ELNO','SIEQ_ELNO',),
+               OPTION=('EPTU_ELNO','EPTQ_ELNO','SITQ_ELNO',),
                REPE_COQUE =_F( NUME_COUCHE=3,
                                NIVE_COUCHE='SUP',
                                ANGLE=90,),);
@@ -128,7 +128,7 @@ REST=CALC_ELEM(reuse =REST,
 REST=CALC_ELEM(reuse =REST,
                RESULTAT=REST,
                TOUT_ORDRE='OUI',
-               OPTION='VARI_ELNO_TUYO',
+               OPTION='VATU_ELNO',
                REPE_COQUE =_F( NUME_COUCHE=3,
                                NIVE_COUCHE='SUP',
                                ANGLE=360,),);
@@ -136,7 +136,7 @@ REST=CALC_ELEM(reuse =REST,
 TEST_RESU(RESU=(
                 _F(RESULTAT=REST,
                    NUME_ORDRE=1,
-                   NOM_CHAM='EPSI_ELNO_TUYO',
+                   NOM_CHAM='EPTU_ELNO',
                    NOM_CMP='EPYY',
                    MAILLE='M1',
                    NOEUD='N1',
@@ -145,7 +145,7 @@ TEST_RESU(RESU=(
                    REFERENCE='NON_REGRESSION',),
                 _F(RESULTAT=REST,
                    NUME_ORDRE=1,
-                   NOM_CHAM='EPEQ_ELNO',
+                   NOM_CHAM='EPTQ_ELNO',
                    NOM_CMP='INVA_2',
                    MAILLE='M1',
                    NOEUD='N1',
@@ -154,7 +154,7 @@ TEST_RESU(RESU=(
                    REFERENCE='NON_REGRESSION',),
                 _F(RESULTAT=REST,
                    NUME_ORDRE=1,
-                   NOM_CHAM='SIEQ_ELNO',
+                   NOM_CHAM='SITQ_ELNO',
                    NOM_CMP='VMIS',
                    MAILLE='M1',
                    NOEUD='N1',
@@ -163,7 +163,7 @@ TEST_RESU(RESU=(
                    REFERENCE='NON_REGRESSION',),
                 _F(RESULTAT=REST,
                    NUME_ORDRE=11,
-                   NOM_CHAM='SIGM_ELNO_TUYO',
+                   NOM_CHAM='SITU_ELNO',
                    NOM_CMP='SIXX',
                    MAILLE='M2',
                    GROUP_NO='B',
@@ -172,7 +172,7 @@ TEST_RESU(RESU=(
                    REFERENCE='ANALYTIQUE',),
                 _F(RESULTAT=REST,
                    NUME_ORDRE=11,
-                   NOM_CHAM='VARI_ELNO_TUYO',
+                   NOM_CHAM='VATU_ELNO',
                    NOM_CMP='V1',
                    MAILLE='M2',
                    GROUP_NO='B',
@@ -181,7 +181,7 @@ TEST_RESU(RESU=(
                    REFERENCE='ANALYTIQUE',),
                 _F(RESULTAT=REST,
                    NUME_ORDRE=11,
-                   NOM_CHAM='VARI_ELNO_TUYO',
+                   NOM_CHAM='VATU_ELNO',
                    NOM_CMP='V1',
                    MAILLE='M2',
                    NOEUD='N5',
@@ -190,7 +190,7 @@ TEST_RESU(RESU=(
                    REFERENCE='ANALYTIQUE',),
                 _F(RESULTAT=REST,
                    NUME_ORDRE=11,
-                   NOM_CHAM='VARI_ELNO_TUYO',
+                   NOM_CHAM='VATU_ELNO',
                    NOM_CMP='V2',
                    MAILLE='M2',
                    GROUP_NO='B',
@@ -307,14 +307,14 @@ TEST_RESU(RESU=(_F(RESULTAT=RESM,
 RESM=CALC_ELEM(reuse =RESM,
                RESULTAT=RESM,
                TOUT_ORDRE='OUI',
-               OPTION=('SIGM_ELNO_TUYO','DEGE_ELNO',),
+               OPTION=('SITU_ELNO','DEGE_ELNO',),
                REPE_COQUE =_F( NUME_COUCHE=3,
                                NIVE_COUCHE='SUP',
                                ANGLE=90,),);
 
 RESM2=CALC_ELEM(RESULTAT=RESM,
                 TOUT_ORDRE='OUI',
-                OPTION='SIGM_ELNO_TUYO',
+                OPTION='SITU_ELNO',
                 REPE_COQUE =_F( NUME_COUCHE=1,
                                 NIVE_COUCHE='INF',
                                 ANGLE=90,),);
@@ -323,7 +323,7 @@ RESM2=CALC_ELEM(RESULTAT=RESM,
 # POUR VALIDER L'IMPRESSION DES VARIABLES INTERNES:
 
 IMPR_RESU(RESU=_F(RESULTAT=REST,
-                  NOM_CHAM='VARI_ELNO_ELGA',
+                  NOM_CHAM='VARI_ELNO',
                   INST=1.1,
                   MAILLE='M1',),);
                   

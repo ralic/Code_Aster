@@ -9,7 +9,7 @@
       
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -152,7 +152,7 @@ C =====================================================================
  60            CONTINUE
  40         CONTINUE
          ENDIF
-         IF (OPTION .EQ. 'VARI_ELNO_ELGA  ') THEN
+         IF (OPTION .EQ. 'VARI_ELNO  ') THEN
 C =====================================================================
 C --- ON VERIFIE QUE LES DIMENSIONNEMENTS SONT A JOUR -----------------
 C =====================================================================

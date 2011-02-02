@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # TITRE THERMO_METALLO_MECANIQUE EN DEFORMATIONS PLANES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -272,8 +272,8 @@ U=STAT_NON_LINE(
 U=CALC_ELEM( reuse=U,
                             RESULTAT=U,
 
-                              OPTION=( 'EPSI_ELNO_DEPL',
-                              'SIEF_ELNO',  'VARI_ELNO_ELGA',)
+                              OPTION=( 'EPSI_ELNO',
+                              'SIEF_ELNO',  'VARI_ELNO',)
                       )
 
 TEST_RESU(RESU=(
@@ -284,50 +284,50 @@ TEST_RESU(RESU=(
              CRITERE = 'ABSOLU',        PRECISION = 0.),
            
 
-           _F(  RESULTAT = U,  NOM_CHAM = 'VARI_ELNO_ELGA',  INST = 16.,
+           _F(  RESULTAT = U,  NOM_CHAM = 'VARI_ELNO',  INST = 16.,
              CRITERE = 'RELATIF', PRECISION = 1.E-5,
              MAILLE = 'M1', NOEUD = 'N13',  NOM_CMP = 'V5',    VALE = 7.9345E-5),
-           _F(  RESULTAT = U,  NOM_CHAM = 'VARI_ELNO_ELGA',  INST = 16.,
+           _F(  RESULTAT = U,  NOM_CHAM = 'VARI_ELNO',  INST = 16.,
              CRITERE = 'ABSOLU',  PRECISION = 1.E-12,
              MAILLE = 'M1', NOEUD = 'N13',  NOM_CMP = 'V6',    VALE = 1.),
            _F(  RESULTAT = U,  NOM_CHAM = 'SIEF_ELNO',  INST = 16.,
              CRITERE = 'RELATIF', PRECISION = 1.E-5,
              MAILLE = 'M1', NOEUD = 'N13',  NOM_CMP = 'SIZZ',  VALE = 360.13E+6),
-           _F(  RESULTAT = U,  NOM_CHAM = 'EPSI_ELNO_DEPL',  INST = 16.,
+           _F(  RESULTAT = U,  NOM_CHAM = 'EPSI_ELNO',  INST = 16.,
              CRITERE = 'RELATIF', PRECISION = 2.E-5,
              MAILLE = 'M1', NOEUD = 'N13',  NOM_CMP = 'EPXX',  VALE = -2.4599E-3),
 
-           _F(  RESULTAT = U,  NOM_CHAM = 'VARI_ELNO_ELGA',  INST = 60.,
+           _F(  RESULTAT = U,  NOM_CHAM = 'VARI_ELNO',  INST = 60.,
              CRITERE = 'RELATIF', PRECISION = 1.E-5,
              MAILLE = 'M1', NOEUD = 'N13',  NOM_CMP = 'V5',    VALE = 5.7213E-3),
            _F(  RESULTAT = U,  NOM_CHAM = 'SIEF_ELNO',  INST = 60.,
              CRITERE = 'RELATIF', PRECISION = 2.E-5,
              MAILLE = 'M1', NOEUD = 'N13',  NOM_CMP = 'SIZZ',  VALE = 265.73E+6),
-           _F(  RESULTAT = U,  NOM_CHAM = 'EPSI_ELNO_DEPL',  INST = 60.,
+           _F(  RESULTAT = U,  NOM_CHAM = 'EPSI_ELNO',  INST = 60.,
              CRITERE = 'RELATIF', PRECISION = 4.E-5,
              MAILLE = 'M1', NOEUD = 'N13',  NOM_CMP = 'EPXX',  VALE = -1.0309E-2),
 
-           _F(  RESULTAT = U,  NOM_CHAM = 'VARI_ELNO_ELGA',  INST = 72.,
+           _F(  RESULTAT = U,  NOM_CHAM = 'VARI_ELNO',  INST = 72.,
              CRITERE = 'RELATIF', PRECISION = 5.E-3,
              MAILLE = 'M1', NOEUD = 'N13',  NOM_CMP = 'V5',    VALE = 5.8420E-3),
 
-           _F(  RESULTAT = U,  NOM_CHAM = 'VARI_ELNO_ELGA',  INST = 112.,
+           _F(  RESULTAT = U,  NOM_CHAM = 'VARI_ELNO',  INST = 112.,
              CRITERE = 'RELATIF', PRECISION = 5.E-3,
              MAILLE = 'M1', NOEUD = 'N13',  NOM_CMP = 'V3',    VALE = 5.8421E-3),
-           _F(  RESULTAT = U,  NOM_CHAM = 'VARI_ELNO_ELGA',  INST = 112.,
+           _F(  RESULTAT = U,  NOM_CHAM = 'VARI_ELNO',  INST = 112.,
              CRITERE = 'ABSOLU', PRECISION = 1.E-5,
              MAILLE = 'M1', NOEUD = 'N13',  NOM_CMP = 'V6',    VALE = 0.),
            _F(  RESULTAT = U,  NOM_CHAM = 'SIEF_ELNO',  INST = 112.,
              PRECISION = 5.E-3,
              MAILLE = 'M1', NOEUD = 'N13',  NOM_CMP = 'SIZZ',  VALE = 12.820E+6),
 
-           _F(  RESULTAT = U,  NOM_CHAM = 'EPSI_ELNO_DEPL',  INST = 176.,
+           _F(  RESULTAT = U,  NOM_CHAM = 'EPSI_ELNO',  INST = 176.,
              CRITERE = 'RELATIF', PRECISION = 4.E-5,
              MAILLE = 'M1', NOEUD = 'N13',  NOM_CMP = 'EPXX',  VALE = -1.5886E-2),
            _F(  RESULTAT = U,  NOM_CHAM = 'SIEF_ELNO',  INST = 176.,
              CRITERE = 'RELATIF', PRECISION = 5.E-5,
              MAILLE = 'M1', NOEUD = 'N13',  NOM_CMP = 'SIZZ',  VALE = 133.55E+6),
-           _F(  RESULTAT = U,  NOM_CHAM = 'VARI_ELNO_ELGA',  INST = 176.,
+           _F(  RESULTAT = U,  NOM_CHAM = 'VARI_ELNO',  INST = 176.,
              CRITERE = 'RELATIF', PRECISION = 1.E-5,
              MAILLE = 'M1', NOEUD = 'N13',  NOM_CMP = 'V6',    VALE = 1.))
            )

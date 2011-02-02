@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # TITRE TRACTION SIMPLE VISC_TAHERI (VITESSE DE DEFORM. CSTE)
 # ssnv170b.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -101,7 +101,7 @@ U=STAT_NON_LINE(        MODELE=MOMECA,
 U=CALC_ELEM(            reuse=U,
                         OPTION=(
                                 'SIEF_ELNO',
-                                'EPSI_ELNO_DEPL',
+                                'EPSI_ELNO',
                                 'EPSP_ELNO'
                                 ),
                         RESULTAT=U,

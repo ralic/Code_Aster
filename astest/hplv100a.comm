@@ -1,8 +1,8 @@
-# MODIF  DATE 22/10/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # TITRE PARALLELEPIPEDE. MODULE D'YOUNG FONCTION DE LA TEMPERATURE.
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -238,7 +238,7 @@ CH4=AFFE_CHAR_MECA(
 
 # LA CHARGE SUIVANTE (CH3) NE DOIT RIEN CHANGER AU RESULTAT
 # CAR LE DDL EST BLOQUE. ELLE NE SERT QU'A VERIFIER QUE L'ON PEUT
-# METTRE 2 CHARGES DANS MECA_STATIQUE AVEC OPTION : 'SIGM_ELNO_DEPL'
+# METTRE 2 CHARGES DANS MECA_STATIQUE AVEC OPTION : 'SIGM_ELNO'
 
 CH3=AFFE_CHAR_MECA(
             MODELE=MO2,
@@ -255,12 +255,12 @@ RES=MECA_STATIQUE(   MODELE=MO2,  CHAM_MATER=CMME, LIST_INST=LR,EXCIT=(
                           _F( CHARGE = CH3, ))  )
 
 CALC_ELEM( reuse= RES ,RESULTAT= RES ,
-                           OPTION='SIGM_ELNO_DEPL',
+                           OPTION='SIGM_ELNO',
                             LIST_INST=LR,)
 
 CALC_ELEM(reuse=RES,
 
-                     OPTION='EPSI_ELNO_DEPL',
+                     OPTION='EPSI_ELNO',
                      RESULTAT=RES
                    )
 
@@ -283,11 +283,11 @@ TEST_RESU(RESU=(
               _F(   RESULTAT = RES,   NOM_CHAM = 'DEPL',    NUME_ORDRE = 1,
                  GROUP_NO = 'D',     NOM_CMP = 'DZ',
                  VALE = -2.0075,  PRECISION = 1.E-03,        ),
-              _F(  RESULTAT = RES,  NOM_CHAM = 'SIGM_ELNO_DEPL',  NUME_ORDRE = 1,
+              _F(  RESULTAT = RES,  NOM_CHAM = 'SIGM_ELNO',  NUME_ORDRE = 1,
                 MAILLE = 'M1',    POINT = 1,    NOM_CMP = 'SIXX',   VALE = 1.0,    ),
-              _F(  RESULTAT = RES,  NOM_CHAM = 'EPSI_ELNO_DEPL',  NUME_ORDRE = 1,
+              _F(  RESULTAT = RES,  NOM_CHAM = 'EPSI_ELNO',  NUME_ORDRE = 1,
                 MAILLE = 'M13',   NOEUD = 'N22',  NOM_CMP = 'EPXX',   VALE = 0.800,  ),
-              _F(  RESULTAT = RES,  NOM_CHAM = 'EPSI_ELNO_DEPL',  NUME_ORDRE = 1,
+              _F(  RESULTAT = RES,  NOM_CHAM = 'EPSI_ELNO',  NUME_ORDRE = 1,
                 MAILLE = 'M13',   NOEUD = 'N22',  NOM_CMP = 'EPYY',   VALE = -0.240, ))
            )
 
@@ -310,11 +310,11 @@ TEST_RESU(RESU=(
               _F(   RESULTAT = RES,   NOM_CHAM = 'DEPL',    NUME_ORDRE = 2,
                  GROUP_NO = 'D',     NOM_CMP = 'DZ',
                  VALE = -1.81125,    PRECISION = 1.E-03,     ),
-              _F(   RESULTAT = RES,  NOM_CHAM = 'SIGM_ELNO_DEPL',  NUME_ORDRE = 2,
+              _F(   RESULTAT = RES,  NOM_CHAM = 'SIGM_ELNO',  NUME_ORDRE = 2,
                  MAILLE = 'M1',    POINT = 1,    NOM_CMP = 'SIXX',   VALE = 1.0,   ),
-              _F(   RESULTAT = RES,  NOM_CHAM = 'EPSI_ELNO_DEPL',  NUME_ORDRE = 2,
+              _F(   RESULTAT = RES,  NOM_CHAM = 'EPSI_ELNO',  NUME_ORDRE = 2,
                  MAILLE = 'M13',   NOEUD = 'N22',  NOM_CMP = 'EPXX',   VALE = 0.800, ),
-              _F(   RESULTAT = RES,  NOM_CHAM = 'EPSI_ELNO_DEPL',  NUME_ORDRE = 2,
+              _F(   RESULTAT = RES,  NOM_CHAM = 'EPSI_ELNO',  NUME_ORDRE = 2,
                  MAILLE = 'M13',   NOEUD = 'N22',  NOM_CMP = 'EPYY',   VALE = -0.240,))
            )
 

@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # TITRE  - ECOULEMENT ORTHOTROPE SATURE EN 2D
 # wtnp110a.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -191,7 +191,7 @@ U0=CALC_ELEM(reuse =U0,
 
              RESULTAT=U0,
              TOUT_ORDRE='OUI',
-             OPTION=('SIEF_ELNO','VARI_ELNO_ELGA',),);
+             OPTION=('SIEF_ELNO','VARI_ELNO',),);
 
 U0=CALC_ELEM(reuse =U0,
              RESULTAT=U0,

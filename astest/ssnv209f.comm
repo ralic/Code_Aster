@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # TITRE INTERFACE EN CONTACT FROTTANT AVEC X-FEM
 # ssnv209f.para = tps_job 320 mem_job 1000Mo mem_aster 100 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -175,7 +175,7 @@ U2M=STAT_NON_LINE(MODELE    = MO,
 #----------------------------------------------
 
 U2M=CALC_ELEM(reuse=U2M,
-              OPTION=('SIEF_ELNO', 'VARI_ELNO_ELGA',),
+              OPTION=('SIEF_ELNO', 'VARI_ELNO',),
               RESULTAT=U2M,)
 
 DEPL2M=CREA_CHAMP(OPERATION='EXTR',

@@ -1,9 +1,9 @@
 
-# MODIF  DATE 11/02/2008   AUTEUR MACOCCO K.MACOCCO 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # TITRE  PLAQUE CARREE COMPOSITE SOUS PRESSION UNIFORME
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -132,7 +132,7 @@ RESU=MECA_STATIQUE(MODELE=MO,
 SIG_C1_S=CALC_ELEM(
                    RESULTAT=RESU,
                    NUME_ORDRE=1,
-                   OPTION='SIGM_ELNO_DEPL',
+                   OPTION='SIGM_ELNO',
                    REPE_COQUE =_F( NUME_COUCHE=1,
                                    NIVE_COUCHE='SUP', ),
                    );
@@ -141,7 +141,7 @@ SIG_C1_S=CALC_ELEM(
 SIG_C1_I=CALC_ELEM(
                    RESULTAT=RESU,
                    NUME_ORDRE=1,
-                   OPTION='SIGM_ELNO_DEPL',
+                   OPTION='SIGM_ELNO',
                    REPE_COQUE =_F( NUME_COUCHE=1,
                                    NIVE_COUCHE='INF', ),
                    );
@@ -150,7 +150,7 @@ SIG_C1_I=CALC_ELEM(
 SIG_C2_S=CALC_ELEM(
                    RESULTAT=RESU,
                    NUME_ORDRE=1,
-                   OPTION='SIGM_ELNO_DEPL',
+                   OPTION='SIGM_ELNO',
                    REPE_COQUE =_F( NUME_COUCHE=2,
                                    NIVE_COUCHE='SUP', ),
                    );
@@ -158,7 +158,7 @@ SIG_C2_S=CALC_ELEM(
 SIG_C2_I=CALC_ELEM(
                    RESULTAT=RESU,
                    NUME_ORDRE=1,
-                   OPTION='SIGM_ELNO_DEPL',
+                   OPTION='SIGM_ELNO',
                    REPE_COQUE =_F( NUME_COUCHE=2,
                                    NIVE_COUCHE='INF', ),
                    );
@@ -167,7 +167,7 @@ SIG_C2_I=CALC_ELEM(
 SIG_C3_S=CALC_ELEM(
                    RESULTAT=RESU,
                    NUME_ORDRE=1,
-                   OPTION='SIGM_ELNO_DEPL',
+                   OPTION='SIGM_ELNO',
                    REPE_COQUE =_F( NUME_COUCHE=3,
                                    NIVE_COUCHE='SUP', ),
                    );
@@ -175,7 +175,7 @@ SIG_C3_S=CALC_ELEM(
 SIG_C3_I=CALC_ELEM(
                    RESULTAT=RESU,
                    NUME_ORDRE=1,
-                   OPTION='SIGM_ELNO_DEPL',
+                   OPTION='SIGM_ELNO',
                    REPE_COQUE =_F( NUME_COUCHE=3,
                                    NIVE_COUCHE='INF', ),
                    );
@@ -212,7 +212,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU,
                    REFERENCE='SOURCE_EXTERNE',),
                 _F(RESULTAT=SIG_C3_I,
                    NUME_ORDRE=1,
-                   NOM_CHAM='SIGM_ELNO_DEPL',
+                   NOM_CHAM='SIGM_ELNO',
                    NOM_CMP='SIXX',
                    MAILLE='M72',
                    GROUP_NO='C',
@@ -221,7 +221,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU,
                    REFERENCE='SOURCE_EXTERNE',),
                 _F(RESULTAT=SIG_C3_S,
                    NUME_ORDRE=1,
-                   NOM_CHAM='SIGM_ELNO_DEPL',
+                   NOM_CHAM='SIGM_ELNO',
                    NOM_CMP='SIXX',
                    MAILLE='M72',
                    GROUP_NO='C',
@@ -230,7 +230,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU,
                    REFERENCE='SOURCE_EXTERNE',),
                 _F(RESULTAT=SIG_C2_I,
                    NUME_ORDRE=1,
-                   NOM_CHAM='SIGM_ELNO_DEPL',
+                   NOM_CHAM='SIGM_ELNO',
                    NOM_CMP='SIXX',
                    MAILLE='M72',
                    GROUP_NO='C',
@@ -239,7 +239,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU,
                    REFERENCE='SOURCE_EXTERNE',),
                 _F(RESULTAT=SIG_C2_S,
                    NUME_ORDRE=1,
-                   NOM_CHAM='SIGM_ELNO_DEPL',
+                   NOM_CHAM='SIGM_ELNO',
                    NOM_CMP='SIXX',
                    MAILLE='M72',
                    GROUP_NO='C',
@@ -248,7 +248,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU,
                    REFERENCE='SOURCE_EXTERNE',),
                 _F(RESULTAT=SIG_C1_I,
                    NUME_ORDRE=1,
-                   NOM_CHAM='SIGM_ELNO_DEPL',
+                   NOM_CHAM='SIGM_ELNO',
                    NOM_CMP='SIXX',
                    MAILLE='M72',
                    GROUP_NO='C',
@@ -257,7 +257,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU,
                    REFERENCE='SOURCE_EXTERNE',),
                 _F(RESULTAT=SIG_C1_S,
                    NUME_ORDRE=1,
-                   NOM_CHAM='SIGM_ELNO_DEPL',
+                   NOM_CHAM='SIGM_ELNO',
                    NOM_CMP='SIXX',
                    MAILLE='M72',
                    GROUP_NO='C',

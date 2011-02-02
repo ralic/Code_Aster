@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # TITRE VALIDATION DE LA COMMANDE CREA_RESU MOT CLE FACTEUR PERM_CHAM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -118,7 +118,7 @@ RESU1=STAT_NON_LINE(
 
 RESU1=CALC_ELEM( reuse=RESU1,
                             OPTION=(
-                  'SIEF_ELNO',  'VARI_ELNO_ELGA',),
+                  'SIEF_ELNO',  'VARI_ELNO',),
                           RESULTAT=RESU1,
               )
 
@@ -142,7 +142,7 @@ TEST_RESU(RESU=(
                  PRECISION = 1.E-3),
            _F( RESULTAT = RESU1,
                  NUME_ORDRE = 21,
-                 NOM_CHAM = 'VARI_ELNO_ELGA',
+                 NOM_CHAM = 'VARI_ELNO',
                  NOEUD = 'N3',
                  MAILLE = 'M14',
                  NOM_CMP = 'V1',
@@ -166,7 +166,7 @@ TEST_RESU(RESU=(
                  PRECISION = 2.E-2),
            _F( RESULTAT = RESU1,
                  NUME_ORDRE = 21,
-                 NOM_CHAM = 'VARI_ELNO_ELGA',
+                 NOM_CHAM = 'VARI_ELNO',
                  NOEUD = 'N6',
                  MAILLE = 'M17',
                  NOM_CMP = 'V1',
@@ -192,7 +192,7 @@ TEST_RESU(RESU=(
                  PRECISION = 1.E-3),
             _F( RESULTAT = RESU1,
                  NUME_ORDRE = 21,
-                 NOM_CHAM = 'VARI_ELNO_ELGA',
+                 NOM_CHAM = 'VARI_ELNO',
                  NOEUD = 'N20',
                  MAILLE = 'M10',
                  NOM_CMP = 'V7',
@@ -217,7 +217,7 @@ TEST_RESU(RESU=(
                  PRECISION = 1.E-3),
             _F( RESULTAT = RESU1,
                  NUME_ORDRE = 21,
-                 NOM_CHAM = 'VARI_ELNO_ELGA',
+                 NOM_CHAM = 'VARI_ELNO',
                  NOEUD = 'N25',
                  MAILLE = 'M46',
                  NOM_CMP = 'V1',
@@ -225,7 +225,7 @@ TEST_RESU(RESU=(
                  PRECISION = 1.E-3),
             _F( RESULTAT = RESU1,
                  NUME_ORDRE = 21,
-                 NOM_CHAM = 'VARI_ELNO_ELGA',
+                 NOM_CHAM = 'VARI_ELNO',
                  NOEUD = 'N25',
                  MAILLE = 'M46',
                  NOM_CMP = 'V7',
@@ -358,7 +358,7 @@ RESU2=CREA_RESU( reuse=RESU2,   OPERATION='PERM_CHAM', TYPE_RESU='EVOL_NOLI',
 
 RESU2=CALC_ELEM( reuse=RESU2,
                             OPTION=(
-                  'SIEF_ELNO',  'VARI_ELNO_ELGA',),
+                  'SIEF_ELNO',  'VARI_ELNO',),
                           RESULTAT=RESU2,
               )
 
@@ -385,7 +385,7 @@ TEST_RESU(RESU=(
 
            _F( RESULTAT = RESU2,
                  NUME_ORDRE = NUM2,
-                 NOM_CHAM = 'VARI_ELNO_ELGA',
+                 NOM_CHAM = 'VARI_ELNO',
                  NOEUD = 'N33',
                  MAILLE = 'M57',
                  NOM_CMP = 'V1',
@@ -410,7 +410,7 @@ TEST_RESU(RESU=(
                  PRECISION = 2.E-2),
           _F( RESULTAT = RESU2,
                  NUME_ORDRE = NUM2,
-                 NOM_CHAM = 'VARI_ELNO_ELGA',
+                 NOM_CHAM = 'VARI_ELNO',
                  NOEUD = 'N26',
                  MAILLE = 'M9',
                  NOM_CMP = 'V1',
@@ -437,7 +437,7 @@ TEST_RESU(RESU=(
                  PRECISION = 1.E-3),
           _F( RESULTAT = RESU2,
                  NUME_ORDRE = NUM2,
-                 NOM_CHAM = 'VARI_ELNO_ELGA',
+                 NOM_CHAM = 'VARI_ELNO',
                  NOEUD = 'N37',
                  MAILLE = 'M31',
                  NOM_CMP = 'V1',
@@ -464,7 +464,7 @@ TEST_RESU(RESU=(
                  PRECISION = 1.E-3),
             _F( RESULTAT = RESU2,
                  NUME_ORDRE = NUM2,
-                 NOM_CHAM = 'VARI_ELNO_ELGA',
+                 NOM_CHAM = 'VARI_ELNO',
                  NOEUD = 'N21',
                  MAILLE = 'M24',
                  NOM_CMP = 'V7',
@@ -490,7 +490,7 @@ TEST_RESU(RESU=(
                  PRECISION = 1.E-3),
           _F( RESULTAT = RESU2,
                  NUME_ORDRE = NUM2,
-                 NOM_CHAM = 'VARI_ELNO_ELGA',
+                 NOM_CHAM = 'VARI_ELNO',
                  NOEUD = 'N9',
                  MAILLE = 'M16',
                  NOM_CMP = 'V1',
@@ -516,7 +516,7 @@ TEST_RESU(RESU=(
                  PRECISION = 1.E-3),
             _F( RESULTAT = RESU2,
                  NUME_ORDRE = NUM2,
-                 NOM_CHAM = 'VARI_ELNO_ELGA',
+                 NOM_CHAM = 'VARI_ELNO',
                  NOEUD = 'N15',
                  MAILLE = 'M20',
                  NOM_CMP = 'V1',
@@ -524,7 +524,7 @@ TEST_RESU(RESU=(
                  PRECISION = 1.E-3),
             _F( RESULTAT = RESU2,
                  NUME_ORDRE = NUM2,
-                 NOM_CHAM = 'VARI_ELNO_ELGA',
+                 NOM_CHAM = 'VARI_ELNO',
                  NOEUD = 'N15',
                  MAILLE = 'M20',
                  NOM_CMP = 'V7',
@@ -544,7 +544,7 @@ RESU11=EXTR_RESU(RESULTAT=RESU1,
 DETRUIRE(INFO=1,CONCEPT = _F(NOM=RESU1),)
 
 CALC_NO( reuse=RESU11,RESULTAT=RESU11,
-           OPTION=('SIEF_NOEU','VARI_NOEU_ELGA'),                     
+           OPTION=('SIEF_NOEU','VARI_NOEU'),                     
                   )
 
 TEST_RESU(RESU=(
@@ -558,7 +558,7 @@ TEST_RESU(RESU=(
                  PRECISION = 1.E-3),
           _F( RESULTAT = RESU11,
                  NUME_ORDRE = 8,
-                 NOM_CHAM = 'VARI_NOEU_ELGA',
+                 NOM_CHAM = 'VARI_NOEU',
                  NOEUD = 'N1',
                  NOM_CMP = 'V7',
                  VALE =0.85 , REFERENCE = 'NON_REGRESSION',

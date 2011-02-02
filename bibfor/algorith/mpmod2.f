@@ -3,7 +3,7 @@
 C
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -133,7 +133,7 @@ C MEMES VECTEURS DE BASE POUR : DEPL, VITE ET ACCE
      &        NOMCH = 'DEPL'
 C MEMES VECTEURS DE BASE POUR LES CONTRAINTES
         IF (NOMCH(1:4) .EQ. 'SIEF')
-     &        NOMCH = 'SIGM_NOEU_DEPL'
+     &        NOMCH = 'SIGM_NOEU'
 C MEMES VECTEURS DE BASE POUR LES DEFORMATIONS
         IF (NOMCH(1:4) .EQ. 'EPSI')
      &        NOMCH = 'EPSI_NOEU'
@@ -183,7 +183,7 @@ C MEMES VECTEURS DE BASE POUR : DEPL, VITE ET ACCE
      &        NOMCHM = 'DEPL'
 C MEMES VECTEURS DE BASE POUR LES CONTRAINTES
             IF (NOMCHM(1:4) .EQ. 'SIEF')
-     &        NOMCHM = 'SIGM_NOEU_DEPL'
+     &        NOMCHM = 'SIGM_NOEU'
 C MEMES VECTEURS DE BASE POUR LES DEFORMATIONS
             IF (NOMCHM(1:4) .EQ. 'EPSI')
      &        NOMCHM = 'EPSI_NOEU'
@@ -242,8 +242,8 @@ C
      &            ZR(LRED-1 +IPOSD) = ZR(JCNSV-1 +(INO-1)*NBCMPI+ICMP)
  401          CONTINUE
 C
-            ELSE IF ( (NOMCH(1:14) .EQ. 'SIGM_NOEU_DEPL') .AND.
-     &              (NOMCHM(1:14) .EQ. 'SIGM_NOEU_DEPL') ) THEN
+            ELSE IF ( (NOMCH(1:14) .EQ. 'SIGM_NOEU') .AND.
+     &              (NOMCHM(1:14) .EQ. 'SIGM_NOEU') ) THEN
 
               IPOSD = (IMODE-1)*NBMESU + IMESU
               DO 501 ICMP = 1,NBCMPI

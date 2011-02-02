@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # TITRE THERMO-PLASTICITE EN TRACTION SIMPLE TUYAU
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -119,7 +119,7 @@ U=STAT_NON_LINE(
 
 U=CALC_ELEM( reuse=U,
                             OPTION=(
-                  'SIEF_ELNO',  'VARI_ELNO_ELGA',),
+                  'SIEF_ELNO',  'VARI_ELNO',),
                           RESULTAT=U,
               )
 
@@ -149,7 +149,7 @@ _F( RESULTAT = U, NOM_CHAM = 'SIEF_ELGA', INST = 66.666,
       MAILLE = 'M1', POINT = 1, NOM_CMP = 'SIXX', VALE = -133.333,
       PRECISION = 0.002),
 
-_F( RESULTAT = U, NOM_CHAM = 'VARI_ELNO_ELGA', INST = 80.,
+_F( RESULTAT = U, NOM_CHAM = 'VARI_ELNO', INST = 80.,
       MAILLE = 'M1', NOEUD = 'N2', SOUS_POINT=3, NOM_CMP = 'V1', VALE = 3.0000E-4,
       PRECISION = 0.002),
 
@@ -157,7 +157,7 @@ _F( RESULTAT = U, NOM_CHAM = 'SIEF_ELGA', INST = 80.,
       MAILLE = 'M1', POINT = 1, NOM_CMP = 'SIXX',VALE = -100.,
       PRECISION = 0.002),
 
-_F( RESULTAT = U, NOM_CHAM = 'VARI_ELNO_ELGA', INST = 90.,
+_F( RESULTAT = U, NOM_CHAM = 'VARI_ELNO', INST = 90.,
       MAILLE = 'M1', NOEUD = 'N1', SOUS_POINT=3, NOM_CMP = 'V1',VALE = 5.2500E-4,
       PRECISION = 0.002),
 

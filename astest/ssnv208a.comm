@@ -1,4 +1,4 @@
-# MODIF  DATE 25/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # TITRE ETUDE:  ESSAI BIAXIAL DRAINE SUR SABLE D'HOSTUN
 # ssnv208a.para = tps_job 160 mem_job 200Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -164,13 +164,13 @@ U1=STAT_NON_LINE(MODELE=MODELE,
 U1=CALC_ELEM(reuse=U1,
 
 
-             OPTION=('SIEF_ELNO','VARI_ELNO_ELGA',
-                     'EPSI_ELNO_DEPL','INDL_ELGA'),
+             OPTION=('SIEF_ELNO','VARI_ELNO',
+                     'EPSI_ELNO','INDL_ELGA'),
              RESULTAT=U1);
 
 U1=CALC_NO(reuse=U1,
 
-           OPTION=('SIEF_NOEU','VARI_NOEU_ELGA','EPSI_NOEU'),
+           OPTION=('SIEF_NOEU','VARI_NOEU','EPSI_NOEU'),
            RESULTAT=U1);
 
 
@@ -181,10 +181,10 @@ TAB_SIG=POST_RELEVE_T(ACTION=_F(INTITULE='EQUI_NOEU_DEPL',
                                 NOM_CMP=('SIXX','SIYY','SIZZ','SIXY'),
                                 OPERATION='EXTRACTION'));
 
-TAB_VARI=POST_RELEVE_T(ACTION=_F(INTITULE='VARI_NOEU_ELGA',
+TAB_VARI=POST_RELEVE_T(ACTION=_F(INTITULE='VARI_NOEU',
                                 GROUP_NO='C',
                                 RESULTAT=U1,
-                                NOM_CHAM='VARI_NOEU_ELGA',
+                                NOM_CHAM='VARI_NOEU',
                                 NOM_CMP=('V1','V2','V3','V4',
                                          'V5','V6','V7','V8','V23','V32'),
                                 OPERATION='EXTRACTION'));

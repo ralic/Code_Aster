@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # TITRE SYSTEME 2 MASSES 3 RESSORTS
 #       SYSTEME MASSE-RESSORT A 2 DEGRES DE LIBERTE
 #       ANALYSE SPECTRALE MULTI SUPPORTEE
@@ -125,7 +125,7 @@ MODES=NORM_MODE(reuse=MODES,
 MODES=CALC_ELEM(reuse=MODES,
                         RESULTAT=MODES,
                           OPTION=( 'SIEF_ELGA',
-                                    'EFGE_ELNO_DEPL',)
+                                    'EFGE_ELNO',)
                   )
 
 MODES=CALC_NO(  reuse=MODES,
@@ -164,7 +164,7 @@ MODE_STA=MODE_STATIQUE(   MATR_RIGI=MATRRIGI,
 MODE_STA=CALC_ELEM(reuse=MODE_STA,
                            RESULTAT=MODE_STA,
                              OPTION=( 'SIEF_ELGA',
-                                      'EFGE_ELNO_DEPL', )
+                                      'EFGE_ELNO', )
                      )
 
 MODE_STA=CALC_NO(  reuse=MODE_STA,
@@ -216,7 +216,7 @@ MODE_CO2=MODE_STATIQUE(   MATR_RIGI=MATRRIGI,
 MODE_CO2=CALC_ELEM(reuse=MODE_CO2,
                            RESULTAT=MODE_CO2,
                              OPTION=( 'SIEF_ELGA',
-                                      'EFGE_ELNO_DEPL', )
+                                      'EFGE_ELNO', )
                      )
 
 MODE_CO2=CALC_NO(  reuse=MODE_CO2,
@@ -343,7 +343,7 @@ MUQASRS=COMB_SISM_MODAL( MODE_MECA=MODES,
                          COMB_MODE=_F(  TYPE = 'SRSS'),
                          OPTION=( 'DEPL',
                                   'SIEF_ELGA',
-                                  'EFGE_ELNO_DEPL',
+                                  'EFGE_ELNO',
                                   'FORC_NODA',
                                   'REAC_NODA', )
                            )
@@ -383,7 +383,7 @@ MUQAABS=COMB_SISM_MODAL( MODE_MECA=MODES,
                          COMB_MODE=_F(  TYPE = 'ABS'),
                          OPTION=( 'DEPL',
                                   'SIEF_ELGA',
-                                  'EFGE_ELNO_DEPL',
+                                  'EFGE_ELNO',
                                   'FORC_NODA',
                                   'REAC_NODA', )
                            )
@@ -426,7 +426,7 @@ MUQADPC=COMB_SISM_MODAL(
                          COMB_MODE=_F(  TYPE = 'DPC'),
                          OPTION=( 'DEPL',
                                        'SIEF_ELGA',
-                                       'EFGE_ELNO_DEPL',
+                                       'EFGE_ELNO',
                                        'FORC_NODA',
                                        'REAC_NODA', )
                       )
@@ -464,7 +464,7 @@ MUQACQC=COMB_SISM_MODAL( MODE_MECA=MODES,
                          COMB_MODE=_F( TYPE = 'CQC'),
                          OPTION=( 'DEPL',
                                   'SIEF_ELGA',
-                                  'EFGE_ELNO_DEPL',
+                                  'EFGE_ELNO',
                                   'FORC_NODA',
                                   'REAC_NODA', )
                            )
@@ -507,7 +507,7 @@ MUQADSC=COMB_SISM_MODAL( MODE_MECA=MODES,
                                        DUREE = 15.),
                          OPTION=( 'DEPL',
                                   'SIEF_ELGA',
-                                  'EFGE_ELNO_DEPL',
+                                  'EFGE_ELNO',
                                   'FORC_NODA',
                                   'REAC_NODA', )
                            )

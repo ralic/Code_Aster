@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # TITRE ESSAI DE THERMOPLASTICITE (MISES ECR. ISOT. BARRE)
 # ssnl112a.para = tps_job 60 mem_job 100Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -133,7 +133,7 @@ UELAS=MECA_STATIQUE(      MODELE=MOD,
 CALC_ELEM( reuse= UELAS ,RESULTAT= UELAS ,
 
                         LIST_INST=LINST,
-                           OPTION='SIGM_ELNO_DEPL'
+                           OPTION='SIGM_ELNO'
                      )
 
 

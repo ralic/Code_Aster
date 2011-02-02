@@ -1,9 +1,9 @@
-# MODIF  DATE 02/02/2010   AUTEUR IDOUX L.IDOUX 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # TITRE  PARALLEPEPIPEDE ISOTROPE TRANSVERSE SOUS SON PROPRE POIDS
 # sslv121a.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -67,7 +67,7 @@ RESU=MECA_STATIQUE(MODELE=MO,
 
 RESU=CALC_ELEM( reuse= RESU, RESULTAT= RESU,
 
-               OPTION=('SIGM_ELNO_DEPL',),
+               OPTION=('SIGM_ELNO',),
                 )
 #---------------------------------------------------------------------
 
@@ -124,15 +124,15 @@ TEST_RESU(RESU=(
               NOEUD = 'N70',      NOM_CMP = 'DZ',            VALE = 5.73885E-9),
      # CONTRAINTES EN A , E ET X
 
-            _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='SIGM_ELNO_DEPL',
+            _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='SIGM_ELNO',
             CRITERE = 'RELATIF',   PRECISION = 1.E-3, MAILLE = 'HEX3',
             NOEUD = 'N59',   NOM_CMP = 'SIZZ',          VALE = 2.29554E5),
 
-            _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='SIGM_ELNO_DEPL',
+            _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='SIGM_ELNO',
             CRITERE = 'RELATIF',   PRECISION = 1.E-3, MAILLE = 'HEX2',
             NOEUD = 'N56',   NOM_CMP = 'SIZZ',          VALE = 1.14777E5),
 
-            _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='SIGM_ELNO_DEPL',
+            _F(  RESULTAT = RESU, NUME_ORDRE=1, NOM_CHAM='SIGM_ELNO',
             CRITERE = 'RELATIF',   PRECISION = 1.E-3, MAILLE = 'HEX6',
             NOEUD = 'N70',   NOM_CMP = 'SIZZ',          VALE = 2.29554E5))
               )

@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # TITRE THERMO-PLASTICITE EN TRACTION SIMPLE
 # RESPONSABLE JMBHH01 J.M.PROIX
 # hsnv100a.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test S
@@ -184,8 +184,8 @@ U=STAT_NON_LINE(
               )
 
 U=CALC_ELEM( reuse=U,
-                            OPTION=( 'EPSI_ELNO_DEPL',
-                  'SIEF_ELNO',  'VARI_ELNO_ELGA',),
+                            OPTION=( 'EPSI_ELNO',
+                  'SIEF_ELNO',  'VARI_ELNO',),
                           RESULTAT=U,
               )
 
@@ -193,19 +193,19 @@ U=CALC_ELEM( reuse=U,
 TEST_RESU(RESU=(
           _F(  RESULTAT = TEMPE,  NOM_CHAM = 'TEMP',  NUME_ORDRE = 5,
             NOEUD = 'N1', NOM_CMP = 'TEMP', VALE = 90.),
-          _F(  RESULTAT = U,  NOM_CHAM = 'EPSI_ELNO_DEPL',  NUME_ORDRE = 1,
+          _F(  RESULTAT = U,  NOM_CHAM = 'EPSI_ELNO',  NUME_ORDRE = 1,
             MAILLE = 'M1', NOEUD = 'N1', NOM_CMP = 'EPXX', VALE = 8.6666E-4),
           _F(  RESULTAT = U, NOM_CHAM = 'SIEF_ELNO', NUME_ORDRE = 1,
             MAILLE = 'M1', NOEUD = 'N1', NOM_CMP = 'SIYY', VALE = -133.333),
-          _F(  RESULTAT = U,  NOM_CHAM = 'EPSI_ELNO_DEPL',  NUME_ORDRE = 3,
+          _F(  RESULTAT = U,  NOM_CHAM = 'EPSI_ELNO',  NUME_ORDRE = 3,
             MAILLE = 'M1',NOEUD = 'N2', NOM_CMP = 'EPZZ',VALE = 1.1000E-3),
-          _F(  RESULTAT = U,  NOM_CHAM = 'VARI_ELNO_ELGA',  NUME_ORDRE = 3,
+          _F(  RESULTAT = U,  NOM_CHAM = 'VARI_ELNO',  NUME_ORDRE = 3,
             MAILLE = 'M1',NOEUD = 'N2',NOM_CMP = 'V1',VALE = 3.0000E-4),
           _F(  RESULTAT = U,  NOM_CHAM = 'SIEF_ELNO',  NUME_ORDRE = 3,
             MAILLE = 'M1',NOEUD = 'N2',NOM_CMP = 'SIYY',VALE = -100.),
-          _F(  RESULTAT = U,  NOM_CHAM = 'EPSI_ELNO_DEPL',  NUME_ORDRE = 5,
+          _F(  RESULTAT = U,  NOM_CHAM = 'EPSI_ELNO',  NUME_ORDRE = 5,
             MAILLE = 'M1',NOEUD = 'N3',NOM_CMP = 'EPZZ',VALE = 1.2750E-3),
-          _F(  RESULTAT = U,  NOM_CHAM = 'VARI_ELNO_ELGA',  NUME_ORDRE = 5,
+          _F(  RESULTAT = U,  NOM_CHAM = 'VARI_ELNO',  NUME_ORDRE = 5,
             MAILLE = 'M1',NOEUD = 'N3',NOM_CMP = 'V1',VALE = 5.2500E-4),
           _F(  RESULTAT = U,  NOM_CHAM = 'SIEF_ELNO',  NUME_ORDRE = 5,
             MAILLE = 'M1',NOEUD = 'N3',NOM_CMP = 'SIYY',VALE = -75.000))
@@ -230,14 +230,14 @@ V=STAT_NON_LINE(
               )
 
 V=CALC_ELEM( reuse=V,
-                            OPTION=( 'EPSI_ELNO_DEPL',
-                   'SIEF_ELNO',  'VARI_ELNO_ELGA',),
+                            OPTION=( 'EPSI_ELNO',
+                   'SIEF_ELNO',  'VARI_ELNO',),
                           RESULTAT=V,
               )
 
 #
 TEST_RESU(RESU=(
-          _F(  RESULTAT = V,  NOM_CHAM = 'EPSI_ELNO_DEPL',  NUME_ORDRE = 1,
+          _F(  RESULTAT = V,  NOM_CHAM = 'EPSI_ELNO',  NUME_ORDRE = 1,
             MAILLE = 'M1', NOEUD = 'N1', NOM_CMP = 'EPXX', VALE = 8.6666E-4),
           _F(  RESULTAT = V,  NOM_CHAM = 'SIEF_ELNO',  NUME_ORDRE = 1,
             MAILLE = 'M1', NOEUD = 'N1', NOM_CMP = 'SIYY', VALE = -133.333))
@@ -260,15 +260,15 @@ V2=STAT_NON_LINE(
               )
 
 V2=CALC_ELEM( reuse=V2,
-                            OPTION=( 'EPSI_ELNO_DEPL',
-                  'SIEF_ELNO',  'VARI_ELNO_ELGA',),
+                            OPTION=( 'EPSI_ELNO',
+                  'SIEF_ELNO',  'VARI_ELNO',),
                           RESULTAT=V2,
               )
 
 TEST_RESU(RESU=(
           _F(  RESULTAT = V2,NOM_CHAM = 'SIEF_ELNO',NUME_ORDRE = 1,
             MAILLE = 'M1',NOEUD = 'N1',NOM_CMP = 'SIYY',VALE = -133.333),
-          _F(  RESULTAT = V2,NOM_CHAM = 'EPSI_ELNO_DEPL',NUME_ORDRE = 1,
+          _F(  RESULTAT = V2,NOM_CHAM = 'EPSI_ELNO',NUME_ORDRE = 1,
             MAILLE = 'M1',NOEUD = 'N1',NOM_CMP = 'EPXX',VALE = 8.6666E-4))
                            )
 
@@ -310,23 +310,23 @@ W=STAT_NON_LINE(
               )
 
 W=CALC_ELEM( reuse=W,
-                            OPTION=( 'EPSI_ELNO_DEPL',
-                  'SIEF_ELNO',  'VARI_ELNO_ELGA',),
+                            OPTION=( 'EPSI_ELNO',
+                  'SIEF_ELNO',  'VARI_ELNO',),
                           RESULTAT=W,
 
               )
 
 #
 TEST_RESU(RESU=(
-          _F(  RESULTAT = W,  NOM_CHAM = 'EPSI_ELNO_DEPL',  NUME_ORDRE = 2,
+          _F(  RESULTAT = W,  NOM_CHAM = 'EPSI_ELNO',  NUME_ORDRE = 2,
             MAILLE = 'M1',NOEUD = 'N2',NOM_CMP = 'EPZZ',VALE = 1.1000E-3),
-          _F(  RESULTAT = W,  NOM_CHAM = 'VARI_ELNO_ELGA',  NUME_ORDRE = 2,
+          _F(  RESULTAT = W,  NOM_CHAM = 'VARI_ELNO',  NUME_ORDRE = 2,
             MAILLE = 'M1',NOEUD = 'N2',NOM_CMP = 'V1',VALE = 3.0000E-4),
           _F(  RESULTAT = W,  NOM_CHAM = 'SIEF_ELNO',  NUME_ORDRE = 2,
             MAILLE = 'M1',NOEUD = 'N2',NOM_CMP = 'SIYY',VALE = -100.),
-          _F(  RESULTAT = W,  NOM_CHAM = 'EPSI_ELNO_DEPL',  NUME_ORDRE = 4,
+          _F(  RESULTAT = W,  NOM_CHAM = 'EPSI_ELNO',  NUME_ORDRE = 4,
             MAILLE = 'M1',NOEUD = 'N3',NOM_CMP = 'EPZZ',VALE = 1.2750E-3),
-          _F(  RESULTAT = W,  NOM_CHAM = 'VARI_ELNO_ELGA',  NUME_ORDRE = 4,
+          _F(  RESULTAT = W,  NOM_CHAM = 'VARI_ELNO',  NUME_ORDRE = 4,
             MAILLE = 'M1',NOEUD = 'N3',NOM_CMP = 'V1',VALE = 5.2500E-4),
           _F(  RESULTAT = W,  NOM_CHAM = 'SIEF_ELNO',  NUME_ORDRE = 4,
             MAILLE = 'M1',NOEUD = 'N3',NOM_CMP = 'SIYY',VALE = -75.000))

@@ -10,7 +10,7 @@
       CHARACTER*(*) LCHIN(*),LCHOU(*),LPAIN(*),LPAOU(*),LIGREL
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -100,10 +100,10 @@ C
 C     1. CHAMP COMPLEXE = DEPL
 C     -----------------------------------------------
       IF ((OPTIO2.EQ.'SIEF_ELGA') .OR.
-     &    (OPTIO2.EQ.'SIGM_ELNO_DEPL') .OR.
-     &    (OPTIO2.EQ.'EPSI_ELNO_DEPL') .OR.
+     &    (OPTIO2.EQ.'SIGM_ELNO') .OR.
+     &    (OPTIO2.EQ.'EPSI_ELNO') .OR.
      &    (OPTIO2.EQ.'EPSI_ELGA') .OR.
-     &    (OPTIO2.EQ.'EFGE_ELNO_DEPL') .OR.
+     &    (OPTIO2.EQ.'EFGE_ELNO') .OR.
      &    (OPTIO2.EQ.'EFGE_ELNO_SENS') .OR.
      &    (OPTIO2.EQ.'SIPO_ELNO') .OR.
      &    (OPTIO2.EQ.'SIPO_ELNO_SENS') .OR.

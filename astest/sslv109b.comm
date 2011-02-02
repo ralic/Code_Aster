@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # TITRE CYLINDRE SOUMIS A UNE PRESSION EN MODE 1 FOURIER (QUAD8)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -67,7 +67,7 @@ RESU=MACRO_ELAS_MULT(            MODELE=MO,
 
                                  TYPE_MODE = 'SYME',
                                  CHAR_MECA = CH,
-                                 OPTION = 'SIGM_ELNO_DEPL',
+                                 OPTION = 'SIGM_ELNO',
                                  SOUS_TITRE = 'MODE FOURIER 1 SYME')
                           )
 
@@ -77,7 +77,7 @@ NOM_CHAM='DEPL', RESULTAT=RESU,
                                       )
 
 SIGMA=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='ELNO_SIEF_R',
-NOM_CHAM='SIGM_ELNO_DEPL', RESULTAT=RESU,
+NOM_CHAM='SIGM_ELNO', RESULTAT=RESU,
                        NUME_MODE=1
                             )
 

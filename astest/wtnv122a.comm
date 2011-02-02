@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # RESPONSABLE JOUMANA J.EL-GHARIB
 # TITRE CAS TEST TRIAXIAL NON DRAINE AVEC CAM_CLAY EN 3D
 # wtnv122a.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
@@ -292,14 +292,14 @@ U1=STAT_NON_LINE(reuse=U1,
 
 U1=CALC_ELEM(  reuse=U1,
                   OPTION=('SIEF_ELNO',
-                          'VARI_ELNO_ELGA',
+                          'VARI_ELNO',
                           ),
                   RESULTAT=U1,
                         )
 
 U1=CALC_NO(  reuse=U1,     RESULTAT=U1,
                        OPTION=( 'SIEF_NOEU',
-                       'VARI_NOEU_ELGA',
+                       'VARI_NOEU',
                            ),
                 )
 

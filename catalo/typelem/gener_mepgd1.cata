@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+%& MODIF TYPELEM  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -110,10 +110,10 @@ OPTION__
                               OUT__  XXXXXX   XXXXXX
     ECIN_ELEM      -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
-    EFGE_ELNO_CART      380   IN__   CCAORIE  PCAORIE  CCAORIE  PCAORIR  DDL_MECA PDEPLAR  NGEOMER  PGEOMER
+    EFCA_ELNO      380   IN__   CCAORIE  PCAORIE  CCAORIE  PCAORIR  DDL_MECA PDEPLAR  NGEOMER  PGEOMER
                                      ECONTNO  PSIEFNOR
                               OUT__  EEFFONO  PEFFORR
-    EFGE_ELNO_DEPL      -1    IN__   XXXXXX   XXXXXX
+    EFGE_ELNO      -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
     ENER_ELAS           -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
@@ -194,9 +194,9 @@ OPTION__
     SIEF_ELNO      394   IN__   EEFGEGA  PCONTRR
                               OUT__  ECONTNO  PSIEFNOR
                                      ECONTNC  PSIEFNOC
-    SIGM_ELNO_CART      -1    IN__   XXXXXX   XXXXXX
+    SICA_ELNO      -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
-    SIGM_ELNO_DEPL      -1    IN__   XXXXXX   XXXXXX
+    SIGM_ELNO      -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
     SIPO_ELNO      -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
@@ -204,7 +204,7 @@ OPTION__
                               OUT__  MMATUUR  PSYM
     TOU_INI_ELGA        99    IN__   NGEOMER  PGEOMER
                               OUT__  EEFGEGA  PSIEF_R  ZVARIPG  PVARI_R
-    VARI_ELNO_ELGA      394   IN__   CCOMPOR  PCOMPOR  ZVARIPG  PVARIGR
+    VARI_ELNO      394   IN__   CCOMPOR  PCOMPOR  ZVARIPG  PVARIGR
                               OUT__  ZVARINO  PVARINR
     WEIBULL             -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX

@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # TITRE ETUDE  : ESSAI TRIAXIAL DRAINE
 # ssnv135a.para = tps_job 210 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -134,7 +134,7 @@ U1=STAT_NON_LINE(
 
 U1=CALC_ELEM( reuse=U1,
                             OPTION=(
-                  'SIEF_ELNO',  'VARI_ELNO_ELGA',),
+                  'SIEF_ELNO',  'VARI_ELNO',),
                           RESULTAT=U1,
               )
 
@@ -196,7 +196,7 @@ U2=STAT_NON_LINE(
 
 U2=CALC_ELEM( reuse=U2,
                             OPTION=(
-                  'SIEF_ELNO',  'VARI_ELNO_ELGA',),
+                  'SIEF_ELNO',  'VARI_ELNO',),
                           RESULTAT=U2,
               )
 
@@ -208,7 +208,7 @@ U2=CALC_ELEM( reuse=U2,
 
 U2=CALC_ELEM( reuse=U2,     RESULTAT=U2,
                     NUME_ORDRE=(10, 20, 40, 60, 100,),
-                        OPTION=('EPSI_ELNO_DEPL', )
+                        OPTION=('EPSI_ELNO', )
                 )
 
 U2=CALC_NO(  reuse=U2,     RESULTAT=U2,
@@ -490,7 +490,7 @@ V1=STAT_NON_LINE(
 
 V1=CALC_ELEM( reuse=V1,
                             OPTION=(
-                  'SIEF_ELNO',  'VARI_ELNO_ELGA',),
+                  'SIEF_ELNO',  'VARI_ELNO',),
                           RESULTAT=V1,
               )
 
@@ -534,7 +534,7 @@ V2=STAT_NON_LINE(
 
 V2=CALC_ELEM( reuse=V2,
                             OPTION=(
-                  'SIEF_ELNO',  'VARI_ELNO_ELGA',),
+                  'SIEF_ELNO',  'VARI_ELNO',),
                           RESULTAT=V2,
               )
 
@@ -545,7 +545,7 @@ V2=CALC_ELEM( reuse=V2,
 
 V2=CALC_ELEM( reuse=V2,     RESULTAT=V2,
                     NUME_ORDRE=(10, 20, 40, 60, 100,),
-                        OPTION=('EPSI_ELNO_DEPL', )
+                        OPTION=('EPSI_ELNO', )
                 )
 
 V2=CALC_NO(  reuse=V2,     RESULTAT=V2,
@@ -827,7 +827,7 @@ W1=STAT_NON_LINE(
 
 W1=CALC_ELEM( reuse=W1,
                             OPTION=(
-                  'SIEF_ELNO',  'VARI_ELNO_ELGA',),
+                  'SIEF_ELNO',  'VARI_ELNO',),
                           RESULTAT=W1,
               )
 
@@ -871,7 +871,7 @@ W2=STAT_NON_LINE(
 
 W2=CALC_ELEM( reuse=W2,
                             OPTION=(
-                  'SIEF_ELNO',  'VARI_ELNO_ELGA',),
+                  'SIEF_ELNO',  'VARI_ELNO',),
                           RESULTAT=W2,
               )
 
@@ -882,7 +882,7 @@ W2=CALC_ELEM( reuse=W2,
 
 W2=CALC_ELEM( reuse=W2,     RESULTAT=W2,
                     NUME_ORDRE=(10, 20, 40, 60, 100,),
-                        OPTION=('EPSI_ELNO_DEPL', )
+                        OPTION=('EPSI_ELNO', )
                 )
 
 W2=CALC_NO(  reuse=W2,     RESULTAT=W2,
@@ -1156,7 +1156,7 @@ W3=STAT_NON_LINE(
 
 W3=CALC_ELEM( reuse=W3,
                             OPTION=(
-                  'SIEF_ELNO',  'VARI_ELNO_ELGA',),
+                  'SIEF_ELNO',  'VARI_ELNO',),
                           RESULTAT=W3,
               )
 
@@ -1167,7 +1167,7 @@ W3=CALC_ELEM( reuse=W3,
 
 W3=CALC_ELEM( reuse=W3,     RESULTAT=W3,
                     NUME_ORDRE=(10, 20, 40,  ),
-                        OPTION=('EPSI_ELNO_DEPL', )
+                        OPTION=('EPSI_ELNO', )
                 )
 
 W3=CALC_NO(  reuse=W3,     RESULTAT=W3,
@@ -1374,7 +1374,7 @@ W4=STAT_NON_LINE(
 
 W4=CALC_ELEM( reuse=W4,
                             OPTION=(
-                  'SIEF_ELNO',  'VARI_ELNO_ELGA',),
+                  'SIEF_ELNO',  'VARI_ELNO',),
                           RESULTAT=W4,
               )
 
@@ -1385,7 +1385,7 @@ W4=CALC_ELEM( reuse=W4,
 
 W4=CALC_ELEM( reuse=W4,     RESULTAT=W4,
                     NUME_ORDRE=(10, 20, 40,),
-                        OPTION=('EPSI_ELNO_DEPL', )
+                        OPTION=('EPSI_ELNO', )
                 )
 
 W4=CALC_NO(  reuse=W4,     RESULTAT=W4,

@@ -1,4 +1,4 @@
-# MODIF  DATE 25/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # TITRE POUTRE DROITE APPUYEE EN SES DEUX EXTREMITES SOUMISE A UN
 # ssll102i.para = tps_job 60 mem_job 300Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -184,12 +184,12 @@ MEST1B=MECA_STATIQUE(        MODELE=MO,
 
 MEST1B=CALC_ELEM( reuse=MEST1B,
                          RESULTAT=MEST1B,
-                           OPTION=('EFGE_ELNO_DEPL', )
+                           OPTION=('EFGE_ELNO', )
                    )
 MEST1B=CALC_NO( reuse=MEST1B,
                          RESULTAT=MEST1B,
                            OPTION=('FORC_NODA','REAC_NODA',
-                                   'EFGE_NOEU_DEPL',
+                                   'EFGE_NOEU',
                                    )
                    )
 TEST_RESU(   RESU=_F( RESULTAT = MEST1B,
@@ -203,7 +203,7 @@ TEST_RESU(   RESU=_F( RESULTAT = MEST1B,
           )
 
 TEST_RESU(   RESU=_F( RESULTAT = MEST1B,
-                    NOM_CHAM = 'EFGE_NOEU_DEPL',
+                    NOM_CHAM = 'EFGE_NOEU',
                     NUME_ORDRE = 1,
                     NOM_CMP = 'VY',
                     GROUP_NO = 'P1',
@@ -222,7 +222,7 @@ TEST_RESU(   RESU=_F( RESULTAT = MEST1B,
 
 #
 TEST_RESU(   RESU=_F( RESULTAT = MEST1B,
-                    NOM_CHAM = 'EFGE_NOEU_DEPL',
+                    NOM_CHAM = 'EFGE_NOEU',
                     NUME_ORDRE = 1,
                     NOM_CMP = 'VY',
                     GROUP_NO='P11',
@@ -241,7 +241,7 @@ TEST_RESU(   RESU=_F( RESULTAT = MEST1B,
 
 #
 TEST_RESU(   RESU=_F( RESULTAT = MEST1B,
-                    NOM_CHAM = 'EFGE_NOEU_DEPL',
+                    NOM_CHAM = 'EFGE_NOEU',
                     NUME_ORDRE = 1,
                     NOM_CMP = 'MFZ',
                     GROUP_NO='P8',

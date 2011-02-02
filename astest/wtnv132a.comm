@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # TITRE CONSTRUCTION PAR COUCHES EN HYDROMECANIQUE DRAINE AVEC LA LOI DE HUJEUX
 # wtnv132a.para = tps_job 1000 mem_job 512Mo mem_aster 25 ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -280,7 +280,7 @@ VAR[0]=CREA_CHAMP(INFO=1,
 U[0]=CALC_ELEM(reuse=U[0],
 
 
-               OPTION=('SIEF_ELNO','VARI_ELNO_ELGA'),
+               OPTION=('SIEF_ELNO','VARI_ELNO'),
                RESULTAT=U[0]);
 
 T_DEP[0]=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLACEMENT',
@@ -353,7 +353,7 @@ T_SIG[1]=POST_RELEVE_T(ACTION=_F(INTITULE='CONTRAINTES',
 T_VAR[1]=POST_RELEVE_T(ACTION=_F(INTITULE='VARIABLES INTERNES',
                                  NOEUD=list_no_later_dro[:2],
                                  RESULTAT=U[0],
-                                 NOM_CHAM='VARI_ELNO_ELGA',
+                                 NOM_CHAM='VARI_ELNO',
                                  NOM_CMP=('V1','V2','V3','V4','V23','V33','V34'),
                                  OPERATION='EXTRACTION'),);
 
@@ -608,7 +608,7 @@ for n in range(1,nbcouche-1):
                 INFO=1,);
 
     U[n]=CALC_ELEM(reuse=U[n],
-                   OPTION=('SIEF_ELNO','VARI_ELNO_ELGA'),
+                   OPTION=('SIEF_ELNO','VARI_ELNO'),
                    RESULTAT=U[n]);
 
 # -->15: Boucle sur le nombre de noeuds a post-traiter
@@ -658,7 +658,7 @@ for n in range(1,nbcouche-1):
     T_VAR[n+1]=POST_RELEVE_T(ACTION=_F(INTITULE='VARIABLES INTERNES',
                                        NOEUD=tuple(list_noeu_haut),
                                        RESULTAT=U[n],
-                                       NOM_CHAM='VARI_ELNO_ELGA',
+                                       NOM_CHAM='VARI_ELNO',
                                        NOM_CMP=('V1','V2','V3','V4','V23','V33','V34'),
                                        OPERATION='EXTRACTION'),);
 

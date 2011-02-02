@@ -1,4 +1,4 @@
-# MODIF  DATE 25/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
 # TITRE POUTRE ENCASTREE-LIBRE: REPONSE SPECTRALE
 # sdll23c.para = tps_job 60 mem_job 270Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -87,7 +87,7 @@ MODE_MEC=NORM_MODE(reuse=MODE_MEC,   MODE=MODE_MEC,   NORME='MASS_GENE',)
 
 MODE_MEC=CALC_ELEM(reuse=MODE_MEC,  RESULTAT=MODE_MEC,
                        OPTION=('SIEF_ELGA',
-                         'EFGE_ELNO_DEPL', 'SIPO_ELNO'),
+                         'EFGE_ELNO', 'SIPO_ELNO'),
                          )
 
 MODE_MEC=CALC_NO(reuse=MODE_MEC,  RESULTAT=MODE_MEC,
@@ -184,7 +184,7 @@ SISM_SP3=COMB_SISM_MODAL(  MODE_MECA=MODE_MEC,
                            COMB_MODE=_F(  TYPE = 'DPC'),
                            COMB_DIRECTION=_F(  TYPE = 'QUAD'),
                            OPTION=( 'DEPL',  'REAC_NODA',
-                                      'EFGE_ELNO_DEPL',
+                                      'EFGE_ELNO',
                                       'SIPO_ELNO',  )
                             )
 
