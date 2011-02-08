@@ -5,9 +5,9 @@
         IMPLICIT NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 07/07/2009   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 07/02/2011   AUTEUR MEUNIER S.MEUNIER 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -115,50 +115,31 @@ C               TD      INSTANT T
 C               TF      INSTANT T+DT
 C               TEMD    TEMPERATURE A T
 C               TEMF    TEMPERATURE A T+DT
-C               EPS     DEFORMATION TOTALE A T
 C               DEPS    INCREMENT DE DEFORMATION TOTALE
-C               SD      CONTRAINTE A T
 C               VD      VARIABLES INTERNES A T    + INDICATEUR ETAT T
 C               DSIDEPLO MATRICE DE COMPORTEMENT TANGENT A T+DT OU T
-C               NPAL            NOMBRE DE PALIER POUR LE REDECOUPAGE
 C               ICOMP           COMPTEUR POUR LE REDECOUPAGE DU PAS DE
 C                                    TEMPS
 C               RETURN1 EN CAS DE NON CONVERGENCE LOCALE
 C       ----------------------------------------------------------------
 C
-        INTEGER         ICOMP,        NPAL,      IPAL  ,IACORR
-        INTEGER         IRTET,     K, NUMLC
+        INTEGER         ICOMP
+        INTEGER         NUMLC
         INTEGER         CODRET
-        REAL*8          EPS(6),       SD(6)
 C       ----------------------------------------------------------------
 C       COMMONS POUR VARIABLES DE COMMANDE : CAII17 ET CARR01
         INTEGER NFPGMX
         PARAMETER (NFPGMX=10)
-        INTEGER NFPG,JFPGL,DECALA(NFPGMX),KM,KP,KR,IREDEC,I
+        INTEGER NFPG,JFPGL,DECALA(NFPGMX),KM,KP,KR,IREDEC
         COMMON /CAII17/NFPG,JFPGL,DECALA,KM,KP,KR,IREDEC
-        REAL*8 INSTM1,INSTP1,TD1,TF1,R8BID
+        REAL*8 INSTM1,INSTP1,TD1,TF1
         COMMON /CARR01/INSTM1,INSTP1,TD1,TF1
 C       ----------------------------------------------------------------
 C       ----------------------------------------------------------------
         COMMON /TDIM/   NDT  , NDI
 C       ----------------------------------------------------------------
 C       ----------------------------------------------------------------
-C ----- DEBUT --- COMMUNS NORMALISES  JEVEUX  --------------------------
-      INTEGER ZI
-      COMMON / IVARJE / ZI(1)
-      REAL*8 ZR
-      COMMON / RVARJE / ZR(1)
-      COMPLEX*16 ZC
-      COMMON / CVARJE / ZC(1)
-      LOGICAL ZL
-      COMMON / LVARJE / ZL(1)
-      CHARACTER*8 ZK8
-      CHARACTER*16 ZK16
-      CHARACTER*24 ZK24
-      CHARACTER*32 ZK32
-      CHARACTER*80 ZK80
-      COMMON / KVARJE / ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
-      CHARACTER*32 JEXNUM,JEXNOM,JEXATR
+
       
 C     NUMLC doit etre compris entre 1 et 100
 

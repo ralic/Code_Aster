@@ -1,4 +1,4 @@
-# MODIF  DATE 24/01/2011   AUTEUR DESOZA T.DESOZA 
+# MODIF  DATE 07/02/2011   AUTEUR DESOZA T.DESOZA 
 # TITRE VALIDATION DE POU_D_TGM
 # ssnv505h.para = tps_job 550 mem_job 256Mo ncpus 1 liste_test V
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -140,8 +140,9 @@ CHLAG= DEFI_CONTACT(MODELE         = MODE,
                               MAIT_VECT_Y    = (0.,0.,-1.,),
                               DIST_MAIT      = F_DIST_M,
                               DIST_ESCL      = F_DIST_E,
-                             ),
+                              ),
                           ),
+                    INFO = 1,
                    );
 
 RAMPE=DEFI_FONCTION(NOM_PARA='INST',
@@ -168,7 +169,7 @@ ULAG=STAT_NON_LINE(MODELE=MODE,
                           FONC_MULT=RAMPE,),
                       ),
                 CONTACT  = CHLAG,
-                SOLVEUR=_F(RENUM='MDA',SYME='OUI',),
+                SOLVEUR=_F(METHODE='LDLT',SYME='OUI',),
                 COMP_INCR=_F(RELATION='MULTIFIBRE'),
                 INCREMENT=_F(LIST_INST=L_INST,
                              ),

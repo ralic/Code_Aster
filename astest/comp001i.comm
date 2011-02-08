@@ -1,9 +1,9 @@
-# MODIF  DATE 03/05/2010   AUTEUR PROIX J-M.PROIX 
-# TITRE TEST EN 3D ELAS_VMIS_PUIS, ELAS_VMIS_TRAC UTILISANT SIMU_POINT_MAT
+# MODIF  DATE 08/02/2011   AUTEUR PROIX J-M.PROIX 
+# TITRE TEST EN 3D VMIS_ISOT_PUIS UTILISANT SIMU_POINT_MAT
 # comp001i.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -34,8 +34,8 @@ APUI=20000
 NPUI=3.5
 
 # def des materiaux
-ACIER = [None]*3
-ACIER2 = [None]*3
+ACIER = [None]*2
+ACIER2 = [None]*2
 #unite en Pa
 C_Pa = 1.e+6
 YOUNG_Pa = YOUNG * C_Pa
@@ -98,250 +98,34 @@ ACIER2[0]=DEFI_MATERIAU(ELAS=_F(E=YOUNG_Pa,
              
                     
 compor1='ELAS_VMIS_PUIS'
-
-
-#Discretisation du calcul
-#Ncal = 10
-Ncal = 7
-N_pas = 4*[1] + [1, 5, 25, 125, 625, 3125]
-N_cas = len(N_pas)
-
-# les differents calculs effectues et les precisions sur chaque TEST_RESU
-label_cal=['_Pa_','_Th_','_sym_','_rot_'] + 6* ['_N']
-prec_ecart=4*[1.E-10] + [1.E-1] + (N_cas-5)*[1.E-2]   
-prec_tgt=1.e-8
-
-
-
-# utilitaires divers
-INCLUDE(UNITE=91)
-# definition du chargement 3D
-INCLUDE(UNITE=93)
-
-ch_param=['V1','VMIS','TRACE','SIXX','SIYY','SIZZ','SIXY','SIXZ','SIYZ']
-
-
-##################################################################################
-#  TEST 3D ELAS_VMIS_PUIS
-##################################################################################
-                                 
-
-#Discretisation du calcul
-
-RESU=[None]*Ncal
-R_SI=[None]*len(ch_param)
-TMP_S=[None]
-
-#pointeur materiau
-P_imat = [0] + [1] + (N_cas-2)*[1]
-#pointeur deformation
-P_idef = 2*[0] + [1] + [2] + (N_cas-4)*[0]
-
-#Boucle sur l'ensemble des calculs
-for i in range(Ncal):
-        N = N_pas[i]
-        imat = P_imat[i]
-        idef = P_idef[i]
-        eps_imp = V_EPS[idef]
-        temps=DEFI_LIST_REEL(DEBUT=0.0,
-                     INTERVALLE=(_F(JUSQU_A=t_0,NOMBRE=N,),
-                                 _F(JUSQU_A=2.0*t_0,NOMBRE=N,),
-                                 _F(JUSQU_A=3.0*t_0,NOMBRE=N,),
-                                 _F(JUSQU_A=4.0*t_0,NOMBRE=N,),
-                                 _F(JUSQU_A=5.0*t_0,NOMBRE=N,),
-                                 _F(JUSQU_A=6.0*t_0,NOMBRE=N,),
-                                 _F(JUSQU_A=7.0*t_0,NOMBRE=N,),
-                                 _F(JUSQU_A=8.0*t_0,NOMBRE=N,),),);
-
-#       Resout le pb a deformation imposee
-        RESU[i]=SIMU_POINT_MAT( INFO=1,
-                   COMP_ELAS=_F(RELATION=compor1,ITER_INTE_MAXI=10,RESI_INTE_RELA=1.E-6),
-                   NEWTON=_F(MATRICE='TANGENTE',REAC_ITER=1,),
-                   CONVERGENCE=_F(ITER_GLOB_MAXI=10,),
-                   MATER      = ACIER[imat],  
-                   ARCHIVAGE = _F(LIST_INST = temps_ar),
-                   INCREMENT=_F(LIST_INST=temps,),
-                   EPSI_IMPOSE=_F(EPXX=eps_imp[0], EPYY=eps_imp[1], EPZZ=eps_imp[2],
-                                  EPXY=eps_imp[3], EPXZ=eps_imp[4], EPYZ=eps_imp[5]),
-                    );
-#       On renomme les composantes en fonction de  l'ordre de discretisation
-        N = N_pas[i]
-        chN=label_cal[i]+str(N)
-        for ch in ch_param:
-                j=ch_param.index(ch)
-                chnew=ch+chN
-                ##Extraction par type de variable 
-                if i==0 :
-                        R_SI[j]=CALC_TABLE( TABLE=RESU[i],TITRE = ' ',
-                                     ACTION=( _F(OPERATION='EXTR',
-                                            NOM_PARA=('INST',ch,),),
-                                              _F(OPERATION='RENOMME',
-                                                NOM_PARA=(ch,chnew,),),),);
-                else:
-                        TMP_S=CALC_TABLE( TABLE=RESU[i],TITRE = ' ',
-                                     ACTION=(_F(OPERATION='EXTR',
-                                            NOM_PARA=('INST',ch,),),
-                                                _F(OPERATION='RENOMME',
-                                                NOM_PARA=(ch,chnew,),),
-                                                                ),);
-                        R_SI[j]=CALC_TABLE( reuse=R_SI[j], TABLE=R_SI[j], TITRE = ' ',
-                                        ACTION=( _F(OPERATION='COMB',
-                                        TABLE=TMP_S,NOM_PARA='INST',),
-                                                ),);
-                        DETRUIRE ( CONCEPT = _F (NOM = TMP_S,),)
-        DETRUIRE ( CONCEPT = _F (NOM = temps,),)
-        
-# TEST_RESU sur les erreurs relatives 
-# label_cal=['_Pa_','_Th_','_sym_','_rot_'] + 6* ['_N']
-prec_ecart=4*[1.E-10] + [1.E-1] + (N_cas-5)*[1.E-2]   
-prec_zero=[1.E-10, 0.01, 0.01]
-
-# les quantites (invariants...) sur lequels portent les calculs d'erreur et les test_resu
-ch_param2=['V1','VMIS','TRACE']
-TEST_ECART(ch_param2,label_cal,N_pas,Ncal,ch_param,R_SI,prec_ecart,prec_zero)
-
-# impressions
-                
-for i in range(len(ch_param)):
-        IMPR_TABLE(TABLE=R_SI[i])
-        
-
-        
-                
-# TESTS DE NON REGRESSION DES QUANTITES SIGNIFICATIVES
-TEST_TABLE(TABLE=R_SI[0],
-           NOM_PARA='V1_Pa_1',VALE=7.84215E-03,
-           FILTRE=_F(NOM_PARA='INST',VALE=3.0*t_0),
-           REFERENCE='NON_REGRESSION',);     
-
-TEST_TABLE(TABLE=R_SI[1],
-           NOM_PARA='VMIS_Pa_1',VALE=5.40922E+08,
-           FILTRE=_F(NOM_PARA='INST',VALE=3.0*t_0),
-           REFERENCE='NON_REGRESSION',);     
-
-TEST_TABLE(TABLE=R_SI[3],
-           NOM_PARA='SIXX_Pa_1',VALE=-3.44568E+08,
-           FILTRE=_F(NOM_PARA='INST',VALE=3.0*t_0),
-           REFERENCE='NON_REGRESSION',);     
-
-
-for i in range(Ncal):
-    DETRUIRE ( CONCEPT = _F(NOM = RESU[i]),)
-for i in range(len(ch_param)):
-    DETRUIRE ( CONCEPT = _F(NOM = R_SI[i]),)
-
-##################################################################################
-#  TEST 3D ELAS_VMIS_TRAC
-##################################################################################
-
-                                 
 compor2='ELAS_VMIS_TRAC'
 
-#Discretisation du calcul
+tabresu=TEST_COMPOR(OPTION='MECA',
 
-RESU=[None]*Ncal
-R_SI=[None]*len(ch_param)
-TMP_S=[None]
+              COMP_ELAS=_F(RELATION=compor1,),
+              NEWTON=_F(REAC_ITER=1),
+              LIST_MATER=ACIER,
+              LIST_NPAS=4*[1] + [1, 5, 25],              
+              VARI_TEST=('V1','VMIS','TRACE'),
+              #LIST_TOLE=4*[1.E-10] + [1.E-1] + 2*[1.E-2] + [1.E-8]  
+              YOUNG=YOUNG,POISSON=POISSON,
+              )
 
-#pointeur materiau
-P_imat = [0] + [1] + (N_cas-2)*[1]
-#pointeur deformation
-P_idef = 2*[0] + [1] + [2] + (N_cas-4)*[0]
+IMPR_TABLE(TABLE=tabresu)
 
-#Boucle sur l'ensemble des calculs
-for i in range(Ncal):
-        N = N_pas[i]
-        imat = P_imat[i]
-        idef = P_idef[i]
-        eps_imp = V_EPS[idef]
-        temps=DEFI_LIST_REEL(DEBUT=0.0,
-                     INTERVALLE=(_F(JUSQU_A=t_0,NOMBRE=N,),
-                                 _F(JUSQU_A=2.0*t_0,NOMBRE=N,),
-                                 _F(JUSQU_A=3.0*t_0,NOMBRE=N,),
-                                 _F(JUSQU_A=4.0*t_0,NOMBRE=N,),
-                                 _F(JUSQU_A=5.0*t_0,NOMBRE=N,),
-                                 _F(JUSQU_A=6.0*t_0,NOMBRE=N,),
-                                 _F(JUSQU_A=7.0*t_0,NOMBRE=N,),
-                                 _F(JUSQU_A=8.0*t_0,NOMBRE=N,),),);
+tabres2=TEST_COMPOR(OPTION='MECA',
 
-#       Resout le pb a deformation imposee
-        RESU[i]=SIMU_POINT_MAT( INFO=1,
-                   COMP_ELAS=_F(RELATION=compor2),
-                   NEWTON=_F(MATRICE='TANGENTE',REAC_ITER=1,),
-                   CONVERGENCE=_F(ITER_GLOB_MAXI=10,),
-                   MATER      = ACIER2[imat],  
-                   ARCHIVAGE = _F(LIST_INST = temps_ar),
-                   INCREMENT=_F(LIST_INST=temps,),
-                   EPSI_IMPOSE=_F(EPXX=eps_imp[0], EPYY=eps_imp[1], EPZZ=eps_imp[2],
-                                  EPXY=eps_imp[3], EPXZ=eps_imp[4], EPYZ=eps_imp[5]),
-                    );
-#       On renomme les composantes en fonction de  l'ordre de discretisation
-        N = N_pas[i]
-        chN=label_cal[i]+str(N)
-        for ch in ch_param:
-                j=ch_param.index(ch)
-                chnew=ch+chN
-                ##Extraction par type de variable 
-                if i==0 :
-                        R_SI[j]=CALC_TABLE( TABLE=RESU[i],TITRE = ' ',
-                                     ACTION=( _F(OPERATION='EXTR',
-                                            NOM_PARA=('INST',ch,),),
-                                              _F(OPERATION='RENOMME',
-                                                NOM_PARA=(ch,chnew,),),),);
-                else:
-                        TMP_S=CALC_TABLE( TABLE=RESU[i],TITRE = ' ',
-                                     ACTION=(_F(OPERATION='EXTR',
-                                            NOM_PARA=('INST',ch,),),
-                                                _F(OPERATION='RENOMME',
-                                                NOM_PARA=(ch,chnew,),),
-                                                                ),);
-                        R_SI[j]=CALC_TABLE( reuse=R_SI[j], TABLE=R_SI[j], TITRE = ' ',
-                                        ACTION=( _F(OPERATION='COMB',
-                                        TABLE=TMP_S,NOM_PARA='INST',),
-                                                ),);
-                        DETRUIRE ( CONCEPT = _F (NOM = TMP_S,),)
-        DETRUIRE ( CONCEPT = _F (NOM = temps,),)
-        
-# TEST_RESU sur les erreurs relatives 
-# label_cal=['_Pa_','_Th_','_sym_','_rot_'] + 6* ['_N']
-prec_ecart=4*[1.E-10] + [1.E-1] + (N_cas-5)*[1.E-2]   
-prec_zero=[1.E-10, 0.01, 0.01]
+              COMP_ELAS=_F(RELATION=compor2,),
+              NEWTON=_F(REAC_ITER=1),
+              LIST_MATER=ACIER2,
+              LIST_NPAS=4*[1] + [1, 5, 25],              
+              VARI_TEST=('V1','VMIS','TRACE'),
+              #LIST_TOLE=4*[1.E-10] + [1.E-1] + 2*[1.E-2] + [1.E-8]  
+              YOUNG=YOUNG,POISSON=POISSON,
+              )
 
-# les quantites (invariants...) sur lequels portent les calculs d'erreur et les test_resu
-ch_param2=['V1','VMIS','TRACE']
-TEST_ECART(ch_param2,label_cal,N_pas,Ncal,ch_param,R_SI,prec_ecart,prec_zero)
+IMPR_TABLE(TABLE=tabres2)
 
 
-
-
-# impressions
-                
-for i in range(len(ch_param)):
-        IMPR_TABLE(TABLE=R_SI[i])
-        
-
-        
-                
-# TESTS DE NON REGRESSION DES QUANTITES SIGNIFICATIVES
-TEST_TABLE(TABLE=R_SI[0],
-           NOM_PARA='V1_Pa_1',VALE=7.84215E-03,
-           FILTRE=_F(NOM_PARA='INST',VALE=3.0*t_0),
-           REFERENCE='NON_REGRESSION',);     
-
-TEST_TABLE(TABLE=R_SI[1],
-           NOM_PARA='VMIS_Pa_1',VALE=5.40922E+08,
-           FILTRE=_F(NOM_PARA='INST',VALE=3.0*t_0),
-           REFERENCE='NON_REGRESSION',);     
-
-TEST_TABLE(TABLE=R_SI[3],
-           NOM_PARA='SIXX_Pa_1',VALE=-3.44568E+08,
-           FILTRE=_F(NOM_PARA='INST',VALE=3.0*t_0),
-           REFERENCE='NON_REGRESSION',);     
-
-###############################################################################                                 
-
-
-FIN();
-
-
+FIN()
 

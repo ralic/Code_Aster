@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 17/01/2011   AUTEUR ABBAS M.ABBAS 
+#& MODIF COMMANDE  DATE 07/02/2011   AUTEUR DEVESA G.DEVESA 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -73,6 +73,9 @@ DYNA_NON_LINE=OPER(nom="DYNA_NON_LINE",op= 70,sd_prod=evol_noli,reentrant='f',
            MASS_GENE       =SIMP(statut='f',typ=matr_asse_gene_r),
            RIGI_GENE       =SIMP(statut='f',typ=matr_asse_gene_r),
            AMOR_GENE       =SIMP(statut='f',typ=matr_asse_gene_r),
+           DEPL_INIT_GENE  =SIMP(statut='f',typ=vect_asse_gene),
+           VITE_INIT_GENE  =SIMP(statut='f',typ=vect_asse_gene),
+           ACCE_INIT_GENE  =SIMP(statut='f',typ=vect_asse_gene),
          ),
 #-------------------------------------------------------------------         
          COMP_INCR       =C_COMP_INCR(),

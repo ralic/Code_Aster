@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 08/02/2011   AUTEUR GRANET S.GRANET 
 # TITRE   TEST HM, 2D , MODELISATION THMC=LIQU_SATU
 # wtnp125a.para = tps_job 300 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -99,7 +99,7 @@ MO=AFFE_MODELE(MAILLAGE=MA,
                             MODELISATION='D_PLAN_HMS',),
                          _F(GROUP_MA=('FISSURE','GAUCHE_2','DROITE_2'),
                             PHENOMENE='MECANIQUE',
-                            MODELISATION='2D_JOINT_HMS',),));
+                            MODELISATION='PLAN_JHMS',),));
 
 ####################################
 #   ORIENTATION FISSURE

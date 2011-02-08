@@ -1,9 +1,9 @@
-# MODIF  DATE 11/10/2010   AUTEUR DEVESA G.DEVESA 
+# MODIF  DATE 07/02/2011   AUTEUR DEVESA G.DEVESA 
 # TITRE POUTRE PLASTIQUE EN TRACTION CONDENSEE DYNAMIQUEMENT
 # sdnv107c.para = tps_job 600 mem_job 250Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -310,14 +310,25 @@ MODELE=AFFE_MODELE(  MAILLAGE=MAILLAGE,
                             AFFE=_F( GROUP_MA = 'VOLU',
                                   PHENOMENE = 'MECANIQUE',
                                   MODELISATION = '3D'));
-                                  
 
+CHARGE=AFFE_CHAR_MECA(  MODELE=MODELE,DDL_IMPO=(
+               _F( GROUP_NO='VOLU',
+                         DY = 0.0, 
+                         DZ = 0.0,
+                         ),
+               _F( GROUP_NO = 'BASE', DX = 0.0, ),
+                                              ),
+               LIAISON_UNIF=(_F(GROUP_NO = 'SURF3',DDL=('DX')),),
+               );
+               
 #
 MERIME=CALC_MATR_ELEM(      MODELE=MODELE,
+                            CHARGE=CHARGE,
                             CHAM_MATER=CHAMAT,
                                OPTION='RIGI_MECA');
                                
 MEMAME=CALC_MATR_ELEM(      MODELE=MODELE,
+                            CHARGE=CHARGE,
                             CHAM_MATER=CHAMAT,
                                OPTION='MASS_MECA');
                                
@@ -467,6 +478,15 @@ MODGLO=REST_GENE_PHYS(    RESU_GENE=RESGEN,
                           TOUT_ORDRE='OUI'
                                         );
                                         
+# RESMOD=REST_GENE_PHYS(    RESU_GENE=RESGEN,
+#                           NOM_CHAM='DEPL',
+#                           TOUT_ORDRE='OUI'
+#                                         );
+#                   
+# MODGLO=DEFI_BASE_MODALE( RITZ=( _F( MODE_MECA = RESMOD,
+#                                     NMAX_MODE=20),
+#                               ),
+#                         NUME_REF=NUMDDL);
 
 NUMEMODE=NUME_DDL_GENE(       BASE=MODGLO,
                            STOCKAGE='DIAG',
@@ -513,6 +533,10 @@ RESMO2=REST_GENE_PHYS(    RESU_GENE=RESGEN,
                           NOM_CHAM='DEPL',
                           TOUT_ORDRE='OUI'
                                         );
+                                        
+NUMEMODN=NUME_DDL_GENE(       BASE=RESMO2,
+                           STOCKAGE='PLEIN',
+                           );
                         
 LINSDYN=DEFI_LIST_REEL(DEBUT=0.0,
                        INTERVALLE=_F(JUSQU_A=0.016,
@@ -564,7 +588,7 @@ DYTREX=DYNA_NON_LINE(MODELE=MODELE1,
                                ),
                      SCHEMA_TEMPS=_F(SCHEMA='DIFF_CENT',
                                 FORMULATION='ACCELERATION',),
-                     INCREMENT=_F(LIST_INST=LINSDY2,INST_FIN=0.01),
+                     INCREMENT=_F(LIST_INST=LINSDY2,INST_FIN=0.006),
                      ARCHIVAGE=_F(LIST_INST=LINSDYN,),
                      PROJ_MODAL=_F(MODE_MECA = RESMO2,
                                    MASS_GENE = M_PROJ,
@@ -577,6 +601,9 @@ DYTREX=DYNA_NON_LINE(MODELE=MODELE1,
                                    ),
                      );
                      
+#IMPR_CO(CONCEPT=_F(NOM=DYTREX,));                                
+                     
+                
 DYTREX=DYNA_NON_LINE(reuse=DYTREX,
                      MODELE=MODELE1,
                      CARA_ELEM=PARAM1,
@@ -597,11 +624,11 @@ DYTREX=DYNA_NON_LINE(reuse=DYTREX,
                                ),
                      ETAT_INIT=_F(
                                 EVOL_NOLI = DYTREX,
-                                INST=0.01,
+                                INST=0.006,
                                 ),
                      SCHEMA_TEMPS=_F(SCHEMA='DIFF_CENT',
                                 FORMULATION='ACCELERATION',),
-                     INCREMENT=_F(LIST_INST=LINSDY2,),
+                     INCREMENT=_F(LIST_INST=LINSDY2,INST_FIN=0.01),
                      ARCHIVAGE=_F(LIST_INST=LINSDYN,),
                      PROJ_MODAL=_F(MODE_MECA = RESMO2,
                                    MASS_GENE = M_PROJ,
@@ -613,13 +640,261 @@ DYTREX=DYNA_NON_LINE(reuse=DYTREX,
                                    VECT_GENE = F_GENE,
                                    ),
                      );
+                
 
-                                                  
+# RESTITUTION SUR MODELE COMPLET AVEC ENRICHISSEMENT DE RESULTAT
+                                 
+                     
 RESUGLO=REST_COND_TRAN(   RESULTAT=DYTREX,
                           BASE_MODALE=MODGLO,
+                          TYPE_RESU='EVOL_NOLI',
+                          CHAM_MATER=CHAMAT,
                           TOUT_CHAM='OUI',
                                         );
-                                                                              
+                                        
+# CHAMPS SUR MODELE COMPLET AVANT REPRISE
+                                        
+                                        
+DEPF=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
+                OPERATION='EXTR',
+                RESULTAT=RESUGLO,
+                NUME_DDL=NUMDDL,
+                NOM_CHAM='DEPL',
+                INST=0.004,
+                INFO=1,);
+                
+VITF=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
+                OPERATION='EXTR',
+                RESULTAT=RESUGLO,
+                NUME_DDL=NUMDDL,
+                NOM_CHAM='VITE',
+                INST=0.004,
+                INFO=1,);
+                
+ACCF=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
+                OPERATION='EXTR',
+                RESULTAT=RESUGLO,
+                NUME_DDL=NUMDDL,
+                NOM_CHAM='ACCE',
+                INST=0.004,
+                INFO=1,);
+                
+# PROJECTION DE CES CHAMPS SUR BASE GLOBALE
+                
+                
+DEPGEN=PROJ_VECT_BASE(BASE=MODGLO,  NUME_DDL_GENE=NUMEMOD2,
+                      TYPE_VECT='DEPL',
+                      VECT_ASSE = DEPF);
+                      
+                      
+VITGEN=PROJ_VECT_BASE(BASE=MODGLO,  NUME_DDL_GENE=NUMEMOD2,
+                      TYPE_VECT='DEPL',
+                      VECT_ASSE = VITF);
+                      
+ACCGEN=PROJ_VECT_BASE(BASE=MODGLO,  NUME_DDL_GENE=NUMEMOD2,
+                      TYPE_VECT='DEPL',
+                      VECT_ASSE = ACCF);
+                      
+## CALCUL DES OPERATEURS TANGENTS VIA COMMANDE CALCUL
+                      
+UT=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
+                OPERATION='EXTR',
+                RESULTAT=RESUGLO,
+                NOM_CHAM='DEPL',
+                INST=0.0045,
+                INFO=1,);                
+                
+                
+DU=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
+                    OPERATION='ASSE',
+                    NUME_DDL=NUMDDL,
+                    MAILLAGE=MAILLAGE,
+                    ASSE=(
+                    _F(TOUT='OUI',
+                       CHAM_GD=UT,
+                       CUMUL='OUI',
+                       COEF_R=1.0,),
+                    _F(TOUT='OUI',
+                       CHAM_GD=DEPF,
+                       CUMUL='OUI',
+                       COEF_R=-1.0,),                       
+                          ),
+                   );                                           
+
+SIGP=CREA_CHAMP(TYPE_CHAM='ELGA_SIEF_R',
+                OPERATION='EXTR',
+                RESULTAT=RESUGLO,
+                NOM_CHAM='SIEF_ELGA',
+                INST=0.004,
+                INFO=1,);                
+                
+VARIP=CREA_CHAMP(TYPE_CHAM='ELGA_VARI_R',
+                OPERATION='EXTR',
+                RESULTAT=RESUGLO,
+                NOM_CHAM='VARI_ELGA',
+                INST=0.004,
+                INFO=1,);
+                
+LIST=DEFI_LIST_REEL(DEBUT=0.004,
+                    INTERVALLE=_F(JUSQU_A=0.0045,
+                                  NOMBRE=1,),);
+                                  
+EXCIMO=AFFE_CHAR_MECA(MODELE=MODELE,
+                      FORCE_NODALE=_F(GROUP_NO='PC3',
+                                      FX=1.E8,),);
+                  
+CONT=CALCUL(OPTION=('COMPORTEMENT','FORC_INT_ELEM','MATR_TANG_ELEM'),
+                     MODELE=MODELE,
+                     CHAM_MATER=CHAMAT,
+                     EXCIT=(_F(CHARGE=CHARGE, ),
+                            _F(CHARGE=EXCIMO,
+                               FONC_MULT=EVINT,),),
+                     COMP_INCR=(
+                                _F(
+                                  RELATION='ELAS',
+                                  GROUP_MA=('VOLU2','VOLU3'),
+                                  ),
+                                _F(
+                                  RELATION='VMIS_ISOT_LINE',
+                                  #RELATION='ELAS',
+                                  GROUP_MA='VOLU1',
+                                  ),
+                               ),
+            INCREMENT=_F(LIST_INST=LIST,
+                         NUME_ORDRE=1),
+            DEPL=DEPF,
+            INCR_DEPL=DU,
+            SIGM=SIGP,
+            VARI=VARIP,
+            INFO=1,);
+            
+MATR=EXTR_TABLE(TYPE_RESU='MATR_ELEM_DEPL_R',
+                 TABLE=CONT,
+                 NOM_PARA='NOM_SD',
+                 FILTRE=_F(NOM_PARA='NOM_OBJET',
+                           VALE_K='MATR_ELEM'),);
+                 
+                   
+MATM=CALC_MATR_ELEM(OPTION='MASS_MECA',
+                    MODELE=MODELE,
+                    CHAM_MATER=CHAMAT,
+                    CHARGE=CHARGE,
+                    );
+                   
+MATASM=ASSE_MATRICE(MATR_ELEM=MATM, NUME_DDL=NUMDDL,);
+
+MATASR=ASSE_MATRICE(MATR_ELEM=MATR, NUME_DDL=NUMDDL, SYME='OUI',);
+                                                                             
+MODE=MODE_ITER_SIMULT(MATR_A=MATASR, MATR_B=MATASM,
+                       CALC_FREQ=_F(OPTION='BANDE',
+                                    FREQ=(0.1,1000.,
+                                          ),
+                                    ),  
+                       VERI_MODE=_F(STOP_ERREUR='NON'),
+                       );
+                       
+# CHAMPS SUR LE MODELE REDUIT NECESSAIRES A LA REPRISE
+                       
+DEP0=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
+                OPERATION='EXTR',
+                NUME_DDL=NUMDDL1B,
+                RESULTAT=DYTREX,
+                NOM_CHAM='DEPL',
+                INST=0.004,
+                INFO=1,);
+                
+VIT0=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
+                OPERATION='EXTR',
+                NUME_DDL=NUMDDL1B,
+                RESULTAT=DYTREX,
+                NOM_CHAM='VITE',
+                INST=0.004,
+                INFO=1,);
+                
+ACC0=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
+                OPERATION='EXTR',
+                NUME_DDL=NUMDDL1B,
+                RESULTAT=DYTREX,
+                NOM_CHAM='ACCE',
+                INST=0.004,
+                INFO=1,);
+                
+SIG0=CREA_CHAMP(INFO=1,
+                TYPE_CHAM='ELGA_SIEF_R',
+                OPERATION='EXTR',
+                RESULTAT=DYTREX,
+                NOM_CHAM='SIEF_ELGA',
+                INST=0.004,);
+                
+VAR0=CREA_CHAMP(INFO=1,
+                TYPE_CHAM='ELGA_VARI_R',
+                OPERATION='EXTR',
+                RESULTAT=DYTREX,
+                NOM_CHAM='VARI_ELGA',
+                INST=0.004,);
+                
+# CALCUL EVOLUTION SUR MODELE REDUIT AVEC REPRISE DE CHAMPS GENERALISES
+                                                             
+DYTREX2=DYNA_NON_LINE(
+                     MODELE=MODELE1,
+                     CARA_ELEM=PARAM1,
+                     CHAM_MATER=CHAMAT,
+                     MASS_DIAG='NON',
+                     EXCIT=(
+                            _F(CHARGE=EXCIMO1,
+                               FONC_MULT=FOC,),),
+                     COMP_INCR=(
+                                _F(
+                                  RELATION='ELAS',
+                                  GROUP_MA='PC1',
+                                  ),
+                                _F(
+                                  RELATION='VMIS_ISOT_LINE',
+                                  GROUP_MA='VOLU1',
+                                  ),
+                               ),
+                     ETAT_INIT=_F(
+                                DEPL=DEP0,
+                                VITE=VIT0,
+                                ACCE=ACC0,
+                                SIGM=SIG0,
+                                VARI=VAR0,
+                                INST=0.004,
+                                ),
+                     SCHEMA_TEMPS=_F(SCHEMA='DIFF_CENT',
+                                FORMULATION='ACCELERATION',),
+                     INCREMENT=_F(LIST_INST=LINSDY2,INST_INIT=0.004),
+                     ARCHIVAGE=_F(LIST_INST=LINSDYN,),
+                     PROJ_MODAL=_F(MODE_MECA = RESMO2,
+                                   MASS_GENE = M_PROJ,
+                                   RIGI_GENE = RIGGENT,
+                                   AMOR_GENE = AMOGENT,
+                                   DEPL_INIT_GENE = DEPGEN,
+                                   VITE_INIT_GENE = VITGEN,
+                                   ACCE_INIT_GENE = ACCGEN,
+                                   ),
+                     EXCIT_GENE=_F(
+                                   FONC_MULT = EVINT,
+                                   VECT_GENE = F_GENE,
+                                   ),
+                     );
+                     
+# RESTITUTION SUR MODELE COMPLET AVEC ENRICHISSEMENT DE RESULTAT
+                                                  
+RESUGLO=REST_COND_TRAN(   reuse=RESUGLO,
+                          RESU_FINAL=RESUGLO,
+                          RESULTAT=DYTREX2,
+                          BASE_MODALE=MODGLO,
+                          TYPE_RESU='EVOL_NOLI',
+                          CHAM_MATER=CHAMAT,
+                          TOUT_CHAM='OUI',
+                                        );
+
+TEST_RESU(RESU=_F( RESULTAT = MODE,  PARA = 'FREQ',
+                   REFERENCE = 'AUTRE_ASTER',
+                   CRITERE = 'RELATIF', PRECISION = 1.E-3,
+                   NUME_ORDRE = 1, VALE = 117.11, ),);                                
+                                        
                                      
 TEST_RESU( RESU=_F( RESULTAT = RESUGLO, 
                     REFERENCE='NON_REGRESSION',
@@ -627,26 +902,26 @@ TEST_RESU( RESU=_F( RESULTAT = RESUGLO,
                   GROUP_NO='PC3',         NOM_CMP = 'DX', 
                   VALE = 3.95547E+00));
                   
-                                                                                              
 TEST_RESU( RESU=_F( RESULTAT = RESUGLO, 
                     REFERENCE='NON_REGRESSION',
                   NOM_CHAM = 'DEPL',      INST=5.5E-3, 
                   GROUP_NO='PC3',         NOM_CMP = 'DX', 
                   VALE = 1.17404E-02));
                                      
-                                                      
+                  
 TEST_RESU( RESU=_F( RESULTAT = RESUGLO, 
                     REFERENCE='NON_REGRESSION',
                   NOM_CHAM = 'DEPL',      INST=1.6E-2, 
                   GROUP_NO='PC3',         NOM_CMP = 'DX', 
-                  VALE = -1.13248E-02));
+                  VALE = -1.13248E-02));                                                      
                                      
                                                       
 TEST_RESU( RESU=_F( RESULTAT = RESUGLO, REFERENCE = 'AUTRE_ASTER', 
                   NOM_CHAM = 'DEPL',      INST=5.5E-3, 
-                  PRECISION = 2.0E-3, 
+                  PRECISION = 3.0E-3, 
                   GROUP_NO='PC3',         NOM_CMP = 'DX', 
                   VALE = 1.17615E-02));
                                         
+
 FIN( ) 
                

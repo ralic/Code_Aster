@@ -1,10 +1,10 @@
-# MODIF  DATE 05/07/2010   AUTEUR PROIX J-M.PROIX 
+# MODIF  DATE 08/02/2011   AUTEUR PROIX J-M.PROIX 
 # TITRE TEST COMPORTEMENT VMIS_ISOT_LINE 3D 
 #......................................................................
 # comp001a.para = tps_job 300 mem_job 512Mo mem_aster 20 ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -20,10 +20,9 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
 
-from Utilitai.veri_matr_tang import VERI_MATR_TANG
 
 
-DEBUT(CODE=_F(NOM='COMP001A',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'));
+DEBUT(CODE=_F(NOM='COMP001A',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),IMPR_MACRO='OUI');
 
 # donnee materiau et fonction
 
@@ -36,7 +35,7 @@ POISSON = 0.3;
 SY = 437.0;
 pente = 2024.74690664;
 # def des materiaux
-ACIER = [None]*3
+ACIER = [None]*2
 #unite en Pa
 C_Pa = 1.e+6
 #C_Pa = 1.
@@ -58,198 +57,15 @@ ACIER[1]=DEFI_MATERIAU(ELAS=_F(E=YOUNG,
                                  
 compor='VMIS_ISOT_LINE'
 
+tabresu=TEST_COMPOR(OPTION='MECA',
 
-#Discretisation du calcul
-#Ncal = 10
-Ncal = 7
-N_pas = 4*[1] + [1, 5, 25, 125, 625, 3125]
-N_cas = len(N_pas)
+              COMP_INCR=_F(RELATION=compor,),
+              NEWTON=_F(REAC_ITER=1),
+              LIST_MATER=ACIER,
+              VARI_TEST=('V1','VMIS','TRACE'),
+              YOUNG=YOUNG,POISSON=POISSON,
+              )
 
-# les differents calculs effectues et les precisions sur chaque TEST_RESU
-label_cal=['_Pa_','_Th_','_sym_','_rot_'] + 6* ['_N']
-prec_ecart=4*[1.E-10] + [1.E-1] + (N_cas-5)*[1.E-2]   
-prec_tgt=1.e-8
-
-
-
-# utilitaires divers
-INCLUDE(UNITE=91)
-
-
-##################################################################################
-#  TEST 3D
-##################################################################################
-                                 
-# definition du chargement 3D
-INCLUDE(UNITE=93)
-
-ch_param=['V1','VMIS','TRACE','SIXX','SIYY','SIZZ','SIXY','SIXZ','SIYZ']
-
-#Discretisation du calcul
-
-RESU=[None]*Ncal
-R_SI=[None]*len(ch_param)
-TMP_S=[None]
-
-#pointeur materiau
-P_imat = [0] + [1] + (N_cas-2)*[1]
-#pointeur deformation
-P_idef = 2*[0] + [1] + [2] + (N_cas-4)*[0]
-#pointeur Option thermique
-P_opt_ther = ["NON", "NON"] + (N_cas-2)*["NON"]
-# conditions du calcul thermique
-(inst_th, temp_th) = (3.0*t_0, 100.)
-
-#Boucle sur l'ensemble des calculs
-for i in range(Ncal):
-        N = N_pas[i]
-        imat = P_imat[i]
-        idef = P_idef[i]
-        eps_imp = V_EPS[idef]
-        opt_ther = P_opt_ther[i]
-        temps=DEFI_LIST_REEL(DEBUT=0.0,
-                     INTERVALLE=(_F(JUSQU_A=t_0,NOMBRE=N,),
-                                 _F(JUSQU_A=2.0*t_0,NOMBRE=N,),
-                                 _F(JUSQU_A=3.0*t_0,NOMBRE=N,),
-                                 _F(JUSQU_A=4.0*t_0,NOMBRE=N,),
-                                 _F(JUSQU_A=5.0*t_0,NOMBRE=N,),
-                                 _F(JUSQU_A=6.0*t_0,NOMBRE=N,),
-                                 _F(JUSQU_A=7.0*t_0,NOMBRE=N,),
-                                 _F(JUSQU_A=8.0*t_0,NOMBRE=N,),),);
-
-#       Resout le pb a deformation imposee
-        RESU[i]=SIMU_POINT_MAT(
-                   COMP_INCR=_F(RELATION=compor,
-                   ),
-                   NEWTON=_F(MATRICE='TANGENTE',
-                             REAC_ITER=1,),
-                   CONVERGENCE=_F(ITER_GLOB_MAXI=10,),
-                   MATER      = ACIER[imat],  
-                   ARCHIVAGE = _F(LIST_INST = temps_ar),
-                   INCREMENT=_F(LIST_INST=temps,),
-                 #  THER=_F(INST_IMP= inst_th, TEMP_IMP= temp_th, OPTION = opt_ther,),
-                   EPSI_IMPOSE=_F(EPXX=eps_imp[0], EPYY=eps_imp[1], EPZZ=eps_imp[2],
-                                  EPXY=eps_imp[3], EPXZ=eps_imp[4], EPYZ=eps_imp[5]),
-                      INFO=1,  );
-                        
-        #IMPR_TABLE(TABLE=RESU[i]);
-        
-# On renomme les composantes en fonction de  l'ordre de discretisation
-        N = N_pas[i]
-        chN=label_cal[i]+str(N)
-        for ch in ch_param:
-                j=ch_param.index(ch)
-                chnew=ch+chN
-                ##Extraction par type de variable 
-                if i==0 :
-                        R_SI[j]=CALC_TABLE( TABLE=RESU[i],
-                                     TITRE = ' ',
-                                     ACTION=(
-                                               _F(OPERATION='EXTR',
-                                            NOM_PARA=('INST',ch,),),
-                                              _F(OPERATION='RENOMME',
-                                                NOM_PARA=(ch,chnew,),),
-                                                                ),);
-                else:
-                        TMP_S=CALC_TABLE( TABLE=RESU[i],
-                                     TITRE = ' ',
-                                     ACTION=(
-                                     #          _F(OPERATION='FILTRE',
-                                     #       NOM_PARA='INST',
-                                     #       VALE=[t_0*k for k in range(9)]),
-                                      _F(OPERATION='EXTR',
-                                            NOM_PARA=('INST',ch,),),
-                                                _F(OPERATION='RENOMME',
-                                                NOM_PARA=(ch,chnew,),),
-                                                                ),);
-                        R_SI[j]=CALC_TABLE( reuse=R_SI[j], TABLE=R_SI[j],
-                                     TITRE = ' ',
-                                        ACTION=( _F(OPERATION='COMB',
-                                        TABLE=TMP_S,NOM_PARA='INST',),
-                                                ),);
-                        DETRUIRE ( CONCEPT = _F (NOM = TMP_S,),)
-                #IMPR_TABLE(TABLE=R_SI[j]);
-        DETRUIRE ( CONCEPT = _F (NOM = temps,),)
-        
-# TEST_RESU sur les erreurs relatives 
-# label_cal=['_Pa_','_Th_','_sym_','_rot_'] + 6* ['_N']
-prec_ecart=4*[1.E-10] + [1.E-1] + (N_cas-5)*[1.E-2]   
-#ch_param2=['V1','VMIS','TRACE']
-prec_zero=[1.E-10, 0.01, 0.01]
-
-# les quantites (invariants...) sur lequels portent les calculs d'erreur et les test_resu
-ch_param2=['V1','VMIS','TRACE']
-TEST_ECART(ch_param2,label_cal,N_pas,Ncal,ch_param,R_SI,prec_ecart,prec_zero)
-
-
-###############################################################################                                 
-
-
-# impressions
-                
-for i in range(len(ch_param)):
-        IMPR_TABLE(TABLE=R_SI[i])
-        
-
-        
-                
-# TESTS DE NON REGRESSION DES QUANTITES SIGNIFICATIVES
-TEST_TABLE(TABLE=R_SI[0],
-           NOM_PARA='V1_Pa_1',VALE=4.82524E-02,
-           FILTRE=_F(NOM_PARA='INST',VALE=8.0*t_0),
-           REFERENCE='NON_REGRESSION',);     
-
-TEST_TABLE(TABLE=R_SI[1],
-           NOM_PARA='VMIS_Pa_1',VALE=5.35698E+08,
-           FILTRE=_F(NOM_PARA='INST',VALE=8.0*t_0),
-           REFERENCE='NON_REGRESSION',);     
-
-TEST_TABLE(TABLE=R_SI[3],
-           NOM_PARA='SIXX_Pa_1',VALE=1.15433E+08,
-           FILTRE=_F(NOM_PARA='INST',VALE=8.0*t_0),
-           REFERENCE='NON_REGRESSION',);     
-
-
-# Test de la matrice tangente sur le calcul le plus fin
-
-N = N_pas[Ncal-1]
-Linst=DEFI_LIST_REEL(DEBUT=0.0,
-                     INTERVALLE=(_F(JUSQU_A=t_0,NOMBRE=N,),
-                                 _F(JUSQU_A=2.0*t_0,NOMBRE=N,),
-                                 _F(JUSQU_A=3.0*t_0,NOMBRE=N,),
-                                 _F(JUSQU_A=4.0*t_0,NOMBRE=N,),
-                                 _F(JUSQU_A=5.0*t_0,NOMBRE=N,),
-                                 _F(JUSQU_A=6.0*t_0,NOMBRE=N,),
-                                 _F(JUSQU_A=7.0*t_0,NOMBRE=N,),
-                                 _F(JUSQU_A=8.0*t_0,NOMBRE=N,),),);
-
-RESU_TGT=SIMU_POINT_MAT(
-                   COMP_INCR=_F(RELATION=compor,                
-                                TYPE_MATR_TANG='VERIFICATION',
-                                VALE_PERT_RELA=1.E-5,
-                               ),
-                   NEWTON=_F(MATRICE='TANGENTE',REAC_ITER=1,),
-                   CONVERGENCE=_F(ITER_GLOB_MAXI=10,),
-                   MATER      = ACIER[1],  
-                   INCREMENT=_F(LIST_INST=Linst,),
-                   EPSI_IMPOSE=_F(EPXX=eps_imp[0], EPYY=eps_imp[1], EPZZ=eps_imp[2],
-                                  EPXY=eps_imp[3], EPXZ=eps_imp[4], EPYZ=eps_imp[5]),
-                        );
-
-
-DIFF_MAT=VERI_MATR_TANG()
-
-TEST_TABLE(TABLE=DIFF_MAT,
-           NOM_PARA='MAT_DIFF',
-           TYPE_TEST='MAX',
-           VALE=0.,
-           CRITERE='ABSOLU',
-           PRECISION=prec_tgt,
-           REFERENCE='ANALYTIQUE',);     
-
-
-
-IMPR_TABLE(TABLE=DIFF_MAT)
 
 FIN();
 

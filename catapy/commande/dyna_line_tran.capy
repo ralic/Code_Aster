@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 18/01/2011   AUTEUR BOITEAU O.BOITEAU 
+#& MODIF COMMANDE  DATE 08/02/2011   AUTEUR TARDIEU N.TARDIEU 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -118,7 +118,7 @@ DYNA_LINE_TRAN=OPER(nom="DYNA_LINE_TRAN",op=  48,sd_prod=dyna_trans,
                RENUM               =SIMP(statut='f',typ='TXM',defaut="RCMK",into=("SANS","RCMK") ),
                ),
              b_simple        =BLOC(condition = "PRE_COND == 'LDLT_SP' ", fr="Paramètres de la factorisation simple précision",
-               REAC_PRECOND        =SIMP(statut='f',typ='I',defaut=5, ),
+               REAC_PRECOND        =SIMP(statut='f',typ='I',defaut=30, ),
                ),
              RESI_RELA       =SIMP(statut='f',typ='R',defaut= 1.E-6 ),
              NMAX_ITER       =SIMP(statut='f',typ='I',defaut= 0 ),
@@ -145,7 +145,7 @@ DYNA_LINE_TRAN=OPER(nom="DYNA_LINE_TRAN",op=  48,sd_prod=dyna_trans,
                RENUM            =SIMP(statut='f',typ='TXM',defaut="RCMK",into=("SANS","RCMK") ),
              ),
              b_ldlt_sp      =BLOC(condition = "PRE_COND == 'LDLT_SP' ", fr="Paramètres de la factorisation simple précision",
-               REAC_PRECOND        =SIMP(statut='f',typ='I',defaut=5, ),
+               REAC_PRECOND        =SIMP(statut='f',typ='I',defaut=30, ),
                RENUM               =SIMP(statut='f',typ='TXM',defaut="SANS",into=("SANS","RCMK") ),
              ),
              b_jacobi_sor   =BLOC(condition = "PRE_COND == 'JACOBI' or PRE_COND == 'SOR'", 

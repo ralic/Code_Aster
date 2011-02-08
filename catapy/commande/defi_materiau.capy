@@ -1,7 +1,7 @@
-#& MODIF COMMANDE  DATE 14/12/2010   AUTEUR PROIX J-M.PROIX 
+#& MODIF COMMANDE  DATE 08/02/2011   AUTEUR GRANET S.GRANET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -1465,7 +1465,6 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater_sdaster,
                                            PRE2          = SIMP(statut='f',typ='R'),
                                            PRES_VAPE     = SIMP(statut='f',typ='R'),
                                            DEGR_SATU     = SIMP(statut='f',typ='R'),
-                                           PRES_ATMO     = SIMP(statut='f',typ='R'),
 # ---------------------------------------------------------------------------------
 # -------------------   DONNEE CACHEE ---------------------------------------------
 # ---------------------------------------------------------------------------------
@@ -1520,10 +1519,6 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater_sdaster,
                                            PERM_GAZ        =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
                                            D_PERM_SATU_GAZ =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
                                            D_PERM_PRES_GAZ =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
-                                           SIGMA_T         =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
-                                           D_SIGMA_T       =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
-                                           PERM_G_INTR     =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
-                                           CHAL_VAPO       =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
                                            FICKV_T          = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
                                            FICKV_PV         = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
                                            FICKV_PG         = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
@@ -1599,7 +1594,6 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater_sdaster,
 # ---------------------------------------------------------------------------------
                                            PRES_VAPE        = SIMP(statut='f',typ='R'),
                                            DEGR_SATU        = SIMP(statut='f',typ='R'),
-                                           PRES_ATMO        = SIMP(statut='f',typ='R'),
 # ---------------------------------------------------------------------------------
 # -------------------   DONNEE CACHEE ---------------------------------------------
 # ---------------------------------------------------------------------------------
@@ -1669,10 +1663,6 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater_sdaster,
 # -------------------   DONNEES INUTILES   ----------------------------------------
 # ---------------------------------------------------------------------------------
                                            EMMAG           = SIMP(statut='f',typ='R'),
-                                           SIGMA_T          = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
-                                           D_SIGMA_T        = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
-                                           PERM_G_INTR      = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
-                                           CHAL_VAPO        = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
                                            FICKV_T          = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
                                            FICKV_PV         = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
                                            FICKV_PG         = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
@@ -1751,7 +1741,6 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater_sdaster,
                                            PRE2             = SIMP(statut='f',typ='R'),
                                            PRES_VAPE        = SIMP(statut='f',typ='R'),
                                            DEGR_SATU        = SIMP(statut='f',typ='R'),
-                                           PRES_ATMO        = SIMP(statut='f',typ='R'),
 # ---------------------------------------------------------------------------------
 # -------------------   DONNEE CACHEE ---------------------------------------------
 # ---------------------------------------------------------------------------------
@@ -1803,10 +1792,6 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater_sdaster,
                                            PERM_GAZ        =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
                                            D_PERM_SATU_GAZ =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
                                            D_PERM_PRES_GAZ =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
-                                           SIGMA_T         =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
-                                           D_SIGMA_T       =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
-                                           PERM_G_INTR     =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
-                                           CHAL_VAPO       =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
                                            FICKV_T          = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
                                            FICKV_PV         = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
                                            FICKV_PG         = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
@@ -1883,7 +1868,6 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater_sdaster,
                                            PRE2             = SIMP(statut='f',typ='R'),
                                            PRES_VAPE        = SIMP(statut='f',typ='R'),
                                            DEGR_SATU        = SIMP(statut='f',typ='R'),
-                                           PRES_ATMO        = SIMP(statut='f',typ='R'),
 # ---------------------------------------------------------------------------------
 # -------------------   DONNEE CACHEE ---------------------------------------------
 # ---------------------------------------------------------------------------------
@@ -1935,10 +1919,6 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater_sdaster,
              PERM_GAZ        =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
              D_PERM_SATU_GAZ =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
              D_PERM_PRES_GAZ =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
-             SIGMA_T         =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
-             D_SIGMA_T       =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
-             PERM_G_INTR     =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
-             CHAL_VAPO       =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
              FICKV_T          = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
              FICKV_PV         = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
              FICKV_PG         = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
@@ -2015,7 +1995,6 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater_sdaster,
 # -------------------   DONNEES INUTILES   ----------------------------------------
 # ---------------------------------------------------------------------------------
                                            DEGR_SATU        = SIMP(statut='f',typ='R'),
-                                           PRES_ATMO        = SIMP(statut='f',typ='R'),
 # ---------------------------------------------------------------------------------
 # -------------------   DONNEE CACHEE ---------------------------------------------
 # ---------------------------------------------------------------------------------
@@ -2085,10 +2064,6 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater_sdaster,
 # -------------------   DONNEES FACULTATIVES   ------------------------------------
 # ---------------------------------------------------------------------------------
                                            EMMAG            = SIMP(statut='f',typ='R'),
-                                           SIGMA_T          = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
-                                           D_SIGMA_T        = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
-                                           PERM_G_INTR      = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
-                                           CHAL_VAPO        = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
                                            FICKV_PV         = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
                                            FICKV_PG         = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
                                            FICKV_S          = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
@@ -2119,11 +2094,6 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater_sdaster,
 # ---------------------------------------------------------------------------------
                                            ALPHA            = SIMP(statut='f',typ='R'),
                                            CP               = SIMP(statut='f',typ='R'),
-                                           LAMB_PHI = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
-                                           D_LB_PHI = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
-                                           LAMB_T    = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
-                                           D_LB_T = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
-                                           LAMB_CT        = SIMP(statut='f',typ='R'),
 # ---------------------------------------------------------------------------------
 # -------------------   DONNEES CACHEES -------------------------------------------
 # ---------------------------------------------------------------------------------
@@ -2200,7 +2170,6 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater_sdaster,
 # -------------------   DONNEES INUTILES   ----------------------------------------
 # ---------------------------------------------------------------------------------
                                            DEGR_SATU        = SIMP(statut='f',typ='R'),
-                                           PRES_ATMO        = SIMP(statut='f',typ='R'),
 # ---------------------------------------------------------------------------------
 # -------------------   DONNEE CACHEE ---------------------------------------------
 # ---------------------------------------------------------------------------------
@@ -2270,10 +2239,6 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater_sdaster,
 # -------------------   DONNEES FACULTATIVE   ----------------------------------
 # ---------------------------------------------------------------------------------
                                            EMMAG            = SIMP(statut='f',typ='R'),
-                                           SIGMA_T          = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
-                                           D_SIGMA_T        = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
-                                           PERM_G_INTR      = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
-                                           CHAL_VAPO        = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
                                            FICKV_PV         = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
                                            FICKV_PG         = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
                                            FICKV_S          = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
@@ -2360,7 +2325,6 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater_sdaster,
 # -------------------   DONNEES INUTILES   ----------------------------------------
 # ---------------------------------------------------------------------------------
                                            DEGR_SATU        = SIMP(statut='f',typ='R'),
-                                           PRES_ATMO        = SIMP(statut='f',typ='R'),
 # ---------------------------------------------------------------------------------
 # -------------------   DONNEE CACHEE ---------------------------------------------
 # ---------------------------------------------------------------------------------
@@ -2430,10 +2394,6 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater_sdaster,
 # -------------------   DONNEES FACULTATIVES   ------------------------------------
 # ---------------------------------------------------------------------------------
                                            EMMAG            = SIMP(statut='f',typ='R'),
-                                           SIGMA_T          = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
-                                           D_SIGMA_T        = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
-                                           PERM_G_INTR      = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
-                                           CHAL_VAPO        = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
                                            FICKV_PV         = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
                                            FICKV_PG         = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
                                            FICKV_S          = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
@@ -2461,11 +2421,6 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater_sdaster,
 # ---------------------------------------------------------------------------------
                                            ALPHA            = SIMP(statut='f',typ='R'),
                                            CP               = SIMP(statut='f',typ='R'),
-                                           LAMB_PHI = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
-                                           D_LB_PHI = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
-                                           LAMB_T    = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
-                                           D_LB_T = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
-                                           LAMB_CT        = SIMP(statut='f',typ='R'),
                                              ),
 # =================================================================================
 # --- MOT-CLE OBLIGATOIRE ---------------------------------------------------------
@@ -2532,7 +2487,6 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater_sdaster,
 # ---------------------------------------------------------------------------------
                                            PRE2             = SIMP(statut='f',typ='R'),
                                            DEGR_SATU        = SIMP(statut='f',typ='R'),
-                                           PRES_ATMO        = SIMP(statut='f',typ='R'),
 # ---------------------------------------------------------------------------------
 # -------------------   DONNEE CACHEE ---------------------------------------------
 # ---------------------------------------------------------------------------------
@@ -2600,10 +2554,6 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater_sdaster,
 # -------------------   DONNEES INUTILES   ----------------------------------------
 # ---------------------------------------------------------------------------------
                                            EMMAG            = SIMP(statut='f',typ='R'),
-                                           SIGMA_T          = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
-                                           D_SIGMA_T        = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
-                                           PERM_G_INTR      = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
-                                           CHAL_VAPO        = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
                                            FICKV_T          = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
                                            FICKV_PV         = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
                                            FICKV_PG         = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),

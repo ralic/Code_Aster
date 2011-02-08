@@ -1,8 +1,8 @@
       SUBROUTINE AMUMPM(RANG,LDIST,KXMPS,KMONIT,IMPR,IFMUMP,ELI2LG,
-     &                  TYPE,LMD,EPSMAT,LDECHG)
+     &                  TYPE,LMD,EPSMAT,LDECHG,KTYPR)
       IMPLICIT NONE
 !           CONFIGURATION MANAGEMENT OF EDF VERSION
-!& MODIF AMUMPM MUMPS  DATE 18/01/2011   AUTEUR DESOZA T.DESOZA 
+!& MODIF AMUMPM MUMPS  DATE 07/02/2011   AUTEUR BOITEAU O.BOITEAU 
 ! ==================================================================
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D              WWW.CODE-ASTER.ORG
 !
@@ -33,6 +33,7 @@ C IN  ELI2LG :  LOG   : LOGICAL POUR NE LAISSER QU'1 LAGRANGE ACTIF
 C IN  TYPE   :   K1   : TYPE DU POINTEUR R OU C
 C IN  EPSMAT :   R8   : SEUIL DE FILTRAGE DES TERMES DE LA MATRICE
 C IN  LDECHG :  LOG   : PILOTAGE DECHARGEMENT OBJET JEVEUX
+C IN  KTYPR  :   K8   : TYPE DE RESOLUTION MUMPS (SYMDEF...)
 C---------------------------------------------------------------
 ! RESPONSABLE BOITEAU O.BOITEAU
 
@@ -40,6 +41,7 @@ C---------------------------------------------------------------
       LOGICAL      LDIST,ELI2LG,LMD,LDECHG
       REAL*8       EPSMAT
       CHARACTER*1  TYPE
+      CHARACTER*8  KTYPR
       CHARACTER*14 IMPR
       CHARACTER*24 KMONIT(12)
 
@@ -72,9 +74,9 @@ C============================================================
       CHARACTER*14 NONUS(NMXINS),NONU
       CHARACTER*19 NOMATS(NMXINS),NOSOLS(NMXINS),NOMAT,NOSOLV
       CHARACTER*24 KFILTR
-      REAL*8       RAUX,RFILTR,RR4MAX,RAUX1,R4MAEM
+      REAL*8       RAUX,RFILTR,RR4MAX,RAUX1,R4MAEM,R8PREM,EPSMAC
       COMPLEX*16   CAUX
-      LOGICAL      LMNSY,LTYPR,LNN,LFILTR
+      LOGICAL      LMNSY,LTYPR,LNN,LFILTR,LSPD
       COMMON /MUMPSS/ SMPS
       COMMON /MUMPSC/ CMPS
       COMMON /MUMPSD/ DMPS
@@ -106,6 +108,7 @@ C       ------------------------------------------------
 C        INITS
 C       ------------------------------------------------
       RR4MAX=R4MAEM()
+      EPSMAC=R8PREM()
       LFILTR=.FALSE.
       KFILTR='&&AMUMPM.FILTRAGE'
       NFILTR=0
@@ -136,6 +139,12 @@ C --- DE MUMPS: DMUMPS_STRUC OU ZMUMPS_STRUC
       ENDIF
 
       IF (LMD) CALL JEVEUO(NONU//'.NUML.NULG','L',JNULOGL)
+      IF (KTYPR(1:6).EQ.'SYMDEF') THEN
+        IF ((TYPE.EQ.'C').OR.(TYPE.EQ.'Z')) CALL U2MESS('F','FACTOR_80')
+        LSPD=.TRUE.
+      ELSE
+        LSPD=.FALSE.
+      ENDIF
 
 !     ------------------------------------------
 !     DETERMINATION DE LA SYMETRIE DE LA MATRICE
@@ -450,9 +459,9 @@ C ---- TERME NON NUL
                 CALL ASSERT(.FALSE.)
               ENDIF
             ENDIF
+            KZERO=0	    
             IF (ELI2LG) THEN
 C ------      ON ELIMINE LE DERNIER TERME DE A/A_loc SI LAG2
-              KZERO=0
               IF (ZI(JDELG-1+ILIGL).EQ.-1) THEN
                 IF (JCOLL.EQ.ILIGL) KZERO=1
                 IF (ZI(JDELG-1+JCOLL).EQ.-2) KZERO=1
@@ -471,6 +480,11 @@ C            ELSE
 C              WRITE(6,*)'K0 ',ILIGG,JCOLG,RAUX
 C NSELLENET
             ENDIF
+C --- SI RESOLUTION SPD DEMANDEE ET TERME NEGATIF OU NUL ON S'ARRETE
+            IF ((LSPD).AND.(KZERO.EQ.0)) THEN
+	      IF ((ILIGG.EQ.JCOLG).AND.(RAUX.LT.EPSMAC)) 
+     &         CALL U2MESS('F','FACTOR_84')
+	    ENDIF	    
           ENDIF
 
 C --- PARTIE TRIANGULAIRE INFERIEURE
@@ -560,6 +574,11 @@ C            ELSE
 C              WRITE(6,*)'K0 ',ILIGG,JCOLG,RAUX
 C NSELLENET
               ENDIF
+C --- SI RESOLUTION SPD DEMANDEE ET TERME NEGATIF OU NUL ON S'ARRETE
+              IF ((LSPD).AND.(KZERO.EQ.0)) THEN
+	        IF ((ILIGG.EQ.JCOLG).AND.(RAUX.LT.EPSMAC)) 
+     &           CALL U2MESS('F','FACTOR_84')
+	      ENDIF	      
             ENDIF
           ENDIF
 C ---FIN DE LA BOUCLE SUR NZ

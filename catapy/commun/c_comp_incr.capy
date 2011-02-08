@@ -1,4 +1,4 @@
-#& MODIF COMMUN  DATE 10/01/2011   AUTEUR PROIX J-M.PROIX 
+#& MODIF COMMUN  DATE 08/02/2011   AUTEUR PROIX J-M.PROIX 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -120,7 +120,7 @@ def C_COMP_INCR() : return FACT(statut='f',min=1,max='**',  #COMMUN#
            ALGO_1D           =SIMP(statut='f',typ='TXM',defaut="ANALYTIQUE",into=("DEBORST","ANALYTIQUE",)),
            ITER_MAXI_DEBORST =SIMP(statut='f',typ='I',defaut= 1),
            RESI_INTE_RELA    =SIMP(statut='f',typ='R',defaut= 1.0E-6),
-           ITER_INTE_MAXI    =SIMP(statut='f',typ='I',defaut= 10 ),
+           ITER_INTE_MAXI    =SIMP(statut='f',typ='I',defaut= 20 ),
 
            b_redec_local      = BLOC(condition = "DEFORMATION in ('PETIT','PETIT_REAC','GROT_GDEP')",
                                      fr="Nombre de redécoupages internes du pas de temps",
@@ -128,7 +128,7 @@ def C_COMP_INCR() : return FACT(statut='f',min=1,max='**',  #COMMUN#
                                      ),
 
            ALGO_INTE         =SIMP(statut='f',typ='TXM',into=("ANALYTIQUE", "SECANTE", "DEKKER", "NEWTON_1D","BRENT", 
-                                                              "NEWTON", "NEWTON_RELI", "RUNGE_KUTTA",
+                                                              "NEWTON", "NEWTON_RELI", "NEWTON_PERT", "RUNGE_KUTTA",
                                                               "SPECIFIQUE", "SANS_OBJET")),
 
            TYPE_MATR_TANG    =SIMP(statut='f',typ='TXM',into=("PERTURBATION","VERIFICATION","TANGENTE_SECANTE")),

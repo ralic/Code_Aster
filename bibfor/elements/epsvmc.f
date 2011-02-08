@@ -2,9 +2,9 @@
      &                   IDFDE, XYZ,DEPL,INSTAN,MATER,
      &                   REPERE,NHARM,OPTION,EPSM)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 15/04/2008   AUTEUR MAHFOUZ D.MAHFOUZ 
+C MODIF ELEMENTS  DATE 07/02/2011   AUTEUR MEUNIER S.MEUNIER 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -21,11 +21,10 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CRP_21
 C.======================================================================
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
 C
 C      EPSVMC   -- CALCUL DES  DEFORMATIONS MECANIQUES
-C                  (I.E. EPS_TOTALES - EPS_THERMIQUES
-C                      - EPS_RETRAIT POUR OPTION EPMH   )
+C                  (I.E. EPS_TOTALES - EPS_THERMIQUES )
 C                  AUX POINTS D'INTEGRATION POUR LES ELEMENTS
 C                  ISOPARAMETRIQUES
 C
@@ -72,11 +71,13 @@ C -----  ARGUMENTS
            CHARACTER*4  FAMI
            REAL*8       XYZ(1),  DEPL(1),  EPSM(1), REPERE(7)
            REAL*8       INSTAN,   NHARM
+           INTEGER      IDFDE,IPOIDS,IVF,MATER,NBSIG,NDIM,NNO,NPG
 C -----  VARIABLES LOCALES
-           CHARACTER*8  PHENOM, MODELI
+           CHARACTER*8  PHENOM
            CHARACTER*2  CODRET
            REAL*8       EPSTH(162), EPS2(162), XYZGAU(3), D(4,4)
-           INTEGER      IER
+           REAL*8       ZERO,UN,DEUX
+           INTEGER      I,IGAU
            LOGICAL      LTEATT
 C.========================= DEBUT DU CODE EXECUTABLE ==================
 C
@@ -152,8 +153,7 @@ C          -------------------------------------------------
           CALL DMATMC(FAMI,'DP',MATER,
      &                INSTAN,'+',IGAU,1,REPERE,XYZGAU,NBSIG,D,.FALSE.)
 C
-          IF (OPTION(1:4).EQ.'EPME'.OR.OPTION(1:4).EQ.'EPMG'.OR.
-     &        OPTION(1:4).EQ.'EPMH') THEN
+          IF (OPTION(1:4).EQ.'EPME'.OR.OPTION(1:4).EQ.'EPMG') THEN
             EPSM(NBSIG*(IGAU-1)+3) = -UN/D(3,3)*
      &                          (  D(3,1)*EPSM(NBSIG*(IGAU-1)+1)
      &                           + D(3,2)*EPSM(NBSIG*(IGAU-1)+2)

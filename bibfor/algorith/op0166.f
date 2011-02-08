@@ -1,7 +1,7 @@
       SUBROUTINE OP0166()
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 10/01/2011   AUTEUR MEUNIER S.MEUNIER 
+C MODIF ALGORITH  DATE 07/02/2011   AUTEUR MEUNIER S.MEUNIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -214,8 +214,8 @@ C     4.1 : SI TYPCAL='2', IL FAUT SURCHARGER LCORR(1) :
       IF (TYPCAL.EQ.'2') THEN
          LCORRE(1)=CORRU
          CALL JEVEUO(CORRU//'.PJXX_K1','L',JPJK1)
-         MOA1=ZK24(JPJK1-1+1)
-         MOA2=ZK24(JPJK1-1+2)
+         MOA1=ZK24(JPJK1-1+1)(1:8)
+         MOA2=ZK24(JPJK1-1+2)(1:8)
 
          IF (MOA1.NE.NOMARE) THEN
            VALK(1) = MOA1
@@ -366,7 +366,9 @@ C       =====================
  9999 CONTINUE
 C     ============= FIN DE LA BOUCLE SENSIBILITE
 
-      CALL DETRSD('CORRESP_2_MAILLA',LCORRE(1))
+      IF (TYPCAL.NE.'2') THEN
+        CALL DETRSD('CORRESP_2_MAILLA',LCORRE(1))
+      ENDIF
       CALL DETRSD('CORRESP_2_MAILLA',LCORRE(2))
       CALL JEDETR(LCORRE(2)//'.PJEF_MP')
       CALL JEDETR(LCORRE(2)//'.PJEF_EL')

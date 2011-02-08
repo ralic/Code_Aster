@@ -1,4 +1,4 @@
-%& MODIF COMPELEM  DATE 25/01/2011   AUTEUR PELLET J.PELLET 
+%& MODIF COMPELEM  DATE 08/02/2011   AUTEUR GRANET S.GRANET 
 % ======================================================================
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
@@ -150,12 +150,12 @@ PHENOMENE_MODELISATION__
 
    PHENOMENE__  MECANIQUE       CODE__  'ME'
 
-        MODELISATION__ 'AXIS_JOINT_HMS'        DIM__ 2 2   CODE__ 'JH2'
+        MODELISATION__ 'AXIS_JHMS'        DIM__ 2 2   CODE__ 'JH2'
               ATTRIBUT__  THM=OUI AXIS=OUI
               MAILLE__ QUAD8    ELEMENT__ HM_J_AXQ8S
               MAILLE__ SEG3     ELEMENT__ HM_J_AXSE3
 
-        MODELISATION__ '2D_JOINT_HMS'        DIM__ 2 2   CODE__ 'JH1'
+        MODELISATION__ 'PLAN_JHMS'        DIM__ 2 2   CODE__ 'JH1'
               ATTRIBUT__  THM=OUI D_PLAN=OUI
               MAILLE__ QUAD8    ELEMENT__ HM_J_DPQ8S
               MAILLE__ SEG3     ELEMENT__ HM_J_DPSE3
@@ -814,6 +814,7 @@ PHENOMENE_MODELISATION__
               MAILLE__ TRIA6     ELEMENT__ MVDPTR6
               MAILLE__ QUAD8     ELEMENT__ MVDPQS8
 
+
        MODELISATION__ 'AXIS_GRAD_VARI'   DIM__ 2 2   CODE__ 'AXV'
               ATTRIBUT__  AXIS=OUI NBSIGM=X4  TYPMOD=AXIS
               MAILLE__ SEG3      ELEMENT__ MEAXSE3
@@ -1051,12 +1052,6 @@ PHENOMENE_MODELISATION__
               MAILLE__ SEG2      ELEMENT__ MEFASE2
               MAILLE__ SEG3      ELEMENT__ MEFASE3
 
-       MODELISATION__ 'D_PLAN_THHM'      DIM__ 2 2   CODE__ 'DH4'
-              ATTRIBUT__  THM=OUI  D_PLAN=OUI
-              MAILLE__ QUAD8     ELEMENT__ THHM_DPQ8
-              MAILLE__ TRIA6     ELEMENT__ THHM_DPTR6
-              MAILLE__ SEG3      ELEMENT__ THHM_D_PLAN_SE3
-
        MODELISATION__ 'D_PLAN_THM'       DIM__ 2 2   CODE__ 'DH5'
               ATTRIBUT__  THM=OUI  D_PLAN=OUI
               MAILLE__ QUAD8     ELEMENT__ THM_DPQ8
@@ -1080,12 +1075,6 @@ PHENOMENE_MODELISATION__
               MAILLE__ QUAD8     ELEMENT__ HM_DPQ8_P
               MAILLE__ TRIA6     ELEMENT__ HM_DPTR6_P
               MAILLE__ SEG3      ELEMENT__ HM_D_PLAN_SE3_P
-
-       MODELISATION__ 'D_PLAN_THH'       DIM__ 2 2   CODE__ 'DH3'
-              ATTRIBUT__  THM=OUI D_PLAN=OUI
-              MAILLE__ QUAD8     ELEMENT__ THH_DPQ8
-              MAILLE__ TRIA6     ELEMENT__ THH_DPTR6
-              MAILLE__ SEG3      ELEMENT__ THH_D_PLAN_SE3
 
        MODELISATION__ 'D_PLAN_HHM'       DIM__ 2 2   CODE__ 'DH1'
               ATTRIBUT__  THM=OUI  D_PLAN=OUI
@@ -1225,23 +1214,11 @@ PHENOMENE_MODELISATION__
              MAILLE__ TRIA6     ELEMENT__ HH2_DPTR6D
              MAILLE__ SEG3      ELEMENT__ HH2_D_PLAN_SE3
 
-       MODELISATION__ 'AXIS_THHM'        DIM__ 2 2   CODE__ 'AH4'
-              ATTRIBUT__  THM=OUI AXIS=OUI
-              MAILLE__ QUAD8     ELEMENT__ THHM_AXIS_QU8
-              MAILLE__ TRIA6     ELEMENT__ THHM_AXIS_TR6
-              MAILLE__ SEG3      ELEMENT__ THHM_AXIS_SE3
-
        MODELISATION__ 'AXIS_HM'          DIM__ 2 2   CODE__ 'AH2'
               ATTRIBUT__  THM=OUI AXIS=OUI
               MAILLE__ QUAD8     ELEMENT__ HM_AXIS_QU8
               MAILLE__ TRIA6     ELEMENT__ HM_AXIS_TR6
               MAILLE__ SEG3      ELEMENT__ HM_AXIS_SE3
-
-       MODELISATION__ 'AXIS_THH'         DIM__ 2 2   CODE__ 'AH3'
-              ATTRIBUT__  THM=OUI AXIS=OUI
-              MAILLE__ QUAD8     ELEMENT__ THH_AXIS_QU8
-              MAILLE__ TRIA6     ELEMENT__ THH_AXIS_TR6
-              MAILLE__ SEG3      ELEMENT__ THH_AXIS_SE3
 
        MODELISATION__ 'AXIS_HHM'         DIM__ 2 2   CODE__ 'AH1'
               ATTRIBUT__  THM=OUI AXIS=OUI
@@ -1410,14 +1387,6 @@ PHENOMENE_MODELISATION__
               MAILLE__ HEXA20    ELEMENT__ HM_HEXA20
               MAILLE__ QUAD8     ELEMENT__ HM_FACE8
               MAILLE__ TRIA6     ELEMENT__ HM_FACE6
-
-       MODELISATION__ '3D_THH'           DIM__ 3 3   CODE__ '3H3'
-              ATTRIBUT__  THM=OUI
-              MAILLE__ TETRA10   ELEMENT__ THH_TETRA10
-              MAILLE__ PENTA15   ELEMENT__ THH_PENTA15
-              MAILLE__ HEXA20    ELEMENT__ THH_HEXA20
-              MAILLE__ QUAD8     ELEMENT__ THH_FACE8
-              MAILLE__ TRIA6     ELEMENT__ THH_FACE6
 
        MODELISATION__ '3D_HHM'           DIM__ 3 3   CODE__ '3H1'
               ATTRIBUT__  THM=OUI

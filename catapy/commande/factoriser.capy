@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 10/01/2011   AUTEUR DELMAS J.DELMAS 
+#& MODIF COMMANDE  DATE 08/02/2011   AUTEUR TARDIEU N.TARDIEU 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -62,7 +62,7 @@ FACTORISER=OPER(nom="FACTORISER",op=14,sd_prod=factoriser_prod,
            RENUM            =SIMP(statut='f',typ='TXM',defaut="RCMK",into=("SANS","RCMK") ),
          ),
          b_ldlt_sp      =BLOC(condition = "PRE_COND == 'LDLT_SP' ", fr="Paramètres de la factorisation simple précision",
-           REAC_PRECOND        =SIMP(statut='f',typ='I',defaut=5, ),
+           REAC_PRECOND        =SIMP(statut='f',typ='I',defaut=30, ),
            RENUM               =SIMP(statut='f',typ='TXM',defaut="SANS",into=("SANS","RCMK") ),
          ),
          b_jacobi_sor   =BLOC(condition = "PRE_COND == 'JACOBI' or PRE_COND == 'SOR'", 

@@ -2,7 +2,7 @@
      &                  IMPR,IFMUMP,PREPOS)
       IMPLICIT NONE
 !           CONFIGURATION MANAGEMENT OF EDF VERSION
-!& MODIF AMUMPS MUMPS  DATE 10/01/2011   AUTEUR DELMAS J.DELMAS 
+!& MODIF AMUMPS MUMPS  DATE 07/02/2011   AUTEUR BOITEAU O.BOITEAU 
 ! ==================================================================
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D              WWW.CODE-ASTER.ORG
 !
@@ -84,6 +84,7 @@ C================================================================
      &             IETRAT,JREFA,NPREC,JSLVI,N,IPIV,I
       CHARACTER*1  ROUCS(NMXINS),ROUC,TYPE,PREC,PRECS(NMXINS)
       CHARACTER*4  ETAMS(NMXINS),ETAM
+      CHARACTER*8  KTYPR
       CHARACTER*14 NONUS(NMXINS),NONU
       CHARACTER*19 NOMATS(NMXINS),NOMAT,NOSOLS(NMXINS)
       CHARACTER*24 KMONIT(12),KPIV
@@ -135,6 +136,8 @@ C --- POUR "ELIMINER" LE 2EME LAGRANGE :
       ELI2LG=ZK24(JSLVK-1+6)(1:3).EQ.'OUI'
 C --- DECHARGEMENT JEVEUX AVANT DE PASSER A MUMPS ?
       LDECHG=ZK24(JSLVK-1+12)(1:3).EQ.'OUI'
+C --- TYPE DE RESOLUTION
+      KTYPR=ZK24(JSLVK-1+3)      
 
 C --- PARAMETRE NPREC
       CALL JEVEUO(NOSOLV//'.SLVI','L',JSLVI)
@@ -182,7 +185,7 @@ C       ------------------------------------------------
         CALL AMUMPT(1,KMONIT,TEMPS,RANG,NBPROC,KXMPS,LQUALI,RDESQ,TYPE,
      &              IETDEB,IETRAT,RCTDEB,LDIST)
         CALL AMUMPM(RANG,LDIST,KXMPS,KMONIT,IMPR,IFMUMP,ELI2LG,TYPE,LMD,
-     &              EPSMAT,LDECHG)
+     &              EPSMAT,LDECHG,KTYPR)
         IF (LDECHG) CALL JJLDYN(0,-1,IBID)
 
 C       ------------------------------------------------

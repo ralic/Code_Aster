@@ -3,9 +3,9 @@
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 10/08/2010   AUTEUR MEUNIER S.MEUNIER 
+C MODIF ALGORITH  DATE 08/02/2011   AUTEUR GRANET S.GRANET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -20,7 +20,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C RESPONSABLE UFBHHLL C.CHAVANT
+C RESPONSABLE GRANET S.GRANET
 C =====================================================================
 C --- BUT : DETERMINER LA COHERENCE DE LA RELATION DE COUPLAGE THM ----
 C =====================================================================
@@ -169,8 +169,8 @@ C =====================================================================
      &                (MODELI(1:10).NE.'D_PLAN_THM').AND.
      &                (MODELI(1:9).NE.'D_PLAN_HS').AND.
      &                (MODELI(1:9).NE.'D_PLAN_HM').AND.
-     &                (MODELI(1:11).NE.'2D_JOINT_HM').AND.
-     &                (MODELI(1:13).NE.'AXIS_JOINT_HM').AND.
+     &                (MODELI(1:8).NE.'PLAN_JHM').AND.
+     &                (MODELI(1:8).NE.'AXIS_JHM').AND.
      &                (MODELI.NE.'#PLUSIEURS')) THEN
 
                           VALK(1) = COMEL(JJ)

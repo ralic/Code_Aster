@@ -2,9 +2,9 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
+C MODIF ALGORITH  DATE 07/02/2011   AUTEUR DEVESA G.DEVESA 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -47,12 +47,12 @@ C
       CHARACTER*16 TYPRES, NOMCOM, TYPBAS, K16NOM, TISSF
       CHARACTER*19 RESU
       CHARACTER*19 NOMNUM, NOMSTO
-      CHARACTER*24 TABRIG
+      CHARACTER*24 TABRIG, TABRI2
       CHARACTER*72 TEXTE
       CHARACTER*255 FICHI
       CHARACTER*2  NOMCMP
       CHARACTER*4  NOMCHA
-      REAL*8 A(3)
+      REAL*8       A(3), A2(3)
       LOGICAL      LISSF
 C-----------------------------------------------------------------------
 C
@@ -82,7 +82,8 @@ C
       ELSE
         CALL ULOPEN ( IFMIS, FICHI, ' ', 'NEW', 'O' )
       ENDIF
-      CALL IRMIFR(IFMIS,FREQ,IFREQ,NFREQ)
+      CALL IRMIFR(IFMIS,FREQ,IFREQ,NFREQ,ICF)
+C      WRITE(6,*) 'FREQ= ',FREQ,' IFREQ= ',IFREQ,' IF= ',ICF
       CALL GETVID ( ' ', 'BASE'          , 1,1,1, BASEMO, N4 )
       CALL GETVID ( ' ', 'NUME_DDL_GENE' , 1,1,1, NUMGEN, N2 )
 C
@@ -110,7 +111,9 @@ C
         NBMODE = NBMODS
       ENDIF
       TABRIG = '&&OP0179.RIGM'
+      TABRI2 = '&&OP0179.RIG2'
       CALL WKVECT(TABRIG,'V V R',2*NBMODE,JRIG)
+      CALL WKVECT(TABRI2,'V V R',2*NBMODE,JRI2)
       REWIND IFMIS
       READ(IFMIS,'(A72)') TEXTE
       IF (TEXTE(1:4).EQ.'XXXX') GOTO 4
@@ -123,6 +126,7 @@ C
       ENDIF
       DO 1 I1 = 1,NBMODE
         NSAUT = NFREQ
+        IF (ICF.EQ.1) NSAUT = NFREQ-1
         IF (I1.EQ.1) NSAUT = IFREQ + NSAU0
         DO 2 I = 1, NSAUT
           READ(IFMIS,'(A72)') TEXTE
@@ -137,6 +141,40 @@ C
           IF (NOMCHA.EQ.'ACCE') COEF = -1.D0/(DPI*A(1))**2
           ZR(JRIG+2*I1-2) = A(2)*COEF
           ZR(JRIG+2*I1-1) = -A(3)*COEF
+        ENDIF
+        IF (ICF.EQ.1) THEN
+          READ(IFMIS,*) (A2(J),J=1,3)
+          IF (NOMCHA.EQ.'VITE') THEN
+            COEF = -1.D0/(DPI*FREQ)
+            ZR(JRIG+2*I1-2)=COEF*
+     &                     (A(3)+(FREQ-A(1))/(A2(1)-A(1))*(A2(3)-A(3)))
+            ZR(JRIG+2*I1-1)=COEF*
+     &                     (A(2)+(FREQ-A(1))/(A2(1)-A(1))*(A2(2)-A(2)))
+          ELSE
+            COEF = 1.D0
+            IF (NOMCHA.EQ.'ACCE') COEF = -1.D0/(DPI*FREQ)**2
+            ZR(JRIG+2*I1-2)=COEF*
+     &                     (A(2)+(FREQ-A(1))/(A2(1)-A(1))*(A2(2)-A(2)))
+            ZR(JRIG+2*I1-1)=-COEF*
+     &                     (A(3)+(FREQ-A(1))/(A2(1)-A(1))*(A2(3)-A(3)))
+          ENDIF
+        ENDIF
+        IF (ICF.EQ.2) THEN
+          READ(IFMIS,*) (A2(J),J=1,3)
+          IF (NOMCHA.EQ.'VITE') THEN
+            COEF = -1.D0/(DPI*A2(1))
+            ZR(JRI2+2*I1-2) = A2(3)*COEF
+            ZR(JRI2+2*I1-1) = A2(2)*COEF
+          ELSE
+            COEF = 1.D0
+            IF (NOMCHA.EQ.'ACCE') COEF = -1.D0/(DPI*A2(1))**2
+            ZR(JRI2+2*I1-2) = A2(2)*COEF
+            ZR(JRI2+2*I1-1) = -A2(3)*COEF
+          ENDIF
+          ZR(JRIG+2*I1-2) = ZR(JRIG+2*I1-2) + (FREQ-A(1))/(A2(1)-A(1))
+     &                   * (ZR(JRI2+2*I1-2)-ZR(JRIG+2*I1-2))
+          ZR(JRIG+2*I1-1) = ZR(JRIG+2*I1-1) + (FREQ-A(1))/(A2(1)-A(1))
+     &                   * (ZR(JRI2+2*I1-1)-ZR(JRIG+2*I1-1))
         ENDIF
     1 CONTINUE
     4 CONTINUE

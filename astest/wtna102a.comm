@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 08/02/2011   AUTEUR GRANET S.GRANET 
 # TITRE MODELISATION DE LA DIFFUSION DE L AIR DISSOUS DANS L EAU
 # wtna102a.para = tps_job 90 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -205,6 +205,7 @@ MATERBO=DEFI_MATERIAU(ELAS=_F(E=5.15E8,
                                    FICKV_T=ZERO,
                                    FICKV_PV=FVPV,
                                    FICKA_T=FICK,
+                                   D_FA_T=ZERO,
                                    FICKA_PA=FAPA,
                                    FICKA_PL=FAPL,
                                    LAMB_T=ZERO,

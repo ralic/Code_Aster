@@ -1,7 +1,7 @@
-#& MODIF COMMANDE  DATE 09/11/2010   AUTEUR DELMAS J.DELMAS 
+#& MODIF COMMANDE  DATE 07/02/2011   AUTEUR DEVESA G.DEVESA 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -18,10 +18,11 @@
 # ======================================================================
  
 # RESPONSABLE DEVESA G.DEVESA
-def rest_cond_tran_prod(RESULTAT,**args ):
+def rest_cond_tran_prod(RESULTAT,TYPE_RESU,**args ):
  
-  if AsType(RESULTAT) == evol_noli  : return dyna_trans
-  if AsType(RESULTAT) == dyna_trans : return dyna_trans
+  if AsType(RESULTAT) == dyna_trans  : return dyna_trans
+  if (AsType(RESULTAT) == evol_noli and TYPE_RESU == "DYNA_TRANS") : return dyna_trans
+  if (AsType(RESULTAT) == evol_noli and TYPE_RESU == "EVOL_NOLI") : return evol_noli
 
   raise AsException("type de concept resultat non prevu")
 
@@ -29,12 +30,14 @@ REST_COND_TRAN=OPER(nom="REST_COND_TRAN",op=  78,sd_prod=rest_cond_tran_prod,
                     fr="Restituer dans la base physique des résultats issus d'un calcul" 
                         +"non-lineaire avec projection modale ou d'un calcul transitoire linear"
                         +"avec condensation dynamique",
-                    reentrant='n',
+                    reentrant='f',
             UIinfo={"groupes":("Matrices et vecteurs",)},
         regles=(
                 EXCLUS('TOUT_ORDRE','NUME_ORDRE','INST','LIST_INST','TOUT_INST'),
                 EXCLUS('MACR_ELEM_DYNA','BASE_MODALE'),),
          RESULTAT        =SIMP(statut='f',typ=(evol_noli,dyna_trans) ),
+         TYPE_RESU       =SIMP(statut='f',typ='TXM',defaut="DYNA_TRANS",
+                          into=("DYNA_TRANS","EVOL_NOLI") ),
          BASE_MODALE     =SIMP(statut='f',typ=mode_meca),
 #         NUME_DDL        =SIMP(statut='f',typ=nume_ddl_sdaster ),
          MACR_ELEM_DYNA  =SIMP(statut='f',typ=macr_elem_dyna),
@@ -53,5 +56,9 @@ REST_COND_TRAN=OPER(nom="REST_COND_TRAN",op=  78,sd_prod=rest_cond_tran_prod,
          b_nom_cham=BLOC(condition="TOUT_CHAM == None",
              NOM_CHAM        =SIMP(statut='f',typ='TXM',validators=NoRepeat(),max=3,defaut="ACCE",   
                                into=("DEPL","VITE","ACCE",) ),),
+         b_base_moda=BLOC(condition="BASE_MODALE != None",
+             CHAM_MATER      =SIMP(statut='f',typ=cham_mater),
+             CARA_ELEM       =SIMP(statut='f',typ=cara_elem),),
+             RESU_FINAL      =SIMP(statut='f',typ=(evol_noli,dyna_trans) ),
          TITRE           =SIMP(statut='f',typ='TXM',max='**' ),  
 )  ;

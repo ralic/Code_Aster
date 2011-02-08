@@ -8,9 +8,9 @@
       CHARACTER*(*) ELREFZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 14/09/2010   AUTEUR REZETTE C.REZETTE 
+C MODIF ELEMENTS  DATE 07/02/2011   AUTEUR MEUNIER S.MEUNIER 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -101,7 +101,7 @@ C     ------------------------------------------------------------------
         NNOS = 8
         VOL = 8.D0
 
-        NBFPG = 8
+        NBFPG = 7
 
         NBPG(1) = NNO
         NBPG(2) = NNOS
@@ -110,7 +110,6 @@ C     ------------------------------------------------------------------
         NBPG(5) = 27
         NBPG(6) = 16
         NBPG(7) = 20
-        NBPG(8) = 64
 
         FAPG(1) = 'NOEU'
         FAPG(2) = 'NOEU_S'
@@ -119,7 +118,6 @@ C     ------------------------------------------------------------------
         FAPG(5) = 'FPG27'
         FAPG(6) = 'FPG8NOS'
         FAPG(7) = 'SHB20'
-        FAPG(8) = 'FPG64'
 
         DO 20 I = 1,20
           XIN(I) = -1.D0

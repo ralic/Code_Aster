@@ -1,8 +1,8 @@
-#@ MODIF miss_fichier_interf Miss  DATE 25/05/2010   AUTEUR GREFFET N.GREFFET 
+#@ MODIF miss_fichier_interf Miss  DATE 07/02/2011   AUTEUR DEVESA G.DEVESA 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -84,9 +84,17 @@ def fichier_cmde(param, struct, *nom_fichier):
         "freq_pas" : param["FREQ_PAS"],
         "binaire"  : "",
         "z0" : param["Z0"],
+        "surf"  : "",
+        "rfic1"  : "",
+        "rfic2"  : "",
     }
     if param["TYPE"] == "BINAIRE":
         dict_info["binaire"] = "BINA"
+    if param["SURF"] == "OUI":
+        dict_info["surf"] = "SURF"
+    if param['RFIC'] != 0.:
+        dict_info["rfic1"] = "RFIC"
+        dict_info["rfic2"] = str(param['RFIC'])
     content = template_miss_in % dict_info
     return content
 
@@ -161,7 +169,7 @@ DOMAINE    2
 *
 * Chargement des fonctions de Green
 * ----------------------------------
-DOS2M Z0 %%(z0)%(R)s
+DOS2M Z0 %%(z0)%(R)s  %%(surf)s
 LIRE %%(fich_sol)s
 *
 * Definition des champs incidents
@@ -185,7 +193,7 @@ DOMAINE    2
 *
 * Chargement des fonctions de Green
 * ----------------------------------
-DOS2M Z0 %%(z0)%(R)s
+DOS2M Z0 %%(z0)%(R)s  %%(surf)s
 LIRE %%(fich_sol)s
 *
 * Calcul dans le sol
@@ -196,7 +204,7 @@ EXEC SPFR
 *
 * Calcul des impedances
 *
-EXEC UGTG IMPEDANCE FORCE
+EXEC UGTG IMPEDANCE FORCE %%(rfic1)s %%(rfic2)s %%(rfic2)s 
 *
 *
 * Post-traitement

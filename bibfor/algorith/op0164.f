@@ -3,9 +3,9 @@
 C TOLE CRP_4
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
+C MODIF ALGORITH  DATE 07/02/2011   AUTEUR DEVESA G.DEVESA 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -49,9 +49,9 @@ C
       CHARACTER*16 TYPRES,NOMCOM,TYPBAS,K16NOM,TYPBIN,TISSF,TSYM
       CHARACTER*19 RESU , STOLCI
       CHARACTER*14 NUGENE
-      CHARACTER*24 TABRIG, TABFRQ
+      CHARACTER*24 TABRIG, TABFRQ, TABRI2
       CHARACTER*72 TEXTE
-      REAL*8       A(3)
+      REAL*8       A(3), A2(3)
       INTEGER*8    LONG1,LONG2,LONG3
       LOGICAL      LISSF, LSYM
 C-----------------------------------------------------------------------
@@ -98,14 +98,17 @@ C NB_VECT DONNE PAR NUME_DDL_GENE
       ENDIF
 C
       TABRIG = '&&OP0164.RIGM'
+      TABRI2 = '&&OP0164.RIG2'
       TABFRQ = '&&OP0164.FREQ'
       CALL WKVECT(TABRIG,'V V R',2*NBMODE*NBMODE,JRIG)
+      CALL WKVECT(TABRI2,'V V R',2*NBMODE*NBMODE,JRI2)
       IF (TYPBIN.NE.'BINAIRE') THEN
         K16NOM = ' '
         IF ( ULISOP ( IFMIS, K16NOM ) .EQ. 0 )  THEN
           CALL ULOPEN ( IFMIS,' ',' ','NEW','O')
         ENDIF
-        CALL IRMIFR(IFMIS,FREQ,IFREQ,NFREQ)
+        CALL IRMIFR(IFMIS,FREQ,IFREQ,NFREQ,IC)
+C        WRITE(6,*) 'FREQ= ',FREQ,' IFREQ= ',IFREQ,' IC= ',IC
         CALL WKVECT(TABFRQ,'V V R',NFREQ,JFRQ)
         REWIND IFMIS
         READ(IFMIS,'(A72)') TEXTE
@@ -113,6 +116,7 @@ C
         DO 1 I2 = 1,NBMODE
         DO 1 I1 = 1,NBMODE
           NSAUT = NFREQ
+          IF (IC.EQ.1) NSAUT = NFREQ-1
           IF (I1.EQ.1.AND.I2.EQ.1) NSAUT = IFREQ
           DO 2 I = 1, NSAUT
             READ(IFMIS,'(A72)') TEXTE
@@ -120,6 +124,21 @@ C
           READ(IFMIS,*) (A(J),J=1,3)
           ZR(JRIG+2*(I2-1)*NBMODE+2*I1-2) = A(2)
           ZR(JRIG+2*(I2-1)*NBMODE+2*I1-1) = -A(3)
+          IF (IC.GE.1) THEN
+            READ(IFMIS,*) (A2(J),J=1,3)
+            ZR(JRI2+2*(I2-1)*NBMODE+2*I1-2) = A2(2)
+            ZR(JRI2+2*(I2-1)*NBMODE+2*I1-1) = -A2(3)
+            ZR(JRIG+2*(I2-1)*NBMODE+2*I1-2) = 
+     &      ZR(JRIG+2*(I2-1)*NBMODE+2*I1-2) + 
+     &                     (FREQ-A(1))/(A2(1)-A(1))
+     &                   * (ZR(JRI2+2*(I2-1)*NBMODE+2*I1-2)
+     &                     -ZR(JRIG+2*(I2-1)*NBMODE+2*I1-2))
+            ZR(JRIG+2*(I2-1)*NBMODE+2*I1-1) = 
+     &      ZR(JRIG+2*(I2-1)*NBMODE+2*I1-1) + 
+     &                     (FREQ-A(1))/(A2(1)-A(1))
+     &                   * (ZR(JRI2+2*(I2-1)*NBMODE+2*I1-1)
+     &                     -ZR(JRIG+2*(I2-1)*NBMODE+2*I1-1))
+          ENDIF
     1   CONTINUE
     4   CONTINUE
       ELSE
@@ -133,23 +152,53 @@ C
         NFREQ=LONG1
         NBMODE=LONG2
         N1=LONG3
+        IC=1
         CALL WKVECT(TABFRQ,'V V R',NFREQ,JFRQ)
         READ(IFMIS) (ZR(JFRQ+IFR-1),IFR=1,NFREQ)
         DO 3 I = 1, NFREQ
-          A(1) = ZR(JFRQ+I-1)+1.D-6
-          IF (FREQ.LE.A(1)) THEN
+          A(1) = ZR(JFRQ+I-1)
+          IF (FREQ.LE.(A(1) + 1.D-6)) THEN
             IFREQ = I
+            IF (I.GT.1.AND.FREQ.LT.(A(1) - 1.D-6)) THEN
+              IFREQ = IFREQ-1
+            ENDIF
+            IF (FREQ.LE.R8PREM( )) IC = 2
+            IF (I.EQ.1.AND.NFREQ.EQ.1) IC = 0
+            IF (I.EQ.NFREQ.AND.FREQ.GE.(A(1) - 1.D-6)) THEN
+              IC = 0
+              IFREQ = NFREQ
+            ENDIF
             GOTO 7
         ENDIF
     3   CONTINUE
         IFREQ = NFREQ
+        IC = 0
     7   CONTINUE
+C        WRITE(6,*) 'FREQ= ',FREQ,' IFREQ= ',IFREQ,' IC= ',IC
         DO 5 I = 1, IFREQ-1
           READ(IFMIS) A(1)
     5   CONTINUE
         READ(IFMIS) ((ZR(JRIG+2*(I2-1)*NBMODE+2*I1-2),
      &                ZR(JRIG+2*(I2-1)*NBMODE+2*I1-1),
      &                I1=1,NBMODE),I2=1,NBMODE)
+        IF (IC.GE.1) THEN
+          READ(IFMIS) ((ZR(JRI2+2*(I2-1)*NBMODE+2*I1-2),
+     &                  ZR(JRI2+2*(I2-1)*NBMODE+2*I1-1),
+     &                  I1=1,NBMODE),I2=1,NBMODE)        
+          DO 8 I1 = 1, NBMODE
+          DO 8 I2 = 1, NBMODE
+            ZR(JRIG+2*(I2-1)*NBMODE+2*I1-2) =
+     &      ZR(JRIG+2*(I2-1)*NBMODE+2*I1-2) +
+     &      (FREQ-ZR(JFRQ+IFREQ-1))/(ZR(JFRQ+IFREQ)-ZR(JFRQ+IFREQ-1)) *
+     &      (ZR(JRI2+2*(I2-1)*NBMODE+2*I1-2)
+     &      -ZR(JRIG+2*(I2-1)*NBMODE+2*I1-2))
+            ZR(JRIG+2*(I2-1)*NBMODE+2*I1-1) =
+     &      ZR(JRIG+2*(I2-1)*NBMODE+2*I1-1) +
+     &      (FREQ-ZR(JFRQ+IFREQ-1))/(ZR(JFRQ+IFREQ)-ZR(JFRQ+IFREQ-1)) *
+     &      (ZR(JRI2+2*(I2-1)*NBMODE+2*I1-1)
+     &      -ZR(JRIG+2*(I2-1)*NBMODE+2*I1-1))
+    8     CONTINUE
+        ENDIF
         DO 6 I1 = 1, NBMODE
         DO 6 I2 = 1, NBMODE
           ZR(JRIG+2*(I2-1)*NBMODE+2*I1-1)=

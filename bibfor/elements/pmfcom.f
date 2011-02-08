@@ -10,10 +10,10 @@
      &                  MODF,SIGF,VARIP,ISECAN,CODRET)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 22/11/2010   AUTEUR FLEJOU J-L.FLEJOU 
+C MODIF ELEMENTS  DATE 08/02/2011   AUTEUR DALLOLIO L.DALLOLIO 
 C TOLE CRP_21
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -62,7 +62,7 @@ C OUT VARIP : VARIABLES INTERNES A L'INSTANT ACTUEL
 C OUT ISECAN:
 C     ------------------------------------------------------------------
 
-      INTEGER     NBVAL,NBPAR,NBRES,NBVARI,CODREF
+      INTEGER     NBVAL,NBPAR,NBRES,NBVARI,CODREP
       PARAMETER   (NBVAL=12)
       REAL*8      VALPAR,VALRES(NBVAL),EP,EM,R8B
       CHARACTER*2 ARRET,RETOUR,CODRES(NBVAL)
@@ -86,6 +86,8 @@ C     ------------------------------------------------------------------
      &     'EP_SUR_E','A1_PM','A2_PM','ELAN','A6_PM','C_PM','A_PM'/
 
 C     ------------------------------------------------------------------
+      CODRET=0
+      CODREP=0
       FAMI = 'RIGI'
       MATERI=COMPOR(1)(1:8)
       COMPO=COMPOR(2)
@@ -221,6 +223,7 @@ C ---   BOUCLE COMPORTEMENT SUR CHAQUE FIBRE
      &                     EP,CONTM(I),EPSM,DEFP(I),VARIM(IVARI),
      &                     SIGF(I),VARIP(IVARI),MODF(I),
      &                     CRIT,CODRET)
+            IF (CODRET.NE.0) GOTO 900
 65          CONTINUE
          ENDIF
 
@@ -253,6 +256,7 @@ C           (VERIFIE DANS RCTRAC)
      &                   DEFAM(1),DEFAP(1),
      &                   ANGMAS,
      &                   SIGF(I),VARIP(IVARI),MODF(I),CODRET)
+            IF (CODRET.NE.0) GOTO 900
 56          CONTINUE
 
          ELSE
@@ -270,11 +274,18 @@ C           (VERIFIE DANS RCTRAC)
 C              ATTENTION, QUE POUR 1 MATERIAU PAR ELEMENT !!!!!
                CALL COMP1D('RIGI',KPG,I,OPTION,SIGX,EPSX,DEPSX,
      &                     ANGMAS,VARIM(IVARI),VARIP(IVARI),
-     &                     SIGF(I),MODF(I),CODREF)
+     &                     SIGF(I),MODF(I),CODREP)
+
+               IF (CODREP.NE.0) THEN
+                    CODRET=CODREP
+C                   CODE 3: ON CONTINUE ET ON LE RENVOIE A LA FIN
+C                   AUTRE CODES: SORTIE IMMEDIATE
+                    IF (CODREP.NE.3) GOTO 900
+               ENDIF
+
 C              SI MODULE TANGENT PAS CALCULE EXACTEMENT -> EVALUATION
                ISECAN = 0
 
-               IF (CODREF.NE.0) CODRET=CODREF
 57          CONTINUE
          ENDIF
 
@@ -304,12 +315,18 @@ C       PAR UNE EXTENSION DE LA METHODE DE DEBORST
 C              ATTENTION, QUE POUR 1 MATERIAU PAR ELEMENT !!!!!
                CALL COMP1D('RIGI',KPG,I,OPTION,SIGX,EPSX,DEPSX,
      &                     ANGMAS,VARIM(IVARI),VARIP(IVARI),
-     &                     SIGF(I),MODF(I),CODREF)
-               IF (CODREF.NE.0) CODRET=CODREF
+     &                     SIGF(I),MODF(I),CODREP)
+               IF (CODREP.NE.0) THEN
+                    CODRET=CODREP
+C                   CODE 3: ON CONTINUE ET ON LE RENVOIE A LA FIN
+C                   AUTRE CODES: SORTIE IMMEDIATE
+                    IF (CODREP.NE.3) GOTO 900
+               ENDIF
 C              SI MODULE TANGENT PAS CALCULE EXACTEMENT -> EVALUATION
                ISECAN = 1
 70          CONTINUE
          END IF
       END IF
 
+900   CONTINUE
       END

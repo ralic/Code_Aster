@@ -1,9 +1,9 @@
-# MODIF  DATE 30/08/2010   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 07/02/2011   AUTEUR BOITEAU O.BOITEAU 
 # TITRE DETECTION DE SINGULARITE SIMPLE AVEC LES SOLVEURS LINEAIRES 
-# erreu03a.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test R
+# erreu03a.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -28,8 +28,10 @@
 # ON TESTE LES MSGS SUIVANT:
 #    1. MANQUE DE BLOCAGE: FACTOR_20/77 POUR LDLT/MF/MUMPS
 #             + FACTOR_57 SI MUMPS ET NPREC<0
-#    2. BLOCAGE SURABONDANTS: FACTOR_41/76 POUR LDLT/MF/MUMPS
+#    2. BLOCAGE SURABONDANTS: FACTOR_41/83 POUR LDLT/MF/MUMPS
 #             + FACTOR_42 SI MUMPS ET NPREC<0
+# VALIDATION DE LA DETECTION DE MATRICE NON SPD AVEC 
+# MUMPS+TYPE_RESOL='SYMDEF'
 #########################################################################
 
 DEBUT(CODE=_F(NOM='ERREU03A',NIV_PUB_WEB='INTERNET', VISU_EFICAS='NON'),
@@ -188,7 +190,7 @@ try :
 except aster.error,err:
    print fmt_raison % str(err)
    # on verifie que l'erreur fatale est bien celle que l'on attendait :
-   if err.id_message == "FACTOR_76":
+   if err.id_message == "FACTOR_83":
       is_ok = 1
 TAB230=CREA_TABLE(LISTE=(_F(PARA='TEST',TYPE_K='K8',LISTE_K='VALEUR  ',),
                          _F(PARA='BOOLEEN',LISTE_I=is_ok,),),)
@@ -212,5 +214,22 @@ TAB231=CREA_TABLE(LISTE=(_F(PARA='TEST',TYPE_K='K8',LISTE_K='VALEUR  ',),
 TEST_TABLE(TABLE=TAB231,FILTRE=_F(NOM_PARA='TEST',VALE_K='VALEUR  ',),
            NOM_PARA='BOOLEEN',VALE_I=1,REFERENCE='ANALYTIQUE',)
 DETRUIRE(CONCEPT=_F(NOM=(RESU231, TAB231),),)
+
+is_ok = 0
+try :
+  RESU232=MECA_STATIQUE(MODELE=MO, CHAM_MATER=CHAM_MAT, INFO=2,
+                     EXCIT=( _F(CHARGE = CTROP),_F(CHARGE = CHARCI)),  
+                     SOLVEUR=_F(METHODE='MUMPS',TYPE_RESOL='SYMDEF'), 
+                   )
+except aster.error,err:
+   print fmt_raison % str(err)
+   # on verifie que l'erreur fatale est bien celle que l'on attendait :
+   if err.id_message == "FACTOR_84":
+      is_ok = 1
+TAB232=CREA_TABLE(LISTE=(_F(PARA='TEST',TYPE_K='K8',LISTE_K='VALEUR  ',),
+                         _F(PARA='BOOLEEN',LISTE_I=is_ok,),),)
+TEST_TABLE(TABLE=TAB232,FILTRE=_F(NOM_PARA='TEST',VALE_K='VALEUR  ',),
+           NOM_PARA='BOOLEEN',VALE_I=1,REFERENCE='ANALYTIQUE',)
+DETRUIRE(CONCEPT=_F(NOM=(RESU232, TAB232),),)
 FIN();
 

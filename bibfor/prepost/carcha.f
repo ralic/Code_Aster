@@ -5,7 +5,7 @@
       CHARACTER*24 OPTION
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+C MODIF PREPOST  DATE 07/02/2011   AUTEUR MEUNIER S.MEUNIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -85,18 +85,10 @@ C     CHAMP DE GRANDEUR "SIEF_R"
          TYPCHA = 'ELNO'
          OPTION = 'SIEF_ELNO'
          PARAM  = 'PSIEFNOR'
-      ELSE IF (NOCH.EQ.'SIEF_ELNO') THEN
-         NOMGD  = 'SIEF_R'
-         TYPCHA = 'ELNO'
-         OPTION = 'SIEF_ELNO'
-         PARAM  = 'PSIEFNOR'
       ELSE IF (NOCH.EQ.'SIEQ_ELNO') THEN
          NOMGD  = 'SIEF_R'
          TYPCHA = 'ELNO'
          OPTION = 'SIEQ_ELNO'
-      ELSE IF (NOCH.EQ.'SIEF_NOEU') THEN
-         NOMGD  = 'SIEF_R'
-         TYPCHA = 'NOEU'
       ELSE IF (NOCH.EQ.'SIEF_NOEU') THEN
          NOMGD  = 'SIEF_R'
          TYPCHA = 'NOEU'
@@ -109,11 +101,6 @@ C     CHAMP DE GRANDEUR "SIEF_R"
          OPTION = 'SIEQ_NOEU'
 C
 C     CHAMP DE GRANDEUR "EPSI_R"
-      ELSE IF (NOCH.EQ.'EPSI_ELGA') THEN
-         NOMGD  = 'EPSI_R'
-         TYPCHA = 'ELGA'
-         OPTION = 'EPSI_ELGA'
-         PARAM  = 'PDEFORR'
       ELSE IF (NOCH.EQ.'EPSI_ELGA') THEN
          NOMGD  = 'EPSI_R'
          TYPCHA = 'ELGA'
@@ -170,11 +157,6 @@ C     CHAMP DE GRANDEUR "VARI_R"
          TYPCHA = 'ELGA'
          OPTION = 'RAPH_MECA'
          PARAM  = 'PVARIPR'
-      ELSE IF (NOCH.EQ.'VARI_ELNO') THEN
-         NOMGD  = 'VARI_R'
-         TYPCHA = 'ELNO'
-         OPTION = 'VARI_ELNO'
-         PARAM  = 'PVARINR'
       ELSE IF (NOCH.EQ.'VARI_ELNO') THEN
          NOMGD  = 'VARI_R'
          TYPCHA = 'ELNO'
