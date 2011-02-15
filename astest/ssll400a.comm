@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 15/02/2011   AUTEUR FLEJOU J-L.FLEJOU 
 # TITRE POUTRE DE SECTION CIRCULAIRE VARIABLE,
 # ssll400a.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -20,7 +20,7 @@
 # ======================================================================
 #              DE SECTION RECTANGULAIRE VARIABLE,
 #              DE SECTION GENERALE  VARIABLE,
-# RESPONSABLE JMBHH01 J.M.PROIX
+# RESPONSABLE FLEJOU J-L.FLEJOU
 #
 # ENCASTREE-LIBRE SOUMISE A UN EFFORT FX
 #                         A UN EFFORT FY,
@@ -220,7 +220,7 @@ MCVF100X=MECA_STATIQUE(        MODELE=MO,
 
 CALC_ELEM( reuse= MCVF100X ,RESULTAT= MCVF100X ,
                                   OPTION=('EFGE_ELNO',
-                                          'SIGM_ELNO',
+                                          'SIPM_ELNO',
                                          )
                           )
 
@@ -267,7 +267,7 @@ TEST_RESU(   RESU=_F( RESULTAT = MCVF100X,
 # SXX A X = 0
 #
 TEST_RESU(   RESU=_F( RESULTAT = MCVF100X,
-                    NOM_CHAM = 'SIGM_ELNO',
+                    NOM_CHAM = 'SIPM_ELNO',
                     NUME_ORDRE = 1,
                     MAILLE = 'S13',
                     NOEUD = 'N1',
@@ -281,7 +281,7 @@ TEST_RESU(   RESU=_F( RESULTAT = MCVF100X,
 # SXX A X = L
 #
 TEST_RESU(   RESU=_F( RESULTAT = MCVF100X,
-                    NOM_CHAM = 'SIGM_ELNO',
+                    NOM_CHAM = 'SIPM_ELNO',
                     NUME_ORDRE = 1,
                     MAILLE = 'S112',
                     NOEUD = 'N2',
@@ -303,7 +303,7 @@ MCVF100Y=MECA_STATIQUE(         MODELE=MO,
 
 CALC_ELEM( reuse= MCVF100Y ,RESULTAT= MCVF100Y ,
                                    OPTION=('EFGE_ELNO',
-                                           'SIGM_ELNO',
+                                           'SIPM_ELNO',
                                           )
                           )
 
@@ -388,7 +388,7 @@ TEST_RESU(   RESU=_F( RESULTAT = MCVF100Y,
 # SXX A X = 0
 #
 TEST_RESU(   RESU=_F( RESULTAT = MCVF100Y,
-                    NOM_CHAM = 'SIGM_ELNO',
+                    NOM_CHAM = 'SIPM_ELNO',
                     NUME_ORDRE = 1,
                     MAILLE = 'S13',
                     NOEUD = 'N1',
@@ -402,7 +402,7 @@ TEST_RESU(   RESU=_F( RESULTAT = MCVF100Y,
 # SXX A X = L
 #
 TEST_RESU(   RESU=_F( RESULTAT = MCVF100Y,
-                    NOM_CHAM = 'SIGM_ELNO',
+                    NOM_CHAM = 'SIPM_ELNO',
                     NUME_ORDRE = 1,
                     MAILLE = 'S112',
                     NOEUD = 'N2',
@@ -415,7 +415,7 @@ TEST_RESU(   RESU=_F( RESULTAT = MCVF100Y,
 # SXY A X = 0
 #
 TEST_RESU(   RESU=_F( RESULTAT = MCVF100Y,
-                    NOM_CHAM = 'SIGM_ELNO',
+                    NOM_CHAM = 'SIPM_ELNO',
                     NUME_ORDRE = 1,
                     MAILLE = 'S13',
                     NOEUD = 'N1',
@@ -429,7 +429,7 @@ TEST_RESU(   RESU=_F( RESULTAT = MCVF100Y,
 # SXY A X = L
 #
 TEST_RESU(   RESU=_F( RESULTAT = MCVF100Y,
-                    NOM_CHAM = 'SIGM_ELNO',
+                    NOM_CHAM = 'SIPM_ELNO',
                     NUME_ORDRE = 1,
                     MAILLE = 'S112',
                     NOEUD = 'N2',
@@ -451,7 +451,7 @@ MCVM100X=MECA_STATIQUE(         MODELE=MO,
 
 CALC_ELEM( reuse= MCVM100X ,RESULTAT= MCVM100X ,
                                    OPTION=('EFGE_ELNO',
-                                           'SIGM_ELNO',
+                                           'SIPM_ELNO',
                                           )
                           )
 
@@ -498,7 +498,7 @@ TEST_RESU(   RESU=_F( RESULTAT = MCVM100X,
 # SXY A X = 0
 #
 TEST_RESU(   RESU=_F( RESULTAT = MCVM100X,
-                    NOM_CHAM = 'SIGM_ELNO',
+                    NOM_CHAM = 'SIPM_ELNO',
                     NUME_ORDRE = 1,
                     MAILLE = 'S13',
                     NOEUD = 'N1',
@@ -512,7 +512,7 @@ TEST_RESU(   RESU=_F( RESULTAT = MCVM100X,
 # SXY A X = L
 #
 TEST_RESU(   RESU=_F( RESULTAT = MCVM100X,
-                    NOM_CHAM = 'SIGM_ELNO',
+                    NOM_CHAM = 'SIPM_ELNO',
                     NUME_ORDRE = 1,
                     MAILLE = 'S112',
                     NOEUD = 'N2',
@@ -526,7 +526,7 @@ TEST_RESU(   RESU=_F( RESULTAT = MCVM100X,
 # SXZ A X = 0
 #
 TEST_RESU(   RESU=_F( RESULTAT = MCVM100X,
-                    NOM_CHAM = 'SIGM_ELNO',
+                    NOM_CHAM = 'SIPM_ELNO',
                     NUME_ORDRE = 1,
                     MAILLE = 'S13',
                     NOEUD = 'N1',
@@ -540,7 +540,7 @@ TEST_RESU(   RESU=_F( RESULTAT = MCVM100X,
 # SXZ A X = L
 #
 TEST_RESU(   RESU=_F( RESULTAT = MCVM100X,
-                    NOM_CHAM = 'SIGM_ELNO',
+                    NOM_CHAM = 'SIPM_ELNO',
                     NUME_ORDRE = 1,
                     MAILLE = 'S112',
                     NOEUD = 'N2',
@@ -563,7 +563,7 @@ MCVM100Y=MECA_STATIQUE(         MODELE=MO,
 
 CALC_ELEM( reuse= MCVM100Y ,RESULTAT= MCVM100Y ,
                                    OPTION=('EFGE_ELNO',
-                                           'SIGM_ELNO',
+                                           'SIPM_ELNO',
                                           )
                            )
 
@@ -647,7 +647,7 @@ TEST_RESU(   RESU=_F( RESULTAT = MCVM100Y,
 # SXX A X = 0
 #
 TEST_RESU(   RESU=_F( RESULTAT = MCVM100Y,
-                    NOM_CHAM = 'SIGM_ELNO',
+                    NOM_CHAM = 'SIPM_ELNO',
                     NUME_ORDRE = 1,
                     MAILLE = 'S13',
                     NOEUD = 'N1',
@@ -661,7 +661,7 @@ TEST_RESU(   RESU=_F( RESULTAT = MCVM100Y,
 # SXXY A X = L
 #
 TEST_RESU(   RESU=_F( RESULTAT = MCVM100Y,
-                    NOM_CHAM = 'SIGM_ELNO',
+                    NOM_CHAM = 'SIPM_ELNO',
                     NUME_ORDRE = 1,
                     MAILLE = 'S112',
                     NOEUD = 'N2',
@@ -683,7 +683,7 @@ MCVD100X=MECA_STATIQUE(        MODELE=MO,
 
 CALC_ELEM( reuse= MCVD100X ,RESULTAT= MCVD100X ,
                                   OPTION=('EFGE_ELNO',
-                                          'SIGM_ELNO',
+                                          'SIPM_ELNO',
                                          )
                           )
 
@@ -729,7 +729,7 @@ TEST_RESU(   RESU=_F( RESULTAT = MCVD100X,
 # SXX A X = 0
 #
 TEST_RESU(   RESU=_F( RESULTAT = MCVD100X,
-                    NOM_CHAM = 'SIGM_ELNO',
+                    NOM_CHAM = 'SIPM_ELNO',
                     NUME_ORDRE = 1,
                     MAILLE = 'S13',
                     NOEUD = 'N1',
@@ -743,7 +743,7 @@ TEST_RESU(   RESU=_F( RESULTAT = MCVD100X,
 # SXX A X = L
 #
 TEST_RESU(   RESU=_F( RESULTAT = MCVD100X,
-                    NOM_CHAM = 'SIGM_ELNO',
+                    NOM_CHAM = 'SIPM_ELNO',
                     NUME_ORDRE = 1,
                     MAILLE = 'S112',
                     NOEUD = 'N2',
@@ -764,7 +764,7 @@ MCVDENY=MECA_STATIQUE(         MODELE=MO,
 
 CALC_ELEM( reuse= MCVDENY ,RESULTAT= MCVDENY ,
                                   OPTION=('EFGE_ELNO',
-                                          'SIGM_ELNO',
+                                          'SIPM_ELNO',
                                          )
                          )
 
@@ -848,7 +848,7 @@ TEST_RESU(   RESU=_F( RESULTAT = MCVDENY,
 # SXX A X = 0
 #
 TEST_RESU(   RESU=_F( RESULTAT = MCVDENY,
-                    NOM_CHAM = 'SIGM_ELNO',
+                    NOM_CHAM = 'SIPM_ELNO',
                     NUME_ORDRE = 1,
                     MAILLE = 'S13',
                     NOEUD = 'N1',
@@ -862,7 +862,7 @@ TEST_RESU(   RESU=_F( RESULTAT = MCVDENY,
 # SXY A X = 0
 #
 TEST_RESU(   RESU=_F( RESULTAT = MCVDENY,
-                    NOM_CHAM = 'SIGM_ELNO',
+                    NOM_CHAM = 'SIPM_ELNO',
                     NUME_ORDRE = 1,
                     MAILLE = 'S13',
                     NOEUD = 'N1',
@@ -931,7 +931,7 @@ MRVF100X=MECA_STATIQUE(        MODELE=MO,
 
 CALC_ELEM( reuse= MRVF100X ,RESULTAT= MRVF100X ,
                                   OPTION=('EFGE_ELNO',
-                                          'SIGM_ELNO',
+                                          'SIPM_ELNO',
                                          )
                           )
 
@@ -978,7 +978,7 @@ TEST_RESU(   RESU=_F( RESULTAT = MRVF100X,
 # SXX A X = 0
 #
 TEST_RESU(   RESU=_F( RESULTAT = MRVF100X,
-                    NOM_CHAM = 'SIGM_ELNO',
+                    NOM_CHAM = 'SIPM_ELNO',
                     NUME_ORDRE = 1,
                     MAILLE = 'S13',
                     NOEUD = 'N1',
@@ -992,7 +992,7 @@ TEST_RESU(   RESU=_F( RESULTAT = MRVF100X,
 # SXX A X = L
 #
 TEST_RESU(   RESU=_F( RESULTAT = MRVF100X,
-                    NOM_CHAM = 'SIGM_ELNO',
+                    NOM_CHAM = 'SIPM_ELNO',
                     NUME_ORDRE = 1,
                     MAILLE = 'S112',
                     NOEUD = 'N2',
@@ -1014,7 +1014,7 @@ MRVF100Y=MECA_STATIQUE(         MODELE=MO,
 
 CALC_ELEM( reuse= MRVF100Y ,RESULTAT= MRVF100Y ,
                                    OPTION=('EFGE_ELNO',
-                                           'SIGM_ELNO',
+                                           'SIPM_ELNO',
                                           )
                           )
 
@@ -1099,7 +1099,7 @@ TEST_RESU(   RESU=_F( RESULTAT = MRVF100Y,
 # SXX A X = 0
 #
 TEST_RESU(   RESU=_F( RESULTAT = MRVF100Y,
-                    NOM_CHAM = 'SIGM_ELNO',
+                    NOM_CHAM = 'SIPM_ELNO',
                     NUME_ORDRE = 1,
                     MAILLE = 'S13',
                     NOEUD = 'N1',
@@ -1113,7 +1113,7 @@ TEST_RESU(   RESU=_F( RESULTAT = MRVF100Y,
 # SXX A X = L
 #
 TEST_RESU(   RESU=_F( RESULTAT = MRVF100Y,
-                    NOM_CHAM = 'SIGM_ELNO',
+                    NOM_CHAM = 'SIPM_ELNO',
                     NUME_ORDRE = 1,
                     MAILLE = 'S112',
                     NOEUD = 'N2',
@@ -1126,7 +1126,7 @@ TEST_RESU(   RESU=_F( RESULTAT = MRVF100Y,
 # SXY A X = 0
 #
 TEST_RESU(   RESU=_F( RESULTAT = MRVF100Y,
-                    NOM_CHAM = 'SIGM_ELNO',
+                    NOM_CHAM = 'SIPM_ELNO',
                     NUME_ORDRE = 1,
                     MAILLE = 'S13',
                     NOEUD = 'N1',
@@ -1140,7 +1140,7 @@ TEST_RESU(   RESU=_F( RESULTAT = MRVF100Y,
 # SXY A X = L
 #
 TEST_RESU(   RESU=_F( RESULTAT = MRVF100Y,
-                    NOM_CHAM = 'SIGM_ELNO',
+                    NOM_CHAM = 'SIPM_ELNO',
                     NUME_ORDRE = 1,
                     MAILLE = 'S112',
                     NOEUD = 'N2',
@@ -1163,7 +1163,7 @@ MRVM100X=MECA_STATIQUE(         MODELE=MO,
 CALC_ELEM( reuse= MRVM100X ,RESULTAT= MRVM100X ,
 
                                    OPTION=('EFGE_ELNO',
-                                           'SIGM_ELNO',
+                                           'SIPM_ELNO',
                                           )
                           )
 
@@ -1210,7 +1210,7 @@ TEST_RESU(   RESU=_F( RESULTAT = MRVM100X,
 # SXY A X = 0
 #
 TEST_RESU(   RESU=_F( RESULTAT = MRVM100X,
-                    NOM_CHAM = 'SIGM_ELNO',
+                    NOM_CHAM = 'SIPM_ELNO',
                     NUME_ORDRE = 1,
                     MAILLE = 'S13',
                     NOEUD = 'N1',
@@ -1225,7 +1225,7 @@ TEST_RESU(   RESU=_F( RESULTAT = MRVM100X,
 # SXY A X = L
 #
 TEST_RESU(   RESU=_F( RESULTAT = MRVM100X,
-                    NOM_CHAM = 'SIGM_ELNO',
+                    NOM_CHAM = 'SIPM_ELNO',
                     NUME_ORDRE = 1,
                     MAILLE = 'S112',
                     NOEUD = 'N2',
@@ -1240,7 +1240,7 @@ TEST_RESU(   RESU=_F( RESULTAT = MRVM100X,
 # SXZ A X = 0
 #
 TEST_RESU(   RESU=_F( RESULTAT = MRVM100X,
-                    NOM_CHAM = 'SIGM_ELNO',
+                    NOM_CHAM = 'SIPM_ELNO',
                     NUME_ORDRE = 1,
                     MAILLE = 'S13',
                     NOEUD = 'N1',
@@ -1255,7 +1255,7 @@ TEST_RESU(   RESU=_F( RESULTAT = MRVM100X,
 # SXZ A X = L
 #
 TEST_RESU(   RESU=_F( RESULTAT = MRVM100X,
-                    NOM_CHAM = 'SIGM_ELNO',
+                    NOM_CHAM = 'SIPM_ELNO',
                     NUME_ORDRE = 1,
                     MAILLE = 'S112',
                     NOEUD = 'N2',
@@ -1279,7 +1279,7 @@ MRVM100Y=MECA_STATIQUE(         MODELE=MO,
 
 CALC_ELEM( reuse= MRVM100Y ,RESULTAT= MRVM100Y ,
                                    OPTION=('EFGE_ELNO',
-                                           'SIGM_ELNO',
+                                           'SIPM_ELNO',
                                           )
                            )
 
@@ -1363,7 +1363,7 @@ TEST_RESU(   RESU=_F( RESULTAT = MRVM100Y,
 # SXX A X = 0
 #
 TEST_RESU(   RESU=_F( RESULTAT = MRVM100Y,
-                    NOM_CHAM = 'SIGM_ELNO',
+                    NOM_CHAM = 'SIPM_ELNO',
                     NUME_ORDRE = 1,
                     MAILLE = 'S13',
                     NOEUD = 'N1',
@@ -1377,7 +1377,7 @@ TEST_RESU(   RESU=_F( RESULTAT = MRVM100Y,
 # SXX A X = L
 #
 TEST_RESU(   RESU=_F( RESULTAT = MRVM100Y,
-                    NOM_CHAM = 'SIGM_ELNO',
+                    NOM_CHAM = 'SIPM_ELNO',
                     NUME_ORDRE = 1,
                     MAILLE = 'S112',
                     NOEUD = 'N2',
@@ -1399,7 +1399,7 @@ MRVD100X=MECA_STATIQUE(        MODELE=MO,
 
 CALC_ELEM( reuse= MRVD100X ,RESULTAT= MRVD100X ,
                                   OPTION=('EFGE_ELNO',
-                                          'SIGM_ELNO',
+                                          'SIPM_ELNO',
                                          )
                           )
 
@@ -1445,7 +1445,7 @@ TEST_RESU(   RESU=_F( RESULTAT = MRVD100X,
 # SXX A X = 0
 #
 TEST_RESU(   RESU=_F( RESULTAT = MRVD100X,
-                    NOM_CHAM = 'SIGM_ELNO',
+                    NOM_CHAM = 'SIPM_ELNO',
                     NUME_ORDRE = 1,
                     MAILLE = 'S13',
                     NOEUD = 'N1',
@@ -1459,7 +1459,7 @@ TEST_RESU(   RESU=_F( RESULTAT = MRVD100X,
 # SXX A X = L/2
 #
 TEST_RESU(   RESU=_F( RESULTAT = MRVD100X,
-                    NOM_CHAM = 'SIGM_ELNO',
+                    NOM_CHAM = 'SIPM_ELNO',
                     NUME_ORDRE = 1,
                     MAILLE = 'S67',
                     NOEUD = 'N7',
@@ -1473,7 +1473,7 @@ TEST_RESU(   RESU=_F( RESULTAT = MRVD100X,
 # SXX A X = L
 #
 TEST_RESU(   RESU=_F( RESULTAT = MRVD100X,
-                    NOM_CHAM = 'SIGM_ELNO',
+                    NOM_CHAM = 'SIPM_ELNO',
                     NUME_ORDRE = 1,
                     MAILLE = 'S112',
                     NOEUD = 'N2',
@@ -1494,7 +1494,7 @@ MRVDENY=MECA_STATIQUE(         MODELE=MO,
 
 CALC_ELEM( reuse= MRVDENY ,RESULTAT= MRVDENY ,
                                   OPTION=('EFGE_ELNO',
-                                          'SIGM_ELNO',
+                                          'SIPM_ELNO',
                                          )
                          )
 
@@ -1578,7 +1578,7 @@ TEST_RESU(   RESU=_F( RESULTAT = MRVDENY,
 # SXX A X = 0
 #
 TEST_RESU(   RESU=_F( RESULTAT = MRVDENY,
-                    NOM_CHAM = 'SIGM_ELNO',
+                    NOM_CHAM = 'SIPM_ELNO',
                     NUME_ORDRE = 1,
                     MAILLE = 'S13',
                     NOEUD = 'N1',
@@ -1592,7 +1592,7 @@ TEST_RESU(   RESU=_F( RESULTAT = MRVDENY,
 # SXX A X = L
 #
 TEST_RESU(   RESU=_F( RESULTAT = MRVDENY,
-                    NOM_CHAM = 'SIGM_ELNO',
+                    NOM_CHAM = 'SIPM_ELNO',
                     NUME_ORDRE = 1,
                     MAILLE = 'S112',
                     NOEUD = 'N2',
@@ -1605,7 +1605,7 @@ TEST_RESU(   RESU=_F( RESULTAT = MRVDENY,
 # SXY A X = 0
 #
 TEST_RESU(   RESU=_F( RESULTAT = MRVDENY,
-                    NOM_CHAM = 'SIGM_ELNO',
+                    NOM_CHAM = 'SIPM_ELNO',
                     NUME_ORDRE = 1,
                     MAILLE = 'S13',
                     NOEUD = 'N1',
@@ -1619,7 +1619,7 @@ TEST_RESU(   RESU=_F( RESULTAT = MRVDENY,
 # SXY A X = 0
 #
 TEST_RESU(   RESU=_F( RESULTAT = MRVDENY,
-                    NOM_CHAM = 'SIGM_ELNO',
+                    NOM_CHAM = 'SIPM_ELNO',
                     NUME_ORDRE = 1,
                     MAILLE = 'S112',
                     NOEUD = 'N2',
@@ -1780,7 +1780,7 @@ MCGPESX=MECA_STATIQUE(         MODELE=MO,
 
 CALC_ELEM( reuse= MCGPESX ,RESULTAT= MCGPESX ,
                                   OPTION=('EFGE_ELNO',
-                                          'SIGM_ELNO',
+                                          'SIPM_ELNO',
                                          )
                          )
 

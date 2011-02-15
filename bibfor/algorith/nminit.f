@@ -8,7 +8,7 @@
      &                  VALINC,SOLALG,MEASSE,VEELEM,MEELEM,
      &                  VEASSE,CODERE)
 C
-C MODIF ALGORITH  DATE 01/02/2011   AUTEUR MASSIN P.MASSIN 
+C MODIF ALGORITH  DATE 15/02/2011   AUTEUR FLEJOU J-L.FLEJOU 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -265,7 +265,8 @@ C
         CALL NMIHHT(MODELE,NUMEDD,MATE  ,COMPOR,CARELE,
      &              LISCHA,CARCRI,COMREF,FONACT,SDDYNA,
      &              SDSENS,SDTIME,DEFICO,RESOCO,RESOCU,
-     &              VALINC,SDDISC,PARCON,SOLALG,VEASSE)
+     &              VALINC,SDDISC,PARCON,SOLALG,VEASSE,
+     &              SDNUME)
       ENDIF        
 C
       CALL JEDEMA()

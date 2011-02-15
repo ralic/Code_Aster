@@ -1,9 +1,9 @@
       SUBROUTINE XGELEM(ELREFP,NDIM,COORSE,IGEOM,JHEAVT,ISE,NFH,
      &                 DDLC,DDLM,NFE,BASLOC,NNOP,IDEPL,
-     &                 LSN,LST,IGTHET,NFISS,JFISNO)
+     &                 LSN,LST,IGTHET,FNO,NFISS,JFISNO)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 25/01/2011   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 14/02/2011   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -28,6 +28,7 @@ C TOLE CRP_20 CRS_1404
       INTEGER       IGEOM,NDIM,NFH,DDLC,NFE,NNOP,DDLM
       INTEGER       IDEPL,NFISS,JFISNO,JHEAVT,ISE
       REAL*8        BASLOC(3*NDIM*NNOP),LSN(NNOP),LST(NNOP)
+      REAL*8        FNO(NDIM*NNOP)
 
 
 C    - FONCTION REALISEE:  CALCUL DU TAUX DE RESTITUTION D'ENERGIE 
@@ -49,7 +50,7 @@ C IN  NNOP    : NOMBRE DE NOEUDS DE L'ELEMENT PARENT
 C IN  DEPL    : DÉPLACEMENTS
 C IN  LSN     : VALEUR DE LA LEVEL SET NORMALE AUX NOEUDS PARENTS
 C IN  LST     : VALEUR DE LA LEVEL SET TANGENTE AUX NOEUDS PARENTS
-
+C IN  FNO     : FORCES VOLUMIQUES AUX NOEUDS DE L'ELEMENT PARENT
 C OUT IGTHET  : G
 
 C---------------- COMMUNS NORMALISES  JEVEUX  --------------------------
@@ -70,7 +71,7 @@ C---------------- COMMUNS NORMALISES  JEVEUX  --------------------------
 C------------FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 
       INTEGER  ITHET,IMATE,ICOMP,IGTHET,JCOORS,JTAB(2),NCOMP
-      INTEGER  IPOIDS,JCOOPG,IVF,IDFDE,JDFD2,JGANO
+      INTEGER  IPOIDS,JCOOPG,IVF,IDFDE,JDFD2,JGANO,IADZI,IAZK24
       INTEGER  I,J,K,KPG,N,INO,IRET,CPT,IG,IN,MXSTAC
       INTEGER  NDIMB,NNO,NNOS,NPGBIS,DDLD,DDLS,MATCOD,M,IRETT
       REAL*8   R8PREM
@@ -79,13 +80,13 @@ C------------FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       REAL*8   EPS(6),E1(3),E2(3),NORME,E3(3),P(3,3)
       REAL*8   INVP(3,3),RG,TG,RBID1(4)
       REAL*8   DGDPO(4,2),DGDLO(4,3)
-      REAL*8   GRAD(NDIM,NDIM),DUDM(3,3),POIDS,RBID2(4)
-      REAL*8   DTDM(3,3),LSNG,LSTG,RBID3(4)
+      REAL*8   GRAD(NDIM,NDIM),DUDM(3,4),POIDS,RBID2(4)
+      REAL*8   DTDM(3,4),LSNG,LSTG,RBID3(4)
       REAL*8   RBID,R6BID(6)
       REAL*8   R2BID(2),TTHE, R
       REAL*8   DEPLA(3),THETA(3),TGUDM(3),TPN(27),TREF
-      REAL*8   CRIT(3)
-      REAL*8   ENERGI(2),SIGL(6),PROD,PROD2,RAC2,SR(3,3),TCLA,DIVT
+      REAL*8   CRIT(3),DFDM(3,4)
+      REAL*8   ENERGI(2),SIGL(6),PROD,PROD2,RAC2,SR(3,3),TCLA,DIVT,TFOR
       CHARACTER*8  ELRESE(6),FAMI(6),TYPMOD(2)
       CHARACTER*16 COMPOR(4),OPRUPT
       LOGICAL  GRDEPL,CP, LTEATT,ISMALI, AXI
@@ -95,6 +96,7 @@ C------------FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       
       DATA    ELRESE /'SE2','TR3','TE4','SE3','TR6','TE4'/
       DATA    FAMI   /'BID','XINT','XINT','BID','XINT','XINT'/
+C
 
       CALL JEMARQ()
 
@@ -118,6 +120,7 @@ C     (VOIR CRS 1404)
       RAC2   = SQRT(2.D0)
       TCLA  = 0.D0
       TTHE  = 0.D0
+      TFOR  = 0.D0
 
       IF (LTEATT(' ','C_PLAN','OUI')) THEN
         TYPMOD(1) = 'C_PLAN'
@@ -195,8 +198,8 @@ C     ------------------------------------------------------------------
       DO 10 KPG=1,NPGBIS
 
 C       INITIALISATIONS
-        CALL VECINI(9,0.D0,DTDM)
-        CALL VECINI(9,0.D0,DUDM)
+        CALL VECINI(12,0.D0,DTDM)
+        CALL VECINI(12,0.D0,DUDM)
 
 
 C       COORDONNÉES DU PT DE GAUSS DANS LE REPÈRE RÉEL : XG
@@ -233,7 +236,7 @@ C -     CALCUL DE LA DISTANCE A L'AXE (AXISYMETRIQUE)
           CALL ASSERT(R.GT.0D0)
           
         ENDIF
-C Si R négative, on s'arrete     
+C 
 C       --------------------------------------
 C       1) COORDONNÉES POLAIRES ET BASE LOCALE
 C       --------------------------------------
@@ -379,6 +382,16 @@ C       ON RECOPIE GRAD DANS DUDM (CAR PB DE DIMENSIONNEMENT SI 2D)
  231      CONTINUE
  230    CONTINUE
 
+C       VALEUR DU DEPLACEMENT DANS LA QUATRIEME COLONNE :
+        DO 240 I=1,NDIM
+          DUDM(I,4) = DEPLA(I)
+ 240    CONTINUE
+
+C       TRAITEMENTS DEPENDANT DE LA MODELISATION
+        IF (CP) THEN
+          DUDM(3,3)= EPS(3)
+        ENDIF
+
 C       ------------------------------------------------
 C       3) CALCUL DU CHAMP THETA ET DE SA DERIVEE (DTDM)
 C       ------------------------------------------------
@@ -413,6 +426,7 @@ C
              TGUDM(I) = TGUDM(I) + DFDI(INO,I) * TPN(INO)
  401      CONTINUE
  400    CONTINUE
+
 C       --------------------------------------------------
 C       5) CALCUL DE LA CONTRAINTE ET DE L ENERGIE
 C       --------------------------------------------------
@@ -424,15 +438,30 @@ C
      &                OPRUPT,EPS,SIGL,RBID,RBID,ENERGI,.FALSE.,
      &                RBID,R6BID,R2BID,R6BID)
 
-        
-C TRAITEMENTS DEPENDANT DE LA MODELISATION
-        IF(CP) THEN
-          DUDM(3,3)= EPS(3)
-        ENDIF
+C       -----------------------------------------------------------
+C       6) CALCUL DES FORCES VOLUMIQUES ET DE LEURS DERIVEES (DFDM)
+C       -----------------------------------------------------------
 
+        CALL VECINI(12,0.D0,DFDM)
+        DO 600 INO=1,NNOP 
+          DO 610 J=1,NDIM
+            DO 620 K=1,NDIM
+              DFDM(J,K) = DFDM(J,K) + FNO(NDIM*(INO-1)+J)*DFDI(INO,K)
+620         CONTINUE
+C           VALEUR DE LA FORCE DANS LA QUATRIEME COLONNE :
+            DFDM(J,4) = DFDM(J,4) + 
+     &                  FNO(NDIM*(INO-1)+J)*FF(INO)
+610       CONTINUE
+600     CONTINUE
 C 
+        IF (AXI) THEN
+          DFDM(3,3)= DFDM(1,4)/R
+        ENDIF
+C 
+
 C       --------------------------------------------------
-C 6) TERME THERMOELAS. CLASSIQUE F.SIG:(GRAD(U).GRAD(THET))-ENER*DIVT
+C              TERME THERMOELAS. CLASSIQUE : 
+C       F.SIG:(GRAD(U).GRAD(THET))-ENER*DIVT
 C       --------------------------------------------------
 C        
         SR(1,1)= SIGL(1)
@@ -460,9 +489,9 @@ C
         TCLA  = TCLA + PROD2
 
 
-C =======================================================
-C TERME THERMIQUE :   -(D(ENER)/DT)(GRAD(T).THETA)
-C =======================================================
+C       =======================================================
+C       TERME THERMIQUE :   -(D(ENER)/DT)(GRAD(T).THETA)
+C       =======================================================
         IF (IRETT.EQ.0) THEN
           PROD = 0.D0
           PROD2 = 0.D0
@@ -471,16 +500,27 @@ C =======================================================
 500       CONTINUE
           PROD2 = - POIDS*PROD*ENERGI(2)
           TTHE = TTHE + PROD2
-        ELSE
-          TTHE = 0.D0
         ENDIF   
 
+C       =======================================================
+C       TERME FORCE VOLUMIQUE
+C       =======================================================
+
+        DO 580 I = 1,NDIM
+          PROD = 0.D0
+          DO 570 J = 1,NDIM
+            PROD = PROD + DFDM(I,J)*DTDM(J,4)
+  570     CONTINUE
+          TFOR = TFOR + DUDM(I,4)* (PROD + DFDM(I,4)*DIVT) * POIDS
+  580   CONTINUE
 
  10   CONTINUE
 
 C     ------------------------------------------------------------------
 C     FIN DE LA BOUCLE SUR LES POINTS DE GAUSS DU SOUS-TÉTRA
 C     ------------------------------------------------------------------
-      ZR(IGTHET) = ZR(IGTHET)+TCLA + TTHE 
+
+      ZR(IGTHET) = ZR(IGTHET) + TCLA + TTHE + TFOR
+
       CALL JEDEMA()
       END

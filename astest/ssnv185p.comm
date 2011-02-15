@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 14/02/2011   AUTEUR GENIAUT S.GENIAUT 
 # TITRE FISSURE DEBOUCHANTE DANS UNE PLAQUE 3D DE LARGEUR FINIE AVEC X-FEM
 # ssnv185p.para = tps_job 270 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -18,6 +18,8 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
+
+# MODELISATION P : FORCES VOLUMIQUES EN 3D AVEC FISSURE X-FEM
 
 DEBUT(CODE=_F(NOM='SSNV185P',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),DEBUG=_F(SDVERI='OUI'))
 
@@ -52,28 +54,23 @@ MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAG1,
 
 MAILLAG1=MODI_MAILLAGE(reuse =MAILLAG1,
                        MAILLAGE=MAILLAG1,
-                       ORIE_PEAU_3D=_F(GROUP_MA=('SURFSUP','SURFINF',),),
-                       );
+                       ORIE_PEAU_3D=_F(GROUP_MA=('SURFSUP','SURFINF'))
+                       )
 
 # PARAMETRES DE LA FISSURE : 0 < a < 6.5 -> influt sur le choix Rsup !
-#                            b = 10.
 a=5.
-b=10.
-#LN=FORMULE(NOM_PARA=('X','Y','Z'),VALE='Z-15.');
-#LT=FORMULE(NOM_PARA=('X','Y','Z'),VALE='b-a-Y');
              
 FISS=DEFI_FISS_XFEM(MODELE=MODELEIN,
-                    INFO=1,
-#                    DEFI_FISS=_F(FONC_LT=LT,FONC_LN=LN,),
-                    DEFI_FISS=_F(
-                                 FORM_FISS = 'DEMI_PLAN',
-                                 PFON      =(0. , 5. ,15.),
+                    DEFI_FISS=_F(FORM_FISS = 'DEMI_PLAN',
+                                 PFON      =(0. , a ,15.),
                                  NORMALE   =(0. , 0. , 1.),
-                                 DTAN      =(0. ,-1. , 0.)),);
+                                 DTAN      =(0. ,-1. , 0.),
+                                 )
+                    )
                    
-MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,FISSURE=FISS,INFO=1,);
+MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,FISSURE=FISS)
 
-CHXFEM=AFFE_CHAR_MECA(MODELE=MODELEK,LIAISON_XFEM='OUI',INFO=1,);
+CHXFEM=AFFE_CHAR_MECA(MODELE=MODELEK,LIAISON_XFEM='OUI')
 
 #----------------------------------------------
 #                   MATERIAU
@@ -95,29 +92,25 @@ CHAMPMA1=AFFE_MATERIAU(MAILLAGE=MAILLAG1,
 #                   CHARGEMENTS
 #----------------------------------------------
 
-CH1=AFFE_CHAR_MECA(
-  MODELE=MODELEK,
-  FACE_IMPO=(_F(GROUP_MA=('SURFSUP'),DX=0.0,DY=0.0,DZ=0.0))          
-  );
+CH1=AFFE_CHAR_MECA(MODELE=MODELEK,
+                   FACE_IMPO=_F(GROUP_MA='SURFSUP',
+                                DX=0.0,DY=0.0,DZ=0.0)
+                   )
                    
-CH2 = AFFE_CHAR_MECA(
-  MODELE = MODELEK, 
-  FORCE_INTERNE = (_F(TOUT='OUI',FX=0,FY=0,FZ=-78000))
-  );
+CH2=AFFE_CHAR_MECA(MODELE=MODELEK, 
+                   FORCE_INTERNE=_F(TOUT='OUI',FX=0,FY=0,FZ=-78000)
+                   )
 
-CH3 = AFFE_CHAR_MECA(
-  MODELE = MODELEK,
-  PESANTEUR=_F(GRAVITE=10,
-               DIRECTION=(0.,0.,-1.),)
-  );
-
-
-
+CH3=AFFE_CHAR_MECA(MODELE=MODELEK,
+                   PESANTEUR=_F(GRAVITE=10,
+                                DIRECTION=(0.,0.,-1.),)
+                   )
+ 
 #----------------------------------------------
 #                   RESOLUTION
 #----------------------------------------------
 
-L_INS1=DEFI_LIST_REEL(DEBUT=0.0,INTERVALLE=_F(JUSQU_A=3.0,NOMBRE=3,),);
+L_INS1=DEFI_LIST_REEL(DEBUT=0.0,INTERVALLE=_F(JUSQU_A=1.,NOMBRE=1))
 
 # CALCUL AVEC CHARGEMENT FORCE_INTERNE
 UTOT1=STAT_NON_LINE(MODELE=MODELEK,
@@ -128,12 +121,9 @@ UTOT1=STAT_NON_LINE(MODELE=MODELEK,
                           ),
                    COMP_ELAS=_F(RELATION='ELAS',
                                 GROUP_MA='VOL',),
-                   INCREMENT=_F(LIST_INST=L_INS1,
-                                INST_FIN=1.0,),
-#                   SOLVEUR=_F(METHODE='MUMPS',),
+                   INCREMENT=_F(LIST_INST=L_INS1),
                    NEWTON=_F(REAC_ITER=1,),
-                   ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA',),
-                   INFO=1,);
+                   )
                    
 # CALCUL AVEC CHARGEMENT PESANTEUR                   
 UTOT2=STAT_NON_LINE(MODELE=MODELEK,
@@ -144,12 +134,50 @@ UTOT2=STAT_NON_LINE(MODELE=MODELEK,
                           ),
                    COMP_ELAS=_F(RELATION='ELAS',
                                 GROUP_MA='VOL',),
-                   INCREMENT=_F(LIST_INST=L_INS1,
-                                INST_FIN=1.0,),
-#                   SOLVEUR=_F(METHODE='MUMPS',),
+                   INCREMENT=_F(LIST_INST=L_INS1),
                    NEWTON=_F(REAC_ITER=1,),
-                   ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA',),
-                   INFO=1,);
+                   )
+
+#------------------------------------------------------------------------
+# POST-TRAITEMENT : CALCUL DE G
+#------------------------------------------------------------------------
+
+G1=CALC_G(RESULTAT=UTOT1,
+          THETA=_F(FISSURE=FISS,
+                   R_INF=2.,
+                   R_SUP=4.),
+          LISSAGE=_F(LISSAGE_THETA='LAGRANGE',
+                     LISSAGE_G='LAGRANGE',))
+              
+IMPR_TABLE(TABLE=G1)
+
+G2=CALC_G(RESULTAT=UTOT2,
+          THETA=_F(FISSURE=FISS,
+                   R_INF=2.,
+                   R_SUP=4.,),
+          LISSAGE=_F(LISSAGE_THETA='LAGRANGE',
+                     LISSAGE_G='LAGRANGE',))
+              
+IMPR_TABLE(TABLE=G2)
+
+# on compare au G donne par l'option CALC_K_G
+Gref = 8.26143E+02
+TEST_TABLE(TABLE=G1,
+           NOM_PARA='G',
+           TYPE_TEST='MAX',
+           VALE=Gref,
+           CRITERE='RELATIF',
+           PRECISION=0.001,
+           REFERENCE='AUTRE_ASTER')
+
+
+TEST_TABLE(TABLE=G2,
+           NOM_PARA='G',
+           TYPE_TEST='MAX',
+           VALE=Gref,
+           CRITERE='RELATIF',
+           PRECISION=0.001,
+           REFERENCE='AUTRE_ASTER')
 
 #------------------------------------------------------------------------
 # POST-TRAITEMENT : CALCUL DES SIFS PAR LA METHODE ENERGETIQUE AVEC X-FEM

@@ -1,10 +1,10 @@
       SUBROUTINE NMAINT(NUMEDD,FONACT,DEFICO,VEASSE,VEFINT,
-     &                  CNFINT)
+     &                  CNFINT,SDNUME)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/12/2009   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 15/02/2011   AUTEUR FLEJOU J-L.FLEJOU 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -26,6 +26,7 @@ C
       CHARACTER*24  NUMEDD
       CHARACTER*19  VEASSE(*)
       CHARACTER*19  VEFINT,CNFINT
+      CHARACTER*19  SDNUME
       CHARACTER*24  DEFICO
 C 
 C ----------------------------------------------------------------------
@@ -43,6 +44,7 @@ C IN  FONACT : FONCTIONNALITES ACTIVEES
 C IN  VEASSE : VARIABLE CHAPEAU POUR NOM DES VECT_ASSE
 C IN  VEFINT : VECT_ELEM FORCES INTERNES
 C IN  CNFINT : VECT_ASSE FORCES INTERNES
+C IN  SDNUME : SD NUMEROTATION
 C
 C -------------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ----------------
 C
@@ -67,6 +69,11 @@ C
       CHARACTER*1  BASE    
       LOGICAL      ISFONC,LCONT,LMACR
       CHARACTER*19 CNCONT,CNSSTR
+      CHARACTER*8  K8BID
+      INTEGER      NEQ,IRET,I,ENDO
+      INTEGER      ENDOP1,ENDOP2
+      INTEGER      JFINT
+      LOGICAL      LENDO
 C 
 C ----------------------------------------------------------------------
 C
@@ -77,7 +84,7 @@ C --- AFFICHAGE
 C
       IF (NIV.GE.2) THEN
         WRITE (IFM,*) '<MECANONLINE> ... ASSEMBLAGE DES FORCES INTERNES'
-      ENDIF               
+      ENDIF
 C
 C --- INITIALISATIONS
 C  
@@ -92,11 +99,39 @@ C --- CONTRIBUTIONS DU CONTACT
 C
       IF (LCONT) THEN
         CALL NMASCO('CNFINT',FONACT,DEFICO,VEASSE,CNCONT)    
-      ENDIF   
+      ENDIF
 C
 C --- ASSEMBLAGE DES FORCES INTERIEURES
 C     
       CALL ASSVEC(BASE  ,CNFINT,1,VEFINT,1.D0,NUMEDD,' ','ZERO',1)
+C
+      LENDO = ISFONC(FONACT,'ENDO_NO')       
+C      
+      IF (LENDO) THEN
+        CALL JEVEUO(SDNUME(1:19)//'.ENDO','L',ENDO)
+        CALL JEVEUO(CNFINT(1:19)//'.VALE','E',JFINT)
+C      
+        CALL DISMOI('F','NB_EQUA',NUMEDD,'NUME_DDL',
+     &               NEQ,K8BID,IRET)
+C      
+        ENDOP1 = 0
+        ENDOP2 = 0   
+C      
+        DO 5 I = 1,NEQ
+C       
+          IF (ZI(ENDO+I-1).EQ.2) THEN
+            IF (ZR(JFINT+I-1).GE.0.D0) THEN    
+              ENDOP2 = ENDOP2+1                   
+              ZR(JFINT+I-1) = 0.D0  
+            ELSE
+              ENDOP1 = ENDOP1+1
+            ENDIF
+          ENDIF
+C
+  5     CONTINUE             
+C        WRITE(6,*) 'NB_ENDO_NPROJ=', ENDOP1
+C        WRITE(6,*) 'NB_ENDO_PROJ=', ENDOP2
+      ENDIF
 C
 C --- CONTRIBUTIONS DU CONTACT
 C          

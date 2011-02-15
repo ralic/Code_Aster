@@ -7,9 +7,9 @@
       INTEGER NNO2,IVF2,IDFDE2,JGANO2
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 15/05/2007   AUTEUR GENIAUT S.GENIAUT 
+C MODIF CALCULEL  DATE 15/02/2011   AUTEUR FLEJOU J-L.FLEJOU 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -25,13 +25,13 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
 
-C ----------------------------------------------------------------------
+C ---------------------------------------------------------------------
 C BUT: RECUPERER DANS UNE ROUTINE TE00IJ LES ADRESSES DANS ZR
 C      - DES POIDS DES POINTS DE GAUSS  : IPOIDS
 C      - DES VALEURS DES FONCTIONS DE FORME : IVF
 C      - DES VALEURS DES DERIVEES 1ERES DES FONCTIONS DE FORME : IDFDE
 C      - DE LA MATRICE DE PASSAGE GAUSS -> NOEUDS : JGANO
-C ----------------------------------------------------------------------
+C ---------------------------------------------------------------------
 C   IN   NOMTE        -->  NOM DU TYPE ELEMENT
 C        FAMIL  : NOM (LOCAL) DE LA FAMILLE DE POINTS DE GAUSS :
 C                 'STD','RICH',...
@@ -59,24 +59,37 @@ C   -------------------------------------------------------------------
       CHARACTER*8 ELREFE,ELREF2
 
 
-      CALL ELREF1(ELREFE)      
-      IF ( ELREFE.EQ.'TR6') THEN
-        ELREF2 = 'TR3'
-      ELSEIF ( ELREFE .EQ. 'QU8'  ) THEN
-        ELREF2 = 'QU4'
-      ELSEIF ( ELREFE .EQ. 'H20'  ) THEN
-        ELREF2 = 'HE8'
-      ELSEIF ( ELREFE .EQ. 'T10'  ) THEN
-        ELREF2 = 'TE4'
-      ELSEIF ( ELREFE .EQ. 'P15'  ) THEN
-        ELREF2 = 'PE6'
-      ELSEIF ( ELREFE .EQ. 'P13'  ) THEN
-        ELREF2 = 'PY5'
-      ENDIF
+      CALL ELREF1(ELREFE) 
+C           
       CALL ELREF4(ELREFE,FAMIL,NDIM,NNO,NNOS,
-     &            NPG,IPOIDS,IVF,IDFDE,JGANO)
-      CALL ELREF4(ELREF2,FAMIL,NDIM,NNO2,NNOS,
-     &            NPG,IPOIDS,IVF2,IDFDE2,JGANO2)
+     &            NPG,IPOIDS,IVF,IDFDE,JGANO) 
+C     
+      IF ( ELREFE.EQ.'TR3' .OR. ELREFE .EQ.'QU4') THEN
+C  
+C --- CAS LINEAIRE
+C              
+        CALL ELREF4(ELREFE,FAMIL,NDIM,NNO2,NNOS,
+     &              NPG,IPOIDS,IVF2,IDFDE2,JGANO2)
+      ELSE     
+C       
+C --- CAS QUADRATIQUE
+C                         
+        IF ( ELREFE.EQ.'TR6') THEN
+          ELREF2 = 'TR3'
+        ELSEIF ( ELREFE .EQ. 'QU8'  ) THEN
+          ELREF2 = 'QU4'
+        ELSEIF ( ELREFE .EQ. 'H20'  ) THEN
+          ELREF2 = 'HE8'
+        ELSEIF ( ELREFE .EQ. 'T10'  ) THEN
+          ELREF2 = 'TE4'
+        ELSEIF ( ELREFE .EQ. 'P15'  ) THEN
+          ELREF2 = 'PE6'
+        ELSEIF ( ELREFE .EQ. 'P13'  ) THEN
+          ELREF2 = 'PY5'
+        ENDIF
+        CALL ELREF4(ELREF2,FAMIL,NDIM,NNO2,NNOS,
+     &              NPG,IPOIDS,IVF2,IDFDE2,JGANO2)
+      ENDIF
 
 
       END

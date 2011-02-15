@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 15/02/2011   AUTEUR FLEJOU J-L.FLEJOU 
 # TITRE TREILLIS DE BARRES ARTICULEES SOUS CHARGE PONCTUELLE
 # ssll11a.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -18,7 +18,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-# RESPONSABLE JMBHH01 J.M.PROIX
+# RESPONSABLE FLEJOU J-L.FLEJOU
 #CAS_TEST__: SSLL11A
 # SSLL11/A                    COMMANDES                          7/03/91
 # TREILLIS DE BARRES ARTICULEES SOUS CHARGE PONCTUELLE
@@ -141,13 +141,13 @@ RESU1=MECA_STATIQUE(  MODELE=MODELE,
                            CHAM_MATER=CHMAT,   CARA_ELEM=CAREL,
                            EXCIT=_F(  CHARGE = CHARGE)             )
 
-# SIGM_ELNO PRODUIT MAINTENANT DES CONTRAINTES SIXX COMBINANT
+# SIPM_ELNO PRODUIT MAINTENANT DES CONTRAINTES SIXX COMBINANT
 # L'EFFORT NORMAL ET LA FLEXION : COMME IL N'Y A PAS DE ROTULES
 # LA FLEXION EST NON NEGLIGEABLE
 
 
 RESU1=CALC_ELEM(reuse=RESU1,
-                      OPTION=( 'SIPO_ELNO', 'SIGM_ELNO', ),
+                      OPTION=( 'SIPO_ELNO', 'SIPM_ELNO', ),
                       RESULTAT=RESU1                             )
 
 RESU1=CALC_ELEM(reuse=RESU1,
@@ -207,7 +207,7 @@ IMPR_TABLE( TABLE = T1 )  ;
 
 T2 = POST_RELEVE_T ( ACTION=_F( INTITULE = 'SIGM',
                                 OPERATION = 'EXTREMA',
-                                NOM_CHAM = 'SIGM_ELNO',
+                                NOM_CHAM = 'SIPM_ELNO',
                                 TOUT_CMP = 'OUI',
                                 RESULTAT = RESU1       ), )  ;
 IMPR_TABLE( TABLE = T2 )  ;

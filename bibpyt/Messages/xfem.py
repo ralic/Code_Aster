@@ -1,8 +1,8 @@
-#@ MODIF xfem Messages  DATE 21/12/2010   AUTEUR MASSIN P.MASSIN 
+#@ MODIF xfem Messages  DATE 14/02/2011   AUTEUR GENIAUT S.GENIAUT 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -330,6 +330,14 @@ cata_msg={
       Pour résoudre ce problème, soit il faut ecarter (ou rafiner le maillage entre) les fissures %(k2)s et %(k3)s.
       Soit il faut lier la fissure %(k3)s à la fissure %(k2)s en ajoutant une ligne du type
       JONCTION=_F(FISSURE=%(k2)s,POINT=...) lorsqu'on appelle DEFI_FISS_XFEM pour définir %(k3)s.
+"""),
+
+48: _("""
+     Le calcul de G avec X-FEM est impossible avec COMP_INCR. 
+"""),
+
+49: _("""
+     Le calcul de G avec X-FEM est impossible en grandes deformations. 
 """),
 
 57: _("""

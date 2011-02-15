@@ -1,4 +1,4 @@
-%& MODIF COMPELEM  DATE 08/02/2011   AUTEUR GRANET S.GRANET 
+%& MODIF COMPELEM  DATE 15/02/2011   AUTEUR FLEJOU J-L.FLEJOU 
 % ======================================================================
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
@@ -827,6 +827,28 @@ PHENOMENE_MODELISATION__
               MAILLE__ PENTA15   ELEMENT__ MVCA_PENTA15
               MAILLE__ PYRAM13   ELEMENT__ MVCA_PYRAM13
               MAILLE__ TETRA10   ELEMENT__ MVCA_TETRA10
+              MAILLE__ QUAD8     ELEMENT__ MECA_FACE8
+              MAILLE__ TRIA6     ELEMENT__ MECA_FACE6
+              MAILLE__ SEG3      ELEMENT__ MECA_ARETE3
+
+       MODELISATION__ 'D_PLAN_GVNO'   DIM__ 2 2   CODE__ 'DGN'
+              ATTRIBUT__  NBSIGM=X4 D_PLAN=OUI TYPMOD=D_PLAN
+              MAILLE__ SEG3      ELEMENT__ MEPLSE3
+              MAILLE__ TRIA6     ELEMENT__ MNDPTR6
+              MAILLE__ QUAD8     ELEMENT__ MNDPQS8
+
+       MODELISATION__ 'AXIS_GVNO'   DIM__ 2 2   CODE__ 'AGN'
+              ATTRIBUT__  AXIS=OUI NBSIGM=X4  TYPMOD=AXIS
+              MAILLE__ SEG3      ELEMENT__ MEAXSE3
+              MAILLE__ TRIA6     ELEMENT__ MNAXTR6
+              MAILLE__ QUAD8     ELEMENT__ MNAXQS8
+
+       MODELISATION__ '3D_GVNO'     DIM__ 3 3   CODE__ '3GN'
+              ATTRIBUT__  NBSIGM=X6   TYPMOD=COMP3D
+              MAILLE__ HEXA20    ELEMENT__ MNVG_HEXA20
+              MAILLE__ PENTA15   ELEMENT__ MNVG_PENTA15
+              MAILLE__ PYRAM13   ELEMENT__ MNVG_PYRAM13
+              MAILLE__ TETRA10   ELEMENT__ MNVG_TETRA10
               MAILLE__ QUAD8     ELEMENT__ MECA_FACE8
               MAILLE__ TRIA6     ELEMENT__ MECA_FACE6
               MAILLE__ SEG3      ELEMENT__ MECA_ARETE3

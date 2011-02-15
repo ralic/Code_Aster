@@ -4,7 +4,7 @@
       INTEGER NBORDR
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 15/02/2011   AUTEUR FLEJOU J-L.FLEJOU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -41,7 +41,7 @@ C ----------------------------------------------------------------------
 C     ------------------------------------------------------------------
 C                      C H A M P _ M E C A N I Q U E
 C     ------------------------------------------------------------------
-      PARAMETER (NCMEC1=39)
+      PARAMETER (NCMEC1=40)
       PARAMETER (NCMEC2=49)
       PARAMETER (NCMEC3=41)
       PARAMETER (NCMECA=NCMEC1+NCMEC2+NCMEC3)
@@ -75,19 +75,20 @@ C                      C H A M P _ M E C A N I Q U E
 C     ------------------------------------------------------------------
 C      '1234567890123456','1234567890123456','1234567890123456',
       DATA CHMEC1/
-     & 'DEPL',            'VITE',            'ACCE',
-     & 'DEPL_ABSOLU',     'VITE_ABSOLU',     'ACCE_ABSOLU',
-     & 'EFGE_ELNO',  'EFGE_NOEU',  'EFCA_ELNO',
-     & 'EFCA_NOEU',  'EPSI_ELGA',       'EPSI_ELNO',
-     & 'EPSI_NOEU',       'EPTU_ELNO',  'SIEF_ELGA',
-     & 'SIEF_ELNO',       'SIEF_NOEU',       'SIGM_ELNO',
-     & 'SIGM_NOEU',  'EPTQ_ELNO',       'SITQ_ELNO',
-     & 'SICA_ELNO',  'SICA_NOEU',  'SIZ1_ELGA',
-     & 'SIZ2_ELGA',  'SIPO_ELNO',       'SIPO_NOEU',
-     & 'SIEQ_ELGA',  'SIEQ_ELNO',  'SIEQ_NOEU',
-     & 'EPEQ_ELGA',  'EPEQ_ELNO',  'EPEQ_NOEU',
-     & 'ALPH0_ELGA_EPSP', 'ALPHP_ELGA_ALPH0','VARI_NON_LOCAL',
-     & 'LANL_ELGA',       'SIRO_ELEM',       'FLHN_ELGA'/
+     & 'DEPL',             'VITE',              'ACCE',
+     & 'DEPL_ABSOLU',      'VITE_ABSOLU',       'ACCE_ABSOLU',
+     & 'EFGE_ELNO',        'EFGE_NOEU',         'EFCA_ELNO',
+     & 'EFCA_NOEU',        'EPSI_ELGA',         'EPSI_ELNO',
+     & 'EPSI_NOEU',        'EPTU_ELNO',         'SIEF_ELGA',
+     & 'SIEF_ELNO',        'SIEF_NOEU',         'SIGM_ELNO',
+     & 'SIGM_NOEU',        'EPTQ_ELNO',         'SITQ_ELNO',
+     & 'SICA_ELNO',        'SICA_NOEU',         'SIZ1_ELGA',
+     & 'SIZ2_ELGA',        'SIPO_ELNO',         'SIPO_NOEU',
+     & 'SIEQ_ELGA',        'SIEQ_ELNO',         'SIEQ_NOEU',
+     & 'EPEQ_ELGA',        'EPEQ_ELNO',         'EPEQ_NOEU',
+     & 'ALPH0_ELGA_EPSP',  'ALPHP_ELGA_ALPH0',  'VARI_NON_LOCAL',
+     & 'LANL_ELGA',        'SIRO_ELEM',         'FLHN_ELGA',
+     & 'SIPM_ELNO'/
 C
 C      '1234567890123456','1234567890123456','1234567890123456',
       DATA CHMEC2/
@@ -100,24 +101,24 @@ C      '1234567890123456','1234567890123456','1234567890123456',
      & 'EPSG_NOEU',       'EPSP_ELGA',       'EPSP_ELNO',
      & 'EPSP_NOEU',       'VARI_ELGA',
      & 'VARI_NOEU',       'VARI_ELNO',
-     & 'VATU_ELNO',  'EPSA_ELNO',       'EPSA_NOEU',
+     & 'VATU_ELNO',       'EPSA_ELNO',       'EPSA_NOEU',
      & 'COMPORTEMENT',    'DERA_ELGA',       'DERA_ELNO',
      & 'DERA_NOEU',       'PRME_ELNO',       'SICO_ELNO',
      & 'EPME_ELNO',       'EPME_ELGA',       'EPMG_ELNO',
      & 'EPMG_ELGA',       'ENEL_ELGA',       'ENEL_ELNO',
-     & 'ENEL_NOEU',       'SICO_NOEU',  'SITU_ELNO',
+     & 'ENEL_NOEU',       'SICO_NOEU',       'SITU_ELNO',
      & 'EPMG_NOEU',       'SING_ELEM',       'SING_ELNO',
      & 'DISS_ELGA',       'DISS_ELNO',       'DISS_NOEU'/
 C
 C      '1234567890123456','1234567890123456','1234567890123456',
       DATA CHMEC3/
-     & 'EPMQ_ELGA',  'EPMQ_ELNO',  'EPMQ_NOEU',
+     & 'EPMQ_ELGA',       'EPMQ_ELNO',       'EPMQ_NOEU',
      & 'DEDE_ELNO',       'DEDE_NOEU',       'DESI_ELNO',
      & 'DESI_NOEU',       'PMPB_ELGA',       'PMPB_ELNO',
      & 'PMPB_NOEU',       'EPFP_ELNO',
      & 'EPFP_ELGA',       'EPFD_ELNO',       'EPFD_ELGA',
      & 'EPVC_ELNO',       'EPVC_ELGA',       'VALE_CONT',
-     & 'VACO_ELNO',  'CRIT_ELNO',       'ETOT_ELGA',
+     & 'VACO_ELNO',       'CRIT_ELNO',       'ETOT_ELGA',
      & 'ETOT_ELNO',       'ETOT_ELEM',       'SPMX_ELGA',
      & 'MODE_FLAMB',
      & 'ENDO_ELGA',       'ENDO_ELNO',       'ENDO_NOEU',

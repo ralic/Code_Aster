@@ -11,9 +11,9 @@
       CHARACTER*8  ELREFA, FAPG
 C ---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 12/07/2010   AUTEUR BERARD A.BERARD 
+C MODIF CALCULEL  DATE 14/02/2011   AUTEUR MEUNIER S.MEUNIER 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -54,18 +54,8 @@ C ---------------------------------------------------------------------
       INTEGER      K, ITRIA3, IQUAD4
       CHARACTER*32 JEXNOM
       CHARACTER*24 VALK(3)
-      CHARACTER*16 NOMCMD,K16B
-      CHARACTER*19 K19B
-      CHARACTER*1  KUTMES
 C ---------------------------------------------------------------------
       CALL JEMARQ()
-
-      CALL GETRES(K19B,K16B,NOMCMD)
-      IF (NOMCMD.EQ.'PROJ_CHAMP') THEN 
-        KUTMES='F'
-      ELSE
-        KUTMES='I'
-      ENDIF
 
       CALL JENONU(JEXNOM('&CATA.TM.NOMTM','TRIA3'),ITRIA3)
       CALL JENONU(JEXNOM('&CATA.TM.NOMTM','QUAD4'),IQUAD4)
@@ -213,7 +203,7 @@ C        -- CONNECTIVITE DES SOUS-ELEMENTS :
         VALK (1) = NOMTE
         VALK (2) = ELREFA
         VALK (3) = FAPG
-        CALL U2MESK(KUTMES, 'CALCULEL5_76', 3, VALK)
+        CALL U2MESK('F', 'CALCULEL5_76', 3, VALK)
 
        ENDIF
 
@@ -434,13 +424,13 @@ C        -- CONNECTIVITE DES SOUS-ELEMENTS :
         VALK (1) = NOMTE
         VALK (2) = ELREFA
         VALK (3) = FAPG
-        CALL U2MESK(KUTMES, 'CALCULEL5_76', 3, VALK)
+        CALL U2MESK('F', 'CALCULEL5_76', 3, VALK)
        ENDIF
 
       ELSE
         VALK (1) = NOMTE
         VALK (2) = ELREFA
-        CALL U2MESK(KUTMES, 'CALCULEL5_78', 2, VALK)
+        CALL U2MESK('F', 'CALCULEL5_78', 2, VALK)
       ENDIF
 
       CALL JEDEMA()

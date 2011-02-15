@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 15/02/2011   AUTEUR FLEJOU J-L.FLEJOU 
 # TITRE ANNEAU DYNAMOMETRIQUE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -98,7 +98,7 @@ MEST1=MECA_STATIQUE(        MODELE=MO,
 
 MEST1=CALC_ELEM( reuse=MEST1,
                          RESULTAT=MEST1,
-                           OPTION=('EFGE_ELNO', 'SIGM_ELNO',)
+                           OPTION=('EFGE_ELNO', 'SIPM_ELNO',)
                     )
 
 #
@@ -175,7 +175,7 @@ TEST_RESU(   RESU=_F( RESULTAT = MEST1,
 
 #
 TEST_RESU(   RESU=_F( RESULTAT = MEST1,
-                    NOM_CHAM = 'SIGM_ELNO',
+                    NOM_CHAM = 'SIPM_ELNO',
                     NUME_ORDRE = 1,
                     NOM_CMP = 'SIXX',
                     MAILLE = 'S11',
@@ -187,7 +187,7 @@ TEST_RESU(   RESU=_F( RESULTAT = MEST1,
 
 #
 TEST_RESU(   RESU=_F( RESULTAT = MEST1,
-                    NOM_CHAM = 'SIGM_ELNO',
+                    NOM_CHAM = 'SIPM_ELNO',
                     NUME_ORDRE = 1,
                     NOM_CMP = 'SIXY',
                     MAILLE = 'S11',
@@ -199,7 +199,7 @@ TEST_RESU(   RESU=_F( RESULTAT = MEST1,
 
 #
 TEST_RESU(   RESU=_F( RESULTAT = MEST1,
-                    NOM_CHAM = 'SIGM_ELNO',
+                    NOM_CHAM = 'SIPM_ELNO',
                     NUME_ORDRE = 1,
                     NOM_CMP = 'SIXY',
                     MAILLE = 'S11',

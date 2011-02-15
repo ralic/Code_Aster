@@ -1,4 +1,4 @@
-#@ MODIF elements4 Messages  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+#@ MODIF elements4 Messages  DATE 15/02/2011   AUTEUR FLEJOU J-L.FLEJOU 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -143,6 +143,13 @@ cata_msg = {
   le code " %(k1)s " est non prévu. code doit etre = "gl" ou "lg"
 """),
 
+59 : _("""
+Pour l'option %(k1)s, vous ne pouvez affecter qu'un seul matériau qui ne doit avoir
+qu'un seul comportement : ELAS. Commande DEFI_MATERIAU / ELAS.
+Conseil :
+   Définir un seul matériau avec un seul comportement : ELAS.
+"""),
+
 61 : _("""
  préconditions non remplies
 """),
@@ -153,6 +160,14 @@ cata_msg = {
 
 63 : _("""
   l'option %(k1)s n'est pas disponible pour le comportement %(k2)s
+"""),
+
+64 : _("""
+Pour l'option %(k1)s votre matériau doit avoir un seul comportement : ELAS.
+Commande DEFI_MATERIAU / ELAS.
+Votre matériau a %(k2)s comme comportement possible.
+Conseil :
+   Définir un matériau avec un seul comportement : ELAS.
 """),
 
 65 : _("""

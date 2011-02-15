@@ -1,8 +1,8 @@
-      SUBROUTINE MAJOUR(NEQ   ,LGROT ,SDNUME,CHAINI,CHADEL,
-     &                  COEF  ,CHAMAJ)
+      SUBROUTINE MAJOUR(NEQ   ,LGROT ,LENDO ,SDNUME,CHAINI,
+     &                  CHADEL,COEF  ,CHAMAJ,ORDRE)
 C      
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 17/01/2011   AUTEUR ABBAS M.ABBAS 
+C MODIF UTILITAI  DATE 15/02/2011   AUTEUR FLEJOU J-L.FLEJOU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,9 +22,9 @@ C ======================================================================
 C
       IMPLICIT NONE
       CHARACTER*19  SDNUME
-      LOGICAL       LGROT
-      INTEGER       NEQ
-      REAL*8        CHAINI(*),CHADEL(*),CHAMAJ(*),COEF      
+      LOGICAL       LGROT,LENDO
+      INTEGER       NEQ,ORDRE
+      REAL*8        CHAINI(*),CHADEL(*),CHAMAJ(*),COEF                  
 C 
 C ----------------------------------------------------------------------
 C
@@ -49,6 +49,8 @@ C                       FALSE SINON
 C IN  CHAINI : CHAM_NO DONNE
 C IN  CHADEL : CHAM_NO DONNE
 C IN  COEF   : REEL DONNE
+C IN  ORDRE  : 0 -> MAJ INCREMENTS
+C              1 -> MAJ DEPL
 C OUT CHAMAJ : CHAM_NO MIS A JOUR
 C
 C -------------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ----------------
@@ -70,24 +72,76 @@ C
 C
 C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
 C
-      INTEGER IRAN(3),I,ICOMP,INDRO
-      REAL*8  THETA(3),DELDET(3)
+      INTEGER      IRAN(3),I,ICOMP,INDRO,ENDO
+      REAL*8       THETA(3),DELDET(3)
+      INTEGER      PTDO,INDIC1,INDIC2
+      REAL*8       STOK
+      REAL*8       ZERO
+      PARAMETER   (ZERO = 0.0D+0)      
 C      
 C ----------------------------------------------------------------------
+C	  
+      PTDO = 0
+      INDIC1 = 0
+      INDIC2 = 0      
 C
       CALL JEMARQ()
 C      
       IF (LGROT) THEN
         CALL JEVEUO(SDNUME//'.NDRO','L',INDRO)
       ENDIF      
+C      
+      IF (LENDO) THEN
+        CALL JEVEUO(SDNUME(1:19)//'.ENDO','E',ENDO)
+      ENDIF                    
 C
-      IF (.NOT.LGROT) THEN
+      IF (.NOT.LGROT .AND. LENDO) THEN
         DO 10 I=1,NEQ
+          STOK      = CHAINI(I)
           CHAMAJ(I) = CHAINI(I) + COEF*CHADEL(I)
+          IF (ZI(ENDO+I-1) .NE. 0) THEN
+C
+C           ON IMPOSE L'ACCROISSEMENT DE L'ENDO
+C            
+            IF (ORDRE.EQ.0) THEN
+              IF (CHAMAJ(I).LE.ZERO) THEN
+                INDIC1 = INDIC1+1
+                CHAMAJ(I) = 0.D0
+                CHADEL(I) = - STOK/COEF
+                ZI(ENDO+I-1)=2
+              ELSE
+                ZI(ENDO+I-1)=1
+                PTDO = PTDO+1
+              ENDIF
+            ENDIF
+C
+C           ON IMPOSE L'ENDO <= 1
+C              
+            IF (ORDRE.EQ.1) THEN
+              IF (CHAMAJ(I).GE.1.D0) THEN
+                INDIC2 = INDIC2+1
+                CHAMAJ(I) = 1.D0
+                CHADEL(I) = (1.D0-STOK)/COEF
+              ENDIF
+            ENDIF
+C
+          ENDIF
+C          
 10      CONTINUE
+
+C        IF (ORDRE.EQ.0) THEN
+C          WRITE(6,*) 'NB_NO_ENDO=', PTDO
+C          WRITE(6,*) 'INDIC1=', INDIC1
+C          WRITE(6,*) 'INDIC2=', INDIC2
+C        ENDIF  
+C
+      ELSEIF (.NOT.LGROT) THEN
+        DO 20 I=1,NEQ
+          CHAMAJ(I) = CHAINI(I) + COEF*CHADEL(I)
+20      CONTINUE
       ELSE
         ICOMP = 0
-        DO 20 I=1,NEQ
+        DO 30 I=1,NEQ
           IF (ZI(INDRO+I-1).EQ.0) THEN
             CHAMAJ(I)     = CHAINI(I) + COEF*CHADEL(I)
           ELSE IF (ZI(INDRO+I-1).EQ.1) THEN     
@@ -102,7 +156,7 @@ C
           ELSE
             CALL ASSERT(.FALSE.)
           ENDIF
-20      CONTINUE
+30      CONTINUE
       ENDIF
       
       CALL JEDEMA()

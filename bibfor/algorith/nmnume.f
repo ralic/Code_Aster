@@ -2,7 +2,7 @@
      &                  SDTIME,NUMEDD,SDNUME)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 17/01/2011   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 15/02/2011   AUTEUR FLEJOU J-L.FLEJOU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -65,7 +65,7 @@ C
 C
 C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
 C
-      CHARACTER*24 SDNURO
+      CHARACTER*24 SDNURO,SDNUMO
 C
 C ----------------------------------------------------------------------
 C      
@@ -78,11 +78,13 @@ C
 C
 C --- REPERAGE DDL GRANDES ROTATIONS
 C
-      SDNURO = SDNUME(1:19)//'.NDRO'
+      SDNURO = SDNUME(1:19)//'.NDRO'          
       CALL NUROTA(NUMEDD,COMPOR,SDNURO)
 C
 C --- REPERAGE AUTRES DDLS
 C
+      SDNUMO = SDNUME(1:19)//'.ENDO'
+      CALL NUENDO(NUMEDD,COMPOR,SDNUMO)
 C
 C
 C      

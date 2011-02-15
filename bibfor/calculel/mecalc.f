@@ -5,7 +5,7 @@
      &                  CHVARI,COMPOR,CHTESE,CHDESE,NOPASE,
      &                  TYPESE,CHACSE,CODRET)
 C ----------------------------------------------------------------------
-C MODIF CALCULEL  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 15/02/2011   AUTEUR FLEJOU J-L.FLEJOU 
 C TOLE CRP_20 CRP_21
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -104,8 +104,8 @@ C PARAMETRES D'APPELS
       POUX = 'NON'
 
       IF (TYPESE.EQ.-1) THEN
-        IAUX = 0
-        CALL RSEXC2(1,1,NOPASE,'THETA',IAUX,CHTHET,OPTIO2,CODRET)
+         IAUX = 0
+         CALL RSEXC2(1,1,NOPASE,'THETA',IAUX,CHTHET,OPTIO2,CODRET)
       END IF
 
       IF (CODRET.EQ.0) THEN
@@ -113,446 +113,413 @@ C PARAMETRES D'APPELS
 C     -- ON DONNE LES INFOS NECESSAIRES POUR CREER UN CHAM_ELEM
 C        AYANT DES SOUS-POINTS ET/OU DES CMPS DYN. DE VARI_R
 C     ---------------------------------------------------------
-        CAREL = CHCARA(1)
-        IF (OPTIO2.EQ.'VARI_ELNO') THEN
-          CALL EXISD('CARTE',COMPOR,IRET2)
-          IF (IRET2.NE.1) THEN
-            CALL U2MESS('A','CALCULEL2_86')
-            GO TO 40
-          END IF
-          CANBVA = '&&'//NOMPRO//'.NBVAR'
-C         LA CARTE COMPOR PEUT CHANGER ENTRE DEUX INSTANTS
-C         IL FAUT DONC APPELER CESVAR SYSTEMATIQUEMENT
-          CALL CESVAR(CAREL,COMPOR,LIGREL,CANBVA)
-          CALL COPISD('CHAM_ELEM_S','V',CANBVA,CHELE2)
-          CALL DETRSD('CHAM_ELEM_S',CANBVA)
+         CAREL = CHCARA(1)
+         IF (OPTIO2.EQ.'VARI_ELNO') THEN
+            CALL EXISD('CARTE',COMPOR,IRET2)
+            IF (IRET2.NE.1) THEN
+               CALL U2MESS('A','CALCULEL2_86')
+               GO TO 40
+            END IF
+            CANBVA = '&&'//NOMPRO//'.NBVAR'
+C           LA CARTE COMPOR PEUT CHANGER ENTRE DEUX INSTANTS
+C           IL FAUT DONC APPELER CESVAR SYSTEMATIQUEMENT
+            CALL CESVAR(CAREL,COMPOR,LIGREL,CANBVA)
+            CALL COPISD('CHAM_ELEM_S','V',CANBVA,CHELE2)
+            CALL DETRSD('CHAM_ELEM_S',CANBVA)
 
-        ELSE IF (OPTIO2.EQ.'VATU_ELNO') THEN
-          CALL EXISD('CARTE',COMPOR,IRET2)
-          IF (IRET2.NE.1) THEN
-            CALL U2MESS('A','CALCULEL2_86')
-            GO TO 40
-          END IF
-          CANBVA = '&&'//NOMPRO//'.NBVARI'
-C         LA CARTE COMPOR PEUT CHANGER ENTRE DEUX INSTANTS
-C         IL FAUT DONC APPELER CESVAR SYSTEMATIQUEMENT
-          CALL CESVAR(' ',COMPOR,LIGREL,CANBVA)
-          CALL COPISD('CHAM_ELEM_S','V',CANBVA,CHELE2)
-          CALL DETRSD('CHAM_ELEM_S',CANBVA)
+         ELSE IF (OPTIO2.EQ.'VATU_ELNO') THEN
+            CALL EXISD('CARTE',COMPOR,IRET2)
+            IF (IRET2.NE.1) THEN
+               CALL U2MESS('A','CALCULEL2_86')
+               GO TO 40
+            END IF
+            CANBVA = '&&'//NOMPRO//'.NBVARI'
+C           LA CARTE COMPOR PEUT CHANGER ENTRE DEUX INSTANTS
+C           IL FAUT DONC APPELER CESVAR SYSTEMATIQUEMENT
+            CALL CESVAR(' ',COMPOR,LIGREL,CANBVA)
+            CALL COPISD('CHAM_ELEM_S','V',CANBVA,CHELE2)
+            CALL DETRSD('CHAM_ELEM_S',CANBVA)
 
          ELSE IF (OPTIO2.EQ.'VACO_ELNO') THEN
-          CALL EXISD('CARTE',COMPOR,IRET2)
-          IF (IRET2.NE.1) THEN
-            CALL U2MESS('A','CALCULEL2_86')
-            GO TO 40
-          END IF
-          CANBVA = '&&'//NOMPRO//'.NBVARI'
-C         LA CARTE COMPOR PEUT CHANGER ENTRE DEUX INSTANTS
-C         IL FAUT DONC APPELER CESVAR SYSTEMATIQUEMENT
-          CALL CESVAR(' ',COMPOR,LIGREL,CANBVA)
-          CALL COPISD('CHAM_ELEM_S','V',CANBVA,CHELE2)
-          CALL DETRSD('CHAM_ELEM_S',CANBVA)
+            CALL EXISD('CARTE',COMPOR,IRET2)
+            IF (IRET2.NE.1) THEN
+               CALL U2MESS('A','CALCULEL2_86')
+               GO TO 40
+            END IF
+            CANBVA = '&&'//NOMPRO//'.NBVARI'
+C           LA CARTE COMPOR PEUT CHANGER ENTRE DEUX INSTANTS
+C           IL FAUT DONC APPELER CESVAR SYSTEMATIQUEMENT
+            CALL CESVAR(' ',COMPOR,LIGREL,CANBVA)
+            CALL COPISD('CHAM_ELEM_S','V',CANBVA,CHELE2)
+            CALL DETRSD('CHAM_ELEM_S',CANBVA)
 
-        ELSE IF ((OPTIO2.EQ.'EPSI_ELGA') .OR.
-     &           (OPTIO2.EQ.'SIEF_ELGA')) THEN
-          CANBSP = '&&'//NOMPRO//'.NBSP'
-          CALL EXISD('CHAM_ELEM_S',CANBSP,IRET1)
-          IF (IRET1.NE.1) CALL CESVAR(CAREL,' ',LIGREL,CANBSP)
-          CALL COPISD('CHAM_ELEM_S','V',CANBSP,CHELE2)
+         ELSE IF ((OPTIO2.EQ.'EPSI_ELGA') .OR.
+     &            (OPTIO2.EQ.'SIEF_ELGA')) THEN
+            CANBSP = '&&'//NOMPRO//'.NBSP'
+            CALL EXISD('CHAM_ELEM_S',CANBSP,IRET1)
+            IF (IRET1.NE.1) CALL CESVAR(CAREL,' ',LIGREL,CANBSP)
+            CALL COPISD('CHAM_ELEM_S','V',CANBSP,CHELE2)
 
-        ELSE IF ((OPTIO2.EQ.'SIEQ_ELGA') .OR.
+         ELSE IF ((OPTIO2.EQ.'SIEQ_ELGA') .OR.
      &           (OPTIO2.EQ.'EPEQ_ELGA')) THEN
-          CANBSP = '&&'//NOMPRO//'.NBSP'
-          CALL EXISD('CHAM_ELEM_S',CANBSP,IRET1)
-          IF (IRET1.NE.1) CALL CESVAR(CAREL,' ',LIGREL,CANBSP)
-          CALL COPISD('CHAM_ELEM_S','V',CANBSP,CHELE2)
+            CANBSP = '&&'//NOMPRO//'.NBSP'
+            CALL EXISD('CHAM_ELEM_S',CANBSP,IRET1)
+            IF (IRET1.NE.1) CALL CESVAR(CAREL,' ',LIGREL,CANBSP)
+            CALL COPISD('CHAM_ELEM_S','V',CANBSP,CHELE2)
 
-        END IF
-
+         END IF
 
 C -------------------
-        INDMEC = .TRUE.
+         INDMEC = .TRUE.
 C ----------------------------------------------------------------------
-        IF (OPTIO2.EQ.'VARI_ELNO') THEN
-          LPAIN(1) = 'PVARIGR'
-          LPAOUT(1) = 'PVARINR'
-        ELSE IF (OPTIO2.EQ.'INDL_ELGA') THEN
-           CALL AJCHCA('PMATERC',CHMATE,LPAIN,LCHIN,NBIN,MAXIN,'N')
-           CALL AJCHCA('PCOMPOR',COMPOR,LPAIN,LCHIN,NBIN,MAXIN,'N')
-           CALL AJCHCA('PVARIPR',CHDEPL,LPAIN,LCHIN,NBIN,MAXIN,'N')
-           CALL AJCHCA('PCONTPR',CHSIG, LPAIN,LCHIN,NBIN,MAXIN,'N')
-           LPAOUT(1) = 'PINDLOC'
-        ELSE IF (OPTIO2.EQ.'CRIT_ELNO') THEN
-          LPAIN(1) = 'PCONCOR'
-          LPAOUT(1) = 'PCRITER'
-        ELSE IF (OPTIO2.EQ.'VATU_ELNO') THEN
-          LPAIN(1) = 'PVARIGR'
-          LPAOUT(1) = 'PVARINR'
-        ELSE IF (OPTIO2.EQ.'VACO_ELNO') THEN
-          LPAIN(1) = 'PVARIGR'
-          LPAOUT(1) = 'PVARINR'
-        ELSE IF (OPTIO2.EQ.'SICA_ELNO') THEN
-          LPAIN(1) = 'PCONTRR'
-          LPAOUT(1) = 'PCONTGL'
-        ELSE IF (OPTIO2.EQ.'VNOR_ELEM_DEPL') THEN
-          LPAIN(1) = 'PDEPLAC'
-          LPAOUT(1) = 'PVITNOR'
-        ELSE IF (OPTIO2.EQ.'EFCA_ELNO') THEN
-CJMP    LPAIN(1) = 'PCONTRR'
-CJMP    IL VAUDRAIT MIEUX HOMOGENEISER LE NOM DU PARAMETRE POUR
-CJMP    LE CHAMP DE CONTRAINTES EN PSIEFNOR ET PASSER CELUI-CI
-CJMP    DANS CHSIG. CELA IMPLIQUE DE MODIFIER LES CATALOGUES
-CJMP    DES ELEMETNS DE POUTRE ET DES DISCRETS POUR FAIRE COMME
-CJMP    LES CABLES QUI SONT CORRECTS
-CJMP    POUR LE MOMENT ON PASSE A LA FOIS LE CHAMP DEPL CI-DESSOUS
-CJMP    PUIS LE CHAMPS CHSIG ASSOCIE A LA FOIS A PCONTRR ET PSIEFNOR
-          LPAIN(1) = 'PDEPLAR'
-          LPAOUT(1) = 'PEFFORR'
-        ELSE IF (OPTIO2.EQ.'DETE_ELNO') THEN
-          LPAIN(1) = 'PTEMPER'
-          LPAOUT(1) = 'PDETENO'
-          INDMEC = .FALSE.
-        ELSE IF (OPTIO2.EQ.'DEDE_ELNO') THEN
-          LPAIN(1) = 'PDEPLAR'
-          LPAOUT(1) = 'PDEDENO'
-        ELSE IF (OPTIO2.EQ.'DLSI_ELGA_DEPL') THEN
-          LPAIN(1) = 'PDEPLAR'
-          LPAOUT(1) = 'PDLAGSG'
-        ELSE IF (OPTIO2.EQ.'DESI_ELNO') THEN
-          LPAIN(1) = 'PDLAGSI'
-          LPAOUT(1) = 'PDESINO'
-        ELSE IF (OPTIO2.EQ.'ENEL_ELGA' .OR.
-     &           OPTIO2.EQ.'ENEL_ELNO') THEN
-          LPAIN(1) = 'PDEPLAR'
-          LPAOUT(1) = 'PENERDR'
-        ELSE IF (OPTIO2.EQ.'DISS_ELGA' .OR.
-     &           OPTIO2.EQ.'DISS_ELNO') THEN
-          LPAOUT(1) = 'PDISSDR'
-        ELSE IF (OPTIO2.EQ.'SIEQ_ELNO' .OR.
-     &           OPTIO2.EQ.'SIEQ_ELGA' .OR.
-     &           OPTIO2.EQ.'PMPB_ELGA' .OR.
-     &           OPTIO2.EQ.'PMPB_ELNO') THEN
-          LPAOUT(1) = 'PCONTEQ'
-        ELSE IF (OPTIO2.EQ.'EPEQ_ELNO' .OR.
-     &           OPTIO2.EQ.'EPEQ_ELGA' .OR.
-     &           OPTIO2.EQ.'EPMQ_ELNO' .OR.
-     &           OPTIO2.EQ.'EPMQ_ELGA') THEN
-          LPAIN(1) = 'PDEFORR'
-          LCHIN(1) = CHEPS
-          LPAOUT(1) = 'PDEFOEQ'
-        ELSE IF (OPTIO2.EQ.'SIRO_ELEM') THEN
-          LPAIN(1) = 'PSIG3D'
-          LCHIN(1) = CHSIG
-          LPAIN(2) = 'PGEOMER'
-          LCHIN(2) = CHGEOM
-          NBIN = 2
-          LPAOUT(1) = 'PPJSIGM'
-        ELSE
-          LPAIN(1) = 'PDEPLAR'
-          IF (OPTIO2.EQ.'SICO_ELNO') THEN
-            LPAIN(1) = 'PVARINR'
-            LPAOUT(1) = 'PSIGNOD'
-          ELSE IF (OPTIO2.EQ.'SITU_ELNO') THEN
-            LPAIN(1) = 'PVARINR'
-            LPAOUT(1) = 'PSIGNOD'
-          ELSE IF (OPTIO2.EQ.'SIEF_ELNO') THEN
-            LPAIN(1) = 'PDEPLPR'
-            LPAOUT(1) = 'PSIEFNOR'
-          ELSE IF (OPTIO2.EQ.'FLHN_ELGA') THEN
-            LPAIN(2) = 'PCONTR'
-            LCHIN(2) = CHSIG
-            NBIN = 2
-            LPAOUT(1) = 'PFLHN'
-          ELSE IF (OPTIO2.EQ.'DEGE_ELNO') THEN
-            LPAOUT(1) = 'PDEFOGR'
-          ELSE IF (OPTIO2.EQ.'EPSI_ELNO' .OR.
-     &             OPTIO2.EQ.'EPSI_ELGA' .OR.
-     &             OPTIO2.EQ.'EPSG_ELNO' .OR.
-     &             OPTIO2.EQ.'EPSG_ELGA' .OR.
-     &             OPTIO2.EQ.'EPME_ELNO' .OR.
-     &             OPTIO2.EQ.'EPME_ELGA' .OR.
-     &             OPTIO2.EQ.'EPMG_ELNO' .OR.
-     &             OPTIO2.EQ.'EPMG_ELGA' .OR.
-     &             OPTIO2.EQ.'EPFP_ELGA'      .OR.
-     &             OPTIO2.EQ.'EPFP_ELNO'      .OR.
-     &             OPTIO2.EQ.'EPFD_ELGA'      .OR.
-     &             OPTIO2.EQ.'EPFD_ELNO'      ) THEN
-            LPAOUT(1) = 'PDEFORR'
-          ELSE IF (OPTIO2.EQ.'EPSP_ELNO' .OR.
-     &             OPTIO2.EQ.'EPSP_ELGA') THEN
-            LPAOUT(1) = 'PDEFOPL'
-          ELSE IF (OPTIO2.EQ.'EPVC_ELNO' .OR.
-     &             OPTIO2.EQ.'EPVC_ELGA') THEN
-            LPAOUT(1) = 'PDEFOVC'
-          ELSE IF (OPTIO2.EQ.'EPOT_ELEM' .OR.
-     &             OPTIO2.EQ.'EPOT_ELEM_TEMP') THEN
-            LPAOUT(1) = 'PENERDR'
-          ELSE IF (OPTIO2.EQ.'ECIN_ELEM') THEN
-            LPAOUT(1) = 'PENERCR'
-          ELSE IF (OPTIO2.EQ.'EPTU_ELNO') THEN
-            LPAIN(1) = 'PDEFORR'
-            LCHIN(1) =  CHEPS
-            LPAOUT(1) = 'PDEFONO'
-          ELSE IF (OPTIO2.EQ.'EPTQ_ELNO') THEN
-            LPAIN(1) = 'PDEFOEQ'
-            LCHIN(1) =  CH2
-            LPAOUT(1) = 'PDENOEQ'
-          ELSE IF (OPTIO2.EQ.'SITQ_ELNO') THEN
-            LPAIN(1) = 'PCONTEQ'
-            LCHIN(1) =  CH1
-            LPAOUT(1) = 'PCOEQNO'
-          ELSE IF (OPTIO2.EQ.'FLUX_ELNO' .OR.
-     &             OPTIO2.EQ.'FLUX_ELGA') THEN
-            LPAOUT(1) = 'PFLUX_R'
-            INDMEC = .FALSE.
-          ELSE IF (OPTIO2.EQ.'SOUR_ELGA') THEN
-            LPAOUT(1) = 'PSOUR_R'
-          ELSE IF (OPTIO2.EQ.'DURT_ELNO') THEN
-            LPAIN(1) = 'PPHASIN'
-            LCHIN(1) = CHMETA
-            LPAOUT(1) = 'PDURT_R'
-          ELSE IF (OPTIO2.EQ.'EPME_ELNO_DPGE' .OR.
-     &             OPTIO2.EQ.'EPSI_ELNO_DPGE') THEN
-            LPAOUT(1) = 'PDEFORR'
-          ELSE IF (OPTIO2.EQ.'SIGM_ELNO_DPGE' .OR.
-     &             OPTIO2.EQ.'SIEF_ELGA_DPGE') THEN
-            LPAOUT(1) = 'PCONTRR'
-          ELSE IF (OPTIO2.EQ.'SPMX_ELGA') THEN
-            LPAIN(1) = 'PCONTRR'
-            LPAIN(2) = 'PDEFORR'
-            LPAIN(3) = 'PCONTEQ'
-            LPAIN(4) = 'PDEFOEQ'
-            LPAIN(5) = 'PNOMCMP'
-            LCHIN(1) = CHSIG
-            LCHIN(2) = CHEPS
-            LCHIN(3) = CH1
-            LCHIN(4) = CH2
-            LCHIN(5) = CHNUMC
-            NBIN = 5
-            LPAOUT(1) = 'PMINMAX'
-          ELSE IF (OPTIO2.EQ.'VAEX_ELGA') THEN
-             NOMA=CHGEOM(1:8)
-             CALL GETVTX(' ','NOM_VARI',0,1,1,VARI,IBID)
-             CALL MECACT('V',CHNOVA,'MAILLA',NOMA,'NEUT_K24',1,'Z1',
-     &                                             IBID,R8B,C16B,VARI )
-
+         IF (OPTIO2.EQ.'VARI_ELNO') THEN
             LPAIN(1) = 'PVARIGR'
-            LPAOUT(1) = 'PVARIGS'
-            LPAIN(2) = 'PNOVARI'
-            LCHIN(2) = CHNOVA
-            NBIN =2
-          ELSE IF (OPTIO2.EQ.'VAEX_ELNO') THEN
-             NOMA=CHGEOM(1:8)
-             CALL GETVTX(' ','NOM_VARI',0,1,1,VARI,IBID)
-             CALL MECACT('V',CHNOVA,'MAILLA',NOMA,'NEUT_K24',1,'Z1',
-     &                                             IBID,R8B,C16B,VARI )
-            LPAIN(1) = 'PVARINR'
-            LPAOUT(1) = 'PVARINS'
-            LPAIN(2) = 'PNOVARI'
-            LCHIN(2) = CHNOVA
-            NBIN =2
-          ELSE
+            LPAOUT(1) = 'PVARINR'
+         ELSE IF (OPTIO2.EQ.'INDL_ELGA') THEN
+            CALL AJCHCA('PMATERC',CHMATE,LPAIN,LCHIN,NBIN,MAXIN,'N')
+            CALL AJCHCA('PCOMPOR',COMPOR,LPAIN,LCHIN,NBIN,MAXIN,'N')
+            CALL AJCHCA('PVARIPR',CHDEPL,LPAIN,LCHIN,NBIN,MAXIN,'N')
+            CALL AJCHCA('PCONTPR',CHSIG, LPAIN,LCHIN,NBIN,MAXIN,'N')
+            LPAOUT(1) = 'PINDLOC'
+         ELSE IF (OPTIO2.EQ.'CRIT_ELNO') THEN
+            LPAIN(1) = 'PCONCOR'
+            LPAOUT(1) = 'PCRITER'
+         ELSE IF (OPTIO2.EQ.'VATU_ELNO') THEN
+            LPAIN(1) = 'PVARIGR'
+            LPAOUT(1) = 'PVARINR'
+         ELSE IF (OPTIO2.EQ.'VACO_ELNO') THEN
+            LPAIN(1) = 'PVARIGR'
+            LPAOUT(1) = 'PVARINR'
+         ELSE IF (OPTIO2.EQ.'SICA_ELNO') THEN
+            LPAIN(1)  = 'PCONTRR'
+            LPAOUT(1) = 'PCONTGL'
+         ELSE IF (OPTIO2.EQ.'VNOR_ELEM_DEPL') THEN
+            LPAIN(1)  = 'PDEPLAC'
+            LPAOUT(1) = 'PVITNOR'
+         ELSE IF (OPTIO2.EQ.'EFCA_ELNO') THEN
+CJMP        LPAIN(1) = 'PCONTRR'
+CJMP        IL VAUDRAIT MIEUX HOMOGENEISER LE NOM DU PARAMETRE POUR
+CJMP        LE CHAMP DE CONTRAINTES EN PSIEFNOR ET PASSER CELUI-CI
+CJMP        DANS CHSIG. CELA IMPLIQUE DE MODIFIER LES CATALOGUES
+CJMP        DES ELEMETNS DE POUTRE ET DES DISCRETS POUR FAIRE COMME
+CJMP        LES CABLES QUI SONT CORRECTS
+CJMP        POUR LE MOMENT ON PASSE A LA FOIS LE CHAMP DEPL CI-DESSOUS
+CJMP        PUIS LE CHAMPS CHSIG ASSOCIE A LA FOIS A PCONTRR ET PSIEFNOR
+            LPAIN(1) = 'PDEPLAR'
+            LPAOUT(1) = 'PEFFORR'
+         ELSE IF (OPTIO2.EQ.'DETE_ELNO') THEN
+            LPAIN(1) = 'PTEMPER'
+            LPAOUT(1) = 'PDETENO'
+            INDMEC = .FALSE.
+         ELSE IF (OPTIO2.EQ.'DEDE_ELNO') THEN
+            LPAIN(1) = 'PDEPLAR'
+            LPAOUT(1) = 'PDEDENO'
+         ELSE IF (OPTIO2.EQ.'DLSI_ELGA_DEPL') THEN
+            LPAIN(1) = 'PDEPLAR'
+            LPAOUT(1) = 'PDLAGSG'
+         ELSE IF (OPTIO2.EQ.'DESI_ELNO') THEN
+            LPAIN(1) = 'PDLAGSI'
+            LPAOUT(1) = 'PDESINO'
+         ELSE IF (OPTIO2.EQ.'ENEL_ELGA' .OR.
+     &            OPTIO2.EQ.'ENEL_ELNO') THEN
+            LPAIN(1) = 'PDEPLAR'
+            LPAOUT(1) = 'PENERDR'
+         ELSE IF (OPTIO2.EQ.'DISS_ELGA' .OR.
+     &            OPTIO2.EQ.'DISS_ELNO') THEN
+            LPAOUT(1) = 'PDISSDR'
+         ELSE IF (OPTIO2.EQ.'SIEQ_ELNO' .OR.
+     &            OPTIO2.EQ.'SIEQ_ELGA' .OR.
+     &            OPTIO2.EQ.'PMPB_ELGA' .OR.
+     &            OPTIO2.EQ.'PMPB_ELNO') THEN
+            LPAOUT(1) = 'PCONTEQ'
+         ELSE IF (OPTIO2.EQ.'EPEQ_ELNO' .OR.
+     &            OPTIO2.EQ.'EPEQ_ELGA' .OR.
+     &            OPTIO2.EQ.'EPMQ_ELNO' .OR.
+     &            OPTIO2.EQ.'EPMQ_ELGA') THEN
+            LPAIN(1) = 'PDEFORR'
+            LCHIN(1) = CHEPS
+            LPAOUT(1) = 'PDEFOEQ'
+         ELSE IF (OPTIO2.EQ.'SIRO_ELEM') THEN
+            LPAIN(1) = 'PSIG3D'
+            LCHIN(1) = CHSIG
+            LPAIN(2) = 'PGEOMER'
+            LCHIN(2) = CHGEOM
+            NBIN = 2
+            LPAOUT(1) = 'PPJSIGM'
+         ELSE
+            LPAIN(1) = 'PDEPLAR'
+            IF (OPTIO2.EQ.'SICO_ELNO') THEN
+               LPAIN(1) = 'PVARINR'
+               LPAOUT(1) = 'PSIGNOD'
+            ELSE IF (OPTIO2.EQ.'SITU_ELNO') THEN
+               LPAIN(1) = 'PVARINR'
+               LPAOUT(1) = 'PSIGNOD'
+            ELSE IF (OPTIO2.EQ.'SIEF_ELNO') THEN
+               LPAIN(1) = 'PDEPLPR'
+               LPAOUT(1) = 'PSIEFNOR'
+            ELSE IF (OPTIO2.EQ.'FLHN_ELGA') THEN
+               LPAIN(2) = 'PCONTR'
+               LCHIN(2) = CHSIG
+               NBIN = 2
+               LPAOUT(1) = 'PFLHN'
+            ELSE IF (OPTIO2.EQ.'DEGE_ELNO') THEN
+               LPAOUT(1) = 'PDEFOGR'
+            ELSE IF (OPTIO2.EQ.'EPSI_ELNO' .OR.
+     &               OPTIO2.EQ.'EPSI_ELGA' .OR.
+     &               OPTIO2.EQ.'EPSG_ELNO' .OR.
+     &               OPTIO2.EQ.'EPSG_ELGA' .OR.
+     &               OPTIO2.EQ.'EPME_ELNO' .OR.
+     &               OPTIO2.EQ.'EPME_ELGA' .OR.
+     &               OPTIO2.EQ.'EPMG_ELNO' .OR.
+     &               OPTIO2.EQ.'EPMG_ELGA' .OR.
+     &               OPTIO2.EQ.'EPFP_ELGA'      .OR.
+     &               OPTIO2.EQ.'EPFP_ELNO'      .OR.
+     &               OPTIO2.EQ.'EPFD_ELGA'      .OR.
+     &               OPTIO2.EQ.'EPFD_ELNO'      ) THEN
+               LPAOUT(1) = 'PDEFORR'
+            ELSE IF (OPTIO2.EQ.'EPSP_ELNO' .OR.
+     &               OPTIO2.EQ.'EPSP_ELGA') THEN
+               LPAOUT(1) = 'PDEFOPL'
+            ELSE IF (OPTIO2.EQ.'EPVC_ELNO' .OR.
+     &               OPTIO2.EQ.'EPVC_ELGA') THEN
+               LPAOUT(1) = 'PDEFOVC'
+            ELSE IF (OPTIO2.EQ.'EPOT_ELEM' .OR.
+     &               OPTIO2.EQ.'EPOT_ELEM_TEMP') THEN
+               LPAOUT(1) = 'PENERDR'
+            ELSE IF (OPTIO2.EQ.'ECIN_ELEM') THEN
+               LPAOUT(1) = 'PENERCR'
+            ELSE IF (OPTIO2.EQ.'EPTU_ELNO') THEN
+               LPAIN(1) = 'PDEFORR'
+               LCHIN(1) =  CHEPS
+               LPAOUT(1) = 'PDEFONO'
+            ELSE IF (OPTIO2.EQ.'EPTQ_ELNO') THEN
+               LPAIN(1) = 'PDEFOEQ'
+               LCHIN(1) =  CH2
+               LPAOUT(1) = 'PDENOEQ'
+            ELSE IF (OPTIO2.EQ.'SITQ_ELNO') THEN
+               LPAIN(1) = 'PCONTEQ'
+               LCHIN(1) =  CH1
+               LPAOUT(1) = 'PCOEQNO'
+            ELSE IF (OPTIO2.EQ.'FLUX_ELNO' .OR.
+     &               OPTIO2.EQ.'FLUX_ELGA') THEN
+               LPAOUT(1) = 'PFLUX_R'
+               INDMEC = .FALSE.
+            ELSE IF (OPTIO2.EQ.'SOUR_ELGA') THEN
+               LPAOUT(1) = 'PSOUR_R'
+            ELSE IF (OPTIO2.EQ.'DURT_ELNO') THEN
+               LPAIN(1) = 'PPHASIN'
+               LCHIN(1) = CHMETA
+               LPAOUT(1) = 'PDURT_R'
+            ELSE IF (OPTIO2.EQ.'EPME_ELNO_DPGE' .OR.
+     &               OPTIO2.EQ.'EPSI_ELNO_DPGE') THEN
+               LPAOUT(1) = 'PDEFORR'
+            ELSE IF (OPTIO2.EQ.'SIGM_ELNO_DPGE' .OR.
+     &               OPTIO2.EQ.'SIEF_ELGA_DPGE') THEN
+               LPAOUT(1) = 'PCONTRR'
+            ELSE IF (OPTIO2.EQ.'SPMX_ELGA') THEN
+               LPAIN(1) = 'PCONTRR'
+               LPAIN(2) = 'PDEFORR'
+               LPAIN(3) = 'PCONTEQ'
+               LPAIN(4) = 'PDEFOEQ'
+               LPAIN(5) = 'PNOMCMP'
+               LCHIN(1) = CHSIG
+               LCHIN(2) = CHEPS
+               LCHIN(3) = CH1
+               LCHIN(4) = CH2
+               LCHIN(5) = CHNUMC
+               NBIN = 5
+               LPAOUT(1) = 'PMINMAX'
+            ELSE IF (OPTIO2.EQ.'VAEX_ELGA') THEN
+               NOMA=CHGEOM(1:8)
+               CALL GETVTX(' ','NOM_VARI',0,1,1,VARI,IBID)
+               CALL MECACT('V',CHNOVA,'MAILLA',NOMA,'NEUT_K24',1,'Z1',
+     &                     IBID,R8B,C16B,VARI )
 
-
-C ----------------------------------------------------------------------
-C                      --- RAJOUT DES POUTRES POUX ---
-C ----------------------------------------------------------------------
-            CALL DISMOI('F','EXI_POUX',NOMODE,'MODELE',IBID,POUX,IER)
-C ----------------------------------------------------------------------
-            IF (OPTIO2.EQ.'SIGM_ELNO' .OR.
-     &          OPTIO2.EQ.'SIPO_ELNO' .OR.
-     &          OPTIO2.EQ.'SIEF_ELGA') THEN
-              LPAOUT(1) = 'PCONTRR'
-              IF (POUX.EQ.'OUI') THEN
-                CALL MECHPO('&&MECHPO',CHARGE,MODELE,CHDEP2,
-     &                      CHDYNR,SUROPT,LPAIN(NBIN+1),LCHIN(NBIN+1),
-     &                      NB,TYPCOE,ALPHA,CALPHA)
-                NBIN = NBIN + NB
-                IF (OPTIO2.EQ.'SIPO_ELNO') THEN
-                  LPAOUT(1) = 'PCONTPO'
-                END IF
-              END IF
-            ELSE IF (OPTIO2.EQ.'SIPO_ELNO') THEN
-              LPAIN(1) = 'PDEPLAR'
-              LPAOUT(1) = 'PCONTRR'
-              IF (POUX.EQ.'OUI') THEN
-                CALL MECHPO('&&MECHPO',CHARGE,MODELE,CHDEP2,
-     &                      CHDYNR,SUROPT,LPAIN(NBIN+1),LCHIN(NBIN+1),
-     &                      NB,TYPCOE,ALPHA,CALPHA)
-                NBIN = NBIN + NB
-                LPAOUT(1) = 'PCONTPC'
-              END IF
-            ELSE IF (OPTIO2.EQ.'SIGM_ELNO') THEN
-              LPAIN(1) = 'PDEPLAR'
-              LPAOUT(1) = 'PCONTRR'
-              IF (POUX.EQ.'OUI') THEN
-                CALL MECHPO('&&MECHPO',CHARGE,MODELE,CHDEP2,
-     &                      CHDYNR,SUROPT,LPAIN(NBIN+1),LCHIN(NBIN+1),
-     &                      NB,TYPCOE,ALPHA,CALPHA)
-                NBIN = NBIN + NB
-              END IF
-            ELSE IF (OPTIO2.EQ.'EFGE_ELNO') THEN
-              LPAOUT(1) = 'PEFFORR'
-              IF (POUX.EQ.'OUI') THEN
-                CALL MECHPO('&&MECHPO',CHARGE,MODELE,CHDEP2,
-     &                      CHDYNR,SUROPT,LPAIN(NBIN+1),LCHIN(NBIN+1),
-     &                      NB,TYPCOE,ALPHA,CALPHA)
-                NBIN = NBIN + NB
-              END IF
-            ELSE IF (OPTIO2.EQ.'EFGE_ELNO') THEN
-              LPAIN(1) = 'PDEPLAR'
-              LPAOUT(1) = 'PEFFORR'
-              IF (POUX.EQ.'OUI') THEN
-                CALL MECHPO('&&MECHPO',CHARGE,MODELE,CHDEP2,
-     &                      CHDYNR,SUROPT,LPAIN(NBIN+1),LCHIN(NBIN+1),
-     &                      NB,TYPCOE,ALPHA,CALPHA)
-                NBIN = NBIN + NB
-              END IF
+               LPAIN(1) = 'PVARIGR'
+               LPAOUT(1) = 'PVARIGS'
+               LPAIN(2) = 'PNOVARI'
+               LCHIN(2) = CHNOVA
+               NBIN =2
+            ELSE IF (OPTIO2.EQ.'VAEX_ELNO') THEN
+               NOMA=CHGEOM(1:8)
+               CALL GETVTX(' ','NOM_VARI',0,1,1,VARI,IBID)
+               CALL MECACT('V',CHNOVA,'MAILLA',NOMA,'NEUT_K24',1,'Z1',
+     &                     IBID,R8B,C16B,VARI )
+               LPAIN(1) = 'PVARINR'
+               LPAOUT(1) = 'PVARINS'
+               LPAIN(2) = 'PNOVARI'
+               LCHIN(2) = CHNOVA
+               NBIN =2
             ELSE
-              VALK = OPTIO2
-              CALL U2MESG('F', 'CALCULEL6_10',1,VALK,0,0,0,0.D0)
+C ----------------------------------------------------------------------
+C ---          RAJOUT DES POUTRES POUX ---
+C ----------------------------------------------------------------------
+               CALL DISMOI('F','EXI_POUX',NOMODE,'MODELE',IBID,POUX,IER)
+C ----------------------------------------------------------------------
+               IF (  OPTIO2.EQ.'SIGM_ELNO' .OR.
+     &               OPTIO2.EQ.'SIPO_ELNO' .OR.
+     &               OPTIO2.EQ.'SIPM_ELNO' .OR.
+     &               OPTIO2.EQ.'SIEF_ELGA') THEN
+                  LPAOUT(1) = 'PCONTRR'
+                  IF (POUX.EQ.'OUI') THEN
+                     CALL MECHPO('&&MECHPO',CHARGE,MODELE,CHDEP2,
+     &                        CHDYNR,SUROPT,LPAIN(NBIN+1),LCHIN(NBIN+1),
+     &                        NB,TYPCOE,ALPHA,CALPHA)
+                     NBIN = NBIN + NB
+                     IF (OPTIO2.EQ.'SIPO_ELNO') THEN
+                        LPAOUT(1) = 'PCONTPO'
+                     END IF
+                  END IF
+               ELSE IF (OPTIO2.EQ.'EFGE_ELNO') THEN
+               LPAOUT(1) = 'PEFFORR'
+                  IF (POUX.EQ.'OUI') THEN
+                     CALL MECHPO('&&MECHPO',CHARGE,MODELE,CHDEP2,
+     &                        CHDYNR,SUROPT,LPAIN(NBIN+1),LCHIN(NBIN+1),
+     &                        NB,TYPCOE,ALPHA,CALPHA)
+                     NBIN = NBIN + NB
+                  END IF
+               ELSE
+                  VALK = OPTIO2
+                  CALL U2MESG('F', 'CALCULEL6_10',1,VALK,0,0,0,0.D0)
+               END IF
             END IF
-          END IF
-        END IF
-        CHC = CHGEOM(1:8)//'.ABS_CURV'
-        CALL AJCHCA('PABSCUR',CHC,LPAIN,LCHIN,NBIN,MAXIN,'N')
-        CALL AJCHCA('PNBSP_I',CAREL//'.CANBSP',LPAIN,LCHIN,NBIN,MAXIN,
-     &              'N')
-        CALL AJCHCA('PFIBRES',CAREL//'.CAFIBR',LPAIN,LCHIN,NBIN,MAXIN,
-     &              'N')
+         END IF
+         CHC = CHGEOM(1:8)//'.ABS_CURV'
+         CALL AJCHCA('PABSCUR',CHC,LPAIN,LCHIN,NBIN,MAXIN,'N')
+         CALL AJCHCA('PNBSP_I',CAREL//'.CANBSP',LPAIN,LCHIN,NBIN,MAXIN,
+     &               'N')
+         CALL AJCHCA('PFIBRES',CAREL//'.CAFIBR',LPAIN,LCHIN,NBIN,MAXIN,
+     &               'N')
 
-C       SI LE MODELE EST X-FEM, AJOUT DES PARAMETRES POUR LE CALCUL DE
-C       'SIEF_ELNO' (ET 'SIEF_SENO_SEGA')
-        CALL JEEXIN(MODELE(1:8)//'.FISS',IFISS)
-        IF (IFISS.NE.0.AND.OPTION.EQ.'SIEF_ELNO') THEN
-          CHXFEM(1)=MODELE(1:8)//'.TOPOSE.CNS'
-          CHXFEM(2)=MODELE(1:8)//'.TOPOSE.LON'
-          CHXFEM(3)=CHELEX
-          CALL AJCHCA('PCNSETO' ,CHXFEM(1),LPAIN,LCHIN,NBIN,MAXIN,'N')
-          CALL AJCHCA('PLONCHA' ,CHXFEM(2),LPAIN,LCHIN,NBIN,MAXIN,'N')
-          CALL AJCHCA('PSIEFSER',CHXFEM(3),LPAOUT,LCHOUT,
-     &                                               NBOUT,MAXOUT,'N')
+C        SI LE MODELE EST X-FEM, AJOUT DES PARAMETRES POUR LE CALCUL DE
+C        'SIEF_ELNO' (ET 'SIEF_SENO_SEGA')
+         CALL JEEXIN(MODELE(1:8)//'.FISS',IFISS)
+         IF (IFISS.NE.0.AND.OPTION.EQ.'SIEF_ELNO') THEN
+            CHXFEM(1)=MODELE(1:8)//'.TOPOSE.CNS'
+            CHXFEM(2)=MODELE(1:8)//'.TOPOSE.LON'
+            CHXFEM(3)=CHELEX
+            CALL AJCHCA('PCNSETO',CHXFEM(1),LPAIN,LCHIN,NBIN,MAXIN,'N')
+            CALL AJCHCA('PLONCHA',CHXFEM(2),LPAIN,LCHIN,NBIN,MAXIN,'N')
+            CALL AJCHCA('PSIEFSER',CHXFEM(3),LPAOUT,LCHOUT,
+     &                   NBOUT,MAXOUT,'N')
+         ENDIF
 
-        ENDIF
-
-        CALL AJCHCA('PCAARPO',CHCARA(9),LPAIN,LCHIN,NBIN,MAXIN,'N')
-        CALL AJCHCA('PCACOQU',CHCARA(7),LPAIN,LCHIN,NBIN,MAXIN,'N')
-        CALL AJCHCA('PCINFDI',CHCARA(15),LPAIN,LCHIN,NBIN,MAXIN,'N')
-        CALL AJCHCA('PCADISK',CHCARA(2),LPAIN,LCHIN,NBIN,MAXIN,'N')
-        CALL AJCHCA('PCADISM',CHCARA(3),LPAIN,LCHIN,NBIN,MAXIN,'N')
-        CALL AJCHCA('PCAGEPO',CHCARA(5),LPAIN,LCHIN,NBIN,MAXIN,'N')
-        CALL AJCHCA('PCAGNBA',CHCARA(11),LPAIN,LCHIN,NBIN,MAXIN,'N')
-        CALL AJCHCA('PCAGNPO',CHCARA(6),LPAIN,LCHIN,NBIN,MAXIN,'N')
-        CALL AJCHCA('PCAMASS',CHCARA(12),LPAIN,LCHIN,NBIN,MAXIN,'N')
-        CALL AJCHCA('PCAORIE',CHCARA(1),LPAIN,LCHIN,NBIN,MAXIN,'N')
-        CALL AJCHCA('PCAORIR',CHTEMP,LPAIN,LCHIN,NBIN,MAXIN,'N')
-        CALL AJCHCA('PCASECT',CHCARA(8),LPAIN,LCHIN,NBIN,MAXIN,'N')
-        CALL AJCHCA('PCOMPOR',COMPOR,LPAIN,LCHIN,NBIN,MAXIN,'N')
-        CALL AJCHCA('PCONCOR',CHFREQ,LPAIN,LCHIN,NBIN,MAXIN,'N')
-        CALL AJCHCA('PCONTRR',CHSIG,LPAIN,LCHIN,NBIN,MAXIN,'N')
+         CALL AJCHCA('PCAARPO',CHCARA(9),LPAIN,LCHIN,NBIN,MAXIN,'N')
+         CALL AJCHCA('PCACOQU',CHCARA(7),LPAIN,LCHIN,NBIN,MAXIN,'N')
+         CALL AJCHCA('PCINFDI',CHCARA(15),LPAIN,LCHIN,NBIN,MAXIN,'N')
+         CALL AJCHCA('PCADISK',CHCARA(2),LPAIN,LCHIN,NBIN,MAXIN,'N')
+         CALL AJCHCA('PCADISM',CHCARA(3),LPAIN,LCHIN,NBIN,MAXIN,'N')
+         CALL AJCHCA('PCAGEPO',CHCARA(5),LPAIN,LCHIN,NBIN,MAXIN,'N')
+         CALL AJCHCA('PCAGNBA',CHCARA(11),LPAIN,LCHIN,NBIN,MAXIN,'N')
+         CALL AJCHCA('PCAGNPO',CHCARA(6),LPAIN,LCHIN,NBIN,MAXIN,'N')
+         CALL AJCHCA('PCAMASS',CHCARA(12),LPAIN,LCHIN,NBIN,MAXIN,'N')
+         CALL AJCHCA('PCAORIE',CHCARA(1),LPAIN,LCHIN,NBIN,MAXIN,'N')
+         CALL AJCHCA('PCAORIR',CHTEMP,LPAIN,LCHIN,NBIN,MAXIN,'N')
+         CALL AJCHCA('PCASECT',CHCARA(8),LPAIN,LCHIN,NBIN,MAXIN,'N')
+         CALL AJCHCA('PCOMPOR',COMPOR,LPAIN,LCHIN,NBIN,MAXIN,'N')
+         CALL AJCHCA('PCONCOR',CHFREQ,LPAIN,LCHIN,NBIN,MAXIN,'N')
+         CALL AJCHCA('PCONTRR',CHSIG,LPAIN,LCHIN,NBIN,MAXIN,'N')
 C         ON RECUPERE LE NUME_ORDRE DANS LE NOM DU CHAMP
 C         DE DEPLACEMENT : 'NOMUTILI.C00.000000'
-        CHC = '&&MEGENE.DEF.'//LCHIN(1) (14:19)
-        CALL AJCHCA('PDEFORM',CHC,LPAIN,LCHIN,NBIN,MAXIN,'N')
-        CALL AJCHCA('PDEFORR',CHEPS,LPAIN,LCHIN,NBIN,MAXIN,'N')
-        CALL AJCHCA('PDEPPLU',CHDEP2,LPAIN,LCHIN,NBIN,MAXIN,'N')
-        IF (OPTIO2.EQ.'SICO_ELNO') CALL AJCHCA('PDEPLAR',CHEPS,
-     &      LPAIN,LCHIN,NBIN,MAXIN,'N')
-        CALL AJCHCA('PFREQR',CHFREQ,LPAIN,LCHIN,NBIN,MAXIN,'N')
-        CALL AJCHCA('PGEOMER',CHGEOM,LPAIN,LCHIN,NBIN,MAXIN,'N')
-        CALL AJCHCA('PHARMON',CHHARM,LPAIN,LCHIN,NBIN,MAXIN,'N')
-        CALL AJCHCA('PMASDIA',CHMASS,LPAIN,LCHIN,NBIN,MAXIN,'N')
-        CALL AJCHCA('PMATERC',CHMATE,LPAIN,LCHIN,NBIN,MAXIN,'N')
-        CALL AJCHCA('PNUMCOR',CHNUMC,LPAIN,LCHIN,NBIN,MAXIN,'N')
-        CALL AJCHCA('PPHASIN',CHMETA,LPAIN,LCHIN,NBIN,MAXIN,'N')
-        CALL AJCHCA('PSIEFNOR',CHSIG,LPAIN,LCHIN,NBIN,MAXIN,'N')
-        CALL AJCHCA('PVARCRR',CH2,LPAIN,LCHIN,NBIN,MAXIN,'N')
-        CALL AJCHCA('PVARCPR',CH1,LPAIN,LCHIN,NBIN,MAXIN,'N')
-        CALL AJCHCA('PVARIGR',CHVARI,LPAIN,LCHIN,NBIN,MAXIN,'N')
-        CALL AJCHCA('PVARIGS',CHVARI,LPAIN,LCHIN,NBIN,MAXIN,'N')
+         CHC = '&&MEGENE.DEF.'//LCHIN(1) (14:19)
+         CALL AJCHCA('PDEFORM',CHC,LPAIN,LCHIN,NBIN,MAXIN,'N')
+         CALL AJCHCA('PDEFORR',CHEPS,LPAIN,LCHIN,NBIN,MAXIN,'N')
+         CALL AJCHCA('PDEPPLU',CHDEP2,LPAIN,LCHIN,NBIN,MAXIN,'N')
+         IF (OPTIO2.EQ.'SICO_ELNO') CALL AJCHCA('PDEPLAR',CHEPS,
+     &                                    LPAIN,LCHIN,NBIN,MAXIN,'N')
+         CALL AJCHCA('PFREQR',CHFREQ,LPAIN,LCHIN,NBIN,MAXIN,'N')
+         CALL AJCHCA('PGEOMER',CHGEOM,LPAIN,LCHIN,NBIN,MAXIN,'N')
+         CALL AJCHCA('PHARMON',CHHARM,LPAIN,LCHIN,NBIN,MAXIN,'N')
+         CALL AJCHCA('PMASDIA',CHMASS,LPAIN,LCHIN,NBIN,MAXIN,'N')
+         CALL AJCHCA('PMATERC',CHMATE,LPAIN,LCHIN,NBIN,MAXIN,'N')
+         CALL AJCHCA('PNUMCOR',CHNUMC,LPAIN,LCHIN,NBIN,MAXIN,'N')
+         CALL AJCHCA('PPHASIN',CHMETA,LPAIN,LCHIN,NBIN,MAXIN,'N')
+         CALL AJCHCA('PSIEFNOR',CHSIG,LPAIN,LCHIN,NBIN,MAXIN,'N')
+         CALL AJCHCA('PVARCRR',CH2,LPAIN,LCHIN,NBIN,MAXIN,'N')
+         CALL AJCHCA('PVARCPR',CH1,LPAIN,LCHIN,NBIN,MAXIN,'N')
+         CALL AJCHCA('PVARIGR',CHVARI,LPAIN,LCHIN,NBIN,MAXIN,'N')
+         CALL AJCHCA('PVARIGS',CHVARI,LPAIN,LCHIN,NBIN,MAXIN,'N')
 
 
-        IF (CHTEMP.NE.' ') THEN
-            CALL AJCHCA('PTEMPER',CHTEMP,LPAIN,LCHIN,NBIN,MAXIN,'N')
-        END IF
-        CALL AJCHCA('PTEMPSR',CHTIME,LPAIN,LCHIN,NBIN,MAXIN,'N')
-        CALL AJCHCA('PTEREF',CHTREF,LPAIN,LCHIN,NBIN,MAXIN,'N')
+         IF (CHTEMP.NE.' ') THEN
+               CALL AJCHCA('PTEMPER',CHTEMP,LPAIN,LCHIN,NBIN,MAXIN,'N')
+         END IF
+         CALL AJCHCA('PTEMPSR',CHTIME,LPAIN,LCHIN,NBIN,MAXIN,'N')
+         CALL AJCHCA('PTEREF',CHTREF,LPAIN,LCHIN,NBIN,MAXIN,'N')
 
 
-        IF (TYPESE.EQ.-1) THEN
+         IF (TYPESE.EQ.-1) THEN
 C         -- DERIVEE LAGRANGIENNE
-          CALL AJCHCA('PDLAGDE',CHDESE,LPAIN,LCHIN,NBIN,MAXIN,'N')
-          IF (OPTION.EQ.'DLSI_ELGA_DEPL') THEN
-            CALL AJCHCA('PVARCMR',CHTESE,LPAIN,LCHIN,NBIN,MAXIN,'N')
-          ELSE
-            CALL AJCHCA('PDLAGTE',CHTESE,LPAIN,LCHIN,NBIN,MAXIN,'N')
-          ENDIF
-          CALL AJCHCA('PVECTTH',CHTHET,LPAIN,LCHIN,NBIN,MAXIN,'N')
+            CALL AJCHCA('PDLAGDE',CHDESE,LPAIN,LCHIN,NBIN,MAXIN,'N')
+            IF (OPTION.EQ.'DLSI_ELGA_DEPL') THEN
+               CALL AJCHCA('PVARCMR',CHTESE,LPAIN,LCHIN,NBIN,MAXIN,'N')
+            ELSE
+               CALL AJCHCA('PDLAGTE',CHTESE,LPAIN,LCHIN,NBIN,MAXIN,'N')
+            ENDIF
+            CALL AJCHCA('PVECTTH',CHTHET,LPAIN,LCHIN,NBIN,MAXIN,'N')
 
-        ELSE IF (TYPESE.EQ.3) THEN
-          IF (OPTIO2(1:4).EQ.'EPSI') GO TO 20
-          IF (OPTIO2(11:14).EQ.'ELGA') GO TO 20
-          IF (OPTIO2.EQ.'SIEF_ELNO') GO TO 20
-          IF (OPTIO2.EQ.'VARI_ELNO') GO TO 20
-
+         ELSE IF (TYPESE.EQ.3) THEN
+            IF (OPTIO2(1:4).EQ.'EPSI') GO TO 20
+            IF (OPTIO2(11:14).EQ.'ELGA') GO TO 20
+            IF (OPTIO2.EQ.'SIEF_ELNO') GO TO 20
+            IF (OPTIO2.EQ.'VARI_ELNO') GO TO 20
 
 C         -- SENSIBILITE PAR RAPPORT A UNE CARACTERISTIQUE MATERIAU
 C            DETERMINATION DU CHAMP MATERIAU A PARTIR DE LA CARTE CODEE
-          MATERI = CHMATE(1:8)
+            MATERI = CHMATE(1:8)
 C         -- DETERMINATION DU CHAMP MATERIAU DERIVE NON CODE MATSEN
-          CALL PSGENC(MATERI,NOPASE,MATERS,IRET)
-          IF (IRET.NE.0) THEN
-            CALL U2MESK('A','CALCULEL2_87',1,MATERI)
-            GO TO 40
-          END IF
+            CALL PSGENC(MATERI,NOPASE,MATERS,IRET)
+            IF (IRET.NE.0) THEN
+               CALL U2MESK('A','CALCULEL2_87',1,MATERI)
+               GO TO 40
+            END IF
 C         -- TRANSFORMATION EN CHAMP MATERIAU DERIVE CODE
-          MATSEN = ' '
-          MATSEN(1:24) = MATERS(1:8)//CHMATE(9:24)
+            MATSEN = ' '
+            MATSEN(1:24) = MATERS(1:8)//CHMATE(9:24)
 C         -- ON RAJOUTE LPAIN LIES AU MATERIAU ET AU CHAMP DERIVES
-          CALL AJCHCA('PMATSEN',MATSEN,LPAIN,LCHIN,NBIN,MAXIN,'N')
-          IF (INDMEC) THEN
-            CALL AJCHCA('PDEPSEN',CHDESE,LPAIN,LCHIN,NBIN,MAXIN,'N')
-            CALL AJCHCA('PACCSEN',CHACSE,LPAIN,LCHIN,NBIN,MAXIN,'N')
-          ELSE
-            CALL AJCHCA('PTEMSEN',CHTESE,LPAIN,LCHIN,NBIN,MAXIN,'N')
-          END IF
+            CALL AJCHCA('PMATSEN',MATSEN,LPAIN,LCHIN,NBIN,MAXIN,'N')
+            IF (INDMEC) THEN
+               CALL AJCHCA('PDEPSEN',CHDESE,LPAIN,LCHIN,NBIN,MAXIN,'N')
+               CALL AJCHCA('PACCSEN',CHACSE,LPAIN,LCHIN,NBIN,MAXIN,'N')
+            ELSE
+               CALL AJCHCA('PTEMSEN',CHTESE,LPAIN,LCHIN,NBIN,MAXIN,'N')
+            END IF
 C         -- REDEFINITION DE L'OPTION
-          OPTIO2 = OPTIO2(1:9)//'_SENS'
-          IF (OPTIO2(1:4).NE.'FLUX') THEN
+            OPTIO2 = OPTIO2(1:9)//'_SENS'
+            IF (OPTIO2(1:4).NE.'FLUX') THEN
 C           -- GLUTE MECALM.F : IL FAUT PERMUTER PDEPLAR ET PDEPSEN
-            I1=INDIK8(LPAIN,'PDEPSEN',1,NBIN)
-            CALL ASSERT(I1.GT.0 .AND. I1.LE.NBIN)
-            I2=INDIK8(LPAIN,'PDEPLAR',1,NBIN)
-            CALL ASSERT(I2.GT.0 .AND. I2.LE.NBIN)
-            LPAIN(I1)='PDEPLAR'
-            LPAIN(I2)='PDEPSEN'
-          ENDIF
-   20     CONTINUE
-        END IF
+               I1=INDIK8(LPAIN,'PDEPSEN',1,NBIN)
+               CALL ASSERT(I1.GT.0 .AND. I1.LE.NBIN)
+               I2=INDIK8(LPAIN,'PDEPLAR',1,NBIN)
+               CALL ASSERT(I2.GT.0 .AND. I2.LE.NBIN)
+               LPAIN(I1)='PDEPLAR'
+               LPAIN(I2)='PDEPSEN'
+            ENDIF
+20          CONTINUE
+         END IF
 
-        CALL MECEUC('C',POUX,OPTIO2,LIGREL,NBIN,LCHIN,LPAIN,NBOUT,
-     &              LCHOUT,LPAOUT,BASE2)
-        CALL EXISD('CHAMP_GD',LCHOUT(1),IRET)
-        IF (IRET.EQ.0) THEN
-          CODRET = 1
-          CALL U2MESK('A','CALCULEL2_89',1,OPTIO2)
-        END IF
+         CALL MECEUC('C',POUX,OPTIO2,LIGREL,NBIN,LCHIN,LPAIN,NBOUT,
+     &               LCHOUT,LPAOUT,BASE2)
+         CALL EXISD('CHAMP_GD',LCHOUT(1),IRET)
+         IF (IRET.EQ.0) THEN
+            CODRET = 1
+            CALL U2MESK('A','CALCULEL2_89',1,OPTIO2)
+         END IF
 C     POUR 'SIEF_ELNO' CAS X-FEM, ON VERIFIE LA PRESENCE DU CHAMP
 C     SUPPLEMENTAIRE "DE CONTRAINTES AUX NOEUDS PAR SOUS ELEMENTS"
-        IF (IFISS.NE.0.AND.OPTION.EQ.'SIEF_ELNO') THEN
-          CALL EXISD('CHAMP_GD',LCHOUT(2),IRET)
-          IF (IRET.EQ.0) THEN
-            CODRET = 1
-            CALL U2MESK('A','CALCULEL6_79',1,OPTIO2)
-          ENDIF
-        END IF
-
+         IF (IFISS.NE.0.AND.OPTION.EQ.'SIEF_ELNO') THEN
+            CALL EXISD('CHAMP_GD',LCHOUT(2),IRET)
+            IF (IRET.EQ.0) THEN
+               CODRET = 1
+               CALL U2MESK('A','CALCULEL6_79',1,OPTIO2)
+            ENDIF
+         END IF
 
 C     MENAGE :
 C     -------
-        IF (POUX.EQ.'OUI') CALL JEDETC('V','&&MECHPO',1)
-        CALL DETRSD('CHAM_ELEM_S',CHELE2)
+         IF (POUX.EQ.'OUI') CALL JEDETC('V','&&MECHPO',1)
+         CALL DETRSD('CHAM_ELEM_S',CHELE2)
 
       END IF
-   40 CONTINUE
+40    CONTINUE
       END

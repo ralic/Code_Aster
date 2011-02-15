@@ -1,4 +1,4 @@
-%& MODIF COMPELEM  DATE 01/02/2011   AUTEUR DELMAS J.DELMAS 
+%& MODIF COMPELEM  DATE 15/02/2011   AUTEUR FLEJOU J-L.FLEJOU 
 % RESPONSABLE PROIX
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
@@ -504,8 +504,6 @@ GRANDEUR_SIMPLE__
        UI2, VI2, WI2, ...,UO6, VO6, WO6, WO, WI1, WO1 : DDL des éléments de tube
        GONF :
        EPXX, EPYY, EPZZ, EPXY, EPXZ, EPYZ :
-       D1 : projection du champ suivant le vecteur directeur (D1X,D1Y,D1Z)
-       D1X, D1Y, D1Z :
        D2 : projection du champ suivant le vecteur directeur (D2X,D2Y,D2Z)
        D2X, D2Y, D2Z :
        D3 : projection du champ suivant le vecteur directeur (D3X,D3Y,D3Z)
@@ -535,6 +533,7 @@ GRANDEUR_SIMPLE__
        SITY    : effort de contact tangent direction 2
        LH1     : multiplicateur de Lagrange pression a travers fissure HM
        SIXX,SIYY,SIXY    : contraintes regularisees pour modele GRAD_SIGM
+       DAMG :
 >>
     DEPL_C   = C    DX       DY       DZ       DRX      DRY      DRZ      GRX      PRES
                     PRE1     PRE2     TEMP     PHI      DH       H1X      H1Y      H1Z
@@ -546,12 +545,12 @@ GRANDEUR_SIMPLE__
                     VI6      WI6      UO2      VO2      WO2      UO3      VO3      WO3
                     UO4      VO4      WO4      UO5      VO5      WO5      UO6      VO6
                     WO6      WO       WI1      WO1      GONF     EPXX     EPYY     EPZZ
-                    EPXY     EPXZ     EPYZ     D1       D1X      D1Y      D1Z      D2
-                    D2X      D2Y      D2Z      D3       D3X      D3Y      D3Z      VARI
-                    LAG_GV   V11      V12      V13      V21      V22      V23      V31
-                    V32      V33      PRES11   PRES12   PRES13   PRES21   PRES22   PRES23
-                    PRES31   PRES32   PRES33   SIGN     SITX     SITY     LH1      SIXX
-                    SIYY     SIZZ     SIXY
+                    EPXY     EPXZ     EPYZ     D2       D2X      D2Y      D2Z      D3
+                    D3X      D3Y      D3Z      VARI     LAG_GV   V11      V12      V13
+                    V21      V22      V23      V31      V32      V33      PRES11   PRES12
+                    PRES13   PRES21   PRES22   PRES23   PRES31   PRES32   PRES33   SIGN
+                    SITX     SITY     LH1      SIXX     SIYY     SIZZ     SIXY     DAMG
+
 <<  DEPL_F Type:K8 Déplacement (fonction)
        DX, DY, DZ : translation suivant X, Y ET Z (repère global)
        DRX, DRY, DRZ : rotation autour de X, Y ET Z (repère global)
@@ -574,8 +573,6 @@ GRANDEUR_SIMPLE__
        UI2, VI2, WI2, ...,UO6, VO6, WO6, WO, WI1, WO1 : DDL des éléments de tube
        GONF :
        EPXX, EPYY, EPZZ, EPXY, EPXZ, EPYZ :
-       D1 : projection du champ suivant le vecteur directeur (D1X,D1Y,D1Z)
-       D1X, D1Y, D1Z :
        D2 : projection du champ suivant le vecteur directeur (D2X,D2Y,D2Z)
        D2X, D2Y, D2Z :
        D3 : projection du champ suivant le vecteur directeur (D3X,D3Y,D3Z)
@@ -604,6 +601,7 @@ GRANDEUR_SIMPLE__
        SITX    : effort de contact normal
        SITY    : effort de contact tangent direction 2
        LH1     : multiplicateur de Lagrange pression a travers fissure HM
+       DAMG :
 >>
 
     DEPL_F   = K8   DX       DY       DZ       DRX      DRY      DRZ      GRX      PRES
@@ -616,12 +614,12 @@ GRANDEUR_SIMPLE__
                     VI6      WI6      UO2      VO2      WO2      UO3      VO3      WO3
                     UO4      VO4      WO4      UO5      VO5      WO5      UO6      VO6
                     WO6      WO       WI1      WO1      GONF     EPXX     EPYY     EPZZ
-                    EPXY     EPXZ     EPYZ     D1       D1X      D1Y      D1Z      D2
-                    D2X      D2Y      D2Z      D3       D3X      D3Y      D3Z      VARI
-                    LAG_GV   V11      V12      V13      V21      V22      V23      V31
-                    V32      V33      PRES11   PRES12   PRES13   PRES21   PRES22   PRES23
-                    PRES31   PRES32   PRES33   SIGN     SITX     SITY     LH1      SIXX
-                    SIYY     SIZZ     SIXY
+                    EPXY     EPXZ     EPYZ     D2       D2X      D2Y      D2Z
+                    D3
+                    D3X      D3Y      D3Z      VARI     LAG_GV   V11      V12      V13
+                    V21      V22      V23      V31      V32      V33      PRES11   PRES12
+                    PRES13   PRES21   PRES22   PRES23   PRES31   PRES32   PRES33   SIGN
+                    SITX     SITY     LH1      SIXX     SIYY     SIZZ     SIXY     DAMG
 
 <<  DEPL_R Type:R Déplacement réel aux noeuds
        DX, DY, DZ : translation suivant X, Y ET Z (repère global)
@@ -645,8 +643,6 @@ GRANDEUR_SIMPLE__
        UI2, VI2, WI2, ...,UO6, VO6, WO6, WO, WI1, WO1 : DDL des éléments de tube
        GONF :
        EPXX, EPYY, EPZZ, EPXY, EPXZ, EPYZ :
-       D1 : projection du champ suivant le vecteur directeur (D1X,D1Y,D1Z)
-       D1X, D1Y, D1Z :
        D2 : projection du champ suivant le vecteur directeur (D2X,D2Y,D2Z)
        D2X, D2Y, D2Z :
        D3 : projection du champ suivant le vecteur directeur (D3X,D3Y,D3Z)
@@ -675,6 +671,7 @@ GRANDEUR_SIMPLE__
        SITX    : effort de contact normal
        SITY    : effort de contact tangent direction 2
        LH1     : multiplicateur de Lagrange pression a travers fissure HM
+       DAMG :
 >>
     DEPL_R   = R    DX       DY       DZ       DRX      DRY      DRZ      GRX      PRES
                     PRE1     PRE2     TEMP     PHI      DH       H1X      H1Y      H1Z
@@ -686,12 +683,12 @@ GRANDEUR_SIMPLE__
                     VI6      WI6      UO2      VO2      WO2      UO3      VO3      WO3
                     UO4      VO4      WO4      UO5      VO5      WO5      UO6      VO6
                     WO6      WO       WI1      WO1      GONF     EPXX     EPYY     EPZZ
-                    EPXY     EPXZ     EPYZ     D1       D1X      D1Y      D1Z      D2
-                    D2X      D2Y      D2Z      D3       D3X      D3Y      D3Z      VARI
-                    LAG_GV   V11      V12      V13      V21      V22      V23      V31
-                    V32      V33      PRES11   PRES12   PRES13   PRES21   PRES22   PRES23
-                    PRES31   PRES32   PRES33   SIGN     SITX     SITY     LH1      SIXX
-                    SIYY     SIZZ     SIXY
+                    EPXY     EPXZ     EPYZ     D2       D2X      D2Y      D2Z
+                    D3
+                    D3X      D3Y      D3Z      VARI     LAG_GV   V11      V12      V13
+                    V21      V22      V23      V31      V32      V33      PRES11   PRES12
+                    PRES13   PRES21   PRES22   PRES23   PRES31   PRES32   PRES33   SIGN
+                    SITX     SITY     LH1      SIXX     SIYY     SIZZ     SIXY     DAMG
 
 <<  DERA_R Type:R indicateur local de décharge et de perte de radialité
        DCHA_V : indicateur local de décharge avec la norme de Von Mises
@@ -1465,9 +1462,10 @@ FORC_C   = C    FX       FY       FZ       MX       MY       MZ       BX       R
        MOMENT :
        DEPL :
        LAG_GV :
+       DAMG
 >>
     PREC     = R    PREC     SIGM     EPSI     FHYDR1   FHYDR2   FTHERM   VARI
-                    EFFORT   MOMENT   DEPL     LAG_GV
+                    EFFORT   MOMENT   DEPL     LAG_GV   DAMG
 
 <<  PRAC_R Type:R Pression acoustique (phénomène Acoustique)
        PRES_R  partie réelle de la pression

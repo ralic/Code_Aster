@@ -1,4 +1,4 @@
-#@ MODIF calculel5 Messages  DATE 31/01/2011   AUTEUR PELLET J.PELLET 
+#@ MODIF calculel5 Messages  DATE 15/02/2011   AUTEUR FLEJOU J-L.FLEJOU 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -250,11 +250,6 @@ PROJ_CHAMP (ou LIAISON_MAILLE) :
  du mot clé facteur REPE_COQUE ne sont pas traités.
 """),
 
-51 : _("""
- Le repère de post-traitement a été défini dans la commande AFFE_CARA_ELEM mot clé facteur COQUE.
- Il est conseillé de définir ce repère à l'aide du mot clé ANGL_REP ou VECTEUR du mot clé
- facteur REPE_COQUE de la commande CALC_ELEM.
-"""),
 
 52 : _("""
  Présence de GRILLE dans la modélisation, les mots clés ANGL_REP ou VECTEUR

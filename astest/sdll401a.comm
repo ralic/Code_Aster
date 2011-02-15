@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 15/02/2011   AUTEUR FLEJOU J-L.FLEJOU 
 # TITRE POUTRE SOUMISE A UNE FORCE SINUSOIDALE REPARTIE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -158,7 +158,7 @@ DYN_FX=CALC_ELEM(MODELE=MO,
                  EXCIT=_F( CHARGE = REPFX,
                            FONC_MULT = fCOS),
                  OPTION=('EFGE_ELNO',
-                         'SIGM_ELNO',
+                         'SIPM_ELNO',
                                   )
                     )
 
@@ -288,7 +288,7 @@ DYNP_F20=CALC_ELEM( MODELE=MO,
                     EXCIT=_F( CHARGE = PONF20,
                               FONC_MULT = fCOS),
                     OPTION=('EFGE_ELNO',
-                            'SIGM_ELNO',
+                            'SIPM_ELNO',
                                      )
                     )
 
@@ -342,7 +342,7 @@ DYNP_M20=CALC_ELEM( MODELE=MO,
                     EXCIT=_F( CHARGE = PONM20,
                               FONC_MULT = fCOS),
                     OPTION=('EFGE_ELNO',
-                            'SIGM_ELNO',
+                            'SIPM_ELNO',
                                      )
                     )
 

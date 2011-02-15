@@ -1,4 +1,4 @@
-#@ MODIF calc_europlexus_ops Macro  DATE 31/01/2011   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+#@ MODIF calc_europlexus_ops Macro  DATE 15/02/2011   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -113,6 +113,9 @@ def calc_europlexus_ops(self,MODELE,CARA_ELEM,CHAM_MATER,EXCIT,FONC_PARASOL=None
   from Utilitai.Utmess import UTMESS, MasquerAlarme, RetablirAlarme
   MasquerAlarme('MED_1')
   MasquerAlarme('MED_54')
+  MasquerAlarme('MED_77')
+  MasquerAlarme('MED_37')
+
 
   # Ligne de commande d'Europlexus
   if args.has_key('LOGICIEL'): EXEC = args['LOGICIEL']
@@ -168,6 +171,8 @@ def calc_europlexus_ops(self,MODELE,CARA_ELEM,CHAM_MATER,EXCIT,FONC_PARASOL=None
   # Pour la gestion des alarmes
   RetablirAlarme('MED_1')
   RetablirAlarme('MED_54')
+  RetablirAlarme('MED_77')
+  RetablirAlarme('MED_37')
 
   return ier
 
@@ -1842,6 +1847,8 @@ class EUROPLEXUS:
     fort = 'fort.%i' %unite
     if os.path.isfile(fort) : os.remove(fort)
 
+    if not os.path.isfile(fichier_med): UTMESS('F','PLEXUS_14')   
+
     os.symlink(fichier_med,fort)
 
     # Regeneration des mots-cles EXCIT passés en argument de la macro
@@ -1850,6 +1857,7 @@ class EUROPLEXUS:
        dExcit.append(j.cree_dict_valeurs(j.mc_liste))
        for i in dExcit[-1].keys():
           if dExcit[-1][i]==None : del dExcit[-1][i]
+
     resu = LIRE_RESU(TYPE_RESU='EVOL_NOLI',
 #                  VERI_ELGA='NON',
                   FORMAT='MED',
@@ -2319,7 +2327,8 @@ class EUROPLEXUS:
 #     EXEC_LOGICIEL(LOGICIEL='cd %s ; unset TMPDIR ; %s -usetmpdir %s ; iret=$? ; cd %s ; echo "Code_Retour Europlexus : $iret" ; exit 0' % (self.pwd + self.REPE, self.EXEC, fichier_epx, self.pwd),
 #                   CODE_RETOUR_MAXI=-1,
 #                   INFO=2)
-     EXEC_LOGICIEL(LOGICIEL='cd %s ; unset TMPDIR ; %s %s ; iret=$? ; cd %s ; echo "Code_Retour Europlexus : $iret" ; exit 0' % (self.pwd + self.REPE, self.EXEC, fichier_epx, self.pwd),
+
+     EXEC_LOGICIEL(LOGICIEL='cd %s ; unset TMPDIR ; unset PMI_RANK ; %s %s ; iret=$? ; cd %s ; echo "Code_Retour Europlexus : $iret" ; exit 0' % (self.pwd + self.REPE, self.EXEC, fichier_epx, self.pwd),
                    CODE_RETOUR_MAXI=-1,
                    INFO=2)
 

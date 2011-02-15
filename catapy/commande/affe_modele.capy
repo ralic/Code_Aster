@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 08/02/2011   AUTEUR GRANET S.GRANET 
+#& MODIF COMMANDE  DATE 15/02/2011   AUTEUR FLEJOU J-L.FLEJOU 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -78,6 +78,7 @@ AFFE_MODELE=OPER(nom="AFFE_MODELE",op=18,sd_prod=modele_sdaster,
                                   "3D_SI",           # RESP. : DESROCHES X.DESROCHES
                                   "3D_GRAD_EPSI",    # RESP. : MICHEL S.MICHEL
                                   "3D_GRAD_VARI",    # RESP. : MICHEL S.MICHEL
+                                  "3D_GVNO",         # RESP. : BEAURAIN J.BEAURAIN
                                   "3D_XFEM_CONT",    # RESP. : GENIAUT S.GENIAUT
                                   "3D_JOINT",        # RESP. : LAVERNE J.LAVERNE
                                   "3D_JOINT_HYME",   # RESP. : LAVERNE J.LAVERNE
@@ -91,6 +92,7 @@ AFFE_MODELE=OPER(nom="AFFE_MODELE",op=18,sd_prod=modele_sdaster,
                                   "AXIS_INCO_GD",    # RESP. : MICHEL S.MICHEL
                                   "AXIS_SI",         # RESP. : DESROCHES X.DESROCHES
                                   "AXIS_GRAD_VARI",  # RESP. : MICHEL S.MICHEL
+                                  "AXIS_GVNO",       # RESP. : BEAURAIN J.BEAURAIN
                                   "AXIS_JOINT",      # RESP. : LAVERNE J.LAVERNE
                                   "AXIS_JOINT_HYME", # RESP. : LAVERNE J.LAVERNE
                                   "AXIS_INTERFACE",  # RESP. : LAVERNE J.LAVERNE
@@ -111,6 +113,7 @@ AFFE_MODELE=OPER(nom="AFFE_MODELE",op=18,sd_prod=modele_sdaster,
                                   "D_PLAN_XFEM_CONT",# RESP. : GENIAUT S.GENIAUT
                                   "D_PLAN_GRAD_EPSI",# RESP. : MICHEL S.MICHEL
                                   "D_PLAN_GRAD_VARI",# RESP. : MICHEL S.MICHEL
+                                  "D_PLAN_GVNO",     # RESP. : BEAURAIN J.BEAURAIN
                                   "D_PLAN_GRAD_SIGM",# RESP. : GRANET S.GRANET
                                   "PLAN_JOINT",      # RESP. : LAVERNE J.LAVERNE
                                   "PLAN_JOINT_HYME", # RESP. : LAVERNE J.LAVERNE

@@ -1,4 +1,4 @@
-# MODIF  DATE 10/01/2011   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 14/02/2011   AUTEUR TRAN V-X.TRAN 
 # TITRE CALCUL DU DOMMAGE DE LEMAITRE-SERMAGE (CALC_ELEM)
 # szlz110a.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -523,15 +523,6 @@ TEST_RESU(RESU=(
           PRECISION = 0.001,
           REFERENCE = 'NON_REGRESSION'),
       _F( RESULTAT = RESUPLA1,
-          NOM_CHAM = 'ENDO_ELGA',
-          MAILLE = 'M1',
-          POINT=1,
-          NUME_ORDRE=15,
-          NOM_CMP = 'D_CUMULE',
-          VALE = 5.43728E-03,
-          PRECISION = 0.001,
-          REFERENCE = 'NON_REGRESSION'),
-      _F( RESULTAT = RESUPLA1,
           NOM_CHAM = 'ENDO_ELNO',
           MAILLE = 'M1',
           NOEUD='N1',
@@ -567,18 +558,8 @@ TEST_RESU(RESU=(
           VALE = 5.43728E-03,
           PRECISION = 0.001,
           REFERENCE = 'NON_REGRESSION'),
-      _F( RESULTAT = RESUPLA1,
-          NOM_CHAM = 'ENDO_ELNO',
-          MAILLE = 'M1',
-          NOEUD='N1',
-          NUME_ORDRE=15,
-          NOM_CMP = 'D_CUMULE',
-          VALE = 5.43728E-03,
-          PRECISION = 0.001,
-          REFERENCE = 'NON_REGRESSION'),
-       ),
 )
-
+);
 
 # ====================================================================
 # RELEVE DE L'ENDOMMAGEMENT DE LEMAITRE-SERMAGE
@@ -587,7 +568,7 @@ DOMLE=POST_RELEVE_T(ACTION=(_F(INTITULE='DOMMAGE S=1.003',
                                GROUP_NO='POST_NO',
                                RESULTAT=RESUPLAS,
                                NOM_CHAM='ENDO_ELNO',
-                               NOM_CMP=('DOM_LEM','D_CUMULE'),
+                               NOM_CMP=('DOM_LEM'),
                                OPERATION='EXTRACTION',),),
                     INFO=1,);
 
@@ -595,7 +576,7 @@ DOMLE1=POST_RELEVE_T(ACTION=(_F(INTITULE='DOMMAGE S=0.8',
                                GROUP_NO='POST_NO',
                                RESULTAT=RESUPLA1,
                                NOM_CHAM='ENDO_ELNO',
-                               NOM_CMP=('DOM_LEM','D_CUMULE'),
+                               NOM_CMP=('DOM_LEM'),
                                OPERATION='EXTRACTION',),),
                     INFO=1,);
 
@@ -780,16 +761,6 @@ TEST_TABLE(TABLE=DOMLE,
            REFERENCE='NON_REGRESSION',
            VERSION='7.2.12',);
 
-TEST_TABLE(TABLE=DOMLE,
-           FILTRE=_F(NOM_PARA = 'INST',
-                     VALE = 1.00000E+03,),
-           NOM_PARA='D_CUMULE',
-           VALE=4.22226E+00,
-           CRITERE='ABSOLU',
-           PRECISION=2.E-5,
-           REFERENCE='NON_REGRESSION',
-           VERSION='7.2.12',);
-
 # --------------------------------------------------------------------
 # VERIFICATION DES SOLUTIONS OBTENUES ...
 # 2. AVEC S=0.8
@@ -961,15 +932,6 @@ TEST_TABLE(TABLE=DOMLE1,
                      VALE = 1.00000E+03,),
            NOM_PARA='DOM_LEM',
            VALE=2.66202E-01,
-           CRITERE='ABSOLU',
-           PRECISION=1.E-5,
-           REFERENCE='NON_REGRESSION',
-           VERSION='7.2.12',);
-TEST_TABLE(TABLE=DOMLE1,
-           FILTRE=_F(NOM_PARA = 'INST',
-                     VALE = 1.00000E+03,),
-           NOM_PARA='D_CUMULE',
-           VALE=6.75640E-01,
            CRITERE='ABSOLU',
            PRECISION=1.E-5,
            REFERENCE='NON_REGRESSION',

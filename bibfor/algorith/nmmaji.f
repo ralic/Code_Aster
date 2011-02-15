@@ -1,8 +1,8 @@
-      SUBROUTINE NMMAJI(NUMEDD,LGROT ,SDNUME,COEF  ,INCMOZ,
-     &                  DDINCZ,INCPLZ)
+      SUBROUTINE NMMAJI(NUMEDD,LGROT ,LENDO ,SDNUME,COEF  ,
+     &                  INCMOZ,DDINCZ,INCPLZ,ORDRE)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 17/01/2011   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 15/02/2011   AUTEUR FLEJOU J-L.FLEJOU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -22,11 +22,12 @@ C ======================================================================
 C RESPONSABLE ABBAS M.ABBAS
 C
       IMPLICIT NONE
-      LOGICAL       LGROT
+      LOGICAL       LGROT,LENDO
       REAL*8        COEF
       CHARACTER*(*) INCPLZ,INCMOZ,DDINCZ
       CHARACTER*24  NUMEDD      
       CHARACTER*19  SDNUME
+      INTEGER       ORDRE
 C 
 C ----------------------------------------------------------------------
 C
@@ -45,6 +46,8 @@ C OUT INCPLU : CHAMP DE DEPL. CORRIGE
 C IN  DDINNC : INCREMENT CHAMP DE DEPL.
 C IN  LGROT  : .TRUE.  S'IL Y A DES DDL DE GRDE ROTATION
 C IN  SDNUME : SD NUMEROTATION
+C IN  ORDRE  : 0 -> MAJ DES INCREMENTS
+C              1 -> MAJ DES DEPL 
 C
 C -------------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ----------------
 C
@@ -88,8 +91,8 @@ C
 C
 C --- MISE A JOUR 
 C  
-      CALL MAJOUR(NEQ   ,LGROT    ,SDNUME,ZR(JDEPM) ,ZR(JDDEPL),
-     &            COEF  ,ZR(JDEPP))
+      CALL MAJOUR(NEQ   ,LGROT    ,LENDO    ,SDNUME,ZR(JDEPM) ,
+     &            ZR(JDDEPL),COEF  ,ZR(JDEPP),ORDRE)
 C
       CALL JEDEMA()
       END

@@ -1,4 +1,4 @@
-#@ MODIF post_k1_k2_k3_ops Macro  DATE 31/01/2011   AUTEUR MACOCCO K.MACOCCO 
+#@ MODIF post_k1_k2_k3_ops Macro  DATE 14/02/2011   AUTEUR GENIAUT S.GENIAUT 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -360,15 +360,14 @@ def get_normale(VECT_K1,Nnoff,ndim,DTANOR,DTANEX,d_coorf,Lnoff,Plev) :
 def get_tab_dep(self,Lnocal,Nnocal,Nnoff,d_coorf,Lnoff,DTANOR,DTANEX,ABSC_CURV_MAXI,dicVN,sens,RESULTAT,MODEL,
                 ListmaS,ListmaI,NB_NOEUD_COUPE,dmax,SYME_CHAR) :
       """ retourne les tables des deplacements sup et inf pour les noeuds perpendiculaires pour
-      chaque point du fond de fissure"""
+      tous les points du fond de fissure"""
 
       from Accas import _F
       import numpy as NP
 
       MACR_LIGN_COUPE  = self.get_cmd('MACR_LIGN_COUPE')
       
-      TlibS = [None]*Nnocal
-      TlibI = [None]*Nnocal
+      mcfact=[]
       for i in xrange(Nnocal):
          Porig = NP.array(d_coorf[Lnocal[i]] )
          if Lnocal[i]==Lnoff[0] and DTANOR : 
@@ -378,28 +377,26 @@ def get_tab_dep(self,Lnocal,Nnocal,Nnoff,d_coorf,Lnoff,DTANOR,DTANEX,ABSC_CURV_M
          else :
             Pextr = Porig - ABSC_CURV_MAXI*dicVN[Lnocal[i]]*sens
 
-         TlibS[i] = MACR_LIGN_COUPE(RESULTAT=RESULTAT,
-                                    NOM_CHAM='DEPL',
-                                    MODELE=MODEL, 
-                                    VIS_A_VIS=_F(MAILLE_1 = ListmaS),
-                                    LIGN_COUPE=_F(NB_POINTS=NB_NOEUD_COUPE,
-                                                  COOR_ORIG=(Porig[0],Porig[1],Porig[2],),
-                                                  TYPE='SEGMENT', 
-                                                  COOR_EXTR=(Pextr[0],Pextr[1],Pextr[2]),
-                                                  DISTANCE_MAX=dmax),);
+         mcfact.append(_F(NB_POINTS=NB_NOEUD_COUPE,
+                          COOR_ORIG=(Porig[0],Porig[1],Porig[2],),
+                          TYPE='SEGMENT',
+                          COOR_EXTR=(Pextr[0],Pextr[1],Pextr[2]),
+                          DISTANCE_MAX=dmax),)
 
+      __TlibS = MACR_LIGN_COUPE(RESULTAT=RESULTAT,
+                              NOM_CHAM='DEPL',
+                              MODELE=MODEL, 
+                              VIS_A_VIS=_F(MAILLE_1 = ListmaS),
+                              LIGN_COUPE=mcfact)
 
-         if SYME_CHAR=='SANS':
-            TlibI[i] = MACR_LIGN_COUPE(RESULTAT=RESULTAT,
-                                       NOM_CHAM='DEPL',
-                                       MODELE=MODEL,
-                                       VIS_A_VIS=_F(MAILLE_1 = ListmaI),
-                                       LIGN_COUPE=_F(NB_POINTS=NB_NOEUD_COUPE,
-                                                     COOR_ORIG=(Porig[0],Porig[1],Porig[2],),
-                                                     TYPE='SEGMENT',
-                                                     COOR_EXTR=(Pextr[0],Pextr[1],Pextr[2]),
-                                                     DISTANCE_MAX=dmax),);
-      return (TlibS,TlibI)
+      if SYME_CHAR=='SANS':
+         __TlibI = MACR_LIGN_COUPE(RESULTAT=RESULTAT,
+                                 NOM_CHAM='DEPL',
+                                 MODELE=MODEL,
+                                 VIS_A_VIS=_F(MAILLE_1 = ListmaI),
+                                 LIGN_COUPE=mcfact)
+
+      return (__TlibS.EXTR_TABLE(),__TlibI.EXTR_TABLE())
 
 #--------------------------------------------------------------------------------------------------------------- 
 
@@ -910,8 +907,7 @@ def get_tab(self,lev,ino,Tlib,Lno,TTSo,FOND_FISS,FISSURE,TYPE_MAILLAGE,RESULTAT,
 
          if FOND_FISS : 
             if TYPE_MAILLAGE =='LIBRE':
-               tab=Tlib[ino].EXTR_TABLE()
-               DETRUIRE(CONCEPT=_F(NOM=Tlib[ino]),INFO=1)
+               tab = Tlib.INTITULE=='l.coupe%i'%(ino+1)
             elif RESULTAT :
                if ndim == 2:
                   nomcmp= ('DX','DY')
@@ -1811,7 +1807,7 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
          MODEL = self.get_concept(n_modele)
          dmax  = PREC_VIS_A_VIS * ABSC_CURV_MAXI
 
-         (TlibS,TlibI) = get_tab_dep(self,Lnocal,Nnocal,Nnoff,d_coorf,Lnoff,DTANOR,DTANEX,ABSC_CURV_MAXI,dicVN,sens,RESULTAT,MODEL,
+         (__TlibS,__TlibI) = get_tab_dep(self,Lnocal,Nnocal,Nnoff,d_coorf,Lnoff,DTANOR,DTANEX,ABSC_CURV_MAXI,dicVN,sens,RESULTAT,MODEL,
                                      ListmaS,ListmaI,NB_NOEUD_COUPE,dmax,SYME_CHAR)
 
 
@@ -1904,8 +1900,8 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
    #  creation des objets vides s'ils n'existent pas
    #  de maniere a pouvoir les passer en argument des fonctions
    #  c'est pas terrible : il faudrait harmoniser les noms entre les différents cas
-   if 'TlibS'  not in locals() : TlibS  = []
-   if 'TlibI'  not in locals() : TlibI  = []
+   if '__TlibS'  not in locals() : __TlibS  = []
+   if '__TlibI'  not in locals() : __TlibI  = []
    if 'Lnosup' not in locals() : Lnosup = []
    if 'Lnoinf' not in locals() : Lnoinf = []
    if 'TTSo'   not in locals() : TTSo   = []
@@ -1943,9 +1939,9 @@ def post_k1_k2_k3_ops(self,MODELISATION,FOND_FISS,FISSURE,MATER,RESULTAT,
       affiche_traitement(FOND_FISS,INFO,FISSURE,Lnofon,ino)
 
 #     table 'depsup' et 'depinf'
-      tabsup = get_tab(self,'sup',ino,TlibS,Lnosup,TTSo,
+      tabsup = get_tab(self,'sup',ino,__TlibS,Lnosup,TTSo,
                        FOND_FISS,FISSURE,TYPE_MAILLAGE,RESULTAT,SYME_CHAR,TABL_DEPL_SUP,ndim)
-      tabinf = get_tab(self,'inf',ino,TlibI,Lnoinf,TTSo,
+      tabinf = get_tab(self,'inf',ino,__TlibI,Lnoinf,TTSo,
                        FOND_FISS,FISSURE,TYPE_MAILLAGE,RESULTAT,SYME_CHAR,TABL_DEPL_INF,ndim)
 
 #     les instants de post-traitement : creation de l_inst

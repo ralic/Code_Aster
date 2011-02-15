@@ -26,7 +26,7 @@ MEST1B=MECA_STATIQUE(  MODELE=MO,
 
 MEST1B=CALC_ELEM( reuse=MEST1B,
                       RESULTAT=MEST1B,
-                      OPTION=('EFGE_ELNO', 'SIGM_ELNO',))
+                      OPTION=('EFGE_ELNO', 'SIPM_ELNO',))
 
 TEST_RESU(RESU=(
 # SECTION RECTANGLE
@@ -69,11 +69,11 @@ TEST_RESU(RESU=(
 
 
 TEST_RESU(RESU=(
-      _F(  RESULTAT = MEST1B,     NOM_CHAM = 'SIGM_ELNO',
+      _F(  RESULTAT = MEST1B,     NOM_CHAM = 'SIPM_ELNO',
            REFERENCE='ANALYTIQUE',
            NUME_ORDRE = 1,        MAILLE = 'S11',  NOEUD = 'N1',
            NOM_CMP = 'SIXX',       VALE = 50.0 ),
-      _F(  RESULTAT = MEST1B,     NOM_CHAM = 'SIGM_ELNO',
+      _F(  RESULTAT = MEST1B,     NOM_CHAM = 'SIPM_ELNO',
            REFERENCE='ANALYTIQUE',
            NUME_ORDRE = 1,        MAILLE = 'S12',  NOEUD = 'N3',
            NOM_CMP = 'SIXX',       VALE = 50.0 ),
@@ -95,7 +95,7 @@ MEST1T=MECA_STATIQUE(  MODELE=MO,
 
 MEST1T=CALC_ELEM( reuse=MEST1T,
                       RESULTAT=MEST1T,
-                      OPTION=('EFGE_ELNO', 'SIGM_ELNO',))
+                      OPTION=('EFGE_ELNO', 'SIPM_ELNO',))
 
 TEST_RESU(RESU=(
 # SECTION RECTANGLE
@@ -138,11 +138,11 @@ TEST_RESU(RESU=(
 
 
 TEST_RESU(RESU=(
-      _F(  RESULTAT = MEST1T,     NOM_CHAM = 'SIGM_ELNO',
+      _F(  RESULTAT = MEST1T,     NOM_CHAM = 'SIPM_ELNO',
            REFERENCE='ANALYTIQUE',
            NUME_ORDRE = 1,        MAILLE = 'S11',  NOEUD = 'N1',
            NOM_CMP = 'SIXX',       VALE = 50.0 ),
-      _F(  RESULTAT = MEST1T,     NOM_CHAM = 'SIGM_ELNO',
+      _F(  RESULTAT = MEST1T,     NOM_CHAM = 'SIPM_ELNO',
            REFERENCE='ANALYTIQUE',
            NUME_ORDRE = 1,        MAILLE = 'S12',  NOEUD = 'N3',
            NOM_CMP = 'SIXX',       VALE = 50.0 ),

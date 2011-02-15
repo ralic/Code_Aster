@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+#& MODIF COMMANDE  DATE 15/02/2011   AUTEUR FLEJOU J-L.FLEJOU 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -95,7 +95,7 @@ CALC_ELEM=OPER(nom="CALC_ELEM",op=58,sd_prod=calc_elem_prod,reentrant='f',
                               #  contraintes
                            into=( "SIEF_ELNO","SIGM_ELNO","SIEF_ELGA",
                                   "SIPO_ELNO","EFGE_ELNO","EFCA_ELNO","SICA_ELNO",
-                                  "SITU_ELNO","SIRO_ELEM",
+                                  "SITU_ELNO","SIRO_ELEM","SIPM_ELNO",
                               # déformations
                                  "EPSI_ELNO","EPSI_ELGA","EPSG_ELGA","EPSG_ELNO",
                                  "EPME_ELNO","EPME_ELGA","DEGE_ELNO","EPTU_ELNO",
@@ -289,7 +289,7 @@ b_charge =BLOC( condition = "OPTION in ('EPME_ELNO','EPSI_ELGA','EPME_ELGA','EPS
                OPTION      =SIMP(statut='o',typ='TXM',validators=NoRepeat(),max='**',
                            into=( "SIEF_ELNO","SIRO_ELEM",
                                   "SITU_ELNO","SICO_ELNO",
-                                  "EFCA_ELNO",
+                                  "EFCA_ELNO","SIPO_ELNO","SIPM_ELNO",
                                   "FLHN_ELGA",
                                   # EPSI
                                   "EPSI_ELNO","EPSI_ELGA","EPSG_ELNO","EPSG_ELGA",

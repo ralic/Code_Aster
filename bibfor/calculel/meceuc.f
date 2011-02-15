@@ -10,7 +10,7 @@
       CHARACTER*(*) LCHIN(*),LCHOU(*),LPAIN(*),LPAOU(*),LIGREL
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 15/02/2011   AUTEUR FLEJOU J-L.FLEJOU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -95,8 +95,6 @@ C
       INDIC3=0
       INDIC4=0
 
-
-
 C     1. CHAMP COMPLEXE = DEPL
 C     -----------------------------------------------
       IF ((OPTIO2.EQ.'SIEF_ELGA') .OR.
@@ -106,94 +104,90 @@ C     -----------------------------------------------
      &    (OPTIO2.EQ.'EFGE_ELNO') .OR.
      &    (OPTIO2.EQ.'EFGE_ELNO_SENS') .OR.
      &    (OPTIO2.EQ.'SIPO_ELNO') .OR.
+     &    (OPTIO2.EQ.'SIPM_ELNO') .OR.
      &    (OPTIO2.EQ.'SIPO_ELNO_SENS') .OR.
      &    (OPTIO2.EQ.'EPOT_ELEM') .OR.
      &    (OPTIO2.EQ.'ECIN_ELEM')) THEN
-        DO 10 I=1,NIN
-          IF (LPAIN(I).EQ.'PDEPLAR')INDIC1=I
-   10   CONTINUE
-        CALL ASSERT(INDIC1.GT.0)
-        IF ( LCHIN(INDIC1).EQ.' ' ) THEN
-          VALK(1) = OPTION
-          CALL U2MESK('F','UTILITAI8_10',1,VALK)
-        ENDIF
-        CALL JEVEUO(LCHIN(INDIC1)(1:19)//'.DESC','L',IDESC)
-        GD=ZI(IDESC)
-        CALL JENUNO(JEXNUM('&CATA.GD.NOMGD',GD),NOMGD)
+         DO 10 I=1,NIN
+            IF (LPAIN(I).EQ.'PDEPLAR')INDIC1=I
+10       CONTINUE
+         CALL ASSERT(INDIC1.GT.0)
+         IF ( LCHIN(INDIC1).EQ.' ' ) THEN
+            VALK(1) = OPTION
+            CALL U2MESK('F','UTILITAI8_10',1,VALK)
+         ENDIF
+         CALL JEVEUO(LCHIN(INDIC1)(1:19)//'.DESC','L',IDESC)
+         GD=ZI(IDESC)
+         CALL JENUNO(JEXNUM('&CATA.GD.NOMGD',GD),NOMGD)
 
+         IF (NOMGD.EQ.'DEPL_R') THEN
+C           ----------------------------------
+C           LE CHAMP EST REEL, ON FAIT UN APPEL A CALCUL ET ON SORT
+            CALL CALCUL(STOP,OPTIO2,LIGREL,NIN,LCHIN,LPAIN,NOU,LCHOU,
+     &                  LPAOU,BASE,'OUI')
+            GOTO 70
 
-        IF (NOMGD.EQ.'DEPL_R') THEN
-C        ----------------------------------
-C         LE CHAMP EST REEL, ON FAIT UN APPEL A CALCUL ET ON SORT
-          CALL CALCUL(STOP,OPTIO2,LIGREL,NIN,LCHIN,LPAIN,NOU,LCHOU,
-     &                LPAOU,BASE,'OUI')
-          GOTO 70
+         ELSEIF (NOMGD.EQ.'DEPL_C') THEN
+C           ----------------------------------
+C           LE CHAMP EST COMPLEXE, ON LE DIVISE EN PARTIE REELLE ET
+C           PARTIE IMAGINAIRE PUIS ON APPELLE CALCUL SUR CHACUN
+C           DES CHAMPS
+            CALL ASSERT(NOU.EQ.1)
+            CALL SEPACH(LCHIN(INDIC1),'V',REEL,IMAG)
+            LCHIN(INDIC1)=REEL
 
+            IF (POUX.EQ.'OUI') THEN
+               DO 20 I=1,NIN
+                  IF (LPAIN(I).EQ.'PCHDYNR')INDIC2=I
+   20          CONTINUE
+               CALL ASSERT(INDIC2.GT.0)
+               CALL SEPACH(LCHIN(INDIC2),'V',CHDYNR,CHDYNI)
+               LCHIN(INDIC2)=CHDYNR
+            ENDIF
 
-        ELSEIF (NOMGD.EQ.'DEPL_C') THEN
-C        ----------------------------------
-C         LE CHAMP EST COMPLEXE, ON LE DIVISE EN PARTIE REELLE ET
-C         PARTIE IMAGINAIRE PUIS ON APPELLE CALCUL SUR CHACUN
-C         DES CHAMPS
-          CALL ASSERT(NOU.EQ.1)
-          CALL SEPACH(LCHIN(INDIC1),'V',REEL,IMAG)
-          LCHIN(INDIC1)=REEL
+            IF (OPTIO2(11:14).EQ.'SENS') THEN
+               DO 30 I=1,NIN
+                  IF (LPAIN(I).EQ.'PACCSEN')INDIC3=I
+   30          CONTINUE
+               CALL ASSERT(INDIC3.GT.0)
+               CALL SEPACH(LCHIN(INDIC3),'V',CHACCR,CHACCI)
+               LCHIN(INDIC3)=CHACCR
 
-          IF (POUX.EQ.'OUI') THEN
-            DO 20 I=1,NIN
-              IF (LPAIN(I).EQ.'PCHDYNR')INDIC2=I
-   20       CONTINUE
-            CALL ASSERT(INDIC2.GT.0)
-            CALL SEPACH(LCHIN(INDIC2),'V',CHDYNR,CHDYNI)
-            LCHIN(INDIC2)=CHDYNR
-          ENDIF
+               DO 40 I=1,NIN
+                  IF (LPAIN(I).EQ.'PDEPSEN')INDIC4=I
+   40          CONTINUE
+               CALL ASSERT(INDIC4.GT.0)
+               CALL SEPACH(LCHIN(INDIC4),'V',CHDEPR,CHDEPI)
+               LCHIN(INDIC4)=CHDEPR
+            ENDIF
 
-          IF (OPTIO2(11:14).EQ.'SENS') THEN
-            DO 30 I=1,NIN
-              IF (LPAIN(I).EQ.'PACCSEN')INDIC3=I
-   30       CONTINUE
-            CALL ASSERT(INDIC3.GT.0)
-            CALL SEPACH(LCHIN(INDIC3),'V',CHACCR,CHACCI)
-            LCHIN(INDIC3)=CHACCR
+C           -- CALCUL 1ERE PARTIE (R):
+            CALL COPISD('CHAM_ELEM_S','V',LCHOU(1),CH1)
+            CALL CALCUL(STOP,OPTIO2,LIGREL,NIN,LCHIN,LPAIN,NOU,CH1,
+     &                  LPAOU,'V','OUI')
 
-            DO 40 I=1,NIN
-              IF (LPAIN(I).EQ.'PDEPSEN')INDIC4=I
-   40       CONTINUE
-            CALL ASSERT(INDIC4.GT.0)
-            CALL SEPACH(LCHIN(INDIC4),'V',CHDEPR,CHDEPI)
-            LCHIN(INDIC4)=CHDEPR
-          ENDIF
+C           -- CALCUL 2EME PARTIE (I):
+            LCHIN(INDIC1)=IMAG
+            IF (POUX.EQ.'OUI')LCHIN(INDIC2)=CHDYNI
+            IF (OPTIO2(11:14).EQ.'SENS') THEN
+               LCHIN(INDIC3)=CHACCI
+               LCHIN(INDIC4)=CHDEPI
+            ENDIF
+            CALL COPISD('CHAM_ELEM_S','V',LCHOU(1),CH2)
+            CALL CALCUL(STOP,OPTIO2,LIGREL,NIN,LCHIN,LPAIN,NOU,CH2,
+     &                  LPAOU,'V','OUI')
 
-C         -- CALCUL 1ERE PARTIE (R):
-          CALL COPISD('CHAM_ELEM_S','V',LCHOU(1),CH1)
-          CALL CALCUL(STOP,OPTIO2,LIGREL,NIN,LCHIN,LPAIN,NOU,CH1,LPAOU,
-     &                'V','OUI')
+C           -- ASSEMBLAGE (R,I) OU CUMUL (R+I) :
+            IF (  (OPTIO2.EQ.'EPOT_ELEM') .OR.
+     &            (OPTIO2.EQ.'ECIN_ELEM')) THEN
+               CALL BARYCH(CH1,CH2,1.D0,1.D0,LCHOU(1),'G')
+            ELSE
+               CALL ASSACH(CH1,CH2,'G',LCHOU(1))
+            ENDIF
 
-C         -- CALCUL 2EME PARTIE (I):
-          LCHIN(INDIC1)=IMAG
-          IF (POUX.EQ.'OUI')LCHIN(INDIC2)=CHDYNI
-          IF (OPTIO2(11:14).EQ.'SENS') THEN
-            LCHIN(INDIC3)=CHACCI
-            LCHIN(INDIC4)=CHDEPI
-          ENDIF
-          CALL COPISD('CHAM_ELEM_S','V',LCHOU(1),CH2)
-          CALL CALCUL(STOP,OPTIO2,LIGREL,NIN,LCHIN,LPAIN,NOU,CH2,LPAOU,
-     &                'V','OUI')
-
-
-C         -- ASSEMBLAGE (R,I) OU CUMUL (R+I) :
-          IF ((OPTIO2.EQ.'EPOT_ELEM') .OR.
-     &        (OPTIO2.EQ.'ECIN_ELEM')) THEN
-            CALL BARYCH(CH1,CH2,1.D0,1.D0,LCHOU(1),'G')
-          ELSE
-            CALL ASSACH(CH1,CH2,'G',LCHOU(1))
-          ENDIF
-
-        ELSE
-          CALL U2MESS('F','CALCULEL3_28')
-        ENDIF
-
-
+         ELSE
+            CALL U2MESS('F','CALCULEL3_28')
+         ENDIF
 
 C     2. CHAMP COMPLEXE = SIEF
 C     -----------------------------------------------
@@ -201,72 +195,65 @@ C     -----------------------------------------------
      &        (OPTIO2.EQ.'ENEL_ELNO') .OR.
      &        (OPTIO2.EQ.'SIEF_ELNO')) THEN
 
+         DO 50 I=1,NIN
+            IF (LPAIN(I).EQ.'PCONTRR')INDIC1=I
+   50    CONTINUE
+         CALL ASSERT(INDIC1.GT.0)
+         CALL DISMOI('F','NOM_GD',LCHIN(INDIC1)(1:19),'CHAMP',IBID,
+     &               NOMGD,IBID)
 
-        DO 50 I=1,NIN
-          IF (LPAIN(I).EQ.'PCONTRR')INDIC1=I
-   50   CONTINUE
-        CALL ASSERT(INDIC1.GT.0)
-        CALL DISMOI('F','NOM_GD',LCHIN(INDIC1)(1:19),'CHAMP',IBID,NOMGD,
-     &              IBID)
+         IF (NOMGD.EQ.'SIEF_R') THEN
+C        -------------------------------
+            CALL CALCUL(STOP,OPTIO2,LIGREL,NIN,LCHIN,LPAIN,NOU,LCHOU,
+     &                  LPAOU,BASE,'OUI')
+            GOTO 70
 
-        IF (NOMGD.EQ.'SIEF_R') THEN
-C       -------------------------------
-          CALL CALCUL(STOP,OPTIO2,LIGREL,NIN,LCHIN,LPAIN,NOU,LCHOU,
-     &                LPAOU,BASE,'OUI')
-          GOTO 70
+         ELSEIF (NOMGD.EQ.'SIEF_C') THEN
+C        -------------------------------
+            CALL ASSERT(NOU.EQ.1)
+            CALL SEPACH(LCHIN(INDIC1),'V',REEL,IMAG)
+            LCHIN(INDIC1)=REEL
 
+            IF (POUX.EQ.'OUI') THEN
+               DO 60 I=1,NIN
+                  IF (LPAIN(I).EQ.'PCHDYNR')INDIC2=I
+   60          CONTINUE
+               CALL ASSERT(INDIC2.GT.0)
+               CALL SEPACH(LCHIN(INDIC2),'V',CHDYNR,CHDYNI)
+               LCHIN(INDIC2)=CHDYNR
+            ENDIF
 
-        ELSEIF (NOMGD.EQ.'SIEF_C') THEN
-C       -------------------------------
-          CALL ASSERT(NOU.EQ.1)
-          CALL SEPACH(LCHIN(INDIC1),'V',REEL,IMAG)
-          LCHIN(INDIC1)=REEL
+C           -- CALCUL 1ERE PARTIE (R):
+            CALL COPISD('CHAM_ELEM_S','V',LCHOU(1),CH1)
+            CALL CALCUL(STOP,OPTIO2,LIGREL,NIN,LCHIN,LPAIN,NOU,CH1,
+     &                  LPAOU,'V','OUI')
 
-          IF (POUX.EQ.'OUI') THEN
-            DO 60 I=1,NIN
-              IF (LPAIN(I).EQ.'PCHDYNR')INDIC2=I
-   60       CONTINUE
-            CALL ASSERT(INDIC2.GT.0)
-            CALL SEPACH(LCHIN(INDIC2),'V',CHDYNR,CHDYNI)
-            LCHIN(INDIC2)=CHDYNR
-          ENDIF
-
-C         -- CALCUL 1ERE PARTIE (R):
-          CALL COPISD('CHAM_ELEM_S','V',LCHOU(1),CH1)
-          CALL CALCUL(STOP,OPTIO2,LIGREL,NIN,LCHIN,LPAIN,NOU,CH1,LPAOU,
-     &                'V','OUI')
-
-C         -- CALCUL 2EME PARTIE (I):
-          LCHIN(INDIC1)=IMAG
-          IF (POUX.EQ.'OUI')LCHIN(INDIC2)=CHDYNI
-          CALL COPISD('CHAM_ELEM_S','V',LCHOU(1),CH2)
-          CALL CALCUL(STOP,OPTIO2,LIGREL,NIN,LCHIN,LPAIN,NOU,CH2,LPAOU,
-     &                'V','OUI')
+C           -- CALCUL 2EME PARTIE (I):
+            LCHIN(INDIC1)=IMAG
+            IF (POUX.EQ.'OUI')LCHIN(INDIC2)=CHDYNI
+            CALL COPISD('CHAM_ELEM_S','V',LCHOU(1),CH2)
+            CALL CALCUL(STOP,OPTIO2,LIGREL,NIN,LCHIN,LPAIN,NOU,CH2,
+     &                  LPAOU,'V','OUI')
 
 
-C         -- ASSEMBLAGE (R,I) OU CUMUL (R+I) :
-          IF (OPTIO2.EQ.'SIEF_ELNO') THEN
-            CALL ASSACH(CH1,CH2,'G',LCHOU(1))
-          ELSE
-            CALL BARYCH(CH1,CH2,1.D0,1.D0,LCHOU(1),'G')
-          ENDIF
+C           -- ASSEMBLAGE (R,I) OU CUMUL (R+I) :
+            IF (OPTIO2.EQ.'SIEF_ELNO') THEN
+               CALL ASSACH(CH1,CH2,'G',LCHOU(1))
+            ELSE
+               CALL BARYCH(CH1,CH2,1.D0,1.D0,LCHOU(1),'G')
+            ENDIF
 
-        ELSE
-          CALL U2MESS('F','CALCULEL3_28')
-        ENDIF
-
-
-
-C     3. AUTRES OPTIONS :
+         ELSE
+            CALL U2MESS('F','CALCULEL3_28')
+         ENDIF
 C     -----------------------------------------------
+C     3. AUTRES OPTIONS :
       ELSE
-C       POUR TOUTE LES AUTRES OPTIONS LE CALCUL EN COMPLEXE N EST PAS
-C       ENCORE AUTORISE ET ON FAIT DONC UN APPEL A CALCUL
-        CALL CALCUL(STOP,OPTIO2,LIGREL,NIN,LCHIN,LPAIN,NOU,LCHOU,LPAOU,
-     &              BASE,'OUI')
+C        POUR TOUTE LES AUTRES OPTIONS LE CALCUL EN COMPLEXE N EST PAS
+C        ENCORE AUTORISE ET ON FAIT DONC UN APPEL A CALCUL
+         CALL CALCUL(STOP,OPTIO2,LIGREL,NIN,LCHIN,LPAIN,NOU,LCHOU,
+     &               LPAOU,BASE,'OUI')
       ENDIF
-
-
 
    70 CONTINUE
       CALL DETRSD('CHAMP',CH1)

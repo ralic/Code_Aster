@@ -6,7 +6,7 @@
       IMPLICIT NONE
 C     ==================================================================
 C          CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 08/02/2011   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 14/02/2011   AUTEUR GENIAUT S.GENIAUT 
 C RESPONSABLE GENIAUT
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -232,8 +232,8 @@ C        RECHERCHE LINEAIRE : RENVOIE DY, YF ET R RE-ACTUALISES
          CALL LCRELI(FAMI,KPG,KSP,LOI,MOD,IMAT,NMAT,MATERD,MATERF,
      &               COMP,NBCOMM,CPMONO,PGL,TOUTMS,HSR,NR,NVI,VIND,
      &               ITMAX,TOLER,TIMED,TIMEF,YD,YF,DEPS,EPSD,DY,R,
-     &               DDY)
-
+     &               DDY,IRET)
+         IF (IRET.NE.0)  GOTO 3
       ENDIF
       IF ( MOD(1:6).EQ.'C_PLAN' ) DEPS(3) = DY(NR)
 C

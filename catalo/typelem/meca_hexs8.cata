@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+%& MODIF TYPELEM  DATE 14/02/2011   AUTEUR TRAN V-X.TRAN 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -42,8 +42,8 @@ MODE_LOCAL__
     EDEPLPG  = DEPL_R   ELGA__ RIGI    (DX       DY       DZ       )
     EDOMGGA  = DOMA_R   ELGA__ RIGI    (DOMA     )
     EDOMGNO  = DOMA_R   ELNO__ IDEN__  (DOMA     )
-    ETRIANO  = ENDO_R   ELNO__ IDEN__  (TRIAX    SI_ENDO  COENDO   DOM_LEM  D_CUMULE )
-    ETRIAPG  = ENDO_R   ELGA__ RIGI    (TRIAX    SI_ENDO  COENDO   DOM_LEM  D_CUMULE )
+    ETRIANO  = ENDO_R   ELNO__ IDEN__  (TRIAX    SI_ENDO  COENDO   DOM_LEM )
+    ETRIAPG  = ENDO_R   ELGA__ RIGI    (TRIAX    SI_ENDO  COENDO   DOM_LEM )
     EENEDNO  = ENER_R   ELEM__         (TOTALE   )
     EENEDPG  = ENER_R   ELGA__ RIGI    (TOTALE   )
     EENEDNN  = ENER_R   ELNO__ IDEN__  (TOTALE   )

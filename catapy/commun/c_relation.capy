@@ -1,4 +1,4 @@
-#& MODIF COMMUN  DATE 08/02/2011   AUTEUR GRANET S.GRANET 
+#& MODIF COMMUN  DATE 15/02/2011   AUTEUR FLEJOU J-L.FLEJOU 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -46,12 +46,12 @@ def C_RELATION() : return (             "ELAS",            #COMMUN#
                                         "DRUCK_PRAG_N_A",
                                         "ELAS_GONF",
                                         "ELAS_HYPER",
+                                        "ENDO_CARRE",
                                         "ENDO_FRAGILE",
                                         "ENDO_HETEROGENE",
                                         "ENDO_ISOT_BETON",
                                         "ENDO_ORTH_BETON",
                                         "ENDO_SCALAIRE",
-                                        "ENDO_CARRE",                                        
                                         "GATT_MONERIE",
                                         "GLRC_DAMAGE",
                                         "GLRC_DM",

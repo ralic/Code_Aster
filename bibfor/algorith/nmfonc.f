@@ -3,7 +3,7 @@
      &                  SDDYNA,MATE  ,COMPOZ,FONACT)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 17/01/2011   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 15/02/2011   AUTEUR FLEJOU J-L.FLEJOU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -87,11 +87,11 @@ C
       INTEGER      NBPASE 
       CHARACTER*24 SENSNB
       INTEGER      JSENSN  
-      LOGICAL      ISFONC,LSTAT,LDYNA,LGROT
+      LOGICAL      ISFONC,LSTAT,LDYNA,LGROT,LENDO
       INTEGER      IFM,NIV 
 C      
 C ----------------------------------------------------------------------
-C      
+C      '
       CALL JEMARQ()
       CALL INFDBG('MECA_NON_LINE',IFM,NIV)
 C
@@ -117,6 +117,8 @@ C --- ELEMENTS EN GRANDES ROTATIONS
 C
       CALL JEEXIN(SDNUME(1:19)//'.NDRO',IRET)
       LGROT = IRET.NE.0    
+      CALL JEEXIN(SDNUME(1:19)//'.ENDO',IRET)
+      LENDO = IRET.NE.0       
 C
 C --- RECHERCHE LINEAIRE
 C      
@@ -312,6 +314,9 @@ C
       IF (LGROT) THEN
         FONACT(15) = 1
       ENDIF  
+      IF (LENDO) THEN
+        FONACT(40) = 1
+      ENDIF        
 C
 C --- SENSIBILITE
 C
@@ -507,6 +512,12 @@ C
           WRITE (IFM,*) '<MECANONLINE> ...... MODELISATION THM'
           NBFONC = NBFONC + 1
         ENDIF   
+        
+        IF (ISFONC(FONACT,'ENDO_NO')) THEN
+          WRITE (IFM,*) '<MECANONLINE> ...... MODELISATION GVNO'
+          NBFONC = NBFONC + 1
+        ENDIF           
+        
         IF (NBFONC.EQ.0) THEN
           WRITE (IFM,*) '<MECANONLINE> ...... <AUCUNE>'
         ENDIF          

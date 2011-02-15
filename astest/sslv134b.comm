@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 14/02/2011   AUTEUR GENIAUT S.GENIAUT 
 # TITRE CALCUL 3D DE G FISSURE CIRCULAIRE EN MILIEU INFINI
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -324,7 +324,6 @@ DEPH1=POST_RELEVE_T( ACTION=_F(  INTITULE = 'TAB2',
                               )
 
 TABL_K1=POST_K1_K2_K3(  MODELISATION='3D',
-                        INFO=2,
                         MATER=MAT,
                         TABL_DEPL_SUP=DEPH1,
                         TABL_DEPL_INF=DEPB1,
@@ -351,7 +350,6 @@ DEPH2=POST_RELEVE_T(   ACTION=_F(  INTITULE = 'TAB4',
                               )
 
 TABL_K2=POST_K1_K2_K3(  MODELISATION='3D',
-                        INFO=2,
                         MATER=MAT,
                         TABL_DEPL_SUP=DEPH2,
                         TABL_DEPL_INF=DEPB2,
@@ -378,7 +376,6 @@ DEPH3=POST_RELEVE_T( ACTION=_F(  INTITULE = 'TAB6',
                               )
 
 TABL_K3=POST_K1_K2_K3(  MODELISATION='3D',
-                        INFO=2,
                         MATER=MAT,
                         TABL_DEPL_SUP=DEPH3,
                         TABL_DEPL_INF=DEPB3,
@@ -546,7 +543,6 @@ MA=DEFI_GROUP( reuse=MA,   MAILLAGE=MA,
 
 TABL_K4=POST_K1_K2_K3(  MODELISATION='3D',
               MATER=MAT,
-              INFO = 2,
               FOND_FISS = FISSN,
               RESULTAT = CHAMDEPL,
               GROUP_NO = ('NOFF1','NOFF2',),
@@ -564,31 +560,30 @@ TEST_TABLE(       TABLE=TABL_K4,
                       PRECISION=0.0001           )
 
 # POST_K1_K2_K3 : VALIDATION TYPE_MA = LIBRE
-TABL_K5=POST_K1_K2_K3(  MODELISATION='3D',
-              MATER=MAT,
-              INFO = 2,
-              FOND_FISS = FISSN,
-              RESULTAT = CHAMDEPL,
-              TYPE_MAILLAGE = 'LIBRE',
-              NB_NOEUD_COUPE = 4,
-              GROUP_NO = ('NOFF1','NOFF2',),
-              ABSC_CURV_MAXI = 0.31,
-              PREC_VIS_A_VIS = 0.05,
-              VECT_K1        = ( 0., 0., 1., ),
-           )
+TABL_K5=POST_K1_K2_K3(MODELISATION='3D',
+                      MATER=MAT,
+                      FOND_FISS = FISSN,
+                      RESULTAT = CHAMDEPL,
+                      TYPE_MAILLAGE = 'LIBRE',
+                      NB_NOEUD_COUPE = 4,
+                      ABSC_CURV_MAXI = 0.31,
+                      PREC_VIS_A_VIS = 0.05,
+                      VECT_K1        = ( 0., 0., 1., ),
+                      )
+
 IMPR_TABLE(TABLE=TABL_K5,);
-TEST_TABLE(       TABLE=TABL_K5,
-                        FILTRE=(_F(  NOM_PARA = 'NOEUD_FOND',
-                                 VALE_K = 'N49'),),
-                      REFERENCE='NON_REGRESSION',
-                       NOM_PARA='K1',
-                           VALE=1.5285241910728E+06,
-                      PRECISION=0.0001           )
+
+TEST_TABLE(TABLE=TABL_K5,
+           FILTRE=_F(NOM_PARA = 'NOEUD_FOND',
+                     VALE_K = 'N49'),
+           REFERENCE='NON_REGRESSION',
+           NOM_PARA='K1',
+           VALE=1.5285241910728E+06,
+           PRECISION=0.0001)
 
 # POST_K1_K2_K3/LIBRE : VALIDATION INFORMATIQUE (SENS PROPA.)
 TABL_K6=POST_K1_K2_K3(  MODELISATION='3D',
               MATER=MAT,
-              INFO = 2,
               FOND_FISS = FISSN,
               RESULTAT = CHAMDEPL,
               TYPE_MAILLAGE = 'LIBRE',

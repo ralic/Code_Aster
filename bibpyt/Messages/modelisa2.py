@@ -1,8 +1,8 @@
-#@ MODIF modelisa2 Messages  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
+#@ MODIF modelisa2 Messages  DATE 15/02/2011   AUTEUR FLEJOU J-L.FLEJOU 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -54,6 +54,14 @@ Erreur d'utilisation :
 
 Risques et conseils :
  Il faut peut etre émettre une demande d'évolution pour pouvoir traiter ce problème.
+"""),
+
+7: _("""
+Occurence de %(k2)s.
+La maille %(k1)s a déjà été affectée par une orientation.
+   Orientation précédente : %(r1)f
+   Orientation nouvelle   : %(r2)f
+La règle de surcharge est appliquée
 """),
 
 
