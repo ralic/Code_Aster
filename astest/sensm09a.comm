@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
 # RESPONSABLE F6BHHBO P.DEBONNIERES
 # TITRE CYLINDRE INFINI SOUS PRESSION (PLAST VON-MISES ISOT LINEAIRE)
 # sensm09a.para = tps_job 60 mem_job 64Mo liste_test S
@@ -289,8 +289,7 @@ U= STAT_NON_LINE ( MODELE=MO,
                              REAC_ITER=1,),
                    CONVERGENCE=_F(
                             RESI_GLOB_RELA = 1.E-8),
-                   ARCHIVAGE=_F(LIST_INST=L_INST,
-                                ARCH_ETAT_INIT='OUI',),
+                   ARCHIVAGE=_F(LIST_INST=L_INST,),
                    SENSIBILITE=(PS_E,PS_DSDE,PS_SIGY,PS_DY),
                    INFO=1);
 
@@ -314,7 +313,6 @@ U= STAT_NON_LINE ( reuse=U,
                    CONVERGENCE=_F(
                             RESI_GLOB_RELA = 1.E-8),
                    ARCHIVAGE=_F(LIST_INST=L_INST2,
-#                                ARCH_ETAT_INIT='OUI',
                                 ),
                    ETAT_INIT=_F(EVOL_NOLI=U),
                    SENSIBILITE=(PS_E,PS_DSDE,PS_SIGY,PS_DY),

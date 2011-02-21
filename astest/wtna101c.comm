@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
 # RESPONSABLE ROMEO R.FERNANDES
 # ======================================================================
 # TITRE ETUDE  : ESSAI TRIAXIAL NON DRAINE AVEC LE MODELE DE TYPE
@@ -217,7 +217,7 @@ TEST_RESU(RESU=(
                        NOEUD = 'NO8',      
                        NOM_CHAM = 'SIEF_NOEU',    
                        NOM_CMP = 'SIXX',     
-                       INST = 1.004000, 
+                       NUME_ORDRE=1, 
                        PRECISION  = 5.E-2, 
                        REFERENCE='NON_REGRESSION',
                        VERSION = '7.2.6',
@@ -260,7 +260,7 @@ TEST_RESU(RESU=(
                        NOEUD = 'NO8',      
                        NOM_CHAM = 'SIEF_NOEU',    
                        NOM_CMP = 'SIZZ',       
-                       INST = 1.004000,
+                       NUME_ORDRE=1,
                        PRECISION  = 5.E-2, 
                        REFERENCE='NON_REGRESSION',
                        VERSION = '7.2.6',
@@ -303,7 +303,7 @@ TEST_RESU(RESU=(
                        NOEUD = 'NO8',      
                        NOM_CHAM = 'DEPL',    
                        NOM_CMP = 'PRE1',     
-                       INST = 1.004000,
+                       NUME_ORDRE=1,
                        PRECISION  = 5.E-2, 
                        REFERENCE='NON_REGRESSION',
                        VERSION = '7.2.6',

@@ -1,4 +1,4 @@
-#@ MODIF algorith9 Messages  DATE 31/01/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF algorith9 Messages  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -27,10 +27,6 @@ cata_msg = {
  le champ de température : TEMP_INIT(NUM_INIT) n'existe pas.
 """),
 
-2 : _("""
- CHAM_NO invalide
-"""),
-
 4 : _("""
  valeur de THETA illicite
 """),
@@ -49,23 +45,23 @@ cata_msg = {
 """),
 
 12 : _("""
- borne inférieure incorrecte
+ La borne inférieure est incorrecte.
 """),
 
 15 : _("""
-Le pas (%(r3)f) est plus grand que l'intervalle [%(r1)f, %(r2)f].
+ Le pas (%(r3)f) est plus grand que l'intervalle [%(r1)f, %(r2)f].
 """),
 
 16 : _("""
- le pas est nul
+ Le pas est nul.
 """),
 
 17 : _("""
- le nombre de pas est négatif
+ Le nombre de pas est négatif.
 """),
 
 18 : _("""
- les matrices assemblées généralisées doivent avoir un stockage plein (cf. NUME_DDL_GENE)
+ Les matrices assemblées généralisées doivent avoir un stockage plein (cf. NUME_DDL_GENE)
 """),
 
 19 : _("""

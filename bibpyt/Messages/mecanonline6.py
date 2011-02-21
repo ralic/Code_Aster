@@ -1,4 +1,4 @@
-#@ MODIF mecanonline6 Messages  DATE 01/02/2011   AUTEUR MASSIN P.MASSIN 
+#@ MODIF mecanonline6 Messages  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -32,30 +32,6 @@ cata_msg = {
 
 3 : _("""
  Post-traitement: calcul d'un mode vibratoire
-"""),
-
-4 : _("""
- Archivage de l'état initial
-"""),
-
-5 : _("""
-  Archivage des champs
-"""),
-
-6 : _("""
-    Champ stocké <%(k1)s> à l'instant %(r1)19.12e pour le numéro d'ordre %(i1)d
-"""),
-
-7 : _("""
- Archivage des champs dérivés par rapport à %(k1)s
-"""),
-
-8 : _("""
-    Mode vibratoire stocké pour le numéro d'ordre %(i1)d  
-"""),
-
-9 : _("""
-    Mode de flambement stocké pour le numéro d'ordre %(i1)d  
 """),
 
 10 : _("""
@@ -192,7 +168,7 @@ cata_msg = {
 """),
 
 37 : _("""
-  Pilotage : suite à la non-convergence, choix de la solution rejetée initialement.
-"""),
+  Le pilotage a échoué. On recommence en utilisant la solution rejetée initialement.
+ """),
 
 }

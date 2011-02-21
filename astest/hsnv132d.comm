@@ -1,4 +1,4 @@
-# MODIF  DATE 25/01/2011   AUTEUR MACOCCO K.MACOCCO 
+# MODIF  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
 # TITRE : FISSURE X-FEM EN THERMO-ELASTICITE 3D 
 # hsnv132d.para = tps_job 100 mem_job 500Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -171,7 +171,8 @@ IMPR_TABLE(TABLE=SIF,);
 
 
 TEST_TABLE(TABLE=SIF,
-           FILTRE=_F(NOM_PARA='NUM_PT',VALE_I=1),
+           FILTRE=(_F(NOM_PARA='NUM_PT',VALE_I=1),
+           _F(NOM_PARA='NUME_ORDRE',VALE_I=1),),
            NOM_PARA='K1',
            VALE= 6.89410E+06,
            CRITERE='RELATIF',
@@ -179,7 +180,9 @@ TEST_TABLE(TABLE=SIF,
            REFERENCE='AUTRE_ASTER');                        
 
 TEST_TABLE(TABLE=SIF,
-           FILTRE=_F(NOM_PARA='NUM_PT',VALE_I=1),
+           FILTRE=(_F(NOM_PARA='NUM_PT',VALE_I=1),
+           _F(NOM_PARA='NUME_ORDRE',VALE_I=1),
+           ),
            NOM_PARA='K2',
            VALE=  3.07670E+06,
            CRITERE='RELATIF',

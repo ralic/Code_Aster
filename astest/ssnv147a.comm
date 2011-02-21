@@ -1,4 +1,4 @@
-# MODIF  DATE 24/01/2011   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
 # TITRE BARREAU FRAGILE EN TRACTION
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -109,7 +109,6 @@ REPONSE=STAT_NON_LINE(
                 CONVERGENCE=_F(
                 RESI_GLOB_RELA = 1.E-6,
                 ITER_GLOB_MAXI = 50),
-                ARCHIVAGE = _F(ARCH_ETAT_INIT = 'OUI')
              )
 
 SIEF=CREA_CHAMP(OPERATION='EXTR',

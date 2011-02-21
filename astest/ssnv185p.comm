@@ -1,4 +1,4 @@
-# MODIF  DATE 14/02/2011   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
 # TITRE FISSURE DEBOUCHANTE DANS UNE PLAQUE 3D DE LARGEUR FINIE AVEC X-FEM
 # ssnv185p.para = tps_job 270 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -113,7 +113,7 @@ CH3=AFFE_CHAR_MECA(MODELE=MODELEK,
 L_INS1=DEFI_LIST_REEL(DEBUT=0.0,INTERVALLE=_F(JUSQU_A=1.,NOMBRE=1))
 
 # CALCUL AVEC CHARGEMENT FORCE_INTERNE
-UTOT1=STAT_NON_LINE(MODELE=MODELEK,
+UTOT1x=STAT_NON_LINE(MODELE=MODELEK,
                    CHAM_MATER=CHAMPMA1,
                    EXCIT=(_F(CHARGE=CHXFEM,),
                           _F(CHARGE=CH1,),
@@ -124,9 +124,9 @@ UTOT1=STAT_NON_LINE(MODELE=MODELEK,
                    INCREMENT=_F(LIST_INST=L_INS1),
                    NEWTON=_F(REAC_ITER=1,),
                    )
-                   
+UTOT1 = EXTR_RESU(RESULTAT=UTOT1x,ARCHIVAGE=_F(NUME_ORDRE=1),);                  
 # CALCUL AVEC CHARGEMENT PESANTEUR                   
-UTOT2=STAT_NON_LINE(MODELE=MODELEK,
+UTOT2x=STAT_NON_LINE(MODELE=MODELEK,
                    CHAM_MATER=CHAMPMA1,
                    EXCIT=(_F(CHARGE=CHXFEM,),
                           _F(CHARGE=CH1,),
@@ -137,7 +137,7 @@ UTOT2=STAT_NON_LINE(MODELE=MODELEK,
                    INCREMENT=_F(LIST_INST=L_INS1),
                    NEWTON=_F(REAC_ITER=1,),
                    )
-
+UTOT2 = EXTR_RESU(RESULTAT=UTOT2x,ARCHIVAGE=_F(NUME_ORDRE=1),);   
 #------------------------------------------------------------------------
 # POST-TRAITEMENT : CALCUL DE G
 #------------------------------------------------------------------------
@@ -199,6 +199,7 @@ for i in range(0,nbc) :
 
    SIF1[i]=CALC_G(RESULTAT=UTOT1,
                  OPTION='CALC_K_G',
+                 #NUME_ORDRE=1,
                  THETA=_F(FISSURE=FISS,
                           R_INF=RI[i],
                           R_SUP=RS[i],),
@@ -209,6 +210,7 @@ for i in range(0,nbc) :
                  
    SIF2[i]=CALC_G(RESULTAT=UTOT2,
                  OPTION='CALC_K_G',
+                 #NUME_ORDRE=1,
                  THETA=_F(FISSURE=FISS,
                           R_INF=RI[i],
                           R_SUP=RS[i],),

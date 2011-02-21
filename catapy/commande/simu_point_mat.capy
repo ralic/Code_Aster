@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 10/01/2011   AUTEUR PROIX J-M.PROIX 
+#& MODIF COMMANDE  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -54,18 +54,8 @@ SIMU_POINT_MAT=MACRO(nom="SIMU_POINT_MAT", op=simu_point_mat_ops,sd_prod=table_s
                ),        
    b_EF = BLOC(condition="SUPPORT ==  'ELEMENT'",fr="Simulation sur un élément fini",                    
       MODELISATION  =SIMP(statut='f',typ='TXM',max=1,into=("3D","C_PLAN","D_PLAN",)),
-      RECH_LINEAIRE   =C_RECH_LINEAIRE(),                                      
-      ARCHIVAGE       =FACT(statut='f',
-       LIST_INST       =SIMP(statut='f',typ=(listr8_sdaster) ),
-       INST            =SIMP(statut='f',typ='R',validators=NoRepeat(),max='**' ),
-       PAS_ARCH        =SIMP(statut='f',typ='I' ),
-       PRECISION       =SIMP(statut='f',typ='R',defaut= 1.0E-6),
-       ARCH_ETAT_INIT  =SIMP(statut='f',typ='TXM',into=("OUI",),defaut="OUI"),
-       NUME_INIT       =SIMP(statut='f',typ='I'),
-       DETR_NUME_SUIV  =SIMP(statut='f',typ='TXM',into=("OUI",)),
-       CHAM_EXCLU      =SIMP(statut='f',typ='TXM',validators=NoRepeat(),max='**',
-                                    into=("DEPL","SIEF_ELGA","VARI_ELGA",)),
-        ),
+      RECH_LINEAIRE   =C_RECH_LINEAIRE(),
+      ARCHIVAGE       =C_ARCHIVAGE(), 
                  ),                                            
    # on permet certaines variables de commandes scalaires, définies par une fonction du temps
    b_EFV = BLOC(condition="SUPPORT ==  'ELEMENT'",fr="variables de commande sur un élément fini",                    

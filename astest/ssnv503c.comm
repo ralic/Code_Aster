@@ -1,4 +1,4 @@
-# MODIF  DATE 25/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
 # DATE     : 03/08/2001
 # AUTEUR   : F. LEBOUVIER (DELTACAD)
 # TITRE    : PATIN GLISSANT SUR UN PLAN RIGIDE
@@ -212,7 +212,6 @@ U_101=STAT_NON_LINE(MODELE=MODE,
                     SOLVEUR=_F(SYME='OUI',
                                METHODE='LDLT',),
                     CONVERGENCE=_F(ITER_GLOB_MAXI=1500,),
-                    ARCHIVAGE=_F(ARCH_ETAT_INIT='OUI'),
                     );
 
 U_101=CALC_NO(reuse =U_101,

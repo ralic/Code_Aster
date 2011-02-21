@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
 # TITRE TUYAUTERIE COUDEE EN FLEXION
 # sslx102e.para = tps_job 60 mem_job 250Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -177,23 +177,28 @@ MASSEBC=POST_ELEM(   MODELE=MO,
 
 TEST_TABLE( TABLE=MASSEAB,
                 NOM_PARA='MASSE',
+                #FILTRE = _F(NOM_PARA='NUME_ORDRE',VALE_I=1),
                REFERENCE='ANALYTIQUE',
                 VALE=51.40365,   PRECISION=1.E-5)
 
 TEST_TABLE( TABLE=MASSEBC,
                 NOM_PARA='MASSE',
+               # FILTRE = _F(NOM_PARA='NUME_ORDRE',VALE_I=1),
                 VALE=20.5226,   PRECISION=1.E-5)
 
 TEST_TABLE( TABLE=MASSEAB,
                 NOM_PARA='CDG_Y',
+                #FILTRE = _F(NOM_PARA='NUME_ORDRE',VALE_I=1),
                 VALE=0.905,   PRECISION=1.E-7)
 
 TEST_TABLE( TABLE=MASSEBC,
                 NOM_PARA='CDG_X',
+               # FILTRE = _F(NOM_PARA='NUME_ORDRE',VALE_I=1),
                 VALE=0.099197,   PRECISION=1.E-5)
 
 TEST_TABLE( TABLE=MASSEBC,
                 NOM_PARA='CDG_Y',
+               # FILTRE = _F(NOM_PARA='NUME_ORDRE',VALE_I=1),
                 VALE=0.099197,   PRECISION=1.E-5)
 
 # TEST DES NOEUDS ORDONNES PAR DEFI_GROUP
@@ -204,22 +209,25 @@ EVOL=POST_RELEVE_T(    ACTION=_F( INTITULE = 'DEPL',
 
 TEST_TABLE( TABLE=EVOL,
                 NOM_PARA='ABSC_CURV',
-       FILTRE=_F( NOM_PARA = 'NOEUD',
+       FILTRE=(_F( NOM_PARA = 'NOEUD',
                VALE_K = 'NS1'),
+               _F(NOM_PARA='NUME_ORDRE',VALE_I=1),),
                REFERENCE='NON_REGRESSION',
                 VALE=2.46696E+00  )
 
 TEST_TABLE( TABLE=EVOL,
                 NOM_PARA='ABSC_CURV',
-       FILTRE=_F( NOM_PARA = 'NOEUD',
+       FILTRE=(_F( NOM_PARA = 'NOEUD',
                VALE_K = 'NS18'),
+               _F(NOM_PARA='NUME_ORDRE',VALE_I=1),),
                REFERENCE='NON_REGRESSION',
                 VALE=2.06041E-01  )
 
 TEST_TABLE( TABLE=EVOL,
                 NOM_PARA='ABSC_CURV',
-       FILTRE=_F( NOM_PARA = 'NOEUD',
+       FILTRE=(_F( NOM_PARA = 'NOEUD',
                VALE_K = 'N37'),
+               _F(NOM_PARA='NUME_ORDRE',VALE_I=1),),
                REFERENCE='ANALYTIQUE',
                 VALE=2.87909288E+00  )
 

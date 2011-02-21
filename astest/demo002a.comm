@@ -1,11 +1,10 @@
-# MODIF  DATE 13/12/2010   AUTEUR DESOZA T.DESOZA 
-# RESPONSABLE MABBAS M.ABBAS
+# MODIF  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
 #
 # TITRE AILETTE FISSUREE AVEC CONTACT
 # demo002a.para = tps_job 70 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -212,8 +211,7 @@ RESU=DYNA_NON_LINE(MODELE=MO,
                               RENUM='METIS',),
                    CONVERGENCE=_F(RESI_GLOB_RELA=1.E-05,
                                   ITER_GLOB_MAXI=20,),
-                   ARCHIVAGE=_F(LIST_INST=LARCH,
-                                ARCH_ETAT_INIT='OUI',),);
+                   ARCHIVAGE=_F(LIST_INST=LARCH,),);
 
 # Sortie d'un fichier universel (unv) IDEAS
 
@@ -244,8 +242,7 @@ RESU2=DYNA_NON_LINE(MODELE=MO,
                               RENUM='METIS',),
                    CONVERGENCE=_F(RESI_GLOB_RELA=1.E-05,
                                   ITER_GLOB_MAXI=20,),
-                   ARCHIVAGE=_F(LIST_INST=LARCH,
-                                ARCH_ETAT_INIT='OUI',),);
+                   ARCHIVAGE=_F(LIST_INST=LARCH,),);
 
 
 #=============================================================================================

@@ -1,4 +1,4 @@
-# MODIF  DATE 31/01/2011   AUTEUR MACOCCO K.MACOCCO 
+# MODIF  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
 # TITRE FISSURE DEBOUCHANTE DANS UNE PLAQUE 3D DE LARGEUR FINIE AVEC X-FEM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -135,7 +135,7 @@ CHPRESF=AFFE_CHAR_MECA_F(MODELE=MODELEIN,PRES_REP=_F(FISSURE=FISS,PRES=PRESF,),)
 
 L_INS1=DEFI_LIST_REEL(DEBUT=0.0,INTERVALLE=_F(JUSQU_A=3.0,NOMBRE=3,),);
 
-UTOT1=STAT_NON_LINE(MODELE=MODELEK,
+UTOT1x=STAT_NON_LINE(MODELE=MODELEK,
                    CHAM_MATER=CHAMPMA1,
                    EXCIT=(_F(CHARGE=CHXFEM,),
                           _F(CHARGE=CHB,),
@@ -147,8 +147,8 @@ UTOT1=STAT_NON_LINE(MODELE=MODELEK,
                    NEWTON=_F(REAC_ITER=1,),
                    ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA',),
                    INFO=1,);
-
-UTOT3=STAT_NON_LINE(MODELE=MODELEK,
+UTOT1 = EXTR_RESU(RESULTAT=UTOT1x,ARCHIVAGE=_F(NUME_ORDRE=1),);
+UTOT3x=STAT_NON_LINE(MODELE=MODELEK,
                    CHAM_MATER=CHAMPMA1,
                    EXCIT=(_F(CHARGE=CHXFEM,),
                           _F(CHARGE=CHB,),
@@ -161,8 +161,8 @@ UTOT3=STAT_NON_LINE(MODELE=MODELEK,
                    ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA',),
                    INFO=1,);
 
-
-UTOT4=STAT_NON_LINE(MODELE=MODELEK,
+UTOT3 = EXTR_RESU(RESULTAT=UTOT3x,ARCHIVAGE=_F(NUME_ORDRE=1),);
+UTOT4x=STAT_NON_LINE(MODELE=MODELEK,
                    CHAM_MATER=CHAMPMA1,
                    EXCIT=(_F(CHARGE=CHXFEM,),
                           _F(CHARGE=CHB,),
@@ -174,7 +174,7 @@ UTOT4=STAT_NON_LINE(MODELE=MODELEK,
                    NEWTON=_F(REAC_ITER=1,),
                    ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA',),
                    INFO=1,);
-
+UTOT4 = EXTR_RESU(RESULTAT=UTOT4x,ARCHIVAGE=_F(NUME_ORDRE=1),);
 #------------------------------------------------------------------------
 # POST-TRAITEMENT : CALCUL DES SIFS PAR LA METHODE ENERGETIQUE AVEC X-FEM
 #------------------------------------------------------------------------
@@ -264,6 +264,7 @@ K1REF4F=4.52e6
 for i in range(0,nbc) :
    TEST_TABLE(TABLE=SIF[i],
               NOM_PARA='K1',
+              #FILTRE = _F(NOM_PARA='NUME_ORDRE',VALE_I=1),
               TYPE_TEST='MAX',
               VALE=K1REF,
               CRITERE='RELATIF',
@@ -272,6 +273,7 @@ for i in range(0,nbc) :
 
    TEST_TABLE(TABLE=SIF[i],
               NOM_PARA='K1',
+              #FILTRE = _F(NOM_PARA='NUME_ORDRE',VALE_I=1),
               TYPE_TEST='MIN',
               VALE=K1REF,
               CRITERE='RELATIF',
@@ -281,6 +283,7 @@ for i in range(0,nbc) :
    TEST_TABLE(TABLE=SIF2[i],
               NOM_PARA='K1',
               TYPE_TEST='MAX',
+              #FILTRE = _F(NOM_PARA='NUME_ORDRE',VALE_I=1),
               VALE=K1REF,
               CRITERE='RELATIF',
               PRECISION=0.04,
@@ -290,6 +293,7 @@ for i in range(0,nbc) :
    TEST_TABLE(TABLE=SIF2[i],
               NOM_PARA='K1',
               TYPE_TEST='MIN',
+              #FILTRE = _F(NOM_PARA='NUME_ORDRE',VALE_I=1),
               VALE=K1REF,
               CRITERE='RELATIF',
               PRECISION=0.04,
@@ -298,7 +302,8 @@ for i in range(0,nbc) :
 
    TEST_TABLE(TABLE=SIF3[i],
               NOM_PARA='K1',
-              TYPE_TEST='MAX',               
+              TYPE_TEST='MAX', 
+              #FILTRE = _F(NOM_PARA='NUME_ORDRE',VALE_I=1),              
               VALE=K1REF,
               CRITERE='RELATIF',
               PRECISION=0.04,
@@ -306,7 +311,8 @@ for i in range(0,nbc) :
 
    TEST_TABLE(TABLE=SIF3[i],
               NOM_PARA='K1',
-              TYPE_TEST='MIN',               
+              TYPE_TEST='MIN',  
+              #FILTRE = _F(NOM_PARA='NUME_ORDRE',VALE_I=1),             
               VALE=K1REF,
               CRITERE='RELATIF',
               PRECISION=0.04,
@@ -314,7 +320,9 @@ for i in range(0,nbc) :
 
    TEST_TABLE(TABLE=SIF4[i],
               NOM_PARA='K1',
-              FILTRE=_F(NOM_PARA='NUM_PT',VALE_I=1,),
+              FILTRE=(_F(NOM_PARA='NUM_PT',VALE_I=1,),
+          #    _F(NOM_PARA='NUME_ORDRE',VALE_I=1),
+              ),
               VALE=K1REF4I,
               CRITERE='RELATIF',
               PRECISION=0.04,
@@ -322,7 +330,9 @@ for i in range(0,nbc) :
 
    TEST_TABLE(TABLE=SIF4[i],
               NOM_PARA='K1',
-              FILTRE=_F(NOM_PARA='NUM_PT',VALE_I=6,),
+              FILTRE=(_F(NOM_PARA='NUM_PT',VALE_I=6,),
+          #    _F(NOM_PARA='NUME_ORDRE',VALE_I=1),
+              ),
               VALE=K1REF4F,
               CRITERE='RELATIF',
               PRECISION=0.05,
@@ -332,6 +342,7 @@ TEST_TABLE(TABLE=SIF[nbc],
            NOM_PARA='K1',
            TYPE_TEST='MAX',
            VALE=K1REF,
+           #FILTRE = _F(NOM_PARA='NUME_ORDRE',VALE_I=1),
            CRITERE='RELATIF',
            PRECISION=0.04,
            REFERENCE='ANALYTIQUE',);
@@ -340,6 +351,7 @@ TEST_TABLE(TABLE=SIF[nbc],
            NOM_PARA='K1',
            TYPE_TEST='MIN',
            VALE=K1REF,
+           #FILTRE = _F(NOM_PARA='NUME_ORDRE',VALE_I=1),
            CRITERE='RELATIF',
            PRECISION=0.04,
            REFERENCE='ANALYTIQUE',);
@@ -366,7 +378,9 @@ TEST_TABLE( TABLE=PK,
             FILTRE=(_F( NOM_PARA = 'PT_FOND',  
                         VALE_I = 1,  ),
                     _F( NOM_PARA = 'INST',  
-                        VALE = 1.,  ),),
+                        VALE = 1.,  ),
+                    #_F(NOM_PARA='NUME_ORDRE',VALE_I=1),    
+                        ),
             VALE=K1REF,
             PRECISION=0.03,
             REFERENCE='ANALYTIQUE' )
@@ -400,6 +414,7 @@ TEST_TABLE(TABLE=TABDEP,
            VALE=DXREF,
            CRITERE='RELATIF',
            PRECISION=PREC,
+           #FILTRE = _F(NOM_PARA='NUME_ORDRE',VALE_I=1),
            REFERENCE = 'NON_REGRESSION',
            VERSION = '8.2.14'),
 
@@ -408,6 +423,7 @@ TEST_TABLE(TABLE=TABDEP,
            TYPE_TEST='SOMM_ABS',
            VALE=DYREF,
            CRITERE='RELATIF',
+           #FILTRE = _F(NOM_PARA='NUME_ORDRE',VALE_I=1),
            PRECISION=PREC,
            REFERENCE = 'NON_REGRESSION',
            VERSION = '8.2.14'),
@@ -415,6 +431,7 @@ TEST_TABLE(TABLE=TABDEP,
 TEST_TABLE(TABLE=TABDEP,
            NOM_PARA='COOR_Z',
            TYPE_TEST='SOMM_ABS',
+           #FILTRE = _F(NOM_PARA='NUME_ORDRE',VALE_I=1),
            VALE=DZREF,
            CRITERE='RELATIF',
            PRECISION=PREC,

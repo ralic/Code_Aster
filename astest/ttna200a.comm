@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
 # TITRE TEST DE NON-REGRESSION D'ASTER : THERMIQUE AXIS
 # RESPONSABLE VABHHTS J.PELLET
 # ttna200a.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test R
@@ -610,7 +610,7 @@ TEST_RESU(RESU=(
                       NUME_ORDRE = 1,
                       NOM_CHAM = 'FLUX_ELNO',
                       TYPE_TEST = 'SOMM_ABS',
-                      VALE =  1.1268990959487E+03  ,
+                      VALE =  1.1268990959487E+03 ,
                       REFERENCE = 'NON_REGRESSION',
                       VERSION = '6.2.3'))
                        )

@@ -1,4 +1,4 @@
-#@ MODIF simu_point_mat_ops Macro  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+#@ MODIF simu_point_mat_ops Macro  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================

@@ -1,4 +1,4 @@
-# MODIF  DATE 17/01/2011   AUTEUR SFAYOLLE S.FAYOLLE 
+# MODIF  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
 # RESPONSABLE SFAYOLLE S.FAYOLLE
 # TITRE  : ENDOMMAGEMENT D UNE PLAQUE PLANE SOUS SOLLICITATIONS VARIEES
 # ssns106g.para = tps_job 120 mem_job 64Mo ncpus 1 liste_test S
@@ -269,33 +269,72 @@ RESU_G=CALC_NO(reuse =RESU_G,
                PRECISION=1.E-3,
                OPTION='FORC_NODA',);
 
-TDXA4=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
+TDXA4=POST_RELEVE_T(ACTION=(_F(OPERATION='EXTRACTION',
                               INTITULE='A4DX',
                               RESULTAT=RESU1,
                               NOM_CHAM='DEPL',
                               GROUP_NO='A4',
-                              NOM_CMP='DX',),);
+                              NOM_CMP='DX',),
+                             ), 
+                              
+                              );
 
-TDXA4_G=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
+TDXA4=CALC_TABLE(reuse =TDXA4,
+               TABLE=TDXA4,
+               ACTION=(_F(
+                          OPERATION = 'FILTRE',
+                          NOM_PARA  = 'NUME_ORDRE',
+                          CRIT_COMP = 'GT',
+                          VALE    = 0,
+                         ),),);
+
+TDXA4_G=POST_RELEVE_T(ACTION=(_F(OPERATION='EXTRACTION',
                                 INTITULE='A4DX',
                                 RESULTAT=RESU_G,
                                 NOM_CHAM='DEPL',
                                 GROUP_NO='A4',
-                                NOM_CMP='DX',),);
-
-TFYA4=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
+                                NOM_CMP='DX',),),);
+                                
+TDXA4_G=CALC_TABLE(reuse =TDXA4_G,
+               TABLE=TDXA4_G,
+               ACTION=(_F(
+                          OPERATION = 'FILTRE',
+                          NOM_PARA  = 'NUME_ORDRE',
+                          CRIT_COMP = 'GT',
+                          VALE    = 0,
+                         ),),);
+                         
+TFYA4=POST_RELEVE_T(ACTION=(_F(OPERATION='EXTRACTION',
                               INTITULE='A4FY',
                               RESULTAT=RESU1,
                               NOM_CHAM='FORC_NODA',
                               GROUP_NO='A4',
-                              NOM_CMP='DY',),);
-
-TFYA4_G=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
+                              NOM_CMP='DY',),),);
+                              
+TFYA4=CALC_TABLE(reuse =TFYA4,
+               TABLE=TFYA4,
+               ACTION=(_F(
+                          OPERATION = 'FILTRE',
+                          NOM_PARA  = 'NUME_ORDRE',
+                          CRIT_COMP = 'GT',
+                          VALE    = 0,
+                         ),),);
+                         
+TFYA4_G=POST_RELEVE_T(ACTION=(_F(OPERATION='EXTRACTION',
                                 INTITULE='A4FY',
                                 RESULTAT=RESU_G,
                                 NOM_CHAM='FORC_NODA',
                                 GROUP_NO='A4',
-                                NOM_CMP='DY',),);
+                                NOM_CMP='DY',),),);
+                                
+TFYA4_G=CALC_TABLE(reuse =TFYA4_G,
+               TABLE=TFYA4_G,
+               ACTION=(_F(
+                          OPERATION = 'FILTRE',
+                          NOM_PARA  = 'NUME_ORDRE',
+                          CRIT_COMP = 'GT',
+                          VALE    = 0,
+                         ),),);                                
 
 FORM_Y = FORMULE(VALE='(DY-DYG)/DY',
                  NOM_PARA=('DY','DYG',),);

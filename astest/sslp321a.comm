@@ -1,4 +1,4 @@
-# MODIF  DATE 25/01/2011   AUTEUR MACOCCO K.MACOCCO 
+# MODIF  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
 # TITRE PROPAGATION D'UNE FISSURE X-FEM DANS UNE PLAQUE EN FLEXION 3 POINTS
 # sslp321a.para = tps_job 150 mem_job 150Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -90,6 +90,7 @@ PROPA_FISS(METHODE_PROPA='INITIALISATION',
 
 CHXFE = [None]*(NPAS+1)
 RESU = [None]*(NPAS+1)
+RESV = [None]*(NPAS+1)
 SIF = [None]*(NPAS+1)
 LSN = [None]*(NPAS+1)
 LST = [None]*(NPAS+1)
@@ -133,7 +134,7 @@ for i in range(NPAS+1) :
                       FORCE_NODALE=_F(GROUP_NO=('P3',),FY=-1.,),
                                     );
 
-    RESU[i]=STAT_NON_LINE(MODELE=MODE[i],
+    RESV[i]=STAT_NON_LINE(MODELE=MODE[i],
                          CHAM_MATER=CHAMA[i],
                          EXCIT=(_F(CHARGE=CHXFE[i],),
                                 _F(CHARGE=CHRIG[i],),),
@@ -144,6 +145,8 @@ for i in range(NPAS+1) :
                          NEWTON=_F(REAC_ITER=1,),
                          ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA',),
                          INFO=1,);
+
+    RESU[i]=EXTR_RESU(RESULTAT=RESV[i],ARCHIVAGE=_F(NUME_ORDRE=(1,)),);   
 
     SIF[i]=CALC_G        (RESULTAT=RESU[i],
                          OPTION='CALC_K_G',

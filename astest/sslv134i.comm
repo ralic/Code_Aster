@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
 # TITRE CALCUL K_I EN X-FEM AXI-SYMMETRIQUE
 # sslv134i.para = tps_job 150 mem_job 512Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -116,6 +116,7 @@ TAB=CALC_G(THETA=_F(FISSURE=FISS,
                     R_INF=0.1,
                     R_SUP=0.3,),
            RESULTAT=RESU,
+           NUME_ORDRE=1,
            COMP_ELAS=_F(RELATION='ELAS',),
            OPTION='CALC_K_G',);
 
@@ -221,6 +222,7 @@ TAB_ROT=CALC_G(THETA=_F(FISSURE=FISS,
                     R_INF=0.1,
                     R_SUP=0.3,),
            RESULTAT=RESU_ROT,
+           NUME_ORDRE=1,
            COMP_ELAS=_F(RELATION='ELAS',),
            OPTION='CALC_K_G',);
 

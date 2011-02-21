@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
 # TITRE POUTRE ENCASTREE A UNE EXTREMITE ET CHARGEE PAR UNE TRACTION
 # ssnl127b.para = tps_job 60 mem_job 240Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -141,8 +141,7 @@ REST=STAT_NON_LINE(MODELE=MO, CHAM_MATER=CHMAT1, CARA_ELEM=CAREL,
                                     RHO_EXCL=1e-8,
                                     RHO_MAX=10.0,),
                    CONVERGENCE=_F(RESI_GLOB_RELA=1e-05,
-                                  ITER_GLOB_MAXI=10),
-                   ARCHIVAGE=_F(ARCH_ETAT_INIT='OUI',),);
+                                  ITER_GLOB_MAXI=10),);
 
 CALC_ELEM(reuse=REST,RESULTAT=REST,OPTION='SIEF_ELNO')
 
@@ -215,7 +214,7 @@ REST2=STAT_NON_LINE(MODELE=MO, CHAM_MATER=CHMAT2, CARA_ELEM=CAREL,
                     CONVERGENCE=_F(RESI_GLOB_RELA=1e-06,
                                    ITER_GLOB_MAXI=10,
                                    ITER_GLOB_ELAS=10),
-                    ARCHIVAGE=_F(ARCH_ETAT_INIT='OUI',),);
+                    );
 
 CALC_ELEM(reuse=REST2,RESULTAT=REST2,OPTION='SIEF_ELNO',);
 
@@ -288,7 +287,7 @@ REST3=STAT_NON_LINE(MODELE=MO, CHAM_MATER=CHMAT3, CARA_ELEM=CAREL,
                     CONVERGENCE=_F(RESI_GLOB_RELA=1e-06,
                                    ITER_GLOB_MAXI=10,
                                    ITER_GLOB_ELAS=10),
-                    ARCHIVAGE=_F(ARCH_ETAT_INIT='OUI',),);
+                    );
 
 CALC_ELEM(reuse=REST3,RESULTAT=REST3,OPTION='SIEF_ELNO')
 

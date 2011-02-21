@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
 # TITRE - REEEQUILIBRAGE GRAVITAIRE D UNE COLONNE - MODELISATION HH2D
 # wtnp118b.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -221,7 +221,6 @@ RESU0=STAT_NON_LINE(
                              ITER_GLOB_MAXI=15,
                              RESI_GLOB_MAXI = 5.E-14 ),
                   ARCHIVAGE=_F(PAS_ARCH=1,
-                              ARCH_ETAT_INIT='OUI',
                               ),
              );
 

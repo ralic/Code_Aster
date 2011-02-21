@@ -1,9 +1,9 @@
-# MODIF  DATE 14/12/2010   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
 # TITRE MISE EN OEUVRE DU "ZOOM STRUCTURAL" SUR UN PROBLEME 2D
 # zzzz230a.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -72,8 +72,6 @@ DEBUT(  CODE=_F(NOM='ZZZZ230A',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 #  * Le chargement est fait par AFFE_CHAR_CINE/EVOL_IMPO
 #    C'est le seul chargement (car il n'y a pas ici de chargement reparti)
 #  * Dans STAT_NON_LINE/EXCIT, il ne faut pas utiliser FONC_MULT.
-#  * Dans STAT_NON_LINE on utilise ARCH_ETAT_INIT='OUI' pour pouvoir calculer sur le zoom
-#    a des instants anterieurs au 1er instant du 1er calcul.
 #  * Dans STAT_NON_LINE, on est oblige d'utiliser RESI_GLOB_MAXI car il n'y a pas de chargement en "force"
 #  * Les TEST_RESU faits sur le calcul "zoom" sont assez tolerants (3%) car la "reference" est le
 #    calcul grossier. Il est heureux que les 2 calculs different un peu !
@@ -101,7 +99,7 @@ FONC1=DEFI_FONCTION(NOM_PARA='INST',VALE=(0., 0., 1., 1.))
 LIST1=DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=_F(JUSQU_A=1.0, NOMBRE=2,),);
 RESU1=STAT_NON_LINE(MODELE=MO1, CHAM_MATER=CHMAT, EXCIT=(_F(CHARGE = CHAR1,FONC_MULT=FONC1),),
                     COMP_INCR=_F(TOUT='OUI',RELATION='ELAS'),INCREMENT=_F(LIST_INST=LIST1,),
-                    ARCHIVAGE=_F(LIST_INST=LIST1, ARCH_ETAT_INIT='OUI',),)
+                    ARCHIVAGE=_F(LIST_INST=LIST1,),)
 
 
 TEST_RESU( RESU=_F(RESULTAT = RESU1,  NUME_ORDRE = 2, NOM_CHAM = 'DEPL', REFERENCE='NON_REGRESSION',

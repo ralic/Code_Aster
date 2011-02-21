@@ -1,9 +1,9 @@
-# MODIF  DATE 12/01/2010   AUTEUR GRANET S.GRANET 
+# MODIF  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
 # TITRE ESSAI DE TRACTION D UNE PLAQUE TROUEE AVEC LA METHODE IMPLEX
 # ssnp140b.para = tps_job 100 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -116,7 +116,7 @@ RESUIE=STAT_NON_LINE(MODELE=MODE,
                                   INST_FIN=TFIN,),
                      METHODE = 'IMPL_EX',
                      IMPL_EX=_F(),
-                     ARCHIVAGE = _F(ARCH_ETAT_INIT = 'OUI',
+                     ARCHIVAGE = _F(
                                     LIST_INST= IARCH),
 );
 
@@ -172,7 +172,7 @@ TEST_TABLE( TABLE=TINT,
             TYPE_TEST='SOMM_ABS',
             REFERENCE='NON_REGRESSION',
             PRECISION=1.E-10,
-            VALE=2.6344192935276e-01,);
+            VALE=0.094938973876676,);
 
 
 FIN();

@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
 # TITRE TEST DE FONDATION FILANTE AVEC LA LOI DE CAMCLAY EN MECANIQUE DRAINE
 # ssnp136a.para = tps_job 370 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -257,7 +257,6 @@ VARINI=CREA_CHAMP(INFO=1,
 #                     CONVERGENCE=_F(RESI_GLOB_RELA=1e-06,
 #                                    ITER_GLOB_MAXI=10,
 #                                    ARRET='OUI',),
-#                     ARCHIVAGE=_F(ARCH_ETAT_INIT='OUI'),
 #                     );
 # 
 # resu0=CALC_ELEM(reuse =resu0,
@@ -350,7 +349,7 @@ resu1=STAT_NON_LINE(MODELE    =MODMEC1,
                     CONVERGENCE=_F(RESI_GLOB_RELA=1E-06,
                                    ITER_GLOB_MAXI=10,
                                    ARRET         ='OUI'),
-                    ARCHIVAGE=_F(ARCH_ETAT_INIT='OUI'));
+                    );
                     
 resu1=CALC_ELEM(reuse   =resu1,
                 RESULTAT=resu1,
@@ -489,7 +488,26 @@ T_VARI_A=POST_RELEVE_T(ACTION=_F(INTITULE ='VARI_NOEU',
                                  NOM_CHAM ='VARI_NOEU',
                                  NOM_CMP  =('V1','V2','V3','V4','V5','V6','V7'),
                                  OPERATION='EXTRACTION'));
-                                 
+
+
+T_VARI_O=CALC_TABLE(reuse =T_VARI_O,
+               TABLE=T_VARI_O,
+               ACTION=(_F(
+                          OPERATION = 'FILTRE',
+                          NOM_PARA  = 'NUME_ORDRE',
+                          CRIT_COMP = 'GT',
+                          VALE    = 0,
+                         ),),);
+                         
+                         
+T_VARI_A=CALC_TABLE(reuse =T_VARI_A,
+               TABLE=T_VARI_A,
+               ACTION=(_F(
+                          OPERATION = 'FILTRE',
+                          NOM_PARA  = 'NUME_ORDRE',
+                          CRIT_COMP = 'GT',
+                          VALE    = 0,
+                         ),),);                                                    
 IMPR_TABLE(TABLE=T_VARI_O);
 IMPR_TABLE(TABLE=T_VARI_A);
 
@@ -625,7 +643,15 @@ T_FORCE=POST_RELEVE_T(INFO=1,
                                 CHEMIN   =b_fonda,
                                 NOM_CMP  ='SIYY',
                                 OPERATION='MOYENNE'));
-
+T_FORCE=CALC_TABLE(reuse =T_FORCE,
+               TABLE=T_FORCE,
+               ACTION=(_F(
+                          OPERATION = 'FILTRE',
+                          NOM_PARA  = 'NUME_ORDRE',
+                          CRIT_COMP = 'GT',
+                          VALE    = 0,
+                         ),),);  
+                         
 # DY = -0.005
 TEST_TABLE(TABLE    =T_FORCE,
            NOM_PARA ='SIYY',

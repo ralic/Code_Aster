@@ -1,9 +1,9 @@
-# MODIF  DATE 13/10/2010   AUTEUR BOITEAU O.BOITEAU 
+# MODIF  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
 # TITRE ANALYSE AUX VALEURS PROPRES DANS DYNA_NON_LINE
 # sdnv106a.para = tps_job 900 mem_job 200Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -134,8 +134,8 @@ REPONSE=STAT_NON_LINE(MODELE=MO,
                 NEWTON=_F(MATRICE = 'TANGENTE',REAC_ITER = 1),
                 CONVERGENCE=_F(RESI_GLOB_RELA = 1.E-6,
                                ITER_GLOB_MAXI = 50),
-                ARCHIVAGE = _F(ARCH_ETAT_INIT = 'OUI',LIST_INST=L_ARCH,),
-                CRIT_FLAMB = _F(NB_FREQ=1,CHAR_CRIT=(-100.0,100.),INST_CALCUL='TOUT_PAS',),
+                ARCHIVAGE = _F(LIST_INST=L_ARCH,),
+                CRIT_FLAMB = _F(NB_FREQ=1,CHAR_CRIT=(-100.0,100.),),
              );
 #
 REPONSE=DYNA_NON_LINE( reuse=REPONSE,
@@ -190,8 +190,8 @@ REPONSEL=STAT_NON_LINE(MODELE=MO,
                 NEWTON=_F(MATRICE = 'TANGENTE',REAC_ITER = 1),
                 CONVERGENCE=_F(RESI_GLOB_RELA = 1.E-6,
                                ITER_GLOB_MAXI = 50),
-                ARCHIVAGE = _F(ARCH_ETAT_INIT = 'OUI',LIST_INST=L_ARCH,),
-                CRIT_FLAMB = _F(NB_FREQ=1,CHAR_CRIT=(-100.0,100.),INST_CALCUL='TOUT_PAS',),
+                ARCHIVAGE = _F(LIST_INST=L_ARCH,),
+                CRIT_FLAMB = _F(NB_FREQ=1,CHAR_CRIT=(-100.0,100.),LIST_INST = L_INST),
              );
 REPONSEL=DYNA_NON_LINE( reuse=REPONSEL,
                SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',
@@ -244,8 +244,8 @@ REPONSEM=STAT_NON_LINE(MODELE=MO,
                 NEWTON=_F(MATRICE = 'TANGENTE',REAC_ITER = 1),
                 CONVERGENCE=_F(RESI_GLOB_RELA = 1.E-6,
                                ITER_GLOB_MAXI = 50),
-                ARCHIVAGE = _F(ARCH_ETAT_INIT = 'OUI',LIST_INST=L_ARCH,),
-                CRIT_FLAMB = _F(NB_FREQ=1,CHAR_CRIT=(-100.0,100.),INST_CALCUL='TOUT_PAS',),
+                ARCHIVAGE = _F(LIST_INST=L_ARCH,),
+                CRIT_FLAMB = _F(NB_FREQ=1,CHAR_CRIT=(-100.0,100.),LIST_INST = L_INST),
              );
 REPONSEM=DYNA_NON_LINE(reuse=REPONSEM,
                SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',
@@ -563,7 +563,7 @@ REPONSE2=DYNA_NON_LINE(
                 CONVERGENCE=_F(RESI_GLOB_RELA = 1.E-6,
                                 ITER_GLOB_MAXI = 10),
                 MODE_VIBR = _F(NB_FREQ=3,MATR_RIGI='SECANTE',),
-                ARCHIVAGE=_F(LIST_INST=L_ARCH2,ARCH_ETAT_INIT='OUI',),
+                ARCHIVAGE=_F(LIST_INST=L_ARCH2),
              );
 REPONSE2=DYNA_NON_LINE( reuse=REPONSE2,
                  ETAT_INIT=_F(EVOL_NOLI = REPONSE2),

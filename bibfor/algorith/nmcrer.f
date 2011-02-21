@@ -1,9 +1,9 @@
-      SUBROUTINE NMCRER(SDERRO)
+      SUBROUTINE NMCRER(CARCRI,SDERRO)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 23/09/2008   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -21,7 +21,7 @@ C ======================================================================
 C RESPONSABLE ABBAS M.ABBAS
 C
       IMPLICIT NONE
-      CHARACTER*24  SDERRO   
+      CHARACTER*24 SDERRO,CARCRI
 C 
 C ----------------------------------------------------------------------
 C
@@ -33,6 +33,7 @@ C ----------------------------------------------------------------------
 C 
 C
 C IN  SDERRO : SD ERREUR
+C IN  CARCRI : PARAMETRES DES METHODES D'INTEGRATION LOCALES
 C
 C -------------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ----------------
 C
@@ -52,10 +53,14 @@ C
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C
 C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
-C
+C      
       INTEGER      IFM,NIV
-      CHARACTER*24 ERRCOD
-      INTEGER      JECOD
+      INTEGER      IBID
+      CHARACTER*24 ERRCOD,ERRTPS
+      INTEGER      JVALE
+      INTEGER      JECOD,JERRT
+      CHARACTER*16 MOTFAC,CHAINE
+      REAL*8       THETA
 C
 C ----------------------------------------------------------------------
 C
@@ -65,16 +70,34 @@ C
 C --- AFFICHAGE
 C
       IF (NIV.GE.2) THEN
-        WRITE (IFM,*) '<MECANONLINE> ... CREATION SD ERREUR' 
-      ENDIF   
+        WRITE (IFM,*) '<MECANONLINE> ... LECTURE CALCUL ERREUR' 
+      ENDIF
+C
+C --- INITIALISATIONS
+C
+      MOTFAC = 'INCREMENT'
+C
+C --- VALEUR DE THETA
+C
+      CALL JEVEUO(CARCRI(1:19)//'.VALV','L',JVALE)
+      THETA  =  ZR(JVALE+3)      
 C
 C --- NOM DES SDS
 C
-      ERRCOD = SDERRO(1:19)//'.CODE'              
+      ERRCOD = SDERRO(1:19)//'.CODE'
+      ERRTPS = SDERRO(1:19)//'.ERRT'         
 C
 C --- CREATION SD 
-C 
+C
       CALL WKVECT(ERRCOD,'V V L',8,JECOD)
+C
+C --- ERREUR EN TEMPS (THM)
+C
+      CALL GETVTX(MOTFAC,'ERRE_TEMPS',1,1,1,CHAINE,IBID)
+      IF (CHAINE.EQ.'OUI') THEN
+        CALL WKVECT(ERRTPS,'V V R',3,JERRT)
+        ZR(JERRT-1+3) = THETA
+      ENDIF
 C
       CALL JEDEMA()
       END

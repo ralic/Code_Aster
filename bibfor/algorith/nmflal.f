@@ -1,10 +1,11 @@
-      SUBROUTINE NMFLAL(COMPOR,METHOD,MAXDDL,OPTFLA,MOD45 ,DEFO ,NFREQ ,
-     &                  TYPMAT,OPTMOD,BANDE,DDL,NDDLE)
+      SUBROUTINE NMFLAL(OPTION,COMPOR,SDPOST,MOD45  ,DEFO  ,
+     &                  NFREQ ,TYPMAT,OPTMOD,BANDE  ,NDDLE ,
+     &                  DDLEXC)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 12/04/2010   AUTEUR MICHEL S.MICHEL 
+C MODIF ALGORITH  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -22,16 +23,13 @@ C ======================================================================
 C RESPONSABLE ABBAS M.ABBAS
 C
       IMPLICIT NONE
-      CHARACTER*24 COMPOR
-      CHARACTER*8  OPTFLA
-      CHARACTER*16 OPTMOD
-      CHARACTER*16 METHOD(*)
+      CHARACTER*24 COMPOR,DDLEXC
+      CHARACTER*16 OPTMOD,OPTION
       CHARACTER*4  MOD45
-      INTEGER      NFREQ,DEFO      
+      INTEGER      NFREQ,DEFO  ,NDDLE    
       CHARACTER*16 TYPMAT
       REAL*8       BANDE(2)
-      INTEGER      MAXDDL,NDDLE
-      CHARACTER*8  DDL(MAXDDL)           
+      CHARACTER*19 SDPOST
 C 
 C ----------------------------------------------------------------------
 C
@@ -42,13 +40,12 @@ C
 C ----------------------------------------------------------------------
 C      
 C
-C IN  OPTFLA : TYPE DE CALCUL
+C IN  OPTION : TYPE DE CALCUL
 C              'FLAMBSTA' MODES DE FLAMBEMENT EN STATIQUE
 C              'FLAMBDYN' MODES DE FLAMBEMENT EN DYNAMIQUE
 C              'VIBRDYNA' MODES VIBRATOIRES
 C IN  COMPOR : CARTE COMPORTEMENT
-C IN  METHOD : INFORMATIONS SUR LES METHODES DE RESOLUTION
-C IN  MAXDDL : NOMBRE MAX DE DDLS QUE L'ON PEUT EXCLURE (20)
+C IN  SDPOST : SD POUR POST-TRAITEMENTS (CRIT_FLAMB ET MODE_VIBR)
 C OUT MOD45  : TYPE DE CALCUL DE MODES PROPRES
 C              'VIBR'     MODES VIBRATOIRES
 C              'FLAM'     MODES DE FLAMBEMENT  
@@ -61,10 +58,9 @@ C               'BANDE'       DANS UNE BANDE DE FREQUENCE DONNEE
 C OUT DEFO   : TYPE DE DEFORMATIONS
 C                0            PETITES DEFORMATIONS (MATR. GEOM.)
 C                1            GRANDES DEFORMATIONS (PAS DE MATR. GEOM.)
-C OUT BANDE  : BANDE DE FREQUENCES SI OPTMOD='BANDE'
-C OUT DDL    : TABLEAU REGROUPANT LES NOMS DES DDLS QUE L'ON EXCLUS 
-C OUT NDDLE  : LONGUEUR NON VIDE DU TABLEAU DDL
-C
+C OUT BANDE  : BANDE DE FREQUENCE SI OPTMOD='BANDE'
+C OUT NDDLE  : NOMBRE DE DDL EXCLUS
+C OUT DDLEXC : NOM DE L'OBJET JEVEUX CONTENANT LE NOM DES DDLS EXCLUS
 C
 C -------------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ----------------
 C
@@ -85,31 +81,27 @@ C
 C
 C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
 C
-      INTEGER      IRET,NBV,I
-      REAL*8       R8BID,OMEGA2
-      INTEGER      INIT,IDES,IFM,NIV
-      CHARACTER*8  MRIG,NGEO,K8B     
+      INTEGER      NBV,I,IBID
+      REAL*8       R8BID
+      CHARACTER*24 K24BID
+      INTEGER      INIT,IDES 
+      CHARACTER*16 OPTRIG
 C
 C ----------------------------------------------------------------------
 C
-      CALL JEMARQ()
-      
-C     ---RECUPERATION DU NIVEAU D'IMPRESSION---
-      CALL INFNIV(IFM,NIV)
-C     -----------------------------------------                  
+      CALL JEMARQ()               
 C
 C --- INITIALISATIONS
 C
       BANDE(1) = 1.D-5
       BANDE(2) = 1.D5
-      DEFO   = 0
-      MOD45  = ' '
-      MRIG   = ' '
-      OPTMOD = 'PLUS_PETITE'
-      DO 5 I = 1,MAXDDL     
-        DDL(I) = ' '
-    5 CONTINUE
-      NDDLE  = 0                  
+      NFREQ    = 0
+      NDDLE    = 0
+      DEFO     = 0
+      MOD45    = ' '     
+      OPTMOD   = ' '
+      OPTRIG   = ' '
+      TYPMAT   = ' '
 C
 C --- TYPE DE DEFORMATIONS
 C
@@ -122,69 +114,58 @@ C     RIGIDITE GEOMETRIQUE INTEGREE A LA MATRICE TANGENTE
      &      (ZK16(INIT+2+20*(I-1)).EQ.'GDEF_HYPO_ELAS').OR.
      &      (ZK16(INIT+2+20*(I-1)).EQ.'SIMO_MIEHE')) THEN
           DEFO = 1
-        END IF
+        ELSEIF ((ZK16(INIT+2+20*(I-1)).EQ.'GDEF_LOG')) THEN
+          CALL ASSERT(.FALSE.)        
+        ENDIF
    10 CONTINUE      
-C  
+C
 C --- RECUPERATION DES OPTIONS
-C         
-      IF ( OPTFLA(1:7) .EQ. 'VIBRDYN' ) THEN
-        CALL GETVIS('MODE_VIBR','NB_FREQ'  ,1,1,1,NFREQ ,IRET)
-        CALL GETVTX('MODE_VIBR','MATR_RIGI',1,1,1,MRIG  ,IRET)
-        MOD45    = 'VIBR'
-        IF ( MRIG(1:4) .EQ. 'ELAS' ) THEN
-          TYPMAT = 'ELASTIQUE'
-        ELSE IF ( MRIG(1:4) .EQ. 'TANG' ) THEN
-          TYPMAT = 'TANGENTE'
-        ELSE IF ( MRIG(1:4) .EQ. 'SECA' ) THEN
-          TYPMAT = 'SECANTE'
-        ELSE
-          CALL ASSERT(.FALSE.)  
+C
+      IF ( OPTION(1:7) .EQ. 'VIBRDYN' ) THEN
+        CALL NMLESD('POST_TRAITEMENT',SDPOST,'NB_FREQ_VIBR',
+     &              NFREQ            ,R8BID ,K24BID)
+        CALL NMLESD('POST_TRAITEMENT',SDPOST,'TYPE_MATR_VIBR',
+     &              IBID             ,R8BID ,TYPMAT)
+        CALL NMLESD('POST_TRAITEMENT',SDPOST,'OPTION_EXTR_VIBR',
+     &              IBID             ,R8BID ,OPTMOD)
+        CALL NMLESD('POST_TRAITEMENT',SDPOST,'BANDE_VIBR_1',
+     &              IBID             ,BANDE(1),K24BID)   
+        CALL NMLESD('POST_TRAITEMENT',SDPOST,'BANDE_VIBR_2',
+     &              IBID             ,BANDE(2),K24BID)           
+        MOD45    = 'VIBR'       
+      ELSEIF ( OPTION(1:5) .EQ. 'FLAMB' ) THEN
+        CALL NMLESD('POST_TRAITEMENT',SDPOST,'NB_FREQ_FLAMB',
+     &              NFREQ            ,R8BID ,K24BID) 
+        CALL NMLESD('POST_TRAITEMENT',SDPOST,'TYPE_MATR_FLAMB',
+     &              IBID             ,R8BID ,TYPMAT)           
+        MOD45    = 'FLAM'
+        CALL NMLESD('POST_TRAITEMENT',SDPOST,'RIGI_GEOM_FLAMB',
+     &              IBID             ,R8BID ,OPTRIG)
+        IF (OPTRIG.EQ.'RIGI_GEOM_NON' ) THEN
+          DEFO   = 1
+          CALL U2MESS('I','MECANONLINE4_3')
         ENDIF
-        OPTMOD = 'PLUS_PETITE'
-        CALL GETVR8('MODE_VIBR','BANDE',1,1,2,BANDE ,IRET)
-        IF ( IRET.NE.0 ) OPTMOD = 'BANDE'
-        R8BID = OMEGA2(BANDE(1))
-        BANDE(1) = R8BID
-        R8BID = OMEGA2(BANDE(2))
-        BANDE(2) = R8BID        
-      ELSEIF ( OPTFLA(1:5) .EQ. 'FLAMB' ) THEN
-        CALL GETVIS('CRIT_FLAMB','NB_FREQ'  ,1,1,1,NFREQ ,IRET)
-        CALL GETVR8('CRIT_FLAMB','CHAR_CRIT',1,1,2,BANDE ,IRET)
-        CALL GETVTX('CRIT_FLAMB','RIGI_GEOM',1,1,1,NGEO,IRET)        
-        CALL GETVTX('CRIT_FLAMB','DDL_EXCLUS',1,1,0,K8B ,NDDLE)     
-C        
-C --- SI LA LISTE DES DDLS A EXCLURE EST NON VIDE, ON LA RECUPERE
-C               
-        IF (NDDLE.NE.0) THEN    
-          IF (NDDLE.LE.MAXDDL) THEN                
-            NDDLE = ABS(NDDLE)                    
-            CALL GETVTX('CRIT_FLAMB','DDL_EXCLUS',1,1,NDDLE,DDL ,IRET)
-          ELSE
-            CALL ASSERT(.FALSE.)
-          ENDIF    
-        ENDIF
-C          
-        IF (NGEO.EQ.'NON') THEN
-          WRITE (IFM,9000)
-          DEFO = 1
-        ENDIF                   
-        MOD45  = 'FLAM'
-        MRIG   = '    '
+        
         IF (DEFO.EQ.0) THEN
           OPTMOD = 'BANDE'
         ELSEIF (DEFO.EQ.1) THEN
-          OPTMOD = 'PLUS_PETITE'
+          OPTMOD = 'PLUS_PETITE'         
         ELSE
           CALL ASSERT(.FALSE.)  
         ENDIF
-        TYPMAT = METHOD(5)
+        
+        CALL NMLESD('POST_TRAITEMENT',SDPOST,'BANDE_FLAMB_1',
+     &              IBID             ,BANDE(1),K24BID)
+        CALL NMLESD('POST_TRAITEMENT',SDPOST,'BANDE_FLAMB_2',
+     &              IBID             ,BANDE(2),K24BID)              
+        CALL NMLESD('POST_TRAITEMENT',SDPOST,'NB_DDL_EXCLUS',
+     &              NDDLE            ,R8BID ,K24BID) 
+        CALL NMLESD('POST_TRAITEMENT',SDPOST,'NOM_DDL_EXCLUS',
+     &              IBID             ,R8BID ,DDLEXC)
       ELSE
         CALL ASSERT(.FALSE.)  
       ENDIF
-C         
-     
+C
       CALL JEDEMA()
-      
- 9000 FORMAT (/,72 ('-'),//,'CALCUL VP EN GRANDE DEFORMATION')      
-      
+C
       END

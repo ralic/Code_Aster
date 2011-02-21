@@ -1,7 +1,7 @@
       LOGICAL FUNCTION ISFONC(FONACT,NOMFOZ)
 C      
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 15/02/2011   AUTEUR FLEJOU J-L.FLEJOU 
+C MODIF ALGORITH  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -51,7 +51,7 @@ C       FETI               :  SOLVEUR FETI
 C       LIAISON_UNILATER   :  LIAISON UNILATERALE
 C       FORCE_SUIVEUSE     :  CHARGEMENT SUIVEUR
 C       MACR_ELEM_STAT     :  MACRO-ELEMENTS STATIQUES
-C       GR_ROT             :  POUTRES EN GRANDES ROTATIONS
+C       GD_ROTA            :  POUTRES EN GRANDES ROTATIONS
 C       SENSIBILITE        :  SENSIBILITE
 C       CRIT_FLAMB         :  CALCUL DE FLAMBEMENT
 C       MODE_VIBR          :  CALCUL DE MODES VIBRATOIRES
@@ -72,6 +72,8 @@ C                             LE CONTACT
 C       DIRI_CINE          :  PRESENCE DE CHARGEMENTS DE DIRICHLET
 C                             DE TYPE ELIMINATION (AFFE_CHAR_CINE)
 C       THM                :  MODELISATION THM
+C       ENDO_NO            :  MODELISATION ENDO AUX NOEUDS *_GVNO
+C       REUSE              :  CONCEPT RE-ENTRANT
 C
 C ---------------------------------------------------------------------
 C
@@ -80,7 +82,6 @@ C
 C ---------------------------------------------------------------------
 C
       NOMFON = NOMFOZ
-      
 C
       IF (NOMFON.EQ.'RECH_LINE') THEN
         ISFONC = FONACT(1).EQ.1
@@ -138,11 +139,9 @@ C
       ELSEIF (NOMFON.EQ.'MACR_ELEM_STAT') THEN
         ISFONC = FONACT(14).EQ.1
       ELSEIF (NOMFON.EQ.'GD_ROTA') THEN
-        ISFONC = FONACT(15) .EQ.1 
-        
+        ISFONC = FONACT(15) .EQ.1       
       ELSEIF (NOMFON.EQ.'ENDO_NO') THEN
-        ISFONC = FONACT(40).EQ.1          
-        
+        ISFONC = FONACT(40).EQ.1  
       ELSEIF (NOMFON.EQ.'SENSIBILITE') THEN
         ISFONC = FONACT(16).EQ.1 
       ELSEIF (NOMFON.EQ.'CRIT_FLAMB') THEN
@@ -174,7 +173,10 @@ C
         ISFONC = FONACT(37).EQ.1
 
       ELSEIF (NOMFON.EQ.'CONT_ALL_VERIF') THEN
-        ISFONC = FONACT(38).EQ.1      
+        ISFONC = FONACT(38).EQ.1
+
+      ELSEIF (NOMFON.EQ.'REUSE') THEN
+        ISFONC = FONACT(39).EQ.1
                              
       ELSE
         CALL ASSERT(.FALSE.)

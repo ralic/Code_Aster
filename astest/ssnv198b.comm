@@ -1,9 +1,9 @@
-# MODIF  DATE 21/09/2010   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
 # TITRE : VALIDATION DES CONDITIONS DE DIRICHLET AVEC X-FEM EN 3D
 # ssnv198b.para = tps_job 60 mem_job 256Mo mem_aster 50 ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -151,19 +151,21 @@ MA_XFEM=DEFI_GROUP(reuse =MA_XFEM,
                                       PRECISION=1.E-6,),
                                       ),);
 
-DEP_BACK= POST_RELEVE_T ( ACTION =_F(INTITULE  = 'DEPLACEMENT',
-                                     GROUP_NO  = 'SURFBAC',
-                                     RESULTAT  = RES_XFEM,
-                                     NOM_CHAM  = 'DEPL',
-                                     NOM_CMP   = ( 'DX','DY','DZ'),
-                                     OPERATION = 'EXTRACTION',),);
+DEP_BACK= POST_RELEVE_T ( ACTION =_F(INTITULE   = 'DEPLACEMENT',
+                                     GROUP_NO   = 'SURFBAC',
+                                     RESULTAT   = RES_XFEM,
+                                     NUME_ORDRE = 1,
+                                     NOM_CHAM   = 'DEPL',
+                                     NOM_CMP    = ( 'DX','DY','DZ'),
+                                     OPERATION  = 'EXTRACTION',),);
 
-DEP_FRON= POST_RELEVE_T ( ACTION =_F(INTITULE  = 'DEPLACEMENT',
-                                     GROUP_NO  = 'SURFFRO',
-                                     RESULTAT  = RES_XFEM,
-                                     NOM_CHAM  = 'DEPL',
-                                     NOM_CMP   = ( 'DX','DY','DZ'),
-                                     OPERATION = 'EXTRACTION',),);
+DEP_FRON= POST_RELEVE_T ( ACTION =_F(INTITULE   = 'DEPLACEMENT',
+                                     GROUP_NO   = 'SURFFRO',
+                                     RESULTAT   = RES_XFEM,
+                                     NUME_ORDRE = 1,
+                                     NOM_CHAM   = 'DEPL',
+                                     NOM_CMP    = ( 'DX','DY','DZ'),
+                                     OPERATION  = 'EXTRACTION',),);
 
 
 # test des noeuds bloques

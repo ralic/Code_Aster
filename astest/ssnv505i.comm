@@ -1,4 +1,4 @@
-# MODIF  DATE 25/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
 # TITRE CONTACT DE DEUX POUTRES EN GRANDS DEPLACEMENTS
 # ssnv505i.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -131,18 +131,13 @@ U=STAT_NON_LINE(SOLVEUR=_F(SYME='OUI',),
                        ),
                 CONTACT  = CH2,
                 COMP_INCR=_F(RELATION='ELAS',
-                             #DEFORMATION='PETIT_REAC',
                              GROUP_MA='TOUT',),
                 INCREMENT=_F(LIST_INST=LINST,
                              INST_FIN=1.0,
                              ),
                 NEWTON=_F(REAC_ITER=1,
                           ),
-                #RECH_LINEAIRE=_F(),
                 CONVERGENCE=_F(ITER_GLOB_MAXI=20,),
-                ARCHIVAGE=_F(ARCH_ETAT_INIT='OUI',
-                             #LIST_INST=LARCH,
-                             ),
                 INFO=1,);
 
 U=CALC_NO(reuse =U,

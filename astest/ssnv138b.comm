@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
 # TITRE VERSION POUTRE DE LA PLAQUE EN GRANDES
 # ssnv138b.para = tps_job 60 mem_job 100Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -134,7 +134,7 @@ NONLI=STAT_NON_LINE(  MODELE=MO1,
                                   ITER_GLOB_MAXI=20,),
                    SOLVEUR=_F(SYME='NON',),
                    ARCHIVAGE=_F(LIST_INST=L_INST,
-                                ARCH_ETAT_INIT='OUI',),);
+                                ),);
 
 NONLI=CALC_ELEM(reuse =NONLI,
                OPTION='SIEF_ELNO',

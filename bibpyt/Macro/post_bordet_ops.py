@@ -1,4 +1,4 @@
-#@ MODIF post_bordet_ops Macro  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+#@ MODIF post_bordet_ops Macro  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================

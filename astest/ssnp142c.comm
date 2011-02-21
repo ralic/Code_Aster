@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
 # TITRE MODELISATION DE LA RUPTURE D'UN BARRAGE 2D A L'AIDE DES ELEMENT DE JOINT ET DE LA LOI JOINT_MECA_FROT
 # ssnp142c.para = tps_job 200 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -177,8 +177,7 @@ U_F=STAT_NON_LINE(MODELE=MO,
                   CONVERGENCE=_F(ITER_GLOB_MAXI=12,
                                  RESI_GLOB_RELA=1E-5),
                   SOLVEUR=_F(METHODE='MUMPS',),
-                  ARCHIVAGE = _F(ARCH_ETAT_INIT = 'OUI',
-                                 LIST_INST = LR)
+                  ARCHIVAGE = _F(LIST_INST = LR)
                   );
 
 

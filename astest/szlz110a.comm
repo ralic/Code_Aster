@@ -1,4 +1,4 @@
-# MODIF  DATE 14/02/2011   AUTEUR TRAN V-X.TRAN 
+# MODIF  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
 # TITRE CALCUL DU DOMMAGE DE LEMAITRE-SERMAGE (CALC_ELEM)
 # szlz110a.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -436,7 +436,6 @@ RESUPLAS=STAT_NON_LINE(MODELE=MODMECA,
                                       ITER_GLOB_MAXI=50),
                        SOLVEUR=_F(METHODE='LDLT',
                                   RENUM='SANS',),
-                       ARCHIVAGE=_F(ARCH_ETAT_INIT='OUI',),
                        INFO=1,);
 
 RESUPLA1=STAT_NON_LINE(MODELE=MODMECA,
@@ -456,7 +455,6 @@ RESUPLA1=STAT_NON_LINE(MODELE=MODMECA,
                                       ITER_GLOB_MAXI=50),
                        SOLVEUR=_F(METHODE='LDLT',
                                   RENUM='SANS',),
-                       ARCHIVAGE=_F(ARCH_ETAT_INIT='OUI',),
                        INFO=1,);
 
 # ====================================================================
@@ -558,8 +556,8 @@ TEST_RESU(RESU=(
           VALE = 5.43728E-03,
           PRECISION = 0.001,
           REFERENCE = 'NON_REGRESSION'),
-)
-);
+),);
+
 
 # ====================================================================
 # RELEVE DE L'ENDOMMAGEMENT DE LEMAITRE-SERMAGE
@@ -760,6 +758,7 @@ TEST_TABLE(TABLE=DOMLE,
            PRECISION=1.E-5,
            REFERENCE='NON_REGRESSION',
            VERSION='7.2.12',);
+
 
 # --------------------------------------------------------------------
 # VERIFICATION DES SOLUTIONS OBTENUES ...

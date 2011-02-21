@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
 # TITRE PLAQUE CONSOLE EN FLEXION QUAD4 GRILLE_EXCENTREE EPSI_INIT
 # ssls132f.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -195,10 +195,18 @@ TAB = POST_RELEVE_T(
 TEST_TABLE(
      TABLE = TAB,
      NOM_PARA = 'DX',
-     FILTRE = _F(
+     FILTRE = (_F(
          NOM_PARA = 'QUANTITE',
          VALE_K   = 'MOMENT_0' ,
          ),
+         _F(NOM_PARA ='INST',
+                     VALE     =0.,
+                     PRECISION=0.,
+                     CRIT_COMP = 'GT',
+                     CRITERE  ='ABSOLU'),
+         
+         ),
+         
      VALE = .1,
      REFERENCE = 'ANALYTIQUE'
   )

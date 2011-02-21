@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
 # TITRE VALIDATION DE LA MODELISATION 3D_GRAD_VARI AVEC PILOTAGE
 # comp005d.para = tps_job 70 mem_job 32Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -263,8 +263,10 @@ for j in range(0,len(comportement)):
 
     if i==1 :
       DIFF[j]=CALC_TABLE(TABLE=TAB_S[i],
-                         TITRE = ' ',
-                         ACTION=(_F(OPERATION='RENOMME',NOM_PARA=('SIXX','SIXX_L'),),
+                         TITRE = ' ', 
+                         ACTION=(
+                                 _F(OPERATION='FILTRE',NOM_PARA='NUME_ORDRE',CRIT_COMP='GT',VALE=0.,),
+                                 _F(OPERATION='RENOMME',NOM_PARA=('SIXX','SIXX_L'),),
                                  _F(OPERATION='COMB',TABLE=TAB_S[i-1],NOM_PARA='INST'),
                                  _F(OPERATION='OPER',FORMULE=F_DIFF,NOM_PARA='DIFF'),
                                  ),

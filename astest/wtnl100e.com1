@@ -80,8 +80,7 @@ RESU_TOT=STAT_NON_LINE(MODELE=MODE[nbadap],
                        NEWTON=_F(MATRICE='TANGENTE',
                                  REAC_ITER=10,),
                        CONVERGENCE=_F(ITER_GLOB_MAXI=10,),
-                       SOLVEUR=_F(METHODE='LDLT',),
-                       ARCHIVAGE=_F(ARCH_ETAT_INIT='OUI',),);
+                       SOLVEUR=_F(METHODE='LDLT',),);
 
 ####dico = RESU_TOT.LIST_PARA()
 

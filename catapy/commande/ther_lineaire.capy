@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 08/02/2011   AUTEUR TARDIEU N.TARDIEU 
+#& MODIF COMMANDE  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -121,17 +121,9 @@ THER_LINEAIRE=OPER(nom="THER_LINEAIRE",op=25,sd_prod=evol_ther,reentrant='f',
            ),
          ),
          PARM_THETA      =SIMP(statut='f',typ='R',defaut= 0.57),
-         ARCHIVAGE       =FACT(statut='f',
-           regles=EXCLUS('PAS_ARCH','LIST_INST','INST'),
-           LIST_INST       =SIMP(statut='f',typ=(listr8_sdaster) ),
-           INST            =SIMP(statut='f',typ='R',validators=NoRepeat(),max='**' ),
-           PAS_ARCH        =SIMP(statut='f',typ='I' ),
-           PRECISION       =SIMP(statut='f',typ='R',defaut= 1.0E-6),
-           NUME_INIT       =SIMP(statut='f',typ='I'),
-           DETR_NUME_SUIV  =SIMP(statut='f',typ='TXM',into=("OUI",)),
-           CHAM_EXCLU      =SIMP(statut='f',typ='TXM',validators=NoRepeat(),max='**',
-                                 into=("VARI",)),
-         ),
+#-------------------------------------------------------------------
+         ARCHIVAGE       =C_ARCHIVAGE(),         
+#-------------------------------------------------------------------
          TITRE           =SIMP(statut='f',typ='TXM',max='**'),
          INFO            =SIMP(statut='f',typ='I',into=(1,2)),
 )  ;

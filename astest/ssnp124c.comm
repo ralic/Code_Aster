@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
 # RESPONSABLE ROMEO R.FERNANDES
 # ======================================================================
 # TITRE ETUDE : ESSAI BIAXIAL DRAINE NON LOCAL
@@ -119,7 +119,6 @@ U2       = STAT_NON_LINE(
                          ETAT_INIT   = _F( SIGM           = SIGINIT,),
                          CONVERGENCE = _F( RESI_GLOB_RELA = 1.E-6,
                                            ITER_GLOB_MAXI = 50),
-                         ARCHIVAGE   = _F( ARCH_ETAT_INIT ='OUI',),
                          INCREMENT   = _F( LIST_INST      = TEMPS,)
                         )
        

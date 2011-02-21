@@ -1,4 +1,4 @@
-# MODIF  DATE 25/01/2011   AUTEUR MACOCCO K.MACOCCO 
+# MODIF  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
 # TITRE PROPAGATION DE FISSURE DEBOUCHANTE DANS UNE PLAQUE 3D DE LARGEUR FINIE AVEC X-FEM
 # ssnv185t.para = tps_job 100 mem_job 1024Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -166,6 +166,7 @@ for i in range(1,4) :
 
 TEST_TABLE(TABLE=SIF[i],
                NOM_PARA='K1',
+               FILTRE=_F(NOM_PARA='INST',VALE=1.),
                TYPE_TEST='MAX',
                VALE=7.20565E+09,
                CRITERE='RELATIF',               
@@ -174,6 +175,7 @@ TEST_TABLE(TABLE=SIF[i],
 
 TEST_TABLE(TABLE=SIF[i],
                NOM_PARA='K1',
+               FILTRE=_F(NOM_PARA='INST',VALE=1.),
                TYPE_TEST='MIN',
                VALE=7.20565E+09,
                CRITERE='RELATIF',               

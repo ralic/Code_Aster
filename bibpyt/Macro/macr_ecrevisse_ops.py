@@ -1,8 +1,8 @@
-#@ MODIF macr_ecrevisse_ops Macro  DATE 14/12/2010   AUTEUR PELLET J.PELLET 
+#@ MODIF macr_ecrevisse_ops Macro  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -300,7 +300,7 @@ def macr_ecrevisse_ops(self,reuse,
                 CHAM_MATER = CHAM_MATER,
                 EXCIT      = _dEXCIT_THER,
                 INCREMENT  = _F(LIST_INST=LES_PAS, NUME_INST_INIT=_nume_ordre, NUME_INST_FIN=_nume_ordre+1,),
-                ARCHIVAGE  = _F(NUME_INIT=_nume_ordre+1,DETR_NUME_SUIV='OUI'),
+                ARCHIVAGE  = _F(DETR_NUME_SUIV='OUI'),
                 INFO       = InfoAster,
                 **motclefs )
 
@@ -316,7 +316,7 @@ def macr_ecrevisse_ops(self,reuse,
                CHAM_MATER = CHAM_MATER,
                EXCIT      = _dEXCIT_THER,
                INCREMENT  = _F(LIST_INST=LES_PAS, NUME_INST_INIT=_nume_ordre, NUME_INST_FIN=_nume_ordre+1,),
-               ARCHIVAGE  = _F(NUME_INIT=_nume_ordre+1,DETR_NUME_SUIV='OUI'),
+               ARCHIVAGE  = _F(DETR_NUME_SUIV='OUI'),
                INFO       = InfoAster,
                **motclefs
                )
@@ -408,7 +408,7 @@ def macr_ecrevisse_ops(self,reuse,
               NEWTON      = _F(**dNEWTON),
               CONVERGENCE = _F(**dCONVERGENCE),
               SOLVEUR     = _F(SYME='OUI'),
-              ARCHIVAGE   = _F(NUME_INIT=_nume_ordre+1,DETR_NUME_SUIV='OUI'),
+              ARCHIVAGE   = _F(DETR_NUME_SUIV='OUI'),
               INFO        = InfoAster,
               **motclefs
            )

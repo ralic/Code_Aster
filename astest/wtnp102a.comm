@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
 # ======================================================================
 # TITRE MODELISATION D_PLAN_THHD EN QUAD8
 # ======================================================================
@@ -294,7 +294,6 @@ U0=STAT_NON_LINE(MODELE=MODELE,
                  SOLVEUR=_F(METHODE='MULT_FRONT',
                             STOP_SINGULIER='NON',),
                  ARCHIVAGE=_F(PAS_ARCH=1,
-#                              ARCH_ETAT_INIT='OUI',
                               ),
                  );
 
@@ -487,6 +486,7 @@ U2=STAT_NON_LINE(reuse=U2,
                  CONVERGENCE=_F(
                                 RESI_GLOB_RELA=1.E-6,
                                 ITER_GLOB_MAXI=20),
+                                ARCHIVAGE=_F(DETR_NUME_SUIV='OUI',),
                  );
 
 U2=CALC_ELEM(reuse =U2,

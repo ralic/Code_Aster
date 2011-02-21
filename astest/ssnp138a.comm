@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
 # TITRE FISSURE INCLINEE EN 2D AVEC X-FEM
 # ssnp138a.para = tps_job 360 mem_job 256Mo mem_aster 50 ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -113,6 +113,7 @@ MODELK = [None]*nbcalc
 CHMA = [None]*nbcalc
 CH = [None]*nbcalc
 UTOT1 = [None]*nbcalc
+UTOT2 = [None]*nbcalc
 PK = [None]*nbcalc
 
 nbc=len(RI)
@@ -163,7 +164,7 @@ for i in range(nbcalc) :
 #
 # RESOLUTION
 #
-  UTOT1[i]=STAT_NON_LINE(MODELE=MODELK[i],
+  UTOT2[i]=STAT_NON_LINE(MODELE=MODELK[i],
                    CHAM_MATER=CHMA[i],
                    EXCIT=_F(CHARGE=CH[i],),
                    COMP_ELAS=_F(RELATION='ELAS',
@@ -173,6 +174,7 @@ for i in range(nbcalc) :
                    NEWTON=_F(REAC_ITER=1,),
                    ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA',),
                    INFO=1,);
+  UTOT1[i] = EXTR_RESU(RESULTAT=UTOT2[i],ARCHIVAGE=_F(NUME_ORDRE=1,),)                 
 
 #
 # POST-TRAITEMENT : CALCUL DES SIFS 

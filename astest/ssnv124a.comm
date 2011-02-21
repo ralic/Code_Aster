@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
 # TITRE CALCUL DE CHARGE LIMITE EN 2D - METHODE DE NORTON-HOFF
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -110,6 +110,7 @@ RESU2=STAT_NON_LINE(MODELE=MO,
                     PILOTAGE=_F(TYPE='ANA_LIM',),);
 
 ECHL2=POST_ELEM(CHAR_LIMITE=_F(),
+                INST=1.69897,
                 RESULTAT=RESU2,);
 #--------------------------------------------------------------
 #      TEST DE LA CHARGE LIMITE

@@ -1,5 +1,5 @@
 
-# MODIF  DATE 10/01/2011   AUTEUR DESOZA T.DESOZA 
+# MODIF  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
 # TITRE REPONSE DYNAMIQUE D'UN PATIN FROTTANT RIGIDE SOUMIS A UNE PRESSION ET UNE fORCE DE RAPPEL
 # sdnv104b.para = tps_job 870 mem_job 96Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -148,7 +148,7 @@ UPM=DYNA_NON_LINE(MODELE=MODE,
                   SOLVEUR=_F(METHODE='MULT_FRONT',
                              SYME='OUI',),
                   CONVERGENCE=_F(ITER_GLOB_MAXI=150,),
-                  ARCHIVAGE=_F(ARCH_ETAT_INIT='OUI',),);
+                  );
 
 TEST_RESU(RESU=(_F(RESULTAT=UPM,
                    INST=1.7,
@@ -187,7 +187,7 @@ UPL=DYNA_NON_LINE(MODELE=MODE,
                   SOLVEUR=_F(METHODE='LDLT',
                              SYME='OUI',),
                   CONVERGENCE=_F(ITER_GLOB_MAXI=150,),
-                  ARCHIVAGE=_F(ARCH_ETAT_INIT='OUI',),);
+                  );
 
 TEST_RESU(RESU=(_F(RESULTAT=UPL,
                    INST=1.7,

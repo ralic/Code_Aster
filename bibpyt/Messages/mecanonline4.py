@@ -1,8 +1,8 @@
-#@ MODIF mecanonline4 Messages  DATE 21/12/2010   AUTEUR ABBAS M.ABBAS 
+#@ MODIF mecanonline4 Messages  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -23,6 +23,10 @@ def _(x) : return x
 
 cata_msg = {
 
+3 : _("""
+ Calcul des valeurs propres en grandes déformations
+"""),
+
 5 : _("""
 Le fichier pour le SUIVI_DDL doit etre défini dans la première occurrence
 """),
@@ -31,13 +35,23 @@ Le fichier pour le SUIVI_DDL doit etre défini dans la première occurrence
 Le fichier pour le SUIVI_DDL a été donné sans unité logique
 """),
 
-35 : _("""
- On utilise MECA_NON_LINE en enrichissant les résultats (REUSE).
- Mais on ne définit pas d'état initial: on prend un état initial nul.
+14 : _("""
+ Vous utilisez la méthode CONTINUE pour le traitement du contact et faites une reprise de calcul (mot-clé REUSE). L'état initial de contact sera
+ non contactant sauf si vous avez utilisé le mot-clé CONTACT_INIT.
+ Cela peut entraîner des difficultés de convergence en présence de fortes non-linéarités. En présence de frottement, la solution peut bifurquer
+ différemment.
+ Conseils :
+   Si vous le pouvez, faites votre calcul en une seule fois.
 """),
 
-37 : _("""
- On ne trouve aucun numéro d'ordre pour le concept EVOl_NOLI de nom <%(k1)s> 
+15 : _("""
+ Vous utilisez la méthode CONTINUE pour le traitement du contact et définissez un état initial via le mot-clé ETAT_INIT. L'état initial de contact
+ sera non-contactant sauf si vous avez utilisé le mot-clé CONTACT_INIT.
+"""),
+
+22 : _("""
+ L'etat initial n'appartient pas à un EVOL_NOLI :
+ on suppose qu'on part d'un état a vitesses nulles
 """),
 
 41 : _("""
@@ -71,6 +85,12 @@ Le fichier pour le SUIVI_DDL a été donné sans unité logique
 46 : _("""
  Le champ des variables internes (ou sa dérivée pour la sensibilité) n'a pas été trouvé 
  dans le concept EVOL_NOLI de nom <%(k1)s>
+"""),
+
+47 : _("""
+ Vous faites une reprise de calcul avec PILOTAGE en longueur d'arc et avec l'option ANGL_INCR_DEPL mais il n'y pas assez d'informations dans
+ la structure de données résultat. Il vous faut en effet au moins les deux derniers champs déplacements solutions.
+ Changer l'option de PILOTAGE (utilisez NORM_INCR_DEPL) ou refaites le premier calcul pour enrichir la structure de données résultat (modifiez vos options d'ARCHIVAGE).
 """),
 
 }

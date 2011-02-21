@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
 # TITRE MODELISATION DES SOUS PRESSION D'UN BARRAGE 2D A L'AIDE DES ELEMENTS DE JOINT HYME ET DE LA LOI JOINT_MECA_RUPT
 # ssnp142e.para = tps_job 120 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -192,8 +192,7 @@ U_HM=STAT_NON_LINE(MODELE=MO,
                                    RESI_REFE_RELA = 1.E-6,
                                    SIGM_REFE      = 1.E5,
                                    FLUX_HYD1_REFE = 1.E-14,),
-                  ARCHIVAGE = _F(ARCH_ETAT_INIT = 'OUI',
-                                 LIST_INST = LR)
+                  ARCHIVAGE = _F(LIST_INST = LR)
                   );
 
 ################### POST TRAITEMENT U_HM  #######################

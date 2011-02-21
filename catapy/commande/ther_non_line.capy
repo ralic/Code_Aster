@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 08/02/2011   AUTEUR TARDIEU N.TARDIEU 
+#& MODIF COMMANDE  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -144,8 +144,8 @@ THER_NON_LINE=OPER(nom="THER_NON_LINE",op= 186,sd_prod=evol_ther,reentrant='f',
            SYME            =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON",) ),
          ),
          PARM_THETA      =SIMP(statut='f',typ='R',defaut= 0.57 ),
-#-------------------------------------------------------------------          
-         ARCHIVAGE       =C_ARCHIVAGE('THER_NON_LINE'),
+#-------------------------------------------------------------------
+         ARCHIVAGE       =C_ARCHIVAGE(),
 #-------------------------------------------------------------------
          OBSERVATION     =C_OBSERVATION(),
 #------------------------------------------------------------------- 

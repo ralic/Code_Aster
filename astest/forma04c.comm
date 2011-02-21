@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
 # RESPONSABLE GNICOLAS G.NICOLAS
 # TITRE Maillage adaptatif mecanique sur une poutre en flexion
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -76,6 +76,7 @@ CHMAT   = [None]*nb_calc1
 CLIM    = [None]*nb_calc1
 CH      = [None]*nb_calc1
 DEPLA   = [None]*nb_calc1
+RESV    = [None]*nb_calc1
 ENER    = [None]*nb_calc1
 FLEC    = [None]*nb_calc1
 
@@ -132,7 +133,7 @@ for num_calc in range(0,nb_calc1) :
 #                         _F(CHARGE = CH[num_calc]))
 #                        )
 
-   DEPLA[num_calc]=STAT_NON_LINE(MODELE=MO[num_calc],
+   RESV[num_calc]=STAT_NON_LINE(MODELE=MO[num_calc],
                        CHAM_MATER=CHMAT[num_calc],
                        EXCIT=(_F(CHARGE=CLIM[num_calc],),
                               _F(CHARGE=CH[num_calc],
@@ -141,13 +142,14 @@ for num_calc in range(0,nb_calc1) :
                                      TOUT='OUI',), ),
                        INCREMENT=_F(LIST_INST=L_INST),);
 
-
+   DEPLA[num_calc]=EXTR_RESU(RESULTAT=RESV[num_calc],ARCHIVAGE=_F(NUME_ORDRE=1,),);
+   
 # POST_TRAITEMENT POUR OBTENIR LES CONTRAINTES AUX NOEUDS ET LES
 # DEUX TYPES D'INDICATEURS D'ERREUR EN MECANIQUE (ZZ1 ET RESIDU).
    DEPLA[num_calc]=CALC_ELEM(reuse=DEPLA[num_calc],
                   RESULTAT=DEPLA[num_calc],
                   TOUT='OUI',
-                  TOUT_ORDRE='OUI',
+                  NUME_ORDRE=1,
                   OPTION=(
 # LISSAGE DES CONTRAINTES SI STAT_NON_LINE
                        'SIEF_ELNO',
@@ -180,13 +182,26 @@ for num_calc in range(0,nb_calc1) :
 
 # CALCUL DE LA FLECHE
    FLEC[num_calc] = POST_RELEVE_T(
-          ACTION=_F(INTITULE='FLECHE',
+          ACTION=(_F(INTITULE='FLECHE',
                  GROUP_NO='GM10',
                  RESULTAT=DEPLA[num_calc],
                  TOUT_ORDRE='OUI',
                  NOM_CHAM='DEPL',
                  RESULTANTE=('DY'),
-                 OPERATION='EXTRACTION',),)
+                 OPERATION='EXTRACTION',),
+                 
+                 ),
+                 
+                 )
+   
+   FLEC[num_calc]=CALC_TABLE(reuse =FLEC[num_calc],
+               TABLE=FLEC[num_calc],
+               ACTION=(_F(
+                          OPERATION = 'FILTRE',
+                          NOM_PARA  = 'NUME_ORDRE',
+                          CRIT_COMP = 'GT',
+                          VALE    = 0,
+                         ),),);            
 
 # IMPRESSION DES TABLES PRECEDENTES DANS LE .RESU
    IMPR_TABLE(TABLE=ENER[num_calc])

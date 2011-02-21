@@ -1,9 +1,9 @@
-# MODIF  DATE 21/12/2010   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
 # TITRE IMPACT D UNE BARRE DE TAYLOR ELASTOPLASTIQUE
 # sdnv103f.para = tps_job 120 mem_job 500Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -128,7 +128,7 @@ RESU=DYNA_NON_LINE(MODELE=MODE,
                                   ARRET='OUI',),
                    SOLVEUR=_F(METHODE='LDLT',RENUM='SANS',
                               ),
-                   ARCHIVAGE=_F(ARCH_ETAT_INIT='OUI',
+                   ARCHIVAGE=_F(
                                 LIST_INST=L_SAUV),
                    );
 

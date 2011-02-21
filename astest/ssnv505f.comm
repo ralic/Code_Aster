@@ -1,8 +1,8 @@
-# MODIF  DATE 21/12/2010   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
 # TITRE CONTACT DE DEUX POUTRES EN PETITES DEFORMATIONS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -159,8 +159,7 @@ ULAG=STAT_NON_LINE(MODELE=MODE,
                 NEWTON=_F(REAC_ITER=1,),
                 CONVERGENCE=_F(ITER_GLOB_MAXI=20,),
                 SOLVEUR=_F(SYME='OUI',),
-                ARCHIVAGE=_F(ARCH_ETAT_INIT='OUI',
-                             LIST_INST=L_ARCH),
+                ARCHIVAGE=_F(LIST_INST=L_ARCH),
                 INFO=1,);
 
 ULAG=CALC_NO(reuse =ULAG,
@@ -222,8 +221,7 @@ UCON=STAT_NON_LINE(MODELE=MODE,
                              INST_FIN=1.,),
                 NEWTON=_F(REAC_ITER=1,),
                 CONVERGENCE=_F(ITER_GLOB_MAXI=20,),
-                ARCHIVAGE=_F(ARCH_ETAT_INIT='OUI',
-                             LIST_INST=L_ARCH),
+                ARCHIVAGE=_F(LIST_INST=L_ARCH),
                 INFO=1,);
 
 UCON=CALC_NO(reuse =UCON,

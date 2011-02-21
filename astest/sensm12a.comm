@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
 # RESPONSABLE F6BHHBO P.DEBONNIERES
 # TITRE PLAQUE SOUS PRESSION EN DP (PLASTICITE DRUCKER-PRAGER)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -104,8 +104,7 @@ RESUS=STAT_NON_LINE(MODELE=MO,
                              PREDICTION='ELASTIQUE',
                              REAC_ITER=1,),
                    CONVERGENCE=_F(RESI_GLOB_RELA = 1.E-8),
-                   ARCHIVAGE=_F(LIST_INST=L_INST,
-                                ARCH_ETAT_INIT='OUI',),
+                   ARCHIVAGE=_F(LIST_INST=L_INST,),
                    SENSIBILITE=FORCES,
                    INFO=1);
 
@@ -184,8 +183,7 @@ RESU2 = STAT_NON_LINE(MODELE=MO,
                                 PREDICTION='ELASTIQUE',
                                 REAC_ITER=1,),
                       CONVERGENCE=_F(RESI_GLOB_RELA = 1.E-8),
-                      ARCHIVAGE=_F(LIST_INST=L_INST,
-                                   ARCH_ETAT_INIT='OUI',),
+                      ARCHIVAGE=_F(LIST_INST=L_INST,),
                       INFO=1);
 
 RESU2=CALC_ELEM( reuse=RESU2,

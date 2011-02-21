@@ -1,4 +1,4 @@
-# MODIF  DATE 31/01/2011   AUTEUR MACOCCO K.MACOCCO 
+# MODIF  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
 # TITRE EPROUVETTE AVEC FISSURE CENTRALE XFEM
 # ssnv192a.para = tps_job 130 mem_job 512Mo mem_aster 50 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -317,6 +317,7 @@ SIF2 = [None]*n
 for i in range(0,n) :
    SIF1[i]=CALC_G(RESULTAT=RESU1,
                OPTION='CALC_K_G',
+               NUME_ORDRE=1,
                THETA=_F( FISSURE=FISS,
                          R_INF=RI[i],
                          R_SUP=RS[i],
@@ -330,6 +331,7 @@ for i in range(0,n) :
 
    SIF2[i]=CALC_G(RESULTAT=RESU1,
                OPTION='CALC_K_G',
+               NUME_ORDRE=1,
                THETA=_F( FISSURE=FISS,
                          R_INF=RI[i],
                          R_SUP=RS[i],
@@ -390,6 +392,7 @@ PK1=POST_K1_K2_K3(  MODELISATION='3D',
                         INFO=1,
                         MATER=ACIER,
                         RESULTAT=RESU1,
+                        NUME_ORDRE=1,
                         ABSC_CURV_MAXI=0.3,
                         NUME_FOND=1,
                         )
@@ -400,6 +403,7 @@ PK2=POST_K1_K2_K3(  MODELISATION='3D',
                         INFO=1,
                         MATER=ACIER,
                         RESULTAT=RESU1,
+                        NUME_ORDRE=1,
                         ABSC_CURV_MAXI=0.3,
                         NUME_FOND=2,
                         )

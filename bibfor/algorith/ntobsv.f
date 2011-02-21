@@ -1,7 +1,7 @@
-      SUBROUTINE NTOBSV(NOMA  ,SDOBSE,TEMP  ,NUMINS,INST  )
+      SUBROUTINE NTOBSV(NOMA  ,SDOBSE,TEMPZ ,NUMINS,INST  )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 17/01/2011   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -21,11 +21,11 @@ C ======================================================================
 C RESPONSABLE ABBAS M.ABBAS
 C
       IMPLICIT NONE 
-      INTEGER      NUMINS
-      CHARACTER*8  NOMA
-      CHARACTER*19 TEMP
-      CHARACTER*19 SDOBSE
-      REAL*8       INST  
+      INTEGER       NUMINS
+      CHARACTER*8   NOMA
+      CHARACTER*(*) TEMPZ
+      CHARACTER*19  SDOBSE
+      REAL*8        INST  
 C 
 C ----------------------------------------------------------------------
 C
@@ -44,7 +44,7 @@ C
 C ----------------------------------------------------------------------
 C
       LOGICAL      LOBSV
-      CHARACTER*19 K19BLA
+      CHARACTER*19 K19BLA,TEMP
       CHARACTER*24 K24BLA
 C      
 C ----------------------------------------------------------------------
@@ -55,6 +55,7 @@ C
       K19BLA = ' '
       K24BLA = ' '
       LOBSV  = .FALSE.
+      TEMP   = TEMPZ(1:19)
 C
 C --- DOIT-ON FAIRE UNE OBSERVATION  ?
 C

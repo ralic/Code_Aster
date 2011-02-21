@@ -1,8 +1,8 @@
-#@ MODIF discretisation Messages  DATE 12/10/2010   AUTEUR GENIAUT S.GENIAUT 
+#@ MODIF discretisation Messages  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -28,8 +28,13 @@ Certains pas de temps de la liste (LISTE_INST) sont plus petits
  que le pas de temps minimal renseigné (SUBD_PAS_MINI)
 """),
 
+2 : _("""
+ L'instant initial de la liste est plus grand que le deuxième instant.
+ Si vous faites une reprise de calcul (REUSE), vous pouvez utiliser le mot-clef ETAT_INIT/INST_ETAT_INIT pour corriger celà.
+"""),
+
 3 : _("""
- le nombre de subdivisions du pas de temps doit etre plus grand que 1 (SUBD_PAS)
+Le nombre de subdivisions du pas de temps doit être plus grand que 1 (SUBD_PAS)
 """),
 
 

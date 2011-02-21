@@ -1,4 +1,4 @@
-#@ MODIF test_compor_ops Macro  DATE 08/02/2011   AUTEUR PROIX J-M.PROIX 
+#@ MODIF test_compor_ops Macro  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -389,6 +389,8 @@ def test_compor_ops(self,OPTION,NEWTON,CONVERGENCE,COMP_INCR,COMP_ELAS,LIST_MATE
   IMPR_FONCTION  = self.get_cmd('IMPR_FONCTION')
   SIMU_POINT_MAT = self.get_cmd('SIMU_POINT_MAT')
   TEST_TABLE     = self.get_cmd('TEST_TABLE')
+  IMPR_TABLE     = self.get_cmd('IMPR_TABLE')
+  CALC_TABLE     = self.get_cmd('CALC_TABLE')
 
   motscles={}
   if   COMP_INCR  :
@@ -441,6 +443,17 @@ def test_compor_ops(self,OPTION,NEWTON,CONVERGENCE,COMP_INCR,COMP_ELAS,LIST_MATE
                        INCREMENT=_F(LIST_INST=_LINST,),
                        EPSI_IMPOSE=_F(EPXX=_zero,),
                        **motscles);
+
+      # On ne garde pas les valeurs initiales (NUME_ORDRE = 0 exclu)
+
+      _U = CALC_TABLE(reuse =_U,
+                    TABLE=_U,
+                    ACTION=(_F(
+                          OPERATION = 'FILTRE',
+                          NOM_PARA  = 'NUME_ORDRE',
+                          CRIT_COMP = 'GT',
+                          VALE    = 0,
+                         ),),);
 
       SXM = 0.
       EXM = 0.
@@ -526,6 +539,17 @@ def test_compor_ops(self,OPTION,NEWTON,CONVERGENCE,COMP_INCR,COMP_ELAS,LIST_MATE
                                  EPSI_INIT=_F(EPXX=EXM, EPYY=0.,EPZZ=0.,EPXY=0.,EPXZ=0.,EPYZ=0.),
                                  **motscles);
  
+          # On ne teste pas les valeurs initiales (NUME_ORDRE = 0 exclu)
+
+          _RES[i] = CALC_TABLE(reuse =_RES[i],
+                    TABLE=_RES[i],
+                    ACTION=(_F(
+                          OPERATION = 'FILTRE',
+                          NOM_PARA  = 'NUME_ORDRE',
+                          CRIT_COMP = 'GT',
+                          VALE    = 0,
+                         ),),);
+ 
           # recuperation des valeurs initiales du futur pas de temps dans la table resultat
  
           EXM = _RES[i]['EPXX',1]
@@ -539,6 +563,8 @@ def test_compor_ops(self,OPTION,NEWTON,CONVERGENCE,COMP_INCR,COMP_ELAS,LIST_MATE
           DETRUIRE ( CONCEPT =  _F (NOM =_epsimp),INFO=1);
           DETRUIRE ( CONCEPT =  _F (NOM =_list),INFO=1);
  
+          
+
           TEST_TABLE(TABLE=_RES[i],
                      NOM_PARA='VMIS',VALE=_U['VMIS',i+1],
                      FILTRE=_F(NOM_PARA='INST',VALE=time),

@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
 # TITRE CYLINDRE EN 3D (PENTA6 HEXA8)
 # sslv04a.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -1187,6 +1187,7 @@ CALC_ELEM(reuse= RESUNL , RESULTAT= RESUNL,
 
 CALC_ELEM(reuse= RESUNL ,
           RESULTAT= RESUNL ,
+          NUME_ORDRE=1,
           GROUP_MA='PRES',OPTION='SIRO_ELEM')
 
 # TEST DU CHAMP 'SIRO_ELEM'
@@ -1521,21 +1522,25 @@ TEST_RESU(RESU=(
 
 IMPR_RESU(FORMAT='MED',RESU=(
                             _F(RESULTAT=RESUNL,
+                               NUME_ORDRE=1,
                                NOM_CHAM=('SIRO_ELEM',),
                                NOM_CHAM_MED=('RESUNL__SIRO_ELEM_NORMAL'),
                                NOM_CMP=('SIG_NX','SIG_NY','SIG_NZ','SIG_N',),
                                GROUP_MA='PRES',),
                             _F(RESULTAT=RESUNL,
+                               NUME_ORDRE=1,
                                NOM_CHAM=('SIRO_ELEM',),
                                NOM_CHAM_MED=('RESUNL__SIRO_ELEM_TANGENT'),
                                NOM_CMP=('SIG_TX','SIG_TY','SIG_TZ',),
                                GROUP_MA='PRES',),
                             _F(RESULTAT=RESUNL,
+                               NUME_ORDRE=1,
                                NOM_CHAM=('SIRO_ELEM',),
                                NOM_CHAM_MED=('RESUNL__SIRO_ELEM_T1'),
                                NOM_CMP=('SIG_T1X','SIG_T1Y','SIG_T1Z','SIG_T1',),
                                GROUP_MA='PRES',),
                             _F(RESULTAT=RESUNL,
+                               NUME_ORDRE=1,
                                NOM_CHAM=('SIRO_ELEM',),
                                NOM_CHAM_MED=('RESUNL__SIRO_ELEM_T2'),
                                NOM_CMP=('SIG_T2X','SIG_T2Y','SIG_T2Z','SIG_T2',),

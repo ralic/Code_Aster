@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
 # TITRE ETUDE : ESSAI BIAXIAL DRAINE (MODELISATION D_PLAN)
 # ssnd104b.para = tps_job 360 mem_job 50Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -120,7 +120,6 @@ U3       = STAT_NON_LINE(
                          ETAT_INIT   = _F( SIGM           = SIGINIT,),
                          CONVERGENCE = _F( RESI_GLOB_RELA = 1.E-10,
                                            ITER_GLOB_MAXI = 50),
-                         ARCHIVAGE   = _F( ARCH_ETAT_INIT ='OUI',),
                          INCREMENT   = _F( LIST_INST      = TEMPS,)
                         )
        
@@ -275,7 +274,6 @@ U4       = STAT_NON_LINE(
                          ETAT_INIT   = _F( SIGM           = SIGINIT,),
                          CONVERGENCE = _F( RESI_GLOB_RELA = 1.E-10,
                                            ITER_GLOB_MAXI = 50),
-                         ARCHIVAGE   = _F( ARCH_ETAT_INIT ='OUI',),
                          INCREMENT   = _F( LIST_INST      = TEMPS,)
                         )
        

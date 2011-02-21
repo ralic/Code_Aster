@@ -1,9 +1,9 @@
-# MODIF  DATE 30/08/2010   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
 # TITRE INDENTATION ELASTOPLASTIQUE D'UN DEMI-PLAN
 # ssnv506c.para = tps_job 890 mem_job 256Mo ncpus 1 liste_test V
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -171,7 +171,6 @@ SSNV506=STAT_NON_LINE(SOLVEUR=_F(SYME='OUI',),
                        CONVERGENCE=_F(RESI_GLOB_RELA=9.9999999999999995E-07,
                                       ITER_GLOB_MAXI=15,
                                       ARRET='OUI',),
-                       ARCHIVAGE=_F(ARCH_ETAT_INIT='OUI',),
                        INFO=1,);
 
 #----------------------------------------------------------------------

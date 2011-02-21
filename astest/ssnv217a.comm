@@ -1,4 +1,4 @@
-# MODIF  DATE 17/01/2011   AUTEUR IDOUX L.IDOUX 
+# MODIF  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
 # TITRE CUBE EN TRACTION SIMPLE ET COMPRESSION AVEC LA LOI ENDO_ORTH_BETON
 # ssnv217a.para = tps_job 60 mem_job 256Mo ncpus 1
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -119,8 +119,7 @@ U=STAT_NON_LINE(MODELE=MO,
                 INCREMENT=_F(LIST_INST=L_INST,
                              INST_INIT=0.0,
                              INST_FIN=1.0,),
-                ARCHIVAGE=_F(LIST_INST=L_ARCH,
-                             ARCH_ETAT_INIT='OUI',),
+                ARCHIVAGE=_F(LIST_INST=L_ARCH,),
                 NEWTON=_F(REAC_ITER=1,),);
 
 U=STAT_NON_LINE(reuse =U,

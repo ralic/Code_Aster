@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 07/02/2011   AUTEUR DEVESA G.DEVESA 
+#& MODIF COMMANDE  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -75,7 +75,7 @@ DYNA_NON_LINE=OPER(nom="DYNA_NON_LINE",op= 70,sd_prod=evol_noli,reentrant='f',
            AMOR_GENE       =SIMP(statut='f',typ=matr_asse_gene_r),
            DEPL_INIT_GENE  =SIMP(statut='f',typ=vect_asse_gene),
            VITE_INIT_GENE  =SIMP(statut='f',typ=vect_asse_gene),
-           ACCE_INIT_GENE  =SIMP(statut='f',typ=vect_asse_gene),
+           ACCE_INIT_GENE  =SIMP(statut='f',typ=vect_asse_gene),           
          ),
 #-------------------------------------------------------------------         
          COMP_INCR       =C_COMP_INCR(),
@@ -178,7 +178,7 @@ DYNA_NON_LINE=OPER(nom="DYNA_NON_LINE",op= 70,sd_prod=evol_noli,reentrant='f',
 #------------------------------------------------------------------- 
          AFFICHAGE       =C_AFFICHAGE(),
 #-------------------------------------------------------------------
-         ARCHIVAGE       =C_ARCHIVAGE('DYNA_NON_LINE'),
+         ARCHIVAGE       =C_ARCHIVAGE(),
 #-------------------------------------------------------------------
          CRIT_FLAMB     =FACT(statut='f',min=1,max=1,
            NB_FREQ         =SIMP(statut='f',typ='I',max=1,defaut=3),
@@ -196,7 +196,15 @@ DYNA_NON_LINE=OPER(nom="DYNA_NON_LINE",op= 70,sd_prod=evol_noli,reentrant='f',
                                           'E3X','E3Y','E3Z','E4X','E4Y','E4Z','LAGS_C','V11','V12','V13','V21','V22',
                                           'V23','V31','V32','V33','PRES11','PRES12','PRES13','PRES21','PRES22','PRES23',
                                           'PRES31','PRES32','PRES33','VARI','LAG_GV')),),
-           INST_CALCUL       =SIMP(statut='f',typ='TXM',defaut="LISTE_ARCHIVAGE",into=("LISTE_ARCHIVAGE","TOUT_PAS",) ),
+           regles         = (EXCLUS('PAS_CALC','LIST_INST','INST'),),
+           LIST_INST      = SIMP(statut='f',typ=(listr8_sdaster) ),
+           INST           = SIMP(statut='f',typ='R',validators=NoRepeat(),max='**' ),
+           PAS_CALC       = SIMP(statut='f',typ='I' ),
+           CRITERE        = SIMP(statut='f',typ='TXM',defaut="RELATIF",into=("RELATIF","ABSOLU") ),
+              b_prec_rela=BLOC(condition="(CRITERE=='RELATIF')",
+                 PRECISION       =SIMP(statut='f',typ='R',defaut= 1.E-6,),),
+              b_prec_abso=BLOC(condition="(CRITERE=='ABSOLU')",
+                 PRECISION       =SIMP(statut='o',typ='R',),),
          ),
          MODE_VIBR     =FACT(statut='f',min=1,max=1,
            MATR_RIGI        =SIMP(statut='f',typ='TXM',defaut="ELASTIQUE",into=("ELASTIQUE","TANGENTE","SECANTE",) ),
@@ -204,7 +212,15 @@ DYNA_NON_LINE=OPER(nom="DYNA_NON_LINE",op= 70,sd_prod=evol_noli,reentrant='f',
                             fr="Nombre de fréquences propres à calculer"),
            BANDE            =SIMP(statut='f',typ='R',min=2,max=2,
                             fr="Valeur des deux fréquences délimitant la bande de recherche",),
-           INST_CALCUL       =SIMP(statut='f',typ='TXM',defaut="LISTE_ARCHIVAGE",into=("LISTE_ARCHIVAGE","TOUT_PAS",) ),
+           regles         = (EXCLUS('PAS_CALC','LIST_INST','INST'),),
+           LIST_INST      = SIMP(statut='f',typ=(listr8_sdaster) ),
+           INST           = SIMP(statut='f',typ='R',validators=NoRepeat(),max='**' ),
+           PAS_CALC       = SIMP(statut='f',typ='I' ),
+           CRITERE        = SIMP(statut='f',typ='TXM',defaut="RELATIF",into=("RELATIF","ABSOLU") ),
+              b_prec_rela=BLOC(condition="(CRITERE=='RELATIF')",
+                 PRECISION       =SIMP(statut='f',typ='R',defaut= 1.E-6,),),
+              b_prec_abso=BLOC(condition="(CRITERE=='ABSOLU')",
+                 PRECISION       =SIMP(statut='o',typ='R',),),
          ),
 #-------------------------------------------------------------------
            SENSIBILITE     =SIMP(statut='f',typ=(para_sensi,theta_geom),validators=NoRepeat(),max='**',

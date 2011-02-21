@@ -1,4 +1,4 @@
-#& MODIF COMMUN  DATE 17/01/2011   AUTEUR ABBAS M.ABBAS 
+#& MODIF COMMUN  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -17,48 +17,16 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
 # RESPONSABLE ABBAS M.ABBAS
-def C_ARCHIVAGE(COMMAND) :  #COMMUN#
-    
-    assert COMMAND in ('DYNA_NON_LINE','STAT_NON_LINE','THER_NON_LINE',)
-    
-    kwargs = {}
-
-# ----------------------------------------------------------------------------------------------------------------------------------
-#  PARAMETRES COMMUNS
-# ----------------------------------------------------------------------------------------------------------------------------------
-     
-    kwargs['regles']         = (EXCLUS('PAS_ARCH','LIST_INST','INST'),)
-    kwargs['LIST_INST']      = SIMP(statut='f',typ=(listr8_sdaster) )
-    kwargs['INST']           = SIMP(statut='f',typ='R',validators=NoRepeat(),max='**' )
-    kwargs['PAS_ARCH']       = SIMP(statut='f',typ='I' )
-    kwargs['PRECISION']      = SIMP(statut='f',typ='R',defaut= 1.0E-6)
-    kwargs['NUME_INIT']      = SIMP(statut='f',typ='I')
-    kwargs['DETR_NUME_SUIV'] = SIMP(statut='f',typ='TXM',into=("OUI",))
-           
-# ----------------------------------------------------------------------------------------------------------------------------------
-#  CHAM_EXCLU
-# ----------------------------------------------------------------------------------------------------------------------------------
-
-    if COMMAND in ('STAT_NON_LINE'):
-        kwargs['CHAM_EXCLU']      = SIMP(statut='f',typ='TXM',validators=NoRepeat(),max='**',
-                                         into=("DEPL","SIEF_ELGA","VARI_ELGA","VALE_CONT"))
-    
-    if COMMAND in ('DYNA_NON_LINE'):
-        kwargs['CHAM_EXCLU']      = SIMP(statut='f',typ='TXM',validators=NoRepeat(),max='**',
-                                         into=("DEPL","SIEF_ELGA","VARI_ELGA","ACCE","VITE","VALE_CONT"))
-       
-    if COMMAND in ('THER_NON_LINE'):
-        kwargs['CHAM_EXCLU']      = SIMP(statut='f',typ='TXM',validators=NoRepeat(),max='**',
-                                         into=("VARI",))
-                                 
-# ----------------------------------------------------------------------------------------------------------------------------------
-#  ARCH_ETAT_INIT
-# ----------------------------------------------------------------------------------------------------------------------------------
-                                 
-    if COMMAND in ('STAT_NON_LINE','DYNA_NON_LINE'):
-        kwargs['ARCH_ETAT_INIT']  = SIMP(statut='f',typ='TXM',into=("OUI",))
-        kwargs['NUME_INIT     ']  = SIMP(statut='f',typ='I')
- 
-    mcfact = FACT(statut='f',max='**', **kwargs)
-
-    return mcfact
+def C_ARCHIVAGE() : return FACT(statut='d',max=1,
+    regles         = (EXCLUS('PAS_ARCH','LIST_INST','INST'),),
+    LIST_INST      = SIMP(statut='f',typ=(listr8_sdaster) ),
+    INST           = SIMP(statut='f',typ='R',validators=NoRepeat(),max='**' ),
+    PAS_ARCH       = SIMP(statut='f',typ='I' ),
+    CRITERE        = SIMP(statut='f',typ='TXM',defaut="RELATIF",into=("RELATIF","ABSOLU") ),
+           b_prec_rela=BLOC(condition="(CRITERE=='RELATIF')",
+              PRECISION       =SIMP(statut='f',typ='R',defaut= 1.E-6,),),
+           b_prec_abso=BLOC(condition="(CRITERE=='ABSOLU')",
+              PRECISION       =SIMP(statut='o',typ='R',),),
+    DETR_NUME_SUIV = SIMP(statut='f',typ='TXM',into=("OUI",)),
+    CHAM_EXCLU     = SIMP(statut='f',typ='TXM',validators=NoRepeat(),max='**',),
+);

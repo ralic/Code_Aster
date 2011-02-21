@@ -1,9 +1,9 @@
-# MODIF  DATE 12/01/2010   AUTEUR GRANET S.GRANET 
+# MODIF  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
 # TITRE ESSAI DE TRACTION D UNE PLAQUE TROUEE AVEC LA METHODE IMPLEX
 # ssnp140d.para = tps_job 100 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -107,7 +107,14 @@ FORC=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                              NOM_CHAM='FORC_NODA',
                              GROUP_NO='34',
                              RESULTANTE='DY',),);
-
+FORC=CALC_TABLE(reuse =FORC,
+               TABLE=FORC,
+               ACTION=(_F(
+                          OPERATION = 'FILTRE',
+                          NOM_PARA  = 'NUME_ORDRE',
+                          CRIT_COMP = 'GT',
+                          VALE    = 0,
+                         ),),); 
 FX=RECU_FONCTION(TABLE=FORC,
                  PARA_X='INST',
                  PARA_Y='DY',
@@ -139,6 +146,15 @@ FORCIE=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                GROUP_NO='34',
                                RESULTANTE='DY',),);
 
+FORCIE=CALC_TABLE(reuse =FORCIE,
+               TABLE=FORCIE,
+               ACTION=(_F(
+                          OPERATION = 'FILTRE',
+                          NOM_PARA  = 'NUME_ORDRE',
+                          CRIT_COMP = 'GT',
+                          VALE    = 0,
+                         ),),); 
+                         
 FXIE=RECU_FONCTION(TABLE=FORCIE,
                    PARA_X='INST',
                    PARA_Y='DY',

@@ -1,4 +1,4 @@
-# MODIF  DATE 31/01/2011   AUTEUR MACOCCO K.MACOCCO 
+# MODIF  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
 # TITRE  FISSURE SEMI-ELLIPTIQUE AVEC MILIEU INFINI
 # sslv110f.para = tps_job 450 mem_job 1200Mo mem_aster 40 ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -125,6 +125,7 @@ UTOT1=STAT_NON_LINE(INFO=1,
 
 SIFTH=CALC_G(  RESULTAT=UTOT1,
                   OPTION='CALC_K_G',
+                  NUME_ORDRE=1,
                   THETA = _F(R_INF=0.5,
                         R_SUP=2.,
                         FISSURE=FISS,),);
@@ -148,24 +149,30 @@ IMPR_TABLE(TABLE = SIFK1,)
 #----------------------------------------------------------------------
 
 TEST_TABLE(      TABLE=SIFTH,
-                   FILTRE=_F(  NOM_PARA = 'NUM_PT',
+                   FILTRE=(_F(  NOM_PARA = 'NUM_PT',
                             VALE_I = 1),
+                           # _F(NOM_PARA='NUME_ORDRE',VALE_I=1),
+                           ),
                  NOM_PARA='K1',
                       VALE=1.9929E+00,
                  PRECISION=5.E-2  ,
                       REFERENCE='ANALYTIQUE'      )
 
 TEST_TABLE(      TABLE=SIFTH,
-                   FILTRE=_F(  NOM_PARA = 'NUM_PT',
+                   FILTRE=(_F(  NOM_PARA = 'NUM_PT',
                             VALE_I = 21),
+                          #  _F(NOM_PARA='NUME_ORDRE',VALE_I=1),
+                          ),
                  NOM_PARA='K1',
                       VALE=4.068E+00,
                  PRECISION=10.E-2  ,
                       REFERENCE='ANALYTIQUE'      )
 
 TEST_TABLE(      TABLE=SIFTH,
-                   FILTRE=_F(  NOM_PARA = 'NUM_PT',
+                   FILTRE=(_F(  NOM_PARA = 'NUM_PT',
                             VALE_I = 21),
+                          #  _F(NOM_PARA='NUME_ORDRE',VALE_I=1),
+                          ),
                  NOM_PARA='K1',
                       VALE=3.7537E+00,
                  PRECISION=1.E-3  ,
@@ -173,7 +180,9 @@ TEST_TABLE(      TABLE=SIFTH,
                                             
 TEST_TABLE(      TABLE=SIFK1,
                    FILTRE=(_F(  NOM_PARA = 'PT_FOND',
-                            VALE_I = 1),),
+                            VALE_I = 1),
+                          #  _F(NOM_PARA='NUME_ORDRE',VALE_I=1),
+                            ),
                  NOM_PARA='K1',
                       VALE=1.9929E+00,
                  PRECISION=8.E-2  ,
@@ -181,8 +190,10 @@ TEST_TABLE(      TABLE=SIFK1,
 
 TEST_TABLE(      TABLE=SIFK1,
                    FILTRE=(_F(  NOM_PARA = 'PT_FOND',
-                            VALE_I = 21),),
-                 NOM_PARA='K1',
+                            VALE_I = 21),
+                           # _F(NOM_PARA='NUME_ORDRE',VALE_I=1),
+                           ),
+                   NOM_PARA='K1',
                       VALE=4.068E+00,
                  PRECISION=15.E-2  ,
                       REFERENCE='ANALYTIQUE'      )

@@ -1,4 +1,4 @@
-# MODIF  DATE 03/01/2011   AUTEUR SFAYOLLE S.FAYOLLE 
+# MODIF  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
 #  TITRE  : REPONSE TRANSITOIRE D'UNE DALLE EN BETON ARME (GLRC_DAMAGE) 
 # sdns106f.para = tps_job 180 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -232,7 +232,7 @@ RESU1 = DYNA_NON_LINE( MODELE=MOD,
                        SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',
                                        FORMULATION='DEPLACEMENT',),
                        ARCHIVAGE=_F(LIST_INST=inst1,
-                                    ARCH_ETAT_INIT='OUI',),
+                                    ),
                       );
 
 F_DEP = RECU_FONCTION(  RESULTAT = RESU1 ,INTERPOL = 'LIN',NOM_CHAM = 'DEPL' ,
@@ -288,7 +288,7 @@ RESU2 = DYNA_NON_LINE(
                                 FORMULATION='DEPLACEMENT',),
                      ARCHIVAGE=_F(
                                   LIST_INST=inst2,
-                                  ARCH_ETAT_INIT='OUI',),
+                                  ),
                     );
                 
                 

@@ -1,4 +1,4 @@
-# MODIF  DATE 25/01/2011   AUTEUR MACOCCO K.MACOCCO 
+# MODIF  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
 # TITRE FISSURE DEBOUCHANTE DANS UNE PLAQUE 3D DE LARGEUR FINIE AVEC X-FEM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -311,6 +311,7 @@ for i in range(0,nbc) :
 
    SIF2[i]=CALC_G(RESULTAT=UTOT2,
                   OPTION='CALC_K_G',
+                  NUME_ORDRE=1,
                   THETA=_F(FISSURE=FISS,
                            R_INF=RI[i],
                            R_SUP=RS[i],),
@@ -322,6 +323,7 @@ for i in range(0,nbc) :
 
    SIF3[i]=CALC_G(RESULTAT=UTOT3,
                   OPTION='CALC_K_G',
+                  NUME_ORDRE=1,
                   THETA=_F(FISSURE=FISS,
                            R_INF=RI[i],
                            R_SUP=RS[i],),

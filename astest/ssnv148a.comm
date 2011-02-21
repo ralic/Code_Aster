@@ -1,9 +1,9 @@
-# MODIF  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
 # TITRE WEIBULL ET RICE-TRACEY EN 3D
 # ssnv148a.para = tps_job 60 mem_job 96Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -138,6 +138,7 @@ RET=POST_ELEM(
               RICE_TRACEY=_F(LOCAL='OUI',
                              TOUT='OUI',
                              OPTION='SIGM_ELMOY',),
+              NUME_ORDRE=(1,2,3,4),
               RESULTAT=U,);
 
 IMPR_TABLE(TABLE=RET)
@@ -210,6 +211,7 @@ AOUI_MOY=POST_ELEM(
               RICE_TRACEY=_F(LOCAL='OUI',
                              TOUT='OUI',
                              OPTION='SIGM_ELMOY',),
+               NUME_ORDRE=(1,2,3,4),              
               RESULTAT=U,);
 
 IMPR_TABLE(TABLE=AOUI_MOY)
@@ -226,6 +228,7 @@ BOUI_MOY=POST_ELEM(
               RICE_TRACEY=_F(LOCAL='OUI',
                              GROUP_MA='CYL',
                              OPTION='SIGM_ELMOY',),
+                             NUME_ORDRE=(1,2,3,4),
               RESULTAT=U,);
 
 IMPR_TABLE(TABLE=BOUI_MOY)
@@ -238,7 +241,7 @@ TEST_TABLE(TABLE=BOUI_MOY,
            VERSION= '9.3.21',
            VALE=1.0458,);
 #----------------------
-COUI_MOY=POST_ELEM(
+COUI_MOY=POST_ELEM(NUME_ORDRE=(1,2,3,4),
               RICE_TRACEY=_F(LOCAL='OUI',
                              MAILLE=('M1','M2','M3','M4','M5','M6','M7',      
                                      'M8','M9','M10','M11','M12','M13','M14'),     
@@ -263,7 +266,7 @@ TEST_TABLE(TABLE=COUI_MOY,
 #     OPTION='SIGM_ELGA'
 #     TOUT, GROUP_MA, MAILLE
 
-DOUI_ELG=POST_ELEM(
+DOUI_ELG=POST_ELEM(NUME_ORDRE=(1,2,3,4),
               RICE_TRACEY=_F(LOCAL='OUI',
                              TOUT='OUI',
                              OPTION='SIGM_ELGA',),
@@ -279,7 +282,7 @@ TEST_TABLE(TABLE=DOUI_ELG,
            VERSION= '9.3.21',
            VALE=1.0458,);
 #----------------------
-EOUI_ELG=POST_ELEM(
+EOUI_ELG=POST_ELEM(NUME_ORDRE=(1,2,3,4),
               RICE_TRACEY=_F(LOCAL='OUI',
                              GROUP_MA='CYL',
                              OPTION='SIGM_ELGA',),
@@ -289,7 +292,7 @@ IMPR_TABLE(TABLE=EOUI_ELG)
 
 #----------------------
 
-FOUI_ELG=POST_ELEM(
+FOUI_ELG=POST_ELEM(NUME_ORDRE=(1,2,3,4),
               RICE_TRACEY=_F(LOCAL='OUI',
                              MAILLE=('M1','M2','M3','M4','M5','M6','M7',      
                                      'M8','M9','M10','M11','M12','M13','M14'),     
@@ -310,7 +313,7 @@ IMPR_TABLE(TABLE=FOUI_ELG)
 
 #--------------------------------------------------
 
-ANON_MOY=POST_ELEM(
+ANON_MOY=POST_ELEM(NUME_ORDRE=(1,2,3,4),
               RICE_TRACEY=_F(LOCAL='NON',
                              TOUT='OUI',
                              OPTION='SIGM_ELMOY',),
@@ -319,7 +322,7 @@ ANON_MOY=POST_ELEM(
 IMPR_TABLE(TABLE=ANON_MOY)
 #----------------------
 
-BNON_MOY=POST_ELEM(
+BNON_MOY=POST_ELEM(NUME_ORDRE=(1,2,3,4),
               RICE_TRACEY=_F(LOCAL='NON',
                              GROUP_MA='CYL',
                              OPTION='SIGM_ELMOY',),
@@ -329,7 +332,7 @@ IMPR_TABLE(TABLE=BNON_MOY)
 
 #----------------------
 
-CNON_MOY=POST_ELEM(
+CNON_MOY=POST_ELEM(NUME_ORDRE=(1,2,3,4),
               RICE_TRACEY=_F(LOCAL='NON',
                              MAILLE=('M1','M2','M3','M4','M5','M6','M7',      
                                      'M8','M9','M10','M11','M12','M13','M14'),     
@@ -345,7 +348,7 @@ IMPR_TABLE(TABLE=CNON_MOY)
 #     OPTION='SIGM_ELGA'
 #     TOUT, GROUP_MA, MAILLE
 
-DNON_ELG=POST_ELEM(
+DNON_ELG=POST_ELEM(NUME_ORDRE=(1,2,3,4),
               RICE_TRACEY=_F(LOCAL='NON',
                              TOUT='OUI',
                              OPTION='SIGM_ELGA',),
@@ -355,7 +358,7 @@ IMPR_TABLE(TABLE=DNON_ELG)
 
 #----------------------
 
-ENON_ELG=POST_ELEM(
+ENON_ELG=POST_ELEM(NUME_ORDRE=(1,2,3,4),
               RICE_TRACEY=_F(LOCAL='NON',
                              GROUP_MA='CYL',
                              OPTION='SIGM_ELGA',),
@@ -365,7 +368,7 @@ IMPR_TABLE(TABLE=ENON_ELG)
 
 #----------------------
 
-FNON_ELG=POST_ELEM(
+FNON_ELG=POST_ELEM(NUME_ORDRE=(1,2,3,4),
               RICE_TRACEY=_F(LOCAL='NON',
                              MAILLE=('M1','M2','M3','M4','M5','M6','M7',      
                                      'M8','M9','M10','M11','M12','M13','M14'),     

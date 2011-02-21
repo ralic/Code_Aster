@@ -1,8 +1,8 @@
-#@ MODIF archivage Messages  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
+#@ MODIF archivage Messages  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -23,17 +23,36 @@ def _(x) : return x
 
 cata_msg = {
 
-97 : _("""
-L'archivage va écraser des instants déjà calculés (ARCHIVAGE)
+1 : _("""
+ Vous risquez d'écraser des données déjà stockées dans la structure de données résultat.
+ Dernier instant stocké dans la structure de données résultat: %(r1)19.12e
+ Premier instant du calcul: %(r2)19.12e
+ Si vous êtes sûr de vous, vous pouvez autoriser l'écrasement avec le mot-clef DETR_NUME_SUIV dans ARCHIVAGE.
 """),
 
-98 : _("""
-L'archivage va laisser des trous dans la sd EVOL_NOLI (ARCHIVAGE, NUME_INIT)
+4 : _("""
+ Archivage de l'état initial
 """),
 
-99 : _("""
-L'option d'archivage de l'état initial ne sert que lors du premier calcul,
-son appel dans les poursuites suivantes est ignoré (ARCHIVAGE, ARCH_ETAT_INIT)
+5 : _("""
+  Archivage des champs
 """),
+
+6 : _("""
+    Champ stocké <%(k1)s> à l'instant %(r1)19.12e pour le numéro d'ordre %(i1)d
+"""),
+
+7 : _("""
+ Archivage des champs dérivés par rapport à %(k1)s
+"""),
+
+8 : _("""
+    Mode vibratoire stocké pour le numéro d'ordre %(i1)d  
+"""),
+
+9 : _("""
+    Mode de flambement stocké pour le numéro d'ordre %(i1)d  
+"""),
+
 
 }

@@ -1,9 +1,9 @@
-# MODIF  DATE 21/09/2010   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
 # TITRE BLOC AVEC INTERFACE EN CONTACT FROTTANT AVEC X-FEM
 # ssnv182g.para = tps_job 60 mem_job 800Mo mem_aster 80 ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -174,7 +174,7 @@ VC_0=POST_RELEVE_T(ACTION=_F(INTITULE='VC_O',
                              GROUP_NO='VOLQUAD',
                              RESULTAT=UTOT1,
                              NOM_CHAM='VALE_CONT',
-                             TOUT_ORDRE='OUI',
+                             NUME_ORDRE=1,
 #                             NOM_CMP=('CONT'),
                              TOUT_CMP='OUI',
                              OPERATION='EXTRACTION',),);

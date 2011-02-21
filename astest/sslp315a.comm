@@ -1,4 +1,4 @@
-# MODIF  DATE 25/01/2011   AUTEUR MACOCCO K.MACOCCO 
+# MODIF  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
 # TITRE PROPAGATION DE FISSURE DEBOUCHANTE DANS UNE PLAQUE TROUEE 2D DE LARGEUR FINIE AVEC X-FEM
 # sslp315a.para = tps_job 60 mem_job 500Mo mem_aster 50 ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -104,6 +104,7 @@ for i in range(0,nb_pas) :
 
    SIF[i]=CALC_G(RESULTAT=UTOT[i],
               OPTION='CALC_K_G',
+              NUME_ORDRE      = 1,
               THETA=_F(FISSURE=FISS[i],
                        R_INF=2.,
                        R_SUP=4.,),);

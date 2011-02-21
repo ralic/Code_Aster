@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 14/02/2011   AUTEUR GREFFET N.GREFFET 
+#& MODIF COMMANDE  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -203,7 +203,7 @@ CALC_IFS_DNL= MACRO(nom='CALC_IFS_DNL',op=calc_ifs_dnl_ops,sd_prod=evol_noli,ree
 #------------------------------------------------------------------- 
          AFFICHAGE       =C_AFFICHAGE(),
 #-------------------------------------------------------------------
-         ARCHIVAGE       =C_ARCHIVAGE('DYNA_NON_LINE'),
+         ARCHIVAGE       =C_ARCHIVAGE(),
 #-------------------------------------------------------------------
          CRIT_FLAMB     =FACT(statut='f',min=1,max=1,
            NB_FREQ         =SIMP(statut='f',typ='I',max=1,defaut=3),

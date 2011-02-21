@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
 # TITRE VALIDATION DE LA COMMANDE CREA_RESU MOT CLE FACTEUR PERM_CHAM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -303,7 +303,7 @@ LINST2=DEFI_LIST_REEL(DEBUT=0.,
                INTERVALLE=_F( JUSQU_A = 1., NOMBRE = 1)
                )
 
-RESU2=STAT_NON_LINE(
+RESUC=STAT_NON_LINE(
                             MODELE=MO2,
                         CHAM_MATER=CHMAT2,
                          CARA_ELEM=CARA2,
@@ -321,9 +321,14 @@ RESU2=STAT_NON_LINE(
                        CONVERGENCE=_F(ARRET = 'NON')
 
               )
+# LA SD RESUC CONTIENT DEUX NUMEROS D'ORDRE
+# ON REDUIT A UN SEUL
+
+RESU2=EXTR_RESU(RESULTAT=RESUC, ARCHIVAGE=_F(NUME_ORDRE = (1),))
 
 RESU2=CREA_RESU( reuse=RESU2,   OPERATION='PERM_CHAM', TYPE_RESU='EVOL_NOLI',
                             RESU_INIT=RESU1,
+                            #INST_INIT=1.,
                         MAILLAGE_INIT=MA1,
                         NOM_CHAM=('DEPL', 'SIEF_ELGA', 'VARI_ELGA',),
                             RESU_FINAL=RESU2,

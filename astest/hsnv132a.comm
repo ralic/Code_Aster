@@ -1,4 +1,4 @@
-# MODIF  DATE 31/01/2011   AUTEUR MACOCCO K.MACOCCO 
+# MODIF  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
 # TITRE : FISSURE CLASSIQUE EN THERMO-ELASTICITE 2D 
 # hsnv132a.para = tps_job 60 mem_job 500Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -143,6 +143,7 @@ TEST_TABLE(TABLE=TABDEP,
            CRITERE='RELATIF',
            PRECISION=1.0E-11,
            REFERENCE='NON_REGRESSION',
+           FILTRE=(_F(NOM_PARA='NUME_ORDRE',VALE_I=1),),
            VERSION = '9.1.7');                        
 
 TEST_TABLE(TABLE=TABDEP,
@@ -151,6 +152,7 @@ TEST_TABLE(TABLE=TABDEP,
            CRITERE='RELATIF',
            PRECISION=1.0E-11,
            REFERENCE='NON_REGRESSION',
+           FILTRE=(_F(NOM_PARA='NUME_ORDRE',VALE_I=1),),
            VERSION = '9.1.7');
 
 FOND1=DEFI_FOND_FISS(MAILLAGE=MAILLAGE,
@@ -191,6 +193,7 @@ PK=POST_K1_K2_K3(MODELISATION='D_PLAN',
                      INFO =2,
                      ABSC_CURV_MAXI = 0.03,
                      RESULTAT  = UTOT,
+                     NUME_ORDRE=1,
                      VECT_K1        = ( 0., 1., 0.,),
                     )
 
@@ -198,7 +201,6 @@ IMPR_TABLE(TABLE = PK)
 
 # Cas test de non regression sur K1
 TEST_TABLE(TABLE=TABSIF,
-           FILTRE=(_F(NOM_PARA='NUME_ORDRE',VALE_I=1),),
            NOM_PARA='K1',
            VALE= 9.0033077632721E+06,
            CRITERE='RELATIF',
@@ -214,7 +216,6 @@ TEST_TABLE(TABLE=PK,
 
 # Cas test de non regression sur G
 TEST_TABLE(TABLE=TABG,
-           FILTRE=(_F(NOM_PARA='NUME_ORDRE',VALE_I=1),),
            NOM_PARA='G',
            VALE= 4.9878E+02,
            CRITERE='RELATIF',

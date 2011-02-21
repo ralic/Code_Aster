@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
 # TITRE PROPAGATION MIXTE D'UNE FISSURE 3D AVEC X-FEM ET RAFFINEMENT ADAPTATIF
 # sslv317a.para = tps_job 180 mem_job 512Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -360,7 +360,7 @@ for i_propa in xrange(pas_debut,nb_pas) :
                          LIAISON_XFEM='OUI')
 
    # Resolution
-   RESU=STAT_NON_LINE(MODELE=MOD_X,
+   RESX=STAT_NON_LINE(MODELE=MOD_X,
                       CHAM_MATER=CHMAT,
                       EXCIT=(_F(CHARGE=CHXFEM),
                              _F(CHARGE=ENCAST),
@@ -369,7 +369,10 @@ for i_propa in xrange(pas_debut,nb_pas) :
                       INCREMENT=_F(LIST_INST=L_INST),
                       NEWTON=_F(REAC_ITER=1),
                       )
-                    
+                      
+   RESU = EXTR_RESU(RESULTAT=RESX,ARCHIVAGE=_F(NUME_ORDRE=1,),);                 
+  
+   DETRUIRE(CONCEPT=_F(NOM=(RESX)),INFO=1)
   
    # Visualisation X-FEM 
    MA_XFEM=POST_MAIL_XFEM(MODELE=MOD_X)

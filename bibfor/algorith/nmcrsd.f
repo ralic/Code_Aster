@@ -1,0 +1,93 @@
+      SUBROUTINE NMCRSD(TYPESD,NOMSD )
+C
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ALGORITH  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C ======================================================================
+C RESPONSABLE ABBAS M.ABBAS
+C
+      IMPLICIT NONE
+      CHARACTER*(*) TYPESD
+      CHARACTER*(*) NOMSD
+      
+C
+C ----------------------------------------------------------------------
+C
+C ROUTINE MECA_NON_LINE (UTILITAIRE)
+C
+C CREATION D'UNE SD
+C
+C ----------------------------------------------------------------------
+C
+C
+C IN  TYPESD :  TYPE DE LA SD
+C               'POST_TRAITEMENT' - MODES VIBRATOIRES OU FLAMBAGE
+C IN  NOMSD  : NOM DE LA SD
+C
+C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ---------------------------
+C
+      INTEGER ZI
+      COMMON /IVARJE/ZI(1)
+      REAL*8 ZR
+      COMMON /RVARJE/ZR(1)
+      COMPLEX*16 ZC
+      COMMON /CVARJE/ZC(1)
+      LOGICAL ZL
+      COMMON /LVARJE/ZL(1)
+      CHARACTER*8 ZK8
+      CHARACTER*16 ZK16
+      CHARACTER*24 ZK24
+      CHARACTER*32 ZK32
+      CHARACTER*80 ZK80
+      COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
+C
+C --- FIN DECLARATIONS NORMALISEES JEVEUX -----------------------------
+C
+      INTEGER      ZPOSTI,ZPOSTR,ZPOSTK
+      PARAMETER   (ZPOSTI=7,ZPOSTR=6,ZPOSTK=10)
+C      
+      INTEGER      IFM,NIV
+      CHARACTER*24 SDINFI,SDINFR,SDINFK
+      INTEGER      JPINFI,JPINFR,JPINFK
+C
+C ----------------------------------------------------------------------
+C
+      CALL JEMARQ()
+      CALL INFDBG('MECA_NON_LINE',IFM,NIV)
+C
+C --- AFFICHAGE
+C
+      IF (NIV.GE.2) THEN
+        WRITE (IFM,*) '<MECANONLINE> ... CREATION SD'
+      ENDIF
+C
+C --- CREATION
+C 
+      IF (TYPESD.EQ.'POST_TRAITEMENT') THEN
+        SDINFI = NOMSD(1:19)//'.INFI'
+        SDINFR = NOMSD(1:19)//'.INFR'
+        SDINFK = NOMSD(1:19)//'.INFK'         
+        CALL WKVECT(SDINFI,'V V I  ',ZPOSTI,JPINFI)
+        CALL WKVECT(SDINFR,'V V R  ',ZPOSTR,JPINFR)      
+        CALL WKVECT(SDINFK,'V V K24',ZPOSTK,JPINFK)              
+      ELSE
+        CALL ASSERT(.FALSE.)
+      ENDIF
+ 
+C          
+      CALL JEDEMA()
+      END

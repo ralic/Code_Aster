@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
 # TITRE CALCUL 3D DE G FISSURE CIRCULAIRE EN MILIEU INFINI
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -141,6 +141,7 @@ GBIL=CALC_G(  THETA=_F( FOND_FISS=FOND,
                         R_INF = 0.2,
                         R_SUP = 0.5),
               RESULTAT=RESU,
+              NUME_ORDRE=(1,2,3,4),
               OPTION='G_BILI_GLOB',
                        );
 
@@ -148,6 +149,7 @@ GMAX=CALC_G(  THETA=_F( FOND_FISS=FOND,
                         R_INF = 0.2,
                         R_SUP = 0.5),
                         RESULTAT=RESU,
+                        NUME_ORDRE=(1,2,3,4),
                         BORNES=( _F( NUME_ORDRE = 1,
                                      VALE_MIN = 0.,
                                      VALE_MAX = 1.),

@@ -1,4 +1,4 @@
-# MODIF  DATE 25/01/2011   AUTEUR MACOCCO K.MACOCCO 
+# MODIF  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
 # TITRE FISSURE DEBOUCHANTE DANS UNE PLAQUE 3D DE LARGEUR FINIE AVEC X-FEM
 # ssnv185o.para = tps_job 270 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -145,6 +145,7 @@ for i in range(0,nbc) :
    
    SIF1[i]=CALC_G(RESULTAT=UTOT1,
                   OPTION='CALC_K_G',
+                  NUME_ORDRE=1,
                   LISSAGE = _F(LISSAGE_THETA='LAGRANGE',
                                LISSAGE_G='LAGRANGE',),
                   THETA=_F(R_INF=RI[i],
@@ -155,6 +156,7 @@ for i in range(0,nbc) :
 
    SIF2[i]=CALC_G(RESULTAT=UTOT2,
                   OPTION='CALC_K_G',
+                  NUME_ORDRE=1,
                   LISSAGE = _F(LISSAGE_THETA='LAGRANGE',
                                LISSAGE_G='LAGRANGE',),
                   THETA=_F(R_INF=RI[i],

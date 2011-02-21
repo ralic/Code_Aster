@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
 # TITRE  - ECOULEMENT ORTHOTROPE SATURE EN 2D
 # wtnp110a.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -182,7 +182,6 @@ U0=STAT_NON_LINE(MODELE=MODELE,
                  INCREMENT=_F(LIST_INST=INST1,
                               ERRE_TEMPS='OUI',),
                  CONVERGENCE=_F(ITER_GLOB_MAXI=1,),
-                 ARCHIVAGE=_F(ARCH_ETAT_INIT='OUI',),
                  NEWTON=_F(MATRICE='TANGENTE',
                            REAC_ITER=1,),);
 

@@ -1,4 +1,4 @@
-#@ MODIF algorith6 Messages  DATE 03/01/2011   AUTEUR SFAYOLLE S.FAYOLLE 
+#@ MODIF algorith6 Messages  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -167,10 +167,6 @@ cata_msg = {
 
 33 : _("""
  incompatibilité NOM_PARA et données mesurées
-"""),
-
-37 : _("""
- pas de numéro d'ordre pour le concept  %(k1)s
 """),
 
 52 : _("""

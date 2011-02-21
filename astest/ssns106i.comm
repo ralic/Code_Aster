@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
 # RESPONSABLE SFAYOLLE S.FAYOLLE
 # TITRE  ENDOMMAGEMENT D UNE PLAQUE PLANE SOUS SOLLICITATIONS VARIEES
 # ssns106i.para = tps_job 500 mem_job 64Mo ncpus 1 liste_test S
@@ -448,82 +448,196 @@ RESU_L1=CALC_ELEM(reuse =RESU_L1,
 
 # -- POST TRAITEMENT --
 
-EPS_R=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
+EPS_R=POST_RELEVE_T(ACTION=(_F(OPERATION='EXTRACTION',
                               INTITULE='TABEPS',
                               RESULTAT=RESU_R1,
                               NOM_CHAM='DEGE_ELNO',
                               GROUP_NO='A4',
-                              TOUT_CMP='OUI',),);
+                              TOUT_CMP='OUI',),
+                             ),);
 
-EPS_G=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
+EPS_R=CALC_TABLE(reuse =EPS_R,
+                    TABLE=EPS_R,
+                    ACTION=(_F(
+                          OPERATION = 'FILTRE',
+                          NOM_PARA  = 'NUME_ORDRE',
+                          CRIT_COMP = 'GT',
+                          VALE    = 0,
+                         ),),);
+
+EPS_G=POST_RELEVE_T(ACTION=(_F(OPERATION='EXTRACTION',
                               INTITULE='TABEPS',
                               RESULTAT=RESU_G1,
                               NOM_CHAM='DEGE_ELNO',
                               GROUP_NO='A4',
-                              TOUT_CMP='OUI',),);
-
-EPS_L=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
+                              TOUT_CMP='OUI',),
+                            ),);
+                            
+                            
+EPS_G=CALC_TABLE(reuse =EPS_G,
+                    TABLE=EPS_G,
+                    ACTION=(_F(
+                          OPERATION = 'FILTRE',
+                          NOM_PARA  = 'NUME_ORDRE',
+                          CRIT_COMP = 'GT',
+                          VALE    = 0,
+                         ),),);
+                         
+                         
+EPS_L=POST_RELEVE_T(ACTION=(_F(OPERATION='EXTRACTION',
                               INTITULE='TABEPS',
                               RESULTAT=RESU_L1,
                               NOM_CHAM='DEGE_ELNO',
                               NOEUD='N2',
-                              TOUT_CMP='OUI',),);
+                              TOUT_CMP='OUI',),
+                            ),);
+                            
+EPS_L=CALC_TABLE(reuse =EPS_L,
+                    TABLE=EPS_L,
+                    ACTION=(_F(
+                          OPERATION = 'FILTRE',
+                          NOM_PARA  = 'NUME_ORDRE',
+                          CRIT_COMP = 'GT',
+                          VALE    = 0,
+                         ),),);                            
+                            
 
-TMYA4_R1=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
+TMYA4_R1=POST_RELEVE_T(ACTION=(_F(OPERATION='EXTRACTION',
                                  INTITULE='A4MY',
                                  RESULTAT=RESU_R1,
                                  NOM_CHAM='FORC_NODA',
                                  GROUP_NO='A4',
-                                 NOM_CMP='DRY',),);
+                                 NOM_CMP='DRY',),
+                               ),);
 
-TMYA4_G1=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
+TMYA4_R1=CALC_TABLE(reuse =TMYA4_R1,
+               TABLE=TMYA4_R1,
+               ACTION=(_F(
+                          OPERATION = 'FILTRE',
+                          NOM_PARA  = 'NUME_ORDRE',
+                          CRIT_COMP = 'GT',
+                          VALE    = 0,
+                         ),),);
+
+TMYA4_G1=POST_RELEVE_T(ACTION=(_F(OPERATION='EXTRACTION',
                                  INTITULE='A4MY',
                                  RESULTAT=RESU_G1,
                                  NOM_CHAM='FORC_NODA',
                                  GROUP_NO='A4',
-                                 NOM_CMP='DRY',),);
+                                 NOM_CMP='DRY',),
+                                ),);
 
-TMYA2_R1=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
+TMYA4_G1=CALC_TABLE(reuse =TMYA4_G1,
+               TABLE=TMYA4_G1,
+               ACTION=(_F(
+                          OPERATION = 'FILTRE',
+                          NOM_PARA  = 'NUME_ORDRE',
+                          CRIT_COMP = 'GT',
+                          VALE    = 0,
+                         ),),);
+
+TMYA2_R1=POST_RELEVE_T(ACTION=(_F(OPERATION='EXTRACTION',
                                  INTITULE='A2MY',
                                  RESULTAT=RESU_R1,
                                  NOM_CHAM='FORC_NODA',
                                  GROUP_NO='A2',
-                                 NOM_CMP='DRY',),);
+                                 NOM_CMP='DRY',),),);
 
-TMYA2_G1=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
+TMYA2_R1=CALC_TABLE(reuse =TMYA2_R1,
+               TABLE=TMYA2_R1,
+               ACTION=(_F(
+                          OPERATION = 'FILTRE',
+                          NOM_PARA  = 'NUME_ORDRE',
+                          CRIT_COMP = 'GT',
+                          VALE    = 0,
+                         ),),);
+
+TMYA2_G1=POST_RELEVE_T(ACTION=(_F(OPERATION='EXTRACTION',
                                  INTITULE='A2MY',
                                  RESULTAT=RESU_G1,
                                  NOM_CHAM='FORC_NODA',
                                  GROUP_NO='A2',
-                                 NOM_CMP='DRY',),);
+                                 NOM_CMP='DRY',),),);
 
-TMYA6_R1=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
+TMYA2_G1=CALC_TABLE(reuse =TMYA2_G1,
+               TABLE=TMYA2_G1,
+               ACTION=(_F(
+                          OPERATION = 'FILTRE',
+                          NOM_PARA  = 'NUME_ORDRE',
+                          CRIT_COMP = 'GT',
+                          VALE    = 0,
+                         ),),);
+
+TMYA6_R1=POST_RELEVE_T(ACTION=(_F(OPERATION='EXTRACTION',
                                  INTITULE='A6MY',
                                  RESULTAT=RESU_R1,
                                  NOM_CHAM='FORC_NODA',
                                  GROUP_NO='A6',
-                                 NOM_CMP='DRY',),);
+                                 NOM_CMP='DRY',),),);
 
-TMYA6_G1=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
+TMYA6_R1=CALC_TABLE(reuse =TMYA6_R1,
+               TABLE=TMYA6_R1,
+               ACTION=(_F(
+                          OPERATION = 'FILTRE',
+                          NOM_PARA  = 'NUME_ORDRE',
+                          CRIT_COMP = 'GT',
+                          VALE    = 0,
+                         ),),);
+
+TMYA6_G1=POST_RELEVE_T(ACTION=(_F(OPERATION='EXTRACTION',
                                  INTITULE='A6MY',
                                  RESULTAT=RESU_G1,
                                  NOM_CHAM='FORC_NODA',
                                  GROUP_NO='A6',
-                                 NOM_CMP='DRY',),);
+                                 NOM_CMP='DRY',),),);
 
-TD_G1=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
+
+TMYA6_G1=CALC_TABLE(reuse =TMYA6_G1,
+               TABLE=TMYA6_G1,
+               ACTION=(_F(
+                          OPERATION = 'FILTRE',
+                          NOM_PARA  = 'NUME_ORDRE',
+                          CRIT_COMP = 'GT',
+                          VALE    = 0,
+                         ),),);
+
+TD_G1=POST_RELEVE_T(ACTION=(_F(OPERATION='EXTRACTION',
                               INTITULE='A4D1',
                               RESULTAT=RESU_G1,
                               NOM_CHAM='VARI_NOEU',
                               GROUP_NO='A4',
-                              NOM_CMP=('V1','V2',),),);
+                              NOM_CMP=('V1','V2',),),
+                             ), 
+                              
+                              );
 
-TMY_L1=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
+TD_G1=CALC_TABLE(reuse =TD_G1,
+               TABLE=TD_G1,
+               ACTION=(_F(
+                          OPERATION = 'FILTRE',
+                          NOM_PARA  = 'NUME_ORDRE',
+                          CRIT_COMP = 'GT',
+                          VALE    = 0,
+                         ),),);
+
+TMY_L1=POST_RELEVE_T(ACTION=(_F(OPERATION='EXTRACTION',
                                INTITULE='MYL',
                                RESULTAT=RESU_L1,
                                NOM_CHAM='REAC_NODA',
                                NOEUD='N2',
-                               NOM_CMP='DRY',),);
+                               NOM_CMP='DRY',),
+                             ),  
+                               
+                               );
+
+TMY_L1=CALC_TABLE(reuse =TMY_L1,
+               TABLE=TMY_L1,
+               ACTION=(_F(
+                          OPERATION = 'FILTRE',
+                          NOM_PARA  = 'NUME_ORDRE',
+                          CRIT_COMP = 'GT',
+                          VALE    = 0,
+                         ),),);
 
 EPS_R=CALC_TABLE(reuse =EPS_R,
                  TABLE=EPS_R,
@@ -670,19 +784,38 @@ D_MY_1=CALC_TABLE(TABLE=TMY_R1,
 
 DETRUIRE(CONCEPT=_F(NOM=(TMYA2_R1,TMYA2_G1,TMYA4_R1,TMYA4_G1,TMYA6_R1,TMYA6_G1,TMY_R1,TMY_G1,TMY_L1,),),);
 
-TRX_R1=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
+TRX_R1=POST_RELEVE_T(ACTION=(_F(OPERATION='EXTRACTION',
                                INTITULE='A4RX',
                                RESULTAT=RESU_R1,
                                NOM_CHAM='DEPL',
                                GROUP_NO='A4',
-                               NOM_CMP='DRX',),);
+                               NOM_CMP='DRX',),),);
 
-TRX_G1=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
+TRX_R1=CALC_TABLE(reuse =TRX_R1,
+               TABLE=TRX_R1,
+               ACTION=(_F(
+                          OPERATION = 'FILTRE',
+                          NOM_PARA  = 'NUME_ORDRE',
+                          CRIT_COMP = 'GT',
+                          VALE    = 0,
+                         ),),);
+
+TRX_G1=POST_RELEVE_T(ACTION=(_F(OPERATION='EXTRACTION',
                                INTITULE='A4RX',
                                RESULTAT=RESU_G1,
                                NOM_CHAM='DEPL',
                                GROUP_NO='A4',
-                               NOM_CMP='DRX',),);
+                               NOM_CMP='DRX',),
+                              ),);
+
+TRX_G1=CALC_TABLE(reuse =TRX_G1,
+               TABLE=TRX_G1,
+               ACTION=(_F(
+                          OPERATION = 'FILTRE',
+                          NOM_PARA  = 'NUME_ORDRE',
+                          CRIT_COMP = 'GT',
+                          VALE    = 0,
+                         ),),);
 
 TRX_R1=CALC_TABLE(reuse =TRX_R1,
                   TABLE=TRX_R1,

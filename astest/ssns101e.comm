@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
 # TITRE CLAQUAGE  CALOTTE CYLINDRIQUE SHB20  
 # ssns101e.para = tps_job 600 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -111,15 +111,30 @@ TABDX=POST_RELEVE_T(ACTION=_F(INTITULE='F',
                               GROUP_NO='P2',
                               RESULTAT=NONLIN,
                               NOM_CHAM='DEPL',
-                              TOUT_ORDRE='OUI',
                               NOM_CMP='DX',
                               OPERATION='EXTRACTION',),);
+                              
+TABDX=CALC_TABLE(reuse =TABDX,
+               TABLE=TABDX,
+               ACTION=(_F(
+                          OPERATION = 'FILTRE',
+                          NOM_PARA  = 'NUME_ORDRE',
+                          CRIT_COMP = 'GT',
+                          VALE    = 0,
+                         ),),);                               
 
 FDX=RECU_FONCTION(TABLE=TABDX,
                   PARA_X='INST',
                   PARA_Y='DX',);
 
-FETA=RECU_FONCTION(RESULTAT=NONLIN,INTERPOL='LIN',
+LISTEXTR=DEFI_LIST_REEL(DEBUT=1.0,
+                        INTERVALLE=_F(JUSQU_A=15,
+                                      NOMBRE=14,),);
+
+FETA=RECU_FONCTION(RESULTAT=NONLIN,
+                   INTERPOL='LIN',
+                   PROL_GAUCHE='CONSTANT',
+                   LIST_INST       =LISTEXTR,
                    NOM_PARA_RESU='ETA_PILOTAGE',);
 
 IMPR_FONCTION(UNITE=8,

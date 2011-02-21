@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
 # RESPONSABLE F6BHHBO P.DEBONNIERES
 # TITRE PLAQUE SOUS PRESSION EN DP (PLASTICITE VON-MISES ISOT LINEAIRE)
 # sensm08a.para = tps_job 60 mem_job 64Mo liste_test R
@@ -101,8 +101,7 @@ RESU=STAT_NON_LINE(MODELE=MO,
                              REAC_ITER=1,),
                    CONVERGENCE=_F(
                             RESI_GLOB_RELA = 1.E-8),
-                   ARCHIVAGE=_F(LIST_INST=L_INST,
-                                ARCH_ETAT_INIT='OUI',),
+                   ARCHIVAGE=_F(LIST_INST=L_INST,),
                    SENSIBILITE=(PS_E,PS_DSDE,PS_SIGY),
                    INFO=1);
 

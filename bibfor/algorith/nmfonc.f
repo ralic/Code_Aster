@@ -1,9 +1,9 @@
       SUBROUTINE NMFONC(PARCRI,PARMET,SOLVEU,MODELE,DEFICO,
      &                  LISCHA,LCONT ,LUNIL ,SDSENS,SDNUME,
-     &                  SDDYNA,MATE  ,COMPOZ,FONACT)
-
+     &                  SDDYNA,MATE  ,COMPOZ,RESULT,FONACT)
+C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 15/02/2011   AUTEUR FLEJOU J-L.FLEJOU 
+C MODIF ALGORITH  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -30,6 +30,7 @@ C
       CHARACTER*19  SOLVEU,LISCHA,SDDYNA,SDNUME
       CHARACTER*24  MATE,MODELE
       CHARACTER*24  DEFICO,SDSENS
+      CHARACTER*8   RESULT
       CHARACTER*(*) COMPOZ
 C
 C ----------------------------------------------------------------------
@@ -41,6 +42,7 @@ C ----------------------------------------------------------------------
 C
 C IN  MODELE : MODELE MECANIQUE
 C IN  DEFICO : SD DE DEFINITION DU CONTACT
+C IN  SDNUME : NOM DE LA SD NUMEROTATION 
 C IN  LCONT  : .TRUE. S'IL Y A DU CONTACT
 C IN  LUNIL  : .TRUE. S'IL Y A LIAISON_UNILATER
 C IN  SOLVEU : NOM DU SOLVEUR DE NEWTON
@@ -52,7 +54,7 @@ C IN  PARCRI : RESI_CONT_RELA VAUT R8VIDE SI NON ACTIF
 C IN  ZFON   : LONGUEUR DU VECTEUR FONACT
 C IN  LISCHA : SD DE DEFINITION DES CHARGES
 C IN  COMPOR : CARTE DE COMPORTEMENT
-C IN  SDNUME : NOM DE LA SD NUMEROTATION 
+C IN  RESULT : STRUCTURE DONNEE RESULTAT
 C OUT FONACT : FONCTIONNALITES SPECIFIQUES ACTIVEES (VOIR ISFONC)
 C
 C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ---------------------------
@@ -91,7 +93,7 @@ C
       INTEGER      IFM,NIV 
 C      
 C ----------------------------------------------------------------------
-C      '
+C      
       CALL JEMARQ()
       CALL INFDBG('MECA_NON_LINE',IFM,NIV)
 C
@@ -111,14 +113,17 @@ C --- NOM DE LA COMMANDE: STAT_NON_LINE, DYNA_NON_LINE
 C
       CALL GETRES(K8BID,K16BID,NOMCMD)
       LSTAT = NOMCMD(1:4).EQ.'STAT'    
-      LDYNA = NOMCMD(1:4).EQ.'DYNA'
+      LDYNA = NOMCMD(1:4).EQ.'DYNA' 
 C
 C --- ELEMENTS EN GRANDES ROTATIONS
 C
       CALL JEEXIN(SDNUME(1:19)//'.NDRO',IRET)
-      LGROT = IRET.NE.0    
+      LGROT = IRET.NE.0   
+C
+C --- ELEMENTS AVEC ENDO AUX NOEUDS
+C
       CALL JEEXIN(SDNUME(1:19)//'.ENDO',IRET)
-      LENDO = IRET.NE.0       
+      LENDO = IRET.NE.0   
 C
 C --- RECHERCHE LINEAIRE
 C      
@@ -309,14 +314,17 @@ C
         FONACT(24) = 1 
       ENDIF        
 C
-C --- POUTRES EN GRANDES ROTATIONS
+C --- ELEMENTS EN GRANDES ROTATIONS
 C
       IF (LGROT) THEN
         FONACT(15) = 1
-      ENDIF  
+      ENDIF
+C
+C --- ELEMENTS AVEC ENDO AUX NOEUDS
+C
       IF (LENDO) THEN
         FONACT(40) = 1
-      ENDIF        
+      ENDIF     
 C
 C --- SENSIBILITE
 C
@@ -386,6 +394,13 @@ C
      &            REPK,IRET)
       IF (REPK(1:3).EQ.'OUI') THEN
         FONACT(37) = 1
+      ENDIF
+C
+C --- CONCEPT REENTRANT ?
+C      
+      CALL GCUCON(RESULT, 'EVOL_NOLI', IRET)
+      IF (IRET.GT.0) THEN
+        FONACT(39) = 1
       ENDIF
 C
 C --- AFFICHAGE
@@ -511,13 +526,15 @@ C
         IF (ISFONC(FONACT,'THM')) THEN
           WRITE (IFM,*) '<MECANONLINE> ...... MODELISATION THM'
           NBFONC = NBFONC + 1
-        ENDIF   
-        
+        ENDIF         
         IF (ISFONC(FONACT,'ENDO_NO')) THEN
           WRITE (IFM,*) '<MECANONLINE> ...... MODELISATION GVNO'
           NBFONC = NBFONC + 1
-        ENDIF           
-        
+        ENDIF               
+        IF (ISFONC(FONACT,'REUSE')) THEN
+          WRITE (IFM,*) '<MECANONLINE> ...... CONCEPT RE-ENTRANT'
+          NBFONC = NBFONC + 1
+        ENDIF  
         IF (NBFONC.EQ.0) THEN
           WRITE (IFM,*) '<MECANONLINE> ...... <AUCUNE>'
         ENDIF          

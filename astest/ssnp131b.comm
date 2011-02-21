@@ -1,4 +1,4 @@
-# MODIF  DATE 10/01/2011   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
 # TITRE CALCUL DU CRITERE ENERGETIQUE GP EN 3D
 # ssnp131b.para = tps_job 500 mem_job 700Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -259,7 +259,7 @@ CHAD=AFFE_CHAR_CINE_F(MODELE=MOD,
 #---------------  RESOLUTION   ------------------
 #----------------------------------------------------------------------
 
-RESU=STAT_NON_LINE(MODELE=MOD,
+RESV=STAT_NON_LINE(MODELE=MOD,
                    CHAM_MATER=CHMAT,
                    EXCIT=(_F(CHARGE=COND_LIM,),
                           _F(CHARGE=COND_LI2,),
@@ -316,6 +316,11 @@ kjc3 = (40.0 * conv);
 # temperature de calcul
 tcal = 35.0;
 
+RESX = EXTR_RESU(RESULTAT=RESV,
+                 ARCHIVAGE=_F(NUME_ORDRE=(
+                 1,
+                 ),),);
+
 # definition du fond de fissure
 
 FONFISS=DEFI_FOND_FISS(MAILLAGE=MA,
@@ -325,7 +330,7 @@ FONFISS=DEFI_FOND_FISS(MAILLAGE=MA,
 
 
 
-tab=POST_GP(RESULTAT=RESU,
+tab=POST_GP(RESULTAT=RESX,
             RESU_THER=RESU_T,
             MODELE=MOD,
             MATER=ACIER,

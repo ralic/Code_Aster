@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
 # TITRE VALIDATION DU CLAVAGE EN 2D POUR LA LOI DE JOINT DE PLOT DES BARRAGES
 # ssnp143a.para = tps_job 200 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -140,8 +140,7 @@ U_1=STAT_NON_LINE(MODELE=MO,
                   CONVERGENCE=_F(ITER_GLOB_MAXI=900,
                                  RESI_GLOB_RELA=1E-6),
                   SOLVEUR=_F(METHODE='MUMPS',),
-                  ARCHIVAGE = _F(ARCH_ETAT_INIT = 'OUI',
-                                 LIST_INST = L_ARCH,),
+                  ARCHIVAGE = _F(LIST_INST = L_ARCH,),
                   );
 
 

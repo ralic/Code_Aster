@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
 # TITRE  CALCUL DU FACTEUR D'INTENSITE DE CONTRAINTES PAR LA REGULARISATION DES
 # ssnp148a.para = tps_job 300 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -207,7 +207,6 @@ EVOEL=STAT_NON_LINE(SOLVEUR=_F(METHODE='MULT_FRONT',),
                         COMP_INCR=_F( 
                             RELATION = 'ENDO_HETEROGENE',
                             DEFORMATION = 'PETIT'),
-                       ARCHIVAGE=_F(ARCH_ETAT_INIT='OUI',),
                        INCREMENT=_F(LIST_INST=DEFLIST,
                                     ),
                        NEWTON =_F(MATRICE='TANGENTE',

@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
 # TITRE CALCUL 3D DE G LOCAL FISSURE CIRCULAIRE EN MILIEU INFINI
 # sslv134f.para = tps_job 160 mem_job 200Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -107,7 +107,8 @@ GL1=CALC_G(THETA=_F(FOND_FISS=FOND,
                     R_INF=0.1,
                     R_SUP=1.0,),
            RESULTAT=RESU,
-           TOUT_ORDRE='OUI',
+           #TOUT_ORDRE='OUI',
+           NUME_ORDRE=(1,2,3,4),
            LISSAGE=_F(LISSAGE_THETA='LAGRANGE',
                       LISSAGE_G='LAGRANGE',),
            TITRE='G_LOCAL AVEC R_INF =  1.00000E-01 ET R_SUP =  1.00000E+00',);
@@ -116,14 +117,16 @@ GL2=CALC_G(THETA=_F(FOND_FISS=FOND,
                     R_INF=0.5,
                     R_SUP=1.5,),
            RESULTAT=RESU,
-           TOUT_ORDRE='OUI',
+           #TOUT_ORDRE='OUI',
+           NUME_ORDRE=(1,2,3,4),
            TITRE='G_LOCAL AVEC R_INF =  0.50000E-01 ET R_SUP =  1.50000E+00',);
 
 GLBIL1=CALC_G(THETA=_F(FOND_FISS=FOND,
                        R_INF=0.1,
                        R_SUP=1.0,),
               RESULTAT=RESU,
-              TOUT_ORDRE='OUI',
+              #TOUT_ORDRE='OUI',
+           NUME_ORDRE=(1,2,3,4),
               LISSAGE=_F(LISSAGE_THETA='LAGRANGE',
                          LISSAGE_G='LAGRANGE',),
               OPTION='G_BILI',
@@ -133,7 +136,8 @@ GLBIL2=CALC_G(THETA=_F(FOND_FISS=FOND,
                        R_INF=0.5,
                        R_SUP=1.5,),
               RESULTAT=RESU,
-              TOUT_ORDRE='OUI',
+              #TOUT_ORDRE='OUI',
+           NUME_ORDRE=(1,2,3,4),
               OPTION='G_BILI',
               TITRE='G_LOCAL AVEC R_INF =  5.00000E-01 ET R_SUP =  1.50000E+00',);
 
@@ -141,7 +145,8 @@ GLMAX1=CALC_G(THETA=_F(FOND_FISS=FOND,
                        R_INF=0.1,
                        R_SUP=1.0,),
               RESULTAT=RESU,
-              TOUT_ORDRE='OUI',
+              #TOUT_ORDRE='OUI',
+           NUME_ORDRE=(1,2,3,4),
               LISSAGE=_F(LISSAGE_THETA='LAGRANGE',
                          LISSAGE_G='LAGRANGE',),
               OPTION='G_MAX',
@@ -164,7 +169,8 @@ GLMAX2=CALC_G(THETA=_F(FOND_FISS=FOND,
                        R_INF=0.5,
                        R_SUP=1.5,),
               RESULTAT=RESU,
-              TOUT_ORDRE='OUI',
+              #TOUT_ORDRE='OUI',
+           NUME_ORDRE=(1,2,3,4),
               OPTION='G_MAX',
               BORNES=(
               _F(NUME_ORDRE=1,
@@ -240,7 +246,8 @@ TEST_TABLE(TABLE=GLBIL1,
            REFERENCE='AUTRE_ASTER',);
 
 TEST_TABLE(TABLE=GLMAX1,
-           FILTRE=(_F(NOM_PARA='Q_1',
+           FILTRE=(
+                   _F(NOM_PARA='Q_1',
                       VALE=1.0,),
                    _F(NOM_PARA='Q_2',
                       VALE=-1.0,),
@@ -256,7 +263,8 @@ TEST_TABLE(TABLE=GLMAX1,
            REFERENCE='NON_REGRESSION',);
 
 TEST_TABLE(TABLE=GL2,
-           FILTRE=(_F(NOM_PARA='NUME_ORDRE',
+           FILTRE=(
+                   _F(NOM_PARA='NUME_ORDRE',
                       VALE_I=2,),
                    _F(NOM_PARA='NOEUD',
                       VALE_K='N2667',),),
@@ -267,7 +275,8 @@ TEST_TABLE(TABLE=GL2,
            VERSION='7.0.17',);
 
 TEST_TABLE(TABLE=GLBIL2,
-           FILTRE=(_F(NOM_PARA='NUME_CMP_I',
+           FILTRE=(
+                   _F(NOM_PARA='NUME_CMP_I',
                       VALE_I=2,),
                    _F(NOM_PARA='NUME_CMP_J',
                       VALE_I=2,),
@@ -279,7 +288,8 @@ TEST_TABLE(TABLE=GLBIL2,
            REFERENCE='NON_REGRESSION',);
 
 TEST_TABLE(TABLE=GLMAX2,
-           FILTRE=(_F(NOM_PARA='Q_1',
+           FILTRE=(
+                   _F(NOM_PARA='Q_1',
                       VALE=1.0,),
                    _F(NOM_PARA='Q_2',
                       VALE=-1.0,),
@@ -295,7 +305,8 @@ TEST_TABLE(TABLE=GLMAX2,
            REFERENCE='NON_REGRESSION',);
 
 TEST_TABLE(TABLE=KLMAX1,
-           FILTRE=(_F(NOM_PARA='Q_1',
+           FILTRE=(
+                   _F(NOM_PARA='Q_1',
                       VALE_I=1,),
                    _F(NOM_PARA='Q_2',
                       VALE_I=1,),

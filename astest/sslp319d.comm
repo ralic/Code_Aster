@@ -1,4 +1,4 @@
-# MODIF  DATE 31/01/2011   AUTEUR MACOCCO K.MACOCCO 
+# MODIF  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
 # TITRE PROPAGATION DE DEUX FISSURES XFEM DEBOUCHANTES SOLLICITEE EN MODE I
 # sslp319d.para = tps_job 250 mem_job 512Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -112,6 +112,7 @@ Mod  = [None]*NPS
 ModX = [None]*NPS
 ChgX = [None]*NPS
 ResX = [None]*NPS
+ResU = [None]*NPS
 SIFL = [None]*NPS
 SIFR = [None]*NPS
 SIFL1 = [None]*NPS
@@ -163,7 +164,7 @@ for i in range(1,NPS-1) :
                       AFFE=_F(TOUT='OUI',
                               MATER=steel,),);
 
-    ResX[i]=STAT_NON_LINE(MODELE=ModX[i],
+    ResU[i]=STAT_NON_LINE(MODELE=ModX[i],
                          CHAM_MATER=MATE[i],
                          EXCIT=(_F(CHARGE=Char[i],),),
                          COMP_ELAS=_F(RELATION='ELAS',
@@ -171,6 +172,10 @@ for i in range(1,NPS-1) :
                          INCREMENT=_F(LIST_INST=TimeStep,
                                       INST_FIN=1,),
                          ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA',),);
+                         
+    ResX[i] = EXTR_RESU(RESULTAT=ResU[i],
+                        ARCHIVAGE=_F(NUME_ORDRE=1),);                   
+                         
 
 #   CALCULE DES FACTEURS D'INTENSITE DE CONTRAINTES POUR LA FISSURE
 #   A GAUCHE
@@ -250,12 +255,14 @@ for i in range(1,NPS-1) :
 
    TEST_TABLE(TABLE=SIFL[i],
               REFERENCE='ANALYTIQUE',
+              
               NOM_PARA='K1',
               PRECISION=0.05,
               VALE= KI_broek  )
 
    TEST_TABLE(TABLE=SIFL[i],
               REFERENCE='ANALYTIQUE',
+              
               NOM_PARA='K2',
               PRECISION=TOL_K2,
               CRITERE='ABSOLU',
@@ -263,12 +270,14 @@ for i in range(1,NPS-1) :
 
    TEST_TABLE(TABLE=SIFR[i],
               REFERENCE='ANALYTIQUE',
+              
               NOM_PARA='K1',
               PRECISION=0.05,
               VALE= KI_broek )
 
    TEST_TABLE(TABLE=SIFR[i],
               REFERENCE='ANALYTIQUE',
+              
               NOM_PARA='K2',
               PRECISION=TOL_K2,
               CRITERE='ABSOLU',

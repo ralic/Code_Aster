@@ -1,4 +1,4 @@
-# MODIF  DATE 31/01/2011   AUTEUR MACOCCO K.MACOCCO 
+# MODIF  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
 # TITRE PROPAGATION DE FISSURE DEBOUCHANTE DANS UNE PLAQUE TROUEE 2D DE LARGEUR FINIE AVEC X-FEM
 # sslp315b.para = tps_job 80 mem_job 500Mo mem_aster 50 ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -49,6 +49,7 @@ CHFEM  = [None]*(nb_pas+2)
 CHMAT  = [None]*(nb_pas+2)
 CHAR   = [None]*(nb_pas+2)
 UTOT   = [None]*(nb_pas+2)
+RESU   = [None]*(nb_pas+2)
 SIF    = [None]*(nb_pas+2)
 
 MAX[0]=CO('MAX_0')
@@ -93,7 +94,7 @@ for i in range(0,nb_pas) :
                           );
 
 
-   UTOT[i]=STAT_NON_LINE(MODELE=MOX[i],
+   RESU[i]=STAT_NON_LINE(MODELE=MOX[i],
                       CHAM_MATER=CHMAT[i],
                       EXCIT=(_F(CHARGE=CHAR[i],),
                              _F(CHARGE=CHFEM[i],),),
@@ -101,6 +102,8 @@ for i in range(0,nb_pas) :
                       INCREMENT=_F(LIST_INST=LINST),
                       ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA',),
                       );
+   
+   UTOT[i]=EXTR_RESU(RESULTAT=RESU[i],ARCHIVAGE=_F(NUME_ORDRE=1,),);
 
    SIF[i]=POST_K1_K2_K3(RESULTAT=UTOT[i],
                       MODELISATION='D_PLAN',

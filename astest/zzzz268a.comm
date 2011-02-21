@@ -1,9 +1,9 @@
-# MODIF  DATE 30/08/2010   AUTEUR DESOZA T.DESOZA 
+# MODIF  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
 # TITRE VALIDATION DE POST_BORDET EN 2D ET 3D
 # zzzz268a.para = tps_job 45 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -95,8 +95,7 @@ EVOL=STAT_NON_LINE(MODELE=MO,
                    NEWTON=_F(MATRICE='ELASTIQUE'),
                    CONVERGENCE=_F(RESI_GLOB_RELA=0.000001,
                                   ITER_GLOB_MAXI=20,),
-                   ARCHIVAGE=_F(ARCH_ETAT_INIT='OUI',
-                                LIST_INST=INST),);
+                   ARCHIVAGE=_F(LIST_INST=INST),);
 
 
 ##########################################################

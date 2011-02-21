@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
 # TITRE TEST DE NON-REGRESSION D'ASTER : THERMIQUE PLAN
 # RESPONSABLE VABHHTS J.PELLET
 # ttnp200a.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test R
@@ -597,7 +597,7 @@ TEST_RESU(RESU=(
                      NUME_ORDRE = 1,
                      NOM_CHAM = 'FLUX_ELGA',
                      TYPE_TEST = 'SOMM_ABS',
-                     VALE = 1.0692623176536E+03   ,
+                     VALE = 1.0692623176536E+03  ,
                      REFERENCE = 'NON_REGRESSION',
                      VERSION = '6.2.3'),
                           _F(

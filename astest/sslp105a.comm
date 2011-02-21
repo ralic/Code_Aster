@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
 # TITRE : TUNNEL CIRCULAIRE REVETU EN CHAMP DE CONTRAINTES INITIAL ISOTROPE
 # sslp105a.para = tps_job 60 mem_job 100Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -256,7 +256,6 @@ RESU1=STAT_NON_LINE(MODELE=MO1,
                  );
 
 
-
 #####################################################################                                
 #  CONDITIONS AUX LIMITES EN DEPLACEMENTS =
 #       SYMETRIE SUR LES COTES LATERAUX                 => DX=0
@@ -374,8 +373,7 @@ BIDON=STAT_NON_LINE(MODELE=MO2,
                                 ITER_GLOB_MAXI=1,
                                 ),
                  );
-                        
-                        
+                                           
 DEP2=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
                   OPERATION='EXTR',
                   RESULTAT=BIDON,
@@ -520,19 +518,22 @@ TEST_RESU(RESU=_F(RESULTAT=RESU1,
                   CRITERE = 'RELATIF',
                   REFERENCE='ANALYTIQUE',),);                 
                                                             
-TAB1=POST_ELEM(
-                MASS_INER=_F(TOUT='OUI'),
-                RESULTAT=RESU1,NUME_ORDRE=1);       
-                
-TEST_TABLE(TABLE=TAB1,
-           REFERENCE='NON_REGRESSION',
-           NOM_PARA='MASSE',
-           VALE= 7.96466E+05   )
+#TAB1=POST_ELEM(
+#                MASS_INER=_F(TOUT='OUI'),
+#                RESULTAT=RESU1,
+#                NUME_ORDRE=1,
+#                );       
+#                
+#TEST_TABLE(TABLE=TAB1,
+#           REFERENCE='NON_REGRESSION',
+#           NOM_PARA='MASSE',
+#           VALE= 7.96466E+05   )
 #
 # CALCUL DE MASS_INER SUR LE MODELE APRES L'EXCAVATION
 #
 TAB2=POST_ELEM(
                 MASS_INER=_F(TOUT='OUI'),
+                
                 MODELE=MO2,CHAM_MATER=CHMAT3);       
                 
 TEST_TABLE(TABLE=TAB2,

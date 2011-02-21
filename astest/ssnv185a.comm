@@ -1,4 +1,4 @@
-# MODIF  DATE 25/01/2011   AUTEUR MACOCCO K.MACOCCO 
+# MODIF  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
 # TITRE FISSURE DEBOUCHANTE DANS UNE PLAQUE 3D DE LARGEUR FINIE AVEC X-FEM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -255,7 +255,8 @@ K1REF4F=4.52e6
 for i in range(0,nbc) :
    TEST_TABLE(TABLE=SIF1[i],
               NOM_PARA='K1',
-              TYPE_TEST='MAX',               
+              TYPE_TEST='MAX', 
+              FILTRE = _F(NOM_PARA='NUME_ORDRE',VALE_I=1),              
               VALE=K1REF1,
               CRITERE='RELATIF',
               PRECISION=0.065,
@@ -263,7 +264,8 @@ for i in range(0,nbc) :
 
    TEST_TABLE(TABLE=SIF1[i],
               NOM_PARA='K1',
-              TYPE_TEST='MIN',               
+              TYPE_TEST='MIN', 
+              FILTRE = _F(NOM_PARA='NUME_ORDRE',VALE_I=1),              
               VALE=K1REF1,
               CRITERE='RELATIF',
               PRECISION=0.065,
@@ -273,13 +275,15 @@ for i in range(0,nbc) :
               NOM_PARA='K1',
               TYPE_TEST='MAX',               
               VALE=K1REF2,
+              FILTRE = _F(NOM_PARA='NUME_ORDRE',VALE_I=1),
               CRITERE='RELATIF',
               PRECISION=0.002,
               REFERENCE='ANALYTIQUE',);
 
    TEST_TABLE(TABLE=SIF2[i],
               NOM_PARA='K1',
-              TYPE_TEST='MIN',               
+              TYPE_TEST='MIN', 
+              FILTRE = _F(NOM_PARA='NUME_ORDRE',VALE_I=1),              
               VALE=K1REF2,
               CRITERE='RELATIF',
               PRECISION=0.002,
@@ -289,13 +293,15 @@ for i in range(0,nbc) :
               NOM_PARA='K1',
               TYPE_TEST='MAX',               
               VALE=K1REF1,
+              FILTRE = _F(NOM_PARA='NUME_ORDRE',VALE_I=1),
               CRITERE='RELATIF',
               PRECISION=0.065,
               REFERENCE='ANALYTIQUE',);
 
    TEST_TABLE(TABLE=SIF3[i],
               NOM_PARA='K1',
-              TYPE_TEST='MIN',               
+              TYPE_TEST='MIN', 
+              FILTRE = _F(NOM_PARA='NUME_ORDRE',VALE_I=1),              
               VALE=K1REF1,
               CRITERE='RELATIF',
               PRECISION=0.065,
@@ -303,7 +309,8 @@ for i in range(0,nbc) :
 
    TEST_TABLE(TABLE=SIF4[i],
               NOM_PARA='K1',
-              FILTRE=_F(NOM_PARA='NUM_PT',VALE_I=1,),
+              FILTRE=(_F(NOM_PARA='NUM_PT',VALE_I=1,),
+                     _F(NOM_PARA='NUME_ORDRE',VALE_I=1),),
               VALE=K1REF4I,
               CRITERE='RELATIF',
               PRECISION=0.002,
@@ -312,7 +319,8 @@ for i in range(0,nbc) :
 
    TEST_TABLE(TABLE=SIF4[i],
               NOM_PARA='K1',
-              FILTRE=_F(NOM_PARA='NUM_PT',VALE_I=6,),
+              FILTRE=(_F(NOM_PARA='NUM_PT',VALE_I=6,),
+              _F(NOM_PARA='NUME_ORDRE',VALE_I=1),),
               VALE=K1REF4F,
               CRITERE='RELATIF',
               PRECISION=0.002,

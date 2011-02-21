@@ -1,9 +1,9 @@
-      INTEGER FUNCTION DINUAR(PARTPS)
+      SUBROUTINE DINUAR(SDDISC,NUMINS,FORCE ,NUMARC)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 23/01/2006   AUTEUR MABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
@@ -18,43 +18,95 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
-C RESPONSABLE MABBAS M.ABBAS
-
+C RESPONSABLE ABBAS M.ABBAS
+C
       IMPLICIT NONE
-      CHARACTER*19 PARTPS
-
-C ----------------------------------------------------------------------
-C   SD DISCRETISATION :   PROCHAIN NUMERO D'ARCHIVAGE
+      CHARACTER*19 SDDISC
+      INTEGER      NUMINS,NUMARC
+      LOGICAL      FORCE
+C
 C ----------------------------------------------------------------------
 C
-C  IN PARTPS K19 : SD DISC_INST
-C OUT DIDEAR  I  : PROCHAIN NUMERO D'ARCHIVAGE
+C ARCHIVAGE - UTILITAIRE
+C
+C NUMERO D'ARCHIVAGE
+C
+C ----------------------------------------------------------------------
+C
+C
+C IN  SDDISC : SD DISCRETISATION
+C IN  NUMINS : NUMERO INSTANT COURANT
+C IN  FORCE  : VRAI SI ON SOUHAITE FORCER L'ARCHIVAGE DE TOUS LES CHAMPS
+C OUT NUMARC : NUMERO D'ARCHIVAGE
 C
 C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
 C
-      CHARACTER*32       JEXNUM , JEXNOM , JEXR8 , JEXATR
-      INTEGER            ZI
+      INTEGER      ZI
       COMMON  / IVARJE / ZI(1)
-      REAL*8             ZR
+      REAL*8       ZR
       COMMON  / RVARJE / ZR(1)
-      COMPLEX*16         ZC
+      COMPLEX*16   ZC
       COMMON  / CVARJE / ZC(1)
-      LOGICAL            ZL
+      LOGICAL      ZL
       COMMON  / LVARJE / ZL(1)
-      CHARACTER*8        ZK8
-      CHARACTER*16                ZK16
-      CHARACTER*24                          ZK24
-      CHARACTER*32                                    ZK32
-      CHARACTER*80                                              ZK80
+      CHARACTER*8  ZK8
+      CHARACTER*16    ZK16
+      CHARACTER*24        ZK24
+      CHARACTER*32            ZK32
+      CHARACTER*80                ZK80
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
-
-      INTEGER JINFO
-
-
+C
+      CHARACTER*24 ARCINF
+      INTEGER      JARINF
+      REAL*8       DIINST,INST      
+      LOGICAL      LARCH
+      CHARACTER*19 SDARCH     
+C
+C ----------------------------------------------------------------------
+C
       CALL JEMARQ()
-      CALL JEVEUO(PARTPS // '.DIIR','L',JINFO)
-      DINUAR = NINT(ZR(JINFO))
+C
+C --- INITIALISATIONS
+C
+      LARCH  = .FALSE.  
+C
+C --- ACCES SD ARCHIVAGE
+C
+      SDARCH = SDDISC(1:14)//'.ARCH'
+      ARCINF = SDARCH(1:19)//'.AINF'
+      CALL JEVEUO(ARCINF,'E',JARINF)
+C
+C --- ARCHIVAGE INSTANT INITIAL FORCE
+C
+      IF (NUMINS.EQ.0) THEN
+        LARCH  = .TRUE.
+      ELSE
+        INST   = DIINST(SDDISC,NUMINS)
+        CALL NMCRPO(SDARCH,NUMINS,INST  ,LARCH ) 
+      ENDIF
+C
+C --- ARCHIVAGE FORCE
+C
+      IF (FORCE) THEN
+        LARCH  = .TRUE.
+      ENDIF
+C
+C --- NUMERO D'ARCHIVAGE
+C
+      IF (LARCH) THEN
+        NUMARC = ZI(JARINF+1 -1)
+      ELSE
+        NUMARC = - 1
+      ENDIF
+C
+C --- NOUVEAU NUMERO D'ARCHIVAGE (POUR LE PROCHAIN APPEL)
+C 
+      IF (LARCH) THEN
+        ZI(JARINF+1 -1) =  ZI(JARINF+1 -1) + 1
+      ENDIF
+C
       CALL JEDEMA()
+C      
       END

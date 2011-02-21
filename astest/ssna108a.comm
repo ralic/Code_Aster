@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
 # TITRE DEPOUILLEMENT WEIBULL EPROUVETTE AE2 M=8 OPTION GAUSS
 # ssna108a.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -87,7 +87,7 @@ L_INST=DEFI_LIST_REEL(    DEBUT=0.,
                             INTERVALLE=_F(  JUSQU_A = 100.,  NOMBRE = 100)
                         )
 
-U=STAT_NON_LINE( 
+T=STAT_NON_LINE( 
                             MODELE=MO,
                         CHAM_MATER=CM,
                              EXCIT=_F( 
@@ -103,6 +103,8 @@ U=STAT_NON_LINE(
                 RESI_GLOB_RELA = 1.0E-04,
                 ITER_GLOB_MAXI = 20)
               )
+              
+U=EXTR_RESU(RESULTAT=T,ARCHIVAGE=_F(NUME_ORDRE=(1,2,3,4,5,6,7,8,9,10),))              
 
 U=CALC_ELEM( reuse=U,
                             OPTION=(
@@ -123,6 +125,7 @@ TEST_RESU(RESU=(
 
 AE2=POST_ELEM(        
                       RESULTAT=U,
+                      NUME_ORDRE=(1,2,3,4,5,6,7,8,9,10),
                        WEIBULL=_F(  TOUT = 'OUI',
                                  OPTION = 'SIGM_ELGA',
                                  CORR_PLAST = 'NON')
@@ -130,6 +133,7 @@ AE2=POST_ELEM(
 
 RET=POST_ELEM(        
                       RESULTAT=U,
+                      NUME_ORDRE=(1,2,3,4,5,6,7,8,9,10),
                        RICE_TRACEY=_F(  TOUT = 'OUI',
                                      OPTION = 'SIGM_ELMOY',
                                      LOCAL = 'OUI')
@@ -252,7 +256,6 @@ SIGU=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(0.,2630.,
 #Calcul de bordet                                           
 BORDET=POST_BORDET(
             TOUT='OUI',
-            NUME_ORDRE=10,
             PROBA_NUCL='NON',
             PARAM=_F(M=8.,
                      SIG_CRIT=600,
@@ -262,6 +265,7 @@ BORDET=POST_BORDET(
                      SEUIL_CALC=SIGY,
                      ),
             RESULTAT=U,
+            NUME_ORDRE=10,
             MODELE=MO,
             CHAM_MATER=CM,
             TEMP=20,

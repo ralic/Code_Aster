@@ -1,5 +1,5 @@
 
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
 # TITRE PLAQUE EN TRACTION - TEST CORR_ACIER EN COQUE_3D
 # ssnl127e.para = tps_job 120 mem_job 240Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -116,8 +116,7 @@ REST=STAT_NON_LINE(MODELE=MO,
                                     RHO_MIN=1e-06,
                                     RHO_MAX=10.0,),
                    CONVERGENCE=_F(RESI_GLOB_RELA=1e-05,
-                                  ITER_GLOB_MAXI=10),
-                   ARCHIVAGE=_F(ARCH_ETAT_INIT='OUI',),);
+                                  ITER_GLOB_MAXI=10),);
 
 REST=CALC_ELEM(reuse =REST,
                RESULTAT=REST,
@@ -196,8 +195,7 @@ REST2=STAT_NON_LINE(MODELE=MO,
                                      RHO_MAX=10.0,),
                     CONVERGENCE=_F(RESI_GLOB_RELA=1e-06,
                                    ITER_GLOB_MAXI=10,
-                                   ITER_GLOB_ELAS=10),
-                    ARCHIVAGE=_F(ARCH_ETAT_INIT='OUI',),);
+                                   ITER_GLOB_ELAS=10),);
 
 REST2=CALC_ELEM(reuse =REST2,
                 RESULTAT=REST2,
@@ -276,8 +274,7 @@ REST3=STAT_NON_LINE(MODELE=MO,
                                      RHO_MAX=10.0,),
                     CONVERGENCE=_F(RESI_GLOB_RELA=1e-06,
                                    ITER_GLOB_MAXI=10,
-                                   ITER_GLOB_ELAS=10),
-                    ARCHIVAGE=_F(ARCH_ETAT_INIT='OUI',),);
+                                   ITER_GLOB_ELAS=10),);
 
 REST3=CALC_ELEM(reuse =REST3,
                 RESULTAT=REST3,

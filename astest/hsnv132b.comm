@@ -1,4 +1,4 @@
-# MODIF  DATE 31/01/2011   AUTEUR MACOCCO K.MACOCCO 
+# MODIF  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
 # TITRE : FISSURE X-FEM EN THERMO-ELASTICITE 2D 
 # hsnv132b.para = tps_job 50 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -170,6 +170,7 @@ IMPR_TABLE(TABLE=TABDEP)
 # REFERENCE : MODELISATION A (ELEMENTS CLASSIQUES)
 TEST_TABLE(TABLE=TABDEP,
            NOM_PARA='DX',
+           FILTRE =_F(NOM_PARA='INST',VALE=1.0),
            VALE= -8.7414981539527E-04,
            CRITERE='RELATIF',
            PRECISION=0.02,
@@ -177,6 +178,7 @@ TEST_TABLE(TABLE=TABDEP,
 
 TEST_TABLE(TABLE=TABDEP,
            NOM_PARA='DY',
+           FILTRE =_F(NOM_PARA='INST',VALE=1.0),
            VALE=  3.8258234896932E-03,
            CRITERE='RELATIF',
            PRECISION=0.01,
@@ -200,6 +202,7 @@ TEST_TABLE(TABLE=PK,
            NOM_PARA='K1',
            VALE= 9.69223E+06,
            CRITERE='RELATIF',
+           FILTRE =_F(NOM_PARA='INST',VALE=1.0),
            PRECISION=0.035,
            REFERENCE='AUTRE_ASTER');                      
 
@@ -225,12 +228,14 @@ IMPR_TABLE(TABLE=TABG,);
 TEST_TABLE(TABLE=SIF,
            NOM_PARA='K1',
            VALE= 9.00331E+06,
+           FILTRE =_F(NOM_PARA='INST',VALE=1.0),
            CRITERE='RELATIF',
            PRECISION=0.02,
            REFERENCE='AUTRE_ASTER');       
                           
 TEST_TABLE(TABLE=TABG,
            NOM_PARA='G',
+           FILTRE =_F(NOM_PARA='INST',VALE=1.0),
            VALE= 4.9878E+02,
            CRITERE='RELATIF',
            PRECISION=0.02,

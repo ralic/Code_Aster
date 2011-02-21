@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
 # TITRE CUBE PLEIN RENFORCE PAR DES ARMATURES SOUS CHARGEMENT TRIAXIAL QUAD4 GRILLE_MEMBRANE
 # sslv146a.para = tps_job 60 mem_job 256Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -513,6 +513,13 @@ TEST_RESU(RESU=(
     )
 
 TEST_TABLE(
+     FILTRE=(
+                   _F(NOM_PARA ='INST',
+                     VALE     =0.,
+                     PRECISION=0.,
+                     CRIT_COMP = 'GT',
+                     CRITERE  ='ABSOLU'),
+                      ) ,
      TABLE = EPOT,
      NOM_PARA = 'TOTALE',
      VALE = 2.8173e10,

@@ -11,7 +11,9 @@ ncmp = U.LIST_NOM_CMP()
 
 # test des numeros d'ordre
 nbord = len(var['NUME_ORDRE'])
-assert var['NUME_ORDRE'] == range(1, nbord+1), var['NUME_ORDRE']
+print nbord
+print var['NUME_ORDRE']
+assert var['NUME_ORDRE'] == range(0, nbord), var['NUME_ORDRE']
 
 # test parametre de type K8
 smo = set(para['MODELE'])

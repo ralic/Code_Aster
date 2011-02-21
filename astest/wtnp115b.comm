@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
 # ======================================================================
 # TITRE DESATURATION D UN MILIEU POREUX SANS AIR SUR CELLULE UNIAIRE
 # wtnp115b.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test R
@@ -210,7 +210,6 @@ U0=STAT_NON_LINE(MODELE=MODELE,
                  SOLVEUR=_F(METHODE='MULT_FRONT',
                             STOP_SINGULIER='NON',),
                  ARCHIVAGE=_F(PAS_ARCH=1,
-#                              ARCH_ETAT_INIT='OUI',
                               ),
                  );
 

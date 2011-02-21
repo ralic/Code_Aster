@@ -2,7 +2,7 @@
      &                  FREQ  ,TOLE  ,LSELEC)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 17/01/2011   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -85,12 +85,12 @@ C
 C
 C --- INITIALISATIONS
 C
-      LSELEC = .FALSE.    
+      LSELEC = .FALSE.
 C
 C --- SELECTION
 C
       IF (TYPSEL.EQ.'FREQ') THEN
-        RESTE  = MOD(NUME-1,FREQ  )
+        RESTE  = MOD(NUME,FREQ  )
         IF (RESTE.EQ.0.D0) THEN
           LSELEC = .TRUE.
         ELSE
@@ -99,11 +99,20 @@ C
       ELSEIF (TYPSEL.EQ.'INST') THEN
         SDLIST = NOMSD(1:19)//'.LIST'
         CALL JEVEUO(SDLIST,'L',JLIST)
-        NBINTV = NBINST - 1
-        CALL UTACLI(INST  ,ZR(JLIST),NBINTV,TOLE  ,NBINDI)
-        IF (NBINDI.GT.0) THEN
-          LSELEC  = .TRUE.
-        ENDIF
+        IF (NBINST.EQ.1) THEN
+          CALL UTACLI(INST  ,ZR(JLIST),1,TOLE  ,NBINDI)
+          IF (NBINDI.GE.0) THEN
+            LSELEC  = .TRUE.
+          ENDIF
+        ELSEIF (NBINST.GE.2) THEN
+          NBINTV = NBINST - 1
+          CALL UTACLI(INST  ,ZR(JLIST),NBINTV,TOLE  ,NBINDI)
+          IF (NBINDI.GE.0) THEN
+            LSELEC  = .TRUE.
+          ENDIF
+        ELSE
+          CALL ASSERT(.FALSE.)
+        ENDIF   
       ELSE
         CALL ASSERT(.FALSE.)
       ENDIF

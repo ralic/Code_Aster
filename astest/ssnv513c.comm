@@ -1,9 +1,9 @@
-# MODIF  DATE 21/12/2010   AUTEUR MASSIN P.MASSIN 
+# MODIF  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
 # TITRE BLOC DECOUPE PAR TROIS INTERFACES SE BRANCHANT SEQUENTIELLEMENT AVEC X-FEM
 # ssnv513c.para = tps_job 50 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -147,8 +147,11 @@ DEP=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
                                  OPERATION='EXTRACTION',),);
 DEP = CALC_TABLE(TABLE = DEP,
                  reuse = DEP,
-                 ACTION =_F(OPERATION = 'EXTR',
-                            NOM_PARA=('NOEUD','INST','COOR_X','COOR_Y','DX','DY','DZ'),),);
+                 ACTION =
+                 (_F(OPERATION='FILTRE',NOM_PARA='NUME_ORDRE',
+                               CRIT_COMP='EQ',VALE=1, ), 
+                 _F(OPERATION = 'EXTR',
+                            NOM_PARA=('NOEUD','INST','COOR_X','COOR_Y','DX','DY','DZ'),),),);
 
 DEPP = CALC_TABLE(TABLE = DEP,
                      ACTION =(_F(OPERATION = 'FILTRE',
@@ -236,18 +239,26 @@ DEPMLY = CALC_TABLE(TABLE = DEPM,
 DEPZON=[None]*5
 
 DEPZON[1] = CALC_TABLE(TABLE = DEPMLX,
-                    ACTION =_F(OPERATION = 'COMB',
-                               TABLE=DEPMLY,),);
+                    ACTION =(_F(
+                               OPERATION = 'COMB',
+                               TABLE=DEPMLY,),
+                            
+                               
+                               ),);
 DEPZON[2] = DEPPLX
 DEPZON[3] = CALC_TABLE(TABLE = DEPMGY,
                     ACTION =(
-                             #_F(OPERATION = 'COMB',
-                             #  TABLE=DEPPGY,),
                              _F(OPERATION = 'COMB',
-                               TABLE=DEPPGX,),),);
+                               TABLE=DEPPGX,),
+                               ),);
 DEPZON[4] = CALC_TABLE(TABLE = DEPMGX,
-                    ACTION =_F(OPERATION = 'COMB',
-                               TABLE=DEPPLY,),);
+                    ACTION =(_F(OPERATION = 'COMB',
+                               TABLE=DEPPLY,),
+                              ),
+                               
+                               
+                               
+                               );
 
 #----------------------------------------------
 #                   TEST TABLE

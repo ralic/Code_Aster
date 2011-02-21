@@ -1,4 +1,4 @@
-# MODIF  DATE 07/02/2011   AUTEUR DESOZA T.DESOZA 
+# MODIF  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
 # TITRE VALIDATION INTERPENETRATION (ERREUR)
 # erreu08a.para = tps_job 60 mem_job 256Mo mem_aster 50 ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -114,7 +114,6 @@ try :
                                   REAC_ITER=1,),
                         SOLVEUR=_F(SYME='OUI',
                                    METHODE='MUMPS',PCENT_PIVOT=10,),
-                        ARCHIVAGE=_F(ARCH_ETAT_INIT='OUI',),
                         CONVERGENCE=_F(RESI_GLOB_RELA=1.0E-6,
                                        ITER_GLOB_MAXI=10,),);
 
