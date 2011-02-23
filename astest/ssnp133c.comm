@@ -1,4 +1,4 @@
-# MODIF  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 23/02/2011   AUTEUR LAVERNE J.LAVERNE 
 # TITRE TEST DES ELEMENTS D'INTERFACE SUR UNE PLAQUE TROUEE
 # ssnp133c.para = tps_job 150 mem_job 100Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -85,7 +85,7 @@ MO = AFFE_MODELE(
 #  REPERE LOCAL DES ELEMENTS D'INTERFACE       
 ORIEN_FI=AFFE_CARA_ELEM(MODELE=MO,
                      MASSIF=(
-                             _F(GROUP_MA='JOINT',ANGL_EULER=(90., 0. ,0.)),
+                             _F(GROUP_MA='JOINT',ANGL_REP=(90., 0. ,0.)),
                                  ));
 
 

@@ -1,4 +1,4 @@
-%& MODIF COMPELEM  DATE 15/02/2011   AUTEUR FLEJOU J-L.FLEJOU 
+%& MODIF COMPELEM  DATE 23/02/2011   AUTEUR LAVERNE J.LAVERNE 
 % ======================================================================
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
@@ -869,10 +869,6 @@ PHENOMENE_MODELISATION__
        MODELISATION__ 'PLAN_JOINT_HYME'     DIM__ 2 2   CODE__ 'PFH'
               ATTRIBUT__  TYPMOD=PLAN TYPMOD2=EJ_HYME
               MAILLE__ QUAD8     ELEMENT__ EJHYME_PLQU8
-
-       MODELISATION__ 'AXIS_JOINT_HYME'     DIM__ 2 2   CODE__ 'AFH'
-              ATTRIBUT__  AXIS=OUI  TYPMOD=AXIS TYPMOD2=EJ_HYME
-              MAILLE__ QUAD8     ELEMENT__ EJHYME_AXQU8
 
        MODELISATION__ '3D_JOINT_HYME'       DIM__ 3 3   CODE__ '3FH'
               ATTRIBUT__  TYPMOD=COMP3D  TYPMOD2=EJ_HYME

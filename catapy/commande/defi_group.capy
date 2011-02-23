@@ -1,7 +1,7 @@
-#& MODIF COMMANDE  DATE 09/11/2010   AUTEUR DELMAS J.DELMAS 
+#& MODIF COMMANDE  DATE 22/02/2011   AUTEUR MACOCCO K.MACOCCO 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -46,7 +46,7 @@ DEFI_GROUP=OPER(nom="DEFI_GROUP",op= 104,sd_prod=defi_group_prod,
             TYPE_MAILLE     =SIMP(statut='f',typ='TXM',defaut="TOUT",into=("TOUT","1D","2D","3D"),max=1 ),
 
             OPTION         =SIMP(statut='f',typ='TXM',into=("FACE_NORMALE","SPHERE","CYLINDRE",
-                                                              "BANDE","APPUI_LACHE","APPUI") ),
+                                                              "BANDE","APPUI_LACHE","APPUI","FISS_XFEM") ),
                 b_group_ma      =BLOC(condition = "GROUP_MA != None",
                   regles=(EXCLUS('POSITION','NUME_INIT'),),
                   NUME_INIT       =SIMP(statut='f',typ='I'),
@@ -106,12 +106,17 @@ DEFI_GROUP=OPER(nom="DEFI_GROUP",op= 104,sd_prod=defi_group_prod,
                   GROUP_NO        =SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**'),
                   TYPE_APPUI      =SIMP(statut='o',typ='TXM',max=1, into=('AU_MOINS_UN','TOUT','SOMMET','MAJORITE')),
                 ),
+                b_fiss_xfem       =BLOC(condition = "OPTION == 'FISS_XFEM'",
+                  TYPE_GROUP      =SIMP(statut='o',typ='TXM',max=1,defaut='XFEM',
+                                          into=('HEAVISIDE','CRACKTIP','MIXTE','FISSUREE','XFEM',),),
+                  FISSURE         =SIMP(statut='o',typ=fiss_xfem,min=1,max='**'),
+                ),
          ),
 
 
          CREA_GROUP_NO   =FACT(statut='f',max='**',
            OPTION          =SIMP(statut='f',typ='TXM',into=("ENV_SPHERE","ENV_CYLINDRE","PLAN",
-                                               "SEGM_DROI_ORDO","NOEUD_ORDO","TUNNEL","INCLUSION") ),
+                                               "SEGM_DROI_ORDO","NOEUD_ORDO","TUNNEL","INCLUSION","FISS_XFEM") ),
 
            b_option =BLOC(condition = "OPTION == None" ,
                           regles=(UN_PARMI('TOUT_GROUP_MA','GROUP_MA','GROUP_NO','NOEUD',
@@ -223,7 +228,12 @@ DEFI_GROUP=OPER(nom="DEFI_GROUP",op= 104,sd_prod=defi_group_prod,
              GROUP_MA_INCL   =SIMP(statut='o',typ=grma,validators=NoRepeat(),max='**'),
              MAILLAGE_INCL   =SIMP(statut='f',typ=maillage_sdaster),
            ),
-         ),
+           b_fiss_xfem            =BLOC(condition = "OPTION == 'FISS_XFEM'",
+                  NOM             =SIMP(statut='o',typ=geom),
+                  TYPE_GROUP      =SIMP(statut='o',typ='TXM',max=1,defaut='XFEM',into=('HEAVISIDE','CRACKTIP','MIXTE','XFEM',)),
+                  FISSURE         =SIMP(statut='o',typ=fiss_xfem,min=1,max='**'),
+           ),
+          ),
          ALARME          =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON") ),
          INFO            =SIMP(statut='f',typ='I',into=( 1 , 2 ) ),
 )  ;

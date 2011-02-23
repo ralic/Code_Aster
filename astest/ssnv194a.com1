@@ -63,20 +63,34 @@ TEST_TABLE(TABLE=MAX_EP,
 
 
 
-MAX_DE=POST_ELEM(  
+MAX_DE1=POST_ELEM(  
                    MINMAX=_F(NOM_CHAM='DEPL',RESULTAT=SOLNL,
-                                NOM_CMP=('DX','DY','DZ'),
-                                TOUT='OUI'),)
+                                TOUT='OUI',
+                                NOM_CMP=('DY','DZ'),
+                                NUME_ORDRE=1),)
 
-IMPR_TABLE(TABLE=MAX_DE)
 
+TEST_TABLE(TABLE=MAX_DE1,
+           NOM_PARA='MIN_DY',
+           VALE=-3.0E-04,
+           REFERENCE='NON_REGRESSION',);
 
-TEST_TABLE(TABLE=MAX_DE,
-           FILTRE=_F(NOM_PARA='INST',
-                     VALE=TFIN,),
+TEST_TABLE(TABLE=MAX_DE1,
            NOM_PARA='MAX_DZ',
-           VALE=5.00000E-03,
-           REFERENCE='AUTRE_ASTER',);
+           VALE=1.0E-03,
+           REFERENCE='NON_REGRESSION',);
+
+MAX_DE2=POST_ELEM(  
+                   MINMAX=_F(NOM_CHAM='DEPL',RESULTAT=SOLNL,
+                                TOUT='OUI',
+                                NOM_CMP=('DX'),
+                                NUME_ORDRE=1),)
+
+TEST_TABLE(TABLE=MAX_DE2,
+           NOM_PARA='MIN_DX',
+           VALE=-3.0E-04,
+           REFERENCE='NON_REGRESSION',);
+
 
 IMPR_RESU(RESU=_F(RESULTAT=SOLNL,VALE_MIN='OUI',VALE_MAX='OUI',NOM_CHAM='DEPL',NOM_CMP=('DX','DY','DZ'),))
 
@@ -102,6 +116,255 @@ INT_EP=POST_ELEM(  RESULTAT=SOLNL,
                                 TOUT='OUI'),)
 
 IMPR_TABLE(TABLE=INT_EP)
+
+# --------  VALIDATION DE POST_ELEM/MINMAX  CHAM_NO  ---------------- #
+'''
+MAX_DE=POST_ELEM(  
+                   MINMAX=_F(NOM_CHAM='DEPL',RESULTAT=SOLNL,
+                                NOM_CMP=('DX','DY','DZ'),
+                                TOUT='OUI'),)
+
+IMPR_TABLE(TABLE=MAX_DE)
+
+
+TEST_TABLE(TABLE=MAX_DE,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=TFIN,),
+           NOM_PARA='MAX_DZ',
+           VALE=5.00000E-03,
+           REFERENCE='AUTRE_ASTER',);
+'''
+# --------  VALIDATION DE POST_ELEM/INTEGRALE  CHAM_NO  -------------- #
+
+INT1EPX=POST_ELEM(  RESULTAT=SOLNL,
+                    INTEGRALE=(_F(NOM_CHAM='EPSP_ELGA',
+                                NOM_CMP=('EPXX'),
+                                TOUT='OUI'),
+                              _F(NOM_CHAM='EPSP_ELNO',
+                                NOM_CMP=('EPXX'),
+                                TOUT='OUI'),
+                              _F(NOM_CHAM='EPSP_NOEU',
+                                NOM_CMP=('EPXX'),
+                                TOUT='OUI'),),)
+TEST_TABLE(TABLE=INT1EPX,
+           FILTRE=(_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=9,),
+                   _F(NOM_PARA='NOM_CHAM',
+                     VALE_K='EPSP_ELGA',),),
+           NOM_PARA='INTE_EPXX',
+           VALE=-1.39355E-03,
+           REFERENCE='NON_REGRESSION',);
+
+TEST_TABLE(TABLE=INT1EPX,
+           FILTRE=(_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=9,),
+                   _F(NOM_PARA='NOM_CHAM',
+                     VALE_K='EPSP_ELNO',),),
+           NOM_PARA='INTE_EPXX',
+           VALE=-1.39355E-03,
+           REFERENCE='NON_REGRESSION',);
+
+TEST_TABLE(TABLE=INT1EPX,
+           FILTRE=(_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=9,),
+                   _F(NOM_PARA='NOM_CHAM',
+                     VALE_K='EPSP_NOEU',),),
+           NOM_PARA='INTE_EPXX',
+           VALE=-1.39352E-03,
+           REFERENCE='NON_REGRESSION',);
+
+
+CH1=CREA_CHAMP(OPERATION = 'EXTR',TYPE_CHAM='ELGA_EPSI_R',NOM_CHAM  = 'EPSP_ELGA',
+               RESULTAT  = SOLNL, NUME_ORDRE=9,);
+
+CH2=CREA_CHAMP(TYPE_CHAM = 'ELGA_NEUT_R', OPERATION = 'ASSE',MODELE = TROISD, PROL_ZERO = 'OUI',
+                  ASSE = _F(TOUT='OUI',
+                            CHAM_GD = CH1, 
+                            NOM_CMP=('EPXX','EPYY','EPZZ','EPXY','EPXZ','EPYZ'),
+                            NOM_CMP_RESU =('X1','X2','X3','X4','X5','X6'),),) 
+
+CH3=CREA_CHAMP(OPERATION = 'DISC', TYPE_CHAM = 'NOEU_NEUT_R',
+                 CHAM_GD=CH2, MODELE = TROISD, PROL_ZERO = 'OUI',);
+
+CH4=CREA_CHAMP(TYPE_CHAM = 'NOEU_EPSI_R', OPERATION = 'ASSE',MODELE = TROISD, PROL_ZERO = 'OUI',
+                  ASSE = _F(TOUT='OUI',
+                            CHAM_GD = CH3, 
+                            NOM_CMP_RESU=('EPXX','EPYY','EPZZ','EPXY','EPXZ','EPYZ'),
+                            NOM_CMP =('X1','X2','X3','X4','X5','X6'),),) 
+
+INT2EPX=POST_ELEM(  CHAM_GD=CH4,
+                    CHAM_MATER=MAT,
+                    MODELE=TROISD,
+                    INTEGRALE=_F( NOM_CMP='EPXX',TOUT='OUI'),)
+
+TEST_TABLE(TABLE=INT2EPX,
+           NOM_PARA='INTE_EPXX',
+           VALE=-1.39352E-03,
+           REFERENCE='AUTRE_ASTER',)
+
+
+# ---------  VALIDATION DE POST_ELEM/VOLUMOGRAMME   ------------------ #
+
+
+# --- CHAMP NOEU ---
+ 
+def masque(X1):
+    val=0.
+    if (-3.041313578E-03<=X1<-2.023665544E-03):
+      val=100.
+    else:
+      val=0.
+    return val
+
+MASQ = FORMULE(NOM_PARA=('X1'),VALE='masque(X1)')
+
+CHFON=CREA_CHAMP(OPERATION='AFFE',
+                 TYPE_CHAM='NOEU_NEUT_F',
+                 MODELE=TROISD,
+                 AFFE=(_F( TOUT='OUI', NOM_CMP = 'X1', VALE_F = MASQ),
+                      )
+                );
+CHEXT=CREA_CHAMP(OPERATION = 'EXTR',TYPE_CHAM='NOEU_EPSI_R',NOM_CHAM  = 'EPSP_NOEU',
+               RESULTAT  = SOLNL, NUME_ORDRE=10,);
+
+
+CHNEXT=CREA_CHAMP(TYPE_CHAM = 'NOEU_NEUT_R', OPERATION = 'ASSE',MODELE = TROISD, PROL_ZERO = 'OUI',
+                  ASSE = _F(TOUT='OUI',
+                            CHAM_GD = CHEXT, 
+                            NOM_CMP='EPXX',
+                            NOM_CMP_RESU ='X1',),) 
+
+
+CHEVA=CREA_CHAMP(OPERATION='EVAL',
+                 TYPE_CHAM='NOEU_NEUT_R',
+                 CHAM_F=CHFON,
+                 CHAM_PARA=CHNEXT);
+
+
+INTVOL=POST_ELEM( CHAM_GD=CHEVA,
+                  CHAM_MATER=MAT,
+                  MODELE=TROISD,
+                  INTEGRALE=_F( NOM_CMP='X1',TOUT='OUI'),)
+
+TEST_TABLE(TABLE=INTVOL,
+           NOM_PARA='INTE_X1',
+           VALE=29.7245,PRECISION=0.01,
+           REFERENCE='AUTRE_ASTER',);
+
+# --- CHAMP ELGA ---
+
+def masque2(X1):
+    val=0.
+    if (-3.69933E-03<=X1<-2.45001E-03):
+      val=100.
+    else:
+      val=0.
+    return val
+
+MASQ2 = FORMULE(NOM_PARA=('X1'),VALE='masque2(X1)')
+
+CHFON2=CREA_CHAMP(OPERATION='AFFE',
+                 TYPE_CHAM='ELGA_NEUT_F',
+                 MODELE=TROISD,PROL_ZERO='OUI',
+                 AFFE=(_F( TOUT='OUI', NOM_CMP = 'X1', VALE_F = MASQ2),
+                      )
+                );
+
+CHEXT2=CREA_CHAMP(OPERATION = 'EXTR',TYPE_CHAM='ELGA_EPSI_R',NOM_CHAM  = 'EPSP_ELGA',
+               RESULTAT  = SOLNL, NUME_ORDRE=10,);
+
+CHNEX2=CREA_CHAMP(TYPE_CHAM = 'ELGA_NEUT_R', OPERATION = 'ASSE',MODELE = TROISD, PROL_ZERO = 'OUI',
+                  ASSE = _F(TOUT='OUI',
+                            CHAM_GD = CHEXT2, 
+                            NOM_CMP=('EPXX'),
+                            NOM_CMP_RESU =('X1'),),),
+
+CHEVA2=CREA_CHAMP(OPERATION='EVAL',
+                 TYPE_CHAM='ELGA_NEUT_R',
+                 CHAM_F=CHFON2,
+                 CHAM_PARA=CHNEX2);
+
+CHEVA3=CREA_CHAMP(TYPE_CHAM = 'ELGA_NEUT_R', OPERATION = 'ASSE',MODELE = TROISD, PROL_ZERO = 'OUI',
+                  ASSE = _F(TOUT='OUI',
+                            CHAM_GD = CHEVA2, 
+                            NOM_CMP=('X1'),
+                            NOM_CMP_RESU =('X1'),),),
+
+
+INTVO2=POST_ELEM( CHAM_GD=CHEVA3,
+                  CHAM_MATER=MAT,
+                  MODELE=TROISD,
+                  INTEGRALE=_F( NOM_CMP='X1',TOUT='OUI'),)
+
+
+TEST_TABLE(TABLE=INTVO2,
+           NOM_PARA='INTE_X1',
+           VALE=21.5824,
+           REFERENCE='AUTRE_ASTER',);
+
+
+VEPXX=POST_ELEM(MODELE=TROISD,
+                RESULTAT=SOLNL,
+                NUME_ORDRE=10,
+                VOLUMOGRAMME=(_F(NOM_CHAM='EPSP_ELGA',
+                                 NOM_CMP=('EPXX'),
+                                 TOUT='OUI'),
+                              _F(NOM_CHAM='EPSP_ELNO',
+                                 NOM_CMP=('EPXX'),
+                                 TOUT='OUI'),
+                              _F(NOM_CHAM='EPSP_NOEU',
+                                 NOM_CMP=('EPXX'),
+                                 TOUT='OUI'),),)
+
+TEST_TABLE(TABLE=VEPXX,
+           FILTRE=(_F(NOM_PARA='NOM_CHAM',
+                      VALE_K='EPSP_ELGA',),
+                   _F(NOM_PARA='INTERVALLE',
+                      VALE_I=5,),),
+           NOM_PARA='DISTRIBUTION',
+           VALE=32.5959,
+           REFERENCE='NON_REGRESSION',);
+
+TEST_TABLE(TABLE=VEPXX,
+           FILTRE=(_F(NOM_PARA='NOM_CHAM',
+                      VALE_K='EPSP_ELNO',),
+                   _F(NOM_PARA='INTERVALLE',
+                      VALE_I=5,),),
+           NOM_PARA='DISTRIBUTION',
+           VALE=32.5959,
+           REFERENCE='NON_REGRESSION',);
+
+TEST_TABLE(TABLE=VEPXX,
+           FILTRE=(_F(NOM_PARA='NOM_CHAM',
+                      VALE_K='EPSP_NOEU',),
+                   _F(NOM_PARA='INTERVALLE',
+                      VALE_I=5,),),
+           NOM_PARA='DISTRIBUTION',
+           VALE=28.0375,
+           REFERENCE='NON_REGRESSION',);
+
+CSIXX=CREA_CHAMP(TYPE_CHAM='ELGA_SIEF_R',
+                 OPERATION='EXTR',
+                 RESULTAT=SOLNL,NUME_ORDRE=10,
+                 NOM_CHAM='SIEF_ELGA');
+
+VSIXX=POST_ELEM(MODELE=TROISD,
+                CHAM_MATER=MAT,
+                CHAM_GD=CSIXX,
+                VOLUMOGRAMME=_F(NOM_CMP=('SIXX'),
+                                TYPE_MAILLE='3D',
+                                TOUT='OUI'),)
+
+TEST_TABLE(TABLE=VSIXX,
+           FILTRE=(_F(NOM_PARA='CHAM_GD',
+                      VALE_K='CSIXX',),
+                   _F(NOM_PARA='INTERVALLE',
+                      VALE_I=3,),),
+           NOM_PARA='DISTRIBUTION',
+           VALE=64.6,
+           REFERENCE='NON_REGRESSION',);
+
+# -------------------------------------------------------------------- #
 
 
 INS=[None]*NB_GRAINS

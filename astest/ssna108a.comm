@@ -1,4 +1,4 @@
-# MODIF  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 23/02/2011   AUTEUR BARGELLI R.BARGELLINI 
 # TITRE DEPOUILLEMENT WEIBULL EPROUVETTE AE2 M=8 OPTION GAUSS
 # ssna108a.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -253,9 +253,13 @@ SIGU=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(0.,2630.,
                          100.,2630.,
                          ),PROL_DROITE='CONSTANT',PROL_GAUCHE='CONSTANT',)
 
+
 #Calcul de bordet                                           
 BORDET=POST_BORDET(
             TOUT='OUI',
+            INST=9.9999,
+            CRITERE='ABSOLU',
+            PRECISION=0.0001,
             PROBA_NUCL='NON',
             PARAM=_F(M=8.,
                      SIG_CRIT=600,
@@ -265,9 +269,6 @@ BORDET=POST_BORDET(
                      SEUIL_CALC=SIGY,
                      ),
             RESULTAT=U,
-            NUME_ORDRE=10,
-            MODELE=MO,
-            CHAM_MATER=CM,
             TEMP=20,
              )
 

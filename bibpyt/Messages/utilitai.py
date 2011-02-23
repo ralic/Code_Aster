@@ -1,4 +1,4 @@
-#@ MODIF utilitai Messages  DATE 31/01/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF utilitai Messages  DATE 22/02/2011   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -30,14 +30,6 @@ cata_msg = {
 
 2 : _("""
  il ne faut pas demander 'TR' derrière cara si le type d'élément discret ne prend pas en compte la rotation
-"""),
-
-3 : _("""
- "*" est illicite dans une liste.
-"""),
-
-4 : _("""
-  %(k1)s  n'est pas une option reconnue
 """),
 
 5 : _("""

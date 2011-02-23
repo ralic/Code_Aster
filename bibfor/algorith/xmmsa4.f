@@ -2,7 +2,7 @@
      &                  NFH,SINGU,RR,DDLS,DDLM,SAUT)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 01/02/2011   AUTEUR MASSIN P.MASSIN 
+C MODIF ALGORITH  DATE 23/02/2011   AUTEUR MASSIN P.MASSIN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -24,7 +24,7 @@ C ======================================================================
       INTEGER     NFH,DDLS,DDLM
       INTEGER     SINGU,NVEC,NDDL
       REAL*8      SAUT(3),RR,FFP(27)
-      REAL*8      V1(NDDL),V2(NDDL),V3(NDDL)
+      REAL*8      V1(NDDL),V2(*),V3(*)
 C      
 C ROUTINE CONTACT (METHODE XFEM HPP - CALCUL ELEM.)
 C
@@ -36,8 +36,11 @@ C IN  NDIM   : DIMENSION DE L'ESPACE
 C IN  NNO    : NOMBRE DE NOEUDS DE L'ELEMENT DE REF PARENT
 C IN  NNOS   : NOMBRE DE NOEUDS SOMMET DE L'ELEMENT DE REF PARENT
 C IN  FFP    : FONCTIONS DE FORME DE L'ELEMENT PARENT
-C IN  NADR   : NOMBRE ADRESSES VECTEURS DEPLACEMENT
-C IN  IDEPM  : ADRESSE VECTEUR DEPLACEMENT
+C IN  NDDL   : NOMBRE TOTAL DE DDL DE L ELEMENT
+C IN  NVEC   : NOMBRE VECTEURS DEPLACEMENT
+C IN  VEC1   : PREMIER VECTEUR
+C IN  VEC2   : DEUXIEME VECTEUR
+C IN  VEC3   : TROISIEME VECTEUR
 C IN  NFH    : NOMBRE DE FONCTIONS HEAVYSIDE
 C IN  SINGU  : 1 SI ELEMENT SINGULIER, 0 SINON
 C IN  RR     : DISTANCE AU FOND DE FISSURE
@@ -64,7 +67,7 @@ C
 
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX --------------------
 C
-      INTEGER I,J,IN,IADR
+      INTEGER I,J,IN
 C
 C ----------------------------------------------------------------------
 
@@ -80,11 +83,11 @@ C ----------------------------------------------------------------------
      &        SAUT(J) = SAUT(J) - 2.D0*FFP(I)*V3(IN+NDIM+J)
  162    CONTINUE
         DO 163 J = 1,SINGU*NDIM
-           SAUT(J) = SAUT(J) - 2.D0*FFP(I)*V1(IN+NDIM*(1+NFH)+J)
+           SAUT(J) = SAUT(J)-2.D0*FFP(I)*RR*V1(IN+NDIM*(1+NFH)+J)
            IF(NVEC.GE.2) 
-     &        SAUT(J) = SAUT(J) - 2.D0*FFP(I)*V2(IN+NDIM*(1+NFH)+J)
+     &        SAUT(J) = SAUT(J)-2.D0*FFP(I)*RR*V2(IN+NDIM*(1+NFH)+J)
            IF(NVEC.GE.3) 
-     &        SAUT(J) = SAUT(J) - 2.D0*FFP(I)*V3(IN+NDIM*(1+NFH)+J)
+     &        SAUT(J) = SAUT(J)-2.D0*FFP(I)*RR*V3(IN+NDIM*(1+NFH)+J)
  163    CONTINUE
  161  CONTINUE
 

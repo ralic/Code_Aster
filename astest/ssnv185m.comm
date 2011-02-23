@@ -1,4 +1,4 @@
-# MODIF  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 22/02/2011   AUTEUR MACOCCO K.MACOCCO 
 # TITRE FISSURE DEBOUCHANTE DANS UNE PLAQUE 3D DE LARGEUR FINIE AVEC X-FEM
 # ssnv185m.para = tps_job 60 mem_job 256Mo mem_aster 50 ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -93,6 +93,52 @@ FISS=DEFI_FISS_XFEM(MODELE=MODELEIN,
                                  POINT_ORIG=(0. ,3.*ly/4. ,lz/2. ),),
                  );
 
+MAILLAG1=DEFI_GROUP(reuse =MAILLAG1,INFO=2,
+                 MAILLAGE=MAILLAG1,
+                 CREA_GROUP_MA=(
+                                _F(FISSURE=FISS,NOM='TTXF',
+                                  OPTION='FISS_XFEM', TYPE_GROUP='XFEM'),
+                                _F(FISSURE=FISS,NOM='COUP',
+                                  OPTION='FISS_XFEM', TYPE_GROUP='FISSUREE'),
+                                _F(FISSURE=FISS,NOM='CRAK',
+                                  OPTION='FISS_XFEM', TYPE_GROUP='CRACKTIP'),
+                                _F(FISSURE=FISS,NOM='HEAV',
+                                  OPTION='FISS_XFEM', TYPE_GROUP='HEAVISIDE'),
+                                _F(FISSURE=FISS,NOM='MIXT',
+                                  OPTION='FISS_XFEM', TYPE_GROUP='MIXTE'),
+                                _F(FISSURE=FISS,NOM='TTXF2D',TYPE_MAILLE='2D',
+                                  OPTION='FISS_XFEM', TYPE_GROUP='XFEM'),
+                                _F(FISSURE=FISS,NOM='COUP2D',TYPE_MAILLE='2D',
+                                  OPTION='FISS_XFEM', TYPE_GROUP='FISSUREE'),
+                                _F(FISSURE=FISS,NOM='CRAK2D',TYPE_MAILLE='2D',
+                                  OPTION='FISS_XFEM', TYPE_GROUP='CRACKTIP'),
+                                _F(FISSURE=FISS,NOM='HEAV2D',TYPE_MAILLE='2D',
+                                  OPTION='FISS_XFEM', TYPE_GROUP='HEAVISIDE'),
+                                _F(FISSURE=FISS,NOM='MIXT2D',TYPE_MAILLE='2D',
+                                  OPTION='FISS_XFEM', TYPE_GROUP='MIXTE'),
+                                _F(FISSURE=FISS,NOM='TTXF3D',TYPE_MAILLE='3D',
+                                  OPTION='FISS_XFEM', TYPE_GROUP='XFEM'),
+                                _F(FISSURE=FISS,NOM='COUP3D',TYPE_MAILLE='3D',
+                                  OPTION='FISS_XFEM', TYPE_GROUP='FISSUREE'),
+                                _F(FISSURE=FISS,NOM='CRAK3D',TYPE_MAILLE='3D',
+                                  OPTION='FISS_XFEM', TYPE_GROUP='CRACKTIP'),
+                                _F(FISSURE=FISS,NOM='HEAV3D',TYPE_MAILLE='3D',
+                                  OPTION='FISS_XFEM', TYPE_GROUP='HEAVISIDE'),
+                                _F(FISSURE=FISS,NOM='MIXT3D',TYPE_MAILLE='3D',
+                                  OPTION='FISS_XFEM', TYPE_GROUP='MIXTE'),)
+);
+MAILLAG1=DEFI_GROUP(reuse =MAILLAG1,INFO=2,
+                 MAILLAGE=MAILLAG1,
+                 CREA_GROUP_NO=(
+                                _F(FISSURE=FISS,NOM='TTXF',
+                                  OPTION='FISS_XFEM', TYPE_GROUP='XFEM'),
+                                _F(FISSURE=FISS,NOM='CRAK',
+                                  OPTION='FISS_XFEM', TYPE_GROUP='CRACKTIP'),
+                                _F(FISSURE=FISS,NOM='HEAV',
+                                  OPTION='FISS_XFEM', TYPE_GROUP='HEAVISIDE'),
+                                _F(FISSURE=FISS,NOM='MIXT',
+                                  OPTION='FISS_XFEM', TYPE_GROUP='MIXTE'),)
+);
 MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,FISSURE=FISS,INFO=1,);
 
 CHXFEM=AFFE_CHAR_MECA(MODELE=MODELEK,LIAISON_XFEM='OUI',INFO=1,);

@@ -2,9 +2,9 @@
      &                 NDIM,FISS  ,LISMAE,LISNOE)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 21/12/2010   AUTEUR MASSIN P.MASSIN 
+C MODIF ALGORITH  DATE 22/02/2011   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -71,7 +71,7 @@ C
       INTEGER       NXMAFI,NXPTFF
 C
       INTEGER       IRET,NBNO,INO,IMAE,NMAFON,JFON,NFON
-      INTEGER       JCOOR,JSTANO,JABSC
+      INTEGER       JCOOR,JSTANO,JABSC,JMULT,JFOND
       INTEGER       JENSV,JENSL,NBMA
       INTEGER       JENSVR,JENSLR,JCARAF
       INTEGER       I,NMAFIS,IBID
@@ -79,13 +79,16 @@ C
       INTEGER       NBFOND,JFISAR,JFISDE,JBORD,NPTBOR,NUFI
       INTEGER       IFM,NIV
       INTEGER       NMAEN1,NMAEN2,NMAEN3,NCOUCH
+      INTEGER       NPARA,NFONL,NFONDL,VALI(2)
+      CHARACTER*1   TYPARA(6)
       CHARACTER*8   K8BID
-      CHARACTER*12  K12
+      CHARACTER*12  K12, NOPARA(6)
       CHARACTER*16  TYPDIS
-      CHARACTER*19  CNXINV
+      CHARACTER*19  CNXINV,TABCOO,TABNB
       CHARACTER*24  MAFIS,STANO,XCARFO
       REAL*8        M(3),P(3),Q(4),PADIST
-      REAL*8        PFI(3),VOR(3),ORI(3),RAYON
+      REAL*8        PFI(3),VOR(3),ORI(3),RAYON,VALE(4),R8BID
+      COMPLEX*16    C16B
       LOGICAL       AUTO
 C
 C ----------------------------------------------------------------------
@@ -409,6 +412,74 @@ C
       CALL XLMAIL(NOMA  ,FISS  ,NMAEN1,NMAEN2,NMAEN3,
      &            JMAEN1,JMAEN2,JMAEN3,NFON,JFON,NBFOND,JBAS,
      &            JFISDE,JFISAR,NDIM)
+
+C     
+C     CONSTRUCTION DE LA TABLE DES COORDONNEES DES FONDS DE FISSURES
+C
+      CALL JEEXIN( FISS//'.FONDFISS',IRET)
+      IF (IRET.NE.0) THEN
+        CALL JEVEUO ( FISS//'.FONDMULT', 'L', JMULT)
+        CALL LTCRSD ( FISS , 'G' )
+        CALL LTNOTB ( FISS , 'FOND_FISS' , TABCOO )
+        CALL TBCRSD ( TABCOO,'G')
+        NOPARA(1) = 'NUME_FOND'
+        TYPARA(1) = 'I'
+        IF (NDIM.NE.3) THEN
+          NOPARA(2) = 'COOR_X'
+          NOPARA(3) = 'COOR_Y'
+          TYPARA(2) = 'R'
+          TYPARA(3) = 'R'
+          NPARA = 3
+          CALL TBAJPA ( TABCOO, NPARA, NOPARA, TYPARA )
+          DO 900 I = 1,NBFOND
+              VALI(1)=I
+              VALE(1)=ZR(JFON-1+4*(I-1)+1)
+              VALE(2)=ZR(JFON-1+4*(I-1)+2)
+              CALL TBAJLI ( TABCOO, NPARA, NOPARA,
+     +                              VALI, VALE, C16B, K8BID, 0 )
+ 900      CONTINUE
+        ELSE
+          NOPARA(2) = 'NUM_PT'
+          NOPARA(3) = 'ABSC_CURV'
+          NOPARA(4) = 'COOR_X'
+          NOPARA(5) = 'COOR_Y'
+          NOPARA(6) = 'COOR_Z'
+          TYPARA(2) = 'I'
+          TYPARA(3) = 'R'
+          TYPARA(4) = 'R'
+          TYPARA(5) = 'R'
+          TYPARA(6) = 'R'
+          NPARA = 6
+          CALL TBAJPA ( TABCOO, NPARA, NOPARA, TYPARA )
+          NFONL = 1
+          NFONDL = 0
+          DO 901 I = 1,NFON
+            IF (ZI(JMULT-1+2*NFONDL+1).EQ.I) THEN
+              NFONDL = NFONDL + 1
+             NFONL = 1
+            ELSE
+              NFONL = NFONL + 1
+            ENDIF            
+            VALI(1)=NFONDL
+            VALI(2)=NFONL
+            VALE(1)=ZR(JFON-1+4*(I-1)+4)
+            VALE(2)=ZR(JFON-1+4*(I-1)+1)
+            VALE(3)=ZR(JFON-1+4*(I-1)+2)
+            VALE(4)=ZR(JFON-1+4*(I-1)+3)
+            CALL TBAJLI ( TABCOO, NPARA, NOPARA,
+     +                              VALI, VALE, C16B, K8BID, 0 )
+ 901      CONTINUE
+        ENDIF
+C     
+C     CONSTRUCTION DE LA TABLE DU NOMBRE
+C
+        CALL LTNOTB ( FISS , 'NB_FOND_FISS' , TABNB )
+        CALL TBCRSD ( TABNB,'G')
+        CALL TBAJPA ( TABNB, 1, 'NOMBRE', 'I' )
+        CALL TBAJLI ( TABNB, 1, 'NOMBRE',NBFOND, R8BID, C16B, K8BID, 0 )
+      ENDIF
+
+
 C
 C --- MENAGE
 C

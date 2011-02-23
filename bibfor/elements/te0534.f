@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 01/02/2011   AUTEUR MASSIN P.MASSIN 
+C MODIF ELEMENTS  DATE 23/02/2011   AUTEUR MASSIN P.MASSIN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -62,7 +62,7 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       INTEGER      NPG,NPGF,XOULA,FAC(6,4),NBF,JSEUIL
       INTEGER      INDCO(60),NINTER,NFACE,CFACE(5,3),IBID2(12,3)
       INTEGER      NINTEG,NFE,SINGU,JSTNO,NVIT
-      INTEGER      NNOL,PLA(27),LACT(8),NLACT
+      INTEGER      NNOL,PLA(27),LACT(8),NLACT,NVEC
       INTEGER      JCOHES,IMATE,NPTF,NFISS,JFISNO,IER,CONTAC
       INTEGER      ZXAIN,XXMMVD
       REAL*8       VTMP(400),REAC,REAC12(3),FFI,JAC
@@ -70,16 +70,13 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       REAL*8       RHON,MU,RHOTK,P(3,3),TAU1(3),TAU2(3),PB(3)
       REAL*8       LST,R,RR,E,G(3),RBID,FFPC(27),DFBID(27,3)
       REAL*8       CSTACO,CSTAFR,CPENCO,CPENFR,X(4)
-      REAL*8       COHES(60),SAUT(3),BETASQ
-      REAL*8       ALPHA0,ALPHA,DTANG(3),DNOR(3),RELA,CZMFE  
-      REAL*8       PP(3,3),AM(3),DSIDEP(6,6),KA,VALRES(3)
+      REAL*8       COHES(60),SAUT(3)
+      REAL*8       ALPHA,DTANG(3),DNOR(3),RELA,CZMFE
+      REAL*8       PP(3,3),AM(3),DSIDEP(6,6),SIGMA(6)
       LOGICAL      LPENAF,NOEUD,LPENAC,LBID
-      CHARACTER*2  CODRET(3)
-      CHARACTER*8  ELREF,TYPMA,FPG,ELC,LAG,ELREFC,NOMRES(3)
-      CHARACTER*9  PHEN      
+      CHARACTER*8  ELREF,TYPMA,FPG,ELC,LAG,ELREFC,NOMRES(3),JOB
       CHARACTER*16 ENR
-      PARAMETER   (BETASQ=1.D0)
-      DATA         NOMRES /'GC','SIGM_C','PENA_ADH'/       
+
 C.......................................................................
 
       CALL JEMARQ()
@@ -140,7 +137,7 @@ C
         CZMFE = 0.D0
       ENDIF
        
-      IF(RELA.EQ.1.D0) THEN
+      IF(RELA.EQ.1.D0.OR.RELA.EQ.2.D0) THEN
         CALL JEVECH('PMATERC','L',IMATE)
         CALL JEVECH('PCOHES' ,'L',JCOHES)
       ENDIF
@@ -160,7 +157,9 @@ C     SUR LA TOPOLOGIE DES FACETTES
       DO 10 I=1,60
         INDCO(I) = ZI(JINDCO-1+I)
         SEUIL(I) = ZR(JSEUIL-1+I)
-      IF(RELA.EQ.1.D0) COHES(I) = ZR(JCOHES-1+I)
+        IF(RELA.EQ.1.D0.OR.RELA.EQ.2.D0) THEN
+           COHES(I) = ZR(JCOHES-1+I)
+        ENDIF
  10   CONTINUE
       RHON = ZR(JDONCO-1+1)
       MU = ZR(JDONCO-1+2)
@@ -212,13 +211,9 @@ C     PENALISATION DU FROTTEMENT
         LPENAF=.TRUE.
       ENDIF
 C
-      IF(RELA.EQ.1.D0) THEN
-        PHEN = 'RUPT_FRAG'
-        CALL RCVALA( ZI(IMATE),' ',PHEN,0,' ',0.D0,3,
-     &                     NOMRES,VALRES,CODRET, 'FM' )
-        ALPHA0=(VALRES(1)/VALRES(2))*VALRES(3)
+      IF(RELA.EQ.1.D0.OR.RELA.EQ.2.D0) THEN
         IF(CZMFE.EQ.1.D0) THEN
-          CSTACO=E/VALRES(3)
+          CSTACO=E
           LPENAC=.FALSE.
         ENDIF
       ENDIF
@@ -365,8 +360,9 @@ C
             ELSE IF (INDCO(ISSPG).EQ.1) THEN
 C
 C --- CALCUL DU SAUT ET DE DN EN CE PG (DEPMOI + DEPDEL)
-              CALL XMMSA3(NDIM,NNO,NNOS,FFP,IDEPL,IDEPM,
-     &                    NFH,SINGU,RR,DDLS,DDLM,SAUT)
+              NVEC=2
+              CALL XMMSA3(NDIM,NNO,NNOS,FFP,NDDL,NVEC,ZR(IDEPL),
+     &              ZR(IDEPM),ZR(IDEPM),NFH,SINGU,RR,DDLS,DDLM,SAUT)
 C
 C --- CALCUL DU VECTEUR LN1 & LN2
 C
@@ -389,8 +385,9 @@ C     ........................................
 C
             IF (INDCO(ISSPG).EQ.0) THEN
               IF (NVIT.NE.0) THEN
-                CALL XMMSA3(NDIM,NNO,NNOS,FFP,IDEPL,IDEPM,
-     &                      NFH,SINGU,RR,DDLS,DDLM,SAUT)
+                NVEC=2
+                CALL XMMSA3(NDIM,NNO,NNOS,FFP,NDDL,NVEC,ZR(IDEPL),
+     &             ZR(IDEPM),ZR(IDEPM),NFH,SINGU,RR,DDLS,DDLM,SAUT)
 C
 C --- CALCUL DU VECTEUR LN3
 C
@@ -402,28 +399,31 @@ C
 C --- ACTIVATION DE LA LOI COHESIVE & RECUPERATION DES
 C --- PARAMETRES MATERIAUX
 C
-                IF(RELA.NE.1.0D0) GOTO 53
+              ENDIF
+              IF(RELA.EQ.1.D0.OR.RELA.EQ.2.D0) THEN
 C
 C --- CALCUL DU SAUT DE DEPLACEMENT EQUIVALENT [[UEG]]
 C
-              CALL XMMSA3(NDIM,NNO,NNOS,FFP,IDEPL,IDEPM,
-     &                    NFH,SINGU,RR,DDLS,DDLM,SAUT)
+                 NVEC=2
+                 CALL XMMSA3(NDIM,NNO,NNOS,FFP,NDDL,NVEC,ZR(IDEPL),
+     &                 ZR(IDEPM),ZR(IDEPM),NFH,SINGU,RR,DDLS,DDLM,SAUT)
 C
-              CALL XMMSA2(NDIM,NNOL,NNOF,IPGF,IVFF,ZI(IMATE),FFC,
-     &                    SAUT,NOEUD,ND,TAU1,TAU2,IFA,CFACE,LACT,
-     &                    COHES(ISSPG),BETASQ,ALPHA0,ALPHA,DSIDEP,
-     &                    PP,DNOR,DTANG,P,KA,AM)
+                 JOB='VECTEUR'
+                 CALL XMMSA2(NDIM ,IPGF  ,ZI(IMATE)   ,SAUT ,ND  ,
+     &                       TAU1 ,TAU2  ,COHES(ISSPG),JOB  ,RELA,
+     &                       ALPHA,DSIDEP,SIGMA       ,PP   ,DNOR,
+     &                       DTANG,P     ,AM)     
 C
 C --- CALCUL DES SECONDS MEMBRES DE COHESION
 C
-               CALL XMVCO1(NDIM,NNO,NNOL,NNOF,ALPHA,BETASQ,
-     &                  DSIDEP,PP,P,PLA,IPGF,IVFF,IFA,CFACE,LACT ,
-     &                  KA,VALRES,DNOR,DTANG,NFH,DDLS,JAC,FFC,FFP,
-     &                  SINGU,E,RR,AM,NOEUD,CSTACO,ND,TAU1,TAU2,
-     &                  VTMP)
+                 CALL XMVCO1(NDIM,NNO,NNOL,NNOF,
+     &                 SIGMA,PLA,IPGF,IVFF,IFA,CFACE,LACT ,
+     &                 DTANG,NFH,DDLS,JAC,FFC,FFP,
+     &                 SINGU,E,RR,NOEUD,CSTACO,ND,TAU1,TAU2,
+     &                 VTMP)
 
-              ENDIF
- 53             CONTINUE    
+               ENDIF
+
 
             ELSE IF (INDCO(ISSPG).EQ.1) THEN
 C

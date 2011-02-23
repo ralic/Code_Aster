@@ -2,9 +2,9 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SOUSTRUC  DATE 19/10/2010   AUTEUR DELMAS J.DELMAS 
+C MODIF SOUSTRUC  DATE 22/02/2011   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -404,6 +404,11 @@ C            -- TRAITEMENT DE L'OPTION APPUI_STRICT :
 C               ----------------------------------
           ELSE IF (OPTION(1:5).EQ.'APPUI') THEN
             CALL CGMAAP('CREA_GROUP_MA',IOCC,MA,LISMA,NBMA)
+
+C            -- TRAITEMENT DE L'OPTION FISS_XFEM :
+C               ----------------------------------
+          ELSE IF (OPTION(1:9).EQ.'FISS_XFEM') THEN
+            CALL CGMAXF('CREA_GROUP_MA',IOCC,MA,LISMA,NBMA)
           END IF
         END IF
 

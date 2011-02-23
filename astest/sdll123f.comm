@@ -1,0 +1,236 @@
+# MODIF  DATE 22/02/2011   AUTEUR TORKHANI M.TORKHANI 
+# TITRE CALCUL MODAL POUTRE MULTIFIBRE AVEC GAUCHISSEMENT ET GYROSCOPIE
+# sdll123f.para = tps_job 900 mem_job 512Mo ncpus 1 liste_test S
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+# RESPONSABLE TORKHANI M.TORKHANI
+#
+
+import numpy as NP
+import numpy.linalg as LA
+
+DEBUT( CODE=_F(NOM='SDLL123F', NIV_PUB_WEB='INTERNET'),
+       PAR_LOT='NON')
+
+INCLUDE(UNITE=66)
+
+# Lecture du maillage filiere
+MAIL=LIRE_MAILLAGE()
+
+# Lecture du maillage de la section
+SECTION=LIRE_MAILLAGE(UNITE=21,FORMAT='MED')
+
+MODELE=AFFE_MODELE(MAILLAGE=MAIL,
+                   AFFE=(_F(GROUP_MA='ROTOR',
+                           PHENOMENE='MECANIQUE',
+                           MODELISATION='POU_D_TGM',),
+                         _F(GROUP_MA=('DISQUES'),
+                           PHENOMENE='MECANIQUE',
+                           MODELISATION='DIS_TR',),
+                         )
+                       )
+
+GF=DEFI_GEOM_FIBRE(
+           SECTION = _F ( GROUP_FIBRE='SECTIO',
+                            MAILLAGE_SECT = SECTION , GROUP_MA_SECT = 'Face_1',
+                            COOR_AXE_POUTRE = (0., 0.,)),
+            )
+
+ACIER=DEFI_MATERIAU(ELAS=_F(E=2.06E11,
+                            NU=0.0,
+                            RHO=7800.0,),);
+
+
+COMPF=DEFI_COMPOR(GEOM_FIBRE=GF,MATER_SECT=ACIER,
+                  MULTIFIBRE=(_F(GROUP_FIBRE='SECTIO',MATER=ACIER,RELATION='ELAS'),))
+
+
+CHMAT=AFFE_MATERIAU(MAILLAGE=MAIL,
+                    AFFE=(_F(GROUP_MA='ROTOR',MATER=ACIER,),),
+                    AFFE_COMPOR=_F(TOUT='OUI',COMPOR=COMPF))
+
+CARELEM=AFFE_CARA_ELEM(MODELE=MODELE,
+                       POUTRE=(_F(GROUP_MA='ROTOR',
+                                 SECTION='CERCLE',
+                                 CARA='R',
+                                 VALE=(.025),),),
+                        DISCRET=(
+                                   _F(GROUP_MA='DISQUES',
+                                     CARA='M_TR_D_N',
+                                     VALE=(0.03829,3.000E-6,1.8000E-6,1.8000E-6,0.,0.,0.,0.,0.,0.),
+                        ),
+                        ),
+                        GEOM_FIBRE=GF,
+                        MULTIFIBRE=(_F(GROUP_MA=('ROTOR'),
+                                       GROUP_FIBRE=('SECTIO')),
+                        ))
+                                 
+                                 
+
+BLOQUAGE=AFFE_CHAR_MECA(MODELE=MODELE,
+                               DDL_IMPO=(
+                               _F(TOUT='OUI',
+                                     GRX=0, ),
+                               _F(GROUP_NO=('PALIER_A','PALIER_B'),
+                                     DX=0, DY=0, DZ=0, DRX=0,),
+                                  ))                                   
+                    
+MACRO_MATR_ASSE(MODELE=MODELE,
+                CHAM_MATER=CHMAT,
+                CARA_ELEM=CARELEM,
+                CHARGE=BLOQUAGE,
+                NUME_DDL=CO('NUMEDDL'),
+                MATR_ASSE=(_F(MATRICE=CO('RIGIDITE'),
+                              OPTION='RIGI_MECA',),
+                           _F(MATRICE=CO('MASSE'),
+                              OPTION='MASS_MECA',),
+                           _F(MATRICE=CO('GYASS'),
+                              OPTION='MECA_GYRO',),
+                           _F(MATRICE=CO('AMOR'),
+                              OPTION='AMOR_MECA',),),);
+
+[d,rig]=EXTR_MATR(RIGIDITE,1)
+[d,mas]=EXTR_MATR(MASSE,1)
+[d,amor]=EXTR_MATR(AMOR,1)
+
+nddl=rig.shape[0]
+print 'nddl', nddl
+
+print "D"
+print len(d)
+i=0
+for ddd in d:
+   print i,ddd
+   i=i+1
+print "\n"
+                    
+MODES=MODE_ITER_SIMULT(MATR_A=RIGIDITE,
+                       MATR_B=MASSE,
+                       CALC_FREQ=_F(OPTION='BANDE',
+                       FREQ=(3.,3000.)));
+
+OM=10000.*pi/30.
+
+GYOM=COMB_MATR_ASSE(COMB_R=(_F(MATR_ASSE=GYASS, COEF_R=OM,),
+                            _F(MATR_ASSE=AMOR, COEF_R=1.,),))
+
+
+MODEQ=MODE_ITER_SIMULT(MATR_A=RIGIDITE,
+                       MATR_B=MASSE,
+                       MATR_C=GYOM,
+                       METHODE='QZ',
+                       TYPE_QZ='QZ_SIMPLE',
+                       CALC_FREQ=_F(NMAX_FREQ=106),
+                       VERI_MODE=_F(SEUIL=0.5),
+                        )
+
+[d,gyro]=EXTR_MATR(GYOM,1)
+
+masI=LA.inv(mas)
+HPRIME=NP.zeros((nddl*2,nddl*2))
+HPRIME[0:nddl,0:nddl]=NP.dot(gyro,masI)
+HPRIME[0:nddl,nddl:2*nddl]=NP.dot(rig,masI)
+HPRIME[nddl:2*nddl,0:nddl]=-NP.identity(nddl)
+aster.matfpe(-1)
+print 'valeurs propres primes'
+vprime=LA.eigvals(HPRIME)/2./NP.pi
+vpreal=list(vprime.imag)
+vpreal.sort()
+i=1
+j=0
+for vp in vpreal:
+ if vp>5.e-3:
+  print "vp %4d : %6.6f" %(i,vp)
+  i=i+1
+ j=j+1
+ dij=j-i
+aster.matfpe(+1)
+
+
+FREQROT=CREA_TABLE(
+        LISTE=(
+               _F(LISTE_I=(1,2,3,4),PARA='NUME_ORDRE'),
+               _F(LISTE_R=(vpreal[1+dij],vpreal[2+dij],vpreal[3+dij],vpreal[4+dij]),PARA='FREQ'),
+              ))
+
+IMPR_TABLE(TABLE=FREQROT)
+
+TEST_TABLE(TABLE=FREQROT, NOM_PARA='FREQ', VALE=123.540,
+           FILTRE=( _F(  NOM_PARA = 'NUME_ORDRE', VALE_I = 1,),),
+           REFERENCE='NON_REGRESSION',)
+
+TEST_TABLE(TABLE=FREQROT, NOM_PARA='FREQ', VALE=124.165,
+           FILTRE=( _F(  NOM_PARA = 'NUME_ORDRE', VALE_I = 2,),),
+           REFERENCE='NON_REGRESSION',)
+
+TEST_TABLE(TABLE=FREQROT, NOM_PARA='FREQ', VALE=491.147,
+           FILTRE=( _F(  NOM_PARA = 'NUME_ORDRE', VALE_I = 3,),),
+           REFERENCE='NON_REGRESSION',)
+
+TEST_TABLE(TABLE=FREQROT, NOM_PARA='FREQ', VALE=493.595,
+           FILTRE=( _F(  NOM_PARA = 'NUME_ORDRE', VALE_I = 4,),),
+           REFERENCE='NON_REGRESSION',)
+
+# POUR QZ
+TEST_RESU(RESU=(
+          _F( RESULTAT = MODEQ, PARA = 'FREQ',
+                CRITERE = 'RELATIF', PRECISION = 5.E-6,
+                NUME_ORDRE = 1,  VALE = 1.23540837E+02, REFERENCE='NON_REGRESSION',),
+          _F( RESULTAT = MODEQ, PARA = 'AMOR_REDUIT',
+                CRITERE = 'ABSOLU', PRECISION = 1.E-4,
+                NUME_ORDRE = 1,  VALE = 0.E0, REFERENCE='NON_REGRESSION',),
+          _F( RESULTAT = MODEQ, PARA = 'FREQ',
+                CRITERE = 'RELATIF', PRECISION = 5.E-6,
+                NUME_ORDRE = 20,  VALE = 6.9162698E+03, REFERENCE='NON_REGRESSION',),
+          _F( RESULTAT = MODEQ, PARA = 'AMOR_REDUIT',
+                CRITERE = 'ABSOLU', PRECISION = 1.E-4,
+                NUME_ORDRE = 20,  VALE = 0.E0, REFERENCE='NON_REGRESSION',),
+          _F( RESULTAT = MODEQ, PARA = 'FREQ',
+                CRITERE = 'RELATIF', PRECISION = 5.E-6,
+                NUME_ORDRE = 40,  VALE = 1.864033705E+04, REFERENCE='NON_REGRESSION',),
+          _F( RESULTAT = MODEQ, PARA = 'AMOR_REDUIT',
+                CRITERE = 'ABSOLU', PRECISION = 1.E-4,
+                NUME_ORDRE = 40,  VALE = 0.E0, REFERENCE='NON_REGRESSION',),
+          _F( RESULTAT = MODEQ, PARA = 'FREQ',
+                CRITERE = 'RELATIF', PRECISION = 5.E-6,
+                NUME_ORDRE = 60,  VALE = 3.587042583E+04, REFERENCE='NON_REGRESSION',),
+          _F( RESULTAT = MODEQ, PARA = 'AMOR_REDUIT',
+                CRITERE = 'ABSOLU', PRECISION = 1.E-4,
+                NUME_ORDRE = 60,  VALE = 0.E0, REFERENCE='NON_REGRESSION',),
+          _F( RESULTAT = MODEQ, PARA = 'FREQ',
+                CRITERE = 'RELATIF', PRECISION = 5.E-6,
+                NUME_ORDRE = 80,  VALE = 5.1529666E+04, REFERENCE='NON_REGRESSION',),
+          _F( RESULTAT = MODEQ, PARA = 'AMOR_REDUIT',
+                CRITERE = 'ABSOLU', PRECISION = 1.E-4,
+                NUME_ORDRE = 80,  VALE = 0.E0, REFERENCE='NON_REGRESSION',),
+          _F( RESULTAT = MODEQ, PARA = 'FREQ',
+                CRITERE = 'RELATIF', PRECISION = 5.E-6,
+                NUME_ORDRE = 100,  VALE = 5.705711E+04, REFERENCE='NON_REGRESSION',),
+          _F( RESULTAT = MODEQ, PARA = 'AMOR_REDUIT',
+                CRITERE = 'ABSOLU', PRECISION = 1.E-4,
+                NUME_ORDRE = 100,  VALE = 0.E0, REFERENCE='NON_REGRESSION',),
+          _F( RESULTAT = MODEQ, PARA = 'FREQ',
+                CRITERE = 'RELATIF', PRECISION = 5.E-6,
+                NUME_ORDRE = 106,  VALE = 5.788811E+04, REFERENCE='NON_REGRESSION',),
+          _F( RESULTAT = MODEQ, PARA = 'AMOR_REDUIT',
+                CRITERE = 'ABSOLU', PRECISION = 1.E-4,
+                NUME_ORDRE = 106,  VALE = 0.E0, REFERENCE='NON_REGRESSION',),
+           ),)
+
+FIN()
+

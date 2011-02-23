@@ -1,7 +1,7 @@
-#& MODIF COMMANDE  DATE 09/11/2010   AUTEUR DELMAS J.DELMAS 
+#& MODIF COMMANDE  DATE 23/02/2011   AUTEUR BARGELLI R.BARGELLINI 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -33,6 +33,8 @@ POST_BORDET =MACRO(nom="POST_BORDET", op=post_bordet_ops,sd_prod=table_sdaster,
          GROUP_MA        =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**',
                            fr="le calcul ne sera effectué que sur ces mailles"),
          INST            =SIMP(statut='f',typ='R',validators=NoRepeat(),max='**'),
+         PRECISION =SIMP(statut='f',typ='R',validators=NoRepeat(),val_min=0.,val_max=1E-3,defaut=1E-6),
+         CRITERE   =SIMP(statut='f',typ='TXM',defaut="ABSOLU",into=("RELATIF","ABSOLU") ),
          NUME_ORDRE      =SIMP(statut='f',typ='I',validators=NoRepeat(),max='**'),
          PROBA_NUCL      =SIMP(statut='f',typ='TXM',into=("NON","OUI"), defaut="NON",
                       fr="prise en compte du facteur exponentiel"),
@@ -59,8 +61,6 @@ POST_BORDET =MACRO(nom="POST_BORDET", op=post_bordet_ops,sd_prod=table_sdaster,
                                   
          RESULTAT        =SIMP(statut='o',typ=resultat_sdaster,
                                       fr="Resultat d'une commande globale STAT_NON_LINE"),
-         MODELE          =SIMP(statut='o',typ=modele_sdaster),
-         CHAM_MATER      =SIMP(statut='o',typ=cham_mater),
          TEMP            =SIMP(statut='o',typ=(fonction_sdaster,'R')),
          COEF_MULT       =SIMP(statut='f',typ='R', defaut=1.),                   
            )

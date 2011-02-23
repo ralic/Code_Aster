@@ -1,9 +1,9 @@
       SUBROUTINE OP0196()
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 10/08/2010   AUTEUR GENIAUT S.GENIAUT 
+C MODIF PREPOST  DATE 22/02/2011   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -45,7 +45,7 @@ C     ------------------------------------------------------------------
 
       INTEGER      JLICHA,NBSY,NBORDR,IOR,JORD,IORD,JINST1,JINST2,NBCHAM
       INTEGER      IBID,IRET,NSETOT,NNNTOT,NCOTOT,NBNOC,NBMAC,IFM,NIV,IC
-      INTEGER      JMOD
+      INTEGER      JMOD,MFTOT,NFTOT,NFCOMF,NGFON
       CHARACTER*1  KBID
       CHARACTER*2  K2B(5)
       CHARACTER*8  MAXFEM,MO,MALINI,RESUCO,RESUX,MODVIS,K8B
@@ -66,6 +66,7 @@ C
       IF (NIV.GT.1) WRITE(IFM,*)'1. XPOINI'
       LICHAM = '&&OP0196.LICHAM'
       CALL XPOINI(MAXFEM,MO,MALINI,MODVIS,LICHAM,RESUCO,RESUX,K2B,K8B)
+      CALL XPOFON(MO,MAXFEM,MFTOT,NFTOT,NFCOMF,NGFON)
 C
 C     ------------------------------------------------------------------
 C     2. SEPARATION DES MAILLES DE MALINI EN 2 GROUPES
@@ -109,9 +110,10 @@ C       ----------------------------------------------------------------
         CESVI2   = '&&OP0196.CESVI2'
         CEL2   = '&&OP0196.CEL2'
         LISTNO = '&&OP0196.LISTNO'
-        CALL XPODIM(MALINI,MAILC,MODVIS,LICHAM,NSETOT,NNNTOT,NCOTOT,
-     &              LISTNO,CNS1,CNS2,CES1,CES2,CEL2,CESVI1,CESVI2,
-     &              IOR,RESUCO,NBNOC,NBMAC,LOGRMA,K24,MAXFEM)
+        CALL XPODIM(MALINI,MAILC,MODVIS,LICHAM,NSETOT+MFTOT,
+     &             NNNTOT+NFTOT,NCOTOT+NFCOMF,
+     &             LISTNO,CNS1,CNS2,CES1,CES2,CEL2,CESVI1,CESVI2,
+     &             IOR,RESUCO,NBNOC,NBMAC,LOGRMA,K24,MAXFEM,IBID)
 
 C       ----------------------------------------------------------------
 C       4. TRAITEMENT DES MAILLES DE MAILC
@@ -130,7 +132,7 @@ C       ----------------------------------------------------------------
         IF (NIV.GT.1) WRITE(IFM,*)'5. XPOMAX'
         CALL XPOMAX(MO,MALINI,MAILX,NBNOC,NBMAC,K2B,K8B,MAXFEM,
      &              CNS1,CNS2,CES1,CES2,CESVI1,CESVI2,LISTGR,K24,K24,
-     &              RESUCO)
+     &              RESUCO,IBID)
 
 C       ----------------------------------------------------------------
 C       6. ENREGISTREMENT DES CHAMPS DE SORTIES

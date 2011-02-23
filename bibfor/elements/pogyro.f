@@ -1,12 +1,13 @@
-      SUBROUTINE POGYRO(NOMTE,E,RHO,XNU,KLV,NL)
+      SUBROUTINE POGYRO(NOMTE,E,RHO,XNU,ICDMAT,KLV,NL)
       IMPLICIT NONE
+      INTEGER ICDMAT
       CHARACTER*(*) NOMTE
       REAL*8 E, RHO, XNU,KLV(*)
 C ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 03/03/2009   AUTEUR BOYERE E.BOYERE 
+C MODIF ELEMENTS  DATE 22/02/2011   AUTEUR TORKHANI M.TORKHANI 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -25,7 +26,8 @@ C ======================================================================
 C     CALCULE LA MATRICE GYROSCOPIQUE DES ELEMENTS DE POUTRE
 
 C IN  NOMTE : NOM DU TYPE ELEMENT
-C             'MECA_POU_D_E'  'MECA_POU_D_T'  'MECA_POU_C_T'
+C             'MECA_POU_D_E'  'MECA_POU_D_T'  'MECA_POU_D_TG'
+C             'MECA_POU_D_EM' 'MECA_POU_D_TGM'
 C     ------------------------------------------------------------------
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER ZI,NL
@@ -47,7 +49,7 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       CHARACTER*8  NOMAIL
       CHARACTER*16 CH16
       INTEGER LSECT,LSECT2, LX, LRCOU, ISTRUC, ITYPE,IADZI,IAZK24
-      REAL*8 ZERO, DEUX, TRIGOM
+      REAL*8 ZERO, DEUX, TRIGOM, RBID, CASECT(6)
       REAL*8 EY, EZ, XL, RAD, ANG, ANGS2, XFL, XFLY, XFLZ
       REAL*8 A, XIY, XIZ, XJX, ALFAY, ALFAZ, ALFINV
       REAL*8 A2, XIY2, XIZ2, XJX2, ALFAY2, ALFAZ2
@@ -87,7 +89,7 @@ C     --- RECUPERATION DES COORDONNEES DES NOEUDS ---
         CALL U2MESK('F','ELEMENTS2_43',1,NOMAIL)
       END IF
 
-      IF (NOMTE(1:12).EQ.'MECA_POU_D_E') THEN
+      IF (NOMTE.EQ.'MECA_POU_D_E') THEN
 C        --- POUTRE DROITE D'EULER A 6 DDL ---
         ISTRUC = 1
         ALFINV = ZERO
@@ -95,23 +97,19 @@ C        --- POUTRE DROITE D'EULER A 6 DDL ---
 C        --- POUTRE DROITE DE TIMOSKENKO A 6 DDL ---
         ISTRUC = 1
         ALFINV = DEUX/(ALFAY+ALFAZ)
-      ELSE IF (NOMTE(1:12).EQ.'MECA_POU_C_T') THEN
-C        --- POUTRE COURBE DE TIMOSKENKO A 6 DDL ---
+      ELSEIF (NOMTE.EQ.'MECA_POU_D_EM' .OR.
+     &        NOMTE.EQ.'MECA_POU_D_TGM'    ) THEN
+C        --- POUTRE DROITE MULTI-FIBRES---
+        ITYPE  = 0
         ISTRUC = 1
-        CALL JEVECH('PCAARPO','L',LRCOU)
-        RAD = ZR(LRCOU)
-        XFL = ZR(LRCOU+2)
-        XFLY = XFL
-        XFLZ = XFL
-        IF (XFL.EQ.ZERO) THEN
-          XFLY = ZR(LRCOU+4)
-          XFLZ = ZR(LRCOU+6)
-        END IF
-        ANGS2 = TRIGOM('ASIN',XL/ (DEUX*RAD))
-        ANG = ANGS2*DEUX
-        XL = RAD*ANG
-        XIY = XIY/XFLY
-        XIZ = XIZ/XFLZ
+        ALFINV = ZERO
+C   ON MET RHO=1, il est utilisé dans PMFITX 
+        RHO = 1.D0
+        CALL PMFITX(ICDMAT,2,CASECT,RBID)
+        A   = CASECT(1)
+        XIY = CASECT(5)
+        XIZ = CASECT(4)
+        XJX = 0.D0
       ELSE
         CH16 = NOMTE
         CALL U2MESK('F','ELEMENTS2_42',1,CH16)
@@ -141,7 +139,6 @@ C     ---- MOYENNAGE -------------------------------------
            ALFINV = DEUX/(ALFAY+ALFAZ)
          ENDIF
       END IF
-
       CALL PTGY01(KLV,NL,XNU,RHO,A,XL,XIY,XIZ,XJX,ALFINV,
      &                     EY,EZ,ISTRUC)
         

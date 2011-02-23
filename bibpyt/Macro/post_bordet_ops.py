@@ -1,4 +1,4 @@
-#@ MODIF post_bordet_ops Macro  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
+#@ MODIF post_bordet_ops Macro  DATE 23/02/2011   AUTEUR BARGELLI R.BARGELLINI 
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -27,17 +27,17 @@ def maxi(x,y):
       return x
    elif y>x:
       return y
-
+    
 #corps de la macro
 def post_bordet_ops(self,
 TOUT,
 GROUP_MA,
 INST,
+PRECISION,
+CRITERE,
 NUME_ORDRE,
 PROBA_NUCL,
 RESULTAT,
-MODELE,
-CHAM_MATER,
 PARAM,
 TEMP,
 COEF_MULT,**args):
@@ -61,27 +61,46 @@ COEF_MULT,**args):
    CREA_TABLE  = self.get_cmd('CREA_TABLE')
    FORMULE     =self.get_cmd('FORMULE')
    CALC_TABLE  =self.get_cmd('CALC_TABLE')
- #
+ # 
  # Definition du concept sortant dans le contexte de la macro
  #
-
+ 
    self.DeclareOut('tabout', self.sd)
 
  #
+ #Recuperation du champ materiau compris dans le resultat
+ #
+   iret,ibid,__nom_cham_mater = aster.dismoi('F','CHAM_MATER',RESULTAT.nom,'RESULTAT')
+#   if (len(__nom_cham_mater) == 0) or (len(__nom_cham_mater) > 1)  :
+   if (__nom_cham_mater.strip() == "#PLUSIEURS") or (__nom_cham_mater.strip() == "#AUCUN") :
+        print 'ON EST LA'
+        UTMESS('F','RUPTURE1_58')
+   else :
+        __cham_mater = self.get_concept(__nom_cham_mater.strip())
+#
+#Recuperation du modele a partir du resultat
+   iret,ibid,__n_modele = aster.dismoi('F','MODELE',RESULTAT.nom,'RESULTAT')
+   __n_modele=__n_modele.rstrip()
+   if len(__n_modele)==0 or __n_modele=="#PLUSIEURS":
+      UTMESS('F','RUPTURE1_58')
+   __model = self.get_concept(__n_modele)
+# 
+ 
+# 
  # Creation du dictionnaire des parametres materiau de l'utilisateur
  #
    __DPARAM=PARAM[0].cree_dict_valeurs(PARAM[0].mc_liste)
 
  # on l'ajoute dans l'environnement pour pouvoir s'en servir dans les commandes
    self.update_const_context({"""__DPARAM""" : __DPARAM})
-
+ 
  #
  #Dimension du modele
  #
-   iret,ndim,rbid = aster.dismoi('F','DIM_GEOM',self['MODELE'].nom,'MODELE')
-
+   iret,ndim,rbid = aster.dismoi('F','DIM_GEOM',__model.nom,'MODELE')
+   
    if (iret==1) or (ndim==23): UTMESS('F','RUPTURE1_57')
-
+   
  #
  #Definition des formules pour le calcul de sigy plus tard
  #
@@ -98,8 +117,8 @@ COEF_MULT,**args):
  #
 
  #Volume point de gauss
-   __VOL_PG=CALC_CHAM_ELEM(MODELE=self['MODELE'],
-                      CHAM_MATER=self['CHAM_MATER'],
+   __VOL_PG=CALC_CHAM_ELEM(MODELE=__model,
+                      CHAM_MATER=__cham_mater,
                       TOUT='OUI',
                       OPTION='COOR_ELGA',);
    if GROUP_MA:
@@ -110,14 +129,15 @@ COEF_MULT,**args):
 #contrainte principale max
    __RESU=CALC_ELEM(
             RESULTAT=self['RESULTAT'],
-            OPTION='SIEQ_ELGA' );
+            OPTION='SIEQ_ELGA');
+#            NOM_CMP='PRIN3',);
 #deformation plastique
    __RESU=CALC_ELEM(
             reuse=__RESU,
             RESULTAT=self['RESULTAT'],
             OPTION='EPSP_ELGA',
             );
-#
+#            
 #Recuperation de la liste des instants et des ordres de calcul
    __list_ordre=__RESU.LIST_VARI_ACCES()['NUME_ORDRE']
    __list_inst=__RESU.LIST_VARI_ACCES()['INST']
@@ -126,14 +146,23 @@ COEF_MULT,**args):
 #On va travailler en ordre ; si l'utilisateur entre un instant, on va le transformer en ordre
    __entree_instant=None
    if INST :
+      if CRITERE=='ABSOLU':
+         __prec=PRECISION
+      elif CRITERE=='RELATIF':
+         __prec=PRECISION*INST
       __entree_instant=True
-      __instant=INST
+      __n=0
+      __trouv=None
+      while (__n<len(__list_inst) and not __trouv):
+       if (__list_inst[__n]+__prec>=INST) and (__list_inst[__n]-__prec<=INST):
+           __instant=__list_inst[__n]
+           __trouv=True
+       __n=__n+1
+      if not __trouv:
+       UTMESS('F','RUPTURE1_53',valr=INST,valk='utilise pour le calcul de Bordet')
    if __entree_instant==True:
-      if __instant not in __list_inst :
-         UTMESS('F','RUPTURE1_53',valr=__instant,valk='utilise pour le calcul de Bordet')
-      elif __instant in __list_inst :
-         index_ordre=__list_inst.index(__instant)
-         nume_ordre=__list_ordre[index_ordre]
+          index_ordre=__list_inst.index(__instant)
+          nume_ordre=__list_ordre[index_ordre]
    elif NUME_ORDRE:
       nume_ordre=NUME_ORDRE
       if nume_ordre not in __list_ordre :
@@ -145,7 +174,7 @@ COEF_MULT,**args):
    __EPSP=[None for i in range(nume_ordre+1)]   #champ de deformation plastique
    __EP=[[None  for j in range(6)] for i in range(nume_ordre+1)]     #tenseur des deformations plastiques
    __EPEQ=[[None for j in range(0)] for i in range(nume_ordre+1)]   #deformation plastique equivalente
-   __EPEQM=[[0.] for i in range(nume_ordre+1)]  #deformation plastique equivalente a l'instant precedent
+   __EPEQM=[[0.] for i in range(nume_ordre+1)]  #deformation plastique equivalente a l'instant precedent 
    __S_BAR=[None for i in range(nume_ordre+1)]
    __PRIN=[[None]for i in range(nume_ordre+1)]
    __EQ_BAR=[[None] for i in range(nume_ordre+1)]
@@ -157,7 +186,7 @@ COEF_MULT,**args):
    __BORDTI=0.#valeur sans l'exposant final, sommee sur les instants
    __BORDTT=[0. for i in range(nume_ordre+1)]#valeur avec l'exposant, que l'on stocke dans la table a chaque instant
    __PROBA=[0. for i in range(nume_ordre+1)]#Probabilite de rupture par clivage
-
+ 
 #LISTE DES PARAMETRES
    __sig0=__DPARAM['SEUIL_REFE']
    __sigth=__DPARAM['SIG_CRIT']
@@ -177,15 +206,15 @@ COEF_MULT,**args):
    elif __list_ordre[0]!=0:
       __fin_ordre=nume_ordre
    for ordre in range(__list_ordre[0],__fin_ordre):
-#
+# 
 #Temperature a extraire : soit une fonction du temps, soit un reel
 #
       if type(TEMP)==fonction_sdaster:
          __TEMPE=TEMP(__list_inst[ordre])
       elif type(TEMP)!=fonction_sdaster:
          __TEMPE=TEMP
-
-
+         
+         
       self.update_const_context({'__TEMPE' : __TEMPE})
 #
 #On met ces grandeurs dans des champs specifiques
@@ -204,10 +233,10 @@ COEF_MULT,**args):
 #
 #On recupere la valeur des champs au niveau des groupes qui nous interessent
 #
-
+              
       if GROUP_MA:
          __PRIN[ordre]=__S_TOT[ordre].EXTR_COMP('PRIN_3',[GROUP_MA],0).valeurs;
-
+         
 #Pour la deformation plastique, on construit de quoi calculer sa norme de VMises
          __EP[ordre][0]=__EPSP[ordre].EXTR_COMP('EPXX',[GROUP_MA],0).valeurs;
          __EP[ordre][1]=__EPSP[ordre].EXTR_COMP('EPYY',[GROUP_MA],0).valeurs;
@@ -216,7 +245,7 @@ COEF_MULT,**args):
          if ndim==3:
             __EP[ordre][4]=EPSP[ordre].EXTR_COMP('EPXZ',[GROUP_MA],0).valeurs;
             __EP[ordre][5]=EPSP[ordre].EXTR_COMP('EPYZ',[GROUP_MA],0).valeurs;
-
+            
       elif TOUT:
          __PRIN[ordre]=__S_TOT[ordre].EXTR_COMP('PRIN_3',[],0).valeurs;
          __EP[ordre][0]=__EPSP[ordre].EXTR_COMP('EPXX',[],0).valeurs;
@@ -226,24 +255,24 @@ COEF_MULT,**args):
          if ndim==3:
             __EP[ordre][4]=__EPSP[ordre].EXTR_COMP('EPXZ',[],0).valeurs;
             __EP[ordre][5]=__EPSP[ordre].EXTR_COMP('EPYZ',[],0).valeurs;
-
+    
       nval=len(__PRIN[ordre])
       nval2=len(__EP[ordre][0])
       if nval2!=nval: UTMESS('F','RUPTURE1_54')
-
+   
 
       if ndim==3:
          __EPEQ[ordre]=NP.sqrt(2./3.*(__EP[ordre][0]**2+__EP[ordre][1]**2+__EP[ordre][2]**2+2.*__EP[ordre][3]**2+2.*__EP[ordre][3]**2+2.*__EP[ordre][4]**2+2.*__EP[ordre][5]**2))
       elif ndim==2:
          __EPEQ[ordre]=NP.sqrt(2./3.*(__EP[ordre][0]**2+__EP[ordre][1]**2+__EP[ordre][2]**2+2.*__EP[ordre][3]**2))
 
-
+           
 #
 #Construction des champs barre et des champs de vitesse
 #
       __EQ_PT2[__list_ordre[0]]=NP.zeros([nval])
       __EPEQ[ordre]=NP.array(__EPEQ[ordre])
-
+      
       if ordre != __list_ordre[0]:
          dt=__list_inst[ordre]-__list_inst[ordre-1]
          if dt==0 : UTMESS('F','RUPTURE1_55')
@@ -269,7 +298,7 @@ COEF_MULT,**args):
                                        NOM_PARA='TSIGY'),)
             __sigy=__TAB.EXTR_TABLE().values()['TSIGY']
             __sigy=NP.array(__sigy)
-
+            
          T1=__sigy/__sig0*(__PR_BAR[ordre]**__m-__sigth**__m)
          T1=list(T1)
          __TABT1=CREA_TABLE(LISTE=(
@@ -292,17 +321,17 @@ COEF_MULT,**args):
          __T4=__VOL.valeurs/__V0
          __BORDTO=NP.cumsum(__T1*__T2*__T3*__T4)[-1]
          __BORDTI=__BORDTI+__BORDTO
-
+    
       __BORDTT[ordre]=(__c_mult*__BORDTI)**(1/__m)
-
+      
       if __sigref(__TEMPE)!=0.:
          __PROBA[ordre]=1-NP.exp(-(__BORDTT[ordre]/__sigref(__TEMPE))**__m)
       elif __sigref(__TEMPE)==0.:
          UTMESS('F','RUPTURE1_56',valr=__list_inst[ordre])
-
+         
    tabout=CREA_TABLE(LISTE=(
                   _F(PARA='INST',LISTE_R=__list_inst[0:nume_ordre+1]),
                   _F(PARA='SIG_BORDET',LISTE_R=__BORDTT,),
                   _F(PARA='PROBA_BORDET',LISTE_R=__PROBA,),
                   ),)
-   return ier
+   return ier    

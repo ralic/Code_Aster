@@ -1,4 +1,4 @@
-# MODIF  DATE 08/02/2011   AUTEUR GRANET S.GRANET 
+# MODIF  DATE 23/02/2011   AUTEUR LAVERNE J.LAVERNE 
 # TITRE   TEST HM, AXIS , MODELISATION THMC=LIQU_SATU
 # wtna111a.para = tps_job 100 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -118,7 +118,7 @@ MO=AFFE_MODELE(MAILLAGE=MA,
 
 ORIEN_FI=AFFE_CARA_ELEM(MODELE=MO,
                         MASSIF=_F(GROUP_MA='FISSURE',
-                                  ANGL_EULER=(180,0,0,),),);
+                                  ANGL_REP=(180,0,0,),),);
 
 ####################################
 #   DEFINITION DU MATERIAU

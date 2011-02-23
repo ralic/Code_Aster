@@ -1,4 +1,4 @@
-# MODIF  DATE 08/02/2011   AUTEUR GRANET S.GRANET 
+# MODIF  DATE 23/02/2011   AUTEUR LAVERNE J.LAVERNE 
 # TITRE   TEST HM, 2D , MODELISATION THMC=GAZ
 # wtnp126b.para = tps_job 200 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -125,7 +125,7 @@ MO=AFFE_MODELE(MAILLAGE=MA,
 
 ORIEN_FI=AFFE_CARA_ELEM(MODELE=MO,
                         MASSIF=_F(GROUP_MA='JOINT',
-                                  ANGL_EULER=(90,0,0,),),);
+                                  ANGL_REP=(90,0,0,),),);
 
 ####################################
 #   DEFINITION DES MATERIAUX

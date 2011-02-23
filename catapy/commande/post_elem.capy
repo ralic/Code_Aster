@@ -1,7 +1,7 @@
-#& MODIF COMMANDE  DATE 09/11/2010   AUTEUR DELMAS J.DELMAS 
+#& MODIF COMMANDE  DATE 22/02/2011   AUTEUR TARDIEU N.TARDIEU 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -23,7 +23,7 @@ POST_ELEM=OPER(nom="POST_ELEM",op=107,sd_prod=table_sdaster,reentrant='n',
 
          regles=(UN_PARMI('MASS_INER', 'ENER_POT', 'ENER_CIN','TRAV_EXT','MINMAX',
                           'WEIBULL', 'RICE_TRACEY', 'CARA_GEOM','CHAR_LIMITE',
-                          'CARA_POUTRE', 'INDIC_ENER', 'INDIC_SEUIL',
+                          'CARA_POUTRE', 'INDIC_ENER', 'INDIC_SEUIL','VOLUMOGRAMME',
                           'AIRE_INTERNE','ENER_ELAS','ENER_TOTALE','ENER_DISS','INTEGRALE'),
                 ),
 
@@ -254,6 +254,36 @@ POST_ELEM=OPER(nom="POST_ELEM",op=107,sd_prod=table_sdaster,reentrant='n',
                        regles=(UN_PARMI('CHAM_GD','RESULTAT'),
                                EXCLUS('TOUT_ORDRE','NUME_ORDRE','INST','LIST_ORDRE','LIST_INST'),),
                        MODELE         = SIMP(statut='f',typ=modele_sdaster),
+                       CHAM_MATER     = SIMP(statut='f',typ=cham_mater),
+                       RESULTAT       = SIMP(statut='f',typ=(evol_noli,evol_ther,evol_elas,evol_char) ),
+                       CHAM_GD        = SIMP(statut='f',typ=(cham_no_sdaster,cham_elem) ),
+                       CRITERE         =SIMP(statut='f',typ='TXM',defaut="RELATIF",into=("RELATIF","ABSOLU",),),
+                       b_prec_rela=BLOC(condition="(CRITERE=='RELATIF')",
+                          PRECISION       =SIMP(statut='f',typ='R',defaut= 1.E-6,),),
+                       b_prec_abso=BLOC(condition="(CRITERE=='ABSOLU')",
+                          PRECISION       =SIMP(statut='o',typ='R',),),
+                       TOUT_ORDRE     = SIMP(statut='f',typ='TXM',into=("OUI",) ),
+                       NUME_ORDRE     = SIMP(statut='f',typ='I',validators=NoRepeat(),max='**'),
+                       LIST_ORDRE     = SIMP(statut='f',typ=listis_sdaster),
+                       INST           = SIMP(statut='f',typ='R',validators=NoRepeat(),max='**'),
+                       LIST_INST      = SIMP(statut='f',typ=listr8_sdaster),
+         ),
+
+         VOLUMOGRAMME  = FACT(statut='f',max='**',
+                               regles=(AU_MOINS_UN('TOUT','GROUP_MA'),),
+                               TOUT         = SIMP(statut='f',typ='TXM',into=("OUI",) ),
+                               GROUP_MA     = SIMP(statut='f',typ=grma,max=1),
+                               TYPE_MAILLE  = SIMP(statut='f',typ='TXM',into=('2D','3D',)),
+                               NOM_CHAM     = SIMP(statut='f',typ='TXM',into=C_NOM_CHAM_INTO()),
+                               NOM_CMP      = SIMP(statut='o',typ='TXM'),
+                               NB_INTERV    = SIMP(statut='f',typ='I',defaut=5),
+                              ),
+         b_volumogramme = BLOC(condition = "( VOLUMOGRAMME != None )",
+                       fr="calcul de la distribution du volume d'une structure vis-à-vis d'une composante",
+                       regles=(UN_PARMI('CHAM_GD','RESULTAT'),
+                               EXCLUS('TOUT_ORDRE','NUME_ORDRE','INST','LIST_ORDRE','LIST_INST'),),
+                       MODELE         = SIMP(statut='f',typ=modele_sdaster),
+                       CHAM_MATER     = SIMP(statut='f',typ=cham_mater),
                        RESULTAT       = SIMP(statut='f',typ=(evol_noli,evol_ther,evol_elas,evol_char) ),
                        CHAM_GD        = SIMP(statut='f',typ=(cham_no_sdaster,cham_elem) ),
                        CRITERE         =SIMP(statut='f',typ='TXM',defaut="RELATIF",into=("RELATIF","ABSOLU",),),

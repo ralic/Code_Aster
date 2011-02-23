@@ -1,8 +1,8 @@
-#@ MODIF compor1 Messages  DATE 07/12/2010   AUTEUR GENIAUT S.GENIAUT 
+#@ MODIF compor1 Messages  DATE 23/02/2011   AUTEUR LAVERNE J.LAVERNE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -360,5 +360,8 @@ non locale GRAD_VARI, assurez vous que votre modelisation soit l'une des trois
 suivantes : - D_PLAN_GRAD_VARI
             - AXIS_GRAD_VARI
             - 3D_GRAD_VARI
+"""),
+67 : _("""
+Dans la définition du materiau RUPT_DUCT les coefficients de forme de la loi CZM_TRA_MIX doivent vérifier : COEF_EXTR <= COEF_PLAS 
 """),
 }

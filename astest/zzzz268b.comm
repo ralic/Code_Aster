@@ -1,4 +1,4 @@
-# MODIF  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 23/02/2011   AUTEUR BARGELLI R.BARGELLINI 
 # TITRE VALIDATION DE POST_BORDET EN 2D ET 3D
 # zzzz268b.para = tps_job 30 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -153,8 +153,6 @@ BORDET=POST_BORDET(
                      DEF_PLAS_REFE=0.001,
                      ),
             RESULTAT=EVOL,
-            MODELE=MO,
-            CHAM_MATER=CHMAT,
             TEMP=TEMP,
              )
 

@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 14/02/2011   AUTEUR MEUNIER S.MEUNIER 
+%& MODIF TYPELEM  DATE 23/02/2011   AUTEUR LAVERNE J.LAVERNE 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -26,13 +26,6 @@ ENTETE__ ELEMENT__ EJHYME_PLQU8        MAILLE__ QUAD8
    ENS_NOEUD__  EN2     =     3  4  7   
    ENS_NOEUD__  EN3     =     6  8
 
-ENTETE__ ELEMENT__ EJHYME_AXQU8          MAILLE__ QUAD8
-   ELREFE__  SE3       GAUSS__  RIGI=FPG2   FPG_LISTE__  MATER = (RIGI)
-   ELREFE__  SE2       GAUSS__  RIGI=FPG2
-   ENS_NOEUD__  EN1     =     1  2  5
-   ENS_NOEUD__  EN2     =     3  4  7  
-   ENS_NOEUD__  EN3     =     6  8
-   
 MODE_LOCAL__
     ZVARCPG  = VARI_R   ELGA__ MATER   (VARI     )
     CMATERC  = ADRSJEVE ELEM__         (I1       )

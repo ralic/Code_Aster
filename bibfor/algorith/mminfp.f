@@ -2,7 +2,7 @@
      &                  LREP   )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 19/01/2011   AUTEUR MASSIN P.MASSIN 
+C MODIF ALGORITH  DATE 23/02/2011   AUTEUR MASSIN P.MASSIN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -554,7 +554,7 @@ C
           RREP(1) = ZR(JCMXF+ZCMXF*(IZONE-1)+16-1)
           IF (NINT(RREP(1)).EQ.0) THEN
             LREP(1) = .FALSE.
-          ELSEIF (NINT(RREP(1)).EQ.1) THEN
+          ELSEIF (NINT(RREP(1)).EQ.1.OR.NINT(RREP(1)).EQ.2) THEN
             LREP(1) = .TRUE.
           ELSE
             CALL ASSERT(.FALSE.)

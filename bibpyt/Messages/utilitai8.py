@@ -1,8 +1,8 @@
-#@ MODIF utilitai8 Messages  DATE 08/11/2010   AUTEUR PELLET J.PELLET 
+#@ MODIF utilitai8 Messages  DATE 22/02/2011   AUTEUR TARDIEU N.TARDIEU 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -246,6 +246,12 @@ Erreur utilisateur :
   - nombre de champs trouvés : %(i1)d
 Conseil:
   Reserrer la précision avec le mot clé PRECISION
+"""),
+
+60 : _("""
+ L'intégrale d'un champ sur des éléments de structure
+(poutre, plaque, coque, tuyau, poutre multi-fibres) n'est pas programmée.
+ Réduiser la zone de calcul par le mot-clé GROUP_MA/MAILLE.
 """),
 
 61 : _("""

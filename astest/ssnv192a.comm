@@ -1,4 +1,4 @@
-# MODIF  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 22/02/2011   AUTEUR MACOCCO K.MACOCCO 
 # TITRE EPROUVETTE AVEC FISSURE CENTRALE XFEM
 # ssnv192a.para = tps_job 130 mem_job 512Mo mem_aster 50 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -20,7 +20,8 @@
 # ======================================================================
 
 
-DEBUT(CODE=_F(NOM='SSNV192A', NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NOM='SSNV192A', NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),DEBUG=_F(SDVERI='OUI'),
+      IGNORE_ALARM=('CALCULEL2_63'))
 
 #----------------------------------------------
 #                   PARAMETRES
@@ -195,7 +196,13 @@ FISS=DEFI_FISS_XFEM(MODELE=MODELEIN,
                                  VECT_ORIE=(XVECT, YVECT, ZVECT,),
                                  POINT_ORIG=(XORI, YORI, ZORI,),),
                      INFO=1,);
-
+# Test sur les tables
+TB_FOND=RECU_TABLE(CO=FISS,
+                    NOM_TABLE='FOND_FISS',);
+IMPR_TABLE(TABLE=TB_FOND)
+NB_FOND=RECU_TABLE(CO=FISS,
+                    NOM_TABLE='NB_FOND_FISS',);
+IMPR_TABLE(TABLE=NB_FOND)
 
 #----------------------------------------------
 #               MODELE FISSURE

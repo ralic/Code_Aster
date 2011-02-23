@@ -1,8 +1,8 @@
-#@ MODIF make_surch_offi Lecture_Cata_Ele  DATE 05/10/2005   AUTEUR VABHHTS J.PELLET 
+#@ MODIF make_surch_offi Lecture_Cata_Ele  DATE 22/02/2011   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -44,88 +44,99 @@ usage= '''
 '''
 ####################################################################################################
 
-import sys  ,  os  , glob , string, traceback
-
-if len(sys.argv) !=7 : print usage ; raise StandardError
-
-
-
-# rep_scripts :
-#--------------
-scripts=os.path.abspath(sys.argv[1])
-if os.path.isdir(scripts) :
-    sys.path[:0]=[scripts]
-else:
-    print scripts+" doit etre le répertoire principal des sources *.py (Eficas en général)" ; raise StandardError
+import sys
+import os
+import glob
+import string
+import traceback
 
 
-# surch :
-#----------------
-surch=os.path.abspath(sys.argv[3])
+def main(rep_trav, surch, unigest, nom_capy_offi, resu_ojb):
+    """Script pour surcharger les catalogues officiels"""
+    from Lecture_Cata_Ele.lecture import lire_cata
+    from Lecture_Cata_Ele.imprime import impr_cata
+    import Lecture_Cata_Ele.utilit as utilit
+
+    # surch :
+    #----------------
+    surch=os.path.abspath(surch)
 
 
-# unigest :
-#--------------
-unigest=os.path.abspath(sys.argv[4])
+    # unigest :
+    #--------------
+    unigest=os.path.abspath(unigest)
 
-# nom_capy_offi :
-#----------------
-nom_capy_offi=os.path.abspath(sys.argv[5])
-
-
-# resu_ojb :
-#----------------
-resu_ojb=os.path.abspath(sys.argv[6])
+    # nom_capy_offi :
+    #----------------
+    nom_capy_offi=os.path.abspath(nom_capy_offi)
 
 
-# rep_trav :
-#--------------
-trav=os.path.abspath(sys.argv[2])
-dirav=os.getcwd()
-if os.path.isdir(trav) :
-    print trav+" ne doit pas exister."; raise StandardError
-else:
-    os.mkdir(trav)
-    os.chdir(trav)
+    # resu_ojb :
+    #----------------
+    resu_ojb=os.path.abspath(resu_ojb)
 
-try :
+
+    # rep_trav :
+    #--------------
+    trav=os.path.abspath(rep_trav)
+    dirav=os.getcwd()
+    if os.path.isdir(trav) :
+        print trav+" ne doit pas exister."; raise StandardError
+    else:
+        os.mkdir(trav)
+        os.chdir(trav)
+
     try :
-        # surcharge des capy et écriture du résultat au format .ojb :
-        #-------------------------------------------------------------
-        from Lecture_Cata_Ele import lecture, imprime , utilit
+        try :
+            # surcharge des capy et écriture du résultat au format .ojb :
+            #-------------------------------------------------------------
+            if os.path.isfile(surch) :
+               # pour ne pas utiliser trop de mémoire, on splite le fichier pour la lecture :
+               liste_morceaux=utilit.cata_split(surch,"morceau",5000)
 
-        if os.path.isfile(surch) :
-           # pour ne pas utiliser trop de mémoire, on splite le fichier pour la lecture :
-           liste_morceaux=utilit.cata_split(surch,"morceau",5000)
+               capy_surch =lire_cata(liste_morceaux[0])
+               for k in range(len(liste_morceaux)-1) :
+                  capy_surc2 =lire_cata(liste_morceaux[k+1])
+                  utilit.concat_capy(capy_surch,capy_surc2)
 
-           capy_surch =lecture.lire_cata(liste_morceaux[0])
-           for k in range(len(liste_morceaux)-1) :
-              capy_surc2 =lecture.lire_cata(liste_morceaux[k+1])
-              utilit.concat_capy(capy_surch,capy_surc2)
+            else:
+               capy_surch =None
 
-        else:
-           capy_surch =None
+            capy_offi  =utilit.read_capy(nom_capy_offi)
 
-        capy_offi  =utilit.read_capy(nom_capy_offi)
+            # prise en compte des destructions demandées via unigest :
+            utilit.detruire_cata(capy_offi,unigest)
 
-        # prise en compte des destructions demandées via unigest :
-        utilit.detruire_cata(capy_offi,unigest)
+            utilit.surch_capy(capy_offi,capy_surch)
+            impr_cata(capy_offi,resu_ojb,'ojb')
 
-        utilit.surch_capy(capy_offi,capy_surch)
-        imprime.impr_cata(capy_offi,resu_ojb,'ojb')
+        except  :
+            print 60*'-'+' debut trace back'
+            traceback.print_exc(file=sys.stdout)
+            print 60*'-'+' fin   trace back'
+            raise Exception
 
-    except  :
-        print 60*'-'+' debut trace back'
-        traceback.print_exc(file=sys.stdout)
-        print 60*'-'+' fin   trace back'
-        raise Exception
+    finally:
+          # ménage :
+          #------------------------
+          os.chdir(dirav)
+          import shutil
+          shutil.rmtree(trav)
 
-finally:
-      # ménage :
-      #------------------------
-      os.chdir(dirav)
-      import shutil
-      shutil.rmtree(trav)
 
+if __name__ == '__main__':
+    if len(sys.argv) !=7 :
+        print usage
+        raise StandardError
+
+    # rep_scripts :
+    #--------------
+    scripts=os.path.abspath(sys.argv[1])
+    if os.path.isdir(scripts) :
+        sys.path[:0]=[scripts]
+    else:
+        print scripts+" doit etre le répertoire principal des sources *.py (Eficas en général)" ; raise StandardError
+
+    main(*sys.argv[2:])
 
 

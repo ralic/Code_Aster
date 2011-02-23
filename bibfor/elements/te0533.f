@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 01/02/2011   AUTEUR MASSIN P.MASSIN 
+C MODIF ELEMENTS  DATE 23/02/2011   AUTEUR MASSIN P.MASSIN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -60,7 +60,7 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX --------------------
       INTEGER      NDIM,NFH,DDLC,DDLS,NDDL,NNO,NNOS,NNOM,NNOF,DDLM
       INTEGER      NPG,NPGF,XOULA,FAC(6,4),NBF
       INTEGER      INDCO(60),NINTER,NFACE,CFACE(5,3),IBID2(12,3)
-      INTEGER      NINTEG,NFE,SINGU,JSTNO,NVIT
+      INTEGER      NINTEG,NFE,SINGU,JSTNO,NVIT,NVEC
       INTEGER      NNOL,PLA(27),LACT(8),NLACT,IMATE
       INTEGER      IER,CONTAC,JCOHES,NPTF,NFISS,JFISNO
       REAL*8       FFP(27),FFC(8),KNP(3,3),RELA,SAUT(3)
@@ -70,16 +70,13 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX --------------------
       REAL*8       PTKNP(3,3),IK(3,3),CZMFE
       REAL*8       LSN,LST,R,RR,E,G(3),RBID
       REAL*8       CSTACO,CSTAFR,CPENCO,CPENFR,X(4)
-      REAL*8       FFPC(27),DFBID(27,3),DSIDEP(6,6),KA
-      REAL*8       AM(3),BETASQ,PP(3,3),DTANG(3),DNOR(3)
-      REAL*8       ALPHA0,ALPHA,COHES(60),VALRES(3)
+      REAL*8       FFPC(27),DFBID(27,3),DSIDEP(6,6),SIGMA(6)
+      REAL*8       AM(3),PP(3,3),DTANG(3),DNOR(3)
+      REAL*8       ALPHA,COHES(60)
       INTEGER      ZXAIN,XXMMVD
       LOGICAL      LPENAF,NOEUD,LPENAC,ADHER,MATSYM
-      CHARACTER*2  CODRET(3)
-      CHARACTER*8  ELREF,ELREFC,TYPMA,FPG,ELC,LAG,NOMRES(3)
-      CHARACTER*9  PHEN
+      CHARACTER*8  ELREF,ELREFC,TYPMA,FPG,ELC,LAG,NOMRES(3),JOB
       CHARACTER*16 ENR
-      DATA         NOMRES /'GC','SIGM_C','PENA_ADH'/
 C......................................................................
 
       CALL JEMARQ()
@@ -139,7 +136,7 @@ C
         CZMFE = 0.D0
       ENDIF
 C
-      IF(RELA.EQ.1.D0) THEN
+      IF(RELA.EQ.1.D0.OR.RELA.EQ.2.D0) THEN
         CALL JEVECH('PMATERC','L',IMATE)
         CALL JEVECH('PCOHES' ,'L',JCOHES)
       ENDIF         
@@ -158,13 +155,14 @@ C
       DO 10 I=1,60
         INDCO(I) = ZI(JINDCO-1+I)
         SEUIL(I) = ZR(JSEUIL-1+I)
-      IF(RELA.EQ.1.D0)COHES(I) = ZR(JCOHES-1+I)
+        IF(RELA.EQ.1.D0.OR.RELA.EQ.2.D0) THEN
+           COHES(I) = ZR(JCOHES-1+I)
+        ENDIF
  10   CONTINUE
 
       RHON = ZR(JDONCO-1+1)
       MU = ZR(JDONCO-1+2)
       RHOTK = ZR(JDONCO-1+3)
-      BETASQ=1.D0
 
 C --- COEFFICIENTS DE STABILISATION
       CSTACO=ZR(JDONCO-1+6)
@@ -197,13 +195,9 @@ C     PENALISATION DU FROTTEMENT
         IF(CPENFR.NE.0.0D0)LPENAF=.TRUE.
       ENDIF
 C
-      IF(RELA.EQ.1.D0) THEN
-        PHEN = 'RUPT_FRAG'
-        CALL RCVALA( ZI(IMATE),' ',PHEN,0,' ',0.D0,3,
-     &                     NOMRES,VALRES,CODRET, 'FM' )
-        ALPHA0=(VALRES(1)/VALRES(2))*VALRES(3)
+      IF(RELA.EQ.1.D0.OR.RELA.EQ.2.D0) THEN
         IF(CZMFE.EQ.1.D0) THEN
-          CSTACO=E/VALRES(3)
+          CSTACO=E
           LPENAC=.FALSE.
         ENDIF
       ENDIF
@@ -376,28 +370,26 @@ C
 C --- ACTIVATION DE LA LOI COHESIVE & RECUPERATION DES
 C --- PARAMETRES MATERIAUX
 C
-              IF(RELA.NE.1.0D0) THEN
-                GO TO 53
-              ENDIF
+              IF(RELA.EQ.1.D0.OR.RELA.EQ.2.D0) THEN
 C
 C --- CALCUL DU SAUT DE DEPLACEMENT EQUIVALENT [[UEG]]
 C
-              CALL XMMSA3(NDIM,NNO,NNOS,FFP,IDEPD,IDEPM,
-     &                    NFH,SINGU,RR,DDLS,DDLM,SAUT)
-
-              CALL XMMSA2(NDIM,NNOL,NNOF,IPGF,IVFF,ZI(IMATE),FFC,
-     &                    SAUT,NOEUD,ND,TAU1,TAU2,IFA,CFACE,LACT,
-     &                    COHES(ISSPG),BETASQ,ALPHA0,ALPHA,
-     &                    DSIDEP,PP,DNOR,DTANG,P,KA,AM)
+                 NVEC=2
+                 CALL XMMSA3(NDIM,NNO,NNOS,FFP,NDDL,NVEC,ZR(IDEPD),
+     &               ZR(IDEPM),ZR(IDEPM),NFH,SINGU,RR,DDLS,DDLM,SAUT)
+                 JOB='MATRICE'
+                 CALL XMMSA2(NDIM ,IPGF  ,ZI(IMATE)   ,SAUT ,ND  ,
+     &                       TAU1 ,TAU2  ,COHES(ISSPG),JOB  ,RELA,
+     &                       ALPHA,DSIDEP,SIGMA       ,PP   ,DNOR,
+     &                       DTANG,P     ,AM)     
 C
 C --- CALCUL DES MATRICES DE COHESION 
 C
-              CALL XMMCO1(NDIM,NNO,ALPHA,KA,DSIDEP,PP,P,
-     &                    VALRES,DNOR,DTANG,NFH,DDLS,JAC,
-     &                    FFP,SINGU,RR,AM,
-     &                    MMAT)  
+                 CALL XMMCO1(NDIM,NNO,DSIDEP,PP,P,
+     &                       ND,NFH,DDLS,JAC,FFP,
+     &                       SINGU,RR,TAU1,TAU2,MMAT)
 
- 53           CONTINUE
+              ENDIF
 C
             ELSE IF (INDCO(ISSPG).EQ.1) THEN
 C

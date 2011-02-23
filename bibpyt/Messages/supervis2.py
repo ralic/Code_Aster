@@ -1,4 +1,4 @@
-#@ MODIF supervis2 Messages  DATE 03/01/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF supervis2 Messages  DATE 22/02/2011   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================

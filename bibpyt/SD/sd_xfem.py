@@ -1,8 +1,8 @@
-#@ MODIF sd_xfem SD  DATE 21/12/2010   AUTEUR MASSIN P.MASSIN 
+#@ MODIF sd_xfem SD  DATE 22/02/2011   AUTEUR MACOCCO K.MACOCCO 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -24,6 +24,7 @@ from SD.sd_cham_no   import sd_cham_no
 from SD.sd_cham_elem import sd_cham_elem
 from SD.sd_carte     import sd_carte
 from SD.sd_util      import *
+from SD.sd_l_table import sd_l_table
 
 
 
@@ -78,6 +79,9 @@ class sd_fiss_xfem(AsBase):
     LISEQ  = Facultatif(AsVI(SDNom(nomj='.LISEQ')))
     LISRL  = Facultatif(AsVI(SDNom(nomj='.LISRL')))
 
+# I.4) objets relatifs au contact
+    # une sd_modele peut avoir une "sd_l_table" contenant des grandeurs caractéristiques de l'étude :
+    lt = Facultatif(sd_l_table(SDNom(nomj='')))
 
 # 1.5) verifications d'existence :
 

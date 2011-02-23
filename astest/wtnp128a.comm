@@ -1,4 +1,4 @@
-# MODIF  DATE 08/02/2011   AUTEUR GRANET S.GRANET 
+# MODIF  DATE 23/02/2011   AUTEUR LAVERNE J.LAVERNE 
 # TITRE   TEST HM, 2D , MODELISATION THMC=LIQU_SATU
 # wtnp128a.para = tps_job 300 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -106,7 +106,7 @@ MO=AFFE_MODELE(MAILLAGE=MA,
 
 ORIEN_FI=AFFE_CARA_ELEM(MODELE=MO,
                         MASSIF=(_F(GROUP_MA=('FISSURE'),
-                                  ANGL_EULER=(0.,0.,0.,),),
+                                  ANGL_REP=(0.,0.,0.,),),
                                 ),);
 
 ####################################

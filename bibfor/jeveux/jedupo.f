@@ -1,9 +1,8 @@
       SUBROUTINE JEDUPO(SCHIN, CLAOUT, SCHOUT, DUPCOL)
-
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 06/07/2009   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 22/02/2011   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
@@ -19,6 +18,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
 C TOLE CFT_726 CFT_720 CRP_18 CRS_508  CRS_512
+C RESPONSABLE LEFEBVRE J-P.LEFEBVRE
       IMPLICIT REAL*8 (A-H,O-Z)
       CHARACTER*(*)       SCHIN, CLAOUT, SCHOUT
       LOGICAL                                           DUPCOL
@@ -77,6 +77,7 @@ C ----------------------------------------------------------------------
       CHARACTER*32     NOMIN,NOMOUT,NOMCOL
       CHARACTER*1      KCLAS,GENRI,TYPEI
       LOGICAL          IDENBA,LIBCOL,X2U
+      REAL*8           VAL
       DATA             IV / 0 , 0 , 0 , 0 , 1 , 0 , 1 , 1 , 1 , 1  /
       DATA             CSUFFI / '$$DESO  ','$$IADD  ','$$IADM  ',
      +                          '$$MARQ  ','$$NOM   ','        ',
@@ -138,7 +139,7 @@ C
         ELSE IF ( IADDI(1) .GT. 0 ) THEN
           CALL JXLIRO (ICIN,IADOUT,IADDI,LONOI*LTYPI)
         ELSE
-          CALL JXABOR()
+          CALL U2MESK('F','JEVEUX1_66',1,NOMIN)
         ENDIF
         DOCU(JDOCU(ICOUT)+IDOUT) = DOCU(JDOCU(ICIN)+IDIN)
         LUTI(JLUTI(ICOUT)+IDOUT) = LUTI(JLUTI(ICIN)+IDIN)
@@ -287,7 +288,7 @@ C
             ELSE IF ( IADDI(1) .GT. 0 ) THEN
               CALL JXLIRO (ICIN,IADOUT,IADDI,NBL)
             ELSE
-              CALL JXABOR()
+              CALL U2MESG('F','JEVEUX1_65',1,NOMIN,1,K,0,VAL)
             ENDIF
  2        CONTINUE
         ENDIF

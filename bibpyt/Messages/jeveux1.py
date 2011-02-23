@@ -1,8 +1,8 @@
-#@ MODIF jeveux1 Messages  DATE 29/09/2010   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF jeveux1 Messages  DATE 22/02/2011   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -412,5 +412,19 @@ cata_msg = {
  est plus de %(r1).2f fois supérieur au volume de données lues (%(r2).2f Mo). 
   
 """),
+
+65 : _("""
+
+ Le segment de valeurs associé à l'objet %(i1)d de la collection %(k1)s ne possède ni adresse mémoire, ni adresse disque. 
+  
+"""),
+
+
+66 : _("""
+
+ Le segment de valeurs associé à l'objet simple %(k1)s ne possède ni adresse mémoire, ni adresse disque. 
+  
+"""),
+
 
 }

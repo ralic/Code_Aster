@@ -1,9 +1,9 @@
       SUBROUTINE OP0187()
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 10/08/2010   AUTEUR GENIAUT S.GENIAUT 
+C MODIF PREPOST  DATE 22/02/2011   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -45,7 +45,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C     ------------------------------------------------------------------
       INTEGER      IBID,IRET,NSETOT,NNNTOT,NCOTOT,NBNOC,NBMAC,IFM,NIV
-      INTEGER      NBGMA2,JNIVGR
+      INTEGER      NBGMA2,JNIVGR,NFTOT,MFTOT,NFCOMF,NGFON
       CHARACTER*2  PREFNO(4)
       CHARACTER*8  MAXFEM,MO,MALINI,K8B,NOMRES,NOGRFI
       CHARACTER*16 K16B
@@ -58,11 +58,14 @@ C
 C
 C     ------------------------------------------------------------------
 C     1. RECUPERATION DES CONCEPTS UTILISATEURS
+C        ET DEFINITION DES NOMBRES DE MAILLES ET DE NOEUDS EN FOND DE
+C        FISSURE
 C     ------------------------------------------------------------------
 C
       IF (NIV.GT.1) WRITE(IFM,*)' '
       IF (NIV.GT.1) WRITE(IFM,*)'1. XPOINI'
       CALL XPOINI(MAXFEM,MO,MALINI,K8B,K24B,K8B,K8B,PREFNO,NOGRFI)
+      CALL XPOFON(MO,MAXFEM,MFTOT,NFTOT,NFCOMF,NGFON)
 C
 C     ------------------------------------------------------------------
 C     2. SEPARATION DES MAILLES DE MALINI EN 2 GROUPES
@@ -79,10 +82,10 @@ C
       LISTGR = '&&OP0187.LISTGR'
       CALL XPOSEP(MO,MALINI,MAILC,MAILX,NSETOT,NNNTOT,NCOTOT,
      &                                                 LOGRMA,LISTGR)
-
+      
       IF (NIV.GT.1) THEN
-        WRITE(IFM,*)'NOMBRE DE NOUVELLES MAILLES A CREER',NSETOT
-        WRITE(IFM,*)'NOMBRE DE NOUVEAUX NOEUDS A CREER',NNNTOT
+        WRITE(IFM,*)'NOMBRE DE NOUVELLES MAILLES A CREER',NSETOT+MFTOT
+        WRITE(IFM,*)'NOMBRE DE NOUVEAUX NOEUDS A CREER',NNNTOT+NFTOT
       ENDIF
 
 C     ------------------------------------------------------------------
@@ -93,9 +96,9 @@ C     ------------------------------------------------------------------
       IF (NIV.GT.1) WRITE(IFM,*)'3. XPODIM'
       LISTNO = '&&OP0187.LISTNO'
       DIRGRM = '&&OP0187.DIRGRM'
-      CALL XPODIM(MALINI,MAILC,K8B,K24B,NSETOT,NNNTOT,NCOTOT,LISTNO,
-     &            K19B,K19B,K19B,K19B,K19B,K19B,K19B,
-     &            IBID,K8B,NBNOC,NBMAC,LOGRMA,DIRGRM,MAXFEM)
+      CALL XPODIM(MALINI,MAILC,K8B,K24B,NSETOT+MFTOT,NNNTOT+NFTOT,
+     &            NCOTOT+NFCOMF,LISTNO,K19B,K19B,K19B,K19B,K19B,K19B,
+     &            K19B,IBID,K8B,NBNOC,NBMAC,LOGRMA,DIRGRM,MAXFEM,NGFON)
 
 C     ------------------------------------------------------------------
 C     4. TRAITEMENT DES MAILLES DE MAILC
@@ -121,8 +124,16 @@ C     ------------------------------------------------------------------
       IF (NIV.GT.1) WRITE(IFM,*)' '
       IF (NIV.GT.1) WRITE(IFM,*)'5. XPOMAX'
       CALL XPOMAX(MO,MALINI,MAILX,NBNOC,NBMAC,PREFNO,NOGRFI,MAXFEM,
-     &     K19B,K19B,K19B,K19B,K19B,K19B,LISTGR,DIRGRM,NIVGRM,K8B)
+     &     K19B,K19B,K19B,K19B,K19B,K19B,LISTGR,DIRGRM,NIVGRM,K8B,NGFON)
 
+C     ------------------------------------------------------------------
+C     6. TRAITEMENT DES FONDS DE FISSURE
+C     ------------------------------------------------------------------
+
+      IF (NIV.GT.1) WRITE(IFM,*)' '
+      IF (NIV.GT.1) WRITE(IFM,*)'6. XPOCRF'
+      CALL XPOCRF(MO,MAXFEM,MFTOT,NFTOT,NFCOMF)
+      
       IF (NIV.GT.1) WRITE(IFM,*)'FIN DE POST_MAIL_XFEM'
 
       CALL TITRE()

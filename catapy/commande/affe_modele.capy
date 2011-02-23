@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 15/02/2011   AUTEUR FLEJOU J-L.FLEJOU 
+#& MODIF COMMANDE  DATE 23/02/2011   AUTEUR LAVERNE J.LAVERNE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -94,7 +94,6 @@ AFFE_MODELE=OPER(nom="AFFE_MODELE",op=18,sd_prod=modele_sdaster,
                                   "AXIS_GRAD_VARI",  # RESP. : MICHEL S.MICHEL
                                   "AXIS_GVNO",       # RESP. : BEAURAIN J.BEAURAIN
                                   "AXIS_JOINT",      # RESP. : LAVERNE J.LAVERNE
-                                  "AXIS_JOINT_HYME", # RESP. : LAVERNE J.LAVERNE
                                   "AXIS_INTERFACE",  # RESP. : LAVERNE J.LAVERNE
                                   "AXIS_ELDI",       # RESP. : LAVERNE J.LAVERNE
                                   "BARRE",           # RESP. : FLEJOU J.L.FLEJOU

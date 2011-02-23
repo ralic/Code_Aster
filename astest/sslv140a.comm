@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 22/02/2011   AUTEUR TARDIEU N.TARDIEU 
 # TITRE CALCUL DE MODULES EFFECTIFS EN PYTHON
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -141,7 +141,7 @@ CONTR1=CREA_CHAMP(TYPE_CHAM='ELGA_SIEF_R',
                   RESULTAT=MESTX,
                   NOM_CHAM='SIEF_ELGA',);
                   
-INT_SIX1=POST_ELEM(MODELE=MO,
+INT_SIX1=POST_ELEM(MODELE=MO,CHAM_MATER=CHMAT,
                    CHAM_GD=CONTR1,
                    INTEGRALE=(_F (TOUT='OUI',NOM_CMP=('SIXX'),),
                               _F (TOUT='OUI',NOM_CMP=('SIYY'),),),)

@@ -2,9 +2,9 @@
       IMPLICIT   NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
+C MODIF UTILITAI  DATE 22/02/2011   AUTEUR TARDIEU N.TARDIEU 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -39,7 +39,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON  /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER      NH, IRET, JCHA, JORDR, N1, N2, NBOCC,
-     &             NBORDR, NC, NCHAR, NP, NR, JPARA, ICHA,IER
+     &             NBORDR, NC, NCHAR, NP, NR, JPARA, IER
       REAL*8       PREC
       CHARACTER*4  CTYP
       CHARACTER*8  K8B, MODELE, CARA, DEFORM, RESUCO, CRIT
@@ -111,7 +111,6 @@ C                   -----------
                TABTYP(1)='NOEU#DEPL_R'
                TABTYP(2)='NOEU#TEMP_R'
                TABTYP(3)='ELEM#ENER_R'
-               CALL CHPVE2(CHDEF,3,TABTYP,IER)
                KNUM = '&&OP0107.NUME_ORDRE'
                CALL GETVID ( ' ', 'RESULTAT' , 1,1,1, RESUCO, NR )
                CALL GETVR8 ( ' ', 'PRECISION', 1,1,1, PREC  , NP )
@@ -124,6 +123,7 @@ C                   -----------
                CALL JEVEUO ( KNUM, 'L', JORDR )
                CALL RSEXCH ( RESUCO, 'DEPL', ZI(JORDR), CHDEF, IRET )
                IF ( IRET .GT. 0 ) CALL U2MESS('F','CHAMPS_2')
+               CALL CHPVE2(CHDEF,3,TABTYP,IER)
             ENDIF
          ENDIF
 
@@ -168,6 +168,14 @@ C                   ----------
 
       ENDIF
 
+      CALL GETFAC ( 'VOLUMOGRAMME' , NBOCC )
+C                   --------------
+      IF ( NBOCC .NE. 0 ) THEN
+
+         CALL MEDOME (MODELE,MATE,CARA,KCHA,NCHAR,CTYP,RESUCO)
+         CALL PEVOLU ( RESU, MODELE, CARA, NBOCC )
+
+      ENDIF
 
       CALL GETFAC ( 'MINMAX' , NBOCC )
 C                   ----------
@@ -310,5 +318,5 @@ C                   -----------
       CALL TITRE
 C
       CALL JEDEMA ( )
-99999 CONTINUE
+
       END

@@ -1,8 +1,8 @@
       SUBROUTINE JEALDY ( IACT , LGSEG )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 05/08/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 22/02/2011   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -28,8 +28,6 @@ C              =/= 1 DESACTIVATION DE L'ALLOCATION DYNAMIQUE
 C IN  LGSEG : LONGUEUR EN ENTIER (INTEGER) A PARTIR DE LAQUELLE 
 C             L'ALLOCATION EST DYNAMIQUE 
 C ----------------------------------------------------------------------
-      LOGICAL          LTESJE , LBUGJE
-      COMMON /LPARJE/  LTESJE , LBUGJE
       INTEGER          LDYN , LGDYN , NBDYN , NBFREE
       COMMON /IDYNJE/  LDYN , LGDYN , NBDYN , NBFREE
       INTEGER          LUNDEF,IDEBUG
@@ -45,9 +43,5 @@ C     ------------------------------------------------------------------
          LDYN = -100
          LGSEG = LUNDEF
       ENDIF
-C     ------------------------------------------------------------------
-      IF ( LTESJE ) THEN
-        CALL U2MESI ( 'A', 'JEVEUX_33', 1, LGSEG )
-      END IF
 C     ------------------------------------------------------------------
       END

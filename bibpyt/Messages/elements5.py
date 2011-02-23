@@ -1,4 +1,4 @@
-#@ MODIF elements5 Messages  DATE 03/01/2011   AUTEUR DESROCHES X.DESROCHES 
+#@ MODIF elements5 Messages  DATE 23/02/2011   AUTEUR LAVERNE J.LAVERNE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -208,6 +208,14 @@ OPTION MASS_INER : la masse volumique RHO doit être non nulle
 46 : _("""
   reletion :  %(k1)s  non implantée pour les éléments COQUE_3D 
   reletion : ELAS obligatoirement 
+"""),
+
+47 : _("""
+    Il n'est pas possible d'utiliser ANGL_AXE et ORIG_AXE d'AFFE_CARA_ELEM pour les modelisations xxx_INTERFACE
+"""),
+
+48 : _("""
+    Il n'est pas possible d'utiliser ANGL_AXE et ORIG_AXE d'AFFE_CARA_ELEM pour les modelisations xxx_JHMS
 """),
 
 }

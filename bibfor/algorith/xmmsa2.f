@@ -1,20 +1,18 @@
-      SUBROUTINE XMMSA2(NDIM,NNOL,NNOF,IPGF,IVFF,
-     &       IMATE,FFC,SAUT,NOEUD,ND,TAU1,TAU2,
-     &       IFA,CFACE,LACT,COHES,BETASQ,ALPHA0,
-     &       ALPHA,DSIDEP,PP,DNOR,DTANG,P,KA,AM)
+      SUBROUTINE XMMSA2(NDIM ,IPGF  ,IMATE ,SAUT ,ND   ,
+     &                  TAU1 ,TAU2  ,COHES ,JOB  ,RELA ,
+     &                  ALPHA,DSIDEP,SIGMA ,PP   ,DNOR ,
+     &                  DTANG,P     ,AM)
 
       IMPLICIT NONE
-      INTEGER     NDIM,NNOL,NNOF,IVFF,IPGF
-      INTEGER     CFACE(5,3),IFA,IMATE
-      INTEGER     LACT(8)
+      INTEGER     NDIM,IPGF,IMATE
       REAL*8      SAUT(3),AM(3),PP(3,3),DSIDEP(6,6)
-      REAL*8      FFC(8),TAU1(3),TAU2(3),ND(3),KA
-      REAL*8      ALPHA0,ALPHA,BETASQ,P(3,3)
-      REAL*8      DTANG(3),DNOR(3),COHES
-      LOGICAL     NOEUD
+      REAL*8      TAU1(3),TAU2(3),ND(3)
+      REAL*8      ALPHA,P(3,3)
+      REAL*8      DTANG(3),DNOR(3),COHES,RELA
+      CHARACTER*8 JOB
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 01/02/2011   AUTEUR MASSIN P.MASSIN 
+C MODIF ALGORITH  DATE 23/02/2011   AUTEUR MASSIN P.MASSIN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -41,32 +39,25 @@ C
 C ----------------------------------------------------------------------
 C
 C IN  NDIM   : DIMENSION DE L'ESPACE
-C IN  NNOL   : NOMBRE DE NOEUDS PORTEURS DE DDLC
-C IN  NNOF   : NOMBRE DE NOEUDS DE LA FACETTE DE CONTACT
-C IN  PLA    : PLACE DES LAMBDAS DANS LA MATRICE
 C IN  IPGF   : NUMÉRO DU POINTS DE GAUSS
-C IN  IVFF   : ADRESSE DANS ZR DU TABLEAU FF(INO,IPG)
-C IN  IMATE  : 
-C IN  FFC    : FONCTIONS DE FORME DE L'ELEMENT DE CONTACT
-C IN  SAUT
-C IN  NOEUD  : INDICATEUR FORMULATION (T=NOEUDS , F=ARETE)
+C IN  IMATE  : ADRESSE DE LA SD MATERIAU
+C IN  SAUT   : SAUT DE DEPLACEMENT
 C IN  ND     : NORMALE À LA FACETTE ORIENTÉE DE ESCL -> MAIT
 C                 AU POINT DE GAUSS
 C IN  TAU1   : TANGENTE A LA FACETTE AU POINT DE GAUSS
 C IN  TAU2   : TANGENTE A LA FACETTE AU POINT DE GAUSS
-C IN  IFA    : INDICE DE LA FACETTE COURANTE
-C IN  CFACE  : CONNECTIVITÉ DES NOEUDS DES FACETTES
-C IN  LACT   : LISTE DES LAGRANGES ACTIFS
-C IN  P      :
-C IN  COHES  :
-C OUT  ALPHA  : 
-C IN  ALPHA0 : 
+C IN  COHES  : VARIABLE INTERNE COHESIVE
+C IN  JOB    : 'SAUT_EQ', 'MATRICE' OU 'VECTEUR'
+C IN  RELA   : LOI COHESIVE 1:CZM_EXP_REG 2:CZM_LIN_REG
+C OUT ALPHA  : SAUT DE DEPLACEMENT EQUIVALENT
 C OUT DSIDEP : MATRICE TANGENTE DE CONTACT PENALISE ET DE FISSURATION
+C OUT SIGMA  : CONTRAINTE
 C OUT PP     : ND X ND
-C OUT DNOR   :
-C OUT DTANG  :
-C OUT AM     : SAUT INSTANT - : AM(1) = SAUT NORMAL
-C                               AM(2) = SAUT TANGENTIEL
+C OUT DNOR   : SAUT DEPLACEMENT NORMAL DANS LA BASE FIXE
+C OUT DTANG  : SAUT DEPLACEMENT TANGENTIEL DANS LA BASE FIXE
+C OUT P      : MATRICE DE PROJECTION SUR LE PLAN TANGENT
+C OUT AM     : SAUT INSTANT - BASE LOCALE : AM(1) = SAUT NORMAL
+C                                           AM(2) = SAUT TANGENTIEL
 C
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX --------------------
 C
@@ -87,68 +78,46 @@ C
 
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX --------------------
 C
-      INTEGER      I,J,K,NLI
-      REAL*8       FFI,VIM(9),VIP(9),TAU11(3),TAU22(3)
+      INTEGER      I,K
+      REAL*8       VIM(9),VIP(9)
       REAL*8       AM2D(2),DAM2D(2),DSID2D(6,6),DAM(3)
-      REAL*8       SIGMA(6),SQRNOR,SQRTAN,R8PREM,EPS
+      REAL*8       SIGMA(6),SQRNOR,SQRTAN,R8PREM,EPS,ALPHA0
       CHARACTER*16 OPTION
 C ----------------------------------------------------------------------
 C
-      CALL VECINI(3,0.D0,TAU11)
-      CALL VECINI(3,0.D0,TAU22)
       CALL VECINI(3,0.D0,AM)
       CALL VECINI(3,0.D0,DAM)
       CALL MATINI(3,3,0.D0,PP)
+      CALL MATINI(3,3,0.D0,P)      
       CALL MATINI(6,6,0.D0,DSIDEP)
       CALL MATINI(6,6,0.D0,DSID2D)
       CALL VECINI(6,0.D0,SIGMA)
       CALL VECINI(9,0.D0,VIM)
       CALL VECINI(9,0.D0,VIP)
+      CALL VECINI(3,0.D0,DTANG)
+      CALL VECINI(3,0.D0,DNOR)
 C
       CALL XMAFR1(3,ND,P)
-
-      DO 310 I = 1,NNOL
-        IF (NOEUD) THEN
-          FFI=FFC(I)
-          NLI=LACT(I)
-          IF (NLI.EQ.0) GOTO 310
-        ELSE
-          FFI=ZR(IVFF-1+NNOF*(IPGF-1)+I)
-          NLI=CFACE(IFA,I)
-        ENDIF
-        DO 311 J=1,NDIM
-          IF (NDIM .EQ.3) THEN
-            TAU11(J)=TAU11(J)+FFI*TAU1(J)
-            TAU22(J)=TAU22(J)+FFI*TAU2(J)
-          ELSEIF (NDIM.EQ.2) THEN
-            TAU11(J)=TAU11(J)+FFI*TAU1(J)
-          ENDIF
-311     CONTINUE
-310   CONTINUE           
-
+C
+C --- CALCUL DU SAUT DE DEPLACEMENT AM EN BASE LOCALE
+C
       DO 218 I=1,NDIM
         DTANG(I) = 0.D0
         DNOR(I) = 0.D0
-C
         DO 219 K=1,NDIM
           PP(I,K)=ND(I)*ND(K)
           DTANG(I)=DTANG(I)+P(I,K)*SAUT(K)
           DNOR(I) = DNOR(I) +PP(I,K)*SAUT(K)                    
  219    CONTINUE 
-        AM(1) = AM(1) + DNOR(I)*ND(I)
-        AM(2) = AM(2) + DTANG(I)*TAU11(I)
-        AM(3) = AM(3) + DTANG(I)*TAU22(I)
-        DAM(1) = AM(1)
-        DAM(2) = AM(2)
-        DAM(3) = AM(3)  
- 218  CONTINUE             
 C                
 C --- L'INTERPENETRATION CORRESPOND A SAUT<0 DANS LCEJEX
+C 
+        AM(1) = AM(1) - DNOR(I)*ND(I)
+        AM(2) = AM(2) - DTANG(I)*TAU1(I)
+        AM(3) = AM(3) - DTANG(I)*TAU2(I)
+ 218  CONTINUE             
 C
-      DO 777 I=1,NDIM
-        AM(I)=-AM(I)
-        DAM(I)=-DAM(I)
- 777  CONTINUE
+C --- CALCUL DU SAUT DE DEPLACEMENT EQUIVALENT ALPHA
 C
       SQRTAN=0.D0
       DO 214 I=2,NDIM
@@ -156,41 +125,42 @@ C
 214   CONTINUE
       EPS=R8PREM()            
       SQRNOR=(MAX(AM(1),EPS))**2
-      ALPHA = SQRT(SQRNOR+BETASQ*SQRTAN) 
-      
-      IF(ALPHA0.NE.0.D0) THEN           
-          KA=MAX(ALPHA0,COHES)        
+      ALPHA = SQRT(SQRNOR+SQRTAN)
+C
+C --- CALCUL VECTEUR ET MATRICE TANGENTE EN BASE LOCALE
+C      
+      IF(JOB.NE.'SAUT_EQ') THEN
+         VIM(1)=COHES
+         OPTION='FULL_MECA'
 C                
 C VIM = VARIABLES INTERNES UTILISEES DANS LCEJEX
 C.............VIM(1): SEUIL, PLUS GRANDE NORME DU SAUT
-C.............VIM(2): INDICATEUR DE DISSIPATION (0 : NON, 1 : OUI)
-
-         VIM(1)=COHES
-              
-         IF ( ALPHA.LE.KA ) THEN   
-           VIM(2) = 0
-         ELSE
-           VIM(2) = 1
-         ENDIF
-               
-         OPTION='RIGI_MECA'
 C
          IF (NDIM.EQ.2) THEN
            AM2D(1)=AM(1)
            AM2D(2)=AM(2)              
            DAM2D(1)=DAM(1)
            DAM2D(2)=DAM(2)
-           CALL LCEJEX('RIGI',IPGF,1,2,IMATE,OPTION,
-     &             AM2D,DAM2D,SIGMA,DSID2D,VIM,VIP)
+           IF(RELA.EQ.1.D0) THEN
+             CALL LCEJEX('RIGI',IPGF,1,2,IMATE,OPTION,
+     &                    AM2D,DAM2D,SIGMA,DSID2D,VIM,VIP)
+           ELSE IF(RELA.EQ.2.D0) THEN
+             CALL LCEJLI('RIGI',IPGF,1,2,IMATE,OPTION,
+     &                    AM2D,DAM2D,SIGMA,DSID2D,VIM,VIP)
+           ENDIF             
            DSIDEP(1,1)=DSID2D(1,1)
            DSIDEP(1,2)=DSID2D(1,2)
            DSIDEP(2,1)=DSID2D(2,1)
            DSIDEP(2,2)=DSID2D(2,2)
          ELSE IF (NDIM.EQ.3) THEN
-           CALL LCEJEX('RIGI',IPGF,1,3,IMATE,OPTION,
-     &             AM,DAM,SIGMA,DSIDEP,VIM,VIP)
-         ENDIF
-      
-      ENDIF          
+           IF(RELA.EQ.1.D0) THEN  
+             CALL LCEJEX('RIGI',IPGF,1,3,IMATE,OPTION,
+     &                    AM,DAM,SIGMA,DSIDEP,VIM,VIP)
+           ELSE IF(RELA.EQ.2.D0) THEN
+             CALL LCEJLI('RIGI',IPGF,1,3,IMATE,OPTION,
+     &                    AM,DAM,SIGMA,DSIDEP,VIM,VIP)             
+           ENDIF
+         ENDIF         
 C
+      ENDIF
       END

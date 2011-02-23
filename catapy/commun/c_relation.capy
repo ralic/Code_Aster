@@ -1,4 +1,4 @@
-#& MODIF COMMUN  DATE 15/02/2011   AUTEUR FLEJOU J-L.FLEJOU 
+#& MODIF COMMUN  DATE 23/02/2011   AUTEUR LAVERNE J.LAVERNE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -35,6 +35,7 @@ def C_RELATION() : return (             "ELAS",            #COMMUN#
                                         "CZM_LIN_REG",
                                         "CZM_OUV_MIX",
                                         "CZM_TAC_MIX",
+                                        "CZM_TRA_MIX",
                                         "DIS_BILI_ELAS",
                                         "DIS_CHOC",
                                         "DIS_ECRO_CINE",

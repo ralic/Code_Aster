@@ -1,8 +1,8 @@
       SUBROUTINE SSDMGN(MAG)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SOUSTRUC  DATE 19/10/2010   AUTEUR DELMAS J.DELMAS 
+C MODIF SOUSTRUC  DATE 22/02/2011   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -217,7 +217,7 @@ C               --------------------------------------
                 DO 5112,II=1,NBNO
                   INOL=ZI(IAWK1-1+II)
                   KK= INDIIS(ZI(IALINO),INOL,1,NBNOEX)
-                  IF (KK.EQ.0) CALL JXABOR()
+                  IF (KK.EQ.0) CALL ASSERT(.FALSE.)
                   ZI(IAGNO-1+II)=I1NOE+KK
 C
  5112           CONTINUE
@@ -255,7 +255,7 @@ C
             DO 52,II=1,NBNO
               INOL=ZI(IAWK1-1+II)
               KK= INDIIS(ZI(IALINO),INOL,1,NBNOEX)
-              IF (KK.EQ.0) CALL JXABOR()
+              IF (KK.EQ.0) CALL ASSERT(.FALSE.)
               ZI(IAGNO-1+II)=I1NOE+KK
  52         CONTINUE
           ELSE

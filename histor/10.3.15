@@ -1,0 +1,1340 @@
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR bargelli     BARGELLINI Renaud      DATE 23/02/2011 - 13:16:01
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 015452 DU 2010-08-25 09:34:34
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+    Modifications lxc3xa9gxc3xa8res de POST_BORDET
+FONCTIONNALITE
+   Apr�s discussion en EDA, voici les �volutions qui ont �t� r�alis�es :
+   
+   1/ On ne demande plus le mod�le et le champ_mat�riau dans la macro mais on les retrouve � partir de la 
+   structure r�sultat. On v�rifie que la structure r�sultat ne contient qu'un et un seul modele et un et 
+   un seul champ mat�riau sinon une erreur est lev�e.
+   
+   2/ On introduit la notion de pr�cision lorsque l'on demande l'instant final de calcul � l'utilisateur. 
+   Cette pr�cision est assortie d'un crit�re qui est par d�faut absolu.
+   
+   NB : cette fiche est redondante avec la 15949 qui est r�solue de fait par la m�me occasion.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : U4.81.41
+VALIDATION
+    ssna108a, zzzz268a, zzzz268b
+NB_JOURS_TRAV  : 2.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 015949 DU 2010-11-22 14:41:13
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+    POST_BORDET : bloc PRECISION/CRITERE li� � INST
+FONCTIONNALITE
+   cette fiche est redondante avec la 15452. Voici ce qui est fait dans cette fiche :
+   
+   """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+   Apr�s discussion en EDA, voici les �volutions qui ont �t� r�alis�es :
+   
+   1/ On ne demande plus le mod�le et le champ_mat�riau dans la macro mais on les retrouve � partir de la 
+   structure r�sultat. On v�rifie que la structure r�sultat ne contient qu'un et un seul modele et un et 
+   un seul champ mat�riau sinon une erreur est lev�e.
+   
+   2/ On introduit la notion de pr�cision lorsque l'on demande l'instant final de calcul � l'utilisateur. 
+   Cette pr�cision est assortie d'un crit�re qui est par d�faut absolu.
+   
+   """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    ssna108a
+NB_JOURS_TRAV  : 0.05
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR laverne      LAVERNE Jérôme       DATE 02/23/2011 - 06:11:55
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 014097 DU 2009-10-26 09:31:49
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+    Une loi CZM pour la rupture ductile
+FONCTIONNALITE
+   CZM_TRA_MIX :
+   -------------
+   Restitution de la loi cohésive pour la rupture ductile proposée dans CR-AMA-09.074 et
+   validée dans HT24-C2010-168. La loi est baptisée CZM_TRA_MIX (TRA comme TRAPEZE), elle est
+   valable pour les modélisations xxx_INTERFACE. Le matériau correspondant est RUPT_DUCT dans
+   la logique de ce qui est fait en czm fragile avec RUPT_FRAG. Les paramètres GC, SIGM_C,
+   PENA_LAGR et RIGI_GLIS ont la même signification qu'en fragile. On ajoute deux paramètres
+   adimensionnels qui permettent de déterminer la forme du trapèze : COEF_EXTR et COEF_PLAS
+   (test si COEF_EXTR=<COEF_PLAS et message d'erreur dans compor1.py sinon).
+   
+              RUPT_DUCT      =FACT(statut='f',
+                GC              =SIMP(statut='o',typ='R'),
+                SIGM_C          =SIMP(statut='o',typ='R'),
+                COEF_EXTR       =SIMP(statut='o',typ='R',val_min=0.E+0,val_max=9.99E-1),
+                COEF_PLAS       =SIMP(statut='o',typ='R',val_min=0.E+0,val_max=9.99E-1),
+                PENA_LAGR       =SIMP(statut='f',typ='R',defaut=1.0E2,val_min=1.01E+0),
+                RIGI_GLIS       =SIMP(statut='f',typ='R',defaut=1.0E1),
+              ),
+   
+   Dvpts connexes pour les EI :
+   ----------------------------
+   Dans les lois czm pour les EI on passe dans le comportement les quantités DE et DDEDT (et
+   non classiquement SIGP et DSIDEP) dans les ldc et dans le te ces quantités étaient
+   dimensionnées à 3 et 3x3 or entre ces deux routines (te.f et ldc.f) on passe par la
+   routine lc00xx.f dans laquelle ces quantités sont dimensionnées à 6 et 6x6. 
+   Comme c'est déjà fait avec les EJ (dvpts connexes de la 14558) on uniformise les
+   dimensions en mettant 6 et 6x6 dans les ldc : lceiou, lceifa et lceitc ainsi que dans la
+   routine appelée dans le te : eifint validation : passage de tous les tests avec EI
+   
+   Sources :
+   ---------
+   FORT : AJOUT : lc0049, lceitr 
+          MODIF : eifint, lceiou, lceifa et lceitc
+   CAPY : MODIF : c_relation, defi_materiau
+   PY   : AJOUT : czm_tra_mix 
+          MODIF : compor1
+   TEST : AJOUT : SSNP118VWX, SSNP151AB, SSNA120A
+   
+   Validation :
+   -------------
+   SSNP118VWX : tests élémentaires sur les modélisations PLAN_INTERFACE et 3D_INTERFACE
+   SSNP151AB  : éprouvette Compact Tension 2D et 3D sur les modélisation PLAN_INTERFACE et
+   3D_INTERFACE
+   SSNA120A   : éprouvette Axisymétrique Entaillée avec AXIS_INTERFACE, (tests comparaison
+   Rousselier)
+   + passage de tous les tests des EI sur ASTER4, CALIBRE5, CLPASTER
+   
+   NB_JOUR_TRAV : JL : 25, AP : 15
+   ------------
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : R7.02.11,U4.51.11, U4.43.01, U3.13.14, U2.05.07,V6.03.118, V6.03.151, V6.01.120
+VALIDATION
+    SSNP118VWX,SSNP151AB,SSNA120A
+NB_JOURS_TRAV  : 40.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 014238 DU 2009-11-26 14:49:11
+TYPE anomalie concernant Code_Aster (VERSION 7.0)
+TITRE
+    Définition du repère local pour les éléments d'interface
+FONCTIONNALITE
+   Dans les EI on demandait à l'utilisateur de fournir des angles d'euler
+   (AFFE_CARA_ELEM/MASSIF/ANGL_EULER) pour définir la position du plan de fissure (repère local).
+   
+   Quand on utilisait ensuite la routine matrot.f pour obtenir la matrice rotation
+   correspondante on supposait que ces angles étaient des angles nautiques. Finalement les
+   angles entrés par l'utilisateur sous ANGL_EULER étaient donc traités comme des nautiques.
+   
+   Pour y remédier on demande a l'utilisateur de renseigner effectivement des angles
+   nautiques : AFFE_CARA_ELEM/MASSIF/ANGL_REP. Cela ne change pas les résultats des tests.
+   
+   IMPACT SOURCES
+   
+   TEST :
+   modifs des cas test des EI avec ce mot clé (remplacement de ANGL_EULER par ANGL_REP +
+   commentaires)
+   ssna115c    wtna111a
+   ssnp118g    wtnp125a
+   ssnp118h    wtnp125b
+   ssnp118i    wtnp126a
+   ssnp118j    wtnp126b
+   ssnp118k    wtnp128a
+   ssnp118l    wtnp128b
+   ssnp133c    wtnp128c
+   ssnp139a    wtnp128d
+   ssnp139b
+   ssnv199e
+   ssnv199f
+   ssnv199g
+   
+   FORT :
+   eiangl : commentaires + nom de variable : modif ANGEUL en ANGNAU
+   eicine : commentaire uniquement
+   te0313, te0359, te0360, te0361 : 
+   commentaires + dans appel de EIANGL modif ZR(ICAMAS+4) en ZR(ICAMAS+1)
+   
+   PY : elements5.py
+        ajout de messages d'erreur dans les te0313, te0359, te0360, te0361
+        dans le cas où l'utilisateur veut utiliser ANGL_AXE et ORIG_AXE d'AFFE_CARA_ELEM
+        pour les modélisations xxx_JHMS et xxx_INTERFACE
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  OUI   DEPUIS : 9.3.4
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U2.05.07
+VALIDATION
+    tous les tests des elements d'interface
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 016357 DU 2011-02-03 09:43:41
+TYPE anomalie concernant Code_Aster (VERSION 10.4)
+TITRE
+    suppression de la modélisation AXIS_JOINT_HYME
+FONCTIONNALITE
+   Suppression de la modélisation AXIS_JOINT_HYME qui avait été restituée dans la fiche 14831
+   avec les autres modélisations xxx_JOINT_HYME et qui n'a finalement pas d'intérêt pour le
+   CIH. Cette modélisation n'était pas testée.
+   
+   IMPACT SOURCE :
+   FORT : te0322, nmfihm
+   CAPY : affe_modele
+   CATA : gener_ej2d_hm, phenomene_modelisation__
+   TEST : rien 
+   
+   on valide la suppression en passant tous les tests lies aux routines des joints pour les
+   barrages.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    tous tests des joints pour les barrages
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR proix        PROIX Jean-Michel      DATE 02/23/2011 - 06:11:56
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 016397 DU 2011-02-10 12:26:32
+TYPE express concernant Code_Aster (VERSION 9.1)
+TITRE
+    suppression incomplete de Nadai_b
+FONCTIONNALITE
+   Malgré la résorption de NADAI_B en 9.4.8, il en reste des scories dans defi_materiau et
+   defi_compor.
+   Je nettoie
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    aucune
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR lefebvre     LEFEBVRE Jean-Pierre   DATE 02/22/2011 - 08:06:41
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 016322 DU 2011-01-28 16:06:23
+TYPE anomalie concernant Code_Aster (VERSION 9.1)
+TITRE
+    Ecriture du .SMOS.SMHC dans IMPR_CO
+FONCTIONNALITE
+   Problème : 
+   ==========
+   
+   IMPR_CO imprime mal des objets Jeveux de type IS (INTEGER *4), une partie des valeurs
+   entières stockées devant le segment de valeurs apparait à l'impression. 
+   L'alignement par rapport au tableau INTEGER *8 est mal géré lors de l'impression. 
+   
+    IMPRESSION SEGMENT DE VALEURS >NUME          .SMOS.SMHC        <
+    >>>>>  
+         1 -          367            0            0    268435456            1
+         6 -            2            3            1            2            3
+        11 -            4            1            2            3            4
+   
+   Correction :
+   ============
+   
+   La correction dans jjimpo.f à effectuer est la suivante :
+   
+   113c113,114
+   <             JI = 1 + ((JISZON +KADM-1)*LOIS+ IDECI +LADM)/(LOR8/2)
+   ---
+   >             JI = 1 + ((JISZON +KADM-1)/LOR8)*2*LOIS+ IDECI/LOR8*2 + 
+   >      &               LADM/LOR8*2
+   
+   Validation :
+   ============
+   
+   Sur le test zzzz208b, on rajoute ATTRIBUT='OUI' dans IMPR_CO pour montrer que l'on traite
+   des objets de type IS.
+   L'impression de NUME          .SMOS.SMHC est correcte :
+   
+    IMPRESSION SEGMENT DE VALEURS >NUME          .SMOS.SMHC        <
+    >>>>>  
+         1 -            1            2            3            1            2
+         6 -            3            4            1            2            3
+        11 -            4            5            1            2            3
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    zzzz208b
+NB_JOURS_TRAV  : 0.3
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 015128 DU 2010-05-28 14:15:49
+TYPE anomalie concernant Code_Aster (VERSION 9.1)
+TMA : DeltaCad
+TITRE
+    Probleme sur la commande EXTR_RESU
+FONCTIONNALITE
+   Problème obsvervé :
+   ===================
+   La commande EXTR_RESU semble produire des concepts résultats de tailles (en nombre
+   d'objets) différentes.
+   
+   Analyse :
+   =========
+   La TMA a essayé de reproduire le problème sur un cas plus simple, n'ayant pas accès aux
+   données de l'étude.
+   
+   Il n'y a pas d'anomalie dans les tests effectués. L'écart observé au niveau du nombre
+   d'objets créés, entre les deux analyses s'explique: il est du au fait que lors des 
+   calculs avec DYNA_NON_LINE on calcule dans la premiere approche des modes de vibration en
+   plus. Ce qui explique le nombre d'objet en plus. 
+   
+   Première approche :  
+     DYNA_NON_LINE( ...,
+            MODE_VIBR = _F(BANDE=(0.1,0.5),MATR_RIGI='ELASTIQUE',),
+   		      ...)
+      => NOMBRE D'OBJETS (OU COLLECTIONS)  TROUVES : 40
+   		
+   Deuxième approche =>  DYNA_NON_LINE( ...,
+          # MODE_VIBR = _F(BANDE=(0.1,0.5),MATR_RIGI='ELASTIQUE',),
+   		      ...)
+      => NOMBRE D'OBJETS (OU COLLECTIONS)  TROUVES : 37
+      
+   Les objets en plus sont les suivants : 
+    REPONSE .125.000645.DESC
+    REPONSE .125.000645.REFE
+    REPONSE .125.000645.VALE
+   
+   Le numéro 125 correspond au MODE_MECA.
+   
+   Correction :  sans suite
+   ============
+   
+   Sans information complémentaire sur le calcul initial (à l'origine de la fiche), la fiche
+   est classée sans suite.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    test perso
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 014446 DU 2010-01-18 13:50:27
+TYPE anomalie concernant Code_Aster (VERSION 9.1)
+TITRE
+    Couverture de code et routines de Jacques
+FONCTIONNALITE
+   Problème :  Couverture des routines Fortran
+   =========
+   
+   aidcon Commande AIDE
+   gcecco Commande AIDE
+   inite2 Commande AIDE
+   
+   On supprime la commande AIDE qui est inutilisée et apporte peu d'information.
+   
+   caver1 Commande DEBUT
+   inccat Commande DEBUT
+   lccata Commande DEBUT
+   lctel2 Commande DEBUT
+   lctel3 Commande DEBUT
+   lecojb Commande DEBUT
+   lecvec Commande DEBUT
+   op0020 Commande MAJ_CATA
+   
+   Toutes ces routines sont appelées lors de la compilation des catalogues d'élements, on
+   introduit un nouveau test zzzz281a qui va effectuer la compilation des catalogues
+   d'élements et appeler la commande MAJ_CATA. Le script python make_surch_offi.py a été
+   modifié par Mathieu pour pouvoir être appelé directement depuis le fichier de commandes. 
+   
+   extrs1 Commande EXTR_RESU
+   
+   On modifie zzzz131a pour faire un EXTR_RESU réentrant et valider extrs1.
+   
+   jedbug
+   jxabor
+   
+   Ces deux routines n'ont pas lieu d'etre utilisées, elles sont supprimées.
+   
+   jeimpa   (impression des attributs des objets JEVEUX)
+   jeimpd   (impression du contenu des bases JEVEUX stockées sur disque)
+   
+   On modifie le test zzzz110b pour tester ces deux routines.
+   
+   jeprsg   (impression de la segmentation de la mémoire statique en cas d'erreur)
+   
+   Ne présente que peu d'intérêt. 
+   
+   ulimpr 
+   
+   On modifie le test zzzz100c (DEFI_FICHIER ( ... INFO=2 ...) pour valider la routine.
+   
+   utims3
+   
+   Cette routine n'est pas traitée.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : V1.01.281  U4.02.01
+VALIDATION
+    zzzz131a zzzz281a zzzz100c zzzz110b
+NB_JOURS_TRAV  : 1.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 014629 DU 2010-02-15 13:49:26
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+    Supprimer l'argument memjeveux
+FONCTIONNALITE
+   But de la fiche : remplacer l'argument -memjeveux qui admet une valeur en en méga mots
+   (Mw) par un argument dont les unités sont les méga octets (Mo).
+   La longueur du mot variant suivant le type de plate-forme de 32 (INTEGER*4) à 64 bits
+   (INTEGER*8).
+   
+   Dans un premier temps on ajoute les arguments suivants.
+   
+   -memory val      : limite de la mémoire dynamique gérée par JEVEUX
+   
+   -memory_stat val : limite de la mémoire statique gérée dynamiquement par JEVEUX 
+   
+   Les anciens arguments -memjeveux et -memjeveux_stat sont conservés et utilisés en
+   l'absence des nouveaux pour assurer la compatibilité des appels depuis astk et de l'agla.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    liste complète
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR geniaut      GENIAUT Samuel         DATE 02/22/2011 - 10:06:17
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013676 DU 2009-08-03 16:28:43
+TYPE evolution concernant Code_Aster (VERSION )
+TMA : Phimeca
+TITRE
+    X-FEM : faciliter le post-traitement des objets de DEFI_FISS_XFEM
+FONCTIONNALITE
+   Objectifs:
+   ---------
+   Le travail portait sur 3 points:
+   - Enrichir le concept issu de DEFI_FISS_XFEM afin d'y ajouter une liste de tables
+   contenant des caractéristiques géométriques des points de fonds de fissures et permettre
+   ainsi de récupérer ces informations via RECU_TABLE.
+   - Enrichir DEFI_GROUP en ajoutant une option "FISS_XFEM" qui permet de construire des
+   groupes de mailles et de noeuds de type XFEM
+   - Enrichir le maillage issu de POST_MAIL_XFEM afin d'y ajouter les fonds de fissures
+   (mailles, noeuds, groupes de mailles, groupes de noeuds)
+   
+   Réalisation:
+   -----------
+   Point 1:
+   -------
+   La commande DEFI_FISS_XFEM produit outre la structure de donnees sd_fiss deux tables de
+   nom: FOND_FISS et NB_FOND_FISS.
+   L'une contient, pour chaque fond, les coordonnees des points fonds de fissure. L'autre les
+   nombres de fonds de fissures.
+   La première table est constituée de :
+   En 2D : NUME_FOND COOR_X COOR_Y
+   En 3D : NUME_FOND NUME_PT ABS_CURV COOR_X COOR_Y COOR_Z
+   
+   Point 2:
+   -------
+   L'option FISS_XFEM dans CREA_GROUP_MA permet de construire des groupes de mailles de type
+   XFEM. Sous le mot-clé FISSURE, l'utilisateur entre les fissures qui souhaite traiter. Le
+   mot-clé TYPE_GROUP permet de sélectionner dans les mailles XFEM des types de groupe. Ainsi,
+   TYPE_GROUP='XFEM': Groupe de mailles de tout type xfem (défaut).
+   TYPE_GROUP='HEAVISIDE = Groupe de mailles de type heaviside.
+   TYPE_GROUP='CRACKTIP = Groupe de mailles de type Crack-tip.
+   TYPE_GROUP='MIXTE' = Groupe de mailles de type Mixte.
+   TYPE_GROUP='FISSUREE' = Groupe de mailles coupées, mailles qui reposent entièrement sur
+   des noeuds dont le status n'est pas nul.
+   
+   L'option FISS_XFEM dans CREA_GROUP_NO permet de construire des groupes de noeuds de type
+   XFEM. Sous le mot-clé FISSURE, l'utilisateur entre les fissures qui souhaite traiter. Le
+   mot-clé TYPE_GROUP permet de sélectionner dans les noeuds XFEM des types de groupe. Ainsi,
+   TYPE_GROUP='XFEM': Groupe de noeuds dont tous les noeuds ont un status différent de 0.
+   (défaut).
+   TYPE_GROUP='HEAVISIDE = Groupe de noeuds dont tous les noeuds ont un status valant 1.
+   TYPE_GROUP='CRACKTIP = Groupe de noeuds dont tous les noeuds ont un status valant 2.
+   TYPE_GROUP='MIXTE' = Groupe de noeuds dont tous les noeuds ont un status valant 3.
+   
+   Point 3:
+   -------
+   Le maillage xfem issu de POST_MAIL_XFEM a été enrichi :
+   - des noeuds des fonds de fissures. Ceux-ci sont notés NF*.
+   - des mailles des fonds de fissures. Elles sont notées MF*. En 2D, il s'agit de POI1 et en
+   3D de SEG2.
+   - de groupes de noeuds NF_xx_yy ou xx désigne la xxème fissure et yy le yyème fond
+   - de groupes de mailles MF_xx_yy ou xx désigne la xxème fissure et yy le yyème fond
+   
+   
+   Validation:
+   -----------
+   Les validations sont visuelles.
+   Pour le point 1, le cas-test ssnv192a a été modifié pour visualiser les tables générées
+   par DEFI_FISS_XFEM. Ceux-ci sont conformes à ce qui est obtenu en INFO=2 de DEFI_FISS_XFEM.
+   Pour le point 2, le cas-test ssnv185m a été modifié pour utiliser DEFI_GROUP avec l'option
+   introduite. L'impression du maillage montre la bonne adéquation entre les groupes de
+   mailles et l'affichage de MODI_MODELE_XFEM.
+   Pour le point 3, l'utilisation de SALOME a montré un affichage correct des groupes construits.
+   
+   Impacts:
+   -------
+   Point 1: xenrch.f, ssnv192a.comm, sd_xfem.py
+   Point 2 : capres.f, sscgno.f, cgnoxf.f(ajout), sscgma.f, cgmaxf.f(ajout), defi_group.capy,
+   ssnv185m.comm
+   Point 3 : op0187.f, op0196.f, xtmafi.f, xpodim.f, xpomax.f, xpocrf.f(ajout),
+   xpofon.f(ajout), ssnv192a.comm
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.82.08, U4.22.01, U4.82.21, D4.10.02
+VALIDATION
+    ssnv185m, ssnv192a
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR kazymyre     KAZYMYRENKO Kyrylo     DATE 02/23/2011 - 10:11:09
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 016366 DU 2011-02-04 08:33:59
+TYPE anomalie concernant Code_Aster (VERSION 10.3)
+TITRE
+    En NEW10.3.11, les cas-tests ssnp144a, e, f et h sont en échec sur Rocks.
+FONCTIONNALITE
+   Suite à la dernière restitution concernant X-FEM et les 
+   éléments cohésifs avec utilisation de la loi CZM_EXP_REG un bug a été 
+   détecté : NEW10.3.11, les cas-tests ssnp133f et ssnp133g s'arrete 
+   anomalement sur Rocks. 
+   
+   Pour tracer ce bug les dévéloppement précédent ont été simplifiés.
+   Développements :
+   Dans la version précédente du code, la matrice tangente  était calculé en 
+   utilisant la loi de compotement (lcejex.f) avec l'option RIGI_MECA, même si 
+   l'on été dans le FULL_MECA. Les vecteurs eux (SIGMA) étaient calculés en 
+   dehors de la routine de comportement (lcejex.f) via une routine doublon 
+   spécifique à la loi de X-FEM, en distinguant suivant la situations de 
+   contact et le régime élastique ou dissipatif de chaque point de Gauss.
+   
+   On implémente un formalisme unifié, similaire à ce qu'était fait pour FEM. 
+   Le passage entre matrice locale, donnée par une routine de comportement
+   commune à X-FEM et FEM, et matrice globale, en base fixe et agissant sur les 
+   DDL de Heaviside devient générique (xmmco1.f,xmmsa2.f,xmvco1.f).
+   On importe directement les vecteurs en base locale de la loi de comportement 
+   (xmmsa2.f) et effectue un changement de base dans les seconds membres.
+   On utilise systématiquement la routine de comportement avec l'option 
+   FULL_MECA, qui calcule à la fois matrice (xmmco1.f) et vecteurs (xmvco1.f), 
+   et qui nécessite uniquement le saut de déplacement et la variable interne, 
+   calculés par des routines X-FEM uniques.  
+   L'ensemble de ces développements assure au passage la suppression des 
+   doublons entre routines de comportement et routines X-FEM, ce qui pouvait 
+   être source d'erreur.
+   
+   MODIF FORTRAN :
+   pipefx,te0532,te0533,te0534,te0547,xmmco1,xmmsa2,xmvco1
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : R7.02.12
+VALIDATION
+    tests
+NB_JOURS_TRAV  : 3.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 016365 DU 2011-02-04 08:20:42
+TYPE anomalie concernant Code_Aster (VERSION 10.3)
+TITRE
+    En NEW10.3.11, les cas-tests ssnp133f et ssnp133g s'arretent anomalement sur Rocks.
+FONCTIONNALITE
+   Suite à la dernière restitution concernant X-FEM et les 
+   éléments cohésifs avec utilisation de la loi CZM_EXP_REG un bug a été 
+   détecté : NEW10.3.11, les cas-tests ssnp133f et ssnp133g s'arrete 
+   anomalement sur Rocks. 
+   
+   Pour tracer ce bug les dévéloppement précédent ont été simplifiés.
+   Développements :
+   Dans la version précédente du code, la matrice tangente  était calculé en 
+   utilisant la loi de compotement (lcejex.f) avec l'option RIGI_MECA, même si 
+   l'on été dans le FULL_MECA. Les vecteurs eux (SIGMA) étaient calculés en 
+   dehors de la routine de comportement (lcejex.f) via une routine doublon 
+   spécifique à la loi de X-FEM, en distinguant suivant la situations de 
+   contact et le régime élastique ou dissipatif de chaque point de Gauss.
+   
+   On implémente un formalisme unifié, similaire à ce qu'était fait pour FEM. 
+   Le passage entre matrice locale, donnée par une routine de comportement
+   commune à X-FEM et FEM, et matrice globale, en base fixe et agissant sur les 
+   DDL de Heaviside devient générique (xmmco1.f,xmmsa2.f,xmvco1.f).
+   On importe directement les vecteurs en base locale de la loi de comportement 
+   (xmmsa2.f) et effectue un changement de base dans les seconds membres.
+   On utilise systématiquement la routine de comportement avec l'option 
+   FULL_MECA, qui calcule à la fois matrice (xmmco1.f) et vecteurs (xmvco1.f), 
+   et qui nécessite uniquement le saut de déplacement et la variable interne, 
+   calculés par des routines X-FEM uniques.  
+   L'ensemble de ces développements assure au passage la suppression des 
+   doublons entre routines de comportement et routines X-FEM, ce qui pouvait 
+   être source d'erreur.
+   
+   MODIF FORTRAN :
+   pipefx,te0532,te0533,te0534,te0547,xmmco1,xmmsa2,xmvco1
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : R7.02.12
+VALIDATION
+    test
+NB_JOURS_TRAV  : 3.5
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR massin       MASSIN Patrick         DATE 02/23/2011 - 10:11:09
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 016439 DU 2011-02-17 09:36:47
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+    Ouverture de CZM_LIN_REG pour X-FEM
+FONCTIONNALITE
+   Suite à la dernière restitution concernant X-FEM et les 
+   éléments cohésifs avec utilisation de la loi CZM_EXP_REG, 
+   on étend à CZM_LIN_REG dans la foulée.
+   
+   Syntaxe :
+   Même principe qu'avec CZM_EXP_REG en formulation X-FEM. On 
+   ajoute une 
+   nouvelle valeur 'CZM_LIN_REG' pour le mot-clé par zone 
+   RELATION
+     DEFI_CONTACT(
+        FORMULATION='XFEM',
+        ...
+        ZONE=_F(ALGO_CONT='CZM',
+                RELATION='CZM_LIN_REG',
+                ...),),
+                
+   Développements :
+   Dans la version précédente du code, une partie de la matrice
+   tangente et des vecteurs étaient calculés en dehors de la 
+   routine de comportement en X-FEM, en distinguant suivant la 
+   situations de contact et le régime élastique ou dissipatif 
+   de chaque point de Gauss.
+   On implémente un formalisme unifié. Le passage entre 
+   matrice locale, donnée par une routine de comportement
+   commune à X-FEM et FEM, et matrice globale, en base fixe et 
+   agissant sur les DDL de Heaviside devient générique.
+   On importe directement les vecteurs en base locale de la 
+   loi de comportement et effectue un changement de base
+   dans les seconds membres.
+   On utilise systématiquement la routine de comportement avec 
+   l'otion FULL_MECA, qui calcule à la fois matrice et 
+   vecteurs, et qui nécessite uniquement le saut de 
+   déplacement et la variable interne, calculés par des 
+   routines X-FEM uniques.  
+   L'ensemble de ces développements assure au passage la 
+   suppression des doublons entre routines de comportement et 
+   routines X-FEM, ce qui pouvait être source d'erreur.
+   
+   Validation :
+   Validation sur le test ssnp133 (plaque trouée). Ajout de la 
+   modélisation H.
+   On teste par rapport aux valeurs de la modélisation FEM 
+   (modélisation A)
+   de référence.
+   
+   Impact sources :
+   FORTRAN MODIF 
+   cazocx,mminfp,pipefx,te0532,te0533,te0534,te0547
+                 xmmco1,xmmsa2,xmvco1.
+   CATAPY  MODIF defi_contact.capy
+   CASTEST AJOUT ssnp133h
+   Impact documentaire : U4.44.11
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : U4.44.11;V6.03.133
+VALIDATION
+    Cas-test - Autre aster
+NB_JOURS_TRAV  : 2.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR tardieu      TARDIEU Nicolas        DATE 02/22/2011 - 07:51:10
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 016089 DU 2010-12-16 16:43:03
+TYPE evolution concernant Code_Aster (VERSION )
+TMA : DeltaCad
+TITRE
+    POST_ELEM/INTEGRALE doit supporter des champs aux noeuds
+FONCTIONNALITE
+   La realisation est terminee.
+   Les fichiers sont sur Aster4 dans /home/rezette/E16089:
+   ./src
+   ./cata
+   ./py
+   ./test/rep
+   
+   Histor (proposition):
+   
+   
+   Objectifs
+   --------
+   1) Permettre la prise en compte des champs aux noeuds dans la commande POST_ELEM, mot-clé 
+   facteur INTEGRAL,
+   2) Revoir le calcul des coordonnees des points de Gauss ainsi que la détermination de 
+   leur poids pour les éléments de poutre, barre, cable,...
+   
+   Développement
+   -------------
+   
+   a) Bibfor
+   L'idée est de changer la discrétisation du champ nodal en champ élémentaire aux points de 
+   Gauss pour pouvoir poursuivre la suite des calculs existants.
+   La modification du fortran peeint.f a été nécessaire : la procédure a été la suivante :
+   - transformation du champ nodal en champ neutre (grandeur NEUT_R),
+   - changement de discrétisation du champ : NOEU -> ELGA,
+   - calcul de l'intégrale comme actuellement.
+   - mise à jour des composantes de champ pour référencer les composantes initiales (celles 
+   du champ nodal, et non celle du champ neutre).
+   
+   Concernant le deuxieme objectif, nous avons corrigé et completé la routine gedisc.f : 
+   - correction de la détermination des points de Gauss,
+   - ajout du calcul de détermination des poids des points de Gauss (ce qui n'etait pas fait 
+   auparavant): Le poids des points de Gauss est obtenu par l'operation suivante:  
+   Poids_elem = Poids_ref * Longueur_elem / Longueur_ref.
+   On dispose du poids et de la longueur de l'élément de référence, seule la longueur de 
+   l'élément est à déterminer: 
+   - pour un SEG2 ou un SEG3 "droit" : il s'agit de la distance entre les 2 premiers noeuds 
+   de l'element,
+   - pour un SEG2 "courbe" (element POU_C_T) :  la longueur de l'élément est calculée a 
+   partir des caractéristiques de l'élément (rayon de courbure)
+   - pour un SEG3 "courbe" : la longueur de l'élément est obtenue à partir d'une nouvelle 
+   routine, pecent.f
+   
+   b) Catalo
+   Le changement de discrétisation  NOEU -> ELGA nécessite la lecture de l'option 
+   TOU_INI_ELGA dans les catalogues d'éléments.
+   Ainsi, nous avons completé dans tous les catalogues *.cata les couples (mode local, 
+   parametre) relatifs aux champs neutres pour l'option TOU_INI_ELGA. Impact : 38 catalogues.
+   Modification aussi du :
+   -catalogue d'élément gener_mepct1.cata : ajout du mode local CCAARPO pour l'option 
+   COOR_ELGA afin de pouvoir disposer du rayon de courbure RCOURB.
+   -catalogue d'option coor_elga.cata : ajout du paramètres d'entrée PCAARPO associé à la 
+   grandeur CAARPO.
+   
+   c) Bibpyt: utilitai8.py
+   Lors d'un test POST_ELEM/INTEGRALE sur un modèle de coques (DKT), Aster s'est arrêté dans 
+   un ASSERT dans peecal.f, car le calcul du volume avec des éléments à sous-points n'est 
+   pas programmé. Il a été convenu d'ajouter un message explicite pour l'utilisateur : 
+   UTILITAI8_60.
+   
+   d) Astest
+   Ajout de POST_ELEM/INTEGRALE sur des champs aux noeuds dans des cas-tests : 
+   - ssnv194a (3D)
+   - wtnp127b (2D)
+   - zzzz234a (POU_D_E, POU_C,T)
+   - ssnl501a (COQUE_C_PLAN)
+   - zzzz266a : modification des valeurs de reference des poids des points de Gauss dans 
+   l'operateur TEST_RESU
+   
+   Validation
+   ----------
+   - cas-tests ci-dessus,
+   - cas-tests "perso" (notamment pour tester les SEG3 "courbes", et pour tester l'émission 
+   du message UTILITAI8_60)
+   - liste restreinte
+   
+   Documentation
+   -------------
+   Ajout de la nouvelle fonctionnalité dans la doc U4.81.22
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : U4.81.22
+VALIDATION
+    Passage des tests joints
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 015983 DU 2010-11-29 15:25:14
+TYPE evolution concernant Code_Aster (VERSION )
+TMA : DeltaCad
+TITRE
+    Produire une table de volumogramme
+FONCTIONNALITE
+   A] Objectif
+   ===========
+   Développer le mot-clé facteur VOLUMOGRAMME de la commande POST_ELEM dans le but de creer 
+   un volumogramme.
+   La table produite represente la distribution du volume d'une structure vis à vis de la 
+   valeur d'une
+   composante d'un champ à différents instants.
+   
+   Par exemple, on s'intéresse ici à la répartition volumique de la contrainte SIXX sur 4
+   intervalles de valeurs aux instants 1 et 2. 
+   La table produite est de la forme :
+   
+   INST | NOM_CMP | INTERVALLE | BORNE_INF | BORNE_SUP | DISTRIBUTION
+   -----------------------------------------------------------------
+   1    |  SIXX   |    1       |     -9    |    -5     |    10
+   1    |  SIXX   |    2       |     -5    |    -1     |    40
+   1    |  SIXX   |    3       |     -1    |     3     |    30
+   1    |  SIXX   |    4       |      3    |     6     |    20
+   2    |  SIXX   |    1       |     -9    |    -5     |    20
+   2    |  SIXX   |    2       |     -5    |    -1     |    50
+   2    |  SIXX   |    3       |     -1    |     3     |    20
+   2    |  SIXX   |    4       |      3    |     6     |    10
+   
+   
+   Interprétation de la première ligne de la table :
+   A l'instant 1, les valeurs de la contrainte SIXX comprise entre -9 et -5 MPa ( 
+   intervalle 1) 
+   représentent 10% du volume d'une structure 3D (ou 10% de la surface si la structure est 
+   2D).
+   
+   Remarques:
+   ---------
+   L'utilisateur ne fournit que le nombre d'intervalles, et non les bornes des intervalles.
+   Les intervalles sont définis à partir :
+   - du nombres d'intervalles fournis par l'utilisateur,
+   - des valeurs min et max que prend la composante aux différents instants.
+   Par exemple, si:
+   - le nombre d'intervalles = 3,
+   - min de la composante = -70,
+   - max de la composante =  50,
+   Les intervalles sont :  [-70,-30[,[-30,10[,[10,40].
+   
+   
+   B] Syntaxe
+   ==========
+   tab = POST_ELEM(
+                o   / RESULTAT = resu,
+                    / CHAM_GD  = cham,
+                f   / NUME_ORDRE = nume_ordre,
+                    / TOUT_ORDRE = 'OUI',
+                    / LIST_ORDRE = l_ordre,
+                    / INST = instant,
+                    / LIST_INST = inst,
+                f   MODELE = modele,
+                f   CHAM_MATER = cham_mater,
+   
+                o   VOLUMOGRAMME = _F(
+                         o  / TOUT = 'OUI',
+                            / GROUP_MA = groupe_ma (max=1),
+                            / TYPE_MAILLE = / '2D',
+                                            / '3D',
+                         f  / NOM_CHAMP = n_champ,
+                         o  NOM_CMP = nom_cmp,
+                         f  NB_INTERV =  /  5 (defaut),
+                                         /  nbre_intervalles,
+                                       ),
+                    )
+                         
+   Remarques:
+   - si GROUP_MA est renseigne, la commande accepte qu'un seul groupe de maille, c'est a 
+   l'utilisateur de le créer au préalable via DEFI_GROUP. Ceci permet de renseigner le nom du
+   groupe de mailles 
+   dans la table
+   produite.
+   - on peut appliquer une restriction sur les mailles a considerer :si TYPE_MAILLE = '2D' 
+   (resp. '3D'), on considère uniquement les mailles 2D (resp. 3D).
+   - Le nombre d'intervalles a prendre en compte est defini a travers le mot-cle NB_INTERV.
+   
+   
+   C] Développement
+   ================
+   
+   1)Catalogue de commande
+   Enrichissement du fichier post_elem.capy:
+   Un bloc relatif au mot-clé facteur VOLUMOGRAMME a ete introduit dans le catalogue 
+   post_elem.capy
+    
+   2)Fortran
+   - op0107.f :
+   le calcul du volumogramme a ete introduit dans cette routine.
+   - pevolu.f :
+   routine dediee au volumogramme :
+   les données y sont recuperees (résultats, champ, composante, numéros d'ordres, nombre 
+   d'intervalles, mailles, ...), l'entête de la table creee,
+   les numéros d'ordre parcourus pour calculer la distribution de la composante dans la 
+   liste de mailles considerees, les valeurs sont stockees dans la table.
+   - pebpct.f:
+   routine specifique au calcul de la distribution
+   
+   D]Validation
+   ============
+   Ajout de la commande POST_ELEM/VOLUMOGRAMME dans les cas-tests:
+   - ssnv194a : cas 3D, champs NOEU ELNO ELGA, (CHAM_GD et RESULTAT), TOUT='OUI'
+   - wtnp127b : cas 2D, champs NOEU ELNO ELGA,  (RESULTAT), GROUP_MA
+   Ajout de plusieurs TEST_TABLE pour la non régression.
+   
+   E]Documentation
+   ===============
+   Ajout d'une description du mot-clé facteur VOLUMOGRAMME dans la documentation U4.81.22 
+   (opérateur POST_ELEM).
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : U4.81.22
+VALIDATION
+    Passage des tests joints
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR desroches    DESROCHES Xavier       DATE 02/22/2011 - 07:51:10
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 016380 DU 2011-02-08 16:57:17
+TYPE anomalie concernant Code_Aster (VERSION 9.1)
+TMA : DeltaCad
+TITRE
+    Bug POST_ELEM(MINMAX)
+FONCTIONNALITE
+   1) Anomalie
+   -----------
+   POST_ELEM/MINMAX : les valeurs extremales d'un champ aux noeuds sur certaines 
+   composantes ne sont pas correctes. 
+   
+   
+   2) Présentation
+   ---------------
+   Le problème est le suivant: on dispose d'un champ de deplacement 
+   comportant 3 composantes (DX,DY,PRE1) valant respectivement 0,0 
+   et 1 sur tous les noeuds du champ. On s'intéresse aux valeurs min 
+   et max des composantes DX et DY. Théoriquement, on devrait 
+   obtenir MIN_DX = MAX_DX = MIN_DY = MAX_DY = 0. Or on trouve 1 
+   pour les valeurs maximales.
+   
+   Plusieurs anomalies ont ete décelées dans la routine pemaxn.f :
+   - la composante ICMP utilisée doit être le numero d'ordre de la 
+   composante dans le champ, et non le numéro d'ordre de la 
+   composante dans la liste des composantes fournies par 
+   l'utilisateur.
+   Dans l'exemple en question, si on s'intéresse uniquement à la 
+   composante PRE1, i.e. la 3eme dans la liste des composantes du 
+   champs, on doit avoir ICMP=3 et non ICMP=1 (1 = 1ere et unique 
+   composante fournie).
+   - le nombre de composantes NBCMP utilisé pour se deplacer dans la 
+   liste des valeurs du champ doit être le nombre maximum de 
+   composantes du champ et non le nombre de composantes fournies. 
+   Par exemple, si l'utilisateur s'intéresse à DX et DY, NBCMP ne 
+   doit valoir 2 mais 3 (DX, DY, PRE1).
+   
+   Remarque:
+   La routine spécifique aux cham_elem (pemaxe.f) ne présente pas 
+   ces anomalies.
+   
+   3) Correction
+   -------------
+   Routine pemaxn.f :
+   a) Le numero de la composante est obtenu en cherchant la 
+   composante en cours dans la liste des composantes du cham , grâce 
+   à le fonction INDIK8
+   b) Le nombre de composantes max est obtenu en consultant 
+   l'objet .CNSD du champ nodal.
+   
+   4) Validation
+   -------------
+   a)On enrichit le cas-test ssnv194a pour tester le minmax de certaines cmp d'un 
+   champ de déplacement au premier numéro d'ordre.
+   Par un IMPR_RESU du champ et un IMPR_TABLE, on vérifie 
+   que les valeurs fournies par POST_ELEM sont maintenant correctes.
+   
+   b) Passage de l'etude fournie + enrichissement de cette étude 
+   pour tester les cas suivants: 
+   - RESULTAT ou CHAM_GD,
+   - TOUT='OUI' ou GROUP_MA,
+   - 1 composante ou plusieurs
+   
+   Remarque: le mot-clé GROUP_MA est accepté par la commande pour 
+   les champs aux noeuds, mais si on l'utilise, une alarme est émise 
+   signalant que TOUT les noeuds du modèle sont pris en compte pour 
+   le calcul du min & max.
+   En d'autre terme, l'utilisation de GROUP_MA pour les champs aux 
+   noeuds n'a pas d'effet.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  OUI   DEPUIS : 9.1
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    ssnv194a
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 016389 DU 2011-02-09 17:29:34
+TYPE anomalie concernant Code_Aster (VERSION 9.1)
+TMA : DeltaCad
+TITRE
+    [FORUM] POST_ELEM sur configuration deformée
+FONCTIONNALITE
+   Un calcul avec POST_ELEM sur configuration déformée
+   (GEOMETRIE='DEFORMEE') échoue avec l'erreur :
+   
+      !---------------------------!
+      ! <EXCEPTION> <UTILITAI_55> !
+      !                           !
+      ! champ inexistant:         !
+      !---------------------------!
+   
+   Présentation
+   -------------
+   Lorsque l'utilisateur renseigne une SD Resultat avec un numéro d'ordre, 
+   Code_Aster se charge d'extraire le champ déplacement à 
+   partir de ces données. Ensuite des vérifications sont effectuées sur ce champ par 
+   l'intermédiaire de la routine CHPVE2. Or 
+   l'appel à cette fonction est placé avant l'extraction du champ, ce qui explique 
+   pourquoi Code_Aster ne trouve pas le champ.
+   
+   Correction
+   ----------
+   L'appel à la routine CHPVE2 a été déplacé pour figurer après l'appel à la routine 
+   RSEXCH dans l'OP0107 (ligne 125).
+   
+   Validation
+   ----------
+   On enrichit le cas-test sdlx102b pour tester MASS_INER avec la déformée.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    sdlx102b
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR torkhani     TORKHANI Mohamed       DATE 02/22/2011 - 04:10:57
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 011850 DU 2008-03-17 13:37:05
+TYPE evolution concernant Code_Aster (VERSION )
+TMA : DeltaCad
+TITRE
+    Etendre le calcul de la matrice d'amortissement gyroscopique a tous les types de poutres
+FONCTIONNALITE
+   Contexte (TMA DeltaCad)
+   --------------
+   La gyroscopie est actuellement disponible pour les elements de poutre POU_D_T et POU_D_T
+   de Code_Aster. Il a 
+   ete propose une extension du chargement de gyroscopie a tous les elements de poutre de
+   Code_Aster. La 
+   gyroscopie (couplage entre angles de rotation dans le plan de la section) suppose une
+   certaine axi-symetrie 
+   des modeles de poutre. Donc, a priori pas de gyroscopie sur une poutre courbe. 
+   
+   Par rapport aux elements POU_D_T et POU_D_T, la particularite des autres elements à
+   traiter est la suivante :
+   
+   Nombre de DDL 
+   - POU_D_EM => 6ddl par nœud : 3 deplacements et 3 rotations
+   - POU_D_TG et POU_D_TGM => 7 ddl par noeud : 3 deplacements, 3 rotations et le gauchissement 
+   
+   Caractéristiques éléments
+    - Poutre droite POU_D_TG
+   
+   Caractéristiques section
+      - fournie par AFFE_CARA_ELEM pour POU_D_TG
+      - calculée à partir du maillage de la section POU_D_EM et POU_D_TGM
+   
+   
+   Impact
+   -----------------
+   Actuellement pour les elements POU_D_T et POU_D_E, le calcul de l'option MECA_GYRO est
+   réalisé dans le source 
+   te0259 via les routines pogyro.f et  ptgy01.f. 
+   => Source : te0259
+   
+   On propose, quelque soit le type d'element :
+      - d'utiliser la routine te0259 pour calculer l'option MECA_GYRO.
+      - d'effectuer les memes operations que celles realisees dans le te0141 lors du calcul
+   de la matrice masse.
+   
+   POU_D_TG 
+      - matrice gyroscopique [12x12] calculee dans le repere global avec POU_D_T.
+      - matrice [12x12] ''ventilee'' vers une matrice 14x14 pour prendre en compte le DDL de
+   gauchissement.
+   
+   POU_D_EM 
+      - prise en compte du maillage de la section dans calcul de matrice gyroscopique
+   (PMFITX, PMFITG, PMFMAS).
+   
+   POU_D_TGM 
+      - prise en compte du maillage de la section dans calcul de la matrice gyroscopique
+   (PMFITX, PMFITG, PTMA01)
+      - matrice  [12x12] ''ventilee'' vers une matrice 14x14 pour prendre en compte le DDL de
+   gauchissement.
+   
+   => Catalogues éléments à modifier
+   
+   - introduction de l'option MECA_GYRO  => te0259
+   - gener_mepdg1.cata   =>  MECA_POU_D_TG     (Poutre de Timoshenko avec gauchissement)
+   - gener_mepmf1.cata   =>  MECA_POU_D_EM     (Poutre Multi-fibres)
+   - gener_mepmf2.cata   =>  MECA_POU_D_TGM    (Poutre Multi-fibres avec gauchissement)
+   
+   
+   Validation
+   --------------
+   On propose d'ajouter trois nouvelles modélisations d, e et f basées sur le cas-test
+   sdll123a.comm, une par 
+   type d'element.
+   
+   Documentation 
+   -----------------
+   Ajout des trois nouvelles modélisations dans la doc v2.02.123 du cas-test.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : v2.02.123
+VALIDATION
+    sdll123
+--------------------------------------------------------------------------------
+
+
+
+========================================================================
+=== Recapitulation des operations demandees pour toutes les restitutions
+========================================================================
+
+
+    TYPE Action    unite                      user      Auteur         nblg  ajout suppr.
+
+       C AJOUT utilitai/mjvsmo              lefebvre J-P.LEFEBVRE        37     37      0
+       C AJOUT utilitai/mjvxmo              lefebvre J-P.LEFEBVRE        36     36      0
+ CASTEST AJOUT sdll123d                     torkhani M.TORKHANI         238    238      0
+ CASTEST AJOUT sdll123e                     torkhani M.TORKHANI         220    220      0
+ CASTEST AJOUT sdll123f                     torkhani M.TORKHANI         236    236      0
+ CASTEST AJOUT ssna120a                      laverne J.LAVERNE          363    363      0
+ CASTEST AJOUT ssnp118v                      laverne J.LAVERNE          652    652      0
+ CASTEST AJOUT ssnp118w                      laverne J.LAVERNE          623    623      0
+ CASTEST AJOUT ssnp118x                      laverne J.LAVERNE          623    623      0
+ CASTEST AJOUT ssnp133h                       massin P.MASSIN           287    287      0
+ CASTEST AJOUT ssnp151a                      laverne J.LAVERNE          271    271      0
+ CASTEST AJOUT ssnp151b                      laverne J.LAVERNE          269    269      0
+ CASTEST AJOUT zzzz281a                     lefebvre J-P.LEFEBVRE       108    108      0
+ CASTEST MODIF adlv100a                     lefebvre J-P.LEFEBVRE       114      2      6
+ CASTEST MODIF sslv140a                      tardieu N.TARDIEU          243      2      2
+ CASTEST MODIF sslx102b                      tardieu N.TARDIEU          276     40      1
+ CASTEST MODIF ssna108a                     bargelli R.BARGELLINI       311      5      4
+ CASTEST MODIF ssna115c                      laverne J.LAVERNE          328      4      4
+ CASTEST MODIF ssna117b                     lefebvre J-P.LEFEBVRE       311      2      2
+ CASTEST MODIF ssnp118g                      laverne J.LAVERNE          530      4      4
+ CASTEST MODIF ssnp118h                      laverne J.LAVERNE          531      4      4
+ CASTEST MODIF ssnp118i                      laverne J.LAVERNE          521      4      4
+ CASTEST MODIF ssnp118j                      laverne J.LAVERNE          271      4      4
+ CASTEST MODIF ssnp118k                      laverne J.LAVERNE          274      4      4
+ CASTEST MODIF ssnp118l                      laverne J.LAVERNE          271      4      4
+ CASTEST MODIF ssnp133c                      laverne J.LAVERNE          318      2      2
+ CASTEST MODIF ssnp139a                      laverne J.LAVERNE          294      3      3
+ CASTEST MODIF ssnp139b                      laverne J.LAVERNE          330      3      3
+ CASTEST MODIF ssnv185m                      macocco K.MACOCCO          329     47      1
+ CASTEST MODIF ssnv192a                      macocco K.MACOCCO          466     10      3
+ CASTEST MODIF ssnv194a                      tardieu N.TARDIEU          217      5      2
+ CASTEST MODIF ssnv199e                      laverne J.LAVERNE          363      4      4
+ CASTEST MODIF ssnv199f                      laverne J.LAVERNE          372      4      4
+ CASTEST MODIF ssnv199g                      laverne J.LAVERNE          403      4      4
+ CASTEST MODIF wtna111a                      laverne J.LAVERNE          366      2      2
+ CASTEST MODIF wtnp125a                      laverne J.LAVERNE          428      2      2
+ CASTEST MODIF wtnp125b                      laverne J.LAVERNE          362      2      2
+ CASTEST MODIF wtnp126a                      laverne J.LAVERNE          417      2      2
+ CASTEST MODIF wtnp126b                      laverne J.LAVERNE          415      2      2
+ CASTEST MODIF wtnp127b                      tardieu N.TARDIEU          532    151      2
+ CASTEST MODIF wtnp128a                      laverne J.LAVERNE          474      2      2
+ CASTEST MODIF wtnp128b                      laverne J.LAVERNE          436      2      2
+ CASTEST MODIF wtnp128c                      laverne J.LAVERNE          360      2      2
+ CASTEST MODIF wtnp128d                      laverne J.LAVERNE          374      2      2
+ CASTEST MODIF zzzz100c                     lefebvre J-P.LEFEBVRE       178      3      3
+ CASTEST MODIF zzzz110b                     lefebvre J-P.LEFEBVRE       112      4      1
+ CASTEST MODIF zzzz131a                     lefebvre J-P.LEFEBVRE       586     11      1
+ CASTEST MODIF zzzz208b                     lefebvre J-P.LEFEBVRE       473      5      2
+ CASTEST MODIF zzzz266a                      tardieu N.TARDIEU           97      6      6
+ CASTEST MODIF zzzz268a                     bargelli R.BARGELLINI       214      1      6
+ CASTEST MODIF zzzz268b                     bargelli R.BARGELLINI       228      1      3
+CATALOGU MODIF compelem/phenomene_modelisation__    laverne J.LAVERNE         1727      1      5
+CATALOGU MODIF options/meca_gyro            torkhani M.TORKHANI          44      7      2
+CATALOGU MODIF typelem/gener_ej2d_hm         laverne J.LAVERNE          147      1      8
+CATALOGU MODIF typelem/gener_me2db1          tardieu N.TARDIEU          231      6      2
+CATALOGU MODIF typelem/gener_me3a33          tardieu N.TARDIEU          202      5      2
+CATALOGU MODIF typelem/gener_me3a62          tardieu N.TARDIEU          177      5      2
+CATALOGU MODIF typelem/gener_me3a64          tardieu N.TARDIEU          180      5      2
+CATALOGU MODIF typelem/gener_me3di3          tardieu N.TARDIEU          252      4      2
+CATALOGU MODIF typelem/gener_me3du3          tardieu N.TARDIEU          256      4      2
+CATALOGU MODIF typelem/gener_me3g33          tardieu N.TARDIEU          173      4      2
+CATALOGU MODIF typelem/gener_me3gi3          tardieu N.TARDIEU          206      4      2
+CATALOGU MODIF typelem/gener_me3h33          tardieu N.TARDIEU          179      4      2
+CATALOGU MODIF typelem/gener_meaa12          tardieu N.TARDIEU          165      5      2
+CATALOGU MODIF typelem/gener_meaa62          tardieu N.TARDIEU          162      4      2
+CATALOGU MODIF typelem/gener_meaa64          tardieu N.TARDIEU          165      4      2
+CATALOGU MODIF typelem/gener_meag32          tardieu N.TARDIEU          156      4      2
+CATALOGU MODIF typelem/gener_meagi2          tardieu N.TARDIEU          197      4      2
+CATALOGU MODIF typelem/gener_meah32          tardieu N.TARDIEU          162      4      2
+CATALOGU MODIF typelem/gener_mecap1          tardieu N.TARDIEU          166      4      2
+CATALOGU MODIF typelem/gener_mecq32          tardieu N.TARDIEU          316      4      2
+CATALOGU MODIF typelem/gener_mecqd1          tardieu N.TARDIEU          215      4      2
+CATALOGU MODIF typelem/gener_meda12          tardieu N.TARDIEU          165      5      2
+CATALOGU MODIF typelem/gener_meda62          tardieu N.TARDIEU          162      4      2
+CATALOGU MODIF typelem/gener_meda64          tardieu N.TARDIEU          165      4      2
+CATALOGU MODIF typelem/gener_medg32          tardieu N.TARDIEU          156      4      2
+CATALOGU MODIF typelem/gener_medh32          tardieu N.TARDIEU          162      4      2
+CATALOGU MODIF typelem/gener_medha2          tardieu N.TARDIEU          144      4      2
+CATALOGU MODIF typelem/gener_megrc2          tardieu N.TARDIEU          206      4      2
+CATALOGU MODIF typelem/gener_megrm2          tardieu N.TARDIEU          211      4      2
+CATALOGU MODIF typelem/gener_meh33           tardieu N.TARDIEU          150      4      2
+CATALOGU MODIF typelem/gener_mepct1          tardieu N.TARDIEU          273      1      1
+CATALOGU MODIF typelem/gener_mepdg1         torkhani M.TORKHANI         291      5      1
+CATALOGU MODIF typelem/gener_mepgd1          tardieu N.TARDIEU          212      4      2
+CATALOGU MODIF typelem/gener_mepgi2          tardieu N.TARDIEU          197      4      2
+CATALOGU MODIF typelem/gener_mepli2          tardieu N.TARDIEU          238      4      2
+CATALOGU MODIF typelem/gener_meplu2          tardieu N.TARDIEU          247      4      2
+CATALOGU MODIF typelem/gener_mepmf1         torkhani M.TORKHANI         288      5      1
+CATALOGU MODIF typelem/gener_mepmf2         torkhani M.TORKHANI         287      5      1
+CATALOGU MODIF typelem/gener_metu61          tardieu N.TARDIEU          284      4      2
+CATALOGU MODIF typelem/gener_th3d_3          tardieu N.TARDIEU          259      4      2
+CATALOGU MODIF typelem/met3seg3              tardieu N.TARDIEU          278      4      2
+CATALOGU MODIF typelem/met3seg4              tardieu N.TARDIEU          275      4      2
+CATALOGU SUPPR commande/aide                lefebvre M.ADMINISTRATEUR     34      0     34
+CATALOPY MODIF commande/affe_modele          laverne J.LAVERNE          275      1      2
+CATALOPY MODIF commande/defi_compor          laverne J.LAVERNE          112      2      3
+CATALOPY MODIF commande/defi_contact          massin P.MASSIN           571      3      2
+CATALOPY MODIF commande/defi_group           macocco K.MACOCCO          239     14      4
+CATALOPY MODIF commande/defi_materiau        laverne J.LAVERNE         3138      9     10
+CATALOPY MODIF commande/post_bordet         bargelli R.BARGELLINI        66      4      4
+CATALOPY MODIF commande/post_elem            tardieu N.TARDIEU          549     33      3
+CATALOPY MODIF commun/c_relation             laverne J.LAVERNE          155      2      1
+       C MODIF utilitai/asterm              lefebvre J-P.LEFEBVRE       460     26      2
+       C MODIF utilitai/memdis              lefebvre J-P.LEFEBVRE        55      1      1
+ FORTRAN AJOUT algorith/lc0049               laverne J.LAVERNE           53     53      0
+ FORTRAN AJOUT algorith/lceitr               laverne J.LAVERNE          223    223      0
+ FORTRAN AJOUT elements/lonseg               tardieu N.TARDIEU          164    164      0
+ FORTRAN AJOUT elements/ppga12               tardieu N.TARDIEU          129    129      0
+ FORTRAN AJOUT modelisa/cgmaxf               macocco K.MACOCCO          215    215      0
+ FORTRAN AJOUT modelisa/cgnoxf               macocco K.MACOCCO          188    188      0
+ FORTRAN AJOUT prepost/xpocrf                macocco K.MACOCCO          216    216      0
+ FORTRAN AJOUT prepost/xpofon                macocco K.MACOCCO          128    128      0
+ FORTRAN AJOUT utilitai/pebpct               tardieu N.TARDIEU          234    234      0
+ FORTRAN AJOUT utilitai/pevolu               tardieu N.TARDIEU          408    408      0
+ FORTRAN MODIF algorith/eiangl               laverne J.LAVERNE           48     12     12
+ FORTRAN MODIF algorith/eicine               laverne J.LAVERNE          101      4      4
+ FORTRAN MODIF algorith/eifint               laverne J.LAVERNE          248      3      3
+ FORTRAN MODIF algorith/lceifa               laverne J.LAVERNE          211      6      5
+ FORTRAN MODIF algorith/lceiou               laverne J.LAVERNE          215      5      4
+ FORTRAN MODIF algorith/lceitc               laverne J.LAVERNE          251      5      3
+ FORTRAN MODIF algorith/mminfp                massin P.MASSIN           755      2      2
+ FORTRAN MODIF algorith/nmfihm               laverne J.LAVERNE          294      5      5
+ FORTRAN MODIF algorith/pipefx                massin P.MASSIN           184     41     78
+ FORTRAN MODIF algorith/xenrch               macocco K.MACOCCO          500     77      6
+ FORTRAN MODIF algorith/xmmco1                massin P.MASSIN           116     29     44
+ FORTRAN MODIF algorith/xmmsa2                massin P.MASSIN           166     53     83
+ FORTRAN MODIF algorith/xmmsa3                massin P.MASSIN            90     24     21
+ FORTRAN MODIF algorith/xmmsa4                massin P.MASSIN            94     11      8
+ FORTRAN MODIF algorith/xmvco1                massin P.MASSIN           156     47     65
+ FORTRAN MODIF algorith/xtmafi               macocco K.MACOCCO          151     18      7
+ FORTRAN MODIF calculel/meamgy              torkhani M.TORKHANI         111     13      4
+ FORTRAN MODIF calculel/op0009              torkhani M.TORKHANI         211      2      2
+ FORTRAN MODIF elements/pogyro              torkhani M.TORKHANI         145     20     23
+ FORTRAN MODIF elements/te0259              torkhani M.TORKHANI         167     83     27
+ FORTRAN MODIF elements/te0313               laverne J.LAVERNE          286      6      5
+ FORTRAN MODIF elements/te0322               laverne J.LAVERNE          117      4      7
+ FORTRAN MODIF elements/te0359               laverne J.LAVERNE          106      6      5
+ FORTRAN MODIF elements/te0360               laverne J.LAVERNE          173      6      6
+ FORTRAN MODIF elements/te0361               laverne J.LAVERNE          102      6      5
+ FORTRAN MODIF elements/te0478               tardieu N.TARDIEU           61      4      3
+ FORTRAN MODIF elements/te0532                massin P.MASSIN           355     40     37
+ FORTRAN MODIF elements/te0533                massin P.MASSIN           507     25     33
+ FORTRAN MODIF elements/te0534                massin P.MASSIN           489     35     35
+ FORTRAN MODIF elements/te0547                massin P.MASSIN           175      7      7
+ FORTRAN MODIF jeveux/jeagco                lefebvre J-P.LEFEBVRE       287      4      4
+ FORTRAN MODIF jeveux/jealdy                lefebvre J-P.LEFEBVRE        47      2      8
+ FORTRAN MODIF jeveux/jedupo                lefebvre J-P.LEFEBVRE       299      6      5
+ FORTRAN MODIF jeveux/jefini                lefebvre J-P.LEFEBVRE       168      3      3
+ FORTRAN MODIF jeveux/jjimpo                lefebvre J-P.LEFEBVRE       207      3      4
+ FORTRAN MODIF modelisa/capres               macocco K.MACOCCO          151      5      4
+ FORTRAN MODIF modelisa/cazocx                massin P.MASSIN           305      3      1
+ FORTRAN MODIF modelisa/lrmast              lefebvre J-P.LEFEBVRE       711      2      5
+ FORTRAN MODIF prepost/op0187                macocco K.MACOCCO          156     20      9
+ FORTRAN MODIF prepost/op0196                macocco K.MACOCCO          212      8      6
+ FORTRAN MODIF prepost/xpodim                macocco K.MACOCCO          323      6      6
+ FORTRAN MODIF prepost/xpomax                macocco K.MACOCCO          531      5      4
+ FORTRAN MODIF soustruc/sscgma               macocco K.MACOCCO          511      7      2
+ FORTRAN MODIF soustruc/sscgno               macocco K.MACOCCO          538      7      2
+ FORTRAN MODIF soustruc/sschge              lefebvre J-P.LEFEBVRE       149      3      3
+ FORTRAN MODIF soustruc/ssdmgn              lefebvre J-P.LEFEBVRE       272      4      4
+ FORTRAN MODIF soustruc/ssmage              lefebvre J-P.LEFEBVRE       139      4      4
+ FORTRAN MODIF soustruc/ssvaro              lefebvre J-P.LEFEBVRE       413      3      3
+ FORTRAN MODIF supervis/gcugen              lefebvre J-P.LEFEBVRE       131      3     18
+ FORTRAN MODIF supervis/ib0mai              lefebvre J-P.LEFEBVRE       115     40     21
+ FORTRAN MODIF utilitai/chpond               tardieu N.TARDIEU          218     17     11
+ FORTRAN MODIF utilitai/op0107               tardieu N.TARDIEU          322     13      5
+ FORTRAN MODIF utilitai/peecal               tardieu N.TARDIEU          254     23     20
+ FORTRAN MODIF utilitai/peeint               tardieu N.TARDIEU          319    125     32
+ FORTRAN MODIF utilitai/pemaxn               tardieu N.TARDIEU          185     29     25
+ FORTRAN SUPPR jeveux/jedbug                lefebvre M.ADMINISTRATEUR     45      0     45
+ FORTRAN SUPPR jeveux/jxabor                lefebvre M.ADMINISTRATEUR     28      0     28
+ FORTRAN SUPPR utilitai/aidcon              lefebvre M.ADMINISTRATEUR     95      0     95
+ FORTRAN SUPPR utilitai/op0042              lefebvre M.ADMINISTRATEUR     52      0     52
+  PYTHON AJOUT Comportement/czm_tra_mix      laverne J.LAVERNE           38     38      0
+  PYTHON MODIF Lecture_Cata_Ele/make_surch_offi   lefebvre J-P.LEFEBVRE       142     50     39
+  PYTHON MODIF Macro/post_bordet_ops        bargelli R.BARGELLINI       337     40     11
+  PYTHON MODIF Messages/cataelem            lefebvre J-P.LEFEBVRE        32      2     45
+  PYTHON MODIF Messages/compor1              laverne J.LAVERNE          367      5      2
+  PYTHON MODIF Messages/elements5            laverne J.LAVERNE          221      9      1
+  PYTHON MODIF Messages/jeveux1             lefebvre J-P.LEFEBVRE       430     16      2
+  PYTHON MODIF Messages/jeveux              lefebvre J-P.LEFEBVRE       535      1     11
+  PYTHON MODIF Messages/rupture1            bargelli R.BARGELLINI       366      6      1
+  PYTHON MODIF Messages/supervis2           lefebvre J-P.LEFEBVRE        35      1      1
+  PYTHON MODIF Messages/supervis            lefebvre J-P.LEFEBVRE       423      2     26
+  PYTHON MODIF Messages/utilitai8            tardieu N.TARDIEU          287      8      2
+  PYTHON MODIF Messages/utilitai            lefebvre J-P.LEFEBVRE       375      1      9
+  PYTHON MODIF SD/sd_xfem                    macocco K.MACOCCO          141      6      2
+
+
+        nb unites  nb lignes  ajouts  suppr.  difference
+ AJOUT :   24        5959      5959             +5959
+ MODIF :  158       46112      1719    1142      +577
+ SUPPR :    5         254               254      -254
+ DEPLA :    0           0 
+         ----      ------     ------  ------   ------
+ TOTAL :  187       52325      7678    1396     +6282 

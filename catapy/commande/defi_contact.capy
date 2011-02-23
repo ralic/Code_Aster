@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 19/01/2011   AUTEUR MASSIN P.MASSIN 
+#& MODIF COMMANDE  DATE 23/02/2011   AUTEUR MASSIN P.MASSIN 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -511,7 +511,8 @@ DEFI_CONTACT=OPER(nom       = "DEFI_CONTACT",
                                                                    "NOEUD","SIMPSON","SIMPSON1","NCOTES","NCOTES1","NCOTES2"),),
 
 
-                                       RELATION       = SIMP(statut='f',typ='TXM',defaut="NON",into=("CZM_EXP_REG","NON"),),
+                                       RELATION       = SIMP(statut='f',typ='TXM',defaut="NON",
+                                                             into=("CZM_EXP_REG","CZM_LIN_REG","NON"),),
 
                                        ALGO_LAGR      = SIMP(statut='f',typ='TXM',defaut="VERSION1",
                                                              into=("NON","VERSION1","VERSION2"),),

@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+%& MODIF TYPELEM  DATE 22/02/2011   AUTEUR TARDIEU N.TARDIEU 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -70,6 +70,8 @@ MODE_LOCAL__
     ZVARINO  = VARI_R   ELNO__ IDEN__  (VARI     )
     EVOISIN  = VOISIN   ELEM__         (V0       V1       V2       V3       V4       V5       V6
                                         T0       T1       T2       T3       T4       T5       T6       )
+    EGNEUT_R = NEUT_R   ELGA__ RIGI    (X[30])
+    EGNEUT_F = NEUT_F   ELGA__ RIGI    (X[30])
     ZVARCPG  = VARI_R   ELGA__ MATER   (VARI     )
 
 VECTEUR__
@@ -184,7 +186,7 @@ OPTION__
     SYME_MDNS_R         222   IN__   MMATUNS  PNOSYM
                               OUT__  MMATUUR  PSYM
     TOU_INI_ELGA        99    IN__   NGEOMER  PGEOMER
-                              OUT__  ECONTPG  PSIEF_R  ZVARIPG  PVARI_R
+                              OUT__  ECONTPG  PSIEF_R  ZVARIPG  PVARI_R  EGNEUT_R PNEUT_R EGNEUT_F PNEUT_F
     TOU_INI_ELNO        99    IN__   NGEOMER  PGEOMER
                               OUT__  ECONTNO  PSIEF_R
     VARI_ELNO      98    IN__   CCOMPOR  PCOMPOR  ZVARIPG  PVARIGR

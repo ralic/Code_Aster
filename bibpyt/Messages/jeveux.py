@@ -1,4 +1,4 @@
-#@ MODIF jeveux Messages  DATE 03/01/2011   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+#@ MODIF jeveux Messages  DATE 22/02/2011   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -176,16 +176,6 @@ cata_msg = {
      -memjeveux_stat sur la ligne de commande). 
 """),
 
-33 : _("""
-     Modification de l'environnement JEVEUX.
-     Allocation dynamique des segments de valeurs de taille supérieure
-     a %(i1)d (entiers) 
-"""),
-
-34 : _("""
-     Modification de l'environnement JEVEUX.
-     Mode debug positionne a %(i1)d
-"""),
 
 36 : _("""  
      Le nombre d'enregistrements maximum de la base %(k1)s sera modifié

@@ -1,4 +1,4 @@
-#@ MODIF rupture1 Messages  DATE 25/01/2011   AUTEUR MACOCCO K.MACOCCO 
+#@ MODIF rupture1 Messages  DATE 23/02/2011   AUTEUR BARGELLI R.BARGELLINI 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -357,5 +357,10 @@ La contrainte de référence est nulle à l'instant %(r1)d.
 
 57:_("""
 Problème dans la dimension du modèle. POST_BORDET ne supporte pas les raccords 2D-3D
+"""),
+
+58:_("""
+L'utilisation de POST_BORDET n'est possible qu'avec 1 seul MODELE et 1 seul
+CHAM_MATERIAU
 """),
 }

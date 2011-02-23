@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF asterm utilitai  DATE 02/02/2011   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF asterm utilitai  DATE 22/02/2011   AUTEUR LEFEBVRE J-P.LEFEBVRE */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2011  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -41,11 +41,17 @@ INTEGER DEFP(LMEMEX, lmemex, INTEGER *);
 INTEGER DEFP(MEMJVX, memjvx, double *);
 #define CALL_MEMJVX(a) CALLP(MEMJVX, memjvx, a)
 
+INTEGER DEFP(MJVXMO, mjvxmo, double *);
+#define CALL_MJVXMO(a) CALLP(MJVXMO, mjvxmo, a)
+
 INTEGER DEFP(MEJVDY, mejvdy, double *);
 #define CALL_MEJVDY(a) CALLP(MEJVDY, mejvdy, a)
 
 INTEGER DEFP(MEJVST, mejvst, double *);
 #define CALL_MEJVST(a) CALLP(MEJVST, mejvst, a)
+
+INTEGER DEFP(MJVSMO, mjvsmo, double *);
+#define CALL_MJVSMO(a) CALLP(MJVSMO, mjvsmo, a)
 
 INTEGER DEFPPS(REPMAT, repmat, INTEGER *, INTEGER *, char *, STRING_SIZE);
 #define CALL_REPMAT(a, b, c) CALLPPS(REPMAT, repmat, a, b, c)
@@ -264,8 +270,26 @@ void asterm(long argc, char** argv)
             inter=1;
             cerr=CALL_ISDBGJ(&inter);
         }
-        /*
-   ** Memoire JEVEUX
+   /*
+   ** Memoire JEVEUX en Mo
+   */
+		if (strcmp(*argv,"-memory") == 0) {
+			double finter;
+			*argv++;
+			finter=(double) atof(*argv);
+			cerr=CALL_MJVXMO(&finter);
+		}
+   /*
+   ** Maximum memoire statique JEVEUX en Mo
+   */
+		if (strcmp(*argv,"-memory_stat") == 0) {
+			double mxmemst;
+			*argv++;
+			mxmemst=(double) atof(*argv);
+			cerr=CALL_MJVSMO(&mxmemst);
+		}
+   /*
+   ** Memoire JEVEUX en Mw
    */
         if (strcmp(*argv,"-memjeveux") == 0) {
             DOUBLE finter;

@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF MEMDIS UTILITAI  DATE 02/02/2011   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF MEMDIS UTILITAI  DATE 22/02/2011   AUTEUR LEFEBVRE J-P.LEFEBVRE */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2011  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
