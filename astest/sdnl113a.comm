@@ -1,10 +1,11 @@
 
-# MODIF  DATE 07/12/2009   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 28/02/2011   AUTEUR GREFFET N.GREFFET 
 # CREE DATE 07/04/2000   AUTEUR E. CHAMPAIN
 # TITRE TUYAUTERIE EN FORME DE LYRE (ELSA) SOUS CHARGEMENT SISMIQUE
+# sdnl113a.para = tps_job 240 mem_job 512Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -113,7 +114,9 @@ MATCD=DEFI_MATERIAU(ELAS=_F(E=1.9E11,
                             NU=0.3,
                             RHO=1.47373E4,),
                     ECRO_LINE=_F(D_SIGM_EPSI=7.67E9,
-                                 SY=242.4E6,),
+# ON DINMINUE VOLONTAIREMENT LA LIMITE ELASTIQUE (VALEUR ORIGINALE : SY=242.4E6,
+#  POUR PLASTIFIER DES LE DEBUT DU SEISME ET DONC POUVOIR ARRETER LE CALCUL PLUS TOT
+                                 SY=242.4E6 / 2,),
                     PRAGER=_F(C=5.328434E9,),);
 
 MATVAN=DEFI_MATERIAU(ELAS=_F(E=1.9E11,
@@ -179,9 +182,12 @@ CHART3=AFFE_CHAR_MECA(MODELE=MO,
 #--------- ACCELEROGRAMMES EXCITATION ----------------
 
 INCLUDE(UNITE=22,);
+#  LE COEFFICIENT SUIVANT PERMET DE METTRE A L'ECHELLE L'ACCELERO
+COEFMULT = 1. ;
+ACCEL2 = CALC_FONCTION(COMB=_F(FONCTION=ACCEL,COEF=COEFMULT),);
 
 FONCPRE=DEFI_FONCTION(NOM_PARA='INST',
-                      VALE=(0.,0.,0.2,1.0,20.,1.0,),);
+                      VALE=(0.,0.,0.2,1.0,40.,1.0,),);
 
 MACRO_MATR_ASSE(MODELE=MO,
                 CHAM_MATER=CHMAT,
@@ -201,12 +207,29 @@ CHART2=AFFE_CHAR_MECA(MODELE=MO,
                       VECT_ASSE=CHARSEI,);
 TMIN = 0.0;
 
-TMAX = 1.1;
-
+TMAX = 20.;
+PASDT = 0.001 ;
+PASDT0 = 10 * PASDT ;
+PASDT1 = 5 * PASDT ;
+# AVEC CETTE VALEUR DE TFIN ON A DEJA PLASTIFIE POUR LA VALEUR DE SY UTILISEE ICI
+TFIN = 0.17 ;
+T1 = 0.13 ;
+T2 = 0.14 ;
 
 LINST=DEFI_LIST_REEL(DEBUT=TMIN,
-                     INTERVALLE=_F(JUSQU_A=TMAX,
-                                   PAS=0.01,),);
+                     INTERVALLE=(_F(JUSQU_A=T1,
+                                   PAS=PASDT0,),
+                                   _F(JUSQU_A=T2,
+                                   PAS=PASDT1,),
+                                 _F(JUSQU_A=TMAX,
+                                   PAS=PASDT,),),
+                                   );
+DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = LINST,),
+                        ECHEC=_F(
+#                                 SUBD_METHODE='EXTRAPOLE',
+                                 SUBD_METHODE = 'UNIFORME',
+                                 SUBD_PAS=2,
+                                 SUBD_PAS_MINI=PASDT/20,),);
 
 RESULT=DYNA_NON_LINE(MODELE=MO,
                      CHAM_MATER=CHMAT,
@@ -215,7 +238,7 @@ RESULT=DYNA_NON_LINE(MODELE=MO,
                             _F(CHARGE=CHART3,
                                FONC_MULT=FONCPRE,),
                             _F(CHARGE=CHART2,
-                               FONC_MULT=ACCEL,),),
+                               FONC_MULT=ACCEL2,),),
                      COMP_INCR=(_F(RELATION='ELAS',
                                    GROUP_MA=('PATBIELA','PATBIELB','PATBIELC','PATVAN','CDGVAN','BIELA','BIELB','BIELC',),),
                                 _F(RELATION='VMIS_ECMI_LINE',
@@ -224,17 +247,13 @@ RESULT=DYNA_NON_LINE(MODELE=MO,
                                    ITER_INTE_MAXI=100,),
                                 _F(RELATION='ELAS',
                                    GROUP_MA='POUTRES',),),
-                     INCREMENT=_F(LIST_INST=LINST,
-                                  INST_FIN=.01,),
+                     INCREMENT=_F(LIST_INST=DEFLIST,
+                                  INST_FIN=TFIN,),
                      SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',
                                 FORMULATION='DEPLACEMENT',),
-                     NEWTON=_F(PREDICTION='ELASTIQUE',
-                               MATRICE='TANGENTE',
-                               REAC_ITER=1,),
-                     SOLVEUR=_F(METHODE='MULT_FRONT',),
                      CONVERGENCE=_F(RESI_GLOB_RELA=1.E-6,
-                                    ITER_GLOB_MAXI=100,),
-                     ARCHIVAGE=_F(PAS_ARCH=1,),);
+                                    ITER_GLOB_MAXI=10,),
+                     );
 
 D_XVAN=RECU_FONCTION(RESULTAT=RESULT,
                      NOM_CHAM='DEPL',
@@ -244,37 +263,66 @@ D_XVAN=RECU_FONCTION(RESULTAT=RESULT,
 
 TEST_FONCTION(VALEUR=_F(FONCTION=D_XVAN,
                         VALE_PARA=0.01,
-                        VALE_REFE=4.3038e-06,
+                        VALE_REFE=4.3038E-06,
                         REFERENCE='NON_REGRESSION',),);
 
+RESULT=CALC_ELEM(reuse =RESULT,
+               RESULTAT=RESULT,
+               INST=(0.01,TFIN),
+               OPTION=('SIEF_ELNO','VARI_ELNO',),);
 RESULT=CALC_NO(reuse =RESULT,
                RESULTAT=RESULT,
-               TOUT_ORDRE='OUI',
-               OPTION='REAC_NODA',);
+               INST=(0.01,TFIN),
+               OPTION=('REAC_NODA',),);
 
 REAC=RECU_FONCTION(RESULTAT=RESULT,
                    NOM_CHAM='REAC_NODA',
                    NOM_CMP='DX',
                    NOEUD='N1',);
 
-TEST_RESU(RESU=_F(RESULTAT=RESULT,
+TEST_RESU(RESU=(_F(RESULTAT=RESULT,
                   INST=0.01,
                   NOM_CHAM='REAC_NODA',
                   NOM_CMP='DX',
                   GROUP_NO='L',
                   VALE=4038.02,
                   REFERENCE='NON_REGRESSION',
-                  VERSION='8.1.9',),);
-
-TEST_RESU(RESU=_F(RESULTAT=RESULT,
+                  VERSION='8.1.9',),
+               _F(RESULTAT=RESULT,
                   INST=0.01,
                   NOM_CHAM='REAC_NODA',
                   NOM_CMP='DX',
                   GROUP_NO='A',
                   VALE=0.0,
                   CRITERE='ABSOLU',
-                  PRECISION=1e-9,
+                  PRECISION=1E-9,
                   REFERENCE='NON_REGRESSION',
-                  VERSION='8.1.9',),);
+                  VERSION='8.1.9',),
+               _F(RESULTAT=RESULT,
+                  INST=TFIN,
+                  NOM_CHAM='REAC_NODA',
+                  NOM_CMP='DX',
+                  GROUP_NO='L',
+                  VALE=71577.12987107,
+                  CRITERE='RELATIF',
+                  PRECISION=1E-9,
+                  REFERENCE='NON_REGRESSION',
+                  VERSION='10.03.14',),
+               _F(RESULTAT=RESULT,
+                  INST=TFIN,
+                  NOM_CHAM='VARI_ELNO',
+                  NOM_CMP='V1',
+                  MAILLE='M10',
+                  NOEUD='N10',
+                  SOUS_POINT=25,
+                  VALE=4.114621124E-05,
+                  CRITERE='RELATIF',
+                  PRECISION=1E-9,
+                  REFERENCE='NON_REGRESSION',
+                  VERSION='10.03.14',),
+                  ),);
+
+#IMPR_RESU(FORMAT='RESULTAT',
+#RESU=_F(RESULTAT=RESULT,NOM_CHAM='VARI_ELNO',INST=0.17,GROUP_MA='COUDES',),);
 
 FIN();

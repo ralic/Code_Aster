@@ -1,6 +1,6 @@
       SUBROUTINE OP0100()
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 18/01/2011   AUTEUR MEUNIER S.MEUNIER 
+C MODIF CALCULEL  DATE 01/03/2011   AUTEUR TRAN V-X.TRAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -55,7 +55,7 @@ C
       PARAMETER (NBTYCH=17)
 C
       REAL*8  TIME,TIMEU,TIMEV,PREC,R8B,DIR(3)
-      REAL*8  RINF,RSUP,MODULE,VAL(2),PULS
+      REAL*8  RINF,RSUP,MODULE,VAL(2),PULS,RBID
 C
       COMPLEX*16 CBID,C16B
 C
@@ -68,7 +68,7 @@ C
       CHARACTER*8 LATABL,LERES0,NOMA,THETAI,NOEUD,TYPEPS(-2:NBTYCH)
       CHARACTER*13 INPSCO
       CHARACTER*16 TYPCO,OPER,OPTION,TYSD, NOPRUP(11),OPTIO1,SUITE
-      CHARACTER*16 OPTIO2,K16B,NOMCAS
+      CHARACTER*16 OPTIO2,K16B,NOMCAS,K16BID
       CHARACTER*19 GRLT,GRLN
       CHARACTER*19 OPTIO3,VCHAR
       CHARACTER*24 DEPLA,MATE,K24B,COMPOR,CHVITE,CHACCE,VECORD
@@ -136,6 +136,7 @@ C
       CALL GETVR8(' ','PRECISION',0,1,1,PREC,NP)
       CALL GETVTX(' ','CRITERE'  ,0,1,1,CRIT,NC)
       CALL RSUTNU ( RESUCO, ' ', 0, VECORD, LONVEC, PREC, CRIT, IER )
+     
       CALL ASSERT(IER.EQ.0)
       CALL GETTCO(RESUCO,TYSD)
       IF (TYSD.EQ.'DYNA_TRANS') THEN
@@ -258,11 +259,10 @@ C------------------------------------------
       IF(DIME.EQ.2)THEN
        CALL GETVID ( 'THETA','FISSURE'  , 1,1,1,FISS,N2)
        CALL GETVID ( 'THETA','FOND_FISS', 1,1,1,FOND,N1)
+       
        IF (N2.NE.0.AND.OPTION.EQ.'CALC_G')
      &        OPTION = 'CALC_G_X'
        IF(OPTION.EQ.'CALC_K_G' .OR. OPTION.EQ.'K_G_MODA')THEN
-           IF (N2.NE.0.AND.OPTION.EQ.'K_G_MODA')
-     &         CALL U2MESS('F','XFEM_9')
            IF (N1+N2.EQ.0.OR.N1*N2.NE.0)
      &         CALL U2MESK('F','RUPTURE1_11',1,OPTION)
            IF (N2.NE.0.AND.OPTION.EQ.'CALC_K_G')
@@ -348,9 +348,12 @@ C 2.7.1 ==> SI 3D LOCAL :
       IF(TROIDL)THEN
 
 C     - FOND_FISS ET FISSURE :
-      IF (OPTION(1:6) .EQ. 'CALC_K' .OR. OPTION .EQ. 'K_G_MODA'
-     &      .OR. OPTION .EQ. 'CALC_G_X')THEN
+      IF (OPTION(1:6) .EQ. 'CALC_K' .OR.
+     &    OPTION .EQ. 'K_G_MODA'    .OR. 
+     &    OPTION .EQ. 'CALC_G_X')THEN
+   
         CALL GETVID ( 'THETA','FISSURE', 1,1,1, FISS, IFOND )
+        
         CHFOND='&&'//NOMPRO//'.CHFOND'
 C       CREATION DE LA LISTE DES POINTS DU FOND A CALCULER
         CALL XRECFF(FISS,CHFOND,LNOFF)
@@ -827,6 +830,7 @@ C
               CALL U2MESG('F', 'RUPTURE0_93',1,VALK,1,VALI,0,0.D0)
             ENDIF
 
+            
             CALL CAKG3D(OPTIO1,LATABL,MODELE,DEPLA,THETAI,MATE,COMPOR,
      &              NCHA,ZK8(ICHA),SYMECH,CHFOND,LNOFF,BASLOC,COURB,
      &              IORD,NDEG,THLAGR,GLAGR,THLAG2,PAIR,NDIMTE,
@@ -854,6 +858,9 @@ C
 C  3.4.1 ==>  K_G_MODA 2D
 C  -----------------------
        IF(.NOT.TROIDL)THEN
+        CALL GETVID ( 'THETA','FOND_FISS', 1,1,1,FOND,N1)
+C FEM        
+        IF (N1.NE.0) THEN
           DO 341 I = 1 , LONVEC
             IORD = ZI(IVEC-1+I)
             CALL RSEXCH(RESUCO,'DEPL',IORD,DEPLA,IRET)
@@ -865,9 +872,39 @@ C  -----------------------
             CALL RSADPA(RESUCO,'L',1,'OMEGA2',IORD,0,IPULS,K8BID)
             PULS = ZR(IPULS)
             PULS = SQRT(PULS)
+            
             CALL MEMOKG(OPTIO1,LATABL,MODELE,DEPLA,THETA,MATE,NCHA,
      &                  ZK8(ICHA),SYMECH,FOND,IORD,PULS,NBPRUP,NOPRUP)
  341     CONTINUE
+ 
+C X-FEM
+       ELSE
+         CALL GETVID ( 'THETA','FISSURE'  , 1,1,1,FISS,N2)
+         CALL ASSERT(N2.NE.0)
+     
+         DO 3422 I = 1 , LONVEC
+            IORD = ZI(IVEC-1+I)
+            CALL RSEXCH(RESUCO,'DEPL',IORD,DEPLA,IRET)
+            IF(IRET.NE.0) THEN
+                VALK(1) = 'DEPL'
+                VALI = IORD
+                CALL U2MESG('F', 'RUPTURE0_95',1,VALK,1,VALI,0,0.D0)
+            ENDIF
+            CALL RSADPA(RESUCO,'L',1,'OMEGA2',IORD,0,IPULS,K8BID)
+            PULS = ZR(IPULS)
+            PULS = SQRT(PULS)
+            EXITIM = .FALSE.
+            CHVITE =' '
+            CHACCE =' '
+
+           CALL MEFICG (OPTIO1,LATABL,MODELE,DEPLA,THETA,MATE,NCHA,
+     &                   ZK8(ICHA),SYMECH,FOND,NOEUD,EXITIM,0.D0,IORD,
+     &                   PULS,NBPRUP, NOPRUP, NOPASE,TYPESE,CHDESE,
+     &                   CHEPSE,CHSISE,CHVITE,CHACCE,LMELAS,K16BID,
+     &                   COMPOR)
+ 3422     CONTINUE
+       ENDIF 
+ 
 C
 C  3.4.2 ==> K_G_MODA 3D LOC
 C  -------------------------
@@ -886,12 +923,14 @@ C  -------------------------
             PULS = ZR(IPULS)
             PULS = SQRT(PULS)
             EXITIM = .TRUE.
+
             CALL CAKGMO(OPTIO1,LATABL,MODELE,DEPLA,THETAI,MATE,COMPOR,
      &              NCHA,ZK8(ICHA),SYMECH,CHFOND,LNOFF,BASLOC,COURB,
      &              IORD,NDEG,THLAGR,GLAGR,THLAG2,PAIR,NDIMTE,
      &              PULS,NBPRUP,NOPRUP,FISS)
  342     CONTINUE
-       ENDIF
+       ENDIF       
+
 C
 C--------------------------------------------
 C 3.5. ==> CALCUL DE G, K_G(2D) ET DG
@@ -1020,7 +1059,7 @@ C
 C
             CALL MEFICG (OPTIO1,LATABL,MODELE,DEPLA,THETA,MATE,NCHA,
      &                   ZK8(ICHA),SYMECH,FOND,NOEUD,EXITIM,TIME,IORD,
-     &                   NBPRUP, NOPRUP, NOPASE,TYPESE,CHDESE,
+     &                   RBID,NBPRUP, NOPRUP, NOPASE,TYPESE,CHDESE,
      &                   CHEPSE,CHSISE,CHVITE,CHACCE,LMELAS,NOMCAS,
      &                   COMPOR)
 C
@@ -1041,7 +1080,7 @@ C           ON LES AJOUTE DIRECTEMENT
       ELSE IF (OPTIO1.EQ.'CALC_DK_DG_FORC') THEN
             CALL MEFICG (OPTIO1,LATABL,MODELE,DEPLA,THETA,MATE,NCHA,
      &                   ZK8(ICHA),SYMECH,FOND,NOEUD,EXITIM,TIME,IORD,
-     &                   NBPRUP, NOPRUP, NOPASE,TYPESE,CHDESE,
+     &                   RBID, NBPRUP, NOPRUP, NOPASE,TYPESE,CHDESE,
      &                   CHEPSE,CHSISE,CHVITE,CHACCE,LMELAS,NOMCAS,
      &                   COMPOR)
 

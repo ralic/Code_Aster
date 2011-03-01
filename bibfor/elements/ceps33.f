@@ -2,7 +2,7 @@
      &                   ,EPS33,DE33D1,DE33D2,KSI2D)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 17/01/2011   AUTEUR SFAYOLLE S.FAYOLLE 
+C MODIF ELEMENTS  DATE 01/03/2011   AUTEUR SFAYOLLE S.FAYOLLE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -28,15 +28,16 @@ C       LAMBDA  : PARAMETRE D ELASTICITE
 C       DEUXMU  : PARAMETRE D ELASTICITE
 C       TR2D    : TRACE 2D = EXX + EYY
 C       D1      : ENDOMMAGEMENT DE LA PLAQUE D'UN COTE
-C       D2      : ET DE L AUTRE 
-C       GMT     : PARAMETRE GAMMA POUR LA MEMBRANE EN TRACTION 
+C       D2      : ET DE L AUTRE
+C       GMT     : PARAMETRE GAMMA POUR LA MEMBRANE EN TRACTION
 C       GMC     : PARAMETRE GAMMA POUR LA MEMBRANE EN COMPRESSION
 C OUT:
 C       EPS33  : COMPOSANTE DE LA DEFORMATION EZZ
-C       DE33D1 : DERIVEE DE EZZ PAR RAPPORT A D1 
-C       DE33D2 : DERIVEE DE EZZ PAR RAPPORT A D2 
+C       DE33D1 : DERIVEE DE EZZ PAR RAPPORT A D1
+C       DE33D2 : DERIVEE DE EZZ PAR RAPPORT A D2
 C       KSI2D : FONCTION CARACTERISTIQUE D ENDOMMAGEMENT,
-C                KSI = KSI(TR2D,D1,D2) 
+C                KSI = KSI(TR2D,D1,D2)
+C INTERNE:
 C       DKSI1  : DERIVEE DE KSI PAR RAPPORT A D1
 C       DKSI2  : DERIVEE DE KSI PAR RAPPORT A D2
 C ----------------------------------------------------------------------
@@ -44,27 +45,25 @@ C ----------------------------------------------------------------------
 
 
       REAL*8   TR2D,D1,D2,GMT,GMC,EPS33,DE33D1,DE33D2
-      INTEGER  K
-      REAL*8   KSI2D,DKSI1,DKSI2,LAMBDA,DEUXMU    
-      
-      
+      REAL*8   KSI2D,DKSI1,DKSI2,LAMBDA,DEUXMU
+
       IF(TR2D .GT. 0.0D0) THEN
-        KSI2D = (1.0D0 + GMT*D1) / (1.0D0 + D1) *0.5D0          
-        KSI2D = KSI2D + (1.0D0 + GMT*D2) / (1.0D0 + D2) *0.5D0
-     
+        KSI2D = (1.0D0 + GMT*D1) / (1.0D0 + D1)*0.5D0
+        KSI2D = KSI2D + (1.0D0 + GMT*D2) / (1.0D0 + D2)*0.5D0
+
         DKSI1 = -0.5D0 * (1.0D0 - GMT)/(1.0D0 + D1)**2
-        DKSI2 = -0.5D0 * (1.0D0 - GMT)/(1.0D0 + D2)**2         
+        DKSI2 = -0.5D0 * (1.0D0 - GMT)/(1.0D0 + D2)**2
       ELSE
-        KSI2D = (1.0D0 + GMC*D1) / (1.0D0 + D1) *0.5D0          
-        KSI2D = KSI2D + (1.0D0 + GMC*D2) / (1.0D0 + D2) *0.5D0
-     
+        KSI2D = (1.0D0 + GMC*D1) / (1.0D0 + D1)*0.5D0
+        KSI2D = KSI2D + (1.0D0 + GMC*D2) / (1.0D0 + D2)*0.5D0
+
         DKSI1 = -0.5D0 * (1.0D0 - GMC)/(1.0D0 + D1)**2
-        DKSI2 = -0.5D0 * (1.0D0 - GMC)/(1.0D0 + D2)**2         
+        DKSI2 = -0.5D0 * (1.0D0 - GMC)/(1.0D0 + D2)**2
       ENDIF
-      
+
       EPS33  = -LAMBDA*TR2D*KSI2D/(DEUXMU + LAMBDA*KSI2D)
-          
+
       DE33D1 = -DEUXMU*LAMBDA*TR2D/(DEUXMU + LAMBDA*KSI2D)**2 * DKSI1
       DE33D2 = -DEUXMU*LAMBDA*TR2D/(DEUXMU + LAMBDA*KSI2D)**2 * DKSI2
-      
+
       END

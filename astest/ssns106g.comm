@@ -1,4 +1,4 @@
-# MODIF  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 01/03/2011   AUTEUR SFAYOLLE S.FAYOLLE 
 # RESPONSABLE SFAYOLLE S.FAYOLLE
 # TITRE  : ENDOMMAGEMENT D UNE PLAQUE PLANE SOUS SOLLICITATIONS VARIEES
 # ssns106g.para = tps_job 120 mem_job 64Mo ncpus 1 liste_test S
@@ -275,7 +275,7 @@ TDXA4=POST_RELEVE_T(ACTION=(_F(OPERATION='EXTRACTION',
                               NOM_CHAM='DEPL',
                               GROUP_NO='A4',
                               NOM_CMP='DX',),
-                             ), 
+                             ),
                               
                               );
 
@@ -334,7 +334,7 @@ TFYA4_G=CALC_TABLE(reuse =TFYA4_G,
                           NOM_PARA  = 'NUME_ORDRE',
                           CRIT_COMP = 'GT',
                           VALE    = 0,
-                         ),),);                                
+                         ),),);
 
 FORM_Y = FORMULE(VALE='(DY-DYG)/DY',
                  NOM_PARA=('DY','DYG',),);
@@ -408,7 +408,7 @@ TEST_TABLE(TABLE=TFYA4_G0,
            FILTRE=_F(NOM_PARA='INST',
                      VALE=t1,),
            NOM_PARA='DY',
-           VALE=3353.44538216,
+           VALE=3353.497694,
            CRITERE='RELATIF',
            PRECISION=0.0001,
            REFERENCE='NON_REGRESSION',);
@@ -417,7 +417,7 @@ TEST_TABLE(TABLE=D_DXA4,
            FILTRE=_F(NOM_PARA='INST',
                      VALE=t2,),
            NOM_PARA='DX_DXG',
-           VALE=-0.252913723881,
+           VALE=-0.2487559789,
            PRECISION=0.0001,
            REFERENCE='NON_REGRESSION',);
 
@@ -425,7 +425,7 @@ TEST_TABLE(TABLE=D_FYA4,
            FILTRE=_F(NOM_PARA='INST',
                      VALE=t2,),
            NOM_PARA='DY_DYG',
-           VALE=0.275892706291,
+           VALE=0.2670950681,
            CRITERE='ABSOLU',
            PRECISION=0.0001,
            REFERENCE='NON_REGRESSION',);
@@ -434,7 +434,7 @@ TEST_TABLE(TABLE=TFYA4_G0,
            FILTRE=_F(NOM_PARA='INST',
                      VALE=t2,),
            NOM_PARA='DY',
-           VALE=-2546.17826455,
+           VALE=-2577.113397,
            CRITERE='RELATIF',
            PRECISION=0.0001,
            REFERENCE='NON_REGRESSION',);
@@ -443,7 +443,7 @@ TEST_TABLE(TABLE=TFYA4_G0,
            FILTRE=_F(NOM_PARA='INST',
                      VALE=t3,),
            NOM_PARA='DY',
-           VALE=24.83509,
+           VALE=25.02051934,
            CRITERE='RELATIF',
            PRECISION=0.0001,
            REFERENCE='NON_REGRESSION',);

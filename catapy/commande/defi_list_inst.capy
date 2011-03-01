@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 01/02/2011   AUTEUR MASSIN P.MASSIN 
+#& MODIF COMMANDE  DATE 28/02/2011   AUTEUR BARGELLI R.BARGELLINI 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -17,6 +17,7 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # RESPONSABLE GENIAUT S.GENIAUT
+
 
 # bloc utilisé deux fois à l'identique
 bloc_unif = BLOC(condition = "SUBD_METHODE == 'UNIFORME'",
@@ -39,7 +40,6 @@ bloc_unif = BLOC(condition = "SUBD_METHODE == 'UNIFORME'",
                 ),
             ) # fin si UNIFORME
 
-
 DEFI_LIST_INST=OPER(nom="DEFI_LIST_INST",op=  28,sd_prod=list_inst,reentrant='n',
             UIinfo={"groupes":("Fonctions",)},
                fr="Définition de la gestion de la liste d'instants",
@@ -56,20 +56,14 @@ DEFI_LIST_INST=OPER(nom="DEFI_LIST_INST",op=  28,sd_prod=list_inst,reentrant='n'
            LIST_INST       =SIMP(statut='o',typ=listr8_sdaster),
                                   ),
 
-         b_auto              =BLOC(condition = "METHODE == 'AUTO' ",fr="a compléter",
+         b_auto              =BLOC(condition = "(METHODE == 'AUTO') ",fr="a compléter",
            LIST_INST       =SIMP(statut='o',typ=listr8_sdaster),
-           PAS_MINI    =SIMP(statut='o',typ='R',val_min=0.0,max=1),
+           PAS_MINI    =SIMP(statut='f',typ='R',val_min=0.0,max=1),
            PAS_MAXI    =SIMP(statut='f',typ='R',max=1),
            NB_PAS_MAXI =SIMP(statut='f',typ='I',max=1),
                                   ),
 
-#          b_cfl               =BLOC(condition = "METHODE  == 'CFL' ",fr="Liste d'instants construite sur condition CFL",
-#            COEF            =SIMP(statut='f',typ='R',val_min=0.E+0,val_max=1.E+0,defaut=0.5),
-#            MODELE          =SIMP(statut='o',typ=modele_sdaster),
-#                                   ),
-
-                               ),
-
+                      ),
 # ----------------------------------------------------------------------------------------------------------------------------------
 # mot-cle pour le comportement en cas d'echec (on doit recommencer le meme instant)
 # ----------------------------------------------------------------------------------------------------------------------------------
@@ -165,7 +159,9 @@ DEFI_LIST_INST=OPER(nom="DEFI_LIST_INST",op=  28,sd_prod=list_inst,reentrant='n'
 #     2) parametre du mode de calcul de dt+
 #     ----------------------------------------
 
-      MODE_CALCUL_TPLUS =SIMP(statut='f',typ='TXM',into=("FIXE","DELTA_GRANDEUR","ITER_NEWTON","FORMULE"),defaut='FIXE',max=1 ),
+      MODE_CALCUL_TPLUS =SIMP(statut='f',typ='TXM',into=("FIXE","DELTA_GRANDEUR","ITER_NEWTON","FORMULE","IMPLEX"),defaut='FIXE',
+                              max=1),
+
          b_mfixe           =BLOC(condition = "MODE_CALCUL_TPLUS == 'FIXE' ",fr="fixe",
 #      dans le cas FIXE :(deltaT+) = (deltaT-)x(1+PCENT_AUGM/100)
       PCENT_AUGM                 =SIMP(statut='f',typ='R',defaut=100.,val_min=-100.,max=1),
@@ -223,6 +219,23 @@ DEFI_LIST_INST=OPER(nom="DEFI_LIST_INST",op=  28,sd_prod=list_inst,reentrant='n'
 
              ),
       ),
+#  b_adaplex  =   BLOC(condition = "METHODE == 'AUTO' and MODE_CALCUL_TPLUS == 'IMPLEX'",
+#
+#    ADAPTATION  =FACT(statut='d',max='**',
+#
+#     1 parametres de l'evenement declencheur
+#     ----------------------------------------
+#
+#      EVENEMENT       =SIMP(statut='f',typ='TXM',into=("TOUT_INST",),defaut="TOUT_INST",max=1 ),
+#
+#                           
+#     2 parametre du mode de calcul de dt+
+#     ----------------------------------------
+#
+#     MODE_CALCUL_TPLUS =SIMP(statut='f',typ='TXM',into=("IMPLEX",),defaut='IMPLEX',max=1,position='global' ),
+#
+#             ),
+#     ),
 
 # ----------------------------------------------------------------------------------------------------------------------------------
 

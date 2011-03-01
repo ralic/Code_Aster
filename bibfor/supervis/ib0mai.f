@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 22/02/2011   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF SUPERVIS  DATE 01/03/2011   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -47,8 +47,8 @@ C                                 passer les valeurs en Mo par
 C     MEMDEM = MJVSMO ( FNTMEM ) * UNMEGA
 C
 C
-      IF (  MJVSMO (FNTMEM) .EQ. 0 ) THEN
-         MEMDEM = MEJVST ( FNTMEM ) * LOIS
+      IF (  MJVSMO (FNTMEM) .EQ. 1 ) THEN
+         MEMDEM = MEJVST ( FNTMEM ) 
       ELSE   
          MEMDEM = MJVSMO ( FNTMEM ) * UNMEGA
       ENDIF
@@ -61,7 +61,7 @@ C
      &           'LIMITE MEMOIRE STATIQUE       : ',FNTMEM,' Mo'
          IMEMO  = MEMDIS (MEMDEM/LOIS, IADZON, LMO, 0)
          WRITE(6,'(1X,A,F12.3,A)') 'MEMOIRE DISPONIBLE            : ',
-     &             IMEMO *LOIS * 1.0D0 / UNMEGA,' Mo'
+     &             (IMEMO*1.0D0/UNMEGA)*LOIS,' Mo'
          IF ( MEMDEM .LE. IMEMO*LOIS ) THEN
             IMEMO = MEMDEM/LOIS
          ELSE

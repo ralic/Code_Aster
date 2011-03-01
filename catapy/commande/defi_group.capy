@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 22/02/2011   AUTEUR MACOCCO K.MACOCCO 
+#& MODIF COMMANDE  DATE 01/03/2011   AUTEUR GENIAUT S.GENIAUT 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -230,7 +230,7 @@ DEFI_GROUP=OPER(nom="DEFI_GROUP",op= 104,sd_prod=defi_group_prod,
            ),
            b_fiss_xfem            =BLOC(condition = "OPTION == 'FISS_XFEM'",
                   NOM             =SIMP(statut='o',typ=geom),
-                  TYPE_GROUP      =SIMP(statut='o',typ='TXM',max=1,defaut='XFEM',into=('HEAVISIDE','CRACKTIP','MIXTE','XFEM',)),
+                  TYPE_GROUP      =SIMP(statut='o',typ='TXM',max=1,into=('HEAVISIDE','CRACKTIP','MIXTE','XFEM',)),
                   FISSURE         =SIMP(statut='o',typ=fiss_xfem,min=1,max='**'),
            ),
           ),

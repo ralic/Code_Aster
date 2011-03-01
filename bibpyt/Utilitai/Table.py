@@ -1,8 +1,8 @@
-#@ MODIF Table Utilitai  DATE 06/09/2010   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF Table Utilitai  DATE 01/03/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -358,6 +358,12 @@ class Table(TableBase):
             self.type[ip]=_typaster(obj[p], self.type[ip])
       self.rows.append(obj)
 
+
+   def extend(self, objs):
+      """Ajoute plusieurs lignes (list of dict)."""
+      for row in objs:
+          self.append(row)
+
 # ------------------------------------------------------------------------------
    def SansColonneVide(self, l_para=None):
       """Retourne une copie de la table dans laquelle on a supprimé les colonnes
@@ -513,6 +519,21 @@ class Table(TableBase):
                new_line[item] = v
          new_rows.append(new_line)
       return Table(new_rows, new_para, new_type, self.titr)
+
+
+   def OrdreColonne(self, cols):
+      """Réordonne les colonnes en mettant en premier 'cols'.
+      Ignore les colonnes qui ne seraient pas dans 'self.para'."""
+      if type(cols) not in (list, tuple):
+         cols = [cols]
+      new_para = [p for p in cols if p in self.para]
+      others = [p for p in self.para if not p in cols]
+      new_para.extend(others)
+      new_type=[]
+      for item in new_para:
+         new_type.append(self.type[self.para.index(item)])
+      self.para = new_para
+      self.type = new_type
 
 # ------------------------------------------------------------------------------
    def _tuplevalues(self, dico):

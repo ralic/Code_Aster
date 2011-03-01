@@ -1,9 +1,9 @@
       SUBROUTINE EXTDCH(TYPEXT,VALINC,NOCHAM,NOCMP,DVAL)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 12/10/2010   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ALGORITH  DATE 28/02/2011   AUTEUR BARGELLI R.BARGELLINI 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -66,11 +66,13 @@ C
       INTEGER      NBNO,INO,IB
       INTEGER      JCESD,JCESL,JCESV
       INTEGER      NBMA,IMA,IPT,ISP,ICMP,NBPT,NBSP,NBCMP,IAD
-      REAL*8       VALEUR,R8MAEM,R8MIEM
+      REAL*8       VALEUR,R8MAEM,R8MIEM,R8PREM
       CHARACTER*6  NOMPRO
       CHARACTER*16 TYPCH
       CHARACTER*19 DCH,DCHS,CHPLU,CHMOI
       PARAMETER   (NOMPRO = 'EXTDCH')
+      
+C      REAL*8  TMP
 C
 C ----------------------------------------------------------------------
 C
@@ -79,7 +81,8 @@ C
       CALL ASSERT(TYPEXT.EQ.'MIN'.OR.
      &            TYPEXT.EQ.'MAX'.OR.
      &            TYPEXT.EQ.'MIN_ABS'.OR.
-     &            TYPEXT.EQ.'MAX_ABS')
+     &            TYPEXT.EQ.'MAX_ABS'.OR.
+     &            TYPEXT.EQ.'MIN_VAR')
 
       CALL ASSERT(NOCHAM.EQ.'VARI_ELGA'.OR.
      &            NOCHAM.EQ.'SIEF_ELGA'.OR.
@@ -101,7 +104,9 @@ C     DECOMPACTION DES VARIABLES CHAPEAUX
       ENDIF
 
 C     INITIALISATION DE L'EXTREMUM
-      IF (TYPEXT.EQ.'MIN'.OR.TYPEXT.EQ.'MIN_ABS') DVAL = R8MAEM()
+      IF (TYPEXT.EQ.'MIN'.OR.TYPEXT.EQ.'MIN_ABS'.
+     &                    OR.TYPEXT.EQ.'MIN_VAR') DVAL = R8MAEM()
+    
       IF (TYPEXT.EQ.'MAX')                        DVAL = R8MIEM()
       IF (TYPEXT.EQ.'MAX_ABS')                    DVAL = 0.D0
 
@@ -130,18 +135,32 @@ C     ON APPELLERA MEMAX QUAND CETTE ROUTINE SERA MIEUX PROGRAMMEE
                 CALL CESEXI('C',JCESD,JCESL,IMA,IPT,ISP,ICMP,IAD)
                 IF (IAD.GT.0) THEN
                   VALEUR = ZR(JCESV-1+IAD)
+
+                  
                   IF (TYPEXT(5:7).EQ.'ABS') VALEUR = ABS(VALEUR)
+                  IF (TYPEXT(5:7).EQ.'VAR') THEN
+                    IF (ABS(VALEUR).GT.R8PREM()) THEN
+                      VALEUR =1.D-3/ABS(VALEUR)
+C                      DVAL = MIN(DVAL,TMP)                     
+                    ELSE 
+                      VALEUR=R8MAEM()
+                    ENDIF  
+           
+                  ENDIF
                   IF (TYPEXT(1:3).EQ.'MIN') THEN
                     DVAL = MIN(DVAL,VALEUR)
+                    
                   ELSEIF (TYPEXT(1:3).EQ.'MAX') THEN
                     DVAL = MAX(DVAL,VALEUR)
+                    
                   ENDIF
+  
                 ENDIF
    10         CONTINUE
    20       CONTINUE
    30     CONTINUE
    40   CONTINUE
-
+        
       ELSEIF (TYPCH.EQ.'CHAM_NO') THEN
 
         CALL CNOCNS(DCH,'V',DCHS)

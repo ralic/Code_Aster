@@ -1,4 +1,4 @@
-#@ MODIF cataelem Messages  DATE 22/02/2011   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+#@ MODIF cataelem Messages  DATE 01/03/2011   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -22,6 +22,49 @@
 def _(x) : return x
 
 cata_msg={
+
+1: _("""
+ l option :  %(k1)s  est probablement composée (vieillot)
+"""),
+
+2: _("""
+ l option :  %(k1)s  a plusieurs paramètres de memes noms.
+"""),
+
+3: _("""
+ mode local incorrect
+ pour le paramètre:  %(k1)s
+ pour l'option    :  %(k2)s
+ pour le type     :  %(k3)s 
+"""),
+
+4: _("""
+ le paramètre :  %(k1)s  pour l'option :  %(k2)s
+ existe pour le type :  %(k3)s mais n'existe pas dans l'option.
+"""),
+
+5: _("""
+ le paramètre :  %(k1)s  pour l'option :  %(k2)s  et pour le TYPE_ELEMENT :  %(k3)s
+ n'est pas associe à la bonne grandeur.
+"""),
+
+6: _("""
+ le paramètre :  %(k1)s  pour l'option :  %(k2)s  et pour le TYPE_ELEMENT :  %(k3)s
+ n'a pas le bon nombre de noeuds.
+"""),
+
+7: _("""
+ le paramètre :  %(k1)s  pour l option :  %(k2)s  et pour le TYPE_ELEMENT :  %(k3)s 
+ n'est pas du bon type:  %(k4)s 
+"""),
+
+8: _("""
+ les grandeurs : %(k1)s  et  %(k2)s  doivent avoir exactement les memes cmps.
+"""),
+
+9: _("""
+ erreurs de cohérence dans les catalogues d'élements finis.
+"""),
 
 20: _("""
  Erreur lors de l'accès à la composante %(i1)d dans le champ de nom %(k1)s et de type %(k2)s.

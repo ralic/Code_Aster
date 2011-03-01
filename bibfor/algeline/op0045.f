@@ -1,9 +1,9 @@
       SUBROUTINE OP0045()
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 15/11/2010   AUTEUR BOITEAU O.BOITEAU 
+C MODIF ALGELINE  DATE 01/03/2011   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -262,8 +262,8 @@ C     --- CONTROLE DE LA COHERENCE OPTION/FREQ OU CHAR_CRIT ---
       ELSE
         CALL VPVOPT(OPTIOF,TYPRES,NNCRIT,ZR(LBORCR),IERX)
       ENDIF
- 
-          
+
+
 C     ------------------------------------------------------------------
 C     --------------------  REGLES D'EXCLUSION   -----------------------
 C     ------------------------------------------------------------------
@@ -382,7 +382,7 @@ C       -- TRAITEMENTS PARTICULIERS PROPRES A QZ
 C     ------------------------------------------------------------------
 C     ----------- LECTURE/TRAITEMENT SD SOLVEUR LINEAIRE  -----------
 C     ------------------------------------------------------------------
-C     -- LECTURE DES PARAMETRES SOLVEURS LINEAIRES ET CREATION DE 
+C     -- LECTURE DES PARAMETRES SOLVEURS LINEAIRES ET CREATION DE
 C        LA SD SOLVEUR ASSOCIEE. CETTE SD SOLVEUR EST LOCALE A L'OPERA
 C        TEUR. POUR CE CALCUL, C'EST ELLE QUI EST UTILISEE POUR PARAME
 C        TREE LE SOLVEUR LINEAIRE, ET NON PAS LA SD SOLVEUR CREE PAR LA
@@ -398,12 +398,12 @@ C        CMDE ECLATEE NUME_DDL LORS DE LA CONSTITUTION DES MATRICES.
      &    (METRES(1:5).NE.'MUMPS')) CALL U2MESS('F','ALGELINE5_71')
 
 C     -- CAS PARTICULIER 1: NUME_DDL_GENE, ON IMPOSE METRES=MUMPS
-      IF ((ZK24(JREFA+9)(1:4).EQ.'GENE').AND. 
+      IF ((ZK24(JREFA+9)(1:4).EQ.'GENE').AND.
      &  (METRES(1:8).EQ.'MULT_FRO')) THEN
         CALL CRSVL2(SOLVEU,NPREC,RAIDE)
       ENDIF
       NPREC=ZI(ISLVI)
-      METRES=ZK24(ISLVK)      
+      METRES=ZK24(ISLVK)
 C     ------------------------------------------------------------------
 C     ------------  CONSTRUCTION DE LA MATRICE SHIFTEE   ---------------
 C     ------------------------------------------------------------------
@@ -446,7 +446,7 @@ C     ------------------------------------------------------------------
         VECRIG = '&&OP0045.MODE.RIGID'
         CALL UTTCPU('CPU.RESO.1','DEBUT',' ')
         CALL UTTCPU('CPU.RESO.4','DEBUT',' ')
-        CALL TLDLG2(LRAIDE,NPREC,NSTOC,VECRIG,IBID,KBID)
+        CALL TLDLG2(LRAIDE,NPREC,NSTOC,VECRIG,' ',' ')
         CALL UTTCPU('CPU.RESO.1','FIN',' ')
         CALL UTTCPU('CPU.RESO.4','FIN',' ')
         IF (NSTOC.NE.0) CALL JEVEUO(VECRIG,'E',LXRIG)
@@ -472,7 +472,7 @@ C     DANS LES AUTRES CAS (VPFOPC,WPFOPR,WPFOPC) ON SORT DES LE CALCUL
 C     DU SHIFT SIGMA
       IF (.NOT.LC) THEN
 C     --- PROBLEME GENERALISE REEL SYMETRIQUE ---
-        IF ((LKR).AND.(.NOT.LNS)) THEN    
+        IF ((LKR).AND.(.NOT.LNS)) THEN
           CALL MTDEFS(MATOPA,RAIDE,'V','R')
           CALL MTDSCR(MATOPA)
           CALL JEVEUO(MATOPA(1:19)//'.&INT','E',LMATRA)
@@ -516,7 +516,7 @@ C     --- PROBLEME QUADRATIQUE COMPLEXE SYM ---
      &      CALL JEVEUO(MATOPA(1:19)//'.&INT','L',LMATRA)
         ENDIF
       ENDIF
-      
+
 C    --- ON BLINDE LES STRUCTURES DE DONNEES DE TYPE MATR_ASSE
 C    --- ON NE MANIPULE PAR LA SUITE QUE LEUR DESCRIPTEUR
 C    --- MATOPA --> LMATRA ET MATPSC --> LMTPSC
@@ -535,7 +535,7 @@ C    --- EVENTUELLES OCCURENCES EXTERNES
         CALL JEEXIN(MATPSC(1:19)//'.REFA',IRET)
         IF (IRET.NE.0) THEN
           CALL JEVEUO(MATPSC(1:19)//'.REFA','E',KREFA)
-          ZK24(KREFA-1+7)=SOLVEU          
+          ZK24(KREFA-1+7)=SOLVEU
         ENDIF
       ENDIF
 
@@ -1168,7 +1168,7 @@ C --- POUR DEBRANCHER LE TEST DE STURM DANS VPCNTL
       LMAT(1) = LRAIDE
       LMAT(2) = LMASSE
       LMAT(3) = LMTPSC
-C --- SI ON MANIPULE DEUX MATRICES DYNAMIQUES (MATOPA/MATPSC), ON SE 
+C --- SI ON MANIPULE DEUX MATRICES DYNAMIQUES (MATOPA/MATPSC), ON SE
 C     DEBARASSE DE CELLE INUTILE (MATRICE + FACTORISEE EVENTUELLE)
 C     ET DE SON EVENTUELLE OCCURENCE EXTERNE (MUMPS)
       IF ((LMTPSC.NE.LMATRA).AND.(LMATRA.NE.0))

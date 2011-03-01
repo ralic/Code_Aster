@@ -1,4 +1,4 @@
-#@ MODIF mecanonline6 Messages  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
+#@ MODIF mecanonline6 Messages  DATE 28/02/2011   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -72,8 +72,7 @@ cata_msg = {
 16 : _("""
   Statistiques de résolution du contact continu dans ce pas de temps.
     * Nombre d'itérations de contact                       : %(i1)d 
-    * Nombre d'itérations de frottement                    : %(i2)d 
-    * Nombre d'itérations de réactualisations géométriques : %(i3)d 
+    * Nombre d'itérations de réactualisations géométriques : %(i2)d 
 """),
 
 17 : _("""
@@ -170,5 +169,9 @@ cata_msg = {
 37 : _("""
   Le pilotage a échoué. On recommence en utilisant la solution rejetée initialement.
  """),
+
+38 : _("""
+    * Nombre d'itérations de frottement                    : %(i1)d 
+"""),
 
 }

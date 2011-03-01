@@ -1,7 +1,7 @@
-#& MODIF COMMANDE  DATE 09/11/2010   AUTEUR DELMAS J.DELMAS 
+#& MODIF COMMANDE  DATE 01/03/2011   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
@@ -17,10 +17,14 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 # ======================================================================
 # RESPONSABLE LEFEBVRE J.P.LEFEBVRE
+#
 MAJ_CATA=PROC(nom="MAJ_CATA",op=20,
-            UIinfo={"groupes":("Gestion du travail",)},
-              fr="Compilation des catalogues de commandes et d'éléments",
+              UIinfo={"groupes":("Gestion du travail",)},
+              fr="Compilation des catalogues d'éléments et couverture des calculs élémentaires",
+              regles=(UN_PARMI('ELEMENT','TYPE_ELEM', ),),
 
-         ELEMENT         =FACT(statut='f',),
+              ELEMENT     =FACT(statut='f',),
 
-)  ;
+              UNITE       =SIMP(statut='f',typ='I',defaut=8),       
+              TYPE_ELEM   =FACT(statut='f',),
+);

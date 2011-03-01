@@ -1,4 +1,4 @@
-#& MODIF COMMUN  DATE 23/02/2011   AUTEUR LAVERNE J.LAVERNE 
+#& MODIF COMMUN  DATE 28/02/2011   AUTEUR BARGELLI R.BARGELLINI 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -67,9 +67,6 @@ def C_RELATION() : return (             "ELAS",            #COMMUN#
                                         "HOEK_BROWN_EFF",
                                         "HOEK_BROWN_TOT",
                                         "HUJEUX",
-                                        "IMPLEX_FRAG",
-                                        "IMPLEX_ISOT_BETO",
-                                        "IMPLEX_ISOT_LINE",
                                         "IRRAD3M",
                                         "JOINT_BA",
                                         "JOINT_BANDIS",

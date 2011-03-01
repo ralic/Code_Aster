@@ -1,10 +1,11 @@
-      SUBROUTINE LC0077 (FAMI,KPG,KSP,NDIM,IMATE,COMPOR,CRIT,INSTAM,
+      SUBROUTINE EIBEX (FAMI,KPG,KSP,NDIM,IMATE,COMPOR,CRIT,INSTAM,
      &            INSTAP,EPSM,DEPS,SIGM,VIM,OPTION,ANGMAS,SIG,
      &             VIP,TAMPON,TYPMOD,ICOMP,NVI,DSIDEP,CODRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF calculel  DATE 08/09/2009   AUTEUR SFAYOLLE S.FAYOLLE 
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ALGORITH  DATE 28/02/2011   AUTEUR BARGELLI R.BARGELLINI 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -19,6 +20,8 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
+C TOLE CRP_7
+C TOLE CRP_20
 C TOLE CRP_21
 
       IMPLICIT NONE
@@ -29,7 +32,7 @@ C TOLE CRP_21
       REAL*8             EPSM(6),DEPS(6),VIM(2),INSTAP,INSTAM,CRIT(*)
       REAL*8             SIG(6), VIP(2), DSIDEP(6,12)
 C ----------------------------------------------------------------------
-C     LOI DE COMPORTEMENT IMPLEX_ISOT_BETO (EN LOCAL)
+C     LOI DE COMPORTEMENT ENDO_ISOT_BETON avec IMPLEX (EN LOCAL)
 C
 C IN  NDIM    : DIMENSION DE L'ESPACE
 C IN  TYPMOD  : TYPE DE MODELISATION
@@ -39,18 +42,18 @@ C IN  DEPS    : INCREMENT DE DEFORMATION
 C IN  VIM     : VARIABLES INTERNES EN T-
 C IN  CRIT    : CRITERES DE CONVERGENCE
 C IN  OPTION  : OPTION DEMANDEE
-C                 RIGI_MECA_TANG ->     DSIDEP
-C                 FULL_MECA      -> SIG DSIDEP VIP
+C                 RIGI_MECA_IMPLEX -> SIG extr  DSIDEP
 C                 RAPH_MECA      -> SIG        VIP
 C OUT SIG     : CONTRAINTE
 C OUT VIP     : VARIABLES INTERNES
 C                 1   -> VALEUR DE L'ENDOMMAGEMENT
+C                 2   -> DD/DT
 C OUT DSIDEP  : MATRICE TANGENTE
 C ----------------------------------------------------------------------
-      LOGICAL     RAPH, TANG
+      LOGICAL     RAPH, TANG, COUP
 
       INTEGER     NDIMSI, K, L, I, J, M, N, T(3,3)
-      INTEGER     NVI, ICOMP, CODRET
+      INTEGER     NVI, ICOMP, CODRET,IRET, IISNAN
 
       REAL*8      EPS(6),  TREPS, SIGEL(6)
       REAL*8      RAC2, SIGM(6)
@@ -60,16 +63,40 @@ C ----------------------------------------------------------------------
       REAL*8      DEUMUD(3), LAMBDD, SIGP(3), RTEMP, RTEMP3, RTEMP4
       REAL*8      LAMBDA, DEUXMU, GAMMA
       REAL*8      SEUIL, DDOT, TAMPON(*), ANGMAS(3)
-
-      PARAMETER   (RIGMIN = 1.D-5)
-
+      REAL*8      TM,TP,TREF,SREF,SECHM,HYDRM,EPSTHE(2),KDESS,BENDO
+      REAL*8       KRON(6), ALPHA,SECHP,HYDRP
+      CHARACTER*2 CERR
+      DATA        KRON/1.D0,1.D0,1.D0,0.D0,0.D0,0.D0/
+C      PARAMETER   (RIGMIN = 0.00001)
 C ----------------------------------------------------------------------
+
+      RIGMIN = 1.D-5
+
+
+C     RECUPERATION DES VARIABLES DE COMMANDE
+      CALL RCVARC(' ','TEMP','-'  ,FAMI,KPG,KSP,TM  ,IRET)
+      CALL RCVARC(' ','TEMP','+'  ,FAMI,KPG,KSP,TP  ,IRET)
+      CALL RCVARC(' ','TEMP','REF',FAMI,KPG,KSP,TREF,IRET)
+      CALL RCVARC(' ','HYDR','-',FAMI,KPG,KSP,HYDRM,IRET)
+      IF (IRET.NE.0) HYDRM=0.D0
+      CALL RCVARC(' ','HYDR','+',FAMI,KPG,KSP,HYDRP,IRET)
+      IF (IRET.NE.0) HYDRP=0.D0
+      CALL RCVARC(' ','SECH','-',FAMI,KPG,KSP,SECHM,IRET)
+      IF (IRET.NE.0) SECHM=0.D0
+      CALL RCVARC(' ','SECH','+',FAMI,KPG,KSP,SECHP,IRET)
+      IF (IRET.NE.0) SECHP=0.D0
+      CALL RCVARC(' ','SECH','REF',FAMI,KPG,KSP,SREF,IRET)
+      IF (IRET.NE.0) SREF=0.D0
+
 C
 C -- OPTION ET MODELISATION
 C
+ 
       RAPH = OPTION .EQ. 'RAPH_MECA'
       TANG = OPTION .EQ. 'RIGI_MECA_IMPLEX'
       CODRET = 0
+C      couplage fluage-endommagement non autorisé en impl-ex      
+      COUP = .FALSE. 
 C
 C -- RECUPERATIOIN DES VARIABLES INTERNES
 C
@@ -82,19 +109,40 @@ C
       NDIMSI = 2*NDIM
       RAC2=SQRT(2.D0)
 
-      CALL CISOLI(FAMI,NDIM,IMATE,COMPOR,EPSM,
-     &            T,LAMBDA,DEUXMU,GAMMA,SEUIL)
+C      CALL CISOLI(FAMI,NDIM,IMATE,COMPOR,EPSM,
+C     &            T,LAMBDA,DEUXMU,GAMMA,SEUIL)
+      CALL LCEIB1 (FAMI,IMATE, COMPOR, NDIM, EPSM, TM,TREF,SREF,
+     &             SECHM,HYDRM,T, LAMBDA, DEUXMU,EPSTHE, KDESS, 
+     &            BENDO, GAMMA, SEUIL,COUP)
+
 C
 C -- MAJ DES DEFORMATIONS ET PASSAGE AUX DEFORMATIONS REELLES 3D
 C
       IF (TANG) THEN
-        DO 10 K = 1, NDIMSI
-          EPS(K) = EPSM(K)
-10      CONTINUE
-      ELSEIF (RAPH) THEN
-        DO 40 K = 1, NDIMSI
-          EPS(K) = EPSM(K) + DEPS(K)
+        DO 40 K=1,NDIMSI
+          EPS(K) = EPSM(K) - (  EPSTHE(1)
+     &                       - KDESS * (SREF-SECHM)
+     &                       - BENDO *  HYDRM  )     * KRON(K)
 40      CONTINUE
+      ELSEIF (RAPH) THEN
+        IF (IISNAN(TP).EQ.0) THEN
+          CALL RCVALB(FAMI,KPG,KSP,'+',IMATE,' ','ELAS',1,'TEMP',
+     &               0.D0,1,'ALPHA',ALPHA,CERR, ' ')
+          IF ((IISNAN(TREF).EQ.1).OR.(CERR.NE.'OK'))  THEN
+            CALL U2MESS('F','CALCULEL_15')
+          ELSE
+            EPSTHE(2) =ALPHA * (TP - TREF)
+          ENDIF
+        ELSE
+          EPSTHE(2) = 0.D0        
+        ENDIF 
+
+        DO 10 K = 1, NDIMSI
+          EPS(K) = EPSM(K) + DEPS(K) 
+     &                   - KRON(K) *  (  EPSTHE(2) 
+     &                                 - KDESS * (SREF-SECHP)
+     &                                 - BENDO *  HYDRP     )  
+10     CONTINUE
       ENDIF
 
       DO 45 K=4,NDIMSI
@@ -137,7 +185,7 @@ C -- CALCUL DES CONTRAINTES ELAS POSITIVES ET DE L'ENERGIE POSITIVE
       ENER = 0.5D0 * DDOT(3,EPSP,1,SIGEL,1)
 
 C ======================================================================
-C     CAS RIGI_MECA_TANG : EXTRAPOLATION VARIABLES INTERNES ET MATRICE
+C     CAS RIGI_MECA_IMPLEX : EXTRAPOLATION VARIABLES INTERNES ET MATRICE
 C ======================================================================
       IF (TANG) THEN
 

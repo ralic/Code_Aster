@@ -1,7 +1,7 @@
-#& MODIF COMMANDE  DATE 09/11/2010   AUTEUR DELMAS J.DELMAS 
+#& MODIF COMMANDE  DATE 01/03/2011   AUTEUR PELLET J.PELLET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -33,13 +33,13 @@ def affe_char_cine_prod(MECA_IMPO,THER_IMPO,ACOU_IMPO,EVOL_IMPO,**args):
 
 
 AFFE_CHAR_CINE=OPER(nom="AFFE_CHAR_CINE",op= 101,sd_prod=affe_char_cine_prod
-                    ,fr="Affectation de conditions aux limites cinématiques constantes pour un traitement sans dualisation",
+                    ,fr="Affectation de conditions aux limites cinématiques (U=U0) pour un traitement sans dualisation",
                      reentrant='n',
             UIinfo={"groupes":("Chargements","Mécanique",)},
          regles=(UN_PARMI('MECA_IMPO','THER_IMPO','ACOU_IMPO','EVOL_IMPO'),
                  ),
          MODELE          =SIMP(statut='o',typ=modele_sdaster ),
-         EVOL_IMPO  =SIMP(statut='f',typ=(evol_noli,evol_elas,evol_ther),fr="Pour imposer tous les ddls d'un evol_xxx"),
+
          MECA_IMPO       =FACT(statut='f',max='**',
            regles=(UN_PARMI('TOUT','GROUP_MA','MAILLE','GROUP_NO','NOEUD'),
                    AU_MOINS_UN('DX','DY','DZ','DRX','DRY','DRZ','GRX','PRES','PHI',
@@ -137,6 +137,7 @@ AFFE_CHAR_CINE=OPER(nom="AFFE_CHAR_CINE",op= 101,sd_prod=affe_char_cine_prod
              PRES33          =SIMP(statut='f',typ='R' ),
              LH1             =SIMP(statut='f',typ='R' ),
          ),
+
          THER_IMPO       =FACT(statut='f',max='**',
            regles=(UN_PARMI('TOUT','GROUP_MA','MAILLE','GROUP_NO','NOEUD'),
                    AU_MOINS_UN('TEMP','TEMP_INF','TEMP_SUP'),),
@@ -149,6 +150,7 @@ AFFE_CHAR_CINE=OPER(nom="AFFE_CHAR_CINE",op= 101,sd_prod=affe_char_cine_prod
            TEMP            =SIMP(statut='f',typ='R' ),
            TEMP_INF        =SIMP(statut='f',typ='R' ),
          ),
+
          ACOU_IMPO       =FACT(statut='f',max='**',
            regles=(UN_PARMI('TOUT','GROUP_MA','MAILLE','GROUP_NO','NOEUD'),),
            TOUT            =SIMP(statut='f',typ='TXM',into=("OUI",) ),
@@ -158,5 +160,11 @@ AFFE_CHAR_CINE=OPER(nom="AFFE_CHAR_CINE",op= 101,sd_prod=affe_char_cine_prod
            NOEUD           =SIMP(statut='f',typ=no  ,validators=NoRepeat(),max='**'),
            PRES            =SIMP(statut='o',typ='C' ),
          ),
+
+         EVOL_IMPO  =SIMP(statut='f',typ=(evol_noli,evol_elas,evol_ther),fr="Pour imposer les ddls d'un evol_xxx"),
+         b_evol_impo = BLOC ( condition = "EVOL_IMPO != None",
+           NOM_CMP         =SIMP(statut='f',typ='TXM',max='**',), # pour n'imposer que certaines CMPS (par défaut : toutes)
+         ),
+
          INFO            =SIMP(statut='f',typ='I',defaut= 1,into=( 1 , 2) ),
 )  ;

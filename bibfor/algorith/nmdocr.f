@@ -2,9 +2,9 @@
 C RESPONSABLE PROIX J-M.PROIX
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 07/12/2010   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ALGORITH  DATE 28/02/2011   AUTEUR BARGELLI R.BARGELLINI 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -39,7 +39,7 @@ C ----------------------------------------------------------------------
       CHARACTER*1  K1BID
       CHARACTER*8  NOMA,K8B,TYPMCL(2)
       CHARACTER*16 TYMATG,COMP,TXCP,ALGO,MOCLES(2),MOCLEF(2)
-      CHARACTER*16 TEXTE(3),COMCOD
+      CHARACTER*16 TEXTE(3),COMCOD,METHOD,K16BID,NOMCMD
       CHARACTER*19 CARCRI, CARCR0
       CHARACTER*24 CARCRZ
       CHARACTER*24 MESMAI,MODELE
@@ -70,6 +70,8 @@ C ----------------------------------------------------------------------
       CALL JEMARQ()
       CARCRI = CARCRZ
       CALL DISMOI('C','NOM_MAILLA',MODELE(1:8),'MODELE',I,NOMA,IRETT)
+      CALL GETRES(K8B,K16BID,NOMCMD)
+
 C
 C CARTE DES CRITERES DE CONVERGENCE LOCAUX
       CALL JEEXIN(CARCRI(1:19)//'.VALV',IRET)
@@ -198,6 +200,34 @@ C                  VERIF QUE TYMATG EST POSSIBLE POUR COMP
                    ENDIF
                 ENDIF
              ENDIF
+C GLUTE POUR IMPLEX
+             IF (NOMCMD(1:13).EQ.'STAT_NON_LINE') THEN
+                CALL GETVTX(' ','METHODE',0,1,1,METHOD,IRET)
+                IF (IRET.NE.0) THEN
+                   IF (METHOD.EQ.'IMPL_EX') THEN
+                      WRITE (6,*) 'COMCOD=',COMCOD
+                      WRITE (6,*) 'COMP=',COMP
+                      IF ((TYPTGT.NE.0).AND.(COMP.NE.'SANS')) THEN
+                         TEXTE(1)=TYMATG
+                         TEXTE(2)='IMPLEX'
+                         WRITE(6,*) 'ON EST DANS IF 1'
+                        CALL U2MESG('F','COMPOR1_46',2,TEXTE,0,0,0,0.D0)
+                      ELSE
+                         TYPTGT=9
+                      ENDIF
+C                     VERIF QUE TYMATG EST POSSIBLE POUR COMP
+                     CALL LCTEST(COMCOD,'TYPE_MATR_TANG','IMPLEX',IRETT)
+                      IF ((IRETT.EQ.0).AND.(COMP.NE.'SANS')) THEN
+                         WRITE(6,*) 'ON EST DANS IF 2'
+                         TEXTE(1)='IMPLEX'
+                         TEXTE(2)=COMP
+                        CALL U2MESG('F','COMPOR1_46',2,TEXTE,0,0,0,0.D0)
+                      ENDIF
+                   ENDIF
+                ENDIF
+             ENDIF
+C FIN GLUTE POUR IMPLEX
+                
           ENDIF
 C
           IF (MOCLEF(I) .EQ. 'COMP_INCR') THEN
@@ -221,7 +251,7 @@ C         STOCKAGE DE LA CARTE CARCRI
           ZR(JVALV-1+7)  = PERT
           ZR(JVALV-1+8)  = RESID
           ZR(JVALV-1+9)  = ITDEBO
-          ZR(JVALV-1+10)  = TSEUIL
+          ZR(JVALV-1+10) = TSEUIL
           ZR(JVALV-1+11) = TSAMPL
           ZR(JVALV-1+12) = TSRETU
           ZR(JVALV-1+13) = ALPHA

@@ -2,7 +2,7 @@
       IMPLICIT      NONE
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 01/02/2011   AUTEUR MASSIN P.MASSIN 
+C MODIF ALGORITH  DATE 28/02/2011   AUTEUR BARGELLI R.BARGELLINI 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -254,7 +254,7 @@ C     ------------------------------------------------------------------
           CALL JEVEUO(SD//'.ESUR',GETSET,JESUR)
           VALR = ZR(JESUR-1+LESUR*(IOCC-1)+8)
           VALI = NINT(VALR)
-          
+        
         ELSEIF (QUEST.EQ.'CHOIX_SOLU_PILO') THEN
           CALL JEVEUO(SD//'.EPIL',GETSET,JPIL)
           N = ZI(JPIL)
@@ -272,7 +272,7 @@ C     ------------------------------------------------------------------
             VALI = ZI(JPIL+1)
           ELSE IF(GETSET.EQ.'E') THEN
             ZI(JPIL+1) = VALI                     
-          ENDIF                  
+          ENDIF 
         
         ENDIF
 
@@ -291,7 +291,7 @@ C     ------------------------------------------------------------------
      &              QUEST.EQ.'PCENT_AUGM'.OR.
      &              QUEST.EQ.'VALE_REF'.OR.
      &              QUEST.EQ.'NOM_CHAM'.OR.
-     &              QUEST.EQ.'NOM_CMP'.OR.     
+     &              QUEST.EQ.'NOM_CMP'.OR.
      &              QUEST.EQ.'NU_CMP'.OR.
      &              QUEST.EQ.'NB_ITER_NEWTON_REF'.OR.
      &              QUEST.EQ.'NB_OCC')
@@ -342,7 +342,10 @@ C     ------------------------------------------------------------------
           IF (VALI.EQ.2) VALK = 'DELTA_GRANDEUR'
           IF (VALI.EQ.3) VALK = 'ITER_NEWTON'
           IF (VALI.EQ.4) VALK = 'FORMULE'
-
+C!!!!!!!!!!!!!!!!!!!!!!!!!!
+          IF (VALI.EQ.5) VALK = 'IMPLEX'
+C          IF (VALI.EQ.6) VALK = 'IMPLEX2'
+C!!!!!!!!!!!!!!!!!!!!!!!!!!
         ELSEIF (QUEST.EQ.'PCENT_AUGM') THEN
           CALL JEVEUO(SD//'.ATPR','L',JATPR)
           VALR = ZR(JATPR-1+LATPR*(IOCC-1)+2)

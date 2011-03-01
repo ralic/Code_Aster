@@ -1,7 +1,7 @@
 POURSUITE(CODE=_F(NOM='SSNP131A'))
 
 
-nbcop = 40
+nbcop = 10
 l_copeaux = ['COPS_%d' % k for k in range(1, nbcop+1)]
 
 # conversion MPa.m^1/2 vers MPa.mm^1/2
@@ -11,7 +11,7 @@ kjc2 = 34.  * conv
 kjc3 = 40.  * conv
 
 # température de calcul
-tcal = 35.
+tcal = 100.
 
 RESX = EXTR_RESU(RESULTAT=RESU,
                  ARCHIVAGE=_F(NUME_ORDRE=(
@@ -58,31 +58,29 @@ TEST_TABLE(TABLE=tabident,
            FILTRE=_F(NOM_PARA='KJ_CRIT',
                      VALE=kjc1),
            NOM_PARA='GP_CRIT',
-           VERSION= '8.3.14',
            REFERENCE='NON_REGRESSION',
            PRECISION = 1.0E-4,
            CRITERE = 'RELATIF', 
-           VALE=0.673969)
+           VALE=0.678875)
 
 TEST_TABLE(TABLE=tabident,
            FILTRE=_F(NOM_PARA='KJ_CRIT',
                      VALE=kjc2),
            NOM_PARA='GP_CRIT',
-           VERSION= '8.3.14',
            REFERENCE='NON_REGRESSION',
            PRECISION = 1.0E-4,
            CRITERE = 'RELATIF', 
-           VALE=0.801440)
+           VALE=0.812359)
               
 TEST_TABLE(TABLE=tabident,
            FILTRE=_F(NOM_PARA='KJ_CRIT',
                      VALE=kjc3),
            NOM_PARA='GP_CRIT',
-           VERSION= '8.3.14',
            REFERENCE='NON_REGRESSION',
            PRECISION = 1.0E-4,
            CRITERE = 'RELATIF', 
-           VALE= 0.916894)
+           VALE= 0.929797)
+
 
 FIN()
 

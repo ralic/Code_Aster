@@ -1,10 +1,10 @@
-      SUBROUTINE LC0090(FAMI,KPG,KSP,NDIM,IMATE,COMPOR,CRIT,INSTAM,
+      SUBROUTINE NMISEX(FAMI,KPG,KSP,NDIM,IMATE,COMPOR,CRIT,INSTAM,
      &              INSTAP,EPSM,DEPS,SIGM,VIM,OPTION,ANGMAS,SIGP,VIP,
      &                  TAMPON,TYPMOD,ICOMP,NVI,DSIDEP,IRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF calculel  DATE 07/12/2010   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ALGORITH  DATE 28/02/2011   AUTEUR BARGELLI R.BARGELLINI 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -131,10 +131,6 @@ C     ----------------------
 C
       FB2 = 'F '
 C
-      IF (.NOT.( COMPOR(1)(1:4) .EQ. 'ELAS'.OR.
-     &     COMPOR(1)(1:11) .EQ. 'IMPLEX_ISOT' )) THEN
-        CALL U2MESK('F','ALGORITH4_50',1,COMPOR(1))
-      ENDIF
 C
 C     -- 2 RECUPERATION DES CARACTERISTIQUES
 C     ---------------------------------------
@@ -192,8 +188,8 @@ C
 C
 C     -- 3 RECUPERATION DES CARACTERISTIQUES
 C     ---------------------------------------
-      IF ( COMPOR(1)(1:11) .EQ. 'IMPLEX_ISOT') THEN
-        PLASTI=(VIM(2).GE.0.5D0)
+      IF ( COMPOR(1) .EQ. 'VMIS_ISOT_LINE') THEN
+        PLASTI=(VIM(2).GT.0.0D0)
         LINE=1.D0
         NOMRES(1)='D_SIGM_EPSI'
         NOMRES(2)='SY'
@@ -291,13 +287,13 @@ C
 C
 C       -- 7.1 CALCUL DE DP (ET DX SI C_PLAN) :
 C       -------------------------------------------
-        ELSE IF (COMPOR(1)(1:11) .EQ. 'IMPLEX_ISOT') THEN
+        ELSE IF (COMPOR(1).EQ.'VMIS_ISOT_LINE') THEN
           IF (SEUIL.LE.0.D0) THEN
             VIP(2) = 0.D0
-            VIP(3) = 0.D0
+C            VIP(3) = 0.D0
             DP = 0.D0
           ELSE
-            VIP(2) = 1.D0
+C            VIP(2) = 1.D0
             PM = VIM(1)
 
             IF (CPLAN) THEN
@@ -326,8 +322,9 @@ C
           ENDIF
 
           VIP(1) = VIM(1) + DP
-          VIP(3) = DP/DT
-          PLASTI=(VIP(2).GE.0.5D0)
+C          VIP(3) = DP/DT
+          VIP(2) = DP/DT
+          PLASTI=(VIP(2).GT.0.0D0)
 C
 C         -- 7.2 CALCUL DE SIGP :
 C         -----------------------
@@ -352,7 +349,8 @@ C
 
 C    EXTRAPOLATION
 
-          DP = MAX(VIM(3) * DT, 0.D0)
+C          DP = MAX(VIM(3) * DT, 0.D0)
+          DP = MAX(VIM(2) * DT, 0.D0)
           P = VIM(1) + DP
 
 C    MISE A JOUR DE LA VARIABLE INTERNE
@@ -368,7 +366,7 @@ C    CONTRAINTES
 C
 C       -- 7.1 CALCUL DE DP (ET DX SI C_PLAN) :
 C       -------------------------------------------
-        ELSE IF (COMPOR(1)(1:11) .EQ. 'IMPLEX_ISOT') THEN
+        ELSE IF (COMPOR(1).EQ.'VMIS_ISOT_LINE') THEN
           IF (SEUIL.LE.0.D0) THEN
             DP = 0.D0
           ELSE
@@ -397,7 +395,7 @@ C         - - OPTION='RIGI_MECA_TANG' => SIGMA(T)
           RP = SQRT(1.5D0*RP)
         ELSE
 C         - - OPTION='FULL_MECA' => SIGMA(T+DT)
-          IF (COMPOR(1)(1:11) .EQ. 'IMPLEX_ISOT') THEN
+          IF (COMPOR(1).EQ.'VMIS_ISOT_LINE') THEN
             DO 119 K = 1, NDIMSI
               SIGDV(K) = SIGPDV(K)
  119        CONTINUE
@@ -413,7 +411,7 @@ C       -- 8.1 PARTIE PLASTIQUE:
 C
         A=1.D0
         IF (.NOT.DECH) THEN
-          IF (COMPOR(1)(1:11) .EQ. 'IMPLEX_ISOT') THEN
+          IF (COMPOR(1).EQ.'VMIS_ISOT_LINE') THEN
             SIGEPS = 0.D0
             DO 170 K = 1, NDIMSI
               SIGEPS = SIGEPS + SIGDV(K)*DEPSDV(K)

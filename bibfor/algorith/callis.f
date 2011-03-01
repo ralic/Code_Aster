@@ -1,8 +1,8 @@
       SUBROUTINE  CALLIS (NOMRES)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 21/06/2010   AUTEUR CORUS M.CORUS 
+C MODIF ALGORITH  DATE 01/03/2011   AUTEUR CORUS M.CORUS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
@@ -56,30 +56,21 @@ C
 C
 C----------  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
-      CHARACTER*1    K1BID,KB
+      CHARACTER*1    K1BID
       CHARACTER*8    NOMRES,OPTION
       CHARACTER*24   FAMLI,FMLIA,PROMLI
       CHARACTER*24   FPLI1O,FPLI2O,FPLI1N,FPLI2N,INT1,INT2,
      &               INDIN1,INDIN2,LINO1,LINO2,
-     &               MAINT1,MAINT2,RESTMO,TRAMO1,TRAMO2,TRAMOD,
-     &               INDCOL
-      CHARACTER*19   KINT
+     &               TRAMO1,TRAMO2,INDCOL
       CHARACTER*8    SST1,SST2,INTF1,INTF2,MOD1,MOD2,
-     &               LINT1,LINT2,K8BID,MA1,MA2,MATPRJ,
-     &               NMCL1,BAMO1,NMCL2,BAMO2,NMACR1,NMACR2
+     &               LINT1,LINT2,K8BID,MA1,MA2,MATPRJ
       CHARACTER*16   MOTCLE(2)  
-      INTEGER        NBLIS,LDPMLI,NBBLOC,LLLIA,IAD,NBLIG,I,J,IRET,
-     &               IBID,NBNO1,NBNO2,NBMA1,NBMA2,IAGMA1,IAGMA2,
-     &               IER,K,IDMAI1,IDMAI2,LLINT1,LLINT2,
+      INTEGER        NBLIS,LDPMLI,NBBLOC,LLLIA,IAD,NBLIG,I,IRET,
+     &               IBID,NBNO1,NBNO2,IER,LLINT1,LLINT2,
      &               IINC,IREP11,IREP12,IREP21,IREP22,IOPT,
-     &               NBEQGT,NBEQ1,NBEQ2,IERD,LMOD1,LMOD2,I1,J1,K1,
-     &               L1,M1,N1,LDMAT,LINDI1,LINDI2,LNOEU1,LNOEU2,NBNOE,
-     &               NBEC,LMACR1,LMACR2,NBDDL1,NBDDL2,IPOS1,IPOS2,
-     &               LMAIN1,LMAIN2,NBCMPM,LEULER,LRESMO,
-     &               DDLA1,DDLA2,LACT1,LACT2,IMAST,NBCOL
-      PARAMETER      (NBCMPM=10)
-      INTEGER        DECO(NBCMPM),TAILLE(2)
-      REAL*8         UN,MOINS1,RBID,EULER(3),ROTA(3,3)
+     &               NBEQ1,NBEQ2,DDLA1,DDLA2,IMAST,NBCOL
+      INTEGER        TAILLE(2)
+      REAL*8         UN,MOINS1
 
 C
 C-----------------------------------------------------------------------
@@ -379,8 +370,8 @@ C--                                                               --C
 C-------------------------------------------------------------------C
 
           INDCOL='BLANC'
-          NBCOL=0
-
+          NBCOL=0          
+          
           IF (IMAST .LT. 2) THEN
 
             IAD=LDPMLI+(I-1)*9
@@ -403,17 +394,17 @@ C-------------------------------------------------------------------C
           ELSE
             IAD=LDPMLI+(I-1)*9
             NBBLOC=NBBLOC+1
-            ZI(IAD+2)=NBBLOC        
-            CALL LIARED(NOMRES,FMLIA,NBBLOC,TRAMO2,DDLA1,NBEQ2,
-     &                  TRAMO1,DDLA1,NBEQ1,TAILLE,INDCOL,NBCOL)
+            ZI(IAD+2)=NBBLOC
+            CALL LIARED (NOMRES,FMLIA,NBBLOC,TRAMO1,DDLA1,NBEQ1,
+     &                   TRAMO1,DDLA1,NBEQ1,TAILLE,INDCOL,NBCOL)
             ZI(IAD)=TAILLE(1)
             ZI(IAD+1)=TAILLE(2)
         
             IAD=LDPMLI+(I-1)*9+3
             NBBLOC=NBBLOC+1
             ZI(IAD+2)=NBBLOC        
-            CALL LIARED (NOMRES,FMLIA,NBBLOC,TRAMO1,DDLA1,NBEQ1,
-     &                   TRAMO1,DDLA1,NBEQ1,TAILLE,INDCOL,NBCOL)
+            CALL LIARED(NOMRES,FMLIA,NBBLOC,TRAMO2,DDLA1,NBEQ2,
+     &                  TRAMO1,DDLA1,NBEQ1,TAILLE,INDCOL,NBCOL)
             ZI(IAD)=TAILLE(1)
             ZI(IAD+1)=TAILLE(2)
      
@@ -453,6 +444,5 @@ C
       CALL JEDETR(FPLI2N)
 
 C
- 9999 CONTINUE
       CALL JEDEMA()
       END

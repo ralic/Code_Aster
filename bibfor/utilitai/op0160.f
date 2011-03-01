@@ -2,9 +2,9 @@
       IMPLICIT   NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
+C MODIF UTILITAI  DATE 01/03/2011   AUTEUR CORUS M.CORUS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -21,7 +21,7 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C     OPERATEUR   IMPR_MACR_ELEM
 C     ------------------------------------------------------------------
-      INTEGER       VERSIO, N1, IFIC, IUNIFI
+      INTEGER       VERSIO, N1, IFIC
       LOGICAL       ULEXIS
       CHARACTER*8   FORMAT, MACREL
       CHARACTER*16  FICHIE
@@ -52,20 +52,20 @@ C     ------------------------------------------------------------------
          CALL IREDMI ( MACREL)
 C
 C     ------------------------------------------------------------------
-      ELSEIF ( FORMAT .EQ. 'CADYRO' ) THEN
-         CALL IREDCA ( MACREL )
+C      ELSEIF ( FORMAT .EQ. 'CADYRO' ) THEN
+C         CALL IREDCA ( MACREL )
 C
 C     ------------------------------------------------------------------
-      ELSEIF ( FORMAT .EQ. 'PLEXUS' ) THEN
-
-         CALL GETVIS ( ' ', 'VERSION', 1,1,1, VERSIO, N1 )
-
-         CALL GETVIS ( ' ', 'UNITE'  , 1,1,1, IFIC , N1 )
-         IF ( .NOT. ULEXIS( IFIC ) ) THEN
-            CALL ULOPEN ( IFIC, ' ', FICHIE, 'NEW', 'O' )
-         ENDIF
-
-         CALL IREDPL ( MACREL, IFIC, VERSIO )
+C      ELSEIF ( FORMAT .EQ. 'PLEXUS' ) THEN
+C
+C         CALL GETVIS ( ' ', 'VERSION', 1,1,1, VERSIO, N1 )
+C
+C         CALL GETVIS ( ' ', 'UNITE'  , 1,1,1, IFIC , N1 )
+C         IF ( .NOT. ULEXIS( IFIC ) ) THEN
+C            CALL ULOPEN ( IFIC, ' ', FICHIE, 'NEW', 'O' )
+C         ENDIF
+C
+C         CALL IREDPL ( MACREL, IFIC, VERSIO )
 C
       ELSE
          CALL ASSERT(.FALSE.)

@@ -1,6 +1,6 @@
       SUBROUTINE JEFINI ( COND )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 22/02/2011   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 01/03/2011   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 C RESPONSABLE LEFEBVRE J-P.LEFEBVRE
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,7 +18,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C TOLE CRP_12 CRS_505
+C TOLE CRP_6 CRP_12 CRS_505 CRS_745
       IMPLICIT REAL*8 (A-H,O-Z)
       CHARACTER*(*)       COND
 C     ==================================================================
@@ -98,7 +98,7 @@ C       -----------  DESALLOCATION MEMOIRE -----------------------------
         CALL JXLIBM ( ISZON , LISZON )
 C
       ELSE
-        CALL ASSERT (.FALSE.)
+        CALL ABORT()
       ENDIF
 C
 C     --- IMPRESSION DES CONSOMMATIONS MEMOIRE ---

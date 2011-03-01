@@ -1,4 +1,4 @@
-#@ MODIF stanley_engine Stanley  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+#@ MODIF stanley_engine Stanley  DATE 01/03/2011   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -80,15 +80,21 @@ from types import *
 from Macro.test_fichier_ops import test_file
 import types
 
-# Salome
+# Salome (ancien Pylotage)
 try:
-   import salomeVisu
+   import salomeVisuPylo
    __salome__ = True
    __rcstanley__ = '.stanley_salome'
 except:
    UTMESS('I','STANLEY_21')
    __salome__ = False
    __rcstanley__ = '.stanley'
+
+
+# Salome (nouvelle Version)
+#import salomeVisu
+from salomeRunScript import MakeTempScript, DelTempScript, RunScript
+
 
 
 # Version du fichier des parametres Stanley
@@ -2411,12 +2417,6 @@ class DRIVER_GMSH(DRIVER_ISOVALEURS):
 
     # Tracé au format GMSH
     DEFI_FICHIER(UNITE = 33, INFO=1)
-#    IMPR_RESU( UNITE   = ul, 
-#                 FORMAT  = 'GMSH',
-#                 VERSION = eval(self.stan.parametres['version_fichier_gmsh']),
-#                 RESU    = para,
-#               )
-
     try:
       IMPR_RESU( UNITE   = ul, 
                  FORMAT  = 'GMSH',
@@ -2442,7 +2442,6 @@ class DRIVER_GMSH(DRIVER_ISOVALEURS):
        self.Test_fichier_resu(driver=selection.mode, FICHIER='fort.'+str(ul), FICHIER_VALID=self.stan.FICHIER_VALID, selection=selection)
 
     if l_detr : 
-#       DETRUIRE(CONCEPT = _F(NOM = tuple(l_detr)), INFO=1, ALARME='NON')
        DETR( tuple(l_detr) )
 
 
@@ -2479,10 +2478,6 @@ class DRIVER_SALOME_ISOVALEURS(DRIVER_ISOVALEURS) :
     contexte   = self.stan.contexte
     type_champ = cata[selection.nom_cham].type
         
-#     if type_champ == 'ELGA' :
-#       contexte, l_detr = self.Ecla_Gauss(selection, contexte)
-#       if not contexte: return
-
     # On efface le fichier si il existe deja
     if os.path.isfile(medFileName):
       try:    os.remove(medFileName)
@@ -2534,8 +2529,13 @@ class DRIVER_SALOME_ISOVALEURS(DRIVER_ISOVALEURS) :
 #        DETRUIRE(CONCEPT = _F(NOM = tuple(l_detr)), INFO=1)
         DETR( tuple(l_detr) )
 
-                           
-    self.terminal = salomeVisu.ISOVALEURS( medFileName, self.stan.parametres, selection )
+
+#     print "medFileName=", medFileName
+#     print "self.stan.parametres=", self.stan.parametres
+#     print "selection=", selection
+#     #import pdb ; pdb.set_trace()
+
+    self.terminal = salomeVisuPylo.ISOVALEURS( medFileName, self.stan.parametres, selection )
 
 
 
@@ -2783,7 +2783,7 @@ class DRIVER_SALOME_COURBES(DRIVER_COURBES) :
        # Extraction des resultats pour la selection requise
        l_courbes = self.Extract( selection )
        if not l_courbes: return
-       self.terminal = salomeVisu.COURBES( l_courbes, self.stan.parametres, selection )
+       self.terminal = salomeVisuPylo.COURBES( l_courbes, self.stan.parametres, selection )
 
 
 

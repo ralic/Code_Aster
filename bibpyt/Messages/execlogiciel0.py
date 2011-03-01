@@ -1,8 +1,8 @@
-#@ MODIF execlogiciel0 Messages  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
+#@ MODIF execlogiciel0 Messages  DATE 01/03/2011   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -86,5 +86,103 @@ Mode de lancement inconnu : %(k1)s
     Vous devriez trouver ci-dessus des messages du logiciel en question
     expliquant les raisons de cet échec.
 """),
+
+
+
+
+14 : _("""
+ -> Il y a eu une erreur lors de la connection à la machine distante via SSH :
+    . Il est probable que les clés SSH ne soient pas configurées correctement.
+
+ -> Conseil :
+    Vérifier que les clés SSH sont correctement configurées sur les différentes machines.
+    Vous pouvez essayer de relancer manuellement la commande suivante depuis le serveur Aster :
+%(k1)s
+"""),
+
+
+15 : _("""
+ -> Il y a eu une erreur lors de la connection à la machine distante via SSH :
+    . La machine distante n'a pas pus être contactée.
+
+ -> Conseil :
+    Vérifier l'adresse de la machine.
+    Vous pouvez essayer de relancer manuellement la commande suivante depuis le serveur Aster :
+%(k1)s
+"""),
+
+
+16 : _("""
+ -> Il y a eu une erreur lors de la connection à la machine distante via SSH :
+    . Le serveur SSH de la machine distante n'a pas pus être contacté.
+
+ -> Conseil :
+    Vérifier le port SSH de la machine.
+    Vous pouvez essayer de relancer manuellement la commande suivante depuis le serveur Aster :
+%(k1)s
+"""),
+
+17 : _("""
+ -> Il y a eu une erreur lors de la connection à la machine distante via SSH :
+    . Il est probable que le logiciel defini par le mot clé LOGICIEL ne soit pas présent
+      sur la machine distante.
+
+ -> Conseil :
+    Vérifier le mot-clé LOGICIEL
+    Vous pouvez essayer de relancer manuellement la commande suivante depuis le serveur Aster :
+%(k1)s
+"""),
+
+18 : _("""
+ -> Il y a eu une erreur lors de la connection à la machine distante via SSH :
+    . Soit l'adresse (ou le port SSH) de la machine n'est pas correcte.
+    . Soit les clés SSH ne sont pas configurées correctement.
+    . Soit le logiciel defini par le mot clé LOGICIEL n'est pas présent sur la machine distante.
+    . Soit une autre raison est à l'origine de cet eche.
+
+ -> Conseil :
+    Vous devriez trouver ci-dessus des messages expliquant les raisons de cet échec.
+    Vous pouvez essayer de relancer manuellement la commande suivante depuis le serveur Aster :
+%(k1)s
+"""),
+
+19 : _("""Info : le champs "%(k1)s" n'a pas été trouvé dans le script Salome, mais il n'est peut être pas nécessaire."""),
+
+20 : _("""
+
+
+----------------------------------------------------------------------------------
+----- Script Salome --------------------------------------------------------------
+
+%(k1)s
+
+----- fin Script Salome ----------------------------------------------------------
+----------------------------------------------------------------------------------
+
+
+"""),
+
+21 : _("""
+
+----------------------------------------------------------------------------------
+----- Commandes à exécuter -------------------------------------------------------
+
+%(k1)s
+
+----------------------------------------------------------------------------------
+----------------------------------------------------------------------------------
+
+"""),
+
+22 : _("""
+Les mots-clés SALOME_HOST et SSH_ADRESSE ont été définis simultanément et sont différents.
+C'est SALOME_HOST qui définira l'adresse de la machine distante.
+"""),
+
+23 : _("""
+Les listes de paramètres (mot-clé NOM_PARA) et de valeurs (mot-clé VALE) doivent être de même longueur !
+"""),
+
+
 
 }

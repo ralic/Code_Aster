@@ -3,9 +3,9 @@
       CHARACTER*(*) SD1,SD2,TYPESD
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 01/03/2011   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -49,7 +49,7 @@ C --------------- COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32 ZK32
       CHARACTER*80 ZK80
 C ----------------------------------------------------------------------
-      LOGICAL IDEN(10),IDENOB
+      LOGICAL IDEN,IDENOB
       CHARACTER*16 TYP2SD
       CHARACTER*19 PCHN1,PCHN2
 C
@@ -66,10 +66,14 @@ C
 C     --------------------------------
         PCHN1=SD1
         PCHN2=SD2
-        IDEN(1)=IDENOB(PCHN1//'.LILI',PCHN2//'.LILI')
-        IDEN(2)=IDENOB(PCHN1//'.DEEQ',PCHN2//'.DEEQ')
-        IDEN(3)=IDENOB(PCHN1//'.NUEQ',PCHN2//'.NUEQ')
-        IF (.NOT.(IDEN(1).AND.IDEN(2).AND.IDEN(3))) GOTO 9998
+        IDEN=IDENOB(PCHN1//'.LILI',PCHN2//'.LILI')
+        IF (.NOT.IDEN) GOTO 9998
+        IDEN=IDENOB(PCHN1//'.PRNO',PCHN2//'.PRNO')
+        IF (.NOT.IDEN) GOTO 9998
+        IDEN=IDENOB(PCHN1//'.DEEQ',PCHN2//'.DEEQ')
+        IF (.NOT.IDEN) GOTO 9998
+        IDEN=IDENOB(PCHN1//'.NUEQ',PCHN2//'.NUEQ')
+        IF (.NOT.IDEN) GOTO 9998
 
 
       ELSE

@@ -1,8 +1,8 @@
-#@ MODIF implex_isot_beto Comportement  DATE 07/12/2010   AUTEUR GENIAUT S.GENIAUT 
-
+#@ MODIF post_miss_ops Macro  DATE 01/03/2011   AUTEUR COURTOIS M.COURTOIS 
+# -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -17,20 +17,36 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
+# RESPONSABLE COURTOIS M.COURTOIS
 
-from cata_comportement import LoiComportement
+import sys
+import os
+import traceback
 
-loi = LoiComportement(
-   nom            = 'IMPLEX_ISOT_BETO',
-   doc            = """   A VENIR        """,
-   num_lc         = 77,
-   nb_vari        = 2,
-   nom_vari       = ('ENDO', 'INC_ENDO_INC_T'),
-   mc_mater       = ('ELAS', 'BETON_ECRO_LINE'),
-   modelisation   = ('3D', 'AXIS', 'C_PLAN', 'D_PLAN'),
-   deformation    = ('PETIT', 'PETIT_REAC'),
-   nom_varc       = ('TEMP'),
-   algo_inte         = ('ANALYTIQUE',),
-   type_matr_tang = ('PERTURBATION', 'VERIFICATION'),
-   proprietes     = None,
-)
+
+def post_miss_ops(self, **kwargs):
+    """Macro POST_MISS :
+    Post-traitement d'un calcul MISS3D
+    """
+    import aster
+    from Utilitai.Utmess  import UTMESS
+    from Miss.miss_post import PostMissFactory
+    
+    ier = 0
+    # La macro compte pour 1 dans la numerotation des commandes
+    self.set_icmd(1)
+
+    # création de l'objet POST_MISS_xxx
+    post = PostMissFactory(kwargs['OPTION'], self, kwargs)
+
+    try:
+        post.argument()
+        post.execute()
+        post.sortie()
+    except aster.error, err:
+        UTMESS('F', err.id_message, valk=err.valk, vali=err.vali, valr=err.valr)
+    except Exception, err:
+        trace = ''.join(traceback.format_tb(sys.exc_traceback))
+        UTMESS('F', 'SUPERVIS2_5', valk=('POST_MISS', trace, str(err)))
+
+

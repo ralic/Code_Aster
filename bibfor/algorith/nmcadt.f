@@ -1,9 +1,9 @@
       SUBROUTINE NMCADT(SDDISC,IOCC,NUMINS,VALINC,DTP)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 12/10/2010   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ALGORITH  DATE 28/02/2011   AUTEUR BARGELLI R.BARGELLINI 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -61,13 +61,20 @@ C
 C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
 C 
       INTEGER     IB,NIT,JITER,ITERAT
-      REAL*8      R8B,DTM,PCENT,VALREF,DVAL
+      REAL*8      R8B,DTM,PCENT,VALREF,DVAL,R8MAEM
       CHARACTER*8 K8B,TYPEXT
       CHARACTER*16 MODETP,NOCHAM,NOCMP
-      PARAMETER   (TYPEXT = 'MAX_ABS')
+C      PARAMETER   (TYPEXT = 'MAX_ABS')
+
+
+C   DECLARATION IMPL-EX
+      
+      REAL*8 ETA,ETAD
 C 
 C ----------------------------------------------------------------------
 C
+
+
       CALL JEMARQ()
 
 C     METHODE DE CALCUL DE DT+
@@ -90,7 +97,7 @@ C     ------------------------------------------------------------------
         CALL UTDIDT('L',SDDISC,'ADAP',IOCC,'NOM_CHAM',R8B,IB,NOCHAM)
         CALL UTDIDT('L',SDDISC,'ADAP',IOCC,'NOM_CMP',R8B,IB,NOCMP)
         CALL UTDIDT('L',SDDISC,'ADAP',IOCC,'VALE_REF',VALREF,IB,K8B)
-
+        TYPEXT = 'MAX_ABS'
 C       CALCUL DE C = MIN (VREF / |DELTA(CHAMP+CMP)| )
 C                   = VREF / MAX ( |DELTA(CHAMP+CMP)| )
 
@@ -118,6 +125,47 @@ C     ------------------------------------------------------------------
 
         CALL ASSERT(.FALSE.)
 
+C!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+C     ------------------------------------------------------------------
+      ELSEIF (MODETP.EQ.'IMPLEX') THEN
+C     ------------------------------------------------------------------
+
+C       FACTEUR D'ACCELERATION ETA
+        ETA = 1.2D0
+C       FACTEUR DE DECELERATION ETAD
+        ETAD = 0.5D0
+                        
+C        CALL UTDIDT('L',SDDISC,'ADAP',IOCC,'NU_CMP',R8B,NUCMP,K8B)
+        TYPEXT='MIN_VAR'
+
+C       CALCUL DE C = MIN (VREF / |DELTA(CHAMP+CMP)| )
+C                   = VREF / MAX ( |DELTA(CHAMP+CMP)| )
+
+C       DVAL :MAX EN VALEUR ABSOLUE DU DELTA(CHAMP+CMP)
+        NOCHAM='VARI_ELGA'
+        NOCMP='V1'
+        CALL EXTDCH(TYPEXT,VALINC,NOCHAM,NOCMP,DVAL)
+        
+C       LE CHAMP DE VARIATION EST IDENTIQUEMENT NUL : ON SORT
+C        IF (DVAL.GE.R8MAEM()) GOTO 9999
+        IF (DVAL.GE.R8MAEM()) DVAL=ETA
+        DTP = DTM * DVAL
+        
+C       ON IMPOSE QUE LE DT SOIT COMPRIS ENTRE ETAD*DTM ET ETA*DTM
+        IF(DTP/DTM.GE.ETA) THEN
+          DTP = ETA * DTM
+        ELSEIF (DTP/DTM.LE.ETAD) THEN
+           DTP = ETAD * DTM
+        ENDIF
+                
+        
+
+C     ------------------------------------------------------------------
+C      ELSEIF (MODETP.EQ.'IMPLEX2') THEN
+C     ------------------------------------------------------------------
+        
+C        CALL UTDIDT('L',SDDISC,'ADAP',IOCC,'NU_CMP',R8B,NUCMP,K8B)
+        
 C     ------------------------------------------------------------------
       ELSE
         CALL ASSERT(.FALSE.)

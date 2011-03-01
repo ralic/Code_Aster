@@ -1,8 +1,9 @@
-# MODIF  DATE 23/10/2006   AUTEUR VABHHTS J.PELLET 
+# MODIF  DATE 01/03/2011   AUTEUR ASSIRE A.ASSIRE 
 # TITRE TEST DE LA COMMANDE EXEC_LOGICIEL STANDARD ET GENERATION DE MAILLAGE
+# zzzz141a.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -18,9 +19,30 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
-DEBUT(CODE=_F(NOM='ZZZZ141A', NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NOM='ZZZZ141A', NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'),IMPR_MACRO='OUI',)
 
 EXEC_LOGICIEL(LOGICIEL='ls -la')
+
+EXEC_LOGICIEL(LOGICIEL='pwd',
+              MACHINE_DISTANTE=_F(SSH_ADRESSE  = 'localhost',
+                                  SSH_PORT     = 22,),);
+
+EXEC_LOGICIEL(
+   SALOME=_F(CHEMIN_SCRIPT   = './fort.18',
+             SALOME_PORT     = 2810,
+             SALOME_RUNAPPLI = 'echo /chemin-salome/runAppli ',),     # Remplacer par le chemin vers runAppli dans Salome
+   INFO=2);
+
+EXEC_LOGICIEL(
+   SALOME=_F(CHEMIN_SCRIPT   = './fort.18',
+             SALOME_HOST     = 'cli75ca.der.edf.fr',
+             SALOME_PORT     = 2811,
+             FICHIERS_ENTREE = [ './fort.91', './fort.92' ],          # Remplacer par les chemins vers les fichiers de donnees du script Salome
+             FICHIERS_SORTIE = [ './fort.98', './fort.99' ],          # Remplacer par les chemins vers les lesquels les fichiers generes par le script Salome seront recopies
+             SALOME_RUNAPPLI = 'echo /chemin-salome/runAppli ',       # Remplacer par le chemin vers runAppli dans Salome
+             NOM_PARA = [ 'CHOIX', 'STUDY' ],                         # Champs qui seront remplaces
+             VALE     = [ 'DEPL', "''" ],),                           # Valeur des champs
+   INFO=2);
 
 EXEC_LOGICIEL(MAILLAGE=_F(FORMAT='GMSH',
                           UNITE_GEOM=16,

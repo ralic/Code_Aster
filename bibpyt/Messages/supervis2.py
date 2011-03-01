@@ -1,4 +1,4 @@
-#@ MODIF supervis2 Messages  DATE 22/02/2011   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+#@ MODIF supervis2 Messages  DATE 01/03/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -31,5 +31,15 @@ Lecture du fichier pick.1..."""),
 3 : _("""%(k1)-8s %(k2)-16s ignoré"""),
 
 4 : _("""%(k1)-8s %(k2)-16s sans SD"""),
+
+5 : _("""
+Erreur inattendue lors de l'exécution de la commande '%(k1)s'.
+Merci de signaler cette anomalie.
+
+Traceback :
+
+%(k2)s
+%(k3)s
+"""),
 
 }

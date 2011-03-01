@@ -1,4 +1,4 @@
-#@ MODIF elements5 Messages  DATE 23/02/2011   AUTEUR LAVERNE J.LAVERNE 
+#@ MODIF elements5 Messages  DATE 28/02/2011   AUTEUR BARGELLI R.BARGELLINI 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -211,11 +211,21 @@ OPTION MASS_INER : la masse volumique RHO doit être non nulle
 """),
 
 47 : _("""
-    Il n'est pas possible d'utiliser ANGL_AXE et ORIG_AXE d'AFFE_CARA_ELEM pour les modelisations xxx_INTERFACE
+    Il n'est pas possible d'utiliser ANGL_AXE et ORIG_AXE d'AFFE_CARA_ELEM pour les modélisations xxx_INTERFACE
 """),
 
 48 : _("""
-    Il n'est pas possible d'utiliser ANGL_AXE et ORIG_AXE d'AFFE_CARA_ELEM pour les modelisations xxx_JHMS
+    Il n'est pas possible d'utiliser ANGL_AXE et ORIG_AXE d'AFFE_CARA_ELEM pour les modélisations xxx_JHMS
+"""),
+49 : _("""
+   La méthode IMPL_EX ne peut pas être utilisée avec la loi de comportement que vous
+   avez choisi ; sur les éléments BARRE elle n'est utilisable qu'avec VMIS_ISOT_LINE et ELAS
+"""),
+
+50 : _("""
+   La méthode IMPL_EX ne peut pas être utilisée avec la loi de comportement que vous
+   avez choisi ; sur les éléments 2D et 3D elle n'est utilisable qu'avec VMIS_ISOT_LINE,
+   ENDO_FRAGILE et ENDO_ISOT_BETON
 """),
 
 }

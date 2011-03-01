@@ -1,8 +1,8 @@
-#@ MODIF algeline3 Messages  DATE 18/10/2010   AUTEUR BOYERE E.BOYERE 
+#@ MODIF algeline3 Messages  DATE 01/03/2011   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -50,7 +50,7 @@ cata_msg={
 
 7: _("""
  Le groupe de mailles '%(k1)s' existe déjà.
- 
+
  Conseil :
     Si vous souhaitez utiliser un nom de groupe existant, il suffit
     de le détruire avec DEFI_GROUP / DETR_GROUP_MA.
@@ -69,7 +69,7 @@ cata_msg={
 """),
 
 11: _("""
- L'extraction des modes a échoué. 
+ L'extraction des modes a échoué.
  La structure de données mode_meca est vide ou aucun mode ne remplit le critère d'extraction.
  Conseils & solution :
    Vérifiez le résultat de votre calcul modal et/ou modifiez votre filtre d'extraction"
@@ -213,9 +213,9 @@ Recherche de corps rigide : pour l'instant proscrite avec matrice non-symetrique
 Recherche de corps rigide : pour l'instant proscrite avec matrice complexe
 """),
 
-48: _("""
- NOM_NUME_DDL  %(k1)s  non trouvé
-"""),
+
+
+
 
 49: _("""
 Attention : plus de six modes de corps rigides detectés
@@ -309,7 +309,7 @@ On poursuit tout de meme.
   -> La matrice de raideur est singulière malgre la strategie de décalage
 (structure avec des modes de corps rigide).
   -> Risque & Conseil :
-Utiliser l'option 'BANDE' avec une borne minimale de la bande de fréquence 
+Utiliser l'option 'BANDE' avec une borne minimale de la bande de fréquence
 légèrement négative (ou positive)
 """),
 

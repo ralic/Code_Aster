@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 28/02/2011   AUTEUR DELMAS J.DELMAS 
 # RESPONSABLE GNICOLAS G.NICOLAS
 # TITRE Maillage adaptatif thermo-mecanique sur une culasse fissuree
 # forma05b.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
@@ -247,6 +247,7 @@ for num_calc in range(0,nb_calc1) :
                      CHAM_MATER=CHMTM[num_calc],
                      CHARGE=(CLIMM[num_calc],CHM[num_calc]),
                      RESULTAT=DEPLA[num_calc],
+                     NUME_ORDRE=1,
                      ENER_POT=_F(TOUT='OUI',),);
 
 # IMPRESSION DES TABLES PRECEDENTES DANS LE .RESU
@@ -333,6 +334,7 @@ for num_calc in range(0,nb_calc1) :
               RESULTAT_N=DEPLA[num_calc],
               NOM_CHAM='ERME_ELEM',
               NOM_CMP='NUEST',
+              NUME_ORDRE=1,
               CRIT_RAFF_PE=0.2,
               CRIT_DERA_PE=0.1,
               QUALITE='OUI',

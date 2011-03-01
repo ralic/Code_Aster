@@ -1,0 +1,208 @@
+# MODIF  DATE 01/03/2011   AUTEUR MICHEL S.MICHEL 
+# TITRE ELEMENT DE BETON PRECONTRAINT EN COMPRESSION ET PESANTEUR
+# sslv115c.para = tps_job 300 mem_job 400Mo mem_aster 20 ncpus 1 liste_test R
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+# MODELISATION C : MAILLAGE TETRAEDRIQUE
+
+DEBUT(CODE=_F(NOM='SSLV115C', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'),IGNORE_ALARM=('CALCULEL3_47'))
+
+# <CALCULEL3_47> AVEC CALC_PRECONT, ON PASSE CONSCIEMMENT DE LA LDC 'SANS'
+# A UNE AUTRE LOI DE COMPORTEMENT 
+
+MAILLAGE=LIRE_MAILLAGE(UNITE=20,);
+
+MAILLAGE=DEFI_GROUP(reuse =MAILLAGE,
+                    MAILLAGE=MAILLAGE,
+                    CREA_GROUP_NO=_F(TOUT_GROUP_MA='OUI',),);
+
+
+MODELE=AFFE_MODELE(AFFE=(_F(GROUP_MA='VOILE',
+                            PHENOMENE='MECANIQUE',
+                            MODELISATION='3D',),
+                         _F(GROUP_MA='CABLE001',
+                            PHENOMENE='MECANIQUE',
+                            MODELISATION='BARRE',),),
+                   MAILLAGE=MAILLAGE,);
+
+CARAELEM=AFFE_CARA_ELEM(MODELE=MODELE,
+                        BARRE=_F(SECTION='GENERALE',
+                                 GROUP_MA='CABLE001',
+                                 CARA=('A'),
+                                 VALE=(0.00015),),);
+
+BETON=DEFI_MATERIAU(BPEL_BETON=_F(),
+                    THER=_F(LAMBDA=1.00,RHO_CP=1),
+                    ELAS=_F(NU=0.0,
+                            ALPHA=1.E-05,
+                            RHO=3.0,
+                            E=3.E10,),);
+
+ACIER=DEFI_MATERIAU(BPEL_ACIER=_F(FROT_LINE=0.0,
+                                  F_PRG=1.770000000E9,
+                                  FROT_COURB=0.0,),
+                    ELAS=_F(NU=0.0,
+                            RHO=2.E4,
+                            ALPHA=1.E-05,
+                            E=2.10000000000E11,),);
+
+CHMATER=AFFE_MATERIAU(AFFE=(_F(MATER=BETON,
+                               GROUP_MA='VOILE',),
+                            _F(MATER=ACIER,
+                               GROUP_MA='CABLE001',),),
+                      MAILLAGE=MAILLAGE,);
+
+CABLEPR=DEFI_CABLE_BP(CHAM_MATER=CHMATER,
+                      MODELE=MODELE,
+                      DEFI_CABLE=_F(NOEUD_ANCRAGE=('NC001001','NC001005'),
+                                    GROUP_MA='CABLE001',),
+                      TYPE_ANCRAGE=('ACTIF','ACTIF'),
+                      GROUP_MA_BETON='VOILE',
+                      TENSION_INIT=2.E5,
+                      RECUL_ANCRAGE=0.0,
+                      CARA_ELEM=CARAELEM,
+                      INFO=1,);
+
+CHARMECA=AFFE_CHAR_MECA(MODELE=MODELE,
+                        DDL_IMPO=(_F(NOEUD='NB001001',
+                                     DY=0.0,),
+                                  _F(DX=0.0,
+                                     GROUP_NO='VGAUCH',),
+                                  _F(DZ=0.0,
+                                     GROUP_NO='VINF',),),)
+
+CHARMEZ=AFFE_CHAR_MECA(MODELE=MODELE,
+                       PESANTEUR=_F(GRAVITE=10.0,
+                                    DIRECTION=(0.0,0.0,-1.0),),);
+
+CHARMEX=AFFE_CHAR_MECA(MODELE=MODELE,
+                       PESANTEUR=_F(GRAVITE=10.0,
+                                    DIRECTION=(-1.0,0.0,0.0),),);
+
+LINST=DEFI_LIST_REEL(VALE=(0.0,1.0),);
+
+EVOLNOLI=CALC_PRECONT( CHAM_MATER=CHMATER,
+                       MODELE=MODELE,
+                       CONVERGENCE=_F(ITER_GLOB_MAXI=10,
+                                      RESI_GLOB_RELA=1.E-05,),
+                       COMP_INCR=_F(TOUT='OUI',
+                                    RELATION='ELAS',
+                                    DEFORMATION='PETIT',),
+                       INCREMENT=_F(LIST_INST=LINST,),
+                       CARA_ELEM=CARAELEM,
+                       SOLVEUR=_F(METHODE='MULT_FRONT',),
+                       EXCIT=(
+                              _F(CHARGE=CHARMECA,),
+                              _F(CHARGE=CHARMEZ,
+                                 ),),
+                       CABLE_BP=( CABLEPR ,),);
+
+EVOLNOLI=CALC_NO(reuse =EVOLNOLI,
+                 OPTION='REAC_NODA',
+                 RESULTAT=EVOLNOLI,);
+
+
+EVOLNO2=CALC_PRECONT(CHAM_MATER=CHMATER,
+                      MODELE=MODELE,
+                      CONVERGENCE=_F(ITER_GLOB_MAXI=10,
+                                     RESI_GLOB_RELA=1.E-05,),
+                      COMP_INCR=_F(TOUT='OUI',
+                                   RELATION='ELAS',
+                                   DEFORMATION='PETIT',),
+                      INCREMENT=_F(LIST_INST=LINST,),
+                      CARA_ELEM=CARAELEM,
+                      SOLVEUR=_F(METHODE='MULT_FRONT',),
+                      EXCIT=(
+                           _F(CHARGE=CHARMECA,),
+                             _F(CHARGE=CHARMEX,
+                                ),),
+                       CABLE_BP=( CABLEPR ,),
+                      );
+
+EVOLNO2=CALC_NO(reuse =EVOLNO2,
+                OPTION='REAC_NODA',
+                RESULTAT=EVOLNO2,);
+
+
+FORC_DZ=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
+                                 INTITULE='FORCDZ',
+                                 GROUP_NO=('VOILE','CABLE001'),
+                                 RESULTANTE='DZ',
+                                 RESULTAT=EVOLNOLI,
+                                 NOM_CHAM='REAC_NODA',
+                                 INST=1.),);
+
+FORC2_DX=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
+                                 INTITULE='FORCDX',
+                                 GROUP_NO=('VOILE','CABLE001'),
+                                 RESULTANTE='DX',
+                                 RESULTAT=EVOLNO2,
+                                 NOM_CHAM='REAC_NODA',
+                                 INST=1.),);
+
+TEST_TABLE(TABLE=FORC_DZ,
+           NOM_PARA='DZ',
+           VALE=132.0,
+           PRECISION=1.E-10);
+
+TEST_TABLE(TABLE=FORC2_DX,
+           NOM_PARA='DX',
+           VALE=132.0,
+           PRECISION=1.E-10);
+
+# CONTRAINTES
+# TESTE LA VALEUR MOYENNE
+
+SIXX_MOY=POST_ELEM(INTEGRALE=_F(GROUP_MA='VOILE',
+                                NOM_CHAM='SIEF_ELGA',
+                                NOM_CMP='SIXX',),
+                   RESULTAT=EVOLNOLI,
+                   INST=1.);
+
+
+TEST_TABLE(TABLE=SIXX_MOY,
+           CRITERE = 'RELATIF',
+           PRECISION = 1.E-8,
+           REFERENCE='ANALYTIQUE',
+           NOM_PARA='MOYE_SIXX',
+           VALE = -1.66666666667E+05)
+
+# DEFORMATION DANS LE BETON
+# TESTE LA VALEUR MOYENNE
+
+EVOLNOLI=CALC_ELEM(reuse=EVOLNOLI,
+                   RESULTAT=EVOLNOLI,
+                   OPTION='EPSI_ELNO')
+
+EPXX_MOY=POST_ELEM(INTEGRALE=_F(GROUP_MA='VOILE',
+                                NOM_CHAM='EPSI_ELNO',
+                                NOM_CMP='EPXX',),
+                   RESULTAT=EVOLNOLI,
+                   INST=1.);
+
+TEST_TABLE(TABLE=EPXX_MOY,
+           CRITERE = 'RELATIF',
+           PRECISION = 1.E-8,
+           REFERENCE='ANALYTIQUE',
+           NOM_PARA='MOYE_EPXX',
+           VALE = -5.5555555556E-6,)
+           
+# -----------------------------------------------------------------------------------------------
+
+
+FIN();

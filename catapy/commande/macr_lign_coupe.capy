@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+#& MODIF COMMANDE  DATE 01/03/2011   AUTEUR DURAND C.DURAND 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -85,7 +85,7 @@ MACR_LIGN_COUPE=MACRO(nom="MACR_LIGN_COUPE",op=macr_lign_coupe_ops,sd_prod=table
 
 
            b_local        =BLOC(condition = "REPERE=='LOCAL' ",
-             VECT_Y          =SIMP(statut='o',typ='R',min=2,max=3),),
+             VECT_Y          =SIMP(statut='f',typ='R',min=2,max=3),),
 
            b_utili        =BLOC(condition = "REPERE=='UTILISATEUR'",
              ANGL_NAUT       =SIMP(statut='o',typ='R',min=3,max=3),),

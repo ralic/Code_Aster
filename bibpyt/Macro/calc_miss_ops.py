@@ -1,8 +1,8 @@
-#@ MODIF calc_miss_ops Macro  DATE 29/09/2010   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF calc_miss_ops Macro  DATE 01/03/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -19,10 +19,12 @@
 # ======================================================================
 # RESPONSABLE COURTOIS M.COURTOIS
 
+import sys
 import os
+import traceback
 
 
-def calc_miss_ops(self, OPTION, **kwargs):
+def calc_miss_ops(self, **kwargs):
     """Macro CALC_MISS :
     Préparation des données et exécution d'un calcul MISS3D
     """
@@ -39,8 +41,7 @@ def calc_miss_ops(self, OPTION, **kwargs):
     param = MISS_PARAMETER(initial_dir=os.getcwd(), **kwargs)
     
     # création de l'objet CALCUL_MISS_xxx
-    option_calcul = OPTION["MODULE"]
-    calcul = CalculMissFactory(option_calcul, self, param)
+    calcul = CalculMissFactory(self, param)
 
     try:
         calcul.prepare_donnees()
@@ -48,4 +49,8 @@ def calc_miss_ops(self, OPTION, **kwargs):
         calcul.post_traitement()
     except aster.error, err:
         UTMESS('F', err.id_message, valk=err.valk, vali=err.vali, valr=err.valr)
+    except Exception, err:
+        trace = ''.join(traceback.format_tb(sys.exc_traceback))
+        UTMESS('F', 'SUPERVIS2_5', valk=('CALC_MISS', trace, str(err)))
+
 

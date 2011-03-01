@@ -1,4 +1,4 @@
-#@ MODIF miss_utils Miss  DATE 25/01/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF miss_utils Miss  DATE 01/03/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -29,12 +29,15 @@ Les objets/fonctions définis sont :
     en_ligne        : formatte des valeurs en colonnes
 """
 
-import os
+import os.path as osp
 import re
 import pprint
 
+import numpy as NP
+
 import aster
 from Utilitai.Utmess import ASSERT
+from Utilitai.UniteAster import UniteAster
 
 
 dict_format = {
@@ -65,30 +68,115 @@ class MISS_PARAMETER(object):
     """Stocke les paramètres nécessaires au calcul à partir des mots-clés.
     """
     def __init__(self, initial_dir, **kwargs):
-        """Enregistrement des valeurs des mots-clés."""
+        """Enregistrement des valeurs des mots-clés.
+        - Comme il n'y a qu'une occurrence de PARAMETRE, cela permet de
+          remonter tous les mots-clés dans un seul dictionnaire.
+        - On peut ajouter des vérifications infaisables dans le capy.
+        - On ajoute des paramètres internes.
+        """
         self._defaults = {
-            'REPERTOIRE' : None,
-            'PROJET'     : 'MODEL',
             '_INIDIR'    : initial_dir,
-            '_WRKDIR'    : os.path.join(initial_dir, 'tmp_miss3d'),
+            '_WRKDIR'    : osp.join(initial_dir, 'tmp_miss3d'),
+            '_NBM_DYN'   : None,
+            '_NBM_STAT'  : None,
+            '_exec_Miss' : False,
         }
         self._keywords = {}
         # une seule occurence du mcfact
-        mcfact = kwargs.get('PARAMETRE', [None,])[0]
+        mcfact = kwargs.get('PARAMETRE')
         if mcfact is not None:
+            mcfact = mcfact[0]
             self._keywords.update( mcfact.cree_dict_valeurs(mcfact.mc_liste) )
-        # mcsimp
-        mcsimp = ('TABLE_SOL', 'PROJET', 'REPERTOIRE', 'VERSION', 'INFO',
-                  'UNITE_IMPR_ASTER', 'UNITE_RESU_IMPE', 'UNITE_RESU_FORC')
-        aux = ('_INIDIR', '_WRKDIR',)
-        for key in mcsimp + aux:
-            self._keywords[key] = kwargs.get(key) or self._defaults[key]
-        # vérification des règles impossible à écrire dans le .capy
-        ASSERT(self['LFREQ_NB'] is None or len(self['LFREQ_LISTE']) == self['LFREQ_NB'])
+        # autres mots-clés
+        others = kwargs.keys()
+        others.remove('PARAMETRE')
+        for key in others + self._defaults.keys():
+            val = kwargs.get(key)
+            if val is None:
+                val = self._defaults.get(key)
+            self._keywords[key] = val
+        if self['REPERTOIRE']:
+            self._keywords['_WRKDIR'] = self['REPERTOIRE']
+        self.UL = UniteAster()
+        self.check()
+
+
+    def __del__(self):
+        """A la destruction."""
+        self.UL.EtatInit()
+
+
+    def check(self):
+        """Vérification des règles impossible à écrire dans le .capy"""
+        # unités logiques
+        if self['UNITE_RESU_IMPE'] is None:
+            self.set('_exec_Miss', True)
+            self['UNITE_RESU_IMPE'] = self.UL.Libre(action='ASSOCIER')
+        if self['UNITE_RESU_FORC'] is None:
+            self.set('_exec_Miss', True)
+            self['UNITE_RESU_FORC'] = self.UL.Libre(action='ASSOCIER')
+        # fréquences : on remplit les mots-clés absents, on pourra ainsi utiliser
+        # l'un ou l'autre selon les cas.
+        if self['FREQ_MIN'] is None:
+            assert len(self['LFREQ_LISTE']) == self['LFREQ_NB']
+            self['FREQ_MIN'] = self['LFREQ_LISTE'][0]
+            self['FREQ_MAX'] = self['LFREQ_LISTE'][-1]
+            lfreq = NP.array(self['LFREQ_LISTE'])
+            pasini = lfreq[1] - lfreq[0]
+            assert pasini != 0.
+            pas = lfreq[1:] - lfreq[:-1]
+            dpasm = max(abs((pas - pasini) / pas))
+            assert dpasm < 1.e-3
+            self['FREQ_PAS'] = pasini
+        else:
+            self['LFREQ_NB'] = int(round((self['FREQ_MAX'] - self['FREQ_MIN']) / self['FREQ_PAS'])) + 1
+            self['LFREQ_LISTE'] = NP.arange(self['FREQ_MIN'], self['FREQ_MAX'] + self['FREQ_PAS'],
+                self['FREQ_PAS']).tolist()
+        # si base modale, vérifier/compléter les amortissements réduits
+        if self['BASE_MODALE']:
+            res = aster.dismoi('C', 'NB_MODES_DYN', self['BASE_MODALE'].nom, 'RESULTAT')
+            assert res[0] == 0
+            self['_NBM_DYN'] = res[1]
+            res = aster.dismoi('C', 'NB_MODES_STA', self['BASE_MODALE'].nom, 'RESULTAT')
+            assert res[0] == 0
+            self['_NBM_STAT'] = res[1]
+            if self['AMOR_REDUIT']:
+                if type(self['AMOR_REDUIT']) not in (list, tuple):
+                    self.set('AMOR_REDUIT', [self['AMOR_REDUIT'],])
+                self.set('AMOR_REDUIT', list(self['AMOR_REDUIT']))
+                nval = len(self['AMOR_REDUIT'])
+                if nval < self['_NBM_DYN']:
+                    # complète avec le dernier
+                    nadd = self['_NBM_DYN'] - nval
+                    self._keywords['AMOR_REDUIT'].extend([self['AMOR_REDUIT'][-1],] * nadd)
+                    nval = self['_NBM_DYN']
+                if nval < self['_NBM_DYN'] + self['_NBM_STAT']:
+                    # on ajoute 0.
+                    self._keywords['AMOR_REDUIT'].append(0.)
+        # excitations
+        if self['TYPE_RESU'] == 'TABLE':
+            nbcalc = 0
+            for p in ('ACCE_X', 'ACCE_Y', 'ACCE_Z', 'INST_FIN', 'PAS_INST'):
+                val = self._keywords[p]
+                if val is not None:
+                    if nbcalc != 0 and nbcalc != len(val):
+                        raise RuntimeError("ACCE_X, ACCE_Y, ACCE_Z, INST_FIN et PAS_INST " \
+                                           "doivent avoir le même cardinal !")
+                    nbcalc = len(val)
+            assert nbcalc > 0
 
 
     def __getitem__(self, key):
         return self._keywords[key]
+
+
+    def __setitem__(self, key, value):
+        ASSERT(self.get(key) is None)
+        self.set(key, value)
+
+
+    def set(self, key, value):
+        self._keywords[key] = value
 
 
     def get(self, key):
@@ -181,6 +269,7 @@ def convert_double(fich1, fich2):
 def double(string):
     """Convertit la chaine en réelle (accepte le D comme exposant).
     """
+    string = re.sub('([0-9]+)([\-\+][0-9])', '\\1e\\2', string)
     return float(string.replace("D", "e"))
 
 

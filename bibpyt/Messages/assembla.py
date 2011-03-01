@@ -1,8 +1,8 @@
-#@ MODIF assembla Messages  DATE 29/11/2010   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF assembla Messages  DATE 28/02/2011   AUTEUR SELLENET N.SELLENET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -29,11 +29,6 @@ cata_msg = {
     de matrice non-symétrique.
 
   Conseil : Changer de solveur
-"""),
-
-2 : _("""
-  Erreur d'utilisation :
-    Les charges cinématiques ne fonctionnent pas avec MUMPS en matrice distribuée
 """),
 
 3: _("""

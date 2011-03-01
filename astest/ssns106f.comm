@@ -1,4 +1,4 @@
-# MODIF  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 01/03/2011   AUTEUR SFAYOLLE S.FAYOLLE 
 # RESPONSABLE SFAYOLLE S.FAYOLLE
 # TITRE  : ENDOMMAGEMENT D UNE PLAQUE PLANE SOUS SOLLICITATIONS VARIEES
 # ssns106f.para = tps_job 300 mem_job 256Mo ncpus 1 liste_test S
@@ -41,7 +41,7 @@ t2 = 2.0;
 
 tmax = 2.04;
 
-dt = 0.0085;
+dt = 8.5e-3;
 
 fx = 500000.0;
 
@@ -231,10 +231,14 @@ chf1=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.,0.,
                          ),PROL_DROITE='LINEAIRE',PROL_GAUCHE='CONSTANT',);
 
 inst1=DEFI_LIST_REEL(DEBUT=0.0,
-                     INTERVALLE=(_F(JUSQU_A=t1,
+                     INTERVALLE=(_F(JUSQU_A=0.9915,
                                     PAS=dt,),
+                                 _F(JUSQU_A=t1,
+                                    NOMBRE=1,),
+                                 _F(JUSQU_A=1.9975,
+                                    PAS=(5 * dt),),
                                  _F(JUSQU_A=tmax,
-                                    PAS=(5 * dt),),),);
+                                    NOMBRE=1,),),);
 
 DEFLIST=DEFI_LIST_INST(DEFI_LIST=_F(METHODE='MANUEL',
                                     LIST_INST=inst1,),);
@@ -248,14 +252,13 @@ RESU1=STAT_NON_LINE(MODELE=MO,
                               FONC_MULT=chf1,),),
                     COMP_INCR=(_F(RELATION='ENDO_ISOT_BETON',
                                   ALGO_C_PLAN='DEBORST',
-                                  RESI_DEBO_MAXI=0.0001,
-                                  ITER_MAXI_DEBORST=5,
+                                  ITER_MAXI_DEBORST=20,
                                   GROUP_MA='DALLE',),
                                _F(RELATION='GRILLE_ISOT_LINE',
                                   ALGO_C_PLAN='ANALYTIQUE',
                                   GROUP_MA=('ACIER1L','ACIER2L','ACIER1T','ACIER2T',),),),
                     INCREMENT=_F(LIST_INST=DEFLIST,
-                                 PRECISION=0.1,),
+                                 PRECISION=0.001,),
                     NEWTON=_F(REAC_ITER=1,),
                     CONVERGENCE=_F(ITER_GLOB_MAXI=25,),);
 
@@ -273,7 +276,7 @@ RESU_G=STAT_NON_LINE(MODELE=MO_G,
                                FONC_MULT=chf1,),),
                      COMP_INCR=_F(RELATION='KIT_DDI',
                                   RELATION_KIT=('GLRC_DM','VMIS_CINE_LINE',),
-                                  ITER_MAXI_DEBORST=50,),
+                                  ITER_MAXI_DEBORST=5,),
                      INCREMENT=_F(LIST_INST=DEFLIST,
                                   PRECISION=0.1,),
                      NEWTON=_F(REAC_ITER=2,),
@@ -401,6 +404,7 @@ D_FXA4=CALC_TABLE(TABLE=TFXA4_G2,
 DETRUIRE(CONCEPT=_F(NOM=TDYA4_G2,),);
 
 DETRUIRE(CONCEPT=_F(NOM=TFXA4_G2,),);
+
 ttel = (2 * dt);
 
 tten = (10 * dt);
@@ -440,7 +444,7 @@ TEST_TABLE(TABLE=D_DYA4,
            FILTRE=_F(NOM_PARA='INST',
                      VALE=tten,),
            NOM_PARA='DY_DYG',
-           VALE=-0.47120145406,
+           VALE=-0.484715767,
            PRECISION=0.0001,
            REFERENCE='NON_REGRESSION',);
 
@@ -448,7 +452,7 @@ TEST_TABLE(TABLE=D_FXA4,
            FILTRE=_F(NOM_PARA='INST',
                      VALE=tten,),
            NOM_PARA='DX_DXG',
-           VALE=-0.343634076841,
+           VALE=-0.346014090,
            PRECISION=0.0001,
            REFERENCE='NON_REGRESSION',);
 
@@ -467,7 +471,7 @@ TEST_TABLE(TABLE=D_FXA4,
            FILTRE=_F(NOM_PARA='INST',
                      VALE=t1,),
            NOM_PARA='DX_DXG',
-           VALE=-0.0693862215065,
+           VALE=-0.069405040100461,
            PRECISION=0.0001,
            REFERENCE='NON_REGRESSION',);
 
@@ -483,26 +487,16 @@ TEST_TABLE(TABLE=TFXA4_G0,
            REFERENCE='NON_REGRESSION',);
 
 #--------------------------------------------------------------------
-#RESU_G=CALC_NO(reuse = RESU_G,
-#               OPTION='FORC_NODA',
-#               PRECISION=1.E-3,
-#               RESULTAT=RESU_G,
-#               
-#               
-#               GROUP_MA = 'DALLE_G',
-#               );
 
-RESU1=CALC_ELEM(reuse =RESU1,
-                RESULTAT=RESU1,
+RESU1_D=CALC_ELEM(RESULTAT=RESU1,
                 GROUP_MA='DALLE',
                 OPTION=('VARI_ELNO','ENEL_ELGA','ENEL_ELNO',),);
 
-RESU1=CALC_ELEM(reuse =RESU1,
-                RESULTAT=RESU1,
-                GROUP_MA=('ACIER1L','ACIER2L','ACIER1T','ACIER2T',),
-                OPTION='SIEF_ELNO',);
+RESU1_A=CALC_ELEM(RESULTAT=RESU1,
+                  GROUP_MA=('ACIER1L','ACIER2L','ACIER1T','ACIER2T',),
+                  OPTION='SIEF_ELNO',);
 
-RESU_G=CALC_ELEM(reuse =RESU_G,
+RESU_G=CALC_ELEM(reuse=RESU_G,
                  RESULTAT=RESU_G,
                  GROUP_MA='DALLE_G',
                  OPTION=('DEGE_ELNO','SIEF_ELNO','VARI_ELNO','ENEL_ELGA','ENEL_ELNO',),);

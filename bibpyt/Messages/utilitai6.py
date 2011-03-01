@@ -1,8 +1,8 @@
-#@ MODIF utilitai6 Messages  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
+#@ MODIF utilitai6 Messages  DATE 01/03/2011   AUTEUR CORUS M.CORUS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -122,21 +122,6 @@ cata_msg = {
 
 38 : _("""
  il y a  %(i1)d paramètre(s) identique(s) dans la définition de la nappe
-"""),
-
-39 : _("""
- erreur dans les données
- interface de type :  %(k1)s  non valable
-"""),
-
-40 : _("""
- erreur dans les données
- on ne retrouve pas le noeud  %(k1)s dans la numerotation
-"""),
-
-41 : _("""
- erreur dans les données
- le noeud :  %(k1)s n'appartient pas au maillage  %(k2)s
 """),
 
 44 : _("""

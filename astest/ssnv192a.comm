@@ -1,4 +1,4 @@
-# MODIF  DATE 22/02/2011   AUTEUR MACOCCO K.MACOCCO 
+# MODIF  DATE 01/03/2011   AUTEUR GENIAUT S.GENIAUT 
 # TITRE EPROUVETTE AVEC FISSURE CENTRALE XFEM
 # ssnv192a.para = tps_job 130 mem_job 512Mo mem_aster 50 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -20,8 +20,12 @@
 # ======================================================================
 
 
-DEBUT(CODE=_F(NOM='SSNV192A', NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),DEBUG=_F(SDVERI='OUI'),
-      IGNORE_ALARM=('CALCULEL2_63'))
+DEBUT(CODE=_F(NOM='SSNV192A', NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),
+      DEBUG=_F(SDVERI='OUI'),
+      IGNORE_ALARM=('CALCULEL2_63'),
+      PAR_LOT='NON')
+
+# le PAR_LOT='NON' est necessaire a la recuperation dans un entier du nombre de fonds de fissure (EXTR_TABLE)
 
 #----------------------------------------------
 #                   PARAMETRES
@@ -195,14 +199,19 @@ FISS=DEFI_FISS_XFEM(MODELE=MODELEIN,
                     ORIE_FOND=_F(PFON_INI=(XFONI, YFONI, ZFONI,),
                                  VECT_ORIE=(XVECT, YVECT, ZVECT,),
                                  POINT_ORIG=(XORI, YORI, ZORI,),),
-                     INFO=1,);
-# Test sur les tables
-TB_FOND=RECU_TABLE(CO=FISS,
-                    NOM_TABLE='FOND_FISS',);
-IMPR_TABLE(TABLE=TB_FOND)
-NB_FOND=RECU_TABLE(CO=FISS,
-                    NOM_TABLE='NB_FOND_FISS',);
+                     )
+
+# RECUPERATION DE LA TABLE CONTENANT LE NOMBRE DE FONDS DE FISSURE
+NB_FOND=RECU_TABLE(CO=FISS,NOM_TABLE='NB_FOND_FISS')
+
 IMPR_TABLE(TABLE=NB_FOND)
+
+# RECUPERATION DE LA TABLE DES COORDONNEES DES FONDS DE FISSURE
+TB_FOND=RECU_TABLE(CO=FISS,NOM_TABLE='FOND_FISS')
+
+IMPR_TABLE(TABLE=TB_FOND)
+
+
 
 #----------------------------------------------
 #               MODELE FISSURE
@@ -317,150 +326,96 @@ RESU1=STAT_NON_LINE(MODELE=MODELEK,
 # POST-TRAITEMENT : CALCUL DES SIFS PAR LA METHODE ENERGETIQUE AVEC X-FEM
 #------------------------------------------------------------------------
 
+# recuperation du nombre de fonds de fissure
+dict = NB_FOND.EXTR_TABLE().values()
+nb_fond = dict['NOMBRE'][0]
+
 n=len(RI)
-SIF1 = [None]*n
-SIF2 = [None]*n
+SIF = [None] * n * nb_fond
 
-for i in range(0,n) :
-   SIF1[i]=CALC_G(RESULTAT=RESU1,
-               OPTION='CALC_K_G',
-               NUME_ORDRE=1,
-               THETA=_F( FISSURE=FISS,
-                         R_INF=RI[i],
-                         R_SUP=RS[i],
-                        ),
-               LISSAGE=_F( LISSAGE_THETA='LAGRANGE',
-                           LISSAGE_G='LAGRANGE',
-                           DEGRE=4,),
-               INFO=2,);
+# pour toutes les couronnes d'integration, pour tous les fonds de fissure
+for i in range(n) :
 
-   IMPR_TABLE(TABLE=SIF1[i],);
+   for j in range(nb_fond) :
 
-   SIF2[i]=CALC_G(RESULTAT=RESU1,
-               OPTION='CALC_K_G',
-               NUME_ORDRE=1,
-               THETA=_F( FISSURE=FISS,
-                         R_INF=RI[i],
-                         R_SUP=RS[i],
-                         NUME_FOND=2,),
-               LISSAGE=_F( LISSAGE_THETA='LAGRANGE',
-                           LISSAGE_G='LAGRANGE',
-                           DEGRE=4,),
-               INFO=2,);
+      k = i*nb_fond + j
+      ifond = j+1
 
-   IMPR_TABLE(TABLE=SIF2[i],);
+      SIF[k]=CALC_G(RESULTAT=RESU1,
+                    OPTION='CALC_K_G',
+                    NUME_ORDRE=1,
+                    THETA=_F( FISSURE=FISS,
+                              R_INF=RI[i],
+                              R_SUP=RS[i],
+                              NUME_FOND=ifond),
+                    LISSAGE=_F( LISSAGE_THETA='LAGRANGE',
+                                LISSAGE_G='LAGRANGE',
+                                DEGRE=4),
+                  )
 
+      IMPR_TABLE(TABLE=SIF[k])
 
 # SOLUTION ANALYTIQUE
 P=abs(PRES)*(B*2*W)
-FAW = sqrt(pi*A/(4*W*cos(pi*A/(2*W))))*(1-0.025*(A/W)**2.+0.06*(A/W)**4.);
-K1REF =  P/(B*sqrt(W))*FAW;
+FAW = sqrt(pi*A/(4*W*cos(pi*A/(2*W))))*(1-0.025*(A/W)**2.+0.06*(A/W)**4.)
+K1REF =  P/(B*sqrt(W))*FAW
 
-# FISSURE 1
-for i in range(0,n) :
-   TEST_TABLE(TABLE=SIF1[i],
-              NOM_PARA='K1',
-              TYPE_TEST='MIN',
-              VALE=K1REF,
-              CRITERE='RELATIF',
-              PRECISION=0.03,
-              REFERENCE='ANALYTIQUE',);
-   TEST_TABLE(TABLE=SIF1[i],
-              NOM_PARA='K1',
-              TYPE_TEST='MAX',
-              VALE=K1REF,
-              CRITERE='RELATIF',
-              PRECISION=0.03,
-              REFERENCE='ANALYTIQUE',);
-
-# FISSURE 2
-for i in range(0,n) :
-   TEST_TABLE(TABLE=SIF2[i],
-              NOM_PARA='K1',
-              TYPE_TEST='MIN',
-              VALE=K1REF,
-              CRITERE='RELATIF',
-              PRECISION=0.03,
-              REFERENCE='ANALYTIQUE',);
-   TEST_TABLE(TABLE=SIF2[i],
-              NOM_PARA='K1',
-              TYPE_TEST='MAX',
-              VALE=K1REF,
-              CRITERE='RELATIF',
-              PRECISION=0.03,
-              REFERENCE='ANALYTIQUE',);
+# test du min et du max pour toutes les couronnes d'integration, pour tous les fonds de fissure
+ltest = ['MIN','MAX']
+for i in range(n) :
+   for j in range(nb_fond) :
+      k = i*nb_fond + j
+      for itest in ltest :
+         TEST_TABLE(TABLE=SIF[k],
+                    NOM_PARA='K1',
+                    TYPE_TEST=itest,
+                    VALE=K1REF,
+                    CRITERE='RELATIF',
+                    PRECISION=0.03,
+                    REFERENCE='ANALYTIQUE')
 
 #------------------------------------------------------------------------
 # POST-TRAITEMENT : CALCUL DES SIFS PAR INTERPOLATION DES SAUTS DE DEP.
 #------------------------------------------------------------------------
 
-PK1=POST_K1_K2_K3(  MODELISATION='3D',
+PK = [None] * nb_fond
+
+for j in range(nb_fond) :
+
+   ifond = j+1
+   PK[j]=POST_K1_K2_K3( MODELISATION='3D',
                         FISSURE=FISS,
-                        INFO=1,
                         MATER=ACIER,
                         RESULTAT=RESU1,
                         NUME_ORDRE=1,
                         ABSC_CURV_MAXI=0.3,
-                        NUME_FOND=1,
+                        NUME_FOND=ifond,
                         )
-                      
-IMPR_TABLE(TABLE=PK1);
-PK2=POST_K1_K2_K3(  MODELISATION='3D',
-                        FISSURE=FISS,
-                        INFO=1,
-                        MATER=ACIER,
-                        RESULTAT=RESU1,
-                        NUME_ORDRE=1,
-                        ABSC_CURV_MAXI=0.3,
-                        NUME_FOND=2,
-                        )
-                      
-IMPR_TABLE(TABLE=PK2);
 
-TEST_TABLE(   TABLE=PK1,
-              NOM_PARA='K1',
-              TYPE_TEST='MIN',
-              VALE=K1REF,
-              PRECISION=0.12 ,
-              REFERENCE='ANALYTIQUE'      )
+   IMPR_TABLE(TABLE=PK[j])
 
-TEST_TABLE(   TABLE=PK1,
-              NOM_PARA='K1',
-              TYPE_TEST='MAX',
-              VALE=K1REF,
-              PRECISION=0.12 ,
-              REFERENCE='ANALYTIQUE'      )         
-TEST_TABLE(   TABLE=PK2,
-              NOM_PARA='K1',
-              TYPE_TEST='MIN',
-              VALE=K1REF,
-              PRECISION=0.12 ,
-              REFERENCE='ANALYTIQUE'      )
-
-TEST_TABLE(   TABLE=PK2,
-              NOM_PARA='K1',
-              TYPE_TEST='MAX',
-              VALE=K1REF,
-              PRECISION=0.12 ,
-              REFERENCE='ANALYTIQUE'      )                        
+   for itest in ltest :
+      TEST_TABLE(TABLE=PK[j],
+                 NOM_PARA='K1',
+                 TYPE_TEST=itest,
+                 VALE=K1REF,
+                 PRECISION=0.12 ,
+                 REFERENCE='ANALYTIQUE')
+        
 # -------------------------------------------------------------   
 #            POST-TRAITEMENT POUR LA VISUALISATION X-FEM   
 # -------------------------------------------------------------   
 
-MA_XFEM=POST_MAIL_XFEM(
-                       MODELE        = MODELEK,
-                       INFO          = 2)
+MA_XFEM=POST_MAIL_XFEM(MODELE= MODELEK,
+                       INFO  = 2)
 
 MOD_VISU=AFFE_MODELE(MAILLAGE=MA_XFEM,
                      AFFE=_F(TOUT='OUI',
                               PHENOMENE='MECANIQUE',
                               MODELISATION='3D',),) 
 
-RES_XFEM=POST_CHAM_XFEM(MODELE_VISU   = MOD_VISU,
-                        RESULTAT      = RESU1,
-                        
-                        INFO          = 2)
+RES_XFEM=POST_CHAM_XFEM(MODELE_VISU = MOD_VISU,
+                        RESULTAT    = RESU1,
+                        INFO        = 2)
  
-#IMPR_RESU(FORMAT='GMSH',UNITE=81,RESU=_F(RESULTAT=RES_XFEM));
-
-FIN();
+FIN()

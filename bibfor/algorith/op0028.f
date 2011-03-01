@@ -1,7 +1,7 @@
       SUBROUTINE OP0028()
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 01/02/2011   AUTEUR MASSIN P.MASSIN 
+C MODIF ALGORITH  DATE 28/02/2011   AUTEUR BARGELLI R.BARGELLINI 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -25,7 +25,7 @@ C
 C
 C ----------------------------------------------------------------------
 C
-C OPERATEUR DEFI_LIST_INS
+C OPERATEUR DEFI_LIST_INST
 C
 C DEFINITION DE LA DISCRETISATION TEMPORELLE
 C
@@ -76,7 +76,7 @@ C
       CHARACTER*16 CL,MCFACT,NOPARA,CRICOM,MODETP,NOCHAM
       CHARACTER*16 NOSCHE
       CHARACTER*19 LISINS      
-      REAL*8       VALE,PCENT,VALERE,R8MAEM
+      REAL*8       VALE,PCENT,VALERE,R8MAEM, R8PREM
       INTEGER      NOCC,IOCC,NECHE,IDIV
       INTEGER      NBINSE,VALEI,NIT,NBPAMX
       INTEGER      JLIR,JDITR,JINST,NBINST,CEIL
@@ -94,6 +94,8 @@ C
       
       INTEGER      JEEVR,JEEVK,JESUR,JAEVR,JAEVK,JATPR,JATPK
       CHARACTER*8  FORTPL,NOMGD,DINOGD,NOCMP
+C     POUR IMPL-EX      
+      REAL*8       PAS0
 C ----------------------------------------------------------------------
 C
       CALL JEMARQ()
@@ -103,18 +105,21 @@ C
 C --- NOM DU CONCEPT 
       CALL GETRES(SDDISC,K16BID,K16BID)
 C
+
+C
 C     -----------------------------------
 C     MOT-CLE FACTEUR DEFI_LIST
 C     -----------------------------------
 
       MCFACT = 'DEFI_LIST'
       CALL WKVECT(SDDISC//'.LIST.INFOR','G V R',LLINR,JLIR)
+      
 C     ECRITURE DES DIFFERENTES INFOS
 C     ZR(JLIR-1 + 1) <===> 'METHODE' =1 SI 'MANUEL'
 C                                    =2 SI 'AUTO'
 C                                    =3 SI 'CFL'
 C                                    =4 SI 'MODAL'
-C     ZR(JLIR-1 + 2) <===> 'PAS_MINI
+C     ZR(JLIR-1 + 2) <===> 'PAS_MINI'
 C     ZR(JLIR-1 + 3) <===> 'PAS_MAXI'
 C     ZR(JLIR-1 + 4) <===> 'NB_PAS_MAX'
 C     ZR(JLIR-1 + 5) <===> DTMIN
@@ -126,7 +131,19 @@ C     ZR(JLIR-1 + 7) <===> REDECOUPE SI DIVERGENCE_ERRE (POUR CRESOL)
         WRITE(6,*)'CETTE FONCTIONNALITE N EST PAS ENCORE DISPO'
         CALL ASSERT(.FALSE.)
       ENDIF
-
+      
+C     A CAUSE D IMPLEX, ON VA RECUPERER DE SUITE LE MODE DE CALCUL
+C     DE T+. LE MOT CLE ADAPTATION SERA TRAITE A LA FIN DE LA ROUTINE
+          
+      IF (CL.EQ.'AUTO')THEN
+        CALL GETFAC('ADAPTATION',NOCC)
+        CALL GETVTX('ADAPTATION','MODE_CALCUL_TPLUS',NOCC,1,1,
+     &        MODETP,IBID)
+        IF (NOCC.NE.1.AND.MODETP.EQ.'IMPLEX') THEN
+           CALL U2MESS('F','DISCRETISATION_15')
+        ENDIF
+      ENDIF    
+      
 C     RECUPERATION DE LA LISTE D'INSTANTS FOURNIE
       IF (CL.EQ.'MANUEL'.OR.CL.EQ.'AUTO') THEN
         CALL GETVID(MCFACT,'LIST_INST',1,1,1,LISINS,N1)
@@ -159,11 +176,23 @@ C       ENREGISTRMENET DE DTMIN
         ZR(JLIR-1+1)= 1.D0
       ELSEIF (CL.EQ.'AUTO') THEN
         ZR(JLIR-1+1)= 2.D0
+        
+C       si pas implex  pasmn = R8prem
+C       sinon =PAS0/1000
+        CALL GETVR8(MCFACT,'PAS_MAXI' ,1,1,1,PASMAX,IBID)         
+        IF (MODETP.EQ.'IMPLEX') THEN
+          PAS0  = ZR(JINST+1)-ZR(JINST)
+          PASMIN = PAS0/1000
+          IF (IBID.EQ.0) PASMAX = PAS0*10
+        ELSE
+          PASMIN = R8PREM()
+          IF (IBID.EQ.0) PASMAX = ZR(JDITR-1+NBINST) - ZR(JDITR-1+1)
+        ENDIF
         CALL GETVR8(MCFACT,'PAS_MINI' ,1,1,1,PASMIN,IBID)
         IF (PASMIN.GT.DTMIN) CALL U2MESS('F','DISCRETISATION_1')
-        CALL GETVR8(MCFACT,'PAS_MAXI' ,1,1,1,PASMAX,IBID)
-        IF (IBID.EQ.0) PASMAX = ZR(JDITR-1+NBINST) - ZR(JDITR-1+1)
+
         CALL GETVIS(MCFACT,'NB_PAS_MAXI' ,1,1,1,NBPAMX,IBID)     
+
         RAPP = MIN (PASMAX / PASMIN, ISMAEM()*1.D0)
         IF (IBID.EQ.0) NBPAMX = CEIL(RAPP)
         ZR(JLIR-1+2)= PASMIN
@@ -266,6 +295,7 @@ C         CRIT_COMP = 'GT' EN DUR -> 2
           ZK16(JEEVK-1+LEEVK*(IOCC-1)+3)=NOCMP
         ELSEIF (EVEN.EQ.'COLLISION') THEN
           ZR(JEEVR-1+LEEVR*(IOCC-1)+1)=3.D0
+C          CALL ASSERT(.FALSE.)
         ELSEIF(EVEN.EQ.'DIVE_ITER_PILO') THEN
           ZR(JEEVR-1+LEEVR*(IOCC-1)+1)=4.D0          
         ELSE
@@ -397,7 +427,7 @@ C     --------------------------------------------
 C     MOT-CLE FACTEUR ADAPTATION
 C     --------------------------------------------
 
-C     ADAPTATION SEULEMENT SI METHODE AUTO
+C     ADAPTATION SEULEMENT SI METHODE AUTO OU IMPLEX
       IF (ZR(JLIR-1+1).NE.2.D0) GOTO 9999
 
       MCFACT = 'ADAPTATION'
@@ -430,6 +460,7 @@ C                                               = 1 SI 'FIXE'
 C                                               = 2 SI  'DELTA_GRANDEUR'
 C                                               = 3 SI  'ITER_NEWTON'
 C                                               = 4 SI  'FORMULE'
+C                                               = 5 SI  'IMPLEX'
 C     ZR(JATPR-1 + LATPR*(IOCC-1) + 2) <===> 'PCENT_AUGM'
 C     ZR(JATPR-1 + LATPR*(IOCC-1) + 3) <===> 'VALE_REF'
 C     ZR(JATPR-1 + LATPR*(IOCC-1) + 4) <===> NUMERO DE LA COMPOSANTE
@@ -482,7 +513,7 @@ C           LE SEUIL N'EST PAS DONNE PAR UNE FORMULE
         ENDIF
 
 C       DONNEE CONCERNANT LE MODE DE CALCUL DE T+
-        CALL GETVTX(MCFACT,'MODE_CALCUL_TPLUS',IOCC,1,1,MODETP,IBID)
+        
         IF (MODETP.EQ.'FIXE') THEN
           ZR(JATPR-1+LATPR*(IOCC-1)+1) = 1.D0
           CALL GETVR8(MCFACT,'PCENT_AUGM',IOCC,1,1,PCENT,IBID)
@@ -518,6 +549,15 @@ C          WRITE(6,*)'   SI CV & SEUIL OK, ON ACCELERE DE ',PCENT,'%'
           ENDIF
           WRITE(6,*)'CETTE FONCTIONNALITE N EST PAS ENCORE DISPO'
           CALL ASSERT(.FALSE.)
+C !!!!!!!!!        
+        ELSEIF (MODETP.EQ.'IMPLEX') THEN
+          ZR(JATPR-1+LATPR*(IOCC-1)+1) = 5.D0
+          IF (EVEN.NE.'TOUT_INST') THEN
+             CALL U2MESS('F','DISCRETISATION_14')
+          ENDIF
+C        ELSEIF (MODETP.EQ.'IMPLEX2') THEN
+C          ZR(JATPR-1+LATPR*(IOCC-1)+1) = 6.D0
+C!!!!!!!!!!!!!!!!!!!!!!
         ENDIF
  200  CONTINUE
 C

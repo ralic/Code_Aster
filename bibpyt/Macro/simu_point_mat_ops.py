@@ -1,4 +1,4 @@
-#@ MODIF simu_point_mat_ops Macro  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
+#@ MODIF simu_point_mat_ops Macro  DATE 28/02/2011   AUTEUR PROIX J-M.PROIX 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -50,6 +50,7 @@ def simu_point_mat_ops(self, MATER, INCREMENT,SIGM_IMPOSE,EPSI_IMPOSE,SIGM_INIT,
   from Accas import _F
   from Utilitai.UniteAster import UniteAster
   from Utilitai.Utmess import  UTMESS
+  from Noyau.N_types import is_enum
   
 # -- Tests de cohérence
   __fonczero = DEFI_FONCTION(NOM_PARA = 'INST',
@@ -60,12 +61,16 @@ def simu_point_mat_ops(self, MATER, INCREMENT,SIGM_IMPOSE,EPSI_IMPOSE,SIGM_INIT,
   CMP_EPS=['EPXX','EPYY','EPZZ','EPXY','EPXZ','EPYZ']
   CMP_SIG=['SIXX','SIYY','SIZZ','SIXY','SIXZ','SIYZ']
   
+  if COMP_INCR  :
+     lcomp = COMP_INCR.List_F()[0]
+  if COMP_ELAS   :
+     lcomp = COMP_ELAS.List_F()[0]
+
   if SUPPORT != None :
      if SUPPORT=='ELEMENT': 
         itetra=1
   if itetra==0 :
      if COMP_INCR != None : 
-        lcomp = COMP_INCR.List_F()[0]
         if lcomp['DEFORMATION'] != 'PETIT' :
            itetra=1
            UTMESS('A','COMPOR2_1',valk=lcomp['DEFORMATION'] )
@@ -498,6 +503,8 @@ def simu_point_mat_ops(self, MATER, INCREMENT,SIGM_IMPOSE,EPSI_IMPOSE,SIGM_INIT,
           lnomneu=[]
           lnomvar=[]
           VARINI=VARI_INIT[0].cree_dict_valeurs(VARI_INIT[0].mc_liste)
+          if (not is_enum(VARINI['VALE'])) :
+              VARINI['VALE'] = [VARINI['VALE'],]
           nbvari=len(VARINI['VALE'])
           for i in range(nbvari):
               lnomneu.append('X'+str(i+1))
@@ -624,15 +631,20 @@ def simu_point_mat_ops(self, MATER, INCREMENT,SIGM_IMPOSE,EPSI_IMPOSE,SIGM_INIT,
                                  EXCIT = l_char,**motscles)
 
 
+      if lcomp['DEFORMATION'] != 'PETIT' :
+         nomepsi='EPSG_ELNO'
+      else :
+         nomepsi='EPSI_ELNO'
+         
       __EVOL1 = CALC_ELEM(reuse = __EVOL1,RESULTAT = __EVOL1,
-        OPTION = ('SIEF_ELNO','EPSI_ELNO','VARI_ELNO'))
+        OPTION = ('SIEF_ELNO',nomepsi,'VARI_ELNO'))
  
       if MODELISATION=="3D":
           angles=(ANGLE,0,0)
           __EVOL=MODI_REPERE(RESULTAT=__EVOL1, MODI_CHAM=(
               _F(NOM_CHAM='DEPL',NOM_CMP=('DX','DY','DZ'),TYPE_CHAM='VECT_3D',),
               _F(NOM_CHAM='SIEF_ELNO',NOM_CMP=('SIXX','SIYY','SIZZ','SIXY','SIXZ','SIYZ'),TYPE_CHAM='TENS_3D',),
-              _F(NOM_CHAM='EPSI_ELNO',NOM_CMP=('EPXX','EPYY','EPZZ','EPXY','EPXZ','EPYZ'),TYPE_CHAM='TENS_3D',),
+              _F(NOM_CHAM=nomepsi,NOM_CMP=('EPXX','EPYY','EPZZ','EPXY','EPXZ','EPYZ'),TYPE_CHAM='TENS_3D',),
                                   ),
                      DEFI_REPERE=_F(REPERE='UTILISATEUR',ANGL_NAUT=angles),);
       else :
@@ -640,7 +652,7 @@ def simu_point_mat_ops(self, MATER, INCREMENT,SIGM_IMPOSE,EPSI_IMPOSE,SIGM_INIT,
           __EVOL=MODI_REPERE(RESULTAT=__EVOL1,MODI_CHAM=(
                      _F(NOM_CHAM='DEPL',NOM_CMP=('DX','DY'),TYPE_CHAM='VECT_2D',),
                      _F(NOM_CHAM='SIEF_ELNO',NOM_CMP=('SIXX','SIYY','SIZZ','SIXY'),TYPE_CHAM='TENS_2D',),
-                     _F(NOM_CHAM='EPSI_ELNO',NOM_CMP=('EPXX','EPYY','EPZZ','EPXY'),TYPE_CHAM='TENS_2D',),
+                     _F(NOM_CHAM=nomepsi,NOM_CMP=('EPXX','EPYY','EPZZ','EPXY'),TYPE_CHAM='TENS_2D',),
                                   ),
                      DEFI_REPERE=_F(REPERE='UTILISATEUR',ANGL_NAUT=angles),);
  
@@ -652,7 +664,7 @@ def simu_point_mat_ops(self, MATER, INCREMENT,SIGM_IMPOSE,EPSI_IMPOSE,SIGM_INIT,
 
  
       __REP_EPSI = POST_RELEVE_T(ACTION = (
-          _F(INTITULE='EPSILON',RESULTAT=__EVOL,NOM_CHAM='EPSI_ELNO',
+          _F(INTITULE='EPSILON',RESULTAT=__EVOL,NOM_CHAM=nomepsi,
             TOUT_CMP='OUI',OPERATION='EXTRACTION',NOEUD     = 'P0'),))
 
       __REP_SIGM = POST_RELEVE_T(ACTION = (

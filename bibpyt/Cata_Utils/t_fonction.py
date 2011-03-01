@@ -1,8 +1,8 @@
-#@ MODIF t_fonction Cata_Utils  DATE 15/11/2010   AUTEUR GREFFET N.GREFFET 
+#@ MODIF t_fonction Cata_Utils  DATE 01/03/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -425,6 +425,36 @@ class t_fonction :
 class t_fonction_c(t_fonction) :
   """Classe pour fonctions complexes, équivalent au type aster = fonction_c
   """
+  def __add__(self,other) :
+    """addition avec une autre fonction ou un nombre, par surcharge de l'opérateur +
+    """
+    if isinstance(other,t_fonction_c):
+      para=copy.copy(self.para)
+      vale_x, para['PROL_GAUCHE'], para['PROL_DROITE'] = self.homo_support(other)
+      fff = self.evalfonc(vale_x)
+      ggg = other.evalfonc(vale_x)
+      res = t_fonction_c(vale_x, fff.vale_y + ggg.vale_y, para)
+    elif is_number(other):
+      res = t_fonction_c(self.vale_x, self.vale_y + other, self.para)
+    else:
+        raise FonctionError, 'fonctions : erreur de type dans __add__ : %s %s' % (self, type(other))
+    return res
+
+  def __mul__(self,other) :
+    """multiplication avec une autre fonction ou un nombre, par surcharge de l'opérateur *
+    """
+    if   isinstance(other,t_fonction_c):
+      para=copy.copy(self.para)
+      vale_x, para['PROL_GAUCHE'], para['PROL_DROITE'] = self.homo_support(other)
+      fff = self.evalfonc(vale_x)
+      ggg = other.evalfonc(vale_x)
+      res = t_fonction_c(vale_x, fff.vale_y * ggg.vale_y, self.para)
+    elif is_number(other):
+      res = t_fonction_c(self.vale_x, self.vale_y*other, self.para)
+    else:
+        raise FonctionError, 'fonctions : erreur de type dans __mul__%s %s' % (self, type(other))
+    return res
+
   def tabul(self) :
     """mise en forme de la fonction selon un vecteur unique (x1,yr1,yi1,x2,yr2,yr2,...)
     """

@@ -1,4 +1,4 @@
-# MODIF  DATE 18/01/2011   AUTEUR PROIX J-M.PROIX 
+# MODIF  DATE 28/02/2011   AUTEUR PROIX J-M.PROIX 
 # RESPONSABLE PROIX J-M.PROIX
 # TITRE : VARIATION TEMPERATURE DANS LE COMPORTEMENT 'ELAS' sous COMP_ELAS
 # comp007a.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test S
@@ -130,6 +130,7 @@ for i in range(NCAL):
                                              MATRICE='TANGENTE',
                                              REAC_ITER=1,),
                                  EPSI_IMPOSE=_F(EPXX=epsimp),
+                                 VARI_INIT=_F(VALE=0.),
                                  INFO=1,);
 
           IMPR_TABLE(TABLE=RESU[i]);

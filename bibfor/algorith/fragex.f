@@ -1,10 +1,11 @@
-      SUBROUTINE LC0088(FAMI,KPG,KSP,NDIM,IMATE,COMPOR,CRIT,INSTAM,
+      SUBROUTINE FRAGEX(FAMI,KPG,KSP,NDIM,IMATE,COMPOR,CRIT,INSTAM,
      &            INSTAP,EPSM,DEPS,SIGM,VIM,OPTION,ANGMAS,SIGP,
      &             VIP,TAMPON,TYPMOD,ICOMP,NVI,DSIDEP,CODRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF calculel  DATE 08/09/2009   AUTEUR SFAYOLLE S.FAYOLLE 
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ALGORITH  DATE 28/02/2011   AUTEUR BARGELLI R.BARGELLINI 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -19,6 +20,8 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
 C ======================================================================
+C TOLE CRP_7
+C TOLE CRP_20
 C TOLE CRP_21
 
 C VARIABLES ENTREE SORTIE NECESSAIRES A LA ROUTINE
@@ -26,8 +29,8 @@ C VARIABLES ENTREE SORTIE NECESSAIRES A LA ROUTINE
       CHARACTER*8     TYPMOD(*)
       CHARACTER*16    OPTION
       INTEGER         NDIM, IMATE
-      REAL*8          INSTAM, INSTAP, EPSM(6), DEPS(6), VIM(4)
-      REAL*8          SIGP(6), VIP(4), DSIDEP(6,6)
+      REAL*8          INSTAM, INSTAP, EPSM(6), DEPS(6), VIM(2)
+      REAL*8          SIGP(6), VIP(2), DSIDEP(6,6)
       INTEGER         CODRET
 
 C VARIABLES ENTREE SORTIE INUTILES POUR CETTE ROUTINE
@@ -61,9 +64,10 @@ C                 RIGI_MECA_ELAS   ->  INTERDIT
 C OUT SIGP    : CONTRAINTE EN T+
 C OUT VIP     : VARIABLES INTERNES
 C                 1   -> VALEUR DE L'ENDOMMAGEMENT
-C                 2   -> ELASTIQUE (0), DISSIPATIF (1) OU CASSE (2)
-C                 3   -> INCREMENT DE L'ENDOMMAGEMENT
-C                 4   -> INCREMENT DE L'INSTANT (T- - T-- necessaire)
+C                 2   -> INCREMENT DE L'ENDOMMAGEMENT/
+C                        ------------------------------
+C                        INCREMENT DE L'INSTANT (T- - T-- necessaire)
+C  
 C OUT DSIDEP  : MATRICE TANGENTE
 C OUT CODRET  : INDICATEUR DE REDECOUPAGE DU PAS DE TEMPS
 C
@@ -96,7 +100,7 @@ C               SIGM    CONTRAINTE A T
 C ======================================================================
       LOGICAL     CPLAN, TANG, RAPH
 
-      INTEGER     NDIMSI, K, L, ETAT
+      INTEGER     NDIMSI, K, L
 
       REAL*8      EPS(6), TREPS, COPLAN, SIGEL(6)
       REAL*8      KRON(6), VALRES(3), DDOT, DMAX, FMIN
@@ -152,8 +156,8 @@ C -- DEFORMATIONS
 
 C -- EXTRACTION DES VARIABLES
       DM   = VIM(1)
-      ETAT = NINT(VIM(2))
-      DDDT = VIM(3)
+C      ETAT = NINT(VIM(2))
+      DDDT = VIM(2)
       DT  = INSTAP-INSTAM
 
 C ======================================================================
@@ -161,19 +165,19 @@ C     CAS RIGI_MECA_TANG : EXTRAPOLATION VARIABLES INTERNES ET MATRICE
 C ======================================================================
 
       IF (TANG) THEN
-       IF (ETAT.NE.2) THEN
+       IF (DM.NE.1) THEN
 C -- DISTINCTION DES CAS : SI AVANT PAS ENDO, EXTRAPOL SANS ENDO
           IF (DDDT .EQ. 0.D0) THEN
            DD = 0.D0
            D = DM + DD
-           ETAT = 0.D0
+C           ETAT = 0.D0
           ELSE
             DD = DDDT * DT
             D  = DM + DD
-            ETAT = 1
+C            ETAT = 1
             IF (D .GT. DMAX) THEN
              D = DMAX
-             ETAT = 2
+C             ETAT = 2
             END IF
           END IF
         ELSE
@@ -181,11 +185,11 @@ C -- SI LE PTG EST CASSE, PAS D'INCREMENT
           IF (DDDT .EQ. 0.D0) THEN
             DD = 0.D0
             D = DM + DD
-            ETAT = 2
+C            ETAT = 2
           ELSE
             DD = 0.D0
             D  = DM + DD
-            ETAT = 2
+C          ETAT = 2
           END IF
         END IF
 
@@ -263,20 +267,20 @@ C ======================================================================
 
 C -- POINT DEJA SATURE
 
-        IF (ETAT.EQ.2) THEN
+        IF (DM.EQ.1) THEN
           D = DM
 
 C -- CALCUL DE L'ETAT D'ENDOMMAGEMENT
         ELSE
           IF (ENER .LE. WY*((1.D0+GAMMA)/(1.D0+GAMMA-DM))**2) THEN
             D = DM
-            ETAT = 0
+C          ETAT = 0
           ELSE
-            ETAT = 1
+C            ETAT = 1
             D = MAX(DM, (1.D0+GAMMA)*(1.D0-SQRT(WY/ENER)))
             IF (D.GT.DMAX) THEN
               D = DMAX
-              ETAT = 2
+C              ETAT = 2
             END IF
           END IF
         END IF
@@ -291,8 +295,8 @@ C -- CALCUL DES CONTRAINTES
 C -- STOCKAGE DES VARIABLES INTERNES
 
         VIP(1) = D
-        VIP(2) = ETAT
-        VIP(3) = (D-DM)/(INSTAP-INSTAM)
+C        VIP(2) = ETAT
+        VIP(2) = (D-DM)/(INSTAP-INSTAM)
       ELSE
           CALL ASSERT(.FALSE.)
       END IF

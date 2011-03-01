@@ -1,8 +1,8 @@
-#@ MODIF calculel4 Messages  DATE 20/12/2010   AUTEUR MEUNIER S.MEUNIER 
+#@ MODIF calculel4 Messages  DATE 01/03/2011   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -67,7 +67,15 @@ Conseil :
   Il faut donc au préalable créer une sd_resultat avec CREA_RESU
 """),
 
-
+6 : _("""
+Erreur utilisateur (ou programmeur) :
+ On veut imposer la numérotation des ddls du cham_no %(k1)s
+ avec le nume_ddl %(k2)s.
+ Mais ces 2 structures de données sont incompatibles.
+ Par exemple :
+    - ce n'est pas le meme maillage sous-jacent
+    - ce n'est pas la meme grandeur sous-jacente.
+"""),
 
 
 8 : _("""

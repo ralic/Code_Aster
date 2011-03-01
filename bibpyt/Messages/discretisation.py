@@ -1,4 +1,4 @@
-#@ MODIF discretisation Messages  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
+#@ MODIF discretisation Messages  DATE 28/02/2011   AUTEUR BARGELLI R.BARGELLINI 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -81,6 +81,15 @@ Le nombre de subdivisions du pas de temps doit être plus grand que 1 (SUBD_PAS)
 
 13 : _("""
  On a depassé le nombre maximal de pas de temps autorisé.
+"""),
+
+14 : _("""
+ Attention : avec MODE_CALCUL_TPLUS = 'IMPLEX', on doit demander le calcul à tous les instants
+ (EVENEMENT='TOUT_INST')
+"""),
+
+15 : _("""
+ Attention : MODE_CALCUL_TPLUS = 'IMPLEX' ne permet qu'un mot clé ADAPTATION
 """),
 
 86 : _("""

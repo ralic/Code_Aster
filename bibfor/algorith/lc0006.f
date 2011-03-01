@@ -20,9 +20,9 @@ C
 C TOLE CRP_21
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 07/07/2009   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 28/02/2011   AUTEUR BARGELLI R.BARGELLINI 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -62,6 +62,7 @@ C                       CRIT(2) = TYPE DE JACOBIEN A T+DT
 C                                 (TYPE_MATR_COMP == MACOMP)
 C                                 0 = EN VITESSE     > SYMETRIQUE
 C                                 1 = EN INCREMENTAL > NON-SYMETRIQUE
+C                                 9 = METHODE IMPLEX
 C                       CRIT(3) = VALEUR DE LA TOLERANCE DE CONVERGENCE
 C                                 (RESI_INTE_RELA == RESCREL)
 C                       CRIT(5) = NOMBRE D'INCREMENTS POUR LE
@@ -77,6 +78,7 @@ C               OPTION     OPTION DE CALCUL A FAIRE
 C                             'RIGI_MECA_TANG'> DSIDEP(T)
 C                             'FULL_MECA'     > DSIDEP(T+DT) , SIG(T+DT)
 C                             'RAPH_MECA'     > SIG(T+DT)
+C                             'RIGI_MECA_IMPLEX' > DSIDEP(T), SIGEXTR
 C               TAMPON  TABLEAUX DES ELEMENTS GEOMETRIQUES SPECIFIQUES
 C                       AUX LOIS DE COMPORTEMENT (DIMENSION MAXIMALE
 C                       FIXEE EN DUR)
@@ -112,8 +114,14 @@ C     FORMULATION LOCALE
         CALL RCVARC(' ','TEMP','+'  ,FAMI,KPG,KSP,TP  ,IRET)
         CALL RCVARC(' ','TEMP','REF',FAMI,KPG,KSP,TREF,IRET)
 
-        CALL LCLDSB(FAMI,KPG,KSP,NDIM, TYPMOD,IMATE,COMPOR,EPSM,
+        IF (CRIT(2).NE.9) THEN
+            CALL LCLDSB(FAMI,KPG,KSP,NDIM, TYPMOD,IMATE,COMPOR,EPSM,
      &              DEPS,VIM,TM,TP,TREF,OPTION,SIGP,VIP,DSIDEP,CRIT)
+        ELSE
+            CALL EIBEX(FAMI,KPG,KSP,NDIM,IMATE,COMPOR,CRIT,INSTAM,
+     &            INSTAP,EPSM,DEPS,SIGM,VIM,OPTION,ANGMAS,SIGP,
+     &             VIP,TAMPON,TYPMOD,ICOMP,NVI,DSIDEP,CODRET)
+        ENDIF
 
       ENDIF
 

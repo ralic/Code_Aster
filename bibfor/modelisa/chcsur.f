@@ -5,9 +5,9 @@
       CHARACTER*(*)       CHCINE, CNSZ, MO
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 19/10/2010   AUTEUR DELMAS J.DELMAS 
+C MODIF MODELISA  DATE 01/03/2011   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -51,9 +51,10 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C
-      INTEGER       NBLOC, IBLOC, ICMP, NCMP, INO, NBNO, NBEC, IER, II,
-     +              JCNSD, JCNSV, JCNSL, JAFCI, JAFCV, IAPRNM
-      LOGICAL       EXISDG
+      INTEGER  NBLOC, IBLOC, ICMP, NCMP, INO, NBNO, NBEC, IER, II
+      INTEGER  JCNSD, JCNSV, JCNSL, JAFCI, JAFCV, IAPRNM,JCNSC,KCMP
+      INTEGER  JCMP,INDIK8,NCMPMX,JCORR
+      LOGICAL  EXISDG
       CHARACTER*8   K8B, NOMO
       CHARACTER*19  CHCI, CNS
       CHARACTER*24  CAFCI, CAFCV
@@ -75,21 +76,35 @@ C
       CAFCV(1:19) = CHCI
 C
       CALL JEVEUO ( CNS//'.CNSD', 'L', JCNSD )
+      CALL JEVEUO ( CNS//'.CNSC', 'L', JCNSC )
       CALL JEVEUO ( CNS//'.CNSV', 'L', JCNSV )
       CALL JEVEUO ( CNS//'.CNSL', 'L', JCNSL )
 C
       NBNO = ZI(JCNSD)
       NCMP = ZI(JCNSD+1)
-C
+
+
+C     -- ON CALCULE LA CORRESPONDANCE ENTRE LES CMPS DE CNS
+C        ET CELLES DE LA GRANDEUR.
+      CALL JEVEUO(JEXNOM('&CATA.GD.NOMCMP',NOMGD),'L',JCMP)
+      CALL JELIRA(JEXNOM('&CATA.GD.NOMCMP',NOMGD),'LONMAX',NCMPMX,K8B)
+      CALL WKVECT('&&CHCSUR.CORRES','V V I',NCMPMX,JCORR)
+      DO 10, KCMP=1,NCMPMX
+         ICMP = INDIK8(ZK8(JCNSC),ZK8(JCMP-1+KCMP),1,NCMP)
+         ZI(JCORR-1+KCMP)=ICMP
+ 10   CONTINUE
+
+
+C     -- CALCUL DE NBLOC :
       NBLOC = 0
       DO 100 ICMP = 1, NCMP
          DO 110 INO = 1 , NBNO
             IF ( ZL(JCNSL+(INO-1)*NCMP+ICMP-1) ) NBLOC = NBLOC + 1
  110     CONTINUE
  100  CONTINUE
-C
-C --- CREATION DE LA SD
-C
+
+
+C     -- CREATION DE LA SD
       CALL WKVECT ( CAFCI, 'G V I', (3*NBLOC+1), JAFCI )
       IF (TYPE.EQ.'R') THEN
          CALL WKVECT ( CAFCV, 'G V R' , MAX(NBLOC,1), JAFCV )
@@ -98,62 +113,38 @@ C
       ELSE IF (TYPE.EQ.'F') THEN
          CALL WKVECT ( CAFCV, 'G V K8', MAX(NBLOC,1), JAFCV )
       ENDIF
-C
-C --- ON REMPLIT LES .AFCI .AFCV
-C
-C
+
+
+C     -- ON REMPLIT LES OBJETS .AFCI .AFCV
       IBLOC = 0
-      IF (TYPE.EQ.'R') THEN
-         DO 120 INO = 1, NBNO
-            II = 0
-            DO 122 ICMP = 1, NCMP
-               IF (EXISDG(ZI(IAPRNM-1+NBEC*(INO-1)+1),ICMP)) THEN
-                  II = II + 1
-                  IF ( ZL(JCNSL+(INO-1)*NCMP+ICMP-1) ) THEN
-                     IBLOC = IBLOC + 1
-                     ZI(JAFCI+3*(IBLOC-1)+1) = INO
-                     ZI(JAFCI+3*(IBLOC-1)+2) = II
-                     ZR(JAFCV-1+IBLOC) = ZR(JCNSV+(INO-1)*NCMP+ICMP-1)
+      DO 120 INO = 1, NBNO
+         II = 0
+         DO 122 KCMP = 1, NCMPMX
+            IF (EXISDG(ZI(IAPRNM-1+NBEC*(INO-1)+1),KCMP)) THEN
+               II = II + 1
+               ICMP=ZI(JCORR-1+KCMP)
+               IF (ICMP.EQ.0) GOTO 122
+               IF ( ZL(JCNSL+(INO-1)*NCMP+ICMP-1) ) THEN
+                  IBLOC = IBLOC + 1
+                  ZI(JAFCI+3*(IBLOC-1)+1) = INO
+                  ZI(JAFCI+3*(IBLOC-1)+2) = II
+                  IF (TYPE.EQ.'R') THEN
+                    ZR(JAFCV-1+IBLOC) = ZR(JCNSV+(INO-1)*NCMP+ICMP-1)
+                  ELSE IF (TYPE.EQ.'C') THEN
+                    ZC(JAFCV-1+IBLOC) = ZC(JCNSV+(INO-1)*NCMP+ICMP-1)
+                  ELSE IF (TYPE.EQ.'F') THEN
+                    ZK8(JAFCV-1+IBLOC) = ZK8(JCNSV+(INO-1)*NCMP+ICMP-1)
+                  ELSE
+                    CALL ASSERT(.FALSE.)
                   ENDIF
                ENDIF
- 122        CONTINUE
- 120     CONTINUE
-C
-      ELSE IF (TYPE.EQ.'C') THEN
-         DO 130 INO = 1, NBNO
-            II = 0
-            DO 132 ICMP = 1, NCMP
-               IF (EXISDG(ZI(IAPRNM-1+NBEC*(INO-1)+1),ICMP)) THEN
-                  II = II + 1
-                  IF ( ZL(JCNSL+(INO-1)*NCMP+ICMP-1) ) THEN
-                     IBLOC = IBLOC + 1
-                     ZI(JAFCI+3*(IBLOC-1)+1) = INO
-                     ZI(JAFCI+3*(IBLOC-1)+2) = II
-                     ZC(JAFCV-1+IBLOC) = ZC(JCNSV+(INO-1)*NCMP+ICMP-1)
-                  ENDIF
-               ENDIF
- 132        CONTINUE
- 130     CONTINUE
-C
-      ELSE IF (TYPE.EQ.'F') THEN
-         DO 140 INO = 1, NBNO
-            II = 0
-            DO 142 ICMP = 1, NCMP
-               IF (EXISDG(ZI(IAPRNM-1+NBEC*(INO-1)+1),ICMP)) THEN
-                  II = II + 1
-                  IF ( ZL(JCNSL+(INO-1)*NCMP+ICMP-1) ) THEN
-                     IBLOC = IBLOC + 1
-                     ZI(JAFCI+3*(IBLOC-1)+1) = INO
-                     ZI(JAFCI+3*(IBLOC-1)+2) = II
-                     ZK8(JAFCV-1+IBLOC) = ZK8(JCNSV+(INO-1)*NCMP+ICMP-1)
-                  ENDIF
-               ENDIF
- 142        CONTINUE
- 140     CONTINUE
-      ENDIF
+            ENDIF
+ 122     CONTINUE
+ 120  CONTINUE
 
       IF (IBLOC.EQ.0) CALL U2MESS('A','CALCULEL_9')
       ZI(JAFCI) = IBLOC
-C
+
+      CALL JEDETR('&&CHCSUR.CORRES')
       CALL JEDEMA()
       END

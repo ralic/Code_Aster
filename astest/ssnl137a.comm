@@ -1,0 +1,126 @@
+# MODIF  DATE 28/02/2011   AUTEUR BARGELLI R.BARGELLINI 
+# TITRE BARRE ELASTOPLASTIQUE EN TRACTION AVEC IMPLEX
+# ssnl137a.para = tps_job 60 mem_job 300Mo ncpus 1 liste_test S
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+
+DEBUT(CODE=_F(NOM='SSNL137A',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+
+MAILLAGE=LIRE_MAILLAGE();
+
+ACIER=DEFI_MATERIAU(ELAS=_F(NU=0.3,
+                            E=100000,),
+                    ECRO_LINE = _F( D_SIGM_EPSI = 10000.,
+                                       SY          = 100.,
+                                     ),);
+
+
+CH_MATER=AFFE_MATERIAU(AFFE=(_F(MATER=ACIER,
+                                TOUT='OUI',),),
+                       MAILLAGE=MAILLAGE,);
+
+MODELE=AFFE_MODELE(AFFE=_F(TOUT='OUI',
+                           PHENOMENE='MECANIQUE',
+                           MODELISATION='BARRE',),
+                   MAILLAGE=MAILLAGE,);
+
+CARA_ELE=AFFE_CARA_ELEM(MODELE=MODELE,
+                        BARRE=_F(SECTION='GENERALE',
+                                 GROUP_MA='TOUT',
+                                 CARA='A',
+                                 VALE=1.0,),);
+
+CHARGE_1=AFFE_CHAR_MECA(DDL_IMPO=(_F(TOUT='OUI',
+                                     DZ=0.0,
+                                     DY=0.0),
+                                  _F(DX=0.0,
+                                     GROUP_NO='A',),),
+                        MODELE=MODELE,
+                                     );
+
+CHARGE_2 = AFFE_CHAR_MECA(MODELE = MODELE,
+                          DDL_IMPO=_F(DX=0.1,
+                                     GROUP_NO='B'),);
+
+TFIN = 10;
+
+F_DEPL=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.0,0.0,
+                           TFIN,1.0,
+                           ),PROL_DROITE='LINEAIRE',);
+
+
+
+
+
+L_INS1 = DEFI_LIST_REEL(DEBUT = 0.0,
+                        INTERVALLE = (
+                                  _F(JUSQU_A=TFIN,
+                                     NOMBRE=2,),),);
+DFLIST1=DEFI_LIST_INST(DEFI_LIST=_F(METHODE='MANUEL',
+                                    LIST_INST=L_INS1,),
+                       ECHEC=_F(SUBD_PAS=4,
+                                SUBD_NIVEAU=3,),);
+
+
+L_ARCH = DEFI_LIST_REEL(DEBUT = 0.0,
+                        INTERVALLE = (
+                                  _F(JUSQU_A=TFIN,
+                                     NOMBRE=2,),),);
+
+
+STATIQU1=STAT_NON_LINE(MODELE=MODELE,
+                     CHAM_MATER = CH_MATER,
+                     CARA_ELEM  = CARA_ELE,
+                     EXCIT = (_F(CHARGE = CHARGE_1,),
+                              _F(CHARGE = CHARGE_2,
+                                 FONC_MULT = F_DEPL,),),
+                     COMP_INCR = _F( RELATION = 'VMIS_ISOT_LINE',),
+                     INCREMENT = _F(LIST_INST=DFLIST1,
+                                  INST_FIN=TFIN,),
+                     SOLVEUR=_F(METHODE='MUMPS',),
+                     METHODE='IMPL_EX',
+                     ARCHIVAGE=_F(LIST_INST=L_ARCH,),
+                     )
+                     
+
+STATIQU1=CALC_ELEM(reuse =STATIQU1,
+                   TOUT = 'OUI',
+                   RESULTAT=STATIQU1,
+                   OPTION=('SIEF_ELNO', 'EPSI_ELNO'),
+                   );
+
+TEST_RESU(RESU=_F(NOM_CHAM='SIEF_ELNO',
+                  RESULTAT=STATIQU1,
+                  MAILLE='M4',
+                  REFERENCE='NON_REGRESSION',
+                  VALE=190,
+                  NOM_CMP='N',
+                  INST = TFIN,
+                  GROUP_NO='B',),);
+
+
+TEST_RESU(RESU=_F(NOM_CHAM='EPSI_ELNO',
+                  RESULTAT=STATIQU1,
+                  MAILLE='M4',
+                  REFERENCE='NON_REGRESSION',
+                  VALE=0.01,
+                  NOM_CMP='EPXX',
+                  INST = TFIN,
+                  GROUP_NO='B',),);                  
+                  
+FIN();

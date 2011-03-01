@@ -1,0 +1,108 @@
+      SUBROUTINE CSTGLD(LAMBDA,MU,LAMF,MUF,ALF,GF,GMT,GMC,
+     &                   EMP,EFP,QFF,COF1,Q2D,GI,GTR2)
+
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ELEMENTS  DATE 01/03/2011   AUTEUR SFAYOLLE S.FAYOLLE 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C ======================================================================
+C RESPONSABLE SFAYOLLE S.FAYOLLE
+
+      IMPLICIT NONE
+      REAL*8 LAMBDA,MU,LAMF,MUF,ALF,GF,GMT,GMC,TR2D,TROT,TROT2
+      REAL*8 EMP(2),EFP(2)
+
+C----------------------------------------------------------------------
+C        CALCUL DES CONSTANTES INDEPENDANTES DE DA1, DA2 ET EPS33
+C
+C     IN : 
+C         LAMBDA : PARAMETRE D ELASTICITE - MEMBRANE
+C         MU     : PARAMETRE D ELASTICITE - MEMBRANE
+C         LAMF   : PARAMETRE D ELASTICITE - FLEXION
+C         MUF    : PARAMETRE D ELASTICITE - FLEXION
+C         ALF    : PARAMETRE DE SEUIL FLEXION
+C         GF     : PARAMETRE GAMMA POUR LA FLEXION
+C         GMT    : PARAMETRE GAMMA POUR LA MEMBRANE EN TRACTION
+C         GMC    : PARAMETRE GAMMA POUR LA MEMBRANE EN COMPRESSION
+C         DELTA  : PARAMETRE DE COUPLAGE MEMBRANE-FLEXION
+C         TR2D   : TRACE DE EPS 2D (MEMBRANE)
+C         TROT   : TRACE DE KAPPA (FLEXION)
+C         EMP(2) : VALEURS PROPRES DE EPS 2D
+C         EFP(2) : VALEURS PROPRES DE KAPPA
+C
+C     OUT : 
+C         QFF(2) : TF
+C         QM     : TM
+C         COF1   : INTERMEDIAIRE DE CALCUL
+C         Q2D    : INTERMEDIAIRE DE CALCUL
+C         GI(2)  : PARTIE DE LA DERIVEE DE KSI(EMP) PAR RAPPORT A DA
+C         GTR2   : INTERMEDIAIRE DE CALCUL
+C         GI(2)  : INTERMEDIAIRE DE CALCUL
+C----------------------------------------------------------------------
+
+      INTEGER K
+      REAL*8 QFF(2),GI(2)
+      REAL*8 GTR2,COF1,Q2D,GF1,GF2
+
+C-- ICI ON SUPPOSE QUE GF1=GF2, CE QUI N EST PAS NECESSAIRE
+      GF1 = GF
+      GF2 = GF
+
+      TR2D = EMP(1) + EMP(2)
+      TROT = EFP(1) + EFP(2)
+      TROT2 = TROT**2
+
+C -------- CALCUL DE QFF --------------------
+
+      IF(TROT .GT. 0.0D0) THEN
+        QFF(1) = 0.0D0
+        QFF(2) = 0.5D0*LAMF*TROT2
+      ELSE
+        QFF(1) = 0.5D0*LAMF*TROT2
+        QFF(2) = 0.0D0
+      ENDIF
+
+      DO 4510, K = 1,2
+        IF(EFP(K) .GT. 0.0D0) THEN
+          QFF(2) = QFF(2) + MUF*EFP(K)**2
+        ELSE
+          QFF(1) = QFF(1) + MUF*EFP(K)**2
+        ENDIF
+4510  CONTINUE
+
+      QFF(1) = ALF*QFF(1)*(1.0D0 - GF1)
+      QFF(2) = ALF*QFF(2)*(1.0D0 - GF2)
+
+C -------- CALCUL DE COF1 ET Q2D -----------
+
+      IF(TR2D .GT. 0.0D0) THEN
+        GTR2 = 1.0D0 - GMT
+      ELSE
+        GTR2 = 1.0D0 - GMC
+      ENDIF
+
+      DO 50, K = 1,2
+        IF(EMP(K) .GT. 0.0D0) THEN
+          GI(K) = 1.0D0 - GMT
+        ELSE
+          GI(K) = 1.0D0 - GMC
+        ENDIF
+ 50   CONTINUE
+
+      COF1 = 0.5D0*LAMBDA*GTR2
+      Q2D  = 0.5D0*MU * (EMP(1)**2*GI(1) + EMP(2)**2*GI(2))
+
+      END

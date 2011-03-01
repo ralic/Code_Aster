@@ -1,4 +1,4 @@
-#@ MODIF algorith10 Messages  DATE 17/01/2011   AUTEUR ABBAS M.ABBAS 
+#@ MODIF algorith10 Messages  DATE 01/03/2011   AUTEUR CORUS M.CORUS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -224,14 +224,6 @@ cata_msg = {
 
 73 : _("""
  la composante  %(k1)s  du noeud  %(k2)s  pour la maille  %(k3)s  n'existe pas.
-"""),
-
-74 : _("""
- on ne traite pas la maille "POI1"
-"""),
-
-75 : _("""
- type de maille non traitée
 """),
 
 76 : _("""

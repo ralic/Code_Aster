@@ -1,5 +1,6 @@
-# MODIF  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 01/03/2011   AUTEUR MICHEL S.MICHEL 
 # TITRE ELEMENT DE BETON PRECONTRAINT EN COMPRESSION ET PESANTEUR
+# MODELISATION A: MAILLAGE HEXAEDRIQUE
 # sslv115a.para = tps_job 60 mem_job 400Mo mem_aster 20 ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -19,7 +20,10 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
-DEBUT(CODE=_F(NOM='SSLV115A', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NOM='SSLV115A', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'),IGNORE_ALARM=('CALCULEL3_47'))
+
+# <CALCULEL3_47> AVEC CALC_PRECONT, ON PASSE CONSCIEMMENT DE LA LDC 'SANS'
+# A UNE AUTRE LOI DE COMPORTEMENT 
 
 MAILLAGE=LIRE_MAILLAGE(UNITE=20,);
 
@@ -27,7 +31,7 @@ MAILLAGE=DEFI_GROUP(reuse =MAILLAGE,
                     MAILLAGE=MAILLAGE,
                     CREA_GROUP_NO=_F(TOUT_GROUP_MA='OUI',),);
 
-MAILLAGE = DEFI_GROUP( reuse=MAILLAGE, MAILLAGE=MAILLAGE, INFO=2,
+MAILLAGE = DEFI_GROUP( reuse=MAILLAGE, MAILLAGE=MAILLAGE, INFO=1,
                 CREA_GROUP_MA= _F( NOM = 'TOUT',
                                    TOUT = 'OUI', ),
                 CREA_GROUP_NO=(_F( NOM = 'GRNO1',
@@ -78,7 +82,7 @@ ACIER=DEFI_MATERIAU(BPEL_ACIER=_F(FROT_LINE=0.0,
                     ELAS=_F(NU=0.0,
                             RHO=2.E4,
                             ALPHA=1.E-05,
-                            E=2.10000000000E11,),);
+                            E=2.1E11,),);
 
 CHMATER=AFFE_MATERIAU(AFFE=(_F(MATER=BETON,
                                GROUP_MA='VOILE',),
@@ -130,7 +134,7 @@ EVOLNOLI=CALC_PRECONT( CHAM_MATER=CHMATER,
                               _F(CHARGE=CHARMEZ,
                                  ),),
                        CABLE_BP=( CABLEPR ,),
-                       INFO=2,);
+                       INFO=1,);
 
 EVOLNOLI=CALC_NO(reuse =EVOLNOLI,
                  OPTION='REAC_NODA',
@@ -161,18 +165,11 @@ EVOLNO2=CALC_NO(reuse =EVOLNO2,
 FORC_DZ=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                 INTITULE='FORCDZ',
                                 GROUP_NO=('VOILE','CABLE001'),
-                                NOM_CMP='DZ',
+                                RESULTANTE='DZ',
                                 NUME_ORDRE=2,
                                 RESULTAT=EVOLNOLI,
                                 NOM_CHAM='REAC_NODA',),);
 
-FORC2_DZ=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
-                                 INTITULE='FORCDZ',
-                                 GROUP_NO=('VOILE','CABLE001'),
-                                 RESULTANTE='DZ',
-                                 RESULTAT=EVOLNOLI,
-                                 NUME_ORDRE=2,
-                                 NOM_CHAM='REAC_NODA',),);
 
 FORC2_DX=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                  INTITULE='FORCDX',
@@ -182,214 +179,45 @@ FORC2_DX=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                  NUME_ORDRE=2,
                                  NOM_CHAM='REAC_NODA',),);
 
-DEPL_DZ=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
-                                INTITULE='DEPLDZ',
-                                GROUP_NO=('VOILE','CABLE001'),
-                                NOM_CMP='DZ',
-                                NUME_ORDRE=2,
-                                RESULTAT=EVOLNOLI,
-                                NOM_CHAM='DEPL',),);
 
-IMPR_TABLE(TABLE=FORC2_DZ,);
-
-IMPR_TABLE(TABLE=FORC2_DX,);
-
-TEST_TABLE(TABLE=FORC2_DZ,
+TEST_TABLE(TABLE=FORC_DZ,
            NOM_PARA='DZ',
+           CRITERE = 'RELATIF',   
+           PRECISION = 1.E-10, 
+           REFERENCE='ANALYTIQUE',
            VALE=132.0,);
 
 TEST_TABLE(TABLE=FORC2_DX,
            NOM_PARA='DX',
+           CRITERE = 'RELATIF',   
+           PRECISION = 1.E-10, 
+           REFERENCE='ANALYTIQUE',
            VALE=132.0,);
 
 
 
-# CALCUL THERMOMECANIQUE
-
-MODTHER1=AFFE_MODELE(MAILLAGE=MAILLAGE,
-                    AFFE=(_F(TOUT='OUI',
-                             PHENOMENE='THERMIQUE',
-                             MODELISATION='3D',),
-                          ),);
-
-CHTHER=AFFE_CHAR_THER(MODELE=MODTHER1,
-                      TEMP_IMPO=_F(GROUP_MA='VOILE',
-                                   TEMP=100,),);
-
-TEMPE1=THER_LINEAIRE(MODELE=MODTHER1,
-                    CHAM_MATER=CHMATER,
-                    INCREMENT=_F(LIST_INST=LINST,),
-                    CARA_ELEM=CARAELEM,
-                     ETAT_INIT=_F(VALE=0.0,),
-                    EXCIT=_F(CHARGE=CHTHER,),);
-
-
-TEMPE2=PROJ_CHAMP(METHODE='COLLOCATION',
-                   RESULTAT=TEMPE1,
-                   MODELE_1=MODTHER1,
-                   MODELE_2=MODELE,
-                   TOUT_ORDRE='OUI',);
-
-
-CHMTM=AFFE_MATERIAU(AFFE=(_F(MATER=BETON,
-                               GROUP_MA='VOILE',),
-                            _F(MATER=ACIER,
-                               GROUP_MA='CABLE001',),),
-                      AFFE_VARC=_F( TOUT='OUI',
-                            EVOL=TEMPE2,
-                            NOM_VARC='TEMP',VALE_REF=0.,
-                            NOM_CHAM='TEMP',),
-                      MAILLAGE=MAILLAGE,);
-
-NLTT100=CALC_PRECONT( MODELE=MODELE,
-                      CHAM_MATER=CHMTM,
-                      CARA_ELEM=CARAELEM,
-                      EXCIT=(
-                             _F(CHARGE=CHARMECA,),),
-                      COMP_INCR=_F(RELATION='ELAS',
-                                   DEFORMATION='PETIT',
-                                   TOUT='OUI',),
-                      INCREMENT=_F(LIST_INST=LINST,),
-                      CONVERGENCE=_F(RESI_GLOB_RELA=1.0000000000000001E-05,
-                                     ITER_GLOB_MAXI=10,),
-                      SOLVEUR=_F(METHODE='MULT_FRONT',),
-                      CABLE_BP=( CABLEPR ,),
-                      INFO=1,);
-
-NLTT100=CALC_ELEM(reuse =NLTT100,
-                   OPTION=('EPSI_ELNO',),
-                   RESULTAT=NLTT100,);
-
-NLTT101 = MODI_REPERE (
-                        RESULTAT = NLTT100,
-                        NUME_ORDRE = 2,
-                        MODI_CHAM = (_F(NOM_CHAM = 'SIEF_ELGA',
-                                    GROUP_MA='VOILE',
-                     NOM_CMP = ('SIXX','SIYY','SIZZ','SIXY','SIXZ','SIYZ'),
-                      TYPE_CHAM = 'TENS_3D',),),
-                                      DEFI_REPERE = _F(
-                                          REPERE = 'UTILISATEUR',
-                                          ANGL_NAUT = (90.,0.,0.),
-                                          ),
-                        INFO=2,
-                        )
-
-# POUR COMPARER AVEC lA SOLUTION SANS THERMIQUE
-
-EVOLNOT=CALC_PRECONT( CHAM_MATER=CHMATER,
-                      MODELE=MODELE,
-                      CONVERGENCE=_F(ITER_GLOB_MAXI=10,
-                                     RESI_GLOB_RELA=1.E-05,),
-                      COMP_INCR=_F(TOUT='OUI',
-                                   RELATION='ELAS',
-                                   DEFORMATION='PETIT',),
-                      INCREMENT=_F(LIST_INST=LINST,),
-                      CARA_ELEM=CARAELEM,
-                      SOLVEUR=_F(METHODE='MULT_FRONT',),
-                      EXCIT=_F(CHARGE=CHARMECA,),
-                      CABLE_BP=( CABLEPR ,),   )
-
-EVOLNOT=CALC_ELEM(reuse =EVOLNOT,
-                   OPTION=('SIEF_ELNO', 'EPSI_ELNO',),
-                   RESULTAT=EVOLNOT,);
-
-
-# CONTRAINTES IDENTIQUES PUISQUE DILATATION THERMIQUE LIBRE
+# CONTRAINTES 
 TEST_RESU(RESU=(
-         _F(    CRITERE = 'RELATIF',   PRECISION = 1.E-3, REFERENCE='NON_REGRESSION',
-         RESULTAT = EVOLNOT,   NOM_CHAM = 'SIEF_ELGA',     NUME_ORDRE = 2,
-         MAILLE='TOTO1',POINT=1,   NOM_CMP = 'SIXX',      VALE = -1.66521E+05     ),
-         _F(    CRITERE = 'RELATIF',   PRECISION = 1.E-3, REFERENCE='NON_REGRESSION',
-         RESULTAT = EVOLNOT,   NOM_CHAM = 'SIEF_ELGA',     NUME_ORDRE = 2,
-         MAILLE='SG001001',POINT=1,   NOM_CMP = 'N',      VALE = 1.99825E+05     ),
-         ),)
-
-TEST_RESU(RESU=(
-         _F(    CRITERE = 'RELATIF',   PRECISION = 1.E-3, REFERENCE='AUTRE_ASTER',
-         RESULTAT = NLTT100,   NOM_CHAM = 'SIEF_ELGA',     NUME_ORDRE = 2,
-         MAILLE='TOTO1',POINT=1,   NOM_CMP = 'SIXX',      VALE = -1.66521E+05     ),
-         _F(    CRITERE = 'RELATIF',   PRECISION = 1.E-3, REFERENCE='AUTRE_ASTER',
-         RESULTAT = NLTT100,   NOM_CHAM = 'SIEF_ELGA',     NUME_ORDRE = 2,
-         MAILLE='SG001001',POINT=1,   NOM_CMP = 'N',      VALE = 1.99825E+05     ),
+         _F(    CRITERE = 'RELATIF',   PRECISION = 1.E-3, REFERENCE='ANALYTIQUE',
+         RESULTAT = EVOLNOLI,   NOM_CHAM = 'SIEF_ELGA',     NUME_ORDRE = 2,
+         MAILLE='TOTO1',POINT=1,   NOM_CMP = 'SIXX',      VALE = -1.66666666667E+05     ),
+         _F(    CRITERE = 'RELATIF',   PRECISION = 1.E-3, REFERENCE='ANALYTIQUE',
+         RESULTAT = EVOLNOLI,   NOM_CHAM = 'SIEF_ELGA',     NUME_ORDRE = 2,
+         MAILLE='SG001001',POINT=1,   NOM_CMP = 'N',      VALE = 2.E+05     ),
          ),)
 
 
-# DEFORMATION DIFFERENTES
+# DEFORMATION DANS LE BETON 
+
+EVOLNOLI=CALC_ELEM(reuse=EVOLNOLI,
+                   RESULTAT=EVOLNOLI,
+                   OPTION='EPSI_ELNO')
 
 TEST_RESU(RESU=(
-         _F(    CRITERE = 'RELATIF',   PRECISION = 1.E-3, REFERENCE='NON_REGRESSION',
-         RESULTAT = EVOLNOT,   NOM_CHAM = 'EPSI_ELNO',     NUME_ORDRE = 2,
-         MAILLE='TOTO1',NOEUD='NB001001',   NOM_CMP = 'EPXX',      VALE = -5.55070E-06    ),
+         _F(    CRITERE = 'RELATIF',   PRECISION = 1.E-5, REFERENCE='ANALYTIQUE',
+         RESULTAT = EVOLNOLI,   NOM_CHAM = 'EPSI_ELNO',     NUME_ORDRE = 2,
+         MAILLE='TOTO1',NOEUD='NB001001',   NOM_CMP = 'EPXX',      VALE = -5.5555555556E-6    ),
          ),)
-
-TEST_RESU(RESU=(
-         _F(    CRITERE = 'RELATIF',   PRECISION = 1.E-3, REFERENCE='NON_REGRESSION',
-         RESULTAT = NLTT100,   NOM_CHAM = 'EPSI_ELNO',     NUME_ORDRE = 2,
-         MAILLE='TOTO1',NOEUD='NB001001',   NOM_CMP = 'EPXX',      VALE = 9.94449E-04    ),
-         ),)
-
 # -----------------------------------------------------------------------------------------------
-
-TT = POST_RELEVE_T( ACTION=_F(  GROUP_NO = 'TOUT',
-                                INTITULE = 'SIEF',
-                                RESULTAT = EVOLNOT,
-                                NUME_ORDRE=2,
-                                NOM_CHAM='SIEF_ELNO',
-                                TOUT_CMP = 'OUI',
-                                OPERATION = 'EXTRACTION')
-                   )
-#
-TEST_TABLE( TABLE= TT ,
-            FILTRE=_F(NOM_PARA='ABSC_CURV', VALE=0. ),
-            REFERENCE='NON_REGRESSION',
-            NOM_PARA='SIXX',
-            VALE= -1.66521E+05   )
-TEST_TABLE( TABLE= TT ,
-            FILTRE=_F(NOM_PARA='ABSC_CURV', VALE=2. ),
-            REFERENCE='NON_REGRESSION',
-            NOM_PARA='SIXX',
-            VALE= -1.66521E+05   )
-TEST_TABLE( TABLE= TT ,
-            FILTRE=_F(NOM_PARA='ABSC_CURV', VALE=2.08043E+01 ),
-            REFERENCE='NON_REGRESSION',
-            NOM_PARA='N',
-            VALE= 2.00000E+05   )
-#
-IM = INTE_MAIL_3D ( MAILLAGE = MAILLAGE ,
-                    INFO = 2 ,
-                    DEFI_SEGMENT = _F( ORIGINE   =  ( 0. , 1. , 0.3 ),
-                                       EXTREMITE =  ( 2. , 1. , 0.3 ), ) , )
-
-TC = POST_RELEVE_T( ACTION=_F(  CHEMIN = IM ,
-                                INTITULE = 'SIEF',
-                                RESULTAT = EVOLNOT,
-                                NUME_ORDRE=2,
-                                NOM_CHAM='SIEF_ELNO',
-                                TOUT_CMP = 'OUI',
-                                OPERATION = 'EXTRACTION')
-                   )
-#
-TEST_TABLE( TABLE= TC ,
-            FILTRE=_F(NOM_PARA='ABSC_CURV', VALE=0. ),
-            REFERENCE='NON_REGRESSION',
-            NOM_PARA='SIXX',
-            VALE= -1.66521E+05   )
-TEST_TABLE( TABLE= TC ,
-            FILTRE=_F(NOM_PARA='ABSC_CURV', VALE=2. ),
-            REFERENCE='NON_REGRESSION',
-            NOM_PARA='SIXX',
-            VALE= -1.66521E+05   )
-TEST_TABLE( TABLE= TC ,
-            FILTRE=_F(NOM_PARA='ABSC_CURV', VALE=0. ),
-            REFERENCE='NON_REGRESSION',
-            CRITERE='ABSOLU',
-            NOM_PARA='N',
-            VALE= 0.   )
-TEST_TABLE( TABLE= TC ,
-            FILTRE=_F(NOM_PARA='ABSC_CURV', VALE=2. ),
-            REFERENCE='NON_REGRESSION',
-            CRITERE='ABSOLU',
-            NOM_PARA='N',
-            VALE= 0.   )
 
 FIN();

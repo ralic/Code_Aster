@@ -1,8 +1,8 @@
-#@ MODIF macr_ecre_calc_ops Macro  DATE 21/04/2010   AUTEUR BOTTONI M.BOTTONI 
+#@ MODIF macr_ecre_calc_ops Macro  DATE 28/02/2011   AUTEUR BOTTONI M.BOTTONI 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -52,7 +52,8 @@ def macr_ecre_calc_ops(
 
 
   # PARAMETRES DEBUG
-  debug = True
+  debug = False
+  
 
 
 
@@ -554,6 +555,7 @@ Choix des correlations de frottement et de transfert de chaleur
 $V[70]       ifrot : frottement (avec : ifrot=1 ou -1 ; sans :  ifrot=0 )
 $V[71]       cas ifrot=-1 : relim = Re limite
 $V[72]       cas ifrot=-1 : frtlim = coeff frottement si Re > relim
+
 $V[73]       ichal : transfert de chaleur (-2 <= ichal <= 2  ichal=0 ==> Pas d'echange de chaleur)
 $V[74]       cas ichal < 0 : xminch = titre m. gaz avec corr. Chen ou liq pour x<xminch
 $V[75]       cas ichal < 0 : xmaxch = titre m. gaz avec corr. melange pour x>xmaxch

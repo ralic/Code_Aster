@@ -1,4 +1,4 @@
-#@ MODIF miss_fichier_interf Miss  DATE 07/02/2011   AUTEUR DEVESA G.DEVESA 
+#@ MODIF miss_fichier_interf Miss  DATE 01/03/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================

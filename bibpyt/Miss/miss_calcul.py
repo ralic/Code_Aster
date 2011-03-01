@@ -1,8 +1,8 @@
-#@ MODIF miss_calcul Miss  DATE 30/08/2010   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF miss_calcul Miss  DATE 01/03/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -33,13 +33,17 @@ import traceback
 import os.path as osp
 
 import aster
+from Cata.cata import MACR_ELEM_DYNA, IMPR_MACR_ELEM
+
 from Utilitai.Utmess          import UTMESS
 from Utilitai.System          import ExecCommand
-from Miss.miss_utils          import MISS_PARAMETER, _print
+from Utilitai.UniteAster      import UniteAster
+from Miss.miss_utils          import set_debug, _print, _printDBG
 from Miss.miss_fichier_sol    import fichier_sol
 from Miss.miss_fichier_option import fichier_option
 from Miss.miss_resu_aster     import lire_resultat_aster
 from Miss.miss_fichier_interf import fichier_mvol, fichier_chp, fichier_cmde
+from Miss.miss_post           import PostMissFactory
 
 
 class CALCUL_MISS(object):
@@ -61,6 +65,7 @@ class CALCUL_MISS(object):
         if self.debug:
             from Utilitai.as_timer import ASTER_TIMER
             self.timer = ASTER_TIMER()
+            set_debug(True)
 
 
     def prepare_donnees(self):
@@ -81,9 +86,9 @@ class CALCUL_MISS(object):
         """Exécute MISS3D.
         """
         self._dbg_trace("Start")
-        copie_fichier(self._fichier_tmp("in"), os.path.join(self.param['_WRKDIR'], "MISS.IN"))
+        copie_fichier(self._fichier_tmp("in"), osp.join(self.param['_WRKDIR'], "MISS.IN"))
 
-        cmd = os.path.join(aster.repout(), "run_miss3d") + " " + self.param['VERSION']
+        cmd = osp.join(aster.repout(), "run_miss3d") + " " + self.param['VERSION']
         try:
             os.chdir(self.param['_WRKDIR'])
             if self.verbose:
@@ -92,7 +97,8 @@ class CALCUL_MISS(object):
             comment = "Lancement de la commande :\n%s" % cmd
             if self.verbose:
                 aster.affiche("MESSAGE", comment)
-            iret, output, error = ExecCommand(cmd, alt_comment=comment, verbose=False, separated_stderr=True)
+            iret, output, error = ExecCommand(cmd, alt_comment=comment,
+                                              verbose=False, separated_stderr=True)
             if self.verbose:
                 _print("Contenu du répertoire après l'exécution de MISS3D :")
                 os.system('ls -la')
@@ -115,12 +121,12 @@ class CALCUL_MISS(object):
         """Opérations de post-traitement.
         """
         self._dbg_trace("Start")
-        copie_fichier(self._fichier_tmp("OUT"), self._fichier_repe("OUT"))
-        if os.path.exists(self._fichier_tmp("resu_impe")):
-            copie_fichier(self._fichier_tmp("resu_impe"), self._fichier_aster(self.param['UNITE_RESU_IMPE']))
-        if os.path.exists(self._fichier_tmp("resu_forc")):
-            copie_fichier(self._fichier_tmp("resu_forc"), self._fichier_aster(self.param['UNITE_RESU_FORC']))
+        self.fichier_resultat()
 
+        post = PostMissFactory(self.param['TYPE_RESU'], self.parent, self.param)
+        post.argument()
+        post.execute()
+        post.sortie()
         # nécessaire s'il y a deux exécutions Miss dans le même calcul Aster
         self.menage()
         self._dbg_trace("Stop")
@@ -128,32 +134,56 @@ class CALCUL_MISS(object):
             print self.timer
 
 
+    def fichier_resultat(self):
+        """Copie les fichiers résultats dans les unités logiques."""
+        if self.param['UNITE_IMPR_ASTER'] and osp.exists(self._fichier_tmp("aster")):
+            copie_fichier(self._fichier_tmp("aster"),
+                          self._fichier_aster(self.param['UNITE_IMPR_ASTER']))
+        if osp.exists(self._fichier_tmp("resu_impe")):
+            copie_fichier(self._fichier_tmp("resu_impe"),
+                          self._fichier_aster(self.param['UNITE_RESU_IMPE']))
+        if osp.exists(self._fichier_tmp("resu_forc")):
+            copie_fichier(self._fichier_tmp("resu_forc"),
+                          self._fichier_aster(self.param['UNITE_RESU_FORC']))
+
+
     def cree_reptrav(self):
         """Création du répertoire d'exécution de MISS.
         """
-        os.makedirs(self.param['_WRKDIR'])
-        if self.param['REPERTOIRE'] and not os.path.exists(self.param['REPERTOIRE']):
-            os.makedirs(self.param['REPERTOIRE'])
+        if not osp.exists(self.param['_WRKDIR']):
+            os.makedirs(self.param['_WRKDIR'])
 
 
     def menage(self):
         """Suppression des fichiers/répertoires de travail.
         """
-        if os.path.exists(self.param['_WRKDIR']):
+        if osp.exists(self.param['_WRKDIR']) and self.param['REPERTOIRE'] is None:
             shutil.rmtree(self.param['_WRKDIR'])
 
-    
+
     def cree_resultat_aster(self):
         """Produit le(s) fichier(s) issu(s) d'Aster."""
         self._dbg_trace("Start")
-        if self.param['UNITE_IMPR_ASTER'] is not None:
-            DEFI_FICHIER = self.parent.get_cmd("DEFI_FICHIER")
-            DEFI_FICHIER(ACTION='LIBERER', UNITE=self.param['UNITE_IMPR_ASTER'],)
-            copie_fichier(self._fichier_aster(self.param['UNITE_IMPR_ASTER']), self._fichier_tmp("aster"))
-        else:
-            pass
-            #XXX appeler ici IMPR_MACR_ELEM/IMPR_MISS (inverser le test !)
-            #    UNITE -> self._fichier_tmp("aster")
+        UL = UniteAster()
+        ulaster = UL.Libre(action='ASSOCIER')
+        mael = self.param['MACR_ELEM_DYNA']
+        if mael is None:
+            opts = {}
+            if self.param['MATR_RIGI']:
+                opts['MATR_RIGI'] = self.param['MATR_RIGI']
+            if self.param['MATR_MASS']:
+                opts['MATR_MASS'] = self.param['MATR_MASS']
+            __mael = MACR_ELEM_DYNA(BASE_MODALE=self.param['BASE_MODALE'],
+                                    **opts)
+            mael = __mael
+        IMPR_MACR_ELEM(MACR_ELEM_DYNA=mael,
+                       FORMAT='MISS_3D',
+                       GROUP_MA_INTERF=self.param['GROUP_MA_INTERF'],
+                       SOUS_TITRE='PRODUIT PAR CALC_MISS',
+                       UNITE=ulaster,)
+        UL.EtatInit()
+        copie_fichier(self.param.UL.Nom(ulaster), self._fichier_tmp("aster"))
+
         self.data = lire_resultat_aster(self._fichier_tmp("aster"))
         self._dbg_trace("Stop")
 
@@ -164,7 +194,6 @@ class CALCUL_MISS(object):
         self._dbg_trace("Start")
         content = fichier_mvol(self.data)
         open(self._fichier_tmp("mvol"), "w").write(content)
-        copie_fichier(self._fichier_tmp("mvol"), self._fichier_repe("mvol"))
         self._dbg_trace("Stop")
 
 
@@ -174,7 +203,6 @@ class CALCUL_MISS(object):
         self._dbg_trace("Start")
         content = fichier_chp(self.data)
         open(self._fichier_tmp("chp"), "w").write(content)
-        copie_fichier(self._fichier_tmp("chp"), self._fichier_repe("chp"))
         self._dbg_trace("Stop")
 
 
@@ -188,7 +216,6 @@ class CALCUL_MISS(object):
             if self.verbose:
                 _print('Fichier de sol', sol_content)
             open(self._fichier_tmp("sol"), 'w').write(sol_content)
-            copie_fichier(self._fichier_tmp("sol"), self._fichier_repe("sol"))
         self._dbg_trace("Stop")
 
 
@@ -199,10 +226,9 @@ class CALCUL_MISS(object):
         lfich = ("mvol", "chp", "sol", "resu_impe", "resu_forc")
         lfich = map(self._fichier_tmp, lfich)
         # chemins relatifs au _WRKDIR sinon trop longs pour Miss
-        lfich = map(os.path.basename, lfich)
+        lfich = map(osp.basename, lfich)
         content = fichier_cmde(self.param, self.data, *lfich)
         open(self._fichier_tmp("in"), "w").write(content)
-        copie_fichier(self._fichier_tmp("in"), self._fichier_repe("in"))
         self._dbg_trace("Stop")
 
 
@@ -213,31 +239,21 @@ class CALCUL_MISS(object):
         if self.verbose:
             _print("Fichier d'option", option_content)
         open(self._fichier_tmp("optmis"), 'w').write(option_content)
-        copie_fichier(self._fichier_tmp("optmis"), self._fichier_repe("optmis"))
         self._dbg_trace("Stop")
 
 
     # --- utilitaires internes
-    def _fichier_repe(self, ext):
-        """Retourne un nom d'un fichier MISS dans REPERTOIRE.
-        """
-        if not self.param['REPERTOIRE']:
-            return ''
-        fich = '%s.%s' % (self.param['PROJET'], ext)
-        return os.path.join(self.param['REPERTOIRE'], fich)
-
-
     def _fichier_tmp(self, ext):
         """Retourne le nom d'un fichier MISS dans WRKDIR.
         """
         fich = '%s.%s' % (self.param['PROJET'], ext)
-        return os.path.join(self.param['_WRKDIR'], fich)
+        return osp.join(self.param['_WRKDIR'], fich)
 
 
     def _fichier_aster(self, unite):
         """Nom du fichier d'unité logique unite dans le répertoire d'exécution de Code_Aster.
         """
-        return os.path.join(self.param['_INIDIR'], "fort.%d" % unite)
+        return osp.join(self.param['_INIDIR'], "fort.%d" % unite)
 
 
     def _dbg_trace(self, on_off):
@@ -249,25 +265,39 @@ class CALCUL_MISS(object):
 
 
 
-
 class CALCUL_MISS_IMPE(CALCUL_MISS):
     """Définition d'un calcul MISS3D de type MISS_IMPE
     """
     option_calcul = 'MISS_IMPE'
 
-#   def __init__(self, parent, parameters):
-#      """Initializations"""
-#      super(CALCUL_MISS_IMPE, self).__init__(parent, parameters)
+
+class CALCUL_MISS_POST(CALCUL_MISS):
+    """Définition d'une exécution de CALC_MISS où seul le
+    post-traitement est demandé.
+    """
+    option_calcul = 'POST-TRAITEMENT'
+
+    def prepare_donnees(self):
+        """Préparation des données."""
+
+
+    def execute(self):
+        """Exécute MISS3D."""
+
+
+    def fichier_resultat(self):
+        """Copie les fichiers résultats dans les unités logiques."""
 
 
 
-def CalculMissFactory(option_calcul, *args, **kwargs):
+def CalculMissFactory(parent, param):
     """Crée l'objet CALCUL_MISS pour résoudre l'option demandée.
     """
-    if option_calcul == 'MISS_IMPE':
-        return CALCUL_MISS_IMPE(*args, **kwargs)
+    if param['TYPE_RESU'] != 'FICHIER' \
+        and not param['_exec_Miss']:
+        return CALCUL_MISS_POST(parent, param)
     else:
-        raise NotImplementedError, option_calcul
+        return CALCUL_MISS_IMPE(parent, param)
 
 
 

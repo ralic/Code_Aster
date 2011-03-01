@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 19/01/2011   AUTEUR MASSIN P.MASSIN 
+C MODIF ELEMENTS  DATE 01/03/2011   AUTEUR TRAN V-X.TRAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -65,6 +65,8 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       REAL*8  MULT,PRES,CISA, FORREP(3,2),FF(27),JAC,ND(3),HE(2)
       REAL*8  RR(2),LST,XG(4),RBID,DFBID(27,3),R27BID(27),R3BID(3)
       LOGICAL LBID,ISMALI
+      INTEGER COMPT
+      REAL*8  THET,R8PREM
       DATA    HE / -1.D0 , 1.D0/
 
       CALL JEMARQ()
@@ -80,6 +82,37 @@ C-----------------------------------------------------------------------
 
       CALL ELREF1(ELREF)
       CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO)
+
+
+
+C-----------------------------------------------------------------------
+C     RECUPERATION DES ENTREES / SORTIE
+C-----------------------------------------------------------------------
+
+      IF (OPTION.EQ.'CHAR_MECA_PRES_R') THEN
+
+C       SI LA PRESSION N'EST CONNUE SUR AUCUN NOEUD, ON LA PREND=0.
+        CALL JEVECD('PPRESSR',IPRES,0.D0)
+        COMPT = 0
+        DO 10 I = 1,NNO
+          THET =  ABS(ZR(IPRES-1+(I-1)+1))
+          IF (THET.LT.R8PREM()) COMPT = COMPT + 1
+ 10     CONTINUE
+        IF (COMPT.EQ.NNO) GOTO 9999
+
+      ELSEIF (OPTION.EQ.'CHAR_MECA_PRES_F') THEN
+
+        CALL JEVECH('PPRESSF','L',IPRES)
+        CALL JEVECH('PTEMPSR','L',ITEMPS)
+
+      ELSE
+        CALL ASSERT(.FALSE.)
+      ENDIF
+
+      CALL JEVECH('PVECTUR','E',IRES)
+
+
+
 
 C     INITIALISATION DES DIMENSIONS DES DDLS X-FEM
       CALL XTEINI(NOMTE,NFH,NFE,SINGU,DDLC,NNOM,DDLS,NDDL,
@@ -102,9 +135,8 @@ C
         FPG='MASS'
       ENDIF
 
-C-----------------------------------------------------------------------
-C     RECUPERATION DES ENTREES / SORTIE
-C-----------------------------------------------------------------------
+
+
 
 C     PARAMETRES PROPRES A X-FEM
       CALL JEVECH('PLST'   ,'L',JLST)
@@ -130,21 +162,6 @@ C     RÉCUPÉRATIONS DES DONNÉES SUR LA TOPOLOGIE DES FACETTES
 
       CALL JEVECH('PGEOMER','L',IGEOM)
 
-      IF (OPTION.EQ.'CHAR_MECA_PRES_R') THEN
-
-C       SI LA PRESSION N'EST CONNUE SUR AUCUN NOEUD, ON LA PREND=0.
-        CALL JEVECD('PPRESSR',IPRES,0.D0)
-
-      ELSEIF (OPTION.EQ.'CHAR_MECA_PRES_F') THEN
-
-        CALL JEVECH('PPRESSF','L',IPRES)
-        CALL JEVECH('PTEMPSR','L',ITEMPS)
-
-      ELSE
-        CALL ASSERT(.FALSE.)
-      ENDIF
-
-      CALL JEVECH('PVECTUR','E',IRES)
 
 C-----------------------------------------------------------------------
 C     BOUCLE SUR LES FACETTES

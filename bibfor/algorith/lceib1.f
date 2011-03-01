@@ -3,9 +3,9 @@
      &                  T, LAMBDA, DEUXMU,
      &                   EPSTHE, KDESS, BENDO,  GAMMA, SEUIL, COUP)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
+C MODIF ALGORITH  DATE 28/02/2011   AUTEUR BARGELLI R.BARGELLINI 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -47,6 +47,7 @@ C OUT BENDO
 C OUT GAMMA
 C OUT SEUIL
 C ----------------------------------------------------------------------
+
       CHARACTER*2 CODRET(3)
       CHARACTER*8 NOMRES(3)
       INTEGER     I,K,NDIMSI
@@ -54,6 +55,8 @@ C ----------------------------------------------------------------------
       REAL*8      TM,TREF,SREF,SECHM,HYDRM
       REAL*8      K0, K1, SICR, TREPSM,EPS(6),KRON(6)
       DATA        KRON/1.D0,1.D0,1.D0,0.D0,0.D0,0.D0/
+
+
 
       NDIMSI=2*NDIM
       T(1,1)=1
@@ -85,6 +88,7 @@ C    LECTURE DES CARACTERISTIQUES DU MATERIAU
      &     (COMPOR(1)(1:8) .EQ. 'KIT_THHM')).AND.
      &     (COMPOR(11)(1:15) .EQ. 'ENDO_ISOT_BETON')).OR.
      &     (COMPOR(1)(1:15) .EQ. 'ENDO_ISOT_BETON')) THEN
+    
 C      IF (COUP) THEN
       CALL RCVALB(FAMI,1,1,'+',IMATE,' ','ELAS',1,'TEMP',0.D0,2,
      &              NOMRES,VALRES,CODRET, 'FM')
@@ -106,9 +110,10 @@ C      ENDIF
         VALRES(3) = 0.D0
         EPSTHE = 0.D0        
       ENDIF 
+
       E     = VALRES(1)
       NU    = VALRES(2)
-   
+         
       LAMBDA = E * NU / (1.D0+NU) / (1.D0 - 2.D0*NU)
       DEUXMU = E/(1.D0+NU)
 
@@ -121,7 +126,7 @@ C    LECTURE DES CARACTERISTIQUES DE RETRAIT ENDOGENE ET DESSICCATION
       IF ( CODRET(2) .NE. 'OK' ) VALRES(2) = 0.D0
       BENDO=VALRES(1)
       KDESS=VALRES(2)
-
+      
 C    LECTURE DES CARACTERISTIQUES D'ENDOMMAGEMENT
       NOMRES(1) = 'D_SIGM_EPSI'
       NOMRES(2) = 'SYT'

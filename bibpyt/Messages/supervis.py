@@ -1,4 +1,4 @@
-#@ MODIF supervis Messages  DATE 22/02/2011   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+#@ MODIF supervis Messages  DATE 01/03/2011   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -50,6 +50,11 @@ cata_msg={
 
 5: _("""
  Erreur(s) à l'exécution de "%(k1)s" : arret immédiat du programme.
+"""),
+
+7: _("""
+ Le concept " %(k1)s " est inconnu.
+ Il n'est ni parmi les créés, ni parmi ceux à créer.
 """),
 
 8: _("""
@@ -273,6 +278,21 @@ Fermeture des bases jeveux afin de permettre la POURSUITE ultérieure du calcul.
   Réserve CPU prévue = %(i3)d secondes
 """),
 
+65: _("""
+   %(k1)s   %(k2)s   %(k3)s   %(k4)s
+"""),
+
+66: _("""
+   %(k1)s   %(k2)s   %(k3)s   %(k4)s   %(k5)s
+"""),
+
+67: _("""
+ Passage numéro %(i1)d
+"""),
+
+68: _("""
+ information sur les concepts devant etre créés.
+"""),
 
 71: _("""
  rappel sur les exécutions précédentes
@@ -346,6 +366,10 @@ Fermeture des bases jeveux afin de permettre la POURSUITE ultérieure du calcul.
  - nombre de valeurs attendues %(i2)d
  - valeurs attendues           %(k2)s, %(k3)s
 
+"""),
+
+85: _("""
+ information sur les concepts existants.
 """),
 
 86: _("""

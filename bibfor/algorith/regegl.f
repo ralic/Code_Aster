@@ -4,9 +4,9 @@
       CHARACTER*19                                PROFNO
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 21/06/2010   AUTEUR CORUS M.CORUS 
+C MODIF ALGORITH  DATE 01/03/2011   AUTEUR CORUS M.CORUS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -58,7 +58,7 @@ C----------  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
       INTEGER      I,IAD,IAR,IBID,IDEP,IEQ,IER,IORD,IRET,J,JBID,K,L,
      +             LDNEW,LLCHAB,LLCHOL,LLIND,LLINER,LLINSK,LLMASS,
-     +             I1,J1,K1,L1,LLNUEQ,LLORS,LLPRS,LLROT,LREFE,LTROTX,
+     +             I1,K1,LLNUEQ,LLORS,LLPRS,LLROT,LREFE,LTROTX,
      +             LTROTY,LTROTZ,LTVEC,LTYPE,NBBAS,NBCMP,NBCOU,NBMAS,
      +             NBMAX,NBMOD,NBNOT,NBSST,NEQ, NEQS,NNO,NUMO,NUTARS,
      +             LLREF1,LLREF2,LLREF3,ELIM,LMOET,NEQET,LMAPRO,
@@ -193,8 +193,7 @@ C      SST=    '&&'//NUMGEN(1:8)//'VECT_NOM_SS'
           NEQET=NEQET+ZI(LSILIA+I-1)
   10    CONTINUE
         CALL WKVECT('&&MODE_ETENDU_REST_ELIM','V V R',NEQET,LMOET)    
-      ENDIF
-          
+      ENDIF  
 C
 CC
 CCC---RESTITUTION PROPREMENT DITE---------------------------------------
@@ -227,13 +226,13 @@ C-- SI ELIMINATION, ON RESTITUE D'ABORD LES MODES GENERALISES
   31        CONTINUE
   21      CONTINUE  
           LLCHOL=LMOET               
-        ENDIF        
+        ENDIF       
 C
 C  REQUETTE NOM ET ADRESSE NOUVEAU CHAMNO
 C
         CALL RSEXCH ( NOMRES, DEPL, I, CHAMNE, IER )
         CALL VTCREA ( CHAMNE, CREFE, 'G', 'R', NEQ )
-        CALL JEVEUO ( CHAMNE//'.VALE', 'E', LDNEW )
+        CALL JEVEUO ( CHAMNE//'.VALE', 'E', LDNEW )        
 C
         CALL RSADPA ( RESGEN, 'L', 8,NOMPAR, IORD,0,IADPAR,KBID)
         FREQ   = ZR(IADPAR(1))
@@ -249,16 +248,16 @@ C  BOUCLE SUR LES SOUS-STRUCTURES
 C
         DO 30 K = 1,NBSST
           CALL JEEXIN(JEXNUM(INDIRF,K),IRET)
+          
 C
 C  TEST SI LA SST GENERE DES DDL GLOBAUX
 C
           IF(IRET.NE.0) THEN
             KBID='  '
-            
             IF (ELIM .NE. 0) THEN
               CALL JENONU(JEXNOM(NOMSST,ZK8(LSST+K-1)),NUMSST)
               IEQ=0
-              DO 41 I1=1,K-1
+              DO 41 I1=1,NUMSST-1
                 IEQ=IEQ+ZI(LSILIA+I1-1)
   41          CONTINUE 
             ELSE
@@ -270,17 +269,17 @@ C  RECUPERATION DU NUMERO TARDIF DE LA SST
               IEQ=ZI(LLPRS+(NUTARS-1)*2)
             ENDIF
              
-            CALL MGUTDM(MODGEN,KBID,NUMSST,'NOM_BASE_MODALE',IBID,
+            CALL MGUTDM(MODGEN,KBID,K,'NOM_BASE_MODALE',IBID,
      &                  BASMOD)
             CALL JEVEUO(BASMOD//'           .REFD','L',LREFE)
             CALL JEVEUO(ZK24(LREFE+4)(1:8)//'.IDC_TYPE','L',
      &                  LTYPE)
             IF (ZK8(LTYPE).EQ.'AUCUN') THEN
-             VALI (1) = NUMSST
-             VALI (2) = NUMSST
+             VALI (1) = K
+             VALI (2) = K
              CALL U2MESG('A', 'ALGORITH14_28',0,' ',2,VALI,0,0.D0)
             ENDIF
-            CALL MGUTDM(MODGEN,KBID,NUMSST,'NOM_MACR_ELEM',IBID,MACREL)
+            CALL MGUTDM(MODGEN,KBID,K,'NOM_MACR_ELEM',IBID,MACREL)
             CALL JEVEUO(MACREL//'.MAEL_MASS_VALE','L',LLMASS)
             CALL JELIRA(MACREL//'.MAEL_MASS_VALE','LONMAX',NBMAX,
      &                  K1BID)
@@ -289,18 +288,16 @@ C  RECUPERATION DU NUMERO TARDIF DE LA SST
             CALL JEVEUO(MACREL//'.MAEL_INER_VALE','L',LLINER)
 C
 C           --- CALCUL DE LA MATRICE DE ROTAION ---
-            CALL JEVEUO(JEXNUM(MODGEN//'      .MODG.SSOR',NUMSST),
+            CALL JEVEUO(JEXNUM(MODGEN//'      .MODG.SSOR',K),
      &                  'L',LLROT)
             CALL MATROT(ZR(LLROT),MAT)
 C
             CALL DISMOI('F','NB_MODES_TOT',BASMOD,'RESULTAT',
      &                      NBBAS,KBID,IER)
             KBID='  '
-            CALL MGUTDM(MODGEN,KBID,NUMSST,'NOM_NUME_DDL',IBID,NUMDDL)
+            CALL MGUTDM(MODGEN,KBID,K,'NOM_NUME_DDL',IBID,NUMDDL)
             CALL DISMOI('F','NB_EQUA',NUMDDL,'NUME_DDL',NEQS,KBID,IRET)
             CALL WKVECT('&&REGEGL.TRAV','V V R',NEQS,LTVEC)
-            
-
 C
 C  BOUCLE SUR LES MODES PROPRES DE LA BASE
 C
@@ -310,7 +307,6 @@ C
 C
 C  BOUCLE SUR LES EQUATIONS PHYSIQUES
 C
-              
               IF (ELIM .NE. 0) THEN
                 IAD=LLCHOL+IEQ+J-1
               ELSE
@@ -340,15 +336,15 @@ C
               
               CALL JELIBE(CHAMBA)
 50          CONTINUE
-            CALL JEVEUO(JEXNUM(INDIRF,NUMSST),'L',LLIND)
-            CALL JELIRA(JEXNUM(INDIRF,NUMSST),'LONMAX',NBCOU,K1BID)
+            CALL JEVEUO(JEXNUM(INDIRF,K),'L',LLIND)
+            CALL JELIRA(JEXNUM(INDIRF,K),'LONMAX',NBCOU,K1BID)
             NBCOU=NBCOU/2
             DO 70 L=1,NBCOU
               IDEP=ZI(LLIND+(L-1)*2)
               IAR=ZI(LLIND+(L-1)*2+1)
               ZR(LDNEW+IAR-1)=ZR(LTVEC+IDEP-1)
 70          CONTINUE
-            CALL JELIBE(JEXNUM(INDIRF,NUMSST))
+            CALL JELIBE(JEXNUM(INDIRF,K))
             CALL JEDETR('&&REGEGL.TRAV')
           ENDIF
 30      CONTINUE
@@ -387,6 +383,5 @@ C
       CALL JELIBE ( NUMGEN//'.NUEQ' )
       CALL JEDETR ( '&&REGEGL.NUME' )
 C
- 9999 CONTINUE
       CALL JEDEMA()
       END

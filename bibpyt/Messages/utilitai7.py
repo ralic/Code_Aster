@@ -1,8 +1,8 @@
-#@ MODIF utilitai7 Messages  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
+#@ MODIF utilitai7 Messages  DATE 01/03/2011   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -55,11 +55,6 @@ cata_msg={
  Si on utilise l'option normale pour les changements de repère, il faut donner
  une équation supplémentaire avec le mot-clé VECT_X ou VECT_Y
  """),
-
-10: _("""
- Seuls les champs de type ELGA, ELEM ou ELNO
- sont autorisés pour NOM_CHAM de POST_ELEM/INTEGRALE.
-"""),
 
 11: _("""
   Erreur dans les données, problème lors du traitement du mot clé facteur FILTRE

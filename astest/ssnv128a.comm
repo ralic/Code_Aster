@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 28/02/2011   AUTEUR ABBAS M.ABBAS 
 # TITRE CONTACT AVEC FROTTEMENT D'UNE PLAQUE SUR UN PLAN RIGIDE
 # ssnv128a.para = tps_job 100 mem_job 32Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -108,11 +108,13 @@ CHA3=DEFI_CONTACT(MODELE        = MO,
 RAMPE=DEFI_FONCTION(NOM_PARA='INST',
                     PROL_GAUCHE='LINEAIRE',
                     PROL_DROITE='LINEAIRE',
-                    VALE=(0.0,0.0,1.0,1.0,)
+                    VALE=(-4.0,0.0,1.0,1.0,)
                     )
 #
-L_INST=DEFI_LIST_REEL(DEBUT=0.,
-                      INTERVALLE=_F(JUSQU_A = 1.0, NOMBRE = 5,)
+L_INST=DEFI_LIST_REEL(DEBUT=-4.,
+                      INTERVALLE=(_F(JUSQU_A = 0.0, NOMBRE = 4,),
+                                  _F(JUSQU_A = 1.0, NOMBRE = 1,),),
+                      
                       )
 #
 #-----------------------------------------------------------
@@ -130,6 +132,7 @@ U2M=STAT_NON_LINE(SOLVEUR=_F(SYME='OUI',),
                                  ITER_GLOB_MAXI = 200,
                                  RESI_GLOB_RELA = 1.0E-5,),
 #                  INFO=2,
+                  ARCHIVAGE=_F(INST=(-2.0,1.0,),),
                )
 #
 U2M=CALC_ELEM(reuse=U2M,
@@ -143,6 +146,20 @@ DEPL2M=CREA_CHAMP(OPERATION='EXTR',
                   RESULTAT=U2M,
                   INST=1.0
                 )
+                
+# VERIFICATION ARCHIVAGE OK
+
+TEST_RESU(RESU=_F(RESULTAT   = U2M,
+                   INST       = -2.0,
+                   NOM_CHAM   = 'DEPL',
+                   GROUP_NO   = 'PPA',
+                   NOM_CMP    = 'DX',
+                   VALE       = 1.1383802368856E-05,
+                   CRITERE    = 'RELATIF',
+                   PRECISION  = 1.E-12,
+                   REFERENCE  = 'NON_REGRESSION',
+                   VERSION    = '10.3.15',
+             ),)
 #
 TEST_RESU(RESU=(_F(RESULTAT   = U2M,
                    INST       = 1.0,

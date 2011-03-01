@@ -1,5 +1,5 @@
 
-# MODIF  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 28/02/2011   AUTEUR BARGELLI R.BARGELLINI 
 # TITRE CALCUL DU CRITERE ENERGETIQUE GP EN 2D
 # ssnp131a.para = tps_job 800 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -46,7 +46,7 @@ DEBUT(CODE=_F( NOM = 'SSNP131A',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),);
 
 MA=LIRE_MAILLAGE(FORMAT='MED',);
 
-TPCAL = 35.;
+TPCAL = 100.;
 
 MA=DEFI_GROUP(reuse =MA,
               MAILLAGE=MA,
@@ -65,77 +65,7 @@ MOD=AFFE_MODELE(MAILLAGE=MA,
 #---------------- DONNEES MECANIQUES ACIER  -------------------
 #----------------------------------------------------------------------
 
-E_T=DEFI_FONCTION(NOM_PARA='TEMP',
-                  VALE=(  
-                         23.0, 220200.0, 
-                        100.0, 214100.0, 
-                        180.0, 206500.0, 
-                        300.0, 205000.0, ), );
-
-
-
-ALPHA_T= DEFI_FONCTION  ( NOM_PARA    = 'TEMP',
-                            VALE        = ( 
-                                         0.000E+00, 1.140E-05,
-                                         1.000E+01, 1.150E-05,
-                                         2.000E+01, 1.156E-05,
-                                         3.000E+01, 1.160E-05,
-                                         4.000E+01, 1.170E-05,
-                                         5.000E+01, 1.180E-05,
-                                         6.000E+01, 1.190E-05,
-                                         7.000E+01, 1.190E-05,
-                                         8.000E+01, 1.200E-05,
-                                         9.000E+01, 1.210E-05,
-                                         1.000E+02, 1.210E-05,
-                                         1.100E+02, 1.220E-05,
-                                         1.200E+02, 1.220E-05,
-                                         1.300E+02, 1.230E-05,
-                                         1.400E+02, 1.230E-05,
-                                         1.500E+02, 1.240E-05,
-                                         1.600E+02, 1.250E-05,
-                                         1.700E+02, 1.250E-05,
-                                         1.800E+02, 1.260E-05,
-                                         1.900E+02, 1.260E-05,
-                                         2.000E+02, 1.270E-05,
-                                         2.100E+02, 1.270E-05,
-                                         2.200E+02, 1.280E-05,
-                                         2.300E+02, 1.280E-05,
-                                         2.400E+02, 1.290E-05,
-                                         2.500E+02, 1.290E-05,
-                                         ),
-                            PROL_DROITE = 'LINEAIRE',
-                            PROL_GAUCHE = 'LINEAIRE', );
-
-
-NU_T=DEFI_CONSTANTE(NOM_RESU='TEMP',
-                    VALE=0.3,);
-                  
-#----------------------------------------------------------------------
-# DEFINITION DE LA COURBE DE TRACTION 
-#----------------------------------------------------------------------
-
-
-#-- DEFINITION DE LA NAPPE (EPSI, SI, TEMP)
 # ECROUISSAGE ISOTROPE NON LINEAIRE 
-
-CT_23 = DEFI_FONCTION ( NOM_PARA = 'EPSI',
-                            VALE = (
-0.00434654,     855.9222268,
-0.006014974,    910.4599555,
-0.007862112,    931.797171,
-0.010757925,    949.0551424,
-0.014221395,    961.578204,
-0.017791783,    971.9294353,
-0.022185081,    984.4905114,
-0.028276427,    1001.471414,
-0.035811061,    1019.316952,
-0.04373072,     1035.194221,
-0.051452332,    1048.650972,
-0.058982804,    1060.757,
-0.066852716,    1070.207138,
-                                ),
-                            PROL_DROITE = 'CONSTANT',
-                            PROL_GAUCHE = 'LINEAIRE',);
 
 CT_100 = DEFI_FONCTION ( NOM_PARA = 'EPSI',
                             VALE = (
@@ -156,69 +86,11 @@ CT_100 = DEFI_FONCTION ( NOM_PARA = 'EPSI',
                             ),
                             PROL_DROITE = 'CONSTANT',
                             PROL_GAUCHE = 'LINEAIRE',);
-                          
-
-CT_180 = DEFI_FONCTION ( NOM_PARA = 'EPSI',
-                            VALE = (
-0.003517805,    757.4699504,
-0.004684809,    824.0113073,
-0.006144782,    860.2699635,
-0.008034933,    882.1596942,
-0.01091719,     897.2825266,
-0.014242098,    911.895256,
-0.017244456,    922.2778349,
-0.020804086,    931.4681604,
-0.025396755,    943.0898357,
-0.030522415,    954.7613776,
-0.036394608,    968.8987176,
-0.043101634,    980.6600888,
-0.049733529,    992.3982518,
-0.057071966,    1002.619204,
-                            ),
-                            PROL_DROITE = 'CONSTANT',
-                            PROL_GAUCHE = 'LINEAIRE',);
-                            
-
-CT_300 = DEFI_FONCTION ( NOM_PARA = 'EPSI',
-                            VALE = (
-0.003899686,    752.4084432,
-0.006058212,    839.0678844,
-0.007710795,    866.9491608,
-0.010249296,    885.5196,
-0.014199705,    901.713589,
-0.018138498,    912.4207501,
-0.023019995,    928.0189803,
-0.028623413,    936.8352848,
-0.034338623,    948.5593249,
-0.040005021,    958.5707197,
-0.045730249,    965.278307,
-0.051311744,    970.2389532,
-0.056285811,    977.4996,
-                            ),
-                            PROL_DROITE = 'CONSTANT',
-                            PROL_GAUCHE = 'LINEAIRE',);
 
 
-
-SIG = DEFI_NAPPE ( NOM_PARA    = 'TEMP',
-
-                        PARA        = (  23.0,
-                                        100.0,
-                                        180.0, 
-                                        300.0, ),
-
-                        FONCTION    = ( CT_23,
-                                        CT_100,
-                                        CT_180,
-                                        CT_300,),
-                        PROL_DROITE = 'LINEAIRE',
-                        PROL_GAUCHE = 'LINEAIRE', );
-
-ACIER=DEFI_MATERIAU(ELAS_FO=_F(E=E_T,
-                               NU=NU_T,
-                               ALPHA=ALPHA_T,
-                      TEMP_DEF_ALPHA = TPCAL,),
-                    TRACTION=_F(SIGM=SIG,),);
+ACIER=DEFI_MATERIAU(ELAS=_F(E=214100,
+                               NU=0.3,),
+                    TRACTION=_F(SIGM=CT_100,),);
 
 #----------------------------------------------------------------------
 #---------------- DONNEES MECANIQUES GOUPILLE  -------------------
@@ -232,25 +104,6 @@ MATGOUP=DEFI_MATERIAU(ELAS=_F(   E=2.E6,
                       ECRO_LINE=_F(D_SIGM_EPSI=200000.,
                                    SY=200000., )
                       );
-
-##----------------------------------------------------------------------
-#--------- TEMPERATURE IMPOSEE
-#----------------------------------------------------------------------
-
-T_T=DEFI_FONCTION(NOM_PARA='INST',
-                  VALE=(
-                         0.0  ,  TPCAL,
-                         50.0 ,  TPCAL,
-                         150.0 , TPCAL,
-                        ),
-                  PROL_GAUCHE='CONSTANT',);
-        
-TEMP_T=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_F',
-                  OPERATION='AFFE',
-                  MAILLAGE=MA,
-                  AFFE=_F(TOUT='OUI',
-                          NOM_CMP='TEMP',
-                          VALE_F=T_T,),);
                                     
 #----------------------------------------------------------------------
 # DEFINITION D UNE RAMPE ET D UNE LISTE D INSTANTS 
@@ -263,15 +116,9 @@ RAMPD=DEFI_FONCTION(NOM_PARA='INST',
                     PROL_GAUCHE='LINEAIRE',);
 
 L_INST=DEFI_LIST_REEL(DEBUT=0.0,
-                    INTERVALLE=(_F(JUSQU_A=100.0,
-                                   NOMBRE=50,),
+                    INTERVALLE=(_F(JUSQU_A=40.0,
+                                   NOMBRE=10,),
                      ),);
-                     
-RESU_T=CREA_RESU(TYPE_RESU='EVOL_THER',
-                 OPERATION='AFFE',
-                 NOM_CHAM='TEMP',
-                 AFFE=_F(CHAM_GD=TEMP_T,
-                         LIST_INST=L_INST,),);
 
 #----------------------------------------------------------------------
 # AFFECTATION DES PROPRIETES MECANIQUES
@@ -285,12 +132,7 @@ CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
                             MATER=ACIER,),
                          _F(GROUP_MA='SGOUP',
                             MATER=MATGOUP,),),
-                    AFFE_VARC=_F( TOUT='OUI',
-                            EVOL=RESU_T,
-                            NOM_VARC='TEMP',
-                            NOM_CHAM='TEMP',
-                            VALE_REF=TPCAL,),
-);
+                         );
 
  
 #----------------------------------------------------------------------
@@ -323,19 +165,15 @@ RESU=STAT_NON_LINE(MODELE=MOD,
                           _F(RELATION='VMIS_ISOT_LINE',
                              DEFORMATION='PETIT',
                              GROUP_MA='SGOUP',),),
-                INCREMENT=_F(LIST_INST=L_INST,
-                             NUME_INST_FIN=40,),
+                INCREMENT=_F(LIST_INST=L_INST,),
                 NEWTON=_F(REAC_ITER=3,),
                 RECH_LINEAIRE=_F(ITER_LINE_MAXI=3,),
                 CONVERGENCE=_F(RESI_GLOB_RELA=1.E-8,
                                ITER_GLOB_MAXI=50,),
                    SOLVEUR=_F(METHODE='MULT_FRONT',
                               RENUM='METIS',),);
-#
-E_el = POST_ELEM ( RESULTAT = RESU,
-                   CHARGE = (CHAD,COND_LIM,),
-                   TOUT_ORDRE = 'OUI',
-                   ENER_ELAS= _F(GROUP_MA='COPS_1'),
-                   TITRE='Energie Elastique',);
+
+
+
 FIN();
 #

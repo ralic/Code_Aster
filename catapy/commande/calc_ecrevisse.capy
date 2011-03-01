@@ -1,7 +1,7 @@
-#& MODIF COMMANDE  DATE 09/11/2010   AUTEUR DELMAS J.DELMAS 
+#& MODIF COMMANDE  DATE 28/02/2011   AUTEUR BOTTONI M.BOTTONI 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -33,8 +33,7 @@ def calc_ecrevisse_prod(self,CHARGE_MECA,CHARGE_THER1,CHARGE_THER2,TABLE,DEBIT,*
 
 CALC_ECREVISSE=MACRO(nom="CALC_ECREVISSE",op=calc_ecrevisse_ops,sd_prod=calc_ecrevisse_prod,reentrant='n',
                      UIinfo={"groupes":("Outils-métier",)},fr="Procedure de couplage avec Ecrevisse",
-
-        regles             = (UN_PARMI('LOGICIEL','VERSION'),),
+                      regles   = (UN_PARMI('LOGICIEL','VERSION'),),
 
 #      CONCEPTS SORTANTS : 2 CHARGEMENTS THERMIQUE + 1 MECANIQUE + 2 TABLES POUR LE POST-TRAITEMENT
 #      ********************************************
@@ -166,7 +165,7 @@ CALC_ECREVISSE=MACRO(nom="CALC_ECREVISSE",op=calc_ecrevisse_ops,sd_prod=calc_ecr
          COURBES            =SIMP(statut='f',typ='TXM',into=("INTERACTIF","POSTSCRIPT","AUCUNE"),defaut="AUCUNE",
                                   fr="Generation eventuelle des courbes" ),
          LOGICIEL           =SIMP(statut='f',typ='TXM',validators=LongStr(1,255),),
-         VERSION            =SIMP(statut='f',typ='TXM',defaut="3.1.2",into = ("3.1.1","3.1.2")),
+         VERSION            =SIMP(statut='f',typ='TXM',into = ("3.1.1","3.1.2","3.2")),
          ENTETE             =SIMP(statut='f',typ='TXM',max='**',defaut="Titre du calcul Ecrevisse" ),
          IMPRESSION         =SIMP(statut='f',typ='TXM',defaut='NON',into=( 'OUI','NON') ),
          INFO               =SIMP(statut='f',typ='I',defaut= 1,into=(1,2) ),

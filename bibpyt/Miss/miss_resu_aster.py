@@ -1,4 +1,4 @@
-#@ MODIF miss_resu_aster Miss  DATE 25/01/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF miss_resu_aster Miss  DATE 01/03/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
