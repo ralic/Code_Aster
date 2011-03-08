@@ -1,4 +1,4 @@
-# MODIF  DATE 25/01/2011   AUTEUR MACOCCO K.MACOCCO 
+# MODIF  DATE 07/03/2011   AUTEUR PROIX J-M.PROIX 
 # TITRE PROPAGATION DE DEUX FISSURES XFEM DEBOUCHANTES SOLLICITEE EN MODE I
 # sslp319c.para = tps_job 250 mem_job 512Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -20,6 +20,8 @@
 # ======================================================================
 # VALIDATION DE LA METHODE MAILLAGE
 
+#  REMARQUE : ON TESTE AUSSI LE CALCUL DU CYCLE DANS PROPA_FISS
+#  SANS UTILISER COMP_LINE.
 
 DEBUT(CODE=_F(NOM='SSLP319C', NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),
       DEBUG=_F(SDVERI='OUI'),
@@ -59,11 +61,9 @@ steel=DEFI_MATERIAU(ELAS=_F(E=2.06E11,
 
 TimeStep=DEFI_LIST_REEL(DEBUT=0,
                         INTERVALLE=_F(JUSQU_A=1,
-                                      NOMBRE=2,),);
+                                      NOMBRE=1,),);
 
-F0=DEFI_FONCTION(NOM_PARA='INST',
-                 VALE=(0.5, 1.,
-                       1.0, 2.,),);
+sigma=1E6
 
 #***********************************
 # DEFINITION DES FISSURES
@@ -160,7 +160,7 @@ for i in range(1,NPS-1) :
                                     _F(GROUP_NO='carrello',
                                        DY=0,),),
                            PRES_REP=_F(GROUP_MA='force',
-                                    PRES=-1E6,
+                                    PRES=-1*sigma,
                                     ),
                           );
                           
@@ -170,11 +170,10 @@ for i in range(1,NPS-1) :
 
     ResX[i]=STAT_NON_LINE(MODELE=ModX[i],
                          CHAM_MATER=MATE[i],
-                         EXCIT=(_F(CHARGE=Char[i],FONC_MULT=F0,),),
+                         EXCIT=_F(CHARGE=Char[i]),
                          COMP_ELAS=_F(RELATION='ELAS',
                                       TOUT='OUI',),
-                         INCREMENT=_F(LIST_INST=TimeStep,
-                                      INST_FIN=1,),
+                         INCREMENT=_F(LIST_INST=TimeStep),
                          ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA',),);
 
 #   CALCULE DES FACTEURS D'INTENSITE DE CONTRAINTES POUR LA FISSURE
@@ -183,7 +182,8 @@ for i in range(1,NPS-1) :
                             R_INF=RI,
                             R_SUP=RS,),
                    RESULTAT=ResX[i],
-                   OPTION='CALC_K_G',);
+                   OPTION='CALC_K_G',
+                   )
 
 #   CALCULE DES FACTEURS D'INTENSITE DE CONTRAINTES POUR LA FISSURE
 #   A DROITE
@@ -191,7 +191,8 @@ for i in range(1,NPS-1) :
                             R_INF=RI,
                             R_SUP=RS,),
                    RESULTAT=ResX[i],
-                   OPTION='CALC_K_G',);
+                   OPTION='CALC_K_G',
+                   )
 
     IMPR_TABLE(TABLE=SIFL[i],);
     IMPR_TABLE(TABLE=SIFR[i],);
@@ -203,6 +204,7 @@ for i in range(1,NPS-1) :
       PROPA_FISS(MAIL_STRUC = MaiPlate,
                  MAIL_TOTAL = MATOT[i+1],
                  ITERATION = i,
+            
                  FISSURE=(_F(FISS_ACTUELLE=FissL[i],
                              MAIL_ACTUEL =  MaFiL[i],
                              MAIL_PROPAGE = MaFiL[i+1] ,
@@ -233,7 +235,6 @@ for i in range(1,NPS-1) :
 #----------------------------------------------
 
 W=1000;
-sigma=2E6
 
 for i in range(1,NPS-1) :
    
@@ -246,12 +247,12 @@ for i in range(1,NPS-1) :
 #  PROPAGE EN MODE I. CELA N'EST PAS VERIFIER EXACTEMENT POUR LE
 #  MODELE FEM. ON ASSUME QUE LA VALEUR DE KII EST ZERO SI
 #  ELLE EST EGAL A 1% DE LA VALEUR DE KI.
-   TOL_K2=0.01*KI_broek;
+   TOL_K2=0.001*KI_broek;
 
    TEST_TABLE(TABLE=SIFL[i],
               REFERENCE='ANALYTIQUE',
               NOM_PARA='K1',
-              PRECISION=0.05,
+              PRECISION=0.01,
               TYPE_TEST='MAX',
               VALE= KI_broek  )
 
@@ -266,7 +267,7 @@ for i in range(1,NPS-1) :
    TEST_TABLE(TABLE=SIFR[i],
               REFERENCE='ANALYTIQUE',
               NOM_PARA='K1',
-              PRECISION=0.05,
+              PRECISION=0.01,
               TYPE_TEST='MAX',
               VALE= KI_broek )
 

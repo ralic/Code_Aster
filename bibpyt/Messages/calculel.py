@@ -1,4 +1,4 @@
-#@ MODIF calculel Messages  DATE 25/01/2011   AUTEUR PELLET J.PELLET 
+#@ MODIF calculel Messages  DATE 08/03/2011   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -23,15 +23,8 @@ def _(x) : return x
 
 cata_msg = {
 
-1 : _("""
-Erreur Utilisateur :
- En cherchant à projeter 1 noeud sur une maille, l'algorithme de Newton échoue.
- Le problème vient probablement de la mauvaise qualité de la maille.
- Maille "coupable" : %(k1)s
 
-Risques & conseils :
- Vérifiez la maille incriminée (numérotation et géométrie de ses noeuds, ...)
-"""),
+
 
 2 : _("""
 Erreur Utilisateur :
@@ -202,17 +195,18 @@ Risques & conseils :
   alors que le champ d'énergie cinétique ECIN_ELEM_DEPL est calculé avec un autre champ de matériau.
 """),
 
-
-
-
-
-
 27 : _("""
  CHAM_ELEM à combiner incompatible
 """),
 
-
-
+28 : _("""
+ Problème lors de l'utilisation de la structure de données %(k1)s.
+ Cette structure de donnéees est de type "évolution temporelle" et l'on n'a pas le droit
+ de l'utiliser en dehors de l'intervalle [tmin, tmax].
+ Mais ici, il n'y a qu'un seul instant dans la structure de donnée (tmin=tmax).
+ Dans ce cas, on suppose alors que ce transitoire est "permanent" et que l'on peut l'utiliser
+ pour toute valeur du temps.
+"""),
 
 29 : _("""
 Erreur de programmation :

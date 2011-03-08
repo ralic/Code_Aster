@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 08/03/2011   AUTEUR MASSIN P.MASSIN 
 # TITRE PLAQUE CIRCULAIRE POSEE SOUS PRESSION  147 SHB8
 # ssls101c.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -101,7 +101,7 @@ MODEL=AFFE_MODELE(MAILLAGE=MAILL,
                   VERIF='MAILLE',
                   AFFE=_F(TOUT='OUI',
                           PHENOMENE='MECANIQUE',
-                          MODELISATION='SHB8',),);
+                          MODELISATION='SHB',),);
 
 CINE=AFFE_CHAR_MECA(MODELE=MODEL,
                     DDL_IMPO=(_F(GROUP_NO='GRNO_ABC',

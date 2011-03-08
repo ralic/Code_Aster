@@ -1,4 +1,4 @@
-#@ MODIF elements Messages  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+#@ MODIF elements Messages  DATE 07/03/2011   AUTEUR FLEJOU J-L.FLEJOU 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -65,6 +65,14 @@ Conseil :
      ANGLE MAX = %(r2)f
   -> Risque & Conseil : mailler plus fin
 """),
+
+8 : _("""
+La raideur tangente de la section est nulle.
+Vérifier votre matériau, vous avez peut être défini un matériau élasto-plastique parfait.
+
+Risque & Conseil : mettre un léger écrouissage peut permettre de passer cette difficulté.
+"""),
+
 
 9 : _("""
  il faut renseigner le coefficient E_N  dans les cas des déformations planes et de l'axisymétrie

@@ -6,8 +6,8 @@
      &                    CODRET )
 C_______________________________________________________________________
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 24/01/2011   AUTEUR SELLENET N.SELLENET 
-C RESPONSABLE GNICOLAS G.NICOLAS
+C MODIF PREPOST  DATE 08/03/2011   AUTEUR SELLENET N.SELLENET 
+C RESPONSABLE SELLENET N.SELLENET
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

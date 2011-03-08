@@ -1,4 +1,4 @@
-# MODIF  DATE 28/02/2011   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 07/03/2011   AUTEUR ABBAS M.ABBAS 
 # TITRE CONTACT AVEC FROTTEMENT D'UNE PLAQUE SUR UN PLAN RIGIDE
 # ssnv128a.para = tps_job 100 mem_job 32Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -156,7 +156,7 @@ TEST_RESU(RESU=_F(RESULTAT   = U2M,
                    NOM_CMP    = 'DX',
                    VALE       = 1.1383802368856E-05,
                    CRITERE    = 'RELATIF',
-                   PRECISION  = 1.E-12,
+                   PRECISION  = 1.E-9,
                    REFERENCE  = 'NON_REGRESSION',
                    VERSION    = '10.3.15',
              ),)

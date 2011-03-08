@@ -1,10 +1,10 @@
-# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 08/03/2011   AUTEUR FOUCAULT A.FOUCAULT 
 
 # TITRE COUPLAGE FLUAGE PROPRE (MODELE UMLV) ET MAZARS
 # ssnv169f.para = tps_job 120 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -163,7 +163,7 @@ L_INS = DEFI_LIST_REEL( DEBUT = -1.0,
                                       _F(JUSQU_A = 300, NOMBRE = 4,),
                                       _F(JUSQU_A = 864000., NOMBRE = 20,),                                      
                                       _F(JUSQU_A = 2300000., NOMBRE = 20,),
-                                      _F(JUSQU_A = 2500000., NOMBRE = 40,),
+                                      _F(JUSQU_A = 5250000., NOMBRE = 40,),
                                       ),
                           );
 
@@ -183,10 +183,12 @@ RESU = STAT_NON_LINE(CHAM_MATER = CAR_MAT,
                      COMP_INCR = _F(RELATION = 'KIT_DDI',
                                     RELATION_KIT = ('BETON_UMLV_FP', 'MAZARS'),
                                     DEFORMATION = 'PETIT',
-                                    GROUP_MA = 'Q'),
+                                    GROUP_MA = 'Q',
+                                    ALGO_C_PLAN = 'DEBORST',),
                      INCREMENT = _F(LIST_INST = DEFLIST,
-                                    INST_FIN = 2500000.,
+                                    INST_FIN = 5250000.,
                                     ),
+                     ARCHIVAGE=_F(LIST_INST=L_INS),
                      NEWTON = _F(PREDICTION = 'TANGENTE',
                                  MATRICE = 'TANGENTE',
                                  REAC_ITER = 1,
@@ -202,7 +204,7 @@ TEST_RESU(RESU=(
           NOM_CHAM = 'SIEF_ELGA',
           MAILLE = 'M1',
           POINT = 1,
-          NUME_ORDRE = 88,
+          NUME_ORDRE = 85,
           NOM_CMP = 'SIXX',
           VALE = 1.38879E+00,
           PRECISION = 0.0001,
@@ -210,27 +212,27 @@ TEST_RESU(RESU=(
       _F( RESULTAT = RESU,
           NOM_CHAM = 'DEPL',
           NOEUD = 'N1',
-          NUME_ORDRE = 88,
+          NUME_ORDRE = 85,
           NOM_CMP = 'DX',
-          VALE = -6.35493E-03,
+          VALE = -6.5657E-03,
           PRECISION = 0.0001,
           REFERENCE = 'NON_REGRESSION'),
       _F( RESULTAT = RESU,
           NOM_CHAM = 'VARI_ELGA',
           MAILLE = 'M1',
           POINT = 1,
-          NUME_ORDRE = 88,
+          NUME_ORDRE = 85,
           NOM_CMP = 'V22',
-          VALE = 3.59765E-02,
+          VALE = 4.2817E-02,
           PRECISION = 0.0001,
           REFERENCE = 'NON_REGRESSION'),
       _F( RESULTAT = RESU,
           NOM_CHAM = 'VARI_ELGA',
           MAILLE = 'M1',
           POINT = 1,
-          NUME_ORDRE = 88,
+          NUME_ORDRE = 85,
           NOM_CMP = 'V3',
-          VALE = 5.31439E-06,
+          VALE = 9.4824E-06,
           PRECISION = 0.0001,
           REFERENCE = 'NON_REGRESSION'), ),)
                  

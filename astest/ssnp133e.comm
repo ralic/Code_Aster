@@ -1,4 +1,4 @@
-# MODIF  DATE 01/02/2011   AUTEUR MASSIN P.MASSIN 
+# MODIF  DATE 08/03/2011   AUTEUR MASSIN P.MASSIN 
 # TITRE PLAQUE TROUEE ASYMETRIQUE, INTERFACE XFEM CONFORME
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -72,6 +72,15 @@ FISS=DEFI_FISS_XFEM(MODELE=MO,
                     DEFI_FISS=_F(FONC_LN=LN,),
                     GROUP_MA_ENRI='MATIERE',
                     );
+
+MA=DEFI_GROUP(reuse=MA,
+              MAILLAGE=MA,
+              INFO=2,
+              CREA_GROUP_MA=_F(FISSURE=FISS,
+                               NOM='TRAVERS',
+                               OPTION='FISS_XFEM',
+                               TYPE_GROUP='HEAVISIDE',
+                               ),);
                                                                        
 MODELEK=MODI_MODELE_XFEM(MODELE_IN=MO,
                          FISSURE=FISS,
@@ -179,7 +188,7 @@ EVOL = STAT_NON_LINE(
     PILOTAGE  = _F (
     TYPE = 'PRED_ELAS',
     SELECTION = 'NORM_INCR_DEPL',
-    GROUP_MA='JOINT',
+    GROUP_MA='TRAVERS',
     FISSURE = FISS,
     DIRE_PILO = 'DY',
     COEF_MULT = c_mult_pilo,
@@ -244,34 +253,34 @@ TEST_TABLE(TABLE=TAB_U,
               FILTRE=(_F(NOM_PARA='INST',VALE=50,),),
               NOM_PARA='DY',
               VALE=3.32215E-03,
-              REFERENCE='NON_REGRESSION')
+              REFERENCE='AUTRE_ASTER')
 TEST_TABLE(TABLE=FORCE,
               FILTRE=(_F(NOM_PARA='INST',VALE=50,),),
               NOM_PARA='DY',
               VALE=4.21054E+07,
-              REFERENCE='NON_REGRESSION')
+              REFERENCE='AUTRE_ASTER')
 
 TEST_TABLE(TABLE=TAB_U,
               FILTRE=(_F(NOM_PARA='INST',VALE=100,),),
               NOM_PARA='DY',
               VALE=2.52359E-03,
-              REFERENCE='NON_REGRESSION')
+              REFERENCE='AUTRE_ASTER')
 TEST_TABLE(TABLE=FORCE,
               FILTRE=(_F(NOM_PARA='INST',VALE=100,),),
               NOM_PARA='DY',
               VALE=5.35460E+06,
-              REFERENCE='NON_REGRESSION')
+              REFERENCE='AUTRE_ASTER')
 
 TEST_TABLE(TABLE=TAB_U,
               FILTRE=(_F(NOM_PARA='INST',VALE=150,),),
               NOM_PARA='DY',
               VALE=7.09118E-03,
-              REFERENCE='NON_REGRESSION')
+              REFERENCE='AUTRE_ASTER')
 TEST_TABLE(TABLE=FORCE,
               FILTRE=(_F(NOM_PARA='INST',VALE=150,),),
               NOM_PARA='DY',
               VALE=6.75039E+06,
-              REFERENCE='NON_REGRESSION')
+              REFERENCE='AUTRE_ASTER')
 
 #--------------------------------------------------------------
 IMPR_FONCTION(

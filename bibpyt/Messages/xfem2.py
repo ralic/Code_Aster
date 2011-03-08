@@ -1,8 +1,8 @@
-#@ MODIF xfem2 Messages  DATE 10/08/2010   AUTEUR GENIAUT S.GENIAUT 
+#@ MODIF xfem2 Messages  DATE 08/03/2011   AUTEUR MASSIN P.MASSIN 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -211,11 +211,10 @@ cata_msg = {
   
 58 : _("""
   -> La dimension (2D ou 3D) du modèle physique et la dimension (2D ou 
-     3D) du modèle utilisé pour la représentation des level sets ne sont
-     pas égales.
+     3D) du modèle utilisé pour la grille auxiliaire ne sont pas égales.
   -> Risque & Conseil:
-     Veuillez utiliser deux modèles avec la même dimension (tous deux 2D
-     ou tous deux 3D).
+     Veuillez utiliser deux modèles avec la même dimension (les deux 2D
+     ou les deux 3D).
   """),
   
 60 : _("""
@@ -309,15 +308,6 @@ cata_msg = {
   -> Risque & Conseil:
      Veuillez vérifier les conditions du chargement du modèle et les
      constantes de la loi de propagation données à PROPA_FISS.
-  """),
-  
-75 : _("""
-  -> Le nombre des fissures définies dans le modèle donné pour la grille
-     des level sets n'est pas correct.
-  -> Modèle: %(k1)s
-     Nombre de fissures: %(i1)d
-  -> Risque & Conseil:
-     Veuillez donner un modèle contenant une seule fissure.
   """),
   
 76 : _("""
@@ -495,16 +485,6 @@ cata_msg = {
      auxiliaire plus raffinés.
   """),
   
-92 : _("""
-  -> Aucune fissure n'est définie sur le modèle spécifié pour la grille
-     auxiliaire:
-     FISS_ACTUELLE = %(k1)s
-     GRILLE_AUX    = %(k2)s
-  -> Risque & Conseil:
-     Veuillez définir une fissure sur le modèle ci-dessus en utilisant
-     les opérateurs DEFI_FISS_XFEM et MODI_MODELE_XFEM avant
-     l'utilisation de PROPA_FISS.
-  """),
   
 93 : _("""
   -> Aucune fissure n'est définie sur le modèle spécifié:
@@ -537,25 +517,24 @@ cata_msg = {
      influence l'opérateur CALC_G aussi et normalement est faisable en
      utilisant un maillage plus raffiné.
   """),
-  
-95 : _("""
-  -> Une grille auxiliaire a été utilisée pour la détermination des
-     fissures actuelles du modèle. Par contre, aucune grille n'a été
-     donnée pour la propagation courante.
+
+95 : _("""      
+  -> Le modèle grille donné est défini sur un maillage (%(k1)s)
+     et pas sur une grille.
+     
   -> Risque & Conseil:
-     Veuillez spécifier la même grille que celle qui a été utilisé pour
-     la propagation précédente.
+     Veuillez donner un modèle grille défini sur une grille. Cette
+     grille doit être définie par DEFI_GRILLE à partir d'un maillage.
   """),
-  
+
 96 : _("""
-  -> La grille auxiliaire qui a été utilisée à la propagation précédente
-     pour déterminer la fissure actuelle n'est pas la même que celle qui
-     a été spécifiée pour la propagation courante:
-     FISS_ACTUELLE         = %(k1)s
-     GRILLE_AUX précédente = %(k2)s
-     GRILLE_AUX actuelle   = %(k3)s
+  -> Le champ_no "%(k1)s" donnés sous le mot-clé facteur
+     DEFI_FISS_GRILLE est défini sur le maillage "%(k2)s".
+     Par contre, le modèle grille donnés par MODELE_GRILLE est défini
+     sur le maillage "%(k3)s".
   -> Risque & Conseil:
-     Veuillez utiliser la même grille pour la fissure ci-dessus.
+     Veuillez donner un champ_no défini sur le même maillage que celui
+     utilisé pour le modèle grille.
   """),
   
 97 : _("""
@@ -567,18 +546,13 @@ cata_msg = {
      Veuillez utiliser la localisation de la zone de mise à jour
      (ZONE_MAJ='TORE') pour la propagation courante aussi.
   """),
-  
+
 98 : _("""
-  -> La localisation de la zone de mise à jour a été utilisé sans grille
-     auxiliaire pour la détermination de la configuration actuelle des
-     fissures du modèle. Par contre, pour la propagation courante, on
-     demande de l'utiliser avec une grille auxiliaire.
-     FISS_ACTUELLE = %(k1)s
+  -> Aucune grille auxiliaire n'est utilisée pour la représentation de
+     la fissure donnée.
   -> Risque & Conseil:
-     Veuillez continuer à utiliser la localisation de la zone de mise à
-     jour sans grille auxiliaire. Si vous voulez utiliser une grille
-     auxiliaire pour la propagation courante, vous devez forcement
-     l'utiliser à partir de la première propagation.
+     Veuillez vérifier que vous avez demandé les level sets de la bonne
+     fissure.
   """),
   
 99 : _("""

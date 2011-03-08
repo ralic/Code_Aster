@@ -1,4 +1,4 @@
-# MODIF  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 08/03/2011   AUTEUR MASSIN P.MASSIN 
 # RESPONSABLE JMBHH01 J.M.PROIX
 # TITRE CLAQUAGE  CALOTTE CYLINDRIQUE SHB8  
 # ssns101c.para = tps_job 100 mem_job 128Mo ncpus 1 liste_test S
@@ -47,7 +47,7 @@ MODMECA=AFFE_MODELE(MAILLAGE=MAIL,
                     INFO=2,
                     AFFE=_F(TOUT='OUI',
                             PHENOMENE='MECANIQUE',
-                            MODELISATION='SHB8',),);
+                            MODELISATION='SHB',),);
 
 TRAC=DEFI_FONCTION(NOM_PARA='EPSI',
                    VALE=(1.e-03,3.102,

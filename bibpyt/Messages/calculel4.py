@@ -1,4 +1,4 @@
-#@ MODIF calculel4 Messages  DATE 01/03/2011   AUTEUR PELLET J.PELLET 
+#@ MODIF calculel4 Messages  DATE 08/03/2011   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -270,6 +270,17 @@ Conseil :
   Il faut sans doute modifier la valeur de TYPE_CHAM
 """),
 
+72 : _("""
+Erreur utilisateur dans la commande PROJ_CHAMP :
+ Le mot clé MODELE_2 a été utilisé. Le maillage associé à ce modèle (%(k1)s)
+ est différent du maillage "2" (%(k1)s)  qui a servi à fabriquer la matrice de projection.
+"""),
+
+73 : _("""
+Erreur utilisateur dans la commande PROJ_CHAMP :
+   On veut projeter des champs aux éléments (cham_elem), le mot clé MODELE_2
+   est alors obligatoire.
+"""),
 
 
 

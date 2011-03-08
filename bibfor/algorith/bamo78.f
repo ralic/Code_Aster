@@ -4,7 +4,7 @@
       CHARACTER*16  TYPRES
       CHARACTER*19  TRANGE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 07/02/2011   AUTEUR DEVESA G.DEVESA 
+C MODIF ALGORITH  DATE 07/03/2011   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -181,6 +181,7 @@ C
          CALL JEVEUO(KINST ,'L',JINST )
          CALL JEVEUO(KNUME ,'L',JNUME )
       END IF
+      CALL JEVEUO(TRANGE//'.ORDR','L',JORDR)
 C      WRITE(6,*) 'KINST ',(ZR(JINST+I-1),I=1,NBINST)
 C      WRITE(6,*) 'KNUME ',(ZI(JNUME+I-1),I=1,NBINST)
       CALL GETVR8(' ','PRECISION',1,1,1,EPSI,N)
@@ -194,11 +195,9 @@ C
       ELSE
         CALL RSORAC(NOMRES,'DERNIER',IBID,R8BID,K8BID,C16BID,EPSI,
      &              CRIT,NUME0,1,NBTROU)
-C        WRITE(6,*) 'NUME0 AV ', NUME0
         CALL RSORAC(NOMRES,'INST',IBID,ZR(JINST),K8BID,C16BID,EPSI,
      &              CRIT,NUME,1,NBTROU)
-        IF (NBTROU.NE.0) NUME0 = NUME-1
-C        WRITE(6,*) 'NUME0 AP ', NUME0
+        IF (NBTROU.NE.0) NUME0 = NUME
         NBINS2 = NBINST + NUME0 
         CALL RSAGSD(NOMRES,NBINS2)
       ENDIF
@@ -208,8 +207,9 @@ C
       DO 300 ICHAM = 1 , NBCHAM
          DO 310 IARCH = 1, NBINST         
             TIME = ZR(JINST+IARCH-1)
-            NUME   = ZI(JNUME+IARCH-1)
-            IARC2 = IARCH + NUME0
+            NUM0  = ZI(JNUME+IARCH-1)
+            NUME = ZI(JORDR+NUM0-1)
+            IARC2 = IARCH + NUME0-1
           
 C         --- RECUP POINTEUR SUR CHAMP GENERALISE
           
@@ -322,14 +322,14 @@ C     --- ON CREE UN CHAMP D'HARMONIQUE DE FOURIER (CARTE CSTE) ---
          VALCMP(I) = ' '
  350  CONTINUE 
       DO 400 IARCH = 1, NBINST
-C         WRITE(6,*) 'IARCH',IARCH
-        
-         NUME   = ZI(JNUME+IARCH-1)
+C         WRITE(6,*) 'IARCH',IARCH        
+         NUM0 = ZI(JNUME+IARCH-1)
+         NUME = ZI(JORDR+NUM0-1)
          TIME = ZR(JINST+IARCH-1)
          CALL MECHTI(CHGEOM(1:8),TIME,RUNDF,RUNDF,CHTIME)
          CALL VRCINS(MODELE,MATE,CARELE,TIME,CHVARC(1:19),CODRET)
          CALL VRCREF(MODELE,MATE(1:8),CARELE(1:8),CHVREF(1:19))
-         IARC2 = IARCH + NUME0
+         IARC2 = IARCH + NUME0-1
           
 C         --- RECUP POINTEUR SUR CHAMP PHYSIQUE DANS SD RESULTAT
          DO 401 IOPT = 1, 2
@@ -359,7 +359,8 @@ C
               CHS(2) = CHES1
             ENDIF         
             IF (IOPT.EQ.2) THEN
-              NOSY='VARI_ELGA_ELNO'
+C              NOSY='VARI_ELGA_ELNO'
+              NOSY= ' '
               NC = 1
               CHS(1) = CHES1              
             ENDIF                   

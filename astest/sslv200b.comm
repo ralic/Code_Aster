@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 08/03/2011   AUTEUR PELLET J.PELLET 
 # TITRE TEST DE NON-REGRESSION D ASTER : MECANIQUE LINEAIRE 3D_SI
 # RESPONSABLE VABHHTS J.PELLET
 # sslv200b.para = tps_job 60 mem_job 250Mo ncpus 1 liste_test R
@@ -386,7 +386,7 @@ CHMEC=AFFE_CHAR_MECA(           MODELE=MO,
                                 VERI_NORM='NON',
                                 PESANTEUR=_F(GRAVITE=9.8,
                                              DIRECTION=(0.3,  0.1, -0.4,),),
-                                ROTATION=_F(VITESSE = 0.2, 
+                                ROTATION=_F(VITESSE = 0.2,
                                             AXE = (0.5, -0.2, 0.2,),),
                                 FORCE_INTERNE=(
 #  ----  MAILLES 3D
@@ -777,13 +777,13 @@ MSLINP=PROJ_CHAMP(RESULTAT=MSLIN,     METHODE='COLLOCATION',
 TEST_RESU(RESU=(
           _F( RESULTAT= MSLINP  , NOM_CHAM= 'DEPL', NUME_ORDRE=      1,
               REFERENCE= 'NON_REGRESSION', PRECISION= 1.E-10    ,
-              TYPE_TEST= 'SOMM_ABS', VALE= 1.16088954255253E+09       ),
+              TYPE_TEST= 'SOMM_ABS', VALE= 1.161575340917E+09        ),
           _F( RESULTAT= MSLINP  , NOM_CHAM= 'DEPL', NUME_ORDRE=      2,
               REFERENCE= 'NON_REGRESSION', PRECISION= 1.E-10    ,
-              TYPE_TEST= 'SOMM_ABS', VALE= 1.17703967576197E+09       ),
+              TYPE_TEST= 'SOMM_ABS', VALE= 1.1777350579081E+09       ),
           _F( RESULTAT= MSLINP  , NOM_CHAM= 'DEPL', NUME_ORDRE=      3,
               REFERENCE= 'NON_REGRESSION', PRECISION= 1.E-10    ,
-              TYPE_TEST= 'SOMM_ABS', VALE= 1.19318858783582E+09       ),
+              TYPE_TEST= 'SOMM_ABS', VALE= 1.1938935530434E+09       ),
             ),)
 
 # ----------------------------------------------------------------------

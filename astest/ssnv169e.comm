@@ -1,10 +1,10 @@
-# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 08/03/2011   AUTEUR FOUCAULT A.FOUCAULT 
 
 # TITRE COUPLAGE FLUAGE PROPRE (MODELE UMLV) ET MAZARS
 # ssnv169e.para = tps_job 240 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -164,12 +164,8 @@ L_INS = DEFI_LIST_REEL( DEBUT = -1.0,
                         INTERVALLE = (                         
                                       _F(JUSQU_A = 0., NOMBRE = 1,),
                                       _F(JUSQU_A = 300, NOMBRE = 4,),
-#                                       _F(JUSQU_A = heure, NOMBRE = 5,),
-#                                       _F(JUSQU_A = jour, NOMBRE = 5,),
-#                                      _F(JUSQU_A = 10*jour, NOMBRE = 15,),                                      _F(JUSQU_A = 10*jour, NOMBRE = 15,),
                                       _F(JUSQU_A = 864000., NOMBRE = 20,),                                      
-                                      _F(JUSQU_A = 6800000., NOMBRE = 60,),
-                                      _F(JUSQU_A = 7200000., NOMBRE = 40,),
+                                      _F(JUSQU_A = 6590000., NOMBRE = 60,),
                                       ),
                           );
                           
@@ -188,17 +184,16 @@ RESU = STAT_NON_LINE(CHAM_MATER = CAR_MAT,
                               ),
                      COMP_INCR = _F(RELATION = 'KIT_DDI',
                                     RELATION_KIT = ('BETON_UMLV_FP', 'MAZARS'),
-#                                    ALGO_C_PLAN = 'DEBORST',
                                     DEFORMATION = 'PETIT',
                                     GROUP_MA = 'Q'),
                      INCREMENT = _F(LIST_INST = DEFLIST,
-                                    INST_FIN = 7200000.,
-#                                    NUME_INST_FIN = 22,
+                                    INST_FIN = 6590000.,
                                     ),
                      NEWTON = _F(PREDICTION = 'TANGENTE',
                                  MATRICE = 'TANGENTE',
                                  REAC_ITER = 1,
                                  ),
+                     ARCHIVAGE=_F(LIST_INST=L_INS),
                      CONVERGENCE = _F(
                                  RESI_GLOB_RELA = 1.E-6,
                                  ITER_GLOB_MAXI = 100,
@@ -210,7 +205,7 @@ TEST_RESU(RESU=(
           NOM_CHAM = 'SIEF_ELGA',
           MAILLE = 'M1',
           POINT = 1,
-          NUME_ORDRE = 134,
+          NUME_ORDRE = 85,
           NOM_CMP = 'SIXX',
           VALE = 1.38880E+00,
           PRECISION = 0.0001,
@@ -218,27 +213,27 @@ TEST_RESU(RESU=(
       _F( RESULTAT = RESU,
           NOM_CHAM = 'DEPL',
           NOEUD = 'N1',
-          NUME_ORDRE = 134,
+          NUME_ORDRE = 85,
           NOM_CMP = 'DX',
-          VALE = -6.75584E-03,
+          VALE = -6.813E-03,
           PRECISION = 0.0001,
           REFERENCE = 'NON_REGRESSION'),
       _F( RESULTAT = RESU,
           NOM_CHAM = 'VARI_ELGA',
           MAILLE = 'M1',
           POINT = 1,
-          NUME_ORDRE = 134,
+          NUME_ORDRE = 85,
           NOM_CMP = 'V22',
-          VALE = 6.22702E-02,
+          VALE = 7.466E-02,
           PRECISION = 0.0001,
           REFERENCE = 'NON_REGRESSION'),
       _F( RESULTAT = RESU,
           NOM_CHAM = 'VARI_ELGA',
           MAILLE = 'M1',
           POINT = 1,
-          NUME_ORDRE = 134,
+          NUME_ORDRE = 85,
           NOM_CMP = 'V3',
-          VALE = 1.16682E-05,
+          VALE = 1.1015E-05,
           PRECISION = 0.0001,
           REFERENCE = 'NON_REGRESSION'), ),)         
                 

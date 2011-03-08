@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 08/03/2011   AUTEUR MASSIN P.MASSIN 
 # TITRE SPHERE SOUS PRESSION EXTERNE MODELISATION 3D
 # ssls123d.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -39,7 +39,7 @@ MAIL=DEFI_GROUP(reuse =MAIL,
 MODMECA=AFFE_MODELE(MAILLAGE=MAIL,
                     AFFE=_F(TOUT='OUI',
                             PHENOMENE='MECANIQUE',
-                            MODELISATION='SHB8',),);
+                            MODELISATION='SHB',),);
 
 MAIL=MODI_MAILLAGE(MAILLAGE=MAIL,reuse=MAIL,
                    ORIE_PEAU_3D=_F(GROUP_MA='SEXT',),

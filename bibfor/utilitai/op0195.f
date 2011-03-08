@@ -1,10 +1,10 @@
       SUBROUTINE OP0195()
       IMPLICIT  NONE
 C     -----------------------------------------------------------------
-C MODIF UTILITAI  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
+C MODIF UTILITAI  DATE 07/03/2011   AUTEUR MEUNIER S.MEUNIER 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -43,11 +43,10 @@ C---- COMMUNS NORMALISES  JEVEUX
       CHARACTER*8 ZK8
       CHARACTER*16 ZK16
       CHARACTER*24 ZK24
-      CHARACTER*24 VALK(2)
+      CHARACTER*24 VALK(4)
       CHARACTER*32 ZK32
       CHARACTER*80 ZK80
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
-      CHARACTER*32 JEXNOM,JEXNUM
 C     ------------------------------------------------------------------
 
       CALL JEMARQ()
@@ -121,6 +120,15 @@ C           -- SI OPERATION 'ASSE', IL Y A PEUT-ETRE UNE MEILLEURE
 C              OPTION A CHOISIR PAR DEFAUT QUE TOU_INI_ELXX
             IF (OPERA.EQ.'ASSE') THEN
               CALL GETVID('ASSE','CHAM_GD',1,1,1,CHIN,IB)
+              CALL DISMOI('F','NOM_MAILLA',CHIN,'CHAMP',IB,MA2,IB)
+              IF (MA2.NE.MA) THEN
+                VALK(1) = CHIN
+                VALK(2) = MO
+                VALK(3) = MA2
+                VALK(4) = MA
+                CALL U2MESK('F','CALCULEL4_59',4,VALK)
+              ENDIF
+
               CALL JEEXIN(CHIN//'.CELK',IRET)
               CALL DISMOI('F','NOM_GD',CHIN,'CHAMP',IB,NOMGD2,IB)
               IF (IRET.NE.0.AND.NOMGD.EQ.NOMGD2) THEN

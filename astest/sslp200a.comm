@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 08/03/2011   AUTEUR PELLET J.PELLET 
 # TITRE TEST DE NON-REGRESSION ASTER : MECANIQUE LINEAIRE 2D D_PLAN
 # RESPONSABLE VABHHTS J.PELLET
 # sslp200a.para = tps_job 60 mem_job 300Mo ncpus 1 liste_test R
@@ -359,7 +359,7 @@ CHMEC=AFFE_CHAR_MECA(           MODELE=MO,
                                VERI_NORM='NON',
                                PESANTEUR=_F(GRAVITE=9.8,
                                             DIRECTION=(0.3,  0.1, -0.4,),),
-                               ROTATION=_F(VITESSE = 0.069631062,  
+                               ROTATION=_F(VITESSE = 0.069631062,
                                            AXE = (0., 0.,   1.,),),
 #  ----  MAILLES 2D
                            FORCE_INTERNE=_F(  MAILLE = ('M42', 'M77',),
@@ -1365,22 +1365,22 @@ T_M1=MACR_LIGN_COUPE(RESULTAT=MSLI2,NOM_CHAM='EPSI_ELNO',NUME_ORDRE = 2,
 TEST_TABLE(      TABLE=T_M1,       NOM_PARA='TR_DIR_1',
                     FILTRE=_F(  NOM_PARA = 'QUANTITE',
                             VALE_K = 'MINIMUM',         ),
-                REFERENCE='NON_REGRESSION',      VALE= -3.96024324705982E+00     )
+                REFERENCE='NON_REGRESSION',      VALE=   -3.9657361302663    )
 
 TEST_TABLE(      TABLE=T_M1,       NOM_PARA='TR_DIR_1',
                     FILTRE=_F(  NOM_PARA = 'QUANTITE',
                             VALE_K = 'MAXIMUM',         ),
-                REFERENCE='NON_REGRESSION',      VALE= -3.00014158489955E+00     )
+                REFERENCE='NON_REGRESSION',      VALE=   -3.0001415848996    )
 
 TEST_TABLE(      TABLE=T_M1,       NOM_PARA='TR_DIR_2',
                     FILTRE=_F(  NOM_PARA = 'QUANTITE',
                             VALE_K = 'MINIMUM',         ),
-                REFERENCE='NON_REGRESSION',      VALE= -6.01297450692068E+00     )
+                REFERENCE='NON_REGRESSION',      VALE=   -5.5904298129475    )
 
 TEST_TABLE(      TABLE=T_M1,       NOM_PARA='TR_DIR_2',
                     FILTRE=_F(  NOM_PARA = 'QUANTITE',
                             VALE_K = 'MAXIMUM',         ),
-                REFERENCE='NON_REGRESSION',      VALE= -3.81432101789589E+00     )
+                REFERENCE='NON_REGRESSION',      VALE=   -3.8143210178959    )
 
 
 #IMPR_TABLE(TABLE=T_E1);
@@ -1404,22 +1404,22 @@ T_M2=MACR_LIGN_COUPE(RESULTAT=MSLI2,NOM_CHAM='EPSI_ELNO',NUME_ORDRE = 2,
 TEST_TABLE(      TABLE=T_M2,       NOM_PARA='TR_NOR_1',
                     FILTRE=_F(  NOM_PARA = 'QUANTITE',
                             VALE_K = 'MINIMUM',         ),
-                REFERENCE='NON_REGRESSION',      VALE= 3.12462551686911E+00      )
+                REFERENCE='NON_REGRESSION',      VALE=   3.1246255168691     )
 
 TEST_TABLE(      TABLE=T_M2,       NOM_PARA='TR_NOR_1',
                     FILTRE=_F(  NOM_PARA = 'QUANTITE',
                             VALE_K = 'MAXIMUM',         ),
-                REFERENCE='NON_REGRESSION',      VALE= 3.75536708879729E+00      )
+                REFERENCE='NON_REGRESSION',      VALE=   4.0667851163382     )
 
 TEST_TABLE(      TABLE=T_M2,       NOM_PARA='TR_NOR_2',
                     FILTRE=_F(  NOM_PARA = 'QUANTITE',
                             VALE_K = 'MINIMUM',         ),
-                REFERENCE='NON_REGRESSION',      VALE= -8.49540704945147E+00     )
+                REFERENCE='NON_REGRESSION',      VALE=   -8.1408663746168    )
 
 TEST_TABLE(      TABLE=T_M2,       NOM_PARA='TR_NOR_2',
                     FILTRE=_F(  NOM_PARA = 'QUANTITE',
                             VALE_K = 'MAXIMUM',         ),
-                REFERENCE='NON_REGRESSION',      VALE= -5.60024446298272E+00     )
+                REFERENCE='NON_REGRESSION',      VALE=   -5.6002444629827    )
 
 #IMPR_TABLE(TABLE=T_E2);
 
@@ -1442,22 +1442,22 @@ T_M3=MACR_LIGN_COUPE(RESULTAT=MSLI2,NOM_CHAM='DEPL',NUME_ORDRE = 2,
 TEST_TABLE(      TABLE=T_M3,       NOM_PARA='DX',
                     FILTRE=_F(  NOM_PARA = 'QUANTITE',
                             VALE_K = 'MINIMUM',         ),
-                REFERENCE='NON_REGRESSION',      VALE= -2.59157326871962E+01     )
+                REFERENCE='NON_REGRESSION',      VALE=   -25.915732687196    )
 
 TEST_TABLE(      TABLE=T_M3,       NOM_PARA='DX',
                     FILTRE=_F(  NOM_PARA = 'QUANTITE',
                             VALE_K = 'MAXIMUM',         ),
-                REFERENCE='NON_REGRESSION',      VALE= -1.85251956096191E+01     )
+                REFERENCE='NON_REGRESSION',      VALE=   -20.896743867263    )
 
 TEST_TABLE(      TABLE=T_M3,       NOM_PARA='DY',
                     FILTRE=_F(  NOM_PARA = 'QUANTITE',
                             VALE_K = 'MINIMUM',         ),
-                REFERENCE='NON_REGRESSION',      VALE= 3.29029376827705E+01      )
+                REFERENCE='NON_REGRESSION',      VALE=   34.008389433351     )
 
 TEST_TABLE(      TABLE=T_M3,       NOM_PARA='DY',
                     FILTRE=_F(  NOM_PARA = 'QUANTITE',
                             VALE_K = 'MAXIMUM',         ),
-                REFERENCE='NON_REGRESSION',      VALE= 6.06629157677694E+01      )
+                REFERENCE='NON_REGRESSION',      VALE=   60.662915767769     )
 
 #IMPR_TABLE(TABLE=T_E3);
 

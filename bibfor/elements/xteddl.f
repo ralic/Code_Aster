@@ -3,9 +3,9 @@
      &                  MAT,VECT,DDLM,NFISS,JFISNO)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 21/12/2010   AUTEUR MASSIN P.MASSIN 
+C MODIF ELEMENTS  DATE 08/03/2011   AUTEUR MASSIN P.MASSIN 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -96,11 +96,10 @@ C
  310    CONTINUE
       ENDIF  
 C     TYPE D'ENRICHISSEMENT DE L'ELEMENT ET TYPE D'ELIMINATION
-
       CALL TEATTR (NOMTE,'S','XFEM',TYENEL,IER)
-      IF (TYENEL(1:2).EQ.'XH') IELIM=1
-      IF (TYENEL(1:2).EQ.'XT') IELIM=2
-      IF (TYENEL(1:3).EQ.'XHT') IELIM=3
+       IF (TYENEL(1:2).EQ.'XH') IELIM=1
+       IF (TYENEL(1:2).EQ.'XT') IELIM=2
+       IF (TYENEL(1:3).EQ.'XHT') IELIM=3
       IF (LCONTX) IELIM=4
 
 C     REMPLISSAGE DU VECTEUR POS : POSITION DES DDLS A SUPPRIMER
@@ -209,11 +208,14 @@ C        L'ELIMINATION DES DDLS HEAVISIDE
      &           OPTION.EQ.'RIGI_CONT'   .OR.
      &           OPTION.EQ.'RIGI_FROT'   .OR.
      &           OPTION.EQ.'MASS_MECA') THEN
-          CALL ASSERT(MATSYM)
           DMIN=R8MAEM()
           DMAX=-R8MAEM()
           DO 110 I = 1,NDDL
-            CODIA=MAT((I-1)*I/2+I)
+            IF(MATSYM) THEN
+               CODIA=MAT((I-1)*I/2+I)
+            ELSE
+               CODIA=MAT((I-1)*NDDL+I)
+            ENDIF
             IF (CODIA.GT.DMAX) THEN
               DMAX=CODIA
             ELSE IF (CODIA.LT.DMIN) THEN
@@ -238,11 +240,16 @@ C        MISE A ZERO DES TERMES I
      &             OPTION.EQ.'RIGI_CONT'   .OR.
      &             OPTION.EQ.'RIGI_FROT'   .OR.
      &             OPTION.EQ.'MASS_MECA') THEN
-            CALL ASSERT(MATSYM)
             DO 210 J = 1,NDDL
+             IF(MATSYM) THEN
               IF (J.LT.I)  MAT((I-1)*I/2+J) = 0.D0
               IF (J.EQ.I)  MAT((I-1)*I/2+J) = CODIA
               IF (J.GT.I)  MAT((J-1)*J/2+I) = 0.D0
+             ELSE
+              IF (J.NE.I)  MAT((I-1)*NDDL+J) = 0.D0
+              IF (J.NE.I)  MAT((J-1)*NDDL+I) = 0.D0              
+              IF (J.EQ.I)  MAT((I-1)*NDDL+J) = CODIA              
+             ENDIF
  210        CONTINUE
           ENDIF
           IF (OPTION.EQ.'RAPH_MECA' .OR.

@@ -4,7 +4,7 @@
       CHARACTER*1         TYPE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 01/03/2011   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 08/03/2011   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -135,7 +135,6 @@ C       -- SI NOM_CMP EST UTILISE, IL FAUT "REDUIRE" CNS :
           CALL COPISD('CHAM_NO_S','V',CNS2,CNS)
           CALL DETRSD('CHAM_NO_S',CNS2)
         ENDIF
-        CALL IMPRSD('CHAMP',CNS,6,'CNS APRES RED')
         GOTO 200
       ENDIF
 

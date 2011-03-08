@@ -1,4 +1,4 @@
-# MODIF  DATE 01/02/2011   AUTEUR MASSIN P.MASSIN 
+# MODIF  DATE 08/03/2011   AUTEUR MASSIN P.MASSIN 
 # TITRE ZONE COHESIVE CZM_EXP_REG AVEC X-FEM
 # ssnp144d.para = tps_job 360 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -67,8 +67,6 @@ MAILLAG2=DEFI_GROUP(reuse =MAILLAG2,
                                       NOEUD_CENTRE='N20',
                                       PRECISION=1.0E-10,
                                       VECT_NORMALE=(0.0,0.0,1.0),),
-                                   _F(NOM='GN',
-                                      UNION=('FISS_INF','FISS_SUP'),)
                                     ),);
 
 
@@ -328,78 +326,97 @@ for i in range(1,nbc) :
 #            POST-TRAITEMENT POUR LA VISUALISATION X-FEM
 # -------------------------------------------------------------
 
-MA_XFEM=POST_MAIL_XFEM(MODELE = MODELEK,);
-
-MA_XFEM=DEFI_GROUP(reuse =MA_XFEM,
-                    MAILLAGE=MA_XFEM,
-                    CREA_GROUP_NO=(_F(GROUP_MA='VOL',),
-                                   _F(NOM='INTERF',
-                                    OPTION='PLAN',
-                                    POINT = (0.0,0.0,12.5),
-                                    PRECISION=0.001,
-                                    VECT_NORMALE=(0.,0.,1.),),),);
+MA_XFEM=POST_MAIL_XFEM(MODELE=MODELEK,
+                       PREF_GROUP_CO='NFISSU',);
 
 MOD_VISU=AFFE_MODELE(MAILLAGE=MA_XFEM,
                      AFFE=_F(TOUT='OUI',
-                              PHENOMENE='MECANIQUE',
-                              MODELISATION='3D',),) 
+                             PHENOMENE='MECANIQUE',
+                             MODELISATION='3D',),);
 
-RESXFEM1=POST_CHAM_XFEM(MODELE_VISU   = MOD_VISU,
-                        RESULTAT      = UTOT1,);
-                        
+RESXFEM1=POST_CHAM_XFEM(RESULTAT=UTOT1,
+                        MODELE_VISU=MOD_VISU,);
+
 RESXFEM2=POST_CHAM_XFEM(RESULTAT=UTOT2,
                         MODELE_VISU=MOD_VISU,);
 #--------------------------------------------------------
 #                  VALIDATION DES RESULTATS
 #--------------------------------------------------------
-TOLE=1.0E-7
+TOLE=2.0E-8 
 
-LLAG=[3.66296853301E+05 ,
- 1.8314842665E+05 ,
- 1.098890559903E+06 ,
- 1.75867720687844E+05 ,
- 58622.573562549 ,
- 1.75867720687844E+05 ,
- 28117.686527187 ,
- 4686.28108785798 ,
- 28117.686527187 ,
- 718.731177854856 ]
-LDEP=[1.36362396705485E-07 ,
- 6.818119835274E-08 ,
- 4.0908719011645E-07 ,
- 7.49999999999582E-04 ,
- 2.49999999999582E-04 ,
- 7.49999999999582E-04 ,
- 1.49999999999958E-03 ,
- 2.49999999999582E-04 ,
- 1.49999999999958E-03 ,
- 2.99999999999958E-03 ]
+LLAG=[3.66296853301E+05,
+ 1.8314842665E+05,
+ 1.098890559903E+06,
+ 1.75867720687844E+05,
+ 5.8622573562549E+04,
+ 1.75867720687844E+05,
+ 2.8117686527187E+04,
+ 4.68628108785798E+03,
+ 2.8117686527187E+04,
+ 7.18731177854856E+02]
+ 
+LDEP=[2.72724793411E-07 ,
+ 1.36362396705E-07 ,
+ 8.18174380233E-07 ,
+ 1.50000000001E-03 ,
+ 5.0000000001E-04 ,
+ 1.50000000001E-03 ,
+ 3.00000000001E-03 ,
+ 5.00000000001E-04 ,
+ 3.00000000001E-03 ,
+ 6.00000000001E-03 ]
 
 TAB1 = [None]*nbc
 TAB2 = [None]*nbc
 TAB3 = [None]*nbc
 TAB4 = [None]*nbc
 
+TAB10 = [None]*nbc
+TAB20 = [None]*nbc
+TAB30 = [None]*nbc
+TAB40 = [None]*nbc
 #--------------------------------------------------------
 #                           MODE I    
 #--------------------------------------------------------
-
+SAUT=FORMULE(NOM_PARA=('DZP','DZM'),
+             VALE='DZP-DZM',);
+             
 for i in range(0,nbc) :
 
    TAB1[i]=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
-                                   GROUP_NO=('INTERF',),
+                                   GROUP_NO=('NFISSU',),
                                    RESULTAT=RESXFEM1,
                                    NOM_CHAM='DEPL',
                                    INST=LINST[i],
                                    TOUT_CMP='OUI',
                                    OPERATION='EXTRACTION',),);
-   TAB2[i]=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
-                                   GROUP_NO=('GN',),
-                                   RESULTAT=UTOT1,
-                                   NOM_CHAM='DEPL',
-                                   INST=LINST[i],
-                                   TOUT_CMP='OUI',
-                                   OPERATION='EXTRACTION',),);
+   TAB2[i]=CALC_TABLE(TABLE=TAB1[i],
+                      ACTION=(_F(OPERATION='FILTRE',
+                                NOM_PARA='NOEUD',
+                                CRIT_COMP='REGEXP',
+                                VALE_K='NM',),
+                               _F(OPERATION='RENOMME',
+                                NOM_PARA=('DZ','DZM'),), 
+                               ),);
+                                                               
+   TAB3[i]=CALC_TABLE(TABLE=TAB1[i],
+                      ACTION=(_F(OPERATION='FILTRE',
+                                NOM_PARA='NOEUD',
+                                CRIT_COMP='REGEXP',
+                                VALE_K='NP',),
+                             _F(OPERATION='RENOMME',
+                                NOM_PARA=('DZ','DZP'),),
+                              ),);
+                                
+   TAB4[i]=CALC_TABLE(TABLE=TAB2[i],
+                      ACTION=(_F(OPERATION='COMB',
+                                TABLE=TAB3[i],
+                                NOM_PARA=('INST','COOR_X','COOR_Y'),),
+                              _F(OPERATION='OPER',
+                                FORMULE=SAUT,
+                                NOM_PARA='SAUZ',),
+                              ),);                            
+                                                           
    TEST_TABLE(TABLE=TAB1[i],
               NOM_PARA='LAGS_C',
               TYPE_TEST='MAX',
@@ -414,76 +431,98 @@ for i in range(0,nbc) :
               VALE=LLAG[i],
               CRITERE='RELATIF',
               PRECISION=TOLE,
-              REFERENCE='ANALYTIQUE',);
-           
-   TEST_TABLE(TABLE=TAB2[i],
-              NOM_PARA='H1Z',
+              REFERENCE='ANALYTIQUE',); 
+                        
+   TEST_TABLE(TABLE=TAB4[i],
+              NOM_PARA='SAUZ',
               TYPE_TEST='MAX',
               VALE=LDEP[i],
               CRITERE='RELATIF',
               PRECISION=TOLE,
               REFERENCE='ANALYTIQUE',);
            
-   TEST_TABLE(TABLE=TAB2[i],
-              NOM_PARA='H1Z',
+   TEST_TABLE(TABLE=TAB4[i],
+              NOM_PARA='SAUZ',
               TYPE_TEST='MIN',
               VALE=LDEP[i],
               CRITERE='RELATIF',
               PRECISION=TOLE,
-              REFERENCE='ANALYTIQUE',);
+              REFERENCE='ANALYTIQUE',);  
 
 #--------------------------------------------------------
-#                           MODE II   
+#                           MODE II    
 #--------------------------------------------------------
-              
+SAUTX=FORMULE(NOM_PARA=('DXP','DXM'),
+             VALE='DXP-DXM',);
+             
 for i in range(0,nbc) :
-
-   TAB3[i]=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
-                                   GROUP_NO=('INTERF',),
+                                   
+   TAB10[i]=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
+                                   GROUP_NO=('NFISSU',),
                                    RESULTAT=RESXFEM2,
                                    NOM_CHAM='DEPL',
                                    INST=LINST[i],
                                    TOUT_CMP='OUI',
                                    OPERATION='EXTRACTION',),);
-   TAB4[i]=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
-                                   GROUP_NO=('GN',),
-                                   RESULTAT=UTOT2,
-                                   NOM_CHAM='DEPL',
-                                   INST=LINST[i],
-                                   TOUT_CMP='OUI',
-                                   OPERATION='EXTRACTION',),);
-   TEST_TABLE(TABLE=TAB3[i],
+                                   
+   TAB20[i]=CALC_TABLE(TABLE=TAB10[i],
+                       ACTION=(_F(OPERATION='FILTRE',
+                                NOM_PARA='NOEUD',
+                                CRIT_COMP='REGEXP',
+                                VALE_K='NM',),
+                               _F(OPERATION='RENOMME',
+                                NOM_PARA=('DX','DXM'),), 
+                               ),);
+                                                               
+   TAB30[i]=CALC_TABLE(TABLE=TAB10[i],
+                      ACTION=(_F(OPERATION='FILTRE',
+                                NOM_PARA='NOEUD',
+                                CRIT_COMP='REGEXP',
+                                VALE_K='NP',),
+                             _F(OPERATION='RENOMME',
+                                NOM_PARA=('DX','DXP'),),
+                              ),);
+                                
+   TAB40[i]=CALC_TABLE(TABLE=TAB20[i],
+                      ACTION=(_F(OPERATION='COMB',
+                                TABLE=TAB30[i],
+                                NOM_PARA=('INST','COOR_X','COOR_Y'),),
+                              _F(OPERATION='OPER',
+                                FORMULE=SAUTX,
+                                NOM_PARA='SAUX',),
+                              ),);                            
+   TEST_TABLE(TABLE=TAB10[i],
               NOM_PARA='LAGS_F1',
               TYPE_TEST='MAX',
+              VALE_ABS='OUI',
               VALE=LLAG[i],
               CRITERE='RELATIF',
-              VALE_ABS='OUI',
               PRECISION=TOLE,
               REFERENCE='ANALYTIQUE',);
            
-   TEST_TABLE(TABLE=TAB3[i],
+   TEST_TABLE(TABLE=TAB10[i],
               NOM_PARA='LAGS_F1',
               TYPE_TEST='MIN',
+              VALE_ABS='OUI',
               VALE=LLAG[i],
               CRITERE='RELATIF',
-              VALE_ABS='OUI',
               PRECISION=TOLE,
-              REFERENCE='ANALYTIQUE',);
-           
-   TEST_TABLE(TABLE=TAB4[i],
-              NOM_PARA='H1X',
+              REFERENCE='ANALYTIQUE',); 
+                        
+   TEST_TABLE(TABLE=TAB40[i],
+              NOM_PARA='SAUX',
               TYPE_TEST='MAX',
+              VALE_ABS='OUI',
               VALE=LDEP[i],
-              VALE_ABS='OUI',              
               CRITERE='RELATIF',
               PRECISION=TOLE,
               REFERENCE='ANALYTIQUE',);
            
-   TEST_TABLE(TABLE=TAB4[i],
-              NOM_PARA='H1X',
+   TEST_TABLE(TABLE=TAB40[i],
+              NOM_PARA='SAUX',
               TYPE_TEST='MIN',
+              VALE_ABS='OUI',
               VALE=LDEP[i],
-              VALE_ABS='OUI',              
               CRITERE='RELATIF',
               PRECISION=TOLE,
               REFERENCE='ANALYTIQUE',);

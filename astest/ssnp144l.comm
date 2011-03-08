@@ -1,4 +1,4 @@
-# MODIF  DATE 01/02/2011   AUTEUR MASSIN P.MASSIN 
+# MODIF  DATE 08/03/2011   AUTEUR MASSIN P.MASSIN 
 # TITRE ZONE COHESIVE CZM_EXP_REG AVEC X-FEM
 # ssnp144l.para = tps_job 300 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -28,8 +28,7 @@ PRE_GIBI();
 
 MAILLAG1=LIRE_MAILLAGE();
 
-MAILLAG2=CREA_MAILLAGE(MAILLAGE=MAILLAG1,
-                       LINE_QUAD=_F(GROUP_MA='SURF',),);
+MAILLAG2=CREA_MAILLAGE(MAILLAGE=MAILLAG1,);
 
 #----------------------------------------------
 #                   MODELE ET FISSURE
@@ -38,7 +37,7 @@ MAILLAG2=CREA_MAILLAGE(MAILLAGE=MAILLAG1,
 MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAG2,
                      AFFE=(_F(GROUP_MA='SURF',
                               PHENOMENE='MECANIQUE',
-                              MODELISATION='C_PLAN_XFEM_CONT',),
+                              MODELISATION='C_PLAN',),
                            _F(GROUP_MA=('LIG1','LIG3',),
                               PHENOMENE='MECANIQUE',
                               MODELISATION='C_PLAN',),),);
@@ -71,8 +70,7 @@ MAILLAG2=DEFI_GROUP(reuse =MAILLAG2,
                                       NOEUD_CENTRE='N6',
                                       VECT_NORMALE=(0.,1.),
                                       PRECISION=0.00001,),
-                                   _F(NOM='GN',
-                                      UNION=('NINF2','NSUP2'),),),);
+                                   ),);
 
 # FORME ANALYTIQUE POUR LA FISSURE
 
@@ -91,7 +89,7 @@ FISS=DEFI_FISS_XFEM(MODELE=MODELEIN,
 
 MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,
                          FISSURE=FISS,
-                         CONTACT='P1P1A',);
+                         CONTACT='P1P1',);
 
 CTXFEM = DEFI_CONTACT(
             MODELE         = MODELEK,
@@ -102,7 +100,7 @@ CTXFEM = DEFI_CONTACT(
                        ALGO_CONT='CZM',
                        COEF_ECHELLE=1.,
                        FISS_MAIT = FISS,
-                       ALGO_LAGR='NON',
+                       ALGO_LAGR='VERSION2',
                        RELATION='CZM_EXP_REG',),),);
                        
 CHXFEM=AFFE_CHAR_MECA(MODELE=MODELEK,
@@ -217,16 +215,7 @@ UTOT1=STAT_NON_LINE(reuse =UTOT1,
 # -------------------------------------------------------------
 
 MA_XFEM=POST_MAIL_XFEM(MODELE=MODELEK,
-                       MAILLAGE_SAIN=MAILLAG1,);
-
-MA_XFEM=DEFI_GROUP(reuse =MA_XFEM,
-                   MAILLAGE=MA_XFEM,
-                   CREA_GROUP_NO=(_F(GROUP_MA='SURF',),
-                                 _F(NOM='INTERF',
-                                    OPTION='PLAN',
-                                    POINT = (0.0,2.5),
-                                    PRECISION=0.001,
-                                    VECT_NORMALE=(0.,1.),),),);
+                       PREF_GROUP_CO='NFISSU',);
 
 MOD_VISU=AFFE_MODELE(MAILLAGE=MA_XFEM,
                      AFFE=_F(TOUT='OUI',
@@ -234,17 +223,17 @@ MOD_VISU=AFFE_MODELE(MAILLAGE=MA_XFEM,
                              MODELISATION='C_PLAN',),);
 
 RESXFEM1=POST_CHAM_XFEM(RESULTAT=UTOT1,
-                        MAILLAGE_SAIN=MAILLAG1,
                         MODELE_VISU=MOD_VISU,);
 #--------------------------------------------------------
 #                  VALIDATION DES RESULTATS
 #--------------------------------------------------------
-TOLE=1.0E-12 
+TOLE=1.0E-8
 LINST=[0.5,1.]
 LLAG=[3.66296853301E+05 ,-3.66296853301E+05 ]
  
-LDEP=[1.36362396705485E-07 ,-1.36362396705485E-07 ]
+LDEP=[2.72724793411E-07 ,-2.72724793411E-07 ]
 nbc=2
+
 TAB1 = [None]*nbc
 TAB2 = [None]*nbc
 TAB3 = [None]*nbc
@@ -254,54 +243,76 @@ TAB4 = [None]*nbc
 #                           MODE I    
 #--------------------------------------------------------
 
+SAUT=FORMULE(NOM_PARA=('DYP','DYM'),
+             VALE='DYP-DYM',);
 
 for i in range(0,nbc) :
+                                   
    TAB1[i]=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
-                                GROUP_NO=('INTERF',),
-                                RESULTAT=RESXFEM1,
-                                NOM_CHAM='DEPL',
-                                INST=LINST[i],
-                                TOUT_CMP='OUI',
-                                OPERATION='EXTRACTION',),);
-   TAB2[i]=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
-                                GROUP_NO=('GN',),
-                                RESULTAT=UTOT1,
-                                NOM_CHAM='DEPL',
-                                INST=LINST[i],
-                                TOUT_CMP='OUI',
-                                OPERATION='EXTRACTION',),);
+                                   GROUP_NO=('NFISSU',),
+                                   RESULTAT=RESXFEM1,
+                                   NOM_CHAM='DEPL',
+                                   INST=LINST[i],
+                                   TOUT_CMP='OUI',
+                                   OPERATION='EXTRACTION',),);
+   TAB2[i]=CALC_TABLE(TABLE=TAB1[i],
+                      ACTION=(_F(OPERATION='FILTRE',
+                                NOM_PARA='NOEUD',
+                                CRIT_COMP='REGEXP',
+                                VALE_K='NM',),
+                               _F(OPERATION='RENOMME',
+                                NOM_PARA=('DY','DYM'),), 
+                               ),);
+                                                               
+   TAB3[i]=CALC_TABLE(TABLE=TAB1[i],
+                      ACTION=(_F(OPERATION='FILTRE',
+                                NOM_PARA='NOEUD',
+                                CRIT_COMP='REGEXP',
+                                VALE_K='NP',),
+                             _F(OPERATION='RENOMME',
+                                NOM_PARA=('DY','DYP'),),
+                              ),);
+                                
+   TAB4[i]=CALC_TABLE(TABLE=TAB2[i],
+                      ACTION=(_F(OPERATION='COMB',
+                                TABLE=TAB3[i],
+                                NOM_PARA=('INST','COOR_X'),),
+                              _F(OPERATION='OPER',
+                                FORMULE=SAUT,
+                                NOM_PARA='SAUY',),
+                              ),);                            
+                                   
+                                                              
    TEST_TABLE(TABLE=TAB1[i],
-           NOM_PARA='LAGS_C',
-           TYPE_TEST='MAX',
-           VALE=LLAG[i],
-           CRITERE='RELATIF',
-           PRECISION=TOLE,
-           REFERENCE='ANALYTIQUE',);
-        
+              NOM_PARA='LAGS_C',
+              TYPE_TEST='MAX',
+              VALE=LLAG[i],
+              CRITERE='RELATIF',
+              PRECISION=TOLE,
+              REFERENCE='ANALYTIQUE',);
+           
    TEST_TABLE(TABLE=TAB1[i],
-           NOM_PARA='LAGS_C',
-           TYPE_TEST='MIN',
-           VALE=LLAG[i],
-           CRITERE='RELATIF',
-           PRECISION=TOLE,
-           REFERENCE='ANALYTIQUE',);
-        
-   TEST_TABLE(TABLE=TAB2[i],
-           NOM_PARA='H1Y',
-           TYPE_TEST='MAX',
-           VALE=LDEP[i],
-           CRITERE='RELATIF',
-           PRECISION=TOLE,
-           REFERENCE='ANALYTIQUE',);
-        
-   TEST_TABLE(TABLE=TAB2[i],
-           NOM_PARA='H1Y',
-           TYPE_TEST='MIN',
-           VALE=LDEP[i],
-           CRITERE='RELATIF',
-           PRECISION=TOLE,
-           REFERENCE='ANALYTIQUE',);
-
-
+              NOM_PARA='LAGS_C',
+              TYPE_TEST='MIN',
+              VALE=LLAG[i],
+              CRITERE='RELATIF',
+              PRECISION=TOLE,
+              REFERENCE='ANALYTIQUE',); 
+                        
+   TEST_TABLE(TABLE=TAB4[i],
+              NOM_PARA='SAUY',
+              TYPE_TEST='MAX',
+              VALE=LDEP[i],
+              CRITERE='RELATIF',
+              PRECISION=TOLE,
+              REFERENCE='ANALYTIQUE',);
+           
+   TEST_TABLE(TABLE=TAB4[i],
+              NOM_PARA='SAUY',
+              TYPE_TEST='MIN',
+              VALE=LDEP[i],
+              CRITERE='RELATIF',
+              PRECISION=TOLE,
+              REFERENCE='ANALYTIQUE',);  
 
 FIN();

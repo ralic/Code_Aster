@@ -1,4 +1,4 @@
-#@ MODIF sd_xfem SD  DATE 22/02/2011   AUTEUR MACOCCO K.MACOCCO 
+#@ MODIF sd_xfem SD  DATE 08/03/2011   AUTEUR MASSIN P.MASSIN 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -51,6 +51,12 @@ class sd_fiss_xfem(AsBase):
     CARAFOND        = Facultatif(AsVR(lonmax=12,))
     JONFISS = Facultatif(AsVK8())
     JONCOEF = Facultatif(AsVI())
+#   objets relatifs a la grille auxiliaire
+    GRILLE_MODELE  = Facultatif(AsVK8(SDNom(nomj='.GRI.MODELE'),lonmax=1,))
+    GRILLE_LNNO    = Facultatif(sd_cham_no(SDNom(nomj='.GRI.LNNO')))
+    GRILLE_LTNO    = Facultatif(sd_cham_no(SDNom(nomj='.GRI.LTNO')))
+    GRILLE_GRLNNO  = Facultatif(sd_cham_no(SDNom(nomj='.GRI.GRLNNO')))
+    GRILLE_GRLTNO  = Facultatif(sd_cham_no(SDNom(nomj='.GRI.GRLTNO')))
 
 # I.2) objets relatifs a l'enrichissement
 
@@ -68,9 +74,9 @@ class sd_fiss_xfem(AsBase):
 
     PRO_MES_EL  = Facultatif(sd_cham_elem(SDNom(nomj='.PRO.MES_EL')))
     PRO_NORMAL  = Facultatif(sd_cham_elem(SDNom(nomj='.PRO.NORMAL')))
+#   objets relatifs a la localisation du domaine de calcul
     PRO_RAYON_TORE  = Facultatif(AsVR(SDNom(nomj='.PRO.RAYON_TORE'),lonmax=1,))
     PRO_NOEUD_TORE  = Facultatif(AsVL(SDNom(nomj='.PRO.NOEUD_TORE')))
-    PRO_MOD_GRILLE  = Facultatif(AsVK8(SDNom(nomj='.PRO.MOD_GRILLE'),lonmax=1,))
 
 # I.4) objets relatifs au contact
 
@@ -90,7 +96,8 @@ class sd_fiss_xfem(AsBase):
         sdu_ensemble((self.LISRL, self.LISCO))
         sdu_ensemble((self.PRO_MES_EL.CELD, self.PRO_NORMAL.CELD))
         sdu_ensemble((self.PRO_RAYON_TORE, self.PRO_NOEUD_TORE))
-
+        sdu_ensemble((self.GRILLE_MODELE, self.GRILLE_LNNO.DESC, self.GRILLE_GRLNNO.DESC))
+        sdu_ensemble((self.GRILLE_LTNO.DESC, self.GRILLE_GRLTNO.DESC))
 
 #-------------------------------
 #       II. sd modele

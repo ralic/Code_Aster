@@ -1,0 +1,534 @@
+# MODIF  DATE 08/03/2011   AUTEUR MASSIN P.MASSIN 
+# TITRE VALIDATION DE L'UTILISATION D'UNE GRILLE AVEC UNE FISSURE X-FEM SUR UN MAILLAGE RAFFINE PAR HOMARD
+# zzzz283a.para = tps_job 120 mem_job 256Mo ncpus 1 liste_test S
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+# RESPONSABLE MASSIN P.MASSIN
+
+DEBUT(CODE=_F(NOM='ZZZZ283A', NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'),)
+
+#----------------------------------------------
+#                 MAILLAGE
+#----------------------------------------------
+
+box=LIRE_MAILLAGE(FORMAT='MED')
+
+MODbox=AFFE_MODELE(MAILLAGE=box,
+                   AFFE=_F(GROUP_MA=('VOL',),
+                           PHENOMENE='MECANIQUE',
+                           MODELISATION='3D',)),
+
+#----------------------------------------------
+#                 GRILLE
+#----------------------------------------------
+
+# ON UTILISE LE MEME MAILLAGE POUR LA GRILLE
+grille=DEFI_GRILLE(MAILLAGE=box)
+
+GriAux=AFFE_MODELE(GRILLE=grille,
+                   AFFE=_F(GROUP_MA=('VOL',),
+                           PHENOMENE='MECANIQUE',
+                           MODELISATION='3D',)),
+
+# FORMULE POUR LE CALCUL DE LA DIFFERENCE ENTRE LES LEVEL SETS
+DIFFER=FORMULE(NOM_PARA=('X1','XGR'),
+               VALE='X1-XGR',);
+
+# TOLERANCE SUR LA DIFFERENCE ENTRE LES LEVEL SETS: 1% LONGUEUR ARETE MAILLAGE
+tol=0.01
+
+#----------------------------------------------
+# FISS: DEFINITION PAR FONCTIONS
+#----------------------------------------------
+
+fLSN=FORMULE(NOM_PARA='Z',
+             VALE='Z')
+fLST=FORMULE(NOM_PARA='Y',
+             VALE='Y-1.0')
+
+FISS=DEFI_FISS_XFEM(DEFI_FISS=_F(FONC_LN=fLSN,
+                                 FONC_LT=fLST),
+                    ORIE_FOND=_F(PFON_INI  = (4., 1., 0.),
+                                 VECT_ORIE = (0. , 0. , 1. ),
+                                 POINT_ORIG = (2., 0., 0.),),
+                    MODELE_GRILLE=GriAux,
+                    MODELE=MODbox,);
+
+#----------------------------------------------
+# EXTRACTION DES LEVEL SETS DU MODELE
+#----------------------------------------------
+
+LSN=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
+               OPERATION='EXTR',
+               NOM_CHAM='LNNO',
+               FISSURE=FISS,);
+
+LST=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
+               OPERATION='EXTR',
+               NOM_CHAM='LTNO',
+               FISSURE=FISS,);
+
+GLSN=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
+                OPERATION='EXTR',
+                NOM_CHAM='GRLNNO',
+                FISSURE=FISS,);
+
+GLST=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
+                OPERATION='EXTR',
+                NOM_CHAM='GRLTNO',
+                FISSURE=FISS,);
+
+
+#----------------------------------------------
+# EXTRACTION DES LEVEL SETS DE LA GRILLE
+#----------------------------------------------
+
+LSNgr=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
+                 OPERATION='EXTR',
+                 NOM_CHAM='GRI.LNNO',
+                 FISSURE=FISS,);
+
+LSTgr=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
+                 OPERATION='EXTR',
+                 NOM_CHAM='GRI.LTNO',
+                 FISSURE=FISS,);
+
+GLSNgr=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
+                  OPERATION='EXTR',
+                  NOM_CHAM='GRI.GRLNNO',
+                  FISSURE=FISS,);
+
+GLSTgr=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
+                  OPERATION='EXTR',
+                  NOM_CHAM='GRI.GRLTNO',
+                  FISSURE=FISS,);
+
+#----------------------------------------------
+# RAFFINEMENT MAILLAGE PAR HOMARD
+#----------------------------------------------
+
+boxRaf=CO('boxRaf')
+LSNraf=CO('LSNraf')
+LSTraf=CO('LSTraf')
+
+MACR_ADAP_MAIL(MAILLAGE_N=box,
+               MAILLAGE_NP1=boxRaf,
+               ADAPTATION='RAFFINEMENT_ZONE',
+               ZONE=_F(TYPE='BOITE',
+                       X_MINI=0.,
+                       X_MAXI=4.,
+                       Y_MINI=0.,
+                       Y_MAXI=4.,
+                       Z_MINI=-1.,
+                       Z_MAXI=1.,),
+               ELEMENTS_NON_HOMARD='IGNORER',
+               MAJ_CHAM=(_F(CHAM_GD=LSN,
+                            TYPE_CHAM='NOEU_NEUT_R',
+                            CHAM_MAJ=LSNraf,),
+                         _F(CHAM_GD=LST,
+                            TYPE_CHAM='NOEU_NEUT_R',
+                            CHAM_MAJ=LSTraf,),),
+               )
+
+MODboxR=AFFE_MODELE(MAILLAGE=boxRaf,
+                    AFFE=_F(GROUP_MA=('VOL',),
+                            PHENOMENE='MECANIQUE',
+                            MODELISATION='3D',)),
+
+#----------------------------------------------
+# DEFINITION DE LA FISSURE SUR LE MAILLAGE RAFFINE
+#----------------------------------------------
+
+# METHODE 1
+
+FISSraf1=DEFI_FISS_XFEM(MODELE=MODboxR,
+                        DEFI_FISS=_F(CHAM_NO_LSN=LSNraf,
+                                     CHAM_NO_LST=LSTraf),
+                        DEFI_FISS_GRILLE=_F(FISSURE=FISS),
+                        ORIE_FOND=_F(PFON_INI  = (4., 1., 0.),
+                                     VECT_ORIE = (0. , 0. , 1. ),
+                                     POINT_ORIG = (2., 0., 0.),),)
+
+# METHODE 2
+
+FISSraf2=DEFI_FISS_XFEM(MODELE=MODboxR,
+                        MODELE_GRILLE=GriAux,
+                        DEFI_FISS=_F(CHAM_NO_LSN=LSNraf,
+                                     CHAM_NO_LST=LSTraf),
+                        DEFI_FISS_GRILLE=_F(CHAM_NO_LSN_GRILLE=LSNgr,
+                                            CHAM_NO_LST_GRILLE=LSTgr,
+                                            CHAM_NO_GRLSN_GRILLE=GLSNgr,
+                                            CHAM_NO_GRLST_GRILLE=GLSTgr,),
+                        ORIE_FOND=_F(PFON_INI  = (4., 1., 0.),
+                                     VECT_ORIE = (0. , 0. , 1. ),
+                                     POINT_ORIG = (2., 0., 0.),),)
+
+#--------------------------------------------------------
+# EXTRACTION DES LEVEL SETS DE LA GRILLE POUR FISSraf1
+#--------------------------------------------------------
+
+LSNgr1=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
+                  OPERATION='EXTR',
+                  NOM_CHAM='GRI.LNNO',
+                  FISSURE=FISSraf1,);
+
+LSTgr1=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
+                  OPERATION='EXTR',
+                  NOM_CHAM='GRI.LTNO',
+                  FISSURE=FISSraf1,);
+
+GLSNgr1=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
+                   OPERATION='EXTR',
+                   NOM_CHAM='GRI.GRLNNO',
+                   FISSURE=FISSraf1,);
+
+GLSTgr1=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
+                   OPERATION='EXTR',
+                   NOM_CHAM='GRI.GRLTNO',
+                   FISSURE=FISSraf1,);
+
+#--------------------------------------------------------
+# EXTRACTION DES LEVEL SETS DE LA GRILLE POUR FISSraf2
+#--------------------------------------------------------
+
+LSNgr2=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
+                  OPERATION='EXTR',
+                  NOM_CHAM='GRI.LNNO',
+                  FISSURE=FISSraf2,);
+
+LSTgr2=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
+                  OPERATION='EXTR',
+                  NOM_CHAM='GRI.LTNO',
+                  FISSURE=FISSraf2,);
+
+GLSNgr2=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
+                   OPERATION='EXTR',
+                   NOM_CHAM='GRI.GRLNNO',
+                   FISSURE=FISSraf2,);
+
+GLSTgr2=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
+                   OPERATION='EXTR',
+                   NOM_CHAM='GRI.GRLTNO',
+                   FISSURE=FISSraf2,);
+
+#--------------------------------------------------------
+# CREATION DES TABLES DES LEVEL SETS DE LA GRILLE POUR
+# FISS, FISSraf1 ET FISSraf2
+#--------------------------------------------------------
+
+# FISS
+N=POST_RELEVE_T(ACTION=_F(INTITULE='LSN grille FISSraf1',
+                          OPERATION='EXTRACTION',
+                          CHAM_GD=LSNgr,
+                          TOUT_CMP='OUI',
+                          GROUP_NO='NODES'))
+
+T=POST_RELEVE_T(ACTION=_F(INTITULE='LST grille FISSraf1',
+                          OPERATION='EXTRACTION',
+                          CHAM_GD=LSTgr,
+                          TOUT_CMP='OUI',
+                          GROUP_NO='NODES'))
+
+GN=POST_RELEVE_T(ACTION=_F(INTITULE='GRLSN grille FISSraf1',
+                           OPERATION='EXTRACTION',
+                           CHAM_GD=GLSNgr,
+                           TOUT_CMP='OUI',
+                           GROUP_NO='NODES'))
+
+GT=POST_RELEVE_T(ACTION=_F(INTITULE='GRLST grille FISSraf1',
+                           OPERATION='EXTRACTION',
+                           CHAM_GD=GLSTgr,
+                           TOUT_CMP='OUI',
+                           GROUP_NO='NODES'))
+
+# FISSraf1
+N1=POST_RELEVE_T(ACTION=_F(INTITULE='LSN grille FISSraf1',
+                           OPERATION='EXTRACTION',
+                           CHAM_GD=LSNgr1,
+                           TOUT_CMP='OUI',
+                           GROUP_NO='NODES'))
+
+T1=POST_RELEVE_T(ACTION=_F(INTITULE='LST grille FISSraf1',
+                           OPERATION='EXTRACTION',
+                           CHAM_GD=LSTgr1,
+                           TOUT_CMP='OUI',
+                           GROUP_NO='NODES'))
+
+GN1=POST_RELEVE_T(ACTION=_F(INTITULE='GRLSN grille FISSraf1',
+                            OPERATION='EXTRACTION',
+                            CHAM_GD=GLSNgr1,
+                            TOUT_CMP='OUI',
+                            GROUP_NO='NODES'))
+
+GT1=POST_RELEVE_T(ACTION=_F(INTITULE='GRLST grille FISSraf1',
+                            OPERATION='EXTRACTION',
+                            CHAM_GD=GLSTgr1,
+                            TOUT_CMP='OUI',
+                            GROUP_NO='NODES'))
+
+# FISSraf2
+N2=POST_RELEVE_T(ACTION=_F(INTITULE='LSN grille FISSraf1',
+                           OPERATION='EXTRACTION',
+                           CHAM_GD=LSNgr2,
+                           TOUT_CMP='OUI',
+                           GROUP_NO='NODES'))
+
+T2=POST_RELEVE_T(ACTION=_F(INTITULE='LST grille FISSraf1',
+                           OPERATION='EXTRACTION',
+                           CHAM_GD=LSTgr2,
+                           TOUT_CMP='OUI',
+                           GROUP_NO='NODES'))
+
+GN2=POST_RELEVE_T(ACTION=_F(INTITULE='GRLSN grille FISSraf1',
+                            OPERATION='EXTRACTION',
+                            CHAM_GD=GLSNgr2,
+                            TOUT_CMP='OUI',
+                            GROUP_NO='NODES'))
+
+GT2=POST_RELEVE_T(ACTION=_F(INTITULE='GRLST grille FISSraf1',
+                            OPERATION='EXTRACTION',
+                            CHAM_GD=GLSTgr2,
+                            TOUT_CMP='OUI',
+                            GROUP_NO='NODES'))
+
+#--------------------------------------------------------
+# VERIFICATION DES TABLES DES LEVEL SETS
+#--------------------------------------------------------
+
+# MODIFICATION TABLES FISSraf2
+N2m=CALC_TABLE(TABLE=N2,
+               ACTION=(_F(OPERATION='EXTR',
+                          NOM_PARA=('NOEUD','X1')),
+                       _F(OPERATION='RENOMME',
+                          NOM_PARA=('X1','XGR'),)))
+
+T2m=CALC_TABLE(TABLE=T2,
+               ACTION=(_F(OPERATION='EXTR',
+                          NOM_PARA=('NOEUD','X1')),
+                       _F(OPERATION='RENOMME',
+                          NOM_PARA=('X1','XGR'),)))
+
+GN2m=CALC_TABLE(TABLE=GN2,
+                ACTION=(_F(OPERATION='EXTR',
+                           NOM_PARA=('NOEUD','X1')),
+                        _F(OPERATION='RENOMME',
+                           NOM_PARA=('X1','XGR'),)))
+
+GT2m=CALC_TABLE(TABLE=GT2,
+                ACTION=(_F(OPERATION='EXTR',
+                           NOM_PARA=('NOEUD','X1')),
+                        _F(OPERATION='RENOMME',
+                           NOM_PARA=('X1','XGR'),)))
+
+# CALCUL DE LA DIFFERENCE ENTRE LES VALEURS DE FISS ET FISSraf2
+DIFN=CALC_TABLE(TABLE=N,
+                ACTION=(_F(OPERATION='COMB',
+                           TABLE=N2m,
+                           NOM_PARA=('NOEUD'),),
+                        _F(OPERATION='OPER',
+                           FORMULE=DIFFER,
+                           NOM_PARA='DIFF',),),);
+
+DIFT=CALC_TABLE(TABLE=T,
+                ACTION=(_F(OPERATION='COMB',
+                           TABLE=T2m,
+                           NOM_PARA=('NOEUD'),),
+                        _F(OPERATION='OPER',
+                           FORMULE=DIFFER,
+                           NOM_PARA='DIFF',),),);
+
+DIFGN=CALC_TABLE(TABLE=GN,
+                 ACTION=(_F(OPERATION='COMB',
+                            TABLE=GN2m,
+                            NOM_PARA=('NOEUD'),),
+                         _F(OPERATION='OPER',
+                            FORMULE=DIFFER,
+                            NOM_PARA='DIFF',),),);
+
+DIFGT=CALC_TABLE(TABLE=GT,
+                 ACTION=(_F(OPERATION='COMB',
+                            TABLE=GT2m,
+                            NOM_PARA=('NOEUD'),),
+                         _F(OPERATION='OPER',
+                            FORMULE=DIFFER,
+                            NOM_PARA='DIFF',),),);
+
+# CALCUL DE LA DIFFERENCE ENTRE LES VALEURS DE FISSraf1 ET FISSraf2
+DIFN12=CALC_TABLE(TABLE=N1,
+                  ACTION=(_F(OPERATION='COMB',
+                             TABLE=N2m,
+                             NOM_PARA=('NOEUD'),),
+                          _F(OPERATION='OPER',
+                             FORMULE=DIFFER,
+                             NOM_PARA='DIFF',),),);
+
+DIFT12=CALC_TABLE(TABLE=T1,
+                  ACTION=(_F(OPERATION='COMB',
+                             TABLE=T2m,
+                             NOM_PARA=('NOEUD'),),
+                          _F(OPERATION='OPER',
+                             FORMULE=DIFFER,
+                             NOM_PARA='DIFF',),),);
+
+DIFGN12=CALC_TABLE(TABLE=GN1,
+                   ACTION=(_F(OPERATION='COMB',
+                              TABLE=GN2m,
+                              NOM_PARA=('NOEUD'),),
+                           _F(OPERATION='OPER',
+                              FORMULE=DIFFER,
+                              NOM_PARA='DIFF',),),);
+
+DIFGT12=CALC_TABLE(TABLE=GT1,
+                   ACTION=(_F(OPERATION='COMB',
+                              TABLE=GT2m,
+                              NOM_PARA=('NOEUD'),),
+                           _F(OPERATION='OPER',
+                              FORMULE=DIFFER,
+                              NOM_PARA='DIFF',),),);
+
+# VERIFICATION FISS-FISSraf1
+TEST_TABLE(TABLE=DIFN,
+           REFERENCE='ANALYTIQUE',
+           NOM_PARA='DIFF',
+           PRECISION=tol,
+           TYPE_TEST='MAX',
+           CRITERE='ABSOLU',
+           VALE= 0.0  )
+
+TEST_TABLE(TABLE=DIFN,
+           REFERENCE='ANALYTIQUE',
+           NOM_PARA='DIFF',
+           PRECISION=tol,
+           TYPE_TEST='MIN',
+           CRITERE='ABSOLU',
+           VALE= 0.0  )
+
+TEST_TABLE(TABLE=DIFT,
+           REFERENCE='ANALYTIQUE',
+           NOM_PARA='DIFF',
+           PRECISION=tol,
+           TYPE_TEST='MAX',
+           CRITERE='ABSOLU',
+           VALE= 0.0  )
+
+TEST_TABLE(TABLE=DIFT,
+           REFERENCE='ANALYTIQUE',
+           NOM_PARA='DIFF',
+           PRECISION=tol,
+           TYPE_TEST='MIN',
+           CRITERE='ABSOLU',
+           VALE= 0.0  )
+
+TEST_TABLE(TABLE=DIFGN,
+           REFERENCE='ANALYTIQUE',
+           NOM_PARA='DIFF',
+           PRECISION=tol,
+           TYPE_TEST='MAX',
+           CRITERE='ABSOLU',
+           VALE= 0.0  )
+
+TEST_TABLE(TABLE=DIFGN,
+           REFERENCE='ANALYTIQUE',
+           NOM_PARA='DIFF',
+           PRECISION=tol,
+           TYPE_TEST='MIN',
+           CRITERE='ABSOLU',
+           VALE= 0.0  )
+
+TEST_TABLE(TABLE=DIFGT,
+           REFERENCE='ANALYTIQUE',
+           NOM_PARA='DIFF',
+           PRECISION=tol,
+           TYPE_TEST='MAX',
+           CRITERE='ABSOLU',
+           VALE= 0.0  )
+
+TEST_TABLE(TABLE=DIFGT,
+           REFERENCE='ANALYTIQUE',
+           NOM_PARA='DIFF',
+           PRECISION=tol,
+           TYPE_TEST='MIN',
+           CRITERE='ABSOLU',
+           VALE= 0.0  )
+
+# VERIFICATION FISSraf1-FISSraf2
+TEST_TABLE(TABLE=DIFN12,
+           REFERENCE='ANALYTIQUE',
+           NOM_PARA='DIFF',
+           PRECISION=tol,
+           TYPE_TEST='MAX',
+           CRITERE='ABSOLU',
+           VALE= 0.0  )
+
+TEST_TABLE(TABLE=DIFN12,
+           REFERENCE='ANALYTIQUE',
+           NOM_PARA='DIFF',
+           PRECISION=tol,
+           TYPE_TEST='MIN',
+           CRITERE='ABSOLU',
+           VALE= 0.0  )
+
+TEST_TABLE(TABLE=DIFT12,
+           REFERENCE='ANALYTIQUE',
+           NOM_PARA='DIFF',
+           PRECISION=tol,
+           TYPE_TEST='MAX',
+           CRITERE='ABSOLU',
+           VALE= 0.0  )
+
+TEST_TABLE(TABLE=DIFT12,
+           REFERENCE='ANALYTIQUE',
+           NOM_PARA='DIFF',
+           PRECISION=tol,
+           TYPE_TEST='MIN',
+           CRITERE='ABSOLU',
+           VALE= 0.0  )
+
+TEST_TABLE(TABLE=DIFGN12,
+           REFERENCE='ANALYTIQUE',
+           NOM_PARA='DIFF',
+           PRECISION=tol,
+           TYPE_TEST='MAX',
+           CRITERE='ABSOLU',
+           VALE= 0.0  )
+
+TEST_TABLE(TABLE=DIFGN12,
+           REFERENCE='ANALYTIQUE',
+           NOM_PARA='DIFF',
+           PRECISION=tol,
+           TYPE_TEST='MIN',
+           CRITERE='ABSOLU',
+           VALE= 0.0  )
+
+TEST_TABLE(TABLE=DIFGT12,
+           REFERENCE='ANALYTIQUE',
+           NOM_PARA='DIFF',
+           PRECISION=tol,
+           TYPE_TEST='MAX',
+           CRITERE='ABSOLU',
+           VALE= 0.0  )
+
+TEST_TABLE(TABLE=DIFGT12,
+           REFERENCE='ANALYTIQUE',
+           NOM_PARA='DIFF',
+           PRECISION=tol,
+           TYPE_TEST='MIN',
+           CRITERE='ABSOLU',
+           VALE= 0.0  )
+
+FIN()

@@ -1,4 +1,4 @@
-%& MODIF COMPELEM  DATE 15/02/2011   AUTEUR FLEJOU J-L.FLEJOU 
+%& MODIF COMPELEM  DATE 08/03/2011   AUTEUR PELLET J.PELLET 
 % RESPONSABLE PROIX
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
@@ -504,6 +504,8 @@ GRANDEUR_SIMPLE__
        UI2, VI2, WI2, ...,UO6, VO6, WO6, WO, WI1, WO1 : DDL des éléments de tube
        GONF :
        EPXX, EPYY, EPZZ, EPXY, EPXZ, EPYZ :
+       D1 : projection du champ suivant le vecteur directeur (D1X,D1Y,D1Z)
+       D1X, D1Y, D1Z :
        D2 : projection du champ suivant le vecteur directeur (D2X,D2Y,D2Z)
        D2X, D2Y, D2Z :
        D3 : projection du champ suivant le vecteur directeur (D3X,D3Y,D3Z)
@@ -545,8 +547,9 @@ GRANDEUR_SIMPLE__
                     VI6      WI6      UO2      VO2      WO2      UO3      VO3      WO3
                     UO4      VO4      WO4      UO5      VO5      WO5      UO6      VO6
                     WO6      WO       WI1      WO1      GONF     EPXX     EPYY     EPZZ
-                    EPXY     EPXZ     EPYZ     D2       D2X      D2Y      D2Z      D3
-                    D3X      D3Y      D3Z      VARI     LAG_GV   V11      V12      V13
+                    EPXY     EPXZ     EPYZ     D1       D1X      D1Y      D1Z      D2
+                    D2X      D2Y      D2Z      D3       D3X      D3Y      D3Z      VARI
+                    LAG_GV   V11      V12      V13
                     V21      V22      V23      V31      V32      V33      PRES11   PRES12
                     PRES13   PRES21   PRES22   PRES23   PRES31   PRES32   PRES33   SIGN
                     SITX     SITY     LH1      SIXX     SIYY     SIZZ     SIXY     DAMG
@@ -573,6 +576,8 @@ GRANDEUR_SIMPLE__
        UI2, VI2, WI2, ...,UO6, VO6, WO6, WO, WI1, WO1 : DDL des éléments de tube
        GONF :
        EPXX, EPYY, EPZZ, EPXY, EPXZ, EPYZ :
+       D1 : projection du champ suivant le vecteur directeur (D1X,D1Y,D1Z)
+       D1X, D1Y, D1Z :
        D2 : projection du champ suivant le vecteur directeur (D2X,D2Y,D2Z)
        D2X, D2Y, D2Z :
        D3 : projection du champ suivant le vecteur directeur (D3X,D3Y,D3Z)
@@ -614,9 +619,9 @@ GRANDEUR_SIMPLE__
                     VI6      WI6      UO2      VO2      WO2      UO3      VO3      WO3
                     UO4      VO4      WO4      UO5      VO5      WO5      UO6      VO6
                     WO6      WO       WI1      WO1      GONF     EPXX     EPYY     EPZZ
-                    EPXY     EPXZ     EPYZ     D2       D2X      D2Y      D2Z
-                    D3
-                    D3X      D3Y      D3Z      VARI     LAG_GV   V11      V12      V13
+                    EPXY     EPXZ     EPYZ     D1       D1X      D1Y      D1Z      D2
+                    D2X      D2Y      D2Z      D3       D3X      D3Y      D3Z      VARI
+                    LAG_GV   V11      V12      V13
                     V21      V22      V23      V31      V32      V33      PRES11   PRES12
                     PRES13   PRES21   PRES22   PRES23   PRES31   PRES32   PRES33   SIGN
                     SITX     SITY     LH1      SIXX     SIYY     SIZZ     SIXY     DAMG
@@ -643,6 +648,8 @@ GRANDEUR_SIMPLE__
        UI2, VI2, WI2, ...,UO6, VO6, WO6, WO, WI1, WO1 : DDL des éléments de tube
        GONF :
        EPXX, EPYY, EPZZ, EPXY, EPXZ, EPYZ :
+       D1 : projection du champ suivant le vecteur directeur (D1X,D1Y,D1Z)
+       D1X, D1Y, D1Z :
        D2 : projection du champ suivant le vecteur directeur (D2X,D2Y,D2Z)
        D2X, D2Y, D2Z :
        D3 : projection du champ suivant le vecteur directeur (D3X,D3Y,D3Z)
@@ -683,9 +690,9 @@ GRANDEUR_SIMPLE__
                     VI6      WI6      UO2      VO2      WO2      UO3      VO3      WO3
                     UO4      VO4      WO4      UO5      VO5      WO5      UO6      VO6
                     WO6      WO       WI1      WO1      GONF     EPXX     EPYY     EPZZ
-                    EPXY     EPXZ     EPYZ     D2       D2X      D2Y      D2Z
-                    D3
-                    D3X      D3Y      D3Z      VARI     LAG_GV   V11      V12      V13
+                    EPXY     EPXZ     EPYZ     D1       D1X      D1Y      D1Z      D2
+                    D2X      D2Y      D2Z      D3       D3X      D3Y      D3Z      VARI
+                    LAG_GV   V11      V12      V13
                     V21      V22      V23      V31      V32      V33      PRES11   PRES12
                     PRES13   PRES21   PRES22   PRES23   PRES31   PRES32   PRES33   SIGN
                     SITX     SITY     LH1      SIXX     SIYY     SIZZ     SIXY     DAMG
@@ -725,9 +732,8 @@ GRANDEUR_SIMPLE__
        SI_ENDO  : Contrainte équivalente d'endommagement
        COENDO   : Contrainte équivalente d'endommagement normalisée
        DOM_LEM  : Endommagement de Lemaitre
-       D_CUMULE : Endommagement de Lemaitre cumulé
 >>
-    ENDO_R   = R    TRIAX    SI_ENDO  COENDO   DOM_LEM  D_CUMULE
+    ENDO_R   = R    TRIAX    SI_ENDO  COENDO   DOM_LEM
 
 <<  ENER_R Type:R Energie
        TOTALE : énergie totale de l'élément

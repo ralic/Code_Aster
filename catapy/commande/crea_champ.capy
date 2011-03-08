@@ -1,7 +1,7 @@
-#& MODIF COMMANDE  DATE 09/11/2010   AUTEUR DELMAS J.DELMAS 
+#& MODIF COMMANDE  DATE 08/03/2011   AUTEUR MASSIN P.MASSIN 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -130,6 +130,7 @@ CREA_CHAMP=OPER(nom="CREA_CHAMP",op= 195,sd_prod=crea_champ_prod,
 #        ------------------------------------------------------------------
          b_extr          =BLOC(condition = "OPERATION == 'EXTR'",
              regles=(AU_MOINS_UN('MAILLAGE','FISSURE','RESULTAT','TABLE'),),
+#                     PRESENT_PRESENT('GRILLE_AUX','FISSURE'),),
              MAILLAGE        =SIMP(statut='f',typ=(maillage_sdaster) ),
              FISSURE         =SIMP(statut='f',typ=(fiss_xfem) ),
              RESULTAT        =SIMP(statut='f',typ=(resultat_sdaster) ),
@@ -137,9 +138,13 @@ CREA_CHAMP=OPER(nom="CREA_CHAMP",op= 195,sd_prod=crea_champ_prod,
              b_extr_maillage =BLOC(condition = "MAILLAGE != None and TABLE == None",
                  NOM_CHAM        =SIMP(statut='o',typ='TXM',into=("GEOMETRIE",)),
              ),
-             b_extr_fissure  =BLOC(condition = "FISSURE != None",
-                 NOM_CHAM        =SIMP(statut='o',typ='TXM',into=("LTNO","LNNO","GRLTNO","GRLNNO","STNO","STNOR","BASLOC")),
+
+             b_extr_fissure  = BLOC(condition = "FISSURE != None",
+                 NOM_CHAM=SIMP(statut='o',typ='TXM',into=("LTNO","LNNO","GRLTNO","GRLNNO","STNO","STNOR","BASLOC",
+                                                                  "GRI.LNNO","GRI.LTNO","GRI.GRLNNO","GRI.GRLTNO")),
+
              ),
+                 
              b_extr_table    =BLOC(condition = "TABLE != None",
                       regles=( EXCLUS('MODELE','MAILLAGE'),
                                EXCLUS('PROL_ZERO','MAILLAGE'),),

@@ -1,4 +1,4 @@
-#@ MODIF propa_fiss_ops Macro  DATE 25/01/2011   AUTEUR MACOCCO K.MACOCCO 
+#@ MODIF propa_fiss_ops Macro  DATE 08/03/2011   AUTEUR MASSIN P.MASSIN 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -231,10 +231,6 @@ def propa_fiss_ops(self,METHODE_PROPA,INFO,**args):
     NbPointFond = []
     
     for Fiss in Fissures :
-        if Fiss['GRILLE_AUX']!=None :
-           GrilleAux.append(Fiss['GRILLE_AUX'])
-        else :
-           GrilleAux.append(args['MODELE'])
         FissAct.append(Fiss['FISS_ACTUELLE'])
         FissNou.append(Fiss['FISS_PROPAGEE'])
         if TEST_MAIL == 'NON':
@@ -265,11 +261,6 @@ def propa_fiss_ops(self,METHODE_PROPA,INFO,**args):
 #      propagating crack.
        for NumFiss in range(0,len(FissAct)) :
            mcsimp['FISS_PROP'] = FissAct[NumFiss]
-           mcsimp['GRILLE_AUX'] = 123
-           if GrilleAux[NumFiss]!=args['MODELE'] : 
-               mcsimp['GRILLE_AUX'] = GrilleAux[NumFiss]
-           else :
-               del mcsimp['GRILLE_AUX']
            self.DeclareOut('nomfiss',FissNou[NumFiss])
            nomfiss = PROPA_XFEM(METHODE=METHODE_PROPA,INFO=INFO,**mcsimp )
            
@@ -305,11 +296,6 @@ def propa_fiss_ops(self,METHODE_PROPA,INFO,**args):
                  mcsimp['MODELE'] = __Mod[NumStep-1]
                  mcsimp['FISS_PROP'] = __Fis[(NumStep-1)*len(FissAct)+NumFiss]
               mcsimp['FISS_INITIALE'] = FissAct[NumFiss]
-              mcsimp['GRILLE_AUX'] = 123
-              if GrilleAux[NumFiss]!=args['MODELE'] : 
-                 mcsimp['GRILLE_AUX'] = GrilleAux[NumFiss]
-              else :
-                  del mcsimp['GRILLE_AUX']
               if NumStep==StepTot-1 :
                  self.DeclareOut('nomfiss',FissNou[NumFiss])
                  nomfiss = PROPA_XFEM(METHODE=METHODE_PROPA,INFO=INFO,**mcsimp )

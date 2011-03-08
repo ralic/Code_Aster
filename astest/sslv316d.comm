@@ -1,4 +1,4 @@
-# MODIF  DATE 25/01/2011   AUTEUR MACOCCO K.MACOCCO 
+# MODIF  DATE 08/03/2011   AUTEUR MASSIN P.MASSIN 
 # TITRE FISSURATION A PROPAGATION IMPOSEE AVEC XFEM
 # sslv316d.para = tps_job 250 mem_job 512Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -75,40 +75,34 @@ CHAMPMA1=AFFE_MATERIAU(MAILLAGE=MAILLAG1,
                              );
 
 #----------------------------------------------
-#              FISSURE INITIALE
-#----------------------------------------------
-
-FISS = [None]*nbcalc
-
-FISS[0]=DEFI_FISS_XFEM(MODELE=MODELE,
-                       DEFI_FISS=_F(
-                                 FORM_FISS = 'DEMI_PLAN',
-                                 PFON      =(0. , 2. ,9.),
-                                 NORMALE   =(0. , 0 , 1.),
-                                 DTAN      =(0. , 1. , 0.)),
-                       );
-
-#----------------------------------------------
 #              GRILLE AUXILIAIRE
 #----------------------------------------------
 
 MaiGril=LIRE_MAILLAGE(FORMAT='MED', UNITE=41,
                       INFO_MED=1,);
 
-Grille=AFFE_MODELE(MAILLAGE=MaiGril,
+Grille=DEFI_GRILLE(MAILLAGE=MaiGril);
+
+ModGri=AFFE_MODELE(GRILLE=Grille,
                    AFFE=_F(GROUP_MA=('VOL',),
                            PHENOMENE='MECANIQUE',
                            MODELISATION='3D',),
                    );
 
-FissGril=DEFI_FISS_XFEM(MODELE=Grille,
-                        DEFI_FISS=_F(FORM_FISS = 'DEMI_PLAN',
-                                    PFON      =(0. , 2. ,9.),
-                                    NORMALE   =(0. , 0 , 1.),
-                                    DTAN      =(0. , 1. , 0.)),
-                       );
+#----------------------------------------------
+#              FISSURE INITIALE
+#----------------------------------------------
 
-GriAux=MODI_MODELE_XFEM(MODELE_IN=Grille,FISSURE=FissGril,INFO=1,);
+FISS = [None]*nbcalc
+
+FISS[0]=DEFI_FISS_XFEM(MODELE=MODELE,
+                       MODELE_GRILLE=ModGri,
+                       DEFI_FISS=_F(
+                                 FORM_FISS = 'DEMI_PLAN',
+                                 PFON      =(0. , 2. ,9.),
+                                 NORMALE   =(0. , 0 , 1.),
+                                 DTAN      =(0. , 1. , 0.)),
+                       );
 
 #----------------------------------------------
 #                   CHARGEMENTS
@@ -193,7 +187,6 @@ for i in range(nbcalc) :
                  FISSURE=_F(FISS_ACTUELLE=FISS[i],
                             FISS_PROPAGEE=FISS[i+1],
                             TABLE=SIF1[i],
-                            GRILLE_AUX=GriAux,
                            ),
                  METHODE_PROPA='SIMPLEXE',
                  DA_MAX=da,
@@ -300,30 +293,5 @@ for i in range(1,nbcalc) :
                TYPE_TEST='MIN',
                CRITERE='ABSOLU',
                VALE= 0.0  )
-
-#----------------------------------------------
-#         POST TRAITEMENT
-#----------------------------------------------
-
-MAXFEM=POST_MAIL_XFEM(MODELE=MODELX[i],
-                          );
-
-MOVISU=AFFE_MODELE(MAILLAGE=MAXFEM,
-                      AFFE=_F(TOUT='OUI',
-                              PHENOMENE='MECANIQUE',
-                              MODELISATION='3D',),) 
-
-DEPL=POST_CHAM_XFEM(
-                       MODELE_VISU   = MOVISU,
-                       RESULTAT=RESU[i],
-                       );
-
-#IMPR_RESU(FORMAT='IDEAS',
-#          RESU=_F(RESULTAT=DEPL,MAILLAGE=MAXFEM),);
-
-DEFI_FICHIER(UNITE=31,);
-IMPR_RESU(FORMAT='MED',
-             UNITE=31,
-             RESU=_F(RESULTAT=DEPL,),);
 
 FIN();

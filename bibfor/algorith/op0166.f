@@ -1,7 +1,7 @@
       SUBROUTINE OP0166()
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 07/02/2011   AUTEUR MEUNIER S.MEUNIER 
+C MODIF ALGORITH  DATE 08/03/2011   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -210,19 +210,31 @@ C     4- PROJECTION DES CHAMPS :
 C     ------------------------------------
 
 
-C     4.1 : SI TYPCAL='2', IL FAUT SURCHARGER LCORR(1) :
+C     4.1 : SI TYPCAL='2', IL FAUT SURCHARGER LCORR(1) ET
+C           EVENTUELLEMENT RECUPERER MODELE_2
       IF (TYPCAL.EQ.'2') THEN
          LCORRE(1)=CORRU
          CALL JEVEUO(CORRU//'.PJXX_K1','L',JPJK1)
+C        -- LES MOA1 ET MOA2 STOCKES SONT LES MAILLAGES
          MOA1=ZK24(JPJK1-1+1)(1:8)
          MOA2=ZK24(JPJK1-1+2)(1:8)
-
          IF (MOA1.NE.NOMARE) THEN
            VALK(1) = MOA1
            VALK(2) = NOREIN
            VALK(3) = MOA1
            VALK(4) = NOMARE
            CALL U2MESK('F','CALCULEL4_59',4,VALK)
+         ENDIF
+C        -- POUR POUVOIR PROJETER LES CHAM_ELEM, IL FAUT MODELE_2
+         CALL GETVID(' ','MODELE_2',1,1,1,NOMO2,N1)
+         IF (N1.EQ.1) THEN
+           CALL DISMOI('F','NOM_MAILLA',NOMO2,'MODELE',IBID,NOMA2,IE)
+           IF (MOA2.NE.NOMA2) THEN
+             VALK(1) = MOA2
+             VALK(2) = NOMA2
+             CALL U2MESK('F','CALCULEL4_72',2,VALK)
+           ENDIF
+           MOA2=NOMO2
          ENDIF
       ENDIF
 

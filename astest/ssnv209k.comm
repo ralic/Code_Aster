@@ -1,4 +1,4 @@
-# MODIF  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 08/03/2011   AUTEUR MASSIN P.MASSIN 
 # TITRE INTERFACE EN CONTACT FROTTANT AVEC X-FEM
 # ssnv209k.para = tps_job 400 mem_job 800Mo mem_aster 80 ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -56,8 +56,7 @@ MAILLAG1=DEFI_GROUP(reuse =MAILLAG1,
                                        DIST=0.0099,),),
                     INFO=1);
 
-MAILLAG2=CREA_MAILLAGE(MAILLAGE=MAILLAG1,
-                       LINE_QUAD=_F(GROUP_MA=('SURF',),),);
+MAILLAG2=CREA_MAILLAGE(MAILLAGE=MAILLAG1,);
 
 MAILLAG2=DEFI_GROUP(reuse =MAILLAG2,
                     MAILLAGE=MAILLAG2,
@@ -92,7 +91,7 @@ MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAG2,
                               MODELISATION='D_PLAN',),
                            _F(GROUP_MA=('SURF',),
                               PHENOMENE='MECANIQUE',
-                              MODELISATION='D_PLAN_XFEM_CONT',),
+                              MODELISATION='D_PLAN',),
                            _F(GROUP_MA=('LIG2',),
                               PHENOMENE='MECANIQUE',
                               MODELISATION='D_PLAN',),
@@ -110,11 +109,9 @@ FISS=DEFI_FISS_XFEM(MODELE=MODELEIN,
                     DEFI_FISS=_F(FONC_LN=LN,),
                     INFO=1,);
 
-# MODELE XFEM
-
 MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,
                          FISSURE=FISS,
-                         CONTACT='P1P1A',
+                         CONTACT='P1P1',
                          INFO=1,);
 
 #----------------------------------------------
@@ -158,9 +155,7 @@ CTXFEM = DEFI_CONTACT(MODELE         = MODELEK,
                       ITER_CONT_MAXI = 4,
                       ITER_FROT_MAXI = 20,                      
                       REAC_GEOM      = 'SANS',
-                      ZONE=(
-                            _F(
-                               FISS_MAIT      = FISS,
+                      ZONE=(_F(FISS_MAIT      = FISS,
                                INTEGRATION    = 'NCOTES',
                                CONTACT_INIT   = 'OUI',
                                COEF_ECHELLE   = 1.,
@@ -169,10 +164,7 @@ CTXFEM = DEFI_CONTACT(MODELE         = MODELEK,
                                COEF_PENA_CONT = 1.E20, 
                                ALGO_FROT      = 'PENALISATION',
                                COEF_PENA_FROT = 1.0E7,                                    
-                               ALGO_LAGR      = 'NON',
-                             ), 
-                         ),
-                   );
+                               ALGO_LAGR      = 'VERSION2', ),),);
 
 CHXFEM=AFFE_CHAR_MECA(MODELE=MODELEK,
                       LIAISON_XFEM='OUI',
@@ -223,18 +215,14 @@ UTOT1=STAT_NON_LINE(MODELE=MODELEK,
                            _F(CHARGE=CHMECA,
                               FONC_MULT=RAMPE),
                            _F(CHARGE=CHAF,
-                              FONC_MULT=RAMPE),
-                           ),
+                              FONC_MULT=RAMPE),),
                     CONTACT  =CTXFEM,       
                     COMP_ELAS=_F(RELATION='ELAS',
-                                 GROUP_MA='SURF',
-                                 ),
+                                 GROUP_MA='SURF',),
                     INCREMENT=_F(LIST_INST=L_INS1,
-                                 INST_FIN=1.0,
-                                 ),
+                                 INST_FIN=1.0,),
                     CONVERGENCE=_F(ARRET='OUI',
-                                   ITER_GLOB_MAXI=15,
-                                   ),
+                                   ITER_GLOB_MAXI=15,),
                     SOLVEUR=_F(METHODE='MUMPS',
                                PCENT_PIVOT=10,
                                NPREC=-1,),
@@ -246,8 +234,7 @@ UTOT1=STAT_NON_LINE(MODELE=MODELEK,
 #             POST-TRAITEMENT POUR LA VISUALISATION
 #-----------------------------------------------------------
 
-MA_XFEM=POST_MAIL_XFEM(MAILLAGE_SAIN = MAILLAG1,
-                       MODELE        = MODELEK,)
+MA_XFEM=POST_MAIL_XFEM(MODELE        = MODELEK,)
 
 MA_XFEM=DEFI_GROUP(reuse=MA_XFEM,
                    MAILLAGE=MA_XFEM,
@@ -289,10 +276,8 @@ MOD_VISU=AFFE_MODELE(MAILLAGE=MA_XFEM,
                              PHENOMENE='MECANIQUE',
                              MODELISATION='D_PLAN',),)
 
-RES_XFEM=POST_CHAM_XFEM(MAILLAGE_SAIN = MAILLAG1,
-                        MODELE_VISU   = MOD_VISU,
-                        RESULTAT      = UTOT1,
-                        )
+RES_XFEM=POST_CHAM_XFEM(MODELE_VISU   = MOD_VISU,
+                        RESULTAT      = UTOT1,)
 
 #----------------------------------------------
 #                   POST RELEVE

@@ -1,9 +1,9 @@
       SUBROUTINE CHPREC(CHOU)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 17/12/2007   AUTEUR FLEJOU J-L.FLEJOU 
+C MODIF MODELISA  DATE 08/03/2011   AUTEUR MASSIN P.MASSIN 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -23,6 +23,7 @@ C     TRAITEMENT DE COMMANDE:   CREA_CHAMP / OPTION: 'EXTR'
 C     ------------------------------------------------------------------
 C
       IMPLICIT   NONE
+
 C
 C 0.1. ==> ARGUMENTS
 C
@@ -53,7 +54,7 @@ C
       PARAMETER ( NOMPRO = 'CHPREC' )
 C
       INTEGER IBID,ICORET,IRET,JORDR,N1,N2,N3,N4,N5,NBORDR,NC,NP,IE
-      INTEGER IAUX, JAUX
+      INTEGER IAUX, JAUX,IFM,NIV
       INTEGER NRPASS, NBPASS
       INT EG ER AD  RE  CG
       REAL*8 INST,EPSI
@@ -68,9 +69,12 @@ CC      CHARACTER*8 LERESU, NOPASE
       CHARACTER*24 NORECG
       CHARACTER*24 VALK(3)
       CHARACTER*8 K8BID,MA,FIS
+      LOGICAL GRILLE
 C     ------------------------------------------------------------------
 
       CALL JEMARQ()
+      CALL INFNIV(IFM,NIV)
+
 C               12   345678   9012345678901234F
       NORECG = '&&'//NOMPRO//'_PARA_SENSI     '
 C
@@ -113,6 +117,15 @@ C     2. CAS DE LA RECUPERATION D'UN CHAMP DANS UNE SD FISS_XFEM
 C     ==============================================================
       CALL GETVID(' ','FISSURE',0,1,1,FIS,N1)
              IF (N1.EQ.1) THEN
+
+C              VERIFIE SI UNE GRILLE AUXILIAIRE EST DEFINIE POUR LA FISS
+               CALL JEEXIN(FIS//'.GRI.MODELE',IBID)
+               IF (IBID.EQ.0) THEN
+                  GRILLE=.FALSE.
+               ELSE
+                  GRILLE=.TRUE.
+               ENDIF             
+
                IF (NOMCH.EQ.'LTNO') THEN
                  CHEXTR = FIS//'.LTNO'
                ELSE IF (NOMCH.EQ.'LNNO') THEN
@@ -127,7 +140,21 @@ C     ==============================================================
                  CHEXTR = FIS//'.STNOR'
                ELSE IF (NOMCH.EQ.'BASLOC') THEN
                  CHEXTR = FIS//'.BASLOC'
-               END IF
+               ELSE 
+                 IF (GRILLE) THEN
+                     IF (NOMCH.EQ.'GRI.LTNO') THEN
+                        CHEXTR = FIS//'.GRI.LTNO'
+                     ELSE IF (NOMCH.EQ.'GRI.LNNO') THEN
+                        CHEXTR = FIS//'.GRI.LNNO'
+                     ELSE IF (NOMCH.EQ.'GRI.GRLNNO') THEN
+                        CHEXTR = FIS//'.GRI.GRLNNO'
+                     ELSE IF (NOMCH.EQ.'GRI.GRLTNO') THEN
+                        CHEXTR = FIS//'.GRI.GRLTNO'
+                     END IF
+                 ELSE
+                     CALL U2MESS('F','XFEM2_98')
+                 ENDIF
+               ENDIF
 C
 C     ON VERIFIE QUE LE MOT-CLE TYPE_CHAMP EST COHERENT AVEC LE
 C     TYPE DU CHAMP EXTRAIT.

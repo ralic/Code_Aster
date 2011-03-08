@@ -1,6 +1,6 @@
-# MODIF  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 08/03/2011   AUTEUR MASSIN P.MASSIN 
 # RESPONSABLE JMBHH01 J.M.PROIX
-# TITRE CLAQUAGE  CALOTTE CYLINDRIQUE SHB8  
+# TITRE CLAQUAGE  CALOTTE CYLINDRIQUE SHB  
 # ssns101a.para = tps_job 100 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -19,7 +19,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
-# ELEMENT SHB8PS - A.COMBESCURE - S.BAGUET -INSA LYON 2003
+# ELEMENT SHBPS - A.COMBESCURE - S.BAGUET -INSA LYON 2003
 
 
 DEBUT(CODE=_F(NOM='SSNS101A',NIV_PUB_WEB='INTERNET',VISU_EFICAS='OUI',));
@@ -45,7 +45,7 @@ MAIL=DEFI_GROUP(reuse =MAIL,
 MODMECA=AFFE_MODELE(MAILLAGE=MAIL,
                     AFFE=_F(TOUT='OUI',
                             PHENOMENE='MECANIQUE',
-                            MODELISATION='SHB8',),);
+                            MODELISATION='SHB',),);
 
 
 TRAC=DEFI_FONCTION(NOM_PARA='EPSI',

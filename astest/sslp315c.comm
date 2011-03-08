@@ -1,4 +1,4 @@
-# MODIF  DATE 25/01/2011   AUTEUR MACOCCO K.MACOCCO 
+# MODIF  DATE 08/03/2011   AUTEUR MASSIN P.MASSIN 
 # TITRE PROPAGATION D'UNE FISSURE XFEM EN 2D DANS UNE PLAQUE TROUEE EN FLEXION 3 POINTS
 # sslp315c.para = tps_job 250 mem_job 512Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -64,6 +64,21 @@ cauxl=AFFE_CHAR_MECA(MODELE=mod,
                      );
 
 # *********************************************
+# GRILLE AUXILIAIRE POUR LES LEVEL SETS
+# *********************************************
+
+mailvs=LIRE_MAILLAGE(FORMAT='MED',
+                     INFO_MED=1,
+                     UNITE=41,);
+
+grille=DEFI_GRILLE(MAILLAGE=mailvs);
+
+modlvs=AFFE_MODELE(GRILLE=grille,
+                   AFFE=(_F(GROUP_MA='All',
+                            PHENOMENE='MECANIQUE',
+                            MODELISATION='D_PLAN',),),);
+
+# *********************************************
 # DEFINITION DE LA FISSURE DANS LE MODELE
 # *********************************************
 
@@ -84,30 +99,10 @@ LT = FORMULE(VALE='Y-YFiss',
 
 # DEFINITION DE LA FISSURE INITIALE
 fiss[0] = DEFI_FISS_XFEM(MODELE=mod,
+                         MODELE_GRILLE=modlvs,
                          DEFI_FISS=_F(FONC_LT=LT,
                                       FONC_LN=LN,),
                          );
-
-# *********************************************
-# GRILLE AUXILIAIRE POUR LES LEVEL SETS
-# *********************************************
-
-mailvs=LIRE_MAILLAGE(FORMAT='MED',
-                     INFO_MED=1,
-                     UNITE=41,);
-
-modlvs=AFFE_MODELE(MAILLAGE=mailvs,
-                   AFFE=(_F(GROUP_MA='All',
-                            PHENOMENE='MECANIQUE',
-                            MODELISATION='D_PLAN',),),);
-
-fislvt = DEFI_FISS_XFEM(MODELE=modlvs,
-                        DEFI_FISS=_F(FONC_LT=LT,
-                                     FONC_LN=LN,),
-                         );
-
-modXlvt=MODI_MODELE_XFEM(MODELE_IN=modlvs,
-                         FISSURE=fislvt,);
 
 # *********************************************
 # PROPAGATION DE LA FISSURE
@@ -177,7 +172,6 @@ for i in range(0,NPS) :
       PROPA_FISS(MODELE=ModX[i],
                  FISSURE=_F(FISS_ACTUELLE=fiss[i],
                             FISS_PROPAGEE=fiss[i+1],
-                            GRILLE_AUX=modXlvt,
                             TABLE=SIF[i],),
                  METHODE_PROPA='UPWIND',
                  DA_MAX=2,

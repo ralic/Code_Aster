@@ -1,4 +1,4 @@
-#@ MODIF xfem Messages  DATE 14/02/2011   AUTEUR GENIAUT S.GENIAUT 
+#@ MODIF xfem Messages  DATE 07/03/2011   AUTEUR MEUNIER S.MEUNIER 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -76,11 +76,6 @@ cata_msg={
      Le nombre de %(k1)s X-FEM est limité à 10E6. 
      Risque & Conseil:
      Veuillez réduire la taille du maillage.
-"""),
-
-9: _("""
-     L'option K_G_MODA n'est pas autorisée avec une fissure définie 
-     par la commande DEFI_FISS_XFEM (méthode X-FEM).
 """),
 
 10: _("""

@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 01/03/2011   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF SUPERVIS  DATE 08/03/2011   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -95,7 +95,7 @@ C
       ENDIF
 C      	
       WRITE(6,'(1X,A,F12.3,A)')
-     &  'LIMITE MEMOIRE DYNAMIQUE      : ',MXDYN*1.0D0/UNMEGA,' Mo)'
+     &  'LIMITE MEMOIRE DYNAMIQUE      : ',MXDYN*1.0D0/UNMEGA,' Mo'
       CALL JEDEBU(4,IMEMO,MXDYN/LOIS,IADZON,LMO,IDEBUG )
       WRITE(6,'(1X,A)')   '======================================='
 C

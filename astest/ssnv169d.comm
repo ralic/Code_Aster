@@ -1,10 +1,10 @@
-# MODIF  DATE 20/07/2009   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 08/03/2011   AUTEUR FOUCAULT A.FOUCAULT 
 
 # TITRE COUPLAGE FLUAGE PROPRE (MODELE UMLV) ET MAZARS
 # ssnv169d.para = tps_job 240 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -153,8 +153,7 @@ CH22=AFFE_CHAR_MECA_F( MODELE=MO,
 L_INST=DEFI_LIST_REEL(  DEBUT=-1.0,INTERVALLE=(
              _F( JUSQU_A = 0.0,       NOMBRE = 1),
              _F( JUSQU_A = 1.0,       NOMBRE = 1),
-             _F( JUSQU_A = 5600000., NOMBRE = 200),            
-             _F( JUSQU_A = 5960000., NOMBRE = 40),)
+             _F( JUSQU_A = 5590000., NOMBRE = 200),)
            )
 
 DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST =L_INST ),
@@ -170,11 +169,12 @@ U=STAT_NON_LINE( MODELE=MO,
                    _F(CHARGE = CH21),
                    _F(CHARGE = CH22),
                  ),
+       ARCHIVAGE=_F(LIST_INST=L_INST),
        COMP_INCR=_F(
                  RELATION = 'KIT_DDI',
                  RELATION_KIT=('BETON_UMLV_FP','MAZARS'),),
                  INCREMENT=_F(LIST_INST = DEFLIST,
-                              INST_FIN = 5960000.,
+                              INST_FIN = 5590000.,
                               ),
                  NEWTON=_F(PREDICTION = 'TANGENTE',
                  MATRICE = 'TANGENTE',
@@ -189,7 +189,7 @@ TEST_RESU(RESU=(
           NOM_CHAM = 'SIEF_ELGA',
           MAILLE = 'M1',
           POINT = 1,
-          NUME_ORDRE = 262,
+          NUME_ORDRE = 202,
           NOM_CMP = 'SIZZ',
           VALE = 1.38880E+00,
           PRECISION = 0.0001,
@@ -197,27 +197,27 @@ TEST_RESU(RESU=(
       _F( RESULTAT = U,
           NOM_CHAM = 'DEPL',
           NOEUD = 'N5',          
-          NUME_ORDRE = 262,
+          NUME_ORDRE = 202,
           NOM_CMP = 'DZ',
-          VALE = 6.62132E-05,
+          VALE = 6.635E-05,
           PRECISION = 0.0001,
           REFERENCE = 'NON_REGRESSION'),
       _F( RESULTAT = U,
           NOM_CHAM = 'VARI_ELGA',
           MAILLE = 'M1',
           POINT = 1,
-          NUME_ORDRE = 262,
+          NUME_ORDRE = 202,
           NOM_CMP = 'V22',
-          VALE = 5.35256E-02,
+          VALE = 5.607E-02,
           PRECISION = 0.0001,
           REFERENCE = 'NON_REGRESSION'),
       _F( RESULTAT = U,
           NOM_CHAM = 'VARI_ELGA',
           MAILLE = 'M1',
           POINT = 1,
-          NUME_ORDRE = 262,
+          NUME_ORDRE = 202,
           NOM_CMP = 'V7',
-          VALE = 1.06628E-05,
+          VALE = 1.0145E-05,
           PRECISION = 0.0001,
           REFERENCE = 'NON_REGRESSION'), ),)
                    

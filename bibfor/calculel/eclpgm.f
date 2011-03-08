@@ -1,7 +1,7 @@
       SUBROUTINE ECLPGM(MA2,MO,LIGREL,SHRINK,LONMIN,NCH,LISCH)
       IMPLICIT   NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 08/03/2011   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -151,6 +151,7 @@ C    -----------------------------------------------------------------
 
            ICO=ICO+1
            CALL CELFPG(CEL,NOMOBJ,IRET)
+           CALL DETRSD ('CHAMP',CEL)
            IF (IRET.EQ.1) THEN
               VALK(1) = MO
               VALK(2) = LISCH(ICH)
@@ -164,7 +165,6 @@ C        -- ON N'A PAS TROUVE DE CHAMP ELGA CORRECT :
          IF (ICO.EQ.0) NCH=0
       ENDIF
 29    CONTINUE
-      CALL DETRSD ('CHAMP',CEL)
 
 
 

@@ -1,0 +1,478 @@
+# MODIF  DATE 08/03/2011   AUTEUR MASSIN P.MASSIN 
+# TITRE VALIDATION DE LA DEFINITION D'UNE FISSURE SUR UN GRILLE PAR DEFI_FISS_XFEM
+# zzzz282a.para = tps_job 120 mem_job 256Mo ncpus 1 liste_test S
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+# RESPONSABLE MASSIN P.MASSIN
+
+DEBUT(CODE=_F(NOM='ZZZZ282A', NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+
+#----------------------------------------------
+#                 MAILLAGE
+#----------------------------------------------
+
+box=LIRE_MAILLAGE(FORMAT='MED')
+
+MODELE=AFFE_MODELE(MAILLAGE=box,
+                      AFFE=_F(GROUP_MA=('VOL',),
+                               PHENOMENE='MECANIQUE',
+                               MODELISATION='3D',)),
+
+box2D=LIRE_MAILLAGE(FORMAT='MED',UNITE=41)
+
+MOD2D=AFFE_MODELE(MAILLAGE=box2D,
+                  AFFE=_F(GROUP_MA=('VOL',),
+                          PHENOMENE='MECANIQUE',
+                          MODELISATION='D_PLAN',)),
+
+#----------------------------------------------
+#                 GRILLE
+#----------------------------------------------
+
+# ON UTILISE POUR LA GRILLE LE MEME MAILLAGE
+
+grille=DEFI_GRILLE(MAILLAGE=box)
+
+GriAux=AFFE_MODELE(GRILLE=grille,
+                   AFFE=_F(GROUP_MA=('VOL',),
+                           PHENOMENE='MECANIQUE',
+                           MODELISATION='3D',)),
+
+grille2D=DEFI_GRILLE(MAILLAGE=box2D)
+
+GriAux2D=AFFE_MODELE(GRILLE=grille2D,
+                     AFFE=_F(GROUP_MA=('VOL',),
+                             PHENOMENE='MECANIQUE',
+                             MODELISATION='D_PLAN',)),
+
+#----------------------------------------------
+# DEFINITION DES FISSURES
+#----------------------------------------------
+
+nfiss = 9
+FISS = [None]*nfiss
+
+# -------
+# FISS[1]: DEFINITION PAR GROUPES DES MAILLES
+# -------
+
+MAX=CO('MAX')
+MA=CO('MA')
+
+PROPA_FISS(METHODE_PROPA='INITIALISATION',
+         MAIL_STRUC=box,
+         MAIL_FISS = MAX,
+         MAIL_TOTAL = MA,
+         FORM_FISS='DEMI_PLAN',
+         POINT_ORIG = (0., 1., 0.),
+         POINT_EXTR =  (4., 1., 0.),
+         DTAN = (0., 1., 0.),
+         NB_POINT_FOND = 5,
+         );
+
+MODmai=AFFE_MODELE(MAILLAGE=MA,
+                   AFFE=_F(GROUP_MA=('VOL',),
+                           PHENOMENE='MECANIQUE',
+                           MODELISATION='3D',)),
+
+FISS[1]=DEFI_FISS_XFEM(DEFI_FISS=_F(GROUP_MA_FISS='FISS_0',
+                                    GROUP_MA_FOND='FOND_0'),
+                       ORIE_FOND=_F(PFON_INI  = (4., 1., 0.),
+                                    VECT_ORIE = (0. , 0. , 1. ),
+                                    POINT_ORIG = (2., 0., 0.),),
+                       MODELE_GRILLE=GriAux,
+                       MODELE=MODmai,);
+
+#--------
+# FISS[2]: DEFINITION PAR FONCTIONS
+#--------
+
+fLSN=FORMULE(NOM_PARA='Z',
+             VALE='Z')
+fLST=FORMULE(NOM_PARA='Y',
+             VALE='Y-1.0')
+
+FISS[2]=DEFI_FISS_XFEM(DEFI_FISS=_F(FONC_LN=fLSN,
+                                    FONC_LT=fLST),
+                       ORIE_FOND=_F(PFON_INI  = (4., 1., 0.),
+                                    VECT_ORIE = (0. , 0. , 1. ),
+                                    POINT_ORIG = (2., 0., 0.),),
+                       MODELE_GRILLE=GriAux,
+                       MODELE=MODmai,);
+
+#--------
+# FISS[3]: DEFINITION PAR CATALOGUE DE FORMES
+#--------
+
+FISS[3]=DEFI_FISS_XFEM(DEFI_FISS=_F(FORM_FISS='DEMI_PLAN',
+                                    NORMALE = (0., 0., 1.),
+                                    PFON =  (4., 1., 0.),
+                                    DTAN = (0., 1., 0.),),
+                       ORIE_FOND=_F(PFON_INI  = (4., 1., 0.),
+                                    VECT_ORIE = (0. , 0. , 1. ),
+                                    POINT_ORIG = (2., 0., 0.),),
+                       MODELE_GRILLE=GriAux,
+                       MODELE=MODmai,);
+
+LSN=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
+               OPERATION='EXTR',
+               NOM_CHAM='LNNO',
+               FISSURE=FISS[3],);
+
+LST=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
+               OPERATION='EXTR',
+               NOM_CHAM='LTNO',
+               FISSURE=FISS[3],);
+
+#--------
+# FISS[4]: DEFINITION PAR CHAMP_NO
+#--------
+
+FISS[4]=DEFI_FISS_XFEM(DEFI_FISS=_F(CHAM_NO_LSN=LSN,
+                                  CHAM_NO_LST=LST),
+                     ORIE_FOND=_F(PFON_INI  = (4., 1., 0.),
+                                  VECT_ORIE = (0. , 0. , 1. ),
+                                  POINT_ORIG = (2., 0., 0.),),
+                     MODELE_GRILLE=GriAux,
+                     MODELE=MODmai,);
+
+#--------
+# FISS[5]: DEFINITION D'UNE INTERFACE PAR GROUPES DES MAILLES
+#--------
+
+FISS[5]=DEFI_FISS_XFEM(TYPE_DISCONTINUITE='INTERFACE',
+                       DEFI_FISS=_F(GROUP_MA_FISS='FISS_0',),
+                       MODELE_GRILLE=GriAux,
+                       MODELE=MODmai,);
+
+#--------
+# FISS[6]: DEFINITION D'UNE INTERFACE PAR UNE FONCTION
+#--------
+
+FISS[6]=DEFI_FISS_XFEM(TYPE_DISCONTINUITE='INTERFACE',
+                       DEFI_FISS=_F(FONC_LN=fLSN,),
+                       MODELE_GRILLE=GriAux,
+                       MODELE=MODmai,);
+
+#--------
+# FISS[7]: DEFINITION D'UNE INTERFACE PAR CATALOGUE DE FORMES
+#--------
+
+FISS[7]=DEFI_FISS_XFEM(TYPE_DISCONTINUITE='INTERFACE',
+                       DEFI_FISS=_F(FORM_FISS='DROITE',
+                                    POINT =  (4., 1., 0.),
+                                    DTAN = (1., 0., 0.),),
+                       MODELE_GRILLE=GriAux2D,
+                       MODELE=MOD2D,);
+
+LSNint=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
+                  OPERATION='EXTR',
+                  NOM_CHAM='LNNO',
+                  FISSURE=FISS[7],);
+
+#--------
+# FISS[8]: DEFINITION D'UNE INTERFACE PAR CHAMP_NO
+#--------
+
+FISS[8]=DEFI_FISS_XFEM(TYPE_DISCONTINUITE='INTERFACE',
+                       DEFI_FISS=_F(CHAM_NO_LSN=LSNint,),
+                       MODELE_GRILLE=GriAux2D,
+                       MODELE=MOD2D,);
+
+#----------------------------------------------
+# VERIFICATION LEVEL SETS ET LEUR GRADIENTS
+#----------------------------------------------
+
+# FORMULE POUR LE CALCUL DE LA DIFFERENCE ENTRE LES LEVEL SETS
+DIFFER=FORMULE(NOM_PARA=('X1','XGR'),
+               VALE='X1-XGR',);
+
+# TOLERANCE SUR LA DIFFERENCE ENTRE LES LEVEL SETS: 1% LONGUEUR ARETE MAILLAGE
+tol=0.01
+
+LSNma  = [None]*nfiss
+LSTma  = [None]*nfiss
+GLSNma = [None]*nfiss
+GLSTma = [None]*nfiss
+
+LSNgr  = [None]*nfiss
+LSTgr  = [None]*nfiss
+GLSNgr = [None]*nfiss
+GLSTgr = [None]*nfiss
+
+Nma  = [None]*nfiss
+Tma  = [None]*nfiss
+GNma = [None]*nfiss
+GTma = [None]*nfiss
+
+Ngr  = [None]*nfiss
+Tgr  = [None]*nfiss
+GNgr = [None]*nfiss
+GTgr = [None]*nfiss
+
+NgrM  = [None]*nfiss
+TgrM  = [None]*nfiss
+GNgrM = [None]*nfiss
+GTgrM = [None]*nfiss
+
+DIFFN  = [None]*nfiss
+DIFFT  = [None]*nfiss
+DIFFGN = [None]*nfiss
+DIFFGT = [None]*nfiss
+
+for i in range(1,8) :
+
+#   EXTRACTION DES CHAMPS LEVEL SETS DU MAILLAGE
+
+    LSNma[i]=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
+                        OPERATION='EXTR',
+                        NOM_CHAM='LNNO',
+                        FISSURE=FISS[i],);    
+
+    if ( i < 5 ) :
+       LSTma[i]=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
+                           OPERATION='EXTR',
+                           NOM_CHAM='LTNO',
+                           FISSURE=FISS[i],);    
+
+    GLSNma[i]=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
+                         OPERATION='EXTR',
+                         NOM_CHAM='GRLNNO',
+                         FISSURE=FISS[i],);    
+
+    if ( i < 5 ) :
+       GLSTma[i]=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
+                            OPERATION='EXTR',
+                            NOM_CHAM='GRLTNO',
+                            FISSURE=FISS[i],);        
+
+#   EXTRACTION DES CHAMPS LEVEL SETS DE LA GRILLE
+
+    LSNgr[i]=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
+                        OPERATION='EXTR',
+                        NOM_CHAM='GRI.LNNO',
+                        FISSURE=FISS[i],);    
+
+    if ( i < 5 ) :
+       LSTgr[i]=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
+                           OPERATION='EXTR',
+                           NOM_CHAM='GRI.LTNO',
+                           FISSURE=FISS[i],);    
+
+    GLSNgr[i]=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
+                         OPERATION='EXTR',
+                         NOM_CHAM='GRI.GRLNNO',
+                         FISSURE=FISS[i],);    
+
+    if ( i < 5 ) :
+       GLSTgr[i]=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
+                            OPERATION='EXTR',
+                            NOM_CHAM='GRI.GRLTNO',
+                            FISSURE=FISS[i],);     
+
+#   CREATION DES TABLES DES CHAMPS CI-DESSUS POUR LE MAILLAGE
+
+    Nma[i]=POST_RELEVE_T(ACTION=_F(INTITULE='LSN maillage',
+                                   OPERATION='EXTRACTION',
+                                   CHAM_GD=LSNma[i],
+                                   TOUT_CMP='OUI',
+                                   GROUP_NO='NODES'))
+
+    if ( i < 5 ) :
+       Tma[i]=POST_RELEVE_T(ACTION=_F(INTITULE='LST maillage',
+                                      OPERATION='EXTRACTION',
+                                      CHAM_GD=LSTma[i],
+                                      TOUT_CMP='OUI',
+                                      GROUP_NO='NODES'))
+
+    GNma[i]=POST_RELEVE_T(ACTION=_F(INTITULE='GRLSN maillage',
+                                    OPERATION='EXTRACTION',
+                                    CHAM_GD=GLSNma[i],
+                                    TOUT_CMP='OUI',
+                                    GROUP_NO='NODES'))
+
+    if ( i < 5 ) :
+       GTma[i]=POST_RELEVE_T(ACTION=_F(INTITULE='GRLST maillage',
+                                       OPERATION='EXTRACTION',
+                                       CHAM_GD=GLSTma[i],
+                                       TOUT_CMP='OUI',
+                                       GROUP_NO='NODES'))
+
+#   CREATION DES TABLES DES CHAMPS CI-DESSUS POUR LA GRILLE
+
+    Ngr[i]=POST_RELEVE_T(ACTION=_F(INTITULE='LSN grille',
+                                   OPERATION='EXTRACTION',
+                                   CHAM_GD=LSNgr[i],
+                                   TOUT_CMP='OUI',
+                                   GROUP_NO='NODES'))
+
+    if ( i < 5 ) :
+       Tgr[i]=POST_RELEVE_T(ACTION=_F(INTITULE='LST grille',
+                                      OPERATION='EXTRACTION',
+                                      CHAM_GD=LSTgr[i],
+                                      TOUT_CMP='OUI',
+                                      GROUP_NO='NODES'))
+
+    GNgr[i]=POST_RELEVE_T(ACTION=_F(INTITULE='GRLSN grille',
+                                    OPERATION='EXTRACTION',
+                                    CHAM_GD=GLSNgr[i],
+                                    TOUT_CMP='OUI',
+                                    GROUP_NO='NODES'))
+
+    if ( i < 5 ) :
+       GTgr[i]=POST_RELEVE_T(ACTION=_F(INTITULE='GRLST grille',
+                                       OPERATION='EXTRACTION',
+                                       CHAM_GD=GLSTgr[i],
+                                       TOUT_CMP='OUI',
+                                       GROUP_NO='NODES'))
+
+#   MODIFICATIONS DES TABLES DE LA GRILLE
+
+    NgrM[i]=CALC_TABLE(TABLE=Ngr[i],
+                       ACTION=(_F(OPERATION='EXTR',
+                                  NOM_PARA=('NOEUD','X1')),
+                               _F(OPERATION='RENOMME',
+                                  NOM_PARA=('X1','XGR'),)))
+
+    if ( i < 5 ) :
+       TgrM[i]=CALC_TABLE(TABLE=Tgr[i],
+                          ACTION=(_F(OPERATION='EXTR',
+                                     NOM_PARA=('NOEUD','X1')),
+                                  _F(OPERATION='RENOMME',
+                                     NOM_PARA=('X1','XGR'),)))
+
+    GNgrM[i]=CALC_TABLE(TABLE=GNgr[i],
+                        ACTION=(_F(OPERATION='EXTR',
+                                   NOM_PARA=('NOEUD','X1')),
+                                _F(OPERATION='RENOMME',
+                                   NOM_PARA=('X1','XGR'),)))
+
+    if ( i < 5 ) :
+       GTgrM[i]=CALC_TABLE(TABLE=GTgr[i],
+                           ACTION=(_F(OPERATION='EXTR',
+                                      NOM_PARA=('NOEUD','X1')),
+                                   _F(OPERATION='RENOMME',
+                                      NOM_PARA=('X1','XGR'),)))
+
+#   CALCUL DE LA DIFFERENCE ENTRE LES LEVEL SETS MAILLAGE/GRILLE
+
+    DIFFN[i]=CALC_TABLE(TABLE=Nma[i],
+                        ACTION=(_F(OPERATION='COMB',
+                                   TABLE=NgrM[i],
+                                   NOM_PARA=('NOEUD'),),
+                                _F(OPERATION='OPER',
+                                   FORMULE=DIFFER,
+                                   NOM_PARA='DIFF',),),);
+
+    if ( i < 5 ) :
+       DIFFT[i]=CALC_TABLE(TABLE=Tma[i],
+                           ACTION=(_F(OPERATION='COMB',
+                                      TABLE=TgrM[i],
+                                      NOM_PARA=('NOEUD'),),
+                                   _F(OPERATION='OPER',
+                                      FORMULE=DIFFER,
+                                      NOM_PARA='DIFF',),),);
+
+    DIFFGN[i]=CALC_TABLE(TABLE=GNma[i],
+                         ACTION=(_F(OPERATION='COMB',
+                                    TABLE=GNgrM[i],
+                                    NOM_PARA=('NOEUD'),),
+                                 _F(OPERATION='OPER',
+                                    FORMULE=DIFFER,
+                                    NOM_PARA='DIFF',),),);
+
+    if ( i < 5 ) :
+       DIFFGT[i]=CALC_TABLE(TABLE=GTma[i],
+                            ACTION=(_F(OPERATION='COMB',
+                                       TABLE=GNgrM[i],
+                                       NOM_PARA=('NOEUD'),),
+                                    _F(OPERATION='OPER',
+                                       FORMULE=DIFFER,
+                                       NOM_PARA='DIFF',),),);
+
+#   VERIFICATION LEVEL SETS
+
+    TEST_TABLE(TABLE=DIFFN[i],
+               REFERENCE='ANALYTIQUE',
+               NOM_PARA='DIFF',
+               PRECISION=tol,
+               TYPE_TEST='MAX',
+               CRITERE='ABSOLU',
+               VALE= 0.0)
+
+    TEST_TABLE(TABLE=DIFFN[i],
+               REFERENCE='ANALYTIQUE',
+               NOM_PARA='DIFF',
+               PRECISION=tol,
+               TYPE_TEST='MIN',
+               CRITERE='ABSOLU',
+               VALE= 0.0)
+
+    if ( i < 5 ) :
+       TEST_TABLE(TABLE=DIFFT[i],
+                  REFERENCE='ANALYTIQUE',
+                  NOM_PARA='DIFF',
+                  PRECISION=tol,
+                  TYPE_TEST='MAX',
+                  CRITERE='ABSOLU',
+                  VALE= 0.0)
+
+       TEST_TABLE(TABLE=DIFFT[i],
+                  REFERENCE='ANALYTIQUE',
+                  NOM_PARA='DIFF',
+                  PRECISION=tol,
+                  TYPE_TEST='MIN',
+                  CRITERE='ABSOLU',
+                  VALE= 0.0)
+
+#   VERIFICATION GRADIENTS LEVEL SETS
+
+    TEST_TABLE(TABLE=DIFFGN[i],
+               REFERENCE='ANALYTIQUE',
+               NOM_PARA='DIFF',
+               PRECISION=tol,
+               TYPE_TEST='MAX',
+               CRITERE='ABSOLU',
+               VALE= 0.0)
+
+    TEST_TABLE(TABLE=DIFFGN[i],
+               REFERENCE='ANALYTIQUE',
+               NOM_PARA='DIFF',
+               PRECISION=tol,
+               TYPE_TEST='MIN',
+               CRITERE='ABSOLU',
+               VALE= 0.0)
+
+    if ( i < 5 ) :
+       TEST_TABLE(TABLE=DIFFGT[i],
+                  REFERENCE='ANALYTIQUE',
+                  NOM_PARA='DIFF',
+                  PRECISION=tol,
+                  TYPE_TEST='MAX',
+                  CRITERE='ABSOLU',
+                  VALE= 0.0)
+
+       TEST_TABLE(TABLE=DIFFGT[i],
+                  REFERENCE='ANALYTIQUE',
+                  NOM_PARA='DIFF',
+                  PRECISION=tol,
+                  TYPE_TEST='MIN',
+                  CRITERE='ABSOLU',
+                  VALE= 0.0)
+
+FIN()

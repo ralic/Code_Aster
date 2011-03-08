@@ -1,8 +1,9 @@
       SUBROUTINE MFNPRO( FID , N , CRET)
 !           CONFIGURATION MANAGEMENT OF EDF VERSION                  
-!& MODIF MFNPRO ECHANGE  DATE 25/10/2010   AUTEUR COURTOIS M.COURTOIS 
+!& MODIF MFNPRO ECHANGE  DATE 08/03/2011   AUTEUR SELLENET N.SELLENET 
+! RESPONSABLE
 ! ================================================================== 
-! COPYRIGHT (C) 1991 - 2010  EDF R&D              WWW.CODE-ASTER.ORG 
+! COPYRIGHT (C) 1991 - 2011  EDF R&D              WWW.CODE-ASTER.ORG 
 !                                                                    
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR      
 ! MODIFY IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS     

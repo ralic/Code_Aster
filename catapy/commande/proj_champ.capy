@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 14/02/2011   AUTEUR GREFFET N.GREFFET 
+#& MODIF COMMANDE  DATE 08/03/2011   AUTEUR PELLET J.PELLET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -232,8 +232,14 @@ PROJ_CHAMP=OPER(nom="PROJ_CHAMP",op= 166,sd_prod=proj_champ_prod,reentrant='f',
          TYPE_CHAM       =SIMP(statut='f',typ='TXM',into=("NOEU",),
               fr="Pour forcer le type des champs projetés. NOEU -> cham_no"),
 
+         NUME_DDL        =SIMP(statut='f',typ=(nume_ddl_sdaster),
+              fr="Parfois utile en dynamique pour pouvoir imposer la numérotation des cham_no."),
+
+         # nécessaire si l'on projette des cham_elem :
+         MODELE_2        =SIMP(statut='f',typ=modele_sdaster),
+
          PROL_ZERO       =SIMP(statut='f',typ='TXM',into=("OUI","NON"),defaut="NON",
-              fr="Pour prolonger les champs par zéro lé ou la projection ne donne pas de valeurs."),
+              fr="Pour prolonger les champs par zéro là où la projection ne donne pas de valeurs."),
 
 
 
@@ -252,9 +258,6 @@ PROJ_CHAMP=OPER(nom="PROJ_CHAMP",op= 166,sd_prod=proj_champ_prod,reentrant='f',
            NOM_PARA        =SIMP(statut='f',typ='TXM', max='**'),
            TOUT_CHAM       =SIMP(statut='f',typ='TXM',into=("OUI",) ),
            NOM_CHAM        =SIMP(statut='f',typ='TXM',validators=NoRepeat(),max='**'),
-
-           NUME_DDL        =SIMP(statut='f',typ=(nume_ddl_sdaster),
-                fr="Utile en dynamique pour pouvoir imoser la numérotation des cham_no."),
 
 
            TOUT_ORDRE      =SIMP(statut='f',typ='TXM',into=("OUI",) ),

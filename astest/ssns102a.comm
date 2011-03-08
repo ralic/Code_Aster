@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 08/03/2011   AUTEUR MASSIN P.MASSIN 
 # RESPONSABLE JMBHH01 J.M.PROIX
 # TITRE ANNEAU AVEC RAIDISSEUR SOUS PRESSION EXTERNE
 # ssns102a.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test S
@@ -37,7 +37,7 @@ ORIE_SHB=_F(GROUP_MA='GEOTOT'),)
 MODMECA=AFFE_MODELE(MAILLAGE=MAIL,
                     AFFE=_F(TOUT='OUI',
                             PHENOMENE='MECANIQUE',
-                            MODELISATION='SHB8',),);
+                            MODELISATION='SHB',),);
                             
 
 MAIL=MODI_MAILLAGE(MAILLAGE=MAIL,reuse=MAIL,

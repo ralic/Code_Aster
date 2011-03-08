@@ -1,4 +1,4 @@
-#@ MODIF calculel5 Messages  DATE 15/02/2011   AUTEUR FLEJOU J-L.FLEJOU 
+#@ MODIF calculel5 Messages  DATE 08/03/2011   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -71,6 +71,14 @@ Risques & conseils :
 Erreur utilisateur :
  Vous utilisez le mot clé NOM_CMP, mais l'une (au moins) des composantes indiquees
  n'appartient pas à la grandeur : %(k1)s
+"""),
+
+7 : _("""
+Alarme utilisateur :
+  Vous utilisez la commande PROJ_CHAMP ou un mot clé nécessitant de "projeter"
+  des noeuds sur des mailles (par exemple LIAISON_MAIL).
+  L'un des noeuds (%(k1)s) du maillage (%(k2)s) a été projeté à une distance D non nulle significative.
+  (D>10%% de la taille de la maille la plus proche (%(k3)s) du maillage (%(k4)s)).
 """),
 
 

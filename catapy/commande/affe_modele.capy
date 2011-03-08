@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 23/02/2011   AUTEUR LAVERNE J.LAVERNE 
+#& MODIF COMMANDE  DATE 08/03/2011   AUTEUR MASSIN P.MASSIN 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,8 +20,9 @@
 AFFE_MODELE=OPER(nom="AFFE_MODELE",op=18,sd_prod=modele_sdaster,
             UIinfo={"groupes":("Modélisation",)},
                  fr="Définir le phénomène physique modélisé et le type d'éléments finis sur le maillage",reentrant='n',
-         regles=(AU_MOINS_UN('AFFE','AFFE_SOUS_STRUC'),),
-         MAILLAGE        =SIMP(statut='o',typ=(maillage_sdaster) ),
+         regles=(AU_MOINS_UN('AFFE','AFFE_SOUS_STRUC'),UN_PARMI('MAILLAGE','GRILLE')),
+         MAILLAGE        =SIMP(statut='f',typ=maillage_sdaster),
+         GRILLE          =SIMP(statut='f',typ=grille_sdaster),
          INFO            =SIMP(statut='f',typ='I',defaut=1,into=(1,2) ),
          VERIF           =SIMP(statut='f',typ='TXM',validators=NoRepeat(),max=2,into=("MAILLE","NOEUD") ),
 #
@@ -141,7 +142,7 @@ AFFE_MODELE=OPER(nom="AFFE_MODELE",op=18,sd_prod=modele_sdaster,
                                   "Q4G",             # RESP. : DESROCHES X.DESROCHES
                                   "TUYAU_3M",        # RESP. : PROIX J.M.PROIX
                                   "TUYAU_6M",        # RESP. : PROIX J.M.PROIX
-                                  "SHB8",            # RESP. : DESROCHES X.DESROCHES
+                                  "SHB",             # RESP. : DESROCHES X.DESROCHES
                                   "D_PLAN_HHM",      # RESP. : GRANET S.GRANET
                                   "D_PLAN_HM",       # RESP. : GRANET S.GRANET
                                   "D_PLAN_THM",      # RESP. : GRANET S.GRANET

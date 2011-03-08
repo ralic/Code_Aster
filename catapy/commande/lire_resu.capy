@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+#& MODIF COMMANDE  DATE 08/03/2011   AUTEUR PELLET J.PELLET 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -265,10 +265,11 @@ LIRE_RESU=OPER(nom="LIRE_RESU",op=150,sd_prod=lire_resu_prod,reentrant='n',
 # 2) blocs selon le type du résultat :
 #---------------------------------
          b_mode_meca     =BLOC(condition="(TYPE_RESU=='MODE_MECA')or(TYPE_RESU=='MODE_MECA_C')",
+           # Ces mots cles sont stockes dans l'objet .REFD des mode_meca
+           # Ces mots cles sont aussi utilises  pour imposer la numerotation des cham_no de DEPL_R
            MATR_A         =SIMP(statut='f',typ=matr_asse_depl_r,max=1),
            MATR_B         =SIMP(statut='f',typ=matr_asse_depl_r,max=1),
-           NUME_DDL        =SIMP(statut='f',typ=(nume_ddl_sdaster),max=1,
-                           fr="Utile en dynamique pour pouvoir imposer la numérotation des cham_no."),
+           NUME_DDL        =SIMP(statut='f',typ=(nume_ddl_sdaster),max=1,),
          ),
 
 

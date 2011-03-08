@@ -1,5 +1,5 @@
-      SUBROUTINE XPRVIT(NOMA,FISS,NDIM,NVIT,NBETA,CNSVT,CNSVN,CNSBL,
-     &                  CNSDIS,DISFR)
+      SUBROUTINE XPRVIT(NOMA,FISS,NDIM,NVIT,NBETA,LCMIN,CNSVT,CNSVN,
+     &                  CNSBL,CNSDIS,DISFR)
 
       IMPLICIT NONE
       CHARACTER*8    NOMA,FISS
@@ -7,11 +7,12 @@
       CHARACTER*19   CNSVT,CNSVN,DISFR,CNSBL,CNSDIS
       CHARACTER*24   NVIT,NBETA
       INTEGER        NDIM
+      REAL*8         LCMIN
       
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 12/10/2010   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ALGORITH  DATE 08/03/2011   AUTEUR MASSIN P.MASSIN 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -43,6 +44,7 @@ C        NVIT    : VECTEUR DES VITESSES DE PROPAGATION POUR CHAQUE POINT
 C                  DU FOND DE LA FISSURE (NOM DU CONCEPT)
 C        NBETA   : VECTEUR DES ANGLES DE PROPAGATION POUR CHAQUE POINT
 C                  DU FOND DE LA FISSURE (NOM DU CONCEPT)
+C        LCMIN   : LONGUEUR DE LA PLUS PETITE ARETE DU MAILLAGE
 C
 C    SORTIE
 C        CNSVT   : CHAM_NO_S VITESSE TANGENTIELLE DE PROPAGATION
@@ -84,9 +86,9 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
      &               NORM2,XN,YN,ZN,D,KI,KII,R8PREM
       CHARACTER*8    TABLE,LOI,K8B,CTYPE,VALK,TYPCMP(6)
       COMPLEX*16     CBID,VALC
-      CHARACTER*19   TCNSVT,TCNSVN,CNSV
+      CHARACTER*19   TCNSVT,TCNSVN
       CHARACTER*24   TMPFF
-      INTEGER        LNOFF,TBNP,JVV,JVL,JVFF,JGRLN,JGRLT,JBASEF,JBL,JDIS
+      INTEGER        LNOFF,TBNP,JVFF,JGRLN,JGRLT,JBASEF,JBL,JDIS
       CHARACTER*3    TEST
 
       REAL*8         BAST(3),TAST(3),N(3),T(3),B(3),MTAST,
@@ -100,15 +102,17 @@ C     SIF AND G VALUES
 C     EULER AXIS AND EULER ANGLE CALCULATIONS
       INTEGER        JEULER
       REAL*8         NI(3),TI(3),BI(3),NJ(3),TJ(3),BJ(3),RIJ(3,3),
-     &               TPL(3),NPL(3),AXEUL(3),CALFA,SALFA,MODVEC
-      REAL*8         T0,T180
+     &               TPL(3),NPL(3),BPL(3),AXEUL(3),CALFA,SALFA,MODVEC
+      REAL*8         T0,T180,ALFA
       PARAMETER      (T0 = 0.5D0/180.D0*3.1415D0)
       PARAMETER      (T180 = 179.5D0/180.D0*3.1415D0)
 
-      REAL*8 V1(3),V2(3),V3(3),V2AST(3),MV1,MV2,MV2AST,VF(3),MV,MVF,ALFA
-
 C     MULTIPLE CRACK FRONTS
       INTEGER        JFMULT,NUMFON,FON
+
+C     BISECTION METHOD AND VELOCITY INTERPOLATION
+      REAL*8         TOLLD,DPREC,DS,VP,BETAP
+      INTEGER        MAXITE
 
 C-----------------------------------------------------------------------
 C     DEBUT
@@ -116,7 +120,7 @@ C-----------------------------------------------------------------------
       CALL JEMARQ()
       CALL INFMAJ()
       CALL INFNIV(IFM,NIV)
-      
+    
 C     RECUPERATION DES CARACTERISTIQUES DU MAILLAGE
       CALL DISMOI('F','NB_NO_MAILLA',NOMA,'MAILLAGE',NBNO,K8B,IRET)
       CALL JEVEUO(NOMA//'.COORDO    .VALE','L',JCOOR)
@@ -155,16 +159,6 @@ C        3D CASE: EACH VECTOR IN THE FIELD HAS 3 COMPONENTS
       CALL JEVEUO(CNSBL//'.CNSV','E',JBL)
       CALL JEVEUO(CNSDIS//'.CNSV','E',JDIS)
 
-C     CREATION DES CHAM_NO_S CONTENANT LE VECTEUR V
-      CNSV='&&XPRVIT.CNSV'
-      IF (NDIM.EQ.2) THEN
-C        2D CASE: EACH VECTOR IN THE FIELD HAS 2 COMPONENTS ONLY
-         CALL CNSCRE(NOMA,'NEUT_R',2,TYPCMP,'V',CNSV)
-      ELSE
-C        3D CASE: EACH VECTOR IN THE FIELD HAS 3 COMPONENTS
-         CALL CNSCRE(NOMA,'NEUT_R',3,TYPCMP,'V',CNSV)
-      ENDIF
-
 C     CREATION DES CHAM_NO_S CONTENANT LES COMPOSANTES DU VECTEUR V
 C     (VT & VN)
       CALL CNSCRE(NOMA,'NEUT_R',1,'X1','V',CNSVT)
@@ -181,8 +175,6 @@ C     CREATE THE VECTOR WHERE THE DISTANCE BETWEEN EACH NODE AND THE
 C     CRACK FRONT IS STORED
       CALL WKVECT(DISFR,'V V R8',NBNO,JDISFR)
 
-      CALL JEVEUO(CNSV//'.CNSV','E',JVV)
-      CALL JEVEUO(CNSV//'.CNSL','E',JVL)
       CALL JEVEUO(CNSVT//'.CNSV','E',JVTV)
       CALL JEVEUO(CNSVT//'.CNSL','E',JVTL)
       CALL JEVEUO(CNSVN//'.CNSV','E',JVNV)
@@ -511,210 +503,285 @@ C                 STORE THE DISTANCE VECTOR
 
          ENDIF
 
-C      ***************************************************************
-C      EVALUATE THE PROPAGATION SPEED VECTOR IN THE NODE
-C      ***************************************************************
+C        ***************************************************************
+C        SMOOTH THE PROJECTION OF THE VELOCITY
+C        ***************************************************************
 
-       IF (NDIM.GT.2) THEN
-          DO 205 J=1,NDIM
+C        MAXIMUM NUMBER OF ITERATIONS
+         MAXITE=25
+C        INITIAL VALUE FOR DS
+         DS= 2.0D-1
+C        TOLERANCE TO CHECK THE CONVERGENCE
+         TOLLD =  1.0D-2*LCMIN
+
+C        SEARCH THE PROJECTED POINT BY THE BISECTION METHOD
+         DO 206 J=1,MAXITE
+
+C           COORDINATES OF THE POINT AT THE END OF THE CRACK FRONT 
+C           SEGMENT
+            XI1 = ZR(JFONF-1+4*(JMIN-1)+1)
+            YI1 = ZR(JFONF-1+4*(JMIN-1)+2)
+            ZI1 = ZR(JFONF-1+4*(JMIN-1)+3)
+            XJ1 = ZR(JFONF-1+4*(JMIN-1+1)+1)
+            YJ1 = ZR(JFONF-1+4*(JMIN-1+1)+2)
+            ZJ1 = ZR(JFONF-1+4*(JMIN-1+1)+3)
+
+C           VECTEUR IJ
+            XIJ = XJ1-XI1
+            YIJ = YJ1-YI1
+            ZIJ = ZJ1-ZI1
+
+C           RETREIVE THE LENGTH OF THE CRACK FRONT SEGMENT
+            NORM2 = SQRT(XIJ*XIJ + YIJ*YIJ + ZIJ*ZIJ)  
+
+C           COORD DU NOEUD M DU MAILLAGE
+            XM=ZR(JCOOR-1+(I-1)*3+1)
+            YM=ZR(JCOOR-1+(I-1)*3+2)
+            ZM=ZR(JCOOR-1+(I-1)*3+3)
+
+C           CALCULATE THE EULER ANGLE FOR THE NODE
+            ALFA = ZR(JEULER-1+7*(JMIN-1)+1)*SMIN
+
+            IF ((ALFA.GT.T0).AND.(ALFA.LT.T180)) THEN
+
+C              CALCULATE COS(ALFA) AND SIN(ALFA) TO SPEED UP THE CODE
+               CALFA = COS(ALFA)
+               SALFA = SIN(ALFA)
+
+C              RETRIEVE THE EULER AXIS
+               AXEUL(1) = ZR(JEULER-1+7*(JMIN-1)+2)
+               AXEUL(2) = ZR(JEULER-1+7*(JMIN-1)+3)
+               AXEUL(3) = ZR(JEULER-1+7*(JMIN-1)+4)
+
+C              RETRIEVE THE LOCAL BASE IN THE PREVIOUS POINT ON THE
+C              FRONT (SMIN=0)
+               NI(1) = ZR(JBASEF-1+2*NDIM*(JMIN-1)+1)
+               NI(2) = ZR(JBASEF-1+2*NDIM*(JMIN-1)+2)
+               NI(3) = ZR(JBASEF-1+2*NDIM*(JMIN-1)+3)
+               TI(1) = ZR(JBASEF-1+2*NDIM*(JMIN-1)+4)
+               TI(2) = ZR(JBASEF-1+2*NDIM*(JMIN-1)+5)
+               TI(3) = ZR(JBASEF-1+2*NDIM*(JMIN-1)+6)
+               BI(1) = ZR(JEULER-1+7*(JMIN-1)+5)
+               BI(2) = ZR(JEULER-1+7*(JMIN-1)+6)
+               BI(3) = ZR(JEULER-1+7*(JMIN-1)+7)
+
+C              CALCULATE THE LOCAL BASE IN THE NODE WITH RESPECT TO THE
+C              LOCAL BASE OF THE PREVIOUS POINT ON THE CRACK FRONT 
+C              (SMIN=0)
+               BPL(1) = (1-CALFA)*AXEUL(1)*AXEUL(3)-AXEUL(2)*SALFA
+               BPL(2) = (1-CALFA)*AXEUL(2)*AXEUL(3)+AXEUL(1)*SALFA
+               BPL(3) = CALFA+(1-CALFA)*AXEUL(3)**2
+
+C              CALCULATE THE LOCAL BASE IN THE NODE WITH RESPECT TO THE
+C              GLOBAL REFERENCE SYSTEM OF THE MESH
+               B(1) = BPL(1)*TI(1)+BPL(2)*NI(1)+BPL(3)*BI(1)
+               B(2) = BPL(1)*TI(2)+BPL(2)*NI(2)+BPL(3)*BI(2)
+               B(3) = BPL(1)*TI(3)+BPL(2)*NI(3)+BPL(3)*BI(3)
+
+C              CALCULATE THE UNIT VECTOR FOR THE NORMAL AXIS
+               MODVEC = (B(1)**2+B(2)**2+B(3)**2)**0.5D0
+
+               CALL ASSERT(MODVEC.GT.R8PREM())
+
+               B(1) = B(1)/MODVEC
+               B(2) = B(2)/MODVEC
+               B(3) = B(3)/MODVEC
+
+            ELSE
+
+               IF (ALFA.LT.T0) THEN
+                   B(1) = ZR(JEULER-1+7*(JMIN-1)+5)
+                   B(2) = ZR(JEULER-1+7*(JMIN-1)+6)
+                   B(3) = ZR(JEULER-1+7*(JMIN-1)+7)                 
+               ENDIF
+
+               IF (ALFA.GT.T180) THEN
+                   B(1) = ZR(JEULER-1+7*(JMIN-1+1)+5)
+                   B(2) = ZR(JEULER-1+7*(JMIN-1+1)+6)
+                   B(3) = ZR(JEULER-1+7*(JMIN-1+1)+7)
+               ENDIF
+
+            ENDIF
+
+C           COORD DE N
+            XN = SMIN*XIJ+XI1
+            YN = SMIN*YIJ+YI1
+            ZN = SMIN*ZIJ+ZI1
+
+C           DISTANCE OF POINT M TO THE PLANE N-T
+            D=(XM-XN)*B(1)+(YM-YN)*B(2)+(ZM-ZN)*B(3)
+
+            IF (ABS(D).LT.TOLLD) GOTO 207
+
+C           INJECTION OF THE GOOD DPREC FOR THE FIRST ITERATION
+            IF (J.EQ.1) THEN
+               DS=DS*SIGN(1.D0,D)*
+     &            SIGN(1.D0,(B(1)*XIJ+B(2)*YIJ+B(3)*ZIJ))
+               DPREC=D
+            ENDIF
+
+C           CHANGE IN THE SEARCH DIRECTION
+            IF ((D*DPREC).LT.0.D0) DS=DS*(-0.5D0)
+
+C           UPDATE THE PROJECTED POINT POSITION ON THE FRONT
+            SMIN=SMIN+DS
+
+C           MANAGE THE CHANGING OF THE CRACK FRONT SEGMENT          
+            IF ((SMIN.LT.0.D0).AND.(JMIN.GT.1)) THEN
+               JMIN=JMIN-1
+               SMIN=1.D0
+            ELSE IF ((SMIN.LT.0.D0).AND.(JMIN.EQ.1)) THEN
+               SMIN=0.D0
+               GOTO 207
+            ENDIF
           
-C            V1 = PROPAGATION SPEED VECTOR AT THE NODE ON THE LEFT OF
-C                 THE PROJECTION OF THE NODE ON THE FRONT
-             V1(J) = ZR(JVFF-1+NDIM*(JMIN-1)+J)
+            IF ((SMIN.GT.1.D0).AND.(JMIN.LT.NBPTFF)) THEN
+               JMIN=JMIN+1
+               SMIN=0.D0
+            ELSE IF ((SMIN.GT.1.D0).AND.(JMIN.EQ.NBPTFF)) THEN
+               SMIN=1.D0
+               GOTO 207
+            ENDIF
 
-C            V2 = PROPAGATION SPEED VECTOR AT THE NODE ON THE RIGHT OF
-C                 THE PROJECTION OF THE NODE ON THE FRONT
-             V2(J) = ZR(JVFF-1+NDIM*(JMIN+1-1)+J)
+            DPREC=D
 
-205       CONTINUE
+206      CONTINUE   
 
-C         CALCULATE THE VECTORIAL PRODUCT BETWEEN V1 AND V2
-          V3(1) = V1(2)*V2(3)-V1(3)*V2(2)
-          V3(2) = V1(3)*V2(1)-V1(1)*V2(3)
-          V3(3) = V1(1)*V2(2)-V1(2)*V2(1)
+207      CONTINUE
 
-C         CALCULATE THE VECTORIAL PRODUCT BETWEEN V3 AND V1
-          V2AST(1) = V3(2)*V1(3)-V3(3)*V1(2)
-          V2AST(2) = V3(3)*V1(1)-V3(1)*V1(3)
-          V2AST(3) = V3(1)*V1(2)-V3(2)*V1(1)
+C        CALCULATE THE PROJECTED POINT COORDINATES
+         XN = SMIN*XIJ+XI1
+         YN = SMIN*YIJ+YI1
+         ZN = SMIN*ZIJ+ZI1
+         D = (XN-XM)*(XN-XM)+(YN-YM)*(YN-YM)+(ZN-ZM)*(ZN-ZM)
+         DMIN = D
 
-C         CALCULATE THE MODULE OF THE VECTORS V1, V2 AND V2AST
-          MV1 = (V1(1)**2+V1(2)**2+V1(3)**2)**0.5D0
-          MV2 = (V2(1)**2+V2(2)**2+V2(3)**2)**0.5D0
-          MV2AST = (V2AST(1)**2+V2AST(2)**2+V2AST(3)**2)**0.5D0
+C        STORE THE DISTANCE VECTOR
+         ZR(JDIS-1+3*(I-1)+1) = XM-XN
+         ZR(JDIS-1+3*(I-1)+2) = YM-YN
+         ZR(JDIS-1+3*(I-1)+3) = ZM-ZN
+         ZR(JDISFR+I-1) = DMIN
 
-C         CALCULATE THE ANGLE BETWEEN THE VECTORS V1 AND V2
-          ALFA = (V1(1)*V2(1)+V1(2)*V2(2)+V1(3)*V2(3))/(MV1*MV2)
-          IF (ALFA.GT.1.D0) ALFA=1.D0
-          ALFA = ACOS(ALFA)
+C        ***************************************************************
+C        EVALUATE THE LOCAL REFERENCE SYSTEM IN THE NODE
+C        ***************************************************************
 
-C         CHECK IF V1 AND V2 ARE PARALLEL. IN THIS CASE V2AST IS A NULL
-C         VECTOR!
-          IF (ALFA.LE.T0) THEN
-             ALFA=0.D0
-             MV2AST=1.D0
-          ENDIF
+         IF (NDIM.EQ.2) THEN
 
-          CALL ASSERT(ALFA.LT.T180)
-
-C         CALCULATE THE FINAL SPEED VECTOR VF AND ITS MODULE
-          VF(1) = COS(ALFA*SMIN)*V1(1)/MV1 +
-     &            SIN(ALFA*SMIN)*V2AST(1)/MV2AST
-          VF(2) = COS(ALFA*SMIN)*V1(2)/MV1 +
-     &            SIN(ALFA*SMIN)*V2AST(2)/MV2AST
-          VF(3) = COS(ALFA*SMIN)*V1(3)/MV1 +
-     &            SIN(ALFA*SMIN)*V2AST(3)/MV2AST
-          MVF = (VF(1)**2+VF(2)**2+VF(3)**2)**0.5D0
-
-          CALL ASSERT(MVF.GT.0.D0)
-
-C         CALCULATE THE MODULE OF THE PROPAGATION SPEED FOR THE ACTUAL
-C         POINT
-          MV = (MV2-MV1)*SMIN+MV1
-
-C         CALCULATE THE FINAL PROPAGATION SPEED VECTOR
-          DO 204 J=1,NDIM
-             ZR(JVV-1+NDIM*(I-1)+J) = VF(J)/MVF*MV
-             ZL(JVL-1+NDIM*(I-1)+J) = .TRUE.
-204       CONTINUE
-
-       ELSE
-
-          ZR(JVV-1+NDIM*(I-1)+1) = ZR(JVFF-1+NDIM*(JMIN-1)+1)
-          ZR(JVV-1+NDIM*(I-1)+2) = ZR(JVFF-1+NDIM*(JMIN-1)+2)
-
-       ENDIF
-
-C      ***************************************************************
-C      EVALUATE THE LOCAL REFERENCE SYSTEM IN THE NODE
-C      ***************************************************************
-
-       IF (NDIM.EQ.2) THEN
-
-C         IN THE 2D CASE THERE'S NO NEED TO CALCULATE THE INTERMEDIATE
-C         LOCAL BASE
-C         N-AXIS
-          ZR(JBL-1+2*NDIM*(I-1)+1) = ZR(JBASEF-1+2*NDIM*(JMIN-1)+1)
-          ZR(JBL-1+2*NDIM*(I-1)+2) = ZR(JBASEF-1+2*NDIM*(JMIN-1)+2)
-C         T-AXIS
+C           IN THE 2D CASE THERE'S NO NEED TO CALCULATE THE INTERMEDIATE
+C           LOCAL BASE
+C           N-AXIS
+            ZR(JBL-1+2*NDIM*(I-1)+1) = ZR(JBASEF-1+2*NDIM*(JMIN-1)+1)
+            ZR(JBL-1+2*NDIM*(I-1)+2) = ZR(JBASEF-1+2*NDIM*(JMIN-1)+2)
+C           T-AXIS
           ZR(JBL-1+2*NDIM*(I-1)+3) = ZR(JBASEF-1+2*NDIM*(JMIN-1)+NDIM+1)
           ZR(JBL-1+2*NDIM*(I-1)+4) = ZR(JBASEF-1+2*NDIM*(JMIN-1)+NDIM+2)
 
-       ELSE
+         ELSE
 
-C         CALCULATE THE EULER ANGLE FOR THE NODE
-          ALFA = ZR(JEULER-1+7*(JMIN-1)+1)*SMIN
+C           CALCULATE THE EULER ANGLE FOR THE NODE
+            ALFA = ZR(JEULER-1+7*(JMIN-1)+1)*SMIN
 
-          IF ((ALFA.GT.T0).AND.(ALFA.LT.T180)) THEN
+            IF ((ALFA.GT.T0).AND.(ALFA.LT.T180)) THEN
 
-C            CALCULATE COS(ALFA) AND SIN(ALFA) TO SPEED UP THE CODE
-             CALFA = COS(ALFA)
-             SALFA = SIN(ALFA)
+C              CALCULATE COS(ALFA) AND SIN(ALFA) TO SPEED UP THE CODE
+               CALFA = COS(ALFA)
+               SALFA = SIN(ALFA)
 
-C            RETRIEVE THE EULER AXIS
-             AXEUL(1) = ZR(JEULER-1+7*(JMIN-1)+2)
-             AXEUL(2) = ZR(JEULER-1+7*(JMIN-1)+3)
-             AXEUL(3) = ZR(JEULER-1+7*(JMIN-1)+4)
+C              RETRIEVE THE EULER AXIS
+               AXEUL(1) = ZR(JEULER-1+7*(JMIN-1)+2)
+               AXEUL(2) = ZR(JEULER-1+7*(JMIN-1)+3)
+               AXEUL(3) = ZR(JEULER-1+7*(JMIN-1)+4)
 
-C            RETRIEVE THE LOCAL BASE IN THE PREVIOUS POINT ON THE FRONT
-C            (SMIN=0)
-             NI(1) = ZR(JBASEF-1+2*NDIM*(JMIN-1)+1)
-             NI(2) = ZR(JBASEF-1+2*NDIM*(JMIN-1)+2)
-             NI(3) = ZR(JBASEF-1+2*NDIM*(JMIN-1)+3)
-             TI(1) = ZR(JBASEF-1+2*NDIM*(JMIN-1)+4)
-             TI(2) = ZR(JBASEF-1+2*NDIM*(JMIN-1)+5)
-             TI(3) = ZR(JBASEF-1+2*NDIM*(JMIN-1)+6)
-             BI(1) = ZR(JEULER-1+7*(JMIN-1)+5)
-             BI(2) = ZR(JEULER-1+7*(JMIN-1)+6)
-             BI(3) = ZR(JEULER-1+7*(JMIN-1)+7)
+C             RETRIEVE THE LOCAL BASE IN THE PREVIOUS POINT ON THE FRONT
+C              (SMIN=0)
+               NI(1) = ZR(JBASEF-1+2*NDIM*(JMIN-1)+1)
+               NI(2) = ZR(JBASEF-1+2*NDIM*(JMIN-1)+2)
+               NI(3) = ZR(JBASEF-1+2*NDIM*(JMIN-1)+3)
+               TI(1) = ZR(JBASEF-1+2*NDIM*(JMIN-1)+4)
+               TI(2) = ZR(JBASEF-1+2*NDIM*(JMIN-1)+5)
+               TI(3) = ZR(JBASEF-1+2*NDIM*(JMIN-1)+6)
+               BI(1) = ZR(JEULER-1+7*(JMIN-1)+5)
+               BI(2) = ZR(JEULER-1+7*(JMIN-1)+6)
+               BI(3) = ZR(JEULER-1+7*(JMIN-1)+7)
 
-C            CALCULATE THE LOCAL BASE IN THE NODE WITH RESPECT TO THE
-C            LOCAL BASE OF THE PREVIOUS POINT ON THE CRACK FRONT
-C            (SMIN=0)
-             TPL(1) = CALFA+(1-CALFA)*AXEUL(1)**2
-             TPL(2) = (1-CALFA)*AXEUL(1)*AXEUL(2)-AXEUL(3)*SALFA
-             TPL(3) = (1-CALFA)*AXEUL(1)*AXEUL(3)+AXEUL(2)*SALFA
-             NPL(1) = (1-CALFA)*AXEUL(1)*AXEUL(2)+AXEUL(3)*SALFA
-             NPL(2) = CALFA+(1-CALFA)*AXEUL(2)**2
-             NPL(3) = (1-CALFA)*AXEUL(2)*AXEUL(3)-AXEUL(1)*SALFA
+C              CALCULATE THE LOCAL BASE IN THE NODE WITH RESPECT TO THE
+C              LOCAL BASE OF THE PREVIOUS POINT ON THE CRACK FRONT
+C              (SMIN=0)
+               TPL(1) = CALFA+(1-CALFA)*AXEUL(1)**2
+               TPL(2) = (1-CALFA)*AXEUL(1)*AXEUL(2)-AXEUL(3)*SALFA
+               TPL(3) = (1-CALFA)*AXEUL(1)*AXEUL(3)+AXEUL(2)*SALFA
+               NPL(1) = (1-CALFA)*AXEUL(1)*AXEUL(2)+AXEUL(3)*SALFA
+               NPL(2) = CALFA+(1-CALFA)*AXEUL(2)**2
+               NPL(3) = (1-CALFA)*AXEUL(2)*AXEUL(3)-AXEUL(1)*SALFA
 
-C            CALCULATE THE LOCAL BASE IN THE NODE WITH RESPECT TO THE
-C            GLOBAL REFERENCE SYSTEM OF THE MESH
-             T(1) = TPL(1)*TI(1)+TPL(2)*NI(1)+TPL(3)*BI(1)
-             T(2) = TPL(1)*TI(2)+TPL(2)*NI(2)+TPL(3)*BI(2)
-             T(3) = TPL(1)*TI(3)+TPL(2)*NI(3)+TPL(3)*BI(3)
-             N(1) = NPL(1)*TI(1)+NPL(2)*NI(1)+NPL(3)*BI(1)
-             N(2) = NPL(1)*TI(2)+NPL(2)*NI(2)+NPL(3)*BI(2)
-             N(3) = NPL(1)*TI(3)+NPL(2)*NI(3)+NPL(3)*BI(3)
+C              CALCULATE THE LOCAL BASE IN THE NODE WITH RESPECT TO THE
+C              GLOBAL REFERENCE SYSTEM OF THE MESH
+               T(1) = TPL(1)*TI(1)+TPL(2)*NI(1)+TPL(3)*BI(1)
+               T(2) = TPL(1)*TI(2)+TPL(2)*NI(2)+TPL(3)*BI(2)
+               T(3) = TPL(1)*TI(3)+TPL(2)*NI(3)+TPL(3)*BI(3)
+               N(1) = NPL(1)*TI(1)+NPL(2)*NI(1)+NPL(3)*BI(1)
+               N(2) = NPL(1)*TI(2)+NPL(2)*NI(2)+NPL(3)*BI(2)
+               N(3) = NPL(1)*TI(3)+NPL(2)*NI(3)+NPL(3)*BI(3)
 
-C            CALCULATE THE UNIT VECTOR FOR THE TANGENTIAL AND NORMAL
-C            AXIS (THEIR MODULE COULD BE SLIGHTLY DIFFERENT THAN 1 DUE
-C            TO NUMERICAL APPROXIMATION)
-C            N-AXIS
-             MODVEC = (T(1)**2+T(2)**2+T(3)**2)**0.5D0
+C              CALCULATE THE UNIT VECTOR FOR THE TANGENTIAL AND NORMAL
+C              AXIS (THEIR MODULE COULD BE SLIGHTLY DIFFERENT THAN 1 DUE
+C              TO NUMERICAL APPROXIMATION)
+C              N-AXIS
+               MODVEC = (T(1)**2+T(2)**2+T(3)**2)**0.5D0
 
-             CALL ASSERT(MODVEC.GT.R8PREM())
+               CALL ASSERT(MODVEC.GT.R8PREM())
 
-             ZR(JBL-1+2*NDIM*(I-1)+1) = N(1)/MODVEC
-             ZR(JBL-1+2*NDIM*(I-1)+2) = N(2)/MODVEC
-             ZR(JBL-1+2*NDIM*(I-1)+3) = N(3)/MODVEC
-C            T-AXIS
-             MODVEC = (N(1)**2+N(2)**2+N(3)**2)**0.5D0
+               ZR(JBL-1+2*NDIM*(I-1)+1) = N(1)/MODVEC
+               ZR(JBL-1+2*NDIM*(I-1)+2) = N(2)/MODVEC
+               ZR(JBL-1+2*NDIM*(I-1)+3) = N(3)/MODVEC
+C              T-AXIS
+               MODVEC = (N(1)**2+N(2)**2+N(3)**2)**0.5D0
 
-             CALL ASSERT(MODVEC.GT.R8PREM())
+               CALL ASSERT(MODVEC.GT.R8PREM())
 
-             ZR(JBL-1+2*NDIM*(I-1)+4) = T(1)/MODVEC
-             ZR(JBL-1+2*NDIM*(I-1)+5) = T(2)/MODVEC
-             ZR(JBL-1+2*NDIM*(I-1)+6) = T(3)/MODVEC
+               ZR(JBL-1+2*NDIM*(I-1)+4) = T(1)/MODVEC
+               ZR(JBL-1+2*NDIM*(I-1)+5) = T(2)/MODVEC
+               ZR(JBL-1+2*NDIM*(I-1)+6) = T(3)/MODVEC
 
-          ELSE
+            ELSE
 
-             IF (ALFA.GT.T180) JMIN=JMIN+1
+               IF (ALFA.GT.T180) JMIN=JMIN+1
 
-C            N-AXIS
-             ZR(JBL-1+2*NDIM*(I-1)+1) = ZR(JBASEF-1+2*NDIM*(JMIN-1)+1)
-             ZR(JBL-1+2*NDIM*(I-1)+2) = ZR(JBASEF-1+2*NDIM*(JMIN-1)+2)
-             ZR(JBL-1+2*NDIM*(I-1)+3) = ZR(JBASEF-1+2*NDIM*(JMIN-1)+3)
-C            T-AXIS
-             ZR(JBL-1+2*NDIM*(I-1)+4) = 
+C              N-AXIS
+               ZR(JBL-1+2*NDIM*(I-1)+1) = ZR(JBASEF-1+2*NDIM*(JMIN-1)+1)
+               ZR(JBL-1+2*NDIM*(I-1)+2) = ZR(JBASEF-1+2*NDIM*(JMIN-1)+2)
+               ZR(JBL-1+2*NDIM*(I-1)+3) = ZR(JBASEF-1+2*NDIM*(JMIN-1)+3)
+C              T-AXIS
+               ZR(JBL-1+2*NDIM*(I-1)+4) = 
      &                               ZR(JBASEF-1+2*NDIM*(JMIN-1)+NDIM+1)
-             ZR(JBL-1+2*NDIM*(I-1)+5) = 
+               ZR(JBL-1+2*NDIM*(I-1)+5) = 
      &                               ZR(JBASEF-1+2*NDIM*(JMIN-1)+NDIM+2)
-             ZR(JBL-1+2*NDIM*(I-1)+6) = 
+               ZR(JBL-1+2*NDIM*(I-1)+6) = 
      &                               ZR(JBASEF-1+2*NDIM*(JMIN-1)+NDIM+3)
 
-          ENDIF
+            ENDIF
 
-       ENDIF
+         ENDIF
 
-C      ***************************************************************
-C      EVALUATE THE NORMAL AND TANGENTIAL COMPONENTS OF THE PROPAGATION
-C      SPEED IN THE NODE WITH RESPECT TO THE LOCAL REFERENCE SYSTEM
-C      ***************************************************************
+C        ***************************************************************
+C        EVALUATE THE NORM. AND TANG. COMPONENTS OF THE PROPAGATION
+C        SPEED IN THE NODE WITH RESPECT TO THE LOCAL REFERENCE SYSTEM
+C        ***************************************************************
+         
+         BETAP=(ZR(JBETA-1+JMIN+1)-ZR(JBETA-1+JMIN))*SMIN+
+     &          ZR(JBETA-1+JMIN)
 
-       ZR(JVNV+I-1) =  0.D0
-       ZR(JVTV+I-1) =  0.D0
+         VP=(ZR(JVIT-1+JMIN+1)-ZR(JVIT-1+JMIN))*SMIN+ZR(JVIT-1+JMIN)
 
-       DO 201 J=1,NDIM
+         ZR(JVNV+I-1)=VP*SIN(BETAP)
+         ZR(JVTV+I-1)=VP*COS(BETAP)
+         ZL(JVTL+I-1) = .TRUE.
+         ZL(JVNL+I-1) = .TRUE.
 
-C        NORMAL COMPONENT
-         ZR(JVNV+I-1) = ZR(JVNV+I-1)+ZR(JVV-1+NDIM*(I-1)+J)*
-     &                  ZR(JBL-1+2*NDIM*(I-1)+J)
-
-C        TANGENTIAL COMPONENT
-         ZR(JVTV+I-1) = ZR(JVTV+I-1)+ZR(JVV-1+NDIM*(I-1)+J)*
-     &                  ZR(JBL-1+2*NDIM*(I-1)+NDIM+J)
-
-
-
-201    CONTINUE
-
-       ZL(JVTL+I-1) = .TRUE.
-       ZL(JVNL+I-1) = .TRUE.
-
-       ZR(JDISFR+I-1) = DMIN
+         ZR(JDISFR+I-1) = DMIN
       
- 200   CONTINUE
+200   CONTINUE
 
 C ***************************************************************
 C PRINT SOME INFORMATIONS
@@ -752,7 +819,6 @@ C  IMPRESSION DES VITESSES DE PROPAGATION EN INFO=2
       CALL JEDETR('&&XPRVIT.VT_PROPA_FF')
       CALL JEDETR('&&XPRVIT.VN_PROPA_FF')
       CALL JEDETR('&&XPRVIT.EULER')
-      CALL JEDETR(CNSV)
 
 C-----------------------------------------------------------------------
 C     FIN

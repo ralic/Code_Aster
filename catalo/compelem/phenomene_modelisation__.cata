@@ -1,4 +1,4 @@
-%& MODIF COMPELEM  DATE 23/02/2011   AUTEUR LAVERNE J.LAVERNE 
+%& MODIF COMPELEM  DATE 08/03/2011   AUTEUR MASSIN P.MASSIN 
 % ======================================================================
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
@@ -421,7 +421,7 @@ PHENOMENE_MODELISATION__
 
 %-------------------------------------------------------------------
 
-       MODELISATION__ 'SHB8'             DIM__ 3 3   CODE__ 'SHB'
+       MODELISATION__ 'SHB'             DIM__ 3 3   CODE__ 'SHB'
               ATTRIBUT__  NBSIGM=X6  TYPMOD=C_PLAN
               MAILLE__ HEXA8     ELEMENT__ MECA_SHB8
               MAILLE__ QUAD4     ELEMENT__ MECA_FACE4

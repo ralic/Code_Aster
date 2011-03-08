@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 08/03/2011   AUTEUR MASSIN P.MASSIN 
 # TITRE POUTRE VRILLEE 
 # ssls108g.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -36,7 +36,7 @@ MAIL=DEFI_GROUP(reuse =MAIL,
 MODMECA=AFFE_MODELE(MAILLAGE=MAIL,
                     AFFE=_F(TOUT='OUI',
                             PHENOMENE='MECANIQUE',
-                            MODELISATION='SHB8',),);
+                            MODELISATION='SHB',),);
 
 MAT=DEFI_MATERIAU(ELAS=_F(E=29E+6,
                           NU=0.22,),);
