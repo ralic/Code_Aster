@@ -1,4 +1,4 @@
-#@ MODIF salomeRunScript Stanley  DATE 01/03/2011   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF salomeRunScript Stanley  DATE 15/03/2011   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -20,8 +20,10 @@
 
 import tempfile
 import re
+import os
 
-debug = True
+debug = False
+
 
 # ----------------------------------------------------------------------------------------------------------------------
 def MakeTempScript(SALOMESCRIPT, **args):
@@ -37,29 +39,27 @@ def MakeTempScript(SALOMESCRIPT, **args):
            print 'Le champs :"%s" n''a pas été trouvé dans le script Salome, mais il n''est peut être pas nécessaire.' % valk
 
    try:
-      # Creer un fichier temporaire
-      fw = tempfile.NamedTemporaryFile(mode='w', suffix='.py')
-      tmpfile = fw.name
-
       # Recupere le script Salome
       f = open(SALOMESCRIPT, 'r')
       txt = f.read()
       f.close()
 
-#       # Remplace les champs par leur valeur
-#       for k in args.keys():
-#          if not txt.find('$%s$'% k)!=-1: UTMESS('I', 'EXECLOGICIEL0_19', valk='$%s$'% k) 
-#          txt = txt.replace('$%s$'% k, str(args[k]) )
-
       # Remplace les champs par leur valeur
       for para, pval in args.items():
-          print para, pval
+          #print para, pval
+          if pval: pval = "'%s'" % str(pval)
+          else:    pval = "''"
           if not txt.find(para)!=-1: UTMESS('I', 'EXECLOGICIEL0_19', valk=para) 
           exp = re.compile('^( *)(%s *=.*)$' % para, re.MULTILINE)
           txt = exp.sub('\g<1>%s = %s' % (para, pval), txt)
 
-      # Ecris le nouveau script
+      # Ecrire le nouveau script
+      fw = tempfile.NamedTemporaryFile(mode='w', suffix='.py')
+#      tmpfile = fw.name
+      tmpfile = os.path.join(os.getcwd(), os.path.basename(fw.name) )
       fw.close()
+
+#      tmpfile = TempFileName(mode='w', suffix='.py')
       fw = open(tmpfile, 'w')
       fw.write( txt + '\n' )
       fw.close()
@@ -90,7 +90,7 @@ def RunScript(SALOMESCRIPT, CHOIX, INPUTFILE):
    """
    tmpfile = MakeTempScript( SALOMESCRIPT=SALOMESCRIPT, CHOIX=CHOIX, INPUTFILE=INPUTFILE, OUTPUTFILE=False, STUDY=False )
    execfile(r"%s" % tmpfile)
-   DelTempScript(tmpfile)
+   if not debug: DelTempScript(tmpfile)
 
 
 

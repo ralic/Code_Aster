@@ -1,4 +1,4 @@
-#@ MODIF salomeGetStudies Templates  DATE 01/03/2011   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF salomeGetStudies Templates  DATE 15/03/2011   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -19,31 +19,31 @@
 # ======================================================================
 
 # Script permettant de recuperer les etudes ouvertes dans Salome
-import salome
-import SALOMEDS
-import tempfile
 
+OUTPUTFILE1 = ''
 
-#%====================Choix et fichier================================%
-# Cette partie est modifiee par Stanley
-OUTPUTFILE = '$OUTPUTFILE$'
+try:   
+    import salome
+    import SALOMEDS
+    import salome_kernel
+    orb, lcc, naming_service, cm = salome_kernel.salome_kernel_init()
+    # get Study Manager reference
+    obj = naming_service.Resolve('myStudyManager')
+    myStudyManager = obj._narrow(SALOMEDS.StudyManager)
+    List_Studies = myStudyManager.GetOpenStudies()
 
+except Exception, e:
+    List_Studies = []
+    print "Probleme avec Salome, il n'est peut etre pas lance!"
+    print e
 
-#%====================Liste des etudes ouvertes====================%
-# On liste les etudes ouvertes et on sort
-Liste_Study = salome.myStudyManager.GetOpenStudies()
 try:
-   # Si pas de fichier de sortie, on met dans un fichier temporaire
-   if OUTPUTFILE=='$OUTPUT'+'FILE$':   # hack pour eviter de substituer cette ligne
-      fw = tempfile.NamedTemporaryFile(mode='w')
-      OUTPUTFILE = fw.name
-      fw.close()
+   if OUTPUTFILE1:
+       # On ecrit les etudes ouvertes dans un fichier
+       fw = file(OUTPUTFILE1,'w')
+       fw.write( '\n'.join(List_Studies) )
 
-   # On ecrit les etudes ouvertes dans un fichier
-   fw = file(OUTPUTFILE,'w')
-   fw.write( '\n'.join(Liste_Study) + '\n' )
 except Exception, e:
    raise "Erreur : \n%s" % e
 
-print 20*"-" + " List of open Studies " + 20*"-" + "\n" + '\n'.join(Liste_Study) + "\n" + 62*"-"
-#%=================================================================%
+print 62*'-' + '\n' + '\n'.join(List_Studies) + '\n' + 62*'-'

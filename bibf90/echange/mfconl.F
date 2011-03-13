@@ -1,8 +1,8 @@
       SUBROUTINE MFCONL(FID,MAA,MDIM,CONN,CSIZE,SWITCH,PFLTAB,PSIZE,
      &                  TYPENT,TYPGEO,TYPCON,CRET)
 !           CONFIGURATION MANAGEMENT OF EDF VERSION                  
-!& MODIF MFCONL ECHANGE  DATE 08/03/2011   AUTEUR SELLENET N.SELLENET 
-! RESPONSABLE
+!& MODIF MFCONL ECHANGE  DATE 14/03/2011   AUTEUR SELLENET N.SELLENET 
+! RESPONSABLE SELLENET N.SELLENET
 ! ================================================================== 
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D              WWW.CODE-ASTER.ORG 
 !                                                                    

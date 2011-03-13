@@ -1,7 +1,7 @@
       SUBROUTINE MFMAAC ( FID , NOM , DIM , TYPE, DESC, CRET )
 !           CONFIGURATION MANAGEMENT OF EDF VERSION                  
-!& MODIF MFMAAC ECHANGE  DATE 08/03/2011   AUTEUR SELLENET N.SELLENET 
-! RESPONSABLE
+!& MODIF MFMAAC ECHANGE  DATE 14/03/2011   AUTEUR SELLENET N.SELLENET 
+! RESPONSABLE SELLENET N.SELLENET
 ! ================================================================== 
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D              WWW.CODE-ASTER.ORG 
 !                                                                    

@@ -10,7 +10,7 @@
       REAL*8         LCMIN
       
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 08/03/2011   AUTEUR MASSIN P.MASSIN 
+C MODIF ALGORITH  DATE 14/03/2011   AUTEUR MASSIN P.MASSIN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -395,8 +395,8 @@ C           CALCULATE THE EULER VECTOR
 C ***************************************************************
 C ELABORATE EACH NODE IN THE MESH IN ORDER TO CALCULATE THE FOLLOWING:
 C - PROPAGATION SPEED VECTOR
-C - LOCAL REFERENCE SYSTEM (NORMAL AND TANGENTIAL AXES WITH RESPECT TO
-C                           THE CRACK PLANE)
+C - LOCAL REFERENCE SYSTEM (NORMAL AND TANGENTIAL AXES WITH RESPECT 
+C                           TO THE CRACK PLANE)
 C - DISTANCE VECTOR BETWEEN THE NODE AND ITS PROJECTION ON THE FRONT
 C ***************************************************************
 
@@ -506,161 +506,165 @@ C                 STORE THE DISTANCE VECTOR
 C        ***************************************************************
 C        SMOOTH THE PROJECTION OF THE VELOCITY
 C        ***************************************************************
+         
+         IF (NDIM.EQ.3) THEN
+         
+C           MAXIMUM NUMBER OF ITERATIONS
+            MAXITE=25
+C           INITIAL VALUE FOR DS
+            DS= 2.0D-1
+C           TOLERANCE TO CHECK THE CONVERGENCE
+            TOLLD =  1.0D-2*LCMIN
 
-C        MAXIMUM NUMBER OF ITERATIONS
-         MAXITE=25
-C        INITIAL VALUE FOR DS
-         DS= 2.0D-1
-C        TOLERANCE TO CHECK THE CONVERGENCE
-         TOLLD =  1.0D-2*LCMIN
+C           SEARCH THE PROJECTED POINT BY THE BISECTION METHOD
+            DO 206 J=1,MAXITE
 
-C        SEARCH THE PROJECTED POINT BY THE BISECTION METHOD
-         DO 206 J=1,MAXITE
+C              COORDINATES OF THE POINT AT THE END OF THE CRACK FRONT 
+C              SEGMENT
+               XI1 = ZR(JFONF-1+4*(JMIN-1)+1)
+               YI1 = ZR(JFONF-1+4*(JMIN-1)+2)
+               ZI1 = ZR(JFONF-1+4*(JMIN-1)+3)
+               XJ1 = ZR(JFONF-1+4*(JMIN-1+1)+1)
+               YJ1 = ZR(JFONF-1+4*(JMIN-1+1)+2)
+               ZJ1 = ZR(JFONF-1+4*(JMIN-1+1)+3)
 
-C           COORDINATES OF THE POINT AT THE END OF THE CRACK FRONT 
-C           SEGMENT
-            XI1 = ZR(JFONF-1+4*(JMIN-1)+1)
-            YI1 = ZR(JFONF-1+4*(JMIN-1)+2)
-            ZI1 = ZR(JFONF-1+4*(JMIN-1)+3)
-            XJ1 = ZR(JFONF-1+4*(JMIN-1+1)+1)
-            YJ1 = ZR(JFONF-1+4*(JMIN-1+1)+2)
-            ZJ1 = ZR(JFONF-1+4*(JMIN-1+1)+3)
+C              VECTEUR IJ
+               XIJ = XJ1-XI1
+               YIJ = YJ1-YI1
+               ZIJ = ZJ1-ZI1
 
-C           VECTEUR IJ
-            XIJ = XJ1-XI1
-            YIJ = YJ1-YI1
-            ZIJ = ZJ1-ZI1
+C              RETREIVE THE LENGTH OF THE CRACK FRONT SEGMENT
+               NORM2 = SQRT(XIJ*XIJ + YIJ*YIJ + ZIJ*ZIJ)  
 
-C           RETREIVE THE LENGTH OF THE CRACK FRONT SEGMENT
-            NORM2 = SQRT(XIJ*XIJ + YIJ*YIJ + ZIJ*ZIJ)  
+C              COORD DU NOEUD M DU MAILLAGE
+               XM=ZR(JCOOR-1+(I-1)*3+1)
+               YM=ZR(JCOOR-1+(I-1)*3+2)
+               ZM=ZR(JCOOR-1+(I-1)*3+3)
 
-C           COORD DU NOEUD M DU MAILLAGE
-            XM=ZR(JCOOR-1+(I-1)*3+1)
-            YM=ZR(JCOOR-1+(I-1)*3+2)
-            ZM=ZR(JCOOR-1+(I-1)*3+3)
+C              CALCULATE THE EULER ANGLE FOR THE NODE
+               ALFA = ZR(JEULER-1+7*(JMIN-1)+1)*SMIN
 
-C           CALCULATE THE EULER ANGLE FOR THE NODE
-            ALFA = ZR(JEULER-1+7*(JMIN-1)+1)*SMIN
+               IF ((ALFA.GT.T0).AND.(ALFA.LT.T180)) THEN
 
-            IF ((ALFA.GT.T0).AND.(ALFA.LT.T180)) THEN
+C                 CALCULATE COS(ALFA) AND SIN(ALFA) TO SPEED UP THE CODE
+                  CALFA = COS(ALFA)
+                  SALFA = SIN(ALFA)
 
-C              CALCULATE COS(ALFA) AND SIN(ALFA) TO SPEED UP THE CODE
-               CALFA = COS(ALFA)
-               SALFA = SIN(ALFA)
+C                 RETRIEVE THE EULER AXIS
+                  AXEUL(1) = ZR(JEULER-1+7*(JMIN-1)+2)
+                  AXEUL(2) = ZR(JEULER-1+7*(JMIN-1)+3)
+                  AXEUL(3) = ZR(JEULER-1+7*(JMIN-1)+4)
 
-C              RETRIEVE THE EULER AXIS
-               AXEUL(1) = ZR(JEULER-1+7*(JMIN-1)+2)
-               AXEUL(2) = ZR(JEULER-1+7*(JMIN-1)+3)
-               AXEUL(3) = ZR(JEULER-1+7*(JMIN-1)+4)
+C                 RETRIEVE THE LOCAL BASE IN THE PREVIOUS POINT ON THE
+C                 FRONT (SMIN=0)
+                  NI(1) = ZR(JBASEF-1+2*NDIM*(JMIN-1)+1)
+                  NI(2) = ZR(JBASEF-1+2*NDIM*(JMIN-1)+2)
+                  NI(3) = ZR(JBASEF-1+2*NDIM*(JMIN-1)+3)
+                  TI(1) = ZR(JBASEF-1+2*NDIM*(JMIN-1)+4)
+                  TI(2) = ZR(JBASEF-1+2*NDIM*(JMIN-1)+5)
+                  TI(3) = ZR(JBASEF-1+2*NDIM*(JMIN-1)+6)
+                  BI(1) = ZR(JEULER-1+7*(JMIN-1)+5)
+                  BI(2) = ZR(JEULER-1+7*(JMIN-1)+6)
+                  BI(3) = ZR(JEULER-1+7*(JMIN-1)+7)
 
-C              RETRIEVE THE LOCAL BASE IN THE PREVIOUS POINT ON THE
-C              FRONT (SMIN=0)
-               NI(1) = ZR(JBASEF-1+2*NDIM*(JMIN-1)+1)
-               NI(2) = ZR(JBASEF-1+2*NDIM*(JMIN-1)+2)
-               NI(3) = ZR(JBASEF-1+2*NDIM*(JMIN-1)+3)
-               TI(1) = ZR(JBASEF-1+2*NDIM*(JMIN-1)+4)
-               TI(2) = ZR(JBASEF-1+2*NDIM*(JMIN-1)+5)
-               TI(3) = ZR(JBASEF-1+2*NDIM*(JMIN-1)+6)
-               BI(1) = ZR(JEULER-1+7*(JMIN-1)+5)
-               BI(2) = ZR(JEULER-1+7*(JMIN-1)+6)
-               BI(3) = ZR(JEULER-1+7*(JMIN-1)+7)
+C                 CALCULATE THE LOCAL BASE IN THE NODE WITH RESPECT TO 
+C                 THELOCAL BASE OF THE PREVIOUS POINT ON THE CRACK FRONT
+C                 (SMIN=0)
+                  BPL(1) = (1-CALFA)*AXEUL(1)*AXEUL(3)-AXEUL(2)*SALFA
+                  BPL(2) = (1-CALFA)*AXEUL(2)*AXEUL(3)+AXEUL(1)*SALFA
+                  BPL(3) = CALFA+(1-CALFA)*AXEUL(3)**2
 
-C              CALCULATE THE LOCAL BASE IN THE NODE WITH RESPECT TO THE
-C              LOCAL BASE OF THE PREVIOUS POINT ON THE CRACK FRONT 
-C              (SMIN=0)
-               BPL(1) = (1-CALFA)*AXEUL(1)*AXEUL(3)-AXEUL(2)*SALFA
-               BPL(2) = (1-CALFA)*AXEUL(2)*AXEUL(3)+AXEUL(1)*SALFA
-               BPL(3) = CALFA+(1-CALFA)*AXEUL(3)**2
+C                 CALCULATE THE LOCAL BASE IN THE NODE WITH RESPECT TO
+C                 THE GLOBAL REFERENCE SYSTEM OF THE MESH
+                  B(1) = BPL(1)*TI(1)+BPL(2)*NI(1)+BPL(3)*BI(1)
+                  B(2) = BPL(1)*TI(2)+BPL(2)*NI(2)+BPL(3)*BI(2)
+                  B(3) = BPL(1)*TI(3)+BPL(2)*NI(3)+BPL(3)*BI(3)
 
-C              CALCULATE THE LOCAL BASE IN THE NODE WITH RESPECT TO THE
-C              GLOBAL REFERENCE SYSTEM OF THE MESH
-               B(1) = BPL(1)*TI(1)+BPL(2)*NI(1)+BPL(3)*BI(1)
-               B(2) = BPL(1)*TI(2)+BPL(2)*NI(2)+BPL(3)*BI(2)
-               B(3) = BPL(1)*TI(3)+BPL(2)*NI(3)+BPL(3)*BI(3)
+C                 CALCULATE THE UNIT VECTOR FOR THE NORMAL AXIS
+                  MODVEC = (B(1)**2+B(2)**2+B(3)**2)**0.5D0
 
-C              CALCULATE THE UNIT VECTOR FOR THE NORMAL AXIS
-               MODVEC = (B(1)**2+B(2)**2+B(3)**2)**0.5D0
+                  CALL ASSERT(MODVEC.GT.R8PREM())
 
-               CALL ASSERT(MODVEC.GT.R8PREM())
+                  B(1) = B(1)/MODVEC
+                  B(2) = B(2)/MODVEC
+                  B(3) = B(3)/MODVEC
 
-               B(1) = B(1)/MODVEC
-               B(2) = B(2)/MODVEC
-               B(3) = B(3)/MODVEC
+               ELSE
 
-            ELSE
+                  IF (ALFA.LT.T0) THEN
+                      B(1) = ZR(JEULER-1+7*(JMIN-1)+5)
+                      B(2) = ZR(JEULER-1+7*(JMIN-1)+6)
+                      B(3) = ZR(JEULER-1+7*(JMIN-1)+7)                 
+                  ENDIF
 
-               IF (ALFA.LT.T0) THEN
-                   B(1) = ZR(JEULER-1+7*(JMIN-1)+5)
-                   B(2) = ZR(JEULER-1+7*(JMIN-1)+6)
-                   B(3) = ZR(JEULER-1+7*(JMIN-1)+7)                 
+                  IF (ALFA.GT.T180) THEN
+                      B(1) = ZR(JEULER-1+7*(JMIN-1+1)+5)
+                      B(2) = ZR(JEULER-1+7*(JMIN-1+1)+6)
+                      B(3) = ZR(JEULER-1+7*(JMIN-1+1)+7)
+                  ENDIF
+
                ENDIF
 
-               IF (ALFA.GT.T180) THEN
-                   B(1) = ZR(JEULER-1+7*(JMIN-1+1)+5)
-                   B(2) = ZR(JEULER-1+7*(JMIN-1+1)+6)
-                   B(3) = ZR(JEULER-1+7*(JMIN-1+1)+7)
+C              COORD DE N
+               XN = SMIN*XIJ+XI1
+               YN = SMIN*YIJ+YI1
+               ZN = SMIN*ZIJ+ZI1
+
+C              DISTANCE OF POINT M TO THE PLANE N-T
+               D=(XM-XN)*B(1)+(YM-YN)*B(2)+(ZM-ZN)*B(3)
+
+               IF (ABS(D).LT.TOLLD) GOTO 207
+
+C              INJECTION OF THE GOOD DPREC FOR THE FIRST ITERATION
+               IF (J.EQ.1) THEN
+                  DS=DS*SIGN(1.D0,D)*
+     &               SIGN(1.D0,(B(1)*XIJ+B(2)*YIJ+B(3)*ZIJ))
+                  DPREC=D
                ENDIF
 
-            ENDIF
+C              CHANGE IN THE SEARCH DIRECTION
+               IF ((D*DPREC).LT.0.D0) DS=DS*(-0.5D0)
 
-C           COORD DE N
+C              UPDATE THE PROJECTED POINT POSITION ON THE FRONT
+               SMIN=SMIN+DS
+
+C              MANAGE THE CHANGING OF THE CRACK FRONT SEGMENT          
+               IF ((SMIN.LT.0.D0).AND.(JMIN.GT.1)) THEN
+                  JMIN=JMIN-1
+                  SMIN=1.D0
+               ELSE IF ((SMIN.LT.0.D0).AND.(JMIN.EQ.1)) THEN
+                  SMIN=0.D0
+                  GOTO 207
+               ENDIF
+          
+               IF ((SMIN.GT.1.D0).AND.(JMIN.LT.NBPTFF)) THEN
+                  JMIN=JMIN+1
+                  SMIN=0.D0
+               ELSE IF ((SMIN.GT.1.D0).AND.(JMIN.EQ.NBPTFF)) THEN
+                  SMIN=1.D0
+                  GOTO 207
+               ENDIF
+
+               DPREC=D
+
+206         CONTINUE   
+
+207         CONTINUE
+
+C           CALCULATE THE PROJECTED POINT COORDINATES
             XN = SMIN*XIJ+XI1
             YN = SMIN*YIJ+YI1
             ZN = SMIN*ZIJ+ZI1
+            D = (XN-XM)*(XN-XM)+(YN-YM)*(YN-YM)+(ZN-ZM)*(ZN-ZM)
+            DMIN = D
 
-C           DISTANCE OF POINT M TO THE PLANE N-T
-            D=(XM-XN)*B(1)+(YM-YN)*B(2)+(ZM-ZN)*B(3)
-
-            IF (ABS(D).LT.TOLLD) GOTO 207
-
-C           INJECTION OF THE GOOD DPREC FOR THE FIRST ITERATION
-            IF (J.EQ.1) THEN
-               DS=DS*SIGN(1.D0,D)*
-     &            SIGN(1.D0,(B(1)*XIJ+B(2)*YIJ+B(3)*ZIJ))
-               DPREC=D
-            ENDIF
-
-C           CHANGE IN THE SEARCH DIRECTION
-            IF ((D*DPREC).LT.0.D0) DS=DS*(-0.5D0)
-
-C           UPDATE THE PROJECTED POINT POSITION ON THE FRONT
-            SMIN=SMIN+DS
-
-C           MANAGE THE CHANGING OF THE CRACK FRONT SEGMENT          
-            IF ((SMIN.LT.0.D0).AND.(JMIN.GT.1)) THEN
-               JMIN=JMIN-1
-               SMIN=1.D0
-            ELSE IF ((SMIN.LT.0.D0).AND.(JMIN.EQ.1)) THEN
-               SMIN=0.D0
-               GOTO 207
-            ENDIF
-          
-            IF ((SMIN.GT.1.D0).AND.(JMIN.LT.NBPTFF)) THEN
-               JMIN=JMIN+1
-               SMIN=0.D0
-            ELSE IF ((SMIN.GT.1.D0).AND.(JMIN.EQ.NBPTFF)) THEN
-               SMIN=1.D0
-               GOTO 207
-            ENDIF
-
-            DPREC=D
-
-206      CONTINUE   
-
-207      CONTINUE
-
-C        CALCULATE THE PROJECTED POINT COORDINATES
-         XN = SMIN*XIJ+XI1
-         YN = SMIN*YIJ+YI1
-         ZN = SMIN*ZIJ+ZI1
-         D = (XN-XM)*(XN-XM)+(YN-YM)*(YN-YM)+(ZN-ZM)*(ZN-ZM)
-         DMIN = D
-
-C        STORE THE DISTANCE VECTOR
-         ZR(JDIS-1+3*(I-1)+1) = XM-XN
-         ZR(JDIS-1+3*(I-1)+2) = YM-YN
-         ZR(JDIS-1+3*(I-1)+3) = ZM-ZN
-         ZR(JDISFR+I-1) = DMIN
+C           STORE THE DISTANCE VECTOR
+            ZR(JDIS-1+3*(I-1)+1) = XM-XN
+            ZR(JDIS-1+3*(I-1)+2) = YM-YN
+            ZR(JDIS-1+3*(I-1)+3) = ZM-ZN
+            ZR(JDISFR+I-1) = DMIN
+         
+         ENDIF
 
 C        ***************************************************************
 C        EVALUATE THE LOCAL REFERENCE SYSTEM IN THE NODE

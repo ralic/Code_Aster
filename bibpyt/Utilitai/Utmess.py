@@ -1,4 +1,4 @@
-#@ MODIF Utmess Utilitai  DATE 31/01/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF Utmess Utilitai  DATE 14/03/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -38,6 +38,9 @@ except:
 
 def _(s):
     return s
+
+from Noyau.N_types import force_list
+
 
 MAXLENGTH = 132
 
@@ -139,7 +142,7 @@ class MESSAGE_LOGGER:
         """Construit le dictionnaire de formatage du message.
         """
         # homogénéisation : uniquement des tuples + strip des chaines de caractères
-        valk, vali, valr = map(force_enum, (valk, vali, valr))
+        valk, vali, valr = map(force_list, (valk, vali, valr))
         valk    = [k.strip() for k in valk]
         
         # variables passées au message
@@ -533,7 +536,7 @@ du calcul ont été sauvées dans la base jusqu'au moment de l'arret."""),
         # tout dans un try/except car c'est du bonus, il ne faudrait pas planter !
         try:
             if ctxt_msg.has_key('CONCEPT'):
-                l_co =  [dicarg[arg] for arg in force_enum(ctxt_msg['CONCEPT'])]
+                l_co =  [dicarg[arg] for arg in force_list(ctxt_msg['CONCEPT'])]
                 for co in l_co:
                     msg.append(message_context_concept(co))
         except:
@@ -569,15 +572,6 @@ def clean_string(chaine):
         else:
             txt.append(invalid)
     return ''.join(txt)
-
-
-def force_enum(obj):
-    """Retourne `obj` si c'est une liste ou un tuple,
-    sinon retourne [obj,]
-    """
-    if type(obj) not in (list, tuple):
-        obj = [obj,]
-    return obj
 
 
 def maximize_lines(l_fields, maxlen, sep):
@@ -618,8 +612,7 @@ def cut_long_lines(txt, maxlen, sep=os.linesep,
 def copy_text_to(text, files):
     """Imprime le texte dans les fichiers.
     """
-    if type(files) not in (list, tuple):
-        files = [files,]
+    files = force_list(files)
     for f in files:
         assert type(f) in (str, file)
         if type(f) == file:
@@ -655,13 +648,13 @@ def UTMESS(code, idmess, valk=(), vali=(), valr=(), print_as=None, cc=None):
     MessageLog(code, idmess, valk, vali, valr, exception=True, print_as=print_as, cc=cc)
 
 
-def ASSERT(condition):
+def ASSERT(condition, message=""):
     """Remonter un assert dans un message.
     """
     if condition:
         return
     stack = traceback.format_stack(limit=10)
-    UTMESS('F', 'DVP_9', valk=(''.join(stack[:-1]),))
+    UTMESS('F', 'DVP_9', valk=[(''.join(stack[:-1]),), message])
 
 
 def message_exception(code, exc):
@@ -705,10 +698,14 @@ def __fake__():
     UTMESS('I', 'CATAMESS_90')
     UTMESS('I', 'CATAMESS_91')
     UTMESS('I', 'CATAMESS_92')
+    # appelé par levé d'exception
     UTMESS('I', 'MISS0_3')
     UTMESS('I', 'MISS0_5')
     UTMESS('I', 'MISS0_6')
     UTMESS('I', 'MISS0_7')
     UTMESS('I', 'MISS0_8')
+    UTMESS('I', 'MISS0_9')
+    UTMESS('I', 'MISS0_11')
+    UTMESS('I', 'MISS0_17')
 
 

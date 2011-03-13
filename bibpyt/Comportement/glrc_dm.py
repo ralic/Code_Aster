@@ -1,4 +1,4 @@
-#@ MODIF glrc_dm Comportement  DATE 11/01/2011   AUTEUR SFAYOLLE S.FAYOLLE 
+#@ MODIF glrc_dm Comportement  DATE 14/03/2011   AUTEUR SFAYOLLE S.FAYOLLE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -38,7 +38,7 @@ loi = LoiComportement(
    deformation    = ('PETIT', 'GROT_GDEP'),
    nom_varc       = ('TEMP'),
    algo_inte      = ('NEWTON',),
-   type_matr_tang = ('PERTURBATION', 'VERIFICATION'),
+   type_matr_tang = (),
    proprietes     = None,
 )
 

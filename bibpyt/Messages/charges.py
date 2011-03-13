@@ -1,4 +1,4 @@
-#@ MODIF charges Messages  DATE 18/01/2011   AUTEUR MEUNIER S.MEUNIER 
+#@ MODIF charges Messages  DATE 14/03/2011   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -25,6 +25,10 @@ cata_msg = {
 
 1 : _("""
 La charge <%(k1)s> a été utilisée plus d'une fois dans EXCIT: il faut la supprimer.
+"""),
+
+2 : _("""
+Il n'y a aucune charge dans le mot-clef facteur EXCIT. Ce n'est pas possible avec STAT_NON_LINE.
 """),
 
 22 : _("""

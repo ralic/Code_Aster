@@ -1,4 +1,4 @@
-#@ MODIF stanley_engine Stanley  DATE 01/03/2011   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF stanley_engine Stanley  DATE 15/03/2011   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -44,6 +44,8 @@ E. LORENTZ, P. BADEL, A. ASSIRE
 STANLEY
 """
 
+debug = False
+
 import sys
 import os
 import os.path
@@ -54,12 +56,17 @@ import tkMessageBox
 import cPickle
 import time
 import socket
+import tempfile
 
 #import Tix as Tk
 import Tkinter as Tk
 
-import as_courbes, xmgrace, gmsh
-import cata_champs,aster
+import as_courbes
+import xmgrace
+import gmsh
+import cata_champs
+import aster
+from Utilitai.Table import Table, merge
 
 # Multi-langues
 try:
@@ -82,7 +89,7 @@ import types
 
 # Salome (ancien Pylotage)
 try:
-   import salomeVisuPylo
+   import salomeVisuPylo0
    __salome__ = True
    __rcstanley__ = '.stanley_salome'
 except:
@@ -92,7 +99,9 @@ except:
 
 
 # Salome (nouvelle Version)
-#import salomeVisu
+import salomeVisu
+__salome__ = True
+__rcstanley__ = '.stanley_salome'
 from salomeRunScript import MakeTempScript, DelTempScript, RunScript
 
 
@@ -337,6 +346,7 @@ class PARAMETRES :
       'machine_salome'        : { 'label': _("Machine de Salome"),                'val': '',                 'type': 'texte',          'section': 'CONFIG',          'mode_graphique': ['Salome'],                   'mode': ['DISTANT'],                 'bulle': _("Machine hebergeant le service graphique Salome."), },
       'machine_salome_login'  : { 'label': _("Login"),                            'val': '',                 'type': 'texte',          'section': 'CONFIG',          'mode_graphique': ['Salome'],   'mode': ['DISTANT'],                 'bulle': _("Login"), },
       'machine_salome_port'   : { 'label': _("Port de Salome"),                   'val': '2810',             'type': 'texte',          'section': 'CONFIG',          'mode_graphique': ['Salome'],                   'mode': ['LOCAL', 'DISTANT'],        'bulle': _("Port de Salome sur la machine hebergeant le service Salome."), },
+      'machine_salome_runscript' : { 'label': _("Lanceur runSalomeScript"),       'val': os.path.join(aster.repout(), 'runSalomeScript'),             'type': 'texte',          'section': 'CONFIG',          'mode_graphique': ['Salome'],                   'mode': ['LOCAL', 'DISTANT'],        'bulle': _("Chemin vers le script runSalomeScript (dans l'arborescence de Salome)."), },
 
       'machine_win'           : { 'label': _("Machine Windows/Samba"),            'val': '',                 'type': 'texte',          'section': 'CONFIG',          'mode_graphique': ['Gmsh/Xmgrace'],             'mode': ['WINDOWS'],                 'bulle': _("Machine hebergeant le partage Windows/Samba."), },
       'partage_win_nom'       : { 'label': _("Nom de partage Windows/Samba"),     'val': '',                 'type': 'texte',          'section': 'CONFIG',          'mode_graphique': ['Gmsh/Xmgrace'],             'mode': ['WINDOWS'],                 'bulle': _("Nom de partage Windows/Samba"), },
@@ -2526,17 +2536,11 @@ class DRIVER_SALOME_ISOVALEURS(DRIVER_ISOVALEURS) :
     DEFI_FICHIER(ACTION='LIBERER',UNITE=ul)
         
     if l_detr :
-#        DETRUIRE(CONCEPT = _F(NOM = tuple(l_detr)), INFO=1)
         DETR( tuple(l_detr) )
 
 
-#     print "medFileName=", medFileName
-#     print "self.stan.parametres=", self.stan.parametres
-#     print "selection=", selection
-#     #import pdb ; pdb.set_trace()
-
-    self.terminal = salomeVisuPylo.ISOVALEURS( medFileName, self.stan.parametres, selection )
-
+    self.terminal = salomeVisu.ISOVALEURS( medFileName, self.stan.parametres, selection )
+#    self.terminal = salomeVisuPylo.ISOVALEURS( medFileName, self.stan.parametres, selection )
 
 
 # ==============================================================================
@@ -2552,9 +2556,12 @@ class DRIVER_COURBES(DRIVER) :
       Extract : extrait la table contenant les valeurs a tracer
   """
 
-  def Options_Post_Releve_T(self, contexte, selection, options={}): pass
+  # --------------------------------------------------------------------------
+  def Options_Post_Releve_T(self, contexte, selection, options={}):
+      pass
 
 
+  # --------------------------------------------------------------------------
   def Extract(self, selection) :
 
     """
@@ -2568,8 +2575,8 @@ class DRIVER_COURBES(DRIVER) :
     type_champ = cata[selection.nom_cham].type
 
     if type_champ == 'ELGA' :
-      contexte, l_detr = self.Ecla_Gauss(selection, contexte)
-      if not contexte: return False
+        contexte, l_detr = self.Ecla_Gauss(selection, contexte)
+        if not contexte: return False
 
     # Parametres communs a toutes les tables a calculer 
     para = _F(INTITULE   = 'TB_GRACE',
@@ -2578,118 +2585,195 @@ class DRIVER_COURBES(DRIVER) :
              )
 
     if 'TOUT_CMP' in selection.nom_cmp :
-      para['TOUT_CMP'] = 'OUI'
-      l_nom_cmp = self.stan.etat_resu.cmp[selection.nom_cham]
+        para['TOUT_CMP'] = 'OUI'
+        l_nom_cmp = self.stan.etat_resu.cmp[selection.nom_cham]
     else :
-      para['NOM_CMP'] = tuple(selection.nom_cmp)
-      l_nom_cmp = selection.nom_cmp
+        para['NOM_CMP'] = tuple(selection.nom_cmp)
+        l_nom_cmp = selection.nom_cmp
 
 
     # Options supplementaires du IMPR_RESU pour la SENSIBILITE
     if contexte.para_sensi:
-       para['SENSIBILITE'] = contexte.para_sensi
-       DETR( 'STNTBLG2' )
+         para['SENSIBILITE'] = contexte.para_sensi
+         DETR( 'STNTBLG2' )
 
     DETR( 'STNTBLGR' )
 
+
     if selection.geom[0] == 'POINT' :
 
-      para['NUME_ORDRE'] = selection.numeros
-      for point in selection.geom[1] :
-        contexte, detr = self.Projeter(selection, contexte, point) 
-        if not contexte: return False
+        para['NUME_ORDRE'] = selection.numeros
+        for point in selection.geom[1] :
+            contexte, detr = self.Projeter(selection, contexte, point) 
+            if not contexte: return False
 
-#        l_detr += detr
-        l_detr.extend(detr)
-        para['RESULTAT'] = contexte.resultat
-        para['GROUP_NO'] = point
+            l_detr.extend(detr)
+            para['RESULTAT'] = contexte.resultat
+            para['GROUP_NO'] = point
 
-        try:
-          if contexte.para_sensi: contexte.jdc.memo_sensi.register_names('STNTBLGR', contexte.para_sensi.nom, 'STNTBLG2')
-          STNTBLGR = POST_RELEVE_T(ACTION = para)
-          if contexte.para_sensi: contexte.jdc.memo_sensi.register_final(STNTBLGR, contexte.para_sensi, 'STNTBLG2')
-        except aster.error,err:
-          return self.erreur.Remonte_Erreur(err, ['STNTBLGR'], 1)
-        except Exception,err:
-          texte = "Cette action n'est pas realisable.\n"+str(err)
-          return self.erreur.Remonte_Erreur(err, ['STNTBLGR'], 1, texte)
+            try:
+                if contexte.para_sensi: contexte.jdc.memo_sensi.register_names('STNTBLGR', contexte.para_sensi.nom, 'STNTBLG2')
+                STNTBLGR = POST_RELEVE_T(ACTION = para)
+                if contexte.para_sensi: contexte.jdc.memo_sensi.register_final(STNTBLGR, contexte.para_sensi, 'STNTBLG2')
+            except aster.error,err:
+                return self.erreur.Remonte_Erreur(err, ['STNTBLGR'], 1)
+            except Exception,err:
+                texte = "Cette action n'est pas realisable.\n"+str(err)
+                return self.erreur.Remonte_Erreur(err, ['STNTBLGR'], 1, texte)
 
-        for comp in l_nom_cmp :
-          vale_x = selection.vale_va
-          courbe = as_courbes.Courbe(vale_x,vale_x)
+            for comp in l_nom_cmp :
+                vale_x = selection.vale_va
+                courbe = as_courbes.Courbe(vale_x,vale_x)
 
-          # Sensibilite
-          if contexte.para_sensi:
-             table_sensible_jeveux = table_jeveux( contexte.jdc.memo_sensi.get_nocomp(STNTBLGR.nom, contexte.para_sensi.nom) )
-             courbe.Lire_y(table_sensible_jeveux, comp)
-             nom = comp + ' - ' + contexte.para_sensi.nom + ' --- ' + string.ljust(point,8)
-          else:
-             courbe.Lire_y(STNTBLGR,comp)
-             nom = comp + ' --- ' + string.ljust(point,8)
+                # Sensibilite
+                if contexte.para_sensi:
+                    table_sensible_jeveux = table_jeveux( contexte.jdc.memo_sensi.get_nocomp(STNTBLGR.nom, contexte.para_sensi.nom) )
+                    courbe.Lire_y(table_sensible_jeveux, comp)
+                    nom = comp + ' - ' + contexte.para_sensi.nom + ' --- ' + string.ljust(point,8)
+                else:
+                    courbe.Lire_y(STNTBLGR,comp)
+                    nom = comp + ' --- ' + string.ljust(point,8)
 
-          l_courbes.append( (courbe, nom) )
-
-        DETR( 'STNTBLGR' )
-        if contexte.para_sensi: DETR( contexte.jdc.memo_sensi.get_nocomp(STNTBLGR.nom, contexte.para_sensi.nom) )
-        if l_detr: DETR( tuple(l_detr) )
+                l_courbes.append( (courbe, nom) )
+    
+            DETR( 'STNTBLGR' )
+            if contexte.para_sensi: DETR( contexte.jdc.memo_sensi.get_nocomp(STNTBLGR.nom, contexte.para_sensi.nom) )
+            if l_detr: DETR( tuple(l_detr) )
 
 
     elif selection.geom[0] == 'CHEMIN' :
 
-      chemin = selection.geom[1][0]
+        chemin = selection.geom[1][0]
+  
+        # Projection si necessaire
+        contexte, detr = self.Projeter(selection, contexte, chemin)
+        if not contexte: return False
+        l_detr += detr    
 
-      # Projection si necessaire
-      contexte, detr = self.Projeter(selection, contexte, chemin)
-      if not contexte: return False
-      l_detr += detr    
+        para['RESULTAT'] = contexte.resultat
+        para['GROUP_NO'] = self.stan.etat_geom.Oriente(chemin)
 
-      para['RESULTAT'] = contexte.resultat
-      para['GROUP_NO'] = self.stan.etat_geom.Oriente(chemin)
+        for no, va in map(lambda x,y : (x,y), selection.numeros, selection.vale_va) :
+            para['NUME_ORDRE'] = no,
+            try:
+                if contexte.para_sensi: contexte.jdc.memo_sensi.register_names('STNTBLGR', contexte.para_sensi.nom, 'STNTBLG2')
+                STNTBLGR = POST_RELEVE_T(ACTION = para)
+                if contexte.para_sensi: contexte.jdc.memo_sensi.register_final(STNTBLGR, contexte.para_sensi, 'STNTBLG2')
+            except aster.error,err:
+                return self.erreur.Remonte_Erreur(err, ['STNTBLGR'], 1)
+            except Exception,err:
+                texte = "Cette action n'est pas realisable.\n"+str(err)
+                return self.erreur.Remonte_Erreur(err, ['STNTBLGR'], 1, texte)
 
-      for no, va in map(lambda x,y : (x,y), selection.numeros, selection.vale_va) :
-        para['NUME_ORDRE'] = no,
-        try:
-          if contexte.para_sensi: contexte.jdc.memo_sensi.register_names('STNTBLGR', contexte.para_sensi.nom, 'STNTBLG2')
-          STNTBLGR = POST_RELEVE_T(ACTION = para)
-          if contexte.para_sensi: contexte.jdc.memo_sensi.register_final(STNTBLGR, contexte.para_sensi, 'STNTBLG2')
-        except aster.error,err:
-          return self.erreur.Remonte_Erreur(err, ['STNTBLGR'], 1)
-        except Exception,err:
-          texte = "Cette action n'est pas realisable.\n"+str(err)
-          return self.erreur.Remonte_Erreur(err, ['STNTBLGR'], 1, texte)
+            for comp in l_nom_cmp :
+                courbe = as_courbes.Courbe()
+      
+                # Sensibilite
+                if contexte.para_sensi:
+                    table_sensible_jeveux = table_jeveux( contexte.jdc.memo_sensi.get_nocomp(STNTBLGR.nom, contexte.para_sensi.nom) )
+                    courbe.Lire_x(table_sensible_jeveux, 'ABSC_CURV')
+                    courbe.Lire_y(table_sensible_jeveux, comp)
+                    nom = comp + ' - ' + contexte.para_sensi.nom + ' --- ' + selection.nom_va + ' = ' + repr(va)
+      #              nom = comp + ' --- ' + selection.nom_va + ' = ' + repr(va)
+                else:
+                    courbe.Lire_x(STNTBLGR, 'ABSC_CURV')
+                    courbe.Lire_y(STNTBLGR, comp)
+                    nom = comp + ' --- ' + selection.nom_va + ' = ' + repr(va)
+      
+                l_courbes.append( (courbe, nom) )
+    
+            DETR( 'STNTBLGR' )
+            if contexte.para_sensi: DETR( contexte.jdc.memo_sensi.get_nocomp(STNTBLGR.nom, contexte.para_sensi.nom) )
 
-
-        for comp in l_nom_cmp :
-          courbe = as_courbes.Courbe()
-
-          # Sensibilite
-          if contexte.para_sensi:
-             table_sensible_jeveux = table_jeveux( contexte.jdc.memo_sensi.get_nocomp(STNTBLGR.nom, contexte.para_sensi.nom) )
-             courbe.Lire_x(table_sensible_jeveux, 'ABSC_CURV')
-             courbe.Lire_y(table_sensible_jeveux, comp)
-             nom = comp + ' - ' + contexte.para_sensi.nom + ' --- ' + selection.nom_va + ' = ' + repr(va)
-#             nom = comp + ' --- ' + selection.nom_va + ' = ' + repr(va)
-          else:
-             courbe.Lire_x(STNTBLGR, 'ABSC_CURV')
-             courbe.Lire_y(STNTBLGR, comp)
-             nom = comp + ' --- ' + selection.nom_va + ' = ' + repr(va)
-
-          l_courbes.append( (courbe, nom) )
-
-#        DETRUIRE(OBJET = _F(CHAINE = 'STNTBLGR'),INFO=1, ALARME='NON')
-        DETR( 'STNTBLGR' )
-#        if contexte.para_sensi: DETRUIRE(OBJET = _F(CHAINE = contexte.jdc.memo_sensi.get_nocomp(STNTBLGR.nom, contexte.para_sensi.nom)),INFO=1, ALARME='NON')
-        if contexte.para_sensi: DETR( contexte.jdc.memo_sensi.get_nocomp(STNTBLGR.nom, contexte.para_sensi.nom) )
-
-#      if l_detr: DETRUIRE(CONCEPT = _F(NOM = tuple(l_detr) ), INFO=1, ALARME='NON')
-      if l_detr: DETR( tuple(l_detr) )
+        if l_detr: DETR( tuple(l_detr) )
 
     else:
-      UTMESS('A','STANLEY_5',valk='')
-      return False
+        UTMESS('A','STANLEY_5',valk='')
+        return False
 
     return l_courbes
 
+
+  # --------------------------------------------------------------------------
+  def Write_file(self, selection, l_courbes, datafile=None) :
+
+    """
+       Ecrire dans un fichier les courbes
+    """  
+
+    _UL=INFO_EXEC_ASTER(LISTE_INFO='UNITE_LIBRE')
+    unite=_UL['UNITE_LIBRE',1]
+
+    if not datafile:
+        fw = tempfile.NamedTemporaryFile(mode='w', suffix='.txt')
+        datafile = os.path.join(os.getcwd(), os.path.basename(fw.name) )
+        fw.close()
+
+    if selection.geom[0] == 'POINT' :
+        _x = selection.nom_va
+        _y = selection.nom_cham
+    elif selection.geom[0] == 'CHEMIN' :
+        _x = 'ABSC_CURV ' + selection.geom[1][0]
+        _y = selection.nom_cham
+    else:
+        _x = ''
+        _y = ''
+
+
+    t=[]
+    ncourbe=0
+    for courbe in l_courbes:
+        acourbe = []
+        for l in string.split(repr(courbe[0])):
+            acourbe.append( float(l) )
+        lx = acourbe[0:len(acourbe):2]
+        ly = acourbe[1:len(acourbe):2]
+
+        # On ne peut pas tracer une courbe avec une seule abscisse
+        if len(lx) <=1:
+            UTMESS('A','STANLEY_36')
+            return None
+
+        # Initialisation de la Table (une liste de ligne, chaque ligne etant un dico)
+        if not t:
+            lnomColonnne=[selection.nom_va]
+            for x in lx:
+                t.append( { lnomColonnne[0]: x } )
+
+        nomColonnne=courbe[1]
+        nomColonnne=nomColonnne.strip()
+        nomColonnne=nomColonnne.replace(' ', '')
+        lnomColonnne.append(nomColonnne)
+
+        for i in range(len(t)):
+            t[i][nomColonnne] = ly[i]
+
+        ncourbe+=1
+
+    # Formatage du titre de la table Aster pour Salome
+    title  = '%s - %s' % ( selection.nom_cham, ' '.join(selection.nom_cmp) )
+    ctitle = ' | '.join(lnomColonnne)
+    cunit  = ''
+    titr="""TITLE: %s
+COLUMN_TITLES: %s
+COLUMN_UNITS: %s""" % ( title, ctitle, cunit)
+
+    # Creation de la table Aster
+    _tbl=Table(titr=titr)
+    _tbl.extend(t)
+    _tbl = _tbl[lnomColonnne]
+    #print _tbl
+
+    try:
+        fw=open(datafile, 'w')
+        fw.write( str(_tbl) )
+        fw.close()
+    except Exception, e:
+        print "Erreur lors de l'ecriture du fichier : %s" % datafile
+        print e
+        return None
+
+    return datafile
 
 
 # ==============================================================================
@@ -2780,10 +2864,18 @@ class DRIVER_SALOME_COURBES(DRIVER_COURBES) :
     def Tracer(self, selection, options={}) :
 
        if self.terminal : self.terminal.Fermer()
+
        # Extraction des resultats pour la selection requise
-       l_courbes = self.Extract( selection )
+       l_courbes = self.Extract(selection)
+
        if not l_courbes: return
-       self.terminal = salomeVisuPylo.COURBES( l_courbes, self.stan.parametres, selection )
+
+       datafile = self.Write_file(selection, l_courbes, datafile=None)
+       if not datafile:
+#           UTMESS('A','STANLEY_36')
+           return
+
+       self.terminal = salomeVisu.COURBES( l_courbes, self.stan.parametres, selection, datafile )
 
 
 

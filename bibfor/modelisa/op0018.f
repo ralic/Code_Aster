@@ -3,7 +3,7 @@
 C RESPONSABLE PELLET J.PELLET
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 08/03/2011   AUTEUR MASSIN P.MASSIN 
+C MODIF MODELISA  DATE 14/03/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -232,6 +232,9 @@ C       -- RAPPEL : LES MOTS CLES TOUT,GROUP_MA,... S'EXCLUENT
             IF (D2.NE.D1) CALL U2MESS('F','MODELISA5_51')
           ENDIF
 
+          IF (MODELI.EQ.'DST') THEN
+            CALL U2MESS('A', 'MODELISA5_14')
+          ENDIF
           IF (MODELI(1:4).EQ.'AXIS' .OR.
      &        MODELI.EQ.'COQUE_AXIS')LAXIS=.TRUE.
 

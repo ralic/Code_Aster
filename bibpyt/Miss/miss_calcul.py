@@ -1,4 +1,4 @@
-#@ MODIF miss_calcul Miss  DATE 01/03/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF miss_calcul Miss  DATE 14/03/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -261,7 +261,7 @@ class CALCUL_MISS(object):
             return
         stack = traceback.format_stack(limit=5)[-2]
         mat = re.search('File [\'\"]*(.*?)[\'\"]*, *line ([0-9]+), *in (.*)', stack)
-        getattr(self.timer, on_off)("CALCUL_MISS." + mat.group(3))
+        getattr(self.timer, on_off)("CALC_MISS." + mat.group(3))
 
 
 

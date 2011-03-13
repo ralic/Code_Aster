@@ -1,4 +1,4 @@
-#@ MODIF miss_utils Miss  DATE 01/03/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF miss_utils Miss  DATE 14/03/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -32,12 +32,15 @@ Les objets/fonctions définis sont :
 import os.path as osp
 import re
 import pprint
+from math import log
 
 import numpy as NP
 
 import aster
-from Utilitai.Utmess import ASSERT
+from Noyau.N_types import force_list
+from Utilitai.Utmess import UTMESS, ASSERT
 from Utilitai.UniteAster import UniteAster
+from Utilitai.transpose import transpose
 
 
 dict_format = {
@@ -64,6 +67,17 @@ def _print(*args):
     aster.affiche('MESSAGE', text)
 
 
+def get_max_dabsc(fonction):
+    """Retourne le maximum et le pas des abscisses de la fonction."""
+    tfunc = fonction.convert()
+    dx = tfunc.vale_x[1:] - tfunc.vale_x[:-1]
+    dxmax = max(dx)
+    dxmin = min(dx)
+    if abs((dxmax - dxmin) / dxmax) > 1.e-3:
+        raise aster.error('MISS0_9', valk=fonction.nom)
+    return max(tfunc.vale_x), dxmax
+
+
 class MISS_PARAMETER(object):
     """Stocke les paramètres nécessaires au calcul à partir des mots-clés.
     """
@@ -80,6 +94,11 @@ class MISS_PARAMETER(object):
             '_NBM_DYN'   : None,
             '_NBM_STAT'  : None,
             '_exec_Miss' : False,
+            'EXCIT_HARMO' : None,
+            'INST_FIN' : None,
+            'PAS_INST' : None,
+            #XXX en attendant de savoir si on réutilisera
+            'ISSF' : 'NON',
         }
         self._keywords = {}
         # une seule occurence du mcfact
@@ -115,35 +134,21 @@ class MISS_PARAMETER(object):
         if self['UNITE_RESU_FORC'] is None:
             self.set('_exec_Miss', True)
             self['UNITE_RESU_FORC'] = self.UL.Libre(action='ASSOCIER')
-        # fréquences : on remplit les mots-clés absents, on pourra ainsi utiliser
-        # l'un ou l'autre selon les cas.
-        if self['FREQ_MIN'] is None:
-            assert len(self['LFREQ_LISTE']) == self['LFREQ_NB']
-            self['FREQ_MIN'] = self['LFREQ_LISTE'][0]
-            self['FREQ_MAX'] = self['LFREQ_LISTE'][-1]
-            lfreq = NP.array(self['LFREQ_LISTE'])
-            pasini = lfreq[1] - lfreq[0]
-            assert pasini != 0.
-            pas = lfreq[1:] - lfreq[:-1]
-            dpasm = max(abs((pas - pasini) / pas))
-            assert dpasm < 1.e-3
-            self['FREQ_PAS'] = pasini
-        else:
-            self['LFREQ_NB'] = int(round((self['FREQ_MAX'] - self['FREQ_MIN']) / self['FREQ_PAS'])) + 1
-            self['LFREQ_LISTE'] = NP.arange(self['FREQ_MIN'], self['FREQ_MAX'] + self['FREQ_PAS'],
-                self['FREQ_PAS']).tolist()
+
+        # fréquences
+        if self['LIST_FREQ'] is not None and self['TYPE_RESU'] not in ('FICHIER', 'HARM_GENE'):
+            raise aster.error('MISS0_17')
+
         # si base modale, vérifier/compléter les amortissements réduits
         if self['BASE_MODALE']:
             res = aster.dismoi('C', 'NB_MODES_DYN', self['BASE_MODALE'].nom, 'RESULTAT')
-            assert res[0] == 0
+            ASSERT(res[0] == 0)
             self['_NBM_DYN'] = res[1]
             res = aster.dismoi('C', 'NB_MODES_STA', self['BASE_MODALE'].nom, 'RESULTAT')
-            assert res[0] == 0
+            ASSERT(res[0] == 0)
             self['_NBM_STAT'] = res[1]
             if self['AMOR_REDUIT']:
-                if type(self['AMOR_REDUIT']) not in (list, tuple):
-                    self.set('AMOR_REDUIT', [self['AMOR_REDUIT'],])
-                self.set('AMOR_REDUIT', list(self['AMOR_REDUIT']))
+                self.set('AMOR_REDUIT', force_list(self['AMOR_REDUIT']))
                 nval = len(self['AMOR_REDUIT'])
                 if nval < self['_NBM_DYN']:
                     # complète avec le dernier
@@ -153,17 +158,6 @@ class MISS_PARAMETER(object):
                 if nval < self['_NBM_DYN'] + self['_NBM_STAT']:
                     # on ajoute 0.
                     self._keywords['AMOR_REDUIT'].append(0.)
-        # excitations
-        if self['TYPE_RESU'] == 'TABLE':
-            nbcalc = 0
-            for p in ('ACCE_X', 'ACCE_Y', 'ACCE_Z', 'INST_FIN', 'PAS_INST'):
-                val = self._keywords[p]
-                if val is not None:
-                    if nbcalc != 0 and nbcalc != len(val):
-                        raise RuntimeError("ACCE_X, ACCE_Y, ACCE_Z, INST_FIN et PAS_INST " \
-                                           "doivent avoir le même cardinal !")
-                    nbcalc = len(val)
-            assert nbcalc > 0
 
 
     def __getitem__(self, key):
@@ -229,7 +223,7 @@ def lire_nb_valeurs(file_object, nb, extend_to, conversion,
                 continue
             add = [conversion(v) for v in line.split()[:max_per_line]]
             val.extend(add)
-        assert len(val) == nb, "%d valeurs attendues, %d valeurs lues" % (nb, len(val))
+        ASSERT(len(val) == nb, "%d valeurs attendues, %d valeurs lues" % (nb, len(val)))
         extend_to.extend(val)
         _printDBG("BLOC", i, ",", nb, "valeurs lues, debut :", repr(val[:3]))
     return ln
@@ -279,3 +273,8 @@ def _printDBG(*args):
         return
     _print(*args)
 
+
+def get_puis2(nval):
+    """Retourne N, la plus grande puissance de 2 telle que 2**N <= nval
+    """
+    return int(log(nval, 2.))

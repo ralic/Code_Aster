@@ -2,8 +2,8 @@
      &                  PROFIL,PFLMOD,TYPENT,TYPGEO,NUMDT,DTUNIT,
      &                  DT,NUMO,CRET)
 !           CONFIGURATION MANAGEMENT OF EDF VERSION                  
-!& MODIF MFCHRE ECHANGE  DATE 08/03/2011   AUTEUR SELLENET N.SELLENET 
-! RESPONSABLE
+!& MODIF MFCHRE ECHANGE  DATE 14/03/2011   AUTEUR SELLENET N.SELLENET 
+! RESPONSABLE SELLENET N.SELLENET
 ! ================================================================== 
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D              WWW.CODE-ASTER.ORG 
 !                                                                    

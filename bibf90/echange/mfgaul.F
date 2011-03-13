@@ -1,7 +1,7 @@
       SUBROUTINE MFGAUL( FID, TR1, TR2, TR3, NBT, K32, CRET)
 !           CONFIGURATION MANAGEMENT OF EDF VERSION                  
-!& MODIF MFGAUL ECHANGE  DATE 08/03/2011   AUTEUR SELLENET N.SELLENET 
-! RESPONSABLE
+!& MODIF MFGAUL ECHANGE  DATE 14/03/2011   AUTEUR SELLENET N.SELLENET 
+! RESPONSABLE SELLENET N.SELLENET
 ! ================================================================== 
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D              WWW.CODE-ASTER.ORG 
 !                                                                    

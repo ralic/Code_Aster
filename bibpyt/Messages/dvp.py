@@ -1,4 +1,4 @@
-#@ MODIF dvp Messages  DATE 18/01/2011   AUTEUR MEUNIER S.MEUNIER 
+#@ MODIF dvp Messages  DATE 14/03/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -62,7 +62,7 @@ cata_msg={
 
 9 : _("""
    Erreur de programmation dans un module Python. 
-   Condition non respectée :
+   Condition non respectée : %(k2)s
 
       %(k1)s
 """),

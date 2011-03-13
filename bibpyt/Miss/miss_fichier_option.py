@@ -1,4 +1,4 @@
-#@ MODIF miss_fichier_option Miss  DATE 01/03/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF miss_fichier_option Miss  DATE 14/03/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -34,10 +34,11 @@ def fichier_option(param):
     """Produit le contenu du fichier OPTMIS à partir des paramètres du calcul."""
     content = []
     # fréquences
-    if param['LFREQ_NB']:
-        content.append("LFREQ %d" % param['LFREQ_NB'])
-        fmt = (sfmt * param['LFREQ_NB']).strip()
-        content.append(fmt % tuple(param['LFREQ_LISTE']))
+    if param['LIST_FREQ']:
+        nb = len(param['LIST_FREQ'])
+        content.append("LFREQ %d" % nb)
+        fmt = (sfmt * nb).strip()
+        content.append(fmt % tuple(param['LIST_FREQ']))
     else:
         fmt = "FREQ" + 3*sfmt
         content.append(fmt % (param['FREQ_MIN'], param['FREQ_MAX'], param['FREQ_PAS']))

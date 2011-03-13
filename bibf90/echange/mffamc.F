@@ -1,8 +1,8 @@
       SUBROUTINE MFFAMC(FID,MAA,FAM,NUM,ATTID,ATTVAL,ATTDES,
      &     NATT, GRO,NGRO,CRET)
 !           CONFIGURATION MANAGEMENT OF EDF VERSION                  
-!& MODIF MFFAMC ECHANGE  DATE 08/03/2011   AUTEUR SELLENET N.SELLENET 
-! RESPONSABLE
+!& MODIF MFFAMC ECHANGE  DATE 14/03/2011   AUTEUR SELLENET N.SELLENET 
+! RESPONSABLE SELLENET N.SELLENET
 ! ================================================================== 
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D              WWW.CODE-ASTER.ORG 
 !                                                                    

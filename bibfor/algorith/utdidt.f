@@ -2,7 +2,7 @@
       IMPLICIT      NONE
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/02/2011   AUTEUR BARGELLI R.BARGELLINI 
+C MODIF ALGORITH  DATE 14/03/2011   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -96,6 +96,7 @@ C     ------------------------------------------------------------------
      &              QUEST.EQ.'NB_PAS_MAXI'.OR.
      &              QUEST.EQ.'NBINST'.OR.
      &              QUEST.EQ.'DT-'.OR.
+     &              QUEST.EQ.'ALGO_DECOUPE'.OR.
      &              QUEST.EQ.'JINST')
 
         IF (QUEST.EQ.'METHODE') THEN
@@ -132,6 +133,18 @@ C     ------------------------------------------------------------------
 
         ELSEIF (QUEST.EQ.'JINST') THEN
           CALL JEVEUO(SD//'.DITR','L',VALI)
+
+        ELSEIF (QUEST.EQ.'ALGO_DECOUPE') THEN
+          CALL JEVEUO(SD//'.LINF',GETSET,JLIR)
+          IF (GETSET.EQ.'L') THEN
+            IF (ZR(JLIR-1+7).EQ.0.D0) VALK = 'NON'
+            IF (ZR(JLIR-1+7).EQ.1.D0) VALK = 'OUI'
+            IF (ZR(JLIR-1+7).EQ.2.D0) VALK = 'DECOUPE'
+          ELSEIF (GETSET.EQ.'E') THEN
+            CALL ASSERT (VALK.EQ.'DECOUPE')
+            ZR(JLIR-1+7)=2.D0
+          ENDIF
+
 
         ENDIF
 

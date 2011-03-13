@@ -1,4 +1,4 @@
-#@ MODIF contact Messages  DATE 03/01/2011   AUTEUR ABBAS M.ABBAS 
+#@ MODIF contact Messages  DATE 14/03/2011   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -54,6 +54,17 @@ Contact methode GCP. Le paramètre RESI_ABSO doit etre obligatoirement renseigné.
 
 7 : _("""
 Contact methode GCP. Le pas d'avancement est negatif ; risque de comportement hasardeux de l'algorithme
+"""),
+
+8 : _("""
+Contact méthodes discrètes.
+ -> Il y a des éléments de type QUAD8 sur la surface esclave de contact. Ces éléments produisent des forces nodales négatives aux noeuds sommets.
+    Afin de limiter les oscillations des forces et d'empêcher une pénétration intempestive de la surface maître dans la surface esclave, on
+    a procédé à des liaisons cinématiques (LIAISON_DDL) entre les noeuds milieux et les noeuds sommets, sur les deux surfaces (maître et esclave).
+ -> Risque & Conseil :
+    Il est préférable d'utiliser des éléments de type QUAD9. Changer votre maillage ou utiliser la commande MODI_MAILLAGE.
+    Ces liaisons supplémentaires peuvent provoquer des incompatibilités avec les conditions limites, ce qui se traduira par un pivot nul dans
+    la matrice.
 """),
 
 9 : _("""

@@ -1,4 +1,4 @@
-#@ MODIF xfem Messages  DATE 07/03/2011   AUTEUR MEUNIER S.MEUNIER 
+#@ MODIF xfem Messages  DATE 14/03/2011   AUTEUR GENIAUT S.GENIAUT 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -333,6 +333,10 @@ cata_msg={
 
 49: _("""
      Le calcul de G avec X-FEM est impossible en grandes deformations. 
+"""),
+
+50: _("""
+     La méthode X-FEM n'est pas disponible avec 'PETIT_REAC'. 
 """),
 
 57: _("""

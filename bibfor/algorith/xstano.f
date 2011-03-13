@@ -9,9 +9,9 @@
       CHARACTER*24  LISNO,STANO
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 21/12/2010   AUTEUR MASSIN P.MASSIN 
+C MODIF ALGORITH  DATE 14/03/2011   AUTEUR MASSIN P.MASSIN 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -74,13 +74,14 @@ C
       INTEGER         JLJSD,JLJSV,NFISS,IFISS
       INTEGER         NBMA,IBID,JLMAF,NMASUP,JMASUP,ISUP,IRET
       REAL*8          MINLSN,MINLST,MAXLSN,MAXLST,LSNA,LSNB,LSTA,LSTB
-      REAL*8          MINLSJ(10),MAXLSJ(10),LSJA(10),LSJB(10),LSJC(10)
+      REAL*8          MINLSJ(10,2),MAXLSJ(10),LSJA(10,2),LSJB(10,2)
+      REAL*8          LSJC(10,2)
       REAL*8          LSNC,LSTC,LSN,A(3),B(3),C(3),R8MAEM,R8PREM,LST
       REAL*8          DDOT,AB(3),AC(3)
       CHARACTER*8     TYPMA,K8B
       CHARACTER*19    MAI,LMAFIS
       CHARACTER*32    JEXATR
-      LOGICAL        LJONC
+      LOGICAL         LJONC
 C ----------------------------------------------------------------------
 
       CALL JEMARQ()
@@ -100,7 +101,7 @@ C ----------------------------------------------------------------------
       IF (IRET.NE.0) THEN
         LJONC = .TRUE.
         CALL JEVEUO(CNSLJ//'.CNSD','L',JLJSD)
-        NFISS = ZI(JLJSD-1+2)
+        NFISS = ZI(JLJSD-1+2)/2
         CALL JEVEUO(CNSLJ//'.CNSV','L',JLJSV)
       ENDIF
       CALL JEVEUO(NOMA//'.COORDO    .VALE','L',JCOOR)
@@ -128,7 +129,8 @@ C     BOUCLE SUR LES NOEUDS DE GROUP_ENRI
         IF (LJONC) THEN
           DO 201 IFISS = 1,NFISS
             MAXLSJ(IFISS)=-1*R8MAEM()
-            MINLSJ(IFISS)= R8MAEM()
+            MINLSJ(IFISS,1)= R8MAEM()
+            MINLSJ(IFISS,2)= R8MAEM()
  201      CONTINUE
         ENDIF
         INO=ZI(JDLINO-1+I)
@@ -167,8 +169,10 @@ C         BOUCLE SUR LES ARETES DE LA MAILLE RETENUE
             LSTB=ZR(JLTSV-1+(NUNOB-1)+1)
             IF (LJONC) THEN
               DO 211 IFISS = 1,NFISS
-                LSJA(IFISS)=ZR(JLJSV-1+(NUNOA-1)*NFISS+IFISS)
-                LSJB(IFISS)=ZR(JLJSV-1+(NUNOB-1)*NFISS+IFISS)
+               LSJA(IFISS,1)=ZR(JLJSV-1+2*NFISS*(NUNOA-1)+2*(IFISS-1)+1)
+               LSJB(IFISS,1)=ZR(JLJSV-1+2*NFISS*(NUNOB-1)+2*(IFISS-1)+1)
+               LSJA(IFISS,2)=ZR(JLJSV-1+2*NFISS*(NUNOA-1)+2*(IFISS-1)+2)
+               LSJB(IFISS,2)=ZR(JLJSV-1+2*NFISS*(NUNOB-1)+2*(IFISS-1)+2)
  211          CONTINUE
             ENDIF
             IF (LSNA.EQ.0.D0.AND.LSNB.EQ.0.D0) THEN
@@ -180,14 +184,18 @@ C             ET ACTUALISATION DE MIN ET MAX POUR LST
               IF (LSTB.GT.MAXLST) MAXLST=LSTB
               IF (LJONC) THEN
                 DO 214 IFISS=1,NFISS
-                  IF (LSJB(IFISS).LT.MINLSJ(IFISS))
-     &                                         MINLSJ(IFISS)=LSJB(IFISS)
-                  IF (LSJB(IFISS).GT.MAXLSJ(IFISS))
-     &                                         MAXLSJ(IFISS)=LSJB(IFISS)
-                  IF (LSJA(IFISS).LT.MINLSJ(IFISS))
-     &                                         MINLSJ(IFISS)=LSJA(IFISS)
-                  IF (LSJA(IFISS).GT.MAXLSJ(IFISS))
-     &                                         MAXLSJ(IFISS)=LSJA(IFISS)
+                  IF (LSJB(IFISS,1).LT.MINLSJ(IFISS,1))
+     &                                     MINLSJ(IFISS,1)=LSJB(IFISS,1)
+                  IF (LSJB(IFISS,1).GT.MAXLSJ(IFISS))
+     &                                     MAXLSJ(IFISS)=LSJB(IFISS,1)
+                  IF (LSJA(IFISS,1).LT.MINLSJ(IFISS,1))
+     &                                     MINLSJ(IFISS,1)=LSJA(IFISS,1)
+                  IF (LSJA(IFISS,1).GT.MAXLSJ(IFISS))
+     &                                     MAXLSJ(IFISS)=LSJA(IFISS,1)
+                  IF (LSJB(IFISS,2).LT.MINLSJ(IFISS,2))
+     &                                     MINLSJ(IFISS,2)=LSJB(IFISS,2)
+                  IF (LSJA(IFISS,2).LT.MINLSJ(IFISS,2))
+     &                                     MINLSJ(IFISS,2)=LSJA(IFISS,2)
  214            CONTINUE
               ENDIF
             ELSEIF((LSNA*LSNB).LE.0.D0) THEN
@@ -208,12 +216,18 @@ C               INTERPOLATION DES COORDONNÉES DE C ET DE LST EN C
               IF (LSTC.GT.MAXLST) MAXLST=LSTC
               IF (LJONC) THEN
                 DO 215 IFISS = 1,NFISS
-                  LSJC(IFISS) = LSJA(IFISS) + (LSJB(IFISS)-LSJA(IFISS))
+                  LSJC(IFISS,1) =
+     &                     LSJA(IFISS,1) + (LSJB(IFISS,1)-LSJA(IFISS,1))
      &                     * DDOT(NDIM,AB,1,AC,1) / DDOT(NDIM,AB,1,AB,1)
-                  IF (LSJC(IFISS).LT.MINLSJ(IFISS))
-     &                                         MINLSJ(IFISS)=LSJC(IFISS)
-                  IF (LSJC(IFISS).GT.MAXLSJ(IFISS))
-     &                                         MAXLSJ(IFISS)=LSJC(IFISS)
+                  LSJC(IFISS,2) =
+     &                     LSJA(IFISS,2) + (LSJB(IFISS,2)-LSJA(IFISS,2))
+     &                     * DDOT(NDIM,AB,1,AC,1) / DDOT(NDIM,AB,1,AB,1)
+                  IF (LSJC(IFISS,1).LT.MINLSJ(IFISS,1))
+     &                                     MINLSJ(IFISS,1)=LSJC(IFISS,1)
+                  IF (LSJC(IFISS,1).GT.MAXLSJ(IFISS))
+     &                                       MAXLSJ(IFISS)=LSJC(IFISS,1)
+                  IF (LSJC(IFISS,2).LT.MINLSJ(IFISS,2))
+     &                                     MINLSJ(IFISS,2)=LSJC(IFISS,2)
  215            CONTINUE
               ENDIF
             ELSE
@@ -248,13 +262,13 @@ C       TEST S'IL Y A EU UNE MAILLE SUPPORT TROUVÉE DANS MAFIS
 C       CORRECTION DU STATUT SI ON EST DU MAUVAIS COTÉ DE LA JONCTION
             DO 220 IFISS=1,NFISS
 C       LA TOLERANCE PERMET DE FILTRER CERTAIN CAS DE PIVOTS NULS
-              IF (MINLSJ(IFISS).GE.-1.D-4) THEN
+              IF(MINLSJ(IFISS,1).GE.-1.D-4.AND.MINLSJ(IFISS,2).LT.0)THEN
                 ENR1=0
                 ENR2=0
               ENDIF
 C       CORRECTION DU STATUT SI ON EST SUR LA JONCTION
-              IF (ENR2.EQ.2.AND.MINLSJ(IFISS)*MAXLSJ(IFISS).LE.R8PREM())
-     &        THEN
+              IF (ENR2.EQ.2.AND.MINLSJ(IFISS,1)*MAXLSJ(IFISS).LE.
+     &        R8PREM().AND.MINLSJ(IFISS,2).LT.0) THEN
                 ENR2=0
                 IF (MINLSN*MAXLSN.LT.0.D0) ENR1 = 1
               ENDIF

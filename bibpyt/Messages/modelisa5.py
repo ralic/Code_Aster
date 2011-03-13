@@ -1,4 +1,4 @@
-#@ MODIF modelisa5 Messages  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+#@ MODIF modelisa5 Messages  DATE 14/03/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -80,13 +80,15 @@ cata_msg = {
    Les champs que l'on cherche à combiner doivent tous s'appuyer sur le meme maillage.
 """),
 
+14 : _("""
+Attention, la modélisation 'DST' présente des défauts et peut conduire à des
+résultats imprécis en cas d'excentrement, de forte épaisseur ou de mailles
+distordues.
 
-
-
-
-
-
-
+Conseil : 
+    Il est préférable d'utiliser les éléments COQUE_3D pour traiter
+    correctement le cisaillement.
+"""),
 
 
 

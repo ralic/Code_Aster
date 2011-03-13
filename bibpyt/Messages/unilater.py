@@ -1,8 +1,8 @@
-#@ MODIF unilater Messages  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
+#@ MODIF unilater Messages  DATE 14/03/2011   AUTEUR ABBAS M.ABBAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -22,6 +22,20 @@
 def _(x) : return x
 
 cata_msg = {
+
+1 : _("""
+Définition d'une liaison unilatérale.
+ -> Cette fonctionnalité suppose la symétrie de la matrice obtenue après assemblage.
+    Si votre modélisation produit une matrice non-symétrique, on force donc sa symétrie pour résoudre
+    le contact.
+ -> Risque & Conseil :
+    Ce changement peut conduire à des difficultés de convergence dans le processus de Newton mais en
+    aucun cas il ne produit des résultats faux.
+    
+    Si la matrice de rigidité de votre structure est symétrique, vous pouvez ignorer ce qui précède.
+    Enfin, il est possible de supprimer l'affichage de cette alarme en renseignant SYME='OUI'
+    sous le mot-clé facteur SOLVEUR.
+"""),
 
 42: _("""
 Définition d'une LIAISON_UNILATERALE.

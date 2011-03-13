@@ -1,4 +1,4 @@
-# MODIF  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 14/03/2011   AUTEUR ABBAS M.ABBAS 
 # TITRE IMPACT D UNE BARRE DE TAYLOR ELASTOPLASTIQUE
 # sdnv103e.para = tps_job 5000 mem_job 500Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -60,9 +60,9 @@ VIT_0=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
                           NOM_CMP=('DX','DY','DZ',),
                           VALE=(0.,0.,0.,),),),)
 
-CIMP=DEFI_CONSTANTE(VALE=-1)
+CIMP=DEFI_CONSTANTE(VALE=2.27)
 
-DIST=DEFI_CONSTANTE(VALE=2.27)
+DIST=DEFI_CONSTANTE(VALE=-1)
 
 LIAI_UNI=DEFI_CONTACT( MODELE  = MODE,
                        FORMULATION = 'LIAISON_UNIL',
@@ -106,25 +106,102 @@ RESU=DYNA_NON_LINE(MODELE=MODE,
                                   ARRET='OUI',),
                    );
 
+# DEPLACEMENT VERTICAL POINT A
+
 TEST_RESU(RESU=(_F(RESULTAT=RESU,
                    INST=2.5e-07,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DZ',
                    GROUP_NO='A1',
-                   VALE=-2.32675,
+                   VALE=-2.27,
                    CRITERE='RELATIF',
-                   PRECISION=(7e-06,1e-10,),
-                   REFERENCE='NON_REGRESSION',
-                   VERSION='10.2.11',),
-                _F(RESULTAT=RESU,
+                   PRECISION=1.E-10,
+                   REFERENCE='ANALYTIQUE',),));
+
+# VITESSE VERTICALE POINT A
+                 
+TEST_RESU(RESU=(_F(RESULTAT=RESU,
                    INST=2.5e-07,
                    NOM_CHAM='VITE',
                    NOM_CMP='DZ',
                    GROUP_NO='A1',
-                   VALE=-227000.000172,
+                   VALE=-1.9453030264492E+05,
                    CRITERE='RELATIF',
-                   PRECISION=(3.65e-06,1e-10,),
+                   PRECISION=1.E-10,
                    REFERENCE='NON_REGRESSION',
-                   VERSION='10.2.11',),),);
+                   VERSION='10.3.16',),));
+
+# DEPLACEMENT VERTICAL POINT B
+
+TEST_RESU(RESU=(_F(RESULTAT=RESU,
+                   INST=2.5e-07,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DZ',
+                   GROUP_NO='B1',
+                   VALE=-2.32675,
+                   CRITERE='RELATIF',
+                   PRECISION=1.E-10,
+                   REFERENCE='NON_REGRESSION',
+                   VERSION='10.3.16',),),);
+                   
+# VITESSE VERTICALE POINT B
+
+TEST_RESU(RESU=(_F(RESULTAT=RESU,
+                   INST=2.5e-07,
+                   NOM_CHAM='VITE',
+                   NOM_CMP='DZ',
+                   GROUP_NO='B1',
+                   VALE=-2.2700000000001E+05,
+                   CRITERE='RELATIF',
+                   PRECISION=1.E-10,
+                   REFERENCE='ANALYTIQUE',
+                   ),),);
+                   
+# DEPLACEMENT ET VITESSE RADIAL POINT A
+
+TEST_RESU(RESU=(_F(RESULTAT=RESU,
+                   INST=2.5e-07,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   GROUP_NO='A1',
+                   VALE=1.5613650399252E-03,
+                   CRITERE='RELATIF',
+                   PRECISION=1.E-10,
+                   REFERENCE='NON_REGRESSION',
+                   VERSION='10.3.16',),
+                _F(RESULTAT=RESU,
+                   INST=2.5e-07,
+                   NOM_CHAM='VITE',
+                   NOM_CMP='DX',
+                   GROUP_NO='A1',
+                   VALE=-16297.463201374,
+                   CRITERE='RELATIF',
+                   PRECISION=1.E-10,
+                   REFERENCE='NON_REGRESSION',
+                   VERSION='10.3.16',),),);
+
+
+# DEPLACEMENT ET VITESSE RADIAL POINT B
+
+TEST_RESU(RESU=(_F(RESULTAT=RESU,
+                   INST=2.5e-07,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
+                   GROUP_NO='B1',
+                   VALE=0.0,
+                   CRITERE='ABSOLU',
+                   PRECISION=1.E-12,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=RESU,
+                   INST=2.5e-07,
+                   NOM_CHAM='VITE',
+                   NOM_CMP='DY',
+                   GROUP_NO='B1',
+                   VALE=0.0,
+                   CRITERE='ABSOLU',
+                   PRECISION=1.E-8,
+                   REFERENCE='ANALYTIQUE',),),);
+
+
 
 FIN()

@@ -1,8 +1,8 @@
-#@ MODIF stanley Messages  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
+#@ MODIF stanley Messages  DATE 15/03/2011   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -111,8 +111,16 @@ Erreur : mode WINDOWS non implémenté
 """),
 
 19 : _("""
-Erreur: il est possible que Stanley ne puisse pas contacter Salome (machine salome definie : %(k1)s). 
-Vous pouvez modifier la machine Salome dans les parametres dans Stanley. 
+Erreur: il est possible que Stanley ne puisse pas contacter Salome :
+
+ - machine Salome definie   : %(k1)s
+ - port de Salome           : %(k2)s
+ - lanceur runSalomeScript  : %(k3)s
+
+Vous pouvez modifier ces valeurs dans les parametres dans Stanley. 
+
+Si Stanley est bien lancé, vous pouvez essayer d'activer le module VISU.
+
 """),
 
 20 : _("""
@@ -183,8 +191,9 @@ Le champ est tracé avec la déformée.
 Concept ignoré : %(k1)s
 """),
 
-
-
+36 : _("""
+On ne peut pas tracer une courbe avec une seule abscisse.
+"""),
 
 37 : _("""
 Tous les concepts Aster nécessaires à Stanley n'ont pas été calculés. 

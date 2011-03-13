@@ -1,4 +1,4 @@
-#@ MODIF salomeScript Templates  DATE 01/03/2011   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF salomeScript Templates  DATE 15/03/2011   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -18,12 +18,6 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
 
-
-# Script de visualisation Stanley
-import salome
-import SALOMEDS
-import visu_gui
-import VISU
 import os
 
 # Donnees utilisateur
@@ -41,10 +35,10 @@ import os
 # CHOIX = DEPL, GAUSS, ISO, COURBE
 # Cette partie est modifiee automatiquement par Stanley
 
-INPUTFILE1  = '$INPUTFILE1$'
-OUTPUTFILE1 = '$OUTPUTFILE1$'
-STUDY       = '$STUDY$'
-CHOIX       = '$CHOIX$'
+INPUTFILE1  = '/tmp/mon-fichier.med'
+OUTPUTFILE1 = ''
+STUDY       = ''
+CHOIX       = 'DEPL'
 
 
 #%=================================================================%
@@ -53,22 +47,37 @@ if CHOIX not in ['DEPL','ISO','GAUSS','COURBE']: raise "Erreur de type de visual
 if not os.path.isfile(INPUTFILE1): raise "Fichier %s non present!" % INPUTFILE1
 
 
+#%====================Initialisation Salome================================%
+import salome
+import SALOMEDS
+import salome_kernel
+orb, lcc, naming_service, cm = salome_kernel.salome_kernel_init()
+obj = naming_service.Resolve('myStudyManager')
+myStudyManager = obj._narrow(SALOMEDS.StudyManager)
+
+
 #%====================Initialisation etude================================%
+if STUDY:
+    # Si on a le nom de l'etude
+    study=myStudyManager.GetStudyByName(STUDY)
+    salome.salome_init(study._get_StudyId())
+    import visu_gui
+    import VISU
+    myVisu = visu_gui.myVisu
+    myVisu.SetCurrentStudy(study)
 
-myVisu = visu_gui.myVisu
-
-# Si on choisit etude courante
-if STUDY=='$STU'+'DY$':
-   # On choisit l'etude courante
-   myVisu.SetCurrentStudy(salome.myStudy)
-   # ou la premiere detectee ?
-   #Liste_Study = salome.myStudyManager.GetOpenStudies()
-   #NOM = Liste_Study[0]
-   #myVisu.SetCurrentStudy(salome.myStudyManager.GetStudyByName(NOM))
-
-# Si on a le nom de l'etude choisie
 else:
-   myVisu.SetCurrentStudy(salome.myStudyManager.GetStudyByName(STUDY))
+    # Sinon on choisit etude courante
+    salome.salome_init()
+    import visu_gui
+    import VISU
+    myVisu = visu_gui.myVisu
+    myVisu.SetCurrentStudy(salome.myStudy)
+    # ou la premiere detectee ?
+    #Liste_Study = salome.myStudyManager.GetOpenStudies()
+    #NOM = Liste_Study[0]
+    #myVisu.SetCurrentStudy(salome.myStudyManager.GetStudyByName(NOM))
+
 
 myViewManager = myVisu.GetViewManager()
 if myViewManager is None : raise "Erreur de creation de study"
@@ -77,17 +86,17 @@ if myViewManager is None : raise "Erreur de creation de study"
 #%===================Construction courbe======================%
 
 if CHOIX=='COURBE':
-   table_txt = myVisu.ImportTables(INPUTFILE1,0)
-   if table_txt :
-      IsFound,aSObject = table_txt.FindSubObject(1)
-      if  IsFound :
-         anID = aSObject.GetID()
-         table = myVisu.CreateTable(anID)
-         NRow = table.GetNbRows()
-         myContainer = myVisu.CreateContainer()
-         for i in range(2,NRow+1):
-            resu = myVisu.CreateCurve(table,1,i)
-            myContainer.AddCurve(resu)
+    table_txt = myVisu.ImportTables(INPUTFILE1,0)
+    if table_txt :
+        IsFound,aSObject = table_txt.FindSubObject(1)
+        if  IsFound :
+            anID = aSObject.GetID()
+            table = myVisu.CreateTable(anID)
+            NRow = table.GetNbRows()
+            myContainer = myVisu.CreateContainer()
+            for i in range(2,NRow+1):
+                resu = myVisu.CreateCurve(table,1,i)
+                myContainer.AddCurve(resu)
 
 #%====================Construction isovaleurs====================%
 
@@ -134,6 +143,7 @@ myView1 = myViewManager.GetCurrentView()
 if CHOIX=='COURBE':
     myView1 = myViewManager.CreateXYPlot()
     myView1.Display(myContainer)
+    salome.sg.updateObjBrowser(1)
 else :
     if myView1 is None :
         myView1 = myViewManager.Create3DView()
@@ -144,4 +154,6 @@ else :
 
     myView1.DisplayOnly(resu)
     myView1.FitAll()
+    salome.sg.updateObjBrowser(1)
+
 #%==================FIN ================================%

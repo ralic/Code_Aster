@@ -1,8 +1,8 @@
-#@ MODIF post_decollement_ops Macro  DATE 04/10/2010   AUTEUR GREFFET N.GREFFET 
+#@ MODIF post_decollement_ops Macro  DATE 14/03/2011   AUTEUR TARDIEU N.TARDIEU 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -36,7 +36,7 @@ def post_decollement_ops(self,RESULTAT,NOM_CHAM,NOM_CMP,GROUP_MA,INFO,**args):
   import aster
   import os,string,types
   from Accas import _F
-  from Utilitai.Utmess import  UTMESS
+  from Utilitai.Utmess import  UTMESS, MasquerAlarme, RetablirAlarme
 
 
   ### On importe les definitions des commandes a utiliser dans la macro
@@ -66,10 +66,19 @@ def post_decollement_ops(self,RESULTAT,NOM_CHAM,NOM_CMP,GROUP_MA,INFO,**args):
              CREA_GROUP_NO=_F(GROUP_MA=GROUP_MA,NOM='PDECOL'),
              ALARME='NON',)
 
+  
+  ### le modele 3D ne va contenir que des mailles de peau : on masque les alarmes
+  MasquerAlarme('CALCULEL2_63')
+  MasquerAlarme('CALCULEL2_64')
+  
   ### model restreint au GROUP_MA
   __model=AFFE_MODELE(MAILLAGE=MAILLAGE,
                   AFFE=_F(  GROUP_MA = GROUP_MA,PHENOMENE = 'MECANIQUE',
-                            MODELISATION = 'DKT'),)
+                            MODELISATION = '3D'),)
+                            
+  ### le modele 3D ne va contenir que des mailles de peau : on retablit les alarmes
+  RetablirAlarme('CALCULEL2_63')
+  RetablirAlarme('CALCULEL2_64')
   
   ### Calcul de la surface du GROUP_MA : __surf
   __unit = CREA_CHAMP(OPERATION='AFFE',TYPE_CHAM='NOEU_NEUT_R',MODELE=__model,

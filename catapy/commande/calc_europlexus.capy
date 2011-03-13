@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 31/01/2011   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+#& MODIF COMMANDE  DATE 14/03/2011   AUTEUR SFAYOLLE S.FAYOLLE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -111,7 +111,7 @@ CALC_EUROPLEXUS = MACRO(nom="CALC_EUROPLEXUS",op=calc_europlexus_ops,sd_prod=cal
         ),
 
 
-        ARCHIVAGE        =FACT(statut='f', regles=( AU_MOINS_UN('PAS_NBRE','PAS_INST',), EXCLUS('PAS_NBRE','PAS_INST',), ),
+        ARCHIVAGE        =FACT(statut='o', regles=( AU_MOINS_UN('PAS_NBRE','PAS_INST',), EXCLUS('PAS_NBRE','PAS_INST',), ),
            PAS_INST     = SIMP(statut='f',typ='R'),
            PAS_NBRE     = SIMP(statut='f',typ='I'),
            CONT_GENER   = SIMP(statut='o',typ='TXM',defaut="NON",max=1,into=("OUI","NON")),

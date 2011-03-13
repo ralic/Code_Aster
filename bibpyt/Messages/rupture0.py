@@ -1,8 +1,8 @@
-#@ MODIF rupture0 Messages  DATE 30/08/2010   AUTEUR MACOCCO K.MACOCCO 
+#@ MODIF rupture0 Messages  DATE 14/03/2011   AUTEUR GENIAUT S.GENIAUT 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -456,6 +456,14 @@ La tangente à l'extrémité est nécessairement dans le plan de la fissure,
 donc orthogonale à la normale fournie. Vérifier les données.
 """), 
 
+80: _("""
+Il ne faut donner la direction de propagation si le champ thêta est donné.
+
+-> Conseil :
+Veuillez supprimer le mot-clé DIRECTION sous CALC_G/THETA.
+"""), 
+
+
 81: _("""
 Il faut donner la direction de propagation en 2D
 La direction par défaut n'existe plus.
@@ -497,12 +505,15 @@ Veuillez redéfinir le mot-clé LISSAGE_THETA.
 
 91: _("""
 Aucune direction de propagation n'est fournie par l'utilisateur, la direction est
-calculée à partir de la normale au fond de fissure.
+calculée à partir de la normale au fond de fissure (donnée dans DEFI_FOND_FISS).
 -> Risque et Conseil :
-Il n'y a aucun moyen de vérifier que la direction de propagation est dans le bon sens, ce
-qui peut inverser le signe du G calculé. Il est préférable de préciser la direction de
-propagation sous le mot clé DIRECTION ou de définir la fissure à partir des mailles de ses
-lèvres.
+  - Si le fond de fissure est droit, la direction calculée est correcte, au signe près.
+Comme il n'y a aucun moyen de vérifier que la direction de propagation est dans le bon sens,
+cela peut inverser le signe du G calculé. On peut alors préciser la direction de
+propagation sous le mot clé DIRECTION. Mais il est préféranbble de définir la fissure à
+partir des mailles de ses lèvres (DEFI_FOND_FISS).
+- Si le fond de fissure est courbe, le direction calculée n'est pas correcte et il faut
+impérativement définir la fissure à partir des mailles de ses lèvres (DEFI_FOND_FISS).
 """), 
 
 92: _("""

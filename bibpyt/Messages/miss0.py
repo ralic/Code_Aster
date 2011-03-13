@@ -1,8 +1,8 @@
-#@ MODIF miss0 Messages  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
+#@ MODIF miss0 Messages  DATE 14/03/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -63,6 +63,54 @@ La trace ci-dessous doit montrer l'incohérence relevée.
 
 Message d'erreur :
 %(k1)s
+"""),
+
+9 : _("""
+Les abscisses de l'accélérogramme '%(k1)s' doivent être à pas constant.
+"""),
+
+10 : ("""
+Interpolation des accélérogrammes sur l'intervalle : [%(r1).4f, %(r2).4f]
+par pas de %(r3).4f, soit %(i1)d instants.
+"""),
+
+11 : _("""
+Les %(i1)d fréquences du calcul harmonique sont :
+    %(k1)s
+"""),
+
+12 : _("""
+Plage de fréquence du calcul harmonique : [%(r1).4f, %(r2).4f]
+par pas de %(r3).4f Hz, soit %(i1)d fréquences.
+"""),
+
+13 : _("""
+Plage de fréquence du calcul Miss : [%(r1).4f, %(r2).4f]
+par pas de %(r3).4f Hz, soit %(i1)d fréquences.
+"""),
+
+15 : _("""
+L'utilisation de MACRO_MISS_3D est déconseillée et maintenant exclue du périmètre
+qualifié de Code_Aster.
+
+Certaines fonctionnalités ne sont pas encore disponibles dans CALC_MISS.
+Pour celles-ci, il faut encore utiliser MACRO_MISS_3D. Il s'agit :
+    - des points de contrôle,
+    - des ondes inclinées,
+    - des sources ponctuelles,
+    - de l'interaction sol-fluide-structure.
+"""),
+
+16 : _("""
+Dans le cas présent (MODULE='MISS_IMPE' et ISSF='NON'), CALC_MISS répond à votre besoin.
+Nous vous conseillons d'utiliser dorénavant CALC_MISS.
+"""),
+
+17 : _("""
+Fournir une plage de fréquence (mot-clé LIST_FREQ) n'est possible que si
+TYPE_RESU = 'FICHIER' ou 'HARM_GENE'.
+Dans les autres cas, il est nécessaire d'avoir un pas de fréquences constant
+pour le calcul des FFT.
 """),
 
 }

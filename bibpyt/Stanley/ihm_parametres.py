@@ -1,8 +1,8 @@
-#@ MODIF ihm_parametres Stanley  DATE 21/03/2006   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF ihm_parametres Stanley  DATE 15/03/2011   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -56,7 +56,7 @@ class AFFICHAGE_PARAMETRES :
     Fenetre d'affichage et de modification des parametres.
   """
 
-  def __init__(self, master, dliste_section, dparam, para, aide, titre=_("Affichage"), largeur=800, hauteur=600):
+  def __init__(self, master, dliste_section, dparam, para, aide, titre=_("Affichage"), largeur=800, hauteur=630):
 
     self.master         = master
     self.dliste_section = dliste_section
@@ -130,7 +130,8 @@ class AFFICHAGE_PARAMETRES :
     x_2 = 0
     y_2 = hauteur_1
     largeur_2 = largeur*0.5
-    hauteur_2 = 340
+#    hauteur_2 = 340
+    hauteur_2 = 370
     frame_2 = Tk.Frame(self.fenetre2, bd=0, relief='flat' )
     frame_2.place(in_=self.fenetre2,x=x_2,y=y_2,anchor='nw',width=largeur_2, height=hauteur_2)
 

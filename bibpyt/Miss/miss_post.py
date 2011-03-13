@@ -1,4 +1,4 @@
-#@ MODIF miss_post Miss  DATE 01/03/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF miss_post Miss  DATE 14/03/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -27,7 +27,6 @@ automatiquement supprimés en sortie de la macro.
 Les concepts dont on garde une référence dans les résultats sont nommés
 avec "_xxxx" (soit _9000002).
 """
-#TODO remplacer les assert/raise par des aster.error(id_message)
 
 import os
 import traceback
@@ -45,7 +44,9 @@ from Cata.cata import (
     FORMULE, CALC_FONC_INTERP, CREA_TABLE,
 )
 
+from Noyau.N_types import force_list
 from Utilitai.Table import Table
+from Utilitai.Utmess import UTMESS
 from Miss.miss_utils import set_debug, _print, _printDBG
 
 # correspondance
@@ -69,22 +70,41 @@ class POST_MISS(object):
         # liste de concepts intermédiaires à supprimer à la fin
         self._to_delete = []
         self.initco()
-        if self.verbose:
-            _print('Paramètres du calcul', self.param)
         if self.debug:
             set_debug(True)
+        self.list_freq_DLH = None
+        self.methode_fft = None
 
 
     def argument(self):
         """Vérification des arguments d'entrée."""
         # fréquences du calcul Miss
-        self.fmiss_min = self.param['FREQ_MIN']
-        self.fmiss_max = self.param['FREQ_MAX']
-        self.fmiss_df = self.param['FREQ_PAS']
-        self.fmiss_nb = int((self.fmiss_max - self.fmiss_min) / self.fmiss_df) + 1
-        _printDBG("Plage de fréquence du calcul Miss : [%.2f, %.2f] par " \
-                  "pas de %.2f Hz, soit %d fréquences." \
-                  % (self.fmiss_min, self.fmiss_max, self.fmiss_df, self.fmiss_nb))
+        nbfmiss = int((self.param['FREQ_MAX'] - self.param['FREQ_MIN']) / self.param['FREQ_PAS']) + 1
+        UTMESS('I', 'MISS0_13', valr=(self.param['FREQ_MIN'], self.param['FREQ_MAX'],
+                                      self.param['FREQ_PAS']),
+                                vali=nbfmiss)
+        # interpolation des accéléros si présents (à supprimer sauf si TABLE)
+        self.excit_harmo = self.param['EXCIT_HARMO']
+        if self.excit_harmo is None:
+            tmax = self.param['INST_FIN']
+            pasdt = self.param['PAS_INST']
+            __linst = DEFI_LIST_REEL(DEBUT=0.,
+                                     INTERVALLE=_F(JUSQU_A=tmax - pasdt,
+                                                   PAS=pasdt),)
+            linst = __linst.Valeurs()
+            UTMESS('I', 'MISS0_10', valr=(min(linst), max(linst), pasdt), vali=len(linst))
+            if self.param['ACCE_X']:
+                _acx = CALC_FONCTION(COMB=_F(FONCTION=self.param['ACCE_X'], COEF=1.0,),
+                                     LIST_PARA=__linst)
+                self.acce_x = _acx
+            if self.param['ACCE_Y']:
+                _acy = CALC_FONCTION(COMB=_F(FONCTION=self.param['ACCE_Y'], COEF=1.0,),
+                                     LIST_PARA=__linst)
+                self.acce_y = _acy
+            if self.param['ACCE_Z']:
+                _acz = CALC_FONCTION(COMB=_F(FONCTION=self.param['ACCE_Z'], COEF=1.0,),
+                                     LIST_PARA=__linst)
+                self.acce_z = _acz
 
 
     def execute(self):
@@ -111,6 +131,52 @@ class POST_MISS(object):
                                    NUME_DDL_GENE=self.nddlgen,
                                    MATR_ASSE=self.param['MATR_MASS'])
         self.massgen = __massgen
+        self.set_fft_accelero()
+        self.set_freq_dlh()
+
+
+    def set_fft_accelero(self):
+        """Calcul des FFT des accélérogrammes."""
+        if self.acce_x:
+            _xff = CALC_FONCTION(FFT=_F(FONCTION=self.acce_x, METHODE=self.methode_fft,),)
+            self.xff = _xff
+        if self.acce_y:
+            _yff = CALC_FONCTION(FFT=_F(FONCTION=self.acce_y, METHODE=self.methode_fft,),)
+            self.yff = _yff
+        if self.acce_z:
+            _zff = CALC_FONCTION(FFT=_F(FONCTION=self.acce_z, METHODE=self.methode_fft,),)
+            self.zff = _zff
+
+
+    def set_freq_dlh(self):
+        """Déterminer les fréquences du calcul harmonique."""
+        if self.excit_harmo is not None:
+            if self['FREQ_MIN'] is not None:
+                freq_max = self['FREQ_MAX']
+                df = self['FREQ_PAS']
+                lfreq = NP.arange(0., freq_max + df, df).tolist()
+                UTMESS('I', 'MISS0_12', valr=(0., freq_max, df), vali=len(lfreq))
+            else:
+                lfreq = self['LIST_FREQ']
+                UTMESS('I', 'MISS0_11', valk=repr(lfreq), vali=len(lfreq))
+        else:
+            fft = self.xff or self.yff or self.zff
+            assert fft is not None
+            tf_fft = fft.convert('complex')
+            df = tf_fft.vale_x[1] - tf_fft.vale_x[0]
+            med = len(tf_fft.vale_x) / 2 + 1
+            lfreq = tf_fft.vale_x[:med].tolist()
+            freq_max = lfreq[-1]
+            UTMESS('I', 'MISS0_12', valr=(0., freq_max, df), vali=len(lfreq))
+        self.list_freq_DLH = lfreq
+
+
+    def suppr_acce_fft(self):
+        """Marque pour suppression les accéléros interpolés et leur FFT."""
+        for co in (self.acce_x, self.acce_y, self.acce_z,
+                   self.xff, self.yff, self.zff):
+            if co:
+                self._to_delete.append(co)
 
 
     def initco(self):
@@ -119,9 +185,9 @@ class POST_MISS(object):
         - libèrer les références avant la sortie de la macro pour destruction
           propre.
         """
-        self.nddlgen = None
-        self.rigigen = None
-        self.massgen = None
+        self.nddlgen = self.rigigen = self.massgen = None
+        self.acce_x = self.acce_y = self.acce_z = None
+        self.xff = self.yff = self.zff = None
         if len(self._to_delete) > 0:
             DETRUIRE(CONCEPT=_F(NOM=tuple(self._to_delete),),)
 
@@ -134,24 +200,22 @@ class POST_MISS(object):
 
 
 class POST_MISS_TRAN(POST_MISS):
-    """Post-traitement de type 1, sortie harm_gene"""
+    """Post-traitement de type 1, sortie tran_gene"""
+
+    def __init__(self, *args, **kwargs):
+        """Initialisation."""
+        super(POST_MISS_TRAN, self).__init__(*args, **kwargs)
+        self.methode_fft = 'PROL_ZERO'
+
 
     def argument(self):
         """Vérification des arguments d'entrée."""
         super(POST_MISS_TRAN, self).argument()
-        self.fdlh_coup = 1.e300   #XXX calcul des fréquences pour DYNA_LINE_HARM
-        self.fdlh_min = 0.
-        self.fdlh_max = self.fmiss_max
-        self.fdlh_df = self.fmiss_df
-        self.fdlh_nb = int(self.fdlh_max / self.fdlh_df) + 1
-        #XXX max=1 dans le capy
-        self.dir_x = self.param['ACCE_X'] is not None
-        self.dir_y = self.param['ACCE_Y'] is not None
-        self.dir_z = self.param['ACCE_Z'] is not None
         # s'assurer que les unités logiques sont libérées (rewind)
         self.check_datafile_exist()
         DEFI_FICHIER(ACTION='LIBERER', UNITE=self.param['UNITE_RESU_IMPE'])
         DEFI_FICHIER(ACTION='LIBERER', UNITE=self.param['UNITE_RESU_FORC'])
+        self.suppr_acce_fft()
 
 
     def execute(self):
@@ -164,42 +228,26 @@ class POST_MISS_TRAN(POST_MISS):
         """Prépare et produit les concepts de sortie."""
         self.parent.DeclareOut('resugene', self.parent.sd)
         self._to_delete.append(self.dyge)
+        #XXX on pensait qu'il fallait utiliser PROL_ZERO mais miss01a
+        #    devient alors NOOK. A clarifier/vérifier en pensant
+        #    d'autres tests avec ce post-traitement.
         resugene = REST_SPEC_TEMP(RESU_GENE = self.dyge,
-                                  METHODE = 'PROL_ZERO',
+                                  METHODE = 'TRONCATURE',
                                   SYMETRIE = 'NON',
                                   TOUT_CHAM = 'OUI')
         self.initco()
 
 
-    def concepts_communs(self):
-        """Construction des concepts partagés entre
-        les différentes étapes du post-traitement"""
-        super(POST_MISS_TRAN, self).concepts_communs()
-        # fft
-        if self.dir_x:
-            _xff = CALC_FONCTION(FFT=_F(FONCTION=self.param['ACCE_X'], METHODE='COMPLET',),)
-            self.xff = _xff
-            self._to_delete.append(_xff)
-        if self.dir_y:
-            _yff = CALC_FONCTION(FFT=_F(FONCTION=self.param['ACCE_Y'], METHODE='COMPLET',),)
-            self.yff = _yff
-            self._to_delete.append(_yff)
-        if self.dir_z:
-            _zff = CALC_FONCTION(FFT=_F(FONCTION=self.param['ACCE_Z'], METHODE='COMPLET',),)
-            self.zff = _zff
-            self._to_delete.append(_zff)
-
-
     def initco(self):
         """Ajoute les concepts"""
         super(POST_MISS_TRAN, self).initco()
-        self.dyge = self.xff = self.yff = self.zff = None
+        self.dyge = None
 
 
     def boucle_dlh(self):
         """Exécution des DYNA_LINE_HARM"""
-        for ifreq in range(self.fdlh_nb):
-            freq = self.fdlh_min + ifreq * self.fdlh_df
+        first = True
+        for freq in self.list_freq_DLH:
             opts = {}
             _printDBG("Calcul pour la fréquence %.2f Hz" % freq)
             __impe = LIRE_IMPE_MISS(BASE=self.param['BASE_MODALE'],
@@ -211,56 +259,47 @@ class POST_MISS_TRAN(POST_MISS):
             _rito = COMB_MATR_ASSE(COMB_C=(_F(MATR_ASSE=__impe, COEF_C=1.0+0.j,),
                                             _F(MATR_ASSE=self.rigigen, COEF_C=1.0+0.j,),),
                                     SANS_CMP='LAGR',)
-            if ifreq > 0:
+            if not first:
                 opts = { 'RESULTAT' : self.dyge, 'reuse' : self.dyge }
             self.dyge = self.iteration_dlh(_rito, freq, opts)
 
             DETRUIRE(CONCEPT=_F(NOM=__impe,),)
             self._to_delete.append(_rito)
+            first = False
 
 
     def iteration_dlh(self, rigtot, freq, opts):
         """Calculs à une fréquence donnée."""
         excit = []
-        if self.dir_x:
+        if self.acce_x:
             __fosx = LIRE_FORC_MISS(BASE=self.param['BASE_MODALE'],
                                     NUME_DDL_GENE=self.nddlgen,
                                     NOM_CMP='DX',
                                     NOM_CHAM='ACCE',
                                     UNITE_RESU_FORC=self.param['UNITE_RESU_FORC'],
                                     FREQ_EXTR=freq,)
-            if freq > self.fdlh_coup:
-                excit.append(_F(VECT_ASSE = __fosx,
-                                COEF_MULT_C = 0. + 0j))
-            else:
-                excit.append(_F(VECT_ASSE = __fosx,
-                                FONC_MULT_C = self.xff))
-        if self.dir_y:
+            excit.append(_F(VECT_ASSE = __fosx,
+                            FONC_MULT_C = self.xff))
+        if self.acce_y:
             __fosy = LIRE_FORC_MISS(BASE=self.param['BASE_MODALE'],
                                     NUME_DDL_GENE=self.nddlgen,
                                     NOM_CMP='DY',
                                     NOM_CHAM='ACCE',
                                     UNITE_RESU_FORC=self.param['UNITE_RESU_FORC'],
                                     FREQ_EXTR=freq,)
-            if freq > self.fdlh_coup:
-                excit.append(_F(VECT_ASSE = __fosy,
-                                COEF_MULT_C = 0. + 0j))
-            else:
-                excit.append(_F(VECT_ASSE = __fosy,
-                                FONC_MULT_C = self.yff))
-        if self.dir_z:
+            excit.append(_F(VECT_ASSE = __fosy,
+                            FONC_MULT_C = self.yff))
+        if self.acce_z:
             __fosz = LIRE_FORC_MISS(BASE=self.param['BASE_MODALE'],
                                     NUME_DDL_GENE=self.nddlgen,
                                     NOM_CMP='DZ',
                                     NOM_CHAM='ACCE',
                                     UNITE_RESU_FORC=self.param['UNITE_RESU_FORC'],
                                     FREQ_EXTR=freq,)
-            if freq > self.fdlh_coup:
-                excit.append(_F(VECT_ASSE = __fosz,
-                                COEF_MULT_C = 0. + 0j))
-            else:
-                excit.append(_F(VECT_ASSE = __fosz,
-                                FONC_MULT_C = self.zff))
+            excit.append(_F(VECT_ASSE = __fosz,
+                            FONC_MULT_C = self.zff))
+        if self.excit_harmo is not None:
+            excit.extend( force_list(self.excit_harmo) )
         dyge = self.dyna_line_harm(MODELE=self.param['MODELE'],
                                    MATR_MASS=self.massgen,
                                    MATR_RIGI=rigtot, 
@@ -281,12 +320,18 @@ class POST_MISS_TRAN(POST_MISS):
 
 class POST_MISS_HARM(POST_MISS_TRAN):
     """Post-traitement de type 1, sortie harm_gene"""
-    #XXX fréquence max, pas...
     
+    def __init__(self, *args, **kwargs):
+        """Initialisation."""
+        super(POST_MISS_HARM, self).__init__(*args, **kwargs)
+        self.methode_fft = 'COMPLET'
+
+
     def argument(self):
         """Vérification des arguments d'entrée."""
         super(POST_MISS_HARM, self).argument()
         self.parent.DeclareOut('trangene', self.parent.sd)
+        self.suppr_acce_fft()
 
 
     def sortie(self):
@@ -307,8 +352,9 @@ class POST_MISS_TAB(POST_MISS):
     def __init__(self, *args, **kwargs):
         """Initialisation."""
         super(POST_MISS_TAB, self).__init__(*args, **kwargs)
+        self.methode_fft = 'COMPLET'
         # pour la construction de la table
-        self._tkeys = ('NUME_CAS', 'GROUP_NO', 'NOM_CHAM', 'NOM_PARA')
+        self._tkeys = ('GROUP_NO', 'NOM_CHAM', 'NOM_PARA')
         self._torder = list(self._tkeys) + ['FONC_X', 'FONC_Y', 'FONC_Z']
         # pour stocker la correspondance clé_primaire : numéro_ligne
         self._tline = {}
@@ -317,11 +363,6 @@ class POST_MISS_TAB(POST_MISS):
     def argument(self):
         """Vérification des arguments d'entrée."""
         super(POST_MISS_TAB, self).argument()
-        # nb calcul
-        self.nbcalc = len(self.param['INST_FIN'])
-        self.dir_x = self.param['ACCE_X'] is not None
-        self.dir_y = self.param['ACCE_Y'] is not None
-        self.dir_z = self.param['ACCE_Z'] is not None
         # s'assurer que les unités logiques sont libérées (rewind)
         self.check_datafile_exist()
         DEFI_FICHIER(ACTION='LIBERER', UNITE=self.param['UNITE_RESU_IMPE'])
@@ -334,7 +375,7 @@ class POST_MISS_TAB(POST_MISS):
         """Lance le post-traitement"""
         self.concepts_communs()
         self.boucle_dlh()
-        self.boucle_sur_transitoires()
+        self.recombinaison()
 
 
     def sortie(self):
@@ -359,9 +400,9 @@ class POST_MISS_TAB(POST_MISS):
 
 
     def boucle_dlh(self):
-        """Exécution des DYNA_LINE_HARM dans les 3 directions"""
-        for ifreq in range(self.fmiss_nb):
-            freq = self.fmiss_min + ifreq * self.fmiss_df
+        """Exécution des DYNA_LINE_HARM dans les 3 directions (chargement unitaire)"""
+        first = True
+        for freq in self.list_freq_DLH:
             opts = {}
             _printDBG("Calcul pour la fréquence %.2f Hz" % freq)
             __impe = LIRE_IMPE_MISS(BASE=self.param['BASE_MODALE'],
@@ -373,23 +414,24 @@ class POST_MISS_TAB(POST_MISS):
             _rito = COMB_MATR_ASSE(COMB_C=(_F(MATR_ASSE=__impe, COEF_C=1.0+0.j,),
                                             _F(MATR_ASSE=self.rigigen, COEF_C=1.0+0.j,),),
                                     SANS_CMP='LAGR',)
-            if self.dir_x:
-                if ifreq > 0:
+            if self.acce_x:
+                if not first:
                     opts = { 'RESULTAT' : self.dyge_x, 'reuse' : self.dyge_x }
                 self.dyge_x = self.iteration_dlh('DX', _rito, freq, opts)
             
-            if self.dir_y:
-                if ifreq > 0:
+            if self.acce_y:
+                if not first:
                     opts = { 'RESULTAT' : self.dyge_y, 'reuse' : self.dyge_y }
                 self.dyge_y = self.iteration_dlh('DY', _rito, freq, opts)
             
-            if self.dir_z:
-                if ifreq > 0:
+            if self.acce_z:
+                if not first:
                     opts = { 'RESULTAT' : self.dyge_z, 'reuse' : self.dyge_z }
                 self.dyge_z = self.iteration_dlh('DZ', _rito, freq, opts)
             
             DETRUIRE(CONCEPT=_F(NOM=__impe,),)
             self._to_delete.append(_rito)
+            first = False
 
 
     def iteration_dlh(self, dir, rigtot, freq, opts):
@@ -412,85 +454,67 @@ class POST_MISS_TAB(POST_MISS):
         return __dyge
 
 
-    def boucle_sur_transitoires(self):
-        """Boucle sur les calculs transitoires"""
-        acce_x = self.param['ACCE_X'] or [None,]*self.nbcalc
-        acce_y = self.param['ACCE_Y'] or [None,]*self.nbcalc
-        acce_z = self.param['ACCE_Z'] or [None,]*self.nbcalc
-        vars = zip(acce_x, acce_y, acce_z, self.param['INST_FIN'], self.param['PAS_INST'])
-        
-        ical = -1
-        for acx, acy, acz, tfin, dt in vars:
-            ical += 1
-            _printDBG("Calcul #%d" % (ical + 1))
-            fmax = 0.5 / dt
-            df = 1. / tfin
-            tfm2 = tfin - dt
-            lfreq = NP.arange(0., fmax + df, df)
-            __linst = DEFI_LIST_REEL(DEBUT=0.,
-                                     INTERVALLE=_F(JUSQU_A=tfm2, PAS=dt),)
-            _xff = _yff = _zff = None
-            if acx:
-                __acx = CALC_FONCTION(COMB=_F(FONCTION=acx, COEF=1.0,),
-                                      LIST_PARA=__linst)
-                _xff = CALC_FONCTION(FFT=_F(FONCTION=__acx, METHODE='COMPLET',),)
-            if acy:
-                __acy = CALC_FONCTION(COMB=_F(FONCTION=acy, COEF=1.0,),
-                                      LIST_PARA=__linst)
-                _yff = CALC_FONCTION(FFT=_F(FONCTION=__acy, METHODE='COMPLET',),)
-            if acz:
-                __acz = CALC_FONCTION(COMB=_F(FONCTION=acz, COEF=1.0,),
-                                      LIST_PARA=__linst)
-                _zff = CALC_FONCTION(FFT=_F(FONCTION=__acz, METHODE='COMPLET',),)
-            # stockage des accéléro et leur fft
-            self.add_line(ical, '', 'ACCE', 'INST',
-                          FONC_X=acx.nom, FONC_Y=acy.nom, FONC_Z=acz.nom)
-            self.add_line(ical, '', 'ACCE', 'FREQ',
-                          FONC_X=_xff.nom, FONC_Y=_yff.nom, FONC_Z=_zff.nom)
+    def recombinaison(self):
+        """Recombinaison des réponses unitaires."""
+        # stockage des accéléro et leur fft
+        self.add_line('', 'ACCE', 'INST',
+                      FONC_X=getattr(self.acce_x, 'nom', None),
+                      FONC_Y=getattr(self.acce_y, 'nom', None),
+                      FONC_Z=getattr(self.acce_z, 'nom', None))
+        self.add_line('', 'ACCE', 'FREQ',
+                      FONC_X=getattr(self.xff, 'nom', None),
+                      FONC_Y=getattr(self.yff, 'nom', None),
+                      FONC_Z=getattr(self.zff, 'nom', None))
 
-            for gno in self.param['GROUP_NO']:
-                for cham in ('DEPL', 'VITE', 'ACCE'):
-                    if acx:
-                        self.gen_funct(ical, gno, cham, 'DX', _xff, _yff, _zff, lfreq)
-                    if acy:
-                        self.gen_funct(ical, gno, cham, 'DY', _xff, _yff, _zff, lfreq)
-                    if acz:
-                        self.gen_funct(ical, gno, cham, 'DZ', _xff, _yff, _zff, lfreq)
-
-            DETRUIRE(CONCEPT=_F(NOM=(__linst, __acx, __acy, __acz),),)
+        # conversion faite une fois
+        if self.acce_x:
+            self.tf_xff = self.xff.convert('complex')
+        if self.acce_y:
+            self.tf_yff = self.yff.convert('complex')
+        if self.acce_z:
+            self.tf_zff = self.zff.convert('complex')
+        # boucle sur les group_no
+        for gno in self.param['GROUP_NO']:
+            for cham in ('DEPL', 'VITE', 'ACCE'):
+                if self.acce_x:
+                    self.gen_funct(gno, cham, 'DX')
+                if self.acce_y:
+                    self.gen_funct(gno, cham, 'DY')
+                if self.acce_z:
+                    self.gen_funct(gno, cham, 'DZ')
 
 
-    def gen_funct(self, ical, gno, cham, dir, xff, yff, zff, lfreq):
+    def gen_funct(self, gno, cham, dir):
         """Calcul la réponse en un noeud particulier dans la direction 'dir'
         sur les fréquences 'lfreq'."""
-        _printDBG("Calcul #%d de la réponse en %s, direction %s" % (ical + 1, gno, dir))
+        _printDBG("Calcul de la réponse en %s, direction %s" % (gno, dir))
         tfc = 0.
-        if self.dir_x:
+        if self.acce_x:
             _repx = RECU_FONCTION(RESU_GENE=self.dyge_x,
                                    NOM_CHAM=cham,
                                    NOM_CMP=dir,
                                    GROUP_NO=gno,
                                    INTERPOL='LIN',
                                    PROL_DROITE='CONSTANT', PROL_GAUCHE='CONSTANT',)
-            tfc = _repx.convert('complex') * xff.convert('complex') + tfc
-        if self.dir_y:
+            tfc = _repx.convert('complex') * self.tf_xff + tfc
+        if self.acce_y:
             _repy = RECU_FONCTION(RESU_GENE=self.dyge_y,
                                    NOM_CHAM=cham,
                                    NOM_CMP=dir,
                                    GROUP_NO=gno,
                                    INTERPOL='LIN',
                                    PROL_DROITE='CONSTANT', PROL_GAUCHE='CONSTANT',)
-            tfc = _repy.convert('complex') * yff.convert('complex') + tfc
-        if self.dir_z:
+            tfc = _repy.convert('complex') * self.tf_yff + tfc
+        if self.acce_z:
             _repz = RECU_FONCTION(RESU_GENE=self.dyge_z,
                                    NOM_CHAM=cham,
                                    NOM_CMP=dir,
                                    GROUP_NO=gno,
                                    INTERPOL='LIN',
                                    PROL_DROITE='CONSTANT', PROL_GAUCHE='CONSTANT',)
-            tfc = _repz.convert('complex') * zff.convert('complex') + tfc
+            tfc = _repz.convert('complex') * self.tf_zff + tfc
 
-        tffr = tfc.evalfonc(lfreq)
+        tffr = tfc.evalfonc(self.list_freq_DLH)
         tffr.para['NOM_PARA'] = 'FREQ'
         fft = tffr.fft('COMPLET', 'NON')
         # création des concepts
@@ -506,15 +530,15 @@ class POST_MISS_TAB(POST_MISS):
                                            AMOR_REDUIT=self.param['AMOR_SPEC_OSCI'],
                                            **opts),)
         DETRUIRE(CONCEPT=_F(NOM=(_repx, _repy, _repz),),)
-        self.add_line(ical, gno, cham, 'INST', **{ FKEY[dir] : _reptemp.nom })
-        self.add_line(ical, gno, cham, 'FREQ', **{ FKEY[dir] : _repfreq.nom })
-        self.add_line(ical, gno, cham, 'SPEC_OSCI', **{ FKEY[dir] : _spec.nom })
+        self.add_line(gno, cham, 'INST', **{ FKEY[dir] : _reptemp.nom })
+        self.add_line(gno, cham, 'FREQ', **{ FKEY[dir] : _repfreq.nom })
+        self.add_line(gno, cham, 'SPEC_OSCI', **{ FKEY[dir] : _spec.nom })
 
 
-    def add_line(self, nume_cas, gno, cham, para, **kwargs):
+    def add_line(self, gno, cham, para, **kwargs):
         """Pour simplifier l'ajout d'une ligne dans la table.
         Arguments optionnels supportés : fonc_x, fonc_y, fonc_z."""
-        primkey = (nume_cas + 1, gno, cham, para)
+        primkey = (gno, cham, para)
         index = self._tline.get(primkey, -1)
         values = dict([(k, v) for k, v in kwargs.items() \
                           if k in self._torder and v is not None])
@@ -531,6 +555,15 @@ class POST_MISS_TAB(POST_MISS):
 
 class POST_MISS_FICHIER(POST_MISS):
     """Pas de post-traitement, car on ne sort que les fichiers."""
+
+    def argument(self):
+        """Vérification des arguments d'entrée."""
+        # fréquences du calcul Miss
+        nbfmiss = int((self.param['FREQ_MAX'] - self.param['FREQ_MIN']) / self.param['FREQ_PAS']) + 1
+        UTMESS('I', 'MISS0_13', valr=(self.param['FREQ_MIN'], self.param['FREQ_MAX'],
+                                      self.param['FREQ_PAS']),
+                                vali=nbfmiss)
+
 
     def execute(self):
         """Lance le post-traitement"""

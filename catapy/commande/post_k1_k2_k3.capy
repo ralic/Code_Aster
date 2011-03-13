@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 31/01/2011   AUTEUR MACOCCO K.MACOCCO 
+#& MODIF COMMANDE  DATE 14/03/2011   AUTEUR GENIAUT S.GENIAUT 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -33,15 +33,20 @@ POST_K1_K2_K3=MACRO(nom="POST_K1_K2_K3",op=post_k1_k2_k3_ops,sd_prod=table_sdast
                    ),
 
          MODELISATION  =SIMP(statut='o',typ='TXM',
-                             into=("3D","AXIS","D_PLAN","C_PLAN"),
+                             into=("3D","AXIS","D_PLAN","C_PLAN"),position='global',
                              fr="Modélisation cohérente avec celle utilisée pour le calcul des déplacements"),
          FOND_FISS     =SIMP(statut='f',typ=fond_fiss),
          FISSURE       =SIMP(statut='f',typ=fiss_xfem),
          NB_NOEUD_COUPE=SIMP(statut='f',typ='I',defaut=5,val_min = 3),
+         SYME_CHAR       =SIMP(statut='f',typ='TXM',defaut="SANS",into=("SYME","SANS")),
 
 #        bloc correspondant a la donnee du fond de fissure pour les fissures maillees
          b_fond_fiss_res   =BLOC (condition="((FOND_FISS!= None)and(RESULTAT!= None))",
-                         TYPE_MAILLAGE = SIMP(statut='f',typ='TXM',into=("LIBRE","REGLE"),defaut="REGLE"),
+                         
+              b_ref_3d     =BLOC (condition="MODELISATION=='3D'",
+                                  TYPE_MAILLAGE = SIMP(statut='f',typ='TXM',into=("LIBRE","REGLE"),defaut="REGLE"),
+                                ),
+                         
                          NOEUD         = SIMP(statut='f',typ=no  ,validators=NoRepeat(),max='**'),
                          GROUP_NO      = SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**'),
                          SANS_NOEUD    = SIMP(statut='f',typ=no  ,validators=NoRepeat(),max='**'),
@@ -51,8 +56,8 @@ POST_K1_K2_K3=MACRO(nom="POST_K1_K2_K3",op=post_k1_k2_k3_ops,sd_prod=table_sdast
                          ),
 
          b_fond_fiss_tab   =BLOC (condition="((FOND_FISS!= None)and(TABL_DEPL_SUP!= None)and(RESULTAT== None))",
+
                          MAILLAGE      = SIMP(statut='o',typ=maillage_sdaster),
-                         TYPE_MAILLAGE = SIMP(statut='f',typ='TXM',into=("LIBRE","REGLE"),defaut="REGLE"),
                          NOEUD         = SIMP(statut='f',typ=no  ,validators=NoRepeat(),max='**'),
                          GROUP_NO      = SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**'),
                          SANS_NOEUD    = SIMP(statut='f',typ=no  ,validators=NoRepeat(),max='**'),
@@ -99,7 +104,6 @@ POST_K1_K2_K3=MACRO(nom="POST_K1_K2_K3",op=post_k1_k2_k3_ops,sd_prod=table_sdast
                b_prec_abso=BLOC(condition="(CRITERE=='ABSOLU')",
                    PRECISION       =SIMP(statut='o',typ='R',),),
              ),
-         SYME_CHAR       =SIMP(statut='f',typ='TXM',defaut="SANS",into=("SYME","SANS") ),
          INFO          =SIMP(statut='f',typ='I',defaut=1,into=(1,2)),
          VECT_K1       =SIMP(statut='f',typ='R',max=3,min=3,
                              fr="Vecteur normal au plan de fissure, orienté de la lèvre inférieure vers la lèvre supérieure"),  

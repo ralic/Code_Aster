@@ -1,4 +1,4 @@
-#@ MODIF exec_logiciel_ops Macro  DATE 01/03/2011   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF exec_logiciel_ops Macro  DATE 15/03/2011   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -24,6 +24,7 @@ import os
 import os.path as osp
 import traceback
 import shutil
+import tempfile
 from types import ListType, TupleType
 EnumTypes = (ListType, TupleType)
 
@@ -38,7 +39,7 @@ exe_scp = 'scp'
 
 tmpdir = '/tmp'
 
-debug = True
+debug = False
 
 # ------------------------------------------------------------------------------
 def ExecCommand_SSH(scmd, alt_comment='', verbose=False, separated_stderr=True):
@@ -99,11 +100,12 @@ def exec_logiciel_ops(self, LOGICIEL, ARGUMENT, MACHINE_DISTANTE, MAILLAGE, SALO
    from Utilitai.System     import ExecCommand
    from Utilitai.UniteAster import UniteAster
    from Stanley.salomeRunScript import MakeTempScript, DelTempScript, RunScript
-   
+   from Noyau.N_types import is_enum
+
    PRE_GMSH      = self.get_cmd("PRE_GMSH")
    PRE_GIBI      = self.get_cmd("PRE_GIBI")
    LIRE_MAILLAGE = self.get_cmd("LIRE_MAILLAGE")
-   
+
    ier=0
    # La macro compte pour 1 dans la numerotation des commandes
    self.set_icmd(1)
@@ -127,23 +129,31 @@ def exec_logiciel_ops(self, LOGICIEL, ARGUMENT, MACHINE_DISTANTE, MAILLAGE, SALO
 
    #----------------------------------------------
    # 0. Prepare les parametres dans le cas d'une execution sur une machine distante
-   dMCF={}
-   if SALOME != None:
-      mcf = SALOME[0]
-      dMCFS = mcf.cree_dict_valeurs(mcf.mc_liste)
-
-
-   #----------------------------------------------
-   # 0. Prepare les parametres dans le cas d'une execution sur une machine distante
 
    if MACHINE_DISTANTE != None:
       mcf = MACHINE_DISTANTE[0]
       dMCF = mcf.cree_dict_valeurs(mcf.mc_liste)
+   else:
+      dMCF = {'SSH_ADRESSE': 'localhost', 'SSH_PORT': 22}
 
-      if SALOME != None:
-          if not dMCFS['SALOME_HOST'] in [ 'localhost', dMCF['SSH_ADRESSE'] ]:
+
+   #----------------------------------------------
+   # 0. Prepare les parametres dans le cas d'une execution SALOME
+   if SALOME != None:
+      mcf = SALOME[0]
+      dMCFS = mcf.cree_dict_valeurs(mcf.mc_liste)
+
+      # Cas ou SALOME_HOST est different de SSH_ADRESSE ou que MACHINE_DISTANTE / SSH_ADRESSE n'est pas defini
+      if not dMCFS['SALOME_HOST'] in [ 'localhost', dMCF['SSH_ADRESSE'] ]:
+          MACHINE_DISTANTE = True
+          dMCF['SSH_ADRESSE'] = dMCFS['SALOME_HOST']
+          if dMCFS['SALOME_HOST'] != dMCF['SSH_ADRESSE']:
               UTMESS('A','EXECLOGICIEL0_22')
-              dMCF['SSH_ADRESSE'] = dMCFS['SALOME_HOST']
+
+
+   #----------------------------------------------
+   # 0. Prepare les parametres dans le cas d'une execution sur une machine distante
+   if MACHINE_DISTANTE != None:
 
       if dMCF.has_key('SSH_LOGIN') and dMCF['SSH_LOGIN'] != None: user_machine = '%s@%s' % (dMCF['SSH_LOGIN'], dMCF['SSH_ADRESSE'])
       else:                                                       user_machine = '%s'    %  dMCF['SSH_ADRESSE']
@@ -196,29 +206,32 @@ def exec_logiciel_ops(self, LOGICIEL, ARGUMENT, MACHINE_DISTANTE, MAILLAGE, SALO
       dMCF = mcf.cree_dict_valeurs(mcf.mc_liste)
       #print dMCF
 
+      # Mot-cles
       if dMCF.has_key('FICHIERS_ENTREE') and dMCF['FICHIERS_ENTREE'] != None: FICHIERS_ENTREE = dMCF['FICHIERS_ENTREE']
       else:                                                                   FICHIERS_ENTREE = []
 
       if dMCF.has_key('FICHIERS_SORTIE') and dMCF['FICHIERS_SORTIE'] != None: FICHIERS_SORTIE = dMCF['FICHIERS_SORTIE']
       else:                                                                   FICHIERS_SORTIE = []
 
-      if   dMCF.has_key('SALOME_RUNAPPLI') and dMCF['SALOME_RUNAPPLI'] != None: RUNAPPLI = dMCF['SALOME_RUNAPPLI']
-      else:                                                                     RUNAPPLI = os.path.join( aster.repout(), 'runSalomeScript' )
+      if dMCF.has_key('SALOME_RUNAPPLI') and dMCF['SALOME_RUNAPPLI'] != None: RUNAPPLI = dMCF['SALOME_RUNAPPLI']
+      else:                                                                   RUNAPPLI = os.path.join( aster.repout(), 'runSalomeScript' )
 
-      if dMCF['SALOME_HOST']: RUNAPPLI += ' -m %s ' % dMCF['SALOME_HOST']
+      if MACHINE_DISTANTE is None:
+          if dMCF['SALOME_HOST']: RUNAPPLI += ' -m %s ' % dMCF['SALOME_HOST']
+
       if dMCF['SALOME_PORT']: RUNAPPLI += ' -p %s ' % dMCF['SALOME_PORT']
 
+      # Chemin du script
       if   dMCF.has_key('CHEMIN_SCRIPT') and dMCF['CHEMIN_SCRIPT'] != None: CHEMIN_SCRIPT = dMCF['CHEMIN_SCRIPT']
       elif dMCF.has_key('UNITE_SCRIPT')  and dMCF['UNITE_SCRIPT']  != None: CHEMIN_SCRIPT = 'fort.%s' % dMCF['UNITE_SCRIPT']
       else:                                                                 CHEMIN_SCRIPT = ''
 
+
+      # dic = Dictionnaire a passer pour la creation du script temporaire
       dic = { 'SALOMESCRIPT': CHEMIN_SCRIPT }
-      for i in range(len(FICHIERS_ENTREE)):
-           dic['INPUTFILE%s' % str(i+1)] = os.path.normpath(os.path.abspath(os.path.realpath ( FICHIERS_ENTREE[i] )))
-      for i in range(len(FICHIERS_SORTIE)):
-           dic['OUTPUTFILE%s' % str(i+1)] = os.path.normpath(os.path.abspath(os.path.realpath ( FICHIERS_SORTIE[i] )))
 
 
+      # Parametres a remplacer dans le script
       if dMCF.has_key('NOM_PARA') and dMCF['NOM_PARA'] != None: NOM_PARA = dMCF['NOM_PARA']
       else:                                                     NOM_PARA = []
       if dMCF.has_key('VALE')     and dMCF['VALE']     != None: VALE     = dMCF['VALE']
@@ -229,57 +242,103 @@ def exec_logiciel_ops(self, LOGICIEL, ARGUMENT, MACHINE_DISTANTE, MAILLAGE, SALO
          dic[ NOM_PARA[i] ] = VALE[i]
 
 
+      # Changement en liste s'il n'y a qu'un seul element
+      if (not is_enum(FICHIERS_ENTREE)):
+          FICHIERS_ENTREE = [FICHIERS_ENTREE,]
+      if (not is_enum(FICHIERS_SORTIE)):
+          FICHIERS_SORTIE = [FICHIERS_SORTIE,]
+
+
+      # On regenere des noms temporaires dans le repertoire temporaire distant
+      if MACHINE_DISTANTE != None:
+          FICHIERS_ENTREE_DIST = []
+          FICHIERS_SORTIE_DIST = []
+
+      for i in range(len(FICHIERS_ENTREE)):
+          if MACHINE_DISTANTE != None:
+              fw = tempfile.NamedTemporaryFile(mode='w', suffix='.salome_input')
+              fname =  os.path.join(tmpdir, os.path.basename(fw.name))
+              fw.close()
+              FICHIERS_ENTREE_DIST.append( fname )
+          else:
+              fname = FICHIERS_ENTREE[i]
+          #dic['INPUTFILE%s' % str(i+1)] = os.path.normpath(os.path.abspath(os.path.realpath(fname)))
+          dic['INPUTFILE%s' % str(i+1)] = fname
+
+      for i in range(len(FICHIERS_SORTIE)):
+          if MACHINE_DISTANTE != None:
+              fw = tempfile.NamedTemporaryFile(mode='w', suffix='.salome_output')
+              fname =  os.path.join(tmpdir, os.path.basename(fw.name))
+              fw.close()
+              FICHIERS_SORTIE_DIST.append( fname )
+          else:
+              fname = FICHIERS_SORTIE[i]
+          #dic['OUTPUTFILE%s' % str(i+1)] = os.path.normpath(os.path.abspath(os.path.realpath(fname)))
+          dic['OUTPUTFILE%s' % str(i+1)] = fname
+
+
+      # Creation du script de de la commande a executer
       CHEMIN_SCRIPT = MakeTempScript( **dic )
-      CMD = '%s %s' % (RUNAPPLI, os.path.join(tmpdir, os.path.basename(CHEMIN_SCRIPT)) )
 
       # Ligne de commande
       cmd_salome = []
 
       if MACHINE_DISTANTE != None:
 
-         # Recopie des fichiers d'entrée sur le serveur distant
-         lst_src = CHEMIN_SCRIPT
-         if FICHIERS_ENTREE:
-             lst_src += ' ' + ' '.join( FICHIERS_ENTREE )
-         # on recopie au moins le script
+         # on recopie le script sur le serveur distant
          d_scp = { 'scp':    exe_scp,
                    'port':   port,
-                   'src':    lst_src,
+                   'src':    CHEMIN_SCRIPT,
                    'dst':    '%s:%s/' % (user_machine, tmpdir),
-                 }
+                  }
          cmd_salome.append( cmd_scp % d_scp )
 
-         # Script
+         # Recopie les fichiers d'entrée sur le serveur distant
+         for i in range(len(FICHIERS_ENTREE)):
+             fsrc = FICHIERS_ENTREE[i]
+             fdst = FICHIERS_ENTREE_DIST[i]
+             d_scp = { 'scp':    exe_scp,
+                       'port':   port,
+                       'src':    fsrc,
+                       'dst':    '%s:%s' % (user_machine, fdst),
+                     }
+             cmd_salome.append( cmd_scp % d_scp )
+
+
+         # Execution du script
          d_ssh = { 'ssh':          exe_ssh,
                    'user_machine': user_machine,
                    'port':         port,
-                   'cmd':          CMD,
+                   'cmd':          '%s %s' % (RUNAPPLI, os.path.join(tmpdir, os.path.basename(CHEMIN_SCRIPT)) ),
                  }
          cmd_salome.append( cmd_ssh % d_ssh )
 
-         # Recopie des fichiers de sortie depuis le serveur distant
-         if FICHIERS_SORTIE:
-            root_src = '%s:%s/' % (user_machine, tmpdir)
-            lst_src = ' '.join( [ root_src + os.path.basename(f) for f in FICHIERS_SORTIE ] )
-            d_scp = { 'scp':    exe_scp,
-                      'port':   port,
-                      'src':    lst_src,
-                      'dst':    '%s/' % tmpdir,
-                 }
-            cmd_salome.append( cmd_scp % d_scp )
 
-         # delete des fichiers distants
+         # Recopie des fichiers de sortie depuis le serveur distant
+         for i in range(len(FICHIERS_SORTIE)):
+             fsrc = FICHIERS_SORTIE_DIST[i]
+             fdst = FICHIERS_SORTIE[i]
+             d_scp = { 'scp':    exe_scp,
+                       'port':   port,
+                       'src':    '%s:%s' % (user_machine, fsrc),
+                       'dst':    fdst,
+                     }
+             cmd_salome.append( cmd_scp % d_scp )
+
+
+         # Effacement des fichiers distants
          lst_src = [ os.path.join( tmpdir, os.path.basename(CHEMIN_SCRIPT) ) ]
-         if FICHIERS_SORTIE: lst_src.extend( [ '%s/' % tmpdir + os.path.basename(f) for f in FICHIERS_SORTIE ] )
-         if FICHIERS_ENTREE: lst_src.extend( [ '%s/' % tmpdir + os.path.basename(f) for f in FICHIERS_ENTREE ] )
+         if FICHIERS_ENTREE_DIST: lst_src.extend( FICHIERS_ENTREE_DIST )
+         if FICHIERS_SORTIE_DIST: lst_src.extend( FICHIERS_SORTIE_DIST )
+
          #print lst_src
          d_ssh['cmd'] = ' '.join([ 'if [ -f "%s" ]; then \\rm %s; fi ; ' % (f,f) for f in lst_src ])
          cmd_salome.append( cmd_ssh % d_ssh )
 
 
       else:
-         if not debug: cmd_salome.append( CMD + ' ; if [ -f "%s" ]; then \\rm %s; fi ; ' % (CHEMIN_SCRIPT, CHEMIN_SCRIPT) )
-         else:         cmd_salome.append( CMD )
+         if not debug: cmd_salome.append( '%s %s ; if [ -f "%s" ]; then \\rm %s; fi ; ' % (RUNAPPLI, CHEMIN_SCRIPT, CHEMIN_SCRIPT, CHEMIN_SCRIPT) )
+         else:         cmd_salome.append( '%s %s ' % (RUNAPPLI, CHEMIN_SCRIPT) )
 
 
       if INFO>=2: 

@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 14/03/2011   AUTEUR PROIX J-M.PROIX 
 # TITRE POUTRE DROITE APPUYEE EN SES DEUX EXTREMITES SOUMISE A UN
 # ssll102i.para = tps_job 60 mem_job 300Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -54,7 +54,7 @@ CHMAT=AFFE_MATERIAU(    MAILLAGE=MA,
 
 #
 CAREL=AFFE_CARA_ELEM(    MODELE=MO,INFO=2,
- ORIENTATION=_F( GROUP_NO = 'P1', CARA = 'GENE_TUYAU', VALE = (0., 0., -1.,),),
+ORIENTATION=_F( GROUP_NO = 'P1', CARA = 'GENE_TUYAU', VALE = (0., 0., -1.,), ),
                            POUTRE=_F(
        GROUP_MA = 'TOUT',
 
@@ -249,6 +249,122 @@ TEST_RESU(   RESU=_F( RESULTAT = MEST1B,
                     PRECISION = 0.002,
                     CRITERE = 'RELATIF')
           )
+          
+          
+          
+# test de ANGLE
+
+IY=2.70098E-05
+
+MZMAX=-13856.41
+
+R=0.1
+
+EP=0.01
+
+SIMAX=MZMAX*(R-EP/2.)/IY
+
+SITU90=CALC_ELEM(  TOUT_ORDRE='OUI',
+               OPTION=('SITU_ELNO',),
+               REPE_COQUE =_F( NUME_COUCHE=1,
+                                   NIVE_COUCHE='SUP',
+                                   ANGLE=90, ),
+               RESULTAT=MEST1B,
+               )
+
+# la maille la plus proche de L/SQRT(3)
+
+TEST_RESU(   RESU=_F( RESULTAT = SITU90,
+                    NOM_CHAM = 'SITU_ELNO',
+                    NUME_ORDRE = 1,
+                    NOM_CMP = 'SIXX',
+                    MAILLE='M12',
+                    GROUP_NO='P8',
+                    REFERENCE='ANALYTIQUE',VALE=SIMAX,
+                    PRECISION = 0.01,
+                    CRITERE = 'RELATIF')
+                    )
+
+TEST_RESU(   RESU=_F( RESULTAT = SITU90,
+                    NOM_CHAM = 'SITU_ELNO',
+                    NUME_ORDRE = 1,
+                    NOM_CMP = 'SIXX',
+                    MAILLE='M11',
+                    GROUP_NO='P8',
+                    REFERENCE='ANALYTIQUE',VALE=SIMAX,
+                    PRECISION = 0.01,
+                    CRITERE = 'RELATIF')
+                    )
+SITU89=CALC_ELEM(  TOUT_ORDRE='OUI',
+               OPTION=('SITU_ELNO',),
+               REPE_COQUE =_F( NUME_COUCHE=1,
+                                   NIVE_COUCHE='SUP',
+                                   ANGLE=89, ),
+               RESULTAT=MEST1B,
+               )
+
+
+# la maille la plus proche de L/SQRT(3)
+
+TEST_RESU(   RESU=_F( RESULTAT = SITU89,
+                    NOM_CHAM = 'SITU_ELNO',
+                    NUME_ORDRE = 1,
+                    NOM_CMP = 'SIXX',
+                    MAILLE='M12',
+                    GROUP_NO='P8',
+                    REFERENCE='ANALYTIQUE',VALE=SIMAX,
+                    PRECISION = 0.01,
+                    CRITERE = 'RELATIF')
+                    )
+
+SITU91=CALC_ELEM(  TOUT_ORDRE='OUI',
+               OPTION=('SITU_ELNO',),
+               REPE_COQUE =_F( NUME_COUCHE=1,
+                                   NIVE_COUCHE='SUP',
+                                   ANGLE=91, ),
+               RESULTAT=MEST1B,
+               )
+
+
+# la maille la plus proche de L/SQRT(3)
+
+TEST_RESU(   RESU=_F( RESULTAT = SITU91,
+                    NOM_CHAM = 'SITU_ELNO',
+                    NUME_ORDRE = 1,
+                    NOM_CMP = 'SIXX',
+                    MAILLE='M12',
+                    GROUP_NO='P8',
+                    REFERENCE='ANALYTIQUE',VALE=SIMAX,
+                    PRECISION = 0.01,
+                    CRITERE = 'RELATIF')
+                    )
+
+
+SITU0=CALC_ELEM(  TOUT_ORDRE='OUI',
+               OPTION=('SITU_ELNO',),
+               REPE_COQUE =_F( NUME_COUCHE=1,
+                                   NIVE_COUCHE='SUP',
+                                   ANGLE=360, ),
+               RESULTAT=MEST1B,
+               )
+
+
+# la maille la plus proche de L/SQRT(3)
+
+TEST_RESU(   RESU=_F( RESULTAT = SITU0,
+                    NOM_CHAM = 'SITU_ELNO',
+                    NUME_ORDRE = 1,
+                    NOM_CMP = 'SIXX',
+                    MAILLE='M12',
+                    GROUP_NO='P8',
+                    REFERENCE='ANALYTIQUE',VALE=0.,
+                    PRECISION = 0.01,
+                    CRITERE = 'ABSOLU')
+                    )
+                    
+#IMPR_RESU(RESU=_F(RESULTAT=SITU90,NOM_CHAM='SITU_ELNO'))
+
+#IMPR_RESU(RESU=_F(RESULTAT=SITU89,NOM_CHAM='SITU_ELNO'))
 
 FIN( )
 #

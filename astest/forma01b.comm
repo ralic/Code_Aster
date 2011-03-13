@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 14/03/2011   AUTEUR PROIX J-M.PROIX 
 # RESPONSABLE PROIX J-M.PROIX
 
 DEBUT(CODE=_F(NOM='FORMA01B',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
@@ -238,10 +238,16 @@ MAIL=DEFI_GROUP(reuse =MAIL,
 
 
 
-RESU2=CALC_ELEM(OPTION='SIGM_ELNO',
-                 RESULTAT=RESU2,reuse=RESU2,
+RESU4=CALC_ELEM(OPTION='SIGM_ELNO',
+                 RESULTAT=RESU2,
                  GROUP_MA='TUBEH',
                  REPE_COQUE=(_F(GROUP_MA='TUBEH',NIVE_COUCHE='MOY',VECTEUR=(0.,1.,0.)),
+                 ),)
+                 
+RESU3=CALC_ELEM(OPTION='SIGM_ELNO',
+                 RESULTAT=RESU2,
+                 GROUP_MA='TUBEH',
+                 REPE_COQUE=(_F(GROUP_MA='TUBEH',NIVE_COUCHE='MOY',ANGL_REP=(90.,0.)),
                  ),)
 
 
@@ -251,7 +257,14 @@ RESU2=CALC_ELEM(OPTION='SIGM_ELNO',
 
 Sxx=PRES*RMOY/EPTUB
 
-TEST_RESU(RESU=_F(RESULTAT=RESU2,
+TEST_RESU(RESU=_F(RESULTAT=RESU4,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='SIGM_ELNO',
+                   NOM_CMP='SIXX',TYPE_TEST='MAX',
+                   VALE=Sxx,PRECISION=0.01,
+                   REFERENCE='ANALYTIQUE'),)
+
+TEST_RESU(RESU=_F(RESULTAT=RESU3,
                    NUME_ORDRE=1,
                    NOM_CHAM='SIGM_ELNO',
                    NOM_CMP='SIXX',TYPE_TEST='MAX',
