@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF aster include  DATE 31/01/2011   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF aster include  DATE 22/03/2011   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2011  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -61,13 +61,6 @@ extern DOUBLE STDCALL(R8PI,r8pi)();
 #define ASSERT(condition)
 #endif
 
-
-
-/* opérations sur les chaines de caractères */
-#define BLANK(dest,taille) memset(dest,' ',taille)
-#define STRING_FCPY(dest,taille,src,longueur) \
-   memcpy(dest,src,min(taille,longueur));taille>longueur?memset(dest+longueur,' ',taille-longueur):0;
-#define CSTRING_FCPY(dest,taille,src) STRING_FCPY(dest,taille,src,strlen(src))
 
 #define PRINTERR if(PyErr_Occurred()){ \
             fprintf(stderr,"Warning: une exception n'a pas ete traitée\n"); \

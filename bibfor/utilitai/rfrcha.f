@@ -1,10 +1,10 @@
-      SUBROUTINE RFRCHA(IER)
+      SUBROUTINE RFRCHA()
       IMPLICIT NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 06/07/2009   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 22/03/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -38,8 +38,8 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER LVALE,LXLGUT,LG1,LG2,IDDL,INOEUD,NCH,NVERI1
-      INTEGER L,NVERI2,N1,N2,N3,IRET,IVARI
-      INTEGER IER,NM,NGM,NPOINT,NP,NN
+      INTEGER NVERI2,N1,IRET,IVARI
+      INTEGER NM,NGM,NPOINT,NP,NN
       INTEGER NGN,IBID,IE,NC,IFM,NIV,NUSP
       REAL*8 EPSI,VALR
       COMPLEX*16 VALC
@@ -47,7 +47,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*24 VALK(2)
       CHARACTER*8 K8B,CRIT,MAILLE,NOMA,INTRES
       CHARACTER*8 NOEUD,CMP,NOGMA,NOGNO,NOMGD
-      CHARACTER*16 NOMCMD,TYPCON,NOMACC,TYPCHA,NOMCHA
+      CHARACTER*16 NOMCMD,TYPCON,TYPCHA
       CHARACTER*19 NOMFON,CHAM19
 C     ------------------------------------------------------------------
       CALL JEMARQ()
@@ -86,7 +86,6 @@ C     -----------------------------------------------------------------
       IF (NCH.NE.0) THEN
         CALL DISMOI('F','TYPE_SUPERVIS',CHAM19,'CHAMP',IBID,TYPCHA,IE)
         CALL DISMOI('F','NOM_MAILLA',CHAM19,'CHAMP',IBID,NOMA,IE)
-        CALL GETTCO(CHAM19,NOMACC)
         IF (TYPCHA(1:7).EQ.'CHAM_NO') THEN
 C       ----------------------------------
           IF (NGN.NE.0) THEN
@@ -111,7 +110,7 @@ C       ----------------------------------
              CALL U2MESK('F','UTILITAI_93', 2 ,VALK)
           END IF
           CALL JEVEUO(CHAM19//'.VALE','L',LVALE)
-          CALL FOCSTE(NOMFON,NOMACC(09:12),ZR(LVALE+IDDL-1),'G')
+          CALL FOCSTE(NOMFON,CMP,ZR(LVALE+IDDL-1),'G')
           GO TO 10
         ELSE IF (TYPCHA(1:9).EQ.'CHAM_ELEM') THEN
 C     -----------------------------------
@@ -147,7 +146,7 @@ C ---  ET GROUP_NO (OU NOEUD OU POINT) DANS LE CAS D'UN CHAM_ELEM
           CALL UTCH19(CHAM19,NOMA,MAILLE,NOEUD,NPOINT,NUSP,
      &                IVARI,CMP,TYPE,VALR,VALC,IRET)
           IF (IRET.EQ.0) THEN
-            CALL FOCSTE(NOMFON,NOMACC(11:14),VALR,'G')
+            CALL FOCSTE(NOMFON,CMP,VALR,'G')
           END IF
           GO TO 10
         ELSE

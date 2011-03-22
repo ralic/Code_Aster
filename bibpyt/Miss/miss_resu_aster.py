@@ -1,4 +1,4 @@
-#@ MODIF miss_resu_aster Miss  DATE 01/03/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF miss_resu_aster Miss  DATE 22/03/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -94,6 +94,10 @@ def lire_resultat_aster(fich_aster):
         # modes statiques : rigidité
         ln += lire_nb_valeurs(fobj, struct.mode_stat_nb ** 2, struct.mode_stat_rigi, double,
                               1, 1)
+        # modes statiques : amortissements (facultatifs)
+        lbid = []
+        unused = lire_nb_valeurs(fobj, struct.mode_stat_nb ** 2, lbid, double,
+                              1, 1, regexp_label="STAT +AMOR")
         # modes couplés
         ln += 1
         lab, nbd, nbs = fobj.readline().split()
@@ -104,6 +108,10 @@ def lire_resultat_aster(fich_aster):
         # modes couplés : rigidité
         ln += lire_nb_valeurs(fobj, struct.mode_dyna_nb * struct.mode_stat_nb,
                               struct.coupl_rigi, double, 1, 1)
+        # modes statiques : amortissements (facultatifs)
+        lbid = []
+        unused = lire_nb_valeurs(fobj, struct.mode_dyna_nb * struct.mode_stat_nb,
+                                 lbid, double, 1, 1, regexp_label="COUPL +AMOR")
 
     except IOError, err:
         raise aster.error('MISS0_7', vali=ln, valk=str(err))  

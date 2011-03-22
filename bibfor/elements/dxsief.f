@@ -4,7 +4,7 @@
       REAL*8          XYZL(3,4), DEPL(*), PGL(3,3), SIGMA(*)
       CHARACTER*16    NOMTE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 03/01/2011   AUTEUR DESROCHES X.DESROCHES 
+C MODIF ELEMENTS  DATE 22/03/2011   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -48,23 +48,24 @@ CCC      PARAMETER (NNO=3)  POUR LES DKT
 CCC      PARAMETER (NNO=4)  POUR LES DKQ
       INTEGER    NNO
       PARAMETER (NNO=4)
+      INTEGER    NBDEPG
+      PARAMETER (NBDEPG=6*NNO)
+      INTEGER    NBEPSG
+      PARAMETER (NBEPSG=8)
 C
 C --------------------------------------------------------------------
       INTEGER  NDIM,NNOEL,NNOS,NPG,IPOIDS,ICOOPG,IVF,IDFDX,IDFD2,JGANO
       INTEGER  I, J, ICACOQ, ICOU, ICPG, IGAUH, INO, IPG, IRET,
-     &         IBID, NBCON, NBCOU, NPGH, JNBSPI, ITAB(8), JTREF, NBPAR
-      REAL*8   ROT(9), DH(9), D(4,4), REPERE(7), INST
-      REAL*8   C,S,PI,PHI,EPSL(4),R8PI
-      REAL*8   HIC, H, ZMIN,ZIC, VALPU(2), TINF, TMOY, TSUP,TREF
-      REAL*8   ZERO, DEUX, SIG, C1, C2, C3
-      REAL*8   E,SIGP(4),SIGL(3),R8DGRD,BETA,ALPH, EXCEN
-      REAL*8   EPS2D(6), KHI(3), DEPF(12), DEPM(8)
-      REAL*8   BF(3,3*NNO), BM(3,2*NNO), EPSM(3), EPSTH(4),EPSG(4)
-      REAL*8   CARAT3(21),CARAQ4(25),QSI,ETA,JACOB(5)
-      LOGICAL      TEMPNO, DKT, DKQ ,LTEATT
-      CHARACTER*2  CODRET
+     &         IBID, NBCON, NBCOU, NPGH, JNBSPI, ITAB(8)
+      REAL*8   D(4,4), REPERE(7), INST
+      REAL*8   HIC, H, ZMIN,ZIC
+      REAL*8   ZERO, DEUX, SIG, KCIS
+      REAL*8   EXCEN
+      REAL*8   EPS2D(6), DEPG(NBDEPG)
+      REAL*8   EPSG(NBEPSG), EPSTH(NBEPSG)
+      REAL*8   CARA(25),BMAT(NBEPSG,NBDEPG),JACGAU
+      LOGICAL      DKT, DKQ
       CHARACTER*4  FAMI
-      CHARACTER*8  NOMPAR(2)
 C     ------------------------------------------------------------------
 C
       FAMI = 'RIGI'
@@ -88,8 +89,10 @@ C
         CALL U2MESK('F','ELEMENTS_34',1,NOMTE)
       END IF
 C
+C     -- INITIALISATIONS
 C
-
+      CALL MATINI(NBEPSG,NBDEPG,ZERO,BMAT)
+      CALL VECINI(NBDEPG,ZERO,DEPG)
       REPERE(1) = ZERO
       REPERE(2) = ZERO
       REPERE(3) = ZERO
@@ -103,10 +106,11 @@ C     ---------------------------
       CALL JEVECH ( 'PCACOQU', 'L', ICACOQ )
       H = ZR(ICACOQ)
       EXCEN = ZR(ICACOQ+5-1)
+      KCIS  = 5.D0/6.D0
       IF ( DKT ) THEN
-         CALL GTRIA3(XYZL,CARAT3)
+         CALL GTRIA3(XYZL,CARA)
       ELSEIF ( DKQ ) THEN
-         CALL GQUAD4(XYZL,CARAQ4)
+         CALL GQUAD4(XYZL,CARA)
       END IF
 C
       CALL TECACH ( 'ONN', 'PTEMPSR', 8, ITAB, IRET )
@@ -120,11 +124,12 @@ C
 C     -- PARTITION DU DEPLACEMENT EN MEMBRANE/FLEXION :
 C     -------------------------------------------------
       DO 20, INO = 1,NNOEL
-        DEPM(1+2*(INO-1)) =  DEPL(1+6*(INO-1))
-        DEPM(2+2*(INO-1)) =  DEPL(2+6*(INO-1))
-        DEPF(1+3*(INO-1)) =  DEPL(1+2+6*(INO-1))
-        DEPF(2+3*(INO-1)) =  DEPL(3+2+6*(INO-1))
-        DEPF(3+3*(INO-1)) = -DEPL(2+2+6*(INO-1))
+        DEPG(6*(INO-1)+1) =  DEPL(6*(INO-1)+1)
+        DEPG(6*(INO-1)+2) =  DEPL(6*(INO-1)+2)
+        DEPG(6*(INO-1)+3) =  DEPL(6*(INO-1)+3)
+        DEPG(6*(INO-1)+4) =  DEPL(6*(INO-1)+5)
+        DEPG(6*(INO-1)+5) = -DEPL(6*(INO-1)+4)
+        DEPG(6*(INO-1)+6) =  0.D0
  20   CONTINUE
 
       NPGH = 3
@@ -140,21 +145,11 @@ C
 C --- BOUCLE SUR LES POINTS DE GAUSS DE LA SURFACE:
 C     ---------------------------------------------
       DO 100, IPG = 1 , NPG
-
-        QSI = ZR(ICOOPG-1+NDIM*(IPG-1)+1)
-        ETA = ZR(ICOOPG-1+NDIM*(IPG-1)+2)
-
-        IF ( DKQ ) THEN
-          CALL JQUAD4( XYZL, QSI, ETA, JACOB )
-          CALL DXQBM ( QSI, ETA, JACOB(2), BM )
-          CALL DKQBF ( QSI, ETA, JACOB(2), CARAQ4, BF )
-        ELSE
-          CALL DXTBM ( CARAT3(9), BM )
-          CALL DKTBF ( QSI, ETA, CARAT3, BF )
-        ENDIF
 C
-        CALL PMRVEC ( 'ZERO', 3, 2*NNOEL, BM, DEPM, EPSM )
-        CALL PMRVEC ( 'ZERO', 3, 3*NNOEL, BF, DEPF, KHI )
+C ----- CALCUL DE LA MATRICE DES DEFORMATIONS GENERALISEES
+C
+        CALL DXBMAT(NOMTE, CARA, XYZL, PGL, IPG, JACGAU, BMAT)
+        CALL PMRVEC('ZERO',NBEPSG,NBDEPG,BMAT,DEPG,EPSG)
 
 C ----- CALCUL DE L'ECOULEMENT PLASTIQUE SUR CHAQUE COUCHE
 C       PAR INTEGRATION EN TROIS POINTS:
@@ -177,12 +172,12 @@ C       --------------------------------
 
 C         -- CALCUL DE EPS2D
 C         ------------------
-            EPS2D(1) = EPSM(1) + ZIC*KHI(1)
-            EPS2D(2) = EPSM(2) + ZIC*KHI(2)
+            EPS2D(1) = EPSG(1) + ZIC*EPSG(4)
+            EPS2D(2) = EPSG(2) + ZIC*EPSG(5)
             EPS2D(3) = ZERO
-            EPS2D(4) = EPSM(3) + ZIC*KHI(3)
-            EPS2D(5) = ZERO
-            EPS2D(6) = ZERO
+            EPS2D(4) = EPSG(3) + ZIC*EPSG(6)
+            EPS2D(5) = EPSG(7)
+            EPS2D(6) = EPSG(8)
 
 C
 C         -- INTERPOLATION DE ALPHA EN FONCTION DE LA TEMPERATURE
@@ -193,6 +188,8 @@ C         ----------------------------------------------------
             EPSTH(2) = EPSTH(1)
             EPSTH(3) = ZERO
             EPSTH(4) = ZERO
+            EPSTH(5) = ZERO
+            EPSTH(6) = ZERO
 
 C           -- CALCUL DE LA MATRICE DE HOOKE
 C           --------------------------------
@@ -207,6 +204,11 @@ C           ---------------------------------------------------------
  132           CONTINUE
                SIGMA(ICPG+I) = SIG
  130        CONTINUE
+C           -- CONTRAINTES DE CISAILLEMENT
+C           ------------------------------
+            SIGMA(ICPG+5) = KCIS*D(4,4)*(EPS2D(5)-EPSTH(5))
+            SIGMA(ICPG+6) = KCIS*D(4,4)*(EPS2D(6)-EPSTH(6))
+C
  120      CONTINUE
  110    CONTINUE
 

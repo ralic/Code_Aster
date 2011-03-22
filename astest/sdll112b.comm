@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 21/03/2011   AUTEUR MACOCCO K.MACOCCO 
 # TITRE  CHEMINEE SOUS EXCITATION SISMIQUE MULTI-SUPPORTEE
 # sdll112b.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -556,6 +556,7 @@ SISM_MU1=COMB_SISM_MODAL(      MODE_MECA=MODE,
                                    DX = 0.),
                              _F(    NUME_CAS = 2,
                                     NOM_CAS ='DEPL EN N5 ET N9',
+                                    MODE_STAT = MODE_STA,
                                     NOEUD = ( 'N5',  'N9', ),
                                     DX = 0.0)),
 
@@ -707,6 +708,7 @@ SISM_MU2=COMB_SISM_MODAL(  MODE_MECA=MODE,
                            DX = 0.),
                        _F(  NUME_CAS = 2,
                             NOM_CAS ='DEPL EN N5 ET N9',
+                            MODE_STAT = MODE_STA,
                             NOEUD = ( 'N5',  'N9', ),
                             DX = 0.001)),
 

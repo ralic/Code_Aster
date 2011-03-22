@@ -1,6 +1,6 @@
       SUBROUTINE PJLIGR(MAIL2,NDIM,LIGRMO)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 07/03/2011   AUTEUR MEUNIER S.MEUNIER 
+C MODIF CALCULEL  DATE 18/03/2011   AUTEUR BERARD A.BERARD 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -71,6 +71,7 @@ C
       INTEGER JTYP
 
       CHARACTER*16 NOMTY
+
 C
 C ----------------------------------------------------------------------
 C
@@ -154,7 +155,7 @@ C
 C --- PAS D'EF AFFECTE SUR LA MAILLE !
 C
         IF (ITYEL2.EQ.0) THEN
-          CALL ASSERT(.FALSE.)
+          CALL U2MESS('F','CALCULEL5_31')
         ELSE
 
 

@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF CPFILE UTILITAI  DATE 02/02/2011   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF CPFILE UTILITAI  DATE 22/03/2011   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2011  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */

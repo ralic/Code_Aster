@@ -1,4 +1,4 @@
-#@ MODIF t_fonction Cata_Utils  DATE 01/03/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF t_fonction Cata_Utils  DATE 22/03/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -38,15 +38,17 @@ class ProlongementError(FonctionError):   pass
 def interp(typ_i,val,x1,x2,y1,y2,tol=1.e-6) :
   """Interpolation linéaire/logarithmique entre un couple de valeurs
   """
+  if abs(val-x1) < tol : return y1
+  if abs(val-x2) < tol : return y2
+  if typ_i[0] == 'LOG' and (x1 <= 0. or x2 <= 0.):
+      raise InterpolationError("Interpolation LOG invalide sur l'intervalle [%g, %g]." % (x1, x2))
+  if typ_i[1] == 'LOG' and (y1 <= 0. or y2 <= 0.):
+      raise InterpolationError("Interpolation LOG invalide sur les ordonnées [%g, %g]." % (y1, y2))
   if typ_i==['LIN','LIN']: return y1+(y2-y1)*(val-x1)/(x2-x1)
   if typ_i==['LIN','LOG']: return exp(log(y1)+(val-x1)*(log(y2)-log(y1))/(x2-x1))
   if typ_i==['LOG','LOG']: return exp(log(y1)+(log(val)-log(x1))*(log(y2)-log(y1))/(log(x2)-log(x1)))
   if typ_i==['LOG','LIN']: return y1+(log(val)-log(x1))*(y2-y1)/(log(x2)-log(x1))
-  if typ_i[0]=='NON'     :
-      if   abs(val-x1) < tol : return y1
-      elif abs(val-x2) < tol : return y2
-      else:
-         raise InterpolationError, "abscisse = %g, intervalle = [%g, %g]" % (val, x1, x2)
+  raise InterpolationError, "abscisse = %g, intervalle = [%g, %g]" % (val, x1, x2)
 
 
 def is_ordo(liste):
@@ -70,11 +72,11 @@ class t_fonction :
     if pk!=['INTERPOL','NOM_PARA','NOM_RESU','PROL_DROITE','PROL_GAUCHE'] :
          raise FonctionError, 'fonction : parametres incorrects'
     if para['INTERPOL'] not in [['NON','NON'],['LIN','LIN'],['LIN','LOG'],['LOG','LOG'],['LOG','LIN'],] :
-         raise FonctionError, 'fonction : parametre INTERPOL incorrect'
+         raise FonctionError, 'fonction : parametre INTERPOL incorrect : %s' % para['INTERPOL']
     if para['PROL_DROITE'] not in ['EXCLU','CONSTANT','LINEAIRE'] :
-         raise FonctionError, 'fonction : parametre PROL_DROITE incorrect'
+         raise FonctionError, 'fonction : parametre PROL_DROITE incorrect : %s' % para['PROL_DROITE']
     if para['PROL_GAUCHE'] not in ['EXCLU','CONSTANT','LINEAIRE'] :
-         raise FonctionError, 'fonction : parametre PROL_GAUCHE incorrect'
+         raise FonctionError, 'fonction : parametre PROL_GAUCHE incorrect : %s' % para['PROL_GAUCHE']
     self.vale_x    = NP.array(vale_x)
     self.vale_y    = NP.array(vale_y)
     self.para      = para
@@ -136,7 +138,7 @@ class t_fonction :
     - tolérance, par défaut 1.e-6 en relatif sur la longueur de l'intervalle
     - adjacent, pour capter les erreurs d'arrondi en cas de prolongement exclu
     """
-    i=NP.searchsorted(self.vale_x,val)
+    i=NP.searchsorted(self.vale_x, val)
     n=len(self.vale_x)
     if n == 1:
       # Utilisation abusive de la tolérance relative mais ce cas est particulier
@@ -550,13 +552,13 @@ class t_nappe :
     pk.sort()
     if pk!=['INTERPOL','NOM_PARA','NOM_PARA_FONC','NOM_RESU','PROL_DROITE','PROL_GAUCHE'] :
          raise FonctionError, 'nappe : parametres incorrects'
-    if para['INTERPOL'] not in [['NON','NON'],['LIN','LIN'],
+    if para['INTERPOL'] not in ['NON', 'LIN', 'LOG', ['NON','NON'],['LIN','LIN'],
                                 ['LIN','LOG'],['LOG','LOG'],['LOG','LIN'],] :
-         raise FonctionError, 'nappe : parametre INTERPOL incorrect'
+         raise FonctionError, 'nappe : parametre INTERPOL incorrect : %s' % para['INTERPOL']
     if para['PROL_DROITE'] not in ['EXCLU','CONSTANT','LINEAIRE'] :
-         raise FonctionError, 'nappe : parametre PROL_DROITE incorrect'
+         raise FonctionError, 'nappe : parametre PROL_DROITE incorrect : %s' % para['PROL_DROITE']
     if para['PROL_GAUCHE'] not in ['EXCLU','CONSTANT','LINEAIRE'] :
-         raise FonctionError, 'nappe : parametre PROL_GAUCHE incorrect'
+         raise FonctionError, 'nappe : parametre PROL_GAUCHE incorrect : %s' % para['PROL_GAUCHE']
     self.vale_para    = NP.array(vale_para)
     if not is_enum(l_fonc):
          raise FonctionError, 'nappe : la liste de fonctions fournie n est pas une liste'

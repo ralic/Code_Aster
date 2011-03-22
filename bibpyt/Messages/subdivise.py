@@ -1,8 +1,8 @@
-#@ MODIF subdivise Messages  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
+#@ MODIF subdivise Messages  DATE 21/03/2011   AUTEUR FLEJOU J-L.FLEJOU 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -33,8 +33,7 @@ cata_msg={
 n'est pas autorisée. Or la méthode sélectionnée est %(k1)s.
 On force SUBD_METHODE = 'AUCUNE'.
 Conseil :
-Pour ne plus avoir ce message, choisissez SUBD_METHODE = 'AUCUNE'.
-   """),
+   Pour ne plus avoir ce message, choisissez SUBD_METHODE = 'AUCUNE'."""),
 
 9: _("""La subdivisition utilise la méthode EXTRAPOLE.
 Il n'y a pas eu de détection de convergence alors que les critères sont atteints.
@@ -43,15 +42,16 @@ Aucune subdivision n'est faite. Pour information :
    Pour l'itération %(i1)d, RESI_GLOB_RELA = <%(r1)E> et doit être inférieure à <%(r2)E>
    Pour l'itération %(i1)d, RESI_GLOB_MAXI = <%(r3)E> et doit être inférieure à <%(r4)E>"""),
 
-10: _("""Le nombre maximale d'itérations autorisées ITER_GLOB_* est atteint.
-La méthode de subdivision ne peut pas faire d'extrapolation.
-La subdivision UNIFORME est déclenchée. Cela peut etre du à une oscillation de l'erreur ou à une divergence.
+10: _("""Le nombre maximal d'itérations autorisées ITER_GLOB_* est atteint.
+La méthode de subdivision ne peut pas faire d'extrapolation. La subdivision UNIFORME est déclenchée.
+Cela peut être dû à une oscillation de l'erreur ou à une divergence.
    Nombre d'intervalle             = <%(i1)d>
    Niveau de subdivision           = <%(i2)d>
    Ratio sur le premier intervalle = <%(r1)E>
    Pas de Temps actuel             = <%(r2)E>"""),
 
-11: _("""La méthode de subdivision ne peut pas faire d'extrapolation.
+11: _("""
+La méthode de subdivision ne peut pas faire d'extrapolation.
 Il n'y a pas de convergence et la méthode de subdivision trouve un nombre
 d'itération à convergence < au nombre donné sous le mot clé CONVERGENCE.
 La subdivision UNIFORME est déclanchée.
@@ -64,13 +64,13 @@ Pour information :
    La méthode calcule <%(r3)d> pour <%(r4)d>"""),
 
 12: _("""Le nombre maximal de niveau de subdivision est atteint.
-      SUBD_NIVEAU doit etre >= <%(i1)d>
-      SUBD_NIVEAU est de     = <%(i2)d>
+   SUBD_NIVEAU doit être >= <%(i1)d>
+   SUBD_NIVEAU est de     = <%(i2)d>
 Conseil :
    Augmenter SUBD_NIVEAU. Il est également possible d'ajuster SUBD_PAS_MINI pour
    imposer un incrément de temps en-dessous duquel on ne peut plus subdiviser.
    Si les 2 mots clefs SUBD_NIVEAU et SUBD_PAS_MINI sont utilisés la subdivision
-   s'arrete dès que l'un des 2 critères est vérifié."""),
+   s'arrête dès que l'un des 2 critères est vérifié."""),
 
 13: _("""Méthode de subdivision : %(k1)s"""),
 
@@ -83,9 +83,9 @@ Conseil :
    Diminuer SUBD_PAS_MINI. Il est également possible d'ajuster SUBD_NIVEAU pour
    indiquer le nombre successif de subdivision d'un pas de temps.
    Si les 2 mots clefs SUBD_NIVEAU et SUBD_PAS_MINI sont utilisés la subdivision
-   s'arrete dès que l'un des 2 critères est vérifié."""),
+   s'arrête dès que l'un des 2 critères est vérifié."""),
 
-16: _("""Méthode extrapolation, convergence prévue en %(i1)d itérations pour un maximum autorisé de %(i2)d."""),
+16: _("""Méthode EXTRAPOLE, convergence prévue en %(i1)d itérations pour un maximum autorisé de %(i2)d."""),
 
 17: _("""Itération %(i1)d, poursuite autorisée."""),
 

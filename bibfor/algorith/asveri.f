@@ -7,9 +7,9 @@
       LOGICAL           TRONC,MONOAP
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 21/03/2011   AUTEUR MACOCCO K.MACOCCO 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -55,6 +55,7 @@ C     ------------------------------------------------------------------
 C
       CALL GETRES(RESU,CONCEP,NOMCMD)
       IER = 0
+      CALL GETVTX('DEPL_MULT_APPUI','NOM_CAS',1,1,0,K8B,NS)
 C
 C     --- VERIFICATION DES CHAMPS DONNES ---
       IF ( MONOAP ) THEN
@@ -89,40 +90,44 @@ C     --- VERIFICATION DES CHAMPS DONNES ---
                   NOEU = NOMSUP(IS,ID)
                   CMP = NOMCMP(ID)
                   MONACC = NOEU//CMP
+                  IF (NS.NE.0) THEN
                   CALL RSORAC(STAT,'NOEUD_CMP',IBID,R8B,MONACC,CBID,
      &                                        R8B,K8B,IORDR,1,NBTROU)
                   IF (NBTROU.NE.1) THEN
                      IER = IER + 1
-               VALK (1) = STAT
-               VALK (2) = MONACC
-                   CALL U2MESG('E', 'ALGORITH12_14',2,VALK,0,0,0,0.D0)
+                     VALK (1) = STAT
+                     VALK (2) = MONACC
+                     CALL U2MESG('E', 'ALGORITH12_14',2,VALK,0,0,0,0.D0)
                      GOTO 16
                   ENDIF
                   MONPAR = 'DEPL_IMPO'
                   CALL RSVPAR(STAT,IORDR,'TYPE_DEFO',IB,RB,MONPAR,IRET)
                   IF (IRET.NE.100) THEN
                      IER = IER + 1
-               VALK (1) = STAT
-               VALK (2) = MONACC
-               VALK (3) = MONPAR
-                   CALL U2MESG('E', 'ALGORITH12_15',3,VALK,0,0,0,0.D0)
+                     VALK (1) = STAT
+                     VALK (2) = MONACC
+                     VALK (3) = MONPAR
+                     CALL U2MESG('E', 'ALGORITH12_15',3,VALK,0,0,0,0.D0)
                   ENDIF
  16               CONTINUE
-                  IF ( TRONC ) THEN
-                  CALL RSORAC(PSMO,'NOEUD_CMP',IBID,R8B,MONACC,CBID,
-     &                                        R8B,K8B,IORDR,1,NBTROU)
-                  IF (NBTROU.NE.1) THEN
-                     IER = IER + 1
-               VALK (1) = PSMO
-               VALK (2) = MONACC
-                   CALL U2MESG('E', 'ALGORITH12_12',2,VALK,0,0,0,0.D0)
-                     GOTO 14
                   ENDIF
-                  MONPAR = 'ACCE_DDL_IMPO'
-                  CALL RSVPAR(PSMO,IORDR,'TYPE_DEFO',IB,RB,MONPAR,IRET)
+                  IF ( TRONC ) THEN
+                     CALL RSORAC(PSMO,'NOEUD_CMP',IBID,R8B,MONACC,CBID,
+     &                                        R8B,K8B,IORDR,1,NBTROU)
+                     IF (NBTROU.NE.1) THEN
+                        IER = IER + 1
+                        VALK (1) = PSMO
+                        VALK (2) = MONACC
+                        CALL U2MESG('E', 'ALGORITH12_12',2,VALK,
+     &                                                     0,0,0,0.D0)
+                        GOTO 14
+                      ENDIF
+                      MONPAR = 'ACCE_DDL_IMPO'
+                      CALL RSVPAR(PSMO,IORDR,'TYPE_DEFO',IB,RB,
+     &                                 MONPAR,IRET)
                   IF (IRET.NE.100) THEN
                      IER = IER + 1
-               VALK (1) = PSMO
+                VALK (1) = PSMO
                VALK (2) = MONACC
                VALK (3) = MONPAR
                    CALL U2MESG('E', 'ALGORITH12_13',3,VALK,0,0,0,0.D0)
@@ -171,7 +176,7 @@ C     --- VERIFICATION DES OPTIONS DE CALCUL ---
                CALL U2MESG('E', 'ALGORITH12_21',2,VALK,0,0,0,0.D0)
             ENDIF
          ENDIF
-         IF ( .NOT.MONOAP ) THEN
+         IF (( .NOT.MONOAP ).AND.(NS.NE.0)) THEN
             CALL RSUTNC(STAT,NOMSY,0,K8B,IBID,NBTROU)
             IF (NBTROU.EQ.0) THEN
                IER = IER + 1
@@ -235,12 +240,14 @@ C        --- ON VERIFIE QUE LES SUIVANTS SONT IDENTIQUES ---
  34            CONTINUE
             ENDIF
          ELSE
+            
             DO 36 ID = 1,3
                IF (NDIR(ID).EQ.1) THEN
                   DO 38 IS = 1,NSUPP(ID)
                      NOEU = NOMSUP(IS,ID)
                      CMP = NOMCMP(ID)
                      MONACC = NOEU//CMP
+                     IF (NS.NE.0) THEN
                      CALL RSORAC(STAT,'NOEUD_CMP',IBID,R8B,MONACC,CBID,
      &                                          R8B,K8B,IORDR,1,NBTROU)
                      IF (NBTROU.EQ.1) THEN
@@ -258,6 +265,7 @@ C        --- ON VERIFIE QUE LES SUIVANTS SONT IDENTIQUES ---
                        VALK(2) = CHEXT2
                        CALL U2MESK('E','ALGORITH_35', 2 ,VALK)
                         ENDIF
+                     ENDIF
                      ENDIF
                      IF ( TRONC ) THEN
                         CALL RSORAC(PSMO,'NOEUD_CMP',IBID,R8B,MONACC,

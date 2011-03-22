@@ -1,9 +1,9 @@
-#@ MODIF B_JDC Build  DATE 07/09/2009   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF B_JDC Build  DATE 22/03/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE COURTOIS M.COURTOIS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
@@ -26,6 +26,8 @@
 """
 # Modules Python
 import sys
+
+from Noyau import N_ASSD
 
 # Modules liés à la sensibilité
 from B_SENSIBILITE_JDC import SENSIBILITE_JDC
@@ -140,6 +142,8 @@ class JDC(CODE):
      """
      d=self.get_contexte_avant(etape)
      sd= d.get(nom_sd,None)
+     if not isinstance(sd, N_ASSD.ASSD):
+         sd = None
      return sd
 
   def is_sensible(self) :

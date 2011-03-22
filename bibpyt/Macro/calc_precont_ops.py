@@ -1,4 +1,4 @@
-#@ MODIF calc_precont_ops Macro  DATE 28/02/2011   AUTEUR BARGELLI R.BARGELLINI 
+#@ MODIF calc_precont_ops Macro  DATE 21/03/2011   AUTEUR MICHEL S.MICHEL 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -371,7 +371,7 @@ def calc_precont_ops(self,reuse,MODELE,CHAM_MATER,CARA_ELEM,EXCIT,
 
   __EV1 = CALC_NO( reuse    = __EV1,
                    RESULTAT = __EV1,
-                   GROUP_MA = __GROUP_MA_A,
+                  # GROUP_MA = __GROUP_MA_A,
                    OPTION = 'FORC_NODA' )
 
   __REA = CREA_CHAMP (

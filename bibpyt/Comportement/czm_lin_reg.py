@@ -1,8 +1,8 @@
-#@ MODIF czm_lin_reg Comportement  DATE 07/12/2010   AUTEUR GENIAUT S.GENIAUT 
+#@ MODIF czm_lin_reg Comportement  DATE 21/03/2011   AUTEUR GRANET S.GRANET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -33,7 +33,7 @@ loi = LoiComportement(
    nb_vari        = 9,
    nom_vari       = ('SEUILDEP','INDIDISS','INDIENDO','PCENERDI','DISSIP','ENEL_RES','SAUT_N','SAUT_T1','SAUT_T2'),
    mc_mater       = ('RUPT_FRAG'),
-   modelisation   = ('3D','PLAN','AXIS','ELEMJOINT','2D_JOINT_HMS','AXIS_JOINT_HMS'),
+   modelisation   = ('3D','PLAN','AXIS','ELEMJOINT','PLAN_JHMS','AXIS_JHMS'),
    deformation    = ('PETIT'),
    nom_varc       = ('TEMP'),
    algo_inte         = ('ANALYTIQUE'),

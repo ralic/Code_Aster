@@ -10,10 +10,10 @@
       LOGICAL           MUAPDE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/12/2010   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 21/03/2011   AUTEUR MACOCCO K.MACOCCO 
 C TOLE CRS_1404
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -65,7 +65,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER       IBID, IDI, IER, IGR, IN, INO, INORF, IOC, IORDR,
      &              IRE1, IRE2, IRET, IS, JDGN, JGRN, JNOE, JVALE,
-     &              NBTROU, NCAS, NG, NGR, NN, NNO, NNR, NX, NY, NZ
+     &              NBTROU, NCAS, NG, NGR, NN, NNO, NNR, NX, NY, NZ,NS
       REAL*8        DX, DY, DZ, R8B, XX1, XXX, REPMO1(NBSUP*NEQ)
       COMPLEX*16    CBID
       CHARACTER*1   K1BID
@@ -86,12 +86,14 @@ C
       INORF =0
 C
       MOTFAC ='DEPL_MULT_APPUI'
-      CALL  GETFAC(MOTFAC,NCAS)
-      DO 2 IOC = 1,NCAS
-        CALL GETVTX(MOTFAC,'NOEUD_REFE',IOC,1,1,NOEREF,NNR)
-         IF (NNR.NE.0) INORF = 1
-         CALL GETVTX(MOTFAC,'NOEUD',IOC,1,0,NOEU,NN)
-         IF (NN.NE.0) THEN
+      CALL GETVTX('DEPL_MULT_APPUI','NOM_CAS',1,1,0,K8B,NS)      
+      IF (NS.NE.0) THEN
+        CALL  GETFAC(MOTFAC,NCAS)
+        DO 2 IOC = 1,NCAS
+          CALL GETVTX(MOTFAC,'NOEUD_REFE',IOC,1,1,NOEREF,NNR)
+          IF (NNR.NE.0) INORF = 1
+          CALL GETVTX(MOTFAC,'NOEUD',IOC,1,0,NOEU,NN)
+          IF (NN.NE.0) THEN
             NNO = -NN
             CALL WKVECT('&&ASEFEN.NOEUD','V V K8',NNO,JNOE)
             CALL GETVTX(MOTFAC,'NOEUD',IOC,1,NNO,ZK8(JNOE),NN)
@@ -125,7 +127,9 @@ C
                ENDIF
  22         CONTINUE
             CALL JEDETR('&&ASEFEN.NOEUD')
-         ELSE
+            
+          ELSE
+          
             CALL GETVTX(MOTFAC,'GROUP_NO',IOC,1,0,K8B,NG)
             NGR = -NG
             CALL WKVECT('&&ASEFEN.GROUP_NO','V V K8',NGR,JGRN)
@@ -133,113 +137,123 @@ C
             CALL GETVR8(MOTFAC,'DX',IOC,1,1,DX,NX)
             CALL GETVR8(MOTFAC,'DY',IOC,1,1,DY,NY)
             CALL GETVR8(MOTFAC,'DZ',IOC,1,1,DZ,NZ)
+            
             DO 26 IGR = 1, NGR
-               GRNOEU = ZK8(JGRN+IGR-1)
-               CALL JEEXIN(JEXNOM(OBJ1,GRNOEU),IRET)
-               IF (IRET .EQ. 0) THEN
-                  IER = IER + 1
-                   VALK(1) = GRNOEU
-                   VALK(2) = NOMA
-                   CALL U2MESK('E','SEISME_2', 2 ,VALK)
-                  GOTO 26
-               ELSE
-                  CALL JELIRA(JEXNOM(OBJ1,GRNOEU),'LONUTI',NN,K1BID)
-                  CALL JEVEUO(JEXNOM(OBJ1,GRNOEU),'L',JDGN)
-                  DO 28 INO = 1, NN
-                     CALL JENUNO(JEXNUM(OBJ2,ZI(JDGN+INO-1)),NOEU)
-                     IF (NX.NE.0) THEN
-                        DO 82 IS = 1,NSUPP(1)
-                           IF (NOMSUP(IS,1).EQ.NOEU) DEPSUP(IS,1) = DX
- 82                     CONTINUE
-                     ENDIF
-                     IF (NY.NE.0) THEN
-                        DO 84 IS = 1,NSUPP(2)
-                           IF (NOMSUP(IS,2).EQ.NOEU) DEPSUP(IS,2) = DY
- 84                     CONTINUE
-                     ENDIF
-                     IF (NZ.NE.0) THEN
-                        DO 86 IS = 1,NSUPP(3)
-                           IF (NOMSUP(IS,3).EQ.NOEU) DEPSUP(IS,3) = DZ
- 86                     CONTINUE
-                     ENDIF
- 28               CONTINUE
+              GRNOEU = ZK8(JGRN+IGR-1)
+              CALL JEEXIN(JEXNOM(OBJ1,GRNOEU),IRET)
+              IF (IRET .EQ. 0) THEN
+                IER = IER + 1
+                 VALK(1) = GRNOEU
+                 VALK(2) = NOMA
+                 CALL U2MESK('E','SEISME_2', 2 ,VALK)
+                 GOTO 26
+              ELSE
+                 CALL JELIRA(JEXNOM(OBJ1,GRNOEU),'LONUTI',NN,K1BID)
+                 CALL JEVEUO(JEXNOM(OBJ1,GRNOEU),'L',JDGN)
+                 DO 28 INO = 1, NN
+                   CALL JENUNO(JEXNUM(OBJ2,ZI(JDGN+INO-1)),NOEU)
+                   IF (NX.NE.0) THEN
+                     DO 82 IS = 1,NSUPP(1)
+                       IF (NOMSUP(IS,1).EQ.NOEU) DEPSUP(IS,1) = DX
+ 82                  CONTINUE
+                   ENDIF
+                   IF (NY.NE.0) THEN
+                     DO 84 IS = 1,NSUPP(2)
+                       IF (NOMSUP(IS,2).EQ.NOEU) DEPSUP(IS,2) = DY
+ 84                  CONTINUE
+                   ENDIF
+                   IF (NZ.NE.0) THEN
+                     DO 86 IS = 1,NSUPP(3)
+                       IF (NOMSUP(IS,3).EQ.NOEU) DEPSUP(IS,3) = DZ
+ 86                  CONTINUE
+                   ENDIF
+ 28              CONTINUE
                ENDIF
  26         CONTINUE
+ 
             CALL JEDETR('&&ASEFEN.GROUP_NO')
-         ENDIF
- 20   CONTINUE
+          
+          ENDIF
 
-      IF (INORF.NE.0) THEN
-         CALL JENONU(JEXNOM(OBJ2,NOEREF),IRE1)
-         CALL JEEXIN(JEXNOM(OBJ1,NOEREF),IRE2)
-         IF ((IRE1+IRE2).EQ.0) THEN
-            IER = IER + 1
-             VALK(1) = NOEREF
-             VALK(2) = NOMA
-             CALL U2MESK('E','SEISME_1', 2 ,VALK)
-            GOTO 9999
-         ENDIF
-         IF (IRE2.NE.0) THEN
-            CALL JEVEUO(JEXNOM(OBJ1,NOEREF),'L',JDGN)
-            CALL JENUNO(JEXNUM(OBJ2,ZI(JDGN)),NOEREF)
-         ENDIF
-         DO 90 IDI = 1,3
-            IF (NDIR(IDI).EQ.1) THEN
-               DO 92 IS = 1,NSUPP(IDI)
-                  IF (NOMSUP(IS,IDI).EQ.NOEREF) THEN
-                      DO 94 IN = 1,NSUPP(IDI)
-                        DEPSUP(IN,IDI) = DEPSUP(IN,IDI) - DEPSUP(IS,IDI)
- 94                   CONTINUE
-                      GOTO 90
-                  ENDIF
- 92            CONTINUE
-               IER = IER + 1
-               CALL U2MESK('E','SEISME_3',1,NOEREF)
-               GOTO 9999
+          IF (INORF.NE.0) THEN
+            CALL JENONU(JEXNOM(OBJ2,NOEREF),IRE1)
+            CALL JEEXIN(JEXNOM(OBJ1,NOEREF),IRE2)
+            IF ((IRE1+IRE2).EQ.0) THEN
+              IER = IER + 1
+              VALK(1) = NOEREF
+              VALK(2) = NOMA
+              CALL U2MESK('E','SEISME_1', 2 ,VALK)
+              GOTO 9999
             ENDIF
- 90      CONTINUE
-      ENDIF
+            IF (IRE2.NE.0) THEN
+              CALL JEVEUO(JEXNOM(OBJ1,NOEREF),'L',JDGN)
+              CALL JENUNO(JEXNUM(OBJ2,ZI(JDGN)),NOEREF)
+            ENDIF
+            DO 90 IDI = 1,3
+              IF (NDIR(IDI).EQ.1) THEN
+                DO 92 IS = 1,NSUPP(IDI)
+                  IF (NOMSUP(IS,IDI).EQ.NOEREF) THEN
+                    DO 94 IN = 1,NSUPP(IDI)
+                      DEPSUP(IN,IDI) = DEPSUP(IN,IDI) - DEPSUP(IS,IDI)
+ 94                 CONTINUE
+                    GOTO 90
+                  ENDIF
+ 92             CONTINUE
+                IER = IER + 1
+                CALL U2MESK('E','SEISME_3',1,NOEREF)
+                GOTO 9999
+              ENDIF
+ 90         CONTINUE
+          ENDIF
 C
- 2    CONTINUE
+ 2      CONTINUE
+      ELSE
+        DO 116 IS = 1,NSUPP(ID)
+          DEPSUP(IS,ID) = 0.D0
+ 116    CONTINUE
+      ENDIF
 C
       CMP = NOMCMP(ID)
       DO 11 IS=1,NBSUP
         DO 12 IN = 1,NEQ
-           REPMO1(IN + (IS-1)*NEQ) = 0.D0
+          REPMO1(IN + (IS-1)*NEQ) = 0.D0
   12    CONTINUE
   11  CONTINUE
       DO 110 IS = 1,NSUPP(ID)
-         NOEU   = NOMSUP(IS,ID)
-         MONACC = NOEU//CMP
-         XX1    = DEPSUP(IS,ID)
-         CALL RSORAC(STAT,'NOEUD_CMP',IBID,R8B,MONACC,CBID,R8B,K8B,
-     &                                                IORDR,1,NBTROU)
-         CALL RSEXCH(STAT,NOMSY,IORDR,CHEXTR,IRET)
-         CALL JEEXIN(CHEXTR//'.VALE',IBID)
-         IF (IBID.GT.0) THEN
+        NOEU   = NOMSUP(IS,ID)
+        MONACC = NOEU//CMP
+        XX1    = DEPSUP(IS,ID)
+        IF (NS.NE.0) THEN
+          CALL RSORAC(STAT,'NOEUD_CMP',IBID,R8B,MONACC,CBID,R8B,K8B,
+     &                                               IORDR,1,NBTROU)
+          CALL RSEXCH(STAT,NOMSY,IORDR,CHEXTR,IRET)
+          CALL JEEXIN(CHEXTR//'.VALE',IBID)
+          IF (IBID.GT.0) THEN
             CALL JEVEUO(CHEXTR//'.VALE','L',JVALE)
-         ELSE
-           CALL JEVEUO(CHEXTR//'.CELV','L',JVALE)
-         END IF
-         IF ( MUAPDE ) THEN
+          ELSE
+            CALL JEVEUO(CHEXTR//'.CELV','L',JVALE)
+          END IF
+        
+          IF ( MUAPDE ) THEN
             IOC = NBDIS(IS)
             DO 112 IN = 1,NEQ
-               XXX = ZR(JVALE+IN-1) * XX1
-               REPMO1(IN+(IOC-1)*NEQ) = REPMO1(IN+(IOC-1)*NEQ) + XXX
+              XXX = ZR(JVALE+IN-1) * XX1
+              REPMO1(IN+(IOC-1)*NEQ) = REPMO1(IN+(IOC-1)*NEQ) + XXX
  112        CONTINUE
-         ELSE
+          ELSE
             DO 114 IN = 1,NEQ
-               XXX = ZR(JVALE+IN-1) * XX1
-               RECMOD(1,IN,ID) = RECMOD(1,IN,ID) + XXX*XXX
+              XXX = ZR(JVALE+IN-1) * XX1
+              RECMOD(1,IN,ID) = RECMOD(1,IN,ID) + XXX*XXX
  114        CONTINUE
-         ENDIF
+          ENDIF
+        ENDIF
  110  CONTINUE
       IF ( MUAPDE ) THEN
         DO 111 IOC = 1,NINTRA
-            DO 113 IN = 1,NEQ
-               XXX =  REPMO1(IN+(IOC-1)*NEQ)
-               RECMOD(IOC,IN,ID) = RECMOD(IOC,IN,ID) + XXX*XXX
- 113        CONTINUE
+          DO 113 IN = 1,NEQ
+            XXX =  REPMO1(IN+(IOC-1)*NEQ)
+            RECMOD(IOC,IN,ID) = RECMOD(IOC,IN,ID) + XXX*XXX
+ 113      CONTINUE
  111    CONTINUE
       ENDIF
 C

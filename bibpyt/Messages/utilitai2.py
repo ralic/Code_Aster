@@ -1,4 +1,4 @@
-#@ MODIF utilitai2 Messages  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+#@ MODIF utilitai2 Messages  DATE 22/03/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -175,31 +175,33 @@ cata_msg = {
 """),
 
 71 : _("""
- interpolation "log" et valeurs negatives sont incompatibles !
+La fonction a des valeurs négatives. Ce n'est pas compatible avec une
+interpolation "LOG".
+
+Conseil :
+    Vous pouvez forcer le type d'interpolation de la fonction produite
+    avec le mot-clé INTERPOL (ou INTERPOL_FONC quand il s'agit de nappe).
 """),
 
 72 : _("""
- parametres non croissants
+Les paramètres de la nappe ne sont pas croissants !
 """),
 
 73 : _("""
- deux fonctions differentes affectee a la meme valeur de parametre.
-"""),
-
-74 : _("""
- deux listes de valeurs differentes affectee a la meme valeur de parametre.
+On ne peut pas définir une nappe avec deux fonctions différentes pour la même
+valeur du paramètre.
 """),
 
 75 : _("""
- les listes nume_lign et liste_x doivent contenir le meme nombre de termes
+Les listes NUME_LIGN et LISTE_R/LISTE_K/LISTE_I doivent contenir le même nombre de termes.
 """),
 
 76 : _("""
- les noms des paramètres doivent etre différents
+Les noms de paramètres doivent être différents
 """),
 
 77 : _("""
- les listes d'abscisses et d'ordonnées doivent etre de memes longueurs
+ les listes d'abscisses et d'ordonnées doivent être de mêmes longueurs
 """),
 
 78 : _("""
@@ -207,7 +209,7 @@ cata_msg = {
 """),
 
 79 : _("""
- les noms de chaque parametre doivent etre differents
+ les noms de chaque paramêtre doivent être differents
 """),
 
 80 : _("""
@@ -231,13 +233,13 @@ cata_msg = {
 """),
 
 87 : _("""
-  -> Le maillage doit etre issu d'IDEAS pour garantir la cohérence entre
+  -> Le maillage doit être issu d'IDEAS pour garantir la cohérence entre
      le maillage et les résultats lus.
 
   -> Risque & Conseil :
      Vous récupérez des résultats au format IDEAS, ces résultats sont donnés
      aux noeuds par leur nom, et/ou aux mailles par leurs noms. Il faut
-     vérifier que les résultats lus ont été obtenus avec le meme maillage
+     vérifier que les résultats lus ont été obtenus avec le même maillage
      que celui lu par aster (LIRE_MAILLAGE).
 """),
 
@@ -269,7 +271,7 @@ Erreur Utilisateur :
 
 Risques & Conseils :
   Si le fichier lu est au format Ideas, et si la commande est LIRE_RESU,
-  le problème vient peut-etre d'une mauvaise utilisation (ou d'une abscence d'utilisation)
+  le problème vient peut-être d'une mauvaise utilisation (ou d'une abscence d'utilisation)
   du mot clé FORMAT_IDEAS. Il faut examiner les "entetes" des DATASET du fichier à lire.
 """),
 

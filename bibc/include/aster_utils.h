@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF aster_utils include  DATE 25/01/2011   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF aster_utils include  DATE 22/03/2011   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2011  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -20,7 +20,17 @@
 #ifndef ASTER_UTILS_H
 #define ASTER_UTILS_H
 
+STRING_SIZE FStrlen( char *, STRING_SIZE );
+
 char * MakeCStrFromFStr( char *, STRING_SIZE );
-void   FreeCStr( char * );
+char * MakeFStrFromCStr( char *, STRING_SIZE );
+void   CopyCStrToFStr( char *, char *, STRING_SIZE );
+
+char * MakeTabFStr( int, STRING_SIZE );
+void   SetTabFStr( char *, int, char *, STRING_SIZE );
+
+void   BlankStr( char *, STRING_SIZE );
+char * MakeBlankFStr( STRING_SIZE );
+void   FreeStr( char * );
 
 #endif

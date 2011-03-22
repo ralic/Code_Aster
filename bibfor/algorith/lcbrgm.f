@@ -4,9 +4,9 @@
 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 15/06/2010   AUTEUR GRANET S.GRANET 
+C MODIF ALGORITH  DATE 21/03/2011   AUTEUR GRANET S.GRANET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -69,15 +69,13 @@ C ----------------------------------------------------------------------
       REAL*8      KRON(6),SIGELL(6),W(3),WORK(9),Z(3,3)
       REAL*8      RIGMIN,FD,D,DM,E,NU,LAMBDA,DEUXMU
 
-      CHARACTER*2 CODRET(3)
-      CHARACTER*8 NOMRES(3)
-      REAL*8      VALRES(3)
+      CHARACTER*2 CODRET(2)
+      CHARACTER*8 NOMRES(2)
+      REAL*8      VALRES(2)
 
       REAL*8      DMAX
       PARAMETER  (DMAX = 0.999999D0)
       DATA  KRON/1.D0,1.D0,1.D0,0.D0,0.D0,0.D0/
-C ----------------------------------------------------------------------
-
 
 
 C ======================================================================
@@ -86,18 +84,19 @@ C ======================================================================
 
 C -- OPTION ET MODELISATION
 
+C
       RESI = OPTION(1:4).EQ.'RAPH' .OR. OPTION(1:4).EQ.'FULL'
       RIGI = OPTION(1:4).EQ.'RIGI' .OR. OPTION(1:4).EQ.'FULL'
 
       CPLAN = (TYPMOD(1).EQ.'C_PLAN  ')
       NDIMSI = 2*NDIM
 
-C -- COUPURE ISOTROPE DE LA REGULARISATION SI ENDOMMAGEMENT SATURE
+C -- COUPURE ISOTROPE DE LA REGULARISATION SI ENDOMMAGEMENT SATURE :
+C A PREVOIR UN PROJECTEUR EVENTUEL
 C
       IF (NINT(PROJ(1,1)) .EQ. 1) THEN
-        CDRETT=NINT(PROJ(1,1))
+       CDRETT=NINT(PROJ(1,1))
       ENDIF
-      
 C -- LECTURE DES CARACTERISTIQUES ELASTIQUES
 
       NOMRES(1) = 'E'
@@ -118,6 +117,9 @@ C -- DEFORMATIONS
         CALL DAXPY(NDIMSI, 1.D0, DEPS,1, EPS,1)
         CALL DAXPY(NDIMSI, 1.D0, DEPS(7),1, EPSR,1)
       END IF
+      DO 50 K = 1,NDIMSI
+          DSIDPT(K,K,1) = 0.D0
+ 50    CONTINUE
 
 
 
@@ -167,7 +169,7 @@ C ======================================================================
         D   = VIM(1)
         ETAT=NINT(VIM(2))
       END IF
-
+      
 
 C ======================================================================
 C                            MATRICE TANGENTE
@@ -175,7 +177,7 @@ C ======================================================================
 
       IF (RIGI) THEN
         CALL R8INIR(72, 0.D0, DSIDPT, 1)
-        FD = 1-D
+        FD = 1.D0-D
         DO 100 K = 1,3
           DO 110 L = 1,3
             DSIDPT(K,L,1) = FD*LAMBDA

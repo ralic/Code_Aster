@@ -1,8 +1,8 @@
-#@ MODIF calc_fonction_ops Macro  DATE 11/10/2010   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF calc_fonction_ops Macro  DATE 22/03/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -17,6 +17,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
+# RESPONSABLE COURTOIS M.COURTOIS
 
 import os
 import copy
@@ -304,7 +305,7 @@ def calc_fonction_ops(self,FFT,DERIVE,INTEGRE,LISS_ENVELOP,
       
          # construction de la nappe
          vale_para = l_amor
-         para      = { 'INTERPOL'      : ['LIN','LOG'],
+         para      = { 'INTERPOL'      : ['LIN', 'LOG'],
                        'NOM_PARA_FONC' : 'FREQ',
                        'NOM_PARA'      : 'AMOR',
                        'PROL_DROITE'   : 'EXCLU',
@@ -372,11 +373,11 @@ def calc_fonction_ops(self,FFT,DERIVE,INTEGRE,LISS_ENVELOP,
    
    if isinstance(__ex,t_fonction) or isinstance(__ex,t_fonction_c):
       para=__ex.para
-      if NOM_PARA   !=None : para['NOM_PARA']   =NOM_PARA
-      if NOM_RESU   !=None : para['NOM_RESU']   =NOM_RESU
-      if PROL_DROITE!=None : para['PROL_DROITE']=PROL_DROITE
-      if PROL_GAUCHE!=None : para['PROL_GAUCHE']=PROL_GAUCHE
-      if INTERPOL   !=None : para['INTERPOL']   =INTERPOL
+      if NOM_PARA    != None: para['NOM_PARA']    = NOM_PARA
+      if NOM_RESU    != None: para['NOM_RESU']    = NOM_RESU
+      if PROL_DROITE != None: para['PROL_DROITE'] = PROL_DROITE
+      if PROL_GAUCHE != None: para['PROL_GAUCHE'] = PROL_GAUCHE
+      if INTERPOL    != None: para['INTERPOL']    = INTERPOL
       if   isinstance(__ex,t_fonction_c): para['VALE_C'] = __ex.tabul()
       elif isinstance(__ex,t_fonction)  : para['VALE']   = __ex.tabul()
       C_out=DEFI_FONCTION(**para)
@@ -385,17 +386,20 @@ def calc_fonction_ops(self,FFT,DERIVE,INTEGRE,LISS_ENVELOP,
       for f in __ex.l_fonc :
          para=f.para
          def_fonc.append(_F(VALE       =f.tabul(),
-                            INTERPOL   =f.para['INTERPOL'],
-                            PROL_DROITE=f.para['PROL_DROITE'],
-                            PROL_GAUCHE=f.para['PROL_GAUCHE'],))
+                            INTERPOL   =INTERPOL_FONC or f.para['INTERPOL'],
+                            PROL_DROITE=PROL_DROITE_FONC or f.para['PROL_DROITE'],
+                            PROL_GAUCHE=PROL_GAUCHE_FONC or f.para['PROL_GAUCHE'],))
       para=__ex.para
-      if NOM_PARA      !=None : para['NOM_PARA']   =NOM_PARA
-      if NOM_RESU      !=None : para['NOM_RESU']   =NOM_RESU
-      if PROL_DROITE   !=None : para['PROL_DROITE']=PROL_DROITE
-      if PROL_GAUCHE   !=None : para['PROL_GAUCHE']=PROL_GAUCHE
-      if NOM_PARA_FONC !=None : para['NOM_PARA_FONC']   =INTERPOL
-      if INTERPOL_FONC !=None : para['INTERPOL']   =INTERPOL
-      C_out=DEFI_NAPPE(PARA=__ex.vale_para.tolist(),DEFI_FONCTION=def_fonc,**para)
+      if NOM_PARA      != None: para['NOM_PARA']      = NOM_PARA
+      if NOM_RESU      != None: para['NOM_RESU']      = NOM_RESU
+      if PROL_DROITE   != None: para['PROL_DROITE']   = PROL_DROITE
+      if PROL_GAUCHE   != None: para['PROL_GAUCHE']   = PROL_GAUCHE
+      if NOM_PARA_FONC != None: para['NOM_PARA_FONC'] = NOM_PARA_FONC
+      if INTERPOL      != None: para['INTERPOL']      = INTERPOL
+      print para
+      C_out=DEFI_NAPPE(PARA=__ex.vale_para.tolist(),
+                       DEFI_FONCTION=def_fonc,
+                       **para)
    if INFO > 1:
       IMPR_FONCTION(FORMAT='TABLEAU',
                     UNITE=6,

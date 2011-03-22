@@ -1,4 +1,4 @@
-#@ MODIF calculel5 Messages  DATE 08/03/2011   AUTEUR PELLET J.PELLET 
+#@ MODIF calculel5 Messages  DATE 18/03/2011   AUTEUR BERARD A.BERARD 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -161,8 +161,11 @@ Alarme utilisateur :
 
 
 
-
-
+31 : _("""
+Erreur Utilisateur dans PROJ_CHAMP (ou LIAISON_MAILLE) :
+ Votre modèle contient un type d'élément non supporté par la commande.
+ Faites une demande d'évolution.
+"""),
 
 
 

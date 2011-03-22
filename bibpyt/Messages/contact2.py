@@ -1,8 +1,8 @@
-#@ MODIF contact2 Messages  DATE 20/09/2010   AUTEUR DESOZA T.DESOZA 
+#@ MODIF contact2 Messages  DATE 22/03/2011   AUTEUR DESOZA T.DESOZA 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -54,8 +54,9 @@ Vérifiez votre AFFE_MODELE et le type de vos mailles dans la définition des surf
 """),
 
 13 : _("""
-Contact méthodes maillées. Il existe une zone de contact dans laquelle un noeud est commun aux surfaces maîtres et
-esclaves. Vérifiez la définition de vos surfaces de contact ou bien renseignez le mot-clé SANS_GROUP_NO.
+Contact méthodes maillées.
+La zone de contact numéro %(i1)i contient %(i2)i noeuds communs aux surfaces maîtres et esclaves.
+Vérifiez la définition de vos surfaces de contact ou bien renseignez un des mot-clés SANS_NOEUD/SANS_GROUP_NO/SANS_MAILLE/SANS_GROUP_MA.
 """),
 
 14 : _("""

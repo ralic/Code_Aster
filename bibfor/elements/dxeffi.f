@@ -5,9 +5,9 @@
       INTEGER             IND
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 21/07/2009   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF ELEMENTS  DATE 22/03/2011   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -48,13 +48,10 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C
       INTEGER  NDIM,NNO,NNOS,NPG,IPOIDS,ICOOPG,IVF,IDFDX,IDFD2,JGANO
-      INTEGER  NBCON, NBCOU, NPGH, K, INO, IPG, ICOU, IGAUH, ICPG,
-     &         ICACOQ, JNBSPI, JDEPL, IMATE, IADZI, IAZK24
-      REAL*8   HIC, H, ZIC, ZMIN, COEF, ZERO, DEUX, DISTN, COEHSD,
-     &         CDF, KHI(3), N(3), M(3), BF(3,9), MG(3), DH(9), DMF(9),
-     &         UF(3,3), UL(6,3), ROT(9)
-      REAL*8   QSI, ETA, CARAT3(21)
-      CHARACTER*24 NOMELE
+      INTEGER  NBCON, NBCOU, NPGH, K, IPG, ICOU, IGAUH, ICPG,
+     &         ICACOQ, JNBSPI
+      REAL*8   HIC, H, ZIC, ZMIN, COEF, ZERO, DEUX, DISTN, COEHSD
+      REAL*8   N(3), M(3), T(2)
 C     ------------------------------------------------------------------
 C
       CALL ELREF5(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,ICOOPG,
@@ -95,6 +92,7 @@ C     -------------------------------------------------
       DO 100, IPG = 1,NPG
          CALL R8INIR ( 3, ZERO, N, 1 )
          CALL R8INIR ( 3, ZERO, M, 1 )
+         CALL R8INIR ( 2, ZERO, T, 1 )
 
          DO 110, ICOU = 1,NBCOU
             DO 120, IGAUH = 1,NPGH
@@ -111,15 +109,18 @@ C     -------------------------------------------------
                   COEF = 1.D0/3.D0
                END IF
 C
-C         -- CALCUL DES EFFORTS RESULTANTS DANS L'EPAISSEUR (N ET M) :
-C         ------------------------------------------------------------
+C         -- CALCUL DES EFFORTS GENERALISES DANS L'EPAISSEUR (N, M ET T)
+C         --------------------------------------------------------------
                COEHSD = COEF*HIC/2.D0
                N(1) = N(1) + COEHSD*CONT(ICPG+1)
                N(2) = N(2) + COEHSD*CONT(ICPG+2)
                N(3) = N(3) + COEHSD*CONT(ICPG+4)
-               M(1) = M(1) + COEHSD*ZIC*CONT(ICPG+1) 
-               M(2) = M(2) + COEHSD*ZIC*CONT(ICPG+2) 
-               M(3) = M(3) + COEHSD*ZIC*CONT(ICPG+4) 
+               M(1) = M(1) + COEHSD*ZIC*CONT(ICPG+1)
+               M(2) = M(2) + COEHSD*ZIC*CONT(ICPG+2)
+               M(3) = M(3) + COEHSD*ZIC*CONT(ICPG+4)
+               T(1) = T(1) + COEHSD*CONT(ICPG+5)
+               T(2) = T(2) + COEHSD*CONT(ICPG+6)
+               
  120        CONTINUE
  110     CONTINUE
 C
@@ -127,6 +128,10 @@ C
                EFFINT((IPG-1)*IND+K)   = N(K)
                EFFINT((IPG-1)*IND+K+3) = M(K)
  140        CONTINUE
+            IF (IND.GT.6) THEN
+               EFFINT((IPG-1)*IND+7) = T(1)
+               EFFINT((IPG-1)*IND+8) = T(2)
+            ENDIF
 C
  100  CONTINUE
 C

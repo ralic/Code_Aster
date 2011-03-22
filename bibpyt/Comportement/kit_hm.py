@@ -1,8 +1,8 @@
-#@ MODIF kit_hm Comportement  DATE 07/12/2010   AUTEUR GENIAUT S.GENIAUT 
+#@ MODIF kit_hm Comportement  DATE 21/03/2011   AUTEUR GRANET S.GRANET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -45,7 +45,7 @@ loi = LoiComportement(
    nb_vari        = 0,
    nom_vari       = None, # depend des modeles de comportement 
    mc_mater       = None,
-   modelisation   = ('D_PLAN_HM' 'D_PLAN_HMS' 'D_PLAN_HMD' 'AXIS_HM' 'AXIS_HMS' 'AXIS_HMD' '3D_HM' '3D_HMS' '3D_HMD' '2D_JOINT_HMS' 'AXIS_JOINT_HMS'),
+   modelisation   = ('D_PLAN_HM' 'D_PLAN_HMS' 'D_PLAN_HMD' 'AXIS_HM' 'AXIS_HMS' 'AXIS_HMD' '3D_HM' '3D_HMS' '3D_HMD' 'PLAN_JHMS' 'AXIS_JHMS'),
    deformation    = ('PETIT', 'PETIT_REAC', 'GROT_GDEP'),
    nom_varc       = None,
    algo_inte         = ('SANS_OBJET'),

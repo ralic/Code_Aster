@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF dll_yacs supervis  DATE 02/02/2011   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF dll_yacs supervis  DATE 22/03/2011   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2011  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -50,7 +50,7 @@ void load_yacs_lib()
      */
     char *error;
     void *yacs_handle;
-    char *valk, *valk_i;
+    char *valk;
     int iret=0;
     INTEGER n0=0, nk=0, ibid=0;
     DOUBLE rbid=0.;
@@ -63,12 +63,11 @@ void load_yacs_lib()
     if ( ! yacs_handle ) {
         printf("\n%s\n", dlerror());
         nk = 2;
-        valk = (char *)malloc(nk*VALK_SIZE*sizeof(char));
-        STRING_FCPY(valk,   VALK_SIZE, "YACS/Calcium", strlen("YACS/Calcium"));
-        valk_i = &valk[VALK_SIZE];
-        STRING_FCPY(valk_i, VALK_SIZE, LIB_YACS,       strlen(LIB_YACS));
+        valk = MakeTabFStr(nk, VALK_SIZE);
+        SetTabFStr(valk, 0, "YACS/Calcium", VALK_SIZE);
+        SetTabFStr(valk, 1, LIB_YACS, VALK_SIZE);
         CALL_U2MESG("F", "FERMETUR_13", &nk, valk, &n0, &ibid, &n0, &rbid);
-        free(valk);  // uncallable
+        FreeStr(valk);  // uncallable
     }
 
     iret = 0;
@@ -233,14 +232,12 @@ void load_yacs_lib()
         error = dlerror();
         printf("\n%s\n", error);
         nk = 3;
-        valk = (char *)malloc(nk*VALK_SIZE*sizeof(char));
-        STRING_FCPY(valk,   VALK_SIZE, "YACS/Calcium", strlen("YACS/Calcium"));
-        valk_i = &valk[VALK_SIZE];
-        STRING_FCPY(valk_i, VALK_SIZE, LIB_YACS,       strlen(LIB_YACS));
-        valk_i = &valk[VALK_SIZE*2];
-        STRING_FCPY(valk_i, VALK_SIZE, symbol,         strlen(symbol));
+        valk = MakeTabFStr(nk, VALK_SIZE);
+        SetTabFStr(valk, 0, "YACS/Calcium", VALK_SIZE);
+        SetTabFStr(valk, 1, LIB_YACS, VALK_SIZE);
+        SetTabFStr(valk, 2, symbol, VALK_SIZE);
         CALL_U2MESG("F", "FERMETUR_14", &nk, valk, &n0, &ibid, &n0, &rbid);
-        free(valk);  // unreachable
+        FreeStr(valk);  // unreachable
     }
 }
 #endif
@@ -280,8 +277,8 @@ void DEFPPPPSPSP(CPECH,cpech,
     nompal = MakeCStrFromFStr(fnompal, lnompal);
     CALL_P_PPPPSPSP(*f_cpech, icompo, cpiter, tf, numpas,
                               nomvar, idim, nompal, info );
-    FreeCStr(nomvar);
-    FreeCStr(nompal);
+    FreeStr(nomvar);
+    FreeStr(nompal);
 #endif
 }
 
@@ -313,7 +310,7 @@ void DEFPPPPSPPP(CPEDB,cpedb,
     nomvar = MakeCStrFromFStr(fnomvar, lnomvar);
     CALL_P_PPPPSPPP(*f_cpedb, icompo, cpiter, tf, numpas,
                               nomvar, idim, paramr, info );
-    FreeCStr(nomvar);
+    FreeStr(nomvar);
 #endif
 }
 
@@ -345,7 +342,7 @@ void DEFPPPPSPPP(CPEEN,cpeen,
     nomvar = MakeCStrFromFStr(fnomvar, lnomvar);
     CALL_P_PPPPSPPP(*f_cpeen, icompo, cpiter, tf, numpas,
                               nomvar, idim, parami, info );
-    FreeCStr(nomvar);
+    FreeStr(nomvar);
 #endif
 }
 
@@ -379,8 +376,8 @@ void DEFPPPPPSPPSP(CPLCH,cplch,
     nompal = MakeCStrFromFStr(fnompal, lnompal);
     CALL_P_PPPPPSPPSP(*f_cplch, icompo, cpiter, ti, tf, numpas,
                                nomvar, idim, taille, nompal, info );
-    FreeCStr(nomvar);
-    FreeCStr(nompal);
+    FreeStr(nomvar);
+    FreeStr(nompal);
 #endif
 }
 
@@ -412,7 +409,7 @@ void DEFPPPPPSPPPP(CPLDB,cpldb,
     nomvar = MakeCStrFromFStr(fnomvar, lnomvar);
     CALL_P_PPPPPSPPPP(*f_cpldb, icompo, cpiter, ti, tf, numpas,
                                nomvar, idim, taille, paramr, info );
-    FreeCStr(nomvar);
+    FreeStr(nomvar);
 #endif
 }
 
@@ -444,7 +441,7 @@ void DEFPPPPPSPPPP(CPLEN,cplen,
     nomvar = MakeCStrFromFStr(fnomvar, lnomvar);
     CALL_P_PPPPPSPPPP(*f_cplen, icompo, cpiter, ti, tf, numpas,
                                nomvar, idim, taille, parami, info );
-    FreeCStr(nomvar);
+    FreeStr(nomvar);
 #endif
 }
 

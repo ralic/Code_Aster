@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF dll_umat supervis  DATE 02/02/2011   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF dll_umat supervis  DATE 22/03/2011   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2011  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -24,6 +24,7 @@
 
 #include "aster.h"
 #include "aster_fort.h"
+#include "aster_utils.h"
 #include "definition_pt.h"
 
 #include "dll_register.h"
@@ -49,7 +50,7 @@ void load_umat_lib(const char* libname, const char* symbol)
      */
     void *umat_handle;
     char *error;
-    char symbol_[18], *valk, *valk_i;
+    char symbol_[18], *valk;
     INTEGER ibid=0, n0=0, nk=0;
     DOUBLE rbid=0.;
     void DEFUMAT(*f_umat,
@@ -72,12 +73,11 @@ void load_umat_lib(const char* libname, const char* symbol)
     if ( ! umat_handle ) {
         printf("\n%s\n", dlerror());
         nk = 2;
-        valk = (char *)malloc(nk*VALK_SIZE*sizeof(char));
-        STRING_FCPY(valk,   VALK_SIZE, "UMAT",  strlen("UMAT"));
-        valk_i = &valk[VALK_SIZE];
-        STRING_FCPY(valk_i, VALK_SIZE, libname, strlen(libname));
+        valk = MakeTabFStr(nk, VALK_SIZE);
+        SetTabFStr(valk, 0, "UMAT", VALK_SIZE);
+        SetTabFStr(valk, 1, (char *)libname, VALK_SIZE);
         CALL_U2MESG("F", "FERMETUR_13", &nk, valk, &n0, &ibid, &n0, &rbid);
-        free(valk);  // uncallable
+        FreeStr(valk);  // uncallable
     }
     printf("searching symbol '%s'... ", symbol);
     dlerror();    /* Clear any existing error */
@@ -93,14 +93,12 @@ void load_umat_lib(const char* libname, const char* symbol)
     if ((error = dlerror()) != NULL)  {
         printf("\n%s\n", error);
         nk = 3;
-        valk = (char *)malloc(nk*VALK_SIZE*sizeof(char));
-        STRING_FCPY(valk,   VALK_SIZE, "UMAT",  strlen("UMAT"));
-        valk_i = &valk[VALK_SIZE];
-        STRING_FCPY(valk_i, VALK_SIZE, libname, strlen(libname));
-        valk_i = &valk[VALK_SIZE*2];
-        STRING_FCPY(valk_i, VALK_SIZE, symbol,         strlen(symbol));
+        valk = MakeTabFStr(nk, VALK_SIZE);
+        SetTabFStr(valk, 0, "UMAT", VALK_SIZE);
+        SetTabFStr(valk, 1, (char *)libname, VALK_SIZE);
+        SetTabFStr(valk, 2, (char *)symbol, VALK_SIZE);
         CALL_U2MESG("F", "FERMETUR_14", &nk, valk, &n0, &ibid, &n0, &rbid);
-        free(valk);  // uncallable
+        FreeStr(valk);  // uncallable
     }
     printf("found\n");
 
@@ -128,8 +126,7 @@ void DEFUMATWRAP(UMATWP, umatwp,
     /* UMAT WraPper : wrapper to the UMAT function through the function pointer
      * Load the library if necessary (at the first call).
     */
-    char libname[129], symbol[17];
-    int lon1, lon2;
+    char *libname, *symbol;
     void DEFUMAT(*f_umat,
         DOUBLE* stress, DOUBLE* statev, DOUBLE* ddsdde, DOUBLE* sse, DOUBLE* spd, DOUBLE* scd,
         DOUBLE* rpl, DOUBLE* ddsddt, DOUBLE* drplde, DOUBLE* drpldt,
@@ -143,14 +140,9 @@ void DEFUMATWRAP(UMATWP, umatwp,
     PyObject* DLL_DICT;
     DLL_DICT = get_dll_register_dict();
     
-    lon1 = (int)lnomlib;
-    lon2 = (int)lnomsub;
-    while (nomlib[lon1-1] == ' ')  lon1--;
-    while (nomsub[lon2-1] == ' ')  lon2--;
-    STRING_FCPY(libname, 128, nomlib, lon1);
-    libname[lon1] = '\0';
-    STRING_FCPY(symbol, 16, nomsub, lon2);
-    symbol[lon2] = '\0';
+    libname = MakeCStrFromFStr(nomlib, lnomlib);
+    symbol = MakeCStrFromFStr(nomsub, lnomsub);
+
         DBGVV(" libname = >%s<, len = %d\n", libname, lon1)
         DBGVV("  symbol = >%s<, len = %d\n", symbol, lon2)
     
@@ -164,6 +156,8 @@ void DEFUMATWRAP(UMATWP, umatwp,
         stran, dstran, time, dtime, temp, dtemp, predef, dpred, cmname, 
         ndi, nshr, ntens, nstatv, props, nprops, coords, drot, pnewdt, 
         celent, dfgrd0, dfgrd1, noel, npt, layer, kspt, kstep, kinc );
+    FreeStr(libname);
+    FreeStr(symbol);
 #else
     printf("Not available under Windows.\n");
     abort();

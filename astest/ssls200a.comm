@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 22/03/2011   AUTEUR DESOZA T.DESOZA 
 # TITRE NON-REGRESSION THERMO-ELASTICITE POUR TOUTES COQUES SURFACIQUES
 # RESPONSABLE VABHHTS J.PELLET
 # ssls200a.para = tps_job 60 mem_job 250Mo ncpus 1 liste_test R
@@ -208,9 +208,10 @@ TEST_RESU(RESU=(_F(RESULTAT=MESTAT,
                    NUME_ORDRE=1,
                    NOM_CHAM='SIEF_ELGA',
                    TYPE_TEST='SOMM_ABS',
-                   VALE=1021729.28593,
+                   VALE=1031856.9210976,
                    PRECISION=1e-10,
-                   REFERENCE='NON_REGRESSION',),
+                   REFERENCE='NON_REGRESSION',
+                   VERSION='10.3.18',),
                 _F(RESULTAT=MESTAT,
                    NUME_ORDRE=1,
                    NOM_CHAM='SIGM_ELNO',

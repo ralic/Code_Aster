@@ -6,7 +6,7 @@
      &                  VEELEM)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 21/03/2011   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -212,15 +212,11 @@ C
      &              IBID             ,FREQR ,K24BID) 
         CALL NMECSD('POST_TRAITEMENT',SDPOST,'SOLU_NUME_VIBR',
      &              NUMORD           ,R8BID ,K24BID)
-        CALL NMECSD('POST_TRAITEMENT',SDPOST,'SOLU_MODE_VIBR',
-     &              IBID             ,R8BID ,VECMOD)
       ELSEIF ( MOD45 .EQ. 'FLAM' ) THEN  
         CALL NMECSD('POST_TRAITEMENT',SDPOST,'SOLU_FREQ_FLAM',
      &              IBID             ,FREQR ,K24BID) 
         CALL NMECSD('POST_TRAITEMENT',SDPOST,'SOLU_NUME_FLAM',
-     &              NUMORD           ,R8BID ,K24BID)
-        CALL NMECSD('POST_TRAITEMENT',SDPOST,'SOLU_MODE_FLAM',
-     &              IBID             ,R8BID ,VECMOD)      
+     &              NUMORD           ,R8BID ,K24BID)     
       ELSE
         CALL ASSERT(.FALSE.)  
       ENDIF 
