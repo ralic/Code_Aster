@@ -1,4 +1,4 @@
-#@ MODIF algeline5 Messages  DATE 11/01/2011   AUTEUR SELLENET N.SELLENET 
+#@ MODIF algeline5 Messages  DATE 29/03/2011   AUTEUR BOITEAU O.BOITEAU 
 # -*- coding: iso-8859-1 -*-
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -436,5 +436,13 @@ cata_msg={
           qui pilote la convergence (PREC_SOREN et NMAX_ITER_SOREN).
        - Avec la méthode QZ, diminuer NMAX_FREQ ou changer de variante (TYPE_QZ).
          
+"""),
+
+76 : _("""
+Solveur GCPC :
+  La création du préconditionneur 'LDLT_SP' a échoué.
+  Plus précisément : le paramètre PCENT_PIVOT choisi automatiquement par le code pour l'appel à MUMPS n'a pas été suffisant.
+
+  Conseil : changez de préconditionneur.
 """),
 }

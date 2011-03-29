@@ -3,9 +3,9 @@
      &                  A0    ,A1    ,A2    ,A3    ,ETAS  )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/03/2010   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 29/03/2011   AUTEUR KAZYMYRE K.KAZYMYRENKO 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -33,7 +33,7 @@ C ----------------------------------------------------------------------
 C
 C ROUTINE MECA_NON_LINE (PILOTAGE - PRED_ELAS)
 C
-C LOI DE COMPORTEMENT ENDO_ISOT_BETON EN NON LOCAL GRAD_VARI
+C LOI DE COMPORTEMENT ENDO_ISOT_BETON EN LOCAL GRAD_VARI
 C
 C ----------------------------------------------------------------------
 C    
@@ -63,9 +63,8 @@ C
       REAL*8      VALRES(NBRES)
 C
       LOGICAL     CPLAN
-      INTEGER     NDIMSI, K,ITER,NITMAX
+      INTEGER     NDIMSI, K,ITER,NITMAX,IFM, NIV
       REAL*8      TREPSD, COPLAN, SIGELD(6)
-      REAL*8      DMAX
       REAL*8      TR(6),VECP(3,3),RAC2
       REAL*8      FPD, DM, D,ETA,EPM(3)
       REAL*8      E, NU, LAMBDA, DEUXMU, GAMMA, SEUIL, TREPSM
@@ -83,6 +82,9 @@ C
       REAL*8      X2,Y2,Z2
       REAL*8      KRON(6)
       DATA  KRON/1.D0,1.D0,1.D0,0.D0,0.D0,0.D0/
+
+C----- GET INFO=1,2      
+      CALL INFNIV(IFM,NIV)
 C
 C ----------------------------------------------------------------------
 C
@@ -100,7 +102,7 @@ C -- OPTION ET MODELISATION
 
 C -- CAS DE L'ENDOMMAGEMENT SATURE, ON NE PILOTE PAS
       IF ((NINT(VIM(2)) .EQ. 2)) THEN
-        CALL U2MESS('I','PILOTAGE_2')
+        IF (NIV.EQ.2) CALL U2MESS('I','PILOTAGE_2')
         GOTO 666
       END IF
 
@@ -163,9 +165,14 @@ C -- LECTURE DES CARACTERISTIQUES D'ENDOMMAGEMENT
 C    ETAT MECANIQUE EN T-
 
       DM     = VIM(1)
-      DMAX   = 1.D0
-      D      = MIN(DMAX,DM+TAU)
+      D      = DM+TAU
       FPD    = (1+GAMMA) / (1+GAMMA*D)**2
+           
+C -- CAS DE L'ENDOMMAGEMENT QUI SATURERA, ON NE PILOTE PAS      
+      IF (D .GT. 1.D0) THEN
+        IF (NIV.EQ.2) CALL U2MESS('I','PILOTAGE_2')
+        GOTO 666
+      ENDIF  
 
 
 C -- CALCUL DES DEFORMATIONS EN PRESENCE DE CONTRAINTES PLANES

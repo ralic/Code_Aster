@@ -2,9 +2,9 @@
      &                                    DEPS,VIM,VIP,SIG,DSIDEP,IRET)
 C =====================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/03/2008   AUTEUR MAHFOUZ D.MAHFOUZ 
+C MODIF ALGORITH  DATE 28/03/2011   AUTEUR BOTTONI M.BOTTONI 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -63,7 +63,7 @@ C =====================================================================
      &         OPTION(1:9).EQ.'RIGI_MECA'
       CALL ASSERT ( (OPTION(1:9).EQ.'RIGI_MECA') .OR.
      &     (OPTION(1:9).EQ.'FULL_MECA') .OR.
-     &     (OPTION     .EQ.'RAPH_MECA') ) 
+     &     (OPTION     .EQ.'RAPH_MECA') )
 C =====================================================================
 C --- AFFECTATION DES VARIABLES ---------------------------------------
 C =====================================================================
@@ -83,6 +83,7 @@ C =====================================================================
       SIIE=DDOT(NDT,SE,1,SE,1)
       SEQ    = SQRT  (TROIS*SIIE/DEUX)
       I1E    = TRACE (NDI,SIGE)
+
 C =====================================================================
 C --- CALCUL DES CONTRAINTES ------------------------------------------
 C =====================================================================
@@ -95,26 +96,27 @@ C =====================================================================
             DO 10 II=1,NDT
                SIG(II) = SIGE(II)
  10         CONTINUE
-            VIP(2) = 0.0D0
          ELSE
-            CALL MAJSIG ( MATERF, SE, SEQ, I1E, ALPHA, DP, SIG)
+            CALL MAJSIG ( MATERF, SE, SEQ, I1E, ALPHA, DP, PLAS, SIG)
          ENDIF
+         
 C =====================================================================
 C --- STOCKAGE DES VARIABLES INTERNES ---------------------------------
 C =====================================================================
-         VIP(1) = VIM(1) + DP
-         VIP(2) = VIM(2) + TROIS*ALPHA*DP
+         VIP(1)   = VIM(1) + DP
+         VIP(2)   = VIM(2) + TROIS*ALPHA*DP
          VIP(NVI) = PLAS
+         
 C =====================================================================
 C --- PREPARATION AU CALCUL DE LA MATRICE TANGENTE --------------------
 C =====================================================================
-         DPDENO = DPLITG( MATERF, VIP(1), PLAS )
+         DPDENO = DPLITG( MATERF,VIP(1),PLAS )
          PPLUS  = VIP(1)
       ELSE
          PLAS   = VIM(NVI)
          DP     = 0.0D0
          PPLUS  = 0.0D0
-         DPDENO = DPLITG( MATERF, PMOINS, PLAS )
+         DPDENO = DPLITG( MATERF,PMOINS,PLAS)
       ENDIF
 C =====================================================================
 C --- CALCUL DE LA MATRICE TANGENTE -----------------------------------
@@ -124,7 +126,7 @@ C =====================================================================
             CALL LCEQMA(HOOKF, DSIDEP)
          ELSE
             CALL DPMATA( MOD, MATERF, ALPHA, DP, DPDENO, PPLUS,
-     &                                           SE, SEQ, PLAS, DSIDEP)
+     &                        SE, SEQ, PLAS, DSIDEP)            
          ENDIF
       ENDIF
 C =====================================================================

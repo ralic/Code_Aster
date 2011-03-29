@@ -1,7 +1,7 @@
       SUBROUTINE NMEXTT(NOMCHA,TYPCHA)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 17/01/2011   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 28/03/2011   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -21,7 +21,7 @@ C ======================================================================
 C RESPONSABLE ABBAS M.ABBAS
 C
       IMPLICIT      NONE
-      CHARACTER*16  NOMCHA
+      CHARACTER*24  NOMCHA
       CHARACTER*4   TYPCHA
 C
 C ----------------------------------------------------------------------

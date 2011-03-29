@@ -1,7 +1,7 @@
       SUBROUTINE NMADAT(SDDISC,NUMINS,ITERAT,VALINC,FINPAS)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/02/2011   AUTEUR BARGELLI R.BARGELLINI 
+C MODIF ALGORITH  DATE 29/03/2011   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -66,7 +66,7 @@ C
       CHARACTER*19 METLIS,MODETP,DTPLUS,LISARC
       CHARACTER*8  K8B
       REAL*8       R8B,R8MAEM,DT,MIN,PASMIN,PASMAX,DIINST,DTM,PIPO
-      REAL*8       INST,R8VIDE,TOLE
+      REAL*8       INST,R8VIDE,TOLE,R8PREM,PREC
       LOGICAL      LADAP,DIADAP,UNCROK
       INTEGER      LGINI,LGTEMP,NBINI,INSPAS,JITER
       LOGICAL      COMPR8
@@ -80,9 +80,13 @@ C     ------------------------------------------------------------------
 C     INITIALISATIONS
 C     ------------------------------------------------------------------
 
-C     DETERMINATION DE LA PRECISION SUR LES INSTANTS
       CALL UTDIDT('L',SDDISC,'LIST',IBID,'PAS_MINI',PASMIN,IBID,K8B)
+      CALL UTDIDT('L',SDDISC,'LIST',IBID,'PAS_MAXI',PASMAX,IBID,K8B)
       CALL UTDIDT('L',SDDISC,'LIST',IBID,'METHODE',R8B,IBID,METLIS)
+
+C     PRECISION SUR LES INSTANTS
+C     (LIEE A CELLE DE VAL_MIN DE PAS_MINI DANS DEFI_LIST_INST.CAPY)
+      PREC = 1.D-12
 C
 C     ON NE FAIT DE L'ADAPTATION DE PAS DE TEMPS QU'EN GESTION AUTO
       IF (METLIS.NE.'AUTO') GOTO 9999
@@ -109,7 +113,7 @@ C     PROCHAIN INSTANT DE PASSAGE OBLIGATOIRE (IPO) ?
       CALL JELIRA(SDDISC//'.LIPO','LONMAX',NIPO,K8B)
       CALL JEVEUO(SDDISC//'.LIPO','L',JIPO)
       DO 10 I =1,NIPO
-        IF ( COMPR8(ZR(JIPO-1+I),'GT',INST,2.D0*PASMIN,0) ) THEN
+        IF ( COMPR8(ZR(JIPO-1+I),'GT',INST,PREC,1) ) THEN
           PIPO = ZR(JIPO-1+I)
           GOTO 20
         ENDIF  
@@ -127,7 +131,9 @@ C     ------------------------------------------------------------------
 C     CALCUL DU PAS DE TEMPS
 C     ------------------------------------------------------------------
 
-      WRITE(IFM,*)'PAS DE TEMPS POUR CHAQUE METHODE D ADAPTATION :'    
+      IF (NIV.GT.1) THEN
+        WRITE(IFM,*)'PAS DE TEMPS POUR CHAQUE METHODE D ADAPTATION :'
+      ENDIF
       DO 100 IOCC = 1,NOCC
         CALL UTDIDT('L',SDDISC,'ADAP',IOCC,'METHODE',R8B,IBID,MODETP)
 
@@ -139,10 +145,12 @@ C     ------------------------------------------------------------------
         ENDIF           
 
 C       IMPRESSION
-        IF (ZR(JDT-1+IOCC) .NE. R8VIDE() ) THEN
-          WRITE(IFM,*)'   ',MODETP,' - DT = ',ZR(JDT-1+IOCC)  
-        ELSE
-          WRITE(IFM,*)'   ',MODETP,' - DT = CRITERE NON VERIFIE'
+        IF (NIV.GT.1) THEN
+          IF (ZR(JDT-1+IOCC) .NE. R8VIDE() ) THEN
+            WRITE(IFM,*)'   ',MODETP,' - DT = ',ZR(JDT-1+IOCC)  
+          ELSE
+            WRITE(IFM,*)'   ',MODETP,' - DT = CRITERE NON VERIFIE'
+          ENDIF
         ENDIF
 
  100  CONTINUE
@@ -159,44 +167,34 @@ C     SI AUCUN CRITERE N'EST VERIFIE, ON PREND LE PAS DE TEMPS "MOINS"
  200  CONTINUE
     
       IF (.NOT.UNCROK) DT = DTM
-C!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! 
-
-
-
-C     EN TEMPS NORMAL LE CALCUL S ARRETE QUAND ON A ATTEINT LE PAS MIN 
-C     OU LE PAS MAX
-C LA ON CONTINUE AVEC CES VALEURS    
-      IF ((MODETP.EQ.'IMPLEX').OR.(MODETP.EQ.'IMPLEX2')) THEN
-        CALL UTDIDT('L',SDDISC,'LIST',IBID,'PAS_MAXI',PASMAX,IBID,K8B)
-        IF (DT.LE.PASMIN) THEN
-           DT = PASMIN
-        ENDIF
-         
-        IF (DT.GE.PASMAX) THEN
-           DT = PASMAX
-        ENDIF
-      ENDIF
-
-
-
-C!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-
-
       CALL JEDETR(DTPLUS) 
 
-C     VA T-ON DEPASSER LE PROCHAIN IPO ?
-      IF ( COMPR8(INST+DT ,'LT', PIPO , 2.D0*PASMIN , 0 ) ) THEN
-C       ON ENREGISTRE DT
-        CALL UTDIDT('E',SDDISC,'LIST',IBID,'DT-',DT,IBID,K8B)
-      ELSE
-        WRITE(IFM,*)' ON DEPASSE LE PROCHAIN INSTANT DE PASSAGE ',
-     &                                            INST+DT,'>=',PIPO
-        DT = PIPO-INST
-C       ON N'ENREGISTRE PAS DT
+C     PROJECTION SUR LES BORNES POUR IMPLEX
+C     (ATTENTION : A FAIRE AVANT L'AJUSTEMENT / PIPO)
+      IF ((MODETP.EQ.'IMPLEX').OR.(MODETP.EQ.'IMPLEX2')) THEN
+        IF (DT.LT.PASMIN) DT = PASMIN
+        IF (DT.GT.PASMAX) DT = PASMAX
       ENDIF
 
-      WRITE(IFM,*)' PAS DE TEMPS RETENU : DT =  ',DT
+C     AJUSTEMENT DE DT EN FONCTION DU PROCHAIN IPO
+      IF ( COMPR8(INST+DT ,'GT',PIPO,PREC,1) ) THEN
+C       NOUVEAU DE PAS DEPASSE LE PROCHAIN IPO : 
+C       ON FORCE A Y PASSER ET ON N'ENREGISTRE PAS DT
+        DT = PIPO-INST
+      ELSEIF ( COMPR8(INST+DT ,'GT',PIPO-PASMIN,PREC,1) ) THEN
+C       NOUVEAU DE PAS INFERIEUR A PIPO, MAIS TROP PROCHE DE PIPO :
+C       ON FORCE A Y PASSER ET ON ENREGISTRE DT
+        DT = PIPO-INST
+        CALL UTDIDT('E',SDDISC,'LIST',IBID,'DT-',DT,IBID,K8B)
+      ELSE
+C       NOUVEAU PAS DE TEMPS OK
+C       ON ENREGISTRE DT
+        CALL UTDIDT('E',SDDISC,'LIST',IBID,'DT-',DT,IBID,K8B)
+      ENDIF
+
+      IF (NIV.GT.1) THEN
+        WRITE(IFM,*)' PAS DE TEMPS RETENU : DT =  ',DT
+      ENDIF
 
 C     ------------------------------------------------------------------
 C     VERIFICATIONS ET INSERTION

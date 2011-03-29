@@ -1,8 +1,8 @@
-#@ MODIF mecanonline3 Messages  DATE 19/07/2010   AUTEUR PELLET J.PELLET 
+#@ MODIF mecanonline3 Messages  DATE 29/03/2011   AUTEUR BOITEAU O.BOITEAU 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -85,7 +85,7 @@ Contact méthode continue et pilotage sont incompatibles
 """),
 
 93 : _("""
-  -> Vous utilisez la formulation 'CONTINUE' de contact conjointement avec le solveur linéaire 'GCPC' et le renuméroteur 'RCMK'.
+  -> Vous utilisez la formulation 'CONTINUE' de contact conjointement avec le solveur linéaire '%(k1)s' et le renuméroteur 'RCMK'.
      Le renuméroteur 'RCMK' n'est actuellement pas autorisé avec la formulation 'CONTINUE'.
 
   -> Conseil :

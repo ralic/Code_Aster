@@ -4,9 +4,9 @@
       CHARACTER*(*)    NOMZ, LIMANZ(LONLIM), TYPZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 19/10/2010   AUTEUR DELMAS J.DELMAS 
+C MODIF MODELISA  DATE 28/03/2011   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -70,6 +70,12 @@ C
 C      --VERIFICATION DE L'APPARTENANCE DES GROUP_NO
 C        AUX GROUP_NO DU MAILLAGE
 C        -------------------------------------------------------
+          CALL JEEXIN(GRNOMA,IRET)
+          IF ( (LONLIM.NE.0).AND.(IRET.EQ.0) ) THEN
+            VALK(1) = TYPE
+            VALK(2) = NOMA
+            CALL U2MESK('F','MODELISA7_12', 2, VALK)
+          ENDIF
           DO 10 IGR = 1, LONLIM
               LIMANO = LIMANZ(IGR)
               CALL JENONU (JEXNOM(GRNOMA,LIMANO),IRET)
@@ -85,6 +91,12 @@ C
 C      --VERIFICATION DE L'APPARTENANCE DES NOEUDS
 C        AUX NOEUDS DU MAILLAGE
 C        -------------------------------------------------------
+            CALL JEEXIN(NOEUMA,IRET)
+            IF ( (LONLIM.NE.0).AND.(IRET.EQ.0) ) THEN
+              VALK(1) = TYPE
+              VALK(2) = NOMA
+              CALL U2MESK('F','MODELISA7_12', 2, VALK)
+            ENDIF
             DO 20 INO = 1, LONLIM
               LIMANO = LIMANZ(INO)
               CALL JENONU (JEXNOM(NOEUMA,LIMANO),IRET)
@@ -100,6 +112,12 @@ C
 C      --VERIFICATION DE L'APPARTENANCE DES GROUP_MA
 C        AUX GROUP_MA DU MAILLAGE
 C        -------------------------------------------------------
+            CALL JEEXIN(GRMAMA,IRET)
+            IF ( (LONLIM.NE.0).AND.(IRET.EQ.0) ) THEN
+              VALK(1) = TYPE
+              VALK(2) = NOMA
+              CALL U2MESK('F','MODELISA7_12', 2, VALK)
+            ENDIF
             DO 30 IGR = 1, LONLIM
               LIMANO = LIMANZ(IGR)
               CALL JENONU (JEXNOM(GRMAMA,LIMANO),IRET)
@@ -115,6 +133,12 @@ C
 C      --VERIFICATION DE L'APPARTENANCE DES MAILLES
 C        AUX MAILLES DU MAILLAGE
 C        -------------------------------------------------------
+            CALL JEEXIN(MAILMA,IRET)
+            IF ( (LONLIM.NE.0).AND.(IRET.EQ.0) ) THEN
+              VALK(1) = TYPE
+              VALK(2) = NOMA
+              CALL U2MESK('F','MODELISA7_12', 2, VALK)
+            ENDIF
             DO 40 IMA = 1, LONLIM
               LIMANO = LIMANZ(IMA)
               CALL JENONU (JEXNOM(MAILMA,LIMANO),IRET)

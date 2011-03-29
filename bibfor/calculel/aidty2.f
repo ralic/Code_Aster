@@ -1,6 +1,6 @@
       SUBROUTINE AIDTY2(IMPR)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 01/03/2011   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF CALCULEL  DATE 28/03/2011   AUTEUR PELLET J.PELLET 
 C RESPONSABLE DURAND C.DURAND
       IMPLICIT NONE
 C ======================================================================
@@ -46,16 +46,14 @@ C---------------- FIN COMMUNS NORMALISES  JEVEUX  --------------------
 C
       CALL JEMARQ()
 
-C
+C     1) IMPRESSION DES LIGNES DU TYPE :
+C        &&CALCUL/MECA_XT_FACE3   /CHAR_MECA_PRES_R
+C     ------------------------------------------------------------------
       CALL JEVEUO('&CATA.TE.OPTTE','L',IAOPTE)
       CALL JELIRA('&CATA.TE.NOMTE','NOMUTI',NBTE,KBID)
       CALL JELIRA('&CATA.OP.NOMOPT','NOMUTI',NBOP,KBID)
-C
-      CALL WKVECT('&&AIDTY2.NOP2','V V K16',NBOP ,IANOP2)
-C
 
-C     -- REMPLISSAGE DE .NOP2:
-C     ------------------------
+      CALL WKVECT('&&AIDTY2.NOP2','V V K16',NBOP ,IANOP2)
       DO 7,IOP=1,NBOP
         CALL JENUNO(JEXNUM('&CATA.OP.NOMOPT',IOP),NOOP)
         ZK16(IANOP2-1+IOP)=NOOP
@@ -75,6 +73,16 @@ C     --------------------------------
           WRITE(IMPR,*)'&&CALCUL/'//NOMTE//'/'//ZK16(IANOP2-1+IOP)
  101    CONTINUE
  10   CONTINUE
+
+
+C     2) IMPRESSION DE LIGNES PERMETTANT LE SCRIPT "USAGE_ROUTINES" :
+C        A QUELLES MODELISATIONS SERVENT LES ROUTINES TE00IJ ?
+C     ----------------------------------------------------------------
+C  PHENOMENE  MODELISATION TYPE_ELEMENT OPTION       TE00IJ
+C  MECANIQUE  D_PLAN_HMS   HM_DPQ8S     SIEQ_ELNO    330
+
+      CALL AIDTYP(IMPR)
+
 
       CALL JEDEMA()
       END

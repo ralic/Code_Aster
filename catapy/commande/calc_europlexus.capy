@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 14/03/2011   AUTEUR SFAYOLLE S.FAYOLLE 
+#& MODIF COMMANDE  DATE 29/03/2011   AUTEUR DELMAS J.DELMAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -99,8 +99,8 @@ CALC_EUROPLEXUS = MACRO(nom="CALC_EUROPLEXUS",op=calc_europlexus_ops,sd_prod=cal
                                         EXCLUS('PAS_NBRE','PAS_INST',),
                                         EXCLUS('GROUP_NO','TOUT_GROUP_NO',),
                                         EXCLUS('GROUP_MA','TOUT_GROUP_MA',), ),
-           NOM_CHAM        = SIMP(statut='f',typ='TXM',validators=NoRepeat(),max='**', defaut = ('DEPL',),
-                                  into=('DEPL','VITE','ACCE','SIEF_ELGA','EPSI_ELGA','VARI_ELGA'),),
+           NOM_CHAM        = SIMP(statut='f',typ='TXM',validators=NoRepeat(),max='**',defaut=('DEPL',),into=('DEPL'
+                                         ,'VITE','ACCE','SIEF_ELGA','EPSI_ELGA','VARI_ELGA'),),
            PAS_INST        = SIMP(statut='f',typ='R'),
            PAS_NBRE        = SIMP(statut='f',typ='I'),
            GROUP_NO        = SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**'),

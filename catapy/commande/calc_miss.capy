@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 14/03/2011   AUTEUR COURTOIS M.COURTOIS 
+#& MODIF COMMANDE  DATE 29/03/2011   AUTEUR COURTOIS M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -42,7 +42,7 @@ CALC_MISS = MACRO(nom="CALC_MISS",
                        fr="Nom de l'étude Miss"),
     REPERTOIRE  = SIMP(statut='f', typ='TXM',
                        fr="Répertoire de travail de Miss"),
-    VERSION     = SIMP(statut='f', typ='TXM', into=("V1_4","V1_5"), defaut="V1_4",
+    VERSION     = SIMP(statut='f', typ='TXM', into=("V6.6","V6.5"), defaut="V6.6",
                        fr="Version de Miss utilisée"),
 
     TABLE_SOL   = SIMP(statut='o', typ=table_sdaster,
@@ -124,19 +124,20 @@ CALC_MISS = MACRO(nom="CALC_MISS",
     # Post-traitement type 1 - harm_gene
     b_post_harm_gene  = BLOC(condition="TYPE_RESU == 'HARM_GENE'",
                        regles=(AU_MOINS_UN('EXCIT_HARMO', 'ACCE_X', 'ACCE_Y', 'ACCE_Z'),
-                               PRESENT_ABSENT('EXCIT_HARMO', 'ACCE_X', 'ACCE_Y', 'ACCE_Z'),),
+                               PRESENT_ABSENT('EXCIT_HARMO', 'ACCE_X', 'ACCE_Y', 'ACCE_Z', 'INST_FIN'),
+                               ENSEMBLE('INST_FIN', 'PAS_INST'),),
         MODELE         = SIMP(statut='o', typ=(modele_sdaster),),
         ACCE_X         = SIMP(statut='f', typ=fonction_sdaster,),
         ACCE_Y         = SIMP(statut='f', typ=fonction_sdaster,),
         ACCE_Z         = SIMP(statut='f', typ=fonction_sdaster,),
-        INST_FIN       = SIMP(statut='o', typ='R', fr="Instant final du calcul"),
-        PAS_INST       = SIMP(statut='o', typ='R', fr="Pas de temps du calcul"),
-        # identique à EXCIT de DYNA_LINE_HARM : maintenir en cohérence
+        INST_FIN       = SIMP(statut='f', typ='R', fr="Instant final du calcul"),
+        PAS_INST       = SIMP(statut='f', typ='R', fr="Pas de temps du calcul"),
+        # identique à EXCIT de DYNA_LINE_HARM au type attendu pour VECT_ASSE près
         EXCIT_HARMO    = FACT(statut='f', max='**',
                               regles=(UN_PARMI('VECT_ASSE', 'CHARGE'),
                                       UN_PARMI('FONC_MULT', 'FONC_MULT_C', 'COEF_MULT', 'COEF_MULT_C'),),
-            VECT_ASSE     = SIMP(statut='f', typ=(cham_no_sdaster,vect_asse_gene) ),
-            CHARGE        = SIMP(statut='f', typ=char_meca ),
+            VECT_ASSE     = SIMP(statut='f', typ=cham_no_sdaster,),
+            CHARGE        = SIMP(statut='f', typ=char_meca),
             TYPE_CHARGE   = SIMP(statut='f', typ='TXM', defaut="FIXE", into=("FIXE",),),
             FONC_MULT_C   = SIMP(statut='f', typ=(fonction_c, formule_c),),
             COEF_MULT_C   = SIMP(statut='f', typ='C'),

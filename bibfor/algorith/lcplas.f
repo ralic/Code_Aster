@@ -6,9 +6,9 @@
         IMPLICIT   NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 29/03/2011   AUTEUR BARGELLI R.BARGELLINI 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -82,7 +82,7 @@ C       ----------------------------------------------------------------
 
       IF     ( LOI(1:8).EQ. 'ROUSS_PR' .OR.
      1         LOI(1:10) .EQ. 'ROUSS_VISC'    ) THEN
-         CALL LCROUS (FAMI,KPG,KSP, TOLER, ITMAX, IMAT, NMAT,
+         CALL LCROUS (FAMI,KPG,KSP, TOLER, ITMAX, IMAT, NMAT,MATERD,
      1                MATERF, NVI,   DEPS, SIGD, VIND, THETA,
      2                LOI, DELTAT,  SIGF, VINF, IRTET )
          IF ( IRTET.GT.0 ) GOTO (1), IRTET

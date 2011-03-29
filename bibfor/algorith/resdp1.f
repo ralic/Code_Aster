@@ -1,9 +1,9 @@
-      SUBROUTINE RESDP1( MATERF, SEQ, I1E, PMOINS,DP, PLAS)
+      SUBROUTINE RESDP1( MATERF, SEQ, I1E, PMOINS, DP, PLAS)
 C =====================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/03/2008   AUTEUR MAHFOUZ D.MAHFOUZ 
+C MODIF ALGORITH  DATE 28/03/2011   AUTEUR BOTTONI M.BOTTONI 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -20,7 +20,7 @@ C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C =====================================================================
       IMPLICIT      NONE
-      REAL*8        MATERF(5,2),PMOINS,DP,SEQ,I1E,PLAS
+      REAL*8        MATERF(5,2),PMOINS,DP,SEQ,I1E,PLAS,PPTEST,FCRIT0
 C =====================================================================
 C --- RESOLUTION NUMERIQUE --------------------------------------------
 C =====================================================================
@@ -52,7 +52,7 @@ C =====================================================================
 C =====================================================================
 C --- CALCUL PLASTIQUE ------------------------------------------------
 C =====================================================================
-      IF ( FCRIT.GT.0.0D0 ) THEN
+      IF ( FCRIT.GT.0.0D0 ) THEN 
          PLAS = 1.0D0
          IF ( PMOINS.LT.PULT ) THEN
             A1 = TROIS * DEUXMU / DEUX + TROIS * TROISK * A * A + H
@@ -72,7 +72,7 @@ C =====================================================================
          ELSE
             B2 = TROIS * DEUXMU / DEUX + TROIS * TROISK * A * A
             IF (B2.EQ.0.0D0) THEN
-               CALL U2MESS('F','ALGORITH10_41')
+               CALL U2MESS('F','ALGORITH10_42')
             ENDIF
             DP = FCRIT / B2
          ENDIF
@@ -80,13 +80,32 @@ C =====================================================================
          PLAS   = 0.0D0
          DP = 0.0D0
       ENDIF
+      
 C =====================================================================
 C --- PROJECTION AU SOMMET --------------------------------------------
 C =====================================================================
-      VALPRO = SEQ/(TROIS*DEUXMU/DEUX)
-      IF ( DP.GT.VALPRO ) THEN
-         DP   = VALPRO
+      PPTEST = PMOINS + DP   
+      B2     = TROIS * TROISK * A * A
+      FCRIT0 = SCHDP1(0.0D0, I1E, SY, H, A, PULT, PPTEST)  
+      VALPRO = FCRIT0 / B2
+      
+      IF ( (PLAS.EQ.1).AND.(DP.LE.VALPRO) ) THEN
          PLAS = 2.0D0
+         FCRIT  = SCHDP1(0.0D0, I1E, SY, H, A, PULT, PMOINS)
+         IF ( PMOINS.LT.PULT ) THEN
+            A1 = TROIS * TROISK * A * A + H
+            IF (A1.EQ.0.0D0) THEN
+               CALL U2MESS('F','ALGORITH10_41')
+            ENDIF
+            DP     = FCRIT / A1
+            VALCOE = PULT - PMOINS            
+            IF ( DP.GT.VALCOE ) THEN
+               FCRIT  = SCHDP1(0.0D0, I1E, SY, H, A, PULT, PULT)
+               DP     = FCRIT / B2
+            ENDIF
+         ELSE
+            DP = FCRIT / B2
+         ENDIF
       ENDIF
 C =====================================================================
       END

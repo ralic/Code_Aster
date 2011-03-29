@@ -2,7 +2,7 @@
      &                  TYPE,LMD,EPSMAT,LDECHG,KTYPR)
       IMPLICIT NONE
 !           CONFIGURATION MANAGEMENT OF EDF VERSION
-!& MODIF AMUMPM MUMPS  DATE 07/02/2011   AUTEUR BOITEAU O.BOITEAU 
+!& MODIF AMUMPM MUMPS  DATE 29/03/2011   AUTEUR BOITEAU O.BOITEAU 
 ! ==================================================================
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D              WWW.CODE-ASTER.ORG
 !

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+#& MODIF COMMANDE  DATE 29/03/2011   AUTEUR DELMAS J.DELMAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,6 +22,6 @@ COMB_FOURIER=OPER(nom="COMB_FOURIER",op= 161,sd_prod=comb_fourier,
             UIinfo={"groupes":("Post-traitements",)},
          RESULTAT        =SIMP(statut='o',typ=(fourier_elas,fourier_ther),),
          ANGL            =SIMP(statut='o',typ='R',max='**'),
-         NOM_CHAM        =SIMP(statut='o',typ='TXM',validators=NoRepeat(),max=6,
-             into=("DEPL","REAC_NODA","SIEF_ELGA","EPSI_ELNO","SIGM_ELNO","TEMP","FLUX_ELNO"),),
+         NOM_CHAM        =SIMP(statut='o',typ='TXM',validators=NoRepeat(),max=6,into=("DEPL","REAC_NODA",
+                               "SIEF_ELGA","EPSI_ELNO","SIGM_ELNO","TEMP","FLUX_ELNO"),),
 ) ;

@@ -4,9 +4,9 @@
       CHARACTER*(*)     TYPE,NU,NOMNO,NOMCMP,TARDIF,LIGREL,INFOBL
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 05/07/2010   AUTEUR CORUS M.CORUS 
+C MODIF UTILITAI  DATE 29/03/2011   AUTEUR CORUS M.CORUS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -185,7 +185,14 @@ C
              CALL JEVEUO(NUME//'.REFN','L',JREFE)      
            ENDIF
            MODGEN = ZK24(JREFE)
-           CALL JENUNO(JEXNUM(MODGEN//'      .MODG.SSNO',NUSST),NOMNO)
+C-- VERIFICATION DU TYPE DE STRUCTURE (MODELE_GENE)           
+           CALL JEEXIN(MODGEN//'      .MODG.SSNO',IRET)
+           IF (IRET .GT. 0) THEN
+             CALL JENUNO(JEXNUM(MODGEN//'      .MODG.SSNO',NUSST),
+     &                   NOMNO)
+           ELSE
+             NOMNO='UNFOUND'
+           ENDIF
            NOMCMP(1:3) = 'GEN'
            WRITE(NOMCMP(4:8),'(I5)') NUCMP
            TARDIF = '         '

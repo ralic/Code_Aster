@@ -2,9 +2,9 @@
      &                  EPSPC, EPSDC, ETAMIN,ETAMAX,A0, A1,A2,A3,ETAS)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 12/04/2010   AUTEUR MICHEL S.MICHEL 
+C MODIF ALGORITH  DATE 29/03/2011   AUTEUR KAZYMYRE K.KAZYMYRENKO 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -56,10 +56,10 @@ C ----------------------------------------------------------------------
 
       LOGICAL     CPLAN,MINI,FINI,MODIF
       INTEGER     NDIMSI, K, NRAC,ITER,NITMAX
-      INTEGER     NCAS
+      INTEGER     NCAS, IFM, NIV
       REAL*8      TREPSD, COPLAN, SIGELP(6), SIGELD(6)
       REAL*8      PHIM,PHIP,PHID
-      REAL*8      CRIT,RTEMP,DMAX
+      REAL*8      CRIT,RTEMP
       REAL*8      TR(6),VECP(3,3),RAC2,CRITP
       REAL*8      FPD, DM, D, P0, P1, P2, ETA, RAC(2), IND(4),EPM(3)
       REAL*8      E, NU, LAMBDA, DEUXMU, GAMMA, SEUIL, SEUREL,TREPSM
@@ -85,7 +85,8 @@ C ----------------------------------------------------------------------
       REAL*8      KRON(6)
       DATA  KRON/1.D0,1.D0,1.D0,0.D0,0.D0,0.D0/
 
-
+C----- GET INFO=1,2
+      CALL INFNIV(IFM,NIV)
 
       NITMAX=100
       EPSTOL=1.D-6
@@ -103,6 +104,7 @@ C -- OPTION ET MODELISATION
 
 C -- CAS DE L'ENDOMMAGEMENT SATURE, on ne pilote pas
       IF ((NINT(VIM(2)) .EQ. 2)) THEN
+        IF (NIV.EQ.2) CALL U2MESS('I','PILOTAGE_2')
         GOTO 666
       END IF
 
@@ -166,10 +168,14 @@ C    ETAT MECANIQUE EN T-
 
 
       DM   = VIM(1)
-      DMAX=1.D0
-      D = MIN(DMAX,DM+TAU)
+      D = DM+TAU
       FPD = (1+GAMMA) / (1+GAMMA*D)**2
-
+      
+C -- CAS DE L'ENDOMMAGEMENT QUI SATURERA, ON NE PILOTE PAS      
+      IF (D .GT. 1.D0) THEN
+        IF (NIV.EQ.2) CALL U2MESS('I','PILOTAGE_2')
+        GOTO 666
+      ENDIF  
 
 
 

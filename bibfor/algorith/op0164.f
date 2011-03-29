@@ -3,7 +3,7 @@
 C TOLE CRP_4
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 07/02/2011   AUTEUR DEVESA G.DEVESA 
+C MODIF ALGORITH  DATE 29/03/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -43,9 +43,9 @@ C      ---- DEBUT DES COMMUNS JEVEUX ----------------------------------
       CHARACTER*32   JEXNUM
 C      ---- FIN DES COMMUNS JEVEUX ------------------------------------
 C
-      INTEGER      N1, N2, N4, IADRIF, JSCDE, ULISOP
+      INTEGER      N1, N2, N4, JSCDE, ULISOP
       REAL*8       PARTR, PARTI
-      CHARACTER*8  K8B, NOMRES, BASEMO, NUMGEN, INTERF
+      CHARACTER*8  K8B, NOMRES, BASEMO, NUMGEN
       CHARACTER*16 TYPRES,NOMCOM,TYPBAS,K16NOM,TYPBIN,TISSF,TSYM
       CHARACTER*19 RESU , STOLCI
       CHARACTER*14 NUGENE
@@ -116,7 +116,7 @@ C        WRITE(6,*) 'FREQ= ',FREQ,' IFREQ= ',IFREQ,' IC= ',IC
         DO 1 I2 = 1,NBMODE
         DO 1 I1 = 1,NBMODE
           NSAUT = NFREQ
-          IF (IC.EQ.1) NSAUT = NFREQ-1
+          IF (IC.GE.1) NSAUT = NFREQ-1
           IF (I1.EQ.1.AND.I2.EQ.1) NSAUT = IFREQ
           DO 2 I = 1, NSAUT
             READ(IFMIS,'(A72)') TEXTE

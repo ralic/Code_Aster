@@ -1,8 +1,8 @@
-#@ MODIF petsc Messages  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
+#@ MODIF petsc Messages  DATE 29/03/2011   AUTEUR BOITEAU O.BOITEAU 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -107,4 +107,20 @@ Solveur PETSc :
   Par exemple, une matrice avec des zéros sur la diagonale et l'algorithme SOR, qui utilise ces entrées pour réaliser des divisions.
 """),
 
+14 : _("""
+Solveur PETSc :
+  La création du préconditionneur a échoué ; consultez le message ci-dessus.
+  Cela peut être dû à une propriété particulière de la matrice du système non supportée par le préconditionneur choisi.
+  Par exemple, une matrice nécessitant des pivotages pour la factoriser ne peut pas utiliser le préconditionneur 'LDLT_INC'.
+  
+  Conseil : changez de préconditionneur.
+"""),
+
+15 : _("""
+Solveur PETSc :
+  La création du préconditionneur 'LDLT_SP' a échoué.
+  Plus précisément : le paramètre PCENT_PIVOT choisi automatiquement par le code pour l'appel à MUMPS n'a pas été suffisant.
+
+  Conseil : changez de préconditionneur.
+"""),
 }

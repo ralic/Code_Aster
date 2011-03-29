@@ -1,10 +1,10 @@
       SUBROUTINE NMEXTK(NOMA  ,MOTFAC,IOCC  ,CHAMP ,NOMCHA,
-     &                  TYPCHA,LISTNO,LISTMA,LISTPI,LISTSP,
-     &                  NBNO  ,NBMA  ,NBPI  ,NBSPI ,LISTCP,
-     &                  NBCMP )
+     &                  NOMCHS,TYPCHA,LISTNO,LISTMA,LISTPI,
+     &                  LISTSP,NBNO  ,NBMA  ,NBPI  ,NBSPI ,
+     &                  LISTCP,NBCMP )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 17/01/2011   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 28/03/2011   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -29,7 +29,7 @@ C
       INTEGER       IOCC
       CHARACTER*4   TYPCHA
       INTEGER       NBNO,NBMA,NBCMP
-      CHARACTER*16  NOMCHA
+      CHARACTER*24  NOMCHA,NOMCHS
       CHARACTER*19  CHAMP
       CHARACTER*24  LISTPI,LISTSP
       INTEGER       NBPI,NBSPI
@@ -84,36 +84,34 @@ C
       CHARACTER*8  K8BID
       INTEGER      N1
       INTEGER      IRET
-      INTEGER      JCMP,JNO,JMA,JPI,JSPI
-      INTEGER      INO,IMA,ICMP,IPI,ISPI
-      INTEGER      NUNO,NUDDL
+      INTEGER      JCMP,JNO,JMA,JPI,JSPI,IAD
+      INTEGER      INO,IMA,ICMP,IPI,ISPI,IPAR,I
+      INTEGER      NBCMPX,NUNO,NUDDL
       INTEGER      NMAPT,NMASPT,NPI,NSPI
       INTEGER      NUMNOE,NUMMAI,NUM,SNUM
       CHARACTER*8  NOMNOE,NOMMAI,NOMCMP
       CHARACTER*8  NOMVAR
       INTEGER      IVARI
       CHARACTER*16 VALK(2)
-      CHARACTER*19 CHELES
-      INTEGER      JCESD
+      INTEGER      JCESD,JCESL,JCESV,JCESC
       INTEGER      VALI(4)
-      REAL*8       R8BID
-      COMPLEX*16   C16BID
 C
 C ----------------------------------------------------------------------
 C
       CALL JEMARQ()
 C
 C --- INITIALISATIONS
-C      
-      CHELES = '&&NMEXTP.CHEL.TRAV' 
+C       
       NBCMP  = 0
 C
-C --- CONVERSION EN CHAM_ELEM_S
+C --- RECUP DU CHAM_ELEM_S
 C
       IF (TYPCHA.EQ.'ELGA') THEN
-        CALL SDMPIC('CHAM_ELEM',CHAMP )
-        CALL CELCES(CHAMP ,'V',CHELES)
-        CALL JEVEUO(CHELES(1:19)//'.CESD','L',JCESD)
+        CALL JEVEUO(NOMCHS(1:19)//'.CESD','L',JCESD)
+        CALL JEVEUO(NOMCHS(1:19)//'.CESL','L',JCESL)
+        CALL JEVEUO(NOMCHS(1:19)//'.CESV','L',JCESV) 
+        CALL JEVEUO(NOMCHS(1:19)//'.CESC','L',JCESC)
+        NBCMPX = ZI(JCESD+4)      
       ENDIF  
 C     
 C --- LECTURE DES COMPOSANTES : IL FAUT AU MOINS UNE COMPOSANTE MAIS
@@ -128,9 +126,9 @@ C
         CALL U2MESI('F','EXTRACTION_12',2,VALI)
       ENDIF
 C
-C --- LECTURE EFFECTIVE
+C --- LECTURE EFFECTIVE DES NOMS DE COMPOSANTES
 C
-      CALL WKVECT(LISTCP,'V V K8',NBCMP ,JCMP  )    
+      CALL WKVECT(LISTCP,'V V K8',NBCMP ,JCMP  )
       CALL GETVTX(MOTFAC,'NOM_CMP',IOCC,1,NBCMP,ZK8(JCMP),IRET)
 C
 C --- VERIFICATION QUE LES NOEUDS SUPPORTENT LES COMPOSANTES FOURNIES
@@ -166,8 +164,8 @@ C
 C
 C ------- NOMBRE EFFECTIF DE POINTS/SOUS-POINTS SUR LA MAILLE
 C
-          NMAPT  = ZI(JCESD+5+4*(IMA-1))
-          NMASPT = ZI(JCESD+5+4*(IMA-1)+1)
+          NMAPT  = ZI(JCESD+5+4*(NUMMAI-1))
+          NMASPT = ZI(JCESD+5+4*(NUMMAI-1)+1)
 C
 C ------- PLAFONNEMENT
 C
@@ -176,24 +174,30 @@ C
           IF (NPI.GT.NMAPT)   NPI  = NMAPT
           IF (NSPI.GT.NMASPT) NSPI = NMASPT
 C
-          DO 31 ICMP = 1,NBCMP
-            NOMCMP = ZK8(JCMP-1+ICMP)
+          DO 31 IPAR = 1,NBCMP
+            NOMCMP = ZK8(JCMP-1+IPAR)
             IF (NOMCHA(1:4).EQ.'VARI') THEN
               NOMVAR = NOMCMP(2:8)//' '
               CALL LXLIIS(NOMVAR,IVARI ,IRET )
             ELSE 
               IVARI  = 0
             ENDIF  
+            NBCMPX=ZI(JCESD+4)
+            IF (NOMCHA(1:4).EQ.'VARI') THEN
+              ICMP   = IVARI
+            ELSE
+              DO 32 I=1,NBCMPX
+                IF (NOMCMP.EQ.ZK8(JCESC-1+I)) ICMP=I  
+ 32            CONTINUE
+            ENDIF
             DO 45 IPI = 1,NPI
               NUM     = ZI(JPI-1+IPI )
               CALL ASSERT(NUM.NE.0)
               DO 46 ISPI = 1,NSPI
                 SNUM   = ZI(JSPI-1+ISPI ) 
                 CALL ASSERT(SNUM.NE.0)
-                CALL UTCH19(CHAMP ,NOMA  ,NOMMAI,' '   ,NUM   ,
-     &                      SNUM  ,IVARI ,NOMCMP,'R'   ,R8BID ,
-     &                      C16BID,IRET  )
-                IF (IRET.EQ.1) THEN
+                CALL CESEXI('C',JCESD,JCESL,NUMMAI,NUM,SNUM,ICMP,IAD)
+                IF (IAD.EQ.0) THEN
                   VALK(1) = NOMMAI
                   VALK(2) = NOMCMP
                   VALI(1) = NUM
@@ -209,8 +213,7 @@ C
       ELSE
         CALL ASSERT(.FALSE.)
       ENDIF
-C      
-      CALL JEDETR(CHELES)
+C
       CALL JEDEMA()
 C
       END

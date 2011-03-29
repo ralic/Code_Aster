@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 28/02/2011   AUTEUR BARGELLI R.BARGELLINI 
+#& MODIF COMMANDE  DATE 29/03/2011   AUTEUR GENIAUT S.GENIAUT 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -56,11 +56,11 @@ DEFI_LIST_INST=OPER(nom="DEFI_LIST_INST",op=  28,sd_prod=list_inst,reentrant='n'
            LIST_INST       =SIMP(statut='o',typ=listr8_sdaster),
                                   ),
 
-         b_auto              =BLOC(condition = "(METHODE == 'AUTO') ",fr="a compléter",
+         b_auto              =BLOC(condition = "(METHODE == 'AUTO') ",fr="Gestion automatique de la liste d'instants",
            LIST_INST       =SIMP(statut='o',typ=listr8_sdaster),
-           PAS_MINI    =SIMP(statut='f',typ='R',val_min=0.0,max=1),
+           PAS_MINI    =SIMP(statut='f',typ='R',val_min=1.e-12,max=1),
            PAS_MAXI    =SIMP(statut='f',typ='R',max=1),
-           NB_PAS_MAXI =SIMP(statut='f',typ='I',max=1),
+           NB_PAS_MAXI =SIMP(statut='f',typ='I',val_max=1000000,max=1,defaut=1000000),
                                   ),
 
                       ),

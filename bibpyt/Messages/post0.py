@@ -1,8 +1,8 @@
-#@ MODIF post0 Messages  DATE 13/07/2010   AUTEUR MAHFOUZ D.MAHFOUZ 
+#@ MODIF post0 Messages  DATE 29/03/2011   AUTEUR MACOCCO K.MACOCCO 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -150,7 +150,27 @@ Attention : donner un maillage 2D en entrée
 Attention : le type de champ en entrée ne fait pas partie des champs que la macro peut traiter
 """),
 
-36 : _(""" Erreur: liste d'instance définie dans la commande POSTGP ne fait pas partie des instances calculées
+36 : _(""" 
+L'instant où le "Kj critique" OU "Gp critique" est atteint a été obtenu par interpolation linéaire 
+entre les instants %(r1)s et %(r2)s ; ce type de grandeur étant non linéaire, le résultat est d'autant plus 
+imprécis que l'intervalle d'interpolation est grand. 
+
+Conseil : raffinez votre discrétisation en temps pour votre post_traitement, et si besoin pour votre calcul.
+"""),
+
+37 : _("""
+Le numéro d'ordre 0 ne peut pas être traité par la commande POST_GP.
+"""),
+
+38 : _("""
+Assurez vous que :
+- Votre fond d'entaille est dans un plan.
+- La direction de propagation correspond bien au produit vectoriel de la direction du fond d'entaille 
+  et de la normale définis tous deux dans la commande DEFI_FOND_FISS.
+"""),
+
+39 : _("""
+En 3D, le mot-clé NORMALE doit être renseigné dans la commande DEFI_FOND_FISS.
 """),
 
 }

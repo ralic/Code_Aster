@@ -1,4 +1,4 @@
-#@ MODIF jeveux Messages  DATE 22/02/2011   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+#@ MODIF jeveux Messages  DATE 28/03/2011   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -270,6 +270,9 @@ cata_msg = {
 
 57 : _("""
  Longueur du segment de valeurs à allouer invalide %(i1)d.
+  -> Risque & Conseil :     
+     Une valeur négative peu parfois provenir d'une valeur entière supérieure à la valeur de l'entier maximum sur
+     une plate-forme 32 bits (2147483648).
 """),
 
 58 : _("""

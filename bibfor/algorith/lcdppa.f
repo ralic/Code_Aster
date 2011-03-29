@@ -2,9 +2,9 @@
      &                                    DEPS,VIM,VIP,SIG,DSIDEP,IRET)
 C =====================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/09/2008   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 28/03/2011   AUTEUR BOTTONI M.BOTTONI 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -76,6 +76,7 @@ C =====================================================================
       ALPHA  = DEUX * SIN(PHI) / (TROIS - SIN(PHI))
       BETA   = DEUX * SIN(PSI) / (TROIS - SIN(PSI))
       PULT   = MATERF(4,2)
+
 C =====================================================================
 C --- OPERATEUR ELASTIQUE LINEAIRE ISOTROPE ---------------------------
 C =====================================================================
@@ -91,6 +92,7 @@ C =====================================================================
       SIIE=DDOT(NDT,SE,1,SE,1)
       SEQ    = SQRT  (TROIS*SIIE/DEUX)
       I1E    = TRACE (NDI,SIGE)
+
 C =====================================================================
 C --- CALCUL DES CONTRAINTES ------------------------------------------
 C =====================================================================
@@ -113,7 +115,7 @@ C =====================================================================
             DO 10 II=1,NDT
                SIG(II) = SIGE(II)
  10         CONTINUE
-            VIP(2) = 0.0D0
+C            VIP(2) = 0.0D0
          ELSE
             IF (COMPOR(1) .EQ. 'DRUCK_PRAGER') THEN
                CALAL = ALPHA
@@ -121,7 +123,7 @@ C =====================================================================
                PPLUS = VIM(1) + DP
                CALAL = BETAPS (BETA, PPLUS, PULT)
             ENDIF
-            CALL MAJSIG ( MATERF, SE, SEQ, I1E, CALAL, DP, SIG)
+            CALL MAJSIG ( MATERF, SE, SEQ, I1E, CALAL, DP, PLAS, SIG)
          ENDIF
 C =====================================================================
 C --- STOCKAGE DES VARIABLES INTERNES ---------------------------------
@@ -129,6 +131,7 @@ C =====================================================================
          VIP(1)   = VIM(1) + DP
          VIP(2)   = VIM(2) + TROIS*CALAL*DP
          VIP(NVI) = PLAS
+         
 C =====================================================================
 C --- PREPARATION AU CALCUL DE LA MATRICE TANGENTE --------------------
 C =====================================================================

@@ -1,7 +1,7 @@
-#& MODIF COMMANDE  DATE 07/12/2010   AUTEUR GENIAUT S.GENIAUT 
+#& MODIF COMMANDE  DATE 29/03/2011   AUTEUR MACOCCO K.MACOCCO 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -37,8 +37,7 @@ POST_GP=MACRO(nom="POST_GP", op=post_gp_ops, sd_prod=post_gp_prod,
               reentrant='n',
               UIinfo={"groupes":("Post-traitements","Rupture",)},
               regles=(UN_PARMI('IDENTIFICATION', 'PREDICTION'),
-                      UN_PARMI('THETA_2D','THETA_3D'),
-                      PRESENT_PRESENT('THETA_2D','DIRECTION'),),
+                      UN_PARMI('THETA_2D','THETA_3D'),),
       
       # Résultat, modèle, comportement, chargement
       RESULTAT     = SIMP(statut='o',typ=(evol_elas,evol_noli,dyna_trans,mode_meca),),
@@ -48,6 +47,8 @@ POST_GP=MACRO(nom="POST_GP", op=post_gp_ops, sd_prod=post_gp_prod,
       
       COMP_ELAS    = C_COMP_ELAS('POST_GP'),
       
+      LIST_INST    = SIMP(statut='o',typ=listr8_sdaster),
+
       TYPE_DEF = SIMP(statut='f',typ='TXM', defaut="PETIT", into=("PETIT","GRAND")),
       EXCIT        = FACT(statut='f', max='**',
             CHARGE      = SIMP(statut='o', typ=(char_meca,char_cine_meca)),
@@ -56,8 +57,8 @@ POST_GP=MACRO(nom="POST_GP", op=post_gp_ops, sd_prod=post_gp_prod,
       ),
       SYME_CHAR    = SIMP(statut='f',typ='TXM',defaut="SANS",into=("SYME","ANTI","SANS")),
       
-      
-      DIRECTION    = SIMP(statut='f', typ='R', max=3),
+      b_direction     =BLOC(condition = "(THETA_2D != None) ",
+          DIRECTION    = SIMP(statut='o', typ='R', max=3),),
       
       THETA_2D     = FACT(statut='f', max='**',
                           fr="paramètres de définition des champs theta",
@@ -116,8 +117,5 @@ POST_GP=MACRO(nom="POST_GP", op=post_gp_ops, sd_prod=post_gp_prod,
       # table résultat
       TABL_GPMAX    = SIMP(statut='o', typ=CO,),
       TABL_GP       = SIMP(statut='f', typ=CO,),
-      b_tabl_gp=BLOC(condition="(TABL_GP != None)",
-             INST            =SIMP(statut='f',typ='R',validators=NoRepeat(),max='**' ),
-             LIST_INST  = SIMP(statut='f',typ=listr8_sdaster),),
       INFO         = SIMP(statut='f', typ='I', defaut=1, into=(1, 2),),
 )

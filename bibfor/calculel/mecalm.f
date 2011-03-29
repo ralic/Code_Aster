@@ -2,7 +2,7 @@
      &                  NBORDR,MODELE,MATE,CARA,NCHAR,CTYP)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 29/03/2011   AUTEUR DELMAS J.DELMAS 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -616,10 +616,8 @@ C    ------------------------------------------------------------------
             CALL JEVEUO(KCHA,'L',JCHA)
             CALL MECARA(CARA,EXICAR,CHCARA)
             CALL MECHC1(SAVCAR,MODELE,MATE,EXICAR,CHCARA)
-            CALL RSEXC2(1,2,LERES0,'SIEF_ELGA',IORDR,CHSIG,OPTION,IRET1)
-            CALL RSEXC2(2,2,RESUCO,'SIEF_ELGA',IORDR,CHSIG,OPTION,
-     &                  IRET2)
-            IF (IRET1.GT.0 .AND. IRET2.GT.0)GOTO 110
+            CALL RSEXC2(1,1,LERES0,'SIEF_ELGA',IORDR,CHSIG,OPTION,IRET)
+            IF (IRET.GT.0)GOTO 110
             CALL RSEXC1(LERES1,OPTION,IORDR,CHELEM)
 C       OPTION 'SIEF_SENO_SEGA' EST NÉCESSAIRE SI X-FEM
             CALL JEEXIN(MODELE(1:8)//'.FISS',IFISS)
@@ -639,13 +637,10 @@ C
             CALL VRCREF(MODELE,MATE(1:8),CARA,CHVREF(1:19))
             CALL RSEXCH(RESUCO,'DEPL',IORDR,CHAMGD,IRET)
 
-C      A PARTIR DE SIEF_ELGA
-            IF (IRET1.EQ.0) THEN
-              CALL RSEXCH(RESUCO,'COMPORTEMENT',IORDR,COMPOR,IRET1)
+            CALL RSEXCH(RESUCO,'COMPORTEMENT',IORDR,COMPOR,IRET1)
 
-C      A PARTIR DE SIEF_ELGA
-            ELSEIF (IRET2.EQ.0) THEN
-              COMPOR=' '
+            IF (IRET1.NE.0) THEN
+              COMPOR = ' '
             ENDIF
 
             CALL MECALC(OPTION,MODELE,CHAMGD,CHGEOM,MATE,CHCARA,K24B,
@@ -751,9 +746,7 @@ C    ------------------------------------------------------------------
             CALL MECHC1(SAVCAR,MODELE,MATE,EXICAR,CHCARA)
             CALL RSEXC2(1,1,RESUCO,'DEPL',IORDR,CHAMGD,OPTION,IRET)
             IF (IRET.GT.0)GOTO 150
-            CALL RSEXC2(1,2,RESUCO,'SIEF_ELGA',IORDR,CHSIG,OPTION,IRET)
-            CALL RSEXC2(2,2,RESUCO,'SIEF_ELGA',IORDR,CHSIG,OPTION,
-     &                  IRET)
+            CALL RSEXC2(1,1,RESUCO,'SIEF_ELGA',IORDR,CHSIG,OPTION,IRET)
             IF (IRET.GT.0) THEN
               CALL U2MESK('A','CALCULEL3_7',1,OPTION)
               CALL JEDEMA
@@ -789,9 +782,7 @@ C    ------------------------------------------------------------------
             CALL MECHC1(SAVCAR,MODELE,MATE,EXICAR,CHCARA)
             CALL RSEXC2(1,1,RESUCO,'DEPL',IORDR,CHAMGD,OPTION,IRET)
             IF (IRET.GT.0)GOTO 170
-            CALL RSEXC2(1,2,RESUCO,'SIEF_ELGA',IORDR,CHSIG,OPTION,IRET)
-            CALL RSEXC2(2,2,RESUCO,'SIEF_ELGA',IORDR,CHSIG,OPTION,
-     &                  IRET)
+            CALL RSEXC2(1,1,RESUCO,'SIEF_ELGA',IORDR,CHSIG,OPTION,IRET)
             IF (IRET.GT.0) THEN
               CALL U2MESK('A','CALCULEL3_7',1,OPTION)
               CALL JEDEMA
@@ -873,10 +864,8 @@ C    ------------------------------------------------------------------
               IF (TYSD.EQ.'FOURIER_ELAS') THEN
                 CALL U2MESK('F','CALCULEL6_83',1,OPTION)
               ENDIF
-              CALL RSEXC2(1,2,RESUCO,'SIEF_ELGA',IORDR,CHSIG,OPTION,
+              CALL RSEXC2(1,1,RESUCO,'SIEF_ELGA',IORDR,CHSIG,OPTION,
      &                    IRET)
-              CALL RSEXC2(2,2,RESUCO,'SIEF_ELGA',IORDR,CHSIG,
-     &                    OPTION,IRET)
               IF (IRET.GT.0) THEN
                 CALL U2MESK('A','CALCULEL3_7',1,OPTION)
                 CALL JEDEMA
@@ -934,7 +923,7 @@ C          CHAMP D'ENTREE POUR COQUES
                   ENDIF
                 ENDIF
               ELSEIF (TYSD.EQ.'EVOL_NOLI') THEN
-                IF (IRET2.LE.0) THEN
+                IF (IRET1.LE.0) THEN
                   CALL RSEXCH(RESUCO,'SIEF_ELGA',IORDR,CHSIG,K)
                 ENDIF
                 IF (EXIPLA) THEN
@@ -1085,7 +1074,7 @@ C    ------------------------------------------------------------------
 C
           CALL MECA01(OPTION,NBORDR,JORDR,NCHAR,JCHA,KCHA,CTYP,TBGRCA,
      &                RESUCO,RESUC1,LERES1,NOMA,MODELE,LIGRMO,MATE,CARA,
-     &                0,NPASS,IRET)
+     &                CHVARC,0,NPASS,IRET)
 C
           IF (IRET.EQ.1) THEN
             GOTO 650
@@ -1474,18 +1463,14 @@ C     ------------------------------------------------------------------
 
 C ---       RECUPERATION DES CONTRAINTES DE L'INSTANT COURANT :
 C           -------------------------------------------------
-            CALL RSEXC2(1,2,RESUCO,'SIEF_ELGA',IORDR,CHSIG,OPTION,IRET1)
-            IF (IRET1.GT.0) THEN
-              CALL RSEXC2(2,2,RESUCO,'SIEF_ELGA',IORDR,CHSIG,
-     &                    OPTION,IRET2)
-              IF (IRET2.GT.0) THEN
-                CALL CODENT(IORDR,'G',KIORD)
-                VALKM(1)=RESUCO
-                VALKM(2)=KIORD
-                CALL U2MESK('A','CALCULEL3_17',2,VALKM)
-                GOTO 370
+            CALL RSEXC2(1,1,RESUCO,'SIEF_ELGA',IORDR,CHSIG,OPTION,IRET)
+            IF (IRET.GT.0) THEN
+              CALL CODENT(IORDR,'G',KIORD)
+              VALKM(1)=RESUCO
+              VALKM(2)=KIORD
+              CALL U2MESK('A','CALCULEL3_17',2,VALKM)
+              GOTO 370
 
-              ENDIF
             ENDIF
 
 C ---       SI LE NUMERO D'ORDRE COURANT EST SUPERIEUR A 1, ON
@@ -1576,20 +1561,16 @@ C     -----------------------------------
             IF (OPTION.EQ.'ENDO_ELGA') THEN
 C --- A11/ RECUPERATION DU CHAMP DE CONTRAINTES 'SIEF_ELGA'
 C          -> CHSIG[1,2] A T- ET T+
-              CALL RSEXC2(1,2,RESUCO,'SIEF_ELGA',IORDR1,CHSIG1,OPTION,
+              CALL RSEXC2(1,1,RESUCO,'SIEF_ELGA',IORDR1,CHSIG1,OPTION,
      &                    IRET1)
-              CALL RSEXC2(2,2,RESUCO,'SIEF_ELGA',IORDR1,CHSIG1,
-     &                    OPTION,IRET1)
               IF (IRET1.GT.0) THEN
                 CALL U2MESK('A','CALCULEL3_18',1,OPTION)
                 GOTO 410
 
               ENDIF
 
-              CALL RSEXC2(1,2,RESUCO,'SIEF_ELGA',IORDR2,CHSIG2,OPTION,
+              CALL RSEXC2(1,1,RESUCO,'SIEF_ELGA',IORDR2,CHSIG2,OPTION,
      &                    IRET2)
-              CALL RSEXC2(2,2,RESUCO,'SIEF_ELGA',IORDR2,CHSIG2,
-     &                    OPTION,IRET2)
               IF (IRET2.GT.0) THEN
                 CALL U2MESK('A','CALCULEL3_18',1,OPTION)
                 GOTO 410
@@ -1962,9 +1943,7 @@ C    ------------------------------------------------------------------
             CALL JEVEUO(KCHA,'L',JCHA)
             CALL MECARA(CARA,EXICAR,CHCARA)
             CALL MECHC1(SAVCAR,MODELE,MATE,EXICAR,CHCARA)
-            CALL RSEXC2(1,2,RESUCO,'SIEF_ELGA',IORDR,CHSIG,OPTION,IRET)
-            CALL RSEXC2(2,2,RESUCO,'SIEF_ELGA',IORDR,CHSIG,OPTION,
-     &                  IRET)
+            CALL RSEXC2(1,1,RESUCO,'SIEF_ELGA',IORDR,CHSIG,OPTION,IRET)
             IF (IRET.GT.0) THEN
               CALL U2MESK('A','CALCULEL3_18',1,OPTION)
               GOTO 570

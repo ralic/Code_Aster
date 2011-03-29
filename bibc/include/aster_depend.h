@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF aster_depend include  DATE 31/01/2011   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF aster_depend include  DATE 29/03/2011   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2011  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -120,12 +120,26 @@ Compatibilité ascendantes :
 #define _USE_64_BITS
 #endif
 
+/* define INTEGER type */
 #ifdef _USE_LONG_LONG_INT
 #define INTEGER long long
-#define STRING_SIZE size_t
 #else
 #define INTEGER long
-#define STRING_SIZE unsigned int
+#endif
+
+/* define STRING_SIZE type : may be previously defined */
+#ifndef STRING_SIZE
+
+#ifdef _USE_LONG_LONG_INT
+ #define STRING_SIZE size_t
+#else
+ #ifdef _USE_INTEL_IFORT
+  #define STRING_SIZE size_t
+ #else
+  #define STRING_SIZE unsigned int
+ #endif
+#endif
+
 #endif
 
 #define INTEGER4 int
@@ -145,7 +159,9 @@ Compatibilité ascendantes :
 #define INTEGER4 int
 #define LONG_INTEGER_BITS 32
 #define LONG_INTEGER_MOTS 4
-#define STRING_SIZE unsigned int
+#ifndef STRING_SIZE
+#define STRING_SIZE size_t
+#endif
 #define DOUBLE double
 #define REAL4 float
 #define LONG_REAL_MOTS 8

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+#& MODIF COMMANDE  DATE 29/03/2011   AUTEUR DELMAS J.DELMAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -138,8 +138,7 @@ MACR_ASPIC_CALC=MACRO(nom="MACR_ASPIC_CALC",op=macr_aspic_calc_ops,sd_prod=macr_
            b_extrac        =BLOC(condition="((FORMAT=='IDEAS')or(FORMAT=='CASTEM'))",
                                  fr="extraction d un champ de grandeur",
              regles=(EXCLUS('TOUT_ORDRE','NUME_ORDRE','INST'),),
-             NOM_CHAM        =SIMP(statut='f',typ='TXM',validators=NoRepeat(),max=3,
-                                   into=("DEPL","SIEQ_ELNO","TEMP")),
+             NOM_CHAM        =SIMP(statut='f',typ='TXM',validators=NoRepeat(),max=3,into=("DEPL","SIEQ_ELNO","TEMP")),
 
              TOUT_ORDRE      =SIMP(statut='f',typ='TXM',into=("OUI",) ),
              NUME_ORDRE      =SIMP(statut='f',typ='I',validators=NoRepeat(),max='**'),

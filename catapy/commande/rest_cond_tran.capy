@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 07/02/2011   AUTEUR DEVESA G.DEVESA 
+#& MODIF COMMANDE  DATE 29/03/2011   AUTEUR DELMAS J.DELMAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -54,8 +54,8 @@ REST_COND_TRAN=OPER(nom="REST_COND_TRAN",op=  78,sd_prod=rest_cond_tran_prod,
          INTERPOL        =SIMP(statut='f',typ='TXM',defaut="NON",into=("NON","LIN") ),
          TOUT_CHAM       =SIMP(statut='f',typ='TXM',into=("OUI",) ),
          b_nom_cham=BLOC(condition="TOUT_CHAM == None",
-             NOM_CHAM        =SIMP(statut='f',typ='TXM',validators=NoRepeat(),max=3,defaut="ACCE",   
-                               into=("DEPL","VITE","ACCE",) ),),
+             NOM_CHAM        =SIMP(statut='f',typ='TXM',validators=NoRepeat(),max=3,defaut="ACCE",into=("DEPL",
+                                   "VITE","ACCE",),),),
          b_base_moda=BLOC(condition="BASE_MODALE != None",
              CHAM_MATER      =SIMP(statut='f',typ=cham_mater),
              CARA_ELEM       =SIMP(statut='f',typ=cara_elem),),

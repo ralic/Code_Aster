@@ -3,8 +3,9 @@
       INTEGER         MATER
       REAL*8          XYZL(3,4), DEPL(*), PGL(3,3), SIGMA(*)
       CHARACTER*16    NOMTE
+C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 22/03/2011   AUTEUR DESOZA T.DESOZA 
+C MODIF ELEMENTS  DATE 29/03/2011   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -46,26 +47,27 @@ C
 C     NNO:    NOMBRE DE NOEUDS DE L'ELEMENT
 CCC      PARAMETER (NNO=3)  POUR LES DKT
 CCC      PARAMETER (NNO=4)  POUR LES DKQ
-      INTEGER    NNO
-      PARAMETER (NNO=4)
+      INTEGER    NNOMX
+      PARAMETER (NNOMX=4)
       INTEGER    NBDEPG
-      PARAMETER (NBDEPG=6*NNO)
+      PARAMETER (NBDEPG=6*NNOMX)
       INTEGER    NBEPSG
       PARAMETER (NBEPSG=8)
 C
-C --------------------------------------------------------------------
-      INTEGER  NDIM,NNOEL,NNOS,NPG,IPOIDS,ICOOPG,IVF,IDFDX,IDFD2,JGANO
-      INTEGER  I, J, ICACOQ, ICOU, ICPG, IGAUH, INO, IPG, IRET,
-     &         IBID, NBCON, NBCOU, NPGH, JNBSPI, ITAB(8)
-      REAL*8   D(4,4), REPERE(7), INST
-      REAL*8   HIC, H, ZMIN,ZIC
-      REAL*8   ZERO, DEUX, SIG, KCIS
-      REAL*8   EXCEN
-      REAL*8   EPS2D(6), DEPG(NBDEPG)
-      REAL*8   EPSG(NBEPSG), EPSTH(NBEPSG)
-      REAL*8   CARA(25),BMAT(NBEPSG,NBDEPG),JACGAU
-      LOGICAL      DKT, DKQ
-      CHARACTER*4  FAMI
+C ----------------------------------------------------------------------
+      INTEGER NDIM,NNOEL,NNOS,NPG,IPOIDS,ICOOPG,IVF,IDFDX,IDFD2,JGANO
+      INTEGER I, J, ICACOQ, ICOU, ICPG, IGAUH, INO, IPG, IRET,
+     &        IBID, NBCON, NBCOU, NPGH, JNBSPI, ITAB(8)
+      REAL*8 D(4,4), REPERE(7), INST
+      REAL*8 HIC, H, ZMIN,ZIC
+      REAL*8 ZERO, DEUX, SIG, KCIS
+      REAL*8 EXCEN
+      REAL*8 EPS2D(6), DEPG(NBDEPG)
+      REAL*8 EPSG(NBEPSG), EPSTH(NBEPSG)
+      REAL*8 CARA(25),BMAT(NBEPSG,NBDEPG),JACGAU
+      LOGICAL DKT, DKQ ,DKG
+      CHARACTER*4 FAMI
+      CHARACTER*8 TYPMA
 C     ------------------------------------------------------------------
 C
       FAMI = 'RIGI'
@@ -77,16 +79,21 @@ C
 C
       DKT    = .FALSE.
       DKQ    = .FALSE.
+      DKG    = .FALSE.
 
-      IF ( NOMTE.EQ.'MEDKTR3 ' .OR.
-     &         NOMTE.EQ.'MEDSTR3 ' ) THEN
+      IF ((NOMTE.EQ.'MEDKTG3').OR.
+     &    (NOMTE.EQ.'MEDKQG4')) THEN
+        DKG = .TRUE.
+      END IF
+
+      CALL TEATTR(' ','S','ALIAS8',TYPMA,IRET)
+
+      IF (TYPMA(6:8).EQ.'TR3') THEN
         DKT = .TRUE.
-      ELSEIF ( NOMTE.EQ.'MEDKQU4 ' .OR.
-     &         NOMTE.EQ.'MEDSQU4 ' .OR.
-     &         NOMTE.EQ.'MEQ4QU4 ' ) THEN
+      ELSEIF (TYPMA(6:8).EQ.'QU4') THEN
         DKQ = .TRUE.
       ELSE
-        CALL U2MESK('F','ELEMENTS_34',1,NOMTE)
+        CALL ASSERT(.FALSE.)
       END IF
 C
 C     -- INITIALISATIONS
@@ -132,18 +139,27 @@ C     -------------------------------------------------
         DEPG(6*(INO-1)+6) =  0.D0
  20   CONTINUE
 
-      NPGH = 3
-C
-      CALL JEVECH('PNBSP_I','L',JNBSPI)
       NBCON = 6
-      NBCOU = ZI(JNBSPI-1+1)
-      IF (NBCOU.LE.0) CALL U2MESS('F','ELEMENTS_46')
+
+      IF (DKG) THEN
+        NBCOU = 1
+        NPGH = 1
+      ELSE
+        CALL JEVECH('PNBSP_I','L',JNBSPI)
+        NPGH = 3
+        NBCOU = ZI(JNBSPI-1+1)
+        IF (NBCOU.LE.0) CALL U2MESS('F','ELEMENTS_46')
+      ENDIF
 C
       HIC = H/NBCOU
       ZMIN = -H/DEUX
 
+C      WRITE(6,*)'H NBCON NBCOU',H,NBCON,NBCOU
+C      WRITE(6,*)'NPGH HIC ZMIN',NPGH,HIC,ZMIN
+
 C --- BOUCLE SUR LES POINTS DE GAUSS DE LA SURFACE:
 C     ---------------------------------------------
+C      WRITE(6,*)'NPG=',NPG
       DO 100, IPG = 1 , NPG
 C
 C ----- CALCUL DE LA MATRICE DES DEFORMATIONS GENERALISEES
@@ -151,6 +167,7 @@ C
         CALL DXBMAT(NOMTE, CARA, XYZL, PGL, IPG, JACGAU, BMAT)
         CALL PMRVEC('ZERO',NBEPSG,NBDEPG,BMAT,DEPG,EPSG)
 
+        WRITE(6,*)'EPSG=',EPSG
 C ----- CALCUL DE L'ECOULEMENT PLASTIQUE SUR CHAQUE COUCHE
 C       PAR INTEGRATION EN TROIS POINTS:
 C       --------------------------------
@@ -162,14 +179,18 @@ C       --------------------------------
      &                                        NBCON*(IGAUH-1)
 C       -- COTE DES POINTS D'INTEGRATION
 C       --------------------------------
-            IF (IGAUH.EQ.1) THEN
-              ZIC = ZMIN + (ICOU-1)*HIC + EXCEN
-            ELSE IF (IGAUH.EQ.2) THEN
+            IF (DKG) THEN
               ZIC = ZMIN + HIC/DEUX + (ICOU-1)*HIC + EXCEN
             ELSE
-              ZIC = ZMIN + HIC + (ICOU-1)*HIC + EXCEN
-            END IF
-
+              IF (IGAUH.EQ.1) THEN
+                ZIC = ZMIN + (ICOU-1)*HIC + EXCEN
+              ELSE IF (IGAUH.EQ.2) THEN
+                ZIC = ZMIN + HIC/DEUX + (ICOU-1)*HIC + EXCEN
+              ELSE
+                ZIC = ZMIN + HIC + (ICOU-1)*HIC + EXCEN
+              ENDIF
+            ENDIF
+            WRITE(6,*)'ZIC=',ZIC
 C         -- CALCUL DE EPS2D
 C         ------------------
             EPS2D(1) = EPSG(1) + ZIC*EPSG(4)
@@ -203,6 +224,7 @@ C           ---------------------------------------------------------
                   SIG = SIG + (EPS2D(J)-EPSTH(J))*D(I,J)
  132           CONTINUE
                SIGMA(ICPG+I) = SIG
+C               WRITE(6,*)'SIG=',SIG
  130        CONTINUE
 C           -- CONTRAINTES DE CISAILLEMENT
 C           ------------------------------

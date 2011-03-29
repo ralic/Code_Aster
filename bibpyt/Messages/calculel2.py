@@ -1,4 +1,4 @@
-#@ MODIF calculel2 Messages  DATE 18/01/2011   AUTEUR MEUNIER S.MEUNIER 
+#@ MODIF calculel2 Messages  DATE 28/03/2011   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -50,7 +50,7 @@ Conseil :
 """),
 
 5: _("""
-Erreur utilisateur dans CREA_RESU
+Erreur utilisateur dans CREA_RESU :
   Quand on utilise la commande CREA_RESU avec le mot clé AFFE / CHAM_GD et que le
   champ est un champ de fonctions (de la géométrie et/ou du temps), il faut que la grandeur
   associée à ce champ soit TEMP_F, DEPL_F, PRES_F ou FORC_F.
@@ -58,9 +58,11 @@ Erreur utilisateur dans CREA_RESU
   Ici, la grandeur est : %(k1)s
 """),
 
-
-
-
+6: _("""
+Erreur utilisateur dans PROJ_CHAMP :
+  Le champ utilisé dans le mot clé CHAM_NO_REFE (%(k1)s) est associé au maillage %(k2)s
+  Il doit etre associé au maillage %(k3)s
+"""),
 
 7: _("""
  trop d'antécédents

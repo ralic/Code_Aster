@@ -1,4 +1,4 @@
-#& MODIF COMMUN  DATE 22/03/2011   AUTEUR DESOZA T.DESOZA 
+#& MODIF COMMUN  DATE 29/03/2011   AUTEUR DELMAS J.DELMAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,7 +19,12 @@
 # RESPONSABLE VABHHTS J.PELLET
 # ce fichier contient la liste des "into" possibles pour le mot cle NOM_CHAM
 # c'est a dire les noms de champs des SD RESULTAT (DATA de la routine RSCRSD)
-def C_NOM_CHAM_INTO() : return  ("ACCE",    #COMMUN#
+
+def C_NOM_CHAM_INTO( typ_cham=None ) : #COMMUN# 
+  import types
+# Liste de tout les champs
+  l_tout_cham = [
+                        "ACCE",
                         "ACCE_ABSOLU",
                         "ALPH0_ELGA_EPSP",
                         "ALPHP_ELGA_ALPH0",
@@ -141,8 +146,6 @@ def C_NOM_CHAM_INTO() : return  ("ACCE",    #COMMUN#
                         "SICO_NOEU",
                         "SIEF_ELGA",
                         "SIEF_ELNO",
-                        "SIEF_ELNO",
-                        "SIEF_NOEU",
                         "SIEF_NOEU",
                         "SIEF_SENO_SEGA",
                         "SIEQ_ELGA",
@@ -172,10 +175,29 @@ def C_NOM_CHAM_INTO() : return  ("ACCE",    #COMMUN#
                         "VARC_ELGA",
                         "VARI_ELGA",
                         "VARI_ELNO",
-                        "VARI_ELNO",
                         "VARI_NOEU",
                         "VATU_ELNO",
                         "VITE",
                         "VITE_ABSOLU",
                         "VITE_VENT",
-                        )
+                        ]
+#
+# Si aucun argument n'est passe, on utilise tous les types de champs possibles
+  if ( typ_cham is None ) :
+    l_ncham = l_tout_cham
+#
+# Sinon, on n'utilise que les champs dont le type est passe en argument
+  else :
+    l_typ_cham = []
+    if (type(typ_cham) == types.StringType) :
+      l_typ_cham.append(typ_cham)
+    else :
+      l_typ_cham = typ_cham
+    l_ncham = []
+    for typ in l_typ_cham :
+     for cham in l_tout_cham :
+       if (cham.find(typ) != -1) :
+        if (cham.split('_')[1] == typ):
+           l_ncham.append(cham)
+
+  return tuple(l_ncham)

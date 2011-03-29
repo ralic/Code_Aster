@@ -1,0 +1,193 @@
+# MODIF  DATE 28/03/2011   AUTEUR PELLET J.PELLET 
+# TITRE VALIDATION PROJ_CHAMP / COLLOCATION (HEXA, PENTA)  LIN/QUAD
+# zzzz285d.para = tps_job 80 mem_job 128Mo mem_aster 50 ncpus 1 liste_test S
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+#       PROJECTION D'UN MAILLAGE SUR LUI-MEME
+
+DEBUT(CODE=_F( NOM = 'ZZZZ285D',NIV_PUB_WEB='INTERNET'),
+      IGNORE_ALARM=('MODELISA8_70','CALCULEL2_63','CALCULEL2_64'))
+
+
+# On lit les maillages 1 et 2 (lineaires a bords droits):
+PRE_GIBI(UNITE_GIBI=19, UNITE_MAILLAGE=20)
+PRE_GIBI(UNITE_GIBI=21, UNITE_MAILLAGE=22)
+
+# F2 : formule utilisee pour calculer l'erreur relative :
+F2 = FORMULE(NOM_PARA=('X1','X3',),VALE='abs(X3/X1)')
+
+# F3,F4,F5 : formules utilisees pour deformer les maillages MA1 et MA2 :
+F3 = FORMULE(NOM_PARA=('X','Y','Z'),VALE='(X)**1.7 -X ')
+F4 = FORMULE(NOM_PARA=('X','Y','Z'),VALE='(Y)**1.7 -Y ')
+F5 = FORMULE(NOM_PARA=('X','Y','Z'),VALE='(Z)**1.7 -Z ')
+
+
+# Tolerances pour les TEST_TABLE :
+toler={}
+toler['BDRO_LIN_DEG1']    =     4.0E-10
+toler['BDRO_LIN_DEG2']    =     4.0E-10
+toler['BDRO_LIN_DEGP']    =     4.0E-10
+toler['BDRO_QUA_DEG1']    =     4.0E-10
+toler['BDRO_QUA_DEG2']    =     4.0E-10
+toler['BDRO_QUA_DEGP']    =     4.0E-10
+toler['BDRO_QUP_DEG1']    =     4.0E-10
+toler['BDRO_QUP_DEG2']    =     4.0E-10
+toler['BDRO_QUP_DEGP']    =     4.0E-10
+toler['BCOU_LIN_DEG1']    =     4.0E-10
+toler['BCOU_LIN_DEG2']    =     4.0E-10
+toler['BCOU_LIN_DEGP']    =     4.0E-10
+toler['BCOU_QUA_DEG1']    =     4.0E-10
+toler['BCOU_QUA_DEG2']    =     4.0E-10
+toler['BCOU_QUA_DEGP']    =     4.0E-10
+toler['BCOU_QUP_DEG1']    =     4.0E-10
+toler['BCOU_QUP_DEG2']    =     4.0E-10
+toler['BCOU_QUP_DEGP']    =     4.0E-10
+
+
+for bord in ('BDRO', 'BCOU',) :
+    for typmail in ('LIN', 'QUA', 'QUP') :
+
+       # 1. On fabrique les maillages MA1 et MA2 :
+       if typmail=='LIN' :
+          MA1=LIRE_MAILLAGE(UNITE=20)
+          MA2=LIRE_MAILLAGE(UNITE=22)
+       elif typmail=='QUA' :
+          MA1_1=LIRE_MAILLAGE(UNITE=20)
+          MA2_1=LIRE_MAILLAGE(UNITE=22)
+          MA1 = CREA_MAILLAGE( MAILLAGE  = MA1_1,  LINE_QUAD = _F(TOUT = 'OUI', PREF_NOEUD='NS' ))
+          MA2 = CREA_MAILLAGE( MAILLAGE  = MA2_1,  LINE_QUAD = _F(TOUT = 'OUI', PREF_NOEUD='NS' ))
+          DETRUIRE(CONCEPT=_F(NOM=(MA1_1,MA2_1,),),)
+       elif typmail=='QUP' :
+          MA1_1=LIRE_MAILLAGE(UNITE=20)
+          MA2_1=LIRE_MAILLAGE(UNITE=22)
+          MA1_2 = CREA_MAILLAGE( MAILLAGE  = MA1_1,  LINE_QUAD = _F(TOUT = 'OUI'), )
+          MA2_2 = CREA_MAILLAGE( MAILLAGE  = MA2_1,  LINE_QUAD = _F(TOUT = 'OUI'), )
+          MA1_3 = CREA_MAILLAGE(MAILLAGE=MA1_2, HEXA20_27=_F(TOUT = 'OUI',PREF_NOEUD='NX'))
+          MA2_3 = CREA_MAILLAGE(MAILLAGE=MA2_2, HEXA20_27=_F(TOUT = 'OUI',PREF_NOEUD='NX'))
+          MA1   = CREA_MAILLAGE(MAILLAGE=MA1_3, PENTA15_18=_F(TOUT = 'OUI',PREF_NOEUD='NY'))
+          MA2   = CREA_MAILLAGE(MAILLAGE=MA2_3, PENTA15_18=_F(TOUT = 'OUI',PREF_NOEUD='NY'))
+          DETRUIRE(CONCEPT=_F(NOM=(MA1_1,MA1_2,MA1_3,MA2_1,MA2_2,MA2_3),),)
+       else :
+          assert 0,typmail
+
+
+       # 2. si bord=='BCOU', il faut deformer MA1 et MA2 pour rendre leurs bords "courbes" :
+       if bord=='BCOU' :
+           #2.1   MA1 :
+           CHFD=CREA_CHAMP(OPERATION='AFFE', TYPE_CHAM='NOEU_NEUT_F', MAILLAGE=MA1,    INFO=1,
+                         AFFE=(_F( TOUT = 'OUI', NOM_CMP = ('X1',), VALE_F  = (F3,)),
+                               _F( TOUT = 'OUI', NOM_CMP = ('X2',), VALE_F  = (F4,)),
+                               _F( TOUT = 'OUI', NOM_CMP = ('X3',), VALE_F  = (F5,)),
+                               ))
+           CHXN=CREA_CHAMP(OPERATION='EXTR', TYPE_CHAM='NOEU_GEOM_R',
+                           NOM_CHAM='GEOMETRIE', MAILLAGE=MA1, INFO=1)
+           DEFO1=CREA_CHAMP(OPERATION='EVAL', TYPE_CHAM='NOEU_NEUT_R', INFO=1,
+                         CHAM_F=CHFD,  CHAM_PARA=( CHXN,)   )
+           DEFO2 = CREA_CHAMP ( OPERATION = 'ASSE' , MAILLAGE = MA1 , TYPE_CHAM = 'NOEU_DEPL_R' , INFO=1,
+                                  ASSE = _F ( NOM_CMP=('X1','X2'), NOM_CMP_RESU=('DX','DY'), TOUT = 'OUI' , CHAM_GD = DEFO1))
+           MA1=MODI_MAILLAGE( reuse=MA1,MAILLAGE=MA1, DEFORME=_F( OPTION = 'TRAN', DEPL = DEFO2))
+           DETRUIRE(CONCEPT=_F(NOM=(CHXN,CHFD,DEFO1,DEFO2)))
+
+           #2.2   MA2 :
+           CHFD=CREA_CHAMP(OPERATION='AFFE', TYPE_CHAM='NOEU_NEUT_F', MAILLAGE=MA2,    INFO=1,
+                         AFFE=(_F( TOUT = 'OUI', NOM_CMP = ('X1',), VALE_F  = (F3,)),
+                               _F( TOUT = 'OUI', NOM_CMP = ('X2',), VALE_F  = (F4,)),
+                               _F( TOUT = 'OUI', NOM_CMP = ('X3',), VALE_F  = (F5,)),
+                               ))
+           CHXN=CREA_CHAMP(OPERATION='EXTR', TYPE_CHAM='NOEU_GEOM_R',
+                           NOM_CHAM='GEOMETRIE', MAILLAGE=MA2, INFO=1)
+           DEFO1=CREA_CHAMP(OPERATION='EVAL', TYPE_CHAM='NOEU_NEUT_R', INFO=1,
+                         CHAM_F=CHFD,  CHAM_PARA=( CHXN,)   )
+           DEFO2 = CREA_CHAMP ( OPERATION = 'ASSE' , MAILLAGE = MA2 , TYPE_CHAM = 'NOEU_DEPL_R' , INFO=1,
+                                  ASSE = _F ( NOM_CMP=('X1','X2'), NOM_CMP_RESU=('DX','DY'), TOUT = 'OUI' , CHAM_GD = DEFO1))
+           MA2=MODI_MAILLAGE( reuse=MA2,MAILLAGE=MA2, DEFORME=_F( OPTION = 'TRAN', DEPL = DEFO2))
+           DETRUIRE(CONCEPT=_F(NOM=(CHXN,CHFD,DEFO1,DEFO2)))
+
+
+
+
+       # MO1 est necessaire pour POST_ELEM / MINMAX.
+       # Il ne sert a rien, mais il occasionne des alarmes sans interet => IGNORE_ALARME
+       MO1=AFFE_MODELE(MAILLAGE=MA1, AFFE=_F(TOUT='OUI', MODELISATION='3D', PHENOMENE='THERMIQUE'))
+
+       # CHF2 : Champ de formules pour calculer l'erreur relative X1=F(X3,X1) :
+       #------------------------------------------------------------------------
+       CHF2=CREA_CHAMP(OPERATION='AFFE', TYPE_CHAM='NOEU_NEUT_F', MAILLAGE=MA1,
+                     AFFE=_F( TOUT = 'OUI', NOM_CMP = ('X1',), VALE_F  = (F2,)))
+
+
+       # CHXN : Champ des coordonnees des noeuds :
+       #-------------------------------------------------------
+       CHXN=CREA_CHAMP(OPERATION='EXTR', TYPE_CHAM='NOEU_GEOM_R',
+                       NOM_CHAM='GEOMETRIE', MAILLAGE=MA1, INFO=1)
+
+
+       for typch in ('DEG1','DEG2','DEGP') :
+
+          # F1 : formule utilisee pour imposer les valeurs du champ a projeter :
+          if typch == 'DEG1' :
+             F1 = FORMULE(NOM_PARA=('X','Y','Z'),VALE='((X+1.)/2.) + ((Y+1.)/2.) + ((Z+1.)/2.)')                       # fonction lineaire
+          elif typch == 'DEG2' :
+             F1 = FORMULE(NOM_PARA=('X','Y','Z'),VALE='((X+1.)/2.)**2 + ((Y+1.)/2.)**2 + ((Z+1.)/2.)**2 +2.*X*Y*Z')    # fonction quadratique
+          elif typch == 'DEGP' :
+             F1 = FORMULE(NOM_PARA=('X','Y','Z'),VALE='((X+1.+Y+Z)/3.)**1.7 + ((Y+1.+Z)/2.)**0.7')                     # fonction quelconque
+          else :
+             assert 0, typch
+
+          # CHF1 : Champ de formules pour calculer X1=F(X,Y,Z) :
+          #-------------------------------------------------------
+          CHF1=CREA_CHAMP(OPERATION='AFFE', TYPE_CHAM='NOEU_NEUT_F', MAILLAGE=MA1,    INFO=1,
+                        AFFE=_F( TOUT = 'OUI', NOM_CMP = ('X1',), VALE_F  = (F1,)))
+
+          # U1 : champ de donnee (affectation d'une formule):
+          #----------------------------------------------------
+          U1=CREA_CHAMP(OPERATION='EVAL', TYPE_CHAM='NOEU_NEUT_R', INFO=1,
+                        CHAM_F=CHF1,  CHAM_PARA=( CHXN,)   )
+
+
+          # U1B : projete (aller-retour) de U1 :  MA1 -> MA2 -> MA1
+          #--------------------------------------------------------
+          U2 =PROJ_CHAMP(CHAM_GD=U1,METHODE='COLLOCATION', MAILLAGE_1=MA1, MAILLAGE_2=MA2 ,)
+          U1B=PROJ_CHAMP(CHAM_GD=U2,METHODE='COLLOCATION', MAILLAGE_1=MA2, MAILLAGE_2=MA1 ,)
+
+          # EABSO : Erreur absolue (U1 - U1B):
+          #----------------------------------
+          EABSO = CREA_CHAMP ( OPERATION = 'ASSE' , MAILLAGE = MA1 , TYPE_CHAM = 'NOEU_NEUT_R' , INFO=1,
+                              ASSE =(
+                              _F ( NOM_CMP='X1', NOM_CMP_RESU='X3', TOUT = 'OUI' , CHAM_GD = U1  , COEF_R=1.  , CUMUL='OUI' ) ,
+                              _F ( NOM_CMP='X1', NOM_CMP_RESU='X3', TOUT = 'OUI' , CHAM_GD = U1B , COEF_R=-1. , CUMUL='OUI' ) ,
+                           ))
+          #IMPR_RESU(UNITE=80, FORMAT='MED',RESU=(_F(MAILLAGE=MA1),_F(CHAM_GD=U1B),_F(CHAM_GD=EABSO),))
+
+          # ERELA : Erreur relative ||(U1 - U1B) / U1 ||:
+          #----------------------------------------------
+          ERELA=CREA_CHAMP(OPERATION='EVAL', TYPE_CHAM='NOEU_NEUT_R', INFO=1,  CHAM_F=CHF2,  CHAM_PARA=( EABSO,U1) )
+
+
+          # TERR : max de l'erreur relative :
+          #----------------------------------
+          TERR=POST_ELEM( MINMAX=_F(NOM_CHAM='PRES', NOM_CMP=('X1',), TOUT='OUI',CHAM_GD=ERELA, MODELE=MO1))
+          legende=bord+"_"+typmail+"_"+typch
+          TEST_TABLE(TABLE=TERR, NOM_PARA='MAX_X1', VALE=0.0, LEGENDE=legende,
+                     REFERENCE='ANALYTIQUE', CRITERE='ABSOLU', PRECISION=toler[legende]);
+
+          DETRUIRE(CONCEPT=_F(NOM=(U1,U2,U1B,EABSO,ERELA,TERR,F1,CHF1)))
+       DETRUIRE(CONCEPT=_F(NOM=(MA1,MA2,MO1,CHF2,CHXN,)))
+
+FIN( )
+

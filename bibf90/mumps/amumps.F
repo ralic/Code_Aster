@@ -2,7 +2,7 @@
      &                  IMPR,IFMUMP,PREPOS)
       IMPLICIT NONE
 !           CONFIGURATION MANAGEMENT OF EDF VERSION
-!& MODIF AMUMPS MUMPS  DATE 07/02/2011   AUTEUR BOITEAU O.BOITEAU 
+!& MODIF AMUMPS MUMPS  DATE 29/03/2011   AUTEUR BOITEAU O.BOITEAU 
 ! ==================================================================
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D              WWW.CODE-ASTER.ORG
 !
@@ -37,6 +37,7 @@ C IN : VCINE (K19) : NOM DU CHAM_NO DE CHARGEMENT CINEMATIQUE
 C            (SI ACTION=RESOUD)
 C OUT : IRET (I) : CODE_RETOUR :
 C            0 : OK
+C            1 : ERREUR (DANS LE CAS OU MUMPS EST UTILISE EN PRE_COND)
 C            2 : MATRICE NUMERIQUEMENT SINGULIERE
 C IN  : NBSOL  : NBRE DE SYSTEMES A RESOUDRE
 C IN  : IMPR,IFMUMP : PARAMETRES POUR SORTIE FICHIER MATRICE CF AMUMPH
@@ -82,6 +83,7 @@ C================================================================
       TYPE (SMUMPS_STRUC) , POINTER :: SMPSK
       INTEGER      JSLVK,JSLVR,RANG,NBPROC,NIV,IFM,IBID,IETDEB,
      &             IETRAT,JREFA,NPREC,JSLVI,N,IPIV,I
+      INTEGER*4    I4
       CHARACTER*1  ROUCS(NMXINS),ROUC,TYPE,PREC,PRECS(NMXINS)
       CHARACTER*4  ETAMS(NMXINS),ETAM
       CHARACTER*8  KTYPR
@@ -90,7 +92,7 @@ C================================================================
       CHARACTER*24 KMONIT(12),KPIV
       REAL*8       EPSMAX,VALR(2),RDESQ,RCTDEB,TEMPS(6),EPSMAT
       COMPLEX*16   CBID(1)
-      LOGICAL      LQUALI,ELI2LG,LDIST,LRESOL,LMD,LDECHG
+      LOGICAL      LQUALI,ELI2LG,LDIST,LRESOL,LMD,LDECHG,LPRECO
       COMMON /MUMPSS/ SMPS
       COMMON /MUMPSH/ NONUS,NOMATS,NOSOLS,ETAMS,ROUCS,PRECS
 C=================================================================
@@ -152,6 +154,10 @@ C --- MUMPS PARALLELE DISTRIBUE ?
 C --- MATRICE ASTER DISTRIBUEE ?
       LMD = .FALSE.
       LMD = ZK24(JSLVK-1+10)(1:3).EQ.'OUI'
+
+C --- MUMPS EST-IL UTILISE COMME PRECONDITIONNEUR ?
+      LPRECO = .FALSE.
+      LPRECO = ZK24(JSLVK-1+8)(1:3).EQ.'OUI'
       
 C --- FILTRAGE DE LA MATRICE DONNEE A MUMPS (UNIQUEMENT NON LINEAIRE)
       EPSMAT=ZR(JSLVR-1+1)
@@ -209,10 +215,11 @@ C              -- C'EST OK
           IRET=2
           GOTO 99
         ELSE
-          IF (SMPSK%INFOG(1).LT.0) THEN
-            CALL U2MESI('F','FACTOR_55',1,SMPSK%INFOG(1))
+          I4=SMPSK%INFOG(1)
+          IF (I4.LT.0) THEN
+            CALL U2MESI('F','FACTOR_55',1,I4)
           ELSE
-            CALL U2MESI('A','FACTOR_55',1,SMPSK%INFOG(1))
+            CALL U2MESI('A','FACTOR_55',1,I4)
           ENDIF
         ENDIF
 C        IF(RANG.EQ.0) CALL ASSERT(SMPSK%INFOG(1).EQ.0)
@@ -241,7 +248,14 @@ C              -- C'EST OK
         ELSE IF ((SMPSK%INFOG(1).EQ.-8).OR.(SMPSK%INFOG(1).EQ.-9).OR.
      &         (SMPSK%INFOG(1).EQ.-14).OR.(SMPSK%INFOG(1).EQ.-15).OR.
      &         (SMPSK%INFOG(1).EQ.-17).OR.(SMPSK%INFOG(1).EQ.-20)) THEN
-          CALL U2MESS('F','FACTOR_53')
+          IF (LPRECO) THEN
+C         -- MUMPS EST APPELE COMME PRECONDITIONNEUR
+C            ON SORT AVEC UN CODE RETOUR NON NUL
+             IRET = 1
+             GOTO 99
+          ELSE
+            CALL U2MESS('F','FACTOR_53')
+          ENDIF
         ELSE IF (SMPSK%INFOG(1).EQ.-10) THEN
           IRET=2
           GOTO 99
@@ -252,10 +266,11 @@ C              -- C'EST OK
        ELSE IF (SMPSK%INFOG(1).EQ.-90) THEN
           CALL U2MESS('F','FACTOR_66'  )
        ELSE
-          IF (SMPSK%INFOG(1).LT.0) THEN
-            CALL U2MESI('F','FACTOR_55',1,SMPSK%INFOG(1))
+          I4=SMPSK%INFOG(1)
+          IF (I4.LT.0) THEN
+            CALL U2MESI('F','FACTOR_55',1,I4)
           ELSE
-            CALL U2MESI('A','FACTOR_55',1,SMPSK%INFOG(1))
+            CALL U2MESI('A','FACTOR_55',1,I4)
           ENDIF
         ENDIF
 
@@ -276,7 +291,7 @@ C --- KPIV(1)= NOMBRE DE PIVOTS QUASI NULS  (TOUS LE PROCS)
               ZI(IPIV)=SMPSK%INFOG(28)
 C --- KPIV(2)= NOMBRE DE PIVOTS NEGATIFS  (TOUS LE PROCS)
               IF (SMPSK%INFOG(12).GT.N) CALL ASSERT(.FALSE.)
-              ZI(IPIV+1)=SMPSK%INFO(12)
+              ZI(IPIV+1)=SMPSK%INFOG(12)
 C --- KPIV(3..) LES PIVOTS QUASI NULS  (ONLY PROC 0)
               IF (RANG.EQ.0) THEN
                 DO I=1,SMPSK%INFOG(28)
@@ -315,7 +330,7 @@ C       ------------------------------------------------
         CALL AMUMPT(7,KMONIT,TEMPS,RANG,NBPROC,KXMPS,LQUALI,RDESQ,TYPE,
      &              IETDEB,IETRAT,RCTDEB,LDIST)
         CALL AMUMPP(0,NBSOL,KXMPS,LDIST,TYPE,IMPR,IFMUMP,ELI2LG,
-     &              RSOLU,CBID,VCINE,PREPOS)
+     &              RSOLU,CBID,VCINE,PREPOS,LPRECO)
 
 C       ------------------------------------------------
 C        RESOLUTION MUMPS :
@@ -333,15 +348,18 @@ C       ------------------------------------------------
         IF (SMPSK%INFOG(1).EQ.0) THEN
 C              -- C'EST OK
         ELSE IF ((SMPSK%INFOG(1).EQ.8).AND.(LQUALI)) THEN
-          CALL U2MESI('A','FACTOR_62',1,SMPSK%ICNTL(10))
+          I4=SMPSK%INFOG(10)    
+          CALL U2MESI('A','FACTOR_62',1,I4)
         ELSE IF (SMPSK%INFOG(1).LT.0) THEN
-          CALL U2MESI('F','FACTOR_55',1,SMPSK%INFOG(1))
+          I4=SMPSK%INFOG(1)      
+          CALL U2MESI('F','FACTOR_55',1,I4)
         ELSE IF (SMPSK%INFOG(1).EQ.4) THEN
 C          -- PERMUTATION DE COLONNES, SMPSK%JCN MODIFIE VOLONTAIREMENT
 C          -- PAR MUMPS. IL NE FAUT DONC PAS LE MANIPULER TEL QUE
 C          -- PAS GRAVE POUR ASTER.
         ELSE
-          CALL U2MESI('A','FACTOR_55',1,SMPSK%INFOG(1))
+          I4=SMPSK%INFOG(1)     
+          CALL U2MESI('A','FACTOR_55',1,I4)
         ENDIF
 C --- CONTROLE DE L'ERREUR SUR LA SOLUTION :
         IF (LQUALI) THEN
@@ -356,7 +374,7 @@ C       ------------------------------------------------
 C        POST-TRAITEMENTS ASTER DE/DES (LA) SOLUTION(S) :
 C       ------------------------------------------------
         CALL AMUMPP(2,NBSOL,KXMPS,LDIST,TYPE,IMPR,IFMUMP,ELI2LG,
-     &              RSOLU,CBID,VCINE,PREPOS)
+     &              RSOLU,CBID,VCINE,PREPOS,LPRECO)
 
 C       ------------------------------------------------
 C        AFFICHAGE DU MONITORING :

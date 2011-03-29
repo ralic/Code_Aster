@@ -1,6 +1,6 @@
-# MODIF  DATE 28/02/2011   AUTEUR BARGELLI R.BARGELLINI 
+# MODIF  DATE 29/03/2011   AUTEUR MACOCCO K.MACOCCO 
 # TITRE CALCUL DU PARAMETRE GP DANS LE CAS D'UNE ENTAILLE ELLIPTIQUE EN 3D
-# ssnv218a.para = tps_job 400 mem_job 128Mo ncpus 1 liste_test S
+# ssnv218a.para = tps_job 600 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -192,7 +192,7 @@ l_copeaux4 = ('CO_4_1','CO_4_2')
 
 L_INS_GP = DEFI_LIST_REEL(VALE=[1.0,3.0],);
 conv = 1000.**0.5
-kjc1=conv*22
+kjc1=conv*57.739
 tab=POST_GP(RESULTAT=RESU,
             MODELE=MOD,
             MATER=M_TR_M3,
@@ -200,7 +200,6 @@ tab=POST_GP(RESULTAT=RESU,
                          DEFORMATION='PETIT',),
             EXCIT=(_F(CHARGE=COND_LIM,),
                    _F(CHARGE=CHARF,),),
-            DIRECTION = (1., 0., 0.),
             THETA_3D=(_F(GROUP_MA='LFOND',
                          R_INF=0.25,
                          R_SUP=0.5,),
@@ -230,9 +229,9 @@ tab2=POST_GP(RESULTAT=RESU,
             MATER=M_TR_M3,
             COMP_ELAS=_F(RELATION='ELAS_VMIS_TRAC',
                          DEFORMATION='PETIT',),
+            LIST_INST=L_INS_GP,
             EXCIT=(_F(CHARGE=COND_LIM,),
                    _F(CHARGE=CHARF,),),
-            DIRECTION = (1., 0., 0.),
             THETA_3D=(_F(GROUP_MA='LFOND',
                          R_INF=0.25,
                          R_SUP=0.5,),

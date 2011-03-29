@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+#& MODIF COMMANDE  DATE 29/03/2011   AUTEUR DELMAS J.DELMAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -41,8 +41,8 @@ PROJ_MESU_MODAL=OPER(nom="PROJ_MESU_MODAL",op= 193,
            MODELE          =SIMP(statut='o',typ=(modele_sdaster) ),
 #           MESURE          =SIMP(statut='o',typ=(dyna_trans,dyna_harmo,base_modale,mode_meca,mode_meca_c,) ),
            MESURE          =SIMP(statut='o',typ=(dyna_trans,dyna_harmo,mode_meca,mode_meca_c,) ),
-           NOM_CHAM        =SIMP(statut='f',typ='TXM',defaut="DEPL",
-                                 into=("DEPL","VITE","ACCE","SIEF_NOEU","EPSI_NOEU",),max='**' ),
+           NOM_CHAM        =SIMP(statut='f',typ='TXM',defaut="DEPL",into=("DEPL","VITE","ACCE",
+                                 "SIEF_NOEU","EPSI_NOEU",),max='**'),
                          ),
          CORR_MANU       =FACT(statut='f',max='**',
            regles=(PRESENT_PRESENT('NOEU_CALCUL','NOEU_MESURE'),),

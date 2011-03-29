@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 15/02/2011   AUTEUR FLEJOU J-L.FLEJOU 
+#& MODIF COMMANDE  DATE 29/03/2011   AUTEUR DELMAS J.DELMAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -118,7 +118,8 @@ CALC_ELEM=OPER(nom="CALC_ELEM",op=58,sd_prod=calc_elem_prod,reentrant='f',
 
 #              Les 2 mots cles suivants ne sont utiles qu' a l'option SPMX_ELGA
 #              mais  on est obligé de les laisser ici a cause des blocs
-               NOM_CHAM  =SIMP(statut='f',typ='TXM',fr="nom du champ pour SPMX_ELGA", ),
+               NOM_CHAM  =SIMP(statut='f',typ='TXM',into=("SIEF_ELGA","EPSI_ELGA","SIEQ_ELGA","EPEQ_ELGA","VARI_ELGA"),
+                               fr="nom du champ pour SPMX_ELGA",),
                NOM_CMP   =SIMP(statut='f',typ='TXM',fr="nom de la composante pour SPMX_ELGA",  ),
 
                 b_erre_qi =BLOC(condition = "OPTION in ('QIRE_ELEM','QIZ1_ELEM','QIZ2_ELEM') or \
@@ -247,7 +248,8 @@ b_charge =BLOC( condition = "OPTION in ('EPME_ELNO','EPSI_ELGA','EPME_ELGA','EPS
                                  ) ),
                b_maxi    =BLOC( condition = "OPTION=='SPMX_ELGA' or \
                                 (type(OPTION)==type(()) and 'SPMX_ELGA' in OPTION)",
-                    NOM_CHAM  =SIMP(statut='o',typ='TXM',fr="Nom du champ pour SPMX_ELGA" ),
+                    NOM_CHAM  =SIMP(statut='o',typ='TXM',into=("SIEF_ELGA","EPSI_ELGA","SIEQ_ELGA","EPEQ_ELGA","VARI_ELGA"),
+                                    fr="Nom du champ pour SPMX_ELGA",),
                     NOM_CMP   =SIMP(statut='o',typ='TXM',fr="Nom de la composante pour SPMX_ELGA"),),
                                  ),
 
@@ -316,7 +318,8 @@ b_charge =BLOC( condition = "OPTION in ('EPME_ELNO','EPSI_ELGA','EPME_ELGA','EPS
 
 #              Les 2 mots cles suivants ne sont utiles qu' a l'option SPMX_ELGA
 #              mais  on est obligé de les laisser ici a cause des blocs
-               NOM_CHAM  =SIMP(statut='f',typ='TXM',fr="Nom du champ pour SPMX_ELGA"),
+               NOM_CHAM  =SIMP(statut='f',typ='TXM',into=("SIEF_ELGA","EPSI_ELGA","SIEQ_ELGA","EPEQ_ELGA","VARI_ELGA"),
+                               fr="Nom du champ pour SPMX_ELGA",),
                NOM_CMP   =SIMP(statut='f',typ='TXM',fr="Nom de la composante pour SPMX_ELGA"),
 
                b_erre_qi =BLOC(condition = "OPTION in ('QIRE_ELEM','QIZ1_ELEM','QIZ2_ELEM') or \
@@ -430,7 +433,8 @@ b_charge =BLOC( condition = "OPTION in ('EPME_ELNO','EPSI_ELGA','EPME_ELGA','EPS
                            into=("SPMX_ELGA",) ),
                b_maxi    =BLOC( condition = "OPTION=='SPMX_ELGA' or \
                                 (type(OPTION)==type(()) and 'SPMX_ELGA' in OPTION)",
-                    NOM_CHAM  =SIMP(statut='o',typ='TXM',fr="Nom du champ pour SPMX_ELGA" ),
+                    NOM_CHAM  =SIMP(statut='o',typ='TXM',into=("SIEF_ELGA","EPSI_ELGA","SIEQ_ELGA","EPEQ_ELGA","VARI_ELGA"),
+                                    fr="Nom du champ pour SPMX_ELGA",),
                     NOM_CMP   =SIMP(statut='o',typ='TXM',fr="Nom de la composante pour SPMX_ELGA"),),
                                  ),
 

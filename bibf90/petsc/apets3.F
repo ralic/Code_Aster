@@ -1,9 +1,9 @@
       SUBROUTINE APETS3(ACTION,KPTSC)
       IMPLICIT NONE
 !           CONFIGURATION MANAGEMENT OF EDF VERSION                  
-!& MODIF APETS3 PETSC  DATE 23/11/2010   AUTEUR DESOZA T.DESOZA 
+!& MODIF APETS3 PETSC  DATE 29/03/2011   AUTEUR BOITEAU O.BOITEAU 
 ! ================================================================== 
-! COPYRIGHT (C) 1991 - 2008  EDF R&D              WWW.CODE-ASTER.ORG 
+! COPYRIGHT (C) 1991 - 2011  EDF R&D              WWW.CODE-ASTER.ORG 
 !                                                                    
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR      
 ! MODIFY IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS     
@@ -145,7 +145,10 @@
           CALL CRSMSP(SOLVBD,NOMAT)
 !         INSTANCIATION DU PRECONDITIONNEUR
           call PCSetUp(pc,ierr)
-          CALL ASSERT(ierr.EQ.0)
+!         ERREUR : PCENT_PIVOT PAS SUFFISANT
+          IF (ierr.NE.0) THEN
+            CALL U2MESS('F','PETSC_15')
+          ENDIF
         ELSE IF (ACTION.EQ.'RESOUD') THEN
 !         CREATION SOLVEUR BIDON SIMPLE PRECISION
           SOLVBD=ZK24(JSLVK-1+3)
@@ -190,7 +193,9 @@
       ENDIF
 
       call PCSetUp(pc,ierr)
-      CALL ASSERT(ierr.EQ.0)
+      IF (ierr.NE.0) THEN
+        CALL U2MESS('F','PETSC_14')
+      ENDIF
 
       
       

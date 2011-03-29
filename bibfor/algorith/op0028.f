@@ -1,7 +1,7 @@
       SUBROUTINE OP0028()
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/02/2011   AUTEUR BARGELLI R.BARGELLINI 
+C MODIF ALGORITH  DATE 29/03/2011   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -105,8 +105,6 @@ C
 C --- NOM DU CONCEPT 
       CALL GETRES(SDDISC,K16BID,K16BID)
 C
-
-C
 C     -----------------------------------
 C     MOT-CLE FACTEUR DEFI_LIST
 C     -----------------------------------
@@ -177,15 +175,14 @@ C       ENREGISTRMENET DE DTMIN
       ELSEIF (CL.EQ.'AUTO') THEN
         ZR(JLIR-1+1)= 2.D0
         
-C       si pas implex  pasmn = R8prem
-C       sinon =PAS0/1000
         CALL GETVR8(MCFACT,'PAS_MAXI' ,1,1,1,PASMAX,IBID)         
         IF (MODETP.EQ.'IMPLEX') THEN
           PAS0  = ZR(JINST+1)-ZR(JINST)
           PASMIN = PAS0/1000
           IF (IBID.EQ.0) PASMAX = PAS0*10
         ELSE
-          PASMIN = R8PREM()
+C         PASMIN = CELLE DE VAL_MIN DE PAS_MINI (DEFI_LIST_INST.CAPY)
+          PASMIN = 1.D-12
           IF (IBID.EQ.0) PASMAX = ZR(JDITR-1+NBINST) - ZR(JDITR-1+1)
         ENDIF
         CALL GETVR8(MCFACT,'PAS_MINI' ,1,1,1,PASMIN,IBID)
@@ -193,8 +190,6 @@ C       sinon =PAS0/1000
 
         CALL GETVIS(MCFACT,'NB_PAS_MAXI' ,1,1,1,NBPAMX,IBID)     
 
-        RAPP = MIN (PASMAX / PASMIN, ISMAEM()*1.D0)
-        IF (IBID.EQ.0) NBPAMX = CEIL(RAPP)
         ZR(JLIR-1+2)= PASMIN
         ZR(JLIR-1+3)= PASMAX
         ZR(JLIR-1+4)= NBPAMX

@@ -1,8 +1,11 @@
-      SUBROUTINE TE0291 ( OPTION , NOMTE )
+      SUBROUTINE TE0291(OPTION,NOMTE)
+      IMPLICIT NONE
+      CHARACTER*16 OPTION,NOMTE
+C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 14/10/2008   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF ELEMENTS  DATE 29/03/2011   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -15,32 +18,19 @@ C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
 C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-      IMPLICIT REAL*8 (A-H,O-Z)
-      CHARACTER*16        OPTION , NOMTE
-C ......................................................................
-C    - FONCTION REALISEE:  CALCUL DU CHAM_ELEM_ERREUR EN 2D
-C                          OPTION : 'CALC_ESTI_ERRE'
+C RESPONSABLE DELMAS J.DELMAS
 C
-C    - ARGUMENTS:
-C        DONNEES:      OPTION       -->  OPTION DE CALCUL
-C                      NOMTE        -->  NOM DU TYPE ELEMENT
-C ......................................................................
+C     BUT:
+C         CALCUL DE L'INDICATEUR D'ERREUR EN ENERGIE
+C         SUR UN ELEMENT 2D AVEC LA METHODE DE ZHU-ZIENKIEWICZ.
+C         OPTION : 'CALC_ESTI_ERRE'
 C
-      CHARACTER*8        NOMRES(2)
-      CHARACTER*2        CODRET(2)
-      CHARACTER*4        FAMI
-      REAL*8             DFDX(9),DFDY(9),POIDS,VALRES(2)
-      REAL*8             SIXX,SIYY,SIZZ,SIXY,RR
-      REAL*8             SIG11,SIG22,SIG33,SIG12,R,TH,THETA,NORVRA,NORV
-      REAL*8             XX,YY,E,NU,ESIG,EEST,NOR,NORSIG,NU0,NUE,HE
-      INTEGER            NNO,KP,NPG1,I,K,IVECTT,NNOS,JGANO,NDIM
-      INTEGER            IPOIDS,IVF,IDFDE,IGEOM,IRET,NIV
-      LOGICAL            LTEATT
+C ......................................................................
 C
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
-      CHARACTER*32       JEXNUM , JEXNOM , JEXR8 , JEXATR
+C
       INTEGER            ZI
       COMMON  / IVARJE / ZI(1)
       REAL*8             ZR
@@ -55,7 +45,24 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       CHARACTER*32                                    ZK32
       CHARACTER*80                                              ZK80
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
+C
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
+C
+      INTEGER NNO,KP,NPG1,I,K,NNOS,JGANO,NDIM
+      INTEGER IPOIDS,IVF,IDFDE,IGEOM,NIV
+      INTEGER IBID,IERR,IMATE,ISIEF,ISIG,MATER
+
+      REAL*8 DFDX(9),DFDY(9),POIDS,VALRES(2)
+      REAL*8 SIG11,SIG22,SIG33,SIG12,R
+      REAL*8 XX,YY,E,NU,EEST,NOR,NORSIG,NU0,HE
+
+      CHARACTER*2 CODRET(2)
+      CHARACTER*4 FAMI
+      CHARACTER*8 NOMRES(2)
+
+      LOGICAL LTEATT
+C
+C ----------------------------------------------------------------------
 C
       FAMI = 'RIGI'
       CALL ELREF4(' ',FAMI,NDIM,NNO,NNOS,NPG1,IPOIDS,IVF,IDFDE,JGANO)
@@ -127,7 +134,12 @@ C
       NIV=1 
       CALL UTHK(NOMTE,IGEOM,HE,NDIM,IBID,IBID,IBID,IBID,NIV,IBID)
 C
-      NU0 = 100.D0*SQRT(ZR(IERR)/(ZR(IERR)+NORSIG))
+      IF ((ZR(IERR)+NORSIG).NE.0.D0) THEN
+        NU0 = 100.D0*SQRT(ZR(IERR)/(ZR(IERR)+NORSIG))
+      ELSE
+        NU0 = 0.D0
+      ENDIF
+
       ZR(IERR  ) = SQRT(ZR(IERR))
       ZR(IERR+1) = NU0
       ZR(IERR+2) = SQRT(NORSIG)

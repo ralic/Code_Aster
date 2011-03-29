@@ -1,9 +1,9 @@
-      SUBROUTINE NMEXTJ(NOMA  ,NOMMAI,NOMCHA,CHAMP ,NBCMP ,
-     &                  LISTCP,EXTRCP,NUM   ,SNUM  ,NVALCP,
-     &                  VALRES)
+      SUBROUTINE NMEXTJ(NOMCHA,NBCMP ,LISTCP,EXTRCP,NUM   ,
+     &                  SNUM  ,NVALCP,NUMMAI,JCESD ,JCESV ,
+     &                  JCESL ,JCESC ,VALRES)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 17/01/2011   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 28/03/2011   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -23,15 +23,15 @@ C ======================================================================
 C RESPONSABLE ABBAS M.ABBAS
 C
       IMPLICIT      NONE
-      CHARACTER*8   NOMA,NOMMAI
-      CHARACTER*16  NOMCHA
+      CHARACTER*24  NOMCHA
       INTEGER       NBCMP
       INTEGER       NVALCP
       REAL*8        VALRES(*)
-      CHARACTER*19  CHAMP
       CHARACTER*24  LISTCP
       CHARACTER*8   EXTRCP
       INTEGER       NUM,SNUM
+      INTEGER       NUMMAI
+      INTEGER       JCESD,JCESV,JCESL,JCESC
 C
 C ----------------------------------------------------------------------
 C
@@ -43,14 +43,15 @@ C ----------------------------------------------------------------------
 C
 C
 C IN  EXTRCP : TYPE D'EXTRACTION SUR LES COMPOSANTES
-C IN  NOMMAI : NOM DE LA MAILLE
 C IN  NOMCHA : NOM DU CHAMP
-C IN  NOMA   : NOM DU MAILLAGE
-C IN  CHAMP  : CHAMP OBSERVE
 C IN  NBCMP  : NOMBRE DE COMPOSANTES
 C IN  LISTCP : LISTE DES COMPOSANTES
 C IN  NUM    : NUMERO POINT DE GAUSS
 C IN  SNUM   : NUMERO SOUS-POINT DE GAUSS
+C IN  JCESD  : ADRESSE ACCES CHAM_ELEM_S.CESD
+C IN  JCESV  : ADRESSE ACCES CHAM_ELEM_S.CESV
+C IN  JCESL  : ADRESSE ACCES CHAM_ELEM_S.CESL
+C IN  JCESC  : ADRESSE ACCES CHAM_ELEM_S.CESC
 C OUT VALRES : VALEUR DES COMPOSANTES
 C OUT NVALCP : NOMBRE EFFECTIF DE COMPOSANTES
 C
@@ -77,13 +78,11 @@ C
       PARAMETER    (NPARX=20)
       CHARACTER*8  NOMCMP(NPARX)
       REAL*8       VALCMP(NPARX)           
-      REAL*8       VALE
-      INTEGER      NEFF
-      INTEGER      ICMP,IPAR,IRET,IEFF
-      INTEGER      JCMP
+      INTEGER      NEFF,NBCMPX
+      INTEGER      ICMP,IPAR,IRET,IEFF,I
+      INTEGER      JCMP,IAD
       CHARACTER*8  CMP,NOMVAR
       INTEGER      IVARI
-      COMPLEX*16   C16BID
 C
 C ----------------------------------------------------------------------
 C
@@ -92,6 +91,7 @@ C
 C --- INITIALISATIONS
 C      
       IEFF   = 1
+      NBCMPX = ZI(JCESD+4)
       CALL ASSERT(NBCMP.LE.NPARX)  
 C 
 C --- NOM DES COMPOSANTES
@@ -112,11 +112,16 @@ C
         ELSE 
           IVARI  = 0
         ENDIF
-        CALL UTCH19(CHAMP ,NOMA  ,NOMMAI,' '   ,NUM   ,
-     &              SNUM  ,IVARI ,NOMCMP,'R'   ,VALE  ,
-     &              C16BID,IRET  )
-        IF (IRET.NE.1) THEN
-          VALCMP(IEFF) = VALE
+        IF (NOMCHA(1:4).EQ.'VARI') THEN
+          ICMP = IVARI
+        ELSE
+          DO 40 I=1,NBCMPX
+            IF (CMP.EQ.ZK8(JCESC-1+I)) ICMP=I
+  40      CONTINUE
+        ENDIF
+        CALL CESEXI('C',JCESD,JCESL,NUMMAI,NUM,SNUM,ICMP,IAD)
+        IF (IAD.GT.0) THEN
+          VALCMP(IEFF) = ZR(JCESV+IAD-1)
           IEFF         = IEFF + 1
         ENDIF
   30  CONTINUE
@@ -126,6 +131,7 @@ C --- EVALUATION
 C
       CALL NMEXTV(NEFF  ,EXTRCP,NOMCMP,VALCMP,NVALCP,
      &            VALRES)
+C
       CALL ASSERT(NVALCP.LE.NBCMP)
 C
       CALL JEDEMA()

@@ -1,6 +1,6 @@
       SUBROUTINE OP0100()
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 14/03/2011   AUTEUR GENIAUT S.GENIAUT 
+C MODIF CALCULEL  DATE 29/03/2011   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -166,6 +166,7 @@ C        PASSER DE LA PRESENCE DE CES MOTS-CLES.
       CALL JEVEUO ( VECORD, 'L', IVEC )
       IORD = ZI(IVEC)
       CALL MEDOM1(MODELE,MATE,K8B,VCHAR,NCHA,K4B,RESUCO,IORD)
+            
       CALL DISMOI('F','DIM_GEOM',MODELE,'MODELE',DIME,K8B,IER)
       CALL NMDORC(MODELE,COMPOR,K24B)
       CALL GVERLC(RESUCO,COMPOR,IORD)
@@ -230,10 +231,10 @@ C------------------------------------------
            CALL GETVID ( 'THETA','FOND_FISS', 1,1,1,K8B,N1)
            CALL GETVID ( 'THETA','FISSURE', 1,1,1, K8B,N2)
            IF((OPTION(1:6).EQ.'CALC_K' .OR. OPTION.EQ.'K_G_MODA')
-     &        .AND.N2.EQ.0)THEN
+     &    .AND.N2.EQ.0)THEN
               CALL U2MESK('F','RUPTURE0_29',1,OPTION(1:8))
            ELSEIF((OPTION(1:6).NE.'CALC_K' .AND. OPTION.NE.'K_G_MODA')
-     &          .AND.N1.EQ.0)THEN
+     &        .AND.N1.EQ.0)THEN
               IF (OPTION.EQ.'CALC_G' .AND. N2.NE.0) THEN
                 OPTION = 'CALC_G_X'
               ELSE
@@ -243,16 +244,14 @@ C------------------------------------------
          ENDIF
       ENDIF
       IF(DIME.EQ.2)THEN
-       CALL GETVID ( 'THETA','FISSURE'  , 1,1,1,FISS,N2)
-       CALL GETVID ( 'THETA','FOND_FISS', 1,1,1,FOND,N1)
+        CALL GETVID ( 'THETA','FISSURE'  , 1,1,1,FISS,N2)
+        CALL GETVID ( 'THETA','FOND_FISS', 1,1,1,FOND,N1)
        
-       IF (N2.NE.0.AND.OPTION.EQ.'CALC_G')
-     &        OPTION = 'CALC_G_X'
-       IF(OPTION.EQ.'CALC_K_G' .OR. OPTION.EQ.'K_G_MODA')THEN
-           IF (N1+N2.EQ.0.OR.N1*N2.NE.0)
-     &         CALL U2MESK('F','RUPTURE1_11',1,OPTION)
-           IF (N2.NE.0.AND.OPTION.EQ.'CALC_K_G')
-     &         OPTION = 'CALC_K_X'
+        IF (N2.NE.0.AND.OPTION.EQ.'CALC_G') OPTION = 'CALC_G_X'
+        IF(OPTION.EQ.'CALC_K_G' .OR. OPTION.EQ.'K_G_MODA') THEN
+          IF (N1+N2.EQ.0.OR.N1*N2.NE.0) 
+     &       CALL U2MESK('F','RUPTURE1_11',1,OPTION)
+          IF (N2.NE.0.AND.OPTION.EQ.'CALC_K_G') OPTION = 'CALC_K_X'
         ENDIF
       ENDIF
 C
@@ -337,7 +336,7 @@ C 2.7. ==> FOND_FISS, FISSURE, LISSAGE,
 C----------------------------------------------------
 C
 C 2.7.1 ==> SI 3D LOCAL :
-      IF(TROIDL)THEN
+      IF (TROIDL)THEN
 
 C     - FOND_FISS ET FISSURE :
       IF (OPTION(1:6) .EQ. 'CALC_K' .OR.

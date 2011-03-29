@@ -1,4 +1,4 @@
-#@ MODIF recal Macro  DATE 31/01/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF recal Macro  DATE 28/03/2011   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -74,6 +74,40 @@ except:
    def UTMESS(code='I', txt='',valk='', vali='', valr=''):
        print txt, valk, vali, valr
        if code=='F': sys.exit()
+
+
+# -------------------------------------------------------------------------------
+def affiche(unity, filename, label='', filetype='stderr'):
+   """ Affiche un fichier dans l'output courant (methode utilisee pour l'affichage
+       du stdout et/ou du stderr
+   """
+   try:
+       f=open(filename, 'r')
+       txt = f.read()
+       txt = """
+
+============================ %s (%s) =============================
+
+
+%s
+
+
+======================================================================
+======================================================================
+
+""" % (label, filetype, txt)   
+
+       f.close()
+
+       if unity:
+           fw=open('fort.%s' % str(unity), 'a')
+           fw.write( txt )
+           fw.close()
+       else:
+           print txt
+   except Exception, e: 
+       print e
+   return
 
 
 # # -------------------------------------------------------------------------------
@@ -364,6 +398,10 @@ class CALCULS_ASTER:
        self.ASTER_ROOT         = None
 
        self.jdc                = jdc
+
+       self.follow_output      = False
+       self.unity_follow       = None
+
 
        self.list_params        = [x[0] for x in parametres]
        self.list_params.sort()
@@ -693,7 +731,9 @@ class CALCULS_ASTER:
         # ----------------------------------------------------------------------------
         sys.argv = ['']
         run = AsRunFactory()
-        if info<=2: run.options['debug_stderr'] = False  # pas d'output d'executions des esclaves dans l'output maitre
+        #if info<=2: run.options['debug_stderr'] = False  # pas d'output d'executions des esclaves dans l'output maitre
+        if self.unity_follow and info==2: run.options['debug_stderr'] = True
+        else:                             run.options['debug_stderr'] = False  # pas d'output d'executions des esclaves dans l'output maitre
 
         # Master profile
         prof = ASTER_PROFIL(filename=export)
@@ -815,22 +855,29 @@ class CALCULS_ASTER:
             else:                output_filename = ''
             d_diag[label] = diag
 
+            # Affichage de l'output de l'esclave dans l'output du maitre
+            if self.unity_follow:
+                affiche(unity=self.unity_follow, filename=output_filename, label=label, filetype='stdout')
+
+            # Calcul esclave NOOK
             if not diag[0:2] in ['OK', '<A']:
+
+              # Affichage de l'output et/ou de l'error de l'esclave dans l'output du maitre
+              try:
+                  affiche(unity=None, filename=output_filename, label=label, filetype='stdout')
+                  error_filename = '.'.join(output_filename.split('.')[0:-1]) + '.e' + output_filename.split('.')[-1][1:]
+                  affiche(unity=None, filename=error_filename, label=label, filetype='stderr')
+              except Exception, e: 
+                  print e
+
               if diag in ['<F>_NOT_RUN', '<A>_NOT_SUBMITTED']:
                   UTMESS('F', 'RECAL0_86', valk=(label, diag))
               else:
                   UTMESS('A', 'RECAL0_83', valk=(label, output_filename))
 
-#                  # Affichage de l'output
-#                  try:
-#                     f=open(output_filename, 'r')
-#                     print f.read()
-#                     f.close()
-#                  except: pass
-
 
         if not d_diag: 
-                UTMESS('F', 'RECAL0_84', valk=resudir)
+            UTMESS('F', 'RECAL0_84', valk=resudir)
         self.list_diag = [ d_diag[label] for label in labels ]
 
         # ----------------------------------------------------------------------------

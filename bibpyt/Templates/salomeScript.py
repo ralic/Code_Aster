@@ -1,4 +1,4 @@
-#@ MODIF salomeScript Templates  DATE 15/03/2011   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF salomeScript Templates  DATE 28/03/2011   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -24,7 +24,7 @@ import os
 #
 # Pour isovaleurs
 # INPUTFILE1 : Fichier de resultat MED
-# CHOIX = 'DEPL', 'ISO', 'GAUSS'
+# CHOIX = 'DEPL', 'ISO', 'GAUSS', 'ON_DEFORMED'
 #
 # Pour courbes
 # INPUTFILE1 : Fichier de resultat TXT
@@ -43,7 +43,7 @@ CHOIX       = 'DEPL'
 
 #%=================================================================%
 
-if CHOIX not in ['DEPL','ISO','GAUSS','COURBE']: raise "Erreur de type de visualisation!"
+if CHOIX not in ['DEPL','ISO','GAUSS','COURBE', 'ON_DEFORMED']: raise "Erreur de type de visualisation!"
 if not os.path.isfile(INPUTFILE1): raise "Fichier %s non present!" % INPUTFILE1
 
 
@@ -108,21 +108,53 @@ else :
      LISTE_CHAMP_CELL = myResult.GetFields(MAILLAGE,VISU.CELL)
      LISTE_CHAMP_NODE = myResult.GetFields(MAILLAGE,VISU.NODE)
 
+     resu=[]
+
+
+     if CHOIX =='ON_DEFORMED' :
+         if LISTE_CHAMP_NODE ==[] : raise "Erreur de champ"
+         TYPE_ENTITE=VISU.NODE
+         NOM_CHAMP = LISTE_CHAMP_NODE[0]
+         NUM_INST = myResult.GetTimeStampNumbers(MAILLAGE,TYPE_ENTITE,NOM_CHAMP)[0]
+
+         if LISTE_CHAMP_CELL ==[] :
+            TYPE_SCAL=VISU.NODE
+            NOM_CHAMP_SCAL = LISTE_CHAMP_NODE[1]
+         else :
+            TYPE_SCAL=VISU.CELL
+            NOM_CHAMP_SCAL = LISTE_CHAMP_CELL[0]
+
+         nCMP=myResult.GetNumberOfComponents(MAILLAGE,TYPE_SCAL,NOM_CHAMP_SCAL)
+         for i in range(1,nCMP+1) :
+            res = myVisu.DeformedShapeAndScalarMapOnField(myResult,MAILLAGE,TYPE_ENTITE,NOM_CHAMP,NUM_INST)
+            res.SetScalarField(TYPE_SCAL,NOM_CHAMP_SCAL,NUM_INST)
+            res.SetScalarMode(i)
+            resu.append(res)
+
+
      if CHOIX == 'DEPL' :
          TYPE_ENTITE=VISU.NODE
          if LISTE_CHAMP_NODE ==[] : raise "Erreur de champ"
          NOM_CHAMP = LISTE_CHAMP_NODE[0]
          NUM_INST = myResult.GetTimeStampNumbers(MAILLAGE,TYPE_ENTITE,NOM_CHAMP)[0]
-         resu = myVisu.DeformedShapeOnField(myResult,MAILLAGE,TYPE_ENTITE,NOM_CHAMP,NUM_INST)
-         resu.ShowColored(True)
+         res = myVisu.DeformedShapeOnField(myResult,MAILLAGE,TYPE_ENTITE,NOM_CHAMP,NUM_INST)
+         res.ShowColored(True)
+         nCMP=1
+         resu.append(res)
+
 
      if CHOIX == 'GAUSS' :
          TYPE_ENTITE=VISU.CELL
          if LISTE_CHAMP_CELL ==[] : raise "Erreur de champ"
          NOM_CHAMP = LISTE_CHAMP_CELL[0]
          NUM_INST = myResult.GetTimeStampNumbers(MAILLAGE,TYPE_ENTITE,NOM_CHAMP)[0]
-         resu = myVisu.GaussPointsOnField(myResult,MAILLAGE,TYPE_ENTITE,NOM_CHAMP,NUM_INST)
-         resu.SetIsDispGlobalScalarBar(False)
+         nCMP=myResult.GetNumberOfComponents(MAILLAGE,TYPE_ENTITE,NOM_CHAMP)
+         for i in range(1,nCMP+1) :
+             res = myVisu.GaussPointsOnField(myResult,MAILLAGE,TYPE_ENTITE,NOM_CHAMP,NUM_INST)
+             res.SetIsDispGlobalScalarBar(False)
+             res.SetScalarMode(i)
+             resu.append(res)
+
 
      if CHOIX == 'ISO' :
          if  LISTE_CHAMP_CELL ==[] : 
@@ -134,7 +166,12 @@ else :
              NOM_CHAMP = LISTE_CHAMP_CELL[0]
 
          NUM_INST = myResult.GetTimeStampNumbers(MAILLAGE,TYPE_ENTITE,NOM_CHAMP)[0]
-         resu = myVisu.ScalarMapOnField(myResult,MAILLAGE,TYPE_ENTITE,NOM_CHAMP,NUM_INST)
+         nCMP=myResult.GetNumberOfComponents(MAILLAGE,TYPE_ENTITE,NOM_CHAMP)
+         for i in range(1,nCMP+1) :
+           res= myVisu.ScalarMapOnField(myResult,MAILLAGE,TYPE_ENTITE,NOM_CHAMP,NUM_INST)
+           res.SetScalarMode(i)
+           resu.append(res)
+
 
 
 #%=============== Affichage ============================%
@@ -143,7 +180,8 @@ myView1 = myViewManager.GetCurrentView()
 if CHOIX=='COURBE':
     myView1 = myViewManager.CreateXYPlot()
     myView1.Display(myContainer)
-    salome.sg.updateObjBrowser(1)
+    session = naming_service.Resolve('/Kernel/Session')
+    session.emitMessageOneWay("updateObjBrowser")
 else :
     if myView1 is None :
         myView1 = myViewManager.Create3DView()
@@ -152,8 +190,7 @@ else :
              myView1 = myViewManager.Create3DView()
              if myView1 is None : raise "Erreur de vue VTK"
 
-    myView1.DisplayOnly(resu)
+    myView1.DisplayOnly(resu[nCMP-1])
     myView1.FitAll()
-    salome.sg.updateObjBrowser(1)
 
 #%==================FIN ================================%

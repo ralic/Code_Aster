@@ -1,4 +1,4 @@
-#@ MODIF post_gp_ops Macro  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
+#@ MODIF post_gp_ops Macro  DATE 29/03/2011   AUTEUR MACOCCO K.MACOCCO 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -48,52 +48,54 @@ def post_gp_ops(self, **args):
    CALC_ELEM     = self.get_cmd('CALC_ELEM')
    RECU_FONCTION = self.get_cmd('RECU_FONCTION')
    DEFI_GROUP    = self.get_cmd('DEFI_GROUP')
+   EXTR_RESU      = self.get_cmd('EXTR_RESU')
    DETRUIRE      = self.get_cmd('DETRUIRE')
    FIN           = self.get_cmd('FIN')
    
    tmp_liste_inst_postgp = []
    
+   #----------------------------------------------------------
    # ----- Comptage, commandes + déclaration concept sortant
+   #----------------------------------------------------------
    self.set_icmd(1)
    self.DeclareOut('result', self.sd)
    self.DeclareOut('tabresult', self['TABL_GPMAX'])
    if (self['TABL_GP']!= None ):   
-    self.DeclareOut('tabgp', self['TABL_GP'])
-    if (self['LIST_INST']!=None) :
-     LIST_INST =  self['LIST_INST']
-     tmp_list_inst1 = aster.getvectjev(string.ljust(LIST_INST.nom,19)+'.VALE')
-     for itmp in tmp_list_inst1 :  
-      tmp_liste_inst_postgp.append(itmp)
-    if (self['INST']!=None) :
-     tmp_INST =  self['INST']
-     for jtmp in tmp_INST :
-      tmp_liste_inst_postgp.append(jtmp)
-      
-    liste_inst_postgp = list(set(tmp_liste_inst_postgp))
-    liste_inst_postgp.sort()
+       self.DeclareOut('tabgp', self['TABL_GP'])
 
+   liste_inst_post = self['LIST_INST']
+   Resultat = EXTR_RESU(RESULTAT=self['RESULTAT'],ARCHIVAGE=_F(LIST_INST=liste_inst_post))
+   liste_inst_postgp = aster.getvectjev(string.ljust(liste_inst_post.nom,19)+'.VALE')
+   
+
+   #----------------------------------------------------------
    # ---- Recuperation du nombre d'instants deja calculés 
-   num_ord = len(NP.nonzero(aster.getvectjev(string.ljust(self['RESULTAT'].nom,19)+'.ORDR        '))[0])
+   #----------------------------------------------------------
+   if aster.getvectjev(string.ljust(Resultat.nom,19)+'.ORDR        ').__contains__(0):UTMESS('F','POST0_37')
+   num_ord = len(aster.getvectjev(string.ljust(Resultat.nom,19)+'.ORDR        '))
+   liste_ord = aster.getvectjev(string.ljust(Resultat.nom,19)+'.ORDR        ')
+
            
    # Cas 2D
    if self['THETA_2D'] is not None:
       is_2D = True
    else:
       is_2D = False
+      UTMESS('A','POST0_38')
+      # TABLE GP à remplier pour 3D
+      liste_3d_inst =  []  
+      liste_3d_lieu =  []  
+      liste_3d_icop =  []
+      liste_3d_deltal =  [] 
+      liste_3d_gp =  []
 
    info = self['INFO']
    type_def = self['TYPE_DEF']
    
-   # TABLE GP à remplier pour 3D
-   liste_3d_inst =  []
-   liste_3d_lieu =  []  
-   liste_3d_icop =  []
-   liste_3d_deltal =  [] 
-   liste_3d_gp =  []
    
-   
-   
+   #----------------------------------------------------------
    # 0. ----- Type de calcul
+   #----------------------------------------------------------
    identification = self['IDENTIFICATION'] != None
    if identification:
       # 0.1. --- identification : on boucle sur les valeurs de TEMP.
@@ -120,19 +122,25 @@ def post_gp_ops(self, **args):
       l_crit = [l_crit,]
    
 
+   #----------------------------------------------------------
    # Maillage associe au modele
+   #----------------------------------------------------------
    __MAIL = aster.getvectjev( self['MODELE'].nom.ljust(8) + '.MODELE    .LGRF        ' )
    nom_maillage = __MAIL[0].strip()
    
    maya = self.get_concept(nom_maillage)
    ltyma =aster.getvectjev("&CATA.TM.NOMTM")
    
+   #----------------------------------------------------------
    # Excitation 
+   #----------------------------------------------------------
    args={}      
    if self['EXCIT']:args={'EXCIT'   : self['EXCIT'].List_F()}
 
    
+   #----------------------------------------------------------
    # 1. ----- calcul de G-theta
+   #----------------------------------------------------------
 
    if is_2D:
       nbcour = len(self['THETA_2D'])
@@ -148,7 +156,7 @@ def post_gp_ops(self, **args):
                                           R_SUP=dMC['R_SUP']),)
    
          __gtheta = CALC_G(THETA=_F(THETA=__theta),
-                           RESULTAT=self['RESULTAT'],
+                           RESULTAT=Resultat,
                            TOUT_ORDRE='OUI',
                            SYME_CHAR=self['SYME_CHAR'],
                            COMP_ELAS=self['COMP_ELAS'].List_F(),
@@ -158,21 +166,22 @@ def post_gp_ops(self, **args):
          
          # une Table par couronne
          l_tab.append(tab)      
-  
+         
    else:
       #Cas 3D
       nbcour = len(self['THETA_3D'])
       l_tab = []
       l_noeuds_fissure, pas = getFondFissInfo(self['FOND_FISS'])
       nb_noeuds_fissure = len(l_noeuds_fissure)
+      FOND_FISS =  self['FOND_FISS']
+      lnormale = aster.getvectjev(FOND_FISS.nom.ljust(8)+'.NORMALE              ')
+      if (lnormale==None):UTMESS('F','POST0_39')
       
       for occ in self['THETA_3D']:
          dMC = occ.cree_dict_valeurs(occ.mc_liste)
          
          # on met les mots-clés facultatifs dans des dictionnaires
          dpar_theta = {}
-         if self['DIRECTION'] is not None:
-            dpar_theta['DIRECTION'] = self['DIRECTION']
          
          __gtheta = CALC_G(
                            THETA=_F(R_INF=dMC['R_INF'],
@@ -180,7 +189,7 @@ def post_gp_ops(self, **args):
                                     MODULE=1.0,
                                     FOND_FISS=self['FOND_FISS'],
                                     **dpar_theta),
-                           RESULTAT=self['RESULTAT'],
+                           RESULTAT=Resultat,
                            TOUT_ORDRE='OUI',
                            SYME_CHAR=self['SYME_CHAR'],
                            COMP_ELAS=self['COMP_ELAS'].List_F(),
@@ -193,8 +202,11 @@ def post_gp_ops(self, **args):
          # une Table par couronne
          l_tab.append(tab)
 
-   # 1.1.----- calcul de la mesure des mailles appartenant à l'axe de symétrie 
-   # ou au plan de symétrie
+   #----------------------------------------------------------
+   # 1.1.----- calcul de la mesure des mailles 
+   #           appartenant à l'axe de symétrie 
+   #           ou au plan de symétrie
+   #----------------------------------------------------------
    l_copo_tot = []
    l_ep_copeaux_tot_3D = []
    for tmpocc in self['TRANCHE']:
@@ -210,36 +222,34 @@ def post_gp_ops(self, **args):
    if is_2D:
       # Récupération des noeuds appartenant à la droite de symétrie
       # le vecteur normal est construit comme étant perpendiculaire au vecteur direction
-       if (self['DIRECTION'][0]==1.):
-           ldirection = (0.,1.)
-       elif (self['DIRECTION'][1]==1.):
-           ldirection = (1.,0.)
+      # La commande CALC_THETA/THETA_2D suppose que la composante suivant z est nulle
+       lnormale = (self['DIRECTION'][1],self['DIRECTION'][0])
        Nds_fdfiss = dMC['GROUP_NO']
-       Recup_Noeuds_Surf(is_2D,maya,Nds_fdfiss,ldirection)
-       mesure = Calcul_mesure_2D(is_2D,maya,nbcop,num_ord,l_copo_tot,ltyma,self['RESULTAT'],type_def)
+       Recup_Noeuds_Surf(is_2D,maya,Nds_fdfiss,lnormale)
+       mesure = Calcul_mesure_2D(is_2D,maya,nbcop,num_ord,l_copo_tot,ltyma,Resultat,type_def)
 
    else:
       # Récupération des noeuds appartenant à la surface de symétrie
       # le vecteur normal est récuperé dans FOND_FISS
        FOND_FISS =  self['FOND_FISS']
-       ldirection = aster.getvectjev(FOND_FISS.nom.ljust(8)+'.NORMALE              ')
-       Recup_Noeuds_Surf(is_2D,maya,l_noeuds_fissure[0],ldirection,l_noeuds_fissure)
-       mesure, l_ep_copeaux_tot_3D = Calcul_mesure_3D(is_2D,maya,nbcop,num_ord,l_copo_tot,ltyma,self['RESULTAT'],type_def)
-   Supr_mano(maya)
+       Recup_Noeuds_Surf(is_2D,maya,l_noeuds_fissure[0],lnormale,l_noeuds_fissure)
+       mesure, l_ep_copeaux_tot_3D = Calcul_mesure_3D(is_2D,maya,nbcop,num_ord,l_copo_tot,ltyma,Resultat,type_def)
+       l_ep_copeaux_tot_3D = l_ep_copeaux_tot_3D*num_ord 
+
+   #----------------------------------------------------------
    # 2. ----- Calcul de l'energie élastique en exploitant les groupes de
    #          mailles fournis par la procedure de maillage
+   #----------------------------------------------------------
    l_ep_copeaux_tot = []
-   for it in range(num_ord):
-     for k in range(0,len(l_copo_tot)) :
-       Copeau_k = l_copo_tot[k]
+   for it in range(len(liste_ord)):
+     for Copeau_k in l_copo_tot :
        l_ep_copeaux_tot.append(mesure[Copeau_k][it])
-   l_ep_copeaux_tot_3D=l_ep_copeaux_tot_3D*num_ord   
    l_t_enel = []
    
    if self['TRAC_COMP']=='OUI':
       # prise en compte de la traction-compression dans le calcul de l'energie
       resu2=CALC_ELEM(OPTION=('SIEQ_ELNO'),
-                     RESULTAT=self['RESULTAT'],
+                     RESULTAT=Resultat,
                      )
                      
       # indices des mailles du dernier group_ma
@@ -305,7 +315,7 @@ def post_gp_ops(self, **args):
             d_nomma[id_elem]=elem
             
             E_el[kk] = POST_ELEM(MODELE=self['MODELE'],
-                                 RESULTAT=self['RESULTAT'],
+                                 RESULTAT=Resultat,
                                  TOUT_ORDRE='OUI',
                                  ENER_ELAS=_F(MAILLE=elem),
                                  TITRE='Energie élastique',
@@ -420,7 +430,7 @@ def post_gp_ops(self, **args):
          # calcul classique de l'energie elastique
       
          __ener = POST_ELEM(MODELE=self['MODELE'],
-                                 RESULTAT=self['RESULTAT'],
+                                 RESULTAT=Resultat,
                                  TOUT_ORDRE='OUI',
                                  ENER_ELAS=_F(GROUP_MA=l_copo),
                                  TITRE='Energie élastique',
@@ -466,15 +476,6 @@ def post_gp_ops(self, **args):
       
       # 2.3. ----- Tableau de Gp = f(icop) pour chaque instant    
       
-###############################################################################################
-# BESOIN D4AFFICHE TABLEAU GP pour chque instant dans fichier mess      
-#      print "####Dana_tGp_t_icop####"
-#      Dana_tGp_t_icop = t_enel['INST', 'LIEU', 'ICOP', 'DELTAL', 'GP']
-#      Dana_tGp_t_icop.titr = "Dana Gp à chaque instant en fonction de la distance au " \
-#                          "fond d'entaille"
-#      Dana_tGp_t_icop.ImprTableau()
-###############################################################################################
-                  
       if info >= 2:
          tGp_t_icop = t_enel['INST', 'DELTAL', 'GP']
          tGp_t_icop.titr = "Gp à chaque instant en fonction de la distance au " \
@@ -502,7 +503,7 @@ def post_gp_ops(self, **args):
          if len(t.GP.values())>1:
             t = t.DELTAL.MINI()
          
-         if j == 1:
+         if l_numord.index(j) == 0:
             tb_Gpmax_i = t
          else:
             tb_Gpmax_i = tb_Gpmax_i | t
@@ -710,12 +711,24 @@ def post_gp_ops(self, **args):
             d_para.update({ 'NOM_PARA' : 'KMOY',
                            'NOM_RESU' : 'INST', })
             valkmoy = tabres.KMOY.values()
-            # temps en fonction de Kmoy
-            finv = t_fonction(valkmoy, tabres.INST.values(), d_para)
+            if len(liste_inst_postgp) == 1 :
+                # si un seul instant alors
+                ti = liste_inst_postgp[0]
+            else:
 
-            # valeurs à mettre dans la table
-            # temps correspondant à KJ_CRIT
-            ti   = finv(KJ_CRIT)
+                # temps en fonction de Kmoy
+                finv = t_fonction(valkmoy, tabres.INST.values(), d_para)
+
+                # valeurs à mettre dans la table
+                # temps correspondant à KJ_CRIT
+                ti   = finv(KJ_CRIT)
+                ind_instant_plus = [x > ti for x in liste_inst_postgp].index(True)
+                if (abs(liste_inst_postgp[ind_instant_plus-1]-ti)/ti) <= 1e-4:
+                   ti = liste_inst_postgp[ind_instant_plus-1]
+                elif (abs(liste_inst_postgp[ind_instant_plus]-ti)/ti) <= 1e-4:
+                   ti = liste_inst_postgp[ind_instant_plus]
+                else:
+                   UTMESS('A','POST0_36',valr =tuple(liste_inst_postgp[ind_instant_plus-1:ind_instant_plus+1]))
             
             # GP correspondant au temps critique
             if (message_kjcritique_non_atteint == 1) :
@@ -746,46 +759,55 @@ def post_gp_ops(self, **args):
 
          else:
             
-            l_i_noeuds_sommets = range(0,len(l_noeuds_fissure),pas)
-            t_noeud_Kcrit = Table(para=tabres.para)
-            
-            # On determine quel noeud sommet maximise KMOY au cours du temps:
-            
             row_KMOY_max = tabres.KMOY.MAXI()
             noeud_KMOY_max = row_KMOY_max.NOEUD.values()[0]
-            
-            # avec le noeud ou KJ_CRIT est atteint, on regarde GP a gauche et a droite. 
-            # le GP le plus grand correspond au GPmax
-            # on garde la tranche ou GP est le plus grand            
-            
-            id_noeud_KMOY_max = list(l_noeuds_fissure).index(noeud_KMOY_max)
-            if id_noeud_KMOY_max==0:
-               # "Gpmax sur la 1ere tranche"
-               nume_tranche_Gpmax = 1
-            elif id_noeud_KMOY_max==(len(l_noeuds_fissure)-1):
-               # "Gpmax sur la derniere tranche"
-               nume_tranche_Gpmax = nb_tranches
-            else:
-               # "Gpmax sur une tranche intermediaire"
-               Gpi_tot = Table(para=tb_Gpmax.para)
-               Gpi_gauche = tb_Gpmax.NUME_TRANCHE==(id_noeud_KMOY_max/pas)
-               Gpi_tot.append(Gpi_gauche.rows[0])
-               Gpi_droite = tb_Gpmax.NUME_TRANCHE==(id_noeud_KMOY_max/pas+1)
-               Gpi_tot.append(Gpi_droite.rows[0])
-               Gpi_tab = Gpi_tot.GPMAX.MAXI()
-               nume_tranche_Gpmax = Gpi_tab.NUME_TRANCHE.values()[0]
-            
-            # tb_Gpmax_TrancheCrit est une table de la meme nature que la table 2D tb_Gpmax
-            # i.e. valeurs sur la seule tranche qui nous interesse (ou on sait
-            # que KJ_CRIT sera atteint)
-            
-            tb_Gpmax_TrancheCrit = tb_Gpmax.NUME_TRANCHE==nume_tranche_Gpmax
-            
-            # avec le noeud ou KJ_CRIT est atteint, on determine le temps
-            # critique par interpolation            
+            Gpi = 0.0
+            nume_tranche_kjcrit = 0
+            # On determine par interpolation le temps critique ou KJ_CRIT est atteint
             tabres_NoeudCrit = tabres.NOEUD==noeud_KMOY_max
-            
-            # la suite est idem 2D, seuls les noms des tables changent
+            d_para.update({ 'NOM_PARA' : 'KMOY',
+                           'NOM_RESU' : 'INST', })
+            valkmoy = tabres_NoeudCrit.KMOY.values()
+            if len(liste_inst_postgp) == 1 :
+                # si un seul instant alors
+                ti = liste_inst_postgp[0]
+            else:
+
+                # temps en fonction de Kmoy
+                finv = t_fonction(valkmoy, tabres_NoeudCrit.INST.values(), d_para)
+   
+                # valeurs à mettre dans la table
+                # temps correspondant a KJ_CRIT
+                ti   = finv(KJ_CRIT)
+                ind_instant_plus = [x > ti for x in liste_inst_postgp].index(True)
+                if abs(liste_inst_postgp[ind_instant_plus-1]-ti)/ti < 1e-4:
+                   ti = liste_inst_postgp[ind_instant_plus-1]
+                elif abs(liste_inst_postgp[ind_instant_plus]-ti)/ti < 1e-4:
+                   ti = liste_inst_postgp[ind_instant_plus]
+                else:
+                   UTMESS('A','POST0_36',valr =tuple(liste_inst_postgp[ind_instant_plus-1:ind_instant_plus+1]))
+
+            # Gpmax fonction du temps
+            d_para.update({  'NOM_PARA' : 'INST','NOM_RESU' : 'GPMAX' })
+            for id_noeud_KMOY_max in range(len( tb_Gpmax.NUME_TRANCHE)):
+                if id_noeud_KMOY_max==0:
+                  # "Gpmax sur la 1ere tranche"
+                  nume_tranche_Gpmax = 1
+                elif id_noeud_KMOY_max==(len(l_noeuds_fissure)-1):
+                  # "Gpmax sur la derniere tranche"
+                  nume_tranche_Gpmax = nb_tranches
+                else:
+                  # "Gpmax sur une tranche intermediaire"
+                  Gpi_tot = Table(para=tb_Gpmax.para)
+                  nume_tranche_Gpmax = tb_Gpmax.NUME_TRANCHE[id_noeud_KMOY_max]
+
+                tb_Gpmax_TrancheCrit = tb_Gpmax.NUME_TRANCHE==nume_tranche_Gpmax
+                fGp = t_fonction(tb_Gpmax_TrancheCrit.INST.values(),
+                                 tb_Gpmax_TrancheCrit.GPMAX.values(),
+                                 d_para)
+                if (Gpi<fGp(ti)):
+                  Gpi = max(Gpi,fGp(ti))
+                  nume_tranche_kjcrit = nume_tranche_Gpmax
     
             # définition des fonctions pour faire les interpolations
             d_para.update({ 'NOM_RESU' : 'DELTALMAX' })
@@ -794,23 +816,6 @@ def post_gp_ops(self, **args):
                               tb_Gpmax_TrancheCrit.DELTALMAX.values(),
                               d_para)
             
-            # Gpmax fonction du temps
-            d_para.update({ 'NOM_RESU' : 'GPMAX' })
-            fGp = t_fonction(tb_Gpmax_TrancheCrit.INST.values(),
-                              tb_Gpmax_TrancheCrit.GPMAX.values(),
-                              d_para)
-            
-    
-            d_para.update({ 'NOM_PARA' : 'KMOY',
-                           'NOM_RESU' : 'INST', })
-            valkmoy = tabres_NoeudCrit.KMOY.values()
-            # temps en fonction de Kmoy
-            finv = t_fonction(valkmoy, tabres_NoeudCrit.INST.values(), d_para)
-   
-            # valeurs à mettre dans la table
-            # temps correspondant a KJ_CRIT
-            ti   = finv(KJ_CRIT)
-
             if (message_kjcritique_non_atteint == 1) :
                Gpi     = '-'
                kgpcrit = '-'
@@ -819,7 +824,6 @@ def post_gp_ops(self, **args):
                type_tab_ident=('R', 'R', 'I', 'K8', 'K8', 'K8', 'K24' ) 
             else :
             # GP correspondant au temps critique
-               Gpi  = fGp(ti)
                kgpcrit = fKj(Gpi, **dict_constantes)
                dLcrit  = fdL(ti)
                message = 'KJ CRITIQUE ATTEINT'
@@ -829,7 +833,7 @@ def post_gp_ops(self, **args):
             d_ident = {
                'KJ_CRIT'     : KJ_CRIT,
                'INST'        : ti,
-               'NUME_TRANCHE': int(nume_tranche_Gpmax),
+               'NUME_TRANCHE': nume_tranche_kjcrit,
                'GP_CRIT'     : Gpi,
                'KGP_CRIT'    : kgpcrit,
                'DELTALCRIT'  : dLcrit,
@@ -901,94 +905,33 @@ def post_gp_ops(self, **args):
      # CAS 2D
      if is_2D : 
        
-       # verifier si la liste d'instant definie par POST_GP est inclus dans la liste d'instant de STAT_NON_LINE
-       if (self['LIST_INST']!=None) :
-
-         liste_2d_inst_reduit = []
-         liste_2d_inst_reduit = dict().fromkeys(t_enel['INST'].values()['INST']).keys()
-
-         temps_agarde_gp = Save_VALGP_DE_LISTINST (liste_inst_postgp,liste_2d_inst_reduit, t_enel['INST'].values()['INST'])
-
-         for i in temps_agarde_gp : 
+         for i in range(num_ord) : 
  
            d_tabgp = {
-               'INST'   : t_enel['INST'].values()['INST'][i],
-               'GROUP_MA'   : t_enel['LIEU'].values()['LIEU'][i],
+               'INST'         : t_enel['INST'].values()['INST'][i],
+               'GROUP_MA'     : t_enel['LIEU'].values()['LIEU'][i],
                'NUMERO_COP'   : t_enel['ICOP'].values()['ICOP'][i],
-               'DELTAL' : t_enel['DELTAL'].values()['DELTAL'][i],
-               'GP' : t_enel['GP'].values()['GP'][i],
+               'DELTAL'       : t_enel['DELTAL'].values()['DELTAL'][i],
+               'GP'           : t_enel['GP'].values()['GP'][i],
                 }
            lv_tabgp.append(d_tabgp)
 
-       # si la liste d'instant de POST_GP n'est pas definie        
-       else :
-       
-         temps_agarde_gp = t_enel['INST'].values()['INST']    
-       
-         for i in range(len(temps_agarde_gp)) : 
-           d_tabgp = {
-               'INST'   : t_enel['INST'].values()['INST'][i],
-               'GROUP_MA'   : t_enel['LIEU'].values()['LIEU'][i],
-               'NUMERO_COP'   : t_enel['ICOP'].values()['ICOP'][i],
-               'DELTAL' : t_enel['DELTAL'].values()['DELTAL'][i],
-               'GP' : t_enel['GP'].values()['GP'][i],
-              }
-           lv_tabgp.append(d_tabgp)
-
-       texte = 'GP 2D pour chaque instant'
+           texte = 'GP 2D pour chaque instant'
        
      # CAS 3D
      else :
-       # verifier si la liste d'instant definie par POST_GP est inclus dans la liste d'instant de STAT_NON_LINE
-       if (self['LIST_INST']!=None) :
 
-         liste_3d_inst_reduit = []
-         liste_3d_inst_reduit = dict().fromkeys(liste_3d_inst).keys()
-
-         temps_agarde_gp = Save_VALGP_DE_LISTINST (liste_inst_postgp,liste_3d_inst_reduit,liste_3d_inst)
-
-         for i in temps_agarde_gp : 
+         for i in range(len(liste_3d_inst)) : 
  
            d_tabgp = {
-               'INST'   : liste_3d_inst[i],
-               'GROUP_MA'   : liste_3d_lieu[i],
+               'INST'         : liste_3d_inst[i],
+               'GROUP_MA'     : liste_3d_lieu[i],
                'NUMERO_COP'   : liste_3d_icop[i],
-               'DELTAL' : liste_3d_deltal[i],
-               'GP' : liste_3d_gp[i],
+               'DELTAL'       : liste_3d_deltal[i],
+               'GP'           : liste_3d_gp[i],
               }    
            lv_tabgp.append(d_tabgp)
-       # si la liste d'instant de POST_GP n'est pas definie 
-       else :
-         inst_agarde_gp = []
-         inst_agarde_gp = liste_3d_inst      
-         inst_agarde_gp.sort()
-
-         inst_sauv = []
-         # réorganisation
-         for j in range(len(inst_agarde_gp)) :
-          if j < len(inst_agarde_gp)-1 :
-           if (inst_agarde_gp[j] != inst_agarde_gp[j+1]) :
-            inst_sauv.append(inst_agarde_gp[j])
-         inst_sauv.append(inst_agarde_gp[len(inst_agarde_gp)-1])
-
-         temps_agarde_gp_inst_sauv = []
-         for tmp_inst_sauv in inst_sauv :
-           compteur_inst_sauv = 0
-           for tmp_liste_3d_inst in liste_3d_inst:
-             if (tmp_inst_sauv == tmp_liste_3d_inst) :
-               temps_agarde_gp_inst_sauv.append(compteur_inst_sauv)
-             compteur_inst_sauv = compteur_inst_sauv + 1
-
-         for i in temps_agarde_gp_inst_sauv :
-           d_tabgp = {
-               'INST'   : liste_3d_inst[i],
-               'GROUP_MA'   : liste_3d_lieu[i],
-               'NUMERO_COP'   : liste_3d_icop[i],
-               'DELTAL' : liste_3d_deltal[i],
-               'GP' : liste_3d_gp[i],
-                }
-           lv_tabgp.append(d_tabgp)
-       texte = 'GP 3D pour chaque instant'
+         texte = 'GP 3D pour chaque instant'
      
      
 #    Creation du tableau Gp 2D ou 3D     
@@ -1003,7 +946,7 @@ def post_gp_ops(self, **args):
 
      dprod_tabgp = tab_tabgp.dict_CREA_TABLE()
      tabgp = CREA_TABLE(**dprod_tabgp)
-
+   DETRUIRE(CONCEPT=_F(NOM=Resultat),INFO=1);
 
 # -----------------------------------------------------------------------------
 def CallRCVALE(TEMP, para, MATER):
@@ -1224,15 +1167,15 @@ def Recup_Noeuds_Copeaux(is_2D,maya,Copeau_k):
       DEFI_GROUP(reuse =maya, MAILLAGE=maya, CREA_GROUP_NO=dicma);
 
 
-def Recup_2D(maya,C_k):
+def Recup_2D(maya,C_k,mon_nom):
 
    from Accas import _F
    if C_k==0:
        dicma=[]
-       dicma.append({'NOM' : 'Mai_Plan' })
+       dicma.append({'NOM' : mon_nom })
        DEFI_GROUP(reuse =maya, MAILLAGE=maya, DETR_GROUP_MA=dicma),
        dicma=[]
-       dicma.append({'NOM' : 'Mai_Plan', 'OPTION' : 'APPUI', 'GROUP_NO' : 'Cop_Pl', 'TYPE_APPUI' : 'TOUT'})
+       dicma.append({'NOM' : mon_nom, 'OPTION' : 'APPUI', 'GROUP_NO' : 'Cop_Pl', 'TYPE_APPUI' : 'TOUT'})
        DEFI_GROUP(reuse =maya, MAILLAGE=maya, CREA_GROUP_MA=dicma)
        dicma=[]
        dicma.append({'NOM' : 'Mai_Pla2'})
@@ -1248,10 +1191,10 @@ def Recup_2D(maya,C_k):
        dicma.append({'NOM' : 'Mai_Pla1', 'OPTION' : 'APPUI', 'GROUP_NO' : 'Cop_Pl', 'TYPE_APPUI' : 'TOUT'})
        DEFI_GROUP(reuse =maya, MAILLAGE=maya, CREA_GROUP_MA=dicma),
        dicma=[]
-       dicma.append({'NOM' : 'Mai_Plan'})
+       dicma.append({'NOM' : mon_nom})
        DEFI_GROUP(reuse =maya, MAILLAGE=maya, DETR_GROUP_MA=dicma),
        dicma=[]
-       dicma.append({'NOM' : 'Mai_Plan', 'DIFFE' : ('Mai_Pla1','Mai_Pla2')})
+       dicma.append({'NOM' : mon_nom, 'DIFFE' : ('Mai_Pla1','Mai_Pla2')})
        DEFI_GROUP(reuse =maya, MAILLAGE=maya, CREA_GROUP_MA=dicma),       
        dicma=[]
        dicma.append({'NOM' : 'Mai_Pla2'})
@@ -1260,33 +1203,33 @@ def Recup_2D(maya,C_k):
        dicma.append({'NOM' : 'Mai_Pla2', 'UNION' : ('Mai_Pla1','Mai_Plan')})
        DEFI_GROUP(reuse =maya, MAILLAGE=maya, CREA_GROUP_MA=dicma)
       
-def Recup_3D(maya,C_k):
+def Recup_3D(maya,C_k,mon_nom):
 
    from Accas import _F
    if C_k==0:
        dicma=[]
-       dicma.append({'NOM' : 'Mai_Plan' })
+       dicma.append({'NOM' : mon_nom })
        DEFI_GROUP(reuse =maya, MAILLAGE=maya, DETR_GROUP_MA=dicma),
        dicma=[]
-       dicma.append({'NOM' : 'Mai_Plan', 'OPTION' : 'APPUI', 'GROUP_NO' : 'Cop_Pl', 'TYPE_APPUI' : 'TOUT'})
+       dicma.append({'NOM' : mon_nom, 'OPTION' : 'APPUI', 'GROUP_NO' : 'Cop_Pl', 'TYPE_APPUI' : 'TOUT', 'TYPE_MAILLE' : '2D'})
        DEFI_GROUP(reuse =maya, MAILLAGE=maya, CREA_GROUP_MA=dicma),
        dicma=[]
        dicma.append({'NOM' : 'Mai_Pla2'})
        DEFI_GROUP(reuse =maya, MAILLAGE=maya, DETR_GROUP_MA=dicma),
        dicma=[]
-       dicma.append({'NOM' : 'Mai_Pla2', 'GROUP_MA' : ('Mai_Plan')})
+       dicma.append({'NOM' : 'Mai_Pla2', 'GROUP_MA' : (mon_nom)})
        DEFI_GROUP(reuse =maya, MAILLAGE=maya, CREA_GROUP_MA=dicma),       
 
 
        dicma=[]
        dicma.append(_F(NOM = 'Nds_Delt'))
        dicma.append(_F(NOM = 'Nds_Floc'))
-       dicma.append(_F(NOM = 'Mai_Plan'))
+       dicma.append(_F(NOM = mon_nom))
        DEFI_GROUP(reuse =maya,MAILLAGE=maya,DETR_GROUP_NO=dicma,);
 
        dicma=[]
-       dicma.append(_F(NOM = 'Mai_Plan',GROUP_MA='Mai_Plan'))
-       dicma.append(_F(NOM = 'Nds_Delt',INTERSEC=('Nds_Fond','Mai_Plan')))
+       dicma.append(_F(NOM = mon_nom,GROUP_MA=mon_nom))
+       dicma.append(_F(NOM = 'Nds_Delt',INTERSEC=('Nds_Fond',mon_nom)))
        dicma.append(_F(NOM = 'Nds_Floc',GROUP_NO='Nds_Delt'))
        DEFI_GROUP(reuse =maya, MAILLAGE=maya, CREA_GROUP_NO=dicma);
 
@@ -1298,20 +1241,20 @@ def Recup_3D(maya,C_k):
        dicma.append({'NOM' : 'Mai_Pla1', 'OPTION' : 'APPUI', 'GROUP_NO' : 'Cop_Pl', 'TYPE_APPUI' : 'TOUT'})
        DEFI_GROUP(reuse =maya, MAILLAGE=maya, CREA_GROUP_MA=dicma),
        dicma=[]
-       dicma.append({'NOM' : 'Mai_Plan'})
+       dicma.append({'NOM' : mon_nom})
        DEFI_GROUP(reuse =maya, MAILLAGE=maya, DETR_GROUP_MA=dicma),
        dicma=[]
-       dicma.append({'NOM' : 'Mai_Plan', 'DIFFE' : ('Mai_Pla1','Mai_Pla2')})
+       dicma.append({'NOM' : mon_nom, 'DIFFE' : ('Mai_Pla1','Mai_Pla2'), 'TYPE_MAILLE' : '2D'})
        DEFI_GROUP(reuse =maya, MAILLAGE=maya, CREA_GROUP_MA=dicma),       
        dicma=[]
        dicma.append(_F(NOM = 'Nds_Delt'))
-       dicma.append(_F(NOM = 'Mai_Plan'))
+       dicma.append(_F(NOM = mon_nom))
        dicma.append(_F(NOM = 'Mai_Pla2'))
        DEFI_GROUP(reuse =maya,MAILLAGE=maya,DETR_GROUP_NO=dicma,);
        dicma=[]
-       dicma.append(_F(NOM = 'Mai_Plan', GROUP_MA ='Mai_Plan'))
+       dicma.append(_F(NOM = mon_nom, GROUP_MA =mon_nom))
        dicma.append(_F(NOM = 'Mai_Pla2', GROUP_MA ='Mai_Pla2'))
-       dicma.append(_F(NOM = 'Nds_Delt', INTERSEC = ('Mai_Pla2','Mai_Plan')))
+       dicma.append(_F(NOM = 'Nds_Delt', INTERSEC = ('Mai_Pla2',mon_nom)))
        DEFI_GROUP(reuse =maya,MAILLAGE=maya,CREA_GROUP_NO=dicma);
        dicma=[]
        dicma.append({'NOM' : 'Mai_Pla2'})
@@ -1328,43 +1271,60 @@ def Calcul_mesure_2D(is_2D,maya,nbcop,num_ord,l_copo_tot,ltyma,resu,type_def):
    import numpy as NP
 
    mesure = {}     
+   mon_nom = 'Mai_Plan'
    for C_k in range(nbcop) :
         Copeau_k = l_copo_tot[C_k]
         Recup_Noeuds_Copeaux(True,maya,Copeau_k)
-        Recup_2D(maya,C_k)
+        Recup_2D(maya,C_k,mon_nom)
         if C_k==0:
           mesure[Copeau_k] = NP.zeros(num_ord)
         else:
           mesure[Copeau_k] = mesure[l_copo_tot[C_k-1]]
           
         # Calcul de la surface des mailles du copeau courant pour chaque instant
-        mon_nom = 'Mai_Plan'
         tmp_mesure = NP.zeros(num_ord)
+        tab_noeud=[]
+        tab_maille=[]
         for maille_courante in maya.GROUPEMA.get()[mon_nom.ljust(8)]:
           if ltyma[maya.TYPMAIL.get()[maille_courante]][0:3]=='SEG':
             connexe = maya.CONNEX.get()[maille_courante]
-            coord_nds = []
-            deforme=[]
-            DEP_el = [None]*2
-            for i in range(0,2):
-               tab_DEP_el = Coord_Recup(maya.NOMNOE.get()[connexe[i]-1],maya.NOMMAI.get()[maille_courante],resu)
-               coord_nds.append((tab_DEP_el.COOR_X.values(),tab_DEP_el.COOR_Y.values()))
-               deforme.append((tab_DEP_el.DX.values(),tab_DEP_el.DY.values()))       
+            tab_noeud = tab_noeud + [maya.NOMNOE.get()[connexe[i]-1] for i in range(2)]
+            tab_maille.append(maya.NOMMAI.get()[maille_courante])
+        tab_DEP_el = Coord_Recup(tab_noeud,tab_maille,resu)
+        num_ord_init  = tab_DEP_el.NUME_ORDRE[0]
+        # Calcul de la surface des mailles du copeau courant pour chaque instant
+        Coord_int = []
+        tab_DEP_el_ord = tab_DEP_el.NUME_ORDRE.values()
+        indices = [tab_DEP_el_ord.index(num_ord_init,x) for x in range(tab_DEP_el_ord.index(num_ord_init),tab_DEP_el_ord.index(num_ord_init)+tab_DEP_el_ord.count(num_ord_init))]
+        tab_noeud = [tab_DEP_el.NOEUD[x] for x in indices]
+        tab_coordX = [tab_DEP_el.COOR_X[x] for x in indices]
+        tab_coordY = [tab_DEP_el.COOR_Y[x] for x in indices]
+        tab_coordZ = [tab_DEP_el.COOR_Z[x] for x in indices]
+        for i_maille_courante in range(len(tab_maille)):
+           indic = [tab_noeud.index(tab_noeud[i_maille_courante*2+x]) for x in range(2)]
+           Coord_int = Coord_int + [(tab_coordX[indic[x]],tab_coordY[indic[x]],tab_coordZ[indic[x]]) for x in indic]
+                 
+        # Si le type est grandes déformations alors il faut tenir compte de la déformée lors du calcul de la surface
+        if type_def=='GRAND':
+          l_ord = list(set(tab_DEP_el_ord))
+          for it in range(num_ord):
+               Def_int   = []
+               indices = [tab_DEP_el_ord.index(l_ord[it],x) for x in range(tab_DEP_el_ord.index(l_ord[it]),tab_DEP_el_ord.index(l_ord[it])+tab_DEP_el_ord.count(l_ord[it]))]
+               tab_defoX = [tab_DEP_el.DX[x] for x in indices]
+               tab_defoY = [tab_DEP_el.DY[x] for x in indices]
+               tab_defoZ = [tab_DEP_el.DZ[x] for x in indices]
+               for i_maille_courante in range(len(tab_maille)):
+                   indic = [tab_noeud.index(tab_noeud[i_maille_courante*2+x]) for x in range(2)]
+                   Def_int   = Def_int   + [(tab_defoX[indic[x]], tab_defoY[indic[x]], tab_defoZ[indic[x]])  for x in indic]
+                   tmp_mesure[it] = mesure[Copeau_k][it] + NP.sqrt((Coord_int[0][0]+Def_int[0][0]-Coord_int[1][0]-Def_int[1][0])**2 + 
+                                 (Coord_int[0][1]+Def_int[0][1]-Coord_int[1][1]-Def_int[1][1])**2 + (Coord_int[0][2]+Def_int[0][2]-Coord_int[1][2]-Def_int[1][2])**2)
+          mesure[Copeau_k] = tmp_mesure
+        else:
+          mesure[Copeau_k] = mesure[Copeau_k] + NP.sqrt((Coord_int[0][0]-Coord_int[1][0])**2 + 
+                                 (Coord_int[0][1]-Coord_int[1][1])**2 + (Coord_int[0][2]-Coord_int[1][2])**2)
 
-            if type_def=='GRAND':
-              for it in range(num_ord):
-                Coor_int=[]
-                Def_int=[]
-                for i in range(0,2):
-                  Coor_int.append((coord_nds[i][0][it],coord_nds[i][1][it]))
-                  Def_int.append((deforme[i][0][it],deforme[i][1][it]))
-                tmp_mesure[it] = mesure[Copeau_k][it] + NP.sqrt((Coor_int[0][0]+Def_int[0][0]-Coor_int[1][0]-Def_int[1][0])**2 + 
-                                 (Coor_int[0][1]+Def_int[0][1]-Coor_int[1][1]-Def_int[1][1])**2 )
-            
-              mesure[Copeau_k] = tmp_mesure
-    
-            else:
-              mesure[Copeau_k] = NP.sqrt((coord_nds[0][0][0]-coord_nds[1][0][0])**2 + (coord_nds[0][1][0]-coord_nds[1][1][0])**2 ) + mesure[Copeau_k]
+   Supr_mano(maya,mon_nom)
+
    return mesure
        
 def Calcul_mesure_3D(is_2D,maya,nbcop,num_ord,l_copo_tot,ltyma,resu,type_def):
@@ -1372,62 +1332,94 @@ def Calcul_mesure_3D(is_2D,maya,nbcop,num_ord,l_copo_tot,ltyma,resu,type_def):
    # appartenant à l'axe de symétrie
 
    import numpy as NP
+   import aster
+   from Accas import _F
+   from Utilitai.Table        import Table
    
+   # Initialisation
+   coord_fond = []
    mesure={}
-   l_ep_copeaux_tot_3D = [] 
+   l_ep_copeaux_tot_3D = []   
+   
+   mon_nom = 'Mai_Plan'
+   COOR = maya.COORDO.VALE.get()
+
+   # Recupération des noeuds de fond de fissure appartenant à la tranche courante
+   Recup_Noeuds_Copeaux(False,maya,l_copo_tot[0])
+   Recup_3D(maya,0,mon_nom)
+   l_noeud_fond = [noeud_courant for noeud_courant in maya.GROUPENO.get()['Nds_Floc'.ljust(8)]]
+   tab_DEP_el   = Coord_Recup([maya.NOMNOE.get()[x-1] for x in maya.GROUPENO.get()['Nds_Floc'.ljust(8)]] ,None,resu)
+   coord_fond   = [(tab_DEP_el.COOR_X[x],tab_DEP_el.COOR_Y[x], tab_DEP_el.COOR_Z[x]) for x in range(len(l_noeud_fond))]
+   
    for C_k in range(len(l_copo_tot)) :
 
        Copeau_k = l_copo_tot[C_k]
+       
+       # Recupération des groupes de noeuds appartenant au copeau courant
        Recup_Noeuds_Copeaux(False,maya,Copeau_k)
-       Recup_3D(maya,C_k%nbcop)
+       Recup_3D(maya,C_k%nbcop,mon_nom)
 
+       # La mesure de la surface est cumulée
        if C_k%nbcop==0:
-          coord_fond = []
-          for noeud_courant in maya.GROUPENO.get()['Nds_Floc'.ljust(8)]:
-               tab_DEP_el = Coord_Recup(maya.NOMNOE.get()[noeud_courant-1],None,resu)
-               coord_fond.append((tab_DEP_el.COOR_X.values()[0],tab_DEP_el.COOR_Y.values()[0],tab_DEP_el.COOR_Z.values()[0]))
-               
           mesure[Copeau_k] = NP.zeros(num_ord)
        else :
           mesure[Copeau_k] = mesure[l_copo_tot[C_k-1]]
-
-       # Calcul de la surface des mailles du copeau courant pour chaque instant
-       mon_nom = 'Mai_Plan'
+          
+          
+       # Recupération des coordonnées des noeuds appartenant au copeau courant
        tmp_mesure = NP.zeros(num_ord)
+       tab_noeud  = []
+       tab_maille = []
        for maille_courante in maya.GROUPEMA.get()[mon_nom.ljust(8)]:
            if ltyma[maya.TYPMAIL.get()[maille_courante]][0:4]=='QUAD':
-               connexe = maya.CONNEX.get()[maille_courante]
-               coord_nds = []
-               deforme=[]
-               DEP_el = [None]*4
-               for i in range(0,4):
-                   tab_DEP_el = Coord_Recup(maya.NOMNOE.get()[connexe[i]-1],maya.NOMMAI.get()[maille_courante],resu)
-                   coord_nds.append((tab_DEP_el.COOR_X.values(),tab_DEP_el.COOR_Y.values(),
-                                   tab_DEP_el.COOR_Z.values()))
-                   deforme.append((tab_DEP_el.DX.values(),tab_DEP_el.DY.values(),
-                                   tab_DEP_el.DZ.values()))  
+               connexe   = maya.CONNEX.get()[maille_courante]
+               tab_noeud = tab_noeud + [maya.NOMNOE.get()[connexe[i]-1] for i in range(4)]
+               tab_maille.append(maya.NOMMAI.get()[maille_courante])
+       tab_DEP_el    = Coord_Recup(tab_noeud,tab_maille,resu)
+       num_ord_init  = tab_DEP_el.NUME_ORDRE[0]
+       
+       # Calcul de la surface des mailles du copeau courant pour chaque instant
+       Coord_int      = []
+       tab_DEP_el_ord = tab_DEP_el.NUME_ORDRE.values()
+       indices        = [tab_DEP_el_ord.index(num_ord_init,x) for x in range(tab_DEP_el_ord.index(num_ord_init),tab_DEP_el_ord.index(num_ord_init)+tab_DEP_el_ord.count(num_ord_init))]
+       tab_noeud      = [tab_DEP_el.NOEUD[x] for x in indices]
+       tab_coordX     = [tab_DEP_el.COOR_X[x] for x in indices]
+       tab_coordY     = [tab_DEP_el.COOR_Y[x] for x in indices]
+       tab_coordZ     = [tab_DEP_el.COOR_Z[x] for x in indices]
+       for i_maille_courante in range(len(tab_maille)):
+           indic = [tab_noeud.index(tab_noeud[i_maille_courante*4+x]) for x in range(4)]
+           Coord_int = Coord_int + [(tab_coordX[indic[x]],tab_coordY[indic[x]],tab_coordZ[indic[x]]) for x in indic]
 
-               if type_def=='GRAND':
-                   for it in range(num_ord):
-                       Coor_int=[]
-                       Def_int=[]
-                       for i in range(0,4):
-                           Coor_int.append((coord_nds[i][0][it],coord_nds[i][1][it],coord_nds[i][2][it]))
-                           Def_int.append((deforme[i][0][it],deforme[i][1][it],deforme[i][2][it]))
-                       tmp_mesure[it] = mesure[Copeau_k][it] + CalSurf(Coor_int,Def_int)
-                   mesure[Copeau_k] = tmp_mesure
-               else:
-                   mesure[Copeau_k] = CalSurf(coord_nds,[tuple(NP.zeros(3))]*len(coord_nds)) + mesure[Copeau_k]
+       # Si le type est grandes déformations alors il faut tenir compte de la déformée lors du calcul de la surface
+       if type_def=='GRAND':
+         l_ord = list(set(tab_DEP_el_ord))
+         for it in range(num_ord):
+               Def_int   = []
+               indices = [tab_DEP_el_ord.index(l_ord[it],x) for x in range(tab_DEP_el_ord.index(l_ord[it]),tab_DEP_el_ord.index(l_ord[it])+tab_DEP_el_ord.count(l_ord[it]))]
+               tab_defoX = [tab_DEP_el.DX[x] for x in indices]
+               tab_defoY = [tab_DEP_el.DY[x] for x in indices]
+               tab_defoZ = [tab_DEP_el.DZ[x] for x in indices]
+               surface_maille = 0.0
+               for i_maille_courante in range(len(tab_maille)):
+                   indic = [tab_noeud.index(tab_noeud[i_maille_courante*4+x]) for x in range(4)]
+                   Def_int   = Def_int   + [(tab_defoX[indic[x]], tab_defoY[indic[x]], tab_defoZ[indic[x]])  for x in indic]
+                   surface_maille = surface_maille + CalSurf(Coord_int,Def_int)
+               tmp_mesure[it] = mesure[Copeau_k][it] + surface_maille
+         mesure[Copeau_k] = tmp_mesure
+       else:
+         mesure[Copeau_k] = mesure[Copeau_k] + CalSurf(Coord_int,[tuple(NP.zeros(3))]*len(tab_noeud)) 
             
        # Calcul de la distance du copeau au fond d'entaille
        coord_nds = [] 
        dist_moy=0. 
        for noeud_courant in maya.GROUPENO.get()['Nds_Delt'.ljust(8)]:
-            tab_DEP_el = Coord_Recup(maya.NOMNOE.get()[noeud_courant-1],None,resu)
-            coord_nds = (tab_DEP_el.COOR_X.values()[0],tab_DEP_el.COOR_Y.values()[0],tab_DEP_el.COOR_Z.values()[0])
+            coord_nds = (COOR[(noeud_courant-1)*3],COOR[(noeud_courant-1)*3+1],COOR[(noeud_courant-1)*3+2])
             dist_moy  = dist_moy + CalDist(coord_nds,NP.zeros(3),coord_fond,[tuple(NP.zeros(3))]*len(coord_fond))
 
        l_ep_copeaux_tot_3D.append(dist_moy/len(maya.GROUPENO.get()['Nds_Delt'.ljust(8)]))
+       
+   Supr_mano(maya,mon_nom)
+   
    return mesure, l_ep_copeaux_tot_3D
 
 def Coord_Recup(noeud_courant,maille_courante,resu):
@@ -1443,7 +1435,7 @@ def Coord_Recup(noeud_courant,maille_courante,resu):
                     NOEUD=noeud_courant,MAILLE=maille_courante))
    else:
        dicarg.append(_F(OPERATION='EXTRACTION',RESULTAT=resu, INTITULE='DEP_el',
-                    TOUT_CMP='OUI',NOM_CHAM='DEPL', TOUT_ORDRE='OUI', 
+                    TOUT_CMP='OUI',NOM_CHAM='DEPL',  TOUT_ORDRE='OUI', 
                     NOEUD=noeud_courant))
 
    DEP_el_i = POST_RELEVE_T(ACTION=dicarg)
@@ -1451,12 +1443,12 @@ def Coord_Recup(noeud_courant,maille_courante,resu):
    DETRUIRE(CONCEPT=_F(NOM=DEP_el_i),INFO=1);  
    return tab_DEP_el
 
-def Supr_mano(maya):
+def Supr_mano(maya,mon_nom):
 
       from Accas import _F
       dicno=[];
       dicno.append(_F(NOM = 'Cop_Pl'));
-      dicno.append(_F(NOM = 'Mai_Plan'));
+      dicno.append(_F(NOM = mon_nom));
       dicno.append(_F(NOM = 'Mai_Pla1'));
       dicno.append(_F(NOM = 'Mai_Pla2'));
       dicno.append(_F(NOM = 'Nds_Plan'));
@@ -1464,38 +1456,7 @@ def Supr_mano(maya):
       dicno.append(_F(NOM = 'Nds_Floc'));
       dicno.append(_F(NOM = 'Nds_Delt'));
       dicma=[];
-      dicma.append(_F(NOM = 'Mai_Plan'));
+      dicma.append(_F(NOM = mon_nom));
       dicma.append(_F(NOM = 'Mai_Pla1'));
       dicma.append(_F(NOM = 'Mai_Pla2'));
       DEFI_GROUP(reuse =maya, MAILLAGE=maya, DETR_GROUP_NO=dicno, DETR_GROUP_MA=dicma);
-#-------------------------------------------------------------                          
-
-def Save_VALGP_DE_LISTINST (liste_inst_postgp,liste_inst_reduit, liste_inst_complete):
-  # sauvegarde les positions de liste des valeurs de GP à des instants définis par l'utilisateur sous le mot clé
-  # LIST_INST ou INST
-    
-  from Utilitai.Utmess       import UTMESS
-  temps_agarde_gp = []
-  trouve = False
-  for tmp_liste in liste_inst_postgp:
-    trouve = False
-    for tmp_resu_reduit in liste_inst_reduit:
-      if (tmp_liste == tmp_resu_reduit):
-          trouve = True
-          break
-    if (trouve == False):
-      UTMESS('F','POST0_36')
-
-  for tmp_liste in liste_inst_postgp :
-    compteur = 0
-    message  = True
-    for tmp_resu in liste_inst_complete : 
-      if (tmp_liste == tmp_resu) :              
-          temps_agarde_gp.append(compteur)
-      else :
-          if (message):
-            message = False
-      compteur = compteur + 1
-  if (len(temps_agarde_gp)==0):  
-          UTMESS('F','POST0_36')
-  return temps_agarde_gp

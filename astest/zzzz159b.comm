@@ -1,4 +1,4 @@
-# MODIF  DATE 07/03/2011   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 28/03/2011   AUTEUR ASSIRE A.ASSIRE 
 # TITRE TEST DE LA MACRO COMMANDE DE RECALAGE
 # 4 calculs esclaves distribues : ncpus = 4 + 1 (maitre),
 # on met 4 car c'est une limite courante en interactif (interactif_nbpmax)
@@ -82,7 +82,9 @@ RESU=MACR_RECAL(
          LIST_PARA        = parametres,
          RESU_CALC        = calcul,
          TOLE_FONC        = 0.9,
-         CALCUL_ESCLAVE=_F(LANCEMENT = 'DISTRIBUTION',),
+         CALCUL_ESCLAVE=_F(LANCEMENT = 'DISTRIBUTION',
+                           UNITE_SUIVI = 90),
+         INFO=1,
 )  ;
 
 

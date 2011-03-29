@@ -1,4 +1,4 @@
-#@ MODIF miss_post Miss  DATE 14/03/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF miss_post Miss  DATE 29/03/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -37,14 +37,13 @@ import numpy as NP
 import aster
 from Cata.cata import (
     _F, DETRUIRE, DEFI_FICHIER,
-    NUME_DDL_GENE, PROJ_MATR_BASE, COMB_MATR_ASSE,
+    NUME_DDL_GENE, PROJ_VECT_BASE, PROJ_MATR_BASE, COMB_MATR_ASSE,
     LIRE_IMPE_MISS, LIRE_FORC_MISS,
     DYNA_LINE_HARM, REST_SPEC_TEMP,
     DEFI_LIST_REEL, CALC_FONCTION, RECU_FONCTION, DEFI_FONCTION,
     FORMULE, CALC_FONC_INTERP, CREA_TABLE,
 )
 
-from Noyau.N_types import force_list
 from Utilitai.Table import Table
 from Utilitai.Utmess import UTMESS
 from Miss.miss_utils import set_debug, _print, _printDBG
@@ -84,8 +83,8 @@ class POST_MISS(object):
                                       self.param['FREQ_PAS']),
                                 vali=nbfmiss)
         # interpolation des accéléros si présents (à supprimer sauf si TABLE)
-        self.excit_harmo = self.param['EXCIT_HARMO']
-        if self.excit_harmo is None:
+        self.excit_kw = self.param['EXCIT_HARMO']
+        if self.excit_kw is None:
             tmax = self.param['INST_FIN']
             pasdt = self.param['PAS_INST']
             __linst = DEFI_LIST_REEL(DEBUT=0.,
@@ -150,14 +149,15 @@ class POST_MISS(object):
 
     def set_freq_dlh(self):
         """Déterminer les fréquences du calcul harmonique."""
-        if self.excit_harmo is not None:
-            if self['FREQ_MIN'] is not None:
-                freq_max = self['FREQ_MAX']
-                df = self['FREQ_PAS']
-                lfreq = NP.arange(0., freq_max + df, df).tolist()
-                UTMESS('I', 'MISS0_12', valr=(0., freq_max, df), vali=len(lfreq))
+        if self.excit_kw is not None:
+            if self.param['FREQ_MIN'] is not None:
+                freq_min = self.param['FREQ_MIN']
+                freq_max = self.param['FREQ_MAX']
+                df = self.param['FREQ_PAS']
+                lfreq = NP.arange(freq_min, freq_max + df, df).tolist()
+                UTMESS('I', 'MISS0_12', valr=(freq_min, freq_max, df), vali=len(lfreq))
             else:
-                lfreq = self['LIST_FREQ']
+                lfreq = self.param['LIST_FREQ']
                 UTMESS('I', 'MISS0_11', valk=repr(lfreq), vali=len(lfreq))
         else:
             fft = self.xff or self.yff or self.zff
@@ -206,6 +206,8 @@ class POST_MISS_TRAN(POST_MISS):
         """Initialisation."""
         super(POST_MISS_TRAN, self).__init__(*args, **kwargs)
         self.methode_fft = 'PROL_ZERO'
+        self._suppr_matr = True
+        self.excit_harmo = []
 
 
     def argument(self):
@@ -229,7 +231,7 @@ class POST_MISS_TRAN(POST_MISS):
         self.parent.DeclareOut('resugene', self.parent.sd)
         self._to_delete.append(self.dyge)
         #XXX on pensait qu'il fallait utiliser PROL_ZERO mais miss01a
-        #    devient alors NOOK. A clarifier/vérifier en pensant
+        #    devient alors NOOK. A clarifier/vérifier en passant
         #    d'autres tests avec ce post-traitement.
         resugene = REST_SPEC_TEMP(RESU_GENE = self.dyge,
                                   METHODE = 'TRONCATURE',
@@ -264,7 +266,8 @@ class POST_MISS_TRAN(POST_MISS):
             self.dyge = self.iteration_dlh(_rito, freq, opts)
 
             DETRUIRE(CONCEPT=_F(NOM=__impe,),)
-            self._to_delete.append(_rito)
+            if self._suppr_matr:
+                self._to_delete.append(_rito)
             first = False
 
 
@@ -298,8 +301,8 @@ class POST_MISS_TRAN(POST_MISS):
                                     FREQ_EXTR=freq,)
             excit.append(_F(VECT_ASSE = __fosz,
                             FONC_MULT_C = self.zff))
-        if self.excit_harmo is not None:
-            excit.extend( force_list(self.excit_harmo) )
+        if len(self.excit_harmo) > 0:
+            excit.extend( self.excit_harmo )
         dyge = self.dyna_line_harm(MODELE=self.param['MODELE'],
                                    MATR_MASS=self.massgen,
                                    MATR_RIGI=rigtot, 
@@ -307,7 +310,7 @@ class POST_MISS_TRAN(POST_MISS):
                                    AMOR_REDUIT=self.param['AMOR_REDUIT'],
                                    EXCIT=excit,
                                    **opts)
-        DETRUIRE(CONCEPT=_F(NOM=(__fosx, __fosy, __fosz),),)
+        #DETRUIRE(CONCEPT=_F(NOM=(__fosx, __fosy, __fosz),),)
         return dyge
 
 
@@ -325,6 +328,7 @@ class POST_MISS_HARM(POST_MISS_TRAN):
         """Initialisation."""
         super(POST_MISS_HARM, self).__init__(*args, **kwargs)
         self.methode_fft = 'COMPLET'
+        self._suppr_matr = False
 
 
     def argument(self):
@@ -332,6 +336,22 @@ class POST_MISS_HARM(POST_MISS_TRAN):
         super(POST_MISS_HARM, self).argument()
         self.parent.DeclareOut('trangene', self.parent.sd)
         self.suppr_acce_fft()
+
+
+    def concepts_communs(self):
+        """Construction des concepts spécifiques au cas HARMO."""
+        super(POST_MISS_HARM, self).concepts_communs()
+        for excit_i in self.excit_kw:
+            dExc = excit_i.cree_dict_valeurs(excit_i.mc_liste)
+            for mc in dExc.keys():
+                if dExc[mc] is None:
+                    del dExc[mc]
+            if dExc.get('VECT_ASSE') is not None:
+                __excit = PROJ_VECT_BASE(BASE=self.param['BASE_MODALE'],
+                                         NUME_DDL_GENE=self.nddlgen,
+                                         VECT_ASSE=dExc['VECT_ASSE'])
+                dExc['VECT_ASSE'] = __excit
+            self.excit_harmo.append(dExc)
 
 
     def sortie(self):

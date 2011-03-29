@@ -1,4 +1,4 @@
-#@ MODIF algeline3 Messages  DATE 01/03/2011   AUTEUR PELLET J.PELLET 
+#@ MODIF algeline3 Messages  DATE 29/03/2011   AUTEUR BOITEAU O.BOITEAU 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -308,9 +308,14 @@ On poursuit tout de meme.
 68: _("""
   -> La matrice de raideur est singulière malgre la strategie de décalage
 (structure avec des modes de corps rigide).
+
   -> Risque & Conseil :
-Utiliser l'option 'BANDE' avec une borne minimale de la bande de fréquence
-légèrement négative (ou positive)
+  Pour passer avec l'option 'PLUS_PETITE', augmenter la valeur de SEUIL_FREQ
+  (0.1 par exemple) ou de PREC_SHIFT (0.5 par exemple). 
+  En fait, il est plutot conseille d'utiliser l'option 'BANDE'. Ici avec une borne minimale
+  de la bande de fréquence légèrement négative (ou positive).
+  A defaut, si vous n'arrivez pas a capter tous les modes rigides, essayer la methode
+  TRI_DIAG avec OPTION='MODE_RIGIDE'.
 """),
 
 69: _("""

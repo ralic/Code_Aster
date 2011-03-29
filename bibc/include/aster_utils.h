@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF aster_utils include  DATE 22/03/2011   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF aster_utils include  DATE 29/03/2011   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2011  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -32,5 +32,7 @@ void   SetTabFStr( char *, int, char *, STRING_SIZE );
 void   BlankStr( char *, STRING_SIZE );
 char * MakeBlankFStr( STRING_SIZE );
 void   FreeStr( char * );
+
+void __check_string_length( STRING_SIZE );
 
 #endif

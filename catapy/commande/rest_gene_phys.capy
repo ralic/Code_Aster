@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+#& MODIF COMMANDE  DATE 29/03/2011   AUTEUR DELMAS J.DELMAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -61,9 +61,8 @@ REST_GENE_PHYS=OPER(nom="REST_GENE_PHYS",op=  75,sd_prod=rest_gene_phys_prod,
          CORR_STAT       =SIMP(statut='f',typ='TXM',into=("OUI",) ),
          TOUT_CHAM       =SIMP(statut='f',typ='TXM',into=("OUI",) ),
          b_nom_cham=BLOC(condition="TOUT_CHAM == None",
-             NOM_CHAM        =SIMP(statut='f',typ='TXM',validators=NoRepeat(),max=8,defaut="ACCE",   
-                               into=("DEPL","VITE","ACCE","ACCE_ABSOLU","EFGE_ELNO","SIPO_ELNO",                 
-                                     "SIGM_ELNO","FORC_NODA",) ),),
+             NOM_CHAM        =SIMP(statut='f',typ='TXM',validators=NoRepeat(),max=8,defaut="ACCE",into=("DEPL",
+                                   "VITE","ACCE","ACCE_ABSOLU","EFGE_ELNO","SIPO_ELNO","SIGM_ELNO","FORC_NODA",),),),
          GROUP_NO        =SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**'),
          NOEUD           =SIMP(statut='f',typ=no  ,validators=NoRepeat(),max='**'),
          GROUP_MA        =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),

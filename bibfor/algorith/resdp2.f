@@ -1,9 +1,9 @@
       SUBROUTINE RESDP2( MATERF, SEQ, I1E, PMOINS, DP, PLAS)
 C =====================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 11/03/2008   AUTEUR MAHFOUZ D.MAHFOUZ 
+C MODIF ALGORITH  DATE 28/03/2011   AUTEUR BOTTONI M.BOTTONI 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -28,6 +28,7 @@ C =====================================================================
       REAL*8   YOUNG, NU, TROISK, DEUXMU, ALPHA1, PHI, C, PULT, ALPHA
       REAL*8   TROIS, DEUX, UN, FCRIT, SCHDP2, VALPRO, GAMAPM, GAMARP
       REAL*8   NEUF, DOUZE, A1, B1, DELTA, QUATRE, VALCOE, B2
+      REAL*8   FCRIT0, PPTEST
       PARAMETER ( DOUZE  = 12.0D0 )
       PARAMETER ( NEUF   =  9.0D0 )
       PARAMETER ( QUATRE =  4.0D0 )
@@ -96,10 +97,31 @@ C =====================================================================
 C =====================================================================
 C --- PROJECTION AU SOMMET --------------------------------------------
 C =====================================================================
-      VALPRO = SEQ/(TROIS*DEUXMU/DEUX)
-      IF ( DP.GT.VALPRO ) THEN
-         DP   = VALPRO
+      PPTEST = PMOINS + DP   
+      B2     = TROIS * TROISK *ALPHA*ALPHA
+      FCRIT0 = SCHDP2(0.0D0, I1E, PHI, ALPHA1, C, PULT, PPTEST)  
+      VALPRO = FCRIT0 / B2
+      
+      A1 = - NEUF*C*COS(PHI)*
+     &           (UN-ALPHA1)*(UN-ALPHA1)/GAMARP/GAMARP/(TROIS-SIN(PHI))
+  
+      IF ( (PLAS.EQ.1).AND.(DP.LE.VALPRO) ) THEN
          PLAS = 2.0D0
+         FCRIT  = SCHDP2(0.0D0, I1E, PHI, ALPHA1, C, PULT, PMOINS)
+         IF ( PMOINS.LT.PULT ) THEN        
+            B1    = - ( TROIS*TROISK*ALPHA*ALPHA -
+     &               SQRT(TROIS/DEUX)*DOUZE*C*COS(PHI)/(TROIS-SIN(PHI))*
+     &                (UN-(UN-ALPHA1)/GAMARP*GAMAPM)*(UN-ALPHA1)/GAMARP)
+            DELTA  = B1*B1 - QUATRE*A1*FCRIT
+            DP     = - (B1 + SQRT(DELTA))/DEUX/A1
+            VALCOE = SQRT(DEUX/TROIS)*(GAMARP-GAMAPM)
+            IF ( DP.GT.VALCOE ) THEN
+               FCRIT  = SCHDP2(0.0D0,I1E,PHI,ALPHA1,C,PULT,PULT)
+               DP     = FCRIT / B2
+            ENDIF
+         ELSE
+            DP = FCRIT / B2
+         ENDIF
       ENDIF
 C =====================================================================
       END

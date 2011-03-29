@@ -1,6 +1,6 @@
-      SUBROUTINE PCMUMP(MATASZ, SOLVEZ)
+      SUBROUTINE PCMUMP(MATASZ, SOLVEZ, IRET  )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 08/02/2011   AUTEUR TARDIEU N.TARDIEU 
+C MODIF ALGELINE  DATE 29/03/2011   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -19,6 +19,7 @@ C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
       IMPLICIT NONE
       CHARACTER*(*) MATASZ, SOLVEZ
+      INTEGER       IRET
 C-----------------------------------------------------------------------
 C
 C     CREATION D'UNE MATRICE DE PRECONDITIONNEMENT DU GCPC
@@ -27,6 +28,7 @@ C
 C-----------------------------------------------------------------------
 C IN  K*  MATASZ    : NOM DE LA MATR_ASSE A PRECONDITIONNER
 C IN  K*  SOLVEZ    : NOM DE LA SD SOLVEUR
+C IN  I   IRET      : CODE RETOUR (!=0 SI ERREUR)
 C-----------------------------------------------------------------------
 C-----------------------------------------------------------------------
 C     COMMUNS   JEVEUX
@@ -46,7 +48,7 @@ C-----------------------------------------------------------------------
 C----------------------------------------------------------------------
 C     VARIABLES LOCALES
 C----------------------------------------------------------------------
-      INTEGER JSLVK,JSLVI,REACPR,ITERPR,JREFA,IRET
+      INTEGER JSLVK,JSLVI,REACPR,ITERPR,JREFA,IRETZ
       REAL*8 RBID
       COMPLEX*16 CBID
       CHARACTER*19 SOLVEU,MATASS,SOLVBD
@@ -83,14 +85,17 @@ C --  (A DETRUIRE A LA SORTIE)
 
 C --  APPEL AU PRECONDITIONNEUR
       IF (ITERPR.GT.REACPR.OR.ITERPR.EQ.0) THEN
-        CALL AMUMPH('DETR_MAT',SOLVBD,MATASS,RBID,CBID,' ',0,IRET,
+        CALL AMUMPH('DETR_MAT',SOLVBD,MATASS,RBID,CBID,' ',0,IRETZ,
      &              .TRUE.)
-        CALL AMUMPH('PRERES',  SOLVBD,MATASS,RBID,CBID,' ',0,IRET,
+        CALL AMUMPH('PRERES',  SOLVBD,MATASS,RBID,CBID,' ',0,IRETZ,
      &              .TRUE.)
       ENDIF
       
 C --  DESTRUCTION DE LA SD SOLVEUR MUMPS SIMPLE PRECISION
       CALL DETRSD('SOLVEUR',SOLVBD)
+
+C --  CODE RETOUR
+      IRET = IRETZ
 
       CALL JEDEMA()
       END

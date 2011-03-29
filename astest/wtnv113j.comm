@@ -1,4 +1,4 @@
-# MODIF  DATE 08/02/2011   AUTEUR GRANET S.GRANET 
+# MODIF  DATE 28/03/2011   AUTEUR ABBAS M.ABBAS 
 # TITRE TEST THMS 3D, MODELISATION THMC=LIQU_SATU
 # wtnv113j.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -193,8 +193,33 @@ RESU0=STAT_NON_LINE(   MODELE=MODELE,
                          CONVERGENCE=_F(
                                      RESI_GLOB_RELA = 1.E-8,
                                      ITER_GLOB_MAXI = 120),
-                          ARCHIVAGE=_F(  LIST_INST = ARCHI)
-                        )
+                          ARCHIVAGE=_F(  LIST_INST = ARCHI),
+                          OBSERVATION=( _F(NOM_CMP='SIP',
+                                       NOM_CHAM='SIEF_ELGA',
+                                       EVAL_ELGA='VALE',
+                                       POINT=1,
+                                       EVAL_CHAM='MIN',
+                                       GROUP_MA = 'VOLUME',
+                                       ),
+                                    _F(NOM_CMP='SIYY',
+                                       NOM_CHAM='SIEF_ELGA',
+                                       EVAL_ELGA='MIN',
+                                       EVAL_CHAM='MIN',
+                                       GROUP_MA = 'VOLUME',
+                                       ),                                          
+                                    _F(NOM_CMP='SIZZ',
+                                       NOM_CHAM='SIEF_ELGA',
+                                       EVAL_ELGA='MIN',
+                                       EVAL_CHAM='MIN',
+                                       GROUP_MA = 'VOLUME',
+                                       ), 
+                                    _F(NOM_CMP='SIP',
+                                       NOM_CHAM='SIEF_ELGA',
+                                       EVAL_ELGA='MIN',
+                                       EVAL_CHAM='MIN',
+                                       GROUP_MA = 'VOLUME',
+                                       ),
+                   ),)
 
 
 TEST_RESU(
@@ -251,5 +276,107 @@ TEST_RESU(
              PRECISION = 1.E-1,
              REFERENCE='AUTRE_ASTER',)
            )
+####          
+
+TAB_OBS=RECU_TABLE(CO=RESU0,
+                   NOM_TABLE='OBSERVATION',);
+
+IMPR_TABLE(TABLE=TAB_OBS,
+           FILTRE=_F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=16,),);
+
+TEST_TABLE(TABLE=TAB_OBS,
+           FILTRE=(_F(NOM_PARA='NOM_CHAM',
+                      CRIT_COMP='EQ',
+                      VALE_K='SIEF_ELGA',),
+                   _F(NOM_PARA='EVAL_CHAM',
+                      CRIT_COMP='EQ',
+                      VALE_K='MIN',),
+                   _F(NOM_PARA='NOM_CMP',
+                      CRIT_COMP='EQ',
+                      VALE_K='SIP',), 
+                   _F(NOM_PARA='POINT',
+                      CRIT_COMP='EQ',
+                      VALE_I=1,),
+                   _F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=16,),  
+                   ),
+           NOM_PARA='VALE',
+           VALE=2886.7983561532,
+           PRECISION = 1E-8,
+           REFERENCE='NON_REGRESSION',);
+           
+TEST_TABLE(TABLE=TAB_OBS,
+           FILTRE=(_F(NOM_PARA='NOM_CHAM',
+                      CRIT_COMP='EQ',
+                      VALE_K='SIEF_ELGA',),
+                   _F(NOM_PARA='EVAL_CHAM',
+                      CRIT_COMP='EQ',
+                      VALE_K='MIN',),
+                   _F(NOM_PARA='NOM_CMP',
+                      CRIT_COMP='EQ',
+                      VALE_K='SIP',),
+                   _F(NOM_PARA='EVAL_ELGA',
+                      CRIT_COMP='EQ',
+                      VALE_K='MIN',),
+                   _F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=16,), 
+                   ),
+           NOM_PARA='VALE',
+           VALE=-4999.9526983562,
+           PRECISION = 1E-8,
+           REFERENCE='NON_REGRESSION',);
+           
+TEST_TABLE(TABLE=TAB_OBS,
+           FILTRE=(_F(NOM_PARA='NOM_CHAM',
+                      CRIT_COMP='EQ',
+                      VALE_K='SIEF_ELGA',),
+                   _F(NOM_PARA='EVAL_CHAM',
+                      CRIT_COMP='EQ',
+                      VALE_K='MIN',),
+                   _F(NOM_PARA='NOM_CMP',
+                      CRIT_COMP='EQ',
+                      VALE_K='SIYY',),
+                   _F(NOM_PARA='EVAL_ELGA',
+                      CRIT_COMP='EQ',
+                      VALE_K='MIN',),
+                   _F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=16,), 
+                   ),
+           NOM_PARA='VALE',
+           VALE=-9.74094E-18,
+           CRITERE='ABSOLU',
+           PRECISION = 1E-15,
+           REFERENCE='NON_REGRESSION',); 
+           
+           
+TEST_TABLE(TABLE=TAB_OBS,
+           FILTRE=(_F(NOM_PARA='NOM_CHAM',
+                      CRIT_COMP='EQ',
+                      VALE_K='SIEF_ELGA',),
+                   _F(NOM_PARA='EVAL_CHAM',
+                      CRIT_COMP='EQ',
+                      VALE_K='MIN',),
+                   _F(NOM_PARA='NOM_CMP',
+                      CRIT_COMP='EQ',
+                      VALE_K='SIZZ',),
+                   _F(NOM_PARA='EVAL_ELGA',
+                      CRIT_COMP='EQ',
+                      VALE_K='MIN',),
+                   _F(NOM_PARA='NUME_ORDRE',
+                     VALE_I=16,), 
+                   ),
+           NOM_PARA='VALE',
+           VALE=-6.21766E-17,
+           CRITERE='ABSOLU',
+           PRECISION=1E-15,
+           REFERENCE='NON_REGRESSION',);            
+           
+                     
+IMPR_RESU(FORMAT='RESULTAT',
+          RESU=_F(RESULTAT=RESU0,NUME_ORDRE=16,),)
+                     
+    
+                   
 FIN()
 #

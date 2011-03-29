@@ -1,4 +1,4 @@
-#@ MODIF salomeRunScript Stanley  DATE 15/03/2011   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF salomeRunScript Stanley  DATE 28/03/2011   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -98,7 +98,7 @@ def RunScript(SALOMESCRIPT, CHOIX, INPUTFILE):
 # ----------------------------------------------------------------------------------------------------------------------
 if __name__ == '__main__':
 
-   # ---------------------------------------------------------
+   # --------------------------------------------------------
    # ---------------------------------------------------------
    # Tests unitaire a lancer depuis Salome
    # Remplacer les deux chemins ci-dessous par vos surcharges, sinon le script tentera de detecter l'installation d'Aster
@@ -199,3 +199,9 @@ if __name__ == '__main__':
    execfile(r"%s" % tmpfile)
    DelTempScript(tmpfile)
 
+
+   CHOIX = 'ON_DEFORMED'
+   INPUTFILE = prefix + '96'  # Stanley_SIGM_DEPL.rmed
+   tmpfile = MakeTempScript( SALOMESCRIPT=salomeScript, CHOIX=CHOIX, INPUTFILE=INPUTFILE, OUTPUTFILE=False, STUDY=False )
+   execfile(r"%s" % tmpfile)
+   DelTempScript(tmpfile)

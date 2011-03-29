@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF aster_utils supervis  DATE 22/03/2011   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF aster_utils supervis  DATE 29/03/2011   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2011  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -18,6 +18,9 @@
 /* ================================================================== */
 
 #include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+
 #include "aster.h"
 
 
@@ -26,6 +29,7 @@ STRING_SIZE FStrlen( _IN char *fstr, _IN STRING_SIZE flen )
     /* Retourne la longueur (dernier caractère non blanc) de "fstr".
      */
     STRING_SIZE n;
+    __check_string_length(flen);
     n = flen;
     while ( n > 1 && fstr[n-1] == ' ') { n--; }
     return n;
@@ -134,4 +138,13 @@ void SetTabFStr( _IN char *tab, _IN int index, _IN char *cstr, _IN STRING_SIZE f
 void FreeStr(char *cstr)
 {
     free(cstr);
+}
+
+void __check_string_length( STRING_SIZE flen )
+{
+    if ( flen > 2147483647 ) {
+        printf("WARNING: The string length seems corrupted. " \
+               "The value of STRING_SIZE is probably bad : %s (%d bytes)\n" \
+               "Please contact your support.\n", xstr(STRING_SIZE), (int)sizeof(STRING_SIZE));
+    }
 }

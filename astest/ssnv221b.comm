@@ -1,0 +1,204 @@
+# MODIF  DATE 28/03/2011   AUTEUR BOTTONI M.BOTTONI 
+# TITRE ESSAI HYDROSTATIQUE AVEC LA LOI DRUCKER-PRAGER ASSOCIEE, ECROUISSAGE PARABOLIQUE
+# ssnv221b.para = tps_job 300 mem_job 32Mo ncpus 1 liste_test S
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+
+
+DEBUT( CODE=_F( NOM='SSNV221B', NIV_PUB_WEB='INTERNET') )
+
+
+## PARAMETRES MATERIAUX EN ENTREE DE LA LOI
+young = 3000.
+nu    = 0.25 
+alpha = 0.20
+p_ult = 0.04
+sy    = 6.
+sy_ult= 10.
+
+
+## PARAMETRES DE CHARGEMENT EN DEFORMATION
+espsVol1    = 0.018
+espsVol2    = 0.045
+espsVol3    = 0.060
+
+
+## QUANTITES VERIFIEES PAR TEST_TABLE
+K = young / (3.*(1-2*nu))
+
+
+#--1) espsVol2 (=0.045)
+traceSigUlt = sy_ult/alpha
+epsp2 = espsVol2-traceSigUlt/(3.*K)
+p2    = epsp2/(3.*alpha)
+
+
+#--2) espsVol3 (=0.060)
+epspMax     = espsVol3-traceSigUlt/(3.*K)
+p_max       = epspMax/(3.*alpha)
+
+
+
+
+
+
+
+
+
+
+
+#----------------------------------------------------------------#
+# MATERIAU                                                       #
+#----------------------------------------------------------------#
+ 
+MATE = DEFI_MATERIAU( ELAS         = _F( E  = young,
+                                         NU = nu,),                      
+                      DRUCK_PRAGER = _F( ECROUISSAGE = 'PARABOLIQUE',
+                                         ALPHA       = alpha,
+                                         P_ULTM      = p_ult,
+                                         SY          = sy,
+                                         SY_ULTM     = sy_ult),)
+
+TEMPS1 = DEFI_LIST_REEL( DEBUT = 0.,
+                         INTERVALLE = (
+                                       _F( JUSQU_A = 40.,
+                                           NOMBRE  = 500,),  ),)
+
+DEFLIST1 = DEFI_LIST_INST( DEFI_LIST = _F( LIST_INST    =  TEMPS1),
+                           ECHEC     = _F( SUBD_METHODE = 'UNIFORME',
+                                           SUBD_PAS     = 4.,
+                                           SUBD_NIVEAU  = 10),)
+
+
+
+
+
+
+#----------------------------------------------------------------#
+# ESSAI HYDROSTATIQUE A DEFORMATIONS IMPOSEES                    #
+#----------------------------------------------------------------#
+
+COEF1 = DEFI_FONCTION( NOM_PARA    = 'INST',
+                       VALE        = (0.,  0., 
+                                      10., espsVol1/3., # ecrouissage
+                                      14., 0.,          # decharge
+                                      26., espsVol2/3., # plasticite parfaite
+                                      30., epsp2/3.,    # decharge
+                                      40., espsVol3/3.),
+                       PROL_DROITE = 'CONSTANT',)
+
+ZERO  = DEFI_CONSTANTE( VALE =  0.0 )
+
+U1 = SIMU_POINT_MAT( SUPPORT    = 'POINT',
+                     COMP_INCR  = _F( RELATION       = 'DRUCK_PRAGER',
+                                      ITER_INTE_MAXI = 20,
+                                      RESI_INTE_RELA = 1.E-8,
+                                      ITER_INTE_PAS  = -1,
+                                      ),
+                     MATER      = MATE,
+                     INCREMENT  = _F( LIST_INST      = DEFLIST1,
+                                      NUME_INST_INIT = 0,
+                                      INST_FIN       = 40.,),
+                     NEWTON     = _F( MATRICE        = 'TANGENTE',
+                                      PREDICTION     = 'TANGENTE',
+#                                      REAC_ITER      = 1,
+                                      ),
+                     CONVERGENCE= _F( RESI_GLOB_MAXI = 1.E-6,
+                                      ITER_GLOB_MAXI = 10),
+                     ARCHIVAGE  = _F(LIST_INST = TEMPS1,),
+                     EPSI_IMPOSE= _F( EPXX = COEF1,
+                                      EPYY = COEF1,
+                                      EPZZ = COEF1,
+                                      EPXY = ZERO,
+                                      EPXZ = ZERO,
+                                      EPYZ = ZERO,),
+                     SIGM_INIT  = _F( SIXX = 0.,
+                                      SIYY = 0.,
+                                      SIZZ = 0.,
+                                      SIXY = 0.,
+                                      SIXZ = 0.,
+                                      SIYZ = 0.,
+                                      ),
+                     EPSI_INIT  = _F( EPXX = 0.,
+                                      EPYY = 0.,
+                                      EPZZ = 0.,
+                                      EPXY = 0.,
+                                      EPXZ = 0.,
+                                      EPYZ = 0.,),
+                     INFO = 2,)
+
+TREPS = FORMULE(NOM_PARA = ('EPXX','EPYY','EPZZ'),
+                VALE     = 'EPXX + EPYY + EPZZ',)
+
+U1 = CALC_TABLE(reuse = U1,
+                TABLE = U1,
+                ACTION=( _F(OPERATION = 'OPER',
+                            FORMULE   = TREPS,
+                            NOM_PARA  = 'TREPSI',),),)
+
+#----------------------------------------------------------------#
+# TESTS PAR RAPPORT AUX RESULTAT ANALYTIQUE                      #
+#----------------------------------------------------------------#
+
+tol = 1.E-8
+TEST_TABLE(TABLE     = U1,
+           REFERENCE = 'ANALYTIQUE',
+           NOM_PARA  = 'TRACE',
+           PRECISION = tol,
+           TYPE_TEST = 'MAX',
+           CRITERE   = 'RELATIF',
+           VALE      = traceSigUlt )
+     
+TEST_TABLE(TABLE     = U1,
+           REFERENCE = 'ANALYTIQUE',
+           NOM_PARA  = 'V2',
+           PRECISION = tol,
+           TYPE_TEST = 'MAX',
+           CRITERE   = 'RELATIF',
+           VALE      = epspMax )
+
+
+TEST_TABLE(TABLE     = U1,
+           REFERENCE = 'ANALYTIQUE',
+           NOM_PARA  = 'V2',
+           VALE      = epsp2,
+           CRITERE   = 'RELATIF',
+           PRECISION = tol,
+           FILTRE    = (_F( NOM_PARA  = 'TREPSI',
+                            CRIT_COMP = 'EQ' ,
+                            VALE      = espsVol2,
+                            PRECISION = tol,
+                            CRITERE   = 'RELATIF',),),)
+
+
+
+#----------------------------------------------------------------#
+# IMRESSION DES RESULTATS                                        #
+#----------------------------------------------------------------#
+
+# IMPR_TABLE( TABLE    = U1, 
+#             UNITE    = 29,
+#             NOM_PARA = ('TREPSI','TRACE',),
+#             FORMAT   = 'XMGRACE',
+#             )
+
+
+#IMPR_TABLE( TABLE    = U1, )
+
+FIN()
+

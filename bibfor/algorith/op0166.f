@@ -1,7 +1,7 @@
       SUBROUTINE OP0166()
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 08/03/2011   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 28/03/2011   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -177,7 +177,12 @@ C
         CALL GETVID(' ','CHAM_NO_REFE',1,1,1,CNREF,N1)
         IF (N1.EQ.1) THEN
           CALL DISMOI('F','NOM_MAILLA',CNREF,'CHAMP',IBID,NOMA3,IE)
-          CALL ASSERT(NOMA3.EQ.NOMA2)
+          IF (NOMA3.NE.NOMA2) THEN
+            VALK(1)=CNREF
+            VALK(2)=NOMA3
+            VALK(3)=NOMA2
+            CALL U2MESK('F','CALCULEL2_6',3,VALK)
+          endif
         ELSE
           CNREF=' '
         ENDIF

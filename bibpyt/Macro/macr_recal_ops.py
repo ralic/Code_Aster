@@ -1,8 +1,8 @@
-#@ MODIF macr_recal_ops Macro  DATE 16/11/2010   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF macr_recal_ops Macro  DATE 28/03/2011   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -179,13 +179,15 @@ def macr_recal(self, UNITE_ESCL, RESU_EXP, POIDS, LIST_PARA, RESU_CALC,
    TOLE_FONC       = args['TOLE_FONC']
 
    # Pour les calculs esclaves
-   CALCUL_ESCLAVE  = {}.fromkeys( ['LANCEMENT', 'MODE', 'CLASSE', 'ACTUALISATION', 'memjeveux', 'memjob', 'mem_aster', 'tpmax', 'tpsjob', 'NMAX_SIMULT', ] )
+   CALCUL_ESCLAVE  = {}.fromkeys( ['LANCEMENT', 'MODE', 'UNITE_SUIVI', 'CLASSE', 'ACTUALISATION', 'memjeveux', 'memjob', 'mem_aster', 'tpmax', 'tpsjob', 'NMAX_SIMULT', ] )
 
    dESCLAVE=args['CALCUL_ESCLAVE'][0].cree_dict_valeurs(args['CALCUL_ESCLAVE'][0].mc_liste)
    for i in dESCLAVE.keys():
        if dESCLAVE[i]==None : del dESCLAVE[i]
 
    CALCUL_ESCLAVE['LANCEMENT']                                            = dESCLAVE['LANCEMENT']
+   if dESCLAVE.has_key('UNITE_SUIVI'):   CALCUL_ESCLAVE['UNITE_SUIVI']    = dESCLAVE['UNITE_SUIVI']
+   else:                                 CALCUL_ESCLAVE['UNITE_SUIVI']    = None
    if dESCLAVE.has_key('MODE'):          CALCUL_ESCLAVE['MODE']           = dESCLAVE['MODE']
    else:                                 CALCUL_ESCLAVE['MODE']           = prof['mode'][0].upper()
 
@@ -231,11 +233,12 @@ def macr_recal(self, UNITE_ESCL, RESU_EXP, POIDS, LIST_PARA, RESU_CALC,
 
    if LANCEMENT == 'DISTRIBUTION':
 
-       print prof.param['tpsjob'][0]
-       print prof.args['tpmax']
-       print prof.param['mem_aster'][0]
-       print prof.args['memjeveux']
-       print prof.param['memjob'][0]
+       if debug:
+           print prof.param['tpsjob'][0]
+           print prof.args['tpmax']
+           print prof.param['mem_aster'][0]
+           print prof.args['memjeveux']
+           print prof.param['memjob'][0]
 
        # Pour la conversion mega-mots / mega-octets
        from asrun.common.sysutils import on_64bits
@@ -365,6 +368,8 @@ def macr_recal(self, UNITE_ESCL, RESU_EXP, POIDS, LIST_PARA, RESU_CALC,
    CALCUL_ASTER.RESU_EXP  = RESU_EXP
    CALCUL_ASTER.RESU_CALC = RESU_CALC
    CALCUL_ASTER.LIST_PARA = LIST_PARA
+
+   if CALCUL_ESCLAVE['UNITE_SUIVI']: CALCUL_ASTER.unity_follow = CALCUL_ESCLAVE['UNITE_SUIVI']
 
 
    # Instances des classes pour le calcul de l'erreur et le dimensionnemnt/adim

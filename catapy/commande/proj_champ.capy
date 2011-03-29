@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 08/03/2011   AUTEUR PELLET J.PELLET 
+#& MODIF COMMANDE  DATE 29/03/2011   AUTEUR DELMAS J.DELMAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -105,7 +105,7 @@ PROJ_CHAMP=OPER(nom="PROJ_CHAMP",op= 166,sd_prod=proj_champ_prod,reentrant='f',
 
            NOM_PARA        =SIMP(statut='f',typ='TXM', max='**'),
            TOUT_CHAM       =SIMP(statut='f',typ='TXM',into=("OUI",) ),
-           NOM_CHAM        =SIMP(statut='f',typ='TXM',validators=NoRepeat(),max='**'),
+           NOM_CHAM        =SIMP(statut='f',typ='TXM',validators=NoRepeat(),max='**',into=C_NOM_CHAM_INTO(),),
 
            NUME_DDL        =SIMP(statut='f',typ=(nume_ddl_sdaster),
                 fr="Utile en dynamique pour pouvoir imoser la numérotation des cham_no."),
@@ -257,7 +257,7 @@ PROJ_CHAMP=OPER(nom="PROJ_CHAMP",op= 166,sd_prod=proj_champ_prod,reentrant='f',
 
            NOM_PARA        =SIMP(statut='f',typ='TXM', max='**'),
            TOUT_CHAM       =SIMP(statut='f',typ='TXM',into=("OUI",) ),
-           NOM_CHAM        =SIMP(statut='f',typ='TXM',validators=NoRepeat(),max='**'),
+           NOM_CHAM        =SIMP(statut='f',typ='TXM',validators=NoRepeat(),max='**',into=C_NOM_CHAM_INTO(),),
 
 
            TOUT_ORDRE      =SIMP(statut='f',typ='TXM',into=("OUI",) ),

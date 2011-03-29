@@ -1,6 +1,6 @@
-# MODIF  DATE 21/03/2011   AUTEUR FLEJOU J-L.FLEJOU 
+# MODIF  DATE 28/03/2011   AUTEUR LEFEBVRE J-P.LEFEBVRE 
 # TITRE  POUTRE EULER_BERNOULLI MULTIFIBRES (STATIQUE NON-LINEAIRE)
-# ssnl119a.para = tps_job 250 mem_job 32Mo ncpus 1 liste_test S
+# ssnl119a.para = tps_job 480 mem_job 32Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG

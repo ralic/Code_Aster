@@ -1,4 +1,4 @@
-#@ MODIF salomeVisu Stanley  DATE 15/03/2011   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF salomeVisu Stanley  DATE 28/03/2011   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -18,7 +18,7 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
 
-debug = False
+debug = True
 
 import os, commands, string, sys, socket, getpass
 from Utilitai.Utmess import UTMESS
@@ -40,15 +40,10 @@ except:
 
 
 # Type de visualisation
-#ScalarMap            = 'ScalarMap'          
-DeformedShape        = 'DeformedShape' 
-IsoSurfaces          = 'IsoSurfaces'
-CutPlanes            = 'CutPlanes'
-Plot2D               = 'Plot2D'
-#GaussPointsOnField   = 'GaussPointsOnField'
-
-DeformedShapeOnField = 'DEPL'
-GaussPointsOnField   = 'GAUSS'
+DeformedShape        = 'DEPL' 
+DeformedShapeOnField = 'ON_DEFORMED'
+GaussPoints          = 'GAUSS'
+GaussPointsOnField   = 'ON_DEFORMED'
 ScalarMap            = 'ISO'          
 
 # =========================================================================
@@ -78,7 +73,6 @@ class VISU:
         self.mode                  = param['mode']
         
         if debug: print "AA1/", self.salome_host, self.salome_port, self.salome_runscript, self.machine_salome_login, self.mode
-        print "AA1/", self.salome_host, self.salome_port, self.salome_runscript, self.machine_salome_login, self.mode
 
         if self.mode == 'LOCAL' :
             self.salome_host = 'localhost'
@@ -179,7 +173,7 @@ class VISU:
 # =========================================================================
 
 class ISOVALEURS( VISU ):
-    def __init__( self, fichier, param,  selection ) :        
+    def __init__( self, fichier, param,  selection, options ) :        
         if not os.path.exists( fichier ):
             raise _("Fichier MED résultat de Stanley non accessible par SALOME : ") + fichier
 
@@ -192,6 +186,7 @@ class ISOVALEURS( VISU ):
         self.fichier       = os.path.abspath( fichier )         # chemin absolu du fichier MED fourni par Stanley        
         self.visuType      = None                               # type de visualisation
         self.selection     = selection
+        self.options       = options
 
         # parsing fichier MED (nom maillage + nom champ)
         self.medInfo = MEDInfo( selection )
@@ -215,14 +210,23 @@ class ISOVALEURS( VISU ):
         """
         nom_champ = cata[selection.nom_cham].nom
         nom_type  = cata[selection.nom_cham].type
-        
+        options   = self.options
+
         if nom_champ == 'DEPL' and selection.nom_cmp[0] == 'TOUT_CMP': 
-#            result = DeformedShape
-            result = DeformedShapeOnField
+            result = DeformedShape
+#            result = DeformedShapeOnField
         elif nom_type == 'ELGA':
-            result = GaussPointsOnField
+            result = GaussPoints
+#             # Champ sur la deformee  # pas encore gere
+#             if options.has_key( 'case_sur_deformee' ):
+#                 if options['case_sur_deformee'] == 1:
+#                     result = GaussPointsOnField
         else: 
             result = ScalarMap        
+            # Champ sur la deformee
+            if options.has_key( 'case_sur_deformee' ):
+                if options['case_sur_deformee'] == 1:
+                    result = DeformedShapeOnField
         return result
 
 

@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF astermodule supervis  DATE 22/03/2011   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF astermodule supervis  DATE 29/03/2011   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2011  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -41,9 +41,6 @@ void PRE_myabort( _IN const char *nomFichier , _IN const int numeroLigne , _IN c
 #define MYABORT(message) PRE_myabort( __FILE__ , __LINE__ , message )
 
 
-char * fstr1( _IN char *s, _IN STRING_SIZE l) ;
-char * fstr2( _IN char *s, _IN STRING_SIZE l) ;
-char * fstr3( _IN char *s, _IN STRING_SIZE l) ;
 void convert( _IN int nval, _IN PyObject *tup, _OUT INTEGER *val) ;
 void convertxt( _IN int nval, _IN PyObject *tup, _OUT char *val, _IN STRING_SIZE taille) ;
 void converltx( _IN int nval, _IN PyObject *tup, _OUT char *val, _IN STRING_SIZE taille) ;
@@ -237,12 +234,6 @@ void DEFPSPSPPPP(UEXCEP,uexcep, _IN INTEGER *exc_type,
 }
 
 
-
-static char nom_fac[256];        /* utilise par fstr1 */
-static char nom_cle[256];        /* utilise par fstr2 */
-static char nom_cmd[256];        /* utilise par fstr3 */
-
-
 /* --- FIN liste des variables globales au fonctions  de ce fichier --- */
 
 
@@ -330,10 +321,10 @@ void DEFSSPPPPP(GETLTX,getltx,_IN char *motfac,_IN STRING_SIZE lfac,
         int nval      = 0 ;
         int ioc       = 0 ;
 
-        mfc=fstr1(motfac,lfac);
+        mfc = MakeCStrFromFStr(motfac,lfac);
                                                         ASSERT(mfc!=(char*)0);
                                                         ASSERT(EstPret(motcle,lcle)!=0);
-        mcs=fstr2(motcle,lcle);
+        mcs = MakeCStrFromFStr(motcle,lcle);
                                                         ASSERT(mcs!=(char*)0);
         ioc=(int)*iocc ;
         ioc=ioc-1 ;
@@ -351,40 +342,9 @@ void DEFSSPPPPP(GETLTX,getltx,_IN char *motfac,_IN STRING_SIZE lfac,
         if( nval < 0 ) nval=(int)*mxval;
         convert(nval,tup,isval);
         Py_DECREF(res);                /*  decrement sur le refcount du retour */
+        FreeStr(mfc);
+        FreeStr(mcs);
         return ;
-}
-
-
-/* ------------------------------------------------------------------ */
-char * fstr1( _IN char *s, _IN STRING_SIZE l)
-{
-        /*
-        copie l caracteres d'une chaine de caracteres fortran s dans la chaine
-        statique globale nom_fac, et retourne un pointeur sur nom_fac
-        */
-        strncpy(nom_fac, s, l );
-        nom_fac[l]='\0';
-        return nom_fac;
-}
-char * fstr2( _IN char *s, _IN STRING_SIZE l)
-{
-        /*
-        copie l caracteres d'une chaine de caracteres fortran s dans la chaine
-        statique globale nom_cle, et retourne un pointeur sur nom_cle
-        */
-        strncpy(nom_cle, s, l );
-        nom_cle[l]='\0';
-        return nom_cle;
-}
-char * fstr3( _IN char *s, _IN STRING_SIZE l)
-{
-        /*
-        copie l caracteres d'une chaine de caracteres fortran s dans la chaine
-        statique globale nom_cmd, et retourne un pointeur sur nom_cmd
-        */
-        strncpy(nom_cmd, s, l );
-        nom_cmd[l]='\0';
-        return nom_cmd;
 }
 
 
@@ -401,9 +361,11 @@ void DEFSP(GETFAC,getfac,_IN char *nomfac, _IN STRING_SIZE lfac, _OUT INTEGER *o
             dans l'etape (ou la commande) courante
         */
         PyObject *res  = (PyObject*)0 ;
+        char *mfc;
                                                         ASSERT(EstPret(nomfac,lfac)!=0);
                                                         ASSERT(commande!=(PyObject*)0);
-        res=PyObject_CallMethod(commande,"getfac","s",fstr1(nomfac,lfac));
+        mfc = MakeCStrFromFStr(nomfac, lfac);
+        res=PyObject_CallMethod(commande,"getfac","s",mfc);
 
         /*  si le retour est NULL : exception Python a transferer
             normalement a l appelant mais FORTRAN ??? */
@@ -412,6 +374,7 @@ void DEFSP(GETFAC,getfac,_IN char *nomfac, _IN STRING_SIZE lfac, _OUT INTEGER *o
         *occu=(INTEGER)PyInt_AsLong(res);
 
         Py_DECREF(res);                /*  decrement sur le refcount du retour */
+        FreeStr(mfc);
         return ;
 }
 
@@ -652,7 +615,7 @@ void DEFSS(GETTCO,gettco,_IN char *nomobj, _IN STRING_SIZE lnom,
         PyObject *res  = (PyObject*)0 ;
         char *nomType  = (char*)0 ;
                                                               ASSERT(lnom>0) ;
-        mcs=fstr2(nomobj,lnom);
+        mcs = MakeCStrFromFStr(nomobj,lnom);
 
         /*
         recherche dans le jeu de commandes python du nom du type de
@@ -667,6 +630,7 @@ void DEFSS(GETTCO,gettco,_IN char *nomobj, _IN STRING_SIZE lnom,
         CopyCStrToFStr(typobj, nomType, ltyp);
                                                               ASSERT(EstPret(typobj,ltyp)) ;
         Py_DECREF(res);                /*  decrement sur le refcount du retour */
+        FreeStr(mcs);
         return ;
 }
 
@@ -736,12 +700,14 @@ void DEFSPPSSP(GETMJM,getmjm,_IN char *nomfac,_IN STRING_SIZE lfac,
         int       nval = 0 ;
         int          k = 0 ;
         int        ioc = 0 ;
+        char *mfc;
                                                                         ASSERT(ltyp>0);
         for ( k=0 ;k<ltyp ; k++ ) type[k]=' ' ;
         ioc=(int)*iocc ;
         ioc=ioc-1 ;
+        mfc = MakeCStrFromFStr(nomfac, lfac);
                                                                         ASSERT(commande!=(PyObject*)0);
-        res=PyObject_CallMethod(commande,"getmjm","sii",fstr2(nomfac,lfac),ioc,(int)*nbval);
+        res=PyObject_CallMethod(commande,"getmjm","sii",mfc,ioc,(int)*nbval);
         /*  si le retour est NULL : exception Python a transferer
             normalement a l appelant mais FORTRAN ??? */
         if (res == NULL)MYABORT("erreur dans la partie Python");
@@ -777,6 +743,7 @@ void DEFSPPSSP(GETMJM,getmjm,_IN char *nomfac,_IN STRING_SIZE lfac,
                 }
         }
         Py_DECREF(res);                /*  decrement sur le refcount du retour */
+        FreeStr(mfc);
         return ;
 }
 
@@ -795,17 +762,21 @@ INTEGER DEFSS( GETEXM, getexm, _IN char *motfac,_IN STRING_SIZE lfac,
             0 si n existe pas 1 si existe
         */
         PyObject *res  = (PyObject*)0 ;
+        char *mfc, *mcs;
         INTEGER presence;
                                                                         ASSERT(motcle!=(char*)0);
                                                                         ASSERT(commande!=(PyObject*)0);
-        res=PyObject_CallMethod(commande,"getexm","ss",
-                                fstr1(motfac,lfac),fstr2(motcle,lcle));
+        mfc = MakeCStrFromFStr(motfac, lfac);
+        mcs = MakeCStrFromFStr(motcle, lcle);
+        res=PyObject_CallMethod(commande,"getexm","ss", mfc, mcs);
         /*  si le retour est NULL : exception Python a transferer
             normalement a l appelant mais FORTRAN ??? */
         if (res == NULL)MYABORT("erreur dans la partie Python");
         presence = (INTEGER)PyLong_AsLong(res);
         /*  decrement sur le refcount du retour */
         Py_DECREF(res);                /*  decrement sur le refcount du retour */
+        FreeStr(mfc);
+        FreeStr(mcs);
         return presence;
 }
 
@@ -891,9 +862,9 @@ void DEFSSPPPPP(GETVC8,getvc8,_IN char *motfac,_IN STRING_SIZE lfac,
         char *mfc      = (char*)0 ;
         char *mcs      = (char*)0 ;
                                                         ASSERT(EstPret(motcle,lcle)!=0);
-        mfc=fstr1(motfac,lfac);
+        mfc = MakeCStrFromFStr(motfac,lfac);
                                                         ASSERT(mfc!=(char*)0);
-        mcs=fstr2(motcle,lcle);
+        mcs = MakeCStrFromFStr(motcle,lcle);
         /*
                 VERIFICATION
                 Si le mot-cle simple est recherche sous un mot-cle facteur et uniquement dans ce cas,
@@ -927,6 +898,8 @@ void DEFSSPPPPP(GETVC8,getvc8,_IN char *motfac,_IN STRING_SIZE lfac,
         convc8(nval,tup,val);
 
         Py_DECREF(res);
+        FreeStr(mfc);
+        FreeStr(mcs);
         return ;
 }
 
@@ -960,9 +933,9 @@ void DEFSSPPPPP(GETVR8,getvr8,_IN char *motfac,_IN STRING_SIZE lfac,
         char *mfc      = (char*)0 ;
         char *mcs      = (char*)0 ;
                                                         ASSERT(EstPret(motcle,lcle)!=0);
-        mfc=fstr1(motfac,lfac); /* conversion chaine fortran en chaine C */
+        mfc = MakeCStrFromFStr(motfac,lfac); /* conversion chaine fortran en chaine C */
                                                         ASSERT(mfc!=(char*)0);
-        mcs=fstr2(motcle,lcle);
+        mcs = MakeCStrFromFStr(motcle,lcle);
         /*
                 VERIFICATION
                 Si le mot-cle simple est recherche sous un mot-cle facteur et uniquement dans ce cas,
@@ -996,6 +969,8 @@ void DEFSSPPPPP(GETVR8,getvr8,_IN char *motfac,_IN STRING_SIZE lfac,
         }
 
         Py_DECREF(res);                /*  decrement sur le refcount du retour */
+        FreeStr(mfc);
+        FreeStr(mcs);
         return ;
 }
 
@@ -1181,9 +1156,9 @@ void DEFSSPPPPP(GETVIS,getvis,_IN char *motfac,_IN STRING_SIZE lfac,
         char *mcs      = (char*)0 ;
                                                         ASSERT((*iocc>0)||(FStrlen(motfac,lfac)==0));
                                                         ASSERT(EstPret(motcle,lcle)!=0);
-        mfc=fstr1(motfac,lfac); /* conversion chaine fortran en chaine C */
+        mfc = MakeCStrFromFStr(motfac,lfac); /* conversion chaine fortran en chaine C */
                                                         ASSERT(mfc!=(char*)0);
-        mcs=fstr2(motcle,lcle);
+        mcs = MakeCStrFromFStr(motcle,lcle);
         /*
                 VERIFICATION
                 Si le mot-cle simple est recherche sous un mot-cle facteur et uniquement dans ce cas,
@@ -1216,6 +1191,8 @@ void DEFSSPPPPP(GETVIS,getvis,_IN char *motfac,_IN STRING_SIZE lfac,
         convert(nval,tup,val);
 
         Py_DECREF(res);                /*  decrement sur le refcount du retour */
+        FreeStr(mfc);
+        FreeStr(mcs);
         return ;
 }
 
@@ -1263,9 +1240,9 @@ void DEFSSPPPPP(GETVLS,getvls,_IN char *motfac,_IN STRING_SIZE lfac,
         char *mcs      = (char*)0 ;
                                                         ASSERT((*iocc>0)||(FStrlen(motfac,lfac)==0));
                                                         ASSERT(EstPret(motcle,lcle)!=0);
-        mfc=fstr1(motfac,lfac); /* conversion chaine fortran en chaine C */
+        mfc = MakeCStrFromFStr(motfac,lfac); /* conversion chaine fortran en chaine C */
                                                         ASSERT(mfc!=(char*)0);
-        mcs=fstr2(motcle,lcle);
+        mcs = MakeCStrFromFStr(motcle,lcle);
         /*
                 VERIFICATION
                 Si le mot-cle simple est recherche sous un mot-cle facteur et uniquement dans ce cas,
@@ -1299,6 +1276,8 @@ void DEFSSPPPPP(GETVLS,getvls,_IN char *motfac,_IN STRING_SIZE lfac,
         convert(nval,tup,val);
 
         Py_DECREF(res);                /*  decrement sur le refcount du retour */
+        FreeStr(mfc);
+        FreeStr(mcs);
         return ;
 }
 
@@ -1337,9 +1316,8 @@ void DEFSSPPPSP(GETVTX,getvtx,_IN char *motfac,_IN STRING_SIZE lfac,
         char *mfc      = (char*)0 ;
         char *mcs      = (char*)0 ;
 
-        mfc=fstr1(motfac,lfac); /* conversion chaine fortran en chaine C */
-                                                        ASSERT(mfc!=(char*)0);
-        mcs=fstr2(motcle,lcle);
+        mfc = MakeCStrFromFStr(motfac, lfac);
+        mcs = MakeCStrFromFStr(motcle, lcle);
         /*
                 VERIFICATION
                 Si le mot-cle simple est recherche sous un mot-cle facteur et uniquement dans ce cas,
@@ -1387,6 +1365,8 @@ void DEFSSPPPSP(GETVTX,getvtx,_IN char *motfac,_IN STRING_SIZE lfac,
          *             du compteur de tup (res=(nbval,tup))
          */
         Py_DECREF(res);                /*  decrement sur le refcount du retour */
+        FreeStr(mfc);
+        FreeStr(mcs);
         return ;
 }
 
@@ -1418,9 +1398,9 @@ void DEFSSPPPSP(GETVID,getvid,_IN char *motfac,_IN STRING_SIZE lfac,
         char *mfc;
         char *mcs;
                                                         ASSERT((*iocc>0)||(FStrlen(motfac,lfac)==0));
-        mfc=fstr1(motfac,lfac); /* conversion chaine fortran en chaine C */
+        mfc = MakeCStrFromFStr(motfac,lfac); /* conversion chaine fortran en chaine C */
                                                         ASSERT(mfc!=(char*)0);
-        mcs=fstr2(motcle,lcle);
+        mcs = MakeCStrFromFStr(motcle,lcle);
         /*
                 VERIFICATION
                 Si le mot-cle simple est recherche sous un mot-cle facteur et uniquement dans ce cas,
@@ -1455,6 +1435,8 @@ void DEFSSPPPSP(GETVID,getvid,_IN char *motfac,_IN STRING_SIZE lfac,
         }
 
         Py_DECREF(res);                /*  decrement sur le refcount du retour */
+        FreeStr(mfc);
+        FreeStr(mcs);
         return ;
 }
 
@@ -3315,7 +3297,7 @@ static PyObject *jeveux_getobjects( PyObject* self, PyObject* args)
         pystr = PyString_FromStringAndSize( ptr, 24 );
         PyList_SetItem( the_list, i, pystr );
     }
-    free( tmp );
+    FreeStr( tmp );
     return the_list;
 }
 
@@ -3323,6 +3305,7 @@ static PyObject *jeveux_getobjects( PyObject* self, PyObject* args)
 /* ------------------------------------------------------------------ */
 static PyObject *jeveux_getattr( PyObject* self, PyObject* args)
 {
+    PyObject *res;
     char *nomobj, *attr;
     char *charval;
     INTEGER intval = 0;
@@ -3332,7 +3315,9 @@ static PyObject *jeveux_getattr( PyObject* self, PyObject* args)
         return NULL;
     CALL_JELIRA( nomobj, attr, &intval, charval );
     
-    return Py_BuildValue( "is", (int)intval, charval );
+    res = Py_BuildValue( "is", (int)intval, charval );
+    FreeStr(charval);
+    return res;
 }
 
 
@@ -3819,6 +3804,7 @@ void initvers(PyObject *dict)
     CALL_VERSIO(&vers,&util,&nivo,date,&exploi);
     sprintf(rev,"%ld.%ld.%ld", (long)vers, (long)util, (long)nivo);
     PyDict_SetItemString(dict, "__version__", v = PyString_FromString(rev));
+    FreeStr(date);
     Py_XDECREF(v);
 }
 
@@ -3829,7 +3815,11 @@ static char aster_module_documentation[] =
 "\n"
 ;
 
+#ifdef _SHARED
+PyMODINIT_FUNC initaster(void)
+#else
 DL_EXPORT(void) initaster()
+#endif
 {
         PyObject *m = (PyObject*)0 ;
         PyObject *d = (PyObject*)0 ;

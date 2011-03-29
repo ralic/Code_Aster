@@ -1,9 +1,9 @@
       SUBROUTINE LDSP1(pc,ierr)
       IMPLICIT NONE
 !           CONFIGURATION MANAGEMENT OF EDF VERSION                  
-!& MODIF LDSP1 PETSC  DATE 23/11/2010   AUTEUR DESOZA T.DESOZA 
+!& MODIF LDSP1 PETSC  DATE 29/03/2011   AUTEUR BOITEAU O.BOITEAU 
 ! ================================================================== 
-! COPYRIGHT (C) 1991 - 2010  EDF R&D              WWW.CODE-ASTER.ORG 
+! COPYRIGHT (C) 1991 - 2011  EDF R&D              WWW.CODE-ASTER.ORG 
 !                                                                    
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR      
 ! MODIFY IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS     
@@ -30,7 +30,7 @@
 !================================================================
       CHARACTER*19 SOLVBD
       CHARACTER*19 NOMAT,NOSOLV
-      INTEGER      JREFA
+      INTEGER      JREFA,IRET
       COMMON /LDLTSP/xlocal,xscatt,xglobal,SOLVBD,NOMAT,NOSOLV
 !================================================================
 ! --- DECLARATIONS NORMALISEES JEVEUX ----------------------------
@@ -65,7 +65,9 @@
       ZK24(JREFA-1+8)=' '
 
 ! --  APPEL A LA ROUTINE DE FACTO SP POUR LE PRECONDITIONNEMENT
-      CALL PCMUMP(NOMAT,NOSOLV)
+      CALL PCMUMP(NOMAT,NOSOLV,IRET  )
+
+      ierr = IRET
 
       CALL JEDEMA()
 

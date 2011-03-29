@@ -1,4 +1,4 @@
-#@ MODIF stanley_engine Stanley  DATE 15/03/2011   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF stanley_engine Stanley  DATE 28/03/2011   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -1584,17 +1584,17 @@ class STANLEY:
     # Permet de passer du mode Salome au mode Gmsh/Xmgrace...
     self.selection.mode = self.selection.mode.replace('Salome', '')
 
-   # Visualisation
-    if self.parametres.para['MODE_GRAPHIQUE']['mode_graphique'] == 'Salome' and self.selection.mode == 'Courbes':
-       self.selection.mode = 'SalomeCourbes'
-    elif self.parametres.para['MODE_GRAPHIQUE']['mode_graphique'] == 'Salome' and self.selection.mode == 'Isovaleurs':
-       self.selection.mode = 'SalomeIsovaleurs'
-
     # Options supplementaires a passer au driver graphique
     options = {}
 
     # Trace sur la deformee
     if self.selection.mode == 'Isovaleurs': options['case_sur_deformee'] = self.interface.case_sur_deformee.Valeur()
+
+   # Visualisation
+    if self.parametres.para['MODE_GRAPHIQUE']['mode_graphique'] == 'Salome' and self.selection.mode == 'Courbes':
+       self.selection.mode = 'SalomeCourbes'
+    elif self.parametres.para['MODE_GRAPHIQUE']['mode_graphique'] == 'Salome' and self.selection.mode == 'Isovaleurs':
+       self.selection.mode = 'SalomeIsovaleurs'
 
     # Animation des modes d'un mode_meca sous Gmsh
     if self.parametres.para['MODE_GRAPHIQUE']['mode_graphique'] == 'Gmsh/Xmgrace':
@@ -2519,6 +2519,26 @@ class DRIVER_SALOME_ISOVALEURS(DRIVER_ISOVALEURS) :
        else:
           para.update( { 'NOM_CMP': tuple(selection.nom_cmp) } )
 
+    # Options supplementaires du IMPR_RESU pour le trace sur deformee
+    if options.has_key( 'case_sur_deformee' ):
+      if options['case_sur_deformee'] == 1:
+        if selection.nom_cham != 'DEPL':
+          if type_champ in ['ELGA', 'ELEM']:
+             UTMESS('A','STANLEY_33')
+          else:
+             UTMESS('I','STANLEY_34')
+             if selection.nom_cham != 'DEPL':
+                para1 = _F(RESULTAT   = contexte.resultat,
+                           NOM_CHAM   = 'DEPL',
+                           NUME_ORDRE = selection.numeros,)
+
+                dim=aster.getvectjev(contexte.maillage.nom.ljust(8)+'.DIME')[5]
+                if   '3' in str(dim): dpara1 = { 'NOM_CMP': ('DX', 'DY', 'DZ') }
+                elif '2' in str(dim): dpara1 = { 'NOM_CMP': ('DX', 'DY') }
+                else:         dpara1 = { 'NOM_CMP': tuple(selection.liste_cmp) }
+                para1.update( dpara1 )
+                para = [ para, para1 ]
+
     try:
         IMPR_RESU(  FORMAT = 'MED',
                     UNITE  = ul,
@@ -2532,15 +2552,13 @@ class DRIVER_SALOME_ISOVALEURS(DRIVER_ISOVALEURS) :
         self.erreur.Remonte_Erreur(err, [], 0, texte)
         DEFI_FICHIER(ACTION='LIBERER',UNITE=ul)
         return
-                          
+
     DEFI_FICHIER(ACTION='LIBERER',UNITE=ul)
-        
+
     if l_detr :
         DETR( tuple(l_detr) )
 
-
-    self.terminal = salomeVisu.ISOVALEURS( medFileName, self.stan.parametres, selection )
-#    self.terminal = salomeVisuPylo.ISOVALEURS( medFileName, self.stan.parametres, selection )
+    self.terminal = salomeVisu.ISOVALEURS(medFileName, self.stan.parametres, selection, options)
 
 
 # ==============================================================================

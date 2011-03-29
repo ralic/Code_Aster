@@ -1,8 +1,8 @@
-#@ MODIF modelisa7 Messages  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
+#@ MODIF modelisa7 Messages  DATE 28/03/2011   AUTEUR SELLENET N.SELLENET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -70,6 +70,12 @@ cata_msg={
 
 11: _("""
  le groupe  %(k1)s  existe deja
+"""),
+
+12: _("""
+ Vous avez demandé l'affectation d'un modèle sur un %(k1)s,
+ or le maillage %(k2)s n'en contient aucun.
+ L'affectation du modèle n'est donc pas possible.
 """),
 
 15: _("""
