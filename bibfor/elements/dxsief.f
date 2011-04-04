@@ -5,7 +5,7 @@
       CHARACTER*16    NOMTE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/03/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF ELEMENTS  DATE 04/04/2011   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -154,12 +154,8 @@ C
       HIC = H/NBCOU
       ZMIN = -H/DEUX
 
-C      WRITE(6,*)'H NBCON NBCOU',H,NBCON,NBCOU
-C      WRITE(6,*)'NPGH HIC ZMIN',NPGH,HIC,ZMIN
-
 C --- BOUCLE SUR LES POINTS DE GAUSS DE LA SURFACE:
 C     ---------------------------------------------
-C      WRITE(6,*)'NPG=',NPG
       DO 100, IPG = 1 , NPG
 C
 C ----- CALCUL DE LA MATRICE DES DEFORMATIONS GENERALISEES
@@ -167,7 +163,6 @@ C
         CALL DXBMAT(NOMTE, CARA, XYZL, PGL, IPG, JACGAU, BMAT)
         CALL PMRVEC('ZERO',NBEPSG,NBDEPG,BMAT,DEPG,EPSG)
 
-        WRITE(6,*)'EPSG=',EPSG
 C ----- CALCUL DE L'ECOULEMENT PLASTIQUE SUR CHAQUE COUCHE
 C       PAR INTEGRATION EN TROIS POINTS:
 C       --------------------------------
@@ -190,7 +185,7 @@ C       --------------------------------
                 ZIC = ZMIN + HIC + (ICOU-1)*HIC + EXCEN
               ENDIF
             ENDIF
-            WRITE(6,*)'ZIC=',ZIC
+
 C         -- CALCUL DE EPS2D
 C         ------------------
             EPS2D(1) = EPSG(1) + ZIC*EPSG(4)
@@ -224,7 +219,6 @@ C           ---------------------------------------------------------
                   SIG = SIG + (EPS2D(J)-EPSTH(J))*D(I,J)
  132           CONTINUE
                SIGMA(ICPG+I) = SIG
-C               WRITE(6,*)'SIG=',SIG
  130        CONTINUE
 C           -- CONTRAINTES DE CISAILLEMENT
 C           ------------------------------

@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF MEMPID utilitai  DATE 29/03/2011   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF MEMPID utilitai  DATE 04/04/2011   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2011  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -20,12 +20,7 @@
 #include "aster.h"
 
 #ifdef _POSIX
-#include <stdio.h>
-#include <stdlib.h>
 #include <fcntl.h>
-#include <string.h>
-#include <sys/types.h>
-#include <unistd.h>
 #endif
 
 /*
@@ -42,13 +37,14 @@ INTEGER DEFP (MEMPID, mempid, INTEGER *val)
     static char sbuf[1024];
     char* S;
     int fd, num_read;
-    long numpro,lmem;
+    long lmem;
+    pid_t numpro;
 #ifdef _POSIX
     pid_t getpid(void);
     
-    numpro = (long)getpid();
+    numpro = getpid();
 
-    sprintf(filename, "/proc/%ld/status", numpro);
+    sprintf(filename, "/proc/%ld/status", (long)numpro);
     fd = open(filename, O_RDONLY, 0);
     if (fd==-1) return -1;
     num_read=read(fd,sbuf,(sizeof sbuf)-1);

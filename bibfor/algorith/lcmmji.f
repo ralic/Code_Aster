@@ -2,12 +2,12 @@
      &                     IS,IR,PR,DRDPS)
         IMPLICIT NONE
         INTEGER IFA,NMAT,NBCOMM(NMAT,3),IR,IS
-        REAL*8 COEFT(NMAT),DRDPS,PS,HSR(5,24,24)
+        REAL*8 COEFT(NMAT),DRDPS,HSR(5,24,24)
         CHARACTER*16 NECRIS
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 24/03/2009   AUTEUR REZETTE C.REZETTE 
+C MODIF ALGORITH  DATE 04/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -35,8 +35,8 @@ C           PR      :  DEFORMATION PLASTIQUE CUMULEE POUR INTERACTION
 C     OUT:
 C           DRSDPR :  D(RS(P))/D(PR)
 C     ----------------------------------------------------------------
-      REAL*8 P,R0,Q,H,B,RP,K,N,B1,B2,Q1,Q2,DRDP,DP,PR
-      INTEGER IFL,IEI,IEC,NS,NUEISO
+      REAL*8 Q,B,B1,B2,Q1,Q2,PR
+      INTEGER IEI,NUEISO
       INTEGER NUMHSR
 C     ----------------------------------------------------------------
 
@@ -60,9 +60,9 @@ C      ELSEIF (NECRIS.EQ.'ECRO_ISOT2') THEN
       
          Q1=COEFT(IEI+2)
          B1=COEFT(IEI+3)
-         Q2=COEFT(IEI+5)
-         B2=COEFT(IEI+6)         
-         NUMHSR=NINT(COEFT(IEI+7))
+         Q2=COEFT(IEI+4)
+         B2=COEFT(IEI+5)         
+         NUMHSR=NINT(COEFT(IEI+6))
 C
          DRDPS=Q1*HSR(NUMHSR,IS,IR)*B1*EXP(-B1*PR)
          IF (IS.EQ.IR) THEN

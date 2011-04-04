@@ -1,4 +1,4 @@
-#@ MODIF factor Messages  DATE 07/02/2011   AUTEUR BOITEAU O.BOITEAU 
+#@ MODIF factor Messages  DATE 04/04/2011   AUTEUR DESOZA T.DESOZA 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -191,9 +191,11 @@ Conseil :
 
 #-----------------------------------------------------------------------------------------------
 52: _("""
-Solveurs LDLT et MULT_FRONT seuls permis ici.
-Causes possibles :
-  - STAT_NON_LINE / FLAMBEMENT
+  -> Vous avez demandé une analyse de stabilité et vous utilisez le solveur linéaire '%(k1)s'.
+     Ces deux fonctionnalités ne sont pas compatibles.
+
+  -> Conseil :
+     Changez de solveur linéaire en utilisant le mot-clé METHODE de SOLVEUR.
 """),
 
 #-----------------------------------------------------------------------------------------------

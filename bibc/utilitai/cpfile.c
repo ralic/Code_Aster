@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF CPFILE UTILITAI  DATE 29/03/2011   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF CPFILE UTILITAI  DATE 04/04/2011   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2011  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -19,8 +19,6 @@
 /* appel de la commande systeme de copie de fichier */
 /* cp ou copy suivant les plates-formes             */
 
-#include <stdio.h>
-#include <stdlib.h>
 #include "aster.h"
 
 void DEFSSS(CPFILE, cpfile, char *action, STRING_SIZE la, char *nom1, STRING_SIZE lnom1, char *nom2, STRING_SIZE lnom2)

@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF APLEXT UTILITAI  DATE 29/03/2011   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF APLEXT UTILITAI  DATE 04/04/2011   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2011  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -19,11 +19,6 @@
 /* Creation d'un process fils, appel d'un programme externe
    et retour au process initial */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <errno.h>
-extern int errno;
 
 #include "aster.h"
 

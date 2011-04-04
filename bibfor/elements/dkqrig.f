@@ -1,6 +1,6 @@
       SUBROUTINE DKQRIG ( NOMTE, XYZL, OPTION, PGL, RIG, ENER )
       IMPLICIT  NONE
-      REAL*8        XYZL(4,*), PGL(*), RIG(*), ENER(*)
+      REAL*8        XYZL(3,*), PGL(*), RIG(*), ENER(*)
       CHARACTER*16  OPTION , NOMTE
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -20,7 +20,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C     ------------------------------------------------------------------
-C MODIF ELEMENTS  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 04/04/2011   AUTEUR DESOZA T.DESOZA 
 C
 C     MATRICE DE RIGIDITE DE L'ELEMENT DE PLAQUE DKQ
 C     ------------------------------------------------------------------
@@ -56,7 +56,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       REAL*8 XAB1(3,12),DEPL(24),CARAQ4(25),JACOB(5),QSI,ETA
       REAL*8 FLEX(144),MEMB(64),MEFL(96),T2EV(4),T2VE(4),T1VE(9)
       REAL*8 BSIGTH(24),ENERTH, EXCENT, R8GAEM, UN, CTOR
-      LOGICAL ELASCO, EXCE, INDITH
+      LOGICAL COUPMF, EXCE, INDITH
 C     ------------------------------------------------------------------
 C
       CALL ELREF5(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,ICOOPG,
@@ -80,7 +80,7 @@ C
 C     ----- CALCUL DES MATRICES DE RIGIDITE DU MATERIAU EN FLEXION,
 C           MEMBRANE ET CISAILLEMENT INVERSEE --------------------------
       CALL DXMATE('RIGI',DF,DM,DMF,DC,DCI,DMC,DFC,NNO,PGL,MULTIC,
-     +                                  ELASCO,T2EV,T2VE,T1VE)
+     +                                  COUPMF,T2EV,T2VE,T1VE)
 C     ----- CALCUL DES GRANDEURS GEOMETRIQUES SUR LE QUADRANGLE --------
       CALL GQUAD4 ( XYZL, CARAQ4 )
 
@@ -106,7 +106,7 @@ C        ----- CALCUL DU PRODUIT BMT.DM.BM -----------------------------
         CALL UTBTAB('CUMU',3,8,DM2,BM,XAB1,MEMB)
 
 C        -- COUPLAGE :
-        IF (MULTIC.EQ.2.OR.EXCE) THEN
+        IF (COUPMF.OR.EXCE) THEN
 C           ----- CALCUL DU PRODUIT BMT.DMF.BF -------------------------
           CALL DCOPY(9,DMF,1,DMF2,1)
           CALL DSCAL(9,WGT,DMF2,1)
@@ -122,7 +122,7 @@ C
       ELSE IF (OPTION.EQ.'EPOT_ELEM') THEN
         CALL JEVECH('PDEPLAR','L',JDEPG)
         CALL UTPVGL(4,6,PGL,ZR(JDEPG),DEPL)
-        CALL DXQLOE(FLEX,MEMB,MEFL,CTOR,MULTIC,DEPL,ENER)
+        CALL DXQLOE(FLEX,MEMB,MEFL,CTOR,COUPMF,DEPL,ENER)
         CALL BSTHPL(NOMTE(1:8),BSIGTH,INDITH)
         IF (INDITH) THEN
           DO 20 I = 1, 24

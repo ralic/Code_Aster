@@ -1,6 +1,6 @@
       SUBROUTINE Q4GRIG ( NOMTE, XYZL, OPTION, PGL, RIG, ENER )
       IMPLICIT NONE
-      REAL*8         XYZL(4,*), PGL(*), RIG(*), ENER(*)
+      REAL*8         XYZL(3,*), PGL(*), RIG(*), ENER(*)
       CHARACTER*16   OPTION , NOMTE
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -20,7 +20,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C     ------------------------------------------------------------------
-C MODIF ELEMENTS  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 04/04/2011   AUTEUR DESOZA T.DESOZA 
 C
 C     MATRICE DE RIGIDITE DE L'ELEMENT Q4GAMMA (AVEC CISAILLEMENT)
 C     ------------------------------------------------------------------
@@ -53,7 +53,7 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       REAL*8 BC(2,12)
       REAL*8 BM(3,8)
       REAL*8 XAB1(3,12),XAB2(2,12),XAB3(3,8)
-      REAL*8 XAB4(3,2)
+      REAL*8 XAB4(3,12)
 C                   ---(12,12)---
       REAL*8 KF(144)
       REAL*8 KC(144)
@@ -65,7 +65,7 @@ C                   -----(8,12)  -----(8,12)
       REAL*8 MEFLI(96),MEFL(96),KMC(96),KFC(144)
       REAL*8 BSIGTH(24),ENERTH,CARAQ4(25)
       REAL*8 T2EV(4), T2VE(4), T1VE(9), JACOB(5), QSI, ETA
-      LOGICAL ELASCO,INDITH
+      LOGICAL COUPMF,INDITH
       INTEGER   I, JCOQU, JDEPG, K
       REAL*8   CTOR, EXCENT, ZERO
       INTEGER   NDIM,NNO,NNOS,NPG,IPOIDS,ICOOPG,IVF,IDFDX,IDFD2,JGANO
@@ -94,7 +94,7 @@ C     ------------------------------------------
 C     ----- CALCUL DES MATRICES DE RIGIDITE DU MATERIAU EN FLEXION,
 C           MEMBRANE ET CISAILLEMENT INVERSEE --------------------------
       CALL DXMATE('RIGI',DF,DM,DMF,DC,DCI,DMC,DFC,NNO,PGL,MULTIC,
-     &                                   ELASCO,T2EV,T2VE,T1VE)
+     &                                   COUPMF,T2EV,T2VE,T1VE)
 C     ----- CALCUL DES GRANDEURS GEOMETRIQUES SUR LE QUADRANGLE --------
       CALL GQUAD4 ( XYZL, CARAQ4 )
 
@@ -118,10 +118,8 @@ C        ---- CALCUL DE LA MATRICE BC ----------------------------------
         CALL Q4GBC(QSI,ETA,JACOB(2),CARAQ4,BC)
 C        ---- CALCUL DU PRODUIT BCT.DC.BC -----------------------------
         CALL UTBTAB('ZERO',2,12,DC,BC,XAB2,KC)
-        IF (ELASCO) THEN
 C        ----- CALCUL DU PRODUIT BFT.DFC.BC ----------------------
-          CALL UTDTAB('ZERO',3,2,12,12,DFC,BC,BF,XAB4,KFC)
-        ENDIF
+        CALL UTDTAB('ZERO',3,2,12,12,DFC,BC,BF,XAB4,KFC)
 C        ----- CALCUL DE LA SOMME KF + KC = FLEXI ----------------------
         DO 40 K = 1,144
           FLEXI(K) = KF(K) + KC(K) + KFC(K)
@@ -141,11 +139,10 @@ C        ----- CALCUL DE LA MATRICE DE RIGIDITE EN MEMBRANE ------------
         DO 60 K = 1,64
           MEMB(K) = MEMB(K) + MEMBI(K)*WGT
    60   CONTINUE
-        IF (ELASCO) THEN
 C        ----- CALCUL DU PRODUIT BMT.DMC.BC ----------------------
-          CALL UTDTAB('ZERO',3,2,12,8,DMC,BC,BM,XAB4,KMC)
-        ENDIF
-        IF (MULTIC.EQ.2) THEN
+        CALL UTDTAB('ZERO',3,2,12,8,DMC,BC,BM,XAB4,KMC)
+C
+        IF (COUPMF) THEN
 C           ------------------------------------------------------------
 C           CALCUL DES MATRICES DE COUPLAGE MEMBRANE/FLEXION
 C           ------------------------------------------------------------
@@ -165,7 +162,7 @@ C
       ELSE IF (OPTION.EQ.'EPOT_ELEM') THEN
         CALL JEVECH('PDEPLAR','L',JDEPG)
         CALL UTPVGL(4,6,PGL,ZR(JDEPG),DEPL)
-        CALL DXQLOE(FLEX,MEMB,MEFL,CTOR,MULTIC,DEPL,ENER)
+        CALL DXQLOE(FLEX,MEMB,MEFL,CTOR,COUPMF,DEPL,ENER)
         CALL BSTHPL(NOMTE(1:8),BSIGTH,INDITH)
         IF (INDITH) THEN
           DO 90 I = 1, 24

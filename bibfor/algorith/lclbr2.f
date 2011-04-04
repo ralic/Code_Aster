@@ -1,10 +1,9 @@
-      SUBROUTINE LCLBR2 (IMATE, COMPOR, NDIM, EPSM, T, E, SIGMT, SIGMC,
-     &                   EPSIC, COMPN, GAMMA,POURC)
+      SUBROUTINE LCLBR2(FAMI, KPG, KSP, IMATE, COMPOR, NDIM, EPSM, T, E,
+     &                  SIGMT, SIGMC, EPSIC, COMPN, GAMMA)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 30/05/2005   AUTEUR LEBOUVIE F.LEBOUVIER 
+C MODIF ALGORITH  DATE 04/04/2011   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -21,7 +20,8 @@ C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
       IMPLICIT NONE
       CHARACTER*16       COMPOR(*)
-      INTEGER            IMATE,NDIM, T(3,3)
+      CHARACTER*(*)      FAMI
+      INTEGER            IMATE,NDIM, T(3,3), KPG, KSP
       REAL*8             EPSM(6), E, SIGMT, SIGMC, GAMMA, COMPN, EPSIC
       REAL*8             POURC      
 C ----------------------------------------------------------------------
@@ -55,8 +55,8 @@ C ----------------------------------------------------------------------
       
 C    LECTURE DES CARACTERISTIQUES DU MATERIAU
       NOMRES(1) = 'E'
-      CALL RCVALA ( IMATE,' ','ELAS',0,' ',0.D0,1,
-     &              NOMRES,VALRES,CODRET, 'FM')
+      CALL RCVALB(FAMI,KPG,KSP,'+',IMATE,' ','ELAS',
+     +            0,' ',0.D0,1,NOMRES,VALRES,CODRET, 'FM' )
       E     = VALRES(1)
 C    LECTURE DES CARACTERISTIQUES D'ENDOMMAGEMENT
       NOMRES(1) = 'D_SIGM_EPSI'
@@ -64,14 +64,12 @@ C    LECTURE DES CARACTERISTIQUES D'ENDOMMAGEMENT
       NOMRES(3) = 'SYC'
       NOMRES(4) = 'EPSC'
       NOMRES(5) = 'N'
-      NOMRES(6) = 'P_ENER'
-      CALL RCVALA(IMATE,' ','BETON_REGLE_PR',0,' ',0.D0,6,
-     &            NOMRES,VALRES,CODRET,' ')
+      CALL RCVALB(FAMI,KPG,KSP,'+',IMATE,' ','BETON_REGLE_PR',
+     +            0,' ',0.D0,5,NOMRES,VALRES,CODRET, 'FM' )
       GAMMA  = - E/VALRES(1)
       SIGMT = VALRES(2)
       SIGMC = -VALRES(3)
       EPSIC = -VALRES(4)
       COMPN = VALRES(5)
-      POURC = VALRES(6)
       
       END

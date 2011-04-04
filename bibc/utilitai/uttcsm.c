@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF UTTCSM UTILITAI  DATE 29/03/2011   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF UTTCSM UTILITAI  DATE 04/04/2011   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2011  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */

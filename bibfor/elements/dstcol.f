@@ -6,7 +6,7 @@
       CHARACTER*16  OPTION
       CHARACTER*4   FAMI
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 04/04/2011   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -53,33 +53,24 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       COMMON /KVARJE/ ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       INTEGER  NDIM,NNO,NNOS,IPOIDS,ICOOPG,IVF,IDFDX,IDFD2,JGANO,JNBSP
-      INTEGER       MULTIC,NE,JCACO,I,J,K,IE,JMATE,IC,ICPG,IG,NBCOU
-      REAL*8        R8BID,ZIC,HIC,ZMIN,DEUX,X3I,EPAIS,EXCEN
+      INTEGER       MULTIC,NE,JCACO,I,J,K,IE,NBCOU
+      REAL*8        HIC,ZMIN,DEUX,X3I,EPAIS,EXCEN
       REAL*8        DEPF(9),DEPM(6)
       REAL*8        DF(3,3),DM(3,3),DMF(3,3),DC(2,2),DCI(2,2),DMC(3,2)
-      REAL*8        H(3,3),D1I(2,2),D2I(2,4),C(3),S(3),DFC(3,2)
+      REAL*8        H(3,3),D1I(2,2),D2I(2,4),DFC(3,2)
       REAL*8        HFT2(2,6),HLT2(4,6),AN(3,9)
       REAL*8        BFB(3,9),BFA(3,3),BFN(3,9),BF(3,9)
       REAL*8        BCA(2,3),BCN(2,9),BM(3,6),SM(3),SF(3)
-      REAL*8        TA(6,3),BLA(4,3),BLN(4,9),VT(2),LAMBDA(4)
-      REAL*8        EPS(3),SIG(3),DCIS(2),CIST(2)
+      REAL*8        VT(2),LAMBDA(4)
+      REAL*8        EPS(3),SIG(3),CIST(2)
       REAL*8        QSI, ETA, CARAT3(21), T2EV(4), T2VE(4), T1VE(9)
-      CHARACTER*2   VAL, CODRET
-      CHARACTER*3   NUM
-      CHARACTER*8   NOMRES
-      LOGICAL  ELASCO
+      LOGICAL       COUPMF
 C     ------------------------------------------------------------------
 C
-      IF (OPTION(6:9).EQ.'ELGA') THEN
-        CALL ELREF5(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,ICOOPG,
+      CALL ELREF5(' ','NOEU',NDIM,NNO,NNOS,NPG,IPOIDS,ICOOPG,
      +                                         IVF,IDFDX,IDFD2,JGANO)
-        NE  = NPG
-      ELSE IF (OPTION(6:9).EQ.'ELNO') THEN
-        CALL ELREF5(' ','NOEU',NDIM,NNO,NNOS,NPG,IPOIDS,ICOOPG,
-     +                                         IVF,IDFDX,IDFD2,JGANO)
-        NE  = NNO
-      END IF
-
+      NE  = NNO
+C
       DEUX = 2.D0
 
 C     ----- RAPPEL DES MATRICES DE RIGIDITE DU MATERIAU EN FLEXION,
@@ -88,7 +79,7 @@ C     ----- CALCUL DES GRANDEURS GEOMETRIQUES SUR LE TRIANGLE ----------
       CALL GTRIA3 ( XYZL, CARAT3 )
 C     ----- CARACTERISTIQUES DES MATERIAUX --------
       CALL DXMATE(FAMI,DF,DM,DMF,DC,DCI,DMC,DFC,NNO,PGL,MULTIC,
-     +                                         ELASCO,T2EV,T2VE,T1VE)
+     +                                         COUPMF,T2EV,T2VE,T1VE)
 C     -------- CALCUL DE D1I ET D2I ------------------------------------
       IF (MULTIC.EQ.0) THEN
         CALL JEVECH('PCACOQU','L',JCACO)
@@ -114,7 +105,7 @@ C     -------- CALCUL DE D1I ET D2I ------------------------------------
         D1I(1,2) = 0.D0
         D1I(2,1) = 0.D0
       ELSE
-        CALL DXDMUL(ICOU,INIV,T1VE,T2VE,H,D1I,D2I,X3I)
+        CALL DXDMUL(ICOU,INIV,T1VE,T2VE,H,D1I,D2I,X3I,HIC)
       END IF
 C     ----- COMPOSANTES DEPLACEMENT MEMBRANE ET FLEXION ----------------
       DO 30 J = 1,NNO
@@ -154,177 +145,63 @@ C     ------ VT = BCA.AN.DEPF ------------------------------------------
   100 CONTINUE
 C     ------- CALCUL DE LA MATRICE BFB ---------------------------------
       CALL DSTBFB ( CARAT3(9), BFB )
-
-      IF (OPTION(1:4).EQ.'SIGM') THEN
-C              ---------------------
-C        ------ CIST = D1I.VT ( + D2I.LAMBDA SI MULTICOUCHES ) ---------
-        CIST(1) = D1I(1,1)*VT(1) + D1I(1,2)*VT(2)
-        CIST(2) = D1I(2,1)*VT(1) + D1I(2,2)*VT(2)
-        IF (MULTIC.GT.0) THEN
-C           ------- CALCUL DU PRODUIT HL.T2 ---------------------------
-          CALL DSXHLT ( DF, CARAT3(9), HLT2 )
-C           -------------- BLA = HLT2.TA ------------------------------
-          C(1) = CARAT3(16)
-          C(2) = CARAT3(17)
-          C(3) = CARAT3(18)
-          S(1) = CARAT3(19)
-          S(2) = CARAT3(20)
-          S(3) = CARAT3(21)
-          DO 200 K = 1,6
-            DO 201 J = 1,3
-              TA(K,J) = 0.D0
-  201       CONTINUE
-  200     CONTINUE
-          TA(1,1) = -8.D0*C(1)
-          TA(2,3) = -8.D0*C(3)
-          TA(3,1) = -4.D0*C(1)
-          TA(3,2) =  4.D0*C(2)
-          TA(3,3) = -4.D0*C(3)
-          TA(4,1) = -8.D0*S(1)
-          TA(5,3) = -8.D0*S(3)
-          TA(6,1) = -4.D0*S(1)
-          TA(6,2) =  4.D0*S(2)
-          TA(6,3) = -4.D0*S(3)
-          DO 204 I = 1,4
-            DO 206 J = 1,3
-              BLA(I,J) = 0.D0
-              DO 208 K = 1,6
-                BLA(I,J) = BLA(I,J) + HLT2(I,K)*TA(K,J)
- 208          CONTINUE
- 206        CONTINUE
- 204      CONTINUE
-C           -------- LAMBDA = BLA.AN.DEPF ------------------------------
-          DO 212 I = 1,4
-            LAMBDA(I) = 0.D0
- 212      CONTINUE
-          DO 214 I = 1,4
-            DO 216 J = 1,9
-              BLN(I,J) = 0.D0
-              DO 218 K = 1,3
-                BLN(I,J) = BLN(I,J) + BLA(I,K)*AN(K,J)
- 218         CONTINUE
-              LAMBDA(I) = LAMBDA(I) + BLN(I,J)*DEPF(J)
- 216        CONTINUE
- 214      CONTINUE
-          DO 220 J = 1,4
-            CIST(1) = CIST(1) + D2I(1,J)*LAMBDA(J)
-            CIST(2) = CIST(2) + D2I(2,J)*LAMBDA(J)
- 220      CONTINUE
-        END IF
-        DO 230 IE = 1,NE
-C ---     COORDONNEES DU POINT D'INTEGRATION COURANT :
-C         ------------------------------------------
-          QSI = ZR(ICOOPG-1+NDIM*(IE-1)+1)
-          ETA = ZR(ICOOPG-1+NDIM*(IE-1)+2)
-C           ----- CALCUL DE LA MATRICE BFA AU POINT QSI ETA -----------
-          CALL DSTBFA ( QSI, ETA , CARAT3 , BFA )
-C           ------ BF = BFB + BFA.AN -----------------------------------
-          DO 234 I = 1,3
-            DO 236 J = 1,9
-              BFN(I,J) = 0.D0
-              DO 238 K = 1,3
-                BFN(I,J) = BFN(I,J) + BFA(I,K)*AN(K,J)
- 238          CONTINUE
-              BF(I,J) = BFB(I,J) + BFN(I,J)
- 236        CONTINUE
- 234      CONTINUE
-C           ------ SF = BF.DEPF ---------------------------------------
-          DO 240 I = 1,3
-            SF(I) = 0.D0
- 240      CONTINUE
-          DO 242 I = 1,3
-            DO 244 J = 1,9
-              SF(I) = SF(I) + BF(I,J)*DEPF(J)
- 244        CONTINUE
- 242      CONTINUE
-          DO 246 I = 1,3
-            EPS(I) = SM(I) + X3I*SF(I)
-            SIG(I) = 0.D0
- 246      CONTINUE
-          DO 248 I = 1,3
-            DO 250 J = 1,3
-              SIG(I) = SIG(I) + H(I,J)*EPS(J)
- 250        CONTINUE
- 248      CONTINUE
-          CDL(1+6* (IE-1)) = SIG(1)
-          CDL(2+6* (IE-1)) = SIG(2)
-          CDL(3+6* (IE-1)) = 0.D0
-          CDL(4+6* (IE-1)) = SIG(3)
-          CDL(5+6* (IE-1)) = CIST(1)
-          CDL(6+6* (IE-1)) = CIST(2)
- 230    CONTINUE
-
-C
-      ELSE IF (OPTION(1:4).EQ.'SIEF') THEN
-C              ---------------------
-C        ------ CIST = D1I.VT ( + D2I.LAMBDA SI MULTICOUCHES ) ---------
-        CIST(1) = D1I(1,1)*VT(1) + D1I(1,2)*VT(2)
-        CIST(2) = D1I(2,1)*VT(1) + D1I(2,2)*VT(2)
-C
-        DO 330 IE = 1,NE
-C ---     COORDONNEES DU POINT D'INTEGRATION COURANT :
-C         ------------------------------------------
-          QSI = ZR(ICOOPG-1+NDIM*(IE-1)+1)
-          ETA = ZR(ICOOPG-1+NDIM*(IE-1)+2)
-C           ----- CALCUL DE LA MATRICE BFA AU POINT QSI ETA -----------
-          CALL DSTBFA ( QSI, ETA , CARAT3 , BFA )
-C           ------ BF = BFB + BFA.AN -----------------------------------
-          DO 334 I = 1,3
-            DO 336 J = 1,9
-              BFN(I,J) = 0.D0
-              DO 338 K = 1,3
-                BFN(I,J) = BFN(I,J) + BFA(I,K)*AN(K,J)
- 338          CONTINUE
-              BF(I,J) = BFB(I,J) + BFN(I,J)
- 336        CONTINUE
- 334      CONTINUE
-C           ------ SF = BF.DEPF ---------------------------------------
-          DO 340 I = 1,3
-            SF(I) = 0.D0
- 340      CONTINUE
-          DO 342 I = 1,3
-            DO 344 J = 1,9
-              SF(I) = SF(I) + BF(I,J)*DEPF(J)
- 344        CONTINUE
- 342      CONTINUE
-
-          DO 350 IC = 1 , ICOU
-
-            HIC  =  EPAIS/ICOU
-            ZMIN = -EPAIS/DEUX
-
-            DO 360, IG = 1 , INIV
-
-              ICPG = 6*INIV*ICOU*(IE-1) + 6*INIV*(IC-1) + 6*(IG-1)
-
-C             -- COTE DES POINTS D'INTEGRATION
-C             --------------------------------
-              IF (IG.EQ.1) THEN
-                ZIC = ZMIN + (IC-1)*HIC
-              ELSE IF (IG.EQ.2) THEN
-                ZIC = ZMIN + HIC/DEUX + (IC-1)*HIC
-              ELSE
-                ZIC = ZMIN + HIC + (IC-1)*HIC
-              END IF
-
-              DO 362 I = 1,3
-                EPS(I) = SM(I) + ZIC*SF(I)
-                SIG(I) = 0.D0
- 362          CONTINUE
-              DO 364 I = 1,3
-                DO 366 J = 1,3
-                  SIG(I) = SIG(I) + H(I,J)*EPS(J)
- 366            CONTINUE
- 364          CONTINUE
-              CDL(ICPG+1) = SIG(1)
-              CDL(ICPG+2) = SIG(2)
-              CDL(ICPG+3) = 0.D0
-              CDL(ICPG+4) = SIG(3)
-              CDL(ICPG+5) = CIST(1)
-              CDL(ICPG+6) = CIST(2)
-  360       CONTINUE
-  350     CONTINUE
- 330    CONTINUE
+C     
+C            ---------------------
+C      ------ CIST = D1I.VT ( + D2I.LAMBDA SI MULTICOUCHES ) ---------
+      CIST(1) = D1I(1,1)*VT(1) + D1I(1,2)*VT(2)
+      CIST(2) = D1I(2,1)*VT(1) + D1I(2,2)*VT(2)
+      IF (MULTIC.GT.0) THEN
+C         ------- CALCUL DU PRODUIT HL.T2 ---------------------------
+        CALL DSXHLT ( DF, CARAT3(9), HLT2 )
+C         -------------- LAMBDA ------------------------------
+        CALL DSTLXY (CARAT3(16), HLT2, AN, DEPF, LAMBDA )
+        DO 220 J = 1,4
+          CIST(1) = CIST(1) + D2I(1,J)*LAMBDA(J)
+          CIST(2) = CIST(2) + D2I(2,J)*LAMBDA(J)
+ 220    CONTINUE
       END IF
+      DO 230 IE = 1,NE
+C ---   COORDONNEES DU POINT D'INTEGRATION COURANT :
+C       ------------------------------------------
+        QSI = ZR(ICOOPG-1+NDIM*(IE-1)+1)
+        ETA = ZR(ICOOPG-1+NDIM*(IE-1)+2)
+C         ----- CALCUL DE LA MATRICE BFA AU POINT QSI ETA -----------
+        CALL DSTBFA ( QSI, ETA , CARAT3 , BFA )
+C         ------ BF = BFB + BFA.AN -----------------------------------
+        DO 234 I = 1,3
+          DO 236 J = 1,9
+            BFN(I,J) = 0.D0
+            DO 238 K = 1,3
+              BFN(I,J) = BFN(I,J) + BFA(I,K)*AN(K,J)
+ 238        CONTINUE
+            BF(I,J) = BFB(I,J) + BFN(I,J)
+ 236      CONTINUE
+ 234    CONTINUE
+C         ------ SF = BF.DEPF ---------------------------------------
+        DO 240 I = 1,3
+          SF(I) = 0.D0
+ 240    CONTINUE
+        DO 242 I = 1,3
+          DO 244 J = 1,9
+            SF(I) = SF(I) + BF(I,J)*DEPF(J)
+ 244      CONTINUE
+ 242    CONTINUE
+        DO 246 I = 1,3
+          EPS(I) = SM(I) + X3I*SF(I)
+          SIG(I) = 0.D0
+ 246    CONTINUE
+        DO 248 I = 1,3
+          DO 250 J = 1,3
+            SIG(I) = SIG(I) + H(I,J)*EPS(J)
+ 250      CONTINUE
+ 248    CONTINUE
+        CDL(1+6* (IE-1)) = SIG(1)
+        CDL(2+6* (IE-1)) = SIG(2)
+        CDL(3+6* (IE-1)) = 0.D0
+        CDL(4+6* (IE-1)) = SIG(3)
+        CDL(5+6* (IE-1)) = CIST(1)
+        CDL(6+6* (IE-1)) = CIST(2)
+ 230  CONTINUE
+
 C
       END

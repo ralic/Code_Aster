@@ -1,8 +1,8 @@
       SUBROUTINE PIESGV(NDIM,TAU,MAT,VIM,EPSM,EPSP,EPSD,NONLOC,COPILO)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 12/04/2010   AUTEUR MICHEL S.MICHEL 
+C MODIF ALGORITH  DATE 04/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -56,7 +56,8 @@ C ----------------------------------------------------------------------
       REAL*8 GAMMA,DRDA0,DFDA0,DUM1,DUM2,DUM3
       COMMON /LCES/ GAMMA,DRDA0,DFDA0,DUM1,DUM2,DUM3
 C ----------------------------------------------------------------------
-      DATA NOM/'E','NU','SY','GAMMA','COEF_RIGI_MINI','DD_MAXI'/
+C     DATA NOM/'E','NU','SY','GAMMA','COEF_RIGI_MINI','DD_MAXI'
+      DATA NOM/'E','NU','SY','GAMMA','COEF_RIG','DD_MAXI'/
 C ----------------------------------------------------------------------
 
 

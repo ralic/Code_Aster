@@ -1,7 +1,7 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF UTCLIM UTILITAI  DATE 29/03/2011   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF UTCLIM UTILITAI  DATE 04/04/2011   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2011  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -23,9 +23,6 @@
 /* une marge necessaire à la fin du job en cas d'arret CPU            */
 /*                	*/
 extern char g_tpmax[];
-
-#include <string.h>
-#include <stdio.h>
 
 #include "aster.h"
 

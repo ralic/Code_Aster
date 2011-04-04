@@ -2,7 +2,7 @@
       IMPLICIT NONE
       CHARACTER*16        OPTION , NOMTE
 C     ----------------------------------------------------------------
-C MODIF ELEMENTS  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 04/04/2011   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -355,7 +355,7 @@ C     ------------------------------------------
           CALL TECACH('NNN','PCOMPOR',1,ICOMPO,IRET)
           CALL JEVECH ( 'PCONTRR', 'L', ICONTP )
           IND=6
-          CALL DXEFFI ( NOMTE, XYZL, PGL, ZR(ICONTP), IND, EFFINT )
+          CALL DXEFFI ( OPTION, NOMTE, PGL, ZR(ICONTP), IND, EFFINT )
           CALL DXREPE ( PGL, T2EV, T2VE, T1VE )
           CALL DXEFR2 ( NPG, T2EV, EFFINT, EFFGT )
           CALL JEVECH ( 'PSIEFNOR', 'E', ICHN   )
@@ -377,7 +377,7 @@ C     -------------------------------------
 
          CALL JEVECH ( 'PCONTMR', 'L', ICONTP )
          IND=8
-         CALL DXEFFI ( NOMTE, XYZL, PGL, ZR(ICONTP), IND, EFFGT )
+         CALL DXEFFI ( OPTION, NOMTE, PGL, ZR(ICONTP), IND, EFFGT )
 C
 C ------ CALCUL DES EFFORTS INTERNES (I.E. SOMME_VOL(BT_SIG))
 C        ----------------------------------------------------

@@ -3,7 +3,7 @@
       REAL*8        XYZL(3,*) , PGL(*) , MAS(*) , ENER(*)
       CHARACTER*16  OPTION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 04/04/2011   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -235,7 +235,7 @@ C
          CALL JEVECH ('PDEPLAR' , 'L' , JDEPG)
          CALL UTPVGL ( 4 , 6 , PGL , ZR(JDEPG) , DEPL )
          CALL DXQLOE ( FLEX   , MEMB   , MEFL  , CTOR ,
-     &                 0 , DEPL , ENER )
+     &                 .FALSE. , DEPL , ENER )
       ENDIF
 C
       END

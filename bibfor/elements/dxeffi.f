@@ -1,11 +1,11 @@
-      SUBROUTINE DXEFFI ( NOMTE, XYZL, PGL, CONT, IND, EFFINT )
+      SUBROUTINE DXEFFI ( OPTION, NOMTE, PGL, CONT, IND, EFFINT )
       IMPLICIT  NONE
-      REAL*8              XYZL(3,*), PGL(3,3), CONT(*), EFFINT(*)
-      CHARACTER*16        NOMTE
+      REAL*8              PGL(3,3), CONT(*), EFFINT(*)
+      CHARACTER*16        OPTION, NOMTE
       INTEGER             IND
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 22/03/2011   AUTEUR DESOZA T.DESOZA 
+C MODIF ELEMENTS  DATE 04/04/2011   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -52,6 +52,13 @@ C
      &         ICACOQ, JNBSPI
       REAL*8   HIC, H, ZIC, ZMIN, COEF, ZERO, DEUX, DISTN, COEHSD
       REAL*8   N(3), M(3), T(2)
+C
+      INTEGER MULTIC,INIV
+      REAL*8 DF(3,3),DM(3,3),DMF(3,3),DC(2,2),DCI(2,2),DMC(3,2),DFC(3,2)
+      REAL*8 T2EV(2,2),T2VE(2,2),T1VE(3,3)
+      REAL*8 HM(3,3)
+      REAL*8 D1I(2,2),D2I(2,4)
+      LOGICAL COUPMF
 C     ------------------------------------------------------------------
 C
       CALL ELREF5(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,ICOOPG,
@@ -74,15 +81,25 @@ C     --------------------------------------------------------
       NBCON = 6
       NBCOU = ZI(JNBSPI-1+1)
       IF (NBCOU.LE.0) CALL U2MESS('F','ELEMENTS_46')
+C
+C
+      MULTIC = 0
+      IF (OPTION.EQ.'FORC_NODA') THEN
+C     ----- CARACTERISTIQUES DES MATERIAUX --------
+        CALL DXMATE('RIGI',DF,DM,DMF,DC,DCI,DMC,DFC,NNO,PGL,MULTIC,
+     &                                            COUPMF,T2EV,T2VE,T1VE)
+      ENDIF
 
 C     -- GRANDEURS GEOMETRIQUES :
 C     ---------------------------
-      CALL JEVECH ( 'PCACOQU', 'L', ICACOQ )
-      H = ZR(ICACOQ)
-      HIC = H/NBCOU
       NPGH = 3
-      DISTN = ZR(ICACOQ+4)
-      ZMIN = -H/DEUX + DISTN
+      IF (MULTIC.EQ.0) THEN
+        CALL JEVECH ( 'PCACOQU', 'L', ICACOQ )
+        H = ZR(ICACOQ)
+        HIC = H/NBCOU
+        DISTN = ZR(ICACOQ+4)
+        ZMIN = -H/DEUX + DISTN
+      ENDIF
 
       CALL R8INIR ( 32, ZERO, EFFINT, 1 )
 
@@ -98,6 +115,7 @@ C     -------------------------------------------------
             DO 120, IGAUH = 1,NPGH
                ICPG = NBCON*NPGH*NBCOU*(IPG-1) + NBCON*NPGH*(ICOU-1) +
      &                                           NBCON*(IGAUH-1)
+
                IF (IGAUH.EQ.1) THEN
                   ZIC = ZMIN + (ICOU-1)*HIC
                   COEF = 1.D0/3.D0
@@ -108,6 +126,10 @@ C     -------------------------------------------------
                   ZIC = ZMIN + HIC + (ICOU-1)*HIC
                   COEF = 1.D0/3.D0
                END IF
+               IF (MULTIC.GT.0) THEN
+                 INIV = IGAUH - 2
+                 CALL DXDMUL(ICOU,INIV,T1VE,T2VE,HM,D1I,D2I,ZIC,HIC)
+               ENDIF
 C
 C         -- CALCUL DES EFFORTS GENERALISES DANS L'EPAISSEUR (N, M ET T)
 C         --------------------------------------------------------------

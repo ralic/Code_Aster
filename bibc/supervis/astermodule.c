@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF astermodule supervis  DATE 29/03/2011   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF astermodule supervis  DATE 04/04/2011   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2011  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -20,11 +20,8 @@
 /* RESPONSABLE                                  COURTOIS M.COURTOIS   */
 /* ------------------------------------------------------------------ */
 
-#include <stdio.h>
-#include <math.h>
-#include <ctype.h>
-#include <string.h>
 #include "Python.h"
+#include <ctype.h>
 
 #include "aster.h"
 #include "aster_fort.h"

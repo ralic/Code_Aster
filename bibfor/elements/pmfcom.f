@@ -10,7 +10,7 @@
      &                  MODF,SIGF,VARIP,ISECAN,CODRET)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 08/02/2011   AUTEUR DALLOLIO L.DALLOLIO 
+C MODIF ELEMENTS  DATE 04/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C TOLE CRP_21
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -33,7 +33,7 @@ C ======================================================================
       INTEGER NF,ICDMAT,NBVALC,ISECAN,KPG,NPG,NSPG
       REAL*8 VARIM(NBVALC*NF),CONTM(NF),DEFM(NF),DEFP(NF),MODF(NF),
      &       SIGF(NF),VARIMP(NBVALC*NF),VARIP(NBVALC*NF)
-      REAL*8 TEMPM,TEMPP,DSIDEP,TREF,SIGX,SIGXP,EPSX,DEPSX
+      REAL*8 TEMPM,TEMPP,TREF,SIGX,EPSX,DEPSX
       REAL*8 CRIT(*),INSTAM,INSTAP
       REAL*8 DEFAP(*), DEFAM(*)
 C     ------------------------------------------------------------------
@@ -64,16 +64,14 @@ C     ------------------------------------------------------------------
 
       INTEGER     NBVAL,NBPAR,NBRES,NBVARI,CODREP
       PARAMETER   (NBVAL=12)
-      REAL*8      VALPAR,VALRES(NBVAL),EP,EM,R8B
+      REAL*8      VALPAR,VALRES(NBVAL),EP,EM
       CHARACTER*2 ARRET,RETOUR,CODRES(NBVAL)
       CHARACTER*8 NOMPAR,NOECLB(9),NOMPIM(12)
-      REAL*8      NU, DEPSTH
+      REAL*8       DEPSTH
       REAL*8      A1,A2,BETA1,BETA2,Y01,Y02,B1,B2,SIGF1
-      REAL*8      CSTPM(13),EPSM,ANGMAS(3),R8VIDE,R8NNEM,DEPSM
-      INTEGER    NBCLMA, NBCLEM, NBCVIL, NBCCYR,NBCEPR,NBCINT
-      PARAMETER (NBCLMA=12,NBCLEM=7,NBCVIL=5,NBCCYR=3,NBCEPR=3,NBCINT=2)
-      REAL*8     COELMA(NBCLMA),COELEM(NBCLEM),COEVIL(NBCVIL)
-      REAL*8     COECYR(NBCCYR),COEEPR(NBCEPR),COEINT(NBCINT),ALPHA
+      REAL*8      CSTPM(13),EPSM,ANGMAS(3),DEPSM
+
+      REAL*8     ALPHA
       INTEGER     I,IVARI,CODRET,IRET,IRET1,IRET2,IRET3,IRET4
       CHARACTER*4 FAMI
       CHARACTER*8 MATERI,NOMRES
@@ -82,7 +80,9 @@ C     ------------------------------------------------------------------
       DATA ARRET,RETOUR/'FM','  '/
       DATA NOECLB/'Y01','Y02','A1','A2','B1','B2','BETA1','BETA2',
      &     'SIGF'/
-      DATA NOMPIM/'SY','EPSI_ULTM','SIGM_ULTM','EPSP_HARD','R_PM',
+C     DATA NOMPIM/'SY','EPSI_ULTM','SIGM_ULTM','EPSP_HARD','R_PM',
+C    &     'EP_SUR_E','A1_PM','A2_PM','ELAN','A6_PM','C_PM','A_PM'/
+      DATA NOMPIM /'SY','EPSI_ULT','SIGM_ULT','EPSP_HAR','R_PM',
      &     'EP_SUR_E','A1_PM','A2_PM','ELAN','A6_PM','C_PM','A_PM'/
 
 C     ------------------------------------------------------------------

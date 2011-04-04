@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF asterm utilitai  DATE 29/03/2011   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF asterm utilitai  DATE 04/04/2011   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2011  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -19,81 +19,14 @@
 /* ================================================================== */
 /* RESPONSABLE LEFEBVRE J-P.LEFEBVRE */
 /* ------------------------------------------------------------------ */
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <ctype.h>
-
 #include "aster.h"
+#include "aster_fort.h"
+#include "aster_utils.h"
 
 
 #ifdef _POSIX
 #include <sys/utsname.h> /* Pour le nom de la machine d'execution */
 #endif
-
-
-INTEGER DEFPPP(INIAST, iniast, INTEGER *, INTEGER *, INTEGER *);
-#define CALL_INIAST(a, b, c) CALLPPP(INIAST, iniast, a, b, c)
-
-INTEGER DEFP(LMEMEX, lmemex, INTEGER *);
-#define CALL_LMEMEX(a) CALLP(LMEMEX, lmemex, a)
-
-INTEGER DEFP(MEMJVX, memjvx, double *);
-#define CALL_MEMJVX(a) CALLP(MEMJVX, memjvx, a)
-
-INTEGER DEFP(MJVXMO, mjvxmo, double *);
-#define CALL_MJVXMO(a) CALLP(MJVXMO, mjvxmo, a)
-
-INTEGER DEFP(MEJVDY, mejvdy, double *);
-#define CALL_MEJVDY(a) CALLP(MEJVDY, mejvdy, a)
-
-INTEGER DEFP(MEJVST, mejvst, double *);
-#define CALL_MEJVST(a) CALLP(MEJVST, mejvst, a)
-
-INTEGER DEFP(MJVSMO, mjvsmo, double *);
-#define CALL_MJVSMO(a) CALLP(MJVSMO, mjvsmo, a)
-
-INTEGER DEFPPS(REPMAT, repmat, INTEGER *, INTEGER *, char *, STRING_SIZE);
-#define CALL_REPMAT(a, b, c) CALLPPS(REPMAT, repmat, a, b, c)
-
-INTEGER DEFPPS(REPOUT, repout, INTEGER *, INTEGER *, char *, STRING_SIZE);
-#define CALL_REPOUT(a, b, c) CALLPPS(REPOUT, repout, a, b, c)
-
-INTEGER DEFPPS(REPDEX, repdex, INTEGER *, INTEGER *, char *, STRING_SIZE);
-#define CALL_REPDEX(a, b, c) CALLPPS(REPDEX, repdex, a, b, c)
-
-void DEFPSSS(NODNAM, nodnam, INTEGER *, char *, STRING_SIZE, char *, STRING_SIZE, char *, STRING_SIZE);
-#define CALL_NODNAM(a, b, c, d) CALLPSSS(NODNAM, nodnam, a, b, c, d)
-
-INTEGER DEFP(ISINTE, isinte, INTEGER *);
-#define CALL_ISINTE(a) CALLP(ISINTE, isinte, a)
-
-INTEGER DEFP(ISSUIV, issuiv, INTEGER *);
-#define CALL_ISSUIV(a) CALLP(ISSUIV, issuiv, a)
-
-INTEGER DEFP(IVERIF, iverif, INTEGER *);
-#define CALL_IVERIF(a) CALLP(IVERIF, iverif, a)
-
-INTEGER DEFP(ISDBGJ, isdbgj, INTEGER *);
-#define CALL_ISDBGJ(a) CALLP(ISDBGJ, isdbgj, a)
-
-void DEFPS(ORIGIN, origin, INTEGER *, char *, STRING_SIZE);
-#define CALL_ORIGIN(a, b) CALLPS(ORIGIN, origin, a, b)
-
-void DEFPPPSP(VERSIO, versio, INTEGER *, INTEGER *, INTEGER *, char *, STRING_SIZE, INTEGER *);
-#define CALL_VERSIO(a, b, c, d, e) CALLPPPSP(VERSIO, versio, a, b, c, d, e)
-
-INTEGER DEFP(SEGJVX, segjvx, INTEGER *);
-#define CALL_SEGJVX(a) CALLP(SEGJVX, segjvx, a)
-
-INTEGER DEFP(LSEGJV, lsegjv, INTEGER *);
-#define CALL_LSEGJV(a) CALLP(LSEGJV, lsegjv, a)
-
-double DEFP(VPARJV, vparjv, DOUBLE *);
-#define CALL_VPARJV(a) CALLP(VPARJV, vparjv, a)
-
-double DEFP(MAXBAS, maxbas, DOUBLE *);
-#define CALL_MAXBAS(a) CALLP(MAXBAS, maxbas, a)
 
 
 void strmaju(char *namin, char *namaj, STRING_SIZE l)
@@ -152,7 +85,7 @@ void asterm(long argc, char** argv)
 */
 {
     INTEGER ivers, iutil, iniv, ilog;
-    char vdate[9] = "         ";
+    char *vdate;
     INTEGER cerr, iret;
     INTEGER inter;
     INTEGER r1,r2,r3;
@@ -163,8 +96,8 @@ void asterm(long argc, char** argv)
 
     iret=CALL_INIAST(&r1,&r2,&r3);
 
-    vdate[8] = '\0';
-    CALL_VERSIO(&ivers,&iutil,&iniv,&vdate[0],&ilog);
+    vdate = MakeBlankFStr(16);
+    CALL_VERSIO(&ivers,&iutil,&iniv,vdate,&ilog);
     *argv ++;
 
     /* Nom de la machine */
@@ -273,21 +206,21 @@ void asterm(long argc, char** argv)
    /*
    ** Memoire JEVEUX en Mo
    */
-		if (strcmp(*argv,"-memory") == 0) {
-			double finter;
-			*argv++;
-			finter=(double) atof(*argv);
-			cerr=CALL_MJVXMO(&finter);
-		}
+        if (strcmp(*argv,"-memory") == 0) {
+            double finter;
+            *argv++;
+            finter=(double) atof(*argv);
+            cerr=CALL_MJVXMO(&finter);
+        }
    /*
    ** Maximum memoire statique JEVEUX en Mo
    */
-		if (strcmp(*argv,"-memory_stat") == 0) {
-			double mxmemst;
-			*argv++;
-			mxmemst=(double) atof(*argv);
-			cerr=CALL_MJVSMO(&mxmemst);
-		}
+        if (strcmp(*argv,"-memory_stat") == 0) {
+            double mxmemst;
+            *argv++;
+            mxmemst=(double) atof(*argv);
+            cerr=CALL_MJVSMO(&mxmemst);
+        }
    /*
    ** Memoire JEVEUX en Mw
    */

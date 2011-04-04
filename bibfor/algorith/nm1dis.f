@@ -2,9 +2,9 @@
      &                  DEPS,VIM,OPTION,COMPOR,MATERI,SIGP,VIP,DSDE)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 15/11/2010   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF ALGORITH  DATE 04/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -48,7 +48,7 @@ C OUT DSDE    : DSIG/DEPS
 C     ------------------------------------------------------------------
 C     ARGUMENTS
 C     ------------------------------------------------------------------
-      REAL*8 TEMPP,TEMPM,EM,EP,ET,SIGY,TREF
+      REAL*8 EM,EP,ET,SIGY
       REAL*8 SIGM,DEPS,PM,VIM(*),VIP(*),RESU
       REAL*8 SIGP,DSDE,RBID
       CHARACTER*16 OPTION,COMPOR(*)
@@ -62,7 +62,7 @@ C     ------------------------------------------------------------------
       INTEGER JPROLM,JVALEM,NBVALM,NBVALP,JPROLP,JVALEP,IRET
       CHARACTER*2 BL2,FB2,CODRES(2)
       CHARACTER*8 NOMPAR,NOMECL(2),TYPE
-      DATA NOMECL/'D_SIGM_EPSI','SY'/
+      DATA NOMECL /'D_SIGM_E','SY'/
 
 
       BL2 = '  '

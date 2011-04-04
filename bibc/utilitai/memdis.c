@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF MEMDIS UTILITAI  DATE 29/03/2011   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF MEMDIS UTILITAI  DATE 04/04/2011   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2011  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -25,8 +25,6 @@
 /* taille_mo : taille effectivement allouee en Mo                 */
 /* lfree     :  =1 la zone est liberee                            */
 /*             !=1 la zone est disponible a l'adresse iadm        */
-#include <stdio.h>
-#include <stdlib.h>
 #include "aster.h"
 
 INTEGER DEFPPPP(MEMDIS, memdis, INTEGER *L, INTEGER **iadm, INTEGER *taille_mo, INTEGER *lfree)

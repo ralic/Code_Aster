@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+%& MODIF TYPELEM  DATE 04/04/2011   AUTEUR FOUCAULT A.FOUCAULT 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -136,6 +136,9 @@ OPTION__
     RICE_TRACEY         -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
     RIGI_MECA_TANG        5   IN__   CCOMPOR  PCOMPOR  ECONTPG  PCONTMR  DDL_MECA PDEPLMR  DDL_MECA PDEPLPR
+                                     NGEOMER  PGEOMER  CMATERC  PMATERC  ZVARIPG  PVARIMR
+                              OUT__  MMATUNS  PMATUNS
+    RIGI_MECA_ELAS        5   IN__   CCOMPOR  PCOMPOR  ECONTPG  PCONTMR  DDL_MECA PDEPLMR  DDL_MECA PDEPLPR
                                      NGEOMER  PGEOMER  CMATERC  PMATERC  ZVARIPG  PVARIMR
                               OUT__  MMATUNS  PMATUNS
     SIEF_ELNO        5   IN__   CCOMPOR  PCOMPOR  ECONTPG  PCONTRR

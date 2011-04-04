@@ -1,6 +1,6 @@
-      SUBROUTINE DXTLOE(FLEX,MEMB,MEFL,CTOR,MULTIC,DEPL,ENER)
+      SUBROUTINE DXTLOE(FLEX,MEMB,MEFL,CTOR,COUPMF,DEPL,ENER)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 04/04/2011   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,7 +18,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
 C ======================================================================
       IMPLICIT REAL*8 (A-H,O-Z)
-      INTEGER MULTIC
+      LOGICAL COUPMF
       REAL*8 FLEX(*),MEMB(*),MEFL(*),CTOR
       REAL*8 DEPL(*),ENER(*)
 C-----------------------------------------------------
@@ -43,7 +43,6 @@ C-----------------------
       REAL*8 DEPLM(6),DEPLF(9)
       REAL*8 MATLOC(171),MATF(45),MATM(21)
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
-      CHARACTER*32 JEXNUM,JEXNOM,JEXR8,JEXATR
       INTEGER ZI
       COMMON /IVARJE/ZI(1)
       REAL*8 ZR
@@ -126,7 +125,7 @@ C                          ---- TERMES DE ROTATION / Z
       MATLOC(JZ(3)) = COEF
 C     ------------------------------------------------------------------
       CALL UTVTSV('ZERO',18,MATLOC,DEPL,ENER(1))
-      IF (MULTIC.EQ.2) THEN
+      IF (COUPMF) THEN
         ENER(2) = 0.D0
         ENER(3) = 0.D0
       ELSE

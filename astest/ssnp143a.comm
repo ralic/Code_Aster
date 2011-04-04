@@ -1,4 +1,4 @@
-# MODIF  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 04/04/2011   AUTEUR KAZYMYRE K.KAZYMYRENKO 
 # TITRE VALIDATION DU CLAVAGE EN 2D POUR LA LOI DE JOINT DE PLOT DES BARRAGES
 # ssnp143a.para = tps_job 200 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -41,7 +41,7 @@ penrup = 0.2
 av_cla = 1
 i_clav = 2.0
 ap_cla = tfin
-eps    = 1.E-8
+eps    = 1.E-5
 
 # CLAVAGE EN FONCTION DU TEMPS
 cla_ins=DEFI_FONCTION(NOM_PARA='INST',VALE=( 0.,-1. , i_clav-eps,-1 , i_clav,1. , i_clav+eps,-1 ,  tfin,-1.));
@@ -138,7 +138,7 @@ U_1=STAT_NON_LINE(MODELE=MO,
                   NEWTON=_F(MATRICE='TANGENTE',
                             REAC_ITER=1,),
                   CONVERGENCE=_F(ITER_GLOB_MAXI=900,
-                                 RESI_GLOB_RELA=1E-6),
+                                 RESI_GLOB_RELA=1E-5),
                   SOLVEUR=_F(METHODE='MUMPS',),
                   ARCHIVAGE = _F(LIST_INST = L_ARCH,),
                   );

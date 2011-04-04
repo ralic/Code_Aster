@@ -2,7 +2,7 @@
      &                  DDEDT,VIM,VIP,R)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 23/02/2011   AUTEUR LAVERNE J.LAVERNE 
+C MODIF ALGORITH  DATE 04/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -51,7 +51,7 @@ C-----------------------------------------------------------------------
       CHARACTER*8 NOM(3)
       CHARACTER*1 POUM
       
-      DATA NOM /'GC','SIGM_C','PENA_LAGR'/
+      DATA NOM /'GC','SIGM_C','PENA_LAG'/
 C-----------------------------------------------------------------------
 
 

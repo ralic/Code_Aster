@@ -2,9 +2,9 @@
      &                  DEPS,VIM,OPTION,MATERI,SIGP,VIP,DSDE)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 15/11/2010   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF ALGORITH  DATE 04/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -50,16 +50,16 @@ C     ------------------------------------------------------------------
       REAL*8 SIGP,VIP(2),DSDE,SIELEQ
       CHARACTER*16 OPTION
       CHARACTER*(*) FAMI,MATERI
-      INTEGER KPG,KSP,IMATE,NPG,NSPG
+      INTEGER KPG,KSP,IMATE
 C     ------------------------------------------------------------------
 C     VARIABLES LOCALES
 C     ------------------------------------------------------------------
-      REAL*8 SIGE,DP,VALPAR,VALRES(2),ETM,ETP,XP,XM,HM,HP
-      REAL*8 TREF,TEMPP,TEMPM
+      REAL*8 SIGE,DP,VALRES(2),ETM,ETP,XP,XM,HM,HP
+
       CHARACTER*2 FB2,CODRES(2)
-      CHARACTER*8 NOMPAR,NOMECL(2)
-      INTEGER NBPAR, IRET
-      DATA NOMECL/'D_SIGM_EPSI','SY'/
+      CHARACTER*8 NOMECL(2)
+
+      DATA NOMECL/'D_SIGM_E','SY'/
 C     ------------------------------------------------------------------
       FB2 = 'FM'
       CALL RCVALB(FAMI,KPG,KSP,'-',IMATE,MATERI,'ECRO_LINE',0,' ',0.D0,

@@ -3,7 +3,7 @@
       REAL*8        XYZL(3,*), PGL(*), MAS(*), ENER(*)
       CHARACTER*16  OPTION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 04/04/2011   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -56,7 +56,7 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       REAL*8   RHO,EPAIS,ROE,ROF,CTOR,EXCENT,DETJ,WGT
       REAL*8   R8GAEM,ZERO,UN,SIX,DOUZE,WGTF,WGTM,WGTMF
       REAL*8   QSI, ETA, CARAT3(21), T2EV(4), T2VE(4), T1VE(9)
-      LOGICAL  ELASCO, EXCE
+      LOGICAL  COUPMF, EXCE
 C     ------------------------------------------------------------------
 C
       CALL ELREF5(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,ICOOPG,
@@ -97,7 +97,7 @@ C     ----- CALCUL DES GRANDEURS GEOMETRIQUES SUR LE TRIANGLE ----------
 C     ----- CALCUL DES MATRICES DE RIGIDITE DU MATERIAU EN FLEXION,
 C           MEMBRANE ET CISAILLEMENT INVERSEE --------------------------
       CALL DXMATE('RIGI',DF,DM,DMF,DC,DCI,DMC,DFC,NNO,PGL,MULTIC,
-     +                                   ELASCO,T2EV,T2VE,T1VE)
+     +                                   COUPMF,T2EV,T2VE,T1VE)
 
 C     -------- CALCUL DU PRODUIT HF.T2 ---------------------------------
       CALL DSXHFT ( DF, CARAT3(9), HFT2 )
@@ -299,7 +299,7 @@ C     ===============================
       ELSE IF (OPTION.EQ.'ECIN_ELEM') THEN
         CALL JEVECH('PDEPLAR','L',JDEPG)
         CALL UTPVGL(3,6,PGL,ZR(JDEPG),DEPL)
-        CALL DXTLOE(FLEX,MEMB,MEFL,CTOR,0,DEPL,ENER)
+        CALL DXTLOE(FLEX,MEMB,MEFL,CTOR,.FALSE.,DEPL,ENER)
       END IF
 C
       END

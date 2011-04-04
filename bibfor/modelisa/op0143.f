@@ -1,9 +1,9 @@
       SUBROUTINE OP0143()
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
+C MODIF MODELISA  DATE 04/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -41,25 +41,26 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32                                    ZK32
       CHARACTER*80                                              ZK80
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
-      CHARACTER*32     JEXNUM, JEXNOM
+
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
         INTEGER      OCVECT, OCPRHO, OCPVIS, OCPESA, OCRUGO, OCCAPA,
      &               OCGRIL, IRET, IFM, NIV
         INTEGER      DIMVI, DIMVK, DIMVR, DIMGM , DIMGR
-        INTEGER      IUNIT, UNIT1, UNIT2, IBID1, IBID2, IOCC1, IOCC2
+        INTEGER      IUNIT, UNIT1, UNIT2, IBID1, IBID2
         INTEGER      IRHO, JRHO
         CHARACTER*2  CARAPA(4)
         CHARACTER*3  OUINON
-        CHARACTER*8  K8BID, CAELEM
+        CHARACTER*8  K8BID
         CHARACTER*9  TYPAS(2), TPAS
         CHARACTER*16 CONCEP, CMD, NOMMCF, MCFAC(4)
         CHARACTER*19 NOMU
         CHARACTER*8 NOMU8
         CHARACTER*24 FSIC, FSVI, FSVR, FSVK, FSGM, FSCR , FSGR
-        REAL*8       VECT(3), VALEPA(4), DE, EP 
+        REAL*8       VECT(3), VALEPA(4) 
 C
-        DATA TYPAS   /'CARRE_LIGN ','TRIA_LIGN'/
+C       DATA TYPAS   /'CARRE_LIGN ','TRIA_LIGN'/
+        DATA TYPAS   /'CARRE_LIG','TRIA_LIGN'/
         DATA MCFAC   /'FAISCEAU_TRANS ','GRAPPE',
      &                'FAISCEAU_AXIAL ','COQUE_COAX'/
 C=======================================================================

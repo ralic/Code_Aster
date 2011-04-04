@@ -3,9 +3,9 @@
       CHARACTER*16 OPTION,NOMTE
 C ......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 21/07/2009   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF ELEMENTS  DATE 04/04/2011   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -59,7 +59,7 @@ C --------- FIN  DECLARATIONS NORMALISEES JEVEUX -----------------------
 
       DATA ZERO,UN,DEUX/0.D0,1.D0,2.D0/
 C     ------------------------------------------------------------------
-
+      BL2 = '  '
       FAMI = 'RIGI'
       CALL ELREF5(' ',FAMI,NDIM,NNO,NNOS,NPG,IPOIDS,JCOOPG,IVF,IDFDK,
      &            JDFD2,JGANO)

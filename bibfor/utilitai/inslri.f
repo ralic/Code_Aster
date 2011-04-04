@@ -5,9 +5,9 @@
       REAL*8  LISTER(NBX),VALR
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 04/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -49,14 +49,14 @@ C     LISTEI : liste actualisee des entiers
          DO 71,II = NBN,1,-1
             IF ( VALR .GT. LISTER(II) ) INDX = II
 71       CONTINUE
+         IF ( NBN .LT. NBX ) NBN = NBN + 1
+         DO 72,II = NBN,INDX+1,-1
+            LISTEI(II) = LISTEI(II-1)
+            LISTER(II) = LISTER(II-1)
+72       CONTINUE
          IF ( INDX .LE. NBX ) THEN
-            DO 72,II = NBX,INDX,-1
-               LISTEI(II) = LISTEI(II-1)
-               LISTER(II) = LISTER(II-1)
-72          CONTINUE
             LISTEI(INDX) = VALI
             LISTER(INDX) = VALR
          ENDIF
-         IF ( NBN .LT. NBX ) NBN = NBN + 1
       ENDIF
       END

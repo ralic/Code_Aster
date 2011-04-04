@@ -1,8 +1,8 @@
       SUBROUTINE DXEFGI(NOMTE,XYZL,PGL,EPSINI,SIGT)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 21/07/2009   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF ELEMENTS  DATE 04/04/2011   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -19,7 +19,7 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
       IMPLICIT REAL*8 (A-H,O-Z)
       CHARACTER*16 NOMTE
-      REAL*8 XYZL(3,1),PGL(3,1)
+      REAL*8 XYZL(3,1),PGL(3,3)
       REAL*8 EPSINI(6)
       REAL*8 SIGT(1)
 C     ------------------------------------------------------------------
@@ -40,7 +40,6 @@ C                        DANS L'ORDRE : EPXX, EPYY, EPXY, KXX, KYY, KXY
 C     OUT SIGT(1)      : EFFORTS  GENERALISES D'ORIGINE THERMIQUE
 C                        AUX POINTS D'INTEGRATION
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
-      CHARACTER*32 JEXNUM,JEXNOM,JEXR8,JEXATR
       INTEGER ZI
       COMMON /IVARJE/ZI(1)
       REAL*8 ZR
@@ -59,7 +58,7 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       INTEGER MULTIC
       REAL*8 DF(3,3),DM(3,3),DMF(3,3),DC(2,2),DCI(2,2),DMC(3,2),DFC(3,2)
       REAL*8 KXX,KYY,KXY,T2EV(4),T2VE(4),T1VE(9)
-      LOGICAL ELASCO
+      LOGICAL COUPMF
 C     ------------------------------------------------------------------
 
 C --- INITIALISATIONS :
@@ -92,7 +91,7 @@ C --- MEMBRANE-FLEXION, CISAILLEMENT, CISAILLEMENT INVERSE
 C     ----------------------------------------------------
 
       CALL DXMATE('RIGI',DF,DM,DMF,DC,DCI,DMC,DFC,NNO,PGL,MULTIC,
-     &                                         ELASCO,T2EV,T2VE,T1VE)
+     &                                         COUPMF,T2EV,T2VE,T1VE)
 
 C --- CHOIX DE NOTATIONS PLUS EXPLICITES POUR LES DEFORMATIONS
 C --- INITIALES

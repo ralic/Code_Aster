@@ -3,9 +3,9 @@
       REAL*8   QSI, ETA, CARAQ4(*), HFT2(2,6), HMFT2(2,6)
       REAL*8   BCB(2,12), BCM(2,8), BCA(2,4)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 02/06/2008   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 04/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -23,7 +23,7 @@ C ======================================================================
 C     -------------------------------------------------------
 C     MATRICES BCB(2,12), BCA(2,4), BCM(2,8) AU POINT QSI, ETA POUR DSQ
 C     -------------------------------------------------------
-      INTEGER J, K
+      INTEGER I,J, K
       REAL*8  PETA,META,PQSI,MQSI,TA(6,4),TB(6,12),TC(6,8),C(4),S(4)
 C     ------------------------------------------------------------------
       C(1) = CARAQ4(13)
@@ -54,8 +54,10 @@ C
       TB(6,9)  =   0.25D0
       TB(6,12) = - 0.25D0
 C
-      DO 110 K = 1, 24
-         TA(K,1) = 0.D0
+      DO 110 I = 1, 6
+        DO 111 J = 1, 4
+           TA(I,J) = 0.D0
+ 111    CONTINUE
  110  CONTINUE
       TA(1,1)  = - META * C(1)
       TA(1,3)  = - PETA * C(3)
@@ -74,8 +76,10 @@ C
       TA(6,3)  = -  QSI * S(3)
       TA(6,4)  =    ETA * S(4)
 C
-      DO 120 K = 1 , 48
-         TC(K,1) = 0.D0
+      DO 120 I = 1 , 6
+        DO 121 J = 1 , 8
+         TC(I,J) = 0.D0
+ 121    CONTINUE
  120  CONTINUE
       TC(3,1)  =   0.25D0
       TC(6,2)  =   0.25D0
@@ -87,8 +91,10 @@ C
       TC(6,8)  = - 0.25D0
 C
 C     -------------- BCB = HFT2.TB -----------------------------------
-      DO 130 K = 1 , 24
-         BCB(K,1) = 0.D0
+      DO 130 I = 1 , 2
+      DO 131 J = 1 , 12
+         BCB(I,J) = 0.D0
+ 131  CONTINUE
  130  CONTINUE
       DO 140 J = 1, 12
          DO 140 K = 1, 6
@@ -96,8 +102,10 @@ C     -------------- BCB = HFT2.TB -----------------------------------
             BCB(2,J) = BCB(2,J) + HFT2(2,K) * TB(K,J)
  140  CONTINUE
 C     -------------- BCA = HFT2.TA -----------------------------------
-      DO 150 K = 1 , 8
-         BCA(K,1) = 0.D0
+      DO 150 I = 1 , 2
+      DO 151 J = 1 , 4
+         BCA(I,J) = 0.D0
+ 151  CONTINUE
  150  CONTINUE
       DO 160 J = 1, 4
          DO 160 K = 1, 6
@@ -105,8 +113,10 @@ C     -------------- BCA = HFT2.TA -----------------------------------
             BCA(2,J) = BCA(2,J) + HFT2(2,K) * TA(K,J)
  160  CONTINUE
 C     -------------- BCM = HMFT2.TC ----------------------------------
-      DO 170 K = 1 , 16
-         BCM(K,1) = 0.D0
+      DO 170 I = 1 , 2
+      DO 171 J = 1 , 8
+         BCM(I,J) = 0.D0
+ 171  CONTINUE
  170  CONTINUE
       DO 180 J = 1, 8
          DO 180 K = 1, 6

@@ -12,7 +12,7 @@
      &                 ISOT,DFICKS,INSTAP)
 C =====================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 08/02/2011   AUTEUR GRANET S.GRANET 
+C MODIF ALGORITH  DATE 04/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -407,8 +407,10 @@ C =====================================================================
      &              'CP'       /
        DATA NCRA38 / 'MASS_MOL' ,
      &              'CP'       /
+C      DATA NCRA39 / 'CP'        ,
+C    &              'COEF_HENRY' /
        DATA NCRA39 / 'CP'        ,
-     &              'COEF_HENRY' /
+     &              'COEF_HEN' /
 C =====================================================================
 C --- DEFINITION DES DONNEES FINALES DANS LE CAS LIQU_AD_GAZ_VAPE -----
 C =====================================================================
@@ -456,8 +458,10 @@ C =====================================================================
      &              'CP'       /
        DATA CRAD37 / 'MASS_MOL' ,
      &              'CP'       /
+C      DATA CRAD39 / 'CP'        ,
+C    &              'COEF_HENRY' /
        DATA CRAD39 / 'CP'        ,
-     &              'COEF_HENRY' /
+     &              'COEF_HEN' /
 C =====================================================================
 C --- DEFINITION DES DONNEES FINALES DANS LE CAS LIQU_AD_GAZ -----
 C =====================================================================

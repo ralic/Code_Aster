@@ -6,7 +6,7 @@
       CHARACTER*16  OPTION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 04/04/2011   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -50,17 +50,17 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       INTEGER  NDIM,NNO,NNOS,NPG,IPOIDS,ICOOPG,IVF,IDFDX,IDFD2,JGANO
-      INTEGER  MULTIC,NE,JCACO,K,J,I,IE
+      INTEGER  MULTIC,NE,JCACO,J,I,IE
       REAL*8   DEPF(9),DEPM(6),HIC,ZMIN
       REAL*8   DF(3,3),DM(3,3),DMF(3,3),DC(2,2),DCI(2,2),DMC(3,2)
-      REAL*8   H(3,3),D1I(2,2),D2I(2,4),DFC(3,2)
+      REAL*8   D1I(2,2),DFC(3,2)
       REAL*8   BF(3,9),BM(3,6)
       REAL*8   SM(3),SF(3)
-      REAL*8   HFT2(2,6),HLT2(4,6)
-      REAL*8   VT(2),LAMBDA(4)
-      REAL*8   EPS(3),SIG(3),DCIS(2),CIST(2),X3I,EPAIS,EXCEN
+      REAL*8   HFT2(2,6)
+      REAL*8   VT(2)
+      REAL*8   EPS(3),DCIS(2),X3I,EPAIS,EXCEN
       REAL*8   QSI, ETA, CARAT3(21), T2EV(4), T2VE(4), T1VE(9)
-      LOGICAL  ELASCO
+      LOGICAL  COUPMF
       CHARACTER*4 FAMI
 C     ------------------------------------------------------------------
 C
@@ -76,7 +76,7 @@ C     ----- CALCUL DES GRANDEURS GEOMETRIQUES SUR LE TRIANGLE ----------
 C     ----- CARACTERISTIQUES DES MATERIAUX --------
 
       CALL DXMATE(FAMI,DF,DM,DMF,DC,DCI,DMC,DFC,NNO,PGL,MULTIC,
-     +                                         ELASCO,T2EV,T2VE,T1VE)
+     +                                         COUPMF,T2EV,T2VE,T1VE)
 C     -------- CALCUL DE D1I ET D2I ------------------------------------
 
         CALL JEVECH('PCACOQU','L',JCACO)

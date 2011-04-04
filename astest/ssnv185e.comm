@@ -1,4 +1,4 @@
-# MODIF  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 04/04/2011   AUTEUR GENIAUT S.GENIAUT 
 # TITRE FISSURE DEBOUCHANTE DANS UNE PLAQUE 3D DE LARGEUR FINIE AVEC X-FEM
 # ssnv185e.para = tps_job 70 mem_job 256Mo mem_aster 50 ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -20,6 +20,8 @@
 # ======================================================================
 
 DEBUT(CODE=_F(NOM='SSNV185E',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),DEBUG=_F(SDVERI='OUI'))
+
+# MODELISATION E : X-FEM FISSURE NON-COINCIDENTE PUR - TRACTION (CHAMP ASYMPTOTIQUE DIRICHLET)
 
 #----------------------------------------------
 #             MAILLAGE : hexa_3_11_31.mgib

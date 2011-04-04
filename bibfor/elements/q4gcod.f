@@ -4,7 +4,7 @@
       REAL*8        XYZL(3,*), PGL(3,*), DEPL(*), CDL(*)
       CHARACTER*16  OPTION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 04/04/2011   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -53,12 +53,12 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       REAL*8   DEPF(12),DEPM(8),HIC,ZMIN
       REAL*8   DF(3,3),DM(3,3),DMF(3,3),DC(2,2),DCI(2,2),DMC(3,2)
       REAL*8   H(3,3),D1I(2,2),D2I(2,4),DFC(3,2)
-      REAL*8   BF(3,12),BM(3,8),BC(2,12),BLB(4,12)
-      REAL*8   SM(3),SF(3), HLT2(4,6),TB(6,12)
-      REAL*8   VT(2),LAMBDA(4),CARAQ4(25)
-      REAL*8   EPS(3),SIG(3),BCDF(2),CIST(2),X3I,EPAIS,EXCEN
+      REAL*8   BF(3,12),BM(3,8),BC(2,12)
+      REAL*8   SM(3),SF(3)
+      REAL*8   CARAQ4(25)
+      REAL*8   EPS(3),BCDF(2),X3I,EPAIS,EXCEN
       REAL*8   T2EV(4), T2VE(4), T1VE(9), JACOB(5), QSI, ETA
-      LOGICAL ELASCO
+      LOGICAL COUPMF
       CHARACTER*4 FAMI
 C     ------------------------------------------------------------------
 C
@@ -72,7 +72,7 @@ C     ----- CALCUL DES GRANDEURS GEOMETRIQUES SUR LE QUADRANGLE --------
       CALL GQUAD4 ( XYZL, CARAQ4 )
 C     ----- CARACTERISTIQUES DES MATERIAUX --------
       CALL DXMATE(FAMI,DF,DM,DMF,DC,DCI,DMC,DFC,NNO,PGL,MULTIC,
-     +                                         ELASCO,T2EV,T2VE,T1VE)
+     +                                         COUPMF,T2EV,T2VE,T1VE)
 C     -------- CALCUL DE D1I ET D2I ------------------------------------
       IF (MULTIC.EQ.0) THEN
         CALL JEVECH('PCACOQU','L',JCACO)
@@ -98,7 +98,7 @@ C     -------- CALCUL DE D1I ET D2I ------------------------------------
         D1I(1,2) = 0.D0
         D1I(2,1) = 0.D0
       ELSE
-        CALL DXDMUL(ICOU,INIV,T1VE,T2VE,H,D1I,D2I,X3I)
+        CALL DXDMUL(ICOU,INIV,T1VE,T2VE,H,D1I,D2I,X3I,HIC)
       END IF
 C     ----- COMPOSANTES DEPLACEMENT MEMBRANE ET FLEXION ----------------
       DO 30 J = 1,NNO

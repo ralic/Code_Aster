@@ -3,7 +3,7 @@
      & CPLAN,FAMI,MATE,INSTP,ANGMAS,
      & GN,FETA,XI,ME, SIGP,FINT,MATUU )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 08/02/2011   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 04/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -58,13 +58,13 @@ C
       IMPLICIT NONE
       INTEGER NDIM,NNO,N,NMAX,KK,I,J,K,M,KL,J1,KKD,G,LGPG,IVTN,MATE
       CHARACTER*(*) FAMI
-      REAL*8  DFF(NNO,*),VFF(NNO),DTDE(6,6),TRAV(6,6),TRAV2(6,6)
-      REAL*8  PES(6,6),SIGM(2*NDIM),SIGP(2*NDIM),TP2(6),TN(6),LAMB(3)
+      REAL*8  DFF(NNO,*),VFF(NNO,*),DTDE(6,6),TRAV(6,6),TRAV2(6,6)
+      REAL*8  PES(6,6),SIGM(2*NDIM),SIGP(2*NDIM),TP2(6),TN(6)
       REAL*8  MATUU(*), FINT(*), TMP2,TMP1, FR(3,3),VIP(LGPG)
       REAL*8  DETF,R,POIDS,DSIDEP(6,6),RAC2,INSTP,ANGMAS(*)
       REAL*8  PK2(6),TP(6),FP(3,3),FM(3,3),SIG(6),EPSB(6)
       REAL*8  PE(3,3,3,3),TL(3,3,3,3),TLS(6,6),EPSE(4),D1(4,4)
-      REAL*8  GN(3,3),FETA(4),XI(3,3),ME(3,3,3,3),EE(4),VP(3,3)
+      REAL*8  GN(3,3),FETA(4),XI(3,3),ME(3,3,3,3)
 C     TABLEAUX AUTOMATIQUES. DIM MAXI : DEF(6,27,3),PFF(6,27,27)
       REAL*8  DEF(2*NDIM,NNO,NDIM),PFF(6,NNO,NNO)
       LOGICAL AXI, RESI, RIGI, MATSYM, CPLAN
@@ -158,7 +158,7 @@ C     CF. NMGR2D, NMGR3D
 C 5.2.5 - TERME DE CORRECTION (3,3) AXI QUI PORTE EN FAIT SUR LE DDL 1
          IF (AXI) THEN
             DO 50 N=1,NNO
-               DEF(3,N,1) = FR(3,3)*VFF(N+(G-1)*NNO)/R
+               DEF(3,N,1) = FR(3,3)*VFF(N,G)/R
  50         CONTINUE
          ENDIF
          IF (RIGI) THEN
@@ -272,8 +272,8 @@ C        POUR LA RIGIDITE GEOMETRIQUE : CALCUL AVEC LES PK2
 153                     CONTINUE
 C                       TERME DE CORRECTION AXISYMETRIQUE
                         IF (AXI .AND. I.EQ.1) THEN
-                           TMP1=TMP1+VFF(N+(G-1)*NNO)*
-     &                     VFF(M+(G-1)*NNO)/(R*R)*PK2(3)
+                           TMP1=TMP1+VFF(N,G)*
+     &                     VFF(M,G)/(R*R)*PK2(3)
                         END IF
                      ENDIF
 

@@ -2,9 +2,9 @@
      &                   OPTION, MAT   , EPSM  , DEPS  , VIM   ,
      &                   NONLOC, SIG   , VIP   , DSIDEP, IRET  )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 12/04/2010   AUTEUR MICHEL S.MICHEL 
+C MODIF ALGORITH  DATE 04/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -47,11 +47,11 @@ C OUT DSIDEP  MATRICES TANGENTES
 C OUT IRET    CODE RETOUR (0=OK, 1=PAS DE CVG, 2=INCR ENDO TROP GRAND)
 C ----------------------------------------------------------------------
       LOGICAL CPLAN, RIGI, RESI, ELAS, EXTEMP
-      INTEGER NDIMSI, IJ, KL, ETAT,ITEMAX,ITER,VRET
+      INTEGER NDIMSI, IJ, KL, ETAT,VRET
       REAL*8  LCESRF,DDOT,KRON(6),VAL(6),ALPHA,TEMP,TREF,EPSTH
       REAL*8  LAMBDA,DEUXMU,WY,RIGMIN,DDMAXI
-      REAL*8  COPLAN, EPS(6), TREPS, EPSEPS, SIGEL(6)
-      REAL*8  A,DRDA,G,DRDAE,DFDAE,DRDAS,DFDAS,GEL,GSAT
+      REAL*8   EPS(6), TREPS, EPSEPS, SIGEL(6)
+      REAL*8  A,DRDA,DRDAE,DFDAE,DRDAS,DFDAS,GEL,GSAT
       REAL*8  RA,FD,D2RDA2,D2FDA2,DGDA,H
       CHARACTER*1 POUM
       CHARACTER*2 K2(6),REP
@@ -61,7 +61,7 @@ C ----------------------------------------------------------------------
       COMMON /LCES/ GAMMA,DRDA0,DFDA0,WEPS,PHI,R
 C ----------------------------------------------------------------------
       DATA KRON/1.D0,1.D0,1.D0,0.D0,0.D0,0.D0/
-      DATA NOM/'E','NU','SY','GAMMA','COEF_RIGI_MINI','DD_MAXI'/
+      DATA NOM/'E','NU','SY','GAMMA','COEF_RIG','DD_MAXI'/
 C ----------------------------------------------------------------------
 
 

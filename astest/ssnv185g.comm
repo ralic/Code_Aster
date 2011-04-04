@@ -1,4 +1,4 @@
-# MODIF  DATE 31/01/2011   AUTEUR MACOCCO K.MACOCCO 
+# MODIF  DATE 04/04/2011   AUTEUR GENIAUT S.GENIAUT 
 # TITRE FISSURE DEBOUCHANTE DANS UNE PLAQUE 3D DE LARGEUR FINIE AVEC X-FEM
 # ssnv185g.para = tps_job 310 mem_job 1024Mo mem_aster 70 ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -20,6 +20,8 @@
 # ======================================================================
 
 DEBUT(CODE=_F(NOM='SSNV185G',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),DEBUG=_F(SDVERI='OUI'))
+
+# MODELISATION G : X-FEM FISSURE NON-COINCIDENTE PUR - COMPRESSION (FACE SUP)
 
 # a : profondeur de la fissure
 # h : hauteur du plan de fissure

@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF INDIK8 UTILITAI  DATE 29/03/2011   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF INDIK8 UTILITAI  DATE 04/04/2011   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2011  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -21,8 +21,6 @@
 /* ------------------------------------------------------------------ */
 /* recherche de la  n-ieme apparition d un K*8 dans une liste de K*8    */
 /* resultat = indice si present / 0 si absent                           */
-#include <stdio.h>
-#include <string.h>
 
 INTEGER DEFSSPP(INDIK8, indik8, char *lstmot, STRING_SIZE llm, char *mot, STRING_SIZE lm, INTEGER *n, INTEGER *nmot)
 {

@@ -1,9 +1,9 @@
       SUBROUTINE CALAMO(NOMRES,CLASSE,BASMOD)
       IMPLICIT REAL*8 (A-H,O-Z)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 11/05/2009   AUTEUR NISTOR I.NISTOR 
+C MODIF ALGORITH  DATE 04/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
@@ -58,11 +58,11 @@ C
       REAL*8       PI
       CHARACTER*1  CLASSE
       CHARACTER*8  BASMOD,BLANC,K8BID
-      CHARACTER*24 CHAVAL,NOMRES
-      CHARACTER*24 VALK(2)
+      CHARACTER*24 NOMRES
+
 C
 C-----------------------------------------------------------------------
-      DATA BLANC /'                    '/
+      DATA BLANC /'        '/
 C-----------------------------------------------------------------------
 C
       CALL JEMARQ()

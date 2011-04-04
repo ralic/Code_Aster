@@ -3,7 +3,7 @@
       CHARACTER*(*) TYPESD,BASE,SD1,SD2
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 08/03/2011   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 04/04/2011   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -412,7 +412,9 @@ C     ------------------------------------------------------------------
 C     -----------------------------------
         K191 = SD1
         K192 = SD2
-        CALL LISCPY(K191,K192,BAS2)
+        CALL JEDUP1(K191//'.INFC',BAS2,K192//'.INFC')
+        CALL JEDUP1(K191//'.LCHA',BAS2,K192//'.LCHA')
+        CALL JEDUP1(K191//'.FCHA',BAS2,K192//'.FCHA')
 
 
 C ----------------------------------------------------------------------

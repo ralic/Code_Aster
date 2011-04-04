@@ -1,4 +1,4 @@
-# MODIF  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 04/04/2011   AUTEUR GENIAUT S.GENIAUT 
 # TITRE FISSURE DEBOUCHANTE DANS UNE PLAQUE 3D DE LARGEUR FINIE AVEC X-FEM
 # ssnv185o.para = tps_job 270 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -20,6 +20,8 @@
 # ======================================================================
 
 DEBUT(CODE=_F(NOM='SSNV185O',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),DEBUG=_F(SDVERI='OUI'));
+
+# MODELISATION O : FEM AVEC FORCES VOLUMIQUES
 
 #----------------------------------------------
 #             MAILLAGE : hexa_cla_5_30_50.mgib

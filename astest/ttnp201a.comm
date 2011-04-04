@@ -1,6 +1,6 @@
-# MODIF  DATE 21/03/2011   AUTEUR HAELEWYN J.HAELEWYN 
+# MODIF  DATE 04/04/2011   AUTEUR HAELEWYN J.HAELEWYN 
 # TITRE TRANSFERT THERMIQUE AVEC CONDUCTIVITE DEPENDANTE DU TEMPS MODELE 3D
-# ttnp201a.para = tps_job 60 mem_job 300Mo ncpus 1 liste_test S
+# ttnp201a.para = tps_job 200 mem_job 300Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG

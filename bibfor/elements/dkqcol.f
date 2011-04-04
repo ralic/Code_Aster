@@ -6,7 +6,7 @@
       CHARACTER*16  OPTION
       CHARACTER*4   FAMI
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 04/04/2011   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -50,18 +50,15 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       CHARACTER*80                                       ZK80
       COMMON /KVARJE/ ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
-      INTEGER       NDIM,NNO,NNOS,IPOIDS,ICOOPG,IVF,IDFDX,IDFD2,JGANO,IG
-      INTEGER       MULTIC,NE,JCACO,I,J,K,IE,JMATE,IC,ICPG,NBCOU,JNBSP
-      REAL*8        R8BID,ZIC,HIC,ZMIN,DEUX,X3I,EPAIS,EXCEN
-      REAL*8        EPS(3),SIG(3),DCIS(2),CIST(2),DEPF(12),DEPM(8)
+      INTEGER       NDIM,NNO,NNOS,IPOIDS,ICOOPG,IVF,IDFDX,IDFD2,JGANO
+      INTEGER       MULTIC,NE,JCACO,I,J,K,IE,NBCOU,JNBSP
+      REAL*8        HIC,ZMIN,DEUX,X3I,EPAIS,EXCEN
+      REAL*8        EPS(3),SIG(3),CIST(2),DEPF(12),DEPM(8)
       REAL*8        DF(3,3),DM(3,3),DMF(3,3),DC(2,2),DCI(2,2),DMC(3,2)
       REAL*8        H(3,3),D1I(2,2),D2I(2,4),VT(2),LAMBDA(4),DFC(3,2)
       REAL*8        BF(3,12),BM(3,8),SM(3),SF(3),HFT2(2,6),HLT2(4,6)
       REAL*8        QSI,ETA,CARAQ4(25),JACOB(5),T2EV(4),T2VE(4),T1VE(9)
-      CHARACTER*2   VAL, CODRET
-      CHARACTER*3   NUM
-      CHARACTER*8   NOMRES
-      LOGICAL  ELASCO
+      LOGICAL  COUPMF
 C     ------------------------------------------------------------------
 C
       CALL ELREF5(' ','NOEU',NDIM,NNO,NNOS,NPG,IPOIDS,ICOOPG,
@@ -77,7 +74,7 @@ C     ----- CALCUL DES GRANDEURS GEOMETRIQUES SUR LE QUADRANGLE --------
 
 C     ----- CARACTERISTIQUES DES MATERIAUX --------
       CALL DXMATE(FAMI,DF,DM,DMF,DC,DCI,DMC,DFC,NNO,PGL,MULTIC,
-     +                                         ELASCO,T2EV,T2VE,T1VE)
+     +                                         COUPMF,T2EV,T2VE,T1VE)
 
 C     -------- CALCUL DE D1I ET D2I ------------------------------------
       IF (MULTIC.EQ.0) THEN
@@ -104,7 +101,7 @@ C     -------- CALCUL DE D1I ET D2I ------------------------------------
         D1I(1,2) = 0.D0
         D1I(2,1) = 0.D0
       ELSE
-        CALL DXDMUL(ICOU,INIV,T1VE,T2VE,H,D1I,D2I,X3I)
+        CALL DXDMUL(ICOU,INIV,T1VE,T2VE,H,D1I,D2I,X3I,HIC)
       END IF
 C     ----- COMPOSANTES DEPLACEMENT MEMBRANE ET FLEXION ----------------
       DO 30 J = 1,4

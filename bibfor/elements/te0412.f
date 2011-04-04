@@ -3,7 +3,7 @@
       CHARACTER*16      OPTION,NOMTE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 04/04/2011   AUTEUR DESOZA T.DESOZA 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -167,7 +167,7 @@ C     -------------------------------------------------
  50       CONTINUE  
  40     CONTINUE  
       ELSE
-        CALL DXEFFI ( NOMTE, XYZL, PGL, ZR(ICONTP),NBSIG, EFFINT )
+        CALL DXEFFI ( OPTION, NOMTE, PGL, ZR(ICONTP),NBSIG, EFFINT )
       ENDIF  
            
       CALL R8INIR(NPGMX,0.D0,ENELM,1)

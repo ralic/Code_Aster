@@ -1,4 +1,4 @@
-# MODIF  DATE 28/03/2011   AUTEUR ROSE C.ROSE 
+# MODIF  DATE 04/04/2011   AUTEUR DESOZA T.DESOZA 
 # TITRE VALIDATION DE POU_D_TGM
 # ssnv505h.para = tps_job 550 mem_job 256Mo ncpus 1 liste_test V
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -168,7 +168,7 @@ ULAG=STAT_NON_LINE(MODELE=MODE,
                        _F(CHARGE=CH1,
                           FONC_MULT=RAMPE,),
                       ),    
-                SOLVEUR=_F(SYME='OUI'),
+                SOLVEUR=_F(METHODE='LDLT',SYME='OUI'),
                 CONTACT  = CHLAG,
                 COMP_INCR=_F(RELATION='MULTIFIBRE'),
                 INCREMENT=_F(LIST_INST=L_INST,

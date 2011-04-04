@@ -20,7 +20,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C     ------------------------------------------------------------------
-C MODIF ELEMENTS  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 04/04/2011   AUTEUR DESOZA T.DESOZA 
 C
 C     MATRICE DE RIGIDITE DE L'ELEMENT DE PLAQUE DKT
 C     ------------------------------------------------------------------
@@ -55,7 +55,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       REAL*8   XAB1(3,9),DEPL(18)
       REAL*8   FLEX(81),MEMB(36),MEFL(54)
       REAL*8   BSIGTH(24), ENERTH, CTOR
-      LOGICAL  ELASCO, INDITH
+      LOGICAL  COUPMF, INDITH
       REAL*8   QSI, ETA, CARAT3(21), T2EV(4), T2VE(4), T1VE(9)
 C     ------------------------------------------------------------------
       ENERTH = 0.0D0
@@ -77,7 +77,7 @@ C
 C     CALCUL DES MATRICES DE RIGIDITE DU MATERIAU EN FLEXION
 C     MEMBRANE ET CISAILLEMENT INVERSEE
       CALL DXMATE('RIGI',DF,DM,DMF,DC,DCI,DMC,DFC,NNO,PGL,MULTIC,
-     +                                    ELASCO,T2EV,T2VE,T1VE)
+     +                                    COUPMF,T2EV,T2VE,T1VE)
 C     ------------------------------------------------------------------
 C     CALCUL DE LA MATRICE DE RIGIDITE DE L'ELEMENT EN MEMBRANE
 C     ------------------------------------------------------------------
@@ -105,7 +105,7 @@ C        ----- CALCUL DU PRODUIT BFT.DF.BF -------------------------
         CALL DCOPY(9,DF,1,DF2,1)
         CALL DSCAL(9,WGT,DF2,1)
         CALL UTBTAB('CUMU',3,9,DF2,BF,XAB1,FLEX)
-        IF (MULTIC.EQ.2) THEN
+        IF (COUPMF) THEN
 C        ----- CALCUL DU PRODUIT BMT.DMF.BF ------------------------
           CALL DCOPY(9,DMF,1,DMF2,1)
           CALL DSCAL(9,WGT,DMF2,1)
@@ -122,7 +122,7 @@ C
       ELSEIF ( OPTION .EQ. 'EPOT_ELEM' ) THEN
          CALL JEVECH('PDEPLAR','L',JDEPG)
          CALL UTPVGL(3,6,PGL,ZR(JDEPG),DEPL)
-         CALL DXTLOE(FLEX,MEMB,MEFL,CTOR,MULTIC,DEPL,ENER)
+         CALL DXTLOE(FLEX,MEMB,MEFL,CTOR,COUPMF,DEPL,ENER)
          CALL BSTHPL(NOMTE(1:8),BSIGTH,INDITH)
          IF (INDITH) THEN
            DO 20 I = 1, 18

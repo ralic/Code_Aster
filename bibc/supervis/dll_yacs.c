@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF dll_yacs supervis  DATE 29/03/2011   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF dll_yacs supervis  DATE 04/04/2011   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2011  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -17,9 +17,6 @@
 /*    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.     */
 /* ================================================================== */
 /* RESPONSABLE COURTOIS M.COURTOIS */
-
-#include <stdio.h>
-#include <stdlib.h>
 
 #include <Python.h>
 

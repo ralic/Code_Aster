@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF matfpe utilitai  DATE 29/03/2011   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF matfpe utilitai  DATE 04/04/2011   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2011  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -33,9 +33,9 @@
 #define _GNU_SOURCE 1
 #include <fenv.h>
 void hanfpe (int sig);
-#endif
 
 static int compteur_fpe = 1;
+#endif
 
 void DEFP(MATFPE, matfpe, INTEGER *enable)
 {

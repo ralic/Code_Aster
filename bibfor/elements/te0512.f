@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 14/02/2011   AUTEUR TRAN V-X.TRAN 
+C MODIF ELEMENTS  DATE 04/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -114,7 +114,7 @@ C
       CHARACTER*16 PHENO,PHENOM,PHENO2,PHENM2
 
       DATA NOMRES / 'E','NU' /
-      DATA NOMRE2 / 'S','EPSP_SEUIL','EXP_S' /
+      DATA NOMRE2 / 'S','EPSP_SEU','EXP_S' /
 C
 C ----------------------------------------------------------------------
 C

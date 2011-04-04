@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF UTTLIM UTILITAI  DATE 29/03/2011   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF UTTLIM UTILITAI  DATE 04/04/2011   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2011  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -21,18 +21,11 @@
 /* temps (sec)  maxi pour ce processus                      */
 extern char g_tpmax[];
 
-#include <string.h>
-#include <stdio.h>
-
 #include "aster.h"
 
 #ifdef _USE_RLIMIT
-#include <sys/time.h>
 #include <sys/resource.h>
 #endif
-
-#include <float.h>
-#include <limits.h>
 
 void DEFP(UTTLIM, uttlim, DOUBLE *t_lim)
 {

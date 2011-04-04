@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF fetsco scotch  DATE 29/03/2011   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF fetsco scotch  DATE 04/04/2011   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2011  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -16,7 +16,6 @@
 /* ALONG WITH THIS PROGRAM; IF NOT, WRITE TO : EDF R&D CODE_ASTER,    */
 /*    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.     */
 /* ================================================================== */
-#include <stdio.h>
 #include "aster.h"
 
 #ifndef _DISABLE_SCOTCH
@@ -35,9 +34,7 @@ void DEFPPPPPPPPPP(FETSCO,fetsco, INTEGER *nbmato, INTEGER *nblien,
   int release=0;
   int patch=0;
   SCOTCH_Graph        grafdat;
-  SCOTCH_Arch         archdat; 
   SCOTCH_Strat        mapstrat;  
-  SCOTCH_Mapping      mapdat;  
 
 /* INPUT : NBMATO (NBRE DE NOEUDS DU GRAPHE), NBLIEN (NBRE D'ARETES DU GRAPHE), 
            CONNECT (TABLEAU DE CONNECTIVITE), IDCONNECT (VECTEUR DE POINTEURS DS CONNECT),

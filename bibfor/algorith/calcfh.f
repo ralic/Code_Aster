@@ -7,13 +7,11 @@
      &                    ALPLIQ,VISCL,DVISCL,MAMOLG,VISCG,DVISCG,
      &                    MAMOLV,ISOT,
      &                    DFICKS,VF,IFA,VALFAC,VALCEN)
-C ======================================================================
+C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ALGORITH  DATE 04/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C MODIF ALGORITH  DATE 08/02/2011   AUTEUR GRANET S.GRANET 
-C RESPONSABLE GRANET S.GRANET
-C ======================================================================
-C COPYRIGHT (C) 1991 - 2001 EDF R&D WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -26,8 +24,9 @@ C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
 C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
-C 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
+C RESPONSABLE GRANET S.GRANET
 C TOLE CRP_20
 C TOLE CRP_21
 C ======================================================================
@@ -54,7 +53,7 @@ C IN VF : TRUE SI VOLUMES FINIS
 C IN IFA : UTILISE EN VF ET POUR LES VALEURS AUX ARETES: NUM DE LA FACE.
 C  LES INFORMATIONS SONT STOCKES DS VALFAC(1:6,1:4,1:NBFACES)
 C VALFAC : SOCKAGE DES VALEURS CALCULEES AUX ARETES EN VF IFA!=0
-C          =>DES VALEURS AU CENTRE 
+C          =>DES VALEURS AU CENTRE
 C
 C
       IMPLICIT NONE
@@ -70,13 +69,13 @@ C
       INTEGER      MOB,DMOBP1,DMOBP2
       INTEGER      WLIQ,WVAP,AIRDIS,AIRSEC
       INTEGER      DENSIT
-      INTEGER      RHOGA,RHOLQ,RHOGA1,RHOGA2,RHOLQ1,RHOLQ2     
+      INTEGER      RHOGA,RHOLQ,RHOGA1,RHOGA2,RHOLQ1,RHOLQ2
       PARAMETER    (CON=1,DCONP1=2,DCONP2=3,DIFFU=4,DDIFP1=5,DDIFP2=6)
       PARAMETER    (MOB=7,DMOBP1=8,DMOBP2=9)
       PARAMETER    (DENSIT=14)
       PARAMETER    (WLIQ=1,WVAP=2,AIRDIS=3,AIRSEC=4)
       PARAMETER    (RHOGA=1,RHOLQ=2,RHOGA1=3)
-      PARAMETER    (RHOGA2=4,RHOLQ1=5,RHOLQ2=6)     
+      PARAMETER    (RHOGA2=4,RHOLQ1=5,RHOLQ2=6)
       INTEGER      NDIM,DIMDEF,DIMCON,YAMEC,YATE,ADCP22
       INTEGER      ADDEME,ADDEP1,ADDEP2,ADDETE,ADCP11,ADCP12,ADCP21
       INTEGER      BDCP11
@@ -153,7 +152,7 @@ C AUX GRADIENTS DE P1,P2,T
 C DERIVEES SECONDES DE PVP (1) OU PAD (2)
       REAL*8 DP1PP1(2),DP2PP1(2),DTPP1(2),DP1PP2(2),DP2PP2(2)
       REAL*8 DTPP2(2),DP1PT(2),DP2PT(2),DTPT(2)
-      
+
 C  POUR LES VF :
 C
 C ON NE CALCULE PAS LES GRADIENTS
@@ -161,13 +160,13 @@ C ON NE REMPLIT PAS LES CONTRAINTES GENERALISEES ET DERIVEES
 C ON CALCULE LES QUANTITES QUI SERVIRONT AUX CALCULS DE FLUX ET
 C DE LEURS DERIVEES A SAVOIR :
 C VALFAC(I,CON,WLIQ)     CONCENTRATION EAU LIQUIDE ARETE I
-C VALFAC(I,DCONP1,WLIQ)  D_CON_EAU_LIQU_I /P1 
-C VALFAC(I,DCONP2,WLIQ)  D_CON_EAU_LIQU_I /P2 
+C VALFAC(I,DCONP1,WLIQ)  D_CON_EAU_LIQU_I /P1
+C VALFAC(I,DCONP2,WLIQ)  D_CON_EAU_LIQU_I /P2
 C VALFAC(I,DIFFU,WLIQ)   DIFFUW ARETE I
 C VALFAC(I,DDIFP1,WLIQ)  D_DIFFUW /P1 I
 C VALFAC(I,DDIFP2,WLIQ)  D_DIFFUW /P2 I
 C VALFAC(I,MOB,WLIQ)     MOBILITE EAU LIQUIDE ARETE I
-C VALFAC(I,DMOBP1,WLIQ)  D_MO_LIQU /P1_CENTRE 
+C VALFAC(I,DMOBP1,WLIQ)  D_MO_LIQU /P1_CENTRE
 C VALFAC(I,DMOBP2,WLIQ)  D_MO_LIQU /P2_CENTRE
 C
 C VALFAC(I,CON,WVAP)    CONCENTRATION EAU VAPEUR ARETE I
@@ -177,7 +176,7 @@ C VALFAC(I,DIFFU,WVAP)  DIFFUVP ARRETE I
 C VALFAC(I,DDIFP1,WVAP) D_DIFFUVP /P1 I
 C VALFAC(I,DDIFP2,WVAP) D_DIFFUVP /P2 I
 C VALFAC(I,MOB,WVAP)     MOBILITE EAU VAPEUR ARRETE I
-C VALFAC(I,DMOBP1,WVAP)  D_MO_VAP /P1_CENTRE 
+C VALFAC(I,DMOBP1,WVAP)  D_MO_VAP /P1_CENTRE
 C VALFAC(I,DMOBP2,WVAP)  D_MO_VAP /P2_CENTRE
 C
 C VALFAC(I,CON,AIRDIS)   IDEM AIR DISSOUS
@@ -186,9 +185,9 @@ C VALFAC(I,DCONP2,AIRDIS)
 C VALFAC(I,DIFFU,AIRDIS)
 C VALFAC(I,DDIFP1,AIRDIS)
 C VALFAC(I,DDIFP2,AIRDIS)
-C VALFAC(I,MOB,AIRDIS)     
-C VALFAC(I,DMOBP1,AIRDIS)  
-C VALFAC(I,DMOBP2,AIRDIS)  
+C VALFAC(I,MOB,AIRDIS)
+C VALFAC(I,DMOBP1,AIRDIS)
+C VALFAC(I,DMOBP2,AIRDIS)
 C
 C VALFAC(I,CON,AIRSEC)   IDEM AIR SEC
 C VALFAC(I,DCONP1,AIRSEC)
@@ -196,16 +195,16 @@ C VALFAC(I,DCONP2,AIRSEC)
 C VALFAC(I,DIFFU,AIRSEC)
 C VALFAC(I,DDIFP1,AIRSEC)
 C VALFAC(I,DDIFP2,AIRSEC)
-C VALFAC(I,MOB,AIRSEC)    
-C VALFAC(I,DMOBP1,AIRSEC) 
-C VALFAC(I,DMOBP2,AIRSEC) 
+C VALFAC(I,MOB,AIRSEC)
+C VALFAC(I,DMOBP1,AIRSEC)
+C VALFAC(I,DMOBP2,AIRSEC)
 C
 C
 C  VALCEN(MOB,WLIQ)       MOBILITE EAU LIQUIDE CENTRE
-C  VALCEN(DMOBP1,WLIQ)    D_MO_LIQU /P1_CENTRE 
+C  VALCEN(DMOBP1,WLIQ)    D_MO_LIQU /P1_CENTRE
 C  VALCEN(DMOBP2,WLIQ)    D_MO_LIQU /P2_CENTRE
 C
-C  VALCEN(MOB,WVAP)       MOBILITE EAU VAPEUR CENTRE 
+C  VALCEN(MOB,WVAP)       MOBILITE EAU VAPEUR CENTRE
 C  VALCEN(DMOBP1,WVAP)
 C  VALCEN(DMOBP2,WVAP)
 C
@@ -218,26 +217,26 @@ C  VALCEN(DMOBP1,AIRDIS)
 C  VALCEN(DMOBP2,AIRDIS)
 C
 C  VALCEN(CON,WVAP)       CONCENTRATION EAU VAPEUR
-C  VALCEN(DCONP1,WVAP) 
-C  VALCEN(DCONP2,WVAP) 
+C  VALCEN(DCONP1,WVAP)
+C  VALCEN(DCONP2,WVAP)
 C
-C  VALCEN(CON,AIRDIS)     CONCENTRATION AIR DISSOUS   
+C  VALCEN(CON,AIRDIS)     CONCENTRATION AIR DISSOUS
 C  VALCEN(DCONP1,AIRDIS)
 C  VALCEN(DCONP2,AIRDIS)
 C
-C  VALCEN(DIFFU,WLIQ)     DIFFU EAU LIQUIDE   
+C  VALCEN(DIFFU,WLIQ)     DIFFU EAU LIQUIDE
 C  VALCEN(DDIFP1,WLIQ)
 C  VALCEN(DDIFP2,WLIQ)
 C
-C  VALCEN(DIFFU,WVAP)     DIFFU EAU VAPEUR 
+C  VALCEN(DIFFU,WVAP)     DIFFU EAU VAPEUR
 C  VALCEN(DDIFP1,WVAP)
 C  VALCEN(DDIFP2,WVAP)
 C
-C  VALCEN(DIFFU,AIRSEC)   DIFFU AIR SEC 
+C  VALCEN(DIFFU,AIRSEC)   DIFFU AIR SEC
 C  VALCEN(DDIFP1,AIRSEC)
 C  VALCEN(DDIFP2,AIRSEC)
 C
-C  VALCEN(DIFFU,AIRDIS)   DIFFU AIR DISSOUS 
+C  VALCEN(DIFFU,AIRDIS)   DIFFU AIR DISSOUS
 C  VALCEN(DDIFP1,AIRDIS)
 C  VALCEN(DDIFP2,AIRDIS)
 C
@@ -312,6 +311,19 @@ C
       DR22P2=0.D0
       DR22T=0.D0
       RHO22=0.D0
+
+      DR11P1 = 0.D0
+      DR11P2 = 0.D0
+      DR11T = 0.D0
+      DR12P1 = 0.D0
+      DR12P2 = 0.D0
+      DR12T = 0.D0
+      DR21P1 = 0.D0
+      DR21P2 = 0.D0
+      DR21T = 0.D0
+      DAUXP1 = 0.D0
+      DAUXP2 = 0.D0
+      DAUXT = 0.D0
 C
 C INITIALISATION ADRESSE SELON QUE LA PARTIE THH EST TRANSITOIRE OU NON
 C
@@ -468,7 +480,7 @@ C
       ENDIF
 
 C ***********************************************************
-C CALCUL DES MASSES VOLUMIQUES, PRESSION D'AIR DISSOUS, 
+C CALCUL DES MASSES VOLUMIQUES, PRESSION D'AIR DISSOUS,
 C GRADIENTS D'AIR DISSOUS ET VAPEUR
 C
       IF (THMC.EQ.'LIQU_AD_GAZ_VAPE') THEN
@@ -507,7 +519,7 @@ C
          ENDIF
       ENDIF
 C ***********************************************************
-C CALCUL DES MASSES VOLUMIQUES, PRESSION D'AIR DISSOUS, 
+C CALCUL DES MASSES VOLUMIQUES, PRESSION D'AIR DISSOUS,
 C GRADIENTS D'AIR DISSOUS
 C
       IF (THMC.EQ.'LIQU_AD_GAZ') THEN
@@ -515,7 +527,7 @@ C
          RHO12=ZERO
          RHO21=MAMOLG*P2/R/T
          MASRT=MAMOLG/R/T
-         RHO22=MAMOLG*PAD/R/T       
+         RHO22=MAMOLG*PAD/R/T
          CVP=ZERO
 
 C
@@ -892,17 +904,17 @@ C
 
 
       ENDIF
-      
+
 C==============================================
 C                VF OU EFMH
-C==============================================      
+C==============================================
       IF(VF) THEN
- 
+
          IF(IFA.EQ.0) THEN
             VALCEN(DENSIT ,RHOGA)=RHO12+RHO21
             VALCEN(DENSIT ,RHOGA1)=DR12P1+DR21P1
             VALCEN(DENSIT ,RHOGA2)=DR12P2+DR21P2
-         
+
             VALCEN(DENSIT ,RHOLQ)=RHO11+RHO22
             VALCEN(DENSIT ,RHOLQ1)=DR11P1+DR22P1
             VALCEN(DENSIT ,RHOLQ2)=DR11P2+DR22P2
@@ -910,20 +922,20 @@ C==============================================
 C VALEURS CALCULEES AU CENTRE DES VF
 C==============================================
             IF (THMC.EQ.'LIQU_AD_GAZ_VAPE') THEN
-        
+
 C ****************** MOBILITES*******************
                VALCEN(MOB,WLIQ) =RHO11*KREL1/VISCL
                VALCEN(DMOBP1,WLIQ)=DR11P1*KREL1/VISCL+RHO11*DKREL1/VISCL
                VALCEN(DMOBP2,WLIQ)=DR11P2*KREL1/VISCL
 
 
-         
+
                VALCEN(MOB,WVAP)=RHO12*KREL2/VISCG
                VALCEN(DMOBP1,WVAP)=DR12P1*KREL2/VISCG
      >                             +RHO12*DKR2S*DSATP1/VISCG
                VALCEN(DMOBP2,WVAP)=DR12P2*KREL2/VISCG+RHO12*DKR2P/VISCG
-               
-               
+
+
 
                VALCEN(MOB,AIRSEC)=RHO21*KREL2/VISCG
                VALCEN(DMOBP1,AIRSEC)=DR21P1*KREL2/VISCG
@@ -935,20 +947,20 @@ C ****************** MOBILITES*******************
                VALCEN(DMOBP1,AIRDIS)=DR22P1*KREL1/VISCL+
      >                                         RHO22*DKREL1/VISCL
                VALCEN(DMOBP2,AIRDIS)=DR22P2*KREL1/VISCL
-         
+
 C ****************** CONCENTRATIONS*******************
                VALCEN(CON,WVAP)=CVP
                VALCEN(DCONP1,WVAP)=DCVP1
                VALCEN(DCONP2,WVAP)=DCVP2
-               
+
                VALCEN(CON,AIRDIS)=RHO22
                VALCEN(DCONP1,AIRDIS)=DR22P1
                VALCEN(DCONP2,AIRDIS)=DR22P2
-               
+
                VALCEN(DIFFU,WLIQ)=0.D0
                VALCEN(DDIFP1,WLIQ)=0.D0
                VALCEN(DDIFP2,WLIQ)=0.D0
-         
+
 C ****************** DIFFUSIVITES*******************
                VALCEN(DIFFU,WVAP)= RHO12*(1.D0-CVP)*FICK
                VALCEN(DDIFP1,WVAP)=DR12P1*(1.D0-CVP)*FICK
@@ -957,9 +969,9 @@ C ****************** DIFFUSIVITES*******************
                VALCEN(DDIFP2,WVAP)=DR12P2*(1.D0-CVP)*FICK
      >                             -RHO12*DCVP2*FICK
      >                             +RHO12*(1.D0-CVP)*DFICKG
-               
-               
-               
+
+
+
                VALCEN(DIFFU,AIRSEC) =RHO21*CVP*FICK
                VALCEN(DDIFP1,AIRSEC)=DR21P1*CVP*FICK
      >                               +RHO21*DCVP1*FICK
@@ -968,32 +980,32 @@ C ****************** DIFFUSIVITES*******************
      >                               +RHO21*DCVP2*FICK
      >                               +RHO21*CVP*DFICKG
      >                               +RHO12*(1.D0-CVP)*DFICKG
-               
-               
-               
+
+
+
                VALCEN(DIFFU,AIRDIS)=FICKAD
                VALCEN(DDIFP1,AIRDIS)=0.D0
                VALCEN(DDIFP2,AIRDIS)=0.D0
-         
+
             ELSE IF (THMC.EQ.'LIQU_AD_GAZ') THEN
 
 C ****************** MOBILITES*******************
                VALCEN(MOB,WLIQ) =RHO11*KREL1/VISCL
                VALCEN(DMOBP1,WLIQ)=DR11P1*KREL1/VISCL+RHO11*DKREL1/VISCL
                VALCEN(DMOBP2,WLIQ)=DR11P2*KREL1/VISCL
-               
+
                VALCEN(MOB,WVAP)=ZERO
                VALCEN(DMOBP1,WVAP)=ZERO
                VALCEN(DMOBP2,WVAP)=ZERO
-               
+
                VALCEN(MOB,AIRSEC)=RHO21*KREL2/VISCG
                VALCEN(DMOBP1,AIRSEC)=
      >                  DR21P1*KREL2/VISCG+RHO21*DKR2S*DSATP1/VISCG
                VALCEN(DMOBP2,AIRSEC)=DR21P2*KREL2/VISCG+
      >                                     RHO21*DKR2P/VISCG
-               
+
                VALCEN(MOB,AIRDIS)=RHO22*KREL1/VISCL
-               
+
                VALCEN(DMOBP1,AIRDIS)=DR22P1*KREL1/VISCL+
      >                                      RHO22*DKREL1/VISCL
                VALCEN(DMOBP2,AIRDIS)=DR22P2*KREL1/VISCL
@@ -1002,17 +1014,17 @@ C ****************** CONCENTRATIONS*******************
                VALCEN(CON,WVAP)=ZERO
                VALCEN(DCONP1,WVAP)=ZERO
                VALCEN(DCONP2,WVAP)=ZERO
-C               
+C
                VALCEN(CON,AIRDIS)=RHO22
                VALCEN(DCONP1,AIRDIS)=DR22P1
                VALCEN(DCONP2,AIRDIS)=DR22P2
-C               
+C
 C ****************** DIFFUSIVITES******************
                VALCEN(DIFFU,WLIQ)=0.D0
                VALCEN(DDIFP1,WLIQ)=0.D0
                VALCEN(DDIFP2,WLIQ)=0.D0
-               
-               
+
+
                VALCEN(DIFFU,WVAP)=ZERO
                VALCEN(DDIFP1,WVAP)=ZERO
                VALCEN(DDIFP2,WVAP)=ZERO
@@ -1020,7 +1032,7 @@ C ****************** DIFFUSIVITES******************
                VALCEN(DIFFU,AIRSEC)=ZERO
                VALCEN(DDIFP1,AIRSEC)=ZERO
                VALCEN(DDIFP2,AIRSEC)=ZERO
-               
+
                VALCEN(DIFFU,AIRDIS)=FICKAD
                VALCEN(DDIFP1,AIRDIS)=0.D0
                VALCEN(DDIFP2,AIRDIS)=0.D0
@@ -1029,9 +1041,9 @@ C ****************** DIFFUSIVITES******************
             END IF
 
          ELSE
-C==============================================  
-C VALEURS CALCULEES AUX FACES DES VF   
-C==============================================    
+C==============================================
+C VALEURS CALCULEES AUX FACES DES VF
+C==============================================
             IF (THMC.EQ.'LIQU_AD_GAZ_VAPE') THEN
 
 C ****************** CONCENTRATIONS*******************
@@ -1056,34 +1068,34 @@ C ****************** MOBILITES*******************
                VALFAC(IFA,DMOBP1,WLIQ)=DR11P1*KREL1/VISCL+
      >                                     RHO11*DKREL1/VISCL
                VALFAC(IFA,DMOBP2,WLIQ)=DR11P2*KREL1/VISCL
-         
+
                VALFAC(IFA,MOB,WVAP)=RHO12*KREL2/VISCG
                VALFAC(IFA,DMOBP1,WVAP)=
      >                         DR12P1*KREL2/VISCG+
      >                         RHO12*DKR2S*DSATP1/VISCG
                VALFAC(IFA,DMOBP2,WVAP)=DR12P2*KREL2/VISCG+
      >                                   RHO12*DKR2P/VISCG
-               
+
                VALFAC(IFA,MOB,AIRSEC)=RHO21*KREL2/VISCG
                VALFAC(IFA,DMOBP1,AIRSEC)=
      >                            DR21P1*KREL2/VISCG+
      >                            RHO21*DKR2S*DSATP1/VISCG
                VALFAC(IFA,DMOBP2,AIRSEC)=DR21P2*KREL2/VISCG+
      >                                   RHO21*DKR2P/VISCG
-               
+
                VALFAC(IFA,MOB,AIRDIS)=RHO22*KREL1/VISCL
                VALFAC(IFA,DMOBP1,AIRDIS)=DR22P1*KREL1/VISCL+
      >                                   RHO22*DKREL1/VISCL
                VALFAC(IFA,DMOBP2,AIRDIS)=DR22P2*KREL1/VISCL
-               
+
 C ****************** DIFFUSIVITES*****************
-C               
+C
 C  A PRIORI DIFFUSITIVITE SUR LES ARETES JAMAIS UTILISEES
-C               
+C
                VALFAC(IFA,DIFFU,WLIQ)=0.D0
                VALFAC(IFA,DDIFP1,WLIQ)=0.D0
                VALFAC(IFA,DDIFP2,WLIQ)=0.D0
-               
+
                VALFAC(IFA,DIFFU,WVAP)=RHO12*(1.D0-CVP)*FICK
                VALFAC(IFA,DDIFP1,WVAP)=DR12P1*(1.D0-CVP)*FICK
      >                                  -RHO12*DCVP1*FICK
@@ -1100,7 +1112,7 @@ C
      >                                  +RHO21*DCVP2*FICK
      >                                  +RHO21*CVP*DFICKG
      >                                  +RHO12*(1.D0-CVP)*DFICKG
-               
+
                VALFAC(IFA,DIFFU,AIRDIS)=FICKAD
                VALFAC(IFA,DDIFP1,AIRDIS)=0.D0
                VALFAC(IFA,DDIFP2,AIRDIS)=0.D0
@@ -1112,11 +1124,11 @@ C ****************** CONCENTRATIONS*******************
                VALFAC(IFA,CON,WLIQ)=1.D0
                VALFAC(IFA,DCONP1,WLIQ)=0.D0
                VALFAC(IFA,DCONP2,WLIQ)=0.D0
-               
+
                VALFAC(IFA,CON,WVAP)=ZERO
                VALFAC(IFA,DCONP1,WVAP)=ZERO
                VALFAC(IFA,DCONP2,WVAP)=ZERO
-               
+
                VALFAC(IFA,CON,AIRSEC)=ZERO
                VALFAC(IFA,DCONP1,AIRSEC)=ZERO
                VALFAC(IFA,DCONP2,AIRSEC)=ZERO
@@ -1124,13 +1136,13 @@ C ****************** CONCENTRATIONS*******************
                VALFAC(IFA,CON,AIRDIS)=RHO22
                VALFAC(IFA,DCONP1,AIRDIS)=DR22P1
                VALFAC(IFA,DCONP2,AIRDIS)=DR22P2
-               
-C ***************** MOBILITES*******************         
+
+C ***************** MOBILITES*******************
                VALFAC(IFA,MOB,WLIQ) = RHO11*KREL1/VISCL
                VALFAC(IFA,DMOBP1,WLIQ)=DR11P1*KREL1/VISCL+
      >                                       RHO11*DKREL1/VISCL
                VALFAC(IFA,DMOBP2,WLIQ)=DR11P2*KREL1/VISCL
-               
+
                VALFAC(IFA,MOB,WVAP)=ZERO
                VALFAC(IFA,DMOBP1,WVAP)=ZERO
                VALFAC(IFA,DMOBP2,WVAP)=ZERO
@@ -1141,26 +1153,26 @@ C ***************** MOBILITES*******************
      >                                       RHO21*DKR2S*DSATP1/VISCG
                VALFAC(IFA,DMOBP2,AIRSEC)=DR21P2*KREL2/VISCG+
      >                                       RHO21*DKR2P/VISCG
-               
+
                VALFAC(IFA,MOB,AIRDIS)=RHO22*KREL1/VISCL
                VALFAC(IFA,DMOBP1,AIRDIS)=DR22P1*KREL1/VISCL+
      >                                       RHO22*DKREL1/VISCL
                VALFAC(IFA,DMOBP2,AIRDIS)=DR22P2*KREL1/VISCL
-               
+
 C ****************** DIFFUSIVITES*****************
 C  A PRIORI DIFFUSITIVITE SUR LES ARETES JAMAIS UTILISEES
                VALFAC(IFA,DIFFU,WLIQ)=0.D0
                VALFAC(IFA,DDIFP1,WLIQ)=0.D0
                VALFAC(IFA,DDIFP2,WLIQ)=0.D0
-               
+
                VALFAC(IFA,DIFFU,WVAP)=ZERO
                VALFAC(IFA,DDIFP1,WVAP)=ZERO
                VALFAC(IFA,DDIFP2,WVAP)=ZERO
-               
+
                VALFAC(IFA,DIFFU,AIRSEC)=ZERO
                VALFAC(IFA,DDIFP1,AIRSEC)=ZERO
                VALFAC(IFA,DDIFP2,AIRSEC)=ZERO
-               
+
                VALFAC(IFA,DIFFU,AIRDIS)=FICKAD
                VALFAC(IFA,DDIFP1,AIRDIS)=0.D0
                VALFAC(IFA,DDIFP2,AIRDIS)=0.D0
@@ -1169,9 +1181,9 @@ C  A PRIORI DIFFUSITIVITE SUR LES ARETES JAMAIS UTILISEES
                CALL U2MESG('F','VOLUFINI_8',1,THMC,0,0,0,0.D0)
             ENDIF
          ENDIF
-C===========================       
+C===========================
 C FIN CAS VOLUMES FINIS
-C===========================   
+C===========================
       ELSE
 C
 C **********************************************************************

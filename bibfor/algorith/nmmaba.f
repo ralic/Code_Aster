@@ -6,12 +6,12 @@ C ----------------------------------------------------------------------
       INTEGER ICODMA
       INTEGER NCSTPM
       REAL*8  CSTPM(NCSTPM)
-      REAL*8  E,ALPHA,DSDE,SIGY
+      REAL*8  E,DSDE,SIGY
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
+C MODIF ALGORITH  DATE 04/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -68,8 +68,10 @@ C
 C ****************************** DATA  *********************************
 C
       DATA NOMELA / 'E' /
-      DATA NOMECL / 'D_SIGM_EPSI', 'SY' /
-      DATA NOMPIM / 'SY','EPSI_ULTM','SIGM_ULTM','ELAN','EPSP_HARD',
+C     DATA NOMECL / 'D_SIGM_EPSI', 'SY' /
+      DATA NOMECL / 'D_SIGM_E', 'SY' /
+C     DATA NOMPIM / 'SY','EPSI_ULTM','SIGM_ULTM','ELAN','EPSP_HARD',
+      DATA NOMPIM / 'SY','EPSI_ULT','SIGM_ULT','ELAN','EPSP_HAR',
      &              'R_PM','EP_SUR_E', 'A1_PM','A2_PM','A6_PM',
      &              'C_PM','A_PM' /
 C
@@ -167,8 +169,4 @@ C
 C
       ENDIF
 C
-C
-C -----------------------------------------------------------------
-C
- 9999 CONTINUE
       END

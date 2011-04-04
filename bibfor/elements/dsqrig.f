@@ -1,6 +1,6 @@
       SUBROUTINE DSQRIG ( NOMTE, XYZL, OPTION, PGL, RIG, ENER )
       IMPLICIT REAL*8 (A-H,O-Z)
-      REAL*8        XYZL(4,*), PGL(*), RIG(*), ENER(*)
+      REAL*8        XYZL(3,*), PGL(*), RIG(*), ENER(*)
       CHARACTER*16  OPTION , NOMTE
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -20,7 +20,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C     ------------------------------------------------------------------
-C MODIF ELEMENTS  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 04/04/2011   AUTEUR DESOZA T.DESOZA 
 C
 C     MATRICE DE RIGIDITE DE L'ELEMENT DE PLAQUE DSQ (AVEC CISAILLEMENT)
 C     ------------------------------------------------------------------
@@ -74,7 +74,7 @@ C                   -----(8,12)  -----(8,12)
       REAL*8 KMPMT(8,8), KMPM(8,8), MEMBCF(8,8), BCAPM(2,8), R8GAEM
       REAL*8 BSIGTH(24), ENERTH, CTOR, UN, ZERO, ETA, EXCENT, QSI
       REAL*8 JACOB(5),CARAQ4(25),T2EV(4),T2VE(4),T1VE(9)
-      LOGICAL ELASCO, EXCE, INDITH
+      LOGICAL COUPMF, EXCE, INDITH
       INTEGER   NDIM,NNO,NNOS,NPG,IPOIDS,ICOOPG,IVF,IDFDX,IDFD2,JGANO
 C     ------------------------------------------------------------------
 C
@@ -118,7 +118,7 @@ C     ----- CALCUL DES GRANDEURS GEOMETRIQUES SUR LE QUADRANGLE --------
 C     ----- CALCUL DES MATRICES DE RIGIDITE DU MATERIAU EN FLEXION,
 C           MEMBRANE ET CISAILLEMENT INVERSEE --------------------------
       CALL DXMATE('RIGI',DF,DM,DMF,DC,DCI,DMC,DFC,NNO,PGL,MULTIC,
-     +                                    ELASCO,T2EV,T2VE,T1VE)
+     +                                    COUPMF,T2EV,T2VE,T1VE)
 
 C     ---- CALCUL DE LA MATRICE PB -------------------------------------
       IF (EXCE) THEN
@@ -195,24 +195,21 @@ C       ------------------------------
 C
 C ---   CALCUL DU MATERIAU ELAS_COQUE :
 C       =============================
-        IF (ELASCO) THEN
 C
-C ---     CALCUL DU PRODUIT BFBT.DFC.DCI.BCA :
-C         ----------------------------------
-          CALL UTDTAB('ZERO',3,2,2,12,DFC,DCI,BFB,XAB7,XAB8)
-          CALL PROMAT(XAB8,12,12,2,BCA,2,2,4,KFCG11)
+C ---   CALCUL DU PRODUIT BFBT.DFC.DCI.BCA :
+C       ----------------------------------
+        CALL UTDTAB('ZERO',3,2,2,12,DFC,DCI,BFB,XAB7,XAB8)
+        CALL PROMAT(XAB8,12,12,2,BCA,2,2,4,KFCG11)
 C
-C ---     CALCUL DU PRODUIT BFAT.DFC.DCI.BCA :
-C         ----------------------------------
-          CALL UTDTAB('ZERO',3,2,2,4,DFC,DCI,BFA,XAB7,XAB9)
-          CALL PROMAT(XAB9,4,4,2,BCA,2,2,4,KFC21)
+C ---   CALCUL DU PRODUIT BFAT.DFC.DCI.BCA :
+C       ----------------------------------
+        CALL UTDTAB('ZERO',3,2,2,4,DFC,DCI,BFA,XAB7,XAB9)
+        CALL PROMAT(XAB9,4,4,2,BCA,2,2,4,KFC21)
 C
-C ---     CALCUL DU PRODUIT BMT.DMC.DCI.BCA :
-C         ----------------------------------
-          CALL UTDTAB('ZERO',3,2,2,8,DMC,DCI,BM,XAB7,XAB10)
-          CALL PROMAT(XAB10,8,8,2,BCA,2,2,4,KMC)
-C
-        ENDIF
+C ---   CALCUL DU PRODUIT BMT.DMC.DCI.BCA :
+C       ----------------------------------
+        CALL UTDTAB('ZERO',3,2,2,8,DMC,DCI,BM,XAB7,XAB10)
+        CALL PROMAT(XAB10,8,8,2,BCA,2,2,4,KMC)
 C
 C ---   CALCUL DES SOMMES KF + KC = KFC :
 C       -------------------------------
@@ -233,7 +230,7 @@ C       -------------------------------
    70     CONTINUE
    60   CONTINUE
 C
-        IF (MULTIC.EQ.2.OR.EXCE) THEN
+        IF (COUPMF.OR.EXCE) THEN
 C
 C ---     CALCUL DU PRODUIT BMT.DMF.BFB :
 C         -----------------------------
@@ -382,7 +379,7 @@ C ---                      +  PM_T*(KF12_T+KBA_T) + KMA*PB          =
 C ---                      +  KMF12*PB                              =
 C====================================================================
 C
-         IF (MULTIC.EQ.2.OR.EXCE) THEN
+         IF (COUPMF.OR.EXCE) THEN
 C
           DO 260 I = 1,8
             DO 270 J = 1,12
@@ -423,7 +420,7 @@ C
       ELSE IF (OPTION.EQ.'EPOT_ELEM') THEN
         CALL JEVECH('PDEPLAR','L',JDEPG)
         CALL UTPVGL(4,6,PGL,ZR(JDEPG),DEPL)
-        CALL DXQLOE(FLEX,MEMB,MEFL,CTOR,MULTIC,DEPL,ENER)
+        CALL DXQLOE(FLEX,MEMB,MEFL,CTOR,COUPMF,DEPL,ENER)
         CALL BSTHPL(NOMTE(1:8),BSIGTH,INDITH)
         IF (INDITH) THEN
           DO 330 I = 1, 24

@@ -3,9 +3,9 @@
       INTEGER           NBOCC,NLM,NLG,NLN,NLJ,IER
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 06/07/2009   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 04/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -36,7 +36,7 @@ C ----------------------------------------------------------------------
       CHARACTER*8  K8B, CAR(NBCAR), NOMU, CARORI(NCO)
       CHARACTER*16 CMD, CONCEP
       CHARACTER*24 VALK(2)
-      DATA CARORI  /'VECT_Y   ','VECT_X_Y ','ANGL_NAUT','ANGL_VRIL'/
+      DATA CARORI  /'VECT_Y  ','VECT_X_Y','ANGL_NAU','ANGL_VRI'/
 C     ------------------------------------------------------------------
 C
       CALL GETRES(NOMU,CONCEP,CMD)

@@ -2,9 +2,9 @@
      &  IDFDE1,IDFDE2,GEOM,TYPMOD,MAT,DDL,SIGM,VECT)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 12/04/2010   AUTEUR MICHEL S.MICHEL 
+C MODIF ALGORITH  DATE 04/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -27,7 +27,7 @@ C ======================================================================
        INTEGER NDIM,NNO1,NNO2,NNO3,NPG,IDFDE1,IDFDE2,IW,MAT
        REAL*8  VFF1(NNO1,NPG),VFF2(NNO2,NPG),VFF3(NNO3,NPG)
        REAL*8  GEOM(NDIM,NNO1)
-       REAL*8  SIGM(2*NDIM+1,NPG),VARI,DDL(*),VECT(*)
+       REAL*8  SIGM(2*NDIM+1,NPG),DDL(*),VECT(*)
 C ----------------------------------------------------------------------
 C
 C     FORC_NODA POUR GRAD_VARI (2D ET 3D)
@@ -52,17 +52,17 @@ C ----------------------------------------------------------------------
       CHARACTER*8 NOM(2)
       
       LOGICAL GRAND,AXI,NAX
-      INTEGER NDDL,NDIMSI,G,N,I,M,J,KL,PQ,KK,OS
+      INTEGER NDDL,NDIMSI,G,N,I,KL,KK
       INTEGER IU(3,27),IA(8),IL(8)
-      REAL*8  RAC2,C,RAUG,LEF,P,VAL(2)
+      REAL*8  RAC2,C,RAUG,VAL(2)
       REAL*8  DFDI1(27,3)
       REAL*8  AV,MU,AG(3),BP
       REAL*8  R,WG,B(6,3,27)
       REAL*8  SIGMA(6),T1,T2,T3
-      REAL*8  R8DOT,NMTAEF,RBID
+
       REAL*8  DFDI2(8*3)
 
-      DATA  NOM /'C_GRAD_VARI','PENA_LAGR'/
+      DATA  NOM /'C_GRAD_V','PENA_LAG'/
 C ----------------------------------------------------------------------
 
 

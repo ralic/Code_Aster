@@ -1,4 +1,4 @@
-#@ MODIF mecanonline3 Messages  DATE 29/03/2011   AUTEUR BOITEAU O.BOITEAU 
+#@ MODIF mecanonline3 Messages  DATE 04/04/2011   AUTEUR DESOZA T.DESOZA 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -68,8 +68,8 @@ cata_msg = {
 """),
 
 90 : _("""
-  -> Vous utilisez une formulation 'DISCRETE' de contact conjointement avec le solveur linéaire 'GCPC'.
-     Le solveur 'GCPC' n'est actuellement autorisé qu'avec les algorithmes de contact 'VERIF' et 'PENALISATION'.
+  -> Vous utilisez une formulation 'DISCRETE' de contact conjointement avec le solveur linéaire '%(k1)s'.
+     Le solveur '%(k1)s' n'est actuellement autorisé qu'avec les algorithmes de contact 'VERIF' et 'PENALISATION'.
 
   -> Conseil :
      Changez d'algorithme de contact en utilisant le mot-clé ALGO_CONT de DEFI_CONTACT ou bien changez de solveur linéaire
@@ -101,7 +101,11 @@ Contact méthode continue et pilotage sont incompatibles
 """),
 
 96 : _("""
- la combinaison : LIAISON_UNILATER et solveur GCPC n'est pas disponible.
+  -> Vous utilisez la formulation 'LIAISON_UNIL' conjointement avec le solveur linéaire '%(k1)s'.
+     Ce dernier n'est pas compatible avec le traitement de conditions unilatérales.
+
+  -> Conseil :
+     Changez de solveur linéaire en utilisant le mot-clé METHODE de SOLVEUR.
 """),
 
 

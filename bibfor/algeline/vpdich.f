@@ -9,9 +9,9 @@
       CHARACTER*19 SOLVEU
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 13/10/2010   AUTEUR BOITEAU O.BOITEAU 
+C MODIF ALGELINE  DATE 04/04/2011   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
@@ -93,6 +93,7 @@ C
                   VALPX = (FREQ1+FREQ2) * 0.5D0
                   IF ( ABS(FREQ2-FREQ1) .GE. TOL*VALPX ) THEN
                      IENCOR = 1
+                     IDX=0
                      CALL VPSTUR(LRAIDE,VALPX,LMASSE,LDYNAM,
      +                           DX,IDX,IX,IER,SOLVEU)
                      IX = IX-NBLAGR

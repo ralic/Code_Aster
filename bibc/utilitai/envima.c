@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF ENVIMA UTILITAI  DATE 29/03/2011   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF ENVIMA UTILITAI  DATE 04/04/2011   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2011  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -19,13 +19,8 @@
 
 /* envima.c        constantes liees a l'arithmetique du processeur    */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <math.h>
 #include <float.h>
-#include <limits.h>
 #include "aster.h"
-
 
 
 /* Définition des constantes */
@@ -59,8 +54,11 @@ static float  R4PREC   = FLT_EPSILON ;
 /* taille max d'une base */
 static INTEGER   ISMFIC   = 50331648;
 /* taille max d'un fichier "extend" */
+#ifdef _USE_64_BITS
 static INTEGER   ISLFIC   = 12582912;
-
+#else
+static INTEGER   ISLFIC   = 2000*1024;
+#endif
 
 #define  R8_PI   3.1415926535897932384626433832
 #define  R8_T0   273.15
@@ -102,11 +100,7 @@ INTEGER STDCALL(LOUAEM,louaem)() { return 1; }
 /* ------------------------------------------  TAILLE DE FICHIER
  exprimee en kilo (1024) */
 INTEGER STDCALL(LOFIEM,lofiem)() {
-#ifdef _USE_64_BITS
    return (INTEGER)ISLFIC;
-#else
-   return (INTEGER)2000*1024;
-#endif
 }
 
 /* ----------------------------------  TAILLE MAXIMUM DE FICHIER */

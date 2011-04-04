@@ -4,9 +4,9 @@
       INTEGER NBNOCH
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 30/06/2008   AUTEUR PELLET J.PELLET 
+C MODIF PREPOST  DATE 04/04/2011   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -137,42 +137,42 @@ C- RECORD 9
 C- POSI_ORDRE
               PARAM='POSI_ORDRE'
               CALL GETVIS('FORMAT_IDEAS',PARAM,IOCC,1,2,POSI,NPOSI)
-              ZI(LFILOC-1+ (ICH-1)*10+1) = POSI(1)
-              ZI(LFILOC-1+ (ICH-1)*10+2) = POSI(2)
+              ZI(LFILOC-1+ (ICH-1)*12+1) = POSI(1)
+              ZI(LFILOC-1+ (ICH-1)*12+2) = POSI(2)
 C- POSI_INST
               PARAM='POSI_INST'
               CALL GETVIS('FORMAT_IDEAS',PARAM,IOCC,1,2,POSI,NPOSI)
               IF (NPOSI.EQ.2) THEN
-                ZI(LFILOC-1+ (ICH-1)*10+3) = POSI(1)
-                ZI(LFILOC-1+ (ICH-1)*10+4) = POSI(2)
+                ZI(LFILOC-1+ (ICH-1)*12+3) = POSI(1)
+                ZI(LFILOC-1+ (ICH-1)*12+4) = POSI(2)
               END IF
 C- POSI_FREQ
               PARAM='POSI_FREQ'
               CALL GETVIS('FORMAT_IDEAS',PARAM,IOCC,1,2,POSI,NPOSI)
               IF (NPOSI.EQ.2) THEN
-                ZI(LFILOC-1+ (ICH-1)*10+5) = POSI(1)
-                ZI(LFILOC-1+ (ICH-1)*10+6) = POSI(2)
+                ZI(LFILOC-1+ (ICH-1)*12+5) = POSI(1)
+                ZI(LFILOC-1+ (ICH-1)*12+6) = POSI(2)
               END IF
 C- POSI_NUME_MODE
               PARAM='POSI_NUME_MODE'
               CALL GETVIS('FORMAT_IDEAS',PARAM,IOCC,1,2,POSI,NPOSI)
               IF (NPOSI.EQ.2) THEN
-                ZI(LFILOC-1+ (ICH-1)*10+7) = POSI(1)
-                ZI(LFILOC-1+ (ICH-1)*10+8) = POSI(2)
+                ZI(LFILOC-1+ (ICH-1)*12+7) = POSI(1)
+                ZI(LFILOC-1+ (ICH-1)*12+8) = POSI(2)
               END IF
 C- POSI_MASS_GENE
               PARAM='POSI_MASS_GENE'
               CALL GETVIS('FORMAT_IDEAS',PARAM,IOCC,1,2,POSI,NPOSI)
               IF (NPOSI.EQ.2) THEN
-                ZI(LFILOC-1+ (ICH-1)*10+9) = POSI(1)
-                ZI(LFILOC-1+ (ICH-1)*10+10) = POSI(2)
+                ZI(LFILOC-1+ (ICH-1)*12+9) = POSI(1)
+                ZI(LFILOC-1+ (ICH-1)*12+10) = POSI(2)
               END IF
 C- POSI_AMOR_GENE
               PARAM='POSI_AMOR_GENE'
               CALL GETVIS('FORMAT_IDEAS',PARAM,IOCC,1,2,POSI,NPOSI)
               IF (NPOSI.EQ.2) THEN
-                ZI(LFILOC-1+ (ICH-1)*10+11) = POSI(1)
-                ZI(LFILOC-1+ (ICH-1)*10+12) = POSI(2)
+                ZI(LFILOC-1+ (ICH-1)*12+11) = POSI(1)
+                ZI(LFILOC-1+ (ICH-1)*12+12) = POSI(2)
               END IF
 
 
@@ -214,14 +214,14 @@ C- RECORD 6
             ZI(LFIPAR-1+ (ICH-1)*800+200+5) = 2
             ZI(LFIPAR-1+ (ICH-1)*800+200+6) = 6
 C- POSI_ORDRE
-            ZI(LFILOC-1+ (ICH-1)*10+1) = 7
-            ZI(LFILOC-1+ (ICH-1)*10+2) = 4
+            ZI(LFILOC-1+ (ICH-1)*12+1) = 7
+            ZI(LFILOC-1+ (ICH-1)*12+2) = 4
 C- POSI_INST
-            ZI(LFILOC-1+ (ICH-1)*10+3) = 8
-            ZI(LFILOC-1+ (ICH-1)*10+4) = 1
+            ZI(LFILOC-1+ (ICH-1)*12+3) = 8
+            ZI(LFILOC-1+ (ICH-1)*12+4) = 1
 C- POSI_FREQ
-            ZI(LFILOC-1+ (ICH-1)*10+5) = 8
-            ZI(LFILOC-1+ (ICH-1)*10+6) = 1
+            ZI(LFILOC-1+ (ICH-1)*12+5) = 8
+            ZI(LFILOC-1+ (ICH-1)*12+6) = 1
 C- NOM_CMP
             ZK8(LFICMP-1+ (ICH-1)*1000+1) = 'DX'
             ZK8(LFICMP-1+ (ICH-1)*1000+2) = 'DY'
@@ -245,14 +245,14 @@ C- RECORD 6
             ZI(LFIPAR-1+ (ICH-1)*800+200+5) = 2
             ZI(LFIPAR-1+ (ICH-1)*800+200+6) = 6
 C- POSI_ORDRE
-            ZI(LFILOC-1+ (ICH-1)*10+1) = 7
-            ZI(LFILOC-1+ (ICH-1)*10+2) = 4
+            ZI(LFILOC-1+ (ICH-1)*12+1) = 7
+            ZI(LFILOC-1+ (ICH-1)*12+2) = 4
 C- POSI_INST
-            ZI(LFILOC-1+ (ICH-1)*10+3) = 8
-            ZI(LFILOC-1+ (ICH-1)*10+4) = 1
+            ZI(LFILOC-1+ (ICH-1)*12+3) = 8
+            ZI(LFILOC-1+ (ICH-1)*12+4) = 1
 C- POSI_FREQ
-            ZI(LFILOC-1+ (ICH-1)*10+5) = 8
-            ZI(LFILOC-1+ (ICH-1)*10+6) = 1
+            ZI(LFILOC-1+ (ICH-1)*12+5) = 8
+            ZI(LFILOC-1+ (ICH-1)*12+6) = 1
 C- NOM_CMP
             ZK8(LFICMP-1+ (ICH-1)*1000+1) = 'DX'
             ZK8(LFICMP-1+ (ICH-1)*1000+2) = 'DY'
@@ -277,14 +277,14 @@ C- RECORD 6
             ZI(LFIPAR-1+ (ICH-1)*800+200+5) = 2
             ZI(LFIPAR-1+ (ICH-1)*800+200+6) = 6
 C- POSI_ORDRE
-            ZI(LFILOC-1+ (ICH-1)*10+1) = 7
-            ZI(LFILOC-1+ (ICH-1)*10+2) = 4
+            ZI(LFILOC-1+ (ICH-1)*12+1) = 7
+            ZI(LFILOC-1+ (ICH-1)*12+2) = 4
 C- POSI_INST
-            ZI(LFILOC-1+ (ICH-1)*10+3) = 8
-            ZI(LFILOC-1+ (ICH-1)*10+4) = 1
+            ZI(LFILOC-1+ (ICH-1)*12+3) = 8
+            ZI(LFILOC-1+ (ICH-1)*12+4) = 1
 C- POSI_FREQ
-            ZI(LFILOC-1+ (ICH-1)*10+5) = 8
-            ZI(LFILOC-1+ (ICH-1)*10+6) = 1
+            ZI(LFILOC-1+ (ICH-1)*12+5) = 8
+            ZI(LFILOC-1+ (ICH-1)*12+6) = 1
 C- NOM_CMP
             ZK8(LFICMP-1+ (ICH-1)*1000+1) = 'DX'
             ZK8(LFICMP-1+ (ICH-1)*1000+2) = 'DY'
@@ -310,14 +310,14 @@ C- RECORD 6
             ZI(LFIPAR-1+ (ICH-1)*800+200+5) = 2
             ZI(LFIPAR-1+ (ICH-1)*800+200+6) = 1
 C- POSI_ORDRE
-            ZI(LFILOC-1+ (ICH-1)*10+1) = 7
-            ZI(LFILOC-1+ (ICH-1)*10+2) = 4
+            ZI(LFILOC-1+ (ICH-1)*12+1) = 7
+            ZI(LFILOC-1+ (ICH-1)*12+2) = 4
 C- POSI_INST
-            ZI(LFILOC-1+ (ICH-1)*10+3) = 8
-            ZI(LFILOC-1+ (ICH-1)*10+4) = 1
+            ZI(LFILOC-1+ (ICH-1)*12+3) = 8
+            ZI(LFILOC-1+ (ICH-1)*12+4) = 1
 C- POSI_FREQ
-            ZI(LFILOC-1+ (ICH-1)*10+5) = 8
-            ZI(LFILOC-1+ (ICH-1)*10+6) = 1
+            ZI(LFILOC-1+ (ICH-1)*12+5) = 8
+            ZI(LFILOC-1+ (ICH-1)*12+6) = 1
 C- NOM_CMP
             ZK8(LFICMP-1+ (ICH-1)*1000+1) = 'TEMP'
 
@@ -338,14 +338,14 @@ C- RECORD 6
             ZI(LFIPAR-1+ (ICH-1)*800+200+5) = 2
             ZI(LFIPAR-1+ (ICH-1)*800+200+6) = 6
 C- POSI_ORDRE
-            ZI(LFILOC-1+ (ICH-1)*10+1) = 7
-            ZI(LFILOC-1+ (ICH-1)*10+2) = 4
+            ZI(LFILOC-1+ (ICH-1)*12+1) = 7
+            ZI(LFILOC-1+ (ICH-1)*12+2) = 4
 C- POSI_INST
-            ZI(LFILOC-1+ (ICH-1)*10+3) = 8
-            ZI(LFILOC-1+ (ICH-1)*10+4) = 1
+            ZI(LFILOC-1+ (ICH-1)*12+3) = 8
+            ZI(LFILOC-1+ (ICH-1)*12+4) = 1
 C- POSI_FREQ
-            ZI(LFILOC-1+ (ICH-1)*10+5) = 8
-            ZI(LFILOC-1+ (ICH-1)*10+6) = 1
+            ZI(LFILOC-1+ (ICH-1)*12+5) = 8
+            ZI(LFILOC-1+ (ICH-1)*12+6) = 1
 C- NOM_CMP
             ZK8(LFICMP-1+ (ICH-1)*1000+1) = 'V1'
             ZK8(LFICMP-1+ (ICH-1)*1000+2) = 'V2'
@@ -395,14 +395,14 @@ C- RECORD 6
             ZI(LFIPAR-1+ (ICH-1)*800+200+5) = 2
             ZI(LFIPAR-1+ (ICH-1)*800+200+6) = 6
 C- POSI_ORDRE
-            ZI(LFILOC-1+ (ICH-1)*10+1) = 7
-            ZI(LFILOC-1+ (ICH-1)*10+2) = 4
+            ZI(LFILOC-1+ (ICH-1)*12+1) = 7
+            ZI(LFILOC-1+ (ICH-1)*12+2) = 4
 C- POSI_INST
-            ZI(LFILOC-1+ (ICH-1)*10+3) = 8
-            ZI(LFILOC-1+ (ICH-1)*10+4) = 1
+            ZI(LFILOC-1+ (ICH-1)*12+3) = 8
+            ZI(LFILOC-1+ (ICH-1)*12+4) = 1
 C- POSI_FREQ
-            ZI(LFILOC-1+ (ICH-1)*10+5) = 8
-            ZI(LFILOC-1+ (ICH-1)*10+6) = 1
+            ZI(LFILOC-1+ (ICH-1)*12+5) = 8
+            ZI(LFILOC-1+ (ICH-1)*12+6) = 1
 C- NOM_CMP
             ZK8(LFICMP-1+ (ICH-1)*1000+1) = 'EPXX'
             ZK8(LFICMP-1+ (ICH-1)*1000+2) = 'EPXY'
@@ -428,14 +428,14 @@ C- RECORD 6
             ZI(LFIPAR-1+ (ICH-1)*800+200+5) = 2
             ZI(LFIPAR-1+ (ICH-1)*800+200+6) = 6
 C- POSI_ORDRE
-            ZI(LFILOC-1+ (ICH-1)*10+1) = 7
-            ZI(LFILOC-1+ (ICH-1)*10+2) = 4
+            ZI(LFILOC-1+ (ICH-1)*12+1) = 7
+            ZI(LFILOC-1+ (ICH-1)*12+2) = 4
 C- POSI_INST
-            ZI(LFILOC-1+ (ICH-1)*10+3) = 8
-            ZI(LFILOC-1+ (ICH-1)*10+4) = 1
+            ZI(LFILOC-1+ (ICH-1)*12+3) = 8
+            ZI(LFILOC-1+ (ICH-1)*12+4) = 1
 C- POSI_FREQ
-            ZI(LFILOC-1+ (ICH-1)*10+5) = 8
-            ZI(LFILOC-1+ (ICH-1)*10+6) = 1
+            ZI(LFILOC-1+ (ICH-1)*12+5) = 8
+            ZI(LFILOC-1+ (ICH-1)*12+6) = 1
 C- NOM_CMP
             ZK8(LFICMP-1+ (ICH-1)*1000+1) = 'SIXX'
             ZK8(LFICMP-1+ (ICH-1)*1000+2) = 'SIXY'
@@ -462,14 +462,14 @@ C- RECORD 6
             ZI(LFIPAR-1+ (ICH-1)*800+200+5) = 2
             ZI(LFIPAR-1+ (ICH-1)*800+200+6) = 1
 C- POSI_ORDRE
-            ZI(LFILOC-1+ (ICH-1)*10+1) = 7
-            ZI(LFILOC-1+ (ICH-1)*10+2) = 4
+            ZI(LFILOC-1+ (ICH-1)*12+1) = 7
+            ZI(LFILOC-1+ (ICH-1)*12+2) = 4
 C- POSI_INST
-            ZI(LFILOC-1+ (ICH-1)*10+3) = 8
-            ZI(LFILOC-1+ (ICH-1)*10+4) = 1
+            ZI(LFILOC-1+ (ICH-1)*12+3) = 8
+            ZI(LFILOC-1+ (ICH-1)*12+4) = 1
 C- POSI_FREQ
-            ZI(LFILOC-1+ (ICH-1)*10+5) = 8
-            ZI(LFILOC-1+ (ICH-1)*10+6) = 1
+            ZI(LFILOC-1+ (ICH-1)*12+5) = 8
+            ZI(LFILOC-1+ (ICH-1)*12+6) = 1
 C- NOM_CMP
             ZK8(LFICMP-1+ (ICH-1)*1000+1) = 'PRES'
 

@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF inisig utilitai  DATE 29/03/2011   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF inisig utilitai  DATE 04/04/2011   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2011  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -25,15 +25,12 @@
 **    CPULIM  : plus de temps CPU
 **    FPE     : Floating point exception
 */
-#include <stdio.h>
-#include <stdlib.h>
-#include <signal.h>
-#include <errno.h>
 
 #include "aster.h"
 #include "aster_fort.h"
 
-extern int errno;
+#include <signal.h>
+
 void abort();
 
 void hancpu (int sig);

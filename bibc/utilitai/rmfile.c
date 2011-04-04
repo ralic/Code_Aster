@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF RMFILE UTILITAI  DATE 29/03/2011   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF RMFILE UTILITAI  DATE 04/04/2011   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2011  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -21,11 +21,6 @@
 /* si info  = 1 mode bavard                               */
 /* si info != 1 mode silencieux                           */
  
-#include <stdio.h>
-#include <stdlib.h>
-#include <errno.h>
-
-extern int errno;
 
 #include "aster.h"
 

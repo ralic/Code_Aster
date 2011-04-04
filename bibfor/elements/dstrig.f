@@ -20,7 +20,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C     ------------------------------------------------------------------
-C MODIF ELEMENTS  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 04/04/2011   AUTEUR DESOZA T.DESOZA 
 C
 C     MATRICE DE RIGIDITE DE L'ELEMENT DE PLAQUE DST (AVEC CISAILLEMENT)
 C     ------------------------------------------------------------------
@@ -69,7 +69,7 @@ C                   ----(6,9)  -----(6,9)
       REAL*8 KMF12(6,3), KMF12A(36)
       REAL*8 BSIGTH(24), ENERTH, EXCENT, UN, R8GAEM, ZERO
       REAL*8 QSI, ETA, CARAT3(21), T2EV(4), T2VE(4), T1VE(9)
-      LOGICAL      ELASCO, EXCE, INDITH
+      LOGICAL      COUPMF, EXCE, INDITH
 C     ------------------------------------------------------------------
       REAL*8 CTOR
       DATA PERM  / 1, 4,   7,  2,  5,  8, 3, 6, 9 /
@@ -106,7 +106,7 @@ C     ----- CALCUL DES GRANDEURS GEOMETRIQUES SUR LE TRIANGLE --------
 C     ----- CALCUL DES MATRICES DE RIGIDITE DU MATERIAU EN FLEXION,
 C           MEMBRANE ET CISAILLEMENT INVERSEE -------------------------
       CALL DXMATE('RIGI',DF,DM,DMF,DC,DCI,DMC,DFC,NNO,PGL,MULTIC,
-     +                                    ELASCO,T2EV,T2VE,T1VE)
+     +                                    COUPMF,T2EV,T2VE,T1VE)
 C     ------------------------------------------------------------------
 C     CALCUL DE LA MATRICE DE RIGIDITE DE L'ELEMENT EN MEMBRANE
 C     ------------------------------------------------------------------
@@ -131,7 +131,7 @@ C     ------- CALCUL DE LA MATRICE BFB -------------------------------
 C     ------- CALCUL DU PRODUIT BFBT.DF.BFB --------------------------
       CALL UTBTAB('ZERO',3,9,DF,BFB,XAB2,KF11)
 
-      IF (MULTIC.EQ.2) THEN
+      IF (COUPMF) THEN
 C        ----- CALCUL DU PRODUIT BMT.DMF.BFB ------------------------
         CALL UTCTAB('ZERO',3,9,6,DMF,BFB,BM,XAB2,KMF11)
       END IF
@@ -185,24 +185,21 @@ C
 C=========================================
 C ---   CAS DU COMPORTEMENT ELAS_COQUE   =
 C=========================================
-        IF (ELASCO) THEN
 C
-C ---     CALCUL DU PRODUIT BFBT.DFC.DCI.BCA :
-C         ----------------------------------
-          CALL UTDTAB('ZERO',3,2,2,9,DFC,DCI,BFB,XAB5,XAB6)
-          CALL PROMAT(XAB6,9,9,2,BCA,2,2,3,KFC11)
+C ---   CALCUL DU PRODUIT BFBT.DFC.DCI.BCA :
+C       ----------------------------------
+        CALL UTDTAB('ZERO',3,2,2,9,DFC,DCI,BFB,XAB5,XAB6)
+        CALL PROMAT(XAB6,9,9,2,BCA,2,2,3,KFC11)
 C
-C ---     CALCUL DU PRODUIT BFAT.DFC.DCI.BCA :
-C         ----------------------------------
-          CALL UTDTAB('ZERO',3,2,2,3,DFC,DCI,BFA,XAB5,XAB7)
-          CALL PROMAT(XAB7,3,3,2,BCA,2,2,3,KFC21)
+C ---   CALCUL DU PRODUIT BFAT.DFC.DCI.BCA :
+C       ----------------------------------
+        CALL UTDTAB('ZERO',3,2,2,3,DFC,DCI,BFA,XAB5,XAB7)
+        CALL PROMAT(XAB7,3,3,2,BCA,2,2,3,KFC21)
 C
-C ---     CALCUL DU PRODUIT BMT.DMC.DCI.BCA :
-C         ---------------------------------
-          CALL UTDTAB('ZERO',3,2,2,6,DMC,DCI,BM,XAB5,XAB8)
-          CALL PROMAT(XAB8,6,6,2,BCA,2,2,3,KMC)
-C
-        ENDIF
+C ---   CALCUL DU PRODUIT BMT.DMC.DCI.BCA :
+C       ---------------------------------
+        CALL UTDTAB('ZERO',3,2,2,6,DMC,DCI,BM,XAB5,XAB8)
+        CALL PROMAT(XAB8,6,6,2,BCA,2,2,3,KMC)
 C
 C==============================================================
 C ---   CALCUL DE LA PARTIE FLEXION DE LA MATRICE DE RIGIDITE =
@@ -241,7 +238,7 @@ C       ---------------------------
           FLEX(K) = FLEX(K) + FLEXI(K)*WGT
   100   CONTINUE
 C
-        IF (MULTIC.EQ.2.OR.EXCE) THEN
+        IF (COUPMF.OR.EXCE) THEN
 C
 C ---     DETERMINATION DE LA MATRICE [KMF12] = [BM]T*[DMF]*[BFA]
 C ---     CETTE MATRICE INTERVIENT DANS LA MATRICE DE RIGIDITE
@@ -284,7 +281,7 @@ C ---     DE COUPLAGE MEMBRANE-FLEXION LES TERMES                    =
 C ---     [PM]T*([KF22]+[KAA])*[PB] + [PM]T*[KF12]T + [KMF12]*[PB]   =
 C=====================================================================
 C
-        IF (MULTIC.EQ.2.OR.EXCE) THEN
+        IF (COUPMF.OR.EXCE) THEN
 C
           DO 120 K = 1,54
             KMF(K,1) = 0.D0
@@ -328,7 +325,7 @@ C
       ELSE IF (OPTION.EQ.'EPOT_ELEM') THEN
         CALL JEVECH('PDEPLAR','L',JDEPG)
         CALL UTPVGL(3,6,PGL,ZR(JDEPG),DEPL)
-        CALL DXTLOE(FLEX,MEMB,MEFL,CTOR,MULTIC,DEPL,ENER)
+        CALL DXTLOE(FLEX,MEMB,MEFL,CTOR,COUPMF,DEPL,ENER)
          CALL BSTHPL(NOMTE(1:8),BSIGTH,INDITH)
          IF (INDITH) THEN
            DO 180 I = 1, 18

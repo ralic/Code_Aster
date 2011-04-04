@@ -1,4 +1,4 @@
-# MODIF  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 04/04/2011   AUTEUR GENIAUT S.GENIAUT 
 # TITRE FISSURE DEBOUCHANTE DANS UNE PLAQUE 3D DE LARGEUR FINIE AVEC X-FEM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -19,6 +19,8 @@
 # ======================================================================
 
 DEBUT(CODE=_F(NOM='SSNV185A',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),DEBUG=_F(SDVERI='OUI'));
+
+# MODELISATION A : FEM - TRACTION (FACE SUP, LEVRES, CHAMP ASYMPTOTIQUE)
 
 #----------------------------------------------
 #             MAILLAGE : hexa_cla_5_30_50.mgib

@@ -3,7 +3,7 @@
       CHARACTER*16      OPTION,NOMTE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 19/01/2011   AUTEUR MASSIN P.MASSIN 
+C MODIF ELEMENTS  DATE 04/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -234,10 +234,11 @@ C --- ---   REPERE GLOBAL ==> PAS DE ROTATION ---
                CALL VECMA(ZR(JDC),NBTERM,MATP,NDDL)
                CALL PMAVEC('ZERO',NDDL,MATP,ZR(IACCE),ZR(IVECT))
             ELSE IF (OPTION(11:14).EQ.'SENS') THEN
+               CALL R8INIR(NL1,ZERO,MATV1,1)
                DO 430 I = 1,NBTERM
                   MATV1(I) = ZR(JDC+I-1)
 430            CONTINUE
-               CALL VECMA(MATV1,NBTERM,MATP,NDDLM)
+               CALL VECMA(MATV1,NL1,MATP,NDDLM)
                DO 400 I = 1,NDDL
                   IF (OPTION(15:16).EQ.'_C') THEN
                      ZC(LVECT-1+I) = DCMPLX(0.D0,0.D0)
@@ -273,10 +274,11 @@ C --- --- ---  ANGLES NULS  ===>  PAS DE ROTATION ---
                   CALL VECMA(ZR(JDC),NBTERM,MATP,NDDL)
                   CALL PMAVEC('ZERO',NDDL,MATP,ZR(IACCE),ZR(IVECT))
                ELSE IF (OPTION(11:14).EQ.'SENS') THEN
+                  CALL R8INIR(NL1,ZERO,MATV1,1)
                   DO 130 I = 1,NBTERM
                      MATV1(I) = ZR(JDC+I-1)
 130               CONTINUE
-                  CALL VECMA(MATV1,NBTERM,MATP,NDDLM)
+                  CALL VECMA(MATV1,NL1,MATP,NDDLM)
                   DO 100 I = 1,NDDL
                      IF (OPTION(15:16).EQ.'_C') THEN
                         ZC(LVECT-1+I) = DCMPLX(0.D0,0.D0)
@@ -315,9 +317,10 @@ C              CALL MATROT ( ZR(LORIEN) , PGL )
                ELSE
                   IF (NDIM.EQ.3) THEN
                      IF (OPTION(11:14).EQ.'SENS') THEN
+                        CALL R8INIR(NL1,ZERO,MATV1,1)
 C                       VECTEUR DE TRAVAIL, ON FAIT LE PRODUIT
                         CALL UTPSLG ( NNO, NC, PGL, ZR(JDC), MATV1 )
-                        CALL VECMA(MATV1,NBTERM,MATP,NDDLM)
+                        CALL VECMA(MATV1,NL1,MATP,NDDLM)
                         DO 200 I = 1,NDDL
                            IF (OPTION(15:16).EQ.'_C') THEN
                               ZC(LVECT-1+I) = DCMPLX(0.D0,0.D0)
@@ -344,9 +347,10 @@ C                       VECTEUR DE TRAVAIL, ON FAIT LE PRODUIT
                      ENDIF
                   ELSEIF (NDIM.EQ.2) THEN
                      IF (OPTION(11:14).EQ.'SENS') THEN
+                        CALL R8INIR(NL1,ZERO,MATV1,1)
 C                       VECTEUR DE TRAVAIL, ON FAIT LE PRODUIT
                         CALL UT2MLG ( NNO, NC, PGL, ZR(JDC), MATV1 )
-                        CALL VECMA(MATV1,NBTERM,MATP,NDDLM)
+                        CALL VECMA(MATV1,NL1,MATP,NDDLM)
                         DO 300 I = 1,NDDL
                            IF (OPTION(15:16).EQ.'_C') THEN
                               ZC(LVECT-1+I) = DCMPLX(0.D0,0.D0)

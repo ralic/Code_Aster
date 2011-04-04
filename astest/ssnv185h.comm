@@ -1,4 +1,4 @@
-# MODIF  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 04/04/2011   AUTEUR GENIAUT S.GENIAUT 
 # TITRE FISSURE DEBOUCHANTE DANS UNE PLAQUE 3D DE LARGEUR FINIE AVEC XFEM
 # ssnv185h.para = tps_job 130 mem_job 1024Mo mem_aster 70 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -20,6 +20,8 @@
 # ======================================================================
 
 DEBUT(CODE=_F(NOM='SSNV185H',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),DEBUG=_F(SDVERI='OUI'))
+
+# MODELISATION H : X-FEM INCLINEE - TRACTION (FACE SUP)
 
 #---------------------------------------------------------
 #                   PARAMETRES

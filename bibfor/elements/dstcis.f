@@ -2,9 +2,9 @@
       IMPLICIT  NONE
       REAL*8    DCI(2,2), CARAT3(*), HFT2(2,6), BCA(2,3), AN(3,9)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 02/06/2008   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 04/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -59,8 +59,10 @@ C
       TA(6,2) =   4.D0 * S(2)
       TA(6,3) = - 4.D0 * S(3)
 C     -------------- PRODUIT HFT2.TA -----------------------------------
-      DO 110 K = 1 , 6
-         BCA(K,1) = 0.D0
+      DO 110 I = 1 , 2
+      DO 111 J = 1 , 3
+         BCA(I,J) = 0.D0
+ 111  CONTINUE
  110  CONTINUE
       DO 120 J = 1, 3
          DO 120 K = 1, 6
@@ -80,8 +82,10 @@ C     -------------- CALCUL DE AA --------------------------------------
       AA(I,I) = AA(I,I) + 2.D0/3.D0 * L(I)
  150  CONTINUE
 C     -------------- INVERSION DE AA -----------------------------------
-      DO 155 K = 1 , 9
-         AAI(K,1) = 0.D0
+      DO 155 I = 1 , 3
+      DO 157 J = 1 , 3
+         AAI(I,J) = 0.D0
+ 157  CONTINUE
  155  CONTINUE
       DO 156 I = 1, 3
          AAI(I,I) = 1.D0
@@ -89,8 +93,10 @@ C     -------------- INVERSION DE AA -----------------------------------
       CALL MGAUSS ( 'NFVP',AA , AAI , 3 , 3 , 3, DET, IRET )
 C
 C     -------------- CALCUL DE AW --------------------------------------
-      DO 160 K = 1 , 27
-         AW(K,1) = 0.D0
+      DO 160 I = 1 , 3
+      DO 161 J = 1 , 9
+         AW(I,J) = 0.D0
+ 161  CONTINUE
  160  CONTINUE
       AW(1,1) =   1.D0
       AW(1,2) = - X(1)/2.D0
@@ -112,8 +118,10 @@ C     -------------- CALCUL DE AW --------------------------------------
       AW(3,9) = - Y(3)/2.D0
 C
 C     -------------- PRODUIT AAI.AW ------------------------------------
-      DO 170 K = 1 , 27
-         AN(K,1) = 0.D0
+      DO 170 I = 1 , 3
+      DO 171 J = 1 , 9
+         AN(I,J) = 0.D0
+ 171  CONTINUE
  170  CONTINUE
       DO 180 I = 1, 3
          DO 180 K = 1, 3
