@@ -1,0 +1,71 @@
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR courtois     COURTOIS Mathieu       DATE 04/05/2011 - 07:04:28
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 016730 DU 2011-04-05 07:06:26
+TYPE anomalie concernant Code_Aster (VERSION 10.3)
+TITRE
+    Bug routine lcejmr
+FONCTIONNALITE
+   Dans la routine lcejmr.f, on initialise GPLOC(3) et FHLOC(3) 
+   même en dimension 2 alors que les tableaux sont dimensionnés à 
+   NDIM.
+   On supprime cet écrasement.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    tous test joint_meca_rupt
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 016736 DU 2011-04-05 12:18:01
+TYPE anomalie concernant Code_Aster (VERSION 9.1)
+TITRE
+    NEW10.3.22 : sdlv131b en erreur numérique
+FONCTIONNALITE
+   Suite à la correction de issue16689, on a corrigé la routine 
+   folocx pour l'interpolation ou extrapolation de fonction ne 
+   comportant qu'un point.
+   
+   On fait un IF (x.eq.0 .and. cond0) .or. ( zzz / x ) .or. ...
+   En fortran, toutes les conditions sont évaluées même si la 
+   première est vérfiée, donc on divise par zéro en évaluant la 
+   2ème condition.
+   On corrige en séparant les IF.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    sdlv131b
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+
+
+========================================================================
+=== Recapitulation des operations demandees pour toutes les restitutions
+========================================================================
+
+
+    TYPE Action    unite                      user      Auteur         nblg  ajout suppr.
+
+ CASTEST MODIF comp008n                     courtois M.COURTOIS         310      2      2
+ FORTRAN MODIF algorith/lcejmr              courtois M.COURTOIS         470      7     13
+ FORTRAN MODIF utilitai/folocx              courtois M.COURTOIS         154      4      2
+
+
+        nb unites  nb lignes  ajouts  suppr.  difference
+ AJOUT :    0           0         0                +0
+ MODIF :    3         934        13      17        -4
+ SUPPR :    0           0                 0        +0
+ DEPLA :    0           0 
+         ----      ------     ------  ------   ------
+ TOTAL :    3         934        13      17        -4 

@@ -6,7 +6,7 @@
       CHARACTER*1                                      COLI
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 04/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 05/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -56,10 +56,12 @@ C             ON A X = VALE(1) + EPSILON
 C             ON A : X < VALE(1) ET PROL GAUCHE AUTORISE
 C             ON A : X > VALE(1) ET PROL DROITE AUTORISE
          IF ( (X.EQ.0.D0 .AND. ABS(VALE(N)).LE.EPSI )
-     &   .OR. ( ABS((VALE(N)-X)/X).LE.EPSI )
      &   .OR. ( X.LT.VALE(N) .AND. PROLGD(1:1).NE.'E' )
      &   .OR. ( X.GT.VALE(N) .AND. PROLGD(2:2).NE.'E' )
      &      ) THEN
+            I = N
+            COLI = 'C'
+         ELSEIF ( ABS((VALE(N)-X)/X).LE.EPSI ) THEN
             I = N
             COLI = 'C'
          ELSE
