@@ -1,7 +1,7 @@
       SUBROUTINE APETS3(ACTION,KPTSC)
       IMPLICIT NONE
 !           CONFIGURATION MANAGEMENT OF EDF VERSION                  
-!& MODIF APETS3 PETSC  DATE 29/03/2011   AUTEUR BOITEAU O.BOITEAU 
+!& MODIF APETS3 PETSC  DATE 12/04/2011   AUTEUR TARDIEU N.TARDIEU 
 ! ================================================================== 
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D              WWW.CODE-ASTER.ORG 
 !                                                                    
@@ -111,7 +111,7 @@
       CALL JEVEUO(NOSOLV//'.SLVI','L',JSLVI)
       PRECON=ZK24(JSLVK-1+2)
       FILLIN=ZR(JSLVR-1+3)
-      NIREMP=ZI(JSLVI-1+3)
+      NIREMP=ZI(JSLVI-1+4)
 
       fill=NIREMP
       fillp=FILLIN

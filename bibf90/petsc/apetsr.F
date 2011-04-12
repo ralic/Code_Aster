@@ -1,7 +1,7 @@
       SUBROUTINE APETSR(ACTION,KPTSC,RSOLU,VCINE)
       IMPLICIT NONE
 !           CONFIGURATION MANAGEMENT OF EDF VERSION
-!& MODIF APETSR PETSC  DATE 08/02/2011   AUTEUR TARDIEU N.TARDIEU 
+!& MODIF APETSR PETSC  DATE 12/04/2011   AUTEUR TARDIEU N.TARDIEU 
 ! ==================================================================
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D              WWW.CODE-ASTER.ORG
 !
@@ -321,7 +321,7 @@
            call KSPGetIterationNumber(ksp,maxits,ierr)
            NMAXIT=maxits
            CALL JEVEUO(NOSOLV//'.SLVI','E',JSLVI)  
-           ZI(JSLVI-1+3)=NMAXIT
+           ZI(JSLVI-1+5)=NMAXIT
         ENDIF
 
 
@@ -348,7 +348,7 @@
             NOSOLS(KPTSC)=' '
             NONUS(KPTSC)=' '
 
-    !       -- TRAITEMENT PARTICULIER DU PRECONDITIONNEUR LDLT_SP
+!           -- TRAITEMENT PARTICULIER DU PRECONDITIONNEUR LDLT_SP
             IF (PRECON .EQ. 'LDLT_SP') THEN
                call VecDestroy(xlocal,ierr)
                call VecDestroy(xglobal,ierr)

@@ -1,0 +1,290 @@
+# MODIF  DATE 12/04/2011   AUTEUR REZETTE C.REZETTE 
+# TITRE Validation de AFFE_CHAR_MECA / ARETE_IMPO
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+# zzzz286a.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
+DEBUT(CODE=_F(NOM='ZZZZ286A', NIV_PUB_WEB='INTERNET'))
+#======================================================================
+#
+#  Ce test sert a verifier la programmation associee
+#  au mot-cle facteur ARETE_IMPO de AFFE_CHAR_MECA.
+#
+#  GEOMETRIE : TETRAEDRE ABCD : A(0,0,0), B(1,0,0), C(0.7,0.7,0), D(0,0,1)
+#
+#  MAILLAGE : NOMBRE DE NOEUDS   : 286
+#             NOMBRE DE MAILLES  : 1289
+#                              SEG2        62
+#                              TRIA3      186
+#                              TETRA4    1041
+#           D
+#             \
+#             |\   \  
+#             |  \     \   C
+#             |    \     /\
+#             |      \     \
+#             |       /     \
+#             |         \    \
+#             |    /      \   \
+#             |             \  \ 
+#             | /             \ \
+#             |                 \\ 
+#            A _ _ _ _ _ _ _ _ _ _\ B
+#             
+
+MA=LIRE_MAILLAGE(FORMAT='MED')
+
+MA=DEFI_GROUP(reuse  = MA, MAILLAGE = MA,
+              CREA_GROUP_NO = ( _F(NOM = 'A',      NOEUD='N1'),
+                                _F(NOM = 'B',      NOEUD='N2'),
+                                _F(NOM = 'C',      NOEUD='N3'),
+                                _F(NOM = 'D',      NOEUD='N4'),),
+              CREA_GROUP_MA = ( _F(NOM = 'ABC',    GROUP_MA = 'GM1003'),
+                                _F(NOM = 'AB',     GROUP_MA = 'GM1009'),
+                                _F(NOM = 'BC',     GROUP_MA = 'GM1010'),
+                                _F(NOM = 'CA',     GROUP_MA = 'GM1011'),
+                                _F(NOM = 'DBC',    GROUP_MA = 'GM1013'),
+                                _F(NOM = 'DA',     GROUP_MA = 'GM1012'),
+                                _F(NOM = 'DB',     GROUP_MA = 'GM1001'),
+                                _F(NOM = 'DC',     GROUP_MA = 'GM1002'),),)
+
+MA=DEFI_GROUP(reuse  = MA, MAILLAGE = MA,
+              CREA_GROUP_NO = (_F(GROUP_MA = 'ABC'),
+                               _F(GROUP_MA='DB'),
+                               _F(GROUP_MA='DC'),
+                               _F(GROUP_MA='DA'),
+                               _F(DIFFE=('DA','D'),NOM='DA1',),
+                               _F(DIFFE=('DA1','A'),NOM='DA2',),
+                               _F(DIFFE=('DB','D'),NOM='DB1',),
+                               _F(DIFFE=('DB1','B'),NOM='DB2',),
+                               _F(DIFFE=('DC','D'),NOM='DC1',),
+                               _F(DIFFE=('DC1','C'),NOM='DC2',),),)
+
+MA=MODI_MAILLAGE(reuse=MA,
+                 MAILLAGE=MA,
+                 ORIE_LIGNE=(_F(GROUP_MA=('DA',),
+                                GROUP_NO='D',
+                                VECT_TANG=(0.,0.,-1.),),
+                             _F(GROUP_MA=('DB',),
+                                GROUP_NO='D',
+                                VECT_TANG=(1.,0.,-1.),),
+                             _F(GROUP_MA=('DC',),
+                                GROUP_NO='D',
+                                VECT_TANG=(0.7,0.7,-1.),),),)
+
+MO=AFFE_MODELE(MAILLAGE=MA,AFFE=_F(TOUT='OUI',MODELISATION='3D',PHENOMENE='MECANIQUE'),)
+
+ACIER=DEFI_MATERIAU(ELAS=_F(E=2.04E11,
+                            NU=0.3,
+                            ALPHA=1.092E-05,),);
+
+CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
+                    AFFE=_F(TOUT='OUI',
+                            MATER=ACIER,),);
+#
+# 1 - VALIDATION DE ARETE_IMPO/DTAN (ARETES NORMALES AU PLAN OXY)
+# ===============================================================
+
+# 1.1 REFERENCE AVEC DDL_IMPO
+# ---------------------------
+
+CHARG0=AFFE_CHAR_MECA(MODELE=MO,
+                      FACE_IMPO=_F(GROUP_MA='DBC',
+                                   SANS_GROUP_NO=('D','B','C'),
+                                   DNOR=10),
+                      DDL_IMPO=(_F(GROUP_NO=('D','B','C'),
+                                  DX=0.0,
+                                  DY=0.0,
+                                  DZ=0.0,),
+                               _F(GROUP_NO='DA1',
+                                  DZ=0.0,),),)
+
+RESU0=MECA_STATIQUE(MODELE=MO,
+                   CHAM_MATER=CHMAT,
+                   EXCIT=_F(CHARGE=CHARG0,),);
+
+IMPR_RESU(RESU=_F(RESULTAT=RESU0,NOM_CHAM='DEPL',GROUP_NO='A'),)
+
+TEST_RESU(RESU=(_F(RESULTAT=RESU0,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   NOEUD='N1',#A
+                   VALE=11.2562,
+                   PRECISION=1.E-5,
+                   REFERENCE='AUTRE_ASTER',),
+                _F(RESULTAT=RESU0,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
+                   NOEUD='N1',#A
+                   PRECISION=1.E-5,
+                   VALE=4.9688,
+                   REFERENCE='AUTRE_ASTER',),
+                _F(RESULTAT=RESU0,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DZ',
+                   NOEUD='N1',#A
+                   PRECISION=1.E-5,
+                   VALE=0.0,
+                   CRITERE='ABSOLU',
+                   REFERENCE='AUTRE_ASTER',),),)
+
+
+# 1.2 EQUIVALENCE AVEC ARETE_IMPO
+# -------------------------------
+
+CHARG1=AFFE_CHAR_MECA(MODELE=MO,
+                      FACE_IMPO=_F(GROUP_MA='DBC',
+                                   SANS_GROUP_NO=('D','B','C'),
+                                   DNOR=10),
+                      DDL_IMPO=_F(GROUP_NO=('D','B','C'),
+                                  DX=0.0,
+                                  DY=0.0,
+                                  DZ=0.0,),
+                      ARETE_IMPO=_F(GROUP_MA='DA',
+                                    SANS_GROUP_NO=('D'),
+                                    DTAN=0),)
+                                                               
+
+RESU1=MECA_STATIQUE(MODELE=MO,
+                   CHAM_MATER=CHMAT,
+                   EXCIT=_F(CHARGE=CHARG1,),);
+
+
+TEST_RESU(RESU=(_F(RESULTAT=RESU1,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   NOEUD='N1',#A
+                   VALE=11.2562,PRECISION=1.E-5,
+                   REFERENCE='AUTRE_ASTER',),
+                _F(RESULTAT=RESU1,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
+                   NOEUD='N1',#A
+                   VALE=4.9688,PRECISION=1.E-5,
+                   REFERENCE='AUTRE_ASTER',),
+                _F(RESULTAT=RESU1,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DZ',
+                   NOEUD='N1',#A
+                   VALE=0.0,PRECISION=1.E-5,
+                   CRITERE='ABSOLU',
+                   REFERENCE='AUTRE_ASTER',),),)
+
+#
+# 2 - VALIDATION DE ARETE_IMPO/DTAN (ARETES OBLIQUES)
+# =================================================
+
+# 1.1 REFERENCE AVEC LIAISON_OBLIQUE
+# -----------------------------------
+F=1.0;
+
+CHARG2=AFFE_CHAR_MECA(MODELE=MO,
+                      DDL_IMPO=(_F(GROUP_NO='ABC',
+                                  DX=0.0,
+                                  DY=0.0,
+                                  DZ=0.0,),
+                               _F(GROUP_NO='DA2',
+                                  DZ=-F,),),
+                      LIAISON_OBLIQUE=(_F( DX=F,GROUP_NO='DB2',ANGL_NAUT=(0.0,45.0,0.0),),
+                                       _F( DX=F,GROUP_NO='DC2',ANGL_NAUT=(45.0,45.0,0.0),),),)
+
+RESU2=MECA_STATIQUE(MODELE=MO,
+                   CHAM_MATER=CHMAT,
+                   EXCIT=_F(CHARGE=CHARG2,),);
+
+TEST_RESU(RESU=(_F(RESULTAT=RESU2,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   NOEUD='N4',#D
+                   VALE=0.443218,
+                   PRECISION=1.E-5,
+                   REFERENCE='AUTRE_ASTER',),
+                _F(RESULTAT=RESU2,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
+                   NOEUD='N4',#D
+                   VALE=0.182208,
+                   PRECISION=1.E-5,
+                   REFERENCE='AUTRE_ASTER',),
+                _F(RESULTAT=RESU2,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DZ',
+                   NOEUD='N4',#D
+                   VALE=-1.00511,
+                   PRECISION=1.E-5,
+                   REFERENCE='AUTRE_ASTER',),),)
+
+
+# 1.2 EQUIVALENCE AVEC ARETE_IMPO
+# -------------------------------
+
+CHARG3=AFFE_CHAR_MECA(MODELE=MO,
+                      DDL_IMPO=_F(GROUP_NO='ABC',
+                                  DX=0.0,
+                                  DY=0.0,
+                                  DZ=0.0,),
+                      ARETE_IMPO=(_F(GROUP_MA='DA',
+                                     SANS_GROUP_NO=('D','A'),
+                                     DTAN=F),
+                                  _F(GROUP_MA='DB',
+                                     SANS_GROUP_NO=('D','B'),
+                                     DTAN=F),
+                                  _F(GROUP_MA='DC',
+                                     SANS_GROUP_NO=('D','C'),
+                                     DTAN=F),),)                                  
+
+RESU3=MECA_STATIQUE(MODELE=MO,
+                   CHAM_MATER=CHMAT,
+                   EXCIT=_F(CHARGE=CHARG3,),);
+
+
+TEST_RESU(RESU=(_F(RESULTAT=RESU3,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   NOEUD='N4',#D
+                   VALE=0.443218,
+                   PRECISION=1.E-5,
+                   REFERENCE='AUTRE_ASTER',),
+                _F(RESULTAT=RESU3,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
+                   NOEUD='N4',#D
+                   VALE=0.182208,
+                   PRECISION=2.E-5,
+                   REFERENCE='AUTRE_ASTER',),
+                _F(RESULTAT=RESU3,
+                   NOM_CHAM='DEPL',
+                   NUME_ORDRE=1,
+                   NOM_CMP='DZ',
+                   NOEUD='N4',#D
+                   VALE=-1.00511,
+                   PRECISION=1.E-5,
+                   REFERENCE='AUTRE_ASTER',),),)
+
+
+FIN()

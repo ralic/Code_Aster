@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 29/03/2011   AUTEUR BOITEAU O.BOITEAU 
+C MODIF ALGELINE  DATE 12/04/2011   AUTEUR TARDIEU N.TARDIEU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -114,8 +114,8 @@ C      --- ON REMPLIT LA SD_SOLVEUR GCPC
            ZK24(JSLVK-1+1) = 'GCPC'
            ZK24(JSLVK-1+2) = PRECON
            ZK24(JSLVK-1+3) = SOLVBD
-           ZI(JSLVI-1+1)   = REACPR
-           ZI(JSLVI-1+3)   = 0
+           ZI(JSLVI-1+5)   = 0
+           ZI(JSLVI-1+6)   = REACPR
 
 C      --- APPEL A LA CONSTRUCTION DU PRECONDITIONNEUR
            CALL PCMUMP(MFAC,SOLVEU,IRETGC)
@@ -199,8 +199,8 @@ C          SIMPLE PRECISION
 C          LECTURE PARAMETRE
            CALL GETVIS(' ','REAC_PRECOND',0,1,1,REACPR,IBID)
            ZK24(JSLVK-1+3) = SOLVBD
-           ZI(JSLVI-1+1)   = REACPR
-           ZI(JSLVI-1+3)   = 0
+           ZI(JSLVI-1+5)   = 0
+           ZI(JSLVI-1+6)   = REACPR
          ELSE 
            CALL ASSERT(.FALSE.)
          ENDIF
