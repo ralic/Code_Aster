@@ -1,8 +1,8 @@
       SUBROUTINE TE0470( OPTION , NOMTE )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -34,9 +34,9 @@ C .....................................................................C
       PARAMETER   ( NBRES = 3 , NDDL = 7)
       CHARACTER*24  CARAC,FF
       CHARACTER*8   NOMRES(NBRES),ELREFE
-      CHARACTER*2   CODRET(NBRES)
+      INTEGER ICODRE(NBRES)
       REAL*8        VALRES(NBRES), TPG, PGL(3,3)
-      INTEGER       NNO1,NNO2, NPG1(2,2), NPG2(2,2), NPG, N, NBV,LL
+      INTEGER       NNO1,NNO2, NPG1(2,2), NPG2(2,2), NPG, N, NBV
       INTEGER       IMATUU,ICARAC,IFF,IMATE,IGEOM,LORIEN,LSECT,ITYPE
       INTEGER       KP, K1, K2, K3, I, J, IK, IJKL, K, L, IJ,IJL,LCORR
       INTEGER       IPOI2, IVF2P, IVF2G, IDDX2G, IDDY2G, IDDZ2G,
@@ -53,7 +53,6 @@ C .....................................................................C
      &              AYZ,B11,B12,B22,COORD(60),YCELL,XLONG
 C
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
-      CHARACTER*32       JEXNUM , JEXNOM , JEXR8 , JEXATR
       INTEGER            ZI
       COMMON  / IVARJE / ZI(1)
       REAL*8             ZR
@@ -129,7 +128,7 @@ C     ---------------------------------------------------
 C     ---- RECUPERATION LOI DE COMPORTEMENT MATERIAU ----
 C     ---------------------------------------------------
       CALL JEVECH('PMATERC','L',IMATE)
-      CALL RCCOMA(ZI(IMATE),'ELAS',PHENOM,CODRET)
+      CALL RCCOMA(ZI(IMATE),'ELAS',PHENOM,ICODRE)
       IF (PHENOM.EQ.'ELAS') THEN
          NOMRES(1)  = 'RHO'
          NBV = 1
@@ -138,9 +137,9 @@ C     ---------------------------------------------------
       ENDIF
       TPG = 0.D0
       CALL RCVALA(ZI(IMATE),' ',PHENOM,0,'   ',TPG,NBV,NOMRES,VALRES,
-     &             CODRET,'FM')
+     &             ICODRE,1)
       RHOPOU  = VALRES(1)
-      CALL RCCOMA(ZI(IMATE),'FLUIDE',PHENOM,CODRET)
+      CALL RCCOMA(ZI(IMATE),'FLUIDE',PHENOM,ICODRE)
       IF (PHENOM.EQ.'FLUIDE') THEN
          NOMRES(1)  = 'RHO'
          NBV = 1
@@ -149,7 +148,7 @@ C     ---------------------------------------------------
       ENDIF
       TPG = 0.D0
       CALL RCVALA(ZI(IMATE),' ',PHENOM,0,'   ',TPG,NBV,NOMRES,VALRES,
-     &             CODRET,'FM')
+     &             ICODRE,1)
       RHOFLU  = VALRES(1)
 C     ----------------------------------------------------------------
 C     --- RECUPERATION DES CARACTERISTIQUES GENERALES DES SECTIONS ---

@@ -2,7 +2,7 @@
       IMPLICIT NONE
       CHARACTER*16        OPTION , NOMTE
 C     ----------------------------------------------------------------
-C MODIF ELEMENTS  DATE 04/04/2011   AUTEUR DESOZA T.DESOZA 
+C MODIF ELEMENTS  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -63,10 +63,11 @@ C
       INTEGER      ICOMPO,I1,I2,J,JVECT
       INTEGER      ICHG,ICHN,NCMP,K,JCRET,JFREQ,IACCE
       INTEGER      JMATE,JGEOM,JMATR,JENER,I,JCARA
-      INTEGER      IVECT,NDDL,NVEC,IRET,ICONTP, N1, NI, N2
+      INTEGER      IVECT,NDDL,NVEC,IRET,ICONTP
       INTEGER      ICOU, NBCOU,JNBSPI, IRET1, VALI(2)
       LOGICAL      LCOELA
-      CHARACTER*2  CODRE2(33),CODRE1,VAL
+      INTEGER CODRE2(33),CODRE1
+      CHARACTER*2 VAL
       CHARACTER*3  NUM
       CHARACTER*8  NOMRES
       CHARACTER*10 PHENOM
@@ -74,7 +75,7 @@ C
       REAL*8        PGL(3,3), XYZL(3,4), BSIGMA(24), EFFGT(32)
       REAL*8        VECLOC(24), ENER(3), MATP(24,24), MATV(300)
       REAL*8        T2EV(4), T2VE(4), T1VE(9)
-      REAL*8        EPI,EPTOT,R8BID,R8PREM, VALR(2)
+      REAL*8        EPI,EPTOT,R8BID, VALR(2)
 C
 C     ---> POUR DKT/DST MATELEM = 3 * 6 DDL = 171 TERMES STOCKAGE SYME
 C     ---> POUR DKQ/DSQ MATELEM = 4 * 6 DDL = 300 TERMES STOCKAGE SYME
@@ -124,8 +125,8 @@ C       ----------------------------------
           CALL CODENT(1,'G',VAL)
           NOMRES = 'C'//NUM//'_V'//VAL
           CALL RCVALA(ZI(JMATE),' ','ELAS_COQMU',0,' ',R8BID,
-     &         1,NOMRES,EPI,CODRE1,' ')
-          IF (CODRE1.EQ.'OK') THEN
+     &         1,NOMRES,EPI,CODRE1,0)
+          IF (CODRE1.EQ.0) THEN
             EPTOT=EPTOT+EPI
             GOTO 5
           ENDIF

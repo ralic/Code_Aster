@@ -1,4 +1,4 @@
-#& MODIF COMMUN  DATE 29/03/2011   AUTEUR DELMAS J.DELMAS 
+#& MODIF COMMUN  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -127,6 +127,7 @@ def C_NOM_CHAM_INTO( typ_cham=None ) : #COMMUN#
                         "META_ELNO",
                         "META_NOEU",
                         "MODE_FLAMB",
+                        "PDIL_ELGA",
                         "PMPB_ELGA",
                         "PMPB_ELNO",
                         "PMPB_NOEU",

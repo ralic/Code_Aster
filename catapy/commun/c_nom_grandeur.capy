@@ -1,4 +1,4 @@
-#& MODIF COMMUN  DATE 04/04/2011   AUTEUR PELLET J.PELLET 
+#& MODIF COMMUN  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 # RESPONSABLE DESROCHES X.DESROCHES
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -112,6 +112,7 @@ def C_NOM_GRANDEUR() : return  ( #COMMUN#
 "ONDE_F",
 "ONDE_R",
 "PESA_R",
+"PDIL_R",
 "PILO_K",
 "PILO_R",
 "POSI",

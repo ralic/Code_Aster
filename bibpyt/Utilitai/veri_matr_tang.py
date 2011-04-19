@@ -1,4 +1,4 @@
-#@ MODIF veri_matr_tang Utilitai  DATE 10/01/2011   AUTEUR PROIX J-M.PROIX 
+#@ MODIF veri_matr_tang Utilitai  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -173,7 +173,10 @@ class TANGENT :
            liste_j.append(j+1)
            liste_matt.append(self.mat[i,j])
            liste_matp.append(matp[i,j])
-           liste_diff.append( NP.abs(self.mat[i,j]-matp[i,j])/ ( NP.abs(self.mat[i,j]) + NP.abs(matp[i,j]) + self.prec_zero))
+           if NP.abs(self.mat[i,j]) + NP.abs(matp[i,j]) >= self.prec_zero :
+             liste_diff.append(NP.abs(self.mat[i,j]-matp[i,j])/ ( NP.abs(self.mat[i,j]) + NP.abs(matp[i,j]) + self.prec_zero))
+           else :
+             liste_diff.append(0.0)
 #       print '-'*80
        if self.norme > self.prec_zero :
          ecart = (self.mat - matp)/2.
@@ -212,7 +215,7 @@ class TANGENT :
      def Sauve(self,nom_fichier) : 
        cPickler.dump(self.__dict__)
        
-def veri_matr_tang_ops(self,SYMETRIE,DIFFERENCE,PRECISION,**args):
+def veri_matr_tang_ops(self,SYMETRIE,DIFFERENCE,PRECISION,PREC_ZERO,**args):
 
    """
       Ecriture de la macro verif_matrice_tangente_ops
@@ -234,9 +237,10 @@ def veri_matr_tang_ops(self,SYMETRIE,DIFFERENCE,PRECISION,**args):
    ier=0                                                                            
    # La macro compte pour 1 dans la numerotation des commandes
    self.set_icmd(1)
-   tgt=TANGENT()                                                                    
+   prec_zero=PREC_ZERO
+   tgt=TANGENT(prec_zero=prec_zero)                                                                    
    tgt.Aster(suffixe='MATA')                                                        
-   matp=TANGENT()                                                                   
+   matp=TANGENT(prec_zero=prec_zero)                                                                   
    matp.Aster(suffixe='MATC')                                                       
    prec_diff = PRECISION                                                                                 
    if (SYMETRIE=='OUI') :
@@ -265,5 +269,6 @@ fr="verification de la matrice tangente : symetrie et difference par rapport a l
          SYMETRIE        =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON") ),
          DIFFERENCE      =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON") ),
          PRECISION       =SIMP(statut='f',typ='R',defaut=1.E-4 ),
+         PREC_ZERO       =SIMP(statut='f',typ='R',defaut=1.E-12 ),
 )  ;
 

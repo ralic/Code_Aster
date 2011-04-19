@@ -2,9 +2,9 @@
      &                   INSTAM,INSTAP,TM,TP,TREF,DEPS,SIGM,PCRM,
      &                   OPTION,SIGP,PCRP,DSIDEP,RETCOM)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 03/08/2009   AUTEUR MEUNIER S.MEUNIER 
+C MODIF ALGORITH  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -101,7 +101,7 @@ C
       REAL*8      VALM,VALP
       INTEGER     NDIMSI,SIGNF,SIGNFI
       INTEGER     I,K,L,ITER, MATR
-      CHARACTER*2 BL2, FB2, CODRET(9)
+      INTEGER ICODRE(9)
       CHARACTER*8 NOMRES(10),NOMPAR(10)
 C ======================================================================
       REAL*8       VALRM(5)
@@ -126,8 +126,6 @@ C     ----------------------
       NDIMSI = 2*NDIM
       RETCOM = 0
 C
-      BL2 = '  '
-      FB2 = 'F '
       PTIT = R8MIEM()
 C
 C     -- 2 RECUPERATION DES CARACTERISTIQUES MATERIAUX
@@ -149,10 +147,10 @@ C
       IF (COMPOR(1)(1:9) .EQ. 'CAM_CLAY ' ) THEN
 
          CALL RCVALA(IMATE,' ','ELAS',1,NOMPAR,VALPAM,1,
-     &                 NOMRES(1),VALRES(1),CODRET(1), BL2 )
+     &                 NOMRES(1),VALRES(1),ICODRE(1), 0)
 
          IF ((IISNAN(TP).EQ.0).AND.(IISNAN(TM).GT.0)) THEN
-           IF ((IISNAN(TREF).GT.0).OR.(CODRET(1) .NE.'OK')) THEN
+           IF ((IISNAN(TREF).GT.0).OR.(ICODRE(1) .NE.0)) THEN
              CALL U2MESS('F','CALCULEL_31')
            ELSE
              COEF = VALRES(1)*(TP-TREF) - VALRES(1)*(TM-TREF)
@@ -162,7 +160,7 @@ C
              COEF = 0.D0
          ENDIF
          CALL RCVALA(IMATE,' ','CAM_CLAY ',1,NOMPAR,VALPAM,8,
-     &                 NOMRES(2),VALRES(2),CODRET(2), FB2 )
+     &                 NOMRES(2),VALRES(2),ICODRE(2), 2)
          MU     = VALRES(2)
          PORO   = VALRES(3)
          KAPA   = VALRES(4)
@@ -180,12 +178,12 @@ C
      &     (COMPOR(11)(1:9) .EQ. 'CAM_CLAY ')) THEN
 
          CALL RCVALA(IMATE,' ','ELAS',1,NOMPAR,VALPAM,1,
-     &                 NOMRES(1),VALRES(1),CODRET(1), BL2 )
-         IF ( CODRET(1) .NE. 'OK' ) VALRES(1) = 0.D0
+     &                 NOMRES(1),VALRES(1),ICODRE(1), 0)
+         IF ( ICODRE(1) .NE.0    ) VALRES(1) = 0.D0
          COEF = VALRES(1)*(TP-TREF) - VALRES(1)*(TM-TREF)
 
          CALL RCVALA(IMATE,' ','CAM_CLAY ',1,NOMPAR,VALPAM,8,
-     &                 NOMRES(2),VALRES(2),CODRET(2), FB2 )
+     &                 NOMRES(2),VALRES(2),ICODRE(2), 2)
          MU     = VALRES(2)
          PORO   = VALRES(3)
          PORO1  = PORO
@@ -197,7 +195,7 @@ C
          PTRAC  = VALRES(9)
 
          CALL RCVALA(IMATE,' ','THM_INIT',1,NOMPAR,VALPAM,1,
-     &                 NOMRES(3),VALRES(3),CODRET(3), FB2 )
+     &                 NOMRES(3),VALRES(3),ICODRE(3), 2)
          PORO = VALRES(3)
          PORO2 = PORO
          DIFF = PORO1-PORO2

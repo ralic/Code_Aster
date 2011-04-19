@@ -1,4 +1,4 @@
-#& MODIF COMMUN  DATE 28/02/2011   AUTEUR BARGELLI R.BARGELLINI 
+#& MODIF COMMUN  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -145,6 +145,7 @@ def C_RELATION() : return (             "ELAS",            #COMMUN#
                                         "VMIS_ISOT_LINE",
                                         "VMIS_ISOT_PUIS",
                                         "VMIS_ISOT_TRAC",
+                                        "VMIS_JOHN_COOK",
                                         "VMIS_POU_FLEJOU",
                                         "VMIS_POU_LINE",
                                         "ZMAT",

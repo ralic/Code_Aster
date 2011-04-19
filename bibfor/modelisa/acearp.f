@@ -4,7 +4,7 @@
       CHARACTER*8   NOMA,NOMO
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 19/01/2011   AUTEUR MASSIN P.MASSIN 
+C MODIF MODELISA  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -143,18 +143,20 @@ C
       CALL JEVEUO(TMVINF,'E',JDVINF)
 C     PAR DEFAUT POUR M, A, K :
 C        REPERE GLOBAL, MATRICE SYMETRIQUE, PAS AFFECTEE
-      CALL INFDIS('DIMC',DIMCAR,R8BID)
+      CALL INFDIS('DIMC',DIMCAR,R8BID,K8BID)
       DO 200 I = 1 , 3
          ZK8(JDCINF+I-1) = 'REP'//KMA(I)//'    '
-         ZR (JDVINF+I-1) = 1.D0
+         CALL INFDIS('INIT',IBID,ZR(JDVINF+I-1),ZK8(JDCINF+I-1))
          ZK8(JDCINF+I+2) = 'SYM'//KMA(I)//'    '
-         ZR (JDVINF+I+2) = 1.D0
+         CALL INFDIS('INIT',IBID,ZR(JDVINF+I+2),ZK8(JDCINF+I+2))
          ZK8(JDCINF+I+5) = 'DIS'//KMA(I)//'    '
-         ZR (JDVINF+I+5) = 0.D0
+         CALL INFDIS('INIT',IBID,ZR(JDVINF+I+5),ZK8(JDCINF+I+5))
 200   CONTINUE
-      ZK8(JDCINF+9) = 'ETAK    '
-      ZR (JDVINF+9) = 0.D0
-C
+      ZK8(JDCINF+9)  = 'ETAK    '
+      CALL INFDIS('INIT',IBID,ZR(JDVINF+9),ZK8(JDCINF+9))
+      ZK8(JDCINF+10) = 'TYDI    '
+      CALL INFDIS('INIT',IBID,ZR(JDVINF+10),ZK8(JDCINF+10))
+
       DO 220 I = 1 , 3
          CART(I)  = NOMU//'.CARDISC'//KMA(I)
          TMPND(I) = CART(I)//'.NCMP'
@@ -239,6 +241,9 @@ C
             ENDIF
 C
             IF ( TRANSL ) THEN
+               IF ( II+3 .GT. NVAL) THEN
+                  CALL U2MESS('F','DISCRETS_21')
+               ENDIF
                DO 132 J = 1,3
                   VALE(J) = VAL(II+J)
 132            CONTINUE
@@ -248,6 +253,9 @@ C
             ENDIF
 C
             IF ( TRAROT ) THEN
+               IF ( II+6 .GT. NVAL) THEN
+                  CALL U2MESS('F','DISCRETS_21')
+               ENDIF
                DO 131 J = 1,6
                   VALE(J) = VAL(II+J)
 131            CONTINUE
@@ -441,6 +449,9 @@ C
  36            CONTINUE
             ENDIF
  34      CONTINUE
+         IF ( II .NE. NVAL) THEN
+            CALL U2MESS('F','DISCRETS_21')
+         ENDIF
  30   CONTINUE
 
       IF (IXNW.NE.0) CALL JEDETR(TMPDIS)

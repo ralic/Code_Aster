@@ -1,8 +1,8 @@
       SUBROUTINE TE0421 ( OPTION , NOMTE )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 16/11/2009   AUTEUR REZETTE C.REZETTE 
+C MODIF ELEMENTS  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -31,7 +31,7 @@ C
       CHARACTER*16       PHENOM
       CHARACTER*8        NOMRES(NBRES),NOMPAR,BLAN8
       CHARACTER*4        FAMI
-      CHARACTER*2        BL2, CODRET(NBRES)
+      INTEGER ICODRE(NBRES)
       REAL*8             VALRES(NBRES),VALPAR,ZERO
       REAL*8             DFDX(9),DFDY(9),POIDS,R,EXX,EYY,EXY,EZZ
       REAL*8             A11,A22,A33,A12,A13,A23,DELTA,C1
@@ -65,7 +65,7 @@ C
 C
       CALL JEVECH('PGEOMER','L',IGEOM)
       CALL JEVECH('PMATERC','L',IMATE)
-      CALL RCCOMA(ZI(IMATE),'ELAS',PHENOM,CODRET)
+      CALL RCCOMA(ZI(IMATE),'ELAS',PHENOM,ICODRE)
 C
       CALL TECACH('ONN','PTEMPSR',1,ITEMPS,IRET)
       IF (ITEMPS.EQ.0) THEN
@@ -73,7 +73,6 @@ C
          NOMPAR=' '
       END IF
 C
-      BL2 = '  '
       DO 10 I=1,NBRES
          NOMRES(I)=BLAN8
  10   CONTINUE
@@ -124,11 +123,11 @@ C
 CCC --- CAS ISOTROPE
            CALL RCVALB ( FAMI,KP,1,'+',ZI(IMATE),' ',PHENOM,
      &                   NBPAR,NOMPAR,VALPAR,2,
-     &                   NOMRES, VALRES, CODRET, 'FM' )
+     &                   NOMRES, VALRES, ICODRE, 1)
            CALL RCVALB ( FAMI,KP,1,'+',ZI(IMATE),' ',PHENOM,
      &                   NBPAR,NOMPAR,VALPAR,1,
-     &                   NOMRES(3), VALRES(3), CODRET(3), BL2 )
-           IF (CODRET(3).NE.'OK') VALRES(3) = 0.D0
+     &                   NOMRES(3), VALRES(3), ICODRE(3), 0)
+           IF (ICODRE(3).NE.0) VALRES(3) = 0.D0
 C
            C1  = VALRES(1)/(1.D0 + VALRES(2))
            A11 = C1*(1.D0 - VALRES(2))/(1.D0 - 2.D0*VALRES(2))
@@ -143,7 +142,7 @@ C
 CCC --- CAS ORTHOTROPE
            CALL RCVALB ( FAMI,KP,1,'+',ZI(IMATE),' ',PHENOM,
      &                   NBPAR,NOMPAR,VALPAR,7,
-     &                   NOMRES, VALRES, CODRET, 'FM' )
+     &                   NOMRES, VALRES, ICODRE, 1)
 C
            E1   = VALRES(1)
            E2   = VALRES(2)
@@ -168,7 +167,7 @@ C
 CCC     CAS ISOTROPE_TRANSVERSE
            CALL RCVALB ( FAMI,KP,1,'+',ZI(IMATE),' ',PHENOM,
      &                   NBPAR,NOMPAR,VALPAR,4,
-     &                   NOMRES, VALRES, CODRET, 'FM' )
+     &                   NOMRES, VALRES, ICODRE, 1)
 C
            E1   = VALRES(1)
            E3   = VALRES(2)

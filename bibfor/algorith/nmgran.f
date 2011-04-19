@@ -2,9 +2,9 @@
      &                   INSTAM,INSTAP,TPMXM,TPMXP,DEPST,
      &                   SIGM,VIM,OPTION,SIGP,VIP,DSIDEP)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 03/08/2009   AUTEUR MEUNIER S.MEUNIER 
+C MODIF ALGORITH  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -71,7 +71,7 @@ C
       REAL*8      SIGLDV(6), SIGLMO ,SIGMP(6),SIGMPO, SIGMPD(6)
       INTEGER     NDIMSI,IBID,IRET
       INTEGER     I,K,L,N, IISNAN,IRET1,IRET2,IRET3
-      CHARACTER*2 BL2, FB2, CODRET(16)
+      INTEGER ICODRE(16)
       CHARACTER*8 NOMRES(16),MOD
       CHARACTER*8 NOMPAR
       REAL*8      VALPAM,VALPAP
@@ -93,8 +93,6 @@ C
 C     -- 1 INITIALISATIONS :
 C     ----------------------
 C
-      BL2 = '  '
-      FB2 = 'F '
 C
       CPLAN =  TYPMOD(1) .EQ. 'C_PLAN'
 C
@@ -141,12 +139,12 @@ C
 C
 
       CALL RCVALB(FAMI,KPG,KSP,'-',IMATE,' ','ELAS',1,NOMPAR,VALPAM,
-     &            2,NOMRES,VALRES,CODRET, FB2)
+     &            2,NOMRES,VALRES,ICODRE, 2)
 
       CALL RCVALB(FAMI,KPG,KSP,'-',IMATE,' ','ELAS',1,NOMPAR,VALPAM,
-     &            1,NOMRES(3),VALRES(3),CODRET(3), FB2)
+     &            1,NOMRES(3),VALRES(3),ICODRE(3), 2)
       IF ((IISNAN(TP).EQ.0).AND.(IISNAN(TM).EQ.0)) THEN
-        IF ((CODRET(3).NE.'OK').OR.(IISNAN(TREF).NE.0)) THEN
+        IF ((ICODRE(3).NE.0).OR.(IISNAN(TREF).NE.0)) THEN
           CALL U2MESS('F','CALCULEL_15')
         ELSE
           EPSTHM = VALRES(3)*(TM-TREF)
@@ -162,16 +160,16 @@ C
 
 
       CALL RCVALB(FAMI,KPG,KSP,'+',IMATE,' ','ELAS',1,NOMPAR,VALPAP,
-     &            2,NOMRES,VALRES,CODRET, FB2)
+     &            2,NOMRES,VALRES,ICODRE, 2)
 
       CALL RCVALB(FAMI,KPG,KSP,'+',IMATE,' ','ELAS',1,NOMPAR,VALPAP,
-     &            1,NOMRES(3),VALRES(3),CODRET(3), BL2)
+     &            1,NOMRES(3),VALRES(3),ICODRE(3), 0)
 
-      IF ( CODRET(3) .NE. 'OK' ) THEN
+      IF ( ICODRE(3) .NE.0    ) THEN
            VALRES(3) = 0.D0
            EPSTHP = 0.D0
       ELSEIF (((IISNAN(TP).GT.0).OR.(IISNAN(TM).GT.0).OR.
-     &   (IISNAN(TREF).GT.0)).AND.(CODRET(3) .EQ. 'OK' )) THEN
+     &   (IISNAN(TREF).GT.0)).AND.(ICODRE(3) .EQ. 0 )) THEN
          CALL U2MESS('F','CALCULEL_15')
       ELSE
            EPSTHP = VALRES(3)*(TP-TREF)
@@ -186,27 +184,27 @@ C
       NOMRES(1)='B_ENDOGE'
       NOMRES(2)='K_DESSIC'
       CALL RCVALB(FAMI,KPG,KSP,'-',IMATE,' ','ELAS',1,NOMPAR,VALPAM,
-     &            1,NOMRES,VALRES,CODRET, BL2)
+     &            1,NOMRES,VALRES,ICODRE, 0)
 
-      IF ( CODRET(1) .NE. 'OK' ) VALRES(1) = 0.D0
+      IF ( ICODRE(1) .NE.0    ) VALRES(1) = 0.D0
       BENDOM = VALRES(1)
 C
       CALL RCVALB(FAMI,KPG,KSP,'+',IMATE,' ','ELAS',1,NOMPAR,VALPAP,
-     &            1,NOMRES,VALRES,CODRET, BL2)
+     &            1,NOMRES,VALRES,ICODRE, 0)
 
-      IF ( CODRET(1) .NE. 'OK' ) VALRES(1) = 0.D0
+      IF ( ICODRE(1) .NE.0    ) VALRES(1) = 0.D0
       BENDOP = VALRES(1)
 C
       CALL RCVALB(FAMI,KPG,KSP,'-',IMATE,' ','ELAS',1,NOMPAR,VALPAM,
-     &            1,NOMRES(2),VALRES(2),CODRET, BL2)
+     &            1,NOMRES(2),VALRES(2),ICODRE, 0)
 
-      IF ( CODRET(2) .NE. 'OK' ) VALRES(2) = 0.D0
+      IF ( ICODRE(2) .NE.0    ) VALRES(2) = 0.D0
       KDESSM = VALRES(2)
 C
       CALL RCVALB(FAMI,KPG,KSP,'+',IMATE,' ','ELAS',1,NOMPAR,VALPAP,
-     &            1,NOMRES(2),VALRES(2),CODRET, BL2)
+     &            1,NOMRES(2),VALRES(2),ICODRE, 0)
 
-      IF ( CODRET(2) .NE. 'OK' ) VALRES(2) = 0.D0
+      IF ( ICODRE(2) .NE.0    ) VALRES(2) = 0.D0
       KDESSP = VALRES(2)
 C
 C  ------- CARACTERISTIQUES FONCTION DE FLUAGE
@@ -230,14 +228,14 @@ C
       COEFJ=0.D0
       DO 110 I=1,8
          CALL RCVALB(FAMI,KPG,KSP,'+',IMATE,' ','GRANGER_FP',0,' ',0.D0,
-     &               1,NOMRES(I),VALRES(I),CODRET(I), BL2)
+     &               1,NOMRES(I),VALRES(I),ICODRE(I), 0)
          CALL RCVALB(FAMI,KPG,KSP,'+',IMATE,' ','GRANGER_FP',0,' ',0.D0,
-     &               1,NOMRES(I+8),VALRES(I+8),CODRET(I+8), BL2)
-         IF ( (CODRET(I) .NE. 'OK') .AND. (CODRET(I+8) .NE. 'OK')) THEN
+     &               1,NOMRES(I+8),VALRES(I+8),ICODRE(I+8), 0)
+         IF ( (ICODRE(I) .NE.0) .AND. (ICODRE(I+8) .NE.0)) THEN
              VALRES(I) = 0.D0
              VALRES(I+8)=1.D0
-         ELSEIF ( ((CODRET(I) .EQ. 'OK') .AND. (CODRET(I+8) .NE. 'OK'))
-     &   .OR. ((CODRET(I) .NE. 'OK') .AND. (CODRET(I+8) .EQ. 'OK')))
+         ELSEIF ( ((ICODRE(I) .EQ. 0) .AND. (ICODRE(I+8) .NE. 0))
+     &   .OR. ((ICODRE(I) .NE. 0) .AND. (ICODRE(I+8) .EQ. 0)))
      &   THEN
              CALL U2MESS('F','ALGORITH8_2')
          ENDIF
@@ -256,8 +254,8 @@ C
       ELSE
         NOMRES(1)='QSR_K'
         CALL RCVALB(FAMI,KPG,KSP,'+',IMATE,' ','GRANGER_FP',0,' ',0.D0,
-     &              1,   NOMRES(1),VALRES(1),CODRET(1), BL2)
-        IF (CODRET(I) .NE. 'OK') VALRES(1)=0.D0
+     &              1,   NOMRES(1),VALRES(1),ICODRE(1), 0)
+        IF (ICODRE(I) .NE.0) VALRES(1)=0.D0
         QSRT=VALRES(1)
         COEFT=(-QSRT)*(1/TEMP-1/TKREF)
         COEFT=EXP(COEFT)
@@ -272,8 +270,8 @@ C
       IF (COMPOR(1) (1:14) .EQ. 'GRANGER_FP_V') THEN
          NOMRES(1)='QSR_V'
          CALL RCVALB(FAMI,KPG,KSP,'+',IMATE,' ','GRANGER_FP',0,' ',0.D0,
-     &               1,NOMRES(1),VALRES(1),CODRET(1), BL2)
-         IF (CODRET(I) .NE. 'OK') VALRES(1)=0.D0
+     &               1,NOMRES(1),VALRES(1),ICODRE(1), 0)
+         IF (ICODRE(I) .NE.0) VALRES(1)=0.D0
          QSRV=VALRES(1)
 C
 C  -------- FONCTION MULTIPLICATIVE - VIEILLISSEMENT K
@@ -286,7 +284,7 @@ C  ------------ AGE EQUIVALENT DU BETON : AGE
          TCEQ = (AGEM+AGEP)/2
          NOMRES(1)='FONC_V'
          CALL RCVALB(FAMI,KPG,KSP,'+',IMATE,' ','V_GRANGER_FP',
-     &               1,'INST',TCEQ,1,NOMRES,VALRES,CODRET, BL2)
+     &               1,'INST',TCEQ,1,NOMRES,VALRES,ICODRE, 0)
 
          VIEIL = VALRES(1)
       ELSE
@@ -299,16 +297,16 @@ C  ------- CARACTERISTIQUES HYGROMETRIE H
 C
       NOMRES(1)='FONC_DESORP'
       CALL RCVALB(FAMI,KPG,KSP,'-',IMATE,' ','ELAS',
-     &            1,NOMPAR,VALPAM,1,NOMRES,VALRES,CODRET, FB2)
+     &            1,NOMPAR,VALPAM,1,NOMRES,VALRES,ICODRE, 2)
 
-         IF  (CODRET(1) .NE. 'OK')  THEN
+         IF  (ICODRE(1) .NE.0)  THEN
              CALL U2MESS('F','ALGORITH7_98')
          ENDIF
       HYGRM=VALRES(1)
       CALL RCVALB(FAMI,KPG,KSP,'+',IMATE,' ','ELAS',
-     &            1,NOMPAR,VALPAP,1,NOMRES,VALRES,CODRET, FB2)
+     &            1,NOMPAR,VALPAP,1,NOMRES,VALRES,ICODRE, 2)
 
-         IF  (CODRET(1) .NE. 'OK')  THEN
+         IF  (ICODRE(1) .NE.0)  THEN
              CALL U2MESS('F','ALGORITH7_98')
          ENDIF
       HYGRP=VALRES(1)

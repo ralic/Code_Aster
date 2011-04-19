@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 C ......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -46,17 +46,16 @@ C --------- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C --------- FIN  DECLARATIONS NORMALISEES JEVEUX -----------------------
 
-      CHARACTER*24 CHMAT
       CHARACTER*8 NOMRES(3),ELREFE
-      CHARACTER*2 BL2,CODRET(3)
+      INTEGER ICODRE(3)
       REAL*8 E,NU,TPG,TGMOY,TGSUP,TGINF,TREF
       REAL*8 X3,EPS(5),C,H,EPSTHE,VALRES(3)
       REAL*8 E11,E22,K11,K22,EP11,EP22
       REAL*8 DFDX(3),EFFOPG(24)
       REAL*8 JAC,R,COSA,SINA,COUR
       INTEGER I,K,KP,IGEOM,IMATE,ICACO,IDEPL
-      INTEGER NNO,NPG,IDFDK,IVF,IRET,NCMP,IRET2,IRET1,IRET3,IRET4
-      INTEGER JCOOPG,IP,CORREC,ITAB(8),JDFD2
+      INTEGER NNO,NPG,IDFDK,IVF,IRET,IRET2,IRET1,IRET3,IRET4
+      INTEGER JCOOPG,IP,CORREC,JDFD2
 
       CALL ELREF1(ELREFE)
 
@@ -71,7 +70,6 @@ C --------- FIN  DECLARATIONS NORMALISEES JEVEUX -----------------------
       CALL JEVECH('PEFFORR','E',IEFFOR)
       CALL RCVARC(' ','TEMP','REF','RIGI',1,1,TREF,IRET)
 
-      BL2 = '  '
       H = ZR(ICACO)
 CJMP  CORREC = CORRECTION DE METRIQUE = 0 (NON) OU 1 (OUI)
 CJMP  CORREC = ZR(ICACO+2)
@@ -135,19 +133,19 @@ C---- COMME POUR LA LONGUEUR
           NOMRES(3) = 'ALPHA'
           CALL RCVALB('RIGI',1,1,'+',ZI(IMATE),' ','ELAS',
      &                1,'TEMP',TPG,2,NOMRES,VALRES,
-     &                CODRET,'FM')
+     &                ICODRE,1)
           CALL RCVALB('RIGI',1,1,'+',ZI(IMATE),' ','ELAS',
      &                1,'TEMP',TPG,1,NOMRES(3),
-     &                VALRES(3),CODRET(3),BL2)
+     &                VALRES(3),ICODRE(3),0)
           E = VALRES(1)
           NU = VALRES(2)
           IF (IRET4.EQ.0) THEN
-            IF((CODRET(3).NE.'OK').OR.(IRET.EQ.1)) THEN
+            IF((ICODRE(3).NE.0).OR.(IRET.EQ.1)) THEN
                    CALL U2MESS('F','CALCULEL_15')
             ELSE
               EPSTHE = (TPG - TREF)*VALRES(3)*E/ (1.D0-NU)
             ENDIF
-          ELSE 
+          ELSE
             EPSTHE = 0.D0
           END IF
 

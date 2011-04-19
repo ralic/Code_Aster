@@ -1,6 +1,6 @@
       SUBROUTINE TE0319(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -44,7 +44,7 @@ C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
-      CHARACTER*2 CODRET(3)
+      INTEGER ICODRE(3)
       CHARACTER*8 NOMRES(3)
       CHARACTER*16 PHENOM
       REAL*8 VALRES(3),LAMBDA,FLUXX,FLUXY,FLUXZ,TPG
@@ -63,12 +63,12 @@ C FIN ------------------------------------------------------------------
       CALL JEVECH('PTEMPER','L',ITEMPE)
       CALL JEVECH('PSOUR_R','E',IFLUX)
 
-      CALL RCCOMA(ZI(IMATE),'THER',PHENOM,CODRET)
+      CALL RCCOMA(ZI(IMATE),'THER',PHENOM,ICODRE)
 
       IF (PHENOM.EQ.'THER') THEN
         NOMRES(1) = 'LAMBDA'
         CALL RCVALA(ZI(IMATE),' ',PHENOM,1,'INST',ZR(ITEMPS),1,NOMRES,
-     &              VALRES,CODRET,'FM')
+     &              VALRES,ICODRE,1)
         LAMBDA = VALRES(1)
         ANISO = .FALSE.
       ELSE IF (PHENOM.EQ.'THER_ORTH') THEN
@@ -76,7 +76,7 @@ C FIN ------------------------------------------------------------------
         NOMRES(2) = 'LAMBDA_T'
         NOMRES(3) = 'LAMBDA_N'
         CALL RCVALA(ZI(IMATE),' ',PHENOM,1,'INST',ZR(ITEMPS),3,NOMRES,
-     &              VALRES,CODRET,'FM')
+     &              VALRES,ICODRE,1)
         LAMBOR(1) = VALRES(1)
         LAMBOR(2) = VALRES(2)
         LAMBOR(3) = VALRES(3)
@@ -143,7 +143,7 @@ C     CALCUL DU GRADIENT DE TEMPERATURE AUX POINTS DE GAUSS
 
         IF (PHENOM.EQ.'THER_NL') THEN
           CALL RCVALA(ZI(IMATE),' ',PHENOM,1,'TEMP',TPG,1,'LAMBDA',
-     &                LAMBDA,CODRET,'FM')
+     &                LAMBDA,ICODRE,1)
         END IF
 
         IF (.NOT.ANISO) THEN

@@ -5,9 +5,9 @@
         IMPLICIT NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 21/06/2010   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -115,7 +115,7 @@ C       ----------------------------------------------------------------
 C       VARIABLES LOCALES
         INTEGER         NDT    , NDI   , NVI1, IBID, IBID2, IBID3, IRE2
         INTEGER         NVI2, NN, I,RETCOM, IISNAN
-        CHARACTER*2     FB2, CERR(5)
+      INTEGER CERR(5)
         CHARACTER*8     MOD    ,MOD3D  ,   NOMC(5), NOMPAR
         CHARACTER*16    OPTFLU, CMP1(3), CMP2(3), CMP3(3), CVERI,COMCOD
         REAL*8          RBID, NU, ANGMAS(3)
@@ -132,10 +132,6 @@ C
         REAL*8          TMPDMX,       TMPFMX,    EPSTH
         REAL*8          ALPHAD, ALPHAF, BENDOD, BENDOF, KDESSD, KDESSF
 C
-        INTEGER         IADZI, IAZK24, ICOMP
-        CHARACTER*4     CITER
-        CHARACTER*8     NOMAIL
-        CHARACTER*10    DCV
         LOGICAL CP
 C       ----------------------------------------------------------------
         COMMON /TDIM/   NDT  , NDI
@@ -253,14 +249,13 @@ C
 C
 C -      RECUPERATION MATERIAU A TEMPD (T)
 C
-         FB2 = 'F '
          CALL RCVALB(FAMI,1,1,'+',IMAT,' ','ELAS',1,NOMPAR,
-     &               VALPAD,1,NOMC(2),MATERD(2),CERR(1),FB2 )
+     &               VALPAD,1,NOMC(2),MATERD(2),CERR(1),2)
 C
 C -      RECUPERATION MATERIAU A TEMPF (T+DT)
 C
          CALL RCVALB(FAMI,1,1,'+',IMAT,' ','ELAS',1,NOMPAR,
-     &               VALPAF,1,NOMC(2),MATERF(2),CERR(1),FB2 )
+     &               VALPAF,1,NOMC(2),MATERF(2),CERR(1),2)
 C
          MATERD(1) = 1.D0
          MATERF(1) = 1.D0
@@ -332,22 +327,21 @@ C
 C
 C -      RECUPERATION MATERIAU A TEMPD (T)
 C
-         FB2 = 'F '
          CALL RCVALB(FAMI,KPG,KSP,'-',IMAT,' ','ELAS',0,' ',
-     &               0.D0,5,NOMC(1),MATERD(1),CERR(1), FB2 )
+     &               0.D0,5,NOMC(1),MATERD(1),CERR(1), 2)
 C
-         IF ( CERR(3) .NE. 'OK' ) MATERD(3) = 0.D0
-         IF ( CERR(4) .NE. 'OK' ) MATERD(4) = 0.D0
-         IF ( CERR(5) .NE. 'OK' ) MATERD(5) = 0.D0
+         IF ( CERR(3) .NE. 0 ) MATERD(3) = 0.D0
+         IF ( CERR(4) .NE. 0 ) MATERD(4) = 0.D0
+         IF ( CERR(5) .NE. 0 ) MATERD(5) = 0.D0
 C
 C -      RECUPERATION MATERIAU A TEMPF (T+DT)
 C
          CALL RCVALB(FAMI,KPG,KSP,'+',IMAT,' ','ELAS',0,' ',
-     &               0.D0,5,NOMC(1),MATERF(1),CERR(1),FB2 )
+     &               0.D0,5,NOMC(1),MATERF(1),CERR(1),2)
 C
-         IF ( CERR(3) .NE. 'OK' ) MATERF(3) = 0.D0
-         IF ( CERR(4) .NE. 'OK' ) MATERF(4) = 0.D0
-         IF ( CERR(5) .NE. 'OK' ) MATERF(5) = 0.D0
+         IF ( CERR(3) .NE. 0 ) MATERF(3) = 0.D0
+         IF ( CERR(4) .NE. 0 ) MATERF(4) = 0.D0
+         IF ( CERR(5) .NE. 0 ) MATERF(5) = 0.D0
 C
 C --- CALCUL DE L'INCREMENT DE DEFORMATION ELASTIQUE
 C --- + RETRAIT ENDOGENNE + RETRAIT DESSICCATION + RETRAIT THERMIQUE

@@ -4,22 +4,22 @@
       CHARACTER*16        TYPTAB
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 16/02/2009   AUTEUR GALENNE E.GALENNE 
+C MODIF POSTRELE  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFAL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFAL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C     ------------------------------------------------------------------
 C     OPERATEUR POST_RCCM, TYPE_RESU_MECA = 'EVOLUTION'
@@ -45,16 +45,16 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
 C
       INTEGER      N1, IBID, NBTRAN, NBPAR, NBTETA, NBCYCL, NBABSC,
-     +             NBINS0, IRET, IND, I, K, L, JNOCK, JNOCL, NK, NL,
-     +             JTETA, KINST, JFAIJ, JABSC,I1, I2, IFM, NIV, NDIM, 
-     +             IOC, IT, IS1, IS2, JINST, JTABL, JNBCY, NBITOT
+     &             NBINS0, IRET, IND, I, K, L, JNOCK, JNOCL, NK, NL,
+     &             JTETA, KINST, JFAIJ, JABSC,I1, I2, IFM, NIV, NDIM,
+     &             IOC, IT, IS1, IS2, JINST, JTABL, JNBCY, NBITOT
       REAL*8       R8B, PREC(2), VALE(4), VALRES(4), RIJ, RAPP,
-     +             FATOT, FAKL, FAM, THETA, R8DGRD, RCAL,
-     +             SITTEF, AAMORC, BAMORC, DAMORC, RAMORC, D,
-     +             SITT1, SITT2,FKL,R8PREM
+     &             FATOT, FAKL, FAM, THETA, R8DGRD, RCAL,
+     &             SITTEF, AAMORC, BAMORC, DAMORC, RAMORC, D,
+     &             SITT1, SITT2,FKL,R8PREM
       COMPLEX*16   CBID
       LOGICAL      EXIST, TROUVE
-      CHARACTER*2  CODRET(4)
+      INTEGER ICODRE(4)
       CHARACTER*8  K8B, NOMRES, CRIT(2), NOMPAR, NOMVAL(4)
       CHARACTER*16 MOTCLF, VALEK(4), TABLE, CONCEP, NOMCMD
       CHARACTER*19 NOMF
@@ -104,8 +104,8 @@ C
       NOMVAL(2) = 'B_AMORC'
       NOMVAL(3) = 'D_AMORC'
       NOMVAL(4) = 'R_AMORC'
-      CALL RCVALE ( NOMMAT, 'RCCM', NBPAR, NOMPAR, R8B, 4, 
-     +                      NOMVAL, VALRES, CODRET, 'F ' )
+      CALL RCVALE ( NOMMAT, 'RCCM', NBPAR, NOMPAR, R8B, 4,
+     &                      NOMVAL, VALRES, ICODRE, 2)
       AAMORC = VALRES(1)
       BAMORC = VALRES(2)
       DAMORC = VALRES(3)
@@ -143,7 +143,7 @@ C
          THETA = (ZR(JTETA+IT) - ZR(JTETA+IT-1)) * R8DGRD()
          D = ZR(JABSC+IT) - ZR(JABSC+IT-1)
          RCAL = D / (2*SIN(0.5D0*THETA))
-         RAPP = ABS( ( RCAL - DAMORC ) / DAMORC ) 
+         RAPP = ABS( ( RCAL - DAMORC ) / DAMORC )
 C ------ TOLERANCE DE 1%
          IF ( RAPP .GT. 0.01D0 ) THEN
             VALE(1) = RCAL
@@ -152,7 +152,7 @@ C ------ TOLERANCE DE 1%
          ENDIF
  10   CONTINUE
 C
-C --- DETERMINATION DU NOMBRE DE SITUATION 
+C --- DETERMINATION DU NOMBRE DE SITUATION
 C        = NOMBRE D'INSTANTS DES TRANSITOIRES
 C
       CALL JECREC('&&RCEVOA.SITUATION', 'V V R', 'NU',
@@ -208,13 +208,13 @@ C
       CALL WKVECT ( '&&RCEVOA.TABL_T', 'V V K8' , NBITOT , JTABL )
       CALL WKVECT ( '&&RCEVOA.INST_T', 'V V R'  , NBITOT , JINST )
       CALL WKVECT ( '&&RCEVOA.NBCY_T', 'V V I'  , NBITOT , JNBCY )
-      
+
       IND = 0
       DO 30 IOC = 1 , NBTRAN
 C
          CALL JEVEUO ( JEXNUM('&&RCEVOA.SITUATION',IOC), 'L', KINST )
          CALL JELIRA ( JEXNUM('&&RCEVOA.SITUATION',IOC), 'LONUTI',
-     +                                                    NBINS0, K8B )
+     &                                                    NBINS0, K8B )
 C
          CALL GETVIS ( MOTCLF, 'NB_OCCUR', IOC,1,1, NBCYCL, N1 )
 C
@@ -225,8 +225,8 @@ C
             ZK8(JTABL-1+IND) = TABLE
              ZR(JINST-1+IND) = ZR(KINST-1+I)
              ZI(JNBCY-1+IND) = NBCYCL
- 32     CONTINUE      
- 30   CONTINUE      
+ 32     CONTINUE
+ 30   CONTINUE
 C
 C --- CALCUL DU FACTEUR D'AMORCAGE
 C
@@ -250,8 +250,8 @@ C
             ZI(JNOCL-1+I1) = ZI(JNBCY-1+I1)
 C
             CALL TBLIVA ( TABLE, 2, VALEK, IBID, VALE,
-     +                    CBID, K8B, CRIT, PREC, VALEK(3), 
-     +                    K8B, IBID, SITT1, CBID, K8B, IRET)
+     &                    CBID, K8B, CRIT, PREC, VALEK(3),
+     &                    K8B, IBID, SITT1, CBID, K8B, IRET)
             IF (IRET.NE.0) THEN
               VALK(1) = TABLE
               VALK(2) = VALEK(3)
@@ -267,8 +267,8 @@ C
               VALE(2) =  ZR(JINST-1+I2)
 C
               CALL TBLIVA ( TABLE, 2, VALEK, IBID, VALE,
-     +                      CBID, K8B, CRIT, PREC, VALEK(3), 
-     +                      K8B, IBID, SITT2, CBID, K8B, IRET)
+     &                      CBID, K8B, CRIT, PREC, VALEK(3),
+     &                      K8B, IBID, SITT2, CBID, K8B, IRET)
               IF (IRET.NE.0) THEN
                 VALK(1) = TABLE
                 VALK(2) = VALEK(3)
@@ -277,7 +277,7 @@ C
                 CALL U2MESG('F', 'POSTRCCM_2',4,VALK,0,0,2,VALE)
               ENDIF
               SITT2 = ABS(SITT2)
-C              
+C
               ZR(JFAIJ-1+NBITOT*(I1-1)+I2) = 0.D0
               IF (MAX(SITT1,SITT2) .GT. R8PREM() ) THEN
 C ------------calcul du rapport de charge
@@ -306,10 +306,10 @@ C
            DO 700 K = 1 , NBITOT
              I1 = NBITOT*(K-1)
              WRITE(IFM,1000) ZI(JNOCK-1+K),
-     +                      (ZR(JFAIJ-1+I1+L),L=1,NBITOT)
+     &                      (ZR(JFAIJ-1+I1+L),L=1,NBITOT)
  700       CONTINUE
          ENDIF
-C 
+C
          FAM = 0.D0
          TROUVE = .FALSE.
          DO 110 K = 1 , NBITOT
@@ -367,10 +367,10 @@ C
         ENDIF
 C
         IF ( NIV .EQ. 2 )
-     +    WRITE(IFM,*)'-->> FACTEUR D''AMORCAGE CUMULE = ', FATOT
+     &    WRITE(IFM,*)'-->> FACTEUR D''AMORCAGE CUMULE = ', FATOT
 C
-        VALE(2) = FATOT 
-C 
+        VALE(2) = FATOT
+C
         IF ( TYPTAB .EQ. 'VALE_MAX' ) THEN
            CALL TBAJLI ( NOMRES,NPARM,NOPARM,IBID,VALE,CBID,K8B,0)
         ELSE

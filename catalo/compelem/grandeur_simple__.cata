@@ -1,4 +1,4 @@
-%& MODIF COMPELEM  DATE 08/03/2011   AUTEUR PELLET J.PELLET 
+%& MODIF COMPELEM  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 % RESPONSABLE PROIX
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
@@ -177,11 +177,12 @@ GRANDEUR_SIMPLE__
          DISK  : Discret avec des caractéristique de raideur
          DISM  : Discret avec des caractéristique de masse
          DISA  : Discret avec des caractéristique de d'amortissement
-
       ETAK  : Coefficient d'amortissement hystérétique
               uniquement sur les matrices de raideurs
+      TYDI  : Type du discret
+
 >>
-    CINFDI   = R   REPK  REPM  REPA  SYMK  SYMM  SYMA  DISK  DISM  DISA  ETAK
+    CINFDI   = R  REPK  REPM  REPA  SYMK  SYMM  SYMA  DISK  DISM  DISA  ETAK  TYDI
 
 %
 %   POUR LES DISCRETS : FIN
@@ -1272,6 +1273,11 @@ FORC_C   = C    FX       FY       FZ       MX       MY       MZ       BX       R
        JPR :
 >>
     J        = R    JINT     JEXT     JTH      JAX      JPR
+
+<<  PDIL_R type:R module de Rigidite de micro-dilatation
+        A1_LC2 : Module de rigidite de micro-dilatation
+>>
+    PDIL_R   = R   A1_LC2
 
 <<  LISTMA Type:K16 Définition des charges réparties sur une zone du maillage
                     (Force de LAPLACE)

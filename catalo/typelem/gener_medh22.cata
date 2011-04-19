@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+%& MODIF TYPELEM  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 % RESPONSABLE GRANET
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
@@ -83,6 +83,7 @@ MODE_LOCAL__
     EGGEOM_R = GEOM_R   ELGA__ RIGI    (X        Y        )
     ENGEOM_R = GEOM_R   ELNO__ IDEN__  (X        Y        )
     EGINDLO  = INDL_R ELGA__ RIGI    (INDICE   DIR[4])
+    EPDILPG  = PDIL_R ELGA__ RIGI    (A1_LC2   )
     CTEMPSR  = INST_R   ELEM__         (INST     )
     CPDTTH_R = INST_R   ELEM__         (INST     DELTAT   THETA    )
     EGINST_R = INST_R   ELGA__ RIGI    (INST     )
@@ -213,6 +214,8 @@ OPTION__
                               OUT__  EDCEL_I  PDCEL_I
     PAS_COURANT         404   IN__   NGEOMER  PGEOMER  CMATERC  PMATERC
                               OUT__  ECOURAN  PCOURAN
+    PDIL_ELGA           511    IN__   CCOMPOR  PCOMPOR  ECONTPG  PCONTPR  CMATERC  PMATERC  ZVARIPG  PVARIPR
+                              OUT__  EPDILPG  PPDIL
     RAPH_MECA           600   IN__   CCARCRI  PCARCRI  CCOMPOR  PCOMPOR  ECONTPG  PCONTMR  DDL_MECA PDEPLMR
                                      DDL_MECA PDEPLPR  NGEOMER  PGEOMER  CTEMPSR  PINSTMR  CTEMPSR  PINSTPR
                                      CMATERC  PMATERC  ZVARCPG  PVARCRR   ZVARCPG  PVARCMR  ZVARCPG  PVARCPR

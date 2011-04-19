@@ -3,7 +3,7 @@
      &   CRILDC,CODRET)
 C ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/02/2011   AUTEUR BARGELLI R.BARGELLINI 
+C MODIF ALGORITH  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -29,12 +29,12 @@ C ------------------------------------------------------------------
       CHARACTER*16 COMPOR(*),OPTION
       CHARACTER*(*) FAMI
       REAL*8 XLONG0,A
-      REAL*8 EM,EP,ALPHAM,ALPHAP
+      REAL*8 EM,EP
       REAL*8 DLONG0,CRILDC(3)
       REAL*8 EFFNOM,VIM(*)
       REAL*8 EFFNOP,VIP(*),FONO(NEQ),KLV(NBT)
-      CHARACTER*2 FB2,CODRES
-      REAL*8 VALPAR,DSDE,EPSM
+      INTEGER CODRES
+      REAL*8 DSDE,EPSM
 C -------------------------------------------------------------------
 
 C    TRAITEMENT DE LA RELATION DE COMPORTEMENT -ELASTOPLASTICITE-
@@ -63,10 +63,9 @@ C----------VARIABLES LOCALES
 
       INTEGER IRET
       REAL*8 SIGM,DEPS,DEPSTH,DEPSM,TMOINS,TPLUS
-      REAL*8 SIGP,XRIG,TEMPM,TEMPP,TREF
+      REAL*8 SIGP,XRIG
       LOGICAL ISOT,CINE,ELAS,CORR,IMPL, ISOTLI
 
-      FB2 = 'FM'
 
 C----------INITIALISATIONS
 
@@ -107,12 +106,12 @@ C----------RECUPERATION DES CARACTERISTIQUES
 C --- CARACTERISTIQUES ELASTIQUES A TMOINS
 
       CALL RCVALB(FAMI,KPG,KSP,'-',IMATE,' ','ELAS',0,' ',0.D0,1,'E',EM,
-     &       CODRES,FB2)
+     &       CODRES,1)
 
 C --- CARACTERISTIQUES ELASTIQUES A TPLUS
 
       CALL RCVALB(FAMI,KPG,KSP,'+',IMATE,' ','ELAS',0,' ',0.D0,1,'E',EP,
-     &              CODRES,FB2)
+     &              CODRES,1)
 
 
       IF ((ISOT) .AND. (.NOT.IMPL)) THEN
@@ -165,10 +164,10 @@ C      EFFNOP = SIGP*A
         IF ( (.NOT.IMPL).AND.(.NOT.ELAS)) THEN
            CALL U2MESS('F','ELEMENTS5_49')
         END IF
-        EFFNOP = SIGP*A      
+        EFFNOP = SIGP*A
         FONO(1) = -EFFNOP
-        FONO(4) = EFFNOP      
-      END IF     
+        FONO(4) = EFFNOP
+      END IF
 
 C -------------------------------------------------------------
 

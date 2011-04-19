@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 C ......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -51,7 +51,8 @@ C --------- FIN  DECLARATIONS NORMALISEES JEVEUX -----------------------
 C
       PARAMETER    (NBRES=3)
       LOGICAL       MUL
-      CHARACTER*2   CODRET(NBRES),VAL
+      INTEGER ICODRE(NBRES)
+      CHARACTER*2 VAL
       CHARACTER*3   NUM
       CHARACTER*8   NOMRES(NBRES)
       CHARACTER*16  PHENOM
@@ -80,7 +81,7 @@ C
 C --- RECUPERATION DE LA NATURE DU MATERIAU DANS PHENOM
 C     -------------------------------------------------
       MATER = ZI(IMATE)
-      CALL RCCOMA ( MATER, 'THER', PHENOM, CODRET )
+      CALL RCCOMA ( MATER, 'THER', PHENOM, ICODRE )
 C
 C --- CAS DES COQUES MULTICOUCHES :
 C     -----------------------------
@@ -89,7 +90,7 @@ C
         MUL = .TRUE.
         NOMRES(1) = 'HOM_28'
         CALL RCVALA(MATER,' ','THER',0,' ',R8B,1,NOMRES,VALRES,
-     &                 CODRET,'FM')
+     &                 ICODRE,1)
         H = VALRES(1)/2.D0
         IC = ZI(INUMCO)
         CALL CODENT(IC,'G',NUM)
@@ -98,7 +99,7 @@ C
           NOMRES(I) = 'C'//NUM//'_V'//VAL
     1   CONTINUE
         CALL RCVALA(MATER,' ','THER',0,' ',R8B,3,NOMRES,VALRES,
-     &                      CODRET,'FM')
+     &                      ICODRE,1)
         CODE = ZI(INUMCO+1)
         EP  = VALRES(1)
         FI  = VALRES(2)
@@ -107,7 +108,7 @@ C
         NOMRES(2) = 'LAMBDAT'
         NOMRES(3) = 'LAMBDAN'
         CALL RCVALA(MATER,' ','THER',0,' ',R8B,3,NOMRES,VALRES,
-     &              CODRET,'FM')
+     &              ICODRE,1)
         C = COS(FI*R8PI()/180.D0)
         S = SIN(FI*R8PI()/180.D0)
         C2 = C*C
@@ -125,7 +126,7 @@ C
         MUL = .FALSE.
         NOMRES(1) = 'LAMBDA'
         CALL RCVALA(MATER,' ','THER',1,'INST',ZR(ITEMPS),1,NOMRES,
-     &           VALRES,   CODRET, 'FM' )
+     &           VALRES,   ICODRE, 1)
         CONDUC = VALRES(1)
         H = ZR(ICACOQ)/2.D0
         ORD = 0.D0

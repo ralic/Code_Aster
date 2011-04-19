@@ -1,6 +1,6 @@
       SUBROUTINE TE0342(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -30,7 +30,6 @@ C IN  NOMTE  : K16 : NOM DU TYPE ELEMENT
 C        'MECA_POU_D_TG': POUTRE DROITE DE TIMOSHENKO AVEC GAUCHISSEMENT
 C
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
-      CHARACTER*32       JEXNUM , JEXNOM , JEXR8 , JEXATR
       INTEGER            ZI
       COMMON  / IVARJE / ZI(1)
       REAL*8             ZR
@@ -50,10 +49,9 @@ C
       PARAMETER   (       NBRES=2)
       INTEGER      IRET,IADZI,IAZK24
       REAL*8       VALRES(NBRES)
-      CHARACTER*2  CODRES(NBRES)
+      INTEGER CODRES(NBRES)
       CHARACTER*8  NOMPAR,NOMRES(NBRES),NOMAIL
-      CHARACTER*16 CH16
-      REAL*8       NU, TPG
+      REAL*8       NU
       REAL*8       B(7,14)
       REAL*8       PGL(14,14), DEPL(14), DEPGLO(14)
       REAL*8       EPSGEN(7), SIGGEN(3,7)
@@ -93,9 +91,9 @@ C --- RECUPERATION ET INTERPOLATION DES CARACTERISTIQUES MATERIAUX :
 C     ------------------------------------------------------------
       CALL JEVECH('PMATERC','L',LMATER)
 C
-      CALL RCVALB('RIGI',NPG,1,'+',ZI(LMATER),' ', 'ELAS', 
-     &             NBPAR, NOMPAR, VALPAR, 
-     &             NBRES, NOMRES, VALRES, CODRES, 'FM' )
+      CALL RCVALB('RIGI',NPG,1,'+',ZI(LMATER),' ', 'ELAS',
+     &             NBPAR, NOMPAR, VALPAR,
+     &             NBRES, NOMRES, VALRES, CODRES, 1)
 C
       E     = VALRES(1)
       NU    = VALRES(2)

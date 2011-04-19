@@ -9,9 +9,9 @@ C ----------------------------------------------------------------------
       REAL*8  KLV(NBT),KLV2(NBT),VARIP(7)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -52,7 +52,7 @@ C
       PARAMETER    ( NBRE1 = 15 )
       REAL*8       NU1,MU1,NU2,MU2,KY,KZ,KRX,KRZ,RP0
       REAL*8       SI(12),K01(78),K02(78),KLC(144), VALRE1(NBRE1)
-      CHARACTER*2  CODRE1(NBRE1)
+      INTEGER CODRE1(NBRE1)
       CHARACTER*8  NOMPAR, NOMRE1(NBRE1)
 C
 C************ FIN DES DECLARATIONS DES VARIABLES LOCALES ***************
@@ -76,7 +76,7 @@ C --- CARACTERISTIQUES DU MATERIAU
 C    (LES DEFINITIONS DE DRYU1 ET DRYU2 SYMETRISENT LA MATRICE)
 C
       CALL RCVALA (ICODMA,' ','ASSE_CORN',NBPAR,NOMPAR,VALPAR,NBRE1,
-     &             NOMRE1,VALRE1,CODRE1, 'FM' )
+     &             NOMRE1,VALRE1,CODRE1, 1)
 C
       NU1   = VALRE1(1)
       MU1   = VALRE1(2)
@@ -588,5 +588,4 @@ C
      &             KY,KZ,KRX,KRZ,KLV,KLV2)
 C ----------------------------------------------------------------------
 C
- 9999 CONTINUE
       END

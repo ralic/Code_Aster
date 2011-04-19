@@ -3,28 +3,28 @@
        CHARACTER*16       OPTION, NOMTE
 C Routine modified by Laurent VELUT
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C
 C     BUT:       POUR LES COQUES EN MATERIAUX COMPOSITES, CALCUL DES
 C                4 CRITERES DE RUPTURE AUX NOEUDS DANS UNE COUCHE
-C               
-C                IL FAUT AU PREALABLE FAIRE SIGM_ELNO 
+C
+C                IL FAUT AU PREALABLE FAIRE SIGM_ELNO
 C
 C     DANS CET ORDRE :
 C
@@ -64,11 +64,11 @@ C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
        REAL*8             R8BID,ZERO
        REAL*8             SIGL(NNOMAX),SIGT(NNOMAX),SIGLT(NNOMAX)
        REAL*8             CRIL(NNOMAX),CRIT(NNOMAX),CRILT(NNOMAX)
-       REAL*8             CRILP(NNOMAX),CRITP(NNOMAX)
        REAL*8             CRITH(NNOMAX)
        REAL*8             XT,XC,YT,YC,SLT,X,Y, ORIEN , ORIENR
        REAL*8             LIM(5),PGL(2,2),SIGM(24),VAR(2),PI,R8PI
-       CHARACTER*2        CODRET(27),VAL
+      INTEGER ICODRE(27)
+      CHARACTER*2 VAL
        CHARACTER*3        NUM
        CHARACTER*8        NOMRES(27)
        CHARACTER*10       PHENOM
@@ -92,62 +92,61 @@ C     -------------------------------------------------
        CALL JEVECH('PGEOMER','L',JGEOM)
        ICOU=ZI(JNUMCO)
        MATCOD = ZI(IMATE)
-      
+
 C --- RECUPERATION DES VALEURS LIMITES DE CONTRAINTE
 C     ----------------------------------------------
 
-       CALL RCCOMA(MATCOD,'ELAS',PHENOM,CODRET)
-       
+       CALL RCCOMA(MATCOD,'ELAS',PHENOM,ICODRE)
+
        CALL CODENT(ICOU,'G',NUM)
        DO 11 J = 1,5
          I=J+78
          CALL CODENT(I,'G',VAL)
          NOMRES(J) = 'C'//NUM//'_V'//VAL
    11  CONTINUE
- 
-       CALL RCVALA(MATCOD,' ','ELAS_COQMU',0,' ',R8BID,5,NOMRES,LIM,
-     &            CODRET,'FM')
 
-C     LIMITE EN TRACTION SUIVANT L 
-       XT=LIM(1)    
-      
-C     LIMITE EN COMPRESSION SUIVANT L     
+       CALL RCVALA(MATCOD,' ','ELAS_COQMU',0,' ',R8BID,5,NOMRES,LIM,
+     &            ICODRE,1)
+
+C     LIMITE EN TRACTION SUIVANT L
+       XT=LIM(1)
+
+C     LIMITE EN COMPRESSION SUIVANT L
        XC=LIM(2)
-      
-C     LIMITE EN TRACTION SUIVANT T     
+
+C     LIMITE EN TRACTION SUIVANT T
        YT=LIM(3)
-      
-C     LIMITE EN COMPRESSION SUIVANT T     
+
+C     LIMITE EN COMPRESSION SUIVANT T
        YC=LIM(4)
-      
-C     LIMITE EN CISAILLEMENT SUIVANT LT 
+
+C     LIMITE EN CISAILLEMENT SUIVANT LT
        SLT=LIM(5)
-       
+
 C --- RECUPERATION DE L'ORIENTATION DE LA COUCHE
 C     -------------------------------------------
        DO 12 J = 1,2
          CALL CODENT(J,'G',VAL)
          NOMRES(J) = 'C'//NUM//'_V'//VAL
    12  CONTINUE
- 
+
        CALL RCVALA(MATCOD,' ','ELAS_COQMU',0,' ',R8BID,2,NOMRES,VAR,
-     &            CODRET,'FM')
-     
-       ORIEN= VAR(2) 
+     &            ICODRE,1)
+       ORIEN= VAR(2)
        PI=R8PI()
        ORIENR = (ORIEN*PI)/180
- 
+
 C --- PASSAGE DES CONTRAINTES DU REPERE DE LA COQUE
 C     AU REPERE LOCAL DE LA COUCHE DEFINI PAR ORIEN
 C     -------------------------------------------------------
-       
+
        PGL(1,1) = COS(ORIENR)
        PGL(2,1) = SIN(ORIENR)
        PGL(1,2) =-SIN(ORIENR)
        PGL(2,2) = COS(ORIENR)
-       
+
        CALL DXSIRO(NNO,PGL,ZR(ICONT),SIGM)
-      
+
 C --- CALCUL DES CRITERES AUX NOEUDS :
 C     -----------------------------------
        DO 10 INO = 1,NNO
@@ -156,18 +155,18 @@ C     -----------------------------------
          SIGLT(INO) = SIGM(4 + (INO-1)*6)
 C
 
-        IF (SIGL(INO).GT.ZERO) THEN 
+        IF (SIGL(INO).GT.ZERO) THEN
               X=XT
-        ELSE 
+        ELSE
               X=XC
         ENDIF
-        IF (SIGT(INO).GT.ZERO) THEN 
+        IF (SIGT(INO).GT.ZERO) THEN
               Y=YT
-        ELSE 
+        ELSE
               Y=YC
         ENDIF
 
-C--- PREMIER CRITERE        
+C--- PREMIER CRITERE
 
         CRIL(INO) = SIGL(INO)/X
 C
@@ -175,7 +174,7 @@ C--- DEUXIEME CRITERE
 
         CRIT(INO) = SIGT(INO)/Y
 C
-C--- TROISIEME CRITERE         
+C--- TROISIEME CRITERE
         CRILT(INO) = (ABS(SIGLT(INO)))/SLT
 C
 C--- QUATRIEME CRITERE
@@ -183,24 +182,24 @@ C--- QUATRIEME CRITERE
          CRITH(INO) =   (SIGL(INO)*SIGL(INO))/(X*X)
      &                - (SIGL(INO)*SIGT(INO))/(X*X)
      &                + (SIGT(INO)*SIGT(INO))/(Y*Y)
-     &                + (SIGLT(INO)*SIGLT(INO))/(SLT*SLT) 
-           
-C           
+     &                + (SIGLT(INO)*SIGLT(INO))/(SLT*SLT)
+
+C
 10     CONTINUE
 C
 C ---- STOCKAGE :
 C      --------
        DO 20 INO = 1,NNO
               ZR(ICRIT+(INO-1)*7) = SIGL(INO)
-              ZR(ICRIT+1+(INO-1)*7) = SIGT(INO) 
+              ZR(ICRIT+1+(INO-1)*7) = SIGT(INO)
               ZR(ICRIT+2+(INO-1)*7) = SIGLT(INO)
               ZR(ICRIT+3+(INO-1)*7) = CRIL(INO)
-              ZR(ICRIT+4+(INO-1)*7) = CRIT(INO) 
+              ZR(ICRIT+4+(INO-1)*7) = CRIT(INO)
               ZR(ICRIT+5+(INO-1)*7) = CRILT(INO)
               ZR(ICRIT+6+(INO-1)*7) = CRITH(INO)
 
 20     CONTINUE
 C
        CALL JEDEMA()
-C      
+C
        END

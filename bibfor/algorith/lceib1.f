@@ -3,7 +3,7 @@
      &                  T, LAMBDA, DEUXMU,
      &                   EPSTHE, KDESS, BENDO,  GAMMA, SEUIL, COUP)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/02/2011   AUTEUR BARGELLI R.BARGELLINI 
+C MODIF ALGORITH  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -48,7 +48,7 @@ C OUT GAMMA
 C OUT SEUIL
 C ----------------------------------------------------------------------
 
-      CHARACTER*2 CODRET(3)
+      INTEGER ICODRE(3)
       CHARACTER*8 NOMRES(3)
       INTEGER     I,K,NDIMSI
       REAL*8      VALRES(3), E, NU
@@ -88,32 +88,32 @@ C    LECTURE DES CARACTERISTIQUES DU MATERIAU
      &     (COMPOR(1)(1:8) .EQ. 'KIT_THHM')).AND.
      &     (COMPOR(11)(1:15) .EQ. 'ENDO_ISOT_BETON')).OR.
      &     (COMPOR(1)(1:15) .EQ. 'ENDO_ISOT_BETON')) THEN
-    
+
 C      IF (COUP) THEN
       CALL RCVALB(FAMI,1,1,'+',IMATE,' ','ELAS',1,'TEMP',0.D0,2,
-     &              NOMRES,VALRES,CODRET, 'FM')
+     &              NOMRES,VALRES,ICODRE, 1)
       CALL RCVALB(FAMI,1,1,'+',IMATE,' ','ELAS',1,'TEMP',0.D0,1,
-     &              NOMRES(3),VALRES(3),CODRET(3), ' ')
+     &              NOMRES(3),VALRES(3),ICODRE(3), 0)
 C      ELSE
 C      CALL RCVALA(IMATE,' ','ELAS',0,' ',0.D0,2,
-C     &              NOMRES,VALRES,CODRET, 'FM')
+C     &              NOMRES,VALRES,ICODRE, 'FM')
 C      CALL RCVALA(IMATE,' ','ELAS',3,' ',0.D0,1,
-C     &              NOMRES(3),VALRES(3),CODRET(3), ' ')
+C     &              NOMRES(3),VALRES(3),ICODRE(3), ' ')
 C      ENDIF
       IF (IISNAN(TM).EQ.0) THEN
-        IF ((IISNAN(TREF).EQ.1).OR.(CODRET(3).NE.'OK'))  THEN
+        IF ((IISNAN(TREF).EQ.1).OR.(ICODRE(3).NE.0))  THEN
           CALL U2MESS('F','CALCULEL_15')
         ELSE
           EPSTHE = VALRES(3) * (TM - TREF)
         ENDIF
       ELSE
         VALRES(3) = 0.D0
-        EPSTHE = 0.D0        
-      ENDIF 
+        EPSTHE = 0.D0
+      ENDIF
 
       E     = VALRES(1)
       NU    = VALRES(2)
-         
+
       LAMBDA = E * NU / (1.D0+NU) / (1.D0 - 2.D0*NU)
       DEUXMU = E/(1.D0+NU)
 
@@ -121,34 +121,34 @@ C    LECTURE DES CARACTERISTIQUES DE RETRAIT ENDOGENE ET DESSICCATION
       NOMRES(1)='B_ENDOGE'
       NOMRES(2)='K_DESSIC'
       CALL RCVALB(FAMI,1,1,'+',IMATE,' ','ELAS',0,' ',0.D0,2,
-     &             NOMRES,VALRES,CODRET, ' ' )
-      IF ( CODRET(1) .NE. 'OK' ) VALRES(1) = 0.D0
-      IF ( CODRET(2) .NE. 'OK' ) VALRES(2) = 0.D0
+     &             NOMRES,VALRES,ICODRE, 0)
+      IF ( ICODRE(1) .NE.0) VALRES(1) = 0.D0
+      IF ( ICODRE(2) .NE.0) VALRES(2) = 0.D0
       BENDO=VALRES(1)
       KDESS=VALRES(2)
-      
+
 C    LECTURE DES CARACTERISTIQUES D'ENDOMMAGEMENT
       NOMRES(1) = 'D_SIGM_EPSI'
       NOMRES(2) = 'SYT'
       NOMRES(3) = 'SYC'
       CALL RCVALB(FAMI,1,1,'+',IMATE,' ','BETON_ECRO_LINE',
      &           0,' ',0.D0,3,
-     &            NOMRES,VALRES,CODRET,' ')
-      IF ((CODRET(1).NE.'OK').OR.(CODRET(2).NE.'OK')) THEN
+     &            NOMRES,VALRES,ICODRE,0)
+      IF ((ICODRE(1).NE.0).OR.(ICODRE(2).NE.0)) THEN
          CALL U2MESS('F','ALGORITH4_51')
       ENDIF
       GAMMA  = - E/VALRES(1)
       K0=VALRES(2)**2 *(1.D0+GAMMA)/(2.D0*E)
      &               *(1.D0+NU-2.D0*NU**2)/(1.D0+NU)
       IF (NU.EQ.0) THEN
-        IF (CODRET(3).EQ.'OK') THEN
+        IF (ICODRE(3).EQ.0) THEN
           CALL U2MESS('F','ALGORITH4_52')
         ELSE
           SEUIL=K0
         ENDIF
       ELSE
         SICR=SQRT((1.D0+NU-2.D0*NU**2)/(2.D0*NU**2))*VALRES(2)
-        IF (CODRET(3).EQ.'NO') THEN
+        IF (ICODRE(3).EQ.1) THEN
           SEUIL=K0
         ELSE
           IF (VALRES(3).LT.SICR) THEN

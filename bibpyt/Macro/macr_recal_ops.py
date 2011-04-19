@@ -1,4 +1,4 @@
-#@ MODIF macr_recal_ops Macro  DATE 28/03/2011   AUTEUR ASSIRE A.ASSIRE 
+#@ MODIF macr_recal_ops Macro  DATE 19/04/2011   AUTEUR ASSIRE A.ASSIRE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -75,7 +75,7 @@ def force_list(obj, typref=list):
 
 
 # --------------------------------------------------------------------------------------------------
-def macr_recal_ops(self,UNITE_ESCL, RESU_EXP, POIDS, LIST_PARA, RESU_CALC, ITER_MAXI, ITER_FONC_MAXI, RESI_GLOB_RELA,UNITE_RESU,PARA_DIFF_FINI, GRAPHIQUE, METHODE, INFO, **args ):
+def macr_recal_ops(self,UNITE_ESCL, RESU_EXP, LIST_POIDS, LIST_PARA, RESU_CALC, ITER_MAXI, ITER_FONC_MAXI, RESI_GLOB_RELA,UNITE_RESU,PARA_DIFF_FINI, GRAPHIQUE, PARA_OPTI, COURBE, METHODE, INFO, **args ):
    """ Macro commande realisant le recalage de modeles Aster """
 
    # Initialisation du compteur d'erreurs
@@ -110,7 +110,45 @@ def macr_recal_ops(self,UNITE_ESCL, RESU_EXP, POIDS, LIST_PARA, RESU_CALC, ITER_
          self.current_context[k]= v
    self.current_context['_F']=cata.__dict__['_F']
 
-   macr_recal(self, UNITE_ESCL, force_list(RESU_EXP, NP.ndarray), POIDS, force_list(LIST_PARA), force_list(RESU_CALC), 
+   # Reecriture des mots-cles
+   if COURBE:
+       RESU_EXP=[] 
+       RESU_CALC=[]
+       LIST_POIDS=[]
+       LIST_POIDS_DEFAUT=[]
+       LIST_POIDS_TMP=[]
+       for m in COURBE:
+          lpar,lval=m['FONC_EXP'].Valeurs()
+          LIST_EXP=[]
+          LIST_CALC_TMP=[]
+          for j in range(len(lpar)):
+             LIST_EXP_TMP=[] 
+             LIST_EXP_TMP.append(lpar[j])
+             LIST_EXP_TMP.append(lval[j])
+             LIST_EXP.append(LIST_EXP_TMP)
+          RESU_EXP.append(NP.array(LIST_EXP))
+          LIST_CALC_TMP.append(m['NOM_FONC_CALC'])
+          LIST_CALC_TMP.append(m['PARA_X'])
+          LIST_CALC_TMP.append(m['PARA_Y'])
+          RESU_CALC.append(LIST_CALC_TMP)
+          if m['POIDS'] != None : LIST_POIDS_TMP.append(m['POIDS'])
+          LIST_POIDS_DEFAUT.append(1.)
+       if len(LIST_POIDS_TMP)==0 : LIST_POIDS= NP.array(LIST_POIDS_DEFAUT)
+       else:                       LIST_POIDS= NP.array(LIST_POIDS_TMP)
+ 
+   if PARA_OPTI:
+      j=0
+      LIST_PARA=[]
+      for m in PARA_OPTI:
+        LIST_TMP=[]
+        LIST_TMP.append(m['NOM_PARA'])
+        LIST_TMP.append(m['VALE_INI'])
+        LIST_TMP.append(m['VALE_MIN'])
+        LIST_TMP.append(m['VALE_MAX'])
+        LIST_PARA.append(LIST_TMP)
+
+
+   macr_recal(self, UNITE_ESCL, force_list(RESU_EXP, NP.ndarray), LIST_POIDS, force_list(LIST_PARA), force_list(RESU_CALC), 
              ITER_MAXI, ITER_FONC_MAXI, RESI_GLOB_RELA,UNITE_RESU,PARA_DIFF_FINI,
              GRAPHIQUE, METHODE, INFO, **args)
 

@@ -1,7 +1,7 @@
       SUBROUTINE DILPEN(IMATE,RPENA)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 04/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -26,7 +26,7 @@ C ======================================================================
 C --- BUT : RECUPERATION DU COEFFICIENT DE PENALISATION ----------------
 C ======================================================================
       REAL*8       VAL
-      CHARACTER*2  CODRET
+      INTEGER ICODRE
       CHARACTER*8  NCRA
 C ======================================================================
 C --- DEFINITION DES DONNEES INITIALES ---------------------------------
@@ -34,7 +34,7 @@ C ======================================================================
       DATA NCRA  / 'PENA_LAG' /
       VAL   = 0.0D0
       CALL RCVALA(IMATE,' ', 'NON_LOCAL', 0, ' ', 0.0D0,
-     +                                          1, NCRA,VAL,CODRET,' ')
+     &                                          1, NCRA,VAL,ICODRE,0)
       RPENA = VAL
 C ======================================================================
       END

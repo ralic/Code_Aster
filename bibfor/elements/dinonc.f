@@ -1,18 +1,18 @@
-      SUBROUTINE DINONC(NOMTE,CODRE,VALRE,KLV,RAIDE,NBPAR,PARAM,NPLOI,
+      SUBROUTINE DINONC(NOMTE,ICODRE,VALRE,KLV,RAIDE,NBPAR,PARAM,NPLOI,
      &                  OKDIRE)
 C ----------------------------------------------------------------------
       IMPLICIT NONE
       CHARACTER*16  NOMTE
-      CHARACTER*2   CODRE(*)
+      INTEGER   ICODRE(*)
       INTEGER       NBPAR,NPLOI
       REAL*8        VALRE(*),KLV(*),RAIDE(*),PARAM(6,NBPAR)
       LOGICAL       OKDIRE(6)
 
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 05/02/2008   AUTEUR FLEJOU J-L.FLEJOU 
+C MODIF ELEMENTS  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -50,7 +50,7 @@ C ======================================================================
 C
 C  IN
 C     NOMTE : NOM DE L'ELEMENT
-C     CODRE : 'OK' SI LE COEFF EST PRESENT SINON 'NO'
+C     ICODRE : 0 SI LE COEFF EST PRESENT SINON 1
 C     VALRE : VALEUR DES COEFFICIENTS
 C     KLV   : RAIDEUR ELASTIQUE DU DISCRET
 C     NBPAR : NOMBRE DE PARAMETRE MAXIMUM DE LA LOI
@@ -74,7 +74,7 @@ C************ FIN DES DECLARATIONS DES VARIABLES LOCALES ***************
      &      (NOMTE .EQ. 'MECA_DIS_TR_L') ) THEN
          DO 101 II = 0 , 5
             DO 102 JJ = 1 , NPLOI
-               IF ( CODRE(NPLOI*II+JJ).EQ.'OK' ) THEN
+               IF ( ICODRE(NPLOI*II+JJ).EQ.0 ) THEN
                   PARAM(II+1,JJ) = VALRE(NPLOI*II+JJ)
                   OKDIRE(II+1) = .TRUE.
                ENDIF
@@ -91,7 +91,7 @@ C************ FIN DES DECLARATIONS DES VARIABLES LOCALES ***************
      &      (NOMTE .EQ. 'MECA_DIS_T_L') ) THEN
          DO 105 II= 0 , 2
             DO 106 JJ = 1 , NPLOI
-               IF ( CODRE(NPLOI*II+JJ).EQ.'OK' ) THEN
+               IF ( ICODRE(NPLOI*II+JJ).EQ.0 ) THEN
                   PARAM(II+1,JJ) = VALRE(NPLOI*II+JJ)
                   OKDIRE(II+1) = .TRUE.
                ENDIF
@@ -99,7 +99,7 @@ C************ FIN DES DECLARATIONS DES VARIABLES LOCALES ***************
 105      CONTINUE
          DO 107 II= 3 , 5
             DO 108 JJ = 1 , NPLOI
-               IF ( CODRE(NPLOI*II+JJ).EQ.'OK' ) THEN
+               IF ( ICODRE(NPLOI*II+JJ).EQ.0 ) THEN
                   CALL U2MESK('F','DISCRETS_1',1,NOMTE)
                ENDIF
 108         CONTINUE
@@ -112,7 +112,7 @@ C************ FIN DES DECLARATIONS DES VARIABLES LOCALES ***************
      &      (NOMTE .EQ. 'MECA_2D_DIS_TR_L') ) THEN
          DO 110 II= 0 , 1
             DO 111 JJ = 1 , NPLOI
-               IF ( CODRE(NPLOI*II+JJ).EQ.'OK' ) THEN
+               IF ( ICODRE(NPLOI*II+JJ).EQ.0 ) THEN
                   PARAM(II+1,JJ) = VALRE(NPLOI*II+JJ)
                   OKDIRE(II+1) = .TRUE.
                ENDIF
@@ -120,14 +120,14 @@ C************ FIN DES DECLARATIONS DES VARIABLES LOCALES ***************
 110      CONTINUE
          II= 5
             DO 112 JJ = 1 , NPLOI
-               IF ( CODRE(NPLOI*II+JJ).EQ.'OK' ) THEN
+               IF ( ICODRE(NPLOI*II+JJ).EQ.0 ) THEN
                   PARAM(3,JJ) = VALRE(NPLOI*II+JJ)
                   OKDIRE(3) = .TRUE.
                ENDIF
 112         CONTINUE
          DO 113 II= 2 , 4
             DO 114 JJ = 1 , NPLOI
-               IF ( CODRE(NPLOI*II+JJ).EQ.'OK' ) THEN
+               IF ( ICODRE(NPLOI*II+JJ).EQ.0 ) THEN
                   CALL U2MESK('F','DISCRETS_2',1,NOMTE)
                ENDIF
 114         CONTINUE
@@ -140,7 +140,7 @@ C************ FIN DES DECLARATIONS DES VARIABLES LOCALES ***************
      &      (NOMTE .EQ. 'MECA_2D_DIS_T_L') ) THEN
          DO 115 II= 0 , 1
             DO 116 JJ = 1 , NPLOI
-               IF ( CODRE(NPLOI*II+JJ).EQ.'OK' ) THEN
+               IF ( ICODRE(NPLOI*II+JJ).EQ.0 ) THEN
                   PARAM(II+1,JJ) = VALRE(NPLOI*II+JJ)
                   OKDIRE(II+1) = .TRUE.
                ENDIF
@@ -148,7 +148,7 @@ C************ FIN DES DECLARATIONS DES VARIABLES LOCALES ***************
 115      CONTINUE
          DO 117 II= 2 , 5
             DO 118 JJ = 1 , NPLOI
-               IF ( CODRE(NPLOI*II+JJ).EQ.'OK' ) THEN
+               IF ( ICODRE(NPLOI*II+JJ).EQ.0 ) THEN
                   CALL U2MESK('F','DISCRETS_3',1,NOMTE)
                ENDIF
 118         CONTINUE

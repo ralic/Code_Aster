@@ -3,9 +3,9 @@
      &                   OPTION,TAUP,VIP,DTAUDF,IRET)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 07/12/2010   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ALGORITH  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -84,7 +84,7 @@ C COMMON GRANDES DEFORMATIONS SIMO - MIEHE
       REAL*8 BEM(6),BETR(6),DVBETR(6),EQBETR,TRBETR
       REAL*8 JP,DJ,JM,DFB(3,3),MUTRBE,TAUTEQ
       REAL*8 DJDF(3,3),DBTRDF(6,3,3)
-      
+
       COMMON /RCONM6/MUTRBE,TAUTEQ
 
       COMMON /GDSMC/
@@ -96,9 +96,9 @@ C ----------------------------------------------------------------------
 C ----------------------------------------------------------------------
       LOGICAL RESI,RIGI,ELAS
       INTEGER I,IJ,LINE,IBID
-      REAL*8  TEMP,DP,SEUIL,R8BID
+      REAL*8  DP,SEUIL,R8BID
       REAL*8  RP,PENTEP,AIRERP
-      REAL*8  EM(6),EP(6),TRTAU,DVBE(6),JE
+      REAL*8  EM(6),EP(6),TRTAU,DVBE(6)
 
 C ----------------------------------------------------------------------
 
@@ -146,18 +146,18 @@ C-----------------------------------------------------------------------
           ELSEIF (COMPOR .EQ. 'VMIS_ISOT_PUIS') THEN
             TAUTEQ=MU*EQBETR
             MUTRBE=MU*TRBETR
-            CALL ECPUIS(YOUNG,SIGY,APUI,1.D0/NPUI,PM,0.D0,RP,RPRIM) 
-            XAP = (TAUTEQ - RP)/MUTRBE                     
-            VAL0  = NMCRI6(0.D0)                                       
-            PRECR = CARCRI(3) * SIGY                                   
-            NITER = NINT(CARCRI(1))                                    
-                                                                       
-            CALL ZEROFO(NMCRI6,VAL0,XAP,PRECR,NITER,DP,IRET,IBID)      
-            IF(IRET.EQ.1) GOTO 9999                                    
-            CALL ECPUIS(YOUNG,SIGY,APUI,1.D0/NPUI,PM,DP,RP,RPRIM) 
+            CALL ECPUIS(YOUNG,SIGY,APUI,1.D0/NPUI,PM,0.D0,RP,RPRIM)
+            XAP = (TAUTEQ - RP)/MUTRBE
+            VAL0  = NMCRI6(0.D0)
+            PRECR = CARCRI(3) * SIGY
+            NITER = NINT(CARCRI(1))
+
+            CALL ZEROFO(NMCRI6,VAL0,XAP,PRECR,NITER,DP,IRET,IBID)
+            IF(IRET.EQ.1) GOTO 9999
+            CALL ECPUIS(YOUNG,SIGY,APUI,1.D0/NPUI,PM,DP,RP,RPRIM)
             PENTE=RPRIM
           ELSE IF (COMPOR.EQ.'VMIS_ISOT_TRAC') THEN
-            CALL RCFONC('E','TRACTION',JPROL,JVALE,NBVAL,R8BID,
+            CALL RCFONC('E',1,JPROL,JVALE,NBVAL,R8BID,
      &             YOUNG*TRBETR/3,NU,PM,RP,PENTE,AIRERP,MU*EQBETR,DP)
           ELSE
 C CAS VISQUEUX : CALCUL DE DP PAR RESOLUTION DE
@@ -166,7 +166,7 @@ C  FPLAS - (R'+MU TR BEL)DP - PHI(DP) = 0
      &                  SIGM0,EPSI0,COEFM,DP,IRET)
 C DANS LE CAS NON LINEAIRE ON VERFIE QUE L ON A LA BONNE PENTE
             IF (COMPOR(10:14).EQ.'_TRAC')  THEN
-              CALL RCFONC('V','TRACTION',JPROL,JVALE,NBVAL,R8BID,
+              CALL RCFONC('V',1,JPROL,JVALE,NBVAL,R8BID,
      &           R8BID,R8BID,PM+DP,RP,PENTEP,R8BID,R8BID,R8BID)
               DO 10 I = 1,NBVAL
                 IF (ABS(PENTE-PENTEP).LE.1.D-3) THEN
@@ -176,7 +176,7 @@ C DANS LE CAS NON LINEAIRE ON VERFIE QUE L ON A LA BONNE PENTE
                   SEUIL = MU*EQBETR - (RP-PENTE*DP)
                   CALL CALCDP(CARCRI,SEUIL,DT,PENTE,MU*TRBETR,
      &                        SIGM0,EPSI0,COEFM,DP,IRET)
-                  CALL RCFONC('V','TRACTION',JPROL,JVALE,
+                  CALL RCFONC('V',1,JPROL,JVALE,
      &              NBVAL,R8BID,R8BID,R8BID,VIM(1)+DP,RP,PENTEP,
      &              R8BID,R8BID,R8BID)
                 ENDIF

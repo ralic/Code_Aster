@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 28/03/2011   AUTEUR ASSIRE A.ASSIRE 
+#& MODIF COMMANDE  DATE 19/04/2011   AUTEUR ASSIRE A.ASSIRE 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -28,12 +28,30 @@ MACR_RECAL = MACRO(nom="MACR_RECAL",op=macr_recal_ops,
                       sd_prod=macr_recal_prod,
                       fr="Réalise le recalage des calculs Aster sur des résultats expérimentaux"
                         +" ou sur d'autres résultats de calculs",
+            regles=(UN_PARMI('PARA_OPTI','LIST_PARA'),
+                    PRESENT_PRESENT('PARA_OPTI','COURBE'),
+                    PRESENT_PRESENT('LIST_PARA','RESU_EXP'),
+                    PRESENT_PRESENT('LIST_PARA','RESU_CALC'),
+                    EXCLUS('LIST_POIDS','COURBE'),),
 
          UNITE_ESCL      =SIMP(statut='o',typ='I'),
-         RESU_EXP        =SIMP(statut='o',typ=assd,max='**'),
-         POIDS           =SIMP(statut='f',typ=assd,max='**'),
-         RESU_CALC       =SIMP(statut='o',typ=assd,max='**'),
-         LIST_PARA       =SIMP(statut='o',typ=assd,max='**'),
+         RESU_EXP        =SIMP(statut='f',typ=assd,max='**'),
+         COURBE          =FACT(statut='f',max='**',
+              FONC_EXP        =SIMP(statut='o',typ=(fonction_sdaster),),
+              NOM_FONC_CALC   =SIMP(statut='o',typ='TXM',),
+              PARA_X          =SIMP(statut='o',typ='TXM',),
+              PARA_Y          =SIMP(statut='o',typ='TXM',),
+              POIDS           =SIMP(statut='f',typ='R',),
+         ),
+         RESU_CALC       =SIMP(statut='f',typ=assd,max='**'),
+         LIST_PARA       =SIMP(statut='f',typ=assd,max='**'),
+         PARA_OPTI       =FACT(statut='f',max='**',
+             NOM_PARA = SIMP(statut='o',typ='TXM'),
+             VALE_INI = SIMP(statut='o',typ='R'),
+             VALE_MIN = SIMP(statut='o',typ='R'),
+             VALE_MAX = SIMP(statut='o',typ='R'),
+         ),
+         LIST_POIDS      =SIMP(statut='f',typ=assd,max='**'),
 
          UNITE_RESU      =SIMP(statut='f',typ='I',defaut=91),
          PARA_DIFF_FINI  =SIMP(statut='f',typ='R',defaut=0.001),

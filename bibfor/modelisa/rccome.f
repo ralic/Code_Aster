@@ -1,8 +1,8 @@
-      SUBROUTINE RCCOME(NOMMAT,PHENO,PHENOM,CODRET)
+      SUBROUTINE RCCOME(NOMMAT,PHENO,PHENOM,ICODRE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -19,7 +19,7 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
       IMPLICIT REAL*8 (A-H,O-Z)
       CHARACTER*(*)     NOMMAT,PHENO,PHENOM
-      CHARACTER*2                           CODRET
+      INTEGER                           ICODRE
 C ----------------------------------------------------------------------
 C     OBTENTION DU COMPORTEMENT COMPLET D'UN MATERIAU DONNE A PARTIR
 C     D'UN PREMISSE
@@ -29,11 +29,10 @@ C        NOMMAT : NOM DU MATERIAU
 C        PHENO  : NOM DU PHENOMENE INCOMPLET
 C     ARGUMENTS DE SORTIE:
 C        PHENOM: NOM DU PHENOMENE COMPLET
-C     CODRET : POUR CHAQUE RESULTAT, 'OK' SI ON A TROUVE, 'NO' SINON
+C     ICODRE : POUR CHAQUE RESULTAT, 0 SI ON A TROUVE, 1 SINON
 C
 C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
 C
-      CHARACTER*32       JEXNUM , JEXNOM , JEXR8 , JEXATR
       INTEGER            ZI
       COMMON  / IVARJE / ZI(1)
       REAL*8             ZR
@@ -54,7 +53,7 @@ C ----------------------------------------------------------------------
 C DEB ------------------------------------------------------------------
       CHARACTER*8     K8BID
       CHARACTER*32    NCOMP
-      CODRET = 'OK'
+      ICODRE = 0
       NCOMP = NOMMAT//'.MATERIAU.NOMRC         '
       CALL JELIRA(NCOMP,'LONUTI',NBCOMP,K8BID)
       CALL JEVEUO(NCOMP,'L',ICOMP)
@@ -64,7 +63,7 @@ C DEB ------------------------------------------------------------------
           GOTO 999
         ENDIF
  10   CONTINUE
-      CODRET = 'NO'
+      ICODRE = 1
       CALL U2MESS('A','ELEMENTS2_63')
       GOTO 999
 C

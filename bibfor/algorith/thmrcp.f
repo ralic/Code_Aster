@@ -12,7 +12,7 @@
      &                 ISOT,DFICKS,INSTAP)
 C =====================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 04/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -129,7 +129,7 @@ C
       REAL*8      VG(DIMVG),FPESA,R8PREM
 
 C
-      CHARACTER*2   CODRET(NRESMA)
+      INTEGER ICODRE(NRESMA)
       CHARACTER*4   NOMPAR(DIMPAR)
       CHARACTER*8   NCRA1(DIM1), NCRA2(DIM2), NCRA3(DIM3), NCRA4(DIM4)
       CHARACTER*8   NCRA5(DIM5), NCRA6(DIM6), NCRA7(DIM7), NCRA8(DIM8)
@@ -256,7 +256,6 @@ C =====================================================================
      &              'PERMIN_X','PERMIN_Y',
      &              'PERMIN_Z','PERMINXY',
      &              'PERMINYZ','PERMINZX'/
-     
        DATA NCRA19 / 'UN_SUR_K' ,
      &              'VISC'     ,
      &              'D_VISC_T' ,
@@ -501,10 +500,10 @@ C =====================================================================
 C --- DEFINITION PARAMETRES MUALEM VAN GENUCHTEN ----------------------
 C =====================================================================
        DATA NVG    / 'VG_N' ,
-     +               'VG_PR' ,
-     +               'VG_SR' ,
-     +               'VG_SMAX',
-     +               'VG_SATUR' /
+     &               'VG_PR' ,
+     &               'VG_SR' ,
+     &               'VG_SMAX',
+     &               'VG_SATUR' /
 C =====================================================================
 C --- CAS DE L'INITIALISATION -----------------------------------------
 C =====================================================================
@@ -514,7 +513,7 @@ C =====================================================================
  10      CONTINUE
          VAL1(1) = R8VIDE()
          CALL RCVALA(IMATE,' ', 'THM_INIT', 0, ' ', 0.D0,
-     &                                  DIM1, NCRA1, VAL1, CODRET, ' ')
+     &                                  DIM1, NCRA1, VAL1, ICODRE, 0)
          T0   = VAL1(1)
          P10  = VAL1(2)
          P20  = VAL1(3)
@@ -562,17 +561,17 @@ C =====================================================================
                VAL3(II) = 0.0D0
  30         CONTINUE
             CALL RCVALA(IMATE,' ', 'THM_DIFFU', 0, ' ', 0.0D0,
-     &                                     2, NCRA2, VAL2, CODRET, ' ')
+     &                                     2, NCRA2, VAL2, ICODRE, 0)
             CALL RCVALA(IMATE,' ', 'THM_LIQU', 0, ' ', 0.0D0,
-     &                                     2, NCRA3, VAL3, CODRET, ' ')
+     &                                     2, NCRA3, VAL3, ICODRE, 0)
             IF (THER.NE.' ') THEN
                CALL RCVALA(IMATE,' ', 'THM_DIFFU', 1, 'TEMP', T,
-     &                              1, NCRA2(3), VAL2(3), CODRET, 'FM')
+     &                              1, NCRA2(3), VAL2(3), ICODRE, 1)
                CALL RCVALA(IMATE,' ', 'THM_LIQU', 1, 'TEMP', T,
-     &                              2, NCRA3(3), VAL3(3), CODRET, 'FM')
+     &                              2, NCRA3(3), VAL3(3), ICODRE, 1)
             ENDIF
             CALL RCVALA(IMATE,' ', 'THM_DIFFU', 0, ' ', 0.0D0,
-     &                         1, NCRA2(4), VAL2(4), CODRET, ' ')
+     &                         1, NCRA2(4), VAL2(4), ICODRE, 0)
             RHOD    = VAL2(1)
             BIOT    = VAL2(2)
             CPD     = VAL2(3)
@@ -593,17 +592,17 @@ C =====================================================================
                VAL5(II) = 0.0D0
  50         CONTINUE
             CALL RCVALA(IMATE,' ', 'THM_DIFFU', 0, ' ', 0.0D0,
-     &                                     3, NCRA4, VAL4, CODRET, ' ')
+     &                                     3, NCRA4, VAL4, ICODRE, 0)
             CALL RCVALA(IMATE,' ', 'THM_GAZ', 0, ' ', 0.0D0,
-     &                                     1, NCRA5, VAL5, CODRET, ' ')
+     &                                     1, NCRA5, VAL5, ICODRE, 0)
             IF (THER.NE.' ') THEN
                CALL RCVALA(IMATE,' ', 'THM_DIFFU', 1, 'TEMP', T,
-     &                              1, NCRA4(4), VAL4(4), CODRET, 'FM')
+     &                              1, NCRA4(4), VAL4(4), ICODRE, 1)
                CALL RCVALA(IMATE,' ', 'THM_GAZ', 1, 'TEMP', T,
-     &                              1, NCRA5(2), VAL5(2), CODRET, 'FM')
+     &                              1, NCRA5(2), VAL5(2), ICODRE, 1)
             ENDIF
             CALL RCVALA(IMATE,' ', 'THM_DIFFU', 0, ' ', 0.0D0,
-     &                           1, NCRA4(5), VAL4(5), CODRET, ' ')
+     &                           1, NCRA4(5), VAL4(5), ICODRE, 0)
             RGAZ    = VAL4(1)
             RHOD    = VAL4(2)
             BIOT    = VAL4(3)
@@ -626,32 +625,32 @@ C =====================================================================
                VAL8(II) = 0.0D0
  80         CONTINUE
             CALL RCVALA(IMATE,' ', 'THM_DIFFU', 0, 'TEMP', 0.0D0,
-     &                                   3, NCRA6, VAL6, CODRET, ' ')
+     &                                   3, NCRA6, VAL6, ICODRE, 0)
             CALL RCVALA(IMATE,' ', 'THM_LIQU', 0, ' ', 0.0D0,
-     &                                   2, NCRA7, VAL7, CODRET, ' ')
+     &                                   2, NCRA7, VAL7, ICODRE, 0)
             CALL RCVALA(IMATE,' ', 'THM_VAPE_GAZ', 0, ' ', 0.0D0,
-     &                                   2, NCRA8, VAL8, CODRET, ' ')
+     &                                   2, NCRA8, VAL8, ICODRE, 0)
             IF (THER.NE.' ') THEN
                CALL RCVALA(IMATE,' ', 'THM_DIFFU', 1, 'TEMP', T,
-     &                              1, NCRA6(4), VAL6(4), CODRET, 'FM')
+     &                              1, NCRA6(4), VAL6(4), ICODRE, 1)
                CALL RCVALA(IMATE,' ', 'THM_LIQU', 1, 'TEMP', T,
-     &                              2, NCRA7(3), VAL7(3), CODRET, 'FM')
+     &                              2, NCRA7(3), VAL7(3), ICODRE, 1)
             ENDIF
             IF (HYDR.EQ.'HYDR_VGM') THEN
                CALL RCVALA(IMATE,' ', 'THM_DIFFU', 0, ' ', 0.0D0,
-     &                     5, NVG(1), VG(1), CODRET, 'FM')
-               IF (CODRET(1).EQ.'NO') THEN
+     &                     5, NVG(1), VG(1), ICODRE, 1)
+               IF (ICODRE(1).EQ.1) THEN
                   CALL U2MESS('F','ALGORITH16_94')
                ENDIF
                CALL SATUVG(VG,P1M,VAL6(5),RBID1  )
             ELSEIF (HYDR.EQ.'HYDR_UTIL' .OR. HYDR.EQ.'HYDR_ENDO') THEN
                CALL RCVALA(IMATE,' ', 'THM_DIFFU', 1, 'PCAP', P1M,
-     &                              1, NCRA6(5), VAL6(5), CODRET, 'FM')
+     &                              1, NCRA6(5), VAL6(5), ICODRE, 1)
             ELSE
                CALL SATURA(HYDR,P1M,VAL6(5),RBID1  )
             ENDIF
             CALL RCVALA(IMATE,' ', 'THM_DIFFU', 0, ' ', 0.0D0,
-     &                         1, NCRA6(6), VAL6(6), CODRET, ' ')
+     &                         1, NCRA6(6), VAL6(6), ICODRE, 0)
             RGAZ    = VAL6(1)
             RHOD    = VAL6(2)
             BIOT    = VAL6(3)
@@ -684,25 +683,25 @@ C =====================================================================
                VAL12(II) = 0.0D0
  120         CONTINUE
             CALL RCVALA(IMATE,' ', 'THM_DIFFU', 0, ' ', 0.0D0,
-     &                                     3, NCRA9, VAL9, CODRET, ' ')
+     &                                     3, NCRA9, VAL9, ICODRE, 0)
             CALL RCVALA(IMATE,' ', 'THM_LIQU', 0, ' ', 0.0D0,
-     &                                   2, NCRA10, VAL10, CODRET, ' ')
+     &                                   2, NCRA10, VAL10, ICODRE, 0)
             CALL RCVALA(IMATE,' ', 'THM_GAZ', 0, ' ', 0.0D0,
-     &                                   1, NCRA11, VAL11, CODRET, ' ')
+     &                                   1, NCRA11, VAL11, ICODRE, 0)
             CALL RCVALA(IMATE,' ', 'THM_VAPE_GAZ', 0, ' ', 0.0D0,
-     &                                   2, NCRA12, VAL12, CODRET, ' ')
+     &                                   2, NCRA12, VAL12, ICODRE, 0)
             IF (THER.NE.' ') THEN
                CALL RCVALA(IMATE,' ', 'THM_DIFFU', 1, 'TEMP', T,
-     &                              1, NCRA9(4), VAL9(4), CODRET, 'FM')
+     &                              1, NCRA9(4), VAL9(4), ICODRE, 1)
                CALL RCVALA(IMATE,' ', 'THM_LIQU', 1, 'TEMP', T,
-     &                            2, NCRA10(3), VAL10(3), CODRET, 'FM')
+     &                            2, NCRA10(3), VAL10(3), ICODRE, 1)
                CALL RCVALA(IMATE,' ', 'THM_GAZ', 1, 'TEMP', T,
-     &                            1, NCRA11(2), VAL11(2), CODRET, 'FM')
+     &                            1, NCRA11(2), VAL11(2), ICODRE, 1)
             ENDIF
             IF (HYDR.EQ.'HYDR_VGM') THEN
                CALL RCVALA(IMATE,' ', 'THM_DIFFU', 0, ' ', 0.0D0,
-     &                     5, NVG(1), VG(1), CODRET, 'FM')
-               IF (CODRET(1).EQ.'NO') THEN
+     &                     5, NVG(1), VG(1), ICODRE, 1)
+               IF (ICODRE(1).EQ.1) THEN
                   CALL U2MESS('F','ALGORITH16_94')
                ENDIF
                CALL SATUVG(VG,P1M,VAL9(5),RBID1  )
@@ -710,15 +709,15 @@ C =====================================================================
 C
             ELSE IF (HYDR.EQ.'HYDR_UTIL' .OR. HYDR.EQ.'HYDR_ENDO') THEN
                CALL RCVALA(IMATE,' ', 'THM_DIFFU', 1, 'PCAP', P1M,
-     &                              1, NCRA9(5), VAL9(5), CODRET, 'FM')
+     &                              1, NCRA9(5), VAL9(5), ICODRE, 1)
                CALL RCVALA(IMATE,' ', 'THM_DIFFU', 1, 'PCAP', P1,
-     &                              2, NCRA9(5), VAL9(6), CODRET, 'FM')
+     &                              2, NCRA9(5), VAL9(6), ICODRE, 1)
             ELSE
                CALL SATURA(HYDR,P1M,VAL9(5),RBID1  )
                CALL SATURA(HYDR,P1 ,VAL9(6),VAL9(7))
             ENDIF
             CALL RCVALA(IMATE,' ', 'THM_DIFFU', 0, ' ', 0.0D0,
-     &                         1, NCRA9(7), VAL9(8), CODRET, ' ')
+     &                         1, NCRA9(7), VAL9(8), ICODRE, 0)
             RGAZ    = VAL9(1)
             RHOD    = VAL9(2)
             BIOT    = VAL9(3)
@@ -761,48 +760,48 @@ C =====================================================================
                VAL39(II) = 0.0D0
  131         CONTINUE
             CALL RCVALA(IMATE,' ', 'THM_DIFFU', 0, ' ', 0.0D0,
-     &                                   3, NCRA35, VAL35, CODRET, ' ')
+     &                                   3, NCRA35, VAL35, ICODRE, 0)
                     
             CALL RCVALA(IMATE,' ', 'THM_LIQU', 0, ' ', 0.0D0,
-     &                                   2, NCRA36, VAL36, CODRET, ' ')
+     &                                   2, NCRA36, VAL36, ICODRE, 0)
                         
             CALL RCVALA(IMATE,' ', 'THM_GAZ', 0, ' ', 0.0D0,
-     &                                   1, NCRA37, VAL37, CODRET, ' ')
+     &                                   1, NCRA37, VAL37, ICODRE, 0)
                 
             CALL RCVALA(IMATE,' ', 'THM_VAPE_GAZ', 0, ' ', 0.0D0,
-     &                                   2, NCRA38, VAL38, CODRET, ' ')
+     &                                   2, NCRA38, VAL38, ICODRE, 0)
            
             IF (THER.NE.' ') THEN
                 CALL RCVALA(IMATE,' ', 'THM_DIFFU', 1, 'TEMP', T,
-     &                            1, NCRA35(4), VAL35(4), CODRET, 'FM')
+     &                            1, NCRA35(4), VAL35(4), ICODRE, 1)
                CALL RCVALA(IMATE,' ', 'THM_LIQU', 1, 'TEMP', T,
-     &                           2, NCRA36(3), VAL36(3), CODRET, 'FM')
+     &                           2, NCRA36(3), VAL36(3), ICODRE, 1)
                CALL RCVALA(IMATE,' ', 'THM_GAZ', 1, 'TEMP', T,
-     &                            1, NCRA37(2), VAL37(2), CODRET, 'FM')
+     &                            1, NCRA37(2), VAL37(2), ICODRE, 1)
             ENDIF
             IF (HYDR.EQ.'HYDR_VGM') THEN
                CALL RCVALA(IMATE,' ', 'THM_DIFFU', 0, ' ', 0.0D0,
-     &                     5, NVG(1), VG(1), CODRET, 'FM')
-               IF (CODRET(1).EQ.'NO') THEN
+     &                     5, NVG(1), VG(1), ICODRE, 1)
+               IF (ICODRE(1).EQ.1) THEN
                       CALL U2MESS('F','ALGORITH16_94')
                ENDIF
                CALL SATUVG(VG,P1M,VAL35(5),RBID1  )
                CALL SATUVG(VG,P1,VAL35(6),VAL35(7)  )
             ELSE IF (HYDR.EQ.'HYDR_UTIL' .OR. HYDR.EQ.'HYDR_ENDO') THEN
                CALL RCVALA(IMATE,' ', 'THM_DIFFU', 1, 'PCAP', P1M,
-     &                            1, NCRA35(5), VAL35(5), CODRET, 'FM')
+     &                            1, NCRA35(5), VAL35(5), ICODRE, 1)
                CALL RCVALA(IMATE,' ', 'THM_DIFFU', 1, 'PCAP', P1,
-     &                            2, NCRA35(5), VAL35(6), CODRET, 'FM')
+     &                            2, NCRA35(5), VAL35(6), ICODRE, 1)
             ELSE
                CALL SATURA(HYDR,P1M,VAL35(5),RBID1  )
                CALL SATURA(HYDR,P1 ,VAL35(6),VAL35(7))
             ENDIF
             CALL RCVALA(IMATE, ' ','THM_AIR_DISSOUS', 0, ' ', 0.0D0,
-     &                           1, NCRA39(1), VAL39(1), CODRET, 'FM ')
+     &                           1, NCRA39(1), VAL39(1), ICODRE, 1)
             CALL RCVALA(IMATE,' ', 'THM_AIR_DISSOUS',  1, 'TEMP', T,
-     &                           1, NCRA39(2), VAL39(2), CODRET, 'FM ')
+     &                           1, NCRA39(2), VAL39(2), ICODRE, 1)
             CALL RCVALA(IMATE,' ', 'THM_DIFFU', 0, ' ', 0.0D0,
-     &                          1, NCRA35(7), VAL35(8), CODRET, ' ')
+     &                          1, NCRA35(7), VAL35(8), ICODRE, 0)
             RGAZ    = VAL35(1)
             RHOD    = VAL35(2)
             BIOT    = VAL35(3)
@@ -847,45 +846,45 @@ C =====================================================================
                VAL39(II) = 0.0D0
  9131         CONTINUE
             CALL RCVALA(IMATE,' ', 'THM_DIFFU', 0, ' ', 0.0D0,
-     &                                   3, CRAD35, VAL35, CODRET, ' ')
+     &                                   3, CRAD35, VAL35, ICODRE, 0)
                     
             CALL RCVALA(IMATE,' ', 'THM_LIQU', 0, ' ', 0.0D0,
-     &                                   2, CRAD36, VAL36, CODRET, ' ')
+     &                                   2, CRAD36, VAL36, ICODRE, 0)
                         
             CALL RCVALA(IMATE,' ', 'THM_GAZ', 0, ' ', 0.0D0,
-     &                                   1, CRAD37, VAL37, CODRET, ' ')
+     &                                   1, CRAD37, VAL37, ICODRE, 0)
            
             IF (THER.NE.' ') THEN
                 CALL RCVALA(IMATE,' ', 'THM_DIFFU', 1, 'TEMP', T,
-     &                            1, CRAD35(4), VAL35(4), CODRET, 'FM')
+     &                            1, CRAD35(4), VAL35(4), ICODRE, 1)
                CALL RCVALA(IMATE,' ', 'THM_LIQU', 1, 'TEMP', T,
-     &                           2, CRAD36(3), VAL36(3), CODRET, 'FM')
+     &                           2, CRAD36(3), VAL36(3), ICODRE, 1)
                CALL RCVALA(IMATE,' ', 'THM_GAZ', 1, 'TEMP', T,
-     &                            1, CRAD37(2), VAL37(2), CODRET, 'FM')
+     &                            1, CRAD37(2), VAL37(2), ICODRE, 1)
             ENDIF
             IF (HYDR.EQ.'HYDR_VGM') THEN
                CALL RCVALA(IMATE,' ', 'THM_DIFFU', 0, ' ', 0.0D0,
-     &                     5, NVG(1), VG(1), CODRET, 'FM')
-               IF (CODRET(1).EQ.'NO') THEN
+     &                     5, NVG(1), VG(1), ICODRE, 1)
+               IF (ICODRE(1).EQ.1) THEN
                       CALL U2MESS('F','ALGORITH16_94')
                ENDIF
                CALL SATUVG(VG,P1M,VAL35(5),RBID1  )
                CALL SATUVG(VG,P1,VAL35(6),VAL35(7)  )
             ELSE IF (HYDR.EQ.'HYDR_UTIL' .OR. HYDR.EQ.'HYDR_ENDO') THEN
                CALL RCVALA(IMATE,' ', 'THM_DIFFU', 1, 'PCAP', P1M,
-     &                            1, CRAD35(5), VAL35(5), CODRET, 'FM')
+     &                            1, CRAD35(5), VAL35(5), ICODRE, 1)
                CALL RCVALA(IMATE,' ', 'THM_DIFFU', 1, 'PCAP', P1,
-     &                            2, CRAD35(5), VAL35(6), CODRET, 'FM')
+     &                            2, CRAD35(5), VAL35(6), ICODRE, 1)
             ELSE
                CALL SATURA(HYDR,P1M,VAL35(5),RBID1  )
                CALL SATURA(HYDR,P1 ,VAL35(6),VAL35(7))
             ENDIF
             CALL RCVALA(IMATE, ' ','THM_AIR_DISSOUS', 0, ' ', 0.0D0,
-     &                           1, CRAD39(1), VAL39(1), CODRET, 'FM ')
+     &                           1, CRAD39(1), VAL39(1), ICODRE, 1)
             CALL RCVALA(IMATE,' ', 'THM_AIR_DISSOUS',  1, 'TEMP', T,
-     &                           1, CRAD39(2), VAL39(2), CODRET, 'FM ')
+     &                           1, CRAD39(2), VAL39(2), ICODRE, 1)
             CALL RCVALA(IMATE,' ', 'THM_DIFFU', 0, ' ', 0.0D0,
-     &                          1, CRAD35(7), VAL35(8), CODRET, ' ')
+     &                          1, CRAD35(7), VAL35(8), ICODRE, 0)
             RGAZ    = VAL35(1)
             RHOD    = VAL35(2)
             BIOT    = VAL35(3)
@@ -927,38 +926,38 @@ C =====================================================================
                VAL15(II) = 0.0D0
  150        CONTINUE
             CALL RCVALA(IMATE,' ', 'THM_DIFFU', 0, ' ', 0.0D0,
-     &                                   3, NCRA13, VAL13, CODRET, ' ')
+     &                                   3, NCRA13, VAL13, ICODRE, 0)
             CALL RCVALA(IMATE,' ', 'THM_LIQU', 0, ' ', 0.0D0,
-     &                                   2, NCRA14, VAL14, CODRET, ' ')
+     &                                   2, NCRA14, VAL14, ICODRE, 0)
             CALL RCVALA(IMATE,' ', 'THM_GAZ', 0, ' ', 0.0D0,
-     &                                   1, NCRA15, VAL15, CODRET, ' ')
+     &                                   1, NCRA15, VAL15, ICODRE, 0)
             IF (THER.NE.' ') THEN
                CALL RCVALA(IMATE,' ', 'THM_DIFFU', 1, 'TEMP', T,
-     &                            1, NCRA13(4), VAL13(4), CODRET, 'FM')
+     &                            1, NCRA13(4), VAL13(4), ICODRE, 1)
                CALL RCVALA(IMATE,' ', 'THM_LIQU', 1, 'TEMP', T,
-     &                            2, NCRA14(3), VAL14(3), CODRET, 'FM')
+     &                            2, NCRA14(3), VAL14(3), ICODRE, 1)
                CALL RCVALA(IMATE,' ', 'THM_GAZ', 1, 'TEMP', T,
-     &                            1, NCRA15(2), VAL15(2), CODRET, 'FM')
+     &                            1, NCRA15(2), VAL15(2), ICODRE, 1)
             ENDIF
             IF (HYDR.EQ.'HYDR_VGM') THEN
                CALL RCVALA(IMATE,' ', 'THM_DIFFU', 0, ' ', 0.0D0,
-     &                     5, NVG(1), VG(1), CODRET, 'FM')
-               IF (CODRET(1).EQ.'NO') THEN
+     &                     5, NVG(1), VG(1), ICODRE, 1)
+               IF (ICODRE(1).EQ.1) THEN
                       CALL U2MESS('F','ALGORITH16_94')
                ENDIF
                CALL SATUVG(VG,P1M,VAL13(5),RBID1  )
                CALL SATUVG(VG,P1,VAL13(6),VAL13(7) )
             ELSEIF (HYDR.EQ.'HYDR_UTIL' .OR. HYDR.EQ.'HYDR_ENDO') THEN
                CALL RCVALA(IMATE,' ', 'THM_DIFFU', 1, 'PCAP', P1M,
-     &                            1, NCRA13(5), VAL13(5), CODRET, 'FM')
+     &                            1, NCRA13(5), VAL13(5), ICODRE, 1)
                CALL RCVALA(IMATE,' ', 'THM_DIFFU', 1, 'PCAP', P1,
-     &                            2, NCRA13(5), VAL13(6), CODRET, 'FM')
+     &                            2, NCRA13(5), VAL13(6), ICODRE, 1)
             ELSE
                CALL SATURA(HYDR,P1M,VAL13(5),RBID1  )
                CALL SATURA(HYDR,P1,VAL13(6),VAL13(7))
             ENDIF
             CALL RCVALA(IMATE,' ', 'THM_DIFFU', 0, ' ', 0.0D0,
-     &                        1, NCRA13(7), VAL13(8), CODRET, ' ')
+     &                        1, NCRA13(7), VAL13(8), ICODRE, 0)
             RGAZ    = VAL13(1)
             RHOD    = VAL13(2)
             BIOT    = VAL13(3)
@@ -990,26 +989,26 @@ C =====================================================================
                VAL17(II) = 0.0D0
  170        CONTINUE
             CALL RCVALA(IMATE,' ', 'THM_DIFFU', 0, ' ', 0.0D0,
-     &                                 2, NCRA16, VAL16, CODRET, ' ')
+     &                                 2, NCRA16, VAL16, ICODRE, 0)
             CALL RCVALA(IMATE,' ', 'THM_LIQU', 0, ' ', 0.0D0,
-     &                                 2, NCRA17, VAL17, CODRET, ' ')
+     &                                 2, NCRA17, VAL17, ICODRE, 0)
             IF (THER.NE.' ') THEN
                CALL RCVALA(IMATE,' ', 'THM_DIFFU', 1, 'TEMP', T,
-     &                            1, NCRA16(3), VAL16(3), CODRET, 'FM')
+     &                            1, NCRA16(3), VAL16(3), ICODRE, 1)
                CALL RCVALA(IMATE,' ', 'THM_LIQU', 1, 'TEMP', T,
-     &                            2, NCRA17(3), VAL17(3), CODRET, 'FM')
+     &                            2, NCRA17(3), VAL17(3), ICODRE, 1)
             ENDIF
             IF (HYDR.EQ.'HYDR_UTIL' .OR. HYDR.EQ.'HYDR_ENDO') THEN
                CALL RCVALA(IMATE,' ', 'THM_DIFFU', 1, 'PCAP', P1M,
-     &                            1, NCRA16(4), VAL16(4), CODRET, 'FM')
+     &                            1, NCRA16(4), VAL16(4), ICODRE, 1)
                CALL RCVALA(IMATE,' ', 'THM_DIFFU', 1, 'PCAP', P1,
-     &                            2, NCRA16(4), VAL16(5), CODRET, 'FM')
+     &                            2, NCRA16(4), VAL16(5), ICODRE, 1)
             ELSE
                CALL SATURA(HYDR,P1M,VAL16(4),RBID1  )
                CALL SATURA(HYDR,P1,VAL16(5),VAL16(6))
             ENDIF
             CALL RCVALA(IMATE,' ', 'THM_DIFFU', 0, ' ', 0.0D0,
-     &                          1, NCRA16(6), VAL16(7), CODRET, ' ')
+     &                          1, NCRA16(6), VAL16(7), ICODRE, 0)
             RHOD    = VAL16(1)
             BIOT    = VAL16(2)
             CPD     = VAL16(3)
@@ -1031,7 +1030,7 @@ C =====================================================================
       ELSE IF (ETAPE.EQ.'SATURATI') THEN
          IF (HYDR.EQ.'HYDR_UTIL' .OR. HYDR.EQ.'HYDR_ENDO') THEN
             CALL RCVALA(IMATE,' ','THM_DIFFU',1,'PCAP',P1,
-     &                                  DIMSAT,NSAT,VALSAT,CODRET,'FM')
+     &                                  DIMSAT,NSAT,VALSAT,ICODRE,1)
             SATUR  = VALSAT(1)
             DSATUR = VALSAT(2)
          ELSE IF (HYDR.EQ.'HYDR')THEN
@@ -1047,7 +1046,7 @@ C =====================================================================
 C --- CAS FINAL -------------------------------------------------------
 C =====================================================================
          CALL RCVALA(IMATE,' ', 'THM_DIFFU', 0, ' ', 0.0D0,
-     &                            1, 'BIOT_COE', BIOT, CODRET, 'FM')
+     &                            1, 'BIOT_COE', BIOT, ICODRE, 1)
          IF (THMC.EQ.'LIQU_SATU') THEN
 C =====================================================================
 C --- LOI DE COUPLAGE DE TYPE LIQU_SATU -------------------------------
@@ -1074,10 +1073,10 @@ C
             VAL18(16) = 0.D0
 C
             CALL RCVALA(IMATE,' ', 'THM_DIFFU', 0, ' ', 0.0D0,
-     &                       3, NCRA18(1), VAL18(1), CODRET, ' ')
+     &                       3, NCRA18(1), VAL18(1), ICODRE, 0)
             IF ((HYDR.EQ.'HYDR_UTIL').OR.(HYDR.EQ.'HYDR_VGM')) THEN
                CALL RCVALA(IMATE,' ', 'THM_DIFFU', 1, 'PORO', PHI,
-     &                               1, NCRA18(4), VAL18(4),CODRET,' ')
+     &                               1, NCRA18(4), VAL18(4),ICODRE,0)
             ELSE IF (HYDR.EQ.'HYDR_ENDO') THEN
                IF ( (MECA.EQ.'MAZARS')          .OR.
      &              (MECA.EQ.'ENDO_ISOT_BETON')      ) THEN
@@ -1085,38 +1084,38 @@ C =====================================================================
 C --- ATTENTION DECALAGE VOLONTAIRE SUR LE TABLEAU VAL18 POUR ENDO ----
 C =====================================================================
                   CALL RCVALA(IMATE,' ', 'THM_DIFFU', 1, 'ENDO', ENDO,
-     &                            1, NCRA18(5), VAL18(4), CODRET, 'FM')
+     &                            1, NCRA18(5), VAL18(4), ICODRE, 1)
                ENDIF
             ENDIF
             CALL RCVALA(IMATE,' ', 'THM_LIQU', 1, 'TEMP', T,
-     &                             DIM19-1, NCRA19, VAL19, CODRET, ' ')
+     &                             DIM19-1, NCRA19, VAL19, ICODRE, 0)
             IF (THER.NE.' ') THEN
                CALL RCVALA(IMATE,' ', 'THM_DIFFU', 1, 'TEMP', T,
-     &                            1, NCRA18(6), VAL18(6), CODRET, 'FM')
+     &                            1, NCRA18(6), VAL18(6), ICODRE, 1)
                CALL RCVALA(IMATE,' ', 'THM_DIFFU', 1, 'TEMP', T,
-     &                            1, NCRA18(7), VAL18(7), CODRET, ' ')
+     &                            1, NCRA18(7), VAL18(7), ICODRE, 0)
                CALL RCVALA(IMATE,' ', 'THM_DIFFU', 1, 'PORO', PHI,
-     &                            2, NCRA18(8), VAL18(8), CODRET, ' ')
+     &                            2, NCRA18(8), VAL18(8), ICODRE, 0)
                CALL RCVALA(IMATE,' ', 'THM_DIFFU', 0, ' ', 0.D0,
-     &                            1, NCRA18(10), VAL18(10), CODRET, ' ')
+     &                            1, NCRA18(10), VAL18(10), ICODRE, 0)
                CALL RCVALA(IMATE,' ', 'THM_LIQU', 1, 'TEMP', T,
-     &                            1, NCRA19(4), VAL19(4), CODRET, 'FM')
+     &                            1, NCRA19(4), VAL19(4), ICODRE, 1)
             ENDIF
 C
 C--- TENSEUR ISOTOPE LE CAS ECHEANT
 C
             CALL RCVALA(IMATE,' ', 'THM_DIFFU', 0, ' ', 0.0D0,
-     &                       6, NCRA18(11), VAL18(11), CODRET, ' ')
+     &                       6, NCRA18(11), VAL18(11), ICODRE, 0)
 
 C
            CALL RCVALA(IMATE,' ', 'THM_DIFFU', 1, 'INST', INSTAP,
-     &                 1, 'PESA_MUL', FPESA, CODRET, ' ')
+     &                 1, 'PESA_MUL', FPESA, ICODRE, 0)
 C COMME IL N'EST PAS POSSIBLE D'AFFECTER UNE VALEUR PAR DEFAUT
 C A LA FONCTION PESA_MULT DANS LE FICHIER DE COMMANDE
 C DEFI_MATERIAU.CAPY, ON UTILISE LE CODE RETOUR POUR LA METTRE
 C A SA VALEUR PAR DEFAUT (EGALE A 1) SI ELLE N A PAS ETE
 C DEFINIE DANS LE FICHIER DE COMMANDE 
-            IF (CODRET(1).EQ.'NO') THEN                  
+            IF (ICODRE(1).EQ.1) THEN
                 FPESA=1.D0
             ENDIF
 C            
@@ -1169,10 +1168,10 @@ C
             VAL20(17) = 0.D0
 
             CALL RCVALA(IMATE,' ', 'THM_DIFFU', 0, ' ', 0.0D0,
-     &                       DIM20-7, NCRA20(1), VAL20(1), CODRET, ' ')
+     &                       DIM20-7, NCRA20(1), VAL20(1), ICODRE, 0)
             IF ((HYDR.EQ.'HYDR_UTIL').OR.(HYDR.EQ.'HYDR_VGM')) THEN
                CALL RCVALA(IMATE,' ', 'THM_DIFFU', 1, 'PORO', PHI,
-     &                               1, NCRA20(5), VAL20(5),CODRET,' ')
+     &                               1, NCRA20(5), VAL20(5),ICODRE,0)
             ELSE IF (HYDR.EQ.'HYDR_ENDO') THEN
                IF ( (MECA.EQ.'MAZARS')          .OR.
      &              (MECA.EQ.'ENDO_ISOT_BETON')      ) THEN
@@ -1180,32 +1179,32 @@ C =====================================================================
 C --- ATTENTION DECALAGE VOLONTAIRE SUR LE TABLEAU VAL21 POUR ENDO ----
 C =====================================================================
                   CALL RCVALA(IMATE,' ', 'THM_DIFFU', 1, 'ENDO', ENDO,
-     &                            1, NCRA20(6), VAL20(5), CODRET, 'FM')
+     &                            1, NCRA20(6), VAL20(5), ICODRE, 1)
                ENDIF
             ENDIF
             CALL RCVALA(IMATE,' ', 'THM_GAZ', 1, 'TEMP', T,
-     &                             DIM21, NCRA21, VAL21, CODRET, ' ')
+     &                             DIM21, NCRA21, VAL21, ICODRE, 0)
             IF (THER.NE.' ') THEN
                CALL RCVALA(IMATE,' ', 'THM_DIFFU', 1, 'TEMP', T,
-     &                            1, NCRA20(7), VAL20(7), CODRET, 'FM')
+     &                            1, NCRA20(7), VAL20(7), ICODRE, 1)
                CALL RCVALA(IMATE,' ', 'THM_DIFFU', 1, 'TEMP', T,
-     &                            1, NCRA20(8), VAL20(8), CODRET, ' ')
+     &                            1, NCRA20(8), VAL20(8), ICODRE, 0)
                CALL RCVALA(IMATE,' ', 'THM_DIFFU', 1, 'PORO', PHI,
-     &                            2, NCRA20(9), VAL20(9), CODRET, ' ')
+     &                            2, NCRA20(9), VAL20(9), ICODRE, 0)
                CALL RCVALA(IMATE,' ', 'THM_DIFFU', 0, ' ', 0.D0,
-     &                            1, NCRA20(11), VAL20(11), CODRET, ' ')
+     &                            1, NCRA20(11), VAL20(11), ICODRE, 0)
             ENDIF
 C
             CALL RCVALA(IMATE,' ', 'THM_DIFFU', 0, ' ', 0.D0,
-     &                            6, NCRA20(12), VAL20(12), CODRET, ' ')
+     &                            6, NCRA20(12), VAL20(12), ICODRE, 0)
             CALL RCVALA(IMATE,' ', 'THM_DIFFU', 1, 'INST', INSTAP,
-     &                       1, 'PESA_MUL', FPESA, CODRET, ' ')
+     &                       1, 'PESA_MUL', FPESA, ICODRE, 0)
 C COMME IL N'EST PAS POSSIBLE D'AFFECTER UNE VALEUR PAR DEFAUT
 C A LA FONCTION PESA_MULT DANS LE FICHIER DE COMMANDE
 C DEFI_MATERIAU.CAPY, ON UTILISE LE CODE RETOUR POUR LA METTRE
 C A SA VALEUR PAR DEFAUT (EGALE A 1) SI ELLE N A PAS ETE
 C DEFINIE DANS LE FICHIER DE COMMANDE            
-            IF (CODRET(1).EQ.'NO') THEN
+            IF (ICODRE(1).EQ.1) THEN
                 FPESA=1.D0
             ENDIF
             RGAZ    = VAL20( 1)
@@ -1261,10 +1260,10 @@ C       INITIALISATION POUR L'ANISOTROPIE
             VAL22(25) = 0.D0
             VAL22(26) = 0.D0
             CALL RCVALA(IMATE,' ', 'THM_DIFFU', 0, ' ', 0.0D0,
-     &                                   4, NCRA22, VAL22, CODRET, ' ')
+     &                                   4, NCRA22, VAL22, ICODRE, 0)
             IF ((HYDR.EQ.'HYDR_UTIL').OR.(HYDR.EQ.'HYDR_VGM')) THEN
                CALL RCVALA(IMATE,' ', 'THM_DIFFU', 1, 'PORO', PHI,
-     &                               1, NCRA22(5), VAL22(5),CODRET,' ')
+     &                               1, NCRA22(5), VAL22(5),ICODRE,0)
             ELSE IF (HYDR.EQ.'HYDR_ENDO') THEN
                IF ( (MECA.EQ.'MAZARS')          .OR.
      &              (MECA.EQ.'ENDO_ISOT_BETON')      ) THEN
@@ -1272,29 +1271,29 @@ C =====================================================================
 C --- ATTENTION DECALAGE VOLONTAIRE SUR LE TABLEAU VAL22 POUR ENDO ----
 C =====================================================================
                   CALL RCVALA(IMATE,' ', 'THM_DIFFU', 1, 'ENDO', ENDO,
-     &                            1, NCRA22(6), VAL22(5), CODRET, 'FM')
+     &                            1, NCRA22(6), VAL22(5), ICODRE, 1)
                ENDIF
             ENDIF
             CALL RCVALA(IMATE,' ', 'THM_LIQU', 1, 'TEMP', T,
-     &                                   3, NCRA23, VAL23, CODRET, ' ')
+     &                                   3, NCRA23, VAL23, ICODRE, 0)
             CALL RCVALA(IMATE,' ', 'THM_VAPE_GAZ', 1, 'TEMP', T,
-     &                                   3, NCRA24, VAL24, CODRET, ' ')
+     &                                   3, NCRA24, VAL24, ICODRE, 0)
             IF (THER.NE.' ') THEN
                CALL RCVALA(IMATE,' ', 'THM_DIFFU', 1, 'TEMP', T,
-     &                           1, NCRA22(7), VAL22(7), CODRET, 'FM')
+     &                           1, NCRA22(7), VAL22(7), ICODRE, 1)
                CALL RCVALA(IMATE,' ', 'THM_DIFFU', 1, 'TEMP', T,
-     &                           1, NCRA22(8), VAL22(8), CODRET, ' ')
+     &                           1, NCRA22(8), VAL22(8), ICODRE, 0)
                CALL RCVALA(IMATE,' ', 'THM_DIFFU', 1, 'PORO', PHI,
-     &                           2, NCRA22(9), VAL22(9), CODRET, ' ')
+     &                           2, NCRA22(9), VAL22(9), ICODRE, 0)
                CALL RCVALA(IMATE,' ', 'THM_DIFFU', 0, ' ', 0.D0,
-     &                           1, NCRA22(13), VAL22(13), CODRET, ' ')
+     &                           1, NCRA22(13), VAL22(13), ICODRE, 0)
                CALL RCVALA(IMATE,' ', 'THM_LIQU', 1, 'TEMP', T,
-     &                      DIM23-3, NCRA23(4), VAL23(4), CODRET, 'FM')
+     &                      DIM23-3, NCRA23(4), VAL23(4), ICODRE, 1)
             ENDIF
             IF (HYDR.EQ.'HYDR_VGM') THEN
                CALL RCVALA(IMATE,' ', 'THM_DIFFU', 0, ' ', 0.0D0,
-     &                     5, NVG(1), VG(1), CODRET, 'FM')
-              IF (CODRET(1).EQ.'NO') THEN
+     &                     5, NVG(1), VG(1), ICODRE, 1)
+              IF (ICODRE(1).EQ.1) THEN
                   CALL U2MESS('F','ALGORITH16_94')
               ENDIF
               CALL SATUVG(VG,PVP-P1,VAL22(14),VAL22(15))
@@ -1303,7 +1302,7 @@ C =====================================================================
               VAL22(20) = 0.D0
             ELSEIF (HYDR.EQ.'HYDR_UTIL' .OR. HYDR.EQ.'HYDR_ENDO') THEN
                CALL RCVALA(IMATE,' ', 'THM_DIFFU', 1, 'PCAP', PVP-P1,
-     &                          2, NCRA22(14), VAL22(14), CODRET, 'FM')
+     &                          2, NCRA22(14), VAL22(14), ICODRE, 1)
             ELSE
                CALL SATURA(HYDR,PVP-P1,VAL22(14),VAL22(15))
             ENDIF
@@ -1313,22 +1312,22 @@ C =====================================================================
             VALPAR(2) =  P2
             IF(HYDR.NE.'HYDR_VGM')THEN
               CALL RCVALA(IMATE,' ', 'THM_DIFFU', 2, NOMPAR, VALPAR,
-     &                          5, NCRA22(16), VAL22(16), CODRET, 'FM')
+     &                          5, NCRA22(16), VAL22(16), ICODRE, 1)
             ENDIF
             IF (THER.NE.' ') THEN
                 CALL RCVALA(IMATE,' ', 'THM_DIFFU', 1, 'SAT', VALPAR(1),
-     &                           2, NCRA22(11), VAL22(11), CODRET, ' ')
+     &                           2, NCRA22(11), VAL22(11), ICODRE, 0)
             ENDIF
             CALL RCVALA(IMATE,' ', 'THM_DIFFU', 0, ' ', 0.D0,
-     &                            6, NCRA22(21), VAL22(21), CODRET, ' ')
+     &                            6, NCRA22(21), VAL22(21), ICODRE, 0)
             CALL RCVALA(IMATE,' ', 'THM_DIFFU', 1, 'INST', INSTAP,
-     &                       1, 'PESA_MUL', FPESA, CODRET, ' ')
+     &                       1, 'PESA_MUL', FPESA, ICODRE, 0)
 C COMME IL N'EST PAS POSSIBLE D'AFFECTER UNE VALEUR PAR DEFAUT
 C A LA FONCTION PESA_MULT DANS LE FICHIER DE COMMANDE
 C DEFI_MATERIAU.CAPY, ON UTILISE LE CODE RETOUR POUR LA METTRE
 C A SA VALEUR PAR DEFAUT (EGALE A 1) SI ELLE N A PAS ETE
 C DEFINIE DANS LE FICHIER DE COMMANDE            
-            IF (CODRET(1).EQ.'NO') THEN
+            IF (ICODRE(1).EQ.1) THEN
                 FPESA=1.D0
             ENDIF
             RGAZ    = VAL22( 1)
@@ -1399,10 +1398,10 @@ C
             VAL25(32) = 0.0D0
 
             CALL RCVALA(IMATE,' ', 'THM_DIFFU', 0, ' ', 0.0D0,
-     &                                   4, NCRA25, VAL25, CODRET, ' ')
+     &                                   4, NCRA25, VAL25, ICODRE, 0)
             IF ((HYDR.EQ.'HYDR_UTIL').OR.(HYDR.EQ.'HYDR_VGM')) THEN
                CALL RCVALA(IMATE,' ', 'THM_DIFFU', 1, 'PORO', PHI,
-     &                               1, NCRA25(5), VAL25(5),CODRET,' ')
+     &                               1, NCRA25(5), VAL25(5),ICODRE,0)
             ELSE IF (HYDR.EQ.'HYDR_ENDO') THEN
                IF ( (MECA.EQ.'MAZARS')          .OR.
      &              (MECA.EQ.'ENDO_ISOT_BETON')      ) THEN
@@ -1410,31 +1409,31 @@ C =====================================================================
 C --- ATTENTION DECALAGE VOLONTAIRE SUR LE TABLEAU VAL22 POUR ENDO ----
 C =====================================================================
                   CALL RCVALA(IMATE,' ', 'THM_DIFFU', 1, 'ENDO', ENDO,
-     &                            1, NCRA25(6), VAL25(5), CODRET, 'FM')
+     &                            1, NCRA25(6), VAL25(5), ICODRE, 1)
                ENDIF
             ENDIF
             CALL RCVALA(IMATE,' ', 'THM_LIQU', 1, 'TEMP', T,
-     &                                   3, NCRA26, VAL26, CODRET, ' ')
+     &                                   3, NCRA26, VAL26, ICODRE, 0)
             CALL RCVALA(IMATE,' ', 'THM_GAZ', 1, 'TEMP', T,
-     &                                   3, NCRA27, VAL27, CODRET, ' ')
+     &                                   3, NCRA27, VAL27, ICODRE, 0)
             CALL RCVALA(IMATE,' ', 'THM_VAPE_GAZ', 0, ' ', 0.0D0,
-     &                                   1, NCRA28, VAL28, CODRET, ' ')
+     &                                   1, NCRA28, VAL28, ICODRE, 0)
             IF (THER.NE.' ') THEN
                CALL RCVALA(IMATE,' ', 'THM_DIFFU', 1, 'TEMP', T,
-     &                           1, NCRA25(7), VAL25(7), CODRET, 'FM')
+     &                           1, NCRA25(7), VAL25(7), ICODRE, 1)
                CALL RCVALA(IMATE,' ', 'THM_DIFFU', 1, 'TEMP', T,
-     &                           1, NCRA25(8), VAL25(8), CODRET, ' ')
+     &                           1, NCRA25(8), VAL25(8), ICODRE, 0)
                CALL RCVALA(IMATE,' ', 'THM_DIFFU', 1, 'PORO', PHI,
-     &                           2, NCRA25(9), VAL25(9), CODRET, ' ')
+     &                           2, NCRA25(9), VAL25(9), ICODRE, 0)
                CALL RCVALA(IMATE,' ', 'THM_DIFFU', 0, ' ',0.D0,
-     &                           1, NCRA25(13), VAL25(13), CODRET, ' ')
+     &                           1, NCRA25(13), VAL25(13), ICODRE, 0)
                CALL RCVALA(IMATE,' ', 'THM_LIQU', 1, 'TEMP', T,
-     &                            1, NCRA26(4), VAL26(4), CODRET, 'FM')
+     &                            1, NCRA26(4), VAL26(4), ICODRE, 1)
             ENDIF
             IF (HYDR.EQ.'HYDR_VGM') THEN
                CALL RCVALA(IMATE,' ', 'THM_DIFFU', 0, ' ', 0.0D0,
-     &                     5, NVG(1), VG(1), CODRET, 'FM')
-               IF (CODRET(1).EQ.'NO') THEN
+     &                     5, NVG(1), VG(1), ICODRE, 1)
+               IF (ICODRE(1).EQ.1) THEN
                   CALL U2MESS('F','ALGORITH16_94')
                ENDIF
                CALL SATUVG(VG,P1,VAL25(14),VAL25(15))
@@ -1443,7 +1442,7 @@ C =====================================================================
                VAL25(20) = 0.D0
             ELSE IF (HYDR.EQ.'HYDR_UTIL' .OR. HYDR.EQ.'HYDR_ENDO') THEN
                CALL RCVALA(IMATE,' ', 'THM_DIFFU', 1, 'PCAP', P1,
-     &                          2, NCRA25(14), VAL25(14), CODRET, 'FM')
+     &                          2, NCRA25(14), VAL25(14), ICODRE, 1)
             ELSE
                CALL SATURA(HYDR,P1,VAL25(14),VAL25(15))
             ENDIF
@@ -1455,11 +1454,11 @@ C =====================================================================
             VALPAR(3) =  T
             IF(HYDR.NE.'HYDR_VGM')THEN
               CALL RCVALA(IMATE,' ', 'THM_DIFFU', 3, NOMPAR, VALPAR,
-     &                          5, NCRA25(16), VAL25(16), CODRET, 'FM')
+     &                          5, NCRA25(16), VAL25(16), ICODRE, 1)
             ENDIF
             IF (THER.NE.' ') THEN
                 CALL RCVALA(IMATE,' ', 'THM_DIFFU', 1, 'SAT', VALPAR(1),
-     &                           2, NCRA25(11), VAL25(11), CODRET, ' ')
+     &                           2, NCRA25(11), VAL25(11), ICODRE, 0)
             ENDIF
 C
 C    RÉCUPÉRATION DES FONCTIONS FICKS ET LEUR DÉRIVÉES AU DESSUS PB
@@ -1468,7 +1467,7 @@ C
             VALPAR(1) =  T
 C
             CALL RCVALA(IMATE,' ', 'THM_DIFFU', 1, NOMPAR, VALPAR,
-     &                          1, NCRA25(21), VAL25(21), CODRET, 'FM')
+     &                          1, NCRA25(21), VAL25(21), ICODRE, 1)
             NOMPAR(1) = 'PVAP'
             NOMPAR(2) = 'PGAZ'
             NOMPAR(3) = 'SAT'
@@ -1480,7 +1479,7 @@ C           DERIVEE PAR RAPPORT A S MISE 0 0 PAR DEFAUT
 C
             VAL25(30) = 0.D0
             CALL RCVALA(IMATE,' ', 'THM_DIFFU', 1, NOMPAR(3), VALPAR(3),
-     &                          1, NCRA25(33), VAL25(33), CODRET, ' ')
+     &                          1, NCRA25(33), VAL25(33), ICODRE, 0)
 C
 C INITIALISATION DES AUTRES COMPOSANTES FICKIENNES
 C
@@ -1488,25 +1487,25 @@ C
             VAL25(23) = 1.0D0
             VAL25(24) = 1.0D0
             CALL RCVALA(IMATE,' ', 'THM_DIFFU', 3, NOMPAR, VALPAR,
-     &                          3, NCRA25(22), VAL25(22), CODRET, ' ')
+     &                          3, NCRA25(22), VAL25(22), ICODRE, 0)
             NOMPAR(1) = 'TEMP'
             NOMPAR(2) = 'PGAZ'
             VALPAR(1) =  T
             VALPAR(2) =  P2
            CALL RCVALA(IMATE,' ', 'THM_DIFFU', 2,NOMPAR, VALPAR,
-     &                          2, NCRA25(25), VAL25(25), CODRET, ' ')
+     &                          2, NCRA25(25), VAL25(25), ICODRE, 0)
 
 
             CALL RCVALA(IMATE,' ', 'THM_DIFFU', 0, ' ', 0.D0,
-     &                            6, NCRA25(27), VAL25(27), CODRET, ' ')
+     &                            6, NCRA25(27), VAL25(27), ICODRE, 0)
             CALL RCVALA(IMATE,' ', 'THM_DIFFU', 1, 'INST', INSTAP,
-     &                       1, 'PESA_MUL', FPESA, CODRET, ' ')
+     &                       1, 'PESA_MUL', FPESA, ICODRE, 0)
 C COMME IL N'EST PAS POSSIBLE D'AFFECTER UNE VALEUR PAR DEFAUT
 C A LA FONCTION PESA_MULT DANS LE FICHIER DE COMMANDE
 C DEFI_MATERIAU.CAPY, ON UTILISE LE CODE RETOUR POUR LA METTRE
 C A SA VALEUR PAR DEFAUT (EGALE A 1) SI ELLE N A PAS ETE
 C DEFINIE DANS LE FICHIER DE COMMANDE            
-            IF (CODRET(1).EQ.'NO') THEN
+            IF (ICODRE(1).EQ.1) THEN
                 FPESA=1.D0
             ENDIF
             RGAZ    = VAL25( 1)
@@ -1585,10 +1584,10 @@ C
             VAL40(37) = 0.0D0
             
             CALL RCVALA(IMATE,' ', 'THM_DIFFU', 0, ' ', 0.0D0,
-     &                                   4, NCRA40, VAL40, CODRET, ' ')
+     &                                   4, NCRA40, VAL40, ICODRE, 0)
             IF (HYDR.EQ.'HYDR_UTIL' .OR. HYDR.EQ.'HYDR_VGM') THEN
                CALL RCVALA(IMATE,' ', 'THM_DIFFU', 1, 'PORO', PHI,
-     &                               1, NCRA40(5), VAL40(5),CODRET,' ')
+     &                               1, NCRA40(5), VAL40(5),ICODRE,0)
             ELSE IF (HYDR.EQ.'HYDR_ENDO') THEN
                IF ( (MECA.EQ.'MAZARS')          .OR.
      &              (MECA.EQ.'ENDO_ISOT_BETON')      ) THEN
@@ -1596,31 +1595,31 @@ C =====================================================================
 C --- ATTENTION DECALAGE VOLONTAIRE SUR LE TABLEAU VAL22 POUR ENDO ----
 C =====================================================================
                   CALL RCVALA(IMATE,' ', 'THM_DIFFU', 1, 'ENDO', ENDO,
-     &                            1, NCRA40(6), VAL40(5), CODRET, 'FM')
+     &                            1, NCRA40(6), VAL40(5), ICODRE, 1)
                ENDIF
             ENDIF
             CALL RCVALA(IMATE,' ', 'THM_LIQU', 1, 'TEMP', T,
-     &                                   3, NCRA41, VAL41, CODRET, ' ')
+     &                                   3, NCRA41, VAL41, ICODRE, 0)
             CALL RCVALA(IMATE,' ', 'THM_GAZ', 1, 'TEMP', T,
-     &                                   3, NCRA42, VAL42, CODRET, ' ')
+     &                                   3, NCRA42, VAL42, ICODRE, 0)
             CALL RCVALA(IMATE,' ', 'THM_VAPE_GAZ', 0, ' ', 0.0D0,
-     &                                   1, NCRA43, VAL43, CODRET, ' ')
+     &                                   1, NCRA43, VAL43, ICODRE, 0)
             IF (THER.NE.' ') THEN
                CALL RCVALA(IMATE,' ', 'THM_DIFFU', 1, 'TEMP', T,
-     &                           1, NCRA40(7), VAL40(7), CODRET, 'FM')
+     &                           1, NCRA40(7), VAL40(7), ICODRE, 1)
                CALL RCVALA(IMATE,' ', 'THM_DIFFU', 1, 'TEMP', T,
-     &                           1, NCRA40(8), VAL40(8), CODRET, ' ')
+     &                           1, NCRA40(8), VAL40(8), ICODRE, 0)
                CALL RCVALA(IMATE,' ', 'THM_DIFFU', 1, 'PORO', PHI,
-     &                           2, NCRA40(9), VAL40(9), CODRET, ' ')
+     &                           2, NCRA40(9), VAL40(9), ICODRE, 0)
                CALL RCVALA(IMATE,' ', 'THM_DIFFU', 0, ' ', 0.D0,
-     &                           1, NCRA40(13), VAL40(13), CODRET, ' ')
+     &                           1, NCRA40(13), VAL40(13), ICODRE, 0)
                CALL RCVALA(IMATE,' ', 'THM_LIQU', 1, 'TEMP', T,
-     &                     DIM41-3, NCRA41(4), VAL41(4), CODRET, 'FM')
+     &                     DIM41-3, NCRA41(4), VAL41(4), ICODRE, 1)
             ENDIF
             IF (HYDR.EQ.'HYDR_VGM') THEN
                CALL RCVALA(IMATE,' ', 'THM_DIFFU', 0, ' ', 0.0D0,
-     &                     5, NVG(1), VG(1), CODRET, 'FM')
-               IF (CODRET(1).EQ.'NO') THEN
+     &                     5, NVG(1), VG(1), ICODRE, 1)
+               IF (ICODRE(1).EQ.1) THEN
                   CALL U2MESS('F','ALGORITH16_94')
                ENDIF
                CALL SATUVG(VG,P1,VAL40(14),VAL40(15))
@@ -1631,7 +1630,7 @@ C =====================================================================
 C
             ELSEIF (HYDR.EQ.'HYDR_UTIL' .OR. HYDR.EQ.'HYDR_ENDO') THEN
                CALL RCVALA(IMATE,' ', 'THM_DIFFU', 1, 'PCAP', P1,
-     &                          2, NCRA40(14), VAL40(14), CODRET, 'FM')
+     &                          2, NCRA40(14), VAL40(14), ICODRE, 1)
             ELSE
                CALL SATURA(HYDR,P1,VAL40(14),VAL40(15))
             ENDIF
@@ -1643,11 +1642,11 @@ C
             VALPAR(3) =  T
             IF(HYDR.NE.'HYDR_VGM')THEN
               CALL RCVALA(IMATE,' ', 'THM_DIFFU', 3, NOMPAR, VALPAR,
-     &                          5, NCRA40(16), VAL40(16), CODRET, 'FM')
+     &                          5, NCRA40(16), VAL40(16), ICODRE, 1)
             ENDIF
             IF (THER.NE.' ') THEN
                 CALL RCVALA(IMATE,' ', 'THM_DIFFU', 1, 'SAT', VALPAR(1),
-     &                           2, NCRA40(11), VAL40(11), CODRET, ' ')
+     &                           2, NCRA40(11), VAL40(11), ICODRE, 0)
             ENDIF
 C
 C    RECUPERATION DES FONCTIONS FICK VAPEUR ET LEURS DERIVEES
@@ -1655,7 +1654,7 @@ C
             NOMPAR(1) = 'TEMP'
             VALPAR(1) =  T
             CALL RCVALA(IMATE,' ', 'THM_DIFFU', 1, NOMPAR, VALPAR,
-     &                          1, NCRA40(21), VAL40(21), CODRET, 'FM ')
+     &                          1, NCRA40(21), VAL40(21), ICODRE, 1)
 C
 C INITIALISATION DES AUTRES COMPOSANTES FICKIENNES
 C
@@ -1676,16 +1675,15 @@ C           DERIVEE PAR RAPPORT A S MISE 0 0 PAR DEFAUT
 C
             VAL40(35) = 0.D0            
             CALL RCVALA(IMATE,' ', 'THM_DIFFU', 1, NOMPAR(3), VALPAR(3),
-     &                          1, NCRA40(38), VAL40(38), CODRET, ' ')
-     
+     &                          1, NCRA40(38), VAL40(38), ICODRE, 0)
             CALL RCVALA(IMATE,' ', 'THM_DIFFU', 3, NOMPAR, VALPAR,
-     &                          3, NCRA40(22), VAL40(22), CODRET, ' ')
+     &                          3, NCRA40(22), VAL40(22), ICODRE, 0)
             NOMPAR(1) = 'TEMP'
             NOMPAR(2) = 'PGAZ'
             VALPAR(1) =  T
             VALPAR(2) =  P2
             CALL RCVALA(IMATE,' ', 'THM_DIFFU', 2,NOMPAR, VALPAR,
-     &                          2, NCRA40(25), VAL40(25), CODRET, ' ')
+     &                          2, NCRA40(25), VAL40(25), ICODRE, 0)
 
 C
 C    RECUPERATION DES FONCTIONS FICK AIR DISSOUS ET LEURS DERIVEES
@@ -1705,21 +1703,21 @@ C
             VAL40(29) = 1.0D0
             VAL40(30) = 1.0D0
             CALL RCVALA(IMATE,' ', 'THM_DIFFU', 4, NOMPAR, VALPAR,
-     &                          4, NCRA40(27), VAL40(27), CODRET, ' ')
+     &                          4, NCRA40(27), VAL40(27), ICODRE, 0)
             CALL RCVALA(IMATE,' ', 'THM_DIFFU', 1, 'TEMP', T,
-     &                          1, NCRA40(31), VAL40(31), CODRET, ' ')
+     &                          1, NCRA40(31), VAL40(31), ICODRE, 0)
 C
             CALL RCVALA(IMATE,' ', 'THM_DIFFU', 0, ' ', 0.D0,
-     &                            6, NCRA40(32), VAL40(32), CODRET, ' ')
+     &                            6, NCRA40(32), VAL40(32), ICODRE, 0)
 
             CALL RCVALA(IMATE,' ', 'THM_DIFFU', 1, 'INST', INSTAP,
-     &                       1, 'PESA_MUL', FPESA, CODRET, ' ')
+     &                       1, 'PESA_MUL', FPESA, ICODRE, 0)
 C COMME IL N'EST PAS POSSIBLE D'AFFECTER UNE VALEUR PAR DEFAUT
 C A LA FONCTION PESA_MULT DANS LE FICHIER DE COMMANDE
 C DEFI_MATERIAU.CAPY, ON UTILISE LE CODE RETOUR POUR LA METTRE
 C A SA VALEUR PAR DEFAUT (EGALE A 1) SI ELLE N A PAS ETE
 C DEFINIE DANS LE FICHIER DE COMMANDE            
-            IF (CODRET(1).EQ.'NO') THEN
+            IF (ICODRE(1).EQ.1) THEN
                 FPESA=1.D0
             ENDIF 
             RGAZ    = VAL40( 1)
@@ -1798,10 +1796,10 @@ C
             VAL40(37) = 0.0D0
             
             CALL RCVALA(IMATE,' ', 'THM_DIFFU', 0, ' ', 0.0D0,
-     &                                   4, CRAD40, VAL40, CODRET, ' ')
+     &                                   4, CRAD40, VAL40, ICODRE, 0)
             IF (HYDR.EQ.'HYDR_UTIL' .OR. HYDR.EQ.'HYDR_VGM') THEN
                CALL RCVALA(IMATE,' ', 'THM_DIFFU', 1, 'PORO', PHI,
-     &                               1, CRAD40(5), VAL40(5),CODRET,' ')
+     &                               1, CRAD40(5), VAL40(5),ICODRE,0)
             ELSE IF (HYDR.EQ.'HYDR_ENDO') THEN
                IF ( (MECA.EQ.'MAZARS')          .OR.
      &              (MECA.EQ.'ENDO_ISOT_BETON')      ) THEN
@@ -1809,29 +1807,29 @@ C =====================================================================
 C --- ATTENTION DECALAGE VOLONTAIRE SUR LE TABLEAU VAL22 POUR ENDO ----
 C =====================================================================
                   CALL RCVALA(IMATE,' ', 'THM_DIFFU', 1, 'ENDO', ENDO,
-     &                            1, CRAD40(6), VAL40(5), CODRET, 'FM')
+     &                            1, CRAD40(6), VAL40(5), ICODRE, 1)
                ENDIF
             ENDIF
             CALL RCVALA(IMATE,' ', 'THM_LIQU', 1, 'TEMP', T,
-     &                                   3, CRAD41, VAL41, CODRET, ' ')
+     &                                   3, CRAD41, VAL41, ICODRE, 0)
             CALL RCVALA(IMATE,' ', 'THM_GAZ', 1, 'TEMP', T,
-     &                                   3, CRAD42, VAL42, CODRET, ' ')
+     &                                   3, CRAD42, VAL42, ICODRE, 0)
             IF (THER.NE.' ') THEN
                CALL RCVALA(IMATE,' ', 'THM_DIFFU', 1, 'TEMP', T,
-     &                           1, CRAD40(7), VAL40(7), CODRET, 'FM')
+     &                           1, CRAD40(7), VAL40(7), ICODRE, 1)
                CALL RCVALA(IMATE,' ', 'THM_DIFFU', 1, 'TEMP', T,
-     &                           1, CRAD40(8), VAL40(8), CODRET, ' ')
+     &                           1, CRAD40(8), VAL40(8), ICODRE, 0)
                CALL RCVALA(IMATE,' ', 'THM_DIFFU', 1, 'PORO', PHI,
-     &                           2, CRAD40(9), VAL40(9), CODRET, ' ')
+     &                           2, CRAD40(9), VAL40(9), ICODRE, 0)
                CALL RCVALA(IMATE,' ', 'THM_DIFFU', 0, ' ', 0.D0,
-     &                           1, CRAD40(13), VAL40(13), CODRET, ' ')
+     &                           1, CRAD40(13), VAL40(13), ICODRE, 0)
                CALL RCVALA(IMATE,' ', 'THM_LIQU', 1, 'TEMP', T,
-     &                     DIM41-3, CRAD41(4), VAL41(4), CODRET, 'FM')
+     &                     DIM41-3, CRAD41(4), VAL41(4), ICODRE, 1)
             ENDIF
             IF (HYDR.EQ.'HYDR_VGM') THEN
                CALL RCVALA(IMATE,' ', 'THM_DIFFU', 0, ' ', 0.0D0,
-     &                     5, NVG(1), VG(1), CODRET, 'FM')
-               IF (CODRET(1).EQ.'NO') THEN
+     &                     5, NVG(1), VG(1), ICODRE, 1)
+               IF (ICODRE(1).EQ.1) THEN
                   CALL U2MESS('F','ALGORITH16_94')
                ENDIF
                CALL SATUVG(VG,P1,VAL40(14),VAL40(15))
@@ -1842,7 +1840,7 @@ C =====================================================================
 C
             ELSEIF (HYDR.EQ.'HYDR_UTIL' .OR. HYDR.EQ.'HYDR_ENDO') THEN
                CALL RCVALA(IMATE,' ', 'THM_DIFFU', 1, 'PCAP', P1,
-     &                          2, CRAD40(14), VAL40(14), CODRET, 'FM')
+     &                          2, CRAD40(14), VAL40(14), ICODRE, 1)
             ELSE
                CALL SATURA(HYDR,P1,VAL40(14),VAL40(15))
             ENDIF
@@ -1854,11 +1852,11 @@ C
             VALPAR(3) =  T
             IF(HYDR.NE.'HYDR_VGM')THEN
               CALL RCVALA(IMATE,' ', 'THM_DIFFU', 3, NOMPAR, VALPAR,
-     &                          5, CRAD40(16), VAL40(16), CODRET, 'FM')
+     &                          5, CRAD40(16), VAL40(16), ICODRE, 1)
             ENDIF
             IF (THER.NE.' ') THEN
                 CALL RCVALA(IMATE,' ', 'THM_DIFFU', 1, 'SAT', VALPAR(1),
-     &                           2, CRAD40(11), VAL40(11), CODRET, ' ')
+     &                           2, CRAD40(11), VAL40(11), ICODRE, 0)
             ENDIF
 C
             NOMPAR(1) = 'PVAP'
@@ -1891,21 +1889,21 @@ C
             VAL40(29) = 1.0D0
             VAL40(30) = 1.0D0
             CALL RCVALA(IMATE,' ', 'THM_DIFFU', 4, NOMPAR, VALPAR,
-     &                          4, CRAD40(27), VAL40(27), CODRET, ' ')
+     &                          4, CRAD40(27), VAL40(27), ICODRE, 0)
             CALL RCVALA(IMATE,' ', 'THM_DIFFU', 1, 'TEMP', T,
-     &                          1, CRAD40(31), VAL40(31), CODRET, ' ')
+     &                          1, CRAD40(31), VAL40(31), ICODRE, 0)
 C
             CALL RCVALA(IMATE,' ', 'THM_DIFFU', 0, ' ', 0.D0,
-     &                            6, CRAD40(32), VAL40(32), CODRET, ' ')
+     &                            6, CRAD40(32), VAL40(32), ICODRE, 0)
 
             CALL RCVALA(IMATE,' ', 'THM_DIFFU', 1, 'INST', INSTAP,
-     &                       1, 'PESA_MUL', FPESA, CODRET, ' ')
+     &                       1, 'PESA_MUL', FPESA, ICODRE, 0)
 C COMME IL N'EST PAS POSSIBLE D'AFFECTER UNE VALEUR PAR DEFAUT
 C A LA FONCTION PESA_MULT DANS LE FICHIER DE COMMANDE
 C DEFI_MATERIAU.CAPY, ON UTILISE LE CODE RETOUR POUR LA METTRE
 C A SA VALEUR PAR DEFAUT (EGALE A 1) SI ELLE N A PAS ETE
 C DEFINIE DANS LE FICHIER DE COMMANDE            
-            IF (CODRET(1).EQ.'NO') THEN
+            IF (ICODRE(1).EQ.1) THEN
                 FPESA=1.D0
             ENDIF 
             RGAZ    = VAL40( 1)
@@ -1984,10 +1982,10 @@ C
             VAL29(26) = 0.0D0
 
             CALL RCVALA(IMATE,' ', 'THM_DIFFU', 0, ' ', 0.0D0,
-     &                                   4, NCRA29, VAL29, CODRET, ' ')
+     &                                   4, NCRA29, VAL29, ICODRE, 0)
             IF ((HYDR.EQ.'HYDR_UTIL').OR.(HYDR.EQ.'HYDR_VGM')) THEN
                CALL RCVALA(IMATE,' ', 'THM_DIFFU', 1, 'PORO', PHI,
-     &                               1, NCRA29(5), VAL29(5),CODRET,' ')
+     &                               1, NCRA29(5), VAL29(5),ICODRE,0)
             ELSE IF (HYDR.EQ.'HYDR_ENDO') THEN
                IF ( (MECA.EQ.'MAZARS')          .OR.
      &              (MECA.EQ.'ENDO_ISOT_BETON')      ) THEN
@@ -1995,29 +1993,29 @@ C =====================================================================
 C --- ATTENTION DECALAGE VOLONTAIRE SUR LE TABLEAU VAL29 POUR ENDO ----
 C =====================================================================
                   CALL RCVALA(IMATE,' ', 'THM_DIFFU', 1, 'ENDO', ENDO,
-     &                            1, NCRA29(6), VAL29(5), CODRET, 'FM')
+     &                            1, NCRA29(6), VAL29(5), ICODRE, 1)
                ENDIF
             ENDIF
             CALL RCVALA(IMATE,' ', 'THM_LIQU', 1, 'TEMP', T,
-     &                                   3, NCRA30, VAL30, CODRET, ' ')
+     &                                   3, NCRA30, VAL30, ICODRE, 0)
             CALL RCVALA(IMATE,' ', 'THM_GAZ', 1, 'TEMP', T,
-     &                                   3, NCRA31, VAL31, CODRET, ' ')
+     &                                   3, NCRA31, VAL31, ICODRE, 0)
             IF (THER.NE.' ') THEN
                CALL RCVALA(IMATE,' ', 'THM_DIFFU', 1, 'TEMP', T,
-     &                           1, NCRA29(7), VAL29(7), CODRET, 'FM')
+     &                           1, NCRA29(7), VAL29(7), ICODRE, 1)
                CALL RCVALA(IMATE,' ', 'THM_DIFFU', 1, 'TEMP', T,
-     &                           1, NCRA29(8), VAL29(8), CODRET, ' ')
+     &                           1, NCRA29(8), VAL29(8), ICODRE, 0)
                CALL RCVALA(IMATE,' ', 'THM_DIFFU', 1, 'PORO', PHI,
-     &                           2, NCRA29(9), VAL29(9), CODRET, ' ')
+     &                           2, NCRA29(9), VAL29(9), ICODRE, 0)
                CALL RCVALA(IMATE,' ', 'THM_DIFFU', 0, ' ', 0.D0,
-     &                           1, NCRA29(13), VAL29(13), CODRET, ' ')
+     &                           1, NCRA29(13), VAL29(13), ICODRE, 0)
                CALL RCVALA(IMATE,' ', 'THM_LIQU', 1, 'TEMP', T,
-     &                     DIM30-3, NCRA30(4), VAL30(4), CODRET, 'FM')
+     &                     DIM30-3, NCRA30(4), VAL30(4), ICODRE, 1)
             ENDIF
             IF (HYDR.EQ.'HYDR_VGM') THEN
                CALL RCVALA(IMATE,' ', 'THM_DIFFU', 0, ' ', 0.0D0,
-     &                     5, NVG(1), VG(1), CODRET, 'FM')
-               IF (CODRET(1).EQ.'NO') THEN
+     &                     5, NVG(1), VG(1), ICODRE, 1)
+               IF (ICODRE(1).EQ.1) THEN
                   CALL U2MESS('F','ALGORITH16_94')
                ENDIF
                CALL SATUVG(VG,P1,VAL29(14),VAL29(15))
@@ -2026,7 +2024,7 @@ C =====================================================================
                VAL29(20) = 0.D0
             ELSE IF (HYDR.EQ.'HYDR_UTIL' .OR. HYDR.EQ.'HYDR_ENDO') THEN
                CALL RCVALA(IMATE,' ', 'THM_DIFFU', 1, 'PCAP', P1,
-     &                          2, NCRA29(14), VAL29(14), CODRET, 'FM')
+     &                          2, NCRA29(14), VAL29(14), ICODRE, 1)
             ELSE
                CALL SATURA(HYDR,P1,VAL29(14),VAL29(15))
             ENDIF
@@ -2036,22 +2034,22 @@ C =====================================================================
             VALPAR(2) =  P2
             IF(HYDR.NE.'HYDR_VGM')THEN
               CALL RCVALA(IMATE,' ', 'THM_DIFFU', 2, NOMPAR, VALPAR,
-     &                          5, NCRA29(16), VAL29(16), CODRET, 'FM')
+     &                          5, NCRA29(16), VAL29(16), ICODRE, 1)
             IF (THER.NE.' ') THEN
             ENDIF
                 CALL RCVALA(IMATE,' ', 'THM_DIFFU', 1, 'SAT', VALPAR(1),
-     &                           2, NCRA29(11), VAL29(11), CODRET, ' ')
+     &                           2, NCRA29(11), VAL29(11), ICODRE, 0)
             ENDIF
             CALL RCVALA(IMATE,' ', 'THM_DIFFU', 0, ' ', 0.D0,
-     &                            6, NCRA29(21), VAL29(21), CODRET, ' ')
+     &                            6, NCRA29(21), VAL29(21), ICODRE, 0)
             CALL RCVALA(IMATE,' ', 'THM_DIFFU', 1, 'INST', INSTAP,
-     &                       1, 'PESA_MUL', FPESA, CODRET, ' ')
+     &                       1, 'PESA_MUL', FPESA, ICODRE, 0)
 C COMME IL N'EST PAS POSSIBLE D'AFFECTER UNE VALEUR PAR DEFAUT
 C A LA FONCTION PESA_MULT DANS LE FICHIER DE COMMANDE
 C DEFI_MATERIAU.CAPY, ON UTILISE LE CODE RETOUR POUR LA METTRE
 C A SA VALEUR PAR DEFAUT (EGALE A 1) SI ELLE N A PAS ETE
 C DEFINIE DANS LE FICHIER DE COMMANDE            
-            IF (CODRET(1).EQ.'NO') THEN
+            IF (ICODRE(1).EQ.1) THEN
                 FPESA=1.D0
             ENDIF
             RGAZ    = VAL29( 1)
@@ -2116,10 +2114,10 @@ C
             VAL32(22) = 0.0D0
 
             CALL RCVALA(IMATE,' ', 'THM_DIFFU', 0, ' ', 0.0D0,
-     &                                   3, NCRA32, VAL32, CODRET, ' ')
+     &                                   3, NCRA32, VAL32, ICODRE, 0)
             IF (HYDR.EQ.'HYDR_UTIL') THEN
                CALL RCVALA(IMATE,' ', 'THM_DIFFU', 1, 'PORO', PHI,
-     &                               1, NCRA32(4), VAL32(4),CODRET,' ')
+     &                               1, NCRA32(4), VAL32(4),ICODRE,0)
             ELSE IF (HYDR.EQ.'HYDR_ENDO') THEN
                IF ( (MECA.EQ.'MAZARS')          .OR.
      &              (MECA.EQ.'ENDO_ISOT_BETON')      ) THEN
@@ -2127,28 +2125,28 @@ C =====================================================================
 C --- ATTENTION DECALAGE VOLONTAIRE SUR LE TABLEAU VAL32 POUR ENDO ----
 C =====================================================================
                   CALL RCVALA(IMATE,' ', 'THM_DIFFU', 1, 'ENDO', ENDO,
-     &                            1, NCRA32(5), VAL32(4), CODRET, 'FM')
+     &                            1, NCRA32(5), VAL32(4), ICODRE, 1)
                ENDIF
             ELSE IF (HYDR.EQ.'HYDR_VGM') THEN
                CALL U2MESS('F','ALGORITH16_95')
             ENDIF
             CALL RCVALA(IMATE,' ', 'THM_LIQU', 1, 'TEMP', T,
-     &                                   3, NCRA33, VAL33, CODRET, ' ')
+     &                                   3, NCRA33, VAL33, ICODRE, 0)
             IF (THER.NE.' ') THEN
                CALL RCVALA(IMATE,' ', 'THM_DIFFU', 1, 'TEMP', T,
-     &                           1, NCRA32(6), VAL32(6), CODRET, 'FM')
+     &                           1, NCRA32(6), VAL32(6), ICODRE, 1)
                CALL RCVALA(IMATE,' ', 'THM_DIFFU', 1, 'TEMP', T,
-     &                           1, NCRA32(7), VAL32(7), CODRET, ' ')
+     &                           1, NCRA32(7), VAL32(7), ICODRE, 0)
                CALL RCVALA(IMATE,' ', 'THM_DIFFU', 1, 'PORO', PHI,
-     &                           2, NCRA32(8), VAL32(8), CODRET, ' ')
+     &                           2, NCRA32(8), VAL32(8), ICODRE, 0)
                CALL RCVALA(IMATE,' ', 'THM_DIFFU', 0, ' ', 0.D0,
-     &                           1, NCRA32(12), VAL32(12), CODRET, ' ')
+     &                           1, NCRA32(12), VAL32(12), ICODRE, 0)
                CALL RCVALA(IMATE,' ', 'THM_LIQU', 1, 'TEMP', T,
-     &                     DIM33-3, NCRA33(4), VAL33(4), CODRET, 'FM')
+     &                     DIM33-3, NCRA33(4), VAL33(4), ICODRE, 1)
             ENDIF
             IF (HYDR.EQ.'HYDR_UTIL' .OR. HYDR.EQ.'HYDR_ENDO') THEN
                CALL RCVALA(IMATE,' ', 'THM_DIFFU', 1, 'PCAP', P1,
-     &                          2, NCRA32(13), VAL32(13), CODRET, 'FM')
+     &                          2, NCRA32(13), VAL32(13), ICODRE, 1)
             ELSE
                CALL SATURA(HYDR,P1,VAL32(13),VAL32(14))
             ENDIF
@@ -2157,21 +2155,21 @@ C =====================================================================
             VALPAR(1) =  VAL32(13)
             VALPAR(2) =  P2
             CALL RCVALA(IMATE,' ', 'THM_DIFFU', 2, NOMPAR, VALPAR,
-     &                         2, NCRA32(15), VAL32(15), CODRET, 'FM')
+     &                         2, NCRA32(15), VAL32(15), ICODRE, 1)
             IF (THER.NE.' ') THEN
                 CALL RCVALA(IMATE,' ', 'THM_DIFFU', 1, 'SAT', VALPAR(1),
-     &                           2, NCRA32(11), VAL32(11), CODRET, ' ')
+     &                           2, NCRA32(11), VAL32(11), ICODRE, 0)
             ENDIF
             CALL RCVALA(IMATE,' ', 'THM_DIFFU', 0, ' ', 0.D0,
-     &                            6, NCRA32(17), VAL32(17), CODRET, ' ')
+     &                            6, NCRA32(17), VAL32(17), ICODRE, 0)
             CALL RCVALA(IMATE,' ', 'THM_DIFFU', 1, 'INST', INSTAP,
-     &                       1, 'PESA_MUL', FPESA, CODRET, ' ')
+     &                       1, 'PESA_MUL', FPESA, ICODRE, 0)
 C COMME IL N'EST PAS POSSIBLE D'AFFECTER UNE VALEUR PAR DEFAUT
 C A LA FONCTION PESA_MULT DANS LE FICHIER DE COMMANDE
 C DEFI_MATERIAU.CAPY, ON UTILISE LE CODE RETOUR POUR LA METTRE
 C A SA VALEUR PAR DEFAUT (EGALE A 1) SI ELLE N A PAS ETE
 C DEFINIE DANS LE FICHIER DE COMMANDE            
-            IF (CODRET(1).EQ.'NO') THEN
+            IF (ICODRE(1).EQ.1) THEN
                 FPESA=1.D0
             ENDIF
             PESA(1) = VAL32( 1)*FPESA

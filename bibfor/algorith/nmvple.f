@@ -2,7 +2,7 @@
      &                   INSTAM,INSTAP,DEPS,SIGM,VIM,
      &                   OPTION,SIGP,VIP,DSIDEP,IRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/03/2011   AUTEUR DEBONNIERES P.DE-BONNIERES 
+C MODIF ALGORITH  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -78,7 +78,7 @@ C
       REAL*8            A0,XAP,X,TM,TP
       REAL*8            FG,FDGDST,FDGDEV,DEFAM(6),DEFAP(6)
       REAL*8            COEF1,COEF2,DELTEV
-      CHARACTER*2       FB2, CODRET(5)
+      INTEGER ICODRE(5)
       CHARACTER*6       EPSA(6)
       CHARACTER*8       NOMRES(5),NOMPAR(2)
       DATA              KRON/1.D0,1.D0,1.D0,0.D0,0.D0,0.D0/
@@ -104,7 +104,6 @@ C
         CALL U2MESS('F','ALGORITH6_92')
         GO TO 299
       ENDIF
-      FB2 = 'F '
       DO 90 K = 1,6
         DEGRAN(K) = 0.D0
   90  CONTINUE
@@ -149,14 +148,14 @@ C
       NOMRES(1)='E'
       NOMRES(2)='NU'
       CALL RCVALB(FAMI,KPG,KSP,'-',IMATE,' ','ELAS',1,NOMPAR,VALPAR,2,
-     &              NOMRES,VALRES,CODRET, FB2 )
+     &              NOMRES,VALRES,ICODRE, 2)
       EM     = VALRES(1)
       NUM    = VALRES(2)
       DEUMUM = EM/(1.D0+NUM)
       TROIKM = EM/(1.D0-2.D0*NUM)
       VALPAR(1)=INSTAP
       CALL RCVALB(FAMI,KPG,KSP,'+',IMATE,' ','ELAS',1,NOMPAR,VALPAR,2,
-     &              NOMRES,VALRES,CODRET, FB2 )
+     &              NOMRES,VALRES,ICODRE, 2)
       E      = VALRES(1)
       NU     = VALRES(2)
       DEUXMU = E/(1.D0+NU)
@@ -169,7 +168,7 @@ C
         NOMPAR(1) = 'TEMP'
         VALPAR(1) = TSCHEM
         CALL RCVALB(FAMI,1,1,'+',IMATE,' ','LEMAITRE',1,NOMPAR,
-     &              VALPAR,3,NOMRES,VALRES,CODRET, FB2 )
+     &              VALPAR,3,NOMRES,VALRES,ICODRE, 2)
         VALDEN = VALRES(1)
         UNSURK = VALRES(2)
         UNSURM = VALRES(3)

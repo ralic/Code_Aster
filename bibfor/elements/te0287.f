@@ -3,9 +3,9 @@
       CHARACTER*16        OPTION , NOMTE
 C ......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 21/07/2009   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF ELEMENTS  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -46,7 +46,7 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C
       INTEGER            NNO,KP,NPG1,II,JJ,I,J,K,IMATUU,NBRES
-      INTEGER            IPOIDS,IVF,IDFDE,IGEOM,IMATE,IRET
+      INTEGER            IPOIDS,IVF,IDFDE,IGEOM,IMATE
       INTEGER            KD1,KD2,IJ1,IJ2,IDEPL,IFORC,MATER,ITHET,IALPH
       INTEGER            NNOS,JGANO,NDIM
       PARAMETER         ( NBRES = 2 )
@@ -58,7 +58,7 @@ C
 C
       CHARACTER*8        NOMRES(NBRES)
       CHARACTER*4        FAMI
-      CHARACTER*2        CODRET(NBRES)
+      INTEGER ICODRE(NBRES)
 
       LOGICAL            LTEATT
 C ......................................................................
@@ -99,7 +99,7 @@ C
           YG  = YG  + ZR(IGEOM+2*(I-1)+1)*ZR(IVF+K+I-1)
  102    CONTINUE
         CALL RCVALB(FAMI,KP,1,'+',MATER,' ','ELAS',0,' ',0.D0,
-     &              2,NOMRES,VALRES, CODRET, 'FM' )
+     &              2,NOMRES,VALRES, ICODRE, 1)
 C
         IF ( LTEATT(' ','AXIS','OUI') ) THEN
            POIDS = POIDS*R

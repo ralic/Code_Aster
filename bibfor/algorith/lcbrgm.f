@@ -4,22 +4,22 @@
 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 21/03/2011   AUTEUR GRANET S.GRANET 
+C MODIF ALGORITH  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C ======================================================================
 C LOI DE COMPORTEMENT ELASTIQUE ENDO HETEROGENE
@@ -62,14 +62,14 @@ C ----------------------------------------------------------------------
 
 
 
-      LOGICAL     CPLAN,RESI,RIGI,NONLIN
-      INTEGER     NDIMSI,K,L,ETAT,REUSS
+      LOGICAL     CPLAN,RESI,RIGI
+      INTEGER     NDIMSI,K,L,ETAT
 
-      REAL*8      EPS(6),EPSR(6),TREPS,COPLAN,SIGEL(6)
-      REAL*8      KRON(6),SIGELL(6),W(3),WORK(9),Z(3,3)
-      REAL*8      RIGMIN,FD,D,DM,E,NU,LAMBDA,DEUXMU
+      REAL*8      EPS(6),EPSR(6),TREPS,SIGEL(6)
+      REAL*8      KRON(6)
+      REAL*8      FD,D,DM,E,NU,LAMBDA,DEUXMU
 
-      CHARACTER*2 CODRET(2)
+      INTEGER ICODRE(2)
       CHARACTER*8 NOMRES(2)
       REAL*8      VALRES(2)
 
@@ -102,7 +102,7 @@ C -- LECTURE DES CARACTERISTIQUES ELASTIQUES
       NOMRES(1) = 'E'
       NOMRES(2) = 'NU'
       CALL RCVALA(IMATE,' ','ELAS',0,' ',0.D0,2,
-     &              NOMRES,VALRES,CODRET, 'FM')
+     &              NOMRES,VALRES,ICODRE, 1)
 
       E     = VALRES(1)
       NU    = VALRES(2)
@@ -137,13 +137,13 @@ C -- CALCUL DES CONTRAINTES ELASTIQUES
 C ======================================================================
 C                 INTEGRATION DE LA LOI DE COMPORTEMENT
 C ======================================================================
-      
+
       IF (RESI) THEN
         DM   = VIM(1)
         ETAT = NINT(VIP(2))
         VIP(3)= VIM(3)
         VIP(4)= VIM(4)
-        
+
         IF (ETAT.EQ.3) THEN
            D = DMAX
            ETAT = 3
@@ -157,19 +157,19 @@ C ======================================================================
             D = DM
             ETAT = 0
         ENDIF
-        
+
         DO 30 K=1,NDIMSI
          SIG(K) = (1-D) * SIGEL(K)
  30     CONTINUE
- 
+
          VIP(1) = D
          VIP(2) = ETAT
-         
+
       ELSE
         D   = VIM(1)
         ETAT=NINT(VIM(2))
       END IF
-      
+
 
 C ======================================================================
 C                            MATRICE TANGENTE
@@ -200,5 +200,5 @@ C ======================================================================
 
 
       END IF
-      
+
       END

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 29/03/2011   AUTEUR DELMAS J.DELMAS 
+#& MODIF COMMANDE  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -310,7 +310,7 @@ b_charge =BLOC( condition = "OPTION in ('EPME_ELNO','EPSI_ELGA','EPME_ELGA','EPS
                                  "EPEQ_ELNO","EPEQ_ELGA","EPMQ_ELNO","EPMQ_ELGA",
                                  "DERA_ELNO","DERA_ELGA",
                                  "ENDO_ELGA","ENDO_ELNO","INDL_ELGA","SING_ELEM",
-                                 "SING_ELNO",
+                                 "SING_ELNO","PDIL_ELGA",
                                  "PMPB_ELNO","PMPB_ELGA","ENEL_ELGA","ENEL_ELNO",
                                  "ETOT_ELGA","ETOT_ELNO","ETOT_ELEM","SPMX_ELGA",
                                  "DISS_ELGA","DISS_ELNO"),

@@ -4,7 +4,7 @@
       INTEGER NBORDR
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 15/02/2011   AUTEUR FLEJOU J-L.FLEJOU 
+C MODIF UTILITAI  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -43,7 +43,7 @@ C                      C H A M P _ M E C A N I Q U E
 C     ------------------------------------------------------------------
       PARAMETER (NCMEC1=40)
       PARAMETER (NCMEC2=49)
-      PARAMETER (NCMEC3=41)
+      PARAMETER (NCMEC3=42)
       PARAMETER (NCMECA=NCMEC1+NCMEC2+NCMEC3)
       CHARACTER*16 CHMEC1(NCMEC1)
       CHARACTER*16 CHMEC2(NCMEC2)
@@ -126,7 +126,7 @@ C      '1234567890123456','1234567890123456','1234567890123456',
      & 'VAEX_NOEU',       'MODE_MECA',       'SIEF_SENO_SEGA',
      & 'COHE_ELGA',       'INDC_ELGA',       'SECO_ELGA',
      & 'VARC_ELGA',       'FERRAILLAGE',     'EPVC_NOEU',
-     & 'EPFD_NOEU',       'EPFP_NOEU'/
+     & 'EPFD_NOEU',       'EPFP_NOEU',       'PDIL_ELGA'/
 C     ------------------------------------------------------------------
 C                      C H A M P _ T H E R M I Q U E
 C     ------------------------------------------------------------------

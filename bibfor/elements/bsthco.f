@@ -5,9 +5,9 @@
       CHARACTER*8         NOMTE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
+C MODIF ELEMENTS  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -47,8 +47,8 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*80                                              ZK80
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
-      INTEGER       I, ICARA, ICOMPO, ICOU, IER, IMATE, INTE, INTSN,
-     &              INTSR, ITEMP, ITEMPF, ITREF, JGEOM, LZI, LZR, NB1,
+      INTEGER       I, ICARA, ICOMPO, ICOU, IMATE, INTE, INTSN,
+     &              INTSR, JGEOM, LZI, LZR, NB1,
      &              NB2, NBCOU, NPGE, NPGSN, NPGSR, KWGT,
      &              ITAB(8), IRET
       PARAMETER (NPGE=3)
@@ -59,13 +59,11 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       REAL*8        HSF(3,9),HSJ1FX(3,9),WGT
       REAL*8        BTDF(3,42),BTILD(5,42)
       REAL*8        EPSTH(5),SIGMTH(5),BSIGT1(42)
-      REAL*8        KSI3S2,KAPPA,MATC(5,5),VALPU(2)
-      REAL*8        COEF, DEUX, EPAIS, EPTOT, QUATRE, T,
-     &              TINF, TPG1, TREF, TROIS, TSUP, UN, VALPAR, VALRES,
+      REAL*8        KSI3S2,KAPPA,MATC(5,5)
+      REAL*8        COEF, DEUX, EPAIS, EPTOT, QUATRE,
+     &                 TROIS, UN, VALPAR,
      &              ZERO, ZIC, ZMIN, EPSTHE
-      LOGICAL       TEMPNO
-      CHARACTER*2   CODRET
-      CHARACTER*8   NOMPU(2) , NOMPAR
+      INTEGER ICODRE
       CHARACTER*10  PHENOM
 C     ------------------------------------------------------------------
 C
@@ -164,7 +162,7 @@ C
 C --- RECUPERATION DU MATERIAU :
 C     ------------------------
       CALL JEVECH('PMATERC','L',IMATE)
-      CALL RCCOMA(ZI(IMATE),'ELAS',PHENOM,CODRET)
+      CALL RCCOMA(ZI(IMATE),'ELAS',PHENOM,ICODRE)
 C______________________________________________________________________
 C
 C---- RECUPERATION DE LA TEMPERATURE
@@ -334,6 +332,5 @@ C     -------------------------------
       BSIGTH(6*NB1+1) = BSIGT1(5*NB1+1)
       BSIGTH(6*NB1+2) = BSIGT1(5*NB1+2)
 C
- 9999 CONTINUE
 C
       END

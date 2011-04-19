@@ -1,7 +1,7 @@
       SUBROUTINE TE0377 (OPTION,NOMTE)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/03/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF ELEMENTS  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -69,15 +69,14 @@ C
       INTEGER IREF1,IREF2
       INTEGER NDIM
       INTEGER NNO , NNOS , NPG , IPOIDS, IVF , IDFDE , JGANO
-      INTEGER NDIMF
-      INTEGER NNOF, NNOSF, NPGF, IPOIDF, IVFF, IDFDXF, JGANOF
+      INTEGER NNOF, NPGF
       INTEGER NBCMP
       INTEGER IPG
       INTEGER IPGF
       INTEGER NBF
       INTEGER TYMVOL,NDEGRE,IFA,TYV
 
-      REAL*8 R8BID,R8BID2,R8BID3(3),R8BID4(3)
+      REAL*8 R8BID,R8BID3(3)
       REAL*8 DFDX(9),DFDY(9),HK,POIDS
       REAL*8 FPX,FPY
       REAL*8 FRX(9),FRY(9)
@@ -92,7 +91,7 @@ C
       REAL*8 SIG11(3),SIG22(3),SIG12(3)
       REAL*8 E,NU,RHO,VALRES(3)
 
-      CHARACTER*2 CODRET(2)
+      INTEGER ICODRE(2)
       CHARACTER*3 TYPNOR
       CHARACTER*8 TYPMAV, ELREFE
       CHARACTER*8 ELREFF, ELREFB
@@ -110,7 +109,6 @@ C
 C
 C ----------------------------------------------------------------------
  1000 FORMAT(A,' :',(6(1X,1PE17.10)))
- 2000 FORMAT(A,10I8)
 C ----------------------------------------------------------------------
 C 1 -------------- GESTION DES DONNEES ---------------------------------
 C ----------------------------------------------------------------------
@@ -189,7 +187,7 @@ C
       IF ( YAPR .OR. YARO .OR. TYPNOR.EQ.'NRJ' ) THEN
 C
         CALL JEVECH('PMATERC','L',IMATE)
-        CALL RCCOMA(ZI(IMATE),'ELAS',PHENOM,CODRET)
+        CALL RCCOMA(ZI(IMATE),'ELAS',PHENOM,ICODRE)
         IBID = 0
         IF ( TYPNOR.EQ.'NRJ' ) THEN
           IBID = IBID +1
@@ -203,7 +201,7 @@ C
         ENDIF
 C
         CALL RCVALA ( ZI(IMATE), ' ', PHENOM, 1, ' ', R8BID,
-     >                IBID, NOMPAR, VALRES, CODRET, 'FM')
+     &                IBID, NOMPAR, VALRES, ICODRE, 1)
 C
         IF ( TYPNOR.EQ.'NRJ' ) THEN
           E  = VALRES(1)
@@ -239,7 +237,7 @@ C 2.3. --- CALCUL DE LA FORCE DE ROTATION ---
 C
       IF ( YARO ) THEN
         CALL RESROT (ZR(IROT),ZR(IGEOM),ZR(IVF),RHO,NNO,NPG,
-     >               FRX,FRY)
+     &               FRX,FRY)
       ELSE
         DO 23 , IPG = 1 , NPG
           FRX(IPG) = 0.D0
@@ -266,7 +264,7 @@ C       IMPOSER LA VALEUR 0 SANS FAIRE DE CALCULS INUTILES
             FOVO(IBID) = 0.D0
           ELSE
             CALL FOINTE('FM',ZK8(IFOVF+IBID-1),1,NOMPAR,R8BID3,
-     >                   FOVO(IBID),IRET)
+     &                   FOVO(IBID),IRET)
           ENDIF
    24   CONTINUE
 CGN        WRITE(IFM,*) 'F X : ',ZK8(IFOVF),FOVO(1)
@@ -315,7 +313,7 @@ C
 C ------- CUMUL DU TERME D'ERREUR
 C
         TER1 = TER1
-     >       + ( R8BID3(1)**2 + R8BID3(2)**2 ) * POIDS
+     &       + ( R8BID3(1)**2 + R8BID3(2)**2 ) * POIDS
         IF ( NIV.GE.2 ) THEN
           WRITE(IFM,1000) 'POIDS', POIDS
           WRITE(IFM,1000) 'A2 + B2 ', R8BID3(1)**2 + R8BID3(2)**2
@@ -353,7 +351,7 @@ C       ELREFB : DENOMINATION DE LA MAILLE FACE DE ELREFE - FAMILLE 2
 C      --- REMARQUE : ON IMPOSE UNE FAMILLE DE POINTS DE GAUSS
 C
       CALL ELREF7 ( ELREFE,
-     >              TYMVOL, NDEGRE, NBF, ELREFF, ELREFB )
+     &              TYMVOL, NDEGRE, NBF, ELREFF, ELREFB )
 CGN      WRITE(6,*) 'TYPE MAILLE VOLUMIQUE COURANTE :',TYMVOL
 C --- CARACTERISTIQUES DES FACES DE BORD -------------------------------
 C     ON EST TENTE DE FAIRE L'APPEL A ELREF4 COMME EN 3D MAIS C'EST EN
@@ -397,10 +395,10 @@ C ----- CALCUL DE NORMALES, TANGENTES ET JACOBIENS AUX POINTS DE GAUSS
 C
           IAUX = IFA
           CALL CALNOR ( '2D' , IGEOM,
-     >                  IAUX, NNOS, NNOF, ORIEN,
-     >                  IBID, IBID, ITAB, IBID, IBID, IBID,
-     >                  JACO, NX, NY, R8BID3,
-     >                  TX, TY, HF )
+     &                  IAUX, NNOS, NNOF, ORIEN,
+     &                  IBID, IBID, ITAB, IBID, IBID, IBID,
+     &                  JACO, NX, NY, R8BID3,
+     &                  TX, TY, HF )
 C
 C ----------------------------------------------------------------------
 C --------------- CALCUL DU DEUXIEME TERME DE L'ERREUR -----------------
@@ -408,13 +406,13 @@ C --------------- LE BORD VOISIN EST UN VOLUME -------------------------
 C ----------------------------------------------------------------------
 C
           IF ( TYPMAV(1:4).EQ.'TRIA' .OR.
-     >         TYPMAV(1:4).EQ.'QUAD' ) THEN
+     &         TYPMAV(1:4).EQ.'QUAD' ) THEN
 C
 C ------- CALCUL DU SAUT DE CONTRAINTE ENTRE ELEMENTS ------------------
 C
             IAUX = IFA
             CALL ERMES2(IAUX,ELREFE,TYPMAV,IREF1,IVOIS,IAD,NBCMP,
-     >                  SG11,SG22,SG12)
+     &                  SG11,SG22,SG12)
 C
 C ------- CALCUL DE L'INTEGRALE SUR LA FACE ----------------------------
 C ------- CALCUL DU TERME D'ERREUR AVEC INTEGRATION DE NEWTON-COTES ----
@@ -458,8 +456,8 @@ C ------- CALCUL EFFORTS SURFACIQUES ET DES CONTRAINTES ----------------
 C
             IAUX = IFA
             CALL ERMEB2 (IAUX,IREF1,IREF2,IVOIS,IGEOM,IAD,
-     >                   ELREFE,NBCMP,INST,NX,NY,TX,TY,
-     >                   SIG11,SIG22,SIG12,CHX,CHY)
+     &                   ELREFE,NBCMP,INST,NX,NY,TX,TY,
+     &                   SIG11,SIG22,SIG12,CHX,CHY)
 C
 C ------- CALCUL DE L'INTEGRALE SUR LE BORD ----------------------------
 C

@@ -3,9 +3,9 @@
       REAL*8              RHO , EPAIS
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 20/02/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF ELEMENTS  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -41,7 +41,7 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       INTEGER       JMATE, NBV, JCOQU, IADZI, IAZK24
       REAL*8        R8BID, VALRES(2), R8MAEM
-      CHARACTER*2   CODRET(2)
+      INTEGER ICODRE(2)
       CHARACTER*24 VALK(2)
       CHARACTER*8   NOMRES(2), NOMAIL
       CHARACTER*16  PHENOM
@@ -49,14 +49,14 @@ C --DEB
 C
       CALL JEVECH ('PMATERC' , 'L' , JMATE )
 C
-      CALL RCCOMA ( ZI(JMATE), 'ELAS', PHENOM, CODRET )
+      CALL RCCOMA ( ZI(JMATE), 'ELAS', PHENOM, ICODRE )
 C
       IF ( PHENOM .EQ. 'ELAS_COQMU' )  THEN
          NOMRES(1) = 'HOM_19'
          NOMRES(2) = 'HOM_20'
          NBV  = 2
          CALL RCVALA(ZI(JMATE),' ', PHENOM, 0, ' ', R8BID, NBV,
-     &                 NOMRES, VALRES, CODRET, 'FM' )
+     &                 NOMRES, VALRES, ICODRE, 1)
          EPAIS = VALRES(1)
          RHO   = VALRES(2)
          IF ( RHO .EQ. R8MAEM() ) THEN
@@ -78,7 +78,7 @@ C
          NOMRES(1) = 'RHO'
          NBV = 1
          CALL RCVALA(ZI(JMATE),' ',PHENOM,0,' ',R8BID,NBV,
-     &                 NOMRES,VALRES,CODRET, 'FM' )
+     &                 NOMRES,VALRES,ICODRE, 1)
          RHO   = VALRES(1)
          CALL JEVECH ('PCACOQU' , 'L' , JCOQU)
          EPAIS = ZR(JCOQU)

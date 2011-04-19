@@ -24,7 +24,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C     ------------------------------------------------------------------
-C MODIF ELEMENTS  DATE 04/04/2011   AUTEUR DESOZA T.DESOZA 
+C MODIF ELEMENTS  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C TOLE CRP_20
 C     ------------------------------------------------------------------
 C     CALCUL DES MATRICES DE RIGIDITE DE FLEXION, MEMBRANE , COUPLAGE
@@ -61,7 +61,8 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       REAL*8       DX,DY,DZ,S,C,NORM,PS,PJDX,PJDY,PJDZ
       REAL*8       ALPHA,BETA,R8DGRD,R8PREM,DET
       REAL*8       ZERO,DEUX
-      CHARACTER*2  CODRET(33),DERIVE
+      INTEGER  ICODRE(33)
+      CHARACTER*2  DERIVE
       CHARACTER*3  NUM
       CHARACTER*8  NOMRES(33),NOMPAR
       CHARACTER*10 PHENOM
@@ -116,7 +117,7 @@ C     ------------------------------------------------
         MULTIC = 0
         GOTO 999
       ENDIF
-      CALL RCCOMA(ZI(JMATE),'ELAS',PHENOM,CODRET)
+      CALL RCCOMA(ZI(JMATE),'ELAS',PHENOM,ICODRE)
 
       IF (PHENOM.EQ.'ELAS_COQMU') THEN
         IF (NORM.LE.R8PREM()) THEN
@@ -194,11 +195,11 @@ C        ET T2VE INVERSE DE T2EV
         T1VE(9) =  T1VE(1) - T1VE(4)
 
         CALL RCVALA(ZI(JMATE),' ',PHENOM,0,' ',ZERO,1,'MEMB_L  ',
-     &              VALRES(1),CODRET,' ')
-        IF (CODRET(1).EQ.'NO') THEN
+     &              VALRES(1),ICODRE,0)
+        IF (ICODRE(1).EQ.1) THEN
           CALL RCVALA(ZI(JMATE),' ',PHENOM,0,' ',ZERO,1,'M_LLLL  ',
-     &                VALRES(1),CODRET,' ')
-          IF (CODRET(1).EQ.'NO') THEN
+     &                VALRES(1),ICODRE,0)
+          IF (ICODRE(1).EQ.1) THEN
             CALL U2MESS('F','ELEMENTS_41')
           ELSE
             ELASCO = 2
@@ -273,20 +274,20 @@ C        ------ MATERIAU ISOTROPE --------------------------------------
           CALL JEVECH('PMATSEN','L',JMATE)
           CALL RCVALB(FAMI,1,1,'+',ZI(JMATE),' ',
      &            PHENOM,NBPAR,NOMPAR,VALPAR,NBV,
-     &            NOMRES,VALRES,CODRET,'FM')
+     &            NOMRES,VALRES,ICODRE,1)
           YOUNG = VALRES(1)
           NU = VALRES(2)
 
 C A CE NIVEAU : LA PROCEDURE HABITUELLE DE CALCUL DE SENSIBILITE DONNE :
 C   SI : DERIVATION PAR RAPPORT A YOUNG ALORS : YOUNG = 1 ET NU = 0
 C   SI : DERIVATION PAR RAPPORT A NU ALORS : YOUNG = 0 ET NU = 1
-C   SINON  : DERIVATION PAR RAPPORT A L EPAISSEUR 
+C   SINON  : DERIVATION PAR RAPPORT A L EPAISSEUR
 C            (EVITE DE DEFINIR UNE OPTION EN PLUS)
 
           CALL JEVECH('PMATERC','L',JMATE)
           CALL RCVALB(FAMI,1,1,'+',ZI(JMATE),' ',
      &            PHENOM,NBPAR,NOMPAR,VALPAR,NBV,
-     &            NOMRES,VALRES,CODRET,'FM')
+     &            NOMRES,VALRES,ICODRE,1)
           IF(ABS(NU).LT.R8PREM()) THEN
             DERIVE = 'E'
             NU = VALRES(2)
@@ -294,7 +295,7 @@ C            (EVITE DE DEFINIR UNE OPTION EN PLUS)
             DERIVE = 'NU'
             YOUNG = VALRES(1)
             NU = VALRES(2)
-          ELSE 
+          ELSE
             DERIVE = 'EP'
           END IF
 C ET REFORMULATION DES TERMES DE LA MATRICE (VOIR PLUS BAS)
@@ -302,7 +303,7 @@ C ET REFORMULATION DES TERMES DE LA MATRICE (VOIR PLUS BAS)
 
           CALL RCVALB(FAMI,1,1,'+',ZI(JMATE),' ',
      &               PHENOM,NBPAR,NOMPAR,VALPAR,NBV,
-     &               NOMRES, VALRES,CODRET,'FM')
+     &               NOMRES, VALRES,ICODRE,1)
 
           YOUNG = VALRES(1)
           NU = VALRES(2)
@@ -404,7 +405,7 @@ C      --- DANS LE CAS D'UN EXCENTREMENT                     --------
       ELSE IF (PHENOM.EQ.'ELAS_COQUE') THEN
         CALL RCVALB(FAMI,1,1,'+',ZI(JMATE),' ',
      &              PHENOM,NBPAR,NOMPAR,VALPAR,NBV,
-     &              NOMRES,VALRES,CODRET,'FM')
+     &              NOMRES,VALRES,ICODRE,1)
         IF (ELASCO.EQ.1) THEN
           MULTIC = 0
 
@@ -543,7 +544,7 @@ C
 C        ------ MATERIAU MULTICOUCHE -----------------------------------
         CALL RCVALB(FAMI,1,1,'+',ZI(JMATE),' ',
      &              PHENOM,NBPAR,NOMPAR,VALPAR,18,NOMRES,
-     &              VALRES,CODRET,'FM')
+     &              VALRES,ICODRE,1)
         DM(1,1) = VALRES(1)
         DM(1,2) = VALRES(2)
         DM(1,3) = VALRES(3)
@@ -573,7 +574,7 @@ C        ------ MATERIAU MULTICOUCHE -----------------------------------
         DF(3,2) = DF(2,3)
         CALL RCVALB(FAMI,1,1,'+',ZI(JMATE),' ',
      &             PHENOM,NBPAR,NOMPAR,VALPAR,6,
-     &             NOMRES(21), VALRES(21),CODRET(21),'FM')
+     &             NOMRES(21), VALRES(21),ICODRE(21),1)
         DCI(1,1) = VALRES(21)
         DCI(2,2) = VALRES(22)
         DCI(1,2) = VALRES(23)

@@ -3,9 +3,9 @@
       CHARACTER*(*)     OPTION,NOMTE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION II
-C MODIF ELEMENTS  DATE 18/01/2010   AUTEUR SELLENET N.SELLENET 
+C MODIF ELEMENTS  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -50,7 +50,8 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) ,ZK80(1)
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
-      CHARACTER*2        CODRET(4), CODRES
+      INTEGER ICODRE(4)
+      INTEGER CODRES
       CHARACTER*4        FAMI
       CHARACTER*8        NOMRES(4)
       CHARACTER*16       OPTCAL(12), PHENOM
@@ -60,10 +61,10 @@ C
       REAL*8             TC(6),TDP(6),SIGOLD,SIGNEW,SREF,TG,TMOY
 
       INTEGER            NNO,KP,NPG,K,II,IWEIB,JTAB(7),NNOS,JGANO,NDIM
-      INTEGER            IDEFG,ISSOPT,INO,IPOPP,IPOPPT
+      INTEGER            IDEFG,ISSOPT,IPOPP,IPOPPT
       INTEGER            IPOIDS,IVF,IDFDE,IMATE
-      INTEGER            IGEOM,ICONG,IVARIG,IISNAN,N
-      INTEGER            ISIGIE,ISIGIS,ITEMPE,ICOMPO,NBVARI
+      INTEGER            IGEOM,ICONG,IVARIG
+      INTEGER            ISIGIE,ISIGIS,ICOMPO,NBVARI
       LOGICAL            LTEATT, LAXI
 C     ------------------------------------------------------------------
 C
@@ -127,11 +128,11 @@ C     --- RECUPERATION DES DONNEES MATERIAU ---
 C
       CALL RCVALB ( FAMI, 1, 1, '+', ZI(IMATE),' ',PHENOM,
      &              0,' ',R8BID,3,NOMRES,
-     &              VALRES, CODRET, 'FM' )
+     &              VALRES, ICODRE, 1)
       CALL RCVALB ( FAMI, 1, 1, '+', ZI(IMATE),' ',PHENOM,
      &              0,' ',R8BID,1,NOMRES(3),
-     &              VALRES(3), CODRET(3),'FM')
-      IF (CODRET(3).NE.'OK') VALRES(3) = 1.D-6
+     &              VALRES(3), ICODRE(3),1)
+      IF (ICODRE(3).NE.0) VALRES(3) = 1.D-6
       M     = VALRES(1)
       V0    = VALRES(2)
       SEUIL = VALRES(3)
@@ -188,7 +189,7 @@ C
             TMOY = TMOY/VOLUME
             CALL RCVALB (FAMI, 1, 1, '+', ZI(IMATE),' ',PHENOM,
      &              1,'TEMP',TMOY,1,
-     &              NOMRES(4),VALRES(4), CODRET(4), 'FM' )
+     &              NOMRES(4),VALRES(4), ICODRE(4), 1)
             SREF = VALRES(4)
             SIGI = SIGI/SREF
          ENDIF
@@ -249,7 +250,7 @@ C
               TDP(6) = 0.D0
               CALL EPDCP(TC,TDP,SIGI,EPSGI)
               CALL RCVALB ( FAMI,KP,1,'+',ZI(IMATE),' ',PHENOM,0,' ',
-     &                    0.D0,1,NOMRES(4),VALRES(4), CODRET(4), 'FM' )
+     &                    0.D0,1,NOMRES(4),VALRES(4), ICODRE(4), 1)
               SREF = VALRES(4)
 
               SIGNEW=EXP((-EPSGI/2.D0))*SIGI/SREF
@@ -327,7 +328,7 @@ C
                 TMOY = TMOY/VOLUME
                 CALL RCVALB ( FAMI, 1, 1, '+',  ZI(IMATE),' ',PHENOM,
      &                  1,'TEMP',TMOY,1,
-     &                  NOMRES(4),VALRES(4), CODRET(4), 'FM' )
+     &                  NOMRES(4),VALRES(4), ICODRE(4), 1)
                 SREF = VALRES(4)
                 SIGNEW=EXP((-EPSGI/2.D0))*SIGI/SREF
           ENDIF
@@ -369,7 +370,7 @@ C
 C CALCUL DE SIGI
                CALL VPRI2D(CONG,SIGI)
                CALL RCVALB ( FAMI,KP,1,'+',ZI(IMATE),' ',PHENOM,0,' ',
-     &                  0.D0,1, NOMRES(4),VALRES(4), CODRET(4), 'FM' )
+     &                  0.D0,1, NOMRES(4),VALRES(4), ICODRE(4), 1)
                SREF = VALRES(4)
                SIGI = SIGI/SREF
            ENDIF

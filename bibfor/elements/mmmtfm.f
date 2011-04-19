@@ -1,12 +1,12 @@
-      SUBROUTINE MMMTFM(PHASE ,NDIM  ,NNM   ,NNL   ,NBCPS ,
-     &                  HPG   ,JACOBI,FFM   ,FFL   ,TAU1  ,
+      SUBROUTINE MMMTFM(PHASEP,NDIM  ,NNM   ,NNL   ,NBCPS ,
+     &                  WPG   ,JACOBI,FFM   ,FFL   ,TAU1  ,
      &                  TAU2  ,MPROJT,RESE  ,NRESE ,LAMBDA,
-     &                  NDEXFR,COEFFF,MATRFM)
+     &                  COEFFF,MATRFM)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 19/10/2010   AUTEUR DESOZA T.DESOZA 
+C MODIF ELEMENTS  DATE 18/04/2011   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -24,10 +24,10 @@ C ======================================================================
 C RESPONSABLE ABBAS M.ABBAS
 C
       IMPLICIT NONE
-      CHARACTER*4  PHASE
-      INTEGER      NDIM,NNM,NNL,NDEXFR,NBCPS
+      CHARACTER*9  PHASEP
+      INTEGER      NDIM,NNM,NNL,NBCPS
       REAL*8       FFM(9),FFL(9)
-      REAL*8       HPG,JACOBI
+      REAL*8       WPG,JACOBI
       REAL*8       TAU1(3),TAU2(3)
       REAL*8       RESE(3),NRESE
       REAL*8       MPROJT(3,3)
@@ -44,12 +44,13 @@ C
 C ----------------------------------------------------------------------
 C
 C
-C IN  PHASE  : PHASE DE CALCUL
-C              'GLIS' - CONTACT GLISSANT METHODE LAGRANGIENNE
-C              'ADHE' - CONTACT ADHERENT METHODE LAGRANGIENNE
-C              'PGLI' - CONTACT GLISSANT METHODE PENALISEE
-C              'PADH' - CONTACT ADHERENT METHODE PENALISEE
-C              'EXFR' - EXCLUSION D'UNE DIRECTION DE FROTTEMENT
+C IN  PHASEP : PHASE DE CALCUL
+C              'CONT'      - CONTACT
+C              'CONT_PENA' - CONTACT PENALISE
+C              'ADHE'      - ADHERENCE
+C              'ADHE_PENA' - ADHERENCE PENALISE
+C              'GLIS'      - GLISSEMENT
+C              'GLIS_PENA' - GLISSEMENT PENALISE
 C IN  NDIM   : DIMENSION DU PROBLEME
 C IN  NBCPS  : NB DE DDL DE LAGRANGE
 C IN  NNM    : NOMBRE DE NOEUDS DE LA MAILLE MAITRE
@@ -57,11 +58,10 @@ C IN  NNL    : NOMBRE DE NOEUDS DE LAGRANGE
 C IN  TAU1   : PREMIER VECTEUR TANGENT
 C IN  TAU2   : SECOND VECTEUR TANGENT
 C IN  MPROJT : MATRICE DE PROJECTION TANGENTE
-C IN  HPG    : POIDS DU POINT INTEGRATION DU POINT DE CONTACT
+C IN  WPG    : POIDS DU POINT INTEGRATION DU POINT DE CONTACT
 C IN  FFM    : FONCTIONS DE FORMES DEPL. MAIT.
 C IN  FFL    : FONCTIONS DE FORMES LAGR.
 C IN  JACOBI : JACOBIEN DE LA MAILLE AU POINT DE CONTACT
-C IN  NDEXFR : ENTIER CODE POUR EXCLUSION DIRECTION DE FROTTEMENT
 C IN  RESE   : SEMI-MULTIPLICATEUR GTK DE FROTTEMENT
 C               GTK = LAMBDAF + COEFFR*VITESSE
 C IN  NRESE  : RACINE DE LA NORME DE RESE
@@ -72,7 +72,6 @@ C
 C ----------------------------------------------------------------------
 C
       INTEGER   INOF,INOM,ICMP,IDIM,I,J,K,II,JJ,NBCPF
-      INTEGER   NDEXCL(10)
       REAL*8    A(2,3),B(2,3)
       REAL*8    H1(3),H2(3)
       REAL*8    H(3,2)
@@ -88,11 +87,10 @@ C
       CALL VECINI(3,0.D0,H1)
       CALL VECINI(3,0.D0,H2)
       NBCPF  = NBCPS - 1
-C
-C --- PARTIE ADHERENT
-C       
-      IF ((PHASE.EQ.'ADHE').OR.(PHASE.EQ.'PADH')) THEN   
-C ---   MATRICE [A] = [T]t*[P]
+C     
+C --- MATRICE [A] = [T]t*[P]
+C      
+      IF (PHASEP(1:4).EQ.'ADHE') THEN
         DO 4  I = 1,NDIM
           DO 5  K = 1,NDIM
             A(1,I) = TAU1(K)*MPROJT(K,I) + A(1,I)
@@ -103,7 +101,35 @@ C ---   MATRICE [A] = [T]t*[P]
             A(2,I) = TAU2(K)*MPROJT(K,I) + A(2,I)
   7       CONTINUE
   6     CONTINUE
+      ENDIF
 C
+C --- VECTEUR PROJ. BOULE SUR TANGENTES: {H1} = [K].{T1}
+C       
+      IF (PHASEP(1:4).EQ.'GLIS') THEN
+        CALL MKKVEC(RESE  ,NRESE ,NDIM  ,TAU1  ,H1    )
+        CALL MKKVEC(RESE  ,NRESE ,NDIM  ,TAU2  ,H2    )
+C
+C ----- MATRICE [H] = [{H1}{H2}]
+C
+        DO 16 IDIM = 1,3
+          H(IDIM,1) = H1(IDIM)
+          H(IDIM,2) = H2(IDIM)
+ 16     CONTINUE
+C
+C ----- MATRICE [B] = [P]*[H]t
+C        
+        DO 23 ICMP = 1,NBCPF
+          DO 24 J = 1,NDIM
+            DO 25  K = 1,NDIM
+              B(ICMP,J) = H(K,ICMP)*MPROJT(K,J)+B(ICMP,J)
+  25        CONTINUE
+  24      CONTINUE
+  23    CONTINUE
+      ENDIF
+C
+C --- CALCUL DES TERMES      
+C
+      IF (PHASEP(1:4).EQ.'ADHE') THEN      
         DO 284 INOF = 1,NNL
           DO 283 INOM = 1,NNM
             DO 282 ICMP = 1,NBCPF
@@ -111,35 +137,14 @@ C
                 II = NBCPF*(INOF-1)+ICMP
                 JJ = NDIM*(INOM-1)+IDIM
                 MATRFM(II,JJ) = MATRFM(II,JJ)+
-     &                          HPG*FFL(INOF)*FFM(INOM)*JACOBI*
+     &                          WPG*FFL(INOF)*FFM(INOM)*JACOBI*
      &                          LAMBDA*COEFFF*A(ICMP,IDIM)
 
  281          CONTINUE
  282        CONTINUE
  283      CONTINUE
- 284    CONTINUE       
-C
-C --- PARTIE GLISSANT
-C        
-      ELSEIF ((PHASE.EQ.'GLIS').OR.(PHASE.EQ.'PGLI')) THEN
-C       --- VECTEUR PROJ. BOULE SUR TGT1: {H1} = [K].{T1}
-        CALL MKKVEC(RESE  ,NRESE ,NDIM  ,TAU1  ,H1    )
-C       --- VECTEUR PROJ. BOULE SUR TGT1: {H2} = [K].{T2}
-        CALL MKKVEC(RESE  ,NRESE ,NDIM  ,TAU2  ,H2    )
-C       --- MATRICE [H] = [{H1}{H2}]
-        DO 16 IDIM = 1,3
-          H(IDIM,1) = H1(IDIM)
-          H(IDIM,2) = H2(IDIM)
- 16     CONTINUE
-C       --- MATRICE [B] = ([P]*[H])t
-        DO 23 ICMP = 1,NBCPF
-          DO 24 J = 1,NDIM
-            DO 25  K = 1,NDIM
-              B(ICMP,J) = MPROJT(J,K)*H(K,ICMP)+B(ICMP,J)
-  25        CONTINUE
-  24      CONTINUE
-  23    CONTINUE
-C
+ 284    CONTINUE 
+      ELSEIF (PHASEP(1:4).EQ.'GLIS') THEN
         DO 184 INOF = 1,NNL
           DO 183 INOM = 1,NNM
             DO 182 ICMP = 1,NBCPF
@@ -147,39 +152,15 @@ C
                 II = NBCPF*(INOF-1)+ICMP
                 JJ = NDIM*(INOM-1)+IDIM
                 MATRFM(II,JJ) = MATRFM(II,JJ)+
-     &                          HPG*FFL(INOF)*FFM(INOM)*JACOBI*
+     &                          WPG*FFL(INOF)*FFM(INOM)*JACOBI*
      &                          LAMBDA*COEFFF*B(ICMP,IDIM)
 
  181          CONTINUE
  182        CONTINUE
  183      CONTINUE
- 184    CONTINUE 
-
-      ELSEIF (PHASE.EQ.'EXFR') THEN
-        CALL ISDECO(NDEXFR,NDEXCL,10)
-        DO 122 INOF = 1,NNL
-          IF (NDEXCL(INOF).EQ.1) THEN
-            DO 121 INOM = 1,NNM
-              DO 120 ICMP = 1,NBCPF
-                IF ((ICMP.EQ.2).AND.(NDEXCL(10).EQ.0)) THEN
-                  GOTO 120
-                ENDIF
-                DO 119 IDIM = 1,NDIM
-                  II     = NBCPF*(INOF-1)+ICMP
-                  JJ     = NDIM*(INOM-1)+IDIM
-                  MATRFM(II,JJ) = 0.D0
- 119            CONTINUE
- 120          CONTINUE
- 121        CONTINUE
-          ENDIF
- 122    CONTINUE
-
+ 184    CONTINUE       
       ELSE
         CALL ASSERT(.FALSE.)
-
       ENDIF
-
-
-
 C
       END

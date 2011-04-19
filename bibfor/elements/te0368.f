@@ -1,7 +1,7 @@
       SUBROUTINE TE0368(OPTION,NOMTE)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -79,7 +79,6 @@ C
       INTEGER NNO2, NNOS2, NPG2, IPOID2, IVF2, IDFDX2, JGANO2
       INTEGER NBCMP
       INTEGER IPG, IN
-      INTEGER IPGF
       INTEGER NBF
       INTEGER TYMVOL,NDEGRE,IFA,TYV
 
@@ -111,7 +110,7 @@ C
       REAL*8 NUPLUS,NUMOIN
       REAL*8 RHO,VALRES(1)
 
-      CHARACTER*2 CODRET(2)
+      INTEGER ICODRE(2)
       CHARACTER*8 TYPMAV, ELREFE
       CHARACTER*8 ELREFF, ELREFB
       CHARACTER*8 NOMPAR(1)
@@ -133,21 +132,20 @@ C                                    4 : PYRAMIDE A 5 ET 13 NOEUDS
 C     VOIR TE003 POUR LES EXPLICATIONS DETAILLEES
 C
       DATA NOE/1,4,3,2,12,11,10, 9,21, 1,2,6,5, 9,14,17,13,22,
-     >         2,3,7,6,10,15,18,14,23, 3,4,8,7,11,16,19,15,24,
-     >         4,1,5,8,12,13,20,16,25, 5,6,7,8,17,18,19,20,26,
-     >         1,3,2,9,8,7, 3*0,       4,5,6,13,14,15, 3*0,
-     >         1,2,5,4, 7,11,13,10,16, 2,3,6,5,8,12,14,11,17,
-     >         1,4,6,3,10,15,12, 9,18, 9*0,
-     >         1,3,2,7,6, 5, 3*0,      2,3,4,6,10,9, 3*0,
-     >         3,1,4,7,8,10, 3*0,      1,2,4,5, 9,8, 3*0,
-     >         9*0,                    9*0,
-     >         1,2,5,6,11,10, 3*0,     2,3,5,7,12,11, 3*0,
-     >         3,4,5,8,13,12, 3*0,     4,1,5,9,10,13, 3*0,
-     >         1,4,3,2,9,8,7,6, 0,     9*0 /
+     &         2,3,7,6,10,15,18,14,23, 3,4,8,7,11,16,19,15,24,
+     &         4,1,5,8,12,13,20,16,25, 5,6,7,8,17,18,19,20,26,
+     &         1,3,2,9,8,7, 3*0,       4,5,6,13,14,15, 3*0,
+     &         1,2,5,4, 7,11,13,10,16, 2,3,6,5,8,12,14,11,17,
+     &         1,4,6,3,10,15,12, 9,18, 9*0,
+     &         1,3,2,7,6, 5, 3*0,      2,3,4,6,10,9, 3*0,
+     &         3,1,4,7,8,10, 3*0,      1,2,4,5, 9,8, 3*0,
+     &         9*0,                    9*0,
+     &         1,2,5,6,11,10, 3*0,     2,3,5,7,12,11, 3*0,
+     &         3,4,5,8,13,12, 3*0,     4,1,5,9,10,13, 3*0,
+     &         1,4,3,2,9,8,7,6, 0,     9*0 /
 C
 C ----------------------------------------------------------------------
  1000 FORMAT(A,' :',(6(1X,1PE17.10)))
- 2000 FORMAT(A,10I8)
 C ----------------------------------------------------------------------
 C 1 -------------- GESTION DES DONNEES ---------------------------------
 C ----------------------------------------------------------------------
@@ -251,10 +249,10 @@ C
       IF ( YAPRP .OR. YAROP .OR. YAPRD .OR. YAROD ) THEN
 C
         CALL JEVECH('PMATERC','L',IMATE)
-        CALL RCCOMA(ZI(IMATE),'ELAS',PHENOM,CODRET)
+        CALL RCCOMA(ZI(IMATE),'ELAS',PHENOM,ICODRE)
         NOMPAR(1)='RHO'
         CALL RCVALA ( ZI(IMATE), ' ', PHENOM, 1, ' ', R8BID,
-     >                1, NOMPAR, VALRES, CODRET, 'FM')
+     &                1, NOMPAR, VALRES, ICODRE, 1)
         RHO = VALRES(1)
 CGN        WRITE(IFM,1000) 'RHO', RHO
 C
@@ -304,7 +302,7 @@ C ------ CALCUL DE LA FORCE DE ROTATION AUX POINTS DE GAUSS PB. PRIMAL -
 C
       IF ( YAROP ) THEN
         CALL RESR3D (ZR(IROTP),ZR(IGEOM),ZR(IVF),RHO,NNO,NPG,
-     >               FRPX,FRPY,FRPZ)
+     &               FRPX,FRPY,FRPZ)
       ELSE
         DO 231 , IPG = 1 , NPG
           FRPX(IPG) = 0.D0
@@ -318,7 +316,7 @@ CGN      WRITE(IFM,1000) 'R PRIMAL Z',(FRPZ(IPG),IPG = 1 , NPG)
 C ------ CALCUL DE LA FORCE DE ROTATION AUX POINTS DE GAUSS PB. DUAL ---
       IF ( YAROD ) THEN
         CALL RESR3D (ZR(IROTD),ZR(IGEOM),ZR(IVF),RHO,NNO,NPG,
-     >               FRDX,FRDY,FRDZ)
+     &               FRDX,FRDY,FRDZ)
       ELSE
         DO 232 , IPG = 1 , NPG
           FRDX(IPG) = 0.D0
@@ -348,7 +346,7 @@ C       IMPOSER LA VALEUR 0 SANS FAIRE DE CALCULS INUTILES
             FOVOP(IBID) = 0.D0
           ELSE
             CALL FOINTE('FM',ZK8(IFOVFP+IBID-1),1,NOMPAR,R8BID3,
-     >                   FOVOP(IBID),IRET)
+     &                   FOVOP(IBID),IRET)
           ENDIF
   241   CONTINUE
 CGN        WRITE(IFM,*) 'F PRIMAL X : ',ZK8(IFOVFP)
@@ -374,7 +372,7 @@ C       IMPOSER LA VALEUR 0 SANS FAIRE DE CALCULS INUTILES
             FOVOD(IBID) = 0.D0
           ELSE
             CALL FOINTE('FM',ZK8(IFOVFD+IBID-1),1,NOMPAR,R8BID3,
-     >                   FOVOD(IBID),IRET)
+     &                   FOVOD(IBID),IRET)
           ENDIF
   242   CONTINUE
 CGN        WRITE(IFM,*) 'F DUAL X   : ',ZK8(IFOVFD)
@@ -395,17 +393,17 @@ C ------- CALCUL DES DERIVEES DES FONCTIONS DE FORMES /X, /Y ET /Z -----
 C
         IAUX = IPG
         CALL DFDM3D(NNO,IAUX,IPOIDS,IDFDE,ZR(IGEOM),
-     >              DFDX,DFDY,DFDZ,POIDS)
+     &              DFDX,DFDY,DFDZ,POIDS)
 C
 C ------- CALCUL DE LA DIVERGENCE ET DE LA NORME DE SIGMA PB. PRIMAL ---
 C
         CALL ERMEV3(NNO,IAUX,IVF,IADP,NBCMP,DFDX,DFDY,DFDZ,
-     >              DSPX,DSPY,DSPZ,R8BID)
+     &              DSPX,DSPY,DSPZ,R8BID)
 C
 C ------- CALCUL DE LA DIVERGENCE ET DE LA NORME DE SIGMA PB. DUAL -----
 C
         CALL ERMEV3(NNO,IAUX,IVF,IADD,NBCMP,DFDX,DFDY,DFDZ,
-     >              DSDX,DSDY,DSDZ,R8BID)
+     &              DSDX,DSDY,DSDZ,R8BID)
 C
 C ------- CUMUL
 C
@@ -446,25 +444,25 @@ C
 C ------- CUMUL DU TERME D'ERREUR
 C
         TERPL1 = TERPL1
-     >         + ( (S*R8BID3(1)+UNSURS*R8BID4(1))**2
-     >         +   (S*R8BID3(2)+UNSURS*R8BID4(2))**2
-     >         +   (S*R8BID3(3)+UNSURS*R8BID4(3))**2 ) * POIDS
+     &         + ( (S*R8BID3(1)+UNSURS*R8BID4(1))**2
+     &         +   (S*R8BID3(2)+UNSURS*R8BID4(2))**2
+     &         +   (S*R8BID3(3)+UNSURS*R8BID4(3))**2 ) * POIDS
 C
         TERMO1 = TERMO1
-     >         + ( (S*R8BID3(1)-UNSURS*R8BID4(1))**2
-     >         +   (S*R8BID3(2)-UNSURS*R8BID4(2))**2
-     >         +   (S*R8BID3(3)-UNSURS*R8BID4(3))**2 ) * POIDS
+     &         + ( (S*R8BID3(1)-UNSURS*R8BID4(1))**2
+     &         +   (S*R8BID3(2)-UNSURS*R8BID4(2))**2
+     &         +   (S*R8BID3(3)-UNSURS*R8BID4(3))**2 ) * POIDS
         IF ( NIV.GE.2 ) THEN
           WRITE(IFM,1000) 'POIDS', POIDS
           WRITE(IFM,1000) 'A2 + B2 + C2',
-     >             (S*R8BID3(1)+UNSURS*R8BID4(1))**2
-     >         +   (S*R8BID3(2)+UNSURS*R8BID4(2))**2
-     >         +   (S*R8BID3(3)+UNSURS*R8BID4(3))**2
+     &             (S*R8BID3(1)+UNSURS*R8BID4(1))**2
+     &         +   (S*R8BID3(2)+UNSURS*R8BID4(2))**2
+     &         +   (S*R8BID3(3)+UNSURS*R8BID4(3))**2
           WRITE(IFM,1000) '==> TERPL1    ', TERPL1
           WRITE(IFM,1000) 'A2 + B2 + C2',
-     >             (S*R8BID3(1)-UNSURS*R8BID4(1))**2
-     >         +   (S*R8BID3(2)-UNSURS*R8BID4(2))**2
-     >         +   (S*R8BID3(3)-UNSURS*R8BID4(3))**2
+     &             (S*R8BID3(1)-UNSURS*R8BID4(1))**2
+     &         +   (S*R8BID3(2)-UNSURS*R8BID4(2))**2
+     &         +   (S*R8BID3(3)-UNSURS*R8BID4(3))**2
           WRITE(IFM,1000) '==> TERMO1    ', TERMO1
         ENDIF
 C
@@ -491,12 +489,12 @@ C       ELREFB : DENOMINATION DE LA MAILLE FACE DE ELREFE - FAMILLE 2
 C      --- REMARQUE : ON IMPOSE UNE FAMILLE DE POINTS DE GAUSS
 C
       CALL ELREF7 ( ELREFE,
-     >              TYMVOL, NDEGRE, NBF, ELREFF, ELREFB )
+     &              TYMVOL, NDEGRE, NBF, ELREFF, ELREFB )
 CGN      WRITE(6,*) 'TYPE MAILLE VOLUMIQUE COURANTE :',TYMVOL
 C --- CARACTERISTIQUES DES FACES DE BORD DE LA FAMILLE 1 ---------------
       CALL ELREF4 ( ELREFF, 'NOEU',
-     >              NDIMF, NNOF, NNOSF, NPGF, IPOIDF, IVFF,
-     >              IDFDXF, JGANOF )
+     &              NDIMF, NNOF, NNOSF, NPGF, IPOIDF, IVFF,
+     &              IDFDXF, JGANOF )
 CGN      WRITE(IFM,2000) 'NDIMF',NDIMF
 CGN      WRITE(IFM,2000) 'NNOSF,NNOF,NPGF',NNOSF,NNOF,NPGF
 CGN      WRITE(IFM,1000) 'IPOIDF', (ZR(IPOIDF+IFA),IFA=0,NPGF-1)
@@ -506,8 +504,8 @@ C --- MAILLES DE BORD (PENTAEDRE, PYRAMIDE) ---
 C
       IF ( ELREFB(1:1).NE.' ' ) THEN
          CALL ELREF4 ( ELREFB, 'NOEU',
-     >                 NDIMF, NNO2, NNOS2, NPG2, IPOID2, IVF2,
-     >                 IDFDX2, JGANO2 )
+     &                 NDIMF, NNO2, NNOS2, NPG2, IPOID2, IVF2,
+     &                 IDFDX2, JGANO2 )
 CGN       WRITE(IFM,2000) 'NDIMF,NNO2',NDIMF,NNO2
 CGN       WRITE(IFM,2000) 'NNOS2,NPG2',NNOS2,NPG2
 CGN       WRITE(IFM,1000) 'IPOID2', (ZR(IPOID2+IFA),IFA=0,NPG2-1)
@@ -540,7 +538,7 @@ C --- IL FAUT REMPLACER LES CARACTERISTIQUES DE LA FAMILLE 1         ---
 C --- PAR CELLES DE LA FAMILLE 2                                     ---
 C
           IF ( ( TYMVOL.EQ.2 .AND. IFA.GE.3 ) .OR.
-     >         ( TYMVOL.EQ.4 .AND. IFA.GE.5 ) ) THEN
+     &         ( TYMVOL.EQ.4 .AND. IFA.GE.5 ) ) THEN
 C
             NNOF   = NNO2
             NPGF   = NPG2
@@ -560,10 +558,10 @@ C ------- CALCUL DE NORMALES ET JACOBIENS AUX POINTS DE GAUSS ----------
 C
           IAUX = IFA
           CALL CALNOR ('3D', IGEOM,
-     >                  IBID, IBID, IBID, R8BID,
-     >                  NNOF, NPGF, NOE, IAUX, TYMVOL, IDFDXF,
-     >                  JACO, NX, NY, NZ,
-     >                  R8BID3, R8BID4, R8BID2 )
+     &                  IBID, IBID, IBID, R8BID,
+     &                  NNOF, NPGF, NOE, IAUX, TYMVOL, IDFDXF,
+     &                  JACO, NX, NY, NZ,
+     &                  R8BID3, R8BID4, R8BID2 )
 C
 C ----------------------------------------------------------------------
 C --------------- CALCUL DU DEUXIEME TERME DE L'ERREUR -----------------
@@ -571,22 +569,22 @@ C --------------- LE BORD VOISIN EST UN VOLUME -------------------------
 C ----------------------------------------------------------------------
 C
           IF ( TYPMAV(1:4).EQ.'HEXA' .OR.
-     >         TYPMAV(1:4).EQ.'PENT' .OR.
-     >         TYPMAV(1:4).EQ.'TETR' .OR.
-     >         TYPMAV(1:4).EQ.'PYRA' ) THEN
+     &         TYPMAV(1:4).EQ.'PENT' .OR.
+     &         TYPMAV(1:4).EQ.'TETR' .OR.
+     &         TYPMAV(1:4).EQ.'PYRA' ) THEN
 C
 C ------- CALCUL DU SAUT DE CONTRAINTE ENTRE ELEMENTS PB. PRIMAL -------
 C ------- CE CHAMP SGPXX EST EXPRIME SUR LES NOEUDS DE LA FACE ---------
 C
             CALL ERMES3(NOE,IFA,TYMVOL,NNOF,TYPMAV,
-     >                  IREFP1,IVOIS,IADP,NBCMP,
-     >                  SGP11,SGP22,SGP33,SGP12,SGP13,SGP23)
+     &                  IREFP1,IVOIS,IADP,NBCMP,
+     &                  SGP11,SGP22,SGP33,SGP12,SGP13,SGP23)
 C
 C ------- CALCUL DU SAUT DE CONTRAINTE ENTRE ELEMENTS PB. DUAL ---------
 C
             CALL ERMES3(NOE,IFA,TYMVOL,NNOF,TYPMAV,
-     >                  IREFD1,IVOIS,IADD,NBCMP,
-     >                  SGD11,SGD22,SGD33,SGD12,SGD13,SGD23)
+     &                  IREFD1,IVOIS,IADD,NBCMP,
+     &                  SGD11,SGD22,SGD33,SGD12,SGD13,SGD23)
 C
 C ------- CALCUL DE L'INTEGRALE SUR LA FACE ----------------------------
 C ------- ATTENTION : CELA MARCHE CAR ON A CHOISI LA FAMILLE -----------
@@ -618,18 +616,18 @@ C
   321       CONTINUE
 C
             CALL INTEGA(NPGF,
-     >                  JACO,ZR(IPOIDF),
-     >                  CHPLX,CHPLY,CHPLZ,
-     >                  SOPL11,SOPL22,SOPL33,SOPL12,SOPL13,SOPL23,
-     >                  NX,NY,NZ,
-     >                  INTPL)
+     &                  JACO,ZR(IPOIDF),
+     &                  CHPLX,CHPLY,CHPLZ,
+     &                  SOPL11,SOPL22,SOPL33,SOPL12,SOPL13,SOPL23,
+     &                  NX,NY,NZ,
+     &                  INTPL)
 C
             CALL INTEGA(NPGF,
-     >                  JACO,ZR(IPOIDF),
-     >                  CHMOX,CHMOY,CHMOZ,
-     >                  SOMO11,SOMO22,SOMO33,SOMO12,SOMO13,SOMO23,
-     >                  NX,NY,NZ,
-     >                  INTMO)
+     &                  JACO,ZR(IPOIDF),
+     &                  CHMOX,CHMOY,CHMOZ,
+     &                  SOMO11,SOMO22,SOMO33,SOMO12,SOMO13,SOMO23,
+     &                  NX,NY,NZ,
+     &                  INTMO)
 C
 C ------- CALCUL DU TERME D'ERREUR -------------------------------------
 C
@@ -648,25 +646,25 @@ C --------------- LE BORD VOISIN EST UNE FACE --------------------------
 C ----------------------------------------------------------------------
 C
           ELSEIF ( TYPMAV(1:4).EQ.'QUAD' .OR.
-     >             TYPMAV(1:4).EQ.'TRIA' ) THEN
+     &             TYPMAV(1:4).EQ.'TRIA' ) THEN
 C
 C ------- CALCUL EFFORTS SURFACIQUES ET DES CONTRAINTES PB. PRIMAL -----
 C
             CALL ERMEB3(NOE,IFA,TYMVOL,NNOF,
-     >                  IREFP1,IREFP2,IVOIS,IGEOM,IADP,
-     >                  NBCMP,INST,
-     >                  NX,NY,NZ,
-     >                  SIGP11,SIGP22,SIGP33,SIGP12,SIGP13,SIGP23,
-     >                  CHPX,CHPY,CHPZ)
+     &                  IREFP1,IREFP2,IVOIS,IGEOM,IADP,
+     &                  NBCMP,INST,
+     &                  NX,NY,NZ,
+     &                  SIGP11,SIGP22,SIGP33,SIGP12,SIGP13,SIGP23,
+     &                  CHPX,CHPY,CHPZ)
 C
 C ------- CALCUL EFFORTS SURFACIQUES ET DES CONTRAINTES PB. DUAL -------
 C
             CALL ERMEB3(NOE,IFA,TYMVOL,NNOF,
-     >                  IREFD1,IREFD2,IVOIS,IGEOM,IADD,
-     >                  NBCMP,INST,
-     >                  NX,NY,NZ,
-     >                  SIGD11,SIGD22,SIGD33,SIGD12,SIGD13,SIGD23,
-     >                  CHDX,CHDY,CHDZ)
+     &                  IREFD1,IREFD2,IVOIS,IGEOM,IADD,
+     &                  NBCMP,INST,
+     &                  NX,NY,NZ,
+     &                  SIGD11,SIGD22,SIGD33,SIGD12,SIGD13,SIGD23,
+     &                  CHDX,CHDY,CHDZ)
 C
 C ------- CALCUL EFFORTS SURFACIQUES ET DES CONTRAINTES PB. GLOBAL -----
 C
@@ -699,18 +697,18 @@ C ------- ATTENTION : CELA MARCHE CAR ON A CHOISI LA FAMILLE -----------
 C ------- AVEC LES POINTS DE GAUSS SUR LES NOEUDS ----------------------
 C
             CALL INTEGA(NPGF,
-     >                  JACO,ZR(IPOIDF),
-     >                  CHPLX,CHPLY,CHPLZ,
-     >                  SIPL11,SIPL22,SIPL33,SIPL12,SIPL13,SIPL23,
-     >                  NX,NY,NZ,
-     >                  INTPL)
+     &                  JACO,ZR(IPOIDF),
+     &                  CHPLX,CHPLY,CHPLZ,
+     &                  SIPL11,SIPL22,SIPL33,SIPL12,SIPL13,SIPL23,
+     &                  NX,NY,NZ,
+     &                  INTPL)
 C
             CALL INTEGA(NPGF,
-     >                  JACO,ZR(IPOIDF),
-     >                  CHMOX,CHMOY,CHMOZ,
-     >                  SIMO11,SIMO22,SIMO33,SIMO12,SIMO13,SIMO23,
-     >                  NX,NY,NZ,
-     >                  INTMO)
+     &                  JACO,ZR(IPOIDF),
+     &                  CHMOX,CHMOY,CHMOZ,
+     &                  SIMO11,SIMO22,SIMO33,SIMO12,SIMO13,SIMO23,
+     &                  NX,NY,NZ,
+     &                  INTMO)
 C
 C ------- CALCUL DU TERME D'ERREUR -------------------------------------
 C

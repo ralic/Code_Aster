@@ -1,11 +1,10 @@
-      SUBROUTINE MMMTCC(PHASE ,NNL   ,HPG   ,FFL   ,JACOBI,
-     &                  TYPBAR,TYPRAC,COEFCP,COEFCS,CWEAR ,
-     &                  DISSIP,MATRCC)
+      SUBROUTINE MMMTCC(PHASEP,NNL   ,WPG   ,FFL   ,JACOBI,
+     &                  COEFCP,COEFCS,MATRCC)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 11/10/2010   AUTEUR ABBAS M.ABBAS 
+C MODIF ELEMENTS  DATE 18/04/2011   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -23,11 +22,10 @@ C ======================================================================
 C RESPONSABLE ABBAS M.ABBAS
 C
       IMPLICIT NONE
-      CHARACTER*4  PHASE
-      INTEGER      NNL,TYPBAR,TYPRAC
-      REAL*8       HPG,FFL(9),JACOBI
+      CHARACTER*9  PHASEP
+      INTEGER      NNL
+      REAL*8       WPG,FFL(9),JACOBI
       REAL*8       COEFCP,COEFCS
-      REAL*8       CWEAR,DISSIP
       REAL*8       MATRCC(9,9)
 C      
 C ----------------------------------------------------------------------
@@ -39,73 +37,50 @@ C
 C ----------------------------------------------------------------------
 C
 C
-C IN  PHASE  : PHASE DE CALCUL
+C IN  PHASEP : PHASE DE CALCUL
 C              'SANS' - PAS DE CONTACT
-C              'USUR' - USURE D'ARCHARD
-C              'EXCL' - EXCLUSION D'UN NOEUD
-C              'PSAN' - PENALISATION - PAS DE CONTACT
-C              'PCON' - PENALISATION - CONTACT
+C              'CONT' - CONTACT
+C              'SANS_PENA' - PENALISATION - PAS DE CONTACT
+C              'CONT_PENA' - PENALISATION - CONTACT
 C IN  NNL    : NOMBRE DE NOEUDS LAGRANGE 
-C IN  HPG    : POIDS DU POINT INTEGRATION DU POINT DE CONTACT
+C IN  WPG    : POIDS DU POINT INTEGRATION DU POINT DE CONTACT
 C IN  FFL    : FONCTIONS DE FORMES LAGR.
-C IN  TYPBAR : NUMERO DU NOEUD (MILIEU) EXCLU
 C IN  JACOBI : JACOBIEN DE LA MAILLE AU POINT DE CONTACT
 C IN  COEFCP : COEF_PENA_CONT
 C IN  COEFCS : COEF_STAB_CONT
-C IN  CWEAR  : COEFFICIENT D'USURE (KWEAR/HWEAR)
-C IN  DISSIP : DISSIPATION CUMULEE POUR L'USURE
 C OUT MATRCC : MATRICE ELEMENTAIRE LAGR_C/LAGR_C
 C
 C ----------------------------------------------------------------------
 C
       INTEGER   INOC1,INOC2
-      INTEGER   NDEXCL(9),IEXCL,I
 C
 C ----------------------------------------------------------------------
 C
-      DO 10 I = 1,9
-        NDEXCL(I) = 0
- 10   CONTINUE
-C 
-      IF (PHASE.EQ.'SANS') THEN
+
+      IF (PHASEP.EQ.'SANS') THEN
         DO 61 INOC1 = 1,NNL
           DO 51 INOC2 = 1,NNL
             MATRCC(INOC1,INOC2) = MATRCC(INOC1,INOC2)-
-     &                    HPG*JACOBI/COEFCS*
+     &                    WPG*JACOBI/COEFCS*
      &                    FFL(INOC2)*FFL(INOC1)
  51       CONTINUE
  61     CONTINUE
-      ELSEIF (PHASE.EQ.'USUR') THEN
-        DO 64 INOC1 = 1,NNL
-          DO 54 INOC2 = 1,NNL
-            MATRCC(INOC1,INOC2) = MATRCC(INOC1,INOC2)+
-     &                    HPG*JACOBI*(CWEAR*DISSIP)*
-     &                    FFL(INOC2)*FFL(INOC1)
-   54     CONTINUE
-   64   CONTINUE
-      ELSEIF (PHASE.EQ.'EXCL') THEN 
-        CALL MMEXN1(TYPBAR,NDEXCL)
-        DO 78 IEXCL = 1,9   
-          IF (NDEXCL(IEXCL).EQ.1) THEN
-            MATRCC(IEXCL,IEXCL) = - FFL(IEXCL)*FFL(IEXCL)
-          ENDIF  
-   78   CONTINUE 
-        IF (TYPRAC.NE.0) THEN
-          CALL MMEXN2(TYPRAC,NDEXCL)
-          DO 79 IEXCL = 1,9   
-            IF (NDEXCL(IEXCL).EQ.1) THEN
-              MATRCC(IEXCL,IEXCL) = - FFL(IEXCL)*FFL(IEXCL)
-            ENDIF  
-   79     CONTINUE
-        ENDIF
-      ELSEIF ((PHASE.EQ.'PSAN').OR.(PHASE.EQ.'PCON')) THEN
+      ELSEIF (PHASEP.EQ.'SANS_PENA') THEN
         DO 62 INOC1 = 1,NNL
           DO 52 INOC2 = 1,NNL
             MATRCC(INOC1,INOC2) = MATRCC(INOC1,INOC2)-
-     &                    HPG*JACOBI/COEFCP*
+     &                    WPG*JACOBI/COEFCP*
      &                    FFL(INOC2)*FFL(INOC1)
  52       CONTINUE
- 62     CONTINUE
+ 62     CONTINUE      
+      ELSEIF (PHASEP.EQ.'CONT_PENA') THEN
+        DO 63 INOC1 = 1,NNL
+          DO 53 INOC2 = 1,NNL
+            MATRCC(INOC1,INOC2) = MATRCC(INOC1,INOC2)-
+     &                    WPG*JACOBI/COEFCP*
+     &                    FFL(INOC2)*FFL(INOC1)
+ 53       CONTINUE
+ 63     CONTINUE
       ELSE
         CALL ASSERT(.FALSE.)
       ENDIF

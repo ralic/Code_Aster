@@ -1,9 +1,9 @@
-# MODIF  DATE 11/05/2010   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 19/04/2011   AUTEUR ASSIRE A.ASSIRE 
 # TITRE TEST DE LA MACRO COMMANDE DE RECALAGE
-# zzzz159a.para = tps_job 600 mem_job 300Mo mem_aster 10 ncpus 1 liste_test S
+# zzzz159a.para = tps_job 600 mem_job 300Mo mem_aster 10 ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -19,98 +19,95 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
 # RESPONSABLE ASSIRE A.ASSIRE
-import numpy as NP
 
+DEBUT(CODE=_F(NOM='ZZZZ159A',NIV_PUB_WEB='INTERNET'))
 
-DEBUT(CODE=_F(NOM='ZZZZ159A',NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'))
+exper1=DEFI_FONCTION(NOM_PARA='INST',
+                        NOM_RESU='SIYY',
+                        VALE=(0.00000E+00  , 0.00000E+00 ,
+                              5.00000E-02  , 5.00000E+01 ,
+                              1.00000E-01  , 1.00000E+02 ,
+                              1.50000E-01  , 1.50000E+02 ,
+                              2.00000E-01  , 2.00000E+02 ,
+                              2.50000E-01  , 2.00500E+02 ,
+                              3.00000E-01  , 2.01000E+02 ,
+                              3.50000E-01  , 2.01500E+02 ,
+                              4.00000E-01  , 2.02000E+02 ,
+                              4.50000E-01  , 2.02500E+02 ,
+                              5.00000E-01  , 2.03000E+02 ,
+                              5.50000E-01  , 2.03500E+02 ,
+                              6.00000E-01  , 2.04000E+02 ,
+                              6.50000E-01  , 2.04500E+02 ,
+                              7.00000E-01  , 2.05000E+02 ,
+                              7.50000E-01  , 2.05500E+02 ,
+                              8.00000E-01  , 2.06000E+02 ,
+                              8.50000E-01  , 2.06500E+02 ,
+                              9.00000E-01  , 2.07000E+02 ,
+                              9.50000E-01  , 2.07500E+02 ,
+                              1.00000E+00  , 2.08000E+02 ),)
 
-parametres =[['YOUN__',100000.,50000.,500000.],['DSDE__',1000.,500.,10000.],['SIGY__',30.,5.,500.]]
-
-calcul = [['REPONSE1','INST','SIYY'],['REPONSE2','INST','V1']]
-
-experience=[    NP.array([[0.00000E+00  , 0.00000E+00 ],
-                              [5.00000E-02  , 5.00000E+01 ],
-                              [1.00000E-01  , 1.00000E+02 ],
-                              [1.50000E-01  , 1.50000E+02 ],
-                              [2.00000E-01  , 2.00000E+02 ],
-                              [2.50000E-01  , 2.00500E+02 ],
-                              [3.00000E-01  , 2.01000E+02 ],
-                              [3.50000E-01  , 2.01500E+02 ],
-                              [4.00000E-01  , 2.02000E+02 ],
-                              [4.50000E-01  , 2.02500E+02 ],
-                              [5.00000E-01  , 2.03000E+02 ],
-                              [5.50000E-01  , 2.03500E+02 ],
-                              [6.00000E-01  , 2.04000E+02 ],
-                              [6.50000E-01  , 2.04500E+02 ],
-                              [7.00000E-01  , 2.05000E+02 ],
-                              [7.50000E-01  , 2.05500E+02 ],
-                              [8.00000E-01  , 2.06000E+02 ],
-                              [8.50000E-01  , 2.06500E+02 ],
-                              [9.00000E-01  , 2.07000E+02 ],
-                              [9.50000E-01  , 2.07500E+02 ],
-                              [1.00000E+00  , 2.08000E+02 ]]),
-               NP.array([[0.00000E+00  , 0.00000E+00 ],
-                              [5.00000E-02  , 0.00000E+00 ],
-                              [1.00000E-01  , 0.00000E+00 ],
-                              [1.50000E-01  , 0.00000E+00 ],
-                              [2.00000E-01  , 0.00000E+00 ],
-                              [2.50000E-01  , 2.47500E-04 ],
-                              [3.00000E-01  , 4.95000E-04 ],
-                              [3.50000E-01  , 7.42500E-04 ],
-                              [4.00000E-01  , 9.90000E-04 ],
-                              [4.50000E-01  , 1.23750E-03 ],
-                              [5.00000E-01  , 1.48500E-03 ],
-                              [5.50000E-01  , 1.73250E-03 ],
-                              [6.00000E-01  , 1.98000E-03 ],
-                              [6.50000E-01  , 2.22750E-03 ],
-                              [7.00000E-01  , 2.47500E-03 ],
-                              [7.50000E-01  , 2.72250E-03 ],
-                              [8.00000E-01  , 2.97000E-03 ],
-                              [8.50000E-01  , 3.21750E-03 ],
-                              [9.00000E-01  , 3.46500E-03 ],
-                              [9.50000E-01  , 3.71250E-03 ],
-                              [1.00000E+00  , 3.96000E-03 ]]) ]
+exper2=DEFI_FONCTION(NOM_PARA='INST',
+                        NOM_RESU='V1',
+                        VALE=(0.00000E+00  , 0.00000E+00 ,
+                              5.00000E-02  , 0.00000E+00 ,
+                              1.00000E-01  , 0.00000E+00 ,
+                              1.50000E-01  , 0.00000E+00 ,
+                              2.00000E-01  , 0.00000E+00 ,
+                              2.50000E-01  , 2.47500E-04 ,
+                              3.00000E-01  , 4.95000E-04 ,
+                              3.50000E-01  , 7.42500E-04 ,
+                              4.00000E-01  , 9.90000E-04 ,
+                              4.50000E-01  , 1.23750E-03 ,
+                              5.00000E-01  , 1.48500E-03 ,
+                              5.50000E-01  , 1.73250E-03 ,
+                              6.00000E-01  , 1.98000E-03 ,
+                              6.50000E-01  , 2.22750E-03 ,
+                              7.00000E-01  , 2.47500E-03 ,
+                              7.50000E-01  , 2.72250E-03 ,
+                              8.00000E-01  , 2.97000E-03 ,
+                              8.50000E-01  , 3.21750E-03 ,
+                              9.00000E-01  , 3.46500E-03 ,
+                              9.50000E-01  , 3.71250E-03 ,
+                              1.00000E+00  , 3.96000E-03 ),)
                               
-
 # LANCEMENT DE L'IDENTIFICATION
+RESU2=MACR_RECAL(
+         UNITE_ESCL       = 3, 
+         PARA_OPTI=(_F(NOM_PARA='YOUN__', VALE_INI=100000.0, VALE_MIN=50000.0, VALE_MAX=500000.0),
+                    _F(NOM_PARA='DSDE__', VALE_INI=1000.,    VALE_MIN=500.,    VALE_MAX=10000.),
+                    _F(NOM_PARA='SIGY__', VALE_INI=30.,      VALE_MIN=5.,      VALE_MAX=500.),),
+         COURBE=(_F(FONC_EXP=exper1, NOM_FONC_CALC='REPONSE1', PARA_X='INST', PARA_Y='SIYY'),
+                 _F(FONC_EXP=exper2, NOM_FONC_CALC='REPONSE2', PARA_X='INST', PARA_Y='V1'),),
+)
 
-RESU=MACR_RECAL(
-         UNITE_ESCL       = 3,
-         RESU_EXP         = experience,
-         LIST_PARA        = parametres,
-         RESU_CALC        = calcul,
-)  ;
 
-
-# On cree une liste bidon pour pouvoir
-# definir une fonction testable par TEST_RESU
-BIDON=DEFI_LIST_REEL(DEBUT=1.,
+BIDON2=DEFI_LIST_REEL(DEBUT=1.,
                      INTERVALLE=_F(JUSQU_A = 3., NOMBRE=2));
 
-OPTIM=DEFI_FONCTION(NOM_PARA='INST',
-                    VALE_PARA=BIDON,
-                    VALE_FONC=RESU);
+OPTIM2=DEFI_FONCTION(NOM_PARA='INST',
+                    VALE_PARA=BIDON2,
+                    VALE_FONC=RESU2);
 
-TEST_FONCTION ( VALEUR =(_F( FONCTION = OPTIM,
-                           PRECISION = 1.E-2,
+TEST_FONCTION (VALEUR =(_F(FONCTION = OPTIM2,
+                           PRECISION = 1.E-5,
                            VALE_PARA = 1.,
-                           REFERENCE = 'ANALYTIQUE',
+                           REFERENCE = 'AUTRE_ASTER',
                            VALE_REFE = 200000.,
+                          ),
+                       _F(FONCTION = OPTIM2,
+                          PRECISION = 1.E-5,
+                          VALE_PARA = 2.,
+                          REFERENCE = 'AUTRE_ASTER',
+                          VALE_REFE = 1999.955707,
                          ),
-                       _F( FONCTION = OPTIM,
-                           PRECISION = 3.E-2,
-                           VALE_PARA = 2.,
-                           REFERENCE = 'ANALYTIQUE',
-                           VALE_REFE = 2000.,
+                       _F(FONCTION = OPTIM2,
+                          PRECISION = 1.E-5,
+                          VALE_PARA = 3.,
+                          REFERENCE = 'AUTRE_ASTER',
+                          VALE_REFE = 200.00027887,
                          ),
-                       _F( FONCTION = OPTIM,
-                           PRECISION = 1.E-2,
-                           VALE_PARA = 3.,
-                           REFERENCE = 'ANALYTIQUE',
-                           VALE_REFE = 200.,
-                         ),
+                      )
               )
-              ) ;
 
 
 FIN()

@@ -2,7 +2,7 @@
      &                   VIM, OPTION, SIGP, VIP,  DSIDEP, PROJ, IRET)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 17/01/2011   AUTEUR IDOUX L.IDOUX 
+C MODIF ALGORITH  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -77,7 +77,7 @@ C TOLE CRP_20
       REAL*8      TR(6),VECP(9),VPP(3),ARRET,PROJT(6,6)
       REAL*8      VECPIK,VECPJL,VECPJK,VECPIL
 
-      CHARACTER*2 CODRET(6)
+      INTEGER ICODRE(6)
       CHARACTER*8 NOMRES(6)
       REAL*8       VALRES(6)
 
@@ -134,7 +134,7 @@ C---------------------------------------------------
       NOMRES(1) = 'E'
       NOMRES(2) = 'NU'
       CALL RCVALA ( IMATE,' ','ELAS',0,' ',0.D0,2,
-     &              NOMRES,VALRES,CODRET, 'FM')
+     &              NOMRES,VALRES,ICODRE, 1)
       E     = VALRES(1)
       NU    = VALRES(2)
       LAMBDA = E * NU / (UN+NU) / (UN - DEUX*NU)
@@ -149,7 +149,7 @@ C-------------------------------------------------
       NOMRES(5) = 'ECROB'
       NOMRES(6) = 'ECROD'
       CALL RCVALA(IMATE,' ','ENDO_ORTH_BETON',0,' ',0.D0,6,
-     &            NOMRES,VALRES,CODRET,'FM')
+     &            NOMRES,VALRES,ICODRE,1)
       ALPHA = VALRES(1)
       RK = VALRES(2)
       RK1 = VALRES(3)

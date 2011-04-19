@@ -1,8 +1,8 @@
       SUBROUTINE NMTAMA(FAMI,KPG,KSP,IMATE,INSTAM,INSTAP,MATM,MAT)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -53,33 +53,31 @@ C ----------------------------------------------------------------------
 
       LOGICAL     VISCO
       CHARACTER*8 NOM(14)
-      CHARACTER*2 BL2,FB2,OK(14)
+      INTEGER OK(14)
       REAL*8      E,NU
 
       DATA NOM / 'E','NU','ALPHA',
      &           'R_0','ALPHA','M','A','B','C1','C_INF','S',
      &           'N','UN_SUR_K','UN_SUR_M' /
-      DATA BL2 / '  '/
-      DATA FB2 / 'F '/
 
 
 C - LECTURE DES CARACTERISTIQUES ELASTIQUES DU MATERIAU (T- ET T+)
 
       CALL RCVALB(FAMI,KPG,KSP,'-',IMATE,' ','ELAS',0,' ',0.D0,
-     &            2,NOM(1),MATM(1),OK(1),FB2)
+     &            2,NOM(1),MATM(1),OK(1),2)
       CALL RCVALB(FAMI,KPG,KSP,'-',IMATE,' ','ELAS',0,' ',0.D0,
-     &            1,NOM(3),MATM(3),OK(3),BL2)
-      IF (OK(3).NE.'OK') MATM(3) = 0.D0
+     &            1,NOM(3),MATM(3),OK(3),0)
+      IF (OK(3).NE.0) MATM(3) = 0.D0
       E       = MATM(1)
       NU      = MATM(2)
       MATM(1) = E/(1.D0-2.D0*NU)
       MATM(2) = E/(1.D0+NU)
 
       CALL RCVALB(FAMI,KPG,KSP,'+',IMATE,' ','ELAS',0,' ',0.D0,
-     &            2,NOM(1),MAT(1),OK(1),FB2)
+     &            2,NOM(1),MAT(1),OK(1),2)
       CALL RCVALB(FAMI,KPG,KSP,'+',IMATE,' ','ELAS',0,' ',0.D0,
-     &            1,NOM(3),MAT(3),OK(3),BL2)
-      IF (OK(3).NE.'OK') MAT(3) = 0.D0
+     &            1,NOM(3),MAT(3),OK(3),0)
+      IF (OK(3).NE.0) MAT(3) = 0.D0
       E      = MAT(1)
       NU     = MAT(2)
       MAT(1) = E/(1.D0-2.D0*NU)
@@ -88,13 +86,13 @@ C - LECTURE DES CARACTERISTIQUES ELASTIQUES DU MATERIAU (T- ET T+)
 
 C - LECTURE DES CARACTERISTIQUES D'ECROUISSAGE (T+)
       CALL RCVALB(FAMI,KPG,KSP,'+',IMATE,' ','TAHERI',0,' ',0.D0,
-     &            8,NOM(4),MAT(4),OK(4),FB2)
+     &            8,NOM(4),MAT(4),OK(4),2)
       MAT(7) = MAT(7) * (2.D0/3.D0)**MAT(5)
 
 C LECTURE DES CARACTERISTIQUES DE VISCOSITE (TEMPS +)
       CALL RCVALB(FAMI,KPG,KSP,'+',IMATE,' ','LEMAITRE',0,' ',0.D0,
-     &            3,NOM(12),MAT(12),OK(12),BL2)
-      VISCO = OK(12).EQ.'OK'
+     &            3,NOM(12),MAT(12),OK(12),0)
+      VISCO = OK(12).EQ.0
 
       IF (VISCO) THEN
         IF (MAT(12).EQ.0.D0)
@@ -105,7 +103,7 @@ C LECTURE DES CARACTERISTIQUES DE VISCOSITE (TEMPS +)
      &    CALL U2MESS('F','ALGORITH8_33')
         MAT(13) = 1.D0 / MAT(13) / (INSTAP-INSTAM)**MAT(12)
 
-        IF (OK(14).NE.'OK') MAT(14) = 0.D0
+        IF (OK(14).NE.0) MAT(14) = 0.D0
 
       ELSE
         MAT(12) = 1.D0

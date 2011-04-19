@@ -3,22 +3,22 @@
      &                  CONGEM,R)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 03/07/2006   AUTEUR MEUNIER S.MEUNIER 
+C MODIF ALGORITH  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C ======================================================================
       IMPLICIT     NONE
@@ -33,14 +33,14 @@ C ======================================================================
       INTEGER      ADCOTE,I
       PARAMETER   (NHOM=3)
       REAL*8       HOM(NHOM),PESA(3),RAC2
-      CHARACTER*2  CODRET(NHOM)
+      INTEGER ICODRE(NHOM)
       CHARACTER*8  NCRA5(NHOM)
       DATA NCRA5 / 'PESA_X','PESA_Y','PESA_Z' /
 C ======================================================================
 C --- RECUPERATION DE LA PESANTEUR DANS DEFI_MATERIAU ------------------
 C ======================================================================
        CALL RCVALA(IMATE,' ','THM_DIFFU',0,' ',0.D0,
-     +                                       NHOM,NCRA5,HOM,CODRET,'FM')
+     &                                       NHOM,NCRA5,HOM,ICODRE,1)
        PESA(1)=HOM(1)
        PESA(2)=HOM(2)
        PESA(3)=HOM(3)
@@ -133,7 +133,7 @@ C ======================================================================
                DO 112 I=1,NDIM
                   R(ADDEP1+I)=R(ADDEP1+I)+DT*CONGEM(ADCP11+I)
  112           CONTINUE
- 
+
                IF(NBPHA1.GT.1) THEN
                   DO 13 I=1,NDIM
                      R(ADDEP1+I)=R(ADDEP1+I)+DT*CONGEM(ADCP12+I)
@@ -145,7 +145,7 @@ C ======================================================================
                   DO 14 I=1,NDIM
                      R(ADDETE)=R(ADDETE)+DT*CONGEM(ADCP11+I)*PESA(I)
  14               CONTINUE
- 
+
                   IF(NBPHA1.GT.1) THEN
                      DO 15 I=1,NDIM
                         R(ADDETE)=R(ADDETE) +DT*CONGEM(ADCP12+I)*PESA(I)
@@ -154,14 +154,14 @@ C ======================================================================
 
                   DO 16 I=1,NDIM
                      R(ADDETE+I)=R(ADDETE+I)+
-     +                         DT*CONGEM(ADCP11+NDIM+1)*CONGEM(ADCP11+I)
+     &                         DT*CONGEM(ADCP11+NDIM+1)*CONGEM(ADCP11+I)
  16               CONTINUE
- 
+
                   IF(NBPHA1.GT.1) THEN
                      DO 17 I=1,NDIM
                         R(ADDETE+I)=R(ADDETE+I)+
-     +                         DT*CONGEM(ADCP12+NDIM+1)*CONGEM(ADCP12+I)
- 17                  CONTINUE 
+     &                         DT*CONGEM(ADCP12+NDIM+1)*CONGEM(ADCP12+I)
+ 17                  CONTINUE
                   ENDIF
 
                ENDIF
@@ -188,12 +188,12 @@ C
                   ENDIF
                   DO 122 I=1,NDIM
                      R(ADDETE+I)=R(ADDETE+I)+
-     +                        DT*CONGEM(ADCP21+NDIM+1)*CONGEM(ADCP21+I)
+     &                        DT*CONGEM(ADCP21+NDIM+1)*CONGEM(ADCP21+I)
  122              CONTINUE
                   IF(NBPHA2.GT.1) THEN
                      DO 23 I=1,NDIM
                         R(ADDETE+I)=R(ADDETE+I)+
-     +                       DT*CONGEM(ADCP22+NDIM+1)*CONGEM(ADCP22+I)
+     &                       DT*CONGEM(ADCP22+NDIM+1)*CONGEM(ADCP22+I)
  23                  CONTINUE
                   ENDIF
                ENDIF

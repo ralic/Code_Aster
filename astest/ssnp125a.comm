@@ -1,4 +1,4 @@
-# MODIF  DATE 25/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 # ======================================================================
 # TITRE CAS-TEST POUR LA VALIDATION DE l'OPTION INDL_ELGA POUR ----
 # ssnp125a.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test S
@@ -168,7 +168,7 @@ except aster.NonConvergenceError:
 
 U = CALC_ELEM(
               reuse      = U,
-              OPTION     = ('INDL_ELGA',),
+              OPTION     = ('INDL_ELGA','PDIL_ELGA'),
               RESULTAT   = U,
               NUME_ORDRE = (19,last_iter),
               );
@@ -491,5 +491,23 @@ TEST_RESU(RESU=(
                    REFERENCE='NON_REGRESSION',
                    VERSION = '7.2.23', ),
                    ),);
+
+
+#------------------------------------------------
+# TEST DU MODULE DE RIGIDITE DE SECOND GRADIENT 
+# EN NON REGRESSION
+#------------------------------------------------
+TEST_RESU(RESU=(
+                _F(RESULTAT=U,
+                   NUME_ORDRE=19,
+                   NOM_CHAM='PDIL_ELGA',
+                   NOM_CMP='A1_LC2',
+                   MAILLE='M1',
+                   POINT=1,
+                   VALE=2.7913994643601E+06,
+                   PRECISION=1.E-3,
+                   REFERENCE='NON_REGRESSION',
+                   VERSION = '11.0.2', ),
+                 ),);
 FIN();
 

@@ -1,4 +1,4 @@
-#@ MODIF calculel3 Messages  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+#@ MODIF calculel3 Messages  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -179,6 +179,16 @@ cata_msg = {
 
 36 : _("""
  A cause des alarmes précédentes, l'option SING_ELEM n'est pas calculée.
+"""),
+
+37 : _("""
+ Attention : Certains ddls sont "imposés" plusieurs fois par AFFE_CHAR_CINE.
+ Pour ces ddls, la valeur imposée sera la SOMME des différentes valeurs imposées.
+ Ce n'est peut-etre pas ce qui est voulu.
+
+ Exemple d'un ddl imposé plusieurs fois :
+   Noeud : %(k1)s  Composante : %(k2)s
+
 """),
 
 38 : _("""

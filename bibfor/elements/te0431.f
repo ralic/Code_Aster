@@ -1,6 +1,6 @@
       SUBROUTINE TE0431(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -27,7 +27,7 @@ C        DONNEES:      OPTION       -->  OPTION DE CALCUL
 C                      NOMTE        -->  NOM DU TYPE ELEMENT
 C ......................................................................
 
-      CHARACTER*2 CODRES(2)
+      INTEGER CODRES(2)
       CHARACTER*4 FAMI
       CHARACTER*8 NOMRES(2)
       INTEGER NNO,NPG,I,IMATUU,LGPG,LGPG1,NDIM,NNOS,JGANO
@@ -38,13 +38,13 @@ C ......................................................................
       INTEGER ICACOQ,KPG,N,J,KKD,M,J1,COD(9)
       INTEGER IMASS
       INTEGER KK,JTAB(7),JCRET,NDDL,IDEPL,IDEFO,IPESA,IEPSIN,INR
-      REAL*8 DFF(2,8),R8BID,P(3,6),EPSTHE
+      REAL*8 DFF(2,8),P(3,6),EPSTHE
       REAL*8 ALPHA,BETA,DIR11(3),VFF(8),B(6,8),JAC,VALRES(2),SIG,RHO
       REAL*8 DEPS,TMP,RIG,DENSIT,SIGM,EPSM,VECN(3),SIGG(9)
       REAL*8 R8VIDE,ANGMAS(3),R8DGRD,R8NNEM,DISTN,PGL(3,3),EPSG(9)
       REAL*8 X(8),Y(8),Z(8),VOLUME,CDG(3),PPG,XXI,YYI,ZZI,MATINE(6),VRO
       REAL*8 EPOT,R8PREM
-      LOGICAL MATSYM,VECTEU,MATRIC,LEXC
+      LOGICAL VECTEU,MATRIC,LEXC
 
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       INTEGER ZI
@@ -83,10 +83,10 @@ C - PARAMETRES EN ENTREE
         CALL JEVECH('PCONTMR','L',ICONTM)
       ELSE IF (OPTION.EQ.'CHAR_MECA_EPSI_R') THEN
         CALL JEVECH('PMATERC','L',IMATE)
-        CALL JEVECH('PEPSINR','L',IEPSIN)  
+        CALL JEVECH('PEPSINR','L',IEPSIN)
       ELSE IF (OPTION.EQ.'CHAR_MECA_PESA_R') THEN
         CALL JEVECH('PMATERC','L',IMATE)
-        CALL JEVECH('PPESANR','L',IPESA)       
+        CALL JEVECH('PPESANR','L',IPESA)
       ELSE IF (OPTION.EQ.'CHAR_MECA_TEMP_R'.OR.
      &         OPTION.EQ.'SIEF_ELGA'.OR.
      &         OPTION.EQ.'SIGM_ELNO'.OR.
@@ -95,7 +95,7 @@ C - PARAMETRES EN ENTREE
      &      OPTION.EQ.'SIGM_ELNO'.OR.
      &      OPTION.EQ.'EPOT_ELEM') THEN
           CALL JEVECH('PDEPLAR','L',IDEPL)
-        ENDIF 
+        ENDIF
         CALL JEVECH('PMATERC','L',IMATE)
       ELSEIF (OPTION.EQ.'RIGI_MECA') THEN
         CALL JEVECH('PMATERC','L',IMATE)
@@ -147,7 +147,7 @@ C      ESTIMATION VARIABLES INTERNES A L'ITERATION PRECEDENTE
 
       ELSE IF (OPTION.EQ.'FORC_NODA'.OR.
      &         OPTION.EQ.'CHAR_MECA_TEMP_R'.OR.
-     &         OPTION.EQ.'CHAR_MECA_EPSI_R'.OR. 
+     &         OPTION.EQ.'CHAR_MECA_EPSI_R'.OR.
      &         OPTION.EQ.'CHAR_MECA_PESA_R') THEN
         CALL JEVECH('PVECTUR','E',IVECTU)
 
@@ -164,17 +164,17 @@ C      ESTIMATION VARIABLES INTERNES A L'ITERATION PRECEDENTE
         CALL JEVECH('PDEFORR','E',IDEFO)
 
       ENDIF
-      
+
       IF (OPTION.EQ.'SIEF_ELGA'.OR.
      &    OPTION.EQ.'SIGM_ELNO') THEN
         CALL JEVECH('PCONTRR','E',ICONTP)
         CALL R8INIR(9,0.D0,SIGG,1)
       ENDIF
-      
+
       IF (OPTION.EQ.'MASS_INER') THEN
         CALL JEVECH('PMASSINE','E',IMASS)
         CALL RCVALB(FAMI,KPG,1,'+',ZI(IMATE),' ','ELAS',0,' ',0.D0,1,
-     &                 'RHO',RHO,CODRES, 'FM')
+     &                 'RHO',RHO,CODRES, 1)
         IF(RHO.LE.R8PREM()) THEN
           CALL U2MESS('F','ELEMENTS5_45')
         ENDIF
@@ -184,7 +184,7 @@ C      ESTIMATION VARIABLES INTERNES A L'ITERATION PRECEDENTE
         CALL JEVECH('PENERDR','E',INR)
         EPOT = 0.D0
       ENDIF
-      
+
 C - INITIALISATION CODES RETOURS
       DO 1955 KPG=1,NPG
          COD(KPG)=0
@@ -209,9 +209,9 @@ C --- SI EXCENTREE : RECUPERATION DE LA NORMALE ET DE L'EXCENTREMENT
         ELSEIF (NOMTE.EQ.'MEGCQU4') THEN
           CALL DXQPGL(ZR(IGEOM),PGL)
         ENDIF
-        
+
         DISTN = ZR(ICACOQ+3)
-        
+
         DO 8 I=1,3
           VECN(I)=DISTN*PGL(3,I)
 8       CONTINUE
@@ -219,12 +219,12 @@ C --- SI EXCENTREE : RECUPERATION DE LA NORMALE ET DE L'EXCENTREMENT
         NDDL=6
 
       ELSE
-        
+
         DISTN = R8VIDE()
         NDDL  = 3
-        
+
       ENDIF
-      
+
       IF (OPTION.EQ.'MASS_INER') THEN
         DO 40 I = 1,NNO
           X(I) = ZR(IGEOM+3* (I-1))
@@ -239,7 +239,7 @@ C --- SI EXCENTREE : RECUPERATION DE LA NORMALE ET DE L'EXCENTREMENT
         CALL R8INIR(3,0.D0,CDG,1)
         CALL R8INIR(6,0.D0,MATINE,1)
       ENDIF
-        
+
       VOLUME = 0.D0
 C
 C - CALCUL POUR CHAQUE POINT DE GAUSS : ON CALCULE D'ABORD LA
@@ -267,7 +267,7 @@ C - RIGI_MECA : ON DONNE LA RIGIDITE ELASTIQUE
         IF (OPTION.EQ.'RIGI_MECA') THEN
           NOMRES(1) = 'E'
           CALL RCVALB(FAMI,KPG,1,'+',ZI(IMATE),' ','ELAS',0,' ',0.D0,1,
-     &                 NOMRES,VALRES,CODRES, 'FM')
+     &                 NOMRES,VALRES,CODRES, 1)
           RIG=VALRES(1)
         ENDIF
 
@@ -285,7 +285,7 @@ C - CHAR_MECA_TEMP_R : SIG = SIGMA THERMIQUE
 
           NOMRES(1) = 'E'
           CALL RCVALB(FAMI,KPG,1,'+',ZI(IMATE),' ','ELAS',0,' ',0.D0,1,
-     &                 NOMRES,VALRES,CODRES, 'FM')
+     &                 NOMRES,VALRES,CODRES, 1)
 
           SIG=VALRES(1)*ZR(IEPSIN)
 
@@ -299,16 +299,16 @@ C - CHAR_MECA_TEMP_R : SIG = SIGMA THERMIQUE
           NOMRES(1) = 'E'
           CALL RCVALB(FAMI,KPG,1,'+',ZI(IMATE),' ','ELAS',
      &                0,' ',0.D0,1,
-     &                NOMRES,VALRES,CODRES, 'FM')
+     &                NOMRES,VALRES,CODRES, 1)
 
           SIG=VALRES(1)*EPSTHE
 
         ENDIF
 
-C - CHAR_MECA_PESA_R : 
+C - CHAR_MECA_PESA_R :
         IF (OPTION.EQ.'CHAR_MECA_PESA_R') THEN
           CALL RCVALB(FAMI,KPG,1,'+',ZI(IMATE),' ','ELAS',0,' ',0.D0,1,
-     &                 'RHO',RHO,CODRES, 'FM')
+     &                 'RHO',RHO,CODRES, 1)
           DO 130 N=1,NNO
             DO 130 I=1,3
               ZR(IVECTU+(N-1)*NDDL+I-1)=ZR(IVECTU+(N-1)*NDDL+I-1)+
@@ -365,15 +365,15 @@ C - SIEF_ELGA
           NOMRES(1) = 'E'
           CALL RCVALB(FAMI,KPG,1,'+',ZI(IMATE),' ','ELAS',
      &                0,' ',0.D0,1,
-     &                NOMRES,VALRES,CODRES, '  ')
+     &                NOMRES,VALRES,CODRES, 0)
 
           EPSM=EPSM-EPSTHE
           SIG = VALRES(1)*EPSM
-           
+
           IF (OPTION.EQ.'EPOT_ELEM') THEN
             EPOT = EPOT+(SIG*EPSM*ZR(IPOIDS+KPG-1)*JAC*DENSIT)/2
           ELSE
-            SIGG(KPG) = SIG            
+            SIGG(KPG) = SIG
           ENDIF
 
         ENDIF
@@ -382,14 +382,14 @@ C - EPSI_ELGA, EPSI_ELNO
 C --------------------------------
         IF ((OPTION.EQ.'EPSI_ELGA').OR.
      &      (OPTION.EQ.'EPSI_ELNO')) THEN
-          
+
           DO 30 I=1,NNO
             DO 30 J=1,NDDL
               EPSG(KPG)=EPSG(KPG)+B(J,I)*ZR(IDEPL+(I-1)*NDDL+J-1)
 30        CONTINUE
 
         ENDIF
-        
+
 C - EPSI_ELGA, EPSI_ELNO
 C --------------------------------
         IF (OPTION.EQ.'MASS_INER') THEN
@@ -414,8 +414,8 @@ C --------------------------------
             MATINE(3) = MATINE(3) + PPG*(XXI+ZZI)
             MATINE(6) = MATINE(6) + PPG*(XXI+YYI)
 300       CONTINUE
-        ENDIF            
-          
+        ENDIF
+
 C - RANGEMENT DES RESULTATS
 C -------------------------
         IF (VECTEU) THEN
@@ -461,8 +461,8 @@ C                 STOCKAGE EN TENANT COMPTE DE LA SYMETRIE
         ZR(IMASS+7) = MATINE(2)*RHO - VRO*(CDG(1)*CDG(2))
         ZR(IMASS+8) = MATINE(4)*RHO - VRO*(CDG(1)*CDG(3))
         ZR(IMASS+9) = MATINE(5)*RHO - VRO*(CDG(2)*CDG(3))
-      ENDIF        
-        
+      ENDIF
+
       IF (OPTION.EQ.'SIEF_ELGA') THEN
           DO 510 KPG=1,NPG
             ZR(ICONTP+KPG-1)=SIGG(KPG)
@@ -481,7 +481,7 @@ C                 STOCKAGE EN TENANT COMPTE DE LA SYMETRIE
 500       CONTINUE
         ENDIF
       ENDIF
-      
+
       IF (OPTION.EQ.'EPOT_ELEM') THEN
         ZR(INR) = EPOT
       ENDIF

@@ -1,24 +1,24 @@
       SUBROUTINE OP0165()
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
       IMPLICIT   NONE
 C     ------------------------------------------------------------------
-C MODIF POSTRELE  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
+C MODIF POSTRELE  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C     ------------------------------------------------------------------
 C
 C     OPERATEUR POST_RCCM
@@ -41,10 +41,10 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON  /KVARJE/ ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
 C
-      INTEGER       IBID, N1, NBOPT, IOPT, NBTHER, NSN, I
+      INTEGER        N1, NBOPT, IOPT, NBTHER
       REAL*8        SYMAX, R8VIDE
       LOGICAL       PMPB, SN, SNET, FATIGU, LROCHT
-      CHARACTER*2   CODRET
+      INTEGER   ICODRE
       CHARACTER*8   K8B, NOMMAT
       CHARACTER*16  TYPTAB, TYPMEC, KOPT(4), PHENOM
 C DEB ------------------------------------------------------------------
@@ -62,7 +62,7 @@ C
 C     ------------------- TYPE_RESU_MECA = EVOLUTION -------------------
 C
 C     ------------------------------------------------------------------
-C     
+C
       IF ( TYPMEC .EQ. 'EVOLUTION' ) THEN
 C
          CALL GETVTX ( ' ', 'OPTION',1,1,0, K8B, N1 )
@@ -72,8 +72,8 @@ C
          CALL GETVID ( ' ', 'MATER',  1, 1,1,NOMMAT, N1 )
          CALL GETVR8 ( ' ', 'SY_MAX', 1, 1,1,SYMAX,  N1 )
 C
-         CALL RCCOME ( NOMMAT, 'RCCM', PHENOM, CODRET )
-         IF (CODRET.EQ.'NO')  CALL U2MESK('F','POSTRCCM_7',1,'RCCM')
+         CALL RCCOME ( NOMMAT, 'RCCM', PHENOM, ICODRE )
+         IF (ICODRE.EQ.1)  CALL U2MESK('F','POSTRCCM_7',1,'RCCM')
 C
          CALL RCEVOL ( TYPTAB, NOMMAT, SYMAX, NBOPT, KOPT )
 C
@@ -82,7 +82,7 @@ C
 C     ------------------ TYPE_RESU_MECA = TUYAUTERIE ------------------
 C
 C     ------------------------------------------------------------------
-C     
+C
       ELSEIF ( TYPMEC .EQ. 'TUYAUTERIE' ) THEN
 C
          CALL GETVTX ( ' ', 'OPTION',1,1,1, KOPT, N1 )
@@ -98,7 +98,7 @@ C
 C     ------------------- TYPE_RESU_MECA = UNITAIRE -------------------
 C
 C     ------------------------------------------------------------------
-C     
+C
       ELSE
 C
          FATIGU = .FALSE.

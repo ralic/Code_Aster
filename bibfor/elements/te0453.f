@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 C.......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -70,7 +70,7 @@ C ......................................................................
 
       DO 20 KPG = 1,NPG
         CALL NMGEOM(NDIM,NNO,AXI,GRAND,ZR(IGEOM),KPG,IPOIDS,IVF,IDFDE,
-     &              ZR(IDEPL),POIDS,DFDI,F,EPS,RBID)
+     &              ZR(IDEPL),.TRUE.,POIDS,DFDI,F,EPS,RBID)
 C       RECUPERATION DE LA DEFORMATION
         DO 10 KSIG = 1,NCMP
           IF (KSIG.LE.NDIM) THEN

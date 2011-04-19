@@ -1,8 +1,8 @@
       SUBROUTINE  D1MACP(FAMI,MATER,INSTAN,POUM,KPG,KSP,REPERE,D1)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
+C MODIF ELEMENTS  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -46,13 +46,13 @@ C -----  ARGUMENTS
 C -----  VARIABLES LOCALES
            PARAMETER (NBRES = 7)
 C
-           CHARACTER*2  CODRET(NBRES)
+      INTEGER ICODRE(NBRES)
            CHARACTER*8  NOMRES(NBRES), NOMPAR
            CHARACTER*16 PHENOM
 C
            REAL*8 VALRES(NBRES), VALPAR
            REAL*8 PASSAG(4,4), D1ORTH(4,4), WORK(4,4)
-           REAL*8 NU, NU12, NU21, NU13, NU31, NU23, NU32
+           REAL*8 NU, NU12, NU21
 C.========================= DEBUT DU CODE EXECUTABLE ==================
 C
 C ---- INITIALISATIONS
@@ -73,7 +73,7 @@ C
 C
 C ---- RECUPERATION DU TYPE DU MATERIAU DANS PHENOM
 C      --------------------------------------------
-      CALL RCCOMA(MATER,'ELAS',PHENOM,CODRET)
+      CALL RCCOMA(MATER,'ELAS',PHENOM,ICODRE)
 C
 C      ------------
 C ---- CAS ISOTROPE
@@ -88,7 +88,7 @@ C ----   INTERPOLATION DES COEFFICIENTS EN FONCTION DU TEMPS
 C        -----------
           CALL RCVALB(FAMI,KPG,KSP,POUM,MATER,' ',PHENOM,1,NOMPAR,
      &                VALPAR,NBV,NOMRES,
-     &                VALRES,CODRET, 'FM' )
+     &                VALRES,ICODRE, 1)
 C
           E  = VALRES(1)
           NU = VALRES(2)
@@ -116,7 +116,7 @@ C ----   INTERPOLATION DES COEFFICIENTS EN FONCTION DU TEMPS
 C        -----------
           CALL RCVALB(FAMI,KPG,KSP,'+',MATER,' ',PHENOM,1,NOMPAR,
      &                VALPAR,NBV,NOMRES,
-     &                VALRES,CODRET, 'FM' )
+     &                VALRES,ICODRE, 1)
 C
           E1    = VALRES(1)
           E2    = VALRES(2)
@@ -163,7 +163,7 @@ C ----   INTERPOLATION DES COEFFICIENTS EN FONCTION DU TEMPS
 C        -----------
           CALL RCVALB(FAMI,KPG,KSP,'+',MATER,' ',PHENOM,1,NOMPAR,
      &                VALPAR,NBV,NOMRES,
-     &               VALRES, CODRET, 'FM' )
+     &               VALRES, ICODRE, 1)
 C
           E     = VALRES(1)
           NU    = VALRES(2)

@@ -1,9 +1,9 @@
       SUBROUTINE NSDRPR(OPTION,TYPMOD,COMPOR,NDIM,IMATE,IMATSE,DEPS,
      &    DEDT,SIGMS,VARMS,VARM,SIGM,VARP,SIPAS,SIGP,SIGPS,VARPS,STYPSE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 19/05/2008   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -30,7 +30,7 @@ C TOLE CRP_20
 C ----------------------------------------------------------------------
 C --- VARIABLES UTILISEES LORS DE LA RECUPERATION DES CARACTERISTIQUES
       CHARACTER*8 NOMRES(6)
-      CHARACTER*2 CODRET(6),FB2
+      INTEGER ICODRE(6)
       REAL*8 VALRES(6),TYPEDP,R8VIDE ,DDOT
 C --- CARACTERISTIQUES MATERIAUX
       REAL*8 E,NU,ALPHA,SY,PULTM,H,SYULTM,TROISK,DEUXMU,TROIMU
@@ -42,10 +42,9 @@ C --- CARACTERISTIQUES MATERIAUX SENSIBLES
       REAL*8 SIGMMO,SIGMDV(6),SIGE(6),SIELEQ,SIELDV(6)
       REAL*8 DSIDEP(6,6),SIGPMO,SIPSMO,SIGPEQ, SIPEQS, SIEEQS, SIMSMO
       REAL*8 KRON(6),SOUTO1,SOUTO2,DPMIN
-      REAL*8 RP,TRSIGP,A,COEF,RPRIM,SIGY
       REAL*8 MATERF(5,2),SE(6),SIIE,SEQ,I1E,DP,PLAS,DPDENO
       REAL*8 DEUX,TROIS,TRACE,DPLITG,DPPATG
-      INTEGER NDIMSI,K,L,IRET
+      INTEGER NDIMSI,K,L
       INTEGER NDT,NDI,NVI,TYPGDP
       PARAMETER (DPMIN = 1.D-15)
       CHARACTER*24 BLAN24
@@ -65,7 +64,6 @@ C ----------------------------------------------------------------------
       DPULTM = 0.D0
       DH = 0.D0
       DSYULT = 0.D0
-      FB2 = 'F '
 C ----------------------------------------------------------------------
 C --- RECUPERATION DES CARACTERISTIQUES MATERIAUX ----------------------
 C ----------------------------------------------------------------------
@@ -75,9 +73,9 @@ C ----------------------------------------------------------------------
       NOMRES(4) = 'SY'
       NOMRES(5) = 'P_ULTM'
       CALL RCVALA(IMATE, ' ', 'ELAS', 0, ' ', 0.D0,
-     &            2, NOMRES(1),VALRES(1), CODRET,'FM')
+     &            2, NOMRES(1),VALRES(1), ICODRE,1)
       CALL RCVALA(IMATE, ' ', 'DRUCK_PRAGER', 0, ' ', 0.D0,
-     &            3, NOMRES(3),VALRES(3), CODRET,'FM')
+     &            3, NOMRES(3),VALRES(3), ICODRE,1)
       E = VALRES(1)
       NU = VALRES(2)
       DEUXMU = E/(1.D0+NU)
@@ -88,7 +86,7 @@ C ----------------------------------------------------------------------
       PULTM = VALRES(5)
       TYPEDP = R8VIDE()
       CALL RCVALA(IMATE, ' ', 'DRUCK_PRAGER', 0, ' ', 0.D0,
-     &            1, 'TYPE_DP', TYPEDP, CODRET, '  ')
+     &            1, 'TYPE_DP', TYPEDP, ICODRE, 0)
 
       IF (TYPEDP.EQ.1.D0) THEN
 C ----------------------------------------------------------------------
@@ -96,7 +94,7 @@ C --- DRUCKER PRAGER LINEAIRE : PARAMETRES MATERIAUX SENSIBLES ---------
 C ----------------------------------------------------------------------
         NOMRES(6) = 'H'
         CALL RCVALA(IMATE, ' ', 'DRUCK_PRAGER', 0, ' ', 0.D0,
-     &              1, NOMRES(6),VALRES(6), CODRET,'FM')
+     &              1, NOMRES(6),VALRES(6), ICODRE,1)
         H = VALRES(6)
 
         IF (STYPSE.NE.BLAN24) THEN
@@ -104,7 +102,7 @@ C ----------------------------------------------------------------------
          NOMRES(1) = 'E'
          NOMRES(2) = 'NU'
          CALL RCVALA(IMATSE,' ','ELAS',0,' ',0.D0,2,
-     &           NOMRES(1),VALRES(1),CODRET(1),'FM')
+     &           NOMRES(1),VALRES(1),ICODRE(1),1)
          ES = VALRES(1)
          NUS = VALRES(2)
 
@@ -114,7 +112,7 @@ C ----------------------------------------------------------------------
           NOMRES(3) = 'P_ULTM'
           NOMRES(4) = 'H'
           CALL RCVALA(IMATSE,' ','DRUCK_PRAGER',0,' ',0.D0,4,
-     &             NOMRES,VALRES, CODRET,FB2)
+     &             NOMRES,VALRES, ICODRE,2)
           ALPHAS = VALRES(1)
           SIGYS = VALRES(2)
           PULTMS = VALRES(3)
@@ -140,7 +138,7 @@ C --- DRUCKER PRAGER PARABOLIQUE : PARAMETRES MATERIAUX SENSIBLES ------
 C ----------------------------------------------------------------------
         NOMRES(6) = 'SY_ULTM'
         CALL RCVALA(IMATE, ' ', 'DRUCK_PRAGER', 0, ' ', 0.D0,
-     &              1, NOMRES(6),VALRES(6), CODRET,'FM')
+     &              1, NOMRES(6),VALRES(6), ICODRE,1)
         SYULTM = VALRES(6)
 
         IF (STYPSE.NE.BLAN24) THEN
@@ -148,7 +146,7 @@ C ----------------------------------------------------------------------
          NOMRES(1) = 'E'
          NOMRES(2) = 'NU'
          CALL RCVALA(IMATSE,' ','ELAS',0,' ',0.D0,2,
-     &           NOMRES(1),VALRES(1),CODRET(1),'FM')
+     &           NOMRES(1),VALRES(1),ICODRE(1),1)
          ES = VALRES(1)
          NUS = VALRES(2)
 
@@ -158,7 +156,7 @@ C ----------------------------------------------------------------------
           NOMRES(3) = 'P_ULTM'
           NOMRES(4) = 'SY_ULTM'
           CALL RCVALA(IMATSE,' ','DRUCK_PRAGER',0,' ',0.D0,4,
-     &             NOMRES,VALRES, CODRET,FB2)
+     &             NOMRES,VALRES, ICODRE,2)
           ALPHAS = VALRES(1)
           SIGYS = VALRES(2)
           PULTMS = VALRES(3)
@@ -511,7 +509,7 @@ C ------- CALCUL DE L'OPERATEUR TANGENT DSIDEP
           ENDIF
 
           CALL DPMATA(TYPMOD(1),MATERF,ALPHA,DELTAP,DPDENO,
-     +                     VARP(1),SE, SEQ, PLAS, DSIDEP)
+     &                     VARP(1),SE, SEQ, PLAS, DSIDEP)
 
 
 C ------- CALCUL DE SIGPS

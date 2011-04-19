@@ -1,6 +1,6 @@
       SUBROUTINE TE0347(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -55,7 +55,6 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       CHARACTER*32                          ZK32
       CHARACTER*80                                  ZK80
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
-      CHARACTER*32 JEXNUM,JEXNOM,JEXR8,JEXATR
 C
       REAL*8      D1B(7,14),DEUX,E,NU,G,GAMMA
       REAL*8      XD(3),RESIDU(14),XL,XL2,XLS2,A,XIY,XIZ
@@ -65,7 +64,7 @@ C
       INTEGER     KP,NPG,IRET,IPLOUF
       CHARACTER*8 NOMRES(2), NOMPAR
       CHARACTER*4 FAMI
-      CHARACTER*2 CODRES(2)
+      INTEGER CODRES(2)
       LOGICAL     REAGEO
       CHARACTER*16 COMPOR
       REAL*8       D1B3(2,3),KSI1
@@ -172,7 +171,7 @@ C
             NBPAR  = 1
             NOMPAR = 'TEMP'
             CALL RCVALA(ZI(IMATE),' ','ELAS',NBPAR,NOMPAR,VALPAR,2,
-     &                  NOMRES, VALRES, CODRES, ' ' )
+     &                  NOMRES, VALRES, CODRES, 0)
 
             E  = VALRES(1)
             NU = VALRES(2)

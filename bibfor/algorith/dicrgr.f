@@ -12,9 +12,9 @@ C ----------------------------------------------------------------------
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/11/2009   AUTEUR DURAND C.DURAND 
+C MODIF ALGORITH  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -75,12 +75,12 @@ C **************** DEBUT COMMUNS NORMALISES JEVEUX *********************
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 
 
-      CHARACTER*2 CODRE1(4),CODRE2(2),CODRE3,CODRE4(5),CODRE5(5)
+      INTEGER CODRE1(4),CODRE2(2),CODRE3,CODRE4(5),CODRE5(5)
       CHARACTER*8 NOMRE1(4),NOMRE2(2),NOMRE3,NOMRE4(5),NOMRE5(5)
       CHARACTER*8 NOMPAR(2)
 
-      INTEGER     NPG,NNO,I,NBPAR,J,K,L,P,Q
-      INTEGER     ICOD,ICOD2,KP,IRETP,IRETM
+      INTEGER     NPG,NNO,NBPAR
+      INTEGER     IRETP,IRETM
       REAL*8      VALRE1(4),VALRE2(2),VALRE3,VALRE4(5),VALRE5(5)
       REAL*8      VALPAR(2)
       REAL*8      FNO,H1
@@ -88,7 +88,7 @@ C **************** DEBUT COMMUNS NORMALISES JEVEUX *********************
       REAL*8      UXM,PHM,THM
       REAL*8      KXX,KYY,KZZ,KPP,KTT
       REAL*8      FL(12)
-      REAL*8      TEMP,TEMM,FTEMP
+      REAL*8      TEMP
       REAL*8      KTAX,MUAX,ETAX,KNAX
       REAL*8      KTRIG,DP,PM,RTM,RTP,RTE
       REAL*8      SIELEQ,BETA,SEUIL,RM
@@ -123,15 +123,15 @@ C
 C recuperation des donnees materiau pour le discret
       CALL RCVALB(FAMI,1,1,'+',ICODMA,' ','DIS_GRICRA',
      &            0,' ',0.D0,4,
-     &            NOMRE1,VALRE1,CODRE1,' ')
+     &            NOMRE1,VALRE1,CODRE1,0)
 
       KNAX=VALRE1(1)
       KTAX=VALRE1(2)/4.D0
       ETAX=VALRE1(3)*KTAX
 
       CALL RCVALB(FAMI,1,1,'+',ICODMA,' ','DIS_GRICRA',0,' ',0.D0,2,
-     &            NOMRE2,VALRE2,CODRE2,' ')
-      IF (CODRE2(1).EQ.'OK') THEN
+     &            NOMRE2,VALRE2,CODRE2,0)
+      IF (CODRE2(1).EQ.0) THEN
         FNO=VALRE2(1)/4.D0
         MUAX=VALRE2(2)
       ELSE
@@ -147,8 +147,8 @@ C recuperation des donnees materiau pour le discret
         VALPAR(1)=TEMP
         CALL RCVALB(FAMI,1,1,'+',ICODMA,' ','DIS_GRICRA',
      &              NBPAR,NOMPAR,VALPAR,1,
-     &              NOMRE3,VALRE3,CODRE3,' ')
-        IF (CODRE3.EQ.'OK') THEN
+     &              NOMRE3,VALRE3,CODRE3,0)
+        IF (CODRE3.EQ.0) THEN
             FNO=VALRE3/4.D0
             MUAX=VALRE2(2)
         ENDIF
@@ -156,9 +156,9 @@ C recuperation des donnees materiau pour le discret
 
       CALL RCVALB(FAMI,1,1,'+',ICODMA,' ','DIS_GRICRA',
      &            0,' ',0.D0,5,
-     &            NOMRE4,VALRE4,CODRE4,' ')
+     &            NOMRE4,VALRE4,CODRE4,0)
 
-      IF (CODRE4(1).EQ.'OK') THEN
+      IF (CODRE4(1).EQ.0) THEN
         PHIC=VALRE4(1)
         THETAC=VALRE4(2)
         KTHETA=VALRE4(4)/2.D0
@@ -176,7 +176,7 @@ C recuperation des donnees materiau pour le discret
         VALPAR(1)=TEMP
         CALL RCVALB(FAMI,1,1,'+',ICODMA,' ','DIS_GRICRA',
      &              NBPAR,NOMPAR,VALPAR,5,
-     &              NOMRE5,VALRE5,CODRE5,' ')
+     &              NOMRE5,VALRE5,CODRE5,0)
         PHIC=VALRE5(1)
         THETAC=VALRE5(2)
         KTHETA=VALRE5(4)/2.D0

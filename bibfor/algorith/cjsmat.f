@@ -4,9 +4,9 @@
 
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -47,7 +47,7 @@ C       ----------------------------------------------------------------
         REAL*8          MATERF(14,2) , TEMPF
         CHARACTER*8     MOD, NOMC(17)
         CHARACTER*4     NIVCJS
-        CHARACTER*2     BL2, FB2, CERR(17)
+      INTEGER CERR(17)
 C       ----------------------------------------------------------------
 C
 C -     NB DE COMPOSANTES / VARIABLES INTERNES -------------------------
@@ -56,8 +56,6 @@ C
 C
 C -     RECUPERATION MATERIAU -----------------------------------------
 C
-        BL2 = '  '
-        FB2 = 'F '
 C
         NOMC(1) = 'E        '
         NOMC(2) = 'NU       '
@@ -81,16 +79,16 @@ C
 C -     RECUPERATION MATERIAU A TEMPF (T+DT)
 C
         CALL RCVALA(IMAT,' ', 'ELAS', 1, 'TEMP', TEMPF, 3,
-     &                 NOMC(1),  MATERF(1,1),  CERR(1), BL2 )
-        IF ( CERR(3) .NE. 'OK' ) MATERF(3,1) = 0.D0
+     &                 NOMC(1),  MATERF(1,1),  CERR(1), 0)
+        IF ( CERR(3) .NE. 0 ) MATERF(3,1) = 0.D0
         CALL RCVALA(IMAT,' ', 'CJS', 1, 'TEMP', TEMPF, 12,
-     &                 NOMC(4),  MATERF(1,2),  CERR(4), FB2 )
+     &                 NOMC(4),  MATERF(1,2),  CERR(4), 2)
         CALL RCVALA(IMAT,' ', 'CJS', 1, 'TEMP', TEMPF, 2,
-     &                 NOMC(16),  MATERF(13,2),  CERR(16), BL2 )
-        IF ( CERR(16).EQ.'NO') THEN
+     &                 NOMC(16),  MATERF(13,2),  CERR(16), 0)
+        IF ( CERR(16).EQ.1) THEN
          MATERF(13,2) = 0.D0
         ENDIF
-        IF ( CERR(17).EQ.'NO') THEN
+        IF ( CERR(17).EQ.1) THEN
          MATERF(14,2) = 0.D0
         ENDIF
 

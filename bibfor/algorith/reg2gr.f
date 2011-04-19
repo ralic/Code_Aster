@@ -1,11 +1,11 @@
       SUBROUTINE REG2GR(IMATE,COMPOR,NDIM,REGULA,DIMDEF,DEFGEP,SIGP,
-     +                  DSDE2G)
+     &                  DSDE2G)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/12/2010   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C TOLE CRS_1404
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -34,7 +34,7 @@ C --- VARIABLES LOCALES ------------------------------------------------
 C ======================================================================
       INTEGER       P,Q,R,L,M,N,ADDER2
       REAL*8        VAL(5),ID(NDIM,NDIM)
-      CHARACTER*2   CODRET(5)
+      INTEGER ICODRE(5)
       CHARACTER*8   NCRA(5)
 C ======================================================================
 C --- DEFINITION DES DONNEES INITIALES ---------------------------------
@@ -53,7 +53,7 @@ C ======================================================================
                ID(P,P)=1.0D0
  30      CONTINUE
          CALL RCVALA(IMATE,' ', 'ELAS_2NDG', 0, ' ', 0.0D0,
-     +                                 5, NCRA(1),VAL(1),CODRET(1),'FM')
+     &                                 5, NCRA(1),VAL(1),ICODRE(1),1)
 
          DO 50 P=1,NDIM
             DO 60 Q=1,NDIM
@@ -62,16 +62,16 @@ C ======================================================================
                      DO 90 M=1,NDIM
                         DO 100 N=1,NDIM
                            DSDE2G((P-1)*NDIM*NDIM+(Q-1)*NDIM+R,
-     +                            (L-1)*NDIM*NDIM+(M-1)*NDIM+N) =
-     +        VAL(1)/2.0D0*(ID(P,Q)*(ID(L,M)*ID(R,N)+ID(L,N)*ID(R,M)) +
-     +                      ID(P,R)*(ID(L,M)*ID(Q,N)+ID(L,N)*ID(Q,M)))+
-     +        VAL(2)/2.0D0*(ID(P,Q)*ID(R,L)*ID(M,N)                   +
-     +                      ID(Q,R)*(ID(L,M)*ID(P,N)+ID(L,N)*ID(P,M)) +
-     +                      ID(P,R)*ID(Q,L)*ID(M,N))                  +
-     +        VAL(3)*2.0D0*ID(R,Q)*ID(P,L)*ID(M,N)                    +
-     +        VAL(4)*ID(P,L)*(ID(Q,M)*ID(R,N)+ID(Q,N)*ID(R,M))        +
-     +        VAL(5)/2.0D0*(ID(R,L)*(ID(P,M)*ID(Q,N)+ID(P,N)*ID(Q,M)) +
-     +                      ID(Q,L)*(ID(R,M)*ID(P,N)+ID(R,N)*ID(P,M)))
+     &                            (L-1)*NDIM*NDIM+(M-1)*NDIM+N) =
+     &        VAL(1)/2.0D0*(ID(P,Q)*(ID(L,M)*ID(R,N)+ID(L,N)*ID(R,M)) +
+     &                      ID(P,R)*(ID(L,M)*ID(Q,N)+ID(L,N)*ID(Q,M)))+
+     &        VAL(2)/2.0D0*(ID(P,Q)*ID(R,L)*ID(M,N)                   +
+     &                      ID(Q,R)*(ID(L,M)*ID(P,N)+ID(L,N)*ID(P,M)) +
+     &                      ID(P,R)*ID(Q,L)*ID(M,N))                  +
+     &        VAL(3)*2.0D0*ID(R,Q)*ID(P,L)*ID(M,N)                    +
+     &        VAL(4)*ID(P,L)*(ID(Q,M)*ID(R,N)+ID(Q,N)*ID(R,M))        +
+     &        VAL(5)/2.0D0*(ID(R,L)*(ID(P,M)*ID(Q,N)+ID(P,N)*ID(Q,M)) +
+     &                      ID(Q,L)*(ID(R,M)*ID(P,N)+ID(R,N)*ID(P,M)))
  100                    CONTINUE
  90                  CONTINUE
  80               CONTINUE

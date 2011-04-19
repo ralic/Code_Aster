@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+%& MODIF TYPELEM  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -125,6 +125,7 @@ MODE_LOCAL__
     EGRDUPG  = G_DEPL_R ELGA__ RIGI    (D_DX_X   D_DX_Y   D_DY_X   D_DY_Y   )
     EGRDUNO  = G_DEPL_R ELNO__ IDEN__  (D_DX_X   D_DX_Y   D_DY_X   D_DY_Y   )
     EGINDLO  = INDL_R ELGA__ RIGI    (INDICE   DIR1     DIR2     DIR3     DIR4     )
+    EPDILPG  = PDIL_R ELGA__ RIGI    (A1_LC2   )
     CTEMPSR  = INST_R   ELEM__         (INST     )
     EGINST_R = INST_R   ELGA__ RIGI    (INST     )
     ENINST_R = INST_R   ELNO__ IDEN__  (INST     )
@@ -477,6 +478,8 @@ OPTION__
                               OUT__  EDCEL_I  PDCEL_I
     PAS_COURANT         404   IN__   NGEOMER  PGEOMER  CMATERC  PMATERC
                               OUT__  ECOURAN  PCOURAN
+    PDIL_ELGA           511    IN__   CCOMPOR  PCOMPOR  ECONTPG  PCONTPR  CMATERC  PMATERC  ZVARIPG  PVARIPR
+                              OUT__  EPDILPG  PPDIL
     PILO_PRED_DEFO      543   IN__   CBORNPI  PBORNPI  CCDTAU   PCDTAU   CCOMPOR  PCOMPOR  ECONTPG  PCONTMR
                                      DDL_MECA PDDEPLR  DDL_MECA PDEPL0R  DDL_MECA PDEPL1R  DDL_MECA PDEPLMR
                                      NGEOMER  PGEOMER  CMATERC  PMATERC  CTYPEPI  PTYPEPI  ZVARIPG  PVARIMR

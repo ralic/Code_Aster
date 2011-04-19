@@ -1,4 +1,4 @@
-# MODIF  DATE 04/04/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 # TITRE FERRAILLAGE D'UNE CUVE CARREE SELON LA METHODE DE CAPRA ET MAURY
 # ssls135a.para = tps_job 30 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -24,6 +24,12 @@ DEBUT(CODE=_F(NOM='SSLS135A', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 
 MeshLin=LIRE_MAILLAGE(UNITE=20, FORMAT='ASTER')
 
+# definition d'un group_ma sur lequel on fera le calcul de ferraillage :
+MeshLin=DEFI_GROUP( reuse=MeshLin, MAILLAGE=MeshLin,
+     CREA_GROUP_MA=_F(  NOM = 'CALCFER',
+                   MAILLE = ( 'M1113', 'M1115', 'M1173', 'M1373', 'M1391',
+                              'M462', 'M516', 'M562',),
+                 ))
 # Type de calcul
 FEMLin=AFFE_MODELE(MAILLAGE=MeshLin,
                    AFFE=(_F(GROUP_MA=('COTEX','COTEX1','COTEY1','COTEY','BASE',),
@@ -144,8 +150,11 @@ Solution=CALC_FERRAILLAGE(reuse =Solution,
                    RESULTAT=Solution,
                    TYPE_COMB='ELS',
                    INST=(0.),
-                   AFFE  = (_F( TOUT='OUI', ENROBG=0.04, CEQUI=15.E0, SIGM_ACIER=2.3E8, SIGM_BETON=3.5E7))
-                   );
+                   AFFE  = (
+                      _F( GROUP_MA='CALCFER',      ENROBG=0.04, CEQUI=15.E0, SIGM_ACIER=2.3E8, SIGM_BETON=3.5E7),
+                      # l'affectation ci-dessous permet de verifier l'usage du mot cle AFFE/MAILLE
+                      _F( MAILLE=('M596','M686'),  ENROBG=0.04, CEQUI=15.E0, SIGM_ACIER=2.3E8, SIGM_BETON=3.5E7),
+                   ));
 
 #IMPR_RESU(RESU=_F(RESULTAT=Solution, NOM_CHAM='FERRAILLAGE'));
 
@@ -403,6 +412,8 @@ TEST_RESU(CHAM_ELEM=(
    _F(CHAM_GD=FERMAX,  REFERENCE='AUTRE_ASTER',  POINT=1,
       MAILLE='M1115', NOM_CMP='DNSYS', VALE=       5.6678519606E-04            ,CRITERE='RELATIF', PRECISION=1.E-5, ),
 ))
+
+
 
 FIN();
 

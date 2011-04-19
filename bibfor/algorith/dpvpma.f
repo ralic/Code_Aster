@@ -2,22 +2,22 @@
      &                      MATERF, MATCST, NDT, NDI, NVI, INDAL)
 C ====================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/06/2009   AUTEUR ELGHARIB J.EL-GHARIB 
+C MODIF ALGORITH  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
         IMPLICIT     NONE
         INTEGER      NDT, NDI, NVI, IMAT, NBMAT
@@ -44,8 +44,8 @@ C --- : INDAL  : INDICATEUR SUR ALPHA
 C =================================================================
         INTEGER         II,INDAL,I,J
         REAL*8          E, NU, MU, K
-        REAL*8          UN, DEUX, TROIS 
-        CHARACTER*2     CERR(17)
+        REAL*8          UN, DEUX, TROIS
+      INTEGER CERR(17)
         CHARACTER*8     NOMC(17)
 C =================================================================
         PARAMETER ( TROIS  =  3.0D0 )
@@ -82,12 +82,12 @@ C =================================================================
 C --- RECUPERATION DES PARAMETRES MATERIAU ------------------------
 C =================================================================
       CALL RCVALA(IMAT,' ', 'ELAS', 1, 'TEMP', TEMPD, 3,
-     &               NOMC(1),  MATERD(1,1),  CERR(1), ' ')
+     &               NOMC(1),  MATERD(1,1),  CERR(1), 0)
       INDAL=1
-      IF (CERR(3).NE.'OK') INDAL=0
+      IF (CERR(3).NE.0) INDAL=0
 
       CALL RCVALA(IMAT,' ','VISC_DRUC_PRAG', 1, 'TEMP', TEMPD, 14,
-     &               NOMC(4),  MATERD(1,2),  CERR(4), ' ' )
+     &               NOMC(4),  MATERD(1,2),  CERR(4), 0)
 C =================================================================
 C - CALCUL DES MODULES DE CISAILLEMENT ET DE DEFORMATION VOLUMIQUE-
 C =================================================================

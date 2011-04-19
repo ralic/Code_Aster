@@ -8,9 +8,9 @@
       REAL*8            A,A2,XL,RAD,ANGS2
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 16/02/2010   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -28,7 +28,6 @@ C ======================================================================
 C     ------------------------------------------------------------------
 C TOLE
 C --------- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------
-      CHARACTER*32       JEXNUM , JEXNOM , JEXR8 , JEXATR
       INTEGER            ZI
       COMMON  / IVARJE / ZI(1)
       REAL*8             ZR
@@ -50,7 +49,7 @@ C
       REAL*8       U(3), V(3), W(8), W2(3),DW(12),TET1,TET2
       REAL*8       Q(12), QQ(12), QQR(12), QQI(12),PTA(3),DIR(3)
       REAL*8       DIR1(3),DIR2(3),D1,D2,OMEG2,X1(3),X2(3),V1(3),V2(3)
-      CHARACTER*2  BL2, CODRET
+      INTEGER ICODRE
       CHARACTER*8  NOMPAR(4)
       CHARACTER*16 CH16
       LOGICAL      GLOBAL, NORMAL
@@ -69,7 +68,6 @@ C     ------------------------------------------------------------------
 C     --- INITIALISATION  ---
 C
       R8MIN = R8MIEM()
-      BL2 = '  '
       ZERO = 0.0D0
       UN   = 1.0D0
       DO 1 I =1,12
@@ -163,11 +161,11 @@ C          -- DIR EST NORME :
          ELSE
            IF ( IST .EQ. 1 ) THEN
              CALL RCVALA(ZI(LMATE),' ','ELAS',0,' ',R8BID,1,
-     +                              'RHO',RHO,CODRET, 'FM' )
+     &                              'RHO',RHO,ICODRE, 1)
            ELSE
              CALL RCVALA(ZI(LMATE),' ','ELAS',0,' ',R8BID,1,
-     +                              'RHO',RHO,CODRET, BL2 )
-             IF (CODRET.NE.'OK' ) RHO = ZERO
+     &                              'RHO',RHO,ICODRE, 0)
+             IF (ICODRE.NE.0    ) RHO = ZERO
            ENDIF
 C          ---A CAUSE DES CHARGEMENTS VARIABLE ---
            COEF1 = A

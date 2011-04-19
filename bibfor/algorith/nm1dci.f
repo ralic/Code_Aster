@@ -2,7 +2,7 @@
      &                  DEPS,VIM,OPTION,MATERI,SIGP,VIP,DSDE)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 04/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -34,7 +34,7 @@ C IN  EM        : MODULE D YOUNG MOINS
 C IN  EP        : MODULE D YOUNG PLUS
 
 C IN  SIGM    : CONTRAINTE AU TEMPS MOINS
-C IN  DEPS    : DEFORMATION  TOTALE PLUS - DEFORMATION MOINS 
+C IN  DEPS    : DEFORMATION  TOTALE PLUS - DEFORMATION MOINS
 C                       - INCREMENT DEFORMATION THERMIQUE
 C IN  VIM     : VARIABLE INTERNES MOINS
 C IN  OPTION     : OPTION DE CALCUL
@@ -56,19 +56,18 @@ C     VARIABLES LOCALES
 C     ------------------------------------------------------------------
       REAL*8 SIGE,DP,VALRES(2),ETM,ETP,XP,XM,HM,HP
 
-      CHARACTER*2 FB2,CODRES(2)
+      INTEGER ICODRE(2)
       CHARACTER*8 NOMECL(2)
 
       DATA NOMECL/'D_SIGM_E','SY'/
 C     ------------------------------------------------------------------
-      FB2 = 'FM'
       CALL RCVALB(FAMI,KPG,KSP,'-',IMATE,MATERI,'ECRO_LINE',0,' ',0.D0,
-     &            1,NOMECL,VALRES,  CODRES,FB2)
+     &            1,NOMECL,VALRES,ICODRE,1)
       ETM = VALRES(1)
       HM = EM*ETM/ (EM-ETM)
 
       CALL RCVALB(FAMI,KPG,KSP,'+',IMATE,MATERI,'ECRO_LINE',0,' ',0.D0,
-     &            2,NOMECL,VALRES,CODRES,FB2)
+     &            2,NOMECL,VALRES,ICODRE,1)
       ETP = VALRES(1)
       HP = EP*ETP/ (EP-ETP)
       SIGY = VALRES(2)

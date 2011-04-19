@@ -1,12 +1,10 @@
-      SUBROUTINE DKTGCO ( XYZL, OPTION, PGL, INIV, DEPL,
-     +                    CDL )
+      SUBROUTINE DKTGCO ( XYZL, PGL, INIV, DEPL, CDL )
       IMPLICIT NONE
       INTEGER       INIV
       REAL*8        XYZL(3,*),PGL(3,*), DEPL(*), CDL(*)
-      CHARACTER*16  OPTION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 04/04/2011   AUTEUR DESOZA T.DESOZA 
+C MODIF ELEMENTS  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -27,7 +25,6 @@ C     ------------------------------------------------------------------
 C       DEFORMATIONS DE L'ELEMENT DE PLAQUE DKT
 C     ------------------------------------------------------------------
 C     IN  XYZL   : COORDONNEES LOCALES DES TROIS NOEUDS
-C     IN  OPTION : NOM DE L'OPTION DE CALCUL
 C     IN  PGL    : MATRICE DE PASSAGE GLOBAL - LOCAL
 C     IN  INIV   : NIVEAU DANS LA COUCHE (-1:INF , 0:MOY , 1:SUP)
 C     IN  DEPL   : DEPLACEMENTS

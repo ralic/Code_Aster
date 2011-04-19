@@ -3,9 +3,9 @@
      &                   PROJ)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 10/05/2005   AUTEUR GJBHHEL E.LORENTZ 
+C MODIF ALGORITH  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -59,10 +59,10 @@ C ----------------------------------------------------------------------
 
       REAL*8      EPS(6), EPSR(6),TREPS, COPLAN, SIGEL(6)
       REAL*8      KRON(6), TREPSR, SIGELR(6)
-      REAL*8      RIGMIN, FD, D, DM, ENER, COEF
-      REAL*8      E, NU, ALPHA, LAMBDA, DEUXMU, GAMMA, SY, WY
+      REAL*8       FD, D, DM, ENER, COEF
+      REAL*8      E, NU, LAMBDA, DEUXMU, GAMMA, SY, WY
 
-      CHARACTER*2 CODRET(3)
+      INTEGER ICODRE(3)
       CHARACTER*8 NOMRES(3)
       REAL*8      VALRES(3)
 
@@ -95,7 +95,7 @@ C -- LECTURE DES CARACTERISTIQUES ELASTIQUES
       NOMRES(1) = 'E'
       NOMRES(2) = 'NU'
       CALL RCVALA(IMATE,' ','ELAS',0,' ',0.D0,2,
-     &              NOMRES,VALRES,CODRET, 'FM')
+     &              NOMRES,VALRES,ICODRE, 1)
 
       E     = VALRES(1)
       NU    = VALRES(2)
@@ -107,7 +107,7 @@ C -- LECTURE DES CARACTERISTIQUES D'ENDOMMAGEMENT
       NOMRES(1) = 'SY'
       NOMRES(2) = 'D_SIGM_EPSI'
       CALL RCVALA(IMATE,' ','ECRO_LINE',0,' ',0.D0,2,
-     &            NOMRES,VALRES,CODRET,'FM')
+     &            NOMRES,VALRES,ICODRE,1)
       SY = VALRES(1)
       GAMMA  = - VALRES(2)/E
       WY  = SY**2 / (2*E)

@@ -8,7 +8,7 @@
       CHARACTER*(*)  CAR
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 19/01/2011   AUTEUR MASSIN P.MASSIN 
+C MODIF MODELISA  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -49,14 +49,15 @@ C --- -- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C --- --  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
 C --- ---------------------------------------------------------------
-      INTEGER      J, L,DIMMAT
+      INTEGER      J, L,DIMMAT,IBID
       CHARACTER*7  KI
       REAL*8       R8BID
       LOGICAL      NONSYM
+      CHARACTER*8  K8BID
 C --- ---------------------------------------------------------------
 C
 
-      CALL INFDIS('DMXM',DIMMAT,R8BID)
+      CALL INFDIS('DMXM',DIMMAT,R8BID,K8BID)
 
 C     BOUCLE SUR LES TYPES DE MATRICE (K,M,A)
 C
@@ -76,8 +77,10 @@ C        COEFFICIENT AMORTISSEMENT HYSTERETIQUE
             ZK8(JDCINF+9) = 'ETAK    '
             ZR (JDVINF+9) = ETA
          ENDIF
-         NONSYM = ( ISYM .EQ. 2 )
+         ZK8(JDCINF+10)   = 'TYDI    '
+         CALL INFDIS('CODE',IBID,ZR(JDVINF+10),CAR)
 C
+         NONSYM = ( ISYM .EQ. 2 )
          NTP = J
 C
 C        NCMP : NOMBRE DE COMPOSANTES DE LA MATRICE NON-SYMETRIQUE

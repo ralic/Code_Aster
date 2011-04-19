@@ -2,9 +2,9 @@
       IMPLICIT   NONE
 C.......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
+C MODIF MODELISA  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -64,7 +64,7 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 
-      INTEGER IFR,IUNIFI,NBCOU,ICOU,N,IADR,JEPOR,JRELA,K,LONOBJ,JMATE,
+      INTEGER IFR,NBCOU,ICOU,N,IADR,JEPOR,JRELA,K,LONOBJ,JMATE,
      &        JOBME,JOBMC,I,NIMPR,IMPR,NBRES,J,NOBJ,JOBTH,JOBTC,NBAD,
      &        IRET,NV,N1
       REAL*8 LAML,LAMT,LAMN,CP,QT(31),VALRES(9)
@@ -75,7 +75,7 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       REAL*8 DL,DT,RHO,G11,G22,G12
       REAL*8 C,S,C2,S2,C3,S3,C4,S4,D11,D22,D12
       REAL*8 HF(3,3),HFINV(3,3),HI(3,3),AI(3,3)
-      REAL*8 DA1I(2,2),DA2I(2,4),IDI(2,2),EZD(2,2)
+      REAL*8 DA1I(2,2),IDI(2,2),EZD(2,2)
       REAL*8 XAB(2,2),C11I(2,2),C11(2,2),HTI(2,2),DET
       REAL*8 C11I1(2,2),C11I2(2,2),C11I3(2,2),C11I4(2,2)
       REAL*8 X1,X2,X3,X4,XT,XC,YT,YC,SLT
@@ -86,7 +86,8 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       REAL*8 L11,L22,L12
       REAL*8 RZKP,RZKM,DIF3,DIF4,DIF5
       REAL*8 R8BID,H,H2,H3,H4,R8MAEM,EPSI,R8MIEM,R8VIDE
-      CHARACTER*2 BL2,CODRET(9),VAL
+      INTEGER ICODRE(9)
+      CHARACTER*2 VAL
       CHARACTER*24 VALK(2)
       CHARACTER*3 NUM
       CHARACTER*8 K8B,MULTIC,MATER,NOMRES(9)
@@ -97,7 +98,6 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       CALL JEMARQ()
       CALL INFMAJ()
 
-      BL2 = '  '
       EPSI=R8MIEM()
 
       CALL GETRES(MULTIC,TYPE,NOMCMD)
@@ -195,29 +195,29 @@ C     ------ CARACTERISTIQUES MECANIQUES ------
 C         EN PRINCIPE G_LN = G_LT CF BATOZ
           K8B = ' '
           CALL RCVALE(ZK16(JRELA+I+1) (1:8),'ELAS_ORTH',0,K8B,R8BID,6,
-     &                NOMRES,VALRES,CODRET,'F ')
+     &                NOMRES,VALRES,ICODRE,2)
           CALL RCVALE(ZK16(JRELA+I+1) (1:8),'ELAS_ORTH',0,K8B,R8BID,3,
-     &                NOMRES(7),VALRES(7),CODRET(7),'  ')
+     &                NOMRES(7),VALRES(7),ICODRE(7),0)
           EL = VALRES(1)
           ET = VALRES(2)
           NULT = VALRES(3)
           GLT = VALRES(4)
           DL = VALRES(5)
           DT = VALRES(6)
-          IF (CODRET(7).NE.'OK') THEN
+          IF (ICODRE(7).NE.0) THEN
             IRET = IRET + 1
             RHO = 0.D0
           ELSE
             RHO = VALRES(7)
           END IF
 C           --- GLN NON DEFINI ==> GLN = GLT (ISOTROPIE TRANSVERSE) ---
-          IF (CODRET(8).NE.'OK') THEN
+          IF (ICODRE(8).NE.0) THEN
             GLN = GLT
           ELSE
             GLN = VALRES(8)
           END IF
 C           --- GTN NON DEFINI ==> GRANDE RIGIDITE --------------------
-          IF (CODRET(9).NE.'OK') THEN
+          IF (ICODRE(9).NE.0) THEN
             GTN = 1.D+6*GLT
           ELSE
             GTN = VALRES(9)
@@ -280,28 +280,28 @@ C       LECTURE DES CRITERES
           NOMRES(5) = 'S_LT'
           K8B = ' '
           CALL RCVALE(ZK16(JRELA+I+1) (1:8),'ELAS_ORTH',0,K8B,R8BID,5,
-     &                NOMRES,VALRES,CODRET,'F ')
-          IF (CODRET(1).NE.'OK') THEN
+     &                NOMRES,VALRES,ICODRE,2)
+          IF (ICODRE(1).NE.0) THEN
              XT=R8VIDE()
           ELSE
              XT = VALRES(1)
           ENDIF
-          IF (CODRET(2).NE.'OK') THEN
+          IF (ICODRE(2).NE.0) THEN
              XC=R8VIDE()
           ELSE
              XC = VALRES(2)
           ENDIF
-          IF (CODRET(3).NE.'OK') THEN
+          IF (ICODRE(3).NE.0) THEN
              YT=R8VIDE()
           ELSE
              YT = VALRES(3)
           ENDIF
-          IF (CODRET(4).NE.'OK') THEN
+          IF (ICODRE(4).NE.0) THEN
              YC=R8VIDE()
           ELSE
              YC = VALRES(4)
           ENDIF
-          IF (CODRET(5).NE.'OK') THEN
+          IF (ICODRE(5).NE.0) THEN
              SLT=R8VIDE()
           ELSE
              SLT = VALRES(5)
@@ -717,7 +717,7 @@ C     ------ CARACTERISTIQUES THERMIQUES ------
           NOMRES(4) = 'RHO_CP'
           K8B = ' '
           CALL RCVALE(ZK16(JRELA+I+1) (1:8),'THER_ORTH',0,K8B,R8BID,
-     &                NBRES,NOMRES,VALRES,CODRET,BL2)
+     &                NBRES,NOMRES,VALRES,ICODRE,0)
           LAML = VALRES(1)
           LAMT = VALRES(2)
           LAMN = VALRES(3)

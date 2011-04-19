@@ -5,7 +5,7 @@
       CHARACTER*16      OPTION
       CHARACTER*24      MATE, COMPOR, PHASIN
       CHARACTER*(*)     MODELZ
-C MODIF ALGORITH  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -55,7 +55,7 @@ C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
       REAL*8        VALR(2)
       INTEGER       VALII
       COMPLEX*16    CBID
-      CHARACTER*2   CODRET, TEST
+      INTEGER   ICODRE, TEST
       CHARACTER*8   K8B, MODELE, NOMCM2(2), MATER, TIMCMP(6), LPAIN(8),
      &              LPAOUT(2)
       CHARACTER*16  OPTIO2
@@ -85,20 +85,20 @@ C
       LIGRMO = MODELE//'.MODELE'
 
       NBHIST = 0
-      TEST ='NO'
+      TEST =1
       IADTRC(1) = 0
       IADTRC(2) = 0
 
       DO 10 I = 1,LONG
         MATER = ZK8(JMATE+I-1)
         IF (MATER.NE.'        ') THEN
-          CALL RCADME(MATER,'META_ACIER','TRC',IADTRC,CODRET,' ')
-          IF (CODRET.EQ.'OK') TEST = 'OK'
+          CALL RCADME(MATER,'META_ACIER','TRC',IADTRC,ICODRE,0)
+          IF (ICODRE.EQ.0) TEST = 0
           NBHIST = MAX(NBHIST,IADTRC(1))
         END IF
    10 CONTINUE
 
-      IF (TEST.EQ.'OK') THEN
+      IF (TEST.EQ.0) THEN
         CALL WKVECT('&&SMEVOL_FTRC','V V R', 9*NBHIST,VALI(1))
         CALL WKVECT('&&SMEVOL_TRC' ,'V V R',15*NBHIST,VALI(2))
         CHFTRC = '&&SMEVOL.ADRESSES'

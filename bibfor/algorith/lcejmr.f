@@ -2,7 +2,7 @@
      &                  DSIDEP,VIM,VIP,COOROT,TYPMOD,INSTAM,INSTAP)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 05/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -47,7 +47,7 @@ C-----------------------------------------------------------------------
       REAL*8 A(NDIM),KA,KAP,R0,RC,ALPHA,BETA,RK,RA,RT,RT0,R8BID
       REAL*8 OSET,DOSET,R8PI,INST,VALPAR(NDIM+1),RHOF,VISF,AMIN
       REAL*8 INVROT(NDIM,NDIM),RIGART
-      CHARACTER*2 COD(NBPA)
+      INTEGER COD(NBPA)
       CHARACTER*8 NOM(NBPA),NOMPAR(NDIM+1)
       CHARACTER*1 POUM
       LOGICAL RESI,RIGI,ELAS
@@ -94,7 +94,7 @@ C--------------------------------------
       ENDIF
 
       CALL RCVALB(FAMI,KPG,KSP,POUM,MATE,' ','JOINT_MECA_RUPT',0,' ',
-     &            0.D0,5,NOM,VAL,COD,'F ')
+     &            0.D0,5,NOM,VAL,COD,2)
 
 C CONTRAINTE CRITIQUE SANS PENALISATION
       SC   = VAL(2)*(1.D0 + VAL(3))/VAL(3)
@@ -117,8 +117,8 @@ C PRESENTATION D'UNE INFINITE NUMERIQUE
       ENDIF
 C PENTE TANGENTIELLE INITIAL (SI ELLE N'EST PAS DEFINI ALORS K_T=K_N)
       CALL RCVALB(FAMI,KPG,KSP,POUM,MATE,' ','JOINT_MECA_RUPT',0,' ',
-     &            0.D0,1,NOM(6),VAL(6),COD(6),'  ')
-      IF (COD(6).EQ.'OK') THEN
+     &            0.D0,1,NOM(6),VAL(6),COD(6),0)
+      IF (COD(6).EQ.0) THEN
         RT0 = VAL(6)
       ELSE
         RT0 = R0
@@ -141,9 +141,9 @@ C-----------------------------------------------------------------------
 
 C RECUPERATION DE LA PRESS FLUIDE (FONCTION DE L'ESPACE ET DU TEMPS)
       CALL RCVALB(FAMI,KPG,KSP,POUM,MATE,' ','JOINT_MECA_RUPT',NDIM+1,
-     &            NOMPAR,VALPAR,1,NOM(7),VAL(7),COD(7),'  ')
+     &            NOMPAR,VALPAR,1,NOM(7),VAL(7),COD(7),0)
 
-      IF (COD(7).EQ.'OK') THEN
+      IF (COD(7).EQ.0) THEN
         PRESFL = VAL(7)
       ELSE
         PRESFL = 0.D0
@@ -151,9 +151,9 @@ C RECUPERATION DE LA PRESS FLUIDE (FONCTION DE L'ESPACE ET DU TEMPS)
 
 C RECUPERATION DE LA PRESS CLAVAGE (FONCTION DE L'ESPACE ET DU TEMPS)
       CALL RCVALB(FAMI,KPG,KSP,POUM,MATE,' ','JOINT_MECA_RUPT',NDIM+1,
-     &            NOMPAR,VALPAR,1,NOM(8),VAL(8),COD(8),'  ')
+     &            NOMPAR,VALPAR,1,NOM(8),VAL(8),COD(8),0)
 
-      IF (COD(8).EQ.'OK') THEN
+      IF (COD(8).EQ.0) THEN
         PRESCL = VAL(8)
       ELSE
         PRESCL = -1.D0
@@ -163,31 +163,31 @@ C RECUPERATION DE LA MASSE VOL ET DE LA VISCO (MODELISATION JOINT HM)
 C--------------------------------------------------------------------
 
       CALL RCVALB(FAMI,KPG,KSP,POUM,MATE,' ','JOINT_MECA_RUPT',0,' ',
-     &            0.D0,1,NOM(9),VAL(9),COD(9),'  ')
+     &            0.D0,1,NOM(9),VAL(9),COD(9),0)
       CALL RCVALB(FAMI,KPG,KSP,POUM,MATE,' ','JOINT_MECA_RUPT',0,' ',
-     &            0.D0,1,NOM(10),VAL(10),COD(10),'  ')
+     &            0.D0,1,NOM(10),VAL(10),COD(10),0)
       CALL RCVALB(FAMI,KPG,KSP,POUM,MATE,' ','JOINT_MECA_RUPT',0,' ',
-     &            0.D0,1,NOM(11),VAL(11),COD(11),'  ')
+     &            0.D0,1,NOM(11),VAL(11),COD(11),0)
 
-      IF (COD(9).EQ.'OK')  RHOF = VAL(9)
-      IF (COD(10).EQ.'OK') VISF = VAL(10)
-      IF (COD(11).EQ.'OK') AMIN = VAL(11)
+      IF (COD(9).EQ.0)  RHOF = VAL(9)
+      IF (COD(10).EQ.0) VISF = VAL(10)
+      IF (COD(11).EQ.0) AMIN = VAL(11)
 
 C VERIFICATION DE LA PRESENCE/ABSENCE DE PARAMETRES
 C EN FONCTION DE LA MODELISATION MECA PUR OU HYDRO MECA
 
       IF ((TYPMOD(2).EQ.'EJ_HYME')) THEN
 
-        IF ((COD(7).EQ.'OK').OR.(COD(8).EQ.'OK')) THEN
+        IF ((COD(7).EQ.0).OR.(COD(8).EQ.0)) THEN
           CALL U2MESS('F','ALGORITH17_14')
         ENDIF
-        IF ((COD(9).NE.'OK').OR.(COD(10).NE.'OK')) THEN
+        IF ((COD(9).NE.0).OR.(COD(10).NE.0)) THEN
           CALL U2MESS('F','ALGORITH17_15')
         ENDIF
 
       ELSEIF (TYPMOD(2).EQ.'ELEMJOIN') THEN
 
-        IF((COD(9).EQ.'OK').OR.(COD(10).EQ.'OK')) THEN
+        IF((COD(9).EQ.0).OR.(COD(10).EQ.0)) THEN
           CALL U2MESS('F','ALGORITH17_16')
         ENDIF
 

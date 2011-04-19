@@ -1,16 +1,16 @@
         SUBROUTINE CALCFT(OPTION,THMC  ,IMATE ,NDIM  ,DIMDEF,
-     +                    DIMCON,YAMEC ,YAP1  ,YAP2  ,
-     +                    ADDETE,ADDEME,ADDEP1,ADDEP2,
-     +                    ADCOTE,CONGEP,
-     +                    DSDE  ,T     ,GRAT  ,PHI   ,PVP   ,
-     +                    RGAZ  , BIOT ,SAT   ,DSATP1,
-     +                    LAMBP ,DLAMBP, LAMBS,DLAMBS,LAMBT ,
-     +                    DLAMBT,MAMOLV,
-     +                    LAMBCT,RHO11 ,H11   ,H12           )
+     &                    DIMCON,YAMEC ,YAP1  ,YAP2  ,
+     &                    ADDETE,ADDEME,ADDEP1,ADDEP2,
+     &                    ADCOTE,CONGEP,
+     &                    DSDE  ,T     ,GRAT  ,PHI   ,PVP   ,
+     &                    RGAZ  , BIOT ,SAT   ,DSATP1,
+     &                    LAMBP ,DLAMBP, LAMBS,DLAMBS,LAMBT ,
+     &                    DLAMBT,MAMOLV,
+     &                    LAMBCT,RHO11 ,H11   ,H12           )
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 08/02/2011   AUTEUR GRANET S.GRANET 
+C MODIF ALGORITH  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C RESPONSABLE GRANET S.GRANET
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -52,7 +52,7 @@ C    PARAMETRE POUR LA RECUP DES COEF MECA
       PARAMETER  ( NELAS=4 )
       REAL*8       ELAS(NELAS),YOUNG,ALPHA0,CS,K0,NU
       CHARACTER*8  NCRA1(NELAS)
-      CHARACTER*2  CODRET(NELAS)
+      INTEGER ICODRE(NELAS)
 C ======================================================================
 C --- DONNEES POUR RECUPERER LES CARACTERISTIQUES MECANIQUES -----------
 C ======================================================================
@@ -63,7 +63,7 @@ C =====================================================================
 
          IF (YAMEC.EQ.1) THEN
            CALL RCVALA(IMATE,' ','ELAS',1,'TEMP', T,3,
-     +                             NCRA1(1),ELAS(1),CODRET,'FM')
+     &                             NCRA1(1),ELAS(1),ICODRE,1)
            YOUNG  = ELAS(1)
            NU     = ELAS(2)
            ALPHA0 = ELAS(3)
@@ -96,50 +96,50 @@ C
            LAMBDT(1) = LAMBS*LAMBP*LAMBT + LAMBCT
            LAMBDT(2) = (BIOT-PHI)*DLAMBP*LAMBS*LAMBT
            LAMBDT(3) =(RHO12/RHO11-1.D0)* LAMBP*DLAMBS*LAMBT*DSATP1
-     +            +CS*(SAT+(1.D0-SAT)*RHO12/RHO11)*(BIOT-PHI)*
-     +             DLAMBP*LAMBS*LAMBT
+     &            +CS*(SAT+(1.D0-SAT)*RHO12/RHO11)*(BIOT-PHI)*
+     &             DLAMBP*LAMBS*LAMBT
            LAMBDT(4) =0.D0
            LAMBDT(5) = LAMBS*LAMBP*DLAMBT
-     +            +(BIOT-PHI)*(-3.D0*ALPHA0+CS*(1.D0-SAT)*
-     +            RHO12*(H12-H11)/T)*DLAMBP*LAMBS*LAMBT
-     +            +LAMBP*DLAMBS*LAMBT*DSATP1*RHO12*(H12-H11)/T
+     &            +(BIOT-PHI)*(-3.D0*ALPHA0+CS*(1.D0-SAT)*
+     &            RHO12*(H12-H11)/T)*DLAMBP*LAMBS*LAMBT
+     &            +LAMBP*DLAMBS*LAMBT*DSATP1*RHO12*(H12-H11)/T
          ELSE
            LAMBDT(1) = LAMBS*LAMBP*LAMBT + LAMBCT
            LAMBDT(2) = (BIOT-PHI)*DLAMBP*LAMBS*LAMBT
            LAMBDT(3) = LAMBP*DLAMBS*LAMBT*DSATP1
-     +            -SAT*CS*(BIOT-PHI)*DLAMBP*LAMBS*LAMBT
+     &            -SAT*CS*(BIOT-PHI)*DLAMBP*LAMBS*LAMBT
            LAMBDT(4) = CS*(BIOT-PHI)*DLAMBP*LAMBS*LAMBT
            LAMBDT(5) = LAMBS*LAMBP*DLAMBT
-     +            -(BIOT-PHI)*3.D0*ALPHA0*DLAMBP*LAMBS*LAMBT
+     &            -(BIOT-PHI)*3.D0*ALPHA0*DLAMBP*LAMBS*LAMBT
          ENDIF
 
 C =====================================================================
 C --- CALCUL DU FLUX THERMIQUE ----------------------------------------
 C =====================================================================
       IF ((OPTION(1:9).EQ.'RIGI_MECA') .OR.
-     +    (OPTION(1:9).EQ.'FULL_MECA')            ) THEN
+     &    (OPTION(1:9).EQ.'FULL_MECA')            ) THEN
          DO 100 I=1,NDIM
             DSDE(ADCOTE+I,ADDETE+I)=DSDE(ADCOTE+I,ADDETE+I)-LAMBDT(1)
             DSDE(ADCOTE+I,ADDETE)=DSDE(ADCOTE+I,ADDETE)
-     +                            - LAMBDT(5)*GRAT(I)
+     &                            - LAMBDT(5)*GRAT(I)
             IF (YAMEC.EQ.1) THEN
                DO 101 J=1,3
                   DSDE(ADCOTE+I,ADDEME+NDIM-1+J)=
-     +              DSDE(ADCOTE+I,ADDEME+NDIM-1+J)-LAMBDT(2)*GRAT(I)
+     &              DSDE(ADCOTE+I,ADDEME+NDIM-1+J)-LAMBDT(2)*GRAT(I)
  101           CONTINUE
             ENDIF
             IF (YAP1.EQ.1) THEN
                DSDE(ADCOTE+I,ADDEP1)=DSDE(ADCOTE+I,ADDEP1)
-     +                            - LAMBDT(3)*GRAT(I)
+     &                            - LAMBDT(3)*GRAT(I)
                IF (YAP2.EQ.1) THEN
                   DSDE(ADCOTE+I,ADDEP2)=DSDE(ADCOTE+I,ADDEP2)
-     +                               - LAMBDT(4)*GRAT(I)
+     &                               - LAMBDT(4)*GRAT(I)
                ENDIF
             ENDIF
  100     CONTINUE
       ENDIF
       IF ( (OPTION(1:9).EQ.'RAPH_MECA') .OR.
-     +     (OPTION(1:9).EQ.'FULL_MECA')      ) THEN
+     &     (OPTION(1:9).EQ.'FULL_MECA')      ) THEN
          DO 102 I=1,NDIM
             CONGEP(ADCOTE+I)=-LAMBDT(1)*GRAT(I)
  102     CONTINUE

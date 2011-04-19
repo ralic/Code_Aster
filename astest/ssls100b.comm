@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 18/04/2011   AUTEUR LEBOUVIER F.LEBOUVIER 
 # TITRE PLAQUE CIRCULAIRE ENCASTREE SOUS PRESSION DKT  170 N - 296 TRIA3
 # ssls100b.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -162,7 +162,7 @@ TEST_TABLE(       TABLE=RELEVE_1,
                              VALE_K = 'O'),
                   NOM_PARA='MXX',
                  REFERENCE='ANALYTIQUE',
-                 PRECISION=0.5E-2,
+                 PRECISION=1.0E-2,
                       VALE=-0.08125       )
 
 TEST_TABLE(       TABLE=RELEVE_1,
@@ -170,7 +170,7 @@ TEST_TABLE(       TABLE=RELEVE_1,
                              VALE_K = 'O'),
                   NOM_PARA='MYY',
                  REFERENCE='ANALYTIQUE',
-                 PRECISION=0.5E-2,
+                 PRECISION=1.0E-2,
                       VALE=-0.08125       )
 
 TEST_TABLE(       TABLE=RELEVE_1,
@@ -258,7 +258,7 @@ TEST_TABLE(       TABLE=RELEVE_1,
                              VALE_K = 'F'),
                   NOM_PARA='MXX',
                  REFERENCE='ANALYTIQUE',
-                 PRECISION=2.0E-2,
+                 PRECISION=2.5E-2,
                       VALE=-0.02925       )
 
 TEST_TABLE(       TABLE=RELEVE_1,

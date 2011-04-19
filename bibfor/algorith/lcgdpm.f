@@ -3,9 +3,9 @@
      &                   OPTION,SIGP,VIP,DSIGDF,IRET)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
+C MODIF ALGORITH  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -63,7 +63,7 @@ C.......................................................................
       REAL*8   PHASE(5),PHASM(5),ZALPHA
       REAL*8   TEMP,DT,EPSTHE(2)
 
-      REAL*8   TTRG,EPSTH,E,NU,MU,MUM,TROISK
+      REAL*8   EPSTH,E,NU,MU,MUM,TROISK
       REAL*8   FMEL,SY(5),H(5),HMOY,HPLUS(5),R(5),RMOY
       REAL*8   THETA(8)
       REAL*8   ETA(5),N(5),UNSURN(5),C(5),M(5),CMOY,MMOY,CR
@@ -90,7 +90,8 @@ C.......................................................................
       REAL*8   VALRES(20)
 
       CHARACTER*1 C1
-      CHARACTER*2 CODRET(20),TEST
+      INTEGER ICODRE(20)
+      INTEGER TEST
       CHARACTER*8 NOMRES(20),NOMCLE(5),ACIER(4)
 
       LOGICAL     RESI,RIGI
@@ -179,11 +180,11 @@ C 2.1 - ELASTIQUE ET THERMIQUE
       NOMRES(6)='EPSF_EPSC_TREF'
 
       CALL RCVALB(FAMI,KPG,KSP,'-',IMAT,' ','ELAS_META',0,' ',0.D0,
-     &            6,NOMRES,VALRES,CODRET,'F ')
+     &            6,NOMRES,VALRES,ICODRE,2)
       MUM=VALRES(1)/(2.D0*(1.D0+VALRES(2)))
 
       CALL RCVALB(FAMI,KPG,KSP,C1,IMAT,' ','ELAS_META',0,' ',0.D0,
-     &            6,NOMRES,VALRES,CODRET,'F ')
+     &            6,NOMRES,VALRES,ICODRE,2)
       EPSTH = PHASE(NZ)*(EPSTHE(1)-(1.D0-VALRES(5))*VALRES(6))
      &     + ZALPHA*(EPSTHE(2)+VALRES(5)*VALRES(6))
       E=VALRES(1)
@@ -217,13 +218,13 @@ C 2.2 - LOI DES MELANGES
 
         CALL RCVALB(FAMI,1,1,'+',IMAT,' ','ELAS_META',
      &              1,'META',ZALPHA,1,
-     &              NOMRES(6),FMEL,CODRET(6),'  ')
-        IF (CODRET(6).NE.'OK') FMEL = ZALPHA
+     &              NOMRES(6),FMEL,ICODRE(6),0)
+        IF (ICODRE(6).NE.0) FMEL = ZALPHA
 
 C 2.3 - LIMITE D ELASTICITE
 
         CALL RCVALB(FAMI,KPG,KSP,C1,IMAT,' ','ELAS_META',0,' ',0.D0,
-     &              5,NOMRES,SY,CODRET,'F ')
+     &              5,NOMRES,SY,ICODRE,2)
 
         IF (RESI) THEN
 
@@ -248,7 +249,7 @@ C 2.4 - RESTAURATION D ECROUISSAGE
             NOMRES(8) ='F4_C_THETA'
 
             CALL RCVALB(FAMI,KPG,KSP,C1,IMAT,' ','META_RE',0,'  ',
-     &                 0.D0,8,NOMRES,THETA,CODRET,'F ')
+     &                 0.D0,8,NOMRES,THETA,ICODRE,2)
           ELSE
 
             DO 20 I=1,8
@@ -286,18 +287,18 @@ C 2.5 - VISCOSITE
             NOMRES(20) = 'C_M'
 
             CALL RCVALB(FAMI,KPG,KSP,C1,IMAT,' ','META_VISC',0,
-     &                 ' ',0.D0,10,NOMRES,VALRES,CODRET,'F ')
+     &                 ' ',0.D0,10,NOMRES,VALRES,ICODRE,2)
 
             CALL RCVALB(FAMI,KPG,KSP,C1,IMAT,' ','META_VISC',0,' ',
-     &                 0.D0,10,NOMRES(11),VALRES(11),CODRET(11),'  ')
+     &                 0.D0,10,NOMRES(11),VALRES(11),ICODRE(11),0)
 
             DO  25 K=1,NZ
               ETA(K) = VALRES(K)
               N(K) = VALRES(NZ+K)
               UNSURN(K)=1/N(K)
-              IF (CODRET(2*NZ+K) .NE. 'OK') VALRES(2*NZ+K)=0.D0
+              IF (ICODRE(2*NZ+K) .NE.0) VALRES(2*NZ+K)=0.D0
               C(K) =VALRES(2*NZ+K)
-              IF (CODRET(3*NZ+K) .NE. 'OK') VALRES(3*NZ+K)=20.D0
+              IF (ICODRE(3*NZ+K) .NE.0) VALRES(3*NZ+K)=20.D0
               M(K) = VALRES(3*NZ+K)
  25         CONTINUE
 
@@ -393,7 +394,7 @@ C 2.8 - PLASTICITE DE TRANSFORMATION
             NOMRES(8) = 'F4_D_F_META'
 
             CALL RCVALB(FAMI,KPG,KSP,C1,IMAT,' ','META_PT',0,' ',
-     &                 0.D0,4,NOMRES,VALRES,CODRET ,'F ')
+     &                 0.D0,4,NOMRES,VALRES,ICODRE ,2)
 
             DO 60 K=1,NZ-1
               KPT (K) = VALRES(K)
@@ -404,7 +405,7 @@ C 2.8 - PLASTICITE DE TRANSFORMATION
                 J = 4+K
                 CALL RCVALB(FAMI,1,1,'+',IMAT,' ','META_PT',
      &                      1,'META',ZALPHA,1,
-     &                      NOMRES(J),VALRES(J),CODRET(J), 'F ')
+     &                      NOMRES(J),VALRES(J),ICODRE(J), 2)
                 TRANS = TRANS + KPT(K)*VALRES(J)*(ZVARIP-ZVARIM)
               ENDIF
  60         CONTINUE
@@ -432,7 +433,7 @@ C 2.9 - CALCUL DE HMOY ET RMOY (ON INCLUE LE SIGY)
           NOMRES(5) ='C_D_SIGM_EPSI'
 
           CALL RCVALB(FAMI,KPG,KSP,C1,IMAT,' ','META_ECRO_LINE',0,
-     &               ' ',0.D0,5,NOMRES,H,CODRET,'F ')
+     &               ' ',0.D0,5,NOMRES,H,ICODRE,2)
 
           H(1)=H(1)*E/(E-H(1))
           H(2)=H(2)*E/(E-H(2))
@@ -457,9 +458,9 @@ C 2.9 - CALCUL DE HMOY ET RMOY (ON INCLUE LE SIGY)
 
           IF (IRET2.EQ.1) CALL U2MESS('F','CALCULEL_31')
           DO 75 K=1,NZ
-            CALL RCTRAC(IMAT,'META_TRACTION',NOMCLE(K),TEMP,
+            CALL RCTRAC(IMAT,2,NOMCLE(K),TEMP,
      &                 JPROL,JVALE,NBVAL(K),RBID)
-            CALL RCFONC('V','META_TRACTION',JPROL,JVALE,NBVAL(K),
+            CALL RCFONC('V',2,JPROL,JVALE,NBVAL(K),
      &               RBID,RBID,RBID,VI(K),R(K),H(K),RBID,RBID,RBID)
             R(K) = R(K) + SY(K)
  75      CONTINUE
@@ -627,22 +628,22 @@ C VERIFICATION QU ON EST DANS LE BON INTERVALLE
      &        COMPOR(1)(1:10).EQ.'META_V_INL' )THEN
 
               DO 240 J=1,MAXVAL
-                TEST='OK'
+                TEST=0
                 DO 241 K=1,NZ
                   IF(PHASE(K).GT.0.D0) THEN
                     VIP(K)=VI(K)+DP
                     HPLUS(K)=H(K)
                     IF (IRET2.EQ.1) CALL U2MESS('F','CALCULEL_31')
-                    CALL RCTRAC(IMAT,'META_TRACTION',NOMCLE(K),TEMP,
+                    CALL RCTRAC(IMAT,2,NOMCLE(K),TEMP,
      &                         JPROL,JVALE,NBVAL(K),RBID)
-                    CALL RCFONC('V','META_TRACTION',JPROL,JVALE,
+                    CALL RCFONC('V',2,JPROL,JVALE,
      &                          NBVAL(K),RBID,RBID,RBID,VIP(K),
      &                          R(K),H(K),RBID,RBID,RBID)
                      R(K)=R(K)+SY(K)
-                    IF(ABS(H(K)-HPLUS(K)).GT.PRECR) TEST='NO'
+                    IF(ABS(H(K)-HPLUS(K)).GT.PRECR) TEST=1
                   ENDIF
  241            CONTINUE
-                IF (TEST.EQ.'OK') GO TO 600
+                IF (TEST.EQ.0) GO TO 600
 
                 HMOY=0.D0
                 RMOY=0.D0
@@ -665,7 +666,7 @@ C VERIFICATION QU ON EST DANS LE BON INTERVALLE
      &                      HMOY,MUTILD,ETA,UNSURN,DP,IRET)
                 IF(IRET.EQ.1) GOTO 9999
   240         CONTINUE
-              CALL ASSERT((TEST.NE.'NO').OR.(J.NE.MAXVAL))
+              CALL ASSERT((TEST.NE.1).OR.(J.NE.MAXVAL))
   600         CONTINUE
             ENDIF
           ENDIF

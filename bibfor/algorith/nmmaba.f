@@ -9,7 +9,7 @@ C ----------------------------------------------------------------------
       REAL*8  E,DSDE,SIGY
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 04/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -58,7 +58,7 @@ C *************** DECLARATION DES VARIABLES LOCALES ********************
 C
       PARAMETER    (NBVAL = 12)
       REAL*8       VALPAR,VALRES(NBVAL)
-      CHARACTER*2  BL2, FB2, CODRES(NBVAL)
+      INTEGER CODRES(NBVAL)
       CHARACTER*8  NOMPAR,NOMELA(1),NOMECL(2)
       CHARACTER*8  NOMPIM(12)
       CHARACTER*4  FAMI
@@ -91,8 +91,6 @@ C
 C
 C --- INITIALISATIONS
 C
-      BL2 = '  '
-      FB2 = 'FM'
       FAMI = 'RIGI'
 C
       CALL R8INIR (NBVAL,0.D0,VALRES,1)
@@ -105,7 +103,7 @@ C
       NBRES = 2
       CALL RCVALB(FAMI,1,1,'+',ICODMA,' ','ELAS',
      &             NBPAR,NOMPAR,VALPAR,1,NOMELA,
-     &             VALRES,CODRES,FB2)
+     &             VALRES,CODRES,1)
       E     = VALRES(1)
 C
 C --- CARACTERISTIQUES ECROUISSAGE LINEAIRE
@@ -116,8 +114,6 @@ C
      &   (COMPOR.EQ.'GRILLE_ISOT_LINE')) THEN
         NBRES= 2
 C
-      BL2 = '  '
-      FB2 = 'FM'
 C
       CALL R8INIR (NBVAL,0.D0,VALRES,1)
       NBPAR  = 0
@@ -125,11 +121,11 @@ C
       VALPAR = 0.D0
         CALL RCVALB(FAMI,1,1,'+',ICODMA,' ','ECRO_LINE',
      &             NBPAR,NOMPAR,VALPAR,1,NOMECL,
-     &             VALRES,CODRES,FB2)
+     &             VALRES,CODRES,1)
         CALL RCVALB(FAMI,1,1,'+',ICODMA,' ','ECRO_LINE',
      &            NBPAR,NOMPAR,VALPAR,1,
-     &            NOMECL(2), VALRES(2),CODRES(2), BL2)
-        IF (CODRES(2).NE.'OK') VALRES(2) = 0.D0
+     &            NOMECL(2), VALRES(2),CODRES(2), 0)
+        IF (CODRES(2).NE.0) VALRES(2) = 0.D0
         DSDE    = VALRES(1)
         SIGY    = VALRES(2)
       ENDIF
@@ -141,8 +137,6 @@ C
 C
         NBRES= 12
 C
-      BL2 = '  '
-      FB2 = 'FM'
 C
       CALL R8INIR (NBVAL,0.D0,VALRES,1)
       NBPAR  = 0
@@ -151,8 +145,8 @@ C
 C
       CALL RCVALB(FAMI,1,1,'+',ICODMA,' ','PINTO_MENEGOTTO',
      &            NBPAR,NOMPAR,VALPAR,
-     &            NBRES, NOMPIM,VALRES,CODRES,BL2)
-      IF (CODRES(7).NE.'OK') VALRES(7) = -1.D0
+     &            NBRES, NOMPIM,VALRES,CODRES,0)
+      IF (CODRES(7).NE.0) VALRES(7) = -1.D0
       CSTPM(1)    =E
       CSTPM(2)    =VALRES(1)
       CSTPM(3)    =VALRES(2)

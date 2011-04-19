@@ -4,7 +4,7 @@
      &  DFDI2)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 10/01/2011   AUTEUR IDOUX L.IDOUX 
+C MODIF ALGORITH  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -69,16 +69,15 @@ C OUT CODRET  : CODE RETOUR
 C MEM DFDI2   :
 C ----------------------------------------------------------------------
 
-      CHARACTER*2 K2
+      INTEGER K2
 
       LOGICAL RESI,RIGI,GRAND,AXI
       INTEGER NDIMSI,NDDL,G,COD(27),N,I,M,J,KL,PQ,OS,KK
       INTEGER IU(3,27),IE(6,8)
       REAL*8  RAC2,LC,C,DEPLM(3*27),DEPLD(3*27),DFDI1(27,3)
       REAL*8  R,WG,EPSGM(6,2),EPSGD(6,2),GEPSM(6,3),GEPS(6,3),F(3,3)
-      REAL*8  B(6,3,27),DE(6),TAMPON(10),SIGMA(6),DSIDEP(6,6,2),T1,T2
+      REAL*8  B(6,3,27),DE(6),SIGMA(6),DSIDEP(6,6,2),T1,T2
       REAL*8  P(6,6),SIGMAM(6),PERT,Q(6,6)
-      REAL*8  DDOT
 
       PARAMETER (PERT = 1.D-4)
 C ----------------------------------------------------------------------
@@ -95,7 +94,7 @@ C - INITIALISATION
       NDIMSI = 2*NDIM
       NDDL   = NNO1*NDIM + NNO2*NDIMSI
       CALL RCVALA(MATE,' ','NON_LOCAL',0,' ',0.D0,1,'LONG_CAR',
-     &            LC,K2,'FM')
+     &            LC,K2,1)
       C = LC**2
       DO 5 G=1,NPG
         COD(G)=0
@@ -270,7 +269,7 @@ C        MATRICE K:E(KL,N),U(J,M)
 
 
 C        MATRICE K:E(KL,N),E(PQ,M)
-C        A n'affecte pas tous les termes de l'integrale 
+C        A n'affecte pas tous les termes de l'integrale
 C        (p.189 these VG, ou doc R) FICHE 15979
 
 C        RIGIDITE FICTIVE SI POINT SATURE

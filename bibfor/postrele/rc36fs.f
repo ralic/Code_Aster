@@ -1,43 +1,44 @@
       SUBROUTINE RC36FS ( NBSIG1, NOC1, SIT1, NBSIG2, NOC2, SIT2,
-     +                    SALTIJ, NS, NSCY, MATSE, MSE, SN, NOMMAT, 
-     +                    C, K, CARA, UG )
+     &                    SALTIJ, NS, NSCY, MATSE, MSE, SN, NOMMAT,
+     &                    C, K, CARA, UG )
       IMPLICIT   NONE
       INTEGER             NBSIG1, NOC1(*), SIT1(*), NBSIG2, NOC2(*),
-     +                    SIT2(*), NS, NSCY
-      REAL*8              SALTIJ(*), MATSE(*), MSE(*), SN(*), C(*), 
-     +                    K(*), CARA(*), UG
+     &                    SIT2(*), NS, NSCY
+      REAL*8              SALTIJ(*), MATSE(*), MSE(*), SN(*), C(*),
+     &                    K(*), CARA(*), UG
       CHARACTER*8         NOMMAT
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 03/04/2007   AUTEUR VIVAN L.VIVAN 
+C MODIF POSTRELE  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C     OPERATEUR POST_RCCM, TRAITEMENT DE FATIGUE_B3600
 C
-C     CALCUL DU FACTEUR D'USAGE 
+C     CALCUL DU FACTEUR D'USAGE
 C
 C     ------------------------------------------------------------------
-      INTEGER      IS1, IS2, IS3, I, I1, I2, IND1, IND2, IFM, L,  
-     +             NIV, NS2, ICMP, ICOMP
+      INTEGER      IS1, IS2, IS3, I, I1, I2, IND1, IND2, IFM, L,
+     &             NIV, NS2, ICMP, ICOMP
       REAL*8       SALT, SALTM, NADM, U1KL, U2KL, SP, SNKL, SALTKL,
-     +             MIJ, SM, VALE(2)
+     &             MIJ, SM, VALE(2)
       LOGICAL      TROUVE,ENDUR
       REAL*8              TYPEKE, SPMECA, SPTHER
-      CHARACTER*2  CODRET, K2C, K2L
+      INTEGER ICODRE
+      CHARACTER*2  K2C, K2L
 C     ------------------------------------------------------------------
 C
       CALL INFNIV ( IFM, NIV )
@@ -49,9 +50,9 @@ C
         DO 100 I = 1 , NBSIG1
           I1 = 4*NBSIG2*(I-1)
           WRITE(IFM,1000) SIT1(2*(I-1)+1), NOC1(2*(I-1)+1),
-     +       (SALTIJ(I1+4*(L-1)+1),SALTIJ(I1+4*(L-1)+3), L=1,NBSIG2)
+     &       (SALTIJ(I1+4*(L-1)+1),SALTIJ(I1+4*(L-1)+3), L=1,NBSIG2)
           WRITE(IFM,1002) SIT1(2*(I-1)+2), NOC1(2*(I-1)+2),
-     +       (SALTIJ(I1+4*(L-1)+2),SALTIJ(I1+4*(L-1)+4), L=1,NBSIG2)
+     &       (SALTIJ(I1+4*(L-1)+2),SALTIJ(I1+4*(L-1)+4), L=1,NBSIG2)
  100    CONTINUE
       ENDIF
 C
@@ -103,7 +104,7 @@ C
             U1KL=0.D0
          ELSE
             CALL RCVALE ( NOMMAT, 'FATIGUE', 1, 'SIGM    ', SALTM, 1,
-     +                         'WOHLER  ', NADM, CODRET, 'F ' )
+     &                         'WOHLER  ', NADM, ICODRE, 2)
             IF ( NADM .LT. 0 ) THEN
                VALE(1) = SALTM
                VALE(2) = NADM
@@ -116,14 +117,14 @@ C
          TYPEKE=-1.D0
          SPMECA=0.D0
          SPTHER=0.D0
-         CALL RC36SA ( NOMMAT, MATSE, MATSE, SNKL, SP, 
-     +                TYPEKE, SPMECA, SPTHER, SALTKL, SM )
+         CALL RC36SA ( NOMMAT, MATSE, MATSE, SNKL, SP,
+     &                TYPEKE, SPMECA, SPTHER, SALTKL, SM )
          CALL LIMEND ( NOMMAT, SALTKL, 'WOHLER', ENDUR )
          IF ( ENDUR ) THEN
             U2KL=0.D0
          ELSE
             CALL RCVALE ( NOMMAT, 'FATIGUE', 1, 'SIGM    ', SALTKL, 1,
-     +                         'WOHLER  ', NADM, CODRET, 'F ' )
+     &                         'WOHLER  ', NADM, ICODRE, 2)
             IF ( NADM .LT. 0 ) THEN
                VALE(1) = SALTKL
                VALE(2) = NADM
@@ -144,7 +145,7 @@ C
               K2C = '_B'
            ENDIF
            WRITE(IFM,1040)'=> SALT MAXI = ', SALTM, SIT1(2*(IS1-1)+1),
-     +                     K2L, SIT2(2*(IS2-1)+1), K2C
+     &                     K2L, SIT2(2*(IS2-1)+1), K2C
            WRITE(IFM,1020)'        U1KL = ', U1KL
            WRITE(IFM,1020)'        SNKL = ', SNKL
            WRITE(IFM,1020)'          SP = ', SP
@@ -172,9 +173,9 @@ C
            DO 110 I = 1 , NBSIG1
              I1 = 4*NBSIG2*(I-1)
              WRITE(IFM,1000) SIT1(2*(I-1)+1), NOC1(2*(I-1)+1),
-     +          (SALTIJ(I1+4*(L-1)+1),SALTIJ(I1+4*(L-1)+3), L=1,NBSIG2)
+     &          (SALTIJ(I1+4*(L-1)+1),SALTIJ(I1+4*(L-1)+3), L=1,NBSIG2)
              WRITE(IFM,1002) SIT1(2*(I-1)+2), NOC1(2*(I-1)+2),
-     +          (SALTIJ(I1+4*(L-1)+2),SALTIJ(I1+4*(L-1)+4), L=1,NBSIG2)
+     &          (SALTIJ(I1+4*(L-1)+2),SALTIJ(I1+4*(L-1)+4), L=1,NBSIG2)
  110       CONTINUE
          ENDIF
 C
@@ -190,7 +191,6 @@ C
  1010 FORMAT(1P,9X,'NB_OCCUR ','|',40(I9,1X,I9,'|'))
  1012 FORMAT(1P,9X,'SITUATION','|',40(I7,'_A',1X,I7,'_B|'))
  1040 FORMAT(1P,A15,E12.5,', LIGNE:',I4,A2,', COLONNE:',I4,A2)
- 1030 FORMAT(1P,A15,I12)
  1020 FORMAT(1P,A15,E12.5)
 C
       END

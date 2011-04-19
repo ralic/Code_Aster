@@ -2,7 +2,7 @@
      &  IDFDE1,IDFDE2,GEOM,TYPMOD,MAT,DDL,SIGM,VECT)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 04/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -48,7 +48,7 @@ C OUT VECT    : FORCES INTERIEURES    (RAPH_MECA   ET FULL_MECA_*)
 C MEM DFDI2   :
 C ----------------------------------------------------------------------
       
-      CHARACTER*2 K2(2)
+      INTEGER K2(2)
       CHARACTER*8 NOM(2)
       
       LOGICAL GRAND,AXI,NAX
@@ -77,7 +77,7 @@ C - INITIALISATION
 
       CALL R8INIR(NDDL,0.D0,VECT,1)
 
-      CALL RCVALA(MAT,' ','NON_LOCAL',0,' ',0.D0,2,NOM,VAL,K2,'F ')
+      CALL RCVALA(MAT,' ','NON_LOCAL',0,' ',0.D0,2,NOM,VAL,K2,2)
       C    = VAL(1)
       RAUG = VAL(2)
       

@@ -1,0 +1,52 @@
+DEBUT();
+
+
+DSDE__ = 200.;
+
+YOUN__ = 8.E4;
+
+SIGY__ = 1.;
+#DSDE__=674.451660221;
+#SIGY__=204.642657655;
+#YOUN__=192539.892388;
+
+
+ACIER=DEFI_MATERIAU(ECRO_LINE=_F(D_SIGM_EPSI=DSDE__,
+                                 SY=SIGY__,),
+                    ELAS=_F(NU=0.3,
+                            E=YOUN__,),);
+
+epyy=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.,0.,1.,0.005,),PROL_DROITE='LINEAIRE');
+                        
+zero=DEFI_CONSTANTE(VALE=0.)
+
+
+INSTANTS=DEFI_LIST_REEL(INTERVALLE=_F(JUSQU_A=1.0,
+                                      NOMBRE=10,),
+                        DEBUT=0.0,);
+
+U=SIMU_POINT_MAT(INFO=1,
+                 COMP_INCR=_F(RELATION='VMIS_ISOT_LINE'),
+                 MATER=ACIER,
+                 INCREMENT=_F(LIST_INST=INSTANTS,),
+                 NEWTON=_F(REAC_ITER=1),
+                 EPSI_IMPOSE=_F(  
+                                EPYY=epyy,
+                                ),
+                                );
+
+#IMPR_TABLE(TABLE=U,UNITE=92)
+               
+                        
+REPONSE1=CALC_TABLE(TABLE = U, 
+               ACTION =_F(OPERATION='EXTR',
+                          NOM_PARA=('INST','SIYY')))
+                          
+REPONSE2=CALC_TABLE(TABLE = U, 
+               ACTION =_F(OPERATION='EXTR',
+                          NOM_PARA=('INST','V1')))
+               
+#IMPR_TABLE(TABLE=REPONSE1,UNITE=92)
+#IMPR_TABLE(TABLE=REPONSE2,UNITE=92)
+
+FIN();

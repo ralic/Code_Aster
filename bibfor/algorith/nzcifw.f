@@ -2,9 +2,9 @@
      &                   INSTAM,INSTAP,EPSM,DEPS,SIGM,VIM,
      &                   OPTION,SIGP,VIP,DSIDEP,IRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 03/08/2009   AUTEUR MEUNIER S.MEUNIER 
+C MODIF ALGORITH  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -89,7 +89,7 @@ C.......................................................................
       REAL*8   VALRES(20),EPSTHE(2)
 
       CHARACTER*1 C1
-      CHARACTER*2   CODRET(20)
+      INTEGER ICODRE(20)
       CHARACTER*8   NOMRES(20),ACIER(4)
 
       LOGICAL     RESI,RIGI
@@ -182,11 +182,11 @@ C 2.1 - ELASTIQUE ET THERMIQUE
       NOMRES(6)='EPSF_EPSC_TREF'
 
       CALL RCVALB(FAMI,KPG,KSP,'-',IMAT,' ','ELAS_META',0,' ',0.D0,
-     &            6,NOMRES,VALRES,CODRET,'F ')
+     &            6,NOMRES,VALRES,ICODRE,2)
       DEUMUM = VALRES(1)/(1.D0+VALRES(2))
 
       CALL RCVALB(FAMI,KPG,KSP,C1,IMAT,' ','ELAS_META',0,' ',0.D0,
-     &            6,NOMRES,VALRES,CODRET,'F ')
+     &            6,NOMRES,VALRES,ICODRE,2)
       EPSTH = PHASE(NZ)*(EPSTHE(1)-(1.D0-VALRES(5))*VALRES(6))
      &     + ZALPHA*(EPSTHE(2) + VALRES(5)*VALRES(6))
       E      = VALRES(1)
@@ -219,13 +219,13 @@ C 2.2 - LOI DES MELANGES
 
         CALL RCVALB(FAMI,1,1,'+',IMAT,' ','ELAS_META',
      &             1,'META',ZALPHA,1,
-     &              NOMRES(6),FMEL,CODRET(6),'  ')
-        IF (CODRET(6).NE.'OK') FMEL = ZALPHA
+     &              NOMRES(6),FMEL,ICODRE(6),0)
+        IF (ICODRE(6).NE.0) FMEL = ZALPHA
 
 C 2.3 - LIMITE D ELASTICITE
 
         CALL RCVALB(FAMI,KPG,KSP,C1,IMAT,' ','ELAS_META',0,' ',0.D0,
-     &              5,NOMRES,SY,CODRET,'F ')
+     &              5,NOMRES,SY,ICODRE,2)
 
 C 2.4 - PENTE D ECROUISSAGE
 
@@ -236,7 +236,7 @@ C 2.4 - PENTE D ECROUISSAGE
         NOMRES(5) ='C_D_SIGM_EPSI'
 
         CALL RCVALB(FAMI,KPG,KSP,C1,IMAT,' ','META_ECRO_LINE',0,
-     &               ' ',0.D0,5,NOMRES,H,CODRET,'F ')
+     &               ' ',0.D0,5,NOMRES,H,ICODRE,2)
 
         H(1)=(2.D0/3.D0)*H(1)*E/(E-H(1))
         H(2)=(2.D0/3.D0)*H(2)*E/(E-H(2))
@@ -268,7 +268,7 @@ C 2.5 - RESTAURATION D ECROUISSAGE
             NOMRES(8) ='F4_C_THETA'
 
             CALL RCVALB(FAMI,KPG,KSP,C1,IMAT,' ','META_RE',0,'  ',
-     &                 0.D0,8,NOMRES,THETA,CODRET,'F ')
+     &                 0.D0,8,NOMRES,THETA,ICODRE,2)
 
           ELSE
 
@@ -307,18 +307,18 @@ C 2.6 - VISCOSITE
             NOMRES(20) = 'C_M'
 
             CALL RCVALB(FAMI,KPG,KSP,C1,IMAT,' ','META_VISC',0,
-     &                 ' ',0.D0,10,NOMRES,VALRES,CODRET,'F ')
+     &                 ' ',0.D0,10,NOMRES,VALRES,ICODRE,2)
 
             CALL RCVALB(FAMI,KPG,KSP,C1,IMAT,' ','META_VISC',0,' ',
-     &                 0.D0,10,NOMRES(11),VALRES(11),CODRET(11),'  ')
+     &                 0.D0,10,NOMRES(11),VALRES(11),ICODRE(11),0)
 
             DO  40 K=1,NZ
               ETA(K) = VALRES(K)
               N(K) = VALRES(NZ+K)
               UNSURN(K)=1/N(K)
-              IF (CODRET(2*NZ+K) .NE. 'OK') VALRES(2*NZ+K)=0.D0
+              IF (ICODRE(2*NZ+K) .NE.0) VALRES(2*NZ+K)=0.D0
               C(K) =VALRES(2*NZ+K)
-              IF (CODRET(3*NZ+K) .NE. 'OK') VALRES(3*NZ+K)=20.D0
+              IF (ICODRE(3*NZ+K) .NE.0) VALRES(3*NZ+K)=20.D0
               M(K) = VALRES(3*NZ+K)
  40         CONTINUE
 
@@ -440,7 +440,7 @@ C 2.9 - PLASTICITE DE TRANSFORMATION
             NOMRES(8) = 'F4_D_F_META'
 
             CALL RCVALB(FAMI,KPG,KSP,C1,IMAT,' ','META_PT',0,' ',
-     &                 0.D0,4,NOMRES,VALRES,CODRET ,'F ')
+     &                 0.D0,4,NOMRES,VALRES,ICODRE ,2)
 
             DO 125 K=1,NZ-1
               KPT (K) = VALRES(K)
@@ -451,7 +451,7 @@ C 2.9 - PLASTICITE DE TRANSFORMATION
                 J = 4+K
                 CALL RCVALB(FAMI,1,1,'+',IMAT,' ','META_PT',
      &                     1,'META',ZALPHA,1,
-     &                      NOMRES(J),VALRES(J),CODRET(J), 'F ')
+     &                      NOMRES(J),VALRES(J),ICODRE(J), 2)
                 TRANS = TRANS + KPT(K)*VALRES(J)*(ZVARIP-ZVARIM)
               ENDIF
  125        CONTINUE

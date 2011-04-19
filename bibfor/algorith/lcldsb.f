@@ -1,22 +1,22 @@
       SUBROUTINE LCLDSB (FAMI,KPG,KSP,NDIM, TYPMOD,IMATE,COMPOR,EPSM,
      &              DEPS,VIM,TM,TP,TREF,OPTION,SIG,VIP,DSIDEP,CRIT)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/01/2008   AUTEUR MARKOVIC D.MARKOVIC 
+C MODIF ALGORITH  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
       IMPLICIT NONE
       REAL*8 ZR
@@ -47,22 +47,22 @@ C                 1   -> VALEUR DE L'ENDOMMAGEMENT
 C OUT DSIDEP  : MATRICE TANGENTE
 C ----------------------------------------------------------------------
 C LOC EDFRC1  COMMON CARACTERISTIQUES DU MATERIAU (AFFECTE DANS EDFRMA)
-      LOGICAL     RIGI, RESI,ELAS,MTG, COUP
-      INTEGER     NDIMSI,K,L,I,J,M,N,P,T(3,3),IRET,IISNAN,ICARCR,ITERAT
-      REAL*8      EPS(6),  TREPS, SIGEL(6), KRON(6),R8BID
+      LOGICAL     RIGI, RESI,ELAS, COUP
+      INTEGER     NDIMSI,K,L,I,J,M,N,T(3,3),IRET,IISNAN,ITERAT
+      REAL*8      EPS(6),  TREPS, SIGEL(6), KRON(6)
       REAL*8      RAC2,COEF,COEF2
-      REAL*8      RIGMIN, FD, D, ENER, TROISK, G
+      REAL*8      RIGMIN, FD, D, ENER
       REAL*8      TR(6), RTEMP2, EPSTHE(2)
-      REAL*8      EPSP(3), VECP(3,3), DSPDEP(6,6),VECP2(3,3)
+      REAL*8      EPSP(3), VECP(3,3), DSPDEP(6,6)
       REAL*8      DEUMUD(3), LAMBDD, SIGP(3),RTEMP,RTEMP3,RTEMP4
-      REAL*8      E, NU, ALPHA, KDESS, BENDO, LAMBDA, DEUXMU, GAMMA
-      REAL*8      SEUIL,TREPSM
+      REAL*8        ALPHA, KDESS, BENDO, LAMBDA, DEUXMU, GAMMA
+      REAL*8      SEUIL
       REAL*8      DDOT,TSEUIL,TSAMPL,TSRETU
-      REAL*8      TPS(6),HYDRM,HYDRP,SECHM,SECHP,SREF
-      CHARACTER*2 CODRET
+      REAL*8      HYDRM,HYDRP,SECHM,SECHP,SREF
+      INTEGER ICODRE
       PARAMETER  (RIGMIN = 1.D-5)
       DATA        KRON/1.D0,1.D0,1.D0,0.D0,0.D0,0.D0/
-      
+
 C ----------------------------------------------------------------------
 
 C -- OPTION ET MODELISATION
@@ -89,9 +89,9 @@ C -- INITIALISATION
       TSEUIL = CRIT(10)
       TSAMPL = CRIT(11)
       TSRETU = CRIT(12)
-        
+
       CALL LCEIB1 (FAMI,IMATE, COMPOR, NDIM, EPSM, TM,TREF,SREF,
-     &             SECHM,HYDRM,T, LAMBDA, DEUXMU,EPSTHE, KDESS, 
+     &             SECHM,HYDRM,T, LAMBDA, DEUXMU,EPSTHE, KDESS,
      &            BENDO, GAMMA, SEUIL,COUP)
 
 C -- MAJ DES DEFORMATIONS ET PASSAGE AUX DEFORMATIONS REELLES 3D
@@ -99,21 +99,21 @@ C -- MAJ DES DEFORMATIONS ET PASSAGE AUX DEFORMATIONS REELLES 3D
       IF (RESI) THEN
         IF (IISNAN(TP).EQ.0) THEN
           CALL RCVALB(FAMI,KPG,KSP,'+',IMATE,' ','ELAS',1,'TEMP',
-     &               0.D0,1,'ALPHA',ALPHA,CODRET, ' ')
-          IF ((IISNAN(TREF).EQ.1).OR.(CODRET.NE.'OK'))  THEN
+     &               0.D0,1,'ALPHA',ALPHA,ICODRE, 0)
+          IF ((IISNAN(TREF).EQ.1).OR.(ICODRE.NE.0))  THEN
             CALL U2MESS('F','CALCULEL_15')
           ELSE
             EPSTHE(2) =ALPHA * (TP - TREF)
           ENDIF
         ELSE
-          EPSTHE(2) = 0.D0        
-        ENDIF 
+          EPSTHE(2) = 0.D0
+        ENDIF
 
         DO 10 K = 1, NDIMSI
-          EPS(K) = EPSM(K) + DEPS(K) 
-     &                   - KRON(K) *  (  EPSTHE(2) 
+          EPS(K) = EPSM(K) + DEPS(K)
+     &                   - KRON(K) *  (  EPSTHE(2)
      &                                 - KDESS * (SREF-SECHP)
-     &                                 - BENDO *  HYDRP     )    
+     &                                 - BENDO *  HYDRP     )
  10     CONTINUE
       ELSE
         DO 40 K=1,NDIMSI
@@ -122,7 +122,7 @@ C -- MAJ DES DEFORMATIONS ET PASSAGE AUX DEFORMATIONS REELLES 3D
      &                       - BENDO *  HYDRM  )     * KRON(K)
 40      CONTINUE
       ENDIF
-      
+
 
       DO 45 K=4,NDIMSI
         EPS(K) = EPS(K)/RAC2
@@ -163,7 +163,7 @@ C -- CALCUL DES CONTRAINTES ELAS POSITIVES ET DE L'ENERGIE POSITIVE
       ENER = 0.5D0 * DDOT(3,EPSP,1,SIGEL,1)
 
 C -- CALCUL (OU RECUPERATION) DE L'ENDOMMAGEMENT
-      
+
       IF (RESI) THEN
         ELAS = .FALSE.
         D = (SQRT((1+GAMMA)/SEUIL * ENER) - 1) / GAMMA
@@ -187,7 +187,7 @@ C -- CALCUL (OU RECUPERATION) DE L'ENDOMMAGEMENT
         FD  = (1 - D) / (1 + GAMMA*D)
         ELAS=((NINT(VIM(2)).EQ.0).OR.(NINT(VIM(2)).EQ.2))
       ENDIF
-      
+
 
 C -- CALCUL DES CONTRAINTES
 
@@ -215,8 +215,8 @@ C -- CALCUL DES CONTRAINTES
       SIGP(1)=LAMBDD*TREPS+DEUMUD(1)*EPSP(1)
       SIGP(2)=LAMBDD*TREPS+DEUMUD(2)*EPSP(2)
       SIGP(3)=LAMBDD*TREPS+DEUMUD(3)*EPSP(3)
-      
-      
+
+
       IF ((RESI).AND.(.NOT.COUP)) THEN
         CALL R8INIR(6,0.D0,SIG,1)
         DO 1010 I=1,3
@@ -232,21 +232,21 @@ C -- CALCUL DES CONTRAINTES
           SIG(K)=RAC2*SIG(K)
 18      CONTINUE
       ENDIF
-      
+
 C -- CALCUL DE LA MATRICE TANGENTE
-      
+
 C----EVOLUTION DES PARALETRES DE CONTROLANT LA MATRICE TANGENTE/SECANTE
       IF(TSEUIL .GE. 0.0D0) THEN
         CALL JEVECH('PITERAT','L',ITERAT)
-        ITERAT = NINT(ZR(ITERAT)) 
-        IF ((OPTION(1:4) .EQ. 'RIGI') .OR. (ITERAT .LE. 1)) THEN 
+        ITERAT = NINT(ZR(ITERAT))
+        IF ((OPTION(1:4) .EQ. 'RIGI') .OR. (ITERAT .LE. 1)) THEN
           VIP(3) = 0.0D0
-        ELSE  
+        ELSE
           CALL EVOLTS(TSEUIL,TSRETU,VIP(2),VIP(3),ITERAT)
-        ENDIF 
-        
+        ENDIF
+
       ENDIF
-C-----------------------------------------------------------      
+C-----------------------------------------------------------
       IF (RIGI) THEN
         IF (OPTION(11:14).EQ.'ELAS') ELAS=.TRUE.
         CALL R8INIR(36, 0.D0, DSPDEP, 1)
@@ -296,7 +296,7 @@ C-----------------------------------------------------------
      &                                    /(EPSP(3)-EPSP(2))
         ENDIF
         DO 20 I=1,3
-          DO 21 J=I,3          
+          DO 21 J=I,3
             IF (I.EQ.J) THEN
               RTEMP3=1.D0
             ELSE
@@ -310,7 +310,7 @@ C-----------------------------------------------------------
                 ELSE
                   RTEMP4=RTEMP3/RAC2
                 ENDIF
-                RTEMP2=0.D0                
+                RTEMP2=0.D0
                 DO 24 M=1,3
                   DO 25 N=1,3
         RTEMP2=RTEMP2+VECP(K,M)*
@@ -330,7 +330,7 @@ C-----------------------------------------------------------
 21        CONTINUE
 20      CONTINUE
 
-        DO 26 I=1,6 
+        DO 26 I=1,6
           DO 27 J=I+1,6
             DSIDEP(I,J)=DSIDEP(J,I)
 27        CONTINUE
@@ -386,7 +386,7 @@ C -- CONTRIBUTION DISSIPATIVE
      &                                        /(EPSP(3)-EPSP(2))
             ENDIF
             DO 520 I=1,3
-              DO 521 J=I,3          
+              DO 521 J=I,3
                 IF (I.EQ.J) THEN
                   RTEMP3=1.D0
                 ELSE
@@ -400,7 +400,7 @@ C -- CONTRIBUTION DISSIPATIVE
                     ELSE
                       RTEMP4=RTEMP3/RAC2
                     ENDIF
-                    RTEMP2=0.D0                
+                    RTEMP2=0.D0
                     DO 524 M=1,3
                       DO 525 N=1,3
             RTEMP2=RTEMP2+VECP(K,M)*
@@ -420,13 +420,13 @@ C -- CONTRIBUTION DISSIPATIVE
 521            CONTINUE
 520          CONTINUE
 
-            DO 526 I=1,6 
+            DO 526 I=1,6
               DO 527 J=I+1,6
                 DSIDEP(I,J+6)=DSIDEP(J,I+6)
 527            CONTINUE
 526          CONTINUE
 
-          ELSE          
+          ELSE
           TR(1) = SIGEL(1)
           TR(2) = SIGEL(2)
           TR(3) = SIGEL(3)
@@ -444,7 +444,7 @@ C -- CONTRIBUTION DISSIPATIVE
             SIGEL(K)=RAC2*SIGEL(K)
 28        CONTINUE
           COEF = (1+GAMMA)/(2*GAMMA*(1+GAMMA*D)*ENER)
-          
+
 C CALCUL DE LA MATRICE EVOLUTIVE TANGENTE/SECANTE
           IF(TSEUIL .GT. 0.0D0) THEN
             IF(ABS(VIP(3)) .GT. TSEUIL) THEN
@@ -454,7 +454,7 @@ C CALCUL DE LA MATRICE EVOLUTIVE TANGENTE/SECANTE
               ENDIF
             ENDIF
           ENDIF
-          
+
           DO 200 K = 1,NDIMSI
             DO 210 L = 1, NDIMSI
               DSIDEP(K,L) = DSIDEP(K,L) - COEF * SIGEL(K) * SIGEL(L)

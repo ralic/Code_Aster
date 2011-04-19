@@ -2,7 +2,7 @@
      &                  EPSPC, EPSDC, ETAMIN,ETAMAX,A0, A1,A2,A3,ETAS)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/03/2011   AUTEUR KAZYMYRE K.KAZYMYRENKO 
+C MODIF ALGORITH  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -54,25 +54,23 @@ C OUT A3      : IDEM A1 POUR LA SECONDE SOLUTION EVENTUELLE;R8VIDE SINON
 C OUT ETAS    : SI PAS DE SOLUTION : LE MINIMUM ; R8VIDE SINON
 C ----------------------------------------------------------------------
 
-      LOGICAL     CPLAN,MINI,FINI,MODIF
-      INTEGER     NDIMSI, K, NRAC,ITER,NITMAX
-      INTEGER     NCAS, IFM, NIV
-      REAL*8      TREPSD, COPLAN, SIGELP(6), SIGELD(6)
+      LOGICAL     CPLAN
+      INTEGER     NDIMSI, K,ITER,NITMAX
+      INTEGER      IFM, NIV
+      REAL*8      TREPSD, COPLAN, SIGELD(6)
       REAL*8      PHIM,PHIP,PHID
-      REAL*8      CRIT,RTEMP
-      REAL*8      TR(6),VECP(3,3),RAC2,CRITP
-      REAL*8      FPD, DM, D, P0, P1, P2, ETA, RAC(2), IND(4),EPM(3)
-      REAL*8      E, NU, LAMBDA, DEUXMU, GAMMA, SEUIL, SEUREL,TREPSM
+      REAL*8      TR(6),VECP(3,3),RAC2
+      REAL*8      FPD, DM, D, ETA,EPM(3)
+      REAL*8      E, NU, LAMBDA, DEUXMU, GAMMA, SEUIL,TREPSM
       REAL*8      K0,K1,SICR,R
-      REAL*8      R8NRM2,EPSP(7), EPSD(7),X(4),Y(4),Z(4)
-      REAL*8      RMINI,EPSTOL
-      REAL*8      TREPS,SIGEL(3),ETA1,ETA2,ETAC,CRIT1,CRIT2
-      REAL*8      RTEMP1,RTEMP2,R8VIDE,CRITP1,CRITP2
+      REAL*8      EPSP(7), EPSD(7),X(4),Y(4),Z(4)
+      REAL*8      EPSTOL
+      REAL*8      CRIT1,CRIT2
+      REAL*8      R8VIDE,CRITP1,CRITP2
       REAL*8      EPSVP
-      CHARACTER*2 CODRET(3)
+      INTEGER ICODRE(3)
       CHARACTER*8 NOMRES(3)
       REAL*8      VALRES(3)
-      REAL*8      R8DOT
       REAL*8      DDOT
 
       REAL*8      EPSMAX,ETASUP,ETAINF,EPSNOR
@@ -113,7 +111,7 @@ C -- LECTURE DES CARACTERISTIQUES THERMOELASTIQUES
       NOMRES(1) = 'E'
       NOMRES(2) = 'NU'
       CALL RCVALA(IMATE,' ','ELAS',0,' ',0.D0,2,
-     &              NOMRES,VALRES,CODRET, 'FM')
+     &              NOMRES,VALRES,ICODRE, 1)
       E      = VALRES(1)
       NU     = VALRES(2)
       LAMBDA = E * NU / (1.D0+NU) / (1.D0 - 2.D0*NU)
@@ -124,21 +122,21 @@ C    LECTURE DES CARACTERISTIQUES D'ENDOMMAGEMENT
       NOMRES(2) = 'SYT'
       NOMRES(3) = 'SYC'
       CALL RCVALA(IMATE,' ','BETON_ECRO_LINE',0,' ',0.D0,3,
-     &            NOMRES,VALRES,CODRET,' ')
+     &            NOMRES,VALRES,ICODRE,0)
       GAMMA  = -E/VALRES(1)
 
 
       K0=VALRES(2)**2 *(1.D0+GAMMA)/(2.D0*E)
      &               *(1.D0+NU-2.D0*NU**2)/(1.D0+NU)
       IF (NU.EQ.0) THEN
-        IF (CODRET(3).EQ.'OK') THEN
+        IF (ICODRE(3).EQ.0) THEN
           CALL U2MESS('F','ALGORITH4_52')
         ELSE
           SEUIL=K0
         ENDIF
       ELSE
         SICR=SQRT((1.D0+NU-2.D0*NU**2)/(2.D0*NU**2))*VALRES(2)
-        IF (CODRET(3).EQ.'NO') THEN
+        IF (ICODRE(3).EQ.1) THEN
           SEUIL=K0
         ELSE
           IF (VALRES(3).LT.SICR) THEN

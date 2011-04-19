@@ -2,9 +2,9 @@
       IMPLICIT NONE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -22,7 +22,7 @@ C ======================================================================
 C RESPONSABLE                            VABHHTS J.PELLET
 C     ARGUMENTS:
 C     ----------
-      INTEGER IGD,NCMPMX,DG1(*),DG2(*),DEB1,DEB2,INO,NNO
+      INTEGER DG1(*),DG2(*),DEB1,DEB2,INO,NNO
       LOGICAL CUMUL
 C ----------------------------------------------------------------------
 C     ENTREES:
@@ -52,16 +52,15 @@ C       DEB2   : EST MIS A JOUR POUR LE NOEUD SUIVANT (SI EXCHNO).
 C                ET POUR L'ELEMENT SUIVANT SI EXCART OU EXCHNO.
 C ----------------------------------------------------------------------
       LOGICAL EXISDG
-      CHARACTER*32 JEXNUM
 
+      INTEGER IGD,NEC,NCMPMX,IACHIN,IACHLO,IICHIN,IANUEQ,LPRNO
+      INTEGER ILCHLO,ITYPGD
       COMMON /CAII01/IGD,NEC,NCMPMX,IACHIN,IACHLO,IICHIN,IANUEQ,LPRNO,
-     &       ILCHLO
-      COMMON /CAKK02/TYPEGD
-      CHARACTER*8 TYPEGD
+     &       ILCHLO,ITYPGD
 
       LOGICAL CHANGE
-      INTEGER CMP,IND1,IND2,ILCHLO
-      INTEGER NEC,NEC2,NECOLD,IACHLO,IACHIN,IICHIN,IANUEQ,LPRNO
+      INTEGER CMP,IND1,IND2
+      INTEGER NEC2,NECOLD
 C---------------- COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON /IVARJE/ZI(1)
       COMMON /RVARJE/ZR(1)
@@ -136,27 +135,27 @@ C     --------------------------------------------
           IF (LPRNO.EQ.1) IEQ = ZI(IANUEQ-1+IEQ)
 
           IF (.NOT.CUMUL) THEN
-            IF (TYPEGD.EQ.'R') THEN
+            IF (ITYPGD.EQ.1) THEN
               ZR(IACHLO-1+DEB2-1+CMP) = ZR(IACHIN-1+IEQ)
-            ELSE IF (TYPEGD.EQ.'I') THEN
-              ZI(IACHLO-1+DEB2-1+CMP) = ZI(IACHIN-1+IEQ)
-            ELSE IF (TYPEGD.EQ.'C') THEN
+            ELSE IF (ITYPGD.EQ.2) THEN
               ZC(IACHLO-1+DEB2-1+CMP) = ZC(IACHIN-1+IEQ)
-            ELSE IF (TYPEGD(1:3).EQ.'K8 ') THEN
+            ELSE IF (ITYPGD.EQ.3) THEN
+              ZI(IACHLO-1+DEB2-1+CMP) = ZI(IACHIN-1+IEQ)
+            ELSE IF (ITYPGD.EQ.4) THEN
               ZK8(IACHLO-1+DEB2-1+CMP) = ZK8(IACHIN-1+IEQ)
-            ELSE IF (TYPEGD(1:3).EQ.'K16') THEN
+            ELSE IF (ITYPGD.EQ.5) THEN
               ZK16(IACHLO-1+DEB2-1+CMP) = ZK16(IACHIN-1+IEQ)
-            ELSE IF (TYPEGD(1:3).EQ.'K24') THEN
+            ELSE IF (ITYPGD.EQ.6) THEN
               ZK24(IACHLO-1+DEB2-1+CMP) = ZK24(IACHIN-1+IEQ)
             ELSE
               CALL ASSERT(.FALSE.)
             END IF
 
           ELSE
-            IF (TYPEGD.EQ.'R') THEN
+            IF (ITYPGD.EQ.1) THEN
               ZR(IACHLO-1+DEB2-1+CMP) = ZR(IACHLO-1+DEB2-1+CMP) +
      &                                  ZR(IACHIN-1+IEQ)
-            ELSE IF (TYPEGD.EQ.'C') THEN
+            ELSE IF (ITYPGD.EQ.2) THEN
               ZC(IACHLO-1+DEB2-1+CMP) = ZC(IACHLO-1+DEB2-1+CMP) +
      &                                  ZC(IACHIN-1+IEQ)
             ELSE

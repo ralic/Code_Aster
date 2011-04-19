@@ -1,11 +1,10 @@
-      SUBROUTINE MMMVCC(PHASE ,NNL   ,HPG   ,FFL   ,JACOBI,
-     &                  JEU   ,TYPBAR,TYPRAC,COEFCP,COEFCS,
-     &                  DLAGRC,VECTCC)
+      SUBROUTINE MMMVCC(PHASEP,NNL   ,WPG   ,FFL   ,JACOBI,
+     &                  JEU   ,COEFCP,COEFCS,DLAGRC,VECTCC)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 11/10/2010   AUTEUR ABBAS M.ABBAS 
+C MODIF ELEMENTS  DATE 18/04/2011   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -23,9 +22,9 @@ C ======================================================================
 C RESPONSABLE ABBAS M.ABBAS
 C
       IMPLICIT NONE
-      CHARACTER*4  PHASE
-      INTEGER      NNL,TYPBAR,TYPRAC
-      REAL*8       HPG,FFL(9),JACOBI,DLAGRC
+      CHARACTER*9  PHASEP
+      INTEGER      NNL
+      REAL*8       WPG,FFL(9),JACOBI,DLAGRC
       REAL*8       COEFCP,COEFCS,JEU
       REAL*8       VECTCC(9)
 C      
@@ -38,17 +37,15 @@ C
 C ----------------------------------------------------------------------
 C
 C
-C IN  PHASE  : PHASE DE CALCUL
+C IN  PHASEP : PHASE DE CALCUL
 C              'SANS' - PAS DE CONTACT
 C              'CONT' - CONTACT
-C              'EXCL' - EXCLUSION D'UN NOEUD
-C              'PSAN' - PENALISATION - PAS DE CONTACT
-C              'PSAN' - PENALISATION - CONTACT
-C IN  NNL    : NOMBRE DE NOEUDS LAGRANGE 
-C IN  HPG    : POIDS DU POINT INTEGRATION DU POINT DE CONTACT
+C              'SANS_PENA' - PENALISATION - PAS DE CONTACT
+C              'CONT_PENA' - PENALISATION - CONTACT
+C IN  NNL    : NOMBRE DE NOEUDS LAGRANGE
+C IN  WPG    : POIDS DU POINT INTEGRATION DU POINT DE CONTACT
 C IN  FFL    : FONCTIONS DE FORMES LAGRANGES
 C IN  JACOBI : JACOBIEN DE LA MAILLE AU POINT DE CONTACT
-C IN  NDEXCL : NUMERO DU NOEUD (MILIEU) EXCLU
 C IN  JEU    : VALEUR DU JEU
 C IN  COEFCP : COEF_PENA_CONT
 C IN  COEFCS : COEF_STAB_CONT
@@ -57,52 +54,31 @@ C OUT VECTCC : VECTEUR ELEMENTAIRE LAGR_C
 C
 C ----------------------------------------------------------------------
 C
-      INTEGER   I
-      INTEGER   NDEXCL(9),IEXCL      
+      INTEGER   INOC
 C
 C ----------------------------------------------------------------------
 C
-      DO 10 I = 1,9
-        NDEXCL(I) = 0
- 10   CONTINUE     
-C
-      IF (PHASE.EQ.'SANS') THEN
-        DO 61 I = 1,NNL
-          VECTCC(I) = VECTCC(I)-
-     &                HPG*FFL(I)*DLAGRC*JACOBI/COEFCS
+      IF (PHASEP.EQ.'SANS') THEN
+        DO 61 INOC = 1,NNL
+          VECTCC(INOC) = VECTCC(INOC) -
+     &                   WPG*FFL(INOC)*DLAGRC*JACOBI/COEFCS
  61     CONTINUE
-      ELSEIF (PHASE.EQ.'PSAN') THEN
-        DO 64 I = 1,NNL
-          VECTCC(I) = VECTCC(I)-
-     &                HPG*FFL(I)*DLAGRC*JACOBI/COEFCP
+      ELSEIF (PHASEP.EQ.'SANS_PENA') THEN
+        DO 64 INOC = 1,NNL
+          VECTCC(INOC) = VECTCC(INOC) -
+     &                   WPG*FFL(INOC)*DLAGRC*JACOBI/COEFCP
  64     CONTINUE
-      ELSEIF (PHASE.EQ.'PCON') THEN
-        DO 63 I = 1,NNL
-          VECTCC(I) = VECTCC(I)-
-     &                HPG*FFL(I)*DLAGRC*JACOBI/COEFCP
-     &               -HPG*FFL(I)*JEU*JACOBI 
+      ELSEIF (PHASEP.EQ.'CONT_PENA') THEN
+        DO 63 INOC = 1,NNL
+          VECTCC(INOC) = VECTCC(INOC) -
+     &                   WPG*FFL(INOC)*DLAGRC*JACOBI/COEFCP -
+     &                   WPG*FFL(INOC)*JEU*JACOBI 
  63     CONTINUE
-      ELSEIF (PHASE.EQ.'CONT') THEN
-        DO 62 I = 1,NNL      
-          VECTCC(I) = VECTCC(I)-
-     &                HPG*FFL(I)*JEU*JACOBI    
+      ELSEIF (PHASEP.EQ.'CONT') THEN
+        DO 62 INOC = 1,NNL      
+          VECTCC(INOC) = VECTCC(INOC)-
+     &                   WPG*FFL(INOC)*JEU*JACOBI    
  62     CONTINUE
-      ELSEIF (PHASE.EQ.'EXCL') THEN 
-        CALL MMEXN1(TYPBAR,NDEXCL)
-        DO 78 IEXCL = 1,9   
-          IF (NDEXCL(IEXCL).EQ.1) THEN
-            VECTCC(IEXCL) = 0D0
-          ENDIF  
- 78     CONTINUE 
-        IF (TYPRAC.NE.0) THEN
-          CALL MMEXN2(TYPRAC,NDEXCL)
-          DO 79 IEXCL = 1,9   
-            IF (NDEXCL(IEXCL).EQ.1) THEN
-              VECTCC(IEXCL) = 0D0
-            ENDIF  
- 79       CONTINUE
-        ENDIF      
-               
       ELSE
         CALL ASSERT(.FALSE.)
       ENDIF

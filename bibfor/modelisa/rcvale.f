@@ -1,9 +1,9 @@
       SUBROUTINE RCVALE( NOMMAZ,PHENOM,NBPAR,NOMPAR,VALPAR,
-     &                   NBRES,NOMRES,VALRES,CODRET, STOP )
+     &                   NBRES,NOMRES,VALRES,ICODRE,IARRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -20,9 +20,10 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
       IMPLICIT REAL*8 (A-H,O-Z)
       INTEGER            NBPAR,NBRES
-      CHARACTER*(*)      PHENOM, STOP
+      CHARACTER*(*)      PHENOM
+      INTEGER   IARRET
       CHARACTER*(*)      NOMMAZ
-      CHARACTER*2        CODRET(NBRES)
+      INTEGER        ICODRE(NBRES)
       CHARACTER*8        NOMPAR(NBPAR), NOMRES(NBRES)
       REAL*8             VALPAR(NBPAR), VALRES(NBRES)
 C ----------------------------------------------------------------------
@@ -40,11 +41,10 @@ C        NOMRES : NOM DES RESULTATS (EX: E,NU,... )
 C                 TELS QU'IL FIGURENT DANS LA COMMANDE MATERIAU
 C     ARGUMENTS DE SORTIE:
 C     VALRES : VALEURS DES RESULTATS APRES RECUPERATION ET INTERPOLATION
-C     CODRET : POUR CHAQUE RESULTAT, 'OK' SI ON A TROUVE, 'NO' SINON
+C     ICODRE : POUR CHAQUE RESULTAT, 0 SI ON A TROUVE, 1 SINON
 C
 C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
 C
-      CHARACTER*32       JEXNUM , JEXNOM  , JEXATR
       INTEGER            ZI
       COMMON  / IVARJE / ZI(1)
       REAL*8             ZR
@@ -66,7 +66,8 @@ C
       INTEGER            NBFP
       REAL*8             VALREP(NBMX)
       LOGICAL            CHANGE
-      CHARACTER*2        CODREP(NBMX)
+      INTEGER        ICODR2(NBMX)
+      CHARACTER*2        KSTOP
       CHARACTER*10       PHEN,PHEPRE
       CHARACTER*8        MATPRE,NOMREP(NBMX),NOMFOP(NBMX),K8BID
       CHARACTER*10       NOMPHE
@@ -76,6 +77,16 @@ C
       CALL JEMARQ()
       NOMMAT = NOMMAZ
       PHEN = PHENOM
+
+      IF (IARRET.EQ.0) THEN
+        KSTOP='  '
+      ELSEIF (IARRET.EQ.1) THEN
+        KSTOP='FM'
+      ELSEIF (IARRET.EQ.2) THEN
+        KSTOP='F '
+      ELSE
+        CALL ASSERT(.FALSE.)
+      ENDIF
 C
 C --- TESTS: CELA A-T-IL CHANGE ?
 C
@@ -93,12 +104,12 @@ C
       IF (.NOT.CHANGE) THEN
         DO 110 IRES = 1, NBRES
           VALRES(IRES) = VALREP(IRES)
-          CODRET(IRES)(1:2) = CODREP(IRES)
+          ICODRE(IRES) = ICODR2(IRES)
   110   CONTINUE
         IF (NBFP .EQ. 0) GOTO 9999
         DO 120 IRES = 1, NBRES
           IF (NOMFOP(IRES) .NE. ' ') THEN
-            CALL FOINTE(STOP,NOMFOP(IRES),NBPAR,NOMPAR,VALPAR,
+            CALL FOINTE(KSTOP,NOMFOP(IRES),NBPAR,NOMPAR,VALPAR,
      &                  VALRES(IRES),IER)
           ENDIF
   120   CONTINUE
@@ -107,7 +118,7 @@ C
         CALL JEEXIN (NOMMAT//'.'//NOMPHE//'.VALR',IRET)
         IF ( IRET .EQ. 0 ) THEN
           DO 113 IRES = 1, NBRES
-            CODRET(IRES)(1:2) = 'NO'
+            ICODRE(IRES) = 1
   113     CONTINUE
           GOTO 999
         ENDIF
@@ -120,7 +131,7 @@ C
         CALL JELIRA (NOMMAT//'.'//NOMPHE//'.VALK', 'LONUTI', NBK,
      &               K8BID)
         DO 130 IRES = 1, NBRES
-          CODRET(IRES)(1:2) = 'NO'
+          ICODRE(IRES) = 1
           NOMFOP(IRES) = ' '
   130   CONTINUE
         NBOBJ = 0
@@ -128,7 +139,7 @@ C
           DO 140 IRES = 1, NBRES
             IF (NOMRES(IRES) .EQ. ZK8(IVALK-1+IR)) THEN
               VALRES(IRES) = ZR(IVALR-1+IR)
-              CODRET(IRES)(1:2) = 'OK'
+              ICODRE(IRES) = 0
               NBOBJ = NBOBJ + 1
             ENDIF
   140     CONTINUE
@@ -139,9 +150,9 @@ C
             DO 160 IK = 1, NBF
               IF (NOMRES(IRES) .EQ. ZK8(IVALK-1+NBR+NBC+IK)) THEN
                 NOMFOP(IRES) = ZK8(IVALK-1+NBR+NBC+NBF+IK)
-                CALL FOINTE (STOP,NOMFOP(IRES),NBPAR,NOMPAR,
+                CALL FOINTE (KSTOP,NOMFOP(IRES),NBPAR,NOMPAR,
      &                            VALPAR,VALRES(IRES),IER)
-                CODRET(IRES)(1:2) = 'OK'
+                ICODRE(IRES) = 0
               ENDIF
   160       CONTINUE
   170     CONTINUE
@@ -153,13 +164,13 @@ C
         DO 180 IRES = 1, NBRESP
           NOMREP(IRES) = NOMRES(IRES)
           VALREP(IRES) = VALRES(IRES)
-          CODREP(IRES)(1:2) = CODRET(IRES)(1:2)
+          ICODR2(IRES) = ICODRE(IRES)
   180   CONTINUE
       ENDIF
  999  CONTINUE
  9999 CONTINUE
 C
-      CALL RCVALS( STOP, CODRET, NBRES, NOMRES )
+      CALL RCVALS( IARRET, ICODRE, NBRES, NOMRES )
 C
       CALL JEDEMA()
       END

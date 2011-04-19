@@ -2,26 +2,26 @@
      &  IDFDE1,IDFDE2,
      &  GEOM,TYPMOD,OPTION,MAT,COMPOR,LGPG,CRIT,INSTAM,INSTAP,
      &  DDLM,DDLD,ANGMAS,SIGM,VIM,SIGP,VIP,MATR,VECT,CODRET)
-C  
+C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 15/02/2011   AUTEUR FLEJOU J-L.FLEJOU 
+C MODIF ALGORITH  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C 
+C
 C TOLE CRP_21
 C
        IMPLICIT NONE
@@ -41,7 +41,7 @@ C ---------------------------------------------------------------------
 C
 C     RAPH_MECA, RIGI_MECA_* ET FULL_MECA_* POUR GRAD_VARI (2D ET 3D)
 C
-C IN  NDIM    : DIMENSION DES ELEMENTS 
+C IN  NDIM    : DIMENSION DES ELEMENTS
 C IN  NNO1    : NOMBRE DE NOEUDS (FAMILLE U)
 C IN  VFF1    : VALEUR DES FONCTIONS DE FORME (FAMILLE U)
 C IN  IDFDE1  : DERIVEES DES FONCTIONS DE FORME DE REFERENCE (FAMILLE U)
@@ -73,41 +73,39 @@ C OUT VECT    : FORCES INTERIEURES    (RAPH_MECA   ET FULL_MECA_*)
 C OUT CODRET  : CODE RETOUR
 C MEM DFDI2   :
 C ---------------------------------------------------------------------
-C      
-      CHARACTER*2 K2(1)
-      CHARACTER*8 NOM(1)     
-      
+C
+      INTEGER K2(1)
+      CHARACTER*8 NOM(1)
+
       LOGICAL RESI,RIGI,GRAND,AXI,ELAS,FULL
-      INTEGER IBID,NDDL,NDIMSI,G,COD(27),N,I,M,J,KL,PQ,OS,OSA,OSL,KK
+      INTEGER NDDL,NDIMSI,G,COD(27),N,I,M,J,KL,PQ,OS,OSA,KK
       INTEGER IU(3*27),IA(8)
       REAL*8  RAC2,C,VAL(1)
-      REAL*8  DEPLM(3*27),DEPLD(3*27),TM,TP,DFDI1(27,3)
+      REAL*8  DEPLM(3*27),DEPLD(3*27),DFDI1(27,3)
       REAL*8  AVM,AVD,AVP,AGM(3),AGD(3),AGP(3),BP
-      REAL*8  R,WG,EPSM(6),EPSD(6),F(3,3),B(6,3,27),P
+      REAL*8  R,WG,EPSM(6),EPSD(6),F(3,3),B(6,3,27)
       REAL*8  NONLOC(2),SIGMAM(6),SIGMA(6),DSIDEP(6,6,4),T1,T2
-      REAL*8  RBID,DI,CHAR
-      REAL*8  DDOT,NMTAEF
+      REAL*8  DI,CHAR
       REAL*8  DFDI2(8*3)
-      REAL*8  AVG
       REAL*8  CRITD(20)
       REAL*8 ZR
-      COMMON /RVARJE/ZR(1)     
+      COMMON /RVARJE/ZR(1)
 
-      DATA  NOM /'C_GRAD_VARI'/ 
-C      
+      DATA  NOM /'C_GRAD_V'/
+C
 C ---------------------------------------------------------------------
 C
 C - INITIALISATION
 
       RESI = OPTION(1:9).EQ.'FULL_MECA' .OR. OPTION(1:9).EQ.'RAPH_MECA'
-      RIGI = OPTION.EQ.'RIGI_MECA_TANG'  
+      RIGI = OPTION.EQ.'RIGI_MECA_TANG'
       FULL = OPTION(1:9).EQ.'FULL_MECA'
       ELAS = OPTION.EQ.'FULL_MECA_ELAS' .OR. OPTION.EQ.'RIGI_MECA_ELAS'
-C      
+C
       IF (ELAS) THEN
         FULL = .FALSE.
-      ENDIF  
-C      
+      ENDIF
+C
       RAC2   = SQRT(2.D0)
       GRAND  = .FALSE.
       AXI    = TYPMOD(1) .EQ. 'AXIS'
@@ -115,11 +113,11 @@ C
       NDIMSI = 2*NDIM
 C
       CALL R8INIR(2,0.D0,NONLOC,1)
-C            
+C
 C      NOM(1) = 'C_GRAD_VARI'
 C
-      CALL RCVALA(MAT,' ','NON_LOCAL',0,' ',0.D0,1,NOM,VAL,K2,'F ')
-C     
+      CALL RCVALA(MAT,' ','NON_LOCAL',0,' ',0.D0,1,NOM,VAL,K2,2)
+C
       CALL COEFDG(COMPOR(1), MAT, DI)
 C
       C = VAL(1)
@@ -130,11 +128,11 @@ C
 C
       IF (RIGI) CALL R8INIR((NDDL*(NDDL+1))/2,0.D0,MATR,1)
       IF (FULL) CALL R8INIR((NDDL*(NDDL+1))/2,0.D0,MATR,1)
-      IF (ELAS) CALL R8INIR((NDDL*(NDDL+1))/2,0.D0,MATR,1)    
+      IF (ELAS) CALL R8INIR((NDDL*(NDDL+1))/2,0.D0,MATR,1)
       IF (RESI) CALL R8INIR(NDDL,0.D0,VECT,1)
 C
       CALL NMGVDN(NDIM,NNO1,NNO2,IU,IA)
-C 
+C
 C    EXTRACTION DES DEPLACEMENTS
 C
       DO 10 N = 1,NNO1
@@ -144,10 +142,10 @@ C
             DEPLD(I+(N-1)*NDIM) = 0.D0
           ELSE
             DEPLD(I+(N-1)*NDIM) = DDLD(IU(NNO1*(I-1)+N))
-          ENDIF  
+          ENDIF
   20    CONTINUE
-  10  CONTINUE 
-C 
+  10  CONTINUE
+C
 C - CREATION D'UN VECTEUR VALANT 0 POUR ABSENCE DE DEPLACEMENT
 C
       DO 30 N = 1,NNO2
@@ -159,9 +157,9 @@ C
 C
 C - CALCUL POUR CHAQUE POINT DE GAUSS
 C
-      DO 1000 G=1,NPG  
-C          
-C      CALCUL DES ELEMENTS GEOMETRIQUES DE L'EF POUR A 
+      DO 1000 G=1,NPG
+C
+C      CALCUL DES ELEMENTS GEOMETRIQUES DE L'EF POUR A
 C
         CALL DFDMIP(NDIM,NNO2,AXI,GEOM,G,IW,VFF2(1,G),IDFDE2,R,WG,DFDI2)
         AVM = 0
@@ -171,14 +169,14 @@ C
           AVD = AVD + VFF2(N,G)*DDLD(IA(N))
           IF (RIGI) THEN
             AVD = 0.D0
-          ENDIF  
+          ENDIF
   50    CONTINUE
         AVP = AVM + AVD
-C        
+C
         IF (AVP.GT.1.D0) THEN
           AVP = 1.D0
-        ENDIF  
-C    
+        ENDIF
+C
         DO 60 I = 1,NDIM
           AGM(I) = 0
           AGD(I) = 0
@@ -187,11 +185,11 @@ C
             AGD(I) = AGD(I) + DFDI2(NNO2*(I-1)+N)*DDLD(IA(N))
             IF (RIGI) THEN
               AGD(I) = 0.D0
-            ENDIF  
+            ENDIF
   70      CONTINUE
           AGP(I) = AGM(I) + AGD(I)
   60    CONTINUE
-C        
+C
 C      CALCUL DES ELEMENTS GEOMETRIQUES DE L'EF POUR U
 C
         CALL DFDMIP(NDIM,NNO1,AXI,GEOM,G,IW,VFF1(1,G),IDFDE1,R,WG,DFDI1)
@@ -212,7 +210,7 @@ C
   90    CONTINUE
         DO 100 KL = 4,NDIMSI
           SIGMAM(KL) = SIGM(KL,G)*RAC2
- 100    CONTINUE          
+ 100    CONTINUE
 C
         NONLOC(1)= AVP
         NONLOC(2)= C
@@ -224,14 +222,14 @@ C
      &              OPTION,
      &              ANGMAS,
      &              NONLOC,
-     &              SIGMA,VIP(1,G),DSIDEP,COD(G))     
+     &              SIGMA,VIP(1,G),DSIDEP,COD(G))
 C
         IF(COD(G).EQ.1) GOTO 9000
-C        
+C
 C      FORCE INTERIEURE ET CONTRAINTES DE CAUCHY
 C
         IF (RESI) THEN
-C        
+C
 C        CONTRAINTES
 C
           DO 110 KL = 1,3
@@ -243,7 +241,7 @@ C
 C
           SIGP(NDIMSI+1,G) = DSIDEP(1,1,4)
           BP = SIGP(NDIMSI+1,G)
-C                                  
+C
 C        VECTEUR FINT:U
 C
           DO 130 N=1,NNO1
@@ -255,9 +253,9 @@ C
  150          CONTINUE
               VECT(KK) = VECT(KK) + WG*T1
  140        CONTINUE
- 130      CONTINUE 
+ 130      CONTINUE
 C
-C        VECTEUR FINT:A  
+C        VECTEUR FINT:A
 C
           DO 160 N=1,NNO2
             T1 = VFF2(N,G)*BP
@@ -267,16 +265,16 @@ C
  170        CONTINUE
             KK = IA(N)
             VECT(KK) = VECT(KK) + WG*(T2+T1)
- 160      CONTINUE  
+ 160      CONTINUE
 
         ENDIF
 C
-C   CALCUL DE LA MATRICE DE RIGIDITE 
+C   CALCUL DE LA MATRICE DE RIGIDITE
 C   STOCKAGE TRIANGLE INFERIEUR LIGNE DE DFI/DUJ
 C
         IF (ELAS .OR. RIGI .OR. FULL) THEN
-C        
-C        MATRICE K:U(I,N),U(J,M)          
+C
+C        MATRICE K:U(I,N),U(J,M)
 C
           DO 180 N = 1,NNO1
             DO 190 I = 1,NDIM
@@ -297,8 +295,8 @@ C
  821          CONTINUE
  190        CONTINUE
  180      CONTINUE
-C 
-C        MATRICES K:A(N),A(M) SI ENDO NON-NUL 
+C
+C        MATRICES K:A(N),A(M) SI ENDO NON-NUL
 C
           DO 240 N = 1,NNO2
             OSA = ((IA(N)-1)*IA(N))/2
@@ -308,18 +306,18 @@ C
               DO 260 I = 1,NDIM
                 T2 = T2 + DFDI2(NNO2*(I-1)+N)*DFDI2(NNO2*(I-1)+M)
  260          CONTINUE
-              T2 = C*T2 
+              T2 = C*T2
               IF (IA(M).LE.IA(N)) THEN
                 KK = OSA+IA(M)
                 MATR(KK) = MATR(KK) + WG*(T2+T1)
               ENDIF
  250        CONTINUE
- 240      CONTINUE  
+ 240      CONTINUE
 C
         ENDIF
-C        
+C
         IF (RIGI .OR. FULL) THEN
-C   
+C
 C        MATRICES K:A(N),U(J,M)
 C
           DO 270 N = 1,NNO2
@@ -338,12 +336,12 @@ C
                 MATR(KK) = MATR(KK) + WG*T1
  290          CONTINUE
  280        CONTINUE
- 270      CONTINUE   
+ 270      CONTINUE
 C
         ENDIF
 C
         IF (ELAS .OR. RIGI .OR. FULL) THEN
-C 
+C
           DO 310 N = 1,NNO2
             OSA = ((IA(N)-1)*IA(N))/2
             DO 320 M = 1,NNO2
@@ -382,11 +380,11 @@ C
         ENDIF
 C
         IF (RIGI .OR. FULL) THEN
-C 
+C
           DO 330 N = 1,NNO2
 C
             CHAR = DDLD(IA(N))
-C          
+C
             IF (CHAR.EQ.0.D0 .AND. CRITD(N).NE.0.D0) THEN
               DO 340 M = 1,NNO1
                 DO 350 J = 1,NDIM
@@ -399,15 +397,15 @@ C
  350            CONTINUE
  340          CONTINUE
             ENDIF
-C          
- 330      CONTINUE  
-C 
+C
+ 330      CONTINUE
+C
         ENDIF
-C         
-1000  CONTINUE  
-C 
+C
+1000  CONTINUE
+C
 9000  CONTINUE
-C 
+C
       CALL CODERE(COD,NPG,CODRET)
 C
       END

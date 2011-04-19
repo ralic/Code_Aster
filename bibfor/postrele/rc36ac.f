@@ -1,41 +1,41 @@
-      SUBROUTINE RC36AC ( NOMA, NCNCIN, CHINDI, CHCARA, 
-     +                    NBMA, LISTMA, CHRESU )
+      SUBROUTINE RC36AC ( NOMA, NCNCIN, CHINDI, CHCARA,
+     &                    NBMA, LISTMA, CHRESU )
       IMPLICIT   NONE
       INTEGER             NBMA, LISTMA(*)
       CHARACTER*8         NOMA
       CHARACTER*24        NCNCIN, CHINDI, CHCARA, CHRESU
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 16/02/2009   AUTEUR GALENNE E.GALENNE 
+C MODIF POSTRELE  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C     ------------------------------------------------------------------
 C
 C     OPERATEUR POST_RCCM, TRAITEMENT DE FATIGUE_B3600
 C
 C     CALCUL DES AMPLITUDES DE CONTRAINTES
-C     CALCUL DU FACTEUR D'USAGE 
+C     CALCUL DU FACTEUR D'USAGE
 C
 C     Pour chaque noeud de chaque maille:
 C
 C     pour une situation P, on a 2 états stabilisés
 C     pour une situation Q, on a 2 états stabilisés
 C
-C     Soit 2 états stabilisés I et J appartenant respectivement aux 
+C     Soit 2 états stabilisés I et J appartenant respectivement aux
 C     situations P et Q :
 C
 C     on calcule le SALT(I,J) = 0,5*(EC/E)*Ke*Sn(P,Q)*Sp(I,J)
@@ -53,7 +53,7 @@ C
 C Etape 2 : on calcule le SALT pour les situations non combinables
 C
 C Etape 3 : traitement des situations de passage
-C           on calcule le SALT(I,J)  
+C           on calcule le SALT(I,J)
 C              - avec I appartenant au premier groupe
 C              - avec J appartenant au deuxieme groupe
 C              - on lui associe le nombre d'occurrences de la
@@ -86,21 +86,21 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
 C
       INTEGER      IG, NBGR, NBSIGR, JNSG, IS1, IOC1, NOCC, NUMGR,
-     +             JCOMBI, JPRESA, JPRESB, JMOMEA, JMOMEB, JNBOCC, I1,
-     +             NBTH1, JTH1, NBTH2, NBCRS, NBCIN, NBCCA, JNSITU,
-     +             JCHMAT, JMAT, JCESD, JCESV, JCESL, JCINV, JCIND,
-     +             JCCAV, JCCAD, IM, IMA, NBPT, DECRS, DECIN, DECCA,
-     +             IPT, INO, ADRM, NBM, ICMP, JCONX1, JCONX2,JFACT,
-     +             JNUMGR, JPASSA, NPASS, IFM, NIV, IOCS,
-     +             IAD, JSEIGR, IOC2, JCINL, JCCAL, NBP12, NBP23, NBP13
+     &             JCOMBI, JPRESA, JPRESB, JMOMEA, JMOMEB, JNBOCC, I1,
+     &             NBTH1, JTH1, NBTH2, NBCRS, NBCIN, NBCCA, JNSITU,
+     &             JCHMAT, JMAT, JCESD, JCESV, JCESL, JCINV, JCIND,
+     &             JCCAV, JCCAD, IM, IMA, NBPT, DECRS, DECIN, DECCA,
+     &             IPT, INO, ADRM, NBM, ICMP, JCONX1, JCONX2,JFACT,
+     &             JNUMGR, JPASSA, NPASS, IFM, NIV, IOCS,
+     &             IAD, JSEIGR, IOC2, JCINL, JCCAL, NBP12, NBP23, NBP13
       REAL*8       PPI, PPJ, SNMAX, SAMAX, UTOT, SALTIJ, UG, NADM,
-     +             MPI(3), MPJ(3), SM, SN, SP, C(3), K(3), CARA(3),
-     +             MATPI(14), MATPJ(14), MSE(3), SNB, SAB, SMM, VALE(2)
+     &             MPI(3), MPJ(3), SM, SN, SP, C(3), K(3), CARA(3),
+     &             MATPI(14), MATPJ(14), MSE(3), SNB, SAB, SMM, VALE(2)
       LOGICAL      SEISME,ENDUR
-      CHARACTER*2  CODRET
+      INTEGER ICODRE
       CHARACTER*8  K8B, NOMMAT, NOEUD, VALK(7)
-      CHARACTER*24 MOMEPI, MOMEPJ, NOMMAI, NOMNOE, CONNEX, 
-     +             MATEPI, MATEPJ
+      CHARACTER*24 MOMEPI, MOMEPJ, NOMMAI, NOMNOE, CONNEX,
+     &             MATEPI, MATEPJ
       REAL*8       TYPEKE,SPMECA,SPTHER
 C DEB ------------------------------------------------------------------
       CALL JEMARQ()
@@ -135,8 +135,8 @@ C
 C
 C --- LE CHAM_ELEM RESULTAT
 C
-      CALL JEVEUO ( CHRESU(1:19)//'.CESD', 'L', JCESD ) 
-      CALL JEVEUO ( CHRESU(1:19)//'.CESV', 'E', JCESV ) 
+      CALL JEVEUO ( CHRESU(1:19)//'.CESD', 'L', JCESD )
+      CALL JEVEUO ( CHRESU(1:19)//'.CESV', 'E', JCESV )
       CALL JEVEUO ( CHRESU(1:19)//'.CESL', 'E', JCESL )
       NBCRS = ZI(JCESD-1+2)
 C
@@ -157,7 +157,7 @@ C
       CALL WKVECT ('&&RC36AC_TRAVAIL', 'V V R', 4*50, JFACT )
 C
 C --- IL FAUT CALCULER LE FACTEUR D'USAGE EN CHAQUE NOEUD DE CHAQUE
-C     MAILLE 
+C     MAILLE
 C
       DO 10 IM = 1 , NBMA
 C
@@ -180,7 +180,7 @@ C
             CALL JENUNO ( JEXNUM(NOMMAI,IMA), K8B )
             CALL JENUNO ( JEXNUM(NOMNOE,INO), NOEUD )
             WRITE(IFM,1000)'===>> TRAITEMENT DU NOEUD ', NOEUD,
-     +                  ' APPARTENANT A LA MAILLE ', K8B
+     &                  ' APPARTENANT A LA MAILLE ', K8B
           ENDIF
 C
 C ------- LES INDICES DE CONTRAINTES
@@ -234,7 +234,7 @@ C
           UTOT  = 0.D0
 C
 C ----------------------------------------------------------------------
-C                           E T A P E   1   
+C                           E T A P E   1
 C ----------------------------------------------------------------------
 C
 C ------- ON TRAITE LES SITUATIONS COMBINABLES DANS LEUR GROUPE
@@ -257,7 +257,7 @@ C
                IF ( NBP13.NE.0 .OR. NBP23.NE.0 ) GOTO 100
             ENDIF
 C
-C --------- PASSAGE 1 : PRISE EN COMPTE DU SEISME, 
+C --------- PASSAGE 1 : PRISE EN COMPTE DU SEISME,
 C                       CALCUL DU FACTEUR D'USAGE -> UTOT
 C
             IF ( IOCS .NE. 0 ) THEN
@@ -270,7 +270,7 @@ C
               SEISME = .FALSE.
             ENDIF
 C
-C --------- PASSAGE 2 : SANS LE SEISME 
+C --------- PASSAGE 2 : SANS LE SEISME
 C                       CALCUL SU SN_MAX
 C                       CALCUL SU SALT_MAX
 C                       CALCUL DU FACTEUR D'USAGE -> UTOT
@@ -282,7 +282,7 @@ C
  100      CONTINUE
 C
 C ----------------------------------------------------------------------
-C                           E T A P E   2 
+C                           E T A P E   2
 C ----------------------------------------------------------------------
 C
           MSE(1) = 0.D0
@@ -298,7 +298,7 @@ C
             IF ( NUMGR .LT. 0 ) GOTO 200
 C
             CALL JELIRA (JEXNUM('&&RC3600.LES_GROUPES',NUMGR),
-     +                                             'LONMAX',NBSIGR,K8B)
+     &                                             'LONMAX',NBSIGR,K8B)
             CALL JEVEUO (JEXNUM('&&RC3600.LES_GROUPES',NUMGR),'L',JNSG)
 C
             NPASS = 0
@@ -322,10 +322,10 @@ C
               CALL RCMA01 ( MATEPJ, IMA, IPT, NBM, ZI(ADRM), MATPJ )
 C
               CALL JELIRA ( JEXNUM('&&RC3600.SITU_THERMIQUE',IOC1),
-     +                                           'LONUTI', NBTH1, K8B )
+     &                                           'LONUTI', NBTH1, K8B )
               IF ( NBTH1 .NE. 0 ) THEN
                 CALL JEVEUO ( JEXNUM('&&RC3600.SITU_THERMIQUE',IOC1),
-     +                                                      'L', JTH1 )
+     &                                                      'L', JTH1 )
               ELSE
                 JTH1 = 1
               ENDIF
@@ -336,9 +336,9 @@ C
 C ----------- CALCUL DU SN
 C
               SN = 0.D0
-              CALL RC36SN ( NBM, ZI(ADRM), IPT, C, CARA, MATPI, PPI, 
-     +                      MPI, MATPJ, PPJ, MPJ, MSE, NBTH1,
-     +                      NBTH2,IOC1,IOC2, SN )
+              CALL RC36SN ( NBM, ZI(ADRM), IPT, C, CARA, MATPI, PPI,
+     &                      MPI, MATPJ, PPJ, MPJ, MSE, NBTH1,
+     &                      NBTH2,IOC1,IOC2, SN )
               SNMAX = MAX ( SNMAX , SN )
 C
 C ----------- CALCUL DU SP
@@ -348,13 +348,13 @@ C
               SPMECA = 0.D0
               SPTHER = 0.D0
               CALL RC36SP ( NBM, ZI(ADRM), IPT, C, K, CARA, MATPI, PPI,
-     +                      MPI, MATPJ, PPJ, MPJ, MSE, NBTH1,
-     +                      NBTH2, IOC1,IOC2, SP,TYPEKE,SPMECA,SPTHER )
+     &                      MPI, MATPJ, PPJ, MPJ, MSE, NBTH1,
+     &                      NBTH2, IOC1,IOC2, SP,TYPEKE,SPMECA,SPTHER )
 C
 C ----------- CALCUL DU SALT
 C
               CALL RC36SA ( NOMMAT, MATPI, MATPJ, SN, SP
-     +               ,TYPEKE,SPMECA,SPTHER, SALTIJ, SMM )
+     &               ,TYPEKE,SPMECA,SPTHER, SALTIJ, SMM )
 C
               IF ( SALTIJ .GT. SAMAX ) THEN
                  SAMAX = SALTIJ
@@ -368,7 +368,7 @@ C
                   UG=0.D0
               ELSE
                  CALL RCVALE(NOMMAT,'FATIGUE',1,'SIGM    ',SALTIJ,1,
-     +                       'WOHLER  ',NADM,CODRET,'F ')
+     &                       'WOHLER  ',NADM,ICODRE,2)
                  IF ( NADM .LT. 0 ) THEN
                     VALE(1) = SALTIJ
                     VALE(2) = NADM
@@ -383,7 +383,7 @@ C
  200      CONTINUE
 C
 C ----------------------------------------------------------------------
-C                           E T A P E   3 
+C                           E T A P E   3
 C ----------------------------------------------------------------------
 C
 C ------- ON TRAITE LES SITUATIONS DE PASSAGE
@@ -402,7 +402,7 @@ C
             ENDIF
 C
             CALL JELIRA (JEXNUM('&&RC3600.LES_GROUPES',NUMGR),
-     +                                             'LONMAX',NBSIGR,K8B)
+     &                                             'LONMAX',NBSIGR,K8B)
             CALL JEVEUO (JEXNUM('&&RC3600.LES_GROUPES',NUMGR),'L',JNSG)
             IF (NIV.GE.2) THEN
                WRITE (IFM,3004)
@@ -452,12 +452,6 @@ C
  10   CONTINUE
 C
  1000 FORMAT(A,A8,A,A8)
- 1010 FORMAT(1P,' COMBINAISON P ',I4,' SN =',E12.5,' SP =',E12.5)
- 1020 FORMAT(1P,' COMBINAISON P Q ',I4,I4,' SN =',E12.5)
- 1031 FORMAT(1P,'                 I I ',' SP =',E12.5)
- 1032 FORMAT(1P,'                 I J ',' SP =',E12.5)
- 1033 FORMAT(1P,'                 J J ',' SP =',E12.5)
- 1034 FORMAT(1P,'                 J I ',' SP =',E12.5)
  3002 FORMAT ('=> LISTE DES NUMEROS DE SITUATION: ',100 (I4,1X))
  3004 FORMAT (/,'=> SITUATION DE PASSAGE')
 C

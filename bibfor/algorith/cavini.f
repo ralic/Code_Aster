@@ -4,7 +4,7 @@ C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 21/03/2011   AUTEUR GRANET S.GRANET 
+C MODIF ALGORITH  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -31,9 +31,9 @@ C VIM(4,GG) = CONTRAINTE DE PROPAGATION AU PT DE GAUSS GG
       INTEGER NDIM,NNO,NPG,LGPG,IMATE,ZZ,ZZZ,ZZZZ,NONO,NITERT,NTIRMX
       REAL*8 GEOM(1:NDIM,1:NNO)
       REAL*8 VIM(1:LGPG,1:NPG),GR
-      CHARACTER*16  COMPOR(4)
       REAL*8      LC,MM,ECHP,KI,EPAI,CT1,CT2,RANDD,SURFF
-      CHARACTER*2 CODRET(5), K2
+      INTEGER ICODRE(5)
+      INTEGER K2
       CHARACTER*8 NOMRES(5)
       REAL*8      VALRES(5),SA,SP,SC
 
@@ -52,9 +52,9 @@ C SI NON PRECISEE
         NOMRES(4) = 'EPAI'
         NOMRES(5) = 'GR'
         CALL RCVALA(IMATE,' ','ENDO_HETEROGENE',0,' ',0.D0,5,
-     &              NOMRES,VALRES,CODRET,'FM')
+     &              NOMRES,VALRES,ICODRE,1)
         CALL RCVALA(IMATE,' ','NON_LOCAL',0,' ',0.D0,1,'LONG_CAR',
-     &              LC,K2,'FM')
+     &              LC,K2,1)
 C  FACTEUR D ECHELLE
         ECHP = VALRES(1)
 C  MODULE DE WEIBULL

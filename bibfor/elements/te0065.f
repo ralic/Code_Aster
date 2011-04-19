@@ -3,9 +3,9 @@
       CHARACTER*16 OPTION,NOMTE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 16/11/2009   AUTEUR DESROCHES X.DESROCHES 
+C MODIF ELEMENTS  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -42,7 +42,7 @@ C     --- FIN DECLARATIONS NORMALISEES JEVEUX --------------------------
       INTEGER       NBRES,NBFAMX
       PARAMETER   ( NBRES = 3, NBFAMX = 20 )
 
-      CHARACTER*2 CODRET(NBRES)
+      INTEGER ICODRE(NBRES)
       CHARACTER*8 NOMRES(NBRES),LIELRF(NBFAMX)
       CHARACTER*16 PHENOM
       REAL*8 DFDX(27),DFDY(27),DFDZ(27),POIDS,VOLUME
@@ -58,7 +58,7 @@ C     ------------------------------------------------------------------
       CALL JEVECH('PGEOMER','L',IGEOM)
       CALL JEVECH('PMATERC','L',IMATE)
 
-      CALL RCCOMA(ZI(IMATE),'ELAS',PHENOM,CODRET)
+      CALL RCCOMA(ZI(IMATE),'ELAS',PHENOM,ICODRE)
 
       IF(LIELRF(2)(1:4).EQ.'POHO')THEN
 C
@@ -74,11 +74,11 @@ C        - DETERMINATION DU RHO 'POUTRE': RHOPOU
          ENDIF
          TPG = 0.D0
          CALL RCVALA(ZI(IMATE),' ',PHENOM,0,'   ',TPG,NBV,
-     &               NOMRES,VALRES,CODRET,'FM')
+     &               NOMRES,VALRES,ICODRE,1)
          RHOPOU  = VALRES(1)
 
 C        - DETERMINATION DU RHO 'FLUIDE': RHOFLU
-         CALL RCCOMA(ZI(IMATE),'FLUIDE',PHENOM,CODRET)
+         CALL RCCOMA(ZI(IMATE),'FLUIDE',PHENOM,ICODRE)
          IF (PHENOM.EQ.'FLUIDE') THEN
             NOMRES(1)  = 'RHO'
             NBV = 1
@@ -87,10 +87,10 @@ C        - DETERMINATION DU RHO 'FLUIDE': RHOFLU
          ENDIF
          TPG = 0.D0
          CALL RCVALA(ZI(IMATE),' ',PHENOM,0,'   ',TPG,NBV,
-     &             NOMRES,VALRES,CODRET,'FM')
+     &             NOMRES,VALRES,ICODRE,1)
          RHOFLU  = VALRES(1)
 
-C        - DETERMINATION DU RHO 'EQUIVALENT' : RHO 
+C        - DETERMINATION DU RHO 'EQUIVALENT' : RHO
 C          RHO = ( RHOPOU * AYZ * RAPP ) +  ( RHOFLUI * YF )
 C                 RAPP :=  COEF_ECH **2 / A_CELL
 C                 YF   :=  A_FLUI  / A_CELL
@@ -105,14 +105,14 @@ C                 AYZ  := AIRE_SECTION_POUTRE
          RHO   = ( RHOPOU * AYZ * RAPP ) +  ( RHOFLU * YF )
          CALL ELREF4(LIELRF(1),'RIGI',NDIM,NNO,NNOS,NPG,
      &               IPOIDS,IVF,IDFDE,JGANO)
-         
+
       ELSE
         CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO)
         IF (PHENOM.EQ.'ELAS' .OR. PHENOM.EQ.'ELAS_FO' .OR.
      &      PHENOM.EQ.'ELAS_ISTR' .OR. PHENOM.EQ.'ELAS_ISTR_FO' .OR.
      &      PHENOM.EQ.'ELAS_ORTH' .OR. PHENOM.EQ.'ELAS_ORTH_FO') THEN
           CALL RCVALA(ZI(IMATE),' ',PHENOM,0,' ',R8B,1,'RHO',RHO,
-     &               CODRET,'FM')
+     &               ICODRE,1)
           IF(RHO.LE.R8PREM()) THEN
             CALL U2MESS('F','ELEMENTS5_45')
           ENDIF

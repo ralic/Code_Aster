@@ -3,7 +3,7 @@
       CHARACTER*16        OPTION , NOMTE
 C----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -48,9 +48,9 @@ C
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C
       CHARACTER*24       NOMRES(5)
-      CHARACTER*2        CODRET(5)
+      INTEGER ICODRE(5)
       REAL*8             PHASE(5),VALRES(5),ZALPHA,DURTNO
-      INTEGER            MATOS,IMATE,IPHASI,IDURT,KN,I,NCMP
+      INTEGER            MATOS,IMATE,IPHASI,IDURT,KN,I
       INTEGER            NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO
 C DEB ------------------------------------------------------------------
       CALL JEMARQ()
@@ -71,7 +71,7 @@ C----RECUPERATION DES CARACTERISTIQUES
         NOMRES(4) = 'F4_DURT'
         NOMRES(5) = 'C_DURT'
         CALL RCVALA(MATOS,' ','DURT_META',1,'TEMP',0.D0,5,NOMRES,
-     &              VALRES,CODRET,'F ')
+     &              VALRES,ICODRE,2)
 C
 C
 C----RECUPERATION Z POUR CHAQUE PHASE
@@ -94,6 +94,5 @@ C
 300   CONTINUE
 C
 
-9999  CONTINUE
       CALL JEDEMA()
       END

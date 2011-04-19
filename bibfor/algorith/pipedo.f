@@ -3,9 +3,9 @@
      &                  A0    ,A1    ,A2    ,A3    ,ETAS  )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/03/2010   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -28,7 +28,7 @@ C
       REAL*8             VIM(7),EPSM(6),EPSPC(6),EPSDC(6)
       REAL*8             ETAMIN,ETAMAX,TAU
       REAL*8             A0,A1,A2,A3,ETAS
-C       
+C
 C ----------------------------------------------------------------------
 C
 C ROUTINE MECA_NON_LINE (PILOTAGE - PRED_ELAS)
@@ -36,7 +36,7 @@ C
 C LOI DE COMPORTEMENT ENDO_ORTH_BETON
 C
 C ----------------------------------------------------------------------
-C    
+C
 C
 C IN  NDIM   : DIMENSION DE L'ESPACE
 C IN  TYPMOD : TYPE DE MODELISATION
@@ -58,7 +58,7 @@ C ----------------------------------------------------------------------
 C
       INTEGER     NBRES
       PARAMETER   (NBRES=6)
-      CHARACTER*2 CODRET(NBRES)
+      INTEGER ICODRE(NBRES)
       CHARACTER*8 NOMRES(NBRES)
       REAL*8      VALRES(NBRES)
 C
@@ -117,8 +117,8 @@ C -- LECTURE DES CARACTERISTIQUES THERMOELASTIQUES
       NOMRES(1) = 'E'
       NOMRES(2) = 'NU'
       CALL RCVALA(MATE  ,' '   ,'ELAS',0     ,' '   ,
-     &            0.D0  ,2     ,NOMRES,VALRES,CODRET,
-     &           'FM')
+     &            0.D0  ,2     ,NOMRES,VALRES,ICODRE,
+     &           1)
       E      = VALRES(1)
       NU     = VALRES(2)
       LAMBDA = E * NU / (1.D0+NU) / (1.D0 - 2.D0*NU)
@@ -132,8 +132,8 @@ C -- LECTURE DES CARACTERISTIQUES D'ENDOMMAGEMENT
       NOMRES(5) = 'ECROB'
       NOMRES(6) = 'ECROD'
       CALL RCVALA(MATE  ,' '   ,'ENDO_ORTH_BETON',0     ,' '   ,
-     &            0.D0  ,NBRES ,NOMRES           ,VALRES,CODRET,
-     &            'FM')
+     &            0.D0  ,NBRES ,NOMRES           ,VALRES,ICODRE,
+     &            1)
       ALPHA  = VALRES(1)
       K0     = VALRES(2)
       K1     = VALRES(3)

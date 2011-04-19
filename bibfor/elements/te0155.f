@@ -3,10 +3,10 @@
       CHARACTER*(*)     OPTION,NOMTE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C TOLE CRP_20
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -52,13 +52,12 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C
-      CHARACTER*2  CODRES
+      INTEGER CODRES
       CHARACTER*4  FAMI
       CHARACTER*8  NOMPAR(4)
-      CHARACTER*16 CH16
-      REAL*8       A, E, RHO, ALPHAT, XL, TEMP, XDEP, XRIG, W(6),W2(3)
+      REAL*8       A, E, RHO, XL, TEMP, XDEP, XRIG, W(6),W2(3)
       REAL*8       PGL(3,3), FL(6), QG(6), QL(6), VALPA1(4), VALPA2(4)
-      REAL*8       R8MIN,S,S2,S3,S4,S5,XXX,R8BID,VECT(6),TREF
+      REAL*8       R8MIN,S,S2,S3,S4,S5,XXX,R8BID,VECT(6)
       INTEGER      NNO,NC,LX,LORIEN,IDEPLA,IDEPLP,I,LVECT,LSECT
       INTEGER      LMATER,LPESA,LFORC,ITEMPS,NBPAR,IRET
       INTEGER      IFCX,IADZI,IAZK24
@@ -151,7 +150,7 @@ C     --- RECUPERATION DES CARACTERISTIQUES GENERALES DES SECTIONS ---
 C        --- RECUPERATION DES CARACTERISTIQUES MATERIAUX ---
          CALL JEVECH ('PMATERC', 'L', LMATER)
          CALL RCVALA(ZI(LMATER),' ','ELAS',0,' ',R8BID,1,'RHO',RHO,
-     &                 CODRES, 'FM' )
+     &                 CODRES, 1)
 C
          CALL JEVECH('PPESANR','L',LPESA)
          DO 20 I = 1,3
@@ -440,7 +439,7 @@ C        --- RECUPERATION DES CARACTERISTIQUES MATERIAUX ---
          CALL JEVECH ('PMATERC', 'L', LMATER)
          CALL RCVALB(FAMI,1,1,'+',ZI(LMATER),' ','ELAS',
      &               0,' ',R8BID,1,'E',E,
-     &               CODRES,'FM')
+     &               CODRES,1)
 C
 C        TEMPERATURE DE REFERENCE
          CALL VERIFT(FAMI,1,1,'+',ZI(LMATER),'ELAS',1,EPSTH,IRET)
@@ -478,7 +477,7 @@ C        --- RECUPERATION DES CARACTERISTIQUES MATERIAUX ---
          CALL JEVECH ('PMATERC', 'L', LMATER)
          CALL RCVALB(FAMI,1,1,'+',ZI(LMATER),' ','ELAS',
      &               0,' ',R8BID,1,'E',E,
-     &               CODRES,'FM')
+     &               CODRES,1)
 
         CALL TECACH('ONN','PTEMPSR',1,ITEMPS,IRET)
         IF (ITEMPS.NE.0) THEN
@@ -510,9 +509,9 @@ C           DU SECHAGE
 C           ----------------------------------------------------------
             CALL RCVALB('RIGI',1,1,'+',ZI(LMATER),' ','ELAS',
      &          3,NOMPAR,VALPA2,1,
-     &          'K_DESSIC',KDESSI, CODRES, ' ' )
+     &          'K_DESSIC',KDESSI, CODRES, 0)
 C
-            IF (CODRES.NE.'OK') KDESSI=0.D0
+            IF (CODRES.NE.0) KDESSI=0.D0
 C
 CC        DEPLACEMENT INDUIT PAR LE SECHAGE
          XDEP = -KDESSI*(SREF-SECH) * XL
@@ -544,7 +543,7 @@ C        --- RECUPERATION DES CARACTERISTIQUES MATERIAUX ---
          CALL JEVECH ('PMATERC', 'L', LMATER)
          CALL RCVALB('RIGI',1,1,'+',ZI(LMATER),' ','ELAS',
      &               0,' ',R8BID,1,'E',E,
-     &               CODRES,'FM')
+     &               CODRES,1)
 
 C ---- RECUPERATION DE L'INSTANT
 C      -------------------------
@@ -577,9 +576,9 @@ C           OU DE L HYDRATATION
 C           ----------------------------------------------------------
             CALL RCVALB('RIGI',1,1,'+',ZI(LMATER),' ','ELAS',
      &          3,NOMPAR,VALPA2,1,
-     &          'B_ENDOGE',KENDOG, CODRES, ' ' )
+     &          'B_ENDOGE',KENDOG, CODRES, 0)
 C
-            IF (CODRES.NE.'OK') KENDOG=0.D0
+            IF (CODRES.NE.0) KENDOG=0.D0
 C
 CC        DEPLACEMENT INDUIT PAR LE SECHAGE
          XDEP = -KENDOG*HYDR * XL

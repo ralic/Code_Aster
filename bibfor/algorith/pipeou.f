@@ -1,7 +1,7 @@
       SUBROUTINE PIPEOU(MAT,SUP,SUD,MUP,MUD,VIM,TAU,COPILO)
             
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 04/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -39,7 +39,7 @@ C                COPILO(5) <> R8VIDE => PAS DE SOLUTION
 C ----------------------------------------------------------------------
       REAL*8  SC,GC,DC,H,R,KA,GA,SK,VAL(3),TMP
       REAL*8  TT,TPN,TDN,TAUREF
-      CHARACTER*2 COD(3)
+      INTEGER COD(3)
       CHARACTER*8 NOM(3)
       
 C     DATA NOM /'GC','SIGM_C','PENA_LAGR'/
@@ -54,7 +54,7 @@ C -- CAS DE L'ENDOMMAGEMENT SATURE
 
 C -- RECUPERATION DES PARAMETRES PHYSIQUES
 
-      CALL RCVALA(MAT,' ','RUPT_FRAG',0,' ',0.D0,3,NOM,VAL,COD,'F ')
+      CALL RCVALA(MAT,' ','RUPT_FRAG',0,' ',0.D0,3,NOM,VAL,COD,2)
       GC   = VAL(1)      
       SC   = VAL(2)  
       DC   = 2.D0*GC/SC

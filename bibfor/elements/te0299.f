@@ -1,8 +1,8 @@
        SUBROUTINE TE0299(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 18/01/2010   AUTEUR SELLENET N.SELLENET 
+C MODIF ELEMENTS  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -35,7 +35,7 @@ C ENTREES  ---> OPTION : OPTION DE CALCUL
 C          ---> NOMTE  : NOM DU TYPE ELEMENT
 C.......................................................................
 C
-      CHARACTER*2  CODRET(2)
+      INTEGER ICODRE(2)
       CHARACTER*4  FAMI
       CHARACTER*8  NOMRES(2),NOMPAR(3)
       CHARACTER*16 NOMTE,OPTION,PHENOM
@@ -45,11 +45,11 @@ C
       REAL*8   DUDM(3,4),DFDM(3,4),DTDM(3,4),DER(4)
       REAL*8   DU1DM(3,4),DU2DM(3,4),DV1DM(7),DV2DM(7)
       REAL*8   RHO,OM,OMO,RBID,E,NU
-      REAL*8   THET,TREF,TPN(20),TGDM(3)
+      REAL*8   THET,TPN(20),TGDM(3)
       REAL*8   XAG,YAG,XG,YG,XA,YA,RPOL,NORM,A,B
       REAL*8   PHI,CPHI,C2PHI,CPHI2,SPHI2
       REAL*8   C1,C2,C3,CS
-      REAL*8   TH,VALRES(2),DEVRES(3),VALPAR(3)
+      REAL*8   TH,VALRES(2),VALPAR(3)
       REAL*8   CK,COEFK,CFORM,CR1,CR2
       REAL*8   GELEM,GUV1,GUV2,GUV3,K1,K2,G,POIDS,RAY
 C
@@ -157,10 +157,10 @@ C
       ENDIF
 C
       IF ((IPESA.NE.0).OR.(IROTA.NE.0)) THEN
-        CALL RCCOMA(ZI(IMATE),'ELAS',PHENOM,CODRET)
+        CALL RCCOMA(ZI(IMATE),'ELAS',PHENOM,ICODRE)
         CALL RCVALB('RIGI',1,1,'+',ZI(IMATE),' ',PHENOM,
      &              1,' ',RBID,1,'RHO',RHO,
-     &              CODRET,'FM')
+     &              ICODRE,1)
         IF (IPESA.NE.0) THEN
           DO 95 I=1,NNO
             DO 90 J=1,NDIM
@@ -205,7 +205,7 @@ C - CALCUL DES ELEMENTS GEOMETRIQUES
 C
         CALL NMGEOM (NDIM,NNO,AXI,.FALSE.,ZR(IGEOM),KP,
      &               IPOIDS,IVF,IDFDE,
-     &               ZR(IDEPL),POIDS,DFDI,F,EPS,RAY)
+     &               ZR(IDEPL),.TRUE.,POIDS,DFDI,F,EPS,RAY)
 C
 C - CALCULS DES GRADIENTS DE U (DUDM),THETA (DTDM) ET FORCE(DFDM)
 C   DU GRADIENT DE TEMPERATURE AUX POINTS DE GAUSS (TGDM)
@@ -219,7 +219,7 @@ C
           YG = YG + ZR(IGEOM+2*(I-1)+1)*DER(4)
           DO 310 J=1,NDIM
             TGDM(J)     = TGDM(J)   + TPN(I)*DER(J)
-    
+
             DO 300 K=1,NDIM
               DUDM(J,K) = DUDM(J,K) + ZR(IDEPL+NDIM*(I-1)+J-1)*DER(K)
               DTDM(J,K) = DTDM(J,K) + ZR(ITHET+NDIM*(I-1)+J-1)*DER(K)
@@ -230,7 +230,6 @@ C
               DFDM(J,4) = DFDM(J,4) + FNO(NDIM*(I-1)+J)*DER(4)
 310       CONTINUE
 320     CONTINUE
-     
         IF (AXI) THEN
           IF (RAY .LT.  R8PREM()) CALL U2MESS('F','RUPTURE0_56')
           DUDM(3,3)= DUDM(1,4)/RAY
@@ -239,12 +238,12 @@ C
         ENDIF
 
         CALL RCVALB (FAMI,KP,1,'+',ZI(IMATE),' ','ELAS',0,' ',0.D0,
-     &               2,NOMRES,VALRES,CODRET,'FM')
+     &               2,NOMRES,VALRES,ICODRE,1)
         E     = VALRES(1)
         NU    = VALRES(2)
         CFORM  = (1.D0+NU)/(SQRT(DEPI)*E)
         C3 = E/(2.D0*(1.D0+NU))
-        IF ( LTEATT(' ','D_PLAN','OUI').OR. 
+        IF ( LTEATT(' ','D_PLAN','OUI').OR.
      &       LTEATT(' ','AXIS','OUI') ) THEN
           C1 = E*(1.D0-NU)/((1.D0+NU)*(1.D0-2.D0*NU))
           C2 = NU/(1.D0-NU)*C1

@@ -4,9 +4,9 @@
       CHARACTER*(*)     RESU, MODELE, CARA, LCHAR(*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 06/07/2009   AUTEUR COURTOIS M.COURTOIS 
+C MODIF UTILITAI  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -42,11 +42,11 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON  /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER      NBTORS, NBGAUC, NBCISA, IRET, NT, IBID, NOPT,
-     &             NTAB, NCT, ILIGN, NCTY, NCTZ, NGM ,IFM, NIV, NGI,
-     &             NGRI, IDGRMI, NRT, J, JP, JV, NBPAR, JN, I, NBRT
+     &             NTAB, NCT, ILIGN, NCTY, NCTZ, NGM , NGI,
+     &             NGRI, IDGRMI, NRT, NBRT
       PARAMETER    ( NBTORS = 1 , NBGAUC = 1 , NBCISA = 8 , NBRT = 1 )
       REAL*8       VALPAR(NBCISA), AY, AZ, EY, EZ, PCTX, PCTY, R8B,RT,
-     &             CT, S, XG, YG, IY, IZ, ALPHA, IOMEGA,DXG,DYG,YGI,ZGI
+     &             CT, S, XG, YG, IY, IZ, ALPHA, IOMEGA
       CHARACTER*8  K8B, NOMA, NOMAIL, NOGRMA, TEMPER, TEMPE1, TEMPE2,
      &             PTORS(NBTORS), PGAUC(NBGAUC), PCISA(NBCISA),
      &             PRT(NBRT)
@@ -54,11 +54,11 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*19 NOMTAB
       CHARACTER*24 CHGEOM, CHCARA(18), CHHARM
       COMPLEX*16   C16B
-      REAL*8 K1,K2,KY,KZ,KYEQ,KZEQ,IYEQ,IZEQ,SEQ,EE,GG,HH,KSI,NU,ALPHAI
+      REAL*8 K1,K2,KY,KZ,KYEQ,KZEQ,IYEQ,IZEQ,SEQ,EE,GG,HH,KSI,NU
       REAL*8 C1,C2,PHI1,PHI2,ALPHAR,COS2,SIN2,R8DGRD,ALPHEQ,XGEQ,YGEQ
       CHARACTER*16 LL
       CHARACTER*8 MATER
-      CHARACTER*2 CODRET
+      INTEGER ICODRE
       INTEGER ILIGNM,N1
 C     ------------------------------------------------------------------
       DATA  PTORS / 'CT'      /
@@ -113,7 +113,7 @@ C     INSERTION DU PARAMETRE 'RT' DANS LA TABLE 'RESU'
           ELSE
             K8B = ' '
             CALL RCVALE(MATER,'ELAS',0,K8B,R8B,
-     &                  1,'NU      ',NU,CODRET,'FM')
+     &                  1,'NU      ',NU,ICODRE,1)
           ENDIF
         ENDIF
       ENDIF
@@ -386,6 +386,5 @@ C
 C
       CALL JEDETC('V','&&PECAPO',1)
 C
- 9999 CONTINUE
       CALL JEDEMA ( )
       END

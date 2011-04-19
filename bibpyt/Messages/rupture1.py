@@ -1,4 +1,4 @@
-#@ MODIF rupture1 Messages  DATE 23/02/2011   AUTEUR BARGELLI R.BARGELLINI 
+#@ MODIF rupture1 Messages  DATE 19/04/2011   AUTEUR GENIAUT S.GENIAUT 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -36,6 +36,13 @@ Veuillez utiliser une autre option de lissage
 
 3: _("""
 %(k1)s n'est pas un groupe de noeuds du maillage.
+"""),
+
+
+5: _("""
+La commande POST_RUPTURE / OPERATION = '%(k1)s' traite uniquement
+un seul fond de fissure. Or la table %(k2)s contient %(i1)s fonds de fissure
+(colonne 'NUME_FOND').
 """),
 
 6: _("""
@@ -323,7 +330,7 @@ maximale, type de lissage, ...).
 """),
 
 50: _("""
-La définition d'une loi de propagation (mot clé facteur LOI_PROPA) est obligatoie pour
+La définition d'une loi de propagation (mot clé facteur LOI_PROPA) est obligatoire pour
 le calcul de la propagation de la fissure.
 """),
 
@@ -362,5 +369,35 @@ Problème dans la dimension du modèle. POST_BORDET ne supporte pas les raccords 2
 58:_("""
 L'utilisation de POST_BORDET n'est possible qu'avec 1 seul MODELE et 1 seul
 CHAM_MATERIAU
+"""),
+
+59:_("""
+La table %(k1)s ne contient pas le paramètre %(k2)s.
+"""),
+
+60:_("""
+Le critère 'K2_NUL' donne des mauvais résultats pour des angles supérieurs à 60 degrés.
+Il se peut que le signe de l'angle soit faux.
+Conseil : utiliser le critère par défaut.
+"""),
+
+61:_("""
+Impossinle de réaliser le comptage sur les quantités demandées car 
+le nombre de cycles pour chaqune d'elles est différent.
+Conseil : limiter le comptage des cycles à une seule quantité (K_EQ par exemple).
+"""),
+
+62:_("""
+Pour l'opération %(k1)s, la table doit être réentrante (reuse obligatoire).
+"""),
+
+63:_("""
+Pour l'opération %(k1)s, la table ne doit pas être réentrante (reuse interdit).
+"""),
+
+64:_("""
+Pour le comptage %(k1)s, la table doit comporter uniquement 1 instant/nume_ordre (ou aucun).
+Or la table %(k2)s contient %(i1)s instants/nume_ordre.
+Conseil : Vérifier la table en entrée ou utiliser un autre type de comptage des cycles.
 """),
 }

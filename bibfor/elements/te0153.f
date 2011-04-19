@@ -3,9 +3,9 @@
       CHARACTER*(*)     OPTION,NOMTE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 30/09/2008   AUTEUR MARKOVIC D.MARKOVIC 
+C MODIF ELEMENTS  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -30,7 +30,6 @@ C        'MECA_BARRE' : ELEMENT BARRE
 C        'MECA_2D_BARRE' : ELEMENT BARRE
 C
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
-      CHARACTER*32       JEXNUM , JEXNOM , JEXR8 , JEXATR
       INTEGER            ZI
       COMMON  / IVARJE / ZI(1)
       REAL*8             ZR
@@ -47,10 +46,10 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C
-      CHARACTER*2         CODRES
+      INTEGER CODRES
       CHARACTER*8  NOMAIL
       CHARACTER*16 CH16
-      REAL*8       E, NU, G, RHO, PGL(3,3), MAT(21),MATR(21)
+      REAL*8       E, RHO, PGL(3,3), MAT(21),MATR(21)
       REAL*8       A, XL, XRIG, XMAS
       INTEGER      IADZI,IAZK24
 C     ------------------------------------------------------------------
@@ -90,7 +89,7 @@ C     --- CALCUL DES MATRICES ELEMENTAIRES ----
       CALL JEVECH ('PMATERC', 'L', IMATE)
       IF ( OPTION.EQ.'RIGI_MECA'  ) THEN
          CALL RCVALA(ZI(IMATE),' ','ELAS',0,' ',R8B,1,'E',E,
-     &               CODRES,'FM')
+     &               CODRES,1)
          XRIG = E * A / XL
          MAT( 1) =  XRIG
          MAT( 7) = -XRIG
@@ -98,7 +97,7 @@ C     --- CALCUL DES MATRICES ELEMENTAIRES ----
 C
       ELSE IF ( OPTION.EQ.'MASS_MECA'  ) THEN
          CALL RCVALA(ZI(IMATE),' ','ELAS',0,' ',R8B,1,'RHO',RHO,
-     &               CODRES,'FM')
+     &               CODRES,1)
          XMAS = RHO * A * XL / 6.D0
          MAT( 1) = XMAS * 2.D0
          MAT( 7) = XMAS
@@ -107,7 +106,7 @@ C
       ELSE IF ( (OPTION.EQ.'MASS_MECA_DIAG') .OR.
      &          (OPTION.EQ.'MASS_MECA_EXPLI')) THEN
          CALL RCVALA(ZI(IMATE),' ','ELAS',0,' ',R8B,1,'RHO',RHO,
-     &               CODRES,'FM')
+     &               CODRES,1)
          XMAS = RHO * A * XL / 2.D0
          MAT( 1) = XMAS
          MAT(10) = XMAS

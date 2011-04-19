@@ -1,14 +1,12 @@
-      SUBROUTINE MMMTMM(PHASE ,NDIM  ,NNM   ,NORM  ,MPROJN,
-     &                  MPROJT,HPG   ,FFM   ,JACOBI,COEFCP,
-     &                  COEFCR,COEFFP,COEFFF,RESE  ,NRESE ,
-     &                  LAMBDA,COEFFS,JEU   ,ASPERI,KAPPAN,
-     &                  KAPPAV,DELTAT,BETA  ,GAMMA ,CWEAR ,
-     &                  DISSIP,DLAGRC,DELUSU,MATRMM)
+      SUBROUTINE MMMTMM(PHASEP,NDIM  ,NNM   ,MPROJN,MPROJT,
+     &                  WPG   ,FFM   ,JACOBI,COEFCP,COEFFP,
+     &                  COEFFF,RESE  ,NRESE ,LAMBDA,COEFFS,
+     &                  MATRMM)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 27/07/2010   AUTEUR DESOZA T.DESOZA 
+C MODIF ELEMENTS  DATE 18/04/2011   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -27,19 +25,14 @@ C RESPONSABLE ABBAS M.ABBAS
 C TOLE CRP_21
 C
       IMPLICIT NONE
-      CHARACTER*4  PHASE
+      CHARACTER*9  PHASEP
       INTEGER      NDIM,NNM
-      REAL*8       NORM(3)
       REAL*8       MPROJN(3,3),MPROJT(3,3)
-      REAL*8       HPG,FFM(9),JACOBI
+      REAL*8       WPG,FFM(9),JACOBI
       REAL*8       RESE(3),NRESE
-      REAL*8       COEFCP,COEFCR
+      REAL*8       COEFCP
       REAL*8       COEFFP,COEFFS
       REAL*8       LAMBDA,COEFFF
-      REAL*8       JEU
-      REAL*8       KAPPAN,KAPPAV,ASPERI
-      REAL*8       BETA,GAMMA,DELTAT
-      REAL*8       DLAGRC,DELUSU(3),DISSIP,CWEAR
       REAL*8       MATRMM(27,27)
 C
 C ----------------------------------------------------------------------
@@ -51,25 +44,21 @@ C
 C ----------------------------------------------------------------------
 C
 C
-C IN  PHASE  : PHASE DE CALCUL
-C              'GLIS' - CONTACT GLISSANT
-C              'STAC' - TERME DE STABILISATION DU CONTACT
-C              'STAF' - TERME DE STABILISATION DU FROTTEMENT
-C              'COMP' - COMPLIANCE
-C              'USUR' - USURE
-C              'PCON' - PENALISATION - CONTACT
-C              'PADH' - PENALISATION - FROTTEMENT ADHERENT
-C              'PGLI' - PENALISATION - FROTTEMENT GLISSANT
+C IN  PHASEP : PHASE DE CALCUL
+C              'CONT'      - CONTACT
+C              'CONT_PENA' - CONTACT PENALISE
+C              'ADHE'      - ADHERENCE
+C              'ADHE_PENA' - ADHERENCE PENALISE
+C              'GLIS'      - GLISSEMENT
+C              'GLIS_PENA' - GLISSEMENT PENALISE
 C IN  NDIM   : DIMENSION DU PROBLEME
 C IN  NNM    : NOMBRE DE NOEUDS DE LA MAILLE MAITRE
-C IN  NORM   : NORMALE AU POINT DE CONTACT
 C IN  MPROJN : MATRICE DE PROJECTION NORMALE
 C IN  MPROJT : MATRICE DE PROJECTION TANGENTE
-C IN  HPG    : POIDS DU POINT INTEGRATION DU POINT DE CONTACT
+C IN  WPG    : POIDS DU POINT INTEGRATION DU POINT DE CONTACT
 C IN  FFM    : FONCTIONS DE FORMES DEPL. MAIT.
 C IN  JACOBI : JACOBIEN DE LA MAILLE AU POINT DE CONTACT
 C IN  COEFCP : COEF_PENA_CONT
-C IN  COEFCR : COEF_REGU_CONT
 C IN  COEFFS : COEF_STAB_FROT
 C IN  LAMBDA : VALEUR DU MULT. DE CONTACT (SEUIL DE TRESCA)
 C IN  RESE   : SEMI-MULTIPLICATEUR GTK DE FROTTEMENT
@@ -77,17 +66,6 @@ C               GTK = LAMBDAF + COEFFR*VITESSE
 C IN  NRESE  : NORME DU SEMI-MULTIPLICATEUR GTK DE FROTTEMENT
 C IN  COEFFF : COEFFICIENT DE FROTTEMENT DE COULOMB
 C IN  COEFFP : COEF_PENA_FROT
-C IN  JEU    : VALEUR DU JEU
-C IN  ASPERI : PARAMATRE A DU MODELE DE COMPLIANCE
-C IN  KAPPAN : COEFFICIENT KN DU MODELE DE COMPLIANCE
-C IN  KAPPAV : COEFFICIENT KV DU MODELE DE COMPLIANCE
-C IN  DELTAT : INCREMENT DE TEMPS
-C IN  BETA   : COEFFICIENT SCHEMA DE NEWMARK
-C IN  GAMMA  : COEFFICIENT SCHEMA DE NEWMARK
-C IN  CWEAR  : COEFFICIENT D'USURE (KWEAR/HWEAR)
-C IN  DLAGRC : LAGR_C DEPDEL DU POINT DE CONTACT (USURE UNILATERALE)
-C IN  DELUSU : SAUT TGT DE L'INCREMENT DE DEPLACEMENT [[DELTA_U]]_TAU
-C IN  DISSIP : DISSIPATION USURE
 C OUT MATRMM : MATRICE ELEMENTAIRE DEPL_M/DEPL_M
 C
 C ----------------------------------------------------------------------
@@ -114,153 +92,128 @@ C
         C3(IDIM) = MPROJT(IDIM,3)
 3     CONTINUE
 C
-C --- PARTIE STABILISATION DU CONTACT --- PARTIE PENALISATION DU CONTACT
+C --- PRODUIT MATR_PROJ_TANG PAR MATR_PROJ_TANG
 C
-      IF ((PHASE.EQ.'STAC').OR.(PHASE.EQ.'PCON')) THEN
-        DO 160 I = 1,NNM
-          DO 150 J = 1,NNM
-            DO 140 K = 1,NDIM
-              DO 130 L = 1,NDIM
-                II = NDIM*(I-1)+L
-                JJ = NDIM*(J-1)+K
-                MATRMM(II,JJ) = MATRMM(II,JJ) + COEFCP*
-     &                          HPG*JACOBI*FFM(I)*MPROJN(L,K)*FFM(J)
-  130         CONTINUE
-  140       CONTINUE
-  150     CONTINUE
-  160   CONTINUE
+      DO 360 I = 1,NDIM
+        DO 350 J = 1,NDIM
+          DO 340 K = 1,NDIM
+            E(I,J) = MPROJT(K,I)*MPROJT(K,J) + E(I,J)
+  340     CONTINUE
+  350   CONTINUE
+  360 CONTINUE
 C
-C --- PARTIE STABILISATION DU FROTTEMENT ET
-C --- PARTIE PENALISATION DU FROTTEMENT ADHERENT
+C --- VECTEUR PROJ. BOULE SUR PLAN TGT1
 C
-      ELSEIF ((PHASE.EQ.'STAF').OR.(PHASE.EQ.'PADH')) THEN
-C       --- PRODUIT MATR_PROJ_TANG PAR MATR_PROJ_TANG
-        DO 360 I = 1,NDIM
-          DO 350 J = 1,NDIM
-            DO 340 K = 1,NDIM
-              E(I,J) = MPROJT(K,I)*MPROJT(K,J) + E(I,J)
-  340       CONTINUE
-  350     CONTINUE
-  360   CONTINUE
-C
-        DO 165 I = 1,NNM
-          DO 155 J = 1,NNM
-            DO 145 K = 1,NDIM
-              DO 135 L = 1,NDIM
-                II = NDIM*(I-1)+K
-                JJ = NDIM*(J-1)+L
-                MATRMM(II,JJ) = MATRMM(II,JJ) - COEFFP*COEFFF*LAMBDA*
-     &                          HPG*JACOBI*FFM(I)*E(K,L)*FFM(J)
-  135         CONTINUE
-  145       CONTINUE
-  155     CONTINUE
-  165   CONTINUE
-C
-C --- PARTIE GLISSANT
-C
-      ELSEIF (PHASE.EQ.'GLIS') THEN
-C       --- VECTEUR PROJ. BOULE SUR PLAN TGT1
+      IF (PHASEP(1:4).EQ.'GLIS') THEN
         CALL MKKVEC(RESE  ,NRESE ,NDIM  ,C1  ,D1    )
         CALL MKKVEC(RESE  ,NRESE ,NDIM  ,C2  ,D2    )
         CALL MKKVEC(RESE  ,NRESE ,NDIM  ,C3  ,D3    )
-C       --- MATRICE [G] = [{D1}{D2}{D3}]
-        DO 16 IDIM = 1,3
-          G(IDIM,1) = D1(IDIM)
-          G(IDIM,2) = D2(IDIM)
-          G(IDIM,3) = D3(IDIM)
- 16     CONTINUE
-C       --- MATRICE [D] = [P]*[G]t
-        DO 23 I = 1,NDIM
-          DO 24 J = 1,NDIM
-            DO 25  K = 1,NDIM
-              D(I,J) = G(K,I)*MPROJT(K,J) + D(I,J)
-  25        CONTINUE
-  24      CONTINUE
-  23    CONTINUE
-        DO 365 I = 1,NNM
-          DO 355 J = 1,NNM
-            DO 345 K = 1,NDIM
-              DO 335 L = 1,NDIM
-                II = NDIM*(I-1)+L
-                JJ = NDIM*(J-1)+K
-                MATRMM(II,JJ) = MATRMM(II,JJ) - COEFFS*COEFFF*LAMBDA*
-     &                          HPG*JACOBI*FFM(I)*D(L,K)*FFM(J)
-  335         CONTINUE
-  345       CONTINUE
-  355     CONTINUE
-  365   CONTINUE
 C
-C --- PARTIE GLISSANT
+C ----- MATRICE [G] = [{D1}{D2}{D3}]
 C
-      ELSEIF (PHASE.EQ.'PGLI') THEN
-C       --- VECTEUR PROJ. BOULE SUR PLAN TGT1
-        CALL MKKVEC(RESE  ,NRESE ,NDIM  ,C1  ,D1    )
-        CALL MKKVEC(RESE  ,NRESE ,NDIM  ,C2  ,D2    )
-        CALL MKKVEC(RESE  ,NRESE ,NDIM  ,C3  ,D3    )
-C       --- MATRICE [G] = [{D1}{D2}{D3}]
         DO 416 IDIM = 1,3
           G(IDIM,1) = D1(IDIM)
           G(IDIM,2) = D2(IDIM)
           G(IDIM,3) = D3(IDIM)
- 416    CONTINUE
-C       --- MATRICE [D] = [P]*[G]t
+  416    CONTINUE
+C
+C ----- MATRICE [D] = [P]*[G]t
+C
         DO 423 I = 1,NDIM
           DO 424 J = 1,NDIM
-            DO 425  K = 1,NDIM
+            DO 425 K = 1,NDIM
               D(I,J) = G(K,I)*MPROJT(K,J) + D(I,J)
  425        CONTINUE
  424      CONTINUE
  423    CONTINUE
-        DO 465 I = 1,NNM
-          DO 455 J = 1,NNM
-            DO 445 K = 1,NDIM
-              DO 435 L = 1,NDIM
-                II = NDIM*(I-1)+L
-                JJ = NDIM*(J-1)+K
-                MATRMM(II,JJ) = MATRMM(II,JJ) - COEFFP*COEFFF*LAMBDA*
-     &                          HPG*JACOBI*FFM(I)*D(L,K)*FFM(J)
-  435         CONTINUE
-  445       CONTINUE
-  455     CONTINUE
-  465   CONTINUE
+      ENDIF
 C
-C --- PARTIE COMPLIANCE
+C --- CALCUL DES TERMES
 C
-      ELSEIF (PHASE.EQ.'COMP') THEN
-        DO 161 I = 1,NNM
-          DO 151 J = 1,NNM
-            DO 141 K = 1,NDIM
-              DO 131 L = 1,NDIM
-                II = NDIM*(I-1)+L
-                JJ = NDIM*(J-1)+K
-                MATRMM(II,JJ) = MATRMM(II,JJ) +
-     &                          (KAPPAN*2*(JEU-ASPERI)+
-     &                           KAPPAV*(GAMMA/(BETA*DELTAT)))*
-     &                          HPG*JACOBI*FFM(I)*MPROJN(L,K)*FFM(J)
-  131         CONTINUE
-  141       CONTINUE
-  151     CONTINUE
-  161   CONTINUE
-C
-C --- PARTIE USURE
-C
-      ELSEIF (PHASE.EQ.'USUR') THEN
-        DO 162 I = 1,NNM
-          DO 152 J = 1,NNM
-            DO 142 K = 1,NDIM
-              DO 132 L = 1,NDIM
-                II = NDIM*(I-1)+L
-                JJ = NDIM*(J-1)+K
-                MATRMM(II,JJ) = MATRMM(II,JJ) - COEFCR*
-     &                          (HPG*FFM(I)*FFM(J)*JACOBI*NORM(K))*
-     &                          (CWEAR/DISSIP)*DELUSU(L)*DLAGRC
-  132         CONTINUE
-  142       CONTINUE
-  152     CONTINUE
-  162   CONTINUE
-C
-      ELSE
-        CALL ASSERT(.FALSE.)
+      IF (PHASEP(1:4).EQ.'CONT') THEN
+        IF (PHASEP(6:9).EQ.'PENA') THEN
+          DO 160 I = 1,NNM
+            DO 150 J = 1,NNM
+              DO 140 K = 1,NDIM
+                DO 130 L = 1,NDIM
+                  II = NDIM*(I-1)+L
+                  JJ = NDIM*(J-1)+K
+                  MATRMM(II,JJ) = MATRMM(II,JJ) + COEFCP*
+     &                            WPG*JACOBI*FFM(I)*MPROJN(L,K)*FFM(J)
+  130           CONTINUE
+  140         CONTINUE
+  150       CONTINUE
+  160     CONTINUE
+        ELSE
+          DO 161 I = 1,NNM
+            DO 151 J = 1,NNM
+              DO 141 K = 1,NDIM
+                DO 131 L = 1,NDIM
+                  II = NDIM*(I-1)+L
+                  JJ = NDIM*(J-1)+K
+                  MATRMM(II,JJ) = MATRMM(II,JJ) + COEFCP*
+     &                            WPG*JACOBI*FFM(I)*MPROJN(L,K)*FFM(J)
+  131           CONTINUE
+  141         CONTINUE
+  151       CONTINUE
+  161     CONTINUE
+        ENDIF       
+      ELSEIF (PHASEP(1:4).EQ.'ADHE') THEN
+        IF (PHASEP(6:9).EQ.'PENA') THEN
+          DO 165 I = 1,NNM
+            DO 155 J = 1,NNM
+              DO 145 K = 1,NDIM
+                DO 135 L = 1,NDIM
+                  II = NDIM*(I-1)+K
+                  JJ = NDIM*(J-1)+L
+                  MATRMM(II,JJ) = MATRMM(II,JJ) - COEFFP*COEFFF*LAMBDA*
+     &                            WPG*JACOBI*FFM(I)*E(K,L)*FFM(J)
+  135           CONTINUE
+  145         CONTINUE
+  155       CONTINUE
+  165     CONTINUE        
+        ELSE
+          DO 166 I = 1,NNM
+            DO 156 J = 1,NNM
+              DO 146 K = 1,NDIM
+                DO 136 L = 1,NDIM
+                  II = NDIM*(I-1)+K
+                  JJ = NDIM*(J-1)+L
+                  MATRMM(II,JJ) = MATRMM(II,JJ) - COEFFP*COEFFF*LAMBDA*
+     &                            WPG*JACOBI*FFM(I)*E(K,L)*FFM(J)
+  136           CONTINUE
+  146         CONTINUE
+  156       CONTINUE
+  166     CONTINUE
+        ENDIF        
+      ELSEIF (PHASEP(1:4).EQ.'GLIS') THEN
+        IF (PHASEP(6:9).EQ.'PENA') THEN         
+          DO 465 I = 1,NNM
+            DO 455 J = 1,NNM
+              DO 445 K = 1,NDIM
+                DO 435 L = 1,NDIM
+                  II = NDIM*(I-1)+L
+                  JJ = NDIM*(J-1)+K
+                  MATRMM(II,JJ) = MATRMM(II,JJ) - COEFFP*COEFFF*LAMBDA*
+     &                            WPG*JACOBI*FFM(I)*D(L,K)*FFM(J)
+  435           CONTINUE
+  445         CONTINUE
+  455       CONTINUE
+  465     CONTINUE                
+        ELSE
+          DO 365 I = 1,NNM
+            DO 355 J = 1,NNM
+              DO 345 K = 1,NDIM
+                DO 335 L = 1,NDIM
+                  II = NDIM*(I-1)+L
+                  JJ = NDIM*(J-1)+K
+                  MATRMM(II,JJ) = MATRMM(II,JJ) - COEFFS*COEFFF*LAMBDA*
+     &                            WPG*JACOBI*FFM(I)*D(L,K)*FFM(J)
+  335           CONTINUE
+  345         CONTINUE
+  355       CONTINUE
+  365     CONTINUE
+        ENDIF
       ENDIF
 C
       END

@@ -1,9 +1,9 @@
-# MODIF  DATE 11/05/2010   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 18/04/2011   AUTEUR LEBOUVIER F.LEBOUVIER 
 # TITRE ORIENTATION DE MAILLES PAR UNE BOUCLE PYTHON       
 # zzzz189a.para = tps_job 100 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -254,7 +254,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU,
                       NOM_CHAM='DEPL',
                       NOEUD='NO30',
                       VALE=3.1392885337581E-05,
-                      PRECISION=1.E-6,
+                      PRECISION=1.5E-6,
                       NOM_CMP='DY',
                       INST=1.,
                       REFERENCE='NON_REGRESSION'),
@@ -262,7 +262,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU,
                       NOM_CHAM='DEPL',
                       NOEUD='NO30',
                       VALE=1.5356429239344E-05,
-                      PRECISION=1.E-6,
+                      PRECISION=5.E-5,
                       NOM_CMP='DZ',
                       INST=1.,
                       REFERENCE='NON_REGRESSION'),
@@ -270,7 +270,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU,
                       NOM_CHAM='DEPL',
                       NOEUD='NO700',
                       VALE=4.4873444446107E-06,
-                      PRECISION=1.E-6,
+                      PRECISION=5.E-5,
                       NOM_CMP='DX',
                       INST=1.,
                       REFERENCE='NON_REGRESSION'),
@@ -278,7 +278,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU,
                       NOM_CHAM='DEPL',
                       NOEUD='NO700',
                       VALE=3.3210482596565E-05,
-                      PRECISION=1.E-6,
+                      PRECISION=5.E-6,
                       NOM_CMP='DY',
                       INST=1.,
                       REFERENCE='NON_REGRESSION'),
@@ -286,7 +286,7 @@ TEST_RESU(RESU=(_F(RESULTAT=RESU,
                       NOM_CHAM='DEPL',
                       NOEUD='NO700',
                       VALE=1.5155123546576E-05,
-                      PRECISION=1.E-6,
+                      PRECISION=5.E-5,
                       NOM_CMP='DZ',
                       INST=1.,
                       REFERENCE='NON_REGRESSION'),

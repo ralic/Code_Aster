@@ -1,8 +1,8 @@
       SUBROUTINE TE0598 ( OPTION , NOMTE )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 08/02/2010   AUTEUR HAELEWYN J.HAELEWYN 
+C MODIF ELEMENTS  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -88,7 +88,7 @@ C
       INTEGER            NBRES
       PARAMETER         ( NBRES=3 )
 C
-      CHARACTER*2        CODRET(NBRES)
+      INTEGER ICODRE(NBRES)
       CHARACTER*8        NOMRES(NBRES), ELREFE, ALIAS8
       CHARACTER*16       PHENOM
 C
@@ -207,13 +207,13 @@ C
 C
 C 2.3. ==> MATERIAU
 C
-      CALL RCCOMA ( ZI(IMATE), 'THER', PHENOM, CODRET )
+      CALL RCCOMA ( ZI(IMATE), 'THER', PHENOM, ICODRE )
 C
       IF ( PHENOM .EQ. 'THER') THEN
          NOMRES(1) = 'RHO_CP'
          NOMRES(2) = 'LAMBDA'
          CALL RCVALA(ZI(IMATE),' ', PHENOM, 1, 'INST', ZR(ITEMPS),
-     &                            2, NOMRES, VALRES, CODRET, 'FM' )
+     &                            2, NOMRES, VALRES, ICODRE, 1)
          CP     = VALRES(1)
          LAMBDA = VALRES(2)
          ANISO  = .FALSE.
@@ -222,7 +222,7 @@ C
          NOMRES(2) = 'LAMBDA_L'
          NOMRES(3) = 'LAMBDA_T'
          CALL RCVALA(ZI(IMATE),' ', PHENOM, 1, 'INST', ZR(ITEMPS),
-     &                            3, NOMRES, VALRES, CODRET, 'FM' )
+     &                            3, NOMRES, VALRES, ICODRE, 1)
          CP        = VALRES(1)
          LAMBOR(1) = VALRES(2)
          LAMBOR(2) = VALRES(3)

@@ -2,9 +2,9 @@
      &                  MATERD,MATERF,MATCST,NDT,NDI,NR,NVI)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 18/10/2010   AUTEUR FLEJOU J-L.FLEJOU 
+C MODIF ALGORITH  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -54,7 +54,7 @@ C     ----------------------------------------------------------------
       INTEGER     ITERAT,NBCARA
 C     NOMBRE DE PARAMETRES DE LA LOI : NBCARA
       PARAMETER   (NBCARA = 12 )
-      CHARACTER*2 CERR(NBCARA)
+      INTEGER CERR(NBCARA)
       CHARACTER*8 NOMCIR(NBCARA)
       REAL*8      MAT(NBCARA)
       CHARACTER*8 NOMCEL(3)
@@ -121,7 +121,7 @@ C
 C === ================================================
 C     CARACTERISTIQUES ELASTIQUES A TEMP- ET IRRA-
       CALL RCVALB(FAMI,KPG,KSP,'-',IMAT,' ','ELAS',0,' ',0.0D0,
-     &            3,NOMCEL,MATERD(1,1),CERR, 'FM' )
+     &            3,NOMCEL,MATERD(1,1),CERR, 1)
 
 C     TEMPERATURE A T-
       CALL RCVARC('F','TEMP','-',FAMI,KPG,KSP,TEMPD,IRET)
@@ -129,15 +129,15 @@ C     IRRADIATION A T-
       CALL RCVARC('F','IRRA','-',FAMI,KPG,KSP,IRRAD,IRET)
 C     CARACTERISTIQUES MATERIAU A TEMP- ET IRRA-
       CALL RCVALB(FAMI,KPG,KSP,'-',IMAT,' ','IRRAD3M',0,' ',0.0D0,
-     &            NBCARA,NOMCIR,MAT,CERR, 'FM' )
+     &            NBCARA,NOMCIR,MAT,CERR, 1)
 
 C     POUR PLUS DE CLARETE, JE RENOMME LES GRANDEURS
-      IF ( CERR(10) .EQ. 'OK' ) THEN
+      IF ( CERR(10) .EQ. 0 ) THEN
          ZETAF = MAT(10)
       ELSE
          ZETAF = 1.0D0
       ENDIF
-      IF ( CERR(11) .EQ. 'OK' ) THEN
+      IF ( CERR(11) .EQ. 0 ) THEN
          ZETAG = MAT(11)
       ELSE
          ZETAG = 1.0D0
@@ -295,7 +295,7 @@ C
 C === ================================================
 C     CARACTERISTIQUES ELASTIQUES A TEMP+ ET IRRA+
       CALL RCVALB(FAMI,KPG,KSP,'+',IMAT,' ','ELAS',0,' ',0.0D0,
-     &            3,NOMCEL,MATERF(1,1),CERR, 'FM' )
+     &            3,NOMCEL,MATERF(1,1),CERR, 1)
 
 C     TEMPERATURE A T+
       CALL RCVARC('F','TEMP','+',FAMI,KPG,KSP,TEMPF,IRET)
@@ -315,15 +315,15 @@ C     L'IRRADIATION NE PEUT PAS DECROITRE
       ENDIF
 C     CARACTERISTIQUES MATERIAU A TEMP+ ET IRRA+
       CALL RCVALB(FAMI,KPG,KSP,'+',IMAT,' ','IRRAD3M',0,' ',0.0D0,
-     &            NBCARA,NOMCIR,MAT,CERR, 'FM' )
+     &            NBCARA,NOMCIR,MAT,CERR, 1)
 
 C     POUR PLUS DE CLARETE
-      IF ( CERR(10) .EQ. 'OK' ) THEN
+      IF ( CERR(10) .EQ. 0 ) THEN
          ZETAF = MAT(10)
       ELSE
          ZETAF = 1.0D0
       ENDIF
-      IF ( CERR(11) .EQ. 'OK' ) THEN
+      IF ( CERR(11) .EQ. 0 ) THEN
          ZETAG = MAT(11)
       ELSE
          ZETAG = 1.0D0

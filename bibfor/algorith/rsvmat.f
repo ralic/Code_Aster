@@ -4,9 +4,9 @@
         IMPLICIT NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
+C MODIF ALGORITH  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -51,10 +51,10 @@ C       ----------------------------------------------------------------
 C
         REAL*8          MATERD(NMAT,2) ,MATERF(NMAT,2) , TEMPD , TEMPF
         REAL*8          EPSI, VIND(NVI), F0
-        REAL*8          R8BID,RESU
+        REAL*8          RESU
 C
         CHARACTER*8     MOD, NOMC(16),TYPE
-        CHARACTER*2     BL2, FB2, CERR(16)
+      INTEGER CERR(16)
         CHARACTER*3     MATCST
         CHARACTER*(*)   FAMI
 C
@@ -67,8 +67,6 @@ C
 C
 C -   RECUPERATION MATERIAU ------------------------------------------
 C
-      BL2 = '  '
-      FB2 = 'F '
 C
           NOMC(1) = 'E        '
           NOMC(2) = 'NU       '
@@ -90,16 +88,16 @@ C
 C -     RECUPERATION MATERIAU A TEMPD (T)
 C
           CALL RCVALB(FAMI,KPG,KSP,'-',IMAT,' ','ELAS',0,' ',
-     &                0.D0,5,NOMC(1),MATERD(1,1),CERR(1), BL2 )
-          IF ( CERR(3) .NE. 'OK' ) MATERD(3,1) = 0.D0
-          IF ( CERR(4) .NE. 'OK' ) MATERD(4,1) = 0.D0
-          IF ( CERR(5) .NE. 'OK' ) MATERD(5,1) = 0.D0
+     &                0.D0,5,NOMC(1),MATERD(1,1),CERR(1), 0)
+          IF ( CERR(3) .NE. 0 ) MATERD(3,1) = 0.D0
+          IF ( CERR(4) .NE. 0 ) MATERD(4,1) = 0.D0
+          IF ( CERR(5) .NE. 0 ) MATERD(5,1) = 0.D0
           CALL RCVALB(FAMI,KPG,KSP,'-',IMAT,' ','ROUSSELIER',
      &                0, ' ', 0.D0, 8,
-     &                NOMC(6),  MATERD(1,2),  CERR(6), FB2 )
+     &                NOMC(6),  MATERD(1,2),  CERR(6), 2)
           CALL RCVALB(FAMI,KPG,KSP,'-',IMAT,' ','VISC_SINH',
      &                0, ' ', 0.D0, 3,
-     &                NOMC(14),  MATERD(9,2),  CERR(14), FB2 )
+     &                NOMC(14),  MATERD(9,2),  CERR(14), 2)
 C
 C         RECUPERATION DE E(TEMPD) VIA LES COURBES DE TRACTION MONOTONES
 C         SIG = F(EPS,TEMPD) ENTREES POINT PAR POINT  (MOT CLE TRACTION)
@@ -107,24 +105,24 @@ C         > ECRASEMENT DU E RECUPERE PAR MOT CLE ELAS
 C
           CALL RCVARC(' ','TEMP','-',FAMI,KPG,KSP,TEMPD,IRET)
           CALL RCTYPE(IMAT,1,'TEMP',TEMPD,RESU,TYPE)
-          IF ((TYPE.EQ.'TEMP').AND.(IRET.EQ.1)) 
+          IF ((TYPE.EQ.'TEMP').AND.(IRET.EQ.1))
      &        CALL U2MESS('F','CALCULEL_31')
-          CALL RCTRAC (IMAT,'TRACTION','SIGM',RESU,
+          CALL RCTRAC (IMAT,1,'SIGM',RESU,
      &                 JPROL,JVALE,NBVALE,MATERD(1,1))
 C
 C -     RECUPERATION MATERIAU A TEMPF (T+DT)
 C
           CALL RCVALB(FAMI,KPG,KSP,'+',IMAT,' ','ELAS',0,' ',
-     &                0.D0,5,NOMC(1),MATERF(1,1),CERR(1), BL2 )
-          IF ( CERR(3) .NE. 'OK' ) MATERF(3,1) = 0.D0
-          IF ( CERR(4) .NE. 'OK' ) MATERF(4,1) = 0.D0
-          IF ( CERR(5) .NE. 'OK' ) MATERF(5,1) = 0.D0
+     &                0.D0,5,NOMC(1),MATERF(1,1),CERR(1), 0)
+          IF ( CERR(3) .NE. 0 ) MATERF(3,1) = 0.D0
+          IF ( CERR(4) .NE. 0 ) MATERF(4,1) = 0.D0
+          IF ( CERR(5) .NE. 0 ) MATERF(5,1) = 0.D0
           CALL RCVALB(FAMI,KPG,KSP,'+',IMAT,' ','ROUSSELIER',
      &                0, ' ', 0.D0, 8,
-     &                NOMC(6),  MATERF(1,2),  CERR(6), FB2 )
+     &                NOMC(6),  MATERF(1,2),  CERR(6), 2)
           CALL RCVALB(FAMI,KPG,KSP,'+',IMAT,' ','VISC_SINH',
      &                0, ' ', 0.D0, 3,
-     &                NOMC(14),  MATERF(9,2),  CERR(14), FB2 )
+     &                NOMC(14),  MATERF(9,2),  CERR(14), 2)
 C
 C         RECUPERATION DE E(TEMPF) VIA LES COURBES DE TRACTION MONOTONES
 C         SIG = F(EPS,TEMP) ENTREES POINT PAR POINT  (MOT CLE TRACTION)
@@ -132,9 +130,9 @@ C         > ECRASEMENT DU E RECUPERE PAR MOT CLE ELAS
 C
           CALL RCVARC(' ','TEMP','+',FAMI,KPG,KSP,TEMPF,IRET)
           CALL RCTYPE(IMAT,1,'TEMP',TEMPF,RESU,TYPE)
-          IF ((TYPE.EQ.'TEMP').AND.(IRET.EQ.1)) 
+          IF ((TYPE.EQ.'TEMP').AND.(IRET.EQ.1))
      &        CALL U2MESS('F','CALCULEL_31')
-          CALL RCTRAC (IMAT,'TRACTION','SIGM',RESU,
+          CALL RCTRAC (IMAT,1,'SIGM',RESU,
      &                 JPROL,JVALE,NBVALE,MATERF(1,1))
 C
 C -     MATERIAU CONSTANT ? ------------------------------------------
@@ -167,5 +165,4 @@ C ---- INITIALISATION DE LA POROSITE INITIALE -------------------------
         ENDIF
 C
 C ----ET C EST TOUT ---------
- 9999   CONTINUE
         END

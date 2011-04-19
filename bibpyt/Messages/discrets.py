@@ -1,4 +1,4 @@
-#@ MODIF discrets Messages  DATE 19/01/2011   AUTEUR MASSIN P.MASSIN 
+#@ MODIF discrets Messages  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -138,6 +138,42 @@ Votre modélisation ne comporte pas d'élément discret.
 20 : _("""
 Votre modélisation doit être soit 2D soit 3D.
 Il est interdit d'avoir des discrets sur une modélisation %(k1)s.
+"""),
+
+21 :_("""
+AFFE_CARA_ELEM/RIGI_PARASOL
+  Le nombre de valeurs fournies sous VALE ne correspond pas au nombre attendu.
+  Vous devez vérifier l'adéquation des dimensions des éléments sous CARA avec le nombre de valeur sous VALE.
+"""),
+
+25 :_("""
+Vous utilisez des discrets %(k1)s alors que vous n'avez pas affecté ses caractéristiques.
+Il faut vérifier les affectations sous AFFE_CARA_ELEM/DISCRET.
+"""),
+
+26 :_("""
+Vous utilisez des discrets %(k1)s pour affecter des MASSES alors que vous n'avez pas affecté
+les caractéristiques de masses. Par défaut la masse est nulle.
+Il faut vérifier les affectations sous AFFE_CARA_ELEM/DISCRET.
+"""),
+
+27 :_("""
+Vous utilisez des discrets %(k1)s pour affecter des RAIDEURS alors que vous n'avez pas affecté
+les caractéristiques de raideurs. Par défaut la raideur est nulle.
+Il faut vérifier les affectations sous AFFE_CARA_ELEM/DISCRET.
+"""),
+
+28 :_("""
+Vous utilisez des discrets %(k1)s pour affecter des AMORTISSEMENTS alors que vous n'avez pas affecté
+les caractéristiques d'amortissements. Par défaut l'amortissement est nul.
+Il faut vérifier les affectations sous AFFE_CARA_ELEM/DISCRET.
+"""),
+
+30 :_("""Informations :
+   Maille de nom %(k1)s, de %(i1)d noeud(s).
+   Nom et coordonnées des noeuds :
+"""),
+31 :_("""      %(k1)s   %(r1)12.5E   %(r2)12.5E   %(r3)12.5E
 """),
 
 }

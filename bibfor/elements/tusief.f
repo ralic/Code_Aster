@@ -1,6 +1,6 @@
       SUBROUTINE TUSIEF(OPTION,NOMTE,NBRDDL,B,VIN,MAT,PASS,VTEMP)
       IMPLICIT NONE
-C MODIF ELEMENTS  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -31,7 +31,7 @@ C ......................................................................
       INTEGER NBRES,NBRDDL
       PARAMETER (NBRES=9)
       CHARACTER*8 NOMRES(NBRES),NOMPAR
-      CHARACTER*2 CODRET(NBRES)
+      INTEGER ICODRE(NBRES)
       REAL*8 VALRES(NBRES),VALPAR,DEGG(24)
       REAL*8 H,A,L,E,NU,BETA,CISAIL,G,OMEGA,DHK
       REAL*8 SINFI,FI,DEUXPI,R,R8PI,AT1,AT2,VPG(4),VNO(4)
@@ -117,7 +117,7 @@ C     --- RECUPERATION DES ORIENTATIONS ---
         NOMPAR = 'TEMP'
         CALL RCVALB('RIGI',1,1,'+',ZI(IMATE),' ','ELAS',
      &              NBPAR,NOMPAR,VALPAR,2,NOMRES,
-     &              VALRES,CODRET,'FM')
+     &              VALRES,ICODRE,1)
         E = VALRES(1)
         NU = VALRES(2)
 

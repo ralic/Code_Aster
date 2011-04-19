@@ -1,6 +1,6 @@
       SUBROUTINE TE0318 ( OPTION , NOMTE )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -45,7 +45,7 @@ C
 C
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 C
-      CHARACTER*2        CODRET(2)
+      INTEGER ICODRE(2)
       CHARACTER*8        NOMRES(2)
       CHARACTER*16       PHENOM
       REAL*8             DFDX(9),DFDY(9),TPG,POIDS,LAMBDA,A,B
@@ -65,19 +65,19 @@ C
       CALL JEVECH('PTEMPER','L',ITEMPE)
       CALL JEVECH('PSOUR_R','E',IFLUX )
 C
-      CALL RCCOMA ( ZI(IMATE), 'THER', PHENOM, CODRET )
+      CALL RCCOMA ( ZI(IMATE), 'THER', PHENOM, ICODRE )
 C
       IF ( PHENOM .EQ. 'THER') THEN
          NOMRES(1) = 'LAMBDA'
          CALL RCVALA(ZI(IMATE),' ', PHENOM, 1, 'INST', ZR(ITEMP),
-     &                            1, NOMRES, VALRES, CODRET, 'FM' )
+     &                            1, NOMRES, VALRES, ICODRE, 1)
          LAMBDA = VALRES(1)
          ANISO  = .FALSE.
       ELSEIF ( PHENOM .EQ. 'THER_ORTH') THEN
          NOMRES(1) = 'LAMBDA_L'
          NOMRES(2) = 'LAMBDA_T'
          CALL RCVALA(ZI(IMATE),' ', PHENOM, 1, 'INST', ZR(ITEMP),
-     &                            2, NOMRES, VALRES, CODRET, 'FM' )
+     &                            2, NOMRES, VALRES, ICODRE, 1)
          LAMBOR(1) = VALRES(1)
          LAMBOR(2) = VALRES(2)
          ANISO     = .TRUE.
@@ -138,7 +138,7 @@ C
 C
         IF ( PHENOM .EQ. 'THER_NL') THEN
           CALL RCVALA(ZI(IMATE),' ', PHENOM, 1, 'TEMP', TPG,
-     &                             1, 'LAMBDA', LAMBDA, CODRET, 'FM' )
+     &                             1, 'LAMBDA', LAMBDA, ICODRE, 1)
         ENDIF
 C
         IF (.NOT.ANISO) THEN

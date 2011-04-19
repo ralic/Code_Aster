@@ -4,7 +4,7 @@
 C ......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -47,16 +47,15 @@ C --------- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------
 C --------- FIN  DECLARATIONS NORMALISEES JEVEUX -----------------------
 
       CHARACTER*8 ELREFE
-      CHARACTER*8 NOMRES(3),NOMPAR,NOMPU(2)
-      CHARACTER*2 BL2,CODRET(3)
+      CHARACTER*8 NOMRES(3),NOMPAR
+      INTEGER ICODRE(3)
       REAL*8 E,NU,TPG,TPGMOY,TPGINF,TPGSUP,VALPAR,TREF
-      REAL*8 ORD,X3,EPS(5),C1,C2,H,EPSTHE,KI(3),NIV
+      REAL*8 X3,EPS(5),C1,C2,H,EPSTHE,KI(3),NIV
       REAL*8 E11,E22,K11,K22,EP11,EP22,EP12,ESX3
-      REAL*8 DFDX(3),CONTPG(24),VALRES(3),VALPU(2)
+      REAL*8 DFDX(3),VALRES(3)
       REAL*8 JAC,R,COSA,SINA,COUR,CORREC
-      INTEGER I,K,KP,IGEOM,IMATE,ICACO,IDEPL,ICONT,NBPAR,IER
+      INTEGER I,K,KP,IGEOM,IMATE,ICACO,IDEPL,ICONT,NBPAR
       INTEGER NNO,NPG,IDFDK,IVF,IRET,IRET1,IRET2,IRET3,IC,INTE,NPGE
-      INTEGER ITAB(8)
 
       CALL ELREF1(ELREFE)
 
@@ -70,7 +69,6 @@ C --------- FIN  DECLARATIONS NORMALISEES JEVEUX -----------------------
 
       CALL RCVARC(' ','TEMP','REF','RIGI',1,1,TREF,IRET)
 
-      BL2 = '  '
       H = ZR(ICACO)
       CORREC = ZR(ICACO+2)
 C NOMBRE DE POINT DE GAUSS DANS LA TRANCHE
@@ -84,7 +82,7 @@ C (POUR RESTER COHERENT AVEC SIEF_ELGA EN PLASTICITE )
 C
       DO 100 INTE=1,NPGE
 
-      NIV = KI(INTE) 
+      NIV = KI(INTE)
       X3 = NIV*H/2.D0
 
 
@@ -125,19 +123,19 @@ C===============================================================
         NOMRES(3) = 'ALPHA'
         CALL RCVALB('RIGI',1,1,'+',ZI(IMATE),' ','ELAS',
      &              NBPAR,NOMPAR,VALPAR,2,NOMRES,
-     &              VALRES,CODRET,'FM')
+     &              VALRES,ICODRE,1)
         CALL RCVALB('RIGI',1,1,'+',ZI(IMATE),' ','ELAS',
      &              NBPAR,NOMPAR,VALPAR,1,
-     &              NOMRES(3),VALRES(3),CODRET(3),BL2)
+     &              NOMRES(3),VALRES(3),ICODRE(3),0)
         E = VALRES(1)
         NU = VALRES(2)
         IF (IRET4.EQ.0) THEN
-            IF((CODRET(3).NE.'OK').OR.(IRET.EQ.1)) THEN
+            IF((ICODRE(3).NE.0).OR.(IRET.EQ.1)) THEN
                    CALL U2MESS('F','CALCULEL_15')
             ELSE
               EPSTHE = (TPG - TREF)*VALRES(3)*E/ (1.D0-NU)
             ENDIF
-        ELSE 
+        ELSE
             EPSTHE = 0.D0
         END IF
 

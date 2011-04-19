@@ -1,9 +1,9 @@
       SUBROUTINE NMVEKX(IMATE, TP, XHI, KXHI, DKXIDX)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -46,11 +46,10 @@ C
       REAL*8      VPAR(2), TP
       REAL*8      ZERO
       PARAMETER    (ZERO = 0.D0)
-      CHARACTER*2 BL2,FB2,OK
+      INTEGER OK
       CHARACTER*8 NOMPAR(2), NOM
 C
       DATA NOM / 'K_D' /
-      DATA FB2 / 'F '/
 C
 C ----------------------------------------------------------------------
 C-- 1. INITIALISATION
@@ -67,7 +66,7 @@ C
       VPAR(2) = XHI
 C
       CALL RCVALA(IMATE,' ', 'VENDOCHAB', 2,  NOMPAR, VPAR, 1,
-     1              NOM,  KXHI, OK, FB2 )
+     &              NOM,  KXHI, OK,2)
 C
 C-- 3. CREATION D'UNE FONCTION KT(XHI) EXTRAITE DE LA NAPPE
 C          A LA TEMPERATURE COURANTE

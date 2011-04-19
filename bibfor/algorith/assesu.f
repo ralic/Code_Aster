@@ -13,22 +13,22 @@
 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 23/03/2010   AUTEUR ANGELINI O.ANGELINI 
+C MODIF ALGORITH  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C ======================================================================
 C TOLE CRP_20
@@ -41,14 +41,14 @@ C ======================================================================
 
       INTEGER MAXFA
       PARAMETER (MAXFA=6)
-      REAL*8 VALFAC(MAXFA,14,6) 
+      REAL*8 VALFAC(MAXFA,14,6)
 C
       INTEGER CON,DCONP1,DCONP2,DIFFU,DDIFP1,DDIFP2,MOB,DMOBP1,DMOBP2
       INTEGER MASSE,DMASP1,DMASP2
       INTEGER WLIQ,WVAP,AIRDIS,AIRSEC,EAU,AIR
       INTEGER VKINT,KXX,KYY,KZZ,KXY,KYZ,KZX,DENSIT
       INTEGER RHOGA,RHOLQ,RHOGA1,RHOGA2,RHOLQ1,RHOLQ2
-      
+
       PARAMETER(CON=1,DCONP1=2,DCONP2=3,DIFFU=4,DDIFP1=5,DDIFP2=6)
       PARAMETER(MOB=7,DMOBP1=8,DMOBP2=9,MASSE=10,DMASP1=11,DMASP2=12)
       PARAMETER(VKINT=13)
@@ -85,9 +85,9 @@ C
       INTEGER MECANI(5),PRESS1(7),PRESS2(7),TEMPE(5)
       INTEGER YAMEC,YAP1,YAP2,YATE,TYPVF
       INTEGER ADDEME,ADDEP1,ADDEP2,ADDETE,
-     >        ADCOME ,ADCP11,ADCP12,
-     >        ADCP21,ADCP22,ADCOTE
-      REAL*8 GEOM(NDIM,NNO),CRIT(*),POIDS,POIDS2
+     &        ADCOME ,ADCP11,ADCP12,
+     &        ADCP21,ADCP22,ADCOTE
+      REAL*8 GEOM(NDIM,NNO),CRIT(*)
 
       REAL*8 DEPLP(DIMUEL),DEPLM(DIMUEL)
 
@@ -98,7 +98,7 @@ C
       REAL*8 DSDE(DIMCON,DIMDEF),PESA(3)
       REAL*8 RTHMC,R8PREM
       LOGICAL AXI, PERMAN , TANGE, CONT
-      CHARACTER*2 CODMES(1)
+      INTEGER CODMES(1)
       CHARACTER*3 MODINT
       CHARACTER*8 TYPMOD(2)
       CHARACTER*16 OPTION,COMPOR(*),THMC,LOI
@@ -114,9 +114,6 @@ C
       REAL*8 MATUU(DIMUEL*DIMUEL)
       REAL*8 P10,P20
       INTEGER IPOIDS,IVF,IDFDE,IPOID2,IVF2,IDFDE2,NPI2,JGANO
-      INTEGER MAXNO
-      PARAMETER (MAXNO=27)
-      REAL*8 DFDI(MAXNO,3),DFDI2(MAXNO,3)
 C
 C =====================================================================
 C.......................................................................
@@ -131,7 +128,7 @@ C IN NDDLS NB DE DDL SUR LES SOMMETS
 C IN NDDLM NB DE DDL SUR LES MILIEUX DE FACE OU D ARETE UNIQUEMT EN EF
 C IN NDDLFA NB DE DDL SUR LES FACE DE DIMENSION DIM-1 NE SERT QU EN VF
 C IN NDDLK NB DE DDL AU CENTRE
-C TYPVF     TYPE DE VF : 3 = SUDA ET 4 SUC  
+C TYPVF     TYPE DE VF : 3 = SUDA ET 4 SUC
 C IN NDIM DIMENSION DE L'ESPACE
 C IN DIMUEL NB DE DDL TOTAL DE L'ELEMENT
 C IN DIMCON DIMENSION DES CONTRAINTES GENERALISEES ELEMENTAIRES
@@ -152,18 +149,18 @@ C CAD ENTRATION AIR DISSOUS
 C DCAD1 DERIVEE CAD /P1
 C DCAD2 DERIVEE CAD /P2
 C  VALFAC(I,CON,WLIQ)     CONCENTRATION DE L EAU LIQUIDE SUR ARRETE I
-C  VALFAC(I,DCONP1,WLIQ)  D_CON_EAU_LIQU_I /P1 
-C  VALFAC(I,DCONP2,WLIQ)  D_CON_EAU_LIQU_I /P2 
+C  VALFAC(I,DCONP1,WLIQ)  D_CON_EAU_LIQU_I /P1
+C  VALFAC(I,DCONP2,WLIQ)  D_CON_EAU_LIQU_I /P2
 C  VALFAC(I,DIFFU,WLIQ)   DIFFUW SUR ARETE I
 C  VALFAC(I,DDIFP1,WLIQ)  D_DIFFUW_I /P1
-C  VALFAC(I,DDIFP2,WLIQ)  D_DIFFUW_I /P2 
+C  VALFAC(I,DDIFP2,WLIQ)  D_DIFFUW_I /P2
 C  VALFAC(I,MOB,WLIQ)     MOBILITE DE L EAU LIQUIDE SUR ARETE I
-C  VALFAC(I,DMOBP1,WLIQ)  D_MO_LIQU /P1_CENTRE 
+C  VALFAC(I,DMOBP1,WLIQ)  D_MO_LIQU /P1_CENTRE
 C  VALFAC(I,DMOBP2,WLIQ)  D_MO_LIQU /P2_CENTRE
 C NB: DE MEME POUR WVAP(EAU VAPEUR),AIRDIS(AIR DISSOUS),AIRSEC(AIR SEC)
 C  VALCEN(CON,WVAP)       CONCENTRATION EAU VAPEUR
-C  VALCEN(DCONP1,WVAP) 
-C  VALCEN(DCONP2,WVAP) 
+C  VALCEN(DCONP1,WVAP)
+C  VALCEN(DCONP2,WVAP)
 C etc...
 C =====================================================================
 C VARIABLES LOCALES POUR CALCULS VF SUSHI
@@ -239,8 +236,8 @@ C VARIABLES COMMUNES
 C =====================================================================
       LOGICAL VF
       REAL*8 MFACE(1:MAXFA),DFACE(1:MAXFA),
-     >       XFACE(1:MAXDIM,1:MAXFA),
-     >       NORMFA(1:MAXDIM,1:MAXFA),VOL
+     &       XFACE(1:MAXDIM,1:MAXFA),
+     &       NORMFA(1:MAXDIM,1:MAXFA),VOL
       INTEGER IFA,JFA,IDIM,NFACE,NDDLFA
       REAL*8  PCP,PWP,PGP,DPGP1,DPGP2,DPWP1,DPWP2
       REAL*8  CVP,DCVP1,DCVP2,CAD,DCAD1,DCAD2
@@ -257,32 +254,32 @@ C =====================================================================
       REAL*8 FM1ASS(1:MAXFA+1,1:MAXFA),FM2ASS(1:MAXFA+1,1:MAXFA)
       REAL*8 FM1ADS(1:MAXFA+1,1:MAXFA),FM2ADS(1:MAXFA+1,1:MAXFA)
       REAL*8 PCPF(1:MAXFA),PGPF(1:MAXFA),DPGP1F(1:MAXFA),
-     >       DPGP2F(1:MAXFA),PWPF(1:MAXFA),DPWP1F(1:MAXFA),
-     >       DPWP2F(1:MAXFA),CVPF(1:MAXFA),DCVP1F(1:MAXFA),
-     >       CADF(1:MAXFA),DCAD1F(1:MAXFA),DCAD2F(1:MAXFA),
-     >       DCVP2F(1:MAXFA)
+     &       DPGP2F(1:MAXFA),PWPF(1:MAXFA),DPWP1F(1:MAXFA),
+     &       DPWP2F(1:MAXFA),CVPF(1:MAXFA),DCVP1F(1:MAXFA),
+     &       CADF(1:MAXFA),DCAD1F(1:MAXFA),DCAD2F(1:MAXFA),
+     &       DCVP2F(1:MAXFA)
       REAL*8 YSS (1:MAXDIM,1:MAXFA,1:MAXFA)
       REAL*8 C (1:MAXFA,1:MAXFA),D (1:MAXFA,1:MAXFA)
       REAL*8 FLKS(1:MAXFA),DFLKS1(1:MAXFA+1,1:MAXFA),
-     >       DFLKS2(1:MAXFA+1,1:MAXFA),
-     >       FGKS(1:MAXFA),DFGKS1(1:MAXFA+1,1:MAXFA),
-     >       DFGKS2(1:MAXFA+1,1:MAXFA),
-     >       FTGKS(1:MAXFA),FTGKS1(1:MAXFA+1,1:MAXFA),
-     >       FTGKS2(1:MAXFA+1,1:MAXFA),
-     >       FCLKS(1:MAXFA),FCLKS1(1:MAXFA+1,1:MAXFA),
-     >       FCLKS2(1:MAXFA+1,1:MAXFA)
+     &       DFLKS2(1:MAXFA+1,1:MAXFA),
+     &       FGKS(1:MAXFA),DFGKS1(1:MAXFA+1,1:MAXFA),
+     &       DFGKS2(1:MAXFA+1,1:MAXFA),
+     &       FTGKS(1:MAXFA),FTGKS1(1:MAXFA+1,1:MAXFA),
+     &       FTGKS2(1:MAXFA+1,1:MAXFA),
+     &       FCLKS(1:MAXFA),FCLKS1(1:MAXFA+1,1:MAXFA),
+     &       FCLKS2(1:MAXFA+1,1:MAXFA)
       REAL*8 MOBWF(1:MAXFA),MOADF(1:MAXFA),MOASF(1:MAXFA),
-     >       MOVPF(1:MAXFA),DW1F(1:MAXFA),DW2F(1:MAXFA),
-     >       DVP1F(1:MAXFA),DAS1F(1:MAXFA),DAS2F(1:MAXFA),
-     >       DAD1F(1:MAXFA),DVP2F(1:MAXFA),DAD2F(1:MAXFA),
-     >       DVP1FF(1:MAXFA),DVP2FF(1:MAXFA),DW1FFA(1:MAXFA) ,
-     >       DW2FFA(1:MAXFA),DAS1FF(1:MAXFA),DAS2FF(1:MAXFA),
-     >       DAD1FF(1:MAXFA),DAD2FF(1:MAXFA)
+     &       MOVPF(1:MAXFA),DW1F(1:MAXFA),DW2F(1:MAXFA),
+     &       DVP1F(1:MAXFA),DAS1F(1:MAXFA),DAS2F(1:MAXFA),
+     &       DAD1F(1:MAXFA),DVP2F(1:MAXFA),DAD2F(1:MAXFA),
+     &       DVP1FF(1:MAXFA),DVP2FF(1:MAXFA),DW1FFA(1:MAXFA) ,
+     &       DW2FFA(1:MAXFA),DAS1FF(1:MAXFA),DAS2FF(1:MAXFA),
+     &       DAD1FF(1:MAXFA),DAD2FF(1:MAXFA)
       REAL*8 DIVP1(1:MAXFA),DIVP2(1:MAXFA),DIAD1(1:MAXFA),
-     >       DIAD2(1:MAXFA), DIAS1(1:MAXFA),DIAS2(1:MAXFA),
-     >       DIFUVP(1:MAXFA),DIFUAS(1:MAXFA),DIFUAD(1:MAXFA),
-     >       DIAD1F(1:MAXFA),DIAD2F(1:MAXFA),DIAS1F(1:MAXFA),
-     >       DIAS2F(1:MAXFA),DIVP1F(1:MAXFA),DIVP2F(1:MAXFA)
+     &       DIAD2(1:MAXFA), DIAS1(1:MAXFA),DIAS2(1:MAXFA),
+     &       DIFUVP(1:MAXFA),DIFUAS(1:MAXFA),DIFUAD(1:MAXFA),
+     &       DIAD1F(1:MAXFA),DIAD2F(1:MAXFA),DIAS1F(1:MAXFA),
+     &       DIAS2F(1:MAXFA),DIVP1F(1:MAXFA),DIVP2F(1:MAXFA)
 C=====================================================================
       LOGICAL UTICER,LDCEN
       REAL*8  XG(MAXDIM)
@@ -291,12 +288,12 @@ C=====================================================================
       INTEGER ZZADMA,IVOIS,LIG,COL
       INTEGER IADP1K,IADP2K,IADP1,IADP2
       INTEGER ADCM1,ADCM2,ADCF1,ADCF2
-C ====================================================      
+C ====================================================
 C ADRESSE DANS LA MATRICE DE L ELEMENT CALCULE PAR
 C LE VOISIN IVOIS EN LIGNE LIG ET COLONNE COL
 C LA CONTRIBUTION PROPRE CORRESPOND AU VOISIN 0
 C DES DONNEES DES VOISINS DE LA MAILLE NUMA (0 SI MAILLE PAS ACTIVE)
-C ==================================================== 
+C ====================================================
       ZZADMA(IVOIS,LIG,COL)=IVOIS*DIMUEL*DIMUEL+(LIG-1)*DIMUEL+COL
 C ===================================================
 C FONCTIONS FORMULES D ADRESSAGE DES DDL
@@ -304,40 +301,40 @@ C ===================================================
       IADP1(FA)=2*(FA-1)+1
       IADP2(FA)=2*(FA-1)+2
       ADCF1(FA)=2*(FA-1)+1
-      ADCF2(FA)=2*(FA-1)+2     
+      ADCF2(FA)=2*(FA-1)+2
       IADP1K=2*NFACE+1
       IADP2K=2*NFACE+2
       ADCM1 = 2*NFACE+1
       ADCM2 = 2*NFACE+2
       CALL INICES(VALCEN,VALFAC,MAXFA)
-C      
+C
       ALPHA = CRIT(13)
 C============================
-C ACTUELLEMENT ON OBLIGE A PRENDRE LE CENTRE 
+C ACTUELLEMENT ON OBLIGE A PRENDRE LE CENTRE
 C AU CENTRE DE GRAVITE
-C SI ON VEUT TESTER LE CENTRE DU CERCLE CIRCONSCRIT 
+C SI ON VEUT TESTER LE CENTRE DU CERCLE CIRCONSCRIT
 C ON PRENDRA UTICER = TRUE
 C===============================
-      UTICER = .FALSE.      
+      UTICER = .FALSE.
       ZERO=0.D0
       DO 100 IDIM = 1 , NDIM
        XG(IDIM)=GEOM(IDIM,NNO)
-  100 CONTINUE 
+  100 CONTINUE
 C ==============================
 C   SI TYPVF=3 ALORS DECENTRE
 C   SI TYPVF=4 ALORS CENTRE
-C ==============================     
+C ==============================
       IF (TYPVF .EQ.3) THEN
         LDCEN=.TRUE.
       ELSE IF (TYPVF .EQ.4) THEN
         LDCEN=.FALSE.
-      ELSE        
+      ELSE
         CALL U2MESG('F','VOLUFINI_9',0,' ',1,TYPVF,0,0.D0)
       ENDIF
       CALL ASSERT(
-     > (OPTION(1:9).EQ.'RIGI_MECA' ) .OR.
-     > (OPTION(1:9).EQ.'RAPH_MECA' ) .OR.
-     > (OPTION(1:9).EQ.'FULL_MECA' ))
+     & (OPTION(1:9).EQ.'RIGI_MECA' ) .OR.
+     & (OPTION(1:9).EQ.'RAPH_MECA' ) .OR.
+     & (OPTION(1:9).EQ.'FULL_MECA' ))
 C
 C
       VF = .TRUE.
@@ -366,7 +363,7 @@ C ====================================================================
 C
       LOI = ' '
       CALL RCVALA(IMATE,' ','THM_INIT', 0, ' ', 0.D0, 1, 'COMP_THM',
-     & RTHMC, CODMES, 'FM')
+     & RTHMC, CODMES, 1)
       THMC = COMPOR(8)
       IF ( (RTHMC-1.0D0).LT.R8PREM() ) THEN
          LOI = 'LIQU_SATU'
@@ -438,14 +435,14 @@ C ================================================================
          CADF(I)  =0.D0
          DCAD1F(I)=0.D0
          DCAD2F(I)=0.D0
-C       
-         MOBWF(I)  =0.D0 
+C
+         MOBWF(I)  =0.D0
          DW1F(I)   =0.D0
          DW2F(I)   =0.D0
          DW1FFA(I)=0.D0
          DW2FFA(I)=0.D0
 C
-         MOADF(I)   = 0.D0 
+         MOADF(I)   = 0.D0
          DAD1F(I)   = 0.D0
          DAD2F(I)   = 0.D0
          DAD1FF(I)= 0.D0
@@ -462,13 +459,13 @@ C
          DVP2F(I)   = 0.D0
          DVP1FF(I)= 0.D0
          DVP2FF(I)= 0.D0
-    3 CONTINUE   
+    3 CONTINUE
 C ================================================================
 C --- CALCUL DES QUANTITES GEOMETRIQUES
 C ================================================================
       CALL CABHVF(MAXFA,MAXDIM,
-     >            NDIM,NNO,NNOS,NFACE,AXI,GEOM,
-     >            VOL,MFACE,DFACE,XFACE,NORMFA,UTICER)
+     &            NDIM,NNO,NNOS,NFACE,AXI,GEOM,
+     &            VOL,MFACE,DFACE,XFACE,NORMFA,UTICER)
 C ================================================================
 C --- CALCUL DES DEFORMATIONS GENERALISEES ----------------------
 C ON MET DANS LE TABLEAU DES DEF GENERALISES LES PRESSIONS
@@ -499,16 +496,16 @@ C ===============================================
             DSDE(I,J)=0.D0
     6 CONTINUE
       CALL COMTHM(OPTION,PERMAN,VF,0,VALFAC,VALCEN,
-     >            IMATE,TYPMOD,COMPOR,
+     &            IMATE,TYPMOD,COMPOR,
      &            CRIT,RINSTM,RINSTP,
      &            NDIM,DIMDEF,DIMCON,NBVARI,YAMEC,YAP1,
      &            YAP2,YATE,ADDEME,ADCOME,ADDEP1,ADCP11,
      &            ADCP12,ADDEP2,ADCP21,ADCP22,ADDETE,ADCOTE,
-     +            DEFGEM,DEFGEP,
-     >            CONGEM,CONGEP,
-     >            VINTM(1,1),VINTP(1,1),
-     +            DSDE,PESA,RETCOM,1,1,
-     >            P10,P20)
+     &            DEFGEM,DEFGEP,
+     &            CONGEM,CONGEP,
+     &            VINTM(1,1),VINTP(1,1),
+     &            DSDE,PESA,RETCOM,1,1,
+     &            P10,P20)
        IF ( RETCOM.NE.0) THEN
          CALL U2MESK('F','COMPOR1_9', 0 ,' ')
       ENDIF
@@ -540,15 +537,15 @@ C ===============================================
   704       CONTINUE
   703    CONTINUE
          CALL COMTHM(OPTION,PERMAN,VF,FA,VALFAC,VALCEN,
-     >               IMATE,TYPMOD,COMPOR,
+     &               IMATE,TYPMOD,COMPOR,
      &               CRIT,RINSTM,RINSTP,
      &               NDIM,DIMDEF,DIMCON,NBVARI,YAMEC,YAP1,
      &               YAP2,YATE,ADDEME,ADCOME,ADDEP1,ADCP11,
      &               ADCP12,ADDEP2,ADCP21,ADCP22,ADDETE,ADCOTE,
-     +               DEFGEM,DEFGEP,
-     >               CONGEM,CONGEP,VINTM(1,FA+1),VINTP(1,FA+1),
-     +               DSDE,PESA,RETCOM,1,1,
-     >               P10,P20)
+     &               DEFGEM,DEFGEP,
+     &               CONGEM,CONGEP,VINTM(1,FA+1),VINTP(1,FA+1),
+     &               DSDE,PESA,RETCOM,1,1,
+     &               P10,P20)
          IF ( RETCOM.NE.0) THEN
             CALL U2MESK('F','COMPOR1_9', 0 ,' ')
          ENDIF
@@ -585,8 +582,8 @@ C ===============================================
          KINTVF(6) = VALCEN(VKINT ,KZX)
       ENDIF
       CALL CACDSU(MAXFA,MAXDIM,ALPHA,
-     >            NDIM,NNO,NNOS,NFACE,AXI,GEOM,
-     >            VOL,MFACE,DFACE,XFACE,NORMFA,KINTVF,YSS,C,D) 
+     &            NDIM,NNO,NNOS,NFACE,AXI,GEOM,
+     &            VOL,MFACE,DFACE,XFACE,NORMFA,KINTVF,YSS,C,D)
       PCP = DEPLP(IADP1K)
       PGP = DEPLP(IADP2K)
       IF (LOI .EQ. 'LIQU_AD_GAZ' ) THEN
@@ -596,8 +593,8 @@ C EN VUE DE POST TRAITEMENT
 C CECI EST PROVISOIRE
 C
          CALL NVITHM(COMPOR, MECA, THMC, THER, HYDR, NVIM, NVIT,
-     >               NVIH, NVIC, ADVIME, ADVITH, ADVIHY, ADVICO,
-     >               VIHRHO, VICPHI, VICPVP, VICSAT,VICPR1,VICPR2)
+     &               NVIH, NVIC, ADVIME, ADVITH, ADVIHY, ADVICO,
+     &               VIHRHO, VICPHI, VICPVP, VICSAT,VICPR1,VICPR2)
          DO 8 IPG=1,NFACE+1
             VINTP(ADVICO+VICPR1,IPG) = PCP
             VINTP(ADVICO+VICPR2,IPG) = PGP
@@ -609,7 +606,7 @@ C
          PCPF(IFA) = DEPLP(IADP1(IFA))
          PGPF(IFA) = DEPLP(IADP2(IFA))
          DPGP1F(IFA) = 0.D0
-         DPGP2F(IFA) = 1.D0                  
+         DPGP2F(IFA) = 1.D0
     9 CONTINUE
       PWP = PGP-PCP
       DPWP1 = -1.D0
@@ -617,7 +614,7 @@ C
       DO 10 IFA=1,NFACE
          PWPF(IFA) = PGPF(IFA)-PCPF(IFA)
          DPWP1F(IFA) = -1.D0
-         DPWP2F(IFA) = 1.D0                     
+         DPWP2F(IFA) = 1.D0
    10 CONTINUE
       CVP   = VALCEN(CON,WVAP)
       DCVP1 = VALCEN(DCONP1,WVAP)
@@ -685,25 +682,25 @@ C ========================================
 C FLUX VOLUMIQUES
 C=========================================
       CALL VFCFKS(.TRUE.,TANGE,MAXFA,NFACE,
-     >           CVP,DCVP1,DCVP2,CVPF,
-     >           DCVP1F,DCVP2F,D,
-     >           PESA,ZERO,ZERO,ZERO,XG,XFACE,MAXDIM,NDIM,
-     >           FTGKS,FTGKS1,FTGKS2)
+     &           CVP,DCVP1,DCVP2,CVPF,
+     &           DCVP1F,DCVP2F,D,
+     &           PESA,ZERO,ZERO,ZERO,XG,XFACE,MAXDIM,NDIM,
+     &           FTGKS,FTGKS1,FTGKS2)
       CALL VFCFKS(.TRUE.,TANGE,MAXFA,NFACE,
-     >            CAD,DCAD1,DCAD2,CADF,
-     >            DCAD1F,DCAD2F,D,
-     >            PESA,ZERO,ZERO,ZERO,XG,XFACE,MAXDIM,NDIM,
-     >            FCLKS,FCLKS1,FCLKS2)
+     &            CAD,DCAD1,DCAD2,CADF,
+     &            DCAD1F,DCAD2F,D,
+     &            PESA,ZERO,ZERO,ZERO,XG,XFACE,MAXDIM,NDIM,
+     &            FCLKS,FCLKS1,FCLKS2)
       CALL VFCFKS(.TRUE.,TANGE,MAXFA,NFACE,
-     >           PWP,DPWP1,DPWP2, PWPF,
-     >           DPWP1F,DPWP2F,C,
-     >           PESA,RHOL,DRHOL1,DRHOL2,XG,XFACE,MAXDIM,NDIM,
-     >           FLKS,DFLKS1,DFLKS2)     
+     &           PWP,DPWP1,DPWP2, PWPF,
+     &           DPWP1F,DPWP2F,C,
+     &           PESA,RHOL,DRHOL1,DRHOL2,XG,XFACE,MAXDIM,NDIM,
+     &           FLKS,DFLKS1,DFLKS2)
       CALL VFCFKS(.TRUE.,TANGE,MAXFA,NFACE,
-     >           PGP,DPGP1,DPGP2, PGPF,
-     >           DPGP1F,DPGP2F,C,
-     >           PESA,RHOG,DRHOG1,DRHOG2,XG,XFACE,MAXDIM,NDIM,
-     >           FGKS,DFGKS1,DFGKS2) 
+     &           PGP,DPGP1,DPGP2, PGPF,
+     &           DPGP1F,DPGP2F,C,
+     &           PESA,RHOG,DRHOG1,DRHOG2,XG,XFACE,MAXDIM,NDIM,
+     &           FGKS,DFGKS1,DFGKS2)
       DO 16 IFA=1,NFACE
 C ========================================
 C CALCUL DIFFUSIONS
@@ -723,8 +720,8 @@ C ========================================
          DIAD2(IFA)  = VALCEN(DDIFP2,AIRDIS)
          DIAD1F(IFA) = 0.D0
          DIAD2F(IFA) = 0.D0
-   16 CONTINUE     
-      DO 161 IFA=1,NFACE      
+   16 CONTINUE
+      DO 161 IFA=1,NFACE
 C ==========================================
 C CALCUL MOBILITES
 C ==========================================
@@ -733,7 +730,7 @@ C ===========================
 C CALCUL MOBILITES
 C ===========================
             IF(FLKS(IFA).GE.0.D0)THEN
-               MOBWF(IFA) = VALCEN(MOB,WLIQ)      
+               MOBWF(IFA) = VALCEN(MOB,WLIQ)
                DW1F(IFA)  = VALCEN(DMOBP1,WLIQ)
                DW2F(IFA)  = VALCEN(DMOBP2,WLIQ)
                DW1FFA(IFA) = 0.D0
@@ -745,7 +742,7 @@ C
                DAD1FF(IFA)= 0.D0
                DAD2FF(IFA)= 0.D0
             ELSE
-               MOBWF(IFA) = VALFAC(IFA,MOB,WLIQ) 
+               MOBWF(IFA) = VALFAC(IFA,MOB,WLIQ)
                DW1F(IFA) = 0.D0
                DW2F(IFA) = 0.D0
                DW1FFA(IFA)=VALFAC(IFA,DMOBP1,WLIQ)
@@ -807,44 +804,44 @@ C
                DVP1FF(IFA)= 0.D0
                DVP2FF(IFA)= 0.D0
          ENDIF
-  161 CONTINUE 
-      DO 162 IFA=1,NFACE 
-         CALL CAFMES(IFA,.TRUE.,TANGE,MAXFA,NFACE,FLKS(IFA),DFLKS1, 
-     >              DFLKS2,MOBWF(IFA),DW1F,DW2F,DW1FFA,DW2FFA,
-     >              FMWS,FM1WS,FM2WS)     
-         CALL CAFMES(IFA,.TRUE.,TANGE,MAXFA,NFACE,FGKS(IFA),DFGKS1,
-     >              DFGKS2,MOVPF(IFA),DVP1F,DVP2F,DVP1FF,DVP2FF,
-     >              FMVPS,FM1VPS,FM2VPS)
-         CALL CAFMES(IFA,CONT,TANGE,MAXFA,NFACE,FTGKS(IFA),FTGKS1,
-     >              FTGKS2,DIFUVP(IFA),DIVP1,DIVP2,DIVP1F,DIVP2F,
-     >              FMVPS,FM1VPS,FM2VPS)
-         CALL CAFMES(IFA,.TRUE.,TANGE,MAXFA,NFACE,FGKS(IFA),DFGKS1,
-     >               DFGKS2,MOASF(IFA),DAS1F,DAS2F,DAS1FF,DAS2FF,
-     >               FMASS,FM1ASS,FM2ASS)
-         CALL CAFMES(IFA,CONT,TANGE,MAXFA,NFACE,FTGKS(IFA),FTGKS1,
-     >               FTGKS2,DIFUAS(IFA),DIAS1,DIAS2,DIAS1F,DIAS2F,
-     >               FMASS,FM1ASS,FM2ASS)
+  161 CONTINUE
+      DO 162 IFA=1,NFACE
          CALL CAFMES(IFA,.TRUE.,TANGE,MAXFA,NFACE,FLKS(IFA),DFLKS1,
-     >               DFLKS2,MOADF(IFA),DAD1F,DAD2F,DAD1FF,DAD2FF,
-     >               FMADS,FM1ADS,FM2ADS)
+     &              DFLKS2,MOBWF(IFA),DW1F,DW2F,DW1FFA,DW2FFA,
+     &              FMWS,FM1WS,FM2WS)
+         CALL CAFMES(IFA,.TRUE.,TANGE,MAXFA,NFACE,FGKS(IFA),DFGKS1,
+     &              DFGKS2,MOVPF(IFA),DVP1F,DVP2F,DVP1FF,DVP2FF,
+     &              FMVPS,FM1VPS,FM2VPS)
+         CALL CAFMES(IFA,CONT,TANGE,MAXFA,NFACE,FTGKS(IFA),FTGKS1,
+     &              FTGKS2,DIFUVP(IFA),DIVP1,DIVP2,DIVP1F,DIVP2F,
+     &              FMVPS,FM1VPS,FM2VPS)
+         CALL CAFMES(IFA,.TRUE.,TANGE,MAXFA,NFACE,FGKS(IFA),DFGKS1,
+     &               DFGKS2,MOASF(IFA),DAS1F,DAS2F,DAS1FF,DAS2FF,
+     &               FMASS,FM1ASS,FM2ASS)
+         CALL CAFMES(IFA,CONT,TANGE,MAXFA,NFACE,FTGKS(IFA),FTGKS1,
+     &               FTGKS2,DIFUAS(IFA),DIAS1,DIAS2,DIAS1F,DIAS2F,
+     &               FMASS,FM1ASS,FM2ASS)
+         CALL CAFMES(IFA,.TRUE.,TANGE,MAXFA,NFACE,FLKS(IFA),DFLKS1,
+     &               DFLKS2,MOADF(IFA),DAD1F,DAD2F,DAD1FF,DAD2FF,
+     &               FMADS,FM1ADS,FM2ADS)
          CALL CAFMES(IFA,CONT,TANGE,MAXFA,NFACE,FCLKS(IFA),FCLKS1,
-     >              FCLKS2,DIFUAD(IFA),DIAD1,DIAD2,DIAD1F,DIAD2F,
-     >              FMADS,FM1ADS,FM2ADS)
-  162 CONTINUE    
+     &              FCLKS2,DIFUAD(IFA),DIAD1,DIAD2,DIAD1F,DIAD2F,
+     &              FMADS,FM1ADS,FM2ADS)
+  162 CONTINUE
       CALL CAFVES(.TRUE.,TANGE,MAXFA,NFACE,FLKS,DFLKS1,DFLKS2,
-     >            MOBWF,DW1F,DW2F,DW1FFA,DW2FFA,FLUWS,FW1S,FW2S)
+     &            MOBWF,DW1F,DW2F,DW1FFA,DW2FFA,FLUWS,FW1S,FW2S)
       CALL CAFVES(.TRUE.,TANGE,MAXFA,NFACE,FGKS,DFGKS1,DFGKS2,
-     >            MOVPF,DVP1F,DVP2F,DVP1FF,DVP2FF,FLUVPS,FVP1S,FVP2S)
+     &            MOVPF,DVP1F,DVP2F,DVP1FF,DVP2FF,FLUVPS,FVP1S,FVP2S)
       CALL CAFVES(.TRUE.,TANGE,MAXFA,NFACE,FTGKS,FTGKS1,FTGKS2,
-     >            DIFUVP,DIVP1,DIVP2,DIVP1F,DIVP2F,FLUVPS,FVP1S,FVP2S)
+     &            DIFUVP,DIVP1,DIVP2,DIVP1F,DIVP2F,FLUVPS,FVP1S,FVP2S)
       CALL CAFVES(.TRUE.,TANGE,MAXFA,NFACE,FGKS,DFGKS1,DFGKS2,
-     >            MOASF,DAS1F,DAS2F,DAS1FF,DAS2FF,FLUASS,FAS1S,FAS2S)
+     &            MOASF,DAS1F,DAS2F,DAS1FF,DAS2FF,FLUASS,FAS1S,FAS2S)
       CALL CAFVES(.TRUE.,TANGE,MAXFA,NFACE,FTGKS,FTGKS1,FTGKS2,
-     >            DIFUAS,DIAS1,DIAS2,DIAS1F,DIAS2F,FLUASS,FAS1S,FAS2S)
+     &            DIFUAS,DIAS1,DIAS2,DIAS1F,DIAS2F,FLUASS,FAS1S,FAS2S)
       CALL CAFVES(.TRUE.,TANGE,MAXFA,NFACE,FLKS,DFLKS1,DFLKS2,
-     >            MOADF,DAD1F,DAD2F,DAD1FF,DAD2FF,FLUADS,FAD1S,FAD2S)
+     &            MOADF,DAD1F,DAD2F,DAD1FF,DAD2FF,FLUADS,FAD1S,FAD2S)
       CALL CAFVES(.TRUE.,TANGE,MAXFA,NFACE,FCLKS,FCLKS1,FCLKS2,
-     >            DIFUAD,DIAD1,DIAD2,DIAD1F,DIAD2F,FLUADS,FAD1S,FAD2S)
+     &            DIFUAD,DIAD1,DIAD2,DIAD1F,DIAD2F,FLUADS,FAD1S,FAD2S)
       IF (CONT) THEN
 C ********************************************************************
 C EQUATION DE LA CONTINUITE DES FLUX
@@ -868,11 +865,11 @@ C ********************************************************************
          CONGEP(ADCP21+1,1)= FLUASS
          CONGEP(ADCP22+1,1)= FLUADS
          VECTU(ADCM1)= VECTU(ADCM1)+CONGEP(ADCP11+1,1)
-     >           +CONGEP(ADCP12+1,1)
+     &           +CONGEP(ADCP12+1,1)
          VECTU(ADCM2)= VECTU(ADCM2)+CONGEP(ADCP21+1,1)
-     >           +CONGEP(ADCP22+1,1)  
+     &           +CONGEP(ADCP22+1,1)
       ENDIF
-      IF ( TANGE) THEN  
+      IF ( TANGE) THEN
 C *******************************************************************
 C EQUATION DE LA CONSERVATION DE LA MASSE POUR K
 C           (DERIVEES % VARIABLES DU CENTRE)
@@ -883,16 +880,16 @@ C           | FAS1S + FAD1S |
 C           | FAS2S + FAD2S |
 C *******************************************************************
          MATUU(ZZADMA(0,ADCM1,IADP1K))=
-     >         MATUU(ZZADMA(0,ADCM1,IADP1K))+FW1S(1)+FVP1S(1)
+     &         MATUU(ZZADMA(0,ADCM1,IADP1K))+FW1S(1)+FVP1S(1)
 C
          MATUU(ZZADMA(0,ADCM1,IADP2K))=
-     >         MATUU(ZZADMA(0,ADCM1,IADP2K))+FW2S(1)+FVP2S(1)
+     &         MATUU(ZZADMA(0,ADCM1,IADP2K))+FW2S(1)+FVP2S(1)
 C
          MATUU(ZZADMA(0,ADCM2,IADP1K))=
-     >         MATUU(ZZADMA(0,ADCM2,IADP1K))+FAS1S(1)+FAD1S(1)
+     &         MATUU(ZZADMA(0,ADCM2,IADP1K))+FAS1S(1)+FAD1S(1)
 C
          MATUU(ZZADMA(0,ADCM2,IADP2K))=
-     >         MATUU(ZZADMA(0,ADCM2,IADP2K))+FAS2S(1)+FAD2S(1)
+     &         MATUU(ZZADMA(0,ADCM2,IADP2K))+FAS2S(1)+FAD2S(1)
          DO 18 IFA=1,NFACE
 C
 C *******************************************************************
@@ -905,20 +902,20 @@ C           | FAS1S + FAD1S |
 C           | FAS2S + FAD2S |
 C *******************************************************************
             MATUU(ZZADMA(0,ADCM1,IADP1(IFA)))=
-     >            MATUU(ZZADMA(0,ADCM1,IADP1(IFA)))
-     >            +FW1S(IFA+1)+FVP1S(IFA+1)
+     &            MATUU(ZZADMA(0,ADCM1,IADP1(IFA)))
+     &            +FW1S(IFA+1)+FVP1S(IFA+1)
 C
             MATUU(ZZADMA(0,ADCM1,IADP2(IFA)))=
-     >            MATUU(ZZADMA(0,ADCM1,IADP2(IFA)))
-     >            +FW2S(IFA+1)+FVP2S(IFA+1)
+     &            MATUU(ZZADMA(0,ADCM1,IADP2(IFA)))
+     &            +FW2S(IFA+1)+FVP2S(IFA+1)
 C
             MATUU(ZZADMA(0,ADCM2,IADP1(IFA)))=
-     >            MATUU(ZZADMA(0,ADCM2,IADP1(IFA)))
-     >            +FAS1S(IFA+1)+FAD1S(IFA+1)
+     &            MATUU(ZZADMA(0,ADCM2,IADP1(IFA)))
+     &            +FAS1S(IFA+1)+FAD1S(IFA+1)
 C
             MATUU(ZZADMA(0,ADCM2,IADP2(IFA)))=
-     >            MATUU(ZZADMA(0,ADCM2,IADP2(IFA)))
-     >            +FAS2S(IFA+1)+FAD2S(IFA+1)
+     &            MATUU(ZZADMA(0,ADCM2,IADP2(IFA)))
+     &            +FAS2S(IFA+1)+FAD2S(IFA+1)
 C *******************************************************************
 C EQUATION DE LA CONTINUITE DES FLUX POUR K
 C           (DERIVEES % VARIABLES DU CENTRE)
@@ -928,20 +925,20 @@ C           | FM1ASS + FM1ADS |
 C           | FM2ASS + FM2ADS |
 C *****************************************************************
             MATUU(ZZADMA(0,ADCF1(IFA),IADP1K))=
-     >            MATUU(ZZADMA(0,ADCF1(IFA),IADP1K))+
-     >            FM1WS(1,IFA)+FM1VPS(1,IFA)
+     &            MATUU(ZZADMA(0,ADCF1(IFA),IADP1K))+
+     &            FM1WS(1,IFA)+FM1VPS(1,IFA)
 C
             MATUU(ZZADMA(0,ADCF1(IFA),IADP2K))=
-     >            MATUU(ZZADMA(0,ADCF1(IFA),IADP2K))+
-     >            FM2WS(1,IFA)+FM2VPS(1,IFA)
+     &            MATUU(ZZADMA(0,ADCF1(IFA),IADP2K))+
+     &            FM2WS(1,IFA)+FM2VPS(1,IFA)
 C
             MATUU(ZZADMA(0,ADCF2(IFA),IADP1K))=
-     >            MATUU(ZZADMA(0,ADCF2(IFA),IADP1K))+
-     >            FM1ASS(1,IFA)+FM1ADS(1,IFA)
+     &            MATUU(ZZADMA(0,ADCF2(IFA),IADP1K))+
+     &            FM1ASS(1,IFA)+FM1ADS(1,IFA)
 C
             MATUU(ZZADMA(0,ADCF2(IFA),IADP2K))=
-     >            MATUU(ZZADMA(0,ADCF2(IFA),IADP2K))+
-     >            FM2ASS(1,IFA)+FM2ADS(1,IFA)
+     &            MATUU(ZZADMA(0,ADCF2(IFA),IADP2K))+
+     &            FM2ASS(1,IFA)+FM2ADS(1,IFA)
 C *******************************************************************
 C EQUATION DE LA CONTINUITE DES FLUX POUR K
 C           (DERIVEES % VARIABLES DE L ARETE)
@@ -952,20 +949,20 @@ C           | FM2ASS + FM2ADS |
 C *******************************************************************
             DO 181 JFA=1,NFACE
                MATUU(ZZADMA(0,ADCF1(IFA),IADP1(JFA)))=
-     >               MATUU(ZZADMA(0,ADCF1(IFA),IADP1(JFA)))
-     >               + FM1WS(JFA+1,IFA)+FM1VPS(JFA+1,IFA)
+     &               MATUU(ZZADMA(0,ADCF1(IFA),IADP1(JFA)))
+     &               + FM1WS(JFA+1,IFA)+FM1VPS(JFA+1,IFA)
 C
                MATUU(ZZADMA(0,ADCF1(IFA),IADP2(JFA)))=
-     >               MATUU(ZZADMA(0,ADCF1(IFA),IADP2(JFA)))
-     >               +FM2WS(JFA+1,IFA)+FM2VPS(JFA+1,IFA)
+     &               MATUU(ZZADMA(0,ADCF1(IFA),IADP2(JFA)))
+     &               +FM2WS(JFA+1,IFA)+FM2VPS(JFA+1,IFA)
 C
                MATUU(ZZADMA(0,ADCF2(IFA),IADP1(JFA)))=
-     >               MATUU(ZZADMA(0,ADCF2(IFA),IADP1(JFA)))
-     >               +FM1ASS(JFA+1,IFA)+FM1ADS(JFA+1,IFA)
+     &               MATUU(ZZADMA(0,ADCF2(IFA),IADP1(JFA)))
+     &               +FM1ASS(JFA+1,IFA)+FM1ADS(JFA+1,IFA)
 C
                MATUU(ZZADMA(0,ADCF2(IFA),IADP2(JFA)))=
-     >               MATUU(ZZADMA(0,ADCF2(IFA),IADP2(JFA)))
-     >              +FM2ASS(JFA+1,IFA)+FM2ADS(JFA+1,IFA)
+     &               MATUU(ZZADMA(0,ADCF2(IFA),IADP2(JFA)))
+     &              +FM2ASS(JFA+1,IFA)+FM2ADS(JFA+1,IFA)
   181       CONTINUE
    18    CONTINUE
       END IF

@@ -2,9 +2,9 @@
       IMPLICIT   NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
+C MODIF PREPOST  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -45,7 +45,7 @@ C     ------------------------------------------------------------------
      &              VMIN, DOMAGE, RCRIT
       COMPLEX*16    CBID
       LOGICAL       LHAIGH, LKE
-      CHARACTER*2   CODRET(2), CODWO, CODBA, CODHS
+      INTEGER ICODRE(2), ICODWO, ICODBA, ICODHS
       CHARACTER*8   K8B, NOMTEN(6), NOMRES(2), NOMMAT, KDOMM, NOMPAR,
      &              CARA, RESULT
       CHARACTER*16  NOMCMD, PHENO, PHENOM, CRITER
@@ -127,7 +127,7 @@ C
       NBPAR  = 0
       NOMPAR = ' '
       CALL RCVALE ( NOMMAT, 'FATIGUE ', NBPAR, NOMPAR, RBID,
-     &                                  2, NOMRES, VAL, CODRET, 'F ' )
+     &                                  2, NOMRES, VAL, ICODRE, 2)
 C
       IF ( CRITER .EQ. 'CROSSLAND' ) THEN
 C          -----------------------
@@ -171,21 +171,21 @@ C     --- CALCUL DU DOMMAGE ELEMENTAIRE DE WOHLER ---
 C         ---------------------------------------
       IF ( KDOMM .EQ. 'WOHLER' ) THEN
          PHENO = 'FATIGUE'
-         CALL RCCOME ( NOMMAT, PHENO, PHENOM, CODRET(1) )
-         IF ( CODRET(1) .EQ. 'NO' ) CALL U2MESS('F','FATIGUE1_24')
+         CALL RCCOME ( NOMMAT, PHENO, PHENOM, ICODRE(1) )
+         IF ( ICODRE(1) .EQ. 1 ) CALL U2MESS('F','FATIGUE1_24')
          CARA = 'WOHLER'
-         CALL RCPARE ( NOMMAT, PHENO, CARA, CODWO )
+         CALL RCPARE ( NOMMAT, PHENO, CARA, ICODWO )
          CARA = 'A_BASQUI'
-         CALL RCPARE ( NOMMAT, PHENO, CARA, CODBA )
+         CALL RCPARE ( NOMMAT, PHENO, CARA, ICODBA )
          CARA = 'A0'
-         CALL RCPARE ( NOMMAT, PHENO, CARA, CODHS )
-         IF ( CODWO .EQ. 'OK' ) THEN
+         CALL RCPARE ( NOMMAT, PHENO, CARA, ICODHS )
+         IF ( ICODWO .EQ. 0 ) THEN
             CALL FGDOWH ( NOMMAT, NBC, VMIN, VMAX, LKE, RBID,
      &                    LHAIGH, RBID, DOMAGE )
-         ELSEIF ( CODBA .EQ. 'OK' ) THEN
+         ELSEIF ( ICODBA .EQ. 0 ) THEN
             CALL FGDOBA ( NOMMAT, NBC, VMIN, VMAX, LKE, RBID,
      &                    LHAIGH, RBID, DOMAGE )
-         ELSEIF ( CODHS .EQ. 'OK' ) THEN
+         ELSEIF ( ICODHS .EQ. 0 ) THEN
             CALL FGDOHS ( NOMMAT, NBC, VMIN, VMAX, LKE, RBID,
      &                    LHAIGH, RBID, DOMAGE )
          ENDIF

@@ -6,7 +6,7 @@
      &                   ANGMAS,
      &                   SIGP,VIP,DSIDEP,IRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 04/04/2011   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -94,13 +94,13 @@ C AUTRES
       REAL*8     COEINT(NBCINT)
       CHARACTER*8  NOMLEM(NBCLEM),NOMVIL(NBCVIL)
       CHARACTER*8  NOMINT(NBCINT)
-      CHARACTER*2  CODVIL(NBCVIL),CODLEM(NBCLEM),CODINT(NBCINT)
+      INTEGER CODVIL(NBCVIL),CODLEM(NBCLEM),CODINT(NBCINT)
 C GRANDISSEMENT
       INTEGER    NBCLGR
       PARAMETER (NBCLGR=3)
       REAL*8     COEFGR(NBCLGR)
       CHARACTER*8 NOMGRD(NBCLGR)
-      CHARACTER*2 CODGRA(NBCLGR)
+      INTEGER CODGRA(NBCLGR)
       CHARACTER*(*) FAMI
 C
       REAL*8            T1,T2,DEFAM(6),DEFAP(6)
@@ -233,11 +233,11 @@ C       RECUPERATION DES CARACTERISTIQUES DES LOIS DE FLUAGE
 
          CALL RCVALB(FAMI,1,1,'+',IMATE,' ','LEMAITRE_IRRA',
      &                 0,' ',0.D0,
-     &                 7,NOMLEM,COELEM,CODLEM, 'FM' )
+     &                 7,NOMLEM,COELEM,CODLEM, 1)
 
          CALL RCVALB(FAMI,1,1,'+',IMATE,' ','LEMAITRE_IRRA',
      &                 0,' ',0.D0,
-     &                 3,NOMGRD,COEFGR,CODGRA, 'FM' )
+     &                 3,NOMGRD,COEFGR,CODGRA, 1)
 C          FLUX NEUTRONIQUE
          FLUPHI = (IRRAP-IRRAM)/DELTAT
 
@@ -274,7 +274,7 @@ C         PARAMETRES DE LA LOI DE FLUAGE
 C        PARAMETRES DE LA LOI DE FLUAGE
          CALL RCVALB(FAMI,1,1,'+',IMATE,' ','VISC_IRRA_',
      &           1,'TEMP',TSCHEM,
-     &           5,NOMVIL(1),COEVIL(1),CODVIL, 'FM' )
+     &           5,NOMVIL(1),COEVIL(1),CODVIL, 1)
          A         = COEVIL(1)
          B         = COEVIL(2)
          CTPS      = COEVIL(3)
@@ -292,11 +292,11 @@ C        PARAMETRES DE LA LOI DE FLUAGE
 C        PARAMETRES DE LA LOI DE FLUAGE
          CALL RCVALB(FAMI,1,1,'+',IMATE,' ','GRAN_IRRA_',
      &           1,' ',0.D0,
-     &           5,NOMVIL(1),COEVIL(1),CODVIL, 'FM' )
+     &           5,NOMVIL(1),COEVIL(1),CODVIL, 1)
          CALL RCVALB(FAMI,1,1,'+',IMATE,' ','GRAN_IRRA_',
      &               0,' ',0.D0,
-     &                 3,NOMGRD,COEFGR,CODGRA, 'FM' )
-         IF (CODGRA(3).NE.'OK') THEN
+     &                 3,NOMGRD,COEFGR,CODGRA, 1)
+         IF (CODGRA(3).NE.0) THEN
             COEFGR(3) = 1.D0
          ENDIF
          IF (COEVIL(5).NE.1.D0) THEN
@@ -315,7 +315,7 @@ C        PARAMETRES DE LA LOI DE FLUAGE
       ELSE IF (COMPOR(1)(1:10).EQ.'LEMA_SEUIL') THEN
          CALL RCVALB(FAMI,1,1,'+',IMATE,' ','LEMA_SEUIL',
      &              1,'TEMP',TSCHEM,
-     &              2,NOMINT(1),COEINT(1),CODINT, 'FM' )
+     &              2,NOMINT(1),COEINT(1),CODINT, 1)
          UNSURM=0.D0
          VALDEN=1.D0
          UNSURK = (COEINT(1)*FLUPHI*2.D0)/SQRT(3.D0)

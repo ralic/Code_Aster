@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 08/02/2011   AUTEUR PROIX J-M.PROIX 
+#& MODIF COMMANDE  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -76,6 +76,11 @@ TEST_COMPOR =MACRO(nom="TEST_COMPOR", op=test_compor_ops,sd_prod=table_sdaster,
               regles=(UN_PARMI('ANGL_REP','ANGL_EULER'),),
               ANGL_REP        =SIMP(statut='f',typ='R',min=1,max=3),
               ANGL_EULER      =SIMP(statut='f',typ='R',min=1,max=3),
+                                 ),
+            VERI_MATR_OPTION  =FACT(statut='f',max=1,fr='options pour le test de la matrice tangente',
+              VALE_PERT_RELA  =SIMP(statut='f',typ='R',defaut=1.E-5),
+              PRECISION       =SIMP(statut='f',typ='R',defaut=1.E-4 ),
+              PREC_ZERO       =SIMP(statut='f',typ='R',defaut=1.E-12 ),
                                  ),
                                ),
             INFO            =SIMP(statut='f',typ='I',defaut=1,into=(1,2) ),

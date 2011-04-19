@@ -2,9 +2,9 @@
      &  PGL,MATERD,MATERF, MATCST,NBCOMM,CPMONO,NDT,NDI,NR,NVI,HSR)
         IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/12/2010   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -126,31 +126,28 @@ C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
       CHARACTER*32 ZK32
       CHARACTER*80 ZK80
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
-      CHARACTER*32     JEXNUM, JEXNOM, JEXATR
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 C     ----------------------------------------------------------------
       INTEGER         KPG,KSP,NMAT, NDT , NDI  , NR , NVI,NBCOMM(NMAT,3)
       REAL*8          MATERD(NMAT,2) ,MATERF(NMAT,2)
-      REAL*8          HYDRD , HYDRF , SECHD , SECHF,R8DGRD,HOOK(6,6)
+      REAL*8             HOOK(6,6)
       REAL*8          REPERE(7),XYZ(3),KOOH(6,6)
       REAL*8          EPSI,R8PREM,ANGMAS(3),PGL(3,3),R8VIDE,HOOKF(6,6)
       REAL*8      VALRES(NMAT),HSR(5,24,24),MS(6),NG(3),Q(3,3),LG(3)
-      CHARACTER*8     MOD, NOM , NOMC(14)
-      CHARACTER*2     BL2, CERR(14)
+      CHARACTER*8     MOD , NOMC(14)
+      INTEGER CERR(14)
       CHARACTER*3     MATCST
       CHARACTER*(*)   FAMI
       CHARACTER*16    COMP(*),NMATER,NECOUL,NECRIS,NECRCI,NOMFAM
       CHARACTER*16    CPMONO(5*NMAT+1),PHENOM,COMPK,COMPI,COMPR
-      INTEGER I, IMAT, NBFSYS, IFA,J,ICAMAS,ITAB(8),NBMONO,NBSYS
+      INTEGER I, IMAT, NBFSYS, IFA,J,NBMONO,NBSYS
       INTEGER NBPHAS,ICOMPK,ICOMPI,ICOMPR,DIMK,TABICP(NMAT),NVLOC
       INTEGER INDMAT,INDCP,IMONO,NBVAL,INDLOC,INDCOM,IPHAS,NBFAM
       INTEGER NUMONO,NVINTG,IDMONO,NBVAL1,NBVAL2,NBVAL3,NBCOEF,NBHSR
-      LOGICAL IRET
 C     ----------------------------------------------------------------
 C
       CALL JEMARQ()
 
-      BL2 = '  '
 C
 C -   NB DE COMPOSANTES / VARIABLES INTERNES -------------------------
 C
@@ -310,22 +307,22 @@ C -     RECUPERATION MATERIAU A TEMPD (T)
 C
           CALL RCVALB (  FAMI,  KPG,     KSP, '-',
      &                   IMAT,  ' ',  'ELAS', 0,  ' ',0.D0, 2,
-     &                   NOMC(1),  MATERD(1,1),  CERR(1), 'FM' )
+     &                   NOMC(1),  MATERD(1,1),  CERR(1), 1)
           CALL RCVALB (  FAMI,  KPG,     KSP, '-',
      &                   IMAT,  ' ',  'ELAS', 0,  ' ',0.D0, 1,
-     &                   NOMC(3),  MATERD(3,1),  CERR(3), BL2 )
-          IF ( CERR(3) .NE. 'OK' ) MATERD(3,1) = 0.D0
+     &                   NOMC(3),  MATERD(3,1),  CERR(3), 0)
+          IF ( CERR(3) .NE. 0 ) MATERD(3,1) = 0.D0
           MATERD(NMAT,1)=0
 C
 C -     RECUPERATION MATERIAU A TEMPF (T+DT)
 C
           CALL RCVALB (  FAMI,  KPG,     KSP, '+',
      &                   IMAT, ' ',   'ELAS',  0, ' ',0.D0, 2,
-     &                   NOMC(1),  MATERF(1,1),  CERR(1), 'FM' )
+     &                   NOMC(1),  MATERF(1,1),  CERR(1), 1)
           CALL RCVALB (  FAMI,  KPG,     KSP, '+',
      &                   IMAT, ' ',   'ELAS',  0, ' ',0.D0, 1,
-     &                   NOMC(3),  MATERF(3,1),  CERR(3), BL2 )
-          IF ( CERR(3) .NE. 'OK' ) MATERF(3,1) = 0.D0
+     &                   NOMC(3),  MATERF(3,1),  CERR(3), 0)
+          IF ( CERR(3) .NE. 0 ) MATERF(3,1) = 0.D0
           MATERF(NMAT,1)=0
 
       ELSE IF (PHENOM.EQ.'ELAS_ORTH') THEN
@@ -372,10 +369,10 @@ C         termes  SQRT(2) qui ne sont pas mis dans DMAT3D
         NOMC(3) = 'ALPHA_N'
         CALL RCVALB(FAMI,KPG,KSP,'-',
      &              IMAT,' ',PHENOM,0,' ',0.D0,3,NOMC,MATERD(73,1),
-     &              CERR,' ')
-        IF (CERR(1).NE.'OK') MATERD(73,1) = 0.D0
-        IF (CERR(2).NE.'OK') MATERD(74,1) = 0.D0
-        IF (CERR(3).NE.'OK') MATERD(75,1) = 0.D0
+     &              CERR,0)
+        IF (CERR(1).NE.0) MATERD(73,1) = 0.D0
+        IF (CERR(2).NE.0) MATERD(74,1) = 0.D0
+        IF (CERR(3).NE.0) MATERD(75,1) = 0.D0
 C
 C -     MATRICE D'ELASTICITE ET SON INVERSE A A TEMPF (T+DT)
 C
@@ -411,10 +408,10 @@ C         termes  SQRT(2) qui ne sont pas mis dans DMAT3D
         MATERF(NMAT,1)=1
         CALL RCVALB(FAMI,KPG,KSP,'+',
      &              IMAT,' ',PHENOM,0,' ',0.D0,3,NOMC,MATERF(73,1),
-     &              CERR,' ')
-        IF (CERR(1).NE.'OK') MATERF(73,1) = 0.D0
-        IF (CERR(2).NE.'OK') MATERF(74,1) = 0.D0
-        IF (CERR(3).NE.'OK') MATERF(75,1) = 0.D0
+     &              CERR,0)
+        IF (CERR(1).NE.0) MATERF(73,1) = 0.D0
+        IF (CERR(2).NE.0) MATERF(74,1) = 0.D0
+        IF (CERR(3).NE.0) MATERF(75,1) = 0.D0
       ELSE
          CALL U2MESK('F','ALGORITH4_65',1,PHENOM)
       ENDIF

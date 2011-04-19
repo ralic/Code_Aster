@@ -8,9 +8,9 @@ C
         CHARACTER*8  MOD
 C =================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/05/2010   AUTEUR FERNANDES R.FERNANDES 
+C MODIF ALGORITH  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -59,7 +59,7 @@ C =================================================================
       REAL*8          UN, DEUX, TROIS
       REAL*8          MU0V, XI0V, S0
       REAL*8          MPIC, APIC, SIGMP1, SIGC, ME, AE, COHERE
-      CHARACTER*2     CERR(32)
+      INTEGER CERR(32)
       CHARACTER*8     NOMC(32)
 C =================================================================
 C --- INITIALISATION DE PARAMETRES --------------------------------
@@ -111,12 +111,12 @@ C =================================================================
 C --- RECUPERATION DES PARAMETRES MATERIAU ------------------------
 C =================================================================
       CALL RCVALA(IMAT,' ', 'ELAS', 1, 'TEMP', TEMPD, 3,
-     &               NOMC(1),  MATERD(1,1),  CERR(1), ' ')
+     &               NOMC(1),  MATERD(1,1),  CERR(1), 0)
       INDAL=1
-      IF (CERR(3).NE.'OK') INDAL=0
+      IF (CERR(3).NE.0) INDAL=0
 
       CALL RCVALA(IMAT,' ', 'LETK', 1, 'TEMP', TEMPD, 27,
-     &               NOMC(4),  MATERD(1,2),  CERR(4), ' ' )
+     &               NOMC(4),  MATERD(1,2),  CERR(4), 0)
 C =================================================================
 C - CALCUL DES MODULES DE CISAILLEMENT ET DE DEFORMATION VOLUMIQUE-
 C =================================================================

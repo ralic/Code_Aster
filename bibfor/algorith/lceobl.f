@@ -3,22 +3,22 @@
 
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 17/01/2011   AUTEUR IDOUX L.IDOUX 
+C MODIF ALGORITH  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 
       IMPLICIT NONE
@@ -29,7 +29,7 @@ C ======================================================================
       REAL*8             SIGM(6), VIP(7), DSIDEP(6,6)
 C ----------------------------------------------------------------------
 C     LOI DE COMPORTEMENT DU MODELE D'ENDOMMAGEMENT ANISOTROPE
-C 
+C
 C IN  NDIM    : DIMENSION DE L'ESPACE
 C IN  TYPMOD  : TYPE DE MODELISATION
 C IN  IMATE   : NATURE DU MATERIAU
@@ -71,13 +71,12 @@ C TOLE CRP_20
       REAL*8      INTERB(3,3),EPIB(6)
       REAL*8      DSIINT(6,6),DSIMED(6,6)
       REAL*8      VECEPM(3,3),VALEPM(3)
-      
-      CHARACTER*2 CODRET(6)
+
+      INTEGER ICODRE(6)
       CHARACTER*8 NOMRES(6)
       REAL*8       VALRES(6)
 
       REAL*8      R8PREM
-     
       DATA  KRON/1.D0,1.D0,1.D0,0.D0,0.D0,0.D0/
 
       UN=1.D0
@@ -121,14 +120,14 @@ C---------------------------------------------------
       NDIMSI = 2*NDIM
       TOTAL =.FALSE.
       REINIT=.FALSE.
-      
+
 C---------------------------------------------------
 C -- LECTURE DES CARACTERISTIQUES THERMOELASTIQUES
 C---------------------------------------------------
       NOMRES(1) = 'E'
       NOMRES(2) = 'NU'
       CALL RCVALA ( IMATE,' ','ELAS',0,' ',0.D0,2,
-     &              NOMRES,VALRES,CODRET, 'FM')
+     &              NOMRES,VALRES,ICODRE, 1)
       E     = VALRES(1)
       NU    = VALRES(2)
       LAMBDA = E * NU / (UN+NU) / (UN - DEUX*NU)
@@ -143,7 +142,7 @@ C-------------------------------------------------
       NOMRES(5) = 'ECROB'
       NOMRES(6) = 'ECROD'
       CALL RCVALA(IMATE,' ','ENDO_ORTH_BETON',0,' ',0.D0,6,
-     &            NOMRES,VALRES,CODRET,'FM')
+     &            NOMRES,VALRES,ICODRE,1)
       ALPHA = VALRES(1)
       RK = VALRES(2)
       RK1 = VALRES(3)
@@ -175,7 +174,7 @@ C-------------------------------------------------
  2      CONTINUE
       ELAS=.TRUE.
       ENDIF
-      
+
       IF (NDIM.LT.3) THEN
         DO 456 I= NDIMSI+1, 6
         EPS(I)=0.D0
@@ -183,13 +182,13 @@ C-------------------------------------------------
         DEPS(I)=0.D0
  456    CONTINUE
       ENDIF
-      
+
       DO 301 I=4,6
         EPS(I)=EPS(I)/RAC2
         EPSM(I)=EPSM(I)/RAC2
         DEPS(I)=DEPS(I)/RAC2
  301  CONTINUE
-C------------------------------------------------- 
+C-------------------------------------------------
 C -- ENDOMMAGEMENT DANS LE REPERE GLOBAL
 C-------------------------------------------------
       DO 3 I = 1,3
@@ -203,7 +202,7 @@ C-------------------------------------------------
       DM=VIM(7)
       D=DM
 
-C------------------------------------------------------------------ 
+C------------------------------------------------------------------
 C-- VERIFICATION SUR LES VALEURS PROPRES DE L ENDOMMAGEMENT
 C-- DE TRACTION ET SUR L ENDOMMAGEMENT DE COMPRESSION POUR BLOQUAGE
 C-- EVENTUEL DE L EVOLUTION
@@ -220,9 +219,9 @@ C------------------------------------------------------------------
         DBLOQ=.TRUE.
       ENDIF
 
-C------------------------------------------------- 
+C-------------------------------------------------
 C--DEFINITION DU SEUIL----------------------------
-C------------------------------------------------- 
+C-------------------------------------------------
 
       CALL DIAGO3(EPSM,VECEPM,VALEPM)
         TREPSM=EPS(1)+EPS(2)+EPS(3)
@@ -243,7 +242,7 @@ C----------------------------------------------------------------
 C--VERIF SUR ENDO FINAL POUR VOIR SI ENDO DEPASSE 1 OU PAS
 C-- SI ENDO DEPASSE 1 PLUS QUE TOLERANCE ON PASSE DANS LCEOBB
 C-- QUI DECOUPE L INCREMENT DE CHARGE POUR ALLER DOUCEMENT A ENDO=1
-        
+
         CALL DIAGO3(B,VECB,VALB)
 
         DO 101 I=1,3
@@ -262,7 +261,7 @@ C-- QUI DECOUPE L INCREMENT DE CHARGE POUR ALLER DOUCEMENT A ENDO=1
           D=UN-TOLB+R8PREM()
           DBLOQ=.TRUE.
         ENDIF
-        
+
         IF (.NOT.REINIT) THEN
           IF (TOTAL) THEN
             CALL R8INIR(6,0.D0,B,1)
@@ -326,7 +325,7 @@ C-- ON RESTREINT L ESPACE CAR L ENDO N EVOLUE PLUS DANS 2 DIRECTIONS
             EPSR(I)=EPI(I)
  803      CONTINUE
           TOT3=.TRUE.
-        ENDIF 
+        ENDIF
 
         CALL LCEOB2(INTMAX,TOLER,EPSR,BMR,DM,
      &              LAMBDA,MU,ALPHA,ECROB,ECROD,SEUIL,
@@ -352,7 +351,7 @@ C-- ENSUITE ON REVIENT AU 3D DANS REPERE INITIAL
         IF (UN-D-TOLB.LE.0.D0) THEN
           D=UN-TOLB+R8PREM()
           DBLOQ=.TRUE.
-        ENDIF 
+        ENDIF
         IF (.NOT.REINIT) THEN
           IF (TOTAL) THEN
             CALL R8INIR(6,0.D0,BR,1)
@@ -442,8 +441,8 @@ C-- ON RESTREINT L ESPACE CAR L ENDO N EVOLUE PLUS DANS UNE DIRECTION
             EPSR(I)=EPI(R2(I))
  806      CONTINUE
           TOT3=.TRUE.
-        ENDIF 
- 
+        ENDIF
+
         CALL LCEOB1(INTMAX,TOLER,EPSR,BMR,DM,
      &              LAMBDA,MU,ALPHA,ECROB,ECROD,SEUIL,
      &              BDIM,BR,D,MULT,ELAS,DBLOQ,IRET)
@@ -521,7 +520,7 @@ C-on verifie l etat de B et D finaux pour calcul matrice tangente
             DSIDEP(I,J)=DSIDEP(I,J)+LAMBDA
  912        CONTINUE
  911      CONTINUE
-        
+
         ELSE
 
       AD=(UN-D)**DEUX
@@ -571,7 +570,7 @@ C -- DSIGMA/DEPS A ENDOMMAGEMENT CONSTANT = MATRICE SECANTE----
             DO 105 J=1,6
                 IF (J.GT.3) THEN
                   RTEMP3=RAC2
-                ELSE                              
+                ELSE
                   RTEMP3=1.D0
                 ENDIF
                   DSIDEP(I,J)=DSIDEP(I,J)+LAMBDA*AD*KRON(I)*KRON(J)
@@ -591,25 +590,25 @@ C -- DSIGMA/DEPS A ENDOMMAGEMENT CONSTANT = MATRICE SECANTE----
            DO 109 J=I,3
            IF (I.EQ.J) THEN
            RTEMP2=1.D0
-           ELSE 
+           ELSE
            RTEMP2=RAC2
            ENDIF
              DO 110 P=1,3
                DO 111 Q=1,3
                  IF (P.EQ.Q) THEN
                  RTEMP3=1.D0
-                 ELSE 
+                 ELSE
                  RTEMP3=UN/RAC2
                  ENDIF
                  DO 112 K=1,3
                    IF (K.EQ.I) THEN
                    RTEMP4=1.D0
-                   ELSE 
+                   ELSE
                    RTEMP4=UN/RAC2
                    ENDIF
                    IF (K.EQ.J) THEN
                    RTEMP5=1.D0
-                   ELSE 
+                   ELSE
                    RTEMP5=UN/RAC2
                    ENDIF
                    DO 113 M=1,3
@@ -624,7 +623,7 @@ C -- DSIGMA/DEPS A ENDOMMAGEMENT CONSTANT = MATRICE SECANTE----
      &                     B(T(Q,N)))*RTEMP4*B(T(K,J))
      &                     +(ZAZA(T(K,J),T(M,N))*RTEMP5*
      &                     (B(T(M,P))*KRON(T(Q,N))+KRON(T(M,P))*
-     &                     B(T(Q,N)))*B(T(I,K))))*RTEMP2*RTEMP3*RTEMP6 
+     &                     B(T(Q,N)))*B(T(I,K))))*RTEMP2*RTEMP3*RTEMP6
   114                CONTINUE
   113              CONTINUE
   112            CONTINUE
@@ -640,22 +639,22 @@ C -- DSIGMA/DEPS A ENDOMMAGEMENT CONSTANT = MATRICE SECANTE----
         CALL R8INIR(36,0.D0,DSISUP,1)
         IF (OPTION(10:14).NE.'_ELAS') THEN
           IF (.NOT.ELAS) THEN
- 
+
             IF (BDIM.EQ.3) THEN
- 
+
                     CALL R8INIR(6,0.D0,DELTAB,1)
                    DO 250 I=1,6
                        DELTAB(I)=B(I)-BM(I)
   250                CONTINUE
                    DELTAD=D-DM
- 
+
               CALL MEOBL3(EPS,B,D,DELTAB,DELTAD,MULT,LAMBDA,
      &                    MU,ECROB,ECROD,ALPHA,RK1,RK2,BDIM,DSISUP)
- 
+
             ELSEIF (BDIM.EQ.2) THEN
- 
+
                    CALL DIAGO3(B,VECB,VALB)
- 
+
                    CALL R8INIR(9,0.D0,INTERM,1)
                    CALL R8INIR(9,0.D0,INTERB,1)
                    CALL R8INIR(6,0.D0,EPI,1)
@@ -690,7 +689,7 @@ C -- DSIGMA/DEPS A ENDOMMAGEMENT CONSTANT = MATRICE SECANTE----
                     DELTAD=D-DM
                     TOT1=.TRUE.
                  ELSEIF (ABS(VALB(2))-TOLB.LE.0.D0) THEN
-                      
+
                     BR(1)=VALB(3)
                     BR(2)=VALB(1)
                     DO 808 I=1,6
@@ -701,9 +700,9 @@ C -- DSIGMA/DEPS A ENDOMMAGEMENT CONSTANT = MATRICE SECANTE----
                DELTAB(4)=-EPIB(5)
                DELTAD=D-DM
                TOT2=.TRUE.
-             
+
                  ELSEIF (ABS(VALB(3))-TOLB.LE.0.D0) THEN
-             
+
                BR(1)=VALB(1)
                BR(2)=VALB(2)
                DO 809 I=1,6
@@ -714,12 +713,12 @@ C -- DSIGMA/DEPS A ENDOMMAGEMENT CONSTANT = MATRICE SECANTE----
                     DELTAB(4)=-EPIB(4)
                     DELTAD=D-DM
                     TOT3=.TRUE.
-        
+
                  ENDIF
- 
+
                  CALL MEOBL2(EPSR,BR,D,DELTAB,DELTAD,MULT,LAMBDA,
      &                    MU,ECROB,ECROD,ALPHA,RK1,RK2,BDIM,DSIINT)
- 
+
             IF (TOT1) THEN
               DO 811 I=1,6
                 DO 812 J=1,6
@@ -768,10 +767,10 @@ C -- DSIGMA/DEPS A ENDOMMAGEMENT CONSTANT = MATRICE SECANTE----
              DSIMED(I,J)=DSIINT(I,J)*RTEMP1*RTEMP2
   816                    CONTINUE
   815             CONTINUE
-             ENDIF  
- 
+             ENDIF
+
              CALL R8INIR(36,0.D0,DSISUP,1)
- 
+
              DO 850 I=1,3
              DO 851 J=I,3
                IF (I.EQ.J) THEN
@@ -790,7 +789,7 @@ C -- DSIGMA/DEPS A ENDOMMAGEMENT CONSTANT = MATRICE SECANTE----
                   DO 861 L=1,3
                   DO 862 M=1,3
                   DO 863 N=1,3
-           
+
            DSISUP(T(I,J),T(P,Q))=DSISUP(T(I,J),T(P,Q))
      &          +VECB(I,K)*VECB(J,L)*VECB(P,M)*VECB(Q,N)
      &          *DSIMED(T(K,L),T(M,N))*RTEMP1*RTEMP2
@@ -802,14 +801,14 @@ C -- DSIGMA/DEPS A ENDOMMAGEMENT CONSTANT = MATRICE SECANTE----
  852             CONTINUE
  851             CONTINUE
  850             CONTINUE
- 
+
 C--------------------------------------------------------
 C--------------------------------------------------------
- 
+
            ELSEIF (BDIM.EQ.1) THEN
- 
+
               CALL DIAGO3(B,VECB,VALB)
- 
+
               CALL R8INIR(9,0.D0,INTERM,1)
               CALL R8INIR(9,0.D0,INTERB,1)
               CALL R8INIR(6,0.D0,EPI,1)
@@ -826,15 +825,15 @@ C--------------------------------------------------------
   605                     CONTINUE
   603              CONTINUE
   602            CONTINUE
- 
+
               TOT1=.FALSE.
               TOT2=.FALSE.
               TOT3=.FALSE.
               CALL R8INIR(6,0.D0,BR,1)
               CALL R8INIR(6,0.D0,DELTAB,1)
- 
+
               IF (ABS(VALB(1))-TOLB.GT.0.D0) THEN
-             
+
                 BR(1)=VALB(1)
                 DO 607 I=1,6
                   EPSR(I)=EPI(I)
@@ -842,34 +841,34 @@ C--------------------------------------------------------
                 DELTAB(1)=VALB(1)-EPIB(1)
                 DELTAD=D-DM
                 TOT1=.TRUE.
- 
+
               ELSEIF (ABS(VALB(2))-TOLB.GT.0.D0) THEN
-             
+
                 BR(1)=VALB(2)
- 
+
                 DO 608 I=1,6
                   EPSR(I)=EPI(R1(I))
   608                CONTINUE
                 DELTAB(1)=VALB(2)-EPIB(2)
                 DELTAD=D-DM
                 TOT2=.TRUE.
-             
+
               ELSEIF (ABS(VALB(3))-TOLB.GT.0.D0) THEN
-             
+
                 BR(1)=VALB(3)
- 
+
                 DO 609 I=1,6
                   EPSR(I)=EPI(R2(I))
   609                CONTINUE
                 DELTAB(1)=VALB(3)-EPIB(3)
                 DELTAD=D-DM
                 TOT3=.TRUE.
-        
+
               ENDIF
- 
+
              CALL MEOBL1(EPSR,B,D,DELTAB,DELTAD,MULT,LAMBDA,
      &                    MU,ECROB,ECROD,ALPHA,RK1,RK2,BDIM,DSIINT)
-             
+
              IF (TOT1) THEN
                DO 611 I=1,6
                  DO 612 J=1,6
@@ -918,10 +917,10 @@ C--------------------------------------------------------
                  DSIMED(R2(I),R2(J))=DSIINT(I,J)*RTEMP1*RTEMP2
   616                 CONTINUE
   615               CONTINUE
-             ENDIF  
- 
+             ENDIF
+
              CALL R8INIR(36,0.D0,DSISUP,1)
- 
+
              DO 650 I=1,3
              DO 651 J=I,3
                IF (I.EQ.J) THEN
@@ -940,7 +939,7 @@ C--------------------------------------------------------
                   DO 661 L=1,3
                   DO 662 M=1,3
                   DO 663 N=1,3
- 
+
            DSISUP(T(I,J),T(P,Q))=DSISUP(T(I,J),T(P,Q))
      &          +VECB(I,K)*VECB(J,L)*VECB(P,M)*VECB(Q,N)
      &          *DSIMED(T(K,L),T(M,N))*RTEMP1*RTEMP2
@@ -952,12 +951,12 @@ C--------------------------------------------------------
  652             CONTINUE
  651             CONTINUE
  650             CONTINUE
- 
+
               ENDIF
-        
-         ENDIF      
+
          ENDIF
- 
+         ENDIF
+
              DO 120 I=1,6
                DO 121 J=1,6
                  DSIDEP(I,J)=DSIDEP(I,J)+DSISUP(I,J)

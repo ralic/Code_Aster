@@ -1,8 +1,8 @@
       SUBROUTINE TE0254(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 14/10/2008   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF ELEMENTS  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -31,7 +31,7 @@ C.......................................................................
 C
       PARAMETER         ( NBRES=2 )
       CHARACTER*8        NOMRES(NBRES)
-      CHARACTER*2        CODRET(NBRES)
+      INTEGER ICODRE(NBRES)
       CHARACTER*16       NOMTE,OPTION
       REAL*8             VALRES(NBRES),A(2,2,9,9)
       REAL*8             DFDX(9),DFDY(9),POIDS,RHO,CELER
@@ -41,7 +41,6 @@ C
       LOGICAL            LTEATT
 C
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
-      CHARACTER*32       JEXNUM , JEXNOM , JEXR8 , JEXATR
       INTEGER            ZI
       COMMON  / IVARJE / ZI(1)
       REAL*8             ZR
@@ -68,7 +67,7 @@ C
       NOMRES(1)='RHO'
       NOMRES(2)='CELE_R'
       CALL RCVALA ( ZI(IMATE),' ','FLUIDE',0,' ',R8BID,2,NOMRES,VALRES,
-     &              CODRET, 'FM' )
+     &              ICODRE, 1)
       RHO    = VALRES(1)
       CELER = VALRES(2)
 C

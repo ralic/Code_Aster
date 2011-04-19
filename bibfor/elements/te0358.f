@@ -1,8 +1,8 @@
       SUBROUTINE TE0358(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
+C MODIF ELEMENTS  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -49,7 +49,8 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       CHARACTER*16 COMPOR
       CHARACTER*8 NOMRES(NBRES),NOMCLE(5),ACIER(4),ZIRC(2)
       CHARACTER*4 FAMI
-      CHARACTER*2 CODRET(NBRES),TEST
+      INTEGER ICODRE(NBRES)
+      INTEGER TEST
       REAL*8 VALRES(NBRES),E,NU
       REAL*8 ZFBM,SIG(6),KPT(5),SIGDV(6),DEUXMU
       REAL*8 DFDX(27),DFDY(27),DFDZ(27),TPG,POIDS
@@ -149,7 +150,6 @@ C PARAMETRES EN ENTREE
 
       END IF
       DO 10 I = 1,NBRES
-        CODRET(I) = '  '
    10 CONTINUE
 
       DO 140 KP = 1,NPG1
@@ -179,7 +179,7 @@ C PARAMETRES EN ENTREE
         ENDIF
 
         CALL RCVALB(FAMI,KP,1,'+',MATER,' ','ELAS_META',0,' ',
-     &              0.D0,2,NOMRES,VALRES,CODRET,'FM')
+     &              0.D0,2,NOMRES,VALRES,ICODRE,1)
         E = VALRES(1)
         NU = VALRES(2)
         DEUXMU = E/ (1.D0+NU)
@@ -187,10 +187,10 @@ C PARAMETRES EN ENTREE
         IF (COMPOR(1:5).EQ.'ACIER') THEN
 
           CALL RCVALB(FAMI,KP,1,'+',MATER,' ','META_PT',0,' ',
-     &                0.D0,4,NOMRES(3),VALRES(3),CODRET(3),' ')
+     &                0.D0,4,NOMRES(3),VALRES(3),ICODRE(3),0)
 
           DO 30 I = 3,6
-            IF (CODRET(I).NE.'OK') THEN
+            IF (ICODRE(I).NE.0) THEN
               KPT(I-2) = 0.D0
             ELSE
               KPT(I-2) = VALRES(I)
@@ -211,26 +211,26 @@ C PARAMETRES EN ENTREE
               J = 6 + I
               CALL RCVALB('RIGI',1,1,'+',MATER,' ','META_PT',
      &                    1,'META',ZFBM,1,NOMRES(J),
-     &                    VALRES(J),CODRET(J),'  ')
-              IF (CODRET(J).NE.'OK') VALRES(J) = 0.D0
+     &                    VALRES(J),ICODRE(J),0)
+              IF (ICODRE(J).NE.0) VALRES(J) = 0.D0
 
               TRANS = TRANS + KPT(I)*VALRES(J)*DELTAZ
             END IF
    50     CONTINUE
 
           CALL RCVALB(FAMI,KP,1,'+',MATER,' ','META_VISC',0,' ',0.D0,
-     &                5,NOMRES(17),VALRES(17),CODRET(17),' ')
-          TEST = 'NO'
+     &                5,NOMRES(17),VALRES(17),ICODRE(17),0)
+          TEST = 1
           DO 60 I = 17,21
-            IF (CODRET(I).EQ.'OK') TEST = 'OK'
+            IF (ICODRE(I).EQ.0) TEST = 0
    60     CONTINUE
           IF ((ZR(IVARI+ (KP-1)*LGPG+5).GT.0.5D0) .AND.
-     &        (TEST.EQ.'NO')) THEN
+     &        (TEST.EQ.1)) THEN
 
             CALL RCVALB('RIGI',1,1,'+',MATER,' ','ELAS_META',
      &                1,'META',ZFBM,1,
-     &                NOMRES(11),  VALRES(11),CODRET(11),'  ')
-            IF (CODRET(11).NE.'OK') THEN
+     &                NOMRES(11),  VALRES(11),ICODRE(11),0)
+            IF (ICODRE(11).NE.0) THEN
               VALRES(11) = ZFBM
             END IF
 
@@ -246,7 +246,7 @@ C PARAMETRES EN ENTREE
 
               CALL RCVALB(FAMI,KP,1,'+',MATER,' ','META_ECRO_LINE',
      &                    0,' ',0.D0,5,
-     &                    NOMRES(12),VALRES(12),CODRET(12),'FM')
+     &                    NOMRES(12),VALRES(12),ICODRE(12),1)
               R0(1) = VALRES(12)*E/ (E-VALRES(12))
               R0(2) = VALRES(13)*E/ (E-VALRES(13))
               R0(3) = VALRES(14)*E/ (E-VALRES(14))
@@ -257,7 +257,7 @@ C PARAMETRES EN ENTREE
      &          ZK16(ICOMPO) (1:9).EQ.'META_V_CL') THEN
               CALL RCVALB(FAMI,KP,1,'+',MATER,' ','META_ECRO_LINE',0,
      &                    ' ',0.D0,5,
-     &                    NOMRES(12),VALRES(12),CODRET(12),'FM')
+     &                    NOMRES(12),VALRES(12),ICODRE(12),1)
               R0(1) = (2.D0/3.D0)*VALRES(12)*E/ (E-VALRES(12))
               R0(2) = (2.D0/3.D0)*VALRES(13)*E/ (E-VALRES(13))
               R0(3) = (2.D0/3.D0)*VALRES(14)*E/ (E-VALRES(14))
@@ -275,9 +275,9 @@ C PARAMETRES EN ENTREE
 
               IF (IRET1.EQ.1) CALL U2MESS('F','CALCULEL_31')
               DO 70 I = 1,5
-                CALL RCTRAC(MATER,'META_TRACTION',NOMCLE(I),TPG,JPROL,
+                CALL RCTRAC(MATER,2,NOMCLE(I),TPG,JPROL,
      &                      JVALE,NBVAL,R8BID)
-                CALL RCFONC('V','META_TRACTION',JPROL,JVALE,NBVAL,R8BID,
+                CALL RCFONC('V',2,JPROL,JVALE,NBVAL,R8BID,
      &                      R8BID,R8BID,VI(I),R8BID,R0(I),R8BID,R8BID,
      &                      R8BID)
    70         CONTINUE
@@ -300,10 +300,10 @@ C PARAMETRES EN ENTREE
         ELSE IF (COMPOR(1:4).EQ.'ZIRC') THEN
           CALL RCVALB(FAMI,KP,1,'+',MATER,' ','META_PT',0,' ',
      &                0.D0,2,NOMRES(3),
-     &                VALRES(3),CODRET(3),' ')
+     &                VALRES(3),ICODRE(3),0)
 
           DO 80 I = 3,4
-            IF (CODRET(I).NE.'OK') THEN
+            IF (ICODRE(I).NE.0) THEN
               KPT(I-2) = 0.D0
             ELSE
               KPT(I-2) = VALRES(I)
@@ -321,8 +321,8 @@ C PARAMETRES EN ENTREE
           IF (DELTAZ.GT.0) THEN
             CALL RCVALB('RIGI',1,1,'+',MATER,' ','META_PT',
      &                  1,'META',ZFBM,1,NOMRES(5),
-     &                  VALRES(5),CODRET(5),'  ')
-            IF (CODRET(5).NE.'OK') VALRES(5) = 0.D0
+     &                  VALRES(5),ICODRE(5),0)
+            IF (ICODRE(5).NE.0) VALRES(5) = 0.D0
 
             TRANS = TRANS + KPT(1)*VALRES(5)*DELTAZ
           END IF
@@ -335,26 +335,26 @@ C PARAMETRES EN ENTREE
 
             CALL RCVALB('RIGI',1,1,'+',MATER,' ','META_PT',
      &                  1,'META',ZFBM,1,NOMRES(6),
-     &                  VALRES(6),CODRET(6),'  ')
-            IF (CODRET(6).NE.'OK') VALRES(6) = 0.D0
+     &                  VALRES(6),ICODRE(6),0)
+            IF (ICODRE(6).NE.0) VALRES(6) = 0.D0
 
             TRANS = TRANS + KPT(2)*VALRES(6)*DELTAZ
           END IF
 
 
           CALL RCVALB(FAMI,KP,1,'+',MATER,' ','META_VISC',0,' ',0.D0,
-     &                3,NOMRES(14),VALRES(14),CODRET(14),' ')
-          TEST = 'NO'
+     &                3,NOMRES(14),VALRES(14),ICODRE(14),0)
+          TEST = 1
           DO 90 I = 14,16
-            IF (CODRET(14).EQ.'OK') TEST = 'OK'
+            IF (ICODRE(14).EQ.0) TEST = 0
    90     CONTINUE
           IF ((ZR(IVARI+ (KP-1)*LGPG+3).GT.0.5D0) .AND.
-     &        (TEST.EQ.'NO')) THEN
+     &        (TEST.EQ.1)) THEN
 
             CALL RCVALB('RIGI',1,1,'+',MATER,' ','ELAS_META',
      &                  1,'META',ZALPHA,1,
-     &                 NOMRES(7), VALRES(7),CODRET(7),'  ')
-            IF (CODRET(7).NE.'OK') THEN
+     &                 NOMRES(7), VALRES(7),ICODRE(7),0)
+            IF (ICODRE(7).NE.0) THEN
               VALRES(7) = ZALPHA
             END IF
 
@@ -367,7 +367,7 @@ C PARAMETRES EN ENTREE
      &          ZK16(ICOMPO) (1:9).EQ.'META_V_IL') THEN
               CALL RCVALB(FAMI,KP,1,'+',MATER,' ','META_ECRO_LINE',
      &                    0,' ',0.D0,3,
-     &                    NOMRES(8),VALRES(8),CODRET(8),'FM')
+     &                    NOMRES(8),VALRES(8),ICODRE(8),1)
               R0(1) = VALRES(8)*E/ (E-VALRES(8))
               R0(2) = VALRES(9)*E/ (E-VALRES(9))
               R0(3) = VALRES(10)*E/ (E-VALRES(10))
@@ -376,7 +376,7 @@ C PARAMETRES EN ENTREE
      &          ZK16(ICOMPO) (1:9).EQ.'META_V_CL') THEN
               CALL RCVALB(FAMI,KP,1,'+',MATER,' ','META_ECRO_LINE',
      &                    0,' ',0.D0,5,
-     &                    NOMRES(8),VALRES(8),CODRET(8),'FM')
+     &                    NOMRES(8),VALRES(8),ICODRE(8),1)
               R0(1) = (2.D0/3.D0)*VALRES(8)*E/ (E-VALRES(8))
               R0(2) = (2.D0/3.D0)*VALRES(9)*E/ (E-VALRES(9))
               R0(3) = (2.D0/3.D0)*VALRES(10)*E/ (E-VALRES(10))
@@ -390,9 +390,9 @@ C PARAMETRES EN ENTREE
               VI(3) = ZR(IVARI+ (KP-1)*LGPG+2)
 
               DO 100 I = 1,3
-                CALL RCTRAC(MATER,'META_TRAC_ZIRC',NOMCLE(I),TPG,JPROL,
+                CALL RCTRAC(MATER,3,NOMCLE(I),TPG,JPROL,
      &                      JVALE,NBVAL,R8BID)
-                CALL RCFONC('V','META_TRAC_ZIRC',JPROL,JVALE,NBVAL,
+                CALL RCFONC('V',3,JPROL,JVALE,NBVAL,
      &                      R8BID,R8BID,R8BID,VI(I),R8BID,R0(I),R8BID,
      &                      R8BID,R8BID)
   100         CONTINUE

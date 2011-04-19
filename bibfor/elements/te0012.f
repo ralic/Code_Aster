@@ -2,7 +2,7 @@
       IMPLICIT   NONE
 C.......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -50,7 +50,7 @@ C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 
-      CHARACTER*2 CODRET
+      INTEGER ICODRE
 
       CHARACTER*16 NOMTE,OPTION,PHENOM
       CHARACTER*8 ELREFE
@@ -58,7 +58,7 @@ C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
       REAL*8 A(3,3,27,27),MATP(81,81),MATV(3321)
       REAL*8 DFDX(27),DFDY(27),DFDZ(27),POIDS,RHO
       INTEGER IPOIDS,IVF,IDFDE,IGEOM,IMATE
-      INTEGER JGANO,NNO,KP,I,J,K,IMATUU,IRET,IACCE,IVECT
+      INTEGER JGANO,NNO,KP,I,J,K,IMATUU,IACCE,IVECT
       INTEGER IJKL,IK,L,NDIM,NPG,NDDL,NVEC
       INTEGER N1,N2,I2,J2,K2
       INTEGER IDIAG,NNOS
@@ -86,7 +86,7 @@ C.......................................................................
 
       CALL JEVECH('PGEOMER','L',IGEOM)
       CALL JEVECH('PMATERC','L',IMATE)
-      CALL RCCOMA(ZI(IMATE),'ELAS',PHENOM,CODRET)
+      CALL RCCOMA(ZI(IMATE),'ELAS',PHENOM,ICODRE)
 
       DO 50 K = 1,3
         DO 40 L = 1,3
@@ -105,7 +105,7 @@ C    BOUCLE SUR LES POINTS DE GAUSS
         CALL DFDM3D ( NNO, KP, IPOIDS, IDFDE,
      &                ZR(IGEOM), DFDX, DFDY, DFDZ, POIDS )
         CALL RCVALB(FAMI,KP,1,'+',ZI(IMATE),' ',PHENOM,0,' ',0.D0,
-     &              1,'RHO',RHO,CODRET,'FM')
+     &              1,'RHO',RHO,ICODRE,1)
         DO 80 I = 1,NNO
           DO 70 J = 1,I
             A(1,1,I,J) = A(1,1,I,J) + RHO*POIDS*ZR(IVF+L+I-1)*
@@ -203,7 +203,7 @@ C PASSAGE DU STOCKAGE RECTANGULAIRE (A) AU STOCKAGE TRIANGULAIRE (ZR)
         DO 200 J = 1,NNO
           DO 190 I = 1,3
             K = K + 1
-            IF (IDEC.EQ.0) THEN 
+            IF (IDEC.EQ.0) THEN
               IDIAG = K* (K+1)/2
             ELSE
               IF (J.LE.NNOS) THEN
@@ -212,7 +212,7 @@ C PASSAGE DU STOCKAGE RECTANGULAIRE (A) AU STOCKAGE TRIANGULAIRE (ZR)
                 K2 = K+IDEC*NNOS
               ENDIF
               IDIAG = K2* (K2+1)/2
-            ENDIF            
+            ENDIF
             ZR(IMATUU+IDIAG-1) = A(I,I,J,J)*ALFA
   190     CONTINUE
   200   CONTINUE

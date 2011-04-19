@@ -2,9 +2,9 @@
       IMPLICIT REAL*8 (A-H,O-Z)
       REAL*8  XM0,XM2,XM4,DOM
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
+C MODIF PREPOST  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -40,15 +40,15 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
-      CHARACTER*2  CODWO,CODBA,CODHS,CODRET(6)
-      CHARACTER*8  K8BID1,WOHLER,NOMMAT,CARA
-      CHARACTER*8  METHOD,MECOMP,NMFWOH,PARAM,NOMP,NOMPAR
+      INTEGER ICODWO,ICODRE(6)
+      INTEGER  ICODBA,ICODHS
+      CHARACTER*8  NOMMAT,CARA
+      CHARACTER*8  METHOD,MECOMP,NOMPAR
       CHARACTER*8  NOMRES(6),KCORRE
-      CHARACTER*16 TYPE,OPER,PHENO,PHENOM
-      COMPLEX*16   CBID
+      CHARACTER*16 PHENO,PHENOM
       REAL*8       DELTA,RVKE,ALPHA,PI,SALT,X,VAL(6),RE
-      REAL*8       VALNR,VALMIN,VALMAX,PAS,XIREG,RUNDF,NRUPT
-      INTEGER      IBASK,IFONC,IHOSIN,IAWHO2,IOCC,MXPARA,NBPF,NBVAL
+      REAL*8       VALMIN,VALMAX,PAS,XIREG,RUNDF,NRUPT
+      INTEGER      IBASK,IFONC,IHOSIN,IAWHO2,NBVAL
       LOGICAL ENDUR
 C
 C     ----------------------------------------------------------------
@@ -60,19 +60,19 @@ C     ----------------------------------------------------------------
       CALL GETVTX(' ','DOMMAGE',1,1,1,METHOD,NBVAL)
       CALL GETVID(' ','MATER',1,1,1,NOMMAT,NBVAL)
       PHENO = 'FATIGUE'
-      CALL RCCOME (NOMMAT,PHENO,PHENOM,CODRET(1))
-      IF(CODRET(1).EQ.'NO') CALL U2MESS('F','FATIGUE1_24')
+      CALL RCCOME (NOMMAT,PHENO,PHENOM,ICODRE(1))
+      IF(ICODRE(1).EQ.1) CALL U2MESS('F','FATIGUE1_24')
       CARA = 'WOHLER'
-      CALL RCPARE(NOMMAT,PHENO,CARA,CODWO)
+      CALL RCPARE(NOMMAT,PHENO,CARA,ICODWO)
       CARA = 'A_BASQUI'
-      CALL RCPARE(NOMMAT,PHENO,CARA,CODBA)
+      CALL RCPARE(NOMMAT,PHENO,CARA,ICODBA)
       CARA = 'A0'
-      CALL RCPARE(NOMMAT,PHENO,CARA,CODHS)
-      IF(CODWO.EQ.'OK') THEN
+      CALL RCPARE(NOMMAT,PHENO,CARA,ICODHS)
+      IF(ICODWO.EQ.0) THEN
         IFONC = 1
-      ELSEIF(CODBA.EQ.'OK') THEN
+      ELSEIF(ICODBA.EQ.0) THEN
         IBASK = 1
-      ELSEIF(CODHS.EQ.'OK') THEN
+      ELSEIF(ICODHS.EQ.0) THEN
         IHOSIN = 1
       ELSE
         CALL U2MESS('F','FATIGUE1_34')
@@ -89,7 +89,7 @@ C
         NBPAR     = 0
         NOMPAR    = ' '
         CALL RCVALE(NOMMAT,'FATIGUE',NBPAR,NOMPAR,RBID,1,NOMRES(6),
-     &              VAL(6),CODRET(6),'F ')
+     &              VAL(6),ICODRE(6),2)
         VALMIN = VAL(6)
         VALMAX = 10*SQRT(XM0)
       ELSE
@@ -145,7 +145,7 @@ C
           NBPAR = 0
           NOMPAR = ' '
           CALL RCVALE(NOMMAT,'RCCM',NBPAR,NOMPAR,RBID,3,NOMRES(1),
-     &                VAL(1),CODRET(1),'F ')
+     &                VAL(1),ICODRE(1),2)
           DO 304 IPOINT = 1,NBPOIN
             DELTA = ZR(IAPICS+IPOINT-1)
             IF(DELTA.LE.3.D0*VAL(3)) THEN
@@ -181,7 +181,7 @@ C
                 ZR(IAWHO2+IPOINT-1) = 0.D0
              ELSE
                CALL RCVALE(NOMMAT,PHENO,NBPAR,NOMPAR,DELTA,1,NOMRES(1),
-     &                                           NRUPT,CODRET(1),'F ')
+     &                                           NRUPT,ICODRE(1),2)
                ZR(IAWHO2+IPOINT-1)  = 1.D0 / NRUPT
              ENDIF
   307     CONTINUE
@@ -191,7 +191,7 @@ C
           NOMRES(1) = 'A_BASQUI'
           NOMRES(2) = 'BETA_BAS'
           CALL RCVALE(NOMMAT,'FATIGUE',NBPAR,NOMPAR,RBID,2,NOMRES,VAL,
-     &                                              CODRET,'F ')
+     &                                              ICODRE,2)
           DO  308  IPOINT = 1,NBPOIN
             ZR(IAWHO2+IPOINT-1)  = VAL(1)*ZR(IAPICS+IPOINT-1)**VAL(2)
   308     CONTINUE
@@ -205,10 +205,10 @@ C
           NBPAR     = 0
           NOMPAR    = ' '
           CALL RCVALE(NOMMAT,'FATIGUE',NBPAR,NOMPAR,RBID,6,NOMRES,VAL,
-     &                                                   CODRET,'F ')
+     &                                                   ICODRE,2)
           NOMRES(1) = 'E'
           CALL RCVALE(NOMMAT,'ELAS',NBPAR,NOMPAR,RBID,1,NOMRES,RE,
-     &                                                CODRET,'F ')
+     &                                                ICODRE,2)
           DO  309  IPOINT = 1,NBPOIN
             SALT  = (VAL(1)/RE)*ZR(IAPICS+IPOINT-1)
             IF (SALT.GE.VAL(6)) THEN

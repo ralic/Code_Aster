@@ -1,8 +1,8 @@
       SUBROUTINE TE0390(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 14/12/2010   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -32,7 +32,7 @@ C ......................................................................
 
       REAL*8 NU,INSTAM,INSTAP
       CHARACTER*8 NOMRES(4),ELREFE
-      CHARACTER*2 BL2,CODRET(4)
+      INTEGER ICODRE(4)
       REAL*8 EN(3,2),ENPRIM(3,2),VALRES(4),GRANC(6),GRANI(4),
      &       RIGI(18,18),FINT(6,3),Y0(3),X00(3,3),X0K(3,3),
      &       X0PG(3),TETAK(3,3),TETAG(3),TETAPG(3),QIM(3,3),QIKM1(3,3),
@@ -43,7 +43,6 @@ C ......................................................................
      &       OMGK(3),OMPGK(3)
 
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
-      CHARACTER*32 JEXNUM,JEXNOM,JEXR8,JEXATR
       INTEGER ZI
       COMMON /IVARJE/ZI(1)
       REAL*8 ZR
@@ -103,18 +102,17 @@ C PARAMETRES EN ENTREE
         CALL U2MESK('F','ELEMENTS3_86',1,ZK16(ICOMPO+2))
       END IF
       CALL JEVECH('PMATERC','L',IMATE)
-      BL2 = '  '
       NOMRES(1) = 'E'
       NOMRES(2) = 'NU'
       NOMRES(3) = 'RHO'
       NOMRES(4) = 'ALPHA'
       CALL RCVALB('RIGI',1,1,'+',ZI(IMATE),' ','ELAS',
      &           0,'  ',R8BID,2,NOMRES,VALRES,
-     &           CODRET, 'FM')
+     &           ICODRE, 1)
       CALL RCVALB('RIGI',1,1,'+',ZI(IMATE),' ','ELAS',
      &           0,'  ',R8BID,1,NOMRES(3),
-     &           VALRES(3), CODRET(3),BL2)
-      IF (CODRET(3).NE.'OK') THEN
+     &           VALRES(3), ICODRE(3),0)
+      IF (ICODRE(3).NE.0) THEN
         IF (STOUDY.GT.DEMI) THEN
           CALL U2MESS('F','ELEMENTS3_87')
         ELSE

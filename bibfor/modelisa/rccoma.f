@@ -1,8 +1,8 @@
-      SUBROUTINE RCCOMA( JMAT,PHENO,PHENOM,CODRET )
+      SUBROUTINE RCCOMA( JMAT,PHENO,PHENOM,ICODRE )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF MODELISA  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -20,7 +20,7 @@ C ======================================================================
       IMPLICIT NONE
       INTEGER            JMAT
       CHARACTER*(*)      PHENO,PHENOM
-      CHARACTER*2        CODRET
+      INTEGER        ICODRE
 C ----------------------------------------------------------------------
 C     OBTENTION DU COMPORTEMENT COMPLET D'UN MATERIAU DONNE A PARTIR
 C     D'UN PREMISSE
@@ -30,11 +30,10 @@ C        JMAT   : ADRESSE DE LA LISTE DE MATERIAU CODE
 C        PHENO  : NOM DU PHENOMENE INCOMPLET
 C     ARGUMENTS DE SORTIE:
 C        PHENOM : NOM DU PHENOMENE COMPLET
-C        CODRET : POUR CHAQUE RESULTAT, 'OK' SI ON A TROUVE, 'NO' SINON
+C        ICODRE : POUR CHAQUE RESULTAT, 0 SI ON A TROUVE, 1 SINON
 C
 C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
 C
-      CHARACTER*32       JEXNUM , JEXNOM , JEXATR
       INTEGER            ZI
       COMMON  / IVARJE / ZI(1)
       REAL*8             ZR
@@ -56,7 +55,7 @@ C
       CHARACTER*16       FENO
 C DEB ------------------------------------------------------------------
       FENO = PHENO
-      CODRET = 'NO'
+      ICODRE = 1
       PHENOM = ' '
       NBMAT=ZI(JMAT)
       DO 20 IM=1,NBMAT
@@ -65,14 +64,14 @@ C DEB ------------------------------------------------------------------
           IF ( PHENO .EQ. ZK16(ZI(IMAT)+ICOMP-1)(1:LEN(PHENO)) ) THEN
             IF ( PHENOM .EQ. ' ' ) THEN
               PHENOM=ZK16(ZI(IMAT)+ICOMP-1)
-              CODRET = 'OK'
+              ICODRE = 0
             ELSE
               CALL U2MESK('F','MODELISA6_56',1,FENO)
             ENDIF
           ENDIF
  10     CONTINUE
  20   CONTINUE
-      IF ( CODRET .EQ. 'NO' ) THEN
+      IF ( ICODRE .EQ. 1 ) THEN
         CALL U2MESK('F','MODELISA6_57',1,FENO)
       ENDIF
 C FIN ------------------------------------------------------------------

@@ -2,9 +2,9 @@
      &             ,NBTRC,TPG0,TPG1,TPG2,DT10,DT21,TAMP,METAPG)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -56,13 +56,13 @@ C-----------------------------------------------------------------------
        INTEGER    MATOS,NBHIST, NBTRC
        REAL*8     FTRC((3*NBHIST),3), TRC((3*NBHIST),5), FMOD(*)
        REAL*8     CKM(6*NBTRC), COEF(*), DT10,DT21,TPG0,TPG1,TPG2
-       REAL*8     LAMBD0,QSRK,D10,WSRK,LAMBDA,UNSURL,DMOINS,DD
+       REAL*8     LAMBD0,QSRK,D10,WSRK,LAMBDA,UNSURL,DMOINS
        REAL*8     DLIM, DZ
 C-----------------------------------------------------------------------
 
 
       CHARACTER*24       NOMRES(11)
-      CHARACTER*2        CODRET(11)
+      INTEGER ICODRE(11)
       REAL*8             TPOINT,ZERO,TI,TPI
       REAL*8             AC1,AC3,TAUX1,TAUX3,ZEQ1,ZEQ2,Z1,Z2,AR3,EPSI
       REAL*8             CTES(11) ,UN
@@ -70,7 +70,7 @@ C-----------------------------------------------------------------------
       REAL*8             A, B, C, DELTA
 
 
-      INTEGER            KP,I,J,K,NBPAS
+      INTEGER            I,J,NBPAS
       LOGICAL            LREFR
 
 C-----------------------------------------------------------------------
@@ -89,7 +89,7 @@ C
          NOMRES(6) = 'TAUX_1'
          NOMRES(7) = 'TAUX_3'
          CALL RCVALA(MATOS,' ','META_ACIER', 1, 'INST', 0.D0, 7, NOMRES,
-     &                 CTES, CODRET, 'FM' )
+     &                 CTES, ICODRE, 1)
          AR3   = CTES(1)
          AC1   = CTES(4)
          AC3   = CTES(5)
@@ -101,17 +101,17 @@ C
          NOMRES(10)= 'D10'
          NOMRES(11)= 'WSR_K'
          CALL RCVALA(MATOS,' ','META_ACIER', 1, 'INST', 0.D0, 4,
-     &                 NOMRES(8),CTES(8), CODRET(8), '  ' )
+     &                 NOMRES(8),CTES(8), ICODRE(8), 0)
 
-         IF (CODRET(8) .EQ. 'NO') CTES(8) = 0.D0
-         IF (CODRET(9) .EQ. 'NO') CTES(9) = 0.D0
-         IF (CODRET(10) .EQ. 'NO') CTES(10) = 0.D0
-         IF (CODRET (11) .EQ. 'NO') CTES(11)=0.D0
+         IF (ICODRE(8) .EQ. 1) CTES(8) = 0.D0
+         IF (ICODRE(9) .EQ. 1) CTES(9) = 0.D0
+         IF (ICODRE(10) .EQ. 1) CTES(10) = 0.D0
+         IF (ICODRE (11) .EQ. 1) CTES(11)=0.D0
          LAMBD0 = CTES(8)
          QSRK = CTES(9)
          D10 = CTES(10)
          WSRK = CTES(11)
-         IF ((CODRET(8) .EQ.'OK') .AND. (CODRET(10) .EQ.'NO'))
+         IF ((ICODRE(8) .EQ.0) .AND. (ICODRE(10) .EQ.1))
      &   CALL U2MESS('F','ALGORITH11_73')
 
          METAPG(6) = TPG2
@@ -203,7 +203,7 @@ C ----------------SUBDIVISION EN PAS DE CING DEGRE MAX
 
 C                 CALCUL TAILLE DE GRAIN
 
-                  IF (CODRET(8) .EQ. 'NO') THEN
+                  IF (ICODRE(8) .EQ. 1) THEN
                      UNSURL = 0.D0
                     METAPG(5) = CKM(5)
                   ELSE
@@ -245,7 +245,7 @@ C                 CALCUL TAILLE DE GRAIN
                   ENDIF
                ENDIF
 C ---          CALCUL TAILLE DE GRAIN
-               IF (CODRET(8) .EQ. 'NO') THEN
+               IF (ICODRE(8) .EQ. 1) THEN
                   UNSURL = 0.D0
                   METAPG(5) = CKM(5)
                ELSE

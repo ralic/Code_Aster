@@ -8,7 +8,7 @@
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 08/02/2011   AUTEUR GRANET S.GRANET 
+C MODIF ALGORITH  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C RESPONSABLE GRANET S.GRANET
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -67,7 +67,7 @@ C ======================================================================
       PARAMETER (NRESMA = 18)
       REAL*8       ELAS(NELAS)
       CHARACTER*8  NCRA1(NELAS)
-      CHARACTER*2 CODRET(NRESMA)
+      INTEGER ICODRE(NRESMA)
       REAL*8  DSDEME(6,6)
       REAL*8  R8BID,ANGMA1(3),ANGMAS(7)
       CHARACTER*16 COMPLG(2)
@@ -102,7 +102,7 @@ C ======================================================================
          ENDIF
       ENDIF
       CALL RCVALA(IMATE,' ','ELAS',1,'TEMP', T,3,
-     &            NCRA1(1),ELAS(1),CODRET,'FM')
+     &            NCRA1(1),ELAS(1),ICODRE,1)
       YOUNG  = ELAS(1)
       NU     = ELAS(2)
       ALPHA0 = ELAS(3)
@@ -435,9 +435,9 @@ C ======================================================================
           IF (YATE.EQ.1) THEN
             DO 4116 I=1,3
                   DSDE(ADCOME-1+I,ADDETE)=-ALPHA0*
-     >            (DSDE(ADCOME-1+I,ADDEME+NDIM-1+1)+
-     >             DSDE(ADCOME-1+I,ADDEME+NDIM-1+2)+
-     >             DSDE(ADCOME-1+I,ADDEME+NDIM-1+3))/3.D0
+     &            (DSDE(ADCOME-1+I,ADDEME+NDIM-1+1)+
+     &             DSDE(ADCOME-1+I,ADDEME+NDIM-1+2)+
+     &             DSDE(ADCOME-1+I,ADDEME+NDIM-1+3))/3.D0
  4116       CONTINUE
           ENDIF
         ENDIF

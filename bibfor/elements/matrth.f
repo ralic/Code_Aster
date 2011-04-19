@@ -1,8 +1,8 @@
       SUBROUTINE MATRTH(FAMI,NPG,YOUNG,NU,ALPHA,INDITH)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
+C MODIF ELEMENTS  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -22,8 +22,7 @@ C
 C
 C
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
-      CHARACTER*32       JEXNUM , JEXNOM , JEXR8 , JEXATR
-      INTEGER            ZI,ITAB(8),IRET
+      INTEGER            ZI,IRET
       COMMON  / IVARJE / ZI(1)
       REAL*8             ZR
       COMMON  / RVARJE / ZR(1)
@@ -39,9 +38,9 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80 (1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C
-      REAL*8        VALRES(26),VALPAR,VALPU(2)
-      CHARACTER*2   CODRET(26)
-      CHARACTER*8   NOMRES(26), NOMPAR,NOMPU(2)
+      REAL*8        VALRES(26),VALPAR
+      INTEGER ICODRE(26)
+      CHARACTER*8   NOMRES(26), NOMPAR
       CHARACTER*10  PHENOM
       REAL*8 YOUNG, NU, ALPHA
       INTEGER NPG
@@ -53,7 +52,7 @@ C
 C
       CALL JEVECH ('PMATERC' , 'L' , JMATE)
 C
-      CALL RCCOMA(ZI(JMATE),'ELAS',PHENOM,CODRET)
+      CALL RCCOMA(ZI(JMATE),'ELAS',PHENOM,ICODRE)
 C
       IF ( PHENOM .EQ. 'ELAS' )  THEN
 
@@ -66,8 +65,8 @@ C
          CALL MOYTEM(FAMI,NPG,3*ZI(JCOU),'+',TEMP,IRET)
          CALL RCVALA(ZI(JMATE),' ',PHENOM,
      &               1,'TEMP',TEMP,3 ,NOMRES,
-     &               VALRES,CODRET, 'FM')
-         IF (CODRET(3).NE.'OK') THEN
+     &               VALRES,ICODRE, 1)
+         IF (ICODRE(3).NE.0) THEN
            INDITH = -1
            GOTO 9999
          ENDIF
@@ -77,14 +76,14 @@ C
          YOUNG = VALRES(1)
          NU    = VALRES(2)
          ALPHA = VALRES(3)
- 
+
       ELSEIF ( PHENOM .EQ. 'ELAS_ORTH' )  THEN
          NOMRES(1)='ALPHA_L'
          NOMRES(2)='ALPHA_T'
          CALL RCVALB(FAMI,1,1,'+',ZI(JMATE),' ',PHENOM,
      &               0,NOMPAR,VALPAR,2 ,NOMRES,
-     &               VALRES,CODRET, 'FM')
-         IF (CODRET(1).NE.'OK') THEN
+     &               VALRES,ICODRE, 1)
+         IF (ICODRE(1).NE.0) THEN
             INDITH = -1
             GOTO 9999
          ELSE

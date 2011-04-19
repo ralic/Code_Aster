@@ -6,9 +6,9 @@
         IMPLICIT REAL*8(A-H,O-Z)
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 07/12/2010   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ALGORITH  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -35,7 +35,7 @@ C     CETTE ROUTINE FOURNIT LA DERIVEE DE L ENSEMBLE DES VARIABLES
 C     INTERNES DU MODELE
 C     ----------------------------------------------------------------
       CHARACTER*8 MOD
-      CHARACTER*2     CERR
+      INTEGER ICODRE
       CHARACTER*3     MATCST
       CHARACTER*(*)   FAMI
       INTEGER         IMAT
@@ -53,7 +53,7 @@ C     ----------------------------------------------------------------
       REAL*8 EVI(6),    ECROU,    DMG
       REAL*8 DEVI(6),DEVCUM,   DECROU,   DDMG
       REAL*8 ZE, TD, VALP(3)
-      REAL*8 S, ALPHA_D, BETA_D, N, UNSMVP, KVP, RD, AD , KD
+      REAL*8 S, ALPHAD, BETAD, N, UNSMVP, KVP, RD, AD , KD
 C     ----------------------------------------------------------------
       PARAMETER(ZE=0.0D0)
       PARAMETER(TD=1.5D0)
@@ -67,8 +67,8 @@ C
 C --    COEFFICIENTS MATERIAU INELASTIQUES
 C
       S    = COEFT(4)
-      ALPHA_D = COEFT(5)
-      BETA_D = COEFT(6)
+      ALPHAD = COEFT(5)
+      BETAD = COEFT(6)
       N    = COEFT(1)
       UNSMVP    = COEFT(2)
       KVP    = (1.D0/COEFT(3))
@@ -103,7 +103,7 @@ C
 C----- VARIABLES INTERNES
       TRSIG=(SIGI(1)+SIGI(2)+SIGI(3))
 C----- CALCUL DE GRJ0(SIGI) : MAX DES CONTRAINTES PRINCIPALES
-      IF (ALPHA_D.LE.(1.0D-15)) THEN
+      IF (ALPHAD.LE.(1.0D-15)) THEN
          GRJ0=0.0D0
       ELSE
          CALL CALCJ0(SIGI,GRJ0,VALP)
@@ -120,7 +120,7 @@ C----- CALCUL DE GRJ2(SIGI) : SECOND INVARIANT (SIGEQ DE VON MISES)
    10 CONTINUE
       GRJ2V=SQRT(1.5D0*GRJ2V)
 C----- CALCUL DE SEDVP : CONTRAINTE EQUIVALENTE DE FLUAGE
-      SEDVP=ALPHA_D*GRJ0+BETA_D*GRJ1+(1-ALPHA_D-BETA_D)*GRJ2V
+      SEDVP=ALPHAD*GRJ0+BETAD*GRJ1+(1-ALPHAD-BETAD)*GRJ2V
 C
 C----- CALCUL DE KD A PARTIR DU MATERIAU CODE
 C
@@ -137,16 +137,16 @@ C
         CALL RCVARC(' ','TEMP','+',FAMI,KPG,KSP,TF,IRET2)
         IF ( IRET2.NE.0 ) TF = 0.D0
         DTPERD = TF-TPERD
-        
+
         HSDT=X/DTIME
         TEMP=TPERD+HSDT*DTPERD
 C
         VPAR(1) = TEMP
         VPAR(2) = SEDVP
 C
-        CALL RCVALB(FAMI,1,1,'+',IMAT,' ', 'VENDOCHAB', 
+        CALL RCVALB(FAMI,1,1,'+',IMAT,' ', 'VENDOCHAB',
      &              2,  NOMPAR, VPAR, 1,
-     &              NOMCOE,  KD,  CERR, 'F ' )
+     &              NOMCOE,  KD,  ICODRE, 2)
       ELSE
         KD    = COEFT(9)
       ENDIF

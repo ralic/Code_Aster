@@ -1,8 +1,8 @@
       SUBROUTINE RCDIFF ( IMATE, COMP, TEMP, C, DIFF )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -32,7 +32,6 @@ C OUT DIFF    : VALEUR DU COEFFICIENT DE DIFFUSION
 C ----------------------------------------------------------------------
 C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
 C
-      CHARACTER*32       JEXNUM , JEXNOM , JEXR8 , JEXATR
       INTEGER            ZI
       COMMON  / IVARJE / ZI(1)
       REAL*8             ZR
@@ -53,16 +52,13 @@ C
       PARAMETER        ( NBRES=10 )
       INTEGER            NBPAR
       REAL*8             VALRES(NBRES),VALPAR(2),TZ0,R8T0
-      CHARACTER*2        CODRET(NBRES)
+      INTEGER ICODRE(NBRES)
       CHARACTER*8        NOMRES(NBRES),NOMPAR(2)
-      CHARACTER*8        K8B, MATERI
       CHARACTER*16       PHENOM
-      CHARACTER*19       CH19
-      CHARACTER*24       CH24
 C
       CALL JEMARQ()
 C
-      CALL RCCOMA(IMATE,COMP(1:6),PHENOM,CODRET)
+      CALL RCCOMA(IMATE,COMP(1:6),PHENOM,ICODRE)
 C
       TZ0  = R8T0()
       IF(PHENOM.EQ.'SECH_GRANGER') THEN
@@ -74,7 +70,7 @@ C
          NOMRES(3) = 'QSR_K'
          NOMRES(4) = 'TEMP_0_C'
          CALL RCVALA(IMATE,' ',PHENOM,NBPAR,NOMPAR,VALPAR,4,
-     &                   NOMRES, VALRES, CODRET, 'FM' )
+     &                   NOMRES, VALRES, ICODRE, 1)
          DIFF = VALRES(1) * EXP(VALRES(2)*C)
      &            *((TEMP+TZ0)/(VALRES(4)+TZ0))
      &            * EXP(-VALRES(3)
@@ -87,7 +83,7 @@ C
          NOMRES(1) = 'A'
          NOMRES(2) = 'B'
          CALL RCVALA(IMATE,' ',PHENOM,NBPAR,NOMPAR,VALPAR,2,
-     &                   NOMRES, VALRES, CODRET, 'FM' )
+     &                   NOMRES, VALRES, ICODRE, 1)
          DIFF = VALRES(1) * EXP(VALRES(2)*C)
 C
       ELSEIF(PHENOM.EQ.'SECH_BAZANT') THEN
@@ -99,7 +95,7 @@ C
          NOMRES(3) = 'N'
          NOMRES(4) = 'FONC_DES'
          CALL RCVALA(IMATE,' ',PHENOM,NBPAR,NOMPAR,VALPAR,4,
-     &                   NOMRES, VALRES, CODRET, 'FM' )
+     &                   NOMRES, VALRES, ICODRE, 1)
          RAP = ((1.D0 - VALRES(4)) / 0.25D0) ** VALRES(3)
          DIFF = VALRES(1) * (VALRES(2)+ (1.D0 - VALRES(2))/(1.D0+RAP))
 C
@@ -111,14 +107,13 @@ C
          VALPAR(2) =  TEMP
          NOMRES(1) = 'FONCTION'
          CALL RCVALA(IMATE,' ',PHENOM,NBPAR,NOMPAR,VALPAR,1,
-     &                   NOMRES, VALRES, CODRET, 'FM' )
+     &                   NOMRES, VALRES, ICODRE, 1)
          DIFF = VALRES(1)
 C
       ELSE
          CALL U2MESK('F','ALGORITH10_20',1,COMP)
       ENDIF
 C
- 9999 CONTINUE
 C
       CALL JEDEMA()
       END

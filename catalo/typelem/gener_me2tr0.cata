@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+%& MODIF TYPELEM  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -28,7 +28,7 @@ MODE_LOCAL__
     CCADISA  = CADISA   ELEM__         (A[9])
     CCADISK  = CADISK   ELEM__         (K[9])
     CCADISM  = CADISM   ELEM__         (M[9])
-    CCINFDI  = CINFDI   ELEM__         (REPK  REPM  REPA  SYMK  SYMM  SYMA  DISK  DISM  DISA  ETAK)
+    CCINFDI  = CINFDI   ELEM__         (REPK  REPM  REPA  SYMK  SYMM  SYMA  DISK  DISM  DISA  ETAK  TYDI)
     CCAORIE  = CAORIE   ELEM__         (ALPHA  BETA GAMMA )
     ECODRET  = CODE_I   ELEM__         (IRET )
     CCOMPOR  = COMPOR   ELEM__         (RELCOM   NBVARI   DEFORM   INCELA   C_PLAN   )

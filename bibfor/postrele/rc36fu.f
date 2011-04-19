@@ -1,40 +1,40 @@
-      SUBROUTINE RC36FU ( NBSIGR, NOCC, SITU, SALTIJ, 
-     +                    NOMMAT, UG, FACTUS )    
+      SUBROUTINE RC36FU ( NBSIGR, NOCC, SITU, SALTIJ,
+     &                    NOMMAT, UG, FACTUS )
       IMPLICIT   NONE
       INTEGER             NBSIGR, NOCC(*), SITU(*)
       REAL*8              SALTIJ(*), UG, FACTUS(*)
       CHARACTER*(*)       NOMMAT
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 21/10/2008   AUTEUR VIVAN L.VIVAN 
+C MODIF POSTRELE  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C
 C     OPERATEUR POST_RCCM, TRAITEMENT DE FATIGUE_B3600
 C
-C     CALCUL DU FACTEUR D'USAGE 
+C     CALCUL DU FACTEUR D'USAGE
 C
 C     ------------------------------------------------------------------
-      INTEGER      ISK, ISL, K, L, NK, NL, N0, I1, I1A4, NSITUP,
-     +             IFM, NIV, ICOMPT
+      INTEGER      ISK, ISL, K, L, NK, NL, N0, I1, I1A4,
+     &             IFM, NIV, ICOMPT
       REAL*8       SALTM, NADM, UKL, VALE(2)
       LOGICAL      TROUVE, ENDUR
-      CHARACTER*2  CODRET, K2C, K2L
-      CHARACTER*8  K8B
+      INTEGER ICODRE
+      CHARACTER*2  K2C, K2L
 C     ------------------------------------------------------------------
 C
       CALL INFNIV ( IFM, NIV )
@@ -46,9 +46,9 @@ C
         DO 100 K = 1 , NBSIGR
           I1 = 4*NBSIGR*(K-1)
           WRITE(IFM,1000) SITU(2*(K-1)+1), NOCC(2*(K-1)+1),
-     +       (SALTIJ(I1+4*(L-1)+1),SALTIJ(I1+4*(L-1)+3), L=1,NBSIGR)
+     &       (SALTIJ(I1+4*(L-1)+1),SALTIJ(I1+4*(L-1)+3), L=1,NBSIGR)
           WRITE(IFM,1002) SITU(2*(K-1)+2), NOCC(2*(K-1)+2),
-     +       (SALTIJ(I1+4*(L-1)+2),SALTIJ(I1+4*(L-1)+4), L=1,NBSIGR)
+     &       (SALTIJ(I1+4*(L-1)+2),SALTIJ(I1+4*(L-1)+4), L=1,NBSIGR)
  100    CONTINUE
       ENDIF
 C
@@ -72,7 +72,7 @@ C
          UKL = 0.D0
       ELSE
          CALL RCVALE ( NOMMAT, 'FATIGUE', 1, 'SIGM    ', SALTM, 1,
-     +                         'WOHLER  ', NADM, CODRET, 'F ' )
+     &                         'WOHLER  ', NADM, ICODRE, 2)
          IF ( NADM .LT. 0 ) THEN
             VALE(1) = SALTM
             VALE(2) = NADM
@@ -101,7 +101,7 @@ C
             K2C = '_B'
          ENDIF
          WRITE(IFM,1040)'=> SALT MAXI = ', SALTM, SITU(2*(ISK-1)+1),
-     +                     K2L, SITU(2*(ISL-1)+1), K2C
+     &                     K2L, SITU(2*(ISL-1)+1), K2C
          WRITE(IFM,1030)'          N0 = ', N0
          WRITE(IFM,1020)'        NADM = ', NADM
          WRITE(IFM,1020)'         UKL = ', UKL
@@ -119,13 +119,13 @@ C
          DO 110 K = 1 , NBSIGR
             I1 = 4*NBSIGR*(K-1)
             WRITE(IFM,1000) SITU(2*(K-1)+1), NOCC(2*(K-1)+1),
-     +          (SALTIJ(I1+4*(L-1)+1),SALTIJ(I1+4*(L-1)+3), L=1,NBSIGR)
+     &          (SALTIJ(I1+4*(L-1)+1),SALTIJ(I1+4*(L-1)+3), L=1,NBSIGR)
             WRITE(IFM,1002) SITU(2*(K-1)+2), NOCC(2*(K-1)+2),
-     +          (SALTIJ(I1+4*(L-1)+2),SALTIJ(I1+4*(L-1)+4), L=1,NBSIGR)
+     &          (SALTIJ(I1+4*(L-1)+2),SALTIJ(I1+4*(L-1)+4), L=1,NBSIGR)
  110     CONTINUE
       ENDIF
 C
-      UG = UG + UKL 
+      UG = UG + UKL
       GOTO 10
 C
  9999 CONTINUE

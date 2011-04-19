@@ -2,9 +2,9 @@
      &                   INSTAM,INSTAP,DEPS,SIGM,VIM,
      &                   OPTION,SIGP,VIP,DSIDEP,IRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 07/12/2010   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ALGORITH  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -67,7 +67,6 @@ C      COMMONS COMMUNS A NMCRI1 ET NMECMI
 C
 C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
 C
-      CHARACTER*32       JEXNUM , JEXNOM , JEXR8 , JEXATR
       INTEGER            ZI
       COMMON  / IVARJE / ZI(1)
       REAL*8             ZR
@@ -94,7 +93,7 @@ C
       REAL*8      HSG,PP,PRAG,PRAGM,PRECR,TM,TP,EPSTHE
       INTEGER     NDIMSI,JPROLM,JVALEM,NBVALM,JPROL2,JVALE2,NBVAL2
       INTEGER     JPROLP,JVALEP,NBVALP,K,L,NITER,IMATE2,IBID
-      CHARACTER*2 FB2, CODRET(3)
+      INTEGER ICODRE(3)
       CHARACTER*8 NOMRES(3),TYPE
       DATA        KRON/1.D0,1.D0,1.D0,0.D0,0.D0,0.D0/
 C DEB ------------------------------------------------------------------
@@ -117,7 +116,6 @@ C
   10  CONTINUE
       DP=0.D0
 C
-      FB2 = 'F '
 C
       IF (.NOT.( COMPOR(1)(1:9) .EQ. 'VMIS_ECMI' )) THEN
             CALL U2MESK('F','ALGORITH4_50',1,COMPOR(1))
@@ -133,20 +131,20 @@ C     ---------------------------------------
 C
       IF (COMPOR(1)(1:14) .EQ. 'VMIS_ECMI_TRAC' ) THEN
          CALL RCVALB(FAMI,KPG,KSP,'-',IMATE,' ','ELAS',0,' ',0.D0,1,
-     &                 NOMRES(2),VALRES(2),CODRET(2), FB2 )
+     &                 NOMRES(2),VALRES(2),ICODRE(2), 2)
          NUM = VALRES(2)
          CALL RCVALB(FAMI,KPG,KSP,'+',IMATE,' ','ELAS',0,' ',
-     &                0.D0,1,NOMRES(2),VALRES(2),CODRET(2), FB2 )
+     &                0.D0,1,NOMRES(2),VALRES(2),ICODRE(2), 2)
          NU = VALRES(2)
       ELSE
          CALL RCVALB(FAMI,KPG,KSP,'-',IMATE,' ','ELAS',0,' ',
-     &                0.D0,2,NOMRES(1),VALRES(1),CODRET(1), FB2 )
+     &                0.D0,2,NOMRES(1),VALRES(1),ICODRE(1), 2)
          EM  = VALRES(1)
          NUM = VALRES(2)
          DEUMUM = EM/(1.D0+NUM)
          TROIKM = EM/(1.D0-2.D0*NUM)
          CALL RCVALB(FAMI,KPG,KSP,'+',IMATE,' ','ELAS',0,' ',
-     &                0.D0,2,NOMRES(1),VALRES(1),CODRET(1), FB2 )
+     &                0.D0,2,NOMRES(1),VALRES(1),ICODRE(1), 2)
          E      = VALRES(1)
          NU     = VALRES(2)
          DEUXMU = E/(1.D0+NU)
@@ -158,10 +156,10 @@ C     -- 3 RECUPERATION DES CARACTERISTIQUES
 C     ---------------------------------------
         NOMRES(1)='C'
         CALL RCVALB(FAMI,KPG,KSP,'+',IMATE,' ','PRAGER',0,' ',
-     &                0.D0,1,NOMRES,VALRES,CODRET,'FM')
+     &                0.D0,1,NOMRES,VALRES,ICODRE,1)
         PRAG=VALRES(1)
         CALL RCVALB(FAMI,KPG,KSP,'-',IMATE,' ','PRAGER',0,' ',
-     &                0.D0,1,NOMRES,VALRES,CODRET,'FM')
+     &                0.D0,1,NOMRES,VALRES,ICODRE,1)
         PRAGM=VALRES(1)
         LINE=0.D0
         IF (COMPOR(1)(10:14) .EQ. '_LINE') THEN
@@ -169,7 +167,7 @@ C     ---------------------------------------
           NOMRES(1)='D_SIGM_EPSI'
           NOMRES(2)='SY'
           CALL RCVALB(FAMI,KPG,KSP,'+',IMATE,' ','ECRO_LINE',0,' ',
-     &                0.D0,2,NOMRES,VALRES,CODRET,'FM')
+     &                0.D0,2,NOMRES,VALRES,ICODRE,1)
           DSDE=VALRES(1)
           SIGY=VALRES(2)
           RPRIM    = DSDE*E/(E-DSDE)-1.5D0*PRAG
@@ -178,18 +176,18 @@ C     ---------------------------------------
 
           CALL RCVARC(' ','TEMP','-',FAMI,KPG,KSP,TM,IRET2)
           CALL RCTYPE(IMATE,1,'TEMP',TM,RESU,TYPE)
-          IF ((TYPE.EQ.'TEMP').AND.(IRET2.EQ.1)) 
+          IF ((TYPE.EQ.'TEMP').AND.(IRET2.EQ.1))
      &        CALL U2MESS('F','CALCULEL_31')
-          CALL RCTRAC(IMATE,'TRACTION','SIGM',RESU,JPROLM,
+          CALL RCTRAC(IMATE,1,'SIGM',RESU,JPROLM,
      &                JVALEM,NBVALM,EM)
           DEUMUM = EM/(1.D0+NUM)
           TROIKM = EM/(1.D0-2.D0*NUM)
-  
+
           CALL RCVARC(' ','TEMP','+',FAMI,KPG,KSP,TP,IRET1)
           CALL RCTYPE(IMATE,1,'TEMP',TP,RESU,TYPE)
-          IF ((TYPE.EQ.'TEMP').AND.(IRET1.EQ.1)) 
+          IF ((TYPE.EQ.'TEMP').AND.(IRET1.EQ.1))
      &        CALL U2MESS('F','CALCULEL_31')
-          CALL RCTRAC(IMATE,'TRACTION','SIGM',RESU,JPROLP,
+          CALL RCTRAC(IMATE,1,'SIGM',RESU,JPROLP,
      &                JVALEP,NBVALP,E)
           DEUXMU = E/(1.D0+NU)
           TROISK = E/(1.D0-2.D0*NU)

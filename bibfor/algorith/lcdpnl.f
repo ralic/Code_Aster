@@ -3,9 +3,9 @@
      & VIP,SIG,DSIDEP,PROJ,IRET)
 C =====================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 11/03/2008   AUTEUR MAHFOUZ D.MAHFOUZ 
+C MODIF ALGORITH  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -51,10 +51,10 @@ C OUT PROJ    PROJECTEUR DE COUPURE DU TERME DE REGULARISATION
 C OUT IRET    CODE RETOUR (0 = OK)
 C =====================================================================
       LOGICAL      RIGI,RESI,ELAS
-      INTEGER      NDIMSI,I,J,K,L,NDT,NDI
+      INTEGER      NDIMSI,I,J,NDT,NDI
       REAL*8       KRON(6),TRE,TRER,VALRES(2),DSDP2(6,6),TP,TM,TREF
-      REAL*8       DEUXMU,LAMBDA,DSDP1B(6,6),DSDP2B(6,6),YOUNG,NU
-      CHARACTER*2  CODRET(2)
+      REAL*8       DEUXMU,LAMBDA,DSDP1B(6,6),YOUNG,NU
+      INTEGER ICODRE(2)
       CHARACTER*8  NOMRES(2)
 C =====================================================================
       COMMON /TDIM/   NDT, NDI
@@ -72,7 +72,7 @@ C =====================================================================
 C --- CARACTERISTIQUES MATERIAU ---------------------------------------
 C =====================================================================
       CALL RCVALB(FAMI,1,1,'+',IMATE,' ','ELAS',0,' ',0.D0,2,
-     &            NOMRES,VALRES,CODRET,'F ')
+     &            NOMRES,VALRES,ICODRE,2)
       YOUNG  = VALRES(1)
       NU     = VALRES(2)
       DEUXMU = YOUNG / ( 1.0D0 + NU )

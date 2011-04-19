@@ -1,6 +1,6 @@
       SUBROUTINE TE0537(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -47,7 +47,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 
-      INTEGER JEFFG,JCONT,LORIEN,JDEPL,IMATE,ISECT,LX,NNO,NC,I,IRET
+      INTEGER JCONT,LORIEN,JDEPL,IMATE,ISECT,LX,NNO,NC,I,IRET
       PARAMETER (NNO=2,NC=6)
       CHARACTER*16 CH16
       REAL*8 UL(12),PGL(3,3),DEGE(6),XL,E,NU
@@ -58,10 +58,10 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       REAL*8 ZERO,UN,DEUX,SIX
       PARAMETER (ZERO=0.0D+0,UN=1.0D+0,DEUX=2.D+0,SIX=6.D+0)
       REAL*8 B(4),GG,XI,WI,VALRES(2)
-      INTEGER IN,IP,IPOS,NBGFMX,IADZI,IAZK24,ISICOM
+      INTEGER IP,IPOS,NBGFMX,IADZI,IAZK24,ISICOM
       INTEGER IPOS1,IPOS2,NBFIG,NBGF,IG,NUGF,IFB,ICP,ISDCOM,ICOMPO
       CHARACTER*8 MATERI,NOMRES(2),NOMAIL
-      CHARACTER*2 CODRES(2)
+      INTEGER CODRES(2)
 C     ------------------------------------------------------------------
 C ----------------------------------------------------------------------
 
@@ -160,8 +160,8 @@ C ---    ON MULTIPLIE PAR E (CONSTANT SUR LE GROUPE)
          NOMRES(1) = 'E'
          NOMRES(2) = 'NU'
          CALL RCVALB('RIGI',1,1,'+',ZI(IMATE),MATERI,'ELAS',
-     +              0,' ',0.D0,2,
-     +              NOMRES, VALRES, CODRES, 'FM' )
+     &              0,' ',0.D0,2,
+     &              NOMRES, VALRES, CODRES, 1)
          E = VALRES(1)
          NU = VALRES(2)
          DO 26 I = 1,6

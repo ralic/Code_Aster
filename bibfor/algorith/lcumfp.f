@@ -2,9 +2,9 @@
      &                    TINSTM,TINSTP,EPSM,DEPS,SIGM,
      &                    VIM,OPTION,SIGP,VIP,DSIDEP,CRIT)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 24/03/2009   AUTEUR REZETTE C.REZETTE 
+C MODIF ALGORITH  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -190,7 +190,7 @@ C
 C MODIFI DU 6 JANVIER 2003 - YLP SUPPRESION DE LA DECLARATION DE NOMPAR
 C      CHARACTER*8     NOMRES(16),NOMPAR(3)
       CHARACTER*8     NOMRES(16)
-      CHARACTER*2     CODRET(16)
+      INTEGER ICODRE(16)
       REAL*8         CFPS,CFPD
 C     NSTRS --> 6 NVARI --> 20
       INTEGER I,J,K,L,NSTRS,IFOU,ISPH
@@ -257,7 +257,7 @@ C
 C   INITIALISATION DU FLUAGE SPHERIQUE PROPRE
 C
       ISPH = 1
-                     
+
 C RECUPERATION DES VALEURS DE TEMPERATURE
 C
 C      CALL VERIFT(FAMI,KPG,KSP,'+',IMATE,'ELAS',1,EPSTHP,IRET1)
@@ -265,7 +265,7 @@ C      CALL VERIFT(FAMI,KPG,KSP,'-',IMATE,'ELAS',1,EPSTHM,IRET2)
       CALL RCVARC('F','TEMP','-',FAMI,KPG,KSP,TM,IRET)
       CALL RCVARC('F','TEMP','+',FAMI,KPG,KSP,TP,IRET)
       CALL RCVARC('F','TEMP','REF',FAMI,KPG,KSP,TREF,IRET)
-      
+
 
 C  ------- LECTURE DES CARACTERISTIQUES ELASTIQUES
 C  MB: LA DEPENDENCE DES PARAMETRES PAR RAPPORT A LA TEMPERATURE
@@ -279,37 +279,36 @@ C  CHANGE PAR RAPPORT A LA LOI D ENDOMMAGEMENT (COUPLAGE)
       IF (OPTION(2).EQ.'ENDO_ISOT_BETON') THEN
 
         CALL RCVALB(FAMI,1,1,'+',IMATE,' ','ELAS',1,'TEMP',0.D0,2,
-     &              NOMRES,VALRES,CODRET, 'FM')
+     &              NOMRES,VALRES,ICODRE, 1)
         CALL U2MESS('I', 'COMPOR1_60')
-        
+
         CALL RCVALB(FAMI,1,1,'+',IMATE,' ','ELAS',1,'TEMP',0.D0,1,
-     &               NOMRES(3),VALRES(3),CODRET(3), ' ') 
-        VALRES(4) = VALRES(3)  
-        CODRET(4) = CODRET(3)
-        
+     &               NOMRES(3),VALRES(3),ICODRE(3), 0)
+        VALRES(4) = VALRES(3)
+        ICODRE(4) = ICODRE(3)
+
       ELSEIF (OPTION(2).EQ.'MAZARS') THEN
         TMAXM = VIM(24)
         TMAXP = MAX(TMAXM, TP)
- 
+
         CALL RCVALB(FAMI,1,1,'-',IMATE,' ','ELAS',1,'TEMP',TMAXM,2,
-     &              NOMRES,VALRES,CODRET, 'FM')
+     &              NOMRES,VALRES,ICODRE, 1)
         YOUNM   = VALRES(1)
-        XNUM    = VALRES(2)     
+        XNUM    = VALRES(2)
 
         CALL RCVALB(FAMI,1,1,'+',IMATE,' ','ELAS',1,'TEMP',TMAXP,2,
-     &              NOMRES,VALRES,CODRET, 'FM')    
-     
+     &              NOMRES,VALRES,ICODRE, 1)
         CALL RCVALB(FAMI,KPG,KSP,'-',IMATE,' ','ELAS',1,
-     &                'TEMP',TMAXM,1,NOMRES(3),VALRES(3),CODRET(3),' ')
+     &                'TEMP',TMAXM,1,NOMRES(3),VALRES(3),ICODRE(3),0)
         CALL RCVALB(FAMI,KPG,KSP,'+',IMATE,' ','ELAS',1,
-     &                'TEMP',TMAXP,1,NOMRES(4),VALRES(4),CODRET(4),'0')
+     &                'TEMP',TMAXP,1,NOMRES(4),VALRES(4),ICODRE(4),0)
         CALL U2MESS('I', 'COMPOR1_61')
-        
+
       ELSE
         CALL RCVALB(FAMI,KPG,KSP,'+',IMATE,' ','ELAS',0,' ',0.D0,2,
-     &               NOMRES,VALRES,CODRET, 'FM' )     
+     &               NOMRES,VALRES,ICODRE, 1)
       ENDIF
-      
+
       YOUN   = VALRES(1)
       XNU    = VALRES(2)
 
@@ -318,25 +317,25 @@ C  -------CALCUL DES DEFORMATIONS THERMIQUES
 C
       IF ((OPTION(2).EQ.'MAZARS').OR.
      &      (OPTION(2).EQ.'ENDO_ISOT_BETON')) THEN
-        IF ( (IISNAN(TREF).EQ.1).OR.(CODRET(3).NE.'OK')
-     &        .OR.(CODRET(4).NE.'OK') ) THEN
-          CALL U2MESS('F','CALCULEL_15')          
+        IF ( (IISNAN(TREF).EQ.1).OR.(ICODRE(3).NE.0)
+     &        .OR.(ICODRE(4).NE.0) ) THEN
+          CALL U2MESS('F','CALCULEL_15')
         ELSE
           IF (IISNAN(TM).EQ.0) THEN
             EPSTHM = VALRES(3) * (TM - TREF)
           ELSE
-            EPSTHM = 0.D0        
+            EPSTHM = 0.D0
           ENDIF
           IF (IISNAN(TP).EQ.0) THEN
             EPSTHP = VALRES(4) * (TP - TREF)
           ELSE
-            EPSTHP = 0.D0        
-          ENDIF          
+            EPSTHP = 0.D0
+          ENDIF
         ENDIF
       ELSE
 
         CALL VERIFT(FAMI,KPG,KSP,'+',IMATE,'ELAS',1,EPSTHP,IRET1)
-        CALL VERIFT(FAMI,KPG,KSP,'-',IMATE,'ELAS',1,EPSTHM,IRET2)  
+        CALL VERIFT(FAMI,KPG,KSP,'-',IMATE,'ELAS',1,EPSTHM,IRET2)
       ENDIF
 
 
@@ -348,11 +347,11 @@ C
       NOMRES(1)='B_ENDOGE'
       NOMRES(2)='K_DESSIC'
       CALL RCVALB(FAMI,KPG,KSP,'+',IMATE,' ','ELAS',0,' ',0.D0,2,
-     &             NOMRES,VALRES,CODRET, 'FM' )
+     &             NOMRES,VALRES,ICODRE, 1)
       BENDO=VALRES(1)
       KDESS=VALRES(2)
 
-            
+
 C
 C  ------- CARACTERISTIQUES FLUAGE PROPRE UMLV
 C
@@ -365,7 +364,7 @@ C
       NOMRES(7)='ETA_ID'
 
       CALL RCVALB(FAMI,KPG,KSP,'+',IMATE,' ','BETON_UMLV_FP',0,' ',
-     &            RBID,7,NOMRES,VALRES,CODRET,'F ')
+     &            RBID,7,NOMRES,VALRES,ICODRE,2)
       KRS     = VALRES(1)
       ETARS   = VALRES(2)
       KIS     = VALRES(3)
@@ -373,15 +372,15 @@ C
       KRD     = VALRES(5)
       ETARD   = VALRES(6)
       ETAID   = VALRES(7)
- 
+
 C
 C ------- CARACTERISTIQUE FLUAGE DE DESSICATION DE BAZANT
 C
       NOMRES(8)='ETA_FD'
       CALL RCVALB(FAMI,KPG,KSP,'+',IMATE,' ','BETON_UMLV_FP',0,' ',
-     &            RBID,8,NOMRES,VALRES,CODRET,'  ')
+     &            RBID,8,NOMRES,VALRES,ICODRE,0)
 C     FLUAGE DE DESSICCATION NON ACTIVE
-      IF (CODRET(8) .NE. 'OK') THEN
+      IF (ICODRE(8) .NE.0) THEN
         CMAT(14) = 0
         ETAFD = -1.0D0
 C     FLUAGE DE DESSICCATION ACTIVE
@@ -396,18 +395,18 @@ C  ------- CARACTERISTIQUES HYGROMETRIE H
 C
       NOMRES(1)='FONC_DES'
       CALL RCVALB(FAMI,KPG,KSP,'-',IMATE,' ','ELAS',0,' ',
-     &            RBID,1,NOMRES(1),VALRES(1),CODRET(1), 'F ')        
-      IF  (CODRET(1) .NE. 'OK')  THEN
+     &            RBID,1,NOMRES(1),VALRES(1),ICODRE(1), 2)
+      IF  (ICODRE(1) .NE.0)  THEN
          CALL U2MESS('F','ALGORITH4_94')
       ENDIF
       HYGRM=VALRES(1)
       CALL RCVALB(FAMI,KPG,KSP,'+',IMATE,' ','ELAS',0,' ',
-     &            RBID,1,NOMRES(1),VALRES(1),CODRET(1), 'F ')
-         IF  (CODRET(1) .NE. 'OK')  THEN
+     &            RBID,1,NOMRES(1),VALRES(1),ICODRE(1), 2)
+         IF  (ICODRE(1) .NE.0)  THEN
              CALL U2MESS('F','ALGORITH4_94')
          ENDIF
       HYGRP=VALRES(1)
-             
+
 
 C
 C CONSTRUCTION DU VECTEUR CMAT CONTENANT LES CARACTERISTIQUES MECANIQUES
@@ -467,7 +466,6 @@ C
 C CALCUL DES MATRICES DES DEFORMATIONS DE FLUAGE TOTAL
 C   DFLUT(N+1) = AN + BN * SIGMA(N) + CN * SIGMA(N+1)
 C_______________________________________________________________________
-     
       IF (TDT.NE.0.D0) THEN
         IF (OPTION(1)(1:9).EQ.'RIGI_MECA') THEN
           ISPH=NINT(VIM(21))
@@ -476,26 +474,26 @@ C_______________________________________________________________________
      &               HYGRM,HYGRP,
      &               AN,BN,CN,CFPS,CFPD)
       ENDIF
-      
-           
+
+
 C_______________________________________________________________________
-C 
+C
 C RECUPERATION DE L HYDRATATION E DU SECHAGE
 C CALCUL DE LA SIGMA ELASTIQUE AU TEMP M POUR COUPLAGE AVEC MAZARS
-C  MODIFIE 20 SEPT 2008 M.BOTTONI 
+C  MODIFIE 20 SEPT 2008 M.BOTTONI
 C_______________________________________________________________________
 
 
-      CALL LCUMVI('FT',VIM,EPSFM)   
-         
-      
+      CALL LCUMVI('FT',VIM,EPSFM)
+
+
       IF ((OPTION(1)(1:9).EQ.'FULL_MECA').OR.
      &    (OPTION(1)(1:9).EQ.'RAPH_MECA')) THEN
 
 C MODIFI DU 18 AOUT 2004 YLP - CORRECTION DE LA DEFORMATION DE FLUAGE
-C PAR LES DEFORMATIONS DE RETRAIT 
+C PAR LES DEFORMATIONS DE RETRAIT
 
-        
+
           CALL RCVARC(' ','HYDR','+',FAMI,KPG,KSP,HYDRP,IRET)
           IF ( IRET.NE.0) HYDRP=0.D0
           CALL RCVARC(' ','HYDR','-',FAMI,KPG,KSP,HYDRM,IRET)
@@ -508,19 +506,19 @@ C PAR LES DEFORMATIONS DE RETRAIT
           IF ( IRET.NE.0) SREF=0.D0
 
           EPSRM = KDESS*(SECHM-SREF)-BENDO*HYDRM + EPSTHM
-          EPSRP = KDESS*(SECHP-SREF)-BENDO*HYDRP + EPSTHP        
+          EPSRP = KDESS*(SECHP-SREF)-BENDO*HYDRP + EPSTHP
 
 
-C - MB: CALCUL DE LA DEFORMATION ELASTIQUE AU TEMP M 
-C    (LA SEULE QUI CONTRIBUE A FAIRE EVOLUER L'ENDOMMAGEMENT) 
+C - MB: CALCUL DE LA DEFORMATION ELASTIQUE AU TEMP M
+C    (LA SEULE QUI CONTRIBUE A FAIRE EVOLUER L'ENDOMMAGEMENT)
 C    POUR LE COUPLAGE AVEC MAZARS
 
         IF (OPTION(2).EQ.'MAZARS') THEN
           CALL R8INIR(6, 0.D0, EPSEL,1)
-          DO 35 K=1,NSTRS  
+          DO 35 K=1,NSTRS
             EPSEL(K) = EPSM(K) - EPSRM * KRON(K) - EPSFM(K)
 35        CONTINUE
-       
+
 
 C  -  ON CALCUL LES CONTRAINTES ELASTIQUES AU TEMP M
 C          CALL SIGELA (NDIM,'LAMBD',LAMBDA,DEUXMU,EPSEL,SIGELM)
@@ -529,10 +527,10 @@ C          CALL SIGELA (NDIM,'LAMBD',LAMBDA,DEUXMU,EPSEL,SIGELM)
 
         ENDIF
 
-         
+
 C ________________________________________________________________
 
-C  1. CONSTRUCTION DE LA MATRICE D ELASTICITE DE HOOKE POUR MAZARS 
+C  1. CONSTRUCTION DE LA MATRICE D ELASTICITE DE HOOKE POUR MAZARS
 C     OU UMLV SANS COUPLAGE, OU DE LA MATRICE ELASTO-ENDOMMAGEE POUR EIB
 C  2. MISE A JOUR DE L ENDOMMAGEMENT ET DES SIGMA POUR EIB
 C ________________________________________________________________
@@ -543,7 +541,7 @@ C ________________________________________________________________
 C    MATRICE ELASTO-ENDOMMAGEE ET MISE A JOUR DE L ENDOMMAGEMENT
           CALL LCLDSB(FAMI,KPG,KSP,NDIM,TYPMOD,IMATE,COMPOZ,EPSM,
      &        DEPS,VIM(22),TM,TP,TREF,'RAPH_COUP       ',
-     &        RBID,VIP(22),DEP,CRIT) 
+     &        RBID,VIP(22),DEP,CRIT)
         ELSE
 C    MATRICE D ELASTICITE DE HOOKE POUR MAZARS ET UMLV SANS COUPLAGE
           CALL LCUMME(YOUN,XNU,IFOU,DEP)
@@ -552,10 +550,10 @@ C    MATRICE D ELASTICITE DE HOOKE POUR MAZARS ET UMLV SANS COUPLAGE
 
 
 C ________________________________________________________________
-C   MODIFIE MB 20 OCT 2008 
+C   MODIFIE MB 20 OCT 2008
 C
 C  1. MISE A JOUR DES SIGMA POUR EIB ET UMLV SANS COUPLAGE
-C     CALCUL DES SIGMA ELASTIQUES POUR MAZARS 
+C     CALCUL DES SIGMA ELASTIQUES POUR MAZARS
 C      (LCUMEF)
 C  2. MISE A JOUR DES VARIABLES INTERNES FINALES DE FLUAGE
 C      (LCUMSF)
@@ -563,23 +561,22 @@ C ________________________________________________________________
 
 C  PRISE EN COMPTE DU FLUAGE PROPRE ET DE DESSICCATION
 C   MODIFI DU 18 AOUT 2004 YLP - CORRECTION DE LA DEFORMATION DE FLUAGE
-C   PAR LES DEFORMATIONS DE RETRAIT 
+C   PAR LES DEFORMATIONS DE RETRAIT
 
         IF (OPTION(2).EQ.'MAZARS') THEN
           CALL LCUMEF(DEP,AN,BN,CN,EPSM,EPSRM,EPSRP,
      &                DEPS,EPSFM,SIGELM,NSTRS,SIGELP)
           CALL LCUMSF(SIGELM,SIGELP,NSTRS,VIM,20,CMAT,15,
-     &                ISPH,TDT,HYGRM,HYGRP,VIP) 
-     
+     &                ISPH,TDT,HYGRM,HYGRP,VIP)
         ELSE
 
           CALL LCUMEF(DEP,AN,BN,CN,EPSM,EPSRM,EPSRP,
-     &                DEPS,EPSFM,SIGM,NSTRS,SIGP)     
+     &                DEPS,EPSFM,SIGM,NSTRS,SIGP)
           CALL LCUMSF(SIGM,SIGP,NSTRS,VIM,20,CMAT,15,
-     &                ISPH,TDT,HYGRM,HYGRP,VIP)             
+     &                ISPH,TDT,HYGRM,HYGRP,VIP)
        ENDIF
 
-    
+
         VIP(21)=1
 
 C
@@ -596,7 +593,7 @@ C___________________________________________________________
 C
 C  MB: MISE A JOUR DE L ENDOMMAGEMENT ET DES SIGMA POUR MAZARS
 C_________________________________________________________
-      
+
 
         IF (OPTION(2).EQ.'MAZARS') THEN
 
@@ -604,37 +601,36 @@ C_________________________________________________________
      &             DEPS, VIM(22), TM,TP,TREF,'RAPH_COUP       ',
      &             SIGP, VIP, RBID)
         ENDIF
-             
-C FIN DE (IF RAPH_MECA ET FULL_MECA)        
+
+C FIN DE (IF RAPH_MECA ET FULL_MECA)
       ENDIF
 
 
 
 
-  
-      
+
+
 C_______________________________________________________________________
 C
 C CONSTRUCTION DE LA MATRICE TANGENTE
 C_______________________________________________________________________
 C
       IF ((OPTION(1)(1:9).EQ.'FULL_MECA').OR.
-     &     (OPTION(1)(1:9).EQ.'RIGI_MECA')) THEN     
+     &     (OPTION(1)(1:9).EQ.'RIGI_MECA')) THEN
 C      FULL_MECA | RIGI_MECA_
 
 C - MB: SI COUPLAGE AVEC MAZARS, ON UTILISE POUR LE COUPLAGE
 C       LA MATRICE TANGENTE DE CETTE LOI
-        IF (OPTION(2).EQ.'MAZARS') THEN   
-        
-          IF (OPTION(1)(1:9).EQ.'FULL_MECA') 
+        IF (OPTION(2).EQ.'MAZARS') THEN
+
+          IF (OPTION(1)(1:9).EQ.'FULL_MECA')
      &     OPTION(1) = 'RIGI_COUP       '
-     
             CALL  LCMAZA (FAMI,KPG,KSP,NDIM, TYPMOD, IMATE, COMPOR,
      &                     EPSM,DEPS, VIM(22), TM,TP,TREF,
      &                     OPTION, RBID, VIP, DSIDEP)
         ELSE
 
-          IF (OPTION(1)(1:9).EQ.'RIGI_MECA') THEN      
+          IF (OPTION(1)(1:9).EQ.'RIGI_MECA') THEN
             IF (OPTION(2).EQ.'ENDO_ISOT_BETON') THEN
               COMPOZ(1)='ENDO_ISOT_BETON'
               CALL LCLDSB(FAMI,KPG,KSP,NDIM,TYPMOD,IMATE,COMPOZ,EPSM,
@@ -717,12 +713,12 @@ C----------- CORRECTION POUR LES CONTRAINTES PLANES :
 137           CONTINUE
 136         CONTINUE
           ENDIF
-          
+
 
 C FIN CHOIX MAZARS
-        ENDIF 
+        ENDIF
 
-C FIN RIGI_MECA/FULL_MECA        
+C FIN RIGI_MECA/FULL_MECA
       ENDIF
-      
+
       END

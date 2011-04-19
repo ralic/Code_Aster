@@ -19,7 +19,7 @@ C ======================================================================
       IMPLICIT  REAL*8  (A-H,O-Z)
       CHARACTER*(*)       OPTION , NOMTE
 C     ------------------------------------------------------------------
-C MODIF ELEMENTS  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C TOLE CRP_6
 C     CALCUL
 C       - ENERGIE DE DEFORMATION
@@ -53,7 +53,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
       PARAMETER    (             NBRES = 3 )
       REAL*8              VALRES(NBRES)
-      CHARACTER*2    CODRES(NBRES)
+      INTEGER CODRES(NBRES)
       CHARACTER*4  FAMI
       CHARACTER*8  NOMPAR,NOMRES(NBRES),NOMAIL
       CHARACTER*16 CH16
@@ -84,9 +84,9 @@ C
       NOMPAR = 'TEMP'
 C
       CALL RCVALA(ZI(LMATER),' ','ELAS',NBPAR,NOMPAR,VALPAR,2,
-     &              NOMRES,VALRES,CODRES,'FM')
+     &              NOMRES,VALRES,CODRES,1)
       CALL RCVALA(ZI(LMATER),' ','ELAS',NBPAR,NOMPAR,VALPAR,1,
-     &              NOMRES(3),VALRES(3),CODRES(3),'FM')
+     &              NOMRES(3),VALRES(3),CODRES(3),1)
 C
       E      = VALRES(1)
       XNU    = VALRES(2)
@@ -252,7 +252,7 @@ C           --- ENERGIE CINETIQUE
             IF = 1
             CALL PTENCI(12,UL,KLC,ZR(JFREQ),ZR(JENDE),ITYPE,KANL,IF)
 C
-         ELSEIF ( CODRES(3)(1:2).NE.'OK') THEN
+         ELSEIF ( CODRES(3).NE.0) THEN
             CALL U2MESS('F','ELEMENTS3_31')
          ENDIF
 C

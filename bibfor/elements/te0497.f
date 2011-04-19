@@ -1,9 +1,9 @@
       SUBROUTINE TE0497(OPTION,NOMTE)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 07/12/2010   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -110,7 +110,7 @@ C
 C
       LOGICAL      LAXI,PERMAN,VF
 C
-      CHARACTER*2  FORM,NOEU
+      CHARACTER*2 FORM,NOEU
       CHARACTER*3  MODINT
       CHARACTER*4  NOMPAR(1)
       CHARACTER*8  TYPEMA,TYPMAV
@@ -126,7 +126,7 @@ C
      &             VALRE3(NBRE3),VALRE4(NBRE4),
      &             VALR11(NBR11),VALR12(NBR12)
 C
-      CHARACTER*2  CODME1(NBRE1),CODME2(NBRE2),
+      INTEGER CODME1(NBRE1),CODME2(NBRE2),
      &             CODME3(NBRE3),CODME4(NBRE4),
      &             CODM11(NBR11),CODM12(NBR12)
 C
@@ -273,9 +273,9 @@ C--------------------------------------------------------------------
       VALRES(1) = INSTPM(1)
 C
       CALL RCVALA ( ZI(IMATE), ' ', 'THM_DIFFU', 1, NOMPAR, VALRES,
-     &              NBRE1, NOMRE1, VALRE1, CODME1, 'FM' )
+     &              NBRE1, NOMRE1, VALRE1, CODME1, 1)
 C
-      IF ( CODME1(1).EQ.'OK' .AND. CODME1(2).EQ.'OK' ) THEN
+      IF ( CODME1(1).EQ.0 .AND. CODME1(2).EQ.0 ) THEN
         RHOHOM = VALRE1(1)
         BIOT   = VALRE1(2)
       ELSE
@@ -288,15 +288,15 @@ C => PERMIN SI ISOTROPE
 C => PERMIN_X,PERMIN_Y ET PERMIN_Z SINON
 C
       CALL RCVALA ( ZI(IMATE), ' ', 'THM_DIFFU', 1, NOMPAR, VALRES,
-     &              NBR11, NOMR11, VALR11, CODM11, '  ' )
+     &              NBR11, NOMR11, VALR11, CODM11, 0)
 C
-      IF ( CODM11(1).EQ.'OK') THEN
+      IF ( CODM11(1).EQ.0) THEN
         PERMIN = VALR11(1)
-      ELSE IF ( CODM11(1).EQ.'NO' ) THEN
+      ELSE IF ( CODM11(1).EQ.1 ) THEN
         CALL RCVALA ( ZI(IMATE), ' ', 'THM_DIFFU', 1, NOMPAR, VALRES,
-     &              NBR12, NOMR12, VALR12, CODM12, '  ' )
-        IF (( CODM12(1).EQ.'OK' ).AND.( CODM12(2).EQ.'OK' ).AND.
-     &      ( CODM12(3).EQ.'OK' )) THEN
+     &              NBR12, NOMR12, VALR12, CODM12, 0)
+        IF (( CODM12(1).EQ.0 ).AND.( CODM12(2).EQ.0 ).AND.
+     &      ( CODM12(3).EQ.0 )) THEN
           PERMIN = SQRT(VALR12(1)**2+VALR12(2)**2+VALR12(3)**2)
         ENDIF
       ELSE
@@ -304,9 +304,9 @@ C
       ENDIF
 C
       CALL RCVALA ( ZI(IMATE), ' ', 'THM_LIQU', 1, NOMPAR, VALRES,
-     &              NBRE2, NOMRE2, VALRE2, CODME2, 'FM' )
+     &              NBRE2, NOMRE2, VALRE2, CODME2, 1)
 C
-      IF ( ( CODME2(1).EQ.'OK' ) .AND. ( CODME2(2).EQ.'OK' ) ) THEN
+      IF ( ( CODME2(1).EQ.0 ) .AND. ( CODME2(2).EQ.0 ) ) THEN
         RHOLIQ = VALRE2(1)
         VISCLI = VALRE2(2)
       ELSE
@@ -330,9 +330,9 @@ C
 C 4.1. RECHERCHE DE LA POROSITE INITIALE
 C
         CALL RCVALA ( ZI(IMATE), ' ', 'THM_INIT', 1, NOMPAR, VALRES,
-     &                NBRE3, NOMRE3, VALRE3, CODME3, 'FM' )
+     &                NBRE3, NOMRE3, VALRE3, CODME3, 1)
 C
-        IF ( CODME3(1).EQ.'OK' ) THEN
+        IF ( CODME3(1).EQ.0 ) THEN
           POROSI = VALRE3(1)
         ELSE
           CALL U2MESK('F','ELEMENTS4_70',1,NOMRE3(1))
@@ -341,9 +341,9 @@ C
 C 4.2. RECHERCHE DU COEFFICIENT DE POISSON ET DU MODULE DE YOUNG
 C
         CALL RCVALA ( ZI(IMATE), ' ', 'ELAS', 1, NOMPAR, VALRES,
-     &                NBRE4, NOMRE4, VALRE4, CODME4, 'FM' )
+     &                NBRE4, NOMRE4, VALRE4, CODME4, 1)
 C
-        IF (( CODME4(1).EQ.'OK' ).AND. ( CODME4(2).EQ.'OK' )) THEN
+        IF (( CODME4(1).EQ.0 ).AND. ( CODME4(2).EQ.0 )) THEN
           CYOUNG = VALRE4(1)
           POISSO = VALRE4(2)
         ELSE
@@ -435,7 +435,7 @@ C       IMPOSER LA VALEUR 0 SANS FAIRE DE CALCULS INUTILES
             FOVO(IBID) = 0.D0
           ELSE
             CALL FOINTE('FM',ZK8(IFOVF+IBID-1),1,NOMPAR,R8BID3,
-     >                   FOVO(IBID),IRET)
+     &                   FOVO(IBID),IRET)
           ENDIF
    24   CONTINUE
 CGN        WRITE(IFM,*) 'F X : ',ZK8(IFOVF),FOVO(1)
@@ -588,17 +588,17 @@ C --- CALCUL DES NORMALES, TANGENTES ET JACOBIENS AUX POINTS DE L'ARETE
 C
           IAUX = IFA
           CALL CALNOR ( '2D' , IGEOM,
-     >                  IAUX, NBS, NBNA, ORIEN,
-     >                  IBID, IBID, ITAB, IBID, IBID, IBID,
-     >                  JACO, NX, NY, R8BID3,
-     >                  TX, TY, HF )
+     &                  IAUX, NBS, NBNA, ORIEN,
+     &                  IBID, IBID, ITAB, IBID, IBID, IBID,
+     &                  JACO, NX, NY, R8BID3,
+     &                  TX, TY, HF )
 C
 C ------- SI L'ARRETE N'EST PAS SUR LA FRONTIERE DE LA STRUCTURE...
 C         CALCUL DES TERMES DE SAUT A TRAVERS LES FACES INTERIEURES
 C         DE LA MAILLE
 C
           IF (TYPMAV(1:4).EQ.'TRIA'.OR.
-     >        TYPMAV(1:4).EQ.'QUAD') THEN
+     &        TYPMAV(1:4).EQ.'QUAD') THEN
 C
             CALL ERHMS2( PERMAN    , IFA      , NBS       ,
      &                   THETA     , JACO      , NX        , NY   ,

@@ -5,7 +5,7 @@
       INTEGER             IND
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 04/04/2011   AUTEUR DESOZA T.DESOZA 
+C MODIF ELEMENTS  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -128,7 +128,8 @@ C     -------------------------------------------------
                END IF
                IF (MULTIC.GT.0) THEN
                  INIV = IGAUH - 2
-                 CALL DXDMUL(ICOU,INIV,T1VE,T2VE,HM,D1I,D2I,ZIC,HIC)
+                 CALL DXDMUL(.FALSE.,ICOU,INIV,T1VE,T2VE,HM,D1I,D2I,
+     &                       ZIC,HIC)
                ENDIF
 C
 C         -- CALCUL DES EFFORTS GENERALISES DANS L'EPAISSEUR (N, M ET T)

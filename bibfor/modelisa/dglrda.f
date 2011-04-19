@@ -2,22 +2,22 @@
       IMPLICIT NONE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 03/01/2011   AUTEUR SFAYOLLE S.FAYOLLE 
+C MODIF MODELISA  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C RESPONSABLE SFAYOLLE S.FAYOLLE
 C ----------------------------------------------------------------------
@@ -51,7 +51,7 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       REAL*8  MF2X,MF2Y,RHO,AMORA,AMORB,EEQ,NUEQ,MF1,MF2,NMIN1,NMIN2
       REAL*8  NORMM,NORMN,VALRES(5),MP1N0,MP2N0,AUX,MAXMP(2),MINMP(2)
       REAL*8  NMAX0,NMIN(2),NMAX(2),OML(NA),R8B,PAR1,PAR2,ELB(2)
-      CHARACTER*2 CODRES(5) 
+      INTEGER ICODR2(5)
       CHARACTER*8 MATER,FON(4),K8B,NOMRES(5)
       CHARACTER*19 FSNCX,FSNCY,FSCXD,FSCYD,FSCXD2,FSCYD2
       CHARACTER*19 FINCX,FINCY,FICXD,FICYD,FICXD2,FICYD2
@@ -99,18 +99,18 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       NOMRES(5) = 'AMOR_BET'
       K8B = ' '
       CALL RCVALE(MATER,'ELAS            ',0,K8B,R8B,5,
-     &            NOMRES,VALRES,CODRES,'  ')
+     &            NOMRES,VALRES,ICODR2,0)
       EB  = VALRES(1)
       NUB = VALRES(2)
       RHO = VALRES(3)
 
-      IF(CODRES(4) .NE. 'OK') THEN 
+      IF(ICODR2(4) .NE. 0) THEN
         AMORA = 0.0D0
       ELSE
         AMORA = VALRES(4)
       ENDIF
 
-      IF(CODRES(5) .NE. 'OK') THEN 
+      IF(ICODR2(5) .NE. 0) THEN
         AMORB = 0.0D0
       ELSE
         AMORB = VALRES(5)
@@ -119,7 +119,7 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       NOMRES(1) = 'SYT'
       NOMRES(2) = 'SYC'
       CALL RCVALE(MATER,'BETON_ECRO_LINE ',0,K8B,R8B,2,
-     &            NOMRES,VALRES,CODRES,'  ')
+     &            NOMRES,VALRES,ICODR2,0)
       FT = VALRES(1)
       FC = VALRES(2)
 
@@ -150,11 +150,11 @@ C      CALL GETVR8('BETON','BT2',1,1,1,BT2,IBID)
           CALL GETVID('NAPPE','MATER',ILIT,1,1,MATER,IBID)
           NOMRES(1) = 'E'
           CALL RCVALE(MATER,'ELAS            ',0,K8B,R8B,1,
-     &            NOMRES,VALRES,CODRES,'  ')
+     &            NOMRES,VALRES,ICODR2,0)
           EA(ILIT) = VALRES(1)
           NOMRES(1) = 'SY'
           CALL RCVALE(MATER,'ECRO_LINE       ',0,K8B,R8B,1,
-     &            NOMRES,VALRES,CODRES,'  ')
+     &            NOMRES,VALRES,ICODR2,0)
           SY(ILIT) = VALRES(1)
           CALL GETVR8('NAPPE','OMX',ILIT,1,1,OMX(ILIT),IBID)
           CALL GETVR8('NAPPE','OMY',ILIT,1,1,OMY(ILIT),IBID)
@@ -172,11 +172,11 @@ C      CALL GETVR8('BETON','BT2',1,1,1,BT2,IBID)
           CALL GETVID('CABLE_PREC','MATER',II,1,1,MATER,IBID)
           NOMRES(1) = 'E'
           CALL RCVALE(MATER,'ELAS            ',0,K8B,R8B,1,
-     &            NOMRES,VALRES,CODRES,'  ')
+     &            NOMRES,VALRES,ICODR2,0)
           EA(ILIT) = VALRES(1)
           NOMRES(1) = 'SY'
           CALL RCVALE(MATER,'ECRO_LINE       ',0,K8B,R8B,1,
-     &            NOMRES,VALRES,CODRES,'  ')
+     &            NOMRES,VALRES,ICODR2,0)
           SY(ILIT) = VALRES(1)
           CALL GETVR8('CABLE_PREC','OMX',II,1,1,OMX(ILIT),IBID)
           CALL GETVR8('CABLE_PREC','OMY',II,1,1,OMY(ILIT),IBID)
@@ -199,12 +199,12 @@ C      CALL GETVR8('BETON','BT2',1,1,1,BT2,IBID)
           NOMRES(1) = 'E'
           NOMRES(2) = 'NU'
           CALL RCVALE(MATER,'ELAS            ',0,K8B,R8B,2,
-     &            NOMRES,VALRES,CODRES,'  ')
+     &            NOMRES,VALRES,ICODR2,0)
           EA(ILIT)  = VALRES(1)
           NUA(ILIT) = VALRES(2)
           NOMRES(1) = 'SY'
           CALL RCVALE(MATER,'ECRO_LINE       ',0,K8B,R8B,1,
-     &            NOMRES,VALRES,CODRES,'  ')
+     &            NOMRES,VALRES,ICODR2,0)
           SY(ILIT) = VALRES(1)
           CALL GETVR8('LINER','OML',II,1,1,OML(II),IBID)
           CALL GETVR8('LINER','RLR',II,1,1,RLR(II),IBID)
@@ -246,12 +246,12 @@ C MOMENT DE FISSURATION
 C MOYENNE DANS CHAQUE DIRECTION
       MF1 = (MF1X+MF1Y)/2.D0
       MF2 = (MF2X+MF2Y)/2.D0
-C      IF(BT1 .EQ. 0.0D0) THEN 
+C      IF(BT1 .EQ. 0.0D0) THEN
 C        BT1 = 5.D0/6.D0*HH/2.D0*(EB/(1+NUB)+EAT*OMT)
-C      ENDIF 
-C      IF(BT2 .EQ. 0.0D0) THEN 
+C      ENDIF
+C      IF(BT2 .EQ. 0.0D0) THEN
 C        BT2 = 5.D0/6.D0*HH/2.D0*(EB/(1+NUB)+EAT*OMT)
-C      ENDIF 
+C      ENDIF
 
 C-----REMPLISSAGE DU MATERIAU
       CALL WKVECT(MATER//'.MATERIAU.NOMRC ','G V K16',2,JLM)
@@ -359,14 +359,14 @@ C        WRITE (IFR,*) 'BT1, BT2 =   :',BT1,' ',BT2
         WRITE (IFR,*) 'MF1, MF2 =   :',MF1,' ',MF2
         WRITE (IFR,*) 'GAMMA, QP1, QP2 =   :',GAMMA,' ',QP1,' ',QP2
         WRITE (IFR,*) 'C1N1, C1N2, C1N3 =   :',CN(1,1),' ',CN(1,2),' ',
-     &                 CN(1,3)        
+     &                 CN(1,3)
         WRITE (IFR,*) 'C2N1, C2N2, C2N3 =   :',CN(2,1),' ',CN(2,2),' ',
-     &                 CN(2,3)        
+     &                 CN(2,3)
         WRITE (IFR,*) 'C1M1, C1M2, C1M3 =   :',CM(1,1),' ',CM(1,2),' ',
-     &                 CM(1,3)        
+     &                 CM(1,3)
         WRITE (IFR,*) 'C2M1, C2M2, C2M3 =   :',CM(2,1),' ',CM(2,2),' ',
-     &                 CM(2,3)        
-        WRITE (IFR,*) 'MODULE D YOUNG ET COEFFICIENT DE POISSON 
+     &                 CM(2,3)
+        WRITE (IFR,*) 'MODULE D YOUNG ET COEFFICIENT DE POISSON
      &                 EFFECTIFS EN FLEXION:'
         WRITE (IFR,*) 'EF, NUF =   :',EEQ,' ',NUEQ
       END IF
@@ -444,10 +444,10 @@ C------CALCULER MAXMP,MINMP,NORMM,NORMN-----------------
         CALL MMFONC(FON19,AUX,MAXMP(II))
         FON19(1:8) = FON(2*II)
         CALL MMFONC(FON19,MINMP(II),AUX)
-        IF ( (MP1N0  .LT.  0.D0).OR.(MP2N0  .GT.  0.D0).OR.  
+        IF ( (MP1N0  .LT.  0.D0).OR.(MP2N0  .GT.  0.D0).OR.
      &       (MAXMP(II)-MINMP(II) .LE. 0.D0)   ) THEN
           CALL U2MESS('F','ELEMENTS_87')
-        ENDIF  
+        ENDIF
  35   CONTINUE
       NORMM=0.5D0*MAX(MAXMP(1)-MINMP(1),MAXMP(2)-MINMP(2))
       DO 40, II = 1,2
@@ -461,7 +461,7 @@ C------CALCULER MAXMP,MINMP,NORMM,NORMN-----------------
      &              NORMM,NMIN0,NMIN(II))
         CALL INTERF(MATER,NOMRES(2*(II-1)+1),NOMRES(2*II),
      &                NORMM,NMAX0,NMAX(II))
- 40   CONTINUE 
+ 40   CONTINUE
       NORMN=0.5D0*MAX(ABS(NMAX(1)-NMIN(1)),ABS(NMAX(2)-NMIN(2)))
       ZK8(JMELK+23) = 'MAXMP1  '
       ZR(JMELR+23 ) = MAXMP(1)

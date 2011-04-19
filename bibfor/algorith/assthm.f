@@ -12,7 +12,7 @@
      &                   CODRET)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 08/02/2011   AUTEUR GRANET S.GRANET 
+C MODIF ALGORITH  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C RESPONSABLE GRANET S.GRANET
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -57,7 +57,7 @@ C
       REAL*8        R(DIMDEF+1),SIGBAR(DIMDEF),C(DIMDEF)
       REAL*8        DT,TA,TA1,RTHMC,R8PREM,CK(DIMDEF),CS(DIMDEF)
       LOGICAL       AXI, PERMAN
-      CHARACTER*2   CODMES(1)
+      INTEGER CODMES(1)
       CHARACTER*3   MODINT
       CHARACTER*8   TYPMOD(2)
       CHARACTER*16  OPTION,COMPOR(*),THMC,LOI
@@ -270,7 +270,7 @@ C --- CALCUL POUR CHAQUE POINT D'INTEGRATION: BOUCLE SUR KPI -----------
 C ======================================================================
       LOI = ' '
       CALL RCVALA(IMATE,' ','THM_INIT', 0, ' ', 0.D0, 1, 'COMP_THM',
-     &                                              RTHMC, CODMES, 'FM')
+     &                                              RTHMC, CODMES, 1)
       THMC = COMPOR(8)
       IF ( (RTHMC-1.0D0).LT.R8PREM() ) THEN
          LOI = 'LIQU_SATU'
@@ -287,7 +287,7 @@ C ======================================================================
       ELSE IF ( (RTHMC-9.0D0).LT.R8PREM() ) THEN
          LOI = 'LIQU_AD_GAZ_VAPE'
       ELSE IF ( (RTHMC-10.0D0).LT.R8PREM() ) THEN
-         LOI = 'LIQU_AD_GAZ'  
+         LOI = 'LIQU_AD_GAZ'
       ENDIF
       IF (THMC.NE.LOI) THEN
           VALK(1) = LOI

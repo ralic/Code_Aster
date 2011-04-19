@@ -1,8 +1,8 @@
       SUBROUTINE TE0102(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 21/07/2009   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF ELEMENTS  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -31,14 +31,15 @@ C ......................................................................
       PARAMETER (NDIMAX=27)
       PARAMETER (NBRES=6)
       PARAMETER (NBVAR=2)
-      CHARACTER*2 CODRET(NBRES),NUM
+      INTEGER ICODRE(NBRES)
+      CHARACTER*2 NUM
       CHARACTER*8 NOMRES(NBRES),NOMPAR(NBVAR)
       CHARACTER*16 PHENOM
-      REAL*8 M(3,3),ROC,H
+      REAL*8 M(3,3),H
       REAL*8 VALRES(NBRES)
       REAL*8 COOR2D(18)
       REAL*8 DFDX(9),DFDY(9),POIDS,PM,DELTAT
-      REAL*8 MUN,ZERO,DEUX,QUATRE,CINQ
+      REAL*8 MUN,ZERO,DEUX,QUATRE
       REAL*8 QUINZE,SEIZE,COUR,COSA,SINA,R
       REAL*8 VALPAR(NBVAR),TEMPE,INSTAN
       REAL*8 MASSE(NDIMAX,NDIMAX)
@@ -47,7 +48,6 @@ C ......................................................................
       INTEGER IMATE,ITEMPS,NNOS,NDIM
 
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
-      CHARACTER*32 JEXNUM,JEXNOM,JEXR8,JEXATR
       INTEGER ZI
       COMMON /IVARJE/ZI(1)
       REAL*8 ZR
@@ -124,7 +124,7 @@ C     ------------------------------------------------------
 
 C --- RECUPERATION DE LA NATURE DU MATERIAU DANS PHENOM :
 C     -------------------------------------------------
-      CALL RCCOMA(ZI(IMATE),'THER',PHENOM,CODRET)
+      CALL RCCOMA(ZI(IMATE),'THER',PHENOM,ICODRE)
 
 C --- DETERMINATION DU TENSEUR DE CAPACITE THERMIQUE :
 C     ==============================================
@@ -147,7 +147,7 @@ C ---   (L'INTERPOLATION EN FONCTION DE LA TEMPERATURE EST
 C ---    INACTIVE POUR LE MOMENT) :
 C       -------------------------
         CALL RCVALA(ZI(IMATE),' ','THER_COQMU',NBVAR,NOMPAR,VALPAR,
-     &              NBRES,NOMRES,VALRES,CODRET,'FM')
+     &              NBRES,NOMRES,VALRES,ICODRE,1)
 
 C ---   TENSEUR DE CAPACITE THERMIQUE :
 C       -----------------------------
@@ -170,7 +170,7 @@ C       -------------------------
         NBV = 1
         NOMRES(1) = 'RHO_CP'
         CALL RCVALA(ZI(IMATE),' ','THER',NBVAR,NOMPAR,VALPAR,NBV,
-     &            NOMRES,  VALRES,CODRET,'FM')
+     &            NOMRES,  VALRES,ICODRE,1)
 
 C ---   CAPACITE THERMIQUE :
 C       ------------------
@@ -224,7 +224,7 @@ C ---    INACTIVE POUR LE MOMENT) :
 C       -------------------------
         NBV = 4
         CALL RCVALA(ZI(IMATE),' ',PHENOM,NBVAR,NOMPAR,VALPAR,NBV,NOMRES,
-     &              VALRES,CODRET,'FM')
+     &              VALRES,ICODRE,1)
 
         M(1,1) = VALRES(1)
         M(1,2) = VALRES(2)

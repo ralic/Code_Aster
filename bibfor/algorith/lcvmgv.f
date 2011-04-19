@@ -5,22 +5,22 @@
 
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 07/12/2010   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ALGORITH  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 
 
@@ -41,7 +41,7 @@ C
 C ----------------------------------------------------------------------
 C     REALISE LA LOI DE VON MISES ISOTROPE ET ELASTIQUE EN NON LOCAL
 C     GRAD_VARI
-C     POUR LES ELEMENTS ISOPARAMETRIQUES EN PETITES DEFORMATIONS 
+C     POUR LES ELEMENTS ISOPARAMETRIQUES EN PETITES DEFORMATIONS
 C
 C IN  KPG,KSP  : NUMERO DU (SOUS)POINT DE GAUSS
 C IN  NDIM    : DIMENSION DE L'ESPACE
@@ -83,7 +83,6 @@ C      COMMONS COMMUNS A NMCRI2 ET NMISOT
 C
 C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
 C
-      CHARACTER*32       JEXNUM , JEXNOM , JEXR8 , JEXATR
       INTEGER            ZI
       COMMON  / IVARJE / ZI(1)
       REAL*8             ZR
@@ -111,7 +110,7 @@ C
       INTEGER     NDIMSI,JPROLM,JVALEM,NBVALM,JPROL2,JVALE2,NBVAL2
       INTEGER     IMATE2,JPROLP,JVALEP,NBVALP,K,L,NITER,IRET2,IRET1
       INTEGER     IRET3,IRET4,IBID
-      CHARACTER*2 BL2, FB2, CODRET(3)
+      INTEGER ICODRE(3)
       CHARACTER*8 NOMRES(3)
       CHARACTER*8 NOMPAR(3),TYPE
       REAL*8      VALPAM(3),VALPAP(3),RESU,VALRM(2),R8MIEM
@@ -133,8 +132,6 @@ C     ----------------------
       NDIMSI = 2*NDIM
       IMATE2 = IMATE
 C
-      BL2 = '  '
-      FB2 = 'F '
 C
       IF (.NOT.(COMPOR(1)(1:9) .EQ. 'VMIS_ISOT' )) THEN
             CALL U2MESK('F','ALGORITH4_50',1,COMPOR(1))
@@ -173,14 +170,14 @@ C
       CALL VERIFT(FAMI,KPG,KSP,'T',IMATE,'ELAS',1,EPSTHE,IBID)
       IF (COMPOR(1)(1:14) .EQ. 'VMIS_ISOT_TRAC' ) THEN
          CALL RCVALB(FAMI,KPG,KSP,'-',IMATE,' ','ELAS',0,' ',0.D0,
-     +                 1,NOMRES(2),VALRES(2),CODRET(2), FB2 )
+     &                 1,NOMRES(2),VALRES(2),ICODRE(2), 2)
          NUM = VALRES(2)
          CALL RCVALB(FAMI,KPG,KSP,'+',IMATE,' ','ELAS',0,' ',0.D0,
-     +                 1,NOMRES(2),VALRES(2),CODRET(2), FB2 )
+     &                 1,NOMRES(2),VALRES(2),ICODRE(2), 2)
          NU = VALRES(2)
       ELSE
          CALL RCVALB(FAMI,KPG,KSP,'-',IMATE,' ','ELAS',0,' ',0.D0,
-     +                 2,NOMRES(1),VALRES(1),CODRET(1), FB2 )
+     &                 2,NOMRES(1),VALRES(1),ICODRE(1), 2)
          EM  = VALRES(1)
          NUM = VALRES(2)
          DEUMUM = EM/(1.D0+NUM)
@@ -190,7 +187,7 @@ C
            TROIKM = EM/(1.D0-2.D0*NUM)
          ENDIF
          CALL RCVALB(FAMI,KPG,KSP,'+',IMATE,' ','ELAS',0,' ',0.D0,
-     +                 2,NOMRES(1),VALRES(1),CODRET(1), FB2 )
+     &                 2,NOMRES(1),VALRES(1),ICODRE(1), 2)
          E      = VALRES(1)
          NU     = VALRES(2)
          IF (INCO) THEN
@@ -207,23 +204,23 @@ C
       NOMRES(1)='B_ENDOGE'
       NOMRES(2)='K_DESSIC'
       CALL RCVALB(FAMI,KPG,KSP,'-',IMATE,' ','ELAS',0,' ',0.D0,1,
-     +            NOMRES(1),VALRES(1),CODRET(1), BL2 )
-      IF ( CODRET(1) .NE. 'OK' ) VALRES(1) = 0.D0
+     &            NOMRES(1),VALRES(1),ICODRE(1), 0)
+      IF ( ICODRE(1) .NE.0    ) VALRES(1) = 0.D0
       BENDOM = VALRES(1)
 C
       CALL RCVALB(FAMI,KPG,KSP,'+',IMATE,' ','ELAS',0,' ',0.D0,1,
-     +            NOMRES(1),VALRES(1),CODRET(1), BL2 )
-      IF ( CODRET(1) .NE. 'OK' ) VALRES(1) = 0.D0
+     &            NOMRES(1),VALRES(1),ICODRE(1), 0)
+      IF ( ICODRE(1) .NE.0    ) VALRES(1) = 0.D0
       BENDOP = VALRES(1)
 C
       CALL RCVALB(FAMI,KPG,KSP,'-',IMATE,' ','ELAS',0,' ',0.D0,1,
-     +            NOMRES(2),VALRES(2),CODRET(2), BL2 )
-      IF ( CODRET(2) .NE. 'OK' ) VALRES(2) = 0.D0
+     &            NOMRES(2),VALRES(2),ICODRE(2), 0)
+      IF ( ICODRE(2) .NE.0    ) VALRES(2) = 0.D0
       KDESSM = VALRES(2)
 C
       CALL RCVALB(FAMI,KPG,KSP,'+',IMATE,' ','ELAS',0,' ',0.D0,1,
-     +            NOMRES(2),VALRES(2),CODRET(2), BL2 )
-      IF ( CODRET(2) .NE. 'OK' ) VALRES(2) = 0.D0
+     &            NOMRES(2),VALRES(2),ICODRE(2), 0)
+      IF ( ICODRE(2) .NE.0    ) VALRES(2) = 0.D0
       KDESSP = VALRES(2)
 C
 C     -- 3 RECUPERATION DES CARACTERISTIQUES
@@ -236,13 +233,13 @@ C     ---------------------------------------
           NOMRES(1)='D_SIGM_EPSI'
           NOMRES(2)='SY'
           CALL RCVALB(FAMI,KPG,KSP,'+',IMATE,' ','ECRO_LINE',0,' ',0.D0,
-     &                          2,NOMRES,VALRES,CODRET, FB2 )
+     &                          2,NOMRES,VALRES,ICODRE, 2)
           DSDE=VALRES(1)
           SIGY=VALRES(2)
           IF ((E-DSDE).LT.R8MIEM()) THEN
              VALRM(1)=DSDE
              VALRM(2)=E
-             CALL U2MESG('F','COMPOR1_54',0,FB2,0,IBID,2,VALRM)
+             CALL U2MESG('F','COMPOR1_54',0,' ',0,IBID,2,VALRM)
           ELSE
              RPRIM    = DSDE*E/(E-DSDE)
           ENDIF
@@ -252,7 +249,7 @@ C     ---------------------------------------
           NOMRES(2)='A_PUIS'
           NOMRES(3)='N_PUIS'
           CALL RCVALB(FAMI,KPG,KSP,'+',IMATE,' ','ECRO_PUIS',0,' ',0.D0,
-     &                          3,NOMRES,VALRES,CODRET, FB2 )
+     &                          3,NOMRES,VALRES,ICODRE, 2)
           SIGY   = VALRES(1)
           ALFAFA = VALRES(2)
           COCO   = E/ALFAFA/SIGY
@@ -269,9 +266,9 @@ C     ---------------------------------------
           NOMPAR(3)='HYDR'
           VALPAM(3)=HYDRM
           CALL RCTYPE(IMATE,3,NOMPAR,VALPAM,RESU,TYPE)
-          IF ((TYPE.EQ.'TEMP').AND.(IRET3.EQ.1)) 
+          IF ((TYPE.EQ.'TEMP').AND.(IRET3.EQ.1))
      &    CALL U2MESS('F','CALCULEL_31')
-          CALL RCTRAC(IMATE,'TRACTION','SIGM',RESU,JPROLM,JVALEM,
+          CALL RCTRAC(IMATE,1,'SIGM',RESU,JPROLM,JVALEM,
      &                NBVALM,EM)
           DEUMUM = EM/(1.D0+NUM)
           IF (INCO) THEN
@@ -284,13 +281,13 @@ C     ---------------------------------------
           NOMPAR(3)='HYDR'
           VALPAP(3)=HYDRP
           CALL RCTYPE(IMATE,3,NOMPAR,VALPAP,RESU,TYPE)
-          IF ((TYPE.EQ.'TEMP').AND.(IRET4.EQ.1)) 
+          IF ((TYPE.EQ.'TEMP').AND.(IRET4.EQ.1))
      &     CALL U2MESS('F','CALCULEL_31')
-          CALL RCTRAC(IMATE,'TRACTION','SIGM',RESU,JPROLP,JVALEP,
+          CALL RCTRAC(IMATE,1,'SIGM',RESU,JPROLP,JVALEP,
      &                NBVALP,E)
-          CALL RCFONC('S','TRACTION',JPROLP,JVALEP,NBVALP,SIGY,DUM,
+          CALL RCFONC('S',1,JPROLP,JVALEP,NBVALP,SIGY,DUM,
      &                DUM,DUM,DUM,DUM,DUM,DUM,DUM)
-          CALL RCFONC('V','TRACTION',JPROLP,JVALEP,NBVALP,RBID,RBID,
+          CALL RCFONC('V',1,JPROLP,JVALEP,NBVALP,RBID,RBID,
      &                RBID,VIM(1),RP,RPRIM,AIRERP,RBID,RBID)
           IF (INCO) THEN
             DEUXMU = 2.D0*E/3.D0
@@ -316,7 +313,7 @@ C     --------------------------------
      &     - BENDOP*HYDRP        + BENDOM*HYDRM
      &     - KDESSP*(SREF-SECHP) + KDESSM*(SREF-SECHM)
       IF (CPLAN) DEPS(3)=-NU/(1.D0-NU)*(DEPS(1)+DEPS(2))
-     +                +(1.D0+NU)/(1.D0-NU)*COEF
+     &                +(1.D0+NU)/(1.D0-NU)*COEF
       DEPSMO = 0.D0
       DO 110 K=1,3
         DEPSTH(K)   = DEPS(K) -COEF
@@ -406,7 +403,7 @@ C
               IF (LINE.GE.0.5D0) THEN
                 RP = SIGY +(RPRIM+RAUG)*(PM+DP)-PHI
               ELSE
-                CALL RCFONC('V','TRACTION',JPROLP,JVALEP,NBVALP,RBID,
+                CALL RCFONC('V',1,JPROLP,JVALEP,NBVALP,RBID,
      &                      RBID,RBID,PM+DP,RP,RBID2,AIRERP,RBID,RBID)
                  RP = RP+RAUG*(PM+DP)-PHI
               ENDIF
@@ -524,7 +521,7 @@ C       -- 8.3 CORRECTION POUR LES CONTRAINTES PLANES :
             DO 137 L=1,NDIMSI
               IF (L.EQ.3) GO TO 137
               DSIDEP(K,L,1)=DSIDEP(K,L,1)
-     +          - 1.D0/DSIDEP(3,3,1)*DSIDEP(K,3,1)*DSIDEP(3,L,1)
+     &          - 1.D0/DSIDEP(3,3,1)*DSIDEP(K,3,1)*DSIDEP(3,L,1)
  137        CONTINUE
  136      CONTINUE
         ENDIF

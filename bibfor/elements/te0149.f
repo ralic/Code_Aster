@@ -3,7 +3,7 @@
       CHARACTER*(*)       OPTION , NOMTE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 15/02/2011   AUTEUR FLEJOU J-L.FLEJOU 
+C MODIF ELEMENTS  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -53,7 +53,7 @@ C
       INTEGER        LMATER,JMAT,NBMAT,IMAT,ICOMP,NPG,LOPT,LSECR,ITSEC
       INTEGER        LABSC,JEFFO,IRET,NBPAR
       REAL*8         VALRES(NBRES),VALREF(NBREF)
-      CHARACTER*2    CODRES(NBRES),CODREF(NBREF)
+      INTEGER CODRES(NBRES),CODREF(NBREF)
       CHARACTER*8    NOMPAR,NOMRES(NBRES),NOMREF(NBREF)
       CHARACTER*24   SUROPT,MESSK(2)
       REAL*8         ZERO, E, NU, RHO,VALPAR,R1,EP1,ABSMOY,RHOS,RHOFI
@@ -124,7 +124,7 @@ CJMP            EP2   =  ZR(LSECR+12)
          ABSMOY = ( ZR(LABSC-1+1) + ZR(LABSC-1+2) ) /2.D0
          CALL RCVALB('RIGI',1,1,'+',ZI(LMATER),' ','ELAS_FLUI',
      &               1,'ABSC',ABSMOY,NBREF,
-     &               NOMREF,VALREF,CODREF,'FM')
+     &               NOMREF,VALREF,CODREF,1)
          E     = VALREF(1)
          NU   = VALREF(2)
          RHOS  = VALREF(3)
@@ -141,11 +141,11 @@ C --- ------------------------------------------------------------------
       ELSE
          CALL RCVALB('RIGI',1,1,'+',ZI(LMATER),' ','ELAS',
      &                NBPAR,NOMPAR,VALPAR,
-     &                2,NOMRES,VALRES,CODRES,'FM')
+     &                2,NOMRES,VALRES,CODRES,1)
          CALL RCVALB('RIGI',1,1,'+',ZI(LMATER),' ','ELAS',
      &                NBPAR,NOMPAR,VALPAR,
-     &                1,NOMRES(3),VALRES(3),CODRES(3),'  ')
-         IF ( CODRES(3) .NE. 'OK' ) VALRES(3) = ZERO
+     &                1,NOMRES(3),VALRES(3),CODRES(3),0)
+         IF ( CODRES(3) .NE. 0 ) VALRES(3) = ZERO
          E     = VALRES(1)
          NU    = VALRES(2)
          RHO   = VALRES(3)

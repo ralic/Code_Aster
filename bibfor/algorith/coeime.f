@@ -7,7 +7,7 @@
 
 C======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 08/02/2011   AUTEUR GRANET S.GRANET 
+C MODIF ALGORITH  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -44,7 +44,7 @@ C VARIABLES LOCALES
       INTEGER I,J
       REAL*8 DA(NDIM),DSIDEP(6,6),PARA(2),OUVFIC,UNSURN
       CHARACTER*8 NCRA(2)
-      CHARACTER*2 CODRET(18)
+      INTEGER ICODRE(18)
 
 C =====================================================================
 C.......................................................................
@@ -134,7 +134,7 @@ C - RECUPERATION DES PARAMETRES DE COUPLAGE POUR LA POINTE DE FISSURE
            UNSURN=0.D0
          ELSE
            CALL RCVALA(IMATE,' ','THM_RUPT',0,' ', 0.D0,2,
-     &                                 NCRA(1),PARA(1),CODRET,'FM')
+     &                                 NCRA(1),PARA(1),ICODRE,1)
            OUVFIC    = PARA(1)
            UNSURN    = PARA(2)
          END IF
@@ -201,7 +201,7 @@ C - INTEGRATION DE LA LOI DE COMPORTEMENT MECANIQUE
 C - RECUPERATION DES PARAMETRES DE COUPLAGE POUR LA POINTE DE FISSURE
 
         CALL RCVALA(IMATE,' ','THM_RUPT',0,' ', 0.D0,2,
-     &                                 NCRA(1),PARA(1),CODRET,'FM')
+     &                                 NCRA(1),PARA(1),ICODRE,1)
         OUVFIC    = PARA(1)
         UNSURN    = PARA(2)
 

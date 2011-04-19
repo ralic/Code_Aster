@@ -2,9 +2,9 @@
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 30/06/2008   AUTEUR PROIX J-M.PROIX 
+C MODIF ELEMENTS  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -20,7 +20,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
       IMPLICIT NONE
-      INTEGER ICDMAT,ISW,ITO
+      INTEGER ICDMAT,ISW
       REAL*8 CASECT(6),GTO
 C     ------------------------------------------------------------------
 C     CALCULE INTEGRALE(E.DS) ou INTEGRALE(RHO.DS)
@@ -47,7 +47,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 
-      INTEGER NBFIB,NCARFI,JACF,IRET,ISICOM
+      INTEGER NCARFI,JACF,ISICOM
       REAL*8 CASEC1(6)
       REAL*8 ZERO,UN,DEUX
       PARAMETER (ZERO=0.0D+0,UN=1.0D0,DEUX=2.D0)
@@ -56,7 +56,8 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       REAL*8  RHO,RHOS, RHOFI, RHOFE, CM, PHIE, PHII
       REAL*8      VAL,E,NU,VALRES(4),ABSMOY
       CHARACTER*8 MATERI,NOMRE4(4)
-      CHARACTER*2 CODRES(4),NOMRES(2)
+      INTEGER CODRES(4)
+      CHARACTER*2 NOMRES(2)
 C     ------------------------------------------------------------------
       DATA NOMRE4/'RHO','RHO_F_IN','RHO_F_EX','CM'/
 C     ------------------------------------------------------------------
@@ -87,20 +88,20 @@ C ---    CALCUL DES CARACTERISTIQUES DU GROUPE ---
 C ---    ON MULTIPLIE PAR RHO OU E (CONSTANT SUR LE GROUPE)
          IF(ISW.EQ.1)THEN
             CALL RCVALB('RIGI',1,1,'+',ICDMAT,MATERI,'ELAS',
-     &                  0,' ',ZERO,1,'E',VAL,CODRES,'  ')
-            IF(CODRES(1).EQ.'NO') THEN
+     &                  0,' ',ZERO,1,'E',VAL,CODRES,0)
+            IF(CODRES(1).EQ.1) THEN
                CALL RCVALB('RIGI',1,1,'+',ICDMAT,MATERI,'ELAS_FLUI',
-     &                     0,' ',ZERO,1,'E',VAL,CODRES,'FM')
+     &                     0,' ',ZERO,1,'E',VAL,CODRES,1)
             ENDIF
          ELSEIF(ISW.EQ.2)THEN
             CALL RCVALA(ICDMAT,MATERI,'ELAS',0,' ',ZERO,1,
-     &                  'RHO',VAL,CODRES,'  ')
-            IF(CODRES(1).EQ.'NO') THEN
+     &                  'RHO',VAL,CODRES,0)
+            IF(CODRES(1).EQ.1) THEN
                CALL JEVECH('PCAGEPO','L',LCAGE)
                CALL JEVECH('PABSCUR','L',LABSC)
                ABSMOY = (ZR(LABSC-1+1)+ZR(LABSC-1+2))/DEUX
                CALL RCVALA(ICDMAT,MATERI,'ELAS_FLUI',1,'ABSC',ABSMOY,4,
-     &                     NOMRE4,VALRES,CODRES,'FM')
+     &                     NOMRE4,VALRES,CODRES,1)
                RHOS  = VALRES(1)
                RHOFI = VALRES(2)
                RHOFE = VALRES(3)
@@ -115,8 +116,8 @@ C ---    ON MULTIPLIE PAR RHO OU E (CONSTANT SUR LE GROUPE)
             ENDIF
          ELSEIF(ISW.EQ.3)THEN
             CALL RCVALA(ICDMAT,MATERI,'ELAS',0,' ',ZERO,1,
-     &                  'RHO',VAL,CODRES,'  ')
-            IF (CODRES(1).NE.'OK' ) VAL = ZERO
+     &                  'RHO',VAL,CODRES,0)
+            IF (CODRES(1).NE.0 ) VAL = ZERO
          ENDIF
          DO 20 I = 1,6
             CASECT(I) = CASECT(I) + VAL*CASEC1(I)
@@ -133,11 +134,11 @@ C ---  SI ITO=1 ON RECUPERE LE MATERIAU DE TORSION
          NOMRES(1) = 'E'
          NOMRES(2) = 'NU'
          CALL RCVALB('RIGI',1,1,'+',ICDMAT,MATERI,'ELAS',
-     &               0,' ',ZERO,2,NOMRES,VALRES,CODRES, '  ')
+     &               0,' ',ZERO,2,NOMRES,VALRES,CODRES, 0)
 
-         IF (CODRES(1).EQ.'NO') THEN
+         IF (CODRES(1).EQ.1) THEN
             CALL RCVALB('RIGI',1,1,'+',ICDMAT,MATERI,'ELAS_FLUI',
-     &                  0,' ',ZERO,2,NOMRES,VALRES,CODRES,'FM')
+     &                  0,' ',ZERO,2,NOMRES,VALRES,CODRES,1)
          ENDIF
          E = VALRES(1)
          NU = VALRES(2)

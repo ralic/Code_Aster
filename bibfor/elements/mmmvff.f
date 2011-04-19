@@ -1,12 +1,12 @@
-      SUBROUTINE MMMVFF(PHASE ,NDIM  ,NNL   ,NBCPS ,HPG   ,
-     &                  FFL   ,TAU1  ,TAU2  ,JACOBI,NDEXFR,
-     &                  COEFFS,COEFFP,DLAGRF,RESE  ,LAMBDA,
-     &                  COEFFF,DDEPLE,DDEPLM,MPROJT,VECTFF)
+      SUBROUTINE MMMVFF(PHASEP,NDIM  ,NNL   ,NBCPS ,WPG   ,
+     &                  FFL   ,TAU1  ,TAU2  ,JACOBI,COEFFS,
+     &                  COEFFP,DLAGRF,RESE  ,LAMBDA,COEFFF,
+     &                  DVITE ,MPROJT,VECTFF)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 19/10/2010   AUTEUR DESOZA T.DESOZA 
+C MODIF ELEMENTS  DATE 18/04/2011   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -24,14 +24,14 @@ C ======================================================================
 C RESPONSABLE ABBAS M.ABBAS
 C
       IMPLICIT NONE
-      CHARACTER*4  PHASE
-      INTEGER      NDIM,NNL,NBCPS,NDEXFR
-      REAL*8       HPG,FFL(9),JACOBI,DLAGRF(2)
+      CHARACTER*9  PHASEP
+      INTEGER      NDIM,NNL,NBCPS
+      REAL*8       WPG,FFL(9),JACOBI,DLAGRF(2)
       REAL*8       TAU1(3),TAU2(3),RESE(3)
       REAL*8       COEFFS,COEFFP
       REAL*8       LAMBDA,COEFFF
       REAL*8       VECTFF(18)
-      REAL*8       DDEPLE(3),DDEPLM(3),MPROJT(3,3)
+      REAL*8       DVITE(3),MPROJT(3,3)
 C
 C ----------------------------------------------------------------------
 C
@@ -42,17 +42,16 @@ C
 C ----------------------------------------------------------------------
 C
 C
-C IN  PHASE  : PHASE DE CALCUL
+C IN  PHASEP : PHASE DE CALCUL
 C              'SANS' - PAS DE CONTACT
 C              'ADHE' - CONTACT ADHERENT
 C              'GLIS' - CONTACT GLISSANT
-C              'EXFR' - EXCLUSION D'UNE DIRECTION DE FROTTEMENT
-C              'PSAN' - PENALISATION - PAS DE CONTACT
-C              'PADH' - PENALISATION - CONTACT ADHERENT
-C              'PGLI' - PENALISATION - CONTACT GLISSANT
+C              'SANS_PENA' - PENALISATION - PAS DE CONTACT
+C              'ADHE_PENA' - PENALISATION - CONTACT ADHERENT
+C              'GLIS_PENA' - PENALISATION - CONTACT GLISSANT
 C IN  NDIM   : DIMENSION DU PROBLEME
 C IN  NNL    : NOMBRE DE NOEUDS LAGRANGE
-C IN  HPG    : POIDS DU POINT INTEGRATION DU POINT DE CONTACT
+C IN  WPG    : POIDS DU POINT INTEGRATION DU POINT DE CONTACT
 C IN  FFL    : FONCTIONS DE FORMES LAGR.
 C IN  JACOBI : JACOBIEN DE LA MAILLE AU POINT DE CONTACT
 C IN  NBCPS  : NOMBRE DE COMPOSANTES/NOEUD DES LAGR_C+LAGR_F
@@ -60,14 +59,13 @@ C IN  TAU1   : PREMIER VECTEUR TANGENT
 C IN  TAU2   : SECOND VECTEUR TANGENT
 C IN  COEFFS : COEF_STAB_FROT
 C IN  COEFFP : COEF_PENA_CONT
-C IN  NDEXFR : ENTIER CODE POUR EXCLUSION DIRECTION DE FROTTEMENT
 C IN  DLAGRF : INCREMENT DEPDEL DU LAGRANGIEN DE FROTTEMENT
 C IN  RESE   : SEMI-MULTIPLICATEUR GTK DE FROTTEMENT
 C               GTK = LAMBDAF + COEFFR*VITESSE
 C IN  LAMBDA : VALEUR DU MULT. DE CONTACT (SEUIL DE TRESCA)
 C IN  COEFFF : COEFFICIENT DE FROTTEMENT DE COULOMB
-C IN  DDEPLE : INCREMENT DEPDEL DES DEPL. ESCLAVES
-C IN  DDEPLM : INCREMENT DEPDEL DES DEPL. MAITRES
+C IN  DVITE  : SAUT D'INCREMENT DES DEPLACEMENTS A L'INTERFACE 
+C               [[DELTA X]]
 C IN  MPROJT : MATRICE DE PROJECTION TANGENTE
 C OUT VECTFF : VECTEUR ELEMENTAIRE LAGR_F
 C
@@ -76,8 +74,7 @@ C
       INTEGER   I, K, L, II,NBCPF
       REAL*8    TT(2)
       REAL*8    NRESE,INTER(2)
-      INTEGER   NDEXCL(10)
-      REAL*8    DVITE(3),DVITET(3)
+      REAL*8    DVITET(3)
 C
 C ----------------------------------------------------------------------
 C
@@ -85,7 +82,6 @@ C
 C --- INITIALISATIONS
 C
       DO 306 I = 1,3
-        DVITE (I) = 0.0D0
         DVITET(I) = 0.0D0
  306  CONTINUE
       DO 305 I = 1,2
@@ -114,13 +110,9 @@ C
         CALL ASSERT(.FALSE.)
       END IF
 C
-      IF((PHASE.EQ.'ADHE').OR.(PHASE.EQ.'PADH')) THEN
+C --- QUANTITES POUR LE CAS ADHERENT
 C
-C --- CALCUL DU SAUT DE "VITESSE" [[DELTA X]]
-C
-        DO 12 I = 1,NDIM
-          DVITE(I) = DDEPLE(I) - DDEPLM(I)
-   12   CONTINUE
+      IF (PHASEP(1:4).EQ.'ADHE') THEN
 C
 C --- PROJECTION DU SAUT SUR LE PLAN TANGENT
 C
@@ -140,8 +132,11 @@ C
             INTER(2)= DVITET(I)*TAU2(I)+INTER(2)
   150     CONTINUE
         END IF
+      ENDIF
 C
-      ELSEIF ((PHASE.EQ.'GLIS').OR.(PHASE.EQ.'PGLI')) THEN
+C --- QUANTITES POUR LE CAS GLISSANT
+C      
+      IF (PHASEP(1:4).EQ.'GLIS') THEN
 C
         CALL NORMEV(RESE  ,NRESE )
         IF (NDIM.EQ.2) THEN
@@ -163,71 +158,57 @@ C
 C
 C --- CALCUL DU VECTEUR
 C
-      IF (PHASE.EQ.'SANS') THEN
+      IF (PHASEP.EQ.'SANS') THEN
         DO 101 I=1,NNL
           DO 102 L=1,NBCPF
             II = (I-1)*NBCPF+L
             VECTFF(II) = VECTFF(II)+
-     &                   HPG*FFL(I)*JACOBI*
+     &                   WPG*FFL(I)*JACOBI*
      &                   TT(L)
   102     CONTINUE
   101   CONTINUE
-      ELSEIF (PHASE.EQ.'PSAN') THEN
+      ELSEIF (PHASEP.EQ.'SANS_PENA') THEN
         DO 201 I=1,NNL
           DO 202 L=1,NBCPF
             II = (I-1)*NBCPF+L
             VECTFF(II) = VECTFF(II)-
-     &                   HPG*FFL(I)*JACOBI*
+     &                   WPG*FFL(I)*JACOBI*
      &                   TT(L)/COEFFP
   202     CONTINUE
   201   CONTINUE
-      ELSEIF (PHASE.EQ.'EXFR') THEN
-        CALL ISDECO(NDEXFR,NDEXCL,10)
-        DO 111 I=1,NNL
-          IF (NDEXCL(I).EQ.1) THEN
-            DO 110 L=1,NBCPF
-              IF ((L.EQ.2).AND.(NDEXCL(10).EQ.0)) THEN
-                GOTO 110
-              ENDIF
-              II = (I-1)*NBCPF+L
-              VECTFF(II) = 0.D0
-  110       CONTINUE
-          ENDIF
-  111   CONTINUE
-      ELSEIF (PHASE.EQ.'ADHE') THEN
+      ELSEIF (PHASEP.EQ.'ADHE') THEN
         DO 53 I = 1,NNL
           DO 54 L = 1,NBCPF
             II = (I-1)*NBCPF+L
             VECTFF(II) = VECTFF(II)-
-     &                   HPG*FFL(I)*JACOBI*
-     &                   COEFFF*LAMBDA*INTER(L)
+     &                   WPG*FFL(I)*JACOBI*
+     &                   COEFFF*LAMBDA*INTER(L)    
  54       CONTINUE
  53     CONTINUE
-      ELSEIF (PHASE.EQ.'GLIS') THEN
+      ELSEIF (PHASEP.EQ.'GLIS') THEN
         DO 63 I = 1,NNL
           DO 64 L = 1,NBCPF
             II = (I-1)*NBCPF+L
             VECTFF(II) = VECTFF(II)+
-     &                   HPG*FFL(I)*JACOBI*
+     &                   WPG*FFL(I)*JACOBI*
      &                   COEFFF*LAMBDA*INTER(L)/COEFFS
  64       CONTINUE
  63     CONTINUE
-      ELSEIF (PHASE.EQ.'PADH') THEN
+      ELSEIF (PHASEP.EQ.'ADHE_PENA') THEN
         DO 73 I = 1,NNL
           DO 74 L = 1,NBCPF
             II = (I-1)*NBCPF+L
             VECTFF(II) = VECTFF(II) +
-     &                   HPG*FFL(I)*JACOBI*COEFFF*
+     &                   WPG*FFL(I)*JACOBI*COEFFF*
      &                   LAMBDA*((TT(L)/COEFFP)-INTER(L))
-
  74       CONTINUE
  73     CONTINUE
-      ELSEIF (PHASE.EQ.'PGLI') THEN
+      ELSEIF (PHASEP.EQ.'GLIS_PENA') THEN
         DO 83 I = 1,NNL
           DO 84 L = 1,NBCPF
             II = (I-1)*NBCPF+L
             VECTFF(II) = VECTFF(II)+
-     &                   HPG*FFL(I)*JACOBI*
+     &                   WPG*FFL(I)*JACOBI*
      &                   COEFFF*LAMBDA*INTER(L)/COEFFP
  84       CONTINUE
  83     CONTINUE

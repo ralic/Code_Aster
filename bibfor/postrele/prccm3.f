@@ -4,22 +4,22 @@
       CHARACTER*(*)       NOMMAT
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
+C MODIF POSTRELE  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C
 C     OPERATEUR POST_RCCM: CALCUL DU KE, SALT, NADM
@@ -27,7 +27,7 @@ C
 C     ------------------------------------------------------------------
       REAL*8       UN, XM, XN, SNS3, TROISM,R8MAEM
       REAL*8 VALR(2)
-      CHARACTER*2  CODRET
+      INTEGER ICODRE
       LOGICAL       ENDUR
 C     ------------------------------------------------------------------
 C
@@ -42,9 +42,9 @@ C     --------------------
       IF ( SN .LT. TROISM ) THEN
          KE = UN
 C
-C --  SI 3*SM < SN < 3*M*SM 
+C --  SI 3*SM < SN < 3*M*SM
 C --- KE = 1 +((1-N)/(N*(M-1)))*((SN/(3*SM))-1) :
-C             ------------------------------------- ---            
+C             ------------------------------------- ---
       ELSEIF ( SN .LT. 3.D0*PARA(1)*SM ) THEN
          XM = PARA(1)
          XN = PARA(2)
@@ -58,7 +58,7 @@ C     -------------------------
       ENDIF
 C
 C
-C --- CALCUL DE LA CONTRAINTE EQUIVALENTE ALTERNEE SALT 
+C --- CALCUL DE LA CONTRAINTE EQUIVALENTE ALTERNEE SALT
 C --- PAR DEFINITION SALT = 0.5*EC/E*KE*SP(TEMP1,TEMP2) :
 C     -------------------------------------------------
       SALT = 0.5D0 * PARA(3) * KE * SP
@@ -72,7 +72,7 @@ C     --------------------------------------------
          NADM=R8MAEM()
       ELSE
          CALL RCVALE ( NOMMAT, 'FATIGUE', 1, 'SIGM    ', SALT, 1,
-     +                      'WOHLER  ', NADM, CODRET, 'F ' )
+     &                      'WOHLER  ', NADM, ICODRE, 2)
          IF ( NADM .LT. 0 ) THEN
             VALR (1) = SALT
             VALR (2) = NADM

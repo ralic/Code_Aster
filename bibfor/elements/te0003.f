@@ -1,9 +1,9 @@
       SUBROUTINE TE0003(OPTION,NOMTE)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 07/12/2010   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -93,11 +93,11 @@ C DECLARATION VARIABLES LOCALES
       INTEGER NNOF, NNOSF, NPGF, IPOIDF, IVFF, IDFDXF, IDFDYF, JGANOF
       INTEGER NNO2, NNOS2, NPG2, IPOID2, IVF2, IDFDX2, IDFDY2, JGANO2
       INTEGER I,J,K,ICODE,I1,IJ,I2,MCELD,MCELV,PCELD,PCELV,IAUX1,
-     >        IAVAF,NCMPF,IAVAH,NCMPH,JNO,MNO,
-     >        IMAV,IAPTMA,IENTF,IENTH,IENTT,IAVAT,NCMPT,NBSV,
-     >        NBNV,JAD,JADV,IGREL,IEL,IAVALP,IAVALM,IAREPE,
-     >        NIVEAU,IFON(3),NBPAR,
-     >        IJEVEO
+     &        IAVAF,NCMPF,IAVAH,NCMPH,JNO,MNO,
+     &        IMAV,IAPTMA,IENTF,IENTH,IENTT,IAVAT,NCMPT,NBSV,
+     &        NBNV,JAD,JADV,IGREL,IEL,IAVALP,IAVALM,IAREPE,
+     &        NIVEAU,IFON(3),NBPAR,
+     &        IJEVEO
       INTEGER IPG
       INTEGER NBF
       INTEGER TYMVOL,NDEGRE,IFA,TYV
@@ -105,23 +105,24 @@ C
       REAL*8 R8BID,R8BID3(4)
       REAL*8 R8PREM
       REAL*8 INSOLD,INST,VALTHE,AUX,RHOCP,DFDX(27),DFDY(27),
-     >       POIDS,R,VALFP(9),VALFM(9),R8CART,VALSP,VALSM,
-     >       VALUNT,TERBUF,TEMPM,TEMPP,FLUXM(3),FLUXP(3),FFORME,DELTAT,
-     >       R8MIEM,PREC,OVFL,DER(6),FLURP,FLURM,UNSURR,X3,Y3,XN(9),
-     >       YN(9),ZN(9),TERM22,JAC(9),HK,HF,ZRJNO1,ZRJNO2,ZRINO1,
-     >       ZRINO2,POINC1,POINC2,VALHP(9),VALHM(9),VALTP(9),VALTM(9),
-     >       R8CAR1,ERTABS,ERTREL,TERMNO,TERMVO,TERMSA,TERMFL,TERMEC,
-     >       TERMV1,TERMV2,TERMS1,TERMS2,TERMF1,TERMF2,TERME1,TERME2,
-     >       JACOB,UNSURD,RHOCPM,RHOCPP,DFDZ(27),X,Y,Z
+     &       POIDS,R,VALFP(9),VALFM(9),R8CART,VALSP,VALSM,
+     &       VALUNT,TERBUF,TEMPM,TEMPP,FLUXM(3),FLUXP(3),FFORME,DELTAT,
+     &       R8MIEM,PREC,OVFL,DER(6),FLURP,FLURM,UNSURR,X3,Y3,XN(9),
+     &       YN(9),ZN(9),TERM22,JAC(9),HK,HF,ZRJNO1,ZRJNO2,ZRINO1,
+     &       ZRINO2,POINC1,POINC2,VALHP(9),VALHM(9),VALTP(9),VALTM(9),
+     &       R8CAR1,ERTABS,ERTREL,TERMNO,TERMVO,TERMSA,TERMFL,TERMEC,
+     &       TERMV1,TERMV2,TERMS1,TERMS2,TERMF1,TERMF2,TERME1,TERME2,
+     &       JACOB,UNSURD,RHOCPM,RHOCPP,DFDZ(27),X,Y,Z
 C
-      CHARACTER*2 CODRET(2),FORMV
+      INTEGER ICODRE(2)
+      CHARACTER*2 FORMV
       CHARACTER*4 EVOL
       CHARACTER*8 TYPMAV, ELREFE
       CHARACTER*8 ELREFF, ELREFB
       CHARACTER*8 MA,NOMPAR(4),TYPMAC,K8CART,K8CAR1
       CHARACTER*16 PHENOM
       CHARACTER*19 CARTEF,CARTEH,CARTET,CARTES,NOMGDF,NOMGDH,NOMGDT,
-     >             NOMGDS,LIGREL,CHFLUM,CHFLUP
+     &             NOMGDS,LIGREL,CHFLUM,CHFLUP
       CHARACTER*24 VALK(2)
       LOGICAL LEVOL,LTHETA,LAXI,LMAJ,LNONLI,L2D,LLUMPE,LTEATT
 C
@@ -275,17 +276,17 @@ C       N6    X--------------------------------------------------------X
 C           N2                           N7                          N3
 C
       DATA NOE/1,4,3,2,12,11,10, 9,21, 1,2,6,5, 9,14,17,13,22,
-     >         2,3,7,6,10,15,18,14,23, 3,4,8,7,11,16,19,15,24,
-     >         4,1,5,8,12,13,20,16,25, 5,6,7,8,17,18,19,20,26,
-     >         1,3,2,9,8,7, 3*0,       4,5,6,13,14,15, 3*0,
-     >         1,2,5,4, 7,11,13,10, 0, 2,3,6,5,8,12,14,11,0,
-     >         1,4,6,3,10,15,12, 9, 0,  9*0,
-     >         1,3,2,7,6, 5, 3*0,      2,3,4,6,10,9, 3*0,
-     >         3,1,4,7,8,10, 3*0,      1,2,4,5, 9,8, 3*0,
-     >         9*0,                    9*0,
-     >         1,2,5,6,11,10, 3*0,     2,3,5,7,12,11, 3*0,
-     >         3,4,5,8,13,12, 3*0,     4,1,5,9,10,13, 3*0,
-     >         1,4,3,2,9,8,7,6, 0,     9*0 /
+     &         2,3,7,6,10,15,18,14,23, 3,4,8,7,11,16,19,15,24,
+     &         4,1,5,8,12,13,20,16,25, 5,6,7,8,17,18,19,20,26,
+     &         1,3,2,9,8,7, 3*0,       4,5,6,13,14,15, 3*0,
+     &         1,2,5,4, 7,11,13,10, 0, 2,3,6,5,8,12,14,11,0,
+     &         1,4,6,3,10,15,12, 9, 0,  9*0,
+     &         1,3,2,7,6, 5, 3*0,      2,3,4,6,10,9, 3*0,
+     &         3,1,4,7,8,10, 3*0,      1,2,4,5, 9,8, 3*0,
+     &         9*0,                    9*0,
+     &         1,2,5,6,11,10, 3*0,     2,3,5,7,12,11, 3*0,
+     &         3,4,5,8,13,12, 3*0,     4,1,5,9,10,13, 3*0,
+     &         1,4,3,2,9,8,7,6, 0,     9*0 /
 C--------------------------------------------------------------------
 C INITIALISATIONS/RECUPERATION DE LA GEOMETRIE ET DES CHAMPS LOCAUX
 C--------------------------------------------------------------------
@@ -364,10 +365,10 @@ C INITIALISATION DIMENSION DE L'ESPACE DE TRAVAIL/LLUMPE OU PAS
       L2D = (NDIM.EQ.2)
       IF ( LLUMPE ) THEN
         IF ( ( ELREFE(1:3).EQ.'H20' ) .OR.
-     >       ( ELREFE(1:3).EQ.'H27' ) .OR.
-     >       ( ELREFE(1:3).EQ.'P15' ) .OR.
-     >       ( ELREFE(1:3).EQ.'T10' ) .OR.
-     >       ( ELREFE(1:3).EQ.'P13' ) ) THEN
+     &       ( ELREFE(1:3).EQ.'H27' ) .OR.
+     &       ( ELREFE(1:3).EQ.'P15' ) .OR.
+     &       ( ELREFE(1:3).EQ.'T10' ) .OR.
+     &       ( ELREFE(1:3).EQ.'P13' ) ) THEN
           CALL U2MESS('F','CALCULEL5_27')
         ENDIF
       ENDIF
@@ -476,13 +477,13 @@ C CALCUL DU TERME VOLUMIQUE
 C------------------------------------------------------------------
 
 C RECHERCHE DE LA VALEUR DE RHO*CP EN LINEAIRE ET EN NON-LINEAIRE
-      CALL RCCOMA(ZI(IMATE),'THER',PHENOM,CODRET)
-      CALL ASSERT(CODRET(1).EQ.'OK')
+      CALL RCCOMA(ZI(IMATE),'THER',PHENOM,ICODRE)
+      CALL ASSERT(ICODRE(1).EQ.0)
       IF (PHENOM.EQ.'THER') THEN
         LNONLI = .FALSE.
         CALL RCVALA(ZI(IMATE),' ',PHENOM,1,'INST',INST,1,'RHO_CP',
-     &             RHOCP, CODRET,'FM')
-        IF (CODRET(1).NE.'OK') CALL U2MESS('F','ELEMENTS2_62')
+     &             RHOCP, ICODRE,1)
+        IF (ICODRE(1).NE.0) CALL U2MESS('F','ELEMENTS2_62')
       ELSE IF (PHENOM.EQ.'THER_NL') THEN
         LNONLI = .TRUE.
         CALL NTFCMA(ZI(IMATE),IFON)
@@ -718,7 +719,7 @@ C       ELREFB : DENOMINATION DE LA MAILLE FACE DE ELREFE - FAMILLE 2
 C      --- REMARQUE : ON IMPOSE UNE FAMILLE DE POINTS DE GAUSS
 C
       CALL ELREF7 ( ELREFE,
-     >              TYMVOL, NDEGRE, NBF, ELREFF, ELREFB )
+     &              TYMVOL, NDEGRE, NBF, ELREFF, ELREFB )
 C
 CGN      WRITE(6,*) 'TYPE MAILLE VOLUMIQUE COURANTE :',TYMVOL
 C --- CARACTERISTIQUES DES FACES DE BORD DE LA FAMILLE 1 ---------------
@@ -797,7 +798,7 @@ C --- IL FAUT REMPLACER LES CARACTERISTIQUES DE LA FAMILLE 1         ---
 C --- PAR CELLES DE LA FAMILLE 2                                     ---
 C
           IF ( ( TYMVOL.EQ.2 .AND. IFA.GE.3 ) .OR.
-     >         ( TYMVOL.EQ.4 .AND. IFA.GE.5 ) ) THEN
+     &         ( TYMVOL.EQ.4 .AND. IFA.GE.5 ) ) THEN
 C
             NNOF   = NNO2
             NPGF   = NPG2

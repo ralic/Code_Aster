@@ -5,9 +5,9 @@
       INTEGER           NBF,NBPOIN
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
+C MODIF PREPOST  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -55,7 +55,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
 C
-      CHARACTER*2   CODRET(3)
+      INTEGER ICODRE(3)
       CHARACTER*8   NOMRES(3),NOMPAR
       CHARACTER*16  PHENO,PHENOM
       REAL*8        VALMOI(3),VALPLU(3),TEMMOI,TEMPLU,PMOI,PPLU
@@ -72,11 +72,11 @@ C
       TROIS = 3.D0
 
       PHENO = 'DOMMA_LEMAITRE'
-      CALL RCCOME (NOMMAT,PHENO,PHENOM,CODRET(1))
-      IF(CODRET(1).EQ.'NO') CALL U2MESS('F','FATIGUE1_6')
+      CALL RCCOME (NOMMAT,PHENO,PHENOM,ICODRE(1))
+      IF(ICODRE(1).EQ.1) CALL U2MESS('F','FATIGUE1_6')
       PHENO = 'ELAS'
-      CALL RCCOME (NOMMAT,PHENO,PHENOM,CODRET(1))
-      IF(CODRET(1).EQ.'NO') CALL U2MESS('F','FATIGUE1_7')
+      CALL RCCOME (NOMMAT,PHENO,PHENOM,ICODRE(1))
+      IF(ICODRE(1).EQ.1) CALL U2MESS('F','FATIGUE1_7')
 C
 C --- CALCUL DU DOMMAGE ELEMENTAIRE
 C
@@ -94,7 +94,7 @@ C --- RECUPERATION DE EXP_S
         NOMRES(1) = 'EXP_S'
         CALL RCVALE(NOMMAT,'DOMMA_LEMAITRE',
      &              0,NOMPAR,RBID,1,NOMRES(1),
-     &              EXPS,CODRET(1),'F ')
+     &              EXPS,ICODRE(1),2)
 C --- RECUPERATION DU VSEUIL AUX INSTANTS TI+1
         NBPAR = 1
         NOMPAR = 'TEMP'
@@ -103,7 +103,7 @@ C --- RECUPERATION DU VSEUIL AUX INSTANTS TI+1
         NOMRES(1) = 'EPSP_SEU'
         CALL RCVALE(NOMMAT,'DOMMA_LEMAITRE',
      &              NBPAR,NOMPAR,TEMPLU,1,NOMRES(1),
-     &              VSEUIL,CODRET(1),'F ')
+     &              VSEUIL,ICODRE(1),2)
 C
         PMOI      = DEFPLA(I)
         PPLU      = DEFPLA(I+1)
@@ -118,16 +118,16 @@ C
 C
           CALL RCVALE(NOMMAT,'ELAS',
      &                NBPAR,NOMPAR,TEMMOI,2,NOMRES(1),
-     &                VALMOI(1),CODRET(1),'F ')
+     &                VALMOI(1),ICODRE(1),2)
           CALL RCVALE(NOMMAT,'ELAS',
      &                NBPAR,NOMPAR,TEMPLU,2,NOMRES(1),
-     &                VALPLU(1),CODRET(1),'F ')
+     &                VALPLU(1),ICODRE(1),2)
           CALL RCVALE(NOMMAT,'DOMMA_LEMAITRE',
      &                NBPAR,NOMPAR,TEMMOI,1,
-     &                NOMRES(3),VALMOI(3),CODRET(3),'F ')
+     &                NOMRES(3),VALMOI(3),ICODRE(3),2)
           CALL RCVALE(NOMMAT,'DOMMA_LEMAITRE',
      &                NBPAR,NOMPAR,TEMPLU,1,
-     &                NOMRES(3),VALPLU(3),CODRET(3),'F ')
+     &                NOMRES(3),VALPLU(3),ICODRE(3),2)
 C
 C --- CALCUL DE SIGMAH ET SIGMA EQUIVALENTE AUX INSTANTS TI ET TI+1
 C

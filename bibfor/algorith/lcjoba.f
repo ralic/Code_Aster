@@ -1,22 +1,22 @@
       SUBROUTINE LCJOBA (NDIM, TYPMOD, IMATE, CRIT, SUM, DSU,
      &                    VIM,OPTION, SIG, VIP,  DSIDEP, IRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 07/12/2010   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ALGORITH  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C ----------------------------------------------------------------------
       IMPLICIT NONE
@@ -30,7 +30,7 @@ C     LOI DE COMPORTEMENT ENDOMMAGEABLE DE LA LIAISON ACIER-BETON :
 C     COUPLAGE ENTRE L'EFFORT NORMAL ET LE CISAILLEMENT
 C     COMBINABLE AVEC ELAS
 C
-C IN : 
+C IN :
 C     NDIM    : DIMENSION DE L'ESPACE
 C     TYPMOD  : TYPE DE MODELISATION
 C     IMATE   : NATURE DU MATERIAU
@@ -49,17 +49,17 @@ C       2   -> VALEUR DE L'ENDOMMAGEMENT DIRECTION TANGENTIELLE
 C       3   -> VALEUR DE L'ECROUISSAGE ISOTROPE EN REGION 1
 C       4   -> VALEUR DE L'ECROUISSAGE ISOTROPE EN REGION 2
 C       5   -> DEFORMATION PAR FROTTEMENT DES FISSURES
-C       6   -> VALEUR DE L'ECROUISSAGE CINEMATIQUE 
+C       6   -> VALEUR DE L'ECROUISSAGE CINEMATIQUE
 C              PAR FROTTEMENT DES FISSURES
 C     DSIDEP  : MATRICE TANGENTE
 C     IRET    : CODE RETOUR DE  L'INTEGRATION DE LA LDC
 C               IRET=0 => PAS DE PROBLEME
 C               IRET=1 => DJ<0 ET INTEGRATION IMPOSSIBLE
-C                      => ABSENCE DE CONVERGENCE DANS LE CALCUL 
+C                      => ABSENCE DE CONVERGENCE DANS LE CALCUL
 C                        IMPLICITE, FROTTEMENT DES FISSURES')
 C
-C ON A BESOIN DE 
-C   HPEN   = PENETRATION 
+C ON A BESOIN DE
+C   HPEN   = PENETRATION
 C   GAMD0  = DEFORMATION TANGENTIELLE SEUIL ELASTIQUE REGION 1
 C   AD1    = CONSTANTE A D'ENDOMMAGEMENT TANGENTIEL REGION 1
 C   BD1    = CONSTANTE B D'ENDOMMAGEMENT TANGENTIEL REGION 1
@@ -74,15 +74,15 @@ C   ADN    = CONSTANTE A D'ENDOMMAGEMENT NORMALE
 C   BDN    = CONSTANTE B D'ENDOMMAGEMENT NORMALE
 C ----------------------------------------------------------------------
       LOGICAL     RIGI, RESI, CONV, TRAC, ADHER
-      CHARACTER*2 CODRET(14)
+      INTEGER ICODRE(14)
       CHARACTER*8 NOMRES(14)
-      INTEGER     I,J,K,L,ITER,ITEMAX
+      INTEGER     K,ITEMAX
       REAL*8      SU(2),EPS(2),E,GTT,HPEN
       REAL*8      BDN, ADN, EPSTR0
       REAL*8      BD1, AD1, GAMD0,BD2, AD2, GAMD2
       REAL*8      FC,FA,VIFROT,SIGNO,I1
       REAL*8      Y0T,YIT,Y2T,FD1,FD2
-      REAL*8      D0T,DF0T,Z0,ZF0,D2T,DF2T,Z2,ZF2,DFT
+      REAL*8      D0T,DF0T,Z0,ZF0,DF2T,Z2,ZF2,DFT
       REAL*8      GAMFRO,X0,TAOFRO,FINI
       REAL*8      D0N,DFN,Y0N,YIN,CONFI,EPSCO
       REAL*8      XMUL,FX,DFDS,DFDX,DPHIDS,DPHIDX,LAMDAP
@@ -108,7 +108,7 @@ C -- OPTION ET MODELISATION
 C    LECTURE DES CARACTERISTIQUES ELASTIQUES
       NOMRES(1) = 'E'
       CALL RCVALA ( IMATE,' ','ELAS',1,' ',0.D0,1,
-     &              NOMRES,VALRES,CODRET, 'FM')
+     &              NOMRES,VALRES,ICODRE, 1)
       E     = VALRES(1)
 
 C    LECTURE DES CARACTERISTIQUES D'ENDOMMAGEMENT
@@ -128,7 +128,7 @@ C    LECTURE DES CARACTERISTIQUES D'ENDOMMAGEMENT
        NOMRES(14) = 'BDN'
 
        CALL RCVALA(IMATE,' ','JOINT_BA',1,' ',0.D0,14,
-     &            NOMRES,VALRES,CODRET,'FM')
+     &            NOMRES,VALRES,ICODRE,1)
       HPEN   = VALRES(1)
       GTT    = VALRES(2)
       GAMD0  = VALRES(3)
@@ -183,33 +183,33 @@ C    DETERMINATION DE L'OUVERTURE OU FERMETURE DE L'ELEMENT
       ENDIF
 
 C ======================================================================
-C       CALCUL DES CONTRAINTES ET VARIABLES INTERNES 
+C       CALCUL DES CONTRAINTES ET VARIABLES INTERNES
 C           (OPTION FULL_MECA ET RAPH_MECA - (RESI) )
 C ====================================================================
-      IF (RESI) THEN          
+      IF (RESI) THEN
 
 C    MATRICE DE COMPORTEMENT
         CALL R8INIR(36,0.D0,DSIDEP,1)
-        DSIDEP(1,1)=E                   
-        DSIDEP(2,2)=GTT                
+        DSIDEP(1,1)=E
+        DSIDEP(2,2)=GTT
 
-C    CALCUL DU CONFINEMENT 
+C    CALCUL DU CONFINEMENT
         SIGNO = DSIDEP(1,1)*EPS(1)
         I1 = SIGNO/3
         CONFI = FC*I1
         IF(CONFI .GT. 0.D0) CONFI=0.D0
 
-C   2 -     CALCUL DE L'ENDOMMAGEMENT DANS LA DIRECTION 
+C   2 -     CALCUL DE L'ENDOMMAGEMENT DANS LA DIRECTION
 C           NORMALE
 C----------------------------------------------------------------
 
-C    SEUIL D'ADHERENCE NORMALE PARFAITE 
+C    SEUIL D'ADHERENCE NORMALE PARFAITE
         IF(TRAC)THEN
           Y0N = 0.5D0*DSIDEP(1,1)*(EPSTR0**2)
         ELSE
           Y0N = 0.5D0*DSIDEP(1,1)*(EPSCO**2)
         ENDIF
-        
+
         YIN = 0.5D0*DSIDEP(1,1)*(EPS(1)**2)
 
 C    ENDOMMAGEMENT DANS LA DIRECTION NORMALE
@@ -222,20 +222,20 @@ C    ENDOMMAGEMENT DANS LA DIRECTION NORMALE
 
           GO TO 100
 C...........................................................
-C      REMARQUE: ENDOMMAGEMENT DE L'ADHERENCE NORMALE ET 
+C      REMARQUE: ENDOMMAGEMENT DE L'ADHERENCE NORMALE ET
 C                DISPARITION DE LA LIAISON DANS LA DIRECTION
 C                TANGENTIELLE
 C...........................................................
 
-        ENDIF 
+        ENDIF
 
-C   3 -     CALCUL DE L'ENDOMMAGEMENT DANS LA DIRECTION 
+C   3 -     CALCUL DE L'ENDOMMAGEMENT DANS LA DIRECTION
 C           TANGENTIELLE
 C----------------------------------------------------------------
 
-C      SEUILS D'ENDOMMAGEMENT DE LA LIAISON DANS LA 
-C      DIRECTION TANGENTIELLE 
-        
+C      SEUILS D'ENDOMMAGEMENT DE LA LIAISON DANS LA
+C      DIRECTION TANGENTIELLE
+
         Y0T = 0.5D0*DSIDEP(2,2)*(GAMD0**2)
         YIT = 0.5D0*DSIDEP(2,2)*(EPS(2)**2)
         Y2T = 0.5D0*DSIDEP(2,2)*(GAMD2**2)
@@ -263,7 +263,7 @@ C         ENDOMMAGEMENT EN REGION 2
           ELSE
             DF2T = 1.D0
             ZF2  = Z2
-          ENDIF          
+          ENDIF
           DFT  = 1.D0 - DF0T*DF2T
 C          write(6,*)eps(2),yit,df0t,df2t,dft
           DFN = D0N
@@ -276,7 +276,7 @@ C         PAS DE PROGRESSION DE L'ENDOMMAGEMENT
           ZF2  = Z2
           DFN = D0N
         ENDIF
- 
+
 
 C   4 -     CALCUL DE LA CONTRAINTE PAR FROTTEMENT DES FISSURES
 C----------------------------------------------------------------
@@ -287,11 +287,11 @@ C         CALCUL DE LA CONTRAINTE PAR FROTTEMENT DES FISSURES
 
 
            TAOFRO = DSIDEP(2,2)*DFT*(EPS(2)-GAMFRO)
-           FINI = ABS(TAOFRO-X0) + CONFI       
+           FINI = ABS(TAOFRO-X0) + CONFI
 
            IF (FINI.GT.0.D0) THEN
               CONV = .FALSE.
-              DO 40 K= 1,ITEMAX 
+              DO 40 K= 1,ITEMAX
                 TAOFRO = DSIDEP(2,2)*DFT*(EPS(2)-GAMFRO)
                 IF ((TAOFRO-X0).GE.0.D0) THEN
                    XMUL = +1.D0
@@ -305,7 +305,7 @@ C         CALCUL DE LA CONTRAINTE PAR FROTTEMENT DES FISSURES
                 DPHIDS = XMUL
                 DPHIDX = -1.D0*XMUL+FA*X0
 
-C --------EVALUATION DU MULTIPLICATEUR PLASTIQUE             
+C --------EVALUATION DU MULTIPLICATEUR PLASTIQUE
 
                 LAMDAP = FX/(DFDS*DSIDEP(2,2)*DFT*DPHIDS+
      &                       DFDX*VIFROT*DPHIDX)
@@ -317,9 +317,9 @@ C --------EVALUATION DU MULTIPLICATEUR PLASTIQUE
 C --------EVALUATION DE LA CONVERGENCE
                 CONV    = ((ABS(FX/FINI) .LE. 0.D0) .OR.
      &                    (LAMDAP .LE. CRIT(3)))
-               IF(CONV) GO TO 100 
+               IF(CONV) GO TO 100
 40            CONTINUE
-           
+
               IF (.NOT. CONV) THEN
                  IRET = 1
               ENDIF
@@ -329,7 +329,7 @@ C --------EVALUATION DE LA CONVERGENCE
 100     CONTINUE
 
 C   5 -  CALCUL DES CONTRAINTES REELLES
-C----------------------------------------------------------------	
+C----------------------------------------------------------------
 
         CALL R8INIR(6, 0.D0, SIG,1)
 
@@ -338,11 +338,11 @@ C----------------------------------------------------------------
         TAOFRO=DSIDEP(2,2)*DFT*(EPS(2)-GAMFRO)
         IF(TRAC .AND. (.NOT.ADHER)) TAOFRO=0.D0
         SIG(2)=SIG(2)+TAOFRO
-      
+
 
 C    6 -   MISE A JOUR DES VARIABLES INTERNES
 C ------------------------------------------------------------
-          
+
         VIP(1) = DFN
         VIP(2) = DFT
         VIP(3) = ZF0
@@ -350,32 +350,32 @@ C ------------------------------------------------------------
         VIP(5) = GAMFRO
         VIP(6) = X0
 
-      END IF   
+      END IF
 
 C ======================================================================
 C     CALCUL  DE LA MATRICE TANGENTE DSIDEP
 C         OPTION RIGI_MECA_TANG ET FULL_MECA  (RIGI)
 C    (PAR SIMPLICITE ON NE CALCULE QUE LA MATRICE SECANTE)
 C ======================================================================
-      IF (RIGI)  THEN 
+      IF (RIGI)  THEN
 
 C   1 -  CONTRIBUTION ELASTIQUE
-C ------------------------------------------------------------     	  
-              
+C ------------------------------------------------------------
+
         CALL R8INIR(36, 0.D0, DSIDEP,1)
 
-        DSIDEP(1,1)=E*(1.D0-DFN)   
-        DSIDEP(2,2)=GTT*(1.D0-DFT) 
+        DSIDEP(1,1)=E*(1.D0-DFN)
+        DSIDEP(2,2)=GTT*(1.D0-DFT)
 
       ENDIF
 
-C   2 -  TRANSFORMATION DES DIMENSIONS POUR UTILISER DANS 
+C   2 -  TRANSFORMATION DES DIMENSIONS POUR UTILISER DANS
 C        L ELEMENT JOINT
-C ------------------------------------------------------------     	  
+C ------------------------------------------------------------
 
-      IF (RIGI)  THEN 
-        DSIDEP(1,1)= DSIDEP(1,1)/HPEN   
+      IF (RIGI)  THEN
+        DSIDEP(1,1)= DSIDEP(1,1)/HPEN
         DSIDEP(2,2)= DSIDEP(2,2)/HPEN
       ENDIF
- 
+
       END

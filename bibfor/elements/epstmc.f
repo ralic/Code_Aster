@@ -1,9 +1,9 @@
       SUBROUTINE  EPSTMC(FAMI,NDIM, INSTAN, POUM, IGAU,ISGAU,
      &                   XYZGAU,REPERE,MATER,OPTION, EPSTH)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 15/04/2008   AUTEUR MAHFOUZ D.MAHFOUZ 
+C MODIF ELEMENTS  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -48,14 +48,14 @@ C -----  ARGUMENTS
 C -----  VARIABLES LOCALES
            PARAMETER (NBRES = 3)
 C
-           CHARACTER*2  BL2, FB2, CODRET(NBRES)
+      INTEGER ICODRE(NBRES)
            CHARACTER*8  NOMRES(NBRES), NOMPAR
            CHARACTER*16 PHENOM
 C
            REAL*8 VALRES(NBRES),VALPAR,BENDOG,KDESSI,ANGL(3)
            REAL*8 DIRE(3),ORIG(3),P(3,3),EPSTHL(6)
            REAL*8 VEPST1(6),VEPST2(6),HYDR,SECH,SREF
-           INTEGER I,J,K,IRET
+           INTEGER I,K,IRET
       CHARACTER*6       EPSA(6)
       DATA EPSA   / 'EPSAXX','EPSAYY','EPSAZZ','EPSAXY','EPSAXZ',
      &              'EPSAYZ'/
@@ -65,7 +65,6 @@ C
 C ---- INITIALISATIONS
 C      ---------------
       ZERO   = 0.0D0
-      BL2    = '  '
       NOMPAR = 'INST'
       VALPAR = INSTAN
 C
@@ -96,9 +95,9 @@ C
 C ----   RECUPERATION DES CARACTERISTIQUES MECANIQUES
 C     ----------------------------------------------------------
             CALL RCVALB(FAMI,IGAU,ISGAU,POUM,MATER,' ',PHENOM,1,NOMPAR,
-     &                  VALPAR,NBV,NOMRES,VALRES,  CODRET, BL2 )
+     &                  VALPAR,NBV,NOMRES,VALRES,  ICODRE, 0)
 C
-            IF (CODRET(1).EQ.'OK') THEN
+            IF (ICODRE(1).EQ.0) THEN
 C
                 BENDOG = VALRES(1)
 C
@@ -126,9 +125,9 @@ C ----      INTERPOLATION DE K_DESSICCA EN FONCTION DE LA TEMPERATURE
 C           DE L HYDRATATION OU DU SECHAGE
 C           ----------------------------------------------------------
             CALL RCVALB(FAMI,IGAU,ISGAU,POUM,MATER,' ',PHENOM,1,NOMPAR,
-     &                  VALPAR,NBV,NOMRES,VALRES, CODRET, BL2 )
+     &                  VALPAR,NBV,NOMRES,VALRES, ICODRE, 0)
 C
-            IF (CODRET(1).NE.'OK') VALRES(1)=0.D0
+            IF (ICODRE(1).NE.0) VALRES(1)=0.D0
 C
             KDESSI = VALRES(1)
 C
@@ -155,7 +154,7 @@ C
 C
 C ---- RECUPERATION DU TYPE DU MATERIAU DANS PHENOM
 C      --------------------------------------------
-      CALL RCCOMA(MATER,'ELAS',PHENOM,CODRET)
+      CALL RCCOMA(MATER,'ELAS',PHENOM,ICODRE)
 C
 C      ------------
 C ---- CAS ISOTROPE

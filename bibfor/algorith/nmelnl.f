@@ -3,9 +3,9 @@
      &                   DERIVL,DLAGTG, DEPS, DENERG, DSIG)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 07/12/2010   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ALGORITH  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -79,7 +79,7 @@ C DECLARATION PARAMETRES D'APPELS
 
 C DECLARATION VARIABLES LOCALES
       LOGICAL     CPLAN,ELAS,VMIS,LINE,NONLIN,INCO,PUIS
-      CHARACTER*2 BL2, FB2, CODRET(3)
+      INTEGER ICODRE(3)
       CHARACTER*8 NOMRES(3)
       INTEGER     JPROL, JVALE, NBVALE
       INTEGER     NDIMSI, NITER, K, L, IBID
@@ -126,8 +126,6 @@ C====================================================================
       PUIS  = (COMPOR(1)(1:14).EQ. 'ELAS_VMIS_PUIS')
       EPSI  = R8PREM()
 
-      BL2 = '  '
-      FB2 = 'F '
 
 C====================================================================
 C INITIALISATIONS LIEES AU CALCUL DE DERIVEES LAGRANGIENNE
@@ -161,25 +159,25 @@ C====================================================================
 
 C TEST SUR LA COHERENCE DES INFORMATIONS CONCERNANT LA TEMPERATURE
       CALL VERIFT(FAMI,KPG,KSP,POUM,IMATE,'ELAS',1,EPSTHE,IRET)
-      
-      
+
+
       CALL RCVARC(' ','TEMP',POUM,FAMI,KPG,KSP,TEMP,IRET)
 
       IF (ELAS .OR. LINE .OR. PUIS) THEN
          CALL RCVALB (FAMI,KPG,KSP,POUM,IMATE,' ','ELAS',0,' ',0.D0,2,
-     &                 NOMRES,VALRES,CODRET, FB2 )
+     &                 NOMRES,VALRES,ICODRE, 2)
          CALL RCVALB (FAMI,KPG,KSP,POUM,IMATE,' ','ELAS',0,' ',0.D0,1,
-     &                 NOMRES(3),VALRES(3),CODRET(3), BL2 )
-         IF (CODRET(3).NE.'OK') VALRES(3)=0.D0
+     &                 NOMRES(3),VALRES(3),ICODRE(3), 0)
+         IF (ICODRE(3).NE.0) VALRES(3)=0.D0
       ELSE
-         CALL RCTRAC(IMATE,'TRACTION','SIGM',TEMP,JPROL,
+         CALL RCTRAC(IMATE,1,'SIGM',TEMP,JPROL,
      &               JVALE,NBVALE,VALRES(1))
          CALL RCVALB (FAMI,KPG,KSP,POUM,IMATE,' ','ELAS',0,' ',0.D0,1,
-     &                 NOMRES(2),VALRES(2),CODRET(2), FB2 )
+     &                 NOMRES(2),VALRES(2),ICODRE(2), 2)
 
          CALL RCVALB (FAMI,KPG,KSP,POUM,IMATE,' ','ELAS',0,' ',0.D0,1,
-     &                 NOMRES(3),VALRES(3),CODRET(3), BL2 )
-         IF (CODRET(3).NE.'OK') VALRES(3)=0.D0
+     &                 NOMRES(3),VALRES(3),ICODRE(3), 0)
+         IF (ICODRE(3).NE.0) VALRES(3)=0.D0
       ENDIF
 
       E     = VALRES(1)
@@ -201,7 +199,7 @@ C====================================================================
         NOMRES(1)='D_SIGM_EPSI'
         NOMRES(2)='SY'
         CALL RCVALB (FAMI,KPG,KSP,POUM,IMATE,' ','ECRO_LINE',0,' ',0.D0,
-     &               2,NOMRES,VALRES,CODRET , FB2 )
+     &               2,NOMRES,VALRES,ICODRE , 2)
         DSDE  = VALRES(1)
         SIGY  = VALRES(2)
 
@@ -210,14 +208,14 @@ C====================================================================
         NOMRES(2)='A_PUIS'
         NOMRES(3)='N_PUIS'
         CALL RCVALA(IMATE,' ','ECRO_PUIS',1,'TEMP',TEMP,3,NOMRES,VALRES,
-     &              CODRET , FB2 )
+     &              ICODRE , 2)
         SIGY   = VALRES(1)
         ALFAFA = VALRES(2)
         COCO   = E/ALFAFA/SIGY
         UNSURN = 1.D0/VALRES(3)
 
       ELSE IF (VMIS) THEN
-        CALL RCFONC('S','TRACTION',JPROL,JVALE,NBVALE,SIGY,DUM,DUM,
+        CALL RCFONC('S',1,JPROL,JVALE,NBVALE,SIGY,DUM,DUM,
      &               DUM,DUM,DUM,DUM,DUM,DUM)
       ENDIF
 
@@ -323,7 +321,7 @@ C        REMPLISSAGE DU COMMON
             JPROL2 = JPROL
             JVALE2 = JVALE
             NBVAL2 = NBVALE
-            CALL RCFONC('V','TRACTION',JPROL,JVALE,NBVALE,DUM,E,NU,
+            CALL RCFONC('V',1,JPROL,JVALE,NBVALE,DUM,E,NU,
      &                  0.D0,RP,RPRIM,AIRERP,DUM,DUM)
             LIN = 0.D0
           ENDIF
@@ -341,7 +339,7 @@ C        CALCUL DE P (EQUATION PROPRE AUX CONTRAINTES PLANES)
           ELSE IF (PUIS) THEN
             CALL U2MESS('F','ALGORITH_1')
           ELSE
-            CALL RCFONC('V','TRACTION',JPROL,JVALE,NBVALE,DUM,E,
+            CALL RCFONC('V',1,JPROL,JVALE,NBVALE,DUM,E,
      &                   NU,P,RP,RPRIM,AIRERP,DUM,DUM)
           ENDIF
 C
@@ -379,7 +377,7 @@ C           AMELIORATION DE LA PREDICTION EN ESTIMANT RPRIM(PM+DP0)
             IF(IRET.EQ.1) CALL U2MESS('F','ALGORITH8_65')
             CALL ECPUIS(E,SIGY,ALFAFA,UNSURN,PM,P,RP,RPRIM)
           ELSE
-            CALL RCFONC('E','TRACTION',JPROL,JVALE,NBVALE,DUM,E,NU,
+            CALL RCFONC('E',1,JPROL,JVALE,NBVALE,DUM,E,NU,
      &                  0.D0,RP,RPRIM,AIRERP,SIELEQ,P)
           ENDIF
           G = RP/EPSEQ

@@ -1,8 +1,8 @@
       SUBROUTINE TE0050 ( OPTION , NOMTE )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 10/11/2009   AUTEUR CORUS M.CORUS 
+C MODIF ELEMENTS  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -43,11 +43,10 @@ C
 
       REAL*8             ALPHA,BETA,ETA,VALRES(NBRES),VALPAR(NBPAR),VXYZ
 
-      CHARACTER*2        BL2, CODRET(NBRES)
+      INTEGER ICODRE(NBRES)
       CHARACTER*8        NOMRES(NBRES),NOMPAR(NBPAR)
 C
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
-      CHARACTER*32       JEXNUM , JEXNOM , JEXR8 , JEXATR
       INTEGER            ZI
       COMMON  / IVARJE / ZI(1)
       REAL*8             ZR
@@ -83,7 +82,6 @@ C     ------------------------------------------------------------
       END IF
       NBVAL= IDRESU(2)
 C
-      BL2 = '  '
       NOMPAR(1)='X'
       NOMPAR(2)='Y'
       NOMPAR(3)='Z'
@@ -132,17 +130,17 @@ C
         VALRES(1) = 0.D0
         VALRES(2) = 0.D0
         CALL RCVALB('RIGI',1,1,'+',MATER,' ','ELAS',NPARA,NOMPAR,VALPAR,
-     &                2,NOMRES,VALRES,CODRET, BL2 )
+     &                2,NOMRES,VALRES,ICODRE, 0)
 C
       ELSE IF (OPTION.EQ.'RIGI_MECA_HYST') THEN
 C     ------------------------------------------
         NOMRES(1)='AMOR_HYST'
         VALRES(1) = 0.D0
         CALL RCVALB('RIGI',1,1,'+',MATER,' ','ELAS',NPARA,NOMPAR,VALPAR,
-     &                1,NOMRES,VALRES,CODRET, BL2 )
-        IF (CODRET(1) .NE. 'OK') THEN
+     &                1,NOMRES,VALRES,ICODRE, 0)
+        IF (ICODRE(1) .NE.0) THEN
           CALL RCVALB('RIGI',1,1,'+',MATER,' ','ELAS_ORTH',NPARA,
-     &                NOMPAR,VALPAR,1,NOMRES,VALRES,CODRET, BL2 )
+     &                NOMPAR,VALPAR,1,NOMRES,VALRES,ICODRE, 0)
         ENDIF
       ELSE
         CALL ASSERT(.FALSE.)

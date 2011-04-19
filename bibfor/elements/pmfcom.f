@@ -10,7 +10,7 @@
      &                  MODF,SIGF,VARIP,ISECAN,CODRET)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 04/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C TOLE CRP_21
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -65,7 +65,7 @@ C     ------------------------------------------------------------------
       INTEGER     NBVAL,NBPAR,NBRES,NBVARI,CODREP
       PARAMETER   (NBVAL=12)
       REAL*8      VALPAR,VALRES(NBVAL),EP,EM
-      CHARACTER*2 ARRET,RETOUR,CODRES(NBVAL)
+      INTEGER ICODRE(NBVAL)
       CHARACTER*8 NOMPAR,NOECLB(9),NOMPIM(12)
       REAL*8       DEPSTH
       REAL*8      A1,A2,BETA1,BETA2,Y01,Y02,B1,B2,SIGF1
@@ -77,7 +77,6 @@ C     ------------------------------------------------------------------
       CHARACTER*8 MATERI,NOMRES
       CHARACTER*16 COMPO,ALGO
       CHARACTER*30 VALKM(2)
-      DATA ARRET,RETOUR/'FM','  '/
       DATA NOECLB/'Y01','Y02','A1','A2','B1','B2','BETA1','BETA2',
      &     'SIGF'/
 C     DATA NOMPIM/'SY','EPSI_ULTM','SIGM_ULTM','EPSP_HARD','R_PM',
@@ -110,11 +109,11 @@ C     S'IL N'Y A PAS DE TEMPERATURE
 
       NOMRES = 'E'
       CALL RCVALB(FAMI,1,1,'-',ICDMAT,MATERI,'ELAS',1,
-     &            'TEMP',TEMPM,1,NOMRES,VALRES,CODRES,'FM')
+     &            'TEMP',TEMPM,1,NOMRES,VALRES,ICODRE,1)
       EM = VALRES(1)
 
       CALL RCVALB(FAMI,1,1,'+',ICDMAT,MATERI,'ELAS',1,
-     &            'TEMP',TEMPP,1,NOMRES,VALRES,CODRES,'FM')
+     &            'TEMP',TEMPP,1,NOMRES,VALRES,ICODRE,1)
       EP = VALRES(1)
 C     EVALUATION DU MODULE SECANT
       ISECAN = 0
@@ -140,8 +139,8 @@ C ---    ON RECUPERE LES PARAMETRES MATERIAU
          NBRES  = 1
          CALL RCVALB(FAMI,1,1,'+',ICDMAT,MATERI,'ELAS',
      &               NBPAR,NOMPAR,VALPAR,NBRES,
-     &               'ALPHA',ALPHA,CODRES,RETOUR)
-         IF(CODRES(1).EQ.'OK') DEPSTH = ALPHA*(TEMPP-TREF)
+     &               'ALPHA',ALPHA,ICODRE,0)
+         IF(ICODRE(1).EQ.0) DEPSTH = ALPHA*(TEMPP-TREF)
 C
          CALL R8INIR(NBVAL,0.D0,VALRES,1)
          NBPAR = 0
@@ -150,7 +149,7 @@ C
          NBRES = 9
          CALL RCVALB(FAMI,1,1,'-',ICDMAT,MATERI,'LABORD_1D',
      &               NBPAR,NOMPAR,VALPAR,NBRES,
-     &               NOECLB,VALRES,CODRES,ARRET)
+     &               NOECLB,VALRES,ICODRE,1)
          Y01 = VALRES(1)
          Y02 = VALRES(2)
          A1 = VALRES(3)
@@ -180,8 +179,8 @@ C ---   BOUCLE COMPORTEMENT SUR CHAQUE FIBRE
          VALPAR = 0.D0
          CALL RCVALB(FAMI,1,1,'-',ICDMAT,MATERI,'PINTO_MENEGOTTO',
      &               NBPAR,NOMPAR,VALPAR,
-     &               NBRES,NOMPIM,VALRES,CODRES,RETOUR)
-         IF (CODRES(7).NE.'OK') VALRES(7) = -1.D0
+     &               NBRES,NOMPIM,VALRES,ICODRE,0)
+         IF (ICODRE(7).NE.0) VALRES(7) = -1.D0
          CSTPM(1) = EP
          DO 30 I = 1,12
             CSTPM(I+1) = VALRES(I)

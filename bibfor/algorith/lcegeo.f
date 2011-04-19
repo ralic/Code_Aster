@@ -1,11 +1,11 @@
        SUBROUTINE  LCEGEO(NNO   ,NPG   ,IPOIDS,IVF   ,IDFDE ,
      &                    GEOM  ,TYPMOD,COMPOR,NDIM  ,DFDI  ,
      &                    DEPLM ,DDEPL ,ELGEOM)
-C     
+C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/07/2010   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -89,9 +89,9 @@ C
       IF (COMPOR(1)(1:15) .EQ. 'BETON_DOUBLE_DP'.OR.
      &   (COMPOR(1)(1:7) .EQ. 'KIT_DDI'.AND.
      &    COMPOR(9)(1:15) .EQ. 'BETON_DOUBLE_DP')) THEN
-         
+
          IF (TYPMOD(1)(1:2).EQ.'3D')THEN
-         
+
            VOLUME = 0.D0
            DO 10 KPG = 1,NPG
              CALL DFDM3D(NNO   ,KPG   ,IPOIDS,IDFDE ,GEOM  ,
@@ -105,7 +105,6 @@ C
            ENDIF
          ELSEIF(TYPMOD(1)(1:6).EQ.'D_PLAN'
      &      .OR.TYPMOD(1)(1:4).EQ.'AXIS')THEN
-     
             SURFAC = 0.D0
             DO 40 KPG = 1,NPG
               K      = (KPG-1)*NNO
@@ -120,13 +119,13 @@ C
               ENDIF
               SURFAC  = SURFAC + POIDS
  40         CONTINUE
- 
+
             IF (NPG.GE.5) THEN
               LC = SURFAC ** 0.5D0
             ELSE
               LC = RAC2 * SURFAC ** 0.5D0
             ENDIF
-            
+
          ELSE
            CALL ASSERT(.FALSE.)
          ENDIF
@@ -144,12 +143,12 @@ C
             ELGEOM(1,KPG) = 0.D0
             ELGEOM(2,KPG) = 0.D0
             ELGEOM(3,KPG) = 0.D0
- 130      CONTINUE        
+ 130      CONTINUE
         ELSE
           DO 100 KPG = 1,NPG
             ELGEOM(1,KPG) = 0.D0
             ELGEOM(2,KPG) = 0.D0
-            ELGEOM(3,KPG) = 0.D0            
+            ELGEOM(3,KPG) = 0.D0
             DO 110 I = 1,NDIM
               DO 120 K = 1,NNO
                 ELGEOM(I,KPG) = ELGEOM(I,KPG) +
@@ -161,10 +160,10 @@ C
       ENDIF
 C
 C --- ELEMENTS GEOMETRIQUES POUR MONOCRISTAL: ROTATION DU RESEAU
-C      
+C
       IF (COMPOR(1) .EQ. 'MONOCRISTAL') THEN
 C       ROTATION RESEAU DEBUT
-C       CALCUL DE L = DF*F-1 
+C       CALCUL DE L = DF*F-1
         CALL DCOPY(NDDL,GEOM,1,GEOMM,1)
         CALL DAXPY(NDDL,1.D0,DEPLM,1,GEOMM,1)
         CALL DCOPY(NDDL,DEPLM,1,DEPLP,1)
@@ -172,10 +171,10 @@ C       CALCUL DE L = DF*F-1
         DO 200 KPG=1,NPG
            CALL NMGEOM(NDIM  ,NNO   ,.FALSE.,.TRUE.,GEOM  ,
      &                 KPG   ,IPOIDS,IVF    ,IDFDE ,DEPLP ,
-     &                 R8BID ,DFDI  ,F      ,EPSBID,R     )
+     &                 .TRUE.,R8BID ,DFDI  ,F      ,EPSBID,R     )
            CALL NMGEOM(NDIM  ,NNO   ,.FALSE.,.TRUE.,GEOMM ,
      &                 KPG   ,IPOIDS,IVF    ,IDFDE ,DDEPL ,
-     &                 R8BID ,DFDI  ,DF     ,EPSBID,R     )
+     &                 .TRUE.,R8BID ,DFDI  ,DF     ,EPSBID,R     )
            CALL DAXPY(9,-1.D0,ID,1,DF,1)
            CALL MATINV('S',3,F,FMM,R8BID)
            CALL PMAT(3,DF,FMM,L)
@@ -186,5 +185,5 @@ C       CALCUL DE L = DF*F-1
 272        CONTINUE
 200     CONTINUE
       ENDIF
-C      
+C
       END

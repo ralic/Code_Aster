@@ -1,0 +1,99 @@
+      SUBROUTINE MMMVEX(NNL   ,NBCPS ,TYPBAR,TYPRAC,NDEXFR,
+     &                  VECTCC,VECTFF)
+C
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ELEMENTS  DATE 18/04/2011   AUTEUR ABBAS M.ABBAS 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+C (AT YOUR OPTION) ANY LATER VERSION.                                   
+C                                                                       
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C ======================================================================
+C RESPONSABLE ABBAS M.ABBAS
+C
+      IMPLICIT NONE
+      INTEGER      TYPBAR,TYPRAC,NDEXFR
+      INTEGER      NNL,NBCPS
+      REAL*8       VECTCC(9),VECTFF(18)
+C
+C ----------------------------------------------------------------------
+C
+C ROUTINE CONTACT (METHODE CONTINUE - CALCUL)
+C
+C CALCUL DES VECTEURS - MODIFICATIONS EXCLUSION/BARSOUM/RACCORD
+C
+C ----------------------------------------------------------------------
+C
+C
+C IN  NNL    : NOMBRE DE NOEUDS PORTANT UN LAGRANGE DE CONTACT/FROTT
+C IN  NBCPS  : NOMBRE DE COMPOSANTES/NOEUD DES LAGR_C+LAGR_F
+C IN  TYPBAR : ARETE OU POINT EN FOND DE FISSURE
+C IN  TYPRAC : ARETE SUR LAQUELLE UN NOEUD MILIEU EST A LINEARISER
+C IN  NDEXFR : ENTIER CODE POUR EXCLUSION DIRECTION DE FROTTEMENT
+C OUT VECTCC : VECTEUR ELEMENTAIRE LAGR_C
+C OUT VECTFF : VECTEUR ELEMENTAIRE LAGR_F
+C
+C ----------------------------------------------------------------------
+C
+      INTEGER   I,L,II,NBCPF
+      INTEGER   NDEXC1(9),NDEXC2(9),NDEXC3(10),IEXCL      
+C
+C ----------------------------------------------------------------------
+C
+
+      DO 10 I = 1,9
+        NDEXC1(I) = 0
+        NDEXC2(I) = 0             
+ 10   CONTINUE
+      NBCPF  = NBCPS - 1
+C
+C --- MODIFICATION DES TERMES SI BARSOUM 
+C
+      IF (TYPBAR.NE.0) THEN
+        CALL MMEXN1(TYPBAR,NDEXC1)
+        DO 15 IEXCL = 1,9   
+          IF (NDEXC1(IEXCL).EQ.1) THEN
+            VECTCC(IEXCL) = 0.D0
+          ENDIF  
+ 15     CONTINUE
+      ENDIF
+C
+C --- MODIFICATION DES TERMES SI RACCORD_LINE_QUAD
+C
+      IF (TYPRAC.NE.0) THEN
+        CALL MMEXN2(TYPRAC,NDEXC2)
+        DO 20 IEXCL = 1,9   
+         IF (NDEXC2(IEXCL).EQ.1) THEN
+           VECTCC(IEXCL) = 0D0
+         ENDIF  
+ 20     CONTINUE
+      ENDIF               
+C
+C --- MODIFICATION DES TERMES SI EXCLUSION DIRECTION FROTT. SANS_NO_FR  
+C
+      IF (NDEXFR.NE.0) THEN
+        CALL ISDECO(NDEXFR,NDEXC3,10)
+        DO 30 I=1,NNL
+          IF (NDEXC3(I).EQ.1) THEN
+            DO 40 L=1,NBCPF
+              IF ((L.EQ.2).AND.(NDEXC3(10).EQ.0)) THEN
+                GOTO 40
+              ENDIF
+              II = (I-1)*NBCPF+L
+              VECTFF(II) = 0.D0
+  40       CONTINUE
+          ENDIF
+  30   CONTINUE
+      ENDIF
+C
+      END

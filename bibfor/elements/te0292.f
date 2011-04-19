@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/03/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF ELEMENTS  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -56,7 +56,7 @@ C
       REAL*8 SIGP11,SIGP22,SIGP33,SIGP12,SIGD11,SIGD22,SIGD33,SIGD12
       REAL*8 XX,YY,E,NU,NOR,NORSIG,NU0,EEST,HE
 
-      CHARACTER*2 CODRET(2)
+      INTEGER ICODRE(2)
       CHARACTER*4 FAMI
       CHARACTER*8 NOMRES(2)
 
@@ -125,7 +125,7 @@ C
 102     CONTINUE
 C
         CALL RCVALB(FAMI,KP,1,'+',MATER,' ','ELAS',0,' ',0.D0,
-     &              2,NOMRES, VALRES, CODRET, 'FM' )
+     &              2,NOMRES, VALRES, ICODRE, 1)
         E  = VALRES(1)
         NU = VALRES(2)
 C

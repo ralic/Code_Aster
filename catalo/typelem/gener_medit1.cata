@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+%& MODIF TYPELEM  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -29,7 +29,7 @@ MODE_LOCAL__
     CCADISA  = CADISA   ELEM__         (A[36])
     CCADISK  = CADISK   ELEM__         (K[36])
     CCADISM  = CADISM   ELEM__         (M[36])
-    CCINFDI  = CINFDI   ELEM__         (REPK  REPM  REPA  SYMK  SYMM  SYMA  DISK  DISM  DISA  ETAK)
+    CCINFDI  = CINFDI   ELEM__         (REPK  REPM  REPA  SYMK  SYMM  SYMA  DISK  DISM  DISA  ETAK  TYDI)
     CCAORIE  = CAORIE   ELEM__         (ALPHA   BETA GAMMA )
     ECODRET  = CODE_I   ELEM__         (IRET   )
     CCOMPOR  = COMPOR   ELEM__         (RELCOM   NBVARI   DEFORM   INCELA   C_PLAN   )
@@ -95,9 +95,9 @@ OPTION__
     ECIN_ELEM           44    IN__   CCADISM  PCADISM  CCAORIE  PCAORIE  DDL_MECA PDEPLAR  CFREQR   PFREQR
                                      CCINFDI  PCINFDI
                               OUT__  EENERCR  PENERCR
-    EFCA_ELNO      39    IN__   CCAORIE  PCAORIE  EEFGENO  PCONTRR  CCINFDI  PCINFDI
+    EFCA_ELNO           39    IN__   CCAORIE  PCAORIE  EEFGENO  PCONTRR  CCINFDI  PCINFDI
                               OUT__  EEFFONO  PEFFORR
-    EFGE_ELNO      42    IN__   CCADISK  PCADISK  CCAORIE  PCAORIE  DDL_MECA PDEPLAR CCINFDI  PCINFDI
+    EFGE_ELNO           42    IN__   CCADISK  PCADISK  CCAORIE  PCAORIE  DDL_MECA PDEPLAR CCINFDI  PCINFDI
                               OUT__  EEFGENO  PEFFORR EEFGENC  PEFFORC
     ENER_ELAS           -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
@@ -198,7 +198,7 @@ OPTION__
                                      EENEUT_F PNEUT_F  EENEUT_R PNEUT_R
     VARI_ELGA_ELNO      159   IN__   CCOMPOR  PCOMPOR  ZVARINO  PVARINR
                               OUT__  ZVARIPG  PVARIGR
-    VARI_ELNO      159   IN__   ZVARIPG  PVARIGR
+    VARI_ELNO           159   IN__   ZVARIPG  PVARIGR
                               OUT__  ZVARINO  PVARINR
     WEIBULL             -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX

@@ -2,7 +2,7 @@
      &                   OPTION, MAT   , EPSM  , DEPS  , VIM   ,
      &                   NONLOC, SIG   , VIP   , DSIDEP, IRET  )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 04/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -54,7 +54,7 @@ C ----------------------------------------------------------------------
       REAL*8  A,DRDA,DRDAE,DFDAE,DRDAS,DFDAS,GEL,GSAT
       REAL*8  RA,FD,D2RDA2,D2FDA2,DGDA,H
       CHARACTER*1 POUM
-      CHARACTER*2 K2(6),REP
+      INTEGER K2(6),REP
       CHARACTER*8 NOM(6)
 C ----------------------------------------------------------------------
       REAL*8 GAMMA,DRDA0,DFDA0,WEPS,PHI,R
@@ -85,9 +85,9 @@ C -- LECTURE DES CARACTERISTIQUES MATERIAU
       R   = NONLOC(2)
 
       CALL RCVALA(MAT,' ','ELAS',         0,' ',0.D0,2,NOM(1),
-     &            VAL(1),K2,'F ')
+     &            VAL(1),K2,2)
       CALL RCVALA(MAT,' ','ENDO_SCALAIRE',0,' ',0.D0,4,NOM(3),
-     &            VAL(3),K2,'F ')
+     &            VAL(3),K2,2)
 
 C      NU     = VAL(2)
       LAMBDA = VAL(1)*VAL(2) / (1-2*VAL(2)) / (1+VAL(2))
@@ -108,8 +108,8 @@ C    PARAMETRES FACULTATIFS : TEMPERATURES
       END IF
 
       CALL RCVALA(MAT,' ','ELAS',0,' ',0.D0,1,'ALPHA',ALPHA,
-     &            REP,'  ')
-      EXTEMP = REP.EQ.'OK'
+     &            REP,0)
+      EXTEMP = REP.EQ.0
 
       IF (EXTEMP) THEN
         CALL RCVARC('F','TEMP','REF',FAMI,KPG,KSP,TREF,VRET)
@@ -245,7 +245,6 @@ C -- CORRECTION POUR LES CONTRAINTES PLANES
 
 
 C -- CORRECTION DISSIPATIVE
-     
       IF (ETAT.NE.1 .OR. ELAS) GOTO 9999
       
       DRDA   = LCESRF(2,A)

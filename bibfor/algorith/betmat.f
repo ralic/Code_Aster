@@ -4,9 +4,9 @@
         IMPLICIT REAL*8 (A-H,O-Z)
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
+C MODIF ALGORITH  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -52,8 +52,8 @@ C       ----------------------------------------------------------------
         REAL*8          MATERD(NMAT,2) ,MATERF(NMAT,2) , TEMPD , TEMPF
         REAL*8           VALPAF
         REAL*8          EPSI , THETA,R8NNEM
-        CHARACTER*8     MOD, NOM , NOMC(14) , NOMPAR
-        CHARACTER*2     BL2, FB2, CERR(14)
+        CHARACTER*8     MOD , NOMC(14) , NOMPAR
+      INTEGER CERR(14)
         CHARACTER*3     MATCST
         CHARACTER*(*)   FAMI
         DATA EPSI       /1.D-15/
@@ -63,8 +63,6 @@ C -     NB DE COMPOSANTES / VARIABLES INTERNES -------------------------
 C
         CALL BETNVI ( MOD , NDT , NDI , NR , NVI )
 C
-        BL2 = '  '
-        FB2 = 'F '
        CALL R8INIR(2*NMAT, 0.D0, MATERD, 1)
        CALL R8INIR(2*NMAT, 0.D0, MATERF, 1)
 C
@@ -101,30 +99,30 @@ C
 C -     RECUPERATION MATERIAU A TEMPD (T)
 C
         CALL RCVALB (FAMI,KPG,KSP,'-',IMAT,' ','ELAS', 0,' ',
-     &               0.D0,5,NOMC(1),MATERD(1,1),CERR(1),BL2 )
-        IF ( CERR(3) .NE. 'OK' ) MATERD(3,1) = 0.D0
-        IF ( CERR(4) .NE. 'OK' ) MATERD(4,1) = 0.D0
-        IF ( CERR(5) .NE. 'OK' ) MATERD(5,1) = 0.D0
+     &               0.D0,5,NOMC(1),MATERD(1,1),CERR(1),0)
+        IF ( CERR(3) .NE. 0 ) MATERD(3,1) = 0.D0
+        IF ( CERR(4) .NE. 0 ) MATERD(4,1) = 0.D0
+        IF ( CERR(5) .NE. 0 ) MATERD(5,1) = 0.D0
         CALL RCVALB (FAMI,KPG,KSP,'-',IMAT,' ','BETON_DOUBLE_DP',0,
      &               ' ',0.D0, 8,NOMC(6),  MATERD(1,2),  CERR(6),
-     &               FB2 )
+     &               2)
         CALL RCVALB (FAMI,KPG,KSP,'-',IMAT,' ','BETON_DOUBLE_DP',0,
      &               ' ',0.D0,1,NOMC(14),MATERD(9,2),CERR(14),
-     &               BL2 )
-        IF ( CERR(14).NE. 'OK' ) MATERD(9,2) = -1.D0
+     &               0)
+        IF ( CERR(14).NE. 0 ) MATERD(9,2) = -1.D0
 C
 C -     RECUPERATION MATERIAU A TEMPF (T+DT)
 C
         CALL RCVALB (FAMI,KPG,KSP,'+',IMAT,' ','ELAS',1,NOMPAR,
-     &               VALPAF,5,NOMC(1),MATERF(1,1),CERR(1),BL2 )
-        IF ( CERR(3) .NE. 'OK' ) MATERF(3,1) = 0.D0
-        IF ( CERR(4) .NE. 'OK' ) MATERF(4,1) = 0.D0
-        IF ( CERR(5) .NE. 'OK' ) MATERF(5,1) = 0.D0
+     &               VALPAF,5,NOMC(1),MATERF(1,1),CERR(1),0)
+        IF ( CERR(3) .NE. 0 ) MATERF(3,1) = 0.D0
+        IF ( CERR(4) .NE. 0 ) MATERF(4,1) = 0.D0
+        IF ( CERR(5) .NE. 0 ) MATERF(5,1) = 0.D0
         CALL RCVALB (FAMI,KPG,KSP,'+',IMAT,' ','BETON_DOUBLE_DP',1,
-     &               NOMPAR,VALPAF,8,NOMC(6),MATERF(1,2),CERR(6),FB2)
+     &               NOMPAR,VALPAF,8,NOMC(6),MATERF(1,2),CERR(6),2)
         CALL RCVALB (FAMI,KPG,KSP,'+',IMAT,' ','BETON_DOUBLE_DP',1,
-     &               NOMPAR,VALPAF,1,NOMC(14),MATERF(9,2),CERR(14),BL2)
-        IF ( CERR(14).NE. 'OK' ) MATERF(9,2) = -1.D0
+     &               NOMPAR,VALPAF,1,NOMC(14),MATERF(9,2),CERR(14),0)
+        IF ( CERR(14).NE. 0 ) MATERF(9,2) = -1.D0
 C
 C
         MATERD(6,2) = MATERD(6,2) * 0.01D0

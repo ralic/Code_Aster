@@ -1,9 +1,9 @@
       SUBROUTINE RCTYPE(JMAT,NBPU,NOMPU,VALPU,RESU,TYPE)
 C -----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 19/02/2008   AUTEUR MACOCCO K.MACOCCO 
+C MODIF MODELISA  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -35,7 +35,6 @@ C OUT TYPE  : TYPE DU PARAMETRE DE LA FONCTION
 C
 C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
 C
-      CHARACTER*32       JEXNUM , JEXNOM
       INTEGER            ZI
       COMMON  / IVARJE / ZI(1)
       REAL*8             ZR
@@ -53,8 +52,8 @@ C
 C
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 C
-      INTEGER       ICOMP, IPI, IDF, NBF, IVALK, IK, IPIF, IPIFC, JPRO
-      INTEGER       JVALF1, NBVF1, K, NPAR(2), NBMAT
+      INTEGER       ICOMP, IPI, IDF, NBF, IVALK, IK, IPIF, JPRO
+      INTEGER          NBMAT
       CHARACTER*16  NOMPF(2)
       CHARACTER*24 VALK
 C ----------------------------------------------------------------------
@@ -89,17 +88,15 @@ C     UTILISABLE SEULEMENT AVEC UN MATERIAU PAR MAILLE
 C
       JPRO = ZI(IPIF+1)
 C
-      TYPE = ' '
       IF (ZK24(JPRO).EQ.'NAPPE') THEN
         NBPARA = 2
         NOMPF(1) = ZK24(JPRO+2)
         NOMPF(2) = ZK24(JPRO+5)
+        TYPE = ' '
       ELSE
         NBPARA = 1
-        NOMPF(1) = ZK24(JPRO+2)
-        IF(NOMPF(1).EQ.'EPSI') THEN
+        IF(ZK24(JPRO+2).EQ.'EPSI') THEN
            RESU = VALPU(1)
-C           TYPE = NOMPU(1)
            TYPE = ' '
            GOTO 9999
         ELSE
@@ -107,7 +104,7 @@ C           TYPE = NOMPU(1)
            CALL U2MESG('F','MODELISA9_73',1,VALK,0,0,0,0.D0)
         ENDIF
       ENDIF
-C
+
       DO 30 I=1,NBPARA
         IF(NOMPF(I)(1:4).NE.'EPSI') THEN
           DO 31 NUPAR=1,NBPU
@@ -119,9 +116,9 @@ C
   31      CONTINUE
         ENDIF
   30  CONTINUE
-C
+
       CALL U2MESS('F','MODELISA9_83')
-C
+
  9999 CONTINUE
-C
+
       END

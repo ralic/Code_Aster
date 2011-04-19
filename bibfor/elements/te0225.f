@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 C ......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 04/04/2011   AUTEUR SELLENET N.SELLENET 
+C MODIF ELEMENTS  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -29,7 +29,6 @@ C        DONNEES:      OPTION       -->  OPTION DE CALCUL
 C                      NOMTE        -->  NOM DU TYPE ELEMENT
 C ......................................................................
 C --------- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------
-      CHARACTER*32 JEXNUM,JEXNOM,JEXR8,JEXATR
       INTEGER ZI
       COMMON /IVARJE/ZI(1)
       REAL*8 ZR
@@ -46,20 +45,19 @@ C --------- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C --------- FIN  DECLARATIONS NORMALISEES JEVEUX -----------------------
 
-      INTEGER I,IP,K,KP,IGEOM,ICACO,IVECTT,ITEMP,IMATE
-      INTEGER IVF,IDFDK,NNO,NPG,NPGS,JCOOPG,J,NBRES,JDFD2
+      INTEGER I,IP,K,KP,IGEOM,ICACO,IVECTT,IMATE
+      INTEGER IVF,IDFDK,NNO,NPG,JCOOPG,J,NBRES,JDFD2
       PARAMETER (NBRES=3)
       CHARACTER*16 PHENOM
       CHARACTER*8 NOMRES(NBRES)
       CHARACTER*4 FAMI
-      CHARACTER*2 BL2,CODRET(NBRES)
+      INTEGER ICODRE(NBRES)
       REAL*8 VALRES(NBRES),DFDX(3),R,COUR,JAC,COSA,SINA
       REAL*8 TPG1,TPG2,TPG3,TPG,ZERO,UN,DEUX,X3
       REAL*8 H,EPSTHE,NU,COEF,AXIS
 
       DATA ZERO,UN,DEUX/0.D0,1.D0,2.D0/
 C     ------------------------------------------------------------------
-      BL2 = '  '
       FAMI = 'RIGI'
       CALL ELREF5(' ',FAMI,NDIM,NNO,NNOS,NPG,IPOIDS,JCOOPG,IVF,IDFDK,
      &            JDFD2,JGANO)
@@ -73,7 +71,7 @@ C     TEMPERATURE DE REFERENCE
 
 C --- RECUPERATION DE LA NATURE DU MATERIAU DANS PHENOM
 C     -------------------------------------------------
-      CALL RCCOMA(ZI(IMATE),'ELAS',PHENOM,CODRET)
+      CALL RCCOMA(ZI(IMATE),'ELAS',PHENOM,ICODRE)
 
       IF (PHENOM.EQ.'ELAS') THEN
 
@@ -112,14 +110,14 @@ C---- COMME POUR LA LONGUEUR
      &            DEUX
             CALL RCVALB('RIGI',1,1,'+',ZI(IMATE),' ','ELAS',
      &                 1,'TEMP',TPG,2,NOMRES,
-     &                 VALRES, CODRET,'FM')
+     &                 VALRES, ICODRE,1)
             CALL RCVALB('RIGI',1,1,'+',ZI(IMATE),' ','ELAS',
      &                  1,'TEMP',TPG,1,NOMRES(3),
-     &                  VALRES(3),CODRET(3),BL2)
+     &                  VALRES(3),ICODRE(3),0)
             IF (((IRET1+IRET2+IRET3+IRET4).GE.1).AND.
-     &              (CODRET(3).EQ.'OK')) THEN
+     &              (ICODRE(3).EQ.0)) THEN
               CALL U2MESS('F','CALCULEL_15')
-            ELSEIF (CODRET(3).NE.'OK') THEN 
+            ELSEIF (ICODRE(3).NE.0) THEN
               EPSTHE = 0.D0
             ELSE
                EPSTHE = (TPG-TREF)*VALRES(3)

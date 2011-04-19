@@ -1,26 +1,26 @@
       SUBROUTINE LCKIMP (NDIM  , TYPMOD, OPTION, MAT , EPSM  ,
      &     DEPS  , VIM   , NONLOC     , SIG   , VIP   ,
      &     DSIDEP)
-C     
+C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 15/02/2011   AUTEUR FLEJOU J-L.FLEJOU 
+C MODIF ALGORITH  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C     
+C
       IMPLICIT NONE
       CHARACTER*8  TYPMOD
       CHARACTER*16 OPTION
@@ -42,24 +42,24 @@ C     IN  EPSM    CHAMP DE DEFORMATION EN T- ET PHIM=EPSM(7)
 C     IN  DEPS    INCREMENT DU CHAMP DE DEFORMATION ET DPHI=DEPS(7)
 C     IN  VIM     VARIABLES INTERNES EN T-
 C     IN  NONLOC  VARIABLES NON LOCALES
-C     OUT VIP     DENSITE DE FISSURATION 
-C     OUT SIG     CONTRAINTE 
+C     OUT VIP     DENSITE DE FISSURATION
+C     OUT SIG     CONTRAINTE
 C     OUT DSIDEP  MATRICES TANGENTES
 C     -----------------------------------------------------------------
 
-      LOGICAL CPLAN, RIGI, RESI, ELAS
+      LOGICAL CPLAN, RESI
       INTEGER NDIMSI, IJ, KL, I
-      REAL*8  VAL(3), NU, LAMBDA, DEUXMU 
-      REAL*8  ALPHA, SY, E, WY
+      REAL*8  VAL(3), NU, LAMBDA, DEUXMU
+      REAL*8    E
       REAL*8  COPLAN, EPS(6), PHI, W, TREPS, EPSEPS, SIGEL(6)
-      REAL*8  D, FD
+      REAL*8   FD
       REAL*8  DDOT
       REAL*8  KK, EPSD(6)
-      REAL*8  SIGM,W0       
-      CHARACTER*2 K2(4)
+      REAL*8  SIGM,W0
+      INTEGER K2(4)
       CHARACTER*8 NOM(3)
       REAL*8 KRON(6), RIGMIN
-      PARAMETER (RIGMIN = 1.D-5)     
+      PARAMETER (RIGMIN = 1.D-5)
       DATA   KRON/1.D0,1.D0,1.D0,0.D0,0.D0,0.D0/
 C     -----------------------------------------------------------------
 
@@ -85,21 +85,21 @@ C     -- LECTURE DES CARACTERISTIQUES MATERIAU
       NOM(3) = 'SY'
 
       CALL RCVALA(MAT,' ','ELAS'     ,0,' ',0.D0,
-     &     2,NOM(1),VAL(1),K2,'F ')
+     &     2,NOM(1),VAL(1),K2,2)
 
       NU     = VAL(2)
       E      = VAL(1)
       LAMBDA = VAL(1)*VAL(2) / (1-2*VAL(2)) / (1+VAL(2))
       DEUXMU = VAL(1) / (1.D0+VAL(2))
-      KK     = LAMBDA + DEUXMU/(3.0D0)   
-      
+      KK     = LAMBDA + DEUXMU/(3.0D0)
+
       CALL RCVALA(MAT,' ','ECRO_LINE'     ,0,' ',0.D0,
-     &     1,NOM(3),VAL(3),K2,'F ')      
-      
+     &     1,NOM(3),VAL(3),K2,2)
+
       SIGM = VAL(3)
-      
+
       W0 = SIGM**2/(2*E)
-      
+
 C     -- DEFORMATIONS COURANTES
 
       CALL DCOPY(NDIMSI, EPSM,1, EPS,1)
@@ -115,22 +115,22 @@ C     DEFORMATION HORS PLAN POUR LES CONTRAINTES PLANES
 
 C     -- ENERGIE DE DEFORMATION ET CONTRAINTE ELASTIQUE
 
-      TREPS  = EPS(1)+EPS(2)+EPS(3)      
-      
+      TREPS  = EPS(1)+EPS(2)+EPS(3)
+
 C     -- DEVIATEUR DES DEFORMATIONS
 
-      DO 2 I = 1,NDIMSI           
+      DO 2 I = 1,NDIMSI
          EPSD(I) = EPS(I) - TREPS*KRON(I)/(3.0D0)
  2    CONTINUE
-      
+
       EPSEPS = DDOT(NDIMSI,EPS,1,EPS,1)
       W      = 0.5D0 * (LAMBDA*TREPS**2 + DEUXMU*EPSEPS)
       DO 5 IJ = 1,NDIMSI
          SIGEL(IJ) = LAMBDA*TREPS*KRON(IJ) + DEUXMU*EPS(IJ)
- 5    CONTINUE        
-      
-C     CORRECTION 1 DE LA DERIVEE PAR RAPPORT A D EN COMPRESSION    
-      
+ 5    CONTINUE
+
+C     CORRECTION 1 DE LA DERIVEE PAR RAPPORT A D EN COMPRESSION
+
       IF (TREPS .LT. 0.D0) THEN
          W = 0.5D0 * DEUXMU*DDOT(NDIMSI,EPSD,1,EPSD,1)
       ENDIF
@@ -138,55 +138,54 @@ C     CORRECTION 1 DE LA DERIVEE PAR RAPPORT A D EN COMPRESSION
 C     -----------------------------------------------------------------
 C     CALCUL DE L'ENDOMMAGEMENT
 C     -----------------------------------------------------------------
-      
-      FD = (1.D0 - PHI)**2 + RIGMIN 
-      
-      IF (.NOT.RESI) GOTO 5000 
-      
+
+      FD = (1.D0 - PHI)**2 + RIGMIN
+
+      IF (.NOT.RESI) GOTO 5000
+
       VIP(1) = PHI
-      
+
       IF (VIP(1).GT. VIM(1)) THEN
          VIP(2) = 1
       ELSE
          VIP(2) = 0
       ENDIF
-      
+
 C     STOCKAGE DES CONTRAINTES ET DES VARIABLES INTERNES
 
- 2000 CONTINUE
-      
-C     FORMULATION LOI DE COMPORTMENT AVEC CORRECTION EN COMPRESSION 
-      
+
+C     FORMULATION LOI DE COMPORTMENT AVEC CORRECTION EN COMPRESSION
+
       IF (TREPS .LT. 0.D0) THEN
-         DO 20 IJ = 1,NDIMSI 
-            SIG(IJ) = KK*TREPS*KRON(IJ) + 
+         DO 20 IJ = 1,NDIMSI
+            SIG(IJ) = KK*TREPS*KRON(IJ) +
      &           DEUXMU*EPSD(IJ)*FD
- 20      CONTINUE   
-      ELSE  
+ 20      CONTINUE
+      ELSE
          DO 10 IJ = 1,NDIMSI
             SIG(IJ) = SIGEL(IJ)*FD
  10      CONTINUE
       ENDIF
 
- 5000 CONTINUE      
+ 5000 CONTINUE
 
 C     -----------------------------------------------------------------
 C     CALCUL DES MATRICES TANGENTES
 C     -----------------------------------------------------------------
-      
+
       CALL R8INIR(36*4, 0.D0, DSIDEP,1)
-      
+
       FD = (1.D0 - PHI)**2 + RIGMIN
-      
+
 C     -- CONTRIBUTION ELASTIQUE
 
       DO 80 IJ=1,3
          DO 90 KL=1,3
             IF (TREPS .LT. 0.D0) THEN
                DSIDEP(IJ,KL,1) = LAMBDA+DEUXMU/(3.0D0)*(1.D0-FD)
-            ELSE  
+            ELSE
                DSIDEP(IJ,KL,1) = FD*LAMBDA
-            ENDIF  
+            ENDIF
  90      CONTINUE
  80   CONTINUE
       DO 100 IJ=1,NDIMSI
@@ -208,7 +207,7 @@ C     -- CORRECTION POUR LES CONTRAINTES PLANES
 
 C     -- CORRECTION DISSIPATIVE
 
-C     CORRECTION 2 DE LA DERIVEE PAR RAPPORT A D EN COMPRESSION      
+C     CORRECTION 2 DE LA DERIVEE PAR RAPPORT A D EN COMPRESSION
 
       IF (TREPS .LT. 0.D0) THEN
          DO 220 IJ = 1,NDIMSI
@@ -220,17 +219,16 @@ C     DERIVEES CROISEES
 
       DO 200 IJ = 1,NDIMSI
          DSIDEP(IJ,1,2) = -2.D0*(1.0D0-PHI)*SIGEL(IJ)
- 200  CONTINUE 
-      
-C     DERIVEE SECONDE /ENDO 
- 
-      DSIDEP(1,1,3) = 2.0D0*W  
-      
-C    DERIVEE PREMIERE /ENDO      
-            
-      DSIDEP(1,1,4) = 2.0D0*(W0-(1.0D0-PHI)*W)              
+ 200  CONTINUE
 
-            
- 9999 CONTINUE
+C     DERIVEE SECONDE /ENDO
+
+      DSIDEP(1,1,3) = 2.0D0*W
+
+C    DERIVEE PREMIERE /ENDO
+
+      DSIDEP(1,1,4) = 2.0D0*(W0-(1.0D0-PHI)*W)
+
+
 
       END

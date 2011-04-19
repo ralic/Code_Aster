@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF aster_fort include  DATE 04/04/2011   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF aster_fort include  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2011  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -23,9 +23,9 @@
 #include "aster.h"
 
 /* *********************************************************************
- * 
+ *
  * Définition des interfaces aux routines fortran appelées depuis le C.
- * 
+ *
  * *********************************************************************/
 
 /* routines UTILITAIRES */
@@ -197,8 +197,8 @@ extern void DEFSPSPPPS(RSACCH,rsacch,char *, STRING_SIZE, INTEGER *, char *,STRI
 
 
 /* routines de manipulation de la SD MATERIAU */
-#define CALL_RCVALE(a,b,c,d,e,f,g,h,i,j) CALLSSPSPPSPSS(RCVALE,rcvale,a,b,c,d,e,f,g,h,i,j)
-extern void DEFSSPSPPSPSS(RCVALE, rcvale, char *,STRING_SIZE, char *,STRING_SIZE, INTEGER *, char *,STRING_SIZE, DOUBLE *, INTEGER *, char *,STRING_SIZE, DOUBLE *, char *, STRING_SIZE, char *, STRING_SIZE);
+#define CALL_RCVALE(a,b,c,d,e,f,g,h,i,j) CALLSSPSPPSPPP(RCVALE,rcvale,a,b,c,d,e,f,g,h,i,j)
+extern void DEFSSPSPPSPPP(RCVALE, rcvale, char *,STRING_SIZE, char *,STRING_SIZE, INTEGER *, char *,STRING_SIZE, DOUBLE *, INTEGER *, char *,STRING_SIZE, DOUBLE *, INTEGER *, INTEGER *);
 
 
 /* routines d'impression des MESSAGES */

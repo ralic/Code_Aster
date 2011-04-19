@@ -1,9 +1,9 @@
       SUBROUTINE MAGLRC (ZIMAT,MATR,DELAS,ECR)
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 19/05/2009   AUTEUR SFAYOLLE S.FAYOLLE 
+C MODIF ELEMENTS  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -42,7 +42,7 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       REAL*8 VALRES(15), VGLOB(3), EPAIS
       REAL*8 ECR(*), ALPH, BETA, VEL, R8DGRD
 
-      CHARACTER*2 CODRES(15)
+      INTEGER CODRES(15)
       CHARACTER*8 NOMRES(15)
       CHARACTER*16 PHENOM
 
@@ -57,7 +57,7 @@ C     EPAISSEUR
       EPAIS = ZR(JCOQU)
       NOMRES(1)  = 'EPAIS'
       CALL RCVALA(ZIMAT,' ',PHENOM,0,' ',R8B,1,NOMRES,
-     &              VALRES,CODRES,'FM')
+     &              VALRES,CODRES,1)
       IF(VALRES(1) .NE. EPAIS) THEN
         VALRES(2) = EPAIS
         CALL U2MESG('F','ELEMENTS5_42',0,' ',0,0,2,VALRES)
@@ -69,7 +69,7 @@ C     ELAS
       NOMRES(2)  = 'NU'
 
       CALL RCVALA(ZIMAT,' ','ELAS            ',0,' ',R8B,2,NOMRES,
-     &              VALRES,CODRES,'FM')
+     &              VALRES,CODRES,1)
       MATR(6) = VALRES(1)
       MATR(7) = VALRES(2)
 
@@ -89,7 +89,7 @@ C     MATRICE ELASTIQUE MEMBRANE/CISAILLEMENT
       NOMRES(10) = 'BM33'
 
       CALL RCVALA(ZIMAT,' ',PHENOM,0,' ',R8B,10,NOMRES,
-     &                 VALRES,CODRES,'FM')
+     &                 VALRES,CODRES,1)
 
       MATR(1)  = 1.0D0
       MATR(2)  = VALRES(1)
@@ -101,8 +101,8 @@ C     MATRICE ELASTIQUE MEMBRANE/CISAILLEMENT
       DELAS(5,4)  = DELAS(4,5)
       DELAS(5,5)  = VALRES(9)
       DELAS(6,6)  = VALRES(10)
-      MATR(14) = VALRES(5) 
-      MATR(15) = VALRES(6) 
+      MATR(14) = VALRES(5)
+      MATR(15) = VALRES(6)
 
 C     SEUILS ET PENTES
 
@@ -113,13 +113,13 @@ C     SEUILS ET PENTES
       NOMRES(5)  = 'GAMMA'
 
       CALL RCVALA( ZIMAT,' ',PHENOM,0,' ',R8B,5,NOMRES,
-     &                 VALRES,CODRES,'FM')
+     &                 VALRES,CODRES,1)
 
       MATR(8)  = VALRES(1)
       MATR(9)  = VALRES(2)
       MATR(10) = VALRES(3)
       MATR(11) = VALRES(4)
-      MATR(12) = VALRES(5) 
+      MATR(12) = VALRES(5)
 
 C     PARAMETRES TENSEUR DE PRAGER
 C     MEMBRANE
@@ -131,14 +131,14 @@ C     MEMBRANE
       NOMRES(6)  = 'C2N3'
 
       CALL RCVALA( ZIMAT,' ',PHENOM,0,' ',R8B,6,NOMRES,
-     &                 VALRES,CODRES,'FM')
+     &                 VALRES,CODRES,1)
 
       MATR(16) = VALRES(1)
       MATR(17) = VALRES(2)
       MATR(18) = VALRES(3)
       MATR(22) = VALRES(4)
-      MATR(23) = VALRES(5) 
-      MATR(24) = VALRES(6) 
+      MATR(23) = VALRES(5)
+      MATR(24) = VALRES(6)
 
 C     FLEXION
 
@@ -150,14 +150,14 @@ C     FLEXION
       NOMRES(6)  = 'C2M3'
 
       CALL RCVALA( ZIMAT,' ',PHENOM,0,' ',R8B,6,NOMRES,
-     &                 VALRES,CODRES,'FM')
+     &                 VALRES,CODRES,1)
 
       MATR(19) = VALRES(1)
       MATR(20) = VALRES(2)
       MATR(21) = VALRES(3)
       MATR(25) = VALRES(4)
-      MATR(26) = VALRES(5) 
-      MATR(27) = VALRES(6) 
+      MATR(26) = VALRES(5)
+      MATR(27) = VALRES(6)
 
       DELAS(1,1) = MATR(2)
       DELAS(1,2) = MATR(3)

@@ -3,9 +3,9 @@
       CHARACTER*8       MATER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 03/04/2007   AUTEUR VIVAN L.VIVAN 
+C MODIF POSTRELE  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -50,7 +50,7 @@ C
      &              JVALA, JVALB, I,NBCMP2
       PARAMETER    ( NBCMP = 7, NBCMP2=NBCMP+1 )
       REAL*8        PARA(NBCMP), TEMPA, TEMPB,TKE
-      CHARACTER*2   CODRET(NBCMP)
+      INTEGER ICODRE(NBCMP)
       CHARACTER*8   NOPA, NOPB, TYPEKE, NOCMP(NBCMP)
       CHARACTER*16  PHENOM, MOTCLF
 C DEB ------------------------------------------------------------------
@@ -67,14 +67,14 @@ C    RECUP TYPE KE
       MOTCLF = 'SITUATION'
       CALL GETFAC ( MOTCLF, NBSITU )
 C
-      CALL RCCOME ( MATER, 'ELAS', PHENOM, CODRET )
-      IF (CODRET(1).EQ.'NO') CALL U2MESK('F','POSTRCCM_7',1,'ELAS')
+      CALL RCCOME ( MATER, 'ELAS', PHENOM, ICODRE )
+      IF (ICODRE(1).EQ.1) CALL U2MESK('F','POSTRCCM_7',1,'ELAS')
 C
-      CALL RCCOME ( MATER, 'FATIGUE', PHENOM, CODRET )
-      IF (CODRET(1).EQ.'NO') CALL U2MESK('F','POSTRCCM_7',1,'FATIGUE')
+      CALL RCCOME ( MATER, 'FATIGUE', PHENOM, ICODRE )
+      IF (ICODRE(1).EQ.1) CALL U2MESK('F','POSTRCCM_7',1,'FATIGUE')
 C
-      CALL RCCOME ( MATER, 'RCCM', PHENOM, CODRET )
-      IF (CODRET(1).EQ.'NO') CALL U2MESK('F','POSTRCCM_7',1,'RCCM')
+      CALL RCCOME ( MATER, 'RCCM', PHENOM, ICODRE )
+      IF (ICODRE(1).EQ.1) CALL U2MESK('F','POSTRCCM_7',1,'RCCM')
 C
       NOCMP(1) = 'E'
       NOCMP(2) = 'NU'
@@ -107,13 +107,13 @@ C
          ENDIF
 C
          CALL RCVALE ( MATER, 'ELAS', NBPA, NOPA, TEMPA, 3,
-     &                              NOCMP(1), PARA(1), CODRET, 'F ' )
+     &                              NOCMP(1), PARA(1), ICODRE, 2)
 C
          CALL RCVALE ( MATER, 'FATIGUE', NBPA, NOPA, TEMPA, 1,
-     &                              NOCMP(4), PARA(4), CODRET, 'F ' )
+     &                              NOCMP(4), PARA(4), ICODRE, 2)
 C
          CALL RCVALE ( MATER, 'RCCM', NBPA, NOPA, TEMPA, 3,
-     &                              NOCMP(5), PARA(5), CODRET, 'F ' )
+     &                              NOCMP(5), PARA(5), ICODRE, 2)
 C
          DO 12 I = 1 , NBCMP
             ZR(JVALA-1+NBCMP2*(IOCC-1)+I) = PARA(I)
@@ -134,13 +134,13 @@ C
          ENDIF
 C
          CALL RCVALE ( MATER, 'ELAS', NBPB, NOPB, TEMPB, 3,
-     &                              NOCMP(1), PARA(1), CODRET, 'F ' )
+     &                              NOCMP(1), PARA(1), ICODRE, 2)
 C
          CALL RCVALE ( MATER, 'FATIGUE', NBPB, NOPB, TEMPB, 1,
-     &                              NOCMP(4), PARA(4), CODRET, 'F ' )
+     &                              NOCMP(4), PARA(4), ICODRE, 2)
 C
          CALL RCVALE ( MATER, 'RCCM', NBPB, NOPB, TEMPB, 3,
-     &                              NOCMP(5), PARA(5), CODRET, 'F ' )
+     &                              NOCMP(5), PARA(5), ICODRE, 2)
 C
          DO 14 I = 1 , NBCMP
             ZR(JVALB-1+NBCMP2*(IOCC-1)+I) = PARA(I)

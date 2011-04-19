@@ -1,6 +1,6 @@
       SUBROUTINE PIESGV(NDIM,TAU,MAT,VIM,EPSM,EPSP,EPSD,NONLOC,COPILO)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 04/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -50,7 +50,7 @@ C ----------------------------------------------------------------------
       REAL*8  EPS(6),PHI,TREPS,TREPSD,EPSPP,EPSPD,EPSDD,Q0,Q1,Q2,RAC(2)
       REAL*8  R,PHIM,PHIP,PHID,ETA,QL1,QL0
       REAL*8  DDOT,LCESRF,R8GAEM
-      CHARACTER*2 K2(6)
+      INTEGER K2(6)
       CHARACTER*8 NOM(6)
 C ----------------------------------------------------------------------
       REAL*8 GAMMA,DRDA0,DFDA0,DUM1,DUM2,DUM3
@@ -89,10 +89,9 @@ C -- LECTURE DES PARAMTERES D'ENTREE NON LOCAUX
 C -- LECTURE DES CARACTERISTIQUES MATERIAU
 
       CALL RCVALA(MAT,' ','ELAS',         0,' ',0.D0,2,NOM(1),
-     &            VAL(1),K2,'F ')
+     &            VAL(1),K2,2)
       CALL RCVALA(MAT,' ','ENDO_SCALAIRE',0,' ',0.D0,4,NOM(3),
-     &            VAL(3),K2,'F ')
-     
+     &            VAL(3),K2,2)
 C     NU     = VAL(2)
       LAMBDA = VAL(1)*VAL(2) / (1-2*VAL(2)) / (1+VAL(2))
       DEUXMU = VAL(1) / (1.D0+VAL(2))

@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF asterm utilitai  DATE 04/04/2011   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF asterm utilitai  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2011  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -30,7 +30,7 @@
 
 
 void strmaju(char *namin, char *namaj, STRING_SIZE l)
-{ 
+{
     int iin, jjn;
     char *p,*q;
 
@@ -48,7 +48,7 @@ void strmaju(char *namin, char *namaj, STRING_SIZE l)
 }
 
 void strcpBS(char *namin, char *namaj , STRING_SIZE l , INTEGER *ll)
-{ 
+{
     int iin, jjn;
     char *p,*q;
 #if defined _POSIX
@@ -66,9 +66,9 @@ void strcpBS(char *namin, char *namaj , STRING_SIZE l , INTEGER *ll)
         *q++=*p++;
         iin++;
     }
-    if ( iin != 0) { 
-        *q++=BS; 
-        iin++; 
+    if ( iin != 0) {
+        *q++=BS;
+        iin++;
         *ll=iin;
     }
     for (jjn=iin;jjn<l;jjn++) *q++=' ';
@@ -98,6 +98,7 @@ void asterm(long argc, char** argv)
 
     vdate = MakeBlankFStr(16);
     CALL_VERSIO(&ivers,&iutil,&iniv,vdate,&ilog);
+    FreeStr(vdate);
     *argv ++;
 
     /* Nom de la machine */
@@ -145,18 +146,18 @@ void asterm(long argc, char** argv)
    pour les scripts appelables depuis aster et pour les
    donnees lues depuis aster
 */
-    { 
+    {
         char rep_mat[129],rep_out[129],rep_don[129];
         INTEGER fi=0;
         INTEGER ll;
         strcpy(rep_mat,REP_MAT);
         ll = strlen(rep_mat);
         CALL_REPMAT(&fi, &ll, rep_mat);
-        
+
         strcpy(rep_out,REP_OUT);
         ll = (INTEGER)strlen(rep_out);
         CALL_REPOUT(&fi, &ll, rep_out);
-        
+
         strcpy(rep_don,REP_DON);
         ll = (INTEGER)strlen(rep_don);
         CALL_REPDEX(&fi, &ll, rep_don);

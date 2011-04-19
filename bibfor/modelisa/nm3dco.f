@@ -1,12 +1,12 @@
       SUBROUTINE NM3DCO(FAMI,KPG,KSP,NDIM,OPTION,IMATE,SIGM,
      &             EPSM,DEPS,VIM,SIGP,VIP,DSIDEP,CRILDC,CODRET)
-C MODIF MODELISA  DATE 03/08/2009   AUTEUR MEUNIER S.MEUNIER 
+C MODIF MODELISA  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C TOLE CRP_20
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -51,7 +51,7 @@ C     ------------------------------------------------------------------
 
       REAL*8 YOUNG,NU,KCOEF,MCOEF,COEFDC,LIMIT
       REAL*8 VALRES(4)
-      CHARACTER*2  FB2,CODRES(4)
+      INTEGER CODRES(4)
       CHARACTER*8  NOMRES(4)
 
       INTEGER ITER,ITEMAX,NDIMSI,I,K,L,M,ITD,IBID
@@ -73,7 +73,7 @@ C     ------------------------------------------------------------------
       NOMRES(3) = 'ECRO_M'
       NOMRES(4) = 'SY'
       CALL RCVALB(FAMI,KPG,KSP,'+',IMATE,' ','CORR_ACIER',0,' ',
-     &            0.D0,4,NOMRES,VALRES,CODRES,FB2)
+     &            0.D0,4,NOMRES,VALRES,CODRES,1)
 
       COEFDC = VALRES(1)
       KCOEF  = VALRES(2)
@@ -83,7 +83,7 @@ C     ------------------------------------------------------------------
       NOMRES(2) = 'E'
 
       CALL RCVALB(FAMI,KPG,KSP,'+',IMATE,' ','ELAS',0,' ',
-     &            0.D0,2,NOMRES,VALRES,   CODRES,FB2)
+     &            0.D0,2,NOMRES,VALRES,   CODRES,1)
 
       NU = VALRES(1)
       YOUNG = VALRES(2)

@@ -4,9 +4,9 @@
      &                   DSIDP1,SIPM,SIPP,RETCOM)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/11/2009   AUTEUR REZETTE C.REZETTE 
+C MODIF ALGORITH  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -55,7 +55,6 @@ C               L'ORDRE :  XX,YY,ZZ,SQRT(2)*XY,SQRT(2)*XZ,SQRT(2)*YZ
 C
 C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
 C
-      CHARACTER*32       JEXNUM , JEXNOM , JEXR8 , JEXATR
       INTEGER            ZI
       COMMON  / IVARJE / ZI(1)
       REAL*8             ZR
@@ -73,7 +72,6 @@ C
 C
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 C
-      LOGICAL     CPLAN,PLASTI
       REAL*8      DEPSTH(6),VALRES(16),ALPHA
       REAL*8      LAMBDA,KAPA,PORO,PRESCR,M,PA,R,BETA,KC,PC0INI
       REAL*8      LAMBS,KAPAS,LAMBB,LAMBBM,ALPHAB,LAMP
@@ -83,30 +81,29 @@ C
       REAL*8      SIGPMO,F1,F2,F3,F4,F5,F6,F,FP,COEF,PORO1,PORO2
       REAL*8      DEPPMO,DELTAP,DELTAS(6),SPARDS,HP,XC,XD,XHHC
       REAL*8      XLAM,XA,XU,XG,XH,XM,XE,XF,XV,XI,RAP
-      REAL*8      CC(6,6),FV(6),FF(6)
-      REAL*8      C(6,6),CT,XB,V0,V0EST,SEUIL,D(3,3),DD(3,3)
+      REAL*8      CC(6,6),FV(6)
+      REAL*8      C(6,6),CT,XB,V0,SEUIL
       REAL*8      SIGEL(6),XINF,XSUP,DET,TOL,FFI(6,6),EE(6,6)
-      REAL*8      V(6,6),S(6,6),T(6,6),VV(6,6),SS(6,6),TT(6,6)
+      REAL*8      V(6,6),S(6,6),T(6,6),VV(6,6)
       REAL*8      DIFF,DIFF1
       REAL*8      SBARM(6),SBARP(6),PC0M(2),PC0P(2),PCRM(2),PCRP(2)
       REAL*8      P1M,P2M,PCRMP1,PAR,PCRPP
       REAL*8      PSP
       REAL*8      TRA,XGG,XZ,XDD,HH(6),XJ,XHH,CT1,KV(6)
       REAL*8      SSH(6),HHKV(6),VH(6,6),VHH(6,6),VVH(6,6)
-      REAL*8      KKH(6),SSHH(6),BB,KCP1,KCP1M,KPMAX,KPMAXM,ZERO
+      REAL*8      KKH(6),SSHH(6),BB,KCP1,KPMAX,ZERO
       REAL*8      FXI1,FXI2,FXI3,FXI
       REAL*8      XINF0,XSUP0,XB0,SEUIL0,F0,FP0,FXI0,SIGNF0,SIGFI0
-      REAL*8      SIEQP,XAU
+      REAL*8      SIEQP
       REAL*8      HHB(6,6),SES(6,6),HHBM(6,6),GG(6,6),SPS(6,6)
       REAL*8      D1G(6,6),ID2(6,6),DEVHYD(6,6),DEVHYM(6,6)
       REAL*8      D1GHHM(6,6)
       REAL*8      UN,DEUX,TROIS,SIX,UNSDE
       INTEGER     NDIMSI,SIGNF,SIGNFI,IRET
-      INTEGER     I,K,L,ITER, MATR,IADZI,IAZK24,UMESS,IUNIFI
-      CHARACTER*2 BL2, FB2, CODRET(16)
+      INTEGER     K,L,ITER, MATR,IADZI,IAZK24,UMESS,IUNIFI
+      INTEGER ICODRE(16)
       CHARACTER*8 NOMRES(16)
-      CHARACTER*8 NOMPAR(1),TYPE
-      CHARACTER*24 NOMMA
+      CHARACTER*8 NOMPAR(1)
       REAL*8       EPXMAX
       CHARACTER*8   NOMAIL
       REAL*8      VALPAM(1),R8MAEM
@@ -125,15 +122,13 @@ C     ----------------------
       NDIMSI = 2*NDIM
       EPXMAX=LOG(R8MAEM())
 C
-      BL2 = '  '
-      FB2 = 'F '
 C
       RETCOM = 0
 C
 C     -- 2 RECUPERATION DES CARACTERISTIQUES
 C     ---------------------------------------
       NOMRES(1)='ALPHA'
-      NOMRES(2)='MU'      
+      NOMRES(2)='MU'
       NOMRES(3)='PORO'
       NOMRES(4)='KAPA'
       NOMRES(5)='LAMBDA'
@@ -151,17 +146,17 @@ C
       NOMPAR(1) = 'TEMP'
       VALPAM(1) = TM
 C
-      
+
          CALL RCVALA(IMATE,' ','ELAS',1,NOMPAR,VALPAM,1,
-     &                 NOMRES(1),VALRES(1),CODRET(1), BL2 )
-         IF ( CODRET(1) .NE. 'OK' ) VALRES(1) = 0.D0
+     &                 NOMRES(1),VALRES(1),ICODRE(1), 0)
+         IF ( ICODRE(1) .NE.0    ) VALRES(1) = 0.D0
          ALPHA = VALRES(1)
-         
+
          CALL RCVALA(IMATE,' ','BARCELONE',1,NOMPAR,VALPAM,13,
-     &                 NOMRES(2),VALRES(2),CODRET(2), FB2 )
+     &                 NOMRES(2),VALRES(2),ICODRE(2), 2)
 
          MU     = VALRES(2)
-         PORO   = VALRES(3)      
+         PORO   = VALRES(3)
          PORO1  = PORO
          KAPA   = VALRES(4)
          LAMBDA = VALRES(5)
@@ -175,8 +170,8 @@ C
          KAPAS  = VALRES(13)
          LAMBS  = VALRES(14)
          CALL RCVALA(IMATE,' ','BARCELONE',1,NOMPAR,VALPAM,1,
-     &                 NOMRES(15),VALRES(15),CODRET(15), BL2 )
-         IF ( CODRET(15) .NE. 'OK' ) THEN
+     &                 NOMRES(15),VALRES(15),ICODRE(15), 0)
+         IF ( ICODRE(15) .NE.0    ) THEN
          VALRES(15) = M*(M-9.D0)*(M-3.D0)/9.D0/(6.D0-M)
      &                *(1.D0/(1.D0-KAPA/LAMBDA))
          ALPHAB = VALRES(15)
@@ -184,7 +179,7 @@ C
          ALPHAB = VALRES(15)
          ENDIF
          CALL RCVALA(IMATE,' ','THM_INIT',1,NOMPAR,VALPAM,1,
-     &                 NOMRES(3),VALRES(3),CODRET(3), FB2 )
+     &                 NOMRES(3),VALRES(3),ICODRE(3), 2)
          PORO = VALRES(3)
          PORO2 = PORO
          DIFF = PORO1-PORO2
@@ -295,14 +290,12 @@ C
       IF (PCRM(1).EQ.0.D0)  THEN
         PCRMP1 = (PA/2.D0)*
      &       (2*PRESCR/PA)**((LAMBDA-KAPA)/(LAMBB-KAPA))
-     
 C ---- ON VERIFIE LA COHERENCE DES DONNEES MECA DE DEPART
         NU = (TROIS*(UN+E0)*SIGMMO-DEUXMU*KAPA)/
      &       (SIX*(UN+E0)*SIGMMO+DEUXMU*KAPA)
-     
         E = DEUXMU*(UN+NU)
 
-        
+
         IF ((E.LE.ZERO).OR.(NU.LE.ZERO).OR.(NU.GT.UNSDE)) THEN
           CALL TECAEL(IADZI,IAZK24)
           NOMAIL = ZK24(IAZK24-1+3) (1:8)
@@ -861,7 +854,7 @@ C     --------------------------------------------------------------
  165  CONTINUE
         ENDIF
 
-C---OPERATEUR TANGENT EN VITESSE  A LINSTATNT COURANT AU LIEU 
+C---OPERATEUR TANGENT EN VITESSE  A LINSTATNT COURANT AU LIEU
 C--- DE L OPERATEUR COHERENT (DANS LE DOUTE)
       IF (MATR.EQ.2) THEN
 C

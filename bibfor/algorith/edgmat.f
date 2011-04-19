@@ -1,10 +1,10 @@
       SUBROUTINE EDGMAT (FAMI,KPG,KSP,IMAT,C1,ZALPHA,TEMP,DT,
-     1                   MUM,MU,TROISK,ALPHA,ANI,M,N,GAMMA)
+     &                   MUM,MU,TROISK,ALPHA,ANI,M,N,GAMMA)
 
       IMPLICIT REAL*8 (A-H,O-Z)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/11/2009   AUTEUR DURAND C.DURAND 
+C MODIF ALGORITH  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 
       INTEGER         KPG,KSP,IMAT
       REAL*8          ZALPHA,TEMP,DT
@@ -14,7 +14,7 @@ C MODIF ALGORITH  DATE 16/11/2009   AUTEUR DURAND C.DURAND
       CHARACTER*1    C1
 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -46,36 +46,35 @@ C  OUT ALPHA  : DILATATION THERMIQUE A L INSTANT COURANT
 C  OUT ANI    : MATRICE D ANISOTROPIE DE HILL
 C  OUT M, N ET GAMMA : COEFFICIENT DE VISCOSITE A L INSTANT COURANT
 C ----------------------------------------------------------------------
-     
       INTEGER        I,J,K
       REAL*8         VALRES(27),A(3),Q(3),FMEL(3)
       REAL*8         M11(2),M22(2),M33(2),M44(2),M55(2),M66(2)
       REAL*8         M12(2),M13(2),M23(2)
-      CHARACTER*2   CODRET(27)
+      INTEGER ICODRE(27)
       CHARACTER*8   NOMC(27)
-      
+
 C 1 - CARACTERISTIQUES ELASTIQUES
 C     YOUNG ET NU OBLIGATOIRES
-C     ALPHA FACULTATIFS 
+C     ALPHA FACULTATIFS
 
       NOMC(1) = 'E       '
       NOMC(2) = 'NU      '
       NOMC(3) = 'F_ALPHA '
 
       CALL RCVALB(FAMI,KPG,KSP,'-',IMAT,' ','ELAS_META',0,' ',0.D0,
-     &            2,NOMC,VALRES,CODRET,'F ')
+     &            2,NOMC,VALRES,ICODRE,2)
       MUM = VALRES(1)/(2.D0*(1.D0+VALRES(2)))
 
       CALL RCVALB(FAMI,KPG,KSP,C1,IMAT,' ','ELAS_META',0,' ',0.D0,
-     1            2,NOMC,VALRES,CODRET,'F ')
+     &            2,NOMC,VALRES,ICODRE,2)
       MU = VALRES(1)/(2.D0*(1.D0+VALRES(2)))
       TROISK = VALRES(1)/(1.D0-2.D0*VALRES(2))
-      
-      CALL RCVALB(FAMI,KPG,KSP,C1,IMAT,' ','ELAS_META',0,' ',0.D0,
-     1            1,NOMC(3),ALPHA,CODRET(3),'F ')
 
-C 2 - MATRICE D ANISOTROPIE      
-C 2.1 - DONNEES UTILISATEUR - UNIQUEMENT LA PHASE FROIDE ET CHAUDE      
+      CALL RCVALB(FAMI,KPG,KSP,C1,IMAT,' ','ELAS_META',0,' ',0.D0,
+     &            1,NOMC(3),ALPHA,ICODRE(3),2)
+
+C 2 - MATRICE D ANISOTROPIE
+C 2.1 - DONNEES UTILISATEUR - UNIQUEMENT LA PHASE FROIDE ET CHAUDE
 C       PHASE FROIDE => INDICE 1
 C       PHASE CHAUDE => INDICE 2
 
@@ -93,7 +92,7 @@ C       PHASE CHAUDE => INDICE 2
         NOMC(27)= 'C_MTZ_TZ'
 
         CALL RCVALB(FAMI,KPG,KSP,C1,IMAT,' ','META_LEMA_ANI',0,' ',
-     1              0.D0,12,NOMC(16),VALRES(16),CODRET(16) , 'F ')
+     &              0.D0,12,NOMC(16),VALRES(16),ICODRE(16) , 2)
 
         M11(1)=VALRES(16)
         M22(1)=VALRES(18)
@@ -101,7 +100,7 @@ C       PHASE CHAUDE => INDICE 2
         M44(1)=VALRES(22)
         M55(1)=VALRES(24)
         M66(1)=VALRES(26)
-      
+
         M11(2)=VALRES(17)
         M22(2)=VALRES(19)
         M33(2)=VALRES(21)
@@ -110,25 +109,25 @@ C       PHASE CHAUDE => INDICE 2
         M66(2)=VALRES(27)
 
 C 2.2 - ON COMPLETE LA MATRICE MIJ(1) ET MIJ(2)
-      
+
         DO 5 K=1,2
-          M12(K)=(-M11(K)-M22(K)+M33(K))/2.D0 
-          M13(K)=(-M11(K)+M22(K)-M33(K))/2.D0 
-          M23(K)=( M11(K)-M22(K)-M33(K))/2.D0 
+          M12(K)=(-M11(K)-M22(K)+M33(K))/2.D0
+          M13(K)=(-M11(K)+M22(K)-M33(K))/2.D0
+          M23(K)=( M11(K)-M22(K)-M33(K))/2.D0
  5      CONTINUE
-       
+
 C 2.3 - ON CONSTRUIT ANI(I,J) SUIVANT LE % DE PHASE FROIDE
 C SI 0   <ZALPHA<0.01 => ANI(I,J)=MIJ(2)
 C SI 0.01<ZALPHA<0.99 => ANI(I,J)=ZALPHA*MIJ(1)+(1-ZALPHA)*MIJ(2)
-C SI 0.99<ZALPHA<1    => ANI(I,J)=MIJ(1)      
-      
+C SI 0.99<ZALPHA<1    => ANI(I,J)=MIJ(1)
+
         DO 10 I=1,6
           DO 15 J=1,6
             ANI(I,J)=0.D0
  15       CONTINUE
  10     CONTINUE
- 
-        IF (ZALPHA.LE.0.01D0) THEN      
+
+        IF (ZALPHA.LE.0.01D0) THEN
           ANI(1,1)=M11(2)
           ANI(2,2)=M22(2)
           ANI(3,3)=M33(2)
@@ -171,7 +170,7 @@ C SI 0.99<ZALPHA<1    => ANI(I,J)=MIJ(1)
           ANI(4,4)=M44(1)
           ANI(5,5)=M55(1)
           ANI(6,6)=M66(1)
-        ENDIF            
+        ENDIF
 
 C 3 - CARACTERISTIQUES PLASTIQUES
 C 3.1 - DONNEES UTILISATEUR
@@ -190,8 +189,8 @@ C 3.1 - DONNEES UTILISATEUR
         NOMC(15)= 'C_Q     '
 
         CALL RCVALB(FAMI,KPG,KSP,C1,IMAT,' ','META_LEMA_ANI',0,' ',
-     1              0.D0,12,NOMC(4),VALRES(4),CODRET(4) , 'F ')
-      
+     &              0.D0,12,NOMC(4),VALRES(4),ICODRE(4) , 2)
+
         DO 20 K=1,3
           A(K)=VALRES(4+K-1)
           M(K)=VALRES(7+K-1)
@@ -210,25 +209,25 @@ C 3.2 - LOI DES MELANGES FMEL SUR LA CONTRAINTE VISQUEUSE
         IF ((ZALPHA.GT.0.01D0).AND.(ZALPHA.LE.0.1D0)) THEN
           FMEL(1)=0.D0
           FMEL(2)=1.D0-((0.1D0-ZALPHA)/0.09D0)
-          FMEL(3)=(0.1D0-ZALPHA)/0.09D0      
+          FMEL(3)=(0.1D0-ZALPHA)/0.09D0
         ENDIF
 
         IF ((ZALPHA.GT.0.1D0).AND.(ZALPHA.LE.0.9D0)) THEN
           FMEL(1)=0.D0
           FMEL(2)=1.D0
-          FMEL(3)=0.D0            
+          FMEL(3)=0.D0
         ENDIF
 
         IF ((ZALPHA.GT.0.9D0).AND.(ZALPHA.LE.0.99D0)) THEN
           FMEL(1)=(ZALPHA-0.9D0)/0.09D0
           FMEL(2)=1.D0-((ZALPHA-0.9D0)/0.09D0)
-          FMEL(3)=0.D0            
+          FMEL(3)=0.D0
         ENDIF
 
         IF (ZALPHA.GT.0.99D0) THEN
           FMEL(1)=1.D0
           FMEL(2)=0.D0
-          FMEL(3)=0.D0      
+          FMEL(3)=0.D0
         ENDIF
 
 C 3.3 - PARAMETRE INTERVENANT DANS LA CONTRAINTE VISQUEUSE
@@ -240,6 +239,6 @@ C 3.3 - PARAMETRE INTERVENANT DANS LA CONTRAINTE VISQUEUSE
             GAMMA(K)=GAMMA(K)+(N(K)*Q(K)/(TEMP+273.D0))
             GAMMA(K)=EXP(GAMMA(K))
           ENDIF
- 25     CONTINUE 
+ 25     CONTINUE
 
       END

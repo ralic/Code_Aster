@@ -2,9 +2,9 @@
      &                  NONLIN,ENER,DERIVL,DDIVU,DEPSEQ,DENER,DLAGTG)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
+C MODIF ALGORITH  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -65,7 +65,7 @@ C DECLARATION PARAMETRES D'APPELS
       REAL*8        TEMP,TREF,EPSEQ,DIVU,ENER(2),DENER(2),DDIVU,
      &              DEPSEQ,DLAGTG
       LOGICAL       NONLIN,DERIVL
-      CHARACTER*2   CODRET(3)
+      INTEGER ICODRE(3)
       CHARACTER*8   NOMRES(3),TYPE
 
 C DECLARATION VARIABLES LOCALES
@@ -110,9 +110,9 @@ C====================================================================
       NOMRES(2) = 'NU'
       NOMRES(3) = 'ALPHA'
       CALL RCVAD2 (FAMI,KPG,KSP,POUM,IMATE,'ELAS',
-     &             3,NOMRES,VALRES,DEVRES,CODRET)
+     &             3,NOMRES,VALRES,DEVRES,ICODRE)
 
-      IF (CODRET(3).NE.'OK') THEN
+      IF (ICODRE(3).NE.0) THEN
         VALRES(3)= 0.D0
         DEVRES(3)= 0.D0
       ENDIF
@@ -147,10 +147,10 @@ C=================================================
           NOMRES(2)='SY'
 
           CALL RCVAD2(FAMI,KPG,KSP,POUM,IMATE,'ECRO_LINE',
-     &                2,NOMRES,VALRES,DEVRES,CODRET)
-          IF ( CODRET(1) .NE. 'OK' )
+     &                2,NOMRES,VALRES,DEVRES,ICODRE)
+          IF ( ICODRE(1) .NE.0    )
      &      CALL U2MESS('F','ALGORITH7_74')
-          IF ( CODRET(2) .NE. 'OK' )
+          IF ( ICODRE(2) .NE.0    )
      &      CALL U2MESS('F','ALGORITH7_75')
 
           DSDE  = VALRES(1)
@@ -174,13 +174,13 @@ C=================================================
         ELSE IF (TRAC) THEN
           SIELEQ = DEMU * EPSEQ
           CALL RCTYPE(IMATE,1,'TEMP',TEMP,RESU,TYPE)
-          IF ((TYPE.EQ.'TEMP').AND.(IRET1.EQ.1)) 
+          IF ((TYPE.EQ.'TEMP').AND.(IRET1.EQ.1))
      &        CALL U2MESS('F','CALCULEL_31')
-          CALL RCTRAC(IMATE,'TRACTION','SIGM',RESU,
+          CALL RCTRAC(IMATE,1,'SIGM',RESU,
      &                JPROL,JVALE,NBVALE,E)
-          CALL RCFONC('S','TRACTION',JPROL,JVALE,NBVALE,SIGY,DUM,DUM,
+          CALL RCFONC('S',1,JPROL,JVALE,NBVALE,SIGY,DUM,DUM,
      &                 DUM,DUM,DUM,DUM,DUM,DUM)
-          CALL RCFONC('E','TRACTION',JPROL,JVALE,NBVALE,DUM,E,NU,
+          CALL RCFONC('E',1,JPROL,JVALE,NBVALE,DUM,E,NU,
      &                 0.D0,RP,RPRIM,AIREP,SIELEQ,P)
           DP     = 0.D0
           DRP    = 0.D0
@@ -189,7 +189,7 @@ C=================================================
           NOMRES(1)='SY'
 
           CALL RCVALB(FAMI,KPG,KSP,POUM,IMATE,' ','ECRO_PUIS',
-     &                0,' ',0.D0,1,NOMRES,VALRES,CODRET,'FM')
+     &                0,' ',0.D0,1,NOMRES,VALRES,ICODRE,1)
           SIGY=VALRES(1)
           COCO   = E/ALFAFA/SIGY
           RP = SIGY *(COCO*P)**UNSURN+SIGY

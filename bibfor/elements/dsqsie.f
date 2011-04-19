@@ -5,7 +5,7 @@
       REAL*8        XYZL(3,*),PGL(3,*), DEPL(*), CDL(*)
       INTEGER       NBCOU
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 04/04/2011   AUTEUR DESOZA T.DESOZA 
+C MODIF ELEMENTS  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -185,7 +185,8 @@ C             --------------------------------
 C             -- EN MULTICOUCHES
 C             -- ON CALCULE TOUT D'UN COUP
               INIV = IG - 2
-              CALL DXDMUL(ICOU,INIV,T1VE,T2VE,H,D1I,D2I,ZIC,HICOU)
+              CALL DXDMUL(.TRUE.,ICOU,INIV,T1VE,T2VE,H,D1I,D2I,
+     &                    ZIC,HICOU)
             ENDIF
 C
             DO 370 I = 1,3

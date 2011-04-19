@@ -3,9 +3,9 @@
       CHARACTER*16        OPTION , NOMTE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 16/11/2009   AUTEUR DESROCHES X.DESROCHES 
+C MODIF ELEMENTS  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -50,7 +50,7 @@ C
       REAL*8             DFDX(9),DFDY(9),POIDS,R,X(9),Y(9)
       REAL*8             MATINE(6), R8B, XXI, XYI, YYI, VOLUME
       REAL*8             IXRP2, IYRP2, XP(9),YP(9),XPG,YPG
-      CHARACTER*2        CODRET
+      INTEGER ICODRE
       CHARACTER*8        ELREFE
       CHARACTER*16       PHENOM
       LOGICAL            LTEATT
@@ -65,7 +65,7 @@ C
 C
       IF (OPTION.EQ.'MASS_INER') THEN
          CALL JEVECH('PMATERC','L',IMATE)
-         CALL RCCOMA ( ZI(IMATE), 'ELAS', PHENOM, CODRET )
+         CALL RCCOMA ( ZI(IMATE), 'ELAS', PHENOM, ICODRE )
 C
          IF ( PHENOM .EQ. 'ELAS'          .OR.
      &     PHENOM .EQ. 'ELAS_FO'       .OR.
@@ -74,7 +74,7 @@ C
      &     PHENOM .EQ. 'ELAS_ORTH'     .OR.
      &     PHENOM .EQ. 'ELAS_ORTH_FO'  )  THEN
             CALL RCVALA(ZI(IMATE),' ', PHENOM, 0, ' ', R8B,
-     &                 1, 'RHO', RHO, CODRET, 'FM' )
+     &                 1, 'RHO', RHO, ICODRE, 1)
             IF(RHO.LE.R8PREM()) THEN
               CALL U2MESS('F','ELEMENTS5_45')
             ENDIF

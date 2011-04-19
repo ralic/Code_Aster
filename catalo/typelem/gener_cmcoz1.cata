@@ -1,7 +1,7 @@
-%& MODIF TYPELEM  DATE 19/07/2010   AUTEUR PELLET J.PELLET 
+%& MODIF TYPELEM  DATE 18/04/2011   AUTEUR ABBAS M.ABBAS 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
-% COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+% COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 % THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 % IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 % THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -62,18 +62,12 @@ MODE_LOCAL__
                                  EN1   (DX       DY       LAGS_C  )
                                  EN2   (DX       DY       )
     NGEOMER  = GEOM_R   ELNO__ IDEN__  (X        Y        )
-    CCONFR   = NEUT_R   ELEM__         (X1       X2       X3       X4       X5       X6
-                                        X7       X8       X9       X10      X11      X12
-                                        X13      X14      X15      X16      X17      X18
-                                        X19      X20      X21      X22      X23      X24
-                                        X25      X26      X27      X28      X29      X30
-                                        X31      X32      X33      X34      X35      X36
-                                        X37      X38      )
+    CCONFR   = NEUT_R   ELEM__         (X[38])
+    CCONF2   = NEUT_R   ELEM__         (X[5])                                        
     ENEUTR   = NEUT_R   ELNO__ IDEN__  (X1    )
 
 VECTEUR__
     MVECTUR = VDEP_R DDL_MECA
-
 MATRICE__
     MMATUUR = MDEP_R DDL_MECA DDL_MECA
     MMATUNS = MDNS_R DDL_MECA DDL_MECA
@@ -84,5 +78,5 @@ OPTION__
                               OUT__  MVECTUR  PVECTUR
     RIGI_CONT           364   IN__   CCONFR   PCONFR   DDL_MECA PDEPL_M  DDL_MECA PDEPL_P  NGEOMER  PGEOMER  DDL_MECA PVITE_M  DDL_MECA PACCE_M
                                      ENEUTR   PUSULAR  DDL_MECA PVITE_P
-                              OUT__  MMATUUR  PMATUUR  MMATUNS  PMATUNS
+                              OUT__  MMATUUR  PMATUUR  MMATUNS  PMATUNS                           
     SYME_MDNS_R         222   IN__   MMATUNS  PNOSYM OUT__  MMATUUR  PSYM

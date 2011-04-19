@@ -1,8 +1,8 @@
       SUBROUTINE TE0111 ( OPTION , NOMTE )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -29,7 +29,7 @@ C        DONNEES:      OPTION       -->  OPTION DE CALCUL
 C                      NOMTE        -->  NOM DU TYPE ELEMENT
 C ......................................................................
 C
-      CHARACTER*2        CODRET
+      INTEGER ICODRE
       CHARACTER*4        FAMI
       REAL*8             A(3,3,9,9), DFDX(9),DFDY(9),POIDS,R
       INTEGER            NNO,KP,NPG2,I,J,IMATUU,NNOS,NDIM,JGANO
@@ -84,7 +84,7 @@ C
 102     CONTINUE
         POIDS = POIDS*R
         CALL RCVALB(FAMI,KP,1,'+',ZI(IMATE),' ','ELAS',0,' ',0.D0,
-     &              1,'RHO',RHO,CODRET,'FM')
+     &              1,'RHO',RHO,ICODRE,1)
 C
          DO 106 I=1,NNO
 C

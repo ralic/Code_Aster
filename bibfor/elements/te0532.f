@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 23/02/2011   AUTEUR MASSIN P.MASSIN 
+C MODIF ELEMENTS  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -61,7 +61,7 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX --------------------
       INTEGER      NNO,NNOS,NNOM,NNOL,PLA(27),LACT(8),NLACT
       INTEGER      IER,CONTAC,JBASEC,NPTF,NDDL,NVEC
       INTEGER      IMATE,SINGU,JCOHES,JCOHEO
-      CHARACTER*2  CODRET(3)      
+      INTEGER ICODRE(3)
       CHARACTER*8  ELREF,TYPMA,FPG,ELC,LAG,ELREFC,NOMRES(3),JOB
       CHARACTER*9  PHEN
       CHARACTER*16 ENR
@@ -73,7 +73,7 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX --------------------
       REAL*8       VALRES(3),RELA,COHES(60)
       PARAMETER    (PREC=1.D-16)
       LOGICAL      IMPRIM,NOEUD
-      DATA         NOMRES /'GC','SIGM_C','PENA_ADH'/      
+      DATA         NOMRES /'GC','SIGM_C','PENA_ADH'/
 C......................................................................
 
       CALL JEMARQ()
@@ -113,12 +113,12 @@ C     DEPLACEMENT TOTAL COURANT (DEPPLU) : 'PDEPL_P'
       CALL JEVECH('PBASECO','L',JBASEC)
       CALL JEVECH('PINCOCA','E',JOUT1)
       CALL JEVECH('PINDCOO','E',JOUT2)
-      CALL JEVECH('PINDMEM','E',JOUT3)  
-          
-      CALL TEATTR(NOMTE,'S','XFEM',ENR,IBID)          
+      CALL JEVECH('PINDMEM','E',JOUT3)
+
+      CALL TEATTR(NOMTE,'S','XFEM',ENR,IBID)
       IF (ENR.EQ.'XHC') THEN
         RELA   = ZR(JDONCO-1+10)
-        CZMFE  = ZR(JDONCO-1+11)        
+        CZMFE  = ZR(JDONCO-1+11)
       ELSE
         RELA  = 0.0D0
         CZMFE = 0.D0
@@ -138,11 +138,11 @@ C     SUR LA TOPOLOGIE DES FACETTES
         INDCO(I) = ZI(JINDCO-1+I)
         GLISS(I) = ZI(JGLISS-1+I)
         MEMCO(I) = ZI(JMEMCO-1+I)
-        IF(RELA.EQ.1.D0.OR.RELA.EQ.2.D0) THEN 
+        IF(RELA.EQ.1.D0.OR.RELA.EQ.2.D0) THEN
            COHES(I) = ZR(JCOHES-1+I)
         ENDIF
 10    CONTINUE
- 
+
       DO 15 I=1,NFACE
         DO 16 J=1,NPTF
           CFACE(I,J)=ZI(JCFACE-1+NPTF*(I-1)+J)
@@ -172,10 +172,10 @@ C     DEFINITIONS DIFFERENTES SELON LA LOI COHESIVE
       IF(RELA.EQ.1.D0.OR.RELA.EQ.2.D0) THEN
         PHEN = 'RUPT_FRAG'
         CALL RCVALA(ZI(IMATE),' ',PHEN,0,' ',0.D0,3,
-     &              NOMRES,VALRES,CODRET, 'FM' )
+     &              NOMRES,VALRES,ICODRE, 1)
         IF(RELA.EQ.1.D0) LC=VALRES(1)/VALRES(2)
         IF(RELA.EQ.2.D0) LC=2.D0*VALRES(1)/VALRES(2)
-        ALPHA0=VALRES(3)*LC        
+        ALPHA0=VALRES(3)*LC
       ENDIF
 
 C     IMPRESSION (1ERE PARTIE)
@@ -215,7 +215,7 @@ C       BOUCLE SUR LES POINTS DE GAUSS DES FACETTES
         DO 110 IPGF=1,NPGF
 C
 C          INDICE DE CE POINT DE GAUSS DANS INDCO
-           ISSPG=NPGF*(IFA-1)+IPGF        
+           ISSPG=NPGF*(IFA-1)+IPGF
 C
 C          CALCUL DE JAC (PRODUIT DU JACOBIEN ET DU POIDS)
 C          ET DES FF DE L'ÉLÉMENT PARENT AU POINT DE GAUSS
@@ -230,7 +230,7 @@ C          ET LA NORMALE ND ORIENTÉE DE ESCL -> MAIT
      &               RBID,FFP,FFPC,DFBID,ND,TAU1)
            ENDIF
 
-C          CALCUL DES FONCTIONS DE FORMES DE CONTACT 
+C          CALCUL DES FONCTIONS DE FORMES DE CONTACT
 C          DANS LE CAS LINEAIRE
            IF (CONTAC.EQ.1) THEN
               CALL XMOFFC(LACT,NLACT,NNO,FFP,FFC)
@@ -241,7 +241,7 @@ C          DANS LE CAS LINEAIRE
            ENDIF
 C
 C          CALCUL DE RR = SQRT(DISTANCE AU FOND DE FISSURE)
-C             
+C
            IF (SINGU.EQ.1) THEN
              LST=0.D0
              DO 112 I=1,NNO
@@ -257,9 +257,9 @@ C          CALCUL COMPOSANTE NORMALE SAUT DE DEPLACEMENT
 
            IF(CZMFE.EQ.1.D0) THEN
               ZI(JOUT2-1+ISSPG) = 0
-              ZI(JOUT3-1+ISSPG) = 0          
-           ELSE 
-           
+              ZI(JOUT3-1+ISSPG) = 0
+           ELSE
+
              DN = 0.D0
              DO 143 J = 1,NDIM
                 DN = DN + SAUT(J)*ND(J)
@@ -278,10 +278,10 @@ C            RQ : LA VALEUR DANS IDEPL EST LA PRESSION DIVISÉE PAR E
                 LAMBDA = ZR(IDEPL-1+PLI)
                 REAC = REAC + FFI * LAMBDA * E
  150         CONTINUE
- 
+
              IF (INDCO(ISSPG).EQ.0) THEN
 
-C            ON REGARDE LA DISTANCE DN DES POINTS SUPPOSÉS 
+C            ON REGARDE LA DISTANCE DN DES POINTS SUPPOSÉS
 C            NON CONTACTANTS :
 C            INTERPÉNÉPRATION EQUIVAUT À DN > 0 (ICI DN > 1E-16 )
 
@@ -293,7 +293,7 @@ C            INTERPÉNÉPRATION EQUIVAUT À DN > 0 (ICI DN > 1E-16 )
                   ZI(JOUT2-1+ISSPG) = 0
                 END IF
 C
-C            ON REGARDE LA REACTION POUR LES POINTS 
+C            ON REGARDE LA REACTION POUR LES POINTS
 C            SUPPOSES CONTACTANT :
              ELSE IF (INDCO(ISSPG).EQ.1) THEN
                 IF (REAC.GT.-1.D-3) THEN
@@ -313,7 +313,7 @@ C                  POINT (MEMCON=1), ALORS ON FORCE LE CONTACT
                  ENDIF
 C
               ELSE
-C                 SI INDCO N'EST NI ÉGAL À 0 NI ÉGAL À 1: 
+C                 SI INDCO N'EST NI ÉGAL À 0 NI ÉGAL À 1:
 C                 PROBLEME DE STATUT DE CONTACT.
                   CALL ASSERT(INDCO(ISSPG).EQ.0.OR.INDCO(ISSPG).EQ.1)
               END IF
@@ -323,9 +323,9 @@ C         IMPRESSION (2EME PARTIE)
                 WRITE(6,698)INDCO(ISSPG),DN,REAC,ZI(JOUT2-1+ISSPG)
  698            FORMAT(5X,I1,4X,E11.5,4X,E11.5,4X,I1)
               ENDIF
-          
-          ENDIF 
-                   
+
+          ENDIF
+
           IF(RELA.EQ.1.D0.OR.RELA.EQ.2.D0) THEN
 C
 C             CALCUL SAUT DE DEPLACEMENT EQUIVALENT
@@ -333,7 +333,7 @@ C             CALCUL SAUT DE DEPLACEMENT EQUIVALENT
               CALL XMMSA2(NDIM ,IPGF  ,ZI(IMATE)   ,SAUT ,ND  ,
      &                    TAU1 ,TAU2  ,COHES(ISSPG),JOB  ,RELA,
      &                    ALPHA,DSIDEP,SIGMA       ,PP   ,DNOR,
-     &                    DTANG,P     ,AM3)              
+     &                    DTANG,P     ,AM3)
 C
 C             ACTUALISATION VARIABLE INTERNE
               IF (ALPHA.GT.ZR(JCOHES-1+ISSPG)) THEN
@@ -343,9 +343,9 @@ C             ACTUALISATION VARIABLE INTERNE
               ELSE IF (ALPHA.LE.ZR(JCOHES-1+ISSPG)) THEN
                   ZR(JCOHEO-1+ISSPG)=ZR(JCOHES-1+ISSPG)
               ENDIF
-           ENDIF   
-                  
-110     CONTINUE                  
+           ENDIF
+
+110     CONTINUE
 100   CONTINUE
 
 C     ENREGISTREMENT DES CHAMPS DE SORTIE

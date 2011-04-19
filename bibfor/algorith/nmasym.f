@@ -4,7 +4,7 @@
      &                 VIM,EFFNOP,VIP,KLV,FONO)
 C ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 10/01/2011   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -59,7 +59,7 @@ C
       INTEGER NBPAR,NBRES
 C
       REAL*8       VALPAR,VALRES(4)
-      CHARACTER*2  FB2, CODRES(4)
+      INTEGER ICODRE(4)
       CHARACTER*8  NOMPAR,NOMELA,NOMASL(4)
       DATA NOMELA / 'E' /
       DATA NOMASL / 'SY_C', 'DC_SIGM_','SY_T','DT_SIGM_' /
@@ -80,11 +80,10 @@ C
       NBPAR  = 0
       NOMPAR = '  '
       VALPAR = 0.D0
-      FB2 = 'FM'
-      
+
 C     RCVALA CAR E NE PEUT PAS DEPENDRE DE LA TEMPERATURE
       CALL RCVALA(ICODMA,' ','ELAS',0,NOMPAR,VALPAR,
-     &            1,NOMELA,VALRES,CODRES,FB2)
+     &            1,NOMELA,VALRES,ICODRE,1)
       E     = VALRES(1)
 C
 C --- CARACTERISTIQUES ECROUISSAGE LINEAIRE ASYMETRIQUE
@@ -95,7 +94,7 @@ CJMP  NBRES = 5
       NBPAR  = 0
       CALL RCVALB(FAMI,1,1,'+',ICODMA,' ','ECRO_ASYM_LINE',
      &           NBPAR,NOMPAR,VALPAR,
-     &           NBRES, NOMASL, VALRES,CODRES,FB2)
+     &           NBRES, NOMASL, VALRES,ICODRE,1)
         SYC    = VALRES(1)
         ETC    = VALRES(2)
         SYT    = VALRES(3)

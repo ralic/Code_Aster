@@ -1,21 +1,21 @@
-#@ MODIF Utmess Utilitai  DATE 14/03/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF Utmess Utilitai  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # RESPONSABLE COURTOIS M.COURTOIS
 
@@ -76,18 +76,18 @@ class MESSAGE_LOGGER:
         """Initialisation
         """
         self.init_buffer()
-        
+
         # est-ce qu'une erreur <E> s'est produite
         self.erreur_E = False
-        
+
         # compteur des alarmes émises { 'id_alarm' : count }
         self.count_alarm = {}         # dans la commande courante (pour arret à 5)
         self.count_alarm_tot = {}     # au total
-        
+
         # alarmes à ignorer, à masquer (on ne les compte pas temporairement)
         self._ignored_alarm = {}
         self._hidden_alarm  = {}
-        
+
         # on prépare le dictionnaire des valeurs par défaut des arguments (dicarg) :
         self.default_args = {}
         # initialisation des 10 premiers
@@ -120,21 +120,21 @@ class MESSAGE_LOGGER:
             code = "I"
         # récupération du texte du message
         dictmess = self.get_message(code, idmess, valk, vali, valr)
-        
+
         # on le met dans le buffer
         self.add_to_buffer(dictmess)
-        
+
         # si on n'attend pas une suite, ...
         if len(code) < 2 or code[1] != '+':
             # mise à jour des compteurs
             self.update_counter()
-            
+
             # on imprime le message en attente
             self.print_buffer_content(print_as, cc)
 
             if exception and code[0] in ('S', 'F'):
                 raise error(idmess, valk, vali, valr)
-        
+
         return None
 
 
@@ -144,7 +144,7 @@ class MESSAGE_LOGGER:
         # homogénéisation : uniquement des tuples + strip des chaines de caractères
         valk, vali, valr = map(force_list, (valk, vali, valr))
         valk    = [k.strip() for k in valk]
-        
+
         # variables passées au message
         dicarg = self.default_args.copy()
         for i in range(1,len(valk)+1):
@@ -155,7 +155,7 @@ class MESSAGE_LOGGER:
             dicarg['r%d' % i] = valr[i-1]
         # valeur spéciale : ktout = concaténation de toutes les chaines
         dicarg['ktout'] = ' '.join(valk)
-    
+
         return dicarg
 
 
@@ -170,7 +170,7 @@ class MESSAGE_LOGGER:
         catamess='_'.join(x[0:-1]).lower()
         numess = int(x[-1])
         assert numess > 0 and numess < 100, idmess
-    
+
         # import catamess => cata_msg
         try:
             mod = __import__('Messages.%s' % catamess, globals(), locals(), [catamess])
@@ -181,7 +181,7 @@ class MESSAGE_LOGGER:
             if catamess != 'catamess':
                 self.print_message('A', 'CATAMESS_57', valk=(catamess, str(msg)))
             cata_msg = {}
-        
+
         # corps du message
         try:
             dicarg = self.build_dict_args(valk, vali, valr)
@@ -194,7 +194,7 @@ class MESSAGE_LOGGER:
             else:
                 fmt_msg  = cata_msg[numess]
                 ctxt_msg = None
-            
+
             dictmess = {
                 'code'          : code,
                 'id_message'    : idmess,
@@ -249,13 +249,13 @@ Exception : %s
         (cf. dgrav)
         """
         dgrav = { '?' : -9, 'I' : 0, 'A' : 1, 'S' : 4, 'Z' : 4, 'E' : 6, 'F' : 10 }
-        
+
         current = '?'
         for dictmess in self._buffer:
             code = dictmess['code'][0]
             if dgrav.get(code, -9) > dgrav.get(current, -9):
                 current = code
-        
+
         return current
 
 
@@ -277,7 +277,7 @@ Exception : %s
         """
         if len(self._buffer) < 1:
             return None
-        
+
         # construction du dictionnaire du message global
         dglob = {
             'code'          : self.get_current_code(),
@@ -290,10 +290,10 @@ Exception : %s
             dglob['liste_context'].append(dictmess['context_info'])
         dglob['corps_message'] = ''.join(dglob['liste_message'])
         dglob['context_info'] = ''.join(dglob['liste_context'])
-        
+
         # liste des unités d'impression en fonction du type de message
         l_unit = list_unit(print_as or dglob['code'])
-        
+
         # texte final et impression
         txt = self.format_message(dglob)
         for unite in l_unit:
@@ -301,7 +301,7 @@ Exception : %s
         # "cc"
         if cc:
             copy_text_to(txt, cc)
-        
+
         self.init_buffer()
 
 
@@ -373,7 +373,7 @@ Exception : %s
             if self._hidden_alarm.get(idmess, 0) == 0:
                 self.count_alarm[idmess]     = self.count_alarm.get(idmess, 0) + 1
                 self.count_alarm_tot[idmess] = self.count_alarm_tot.get(idmess, 0) + 1
-            
+
             if self.is_alarm_disabled(idmess) or self.count_alarm[idmess] > nmax_alarm:
                 # ignorer l'alarme ou count_alarm > max, on vide le buffer
                 self.init_buffer()
@@ -430,7 +430,7 @@ alarme, vous pouvez obtenir des résultats inattendus !"""),
 du calcul ont été sauvées dans la base jusqu'au moment de l'arret."""),
             'F' : _("""Cette erreur est fatale. Le code s'arrete."""),
         }
-        
+
         # format complet
         format_general = {
             'decal'  : '   ',
@@ -465,28 +465,31 @@ du calcul ont été sauvées dans la base jusqu'au moment de l'arret."""),
             dmsg['str_id_message'] = '<%s>' % dmsg['id_message']
         else:
             dmsg['str_id_message'] = ''
-        
+
         # format utilisé
         format = format_general
         if dmsg['type_message'] == 'I':
             format = format_light
         if format is format_general:
-            dmsg['corps_message'] = dmsg['corps_message'].strip()
-        
+            lines = dmsg['corps_message'].splitlines()
+            while len(lines) > 1 and lines[0].strip() == '':
+                del lines[0]
+            dmsg['corps_message'] = os.linesep.join(lines).rstrip()
+
         dmsg['header']      = format['header'] % dmsg
         dmsg['commentaire'] = dcomm.get(dmsg['type_message'], '')
         if re.search('^DVP', dmsg['id_message']) != None:
             dmsg['commentaire'] += contacter_assistance
-        
+
         dmsg['corps']       = format['corps'] % dmsg
         if format is format_general:
             dmsg['corps'] = dmsg['corps'].strip()
-        
-        
+
+
         # longueur de la ligne la plus longue
         l_line = dmsg['corps'].splitlines()
         maxlen = max([len(line) for line in l_line])
-        
+
         # format des lignes sur maxlen caractères
         dlin = {
             'charh'  : charh,
@@ -495,17 +498,17 @@ du calcul ont été sauvées dans la base jusqu'au moment de l'arret."""),
             'maxlen' : maxlen
         }
         fmt_line = format['ligne'] % dlin
-        
+
         # on formate toutes les lignes
         txt = [fmt_line % line for line in l_line]
         dmsg['corps'] = os.linesep.join(txt)
         dmsg['separateur'] = charc + charh * (maxlen + 2) + charc
-        
+
         # ligne haut et bas
         newtxt = format['final'] % dmsg
         # on décale
         l_txt = [format['decal'] + line for line in newtxt.splitlines()]
-        
+
         return clean_string(os.linesep.join(l_txt))
 
 
@@ -635,10 +638,10 @@ def UTMESS(code, idmess, valk=(), vali=(), valr=(), print_as=None, cc=None):
         code   : 'A', 'E', 'S', 'F', 'I'
         idmess : identificateur du message
         valk, vali, valr : liste des chaines, entiers ou réels.
-    
+
     Appel sans valeurs :                avec valeurs :
         UTMESS('A', 'SUPERVIS_40')          UTMESS('A', 'SUPERVIS_40', vali=[1, 2])
-    
+
     Remarques :
         - Nommer les arguments permet de ne pas tous les passer.
         - Meme fonctionnement que U2MESG :

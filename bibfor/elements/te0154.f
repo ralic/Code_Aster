@@ -19,7 +19,7 @@ C ======================================================================
       IMPLICIT  NONE
       CHARACTER*(*)     OPTION,NOMTE
 C ----------------------------------------------------------------------
-C MODIF ELEMENTS  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C     CALCUL
 C       - DU VECTEUR ELEMENTAIRE EFFORT GENERALISE,
 C       - DU VECTEUR ELEMENTAIRE CONTRAINTE
@@ -55,16 +55,16 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C
-      REAL*8       PGL(3,3), KLC(6,6), ENERTH,EPSGL(6)
-      REAL*8       UGR(6),ULR(6),FLR(6),EPS(6)
-      CHARACTER*2  CODRES
+      REAL*8       PGL(3,3), KLC(6,6), ENERTH
+      REAL*8       UGR(6),ULR(6),FLR(6)
+      INTEGER CODRES
       CHARACTER*4  FAMI
       CHARACTER*8  NOMAIL
       CHARACTER*16 CH16
       LOGICAL      LTEIMP
-      REAL*8       A,EPSTH,E,R8BID,RHO,XFL1,XFL4,XL,XMAS,XRIG,TREF
+      REAL*8       A,EPSTH,E,R8BID,RHO,XFL1,XFL4,XL,XMAS,XRIG
       INTEGER      I,IF,ITYPE,J,JDEPL,JEFFO,JENDE,JFREQ,JDEFO,KANL
-      INTEGER      LMATER,LORIEN,LSECT,LTEMP,IRET,LX,NC,NNO,IADZI,IAZK24
+      INTEGER      LMATER,LORIEN,LSECT,IRET,LX,NC,NNO,IADZI,IAZK24
 C     ------------------------------------------------------------------
 
       LTEIMP = .FALSE.
@@ -85,7 +85,7 @@ C     --- RECUPERATION DES CARACTERISTIQUES MATERIAUX ---
 
       CALL RCVALB(FAMI,1,1,'+',ZI(LMATER),' ','ELAS',
      &            0,' ',R8BID,1,'E',E,
-     &            CODRES, 'FM' )
+     &            CODRES, 1)
       IF (EPSTH.NE.0.D0) LTEIMP =.TRUE.
 C
 C     --- RECUPERATION DES COORDONNEES DES NOEUDS ---
@@ -168,7 +168,7 @@ C
       ELSEIF( OPTION .EQ. 'ECIN_ELEM' ) THEN
          CALL RCVALB(FAMI,1,1,'+', ZI(LMATER),' ','ELAS',
      &                 0,' ',R8BID,1,'RHO',RHO,
-     &                 CODRES , 'FM' )
+     &                 CODRES , 1)
          CALL JEVECH ('PENERCR', 'E', JENDE)
          CALL JEVECH ('PFREQR' , 'L', JFREQ)
          XMAS = RHO * A * XL / 6.D0

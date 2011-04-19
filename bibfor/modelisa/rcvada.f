@@ -1,9 +1,9 @@
       SUBROUTINE RCVADA(JMAT,PHENOM,TEMP,NBRES,NOMRES,VALRES,DEVRES,
-     &                  CODRET)
+     &                  ICODRE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 06/04/2007   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -21,7 +21,7 @@ C ======================================================================
       IMPLICIT REAL*8 (A-H,O-Z)
 C
       INTEGER           IMAT,NBRES,JMAT
-      CHARACTER*(*)     CODRET(NBRES)
+      INTEGER     ICODRE(NBRES)
       CHARACTER*8       NOMRES(NBRES)
       CHARACTER*(*)     PHENOM
       REAL*8            TEMP,VALRES(NBRES),DEVRES(NBRES)
@@ -37,12 +37,11 @@ C IN   NOMRES : NOM DES COEFFICIENTS
 C
 C OUT  VALRES : VALEURS DES COEFFICIENTS
 C OUT  DEVRES : DERIVEE DES COEFFICIENTS
-C OUT  CODRET : POUR CHAQUE RESULTAT, 'OK' SI ON A TROUVE, 'NO' SINON
+C OUT  ICODRE : POUR CHAQUE RESULTAT, 0 SI ON A TROUVE, 1 SINON
 C ......................................................................
 C
 C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
 C
-      CHARACTER*32       JEXNUM , JEXNOM , JEXR8 , JEXATR
       INTEGER            ZI
       COMMON  / IVARJE / ZI(1)
       REAL*8             ZR
@@ -60,11 +59,10 @@ C
 C
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 C
-      INTEGER            NBOBJ,NBF,NBR,IVALR,IVALK,IR,IDF,IRES,NBRESP
-      INTEGER            LMAT,LFCT,IMATPR,ICOMP,IPI,IFON,IK, NBMAT
-      CHARACTER*10       PHEN,PHEPRE
+      INTEGER            NBOBJ,NBF,NBR,IVALR,IVALK,IR,IDF,IRES
+      INTEGER            LMAT,LFCT,ICOMP,IPI,IFON,IK, NBMAT
+      CHARACTER*10       PHEN
 C
-      LOGICAL            CHANGE
 C ----------------------------------------------------------------------
 C PARAMETER ASSOCIE AU MATERIAU CODE
       PARAMETER        ( LMAT = 7 , LFCT = 9 )
@@ -79,7 +77,7 @@ C     UTILISABLE SEULEMENT AVEC UN MATERIAU PAR MAILLE
       IMAT = JMAT+ZI(JMAT+NBMAT+1)
 
       DO 30 IRES = 1, NBRES
-        CODRET(IRES)(1:2) = 'NO'
+        ICODRE(IRES) = 1
 30    CONTINUE
 C
       DO 40 ICOMP=1,ZI(IMAT+1)
@@ -101,7 +99,7 @@ C
           IF (NOMRES(IRES) .EQ. ZK8(IVALK+IR-1)) THEN
             VALRES(IRES) = ZR(IVALR-1+IR)
             DEVRES(IRES) = 0.D0
-            CODRET(IRES)(1:2) = 'OK'
+            ICODRE(IRES) = 0
             NBOBJ = NBOBJ + 1
           ENDIF
 140     CONTINUE
@@ -115,7 +113,7 @@ C
             IF (NOMRES(IRES) .EQ. ZK8(IVALK+IDF+IK-1)) THEN
               IFON = IPI+LMAT-1+LFCT*(IK-1)
               CALL RCFODE(IFON,TEMP,VALRES(IRES),DEVRES(IRES))
-              CODRET(IRES)(1:2) = 'OK'
+              ICODRE(IRES) = 0
             ENDIF
 160       CONTINUE
 170     CONTINUE

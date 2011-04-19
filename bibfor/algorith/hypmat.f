@@ -1,8 +1,8 @@
       SUBROUTINE HYPMAT(FAMI  ,KPG   ,KSP   ,POUM  ,IMATE ,
      &                  C10   ,C01   ,C20   ,K     )
-C     
+C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 09/03/2010   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 2005 UCBL LYON1 - T. BARANGER     WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -37,7 +37,7 @@ C RECUPERE DONNEES MATERIAUX
 C
 C ----------------------------------------------------------------------
 C
-C  
+C
 C IN  IMATE   : ADRESSE DU MATERIAU CODE
 C IN  FAMI    : FAMILLE DE POINTS DE GAUSS
 C IN  KPG     : NUMERO DU POINT DE GAUSS
@@ -45,7 +45,7 @@ C IN  KSP     : NUMERO DU SOUS-POINT DE GAUSS
 C IN  POUM    : '-' POUR VARIABLES DE COMMANDE
 C OUT C10     : PARAMETRE LOI DE COMPORTEMENT
 C OUT C02     : PARAMETRE LOI DE COMPORTEMENT
-C OUT C20     : PARAMETRE LOI DE COMPORTEMENT 
+C OUT C20     : PARAMETRE LOI DE COMPORTEMENT
 C OUT K       : MODULE DE COMPRESSIBILITE
 C
 C ----------------------------------------------------------------------
@@ -53,9 +53,8 @@ C
       INTEGER     NBRES
       PARAMETER   ( NBRES = 3  )
       CHARACTER*8 NOMRES(NBRES)
-      CHARACTER*2 CODRES(NBRES)
+      INTEGER CODRES(NBRES)
       REAL*8      VALRES(NBRES)
-      CHARACTER*8 BL2,FB2,AB2
       REAL*8      NU
       REAL*8      R8PREM,DENOM
       LOGICAL     CMPK
@@ -64,28 +63,25 @@ C ----------------------------------------------------------------------
 C
 C --- INITIALISATIONS
 C
-      BL2    = '  '
-      FB2    = 'F '
-      AB2    = '  '
 C
 C --- SOIT ON PREND LE K DONNE PAR DEFI_MATERIAU, SOIT ON LE CALCULE
 C --- A PARTIR DU NU
 C
       NOMRES(1)   = 'K'
       CALL RCVALB(FAMI  ,KPG   ,KSP   ,POUM  ,IMATE ,
-     &            BL2   ,'ELAS_HYPER' ,0     ,' '   ,
-     &            0.D0  ,1            ,NOMRES,VALRES,
-     &            CODRES,AB2 )
+     &            ' ' ,'ELAS_HYPER' ,0     ,' '   ,
+     &          0.D0  ,1            ,NOMRES,VALRES,
+     &          CODRES,0)
 
-      IF (CODRES(1).EQ.'OK') THEN
+      IF (CODRES(1).EQ.0) THEN
         K         = VALRES(1)
         CMPK      = .FALSE.
       ELSE
         NOMRES(1) = 'NU'
         CALL RCVALB(FAMI  ,KPG   ,KSP   ,POUM  ,IMATE ,
-     &              BL2   ,'ELAS_HYPER' ,0     ,' '   ,
-     &              0.D0  ,1            ,NOMRES,VALRES,
-     &              CODRES,FB2 )        
+     &              ' ' ,'ELAS_HYPER' ,0     ,' '   ,
+     &            0.D0  ,1            ,NOMRES,VALRES,
+     &            CODRES,2)
         NU        = VALRES(1)
         DENOM     = 3.D0*(1.D0-2.D0*NU)
         IF (DENOM.LE.R8PREM()) THEN
@@ -102,9 +98,9 @@ C
       NOMRES(2) = 'C01'
       NOMRES(3) = 'C20'
       CALL RCVALB(FAMI  ,KPG   ,KSP   ,POUM  ,IMATE ,
-     &            BL2   ,'ELAS_HYPER' ,0     ,' '   ,
-     &            0.D0  ,NBRES        ,NOMRES,VALRES,
-     &            CODRES,FB2 )  
+     &            ' ' ,'ELAS_HYPER' ,0     ,' '   ,
+     &          0.D0  ,NBRES        ,NOMRES,VALRES,
+     &          CODRES,2)
       C10       = VALRES(1)
       C01       = VALRES(2)
       C20       = VALRES(3)

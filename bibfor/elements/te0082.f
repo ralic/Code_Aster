@@ -3,7 +3,7 @@
       CHARACTER*16        OPTION , NOMTE
 C ......................................................................
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -49,7 +49,7 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C
       CHARACTER*16       PHENOM
-      CHARACTER*2        CODRET
+      INTEGER ICODRE
 C      CHARACTER*4        FAMI
       REAL*8             VALRES, DFDX(9),DFDY(9),POIDS,R,R8B,VFI,VFJ
       REAL*8             MATP(18,18), MATV(171),MASVIT(18)
@@ -77,9 +77,9 @@ C
       CALL JEVECH('PGEOMER','L',IGEOM)
       CALL JEVECH('PMATERC','L',IMATE)
 C
-      CALL RCCOMA(ZI(IMATE),'ELAS',PHENOM,CODRET)
+      CALL RCCOMA(ZI(IMATE),'ELAS',PHENOM,ICODRE)
       CALL RCVALA ( ZI(IMATE),' ',PHENOM,0,' ',R8B,1,'RHO',VALRES,
-     &              CODRET,'FM')
+     &              ICODRE,1)
 C
       DO 2 K = 1,NVEC
          MATV(K) = 0.0D0

@@ -3,7 +3,7 @@
      &                  A0    ,A1    ,A2    ,A3    ,ETAS  )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/03/2011   AUTEUR KAZYMYRE K.KAZYMYRENKO 
+C MODIF ALGORITH  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -58,7 +58,7 @@ C ----------------------------------------------------------------------
 C
       INTEGER     NBRES
       PARAMETER   (NBRES=3)
-      CHARACTER*2 CODRET(NBRES)
+      INTEGER ICODRE(NBRES)
       CHARACTER*8 NOMRES(NBRES)
       REAL*8      VALRES(NBRES)
 C
@@ -110,8 +110,8 @@ C -- LECTURE DES CARACTERISTIQUES THERMOELASTIQUES
       NOMRES(1) = 'E'
       NOMRES(2) = 'NU'
       CALL RCVALA(MATE  ,' '   ,'ELAS',0     ,' '   ,
-     &            0.D0  ,2     ,NOMRES,VALRES,CODRET,
-     &           'FM')
+     &            0.D0  ,2     ,NOMRES,VALRES,ICODRE,
+     &           1)
       E      = VALRES(1)
       NU     = VALRES(2)
       LAMBDA = E * NU / (1.D0+NU) / (1.D0 - 2.D0*NU)
@@ -122,8 +122,8 @@ C -- LECTURE DES CARACTERISTIQUES D'ENDOMMAGEMENT
       NOMRES(2) = 'SYT'
       NOMRES(3) = 'SYC'
       CALL RCVALA(MATE  ,' '   ,'BETON_ECRO_LINE',0     ,' '   ,
-     &            0.D0  ,NBRES ,NOMRES           ,VALRES,CODRET,
-     &            ' '   )
+     &            0.D0  ,NBRES ,NOMRES           ,VALRES,ICODRE,
+     &            0)
       DSIGM  = VALRES(1)
       SYT    = VALRES(2)
       SYC    = VALRES(3)
@@ -131,16 +131,15 @@ C -- LECTURE DES CARACTERISTIQUES D'ENDOMMAGEMENT
       GAMMA  = -E/DSIGM
       K0     = (SYT*SYT)*(1.D0+GAMMA)/(2.D0*E)*
      &                     (1.D0+NU-2.D0*NU*NU)/(1.D0+NU)
-     
       IF (NU.EQ.0) THEN
-        IF (CODRET(3).EQ.'OK') THEN
+        IF (ICODRE(3).EQ.0) THEN
           CALL U2MESS('F','ALGORITH4_52')
         ELSE
           SEUIL  = K0
         ENDIF
       ELSE
         SICR=SQRT((1.D0+NU-2.D0*NU**2)/(2.D0*NU**2))*SYT
-        IF (CODRET(3).EQ.'NO') THEN
+        IF (ICODRE(3).EQ.1) THEN
           SEUIL=K0
         ELSE
           IF (SYC.LT.SICR) THEN

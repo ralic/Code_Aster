@@ -1,12 +1,10 @@
-      SUBROUTINE DKTCOL ( FAMI,XYZL, OPTION, PGL, ICOU, INIV, DEPL,
-     +                    CDL, MULTIC )
+      SUBROUTINE DKTCOL ( FAMI,XYZL, PGL, ICOU, INIV, DEPL,CDL)
       IMPLICIT  NONE
-      INTEGER       ICOU, INIV, MULTIC
+      INTEGER       ICOU, INIV
       REAL*8        XYZL(3,*),PGL(3,*), DEPL(*), CDL(*)
-      CHARACTER*16  OPTION
       CHARACTER*4   FAMI
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 04/04/2011   AUTEUR DESOZA T.DESOZA 
+C MODIF ELEMENTS  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -27,7 +25,6 @@ C     ------------------------------------------------------------------
 C     CONTRAINTES DE L'ELEMENT DE PLAQUE DKT 'SIGM_ELNO'
 C     ------------------------------------------------------------------
 C     IN  XYZL   : COORDONNEES LOCALES DES TROIS NOEUDS
-C     IN  OPTION : NOM DE L'OPTION DE CALCUL
 C     IN  PGL    : MATRICE DE PASSAGE GLOBAL - LOCAL
 C     IN  ICOU   : NUMERO DE LA COUCHE
 C     IN  INIV   : NIVEAU DANS LA COUCHE (-1:INF , 0:MOY , 1:SUP)
@@ -51,7 +48,7 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       COMMON /KVARJE/ ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       INTEGER  NDIM,NNO,NNOS,NPG,IPOIDS,ICOOPG,IVF,IDFDX,IDFD2,JGANO
-      INTEGER       NE,JCACO,I,J,K,IE,NBCOU,JNBSP
+      INTEGER       NE,JCACO,I,J,K,IE,NBCOU,JNBSP,MULTIC
       REAL*8        HIC,ZMIN,DEUX,X3I,EPAIS,EXCEN
       REAL*8        DEPF(9),DEPM(6),VT(2),LAMBDA(4)
       REAL*8        DF(3,3),DM(3,3),DMF(3,3),DC(2,2),DCI(2,2),DMC(3,2)
@@ -103,7 +100,7 @@ C     -------- CALCUL DE D1I ET D2I ------------------------------------
         D1I(1,2) = 0.D0
         D1I(2,1) = 0.D0
       ELSE
-        CALL DXDMUL(ICOU,INIV,T1VE,T2VE,H,D1I,D2I,X3I,HIC)
+        CALL DXDMUL(.TRUE.,ICOU,INIV,T1VE,T2VE,H,D1I,D2I,X3I,HIC)
       END IF
 C     ----- COMPOSANTES DEPLACEMENT MEMBRANE ET FLEXION ----------------
       DO 30 J = 1,3

@@ -1,6 +1,6 @@
-      SUBROUTINE DXDMUL(ICOU,INIV,T1VE,T2VE,H,D1I,D2I,X3I,EPI)
+      SUBROUTINE DXDMUL(LCALCT,ICOU,INIV,T1VE,T2VE,H,D1I,D2I,X3I,EPI)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 04/04/2011   AUTEUR DESOZA T.DESOZA 
+C MODIF ELEMENTS  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -17,7 +17,8 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-      IMPLICIT REAL*8 (A-H,O-Z)
+      IMPLICIT NONE
+      LOGICAL LCALCT
       INTEGER ICOU
       INTEGER INIV
       REAL*8 T1VE(3,3)
@@ -54,22 +55,23 @@ C      CHARACTER*32 JEXNUM,JEXNOM,JEXR8,JEXATR
       CHARACTER*80 ZK80
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
-      CHARACTER*2 VAL,CODRET(27)
+      INTEGER     I,K,L,JCACO,JCOU,JMATE,ICODRE(27)
+      CHARACTER*2 VAL
       CHARACTER*3 NUM
       CHARACTER*8 NOMRES(27)
-      REAL*8 VALRES(27)
-      REAL*8 DX1I(2,2),DX2I(2,4)
-      REAL*8 DA1I(2,2),DA2I(2,4)
-      REAL*8 ORDI,AI(3,3)
-      REAL*8 XAB1(3,3),EXCEN
-      LOGICAL LCALCT
+      REAL*8      VALRES(27),R8BID
+      REAL*8      DX1I(2,2),DX2I(2,4)
+      REAL*8      DA1I(2,2),DA2I(2,4)
+      REAL*8      ORDI,AI(3,3)
+      REAL*8      XAB1(3,3),EXCEN
+      LOGICAL     LEXCEN
 C
       CALL JEVECH('PCACOQU','L',JCACO)
       EXCEN = ZR(JCACO+5-1)
-      LCALCT = .TRUE.
+      LEXCEN = .FALSE.
       IF (EXCEN.NE.0D0) THEN
         CALL U2MESS('A','ELEMENTS_91')
-        LCALCT = .FALSE.
+        LEXCEN = .TRUE.
       ENDIF
 C
       CALL JEVECH('PMATERC','L',JMATE)
@@ -80,7 +82,7 @@ C     ----- RAPPEL DES CARACTERISTIQUES DU MONOCOUCHE ------------------
         NOMRES(I) = 'C'//NUM//'_V'//VAL
    10 CONTINUE
       CALL RCVALA(ZI(JMATE),' ','ELAS_COQMU',0,' ',R8BID,9,NOMRES,
-     &           VALRES, CODRET,'FM')
+     &           VALRES, ICODRE, 1)
       EPI = VALRES(1)
       ORDI = VALRES(3)
       H(1,1) = VALRES(4)
@@ -104,7 +106,7 @@ C     ----- CALCUL DE D1I ET D2I ---------------------------------------
       CALL MATINI(2,2,0.D0,DX1I)
       CALL MATINI(2,4,0.D0,DX2I)
 
-      IF (.NOT.LCALCT) THEN
+      IF (LEXCEN.OR.(.NOT.LCALCT)) THEN
         GOTO 999
       ENDIF
 
@@ -115,13 +117,13 @@ C     ----- CALCUL DE D1I ET D2I ---------------------------------------
           NOMRES(I) = 'C'//NUM//'_V'//VAL
    60   CONTINUE
         CALL RCVALA(ZI(JMATE),' ','ELAS_COQMU',0,' ',R8BID,1,NOMRES,
-     &             VALRES, CODRET,'FM')
+     &             VALRES, ICODRE, 1)
         EPI = VALRES(1)
         CALL RCVALA(ZI(JMATE),' ','ELAS_COQMU',0,' ',R8BID,1,NOMRES(3),
-     &              VALRES(3),CODRET(3),'FM')
+     &              VALRES(3), ICODRE(3), 1)
         ORDI = VALRES(3)
         CALL RCVALA(ZI(JMATE),' ','ELAS_COQMU',0,' ',R8BID,12,
-     &            NOMRES(16),  VALRES(16),CODRET(16),'FM')
+     &            NOMRES(16), VALRES(16), ICODRE(16), 1)
 C
 C      RECUP MATRICE AI = H(Z).HF-1
 C

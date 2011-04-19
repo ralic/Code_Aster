@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 # TITRE ETUDE:  ESSAI BIAXIAL DRAINE SUR SABLE D'HOSTUN
 # ssnv208a.para = tps_job 160 mem_job 200Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -165,7 +165,7 @@ U1=CALC_ELEM(reuse=U1,
 
 
              OPTION=('SIEF_ELNO','VARI_ELNO',
-                     'EPSI_ELNO','INDL_ELGA'),
+                     'EPSI_ELNO','INDL_ELGA','PDIL_ELGA'),
              RESULTAT=U1);
 
 U1=CALC_NO(reuse=U1,
@@ -589,6 +589,24 @@ TEST_RESU(RESU=(
                    VALE_ABS='OUI',
                    REFERENCE='NON_REGRESSION',
                    VERSION = '9.2.20', ),
+                   ),);
+
+#------------------------------------------------
+# TEST DU MODULE DE RIGIDITE DE SECOND GRADIENT 
+# EN NON REGRESSION
+#------------------------------------------------
+
+TEST_RESU(RESU=(
+                _F(RESULTAT=U1,
+                   NUME_ORDRE=100,
+                   NOM_CHAM='PDIL_ELGA',
+                   NOM_CMP='A1_LC2',
+                   MAILLE='M1',
+                   POINT=1,
+                   VALE=2.4926977583244E+06,
+                   PRECISION=1.E-3,
+                   REFERENCE='NON_REGRESSION',
+                   VERSION = '11.0.2', ),
                    ),);
 
 FIN();

@@ -2,9 +2,9 @@
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 08/12/2009   AUTEUR PROIX J-M.PROIX 
+C MODIF ELEMENTS  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWAR<E FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -74,7 +74,8 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C DECLARATION VARIABLES LOCALES
 C
 C
-      CHARACTER*2   CODRET,CODRES(3)
+      INTEGER ICODRE
+      INTEGER CODRES(3)
       CHARACTER*8   NOMPAR(3),TYPMOD(2),ELREFE,NOMRES(3), BLAN8
       CHARACTER*16  COMPOR(4),OPRUPT
 
@@ -295,9 +296,9 @@ C
 C PESANTEUR ET ROTATION
 C
       IF ((IPESA.NE.0).OR.(IROTA.NE.0)) THEN
-        CALL RCCOMA(MATCOD,'ELAS',PHENOM,CODRET)
+        CALL RCCOMA(MATCOD,'ELAS',PHENOM,ICODRE)
        CALL RCVALB('RIGI',1,1,'+',MATCOD,' ',PHENOM,
-     &             1,' ',RBID,1,'RHO',RHO,CODRET,'FM')
+     &             1,' ',RBID,1,'RHO',RHO,ICODRE,1)
         IF (IPESA.NE.0) THEN
           DO 95 I=1,NNO
             IJ = NDIM*(I-1)
@@ -339,7 +340,7 @@ C =====================================================================
           L    = (KP-1)*NNO
           CALL NMGEOM (NDIM,NNO,AXI,GRAND,ZR(IGEOM),KP,IPOI1,
      &                 IVF1,IDFDE1,ZR(IDEPI),
-     &                 RBID,DFDI,F,EPS,RBID)
+     &                 .TRUE.,RBID,DFDI,F,EPS,RBID)
           DO 110 I=1,NCMP
             EPSIPG((KP-1)*NCMP+I)= EPS(I)
 110       CONTINUE
@@ -408,7 +409,7 @@ C CALCUL DES ELEMENTS GEOMETRIQUES
 C ================================
         CALL NMGEOM (NDIM,NNO,AXI,GRAND,ZR(IGEOM),KP,IPOIDS,
      &               IVF,IDFDE,ZR(IDEPL),
-     &               POIDS,DFDI,F,EPS,R)
+     &               .TRUE.,POIDS,DFDI,F,EPS,R)
 C =========================================================
 C STOCKAGE DES DERIVEES DES CONTRAINTES ET DES DEFORMATIONS
 C =========================================================
@@ -432,7 +433,7 @@ C   DE LA TEMPERATURE AUX POINTS DE GAUSS (TG) ET SON GRADIENT (TGDM)
             DO 302 J=1,NDIM
               TGDM(J)=0.D0
 302         CONTINUE
-          ENDIF     
+          ENDIF
           DO 310 J=1,NDIM
             IJ1 = NDIM*I1+J
             IJ = IJ1 - 1
@@ -597,7 +598,7 @@ C - CALCUL DE DPSI/DE
           CALL RCVAD2 ('RIGI',KP,1,'+',ZI(IMATE),'ELAS',3,
      &                 NOMRES,VALRES,DEVRES,CODRES)
 C
-          IF (CODRES(3).NE.'OK') THEN
+          IF (CODRES(3).NE.0) THEN
             VALRES(3)= 0.D0
             DEVRES(3)= 0.D0
           ENDIF

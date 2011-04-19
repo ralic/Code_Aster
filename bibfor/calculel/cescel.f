@@ -1,9 +1,9 @@
       SUBROUTINE CESCEL(CESZ,LIGREZ,OPTINI,NOMPAZ,PROLZ,NNCP,BASEZ,CELZ,
      &                  KSTOP,IRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -49,6 +49,7 @@ C             DES VALEURS DE CEL QUI NE SONT PAS AFFECTEES PAR CES.
 C             => ON N'INVENTE AUCUNE VALEUR
 C    /'OUI' : LE CHAM_ELEM CEL EST PROLONGE
 C             PAR DES VALEURS NULLES LA OU CES N'EST PAS DEFINI.
+C             SI LA GRANDEUR EST NEUT_F, ON MET LA FONCTION "&FOZERO"
 C    /'CHL' : (UTILISE PAR CHLIGR)
 C             PROLONGE PAR "ZERO" LES MAILLES DE CEL QUI NE SONT
 C             PAS DU TOUT AFFECTEES DANS CES (NOUVELLES MAILLES)
@@ -326,7 +327,7 @@ C     ===================================================
       CALL JEVEUO(JEXATR(LIGREL//'.LIEL','LONCUM'),'L',ILLIEL)
 
 
-C     3.0 ON INITIALISE CELV AVEC "NAN" SI NECESSAIRE :
+C     3.1 ON INITIALISE CELV AVEC "NAN" SI NECESSAIRE :
 C     -------------------------------------------------
       IF (PROL0.EQ.'NAN') THEN
         RNAN = R8NNEM()
@@ -357,11 +358,21 @@ C     -------------------------------------------------
       ENDIF
 
 
-C     3.1 CAS NOMGD /= 'VARI_R' :
+C     3.2 ON INITIALISE CELV AVEC "&FOZERO" SI NEUT_F :
+C     -----------------------------------------------------
+      IF (PROL0.EQ.'OUI'. AND. NOMGD.EQ.'NEUT_F') THEN
+        CALL ASSERT (TSCA.EQ.'K8')
+        DO 85,IEQ = 1,NEQ
+          ZK8(JCELV-1+IEQ) = '&FOZERO'
+   85   CONTINUE
+      ENDIF
+
+
+C     3.2 CAS NOMGD /= 'VARI_R' :
 C     ---------------------------------------------------
       IF (NOMGD.NE.'VARI_R') THEN
 
-C       3.1.1 ALLOCATION DE 2 VECTEURS DE TRAVAIL :
+C       3.2.1 ALLOCATION DE 2 VECTEURS DE TRAVAIL :
         NPTMX = ZI(JCESD-1+3)
         DO 90,IGR = 1,NBGR
           IMOLO = ZI(JCELD-1+ZI(JCELD-1+4+IGR)+2)
@@ -374,7 +385,7 @@ C       3.1.1 ALLOCATION DE 2 VECTEURS DE TRAVAIL :
         CALL WKVECT('&&CESCEL.LONG_PT','V V I',NPTMX,JLPT)
         CALL WKVECT('&&CESCEL.LONG_PT_CUMU','V V I',NPTMX,JLCUPT)
 
-C       3.1.2 BOUCLE SUR LES GREL DU LIGREL
+C       3.2.2 BOUCLE SUR LES GREL DU LIGREL
         DO 170,IGR = 1,NBGR
           IMOLO = ZI(JCELD-1+ZI(JCELD-1+4+IGR)+2)
           IF (IMOLO.EQ.0) GOTO 170
@@ -514,7 +525,7 @@ C                 -- QUE FAIRE SI LA MAILLE EST TARDIVE ?
   170   CONTINUE
 
 
-C     3.2 CAS NOMGD == 'VARI_R' :
+C     3.3 CAS NOMGD == 'VARI_R' :
 C     ---------------------------------------------------
       ELSE
         DO 220,IGR = 1,NBGR

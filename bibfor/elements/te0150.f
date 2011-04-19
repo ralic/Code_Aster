@@ -3,9 +3,9 @@
       CHARACTER*(*)     OPTION,NOMTE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 16/02/2010   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -44,7 +44,6 @@ C       'MECA_POU_D_TGM': POUTRE DROITE DE TIMOSHENKO (GAUCHISSEMENT)
 C                         MULTI-FIBRES SECTION CONSTANTE
 C     ------------------------------------------------------------------
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
-      CHARACTER*32       JEXNUM , JEXNOM , JEXR8 , JEXATR
       INTEGER            ZI
       COMMON  / IVARJE / ZI(1)
       REAL*8             ZR
@@ -60,12 +59,12 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       CHARACTER*80                                              ZK80
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
-      INTEGER      NBRES,NBPAR,LMATER,ITEMPE,ITEMPS,IRET,LSECT,LSECT2
+      INTEGER      NBRES,NBPAR,LMATER,ITEMPS,IRET,LSECT,LSECT2
       INTEGER      ISTRUC,LORIEN,LRCOU,LVECT,LX
       INTEGER      ITYPE,NC,IND,I,J,IGAU
       PARAMETER                 (NBRES=2)
       REAL*8       VALPAR(3),VALRES(NBRES)
-      CHARACTER*2  CODRES(NBRES)
+      INTEGER CODRES(NBRES)
       CHARACTER*4  FAMI
       CHARACTER*8  NOMPAR(3),NOMRES(NBRES),MATERI,NOMAIL
       CHARACTER*16 CH16
@@ -133,7 +132,7 @@ C       -- POUTRES CLASSIQUES
          IF (OPTION(13:16).NE.'1D1D'.AND..NOT.LRHO) THEN
             CALL RCVALB(FAMI,1,1,'+',ZI(LMATER),MATERI,'ELAS',
      &                  NBPAR,NOMPAR,VALPAR,
-     &                  NBRES,NOMRES,VALRES,CODRES,'FM')
+     &                  NBRES,NOMRES,VALRES,CODRES,1)
 C
             E      = VALRES(1)
             NU     = VALRES(2)
@@ -388,8 +387,8 @@ C        DE L HYDRATATION OU DU SECHAGE
 C        ----------------------------------------------------------
             CALL RCVALB(FAMI,1,1,'+',ZI(LMATER),MATERI,'ELAS',
      &                  3,NOMPAR,VALPAR,1,
-     &                  'K_DESSIC',KDESSI, CODRES, ' ' )
-            IF (CODRES(1).NE.'OK') KDESSI=0.D0
+     &                  'K_DESSIC',KDESSI, CODRES, 0)
+            IF (CODRES(1).NE.0) KDESSI=0.D0
             F = -KDESSI*(SREF-SECH)
 
          ELSEIF ( OPTION.EQ.'CHAR_MECA_HYDR_R' ) THEN
@@ -421,8 +420,8 @@ C ----   INTERPOLATION DE B_ENDOGE EN FONCTION DE LA TEMPERATURE
 C        ET DE L HYDRATATION
             CALL RCVALB(FAMI,1,1,'+',ZI(LMATER),MATERI,'ELAS',
      &          3,NOMPAR,VALPAR,1,
-     &          'B_ENDOGE',KENDOG, CODRES, ' ' )
-            IF (CODRES(1).NE.'OK') KENDOG=0.D0
+     &          'B_ENDOGE',KENDOG, CODRES, 0)
+            IF (CODRES(1).NE.0) KENDOG=0.D0
 C        DEPLACEMENT INDUIT PAR L'HYDRATATION
             F = -KENDOG*HYDR
 

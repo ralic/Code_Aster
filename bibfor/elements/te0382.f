@@ -1,9 +1,9 @@
       SUBROUTINE TE0382(OPTION,NOMTE)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 21/12/2010   AUTEUR MASSIN P.MASSIN 
+C MODIF ELEMENTS  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -82,7 +82,7 @@ C     (CAS D'1 ELEMENT PARENT QUADRATIQUE) => NBNAMX=3
       INTEGER JPINTT,JCNSET,JLONCH,JVOXSE,JSIGSE,JPMILT
       INTEGER NSE,ISE,IN,J,IPG
       INTEGER LEVOIS
-      INTEGER IER,IRESE
+      INTEGER IRESE
 
       REAL*8 R8BID,RTBID3(3)
       REAL*8 DFDXP(9),DFDYP(9),POIDP,HE,HSE,HF,COEFF
@@ -94,7 +94,7 @@ C     (CAS D'1 ELEMENT PARENT QUADRATIQUE) => NBNAMX=3
       REAL*8 TVOL,TVOLSE,TSAU,TNOR,NOR,NORSIG,SIGCAL
       REAL*8 E,NU,VALRES(2),R8TMP
 
-      CHARACTER*2 CODRET(2)
+      INTEGER ICODRE(2)
       CHARACTER*2 NOEU
       CHARACTER*3 TYPNOR
       CHARACTER*8 TYPMAV, ELREFE
@@ -295,9 +295,9 @@ C --------- ACTUALISATION DU TERME DE BORD
 C
             IF (TYPNOR.EQ.'NRJ') THEN
               TSAU=TSAU+0.5D0*HF*INTE
-            ELSE 
+            ELSE
               TSAU=TSAU+0.5D0*SQRT(HF)*SQRT(INTE)
-            ENDIF                
+            ENDIF
 C
 C ------- SI L'ARETE EST SUR LA FRONTIERE DE LA STRUCTURE...
 C ------- ON CALCULE LE TERME NORMAL POUR LES ELEMENTS PARENTS
@@ -320,9 +320,9 @@ C --------- ACTUALISATION DU TERME DE BORD
 C
             IF (TYPNOR.EQ.'NRJ') THEN
               TNOR=TNOR+HF*INTE
-            ELSE 
+            ELSE
               TNOR=TNOR+SQRT(HF)*SQRT(INTE)
-            ENDIF                
+            ENDIF
 C
 C ----------------------------------------------------------------------
 C --------------- CURIEUX ----------------------------------------------
@@ -393,9 +393,9 @@ C
 C
         IF (TYPNOR.EQ.'NRJ') THEN
           TVOL=TVOL+TVOLSE*HSE**2
-        ELSE 
+        ELSE
           TVOL=TVOL+SQRT(TVOLSE)*HSE
-        ENDIF                
+        ENDIF
 C
 C --------------------------------------------------------------------
 C ------------- BOUCLE SUR LES ARETES DU SOUS-ELEMENT ----------------
@@ -436,9 +436,9 @@ C --------- ACTUALISATION DU TERME DE BORD
 C
             IF (TYPNOR.EQ.'NRJ') THEN
               TSAU=TSAU+0.5D0*HF*INTE
-            ELSE 
+            ELSE
               TSAU=TSAU+0.5D0*SQRT(HF)*SQRT(INTE)
-            ENDIF                
+            ENDIF
 C
           END IF
 C
@@ -469,9 +469,9 @@ C
 
         NOMPAR(1)='E'
         NOMPAR(2)='NU'
-        CALL RCCOMA (ZI(IMATE),'ELAS',PHENOM,CODRET)
+        CALL RCCOMA (ZI(IMATE),'ELAS',PHENOM,ICODRE)
         CALL RCVALA (ZI(IMATE),' ',PHENOM,1,' ',R8BID,2,NOMPAR,
-     &               VALRES,CODRET,'FM')
+     &               VALRES,ICODRE,1)
         E =VALRES(1)
         NU=VALRES(2)
 

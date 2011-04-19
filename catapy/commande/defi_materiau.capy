@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 23/02/2011   AUTEUR LAVERNE J.LAVERNE 
+#& MODIF COMMANDE  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -25,7 +25,7 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater_sdaster,
                       'ELAS_ORTH_FO','ELAS_COQUE','ELAS_COQUE_FO',
                       'ELAS_HYPER','ELAS_2NDG',),
                EXCLUS('THER','THER_FO','THER_ORTH','THER_NL'),
-               EXCLUS('ECRO_LINE','ECRO_LINE_FO','ECRO_PUIS'),
+               EXCLUS('ECRO_LINE','ECRO_LINE_FO','ECRO_PUIS','ECRO_COOK',),
                EXCLUS('ENDO_HETEROGENE'),
                EXCLUS('TAHERI','TAHERI_FO'),
                EXCLUS('ROUSSELIER','ROUSSELIER_FO'),
@@ -327,6 +327,18 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater_sdaster,
              SY              =SIMP(statut='o',typ=(fonction_sdaster,nappe_sdaster,formule)),
              A_PUIS          =SIMP(statut='o',typ=(fonction_sdaster,nappe_sdaster,formule)),
              N_PUIS          =SIMP(statut='o',typ=(fonction_sdaster,nappe_sdaster,formule)),
+           ),
+           ECRO_COOK       =FACT(statut='f',
+             regles=(PRESENT_PRESENT('C','EPSP0'),
+                     PRESENT_PRESENT('TROOM','TMELT','M_PUIS'),),
+             A               =SIMP(statut='o',typ='R',val_min=0.0),
+             B               =SIMP(statut='o',typ='R',val_min=0.0),
+             C               =SIMP(statut='f',typ='R',val_min=0.0),
+             N_PUIS          =SIMP(statut='o',typ='R',val_min=0.0),
+             M_PUIS          =SIMP(statut='f',typ='R',val_min=0.0),
+             EPSP0           =SIMP(statut='f',typ='R',val_min=1.E-6),
+             TROOM           =SIMP(statut='f',typ='R',val_min=0.0),
+             TMELT           =SIMP(statut='f',typ='R',val_min=0.0),
            ),
            BETON_ECRO_LINE =FACT(statut='f',
              D_SIGM_EPSI     =SIMP(statut='o',typ='R'),

@@ -1,4 +1,4 @@
-#@ MODIF test_compor_ops Macro  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
+#@ MODIF test_compor_ops Macro  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -40,7 +40,7 @@ def PROD_ROT(X1,X2):
             return None
 #######################################################################
 def RENOMME(self,i,N_pas,label_cal,ch_param,_RES,_RSI):
-# On renomme les composantes en fonction de  l'ordre de discrétisation
+# On renomme les composantes en fonction de  l'ordre de discr?tisation
    from Accas import _F
    DETRUIRE       = self.get_cmd('DETRUIRE')
    CALC_TABLE     = self.get_cmd('CALC_TABLE')
@@ -360,7 +360,7 @@ def CHAR2D(self,POISSON,YOUNG,_tempsar,INFO):
 
 def test_compor_ops(self,OPTION,NEWTON,CONVERGENCE,COMP_INCR,COMP_ELAS,LIST_MATER,VARI_TEST,INFO,
                              **args):
- # seule l'option "THER", c'est à dire le test thermomecanique est programme a ce jour
+ # seule l'option "THER", c'est à dire le test thermomecanique est programmé à ce jour
  # ajouter l'option MECA (tests comp001,002), l'option HYDR, etc..
   from Accas import _F
   import numpy as NP
@@ -754,7 +754,7 @@ def test_compor_ops(self,OPTION,NEWTON,CONVERGENCE,COMP_INCR,COMP_ELAS,LIST_MATE
 
       if   COMP_INCR  :
           motscles['COMP_INCR'][0]['TYPE_MATR_TANG'] = 'VERIFICATION' 
-      
+          motscles['COMP_INCR'][0]['VALE_PERT_RELA']=args['VERI_MATR_OPTION'].List_F()[0]['VALE_PERT_RELA']
           _DEFLIS2 =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = _Linst,),
                             ECHEC=_F(SUBD_METHODE='EXTRAPOLE',
                                      SUBD_PAS=10,
@@ -767,7 +767,8 @@ def test_compor_ops(self,OPTION,NEWTON,CONVERGENCE,COMP_INCR,COMP_ELAS,LIST_MATE
                          **motscles
                               );
 
-          _DIFFMAT=VERI_MATR_TANG()
+          _DIFFMAT=VERI_MATR_TANG(PRECISION=args['VERI_MATR_OPTION'].List_F()[0]['PRECISION'],
+                                  PREC_ZERO=args['VERI_MATR_OPTION'].List_F()[0]['PREC_ZERO'],)
 
           TEST_TABLE(TABLE=_DIFFMAT,
                      NOM_PARA='MAT_DIFF',

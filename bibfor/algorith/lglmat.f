@@ -8,9 +8,9 @@ C
         CHARACTER*8  MOD
 C =================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -58,7 +58,7 @@ C =================================================================
       REAL*8          E, NU, MU, K, GAMMA, KSI, SIGC, MULT, ME, AE
       REAL*8          UN, DEUX, TROIS, SIGMP2, SIGMP1, APIC, MPIC
       REAL*8          COHERE
-      CHARACTER*2     CERR(17)
+      INTEGER CERR(17)
       CHARACTER*8     NOMC(17)
 C =================================================================
 C --- INITIALISATION DE PARAMETRES --------------------------------
@@ -101,9 +101,9 @@ C =================================================================
 C --- RECUPERATION DES PARAMETRES MATERIAU ------------------------
 C =================================================================
       CALL RCVALA(IMAT,' ', 'ELAS', 1, 'TEMP', TEMPD, 3,
-     &               NOMC(1),  MATERD(1,1),  CERR(1), ' ')
+     &               NOMC(1),  MATERD(1,1),  CERR(1), 0)
       CALL RCVALA(IMAT,' ', 'LAIGLE', 1, 'TEMP', TEMPD, 14,
-     &               NOMC(4),  MATERD(1,2),  CERR(4), ' ' )
+     &               NOMC(4),  MATERD(1,2),  CERR(4), 0)
 C =================================================================
 C - CALCUL DES MODULES DE CISAILLEMENT ET DE DEFORMATION VOLUMIQUE-
 C =================================================================

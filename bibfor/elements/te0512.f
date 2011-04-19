@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 04/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -108,7 +108,7 @@ C
       REAL*8 XES,TS
 
       CHARACTER*4  FAMI
-      CHARACTER*2  CODRES(NBRES),CODRE2(NBRES2)
+      INTEGER CODRES(NBRES),CODRE2(NBRES2)
       CHARACTER*8  NOMRES(NBRES)
       CHARACTER*8  NOMRE2(NBRES2)
       CHARACTER*16 PHENO,PHENOM,PHENO2,PHENM2
@@ -153,11 +153,11 @@ C
 C ---    EVALUATION DES DONNEES MATERIAUX
       PHENO = 'ELAS'
       CALL RCCOMA (ZI(IMATE),PHENO,PHENOM,CODRES(1))
-      IF (CODRES(1).EQ.'NO') CALL U2MESS('F','FATIGUE1_7')
+      IF (CODRES(1).EQ.1) CALL U2MESS('F','FATIGUE1_7')
 
       PHENO2 = 'DOMMA_LEMAITRE'
       CALL RCCOMA (ZI(IMATE),PHENO2,PHENM2,CODRES(1))
-      IF (CODRES(1).EQ.'NO') CALL U2MESS('F','FATIGUE1_6')
+      IF (CODRES(1).EQ.1) CALL U2MESS('F','FATIGUE1_6')
 C
 C ----------------------------------------------------------------------
 C --- 1. PREALABLES
@@ -217,9 +217,9 @@ C ---    NORMALISEE (CENDO)
 C ----------------------------------------------------------------------
       DO 60 IGAU = 1, NPG
         CALL RCVALB(FAMI,IGAU,1,'+',ZI(IMATE),' ',PHENOM,0,' ',
-     &                  0.D0,NBRES,NOMRES,VALRES,CODRES,'FM')
+     &                  0.D0,NBRES,NOMRES,VALRES,CODRES,1)
         CALL RCVALB(FAMI,IGAU,1,'+',ZI(IMATE),' ',PHENM2,0,' ',
-     &                  0.D0,NBRES2,NOMRE2,VALRE2,CODRE2,'FM')
+     &                  0.D0,NBRES2,NOMRE2,VALRE2,CODRE2,1)
 
         TS = VALRE2(1)
         PSEUIL(IGAU) = VALRE2(2)

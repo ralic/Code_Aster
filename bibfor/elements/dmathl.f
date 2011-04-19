@@ -4,12 +4,12 @@
       INTEGER NNO,MULTIC,INDITH,ICOU
       REAL*8 DF(3,3),DM(3,3),DMF(3,3)
       REAL*8 PGL(3,3),T2EV(4),T2VE(4),T1VE(9)
-      REAL*8 ORDI,EPI,EPAIS,CTOR
+      REAL*8 ORDI,EPI,EPAIS
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 14/10/2008   AUTEUR REZETTE C.REZETTE 
+C MODIF ELEMENTS  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -53,18 +53,18 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       CHARACTER*80 ZK80
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
-      INTEGER IBID,JCOQU,JMATE,ITEMP,INDEP,ITAB(8),IRET,IRETF
-      INTEGER NBV,I,J,K,NBPAR,IER,NBCOU,JCOU
-      REAL*8 CDF,CDM,CDC,GCIS,VALRES(134),VALPU(2)
+      INTEGER JCOQU,JMATE,IRET
+      INTEGER NBV,I,K,NBPAR,NBCOU,JCOU
+      REAL*8 CDF,CDM,VALRES(134)
       REAL*8 YOUNG,NU,VALPAR
-      REAL*8 XAB1(3,3),XAB2(2,2),DH(3,3),ROT(3,3)
+      REAL*8 XAB1(3,3),DH(3,3)
       REAL*8 DX,DY,DZ,S,C,NORM
-      REAL*8 PS,PJDX,PJDY,PJDZ,T,TINF,TSUP,TPG1,ALPHAT
+      REAL*8 PS,PJDX,PJDY,PJDZ,ALPHAT
       REAL*8 ALPHA,BETA,R8DGRD,R8PREM
-      REAL*8 YOUNG1,YOUNG2,EPTOT
-      CHARACTER*2 BL2,CODRET(134),VAL
+      INTEGER ICODRE(134)
+      CHARACTER*2 VAL
       CHARACTER*3 NUM
-      CHARACTER*8 NOMRES(134),NOMPAR,NOMPU(2)
+      CHARACTER*8 NOMRES(134),NOMPAR
       CHARACTER*10 PHENOM
 C     ------------------------------------------------------------------
 
@@ -95,8 +95,7 @@ C     ------------------------------------------------------------------
 C     ------------------------------------------------
       INDITH = 0
       CALL JEVECH('PMATERC','L',JMATE)
-      BL2 = '  '
-      CALL RCCOMA(ZI(JMATE),'ELAS',PHENOM,CODRET)
+      CALL RCCOMA(ZI(JMATE),'ELAS',PHENOM,ICODRE)
 
       IF (PHENOM.EQ.'ELAS_COQMU') THEN
         IF (NORM.LE.R8PREM()) THEN
@@ -211,14 +210,14 @@ C        ------ MATERIAU ISOTROPE ------------------------------------
 
         CALL RCVALB('RIGI',1,1,'+',ZI(JMATE),' ',PHENOM,
      &              NBPAR,NOMPAR,VALPAR,2,NOMRES,
-     &              VALRES,CODRET,'FM')
+     &              VALRES,ICODRE,1)
         CALL RCVALB('RIGI',1,1,'+',ZI(JMATE),' ',PHENOM,
      &              NBPAR,NOMPAR,VALPAR,1,
-     &              NOMRES(3),VALRES(3),CODRET(3),BL2)
-        IF ((CODRET(3).NE.'OK').OR.(VALRES(3).EQ.0.D0)) THEN
+     &              NOMRES(3),VALRES(3),ICODRE(3),0)
+        IF ((ICODRE(3).NE.0).OR.(VALRES(3).EQ.0.D0)) THEN
           INDITH = -1
           GO TO 70
-        ELSEIF ((IRET.EQ.1).AND.(CODRET(3).NE.'OK')) THEN
+        ELSEIF ((IRET.EQ.1).AND.(ICODRE(3).NE.0)) THEN
           CALL U2MESS('F','CALCULEL_15')
         END IF
         YOUNG = VALRES(1)
@@ -244,14 +243,14 @@ C        ---------------------------------------------------------------
         MULTIC = 0
         CALL RCVALB('RIGI',1,1,'+',ZI(JMATE),' ',PHENOM,
      &              NBPAR,NOMPAR,VALPAR,NBV,NOMRES,
-     &              VALRES,CODRET,'FM')
+     &              VALRES,ICODRE,1)
         CALL RCVALB('RIGI',1,1,'+',ZI(JMATE),' ',PHENOM,
      &            NBPAR,NOMPAR,VALPAR,1,
-     &            NOMRES(11),  VALRES(11),CODRET(11),BL2)
-        IF ((CODRET(11).NE.'OK').OR.(VALRES(11).EQ.0.D0)) THEN
+     &            NOMRES(11),  VALRES(11),ICODRE(11),0)
+        IF ((ICODRE(11).NE.0).OR.(VALRES(11).EQ.0.D0)) THEN
           INDITH = -1
           GO TO 70
-        ELSEIF ((IRET.EQ.1).AND.(CODRET(11).NE.'OK')) THEN
+        ELSEIF ((IRET.EQ.1).AND.(ICODRE(11).NE.0)) THEN
           CALL U2MESS('F','CALCULEL_15')
         END IF
         ALPHAT = VALRES(11)
@@ -274,19 +273,19 @@ C        ----------- MATRICES DANS LE REPERE INTRINSEQUE DE L'ELEMENT --
 C        ------ MATERIAU MULTICOUCHE -----------------------------------
         CALL RCVALB('RIGI',1,1,'+',ZI(JMATE),' ',PHENOM,
      &             NBPAR,NOMPAR,VALPAR,1,
-     &             NOMRES(19), VALRES(19),CODRET(19),'FM')
+     &             NOMRES(19), VALRES(19),ICODRE(19),1)
         EPAIS = VALRES(19)
         CALL RCVALB('RIGI',1,1,'+',ZI(JMATE),' ',PHENOM,
      &             NBPAR,NOMPAR,VALPAR,1,
-     &             NOMRES(57), VALRES(57),CODRET(57),'FM')
+     &             NOMRES(57), VALRES(57),ICODRE(57),1)
         EPI = VALRES(57)
         CALL RCVALB('RIGI',1,1,'+',ZI(JMATE),' ',PHENOM,
      &              NBPAR,NOMPAR,VALPAR,1,
-     &              NOMRES(59),VALRES(59),CODRET(59),'FM')
+     &              NOMRES(59),VALRES(59),ICODRE(59),1)
         ORDI = VALRES(59)
         CALL RCVALB('RIGI',1,1,'+',ZI(JMATE),' ',PHENOM,
      &             NBPAR,NOMPAR,VALPAR,27,
-     &             NOMRES(102), VALRES(102),CODRET(102),'FM')
+     &             NOMRES(102), VALRES(102),ICODRE(102),1)
         DM(1,1) = VALRES(102)
         DM(1,2) = VALRES(103)
         DM(1,3) = VALRES(104)

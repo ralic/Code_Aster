@@ -1,9 +1,9 @@
         SUBROUTINE DPMATE ( MOD, IMAT, MATERF, NDT, NDI, NVI, TYPEDP)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 11/03/2008   AUTEUR MAHFOUZ D.MAHFOUZ 
+C MODIF ALGORITH  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -35,7 +35,7 @@ C           NDI    :  NB DE COMPOSANTES DIRECTES  TENSEURS
 C ======================================================================
         REAL*8       TROIS, DEUX, UN, SIX, ALPHA, SY, SYULT, C , A, PHI
         REAL*8       TYPED,R8VIDE,TABTMP(4),COE,DILAT,PSI
-        CHARACTER*2  CODRET(8)
+      INTEGER ICODRE(8)
         CHARACTER*8  NOMC(8)
 C ======================================================================
         PARAMETER ( SIX    =  6.0D0 )
@@ -53,9 +53,9 @@ C --- RECUPERATION DONNEES MATERIAU ELAS -------------------------------
 C ======================================================================
         MATERF(3,1) = 0.0D0
         CALL RCVALA(IMAT,' ', 'ELAS', 0, ' ', 0.D0,
-     &                            2, NOMC(1), MATERF(1,1), CODRET, 'FM')
+     &                            2, NOMC(1), MATERF(1,1), ICODRE, 1)
         CALL RCVALA(IMAT,' ', 'ELAS', 0, ' ', 0.D0,
-     &                            1, NOMC(3), MATERF(3,1), CODRET, '  ')
+     &                            1, NOMC(3), MATERF(3,1), ICODRE, 0)
 C ======================================================================
 C --- DEFINITION PARAMETRES MATERIAU DRUCKER ---------------------------
 C ======================================================================
@@ -67,7 +67,7 @@ C --- RECUPERATION MATERIAU SUIVANT LE TYPE D ECROUISSAGE --------------
 C ======================================================================
         TYPED = R8VIDE()
         CALL RCVALA(IMAT,' ', 'DRUCK_PRAGER', 0, ' ', 0.D0,
-     &                               1, 'TYPE_DP',TYPED, CODRET, ' ')
+     &                               1, 'TYPE_DP',TYPED, ICODRE, 0)
         IF (TYPED.EQ.1.0D0) THEN
 C ======================================================================
 C --- CAS LINEAIRE -----------------------------------------------------
@@ -75,7 +75,7 @@ C ======================================================================
            TYPEDP = 1
            NOMC(7) = 'H'
            CALL RCVALA(IMAT,' ', 'DRUCK_PRAGER', 0, ' ', 0.D0,
-     &                            4, NOMC(4), TABTMP(1), CODRET, 'FM')
+     &                            4, NOMC(4), TABTMP(1), ICODRE, 1)
 C ======================================================================
 C --- POUR DES COMMODITES DE PROGRAMMATION ON DEFINIT LES PARAMETRES ---
 C --- MATERIAU DE LA FACON SUIVANTE ------------------------------------
@@ -97,7 +97,7 @@ C ======================================================================
            TYPEDP = 2
            NOMC(7) = 'SY_ULTM'
            CALL RCVALA(IMAT,' ', 'DRUCK_PRAGER', 0, ' ', 0.D0,
-     &                            4, NOMC(4), TABTMP(1), CODRET, 'FM')
+     &                            4, NOMC(4), TABTMP(1), ICODRE, 1)
 C ======================================================================
 C --- POUR DES COMMODITES DE PROGRAMMATION ON DEFINIT LES PARAMETRES ---
 C --- MATERIAU DE LA FACON SUIVANTE ------------------------------------
@@ -116,7 +116,7 @@ C           PHI   = ASIN ( TROIS * ALPHA / ( DEUX + ALPHA ) )
            MATERF(4,2) = TABTMP(3)
            NOMC(8) = 'DILAT'
            CALL RCVALA(IMAT,' ', 'DRUCK_PRAGER', 0, ' ', 0.D0,
-     &                            1, NOMC(8), DILAT, CODRET, 'FM')
+     &                            1, NOMC(8), DILAT, ICODRE, 1)
            PSI   = ATAN2 (( TROIS*DILAT / DEUX /
      &                SQRT(( DEUX*DILAT + 1.0D0 )*(1.0D0-DILAT))),1.0D0)
            MATERF(5,2) = PSI

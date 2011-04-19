@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/03/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF ELEMENTS  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -56,7 +56,7 @@ C
       REAL*8 SIG11,SIG22,SIG33,SIG12,R
       REAL*8 XX,YY,E,NU,EEST,NOR,NORSIG,NU0,HE
 
-      CHARACTER*2 CODRET(2)
+      INTEGER ICODRE(2)
       CHARACTER*4 FAMI
       CHARACTER*8 NOMRES(2)
 
@@ -109,7 +109,7 @@ C
              SIG12 = SIG12 + ZR(ISIG-1+4*(I-1)+4) * ZR(IVF+K+I-1)
 102     CONTINUE
         CALL RCVALB(FAMI,KP,1,'+',MATER,' ','ELAS',0,' ',0.D0,
-     &              2,NOMRES,VALRES, CODRET, 'FM' )
+     &              2,NOMRES,VALRES, ICODRE, 1)
         E  = VALRES(1)
         NU = VALRES(2)
 C
@@ -131,7 +131,7 @@ C
 C
 101   CONTINUE
 C
-      NIV=1 
+      NIV=1
       CALL UTHK(NOMTE,IGEOM,HE,NDIM,IBID,IBID,IBID,IBID,NIV,IBID)
 C
       IF ((ZR(IERR)+NORSIG).NE.0.D0) THEN

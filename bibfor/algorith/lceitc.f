@@ -2,7 +2,7 @@
      &                  DDEDT,VIM,VIP,R)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 04/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -47,7 +47,7 @@ C-----------------------------------------------------------------------
       INTEGER REGIME,REGM,I,J
       REAL*8  SC,GC,DC,H,KA,KAP,GA,GAP,SK,VAL(3)
       REAL*8  T(3),PR(3,3),TPO(3),TNO,LBD,D,TMP
-      CHARACTER*2 COD(3)
+      INTEGER COD(3)
       CHARACTER*8 NOM(3)
       CHARACTER*1 POUM
       
@@ -71,7 +71,7 @@ C    RECUPERATION DES PARAMETRES PHYSIQUES
       ENDIF
 
       CALL RCVALB(FAMI,KPG,KSP,POUM,MAT,' ','RUPT_FRAG',0,' ',
-     &            0.D0,3,NOM,VAL,COD,'F ')
+     &            0.D0,3,NOM,VAL,COD,2)
       
       GC   = VAL(1)      
       SC   = VAL(2)  

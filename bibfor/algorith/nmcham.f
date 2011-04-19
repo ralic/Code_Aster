@@ -1,29 +1,29 @@
       SUBROUTINE NMCHAM (FAMI,KPG,KSP,IMATE,COMPOR,
      &                   MATEL,MAT,NBVAR,MEMO,VISC,COEF)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 08/12/2008   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C RESPONSABLE PROIX J-M.PROIX
 C.======================================================================
       IMPLICIT NONE
 C
 C      NMCHAM   -- COEFFICIENTS MATERIAU DES LOIS DE COMPORTEMENT
-C                  'VMIS_CINx_CHAB'  'VISC_CINx_CHAB' 
+C                  'VMIS_CINx_CHAB'  'VISC_CINx_CHAB'
 C                  'VMIS_CIN2_MEMO'  'VISC_CIN2_MEMO'
 C
 C     ARGUMENT  E/S  TYPE         ROLE
@@ -33,14 +33,14 @@ C     MAT       OUT   R    COEF MATERIAU
 C
 C ---- ARGUMENTS
       INTEGER       IMATE,NBVAR,KPG,KSP,MEMO,VISC,IRET
-      CHARACTER*16  COMPOR(3),OPTION
+      CHARACTER*16  COMPOR(3)
       REAL*8        MAT(16),MATEL(4)
       CHARACTER*(*) FAMI
 C ---- VARIABLES LOCALES
       REAL*8      COEF,VALRES(10),C2INF,GAMM20
-      REAL*8      E,NU,TROISK,EM,NUM,R0,RINF,B,CINF,K,W,GAMMA0
-      REAL*8      TROIKM,DEUMUM,UN,MU,AINF,DT,KVI,VALDEN,UNSKVI
-      CHARACTER*2 FB2, CODRET(10)
+      REAL*8      R0,RINF,B,CINF,K,W,GAMMA0
+      REAL*8      UN,AINF,KVI,VALDEN,UNSKVI
+      INTEGER ICODRE(10)
       CHARACTER*8 NOMRES(10),NOMEMO(4)
 C.========================= DEBUT DU CODE EXECUTABLE ==================
 C
@@ -70,7 +70,6 @@ C
 C --- INITIALISATIONS :
 C     ===============
       UN     = 1.0D0
-      FB2    = 'FM'
 
       CALL VERIFT(FAMI,KPG,KSP,'T',IMATE,'ELAS',1,COEF,IRET)
 C
@@ -82,13 +81,13 @@ C
 C ---  CARACTERISTIQUES A L'INSTANT PRECEDENT :
 C      --------------------------------------
       CALL RCVALB(FAMI,KPG,KSP,'-',IMATE,' ','ELAS',0,' ',0.D0,2,
-     &              NOMRES(1),MATEL(1),CODRET(1), FB2 )
+     &              NOMRES(1),MATEL(1),ICODRE(1), 1)
 C
 C ---  CARACTERISTIQUES A L'INSTANT ACTUEL :
 C      -----------------------------------
 
       CALL RCVALB(FAMI,KPG,KSP,'+',IMATE,' ','ELAS',0,' ',0.D0,2,
-     &              NOMRES(1),MATEL(3),CODRET(1), FB2 )
+     &              NOMRES(1),MATEL(3),ICODRE(1), 1)
 C
 C --- RECUPERATION DES CARACTERISTIQUES D'ECROUISSAGE :
 C     ===============================================
@@ -102,7 +101,7 @@ C     ===============================================
          NOMRES(4) = 'C_I'
          NOMRES(7) = 'G_0'
          CALL RCVALB(FAMI,KPG,KSP,'+',IMATE,' ','CIN1_CHAB',0,' ',0.D0,
-     &            8,NOMRES,VALRES,CODRET,FB2)
+     &            8,NOMRES,VALRES,ICODRE,1)
       ELSEIF (NBVAR.EQ.2) THEN
          NOMRES(4) = 'C1_I'
          NOMRES(7) = 'G1_0'
@@ -110,7 +109,7 @@ C     ===============================================
          NOMRES(10)= 'G2_0'
 
          CALL RCVALB(FAMI,KPG,KSP,'+',IMATE,' ','CIN2_CHAB',0,' ',0.D0,
-     &            10,NOMRES,VALRES,CODRET,FB2)
+     &            10,NOMRES,VALRES,ICODRE,1)
       ENDIF
        R0     = VALRES(1)
        RINF   = VALRES(2)
@@ -142,7 +141,7 @@ C
        MAT(9) = 0.D0
        MAT(10) = 0.D0
       ENDIF
-            
+
       IF (VISC.EQ.1) THEN
 C
 C ---    RECUPERATION DES CARACTERISTIQUES VISQUEUSES :
@@ -151,9 +150,9 @@ C        ============================================
          NOMRES(2) = 'UN_SUR_K'
          NOMRES(3) = 'UN_SUR_M'
          CALL RCVALB(FAMI,KPG,KSP,'+',IMATE,' ','LEMAITRE',0,' ',0.D0,3
-     &                ,NOMRES,VALRES,CODRET,FB2)
+     &                ,NOMRES,VALRES,ICODRE,1)
 C
-         IF (CODRET(1).EQ.'OK') THEN
+         IF (ICODRE(1).EQ.0) THEN
            VALDEN = VALRES(1)
            UNSKVI = VALRES(2)
            IF (VALDEN.LE.0.D0) THEN
@@ -179,7 +178,7 @@ C
       MAT(14)=0.D0
       MAT(15)=0.D0
       MAT(16)=0.D0
-      
+
       IF (MEMO.EQ.1) THEN
 C ---    RECUPERATION DES CARACTERISTIQUES MEMOIRE :
 C        ============================================
@@ -188,7 +187,7 @@ C        ============================================
          NOMEMO(3) = 'Q_M     '
          NOMEMO(4) = 'MU      '
          CALL RCVALB(FAMI,KPG,KSP,'+',IMATE,' ', 'MEMO_ECRO',0,' ',
-     1              0.D0,4,NOMEMO,MAT(13),CODRET, FB2 )
+     &              0.D0,4,NOMEMO,MAT(13),ICODRE, 1)
 
       ENDIF
       END

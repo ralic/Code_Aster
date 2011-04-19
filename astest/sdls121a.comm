@@ -1,4 +1,4 @@
-# MODIF  DATE 31/01/2011   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 19/04/2011   AUTEUR ASSIRE A.ASSIRE 
 # TITRE RECALAGE DES PARAMETRES D'UN MODELE DYNAMIQUE PAR ANALYSE MODALE
 # 3 calculs esclaves distribues : ncpus = 3 + 1 (maitre)
 # sdls121a.para = tps_job 600 mem_job 300Mo mem_aster 64 ncpus 4 liste_test S
@@ -66,7 +66,7 @@ RESU=MACR_RECAL(
          RESU_EXP         = experience,
          LIST_PARA        = parametres,
          RESU_CALC        = calcul,
-         POIDS            = poids,
+         LIST_POIDS       = poids,
          UNITE_RESU       = 91,
 
          METHODE          = 'HYBRIDE',

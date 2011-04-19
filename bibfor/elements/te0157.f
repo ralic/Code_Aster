@@ -3,9 +3,9 @@
       CHARACTER*16        OPTION , NOMTE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 16/11/2009   AUTEUR DESROCHES X.DESROCHES 
+C MODIF ELEMENTS  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -52,7 +52,7 @@ C
       REAL*8             RHO, XG, YG, DEPI, R8DEPI, ZERO
       REAL*8             DFDX(9),DFDY(9),POIDS,R,X(9),Y(9),VOLUME
       REAL*8             MATINE(6), XXI, YYI, XYI, R8BID, R8PREM
-      CHARACTER*2        CODRET(NBRES)
+      INTEGER ICODRE(NBRES)
       CHARACTER*8        NOMRES(NBRES)
       LOGICAL            LTEATT
 C     ------------------------------------------------------------------
@@ -67,7 +67,7 @@ C
       NOMRES(1) = 'RHO'
       NOMRES(2) = 'CELE_R'
       CALL RCVALA ( ZI(IMATE),' ','FLUIDE',0,' ',R8BID,2,NOMRES,VALRES,
-     &              CODRET, 'FM' )
+     &              ICODRE, 1)
       RHO    = VALRES(1)
       IF(RHO.LE.R8PREM()) THEN
          CALL U2MESS('F','ELEMENTS5_45')
@@ -129,7 +129,7 @@ C
 C        --- ON DONNE LES INERTIES AU CDG ---
          MATINE(6) = MATINE(3) * RHO * DEPI
          MATINE(1) = MATINE(1) * RHO * DEPI + MATINE(6)/2.D0
-     +                                      - ZR(LCASTR)*YG*YG
+     &                                      - ZR(LCASTR)*YG*YG
          MATINE(2) = ZERO
          MATINE(3) = MATINE(1)
 C

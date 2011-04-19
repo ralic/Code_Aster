@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
       CHARACTER*(*) OPTION,NOMTE
 C     ------------------------------------------------------------------
-C MODIF ELEMENTS  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -53,9 +53,9 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       PARAMETER (NBRES=3,NBREF=6)
       PARAMETER (NDDL=12,NL=NDDL*(NDDL+1)/2)
       REAL*8 VALRES(NBRES),VALREF(NBREF)
-      CHARACTER*2 CODRES(NBRES),CODREF(NBREF),DERIVE
+      CHARACTER*2 DERIVE
+      INTEGER CODRES(NBRES),CODREF(NBREF)
       CHARACTER*8 NOMPAR,NOMRES(NBRES),NOMREF(NBREF)
-      CHARACTER*16 CH16
       REAL*8 ZERO,E,NU,RHO
       REAL*8 KLV(78),KLC(12,12),KLCS(12,12)
       REAL*8 MLV(78),MLC(12,12)
@@ -85,7 +85,7 @@ C     --- RECUPERATION DES CARACTERISTIQUES MATERIAUX ---
         ABSMOY = (ZR(LABSC-1+1)+ZR(LABSC-1+2))/2.D0
         CALL RCVALB('NOEU',1,1,'+',ZI(LMATER),' ','ELAS_FLUI',
      &             1,'ABSC',ABSMOY,NBREF,
-     &             NOMREF, VALREF,CODREF,'FM')
+     &             NOMREF, VALREF,CODREF,1)
         E = VALREF(1)
         NU = VALREF(2)
         RHOS = VALREF(3)
@@ -103,11 +103,11 @@ C     --- RECUPERATION DES CARACTERISTIQUES MATERIAUX ---
         IF(NOMTE.NE.'MECA_POU_D_EM')THEN
           CALL RCVALB('NOEU',1,1,'+',ZI(LMATER),' ','ELAS',
      &              NBPAR,NOMPAR,VALPAR,2,
-     &              NOMRES,VALRES,CODRES,'FM')
+     &              NOMRES,VALRES,CODRES,1)
           CALL RCVALB('NOEU',1,1,'+',ZI(LMATER),' ','ELAS',
      &             NBPAR,NOMPAR,VALPAR,1,
-     &             NOMRES(3), VALRES(3),CODRES(3),'  ')
-          IF (CODRES(3).NE.'OK') VALRES(3) = ZERO
+     &             NOMRES(3), VALRES(3),CODRES(3),0)
+          IF (CODRES(3).NE.0) VALRES(3) = ZERO
           E = VALRES(1)
           NU = VALRES(2)
           RHO = VALRES(3)
@@ -161,7 +161,7 @@ C
         CALL JEVECH('PMATSEN','L',IMATE)
         CALL RCVALB('NOEU',1,1,'+',ZI(IMATE),' ','ELAS',
      &           NBPAR,NOMPAR,VALPAR,2,
-     &           NOMRES,VALRES,CODRES,'FM')
+     &           NOMRES,VALRES,CODRES,1)
         E   = VALRES(1)
         XNU = VALRES(2)
 
@@ -174,7 +174,7 @@ C
         CALL JEVECH('PMATERC','L',IMATE)
         CALL RCVALB('NOEU',1,1,'+',ZI(IMATE),' ','ELAS',
      &            NBPAR,NOMPAR,VALPAR,2,
-     &            NOMRES,VALRES,CODRES,'FM')
+     &            NOMRES,VALRES,CODRES,1)
         IF(ABS(XNU).LT.R8PREM()) THEN
           DERIVE = 'E'
           XNU = VALRES(2)

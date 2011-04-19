@@ -1,12 +1,12 @@
-      SUBROUTINE MMMTFF(PHASE ,NDIM  ,NBCPS ,NNL   ,HPG   ,
+      SUBROUTINE MMMTFF(PHASEP,NDIM  ,NBCPS ,NNL   ,HPG   ,
      &                  FFL   ,JACOBI,TAU1  ,TAU2  ,RESE  ,
-     &                  NRESE ,LAMBDA,NDEXFR,COEFFS,COEFFF,
-     &                  COEFFP,MATRFF)
+     &                  NRESE ,LAMBDA,COEFFS,COEFFF,COEFFP,
+     &                  MATRFF)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 19/10/2010   AUTEUR DESOZA T.DESOZA 
+C MODIF ELEMENTS  DATE 18/04/2011   AUTEUR ABBAS M.ABBAS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -24,8 +24,8 @@ C ======================================================================
 C RESPONSABLE ABBAS M.ABBAS
 C
       IMPLICIT NONE
-      CHARACTER*4  PHASE
-      INTEGER      NDIM,NNL,NBCPS,NDEXFR
+      CHARACTER*9  PHASEP
+      INTEGER      NDIM,NNL,NBCPS
       REAL*8       HPG,FFL(9),JACOBI
       REAL*8       TAU1(3),TAU2(3)
       REAL*8       RESE(3),NRESE
@@ -42,12 +42,13 @@ C
 C ----------------------------------------------------------------------
 C
 C
-C IN  PHASE  : PHASE DE CALCUL
+C IN  PHASEP : PHASE DE CALCUL
 C              'SANS' - PAS DE CONTACT
+C              'ADHE' - CONTACT ADHERENT
 C              'GLIS' - CONTACT GLISSANT
-C              'EXFR' - EXCLUSION D'UNE DIRECTION DE FROTTEMENT
-C              'PADH' - PENALISATION - FROTTEMENT ADHERENT
-C              'PGLI' - PENALISATION - FROTTEMENT GLISSANT
+C              'SANS_PENA' - PENALISATION - PAS DE CONTACT
+C              'ADHE_PENA' - PENALISATION - CONTACT ADHERENT
+C              'GLIS_PENA' - PENALISATION - CONTACT GLISSANT
 C IN  NDIM   : DIMENSION DU PROBLEME
 C IN  NNL    : NOMBRE DE NOEUDS LAGRANGE
 C IN  NBCPS  : NB DE DDL DE LAGRANGE
@@ -56,7 +57,6 @@ C IN  FFL    : FONCTIONS DE FORMES LAGR.
 C IN  TAU1   : PREMIER VECTEUR TANGENT
 C IN  TAU2   : SECOND VECTEUR TANGENT
 C IN  JACOBI : JACOBIEN DE LA MAILLE AU POINT DE CONTACT
-C IN  NDEXFR : ENTIER CODE POUR EXCLUSION DIRECTION DE FROTTEMENT
 C IN  RESE   : SEMI-MULTIPLICATEUR GTK DE FROTTEMENT
 C               GTK = LAMBDAF + COEFFR*VITESSE
 C IN  NRESE  : RACINE DE LA NORME DE RESE
@@ -67,7 +67,7 @@ C OUT MATRFF : MATRICE ELEMENTAIRE LAGR_F/LAGR_F
 C
 C ----------------------------------------------------------------------
 C
-      INTEGER   I, J, K , L,II,JJ,IDIM,NBCPF,NDEXCL(10)
+      INTEGER   I, J, K , L,II,JJ,IDIM,NBCPF
       REAL*8    TT(3,3)
       REAL*8    H1(3),H2(3)
       REAL*8    R(2,2)
@@ -92,7 +92,7 @@ C
         TT(2,2) = TAU2(K)*TAU2(K) + TT(2,2)
  301  CONTINUE
 C
-      IF (PHASE.EQ.'SANS') THEN
+      IF (PHASEP(1:4).EQ.'SANS') THEN
         DO 284 I = 1,NNL
           DO 283 J = 1,NNL
             DO 282 L = 1,NBCPF
@@ -105,7 +105,7 @@ C
  282        CONTINUE
  283      CONTINUE
  284    CONTINUE
-      ELSEIF (PHASE.EQ.'GLIS') THEN
+      ELSEIF (PHASEP.EQ.'GLIS') THEN
 C       --- VECTEUR PROJ. BOULE SUR TGT1: {H1} = [K].{T1}
         CALL MKKVEC(RESE  ,NRESE ,NDIM  ,TAU1  ,H1    )
 C       --- VECTEUR PROJ. BOULE SUR TGT1: {H2} = [K].{T2}
@@ -131,21 +131,7 @@ C
  22         CONTINUE
  23       CONTINUE
  24     CONTINUE
-C
-      ELSEIF (PHASE.EQ.'EXFR') THEN
-        CALL ISDECO(NDEXFR,NDEXCL,10)
-        DO 121 I = 1,NNL
-          IF (NDEXCL(I).EQ.1) THEN
-            DO 120 L = 1,NBCPF
-              IF ((L.EQ.2).AND.(NDEXCL(10).EQ.0)) THEN
-                GOTO 120
-              ENDIF
-              II = NBCPF*(I-1)+L
-              MATRFF(II,II) = 1.D0
- 120        CONTINUE
-          ENDIF
- 121    CONTINUE
-      ELSEIF ((PHASE.EQ.'PADH').OR.(PHASE.EQ.'PGLI')) THEN
+      ELSEIF (PHASEP.EQ.'GLIS_PENA') THEN 
         DO 384 I = 1,NNL
           DO 383 J = 1,NNL
             DO 382 L = 1,NBCPF
@@ -158,7 +144,22 @@ C
  381          CONTINUE
  382        CONTINUE
  383      CONTINUE
- 384    CONTINUE
+ 384    CONTINUE 
+C
+      ELSEIF (PHASEP.EQ.'ADHE_PENA') THEN
+        DO 484 I = 1,NNL
+          DO 483 J = 1,NNL
+            DO 482 L = 1,NBCPF
+              DO 481 K = 1,NBCPF
+                II = (NDIM-1)*(I-1)+L
+                JJ = (NDIM-1)*(J-1)+K
+                MATRFF(II,JJ) = MATRFF(II,JJ)+
+     &                          HPG*FFL(I)*FFL(J)*JACOBI*TT(L,K)
+     &                          *COEFFF*LAMBDA/COEFFP
+ 481          CONTINUE
+ 482        CONTINUE
+ 483      CONTINUE
+ 484    CONTINUE
       ELSE
         CALL ASSERT(.FALSE.)
       ENDIF

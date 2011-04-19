@@ -2,12 +2,12 @@
      &                  EPSM,DEPS,VIM,SIGP,VIP,DSDE,CRILDC,CODRET)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 24/09/2007   AUTEUR MARKOVIC D.MARKOVIC 
+C MODIF MODELISA  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C TOLE CRP_20
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -50,28 +50,22 @@ C OUT DSDE    : DSIG/DEPS
 C     ------------------------------------------------------------------
 C     ARGUMENTS
 C     ------------------------------------------------------------------
-      REAL*8 EM,EP,ET,ALPHAM,ALPHAP,TREF
-      REAL*8 SIGM,DEPS,PM,VIM(*),VIP(*),RESU,EPSPM,CORRM
-      REAL*8 SIGP,DSDE,RBID,RESI,CRILDC(*)
+      REAL*8 SIGM,DEPS,PM,VIM(*),VIP(*),EPSPM,CORRM
+      REAL*8 SIGP,DSDE,RESI,CRILDC(*)
       CHARACTER*16 OPTION
       CHARACTER*(*) FAMI,MATERI
-      INTEGER IMATE,IRET,CODRET,KPG,KSP
+      INTEGER IMATE,CODRET,KPG,KSP
 C     ------------------------------------------------------------------
 C     VARIABLES LOCALES
 C     ------------------------------------------------------------------
-      REAL*8 RPRIM,RM,SIGE,VALRES,DEPSTH,AIRERP,DUM
-      REAL*8 SIELEQ,RP,DP,NU,EPSM
-      INTEGER JPROLM,JVALEM,NBVALM,NBVALP,NBPAR,JPROLP,JVALEP
-      CHARACTER*2 FB2,CODRES
-      CHARACTER*8 NOMPAR,NOMRES,NOMECL(2),TYPE
-      REAL*8  EPSIL0,D0,EPSP0,DEPSIL,P0,SIG0
-      REAL*8 ECR0,ECRF,DF,PF,EPSPF,SIGF,E,SY,DC,V,K,M,SF
+      REAL*8 EPSM
+      INTEGER CODRES
+      REAL*8 E,SY,DC,V,K,M
       REAL*8 EPSILF,EPSD,EPSC,D,P,EPSP,ECR,FPLAS
       REAL*8 DFDS,DFPDS,DFDECR,DIFECR,LAMBP,FD,VAR1
-      REAL*8 VAR2,VAR3,RV,FINI,FDINI,FPLAS2,EPSMAX
+      REAL*8 VAR2,VAR3,RV,FINI,FDINI,FPLAS2
       LOGICAL DCONV,PCONV,MELAS
-      INTEGER ITER,ITEMAX,ICHAR,NCHAR,I,J,IBID
-      FB2 = 'FM'
+      INTEGER ITER,ITEMAX,I,J,IBID
       PM = VIM(1)
       EPSPM = VIM(1)
       D  = VIM(2)
@@ -79,15 +73,15 @@ C     ------------------------------------------------------------------
 
 C --- CARACTERISTIQUES ECROUISSAGE LINEAIRE
       CALL RCVALB(FAMI,KPG,KSP,'+',IMATE,MATERI,'CORR_ACIER',0,' ',
-     &            0.D0,1,'D_CORR',DC,CODRES,FB2)
+     &            0.D0,1,'D_CORR',DC,CODRES,1)
       CALL RCVALB(FAMI,KPG,KSP,'+',IMATE,MATERI,'CORR_ACIER',0,' ',
-     &            0.D0,1,'ECRO_K',K,CODRES,FB2)
+     &            0.D0,1,'ECRO_K',K,CODRES,1)
       CALL RCVALB(FAMI,KPG,KSP,'+',IMATE,MATERI,'CORR_ACIER',0,' ',
-     &            0.D0,1,'ECRO_M',M,CODRES,FB2)
+     &            0.D0,1,'ECRO_M',M,CODRES,1)
       CALL RCVALB(FAMI,KPG,KSP,'+',IMATE,MATERI,'CORR_ACIER',0,' ',
-     &            0.D0,1,'SY',SY,CODRES,FB2)
+     &            0.D0,1,'SY',SY,CODRES,1)
       CALL RCVALB(FAMI,KPG,KSP,'+',IMATE,MATERI,'ELAS',0,' ',0.D0,
-     &            1,'NU',V,CODRES,FB2)
+     &            1,'NU',V,CODRES,1)
 
 C --- PARAMETRES DE CONVERGENCE
       RESI = CRILDC(3)

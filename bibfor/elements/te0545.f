@@ -1,7 +1,7 @@
       SUBROUTINE TE0545(OPTION,NOMTE)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 17/01/2011   AUTEUR SFAYOLLE S.FAYOLLE 
+C MODIF ELEMENTS  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -45,12 +45,11 @@ C ......................................................................
       REAL*8 XYZ(3)
       REAL*8 ANGMAS(7)
 
-      CHARACTER*2 CODRT1
+      INTEGER ICODR1
       CHARACTER*8 TYPMOD(2)
       CHARACTER*16 PHENOM
 
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
-      CHARACTER*32 JEXNUM,JEXNOM,JEXR8,JEXATR
       INTEGER ZI
       COMMON /IVARJE/ZI(1)
       REAL*8 ZR
@@ -114,9 +113,9 @@ C     3 DEPLACEMENT + LAMBDA + VAR_REG
 
         CALL MASSUP(OPTION,NDIM,DLNS,NNO,NNOB,ZI(IMATE),PHENOM,
      &              NPG1,IPOIDS,IDFDE,ZR(IGEOM),ZR(IVF),
-     &              IMATUU,CODRT1,IGEOM,IVF)
+     &              IMATUU,ICODR1,IGEOM,IVF)
 
-C--------------- FIN CALCUL MATRICE DE MASSE ----------------------- 
+C--------------- FIN CALCUL MATRICE DE MASSE -----------------------
       ELSE
 
         CALL JEVECH('PCONTMR','L',ICONTM)

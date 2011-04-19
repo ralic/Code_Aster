@@ -3,9 +3,9 @@
       CHARACTER*(*) OPTION,NOMTE
 C     -----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -51,7 +51,8 @@ C-DEL CHARACTER*32 JEXNUM,JEXNOM,JEXATR,JEXR8
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 
-      CHARACTER*2 CODRET(4),CODRES
+      INTEGER ICODRE(4)
+      INTEGER CODRES
       CHARACTER*4 FAMI
       CHARACTER*8 NOMRES(4)
       CHARACTER*16 OPTCAL(12),PHENOM
@@ -64,7 +65,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER I,KP,NDIM,ICOMPO,NBVARI,IPOPP,IPOPPT
       INTEGER JGANO,IPOIDS,IVF,IDFDE,NPG,NNO,NNOS
       INTEGER IMATE,IGEOM,ICONG,IVARIG,ISSOPT,IWEIB,IDEFG,NBVP
-      INTEGER ISIGIE,ISIGIS,INO,JTAB(7),IRET
+      INTEGER ISIGIE,ISIGIS,JTAB(7),IRET
 
 C======================== CORPS DU PROGRAMME ===========================
 
@@ -116,10 +117,10 @@ C     ARRET
       END IF
 
       CALL RCVALB(FAMI,1,1,'+',ZI(IMATE),' ',PHENOM,0,' ',0.D0,
-     &            3,NOMRES,VALRES,CODRET,'FM')
+     &            3,NOMRES,VALRES,ICODRE,1)
       CALL RCVALB(FAMI,1,1,'+',ZI(IMATE),' ',PHENOM,0,' ',0.D0,
-     &            1,NOMRES(3),VALRES(3),CODRET(3),'FM')
-      IF (CODRET(3).NE.'OK') VALRES(3) = 1.0D-6
+     &            1,NOMRES(3),VALRES(3),ICODRE(3),1)
+      IF (ICODRE(3).NE.0) VALRES(3) = 1.0D-6
       M = VALRES(1)
       VREF = VALRES(2)
       SEUIL = VALRES(3)
@@ -187,7 +188,7 @@ C           --------------------------------------------------------
           TMOY = TMOY/VKP
           CALL RCVALB('RIGI',1,1,'+',ZI(IMATE),' ',PHENOM,
      &                1,'TEMP',TMOY,1,NOMRES(4),
-     &                VALRES(4),CODRET(4),'FM')
+     &                VALRES(4),ICODRE(4),1)
           SREF = VALRES(4)
 
 C           2.1.3 CALCUL DE SIGM_W
@@ -255,7 +256,7 @@ C           --------------------------------------------------------
           TMOY = TMOY/VKP
           CALL RCVALB('RIGI',1,1,'+',ZI(IMATE),' ',PHENOM,
      &                1,'TEMP',TMOY,1,NOMRES(4),
-     &                VALRES(4),CODRET(4),'FM')
+     &                VALRES(4),ICODRE(4),1)
           SREF = VALRES(4)
 
 C           2.2.3 CALCUL DE SIGM_W
@@ -299,7 +300,7 @@ C     -------------------------------------------------------------
               CALL EPDCP(SIGM,EPSG,SIG1,EPS1)
 C           --- TEMPERATURE AU PG
               CALL RCVALB(FAMI,KP,1,'+',ZI(IMATE),' ',PHENOM,0,' ',0.D0,
-     &                  1,NOMRES(4),VALRES(4),CODRET(4),'FM')
+     &                  1,NOMRES(4),VALRES(4),ICODRE(4),1)
               SREF = VALRES(4)
               SIGNEW = (SIG1/SREF)*EXP(-EPS1*0.5D0)
             END IF
@@ -337,7 +338,7 @@ C     ----------------------------------------------------
               CALL FGEQUI(SIGM,'SIGM',NBVP,EQUI)
               SIG1 = MAX(EQUI(3),EQUI(4),EQUI(5))
               CALL RCVALB(FAMI,KP,1,'+',ZI(IMATE),' ',PHENOM,0,' ',
-     &                    0.D0,1,NOMRES(4),VALRES(4),CODRET(4),'FM')
+     &                    0.D0,1,NOMRES(4),VALRES(4),ICODRE(4),1)
               SREF = VALRES(4)
               SIG1 = SIG1/SREF
             END IF
