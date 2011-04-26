@@ -1,29 +1,29 @@
-      SUBROUTINE LKDGDE (VAL,VINTR,DT,SEUIVE,UCRIM,IM,SM,VINM, 
+      SUBROUTINE LKDGDE (VAL,VINTR,DT,SEUIVE,UCRIM,IM,SM,VINM,
      &                    NBMAT, MATER,DEPSV, DGAMV,RETCOM)
 C
       IMPLICIT    NONE
       INTEGER     NBMAT,RETCOM, VAL
-      REAL*8      INVAR,S(6),SEUIVE,UCRIM,IM,SM(6), VINTR
+      REAL*8      SEUIVE,UCRIM,IM,SM(6), VINTR
       REAL*8      MATER(NBMAT,2), VINM(7), DEPSV(6), DGAMV
       REAL*8      DT
 C =================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 15/01/2008   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C =================================================================
 C --- MODELE LETK : LAIGLE VISCOPLASTIQUE--------------------------
@@ -48,13 +48,13 @@ C     : DGAMV : PARAMETRE D ECROUISSAGE VISQUEUX ------------------
 C --- : RETCOM: CODE RETOUR POUR REDECOUPAGE DU PAS DE TEMPS-------
 C =================================================================
       COMMON /TDIM/   NDT , NDI
-      INTEGER   I, K, NDI, NDT
-      REAL*8    A, N, PA , AA(6)
+      INTEGER   I, NDI, NDT
+      REAL*8    A, N, PA
       REAL*8    BIDON, DEUX, TROIS, ZERO
       REAL*8    PARAVI(3), VARVI(4)
       REAL*8    DHDS(6),DS2HDS(6),DFDSV(6)
       REAL*8    BPRIME, LKBPRI, VECNV(6), GV(6)
-      REAL*8    DDEPSV(6),SEUIVM, UCRIVM
+      REAL*8    DDEPSV(6)
 C =================================================================
 C --- INITIALISATION DE PARAMETRES --------------------------------
 C =================================================================
@@ -74,14 +74,14 @@ C =================================================================
       CALL LKDHDS(NBMAT,MATER,IM,SM,DHDS,RETCOM)
       CALL LKDS2H(NBMAT,MATER,IM,SM,DHDS,DS2HDS,RETCOM)
       CALL LKVARV(VINTR,NBMAT, MATER, PARAVI)
-      
+
       CALL LKVACV(NBMAT, MATER,  PARAVI, VARVI)
       CALL LKDFDS(NBMAT,MATER,SM,PARAVI,VARVI,DS2HDS,
      &            UCRIM,DFDSV)
 
       BPRIME = LKBPRI (VAL,VINM,NBMAT,MATER,PARAVI,IM,SM)
 
-      CALL LKCALN(SM, BPRIME, VECNV,RETCOM)   
+      CALL LKCALN(SM, BPRIME, VECNV,RETCOM)
 C =================================================================
 C --- CALCUL DE GVISC ------------------------------------
 C =================================================================
@@ -89,13 +89,13 @@ C =================================================================
 C =================================================================
 C --- CALCUL DE DEPSV ------------------------------------
 C =================================================================
-      DO 10 I = 1,NDT 
+      DO 10 I = 1,NDT
       IF (SEUIVE .LE. ZERO) THEN
       DEPSV(I) = ZERO
       ELSE
       DEPSV(I) = A *  (SEUIVE/PA)**N*GV(I)*DT
       ENDIF
-  10  CONTINUE      
+  10  CONTINUE
 
 C =================================================================
 C --- CALCUL DU DEVIATEUR DU TENSEUR DES DEFORMATIONS VISQUEUSES -
@@ -105,11 +105,11 @@ C =================================================================
 C =================================================================
 C --- CALCUL DE DGAMV ------------------------------------
 C =================================================================
-      
+
       DGAMV = 0.D0
 
       DO 20 I = 1,NDT
-      DGAMV = DGAMV + DDEPSV(I)**2 
+      DGAMV = DGAMV + DDEPSV(I)**2
   20  CONTINUE
       DGAMV = SQRT(DEUX/TROIS * DGAMV)
 C =================================================================

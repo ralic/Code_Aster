@@ -1,8 +1,8 @@
       SUBROUTINE JJAREP ( ICLAS , NRMAX )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 15/03/2010   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -37,7 +37,7 @@ C ----------------------------------------------------------------------
       EQUIVALENCE    ( ISZON(1) , K1ZON(1) )
       PARAMETER  ( N = 5 )
       INTEGER          LTYP    , LONG    , DATE    , IADD    , IADM    ,
-     &                 LONO    , HCOD    , CARA    , LUTI    , IMARQ   
+     &                 LONO    , HCOD    , CARA    , LUTI    , IMARQ
       COMMON /IATRJE/  LTYP(1) , LONG(1) , DATE(1) , IADD(1) , IADM(1) ,
      &                 LONO(1) , HCOD(1) , CARA(1) , LUTI(1) , IMARQ(1)
       COMMON /JIATJE/  JLTYP(N), JLONG(N), JDATE(N), JIADD(N), JIADM(N),
@@ -67,14 +67,14 @@ C
       COMMON /IENVJE/  LBIS , LOIS , LOLS , LOUA , LOR8 , LOC8
       INTEGER          IPGC,KDESMA(2),LGD,LGDUTI,KPOSMA(2),LGP,LGPUTI
       COMMON /IADMJE/  IPGC,KDESMA,   LGD,LGDUTI,KPOSMA,   LGP,LGPUTI
-      INTEGER          LDYN , LGDYN , NBDYN , NBFREE 
-      COMMON /IDYNJE/  LDYN , LGDYN , NBDYN , NBFREE 
+      INTEGER          LDYN , LGDYN , NBDYN , NBFREE
+      COMMON /IDYNJE/  LDYN , LGDYN , NBDYN , NBFREE
 C ----------------------------------------------------------------------
       CHARACTER *32    CLEL,CLE
       REAL *8          RBID
       CHARACTER *4     Z
       INTEGER          JCOD,KADHC,JNOM,KADNO,LOREP,IADRS(20),KAT(20)
-      INTEGER          LGNOM,NUTI,LSO(20),IMQ(2),IADDI(2),KDY(20),IBID
+      INTEGER          LGNOM,NUTI,LSO(20),IMQ(2),IADDI(2),KDY(20)
       PARAMETER       (NBATT=12,NBTOT=NBATT+3,LGNOM=32)
       INTEGER          NUMATT(NBTOT),IDM(NBTOT),IDY(NBTOT),IRT
       DATA NUMATT,Z   /2,3,4,5,6,8,9,10,11,12,16,7,13,20,17,'INIT'/
@@ -83,23 +83,23 @@ C DEB ------------------------------------------------------------------
       IPGC  = -2
       IRT = 0
       IC = ICLAS
-      CALL JJLDYN (0,-1,LTOT) 
+      CALL JJLDYN (0,-1,LTOT)
 C
-C --- ON INTERDIT L'APPEL A JJLDYN AVEC LE PARAMETRE MODE=1 LORS DE 
+C --- ON INTERDIT L'APPEL A JJLDYN AVEC LE PARAMETRE MODE=1 LORS DE
 C --- L'ALLOCATION DYNAMIQUE  (ET LES APPELS RECURSIFS)
 C
       LDYNOL = LDYN
-      IF ( LDYN .EQ. 1 ) THEN  
+      IF ( LDYN .EQ. 1 ) THEN
         LDYN   = 2
       ENDIF
 C
 C --- ALLOCATION DU SEGMENT DE VALEURS POUR LE NOUVEAU REPERTOIRE
 C
       LHCOD  = JJPREM ( NRMAX , IRT )
-      IF ( IRT .EQ. 1 ) THEN 
+      IF ( IRT .EQ. 1 ) THEN
         IF ( IC .EQ. 1 ) THEN
           CALL U2MESG('A','JEVEUX_64',1,NOMBAS(IC),1,NRMAX,0,RBID)
-        ELSE 
+        ELSE
           CALL U2MESG('A','JEVEUX_65',1,NOMBAS(IC),1,NRMAX,0,RBID)
         ENDIF
       ENDIF
@@ -303,7 +303,7 @@ C
       CARA(JCARA(IC)+7) = IADD(JIADD(IC) + 2*2    )
       DO 345 IND = 1 , NREMAX(IC)
         INDIR(JINDIR(IC)+IND) = IND
- 345  CONTINUE        
+ 345  CONTINUE
       LDYN = LDYNOL
       IPGC = IPGCA
 C FIN ------------------------------------------------------------------

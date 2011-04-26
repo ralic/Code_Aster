@@ -8,9 +8,9 @@
       REAL*8  TIME
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 20/11/2007   AUTEUR REZETTE C.REZETTE 
+C MODIF CALCULEL  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -44,17 +44,16 @@ C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
 C ----------------------------------------------------------------------
 C
       INTEGER       IBID, I, IF3D3D, IF2D2D, IF1D2D, IF2D3D,
-     &              IPRESS, IEPSIN, IROTA, IPESA, IRET, N1, ICHA0,
-     &              NBVALE, IN, IVAL, JVAL, NEXCI, JPARA, JFCHA, NRES,
+     &              IPRESS, IEPSIN, IROTA, IPESA, IRET, N1,
+     &               NEXCI, JPARA, JFCHA, NRES,
      &              NVOLU, N1D2D, N2D3D, NPRESS, NEPSI, NROTA, NPESA,
      &              IIVOLU,II1D2D,II2D3D,IIPRES,
      &              JFONCI,ISVOLU,IS1D2D,IS2D3D,ISPRES
       CHARACTER*8   K8B, RESU, NOMF, NOMCHF
       CHARACTER*16  TYPE, OPER
-      CHARACTER*19  CHARG,CHTMP1, CHTMP2, CHARGI
-      CHARACTER*24  VCHAR, NOMFCT
+      CHARACTER*19  CHARG,CHTMP1, CHTMP2
+      CHARACTER*24   NOMFCT
       CHARACTER*24  EXCISD
-      REAL*8  CONST
       LOGICAL LCHSD, FONCI, FONC1, FONC2
 C     ------------------------------------------------------------------
 C
@@ -103,7 +102,7 @@ C
 C
 
       DO 10 I = 1 , NCHAR
-C 
+C
         NOMCHF(7:8)='00'
 
         IF(LCHAR(I).NE.' ') THEN
@@ -118,7 +117,7 @@ C
          ZL(JFONCI+I-1)=FONCI
 C
 C  ---   CHVOLU  ---
-C   
+C
          CALL JEEXIN ( LCHAR(I)//'.CHME.F3D3D.DESC', IF3D3D )
          CALL JEEXIN ( LCHAR(I)//'.CHME.F2D2D.DESC', IF2D2D )
          IF ( IF3D3D .NE. 0 ) THEN
@@ -136,7 +135,7 @@ C
            ENDIF
 
            IF (N1. NE. 0)THEN
-             IF( FONCI) THEN             
+             IF( FONCI) THEN
                CALL CODENT(I*10+1,'D0',NOMCHF(6:7))
                NOMF=NOMCHF
              ELSE
@@ -174,7 +173,7 @@ C
          ENDIF
 C
 C  ---   CF1D2D  ---
-C    
+C
          CALL JEEXIN ( LCHAR(I)//'.CHME.F1D2D.DESC', IF1D2D )
          IF ( IF1D2D .NE. 0 ) THEN
 
@@ -188,7 +187,7 @@ C
 
            CHARG= LCHAR(I)//'.CHME.F1D2D'
            IF (N1. NE. 0)THEN
-             IF( FONCI) THEN             
+             IF( FONCI) THEN
                CALL CODENT(I*10+2,'D0',NOMCHF(6:7))
                NOMF=NOMCHF
              ELSE
@@ -226,7 +225,7 @@ C
          ENDIF
 C
 C  ---   CF2D3D  ---
-C    
+C
          CALL JEEXIN ( LCHAR(I)//'.CHME.F2D3D.DESC', IF2D3D )
          IF ( IF2D3D .NE. 0 ) THEN
 
@@ -240,7 +239,7 @@ C
 
            CHARG= LCHAR(I)//'.CHME.F2D3D'
            IF (N1. NE. 0)THEN
-             IF( FONCI) THEN             
+             IF( FONCI) THEN
                CALL CODENT(I*10+3,'D0',NOMCHF(6:7))
                NOMF=NOMCHF
              ELSE
@@ -278,10 +277,10 @@ C
          ENDIF
 C
 C  ---   CHPRES  ---
-C    
+C
          CALL JEEXIN ( LCHAR(I)//'.CHME.PRESS.DESC', IPRESS )
          IF ( IPRESS .NE. 0 ) THEN
-            
+
            IF(LCHSD) THEN
              N1 = 1
              NOMFCT = ZK24(JFCHA-1+I)
@@ -292,7 +291,7 @@ C
 
            CHARG= LCHAR(I)//'.CHME.PRESS'
            IF (N1. NE. 0)THEN
-             IF( FONCI) THEN             
+             IF( FONCI) THEN
                CALL CODENT(I*10+4,'D0',NOMCHF(6:7))
                NOMF=NOMCHF
              ELSE
@@ -327,11 +326,11 @@ C
            ENDIF
            IIPRES=I
 
-     
+
          ENDIF
 C
 C  ---   CHEPSI  ---
-C    
+C
          CALL JEEXIN ( LCHAR(I)//'.CHME.EPSIN.DESC', IEPSIN )
          IF ( IEPSIN .NE. 0 ) THEN
 
@@ -346,7 +345,7 @@ C
            CHARG= LCHAR(I)//'.CHME.EPSIN'
 
            IF (N1. NE. 0)THEN
-             IF( FONCI) THEN             
+             IF( FONCI) THEN
                CALL CODENT(I*10+5,'D0',NOMCHF(6:7))
                NOMF=NOMCHF
              ELSE
@@ -365,7 +364,7 @@ C
            ELSE
              CALL U2MESS('F','CALCULEL5_58')
            ENDIF
-           
+
          ENDIF
 C
 C  ---   CHPESA  ---
@@ -384,7 +383,7 @@ C
            CHARG= LCHAR(I)//'.CHME.PESAN'
 
            IF (N1. NE. 0)THEN
-             IF( FONCI) THEN             
+             IF( FONCI) THEN
                CALL CODENT(I*10+6,'D0',NOMCHF(6:7))
                NOMF=NOMCHF
              ELSE
@@ -421,7 +420,7 @@ C
            CHARG= LCHAR(I)//'.CHME.ROTAT'
 
            IF (N1. NE. 0)THEN
-             IF( FONCI) THEN             
+             IF( FONCI) THEN
                CALL CODENT(I*10+7,'D0',NOMCHF(6:7))
                NOMF=NOMCHF
              ELSE

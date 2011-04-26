@@ -3,48 +3,48 @@
      &          TAMPON)
         IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 14/12/2010   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C     DEFORMATION PLASTIQUE EQUIVALENTE CUMULEE MACROSCOPIQUE
 C     POUR LE MONOCRISTAL
 C     IN  VIND   :  VARIABLES INTERNES A T
 C     IN  VINF   :  VARIABLES INTERNES A T+DT
 C     ----------------------------------------------------------------
-      INTEGER  NMAT,NDT,I,NBCOMM(NMAT,3),NBSYS,IEC,IFA,IS,NBFSYS,ITMAX
-      INTEGER  NUV1,NUVI,MONO1,ITER,NVI,IRET,IFL,IU,J,IR,K
+      INTEGER  NMAT,NDT,I,NBCOMM(NMAT,3),NBSYS,IFA,IS,NBFSYS,ITMAX
+      INTEGER  NUV1,NUVI,ITER,NVI,IRET,J,IR,K
       REAL*8   VIND(*),VINF(*),DVIN(6),DY(*),YF(*),MATERF(NMAT*2)
-      REAL*8   LCNRTE, EPSEQ,PGL(3,3),D,MS(6),NG(3),DGAMMA,DP,DALPHA
+      REAL*8   LCNRTE, EPSEQ,PGL(3,3),MS(6),NG(3),DGAMMA,DP,DALPHA
       REAL*8   ALPHAM,DEVI(6),TOUTMS(5,24,6),TOLER,HSR(5,24,24)
-      REAL*8   BSD,GCB,KDCS, RACR,SOM, AUX, TAUS,CISA2,L(3,3),MAXRP
+      REAL*8     TAUS,CISA2,L(3,3),MAXRP
       REAL*8   CRIT, SGNS, DT,OMP(3),R8MIEM,Q(3,3),OMEGAE(3,3),ZE(12)
       REAL*8   SI(3,3),SING(3),SICL, P,LG(3),DTHETA,TAMPON(*),RP
       CHARACTER*16 CPMONO(5*NMAT+1),NOMFAM,NECRCI,NECOUL,NECRIS
       REAL*8 IDEN(3,3),OMEGA(3,3),OMEGAP(3,3),QM(3,3),NAX(3,3),DQ(3,3)
       DATA IDEN/1.D0,0.D0,0.D0, 0.D0,1.D0,0.D0, 0.D0,0.D0,1.D0/
 C
-C     CAS MONO1 : ON RECALCULE LES VARIABLES INTERNES      
-      CALL R8INIR(6, 0.D0, DEVI, 1)                        
-      CALL R8INIR(3, 0.D0, OMP, 1)                        
-      CALL R8INIR(9, 0.D0, QM, 1)                        
-      CALL R8INIR(12, 0.D0, ZE, 1)                        
-      NBFSYS=NBCOMM(NMAT,2)                                
-      NUVI=6                                               
-      NUV1=NDT                                             
+C     CAS MONO1 : ON RECALCULE LES VARIABLES INTERNES
+      CALL R8INIR(6, 0.D0, DEVI, 1)
+      CALL R8INIR(3, 0.D0, OMP, 1)
+      CALL R8INIR(9, 0.D0, QM, 1)
+      CALL R8INIR(12, 0.D0, ZE, 1)
+      NBFSYS=NBCOMM(NMAT,2)
+      NUVI=6
+      NUV1=NDT
       SICL = 0.D0
       MAXRP=-1.D20
 C ROTATION RESEAU DEBUT
@@ -59,19 +59,19 @@ C        LA MATRICE DE ROTATION QM EST STOCKEE DANS VIND (N-19 a N-9)
          IR=0
       ENDIF
 
-      DO 6 IFA=1,NBFSYS                                     
-         NOMFAM=CPMONO(5*(IFA-1)+1)                        
+      DO 6 IFA=1,NBFSYS
+         NOMFAM=CPMONO(5*(IFA-1)+1)
          NECOUL=CPMONO(5*(IFA-1)+3)
          NECRIS=CPMONO(5*(IFA-1)+4)
          NECRCI=CPMONO(5*(IFA-1)+5)
-         CALL LCMMSG(NOMFAM,NBSYS,0,PGL,MS,NG,LG,0,Q)                
-         DO 7 IS=1,NBSYS                                   
-            DO 101 I=1,6                                    
-              MS(I)=TOUTMS(IFA,IS,I)                       
- 101        CONTINUE                                       
-            NUVI=NUVI+3                                           
-            NUV1=NUV1+1                                           
-            
+         CALL LCMMSG(NOMFAM,NBSYS,0,PGL,MS,NG,LG,0,Q)
+         DO 7 IS=1,NBSYS
+            DO 101 I=1,6
+              MS(I)=TOUTMS(IFA,IS,I)
+ 101        CONTINUE
+            NUVI=NUVI+3
+            NUV1=NUV1+1
+
             IF(NECOUL.EQ.'MONO_DD_KR') THEN
                TAUS=0.D0
                DO 102 I=1,6
@@ -98,9 +98,9 @@ C        LA MATRICE DE ROTATION QM EST STOCKEE DANS VIND (N-19 a N-9)
      &                      NMAT,NBCOMM,NECOUL,IS,NBSYS,VIND(7),DY(7),
      &                  RP,ZE,ZE,DT,DALPHA,DGAMMA,DP,CRIT,SGNS,HSR,IRET)
             ELSE
-               DGAMMA=DY(NUV1)                                       
-               DP=ABS(DGAMMA)                                        
-C              ECROUISSAGE CINEMATIQUE - CALCUL DE DALPHA  
+               DGAMMA=DY(NUV1)
+               DP=ABS(DGAMMA)
+C              ECROUISSAGE CINEMATIQUE - CALCUL DE DALPHA
                ALPHAM=VIND(NUVI-2)
                CALL LCMMFC( MATERF(NMAT+1),IFA,NMAT,NBCOMM,NECRCI,
      &                ITMAX, TOLER,ALPHAM,DGAMMA,DALPHA, IRET)
@@ -139,18 +139,18 @@ C           calcul du max de Ns.(SIGMA.Ns)
             VINF(NVI-2) = SICL
             IF (IR.EQ.1) THEN
 C ROTATION RESEAU DEBUT
-C           stockage de OMEGAP pour la rotation de reseau            
+C           stockage de OMEGAP pour la rotation de reseau
                OMP(1)=OMP(1)+DGAMMA*0.5D0*(NG(2)*LG(3)-NG(3)*LG(2))
                OMP(2)=OMP(2)+DGAMMA*0.5D0*(NG(3)*LG(1)-NG(1)*LG(3))
                OMP(3)=OMP(3)+DGAMMA*0.5D0*(NG(1)*LG(2)-NG(2)*LG(1))
 C ROTATION RESEAU FIN
             ENDIF
-  7      CONTINUE                                             
+  7      CONTINUE
             IF(NECOUL.EQ.'MONO_DD_CFC') VINF(NVI-2)=MAXRP
   6   CONTINUE
-                                               
+
 C ROTATION RESEAU DEBUT
-C     stockage de OMEGAP pour la rotation de reseau            
+C     stockage de OMEGAP pour la rotation de reseau
       IF (IR.EQ.1) THEN
 C         TAMPON CONTIENT L(3,3)
           DO 21 I = 1, 3
@@ -199,9 +199,9 @@ C         ANGLE = NORME DU VECTEUR AXIAL
              Q(I,J)=Q(I,J)+DQ(I,K)*QM(K,J)
  28       CONTINUE
 C LE VECTEUR D-ROTATION PLASTIQUE EST STOCKE DANS VINF (N-9 a N-7)
-          VINF(NVI-9) = OMP(1)                           
-          VINF(NVI-8) = OMP(2)                           
-          VINF(NVI-7) = OMP(3)   
+          VINF(NVI-9) = OMP(1)
+          VINF(NVI-8) = OMP(2)
+          VINF(NVI-7) = OMP(3)
 C LE VECTEUR D-ROTATION ELASTIQUE EST STOCKE DANS VINF (N-6 a N-4)
           VINF(NVI-6) = OMEGAE(3,2)
           VINF(NVI-5) = OMEGAE(1,3)
@@ -214,11 +214,11 @@ C LA MATRICE DE ROTATION ESt STOCKEE DANS VINF (N-18 a N-10)
  29       CONTINUE
           VINF(NVI-3)   =DTHETA+VIND(NVI-3)
       ENDIF
-C ROTATION RESEAU FIN      
-                              
-      DO 8 I=1,6                                           
-         VINF(I)=VIND(I)+DEVI(I)                           
-8     CONTINUE                                             
+C ROTATION RESEAU FIN
+
+      DO 8 I=1,6
+         VINF(I)=VIND(I)+DEVI(I)
+8     CONTINUE
       CALL LCDIVE(VINF,VIND,DVIN)
       EPSEQ = LCNRTE(DVIN)
       VINF (NVI-1) = VIND (NVI-1) + EPSEQ

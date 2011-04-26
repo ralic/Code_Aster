@@ -3,12 +3,11 @@
      &                       EPSDT, DEPST, SIGD,  VIND,  OPT,
      &                       ANGMAS, SIGF,  VINF,  DSDE)
         IMPLICIT NONE
-C       ================================================================
+C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 07/12/2010   AUTEUR GENIAUT S.GENIAUT 
-C RESPONSABLE JMBHH01 J.M.PROIX
+C MODIF ALGORITH  DATE 26/04/2011   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -23,6 +22,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
+C RESPONSABLE PROIX J.M.PROIX
 C       ================================================================
 C       INTEGRATION DE LOIS DE COMPORTEMENT ELASTO-VISCOPLASTIQUE
 C       PAR UNE METHODE DE RUNGE KUTTA
@@ -103,15 +103,14 @@ C       ----------------------------------------------------------------
 C TOLE CRP_21
         INTEGER         IMAT,   NDIM,   NDT, NDI, NR, NVI, KPG, KSP
 C
-        INTEGER         I, NCHAI, ICP, NBPHAS
+        INTEGER         I, ICP, NBPHAS
 C
-        INTEGER         ITMAX,  ICOMP, IREP
-        INTEGER         NMAT,   IOPTIO, IDNR, NBMAT
+        INTEGER         ITMAX
+        INTEGER         NMAT,   IOPTIO, IDNR
         REAL*8          TOLER,  YMFS
         REAL*8          CRIT(*)
         REAL*8          VIND(*),     VINF(*)
-        REAL*8          TIMED,       TIMEF,     TEMPD,    TEMPF  , TREF
-        REAL*8          DEPS(6),     EPSF(6)
+        REAL*8          TIMED,       TIMEF
         REAL*8          EPSDT(6),    DEPST(6)
         CHARACTER*(*)   FAMI
 C
@@ -119,30 +118,28 @@ C
 C
         REAL*8          SIGD(6),     SIGF(6)
 C
-        REAL*8          DSDE(6,6), WORK(6,6), ANGMAS(*),REPERE(7)
+        REAL*8          DSDE(6,6), ANGMAS(*)
 C
         PARAMETER     ( MAXDOM = 0.99D0 )
 C
 C       POUR POLYCRISTAL, POUR POUVOIR STOCKER JUSQU'A 1000 PHASES
         PARAMETER       ( NMAT = 6000     )
 C
-        REAL*8          MATERD(NMAT,2) , MATERF(NMAT,2),R8VIDE
+        REAL*8          MATERD(NMAT,2) , MATERF(NMAT,2)
         INTEGER         NBCOMM(NMAT,3)
 C
-        CHARACTER*7     ETATD  ,     ETATF
-        CHARACTER*8     NBITER,      MOD,      TYPMA,  TYPMOD(*)
+        CHARACTER*8           MOD,      TYPMA,  TYPMOD(*)
         CHARACTER*16    COMP(*),     OPT,      LOI,CPMONO(5*NMAT+1)
 C
         CHARACTER*3     MATCST
 C
         CHARACTER*11    METING
-        CHARACTER*16    CHAI
 C
-        REAL*8          COTHE(NMAT),DCOTHE(NMAT),PGL(3,3),PASSAG(6,6)
-        REAL*8          COEFF(NMAT),DCOEFF(NMAT),COEL(NMAT),XYZ(3)
+        REAL*8          COTHE(NMAT),DCOTHE(NMAT),PGL(3,3)
+        REAL*8          COEFF(NMAT),DCOEFF(NMAT),COEL(NMAT)
         REAL*8          SIGI(6),EPSD(6),DETOT(6)
         REAL*8          NU,DTIME,E,ALPHA,X
-        REAL*8          EPSEQ,RBID
+        REAL*8          RBID
         REAL*8          HSR(5,24,24),TOUTMS(5,24,6)
 C
         COMMON /TDIM/   NDT,    NDI
@@ -150,7 +147,6 @@ C
         COMMON /METI/   METING
 C
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
-      CHARACTER*32       JEXNUM , JEXNOM , JEXR8 , JEXATR
       INTEGER            ZI
       COMMON  / IVARJE / ZI(1)
       REAL*8             ZR

@@ -2,7 +2,7 @@
       IMPLICIT   NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 31/01/2011   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -41,12 +41,12 @@ C     --- DEBUT DECLARATIONS NORMALISEES  JEVEUX -----------------------
 C     --- FIN  DECLARATIONS  NORMALISEES  JEVEUX -----------------------
 C
       INTEGER       N1, N2, NBOCC, NBOC1, NBOC2, NOP, I,
-     &              DIM, IADCOO, NBNO, NDDL, IER, IBID
+     &              DIM, IER, IBID
       LOGICAL       BIDIM
-      CHARACTER*8   MA, MA2, DEPLA, K8BID, COUTUR,MAB
+      CHARACTER*8   MA, MA2, DEPLA, COUTUR,MAB
       CHARACTER*16  KBI1, KBI2, OPTION
-      CHARACTER*19  GEOMI, GEOMF,GEOM1
-      CHARACTER*24  COORJV,VALK(3)
+      CHARACTER*19  GEOMI, GEOMF
+      CHARACTER*24  VALK(3)
       REAL*8        LTCHAR, PT(3), PT2(3), DIR(3), ANGL, R8BID
 
       REAL*8        AXE1(3),AXE2(3),PERP(3)

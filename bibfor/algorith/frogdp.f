@@ -1,10 +1,10 @@
       SUBROUTINE FROGDP(DEFICO,RESOCO,LMAT  ,RESU  ,RESIGR,
      &                  DEPDEL)
-C 
+C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 19/10/2010   AUTEUR DESOZA T.DESOZA 
+C MODIF ALGORITH  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -27,12 +27,12 @@ C
       CHARACTER*24 DEFICO,RESOCO
       CHARACTER*19 RESU,DEPDEL
       INTEGER      LMAT
-C      
+C
 C ----------------------------------------------------------------------
 C
 C ROUTINE CONTACT (METHODES DISCRETES - RESOLUTION)
 C
-C ALGO. POUR CONTACT	: PENALISATION
+C ALGO. POUR CONTACT    : PENALISATION
 C ALGO. POUR FROTTEMENT : PENALISATION
 C
 C ----------------------------------------------------------------------
@@ -115,7 +115,7 @@ C
       CHARACTER*24 CONTNO,CONTMA,APCOFR
       CHARACTER*24 TACFIN
       INTEGER      JTACF
-      INTEGER      CFMMVD,ZTACF 
+      INTEGER      CFMMVD,ZTACF
       REAL*8       COEFPN,COEFPT,COEFTE
 C
 C ======================================================================
@@ -166,7 +166,7 @@ C ======================================================================
       MAF1   = '&&FROGDP.MAF1'
       MAF2   = '&&FROGDP.MAF2'
       MATEMP = '&&FROGDP.MATP'
-      TACFIN = RESOCO(1:14)//'.TACFIN' 
+      TACFIN = RESOCO(1:14)//'.TACFIN'
       MAT      = ZK24(ZI(LMAT+1))(1:19)
 C ======================================================================
       CALL JEVEUO(CONTNO,'L',JNOCO)
@@ -188,7 +188,7 @@ C ======================================================================
       CALL JEVEUO(DEPDEL(1:19)//'.VALE','L',JDEPDE)
       CALL JEVEUO(TACFIN,'L',JTACF )
       CALL DISMOI('F','NOM_NUME_DDL',MAT,'MATR_ASSE',IBID,NUMEDD,IER)
-      ZTACF  = CFMMVD('ZTACF') 
+      ZTACF  = CFMMVD('ZTACF')
 C ======================================================================
 C --- INITIALISATION DE VARIABLES
 C --- NBLIAI : NOMBRE DE LIAISONS DE CONTACT
@@ -218,7 +218,7 @@ C ======================================================================
       NEQ    = CFDISD(RESOCO,'NEQ'   )
       NDIM   = CFDISD(RESOCO,'NDIM'  )
       NESMAX = CFDISD(RESOCO,'NESMAX')
-      NBLIAC = CFDISD(RESOCO,'NBLIAC')   
+      NBLIAC = CFDISD(RESOCO,'NBLIAC')
       ITER   = 0
 C ======================================================================
 C --- CREATION DE DELTA0 = C-1B
@@ -245,7 +245,7 @@ C
            CALL CALATM(NEQ,NBDDL,ZR(JMU-1+ILIAC),ZR(JAPCOE+JDECAL),
      &                 ZI(JAPDDL+JDECAL),ZR(JATMU))
            ILIAC = ILIAC + 1
-         ENDIF         
+         ENDIF
  50   CONTINUE
       CALL ASSERT(NBLIAC.EQ.(ILIAC-1))
 C
@@ -277,14 +277,14 @@ C
            VAL = VAL1 + VAL2
            AJEUFY = ZR(JAPJFY-1+LLIAC) - VAL
          ENDIF
-         
+
          XK = ZR(JTACF+ZTACF*(LLIAC-1)+0)
 
          IF ( ZR(JMU-1+ILIAI) .GT. 0.D0) THEN
             XK = XK*ZR(JMU-1+ILIAI)
          ELSE
             XK = 0.D0
-         ENDIF 
+         ENDIF
 
          COEFPT = ZR(JTACF+ZTACF*(LLIAC-1)+2)
          XF     = SQRT(COEFPT)
@@ -298,7 +298,7 @@ C
             ENDIF
          ELSE
             ZR(JMU-1+3*NBLIAI+LLIAC) = 0.D0
-         ENDIF  
+         ENDIF
  100  CONTINUE
 C
 C ======================================================================
@@ -307,7 +307,7 @@ C ======================================================================
 C
       DO 160 ILIAI = 1, NBLIAI
          CALL JEVEUO(JEXNUM(ENAT,ILIAI), 'E', JENAT )
-         DO 150 KK = 1, NDLMAX        
+         DO 150 KK = 1, NDLMAX
            ZR(JENAT-1+KK) = 0.0D0
  150     CONTINUE
          AJEU   = ZR(JAPJEU+ILIAI-1)
@@ -370,7 +370,7 @@ C
               XMU  = ZR(JMU-1+3*NBLIAI+ILIAI)
               CALL DAXPY(NBDDL,XMU,ZR(JAPCOF+JDECAL),1,ZR(JFRO11),1)
             ENDIF
-        
+
             CALL JELIBE(JEXNUM(FRO1,ILIAI))
  216     CONTINUE
       ENDIF
@@ -490,12 +490,12 @@ C ======================================================================
  350  CONTINUE
 
  999  CONTINUE
-C      
+C
 C --- ETAT DES VARIABLES DE CONTROLE DU CONTACT
 C
       CALL CFECRD(RESOCO,'NBLIAC',NBLIAC)
 C
-C --- SAUVEGARDE DES INFOS DE DIAGNOSTIC 
+C --- SAUVEGARDE DES INFOS DE DIAGNOSTIC
 C
       CALL CFITER(RESOCO,'E','CONT',ITER  ,R8BID )
       CALL CFITER(RESOCO,'E','LIAC',NBLIAC,R8BID )

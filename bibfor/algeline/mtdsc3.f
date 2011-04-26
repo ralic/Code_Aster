@@ -3,9 +3,9 @@
       CHARACTER*(*) NOMMAT
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 19/06/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGELINE  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -59,11 +59,9 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
 C     ----- PARAMETRES DE DEFINITION DES MATRICES ----------------------
-      CHARACTER*2 TYMA
-      CHARACTER*4 KBID,DOCU
+      CHARACTER*4 KBID
       CHARACTER*14 NU
       CHARACTER*19 MAT19,NOMSTO
-      CHARACTER*32 JEXNUM
 C     ------------------------------------------------------------------
 
 
@@ -133,6 +131,5 @@ C     -------------------------------------------------
       ZI(LMAT+18) = 0
 
 
-   20 CONTINUE
       CALL JEDEMA()
       END

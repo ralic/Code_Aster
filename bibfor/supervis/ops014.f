@@ -3,9 +3,9 @@
       INTEGER            ICMD , ICOND, IER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 24/10/2006   AUTEUR DURAND C.DURAND 
+C MODIF SUPERVIS  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -32,18 +32,6 @@ C     ------------------------------------------------------------------
       COMMON  /SUCC00/ UNITE(MXFILE), NAME(MXFILE)
       COMMON  /SUCN00/ IPASS,IFILE,JCMD
 C     ------------------------------------------------------------------
-      CHARACTER*72     NOMAFN,TYPMOD,VARIAN,TYPVAL
-      INTEGER          LRM,LTY,LNA,LTYV
-      CHARACTER*128    REP
-      CHARACTER*128    NOMFM
-      INTEGER          IOCCF
-      CHARACTER*16     MCF,MCSMCS,MCSTPX
-      REAL*8           TPEXT
-      INTEGER          JARGV,ARGC
-      CHARACTER*14     VALC
-      CHARACTER*129    DIROU
-      INTEGER          LDIROU
-      CHARACTER*2      CUNIT
 C
 C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
       INTEGER            ZI

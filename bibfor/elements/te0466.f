@@ -4,7 +4,7 @@
 C =====================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C =====================================================================
-C MODIF ELEMENTS  DATE 08/02/2011   AUTEUR GRANET S.GRANET 
+C MODIF ELEMENTS  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C RESPONSABLE GRANET S.GRANET
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -55,14 +55,14 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C
       INTEGER            IPOIDS,IVF,IDFDX,IDFDY,IGEOM,I,J,L,IFLUXF
       INTEGER            NDIM,NNO,IPG,NPI,IRES,IFLUX,ITEMPS,JGANO
-      INTEGER            IDEC,JDEC,KDEC,LDEC,LDEC2,JVAL,INO,JNO,IBID
-      INTEGER            NBPG(10),IOPT,IRET,IFORC,NBFPG,JIN
+      INTEGER            IDEC,JDEC,KDEC,LDEC,LDEC2,INO,JNO,IBID
+      INTEGER            IOPT,IRET,IFORC
       INTEGER            NNO2,NNOS2,IPOID2,IDFDX2,IVF2
       REAL*8             NX,NY,NZ,SX(9,9),SY(9,9),SZ(9,9),JAC,VALPAR(4)
       REAL*8             DELTAT,FLU1,FLU2,FLUTH,X,Y,Z,FX,FY,FZ
       INTEGER            NAPRE1,NAPRE2,NATEMP,NDIM2
-      CHARACTER*8        ALIAS,NOMPAR(4),ELREFE
-      CHARACTER*24       CHVAL,CHCTE,ELREF2
+      CHARACTER*8        NOMPAR(4),ELREFE
+      CHARACTER*24       ELREF2
       INTEGER            NDLNO,NDLNM,IPRES,IPRESF
       REAL*8             PRES,PRESF
 C
@@ -191,7 +191,7 @@ C ======================================================================
 C --- SI MODELISATION = SUSHI HH2 AVEC OU SANS VOISINAGE
 C
            IF (NOMTE(1:10).EQ.'ZHH2_FACE9')THEN
-           
+
 C
 C --- NAPRE1,NAPRE2,NATEMP SONT MIS EN PLACE
 C --- POUR UNE EVENTUELLE MODIFICATION DE L'ORDRE DES DDL :
@@ -229,17 +229,17 @@ C
      &                     FLU2,IRET)
 C
              ENDIF
-C          
-           
+C
+
 
                DO 301 I=1,NNO2
-C                                
+C
                  ZR(IRES) = ZR(IRES) - ZR(IPOIDS+IPG-1) *
      &                  FLU1 * ZR(IVF2+LDEC2+I-1) * JAC
-C                 
+C
                  ZR(IRES+1) = ZR(IRES+1) - ZR(IPOIDS+IPG-1) *
      &                  FLU2 * ZR(IVF2+LDEC2+I-1) * JAC
-C                 
+C
  301           CONTINUE
 C
 C             WRITE(6,*)' ICI4'

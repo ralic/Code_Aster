@@ -1,7 +1,7 @@
       SUBROUTINE CNCINV(MAIL,LIMA,NLIMA,BASE,NOMZ)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 25/01/2011   AUTEUR PELLET J.PELLET 
+C MODIF PREPOST  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -58,7 +58,7 @@ C**********************************************************************
 C
 C  FONCTIONS EXTERNES
 C  ------------------
-      CHARACTER*32 JEXNOM,JEXNUM,JEXATR
+      CHARACTER*32 JEXNUM,JEXATR
 C
 C  DECLARATION DES COMMUNS NORMALISES JEVEUX
 C  -----------------------------------------

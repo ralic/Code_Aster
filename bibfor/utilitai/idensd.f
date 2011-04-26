@@ -3,7 +3,7 @@
       CHARACTER*(*) SD1,SD2,TYPESD
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 01/03/2011   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -33,7 +33,6 @@ C       IDENSD : .TRUE.    SI SD1 == SD2
 C                .FALSE.   SINON
 C ----------------------------------------------------------------------
 C --------------- COMMUNS NORMALISES  JEVEUX  --------------------------
-      CHARACTER*32 JEXNUM,JEXNOM,JEXATR,JEXR8
       COMMON /IVARJE/ZI(1)
       COMMON /RVARJE/ZR(1)
       COMMON /CVARJE/ZC(1)

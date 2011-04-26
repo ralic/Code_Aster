@@ -7,22 +7,22 @@
       REAL*8         DAMAX,DT,DAFISS
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 25/01/2011   AUTEUR MACOCCO K.MACOCCO 
+C MODIF ALGORITH  DATE 26/04/2011   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C RESPONSABLE GENIAUT S.GENIAUT
 C TOLE CRP_20 CRP_6
@@ -76,7 +76,6 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32                               ZK32
       CHARACTER*80                                        ZK80
       COMMON  /KVARJE/ ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
-      CHARACTER*32    JEXNUM,JEXATR,JEXNOM
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 
 C     JEVEUX AND GENERAL PURPOSE
@@ -89,7 +88,7 @@ C     JEVEUX AND GENERAL PURPOSE
       CHARACTER*8  TEST,MSGOUT(2)
 
 C     INPUT DATA
-      INTEGER      NFISS,JNFIS,MSGINT(2),JFISS,NUMFIS
+      INTEGER      NFISS,JFISS,NUMFIS
 
 C     MATERIAL DATA
       REAL*8       C,N,M,MATE,MATNU
@@ -132,7 +131,7 @@ C     RETRIEVE THE INPUT DATA
 C **********************************************************************
 
 C     CHECK THAT A CRACK HAS BEEN DEFINED ON THE MODEL
-C     AND RETRIEVE THE NUMBER OF CRACKS IN THE MODEL 
+C     AND RETRIEVE THE NUMBER OF CRACKS IN THE MODEL
       CALL DISMOI('F','NB_FISS_XFEM',NOMO,'MODELE',NFISS,K8B,IRET)
       IF (NFISS.EQ.0) CALL U2MESK('F','XFEM2_93',1,NOMO)
 
@@ -210,7 +209,7 @@ C           OF ONE PROPAGATING CRACK
             DO 2500 J=1,NPF
                I=I+ZI(JNPF-1+J)
 2500        CONTINUE
-            
+
             IF (I.GT.(-1*NPF)) THEN
 C              YES. THE USER HAS USED THE OPTION.
 C              ACTIVATE THE FLAG FOR THE NB_POINT_FOND OPTION
@@ -312,7 +311,7 @@ C        RETRIEVE THE CRACK DATA STRUCTURE
          NCRACK = ZK8(JLISTE-1+CRACK)
 
 C        RETRIEVE THE NUMBER OF DIFFERENT PIECES (NFON) FORMING THE
-C        CURRENT FRONT 
+C        CURRENT FRONT
          CALL DISMOI('F','NB_FOND',NCRACK,'FISS_XFEM',NFON,K8B,IB)
          CALL JEVEUO(NCRACK//'.FONDMULT','L',JNFON)
 
@@ -364,7 +363,7 @@ C        ELABORATE EACH SINGLE PIECE OF THE FRONT
          DO 500 PIECE=1,NFON
 
 C           **********************************************************
-C           EVALUATE THE CRACK ADVANCEMENT SPEED FOR EACH NODE OF 
+C           EVALUATE THE CRACK ADVANCEMENT SPEED FOR EACH NODE OF
 C           THE PIECE
 C           **********************************************************
 
@@ -392,7 +391,7 @@ C               RETRIEVE THE FIRST VALUE OF G
      &                      'G',CTYPE,VALI,G1,VALC,VALK,IRET)
                 CALL ASSERT(IRET.EQ.0)
 
-                IF (.NOT.(CHLINE)) THEN
+                IF (.NOT.CHLINE) THEN
 C                  THE COMP_LINE OPTION HAS NOT BEEN USED. THEREFORE THE
 C                  VALUES OF G MUST BE READ FROM THE SIF TABLES.
 
@@ -437,7 +436,7 @@ C                  CONDITIONS
 
 C               CALCULATE THE VALUE OF THE CRACK ADVANCEMENT SPEED IN
 C               THE CRACK FRONT USING THE PARIS LAW
-                IF ((G1.LT.0.D0).OR.(G2.LT.0.D0)) 
+                IF ((G1.LT.0.D0).OR.(G2.LT.0.D0))
      &                                   CALL U2MESS('F','XFEM2_66')
 
                 IF ((G1.LT.R8PREM()).AND.(G2.LT.R8PREM()))
@@ -455,7 +454,7 @@ C               THE CRACK FRONT USING THE PARIS LAW
                        R = SQRT(G1/G2)
                    ENDIF
                 ENDIF
-                   
+
                 VPNT = (C/(1-R)**N)*
      &               (SQRT(MATE/(1-MATNU**2))*ABS(SQRT(G1)-SQRT(G2)))**M
 
@@ -488,7 +487,7 @@ C                  RETRIEVE THE FIRST VALUE OF KII
      &                         R8B,'K2',CTYPE,VALI,KII1,VALC,VALK,IRET)
                    CALL ASSERT(IRET.EQ.0)
 
-                   IF (.NOT.(CHLINE)) THEN
+                   IF (.NOT.CHLINE) THEN
 C                     RETRIEVE THE SECOND VALUE OF KI
                       VAPAC2(1)=1
                       CALL TBLIVA(TABLE,2,LIPAC2,VAPAC2,R8B,CBID,K8B,
@@ -661,7 +660,7 @@ C                MUST BE RETRIEVED FROM THE CRACK DATA STRUCTURE
 
               ENDIF
 
-              IF ((NPFMOR).AND.(STORE)) THEN
+              IF (NPFMOR.AND.STORE) THEN
 
 C                INITIALIZE THE POINTER TO TRACK THE ACTUAL VIRTUAL
 C                POINT ON THE CRACK FRONT PIECE IF THE NB_POINT_FOND
@@ -698,7 +697,7 @@ C                RETRIEVE THE FIRST VALUE OF G FOR THE CURRENT POINT
                       VINT(3) = I
                      CALL U2MESG('F','XFEM2_77',1,NCRACK,3,VINT,0,VREAL)
                    ENDIF
- 
+
                    CALL ASSERT(IRET.EQ.0)
 
 C                  RETREIVE THE FIRST VALUE OF BETA FOR THE CURRENT
@@ -709,7 +708,7 @@ C                  POINT
                    CALL ASSERT(IRET.EQ.0)
                    ENDIF
 
-                   IF (.NOT.(CHLINE)) THEN
+                   IF (.NOT.CHLINE) THEN
 
 C                     RETRIEVE THE SECOND VALUE OF G FOR THE CURRENT
 C                     POINT
@@ -767,7 +766,7 @@ C                     OF THE REFERENCE LOAD CASE
 
 C                  CALCULATE THE VALUE OF THE CRACK ADVANCEMENT SPEED IN
 C                  THE CRACK FRONT USING THE PARIS LAW
-                   IF ((G1.LT.0.D0).OR.(G2.LT.0.D0)) 
+                   IF ((G1.LT.0.D0).OR.(G2.LT.0.D0))
      &                                    CALL U2MESS('F','XFEM2_66')
 
                    IF ((G1.LT.R8PREM()).AND.(G2.LT.R8PREM()))
@@ -785,7 +784,7 @@ C                  THE CRACK FRONT USING THE PARIS LAW
                           R = SQRT(G1/G2)
                       ENDIF
                    ENDIF
-                   
+
                    VPNT = (C/(1-R)**N)*
      &               (SQRT(MATE/(1-MATNU**2))*ABS(SQRT(G1)-SQRT(G2)))**M
 
@@ -807,7 +806,7 @@ C                   ACTIVATE THE WARNING FLAG IF THE CHANGING IN THE
 C                   PROPAGATION ANGLE IS GREATER THEN THE TOLERANCE
                     IF (ABS(BETA1-BETA2).GT.BETTOL) BETCHG=.TRUE.
 
-                    IF (.NOT.(NPFMOR)) THEN
+                    IF (.NOT.NPFMOR) THEN
 
 C                      STORE THE VALUES
                        CALL ASSERT(ACTPOI.LE.MAXACT)
@@ -852,10 +851,10 @@ C               CHECK THAT THE TABLE DOES NOT CONTAIN ANY OTHER VALUE
 C             IF THE NB_POINT_FOND HAS BEEN USED FOR THE ACTUAL PIECE
 C             OF THE CRACK FRONT, THEN THE VALUES AT THE PHYSICAL POINT
 C             OF THE PIECE ARE EXTRAPOLATED LINEARLY
-              IF ((NPFMOR).AND.(STORE)) THEN
+              IF (NPFMOR.AND.STORE) THEN
 
-C                CREATE THE TEMPORARY DATA STRUCTURE WHERE THE 
-C                CURVILINEAR ABSCISSA FOR EACH VIRTUAL POINT CREATED 
+C                CREATE THE TEMPORARY DATA STRUCTURE WHERE THE
+C                CURVILINEAR ABSCISSA FOR EACH VIRTUAL POINT CREATED
 C                BY NB_POINT_FOND IS STORED
                  CALL WKVECT('&&XPRCYC.ABSC','V V R8',SIFVAL,JABSC)
 
@@ -889,11 +888,11 @@ C                   ANGLE IN THE PHYSICAL POINT BY LINEAR INTERPOLATION
 
                     ELSE
                        CALL ASSERT(ACTPOI.LE.MAXACT)
-                       ZR(JVIT-1+ACTPOI) = ZR(JVITD-1+JMIN) + 
+                       ZR(JVIT-1+ACTPOI) = ZR(JVITD-1+JMIN) +
      &                   (ZR(JVITD-1+JMIN+1)-ZR(JVITD-1+JMIN))/
      &                   (ZR(JABSC-1+JMIN+1)-ZR(JABSC-1+JMIN))*
      &                   (ABSCUR-ZR(JABSC-1+JMIN))
-                       ZR(JBETA-1+ACTPOI) = ZR(JBETAD-1+JMIN) + 
+                       ZR(JBETA-1+ACTPOI) = ZR(JBETAD-1+JMIN) +
      &                   (ZR(JBETAD-1+JMIN+1)-ZR(JBETAD-1+JMIN))/
      &                   (ZR(JABSC-1+JMIN+1)-ZR(JABSC-1+JMIN))*
      &                   (ABSCUR-ZR(JABSC-1+JMIN))
@@ -921,7 +920,7 @@ C                DESTROY THE TEMPORARY DATA STRUCTURES
 
 C        INCREMENT THE POINTER FOR THE NB_POINT_FOND LIST IF THIS
 C        OPTION HAS NOT BEEN USED FOR THE ACTUAL CRACK (VALUE -1)
-         IF ((NBPTFO).AND.(.NOT.(NPFCUR))) NPFPOS=NPFPOS+1
+         IF (NBPTFO.AND.(.NOT.NPFCUR)) NPFPOS=NPFPOS+1
 
 1000  CONTINUE
 

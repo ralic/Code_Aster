@@ -1,11 +1,11 @@
       SUBROUTINE NMVEEI (FAMI,KPG,KSP,NDIM,TYPMOD,IMATE,COMPOR,CRIT,
      &                   INSTAM,INSTAP,EPSM,DEPS,SIGM,VIM,
      &                   OPTION,SIGP,VIP,DSIDEP,IRET)
-C-----------------------------------------------------------------------
+C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 07/12/2010   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ALGORITH  DATE 26/04/2011   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -21,7 +21,6 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C-----------------------------------------------------------------------
-C TOLE CRP_21
       IMPLICIT NONE
       INTEGER            NDIM,IMATE,IRET,KPG,KSP
       CHARACTER*16       COMPOR(*),OPTION
@@ -60,7 +59,7 @@ C                         REDECOUPAGE LOCAL DU PAS DE TEMPS
 C                         (RESI_INTE_PAS == 0)
 C                         0 = PAS DE REDECOUPAGE
 C                         N = NOMBRE DE PALIERS
-C               CRIT(6) = TYPE D INTEGRATION LOCAL POUR LA LOI DE 
+C               CRIT(6) = TYPE D INTEGRATION LOCAL POUR LA LOI DE
 C                         COMPORTEMENT (ALGO_INTE)
 C IN  INSTAM  : INSTANT DU CALCUL PRECEDENT
 C IN  INSTAP  : INSTANT DU CALCUL
@@ -111,10 +110,10 @@ C
       INTEGER       NDT, NVI, NRV, NDI, K, L
       INTEGER       NBCOMM(NMAT,3),ISIMP
 C
-      REAL*8        TOLER, DELTX, SUMX, DT, SE2,GK,GR
+      REAL*8        TOLER, DELTX, SUMX, DT, SE2
       REAL*8        VIND(NI), MATM(NMAT,2), A(6,6), B(6)
       REAL*8        MATE(NMAT,2), HOOK(6,6), HOOKM(6,6)
-      REAL*8        P(NP), BETA(NB), EP(NT), RM, DM,D,UNMD
+      REAL*8        P(NP), BETA(NB), EP(NT), RM, DM,UNMD
       REAL*8        DSGDE(NB,NB), DSGDB(NB,NB), DSGDP(NB,NP)
       REAL*8        RB(NB), RP(NP), DRBDB(NB,NB), DRBDP(NB,NP)
       REAL*8        DRPDB(NP,NB), DRPDP(NP,NP), DRBDE(NB,NB)
@@ -138,7 +137,7 @@ C----------------------
       ITMAX =  INT(CRIT(1))
       IER=0
       IRET=0
-      
+
       IF ( ITMAX .LE. 0 )ITMAX = -ITMAX
       TOLER =  CRIT(3)
       LOI   =  COMPOR(1)
@@ -298,7 +297,7 @@ C
                 BETA(I)=BETA(I)+DBETA(I)
             ELSE
                 ISIMP=0
-            ENDIF    
+            ENDIF
             DELTB=DELTB+ABS(DBETA(I))
             SUMB=SUMB+ABS(BETA(I))
 00210     CONTINUE
@@ -311,7 +310,7 @@ C
                 P(I)=P(I)+DP(I)
             ELSE
                 ISIMP=0
-            ENDIF    
+            ENDIF
             DELTX=DELTX+ABS(DP(I))
             SUMX=SUMX+ABS(P(I))
 00220     CONTINUE

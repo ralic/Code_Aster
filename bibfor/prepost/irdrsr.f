@@ -11,22 +11,22 @@ C
       LOGICAL           LMASU
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 07/02/2006   AUTEUR CIBHHPD L.SALMONA 
+C MODIF PREPOST  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C--------------------------------------------------------------------
 C        ECRITURE D'UN CHAM_NO A REPRESENTATION CONSTANTE
@@ -60,14 +60,13 @@ C     ----------- COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER ZI
       REAL*8 ZR
       COMPLEX*16 ZC
-      LOGICAL ZL,EXISTE,EXISDG,LCMP
+      LOGICAL ZL,EXISDG,LCMP
       CHARACTER*8  ZK8
       CHARACTER*16 ZK16
       CHARACTER*24 ZK24
-      CHARACTER*32 ZK32,JEXNUM,JEXNOM
+      CHARACTER*32 ZK32
       CHARACTER*80 ZK80
 C     ------------------------------------------------------------------
-      CHARACTER*4  FITYPE
       CHARACTER*8  NOCMP,NOMGS
       CHARACTER*24 NOMST
       CHARACTER*80 ENTETE(10),TITRE,TEXTE
@@ -107,18 +106,18 @@ C
             ZK16(INOM-1+ICOMPT) = NOMCMP(ICMP)
          ENDIF
  12   CONTINUE
-C     
+C
 C     ---- RECHERCHE DES GRANDEURS SUPERTAB -----
-C     
+C
       CALL IRGAGS(ICOMPT,ZK16(INOM),NOMSYM,NBCHS,ZK8(INOCHS),
      +     ZI(IBCMPS),ZK8(INOGDS),ZI(ICMPS))
 
-      
-C      ==================    
-C ---- PARTIE 1 : NBCMP=0    
+
 C      ==================
-      IF(NBCMP.EQ.0)THEN   
-C     
+C ---- PARTIE 1 : NBCMP=0
+C      ==================
+      IF(NBCMP.EQ.0)THEN
+C
 C     ---- BOUCLE SUR LES DIVERSES GRANDEURS SUPERTAB ----
          DO 10 ICHS = 1,NBCHS
             IENTE = 1
@@ -142,7 +141,7 @@ C     ---- BOUCLE SUR LES DIVERSES GRANDEURS SUPERTAB ----
             DO 11 INNO = 1,NBNO
                INO = NUMNOE(INNO)
                IVAL = (INO-1)*NCMP
-C     
+C
                DO 25 IC = 1,ZI(IBCMPS-1+ICHS)
                   ZR(IRVAL-1+IC) = 0.0D0
  25            CONTINUE
@@ -173,9 +172,9 @@ C      =====================
 C ---- PARTIE 2 : NBCMP.NE.0
 C      =====================
 C
-      ELSE     
+      ELSE
 C
-C --- NOM DE LA GRANDEUR SUPERTAB         
+C --- NOM DE LA GRANDEUR SUPERTAB
       DO 897 I=1,NBCHS
          DO 898 J=1,ZI(IBCMPS+I-1)
             IF(NCMPS(1).EQ.ZI(ICMPS-1+(I-1)*NCMPMX+J)) GOTO 899
@@ -205,8 +204,8 @@ C --- NOMBRE DE DATASET
             NI=NI+6
             ZI(INDATS+I)=NI
  902     CONTINUE
-         ZI(IBCMPS+NBDATS-1)=IRES 
-         ZI(INDATS+NBDATS)=NI+IRES 
+         ZI(IBCMPS+NBDATS-1)=IRES
+         ZI(INDATS+NBDATS)=NI+IRES
       ENDIF
 
 C --- ECRITURE DE L'ENTETE SUPERTAB ----
@@ -226,7 +225,7 @@ C --- COMPOSANTES ADMISES
             K=K+1
          ENDIF
  777  CONTINUE
-    
+
 C --- BOUCLES SUR LES DATASETS
 C ----------------------------
       DO 810 IDA=1,NBDATS
@@ -244,14 +243,14 @@ C ----------------------------
             TEXTE(IDEBU:IFIN) = NOCMP(1:IUTIL)//' '
             IDEBU = IFIN+1
  805     CONTINUE
-         
+
          IUTIL = LXLGUT(TEXTE)
          JMAX = LXLGUT(TITRE)
          JMAX  = MIN(JMAX,(80-IUTIL-2))
          ENTETE(4)= TITRE(1:JMAX)//' - '//TEXTE(1:IUTIL)
-         
 
-C ---    POSITIONS DES COMPOSANTES SELECTIONNEES PARMI LES 
+
+C ---    POSITIONS DES COMPOSANTES SELECTIONNEES PARMI LES
 C        COMPOSANTES ADMISES
          L=0
          DO 778 J=1,ZI(IBCMPS+IDA-1)
@@ -266,20 +265,20 @@ C        COMPOSANTES ADMISES
  778     CONTINUE
 
 C ---    BOUCLES SUR LES NOEUDS
-C        ---------------------        
+C        ---------------------
          DO 811 INNO = 1,NBNO
-            
+
             INO = NUMNOE(INNO)
             JJ=(INO-1)*NCMP
 
             DO 825 IC = 1,6
                ZR(IRVAL-1+IC) = 0.0D0
  825        CONTINUE
-            
+
             DO 813 ICMS = 1,ZI(IBCMPS+IDA-1)
                ZR(IRVAL-1+ICMS)=VALE(JJ+ZI(JPOS+ICMS-1))
  813        CONTINUE
-            
+
             IF(IENTE.EQ.1) THEN
                WRITE(IFI,'(A80)') (ENTETE(I),I=1,10)
                IENTE=0
@@ -292,13 +291,13 @@ C        ---------------------
      +           I=1,6)
  811     CONTINUE
          IF (IENTE.EQ.0) WRITE (IFI,'(A)') '    -1'
- 810  CONTINUE     
+ 810  CONTINUE
 
       CALL JEDETR('&&IRDESR.CMP_DATS')
       CALL JEDETR('&&IRDESR.CMP')
       CALL JEDETR('&&IRDESR.POS')
-      ENDIF  
-      
-      
+      ENDIF
+
+
       CALL JEDEMA()
       END

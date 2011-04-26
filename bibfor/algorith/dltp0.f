@@ -3,9 +3,9 @@
       REAL*8    T0
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 01/03/2010   AUTEUR BOYERE E.BOYERE 
+C MODIF ALGORITH  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -40,9 +40,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32                                ZK32
       CHARACTER*80                                         ZK80
       COMMON / KVARJE / ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
-      CHARACTER*32      JEXNUM, JEXNOM
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
-      CHARACTER*1   K1BID
       CHARACTER*24 VALK
       CHARACTER*8   K8B, NOMRES, DYNA, LI, CRIT, CTYPE
       CHARACTER*16  TYPRES, NOMCMD
@@ -53,7 +51,7 @@ C     -----------------------------------------------------------------
 C
 C     --- EST-ON EN REPRISE ? ---
 C
-C     INITIALISATION DE T0 PAR DEFAUT 
+C     INITIALISATION DE T0 PAR DEFAUT
 
       CALL GETVID('ETAT_INIT','DYNA_TRANS',1,1,1,DYNA,NDY)
       IF ( NDY .NE. 0 ) THEN

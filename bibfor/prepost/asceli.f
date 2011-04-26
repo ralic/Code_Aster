@@ -3,9 +3,9 @@
       CHARACTER*8         MAILLA
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 19/10/2010   AUTEUR DELMAS J.DELMAS 
+C MODIF PREPOST  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -46,12 +46,10 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C-----------------------------------------------------------------------
 C
       INTEGER  INUMA, NBPT, JPOIN, INO, INOV, NBMAT, IFM, IUNIFI, JPOIN2
-      INTEGER   NBNO, JGRN1, JGRN2, JVI1, JVI2, IRET, IGR,NUNO, K, JIND2
+      INTEGER   NBNO, JGRN1, JGRN2, JVI1, JVI2, IRET, IGR, K, JIND2
       INTEGER   IDIME, NBNOT, NBGRNO, JCOOR, I, JIND, NBNO2, JCOR, KK
-      INTEGER   IAD
       CHARACTER*8   K8B,  NOGRN1, NOGRN2, NOMGRN, TMP, NOMNO
       CHARACTER*24  GRPNOE, CONNEX, LISO1, LISO2
-      REAL*8 RVID,R8VIDE
 C     ------------------------------------------------------------------
 C
       CALL JEMARQ ( )

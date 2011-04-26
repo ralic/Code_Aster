@@ -2,46 +2,46 @@
      &                     NEGMUL, CHGMEC, INDI, IRET)
         IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/12/2009   AUTEUR FOUCAULT A.FOUCAULT 
+C MODIF ALGORITH  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C   ------------------------------------------------------------------
 C   DEFINITION DU DOMAINE POTENTIEL DES MECANISMES ACTIFS
 C   IN  MATER    :  COEFFICIENTS MATERIAU A T+DT
 C       VIND     :  VARIABLES INTERNES  A T
 C       VINF     :  VARIABLES INTERNES A T+DT
-C       VINS     :  VARIABLES INTERNES A T AVANT CREATION DU DOMAINE 
+C       VINS     :  VARIABLES INTERNES A T AVANT CREATION DU DOMAINE
 C                   POTENTIEL DE MECANISMES
 C       SIGD     :  CHAMPS DE CONTRAINTES A T
 C       SIGF     :  CHAMPS DE CONTRAINTES A T+DT
-C       NEGMUL() = .TRUE. ---> MULTIPLICATEUR PLASTIQUE NEGATIF 
+C       NEGMUL() = .TRUE. ---> MULTIPLICATEUR PLASTIQUE NEGATIF
 C
 C   OUT VIND   :  VARIABLES INTERNES MODIFIEES SI CHGMEC = .TRUE.
 C       VINF   :  VARIABLES INTERNES MODIFIEES SI NECESSAIRE
-C       CHGMEC   = .TRUE. SI MODIFICATION DU DOMAINE POTENTIEL 
+C       CHGMEC   = .TRUE. SI MODIFICATION DU DOMAINE POTENTIEL
 C                            DES MECANISMES ACTIFS
 C   ------------------------------------------------------------------
-        INTEGER       NDT, NDI, I, J, MONO, IRET, INDI(7) 
+        INTEGER       NDT, NDI, I, MONO, IRET, INDI(7)
         REAL*8        TOLE1, SIGD(6),SIGF(6)
         REAL*8        VIND(*), VINF(*), VINS(50), VINT(50)
-        REAL*8        MATER(22,2), UN, ZERO 
-        REAL*8        I1F, I1D, PCREF, PSF
+        REAL*8        MATER(22,2), UN, ZERO
+        REAL*8          PSF
         REAL*8        SEUIL, RD, RF, PSM
-        LOGICAL       DEBUG, CHGMEC, NEGMUL(8), PROX, MISO 
+        LOGICAL       DEBUG, CHGMEC, NEGMUL(8), MISO
         REAL*8        VINM(50), SEUILM, C1TD, C2TD, CMOD, DEUX
 C --------------------------------------------------------------------
         COMMON /TDIM/   NDT, NDI
@@ -51,7 +51,7 @@ C --------------------------------------------------------------------
         PARAMETER     (DEUX = 2.D0)
         PARAMETER     (UN   = 1.D0)
         PARAMETER     (ZERO = 0.D0)
-        
+
 C ====================================================================
 C --- CONSTRUCTION DES SURFACES CYCLIQUES PRECEDENTES -----------
 C ====================================================================
@@ -90,7 +90,7 @@ C ====================================================================
               IF (I.LT.4) THEN
                 IF (VIND(I).EQ.MATER(13,2)) THEN
                   VIND(23+I) = ZERO
-                ELSE              
+                ELSE
                   IF((VINS(4*I+7).NE.ZERO).OR.(VINS(4*I+8).NE.ZERO))THEN
                     VIND(4+I)   = VINS(4+I)
                     VIND(4*I+5) = VINS(4*I+5)
@@ -100,7 +100,7 @@ C ====================================================================
                     VIND(23+I)  = -UN
                   ELSE
                     VIND(23+I) = -UN
-                    CALL HUJMED(I, MATER, VIND, SIGD)   
+                    CALL HUJMED(I, MATER, VIND, SIGD)
                     VIND(I+4) = MATER(18,2)
                   ENDIF
                 ENDIF
@@ -125,11 +125,11 @@ C ====================================================================
                       VIND(23+I) = ZERO
                     ENDIF
                   ENDIF
-                ENDIF  
+                ENDIF
               ENDIF
             ENDIF
             GOTO 40
-            
+
 C ==================================================================
 C ---------- MECANISME MONOTONE SUPPOS  ELASTIQUE ------------------
 C ==================================================================
@@ -149,7 +149,7 @@ C ************************
                 VIND(4*I+8) = ZERO
                 VIND(4+I)   = MATER(18,2)
               ENDIF
-              GOTO 40         
+              GOTO 40
 
 C ******************************
 C --- MECANISME DE CONSOLIDATION
@@ -175,7 +175,7 @@ C ******************************
               ENDIF
               GOTO 40
             ENDIF
-            
+
 C ====================================================================
 C ---------- MECANISME MONOTONE SUPPOS  EN DECHARGE ------------------
 C ====================================================================
@@ -188,9 +188,9 @@ C ***********************************************
               CHGMEC      = .TRUE.
               NEGMUL(I+4) = .FALSE.
               VIND(27+I)  = ZERO
-              GOTO 40   
+              GOTO 40
             ENDIF
-                 
+
 
 C *************************************
 C --- VERIFICATION DES SEUILS MONOTONES
@@ -205,7 +205,7 @@ C *************************************
               CHGMEC = .TRUE.
               IF (I.LT.4) THEN
                 VIND(27+I)  = ZERO
-                VIND(23+I)  = UN   
+                VIND(23+I)  = UN
                 VIND(4*I+5) = ZERO
                 VIND(4*I+6) = ZERO
                 VIND(4*I+7) = ZERO
@@ -215,16 +215,16 @@ C *************************************
                 IF ((VIND(22).EQ.UN).AND.(VINS(22).EQ.-UN)) THEN
                   VIND(21) = VINS(21)
                   VIND(22) = VINS(22)
-                  VIND(31) = UN            
-                  VIND(8)  = VINS(8)         
+                  VIND(31) = UN
+                  VIND(8)  = VINS(8)
                 ELSE
                   VIND(31) = ZERO
-                  VIND(27) = UN   
+                  VIND(27) = UN
                   VIND(21) = ZERO
                   VIND(22) = ZERO
                 ENDIF
               ENDIF
-              GOTO 40   
+              GOTO 40
             ENDIF
 
 C ***********************************************************
@@ -235,7 +235,7 @@ C ***********************************************************
             C2TD = (VINF(4*I+6)-VINF(4+I)*VINF(4*I+8))
             CMOD = SQRT(C1TD**DEUX+C2TD**DEUX/DEUX)
             IF ((CMOD+VINF(I+4)-VINF(I))/VINF(I).GT.TOLE1) THEN
-              CHGMEC = .TRUE.   
+              CHGMEC = .TRUE.
               VIND(4*I+7)  = C1TD/CMOD
               VIND(4*I+8)  = C2TD/CMOD
               VIND(4*I+5)  = VIND(4*I+7)*VIND(I)
@@ -262,7 +262,7 @@ C ------------------------
               IF (I.LT.4) THEN
                 CALL HUJCDC(I, MATER, SIGF, VINF, SEUIL)
                 IF (SEUIL.GT.TOLE1) THEN
-                  CHGMEC      = .TRUE. 
+                  CHGMEC      = .TRUE.
                   VIND(27+I)  = UN
                   CALL HUJDRC(I,MATER,SIGF,VINF,PSF)
                   IF ((VIND(5*I+31).NE.ZERO).OR.
@@ -359,7 +359,7 @@ C ------------------------------
 
                 IF ((VIND(22).EQ.UN).AND.(RD.GE.RF)) THEN
                   IF (SEUIL.GT.TOLE1) THEN
-                    CHGMEC   = .TRUE. 
+                    CHGMEC   = .TRUE.
                     VIND(31) = UN
                   ELSE
                     VINF(21) = VINS(21)
@@ -367,16 +367,16 @@ C ------------------------------
                     VINF(8)  = VINS(8)
 
                     IF (VINS(22).EQ.ZERO) VINF(27)=ZERO
-                  ENDIF                  
+                  ENDIF
                 ELSEIF ((VIND(22).EQ.-UN).AND.(RD.LT.RF)) THEN
                   IF (SEUIL.GT.TOLE1) THEN
-                    CHGMEC   = .TRUE. 
+                    CHGMEC   = .TRUE.
                     VIND(31) = UN
                   ELSE
                     VINF(21) = VINS(21)
                     VINF(22) = VINS(22)
                     VINF(8)  = VINS(8)
-                  ENDIF   
+                  ENDIF
                 ELSEIF ((VIND(22).EQ.UN).AND.(RD.LT.RF)) THEN
 
                   IF (VINS(22).NE.VINF(22)) THEN
@@ -443,7 +443,6 @@ C ------------------------------
 
   40    CONTINUE
  999    CONTINUE
-1001    FORMAT(A,I3)    
-2000    FORMAT(A,28(1X,E12.5)) 
-2010    FORMAT(A,4(1X,I2))
+1001    FORMAT(A,I3)
+2000    FORMAT(A,28(1X,E12.5))
         END

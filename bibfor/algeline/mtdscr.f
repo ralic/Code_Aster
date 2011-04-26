@@ -3,7 +3,7 @@
       CHARACTER*(*) NOMMAT
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 11/01/2011   AUTEUR SELLENET N.SELLENET 
+C MODIF ALGELINE  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -77,10 +77,9 @@ C
 C     ----- PARAMETRES DE DEFINITION DES MATRICES ----------------------
       INTEGER IMATD
       CHARACTER*2 TYMA
-      CHARACTER*4 KBID,DOCU
+      CHARACTER*4 KBID
       CHARACTER*14 NU
       CHARACTER*19 MAT19,NOMSTO
-      CHARACTER*32 JEXNUM
 C     ------------------------------------------------------------------
 
 
@@ -201,6 +200,5 @@ C     ----------
       ZI(LMAT+14) = ZI(JSMDE-1+2)
 
 
-   20 CONTINUE
       CALL JEDEMA()
       END

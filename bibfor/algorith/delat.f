@@ -3,9 +3,9 @@
 
 C---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 07/10/2008   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -24,7 +24,7 @@ C---------------------------------------------------------------------
 C AUTEUR : G. ROUSSEAU
 C
 C--------- DEBUT DES COMMUNS JEVEUX ----------------------------------
-      CHARACTER*32     JEXNUM, JEXNOM, JEXR8, JEXATR
+      CHARACTER*32     JEXNUM
       INTEGER          ZI
       COMMON  /IVARJE/ ZI(1)
       REAL*8           ZR
@@ -40,27 +40,10 @@ C--------- DEBUT DES COMMUNS JEVEUX ----------------------------------
       CHARACTER*80                                    ZK80
       COMMON  /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C     --- FIN DES COMMUNS JEVEUX ------------------------------------
-      LOGICAL       TEST1,TEST2,EXISDG,TEST3
-      INTEGER       NBVALE,NBREFE,NBDESC,IBID,NBID,ISST,IADRP
-      INTEGER       I,J,IAD(2),IAD3D(3),ITXSTO,ITYSTO,IPRSTO
-      INTEGER       ICOR1,ICOR2,ICOR(2),NDBLE
-      REAL*8        R8BID,MIJ,TGEOM(6),CONST(3)
-      REAL*8        TAILMI,NORM1,NORM2,RESTE(3),DEUXPI,CA(3),SA(3)
-      REAL*8        VAL(2),VAL3D(3),TOL
-      CHARACTER*1   TYPECH(3),TYPCST(3)
-      CHARACTER*2   MODEL
-      CHARACTER*3   REPON
-      CHARACTER*6   CHAINE
-      CHARACTER*8   TCORX(2),TCORY(2),NOMCH(3),TCORZ(2)
-      CHARACTER*8   MOFLUI,MOINT,MA,K8BID
-      CHARACTER*8   MODGEN,BAMO,MACEL,MAILLA,GD,MAFLUI
-      CHARACTER*14  NU,NUM,NUDDL
-      CHARACTER*19  MAX,MAY,CHTMPX,CHTMPY,CHTMPZ,CHCOMB,VESTOC
-      CHARACTER*19  VESOLX,VESOLY,VEPR,VESOLZ,CHTEMP,NOMNUM
-      CHARACTER*19  CHFLU,CHAMNX,CHAMNY,CHAMNZ,NEWCHA,PCHNO
-      CHARACTER*24  NOMCHA
-      CHARACTER*72  K72B
-      COMPLEX*16    C16B,CBID
+      INTEGER       IBID,NBID,ISST
+      CHARACTER*8   K8BID
+      CHARACTER*8   MODGEN,MACEL
+      COMPLEX*16    CBID
 C -----------------------------------------------------------------
 C---------------------------------------------------------------------
 

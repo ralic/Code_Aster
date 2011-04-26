@@ -8,10 +8,9 @@
      &               ELETOR,LIGGRD
       CHARACTER*24   VCN,GRLR
       REAL*8         DELTAT,LCMIN
-      LOGICAL        TORE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 08/03/2011   AUTEUR MASSIN P.MASSIN 
+C MODIF ALGORITH  DATE 26/04/2011   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -96,7 +95,6 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32                               ZK32
       CHARACTER*80                                        ZK80
       COMMON  /KVARJE/ ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
-      CHARACTER*32    JEXNUM,JEXATR,JEXNOM
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 
       CHARACTER*19     CNSLS,GRLS,LSV,GRLSV
@@ -118,7 +116,7 @@ C     CONNECTION TABLE OF THE NODES
 C     MINIMIZATION LOOP
       CHARACTER*24     TEMPV
       INTEGER          JTEMPV
-      REAL*8           SGNLS,VTMP,VXYZ(3),VXYZGL(3),R8PREM,MODGRL,LSTMP
+      REAL*8           SGNLS,VTMP,VXYZ(3),VXYZGL(3),R8PREM,MODGRL
       INTEGER          ITRMAX
       PARAMETER        (ITRMAX=300)
 

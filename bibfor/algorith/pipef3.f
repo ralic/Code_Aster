@@ -4,7 +4,7 @@
      &                  DTAU,   COPILO, TYPMOD             )
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/12/2010   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C TOLE CRS_1404
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
@@ -39,7 +39,6 @@ C IN  : GEOM, MATE, VIM, DDEPL, DEPLM, DDEPL0, DDELP1, DTAU, NPG
 C OUT : COPILO
 C-----------------------------------------------------------------------
 
-      LOGICAL AXI
       INTEGER I,J,KPG
       REAL*8  UP(NDDL),UD(NDDL),SUP(3),SUD(3),B(3,60),POIDS
       REAL*8  R8VIDE

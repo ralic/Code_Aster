@@ -1,8 +1,8 @@
       SUBROUTINE JELIHD ( NOMF, FICHDF, CLAS )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 06/04/2010   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -17,7 +17,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C TOLE CRP_18 CRP_20 CRS_508 CRS_512 CRS_513 CRS_505 
+C TOLE CRP_18 CRP_20 CRS_508 CRS_512 CRS_513 CRS_505
       IMPLICIT NONE
       CHARACTER*(*)       NOMF, FICHDF, CLAS
 C ----------------------------------------------------------------------
@@ -45,11 +45,11 @@ C ----------------------------------------------------------------------
       INTEGER          N
       PARAMETER      ( N = 5 )
       INTEGER          LTYP    , LONG    , DATE    , IADD    , IADM    ,
-     &                 LONO    , HCOD    , CARA    , LUTI    , IMARQ   
+     &                 LONO    , HCOD    , CARA    , LUTI    , IMARQ
       COMMON /IATRJE/  LTYP(1) , LONG(1) , DATE(1) , IADD(1) , IADM(1) ,
      &                 LONO(1) , HCOD(1) , CARA(1) , LUTI(1) , IMARQ(1)
       INTEGER          JLTYP   , JLONG   , JDATE   , JIADD   , JIADM   ,
-     &                 JLONO   , JHCOD   , JCARA   , JLUTI   , JMARQ   
+     &                 JLONO   , JHCOD   , JCARA   , JLUTI   , JMARQ
       COMMON /JIATJE/  JLTYP(N), JLONG(N), JDATE(N), JIADD(N), JIADM(N),
      &                 JLONO(N), JHCOD(N), JCARA(N), JLUTI(N), JMARQ(N)
 C
@@ -99,8 +99,8 @@ C
       COMMON /IADMJE/  IPGC,KDESMA,   LGD,LGDUTI,KPOSMA,   LGP,LGPUTI
       INTEGER          ISTAT
       COMMON /ISTAJE/  ISTAT(4)
-      REAL *8          SVUSE,SMXUSE   
-      COMMON /STATJE/  SVUSE,SMXUSE  
+      REAL *8          SVUSE,SMXUSE
+      COMMON /STATJE/  SVUSE,SMXUSE
 C---------- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER            ZI
       COMMON  / IVARJE / ZI(1)
@@ -119,23 +119,23 @@ C---------- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C---------- FIN  COMMUNS NORMALISES  JEVEUX ----------------------------
       CHARACTER*4      Z
       PARAMETER      ( Z = 'INIT' )
-      CHARACTER*8      KNOM,KNOMF,KSTIN,KSTOU,CVERSB,CVERSU
+      CHARACTER*8      KNOM,KNOMF,CVERSB,CVERSU
       CHARACTER*16     K16BID
-      INTEGER          NCAR , ITLEC(1) , ITECR(1) , IADADD(2)
+      INTEGER          NCAR , ITLEC(1) , ITECR(1)
       PARAMETER      ( NCAR = 11 )
 C ----------------------------------------------------------------------
       CHARACTER*1      KCLAS,TYPEI,GENRI,TYPEB
       CHARACTER*80     NHDF
-      CHARACTER*32     CRNOM,NGRP,K32(1),K32B(2),NOMO
+      CHARACTER*32     CRNOM,NGRP,K32(1),NOMO
       CHARACTER*24     KATTR(5),KATTRG(5),NOMATR,NOMAT2
-      CHARACTER*8      K8(1),K8B(2),NREP(2)
+      CHARACTER*8      K8(1),NREP(2)
       PARAMETER      ( NOMATR = 'ATTRIBUTS JEVEUX',
      &                 NOMAT2 = 'BASE GLOBALE JEVEUX' )
       INTEGER          IPGCA,LTYPI,LONOI,NBOBJ,IK32(1),JK32,IK8(1),JK8
-      INTEGER          IDFIC,IDTS,LTYPB,LONIND,NBVAL,IADMI,VALI(2)
+      INTEGER          IDFIC,IDTS,LTYPB,NBVAL,IADMI,VALI(2)
       INTEGER          IDOS,KITAB,IDGR,IDT1,IDT2,IDG,JULIST,IUNIFI
       INTEGER          HDFOPF,HDFNBO,HDFOPD,HDFTSD,HDFRSV,HDFRAT
-      INTEGER          HDFNOM,HDFTYP,HDFCLD,HDFOPG,HDFCLG,HDFRSI,HDFCLF
+      INTEGER          HDFNOM,HDFTYP,HDFCLD,HDFOPG,HDFCLG,HDFCLF
       INTEGER          IRET1,IRET2,IRET3,IDCO,IVERS,IUTIL,INIVO,LMARQ
       EQUIVALENCE     (IK32,K32),(IK8,K8)
       INTEGER          IGENR(1),ITYPE(1),IDOCU(1),IORIG(1),IRNOM(1)
@@ -147,7 +147,7 @@ C     ------------------------------------------------------------------
       INTEGER          ILOREP , IDENO , ILNOM , ILMAX , ILUTI , IDEHC
       PARAMETER      ( ILOREP=1,IDENO=2,ILNOM=3,ILMAX=4,ILUTI=5,IDEHC=6)
 C ----------------------------------------------------------------------
-      INTEGER          LIDBAS      , LIDEFF, IDYN32, IDYN8 , IBID
+      INTEGER          LIDBAS      , LIDEFF, IDYN32, IDYN8
       PARAMETER      ( LIDBAS = 20 , LIDEFF = 15 )
       CHARACTER*8      CIDBAS(LIDBAS)
       CHARACTER*24     VALK(3)
@@ -175,8 +175,8 @@ C
       KNOMF = NOMF
       CALL LXMINS(KNOMF)
 C
-      CALL ASSERT( KNOMF .NE. '        ' .AND. LEN(NOMF) .LE. 8 ) 
-      CALL ASSERT( KCLAS .NE. ' ' ) 
+      CALL ASSERT( KNOMF .NE. '        ' .AND. LEN(NOMF) .LE. 8 )
+      CALL ASSERT( KCLAS .NE. ' ' )
       CALL ASSERT( INDEX (CLASSE,KCLAS) .EQ. 0 )
 C
       IC = INDEX (CLASSE , ' ')
@@ -209,7 +209,7 @@ C
       IRET1 = HDFCLG (IDG)
       JULIST = IUNIFI ('MESSAGE')
       WRITE(JULIST,*) '<I> RELECTURE DE LA BASE GLOBALE AU FORMAT'//
-     &                ' HDF SUR LE FICHIER :' 
+     &                ' HDF SUR LE FICHIER :'
       WRITE(JULIST,*) '    ',NHDF
       WRITE(JULIST,*) '    '
       WRITE(JULIST,*) '    CONSTRUITE AVEC LA VERSION ',KATTR(1)
@@ -305,7 +305,7 @@ C
       CALL JJECRS(KAT(17),KDY(17),IC,17,0,'E',IMARQ(JMARQ(IC)+2*17-1))
       DO 345 IND = 1 , NREMAX(IC)
         INDIR(JINDIR(IC)+IND) = IND
- 345  CONTINUE        
+ 345  CONTINUE
 C
 C
 C     CES DEUX OBJETS SYSTEME NE DOIVENT PAS ETRE RELUS SUR FICHIER HDF
@@ -439,7 +439,7 @@ C
 C
 C     IL FAUT AJUSTER LA LONGUEUR DU TYPE ENTIER AVANT ECRITURE
 C
- 
+
       DO 49 K=1,LIDEFF
         IF(TYPE(JTYPE(IC)+K).EQ.'I') THEN
           LTYP(JLTYP(IC)+K) = LOIS
@@ -598,12 +598,12 @@ C
         CALL JJLIDY ( IDYN32 , KTEMP1 )
       ELSE IF (KTEMP1 .NE. 0) THEN
         CALL JJLIBP (KTEMP1)
-      ENDIF     
+      ENDIF
       IF ( IDYN8 .NE. 0 ) THEN
         CALL JJLIDY ( IDYN8 , KTEMP2 )
       ELSE IF (KTEMP2 .NE. 0) THEN
         CALL JJLIBP (KTEMP2)
-      ENDIF     
+      ENDIF
       CALL JEDEMA()
 C FIN ------------------------------------------------------------------
       END

@@ -4,22 +4,22 @@
       CHARACTER*(*)       NOMO
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 20/02/2007   AUTEUR MICHEL S.MICHEL 
+C MODIF MODELISA  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C
 C      OPERATEURS :     AFFE_CHAR_MECA ET AFFE_CHAR_MECA_C
@@ -49,12 +49,12 @@ C --------------- COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32                                ZK32
       CHARACTER*80                                         ZK80
       COMMON / KVARJE / ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
-      CHARACTER*32      JEXNOM, JEXNUM
+      CHARACTER*32       JEXNUM
 C     ----------- COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER       IRET, NBGREL, IGREL, IALIEL, NEL, ITYPEL, IMA, IER,
      +              NUMAIL, IEL, TRAITE
       CHARACTER*1   K1B
-      CHARACTER*8   K8B, MODELE, DMO, DMA
+      CHARACTER*8    MODELE, DMO, DMA
       CHARACTER*16  NOMTE
       CHARACTER*19  NOLIG
 C     ------------------------------------------------------------------
@@ -77,7 +77,7 @@ C
          ITYPEL = ZI(IALIEL -1 +NEL)
          CALL JENUNO(JEXNUM('&CATA.TE.NOMTE',ITYPEL),NOMTE)
          DO 20 IMA = 1 , NBMAIL
-            NUMAIL = LISTMA(IMA)                    
+            NUMAIL = LISTMA(IMA)
             DO 30 IEL = 1 , NEL-1
                IF ( NUMAIL .EQ. ZI(IALIEL-1+IEL) ) THEN
                   TRAITE = TRAITE + 1
@@ -88,7 +88,7 @@ C                    on a un element principal
                      MABORD(IMA) = 0
                      NBMAPR = NBMAPR + 1
                   ELSE
-C                    on a un element de bord 
+C                    on a un element de bord
                      MABORD(IMA) = 1
                      NBMABO = NBMABO + 1
                   ENDIF

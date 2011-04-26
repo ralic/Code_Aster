@@ -1,10 +1,10 @@
       SUBROUTINE OP0093 ()
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 13/10/2010   AUTEUR BOITEAU O.BOITEAU 
+C MODIF ALGELINE  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C TOLE CRP_20
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -22,7 +22,7 @@ C ======================================================================
       IMPLICIT NONE
 C     ------------------------------------------------------------------
 C
-C     OPERATEUR MODE_STATIQUE 
+C     OPERATEUR MODE_STATIQUE
 C
 C     ------------------------------------------------------------------
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
@@ -42,32 +42,27 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON  /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C     ------------------------------------------------------------------
-      INTEGER      IBID,NEQ,LMATR,LMATM,LDUTI,IFM,NIV,VALI,IRET,
+      INTEGER      IBID,NEQ,LMATR,IFM,NIV,IRET,
      &             NRA,NMA,NBPSMO,IERD,NBMODD,NBMOST,LDDLD,
-     &             I,J,K,I1,J1,K1,LMODD,NBMODF,NBFONA,LDDLF,LMODF,IEQ,
-     &             NBMOAD,NBMODA,NA,ND,NND,JCOEF,IMOD,NBACC,NNAXE,JAXE,
-     &             IA,IND,ID,LMODA,LDDAD,II,LMOAD,NBMODE,IMODE,IFIN,IM,
-     &             IE,LNOM,LNUME,LTYPE,IMODF,IMOAD,IMODA,LCOEF,
-     &             NBTROU,LRES,NBPAR,JPARA,IUL,IUNIFI,NBMOIN,NBEC,
-     &             NBMODI,MASSFA,NBNOEU
-      REAL*8       R8B,COEF(3),XNORM
-      CHARACTER*8  K8B,RESU,NOMMA,MONAXE,FORMAR,NOMNOE,NOMCMP,KNUM,
-     &             NOMDIR,K8BID
+     &             I,LMODD,NBMODF,NBFONA,LDDLF,LMODF,
+     &             NBMOAD,NBMODA,
+     &             NBMOIN,
+     &             NBMODI,MASSFA
+      REAL*8       R8B
+      CHARACTER*8  K8B,RESU,NOMMA
       CHARACTER*14 NUME
-      CHARACTER*16 NOMCMD,CONCEP,ACCES(3)
-      CHARACTER*19 CHAMNO,RAIDE,MATFAC,MASSE,AMOR,NUMEDD,MATPRE,SOLVEU,
-     &             RESU19,RAIDFA
+      CHARACTER*16 NOMCMD,CONCEP
+      CHARACTER*19 RAIDE,MASSE,AMOR,NUMEDD,MATPRE,SOLVEU,
+     &             RAIDFA
       CHARACTER*24 VALK,MOCB,MOATTA,MOAIMP,MOAUNI,MOINTF,DDLCB,
      &             DDLMN,VEFREQ,DDLAC
-      LOGICAL      DEPLIM,FORCIM,ACCUNI,ACCDDL,DIRECT,LBID,MODINT
-      COMPLEX*16   C16B
 C     ------------------------------------------------------------------
       CALL JEMARQ()
-      
+
 C------------------------------C
-C--                          --C 
+C--                          --C
 C-- INITIALISATIONS DIVERSES --C
-C--                          --C 
+C--                          --C
 C------------------------------C
 
       MASSE  = ' '
@@ -87,10 +82,10 @@ C--                                         --C
 C---------------------------------------------C
 
       CALL GETRES(RESU,CONCEP,NOMCMD)
-            
+
       CALL GETVID(' ','MATR_RIGI',1,1,1,RAIDE,NRA)
       CALL GETVID(' ','MATR_MASS',1,1,1,MASSE,NMA)
-      
+
       CALL GETFAC('PSEUDO_MODE',NBPSMO)
       IF (NBPSMO.NE.0) THEN
          IF (NMA.EQ.0) THEN
@@ -102,7 +97,7 @@ C     -- CREATION DU SOLVEUR :
       SOLVEU='&&OP0093.SOLVEUR'
       CALL CRESOL(SOLVEU,' ')
 
-      
+
 C     --- COMPATIBILITE DES MODES (DONNEES ALTEREES) ---
       CALL EXISD('MATR_ASSE',RAIDE,IBID)
       IF (IBID.NE.0) THEN
@@ -115,7 +110,7 @@ C     --- COMPATIBILITE DES MODES (DONNEES ALTEREES) ---
 C
       CALL INFMAJ
       CALL INFNIV(IFM,NIV)
-      
+
       CALL DISMOI('F','NOM_MAILLA'  ,RAIDE,'MATR_ASSE',IBID,NOMMA,IERD)
       CALL DISMOI('F','NOM_NUME_DDL',RAIDE,'MATR_ASSE',IBID,NUME ,IERD)
       CALL DISMOI('F','NB_EQUA'     ,RAIDE,'MATR_ASSE',NEQ ,K8B ,IERD)
@@ -132,7 +127,7 @@ C-- FACTORISATION DE LA MATRICE DE RAIDEUR
          VALK = RAIDE
          CALL U2MESK('F', 'ALGELINE4_37',1,VALK)
       ENDIF
-     
+
       CALL GETFAC ( 'MODE_STAT', NBMOST )
       CALL GETFAC ( 'FORCE_NODALE', NBFONA )
       CALL GETFAC ( 'PSEUDO_MODE', NBPSMO )
@@ -153,7 +148,7 @@ C-------------------------------------C
       MOINTF='&&MOIN93.MODE_INTF_DEPL'
       VEFREQ='&&MOIN93.FREQ_INTF_DEPL'
 
-C-- CALCUL DES MODES DE CONTRAINTES (METHODE CRAIG & BAMPTON)     
+C-- CALCUL DES MODES DE CONTRAINTES (METHODE CRAIG & BAMPTON)
       IF (NBMOST .GT. 0) THEN
          CALL WKVECT(DDLCB,'V V I',NEQ,LDDLD)
          CALL MSTGET(NOMCMD,RAIDE,'MODE_STAT',NBMOST,ZI(LDDLD))
@@ -202,7 +197,7 @@ C-----------------------------C
 
       CALL ARCH93(RESU,CONCEP,NUME,RAIDE,NBMODD,NBMODF,NBMODA,NBMOAD,
      &            NBMODI,NBPSMO)
-      
+
 
       CALL JEDETR(DDLCB)
       CALL JEDETR(MOCB)
@@ -213,7 +208,7 @@ C-----------------------------C
       CALL JEDETR(DDLAC)
       CALL JEDETR(MOINTF)
       CALL JEDETR(VEFREQ)
-      
+
       CALL JEDEMA()
-      
+
       END

@@ -1,8 +1,8 @@
       SUBROUTINE HBRCVX(SIG,VID,NMAT, MATERF, SEUIL, VP, VECP)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/12/2006   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -35,7 +35,7 @@ C OUT : VP    :  VALEURS PROPRES DU DEVIATEUR DE SIG (ELASTIQUE) ------
 C OUT : VECP  :  VECTEURS PROPRES DU DEVIATEUR DE SIG (ELASTIQUE) -----
 C OUT : SEUIL :  VALEUR DU CRITERE PLASTIQUE --------------------------
 C =====================================================================
-      REAL*8       DIFSIG,SIG3,SIGBD,DEUX,AUX
+      REAL*8       DIFSIG,SIG3,SIGBD,DEUX
       REAL*8       AUX1,AUX2,PARAME(4),SEB(6)
       REAL*8       GAMMA,I1E,SE(6),TRACE,TU(6),TOL,TOLDYN,JACAUX(3)
       CHARACTER*10 CVP1,CVP2,CVP3
@@ -106,6 +106,5 @@ C ======================================================================
       ELSE
            SEUIL = DIFSIG - AUX2 - SQRT(AUX1)
       ENDIF
- 10   CONTINUE
 C ======================================================================
       END

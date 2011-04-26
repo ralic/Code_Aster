@@ -2,9 +2,9 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 30/06/2010   AUTEUR DELMAS J.DELMAS 
+C MODIF ALGELINE  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -40,8 +40,7 @@ C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
       COMPLEX*16    CBID
       CHARACTER*8   K8B, RESU, RESUIN, MODELE, MATE, CARELE
       CHARACTER*16  CONCEP, NOMCMD, NSYMB
-      CHARACTER*19  LISCHA
-      CHARACTER*24  NOMCH,NOOBJ
+      CHARACTER*24  NOMCH
 C     ------------------------------------------------------------------
       CALL JEMARQ()
       CALL INFMAJ()
@@ -96,7 +95,7 @@ C
  120    CONTINUE
 C
         DO 130 IAN = 1 , NBANGL
-C      
+C
 C     STOCKAGE DU NOM DU MODELE
 C     -------------------------
           CALL RSADPA(RESU,'E',1,'MODELE',IAN,0,JPARA,K8B)

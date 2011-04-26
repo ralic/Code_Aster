@@ -3,9 +3,9 @@
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 21/06/2010   AUTEUR CORUS M.CORUS 
+C MODIF ALGORITH  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -43,19 +43,15 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON  /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C     ------------------------------------------------------------------
-      INTEGER      IBID, NEQ, LMATR, LMATM, LDUTI, IFM, NIV,
-     &             VALI,IRET,IER,NIVE, VERSIO
+      INTEGER      IBID, NEQ, LMATM
       REAL*8       R8B, ZERO, UN, COEF(3),XNORM
-      CHARACTER*8  K8B,RESU,NOMMA,MONAXE,FORMAR,NOMNOE,NOMCMP,KNUM,
-     &             NOMDIR,NOSIMP,NOPASE
+      CHARACTER*8  K8B,MONAXE
       CHARACTER*14 NUME
-      CHARACTER*16 NOMCMD, CONCEP, ACCES(3)
-      CHARACTER*19 CHAMNO,RAIDE,RAIDFA,MASSE,AMOR,NUMEDD,MATPRE
-      CHARACTER*19 SOLVEU,RESU19
-      CHARACTER*24 VALE,VALK,MOAUNI,MOAIMP,DDLAC
-      LOGICAL      DEPLIM, FORCIM, ACCUNI, DIRECT
-      LOGICAL      LMOD,LBID
-      COMPLEX*16   C16B
+      CHARACTER*16 NOMCMD
+      CHARACTER*19 RAIDE,RAIDFA,MASSE,MATPRE
+      CHARACTER*19 SOLVEU
+      CHARACTER*24 MOAUNI,MOAIMP,DDLAC
+      LOGICAL      ACCUNI
 C     ------------------------------------------------------------------
       CALL JEMARQ()
 
@@ -68,10 +64,10 @@ C     ------------------------------------------------------------------
       MOAIMP='&&OP0093.MODE_ACCE_IMPO'
       DDLAC='&&OP0093.DDL_ACCE_IMPO'
       MATPRE = '&&MOIN93.MATPRE'
-      
+
       CALL DISMOI('F','NB_EQUA',RAIDE,'MATR_ASSE',NEQ ,K8B ,IERD)
       CALL JEVEUO(MASSE(1:19)//'.&INT','E',LMATM)
-      
+
       DO 30 I = 1,NBPSMO
          CALL GETVTX('PSEUDO_MODE','AXE',I,1,0,K8B,NA)
          IF (NA.NE.0) NBMODA = NBMODA - NA
@@ -92,7 +88,7 @@ C----------------------------------C
       IMOD = 0
       NBACC = 0
       DO 32 I = 1,NBPSMO
-      
+
 C-- PSEUDO MODE AUTOUR D'UN AXE
         CALL GETVTX('PSEUDO_MODE','AXE',I,1,0,MONAXE,NA)
         IF (NA.NE.0) THEN
@@ -126,7 +122,7 @@ C-- PSEUDO MODE AUTOUR D'UN AXE
           CALL JEDETR('&&OP0093.AXE')
         ENDIF
 
-C-- PSEUDO MODE DANS UNE DIRECTION        
+C-- PSEUDO MODE DANS UNE DIRECTION
         CALL GETVR8('PSEUDO_MODE','DIRECTION',I,1,3,COEF,ND)
         IF (ND.NE.0) THEN
           NBACC = NBACC + 1
@@ -154,14 +150,14 @@ C--------------------------C
 C--                      --C
 C-- CALCUL DES DEFORMEES --C
 C--                      --C
-C--------------------------C 
+C--------------------------C
 
       IF ( ACCUNI ) THEN
         CALL WKVECT(MOAUNI,'V V R',NEQ*NBMODA,LMODA)
         CALL MODSTA('ACCE',RAIDFA,MATPRE,SOLVEU,LMATM,NUME,IBID,
      &              ZR(JCOEF),NEQ,NBMODA,ZR(LMODA))
       ENDIF
-      
+
       IF ( NBACC .NE. NBPSMO ) THEN
         CALL WKVECT(DDLAC,'V V I',NEQ,LDDAD)
         CALL MSTGET(NOMCMD,MASSE,'PSEUDO_MODE',NBPSMO,ZI(LDDAD))
@@ -174,5 +170,5 @@ C--------------------------C
       ENDIF
 
       CALL JEDEMA()
-      
+
       END

@@ -3,7 +3,7 @@
       CHARACTER*16 OPTION,NOMTE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 23/02/2011   AUTEUR MASSIN P.MASSIN 
+C MODIF ELEMENTS  DATE 26/04/2011   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -35,7 +35,7 @@ C  ENTREES  ---> OPTION : OPTION DE CALCUL
 C           ---> NOMTE  : NOM DU TYPE ELEMENT
 C
 C.......................................................................
-C TOLE CRP_20
+C
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
 
       INTEGER ZI
@@ -74,7 +74,7 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       REAL*8       ALPHA,DTANG(3),DNOR(3),RELA,CZMFE
       REAL*8       PP(3,3),AM(3),DSIDEP(6,6),SIGMA(6)
       LOGICAL      LPENAF,NOEUD,LPENAC,LBID
-      CHARACTER*8  ELREF,TYPMA,FPG,ELC,LAG,ELREFC,NOMRES(3),JOB
+      CHARACTER*8  ELREF,TYPMA,FPG,ELC,LAG,ELREFC,JOB
       CHARACTER*16 ENR
 
 C.......................................................................
@@ -128,7 +128,7 @@ C     INCREMENT DE DEP DEPUIS L'EQUILIBRE PRECEDENT (DEPDEL) : 'PDEPL_P'
       CALL JEVECH('PBASECO','L',JBASEC)
       CALL JEVECH('PVECTUR','E',IVECT)
 C
-      CALL TEATTR(NOMTE,'S','XFEM',ENR,IBID)          
+      CALL TEATTR(NOMTE,'S','XFEM',ENR,IBID)
       IF (ENR.EQ.'XHC') THEN
         RELA  = ZR(JDONCO-1+10)
         CZMFE = ZR(JDONCO-1+11)
@@ -136,7 +136,7 @@ C
         RELA  = 0.D0
         CZMFE = 0.D0
       ENDIF
-       
+
       IF(RELA.EQ.1.D0.OR.RELA.EQ.2.D0) THEN
         CALL JEVECH('PMATERC','L',IMATE)
         CALL JEVECH('PCOHES' ,'L',JCOHES)
@@ -220,7 +220,7 @@ C
 C
 C --- LISTE DES LAMBDAS ACTIFS
 C
-      IF(NOEUD) CALL XLACTI(TYPMA,NINTER,JAINT,CONTAC,LACT,NLACT)
+      IF(NOEUD) CALL XLACTI(TYPMA,NINTER,JAINT,LACT,NLACT)
 C
 C --- BOUCLE SUR LES FACETTES
 C
@@ -412,7 +412,7 @@ C
                  CALL XMMSA2(NDIM ,IPGF  ,ZI(IMATE)   ,SAUT ,ND  ,
      &                       TAU1 ,TAU2  ,COHES(ISSPG),JOB  ,RELA,
      &                       ALPHA,DSIDEP,SIGMA       ,PP   ,DNOR,
-     &                       DTANG,P     ,AM)     
+     &                       DTANG,P     ,AM)
 C
 C --- CALCUL DES SECONDS MEMBRES DE COHESION
 C

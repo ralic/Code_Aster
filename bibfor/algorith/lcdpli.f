@@ -2,7 +2,7 @@
      &                                    DEPS,VIM,VIP,SIG,DSIDEP,IRET)
 C =====================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/03/2011   AUTEUR BOTTONI M.BOTTONI 
+C MODIF ALGORITH  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -44,7 +44,7 @@ C OUT DSIDEP  MATRICE TANGENTE
 C OUT IRET    CODE RETOUR (0 = OK)
 C =====================================================================
       LOGICAL     RIGI,RESI
-      INTEGER     NDT,NDI,II,JJ
+      INTEGER     NDT,NDI,II
       REAL*8      TROIS,DEUX,DP,DPDENO,ALPHA,PMOINS,PPLUS
       REAL*8      HOOKF(6,6),DKOOH(6,6),PLAS,DPLITG
       REAL*8      EPSP(6),EPSM2(6),SIGE(6),SE(6),SIIE,SEQ,I1E,TRACE
@@ -99,14 +99,14 @@ C =====================================================================
          ELSE
             CALL MAJSIG ( MATERF, SE, SEQ, I1E, ALPHA, DP, PLAS, SIG)
          ENDIF
-         
+
 C =====================================================================
 C --- STOCKAGE DES VARIABLES INTERNES ---------------------------------
 C =====================================================================
          VIP(1)   = VIM(1) + DP
          VIP(2)   = VIM(2) + TROIS*ALPHA*DP
          VIP(NVI) = PLAS
-         
+
 C =====================================================================
 C --- PREPARATION AU CALCUL DE LA MATRICE TANGENTE --------------------
 C =====================================================================
@@ -126,7 +126,7 @@ C =====================================================================
             CALL LCEQMA(HOOKF, DSIDEP)
          ELSE
             CALL DPMATA( MOD, MATERF, ALPHA, DP, DPDENO, PPLUS,
-     &                        SE, SEQ, PLAS, DSIDEP)            
+     &                        SE, SEQ, PLAS, DSIDEP)
          ENDIF
       ENDIF
 C =====================================================================

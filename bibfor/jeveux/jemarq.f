@@ -1,8 +1,8 @@
       SUBROUTINE JEMARQ
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 06/10/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -38,8 +38,8 @@ C ----------------------------------------------------------------------
       COMMON /IADMJE/  IPGC,KDESMA,   LGD,LGDUTI,KPOSMA,   LGP,LGPUTI
       INTEGER          ISTAT
       COMMON /ISTAJE/  ISTAT(4)
-      REAL *8          SVUSE,SMXUSE   
-      COMMON /STATJE/  SVUSE,SMXUSE  
+      REAL *8          SVUSE,SMXUSE
+      COMMON /STATJE/  SVUSE,SMXUSE
 C ----------------------------------------------------------------------
       INTEGER          IADMA,IADRS,LSI,KTEMPO(2)
 C ----------------------------------------------------------------------
@@ -84,7 +84,7 @@ C
           CALL JJLIDY ( KPOSMA(2) , KPOSMA(1) )
         ELSE IF ( KPOSMA(1) .NE. 0 ) THEN
           CALL JJLIBP ( KPOSMA(1) )
-        ENDIF  
+        ENDIF
         KPOSMA(1) = KTEMPO(1)
         KPOSMA(2) = KTEMPO(2)
       ENDIF
@@ -99,6 +99,5 @@ C     SI IPGC > 200 C'EST PROBABLEMENT QU'UNE ROUTINE
 C     FAIT JEMARQ SANS FAIRE JEDEMA
       CALL ASSERT(IPGC.LT.200)
 
- 300  CONTINUE
 C FIN ------------------------------------------------------------------
       END

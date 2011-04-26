@@ -1,24 +1,24 @@
         SUBROUTINE HUJMID ( MOD, CRIT, MATER, NVI, EPSD, DEPS,
-     &  SIGD, SIGF, VIND, VINF, NOCONV, AREDEC, STOPNC, 
+     &  SIGD, SIGF, VIND, VINF, NOCONV, AREDEC, STOPNC,
      &  NEGMUL, IRET, SUBD, LOOP, NDEC0, INDI,MECTRA)
         IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 18/10/2010   AUTEUR FOUCAULT A.FOUCAULT 
+C MODIF ALGORITH  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CRP_20
 C ---------------------------------------------------------------------
@@ -34,7 +34,7 @@ C      SIGF    :  PREDICTION ELASTIQUE OU PLASTIQUE
 C      VIND    :  VARIABLES INTERNES  A T
 C      AREDEC   =.TRUE.  ARRET DES DECOUPAGES
 C      STOPNC   =.TRUE.  ARRET EN CAS DE NON CONVERGENCE
-C      LOOP     =.TRUE.  PREDICTION PLASTIQUE DES CONTRAINTES      
+C      LOOP     =.TRUE.  PREDICTION PLASTIQUE DES CONTRAINTES
 C               =.FALSE. PREDICTION ELASTIQUE DES CONTRAINTES
 C VAR  SIGF    :  CONTRAINTE  A T+DT
 C      VINF    :  VARIABLES INTERNES  A T+DT
@@ -44,41 +44,41 @@ C      SUBD     =.TRUE. SUBDIVISION DU A (DR/R) < CRIT
 C      NDEC0   :  NOMBRE D'INCREMENTS DE SUBDIVISION LIE A SUBD
 C      IRET    :  CODE RETOUR
 C   -------------------------------------------------------------------
-      INTEGER   NDT, NDI, NVI, NR, NMOD, IRET, JJ, NBMECT
+      INTEGER   NDT, NDI, NVI, NR, NMOD, IRET, NBMECT
       INTEGER   I, J, K, KK, ITER, INDI(7), NDEC0, NDEC
       INTEGER   NITIMP, NBMECA, COMPT, MSUP(2)
       INTEGER   UMESS, IUNIFI, IFM, NIV
       INTEGER   ESSAI, ESSMAX, RESI, NMAX
       LOGICAL   DEBUG, NOCONV, AREDEC, STOPNC, NEGMUL(8), SUBD
       LOGICAL   LOOP, EULER
-       
+
       COMMON    /TDIM/ NDT, NDI
       COMMON    /MESHUJ/ DEBUG
-      
+
       PARAMETER (NMOD   = 18)
       PARAMETER (NITIMP = 200)
       PARAMETER (ESSMAX = 10)
 
       REAL*8    EPSD(6), DEPS(6), I1F, DEUX
-      REAL*8    SIGD(6), SIGF(6), GD(6)
+      REAL*8    SIGD(6), SIGF(6)
       REAL*8    VIND(*), VINF(*)
       REAL*8    CRIT(*), MATER(22,2)
       REAL*8    R(NMOD), DRDY(NMOD,NMOD)
       REAL*8    DDY(NMOD), DY(NMOD), YD(NMOD), YF(NMOD)
-      REAL*8    ERR, ERR1, ERR2, DSIG(6)
+      REAL*8    ERR, DSIG(6)
       REAL*8    DET, ZERO, UN, RATIO, MAXI
-      REAL*8    EVOL, KSI, ACYC, AMON, AD
-      REAL*8    RDEC, PCO, BETA, CMON, CCYC, TOLE2
-      
-      REAL*8    RELAX(ESSMAX+1), ROTAGD(ESSMAX+1), NOR1(7), NOR2(7)
+      REAL*8    EVOL
+      REAL*8    RDEC, TOLE2
+
+      REAL*8    RELAX(ESSMAX+1)
       REAL*8    ERIMP(NITIMP,4), PREF, DEV(3), PF, QF
-      REAL*8    R8PREM, PTRAC, YE(NMOD), PSF, TOLE1, RTRAC
+      REAL*8    R8PREM, PTRAC, YE(NMOD), TOLE1, RTRAC
 
       REAL*8    PREDI0(6), SIGD0(6), DEPS0(6), VIND0(50), PROB(4)
       LOGICAL   AREDE0, STOPN0, LOOP0, PROX(4), PROBT, PROXC(4)
       LOGICAL   TRACTI, CYCL, NEGTRA, BNEWS(3), NODEF
       LOGICAL   NEGLAM(3), MECTRA, LTRY, MODIF, MTRAC
-      
+
       CHARACTER*8 MOD
 
       DATA   ZERO, UN, DEUX, TOLE1 / 0.D0, 1.D0, 2.D0, 1.D-6/
@@ -102,7 +102,7 @@ C ----------------------------------------------------------------
 C --------------------------------------------------
 C ----  SAUVEGARDE DES GRANDEURS D ENTREE INITIALES
 C --------------------------------------------------
-C --- LIMITATION DU REDECOUPAGE DU A UNE EVOLUTION TROP RAPIDE 
+C --- LIMITATION DU REDECOUPAGE DU A UNE EVOLUTION TROP RAPIDE
 C     DES VARIABLES INTERNES RDEV, RISO OU EPSVP
       NMAX = 3
 
@@ -122,7 +122,7 @@ C     DES VARIABLES INTERNES RDEV, RISO OU EPSVP
 
  1    CONTINUE
       IF(COMPT.GT.5)GOTO 9999
-      COMPT = COMPT + 1 
+      COMPT = COMPT + 1
       IF (DEBUG) WRITE(6,*)'DEBUT --- VINF =',(VINF(I),I=24,31)
 
 C --------------------------------------------------
@@ -149,7 +149,7 @@ C --------------------------------------------------
         NEGMUL(K) = .FALSE.
  5      CONTINUE
       NR = NDT + 1 + 2*NBMECA
-      
+
 C ----------------------------
 C ---> MISE A ZERO DES DATAS
 C ----------------------------
@@ -166,17 +166,17 @@ C --------------------------------------------------
 C ---> INITIALISATION DE YD = (SIGD, VIND, ZERO)
 C --------------------------------------------------
       CALL LCEQVN (NDT, SIGD, YD)
-      
+
       YD(NDT+1) = VIND(23)
 
       DO 15 K = 1, 7
         INDI(K)=0
- 15     CONTINUE          
+ 15     CONTINUE
 
       KK = 1
       DO 16 K = 1, 8
         IF (VIND(23+K) .EQ. UN) THEN
-        
+
           IF (K .NE. 4) THEN
             INDI(KK)            = K
             YD(NDT+1+KK)        = VIND(K)
@@ -186,8 +186,8 @@ C --------------------------------------------------
             INDI(NBMECA)        = K
             YD(NDT+1+NBMECA)    = VIND(K)
             YD(NDT+1+2*NBMECA)  = ZERO
-          ENDIF  
-          
+          ENDIF
+
         ENDIF
  16     CONTINUE
 
@@ -200,7 +200,7 @@ C --------------------------------------------------
           WRITE(6,*)'VIND = ',(VIND(I),I=21,22)
           WRITE(6,*)'LOOP = ',LOOP
           WRITE(6,*)
-        ENDIF         
+        ENDIF
 
        I1F = (SIGF(1) + SIGF(2) + SIGF(3))/3.D0
 
@@ -221,7 +221,7 @@ C ------------------------------------------------------------
        ENDIF
 
 C ------------------------------------------------------------------
-C ---> INITIALISATION : DY : CALCUL DE LA SOLUTION D ESSAI INITIALE 
+C ---> INITIALISATION : DY : CALCUL DE LA SOLUTION D ESSAI INITIALE
 C      (SOLUTION EXPLICITE)
 C ------------------------------------------------------------------
       CALL HUJIID (MOD, MATER, INDI, DEPS, I1F, YD, VIND, DY,
@@ -257,18 +257,18 @@ C ------------------------------------
       WRITE (IFM,'(A)') '- SIXX - SIYY - SIZZ - SIXY - SIXZ - SIYZ -
      &EPSVP - R1 - R2 - R3 - R4 - DLA1 - DLA2 - DLA3 - DLA4 -'
       WRITE (IFM,1000) '  > ESSAI :: YF=',(YF(I),I=1,NR)
-      
+
       ENDIF
 
 C ----------------------------------------------------
-C ---> RESTRICTION DES VALEURS DE SIGE A PREF**2 
-C ---  SINON RENVOI EN ECHEC OU LES MECA DE TRACTION 
+C ---> RESTRICTION DES VALEURS DE SIGE A PREF**2
+C ---  SINON RENVOI EN ECHEC OU LES MECA DE TRACTION
 C ---  SONT DESACTIVES
 C ----------------------------------------------------
       IF (NBMECA.NE.NBMECT) THEN
         DO 20 I = 1, NDI
           IF (ABS(YE(I)).GT.PREF**2.D0) NODEF = .TRUE.
-  20      CONTINUE 
+  20      CONTINUE
         IF (NODEF) THEN
           IRET = 1
           GOTO 9999
@@ -309,13 +309,13 @@ C -----------------------------------------------------
           PROB(I) = DEUX
           PROBT   = .TRUE.
         ENDIF
- 11     CONTINUE        
+ 11     CONTINUE
 
 
 C ------------------------------------------------------------
 C ---> SI ECHEC DANS LE CALCUL DE LA JACOBIENNE DR/DY
 C ---  ON VERIFIE LES ETATS DE CONTRAINTES DE YF A L'ITERATION
-C ---  DE CORRECTION PRECEDENTE. SI TRACTION IL Y A, ON TRAITE 
+C ---  DE CORRECTION PRECEDENTE. SI TRACTION IL Y A, ON TRAITE
 C ---  LE PB APRES L'ETIQUETTE 9999
 C ------------------------------------------------------------
       IF (IRET.EQ.1) THEN
@@ -325,7 +325,7 @@ C ------------------------------------------------------------
           IF (((RTRAC+PF-PTRAC)/ABS(PREF)).GE.-R8PREM())THEN
             TRACTI = .TRUE.
           ENDIF
- 255      CONTINUE          
+ 255      CONTINUE
         GOTO 9999
       ENDIF
 
@@ -337,7 +337,7 @@ C ----------------------------------------------------
 C ---> SI ECHEC DANS LA RESOLUTION DU SYSTEME LINEAIRE
 C ---  RENVOI A L'ETIQUETTE 9999
 C ----------------------------------------------------
-      IF (IRET.EQ.1) THEN 
+      IF (IRET.EQ.1) THEN
         IF (DEBUG) WRITE(6,'(A)')'HUJMID :: ERREUR DANS MGAUSS'
         GOTO 9999
       ENDIF
@@ -355,10 +355,10 @@ C DE L INTEGRATION LOCALE AVEC UN RETOUR A 9999
           IRET = 1
           GOTO 9999
         ENDIF
- 350  CONTINUE       
+ 350  CONTINUE
       CALL LCNRVN (NR, R, ERR)
       IF(DEBUG)WRITE(6,*)'ERREUR =',ERR
-      
+
       IF (ITER .LE. NITIMP) THEN
         ERIMP(ITER,1) = ERR
         ERIMP(ITER,2) = RELAX(ESSAI)
@@ -399,19 +399,19 @@ C -----------------------------------
             DY(I) = DY(I) + DDY(I)
             YF(I) = YD(I) + DY(I)
  42       CONTINUE
- 
+
           IF (DEBUG) THEN
-      
+
             WRITE(IFM,*)
             WRITE(IFM,1001) '  $$ ITER=',ITER
 C        WRITE(IFM,1000) '     DDY=',(DDY(I),I=1,NR)
 C        WRITE(IFM,1000) '     DY =',(DY(I),I=1,NR)
             WRITE(IFM,1000) '     YF =',(YF(I),I=1,NR)
             WRITE(IFM,1000) '     R  =',(R(I),I=1,NR)
-        
+
           ENDIF
 C -----------------------------------------------------
-C --- CONTROLE DE L'ETAT DE CONTRAINTE PAR RAPPORT A LA 
+C --- CONTROLE DE L'ETAT DE CONTRAINTE PAR RAPPORT A LA
 C     LIMITE DE TRACTION A NE PAS DEPASSEE
 C -----------------------------------------------------
           IF ((NBMECA.NE.NBMECT).AND.(NBMECA.EQ.0)) THEN
@@ -431,10 +431,10 @@ C -----------------------------------------------------
                   ENDIF
  445            CONTINUE
               ENDIF
-  44        CONTINUE        
+  44        CONTINUE
           ENDIF
 
-  45      CONTINUE  
+  45      CONTINUE
 
           GOTO 100
         ENDIF
@@ -451,12 +451,12 @@ C ----------------------------------------------------
            IRET = 1
            GOTO 9999
          ENDIF
-        
+
       ENDIF
  200  CONTINUE
- 
+
 C ---------------------------------------------------
-C --- CONTROLE DES RESULTATS OBTENUS APRES RESOLUTION 
+C --- CONTROLE DES RESULTATS OBTENUS APRES RESOLUTION
 C     DU SYSTEME NON LINEAIRE LOCAL
 C ---------------------------------------------------
 
@@ -472,21 +472,21 @@ C -------------------------------------------------
 
       DO 210 K = 1, NBMECT
         RATIO = YF(NDT+1+NBMECA+K)/MAXI
-        IF (RATIO .LT. (-TOLE1)) THEN 
+        IF (RATIO .LT. (-TOLE1)) THEN
           IF (INDI(K).LE.8) THEN
             NEGMUL(INDI(K)) = .TRUE.
           ELSE
 C ----------------------------------------------
 C ---> MECANISME DE TRACTION
-C LAMBDA < 0 --> DESACTIVATION DU MECANISME POUR 
+C LAMBDA < 0 --> DESACTIVATION DU MECANISME POUR
 C LA PROCHAINE TENTATIVE D'INTEGRATION
 C ----------------------------------------------
-            BNEWS(INDI(K)-8) = .TRUE.              
+            BNEWS(INDI(K)-8) = .TRUE.
             NEGTRA = .TRUE.
           ENDIF
         ENDIF
- 210    CONTINUE    
-      
+ 210    CONTINUE
+
 
 C -------------------------------------------------------
 C ---> MECANISME DE TRACTION
@@ -541,7 +541,7 @@ C ------------------------------------------------------
         GOTO 9999
       ELSEIF(TRACTI)THEN
 C --- SI IL N Y A QUE DES MECANISMES DE TRACTION ACTIFS
-C --- ALORS ON DEMANDE DIRECTEMENT SON ACTIVATION SANS 
+C --- ALORS ON DEMANDE DIRECTEMENT SON ACTIVATION SANS
 C --- REPASSER PAR L'ETAT INITIAL STANDARD
         CALL LCEQVE(DEPS0, DEPS)
 C        CALL LCEQVE(PREDI0, SIGF)
@@ -554,7 +554,7 @@ C        CALL LCEQVE(PREDI0, SIGF)
       ENDIF
 Caf 15/05/07 Debut
       VINF(23) = YF(NDT+1)
-Caf 15/05/07 Fin        
+Caf 15/05/07 Fin
 
 C ----------------------------------------------
 C ---> AFFECTATION DES RAYONS DE YF VERS VINF
@@ -572,11 +572,11 @@ C ----------------------------------------------
           ELSE
             VINF(KK) = YF(NDT+1+K)
           ENDIF
-        ELSE 
+        ELSE
           VINF(KK) = VIND(KK)
-        ENDIF   
+        ENDIF
  250  CONTINUE
- 
+
 C -------------------------------------
 C --- CONTROLE DE L'EVOLUTION DE R(K)
 C     SI DR/R > TOLE ---> SUBD = .TRUE.
@@ -595,7 +595,7 @@ C -------------------------------------
           NDEC0 = MAX(NDEC, NDEC0)
         ENDIF
  251  CONTINUE
-      
+
 C -------------------------------------------------
 C --- CONTROLE DE L'EVOLUTION DE EPS_V^P
 C     SI DEPS_V^P/EPS_V^P > TOLE ---> SUBD = .TRUE.
@@ -615,7 +615,7 @@ C -------------------------------------------------
 
 C ----------------------------------------------------------
 C ETIQUETTE 9999 ---> GESTION DES NON CONVERGENCES LOCALES
-C                     LIMITEES A 5 TENTATIVES 
+C                     LIMITEES A 5 TENTATIVES
 C ----------------------------------------------------------
 9999  CONTINUE
       IF (COMPT.GT.5) THEN
@@ -626,13 +626,13 @@ C --- UN MECANISME DE TRACTION : ETAT INIT = SIGD0
           CALL HUJPRJ(I, SIGD0, DEV, PF, QF)
           IF (((PF+DEUX*RTRAC-PTRAC)/ABS(PREF)).GT.-R8PREM()) THEN
             NOCONV=.FALSE.
-            IRET = 0            
+            IRET = 0
           ENDIF
  49     CONTINUE
         IF(.NOT.NOCONV)THEN
 C --- EN POSANT NOCONV = .TRUE., ON CONDUIT L'ALGORITHME PRESENT
-C --- DANS HUJRES A IMPOSER UN ETAT DE CONTRAINTES ISOTROPE COMMUN 
-C --- AUX 3 SEUILS PLASTIQUES DE TRACTION 
+C --- DANS HUJRES A IMPOSER UN ETAT DE CONTRAINTES ISOTROPE COMMUN
+C --- AUX 3 SEUILS PLASTIQUES DE TRACTION
 
           NOCONV=.TRUE.
           CALL LCEQVE(SIGD0,SIGD)
@@ -642,7 +642,7 @@ C --- AUX 3 SEUILS PLASTIQUES DE TRACTION
         ENDIF
         IF(DEBUG)WRITE(6,*)'NOCONV =',NOCONV
         IF(DEBUG)WRITE(6,*)'MECTRA =',MECTRA
-        GOTO 2000        
+        GOTO 2000
       ENDIF
 
       IF (PROBT) THEN
@@ -702,11 +702,11 @@ C --- AUX 3 SEUILS PLASTIQUES DE TRACTION
             ENDIF
             TRACTI = .FALSE.
           ENDIF
- 254    CONTINUE 
+ 254    CONTINUE
         IF(DEBUG)WRITE(6,*)'NEGLAM =',(NEGLAM(I),I=1,3)
         MTRAC = .FALSE.
         DO 253 I = 1, 3
-C --- ON NE DOIT PAS REACTIVE UN MECANISME DE TRACTION QUI DONNE 
+C --- ON NE DOIT PAS REACTIVE UN MECANISME DE TRACTION QUI DONNE
 C     COMME PREDICTEUR UN MULTIPLICATEUR PLASTIQUE NEGATIF
           IF(.NOT.NEGLAM(I))THEN
             CALL HUJPRJ(I,YF,DEV,PF,QF)
@@ -771,9 +771,9 @@ C     DURANT CETTE TENTATIVE?
                 J = J+1
                 MSUP(J) = I
               ENDIF
-            ENDIF     
+            ENDIF
  258      CONTINUE
- 
+
           CALL LCEQVE(PREDI0,SIGF)
           CALL LCEQVE(SIGD0,SIGD)
           CALL LCEQVE(DEPS0,DEPS)
@@ -788,8 +788,8 @@ C     DURANT CETTE TENTATIVE?
   26         CONTINUE
           ENDIF
 
-C --- EXISTE-T-IL UN MECANISME DEVIATOIRE AYANT LE MEME COMPORTEMENT 
-C     QUE CELUI IDENTIFIE PRECEDEMMENT COMME POSANT PROBLEME ? 
+C --- EXISTE-T-IL UN MECANISME DEVIATOIRE AYANT LE MEME COMPORTEMENT
+C     QUE CELUI IDENTIFIE PRECEDEMMENT COMME POSANT PROBLEME ?
           DO 257 I = 1, NBMECA
             IF ((INDI(I).GT.4).AND.(INDI(I).LT.8).AND.
      &         (((MAXI-ABS(R(7+I)))/TOLE1).LT.TOLE1).AND.
@@ -834,7 +834,7 @@ C ---------------------------------------------------------------
         CALL LCEQVN(NVI,VIND,VINF)
         GOTO 1
       ENDIF
-      
+
 C ---------------------------------------------------------------
 C --- SI MECANISME TRACTION ACTIF => RETIRE DE MPOT
 C ---------------------------------------------------------------
@@ -851,9 +851,9 @@ C ---------------------------------------------------------------
         IRET   = 0
         DO 262 I = NBMECA+1, NBMECT
           IF (YE(NDT+1+NBMECA+I).EQ.ZERO) THEN
-            BNEWS(INDI(I)-8) = .TRUE.              
+            BNEWS(INDI(I)-8) = .TRUE.
           ENDIF
- 262    CONTINUE 
+ 262    CONTINUE
         PROBT = .FALSE.
         CALL LCEQVN(NVI,VIND,VINF)
         GOTO 1
@@ -889,7 +889,7 @@ C ---------------------------------------------------------------
         ENDIF
  263  CONTINUE
       IF (.NOT.EULER) THEN
-        CALL LCEQVN(NVI,VIND,VINF)              
+        CALL LCEQVN(NVI,VIND,VINF)
         IRET = 0
         GOTO 1
       ENDIF
@@ -902,42 +902,42 @@ C ---------------------------------------------------------------
         CALL HUJPRJ(I, SIGD0, DEV, PF, QF)
         IF (((PF+DEUX*RTRAC-PTRAC)/ABS(PREF)).GT.-R8PREM())THEN
           NOCONV=.FALSE.
-          IRET = 0     
-          BNEWS(I) = .FALSE.       
+          IRET = 0
+          BNEWS(I) = .FALSE.
           LTRY = .TRUE.
         ENDIF
         CALL HUJPRJ(I, YE, DEV, PF, QF)
         IF (((PF+DEUX*RTRAC-PTRAC)/ABS(PREF)).GT.-R8PREM())THEN
           NOCONV=.FALSE.
-          IRET = 0     
-          BNEWS(I) = .FALSE.       
+          IRET = 0
+          BNEWS(I) = .FALSE.
           LTRY = .TRUE.
         ENDIF
         CALL HUJPRJ(I, YF, DEV, PF, QF)
         IF (((PF+DEUX*RTRAC-PTRAC)/ABS(PREF)).GT.-R8PREM())THEN
           NOCONV=.FALSE.
-          IRET = 0     
-          BNEWS(I) = .FALSE.       
+          IRET = 0
+          BNEWS(I) = .FALSE.
           LTRY = .TRUE.
         ENDIF
         CALL HUJPRJ(I, PREDI0, DEV, PF, QF)
         IF (((PF+RTRAC-PTRAC)/ABS(PREF)).GT.-R8PREM())THEN
           NOCONV=.FALSE.
-          IRET = 0     
-          BNEWS(I) = .FALSE.       
+          IRET = 0
+          BNEWS(I) = .FALSE.
           LTRY = .TRUE.
         ENDIF
  264  CONTINUE
 
       IF(LTRY)THEN
-        CALL LCEQVN(NVI,VIND,VINF)              
+        CALL LCEQVN(NVI,VIND,VINF)
         IRET = 0
-        GOTO 1              
+        GOTO 1
       ELSE
         NOCONV = .TRUE.
       ENDIF
-      
-       
+
+
  1000 FORMAT(A,15(1X,E12.5))
  1001 FORMAT(A,2(I3))
 

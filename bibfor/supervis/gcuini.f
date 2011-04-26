@@ -9,7 +9,7 @@ C IN  MXCMDU : IS : NOMBRE DE COMMANDES UTILISATEURS MAXIMUM
 C IN  BASE   : CH : TYPE DE LA BASE 'L' 'G' 'V' ....
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 31/01/2011   AUTEUR PELLET J.PELLET 
+C MODIF SUPERVIS  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -51,7 +51,7 @@ C     --- VARIABLES LOCALES --------------------------------------------
       CHARACTER*1    DDBASE
       CHARACTER*8    NOMUSR,NOMOBJ
       CHARACTER*16   NOMCMD, TYPCON
-      CHARACTER*24   SPVR,OBJ1,OBJ2,VALK(2)
+      CHARACTER*24   SPVR,VALK(2)
       CHARACTER*80   INIT
 C     ------------------------------------------------------------------
       CALL JEMARQ()

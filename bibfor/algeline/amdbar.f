@@ -2,7 +2,7 @@
      >          (N, PE, IW, LEN, IWLEN, PFREE, NV, NEXT,
      >          LAST, HEAD, ELEN, DEGREE, NCMPA, W, IOVFLO)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 07/01/2002   AUTEUR JFBHHUC C.ROSE 
+C MODIF ALGELINE  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C RESPONSABLE JFBHHUC C.ROSE
 C TOLE CRP_20
       IMPLICIT REAL*8 (A-H,O-Z)
@@ -434,7 +434,7 @@ C-----------------------------------------------------------------------
 C LOCAL INTEGERS:
 C-----------------------------------------------------------------------
 
-        INTEGER DEG, DEGME, DEXT, DMAX, E, ELENME, ELN, HASH, HMOD, I,
+        INTEGER DEG, DEGME, DMAX, E, ELENME, ELN, HASH, HMOD, I,
      >          ILAST, INEXT, J, JLAST, JNEXT, K, KNT1, KNT2, KNT3,
      >          LENJ, LN, MAXMEM, ME, MEM, MINDEG, NEL, NEWMEM,
      >          NLEFT, NVI, NVJ, NVPIV, SLENME, WBIG, WE, WFLG, WNVI, X

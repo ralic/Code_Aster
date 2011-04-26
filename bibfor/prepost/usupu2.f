@@ -3,9 +3,9 @@
       IMPLICIT REAL *8 (A-H,O-Z)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 06/07/2009   AUTEUR COURTOIS M.COURTOIS 
+C MODIF PREPOST  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -42,7 +42,7 @@ C     ---- DEBUT DES COMMUNS JEVEUX ------------------------------------
       CHARACTER*80                                        ZK80
       COMMON  /KVARJE/ ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
 C     ---- FIN DES COMMUNS JEVEUX --------------------------------------
-      CHARACTER*8  K8B, NOEU, RESU
+      CHARACTER*8  K8B, NOEU
       CHARACTER*19 TRANGE
       REAL*8 COEF(*),ANG(*),TEMPS(*)
       REAL*8 VUSTUB(NBPAIR,NBINST),VUSOB(NBPAIR,NBINST)

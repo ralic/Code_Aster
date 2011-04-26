@@ -2,24 +2,24 @@
      &                   NBCOMM,CPMONO,PGL,TOUTMS,HSR,
      &                    NR,VIND,YF,DY,DRDY,IRET)
       IMPLICIT NONE
-C TOLE CRP_21
+C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 12/07/2010   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 26/04/2011   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C RESPONSABLE PROIX J-M.PROIX
 C       ----------------------------------------------------------------
@@ -59,8 +59,8 @@ C       ----------------------------------------------------------------
       REAL*8          VIND(*),TOUTMS(5,24,6),HSR(5,24,24),SIGF(6)
       REAL*8          FHOOK(6,6),Q(3,3),LG(3)
       REAL*8          PGL(3,3),MS(6),NG(3),TAUS,TIMED, TIMEF,MR(6)
-      REAL*8          DPS,YF(*),DY(*),DRDY(NR,NR),SMSMS(6,6)
-      REAL*8          MATERF(NMAT*2),DT,MSMS(6,6),DELTSR,MSDGDT(6,6)
+      REAL*8          DPS,YF(*),DY(*),DRDY(NR,NR)
+      REAL*8          MATERF(NMAT*2),DT,MSDGDT(6,6)
       REAL*8          SGNS,TAUR,SGNR,HS,HR,DPR,R8B
       REAL*8          DPDTAU,DPRDAS,DHRDAS
       CHARACTER*16    CPMONO(5*NMAT+1),NOMFAM
@@ -83,9 +83,9 @@ C     LE NUMERO GLOBAL DU SYSTEME IS DANS Y EST NUVS
 
       DO 6 IFA=1,NBFSYS
          NOMFAM=CPMONO(5*(IFA-1)+1)
- 
+
          CALL LCMMSG(NOMFAM,NBSYS,0,PGL,MS,NG,LG,0,Q)
-         
+
          DO 7 IS=1,NBSYS
 C           CALCUL DE LA SCISSION REDUITE =
 C           PROJECTION DE SIG SUR LE SYSTEME DE GLISSEMENT
@@ -98,12 +98,12 @@ C           TAU      : SCISSION REDUITE TAU=SIG:MS
                TAUS=TAUS+SIGF(I)*MS(I)
  9          CONTINUE
             NUVS=NSFA+IS
-            
+
 C              CALCUL de dF/dtau
 
             CALL LCMMJD( TAUS,MATERF,IFA,NMAT,NBCOMM,DT,
      &                   IS,IS,NBSYS,HSR,VIND(NSFV+1),DY(NSFA+1),
-     &                   DPDTAU,R8B,R8B,HS,DPS,SGNS,IRET)     
+     &                   DPDTAU,R8B,R8B,HS,DPS,SGNS,IRET)
             IF (IRET.GT.0)  GOTO 9999
 C------------------------
 C              dR1/dS
@@ -120,7 +120,7 @@ C------------------------
             DO 29 I=1,6
                DRDY(NUVS,I)=-MS(I)*DPDTAU*HS
  29         CONTINUE
- 
+
 C------------------------
 C           calcul des ns termes dR1/dalphas
 C           et     des ns termes dR2/dalphas
@@ -137,7 +137,7 @@ C              Calcul de TauR (scission reduite du systeme R)
                NUVR=NSFA+IR
                CALL LCMMJD(TAUR,MATERF,IFA,NMAT,NBCOMM,DT,
      &                   IR,IS,NBSYS,HSR,VIND(NSFV+1),DY(NSFA+1),
-     &                   R8B,DPRDAS,DHRDAS,HR,DPR,SGNR,IRET)     
+     &                   R8B,DPRDAS,DHRDAS,HR,DPR,SGNR,IRET)
                IF (IRET.GT.0)  GOTO 9999
 C------------------------
 C              terme dR1/dAlpha_s

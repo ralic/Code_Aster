@@ -4,9 +4,9 @@
       CHARACTER*(*) NOMSD,NOMSY,CHEXTR
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 17/11/2003   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -40,7 +40,7 @@ C                    110 : LE NOM SYMBOLIQUE EST LICITE.
 C                    111 : LE NOM SYMBOLIQUE EST INTERDIT.
 C ----------------------------------------------------------------------
 C --------------- COMMUNS NORMALISES  JEVEUX  --------------------------
-      CHARACTER*32 JEXNUM,JEXNOM,JEXATR,JEXR8
+      CHARACTER*32 JEXNUM,JEXNOM
       INTEGER ZI
       COMMON /IVARJE/ZI(1)
       REAL*8 ZR
@@ -56,11 +56,7 @@ C --------------- COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*80 ZK80
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C ---------------- FIN COMMUNS NORMALISES  JEVEUX  --------------------
-      CHARACTER*2 NUCH
-      CHARACTER*4 TYPE,TYSCA
-      CHARACTER*6 CHFORD
-      CHARACTER*8 NOMOBJ,K8BID,K8DEBU,K8MAXI,K8ENT
-      CHARACTER*16 TYSD,NOMS2
+      CHARACTER*16 NOMS2
       CHARACTER*19 NOMD2,CHEXT2
       CHARACTER*1 K1BID
 C ----------------------------------------------------------------------

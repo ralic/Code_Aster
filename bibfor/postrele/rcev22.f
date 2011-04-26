@@ -7,22 +7,22 @@
       CHARACTER*24  CSIGM, CINST, CCONT, CNOC, CRESU, CPRES
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 24/03/2009   AUTEUR REZETTE C.REZETTE 
+C MODIF POSTRELE  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C     ------------------------------------------------------------------
 C     OPERATEUR POST_RCCM, TYPE_RESU_MECA='EVOLUTION'
@@ -33,7 +33,6 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER          ZI
       COMMON  /IVARJE/ ZI(1)
       REAL*8           ZR
-      REAL*8 VALR
       COMMON  /RVARJE/ ZR(1)
       COMPLEX*16       ZC
       COMMON  /CVARJE/ ZC(1)
@@ -45,20 +44,18 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32                               ZK32
       CHARACTER*80                                        ZK80
       COMMON  /KVARJE/ ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
-      CHARACTER*32     JEXNOM, JEXNUM
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
 C
-      INTEGER      IBID, N1, NUME, NBINST, KINST, JCONT, JCOFL, NCMPR,
+      INTEGER      IBID, N1, NBINST, KINST, JCONT, JCOFL, NCMPR,
      +             I, J, K, L, NDIM, NBABSC, JABSC, JSIGM, JINST, NCMP,
-     +             IRET, JOCCU, NBTRAN, JSIOE, IOCC, NBINS0, JNOCC,
-     +             JRESU, NBCYCL, JCALS, JCOPR, JRESP
+     +             IRET, JSIOE, IOCC, NBINS0, JNOCC,
+     +             JRESU, NBCYCL, JCOPR, JRESP
       PARAMETER  ( NCMP = 6 )
-      REAL*8       R8B, PREC(2), MOMEN0, MOMEN1, VALE(2), SIGMLO,
-     +             SIGMLE, R8VIDE
+      REAL*8       R8B, PREC(2), MOMEN0, MOMEN1, VALE(2),
+     +              R8VIDE
       COMPLEX*16   CBID
       LOGICAL      EXIST, CFAIT
-      CHARACTER*4  TYPE
-      CHARACTER*8  K8B, CRIT(2), NOCMP(NCMP), KNUME
+      CHARACTER*8  K8B, CRIT(2), NOCMP(NCMP)
       CHARACTER*16 MOTCLF, VALEK(2), TABLE, TABL0, TABFLE, TABFL0,
      +             TABPRE, TABPR0
       CHARACTER*19 NOMF
@@ -131,7 +128,7 @@ C
                   CALL U2MESK('F', 'UTILITAI7_3',2,VALK)
                ENDIF
                IF ( FLEXIO ) THEN
-                  CALL TBEXTB ( TABFL0, 'V', TABFLE, 1, 'INTITULE', 
+                  CALL TBEXTB ( TABFL0, 'V', TABFLE, 1, 'INTITULE',
      +                 'EQ', IBID, R8B, CBID, KINTI, R8B, K8B, IRET )
                   IF ( IRET .EQ. 10 ) THEN
                      VALK(1) = 'INTITULE'
@@ -144,7 +141,7 @@ C
                   ENDIF
                ENDIF
                IF ( LROCHT ) THEN
-                  CALL TBEXTB ( TABPR0, 'V', TABPRE, 1, 'INTITULE', 
+                  CALL TBEXTB ( TABPR0, 'V', TABPRE, 1, 'INTITULE',
      +                 'EQ', IBID, R8B, CBID, KINTI, R8B, K8B, IRET )
                   IF ( IRET .EQ. 10 ) THEN
                      VALK(1) = 'INTITULE'
@@ -195,7 +192,7 @@ C
                CALL U2MESK('F', 'UTILITAI7_3',2,VALK)
             ENDIF
             IF ( FLEXIO ) THEN
-               CALL TBEXTB ( TABFL0, 'V', TABFLE, 1, 'INTITULE', 
+               CALL TBEXTB ( TABFL0, 'V', TABFLE, 1, 'INTITULE',
      +             'EQ', IBID, R8B, CBID, KINTI, R8B, K8B, IRET )
                IF ( IRET .EQ. 10 ) THEN
                   VALK(1) = 'INTITULE'
@@ -208,7 +205,7 @@ C
                ENDIF
             ENDIF
             IF ( LROCHT ) THEN
-               CALL TBEXTB ( TABPR0, 'V', TABPRE, 1, 'INTITULE', 
+               CALL TBEXTB ( TABPR0, 'V', TABPRE, 1, 'INTITULE',
      +             'EQ', IBID, R8B, CBID, KINTI, R8B, K8B, IRET )
                IF ( IRET .EQ. 10 ) THEN
                   VALK(1) = 'INTITULE'
@@ -333,11 +330,11 @@ C
 C
          DO 104 J = 1 , NCMPR
 C
-            DO 106 K = 1 , NBABSC 
+            DO 106 K = 1 , NBABSC
               VALE(2) = ZR(JABSC+K-1)
 C
               CALL TBLIVA ( TABLE, 2, VALEK, IBID, VALE,
-     +                      CBID, K8B, CRIT, PREC, NOCMP(J), 
+     +                      CBID, K8B, CRIT, PREC, NOCMP(J),
      +                      K8B, IBID, ZR(JCONT+K-1), CBID, K8B, IRET)
               IF (IRET.NE.0) THEN
                 VALK (1) = TABLE
@@ -349,7 +346,7 @@ C
 C
               IF ( FLEXIO ) THEN
                 CALL TBLIVA ( TABFLE, 2, VALEK, IBID, VALE,
-     +                        CBID, K8B, CRIT, PREC, NOCMP(J), K8B, 
+     +                        CBID, K8B, CRIT, PREC, NOCMP(J), K8B,
      +                        IBID, ZR(JCOFL+K-1), CBID, K8B, IRET)
                 IF (IRET.NE.0) THEN
                   VALK (1) = TABFLE
@@ -362,7 +359,7 @@ C
 C
               IF ( LROCHT ) THEN
                 CALL TBLIVA ( TABPRE, 2, VALEK, IBID, VALE,
-     +                        CBID, K8B, CRIT, PREC, NOCMP(J), K8B, 
+     +                        CBID, K8B, CRIT, PREC, NOCMP(J), K8B,
      +                        IBID, ZR(JCOPR+K-1), CBID, K8B, IRET)
                 IF (IRET.NE.0) THEN
                   VALK (1) = TABPRE

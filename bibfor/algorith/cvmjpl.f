@@ -3,10 +3,10 @@
         IMPLICIT NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/12/2010   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C TOLE CRS_1404
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -81,7 +81,7 @@ C
 C
         REAL*8          HOOKF(6,6), DSDE(6,6),  I6(6,6)
 C
-        REAL*8          MATA(6,6),  MATB(6,6),  MATC(6,6)
+        REAL*8              MATC(6,6)
         REAL*8          MATD(6,6),  MATE(6,6),  MATF(6,6)
         REAL*8          MTMP(6,6),  MTMP1(6,6), MTMP2(6,6)
         REAL*8          VTMP(6),    VTMP1(6),   VTMP2(6)

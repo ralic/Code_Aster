@@ -4,11 +4,11 @@
      &                   TOL  , RESID , NCV   , V     ,
      &                   LDV  , IPARAM, IPNTR , WORKD ,
      &                   WORKL, LWORKL, RWORK , INFO  )
-C MODIF ALGELINE  DATE 24/03/2009   AUTEUR REZETTE C.REZETTE 
+C MODIF ALGELINE  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -347,8 +347,8 @@ C
       CHARACTER*6  TYPE
       INTEGER*4 IERR4
       INTEGER    BOUNDS, IERR  , IH    , IHBDS, IHEIG , NCONV ,
-     &           INVSUB, IUPTRI, IWEV  , J    , LDH   , LDQ   ,
-     &           MODE  , MSGLVL, RITZ  , WR   , K     , IRZ   ,
+     &           INVSUB, IUPTRI  , J    , LDH   , LDQ   ,
+     &           MODE  , MSGLVL, RITZ     , K     , IRZ   ,
      &           IBD   , OUTNCV, NP   , NUMCNV, JJ    ,
      &           ISHIFT
       COMPLEX*16 RNORM, TEMP, VL(1)

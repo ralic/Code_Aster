@@ -3,9 +3,9 @@
      &                    NPARPG, LIPAPG, FORMAR, FORMAC )
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 19/01/2010   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -62,7 +62,6 @@ C
       INTEGER      LTITR, LONMAX, ITITR
       CHARACTER*8  K8B, FORMAT
       CHARACTER*19 NOMTAB
-      CHARACTER*24 NEWTAB
 C     ------------------------------------------------------------------
 C
 C====

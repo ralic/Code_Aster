@@ -6,9 +6,9 @@
       CHARACTER*8   TYPMA
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/06/2010   AUTEUR CARON A.CARON 
+C MODIF ALGORITH  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -52,18 +52,18 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON  /KVARJE/ ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
-      INTEGER        I,J
+      INTEGER        I
       REAL*8         AR(3),M(3)
 C ----------------------------------------------------------------------
 
       CALL JEMARQ()
 
-C     ATTENTION, 
+C     ATTENTION,
 C     NDIM EST LA DIMENSION DU MAILLAGE
 C     POUR LES MAILLES DE BORD, CE N'EST PAS LA DIMENSION DE LA MAILLE
 
       CALL ASSERT(NDIM.EQ.2.OR.NDIM.EQ.3)
-         
+
       IF (TYPMA(1:4).EQ.'HEXA') THEN
 
 C       LA LONGUEUR CARACTÉRISTIQUE EST LA GRANDE DIAGONALE N1-N7
@@ -88,16 +88,16 @@ C       M : MILIEU DE LA FACE QUADRANGLE
           M(I) = (   COORD(3*(1-1)+I) + COORD(3*(2-1)+I)
      &             + COORD(3*(3-1)+I) + COORD(3*(4-1)+I)  ) / 4.D0
  5      CONTINUE
-         
+
 C       LA LONGUEUR CARACTÉRISTIQUE EST ((N1-N3)*(M-N5))^(1/2)
-        AR(1)=SQRT(   (COORD(3*(3-1)+1)-COORD(3*(1-1)+1))**2  
+        AR(1)=SQRT(   (COORD(3*(3-1)+1)-COORD(3*(1-1)+1))**2
      &              + (COORD(3*(3-1)+2)-COORD(3*(1-1)+2))**2
      &              + (COORD(3*(3-1)+3)-COORD(3*(1-1)+3))**2 )
         AR(2)=SQRT(   (            M(1)-COORD(3*(5-1)+1))**2
      &              + (            M(2)-COORD(3*(5-1)+2))**2
      &              + (            M(3)-COORD(3*(5-1)+3))**2 )
         L=SQRT(AR(1)*AR(2))
- 
+
       ELSEIF (TYPMA(1:5).EQ.'TETRA') THEN
 
 C       LA LONGUEUR CARACTÉRISTIQUE EST ((N1-N2)*(N1-N3)*(N1-N4))^(1/3)
@@ -112,8 +112,8 @@ C       LA LONGUEUR CARACTÉRISTIQUE EST ((N1-N2)*(N1-N3)*(N1-N4))^(1/3)
 C     LA LONGUEUR CARACTÉRISTIQUE EST ((N1-N2)*(N1-N3))^(1/2)
         DO 20 I=1,2
           AR(I) = (COORD(1)-COORD(NDIM*I+1))**2 +
-     &            (COORD(2)-COORD(NDIM*I+2))**2 
-          IF (NDIM.EQ.3) AR(I) = AR(I) + (COORD(3)-COORD(NDIM*I+3))**2 
+     &            (COORD(2)-COORD(NDIM*I+2))**2
+          IF (NDIM.EQ.3) AR(I) = AR(I) + (COORD(3)-COORD(NDIM*I+3))**2
  20     CONTINUE
         L=(SQRT(AR(1)*AR(2)))**(1.D0/2.D0)
 
@@ -122,8 +122,8 @@ C     LA LONGUEUR CARACTÉRISTIQUE EST ((N1-N2)*(N1-N3))^(1/2)
 C     LA LONGUEUR CARACTÉRISTIQUE EST ((N1-N2)*(N1-N3))^(1/2)
         DO 30 I=1,2
           AR(I) = (COORD(1)-COORD(NDIM*I+1))**2 +
-     &            (COORD(2)-COORD(NDIM*I+2))**2 
-          IF (NDIM.EQ.3) AR(I) = AR(I) + (COORD(3)-COORD(NDIM*I+3))**2 
+     &            (COORD(2)-COORD(NDIM*I+2))**2
+          IF (NDIM.EQ.3) AR(I) = AR(I) + (COORD(3)-COORD(NDIM*I+3))**2
  30     CONTINUE
         L=(SQRT(AR(1)*AR(2)))**(1.D0/2.D0)
 
@@ -131,7 +131,7 @@ C     LA LONGUEUR CARACTÉRISTIQUE EST ((N1-N2)*(N1-N3))^(1/2)
 
 C       LA LONGUEUR CARACTÉRISTIQUE EST (N1-N2)^(1/2)
         L = (COORD(1)-COORD(NDIM+1))**2 + (COORD(2)-COORD(NDIM+2))**2
-        IF (NDIM.EQ.3) L = L + (COORD(3)-COORD(NDIM+3))**2 
+        IF (NDIM.EQ.3) L = L + (COORD(3)-COORD(NDIM+3))**2
         L = SQRT(L)
 
       ELSE

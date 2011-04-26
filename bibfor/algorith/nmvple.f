@@ -1,8 +1,9 @@
       SUBROUTINE NMVPLE (FAMI,KPG,KSP,NDIM,IMATE,COMPOR,CRIT,TYPMOD,
      &                   INSTAM,INSTAP,DEPS,SIGM,VIM,
      &                   OPTION,SIGP,VIP,DSIDEP,IRET)
+C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 26/04/2011   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,7 +20,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C TOLE CRP_7 CRP_21
+C TOLE CRP_7
       IMPLICIT NONE
       INTEGER            NDIM,IMATE,IRET,KPG,KSP
       CHARACTER*(*)      FAMI
@@ -104,6 +105,7 @@ C
         CALL U2MESS('F','ALGORITH6_92')
         GO TO 299
       ENDIF
+
       DO 90 K = 1,6
         DEGRAN(K) = 0.D0
   90  CONTINUE
@@ -241,7 +243,7 @@ C
           ENDIF
           ENDIF
         ENDIF
-        IF (X.NE.0.D0) 
+        IF (X.NE.0.D0)
      &   CALL GGPLEM(X,DPC+(SIELEQ-X)/(1.5D0*DEUXMU),VALDEN,
      &        UNSURK,UNSURM,THETA,DEUXMU,FG,FDGDST,FDGDEV)
 C

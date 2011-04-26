@@ -5,9 +5,9 @@
       CHARACTER*8   ELP
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 21/12/2010   AUTEUR MASSIN P.MASSIN 
+C MODIF ALGORITH  DATE 26/04/2011   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -102,7 +102,7 @@ C ----------------------------------------------------------------------
         NSE=3
         NNOSE=4
       ELSEIF (ELP.EQ.'PY5'.OR.ELP.EQ.'P13') THEN
-C       SOUS-TETRAS 
+C       SOUS-TETRAS
 C       CONNEC = [1 2 3 5
 C                 1 3 4 5]
         CONNEC(1,1)=1

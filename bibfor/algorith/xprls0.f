@@ -7,7 +7,7 @@
      &               TRIFIS
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 08/03/2011   AUTEUR MASSIN P.MASSIN 
+C MODIF ALGORITH  DATE 26/04/2011   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -88,19 +88,16 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
      &               NUNOA,NUNOB,JNOMCO,NBNOCO,NUNO,NMAABS,NPTINT,NTRI,
      &               ITYPMA,ITRI,JCOOR,JNOSOM,NBNOZO,IA,IB,IC,CPTZO,
      &               JLSNO,JLTNO,JNOULS,JNOULT,AR(12,3),NBAR,IAR,NA,NB,
-     &               IBID,IPT,NBLSN0,IBID2(12,3),IFQ,NBF,FA(6,4),NI,
-     &               NUNOI,NBSOM,JTMDIM,NDIME,I
-      REAL*8         R8B,R8PREM,P(3),X(7),Y(7),Z(7),XA,YA,ZA,XB,YB,
-     &               ZB,S,A(3),B(3),C(3),EPS(3),M(3),D,VN(3),NORMGR,
+     &               IBID,IPT,NBLSN0,IBID2(12,3),IFQ,NBF,FA(6,4),
+     &               NBSOM,JTMDIM,NDIME,I
+      REAL*8         R8PREM,P(3),X(7),Y(7),Z(7),XA,YA,ZA,XB,YB,
+     &               ZB,S,A(3),B(3),C(3),EPS(3),M(3),D,VN(3),
      &               LSNA,LSNB,LSTA,LSTB,LSTC,LST(6),BESTD,BESTDI,LSN,
      &               BESTLT,BESTLI,DIST,ARMIN,LONGAR,LONGMX,PADIST,
-     &               LSNC,LSND,AB(3),AP(3),NORMAB,NORMAP,NORMVN,DDOT,
+     &
      &               MP(3)
-      COMPLEX*16     C16B
-      CHARACTER*2    NPTIK2
-      CHARACTER*8    K8B,TYPMA,NOMAIL,K8BID
-      CHARACTER*19   MAICOU,NOMCOU,VNOULS,VNOULT,MAI,NOMT19
-      CHARACTER*24   VALK(4),PARA
+      CHARACTER*8    K8B,TYPMA
+      CHARACTER*19   MAICOU,NOMCOU,VNOULS,VNOULT,MAI
       LOGICAL        DEJAIN,DEJADI,NOEMAI,IN,DEJA
       REAL*8         TOLL
 
@@ -521,7 +518,7 @@ C                     NPTINT = NPTINT+1
                      Y(NPTINT+1) = YA + S*(YB-YA)
                      Z(NPTINT+1) = ZA + S*(ZB-ZA)
 
-C  ON VERIFIE LA VALIDITE DU POINT		
+C  ON VERIFIE LA VALIDITE DU POINT
                      DEJA=.FALSE.
                      IF (NDIM.EQ.3) THEN
                        DIST = (((X(NPTINT+1)-XA)**2)+

@@ -7,22 +7,22 @@
       REAL*8        DS2HDS(6), DFDSIG(6)
 C =================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 15/01/2008   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C =================================================================
 C --- MODELE LETK : LAIGLE VISCOPLASTIQUE--------------------------
@@ -41,9 +41,8 @@ C     : DS2HDS: d(sII*h(THETA))/dsig ------------------------------
 C     : UCRI  : LE TERME SOUS LA PUISSANCE DANS LE CRITERE --------
 C OUT : DFDSIG : dF/dsig ------------------------------------------
 C =================================================================
-      INTEGER NDI, NDT, I, K
+      INTEGER NDI, NDT, I
       REAL*8  PREF, SIGC, COS3T, RCOS3T, H0C, H0E, HTHETA
-      REAL*8  SII
       REAL*8  ZERO, UN, LGLEPS
       REAL*8  A(6), KRON(6)
       REAL*8  FACT1, FACT3,R8PREM
@@ -71,23 +70,23 @@ C =================================================================
 C --- CALCUL DES TERMES INTERMEDIARES
 C =================================================================
       FACT1 = PARA(1) * SIGC * H0C
-      FACT3 = PARA(1) - UN  
+      FACT3 = PARA(1) - UN
 C =================================================================
-C --- RESULTAT FINAL      
+C --- RESULTAT FINAL
 C =================================================================
       CALL R8INIR(6,0.D0,A,1)
       CALL R8INIR(6,0.D0,DFDSIG,1)
 
       DO 10 I = 1, NDT
       A(I) = VAR(1) * DS2HDS(I) + VAR(2)* KRON (I)
- 10   CONTINUE      
+ 10   CONTINUE
 
       DO 20 I = 1, NDT
       IF (UCRI .LE. R8PREM()) THEN
       DFDSIG(I) =  DS2HDS(I)
       ELSE
-      DFDSIG(I) =  DS2HDS(I) - FACT1*((UCRI)**FACT3)*A(I) 
+      DFDSIG(I) =  DS2HDS(I) - FACT1*((UCRI)**FACT3)*A(I)
       ENDIF
- 20   CONTINUE      
+ 20   CONTINUE
 C =================================================================
       END

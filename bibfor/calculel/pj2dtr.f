@@ -3,13 +3,13 @@
       CHARACTER*16 CORRES,CORTR3
       INTEGER NBTM
       PARAMETER    (NBTM=6)
-      CHARACTER*8 ELRF2D(NBTM),NOTM
+      CHARACTER*8 ELRF2D(NBTM)
       INTEGER NUTM2D(NBTM)
       REAL*8  GEOM1(*),GEOM2(*)
       LOGICAL LRAFF
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 08/03/2011   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -43,7 +43,7 @@ C                            INUTILISABLE DANS LE CAS 2.5D
 C ----------------------------------------------------------------------
 C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
 C
-      CHARACTER*32       JEXNUM , JEXNOM , JEXR8 , JEXATR
+      CHARACTER*32         JEXATR
       INTEGER            ZI
       COMMON  / IVARJE / ZI(1)
       REAL*8             ZR
@@ -61,7 +61,7 @@ C
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
       INTEGER        NBNOMX,    NBFAMX
       PARAMETER    ( NBNOMX=27, NBFAMX=20)
-      CHARACTER*8  M1, M2, KB, ELREFA, FAPG(NBFAMX),NOMMAI,ALARME
+      CHARACTER*8  M1, M2, KB, ELREFA, FAPG(NBFAMX),ALARME
       CHARACTER*16  K16BID,NOMCMD
       INTEGER      NBPG(NBFAMX), CNQUAD(3,2)
       REAL*8  CRREFE(3*NBNOMX), KSI, ETA, XR1(2), XR2(2), XR3(2)
@@ -255,6 +255,5 @@ C       CALCUL DES F. DE FORME AUX NOEUDS POUR LE POINT XR3
 
 20    CONTINUE
 
-9999  CONTINUE
       CALL JEDEMA()
       END

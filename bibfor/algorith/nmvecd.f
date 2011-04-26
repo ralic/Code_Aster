@@ -5,9 +5,9 @@
      &                    ETATF, IER)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 07/12/2010   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ALGORITH  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -79,13 +79,13 @@ C
 C INFO P(1)=RPOINT,  P(2)=DPOINT
 C-----------------------------------------------------------------------
       INTEGER     K, J, I
-      REAL*8      DAMMAX, EPSI, R8PREM
+      REAL*8      DAMMAX, EPSI
       PARAMETER  (DAMMAX = 0.99D0)
 C
       REAL*8     R8MIEM, DKRON(6,6), SC, DSCDR, UNSSC, ARG
       REAL*8     CA1, CA0, DRPDSC, DRPDSE, UNSSEM, EC, UNMD, EA
       REAL*8     SY, UNSM, GK, GR, GA, EPSVPM(6), EPST(6),EPSTH(6)
-      REAL*8     DSEDB(6), DSEDB2(6,6), SE, D, R, GN, SEMSY, GM, CRIT
+      REAL*8     DSEDB(6), DSEDB2(6,6), SE, D, R, GN, SEMSY, CRIT
       REAL*8     DHEDE(6,6), DHEDB(6,6), DHEDP(6,2), XHI, P2, EPSVP(6)
       REAL*8     P2DXHI, P2DP2, HE(6), DXHIDB(6), KXHI, DKXIDX
 C

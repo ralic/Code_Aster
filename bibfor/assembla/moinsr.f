@@ -6,9 +6,9 @@
       CHARACTER*(*) NOSUIV,NOIP
 C     -----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ASSEMBLA  DATE 24/03/2009   AUTEUR REZETTE C.REZETTE 
+C MODIF ASSEMBLA  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -55,7 +55,6 @@ C------------------------------------------------------------------
 C     -------------------------------------------------------------
 C     FONCTIONS JEVEUX
 C     -------------------------------------------------------------
-      CHARACTER*32 JEXNUM,JEXNOM,JEXATR
 C     -------------------------------------------------------------
 C     COMMUNS   JEVEUX
 C     -------------------------------------------------------------

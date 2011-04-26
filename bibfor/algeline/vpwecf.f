@@ -2,9 +2,9 @@
      +                   RESUFK,LAMOR,KTYP,LNS)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 16/09/2008   AUTEUR PELLET J.PELLET 
+C MODIF ALGELINE  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -33,7 +33,7 @@ C PARAMETRES D'APPEL
 
 C VARIABLES LOCALES
       INTEGER      IFM,IFREQ,IRESO,ITERB,ITERJ,ITERQ,ITERA,INDF,ISNNEM,
-     &             NIV,NFSUP
+     &             NIV
       REAL*8       FFF,AM,ERR,PREC,UNDF,R8VIDE,CHA,AM2,ERC,ERRMOY
       CHARACTER*27 STRAUX
 C     ------------------------------------------------------------------
@@ -141,7 +141,7 @@ C     ------------------------------------------------------------------
  35      CONTINUE
          WRITE(IFM,7776)ERRMOY/NFREQ
          WRITE(IFM,7777)
-         
+
       ELSEIF ( RESUFK(NFREQ,2)(1:2) .EQ. 'QZ' ) THEN
         STRAUX='ALGORITHME '//RESUFK(NFREQ,2)(1:16)
         IF ((LAMOR.EQ.0).AND.(KTYP.EQ.'R').AND.(.NOT.LNS)) THEN
@@ -427,5 +427,4 @@ C     ------------------------------------------------------------------
  7777 FORMAT ( / )
 
 C     ------------------------------------------------------------------
- 9999 CONTINUE
       END

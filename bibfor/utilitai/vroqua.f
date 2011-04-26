@@ -1,9 +1,9 @@
       SUBROUTINE VROQUA(THETA ,QUATER)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 23/09/2008   AUTEUR ABBAS M.ABBAS 
+C MODIF UTILITAI  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -21,26 +21,26 @@ C ======================================================================
 C
        IMPLICIT NONE
        REAL*8   QUATER(4),THETA(3)
-C 
+C
 C ----------------------------------------------------------------------
 C
 C ROUTINE UTILITAIRE (QUATERNION)
 C
 C CALCULE LE QUATERNION CORRESPONDANT AU VECTEUR-ROTATION THETA
-C      
+C
 C ----------------------------------------------------------------------
-C 
-C       
+C
+C
 C OUT QUATER : QUATERNION
 C IN  THETA  : VECTEUR ROTATION
-C      
+C
 C ----------------------------------------------------------------------
 C
       REAL*8   EPSIL,DEMI,UN
       REAL*8   DDOT
       REAL*8   ANGLE,COEF,PROSCA
       INTEGER  I
-C      
+C
 C ----------------------------------------------------------------------
 C
       EPSIL  = 1.D-4
@@ -60,5 +60,4 @@ C
         QUATER(I) = COEF * THETA(I)
 1     CONTINUE
 C
- 9999 CONTINUE
       END

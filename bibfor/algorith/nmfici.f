@@ -1,7 +1,7 @@
       SUBROUTINE NMFICI(NNO,NDDL,WREF,VFF,DFDE,GEOM,POIDS,B)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/12/2010   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C TOLE CRS_1404
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
@@ -40,8 +40,8 @@ C IN  GEOM   COORDONNEES DES NOEUDS
 C OUT POIDS  POIDS REEL DU POINT DE GAUSS (AVEC DISTORSION)
 C OUT B      MATRICE DE PASSAGE UNODAL -> SAUT DE U LOCAL
 C-----------------------------------------------------------------------
-      INTEGER N,I
-      REAL*8 COVA(3,3),METR(2,2),JAC,R(3,3),NOA1,GEO(3,NNO)
+      INTEGER N
+      REAL*8 COVA(3,3),METR(2,2),JAC,R(3,3),NOA1
 C-----------------------------------------------------------------------
 
 

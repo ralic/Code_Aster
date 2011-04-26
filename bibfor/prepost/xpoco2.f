@@ -2,22 +2,22 @@
      &                  CNS1,CNS2,CES1,CES2,CESVI1,CESVI2,RESUCO)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 06/07/2010   AUTEUR CARON A.CARON 
+C MODIF PREPOST  DATE 26/04/2011   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C RESPONSABLE GENIAUT S.GENIAUT
 
@@ -67,8 +67,8 @@ C---------------- FIN COMMUNS NORMALISES  JEVEUX  ----------------------
       CHARACTER*8  K8B
       CHARACTER*16  TYSD
       INTEGER      IVIEX,IRET
-     
-      
+
+
       CALL JEMARQ()
 
       CALL DISMOI('F','DIM_GEOM',MALINI,'MAILLAGE',NDIM,K8B,IER)
@@ -111,7 +111,7 @@ C     ------------------------------------------------------------------
         CALL JEVEUO(CES2//'.CESL','E',JCESL2)
 
         CALL JEEXIN(CESVI1//'.CESV',IRET)
-        IF(IRET .NE. 0) THEN      
+        IF(IRET .NE. 0) THEN
           CALL JEVEUO(CESVI1//'.CESV','L',JCVIV1)
           CALL JEVEUO(CESVI1//'.CESD','L',JCVID1)
           CALL JEVEUO(CESVI1//'.CESL','L',JCVIL1)
@@ -119,7 +119,7 @@ C     ------------------------------------------------------------------
         IVIEX = IRET
 
         CALL JEEXIN(CESVI2//'.CESV',IRET)
-        IF(IRET .NE. 0) THEN      
+        IF(IRET .NE. 0) THEN
           CALL JEVEUO(CESVI2//'.CESV','E',JCVIV2)
           CALL JEVEUO(CESVI2//'.CESD','L',JCVID2)
           CALL JEVEUO(CESVI2//'.CESL','E',JCVIL2)
@@ -133,12 +133,12 @@ C     ------------------------------------------------------------------
           IF (IMA2.EQ.0) GOTO 10
           NPG1  = ZI(JCESD1-1+5+4* (IMA-1)+1)
           NCMP1 = ZI(JCESD1-1+5+4* (IMA-1)+3)
-        
+
           NPG2  = ZI(JCESD2-1+5+4* (IMA2-1)+1)
           NCMP2 = ZI(JCESD2-1+5+4* (IMA2-1)+3)
           CALL ASSERT(NPG1.EQ.NPG2)
           CALL ASSERT(NCMP1.EQ.NCMP2)
-        
+
           IF(IVIEX .NE. 0) THEN
             NPGV1  = ZI(JCVID1-1+5+4* (IMA-1)+1)
             NCMV1 = ZI(JCVID1-1+5+4* (IMA-1)+3)
@@ -148,23 +148,23 @@ C     ------------------------------------------------------------------
             CALL ASSERT(NPGV1.EQ.NPG2)
             CALL ASSERT(NCMV1.LE.NCMV2)
           ENDIF
-        
+
           DO 20 IPG = 1,NPG1
             DO 30 ICMP = 1,NCMP1
               CALL CESEXI('C',JCESD1,JCESL1,IMA,IPG,1,ICMP,IAD1)
-              CALL ASSERT(IAD1.GT.0) 
+              CALL ASSERT(IAD1.GT.0)
               CALL CESEXI('C',JCESD2,JCESL2,DIRMA(IMA),IPG,1,ICMP,IAD2)
-              CALL ASSERT(IAD2.GT.0) 
+              CALL ASSERT(IAD2.GT.0)
               ZL(JCESL2-1+IAD2) = .TRUE.
               ZR(JCESV2-1+IAD2) = ZR(JCESV1-1+IAD1)
  30         CONTINUE
             IF(IVIEX .NE. 0) THEN
               DO 40 ICMP = 1,NCMV1
                 CALL CESEXI('C',JCVID1,JCVIL1,IMA,IPG,1,ICMP,IAD1)
-                CALL ASSERT(IAD1.GT.0) 
+                CALL ASSERT(IAD1.GT.0)
                 CALL CESEXI('C',JCVID2,JCVIL2,DIRMA(IMA),IPG,1,
      &                      ICMP,IAD2)
-                CALL ASSERT(IAD2.LT.0) 
+                CALL ASSERT(IAD2.LT.0)
                 IAD2 = -IAD2
                 ZL(JCVIL2-1+IAD2) = .TRUE.
                 ZR(JCVIV2-1+IAD2) = ZR(JCVIV1-1+IAD1)

@@ -2,7 +2,7 @@
      &                  CHELEM)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 19/01/2011   AUTEUR MASSIN P.MASSIN 
+C MODIF ALGORITH  DATE 26/04/2011   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -142,16 +142,16 @@ C
 C --- CARACTERISTIQUES DU CONTACT POUR LA FISSURE EN COURS
 C
         COEFCR  = MMINFR(DEFICO,'COEF_REGU_CONT',IZONE )
-        COEFFR  = MMINFR(DEFICO,'COEF_REGU_FROT',IZONE ) 
-        COEFFF  = MMINFR(DEFICO,'COEF_COULOMB'  ,IZONE )       
+        COEFFR  = MMINFR(DEFICO,'COEF_REGU_FROT',IZONE )
+        COEFFF  = MMINFR(DEFICO,'COEF_COULOMB'  ,IZONE )
         COECHE  = MMINFR(DEFICO,'COEF_ECHELLE'  ,IZONE )
         INTEGR  = MMINFI(DEFICO,'INTEGRATION'   ,IZONE )
         COCAUS  = MMINFR(DEFICO,'COEF_STAB_CONT',IZONE )
-        COFAUS  = MMINFR(DEFICO,'COEF_STAB_FROT',IZONE ) 
+        COFAUS  = MMINFR(DEFICO,'COEF_STAB_FROT',IZONE )
         COCAUP  = MMINFR(DEFICO,'COEF_PENA_CONT',IZONE )
         COFAUP  = MMINFR(DEFICO,'COEF_PENA_FROT',IZONE )
         RELATI  = MMINFR(DEFICO,'RELATION'      ,IZONE )
-        CZMFER  = MMINFR(DEFICO,'CZM_FERMETURE' ,IZONE )        
+        CZMFER  = MMINFR(DEFICO,'CZM_FERMETURE' ,IZONE )
 C
 C --- ACCES AU CHAMP INDICATEUR
 C
@@ -235,7 +235,7 @@ C
               ENDIF
               ZL(JCESL-1-IAD) = .TRUE.
               ZR(JCESV-1-IAD) = COECHE
-C              
+C
               CALL CESEXI('C',JCESD,JCESL,IMA,1,1,6,IAD)
               IF (IAD.GE.0) THEN
                 VALI(1) = 6
@@ -284,8 +284,8 @@ C
                 CALL U2MESG('F','CATAELEM_20',2,VALK,1,VALI,0,0.D0)
               ENDIF
                 ZL(JCESL-1-IAD) = .TRUE.
-                ZR(JCESV-1-IAD) = RELATI  
-                 
+                ZR(JCESV-1-IAD) = RELATI
+
               CALL CESEXI('C',JCESD,JCESL,IMA,1,1,11,IAD)
               IF (IAD.GE.0) THEN
                 VALI(1) = 6
@@ -295,7 +295,7 @@ C
               ENDIF
                 ZL(JCESL-1-IAD) = .TRUE.
                 ZR(JCESV-1-IAD) = CZMFER
-                                                             
+
  120       CONTINUE
           ENDIF
  1000    CONTINUE

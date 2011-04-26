@@ -2,9 +2,9 @@
       IMPLICIT NONE
 C---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -30,7 +30,6 @@ C IN : K* : MODEL : DIMENSION DU MODELE (3D, 2D OU AXI)
 C IN : I  : N12 : PRESENCE DU POTENTIEL PERMANENT
 C---------------------------------------------------------------------
 C--------- DEBUT DES COMMUNS JEVEUX ----------------------------------
-      CHARACTER*32     JEXNUM, JEXNOM, JEXR8, JEXATR
       INTEGER          ZI
       COMMON  /IVARJE/ ZI(1)
       REAL*8           ZR
@@ -46,10 +45,8 @@ C--------- DEBUT DES COMMUNS JEVEUX ----------------------------------
       CHARACTER*80                                    ZK80
       COMMON  /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C     --- FIN DES COMMUNS JEVEUX ------------------------------------
-      INTEGER       NBID,NBLOC,NBMODT,NSTOC,NTBLOC,NTERM,NUEQ,IMPR
       INTEGER       N12,IBID,IERD
       CHARACTER*(*)   OPTION,MODEL,MOFLUI,MOINT
-      CHARACTER*3   MODEL3
       CHARACTER*9   OPTIO9
       CHARACTER*16  REP,RK16
 C -----------------------------------------------------------------

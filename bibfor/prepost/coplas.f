@@ -1,4 +1,4 @@
-      SUBROUTINE COPLAS( TEMPA, K1A, K1B, MATREV, LREV, 
+      SUBROUTINE COPLAS( TEMPA, K1A, K1B, MATREV, LREV,
      &                   DEKLAG, PRODEF, ORIDEF,
      &                   KAL, KBL, DKMA, DKMB, K1ACP, K1BCP )
 C
@@ -8,9 +8,9 @@ C
       CHARACTER*8   MATREV, ORIDEF
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 02/11/2010   AUTEUR MACOCCO K.MACOCCO 
+C MODIF PREPOST  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -61,7 +61,7 @@ C --------- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32                                ZK32
       CHARACTER*80                                         ZK80
       COMMON / KVARJE / ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
-      CHARACTER*32      JEXNUM, JEXNOM
+      CHARACTER*32      JEXNUM
 C --------- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
 C ======================================================================
       INTEGER      IADR,LONG,I,J,K,LREEL, INEUT1, INEUT2, INEUT3, INEUT4
@@ -70,7 +70,7 @@ C ======================================================================
       INTEGER      ITOT13, ITOT14, ITOT15
       REAL*8       SIGMA, TEMP1, TEMP2, SIGMA1, SIGMA2, REST, PENT
       REAL*8       TEMPDI, LAMB1, LAMB2, TEMPD, COEF1, COEF2, RYA, PI
-      REAL*8       BETAA, BETAB, R8PI, DK, CA, CB, VAL1, VAL2
+      REAL*8       BETAA, BETAB, R8PI, CA, CB, VAL1, VAL2
       CHARACTER*1  K1BID
       CHARACTER*8  PROLN, K8B
       CHARACTER*16 PHENOM, PROLG

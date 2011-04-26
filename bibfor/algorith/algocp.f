@@ -1,9 +1,9 @@
       SUBROUTINE ALGOCP(RESOCO,LMAT  ,RESU  )
-C     
+C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 19/10/2010   AUTEUR DESOZA T.DESOZA 
+C MODIF ALGORITH  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -24,12 +24,12 @@ C
       INTEGER      LMAT
       CHARACTER*24 RESOCO
       CHARACTER*19 RESU
-C      
+C
 C ----------------------------------------------------------------------
 C
 C ROUTINE CONTACT (METHODES DISCRETES - RESOLUTION)
 C
-C ALGO. POUR CONTACT	: PENALISATION
+C ALGO. POUR CONTACT    : PENALISATION
 C ALGO. POUR FROTTEMENT : SANS
 C
 C ----------------------------------------------------------------------
@@ -85,7 +85,7 @@ C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
 C
       INTEGER      IFM,NIV
       INTEGER      NDLMAX,NMULT
-      PARAMETER   (NDLMAX = 30)      
+      PARAMETER   (NDLMAX = 30)
       CHARACTER*24 ATMU,AFMU,APCOEF,APDDL,APJEU
       INTEGER      JATMU,JAFMU,JAPCOE,JAPDDL,JAPJEU
       CHARACTER*24 MU,ENAT
@@ -121,7 +121,7 @@ C          C'EST DU/K OU DU/K+1.
 C DELT0  : INCREMENT DE DEPLACEMENT DEPUIS LA DERNIERE ITERATION DE
 C          NEWTON SANS TRAITER LE CONTACT. C'EST C-1.F.
 C ======================================================================
-      CALL INFDBG('CONTACT',IFM,NIV) 
+      CALL INFDBG('CONTACT',IFM,NIV)
       IF(NIV.GE.2) THEN
         WRITE (IFM,*) '<CONTACT> <> ALGO_CONTACT   : PENALISATION'
         WRITE (IFM,*) '<CONTACT> <> ALGO_FROTTEMENT: SANS'
@@ -137,7 +137,7 @@ C CM1A   : C-1.AT AVEC C MATRICE DE RIGIDITE TANGENTE,
 C          ET A MATRICE DE CONTACT (AT SA TRANSPOSEE)
 C ======================================================================
       APPOIN = RESOCO(1:14)//'.APPOIN'
-      APCOEF = RESOCO(1:14)//'.APCOEF' 
+      APCOEF = RESOCO(1:14)//'.APCOEF'
       APDDL  = RESOCO(1:14)//'.APDDL'
       APJEU  = RESOCO(1:14)//'.APJEU'
       MU     = RESOCO(1:14)//'.MU'
@@ -158,7 +158,7 @@ C ======================================================================
       CALL JEVEUO(RESU(1:19)//'.VALE'  ,'L',JRESU)
       CALL JEVEUO(TACFIN,'E',JTACF )
 
-      ZTACF  = CFMMVD('ZTACF') 
+      ZTACF  = CFMMVD('ZTACF')
 C ======================================================================
 C --- INITIALISATION DE VARIABLES
 C --- NESCL  : NOMBRE DE NOEUDS ESCLAVES SUSCEPTIBLES D'ETRE EN CONTACT
@@ -185,7 +185,7 @@ C                          -- ZERO --
 C ======================================================================
       NBLIAI = CFDISD(RESOCO,'NBLIAI')
       NEQ    = CFDISD(RESOCO,'NEQ'   )
-      NBLIAC = CFDISD(RESOCO,'NBLIAC')      
+      NBLIAC = CFDISD(RESOCO,'NBLIAC')
       ITER   = 0
       CALL DISMOI ('F','NOM_NUME_DDL',MAT,'MATR_ASSE',IBID,NUMEDD,IER)
 
@@ -201,10 +201,10 @@ C ======================================================================
          NBDDL  = ZI(JAPPTR+ILIAI) - ZI(JAPPTR+ILIAI-1)
          AJEU   = ZR(JAPJEU+ILIAI-1)
          IF ( AJEU.LT.0.D0 ) THEN
-           COEFPN = ZR(JTACF+ZTACF*(ILIAI-1)+1) 
+           COEFPN = ZR(JTACF+ZTACF*(ILIAI-1)+1)
            ZR(JMU-1+ILIAC) = -AJEU*COEFPN
            CALL CALATM(NEQ,NBDDL,ZR(JMU-1+ILIAC),ZR(JAPCOE+JDECAL),
-     &                 ZI(JAPDDL+JDECAL),ZR(JAFMU)) 
+     &                 ZI(JAPDDL+JDECAL),ZR(JAFMU))
            ILIAC = ILIAC + 1
          ENDIF
  50   CONTINUE
@@ -259,13 +259,13 @@ C ======================================================================
 C --- STOCKAGE DE L'ETAT DE CONTACT DEFINITIF
 C ======================================================================
  999  CONTINUE
-C      
+C
 C --- ETAT DES VARIABLES DE CONTROLE DU CONTACT
 C
       CALL CFECRD(RESOCO,'NBLIAC',NBLIAC)
-C 
-C --- SAUVEGARDE DES INFOS DE DIAGNOSTIC 
-C 
+C
+C --- SAUVEGARDE DES INFOS DE DIAGNOSTIC
+C
       CALL CFITER(RESOCO,'E','CONT',ITER  ,R8BID)
       CALL CFITER(RESOCO,'E','LIAC',NBLIAC,R8BID)
 C

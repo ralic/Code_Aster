@@ -6,23 +6,23 @@
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 08/02/2011   AUTEUR GRANET S.GRANET 
+C MODIF ALGORITH  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C RESPONSABLE GRANET S.GRANET
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CRP_21
 C ======================================================================
@@ -36,8 +36,7 @@ C ======================================================================
 C ======================================================================
 C --- RECUPERATION DES DONNEES INITIALES -------------------------------
 C ======================================================================
-      INTEGER       IBID1, IBID2
-      REAL*8        RBID1, RBID2, RBID3, RBID4, RBID5, RBID6, RBID7
+      REAL*8        RBID1, RBID2, RBID3, RBID4, RBID5, RBID6
       REAL*8        RBID8, RBID9, RBID10, RBID11, RBID12, RBID13, RBID14
       REAL*8        RBID15, RBID16, RBID17, RBID18, RBID19, RBID20
       REAL*8        RBID21, RBID22, RBID23, RBID24, RBID25, RBID26
@@ -60,7 +59,7 @@ C ======================================================================
      +           RBID33, RBID34, RBID35,RBID36, RBID37, RBID38,
      +           RBID39, RBID40, RBID41,RBID42, RBID43, RBID44, RBID45,
      +           RBID46, RBID47,RBID48, RBID49, RBID50,RBID51,
-     +           R3BID,  RBID52,RINSTP)     
+     +           R3BID,  RBID52,RINSTP)
 C ======================================================================
 C --- CALCUL DES VARIABLES ---------------------------------------------
 C ======================================================================

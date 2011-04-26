@@ -1,7 +1,7 @@
       SUBROUTINE GLARTG( F, G, CS, SN, R )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILIFOR  DATE 17/02/2003   AUTEUR NICOLAS O.NICOLAS 
+C MODIF UTILIFOR  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) LAPACK
 C ======================================================================
@@ -120,7 +120,6 @@ C
             R = G*SS*D
          END IF
       END IF
- 1000 CONTINUE
 C
 C     END OF GLARTG
 C

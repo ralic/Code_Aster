@@ -1,5 +1,5 @@
       SUBROUTINE THMLEC( IMATE, THMC, MECA, HYDR, THER,
-     +                   T, P1, P2, PHI, END, PVP, PAD, RGAZ, BIOT, 
+     +                   T, P1, P2, PHI, END, PVP, PAD, RGAZ, BIOT,
      +                   SATUR, DSATUR, PESA, PERMFH, PERMLI, DPERML,
      +                   PERMGZ, DPERMS, DPERMP, FICK, DFICKT, DFICKG,
      +                   LAMBP, DLAMBP, UNSURK, ALPHA, LAMBS, DLAMBS,
@@ -8,22 +8,22 @@
      >                   DFICKS,INSTAP)
 C =====================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 08/02/2011   AUTEUR GRANET S.GRANET 
+C MODIF ALGORITH  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C RESPONSABLE GRANET S.GRANET
 C =====================================================================
@@ -41,7 +41,6 @@ C =====================================================================
       REAL*8        LAMBT, DLAMBT, VISCG, DVISCG, MAMOLG, INSTAP
       REAL*8        MAMOLV,FICKAD,DFADT,PAD,LAMBCT, UNSURK,ISOT(6)
       REAL*8        DFICKS
-      CHARACTER*8   ETAPE
       CHARACTER*16  MECA,THMC,THER,HYDR
 C =====================================================================
 C --- VARIABLES LOCALES -----------------------------------------------
@@ -51,7 +50,7 @@ C =====================================================================
       REAL*8        RBID11, RBID12, RBID13, RBID14, RBID15, RBID16
       REAL*8        RBID17, RBID18, RBID19, RBID20, RBID21, RBID22
       REAL*8        RBID23, RBID24, RBID25, RBID26, RBID27, RBID28
-      REAL*8        RBID29, RBID30, RBID31, RBID32 
+      REAL*8        RBID29, RBID30, RBID31, RBID32
       REAL*8        RBID35, RBID36, RBID37, RBID38, RBID39, RBID40
       REAL*8        RBID41, RBID42, RBID43, RBID44,RBID45,RBID46
       REAL*8        RBID47,RBID48,RBID49,RBID50
@@ -153,9 +152,9 @@ C =====================================================================
      +                 PERMGZ,
      +                 DPERMS, DPERMP, FICK, DFICKT, DFICKG,
      +                 LAMBP,DLAMBP, RBID17, UNSURK,
-     +                 ALPHA, RBID18, LAMBS,DLAMBS, VISCL, DVISCL, 
+     +                 ALPHA, RBID18, LAMBS,DLAMBS, VISCL, DVISCL,
      +                 MAMOLG, RBID19, LAMBT,DLAMBT,VISCG, DVISCG,
-     +                 MAMOLV, RBID25,RBID26,RBID27,RBID45, 
+     +                 MAMOLV, RBID25,RBID26,RBID27,RBID45,
      +                 RBID46,RBID47,RBID48,RBID49,RBID50,LAMBCT,ISOT,
      >                 DFICKS,INSTAP)
       ELSE IF (THMC.EQ.'LIQU_AD_GAZ_VAPE') THEN
@@ -167,13 +166,13 @@ C =====================================================================
      +                 SATUR, DSATUR, PESA, PERMFH, PERMLI, DPERML,
      +                 PERMGZ,
      +                 DPERMS, DPERMP, FICK, DFICKT, DFICKG,
-     +                 LAMBP,DLAMBP, RBID17, UNSURK, 
-     +                 ALPHA, RBID18, LAMBS,DLAMBS, VISCL, 
+     +                 LAMBP,DLAMBP, RBID17, UNSURK,
+     +                 ALPHA, RBID18, LAMBS,DLAMBS, VISCL,
      +                 DVISCL, MAMOLG, RBID19, LAMBT,DLAMBT,VISCG,
      +                 DVISCG, MAMOLV, RBID25,RBID26, RBID27,FICKAD,
      +                 DFADT,RBID47,RBID48,PAD,RBID50,LAMBCT,ISOT,
      >                 DFICKS,INSTAP)
-     
+
       ELSE IF (THMC.EQ.'LIQU_AD_GAZ') THEN
          CALL THMRCP( 'FINALE  ', IMATE, THMC, MECA, HYDR, THER,
      +                 RBID1, RBID2, RBID3, RBID4, RBID5, T, P1,
@@ -183,8 +182,8 @@ C =====================================================================
      +                 SATUR, DSATUR, PESA, PERMFH, PERMLI, DPERML,
      +                 PERMGZ,
      +                 DPERMS, DPERMP, RBID50, RBID50, RBID50,
-     +                 LAMBP,DLAMBP, RBID17, UNSURK, 
-     +                 ALPHA, RBID18, LAMBS,DLAMBS, VISCL, 
+     +                 LAMBP,DLAMBP, RBID17, UNSURK,
+     +                 ALPHA, RBID18, LAMBS,DLAMBS, VISCL,
      +                 DVISCL, MAMOLG, RBID19, LAMBT,DLAMBT,VISCG,
      +                 DVISCG, RBID50, RBID25,RBID26, RBID27,FICKAD,
      +                 DFADT,RBID47,RBID48,PAD,RBID50,LAMBCT,ISOT,
@@ -199,9 +198,9 @@ C =====================================================================
      +                 PERMGZ,
      +                 DPERMS, DPERMP, RBID14, RBID15, RBID16,
      +                 LAMBP,DLAMBP, RBID17, UNSURK,
-     +                 ALPHA, RBID18, LAMBS,DLAMBS, VISCL, DVISCL, 
-     +                 MAMOLG, RBID19, LAMBT,DLAMBT,VISCG, DVISCG, 
-     +                 MAMOLV, RBID25,RBID26,RBID27,RBID45, 
+     +                 ALPHA, RBID18, LAMBS,DLAMBS, VISCL, DVISCL,
+     +                 MAMOLG, RBID19, LAMBT,DLAMBT,VISCG, DVISCG,
+     +                 MAMOLV, RBID25,RBID26,RBID27,RBID45,
      +                 RBID46,RBID47,RBID48,RBID49,RBID50,LAMBCT,ISOT,
      >                 RBID50,INSTAP)
       ELSE IF (THMC.EQ.'LIQU_GAZ_ATM') THEN
@@ -213,9 +212,9 @@ C =====================================================================
      +                 SATUR, DSATUR, PESA, PERMFH, PERMLI, DPERML,
      +                 RBID30,
      +                 RBID31, RBID32, RBID14, RBID15, RBID16,
-     +                 LAMBP,DLAMBP, RBID17, UNSURK, 
-     +                 ALPHA, RBID18, LAMBS,DLAMBS, VISCL, DVISCL, 
-     +                 RBID20, RBID19, LAMBT,DLAMBT,RBID23, RBID24, 
+     +                 LAMBP,DLAMBP, RBID17, UNSURK,
+     +                 ALPHA, RBID18, LAMBS,DLAMBS, VISCL, DVISCL,
+     +                 RBID20, RBID19, LAMBT,DLAMBT,RBID23, RBID24,
      +                 MAMOLV, RBID25,RBID26, RBID27,RBID45,
      +                 RBID46,RBID47,RBID48,RBID49,RBID50,LAMBCT,ISOT,
      >                 RBID50,INSTAP)

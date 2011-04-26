@@ -8,9 +8,9 @@
       CHARACTER*(*)       NOMOB1
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 11/10/2010   AUTEUR COURTOIS M.COURTOIS 
+C MODIF PREPOST  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -47,7 +47,7 @@ C              SI ORIE_PEAU_2D ("GROUP_MA_SURF"):
 C                  = LISTE DES MAILLES SURFACIQUES
 C                    UTILES A LA REORIENTATION
 C              SINON: MAILVO N'EST PAS UTILISE
-C     NBMAVO : NB DE MAILLES DE MAILVO 
+C     NBMAVO : NB DE MAILLES DE MAILVO
 
 C-----------------------------------------------------------------------
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
@@ -65,7 +65,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32                               ZK32
       CHARACTER*80                                        ZK80
       COMMON  /KVARJE/ ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
-      CHARACTER*32     JEXNOM, JEXNUM, JEXATR
+      CHARACTER*32      JEXNUM, JEXATR
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
 C
       INTEGER       P1,P2,P3,P4, JM3D, INDIIS, NBMAT, IRET, IM1, IM2
@@ -151,7 +151,7 @@ C     -----------------
                CALL ORIEM0 ( TYPE, MAIL, COOR, ZI(P1+ZI(P2+IM1-1)-1),
      &              NNOE1, ZI(P1+ZI(P2+IM2-1)-1), NNOEM, LISNOE, NNOE,
      &              PREC, IRET, IPOS, INDMAI )
-               IF ( IPOS .NE. 0)THEN  
+               IF ( IPOS .NE. 0)THEN
                  IF(LVNOR) THEN
                    CALL JENUNO(JEXNUM(MAIL//'.NOMMAI',NUMA),VALK(1))
                    CALL JENUNO(JEXNUM(MAIL//'.NOMMAI',IM1),VALK(2))

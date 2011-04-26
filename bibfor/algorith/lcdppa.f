@@ -2,7 +2,7 @@
      &                                    DEPS,VIM,VIP,SIG,DSIDEP,IRET)
 C =====================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/03/2011   AUTEUR BOTTONI M.BOTTONI 
+C MODIF ALGORITH  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -46,9 +46,9 @@ C OUT DSIDEP  MATRICE TANGENTE
 C OUT IRET    CODE RETOUR (0 = OK)
 C =====================================================================
       LOGICAL     RIGI,RESI
-      INTEGER     NDT,NDI,II,JJ
+      INTEGER     NDT,NDI,II
       REAL*8      DP,DPDENO,ALPHA,PMOINS,PHI,DEUX,TROIS,PPLUS,BETA,PULT
-      REAL*8      HOOKF(6,6),DKOOH(6,6),PLAS,ALPHA2,DPPATG,PSI,BETAPS
+      REAL*8      HOOKF(6,6),DKOOH(6,6),PLAS,DPPATG,PSI,BETAPS
       REAL*8      EPSP(6),EPSM2(6),SIGE(6),SE(6),SIIE,SEQ,I1E,TRACE
       REAL*8      DPPAT2,CALAL
 C =====================================================================
@@ -131,7 +131,7 @@ C =====================================================================
          VIP(1)   = VIM(1) + DP
          VIP(2)   = VIM(2) + TROIS*CALAL*DP
          VIP(NVI) = PLAS
-         
+
 C =====================================================================
 C --- PREPARATION AU CALCUL DE LA MATRICE TANGENTE --------------------
 C =====================================================================

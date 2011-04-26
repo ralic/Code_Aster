@@ -5,9 +5,9 @@
         IMPLICIT NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 18/05/2010   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -106,7 +106,7 @@ C
         CHARACTER*16    COMPOR(*),     OPT
         CHARACTER*8     TYPMOD(*)
         CHARACTER*(*)   FAMI
-        LOGICAL         CP 
+        LOGICAL         CP
 C
 C       ----------------------------------------------------------------
 C       VARIABLES LOCALES POUR LE REDECOUPAGE DU PAS DE TEMPS
@@ -131,7 +131,6 @@ C
         REAL*8          EPS(6),       DEPS(6),   SD(6)
         REAL*8          DSDELO(6,6)
         REAL*8          DELTAT,TD,TF
-        REAL*8          TEMD,         TEMF,      DETEMP
 C       ----------------------------------------------------------------
 C       COMMONS POUR VARIABLES DE COMMANDE : CAII17 ET CARR01
         INTEGER NFPGMX
@@ -158,7 +157,7 @@ C       -- POUR LES VARIABLES DE COMMANDE :
         IRTET=0
 C       CORRECTION JMP : POURQUOI REDECOUPER POUR RIGI_MECA_TANG ?
         IF (OPT.EQ.'RIGI_MECA_TANG') IPAL=0
-        
+
         READ (COMPOR(2),'(I16)') NVI
 C
 C IPAL = 0  1 OU -1 -> PAS DE REDECOUPAGE DU PAS DE TEMPS
@@ -205,8 +204,8 @@ C
            GOTO 2
         ELSE
            IF ((TYPMOD(2).EQ.'GRADEPSI').OR.
-     &         (TYPMOD(2).EQ.'GRADVARI')) THEN              
-              CALL U2MESK('A','COMPOR2_10',1,TYPMOD(2))           
+     &         (TYPMOD(2).EQ.'GRADVARI')) THEN
+              CALL U2MESK('A','COMPOR2_10',1,TYPMOD(2))
            ENDIF
         ENDIF
 C

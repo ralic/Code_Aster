@@ -1,24 +1,24 @@
-      SUBROUTINE DPVPDB( NBMAT,MATER, CRIT,DT, VINM,VINP,  
-     &                   NVI,SEQE, I1E, SEQM, I1M, 
+      SUBROUTINE DPVPDB( NBMAT,MATER, CRIT,DT, VINM,VINP,
+     &                   NVI,SEQE, I1E, SEQM, I1M,
      &                   DP, NBRE, RETCOM)
 C =====================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 03/11/2009   AUTEUR ELGHARIB J.EL-GHARIB 
+C MODIF ALGORITH  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
       IMPLICIT      NONE
       INTEGER       NBMAT, NVI, NBRE, RETCOM
@@ -43,7 +43,7 @@ C ---------  : NBRE   NOMBRE D ITERATIONS POUR LA CONVERGENCE LOCALE --
 C ---------  : RETCOM  CODE RETOUR 0 OU 1 SI REDECOUPAGE NECESSAIRE  --
 C =====================================================================
 C =====================================================================
-C --- LOI DE COMPORTEMENT DE TYPE DRUCKER PRAGER VISCOPLASTIQUE ------- 
+C --- LOI DE COMPORTEMENT DE TYPE DRUCKER PRAGER VISCOPLASTIQUE -------
 C --- VISC_DRUC_PRAG --------------------------------------------------
 C --- RESOLUTION NUMERIQUE DE L EQ NON LINEAIRE AVEC BRACKETING ET ----
 C --------------LA METHODE DES CORDES (APPEL A ZEROCO)-----------------
@@ -54,13 +54,13 @@ C =====================================================================
       REAL*8   TROIS, NEUF, ZERO
       REAL*8   PREF, A, N, CONST
       REAL*8   FONC1, FONC2, FONC3, FONC4
-      REAL*8   F, FP, SEUIL, V0, XINF, XSUP, FINF, FSUP
+      REAL*8   F, FP, SEUIL, XINF, XSUP, FINF, FSUP
       REAL*8   FONECP(3), FONECM(3), FONDER(3)
       REAL*8   DPVPEQ
       REAL*8   ALPHAM, RM, BETAM
-      REAL*8   DALPDP, DRDP, DBETDP 
-      REAL*8   X(4), Y(4), DP0
-      REAL*8   DPVPDF, FI, FS
+      REAL*8   DALPDP, DRDP, DBETDP
+      REAL*8     DP0
+      REAL*8   DPVPDF, FI
 C =====================================================================
       PARAMETER ( TROIS  =  3.0D0 )
       PARAMETER ( NEUF   =  9.0D0 )
@@ -84,7 +84,7 @@ C =====================================================================
        CALL DPVPVA(VINM, NBMAT, MATER, FONECM)
        CALL DPVPVA(VINP, NBMAT, MATER, FONECP)
        CALL DPVPDV(VINP, NBMAT, MATER, FONDER)
-       
+
 
        ALPHAM = FONECM(1)
        RM     = FONECM(2)
@@ -96,40 +96,40 @@ C =====================================================================
 
        FONC1 = SEQE + ALPHAM*I1E - RM
 C
-       FONC2 = TROIS*MU + DRDP  - DALPDP*I1E 
-     &         +NEUF*K *ALPHAM*BETAM 
+       FONC2 = TROIS*MU + DRDP  - DALPDP*I1E
+     &         +NEUF*K *ALPHAM*BETAM
 C
        FONC3 = NEUF*K*(ALPHAM*DBETDP+BETAM*DALPDP)
 C
        FONC4 = NEUF*K*DALPDP*DBETDP
-       
+
 C
        IF (FONC1 .GT. ZERO) THEN
            FONC1 = FONC1
          ELSE
            FONC1 = ZERO
-       ENDIF    
+       ENDIF
 C
        XINF = ZERO
-              
+
        XSUP = A * (ABS(FONC1)/PREF)**N * DT
-       
+
        FINF   = DPVPEQ(XINF,N,CONST,FONC1,FONC2,FONC3,FONC4)
- 
+
        FSUP   = DPVPEQ(XSUP,N,CONST,FONC1,FONC2,FONC3,FONC4)
 
-        
+
        NITER  = INT(CRIT(1))
 
-      
+
        DP0 = XINF
 
-      
+
        F    = DPVPEQ(DP0,N,CONST,FONC1,FONC2,FONC3,FONC4)
        FP   = DPVPDF(DP0,N,CONST,FONC1,FONC2,FONC3,FONC4)
-       
+
        SEUIL = DPVPEQ(XINF,N,CONST,FONC1,FONC2,FONC3,FONC4)
-       
+
        IF (ABS(FINF/SEUIL) .LE. CRIT(3)) THEN
            DP0 = XINF
            NBRE = 1
@@ -141,36 +141,36 @@ C
        ENDIF
 
        DO 40 I = 1, NITER
-         
+
         IF ((ABS(F/SEUIL)).LT.CRIT(3)) THEN
          NBRE = I
          GOTO 50
-        ENDIF 
+        ENDIF
 
-        DP0 = DP0 - F/FP        
-        
+        DP0 = DP0 - F/FP
+
         IF (DP0.GE.XSUP.OR.DP0.LE.XINF)  DP0 = (XINF+XSUP)/2
 
         F    = DPVPEQ(DP0,N,CONST,FONC1,FONC2,FONC3,FONC4)
         FP   = DPVPDF(DP0,N,CONST,FONC1,FONC2,FONC3,FONC4)
-        
-        
+
+
         IF (F.GT.ZERO) THEN
          SIGNF =  1
-        ELSE 
+        ELSE
          SIGNF = -1
         ENDIF
-        
+
         FI    = DPVPEQ(XINF,N,CONST,FONC1,FONC2,FONC3,FONC4)
         IF (FI.GT.ZERO) THEN
          SIGNFI =  1
-        ELSE 
+        ELSE
          SIGNFI = -1
         ENDIF
 
         IF ((SIGNF*SIGNFI).LT.ZERO) XSUP = DP0
         IF ((SIGNF*SIGNFI).GT.ZERO) XINF = DP0
-        
+
         IF (ABS(FINF/SEUIL) .LE. CRIT(3)) THEN
            DP0 = XINF
            NBRE = 1

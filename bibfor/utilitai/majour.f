@@ -1,8 +1,8 @@
       SUBROUTINE MAJOUR(NEQ   ,LGROT ,LENDO ,SDNUME,CHAINI,
      &                  CHADEL,COEF  ,CHAMAJ,ORDRE)
-C      
+C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 15/02/2011   AUTEUR FLEJOU J-L.FLEJOU 
+C MODIF UTILITAI  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -24,16 +24,16 @@ C
       CHARACTER*19  SDNUME
       LOGICAL       LGROT,LENDO
       INTEGER       NEQ,ORDRE
-      REAL*8        CHAINI(*),CHADEL(*),CHAMAJ(*),COEF                  
-C 
+      REAL*8        CHAINI(*),CHADEL(*),CHAMAJ(*),COEF
+C
 C ----------------------------------------------------------------------
 C
 C ROUTINE MECA_NON_LINE (ALGORITHME - UTILITAIRE - STATIQUE)
 C
-C MET A JOUR LES CHAM_NO DES DEPLACEMENTS 
-C      
+C MET A JOUR LES CHAM_NO DES DEPLACEMENTS
+C
 C ----------------------------------------------------------------------
-C 
+C
 C
 C CHAMAJ = CHAINI + COEF*CHADEL.
 C   POUR LES TRANSLATIONS ET LES PETITES ROTATIONS, ON APPLIQUE
@@ -77,23 +77,23 @@ C
       INTEGER      PTDO,INDIC1,INDIC2
       REAL*8       STOK
       REAL*8       ZERO
-      PARAMETER   (ZERO = 0.0D+0)      
-C      
+      PARAMETER   (ZERO = 0.0D+0)
+C
 C ----------------------------------------------------------------------
-C	  
+C
       PTDO = 0
       INDIC1 = 0
-      INDIC2 = 0      
+      INDIC2 = 0
 C
       CALL JEMARQ()
-C      
+C
       IF (LGROT) THEN
         CALL JEVEUO(SDNUME//'.NDRO','L',INDRO)
-      ENDIF      
-C      
+      ENDIF
+C
       IF (LENDO) THEN
         CALL JEVEUO(SDNUME(1:19)//'.ENDO','E',ENDO)
-      ENDIF                    
+      ENDIF
 C
       IF (.NOT.LGROT .AND. LENDO) THEN
         DO 10 I=1,NEQ
@@ -102,7 +102,7 @@ C
           IF (ZI(ENDO+I-1) .NE. 0) THEN
 C
 C           ON IMPOSE L'ACCROISSEMENT DE L'ENDO
-C            
+C
             IF (ORDRE.EQ.0) THEN
               IF (CHAMAJ(I).LE.ZERO) THEN
                 INDIC1 = INDIC1+1
@@ -116,7 +116,7 @@ C
             ENDIF
 C
 C           ON IMPOSE L'ENDO <= 1
-C              
+C
             IF (ORDRE.EQ.1) THEN
               IF (CHAMAJ(I).GE.1.D0) THEN
                 INDIC2 = INDIC2+1
@@ -126,14 +126,14 @@ C
             ENDIF
 C
           ENDIF
-C          
+C
 10      CONTINUE
 
 C        IF (ORDRE.EQ.0) THEN
 C          WRITE(6,*) 'NB_NO_ENDO=', PTDO
 C          WRITE(6,*) 'INDIC1=', INDIC1
 C          WRITE(6,*) 'INDIC2=', INDIC2
-C        ENDIF  
+C        ENDIF
 C
       ELSEIF (.NOT.LGROT) THEN
         DO 20 I=1,NEQ
@@ -144,7 +144,7 @@ C
         DO 30 I=1,NEQ
           IF (ZI(INDRO+I-1).EQ.0) THEN
             CHAMAJ(I)     = CHAINI(I) + COEF*CHADEL(I)
-          ELSE IF (ZI(INDRO+I-1).EQ.1) THEN     
+          ELSE IF (ZI(INDRO+I-1).EQ.1) THEN
             ICOMP         = ICOMP + 1
             IRAN(ICOMP)   = I
             THETA(ICOMP)  = CHAINI(I)
@@ -158,6 +158,6 @@ C
           ENDIF
 30      CONTINUE
       ENDIF
-      
+
       CALL JEDEMA()
       END

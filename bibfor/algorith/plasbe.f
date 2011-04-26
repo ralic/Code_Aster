@@ -1,13 +1,13 @@
-         SUBROUTINE PLASBE ( FAMI, KPG, KSP, TYPMOD, IMAT, COMP,
+         SUBROUTINE PLASBE ( FAMI, KPG, KSP, TYPMOD, IMAT,
      &                       CRIT, EPSDT,
      &                       DEPST, SIGD, VIND, OPT, ELGEOM, SIGF,
      &                       VINF,  DSDE,  ICOMP, NVI,  IRTETI)
         IMPLICIT REAL*8 (A-H,O-Z)
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/09/2010   AUTEUR FLEJOU J-L.FLEJOU 
+C MODIF ALGORITH  DATE 26/04/2011   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -22,8 +22,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C TOLE CRP_20
-C TOLE CRP_21
+C
 C       ================================================================
 C       INTEGRATION DE LOIS DE COMPORTEMENT ELASTO PLASTIQUE ET VISCO
 C       PLASTIQUE
@@ -170,11 +169,10 @@ C       ----------------------------------------------------------------
         INTEGER         IMAT , NDT   , NDI   , NR  , NVI
         INTEGER         ITMAX, ICOMP
         INTEGER         NMAT , IRTET , IRTETI, NSEUI4, IISNAN
-        INTEGER         NSEUIL, NSEUI1, NSEUI2, NSEUI3, NSEUII
+        INTEGER         NSEUIL, NSEUI1, NSEUI2, NSEUI3
         INTEGER         IADZI, IAZK24
         REAL*8          TOLER
         REAL*8          EPSI
-        LOGICAL         BZ
 C
         PARAMETER       ( EPSI = 1.D-15 )
         PARAMETER       ( NMAT = 90     )
@@ -183,19 +181,18 @@ C
         REAL*8          VIND(*),     VINF(*)
         REAL*8          TEMPD,    TEMPF
         REAL*8          ELGEOM(*)
-        REAL*8          EPSD(6),     DEPS(6),   EPSF(6)
+        REAL*8          EPSD(6),     DEPS(6)
         REAL*8          EPSDT(6),    DEPST(6)
-        REAL*8          SIGD(6),     SIGF(6),   SIGE(6), DSIG(6)
+        REAL*8          SIGD(6),     SIGF(6),   SIGE(6)
 C
-        REAL*8          HOOK(6,6),   DSDE(6,6)
+        REAL*8          DSDE(6,6)
         REAL*8          MATERD(NMAT,2) , MATERF(NMAT,2) , TMPMX
         CHARACTER*7     ETATD  ,     ETATF
         CHARACTER*8     MOD,        TYPMA,   TYPMOD(*)
-        CHARACTER*16    COMP(*),     OPT,        LOI
+        CHARACTER*16    OPT
         CHARACTER*3     MATCST, CNSEUI
         CHARACTER*8     NOMAIL
         CHARACTER*(*)   FAMI
-        REAL*8          PC, PT, FC, FT, DFCDLC, DFTDLT, KUC, KUT, KE
         REAL*8          R8NNEM
 C       ----------------------------------------------------------------
         COMMON /TDIM/   NDT  , NDI

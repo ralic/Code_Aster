@@ -4,9 +4,9 @@
       INTEGER INO2,I,TRIA3(*)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 18/03/2008   AUTEUR CNGUYEN C.NGUYEN 
+C MODIF CALCULEL  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -38,7 +38,6 @@ C  OUT  SURF       R  : SURFACE DU TRIA3 I
 
 
 C ----------------------------------------------------------------------
-      CHARACTER*8   KB
       REAL*8 X1,Y1,X2,Y2,X3,Y3,XP,YP,XM,YM
       REAL*8 KSI,DIST,R8MAEM
       REAL*8 V1(2),V2(2),V3(2),M(2),XC

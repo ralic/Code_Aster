@@ -1,13 +1,13 @@
-        SUBROUTINE LCJPLC ( FAMI,KPG,KSP,LOI  ,MOD , NMAT, MATER,
-     &            TIMED, TIMEF, COMP,NBCOMM, CPMONO, PGL,TOUTMS,HSR,
-     &            NR,NVI,EPSD,DEPS,ITMAX,TOLER,SIGF,VINF,SIGD,VIND,
-     &                   DSDE, DRDY, OPTION, IRET )
+        SUBROUTINE LCJPLC (LOI,MOD,NMAT,MATER,TIMED,TIMEF,
+     &                     NBCOMM,CPMONO,PGL,TOUTMS,HSR,
+     &                     NR,NVI,EPSD,DEPS,ITMAX,TOLER,SIGF,VINF,
+     &                     SIGD,VIND,DSDE,DRDY,OPTION,IRET)
         IMPLICIT NONE
-C       ================================================================
+C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 21/06/2010   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 26/04/2011   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -36,28 +36,27 @@ C           NMAT   :  DIMENSION MATER
 C           MATER  :  COEFFICIENTS MATERIAU
 C       OUT DSDE   :  MATRICE DE COMPORTEMENT TANGENT = DSIG/DEPS
 C       ----------------------------------------------------------------
-        INTEGER         KPG,KSP,NMAT , NR, NVI, ITMAX, IRET
+        INTEGER         NMAT , NR, NVI, ITMAX, IRET
         REAL*8          DSDE(6,6),EPSD(*),DEPS(*),TOLER
         REAL*8          MATER(NMAT,2)
         REAL*8 TOUTMS(5,24,6),HSR(5,24,24)
-        CHARACTER*(*)   FAMI
         CHARACTER*8     MOD
         CHARACTER*16    LOI,OPTION
 
       INTEGER         NBCOMM(NMAT,3)
       REAL*8  SIGF(*),SIGD(*),VIND(*),VINF(*),TIMED,TIMEF,PGL(3,3)
       REAL*8  DRDY(NR,NR)
-      CHARACTER*16    CPMONO(5*NMAT+1),COMP(*)
+      CHARACTER*16    CPMONO(5*NMAT+1)
 C       ----------------------------------------------------------------
        IRET=0
          IF     ( LOI(1:9) .EQ. 'VISCOCHAB' ) THEN
             CALL  CVMJPL (MOD,NMAT,MATER,
      &        TIMED, TIMEF,EPSD,DEPS,SIGF,VINF,SIGD,VIND,NVI,NR,DSDE)
          ELSEIF ( LOI(1:8) .EQ. 'MONOCRIS'     ) THEN
-            CALL  LCMMJP (FAMI,KPG,KSP,MOD,NMAT,MATER,
-     &          TIMED, TIMEF, COMP,NBCOMM, CPMONO, PGL,TOUTMS,HSR,
-     &                  NR,NVI,ITMAX,TOLER,SIGF,VINF,SIGD,VIND,
-     &                   DSDE , DRDY, OPTION, IRET)
+            CALL  LCMMJP (MOD,NMAT,MATER,
+     &                    TIMED, TIMEF, NBCOMM, CPMONO, PGL,TOUTMS,HSR,
+     &                    NR,NVI,ITMAX,TOLER,SIGF,VINF,SIGD,VIND,
+     &                    DSDE , DRDY, OPTION, IRET)
          ENDIF
 C
          END

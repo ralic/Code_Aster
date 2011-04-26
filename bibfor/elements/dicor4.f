@@ -9,9 +9,9 @@ C ----------------------------------------------------------------------
       REAL*8 P2,UTOT,TTOT,DNSDU,DMSDT,DNSDT,DNSDU2,DMSDT2,DNSDT2
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ELEMENTS  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -120,5 +120,4 @@ C
       CALL DICOR3 (K0,DUR,DRYR,SIM,SIP,DNSDU,DMSDT,DNSDT)
 C ----------------------------------------------------------------------
 C
- 9999 CONTINUE
       END

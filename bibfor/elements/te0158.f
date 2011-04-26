@@ -3,7 +3,7 @@
       CHARACTER*(*)       OPTION , NOMTE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -53,11 +53,9 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
       INTEGER      JEFFG, LMATER, LSECT, LX,IRET,
-     &             LORIEN, JDEPL, I, J, KP, NBPAR, NNO, NC, NBRES,
+     &             LORIEN, JDEPL, I, J, KP, NNO, NC,
      &             NPG,ITEMP
 
-      PARAMETER   (        NBRES = 3 )
-      CHARACTER*2   CODRES(NBRES)
       CHARACTER*4  FAMI
       CHARACTER*8  NOMAIL
       CHARACTER*16 CH16
@@ -65,7 +63,7 @@ C
       REAL*8       B(4),GG,XI,WI
       REAL*8       UL(14), PGL(3,3), D1B(6,12), DEGE(3,7),D1BTG(7,14)
       REAL*8       DEGEM(6)
-      REAL*8       ZERO, UN, DEUX, TEMP, TREF, E, XNU, EPSTHE, G, XL
+      REAL*8       ZERO, UN, DEUX, TEMP, E, XNU, EPSTHE, G, XL
       REAL*8       A, XIY, XIZ, ALFAY, ALFAZ, PHIY, PHIZ
       REAL*8       KSI1, D1B3(2,3), EY, EZ
 C     ------------------------------------------------------------------

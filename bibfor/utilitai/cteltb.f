@@ -10,22 +10,22 @@
       CHARACTER*24 NKCHA,NKCMP,MESMAI,NIVAL,NRVAL,NIORD
       LOGICAL      TOUCMP
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 14/09/2010   AUTEUR SFAYOLLE S.FAYOLLE 
+C MODIF UTILITAI  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C     ----- OPERATEUR CREA_TABLE , MOT-CLE FACTEUR RESU   --------------
 C
@@ -48,9 +48,9 @@ C                 NSYMB (K16)  : NOM SYMBOLIQUE DU CHAMP
 C                 TYCH  (K4)   : TYPE DE CHAMP (ELNO OU ELGA)
 C                 CHPGS (K19)  : CHAMP DES COORD DES POINTS DE GAUSS
 C                 NBMA  (I)    : NOMBRE DE MAILLES UTILISATEUR
-C                 
+C
 C        IN/OUT : NOMTB (K24)  : OBJET TABLE
-C   
+C
 C ----------------------------------------------------------------------
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER           ZI
@@ -75,7 +75,6 @@ C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
       INTEGER NBCMPT,NBSPT,INOT,KCP,INDCMP,IAD,NI,NK,NR,JI,JR,JK
       INTEGER NBPARA,JPARAK
       CHARACTER*8 KMA,KNO
-      REAL*8  R8B
       COMPLEX*16 CBID
       CHARACTER*19 CHAMES
 
@@ -177,12 +176,12 @@ C                 -- ON PARCOURT LES SOUS-POINTS DE LA MAILLE IMA
                      KCP=0
 C
 C                   -- ON PARCOURT LES COMPOSANTES PORTEES
-C                   PAR LE POINT IPT 
+C                   PAR LE POINT IPT
                     DO 230 ICMP=1,NBCMPT
 
                        IF(.NOT.TOUCMP)THEN
-C                        -SI LA COMPOSANTE FAIT PARTIE DES 
-C                         COMPOSANTES DESIREES, ON POURSUIT, 
+C                        -SI LA COMPOSANTE FAIT PARTIE DES
+C                         COMPOSANTES DESIREES, ON POURSUIT,
 C                         SINON ON VA A LA COMPOSANTE SUIVANTE
                           INDCMP=INDIK8(ZK8(JCMP),ZK8(JCESC+ICMP-1),
      &                                  1,NBCMP)
@@ -253,8 +252,8 @@ C                   ON REMPLIT LES TABLEAUX ZI(JI),ZR(JR),ZK16(JK)
                     KK=0
                     IF(RESU.NE.' ')THEN
                        ZI(JI+KK)=ZI(JNIORD+I-1)
-                       KK=KK+1 
-                    ENDIF             
+                       KK=KK+1
+                    ENDIF
                     IF(TYPAC.EQ.'MODE')THEN
                         ZI(JI+KK)=ZI(JIVAL+I-1)
                         KK=KK+1
@@ -276,7 +275,7 @@ C                   ON REMPLIT LES TABLEAUX ZI(JI),ZR(JR),ZK16(JK)
                        ZK16(JK+KK)=NSYMB
                        KK=KK+1
                     ENDIF
-                    CALL JENUNO(JEXNUM(NOMA//'.NOMMAI',IMA),KMA) 
+                    CALL JENUNO(JEXNUM(NOMA//'.NOMMAI',IMA),KMA)
                     ZK16(JK+KK)=KMA
                     KK=KK+1
                     IF(TYCH.EQ.'ELNO')THEN
@@ -335,10 +334,10 @@ C                   TABLEAU DES NOMS DE PARAMETRES DE LA TABLE
                        ZK16(JPARAK+KK)=ZK8(JKVAL+J-1)
                        KK=KK+1
  260                CONTINUE
-   
-C                       ON AJOUTE LA LIGNE A LA TABLE 
+
+C                       ON AJOUTE LA LIGNE A LA TABLE
                     CALL TBAJLI(NOMTB,NBPARA,ZK16(JPARAK),ZI(JI),
-     &                          ZR(JR),CBID,ZK16(JK),0)    
+     &                          ZR(JR),CBID,ZK16(JK),0)
 
  225              CONTINUE
 

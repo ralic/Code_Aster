@@ -4,9 +4,9 @@
       REAL*8    UL(12), F, MAT(N,N), ENERTH
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
+C MODIF ELEMENTS  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -49,7 +49,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*80                                              ZK80
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
-      INTEGER  I, J, LRCOU, IRET
+      INTEGER  I, J, LRCOU
       REAL*8   UGT(12), FLT(12), ALONG, ANGS2, DEUX,  RAD, XL,
      +         ZERO, FLM(12)
 C     ------------------------------------------------------------------
@@ -104,7 +104,7 @@ C       --------------------------------------------------------------
         DO 40 I = 1, 12
             ENERTH = ENERTH + (0.5D0*UGT(I)*FLT(I)-UGT(I)*FLM(I))
   40    CONTINUE
-  
+
       ENDIF
 C
 C

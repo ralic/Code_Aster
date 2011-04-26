@@ -4,9 +4,9 @@
       CHARACTER*(*)     ARRET,QUESTI,NOMOB,TYPECO,     REPK
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 13/04/2010   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -41,7 +41,6 @@ C     ------------------
       CHARACTER*24 TYPEC1,QUEST1
       CHARACTER*1 ARRET2
 C --------------- COMMUNS NORMALISES  JEVEUX  --------------------------
-      CHARACTER*32 JEXNUM,JEXNOM,JEXATR,JEXR8
       COMMON /IVARJE/ZI(1)
       COMMON /RVARJE/ZR(1)
       COMMON /CVARJE/ZC(1)
@@ -57,7 +56,7 @@ C --------------- COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32 ZK32
       CHARACTER*80 ZK80
 C --------------- FIN COMMUNS NORMALISES  JEVEUX  --------------------
-      INTEGER REPI1, IERD1,N1
+      INTEGER REPI1, IERD1
 C
 C DEB-------------------------------------------------------------------
 C
@@ -139,7 +138,6 @@ C
          ENDIF
       END IF
 
- 9999 CONTINUE
 
 C     -- ON NE DOIT PAS SORTIR DE DISMOI SI IERD1/=0 ET ARRET='F'
       IF (IERD1.NE.0.AND.ARRET2.EQ.'F') CALL ASSERT(.FALSE.)

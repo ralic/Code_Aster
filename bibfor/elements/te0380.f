@@ -1,6 +1,6 @@
       SUBROUTINE TE0380 ( OPTION , NOMTE )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -42,7 +42,7 @@ C     ----- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C     ----- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C     ------------------------------------------------------------------
-      REAL*8  ZERO, DEUX, XD(3), XUG(9), ROTABS(3,3)
+      REAL*8   XD(3), XUG(9), ROTABS(3,3)
       REAL*8  QI(3),GN(3),GM(3),PN(3),PM(3),ROT0(3,3),ROT(3,3)
 C DEB ------------------------------------------------------------------
 C

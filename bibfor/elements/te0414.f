@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
       CHARACTER*(*)   OPTIOZ , NOMTZ
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 03/01/2011   AUTEUR DESROCHES X.DESROCHES 
+C MODIF ELEMENTS  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -24,7 +24,6 @@ C     CALCUL DES OPTIONS DES ELEMENTS DE COQUE : COQUE_3D
 C     ----------------------------------------------------------------
 C
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
-      CHARACTER*32       JEXNUM , JEXNOM , JEXR8 , JEXATR
       INTEGER            ZI
       COMMON  / IVARJE / ZI(1)
       REAL*8             ZR
@@ -41,10 +40,9 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       INTEGER       NB1, JCRET, CODRET
-      REAL*8        MATLOC(51,51), PLG(9,3,3), COEF
+      REAL*8        MATLOC(51,51), PLG(9,3,3)
       LOGICAL       MATRIC
       CHARACTER*16  OPTION , NOMTE
-      CHARACTER*24  DESI , DESR
 C ----------------------------------------------------------------------
 C
       OPTION = OPTIOZ

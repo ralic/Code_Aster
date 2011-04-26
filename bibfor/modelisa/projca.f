@@ -3,7 +3,7 @@
       IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 28/02/2011   AUTEUR LABBE M.LABBE 
+C MODIF MODELISA  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -79,7 +79,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32                                    ZK32
       CHARACTER*80                                              ZK80
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
-      CHARACTER*32 JEXNOM, JEXNUM, JEXATR
+      CHARACTER*32  JEXNUM
 C     ----- FIN   COMMUNS NORMALISES  JEVEUX  --------------------------
 C
 C ARGUMENTS
@@ -98,7 +98,6 @@ C -----------------
       REAL*8        D2, D2MIN, DX, DY, DZ, EXCENT, NORMAL(3), X3DCA(3),
      &              XBAR(3)
       COMPLEX*16    CBID
-      CHARACTER*1   K1B
       CHARACTER*8   NNOECA, VOISIN(2)
       CHARACTER*19  LICNX, LNUMA
       CHARACTER*24  COORNO, NOMAMA, NONOCA, NONOMA

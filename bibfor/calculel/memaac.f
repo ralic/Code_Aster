@@ -5,9 +5,9 @@
       CHARACTER*(*) MATE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 08/11/2010   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -40,7 +40,6 @@ C ----------------------------------------------------------------------
 
 C     FONCTIONS EXTERNES:
 C     -------------------
-      CHARACTER*32 JEXNUM,JEXNOM,JEXATR
 
 C     VARIABLES LOCALES:
 C     ------------------
@@ -56,7 +55,7 @@ C---------------- COMMUNS NORMALISES  JEVEUX  --------------------------
 C*
       LOGICAL ZL,EXIGEO
 C*
-      CHARACTER*8 ZK8,LPAIN(4),LPAOUT(1),BLANC,LIPARA(1)
+      CHARACTER*8 ZK8,LPAIN(4),LPAOUT(1),BLANC
       CHARACTER*16 ZK16,OPTION
 C*
       CHARACTER*24 ZK24,CHGEOM,LCHIN(4),LCHOUT(1)
@@ -99,6 +98,5 @@ C**
       CALL EXISD('CHAMP_GD',LCHOUT(1) (1:19),IRET)
       CALL REAJRE(MATEL,LCHOUT(1),'G')
 
-   10 CONTINUE
       CALL JEDEMA()
       END

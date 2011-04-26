@@ -4,9 +4,9 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGELINE  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -47,12 +47,11 @@ C
       COMPLEX*16    XKF
 C
 C ----------------------------------------------------------------------
-      REAL*8        FN
       REAL*8        DEPI,R8DEPI,VRMIN,VRMAX,VRED
       REAL*8        MCF0,KAJ1,KAJ2
       INTEGER       JVIRED, JCOMPT, JEXTR, JVRZO, JZONE, JALARM, IRET
       INTEGER       IZONE, NZONE, N1, N2
-      COMPLEX*16    BII,BIIE,FONCT,POIDS,Z
+      COMPLEX*16    BII,BIIE,POIDS,Z
       CHARACTER*24  FSIC,FSVI,FSVR,NOM1,NOM2,NOM3,NOM4,NOM5
 C ----------------------------------------------------------------------
 C

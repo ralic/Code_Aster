@@ -5,9 +5,9 @@
       REAL*8              ORIG(3), AXEZ(3)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 03/04/2007   AUTEUR VIVAN L.VIVAN 
+C MODIF POSTRELE  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -49,7 +49,6 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       REAL*8        VALED(3), VALD(3), VALER(3), VALR(3), PSCAL
       REAL*8        XNORMR, EPSI, AXER(3), AXET(3), PGL(3,3)
       CHARACTER*8   K8B, NOMCMP, NOMAIL
-      CHARACTER*24 VALK
       CHARACTER*19  PRNO, DEPLA
       LOGICAL       EXISDG
 C     ------------------------------------------------------------------

@@ -1,8 +1,8 @@
-      SUBROUTINE MDTR74(NOMRES,NOMCMD)
+      SUBROUTINE MDTR74(NOMRES)
       IMPLICIT REAL*8 (A-H,O-Z)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 31/01/2011   AUTEUR GREFFET N.GREFFET 
+C MODIF ALGORITH  DATE 26/04/2011   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -39,11 +39,11 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON /CVARJE/ZC(1)
       LOGICAL ZL
       COMMON /LVARJE/ZL(1)
-      CHARACTER*8 ZK8
-      CHARACTER*16 ZK16
-      CHARACTER*24 ZK24
-      CHARACTER*32 ZK32
-      CHARACTER*80 ZK80
+      CHARACTER*8    ZK8
+      CHARACTER*16          ZK16
+      CHARACTER*24                  ZK24
+      CHARACTER*32                          ZK32
+      CHARACTER*80                                  ZK80
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
       CHARACTER*32     JEXNOM
 
@@ -54,7 +54,7 @@ C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
       CHARACTER*8  MATASS,VECGEN,MONMOT,LISTAM,TYPFLU,NOMBM
       CHARACTER*8  RIGASS,MAILLA
       CHARACTER*14 NUMDDL,NUMGEM,NUMGEK,NUMGEC,K14B
-      CHARACTER*16 NOMCMD,TYPBAS,TYPBA2,METHOD
+      CHARACTER*16 TYPBAS,TYPBA2,METHOD
       CHARACTER*19 LISARC,NOMSTM,NOMSTK,MASSE
       CHARACTER*24 NUMK24,NUMM24,NUMC24,LISINS,NOMNOE,TYPEBA
       CHARACTER*24 VALK(3)
@@ -68,9 +68,9 @@ C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
 
 C  COUPLAGE EDYOS
 C =>
-      REAL*8        VROTAT,DTSTO,TCF     
+      REAL*8        VROTAT,DTSTO,TCF
 
-      INTEGER       NBEDYO,UNITPA 
+      INTEGER       NBEDYO,UNITPA
       INTEGER       INFO
 C
 C     COMMON
@@ -78,9 +78,9 @@ C     ======
       INTEGER       NBPAL
 C
       INTEGER       IADRI
-      CHARACTER*24  NPAL   
+      CHARACTER*24  NPAL
 C
-      LOGICAL       PRDEFF       
+      LOGICAL       PRDEFF
 
 C =<
 
@@ -90,7 +90,7 @@ C-----------------------------------------------------------------------
       DEUX = 2.D0
 C-----------------------------------------------------------------------
 
-      
+
       IBID = 0
       JRANC = 1
       JPARC = 1
@@ -118,7 +118,7 @@ C-----------------------------------------------------------------------
       LAMOR = .FALSE.
       LFLU = .FALSE.
       LPSTO = .FALSE.
-      
+
 C     --- RECUPERATION DES ARGUMENTS DE LA COMMANDE ---
 
       CALL GETVTX(' ','METHODE',0,1,1,METHOD,N1)
@@ -377,7 +377,7 @@ C        --- DONNEES ITMI ---
 C--- ET POUR GAGNER DE LA PLACE
         CALL JEDETR('&&MDTR74.PULSAT2')
         NBMODE = 0
-        CALL MDITMI(NOMCMD,TYPFLU,NOMBM,ICOUPL,NBM0,NBMODE,NBMD,
+        CALL MDITMI(TYPFLU,NOMBM,ICOUPL,NBM0,NBMODE,NBMD,
      &           VGAP,ITRANS,EPS,TS, NTS,ITYPFL)
         CALL JEVEUO('&&MDITMI.PULSATIO','L'    ,JPULS)
         CALL JEVEUO('&&MDITMI.MASSEGEN','L'    ,JMASG)
@@ -501,7 +501,7 @@ C Lecture des donnees paliers
 C  Recuperation du nombre de paliers
         NPAL='N_PAL'
         CALL JEVEUO(NPAL,'L',IADRI)
-        NBPAL=ZI(IADRI) 
+        NBPAL=ZI(IADRI)
         NBNLI = NBNLI + NBPAL
       ENDIF
 C =<
@@ -603,7 +603,7 @@ C     --- VERIFICATION DU PAS DE TEMPS ---
       CALL MDPTEM(NBMODE,ZR(JMASG),ZR(JPULS),NBNLI,ZR(JDEPL),
      & ZR(JPARC),ZK8(JNOEC),DT,DTS,DTU,DTMAX,TINIT,TFIN,NBPAS,INFO,IRET)
 C      DTS = DTS / 10.D0
-      
+
 C
 C     --- COUPLAGE EDYOS ---
 C =>
@@ -612,7 +612,7 @@ C =>
         CALL INICOU(NBPAS,TINIT,TFIN,DT,DTSTO,VROTAT)
         TCF = TINIT
       ENDIF
-C <=      
+C <=
       IF (METHOD.EQ.'ITMI') THEN
         TFEXM = TFIN - TINIT
         IF (NTS.EQ.0) TS = TFEXM

@@ -4,7 +4,7 @@
       IMPLICIT  REAL*8  (A-H,O-Z)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SOUSTRUC  DATE 31/01/2011   AUTEUR PELLET J.PELLET 
+C MODIF SOUSTRUC  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -53,7 +53,7 @@ C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
 
       INTEGER            NBCHOC, INFO, NBMODE,IRIGI,INDIC(NBMODE),IBID
       INTEGER VALI
-      INTEGER            NEQ,NBNLI,NDECI,ISINGU,ISTOAV,IRET, ISTOP,IFAC
+      INTEGER            NEQ,NBNLI,ISTOAV,IRET,IFAC
       INTEGER            JSLVI
       REAL*8             RIGGEN(*),SEUIL,
      &                   PARCHO(NBNLI,*)

@@ -1,7 +1,7 @@
       SUBROUTINE FTREVC( SIDE, HOWMNY, SELECT, N, T, LDT, VL, LDVL, VR,
      &                   LDVR, MM, M, WORK, INFO )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILIFOR  DATE 31/01/2005   AUTEUR REZETTE C.REZETTE 
+C MODIF UTILIFOR  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) LAPACK
 C ======================================================================
@@ -933,7 +933,6 @@ C
 C
 C              COPY THE VECTOR X OR Q*X TO VL AND NORMALIZE.
 C
-  210          CONTINUE
                IF( .NOT.OVER ) THEN
                   CALL DCOPY( N-KI+1, WORK( KI+N ), 1, VL( KI, IS ),1)
                   CALL DCOPY( N-KI+1, WORK( KI+N2 ), 1, VL( KI, IS+1 ),

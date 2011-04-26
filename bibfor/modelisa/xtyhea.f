@@ -1,7 +1,7 @@
       SUBROUTINE XTYHEA(NFISS,IFISS,IMA,NNO,JCONX1,JCONX2,
      &                 JSTNL,JSTNV,NBHEAV)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 01/02/2011   AUTEUR MASSIN P.MASSIN 
+C MODIF MODELISA  DATE 26/04/2011   AUTEUR DELMAS J.DELMAS 
 C TOLE CRS_1404
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -49,12 +49,11 @@ C
       CHARACTER*32 ZK32
       CHARACTER*80 ZK80
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
-      CHARACTER*32 JEXNUM,JEXATR
 C
 C ---------------- FIN DECLARATIONS NORMALISEES JEVEUX -----------------
 C
       INTEGER     INO,STNO(NNO),IFIS
-      INTEGER     JLCNX,NNGL
+      INTEGER     NNGL
 C
 C ----------------------------------------------------------------------
 C

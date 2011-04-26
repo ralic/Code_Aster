@@ -13,11 +13,9 @@
       CHARACTER*16    COMPOR(*),OPTION
       CHARACTER*8     TYPMOD(*)
       CHARACTER*(*)   FAMI
-C
-C TOLE CRP_21
-C ======================================================================
+C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 26/04/2011   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -35,6 +33,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C RESPONSABLE PROIX J-M.PROIX
+C TOLE CRP_21
 C ======================================================================
 C.......................................................................
 C
@@ -137,7 +136,7 @@ C       PETITES DEFORMATIONS
           IF (MCMATE.EQ.'ELAS') THEN
             IF (CRIT(2).NE.9) THEN
             CALL NMISOT (FAMI,KPG,KSP,NDIM,TYPMOD,IMATE,COMPOR,CRIT,
-     &                   INSTAM,INSTAP,DEPS,SIGM,VIM,
+     &                   DEPS,SIGM,VIM,
      &                   OPTION,SIGP,VIP,DSIDEP,R8BID,R8BID,CODRET)
              ELSE
             CALL NMISEX(FAMI,KPG,KSP,NDIM,IMATE,COMPOR,CRIT,INSTAM,
@@ -145,8 +144,8 @@ C       PETITES DEFORMATIONS
      &                  TAMPON,TYPMOD,ICOMP,NVI,DSIDEP,CODRET)
              ENDIF
           ELSEIF (MCMATE.EQ.'ELAS_ORTH'.OR.MCMATE.EQ.'ELAS_ISTR') THEN
-            CALL NMORTH (FAMI,KPG,KSP,NDIM,MCMATE,TYPMOD,IMATE,
-     &                   EPSM,DEPS,SIGM,OPTION,ANGMAS,SIGP,VIP,
+            CALL NMORTH (FAMI,KPG,KSP,NDIM,MCMATE,IMATE,
+     &                   DEPS,SIGM,OPTION,ANGMAS,SIGP,VIP,
      &                   DSIDEP)
           ELSE
             CALL U2MESS('F','ALGORITH6_88')

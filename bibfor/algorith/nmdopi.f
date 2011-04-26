@@ -1,7 +1,7 @@
       SUBROUTINE NMDOPI(MODELZ,NUMEDD,METHOD,LRELI ,SDPILO)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 01/02/2011   AUTEUR MASSIN P.MASSIN 
+C MODIF ALGORITH  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -63,7 +63,6 @@ C                (6) = COEF_PILO AU PAS DE TEMPS CONVERGE PRECEDENT
 C
 C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
 C
-      CHARACTER*32 JEXNUM
       INTEGER ZI
       COMMON /IVARJE/ ZI(1)
       REAL*8 ZR
@@ -89,7 +88,7 @@ C
       REAL*8        COEF, R8BID, LM(2)
       REAL*8        R8VIDE,R8GAEM,R8PREM
       COMPLEX*16    C16BID
-      CHARACTER*8   K8BID,NOMA,NOMDDL,LBORN(2),NOMCMP
+      CHARACTER*8   K8BID,NOMA,LBORN(2),NOMCMP
       CHARACTER*8   MODELE,FISS
       CHARACTER*16  RELMET
       CHARACTER*24  LISNOE,LISCMP,LISDDL,LISEQU
@@ -99,7 +98,7 @@ C
       CHARACTER*19  CARETA,CARTYP,CHAPIC
       REAL*8        ETRMAX,ETRMIN,ETAMIN,ETAMAX
       INTEGER       NBMOCL
-      CHARACTER*16  LIMOCL(2),TYMOCL(2)      
+      CHARACTER*16  LIMOCL(2),TYMOCL(2)
       INTEGER       IFM,NIV
       INTEGER       JLINO1,JLINO2,NBNOM,NOEU1,NOEU2
       INTEGER       IVALE,JEQ2,IERM
@@ -107,7 +106,7 @@ C
       CHARACTER*19  GRLN,CNSLN,GRLT
       CHARACTER*24  LISEQ2,LISNO1,LISNO2
       REAL*8        COEF1,COEF2,COEFI,VECT(3)
-      LOGICAL       ISXFE,SELXFE,SELFEM   
+      LOGICAL       ISXFE,SELXFE,SELFEM
 C
 C ----------------------------------------------------------------------
 C
@@ -128,7 +127,7 @@ C
       LISCMP = '&&NMDOPI.LISCMP'
       NBMOCL = 2
       LIMOCL(1) = 'GROUP_NO'
-      LIMOCL(2) = 'NOEUD'      
+      LIMOCL(2) = 'NOEUD'
       TYMOCL(1) = 'GROUP_NO'
       TYMOCL(2) = 'NOEUD'
 C
@@ -188,21 +187,21 @@ C
         IF(.NOT.ISXFE) CALL U2MESS('F','PILOTAGE_60')
         CALL GETVID('PILOTAGE','FISSURE',1,1,0,FISS,N1)
         IF(N1.NE.0) THEN
-          CALL GETVID('PILOTAGE','FISSURE',1,1,1,FISS,N1) 
+          CALL GETVID('PILOTAGE','FISSURE',1,1,1,FISS,N1)
         ELSE
-          CALL U2MESS('F','PILOTAGE_58')                         
+          CALL U2MESS('F','PILOTAGE_58')
         ENDIF
       ENDIF
-      
+
       IF(ISXFE.AND.(TYPSEL.EQ.'ANGL_INCR_DEPL'.
      &           OR.TYPSEL.EQ.'NORM_INCR_DEPL')) THEN
         CALL GETVID('PILOTAGE','FISSURE',1,1,0,FISS,N1)
         IF(N1.NE.0) THEN
-          CALL GETVID('PILOTAGE','FISSURE',1,1,1,FISS,N1) 
+          CALL GETVID('PILOTAGE','FISSURE',1,1,1,FISS,N1)
         ELSE
-          CALL U2MESS('F','PILOTAGE_59')                         
+          CALL U2MESS('F','PILOTAGE_59')
         ENDIF
-      ENDIF      
+      ENDIF
 C ======================================================================
 C             PILOTAGE PAR PREDICTION ELASTIQUE : PRED_ELAS
 C ======================================================================
@@ -238,25 +237,25 @@ C              PILOTAGE PAR UN DEGRE DE LIBERTE : DDL_IMPO
 C ======================================================================
 
       ELSE IF (TYPPIL .EQ. 'DDL_IMPO'.OR.TYPPIL .EQ. 'SAUT_IMPO') THEN
-      
+
         CALL RELIEM(MODELE,NOMA  ,'NU_NOEUD','PILOTAGE',1   ,
-     &              NBMOCL,LIMOCL,TYMOCL,LISNOE,NBNO) 
-        IF(TYPPIL .EQ. 'DDL_IMPO') THEN       
-           IF(NBNO.NE.1) CALL U2MESS('F','PILOTAGE_50')        
+     &              NBMOCL,LIMOCL,TYMOCL,LISNOE,NBNO)
+        IF(TYPPIL .EQ. 'DDL_IMPO') THEN
+           IF(NBNO.NE.1) CALL U2MESS('F','PILOTAGE_50')
            COEF = 1.D0
         ENDIF
-        
+
 
 C ======================================================================
 C      PILOTAGE PAR UNE METHODE DE TYPE LONGUEUR D'ARC : LONG_ARC
 C ======================================================================
 
       ELSE IF (TYPPIL.EQ.'LONG_ARC'.OR.TYPPIL.EQ.'SAUT_LONG_ARC') THEN
-      
+
         CALL RELIEM(MODELE,NOMA  ,'NU_NOEUD','PILOTAGE',1   ,
      &              NBMOCL,LIMOCL,TYMOCL,LISNOE,NBNO)
-        IF(TYPPIL .EQ. 'LONG_ARC') THEN             
-           IF (NBNO.EQ.0) CALL U2MESS('F','PILOTAGE_57')         
+        IF(TYPPIL .EQ. 'LONG_ARC') THEN
+           IF (NBNO.EQ.0) CALL U2MESS('F','PILOTAGE_57')
            COEF = 1.D0 / NBNO
         ENDIF
       ENDIF
@@ -266,11 +265,11 @@ C
       SELFEM = ((TYPPIL .EQ. 'LONG_ARC' ).OR.(TYPPIL .EQ. 'DDL_IMPO' ))
 C
 C --- CREATION SD SELECTION DES DDLS EN X-FEM ?
-C       
+C
       SELXFE = ((TYPPIL.EQ.'SAUT_LONG_ARC').OR.(TYPPIL .EQ. 'SAUT_IMPO')
      &            .OR.(ISXFE.AND.TYPSEL.NE.'RESIDU'))
-           
-      IF (SELFEM) THEN     
+
+      IF (SELFEM) THEN
         CALL GETVTX('PILOTAGE','NOM_CMP',1,1,0,K8BID,NDDL )
         NDDL = -NDDL
         IF(NDDL.NE.1.AND.TYPPIL.EQ.'DDL_IMPO') THEN
@@ -279,19 +278,19 @@ C
           CALL U2MESK('F','PILOTAGE_56',2,TXT)
         ELSEIF(NDDL.EQ.0.AND.TYPPIL.EQ.'LONG_ARC') THEN
           TXT(1)='NOM_CMP'
-          TXT(2)=TYPPIL        
-          CALL U2MESK('F','PILOTAGE_55',2,TXT)                   
-        ENDIF         
-        IF(NDDL.GT.0) THEN      
+          TXT(2)=TYPPIL
+          CALL U2MESK('F','PILOTAGE_55',2,TXT)
+        ENDIF
+        IF(NDDL.GT.0) THEN
            CALL WKVECT(LISCMP,'V V K8',NDDL,JLICMP)
            CALL GETVTX ('PILOTAGE','NOM_CMP',1,1,NDDL,
      &                ZK8(JLICMP), IBID)
         ENDIF
-        CALL JEVEUO(LISNOE,'L',JLINOE)        
+        CALL JEVEUO(LISNOE,'L',JLINOE)
       ENDIF
-      
 
-                
+
+
       IF (SELXFE) THEN
         CALL GETVTX('PILOTAGE','DIRE_PILO',1,1,0,K8BID,NDDL )
         NDDL = -NDDL
@@ -301,47 +300,47 @@ C
           CALL U2MESK('F','PILOTAGE_56',2,TXT)
         ELSEIF(NDDL.EQ.0.AND.TYPPIL.EQ.'SAUT_LONG_ARC') THEN
           TXT(1)='DIRE_PILO'
-          TXT(2)=TYPPIL        
-          CALL U2MESK('F','PILOTAGE_55',2,TXT) 
+          TXT(2)=TYPPIL
+          CALL U2MESK('F','PILOTAGE_55',2,TXT)
         ELSEIF(NDDL.EQ.0) THEN
-          CALL U2MESK('F','PILOTAGE_64',1,TYPSEL)                    
-        ENDIF         
-        IF(NDDL.GT.0) THEN      
+          CALL U2MESK('F','PILOTAGE_64',1,TYPSEL)
+        ENDIF
+        IF(NDDL.GT.0) THEN
            CALL WKVECT(LISCMP,'V V K8',NDDL,JLICMP)
            CALL GETVTX ('PILOTAGE','DIRE_PILO',1,1,NDDL,
      &                ZK8(JLICMP), IBID)
-        ENDIF     
+        ENDIF
 
         LISNO1 ='&&NMDOPI.LISNO1'
         LISNO2 ='&&NMDOPI.LISNO2'
         CNSLN  ='&&NMDOPI.CNSLN'
         GRLN   ='&&NMDOPI.GRLN'
-        GRLT   ='&&NMDOPI.GRLT'           
+        GRLT   ='&&NMDOPI.GRLT'
         CALL CNOCNS(FISS//'.LNNO','V',CNSLN)
         CALL CNOCNS(FISS//'.GRLNNO','V',GRLN)
-        CALL CNOCNS(FISS//'.GRLTNO','V',GRLT)           
-                      
+        CALL CNOCNS(FISS//'.GRLTNO','V',GRLT)
+
         CALL NMMEIN(FISS,NOMA,NBNO,LISNOE,LISCMP,NBNOM,
      &             LISNO1,LISNO2,NDIM,COMPO)
         CALL JEVEUO(LISNO1,'L',JLINO1)
-        CALL JEVEUO(LISNO2,'L',JLINO2)         
+        CALL JEVEUO(LISNO2,'L',JLINO2)
         NBNO=NBNOM
         LISEQ2='&&NMDOPI.LISEQ2'
         CALL WKVECT(LISEQ2,'V V I',NBNO,JEQ2)
         CHAPIC = SDPILO(1:14)//'.PLCI'
         CALL VTCREB(CHAPIC,NUMEDD,'V','R',NEQ)
         CALL JEVEUO(CHAPIC(1:19)//'.VALE','E',IVALE)
-      ENDIF 
-      
-      IF(SELFEM.OR.SELXFE) THEN                 
+      ENDIF
+
+      IF(SELFEM.OR.SELXFE) THEN
         CHAPIL = SDPILO(1:14)//'.PLCR'
-        CALL VTCREB(CHAPIL,NUMEDD,'V','R',NEQ)      
-        CALL JEVEUO(CHAPIL(1:19)//'.VALE','E',JVALE)        
+        CALL VTCREB(CHAPIL,NUMEDD,'V','R',NEQ)
+        CALL JEVEUO(CHAPIL(1:19)//'.VALE','E',JVALE)
         CALL WKVECT(LISDDL,'V V K8',NBNO ,JDDL )
         CALL WKVECT(LISEQU,'V V I' ,NBNO ,JEQU )
         CALL JEVEUO(LISCMP,'L',JLICMP)
         CALL JELIRA(LISCMP,'LONMAX',NDDL,K8BID)
-        
+
         DO 10 IDDL = 1,NDDL
           NOMCMP = ZK8(JLICMP-1+IDDL)
           DO 15 INO = 1,NBNO
@@ -351,7 +350,7 @@ C
           CALL NUEQCH('F',CHAPIL, NOMA, NBNO, ZI(JLINO1),
      &                ZK8(JDDL), ZI(JEQU))
           CALL NUEQCH('F',CHAPIL, NOMA, NBNO, ZI(JLINO2),
-     &                ZK8(JDDL), ZI(JEQ2))               
+     &                ZK8(JDDL), ZI(JEQ2))
           ELSE IF(SELFEM) THEN
           CALL NUEQCH('F',CHAPIL, NOMA, NBNO, ZI(JLINOE),
      &                ZK8(JDDL), ZI(JEQU))
@@ -359,7 +358,7 @@ C
           DO 20 INO = 1,NBNO
             IF(SELXFE) THEN
               NOEU1=ZI(JLINO1-1+INO)
-              NOEU2=ZI(JLINO2-1+INO)          
+              NOEU2=ZI(JLINO2-1+INO)
               IF(COMPO(1:4).EQ.'DTAN'.OR.
      &           COMPO.EQ.'DNOR') THEN
                 CALL NMDIRE(NOEU1,NOEU2,NDIM,CNSLN,
@@ -368,7 +367,7 @@ C
               CALL NMCOEF(NOEU1,NOEU2,TYPPIL,NBNO,
      &         CNSLN,COMPO,VECT,IDDL,INO,COEF1,COEF2,COEFI)
              NUMEQU = ZI(JEQU-1+INO)
-             ZR(JVALE-1+NUMEQU) = COEF1         
+             ZR(JVALE-1+NUMEQU) = COEF1
              ZR(IVALE-1+NUMEQU) = COEFI
              NUMEQU = ZI(JEQ2-1+INO)
              ZR(JVALE-1+NUMEQU) = COEF2
@@ -376,7 +375,7 @@ C
             ELSE IF(SELFEM) THEN
             NUMEQU = ZI(JEQU-1+INO)
             ZR(JVALE-1+NUMEQU) = COEF
-            ENDIF          
+            ENDIF
  20       CONTINUE
  10     CONTINUE
       ENDIF
@@ -386,25 +385,25 @@ C
       CALL JEDETR(LISNOE)
       CALL JEDETR(LISCMP)
       IF(SELXFE) THEN
-        CALL JEDETR(LISNO1)                   
-        CALL JEDETR(LISNO2)                  
-        CALL JEDETR(LISEQ2)                 
-        CALL JEDETR(CNSLN)         
+        CALL JEDETR(LISNO1)
+        CALL JEDETR(LISNO2)
+        CALL JEDETR(LISEQ2)
+        CALL JEDETR(CNSLN)
         CALL JEDETR(GRLN)
-      ENDIF                
+      ENDIF
 C
 C --- CREATION SD REPERAGE DES DX/DY/DZ
-C 
+C
       IF (TYPPIL .EQ. 'LONG_ARC') THEN
         SELPIL = SDPILO(1:14)//'.PLSL'
-        CALL VTCREB(SELPIL,NUMEDD,'V','R',NEQ) 
-        CALL JEVEUO(SELPIL(1:19)//'.VALE','E',JPLSL)     
-        
+        CALL VTCREB(SELPIL,NUMEDD,'V','R',NEQ)
+        CALL JEVEUO(SELPIL(1:19)//'.VALE','E',JPLSL)
+
         NDDL = 3
         CALL WKVECT(LISCMP,'V V K8',NDDL,JLICMP)
         ZK8(JLICMP+1-1) = 'DX'
         ZK8(JLICMP+2-1) = 'DY'
-        ZK8(JLICMP+3-1) = 'DZ'   
+        ZK8(JLICMP+3-1) = 'DZ'
 
         CALL WKVECT(LISDDL,'V V K8',NBNOMA,JDDL  )
         CALL WKVECT(LISNOE,'V V I' ,NBNOMA,JLINOE)
@@ -424,7 +423,7 @@ C
             NUMEQU = ZI(JEQU-1+INO)
             CALL ASSERT(NUMEQU.LE.NEQ)
             IF (NUMEQU.NE.0) THEN
-              ZR(JPLSL-1+NUMEQU) = 1.D0   
+              ZR(JPLSL-1+NUMEQU) = 1.D0
             ENDIF
  80       CONTINUE
  70     CONTINUE
@@ -444,6 +443,6 @@ C
       CALL JEDETR(LISDDL)
       CALL JEDETR(LISEQU)
       CALL JEDETR(LISNOE)
-      CALL JEDETR(LISCMP) 
+      CALL JEDETR(LISCMP)
       CALL JEDEMA()
       END

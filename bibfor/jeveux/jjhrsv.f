@@ -1,8 +1,8 @@
       SUBROUTINE JJHRSV(IDTS,NBVAL,IADMI)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 01/12/2008   AUTEUR COURTOIS M.COURTOIS 
+C MODIF JEVEUX  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -41,10 +41,10 @@ C---------- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER            ZI
       COMMON  / IVARJE / ZI(1)
 C ----------------------------------------------------------------------
-      REAL *8          SVUSE,SMXUSE   
-      COMMON /STATJE/  SVUSE,SMXUSE  
+      REAL *8          SVUSE,SMXUSE
+      COMMON /STATJE/  SVUSE,SMXUSE
 C ----------------------------------------------------------------------
-      INTEGER          IRET,JADR,KADM,NBV,K,LONOI,LTYPI,IBID
+      INTEGER          IRET,JADR,KADM,NBV,K,LONOI,LTYPI
       INTEGER          HDFTSD,HDFRSV,HDFCLD,IR,KITAB,ICONV,IADYN
       CHARACTER*1      TYPEI
 C DEB ------------------------------------------------------------------

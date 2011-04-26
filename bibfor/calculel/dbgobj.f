@@ -1,9 +1,9 @@
       SUBROUTINE DBGOBJ(OJBZ,PERM,IUNIT,MESS)
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 23/05/2007   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -38,7 +38,7 @@ C ----------------------------------------------------------------------
       CHARACTER*24 OJB
       CHARACTER*3 TYPE
       CHARACTER*(*) MESS,OJBZ,PERM
-      INTEGER SOMMI,RESUME,LONMAX,LONUTI,I,IRET
+      INTEGER SOMMI,RESUME,LONMAX,LONUTI,IRET
       REAL*8 SOMMR
 
 C DEB-------------------------------------------------------------------
@@ -69,9 +69,6 @@ C DEB-------------------------------------------------------------------
       END IF
 
  9999   CONTINUE
-
- 1001 FORMAT (A,' | ',A24,' | LONMAX=',I12,' | LONUTI=',I12,
-     &        ' | TYPE=',A4,' | IRET=',I7 )
 
  1002 FORMAT (A,' | ',A24,' | LONMAX=',I12,' | LONUTI=',I12,
      &        ' | TYPE=',A4,' | IRET=',I7, ' | SOMMI=',I24 )

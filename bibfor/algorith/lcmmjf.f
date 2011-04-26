@@ -8,9 +8,9 @@
         CHARACTER*16 NECOUL
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C TOLE CRP_21
-C MODIF ALGORITH  DATE 24/03/2009   AUTEUR REZETTE C.REZETTE 
+C MODIF ALGORITH  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -44,14 +44,14 @@ C           DGDTAU  :  dF/dTau
 C           DGDAL   :  dF/dAlpha  (particulier pour KR)
 C           DFDR    :  dF/dR (ou dhs/dalphar pour KR)
 C     ----------------------------------------------------------------
-      REAL*8 C,P,R0,Q,H,B,K,N,FTAU,CRIT,B1,B2,Q1,Q2,A,GAMMA0,D
-      REAL*8 TPERD,TABS,DRDP,ALPHA,GAMMA,DP,TAUMU,TAUV,GM,PM,CC
-      REAL*8 SGNR,PR,DRDPR,DELTAV,DELTG0,SGNS,R8MIEM,AUX,ALPHAS
-      REAL*8 TAUR,TAU0,TAUEF,BSD,GCB,KDCS,R,INT1,INT2,INT3,DFDTMU
-      REAL*8 DTMUDR,SOM,DRDGAM,CISA2, RR,DELTGG,TERME,PETITG,CS
+      REAL*8 C,P,Q,K,N,FTAU,CRIT,A,GAMMA0,D
+      REAL*8 TPERD,TABS,ALPHA,TAUMU,TAUV
+      REAL*8 SGNR,DELTAV,DELTG0,SGNS,R8MIEM,AUX,ALPHAS
+      REAL*8 TAUR,TAU0,TAUEF,BSD,GCB,KDCS
+      REAL*8 SOM,CISA2,DELTGG,TERME,PETITG,CS
       REAL*8 DTEDTO,DGGDTO,DTEDAL,DGGDAL,DELTSR,DHDAL,PETITH
 
-      INTEGER IFL,NS, IS, NBSYS,IU,IR,IRET,NUECOU,NULHSR,IRET2
+      INTEGER IFL, IS, NBSYS,IU,IR,IRET,NUECOU
 C     ----------------------------------------------------------------
 
 C     DANS VIS : 1 = ALPHA, 2=GAMMA, 3=P
@@ -91,7 +91,7 @@ C         DFDR
 
 C      IF (NECOUL.EQ.'ECOU_VISC2') THEN
       ELSEIF (NUECOU.EQ.2) THEN
-      
+
           N=COEFT(IFL+1)
           K=COEFT(IFL+2)
           C=COEFT(IFL+3)
@@ -122,7 +122,7 @@ C         DFDR
 
 C      ELSEIF (NECOUL.EQ.'ECOU_VISC3') THEN
       ELSEIF (NUECOU.EQ.3) THEN
-      
+
           K      =COEFT(IFL+1)
           TAUMU  =COEFT(IFL+2)
           GAMMA0 =COEFT(IFL+3)
@@ -135,7 +135,7 @@ C      ELSEIF (NECOUL.EQ.'ECOU_VISC3') THEN
           ELSE
              SGNS=(TAUS)/ABS(TAUS)
           ENDIF
-          
+
           IF (CRIT.LT.0.D0) THEN
              DGDTAU=0.D0
           ELSE
@@ -158,15 +158,15 @@ C  R2 = dALPHA - g(Taus,alphas)*h(alphas)
 C avec Gamma_s=g(Taus,alphas)*sgn(taus)
 C
 C ON VEUT CALCULER :
-C         dg(taus,alphas)/dtaus          
+C         dg(taus,alphas)/dtaus
           DGDTAU=0.D0
-C         dg(taus,alphas)/dalphar          
+C         dg(taus,alphas)/dalphar
           DGDAL=0.D0
-C         dh(alphas)/dalphar          
+C         dh(alphas)/dalphar
           DHDAL=0.D0
 C         DFDR=DHDAL
           DFDR=0.D0
-                
+
           K         =COEFT(IFL+1)
           TAUR      =COEFT(IFL+2)
           TAU0      =COEFT(IFL+3)
@@ -231,17 +231,17 @@ C              CALCUL DE dg/dtau
                DTEDTO=SGNS*(1.D0+TAUMU/TAUV)
                DGGDTO=CS*DTEDTO
                DGDTAU =-PETITG*SGNS*DGGDTO/K/TABS
-               
+
                IF (IR.NE.0) THEN
 C                  CALCUL DE dgs/dalphar
                    DTEDAL=-CISA2/TAUV*HSR(NUMHSR,IS,IR)
                    DGGDAL=CS*DTEDAL
                    DGDAL=-PETITG/K/TABS*DGGDAL
- 
+
 C                  CALCUL DE dhs/dalphar
                    DELTSR=0.D0
                    IF (IR.EQ.IS) DELTSR=1.D0
-                   
+
                    IF (PETITH.GT.0.D0) THEN
                       IF (SOM.GT.0.D0) THEN
                          DHDAL=(1-DELTSR)/SOM/2.D0/KDCS-GCB*DELTSR

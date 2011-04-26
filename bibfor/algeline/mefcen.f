@@ -4,15 +4,15 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C
       INTEGER      IEQUIV,NBCYL,NUMNOG(*),NBNOG(*),NUMMAG(*)
-      INTEGER      NUMGRP(*),IROT(3),IDECAL,ITAB,NBGRP
+      INTEGER      NUMGRP(*),IROT(3),NBGRP
       REAL*8       XINT(NBCYL),YINT(NBCYL),ZINT(NBZ,NBGRP),COOR(*)
       REAL*8       CENT(2*NBCYL),REQ(NBGRP),RINT(NBCYL)
       CHARACTER*19 CAELEM
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 18/09/2007   AUTEUR DURAND C.DURAND 
+C MODIF ALGELINE  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -80,10 +80,8 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C     ------------------------------------------------------------------
       INTEGER      I,J,IRET,INDIK8,RANGR1
-      CHARACTER*24 CARAD, CARAV, CARAL
-      CHARACTER*19 LIGRMO,CARTE,CARSD,KBID
+      CHARACTER*19 CARTE,CARSD,KBID
       CHARACTER*3  NOTE
-      CHARACTER*1  K1BID
 C     ------------------------------------------------------------------
 C
 C

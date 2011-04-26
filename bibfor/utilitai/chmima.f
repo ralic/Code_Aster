@@ -1,12 +1,12 @@
       SUBROUTINE CHMIMA(NOMSD,NOMSY,TYPMAX,NOCHAM)
       IMPLICIT REAL*8 (A-H,O-Z)
-      INTEGER                       NBORDR,IORDR
+      INTEGER                       NBORDR
       CHARACTER*(*)     NOMSD,NOMSY, TYPMAX,NOCHAM
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -33,7 +33,7 @@ C                CHAMPS DE TYPE NOMSY DU RESULTAT NOMSD.
 C
 C ----------------------------------------------------------------------
 C --------------- COMMUNS NORMALISES  JEVEUX  --------------------------
-      CHARACTER*32   JEXNUM, JEXNOM, JEXATR, JEXR8
+      CHARACTER*32   JEXNUM
       INTEGER        ZI
       COMMON /IVARJE/ZI(1)
       REAL*8         ZR
@@ -53,7 +53,7 @@ C ---------------- FIN COMMUNS NORMALISES  JEVEUX  --------------------
       CHARACTER*8  TYPMA, K8B, CRIT, NOMA, NOMN, VALEUR
       CHARACTER*19 PRNO, PRN2
       CHARACTER*16 NOMS2
-      CHARACTER*19 TYPCH2, NOCHA2, CHEXTR, KNUM, LISTR
+      CHARACTER*19  NOCHA2, CHEXTR, KNUM
       CHARACTER*24 NOMNOE
       CHARACTER*5 SUFV
 C ----------------------------------------------------------------------

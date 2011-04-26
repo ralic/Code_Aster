@@ -3,22 +3,22 @@
      &           DEPS, SIGD, VIND, OPT, SIGF, VINF, DSDE, IRET)
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 22/12/2009   AUTEUR FOUCAULT A.FOUCAULT 
+C MODIF ALGORITH  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CRP_20
 C  ================================================================
@@ -71,7 +71,7 @@ C          VINF    VARIABLES INTERNES A T+DT + INDICATEUR ETAT T+DT
 C          DSDE    MATRICE DE COMPORTEMENT TANGENT A T+DT OU T
 C          IRET    CODE RETOUR DE  L'INTEGRATION DE LA LOI CJS
 C                         IRET=0 => PAS DE PROBLEME
-C                         IRET=1 => ECHEC 
+C                         IRET=1 => ECHEC
 C  ----------------------------------------------------------------
 C  INFO    MATERD        (*,1) = CARACTERISTIQUES ELASTIQUES A T
 C                        (*,2) = CARACTERISTIQUES PLASTIQUES A T
@@ -101,25 +101,24 @@ C  PRODUITS TENSORIELS ET CONSERVATION DE LA SYMETRIE
 C
 C  ----------------------------------------------------------------
       INTEGER       IMAT, NDT, NDI, NVI, IRET, IRET1
-      INTEGER       I, J, K, INC, INCMAX, NDTT, LIMSUP
+      INTEGER       I, INC, INCMAX, NDTT, LIMSUP
       REAL*8        CRIT(*), VIND(*), VINF(*), VIND0(50)
       REAL*8        INSTAM, INSTAP, TEMPM, TEMPF, TREF
-      REAL*8        EPSD(6), DEPS(6), EPSF(6), DEPS0(6)
+      REAL*8        EPSD(6), DEPS(6), DEPS0(6)
       REAL*8        SIGD(6), SIGF(6), DSDE(6,6), SEUIL
       REAL*8        PISO, DEPSR(6), DEPSQ(6), TIN(3)
       REAL*8        D, Q, M, PHI, B, DEGR, ANGMAS(*)
-      REAL*8        PC0, RATIO(6), SIGD0(6), HILL, DSIG(6) 
-      CHARACTER*6   MECAND, MECANF
+      REAL*8        PC0, SIGD0(6), HILL, DSIG(6)
       CHARACTER*7   ETATD, ETATF
-      CHARACTER*8   NOMAIL, MOD, TYPMOD(*)
+      CHARACTER*8    MOD, TYPMOD(*)
       CHARACTER*16  COMP(*), OPT
       REAL*8        DEPSTH(6), EPSDTH(6), ALPHA(3)
       REAL*8        DET, R8PREM, R8VIDE, BID16(6), BID66(6,6)
       REAL*8        MATERF(22,2), I1D, D13, ZERO, UN, DEUX, DIX
       REAL*8        NEPS, NSIG, PTRAC, RTRAC
-      INTEGER       UMESS, IUNIFI, IISNAN
+      INTEGER        IISNAN
       LOGICAL       DEBUG, CONV, REORIE, TRACT
-      
+
       PARAMETER     ( DEGR  = 0.0174532925199D0 )
 
 C     ----------------------------------------------------------------
@@ -136,7 +135,7 @@ C     ----------------------------------------------------------------
       DEBUG = .FALSE.
       TRACT = .FALSE.
 C --- DEBUG = .TRUE. : MODE AFFICHAGE ENRICHI
-    
+
       IF (DEBUG) WRITE(6,'(A)')'HHHHHHHHHHHHHHHHHHHHHH'
       MOD   = TYPMOD(1)
 
@@ -145,7 +144,7 @@ C      (INDEPENDANTS DE LA TEMPERATURE)
 C      NB DE CMP DIRECTES/CISAILLEMENT
 C      NB VARIABLES INTERNES
       CALL HUJMAT (MOD, IMAT, TEMPF, MATERF, NDT, NDI, NVI)
-      
+
       PTRAC = MATERF(21,2)
       RTRAC = ABS(1.D-6*MATERF(8,2))
 
@@ -157,14 +156,14 @@ C     REPERE LOCAL DONNE PAR LES ANGLES NAUTIQUES (ANGMAS)
       CALL HUJORI ('LOCAL', 1, REORIE, ANGMAS, SIGD, BID66)
       CALL HUJORI ('LOCAL', 1, REORIE, ANGMAS, EPSD, BID66)
       CALL HUJORI ('LOCAL', 1, REORIE, ANGMAS, DEPS, BID66)
-      
+
 C --- ON TRAVAILLE TOUJOURS AVEC UN TENSEUR CONTRAINTES
 C     DEFINI EN 3D
 
       NDTT = 6
       IF (NDT.LT.6) THEN
         NDTT = 4
-        NDT  = 6          
+        NDT  = 6
       ENDIF
 
       I1D = ZERO
@@ -176,17 +175,17 @@ C     CALCUL DE DEPSTH ET EPSDTH
 C     --------------------------
 C ---> COEF DE DILATATION LE MEME A TPLUS ET TMOINS
       IF (MATERF(17,1).EQ.UN) THEN
-      
+
         IF ( ((IISNAN(TEMPM).GT.0) .OR. (IISNAN(TREF).GT.0))
      &       .AND. (MATERF(3,1).NE.ZERO) )
      &  CALL U2MESS('F','CALCULEL_15')
-     
+
         ALPHA(1) = MATERF(3,1)
         ALPHA(2) = MATERF(3,1)
         ALPHA(3) = MATERF(3,1)
-  
+
       ELSEIF (MATERF(17,1).EQ.DEUX) THEN
-      
+
         ALPHA(1) = MATERF(10,1)
         ALPHA(2) = MATERF(11,1)
         ALPHA(3) = MATERF(12,1)
@@ -198,30 +197,30 @@ C ---> COEF DE DILATATION LE MEME A TPLUS ET TMOINS
       ELSE
         CALL U2MESS('F', 'COMPOR1_33')
       ENDIF
-      
+
       IF ( (IISNAN(TEMPM).GT.0) .OR. (IISNAN(TEMPF).GT.0) .OR.
      &     (IISNAN(TREF) .GT.0) ) THEN
-     
+
         DO 20 I = 1, NDI
           DEPSTH(I) = DEPS(I)
           EPSDTH(I) = EPSD(I)
   20      CONTINUE
 
       ELSE
-      
+
         DO 25 I = 1, NDI
           DEPSTH(I) = DEPS(I) -
      &                ALPHA(I)*(TEMPF-TREF) + ALPHA(I)*(TEMPM-TREF)
           EPSDTH(I) = EPSD(I) - ALPHA(I)*(TEMPM-TREF)
   25      CONTINUE
-  
+
       ENDIF
 
       DO 21 I = NDI+1, NDT
         DEPSTH(I) = DEPS(I)
         EPSDTH(I) = EPSD(I)
   21    CONTINUE
-  
+
       IF (NDTT .LT. 6) THEN
         DO 22 I = NDTT+1, 6
           DEPSTH(I) = ZERO
@@ -231,18 +230,18 @@ C ---> COEF DE DILATATION LE MEME A TPLUS ET TMOINS
       ENDIF
 
 C ---> INITIALISATION SEUIL DEVIATOIRE SI NUL
-      
+
       DO 30 I = 1, NDI
         IF (VIND(I) .EQ. ZERO) THEN
-        
+
            IF (MATERF(13, 2) .EQ. ZERO) THEN
              VIND(I) = 1.D-3
            ELSE
              VIND(I) = MATERF(13,2)
            ENDIF
-           
+
            CALL HUJCRD(I, MATERF, SIGD, VIND, SEUIL)
-           
+
 C --- SI LE SEUIL EST DESEQUILIBRE A L'ETAT INITIAL
 C     ON EQUILIBRE LE SEUIL EN CALCULANT LA VALEUR DE R
 C     APPROPRIEE
@@ -252,15 +251,15 @@ C     APPROPRIEE
              PISO       = PISO - PTRAC
              B          = MATERF(4,2)
              PHI        = MATERF(5,2)
-             M          = SIN(DEGR*PHI) 
+             M          = SIN(DEGR*PHI)
              PC0        = MATERF(7,2)
              VIND(I)    = -Q/(M*PISO*(UN-B*LOG(PISO/PC0)))
              VIND(23+I) = UN
            ENDIF
-           
+
         ENDIF
   30    CONTINUE
-  
+
 C ---> INITIALISATION SEUIL ISOTROPE SI NUL
       IF (VIND(4) .EQ. ZERO) THEN
          IF (MATERF(14, 2) .EQ. ZERO) THEN
@@ -268,9 +267,9 @@ C ---> INITIALISATION SEUIL ISOTROPE SI NUL
          ELSE
            VIND(4) = MATERF(14,2)
          ENDIF
-         
-         CALL HUJCRI(MATERF, SIGD, VIND, SEUIL)   
-         
+
+         CALL HUJCRI(MATERF, SIGD, VIND, SEUIL)
+
 C --- SI LE SEUIL EST DESEQUILIBRE A L'ETAT INITIAL
 C     ON EQUILIBRE LE SEUIL EN CALCULANT LA VALEUR DE R
 C     APPROPRIEE
@@ -279,10 +278,10 @@ C     APPROPRIEE
            PISO    = (SIGD(1)+SIGD(2)+SIGD(3))/3
            D       = MATERF(3,2)
            PC0     = MATERF(7,2)
-           VIND(4) = PISO/(D*PC0)      
-           VIND(27)= UN  
+           VIND(4) = PISO/(D*PC0)
+           VIND(27)= UN
          ENDIF
-         
+
       ENDIF
 
 C ---> INITIALISATION SEUIL CYCLIQUE SI NUL
@@ -295,7 +294,7 @@ C ---> INITIALISATION SEUIL CYCLIQUE SI NUL
           ENDIF
         ENDIF
  40     CONTINUE
- 
+
       IF (VIND(8) .EQ. ZERO) THEN
          IF (MATERF(19, 2) .EQ. ZERO) THEN
            VIND(8) = 1.D-3
@@ -303,7 +302,7 @@ C ---> INITIALISATION SEUIL CYCLIQUE SI NUL
            VIND(8) = MATERF(19,2)
          ENDIF
       ENDIF
-        
+
 CONTROLE DES INDICATEURS DE PLASTICITE
       DO 39 I = 1, 4
         IF (ABS(VIND(27+I)-UN).LT.R8PREM()) VIND(23+I)=-UN
@@ -313,9 +312,9 @@ CONTROLE DES INDICATEURS DE PLASTICITE
 
 C ---> ETAT ELASTIQUE OU PLASTIQUE A T
       IF (((VIND(24) .EQ. ZERO) .OR.
-     &   (VIND(24) .EQ. -UN .AND. VIND(28) .EQ. ZERO)) .AND.  
+     &   (VIND(24) .EQ. -UN .AND. VIND(28) .EQ. ZERO)) .AND.
      &   ((VIND(25) .EQ. ZERO) .OR.
-     &   (VIND(25) .EQ. -UN .AND. VIND(29) .EQ. ZERO)) .AND. 
+     &   (VIND(25) .EQ. -UN .AND. VIND(29) .EQ. ZERO)) .AND.
      &   ((VIND(26) .EQ. ZERO) .OR.
      &   (VIND(26) .EQ. -UN .AND. VIND(30) .EQ. ZERO)) .AND.
      &   ((VIND(27) .EQ. ZERO).OR.
@@ -339,7 +338,7 @@ C     -------------------------------------------------------------
 
 C ---> INTEGRATION ELASTIQUE SUR DT
         DO 45 I = 1, NDT
-          DEPSQ(I) = ZERO 
+          DEPSQ(I) = ZERO
   45      CONTINUE
 
 C -----------------------------------------------
@@ -347,7 +346,7 @@ C ---> INCREMENT TOTAL DE DEFORMATION A APPLIQUER
 C -----------------------------------------------
 C - ENREGISTREMENT DE L'ETAT DE CONTRAINTES A T
         CALL LCEQVE (SIGD,SIGD0)
-C - ENREGISTREMENT DE L'INCREMENT TOTAL DEPS0     
+C - ENREGISTREMENT DE L'INCREMENT TOTAL DEPS0
         CALL LCEQVE (DEPSTH,DEPS0)
 C - INITIALISATION DES DEFORMATIONS RESTANTES
         CALL LCEQVE (DEPSTH,DEPSQ)
@@ -367,7 +366,7 @@ C -----------------------------------------------------
         CALL HUJPRE (ETATD, MOD, CRIT, IMAT, MATERF, DEPSR, SIGD,
      &               SIGF, EPSDTH, VIND0, IRET)
         IF (IRET .EQ. 1) GOTO 9999
-      
+
 C ----------------------------------------------------
 C ---> CONTROLE DE L EVOLUTION DE LA PRESSION ISOTROPE
 C ----------------------------------------------------
@@ -376,7 +375,7 @@ C ----------------------------------------------------
      &              VIND, INCMAX, IRET1)
         IF (DEBUG .AND. IRET1.EQ.1)
      &  WRITE (6,'(A)') 'NMHUJ :: HUJDP :: PAS DE RESUBDIVISON'
-      
+
 C --- ON LIMITE LE REDECOUPAGE LOCAL A 20 POUR HUJDP
         LIMSUP = 20
         IF (ABS(CRIT(5)).GT.LIMSUP) LIMSUP = INT(ABS(CRIT(5)))
@@ -385,12 +384,12 @@ C --- ON LIMITE LE REDECOUPAGE LOCAL A 20 POUR HUJDP
         ELSEIF (INCMAX.LE.1) THEN
           INCMAX =1
         ENDIF
-      
+
         IF (INC.EQ.1 .AND. INCMAX.GT.1) THEN
           DO 48 I=1, NDT
             DEPSQ(I)=DEPS0(I) /INCMAX
             DEPSR(I)=DEPS0(I) /INCMAX
-            CALL HUJPRE (ETATD, MOD, CRIT, IMAT, MATERF, DEPSR, 
+            CALL HUJPRE (ETATD, MOD, CRIT, IMAT, MATERF, DEPSR,
      &                   SIGD, SIGF, EPSDTH, VIND0, IRET)
  48         CONTINUE
         ENDIF
@@ -405,20 +404,20 @@ C ---------------------------------------------
 
 C -------------------------------------------
 C - CONTROLE DES DEFORMATIONS DEJA APPLIQUEES
-C -------------------------------------------   
+C -------------------------------------------
         IF (INC.LT.INCMAX) THEN
           CONV =.FALSE.
         ELSE
           CONV =.TRUE.
         ENDIF
-      
+
         IF (.NOT.CONV) THEN
           CALL LCEQVE (SIGF, SIGD)
           CALL LCEQVN (NVI, VINF, VIND)
           GOTO 100
         ENDIF
-      
-C --- CALCUL DU CRITERE DE HILL: DSIG*DEPS       
+
+C --- CALCUL DU CRITERE DE HILL: DSIG*DEPS
           HILL = ZERO
           NSIG = ZERO
           NEPS = ZERO
@@ -428,14 +427,14 @@ C --- CALCUL DU CRITERE DE HILL: DSIG*DEPS
             NSIG    = NSIG + DSIG(I)**2.D0
             NEPS    = NEPS + DEPS0(I)**2.D0
  57       CONTINUE
- 
-C --- NORMALISATION DU CRITERE : VARIE ENTRE -1 ET 1 
+
+C --- NORMALISATION DU CRITERE : VARIE ENTRE -1 ET 1
           IF ((NEPS.GT.R8PREM()).AND.(NSIG.GT.R8PREM())) THEN
             VINF(32) = HILL/SQRT(NEPS*NSIG)
           ELSE
             VINF(32) = ZERO
-          ENDIF          
-          
+          ENDIF
+
       ENDIF
 Caf 07/05/07 fin <IF RAPH_MECA et FULL_MECA>
 
@@ -446,7 +445,7 @@ C       CALCUL ELASTIQUE ET EVALUATION DE DSDE A (T)
 C       POUR 'RIGI_MECA_TANG' ET POUR 'FULL_MECA'
 C       ----------------------------------------------------------------
       IF (OPT .EQ. 'RIGI_MECA_TANG') THEN
-      
+
         CALL LCINMA (ZERO, DSDE)
 
 C REMARQUE: CALCUL DE DSDE A T AVEC MATERF CAR PARAMETRES HUJEUX
@@ -462,9 +461,9 @@ C ---> CALCUL MATRICE TANGENTE DU PROBLEME CONTINU
           CALL HUJTID (MOD, IMAT, SIGD, VIND, DSDE, IRET)
           IF (IRET.EQ.1) GOTO 9999
         ENDIF
-        
+
         CALL HUJORI ('GLOBA', 2, REORIE, ANGMAS, BID16, DSDE)
-        
+
       ELSEIF (OPT .EQ. 'FULL_MECA') THEN
 
         CALL LCINMA (ZERO, DSDE)
@@ -486,7 +485,7 @@ C ---> CALCUL MATRICE TANGENTE DU PROBLEME CONTINU
         CALL HUJTEL (MOD, MATERF, SIGF, DSDE)
 
       ELSEIF (OPT .EQ. 'RIGI_MECA_ELAS') THEN
-      
+
         CALL LCINMA (ZERO, DSDE)
         CALL HUJTEL (MOD, MATERF, SIGD, DSDE)
         CALL HUJORI ('GLOBA', 2, REORIE, ANGMAS, BID16, DSDE)
@@ -494,13 +493,13 @@ C ---> CALCUL MATRICE TANGENTE DU PROBLEME CONTINU
       ENDIF
 C fin <IF RIGI_MECA_TANG>
 
-C ---> CALCUL DETERMINANT DE LA MATRICE TANGENTE + INDICATEUR 
+C ---> CALCUL DETERMINANT DE LA MATRICE TANGENTE + INDICATEUR
 C --- RELIE AUX MECANISMES ACTIFS
       IF (OPT(1:9) .NE. 'RIGI_MECA') THEN
-      
+
         CALL HUJORI ('GLOBA', 2, REORIE, ANGMAS, BID16, DSDE)
-        
-        IF(OPT .EQ.'FULL_MECA')THEN  
+
+        IF(OPT .EQ.'FULL_MECA')THEN
           CALL MGAUSS ('NCSD', DSDE, SIGD, 6, 6, 1, DET, IRET)
           IF (IRET.EQ.1) THEN
             VINF(33) = UN
@@ -509,9 +508,9 @@ C --- RELIE AUX MECANISMES ACTIFS
             VINF(33) = DET
           ENDIF
         ENDIF
-       
+
         VINF(34) = ZERO
-        
+
         DO 60 I=1,8
           IF (ABS(VINF(23+I)-UN).LT.R8PREM()) THEN
             IF (I.EQ.1) VINF(34)=VINF(34)+DIX**ZERO
@@ -527,15 +526,15 @@ C --- RELIE AUX MECANISMES ACTIFS
 
 
       ENDIF
-C --- ON RENVOIE LA VALEUR ADEQUATE DE NDT 
+C --- ON RENVOIE LA VALEUR ADEQUATE DE NDT
 C     POUR MODELISATION D_PLAN
       IF (NDTT.EQ.4) NDT = 4
-      
+
       IF (OPT .EQ. 'RAPH_MECA' .OR. OPT(1:9) .EQ. 'FULL_MECA')
      &CALL HUJORI ('GLOBA', 1, REORIE, ANGMAS, SIGF, BID66)
-      
+
  9999 CONTINUE
-        
+
       IF (OPT(1:9).EQ.'RAPH_MECA'.OR.OPT(1:9).EQ.'FULL_MECA') THEN
         IF (IRET.EQ.1) THEN
           IF (.NOT.TRACT) THEN
@@ -554,7 +553,7 @@ C     POUR MODELISATION D_PLAN
               WRITE(6,*)
             ENDIF
           ELSE
-          
+
             CALL LCINMA (ZERO, DSDE)
             CALL HUJTEL (MOD, MATERF, SIGD, DSDE)
             DO 61 I = 1, 3
@@ -569,5 +568,5 @@ C     POUR MODELISATION D_PLAN
         CALL LCEQVE(DEPS0,DEPS)
         CALL LCEQVN (50, VIND0, VIND)
       ENDIF
- 
+
       END

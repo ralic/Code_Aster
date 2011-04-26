@@ -1,13 +1,12 @@
         SUBROUTINE LCCNVX ( FAMI, KPG, KSP, LOI, IMAT, NMAT, MATERF,
-     &                SIGF, VIND,COMP, NBCOMM, CPMONO, PGL,NR,
+     &                SIGF, VIND, NBCOMM, CPMONO, PGL,
      &                NVI,VP,VECP,HSR,TOUTMS,TIMED,TIMEF,SEUIL)
         IMPLICIT  NONE
-C TOLE CRP_21
-C ======================================================================
+C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 12/07/2010   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 26/04/2011   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -22,6 +21,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
+C TOLE CRP_21
 C ----------------------------------------------------------------------
 C --- BUT : CONVEXE ELASTO PLASTIQUE A T+DT POUR (SIGF , VIND) DONNES --
 C ----------------------------------------------------------------------
@@ -39,17 +39,17 @@ C OUT : VECP   :  VECTEURS PROPRES DU DEVIATEUR ELASTIQUE (HOEK-BROWN) -
 C OUT : SEUIL  :  SEUIL  ELASTICITE  A T+DT ----------------------------
 C ----------------------------------------------------------------------
 C ======================================================================
-        INTEGER         NMAT , IMAT, NR, NVI, KPG, KSP, IRET
+        INTEGER         NMAT , IMAT, NVI, KPG, KSP
         CHARACTER*(*)   FAMI
         REAL*8          MATERF(NMAT,2), SEUIL,TIMED,TIMEF
         REAL*8          SIGF(6) , VIND(*),HSR(5,24,24)
         CHARACTER*16    LOI
         INTEGER         NBCOMM(NMAT,3)
         REAL*8          PGL(3,3),VP(3),VECP(3),TOUTMS(5,24,6)
-        CHARACTER*16    CPMONO(5*NMAT+1),COMP(*)
+        CHARACTER*16    CPMONO(5*NMAT+1)
 C ======================================================================
       IF ( LOI(1:8) .EQ. 'ROUSS_PR'  )THEN
-         CALL RSLCVX ( FAMI, KPG, KSP, IMAT, NMAT, MATERF, 
+         CALL RSLCVX ( FAMI, KPG, KSP, IMAT, NMAT, MATERF,
      &                 SIGF, VIND, SEUIL )
 C ======================================================================
       ELSEIF ( LOI(1:10) .EQ. 'ROUSS_VISC' ) THEN
@@ -67,8 +67,8 @@ C ======================================================================
          CALL HBRCVX ( SIGF, VIND, NMAT, MATERF, SEUIL, VP, VECP)
 C ======================================================================
       ELSEIF ( LOI(1:8)  .EQ. 'MONOCRIS') THEN
-         CALL LCMMVX ( FAMI, KPG, KSP,SIGF, VIND, NMAT, MATERF,
-     &  COMP,NBCOMM, CPMONO, PGL, NR, NVI,HSR, TOUTMS,TIMED,TIMEF,SEUIL)
+         CALL LCMMVX (SIGF, VIND, NMAT, MATERF, NBCOMM, CPMONO, PGL,
+     &                NVI,HSR, TOUTMS,TIMED,TIMEF,SEUIL)
 C ======================================================================
       ELSEIF ( LOI(1:7)  .EQ. 'IRRAD3M') THEN
          CALL IRRCVX ( FAMI, KPG, KSP, NMAT, MATERF, SIGF, VIND, SEUIL)

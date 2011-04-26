@@ -3,9 +3,9 @@
         IMPLICIT NONE
 C       ----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILIFOR  DATE 23/10/2007   AUTEUR SALMONA L.SALMONA 
+C MODIF UTILIFOR  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -57,7 +57,6 @@ C               EPSDM   DEFORMATION MECANIQUE A T
 C       ----------------------------------------------------------------
         INTEGER         KPG, KSP, NDT  , NDI , NMAT, K, IRET, IISNAN
         CHARACTER*(*)   FAMI
-        CHARACTER*2     CE
         REAL*8          TD,  TF , TR,R8VIDE,TEMPD,TEMPF,TREF
         REAL*8          EPSDT(6), DEPST(6)
         REAL*8          EPSDM(6), DEPSM(6),ALPHFN,ALPHFL,ALPHFT
@@ -90,7 +89,7 @@ C       ----------------------------------------------------------------
               ALPHAD = MATERD(3,1)
               ALPHAF = MATERF(3,1)
               DO 110 K = 1,NDI
-                DEPSM(K) = DEPST(K) - ( ALPHAF*(TF-TR) - 
+                DEPSM(K) = DEPST(K) - ( ALPHAF*(TF-TR) -
      &                                ALPHAD*(TD-TR))
                 EPSDM(K) = EPSDT(K) - ( ALPHAD*(TD-TR) )
  110          CONTINUE
@@ -110,11 +109,11 @@ C
               ALPHFT = MATERF(74,1)
               ALPHFN = MATERF(75,1)
 C
-              DEPSM(1) = DEPST(1) - ( ALPHFL*(TF-TR) - 
+              DEPSM(1) = DEPST(1) - ( ALPHFL*(TF-TR) -
      &                              ALPHDL*(TD-TR))
-              DEPSM(2) = DEPST(2) - ( ALPHFT*(TF-TR) - 
+              DEPSM(2) = DEPST(2) - ( ALPHFT*(TF-TR) -
      &                              ALPHDT*(TD-TR))
-              DEPSM(3) = DEPST(3) - ( ALPHFN*(TF-TR) - 
+              DEPSM(3) = DEPST(3) - ( ALPHFN*(TF-TR) -
      &                              ALPHDN*(TD-TR))
 
               EPSDM(1) = EPSDT(1) - ( ALPHDL*(TD-TR) )

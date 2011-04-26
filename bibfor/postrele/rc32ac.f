@@ -1,38 +1,38 @@
       SUBROUTINE RC32AC ( LPMPB, LSN, LSNET, LFATIG, LROCHT, MATER )
-      IMPLICIT   NONE        
+      IMPLICIT   NONE
       LOGICAL             LPMPB, LSN, LSNET, LFATIG, LROCHT
       CHARACTER*8         MATER
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 16/02/2009   AUTEUR GALENNE E.GALENNE 
+C MODIF POSTRELE  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C TOLE CRP_20
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C     ------------------------------------------------------------------
 C     OPERATEUR POST_RCCM, TRAITEMENT DE FATIGUE_B3200
 C     CALCUL DES AMPLITUDES DE CONTRAINTES
-C     CALCUL DU FACTEUR D'USAGE 
+C     CALCUL DU FACTEUR D'USAGE
 C
 C     Pour chaque extremite :
 C
 C     pour une situation P, on a 2 états stabilisés
 C     pour une situation Q, on a 2 états stabilisés
 C
-C     Soit 2 états stabilisés I et J appartenant respectivement aux 
+C     Soit 2 états stabilisés I et J appartenant respectivement aux
 C     situations P et Q :
 C
 C     on calcule le SALT(I,J) = 0,5*(EC/E)*Ke*Sn(P,Q)*Sp(I,J)
@@ -50,7 +50,7 @@ C
 C Etape 2 : on calcule le SALT pour les situations non combinables
 C
 C Etape 3 : traitement des situations de passage
-C           on calcule le SALT(I,J)  
+C           on calcule le SALT(I,J)
 C              - avec I appartenant au premier groupe
 C              - avec J appartenant au deuxieme groupe
 C              - on lui associe le nombre d'occurrences de la
@@ -74,12 +74,12 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32     JEXNUM
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
 C
-      INTEGER      IG, NBGR, NBSIGR, JNSG, IS1, IOC1, NOCC, NUMGR, 
+      INTEGER      IG, NBGR, NBSIGR, JNSG, IS1, IOC1, NOCC, NUMGR,
      +             JCOMBI, JPRESA, JPRESB, JNBOCC, IM, JNUMGR,
      +             NPASS, IFM, NIV, IOCS, JSEIGR, JRESU,
      +             JNSITU, NSITUP, NSITUQ, IRET, I1, JFACT, I, J,
      +             JREAS, JRESS, JRECA, JRECS, NDIM, NBP12, NBP23, NBP13
-      REAL*8       PPI, PPJ, SNMAX, SPMAX, SAMAX, UTOT, SALTIJ(2), 
+      REAL*8       PPI, PPJ, SNMAX, SPMAX, SAMAX, UTOT, SALTIJ(2),
      +             TYPEKE,UG,PMBMAX, FUIJ(2),
      +             MPI(12), MPJ(12), SM, SN, SNET, SP(2), SMM,
      +             MATPI(8), MATPJ(8), MSE(12),SPMECA(2),SPTHER(2),
@@ -177,7 +177,7 @@ C
          SIPMAX = 0.D0
 C
 C ----------------------------------------------------------------------
-C                           E T A P E   1   
+C                           E T A P E   1
 C ----------------------------------------------------------------------
 C
 C ------ ON TRAITE LES SITUATIONS COMBINABLES DANS LEUR GROUPE
@@ -232,10 +232,10 @@ C
             ELSE
                SEISME = .TRUE.
             ENDIF
-C  
+C
             CALL RC3201 ( LPMPB, LSN, LSNET, LFATIG, LROCHT, LIEU(IM),
      +                    NUMGR, IOCS, SEISME, NPASS, MATER, SNMAX,
-     +                    SNEMAX, SPMAX, KEMAX, SPMECM, SPTHEM, SAMAX,  
+     +                    SNEMAX, SPMAX, KEMAX, SPMECM, SPTHEM, SAMAX,
      +                    UTOT, SM, SIPMAX, ZR(JREAS), ZR(JRESS),
      +                    ZR(JRECA), ZR(JRECS), ZR(JFACT), PMMAX,
      +                    PBMAX, PMBMAX )
@@ -243,7 +243,7 @@ C
  100     CONTINUE
 C
 C ----------------------------------------------------------------------
-C                           E T A P E   2 
+C                           E T A P E   2
 C ----------------------------------------------------------------------
 C
          SEISME = .FALSE.
@@ -286,7 +286,7 @@ C
                  CALL JEECRA (JEXNUM(K24SS,IG),'LONMAX',10*NBSIGR,' ')
               ENDIF
               CALL JEVEUO ( JEXNUM(K24SS,IG), 'E', JRESS )
-C   
+C
               IF ( .NOT.CFAIT .AND. NIV.GE.2 ) THEN
                 CFAIT = .TRUE.
                 WRITE(IFM,*) ' '
@@ -315,7 +315,7 @@ C
                  PM = 0.D0
                  PB = 0.D0
                  PMPB = 0.D0
-                 CALL RC32PM ( LIEU(IM), SEISME, PPI, MPI, 
+                 CALL RC32PM ( LIEU(IM), SEISME, PPI, MPI,
      +                                            MSE, PM, PB, PMPB )
                  CALL RC32PM ( LIEU(IM), SEISME, PPJ, MPJ,
      +                                            MSE, PM, PB, PMPB )
@@ -334,7 +334,7 @@ C ----------- CALCUL DU SN
 C
               IF ( LSN ) THEN
                  SN = 0.D0
-                 CALL RC32SN ( 'SN_SITU', LIEU(IM), NSITUP, PPI, MPI, 
+                 CALL RC32SN ( 'SN_SITU', LIEU(IM), NSITUP, PPI, MPI,
      +                         NSITUQ, PPJ, MPJ, SEISME, MSE, SN )
                  SNMAX = MAX ( SNMAX , SN )
                  ZR(JRESS-1+10*(IS1-1)+4) = SN
@@ -347,7 +347,7 @@ C ----------- CALCUL DU SN*
 C
               IF ( LSN .AND. LSNET ) THEN
                  SNET = 0.D0
-                 CALL RC32SN ( 'SN*_SITU', LIEU(IM), NSITUP, PPI, MPI, 
+                 CALL RC32SN ( 'SN*_SITU', LIEU(IM), NSITUP, PPI, MPI,
      +                         NSITUQ, PPJ, MPJ, SEISME, MSE, SNET )
                  SNEMAX = MAX ( SNEMAX , SNET )
                  ZR(JRESS-1+10*(IS1-1)+5) = SNET
@@ -371,8 +371,8 @@ C
               SP(1) = 0.D0
               SP(2) = 0.D0
               TYPEKE=MATPI(8)
-              CALL RC32SP ( 'SP_SITU', LIEU(IM), NSITUP, PPI, MPI, 
-     +                      NSITUQ, PPJ, MPJ, SEISME, MSE, 
+              CALL RC32SP ( 'SP_SITU', LIEU(IM), NSITUP, PPI, MPI,
+     +                      NSITUQ, PPJ, MPJ, SEISME, MSE,
      +                      SP, TYPEKE, SPMECA, SPTHER )
               SPTHEM = MAX ( SPTHEM , SPTHER(1) )
               SPMAX = MAX ( SPMAX , SP(1) )
@@ -411,7 +411,7 @@ C
  200     CONTINUE
 C
 C ----------------------------------------------------------------------
-C                           E T A P E   3 
+C                           E T A P E   3
 C ----------------------------------------------------------------------
 C
 C ------ ON TRAITE LES SITUATIONS DE PASSAGE
@@ -459,10 +459,10 @@ C
             CALL JEVEUO (JEXNUM(K24FU,IG), 'E', JFACT )
 C
             NPASS = 7
-C  
+C
             CALL RC3201 ( LPMPB, LSN, LSNET, LFATIG, LROCHT, LIEU(IM),
      +                    NUMGR, IOCS, SEISME, NPASS, MATER, SNMAX,
-     +                    SNEMAX, SPMAX, KEMAX, SPMECM, SPTHEM, SAMAX,  
+     +                    SNEMAX, SPMAX, KEMAX, SPMECM, SPTHEM, SAMAX,
      +                    UTOT, SM, SIPMAX, ZR(JREAS), ZR(JRESS),
      +                    ZR(JRECA), ZR(JRECS), ZR(JFACT), PMMAX,
      +                    PBMAX, PMBMAX )
@@ -516,7 +516,6 @@ C
  3002 FORMAT ('=> LISTE DES NUMEROS DE SITUATION: ',100 (I4,1X))
  3004 FORMAT (/,'=> SITUATION DE PASSAGE')
  2000 FORMAT ('=> GROUPE: ',I4,' , SITUATION: ',I4)
- 2010 FORMAT ('=> PASSAGE DU GROUPE: ',I4,' AU GROUPE: ',I4)
  2020 FORMAT (1P,' SITUATION ',I4,' PM =',E12.5,
      +                            ' PB =',E12.5,' PMPB =',E12.5)
  2030 FORMAT (1P,' SITUATION ',I4,' SN =',E12.5 )

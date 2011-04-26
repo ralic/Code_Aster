@@ -1,21 +1,21 @@
-#@ MODIF miss_post Miss  DATE 29/03/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF miss_post Miss  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # RESPONSABLE COURTOIS M.COURTOIS
 
@@ -78,10 +78,7 @@ class POST_MISS(object):
     def argument(self):
         """Vérification des arguments d'entrée."""
         # fréquences du calcul Miss
-        nbfmiss = int((self.param['FREQ_MAX'] - self.param['FREQ_MIN']) / self.param['FREQ_PAS']) + 1
-        UTMESS('I', 'MISS0_13', valr=(self.param['FREQ_MIN'], self.param['FREQ_MAX'],
-                                      self.param['FREQ_PAS']),
-                                vali=nbfmiss)
+        info_freq(self.param)
         # interpolation des accéléros si présents (à supprimer sauf si TABLE)
         self.excit_kw = self.param['EXCIT_HARMO']
         if self.excit_kw is None:
@@ -305,7 +302,7 @@ class POST_MISS_TRAN(POST_MISS):
             excit.extend( self.excit_harmo )
         dyge = self.dyna_line_harm(MODELE=self.param['MODELE'],
                                    MATR_MASS=self.massgen,
-                                   MATR_RIGI=rigtot, 
+                                   MATR_RIGI=rigtot,
                                    FREQ=freq,
                                    AMOR_REDUIT=self.param['AMOR_REDUIT'],
                                    EXCIT=excit,
@@ -323,7 +320,7 @@ class POST_MISS_TRAN(POST_MISS):
 
 class POST_MISS_HARM(POST_MISS_TRAN):
     """Post-traitement de type 1, sortie harm_gene"""
-    
+
     def __init__(self, *args, **kwargs):
         """Initialisation."""
         super(POST_MISS_HARM, self).__init__(*args, **kwargs)
@@ -438,17 +435,17 @@ class POST_MISS_TAB(POST_MISS):
                 if not first:
                     opts = { 'RESULTAT' : self.dyge_x, 'reuse' : self.dyge_x }
                 self.dyge_x = self.iteration_dlh('DX', _rito, freq, opts)
-            
+
             if self.acce_y:
                 if not first:
                     opts = { 'RESULTAT' : self.dyge_y, 'reuse' : self.dyge_y }
                 self.dyge_y = self.iteration_dlh('DY', _rito, freq, opts)
-            
+
             if self.acce_z:
                 if not first:
                     opts = { 'RESULTAT' : self.dyge_z, 'reuse' : self.dyge_z }
                 self.dyge_z = self.iteration_dlh('DZ', _rito, freq, opts)
-            
+
             DETRUIRE(CONCEPT=_F(NOM=__impe,),)
             self._to_delete.append(_rito)
             first = False
@@ -464,7 +461,7 @@ class POST_MISS_TAB(POST_MISS):
                                 FREQ_EXTR=freq,)
         __dyge = DYNA_LINE_HARM(MODELE=self.param['MODELE'],
                                 MATR_MASS=self.massgen,
-                                MATR_RIGI=rigtot, 
+                                MATR_RIGI=rigtot,
                                 FREQ=freq,
                                 AMOR_REDUIT=self.param['AMOR_REDUIT'],
                                 EXCIT=_F(VECT_ASSE=__fosx,
@@ -579,10 +576,7 @@ class POST_MISS_FICHIER(POST_MISS):
     def argument(self):
         """Vérification des arguments d'entrée."""
         # fréquences du calcul Miss
-        nbfmiss = int((self.param['FREQ_MAX'] - self.param['FREQ_MIN']) / self.param['FREQ_PAS']) + 1
-        UTMESS('I', 'MISS0_13', valr=(self.param['FREQ_MIN'], self.param['FREQ_MAX'],
-                                      self.param['FREQ_PAS']),
-                                vali=nbfmiss)
+        info_freq(self.param)
 
 
     def execute(self):
@@ -607,3 +601,13 @@ def PostMissFactory(type_post, *args, **kwargs):
     else:
         raise NotImplementedError, type_post
 
+
+def info_freq(param):
+    """Emet un message sur les fréquences utilisées"""
+    if param['FREQ_MAX']:
+        nbfmiss = int((param['FREQ_MAX'] - param['FREQ_MIN']) / param['FREQ_PAS']) + 1
+        UTMESS('I', 'MISS0_13', valr=(param['FREQ_MIN'], param['FREQ_MAX'],
+                                      param['FREQ_PAS']),
+                                vali=nbfmiss)
+    else:
+        UTMESS('I', 'MISS0_14', valk=repr(param['LIST_FREQ']), vali=len(param['LIST_FREQ']))

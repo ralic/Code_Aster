@@ -10,7 +10,7 @@
       LOGICAL           MUAPDE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 21/03/2011   AUTEUR MACOCCO K.MACOCCO 
+C MODIF ALGORITH  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C TOLE CRS_1404
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -61,7 +61,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32                            ZK32
       CHARACTER*80                                    ZK80
       COMMON  /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
-      CHARACTER*32 JEXNUM,JEXNOM,JEXR8,JEXATR
+      CHARACTER*32 JEXNUM,JEXNOM
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER       IBID, IDI, IER, IGR, IN, INO, INORF, IOC, IORDR,
      &              IRE1, IRE2, IRET, IS, JDGN, JGRN, JNOE, JVALE,
@@ -86,7 +86,7 @@ C
       INORF =0
 C
       MOTFAC ='DEPL_MULT_APPUI'
-      CALL GETVTX('DEPL_MULT_APPUI','NOM_CAS',1,1,0,K8B,NS)      
+      CALL GETVTX('DEPL_MULT_APPUI','NOM_CAS',1,1,0,K8B,NS)
       IF (NS.NE.0) THEN
         CALL  GETFAC(MOTFAC,NCAS)
         DO 2 IOC = 1,NCAS
@@ -127,9 +127,9 @@ C
                ENDIF
  22         CONTINUE
             CALL JEDETR('&&ASEFEN.NOEUD')
-            
+
           ELSE
-          
+
             CALL GETVTX(MOTFAC,'GROUP_NO',IOC,1,0,K8B,NG)
             NGR = -NG
             CALL WKVECT('&&ASEFEN.GROUP_NO','V V K8',NGR,JGRN)
@@ -137,7 +137,7 @@ C
             CALL GETVR8(MOTFAC,'DX',IOC,1,1,DX,NX)
             CALL GETVR8(MOTFAC,'DY',IOC,1,1,DY,NY)
             CALL GETVR8(MOTFAC,'DZ',IOC,1,1,DZ,NZ)
-            
+
             DO 26 IGR = 1, NGR
               GRNOEU = ZK8(JGRN+IGR-1)
               CALL JEEXIN(JEXNOM(OBJ1,GRNOEU),IRET)
@@ -170,9 +170,9 @@ C
  28              CONTINUE
                ENDIF
  26         CONTINUE
- 
+
             CALL JEDETR('&&ASEFEN.GROUP_NO')
-          
+
           ENDIF
 
           IF (INORF.NE.0) THEN
@@ -233,7 +233,7 @@ C
           ELSE
             CALL JEVEUO(CHEXTR//'.CELV','L',JVALE)
           END IF
-        
+
           IF ( MUAPDE ) THEN
             IOC = NBDIS(IS)
             DO 112 IN = 1,NEQ

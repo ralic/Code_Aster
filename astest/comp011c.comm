@@ -1,0 +1,363 @@
+# MODIF  DATE 26/04/2011   AUTEUR PROIX J-M.PROIX 
+#====================================================================== 
+#
+# TITRE : VALIDATION DE LA TEMPERATURE  RELATION = 'BETON_UMLV_FP' 
+# comp011c.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test S
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+#
+# CAS-TEST DE REFERENCE : SSNV163A
+#
+#===================================================================== 
+
+DEBUT(CODE=_F(NOM='COMP011C',NIV_PUB_WEB='INTERNET'),PAR_LOT='NON')
+
+MA=LIRE_MAILLAGE();
+
+import numpy as N             
+
+epsi=1.E-10
+
+TREF = 0.
+
+T0 = TREF
+Tmax = 500.
+
+tmax =1.
+
+NCAL = 20
+
+ZERO =DEFI_CONSTANTE(VALE=0.);
+
+UN =DEFI_CONSTANTE(VALE=1.0);
+
+compor='BETON_UMLV_FP'
+
+Nbvari=21
+
+#compor='ELAS'
+
+#Nbvari=0
+
+YOUN=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(  0., 11000.,
+                                         500., 31000.,                                   
+                                           ),);
+                                           
+ALPH=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(  0., 1.0e-04,
+                                         500., 2.0e-04,
+                                           ),);
+                                           
+FONC1=DEFI_FONCTION( NOM_PARA='SECH',
+                     PROL_DROITE='LINEAIRE',
+                     PROL_GAUCHE='LINEAIRE',
+                     VALE=(0.0, 0.0, 1.0, 1.0,)
+                   )
+
+MATER=DEFI_MATERIAU(ELAS_FO=_F(E=YOUN,
+                               NU=ZERO,
+                               TEMP_DEF_ALPHA=TREF,
+                               ALPHA=ALPH,
+                               FONC_DESORP = FONC1),
+                     BETON_UMLV_FP =_F( K_RS   = 2.0E+5,
+                                        ETA_RS = 4.0E+10,
+                                        K_IS   = 5.0E+4,
+                                        ETA_IS = 1.0E+11,
+                                        K_RD   = 5.0E+4,
+                                        ETA_RD = 1.0E+10,
+                                        ETA_ID = 1.0e+11,
+                                      ),
+                 );
+
+MOMECA=AFFE_MODELE(MAILLAGE=MA,
+                   AFFE=_F(TOUT='OUI',
+                           PHENOMENE='MECANIQUE',
+                           MODELISATION='D_PLAN',),);
+
+
+L_INST=DEFI_LIST_REEL(DEBUT=0.0,
+                      INTERVALLE=(_F(JUSQU_A=1,
+                                     NOMBRE=NCAL,),
+                                     ),);
+
+TIMP=DEFI_FONCTION(
+                      NOM_PARA='INST',  NOM_RESU='TEMP',
+                       VALE=(  0. , TREF, 1. , 500.)
+                        )
+
+
+CHP_TEMP=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_F',
+                    OPERATION='AFFE',
+                    MAILLAGE=MA,
+                    AFFE=_F(TOUT='OUI',
+                            NOM_CMP='TEMP',
+                            VALE_F=TIMP,),);
+
+RTEMP=CREA_RESU(OPERATION='AFFE',
+                TYPE_RESU='EVOL_THER',
+                NOM_CHAM='TEMP',
+                AFFE=_F(CHAM_GD=CHP_TEMP,
+                        LIST_INST=L_INST,),);
+
+
+
+SECH=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R', MAILLAGE=MA,
+                        AFFE=_F( TOUT = 'OUI',
+                              NOM_CMP = 'TEMP',
+                              VALE = 0.))
+
+CHMTH=AFFE_MATERIAU(MAILLAGE=MA,
+                      AFFE=_F(TOUT='OUI',
+                              MATER=MATER,),
+                   AFFE_VARC=(_F(TOUT     = 'OUI',
+                                 CHAMP_GD = SECH,
+                                 NOM_VARC = 'SECH',
+                                 VALE_REF =  0.),
+                              _F(NOM_VARC = 'TEMP',
+                                 VALE_REF =  TREF,
+                                 TOUT     = 'OUI',
+                                 EVOL     =  RTEMP,
+                                 NOM_CHAM = 'TEMP',)),);
+
+
+LIAISON1=AFFE_CHAR_MECA(MODELE=MOMECA,
+                       DDL_IMPO=(
+                                  _F(NOEUD=('N1','N2','N3','N4'),
+                                     DX=0.0),
+                                  _F(NOEUD=('N1','N2',),
+                                     DY=0.0,),
+                                    ),);
+
+LIAISON=AFFE_CHAR_MECA(MODELE=MOMECA,
+                       DDL_IMPO=(
+                                  _F(NOEUD=('N1','N2','N3','N4'),
+                                     DX=0.0),
+                                  _F(NOEUD=('N1','N2','N3','N4'),
+                                     DY=0.0,),
+                                    ),);
+                                    
+U=STAT_NON_LINE(MODELE=MOMECA,
+                CHAM_MATER=CHMTH,
+                EXCIT=(_F(CHARGE=LIAISON1,),
+                    ),          
+                COMP_INCR=_F(RELATION  = compor,
+                             ITER_INTE_MAXI = 1000),
+                INCREMENT=_F(LIST_INST=L_INST,),
+                NEWTON=_F(REAC_INCR=1,
+                          REAC_ITER=1,),
+                          );
+
+
+U=CALC_ELEM(reuse =U,
+               RESULTAT=U,
+               OPTION=('SIEQ_ELNO','VARI_ELNO'
+                       ),);
+
+#IMPR_RESU(RESU=_F(RESULTAT=U,NOM_CHAM='SIEQ_ELNO',MAILLE='M1',NOEUD='N1',NOM_CMP=('VMIS','TRSIG')))
+
+Vmis=POST_RELEVE_T(ACTION=_F(INTITULE='VMIS_N1',
+                                NOEUD='N1',
+                                MAILLE = 'M1',
+                                RESULTAT=U,
+                                NOM_CHAM='SIEQ_ELNO',
+                                TOUT_CMP='OUI',
+                                OPERATION='EXTRACTION',),);
+
+IMPR_TABLE(TABLE=Vmis)
+
+
+
+MATER     = [None]*NCAL
+CHMTH     = [None]*NCAL
+CHRGE     = [None]*NCAL
+RESU      = [None]*NCAL
+SVMIS     = [None]*NCAL
+STRAC     = [None]*NCAL
+VARN3     = [None]*NCAL
+
+time = 0.
+
+
+for i in range(NCAL):
+          
+          timem = time 
+          
+          time = timem + tmax/NCAL
+            
+          Ti = T0 + time/tmax * (Tmax - T0)
+          
+          Tm = T0 + timem/tmax * (Tmax - T0)
+          
+          # deformation mecanique imposee correspondant a la deformation thermique du premier calcul
+          
+          epsimp =DEFI_CONSTANTE(VALE=-ALPH(Ti)*(Ti - TREF));
+
+          print 'i=',i, ' instant=', time, ' Temperature=',Ti
+          
+          # variation des coef du comportement avec la temperature
+          # correction eventuelle des valeurs initiales du temps ti
+           
+          Ei=DEFI_CONSTANTE(VALE=YOUN(Ti))
+
+          MATER[i]=DEFI_MATERIAU(#ELAS=_F(E=YOUN(Ti),
+                                 #        NU=0.,
+                                 #        ALPHA=0.,
+                                 #        # FONC_DESORP = FONC1(Ti)
+                                  #      ),
+                     ELAS_FO=_F(E=Ei,
+                                NU=ZERO,
+                                TEMP_DEF_ALPHA=0.,
+                                ALPHA=ZERO,
+                                FONC_DESORP = FONC1),
+                     BETON_UMLV_FP =_F( K_RS   = 2.0E+5,
+                                        ETA_RS = 4.0E+10,
+                                        K_IS   = 5.0E+4,
+                                        ETA_IS = 1.0E+11,
+                                        K_RD   = 5.0E+4,
+                                        ETA_RD = 1.0E+10,
+                                        ETA_ID = 1.0e+11,
+                                      ),
+                 );
+
+
+          list = DEFI_LIST_REEL(DEBUT=timem,
+                      INTERVALLE=(_F(JUSQU_A=time,NOMBRE=1,),),);
+          
+          CHMTH[i]=AFFE_MATERIAU(MAILLAGE=MA,
+                      AFFE=_F(TOUT='OUI',
+                              MATER=MATER[i],),
+                   AFFE_VARC=(_F(TOUT     = 'OUI',
+                                 CHAMP_GD =  SECH,
+                                 NOM_VARC = 'SECH',
+                                 VALE_REF =  0.),
+                              _F(NOM_VARC = 'TEMP',
+                                 VALE_REF =  TREF,
+                                 TOUT     = 'OUI',
+                                 EVOL     =  RTEMP,
+                                 NOM_CHAM = 'TEMP',)),);
+
+          LIAISON2=AFFE_CHAR_MECA(MODELE=MOMECA,
+                       DDL_IMPO=(
+                                  _F(NOEUD=('N1','N4'),
+                                     DX=0.0),
+                                  _F(NOEUD=('N1','N2'),
+                                     DY=0.0,),
+                                    ),);
+                                    
+          CHRGE[i]=AFFE_CHAR_MECA_F(MODELE=MOMECA,
+                       DDL_IMPO=(_F(NOEUD=('N2','N3'),
+                                    DX=epsimp,),),);
+                                    
+         
+          if i == 0 :
+ 
+              RESU[i]=STAT_NON_LINE(MODELE=MOMECA,
+                                 CHAM_MATER=CHMTH[i],
+                                 EXCIT=(_F(CHARGE=CHRGE[i]),
+                                        _F(CHARGE=LIAISON2),),
+                                 COMP_INCR=_F(RELATION     = compor,),
+                                 INCREMENT=_F(LIST_INST=list,),
+                                 NEWTON=_F(REAC_INCR=1,
+                                 REAC_ITER=1,),
+                                 );
+          else :
+
+              NOR = FORMULE(NOM_PARA='SIXX',VALE='YOUN(Ti)/YOUN(Tm)*SIXX')
+
+              SIG1=CREA_CHAMP(OPERATION='AFFE', TYPE_CHAM='ELGA_NEUT_F',
+                              MODELE=MOMECA,  PROL_ZERO='OUI',   INFO=1,
+                              AFFE=_F( TOUT = 'OUI', NOM_CMP = ('X1'),
+                                          VALE_F  = (NOR)))
+
+              SIG2=CREA_CHAMP(OPERATION='EVAL', TYPE_CHAM='ELGA_NEUT_R', INFO=1,
+                              CHAM_F=SIG1,  CHAM_PARA=SM   )
+
+              SM1  =CREA_CHAMP(OPERATION='ASSE', TYPE_CHAM='ELGA_SIEF_R',
+                                MODELE=MOMECA,  PROL_ZERO='OUI',
+                                ASSE=_F( TOUT = 'OUI',   CHAM_GD = SIG2,
+                                NOM_CMP = ('X1',  ),
+                                NOM_CMP_RESU = ('SIXX')))
+
+          # recuperation des valeurs initiales du futur pas de temps dans la table resultat
+
+              RESU[i]=STAT_NON_LINE(MODELE=MOMECA,
+                             CHAM_MATER=CHMTH[i],
+                             EXCIT=(_F(CHARGE=CHRGE[i]),_F(CHARGE=LIAISON2),),
+                             ETAT_INIT = _F(DEPL=EM, SIGM= SM1, VARI = VM),
+                             COMP_INCR=_F(RELATION     = compor,),
+                             INCREMENT=_F(LIST_INST=list,),
+                             NEWTON=_F(REAC_INCR=1,
+                             REAC_ITER=1,),
+                            );
+  
+              DETRUIRE ( CONCEPT =  _F (NOM =EM),);
+              DETRUIRE ( CONCEPT =  _F (NOM =SM),);
+              DETRUIRE ( CONCEPT =  _F (NOM =VM),);
+              DETRUIRE ( CONCEPT =  _F (NOM =NOR),);              
+              DETRUIRE ( CONCEPT =  _F (NOM =SIG1),);
+              DETRUIRE ( CONCEPT =  _F (NOM =SIG2),);
+              DETRUIRE ( CONCEPT =  _F (NOM =SM1),);
+
+          RESU[i]=CALC_ELEM(reuse =RESU[i],
+                            RESULTAT=RESU[i],
+                            OPTION=('SIEF_ELNO','SIEQ_ELNO'
+                            ),);
+
+          #IMPR_RESU(RESU=_F(RESULTAT=RESU[i],NOM_CHAM='SIEQ_ELNO',MAILLE='M1',NOEUD='N1',NOM_CMP=('VMIS','TRSIG')))
+
+
+          EM  = CREA_CHAMP(  TYPE_CHAM = 'NOEU_DEPL_R',
+                               OPERATION = 'EXTR',
+                               RESULTAT  = RESU[i],
+                               NOM_CHAM  = 'DEPL',
+                               NUME_ORDRE = 1)
+
+          SM  = CREA_CHAMP(  TYPE_CHAM = 'ELGA_SIEF_R',
+                               OPERATION = 'EXTR',
+                               RESULTAT  = RESU[i],
+                               NOM_CHAM  = 'SIEF_ELGA',
+                               NUME_ORDRE = 1)
+ 
+          VM = CREA_CHAMP(TYPE_CHAM='ELGA_VARI_R',
+                           OPERATION='EXTR',
+                           RESULTAT=RESU[i],
+                           NOM_CHAM='VARI_ELGA',
+                           NUME_ORDRE=1,  );                                                                   
+          
+          DETRUIRE ( CONCEPT =  _F (NOM =epsimp),);
+          DETRUIRE ( CONCEPT =  _F (NOM =Ei),);
+          DETRUIRE ( CONCEPT =  _F (NOM =list),);
+          DETRUIRE ( CONCEPT =  _F (NOM =CHRGE[i]),);
+          DETRUIRE ( CONCEPT =  _F (NOM =LIAISON2),);
+
+          SVMIS[i]=POST_RELEVE_T(ACTION=_F(INTITULE='VMIS_N1',
+                                NOEUD='N1',
+                                MAILLE = 'M1',
+                                RESULTAT=RESU[i],
+                                NOM_CHAM='SIEQ_ELNO',
+                          #      NOM_CMP='VMIS',
+                                NOM_CMP='PRIN_1',
+                                OPERATION='EXTRACTION',),);
+          IMPR_TABLE(TABLE=SVMIS[i])
+
+          TEST_TABLE(TABLE=SVMIS[i],
+                     NOM_PARA='PRIN_1',VALE=Vmis['PRIN_1',i+2],
+                     FILTRE=_F(NOM_PARA='INST',VALE=time),
+                     REFERENCE='AUTRE_ASTER',);
+          
+          
+FIN();

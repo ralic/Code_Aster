@@ -10,9 +10,9 @@ C
 C
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 03/04/2007   AUTEUR VIVAN L.VIVAN 
+C MODIF POSTRELE  DATE 26/04/2011   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -27,7 +27,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C TOLE CRP_21
+C
 C     ------------------------------------------------------------------
 C     CALCUL DU VALE D' UN SS_CHAM_ELEM SUR 1 MAILLE DE NBPT
 C     A NBCO COUCHE, NBSP SOUS-POINT POUR NBCP
@@ -55,8 +55,8 @@ C     ------------------------------------------------------------------
 C     NBPT > 1 => LES POINT SONT SUR  UNE MEME FACE OU ARETE DE MA(1)
 C                 MA(I), I>1,ONT EN COMMUN CETTE FACE OU ARETE
 C     ------------------------------------------------------------------
-      INTEGER M,F,IPT,ICO,I,J,K,NDGLO1(4),NDGLO2(4),NDLOC(4),NLOC
-      INTEGER NCOM,NSPM,NBNM,DEC1,DEC2,DEC3,NBNF
+      INTEGER M,F,IPT,ICO,I,J,K,NDGLO1(4),NDLOC(4),NLOC
+      INTEGER NSPM,NBNM,DEC1,DEC2,DEC3,NBNF
       REAL*8  C1,C2,C3,C4,C5,R,S,UNSUR4,R8VIDE
 C
 C======================================================================

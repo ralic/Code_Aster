@@ -1,13 +1,13 @@
         SUBROUTINE LIRLIG ( IFL, CNL, LIG, ILEC )
-        IMPLICIT   NONE        
+        IMPLICIT   NONE
         INTEGER             IFL,           ILEC
         CHARACTER*14                  CNL
         CHARACTER*80                       LIG
 C       ----------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 19/06/2007   AUTEUR VIVAN L.VIVAN 
+C MODIF MODELISA  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -70,7 +70,6 @@ C
         ENDIF
 C
  1      FORMAT(A80)
- 2      FORMAT(' <',I6,' >   ',A80)
 C
  9999   CONTINUE
         END

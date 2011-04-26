@@ -10,9 +10,9 @@
       CHARACTER*(*)                      KCHA
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 07/12/2010   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -56,21 +56,16 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32                               ZK32
       CHARACTER*80                                        ZK80
       COMMON  /KVARJE/ ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
-      CHARACTER*32     JEXNUM, JEXNOM, JEXATR
 C     ------------------------------------------------------------------
-      INTEGER     NBORDR, IRET, NP, NC, JORDR
+      INTEGER      IRET
       INTEGER     IEXCIT, IERD,I, IBID, ICHA, IE, IKF, IN
       INTEGER     JFCHA, JINFC, JLCHA, N, N1, N2, N3, N5
-      REAL*8      PREC
       CHARACTER*6 NOMPRO
       PARAMETER (NOMPRO='MEDOM1')
       CHARACTER*8  K8B, NOMO, MATERI
-      CHARACTER*8  CRIT, BLAN8
+      CHARACTER*8   BLAN8
       CHARACTER*16 CONCEP, NOMCMD, PHENOM
-      CHARACTER*19 CH19 , CCARTE, CHAREP, CHPESA
-      CHARACTER*19 EXCIT, KNUM, KFON
-      CHARACTER*24 CH24 , CHCHAR
-      CHARACTER*8 K8BID
+      CHARACTER*19 EXCIT, KFON
 C
       CALL JEMARQ()
 C              12345678

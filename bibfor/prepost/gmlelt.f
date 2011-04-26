@@ -5,9 +5,9 @@
      &        VERSIO
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 22/07/2009   AUTEUR SELLENET N.SELLENET 
+C MODIF PREPOST  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -39,7 +39,7 @@ C                                    POUR UN TYPE DE MAILLE DONNEE
 C    NUCONN         IN    I         PASSAGE DE LA NUMEROTATION DES NDS
 C                                     D'UNE MAILLE : ASTER -> GMSH
 C    VERSIO         IN    I         VERSION DU FICHIER GMSH
-C	   
+C
 C ......................................................................
 C
 C --------- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------
@@ -58,7 +58,7 @@ C
       CHARACTER*32                                    ZK32
       CHARACTER*80                                              ZK80
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
-      CHARACTER*32 JEXNOM, JEXNUM
+      CHARACTER*32  JEXNUM
 C
 C --------- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------
 C
@@ -134,7 +134,7 @@ C --- DES VECTEURS DE TRAVAIL :
 C     -----------------------
       K      = 0
       IJ     = 0
-      
+
 C --- ICURGR : NUMERO DU GROUPE GMSH
 C     NBGROU : NBRE DE GROUPES TROUVES
 C     INDGRO : INDICE DU GROUPE
@@ -197,7 +197,7 @@ C      INDICATION DES NOEUDS QUI NE SONT PAS ORPHELINS
           ENDIF
         ENDIF
         ZI(JNBMAG+INDGRO-1) = ZI(JNBMAG+INDGRO-1) + 1
-      
+
         IJ = IJ + ZI(JNBNMA+IMA-1)
         ZI(JNBTYM+ZI(JTYPMA+IMA-1)-1) = ZI(JNBTYM+ZI(JTYPMA+IMA-1)-1)+1
   10  CONTINUE

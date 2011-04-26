@@ -7,9 +7,9 @@ C
       CHARACTER*8   MOD
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 27/10/2009   AUTEUR FERNANDES R.FERNANDES 
+C MODIF ALGELINE  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -58,7 +58,7 @@ C ======================================================================
       INTEGER       JPARA, JDERIV, NDT, NDI
       REAL*8        EPSSIG, SIGC, GAMCJS, PREF, SN(6), SNII, INVN, H0
       REAL*8        MUN, HLODE, GAMPN, RCOS3T, COS3T, RN, GN, GDEV
-      REAL*8        UCRITP, DUDS(6), DUDG, DFDS(6), DFDG, TRACE
+      REAL*8         DUDS(6), DUDG, DFDS(6), DFDG, TRACE
       REAL*8        Q(6), HOOK(6,6),DDOT
       CHARACTER*16  PARECR, DERIVE
 C ======================================================================

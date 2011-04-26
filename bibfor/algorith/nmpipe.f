@@ -4,7 +4,7 @@
      &                  PILCVG,TYPPIL,CARELE)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 01/02/2011   AUTEUR MASSIN P.MASSIN 
+C MODIF ALGORITH  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -49,7 +49,7 @@ C IN  CARTYP : CARTE CONTENANT LE TYPE DE PILOTAGE
 C IN  MATE   : MATERIAU
 C IN  CARELE : CARACTERISTIQUES DES ELEMENTS DE STRUCTURE
 C IN  COMPOR : COMPORTEMENT
-C IN  RESOCO : SD DE TRAITEMENT NUMERIQUE DU CONTACT 
+C IN  RESOCO : SD DE TRAITEMENT NUMERIQUE DU CONTACT
 C IN  DEPDEL : INCREMENT DE DEPLACEMENT
 C IN  DDEPL0 : VARIATION DE DEPLACEMENT K-1.F0
 C IN  DDEPL1 : VARIATION DE DEPLACEMENT K-1.F1
@@ -98,11 +98,10 @@ C
       CHARACTER*16 OPTION
       INTEGER      IFMDBG,NIVDBG
       LOGICAL      DEBUG
-      CHARACTER*19 XDONCO,XINDCO,LNNO,LTNO,PINTER,AINTER,CFACE 
-      CHARACTER*19 FACLON,BASECO,XCOHES,DEPPLU 
+      CHARACTER*19 XDONCO,XINDCO,LNNO,LTNO,PINTER,AINTER,CFACE
+      CHARACTER*19 FACLON,BASECO,XCOHES,DEPPLU
       LOGICAL      LCONTX
       INTEGER      IER
-      INTEGER      NUMPG1,NUMPG2,NUMMA1,NUMMA2
 C
       DATA COPILO, COPILS  /'&&NMPIPE.COPILO','&&NMPIPE.COPILS'/
       DATA CTAU            /'&&NMPIPE.CTAU'/
@@ -112,11 +111,11 @@ C ----------------------------------------------------------------------
 C
       CALL JEMARQ()
       CALL INFDBG('PRE_CALCUL',IFMDBG,NIVDBG)
-      
+
 C    --------------------------------------------------------
 C    MODELE X-FEM
 C    --------------------------------------------------------
-      CALL JEEXIN(MODELE(1:8)//'.XFEM_CONT',IER) 
+      CALL JEEXIN(MODELE(1:8)//'.XFEM_CONT',IER)
       IF (IER.EQ.0) THEN
         LCONTX = .FALSE.
       ELSE
@@ -124,13 +123,13 @@ C    --------------------------------------------------------
       ENDIF
 C
 C --- INITIALISATIONS
-C  
+C
       IF (TYPPIL.EQ.'PRED_ELAS') THEN
-        IF (LCONTX)  THEN 
+        IF (LCONTX)  THEN
           OPTION = 'PILO_PRED_XLAS'
         ELSE
           OPTION = 'PILO_PRED_ELAS'
-        ENDIF  
+        ENDIF
       ELSEIF (TYPPIL.EQ.'DEFORMATION') THEN
         OPTION = 'PILO_PRED_DEFO'
       ELSE
@@ -155,8 +154,8 @@ C
       CFACE  = MODELE(1:8)//'.TOPOFAC.CF'
       FACLON = MODELE(1:8)//'.TOPOFAC.LO'
       BASECO = MODELE(1:8)//'.TOPOFAC.BA'
-C         
-C      
+C
+C
 C
 C --- INITIALISATION DES CHAMPS POUR CALCUL
 C
@@ -170,9 +169,9 @@ C
       CALL NMCHEX(VALINC,'VALINC','VARMOI',VARMOI)
       CALL NMCHEX(VALINC,'VALINC','COMMOI',COMMOI)
       CALL NMCHEX(VALINC,'VALINC','DEPPLU',DEPPLU)
-C     
+C
       CALL SDMPIC('CHAM_ELEM',SIGMOI)
-      CALL SDMPIC('CHAM_ELEM',VARMOI)     
+      CALL SDMPIC('CHAM_ELEM',VARMOI)
 C
 C --- CHAMP DE GEOMETRIE
 C
@@ -221,18 +220,18 @@ C
       LCHIN(16) = LNNO
       LPAIN(17) = 'PLST'
       LCHIN(17) = LTNO
-      LPAIN(18) = 'PPINTER'                         
-      LCHIN(18) = PINTER                            
-      LPAIN(19) = 'PAINTER'                         
-      LCHIN(19) = AINTER                            
-      LPAIN(20) = 'PCFACE'                          
-      LCHIN(20) = CFACE                             
-      LPAIN(21) = 'PLONCHA'                         
-      LCHIN(21) = FACLON                            
-      LPAIN(22) = 'PBASECO'                         
-      LCHIN(22) = BASECO                            
-      LPAIN(23) = 'PCOHES'                          
-      LCHIN(23) = XCOHES(1:19)                      
+      LPAIN(18) = 'PPINTER'
+      LCHIN(18) = PINTER
+      LPAIN(19) = 'PAINTER'
+      LCHIN(19) = AINTER
+      LPAIN(20) = 'PCFACE'
+      LCHIN(20) = CFACE
+      LPAIN(21) = 'PLONCHA'
+      LCHIN(21) = FACLON
+      LPAIN(22) = 'PBASECO'
+      LCHIN(22) = BASECO
+      LPAIN(23) = 'PCOHES'
+      LCHIN(23) = XCOHES(1:19)
 C
 C --- REMPLISSAGE DU CHAMP DE SORTIE
 C
@@ -287,18 +286,18 @@ C
           CALL CESEXI('C',JCESD,JCESL,MA,PT,1,5,JA4)
 
 
-                  
+
           IF (LCONTX)  THEN
 C - XFEM : SI PAS DE SOL AU PT DE GAUSS, ON N AJOUTE PAS DE DROITE
              RESULT = ABS(ZR(JCESV-1+JA0))+ABS(ZR(JCESV-1+JA1))+
      &             ABS(ZR(JCESV-1+JA2))+ABS(ZR(JCESV-1+JA3))
-             IF (RESULT.EQ.0) THEN 
+             IF (RESULT.EQ.0) THEN
                GOTO 200
              ENDIF
           ENDIF
 C
 C ---     LECTURE DU CODE RETOUR
-C         
+C
           IF (JA4.NE.0) THEN
             IF (ZR(JCESV-1 + JA4).NE.R8VIDE()) THEN
 C ---         A T ON REMPLI CODE-RETOUR ? OUI -> PAS DE SOLUTION
@@ -311,7 +310,7 @@ C ---     COEFFICIENTS DE LA OU DES DROITES
 C
           IF (JA0.NE.0) THEN
             ZR(JA0A1 + ICMP    ) = ZR(JCESV-1 + JA0)
-            ZR(JA0A1 + ICMP + 1) = ZR(JCESV-1 + JA1)           
+            ZR(JA0A1 + ICMP + 1) = ZR(JCESV-1 + JA1)
             ICMP = ICMP+2
             IF (ZR(JCESV-1 + JA2).NE.R8VIDE()) THEN
               ZR(JA0A1 + ICMP )    = ZR(JCESV-1 + JA2)
@@ -321,18 +320,18 @@ C
           END IF
  200    CONTINUE
  100  CONTINUE
-C 
+C
       NPG = ICMP / 2
 C
 C --- RESOLUTION DE L'EQUATION DE PILOTAGE P(U(ETA)) = TAU
 C
       CALL PIPERE(NPG,ZR(JA0A1),TAU,NBEFFE,ETA)
-      
+
       IF (NBEFFE .EQ. 0) THEN
         PILCVG = 1
       END IF
 C
- 9999 CONTINUE      
+ 9999 CONTINUE
 C
       CALL JEDEMA()
       END

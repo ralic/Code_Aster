@@ -1,22 +1,22 @@
       SUBROUTINE UTPAGL ( NN , NC , P , SG , SL )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILIFOR  DATE 23/10/2008   AUTEUR TORKHANI M.TORKHANI 
+C MODIF UTILIFOR  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 
       IMPLICIT NONE
@@ -33,8 +33,6 @@ CIN   R   SL   NN*NC COMPOSANTES DE LA TRIANGULAIRE SL DANS LOCAL
 COUT  R   SG   NN*NC COMPOSANTES DE LA TRIANGULAIRE SG DANS GLOBAL
 C     ------------------------------------------------------------------
       REAL*8   R(9) , ZERO
-      REAL*8   ML14(14,14), MR14(14,14), MTR14(14,14), MV14(14,14)
-      REAL*8   ML16(16,16), MR16(16,16), MTR16(16,16), MV16(16,16)
       INTEGER  IN(3),I,J,M,N,NB,K,L
       DATA     ZERO / 0.D0 /
 C
@@ -62,7 +60,7 @@ C MATRICE SL ANTISYMETRIQUE
                  DO 130 N = 1 , M
                    SL(IN(M)+N) = ZERO
                    DO 140 L = 1 , 3
-                     SL(IN(M)+N) = SL(IN(M)+N) + 
+                     SL(IN(M)+N) = SL(IN(M)+N) +
      +                              P(L,M) * ( R(3*(L-1)+1)*P(1,N) +
      +                                         R(3*(L-1)+2)*P(2,N) +
      +                                         R(3*(L-1)+3)*P(3,N) )
@@ -75,7 +73,7 @@ C              --------- BLOC EXTRA - DIAGONAL
                  DO 160 N = 1 , 3
                    SL(IN(M)+N) = ZERO
                    DO 170 L = 1 , 3
-                     SL(IN(M)+N) = SL(IN(M)+N) + 
+                     SL(IN(M)+N) = SL(IN(M)+N) +
      +                              P(L,M) * ( SG(IN(L)+1)*P(1,N) +
      +                                         SG(IN(L)+2)*P(2,N) +
      +                                         SG(IN(L)+3)*P(3,N) )

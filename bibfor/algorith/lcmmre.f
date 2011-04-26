@@ -3,9 +3,9 @@
      1       ITMAX, TOLER, TIMED, TIMEF,YD ,YF,DEPS, DY, R, IRET)
         IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 12/07/2010   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -59,20 +59,20 @@ C     OUT R      :  RESIDU DU SYSTEME NL A T + DT
 C         IRET   :  CODE RETOUR
 C     ----------------------------------------------------------------
       INTEGER         NDT , NDI , NMAT, NR, NVI, NSFV, IRET
-      INTEGER ITENS,NBFSYS,I,NUVI,IFA,NBSYS,IS,IV,IR,ITMAX,IEXP
+      INTEGER ITENS,NBFSYS,I,NUVI,IFA,NBSYS,IS,ITMAX,IEXP
 C
       REAL*8          DKOOH(6,6), FKOOH(6,6),TIMED, TIMEF
-      REAL*8          SIGF(6)   , SIGD(6), DAL
+      REAL*8          SIGF(6)   , SIGD(6)
       REAL*8          DEPS(6)   ,     DEPSE(6), DEVI(6),DT
       REAL*8          EPSED(6) , EPSEF(6), H1SIGF(6),VIND(*)
       REAL*8          MATERD(NMAT*2) ,MATERF(NMAT*2)
-      REAL*8          VIS(3),MS(6),NG(3),TAUS,DGAMMA,DALPHA,DP,RP,SQ,PR
+      REAL*8          MS(6),NG(3),TAUS,DGAMMA,DALPHA,DP,RP
       REAL*8          R(NR),DY(NR),YD(NR),YF(NR),TOLER
       REAL*8          TOUTMS(5,24,6), HSR(5,24,24),Q(3,3),LG(3)
 C
       CHARACTER*8     TYPMOD
-      INTEGER         NBCOMM(NMAT,3),MONO1,IEC,IEI,NSFA,IFL,NUECOU
-      REAL*8          PGL(3,3),D,R0,B,N,K,C,DGAMM1,ABSDGA,ALPHAM,H
+      INTEGER         NBCOMM(NMAT,3),NSFA,IFL,NUECOU
+      REAL*8          PGL(3,3),DGAMM1,ALPHAM
       REAL*8          CRIT,ALPHAP,SGNS,GAMMAP,EXPBP(24)
       CHARACTER*16    CPMONO(5*NMAT+1),COMP(*)
       CHARACTER*16 NOMFAM,NECOUL,NECRIS,NECRCI
@@ -93,7 +93,7 @@ C     NSFV : debut de la famille IFA dans les variables internes
       NSFV=6
 
       DO 6 IFA=1,NBFSYS
-         IFL=NBCOMM(IFA,1)           
+         IFL=NBCOMM(IFA,1)
          NUECOU=NINT(MATERF(NMAT+IFL))
 
          NOMFAM=CPMONO(5*(IFA-1)+1)
@@ -117,7 +117,7 @@ C           TAU      : SCISSION REDUITE TAU=SIG:MS
             DO 10 I=1,6
                TAUS=TAUS+SIGF(I)*MS(I)
  10         CONTINUE
-            
+
             NUVI=NSFV+3*(IS-1)
 
 C           ECROUISSAGE CINEMATIQUE - CALCUL DE DALPHA-SAUD MODELES DD
@@ -136,7 +136,7 @@ C           POUR KOCKS-RAUCH ET DD_CFC ALPHA est la variable principale
                ALPHAP=YD(NSFA+IS)+DY(NSFA+IS)
                GAMMAP=VIND(NUVI+2)
             ENDIF
-            
+
             IF (NUECOU.NE.4) THEN
 C               ECROUISSAGE ISOTROPE : CALCUL DE R(P)
                 IEXP=0
@@ -146,7 +146,7 @@ C               ECROUISSAGE ISOTROPE : CALCUL DE R(P)
      &                      EXPBP,RP)
             IF (IRET.GT.0) GOTO 9999
             ENDIF
-            
+
 C           ECOULEMENT VISCOPLASTIQUE
 C           ROUTINE COMMUNE A L'IMPLICITE (PLASTI-LCPLNL)
 C           ET L'EXPLICITE (NMVPRK-GERPAS-RK21CO-RDIF01)
@@ -156,7 +156,7 @@ C
             CALL LCMMFE( TAUS,MATERF(NMAT+1),MATERF(1),IFA,
      &      NMAT,NBCOMM,NECOUL,IS,NBSYS,VIND(NSFV+1),DY(NSFA+1),
      &      RP,ALPHAP,GAMMAP,DT,DALPHA,DGAMMA,DP,CRIT,SGNS,HSR,IRET)
-     
+
             IF (IRET.GT.0) GOTO 9999
 
 C            IF (NECOUL.ES.'KOCKS_RAUCH') THEN

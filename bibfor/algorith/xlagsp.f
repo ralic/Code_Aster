@@ -2,7 +2,7 @@
      &                  NLISEQ,NLISRL,NLISCO,NBASCO)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 01/02/2011   AUTEUR MASSIN P.MASSIN 
+C MODIF ALGORITH  DATE 26/04/2011   AUTEUR DELMAS J.DELMAS 
 C TOLE CRS_1404
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -227,7 +227,7 @@ C
           CALL JEVEUO(NOMO(1:8)//'.XFEM_CONT','L',JXC)
           IF (ZI(JXC).EQ.3) MAQUA=.FALSE.
           IF (.NOT.MAQUA) EXILI=.TRUE.
-          IF(GETEXM('PILOTAGE','DIRE_PILO').EQ.1) THEN 
+          IF(GETEXM('PILOTAGE','DIRE_PILO').EQ.1) THEN
              CALL GETVTX('PILOTAGE','DIRE_PILO',1,1,0,K8BID,NPIL)
              NPIL=-NPIL
              IF(NPIL.GE.1) THEN
@@ -235,7 +235,7 @@ C
                 MAQUA=.FALSE.
              ENDIF
           ENDIF
-          
+
 C
 C --- RECUPERATION DU NOMBRE DE POINT D'INTERSECTIONS
 C
@@ -256,7 +256,7 @@ C
             CALL ASSERT(IAD3.GT.0)
             IA=NINT(ZR(JCESV3-1+IAD3))
 C - SI PILOTAGE ET NOEUD INTERSECTE, ON L AJOUTE
-            IF(GETEXM('PILOTAGE','DIRE_PILO').EQ.1) THEN 
+            IF(GETEXM('PILOTAGE','DIRE_PILO').EQ.1) THEN
                 CALL GETVTX('PILOTAGE','DIRE_PILO',1,1,0,K8BID,NPIL)
                 NPIL=-NPIL
                 IF(NPIL.GE.1) THEN
@@ -271,8 +271,8 @@ C - SI PILOTAGE ET NOEUD INTERSECTE, ON L AJOUTE
                    ENDIF
                 ENDIF
 C --- SI CE N'EST PAS UNE ARETE COUPEE, ON SORT
-            ELSE 
-               IF (IA.EQ.0) GOTO 110  
+            ELSE
+               IF (IA.EQ.0) GOTO 110
                NA = AR(IA,1)
                NB = AR(IA,2)
             ENDIF

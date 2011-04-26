@@ -8,7 +8,7 @@
       CHARACTER*(*)       NOMZ
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 25/01/2011   AUTEUR PELLET J.PELLET 
+C MODIF PREPOST  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -68,13 +68,13 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32                               ZK32
       CHARACTER*80                                        ZK80
       COMMON  /KVARJE/ ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
-      CHARACTER*32     JEXNOM, JEXNUM, JEXATR
+      CHARACTER*32      JEXNUM, JEXATR
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
 C
-      INTEGER       IBID,NARE,NUMA,NBNO,NBMAT,INO,NUNO,P1,P2,IRET
-      INTEGER       I,J,K,JMAIL,NBMAN,ADRMA,ADRVLC,ACNCIN,IMA,II
+      INTEGER       IBID,NARE,NUMA,NBNO,NBMAT,INO,NUNO,P1,P2
+      INTEGER       I,J,K,JMAIL,NBMAN,ADRVLC,ACNCIN,IMA,II
       INTEGER       ADRA,IAD,JTR1(1000), JTR2, IDTYMA, NUTYMA, IEXINV
-      CHARACTER*8   K8B, TYPE
+      CHARACTER*8    TYPE
       CHARACTER*24  NOM, NCNINV
 C     ------------------------------------------------------------------
       CALL JEMARQ()

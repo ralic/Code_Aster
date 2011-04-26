@@ -1,24 +1,24 @@
       SUBROUTINE ZNAPPS
-     &   ( N, KEV, NP, SHIFT, V, LDV, H, LDH, RESID, Q, LDQ, 
+     &   ( N, KEV, NP, SHIFT, V, LDV, H, LDH, RESID, Q, LDQ,
      &     WORKL, WORKD )
 C---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 06/11/2006   AUTEUR MCOURTOI M.COURTOIS 
+C MODIF ALGELINE  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CRP_20
 C
@@ -46,7 +46,7 @@ C     A*VNEW_{K} - VNEW_{K}*HNEW_{K} = RNEW_{K}*E_{K}^T.
 C
 C\USAGE:
 C  CALL ZNAPPS
-C     ( N, KEV, NP, SHIFT, V, LDV, H, LDH, RESID, Q, LDQ, 
+C     ( N, KEV, NP, SHIFT, V, LDV, H, LDH, RESID, Q, LDQ,
 C       WORKL, WORKD )
 C
 C\ARGUMENTS
@@ -55,7 +55,7 @@ C          PROBLEM SIZE, I.E. SIZE OF MATRIX A.
 C
 C  KEV     INTEGER.  (INPUT/OUTPUT)
 C          KEV+NP IS THE SIZE OF THE INPUT MATRIX H.
-C          KEV IS THE SIZE OF THE UPDATED MATRIX HNEW. 
+C          KEV IS THE SIZE OF THE UPDATED MATRIX HNEW.
 C
 C  NP      INTEGER.  (INPUT)
 C          NUMBER OF IMPLICIT SHIFTS TO BE APPLIED.
@@ -73,7 +73,7 @@ C          LEADING DIMENSION OF V EXACTLY AS DECLARED IN THE CALLING
 C          PROGRAM.
 C
 C  H       COMPLEX*16 (KEV+NP) BY (KEV+NP) ARRAY.  (INPUT/OUTPUT)
-C          ON INPUT, H CONTAINS THE CURRENT KEV+NP BY KEV+NP UPPER 
+C          ON INPUT, H CONTAINS THE CURRENT KEV+NP BY KEV+NP UPPER
 C          HESSENBERG MATRIX OF THE ARNOLDI FACTORIZATION.
 C          ON OUTPUT, H CONTAINS THE UPDATED KEV BY KEV UPPER HESSENBERG
 C          MATRIX IN THE KEV LEADING SUBMATRIX.
@@ -84,7 +84,7 @@ C          PROGRAM.
 C
 C  RESID   COMPLEX*16 ARRAY OF LENGTH N.  (INPUT/OUTPUT)
 C          ON INPUT, RESID CONTAINS THE THE RESIDUAL VECTOR R_{K+P}.
-C          ON OUTPUT, RESID IS THE UPDATE RESIDUAL VECTOR RNEW_{K} 
+C          ON OUTPUT, RESID IS THE UPDATE RESIDUAL VECTOR RNEW_{K}
 C          IN THE FIRST KEV LOCATIONS.
 C
 C  Q       COMPLEX*16 KEV+NP BY KEV+NP WORK ARRAY.  (WORKSPACE)
@@ -139,9 +139,9 @@ C\AUTHOR
 C     DANNY SORENSEN               PHUONG VU
 C     RICHARD LEHOUCQ              CRPC / RICE UNIVERSITY
 C     DEPT. OF COMPUTATIONAL &     HOUSTON, TEXAS
-C     APPLIED MATHEMATICS 
-C     RICE UNIVERSITY           
-C     HOUSTON, TEXAS 
+C     APPLIED MATHEMATICS
+C     RICE UNIVERSITY
+C     HOUSTON, TEXAS
 C
 C\SCCS INFORMATION: @(#)
 C FILE: NAPPS.F   SID: 2.3   DATE OF SID: 3/28/97   RELEASE: 2
@@ -180,7 +180,7 @@ C     %-----------------%
 C     | ARRAY ARGUMENTS |
 C     %-----------------%
 C
-      COMPLEX*16 H(LDH,KEV+NP), RESID(N), SHIFT(NP), 
+      COMPLEX*16 H(LDH,KEV+NP), RESID(N), SHIFT(NP),
      &           V(LDV,KEV+NP), Q(LDQ,KEV+NP), WORKD(2*N), WORKL(KEV+NP)
 C
 C     %------------%
@@ -200,7 +200,7 @@ C
       LOGICAL    FIRST
       COMPLEX*16 CDUM, F, G, H11, H21, R, S, SIGMA, T
       REAL*8     C,  OVFL, SMLNUM, ULP, UNFL, TST1, RBID
-      SAVE       FIRST, OVFL, SMLNUM, ULP, UNFL 
+      SAVE       FIRST, OVFL, SMLNUM, ULP, UNFL
 C
 C
 C     %--------------------%
@@ -253,9 +253,9 @@ C     | & MESSAGE LEVEL FOR DEBUGGING |
 C     %-------------------------------%
 C
       MSGLVL = MNAPPS
-C 
-      KPLUSP = KEV + NP 
-C 
+C
+      KPLUSP = KEV + NP
+C
 C     %--------------------------------------------%
 C     | INITIALIZE Q TO THE IDENTITY TO ACCUMULATE |
 C     | THE ROTATIONS AND REFLECTIONS              |
@@ -279,9 +279,9 @@ C
          SIGMA = SHIFT(JJ)
 C
          IF (MSGLVL .GT. 2 ) THEN
-            CALL IVOUT (LOGFIL, 1, JJ, NDIGIT, 
+            CALL IVOUT (LOGFIL, 1, JJ, NDIGIT,
      &               '_NAPPS: SHIFT NUMBER.')
-            CALL ZVOUT (LOGFIL, 1, SIGMA, NDIGIT, 
+            CALL ZVOUT (LOGFIL, 1, SIGMA, NDIGIT,
      &               '_NAPPS: VALUE OF THE SHIFT ')
          END IF
 C
@@ -299,15 +299,15 @@ C
             TST1 = ZABS1( H( I, I ) ) + ZABS1( H( I+1, I+1 ) )
             IF( TST1.EQ.RZERO )
      &         TST1 = ZLANHS( '1', KPLUSP-JJ+1, H, LDH, RBID)
-               
-            IF ( ABS(DBLE(H(I+1,I))) 
+
+            IF ( ABS(DBLE(H(I+1,I)))
      &           .LE. MAX(ULP*TST1, SMLNUM) )  THEN
                IF (MSGLVL .GT. 0) THEN
-                  CALL IVOUT (LOGFIL, 1, I, NDIGIT, 
+                  CALL IVOUT (LOGFIL, 1, I, NDIGIT,
      &                 '_NAPPS: MATRIX SPLITTING AT ROW/COLUMN NO.')
-                  CALL IVOUT (LOGFIL, 1, JJ, NDIGIT, 
+                  CALL IVOUT (LOGFIL, 1, JJ, NDIGIT,
      &                 '_NAPPS: MATRIX SPLITTING WITH SHIFT NUMBER.')
-                  CALL ZVOUT (LOGFIL, 1, H(I+1,I), NDIGIT, 
+                  CALL ZVOUT (LOGFIL, 1, H(I+1,I), NDIGIT,
      &                 '_NAPPS: OFF DIAGONAL ELEMENT.')
                END IF
                IEND = I
@@ -319,9 +319,9 @@ C
    40    CONTINUE
 C
          IF (MSGLVL .GT. 2) THEN
-             CALL IVOUT (LOGFIL, 1, ISTART, NDIGIT, 
+             CALL IVOUT (LOGFIL, 1, ISTART, NDIGIT,
      &                   '_NAPPS: START OF CURRENT BLOCK ')
-             CALL IVOUT (LOGFIL, 1, IEND, NDIGIT, 
+             CALL IVOUT (LOGFIL, 1, IEND, NDIGIT,
      &                   '_NAPPS: END OF CURRENT BLOCK ')
          END IF
 C
@@ -337,7 +337,7 @@ C
          H21 = H(ISTART+1,ISTART)
          F = H11 - SIGMA
          G = H21
-C 
+C
          DO 80 I = ISTART, IEND-1
 C
 C           %------------------------------------------------------%
@@ -357,7 +357,7 @@ C
             DO 50 J = I, KPLUSP
                T        =  C*H(I,J) + S*H(I+1,J)
                H(I+1,J) = -DCONJG(S)*H(I,J) + C*H(I+1,J)
-               H(I,J)   = T   
+               H(I,J)   = T
    50       CONTINUE
 C
 C           %---------------------------------------------%
@@ -367,7 +367,7 @@ C
             DO 60 J = 1, MIN(I+2,IEND)
                T        =  C*H(J,I) + DCONJG(S)*H(J,I+1)
                H(J,I+1) = -S*H(J,I) + C*H(J,I+1)
-               H(J,I)   = T   
+               H(J,I)   = T
    60       CONTINUE
 C
 C           %-----------------------------------------------------%
@@ -377,7 +377,7 @@ C
             DO 70 J = 1, MIN(I+JJ, KPLUSP)
                T        =   C*Q(J,I) + DCONJG(S)*Q(J,I+1)
                Q(J,I+1) = - S*Q(J,I) + C*Q(J,I+1)
-               Q(J,I)   = T   
+               Q(J,I)   = T
    70       CONTINUE
 C
 C           %---------------------------%
@@ -393,7 +393,7 @@ C
 C        %-------------------------------%
 C        | FINISHED APPLYING THE SHIFT.  |
 C        %-------------------------------%
-C 
+C
   100    CONTINUE
 C
 C        %---------------------------------------------------------%
@@ -440,7 +440,7 @@ C
          TST1 = ZABS1( H( I, I ) ) + ZABS1( H( I+1, I+1 ) )
          IF( TST1 .EQ. RZERO )
      &       TST1 = ZLANHS( '1', KEV, H, LDH, RBID)
-         IF( DBLE( H( I+1,I ) ) .LE. MAX( ULP*TST1, SMLNUM ) ) 
+         IF( DBLE( H( I+1,I ) ) .LE. MAX( ULP*TST1, SMLNUM ) )
      &       H(I+1,I) = ZERO
  130  CONTINUE
 C
@@ -453,9 +453,9 @@ C     | OF H WOULD BE ZERO AS IN EXACT ARITHMETIC.      |
 C     %-------------------------------------------------%
 C
       IF ( DBLE( H(KEV+1,KEV) ) .GT. RZERO )
-     &   CALL ZGEMV ('N', N, KPLUSP, ONE, V, LDV, Q(1,KEV+1), 1, ZERO, 
+     &   CALL ZGEMV ('N', N, KPLUSP, ONE, V, LDV, Q(1,KEV+1), 1, ZERO,
      &                WORKD(N+1), 1)
-C 
+C
 C     %----------------------------------------------------------%
 C     | COMPUTE COLUMN 1 TO KEV OF (V*Q) IN BACKWARD ORDER       |
 C     | TAKING ADVANTAGE OF THE UPPER HESSENBERG STRUCTURE OF Q. |
@@ -472,14 +472,14 @@ C     |  MOVE V(:,KPLUSP-KEV+1:KPLUSP) INTO V(:,1:KEV). |
 C     %-------------------------------------------------%
 C
       CALL ZLACPY ('A', N, KEV, V(1,KPLUSP-KEV+1), LDV, V, LDV)
-C 
+C
 C     %--------------------------------------------------------------%
 C     | COPY THE (KEV+1)-ST COLUMN OF (V*Q) IN THE APPROPRIATE PLACE |
 C     %--------------------------------------------------------------%
 C
       IF ( DBLE( H(KEV+1,KEV) ) .GT. RZERO )
      &   CALL ZCOPY (N, WORKD(N+1), 1, V(1,KEV+1), 1)
-C 
+C
 C     %-------------------------------------%
 C     | UPDATE THE RESIDUAL VECTOR:         |
 C     |    R <- SIGMAK*R + BETAK*V(:,KEV+1) |
@@ -497,7 +497,7 @@ C
      &        '_NAPPS: SIGMAK = (E_(KEV+P)T*Q)*E_(KEV)')
          CALL ZVOUT (LOGFIL, 1, H(KEV+1,KEV), NDIGIT,
      &        '_NAPPS: BETAK = E_(KEV+1)T*H*E_(KEV)')
-         CALL IVOUT (LOGFIL, 1, KEV, NDIGIT, 
+         CALL IVOUT (LOGFIL, 1, KEV, NDIGIT,
      &               '_NAPPS: ORDER OF THE FINAL HESSENBERG MATRIX ')
          IF (MSGLVL .GT. 2) THEN
             CALL ZMOUT (LOGFIL, KEV, KEV, H, LDH, NDIGIT,
@@ -508,7 +508,7 @@ C
 C
  9000 CONTINUE
       CALL MATFPE(1)
-C 
+C
 C
 C     %---------------%
 C     | END OF ZNAPPS |

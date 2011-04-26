@@ -5,9 +5,9 @@ C
       CHARACTER*8  ORIDEF
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF PREPOST  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -31,7 +31,7 @@ C IN  : NK1D   : NOMBRE D'OCCURENCE DE K1D -----------------------------
 C --- : NDIM   : DIMENSION DE L'ESPACE ---------------------------------
 C --- : ORIDEF : TYPE D'ORIENTATION DU DEFAUT --------------------------
 C ======================================================================
-      LOGICAL       EXIST, VERINR, TESTE
+      LOGICAL        VERINR, TESTE
       INTEGER       I, IBID, NBVAL1, NBVAL2
       CHARACTER*8   MOTFAC, K8B,TABREV,TABMDB,TABTHR
       CHARACTER*19  TBINS1, TBINS2

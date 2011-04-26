@@ -10,7 +10,7 @@
       CHARACTER*8   ELP
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 25/01/2011   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 26/04/2011   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -38,16 +38,16 @@ C       ELP      : ELEMENT DE REFERENCE PARENT
 C       NNOP     : NOMBRE DE NOEUDS DE L'ELEMENT PARENT
 C       NNOSE    : NOMBRE DE NOEUDS DU SOUS TETRA
 C       IT       : INDICE DU TETRA EN COURS
-C       PINTT    : 
+C       PINTT    :
 C       CNSET    : CONNECTIVITEE DES NOEUDS DU TETRA
 C       LSN      : VALEURS DE LA LEVEL SET NORMALE
-C       FISCO    : 
+C       FISCO    :
 C       IGEOM    : ADRESSE DES COORDONNEES DES NOEUDS DE L'ELT PARENT
 C       NFIS ???     : NOMBRE DE FISSURES "VUES" PAR L'ÉLÉMENT
 C       NFISS
 C       IFISS
-C       LONREF   : 
-C       NFISC    :  
+C       LONREF   :
+C       NFISC    :
 C
 C     SORTIE
 C       PINTER   : COORDONNEES DES POINTS D'INTERSECTION
@@ -72,12 +72,12 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON  /KVARJE/ ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
-      REAL*8          A(3),B(3),C(3),LSNA,LSNB,PADIST,LONGAR,TAMPOR(4)
-      REAL*8          ALPHA,LSNC,SOMLSN(NFISC+1),FF(NNOP)
+      REAL*8          A(3),B(3),C(3),LSNA,LSNB,TAMPOR(4)
+      REAL*8          LSNC,SOMLSN(NFISC+1),FF(NNOP)
       REAL*8          RBID,RBID2(NDIM)
       INTEGER         AR(12,3),NBAR,NTA,NTB,NA,NB,JPTINT,INS,JAINT
       INTEGER         IA,I,J,IPT,IBID,PP,PD,K,PTMAX
-      INTEGER         NDIME,INO,ITER
+      INTEGER         NDIME,ITER
       INTEGER         MXSTAC
       CHARACTER*8     TYPMA
       INTEGER         ZXAIN,XXMMVD
@@ -98,7 +98,7 @@ C     (VOIR CRS 1404)
       CALL ELREF4(' ','RIGI',NDIME,IBID,IBID,IBID,IBID,IBID,IBID,IBID)
 
       AXI = LTEATT(' ','AXIS','OUI')
-      
+
       IF (NDIME .EQ. 3) THEN
          TYPMA='TETRA4'
          PTMAX=4

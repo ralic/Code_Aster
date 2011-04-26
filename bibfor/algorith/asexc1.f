@@ -7,9 +7,9 @@
       LOGICAL          CORFRE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 05/11/2007   AUTEUR VIVAN L.VIVAN 
+C MODIF ALGORITH  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -53,17 +53,17 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32                                 ZK32
       CHARACTER*80                                          ZK80
       COMMON  / KVARJE / ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
-      CHARACTER*32       JEXNOM, JEXNUM
+      CHARACTER*32        JEXNUM
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C     ------------------------------------------------------------------
       INTEGER      NATURE(3), ID, IER, IFM, II, IM, INAT, IOC, NBPT1,
      +             NBPT2, N1, NIMPR, IUNIFI, JVAR1
       REAL*8       AMOR, COEF, DEUXPI, ECHEL, EPSI, FREQ, DIRSPE(3),
      +             ECHSPE(3), VALPU(2), OMEGA, OMEGA2, R8B, R8DEPI,
-     +             RESU, UN, UNS2PI, NORM, XNORM, ZERO
+     +             RESU, UN, UNS2PI, XNORM, ZERO
       CHARACTER*1  K1B, DIR(3)
       CHARACTER*4  KNAT
-      CHARACTER*8  K8B, SPECT, NOMSPE(3), NOMPU(2)
+      CHARACTER*8   SPECT, NOMSPE(3), NOMPU(2)
       CHARACTER*9  NIVEAU
       CHARACTER*24 VALE
 C     ------------------------------------------------------------------

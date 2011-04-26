@@ -1,6 +1,6 @@
       SUBROUTINE OP0186()
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -73,7 +73,7 @@ C 0.3. ==> VARIABLES LOCALES
       CHARACTER*19 SDOBSE
       CHARACTER*16 TYSD
       CHARACTER*19 INFCHA,INFCH2
-      CHARACTER*19 SOLVEU,MAPREC,SDDISC,VTEM19,SDCRIT
+      CHARACTER*19 SOLVEU,MAPREC,SDDISC,SDCRIT
       CHARACTER*24 MODELE,MATE,CARELE,FOMULT,CHARGE,INFOCH,RESULT,TIME,
      &             TMPCHI,TMPCHF,COMPOR,VTEMP,VTEMPM,VTEMPP,
      &             VTEMPR,VEC2ND,VEC2NI,LISOPT,
@@ -555,9 +555,9 @@ C ======================================================================
               ZR(JCRR+3) = TESTM
               ZR(JCRR+4) = RHO
             END IF
-            
+
             FINPAS = DIDERN(SDDISC, NUMINS)
-            
+
             CALL JEVEUO(VTEMPM(1:19)//'.VALE','L',JTEMPP)
             CALL JEVEUO(VTEMP(1:19)//'.VALE','E',JTEMP)
 C VTEMPM --> VTEMP
@@ -575,8 +575,8 @@ C
           IF (.NOT.LEVOL) THEN
             FORCE = .TRUE.
           ELSE
-            FORCE = .FALSE.  
-          ENDIF  
+            FORCE = .FALSE.
+          ENDIF
           CALL NTARCH(NUMINS,MODELE,MATE  ,CARELE,COMPOR,
      &                LNONL ,PARA  ,SDDISC,SDCRIT,NBPASE,
      &                INPSCO,VHYDR ,INFCH2,FORCE )

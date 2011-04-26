@@ -1,26 +1,26 @@
       SUBROUTINE NDNPAS(FONACT,NUMEDD,NUMINS,SDDISC,SDSENS,
      &                  SDDYNA,RESOCO,VALINC,SOLALG)
-C     
+C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 17/01/2011   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 26/04/2011   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C RESPONSABLE ABBAS M.ABBAS
-C TOLE CRP_21 CRP_20
+C TOLE CRP_20
 C
       IMPLICIT NONE
       INTEGER      NUMINS
@@ -29,23 +29,23 @@ C
       CHARACTER*19 SDDYNA,SDDISC
       CHARACTER*19 SOLALG(*),VALINC(*)
       INTEGER      FONACT(*)
-C 
+C
 C ----------------------------------------------------------------------
 C
 C ROUTINE MECA_NON_LINE (DYNAMIQUE)
 C
 C INITIALISATION DES CHAMPS D'INCONNUES POUR UN NOUVEAU PAS DE TEMPS
-C      
+C
 C ----------------------------------------------------------------------
 C
-C    
+C
 C IN  FONACT : FONCTIONNALITES ACTIVEES
 C IN  NUMEDD : NUME_DDL
 C IN  NUMINS : NUMERO INSTANT COURANT
 C IN  SDDISC : SD DISCRETISATION TEMPORELLE
 C IN  SDSENS : SD SENSIBILITE
 C IN  RESOCO : SD RESOLUTION DU CONTACT
-C IN  SDDYNA : SD DYNAMIQUE 
+C IN  SDDYNA : SD DYNAMIQUE
 C IN  VALINC : VARIABLE CHAPEAU POUR INCREMENTS VARIABLES
 C IN  SOLALG : VARIABLE CHAPEAU POUR INCREMENTS SOLUTIONS
 C
@@ -71,13 +71,13 @@ C
       REAL*8       ZERO,UN,DEUX
       PARAMETER    (UN   = 1.D0,DEUX = 2.D0)
       PARAMETER    (ZERO = 0.D0)
-C      
+C
       INTEGER      JCFSC
       CHARACTER*24 CFSC
       INTEGER      NDYNIN
       REAL*8       NDYNRE
-      REAL*8       ALPHA,BETA,GAMMA,THETA,PHI,UNTHET,KAPPA     
-      REAL*8       DIINST,INSTAM,INSTAP,DELTAT    
+      REAL*8       ALPHA,BETA,GAMMA,THETA,PHI,UNTHET,KAPPA
+      REAL*8       DIINST,INSTAM,INSTAP,DELTAT
       LOGICAL      LEXGE,LCTCC,LMUAP,LGROT,LEXPL,LMPAS,LHHTC,LIMPL
       LOGICAL      NDYNLO,ISFONC
       CHARACTER*24 MDECOL
@@ -87,18 +87,18 @@ C
       LOGICAL      LDEPL,LVITE,LACCE
       LOGICAL      LNEWMA,LTHETA,LKRENK
       REAL*8       COERIG,COEAMO,COEMAS
-      REAL*8       COEEXT,COEINT,COEEQU,COEEX2  
+      REAL*8       COEEXT,COEINT,COEEQU,COEEX2
       INTEGER      IRET,IMODE
       INTEGER      NEQ,NBMODP
-      REAL*8       COEFD(3),COEFV(3),COEFA(3)         
+      REAL*8       COEFD(3),COEFV(3),COEFA(3)
       REAL*8       COEDEP,COEVIT,COEACC
       REAL*8       COERMA,COERAM,COERRI
       REAL*8       COINER,R8PREM
       CHARACTER*19 DEPPLU,VITPLU,ACCPLU
-      CHARACTER*19 DEPMOI,VITMOI,ACCMOI 
+      CHARACTER*19 DEPMOI,VITMOI,ACCMOI
       CHARACTER*19 DEPGEM,VITGEM,ACCGEM,DEPGEP,VITGEP,ACCGEP
       INTEGER      JDEPGM,JVITGM,JACCGM,JDEPGP,JVITGP,JACCGP
-      INTEGER      IFM,NIV         
+      INTEGER      IFM,NIV
 C
 C ----------------------------------------------------------------------
 C
@@ -108,18 +108,18 @@ C
 C --- AFFICHAGE
 C
       IF (NIV.GE.2) THEN
-        WRITE (IFM,*) '<MECANONLINE> INITIALISATIONS EN DYNAMIQUE' 
-      ENDIF         
+        WRITE (IFM,*) '<MECANONLINE> INITIALISATIONS EN DYNAMIQUE'
+      ENDIF
 C
 C --- INITIALISATIONS
 C
       CALL DISMOI('F','NB_EQUA',NUMEDD,'NUME_DDL',NEQ,K8BID,IRET)
       INSTAM = DIINST(SDDISC,NUMINS-1)
       INSTAP = DIINST(SDDISC,NUMINS)
-      DELTAT = INSTAP - INSTAM     
+      DELTAT = INSTAP - INSTAM
 C
 C --- FONCTIONNALITES ACTIVEES
-C 
+C
       LEXGE  = NDYNLO(SDDYNA,'EXPL_GENE')
       LCTCC  = ISFONC(FONACT,'CONT_CONTINU')
       LMUAP  = NDYNLO(SDDYNA,'MULTI_APPUI')
@@ -129,12 +129,12 @@ C
       LIMPL  = NDYNLO(SDDYNA,'IMPLICITE')
 C
 C --- ACCES SD DYNA
-C      
-      CFSC = SDDYNA(1:15)//'.COEF_SCH'  
-      CALL JEVEUO(CFSC,'E',JCFSC)   
+C
+      CFSC = SDDYNA(1:15)//'.COEF_SCH'
+      CALL JEVEUO(CFSC,'E',JCFSC)
 C
 C --- DECOMPACTION DES VARIABLES CHAPEAUX
-C       
+C
       CALL NMCHEX(VALINC,'VALINC','DEPMOI',DEPMOI)
       CALL NMCHEX(VALINC,'VALINC','VITMOI',VITMOI)
       CALL NMCHEX(VALINC,'VALINC','ACCMOI',ACCMOI)
@@ -149,29 +149,29 @@ C
       LACCE = NDYNIN(SDDYNA,'FORMUL_DYNAMIQUE').EQ.3
       IF (LGROT.AND..NOT.LDEPL) THEN
         CALL ASSERT(.FALSE.)
-      ENDIF     
+      ENDIF
 C
-C --- TYPE DE SCHEMA: NEWMARK (ET SES DERIVEES) OU THETA    
+C --- TYPE DE SCHEMA: NEWMARK (ET SES DERIVEES) OU THETA
 C
       LNEWMA = NDYNLO(SDDYNA,'FAMILLE_NEWMARK')
       LTHETA = NDYNLO(SDDYNA,'THETA_METHODE')
       LKRENK = NDYNLO(SDDYNA,'KRENK')
       IF (.NOT.(LNEWMA.OR.LTHETA.OR.LKRENK)) THEN
         CALL ASSERT(.FALSE.)
-      ENDIF 
+      ENDIF
 C
 C --- HHT COMPLET (MULTI-PAS)
 C
-      LHHTC  = NDYNLO(SDDYNA,'HHT_COMPLET')  
+      LHHTC  = NDYNLO(SDDYNA,'HHT_COMPLET')
 C
-C --- COEFFICIENTS DU SCHEMA EN TEMPS      
-C     
+C --- COEFFICIENTS DU SCHEMA EN TEMPS
+C
       BETA   = NDYNRE(SDDYNA,'BETA')
       GAMMA  = NDYNRE(SDDYNA,'GAMMA')
       THETA  = NDYNRE(SDDYNA,'THETA')
       UNTHET = UN-THETA
       IF (ABS(UNTHET).LE.R8PREM()) UNTHET = UN
-      PHI    = NDYNRE(SDDYNA,'PHI') 
+      PHI    = NDYNRE(SDDYNA,'PHI')
       ALPHA  = NDYNRE(SDDYNA,'ALPHA')
       KAPPA  = NDYNRE(SDDYNA,'KAPPA')
 C
@@ -180,69 +180,69 @@ C
       IF (LCTCC) THEN
         IF (LTHETA) THEN
           MDECOL = RESOCO(1:14)//'.MDECOL'
-          CALL JEVEUO(MDECOL,'L',JMDECO)  
-          SCOTCH = ZL(JMDECO+1-1)        
+          CALL JEVEUO(MDECOL,'L',JMDECO)
+          SCOTCH = ZL(JMDECO+1-1)
           IF (SCOTCH) THEN
             THETA   = 1.D0
           ENDIF
-        ENDIF        
-      ENDIF     
-C  
+        ENDIF
+      ENDIF
+C
 C --- COEFFICIENTS POUR MATRICES
-C   
+C
       IF (LNEWMA) THEN
         IF (LDEPL) THEN
           COERIG = UN
           COEAMO = GAMMA/(BETA*DELTAT)
-          COEMAS = UN/(BETA*DELTAT*DELTAT)            
+          COEMAS = UN/(BETA*DELTAT*DELTAT)
         ELSEIF (LACCE) THEN
           COERIG = BETA*DELTAT*DELTAT
           COEAMO = GAMMA*DELTAT
-          COEMAS = UN 
+          COEMAS = UN
         ELSE
-          CALL ASSERT(.FALSE.)  
+          CALL ASSERT(.FALSE.)
         ENDIF
-        IF (LHHTC) THEN        
+        IF (LHHTC) THEN
           COEAMO = COEAMO/(UN+ALPHA)
-          COEMAS = COEMAS/(UN+ALPHA)    
+          COEMAS = COEMAS/(UN+ALPHA)
         ENDIF
       ELSEIF (LTHETA) THEN
         IF (LDEPL) THEN
           COERIG = THETA
           COEAMO = UN/(THETA*DELTAT)
-          COEMAS = UN/(THETA*DELTAT*DELTAT)        
+          COEMAS = UN/(THETA*DELTAT*DELTAT)
         ELSEIF (LVITE) THEN
           COERIG = THETA*THETA*DELTAT
           COEAMO = THETA
-          COEMAS = UN/DELTAT      
+          COEMAS = UN/DELTAT
         ELSE
           CALL ASSERT(.FALSE.)
-        ENDIF 
+        ENDIF
       ELSEIF (LKRENK) THEN
         IF (LDEPL) THEN
-          COERIG = (KAPPA)/DEUX
+          COERIG = KAPPA/DEUX
           COEAMO = UN/DELTAT
-          COEMAS = DEUX/((KAPPA)*DELTAT*DELTAT)        
+          COEMAS = DEUX/(KAPPA*DELTAT*DELTAT)
         ELSEIF (LVITE) THEN
-          COERIG = ((KAPPA)/DEUX)*((KAPPA)/DEUX)*DELTAT
-          COEAMO = (KAPPA)/DEUX
-          COEMAS = UN/DELTAT      
+          COERIG = (KAPPA/DEUX)*(KAPPA/DEUX)*DELTAT
+          COEAMO = KAPPA/DEUX
+          COEMAS = UN/DELTAT
         ELSE
           CALL ASSERT(.FALSE.)
-        ENDIF    
+        ENDIF
       ELSE
         CALL ASSERT(.FALSE.)
-      ENDIF  
+      ENDIF
 C
-      ZR(JCFSC-1+1) = COERIG 
-      ZR(JCFSC-1+2) = COEAMO 
+      ZR(JCFSC-1+1) = COERIG
+      ZR(JCFSC-1+2) = COEAMO
       ZR(JCFSC-1+3) = COEMAS
-C      
+C
       IF (NIV.GE.2) THEN
-        WRITE (IFM,*) '<MECANONLINE> ... COEF. RIGI.: ',COERIG 
-        WRITE (IFM,*) '<MECANONLINE> ... COEF. AMOR.: ',COEAMO 
-        WRITE (IFM,*) '<MECANONLINE> ... COEF. MASS.: ',COEMAS         
-      ENDIF    
+        WRITE (IFM,*) '<MECANONLINE> ... COEF. RIGI.: ',COERIG
+        WRITE (IFM,*) '<MECANONLINE> ... COEF. AMOR.: ',COEAMO
+        WRITE (IFM,*) '<MECANONLINE> ... COEF. MASS.: ',COEMAS
+      ENDIF
 C
 C --- COEFFICIENTS POUR MISE A JOUR DEPL/VITE/ACCE
 C
@@ -251,72 +251,72 @@ C
         IF (LDEPL) THEN
           COEDEP = UN
           COEVIT = GAMMA/(BETA*DELTAT)
-          COEACC = UN/(BETA*DELTAT*DELTAT)         
+          COEACC = UN/(BETA*DELTAT*DELTAT)
         ELSEIF (LACCE) THEN
           COEDEP = BETA*DELTAT*DELTAT
           COEVIT = GAMMA*DELTAT
-          COEACC = UN             
+          COEACC = UN
         ELSE
-          CALL ASSERT(.FALSE.)  
+          CALL ASSERT(.FALSE.)
         ENDIF
       ELSEIF (LTHETA) THEN
         IF (LDEPL) THEN
           COEDEP = UN
           COEVIT = UN/(THETA*DELTAT)
-          COEACC = DEUX/(THETA*DELTAT*DELTAT)          
+          COEACC = DEUX/(THETA*DELTAT*DELTAT)
         ELSEIF (LVITE) THEN
           COEDEP = DELTAT*THETA
           COEVIT = UN
-          COEACC = DEUX/(DELTAT)               
+          COEACC = DEUX/DELTAT
         ELSE
           CALL ASSERT(.FALSE.)
         ENDIF
       ELSEIF (LKRENK) THEN
         IF (LDEPL) THEN
           COEDEP = UN
-          COEVIT = DEUX/((KAPPA)*DELTAT)
-          COEACC =  DEUX*DEUX/(KAPPA*DELTAT*DELTAT)          
+          COEVIT = DEUX/(KAPPA*DELTAT)
+          COEACC =  DEUX*DEUX/(KAPPA*DELTAT*DELTAT)
         ELSEIF (LVITE) THEN
-          COEDEP = DELTAT*((KAPPA)/DEUX)
+          COEDEP = DELTAT*(KAPPA/DEUX)
           COEVIT = UN
-          COEACC = DEUX/DELTAT               
+          COEACC = DEUX/DELTAT
         ELSE
           CALL ASSERT(.FALSE.)
-        ENDIF   
+        ENDIF
       ELSE
         CALL ASSERT(.FALSE.)
-      ENDIF        
+      ENDIF
       ZR(JCFSC-1+13) = COEDEP
       ZR(JCFSC-1+14) = COEVIT
-      ZR(JCFSC-1+15) = COEACC  
-C      
+      ZR(JCFSC-1+15) = COEACC
+C
       IF (NIV.GE.2) THEN
-        WRITE (IFM,*) '<MECANONLINE> ... COEF. DEPL.: ',COEDEP 
-        WRITE (IFM,*) '<MECANONLINE> ... COEF. VITE.: ',COEVIT 
-        WRITE (IFM,*) '<MECANONLINE> ... COEF. ACCE.: ',COEACC         
-      ENDIF               
+        WRITE (IFM,*) '<MECANONLINE> ... COEF. DEPL.: ',COEDEP
+        WRITE (IFM,*) '<MECANONLINE> ... COEF. VITE.: ',COEVIT
+        WRITE (IFM,*) '<MECANONLINE> ... COEF. ACCE.: ',COEACC
+      ENDIF
 C
 C --- COEFFICIENTS POUR PREDICTEURS
-C    
+C
       IF (LNEWMA) THEN
         IF (LDEPL) THEN
           COEFD(1) = ZERO
           COEFD(2) = ZERO
-          COEFD(3) = ZERO         
+          COEFD(3) = ZERO
           COEFV(1) = ZERO
           COEFV(2) = (BETA-GAMMA)/BETA
           COEFV(3) = ((DEUX*BETA-GAMMA)*DELTAT)/(DEUX*BETA)
           COEFA(1) = ZERO
           COEFA(2) = -UN/(BETA*DELTAT)
-          COEFA(3) = (DEUX*BETA-UN)/(DEUX*BETA)      
+          COEFA(3) = (DEUX*BETA-UN)/(DEUX*BETA)
         ELSEIF (LACCE) THEN
           IF (LEXPL) THEN
             IF (NDYNLO(SDDYNA,'TCHAMWA')) THEN
               COEFD(1) = UN
               COEFD(2) = DELTAT
-              COEFD(3) = DELTAT*DELTAT*PHI     
+              COEFD(3) = DELTAT*DELTAT*PHI
               COEFV(1) = ZERO
-              COEFV(2) = UN 
+              COEFV(2) = UN
               COEFV(3) = DELTAT
               COEFA(1) = ZERO
               COEFA(2) = ZERO
@@ -324,49 +324,49 @@ C
             ELSE
               COEFD(1) = UN
               COEFD(2) = DELTAT
-              COEFD(3) = DELTAT*DELTAT/DEUX     
+              COEFD(3) = DELTAT*DELTAT/DEUX
               COEFV(1) = ZERO
-              COEFV(2) = UN 
+              COEFV(2) = UN
               COEFV(3) = DELTAT*(UN-GAMMA)
               COEFA(1) = ZERO
               COEFA(2) = ZERO
-              COEFA(3) = ZERO                            
-            ENDIF 
+              COEFA(3) = ZERO
+            ENDIF
           ELSE
             COEFD(1) = UN
             COEFD(2) = DELTAT
             COEFD(3) = DELTAT*DELTAT/DEUX
             COEFV(1) = ZERO
-            COEFV(2) = UN 
+            COEFV(2) = UN
             COEFV(3) = DELTAT
             COEFA(1) = ZERO
             COEFA(2) = ZERO
-            COEFA(3) = ZERO            
+            COEFA(3) = ZERO
           ENDIF
         ELSE
-          CALL ASSERT(.FALSE.)  
+          CALL ASSERT(.FALSE.)
         ENDIF
       ELSEIF (LTHETA) THEN
         IF (LDEPL) THEN
           COEFD(1) = ZERO
           COEFD(2) = ZERO
-          COEFD(3) = ZERO         
+          COEFD(3) = ZERO
           COEFV(1) = ZERO
           COEFV(2) = (THETA-UN)/THETA
           COEFV(3) = ZERO
           COEFA(1) = ZERO
           COEFA(2) = -DEUX/(THETA*DELTAT)
-          COEFA(3) = -UN        
+          COEFA(3) = -UN
         ELSEIF (LVITE) THEN
           COEFD(1) = UN
           COEFD(2) = DELTAT
           COEFD(3) = ZERO
           COEFV(1) = ZERO
           COEFV(2) = UN
-          COEFV(3) = ZERO            
+          COEFV(3) = ZERO
           COEFA(1) = ZERO
           COEFA(2) = ZERO
-          COEFA(3) = -UN             
+          COEFA(3) = -UN
         ELSE
           CALL ASSERT(.FALSE.)
         ENDIF
@@ -374,30 +374,30 @@ C
         IF (LDEPL) THEN
           COEFD(1) = UN
           COEFD(2) = ZERO
-          COEFD(3) = ZERO    
+          COEFD(3) = ZERO
           COEFV(1) = ZERO
-          COEFV(2) = ((KAPPA)-DEUX)/(KAPPA)
+          COEFV(2) = (KAPPA-DEUX)/KAPPA
           COEFV(3) = ZERO
           COEFA(1) = ZERO
           COEFA(2) = -DEUX*DEUX/(KAPPA*DELTAT)
-          COEFA(3) = -UN        
+          COEFA(3) = -UN
         ELSEIF (LVITE) THEN
           COEFD(1) = UN
           COEFD(2) = DELTAT
           COEFD(3) = ZERO
           COEFV(1) = ZERO
           COEFV(2) = UN
-          COEFV(3) = ZERO            
+          COEFV(3) = ZERO
           COEFA(1) = ZERO
           COEFA(2) = ZERO
-          COEFA(3) = -UN               
+          COEFA(3) = -UN
         ELSE
           CALL ASSERT(.FALSE.)
-        ENDIF            
+        ENDIF
       ELSE
         CALL ASSERT(.FALSE.)
       ENDIF
-            
+
       ZR(JCFSC-1+4)  = COEFD(1)
       ZR(JCFSC-1+5)  = COEFD(2)
       ZR(JCFSC-1+6)  = COEFD(3)
@@ -407,10 +407,10 @@ C
       ZR(JCFSC-1+10) = COEFA(1)
       ZR(JCFSC-1+11) = COEFA(2)
       ZR(JCFSC-1+12) = COEFA(3)
-C      
+C
 C --- CALCUL DES PREDICTEURS
-C     
-      CALL NDPRED(SDDISC,SDSENS,SDDYNA,VALINC,SOLALG)       
+C
+      CALL NDPRED(SDDISC,SDSENS,SDDYNA,VALINC,SOLALG)
 C
 C --- COEFFICIENTS POUR SCHEMAS A PLUSIEURS PAS
 C --- COEEXT: COEF. DE PONDERATION DES FORCES EXTERNES
@@ -422,55 +422,55 @@ C
       IF (LMPAS) THEN
         IF (LHHTC) THEN
           COEEXT = -ALPHA/(UN+ALPHA)
-          COEINT = -ALPHA/(UN+ALPHA)          
+          COEINT = -ALPHA/(UN+ALPHA)
           COEEQU = UN/(UN+ALPHA)
           COEEX2 = UN
-        ELSEIF (LTHETA) THEN  
+        ELSEIF (LTHETA) THEN
           COEEXT = (UN-THETA)
           IF (ABS(UN-THETA).LE.R8PREM()) THEN
             COEEXT = ZERO
-          ENDIF          
-          COEINT = ZERO         
+          ENDIF
+          COEINT = ZERO
           COEEQU = UN
-          COEEX2 = THETA            
+          COEEX2 = THETA
         ELSEIF (LKRENK) THEN
           IF (LDEPL) THEN
             COEEXT = UN/DEUX
-            COEINT = ZERO         
-            COEEQU = UN
-            COEEX2 = UN/DEUX          
-          ELSEIF (LVITE) THEN
-            COEEXT = UN/DEUX
-            COEINT = ZERO         
+            COEINT = ZERO
             COEEQU = UN
             COEEX2 = UN/DEUX
-          ENDIF                     
+          ELSEIF (LVITE) THEN
+            COEEXT = UN/DEUX
+            COEINT = ZERO
+            COEEQU = UN
+            COEEX2 = UN/DEUX
+          ENDIF
         ELSE
           CALL ASSERT(.FALSE.)
         ENDIF
-      ELSE  
+      ELSE
         COEEXT = ZERO
-        COEINT = ZERO        
+        COEINT = ZERO
         COEEQU = UN
         COEEX2 = UN
       ENDIF
       ZR(JCFSC-1+16) = COEEXT
       ZR(JCFSC-1+17) = COEEQU
       ZR(JCFSC-1+18) = COEINT
-      ZR(JCFSC-1+19) = COEEX2      
-C     
-      IF (LMPAS) THEN 
+      ZR(JCFSC-1+19) = COEEX2
+C
+      IF (LMPAS) THEN
         IF (NIV.GE.2) THEN
           WRITE (IFM,*) '<MECANONLINE> ... MULTI-PAS F. EXT. N-1: ',
      &                    COEEXT
           WRITE (IFM,*) '<MECANONLINE> ... MULTI-PAS F. EXT. N  : ',
-     &                    COEEX2     
+     &                    COEEX2
           WRITE (IFM,*) '<MECANONLINE> ... MULTI-PAS F. INT. N-1: ',
-     &                    COEINT 
+     &                    COEINT
           WRITE (IFM,*) '<MECANONLINE> ... MULTI-PAS F. EQU.    : ',
      &                    COEEQU
-        ENDIF 
-      ENDIF 
+        ENDIF
+      ENDIF
 C
 C --- COEFFICENT POUR CALCUL FORCE D'INERTIE DE REFERENCE (NDINER)
 C
@@ -478,20 +478,20 @@ C
         IF (LIMPL) THEN
           COINER = UN/(BETA*DELTAT)
         ELSE
-          COINER = UN/DELTAT  
-        ENDIF 
+          COINER = UN/DELTAT
+        ENDIF
       ELSEIF (LTHETA) THEN
         IF (LDEPL) THEN
           COINER = UN/DELTAT
         ELSE
-          COINER = UN/DELTAT  
-        ENDIF 
+          COINER = UN/DELTAT
+        ENDIF
       ELSEIF (LKRENK) THEN
         IF (LDEPL) THEN
           COINER = UN/DELTAT
         ELSE
-          COINER = UN/DELTAT  
-        ENDIF    
+          COINER = UN/DELTAT
+        ENDIF
       ELSE
         COINER = UN/DELTAT
       ENDIF
@@ -499,7 +499,7 @@ C
       IF (NIV.GE.2) THEN
           WRITE (IFM,*) '<MECANONLINE> ... COEF. FORC. INERTIE REF: ',
      &                    COINER
-      ENDIF  
+      ENDIF
 C
 C --- COEFFICIENTS DEVANT MATRICE POUR TERME DE RAPPEL DYNAMIQUE
 C
@@ -507,29 +507,29 @@ C
         IF (LVITE) THEN
           COERMA = ZERO
           COERAM = UN
-          COERRI = THETA*DELTAT         
+          COERRI = THETA*DELTAT
           IF (ABS(UN-THETA).LE.R8PREM()) THEN
-            COERRI = DELTAT 
+            COERRI = DELTAT
           ENDIF
         ELSEIF (LDEPL) THEN
           IF (ABS(UN-THETA).LE.R8PREM()) THEN
             COERMA = -UN/(THETA*DELTAT)
           ELSE
-            COERMA = -UN/((THETA)*DELTAT)
+            COERMA = -UN/(THETA*DELTAT)
           ENDIF
-          COERAM = UN 
+          COERAM = UN
           COERRI = UN
         ENDIF
       ELSEIF (LKRENK) THEN
          IF (LDEPL) THEN
            COERMA = DEUX/((DEUX-KAPPA)*DELTAT)
            COERAM = UN
-           COERRI = UN         
+           COERRI = UN
          ELSEIF (LVITE) THEN
            COERMA = ZERO
            COERAM = ZERO
-           COERRI = ((KAPPA)/DEUX)*DELTAT 
-         ENDIF 
+           COERRI = (KAPPA/DEUX)*DELTAT
+         ENDIF
       ELSE
         COERMA = UN
         COERAM = UN
@@ -538,13 +538,13 @@ C
       ZR(JCFSC-1+20) = COERMA
       ZR(JCFSC-1+21) = COERAM
       ZR(JCFSC-1+22) = COERRI
-      
+
       IF (NIV.GE.2) THEN
         WRITE (IFM,*) '<MECANONLINE> ... COEF. FDYNA RIGI: ',COERRI
         WRITE (IFM,*) '<MECANONLINE> ... COEF. FDYNA AMOR: ',COERAM
         WRITE (IFM,*) '<MECANONLINE> ... COEF. FDYNA MASS: ',COERMA
-      ENDIF      
-              
+      ENDIF
+
 C
 C --- INITIALISATION DES CHAMPS D'ENTRAINEMENT EN MULTI-APPUI
 C
@@ -561,31 +561,31 @@ C
         CALL NDYNKK(SDDYNA,'PRMO_DEPGEP',DEPGEP)
         CALL NDYNKK(SDDYNA,'PRMO_VITGEP',VITGEP)
         CALL NDYNKK(SDDYNA,'PRMO_ACCGEP',ACCGEP)
-        NBMODP = NDYNIN(SDDYNA,'NBRE_MODE_PROJ')              
+        NBMODP = NDYNIN(SDDYNA,'NBRE_MODE_PROJ')
         CALL JEVEUO(ACCGEM,'E',JACCGM)
         CALL JEVEUO(ACCGEP,'E',JACCGP)
         CALL JEVEUO(VITGEM,'E',JVITGM)
         CALL JEVEUO(VITGEP,'E',JVITGP)
         CALL JEVEUO(DEPGEM,'E',JDEPGM)
-        CALL JEVEUO(DEPGEP,'E',JDEPGP)          
+        CALL JEVEUO(DEPGEP,'E',JDEPGP)
         CALL DCOPY(NBMODP,ZR(JDEPGM),1,ZR(JDEPGP),1)
         CALL DCOPY(NBMODP,ZR(JVITGM),1,ZR(JVITGP),1)
-        CALL DCOPY(NBMODP,ZR(JACCGM),1,ZR(JACCGP),1)                
+        CALL DCOPY(NBMODP,ZR(JACCGM),1,ZR(JACCGP),1)
 C
 C --- PREDICTION DEPLACEMENT GENERALISE
-C              
+C
         DO 54 IMODE = 1,NBMODP
-          ZR(JDEPGP+IMODE-1) = ZR(JDEPGM+IMODE-1) 
+          ZR(JDEPGP+IMODE-1) = ZR(JDEPGM+IMODE-1)
      &                    + COEFD(2)*ZR(JVITGM+IMODE-1)
      &                    + COEFD(3)*ZR(JACCGM+IMODE-1)
    54   CONTINUE
         IF (NIV.GE.2) THEN
           WRITE (IFM,*) '<MECANONLINE> ...... PRED. DEPL. GENE'
-          CALL NMDEBG('VECT',DEPGEP,IFM)                                
-        ENDIF  
+          CALL NMDEBG('VECT',DEPGEP,IFM)
+        ENDIF
 C
-      ENDIF    
-C    
+      ENDIF
+C
       CALL JEDEMA()
 
       END

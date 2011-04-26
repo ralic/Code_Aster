@@ -10,9 +10,9 @@ C
       LOGICAL      LMOD
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 19/10/2010   AUTEUR DELMAS J.DELMAS 
+C MODIF PREPOST  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -62,7 +62,7 @@ C     ----------- COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*8  ZK8
       CHARACTER*16 ZK16
       CHARACTER*24 ZK24
-      CHARACTER*32 ZK32,JEXNUM,JEXNOM
+      CHARACTER*32 ZK32,JEXNUM
       CHARACTER*80 ZK80
 C     ------------------------------------------------------------------
 C ---------------------------------------------------------------------
@@ -191,6 +191,5 @@ C     --------------------------------
  1001 FORMAT (1X,A8,1X,1PD21.14,1X,1PD21.14,1X,1PD21.14)
  1003 FORMAT (8(1X,A8))
  1004 FORMAT (9X,7(1X,A8))
- 9999 CONTINUE
       CALL JEDEMA()
       END

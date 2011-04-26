@@ -1,11 +1,12 @@
         SUBROUTINE NMCOUP(FAMI,KPG,KSP,NDIM,TYPMOD,IMAT,COMP,LCPDB,CRIT,
      &                      TIMED,TIMEF, EPSDT, DEPST,
-     &                   SIGD,VIND,OPT,ELGEOM,NUMLC,SIGF,VINF,DSDE,IRET)
+     &                   SIGD,VIND,OPT,ELGEOM,SIGF,VINF,DSDE,IRET)
         IMPLICIT NONE
+C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 21/06/2010   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 26/04/2011   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -20,10 +21,10 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C RESPONSABLE JMBHH01 J.M.PROIX
+C RESPONSABLE PROIX J.M.PROIX
 C TOLE CRP_21
 C       ----------------------------------------------------------------
-        INTEGER         IMAT , NDIM,KPG,KSP,IRET,NUMLC
+        INTEGER         IMAT , NDIM,KPG,KSP,IRET
 C
         REAL*8          CRIT(*)
         REAL*8          TIMED,     TIMEF
@@ -38,7 +39,7 @@ C
         CHARACTER*16    COMP(*),     OPT
         CHARACTER*(*)   FAMI
         CHARACTER*8     TYPMOD(*)
-        
+
 C       ----------------------------------------------------------------
 C
 C       AIGUILLAGE DES LOIS DE COMPORTEMENT COUPLES
@@ -119,7 +120,7 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 
       IF (CMP1(1:10).EQ.'GRANGER_FP') THEN
 
-         IF (CMP2(1:5) .EQ. 'ELAS '             .OR.
+         IF (CMP2(1:5) .EQ. 'ELAS '            .OR.
      &       CMP2(1:9) .EQ. 'VMIS_ISOT'        .OR.
      &       CMP2(1:14).EQ. 'VMIS_ISOT_LINE'   .OR.
      &       CMP2(1:8) .EQ. 'ROUSS_PR'         .OR.
@@ -127,16 +128,12 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 
            CALL NMCPLA (FAMI,KPG,KSP,NDIM,TYPMOD,IMAT,COMP,CRIT,
      &                      TIMED,TIMEF,
-     &                      EPSDT,DEPST,SIGD,VIND,OPT,ELGEOM,NUMLC,
+     &                      EPSDT,DEPST,SIGD,VIND,OPT,ELGEOM,
      &                      SIGF,VINF,DSDE,IRET)
            IF(IRET.EQ.1) GOTO 9999
          ELSE IF (CMP2(1:10) .EQ. 'ENDO_ISOT_BETON' .OR.
      &            CMP2(1:6)  .EQ. 'MAZARS') THEN
            OPTION(2)(1:16) = CMP2(1:16)
-C          CALL NMGRAN ( NDIM, TYPMOD, IMAT, COMP, CRIT,
-C     1                  TIMED,TIMEF, TEMPD,TEMPF,TREF,HYDRD,
-C     &                  HYDRF,SECHD,SECHF,SREF,TEMPD,TEMPF,EPSDT,
-C     2                  DEPST,SIGD, VIND, OPTION,ELGEOM,SIGF,VINF,DSDE)
            CALL U2MESS('F','ALGORITH7_2')
 
          ELSE
@@ -147,25 +144,25 @@ C     2                  DEPST,SIGD, VIND, OPTION,ELGEOM,SIGF,VINF,DSDE)
 
         IF (CMP2(1:15) .EQ. 'ENDO_ISOT_BETON' .OR.
      &      CMP2(1:6)  .EQ. 'MAZARS') THEN
-         
+
           CMP4(1:16) = TYPMOD(2)
           OPTION(2)(1:16) = CMP2(1:16)
 
           IF  (CMP2(1:15) .EQ. 'ENDO_ISOT_BETON')  THEN
             IF ((TYPMOD(1).EQ.'C_PLAN').AND.(.NOT.LCPDB)) THEN
               CALL U2MESS('F','ALGORITH7_5')
-            ENDIF  
+            ENDIF
           ELSE
              IF ((TYPMOD(1).EQ.'C_PLAN') .AND. LCPDB) THEN
               CALL U2MESS('F','ALGORITH7_4')
-            ENDIF 
+            ENDIF
           ENDIF
-                     
-          IF (TYPMOD(2) .EQ. 'GRADEPSI') THEN         
+
+          IF (TYPMOD(2) .EQ. 'GRADEPSI') THEN
             CALL LCUMFE ( FAMI,KPG,KSP,NDIM, TYPMOD, IMAT,
      &                    TIMED,TIMEF,
      &                    EPSDT,DEPST,SIGD, VIND, OPTION,SIGF,
-     &                    VINF,DSDE,ELGEOM)             
+     &                    VINF,DSDE,ELGEOM)
           ELSEIF (TYPMOD(2) .EQ. 'GRADVARI') THEN
             TEXTE(1)=CMP4
             TEXTE(2)=CMP2
@@ -174,7 +171,7 @@ C     2                  DEPST,SIGD, VIND, OPTION,ELGEOM,SIGF,VINF,DSDE)
             CALL LCUMFP ( FAMI,KPG,KSP,NDIM, TYPMOD, IMAT, COMP,
      &                    TIMED,TIMEF,
      &                    EPSDT,DEPST,SIGD, VIND, OPTION, SIGF,
-     &                    VINF,DSDE,CRIT) 
+     &                    VINF,DSDE,CRIT)
           ENDIF
         ELSE
           CALL U2MESS('F','ALGORITH7_3')

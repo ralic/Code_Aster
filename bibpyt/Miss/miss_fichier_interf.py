@@ -1,21 +1,21 @@
-#@ MODIF miss_fichier_interf Miss  DATE 01/03/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF miss_fichier_interf Miss  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # RESPONSABLE COURTOIS M.COURTOIS
 
@@ -82,6 +82,8 @@ def fichier_cmde(param, struct, *nom_fichier):
         "freq_min" : param["FREQ_MIN"],
         "freq_max" : param["FREQ_MAX"],
         "freq_pas" : param["FREQ_PAS"],
+        "freq_list" : param['LIST_FREQ'],
+        "freq_nb" : "",
         "binaire"  : "",
         "z0" : param["Z0"],
         "surf"  : "",
@@ -95,6 +97,16 @@ def fichier_cmde(param, struct, *nom_fichier):
     if param['RFIC'] != 0.:
         dict_info["rfic1"] = "RFIC"
         dict_info["rfic2"] = str(param['RFIC'])
+    # deux formats possibles pour les fréquences
+    if param["FREQ_MIN"]:
+        itmpl = "FREQUENCE DE %%(freq_min)%(R)s A %%(freq_max)%(R)s " \
+                "PAS %%(freq_pas)%(R)s" % dict_format
+        dict_info['_lfreq'] = itmpl % dict_info
+    else:
+        dict_info['freq_nb'] = len(param['LIST_FREQ'])
+        itmpl = "FREQUENCE %%(freq_nb)%(I)s\n" % dict_format + \
+                (dict_format['sR'] * dict_info['freq_nb']) % dict_info['freq_list']
+        dict_info['_lfreq'] = itmpl % dict_info
     content = template_miss_in % dict_info
     return content
 
@@ -137,7 +149,7 @@ INTEGRATION RECT 6 8 TRIANGLE 12 12
 * Plage de frequence MISS
 *-------------------------
 *
-FREQUENCE DE %%(freq_min)%(R)s A %%(freq_max)%(R)s PAS %%(freq_pas)%(R)s
+%%(_lfreq)s
 *
 * Definition du sous-domaine    1
 *----------------------------
@@ -204,7 +216,7 @@ EXEC SPFR
 *
 * Calcul des impedances
 *
-EXEC UGTG IMPEDANCE FORCE %%(rfic1)s %%(rfic2)s %%(rfic2)s 
+EXEC UGTG IMPEDANCE FORCE %%(rfic1)s %%(rfic2)s %%(rfic2)s
 *
 *
 * Post-traitement

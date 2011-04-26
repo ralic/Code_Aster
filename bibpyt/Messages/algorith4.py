@@ -1,21 +1,21 @@
-#@ MODIF algorith4 Messages  DATE 14/12/2010   AUTEUR PELLET J.PELLET 
+#@ MODIF algorith4 Messages  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # RESPONSABLE DELMAS J.DELMAS
 
@@ -53,7 +53,7 @@ cata_msg = {
 """),
 
 53 : _("""
-  SYC doit etre supérieur à SQRT((1+NU-2*NU*NU)/(2.D0*NU*NU))*SYT 
+  SYC doit etre supérieur à SQRT((1+NU-2*NU*NU)/(2.D0*NU*NU))*SYT
   dans DEFI_MATERIAU pour prendre en compte le confinement
 """),
 
@@ -116,16 +116,16 @@ cata_msg = {
 """),
 
 73 : _("""
-  non convergence à itération maxi  %(k1)s  
+  non convergence à itération maxi  %(k1)s
   - erreur calculee  %(k2)s  >  %(k3)s
   mais tres faibles incréments de newton pour la loi BETON_DOUBLE_DP
   - on accepte la convergence.
 """),
 
 74 : _("""
-  non convergence à itération maxi  %(k1)s 
-  - erreur calculée  %(k2)s  >  %(k3)s 
-  - pour la loi BETON_DOUBLE_DP 
+  non convergence à itération maxi  %(k1)s
+  - erreur calculée  %(k2)s  >  %(k3)s
+  - pour la loi BETON_DOUBLE_DP
   - redécoupage du pas de temps
 """),
 
@@ -211,11 +211,6 @@ cata_msg = {
 
 90 : _("""
  état convergé non conforme en compression
-"""),
-
-92 : _("""
- valeurs initiales non conformes :
- il y a probablement une erreur dans la programmation
 """),
 
 94 : _("""

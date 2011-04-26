@@ -1,12 +1,13 @@
       SUBROUTINE NMPIME(FAMI,KPG,KSP,IMATE,OPTION,
      &           XLONG0,A,XLONGM,DLONG0,
-     >           NCSTPM,CSTPM,
-     >           VIM,EFFNOM,
+     &           NCSTPM,CSTPM,
+     &           VIM,EFFNOM,
      &           VIP,EFFNOP,KLV,FONO)
+C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 15/11/2010   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF ALGORITH  DATE 26/04/2011   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -21,8 +22,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C TOLE CRP_21
-C -----------------------------------------------------------------
+C
       IMPLICIT REAL*8 (A-H,O-Z)
       PARAMETER   (NEQ = 6,NBT = 21,NVAR=8)
 
@@ -30,7 +30,7 @@ C -----------------------------------------------------------------
       REAL*8        XLONG0,A,XLONGM
       INTEGER       KPG,KSP,NCSTPM,IMATE
       REAL*8        CSTPM(NCSTPM)
-      REAL*8        TMOINS,TPLUS,DLONG0
+      REAL*8        DLONG0
       REAL*8        EFFNOM,VIM(NVAR)
       REAL*8        EFFNOP,VIP(NVAR),FONO(NEQ),KLV(NBT)
 C -----------------------------------------------------------------
@@ -70,14 +70,11 @@ C       KLV    : MATRICE TANGENTE
 C
 C----------VARIABLES LOCALES
 C
-      REAL*8      CYCL,PLASTI
-      REAL*8      SIGM,DEPTHE,EPSY,R,SIGMAX
-      REAL*8      EPSRM,EPSRP,SIGRP,EPSM
-      REAL*8      SIGEL,PALEL,PALEC,PALSU,PALGIU
-      REAL*8      SIGEPS,EPSP,DEPSP,EPS0,SIG0
-      REAL*8      SIGP,XRIG,TG,FLBG
-      REAL*8      DEPS,DEPSM,EPSTHE
-      REAL*8      A5,XISEC,XIPRIM,BC,BT,GAS,B0
+      REAL*8      SIGM
+      REAL*8      EPSM
+      REAL*8      EPSP
+      REAL*8      SIGP,XRIG
+      REAL*8      DEPS,EPSTHE
 
 C
 C----------INITIALISATIONS

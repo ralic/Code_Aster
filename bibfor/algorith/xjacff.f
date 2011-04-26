@@ -11,7 +11,7 @@
 
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 25/01/2011   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 26/04/2011   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -81,13 +81,13 @@ C
       INTEGER         I,J,K,NNOF,IPOIDF,IVFF,IDFDEF,JCOR2D,JCOR3D,NDIMF
       CHARACTER*8     K8BID
       CHARACTER*24    COOR2D,COOR3D
-      INTEGER         DDLH,NFE,DDLS,DDLM,IDEPL
+      INTEGER         DDLH,NFE,DDLS,DDLM
       REAL*8          HE,FE(4),DGDGL(4,3)
       REAL*8          XE(3),F(3,3),DFDIC(27,3)
       REAL*8          EPS(6),GRAD(3,3)
-      
+
       LOGICAL         LTEATT, AXI
-      
+
       PARAMETER       (NBNOMX = 27)
 C ----------------------------------------------------------------------
 
@@ -95,9 +95,9 @@ C ----------------------------------------------------------------------
 
       CALL ELREF4(ELC,FPG,NDIMF,NNOF,IBID,IBID,IPOIDF,IVFF,
      &                                             IDFDEF,IBID)
-     
+
       AXI = LTEATT(' ','AXIS','OUI')
-     
+
       CALL ASSERT(NNOF.EQ.3)
       CALL ASSERT(NDIM.EQ.3)
 

@@ -2,9 +2,9 @@
      &                  MAA)
 C--------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 08/11/2010   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -34,7 +34,6 @@ C IN : NUM : NUMEROTATION DES DDLS THERMIQUES D INTERFACE
 C OUT : MAA : MATRICE AX OU AY
 C---------------------------------------------------------------------
 C--------- DEBUT DES COMMUNS JEVEUX ----------------------------------
-      CHARACTER*32 JEXNUM,JEXNOM,JEXR8,JEXATR
       INTEGER ZI
       COMMON /IVARJE/ZI(1)
       REAL*8 ZR
@@ -58,7 +57,6 @@ C--------- FIN DES COMMUNS JEVEUX ------------------------------------
       CHARACTER*16 OPTION
       CHARACTER*19 MATEL,MAA
       CHARACTER*24 LCHOUT(1),LCHIN(1),LIGRMO,MAA2
-      REAL*8  RTBLOC,JEVTBL
 
 
 
@@ -93,6 +91,5 @@ C---------------ASSEMBLAGE DES MATRICES AX OU AY DES N(I)N(J)NX OU NY
 
       CALL ASSMAM('V',MAA,1,MATEL,1.D0,NUM,'ZERO',1)
 
-   10 CONTINUE
       CALL JEDEMA()
       END

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
+#& MODIF COMMANDE  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -549,11 +549,11 @@ AFFE_CARA_ELEM=OPER(nom="AFFE_CARA_ELEM",op=  19,sd_prod=cara_elem,
       regles               = (UN_PARMI('COEF_GROUP','FONC_GROUP'),
                               UN_PARMI('COOR_CENTRE','NOEUD_CENTRE','GROUP_NO_CENTRE'),
                               EXCLUS('GROUP_MA_POI1','GROUP_MA_SEG2'),),
-      GROUP_MA             = SIMP(statut='o',typ=ma,validators=NoRepeat(),max='**',
+      GROUP_MA             = SIMP(statut='o',typ=grma,validators=NoRepeat(),max='**',
          fr="Surface servant à répartir les caractéristiques des discrets"),
-      GROUP_MA_POI1        = SIMP(statut='f',typ=ma,validators=NoRepeat(),max=1,
+      GROUP_MA_POI1        = SIMP(statut='f',typ=grma,validators=NoRepeat(),max=1,
          fr="Mailles de type point correspondant aux discrets"),
-      GROUP_MA_SEG2        = SIMP(statut='f',typ=ma,validators=NoRepeat(),max=1,
+      GROUP_MA_SEG2        = SIMP(statut='f',typ=grma,validators=NoRepeat(),max=1,
          fr="Mailles de type seg2 correspondant aux discrets"),
       FONC_GROUP           = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
       COEF_GROUP           = SIMP(statut='f',typ='R',max='**'),
@@ -578,8 +578,8 @@ AFFE_CARA_ELEM=OPER(nom="AFFE_CARA_ELEM",op=  19,sd_prod=cara_elem,
 
 #============================================================================
    RIGI_MISS_3D         = FACT(statut='f',max='**',
-      GROUP_MA_POI1        = SIMP(statut='o',typ=ma,max=1),
-      GROUP_MA_SEG2        = SIMP(statut='f',typ=ma,max=1),
+      GROUP_MA_POI1        = SIMP(statut='o',typ=grma,max=1),
+      GROUP_MA_SEG2        = SIMP(statut='f',typ=grma,max=1),
       FREQ_EXTR            = SIMP(statut='o',typ='R',max=1),
       UNITE_RESU_IMPE      = SIMP(statut='f',typ='I',defaut=30),
    ),

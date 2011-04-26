@@ -2,12 +2,11 @@
       IMPLICIT   NONE
       INTEGER             NBMA, LISTMA(*)
       CHARACTER*8         NOMA
-C     ------------------------------------------------------------------
+C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 24/03/2009   AUTEUR GALENNE E.GALENNE 
-C TOLE CRP_20 CRP_21
+C MODIF POSTRELE  DATE 26/04/2011   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -22,7 +21,6 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C     ------------------------------------------------------------------
 C
 C     OPERATEUR POST_RCCM, TRAITEMENT DE FATIGUE_B3600
 C     RECUPERATION DES DONNEES DE "SITUATION"
@@ -46,7 +44,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32                               ZK32
       CHARACTER*80                                        ZK80
       COMMON  /KVARJE/ ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
-      CHARACTER*32     JEXNOM, JEXNUM
+      CHARACTER*32      JEXNUM
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
 C
       INTEGER      N1, NBSITU, IOCC, IBID, JMOMEA,JMOMEB,II,NOCC,JRETH,
@@ -55,7 +53,7 @@ C
      &             NBGR, NUMGR, NBSIGR, JNSG, NBTH, JSEIGR,JCHTH,NUME,
      &             NBM, NBP12, NBP23, NBP13, JSP12, JSP23, JSP13,
      &             NBSG1, NBSG2, NBSG3, JSIGR, VALI(3), NBGRT, NUMG1,
-     &             NUMG2,JSPAS, ING, JNBVG, NBVG, NDIM, NUMGS,NBSEIS 
+     &             NUMG2,JSPAS, ING, JNBVG, NBVG, NDIM, NUMGS,NBSEIS
       LOGICAL      YAPASS
       CHARACTER*8  K8B, OUINON
       CHARACTER*16 MOTCL1, MOTCL2
@@ -98,30 +96,22 @@ C
 C
          CALL CODENT ( IOCC , 'D0' , K8B  )
 C
-C
 C ------ LE NUMERO DE SITUATION:
 C        -----------------------
-C
          CALL GETVIS (MOTCL1,'NUME_SITU',IOCC,1,1,ZI(JNSITU+IOCC-1),N1)
-C
 C
 C ------ LE NOMBRE D'OCCURRENCE:
 C        -----------------------
-C
          CALL GETVIS ( MOTCL1, 'NB_OCCUR', IOCC,1,1, NOCC, N1 )
          ZI(JNBOCC+2*IOCC-2) = NOCC
 C
-C
 C ------ LES PRESSIONS:
 C        --------------
-C
          CALL GETVR8 ( MOTCL1,'PRES_A', IOCC,1,1, ZR(JPRESA+IOCC-1),N1)
          CALL GETVR8 ( MOTCL1,'PRES_B', IOCC,1,1, ZR(JPRESB+IOCC-1),N1)
 C
-C
 C ------ LES NUMEROS DE GROUPE:
 C        ----------------------
-C
         CALL GETVIS ( MOTCL1, 'NUME_GROUPE', IOCC,1,0, NUMPAS, N1 )
         IF ( N1 .NE. 0 ) THEN
            NBVG = -N1
@@ -149,7 +139,6 @@ C
 C
 C ------ LES NUMEROS DE PASSAGE:
 C        -----------------------
-C
         CALL GETVIS ( MOTCL1, 'NUME_PASSAGE', IOCC,1,0, NUMPAS, N1 )
         IF ( N1 .NE. 0 ) THEN
            CALL GETVIS ( MOTCL1, 'NUME_PASSAGE', IOCC,1,2, NUMPAS, N1 )
@@ -176,10 +165,8 @@ C
  25        CONTINUE
         ENDIF
 C
-C
 C ------ COMBINABLE DANS SON GROUPE:
 C        ---------------------------
-C
          CALL GETVTX ( MOTCL1, 'COMBINABLE', IOCC,1,1, OUINON, N1 )
          IF ( OUINON(1:3) .EQ. 'OUI' ) THEN
             ZL(JCOMBI+IOCC-1) = .TRUE.
@@ -187,10 +174,8 @@ C
             ZL(JCOMBI+IOCC-1) = .FALSE.
          ENDIF
 C
-C
 C ------ ETAT DE CHARGEMENT POUR "A":
 C        ----------------------------
-C
          CALL GETVIS ( MOTCL1, 'CHAR_ETAT_A', IOCC,1,0, IBID, N1 )
          NBCHAR = -N1
          CALL WKVECT ( '&&RC36SI.CHAR_ETAT', 'V V I', NBCHAR, JCHAR1 )
@@ -202,10 +187,8 @@ C
          ZK24(JMOMEA+IOCC-1) = CHMOME
          CALL JEDETR ( '&&RC36SI.CHAR_ETAT' )
 C
-C
 C ------ ETAT DE CHARGEMENT POUR "B":
 C        ----------------------------
-C
          CALL GETVIS ( MOTCL1, 'CHAR_ETAT_B', IOCC,1,0, IBID, N1 )
          NBCHAR = -N1
          CALL WKVECT ( '&&RC36SI.CHAR_MECA', 'V V I', NBCHAR, JCHAR2 )
@@ -217,10 +200,8 @@ C
          ZK24(JMOMEB+IOCC-1) = CHMOME
          CALL JEDETR ( '&&RC36SI.CHAR_MECA' )
 C
-C
 C ------ TRANSITOIRE THERMIQUE ASSOCIE A LA SITUATION:
 C        ---------------------------------------------
-C
          CALL GETVIS ( MOTCL1, 'NUME_RESU_THER', IOCC,1,0, IBID, N1 )
          NBTH = -N1
          CALL JECROC (JEXNUM('&&RC3600.SITU_THERMIQUE',IOCC))
@@ -241,7 +222,6 @@ C
 C     ------------------------------------------------------------------
 C                   RESULTATS DES CALCULS THERMIQUES
 C     ------------------------------------------------------------------
-C
           CALL RC36TH (NOMA,NBMA,LISTMA,ZK24(JCHTH),IOCC,NBTH,ZI(JRETH))
          ENDIF
 C
@@ -257,13 +237,11 @@ C
 C
          ZL(JCOMBI+NBSITU+IOCC-1) = .TRUE.
 C
-C
 C ------ LE NUMERO DE SITUATION:
 C        -----------------------
 C
          CALL GETVIS (MOTCL2,'NUME_SITU',IOCC,1,1,
      +                                   ZI(JNSITU+NBSITU+IOCC-1),N1)
-C
 C
 C ------ LE NOMBRE D'OCCURRENCE:
 C        -----------------------
@@ -272,7 +250,6 @@ C
          ZI(JNBOCC+2*(NBSITU+IOCC)-2) = NOCC
          CALL GETVIS ( MOTCL2, 'NB_CYCL_SEISME', IOCC,1,1, NSCY, N1 )
          ZI(JNBOCC+2*(NBSITU+IOCC)-1) = NSCY
-C
 C
 C ------ ETAT DE CHARGEMENT:
 C        -------------------
@@ -287,7 +264,6 @@ C
      &                                     NBCHAR, ZI(JCHAR1), CHMOME )
          ZK24(JMOMEA+NBSITU+IOCC-1) = CHMOME
          CALL JEDETR ( '&&RC36SI.CHAR_ETAT' )
-C
 C
 C ------ TRANSITOIRE THERMIQUE ASSOCIE A LA SITUATION:
 C        ---------------------------------------------

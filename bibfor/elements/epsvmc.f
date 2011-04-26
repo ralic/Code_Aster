@@ -1,8 +1,10 @@
       SUBROUTINE EPSVMC (FAMI,NNO,NDIM,NBSIG,NPG,IPOIDS,IVF,
      &                   IDFDE, XYZ,DEPL,INSTAN,MATER,
      &                   REPERE,NHARM,OPTION,EPSM)
+      IMPLICIT NONE
+C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 26/04/2011   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,9 +21,6 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C TOLE CRP_21
-C.======================================================================
-      IMPLICIT NONE
 C
 C      EPSVMC   -- CALCUL DES  DEFORMATIONS MECANIQUES
 C                  (I.E. EPS_TOTALES - EPS_THERMIQUES )
@@ -67,18 +66,17 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C -----  ARGUMENTS
-           CHARACTER*16 OPTION
-           CHARACTER*4  FAMI
-           REAL*8       XYZ(1),  DEPL(1),  EPSM(1), REPERE(7)
-           REAL*8       INSTAN,   NHARM
-           INTEGER      IDFDE,IPOIDS,IVF,MATER,NBSIG,NDIM,NNO,NPG
+      CHARACTER*16 OPTION
+      CHARACTER*4  FAMI
+      REAL*8       XYZ(1),  DEPL(1),  EPSM(1), REPERE(7)
+      REAL*8       INSTAN,   NHARM
+      INTEGER      IDFDE,IPOIDS,IVF,MATER,NBSIG,NDIM,NNO,NPG
 C -----  VARIABLES LOCALES
-           CHARACTER*8  PHENOM
-      INTEGER ICODRE
-           REAL*8       EPSTH(162), EPS2(162), XYZGAU(3), D(4,4)
-           REAL*8       ZERO,UN,DEUX
-           INTEGER      I,IGAU
-           LOGICAL      LTEATT
+      CHARACTER*8  PHENOM
+      REAL*8       EPSTH(162), EPS2(162), XYZGAU(3), D(4,4)
+      REAL*8       ZERO,UN,DEUX
+      INTEGER      I,IGAU,ICODRE
+      LOGICAL      LTEATT
 C.========================= DEBUT DU CODE EXECUTABLE ==================
 C
 C --- INITIALISATIONS :

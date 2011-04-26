@@ -1,8 +1,8 @@
-#@ MODIF rouss_visc Comportement  DATE 07/12/2010   AUTEUR GENIAUT S.GENIAUT 
+#@ MODIF rouss_visc Comportement  DATE 26/04/2011   AUTEUR PROIX J-M.PROIX 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -23,7 +23,7 @@ from cata_comportement import LoiComportement
 
 loi = LoiComportement(
    nom            = 'ROUSS_VISC',
-   doc = """Relation de comportement élasto-visco-plastique de G.Rousselier, en petites déformations (DEFORMATION='PETIT_REAC', 'EULER_ALMANSI','REAC_GEOM' ou 'PETIT'), . 
+   doc = """Relation de comportement élasto-visco-plastique de G.Rousselier, en petites déformations.
    Elle permet de rendre compte de la croissance des cavités et de décrire la rupture ductile.
    Pour faciliter l'intégration de ce modèle, il est conseillé d'utiliser le redécoupage automatique local du pas de temps (ITER_INTE_PAS). 
    Pour l'intégration de cette loi, une theta-méthode est disponible et on conseille d'utiliser une intégration semi-NEWTON_1D c'est-à-dire : PARM_THETA = 0.5.""",

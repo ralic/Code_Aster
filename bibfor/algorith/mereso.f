@@ -4,10 +4,11 @@
      &                    NUMEDD, VECASS,
      &                    ASSMAT, SOLVEU, MATASS, MAPREC,
      &                    BASE, COMPOR )
+C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/10/2010   AUTEUR BOITEAU O.BOITEAU 
+C MODIF ALGORITH  DATE 26/04/2011   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -52,7 +53,6 @@ C   -------------------------------------------------------------------
 C     ASTER INFORMATIONS:
 C       30/01/04 (OB): MODIF CRITER POUR SOLVEUR FETI.
 C-----------------------------------------------------------------------
-C TOLE CRP_21
 C
       IMPLICIT NONE
 
@@ -103,7 +103,7 @@ C 0.3. ==> VARIABLES LOCALES
       CHARACTER*8 K8BID
       CHARACTER*8 NOPASE
       CHARACTER*19 CHDEPL, CHSOL
-      CHARACTER*24 CNCHCI,INFOCH
+      CHARACTER*24 CNCHCI
       CHARACTER*24 CRITER
       CHARACTER*24 RESULT
       CHARACTER*24 VDEPL, VDEPLM, VDEPLP

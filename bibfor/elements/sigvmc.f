@@ -1,11 +1,12 @@
       SUBROUTINE SIGVMC (FAMI,NNO,NDIM,NBSIG,NPG,
-     +                    IPOIDS,IVF,IDFDE,XYZ,DEPL,
-     +                    INSTAN, REPERE,MATER,NHARM,SIGMA,
-     +                    LSENS)
+     &                    IPOIDS,IVF,IDFDE,XYZ,DEPL,
+     &                    INSTAN, REPERE,MATER,NHARM,SIGMA,
+     &                    LSENS)
+C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 24/09/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF ELEMENTS  DATE 26/04/2011   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -22,7 +23,6 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C.======================================================================
       IMPLICIT REAL*8 (A-H,O-Z)
-C TOLE CRP_21
 C
 C      SIGVMC   -- CALCUL DES  CONTRAINTES 'VRAIES'
 C                  (I.E. SIGMA_MECA - SIGMA_THERMIQUES- SIGMA_RETRAIT)

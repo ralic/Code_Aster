@@ -5,9 +5,9 @@
       REAL*8            VR(2)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF CALCULEL  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -57,14 +57,12 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32                               ZK32
       CHARACTER*80                                        ZK80
       COMMON  /KVARJE/ ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
-      CHARACTER*32     JEXNUM, JEXNOM, JEXATR
 C     ------------------------------------------------------------------
-      INTEGER      NBGREL, NBELEM, DIGDEL, LONG
+      INTEGER      NBGREL, NBELEM, DIGDEL
       CHARACTER*8  SCALAI
-      INTEGER      LONGT1, LONGT2, NCMPEL, MODE, J, IGD1, IGD2, LONGT
+      INTEGER      LONGT1, LONGT2, NCMPEL, MODE, J, IGD1, IGD2
       REAL*8       RZERO
-      CHARACTER*4  CVAL
-      CHARACTER*8  SCAL1, SCAL2, SCAL
+      CHARACTER*8  SCAL1, SCAL2
       CHARACTER*19 CHAMP1, CHAMP2, LIGREL, LIGRE1, LIGRE2
       LOGICAL      FIRST
 C

@@ -1,7 +1,7 @@
       SUBROUTINE OP0187()
       IMPLICIT NONE
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 22/02/2011   AUTEUR MACOCCO K.MACOCCO 
+C MODIF PREPOST  DATE 26/04/2011   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -41,7 +41,6 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32 ZK32
       CHARACTER*80 ZK80
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
-      CHARACTER*32 JEXNUM,JEXNOM
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C     ------------------------------------------------------------------
       INTEGER      IBID,IRET,NSETOT,NNNTOT,NCOTOT,NBNOC,NBMAC,IFM,NIV
@@ -65,7 +64,7 @@ C
       IF (NIV.GT.1) WRITE(IFM,*)' '
       IF (NIV.GT.1) WRITE(IFM,*)'1. XPOINI'
       CALL XPOINI(MAXFEM,MO,MALINI,K8B,K24B,K8B,K8B,PREFNO,NOGRFI)
-      CALL XPOFON(MO,MAXFEM,MFTOT,NFTOT,NFCOMF,NGFON)
+      CALL XPOFON(MO,MFTOT,NFTOT,NFCOMF,NGFON)
 C
 C     ------------------------------------------------------------------
 C     2. SEPARATION DES MAILLES DE MALINI EN 2 GROUPES
@@ -82,7 +81,7 @@ C
       LISTGR = '&&OP0187.LISTGR'
       CALL XPOSEP(MO,MALINI,MAILC,MAILX,NSETOT,NNNTOT,NCOTOT,
      &                                                 LOGRMA,LISTGR)
-      
+
       IF (NIV.GT.1) THEN
         WRITE(IFM,*)'NOMBRE DE NOUVELLES MAILLES A CREER',NSETOT+MFTOT
         WRITE(IFM,*)'NOMBRE DE NOUVEAUX NOEUDS A CREER',NNNTOT+NFTOT
@@ -132,8 +131,8 @@ C     ------------------------------------------------------------------
 
       IF (NIV.GT.1) WRITE(IFM,*)' '
       IF (NIV.GT.1) WRITE(IFM,*)'6. XPOCRF'
-      CALL XPOCRF(MO,MAXFEM,MFTOT,NFTOT,NFCOMF)
-      
+      CALL XPOCRF(MO,MAXFEM,MFTOT,NFTOT)
+
       IF (NIV.GT.1) WRITE(IFM,*)'FIN DE POST_MAIL_XFEM'
 
       CALL TITRE()

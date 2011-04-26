@@ -5,31 +5,31 @@
         REAL*8 COEFT(NMAT),DY(*),VIND(*),HSR(5,24,24),SQ,EXPBP(*)
         CHARACTER*16 NECRIS
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 12/07/2010   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C RESPONSABLE JMBHH01 J.M.PROIX
-C  COMPORTEMENT MONOCRISTALLIN : ECROUISSAGE ISOTROPE 
-C     IN  COEFT   :  PARAMETRES MATERIAU 
+C  COMPORTEMENT MONOCRISTALLIN : ECROUISSAGE ISOTROPE
+C     IN  COEFT   :  PARAMETRES MATERIAU
 C         IFA     :  NUMERO DE FAMILLE
 C         NMAT    :  NOMBRE MAXI DE MATERIAUX
 C         NBCOMM  :  NOMBRE DE COEF MATERIAU PAR FAMILLE
 C         NECRIS  :  NOM DE LA LOI D'ECROUISSAGE ISTROPE
-C         IS      :  NUMERO DU SYSTEME DE GLISSEMET EN COURS 
+C         IS      :  NUMERO DU SYSTEME DE GLISSEMET EN COURS
 C         NBCOMM  :  INCIDES DES COEF MATERIAU
 C         NBSYS   :  NOMBRE DE SYSTEMES DE GLISSEMENT DE LA FAMILLE
 C         VIND    :  VARIABLES INTERNES A L'INSTANT PRECEDENT
@@ -42,9 +42,9 @@ C         RP      :  R(P)
 C ======================================================================
 
 C     ----------------------------------------------------------------
-      REAL*8 C,P,R0,Q,B,RP,K,N,FTAU,CRIT,B1,B2,Q1,Q2,A,GAMMA0,V,D
-      REAL*8 TPERD,TABS,PR,DRDP,B1P,MU,CEFF,ALPHAM(12),ALPHAS(12),R8B
-      INTEGER IEI,TNS,NS,IR,NBCOEF,NUEISO
+      REAL*8 P,R0,Q,B,RP,B1,B2,Q1,Q2
+      REAL*8 PR,MU,CEFF,ALPHAM(12),ALPHAS(12),R8B
+      INTEGER IEI,IR,NUEISO
       INTEGER NUMHSR
 C     ----------------------------------------------------------------
 
@@ -61,22 +61,22 @@ C      IF (NECRIS.EQ.'ECRO_ISOT1') THEN
          Q     =COEFT(IEI+2)
          B     =COEFT(IEI+3)
          NUMHSR=NINT(COEFT(IEI+4))
-         
+
          IF (IEXP.EQ.1) THEN
-           DO 10 IR = 1, NBSYS                              
+           DO 10 IR = 1, NBSYS
             PR=VIND(3*(IR-1)+3)+ABS(DY(IR))
-            EXPBP(IR) = (1.D0-EXP(-B*PR))      
-  10      CONTINUE                                          
+            EXPBP(IR) = (1.D0-EXP(-B*PR))
+  10      CONTINUE
          ENDIF
-         
+
 C       VIND commence en fait au début de systemes de glissement
-C      de LA famille courante;         
-         SQ=0.D0                                            
-           DO 11 IR = 1, NBSYS                              
+C      de LA famille courante;
+         SQ=0.D0
+           DO 11 IR = 1, NBSYS
             PR=VIND(3*(IR-1)+3)+ABS(DY(IR))
-            SQ = SQ + HSR(NUMHSR,IS,IR)*EXPBP(IR)      
-  11      CONTINUE                                          
-            RP=R0+Q*SQ                                      
+            SQ = SQ + HSR(NUMHSR,IS,IR)*EXPBP(IR)
+  11      CONTINUE
+            RP=R0+Q*SQ
 
 C      ELSEIF (NECRIS.EQ.'ECRO_ISOT2') THEN
       ELSEIF (NUEISO.EQ.2) THEN
@@ -90,22 +90,22 @@ C      ELSEIF (NECRIS.EQ.'ECRO_ISOT2') THEN
 
 
 C        VIND COMMENCE EN FAIT AU DÉBUT DE SYSTEMES DE GLISSEMENT
-C        DE LA FAMILLE COURANTE;         
+C        DE LA FAMILLE COURANTE;
 
-         SQ=0.D0                                            
-         DO 12 IR = 1, NBSYS                              
+         SQ=0.D0
+         DO 12 IR = 1, NBSYS
             PR=VIND(3*(IR-1)+3)+ABS(DY(IR))
-            SQ = SQ + HSR(NUMHSR,IS,IR)*(1.D0-EXP(-B1*PR))      
-  12     CONTINUE       
+            SQ = SQ + HSR(NUMHSR,IS,IR)*(1.D0-EXP(-B1*PR))
+  12     CONTINUE
          P=VIND(3*(IS-1)+3)+ABS(DY(IS))
          RP=R0+Q1*SQ+Q2*(1.D0-EXP(-B2*P))
-         
+
 C      ELSEIF (NECRIS.EQ.'ECRO_DD_CFC') THEN
       ELSEIF (NUEISO.EQ.3) THEN
          MU    =COEFT(IEI+4)
          NUMHSR=NINT(COEFT(IEI+5))
 C        VIND COMMENCE EN FAIT AU DÉBUT DE SYSTEMES DE GLISSEMENT
-C        DE LA FAMILLE COURANTE;         
+C        DE LA FAMILLE COURANTE;
 C        VARIABLE INTERNE PRINCIPALE : ALPHA=RHO*B**2
 
 C        RHO_0  VALEUR INITIALE DE DENSITE DE DISLOCATION
@@ -113,23 +113,22 @@ C        RHO_0  VALEUR INITIALE DE DENSITE DE DISLOCATION
             ALPHAM(IR)=VIND(3*(IR-1)+1)
             ALPHAS(IR)= ALPHAM(IR)+DY(IR)
  55      CONTINUE
- 
+
          RP=0.D0
-         DO 23 IR = 1, NBSYS                              
+         DO 23 IR = 1, NBSYS
             IF (ALPHAS(IR).GT.0.D0) THEN
-            RP=RP+ALPHAS(IR)*HSR(NUMHSR,IS,IR) 
+            RP=RP+ALPHAS(IR)*HSR(NUMHSR,IS,IR)
             ENDIF
-  23     CONTINUE       
+  23     CONTINUE
 C        CE QUE L'ON APPELLE RP CORRESPOND ICI A TAU_S_FOREST
 
          CALL LCMMDC(COEFT,IFA,NMAT,NBCOMM,ALPHAS,IS,CEFF,R8B)
-         
+
          RP=MU*SQRT(RP)*CEFF
-         
+
       ELSE
-          CALL U2MESS('F','COMPOR1_21')          
+          CALL U2MESS('F','COMPOR1_21')
       ENDIF
-      
- 9999 CONTINUE           
-           
+
+
       END

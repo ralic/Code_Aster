@@ -1,6 +1,6 @@
       SUBROUTINE DIAGP3(TENS,VECP,VALP)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 10/01/2011   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -27,12 +27,11 @@ C    IN    TENS   : TENSEUR SOUS LA FORME
 C                     (XX XY XZ YY YZ ZZ)
 C ----------------------------------------------------------------------
 
-      INTEGER I,J,NRAC,IND
+      INTEGER I,NRAC,IND
       LOGICAL INVVP,TNULL
-      REAL*8  TRACE,X(6),Y(6),DET(4),D12,D13,D23,RTEMP,NORM(3)
+      REAL*8  TRACE,X(6),Y(6),DET(4),RTEMP
       REAL*8  A,B,C,R8PI,THETA,R8MIEM,R8PREM
       REAL*8  F,G
-      REAL*8  TPS(6)
 
 
 

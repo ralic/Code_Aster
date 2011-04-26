@@ -4,9 +4,9 @@
       CHARACTER*(*) NOMSD,CHAMP,NOMSYM
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 02/02/2010   AUTEUR SELLENET N.SELLENET 
+C MODIF UTILITAI  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -33,7 +33,7 @@ C OUT : IRET   :  / 1 : CHAMP A ETE TROUVE
 C                 / 0 : CHAMP N'A PAS ETET TROUVE
 C ----------------------------------------------------------------------
 C --------------- COMMUNS NORMALISES  JEVEUX  --------------------------
-      CHARACTER*32 JEXNUM,JEXNOM,JEXATR,JEXR8
+      CHARACTER*32 JEXNUM
       INTEGER ZI
       COMMON /IVARJE/ZI(1)
       REAL*8 ZR
@@ -53,15 +53,15 @@ C ---------------- FIN COMMUNS NORMALISES  JEVEUX  --------------------
       CHARACTER*6  CHORCH
       CHARACTER*19 NOMD2
       INTEGER      NUNOCH
-      
+
       NOMD2 = NOMSD
-      
+
       CHNOCH = CHAMP(10:12)
       CHORCH = CHAMP(14:19)
-      
+
       READ(CHNOCH,'(I3)') NUNOCH
       READ(CHORCH,'(I6)') IORDR
       CALL JENUNO(JEXNUM(NOMD2//'.DESC',NUNOCH),NOMSYM)
       IRET = 1
-      
+
       END

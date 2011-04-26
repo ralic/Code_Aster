@@ -5,9 +5,9 @@
       REAL*8        NEWPT(3),LONGAR,AL
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/04/2010   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 26/04/2011   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -59,7 +59,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
       CHARACTER*8     NOMA,KBID
       REAL*8          PADIST,P(3)
-      INTEGER         I,J,NDIM,IBID,IADZI,IAZK24,IRET
+      INTEGER         I,J,NDIM,IADZI,IAZK24,IRET
       LOGICAL         DEJA
       INTEGER      ZXAIN,XXMMVD
 C ----------------------------------------------------------------------

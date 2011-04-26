@@ -17,7 +17,7 @@ C
       IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 31/01/2011   AUTEUR GREFFET N.GREFFET 
+C MODIF ALGORITH  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -266,8 +266,6 @@ C     -------------------------------------
  1004 FORMAT(3X,'DEBUT DU CALCUL TEMPOREL             -            ',
      &'TEMPS COURANT: ',1PD14.6/)
  1005 FORMAT(3X,'FIN DU CALCUL TEMPOREL               -            ',
-     &'TEMPS COURANT: ',1PD14.6/)
- 1008 FORMAT(3X,'INDICE DE TEMPS DU  CALCUL TEMPOREL  -            ',
      &'TEMPS COURANT: ',1PD14.6/)
  1006 FORMAT(3X,'NOMBRE D APPELS A ALITMI             -            ',
      &'    ',I9/)

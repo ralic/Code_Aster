@@ -1,13 +1,13 @@
          SUBROUTINE PLASTI ( FAMI,KPG,KSP,TYPMOD,IMAT,COMP,CRIT,TIMED,
-     1                       TIMEF, TEMPD, TEMPF, TREF,EPSDT,DEPST,
-     2                       SIGD,VIND,OPT,ANGMAS,SIGF,VINF,DSDE,ICOMP,
-     3                       NVI,TAMPON,IRTETI)
+     &                       TIMEF, TEMPD, TEMPF, TREF,EPSDT,DEPST,
+     &                       SIGD,VIND,OPT,ANGMAS,SIGF,VINF,DSDE,ICOMP,
+     &                       NVI,TAMPON,IRTETI)
         IMPLICIT NONE
-C       ================================================================
+C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/09/2010   AUTEUR FLEJOU J-L.FLEJOU 
+C MODIF ALGORITH  DATE 26/04/2011   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -22,8 +22,8 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
+C RESPONSABLE PROIX J.M.PROIX
 C TOLE CRP_21
-C RESPONSABLE JMBHH01 J.M.PROIX
 C ======================================================================
 C       INTEGRATION DE LOIS DE COMPORTEMENT ELASTO PLASTIQUE ET VISCO
 C       PLASTIQUE PAR UNE MATHODE DE NEWTON (DISCRETISATION IMPLICITE)
@@ -309,7 +309,7 @@ C --     INTEGRATION ELASTIQUE SUR DT
 
 C --     PREDICTION ETAT ELASTIQUE A T+DT : F(SIG(T+DT),VIN(T)) = 0 ?
          CALL LCCNVX(FAMI, KPG, KSP, LOI, IMAT, NMAT, MATERF,
-     &               SIGF, VIND,COMP, NBCOMM, CPMONO, PGL, NR, NVI,
+     &               SIGF, VIND, NBCOMM, CPMONO, PGL, NVI,
      &               VP,VECP, HSR, TOUTMS, TIMED,TIMEF, SEUIL)
 C
          IF ( SEUIL .GE. 0.D0 ) THEN
@@ -335,7 +335,6 @@ C
          IF ( LOI(1:6) .EQ. 'LAIGLE') THEN
             CALL LGLDCM( NMAT, MATERF, SIGF, VINF )
          ENDIF
-10       CONTINUE
 C
 C --     CONTRAINTES PLANES
          IF ( MOD(1:6) .EQ. 'C_PLAN' ) SIGF(3) = 0.D0
@@ -358,8 +357,8 @@ C   ------>    ELASTOPLASTICITE ==> TYPMA = 'VITESSE '
 C   ------>    VISCOPLASTICITE  ==> TYPMA = 'COHERENT '==> ELASTIQUE
                IF( TYPMA .EQ. 'COHERENT' ) THEN
                   IF (LOI(1:11).EQ.'MONOCRISTAL') THEN
-                     CALL LCJPLC(FAMI,KPG,KSP,LOI,MOD,NMAT,MATERF,
-     &                           TIMED,TIMEF,COMP,NBCOMM,CPMONO,
+                     CALL LCJPLC(LOI,MOD,NMAT,MATERF,
+     &                           TIMED,TIMEF,NBCOMM,CPMONO,
      &                           PGL,TOUTMS,HSR,NR,NVI,EPSD,DEPS,
      &                           ITMAX,TOLER,SIGD,VIND,SIGD,VIND,
      &                           DSDE,DRDY,OPT,IRET)
@@ -388,8 +387,8 @@ C
 C   ------>    ELASTOPLASTICITE ==>  TYPMA = 'VITESSE '
 C   ------>    VISCOPLASTICITE  ==>  TYPMA = 'COHERENT '
                IF     ( TYPMA .EQ. 'COHERENT' ) THEN
-                  CALL LCJPLC(FAMI,KPG,KSP,LOI,MOD,NMAT,MATERF,
-     &                        TIMED,TIMEF, COMP,NBCOMM,CPMONO,
+                  CALL LCJPLC(LOI,MOD,NMAT,MATERF,
+     &                        TIMED,TIMEF,NBCOMM,CPMONO,
      &                        PGL,TOUTMS,HSR,NR,NVI,EPSD,DEPS,
      &                        ITMAX,TOLER,SIGF,VINF,SIGD,VIND,
      &                        DSDE,DRDY,OPT,IRET)

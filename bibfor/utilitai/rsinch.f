@@ -7,7 +7,7 @@
       CHARACTER*(*)           BASE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 08/03/2011   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -54,7 +54,7 @@ C                12 --> SI PROLONGEMENT A DROITE INTERDIT.
 C                20 --> LA VARIABLE D'ACCES EST ILLICITE.
 C ----------------------------------------------------------------------
 C --------------- COMMUNS NORMALISES  JEVEUX  --------------------------
-      CHARACTER*32 JEXNUM,JEXNOM,JEXATR,JEXR8
+      CHARACTER*32 JEXNUM,JEXNOM
       COMMON /IVARJE/ZI(1)
       COMMON /RVARJE/ZR(1)
       COMMON /CVARJE/ZC(1)
@@ -63,11 +63,11 @@ C --------------- COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER ZI
       REAL*8 ZR,R1,R2,RBASE
       REAL*8 VALR
-      COMPLEX*16 ZC,CBID
-      LOGICAL ZL,COMPO
+      COMPLEX*16 ZC
+      LOGICAL ZL
       INTEGER L1,L2
       CHARACTER*1 STP,BASE2
-      CHARACTER*4 TYSD,TYPE,TYSCA
+      CHARACTER*4 TYPE,TYSCA
       CHARACTER*8 ZK8,NOMOBJ,K8BID,K8DEBU,K8MAXI,K8ENT
       CHARACTER*19 CH1,CH2
       CHARACTER*8  PROLD2,PROLG2
@@ -78,7 +78,6 @@ C --------------- COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32 ZK32
       CHARACTER*80 ZK80
 C ---------------- FIN COMMUNS NORMALISES  JEVEUX  --------------------
-      CHARACTER*24 TITI
       CHARACTER*24 VALK(3)
 C
 C

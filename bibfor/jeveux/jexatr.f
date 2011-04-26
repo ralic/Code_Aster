@@ -1,8 +1,8 @@
       FUNCTION   JEXATR ( NOMC , NOMA )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 26/07/2010   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -42,7 +42,6 @@ C     ------------------------------------------------------------------
      &               IDLONO = 8 , IDLUTI = 9 ,IDNUM  = 10 )
 C     ------------------------------------------------------------------
       INTEGER          ICRE , IRET
-      CHARACTER *75    CMESS
       CHARACTER*24     NOM24
       CHARACTER*6      NOMALU
       CHARACTER*8      CH8

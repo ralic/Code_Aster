@@ -1,8 +1,8 @@
       SUBROUTINE JJLIDE ( NOMAP , NOMLU , ITYPE )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 06/10/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -36,7 +36,7 @@ C ----------------------------------------------------------------------
       EQUIVALENCE    ( ISZON(1) , K1ZON(1) )
       PARAMETER      ( N = 5 )
       INTEGER          LTYP    , LONG    , DATE    , IADD    , IADM    ,
-     &                 LONO    , HCOD    , CARA    , LUTI    , IMARQ   
+     &                 LONO    , HCOD    , CARA    , LUTI    , IMARQ
       COMMON /IATRJE/  LTYP(1) , LONG(1) , DATE(1) , IADD(1) , IADM(1) ,
      &                 LONO(1) , HCOD(1) , CARA(1) , LUTI(1) , IMARQ(1)
       COMMON /JIATJE/  JLTYP(N), JLONG(N), JDATE(N), JIADD(N), JIADM(N),
@@ -63,10 +63,10 @@ C ----------------------------------------------------------------------
       COMMON /UNDFJE/  LUNDEF,IDEBUG
       INTEGER          IDINIT   ,IDXAXD   ,ITRECH,ITIAD,ITCOL,LMOTS,IDFR
       COMMON /IXADJE/  IDINIT(2),IDXAXD(2),ITRECH,ITIAD,ITCOL,LMOTS,IDFR
-      REAL *8          SVUSE,SMXUSE   
-      COMMON /STATJE/  SVUSE,SMXUSE  
-      INTEGER          LDYN , LGDYN , NBDYN , NBFREE 
-      COMMON /IDYNJE/  LDYN , LGDYN , NBDYN , NBFREE 
+      REAL *8          SVUSE,SMXUSE
+      COMMON /STATJE/  SVUSE,SMXUSE
+      INTEGER          LDYN , LGDYN , NBDYN , NBFREE
+      COMMON /IDYNJE/  LDYN , LGDYN , NBDYN , NBFREE
 C ----------------------------------------------------------------------
       INTEGER        IVNMAX     , IDDESO     , IDIADD     , IDIADM     ,
      &               IDMARQ     , IDNOM      ,              IDLONG     ,
@@ -85,7 +85,7 @@ C ----------------------------------------------------------------------
       INTEGER          ISTA1,ISTA2,IPGCL
       CHARACTER*4      FONC
       CHARACTER*32     NOML32
-      INTEGER          IADMI,IADDI(2),NLD,IT(NPARM), KT(NPARM),IBID
+      INTEGER          IADMI,IADDI(2),NLD,IT(NPARM), KT(NPARM)
       LOGICAL          LSAUV,LDATE,LMARQ,LLIBP,LTOUT,LATTR,LXU,LAD
 C DEB ------------------------------------------------------------------
       DO 1 K=1,NPARM
@@ -109,7 +109,7 @@ C DEB ------------------------------------------------------------------
         FONC = 'TASS'
 C
 C       APPEL A JJLIDE PAR JETASS INVALIDE POUR TYPE =/= 1
-        CALL ASSERT (ITYPE.EQ.1) 
+        CALL ASSERT (ITYPE.EQ.1)
       ELSE IF ( NOMAP .EQ. 'JELIBF' ) THEN
         FONC   = 'LIBF'
       ELSE IF ( NOMAP .EQ. 'SYSTEM' ) THEN
@@ -183,12 +183,12 @@ C
             NALLOC = NALLOC + NMAX
           ENDIF
 C
-C ------- TOUTE FORME DE COLLECTION 
-C ---     ALLOCATION EN EVITANT L'APPEL A JJLDYN 
+C ------- TOUTE FORME DE COLLECTION
+C ---     ALLOCATION EN EVITANT L'APPEL A JJLDYN
 C ---          (ET LES APPELS RECURSIFS)
 C
           LDYNOL = LDYN
-          IF ( LDYN .EQ. 1 ) THEN  
+          IF ( LDYN .EQ. 1 ) THEN
             LDYN   = 2
           ENDIF
           ITROLD = ITRECH
@@ -304,8 +304,8 @@ C
           IXDESO = ISZON ( JISZON + IBACOL + IDDESO )
           IXLONO = ISZON ( JISZON + IBACOL + IDLONO )
 C
-C         LIBERATION D''UN OBJET DE COLLECTION CONTIGUE REFUSEE 
-          CALL ASSERT (IXIADD .NE. 0) 
+C         LIBERATION D''UN OBJET DE COLLECTION CONTIGUE REFUSEE
+          CALL ASSERT (IXIADD .NE. 0)
           IBIADM = IADM ( JIADM(IC) + 2*IXIADM-1 )
           IBIADD = IADM ( JIADM(IC) + 2*IXIADD-1 )
           IBMARQ = IADM ( JIADM(IC) + 2*IXMARQ-1 )
@@ -382,7 +382,7 @@ C
         ELSE
           LONOI = ISZON (IT(JIT+KK+ ILONO))* LTYP(IT(JIT+KK +ILTYP))
         ENDIF
-C       
+C
         IDOS  = IT( JIT+KK+ IIDOS )
         IDCO  = IT( JIT+KK+ IIDCO )
         ISTA1 = ISZON (JISZON + IADMI - 1)
@@ -518,12 +518,12 @@ C
               ISZON( IT(JIT+KK+IIMAR)+1 ) = 0
             ENDIF
           ENDIF
-          IF (LXU) THEN 
+          IF (LXU) THEN
              ISZON(JISZON+IADMI-1) = ISTAT(1)
              SVUSE = SVUSE - (ISZON(JISZON+IADMI-4) - IADMI+4)
              IF (IDYNI .NE. 0) SVUSE = SVUSE - 1
              SMXUSE = MAX(SMXUSE,SVUSE)
-          ENDIF   
+          ENDIF
           IF (LAD) THEN
             IS                   = ISZON(JISZON+IADMI-4)
             ISZON(JISZON+IS-4)   = ISTAT(3)
@@ -567,12 +567,12 @@ C
   101 CONTINUE
       IF ( IADY1 .NE. 0 ) THEN
         CALL JJLIDY ( IADY1 , IADIT )
-      ELSE IF ( IADIT .NE. 0 ) THEN 
+      ELSE IF ( IADIT .NE. 0 ) THEN
         CALL JJLIBP ( IADIT )
       ENDIF
       IF ( IADY2 .NE. 0 ) THEN
         CALL JJLIDY ( IADY2 , IASIG )
-      ELSE IF ( IASIG .NE. 0 ) THEN 
+      ELSE IF ( IASIG .NE. 0 ) THEN
         CALL JJLIBP ( IASIG )
       ENDIF
 C FIN ------------------------------------------------------------------

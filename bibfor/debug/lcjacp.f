@@ -5,7 +5,7 @@
      &                    DY,R,DRDY,VERJAC,DRDYB,IRET)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF DEBUG  DATE 08/02/2011   AUTEUR PROIX J-M.PROIX 
+C MODIF DEBUG  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -59,10 +59,10 @@ C     OUT DRDYB  : MATRICE JACOBIENNE PAR PERTURBATION
 C ----------------------------------------------------------------------
       IMPLICIT NONE
 
-      INTEGER NMAT,NBCOMM(NMAT,3),NR,ILIG,IMPR,VALI(2)
+      INTEGER NMAT,NBCOMM(NMAT,3),NR,IMPR,VALI(2)
       INTEGER IMAT,I,J,ITMAX,IRET,KPG,KSP,NVI,VERJAC
 
-      REAL*8 TOLER,EPSD(6),DEPS(6),VIND(NVI),R8PREM,TIMED,TIMEF,ERR
+      REAL*8 TOLER,EPSD(6),DEPS(6),VIND(NVI),TIMED,TIMEF,ERR
 
 C     DIMENSIONNEMENT DYNAMIQUE (MERCI F90)
       REAL*8 DY(NR),R(NR),DRDYB(NR,NR),RINI(NR),DYINI(NR),RP(NR),RM(NR)
@@ -161,7 +161,7 @@ C              write(9,'(A1,E12.5,A5,2(1X,I2),3(A7,E10.3))') 't',TIMEF,
 C     &' i,j',i,j,' erjac ',err,' DRDYB ',DRDYB(I,J),' DRDY ',DRDY(I,J)
               VALI(1) = I
               VALI(2) = J
-              
+
               VALR(1) = TIMEF
               VALR(2) = ERR
               VALR(3) = DRDYB(I,J)

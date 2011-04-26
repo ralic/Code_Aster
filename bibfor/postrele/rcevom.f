@@ -1,7 +1,7 @@
       SUBROUTINE RCEVOM ( CSIGM, CINST, CNOC, SM, LFATIG, LPMPB, LSN,
      +                    CSNO, CSNE, FLEXIO, CSNEO, CSNEE, CFAO, CFAE,
-     +                    CSPO, CSPE, CRESU, KINTI, IT, JT, LROCHT, 
-     +                    SYMAX, CPRES , KEMIXT, CSPTO, CSPTE, 
+     +                    CSPO, CSPE, CRESU, KINTI, IT, JT, LROCHT,
+     +                    SYMAX, CPRES , KEMIXT, CSPTO, CSPTE,
      +                    CSPMO, CSPME)
       IMPLICIT   NONE
       INTEGER      IT, JT
@@ -13,23 +13,23 @@
      +             CSPTO, CSPTE, CSPMO, CSPME
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 06/07/2009   AUTEUR GALENNE E.GALENNE 
+C MODIF POSTRELE  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C TOLE CRP_20 CRP_21
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CRP_20
 C     ------------------------------------------------------------------
@@ -52,13 +52,12 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32                               ZK32
       CHARACTER*80                                        ZK80
       COMMON  /KVARJE/ ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
-      CHARACTER*32     JEXNOM, JEXNUM
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
 C
-      INTEGER      NCMP, JSIGM, JINST, NBINST, NBORDR, JSNO, JSNE, N1,
-     +             IND, I1, I2, ICMP, L1,L2,L3,L4, NPARA, II,IK,IR, I,
+      INTEGER      NCMP, JSIGM, JINST, NBINST, NBORDR, JSNO, JSNE,
+     +             IND, I1, I2, ICMP, L1,L2,L3,L4, NPARA,IK,IR, I,
      +             VAIO(5), VAIE(5), IOO1, IOO2, IOE1, IOE2, NPAR1,
-     +             JSNEO, JSNEE, JSPO, JSPE, JFAO, JFAE, JNOC, JRESU,
+     +              JSPO, JSPE, JFAO, JFAE, JNOC, JRESU,
      +             JRESP, JSPTO, JSPTE, JSPMO, JSPME
       PARAMETER  ( NCMP = 6 )
       REAL*8       TPM(NCMP), TPB(NCMP), TPMPBO(NCMP), TPMPBE(NCMP),
@@ -66,13 +65,13 @@ C
      +             SNO, SNE, I1SNO, I2SNO, I1SNE, I2SNE,
      +             SPO, SPE, KEO, KEE, SAO, SAE, NAO, NAE,
      +             DOO, DOE, DCO, DCE, STLIN, STPAR, KETHO, KETHE,
-     +             TRESCA, VALO(39), VALE(39),SPMO, SPME, SPTO, SPTE 
+     +             TRESCA, VALO(39), VALE(39),SPMO, SPME, SPTO, SPTE
       COMPLEX*16   C16B
-      CHARACTER*8  K8B, NOMRES, TYPARA(39), RPM, RPB, RPMPBO, RPMPBE, 
+      CHARACTER*8  K8B, NOMRES, TYPARA(39), RPM, RPB, RPMPBO, RPMPBE,
      +             R1SNO, R1SNE, R2SNO, R2SNE
       CHARACTER*16 NOMCMD, CONCEP, NOPARA(39), VAKO(5), VAKE(5)
 C
-      INTEGER      NPAREN, NPARPM, NPARSN, NPARSE, NPARF1, NPARRT, 
+      INTEGER      NPAREN, NPARPM, NPARSN, NPARSE, NPARF1, NPARRT,
      +             NPARF2
       PARAMETER  ( NPAREN=4, NPARPM=7, NPARSN=5, NPARSE=3, NPARF1=10,
      +             NPARRT=5 , NPARF2=13)
@@ -84,28 +83,28 @@ C
      +             NOPAF2(NPARF2)
 C
       DATA NOPAEN / 'INTITULE', 'LIEU', 'SM', '3SM' /
-      DATA TYPAEN / 'K16',      'K8'  , 'R' , 'R'   / 
+      DATA TYPAEN / 'K16',      'K8'  , 'R' , 'R'   /
       DATA NOPART / 'TABL_PRES', 'SY', 'SIGM_M_PRES',
      +              'VALE_MAXI_LINE', 'VALE_MAXI_PARAB' /
-      DATA TYPART / 'K8', 'R' , 'R'   , 'R'   , 'R'   / 
+      DATA TYPART / 'K8', 'R' , 'R'   , 'R'   , 'R'   /
       DATA NOPAPM / 'TABL_RESU', 'INST_PM', 'PM', 'INST_PB', 'PB',
      +              'INST_PMB' , 'PMB' /
       DATA TYPAPM / 'K8', 'R', 'R', 'R', 'R', 'R', 'R' /
-      DATA NOPASN / 'TABL_RESU_1', 'INST_SN_1', 
+      DATA NOPASN / 'TABL_RESU_1', 'INST_SN_1',
      +              'TABL_RESU_2', 'INST_SN_2', 'SN' /
       DATA TYPASN / 'K8', 'R' ,'K8', 'R', 'R'  /
       DATA NOPASE / 'INST_SN*_1', 'INST_SN*_2', 'SN*' /
       DATA TYPASE / 'R' , 'R', 'R'  /
       DATA NOPAF1 / 'INST_SALT_1', 'NB_OCCUR_1',
-     +              'INST_SALT_2', 'NB_OCCUR_2', 
+     +              'INST_SALT_2', 'NB_OCCUR_2',
      +              'SP', 'KE', 'SALT', 'NADM', 'DOMMAGE',
      +              'DOMMAGE_CUMU' /
       DATA TYPAF1 / 'R', 'I', 'R', 'I','R', 'R', 'R', 'R', 'R', 'R' /
       DATA NOPAF2 / 'INST_SALT_1', 'NB_OCCUR_1',
-     +              'INST_SALT_2', 'NB_OCCUR_2', 
+     +              'INST_SALT_2', 'NB_OCCUR_2',
      +              'SP', 'SP_MECA','SP_THER','KE_MECA', 'KE_THER',
      +              'SALT', 'NADM', 'DOMMAGE', 'DOMMAGE_CUMU' /
-      DATA TYPAF2 / 'R', 'I', 'R', 'I','R', 'R', 'R', 'R', 'R', 'R', 
+      DATA TYPAF2 / 'R', 'I', 'R', 'I','R', 'R', 'R', 'R', 'R', 'R',
      +              'R', 'R', 'R' /
 C DEB ------------------------------------------------------------------
       CALL JEMARQ()

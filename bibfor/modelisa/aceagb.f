@@ -4,9 +4,9 @@
       CHARACTER*8         NOMU, NOMA
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 25/06/2007   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF MODELISA  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -49,10 +49,9 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER      JDCC, JDVC, JDLS, IOC,  NG, NM, N1, N2, N3, N4, N5,
      &             I, AXYZM, NUNOE, NBMAT, IER, NBMA,
      &             IMA, NBNO, INO, JNUMA, ADRM, NUMA, JGRMA, IGR,NBMAT0
-      REAL*8       ANG(2), SL,EZ,EZA,CTR, ORIG(3), Z, R8RDDG,
+      REAL*8       ANG(2), SL,EZ,CTR, ORIG(3), Z, R8RDDG,
      &             AXEZ(3), XNORM, EPSI, AXER(3), PSCAL, AXET(3), X, Y
       CHARACTER*8  K8B
-      CHARACTER*16 TOU
       CHARACTER*19 CARTGR
       CHARACTER*24 TMPNGR, TMPVGR, NOMAGR, NOMAMA, CONNEX
 C     ------------------------------------------------------------------

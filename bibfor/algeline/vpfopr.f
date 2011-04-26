@@ -3,9 +3,9 @@
      &                   PRECDC, NBRSSA, NBLAGR, SOLVEU)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 18/10/2010   AUTEUR BOYERE E.BOYERE 
+C MODIF ALGELINE  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -59,7 +59,6 @@ C PARAMETRES D'APPEL
       INTEGER                    NBFREQ, NPIVOT, NIV,    IFM,    NBLAGR
 
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
-      CHARACTER*32       JEXNUM , JEXNOM , JEXR8 , JEXATR
       INTEGER            ZI
       COMMON  / IVARJE / ZI(1)
       REAL*8             ZR
@@ -87,7 +86,7 @@ C VARIABLES LOCALES
 C     ------------------------------------------------------------------
 C     ------------------------ OPTION CENTRE ---------------------------
 C     ------------------------------------------------------------------
- 
+
       CALL INFNIV(IFM,NIV)
 C --- POUR NE PAS DECLANCHER INUTILEMENT LE CALCUL DU DETERMINANT DANS
 C     VPSTUR
@@ -324,7 +323,6 @@ C     -----------------------------FORMAT------------------------------
   900 FORMAT('L''OPTION CHOISIE EST:',1X,A,/)
  1000 FORMAT('LA VALEUR DE DECALAGE EN FREQUENCE EST : ',1PE12.5)
  1001 FORMAT('LA VALEUR DE DECALAGE CHARGE CRITIQUE EST : ',1PE12.5)
- 1100 FORMAT (7X)
  1200 FORMAT (72('-'),/)
  1300 FORMAT('LA VALEUR DE DECALAGE (OMEGA2)EST INFERIEURE A LA VALEUR '
      &      ,'DE CORPS RIGIDE ON LA MODIFIE, ELLE DEVIENT:',1X,1PE12.5)

@@ -5,9 +5,9 @@
       CHARACTER*(*) MCFAC
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 04/10/2010   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -38,8 +38,7 @@ C  IVARI  OUT I  : NUMERO DE LA VARIABLE INTERNE SI NOMGD='VARI_R'
 C                  0 SINON
 
 C ----------------------------------------------------------------------
-      INTEGER IBID,N1,N2,IRET,IANCMP,LGNCMP,IVARI
-      CHARACTER*8 K8B
+      INTEGER IBID,N2,IRET,IVARI
       CHARACTER*24 VALK(2)
 C     ------------------------------------------------------------------
 

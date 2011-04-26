@@ -2,10 +2,10 @@
       IMPLICIT   NONE
       CHARACTER*8 NOMU,TABLE
 C-----------------------------------------------------------------------
-C MODIF ALGORITH  DATE 06/07/2009   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -76,14 +76,14 @@ C-----------------------------------------------------------------------
       CALL GETVIS(' ','NUME_ORDRE',1,1,0,IBID,NBMODE)
       NBMODE = -NBMODE
       IF (NBMODE.EQ.0) THEN
-        CALL GETVTX(' ','TOUT_ORDRE',1,1,1,TOUTOR,IBID) 
+        CALL GETVTX(' ','TOUT_ORDRE',1,1,1,TOUTOR,IBID)
         IF  (TOUTOR.EQ.'OUI') THEN
           NBMODE=NBMOD1
           CALL WKVECT('&&SPEPH0.LISTEMODES','V V I',NBMOD1,ILMODE)
           DO 11 IM = 1,NBMOD1
             ZI(ILMODE-1+IM)=IM
-            ZI(ILMODE-1+IM)=ZI(LNUMOR+IM-1)        
-   11     CONTINUE       
+            ZI(ILMODE-1+IM)=ZI(LNUMOR+IM-1)
+   11     CONTINUE
         ELSE
           CALL GETVR8(' ','BANDE',1,1,2,BANDE,IBID)
           IF (IBID.EQ.0) THEN
@@ -175,7 +175,7 @@ C     --- VERIFICATION DES DONNEES INTERSPECTRE ---
       OPTCH1 = OPTCHA
       IF (OPTCHA(1:4).EQ.'VITE') OPTCH1 = 'DEPL'
       IF (OPTCHA(1:4).EQ.'ACCE') OPTCH1 = 'DEPL'
-C 
+C
 C     --- RECUPERATION DES NOEUDS, NOM_CMP ET MAILLE ---
 
       CALL GETVTX(' ','NOEUD',0,1,0,K8B,NBN1)
@@ -320,8 +320,8 @@ C     --- ON NE PREND EN COMPTE QUE LES MODES DYNAMIQUES ---
             ICHAM1 = ICHAM + NAPEX1*NBN + NBN* (IMR-1) + IN - 1
             ZR(ICHAM1) = DBLE(ZC(ISIP+ZI(INDDL+IN-1)-1))
    70     CONTINUE
-C  -------------------------------  
-C  si base modale, alors les nume_ddl des differents modes peuvent 
+C  -------------------------------
+C  si base modale, alors les nume_ddl des differents modes peuvent
 C              etres differents
 
         ELSEIF(TYPBA(1:1).NE.' ') THEN
@@ -339,7 +339,7 @@ C              etres differents
              CALL DISMOI('F','NOM_MAILLA',CHAM19,'CHAM_ELEM',
      &                                              IBID,NOMA,IRET)
              NUPO = 0
-             IVARI = 1 
+             IVARI = 1
              DO 72 I = 1,NBN
                 MAILLE = ZK8(IMAIN+I-1)
                 NOEUD = ZK8(INOEN+I-1)
@@ -411,6 +411,5 @@ C     --- CREATION DE LA TABLE DE SORTIE ---
       IF (IRET.NE.0) CALL JEDETR('&&SPEPH0.LISTECMPEXC')
       IF (NBMAIL.NE.0) CALL JEDETR('&&SPEPH0.MAILLE_REP')
 
-  110 CONTINUE
       CALL JEDEMA()
       END

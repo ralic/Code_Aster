@@ -2,12 +2,10 @@
      &                   M, S, SEP, WORK, LWORK, IWORK, LIWORK, INFO )
 C----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILIFOR  DATE 06/11/2006   AUTEUR MCOURTOI M.COURTOIS 
+C MODIF UTILIFOR  DATE 26/04/2011   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) LAPACK
 C ======================================================================
-C TOLE CRP_21
 C
 C     SUBROUTINE LAPACK REORDONNANT LA FACTORISATION DE SCHUR REELLE
 C     DEJA CALCULEES PAR DHSEQR, POUR OBTENIR UN CLUSTER DE VALEURS

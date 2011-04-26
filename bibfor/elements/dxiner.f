@@ -4,9 +4,9 @@
       REAL*8             XYZG1(3,*), RHO, EPAIS, MASS, CDG(*), INERTI(*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 09/05/2007   AUTEUR VIVAN L.VIVAN 
+C MODIF ELEMENTS  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -38,11 +38,6 @@ C---------------- COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON /CVARJE/ ZC(1)
       LOGICAL         ZL
       COMMON /LVARJE/ ZL(1)
-      CHARACTER*8     ZK8
-      CHARACTER*16            ZK16
-      CHARACTER*24                     ZK24
-      CHARACTER*32                              ZK32
-      CHARACTER*80                                       ZK80
 C------------FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
 C --- INITIALISATIONS :

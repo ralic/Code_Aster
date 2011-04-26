@@ -3,22 +3,22 @@
      &                 LSN,LST,IGTHET,FNO,NFISS,JFISNO)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 14/02/2011   AUTEUR GENIAUT S.GENIAUT 
+C MODIF ELEMENTS  DATE 26/04/2011   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CRP_20 CRS_1404
 
@@ -31,7 +31,7 @@ C TOLE CRP_20 CRS_1404
       REAL*8        FNO(NDIM*NNOP)
 
 
-C    - FONCTION REALISEE:  CALCUL DU TAUX DE RESTITUTION D'ENERGIE 
+C    - FONCTION REALISEE:  CALCUL DU TAUX DE RESTITUTION D'ENERGIE
 C                          PAR LA METHODE ENERGETIQUE G-THETA
 C                          POUR LES ELEMENTS X-FEM (2D ET 3D)
 C
@@ -71,7 +71,7 @@ C---------------- COMMUNS NORMALISES  JEVEUX  --------------------------
 C------------FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 
       INTEGER  ITHET,IMATE,ICOMP,IGTHET,JCOORS,JTAB(2),NCOMP
-      INTEGER  IPOIDS,JCOOPG,IVF,IDFDE,JDFD2,JGANO,IADZI,IAZK24
+      INTEGER  IPOIDS,JCOOPG,IVF,IDFDE,JDFD2,JGANO
       INTEGER  I,J,K,KPG,N,INO,IRET,CPT,IG,IN,MXSTAC
       INTEGER  NDIMB,NNO,NNOS,NPGBIS,DDLD,DDLS,MATCOD,M,IRETT
       REAL*8   R8PREM
@@ -93,7 +93,7 @@ C------------FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER  IRESE,DDLI,NNOI,INDENI,IBID,NNOPS,FISNO(NNOP,NFISS),IFISS
 
       PARAMETER      (MXSTAC=1000)
-      
+
       DATA    ELRESE /'SE2','TR3','TE4','SE3','TR6','TE4'/
       DATA    FAMI   /'BID','XINT','XINT','BID','XINT','XINT'/
 C
@@ -105,7 +105,7 @@ C     (VOIR CRS 1404)
       CALL ASSERT(NDIM.LE.MXSTAC)
       CALL ASSERT(NNOP.LE.MXSTAC)
       CALL ASSERT(NFISS.LE.MXSTAC)
-      
+
       GRDEPL=.FALSE.
 
       IF (.NOT.ISMALI(ELREFP).AND. NDIM.LE.2) THEN
@@ -113,7 +113,7 @@ C     (VOIR CRS 1404)
       ELSE
         IRESE=0
       ENDIF
-      
+
       TYPMOD(2) = ' '
       CP  = .FALSE.
       OPRUPT = 'RUPTURE'
@@ -143,11 +143,11 @@ C     ELEMENT DE REFERENCE PARENT : RECUP DE NNOPS
       CALL ELREF4(' ','RIGI',IBID,IBID,NNOPS,IBID,IBID,IBID,IBID,IBID)
 
       AXI = LTEATT(' ','AXIS','OUI')
-      
+
       CALL JEVECH('PTHETAR','L',ITHET)
       CALL JEVECH('PMATERC','L',IMATE)
       MATCOD = ZI(IMATE)
-      CALL JEVECH('PCOMPOR','L',ICOMP)      
+      CALL JEVECH('PCOMPOR','L',ICOMP)
       DO 11 I = 1,4
         COMPOR(I)= ZK16(ICOMP+I-1)
 11    CONTINUE
@@ -156,7 +156,7 @@ C     ELEMENT DE REFERENCE PARENT : RECUP DE NNOPS
 C     ADRESSE DES COORD DU SOUS ELT EN QUESTION
       CALL JEVEUO(COORSE,'L',JCOORS)
 
-C     SOUS-ELEMENT DE REFERENCE 
+C     SOUS-ELEMENT DE REFERENCE
       CALL ELREF5(ELRESE(NDIM+IRESE),FAMI(NDIM+IRESE),NDIMB,NNO,NNOS,
      &            NPGBIS,IPOIDS,JCOOPG,IVF,IDFDE,JDFD2,JGANO)
       CALL ASSERT(NDIM.EQ.NDIMB)
@@ -190,7 +190,7 @@ C    ON REMPLIT JUSQU'A NFH <= NFISS
             FISNO(INO,IG) = ZI(JFISNO-1+(INO-1)*NFH+IG)
   60      CONTINUE
   50    CONTINUE
-      ENDIF  
+      ENDIF
 C     ------------------------------------------------------------------
 C     BOUCLE SUR LES POINTS DE GAUSS DU SOUS-TÉTRA
 C     ------------------------------------------------------------------
@@ -206,7 +206,7 @@ C       COORDONNÉES DU PT DE GAUSS DANS LE REPÈRE RÉEL : XG
         CALL VECINI(NDIM,0.D0,XG)
         DO 101 I=1,NDIM
           DO 102 N=1,NNO
-            XG(I) = XG(I) + ZR(IVF-1+NNO*(KPG-1)+N) 
+            XG(I) = XG(I) + ZR(IVF-1+NNO*(KPG-1)+N)
      &                                * ZR(JCOORS-1+NDIM*(N-1)+I)
  102      CONTINUE
  101    CONTINUE
@@ -224,7 +224,7 @@ C       ON ENVOIE DFDM3D/DFDM2D AVEC LES COORD DU SS-ELT
         IF (NDIM.EQ.2) CALL DFDM2D(NNO,KPG,IPOIDS,IDFDE,ZR(JCOORS),
      &                                      RBID1,RBID2,POIDS)
 
-C 
+C
 C -     CALCUL DE LA DISTANCE A L'AXE (AXISYMETRIQUE)
         IF (AXI) THEN
           R  = 0.D0
@@ -234,9 +234,9 @@ C -     CALCUL DE LA DISTANCE A L'AXE (AXISYMETRIQUE)
 
           POIDS= POIDS * R
           CALL ASSERT(R.GT.0D0)
-          
+
         ENDIF
-C 
+C
 C       --------------------------------------
 C       1) COORDONNÉES POLAIRES ET BASE LOCALE
 C       --------------------------------------
@@ -292,7 +292,7 @@ C         ON NE FERA PAS LE CALCUL DES DÉRIVÉES
 C       ON A PAS PU CALCULER LES DERIVEES DES FONCTIONS SINGULIERES
 C       CAR ON SE TROUVE SUR LE FOND DE FISSURE
         CALL ASSERT(IRET.NE.0)
-        
+
 C       ---------------------------------------------
 C       2) CALCUL DU DEPLACEMENT ET DE SA DERIVEE (DUDM)
 C       ---------------------------------------------
@@ -324,7 +324,7 @@ C         DDLS CLASSIQUES
  201      CONTINUE
 C         DDLS HEAVISIDE
           DO 202 IG=1,NFH
-            DO 203 I=1,NDIM            
+            DO 203 I=1,NDIM
               CPT=CPT+1
               DEPLA(I) = DEPLA(I) + HE(FISNO(IN,IG)) * FF(IN) *
      &                    ZR(IDEPL-1+INDENI+CPT)
@@ -338,7 +338,7 @@ C         DDL ENRICHIS EN FOND DE FISSURE
      &                * ZR(IDEPL-1+INDENI+CPT)
  205        CONTINUE
  204      CONTINUE
- 200    CONTINUE        
+ 200    CONTINUE
 
 C       DÉRIVÉES DES FONCTIONS D'ENRICHISSEMENT DANS LA BASE POLAIRE
         DGDPO(1,1)=1.D0/(2.D0*SQRT(RG))*SIN(TG/2.D0)
@@ -401,7 +401,7 @@ C
           THETA(I)=0.D0
           DO 301 INO=1,NNOP
             THETA(I) = THETA(I) +  FF(INO) * ZR(ITHET-1+NDIM*(INO-1)+I)
- 301      CONTINUE 
+ 301      CONTINUE
 
           DO 310 J=1,NDIM
              DO 311 INO=1,NNOP
@@ -410,7 +410,7 @@ C
  311        CONTINUE
  310      CONTINUE
  300    CONTINUE
- 
+
         DIVT = 0.D0
         DO 437 I=1,NDIM
           DIVT  = DIVT + DTDM(I,I)
@@ -443,27 +443,27 @@ C       6) CALCUL DES FORCES VOLUMIQUES ET DE LEURS DERIVEES (DFDM)
 C       -----------------------------------------------------------
 
         CALL VECINI(12,0.D0,DFDM)
-        DO 600 INO=1,NNOP 
+        DO 600 INO=1,NNOP
           DO 610 J=1,NDIM
             DO 620 K=1,NDIM
               DFDM(J,K) = DFDM(J,K) + FNO(NDIM*(INO-1)+J)*DFDI(INO,K)
 620         CONTINUE
 C           VALEUR DE LA FORCE DANS LA QUATRIEME COLONNE :
-            DFDM(J,4) = DFDM(J,4) + 
+            DFDM(J,4) = DFDM(J,4) +
      &                  FNO(NDIM*(INO-1)+J)*FF(INO)
 610       CONTINUE
 600     CONTINUE
-C 
+C
         IF (AXI) THEN
           DFDM(3,3)= DFDM(1,4)/R
         ENDIF
-C 
+C
 
 C       --------------------------------------------------
-C              TERME THERMOELAS. CLASSIQUE : 
+C              TERME THERMOELAS. CLASSIQUE :
 C       F.SIG:(GRAD(U).GRAD(THET))-ENER*DIVT
 C       --------------------------------------------------
-C        
+C
         SR(1,1)= SIGL(1)
         SR(2,2)= SIGL(2)
         SR(3,3)= SIGL(3)
@@ -473,7 +473,7 @@ C
         SR(3,1)= SR(1,3)
         SR(2,3)= SIGL(6)/RAC2
         SR(3,2)= SR(2,3)
-        
+
         PROD  = 0.D0
         PROD2 = 0.D0
         DO 490 I=1,NDIM
@@ -500,7 +500,7 @@ C       =======================================================
 500       CONTINUE
           PROD2 = - POIDS*PROD*ENERGI(2)
           TTHE = TTHE + PROD2
-        ENDIF   
+        ENDIF
 
 C       =======================================================
 C       TERME FORCE VOLUMIQUE

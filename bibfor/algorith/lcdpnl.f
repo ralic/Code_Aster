@@ -1,9 +1,17 @@
       SUBROUTINE LCDPNL(FAMI,KPG,KSP,TYPMOD,NDIM,
-     & OPTION,COMPOR,IMATE,SIGM,EPSM,DEPS,VIM,
-     & VIP,SIG,DSIDEP,PROJ,IRET)
+     &                  OPTION,COMPOR,IMATE,SIGM,DEPS,
+     &                  VIM,VIP,SIG,DSIDEP,PROJ,
+     &                  IRET)
+      IMPLICIT      NONE
+      INTEGER       NDIM, IMATE,IRET,KSP,KPG,IRET2
+      REAL*8        SIGM(6),DEPS(6,2),VIM(*),VIP(*),SIG(6),PROJ(6,6)
+      REAL*8        DSIDEP(6,6,2)
+      CHARACTER*(*) FAMI
+      CHARACTER*8   TYPMOD(*)
+      CHARACTER*16  OPTION,COMPOR(*)
 C =====================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 26/04/2011   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,16 +28,8 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C =====================================================================
-C =====================================================================
-C TOLE CRP_20
-C TOLE CRP_21
-      IMPLICIT      NONE
-      INTEGER       NDIM, IMATE,IRET,KSP,KPG,IRET2
-      REAL*8        SIGM(6),DEPS(6,2),VIM(*),VIP(*),SIG(6),PROJ(6,6)
-      REAL*8        DSIDEP(6,6,2),EPSM(6,2)
-      CHARACTER*(*) FAMI
-      CHARACTER*8   TYPMOD(*)
-      CHARACTER*16  OPTION,COMPOR(*)
+C
+C
 C =====================================================================
 C --- APPLICATION DE LA LOI DE COMPORTEMENT DE TYPE DRUCKER PRAGER ----
 C --- LINEAIRE AVEC PRISE EN COMPTE DES PHENOMENES DE NON LOCALISATION

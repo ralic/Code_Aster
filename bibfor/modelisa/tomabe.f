@@ -3,9 +3,9 @@
       IMPLICIT NONE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 08/11/2010   AUTEUR REZETTE C.REZETTE 
+C MODIF MODELISA  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -72,7 +72,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32                                    ZK32
       CHARACTER*80                                              ZK80
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
-      CHARACTER*32 JEXNOM, JEXNUM, JEXATR
+      CHARACTER*32 JEXNOM, JEXNUM
 C     ----- FIN   COMMUNS NORMALISES  JEVEUX  --------------------------
 C
 C ARGUMENTS
@@ -88,7 +88,7 @@ C VARIABLES LOCALES
 C -----------------
       INTEGER       IAS, ICSTE, IDECAL, IMAIL, INO, IRET, JCONX, JNCOCH,
      &              JNUMAB, JNUNOB, JPTMA, JTYMA, JVALK, JVALR, NBCONX,
-     &              NBCSTE, NTYMA, NUMAIL, NUMNOE, N2, JLIMAB,
+     &              NBCSTE, NTYMA, NUMAIL, NUMNOE,
      &              JCESD, JCESL, JCESV, IAD
 C
       INTEGER       NTRI3, NTRI6, NQUA4, NQUA8, NQUA9,
@@ -98,10 +98,10 @@ C
       LOGICAL       MAIL3D, TROUV1, TROUV2
       CHARACTER*1   K1B
       CHARACTER*3   K3MAI
-      CHARACTER*8   BETON, K8B
+      CHARACTER*8   BETON
       CHARACTER*19  CARTE, NOMRC, CHSMAT, CARTEZ,CHTMP
       CHARACTER*24  CAPTMA, CAVALK, CONXMA, RCVALK, RCVALR,
-     &              TYMAMA, NCNCIN
+     &              TYMAMA
 C
       CHARACTER*8   BPELB(2)
       REAL*8        CRITE

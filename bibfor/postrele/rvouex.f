@@ -4,10 +4,10 @@
       CHARACTER*(*)     MCF,     NCHPT
       INTEGER               IOCC,                            IRET
 C**********************************************************************
-C MODIF POSTRELE  DATE 25/03/2010   AUTEUR LEBOUVIER F.LEBOUVIER 
+C MODIF POSTRELE  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -47,7 +47,7 @@ C
 C**********************************************************************
 C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
 C
-      CHARACTER*32       JEXNUM , JEXNOM , JEXR8 , JEXATR
+      CHARACTER*32       JEXNUM   , JEXATR
       INTEGER            ZI
       COMMON  / IVARJE / ZI(1)
       REAL*8             ZR
@@ -68,8 +68,8 @@ C
 C  VARIABLES LOCALES
 C  -----------------
       INTEGER      ADR,ALISTE,ACNCIN,ALSMAC,ALSNAC,ACMP,ADRVLC,AREPE
-      INTEGER      NBTMA,NBM,NBMAC,NBNAC,NBCRB,INDMOT,NBMALU
-      INTEGER      I,IN,N,M,LIBRE,N1,IBID,IGREL,JNUMA,ILISMA,J
+      INTEGER      NBTMA,NBM,NBMAC,NBNAC,NBCRB,NBMALU
+      INTEGER      I,IN,N,M,LIBRE,N1,IBID,IGREL,JNUMA,J
       INTEGER      IBIB,IE,IMOLO,JCELD,N2,KK,IER,NBVARI,NBR
       INTEGER      II,JMMAIL,NBTROU,NBCMP,NBCMP1,NC,JCMP,JCMP1,NTC
       CHARACTER*4  DOCU
@@ -156,7 +156,7 @@ C
 103             CONTINUE
                 VALK(1) = ZK8(JCMP-1+I)
                 VALK(2) = NCHSYM
-                VALK(3) = RESUCO               
+                VALK(3) = RESUCO
                 CALL U2MESK('F','POSTRELE_65',3,VALK)
 102          CONTINUE
             ENDIF

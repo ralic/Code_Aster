@@ -3,33 +3,30 @@
       IMPLICIT NONE
 
       CHARACTER*16 OPTION,NOMTE
-      
+
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 23/02/2011   AUTEUR LAVERNE J.LAVERNE 
+C MODIF ELEMENTS  DATE 26/04/2011   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
-C ======================================================================
-C ======================================================================
-C TOLE CRP_21
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 
 C =====================================================================
 C    - FONCTION REALISEE: FULL_MECA, RIGI_MECA, RAPH_MECA, FORC_NODA
-C                         VARI_ELNO,SIEF_ELNO 
+C                         VARI_ELNO,SIEF_ELNO
 C    - ARGUMENTS:
 C        DONNEES:      OPTION       -->  OPTION DE CALCUL
 C                      NOMTE        -->  NOM DU TYPE ELEMENT
@@ -71,7 +68,7 @@ C =====================================================================
       REAL*8 ANG(24)
       CHARACTER*3 MODINT
       CHARACTER*8 NOMAIL
-    
+
 C =====================================================================
       INTEGER     ISMAEM,LI
       LOGICAL     AXI, PERMAN
@@ -114,19 +111,19 @@ C =====================================================================
      >                  DIMDEF,DIMCON,NDIM,NNO1,
      >                  NNO2,NPI,NPG,DIMUEL,IPOIDS,IVF1,IDF1,
      >                  IVF2,IDF2,JGANO,IU,IP,IPF,IQ,MODINT)
-     
+
        CALL TECAEL(IADZI,IAZK24)
-       NOMAIL = ZK24(IAZK24-1+3) (1:8)     
- 
+       NOMAIL = ZK24(IAZK24-1+3) (1:8)
+
 C RECUPERATION DES ANGLES NAUTIQUES DEFINIS PAR AFFE_CARA_ELEM
-      IF ((OPTION .EQ. 'FORC_NODA') .OR. 
+      IF ((OPTION .EQ. 'FORC_NODA') .OR.
      +    (OPTION(1:9).EQ.'RIGI_MECA' ) .OR.
      +    (OPTION(1:9).EQ.'RAPH_MECA' ) .OR.
      +    (OPTION(1:9).EQ.'FULL_MECA' )) THEN
 
         CALL JEVECH('PCAMASS','L',ICAMAS)
         IF (ZR(ICAMAS).EQ.-1.D0) CALL U2MESS('F','ELEMENTS5_48')
-        
+
 C DEFINITION DES ANGLES NAUTIQUES AUX NOEUDS SOMMETS
         CALL EIANGL(NDIM,NNO2,ZR(ICAMAS+1),ANG)
       END IF
@@ -181,7 +178,7 @@ C =====================================================================
 
          RETLOI = 0
 
-                         
+
          IF (OPTION(1:9).EQ.'RIGI_MECA') THEN
 
             CALL ASEIHM(OPTION,AXI,NDIM,NNO1,NNO2,NPI,NPG,
@@ -242,7 +239,7 @@ C ======================================================================
 C --- PARAMETRES EN SORTIE ---------------------------------------------
 C ======================================================================
         CALL JEVECH('PVECTUR','E',IVECTU)
-        
+
         CALL  FNEIHM(FNOEVO,DT,PERMAN,NNO1,NNO2,NPI,NPG,
      +                   ZR(IPOIDS),IU,IP,IPF,IQ,ZR(IVF1),
      +                   ZR(IVF2),ZR(IDF2),ZR(IGEOM),ANG,
@@ -259,7 +256,7 @@ C ======================================================================
         CALL JEVECH('PCONTRR','L',ICHG)
         CALL JEVECH('PSIEFNOR','E',ICHN)
 
-        
+
         NVIM=MECANI(6)
 
         CALL POEIHM(NOMTE,OPTION,MODINT,JGANO,NNO1,NNO2,DIMCON,NVIM,

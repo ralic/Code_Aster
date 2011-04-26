@@ -2,11 +2,11 @@
      &                  FONACT,LISCHA,SOLVEU,NUMEDD,SDDYNA,
      &                  SDDISC,DEFICO,RESOCO,MEELEM,MEASSE,
      &                  MATASS)
-C
+C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 09/03/2010   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 26/04/2011   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -21,18 +21,17 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C RESPONSABLE MABBAS M.ABBAS
-C TOLE CRP_21
+C RESPONSABLE ABBAS M.ABBAS
 C
       IMPLICIT NONE
       CHARACTER*(*) PHASEZ
-      CHARACTER*19  MATASS      
+      CHARACTER*19  MATASS
       CHARACTER*19  SDDYNA,SDDISC
       CHARACTER*24  DEFICO,RESOCO
       INTEGER       FONACT(*)
       CHARACTER*19  MEELEM(*),MEASSE(*)
       CHARACTER*24  NUMEDD
-      CHARACTER*19  LISCHA,SOLVEU      
+      CHARACTER*19  LISCHA,SOLVEU
 C
 C ----------------------------------------------------------------------
 C
@@ -45,8 +44,8 @@ C
 C
 C IN  PHASE  : PHASE DE CALCUL
 C                'PREDICTION'
-C                'CORRECTION' 
-C                'ACCEL_INIT'  
+C                'CORRECTION'
+C                'ACCEL_INIT'
 C IN  RESOCO : SD RESOLUTION CONTACT
 C IN  DEFICO : SD DEF. CONTACT
 C IN  SDDYNA : SD DYNAMIQUE
@@ -84,12 +83,12 @@ C
       REAL*8       COEMAT(3)
       CHARACTER*24 LIMAT(3)
       CHARACTER*4  TYPCST(3)
-      
+
       REAL*8       COEMAM(3)
       CHARACTER*24 LIMAM(3)
       CHARACTER*4  TYPCSM(3)
       INTEGER      NBMAT,IRET
-      CHARACTER*10 PHASE      
+      CHARACTER*10 PHASE
       CHARACTER*19 RIGID,MASSE,AMORT
       INTEGER      IFM,NIV
 C
@@ -101,8 +100,8 @@ C
 C --- AFFICHAGE
 C
       IF (NIV.GE.2) THEN
-        WRITE (IFM,*) '<MECANONLINE><CALC> CALCUL MATRICE GLOBALE' 
-      ENDIF           
+        WRITE (IFM,*) '<MECANONLINE><CALC> CALCUL MATRICE GLOBALE'
+      ENDIF
 C
 C --- INITIALISATIONS
 C
@@ -110,77 +109,77 @@ C
       PHASE  = PHASEZ
 C
 C --- DECOMPACTION DES VARIABLES CHAPEAUX
-C 
+C
       CALL NMCHEX(MEASSE,'MEASSE','MERIGI',RIGID)
       CALL NMCHEX(MEASSE,'MEASSE','MEMASS',MASSE)
       CALL NMCHEX(MEASSE,'MEASSE','MEAMOR',AMORT)
 C
 C --- FONCTIONNALITES ACTIVEES
-C    
+C
       LCTCD  = ISFONC(FONACT,'CONT_DISCRET')
-      LSUIV  = ISFONC(FONACT,'FORCE_SUIVEUSE')  
-      LAMOR  = NDYNLO(SDDYNA,'MAT_AMORT')    
-      LDYNA  = NDYNLO(SDDYNA,'DYNAMIQUE')  
+      LSUIV  = ISFONC(FONACT,'FORCE_SUIVEUSE')
+      LAMOR  = NDYNLO(SDDYNA,'MAT_AMORT')
+      LDYNA  = NDYNLO(SDDYNA,'DYNAMIQUE')
       LEXPL  = NDYNLO(SDDYNA,'EXPLICITE')
-      LSHIMA = NDYNLO(SDDYNA,'COEF_MASS_SHIFT') 
+      LSHIMA = NDYNLO(SDDYNA,'COEF_MASS_SHIFT')
 C
 C --- PREMIER PAS DE TEMPS ?
 C
       CALL DIBCLE(SDDISC,'PREMIE','L',IRET  )
-      LPREM  = IRET.EQ.0  
+      LPREM  = IRET.EQ.0
 C
 C --- SUPPRESSION ANCIENNE MATRICE ASSEMBLEE
 C
       IF (LDYNA) THEN
         CALL DETRSD('MATR_ASSE',MATASS)
-      ENDIF        
+      ENDIF
 C
 C --- COEFFICIENTS POUR MATRICES
-C      
+C
       IF (LDYNA) THEN
         COERIG = NDYNRE(SDDYNA,'COEF_MATR_RIGI')
         COEAMO = NDYNRE(SDDYNA,'COEF_MATR_AMOR')
         COEMAS = NDYNRE(SDDYNA,'COEF_MATR_MASS')
-        COESHI = NDYNRE(SDDYNA,'COEF_MASS_SHIFT') 
+        COESHI = NDYNRE(SDDYNA,'COEF_MASS_SHIFT')
       ELSE
-        COERIG = 1.D0    
-      ENDIF       
+        COERIG = 1.D0
+      ENDIF
       TYPCST(1) = 'R'
       TYPCST(2) = 'R'
       TYPCST(3) = 'R'
 C
 C --- DECALAGE DE LA MATRICE MASSE (COEF_MASS_SHIFT)
 C
-      IF (LSHIMA.AND.LPREM.AND.(PHASE.EQ.'PREDICTION')) THEN  
+      IF (LSHIMA.AND.LPREM.AND.(PHASE.EQ.'PREDICTION')) THEN
          TYPCSM(1) = 'R'
-         TYPCSM(2) = 'R' 
+         TYPCSM(2) = 'R'
          COEMAM(1) = 1.D0
-         COEMAM(2) = COESHI       
+         COEMAM(2) = COESHI
          LIMAM(1)  = MASSE
-         LIMAM(2)  = RIGID      
+         LIMAM(2)  = RIGID
          IF (LEXPL) THEN
            CALL MTCMBL(2,TYPCSM,COEMAM,LIMAM,MASSE,' ',' ','ELIM=')
          ELSE
            CALL MTCMBL(2,TYPCSM,COEMAM,LIMAM,MASSE,'LAGR',' ','ELIM=')
-         ENDIF      
-      ENDIF    
+         ENDIF
+      ENDIF
 C
 C --- MATRICES ET COEFFICIENTS
-C 
+C
       IF (LDYNA) THEN
         IF (PHASE.EQ.'ACCEL_INIT') THEN
           LIMAT(1)  = MASSE
-          NBMAT     = 1 
-          COEMAT(1) = 1.D0          
-        ELSE  
-          IF (LEXPL) THEN                    
+          NBMAT     = 1
+          COEMAT(1) = 1.D0
+        ELSE
+          IF (LEXPL) THEN
             LIMAT(1)  = MASSE
             NBMAT     = 1
             COEMAT(1) = COEMAS
-          ELSE 
+          ELSE
             COEMAT(1) = COERIG
             COEMAT(2) = COEMAS
-            COEMAT(3) = COEAMO   
+            COEMAT(3) = COEAMO
             LIMAT(1)  = RIGID
             LIMAT(2)  = MASSE
             LIMAT(3)  = AMORT
@@ -189,47 +188,47 @@ C
             ELSE
               NBMAT = 2
             END IF
-          ENDIF 
-        ENDIF            
-      ENDIF     
-C      
+          ENDIF
+        ENDIF
+      ENDIF
+C
 C --- DEFINITION DE LA STRUCTURE DE LA MATRICE
-C    
+C
       IF (LDYNA) THEN
         IF (PHASE.EQ.'ACCEL_INIT') THEN
-          CALL MTDEFS(MATASS,MASSE ,'V','R')            
+          CALL MTDEFS(MATASS,MASSE ,'V','R')
         ELSE
-          IF (LEXPL) THEN                    
-            CALL MTDEFS(MATASS,MASSE ,'V','R')         
-          ELSE      
+          IF (LEXPL) THEN
+            CALL MTDEFS(MATASS,MASSE ,'V','R')
+          ELSE
             CALL MTDEFS(MATASS,RIGID ,'V','R')
           ENDIF
-        ENDIF              
-      ENDIF    
+        ENDIF
+      ENDIF
 C
 C --- ASSEMBLAGE
 C
       IF (LDYNA) THEN
         CALL MTCMBL(NBMAT ,TYPCST,COEMAT,LIMAT,MATASS,
-     &              NOMDDL,' '   ,'ELIM=')    
+     &              NOMDDL,' '   ,'ELIM=')
       ELSE
-        MATASS = RIGID     
-      ENDIF 
+        MATASS = RIGID
+      ENDIF
       IF (PHASE.EQ.'ACCEL_INIT') THEN
-        GOTO 9999              
-      ENDIF       
+        GOTO 9999
+      ENDIF
 C
 C --- PRISE EN COMPTE DE LA MATRICE TANGENTE DES FORCES SUIVEUSES
-C 
+C
       IF (LSUIV) THEN
         CALL ASCOMA(MEELEM,NUMEDD,SOLVEU,LISCHA,MATASS)
-      ENDIF              
+      ENDIF
 C
 C --- PRISE EN COMPTE DE LA MATRICE TANGENTE DU FROTTEMENT
 C
       IF (LCTCD.AND.(PHASE.EQ.'CORRECTION')) THEN
         CALL NMASFR(DEFICO,RESOCO,MATASS)
-      ENDIF      
+      ENDIF
 C
 9999  CONTINUE
 C

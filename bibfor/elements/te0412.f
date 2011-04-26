@@ -3,7 +3,7 @@
       CHARACTER*16      OPTION,NOMTE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 04/04/2011   AUTEUR DESOZA T.DESOZA 
+C MODIF ELEMENTS  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -53,33 +53,33 @@ C ----- DEBUT --- COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*80                                              ZK80
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C------------FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
-      
-      INTEGER    NNOMX 
+
+      INTEGER    NNOMX
       PARAMETER (NNOMX=4)
-      INTEGER    NBSM,NBSIG 
+      INTEGER    NBSM,NBSIG
       PARAMETER (NBSIG=6)
       PARAMETER (NBSM=3)
-      INTEGER    NPGMX 
+      INTEGER    NPGMX
       PARAMETER (NPGMX=4)
-      
+
       REAL*8   PGL(3,3)
       REAL*8   EPS(3),KHI(3)
       REAL*8   BF(3,3*NNOMX),BM(3,2*NNOMX),UM(2,NNOMX),UF(3,NNOMX)
       REAL*8   UL(6,NNOMX),QSI,ETA,XYZL(3,4),JACOB(5),POIDS,CARA(25)
       REAL*8   NMM(NBSM),NMF(NBSM),MFF(NBSM),ENELM(NPGMX),ENELF(NPGMX)
       REAL*8   ENELT(NPGMX),ENM,ENF,ENT,AUXM(NNOMX),AUXF(NNOMX)
-      REAL*8   AUXT(NNOMX),ENELMF(NPGMX),DUM(2,NNOMX),DUF(3,NNOMX)
-      REAL*8   DUL(6,NNOMX),EFFINT(32),EFFGT(32)
-      
+      REAL*8   AUXT(NNOMX)
+      REAL*8   EFFINT(32)
+
       INTEGER  NDIM,NNO,NNOEL,NPG,IPOIDS,ICOOPG,IVF,IDFDX,IDFD2,JGANO
-      INTEGER  JGEOM,MULTIC,IPG,K,INO,JDEPM,ISIG,JSIG,IDENER,NMCPI
-      INTEGER  ICOMPO,ICACOQ,I,NCMP,ICONTP,JVARI,NBVAR,JTAB(7),IVPG
-      
-      CHARACTER*16 COMPOR,VALK(3)  
-      LOGICAL  ELASCO,DKQ,DKG,LKIT     
-      
+      INTEGER  JGEOM,IPG,INO,JDEPM,ISIG,JSIG,IDENER
+      INTEGER  ICOMPO,ICACOQ,I,NCMP,ICONTP,JVARI,NBVAR,IVPG
+
+      CHARACTER*16 VALK(3)
+      LOGICAL  DKQ,DKG,LKIT
+
       DKQ = .FALSE.
-      DKG = .FALSE.  
+      DKG = .FALSE.
 
       IF (NOMTE.EQ.'MEDKQU4 ') THEN
         DKQ = .TRUE.
@@ -97,7 +97,7 @@ C------------FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 
       CALL ELREF5(' ','RIGI',NDIM,NNO,NNOEL,NPG,IPOIDS,ICOOPG,
      +                                         IVF,IDFDX,IDFD2,JGANO)
-      
+
       CALL JEVECH('PGEOMER','L',JGEOM)
       CALL JEVECH('PCOMPOR','L',ICOMPO)
       IF (NNO.EQ.3) THEN
@@ -105,29 +105,29 @@ C------------FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       ELSE IF (NNO.EQ.4) THEN
          CALL DXQPGL ( ZR(JGEOM), PGL )
       END IF
-      
+
       LKIT = ZK16(ICOMPO)(1:7).EQ.'KIT_DDI'
 
-      IF ( ZK16(ICOMPO)(1:4).EQ.'ELAS'   .OR. 
+      IF ( ZK16(ICOMPO)(1:4).EQ.'ELAS'   .OR.
      &     ZK16(ICOMPO)(1:4).EQ.'ENDO'   .OR.
      &     ZK16(ICOMPO)(1:6).EQ.'MAZARS' .OR.
-     &     ZK16(ICOMPO)(1:7).EQ.'GLRC_DM'.OR. 
-     &     ZK16(ICOMPO)(1:11).EQ.'GLRC_DAMAGE'.OR. 
-     &   (LKIT  .AND. ZK16(ICOMPO+7)(1:7).EQ.'GLRC_DM' ) 
+     &     ZK16(ICOMPO)(1:7).EQ.'GLRC_DM'.OR.
+     &     ZK16(ICOMPO)(1:11).EQ.'GLRC_DAMAGE'.OR.
+     &   (LKIT  .AND. ZK16(ICOMPO+7)(1:7).EQ.'GLRC_DM' )
      &   ) THEN
 
-      
+
       IF(OPTION(1:4) .EQ. 'ENEL') THEN
         CALL JEVECH('PDEPLAR','L',JDEPM)
         CALL JEVECH ( 'PCONTRR', 'L', ICONTP )
       ELSE IF(OPTION(1:4) .EQ. 'ENER') THEN
         CALL JEVECH('PDEPLR','L',JDEPM)
         CALL JEVECH ( 'PCONTPR', 'L', ICONTP )
-      ENDIF  
+      ENDIF
 
       CALL JEVECH('PGEOMER','L',JGEOM)
       CALL JEVECH('PCACOQU','L',ICACOQ)
-      
+
       CALL UTPVGL(NNO,3,PGL,ZR(JGEOM),XYZL)
 
       IF ( DKQ ) THEN
@@ -135,17 +135,17 @@ C------------FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       ELSE
          CALL GTRIA3(XYZL,CARA)
       END IF
-      
+
       IF(DKG .AND. (LKIT .OR. ZK16(ICOMPO)(1:11).EQ.'GLRC_DAMAGE')) THEN
         IF(OPTION(1:4) .EQ. 'ENEL') THEN
           CALL JEVECH('PVARIGR','L',JVARI)
         ELSE IF(OPTION(1:4) .EQ. 'ENER') THEN
           CALL JEVECH('PVARIPR','L',JVARI)
         ENDIF
-      ENDIF    
-      IF((.NOT. LKIT) .OR. (.NOT. DKG)) THEN  
+      ENDIF
+      IF((.NOT. LKIT) .OR. (.NOT. DKG)) THEN
         CALL UTPVGL(NNO,6,PGL,ZR(JDEPM),UL)
-        
+
 C       -- PARTITION DU DEPLACEMENT EN MEMBRANE/FLEXION :
 C       -------------------------------------------------
         DO 30,INO = 1,NNOEL
@@ -155,21 +155,21 @@ C       -------------------------------------------------
           UF(2,INO) =  UL(5,INO)
           UF(3,INO) = -UL(4,INO)
    30   CONTINUE
-      ENDIF 
+      ENDIF
 
 C     -- CALCUL DES CONTRAINTES GENERALISEES :
 C     -------------------------------------------------
-      IF(DKG) THEN 
+      IF(DKG) THEN
         DO 40 IPG = 1, NPG
           DO 50 ISIG = 1, NBSIG
-            EFFINT((IPG-1)*NBSIG + ISIG) = 
+            EFFINT((IPG-1)*NBSIG + ISIG) =
      &               ZR(ICONTP-1 + (IPG-1)*8 + ISIG )
- 50       CONTINUE  
- 40     CONTINUE  
+ 50       CONTINUE
+ 40     CONTINUE
       ELSE
         CALL DXEFFI ( OPTION, NOMTE, PGL, ZR(ICONTP),NBSIG, EFFINT )
-      ENDIF  
-           
+      ENDIF
+
       CALL R8INIR(NPGMX,0.D0,ENELM,1)
       CALL R8INIR(NPGMX,0.D0,ENELF,1)
       CALL R8INIR(NPGMX,0.D0,ENELT,1)
@@ -200,9 +200,9 @@ C      ===================================
           DO 55 ISIG = 1, NBSM
             EPS(ISIG) = ZR(IVPG + ISIG )
             KHI(ISIG) = ZR(IVPG + ISIG + 3)
- 55       CONTINUE  
+ 55       CONTINUE
         ELSE
-          
+
 C         -- CALCUL DE EPS, KHI :
 C         -----------------------------------
           CALL PMRVEC('ZERO',3,2*NNOEL,BM, UM, EPS)
@@ -210,13 +210,13 @@ C         -----------------------------------
 
           IF(ZK16(ICOMPO)(1:11).EQ.'GLRC_DAMAGE') THEN
             READ (ZK16(ICOMPO-1+2),'(I16)') NBVAR
-            IVPG = JVARI + (IPG-1)*NBVAR - 1 
+            IVPG = JVARI + (IPG-1)*NBVAR - 1
             DO 57 ISIG = 1, NBSM
               EPS(ISIG) = EPS(ISIG) - ZR(IVPG + ISIG )
               KHI(ISIG) = KHI(ISIG) - ZR(IVPG + ISIG + 3)
  57         CONTINUE
-          ENDIF   
-        ENDIF  
+          ENDIF
+        ENDIF
 
 C  --    CALCUL DE LA DENSITE D'ENERGIE POTENTIELLE ELASTIQUE :
 C        ==========================================================
@@ -228,7 +228,7 @@ C          ---------------------
            CALL R8INIR(NBSM,0.D0,NMM,1)
            CALL R8INIR(NBSM,0.D0,NMF,1)
            CALL R8INIR(NBSM,0.D0,MFF,1)
-                     
+
               DO 70 ISIG = 1, NBSM
                  NMM(ISIG) = EFFINT((IPG-1)*NBSIG + ISIG)
                  MFF(ISIG) = EFFINT((IPG-1)*NBSIG + ISIG +3)
@@ -239,7 +239,7 @@ C          ---------------------
               ENELF(IPG)  = ENELF(IPG)  + 0.5D0*MFF(JSIG)*KHI(JSIG)
   600      CONTINUE
            ENELT(IPG) = ENELM(IPG) + ENELF(IPG)
-           
+
            ENM = ENM + ENELM(IPG)*POIDS
            ENF = ENF + ENELF(IPG)*POIDS
            ENT = ENT + ENELT(IPG)*POIDS
@@ -255,7 +255,7 @@ C      -------------------
         CALL JEVECH('PENERDR','E',IDENER)
       ELSE IF(OPTION(1:4) .EQ. 'ENER') THEN
         CALL JEVECH('PENERD1','E',IDENER)
-      ENDIF  
+      ENDIF
 C
 C --- OPTIONS ENEL_ELGA
 C     ==============================
@@ -296,7 +296,7 @@ C     ================
       ENDIF
 
       ELSE
-C      OPTION NON DISPONIBLE     
+C      OPTION NON DISPONIBLE
         VALK(1) = OPTION
         VALK(2) = NOMTE
         VALK(3) = ZK16(ICOMPO)

@@ -4,9 +4,9 @@
       INTEGER           LMATK,       LMATM,LMATSH
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 10/07/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGELINE  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -32,7 +32,6 @@ C IN  LMATSH : IS : ADRESSE ATTRIBUT MATRICE SHIFTEE
 C     ------------------------------------------------------------------
 C
 C     ------ DEBUT DECLARATIONS NORMALISEES  JEVEUX --------------------
-      CHARACTER*32       JEXNUM , JEXNOM , JEXR8 , JEXATR
       INTEGER            ZI
       COMMON  / IVARJE / ZI(1)
       REAL*8             ZR
@@ -50,7 +49,6 @@ C     ------ DEBUT DECLARATIONS NORMALISEES  JEVEUX --------------------
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX
 C
       REAL*8       COEF(2)
-      INTEGER      MAT (2)
       CHARACTER*1  TYPCST(2)
       CHARACTER*8  NOMDDL
       CHARACTER*24 NMAT(2),NMATSH

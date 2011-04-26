@@ -6,9 +6,9 @@ C
       REAL*8        DEVG(6), DEVGII, TRACEG, DY(10)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 27/10/2009   AUTEUR FERNANDES R.FERNANDES 
+C MODIF ALGELINE  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -57,7 +57,7 @@ C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
 C ======================================================================
       INTEGER       JPARA, JDERIV, NDT, NDI
       REAL*8        PREF, EPSSIG, GAMCJS, MU, K, SNII, RN, GN
-      REAL*8        RCOS3T, COS3T, HLODE, GDEV, UCRITP,DDOT
+      REAL*8        RCOS3T, COS3T, HLODE, GDEV,DDOT
       REAL*8        DFDL, SN(6), INVN, GAMPN, EVPN, DELTAN, Q(6)
       CHARACTER*16  PARECR, DERIVE
 C ======================================================================

@@ -7,9 +7,9 @@
       CHARACTER*14        NUGENE
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 25/03/2008   AUTEUR REZETTE C.REZETTE 
+C MODIF ALGORITH  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -44,17 +44,17 @@ C      ---- DEBUT DES COMMUNS JEVEUX ----------------------------------
       CHARACTER*32                          ZK32
       CHARACTER*80                                  ZK80
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
-      CHARACTER*32   JEXNUM, JEXNOM
+      CHARACTER*32   JEXNUM
 C      ---- FIN DES COMMUNS JEVEUX ------------------------------------
 C
-      INTEGER      IBID, IDDEEQ, JSCDE, NUEQ, NTBLOC, NBLOC, IALIME,
+      INTEGER       IDDEEQ, JSCDE, NUEQ, NTBLOC, NBLOC, IALIME,
      +             IACONL, JREFA, IADESC, I, J, K, IMATRA, JSCDI,
-     +             JSCBL, JSCHC, IBLO, LDBLO, N1BLOC, N2BLOC, IADMOD,
-     +             IRET, IDVEC2, IDVEC3, IDBASE
+     +             JSCBL, JSCHC, IBLO, LDBLO, N1BLOC, N2BLOC,
+     +              IDVEC2, IDVEC3, IDBASE
       COMPLEX*16   PIJ
       CHARACTER*8  K8B
       CHARACTER*16 TYPBAS
-      CHARACTER*19 RESU, NOMCHA
+      CHARACTER*19 RESU
       REAL*8       ZERO
 C-----------------------------------------------------------------------
 C

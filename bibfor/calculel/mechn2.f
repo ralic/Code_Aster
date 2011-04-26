@@ -4,9 +4,9 @@
       CHARACTER*24              CHNUMC, CHPLAN
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 07/12/2010   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -45,14 +45,13 @@ C     ----- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C     ----- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C     ------------------------------------------------------------------
-      INTEGER      IBID, IVAL(3), NX3, NCOU, NANGL, IOC, N1, NA, NVEC,
+      INTEGER      IBID, NX3, NCOU, NANGL, IOC, N1,
      +             NREP, NBMA, JMAIL, JDCC, JDVC, JDCP, JDVP, IRET
-      REAL*8       R8B, RPLAN
+      REAL*8        RPLAN
       CHARACTER*3  ORDO
       CHARACTER*8  K8B, MOTCLS(2), TYPMCL(2), PLAN
       CHARACTER*16 MOTCLE,KBID,NOMCMD
       CHARACTER*24 MESMAI
-      COMPLEX*16   C16B
 C DEB-------------------------------------------------------------------
 C
       CALL GETRES(KBID,KBID,NOMCMD)

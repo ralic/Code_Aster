@@ -3,9 +3,9 @@
         IMPLICIT NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
+C MODIF ALGORITH  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -32,7 +32,7 @@ C           SIG    :  CONTRAINTES
 C           VIN    :  VARIABLES INTERNES
 C       OUT DSDE   :  MATRICE DE COMPORTEMENT TANGENT = DSIG/DEPS
 C       ----------------------------------------------------------------
-        INTEGER         KPG,KSP,IMAT , NMAT, IRET
+        INTEGER         KPG,KSP,IMAT , NMAT
 C
         REAL*8          V1(6), V2(6), I2(6)
         REAL*8          M1(6,6), M2(6,6), M3(6,6), DSDE(6,6), I4(6,6)
@@ -43,10 +43,10 @@ C
         REAL*8          X1, X2, Y1, Y2, Y3, Y4, Y5, A1, A2, A3, A4
         REAL*8          A5, A6, D , S1, F, FD, F0, P, RHO, UNF
         REAL*8          NU, E, DEUXMU, MU, TROIMU, TROISK, K
-        REAL*8          MATER(NMAT,2) , TEMP , RP , DRDP, DP, DPM
+        REAL*8          MATER(NMAT,2)  , RP , DRDP, DP, DPM
         REAL*8          ZERO, UN , DEUX, TROIS, ANN, PD, FTOT, FDTOT
         REAL*8          NDEPS, NSIG, LCNRTS, LCNRTE, THETA
-        REAL*8          DPUISS, PUISS, GP, DT
+        REAL*8          DPUISS, PUISS, DT
 C
         CHARACTER*16    LOI
         CHARACTER*(*)     FAMI

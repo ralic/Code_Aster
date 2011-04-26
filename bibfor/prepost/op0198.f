@@ -2,24 +2,24 @@
       IMPLICIT   NONE
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 02/11/2010   AUTEUR MACOCCO K.MACOCCO 
+C MODIF PREPOST  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2002  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-C (AT YOUR OPTION) ANY LATER VERSION.                                 
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
 C
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
-C                                                                       
-C                                                                       
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+C
+C
 C ======================================================================
 C ======================================================================
 C --- BUT : COMMANDE POST_K_BETA ---------------------------------------
@@ -42,8 +42,8 @@ C --------- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
 C --------- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
 C ======================================================================
       INTEGER      NDIM, NK1D, IK1D, JNOGN, ITIME, NBVAL, JTBINT, NBVAL2
-      INTEGER      NOREV, NOMDB, NOTOT, JTHRTO, IBID
-      REAL*8       LREV, DEKLAG, PRODEF, LONDEF, TEMPS, R8MIEM, K1ACP
+      INTEGER      NOREV, NOMDB, IBID
+      REAL*8       LREV, DEKLAG, PRODEF, LONDEF, TEMPS, K1ACP
       REAL*8       DKMA, DKMB, KAL, KBL, K1A, K1B, TEMPA, TEMPB, K1BCP
       REAL*8       RNOM(7)
       COMPLEX*16   C16B
@@ -54,7 +54,7 @@ C ======================================================================
       CHARACTER*19 TBINST, TBSCRV, TBSCMB, SIGMRV, SIGMDB, TBINTH
       CHARACTER*32 KNOM
 C
-      DATA  NOMTAB / 'GROUP_NO', 'INST', 'K1_REV', 'KCP_REV',  
+      DATA  NOMTAB / 'GROUP_NO', 'INST', 'K1_REV', 'KCP_REV',
      +               'TEMPPF_REV', 'K1_MDB',  'KCP_MDB', 'TEMPPF_MDB' /
       DATA  TYPPAR / 'K32', 'R', 'R', 'R', 'R', 'R', 'R', 'R' /
 C ======================================================================
@@ -131,7 +131,7 @@ C --- RECUPERATION DES CHAMPS MECANIQUES -------------------------------
 C ======================================================================
             SIGMRV = '&&OP0198.SIGMRV'
             SIGMDB = '&&OP0198.SIGMDB'
-            CALL RECHMC( NDIM, TEMPS, ORIDEF, TABREV, TABMDB, 
+            CALL RECHMC( NDIM, TEMPS, ORIDEF, TABREV, TABMDB,
      +                   NOREV, SIGMRV, NOMDB, SIGMDB )
 C ======================================================================
 C --- CALCUL DES FACTEURS D'INTENSITE DE CONTRAINTES ELASTIQUES --------

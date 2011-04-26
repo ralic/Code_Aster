@@ -6,9 +6,9 @@
       REAL*8           TOLF,RESUFR(MXRESF,*)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 13/10/2010   AUTEUR BOITEAU O.BOITEAU 
+C MODIF ALGELINE  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -61,13 +61,13 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
       CHARACTER*1   TYPCST(3),BASE
       CHARACTER*8   NOMDDL
-      CHARACTER*19  MATDYN,SOLVEU,MATPRE,MATASS
+      CHARACTER*19  MATDYN,SOLVEU,MATPRE
       CHARACTER*24  NMAT(3),NDYNAM
       COMPLEX*16    RES0,RES1,RES2,H0,H1,LAMBDA,DELTA,ZZ,G0,GG,GG1,GG2,
      &              Z0,Z1,Z2
       INTEGER       IDET0,IDET1,IDET2,IBID
-      REAL*8        DEPI,R8DEPI,EPS,DET0,DET1,DET2,RN1,RN2,ERR,ERRZ,
-     &              DIST,CONST(6)
+      REAL*8        DET0,DET1,DET2,RN1,RN2,ERR,ERRZ,
+     &              CONST(6)
 C     ------------------------------------------------------------------
       DATA          NOMDDL /'        '/
 C     ------------------------------------------------------------------

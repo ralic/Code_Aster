@@ -1,6 +1,6 @@
       SUBROUTINE TE0086 ( OPTION , NOMTE )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -31,7 +31,7 @@ C ......................................................................
 C
       CHARACTER*4      FAMI
       REAL*8           SIGMA(54), REPERE(7),SIGM2(54),BARY(3)
-      REAL*8           NHARM, INSTAN, DEPLA(36),CONTNO(54)
+      REAL*8           NHARM, INSTAN,CONTNO(54)
       INTEGER          IDIM
       LOGICAL          LSENS
 C

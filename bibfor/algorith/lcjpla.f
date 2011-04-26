@@ -4,9 +4,9 @@
         IMPLICIT   NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 18/10/2010   AUTEUR FLEJOU J-L.FLEJOU 
+C MODIF ALGORITH  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -51,7 +51,7 @@ C                    = 1 ou 2, CORRESPOND AU CODE RETOUR DE PLASTI.F
 C       ----------------------------------------------------------------
 C TOLE CRP_21
       INTEGER         IMAT, NMAT , NVI, NR,KPG,KSP,CODRET
-      REAL*8          DSDE(6,6),DEVG(*),DEVGII,SIGF(6),DEPS(6),DG
+      REAL*8          DSDE(6,6),DEVG(*),DEVGII,SIGF(6),DEPS(6)
       REAL*8          VIN(*), VIND(*),THETA,DT,MATER(NMAT,2)
       REAL*8          VP(3),VECP(3,3),SIGD(6)
       CHARACTER*8     MOD

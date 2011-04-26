@@ -1,22 +1,22 @@
       SUBROUTINE DFBDE (DIM,B,E,DEUXMU,LAMBDA,DSIDEP)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 04/10/2004   AUTEUR GODARD V.GODARD 
+C MODIF ALGORITH  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 
       IMPLICIT NONE
@@ -39,7 +39,7 @@ C     OUT DSIDEP      : DFB/DEPS
 C ----------------------------------------------------------------------
 
       INTEGER I,J,K,L,T(3,3)
-      INTEGER P,Q,R,S,IK,PQ,RS
+      INTEGER P,Q,IK,PQ,RS
       REAL*8  RTEMP2
       REAL*8  RTEMP3,RTEMP4,RAC2,KRON(3,3),DBEDE(6,6),MTEMP(6,6)
       REAL*8  BEEB(6),BEEBP(6),VECBEB(3,3),VALBEB(3)
@@ -66,7 +66,7 @@ C ----------------------------------------------------------------------
       KRON(3,1)=0.D0
       KRON(3,2)=0.D0
       KRON(3,3)=1.D0
-      
+
       RAC2=SQRT(2.D0)
 
       CALL R8INIR(36,0.D0,DBEDE,1)
@@ -98,7 +98,7 @@ C-----CALCUL DE D(BE+EB)/DE------------------------------------
      &         B(T(L,J))+KRON(J,L)*B(T(I,K)))*RTEMP3*RTEMP4
 23          CONTINUE
             BEEB(T(I,J))=BEEB(T(I,J))+
-     &              B(T(I,K))*E(T(K,J))+E(T(I,K))*B(T(K,J))            
+     &              B(T(I,K))*E(T(K,J))+E(T(I,K))*B(T(K,J))
 22        CONTINUE
 21      CONTINUE
 20    CONTINUE
@@ -130,7 +130,7 @@ C-----CALCUL DE F2B----------------------------------------------------
 
 
       CALL DFPDF(6,BEEB,MTEMP)
-      
+
       DO 240 IK=1,6
         DO 241 PQ=1,6
           DO 242 RS=1,6
@@ -160,7 +160,7 @@ C-----CALCUL DE F2B----------------------------------------------------
                 RTEMP4=1.D0
               ELSE
                 RTEMP4=1.D0/RAC2
-              ENDIF              
+              ENDIF
               F2B(T(I,J),L)=F2B(T(I,J),L)+(A(T(I,K),L)*E(T(K,J))*
      &                    RTEMP4+E(T(I,K))*A(T(K,J),L)*RTEMP3)*RTEMP2
 253         CONTINUE
@@ -174,7 +174,7 @@ C-----CALCUL DE F2B----------------------------------------------------
       DO 260 I=1,3
         DO 261 J=I,3
             DO 262 P=1,3
-              DO 263 Q=1,3 
+              DO 263 Q=1,3
                 IF (I.EQ.J) THEN
                   RTEMP2=1.D0
                 ELSE
@@ -188,7 +188,7 @@ C-----CALCUL DE F2B----------------------------------------------------
       F2B(T(I,J),T(P,Q))=F2B(T(I,J),T(P,Q))
      &                   +(KRON(J,Q)*BEEBP(T(I,P))
      &                   +KRON(I,P)*BEEBP(T(J,Q)))
-     &                   *RTEMP2*RTEMP3              
+     &                   *RTEMP2*RTEMP3
 263         CONTINUE
 262       CONTINUE
 261     CONTINUE
@@ -199,13 +199,13 @@ C
 C-----CALCUL DE F1B-----------------------------------------------------
 
       TREB=(BEEB(1)+BEEB(2)+BEEB(3))/2.D0
-      
+
       IF (TREB.LT.0) THEN
          TREC=0.D0
-      ELSE 
+      ELSE
          TREC=1.D0
-      ENDIF   
-         
+      ENDIF
+
 
       RTEMP2 = 0.D0
       RTEMP3 = 0.D0
@@ -253,7 +253,7 @@ C-----CALCUL DE F1B-----------------------------------------------------
 162          CONTINUE
 161        CONTINUE
 160   CONTINUE
-      
+
 
 C----CALCUL DE FB-------------------------------------------------------
 
@@ -261,6 +261,6 @@ C----CALCUL DE FB-------------------------------------------------------
         DO 901 J=1,6
           DSIDEP(I,J)=-LAMBDA*F1B(I,J)-DEUXMU/4.D0*F2B(I,J)
 901     CONTINUE
-900   CONTINUE      
-      
+900   CONTINUE
+
       END

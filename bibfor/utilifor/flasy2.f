@@ -1,11 +1,11 @@
       SUBROUTINE FLASY2( LTRANL, LTRANR, ISGN, N1, N2, TL, LDTL, TR,
      &                   LDTR, B, LDB, SCALE, X, LDX, XNORM, INFO )
+C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILIFOR  DATE 16/12/2004   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILIFOR  DATE 26/04/2011   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) LAPACK
 C ======================================================================
-C TOLE CRP_21
 C
 C     SUBROUTINE LAPACK RESOLVANT L'EQUATION MATRICIELLE CI-DESSOUS.
 C-----------------------------------------------------------------------

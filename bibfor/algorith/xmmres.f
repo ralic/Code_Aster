@@ -1,7 +1,7 @@
       SUBROUTINE XMMRES(DEPDEL,MODELE,VEASSE,CNSINR)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 26/04/2011   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,10 +22,10 @@ C RESPONSABLE GENIAUT S.GENIAUT
 C
       IMPLICIT     NONE
       CHARACTER*19 CNSINR
-      CHARACTER*19 VEASSE(*)      
+      CHARACTER*19 VEASSE(*)
       CHARACTER*19 DEPDEL
       CHARACTER*8  MODELE
-C      
+C
 C ----------------------------------------------------------------------
 C
 C ROUTINE CONTACT (METHODE XFEM - POST-TRAITEMENT)
@@ -59,7 +59,7 @@ C
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C
 C --------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------
-C 
+C
       INTEGER      IFM,NIV
       INTEGER      JCESV1,JCESV2,JCESV3,JCESV4,JCESV5
       INTEGER      JCESL1,JCESL2,JCESL3,JCESL4,JCESL5,JTMDIM,NDIME
@@ -71,14 +71,14 @@ C
       INTEGER      NSOM,NOSOM(2),AR(12,3),NBAR,ZRESU
       INTEGER      ZXAIN,XXMMVD
       INTEGER      JXC
-      INTEGER      INO,ICMP,IBID,NBNO
+      INTEGER      IBID,NBNO
       CHARACTER*8  NOMA,K8BID,TYPMA
       CHARACTER*19 DEPDES,DEPCN,FCONT,FCONTS
       CHARACTER*19 FCTCN,FFROT,FFROTS,FFROCN,LAGCN
       CHARACTER*19 FACLOS,AINTES,PINTES,BASECS
       CHARACTER*19 FACLON,AINTER,PINTER,BASECO
       CHARACTER*19 LST,LSTNO
-      
+
       REAL*8       XYZ(3),JEU,FF(2),MULT,CONT
       REAL*8       DDOT,SAUT(3),GLIT(3),P(3,3),N(3),GLI,LAGFRO(3)
       REAL*8       LAGSF,RR,RNXYZ(3),RN,ALPHA,LONGAR,LEVELS
@@ -96,21 +96,21 @@ C
       FACLOS = '&&XMMRES.FACLOS'
       AINTES = '&&XMMRES.AINTES'
       PINTES = '&&XMMRES.PINTES'
-      BASECS = '&&XMMRES.BASECS' 
-      LSTNO  = '&&XMMRES.LSTNO' 
+      BASECS = '&&XMMRES.BASECS'
+      LSTNO  = '&&XMMRES.LSTNO'
       CONT   = 0.D0
       CALL DISMOI('F','NOM_MAILLA',MODELE,'MODELE',IBID,NOMA,IRET)
       CALL DISMOI('F','NB_NO_MAILLA',NOMA,'MAILLAGE',NBNO,K8BID,IBID)
 C
 C --- ACCES SD CONTACT
-C           
+C
       ZRESU  = CFMMVD('ZRESU')
       ZXAIN  = XXMMVD('ZXAIN')
       CALL NMCHEX(VEASSE,'VEASSE','CNELTC',FCONT)
       CALL NMCHEX(VEASSE,'VEASSE','CNELTF',FFROT)
 C
 C --- ACCES SD XFEM
-C           
+C
       FACLON = MODELE(1:8)//'.TOPOFAC.LO'
       AINTER = MODELE(1:8)//'.TOPOFAC.AI'
       PINTER = MODELE(1:8)//'.TOPOFAC.OE'
@@ -185,7 +185,7 @@ C
 C --- ACCES AU CHAM_NO_S VALE_CONT
 C
       CALL JEVEUO(CNSINR//'.CNSV','E',JCNSVR)
-      CALL JEVEUO(CNSINR//'.CNSL','E',JCNSLR)            
+      CALL JEVEUO(CNSINR//'.CNSL','E',JCNSLR)
 C
 C --- BOUCLE SUR LES MAILLES
 C
@@ -198,12 +198,12 @@ C       NDIME : DIMENSION TOPOLOGIQUE DE LA MAILLE
 
 C       ON ZAPPE LES MAILLES DE BORD (MAILLES NON PRINCIPALES)
         IF (NDIM.NE.NDIME) GOTO 100
-              
+
         CALL CONARE(TYPMA,AR,NBAR)
 
         CALL CESEXI('C',JCESD1,JCESL1,IMA,1,1,1,IAD)
         IF (IAD.LE.0) GOTO 100
-        
+
         CALL JEVEUO(MODELE//'.XFEM_CONT'  ,'L',JXC)
         NINTER = ZI(JCESV1-1+IAD)
 
@@ -241,7 +241,7 @@ C         RECUP DES NUMEROS GLOBAUX DES NOEUDS DE L'ARETE/NOEUD SOMMET
             NOSOM(1) = ZI(JCONX1-1+ZI(JCONX2+IMA-1)+IN-1)
             FF(1)=1.D0
             MULT=0.5D0
-          ELSEIF (IA.GT.0) THEN 
+          ELSEIF (IA.GT.0) THEN
             NSOM = 2
             NOSOM(1)=ZI(JCONX1-1+ZI(JCONX2+IMA-1)+AR(IA,1)-1)
             NOSOM(2)=ZI(JCONX1-1+ZI(JCONX2+IMA-1)+AR(IA,2)-1)
@@ -289,7 +289,7 @@ C         IL FAUT RECUPERER LES FF DE FORMES
 C         RECUP NORMALE, VECTEURS TANGENTS AU POINT D'INTERSECTION
           N(3)=0.D0
           TAU1(3)=0.D0
-          
+
           DO 130 J=1,NDIM
             N(J)   =ZR(JCESV4-1+IADB-1+J)
             TAU1(J)=ZR(JCESV4-1+IADB-1+NDIM+J)
@@ -356,7 +356,7 @@ C         RTAX, RTAY, RTAZ, RTGX, RTGY, RTGZ
 
           DO 164 J=1,NDIM
             DO 163 K=1,NSOM
-              LAGFRO(J) = LAGFRO(J) + FF(K) * 
+              LAGFRO(J) = LAGFRO(J) + FF(K) *
      &                 ZR(JLAGV-1+NDIM*(NOSOM(K)-1)+2) * TAU1(J)
               IF (NDIM.EQ.3) LAGFRO(J) = LAGFRO(J) + FF(K) *
      &                 ZR(JLAGV-1+NDIM*(NOSOM(K)-1)+3) * TAU2(J)
@@ -379,7 +379,7 @@ C             DDL ASYMPTOTIQUE
               ENDIF
  162        CONTINUE
  161      CONTINUE
-            
+
 C         NORME DU SEMI-MULTIPLICATEUR DE LAGRANGE DU FROTTEMENT
           CALL NORMEV(LAGFRO,LAGSF)
 
@@ -390,7 +390,7 @@ C           LE POINT EST GLISSANT
             RTGZ = RTXYZ(3)
             RTAX = 0.D0
             RTAY = 0.D0
-            RTAZ = 0.D0          
+            RTAZ = 0.D0
           ELSE
 C           LE POINT EST ADHERENT
             RTAX = RTXYZ(1)
@@ -398,7 +398,7 @@ C           LE POINT EST ADHERENT
             RTAZ = RTXYZ(3)
             RTGX = 0.D0
             RTGY = 0.D0
-            RTGZ = 0.D0             
+            RTGZ = 0.D0
           END IF
 
 C         LAGRANGES AUX NOEUDS, VALE_CONT SUR LE PREMIER NOEUD DE L'AR
@@ -419,7 +419,7 @@ C         LAGRANGES AUX NOEUDS, VALE_CONT SUR LE PREMIER NOEUD DE L'AR
           ZR(JCNSVR-1+ZRESU*(NUNO-1)+17)= RNY + RTAY + RTGY
           ZR(JCNSVR-1+ZRESU*(NUNO-1)+18)= RNZ + RTAZ + RTGZ
           ZR(JCNSVR-1+ZRESU*(NUNO-1)+19)= SQRT((RNX+RTAX+RTGX)**2 +
-     &                                        (RNY+RTAY+RTGY)**2 + 
+     &                                        (RNY+RTAY+RTGY)**2 +
      &                                        (RNZ+RTAZ+RTGZ)**2)
           ZR(JCNSVR-1+ZRESU*(NUNO-1)+25)=XYZ(1)
           ZR(JCNSVR-1+ZRESU*(NUNO-1)+26)=XYZ(2)

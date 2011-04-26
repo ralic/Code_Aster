@@ -1,9 +1,9 @@
       SUBROUTINE NMICLB(FAMI,KPG,KSP,OPTION,COMPOR,IMATE,XLONG0,A,
      &   TMOINS,TPLUS,DLONG0,EFFNOM,VIM,EFFNOP,VIP,KLV,FONO,EPSM,
      &   CRILDC,CODRET)
-C ------------------------------------------------------------------
+C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 26/04/2011   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,7 +20,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C TOLE CRP_21
+C
 C ------------------------------------------------------------------
       IMPLICIT NONE
       INTEGER IMATE,NEQ,NBT,KPG,KSP,CODRET
@@ -86,7 +86,7 @@ C----------INITIALISATIONS
         IF (CRILDC(2).EQ.9) THEN
             IMPL = .TRUE.
         END IF
-        IF ((IMPL) .AND.(.NOT.ISOTLI)) THEN
+        IF (IMPL.AND.(.NOT.ISOTLI)) THEN
             CALL U2MESS('F','ELEMENTS5_50')
         END IF
       ELSE IF (COMPOR(1).EQ.'VMIS_CINE_LINE') THEN
@@ -114,7 +114,7 @@ C --- CARACTERISTIQUES ELASTIQUES A TPLUS
      &              CODRES,1)
 
 
-      IF ((ISOT) .AND. (.NOT.IMPL)) THEN
+      IF (ISOT.AND.(.NOT.IMPL)) THEN
         CALL VERIFT(FAMI,KPG,KSP,'T',IMATE,'ELAS',1,DEPSTH,IRET)
         DEPSM=DEPS-DEPSTH
         CALL NM1DIS(FAMI,KPG,KSP,IMATE,EM,EP,SIGM,

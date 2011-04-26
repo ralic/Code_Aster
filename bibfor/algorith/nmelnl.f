@@ -3,7 +3,7 @@
      &                   DERIVL,DLAGTG, DEPS, DENERG, DSIG)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 26/04/2011   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,7 +21,6 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CRP_7
-C TOLE CRP_21
 C-----------------------------------------------------------------------
 C
 C     REALISE LA LOI DE HENCKY POUR LES ELEMENTS ISOPARAMETRIQUES
@@ -450,7 +449,7 @@ C      TERME LINEAIRE
  100    CONTINUE
 
 C      TERME NON LINEAIRE
-        IF ((NONLIN).AND.(OPTION(11:14).NE.'ELAS')) THEN
+        IF (NONLIN.AND.(OPTION(11:14).NE.'ELAS')) THEN
           COEF = DEUXMU*RPRIM/(1.5D0*DEUXMU+RPRIM) - G
           COEF = COEF * 3.D0 / (2.D0*EPSEQ*EPSEQ)
           DO 110 K = 1,NDIMSI

@@ -2,7 +2,7 @@
      $                   LDVR, MM, M, WORK, RWORK, INFO )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILIFOR  DATE 06/11/2006   AUTEUR MCOURTOI M.COURTOIS 
+C MODIF UTILIFOR  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) LAPACK
 C ======================================================================
@@ -157,7 +157,7 @@ C     ..
 C     .. LOCAL SCALARS ..
       LOGICAL            ALLV, BOTHV, LEFTV, OVER, RIGHTV, SOMEV
       INTEGER            I, II, IS, J, K, KI
-      REAL*8             OVFL, REMAX, SCALE, SMIN, SMLNUM, ULP, UNFL
+      REAL*8              REMAX, SCALE, SMIN, SMLNUM, ULP, UNFL
       COMPLEX*16         CDUM
 C     ..
 C     .. EXTERNAL FUNCTIONS ..

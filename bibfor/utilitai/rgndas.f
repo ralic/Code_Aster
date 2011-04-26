@@ -4,7 +4,7 @@
       CHARACTER*(*)     TYPE,NU,NOMNO,NOMCMP,TARDIF,LIGREL,INFOBL
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 29/03/2011   AUTEUR CORUS M.CORUS 
+C MODIF UTILITAI  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -49,7 +49,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32                            ZK32
       CHARACTER*80                                    ZK80
       COMMON  /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
-      CHARACTER*32     JEXNUM, JEXNOM
+      CHARACTER*32     JEXNUM
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER       IBID, GD, NBEC, NEC, JPRNO, JNUEQ, IDESC, IRET, ICO
       INTEGER       JDESC, IER, NLILI, I, ILO, NBNO, INO, IDEB, NCMP
@@ -150,7 +150,6 @@ C
             CALL U2MESK('A','UTILITAI2_31',1,NOMEQ)
          ENDIF
 C
- 9999    CONTINUE
 C
 C        SI LE NOEUD EST TARDIF ON REMPLIT INFOBL:
          IF ( TARDIF .NE. '  ' ) THEN
@@ -182,10 +181,10 @@ C
            IF (IRET .GT. 0) THEN
              CALL JEVEUO(NUME//'.REFE','L',JREFE)
            ELSE
-             CALL JEVEUO(NUME//'.REFN','L',JREFE)      
+             CALL JEVEUO(NUME//'.REFN','L',JREFE)
            ENDIF
            MODGEN = ZK24(JREFE)
-C-- VERIFICATION DU TYPE DE STRUCTURE (MODELE_GENE)           
+C-- VERIFICATION DU TYPE DE STRUCTURE (MODELE_GENE)
            CALL JEEXIN(MODGEN//'      .MODG.SSNO',IRET)
            IF (IRET .GT. 0) THEN
              CALL JENUNO(JEXNUM(MODGEN//'      .MODG.SSNO',NUSST),

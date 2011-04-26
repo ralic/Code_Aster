@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 08/03/2011   AUTEUR SELLENET N.SELLENET 
+C MODIF SUPERVIS  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -34,7 +34,7 @@ C     ------------------------------------------------------------------
       INTEGER      LOISEM, ISDBGJ, MEMDIS, MEJVST,MEMJVX,MJVXMO,MJVSMO
 C
 C     --- MEMOIRE POUR LE GESTIONNAIRE D'OBJET ---
-      UNMEGA = 1 024 * 1 024 
+      UNMEGA = 1 024 * 1 024
       IADZON = 0
       LMO  = 0
 C     RESTRICTION POUR UNE TAILLE MEMOIRE JEVEUX EXACTE
@@ -42,22 +42,22 @@ C     RESTRICTION POUR UNE TAILLE MEMOIRE JEVEUX EXACTE
       LERMEM = .FALSE.
       FNTMEM = -1.0D0
 C
-C     Bloc a remplacer quand astk sera modifie pour 
-C                                 passer les valeurs en Mo par 
+C     Bloc a remplacer quand astk sera modifie pour
+C                                 passer les valeurs en Mo par
 C     MEMDEM = MJVSMO ( FNTMEM ) * UNMEGA
 C
 C
       IF (  MJVSMO (FNTMEM) .EQ. 1 ) THEN
-         MEMDEM = MEJVST ( FNTMEM ) 
-      ELSE   
+         MEMDEM = MEJVST ( FNTMEM )
+      ELSE
          MEMDEM = MJVSMO ( FNTMEM ) * UNMEGA
       ENDIF
-C      
+C
       WRITE(6,'(/,1X,A)') 'PARAMETRES DE LA GESTION MEMOIRE JEVEUX  '
       WRITE(6,'(1X,A)')   '======================================='
       IF ( MEMDEM .GT. 0 ) THEN
          FNTMEM = MEMDEM * 1.0D0 / UNMEGA
-         WRITE(6,'(1X,A,F12.3,A)') 
+         WRITE(6,'(1X,A,F12.3,A)')
      &           'LIMITE MEMOIRE STATIQUE       : ',FNTMEM,' Mo'
          IMEMO  = MEMDIS (MEMDEM/LOIS, IADZON, LMO, 0)
          WRITE(6,'(1X,A,F12.3,A)') 'MEMOIRE DISPONIBLE            : ',
@@ -72,7 +72,7 @@ C
       ENDIF
       FNTMEM = IMEMO * 1.0D0 / UNMEGA
       WRITE(6,'(1X,A,F12.3,A)')  'MEMOIRE PRISE                 : ',
-     &         IMEMO*LOIS* 1.0D0 / UNMEGA,' Mo' 
+     &         IMEMO*LOIS* 1.0D0 / UNMEGA,' Mo'
 C
 C     --- OUVERTURE DE GESTIONNAIRE D'OBJET ---
       INTDBG = -1
@@ -83,17 +83,17 @@ C     --- OUVERTURE DE GESTIONNAIRE D'OBJET ---
       ENDIF
       VDY = -1.0D0
 C
-C     Bloc a remplacer quand astk sera modifie par 
-C                                 passer les valeurs en Mo par 
+C     Bloc a remplacer quand astk sera modifie par
+C                                 passer les valeurs en Mo par
 C     MXDYN =  MAX(0, MJVXMO (VDY) * UNMEGA - IMEMO*LOIS)
 C
 C
-      IF ( MJVXMO (VDY) . EQ. 0 ) THEN 
+      IF ( MJVXMO (VDY) . EQ. 0 ) THEN
         MXDYN =  MAX(0, MEMJVX (VDY) - IMEMO) * LOIS
       ELSE
         MXDYN =  MAX(0, MJVXMO (VDY) * UNMEGA - IMEMO*LOIS)
       ENDIF
-C      	
+C
       WRITE(6,'(1X,A,F12.3,A)')
      &  'LIMITE MEMOIRE DYNAMIQUE      : ',MXDYN*1.0D0/UNMEGA,' Mo'
       CALL JEDEBU(4,IMEMO,MXDYN/LOIS,IADZON,LMO,IDEBUG )

@@ -1,7 +1,7 @@
        SUBROUTINE TE0366(OPTION,NOMTE)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 19/01/2011   AUTEUR MASSIN P.MASSIN 
+C MODIF ELEMENTS  DATE 26/04/2011   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -61,15 +61,15 @@ C
       INTEGER      JPCPI,JPCAI,JPCCF,JSTNO
       INTEGER      INDNOR,IFROTT,INDCO
       INTEGER      CFACE(5,3)
-      INTEGER      JDEPDE,JDEPM,JGEOM     
+      INTEGER      JDEPDE,JDEPM,JGEOM
       REAL*8       MMAT(N,N),TAU1(3),TAU2(3),NORM(3)
       REAL*8       MPROJT(3,3)
       REAL*8       COORE(3),COORM(3),COORC(2)
-      REAL*8       FFE(8),FFM(8),FFC(8),DFFC(2,8)       
+      REAL*8       FFE(9),FFM(9),FFC(9),DFFC(3,9)
       REAL*8       JACOBI,HPG
       CHARACTER*8  TYPMAE,TYPMAM,TYPMAC,TYPMAI,TYPMEC
       INTEGER      INADH,NVIT,LACT(8),NLACT,NINTER
-      REAL*8       GEOPI(9),GEOPI1(9)
+      REAL*8       GEOPI(9)
       REAL*8       COEFFF,COEFCA,COEFFA,COEFFP
       REAL*8       RESE(3),NRESE
       REAL*8       RRE,RRM,JEU,R8BID
@@ -85,7 +85,7 @@ C
 C --- INFOS SUR LA MAILLE DE CONTACT
 C
       CALL XMELET(NOMTE , TYPMAI , TYPMAE ,TYPMAM ,TYPMAC  ,
-     &                  NDIM  , NDDL   , NNE   , NNM  , 
+     &                  NDIM  , NDDL   , NNE   , NNM  ,
      &                  NNC   , DDLE  , DDLM  ,
      &                  CONTAC, NDEPLE , NSINGE, NSINGM)
 
@@ -93,11 +93,11 @@ C
 C
 C --- INITIALISATIONS
 C
-      CALL MATINI(N   ,N     ,0.D0  ,MMAT  )         
+      CALL MATINI(N   ,N     ,0.D0  ,MMAT  )
       CALL VECINI(9   ,0.D0  ,GEOPI )
       CALL VECINI(2  ,0.D0  ,DLAGRF)
       CALL VECINI(3  ,0.D0  ,DDEPLE)
-      CALL VECINI(3  ,0.D0  ,DDEPLM)      
+      CALL VECINI(3  ,0.D0  ,DDEPLM)
       DLAGRC = 0.D0
       JEU    = 0.D0
 C
@@ -131,7 +131,7 @@ C --- LES COORDONNEES ESCLAVE ET MAITRES DANS L'ELEMENT PARENT
       COORM(2) = ZR(JPCPO-1+28)
       COORM(3) = ZR(JPCPO-1+29)
 C --- POINT D'INTEGRATION VITAL OU PAS
-      NVIT     = NINT(ZR(JPCPO-1+30))   
+      NVIT     = NINT(ZR(JPCPO-1+30))
 C --- SQRT LSN PT ESCLAVE ET MAITRE
       RRE       = ZR(JPCPO-1+18)
       RRM       = ZR(JPCPO-1+23)
@@ -185,13 +185,13 @@ C --- DES DEPLACEMENTS DANS LA MAILLE ESCLAVE POUR LE CALCUL DES CONTRIB
 C
       IF (CONTAC.EQ.1) THEN
         NNC   = NNE(2)
-        CALL XLACTI(TYPMAI,NINTER,JPCAI,CONTAC,LACT,NLACT)
+        CALL XLACTI(TYPMAI,NINTER,JPCAI,LACT,NLACT)
         CALL XMOFFC(LACT,NLACT,NNC,FFE,FFC)
       ELSEIF (CONTAC.EQ.3) THEN
         NNC   = NNE(2)
         CALL ELELIN(CONTAC,TYPMAE,TYPMEC,IBID,IBID)
         CALL ELRFVF(TYPMEC,COORE,NNC,FFEC,IBID)
-        CALL XLACTI(TYPMAI,NINTER,JPCAI,CONTAC,LACT,NLACT)
+        CALL XLACTI(TYPMAI,NINTER,JPCAI,LACT,NLACT)
         CALL XMOFFC(LACT,NLACT,NNC,FFEC,FFC)
       ELSE
         CALL ELRFVF(TYPMAC,COORC,NNC,FFC,NNC)
@@ -224,7 +224,7 @@ C
      &                TYPMAI,NSINGE,NSINGM,RRE   ,RRM   ,
      &                CONTAC,DDLE,DDLM,MMAT  )
 
-C     
+C
         ELSE IF (INDCO .EQ. 0) THEN
           IF (NVIT.EQ.1) THEN
 C
@@ -241,17 +241,17 @@ C
       ELSEIF (OPTION.EQ.'RIGI_FROT') THEN
 C
 C --- CALCUL DES INCREMENTS - LAGRANGE DE CONTACT
-C  
+C
         CALL XTLAGC(TYPMAI,NDIM  ,NNC   ,NNE    ,
      &              DDLE(1),NFAES ,CFACE ,JDEPDE,JPCAI  ,
      &              FFC   ,CONTAC,DLAGRC)
-         
+
         IF (COEFFF.EQ.0.D0) INDCO = 0
         IF (DLAGRC.EQ.0.D0) INDCO = 0
         IF (IFROTT.NE.3)    INDCO = 0
 C
         IF (INDCO.EQ.0) THEN
-          IF (NVIT.EQ.1) THEN       
+          IF (NVIT.EQ.1) THEN
 C
 C --- CALCUL DE LA MATRICE F - CAS SANS FROTTEMENT
 C
@@ -263,26 +263,26 @@ C
         ELSE IF (INDCO.EQ.1) THEN
 C
 C --- CALCUL DES INCREMENTS - DEPLACEMENTS
-C     
+C
           CALL XTDEPM(NDIM  ,NNM,NNE,NDEPLE,
      &                NSINGE,NSINGM,FFE   ,FFM   ,JDEPDE,
      &                RRE   ,RRM   ,DDLE,DDLM,
      &                DDEPLE,DDEPLM)
 C
 C --- CALCUL DES INCREMENTS - LAGRANGE DE FROTTEMENT
-C      
+C
           CALL XTLAGF(TYPMAI,NDIM  ,NNC   ,NNE    ,
      &                DDLE,NFAES ,CFACE ,JDEPDE,JPCAI  ,
      &                FFC   ,CONTAC,DLAGRF)
-C      
+C
 C --- ON CALCULE L'ETAT DE CONTACT ADHERENT OU GLISSANT
-C      
+C
           CALL TTPRSM(NDIM  ,DDEPLE,DDEPLM,DLAGRF,COEFFA,
      &                TAU1  ,TAU2  ,MPROJT,INADH ,RESE  ,
      &                NRESE ,COEFFP,LPENAF)
 C
-C --- CALCUL DU JEU     
-C     
+C --- CALCUL DU JEU
+C
 
        CALL XMMJEU(NDIM  ,NNM,NNE,NDEPLE,
      &                  NSINGE,NSINGM,FFE  ,FFM   ,NORM  ,
@@ -297,19 +297,19 @@ C --- CALCUL DE B, BT, BU - CAS ADHERENT
 C
             CALL XMMAB1(NDIM  ,NNE,NDEPLE,NNC   ,NNM   ,
      &                  NFAES ,CFACE ,HPG ,FFC ,FFE ,
-     &                  FFM   ,JACOBI,JPCAI ,DLAGRC,COEFCA,   
+     &                  FFM   ,JACOBI,JPCAI ,DLAGRC,COEFCA,
      &                  JEU   ,COEFFA,COEFFF,TAU1  ,TAU2  ,
      &                  RESE  ,MPROJT,NORM  ,TYPMAI,NSINGE,
      &                  NSINGM,RRE   ,RRM   ,NVIT  ,CONTAC,
      &                  DDLE,DDLM,MMAT  )
-C                  
+C
           ELSE IF (INADH.EQ.0) THEN
 C
 C --- CALCUL DE B, BT, BU, F - CAS GLISSANT
 C
             CALL XMMAB2(NDIM  ,NNE,NDEPLE,NNC   ,NNM   ,
      &                  NFAES ,CFACE ,HPG   ,FFC   ,FFE   ,
-     &                  FFM   ,JACOBI,JPCAI, DLAGRC,COEFCA,   
+     &                  FFM   ,JACOBI,JPCAI, DLAGRC,COEFCA,
      &                  JEU   ,COEFFA,COEFFF,TAU1  ,TAU2  ,
      &                  RESE  ,NRESE ,MPROJT,NORM  ,TYPMAI,
      &                  NSINGE,NSINGM,RRE,RRM,NVIT,CONTAC,
@@ -320,7 +320,7 @@ C
         END IF
       ELSE
         CALL ASSERT(OPTION.EQ.'RIGI_FROT' .OR.
-     &              OPTION.EQ.'RIGI_CONT')  
+     &              OPTION.EQ.'RIGI_CONT')
       END IF
 C
 C --- SUPPRESSION DES DDLS SUPERFLUS (CONTACT ET XHTC)

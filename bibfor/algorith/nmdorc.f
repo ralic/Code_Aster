@@ -1,7 +1,7 @@
       SUBROUTINE NMDORC(MODELZ,COMPOZ,CARCRI)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -22,7 +22,7 @@ C RESPONSABLE PROIX J-M.PROIX
       CHARACTER*(*) MODELZ,COMPOZ
       CHARACTER*24  CARCRI
 C ----------------------------------------------------------------------
-C MODIF ALGORITH  DATE 16/09/2008   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C
 C     SAISIE ET VERIFICATION DES MOTS CLES COMP_INCR / COMP_ELAS
 C
@@ -45,11 +45,10 @@ C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
       CHARACTER*32                          ZK32
       CHARACTER*80                                  ZK80
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
-      CHARACTER*32     JEXNUM, JEXNOM
 C ----------------------------------------------------------------------
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 
-      INTEGER NCMPMA,DIMAKI,I,K,NBMO1,NBVARI,IRET,DIMANV
+      INTEGER NCMPMA,DIMAKI,NBMO1,IRET,DIMANV
 C    DIMAKI = DIMENSION MAX DE LA LISTE DES RELATIONS KIT
       PARAMETER (DIMAKI=9)
 C    DIMANV = DIMENSION MAX DE LA LISTE DU NOMBRE DE VAR INT EN THM
@@ -60,7 +59,7 @@ C    DIMANV = DIMENSION MAX DE LA LISTE DU NOMBRE DE VAR INT EN THM
       CHARACTER*19 COMPOR
       CHARACTER*24 MODELE
       LOGICAL CRILOC,MECA
-      
+
       DATA NOMCMP/'RELCOM  ','NBVARI  ','DEFORM  ','INCELA  ',
      &     'C_PLAN  ','XXXX1','XXXX2','KIT1    ','KIT2    ','KIT3    ',
      &     'KIT4    ','KIT5    ','KIT6    ','KIT7    ','KIT8    ',
@@ -101,25 +100,24 @@ C     MECA=COMMANDES MECANIQUE
         MOCLEF(2) = 'COMP_ELAS'
         MECA=.TRUE.
         CRILOC=.TRUE.
-      ELSE 
+      ELSE
          CALL U2MESG('F','COMPOR1_51',1,NOMCMD,0,0,0,0.D0)
       ENDIF
-      
+
 C ======================================================================
 C     CARTE COMPOR
       CALL NMDOCC(COMPOR,MODELE,NBMO1,MOCLEF,
-     &            NOMCMP,NCMPMA,MECA)      
+     &            NOMCMP,NCMPMA,MECA)
       COMPOZ = COMPOR
-      
+
 C ======================================================================
 
 C     CARTE DE CRITERES LOCAUX
       IF (CRILOC) THEN
         CALL NMDOCR(CARCRI,MODELE,NBMO1,MOCLEF,IRET)
       ENDIF
-      
+
 C ======================================================================
 
- 170  CONTINUE
       CALL JEDEMA()
       END

@@ -1,8 +1,8 @@
       SUBROUTINE TE0419 ( OPTION , NOMTE )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 28/03/2007   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -29,7 +29,6 @@ C        DONNEES:      OPTION       -->  OPTION DE CALCUL
 C                      NOMTE        -->  NOM DU TYPE ELEMENT
 C ......................................................................
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
-      CHARACTER*32       JEXNUM , JEXNOM , JEXR8 , JEXATR
       INTEGER            ZI
       COMMON  / IVARJE / ZI(1)
       REAL*8             ZR
@@ -38,7 +37,7 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       COMMON  / CVARJE / ZC(1)
       LOGICAL            ZL
       COMMON  / LVARJE / ZL(1)
-      CHARACTER*8        ZK8 ,NOMPU(2)
+      CHARACTER*8        ZK8
       CHARACTER*16                ZK16
       CHARACTER*24                          ZK24
       CHARACTER*32                                    ZK32
@@ -46,7 +45,6 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       INTEGER NB1,NB2,NDDLE,NPGE,NPGSR,NPGSN
-      REAL*8 XI(3,9)
       REAL*8 VECTA(9,2,3),VECTN(9,3),VECTPT(9,2,3),VECPT(9,3,3)
       REAL*8 VECTG(2,3),VECTT(3,3)
       REAL*8 HSFM(3,9),HSS(2,9),HSJ1M(3,9),HSJ1S(2,9)
@@ -54,7 +52,7 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       REAL*8 HSF(3,9),HSJ1FX(3,9),WGT
       REAL*8 BTDF(3,42),BTILD(5,42)
       REAL*8 FORTHI(42),FORCTH(42),VECL(51)
-      REAL*8 YOUNG,NU,ALPHA ,VALPU(2)
+      REAL*8 YOUNG,NU,ALPHA
       PARAMETER (NPGE=2)
       REAL*8 EPSVAL(NPGE),KSI3S2,KSI3
       DATA EPSVAL / -0.577350269189626D0,  0.577350269189626D0 /

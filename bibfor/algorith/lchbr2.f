@@ -2,9 +2,9 @@
      &     TR,DEPSM,VIM,VIP,DSPDP1,DSPDP2,SIPM,SIPP,
      &     SIGP,DSIDEP,DSIDP1,DSIDP2,IRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 08/02/2008   AUTEUR MACOCCO K.MACOCCO 
+C MODIF ALGORITH  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -75,21 +75,19 @@ C            VECP     VECTEURS PROPRES ASSOCIES A SE
 C            TOLER    VALEUR TOLERANCE DE CONVERGENCE
 C            ITMAX    NB ITERATIONS MAX A CONVERGENCE
 C ======================================================================
-      INTEGER      NDT,NDI,ITMAX,II,ITERI,ITER,JJ,NR,NBMAT
-      REAL*8       GPM,GM,GP,ETAM,ETAP,AUX,SIG3,MU,K,NEUF,AUX2,AUX3
-      REAL*8       MATERF(16,2),ALPHAT,SIGB(6),DDIFDG,AUX4,MATERD(16,2)
+      INTEGER      NDT,NDI,ITMAX,II,ITERI,ITER,NR,NBMAT
+      REAL*8       GM,GP,ETAM,ETAP,AUX,SIG3,MU,K,NEUF
+      REAL*8       MATERF(16,2),MATERD(16,2)
       REAL*8       DEPS(6),EPSP(6),SIGE(6),SE(6),SIGEB(6)
-      REAL*8       TOLER,SEQ,I1E,SEUIL,PLAS,DG,SIGEQE,UN,SEUIL2
+      REAL*8       TOLER,SEQ,I1E,SEUIL,PLAS,DG,SIGEQE,UN
       REAL*8       HOOKF(6,6),DEUX,TROIS,TRACE,VI
       REAL*8       VP(3),VECP(3,3),DETADG,DGDL,DSDSIP(6),ETA,GAM
-      REAL*8       INCRG,GNP,DGNP,ETANP,VH,VG,ZERO,DSIG3,GRUP,GRES
+      REAL*8       INCRG,GNP,DGNP,ETANP,VH,VG,ZERO,GRUP,GRES
       REAL*8       PARAME(4),DERIVE(5),PI,R8PI,FMOINS,PPHI0,PPHI1,PPHI2
       CHARACTER*3  MATCST
       CHARACTER*8  MOD
-      LOGICAL      RESI,RIGI,DEB
-      INTEGER      JPARA,JDERIV,IFM,INV,NVI
-      CHARACTER*16 PARECR,DERECR
-      CHARACTER*10 CVP1,CVP2,CVP3
+      LOGICAL      RESI,RIGI
+      INTEGER      NVI
 C ======================================================================
       PARAMETER       ( UN     =  1.0D0  )
       PARAMETER       ( DEUX   =  2.0D0  )
@@ -134,7 +132,7 @@ C =====================================================================
      &         OPTION(1:9).EQ.'RIGI_MECA'
       CALL ASSERT ( (OPTION(1:9).EQ.'RIGI_MECA') .OR.
      &     (OPTION(1:9).EQ.'FULL_MECA') .OR.
-     &     (OPTION(1:9).EQ.'RAPH_MECA') )  
+     &     (OPTION(1:9).EQ.'RAPH_MECA') )
 C =====================================================================
 C --- OPERATEUR ELASTIQUE LINEAIRE ISOTROPE ---------------------------
 C =====================================================================
@@ -169,7 +167,6 @@ C ======================================================================
 C --- CALCUL DE DELTA GAMMA --------------------------------------------
 C ======================================================================
         IF (SEUIL.GT.TOLER) THEN
- 3          CONTINUE
             PLAS = 1.0D0
             DG = 0.0D0
             CALL HBCREL(VP,GM,DG,NBMAT,MATERF,SIGEQE,I1E,

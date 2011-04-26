@@ -5,26 +5,25 @@ C
       INTEGER       NBMAT
       REAL*8        DT, DP, PLAS
       REAL*8        MATER(NBMAT,2), VIM(4), VIP(4), SIG(6), DSIDEP(6,6)
-      REAL*8        MATER2(3,2)
       CHARACTER*8   MOD
 C =====================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 03/11/2009   AUTEUR ELGHARIB J.EL-GHARIB 
+C MODIF ALGORITH  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C =====================================================================
 C --- BUT   OPERATEUR TANGENT COHERENT POUR LA LOI --------------------
@@ -40,9 +39,9 @@ C =====================================================================
       REAL*8   DALPDP, DBETDP, DRDP
       REAL*8   FONECM(3),FONECP(3), FONDER(3)
       REAL*8   TRACE, SII, SEQ, I1
-      REAL*8   SCAL1, SCAL2, SCAL3, SCAL4, SCAL5, SCAL6, SCAL7, SCAL8
-      REAL*8   SCAL11, SCAL12
-      REAL*8   DENOM, INT, DFDP, CONST, CONST1
+      REAL*8   SCAL1, SCAL3, SCAL4, SCAL5, SCAL6
+      REAL*8    SCAL12
+      REAL*8   DENOM, DFDP, CONST, CONST1
       REAL*8   KRON(6)
       REAL*8   DSEDE(6,6)
       REAL*8   S(6)
@@ -66,7 +65,7 @@ C =====================================================================
       PARAMETER  ( NEUF  = 9.0D0 )
       PARAMETER  ( UNSTR = 1.D0/3.0D0)
       PARAMETER  ( TOL = 1.D-12)
-      
+
 C =====================================================================
       COMMON /TDIM/   NDT , NDI
 C =================================================================
@@ -74,7 +73,7 @@ C =================================================================
 C =================================================================
 C ---- RECUPERATION DES PARAMETRES MATERIAUX ----------------------
 C =================================================================
-      
+
           MU        = MATER(4,1)
           K         = MATER(5,1)
           PREF      = MATER(1,2)
@@ -88,7 +87,7 @@ C =====================================================================
           CALL     LCINVE ( 0.0D0, VECT1   )
           CALL     LCINVE ( 0.0D0, VECT2   )
           CALL     LCINVE ( 0.0D0, VECT3   )
-          CALL     LCINVE ( 0.0D0, VECT4   )      
+          CALL     LCINVE ( 0.0D0, VECT4   )
           CALL     LCINVE ( 0.0D0, DQDSIG  )
           CALL     LCINVE ( 0.0D0, DFDSIG  )
           CALL     LCINVE ( 0.0D0, DPDSIG  )
@@ -149,14 +148,14 @@ C =====================================================================
 
          ALPHAM  = FONECM(1)
          RM      = FONECM(2)
-         BETAM   = FONECM(3)   
+         BETAM   = FONECM(3)
 
-         BETA       = FONECP(3)   
+         BETA       = FONECP(3)
 
          DALPDP = FONDER(1)
-         DRDP     = FONDER(2)   
+         DRDP     = FONDER(2)
          DBETDP = FONDER(3)
-         
+
          CONST = A*DT/(PREF)**N
 C =====================================================================
 C --- CALCUL DE DSIDEP ------------------------------------------------
@@ -176,9 +175,9 @@ C --- CALCUL DE LA TROISIEME PARTIE DU TERME DS/DEPS ------------------
 C =====================================================================
 C --- CALCUL DE DSIEQ/ DSIG -------------------------------------------
 C =====================================================================
-            
+
              SCAL1 = TROIS/DEUX/SEQ
-             
+
              CALL LCPRMV(DSDSIG,S,DQDSIG)
              CALL LCPRSV(SCAL1,DQDSIG,DQDSIG)
 C =====================================================================
@@ -199,18 +198,18 @@ C =====================================================================
 C --- CALCUL DE DfDp --------------------------------------------------
 C =====================================================================
              FONC1 = SEQ + ALPHAM * I1 - RM
-        
+
              FONC2 = TROIS*MU + DRDP  - DALPDP*I1
      &         +NEUF*K *ALPHAM*BETAM
- 
+
              FONC3 = NEUF*K*(ALPHAM*DBETDP+BETAM*DALPDP)
- 
+
              FONC4 = NEUF*K*DALPDP*DBETDP
-        
-         
+
+
              FONC  = FONC1 - FONC2*DP - FONC3*DP**2 - FONC4*DP**3
              FONCP = -FONC2 -DEUX*DP*FONC3-TROIS*DP**2*FONC4
-             
+
               IF (FONC .GT. ZERO) THEN
                   FONC = FONC
                 ELSE
@@ -226,7 +225,7 @@ C =====================================================================
                GOTO 9999
               ELSE
                DENOM = -UN / DFDP
-              ENDIF 
+              ENDIF
 C =====================================================================
 C --- CALCUL DE Df/ DSIG ----------------------------------------------
 C =====================================================================
@@ -254,10 +253,10 @@ C =====================================================================
                   DO 67 JJ = 1, NDT
                   MATR1(II,JJ) = UN/DEUX*(MATR1A(II,JJ)+MATR1B(II,JJ))
    67     CONTINUE
-   68     CONTINUE         
-           
+   68     CONTINUE
+
              SCAL3 = -TROIS*MU/SEQ
-      
+
              CALL LCPRSM(SCAL3, MATR1, PART3)
 
 C =====================================================================
@@ -272,17 +271,17 @@ C --- CALCUL DE LA  DEUXIEME PARTIE DU TERME DS/DEPS ------------------
 C =====================================================================
 C --- CALCUL DE 3GDP/SEQ**2 *(se * dSEQ/dEPS ------------------------
 C =====================================================================
-             SCAL5 = NEUF * MU *MU* DP/SEQ/ SEQ/ SEQ         
+             SCAL5 = NEUF * MU *MU* DP/SEQ/ SEQ/ SEQ
              CALL LCPRTE(S,S,MATR3)
-           
+
              CALL LCPRSM(SCAL5, MATR3 ,PART2)
 C =====================================================================
 C --- SOMMATION DES PARTIES DE ds/dEPS --------------------------------
 C =====================================================================
              CALL LCSOMA(PART1,PART2,INTER1)
-         
+
              CALL LCSOMA(INTER1,PART3,DSDEPS)
-             
+
              CALL LCTRMA(DSDEPS,DSDEPT)
              DO 980 II   = 1, NDT
              DO 990 JJ = 1, NDT
@@ -322,7 +321,7 @@ C =====================================================================
    98      CONTINUE
            CALL LCPRSM(UNSTR,INTER2,INTER2)
            CALL LCSOMA(DSDEPS, INTER2, DSIDEP)
-           ENDIF     
+           ENDIF
 C =====================================================================
  9999 CONTINUE
 C =====================================================================

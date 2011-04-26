@@ -1,8 +1,9 @@
       SUBROUTINE DXGLRC ( NOMTE, OPT, COMPOR, XYZL, UL, DUL, BTSIG,
      &                    KTAN, EFFINT, PGL, CRIT, CODRET )
       IMPLICIT NONE
-C            CONFIGURATION MANAGEMENT OF EDF VERSION 
-C MODIF ELEMENTS  DATE 24/01/2011   AUTEUR SFAYOLLE S.FAYOLLE 
+C ----------------------------------------------------------------------
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ELEMENTS  DATE 26/04/2011   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -45,7 +46,7 @@ C                      REDECOUPAGE LOCAL DU PAS DE TEMPS
 C                      (ITER_INTE_PAS  == ITEDEC)
 C                       -1,0,1 = PAS DE REDECOUPAGE
 C                       N = NOMBRE DE PALIERS
-C                (6) = TYPE D INTEGRATION LOCAL POUR LA LOI DE 
+C                (6) = TYPE D INTEGRATION LOCAL POUR LA LOI DE
 C                      COMPORTEMENT (ALGO_INTE)
 C     OUT KTAN : MATRICE DE RIGIDITE TANGENTE
 C                    SI 'FULL_MECA' OU 'RIGI_MECA_TANG'
@@ -131,7 +132,7 @@ C           LE MATERIAU EST SUPPOSE HOMOGENE
       INTEGER ICOMPO, ICACOQ, ICONTP, IVARIP, INO, NBCON
       INTEGER NBVAR, IPG
       INTEGER I, J, K, L
-      INTEGER ICPG, ICPV, T(2,2), IBID
+      INTEGER ICPG, ICPV, T(2,2)
       INTEGER ICARA, JTAB(7)
 
       REAL*8 XYZL(3,4), KTAN((6*4)*(6*4+1)/2), BTSIG(6,4)
@@ -375,8 +376,8 @@ C     ENDOMMAGEMENT PLUS PLASTICITE
           ENDIF
 
           CALL NMCOUP('RIGI',IPG,1,3,K8BID,ZI(IMATE),COMPOR,LBID,
-     &                   CRIT,R8BID,R8BID,EPSM,DEPS,SIGM,ECR,OPT,R8BID,
-     &                   IBID,SIG,ECRP,DSIDEP,CODRET)
+     &                 CRIT,R8BID,R8BID,EPSM,DEPS,SIGM,ECR,OPT,R8BID,
+     &                 SIG,ECRP,DSIDEP,CODRET)
         ELSE
           VALK = COMPOR(1)
           CALL U2MESG('F', 'ELEMENTS4_79',1,VALK,0,0,0,0.D0)
@@ -386,7 +387,7 @@ C     ENDOMMAGEMENT PLUS PLASTICITE
           DO 8520, I = 1,NBVAR
             ZR(IVARIP-1 + ICPV + I) = ECRP(I)
  8520     CONTINUE
- 
+
           DO 8530, I = 1,6
             ZR(ICONTP-1 + ICPG + I) = SIG(I)
  8530     CONTINUE
@@ -466,6 +467,5 @@ C     ACCUMULATION DES SOUS MATRICES DANS KTAN :
         ENDIF
       END IF
 
-  140 CONTINUE
 
       END

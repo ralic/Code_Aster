@@ -1,0 +1,225 @@
+# MODIF  DATE 26/04/2011   AUTEUR PROIX J-M.PROIX 
+#====================================================================== 
+#
+# TITRE : VALIDATION DE LA TEMPERATURE DANS LA RELATION = 'VISCOCHAB' 
+# comp010i.para = tps_job 600 mem_job 700Mo ncpus 1 liste_test S
+#            CONFIGURATION MANAGEMENT OF EDF VERSION
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+#
+# CAS-TEST DE REFERENCE : SSNV118B
+#
+#===================================================================== 
+
+
+DEBUT(CODE=_F(NOM='COMP010I',NIV_PUB_WEB='INTERNET'))
+
+
+TREF = 20.
+T0   = TREF
+Tmax = 200.
+
+NCAL = 100
+
+ZERO =DEFI_CONSTANTE(VALE=0.0);
+
+# Parametres elastiques 
+
+YOUN=DEFI_FONCTION(  NOM_PARA='TEMP',
+                     VALE=(T0,   150000.,
+                           Tmax, 100000.,)  )
+  
+ALPH=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(T0,   1.E-5,
+                                         Tmax, 2.0E-5,),);
+
+# Parametre du modele elasto-viscoplastique de Chaboche
+K_F=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(T0,   25,
+                                        Tmax, 40,),);
+
+aphak_F=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(T0,   1.,      
+                                            Tmax, 1.,),);  
+
+alphar_F=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(T0,   0.50,
+                                             Tmax, 0.80,),);
+
+K0_F=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(T0,   60,
+                                         Tmax, 80),);
+
+N_F=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(T0,   30,
+                                        Tmax, 15,),);
+
+alpha_F=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(T0,   0.,          
+                                            Tmax, 0.,),);      
+
+b_F=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(T0,   15,
+                                        Tmax, 15,),);
+
+mr_F=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(T0,   2.,             
+                                         Tmax, 2.,),);         
+
+gamar_F=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(T0,   2.5E-7,
+                                            Tmax, 1.5E-7,),);
+
+mu_F=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(T0,   22,
+                                         Tmax, 16,),);
+
+Q0_F=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(T0,   40,
+                                         Tmax, 45,),);
+
+Qm_F=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(T0,   500,
+                                         Tmax, 400,),);
+
+Qr0_F=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(T0,   150,
+                                          Tmax, 250,),);
+
+eta_F=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(T0,   0.06,
+                                          Tmax, 0.03,),);
+
+# C1 doit etre constant car on ne peut pas encore simuler
+# sa variation avec ce test, cf R5.03.12
+
+C1_F=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(T0,   1600,
+                                         Tmax, 1600,),);
+                                        # Tmax, 2300,),);
+
+m1_F=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(T0,   3,
+                                         Tmax, 5,),);
+
+d1_F=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(T0,   0.360E-3,
+                                         Tmax, 0.420E-3,),);
+
+gx1_F=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(T0,   2.5E-13,
+                                          Tmax, 1.5E-13,),);
+
+g10_F=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(T0,   40,
+                                          Tmax, 60,),);
+
+# C2 doit etre constant car on ne peut pas encore simuler
+# sa variation avec ce test, cf R5.03.12
+C2_F=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(T0,   55000,
+                                         Tmax, 55000,),);
+                                        #   Tmax, 73000,),);
+
+m2_F=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(T0,   5,
+                                         Tmax, 3.5,),);
+
+d2_F=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(T0,   0.50E-1,
+                                         Tmax, 0.60E-1,),);
+
+gx2_F=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(T0,   0.8E-12,
+                                          Tmax, 1.5E-12,),);
+
+g20_F=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(T0,   1500,
+                                           Tmax, 1000,),);
+
+ainfi_F=DEFI_FONCTION(NOM_PARA='TEMP',VALE=(T0,   0.41,
+                                            Tmax, 0.56,),);
+    
+UN   =DEFI_CONSTANTE(VALE=1.0);
+CENT =DEFI_CONSTANTE(VALE=100.0);
+
+MATER1=DEFI_MATERIAU(ELAS_FO=_F(E=YOUN,
+                                NU=ZERO,
+                                TEMP_DEF_ALPHA=TREF,
+                                ALPHA=ALPH,),
+                     VISCOCHAB_FO=_F(K    = K_F,
+                                     A_K  = aphak_F,
+                                     A_R  = alphar_F,
+                                     K_0  = K0_F,
+                                     N    = N_F,
+                                     ALP  = alpha_F,
+                                     B    = b_F,
+                                     M_R  = mr_F,
+                                     G_R  = gamar_F,
+                                     MU   = mu_F,
+                                     Q_0  = Q0_F,
+                                     Q_M  = Qm_F,
+                                     QR_0 = Qr0_F,
+                                     ETA  = eta_F,
+                                     C1   = C1_F,
+                                     M_1  = m1_F,
+                                     D1   = d1_F,
+                                     G_X1 = gx1_F,
+                                     G1_0 = g10_F,
+                                     C2   = C2_F,
+                                     M_2  = m2_F,
+                                     D2   = d2_F,
+                                     G_X2 = gx2_F,
+                                     G2_0 = g20_F,
+                                     A_I  = ainfi_F
+                                     ,),
+                      );
+
+
+LMAT1  = [None]*(NCAL)
+LMAT2  = [None]*(NCAL)
+time=0.
+tfin=1000.
+for i in range(NCAL):        
+    timem = time     
+    time = timem + tfin/NCAL
+    Ti = TREF + time/tfin * (Tmax - TREF)
+    Tm = TREF + timem/tfin * (Tmax - TREF)
+    LMAT1[i]=DEFI_MATERIAU(ELAS =_F(E=YOUN(Ti),
+                                     NU=0.,
+                                     ALPHA=0.,),
+                             VISCOCHAB=_F(K    = K_F(Ti),
+                                          A_K  = aphak_F(Ti),
+                                          A_R  = alphar_F(Ti),
+                                          K_0  = K0_F(Ti),
+                                          N    = N_F(Ti),
+                                          ALP  = alpha_F(Ti),
+                                          B    = b_F(Ti),
+                                          M_R  = mr_F(Ti),
+                                          G_R  = gamar_F(Ti),
+                                          MU   = mu_F(Ti),
+                                          Q_0  = Q0_F(Ti),
+                                          Q_M  = Qm_F(Ti),
+                                          QR_0 = Qr0_F(Ti),
+                                          ETA  = eta_F(Ti),
+                                          C1   = C1_F(Ti),
+                                          M_1  = m1_F(Ti),
+                                          D1   = d1_F(Ti),
+                                          G_X1 = gx1_F(Ti),
+                                          G1_0 = g10_F(Ti),
+                                          C2   = C2_F(Ti),
+                                          M_2  = m2_F(Ti),
+                                          D2   = d2_F(Ti),
+                                          G_X2 = gx2_F(Ti),
+                                          G2_0 = g20_F(Ti),
+                                          A_I  = ainfi_F(Ti)),
+                                 );
+
+
+############################################################################
+# MACRO pour test thermoplastique
+
+compor='VISCOCHAB'
+
+
+tabresu=TEST_COMPOR(MATER=MATER1,
+              COMP_INCR=_F(RELATION=compor,ITER_INTE_MAXI=200,PARM_THETA=1.,ALGO_INTE='NEWTON_RELI'),
+              LIST_MATER=LMAT1,ALPHA=ALPH,YOUNG=YOUN,TEMP_INIT=TREF,TEMP_FIN=Tmax,
+              NEWTON=_F(REAC_ITER=1),
+              NB_VARI=28,  
+              VARI_TEST=('V1','V2','V3','V4','V5'),
+              )
+
+IMPR_TABLE(TABLE=tabresu)
+
+                     
+FIN()

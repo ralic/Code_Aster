@@ -1,9 +1,9 @@
       SUBROUTINE JJLDYN ( IMODE , LMIN , LTOT )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 06/04/2010   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C RESPONSABLE LEFEBVRE J-P.LEFEBVRE
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -20,17 +20,17 @@ C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CRP_18 CRS_505 CRS_508 CRS_512
       IMPLICIT REAL*8 (A-H,O-Z)
-      INTEGER             IMODE , LMIN , LTOT  
+      INTEGER             IMODE , LMIN , LTOT
 C ----------------------------------------------------------------------
 C LIBERE LES SEGMENTS DE VALEURS ALLOUES DYNAMIQUEMENT
 C
-C IN   IMODE : 
+C IN   IMODE :
 C              =1 ON NE TRAITE QUE LA BASE VOLATILEC
 C              =2 ON NE TRAITE QUE LES OBJETS XA
 C              =3 ON NE TRAITE QUE LES OBJETS XA DE LA BASE VOLATILE
 C              SINON ON EXAMINE TOUTE LA MEMOIRE
 C IN   LMIN  : TAILLE MINIMUM EN ENTIERS REQUISE
-C              =< 0 ON LIBERE TOUT 
+C              =< 0 ON LIBERE TOUT
 C OUT  LTOT  : LONGUEUR CUMULEE EN ENTIERS DES SEGMENTS DESALLOUES
 C
 C ----------------------------------------------------------------------
@@ -77,7 +77,7 @@ C
       COMMON /IDYNJE/  LDYN , LGDYN , NBDYN , NBFREE
       INTEGER          ICDYN , MXLTOT
       COMMON /XDYNJE/  ICDYN , MXLTOT
-      REAL *8          MXDYN , MCDYN , MLDYN , VMXDYN , LGIO 
+      REAL *8          MXDYN , MCDYN , MLDYN , VMXDYN , LGIO
       COMMON /RDYNJE/  MXDYN , MCDYN , MLDYN , VMXDYN , LGIO(2)
       INTEGER          LBIS , LOIS , LOLS , LOUA , LOR8 , LOC8
       COMMON /IENVJE/  LBIS , LOIS , LOLS , LOUA , LOR8 , LOC8
@@ -93,7 +93,7 @@ C ----------------------------------------------------------------------
 C ----------------------------------------------------------------------
       CHARACTER*1    CGENR
       CHARACTER*32   NOM32
-      INTEGER        IADDI(2),ICOUNT,LMEMT,LGS,NBIOAV(2),KI
+      INTEGER        IADDI(2),LGS,NBIOAV(2)
       INTEGER        NUMP,GTNPRO
       REAL*8         GRAINE
 
@@ -108,22 +108,22 @@ C
       NCLA2 = INDEX ( CLASSE , '$' ) - 1
       IF (NCLA2 .LT. 0) NCLA2 = N
       IF (IMODE .EQ. 1 .OR. IMODE .EQ. 3) THEN
-        NCLA2 = INDEX ( CLASSE , 'V' )  
-        NCLA1 = NCLA2  
-      ENDIF 
+        NCLA2 = INDEX ( CLASSE , 'V' )
+        NCLA1 = NCLA2
+      ENDIF
       DO 200  IC = NCLA2 , NCLA1, - 1
-        IF (NREUTI(IC) .EQ. 0) GOTO 200 
-        NUMP = GTNPRO() 
-        IF ( NUMP .NE. 0 ) THEN 
+        IF (NREUTI(IC) .EQ. 0) GOTO 200
+        NUMP = GTNPRO()
+        IF ( NUMP .NE. 0 ) THEN
           GRAINE = (NUMP+1)*DATEI*1.5D0
           DO 202 I= 2,NREUTI(IC)
             CALL RANDOM(GRAINE)
             K = INT(GRAINE*I)+1
             J = INDIR(JINDIR(IC)+I)
             INDIR(JINDIR(IC)+I) = INDIR(JINDIR(IC)+K)
-            INDIR(JINDIR(IC)+K) = J       
+            INDIR(JINDIR(IC)+K) = J
  202      CONTINUE
-        ENDIF 
+        ENDIF
 C
         NBIOAV(1) = NBACCE(2*IC-1)
         NBIOAV(2) = NBACCE(2*IC  )
@@ -174,7 +174,7 @@ C
                       IF ( IMODE .EQ. 2 .OR. IMODE .EQ. 3 ) THEN
 C
 C     ON NE TRAITE PAS LE SEGMENT DE VALEURS MARQUE X D
-C                   
+C
                         GOTO 210
                       ENDIF
 C
@@ -197,11 +197,11 @@ C                   write(6,*) ' OC ',NOM32,' objet ',K,' lg =',IL,LSV
                     IF ( LMIN .GT. 0 ) THEN
                       IF ( LTOT .GE. LMIN ) THEN
                         LGIO(1) = LGIO(1)+1024*LONGBL(IC)*LOIS*
-     &                           (NBACCE(2*IC-1)-NBIOAV(1)) 
+     &                           (NBACCE(2*IC-1)-NBIOAV(1))
                         LGIO(2) = LGIO(2)+1024*LONGBL(IC)*LOIS*
-     &                           (NBACCE(2*IC  )-NBIOAV(2)) 
+     &                           (NBACCE(2*IC  )-NBIOAV(2))
                         GOTO 300
-                      ENDIF  
+                      ENDIF
                     ENDIF
                   ENDIF
                 ENDIF
@@ -225,7 +225,7 @@ C
                   IF ( IMODE .EQ. 2 .OR. IMODE .EQ. 3 ) THEN
 C
 C     ON NE TRAITE PAS LE SEGMENT DE VALEURS MARQUE X D
-C                   
+C
                     GOTO 205
                   ENDIF
 C
@@ -248,19 +248,19 @@ C               write(6,*) ' OS ',NOM32,' lg =',IL,LSV
                 IF ( LMIN .GT. 0 ) THEN
                   IF ( LTOT .GE. LMIN ) THEN
                         LGIO(1) = LGIO(1)+1024*LONGBL(IC)*LOIS*
-     &                           (NBACCE(2*IC-1)-NBIOAV(1)) 
+     &                           (NBACCE(2*IC-1)-NBIOAV(1))
                         LGIO(2) = LGIO(2)+1024*LONGBL(IC)*LOIS*
-     &                           (NBACCE(2*IC  )-NBIOAV(2)) 
+     &                           (NBACCE(2*IC  )-NBIOAV(2))
                     GOTO 300
-                  ENDIF  
+                  ENDIF
                 ENDIF
               ENDIF
             ENDIF
           ENDIF
  205    CONTINUE
 C
-        LGIO(1)=LGIO(1)+1024*LONGBL(IC)*LOIS*(NBACCE(2*IC-1)-NBIOAV(1)) 
-        LGIO(2)=LGIO(2)+1024*LONGBL(IC)*LOIS*(NBACCE(2*IC  )-NBIOAV(2)) 
+        LGIO(1)=LGIO(1)+1024*LONGBL(IC)*LOIS*(NBACCE(2*IC-1)-NBIOAV(1))
+        LGIO(2)=LGIO(2)+1024*LONGBL(IC)*LOIS*(NBACCE(2*IC  )-NBIOAV(2))
  200  CONTINUE
  300  CONTINUE
       MXLTOT=MXLTOT+(LTOT*LOIS)/(1024*1024)

@@ -9,22 +9,22 @@ C
       REAL*8      UCRIP,  SEUILP
 C =================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/10/2008   AUTEUR ELGHARIB J.EL-GHARIB 
+C MODIF ALGORITH  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C =================================================================
 C --- MODELE LETK : LAIGLE VISCOPLASTIQUE--------------------------
@@ -44,14 +44,14 @@ C ----------- :  MATER(*,1) = CARACTERISTIQUES ELASTIQUES ---------
 C ----------- :  MATER(*,2) = CARACTERISTIQUES PLASTIQUES ---------
 C --- : DE    :  MATRICE ELASTIQUE --------------------------------
 C-------DEPS  :  INCREMENT DEFORMATIONS TOTALES
-C --- : DEPSV :  ACCROISSEMENT DES DEFORMATIONS VISCOPLASTIQUE A T 
+C --- : DEPSV :  ACCROISSEMENT DES DEFORMATIONS VISCOPLASTIQUE A T
 C --- : DGAMV :  ACCROISSEMENT DE GAMMA VISCOPLASTIQUE ------------
 C OUT : DEPSP : DEFORMATIONS PLASTIQUES ---------------------------
 C     : DGAMP : PARAMETRE D ECROUISSAGE PLASTIQUES-----------------
 C ----: RETCOM: CODE RETOUR POUR REDECOUPAGE DU PAS DE TEMPS ------
 C =================================================================
       COMMON /TDIM/   NDT , NDI
-      INTEGER   I, K, NDI, NDT
+      INTEGER   I, NDI, NDT
       REAL*8    DEUX, TROIS
       REAL*8    PARAEP(3), VARPL(4)
       REAL*8    DHDS(6), DS2HDS(6),DFDSP(6), DDEPSP(6)
@@ -65,7 +65,7 @@ C =================================================================
 C =================================================================
 C --- CALCUL DE DF/DSIG ------------------------------------
 C =================================================================
-      
+
       CALL LKDHDS(NBMAT,MATER,IM,SM,DHDS,RETCOM)
       CALL LKDS2H(NBMAT,MATER,IM,SM,DHDS,DS2HDS,RETCOM)
       CALL LKVARP(VINM, NBMAT, MATER, PARAEP)
@@ -81,8 +81,8 @@ C =================================================================
 
       BPRIMP = LKBPRI (VAL,VINM,NBMAT,MATER,PARAEP,IM,SM)
 
-      CALL LKCALN(SM, BPRIMP, VECNP, RETCOM)   
-           
+      CALL LKCALN(SM, BPRIMP, VECNP, RETCOM)
+
       CALL LKCALG(DFDSP,VECNP,GP,DEVGII)
 C =================================================================
 C --- CALCUL DE D LAMBDA ------------------------------------
@@ -94,19 +94,19 @@ C =================================================================
 C =================================================================
 C --- CALCUL DE DEDEV --------DEVIATEUR DU TENSEUR DES DEFORMATIONS
 C =================================================================
-       
-      DO 10 I = 1,NDT 
+
+      DO 10 I = 1,NDT
       DEPSP(I) = DLAM*GP(I)
-  10  CONTINUE      
+  10  CONTINUE
       CALL LCDEVI(DEPSP, DDEPSP)
 C =================================================================
 C --- CALCUL DE DGAMP ------------------------------------
 C =================================================================
-      
+
       DGAMP = 0.D0
 
       DO 20 I = 1,NDT
-      DGAMP = DGAMP + DDEPSP(I)**2 
+      DGAMP = DGAMP + DDEPSP(I)**2
   20  CONTINUE
       DGAMP = SQRT(DEUX/TROIS * DGAMP)
 C =================================================================

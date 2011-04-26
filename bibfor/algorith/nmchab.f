@@ -2,9 +2,9 @@
      &                   INSTAM,INSTAP,DEPS,SIGM,VIM,
      &                   OPTION,SIGP,VIP,DSIDEP,IRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/01/2009   AUTEUR PROIX J-M.PROIX 
+C MODIF ALGORITH  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -122,31 +122,30 @@ C                                        LORS DE L'INTEGRATION DE LA
 C                                        LOI VISC_CINX_CHAB
 C
 C -----  ARGUMENTS
-          INTEGER             KPG,KSP,NDIM,IMATE,NBVAR,IRET,IRET1,IRET2
+          INTEGER             KPG,KSP,NDIM,IMATE,NBVAR,IRET
            REAL*8             CRIT(6),INSTAM,INSTAP
-           REAL*8             DEPS(6),DEUXMU,DILATM,DILATP,EPSM(6)
+           REAL*8             DEPS(6),DEUXMU
            REAL*8             SIGM(6),VIM(*),SIGP(6),VIP(*),DSIDEP(6,6)
            CHARACTER*(*)      FAMI
            CHARACTER*8        TYPMOD(*)
            CHARACTER*16       COMPOR(3),OPTION
 C -----  VARIABLES LOCALES
-           REAL*8      DEPSTH(6),VALRES(10),PM,C2INF,GAMM20,M2P
-           REAL*8      PLAST,DEPSMO,SIGMMO,E,NU,TROISK,EPSMMO
-           REAL*8      RP,RPM,SIELEQ,SEUIL,DP,TM,TP,TREF,EPSMDV(6)
+           REAL*8      DEPSTH(6),PM,C2INF,GAMM20,M2P
+           REAL*8      PLAST,DEPSMO,SIGMMO,E,NU,TROISK
+           REAL*8      RP,RPM,SIELEQ,SEUIL,DP
            REAL*8      COEF,SIGEDV(6),KRON(6),DEPSDV(6),EPSPM(6)
            REAL*8      SIGMDV(6),SIGPDV(6),EM,NUM,KSIP(6),QP
            REAL*8      TROIKM,DEUMUM,SIGMP(6),SIGEL(6),PP,EPSPP(6)
            REAL*8      UN,RAC2,C2P
-           REAL*8      R0,RINF,B,CINF,K,W,MAT(16),C2M,GAMM2P,DE2P,DB2P
-           REAL*8      DGAMAP,DCP,DRP,DMP,AP,BP,EP,DENOMI,DDENOM,H2A2
-           REAL*8      L1P,L2P,L3P,DAP,DBP,DEP,MP,GAMMA0,GAMMAP,L22P
-           REAL*8      ISP,IAP,IA2P,IP,H1S,H2P,H1A1,H2S,H1A2,H2A1
-           REAL*8      S(6),DEPSP(6),ALFAM(6),ALFA(6),DALFA(6),RPVP
-           REAL*8      CM,MU,AINF,CP,HP,SEQ,DGAM2P,DC2P,DM2P,E2P,B2P
-           REAL*8      PDEV(6,6),DSIDE(6,6),ALFA2M(6),ALFA2(6),DALFA2(6)
-           REAL*8      DT,KVI,VALDEN,CORR,VP,DVP,UNSKVI,KSIM(6),QM,RPVM
-           REAL*8      GQ0,GQMAX,MUMEM,GQP,GQM,MATEL(4)
-           INTEGER     NDIMSI,I,J,L,NITER,VISC,MEMO
+           REAL*8      R0,RINF,B,CINF,K,W,MAT(16),C2M,GAMM2P
+           REAL*8      DENOMI
+           REAL*8      MP,GAMMA0,GAMMAP
+           REAL*8      DEPSP(6),ALFAM(6),ALFA(6),DALFA(6),RPVP
+           REAL*8      CM,AINF,CP
+           REAL*8      ALFA2M(6),ALFA2(6),DALFA2(6)
+           REAL*8      DT,KVI,VALDEN,KSIM(6),QM,RPVM
+           REAL*8      MATEL(4)
+           INTEGER     NDIMSI,I,NITER,VISC,MEMO
            DATA        KRON/1.D0,1.D0,1.D0,0.D0,0.D0,0.D0/
 C.========================= DEBUT DU CODE EXECUTABLE ==================
 C
@@ -177,8 +176,8 @@ C
       W      = MAT(6)
       GAMMA0 = MAT(7)
       AINF   = MAT(8)
-      C2INF  = MAT(9) 
-      GAMM20 = MAT(10) 
+      C2INF  = MAT(9)
+      GAMM20 = MAT(10)
       IF (VISC.EQ.1) THEN
          VALDEN= MAT(11)
          KVI   = MAT(12)
@@ -201,7 +200,7 @@ C
       IF (MEMO.EQ.0) THEN
          RPM    = RINF + (R0-RINF)*EXP(-B*PM)
       ELSEIF (MEMO.EQ.1) THEN
-         RPVM   = VIM(15) 
+         RPVM   = VIM(15)
          RPM    = RPVM + R0
          QM     = VIM(16)
          DO 103 I=1,6
@@ -308,14 +307,14 @@ C       --------------------
       SIELEQ     = SQRT(1.5D0*SIELEQ)
       SEUIL      = SIELEQ - RPM
 C     INITIALISATIONS
-      DP    = 0.D0              
-      IF (MEMO.EQ.1) THEN       
-         QP=QM                     
-         DO 104 I = 1,NDIMSI      
-            KSIP(I)=KSIM(I)       
- 104     CONTINUE                 
-         RPVP  = RPVM             
-      ENDIF                     
+      DP    = 0.D0
+      IF (MEMO.EQ.1) THEN
+         QP=QM
+         DO 104 I = 1,NDIMSI
+            KSIP(I)=KSIM(I)
+ 104     CONTINUE
+         RPVP  = RPVM
+      ENDIF
 C
 C --- CALCUL DE SIGP,SIGPDV,VIP,DP,RP :
 C     ===============================
@@ -343,7 +342,7 @@ C
          IF (MEMO.EQ.0) THEN
              RP     = RINF + (R0-RINF)*EXP(-B*PP)
          ELSEIF (MEMO.EQ.1) THEN
-             RP    = RPVP + R0              
+             RP    = RPVP + R0
          ENDIF
          CP     = CINF * (UN + (K-UN)*EXP(-W*PP))
          C2P    = C2INF * (UN + (K-UN)*EXP(-W*PP))

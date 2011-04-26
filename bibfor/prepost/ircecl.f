@@ -15,9 +15,9 @@ C
       LOGICAL           LSUP,LINF,LMAX,LMIN,LCOR
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF PREPOST  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -81,7 +81,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32                                ZK32
       CHARACTER*80                                         ZK80
       COMMON / KVARJE / ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
-      CHARACTER*32      JEXNUM, JEXNOM,JEXATR
+      CHARACTER*32      JEXNUM,JEXATR
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
       INTEGER       DIGDEL,ILONG,IMODEL
       REAL*8        RUNDF, VALUE, VALMAX, VALMIN
@@ -819,7 +819,6 @@ C
    18             CONTINUE
    17          CONTINUE
             END IF
-   13    CONTINUE
    12 CONTINUE
       WRITE (IFI,*) ' '
 C

@@ -7,9 +7,9 @@
       CHARACTER*16                    TYPBAS
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 10/10/2006   AUTEUR MCOURTOI M.COURTOIS 
+C MODIF ALGORITH  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -59,12 +59,8 @@ C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
 C
       INTEGER       I, J, K
       REAL*8        UN, T, ALPHA
-      CHARACTER*1   COLI
-      CHARACTER*8   K8B
-      CHARACTER*16  INTERP, PROLGD
       CHARACTER*19  CHANNO, FONCT
       LOGICAL       LFORC
-      CHARACTER*1 K1BID
 C
 C     ------------------------------------------------------------------
 C

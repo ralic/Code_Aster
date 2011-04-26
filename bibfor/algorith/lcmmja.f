@@ -1,12 +1,13 @@
-      SUBROUTINE LCMMJA (TYPMOD, NMAT, MATERF,TIMED, TIMEF,
-     &                   ITMAX,TOLER,COMP,NBCOMM,CPMONO,PGL,TOUTMS,HSR,
-     &                    NR,NVI,VIND,YF,DY,DRDY,IRET)
+      SUBROUTINE LCMMJA (TYPMOD,  NMAT,MATERF, TIMED, TIMEF,
+     &                    ITMAX, TOLER,NBCOMM,CPMONO,   PGL,
+     &                   TOUTMS,   HSR,    NR,  VIND,    YF,
+     &                       DY,  DRDY,  IRET               )
       IMPLICIT NONE
+C ----------------------------------------------------------------------
+C MODIF ALGORITH  DATE 26/04/2011   AUTEUR DELMAS J.DELMAS 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C TOLE CRP_21 CRS_1404
-C MODIF ALGORITH  DATE 20/12/2010   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -21,7 +22,8 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C RESPONSABLE JMBHH01 J.M.PROIX
+C RESPONSABLE PROIX J.M.PROIX
+C TOLE CRS_1404
 C       ----------------------------------------------------------------
 C       MONOCRISTAL : CALCUL DU JACOBIEN DU SYSTEME NL A RESOUDRE = DRDY
 C                    DY    = ( DSIG + DGAMMA PAR SYST )
@@ -47,26 +49,18 @@ C           NR     :  DIMENSION DECLAREE DRDY
 C       OUT DRDY   :  JACOBIEN DU SYSTEME NON LINEAIRE
 C       OUT IRET   :  CODE RETOUR
 C       ----------------------------------------------------------------
-      INTEGER         NDT , NDI , NMAT , NR, NVI, NBFSYS, NUVS, IEXP
-      INTEGER         NBCOMM(NMAT,3),NUVI,IFA,NBSYS,IS,IV,I,J,NUMC,IRET
-      INTEGER         NUML, NUMCO,IEI,IFL,IEC,IR,NSFA,NUVR,NSFV,ITMAX
-      INTEGER         KPG,KSP,NUECOU,KR(5),IMIN,IMAX
-      REAL*8          UN  , ZERO , VIND(*),DGDTAU,DGDRS
-      REAL*8          TOUTMS(5,24,6),HSR(5,24,24),SQ,PR
+      INTEGER         NDT , NDI , NMAT , NR, NBFSYS
+      INTEGER         NBCOMM(NMAT,3),IFA,I,IRET
+      INTEGER         IFL,ITMAX
+      INTEGER         NUECOU,KR(5),IMIN,IMAX
+      REAL*8            VIND(*)
+      REAL*8          TOUTMS(5,24,6),HSR(5,24,24)
 C     ALLOCATION DYNAMIQUE
-      REAL*8          SIGF(6),DDVIS(3,3),DDVIR(NVI),DRSDPR(NVI)
-      REAL*8          FHOOK(6,6),CRITR,DGAMM2,DP2,DRSDPS
-      REAL*8          EXPBP(24),DHDALR,HS,Q(3,3),LG(3)
-      REAL*8          PGL(3,3),MS(6),NG(3),VIS(3),TAUS,TIMED, TIMEF
-      REAL*8          P,DP,YF(*),DY(*),DRDY(NR,NR),SMSMS(6,6),DFDGA
-      REAL*8          MATERF(NMAT*2), DT,RP,DADV(3),DFDTAR,DGDALR,DFDRR
-      REAL*8          DVDTAU(3),DTAUDS(3,6),MSMS(6,6),DRRDPS,DELTSR
-      REAL*8          MSDGDT(6,6),D,R0,B,N,K,C,DGAMMS,ABSDGA,H,RR
-      REAL*8          ALPHAM,DALPHA,ALPHAP,CRIT,DALDGA,DGAMMA
-      REAL*8          DRDGA,SGNS,TAUR,SGNR,ALPHAR,GAMMAP,PM,GAMMAR
-      REAL*8          DAR,DGR,ARM,DGDAL,DFDR,DGAMMR,ALPHMR,PS,TOLER
-      CHARACTER*16    CPMONO(5*NMAT+1),COMP(*)
-      CHARACTER*16    NOMFAM,NECOUL,NECRIS,NECRCI
+      REAL*8          PGL(3,3),TIMED, TIMEF
+      REAL*8          YF(*),DY(*),DRDY(NR,NR)
+      REAL*8          MATERF(NMAT*2)
+      REAL*8          TOLER
+      CHARACTER*16    CPMONO(5*NMAT+1)
       CHARACTER*8     TYPMOD
 C     ----------------------------------------------------------------
       COMMON /TDIM/   NDT , NDI
@@ -90,18 +84,18 @@ C     test pour verifier que KOCKS_RAUCH n'est pas mélangé avec d'autres
 C        KOCKS-RAUCH
          CALL ASSERT(IMIN.EQ.4)
          CALL LCMMJ2 (TYPMOD, NMAT, MATERF,TIMED, TIMEF,
-     &                ITMAX,TOLER,COMP,NBCOMM,CPMONO,PGL,TOUTMS,HSR,
-     &                 NR,NVI,VIND,YF,DY,DRDY,IRET)
+     &                NBCOMM,CPMONO,PGL,TOUTMS,HSR,
+     &                NR,VIND,YF,DY,DRDY,IRET)
       ELSEIF (IMAX.EQ.5) THEN
 C        DD-CFC
          CALL ASSERT(IMIN.EQ.5)
          CALL LCMMJ3 (TYPMOD, NMAT, MATERF,TIMED, TIMEF,
      &                NBCOMM,CPMONO,PGL,TOUTMS,HSR,
-     &                 NR,VIND,YF,DY,DRDY,IRET)
+     &                NR,VIND,YF,DY,DRDY,IRET)
       ELSE
 C        AUTRES COMPORTEMENTS
          CALL LCMMJ1 (TYPMOD, NMAT, MATERF,TIMED, TIMEF,
-     &                ITMAX,TOLER,COMP,NBCOMM,CPMONO,PGL,TOUTMS,HSR,
-     &                 NR,NVI,VIND,YF,DY,DRDY,IRET)
+     &                ITMAX,TOLER,NBCOMM,CPMONO,PGL,TOUTMS,HSR,
+     &                 NR,VIND,YF,DY,DRDY,IRET)
       ENDIF
       END

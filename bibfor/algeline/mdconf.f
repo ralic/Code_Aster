@@ -4,7 +4,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 31/01/2011   AUTEUR PELLET J.PELLET 
+C MODIF ALGELINE  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -80,12 +80,12 @@ C -----------------
      &              NOMNO0
       CHARACTER*14  NUMDDL
       CHARACTER*19  CAELEM, MASSE
-      CHARACTER*24  CHVALE, DEEQ, FRHOE, FRHOI, FSIC, FSVI, FSVK, FSVR,
-     &              MLGNMA, MLGNNO, NOMCHA, NOMNOE, PVITE
+      CHARACTER*24   DEEQ, FRHOE, FRHOI, FSIC, FSVI, FSVK, FSVR,
+     &              MLGNMA, MLGNNO, NOMCHA, PVITE
 C
 C FONCTIONS EXTERNES
 C ------------------
-      REAL*8        R8PI, R8PREM
+      REAL*8         R8PREM
       REAL*8 VALR(3)
 C     EXTERNAL      R8PI, R8PREM
       CHARACTER*32  JEXNOM

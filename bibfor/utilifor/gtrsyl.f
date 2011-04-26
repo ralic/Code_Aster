@@ -2,7 +2,7 @@
      $                   LDC, SCALE, INFO )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILIFOR  DATE 06/11/2006   AUTEUR MCOURTOI M.COURTOIS 
+C MODIF UTILIFOR  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) LAPACK
 C ======================================================================
@@ -114,9 +114,9 @@ C     .. LOCAL ARRAYS ..
 C     ..
 C     .. EXTERNAL FUNCTIONS ..
       LOGICAL            LSAME
-      REAL*8             ZLANGE, R8PREM, R8MIEM
+      REAL*8             ZLANGE, R8PREM
       COMPLEX*16         ZDOTC, ZDOTU
-      INTEGER            IDAMAX, ISBAEM
+      INTEGER             ISBAEM
 C     ..
 C     .. EXECUTABLE STATEMENTS ..
 C

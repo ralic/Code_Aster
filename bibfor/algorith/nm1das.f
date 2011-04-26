@@ -3,9 +3,9 @@
      &                  SIGM,DEPS,VIM,SIG,VIP,DSDEM,DSDEP)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 16/10/2007   AUTEUR SALMONA L.SALMONA 
+C MODIF ALGORITH  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -56,7 +56,7 @@ C     ------------------------------------------------------------------
 C     ------------------------------------------------------------------
 C     VARIABLES LOCALES
 C     ------------------------------------------------------------------
-      REAL*8        RMC,RMT,SIGE,HT,HC,DEPMEC,DPT,RPT,DPC,RPC,SIGD,T
+      REAL*8        RMC,RMT,SIGE,HT,HC,DEPMEC,DPT,RPT,DPC,RPC,SIGD
       INTEGER       IRET,ICODMA
 
 C     ------------------------------------------------------------------
@@ -73,7 +73,7 @@ C     ------------------------------------------------------------------
 C     DELTA DEFORMATION MECANIQUE
 C     ------------------------------------------------------------------
 C
-      CALL VERIFT(FAMI,KPG,KSP,'T',ICODMA,'ELAS',1,EPSTHE,IRET)      
+      CALL VERIFT(FAMI,KPG,KSP,'T',ICODMA,'ELAS',1,EPSTHE,IRET)
 
       DEPMEC = DEPS-EPSTHE
 C     ------------------------------------------------------------------

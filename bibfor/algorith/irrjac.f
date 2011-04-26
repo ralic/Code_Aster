@@ -6,9 +6,9 @@
       INTEGER       NMAT,NMOD,KPG,KSP
       REAL*8        MATER(NMAT,2),YF(*),DY(*),DRDY(NMOD,NMOD)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 17/12/2007   AUTEUR FLEJOU J-L.FLEJOU 
+C MODIF ALGORITH  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2006  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -60,7 +60,7 @@ C  ----------------------------------------------------------------
       REAL*8          DQDS(4),DQDP,DQDE,DQDI,DQDG,DQDE3,R8PREM
       REAL*8          LCNRTS,SR,DDFDDS(6,6),ETAIF,DEDE3(6),HOOKF(6,6)
       REAL*8          PK,KAPPA,R02,PE,PENPE,SPE
-      INTEGER         NDT,NDI,IRET,II
+      INTEGER         NDT,NDI,IRET
 C     ----------------------------------------------------------------
       COMMON /TDIM/   NDT , NDI
 C     ----------------------------------------------------------------

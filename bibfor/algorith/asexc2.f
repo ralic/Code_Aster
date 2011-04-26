@@ -7,11 +7,11 @@
       CHARACTER*8      NOMSUP(3,*),NOMSPE(3,*),NOMA
       CHARACTER*(*)    MOTFAC,KVSPE,KASPE,KNOEU
       LOGICAL          CORFRE
-C     ------------------------------------------------------------------
+C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 19/10/2010   AUTEUR DELMAS J.DELMAS 
+C MODIF ALGORITH  DATE 26/04/2011   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -26,11 +26,11 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C TOLE CRP_21
-C     ------------------------------------------------------------------
+C
 C     COMMANDE : COMB_SISM_MODAL
 C                TRAITEMENT DU MOT-CLE "EXCIT" POUR LE MONO-APPUI
-C     ------------------------------------------------------------------
+C
+C
 C IN  : MOTFAC : MOT CLE FACTEUR
 C IN  : NBOCC  : NOMBRE D'OCCURENCE DU MOT CLE FACTEUR
 C IN  : NBMODE : NOMBRE DE MODES
@@ -40,8 +40,10 @@ C IN  : CORFRE : CORRECTION FREQUENCE SI .TRUE.
 C OUT : NDIR   : DIRECTION DU SEISME A ETUDIER
 C OUT : VALSPE : VALEURS DU SPECTRE
 C OUT : ASYSPE : VALEURS ASYMPTOTIQUES DU SPECTRE
-C     ------------------------------------------------------------------
+C
+C
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
+C
       INTEGER            ZI
       COMMON  / IVARJE / ZI(1)
       REAL*8             ZR
@@ -57,24 +59,30 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*80                                          ZK80
       COMMON  / KVARJE / ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
       CHARACTER*32       JEXNOM, JEXNUM
-C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
-C     ------------------------------------------------------------------
-      INTEGER      I, ID, IER, IFM, IGR, II, III, IM, INAT, INO, IOC,
-     +             IRET, IS, IUNIFI, J, JASPE, JDGN, JGRN, JKNO, JNOE,
-     +             JVAR1, JVSPE, N1, NBPT1, NBPT2, NBSUPM, NGR, NIMPR,
-     +             NNO
-      REAL*8       AMOR, COEF, DEUXPI, ECHEL, EPSI, FREQ, DIRSP0(3),
-     +             ECHSP0(3), VALPU(2), OMEGA, OMEGA2, R8B, R8DEPI,
-     +             RESU, UN, UNS2PI, XNORM, ZERO
+C
+C ---------  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
+C
+      INTEGER      I, ID, IER, IFM, IGR, II, III, IM, INAT, INO, IOC
+      INTEGER      IRET, IS, IUNIFI, J, JASPE, JDGN, JGRN, JKNO, JNOE
+      INTEGER      JVAR1, JVSPE, N1, NBPT1, NBPT2, NBSUPM, NGR, NIMPR
+      INTEGER      NNO
+
+      REAL*8       AMOR, COEF, DEUXPI, ECHEL, EPSI, FREQ, DIRSP0(3)
+      REAL*8       ECHSP0(3), VALPU(2), OMEGA, OMEGA2, R8B, R8DEPI
+      REAL*8       RESU, UN, UNS2PI, XNORM, ZERO
+
       CHARACTER*1  K1B, DIR(3)
       CHARACTER*4  KNAT
       CHARACTER*8  K8B, SPECT, NOEU, GRNOEU, NOMSP0(3), NOMPU(2)
       CHARACTER*9  NIVEAU
       CHARACTER*24 VALE, OBJ1, OBJ2, VALK(2)
+C
 C     ------------------------------------------------------------------
+C
       DATA   VALE / '                   .VALE' /
       DATA  NOMPU / 'AMOR' , 'FREQ'    /
       DATA   DIR  / 'X' , 'Y' , 'Z' /
+C
 C     ------------------------------------------------------------------
 C
       CALL JEMARQ()

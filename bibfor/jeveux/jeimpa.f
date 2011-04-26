@@ -1,8 +1,8 @@
       SUBROUTINE JEIMPA ( UNIT , NOMLU , COM )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 26/10/2010   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -57,7 +57,6 @@ C     -----------------------------------------------------------------
      &               IDMARQ = 4 , IDNOM  = 5 ,             IDLONG = 7 ,
      &               IDLONO = 8 , IDLUTI = 9 ,IDNUM  = 10 )
 C
-      CHARACTER *75   CMESS
       CHARACTER *72   COML
       CHARACTER *32   NOML32
       CHARACTER *33   CVAL
@@ -152,8 +151,8 @@ C
       IF ( GENRI .EQ. 'N' )  JLON = 3
 C
       WRITE(UNIT,'(A)') 'JEIMPA  IMPRESSION DES ATTRIBUTS DE >'
-     &                  //NOML32(1:24)//'<'  
-      WRITE(UNIT,'(A1,A72)')  ' ',COML 
+     &                  //NOML32(1:24)//'<'
+      WRITE(UNIT,'(A1,A72)')  ' ',COML
       IF ( IRET .EQ. 3 ) THEN
          IF ( NOML32(25:32) .EQ. NOME ) THEN
             WRITE(UNIT,'(A,A8)') 'NOM OC',NOMEC
@@ -187,7 +186,7 @@ C
      &         ( IRET.EQ.1 .AND. (K.GT.10)                    ) ) THEN
             CALL JELIRA ( NOML32 , NAO(K) , IVAL , CVAL )
             IF ( TAO(K) .EQ. 'I' ) THEN
-              WRITE(UNIT,'(A8,I12)') NAO(K),IVAL 
+              WRITE(UNIT,'(A8,I12)') NAO(K),IVAL
             ELSE
               WRITE(UNIT,'(A8,A)') NAO(K),CVAL(1:LAO(K))
             ENDIF

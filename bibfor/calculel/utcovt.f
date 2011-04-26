@@ -8,7 +8,7 @@ C
       CHARACTER*24        TCHVAL(2)
       CHARACTER*16        TCHERR(2)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 04/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF CALCULEL  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -50,7 +50,7 @@ C ----------------------------------------------------------------------
       INTEGER LCVREF,LCV,I,II,EXV,EXVREF,IRET,LXLGUT,NDEC,V
 
       REAL*8  SG,SGREF
-      CHARACTER*24 CHV,CHVREF,CHV3,CHV4,CH24
+      CHARACTER*24 CHV,CHVREF,CHV3,CHV4,CH24,K24W
       CHARACTER*7 SIV,SIVREF
       LOGICAL VALFLO,REFFLO,ERRFLO,TOLFLO
 
@@ -208,17 +208,19 @@ C
 C   --   POUR LA VALEUR CALCULEE:
          CHV4=' '
          IF(SG.LT.0.D0)THEN
-             CALL UTROUN('-'//CHV(1:23),NDEC,CHV4)
+             K24W = '-'//CHV(1:23)
+             CALL UTROUN(K24W, NDEC, CHV4)
          ELSE
-             CALL UTROUN(CHV,NDEC,CHV4)
+             CALL UTROUN(CHV, NDEC, CHV4)
          ENDIF
 
 C   --   POUR LA VALEUR DE REFERENCE:
          CHV3=' '
          IF(SGREF.LT.0.D0)THEN
-             CALL UTROUN('-'//CHVREF(1:23),NDEC,CHV3)
+             K24W = '-'//CHVREF(1:23)
+             CALL UTROUN(K24W, NDEC, CHV3)
          ELSE
-             CALL UTROUN(CHVREF,NDEC,CHV3)
+             CALL UTROUN(CHVREF, NDEC, CHV3)
          ENDIF
 C
 C

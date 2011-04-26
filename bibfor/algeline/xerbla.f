@@ -1,6 +1,6 @@
       SUBROUTINE XERBLA( SRNAME, INFO )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 04/09/2007   AUTEUR DURAND C.DURAND 
+C MODIF ALGELINE  DATE 26/04/2011   AUTEUR DELMAS J.DELMAS 
 C----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================

@@ -1,4 +1,4 @@
-      SUBROUTINE RCEVSP ( CSIEX, KEMIXT, CSTEX, CSMEX, CINST, CSPO, 
+      SUBROUTINE RCEVSP ( CSIEX, KEMIXT, CSTEX, CSMEX, CINST, CSPO,
      +                     CSPE, CSPTO, CSPTE , CSPMO, CSPME )
       IMPLICIT     NONE
       CHARACTER*24 CSIEX, CINST, CSPO, CSPE, CSTEX, CSMEX,
@@ -6,22 +6,22 @@
       LOGICAL       KEMIXT
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF POSTRELE  DATE 06/07/2009   AUTEUR GALENNE E.GALENNE 
+C MODIF POSTRELE  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C     ------------------------------------------------------------------
 C     OPERATEUR POST_RCCM, TYPE_RESU_MECA='EVOLUTION'
@@ -43,11 +43,10 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32                               ZK32
       CHARACTER*80                                        ZK80
       COMMON  /KVARJE/ ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
-      CHARACTER*32     JEXNOM, JEXNUM
 C     ----- FIN COMMUNS NORMALISES  JEVEUX  ----------------------------
 C
       INTEGER      NCMP, JSIOE, JINST, NBINST, NBORDR, JSPO, JSPE,
-     +             IND, I1, I2, ICMP, L1, L2, 
+     +             IND, I1, I2, ICMP, L1, L2,
      +             JSTOE, JSMOE, JSPTO, JSPTE, JSPMO, JSPME
       PARAMETER  ( NCMP = 6 )
       REAL*8       SP1O(NCMP), SP1E(NCMP), SP2O(NCMP), SP2E(NCMP),
@@ -94,7 +93,7 @@ C
             ENDIF
  102     CONTINUE
          IND = IND + 1
-C         
+C
          ZR(JSPO+IND-1) = 0.D0
          ZR(JSPE+IND-1) = 0.D0
          IF (KEMIXT) THEN
@@ -133,33 +132,33 @@ C ======================================================================
                ENDIF
  114        CONTINUE
 C ======================================================================
-C ---       CALCUL DE LA NORME DE TRESCA DE LA DIFFERENCE DES TENSEURS 
-C ---       DE CONTRAINTES TOTALES 
+C ---       CALCUL DE LA NORME DE TRESCA DE LA DIFFERENCE DES TENSEURS
+C ---       DE CONTRAINTES TOTALES
 C ---       SP12O = SPO(TEMP1)-SPO(TEMP2) A L'ORIGINE DU CHEMIN :
 C ======================================================================
             CALL RCTRES ( SP12O, TRESCA )
             ZR(JSPO+IND-1) = TRESCA
 C ======================================================================
-C ---       CALCUL DE LA NORME DE TRESCA DE LA DIFFERENCE DES TENSEURS 
+C ---       CALCUL DE LA NORME DE TRESCA DE LA DIFFERENCE DES TENSEURS
 C ---       DE CONTRAINTES TOTALES A L'EXTREMITE DU CHEMIN :
 C ======================================================================
             CALL RCTRES ( SP12E, TRESCA )
             ZR(JSPE+IND-1) = TRESCA
 C
-            IF (KEMIXT) THEN            
+            IF (KEMIXT) THEN
 C ======================================================================
 C ---       CAS KE_MIXTE : SEPARATION DES CONTRAINTES THERMIQUES
 C ---       ET DES CONTRAINTES MECANIQUES
 C ======================================================================
             CALL RCTRES ( SPT12O, TRESCA )
             ZR(JSPTO+IND-1) = TRESCA
-C            
+C
             CALL RCTRES ( SPT12E, TRESCA )
             ZR(JSPTE+IND-1) = TRESCA
 C
             CALL RCTRES ( SPM12O, TRESCA )
             ZR(JSPMO+IND-1) = TRESCA
-C            
+C
             CALL RCTRES ( SPM12E, TRESCA )
             ZR(JSPME+IND-1) = TRESCA
 C

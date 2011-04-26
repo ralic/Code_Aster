@@ -1,12 +1,12 @@
       SUBROUTINE XMELET(NOMTE , TYPMAI , TYPMAE ,TYPMAM ,TYPMAC  ,
-     &                  NDIM  , NDDL   , JNNE   , JNNM  , 
+     &                  NDIM  , NDDL   , JNNE   , JNNM  ,
      &                  NNC   , JDDLE  , JDDLM  ,
      &                  NCONTA, NDEPLE , NSINGE, NSINGM)
-     
+
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 21/12/2010   AUTEUR MASSIN P.MASSIN 
+C MODIF ALGORITH  DATE 26/04/2011   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -23,13 +23,13 @@ C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C
       IMPLICIT NONE
-      CHARACTER*16 NOMTE   
+      CHARACTER*16 NOMTE
       CHARACTER*8  TYPMAI,TYPMAE,TYPMAM,TYPMAC
       INTEGER      NDIM,NDDL,NNC
       INTEGER      NSINGE,NSINGM,NCONTA
       INTEGER      JNNE(3), JNNM(3),NDEPLE
       INTEGER      JDDLE(2),JDDLM(2)
-C      
+C
 C ----------------------------------------------------------------------
 C
 C ROUTINE CONTACT (METHODE XFEMGG - CALCUL ELEM.)
@@ -90,9 +90,6 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER     NTROU, ILIE, NDIMD, NNOD, NNOSD, IBID , IER, I
       INTEGER     IADZI,IAZK24
       LOGICAL     ISMALI
-      INTEGER     EN1,EN2,EN3,EN4,EN5,EN6
-      REAL*8      X(27),VOL
-      CHARACTER*8 FAPG(20)
 C
 C ----------------------------------------------------------------------
 C
@@ -104,7 +101,7 @@ C
       IF (ELREFP .EQ. 'QU8') TYPMAI = 'QUAD8'
       IF (ELREFP .EQ. 'TR3') TYPMAI = 'TRIA3'
       IF (ELREFP .EQ. 'TR6') TYPMAI = 'TRIA6'
-C     
+C
       CALL TEATTR (NOMTE,'S','XFEM_E',ENRE,IER)
       CALL TEATTR (NOMTE,'S','XFEM_M',ENRM,IER)
 C
@@ -119,7 +116,7 @@ C
  12   CONTINUE
 C
 C
-C --- NOMBRE DE FONCTIONS SINGULIERES    
+C --- NOMBRE DE FONCTIONS SINGULIERES
 C
       IF (ENRE.EQ.'H') THEN
         NSINGE = 0
@@ -128,7 +125,7 @@ C
       ELSE
         CALL U2MESK('F','DVP_4',1,NOMTE)
       ENDIF
-C       
+C
       IF (ENRM.EQ.'C') THEN
         NSINGM = 1
       ELSEIF ((ENRM.EQ.'H').OR.(ENRM.EQ.'T')) THEN
@@ -157,7 +154,7 @@ C
          TYPMAM  = LIELRF(ILIE)
         ENDIF
 C
-        IF ( ILIE.EQ.2 .AND. NTROU.EQ.2 ) THEN 
+        IF ( ILIE.EQ.2 .AND. NTROU.EQ.2 ) THEN
          JNNM(1)  = JNNE(1)
          TYPMAM = TYPMAE
          NNC  = NNOD
@@ -183,7 +180,7 @@ C
         JNNM(1)  = 0
         JNNM(2)  = 0
         TYPMAM = '  '
-      ENDIF     
+      ENDIF
 C
 C --- RECUPERATION DU TYPE DE CONTACT
 C
@@ -198,7 +195,7 @@ C
         ENDIF
       ENDIF
 C
-C --- NOMBRE DE DDLS D'UN NOEUD SOMMET ESCLAVE    
+C --- NOMBRE DE DDLS D'UN NOEUD SOMMET ESCLAVE
 C
       IF (ENRE.EQ.'T') THEN
         JDDLE(1)  = 2*NDIM
@@ -206,7 +203,7 @@ C
         JDDLE(1)  = NDIM *(3+NSINGE)
       ENDIF
 C
-C --- NOMBRE DE DDLS D'UN NOEUD MILIEU ESCLAVE    
+C --- NOMBRE DE DDLS D'UN NOEUD MILIEU ESCLAVE
 C
       IF (NCONTA.EQ.2) THEN
         JDDLE(2)  = NDIM
@@ -214,7 +211,7 @@ C
         JDDLE(2)  = NDIM*2
       ENDIF
 C
-C --- NOMBRE DE DDLS D'UN NOEUD MAITRE    
+C --- NOMBRE DE DDLS D'UN NOEUD MAITRE
 C
       IF (ENRE.EQ.'T') THEN
         JDDLM(1)  = 0

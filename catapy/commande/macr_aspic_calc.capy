@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 29/03/2011   AUTEUR DELMAS J.DELMAS 
+#& MODIF COMMANDE  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -50,7 +50,7 @@ MACR_ASPIC_CALC=MACRO(nom="MACR_ASPIC_CALC",op=macr_aspic_calc_ops,sd_prod=macr_
          AFFE_MATERIAU   =FACT(statut='o',max=3,
            regles=(UN_PARMI('TOUT','GROUP_MA'),),
            TOUT            =SIMP(statut='f',typ='TXM',into=("OUI",)),
-           GROUP_MA        =SIMP(statut='f',typ='TXM',into=("TUBU","CORP","SOUD","SOUDCORP","SOUDTUBU") ),
+           GROUP_MA        =SIMP(statut='f',typ=grma,into=("TUBU","CORP","SOUD","SOUDCORP","SOUDTUBU") ),
            MATER           =SIMP(statut='o',typ=mater_sdaster),
            TEMP_REF        =SIMP(statut='f',typ='R',defaut= 0.E+0 ),
            RCCM            =SIMP(statut='o',typ='TXM',into=("OUI","NON")),

@@ -3,7 +3,7 @@
       CHARACTER*8         NOMRES, RESGEN, NOMSST
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 01/03/2011   AUTEUR CORUS M.CORUS 
+C MODIF ALGORITH  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -111,9 +111,9 @@ C
       SST=   NUMGEN(1:14)//'.ELIM.NOMS'
 
       CALL JEEXIN(SELIAI,ELIM)
-      
+
       IF (ELIM .EQ. 0) THEN
-            
+
         CALL JENONU(JEXNOM(NUMGEN//'.LILI',SOUTR),IBID)
         CALL JEVEUO(JEXNUM(NUMGEN//'.ORIG',IBID),'L',LLORS)
         CALL JENONU(JEXNOM(NUMGEN//'.LILI',SOUTR),IBID)
@@ -131,17 +131,17 @@ C
         IEQ=ZI(LLPRS+(NUTARS-1)*2)
 
       ELSE
-      
+
         CALL JELIRA(MODGEN//'      .MODG.SSNO','NOMMAX',NBSST,K1BID)
         CALL JEVEUO(SST,'L',IBID)
         DO 12 I1=1,NBSST
           IF (NOMSST .EQ. ZK8(IBID+I1-1)) THEN
             NUSST=I1
           ENDIF
-  12    CONTINUE      
+  12    CONTINUE
         NEQET=0
         IEQ=0
-        
+
         CALL JEVEUO(NUMGEN//'.NEQU','L',IBID)
         NEQRED=ZI(IBID)
         CALL JEVEUO(SELIAI,'L',LMAPRO)
@@ -157,7 +157,7 @@ C
             IEQ=IEQ+ZI(LSILIA+I1-1)
   41    CONTINUE
         CALL WKVECT('&&MODE_ETENDU_REST_ELIM','V V R',NEQET,LMOET)
-           
+
       ENDIF
 C
 C --- RECUPERATION DE LA BASE MODALE
@@ -166,7 +166,7 @@ C
 C
       CALL DISMOI('F','NB_MODES_TOT',BASMOD,'RESULTAT',
      &                      NBBAS,KBID,IER)
-     
+
       IF (ELIM .EQ. 0) THEN
         IF(NBBAS.NE.NBDDG) THEN
           VALK (1) = BASMOD
@@ -174,7 +174,7 @@ C
           VALI (2) = NBDDG
           CALL U2MESG('F', 'ALGORITH14_26',1,VALK,2,VALI,0,0.D0)
         ENDIF
-      ENDIF  
+      ENDIF
 C
       CALL JEVEUO(BASMOD//'           .REFD','L',LLREF4)
       LINT=ZK24(LLREF4+4)
@@ -224,7 +224,7 @@ C
 C ----- REQUETTE NOM ET ADRESSE CHAMNO GENERALISE
         CALL DCAPNO ( RESGEN, DEPL, IORD, CHAMOL )
         CALL JEVEUO ( CHAMOL, 'L', LLCHOL )
-C-- SI ELIMINATION, ON RESTITUE D'ABORD LES MODES GENERALISES       
+C-- SI ELIMINATION, ON RESTITUE D'ABORD LES MODES GENERALISES
         IF (ELIM .NE. 0) THEN
           DO 21 I1=1,NEQET
             ZR(LMOET+I1-1)=0.D0
@@ -233,9 +233,9 @@ C-- SI ELIMINATION, ON RESTITUE D'ABORD LES MODES GENERALISES
      &          ZR(LMAPRO+(K1-1)*NEQET+I1-1)*
      &          ZR(LLCHOL+K1-1)
   31        CONTINUE
-  21      CONTINUE  
-          LLCHOL=LMOET               
-        ENDIF        
+  21      CONTINUE
+          LLCHOL=LMOET
+        ENDIF
 C
 C ----- REQUETTE NOM ET ADRESSE NOUVEAU CHAMNO
         CALL RSEXCH ( NOMRES, DEPL, I, CHAMNE, IER )
@@ -255,9 +255,9 @@ C ----- BOUCLE SUR LES MODES PROPRES DE LA BASE
         ELSE
           IBID=NBDDG
         ENDIF
-        DO 30 J = 1,IBID        
+        DO 30 J = 1,IBID
           CALL DCAPNO ( BASMOD, DEPL, J, CHAMBA )
-          CALL JEVEUO ( CHAMBA, 'L', LLCHAB )          
+          CALL JEVEUO ( CHAMBA, 'L', LLCHAB )
 C
 C ------- BOUCLE SUR LES EQUATIONS PHYSIQUES
           DO 40 K = 1,NEQ
@@ -285,6 +285,5 @@ C
       CALL JELIBE(NUMGEN//'.NUEQ')
       CALL JEDETR ( '&&REGEEC.NUME' )
 C
- 9999 CONTINUE
       CALL JEDEMA()
       END

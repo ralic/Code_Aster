@@ -2,7 +2,7 @@
      &                  CHELEM,PARAM,OPTION)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 19/01/2011   AUTEUR MASSIN P.MASSIN 
+C MODIF ALGORITH  DATE 26/04/2011   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -25,7 +25,7 @@ C
       CHARACTER*8   NOMA,MODELE
       CHARACTER*(*)   PARAM,OPTION
       INTEGER       NFISS
-      CHARACTER*19  CHELEM,CHELE2
+      CHARACTER*19  CHELEM
       CHARACTER*19  LIGREL
       CHARACTER*24  DEFICO
 C
@@ -100,7 +100,7 @@ C
 C
 C --- CREATION DU CHAM_ELEM VIERGE
 C
-      CALL EXISD('CHAM_ELEM',CHELEM,IRET)     
+      CALL EXISD('CHAM_ELEM',CHELEM,IRET)
       IF (IRET.EQ.0) THEN
         CALL XMCHBA(NOMA  ,NBMA  ,LIGREL,PARAM,OPTION,
      &            CHELEM)
@@ -136,15 +136,15 @@ C --- CONTACT INIT
 C
         IF(PARAM.EQ.'PINDCOI'.OR.PARAM.EQ.'PMEMCON') THEN
           VALL = (MMINFI(DEFICO,'CONTACT_INIT',IZONE ).EQ.1)
-        ELSE IF(PARAM.EQ.'PSEUIL') THEN 
+        ELSE IF(PARAM.EQ.'PSEUIL') THEN
           VALR = MMINFR(DEFICO,'SEUIL_INIT',IZONE )
-        ELSE IF(PARAM.EQ.'PGLISS') THEN         
+        ELSE IF(PARAM.EQ.'PGLISS') THEN
           VALL = MMINFL(DEFICO,'GLISSIERE_ZONE',IZONE )
         ELSE IF(PARAM(1:5).EQ.'PCOHE') THEN
-          VALR = 0.D0 
+          VALR = 0.D0
         ELSE
           CALL ASSERT(.FALSE.)
-        ENDIF                               
+        ENDIF
 C
 C --- SI CONTACT_INIT
 C
@@ -167,8 +167,8 @@ C
                   CALL CESEXI('C',JCESD,JCESL,IMA,1,ISPT,1,IAD)
                   IF (IAD.EQ.0) THEN
                     GOTO 120
-                  ENDIF 
-                  IF(ISINT) ZI(JCESV-1+IAD) = 1                
+                  ENDIF
+                  IF(ISINT) ZI(JCESV-1+IAD) = 1
                   IF(.NOT.ISINT) ZR(JCESV-1+IAD) = VALR
  121            CONTINUE
  120          CONTINUE

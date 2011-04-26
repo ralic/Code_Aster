@@ -5,7 +5,7 @@
       CHARACTER*(*)       CHCINE, CNSZ, MO
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 01/03/2011   AUTEUR PELLET J.PELLET 
+C MODIF MODELISA  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -34,7 +34,7 @@ C IN   MO      K*      : NOM DU MODELE
 C IN   NOMGD   K*      : NOM DE LA GRANDEUR
 C-----------------------------------------------------------------------
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
-      CHARACTER*32 JEXNUM,JEXNOM,JEXR8,JEXATR
+      CHARACTER*32 JEXNOM
       INTEGER ZI
       COMMON /IVARJE/ZI(1)
       REAL*8 ZR

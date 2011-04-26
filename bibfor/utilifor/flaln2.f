@@ -1,12 +1,12 @@
       SUBROUTINE FLALN2( LTRANS, NA, NW, SMIN, CA, A, LDA, D1, D2, B,
      &                   LDB, WR, WI, X, LDX, SCALE, XNORM, INFO )
+C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILIFOR  DATE 06/11/2006   AUTEUR MCOURTOI M.COURTOIS 
+C MODIF UTILIFOR  DATE 26/04/2011   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) LAPACK
 C ======================================================================
 C TOLE CRP_20
-C TOLE CRP_21
 C
 C     SUBROUTINE LAPACK RESOLVANT UN SYSTEME LINEAIRE PERTURBE
 C     PARTICULIER (DU TYPE MENTIONNE CI DESSOUS).

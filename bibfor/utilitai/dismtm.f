@@ -1,8 +1,8 @@
       SUBROUTINE DISMTM(QUESTI,NOMOBZ,REPI,REPKZ,IERD)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 29/03/2010   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -39,7 +39,7 @@ C ----------------------------------------------------------------------
 C     VARIABLES LOCALES:
 C     ------------------
 C---------------- COMMUNS NORMALISES  JEVEUX  --------------------------
-      CHARACTER*32 JEXNUM,JEXNOM,JEXATR,JEXR8
+      CHARACTER*32 JEXNUM,JEXNOM
       COMMON /IVARJE/ZI(1)
       COMMON /RVARJE/ZR(1)
       COMMON /CVARJE/ZC(1)
@@ -54,7 +54,6 @@ C---------------- COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*24 ZK24
       CHARACTER*32 ZK32
       CHARACTER*80 ZK80
-      CHARACTER*8 KBID
 C---------------- FIN COMMUNS NORMALISES  JEVEUX  --------------------
       INTEGER ITM,IANBNO
 
@@ -106,7 +105,6 @@ C     ----------------------------------
         IERD = 1
       END IF
 
-   10 CONTINUE
       REPKZ = REPK
       CALL JEDEMA()
       END

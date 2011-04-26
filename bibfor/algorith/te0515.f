@@ -3,22 +3,22 @@
       CHARACTER*16 OPTION,NOMTE
 C =====================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 23/03/2010   AUTEUR ANGELINI O.ANGELINI 
+C MODIF ALGORITH  DATE 26/04/2011   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C =====================================================================
 C    - FONCTION REALISEE:  CALCUL DES OPTIONS NON-LINEAIRES MECANIQUES
@@ -27,13 +27,13 @@ C    - ARGUMENTS:
 C        DONNEES:      OPTION       -->  OPTION DE CALCUL
 C                      NOMTE        -->  NOM DU TYPE ELEMENT
 C =====================================================================
-      INTEGER JGANO,NNO,IMATUU,NDIM,IMATE,IINSTM,IFORC,JCRET
+      INTEGER JGANO,NNO,IMATUU,NDIM,IMATE,IINSTM,JCRET
       INTEGER IPOID2,IVF2
-      INTEGER IDFDE2,NPI,NPG,NVIM,NPI2
+      INTEGER IDFDE2,NPI,NPG,NPI2
 C
-      INTEGER RETLOI,IRET,IRETP,IRETM
-      INTEGER IPOIDS,IVF,IDFDE,IGEOM,IDEFO
-      INTEGER IINSTP,IDEPLM,IDEPLP,IDEPLA,ICOMPO,ICARCR,IPESA
+      INTEGER RETLOI
+      INTEGER IPOIDS,IVF,IDFDE,IGEOM
+      INTEGER IINSTP,IDEPLM,IDEPLP,ICOMPO,ICARCR
       INTEGER ICONTM,IVARIP,IVARIM,IVECTU,ICONTP
 C =====================================================================
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX --------------------
@@ -57,21 +57,17 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C =====================================================================
       INTEGER MECANI(5),PRESS1(7),PRESS2(7),TEMPE(5),DIMUEL
       INTEGER DIMDEP,DIMDEF,DIMCON,NBVARI,NDDLS,NDDLM,NDDLFA,NDDLK
-      INTEGER II,INO,NMEC,NP1,NP2,I,NCMP,NNOS,ICHG,ICHN
-      INTEGER JTAB(7),IGAU,ISIG,NNOM,NFACE
+      INTEGER NMEC,NP1,NP2,NNOS
+      INTEGER NNOM,NFACE
 C     REMARQUE : CES DIMENSIONS DOIVENT ETRE LES MEMES QUE DANS TE0492
       REAL*8 DEFGEP(21),DEFGEM(21)
-      REAL*8 POIDS
-      INTEGER NCONMA,NDEFMA,ICON,IDEF
+      INTEGER NCONMA,NDEFMA
       PARAMETER (NCONMA=31,NDEFMA=21)
       REAL*8 DSDE(NCONMA,NDEFMA)
       CHARACTER*3 MODINT
       CHARACTER*8 TYPMOD(2)
-      CHARACTER*16 PHENOM
 C =====================================================================
-      INTEGER     ISMAEM,LI,KP,J,L,K
-      REAL*8      R8BID,RHO,COEF,RX
-      CHARACTER*2 CODRET(1)
+      INTEGER     ISMAEM,LI
       LOGICAL     AXI, PERMAN,VF
       INTEGER     TYPVF
 C =====================================================================
@@ -95,16 +91,16 @@ C TYPMOD    MODELISATION (D_PLAN, 3D )
 C MODINT    METHODE D'INTEGRATION (CLASSIQUE,LUMPEE(D),REDUITE(R) ?)
 C NNO       NB DE NOEUDS DE L'ELEMENT
 C NNOS      NB DE NOEUDS SOMMETS DE L'ELEMENT
-C OUT 
+C OUT
 C     NFACE  NB DE FACES AU SENS BORD DE DIM DIM-1 NE SERT QU EN VF
 C     NNOM   NB DE NOEUDS MILIEUX DE FACE OU D ARRETE NE SERT QU EN EF
 C
 C NDDLS     NB DE DDL SUR LES SOMMETS
-C OUT 
-C    NDDLM     NB DDL SUR LES MILIEUX DE FACE OU D ARRETE 
+C OUT
+C    NDDLM     NB DDL SUR LES MILIEUX DE FACE OU D ARRETE
 C              NE SERT QU EN EF
 C    NDDLFA    NB DDL SUR LES FACE DE DIMENSION DIM-1 NE SERT QU EN VF
-C NDDLK     NB DDL AU CENTRE ELEMENT 
+C NDDLK     NB DDL AU CENTRE ELEMENT
 C NPI       NB DE POINTS D'INTEGRATION DE L'ELEMENT
 C NPG       NB DE POINTS DE GAUSS     POUR CLASSIQUE(=NPI)
 C                 SOMMETS             POUR LUMPEE   (=NPI=NNOS)
@@ -117,7 +113,6 @@ C IVF       FONCTIONS DE FORMES QUADRATIQUES
 C IVF2      FONCTIONS DE FORMES LINEAIRES
 C TYPVF     : 3 OU 4 SCHEMA SUSHI DECENTRE ARETE OU CENTRE
 C =====================================================================
-      REAL*8  DT
 C =====================================================================
 C --- 1. INITIALISATIONS ----------------------------------------------
 C --- SUIVANT ELEMENT, DEFINITION DES CARACTERISTIQUES : --------------
@@ -131,7 +126,7 @@ C =====================================================================
      >            NNOS,NNOM,NFACE,
      >            NPI,NPG,NDDLS,NDDLM,NDDLFA,NDDLK,DIMUEL,
      >            IPOIDS,IVF,IDFDE,IPOID2,IVF2,IDFDE2,NPI2,JGANO)
-      CALL ASSERT(VF)        
+      CALL ASSERT(VF)
 C =====================================================================
 C --- DEBUT DES DIFFERENTES OPTIONS -----------------------------------
 C =====================================================================
@@ -139,7 +134,7 @@ C --- 2. OPTIONS : RIGI_MECA_TANG , FULL_MECA , RAPH_MECA -------------
 C =====================================================================
       IF ((OPTION(1:9).EQ.'RIGI_MECA' ) .OR.
      +    (OPTION(1:9).EQ.'RAPH_MECA' ) .OR.
-     +    (OPTION(1:9).EQ.'FULL_MECA' )) THEN        
+     +    (OPTION(1:9).EQ.'FULL_MECA' )) THEN
 C =====================================================================
 C --- PARAMETRES EN ENTREE --------------------------------------------
 C =====================================================================
@@ -158,9 +153,9 @@ C =====================================================================
 C --- PARAMETRES EN SORTIE ISMAEM? ------------------------------------
 C =====================================================================
          IF (OPTION(1:9).EQ.'RIGI_MECA' .OR.
-     +       OPTION(1:9).EQ.'FULL_MECA') THEN         
+     +       OPTION(1:9).EQ.'FULL_MECA') THEN
             CALL JEVECH('PMATUNS','E',IMATUU)
-         ELSE         
+         ELSE
             IMATUU = ISMAEM()
          END IF
          IF (OPTION(1:9).EQ.'RAPH_MECA' .OR.
@@ -177,38 +172,32 @@ C =====================================================================
          END IF
          RETLOI = 0
          IF (OPTION(1:9).EQ.'RIGI_MECA') THEN
-            CALL ASSESU(NNO,NNOS,NNOM,NFACE,
+            CALL ASSESU(NNO,NNOS,NFACE,
      +                ZR(IGEOM),ZR(ICARCR),
      +                ZR(IDEPLM),ZR(IDEPLM),ZR(ICONTM),
      +                ZR(ICONTM),ZR(IVARIM),ZR(IVARIM),DEFGEM,DEFGEM,
      +                DSDE,ZR(IMATUU),ZR(IVECTU),
      +                ZR(IINSTM),ZR(IINSTP),OPTION,ZI(IMATE),MECANI,
      +                PRESS1,PRESS2,TEMPE,DIMDEF,DIMCON,DIMUEL,
-     +                NBVARI,NDDLS,NDDLM,NDDLK,NDDLFA,
-     +                NMEC,NP1,NP2,NDIM,ZK16(ICOMPO),
-     >                TYPMOD,TYPVF,AXI,PERMAN,MODINT,
-     >                IPOIDS,IVF,IDFDE,IPOID2,IVF2,IDFDE2,NPI2,JGANO,
-     +                RETLOI)
+     +                NBVARI,NDIM,ZK16(ICOMPO),
+     >                TYPMOD,TYPVF,AXI,PERMAN)
          ELSE
 C
-C   DU FAIT DE L UTIISATION DES VOISINS CETTE BOUCLE 
+C   DU FAIT DE L UTIISATION DES VOISINS CETTE BOUCLE
 C  NE PEUT PLUS ETRE FAITECONTRAIREMENT A LA SITUATION EF
-C  ASSESU UTILISE DELTAP ET PM 
+C  ASSESU UTILISE DELTAP ET PM
             DO 30 LI = 1,DIMUEL
                ZR(IDEPLP+LI-1) = ZR(IDEPLM+LI-1) + ZR(IDEPLP+LI-1)
    30       CONTINUE
-            CALL ASSESU(NNO,NNOS,NNOM,NFACE,
+            CALL ASSESU(NNO,NNOS,NFACE,
      +                ZR(IGEOM),ZR(ICARCR),
      +                ZR(IDEPLM),ZR(IDEPLP),ZR(ICONTM),
      +                ZR(ICONTP),ZR(IVARIM),ZR(IVARIP),DEFGEM,DEFGEP,
      +                DSDE,ZR(IMATUU),ZR(IVECTU),
      +                ZR(IINSTM),ZR(IINSTP),OPTION,ZI(IMATE),MECANI,
      +                PRESS1,PRESS2,TEMPE,DIMDEF,DIMCON,DIMUEL,
-     +                NBVARI,NDDLS,NDDLM,NDDLK,NDDLFA,
-     +                NMEC,NP1,NP2,NDIM,ZK16(ICOMPO),
-     >                TYPMOD,TYPVF,AXI,PERMAN,MODINT,
-     >                IPOIDS,IVF,IDFDE,IPOID2,IVF2,IDFDE2,NPI2,JGANO,
-     +                RETLOI)
+     +                NBVARI,NDIM,ZK16(ICOMPO),
+     >                TYPMOD,TYPVF,AXI,PERMAN)
             ZI(JCRET) = RETLOI
          END IF
       END IF

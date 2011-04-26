@@ -1,9 +1,9 @@
       SUBROUTINE JEDEMA
 C TOLE CFT_720 CFT_726 CRP_18 CRS_508
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 06/10/2008   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -31,7 +31,7 @@ C ----------------------------------------------------------------------
       EQUIVALENCE    ( ISZON(1) , K1ZON(1) )
       PARAMETER      ( N = 5 )
       INTEGER          LTYP    , LONG    , DATE    , IADD    , IADM    ,
-     &                 LONO    , HCOD    , CARA    , LUTI    , IMARQ   
+     &                 LONO    , HCOD    , CARA    , LUTI    , IMARQ
       COMMON /IATRJE/  LTYP(1) , LONG(1) , DATE(1) , IADD(1) , IADM(1) ,
      &                 LONO(1) , HCOD(1) , CARA(1) , LUTI(1) , IMARQ(1)
       COMMON /JIATJE/  JLTYP(N), JLONG(N), JDATE(N), JIADD(N), JIADM(N),
@@ -54,8 +54,8 @@ C
       COMMON /NOMCJE/  NOMUTI , NOMOS , NOMCO , NOMOC , BL32
       INTEGER          LUNDEF,IDEBUG
       COMMON /UNDFJE/  LUNDEF,IDEBUG
-      REAL *8          SVUSE,SMXUSE   
-      COMMON /STATJE/  SVUSE,SMXUSE  
+      REAL *8          SVUSE,SMXUSE
+      COMMON /STATJE/  SVUSE,SMXUSE
 C ----------------------------------------------------------------------
       INTEGER          K,IADMI,IDEB,IFIN,IDOS,IDCO,IC,IS
       CHARACTER *8     KSUF
@@ -132,6 +132,5 @@ C
       LGDUTI = IDEB
       ISZON(JISZON+KPOSMA(1)+IPGC-1) = 0
       IPGC = IPGC - 1
- 300  CONTINUE
 C FIN ------------------------------------------------------------------
       END

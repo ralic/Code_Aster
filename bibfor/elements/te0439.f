@@ -3,7 +3,7 @@
       CHARACTER*16        OPTION, NOMTE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -54,10 +54,9 @@ C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 C     ------------------------------------------------------------------
-      PARAMETER         ( NNOMAX = 27 , NEQMAX = 6 , NPGMAX = 27 )
+      PARAMETER         ( NNOMAX = 27 , NEQMAX = 6 )
       INTEGER            NNO, NPG, NNOS
-      REAL*8             EQNO(NEQMAX*NNOMAX), SIGMA(6), DEFORM(6)
-      REAL*8             EQPG(NEQMAX*NPGMAX)
+      REAL*8             EQNO(NEQMAX*NNOMAX), DEFORM(6)
 C     ------------------------------------------------------------------
 
       CALL ELREF4(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,IVF,IDFDE,JGANO)

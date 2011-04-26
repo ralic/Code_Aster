@@ -11,7 +11,7 @@
       CHARACTER*8   ELP
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 25/01/2011   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 26/04/2011   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -182,7 +182,7 @@ C         1 SEUL ELEMENT
 C         TROP DE POINTS D'INTERSECTION
           CALL ASSERT(NINTER.LE.3)
         ENDIF
-        
+
       ELSEIF (NDIME .EQ. 1) THEN
 
         IF (NINTER .LT. 1) THEN
@@ -375,7 +375,7 @@ C          CONFIGURATION NÂ°3
      &                 102,104,CNSET(NNOSE*(IT-1)+4))
            CALL XPENTE(4,CNSE,CNSET(NNOSE*(IT-1)+2),104,103,
      &                 CNSET(NNOSE*(IT-1)+1),102,101)
-          ELSE 
+          ELSE
 C          PROBLEME DE DECOUPAGE A 4 POINTS
            CALL ASSERT(A1.EQ.1.AND.A2.EQ.2.AND.A3.EQ.5.AND.A4.EQ.6)
           ENDIF
@@ -461,12 +461,12 @@ C           RECUP DE LA GÉOMETRIE
             ENDIF
 C           CALCUL DES FF
 
-           
+
             CALL REEREF(ELP,AXI, NNOP,IBID,IGEOM,GEOM,IBID,LBID,
      &              NDIM,RBID,RBID, RBID,
      &              IBID,IBID,IBID,IBID,IBID,IBID,RBID,RBID,'NON',
      &              RBID2,FF,RBID,RBID,RBID,RBID)
-     
+
             DO 350 J=1,NNOP
               DO 355 I=1,NFISC
                 SOMLSN(I)=SOMLSN(I)+FF(J)*LSN((J-1)*NFISS+FISCO(2*I-1))

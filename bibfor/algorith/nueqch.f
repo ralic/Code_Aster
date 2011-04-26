@@ -1,10 +1,10 @@
       SUBROUTINE NUEQCH(ERREUR,CHAMNO,NOMA,NBNO  ,NUMNO ,NOMCMP,
      &                  NUEQ  )
-C      
+C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 03/11/2010   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -20,23 +20,23 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C RESPONSABLE ABBAS M.ABBAS
-C 
+C
       IMPLICIT     NONE
       CHARACTER*19 CHAMNO
       CHARACTER*8  NOMCMP(*),NOMA
       CHARACTER*1  ERREUR
       INTEGER      NBNO,NUMNO(*),NUEQ(*)
-C 
+C
 C ----------------------------------------------------------------------
 C
 C ROUTINE MECA_NON_LINE (ALGORITHME - PILOTAGE)
 C
 C PERMET DE RECUPERER LES NUMEROS DES EQUATIONS DANS LE .VALE A
 C PARTIR DES NOMS DE NOEUD ET DES NOMS DE COMPOSANTE
-C      
+C
 C ----------------------------------------------------------------------
 C
-C      
+C
 C IN  CHAMNO  : CHAM_NO A MODIFIER
 C IN  ERREUR  : 'F' SI UNE COMPOSANTE ABSENTE -> ERREUR
 C               'A' SI UNE COMPOSANTE ABSENTE -> ALARME
@@ -48,7 +48,7 @@ C OUT NUEQ    : LISTE DES POSITIONS DANS LE .VALE
 C
 C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ---------------------------
 C
-      CHARACTER*32       JEXNOM,JEXNUM
+      CHARACTER*32       JEXNOM
       INTEGER            ZI
       COMMON  / IVARJE / ZI(1)
       REAL*8             ZR
@@ -72,7 +72,7 @@ C
       INTEGER      ICMP,INO,IDC,NEC,INDIK8
       INTEGER      JCMP,JNUEQ,JPRNO
       LOGICAL      EXIS,EXISDG
-      CHARACTER*8  K8BID,NOM,NOMNOE
+      CHARACTER*8  K8BID,NOM
 C
 C ----------------------------------------------------------------------
 C
@@ -83,7 +83,7 @@ C
       CALL DISMOI('F','NB_CMP_MAX',  NOMGD, 'GRANDEUR',NBCMPX,K8BID,IER)
       CALL JEVEUO(JEXNOM('&CATA.GD.NOMCMP',NOMGD),'L',JCMP)
       CALL JELIRA(JEXNOM('&CATA.GD.NOMCMP',NOMGD),'LONMAX',NCMP, K8BID)
-C      
+C
       CALL DISMOI('F','PROF_CHNO',CHAMNO,'CHAM_NO',IBID,PFCHNO, IER)
       CALL JEVEUO(PFCHNO//'.PRNO','L',JPRNO)
       CALL JEVEUO(PFCHNO//'.NUEQ','L',JNUEQ)
@@ -105,23 +105,23 @@ C
               GOTO 101
             ELSE
               ITROU = 0
-              IF (ERREUR.NE. ' ') THEN 
+              IF (ERREUR.NE. ' ') THEN
                 CALL U2MESK(ERREUR, 'MECANONLINE5_50',1,NOM)
               ENDIF
             ENDIF
           ENDIF
  100    CONTINUE
-        IF (ERREUR.NE. ' ') THEN 
+        IF (ERREUR.NE. ' ') THEN
           CALL U2MESK(ERREUR, 'MECANONLINE5_50',1,NOM)
-        ENDIF  
+        ENDIF
  101    CONTINUE
         IF (ITROU.EQ.0) THEN
           NUEQ(INO) = 0
         ELSE
           NUEQ(INO) = ZI(JNUEQ-1+ZI(JPRNO-1+
      &               (NEC+2)*(NUMNO(INO)-1)+1)+ITROU-1)
-        ENDIF  
+        ENDIF
  10   CONTINUE
-C 
+C
       CALL JEDEMA()
       END

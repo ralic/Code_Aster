@@ -1,4 +1,4 @@
-#@ MODIF test_compor_ops Macro  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF test_compor_ops Macro  DATE 26/04/2011   AUTEUR SFAYOLLE S.FAYOLLE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -40,7 +40,7 @@ def PROD_ROT(X1,X2):
             return None
 #######################################################################
 def RENOMME(self,i,N_pas,label_cal,ch_param,_RES,_RSI):
-# On renomme les composantes en fonction de  l'ordre de discr?tisation
+# On renomme les composantes en fonction de  l'ordre de discrétisation
    from Accas import _F
    DETRUIRE       = self.get_cmd('DETRUIRE')
    CALC_TABLE     = self.get_cmd('CALC_TABLE')
@@ -753,8 +753,9 @@ def test_compor_ops(self,OPTION,NEWTON,CONVERGENCE,COMP_INCR,COMP_ELAS,LIST_MATE
                                        _F(JUSQU_A=8.0*t_0,NOMBRE=N,),),);
 
       if   COMP_INCR  :
-          motscles['COMP_INCR'][0]['TYPE_MATR_TANG'] = 'VERIFICATION' 
-          motscles['COMP_INCR'][0]['VALE_PERT_RELA']=args['VERI_MATR_OPTION'].List_F()[0]['VALE_PERT_RELA']
+          motscles['COMP_INCR'][0]['TYPE_MATR_TANG'] = 'VERIFICATION'
+          if args['VERI_MATR_OPTION'] is not None :
+              motscles['COMP_INCR'][0]['VALE_PERT_RELA']=args['VERI_MATR_OPTION'].List_F()[0]['VALE_PERT_RELA']
           _DEFLIS2 =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = _Linst,),
                             ECHEC=_F(SUBD_METHODE='EXTRAPOLE',
                                      SUBD_PAS=10,
@@ -766,9 +767,12 @@ def test_compor_ops(self,OPTION,NEWTON,CONVERGENCE,COMP_INCR,COMP_ELAS,LIST_MATE
                          INCREMENT=_F(LIST_INST=_DEFLIS2,),
                          **motscles
                               );
+          motscles={}
+          if args['VERI_MATR_OPTION'] is not None :
+              motscles['PRECISION']=args['VERI_MATR_OPTION'].List_F()[0]['PRECISION']
+              motscles['PREC_ZERO']=args['VERI_MATR_OPTION'].List_F()[0]['PREC_ZERO']
 
-          _DIFFMAT=VERI_MATR_TANG(PRECISION=args['VERI_MATR_OPTION'].List_F()[0]['PRECISION'],
-                                  PREC_ZERO=args['VERI_MATR_OPTION'].List_F()[0]['PREC_ZERO'],)
+          _DIFFMAT=VERI_MATR_TANG(**motscles)
 
           TEST_TABLE(TABLE=_DIFFMAT,
                      NOM_PARA='MAT_DIFF',

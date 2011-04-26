@@ -4,9 +4,9 @@
       INTEGER                   ILIGD,ICOLD,NBTITR,       ILIGS,ICOLS
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 15/06/2010   AUTEUR MACOCCO K.MACOCCO 
+C MODIF UTILITAI  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -44,7 +44,6 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32                            ZK32
       CHARACTER*80                                    ZK80
       COMMON  /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
-      CHARACTER*32 JEXNUM
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
       INTEGER       IVAL, IGEN,IPOSA,IPOSB,IPOSC
@@ -58,7 +57,7 @@ C
 C
 C     REMARQUE :  MXPARA DONNE LE NOMBRE DE PARAMETRES DU DEMON
       PARAMETER          (MXDEMO=20)
-      CHARACTER*16 DEMONS(MXDEMO) , CBID,K16BID,TYPVAL, TYSD
+      CHARACTER*16 DEMONS(MXDEMO) , CBID,K16BID, TYSD
       CHARACTER*24 PARA(2)
       INTEGER      MXPARA(MXDEMO)
 C     ------------------------------------------------------------------
@@ -363,17 +362,17 @@ C        --- ACCES ---
 
                CALL RSADPA(PARA(1)(1:8),'L',1,ZK16(JPARA-1+IACC),
      &                                               IBID,1,IAD,CTYPE)
-C              TEST SUR LE TYPE DU CONCEPT 
+C              TEST SUR LE TYPE DU CONCEPT
 C              MODE_MECA A 3 VAR D'ACCES (FREQ,NUME_MODE,et NOEUD_CMP)
                IF(TYSD.EQ.'MODE_MECA') THEN
                   IF (ZK16(JPARA-1+IACC).EQ.'FREQ') THEN
                     IF(ZR(IAD).EQ.R8VIDE())THEN
                       LFREQ= .TRUE.
-                    ELSE 
+                    ELSE
                       LFREQ = .FALSE.
-                    ENDIF  
+                    ENDIF
                   ENDIF
-                  
+
                   IPOSA = IGEN+1
                   IPOSB = IGEN+ILG
                   IPOSC = IGEN+ILG+1
@@ -385,16 +384,16 @@ C                   PAS D'AFFICHAGE DU TEXTE NOEUD_CMP
                       CGEN(IPOSC:IPOSC) = ' '
                     ENDIF
                   ELSE
-C                   PAS D'AFFICHAGE DU TEXTE FREQ,ET NUME_MODE       
+C                   PAS D'AFFICHAGE DU TEXTE FREQ,ET NUME_MODE
                     IF (ZK16(JPARA-1+IACC).EQ.'FREQ')THEN
                       CGEN(IPOSA:IPOSB) = ' '
                       CGEN(IPOSC:IPOSC) = ' '
                     ELSE IF (ZK16(JPARA-1+IACC).EQ.'NUME_MODE')THEN
                       CGEN(IPOSA:IPOSB) = ' '
-                      CGEN(IPOSC:IPOSC) = ' ' 
+                      CGEN(IPOSC:IPOSC) = ' '
                     ENDIF
                   ENDIF
-                  
+
                   IGEN = IGEN+ILG+2
                   IF ((CTYPE(1:1).EQ.'I').AND.(.NOT.LFREQ)) THEN
 C                   ENTIER
@@ -419,12 +418,12 @@ C                   K16
                     ENDIF
                     CALL ASSERT(.FALSE.)
                   ENDIF
- 
+
                ELSE
-               
+
                   IGEN = IGEN+ILG+2
                   IF (CTYPE(1:1).EQ.'I') THEN
-C                   ENTIER	
+C                   ENTIER
                     CALL CODENT(ZI(IAD),'G',CBID)
                     ILG = LXLGUT(CBID)
                     CGEN(IGEN+1:IGEN+ILG) = CBID

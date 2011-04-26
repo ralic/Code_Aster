@@ -2,9 +2,9 @@
       IMPLICIT NONE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 30/03/2004   AUTEUR CIBHHLV L.VIVAN 
+C MODIF CALCULEL  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -32,7 +32,7 @@ C        DONNEES:      OPTION       -->  OPTION DE CALCUL
 C                      NOMTE        -->  NOM DU TYPE ELEMENT
 C ......................................................................
 
-      INTEGER NPGMAX,NBRES
+      INTEGER NPGMAX
       PARAMETER (NPGMAX=40)
 
       CHARACTER*24 DECENT
@@ -104,7 +104,7 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
         UL(2,KP) = 0.D0
         UL(3,KP) = 0.D0
         K = (KP-1)*NNO
-        CALL DFDM3D ( NNO, KP, IPOIDS, IDFDE, 
+        CALL DFDM3D ( NNO, KP, IPOIDS, IDFDE,
      &                ZR(IGEOM), DFDX, DFDY, DFDZ, POIDS )
         DO 50 I = 1,NNO
           UL(1,KP) = UL(1,KP) + ULOC(1,I)*ZR(IVF+K+I-1)

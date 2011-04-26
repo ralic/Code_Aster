@@ -1,8 +1,8 @@
       SUBROUTINE CGMACY (MOFAZ, IOCC, NOMAZ, LISMAZ, NBMA)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 21/06/2010   AUTEUR MACOCCO K.MACOCCO 
+C MODIF MODELISA  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -42,7 +42,7 @@ C -------------------------------------------------------
 C
 C.========================= DEBUT DES DECLARATIONS ====================
 C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ------
-      CHARACTER*32       JEXNUM , JEXNOM , JEXR8 , JEXATR
+      CHARACTER*32       JEXNUM , JEXNOM
       INTEGER            ZI
       COMMON  / IVARJE / ZI(1)
       REAL*8             ZR
@@ -64,7 +64,7 @@ C -----  ARGUMENTS
 C
 C --------- VARIABLES LOCALES ---------------------------
       CHARACTER*1    K1BID
-      CHARACTER*8    NOMA, K8BID, NOMAIL, NOMPOI, NOMNOE
+      CHARACTER*8    NOMA, K8BID, NOMAIL
       CHARACTER*16   MOTFAC, MOCLE(3)
       CHARACTER*24   LISMAI
       CHARACTER*16   SELEC
@@ -79,10 +79,10 @@ C --- INITIALISATIONS :
 C     ---------------
       MOTFAC = MOFAZ
       NOMA   = NOMAZ
-      LISMAI = LISMAZ             
+      LISMAI = LISMAZ
 C
 C --- RECUPERATION DU TYPE DE VERIFICATION A APPLIQUER :
-C     --------------------------------------------------      
+C     --------------------------------------------------
       CALL GETVTX(MOTFAC,'CRIT_NOEUD',IOCC,1,1,SELEC,IBID)
 C
       ZERO  = 0.0D0
@@ -217,7 +217,7 @@ C         ----------------------------------------------------
      &                  K1BID)
 
 C ---      COMPTE NOMBRE DES NOEUDS D'UN MAILLE DANS LE CYLINDRE :
-C          ------------------------------------------------------      
+C          ------------------------------------------------------
            NBNOD = 0
 C
 C ---     BOUCLE SUR LES CONNECTIVITES DE LA MAILLE :
@@ -276,7 +276,7 @@ C             -----------
 C ---      SI LE MOT CLE SIMPLE CRIT_NOEUD EST EGAL A AU MOINS UN NOEUD
 C          -------------------------------------------------------------
 C
-                    IF (SELEC.EQ.'AU_MOINS_UN') THEN 
+                    IF (SELEC.EQ.'AU_MOINS_UN') THEN
 C
 C ---         SI LE NOEUD COURANT EST DANS LE CYLINDRE, ON AFFECTE
 C ---         LA MAILLE COURANTE A LA LISTE DE MAILLES QUI SERA
@@ -288,10 +288,10 @@ C             --------------------
                           GOTO 10
                       ENDIF
 
-C ---         SI LE MOT CLE SIMPLE CRIT_NOEUD EST EGAL A TOUT OU 
+C ---         SI LE MOT CLE SIMPLE CRIT_NOEUD EST EGAL A TOUT OU
 C ---         MAJORITE, COMPTER LE NOMBRE DES NOEUDS D'UNE MAILLE
 C ---         DANS LE CYLINDRE :
-C             ------------------------------------------------     
+C             ------------------------------------------------
                     ELSE IF((SELEC.EQ.'TOUS').OR.
      &                       (SELEC.EQ.'MAJORITE'))THEN
 C
@@ -304,19 +304,19 @@ C
                 ENDIF
 C
  20        CONTINUE
-C 
+C
            IF (SELEC.EQ.'TOUS') THEN
              IF (NBNOD.EQ.NBNO) THEN
                NBMA = NBMA + 1
                ZI(IDLIMA+NBMA-1) = IMA
                GOTO 10
              ENDIF
-           ENDIF 
+           ENDIF
 C
-           IF (SELEC.EQ.'MAJORITE') THEN     
+           IF (SELEC.EQ.'MAJORITE') THEN
              IF (NBNOD.GE.(NBNO+1)/2) THEN
                NBMA = NBMA + 1
-               ZI(IDLIMA+NBMA-1) = IMA     
+               ZI(IDLIMA+NBMA-1) = IMA
                GOTO 10
              ENDIF
            ENDIF

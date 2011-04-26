@@ -1,11 +1,11 @@
       SUBROUTINE JELIBF ( COND , CLAS , INFO )
-C MODIF JEVEUX  DATE 06/04/2010   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ----------------------------------------------------------------------
 C ROUTINE UTILISATEUR PERMETTANT DE LIBERER TOUS LES OBJETS D'UNE BASE
 C         ET DE FERMER LES FICHIERS ASSOCIES
 C IN : CLAS NOM DE LA CLASSE ASSOCIEE ('G','V', ...)
 C IN : COND TYPE DE FERMETURE
-C      = 'SAUVE' 
+C      = 'SAUVE'
 C      = 'ERREUR'
 C      = 'DETRUIT'
 C      = 'LIBERE'
@@ -17,7 +17,7 @@ C TOLE CRS_505 CRS_508 CRP_18
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C RESPONSABLE LEFEBVRE J-P.LEFEBVRE
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -46,7 +46,7 @@ C ----------------------------------------------------------------------
 C ----------------------------------------------------------------------
       PARAMETER  ( N = 5 )
       INTEGER          LTYP    , LONG    , DATE    , IADD    , IADM    ,
-     &                 LONO    , HCOD    , CARA    , LUTI    , IMARQ   
+     &                 LONO    , HCOD    , CARA    , LUTI    , IMARQ
       COMMON /IATRJE/  LTYP(1) , LONG(1) , DATE(1) , IADD(1) , IADM(1) ,
      &                 LONO(1) , HCOD(1) , CARA(1) , LUTI(1) , IMARQ(1)
       COMMON /JIATJE/  JLTYP(N), JLONG(N), JDATE(N), JIADD(N), JIADM(N),
@@ -102,8 +102,8 @@ C ----------------------------------------------------------------------
       CHARACTER*1      KCLAS
       CHARACTER*8      KCOND,VALK(1),NOM
       CHARACTER*32     NOMCAR
-      INTEGER          IADCAR,IADDAC(2),LGBL,VALI(8),IADCDY,IBID,
-     &                 IADDAD(2),KLEC,KECR
+      INTEGER          IADCAR,IADDAC(2),LGBL,VALI(8),IADCDY,
+     &                 IADDAD(2)
       REAL*8           VALR(2)
 C DEB ------------------------------------------------------------------
       KCOND = COND
@@ -170,7 +170,7 @@ C     ----------- DECHARGER TOUS LES OBJETS SYSTEME ----------------
         LADI   = LONO (JLONO(IC) + LIDEFF-1)* LTYP(JLTYP(IC)+LIDEFF-1)
         IADDAD(1) = IADD (JIADD(IC) + 2*(LIDEFF-1)-1)
         IADDAD(2) = IADD (JIADD(IC) + 2*(LIDEFF-1)  )
-C       
+C
         IDB    = IDEBUG
         IDEBUG = 0
 
@@ -211,8 +211,8 @@ C       ----------- ACTUALISER CARA
 C
 C ON PEUT MAINTENANT LIBERER LES ZONES MEMOIRES ASSOCIEES AUX
 C OBJETS DU SYSTEME, ELLES NE SERONT PLUS UTILISEES (3-13):
-C    $$GENR , $$TYPE , $$DOCU , $$ORIG , $$RNOM  , $$LTYP , $$LONG  , 
-C    $$LONO , $$DATE , $$LUTI , $$HCOD 
+C    $$GENR , $$TYPE , $$DOCU , $$ORIG , $$RNOM  , $$LTYP , $$LONG  ,
+C    $$LONO , $$DATE , $$LUTI , $$HCOD
 C
       IF ( KCOND .NE. 'LIBERE  ' ) THEN
         DO 32 I = 3 , LIDEFF-2
@@ -225,8 +225,8 @@ C
           END IF
    32   CONTINUE
       ENDIF
-C      
-C      
+C
+C
       IF ( KCOND .EQ. 'SAUVE   '  ) THEN
 C       ----------- DECHARGER TAMPON D'ECRITURE ( PETITS OBJETS )
         LGBL = 1024*LONGBL(IC)*LOIS
@@ -274,7 +274,7 @@ C       ---- ON DECHARGE MAINTENANT LA DESCRIPTION DES ENREGISTREMENTS
           IADADY = 0
         ELSE IF ( IADADI .NE. 0 ) THEN
           CALL JJLIBP ( IADADI )
-        ENDIF  
+        ENDIF
         IADADI = 0
 C       ---- $$ACCE N'EST PLUS UTILISE, ON PEUT LE LIBERER
         IF ( IADACY .NE. 0 ) THEN
@@ -282,7 +282,7 @@ C       ---- $$ACCE N'EST PLUS UTILISE, ON PEUT LE LIBERER
           IADACY = 0
         ELSE IF ( IADACC.NE. 0 ) THEN
           CALL JJLIBP ( IADACC )
-        ENDIF  
+        ENDIF
         IADACC = 0
       ENDIF
 C
@@ -300,12 +300,12 @@ C
 C
       IF ( INFO .GE. 1 ) THEN
         CALL U2MESG ('I','JEVEUX_22',1,VALK,8,VALI,2,VALR)
-      ENDIF 
+      ENDIF
 C
       IF ( KCOND .NE. 'LIBERE  ' ) THEN
         IF ( IADCAR.NE. 0 ) THEN
            IDATOS = 1
-           IF (IADCDY .NE. 0 ) THEN 
+           IF (IADCDY .NE. 0 ) THEN
              CALL JJLIDY ( IADCDY , IADCAR )
            ELSE
              CALL JJLIBP ( IADCAR )
@@ -315,7 +315,7 @@ C
           CALL JJLIDY ( IADADY , IADACC )
         ELSE IF ( IADACC.NE. 0 ) THEN
           CALL JJLIBP ( IADACC )
-        ENDIF  
+        ENDIF
 C       ----------- CLORE LE FICHIER
         IF ( KSTINI(IC) .NE. 'DUMMY   ' ) THEN
           CALL JXFERM ( IC )
@@ -358,7 +358,7 @@ C
           INFO = 0
           CALL RMFILE (NOM,INFO)
         ENDIF
-C	
+C
         CLASSE(IC:IC) = ' '
         NOMFIC(IC)    = ' '
         NOMBAS(IC)    = ' '

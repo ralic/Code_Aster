@@ -8,30 +8,30 @@
       CHARACTER*24   NVIT,NBETA
       INTEGER        NDIM
       REAL*8         LCMIN
-      
+
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 15/04/2011   AUTEUR COLOMBO D.COLOMBO 
+C MODIF ALGORITH  DATE 26/04/2011   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C RESPONSABLE MASSIN P.MASSIN
 C     ------------------------------------------------------------------
 C
 C       XPRVIT   : X-FEM PROPAGATION : EXTENSION DU CHAMP DE VITESSES
-C       ------     -     --                                  ---       
+C       ------     -     --                                  ---
 C    CALCUL DE LA VITESSE DE PROPAGATION DE FISSURE SUR LE FOND
 C    ET EXTENSION DU CHAMP DE VITESSE A TOUS LES NOEUDS DU MAILLAGE
 C
@@ -74,7 +74,6 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32                               ZK32
       CHARACTER*80                                        ZK80
       COMMON  /KVARJE/ ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
-      CHARACTER*32    JEXNUM,JEXATR
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 
       INTEGER        I,J,JCOOR,IRET,NBNO,JMIN,NBPTFF,
@@ -110,14 +109,14 @@ C-----------------------------------------------------------------------
       CALL JEMARQ()
       CALL INFMAJ()
       CALL INFNIV(IFM,NIV)
-    
+
 C     RECUPERATION DES CARACTERISTIQUES DU MAILLAGE
       CALL DISMOI('F','NB_NO_MAILLA',NOMA,'MAILLAGE',NBNO,K8B,IRET)
       CALL JEVEUO(NOMA//'.COORDO    .VALE','L',JCOOR)
 
 C     RECUPERATION DU FOND DE FISSURE
       CALL JEVEUO(FISS//'.FONDFISS','L',JFONF)
-      CALL DISMOI('F','NB_POINT_FOND',FISS,'FISS_XFEM',NBPTFF,K8B,IRET) 
+      CALL DISMOI('F','NB_POINT_FOND',FISS,'FISS_XFEM',NBPTFF,K8B,IRET)
 
 C     MAXIMUM VALUE FOR JMIN
       JMAX = NBPTFF-1
@@ -307,7 +306,7 @@ C        LOCAL REFERENCE SYSTEM AT THE POINT
 C        CALCULATE THE PROPAGATION SPEED VECTOR V IN THE GLOBAL
 C        REFERENCE SYSTEM USED FOR THE MESH
          DO 50 J=1,NDIM
-            ZR(JVFF-1+NDIM*(I-1)+J) = 
+            ZR(JVFF-1+NDIM*(I-1)+J) =
      &            ZR(JVNFF-1+I)*ZR(JBASEF-1+2*NDIM*(I-1)+J)/MODNOR+
      &            ZR(JVTFF-1+I)*ZR(JBASEF-1+2*NDIM*(I-1)+J+NDIM)/MODTAN
 50       CONTINUE
@@ -373,22 +372,22 @@ C           CALCULATE THE EULER ANGLE
 
 C           CALCULATE THE EULER VECTOR
             IF ((ALFA.GT.T0).AND.(ALFA.LT.T180)) THEN
-            ZR(JEULER-1+7*(I-1-1)+2) = 
+            ZR(JEULER-1+7*(I-1-1)+2) =
      &                               0.5D0*(RIJ(2,3)-RIJ(3,2))/SIN(ALFA)
-            ZR(JEULER-1+7*(I-1-1)+3) = 
+            ZR(JEULER-1+7*(I-1-1)+3) =
      &                               0.5D0*(RIJ(3,1)-RIJ(1,3))/SIN(ALFA)
-            ZR(JEULER-1+7*(I-1-1)+4) = 
+            ZR(JEULER-1+7*(I-1-1)+4) =
      &                               0.5D0*(RIJ(1,2)-RIJ(2,1))/SIN(ALFA)
             ENDIF
 
          ENDIF
-         
+
 100   CONTINUE
 
 C ***************************************************************
 C ELABORATE EACH NODE IN THE MESH IN ORDER TO CALCULATE THE FOLLOWING:
 C - PROPAGATION SPEED VECTOR
-C - LOCAL REFERENCE SYSTEM (NORMAL AND TANGENTIAL AXES WITH RESPECT 
+C - LOCAL REFERENCE SYSTEM (NORMAL AND TANGENTIAL AXES WITH RESPECT
 C                           TO THE CRACK PLANE)
 C - DISTANCE VECTOR BETWEEN THE NODE AND ITS PROJECTION ON THE FRONT
 C ***************************************************************
@@ -403,7 +402,7 @@ C     THE CRACK TIP (ONLY ONE POINT!) FOR THE 2D CASE ARE STORED
 C     IN XI1,YI1,ZI1.
       JMIN = 1
       SMIN = 0.D0
- 
+
 C     BOUCLE SUR LES NOEUDS M DU MAILLAGE POUR CALCULER PROJ(V)=V
       EPS = 1.D-12
       DO 200 I=1,NBNO
@@ -412,7 +411,7 @@ C        COORD DU NOEUD M DU MAILLAGE
          XM=ZR(JCOOR-1+(I-1)*3+1)
          YM=ZR(JCOOR-1+(I-1)*3+2)
          ZM=ZR(JCOOR-1+(I-1)*3+3)
-         
+
 C        THE PROJ(V)=V IS NEEDED ONLY FOR THE 3D CASE
          IF (NDIM.EQ.3) THEN
 C          INITIALISATION
@@ -443,7 +442,7 @@ C            VECTEUR IJ ET IM
              XIM = XM-XI1
              YIM = YM-YI1
              ZIM = ZM-ZI1
-            
+
 C            PARAM S (PRODUIT SCALAIRE...)
              S   = XIJ*XIM + YIJ*YIM + ZIJ*ZIM
              NORM2 = XIJ*XIJ + YIJ*YIJ + ZIJ*ZIJ
@@ -499,9 +498,9 @@ C                 STORE THE DISTANCE VECTOR
 C        ***************************************************************
 C        SMOOTH THE PROJECTION OF THE VELOCITY
 C        ***************************************************************
-         
+
          IF (NDIM.EQ.3) THEN
-         
+
 C           MAXIMUM NUMBER OF ITERATIONS
             MAXITE=25
 C           INITIAL VALUE FOR DS
@@ -512,7 +511,7 @@ C           TOLERANCE TO CHECK THE CONVERGENCE
 C           SEARCH THE PROJECTED POINT BY THE BISECTION METHOD
             DO 206 J=1,MAXITE
 
-C              COORDINATES OF THE POINT AT THE END OF THE CRACK FRONT 
+C              COORDINATES OF THE POINT AT THE END OF THE CRACK FRONT
 C              SEGMENT
                XI1 = ZR(JFONF-1+4*(JMIN-1)+1)
                YI1 = ZR(JFONF-1+4*(JMIN-1)+2)
@@ -527,7 +526,7 @@ C              VECTEUR IJ
                ZIJ = ZJ1-ZI1
 
 C              RETREIVE THE LENGTH OF THE CRACK FRONT SEGMENT
-               NORM2 = SQRT(XIJ*XIJ + YIJ*YIJ + ZIJ*ZIJ)  
+               NORM2 = SQRT(XIJ*XIJ + YIJ*YIJ + ZIJ*ZIJ)
 
 C              COORD DU NOEUD M DU MAILLAGE
                XM=ZR(JCOOR-1+(I-1)*3+1)
@@ -560,7 +559,7 @@ C                 FRONT (SMIN=0)
                   BI(2) = ZR(JEULER-1+7*(JMIN-1)+6)
                   BI(3) = ZR(JEULER-1+7*(JMIN-1)+7)
 
-C                 CALCULATE THE LOCAL BASE IN THE NODE WITH RESPECT TO 
+C                 CALCULATE THE LOCAL BASE IN THE NODE WITH RESPECT TO
 C                 THELOCAL BASE OF THE PREVIOUS POINT ON THE CRACK FRONT
 C                 (SMIN=0)
                   BPL(1) = (1-CALFA)*AXEUL(1)*AXEUL(3)-AXEUL(2)*SALFA
@@ -587,7 +586,7 @@ C                 CALCULATE THE UNIT VECTOR FOR THE NORMAL AXIS
                   IF (ALFA.LT.T0) THEN
                       B(1) = ZR(JEULER-1+7*(JMIN-1)+5)
                       B(2) = ZR(JEULER-1+7*(JMIN-1)+6)
-                      B(3) = ZR(JEULER-1+7*(JMIN-1)+7)                 
+                      B(3) = ZR(JEULER-1+7*(JMIN-1)+7)
                   ENDIF
 
                   IF (ALFA.GT.T180) THEN
@@ -621,7 +620,7 @@ C              CHANGE IN THE SEARCH DIRECTION
 C              UPDATE THE PROJECTED POINT POSITION ON THE FRONT
                SMIN=SMIN+DS
 
-C              MANAGE THE CHANGING OF THE CRACK FRONT SEGMENT          
+C              MANAGE THE CHANGING OF THE CRACK FRONT SEGMENT
                IF ((SMIN.LT.0.D0).AND.(JMIN.GT.1)) THEN
                   JMIN=JMIN-1
                   SMIN=1.D0
@@ -629,7 +628,7 @@ C              MANAGE THE CHANGING OF THE CRACK FRONT SEGMENT
                   SMIN=0.D0
                   GOTO 207
                ENDIF
-          
+
                IF ((SMIN.GT.1.D0).AND.(JMIN.LT.JMAX)) THEN
                   JMIN=JMIN+1
                   SMIN=0.D0
@@ -640,7 +639,7 @@ C              MANAGE THE CHANGING OF THE CRACK FRONT SEGMENT
 
                DPREC=D
 
-206         CONTINUE   
+206         CONTINUE
 
 207         CONTINUE
 
@@ -656,7 +655,7 @@ C           STORE THE DISTANCE VECTOR
             ZR(JDIS-1+3*(I-1)+2) = YM-YN
             ZR(JDIS-1+3*(I-1)+3) = ZM-ZN
             ZR(JDISFR+I-1) = DMIN
-         
+
          ENDIF
 
 C        ***************************************************************
@@ -750,11 +749,11 @@ C              N-AXIS
                ZR(JBL-1+2*NDIM*(I-1)+2) = ZR(JBASEF-1+2*NDIM*(JMIN-1)+2)
                ZR(JBL-1+2*NDIM*(I-1)+3) = ZR(JBASEF-1+2*NDIM*(JMIN-1)+3)
 C              T-AXIS
-               ZR(JBL-1+2*NDIM*(I-1)+4) = 
+               ZR(JBL-1+2*NDIM*(I-1)+4) =
      &                               ZR(JBASEF-1+2*NDIM*(JMIN-1)+NDIM+1)
-               ZR(JBL-1+2*NDIM*(I-1)+5) = 
+               ZR(JBL-1+2*NDIM*(I-1)+5) =
      &                               ZR(JBASEF-1+2*NDIM*(JMIN-1)+NDIM+2)
-               ZR(JBL-1+2*NDIM*(I-1)+6) = 
+               ZR(JBL-1+2*NDIM*(I-1)+6) =
      &                               ZR(JBASEF-1+2*NDIM*(JMIN-1)+NDIM+3)
 
             ENDIF
@@ -765,7 +764,7 @@ C        ***************************************************************
 C        EVALUATE THE NORM. AND TANG. COMPONENTS OF THE PROPAGATION
 C        SPEED IN THE NODE WITH RESPECT TO THE LOCAL REFERENCE SYSTEM
 C        ***************************************************************
-         
+
          BETAP=(ZR(JBETA-1+JMIN+1)-ZR(JBETA-1+JMIN))*SMIN+
      &          ZR(JBETA-1+JMIN)
 
@@ -777,7 +776,7 @@ C        ***************************************************************
          ZL(JVNL+I-1) = .TRUE.
 
          ZR(JDISFR+I-1) = DMIN
-      
+
 200   CONTINUE
 
 C ***************************************************************

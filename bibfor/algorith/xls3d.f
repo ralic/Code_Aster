@@ -9,7 +9,7 @@
       LOGICAL     CALLST,GRILLE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 08/03/2011   AUTEUR MASSIN P.MASSIN 
+C MODIF ALGORITH  DATE 26/04/2011   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -43,12 +43,12 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32                               ZK32
       CHARACTER*80                                        ZK80
       COMMON  /KVARJE/ ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
-      CHARACTER*32    JEXNUM,JEXATR
+      CHARACTER*32    JEXNUM
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 
       REAL*8        DDOT,DMIN,EPS,EPS1,EPS2,EPS3
       INTEGER       IMAFIS,INOMA,INOSE,ISEFIS,ITRI,JCONX1,JCONX2,JMA
-      INTEGER       JDLIMA,JDLISE,N1,N2,NBNOMA,NBSEF,NMAABS,NNOS
+      INTEGER       JDLIMA,JDLISE,N1,N2,NBNOMA,NBSEF,NMAABS
       INTEGER       NSEABS,NTRI,NUM,NUNOC,ITYPMA,JNNOS,JCRD
       REAL*8        PADIST,R8MAEM,XLN,XLT
       INTEGER       INO,NBMAF,NUNO(4),NUNOSE(2),I,NBNOTT(3)
@@ -56,7 +56,6 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       REAL*8        A(3),P(3),B(3),C(3),M(3),PM(3),VNREF(3)
       REAL*8        NORME,PS,PS1,PS2,D
       LOGICAL       MA2FF,PREM
-      CHARACTER*8   TYPMA
       CHARACTER*19  MAI
       CHARACTER*8   NOMAIL
       REAL*8        MPRIM(3),PMPRIM(3),COS,SIN,VECT(3),NOVE,PRONOR,ANGLE
@@ -85,7 +84,7 @@ C     DES MAILLES DE FISSURE
 C
 C     BOUCLE SUR TOUS LES NOEUDS P DU MAILLAGE
       DO 11 INO=1,NBNO
-              
+
         P(1)=ZR(JCRD-1+3*(INO-1)+1)
         P(2)=ZR(JCRD-1+3*(INO-1)+2)
         P(3)=ZR(JCRD-1+3*(INO-1)+3)
@@ -300,7 +299,7 @@ C             ON RAMENE M SUR LES BORDS S'IL LE FAUT
                 PMPRIM(I)=MPRIM(I)-P(I)
  34           CONTINUE
 
-C              CALCUL DE L'ANGLE (PM,PM') 
+C              CALCUL DE L'ANGLE (PM,PM')
 C                  OU M EST LE PROJETE RAMENE
 C                  ET M' LE PROJETE AVANT RAMENAGE
 C              COS A = <U,V> / (||U|| * ||V||)
@@ -310,9 +309,9 @@ C              SIN A = ||U^V|| / (||U|| * ||V||)
               PRONOR = SQRT(PM(1)**2+PM(2)**2+PM(3)**2+
      &                 PMPRIM(1)**2+PMPRIM(2)**2+PMPRIM(3)**2)
               IF (PRONOR.NE.0.D0) THEN
-                COS = (PM(1)*PMPRIM(1)+PM(2)*PMPRIM(2)+PM(3)*PMPRIM(3)) 
+                COS = (PM(1)*PMPRIM(1)+PM(2)*PMPRIM(2)+PM(3)*PMPRIM(3))
      &                                                / PRONOR
-                SIN = NOVE / PRONOR 
+                SIN = NOVE / PRONOR
                 ANGLE = ATAN2(SIN,COS)
               ELSE
                 COS = 0.D0

@@ -1,11 +1,11 @@
         SUBROUTINE NMCPLA(FAMI,KPG,KSP,NDIM,TYPMOD,IMAT,COMP,CRIT,
      &                      TIMED,TIMEF,
-     &                      EPSDT,DEPST,SIGD,VIND,OPT,ELGEOM,NUMLC,SIGF,
+     &                      EPSDT,DEPST,SIGD,VIND,OPT,ELGEOM,SIGF,
      &                      VINF,DSDE,IRET)
         IMPLICIT NONE
-C       ================================================================
+C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 26/04/2011   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,7 +22,6 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C TOLE CRP_21
 C       ================================================================
 C       INTEGRATION DU COUPLAGE FLUAGE/FISSURATION, C'EST A DIRE LE
 C       COUPLAGE D'UNE LOI DE COMPORTEMENT DE TYPE FLUAGE GRANGER
@@ -97,7 +96,7 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX ---------------------
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
 C       ----------------------------------------------------------------
-        INTEGER         IMAT , NDIM, KPG,KSP,IRET,NUMLC
+        INTEGER         IMAT , NDIM, KPG,KSP,IRET
 C
         REAL*8          CRIT(*)
         REAL*8          TIMED,     TIMEF,    TEMPD,   TEMPF  , TREF
@@ -115,7 +114,7 @@ C       ----------------------------------------------------------------
 C       VARIABLES LOCALES
         INTEGER         NDT    , NDI   , NVI1, IBID, IBID2, IBID3, IRE2
         INTEGER         NVI2, NN, I,RETCOM, IISNAN
-      INTEGER CERR(5)
+        INTEGER CERR(5)
         CHARACTER*8     MOD    ,MOD3D  ,   NOMC(5), NOMPAR
         CHARACTER*16    OPTFLU, CMP1(3), CMP2(3), CMP3(3), CVERI,COMCOD
         REAL*8          RBID, NU, ANGMAS(3)
@@ -305,7 +304,6 @@ C
      &    CMP2(1)(1:14).EQ. 'VMIS_ISOT_LINE' ) THEN
 C
           CALL NMISOT (FAMI,KPG,KSP,NDIM,TYPMOD,IMAT,CMP2,CRIT,
-     &                 TIMED, TIMEF,
      &                 DEPS , SIGD,      VIND(NN), OPT,
      &                 SIGF,  VINF(NN),  DSDE,     RBID,  RBID, IRET)
 C

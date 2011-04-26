@@ -5,9 +5,9 @@
       INTEGER                                            NBORDR
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 11/05/2009   AUTEUR NISTOR I.NISTOR 
+C MODIF UTILITAI  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -38,7 +38,7 @@ C     ----------- COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32                          ZK32
       CHARACTER*80                                  ZK80
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
-      CHARACTER*32   JEXNUM, JEXNOM, JEXATR, JEXR8
+      CHARACTER*32   JEXNUM, JEXNOM
 C ---------------- FIN COMMUNS NORMALISES  JEVEUX  --------------------
       CHARACTER*8  CH8,TYPE,ACCES,KBID
       CHARACTER*5  SUFFIX
@@ -48,7 +48,7 @@ C ---------------- FIN COMMUNS NORMALISES  JEVEUX  --------------------
       CHARACTER*32 PARA,LIPARA(NBPAMX)
       CHARACTER*16 NOPARA
       CHARACTER*8 LIACCE(NBPAMX), LITYPE(NBPAMX)
-      INTEGER I, IBID, JTAVA,ICO,JPARA,IUNDEF,ISNNEM,I1
+      INTEGER I, JTAVA,ICO,JPARA,IUNDEF,ISNNEM,I1
       INTEGER NBR, NBI, NBC, NBK8, NBK16, NBK24, NBK32, NBK80, N1,N2
       REAL*8 R8VIDE, RUNDEF
 C     ------------------------------------------------------------------

@@ -3,9 +3,9 @@
       INTEGER    IFIC, NOCC
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 01/02/2010   AUTEUR REZETTE C.REZETTE 
+C MODIF CALCULEL  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -24,7 +24,7 @@ C ----------------------------------------------------------------------
 C     COMMANDE:  TEST_RESU
 C                MOT CLE FACTEUR "OBJET"
 C ----------------------------------------------------------------------
-      INTEGER      IOCC, REFI, N0, N1, N2, I
+      INTEGER      IOCC, REFI, N1, N2
       REAL*8       EPSI, REFR
       CHARACTER*3  SSIGNE
       CHARACTER*8  CRIT
@@ -57,6 +57,5 @@ C           -- S_R :
         WRITE (IFIC,*)' '
  100  CONTINUE
 C
-1000  FORMAT(5X,2(1X,A16),2(1X,A24),2(1X,A16))
 
       END

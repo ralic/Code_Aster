@@ -7,8 +7,9 @@
       REAL*8             VROTAT,CONV
       INTEGER            NUMPAS
       LOGICAL            PRDEFF
+C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 31/01/2011   AUTEUR GREFFET N.GREFFET 
+C MODIF ALGORITH  DATE 26/04/2011   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -26,8 +27,8 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C RESPONSABLE GREFFET N.GREFFET
+C TOLE CRS_1404
 C ======================================================================
-C TOLE CRP_4 CRP_20 CRP_21 CRS_512 CRS_1404
 C
 C              RECUPERATION DES FORCES VENANT D'EDYOS
 C                 ET ENVOI DES CHAMPS CINEMATIQUES

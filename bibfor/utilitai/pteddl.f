@@ -5,7 +5,7 @@
       CHARACTER*8       LNOCMP(*)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 11/01/2011   AUTEUR SELLENET N.SELLENET 
+C MODIF UTILITAI  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -48,7 +48,7 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*32                            ZK32
       CHARACTER*80                                    ZK80
       COMMON  /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
-      CHARACTER*32     JEXNUM, JEXNOM
+      CHARACTER*32     JEXNUM
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER       IBID, I, J, TABEC(10), IER, IDESC, INUDES, NCMPMX
       INTEGER       JDESC, NEC, NBEC, GD, IAD, IEC, JNUCMP, INDIK8
@@ -164,7 +164,6 @@ C
  62       CONTINUE
  30     CONTINUE
         CALL JEDETR ( '&&PTEDDL.NUME_CMP' )
- 9999   CONTINUE
 C
 C
       ELSEIF ( IDESC .EQ. 2 ) THEN

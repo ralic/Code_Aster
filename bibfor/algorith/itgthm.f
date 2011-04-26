@@ -14,9 +14,9 @@
       CHARACTER*8  ELREFE,ELREF2
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 23/03/2010   AUTEUR ANGELINI O.ANGELINI 
+C MODIF ALGORITH  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2005  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -39,14 +39,14 @@ C --- DEFINITION DE L'ELEMENT (NOEUDS, SOMMETS, POINTS DE GAUSS) -------
 C ======================================================================
 C VF        .TRUE. SI VF
 C TYPVF  TYPE DE VF : 1  = TPFA (FLUX A DEUX POINTS)
-C        	      2  = SUSHI AVEC VOISIN DECENTRE MAILLE (SUDM)
-C        	      3  = SUSHI AVEC VOISIN DECENTRE ARETE (SUDA)
-C        	      4  = SUSHI AVEC VOISIN CENTRE  (SUC)
+C                 2  = SUSHI AVEC VOISIN DECENTRE MAILLE (SUDM)
+C                 3  = SUSHI AVEC VOISIN DECENTRE ARETE (SUDA)
+C                 4  = SUSHI AVEC VOISIN CENTRE  (SUC)
 C MODINT    METHODE D'INTEGRATION (CLASSIQUE,LUMPEE(D),REDUITE(R) ?)
 C NNO       NB DE NOEUDS DE L'ELEMENT
 C NNOS      NB DE NOEUDS SOMMETS DE L'ELEMENT
 C NFACE     NB DE FACES AU SENS BRD DE DIM DIM-1 NE SERT QU EN VF
-C NNOM      NB DE NOEUDS MILIEUX DE FACE OU D ARRETE NE SERT QU EN EF 
+C NNOM      NB DE NOEUDS MILIEUX DE FACE OU D ARRETE NE SERT QU EN EF
 C NDDLS     NB DE DDL SUR LES SOMMETS
 C NDDLM     NB DE DDL SUR LES MILIEUX DE FACE OU D ARETE - QU EN EF
 C NDDLFA    NB DE DDL SUR LES FACE DE DIMENSION DIM-1 NE SERT QU EN VF
@@ -88,7 +88,7 @@ C =====================================================================
        ELSE
          CALL U2MESK('F','DVP_9',1,ELREFE)
        ENDIF
-      ENDIF 
+      ENDIF
 C ======================================================================
 C --- FONCTIONS DE FORME P2 POUR L'INTEGRATION MECANIQUE ---------------
 C ======================================================================
@@ -115,7 +115,7 @@ C ======================================================================
           CALL U2MESK('F','VOLUFINI_12', 1 ,ELREFE)
         ENDIF
        ENDIF
-      ENDIF        
+      ENDIF
 C ======================================================================
 C --- POUR METHODES CLASSIQUE ET LUMPEE NPG=NPI
 C ======================================================================
@@ -132,7 +132,7 @@ C ======================================================================
         NDDLS  = 0
         NDDLFA = 0
         NDDLK  = PRESS1(1) + PRESS2(1) + TEMPE(1)
-       ELSE IF (( TYPVF.EQ.2).OR.( TYPVF.EQ.3) 
+       ELSE IF (( TYPVF.EQ.2).OR.( TYPVF.EQ.3)
      >          .OR.( TYPVF.EQ.4)) THEN
         NPG    = NPI
         NDDLS  = 0
@@ -142,7 +142,7 @@ C ======================================================================
         CALL U2MESG('F','VOLUFINI_9',0,' ',1,TYPVF,0,0.D0)
        ENDIF
        DIMUEL = NNOS*NDDLS + NFACE*NDDLFA + NDDLK
-      ENDIF 
+      ENDIF
 C ======================================================================
 C --- POUR METHODE REDUITE NPI = NPG+NNOS ------------------------------
 C ======================================================================

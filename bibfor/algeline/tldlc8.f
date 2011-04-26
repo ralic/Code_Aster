@@ -9,9 +9,9 @@ C
 C
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 02/10/2007   AUTEUR PELLET J.PELLET 
+C MODIF ALGELINE  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -83,7 +83,7 @@ C         AIEE TRANSACTION VOL 60, PP 1235-1240  (1941)
 C
 C     ------------------------------------------------------------------
 C
-      INTEGER IFM,NIV,IER,LDIAG,LTRAV
+      INTEGER IFM,NIV,LDIAG,LTRAV
       INTEGER IBLOC,IL1,IL2,IAA,IL,KL1
       INTEGER IMINI,IEQUA,I,JBLMIN,JBLOC,JL1,JL2
       INTEGER IAB,ILONG,IADIA,IDE,IDL
@@ -109,7 +109,6 @@ C     ----- CNJ --------------------------------------------------------
 C     ----- CNJ --------------------------------------------------------
 C
       COMPLEX*16 VAL
-      CHARACTER*1 VNPES
       CHARACTER*19 NOMA19
       CHARACTER*24 NOMDIA,UALF,NOMTRA
       CHARACTER*32 JEXNUM
@@ -273,7 +272,6 @@ C
 C
 C
 C           --- UTILISATION DE LA LIGNE IEQUA (CALCUL DU PIVOT) --------
-  120     CONTINUE
           LM = ILONG - 1
           ICA = IADIA - ILONG
 C

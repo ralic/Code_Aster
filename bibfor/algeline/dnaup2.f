@@ -4,7 +4,7 @@
      &     Q, LDQ, WORKL, IPNTR, WORKD, INFO, NEQACT, ALPHA)
 C---------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 06/11/2006   AUTEUR MCOURTOI M.COURTOIS 
+C MODIF ALGELINE  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) LAPACK
 C ======================================================================
@@ -309,7 +309,6 @@ C     | GET A POSSIBLY RANDOM STARTING VECTOR AND   |
 C     | FORCE IT INTO THE RANGE OF THE OPERATOR OP. |
 C     %---------------------------------------------%
 
-   10 CONTINUE
 
       IF (GETV0) THEN
          CALL DGETV0 (IDO, BMAT, 1, INITV, N, 1, V, LDV, RESID, RNORM,

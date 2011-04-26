@@ -1,10 +1,10 @@
       SUBROUTINE NMCHCR (MAT,DP,PM,NDIMSI,SIGEDV,NBVAR,EPSPM,ALFAM,
      &  ALFA2M,DEUXMU,VISC,MEMO,RM,RP,QM,Q,KSIM,KSI,DT,F)
+C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 08/11/2010   AUTEUR PROIX J-M.PROIX 
-C TOLE CRP_21
+C MODIF ALGORITH  DATE 26/04/2011   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -20,7 +20,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C.======================================================================
-C RESPONSABLE JMBHH01 J.M.PROIX
+C RESPONSABLE PROIX J.M.PROIX
       IMPLICIT NONE
 C
 C      NMCHCR   -- CETTE ROUTINE CONCERNE L'INTEGRATION DE LA LOI
@@ -69,11 +69,11 @@ C -----  ARGUMENTS
 C -----  VARIABLES LOCALES
            INTEGER     I
            REAL*8      R0,RINF,B,CINF,K,W,GAMMA0,AINF,C2INF ,GAMM20
-           REAL*8      ZERO,UN,DEUX,TROIS,C2P,GAMM2P,M2P,XN,VI(6),NNE
+           REAL*8      ZERO,UN,DEUX,TROIS,C2P,GAMM2P,M2P
            REAL*8      PP,CP,GAMMAP,MP,RPPMDP,SEQ,S(6),R8MIEM,GRJEPS
            REAL*8      MUMEM,VALDEN,KVI,ETAM,Q0MEM,QMMEM,DR,DEPSP(6)
-           REAL*8      CRITME,DQ,DKSI(6),XXN,PETIN(6),PETIN2(6),GQ
-           REAL*8      DEPPEQ,RPP,DQ1,NORME2,COEF,DENOM,SDENOM(6)
+           REAL*8      CRITME,DQ,DKSI(6),GQ
+           REAL*8      DEPPEQ,RPP,COEF,DENOM,SDENOM(6)
 C.========================= DEBUT DU CODE EXECUTABLE ==================
 C
 C --- INITIALISATIONS :
@@ -126,13 +126,13 @@ C     =============
       ENDIF
 
       IF (MEMO.EQ.1) THEN
-      
+
 C --- DETERMINATION DE L'INCREMENT DES DEFORMATIONS PLASTIQUES
          DEPPEQ=0.D0
          DO 120 I = 1, NDIMSI
             DEPSP(I)=SIGEDV(I)
      &            - (MP*ALFAM(I)-M2P*ALFA2M(I))/1.5D0
-            DEPPEQ=DEPPEQ+DEPSP(I)*DEPSP(I) 
+            DEPPEQ=DEPPEQ+DEPSP(I)*DEPSP(I)
   120    CONTINUE
          DEPPEQ=SQRT(DEPPEQ*1.5D0)
          DO 121 I = 1, NDIMSI
@@ -172,7 +172,7 @@ C             DKSI(I)=0.D0
 C             KSI(I)=KSIM(I)
 C             ENDDO
 C            ENDIF
-         ENDIF   
+         ENDIF
          Q=QM+DQ
          DO 21 I=1,NDIMSI
             KSI(I)=KSIM(I)+DKSI(I)
@@ -180,13 +180,13 @@ C            ENDIF
          GQ=QMMEM+(Q0MEM-QMMEM)*EXP(-2.D0*MUMEM*Q)
          DR=B*(GQ-RM)*DP/(1.D0+B*DP)
          RP = RM + DR
-         RPP = R0 + RP 
+         RPP = R0 + RP
       ELSEIF (MEMO.EQ.0) THEN
          RPP     = RINF + (R0-RINF)*EXP(-B*PP)
-      ENDIF   
+      ENDIF
 
       SEQ = ZERO
-C POUR NORMER L'EQUATION      
+C POUR NORMER L'EQUATION
       DENOM = ZERO
 C
       DO 10 I = 1, NDIMSI
@@ -210,10 +210,10 @@ C
       IF (VISC.EQ.1) THEN
          RPPMDP = RPPMDP + KVI*((DP/DT)**(UN/VALDEN))
       ENDIF
-      IF (DENOM.LE.R8MIEM()) THEN   
-         F = SEQ - RPPMDP         
-      ELSE                        
-         F = (SEQ - RPPMDP)/DENOM      
+      IF (DENOM.LE.R8MIEM()) THEN
+         F = SEQ - RPPMDP
+      ELSE
+         F = (SEQ - RPPMDP)/DENOM
       ENDIF
 
       END

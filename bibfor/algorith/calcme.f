@@ -5,11 +5,10 @@
      &                    CONGEP,VINTM,VINTP,ADDEP1,ADDEP2,DSDE,
      &                    DEPS,DEPSV,P1,P2,T,DT,RETCOM,DP1,DP2,
      &                    SAT,BIOT)
-C ======================================================================
+C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
-C RESPONSABLE GRANET S.GRANET
+C MODIF ALGORITH  DATE 26/04/2011   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -26,8 +25,8 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C TOLE CRP_20
-C TOLE CRP_21
+C RESPONSABLE GRANET S.GRANET
+C TOLE CRP_20 CRP_21
 C **********************************************************************
 C ROUTINE CALC_MECA
 C CALCULE LES CONTRAINTES GENERALISEES ET LA MATRICE TANGENTE MECANIQUES
@@ -52,9 +51,9 @@ C ======================================================================
       LOGICAL       MECTRU,PRE2TR
       INTEGER       NDIM,DIMDEF,DIMCON,NVIMEC,ADDEME,ADDETE,ADDEP1
       INTEGER       ADDEP2,ADCOME,IMATE,YATE,RETCOM
-      REAL*8        DEFGEM(1:DIMDEF),CONGEM(1:DIMCON),CONGEP(1:DIMCON)
-      REAL*8        VINTM(1:NVIMEC),VINTP(1:NVIMEC)
-      REAL*8        DSDE(1:DIMCON,1:DIMDEF)
+      REAL*8        DEFGEM(DIMDEF),CONGEM(DIMCON),CONGEP(DIMCON)
+      REAL*8        VINTM(NVIMEC),VINTP(NVIMEC)
+      REAL*8        DSDE(DIMCON,DIMDEF)
       CHARACTER*8   TYPMOD(2)
       CHARACTER*16  OPTION,COMPOR(*),MECA,THMC
 C ======================================================================
@@ -265,13 +264,13 @@ C --- LOI L&K -----------------------------------------------------
 C ======================================================================
       IF (MECA.EQ.'LETK') THEN
         TINI = T - DT
-        CALL LKCOMP(  NDIM, TYPMOD,  IMATE, COMPOR, CRIT,
-     &                      INSTAM, INSTAP,
-     &                      TINI,T, TREF,
-     &                      DEPS,
-     &                      CONGEM(ADCOME), VINTM, OPTION,
-     &                      CONGEP(ADCOME), VINTP,
-     &                      DSDEME,RETCOM)
+        CALL LKCOMP(TYPMOD,  IMATE,
+     &              INSTAM, INSTAP,
+     &              TINI,T, TREF,
+     &              DEPS,
+     &              CONGEM(ADCOME), VINTM, OPTION,
+     &              CONGEP(ADCOME), VINTP,
+     &              DSDEME,RETCOM)
         IF ((OPTION(1:9).EQ.'RIGI_MECA').OR.
      &      (OPTION(1:9).EQ.'FULL_MECA')) THEN
           DO 302 I = 1 , 2*NDIM
@@ -435,9 +434,9 @@ C ======================================================================
           IF (YATE.EQ.1) THEN
             DO 4116 I=1,3
                   DSDE(ADCOME-1+I,ADDETE)=-ALPHA0*
-     &            (DSDE(ADCOME-1+I,ADDEME+NDIM-1+1)+
-     &             DSDE(ADCOME-1+I,ADDEME+NDIM-1+2)+
-     &             DSDE(ADCOME-1+I,ADDEME+NDIM-1+3))/3.D0
+     >            (DSDE(ADCOME-1+I,ADDEME+NDIM-1+1)+
+     >             DSDE(ADCOME-1+I,ADDEME+NDIM-1+2)+
+     >             DSDE(ADCOME-1+I,ADDEME+NDIM-1+3))/3.D0
  4116       CONTINUE
           ENDIF
         ENDIF

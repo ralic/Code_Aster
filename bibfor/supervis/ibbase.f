@@ -4,9 +4,9 @@
       CHARACTER*(*)             FICHDF
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF SUPERVIS  DATE 14/09/2009   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF SUPERVIS  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -34,9 +34,6 @@ C     --- VARIABLES LOCALES --------------------------------------------
 C     NOM DES BASES DE DONNEES AUTORISEES
 C     REMARQUE :  UN DDNAME OU SHORT NAME NE PEUT EXCEDER 7 CARACTERES
 C     ------------------------------------------------------------------
-      CHARACTER*80  BANOM
-      INTEGER       NBBL
-      LOGICAL       BASAUV
 C
       CHARACTER*16  MOTFAC, NOMRES, CONCEP, NOMCMD
 C
@@ -46,10 +43,9 @@ C     --- VARIABLES LOCALES --------------------------------------------
 C
 C     --- VALEURS PAR DEFAUTS DES BASES --------------------------------
       INTEGER      PRESBA(MXBASE)
-      CHARACTER*8  CALCBA(MXBASE) , CALCUL
       CHARACTER*16 NOMBA (MXBASE) , NOM
-      CHARACTER*16 STIN  (MXBASE) , STOUT  (MXBASE) , STATUT
-      CHARACTER*16 CASBA (MXBASE) , CAS
+      CHARACTER*16 STIN  (MXBASE) , STOUT  (MXBASE)
+      CHARACTER*16  CAS
       CHARACTER*32 TITRBA(MXBASE)
 C
 C     --- VALEURS PAR DEFAUTS DES CAS ----------------------------------

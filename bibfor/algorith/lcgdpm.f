@@ -1,9 +1,9 @@
       SUBROUTINE LCGDPM (FAMI,KPG,KSP,NDIM,IMAT,COMPOR,CRIT,
      &                   INSTAM,INSTAP,FM,DF,SIGM,VIM,
      &                   OPTION,SIGP,VIP,DSIGDF,IRET)
-
+C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 26/04/2011   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,7 +21,6 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CRP_20
-C TOLE CRP_21
 
       IMPLICIT NONE
       INTEGER            NDIM,IMAT,IRET,KPG,KSP
@@ -90,8 +89,7 @@ C.......................................................................
       REAL*8   VALRES(20)
 
       CHARACTER*1 C1
-      INTEGER ICODRE(20)
-      INTEGER TEST
+      INTEGER ICODRE(20),TEST
       CHARACTER*8 NOMRES(20),NOMCLE(5),ACIER(4)
 
       LOGICAL     RESI,RIGI

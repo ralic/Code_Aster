@@ -1,30 +1,9 @@
-      SUBROUTINE XMMJEU(NDIM  ,JNNM,JNNE,NDEPLE,
+      SUBROUTINE XMMJEU(NDIM  ,  JNNM,JNNE,NDEPLE,
      &                  NSINGE,NSINGM,FFE  ,FFM   ,NORM  ,
      &                  JGEOM ,JDEPDE,JDEPM ,RRE   ,RRM   ,
      &                  JDDLE,JDDLM, JEU   )
-C
-C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 21/12/2010   AUTEUR MASSIN P.MASSIN 
-C ======================================================================
-C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
-C ======================================================================
-C TOLE CRP_21
-C
       IMPLICIT NONE
-      INTEGER NDIM 
+      INTEGER NDIM
       REAL*8  NORM(3)
       REAL*8  FFE(9),FFM(9)
       REAL*8  JEU
@@ -32,16 +11,33 @@ C
       INTEGER JNNM(3),JNNE(3),JDDLE(2),JDDLM(2)
       INTEGER NSINGE,NSINGM
       REAL*8  RRE,RRM
-C      
 C ----------------------------------------------------------------------
+C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ALGORITH  DATE 26/04/2011   AUTEUR DELMAS J.DELMAS 
+C ======================================================================
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+C ======================================================================
 C
 C ROUTINE XFEM (METHODE XFEM-GG - TE)
 C
 C CALCUL DU JEU
-C      
+C
 C ----------------------------------------------------------------------
 C
-C 
+C
 C IN  NDIM   : DIMENSION DU PROBLEME
 C IN  NDDL   : NOMBRE TOTAL DE DEGRES DE LIBERTE DE LA MAILLE DE CONTACT
 C IN  NNE    : NOMBRE DE NOEUDS DE LA MAILLE ESCLAVE
@@ -79,12 +75,12 @@ C
 C -------------- FIN  DECLARATIONS  NORMALISEES  JEVEUX ----------------
 C
       INTEGER IDIM,INOM,ISINGE,INOES,ISINGM,IN,JN,NDDLE
-      REAL*8  POSE(3),POSM(3)
       INTEGER PL,DDLES,DDLEM,DDLMS,DDLMM,NNE,NNES,NNEM,NNM,NNMS
+
+      REAL*8  POSE(3),POSM(3)
 C
 C ----------------------------------------------------------------------
 C
-
 C
 C --- INNITIALISATION
 C
@@ -116,7 +112,7 @@ C
      &                      ZR(JDEPDE-1+PL) -
      &                      ZR(JDEPDE-1+PL+NDIM) +
      &                      ZR(JDEPM-1+PL) -
-     &                      ZR(JDEPM-1+PL+NDIM)     
+     &                      ZR(JDEPM-1+PL+NDIM)
      &                   )
           ENDIF
           DO 25 ISINGE = 1,NSINGE
@@ -127,7 +123,7 @@ C
  25       CONTINUE
  20     CONTINUE
  10   CONTINUE
-C           
+C
 C --- CALCUL DE LA POSITION COURANTE DU POINT MAITRE
 C
       DO 11 IDIM = 1,NDIM
@@ -140,7 +136,7 @@ C
      &                   ZR(JDEPDE-1+PL) +
      &                   ZR(JDEPDE-1+PL+NDIM) +
      &                   ZR(JDEPM-1+PL) +
-     &                   ZR(JDEPM-1+PL+NDIM)      
+     &                   ZR(JDEPM-1+PL+NDIM)
      &                 )
           DO 40 ISINGM = 1,NSINGM
             PL         = PL + 2*NDIM
@@ -148,7 +144,7 @@ C
      &                    (ZR(JDEPDE-1+PL)+ZR(JDEPM-1+PL))
  40       CONTINUE
  30     CONTINUE
- 11   CONTINUE 
+ 11   CONTINUE
 C
 C --- CALCUL DU JEU
 C

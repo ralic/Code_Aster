@@ -2,7 +2,7 @@
      &             COMPOR,CRIT,OPTION,EPS,SIG,VI,DSIDEP,CODRET)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 26/04/2011   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -58,8 +58,8 @@ C CORPS DU PROGRAMME
 C DECLARATION PARAMETRES D'APPELS
       INTEGER            NDIM,IMATE,CODRET,KPG,KSP
       CHARACTER*8        TYPMOD(*)
-      CHARACTER*16       COMPOR(4), OPTION
-      REAL*8             CRIT(3)  , EPSM(6),SIGM(6)
+      CHARACTER*16       COMPOR(4),OPTION
+      REAL*8             CRIT(3),SIGM(6)
       REAL*8             EPS(6), SIG(6), VI(*), DSIDEP(6,6),ANGMAS(3)
       INTEGER  ICODRE
       CHARACTER*(*)  FAMI,POUM
@@ -90,11 +90,10 @@ C - ORTHOTROPIE OU ISOTROPIE TRANSVERSE LINEAIRE
      &    (PHENOM(1:6).EQ.'ELAS_O'.OR.PHENOM(1:6).EQ.'ELAS_I')) THEN
         IF ( COMPOR(1)(1:5) .EQ. 'ELAS ')THEN
           DO 30 I=1,6
-            EPSM(I)=0.D0
             SIGM(I)=0.D0
  30     CONTINUE
-          CALL NMORTH (FAMI, KPG, KSP, NDIM, PHENOM, TYPMOD, IMATE,
-     &                 EPSM,EPS,SIGM,
+          CALL NMORTH (FAMI, KPG,KSP,NDIM,PHENOM,IMATE,
+     &                 EPS,SIGM,
      &                 OPTION,ANGMAS, SIG,R8BID, DSIDEP)
         ELSE
           CALL U2MESS('F','ALGORITH7_7')

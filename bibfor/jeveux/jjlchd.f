@@ -1,8 +1,8 @@
       SUBROUTINE JJLCHD (ID, IC, IDFIC, IDTS, NGRP)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF JEVEUX  DATE 26/07/2010   AUTEUR LEFEBVRE J-P.LEFEBVRE 
+C MODIF JEVEUX  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -42,11 +42,11 @@ C ----------------------------------------------------------------------
       INTEGER          N
       PARAMETER  ( N = 5 )
       INTEGER          LTYP    , LONG    , DATE    , IADD    , IADM    ,
-     &                 LONO    , HCOD    , CARA    , LUTI    , IMARQ   
+     &                 LONO    , HCOD    , CARA    , LUTI    , IMARQ
       COMMON /IATRJE/  LTYP(1) , LONG(1) , DATE(1) , IADD(1) , IADM(1) ,
      &                 LONO(1) , HCOD(1) , CARA(1) , LUTI(1) , IMARQ(1)
       INTEGER          JLTYP   , JLONG   , JDATE   , JIADD   , JIADM   ,
-     &                 JLONO   , JHCOD   , JCARA   , JLUTI   , JMARQ  
+     &                 JLONO   , JHCOD   , JCARA   , JLUTI   , JMARQ
       COMMON /JIATJE/  JLTYP(N), JLONG(N), JDATE(N), JIADD(N), JIADM(N),
      &                 JLONO(N), JHCOD(N), JCARA(N), JLUTI(N), JMARQ(N)
       CHARACTER*1      GENR    , TYPE
@@ -84,12 +84,12 @@ C     ------------------------------------------------------------------
       INTEGER          ILOREP , IDENO , ILNOM , ILMAX , ILUTI , IDEHC
       PARAMETER      ( ILOREP=1,IDENO=2,ILNOM=3,ILMAX=4,ILUTI=5,IDEHC=6)
 C     ------------------------------------------------------------------
-      CHARACTER*32     NOMO,NGRC,D32,NOM32
+      CHARACTER*32     NOMO,NGRC,D32
       CHARACTER*8      NREP(2)
       CHARACTER*1      GENRI,TYPEI,TYPEB
-      INTEGER          COL(1),JCOL,ITAB(1),IDA,JCTAB,NBOB,IDO,IDGR,ICONV
+      INTEGER          ITAB(1),IDA,JCTAB,NBOB,IDO,IDGR,ICONV
       INTEGER          HDFRSV,HDFOPG,HDFCLG,HDFNBO,HDFOPD,HDFCLD,HDFTSD
-      INTEGER          IADMI,IADDI(2),LTYPI,LONOI,ISTA1,ISTA2,LTYPB,LON
+      INTEGER          IADMI,LTYPI,LONOI,LTYPB,LON
       INTEGER          IBACOL,IRET,K,IX,IXIADD,IXIADM,IXMARQ,IXDESO,IDGC
       INTEGER          IBIADM,IBMARQ,IBLONO,IDT1,IDT2,NBVAL,KITAB,IXLONO
       INTEGER          IADYN

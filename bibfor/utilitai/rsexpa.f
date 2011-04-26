@@ -4,10 +4,10 @@
       CHARACTER*(*)     RESU,      NOMPAR
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 16/07/2002   AUTEUR VABHHTS J.PELLET 
+C MODIF UTILITAI  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C RESPONSABLE VABHHTS J.PELLET
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -34,7 +34,6 @@ C                     = 2 : VARIABLE D'ACCES OU PARAMETRE
 C OUT : IRET   : = 0  LE NOM SYMBOLIQUE N'EXISTE PAS
 C ----------------------------------------------------------------------
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
-      CHARACTER*32     JEXNUM, JEXNOM
       INTEGER          ZI
       COMMON  /IVARJE/ ZI(1)
       REAL*8           ZR
@@ -51,7 +50,6 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       COMMON  /KVARJE/ ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C ----------------------------------------------------------------------
       INTEGER      NBAC,NBPA,LPOUT
-      CHARACTER*16 K16BID
 C
       CALL JEMARQ()
       IRET=0

@@ -1,9 +1,9 @@
       SUBROUTINE CRIBIF( MOD, DSIDEP, VBIFUR , NBRAC4, RACINE )
 C =====================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/10/2009   AUTEUR SFAYOLLE S.FAYOLLE 
+C MODIF ALGORITH  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -26,11 +26,11 @@ C =====================================================================
 C =====================================================================
 C --- RECHERCHE DE ZONES DE LOCALISATION PAR LE CRITERE DE RICE -------
 C =====================================================================
-      INTEGER     TESTIV,II,DEGRE,COMPT,NBRAC3,IER
-      REAL*8      ZERO, UN, DEUX, TROIS, QUATRE, R8PREM, R8NNEM, R8PI
-      REAL*8      A0, A1, A2, A3, A4, LAMBA, LAMBB, LAMBC, LAMBP, LAMBQ
-      REAL*8      VALEUR, FBIFUR, DELTA, LAMBR, LAMBT, TRIGOM
-      REAL*8      AI(4),RAC4(8),SC,SIGNE, RAC3(3), ANGLE, R8RDDG,R8DGRD
+      INTEGER     II,DEGRE,COMPT,NBRAC3,IER
+      REAL*8      ZERO, UN, DEUX, TROIS, QUATRE, R8PREM, R8NNEM
+      REAL*8      A0, A1, A2, A3, A4, LAMBA, LAMBB, LAMBC
+      REAL*8      VALEUR, FBIFUR
+      REAL*8      AI(4),RAC4(8),SIGNE, RAC3(3), R8RDDG
 C =====================================================================
       PARAMETER  ( ZERO   = 0.0D0 )
       PARAMETER  ( UN     = 1.0D0 )

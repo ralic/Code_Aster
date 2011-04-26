@@ -1,7 +1,7 @@
       SUBROUTINE CHPREC(CHOU)
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 08/03/2011   AUTEUR MASSIN P.MASSIN 
+C MODIF MODELISA  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -59,7 +59,6 @@ C
       INT EG ER AD  RE  CG
       REAL*8 INST,EPSI
       CHARACTER*1 BASE
-      CHARACTER*4 TYCHA
       CHARACTER*8 RESUCO,INTERP,CRIT,PROLDR,PROLGA,TYPMAX
       CHARACTER*8 NOMGD
 CC      CHARACTER*8 LERESU, NOPASE
@@ -124,7 +123,7 @@ C              VERIFIE SI UNE GRILLE AUXILIAIRE EST DEFINIE POUR LA FISS
                   GRILLE=.FALSE.
                ELSE
                   GRILLE=.TRUE.
-               ENDIF             
+               ENDIF
 
                IF (NOMCH.EQ.'LTNO') THEN
                  CHEXTR = FIS//'.LTNO'
@@ -140,7 +139,7 @@ C              VERIFIE SI UNE GRILLE AUXILIAIRE EST DEFINIE POUR LA FISS
                  CHEXTR = FIS//'.STNOR'
                ELSE IF (NOMCH.EQ.'BASLOC') THEN
                  CHEXTR = FIS//'.BASLOC'
-               ELSE 
+               ELSE
                  IF (GRILLE) THEN
                      IF (NOMCH.EQ.'GRI.LTNO') THEN
                         CHEXTR = FIS//'.GRI.LTNO'

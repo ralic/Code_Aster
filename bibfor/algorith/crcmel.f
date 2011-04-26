@@ -3,9 +3,9 @@
 C RESPONSABLE PELLET J.PELLET
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 28/06/2010   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -40,8 +40,6 @@ C ---------------------------------------------------------------------
       CHARACTER*8  NOMCMP(NCMPMA),NOMA,K8B
       CHARACTER*19 COMPOR
       CHARACTER*24 MODELE,LIGREL
-      REAL*8 RBID
-      COMPLEX*16   CBID
       CHARACTER*19 CES1,CES2,CEL1
 C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
       INTEGER        ZI
@@ -58,7 +56,6 @@ C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------------------
       CHARACTER*32                          ZK32
       CHARACTER*80                                  ZK80
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
-      CHARACTER*32     JEXNUM, JEXNOM
 C --- FIN DECLARATIONS NORMALISEES JEVEUX ------------------------------
 C ----------------------------------------------------------------------
 

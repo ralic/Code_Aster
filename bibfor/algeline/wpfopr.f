@@ -10,9 +10,9 @@
 C     -----------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 13/10/2010   AUTEUR BOITEAU O.BOITEAU 
+C MODIF ALGELINE  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -39,7 +39,6 @@ C IN  SOLVEU : K19 : SD SOLVEUR POUR PARAMETRER LE SOLVEUR LINEAIRE
 C     ------------------------------------------------------------------
 C
 C     ------ DEBUT DECLARATIONS NORMALISEES  JEVEUX --------------------
-      CHARACTER*32       JEXNUM , JEXNOM , JEXR8 , JEXATR
       INTEGER            ZI
       COMMON  / IVARJE / ZI(1)
       REAL*8             ZR
@@ -57,10 +56,10 @@ C     ------ DEBUT DECLARATIONS NORMALISEES  JEVEUX --------------------
 C     -----  FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
 C
       INTEGER      LMAT(3),LMATRA,LMTPSC,JPOMR,JREFE,IBID,JBID
-      REAL*8       ASHIFT,EPS,CONSTR(3),R8DEPI,CONSTC(6),VALR(2)
+      REAL*8       ASHIFT,CONSTR(3),R8DEPI,CONSTC(6),VALR(2)
       CHARACTER*1  TYPCST(3),BASE
       CHARACTER*8  NAMDDL
-      CHARACTER*19 MASSE,AMOR,NOMI,NOMT,MATPRE,MATASS
+      CHARACTER*19 NOMI,NOMT,MATPRE,MATASS
       CHARACTER*24 NMAT(3),NMATRA,NMTPSC
 
 C     ------------------------------------------------------------------
@@ -68,7 +67,7 @@ C     ------------------------------------------------------------------
 C     ------------------------------------------------------------------
 C
       CALL JEMARQ()
-     
+
       LMAT(1) = LMASSE
       NMAT(1) = ZK24(ZI(LMAT(1)+1))
       LMAT(2) = LAMOR
@@ -90,7 +89,7 @@ C
 
       ASHIFT = - (ASHIFT*FSHIFT)/SQRT(1.D0-ASHIFT*ASHIFT)
       SIGMA = DCMPLX(ASHIFT,FSHIFT)
-      
+
 C --- POUR QZ CALCUL DE LA MATRICE SHIFTEE ET DE SA FACTORISEE INUTILE
       IF (LQZ) GOTO 999
 C

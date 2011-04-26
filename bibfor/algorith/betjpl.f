@@ -2,9 +2,9 @@
         IMPLICIT NONE
 C       ================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 29/09/2006   AUTEUR VABHHTS J.PELLET 
+C MODIF ALGORITH  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -67,7 +67,6 @@ C
         REAL*8          TRAV1(6), TRAV2(6), PI0(6), DEV(6)
         REAL*8          SIGEQ , P, MATR1(6,6)
         REAL*8          FC , FT  , BETA, KUC, KUT, KE
-        REAL*8          LCNRTS , KU , FCOMP , FTRAC
         REAL*8          A, B, C, D
         REAL*8          PC, PT, DFCDLC, DFTDLT, DFCDS(6), DFTDS(6)
         REAL*8          COEF1, COEF2, HDFCDS(6), HDFTDS(6)

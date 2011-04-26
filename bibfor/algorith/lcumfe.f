@@ -1,9 +1,10 @@
-       SUBROUTINE LCUMFE (FAMI,KPG,KSP,NDIM,TYPMOD,IMATE,
-     &                    TINSTM,TINSTP,EPSTM,DEPST,SIGM,
-     &                    VIM,OPTION,SIGP,VIP,DSIDPT,PROJ)
-
+       SUBROUTINE LCUMFE (  FAMI,   KPG,   KSP,  NDIM,TYPMOD,
+     &                     IMATE,TINSTM,TINSTP, EPSTM, DEPST,
+     &                      SIGM,   VIM,OPTION,  SIGP,   VIP,
+     &                    DSIDPT,  PROJ                     )
+C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 26/04/2011   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -21,7 +22,6 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CRP_20
-C TOLE CRP_21
       IMPLICIT NONE
       INTEGER          NDIM,IMATE,KPG,KSP
       CHARACTER*8     TYPMOD(*)

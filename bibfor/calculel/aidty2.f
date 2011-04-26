@@ -1,6 +1,6 @@
       SUBROUTINE AIDTY2(IMPR)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 28/03/2011   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C RESPONSABLE DURAND C.DURAND
       IMPLICIT NONE
 C ======================================================================
@@ -26,7 +26,7 @@ C       1  LES COUPLES (OPTION, TYPE_ELEMENT) REALISES AUJOURD'HUI
 C          (POUR VERIFIER LA COMPLETUDE)
 C ----------------------------------------------------------------------
 C---------------- COMMUNS NORMALISES  JEVEUX  --------------------------
-      CHARACTER*32 JEXNUM,JEXNOM,JEXATR,JEXR8
+      CHARACTER*32 JEXNUM
       COMMON /IVARJE/ZI(1)
       COMMON /RVARJE/ZR(1)
       COMMON /CVARJE/ZC(1)

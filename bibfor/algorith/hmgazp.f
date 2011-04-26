@@ -6,7 +6,7 @@
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 08/02/2011   AUTEUR GRANET S.GRANET 
+C MODIF ALGORITH  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C RESPONSABLE GRANET S.GRANET
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -28,7 +28,7 @@ C TOLE CRP_21
 C ======================================================================
 C ROUTINE HMGAZP : CETTE ROUTINE CALCULE LES CONTRAINTES GENERALISEES
 C   ET LA MATRICE TANGENTE DES GRANDEURS COUPLEES, A SAVOIR CELLES QUI
-C   NE SONT PAS DES GRANDEURS DE MECANIQUE PURE OU DES FLUX PURS 
+C   NE SONT PAS DES GRANDEURS DE MECANIQUE PURE OU DES FLUX PURS
 C   DANS LE CAS OU THMC = 'GAZ'
 C ======================================================================
 C OUT RETCOM : RETOUR LOI DE COMPORTEMENT
@@ -50,11 +50,11 @@ C ======================================================================
 C --- VARIABLES LOCALES ------------------------------------------------
 C ======================================================================
       INTEGER      I
-      REAL*8       EPSVM,PHIM,RHO11M,UMPRHS
+      REAL*8       EPSVM,PHIM
       REAL*8       BIOT,K0,CS,ALPHA0,CP12,SAT,MAMOLG
       REAL*8       R,RHO0,CSIGM,ALP11,EM
       REAL*8       EPS,RINSTP
-      PARAMETER  ( EPS = 1.D-21 ) 
+      PARAMETER  ( EPS = 1.D-21 )
       LOGICAL      EMMAG
 C ======================================================================
 C --- DECLARATIONS PERMETTANT DE RECUPERER LES CONSTANTES MECANIQUES ---
@@ -86,7 +86,7 @@ C =====================================================================
       CALL NETBIS(MECA,NET,BISHOP)
       CALL THMRCP( 'INTERMED', IMATE, THMC, MECA, HYDR, THER,
      +             RBID1, RBID2, RBID3, RBID4, RBID5, T, P1,
-     +             RBID6,RBID44,RBID7, RBID8,     
+     +             RBID6,RBID44,RBID7, RBID8,
      +             RBID10, R, RHO0, CSIGM,  BIOT, RBID12, SAT,
      +             RBID13, RBID14, RBID15, RBID16, RBID17, RBID18,
      +             RBID19, RBID20, RBID21, RBID22,RBID23, RBID24,
@@ -126,7 +126,7 @@ C =====================================================================
       IF((EM.GT.EPS).AND.(YAMEC.EQ.0))THEN
         EMMAG = .TRUE.
       ENDIF
-        
+
       CALL INITHM(IMATE,YAMEC,PHI0,EM,ALPHA0,K0,CS,BIOT,T,
      +                                       EPSV,DEPSV,EPSVM,MECA)
 

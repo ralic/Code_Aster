@@ -3,7 +3,7 @@
       CHARACTER*16      OPTION,NOMTE
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -52,33 +52,28 @@ C ----- DEBUT --- COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*80                                              ZK80
       COMMON  / KVARJE / ZK8(1) , ZK16(1) , ZK24(1) , ZK32(1) , ZK80(1)
 C------------FIN  COMMUNS NORMALISES  JEVEUX  --------------------------
-      
-      INTEGER    NNOMX 
+
+      INTEGER    NNOMX
       PARAMETER (NNOMX=4)
-      INTEGER    NBSM 
-      PARAMETER (NBSM=3)
-      INTEGER    NPGMX 
+      INTEGER    NPGMX
       PARAMETER (NPGMX=4)
-      
-      REAL*8   PGL(3,3),DM(3,3),DF(3,3),DMF(3,3),DC(4),DCI(4),COEF,DEUX
-      REAL*8   DMC(3,2),DFC(3,2),T2EV(4),T2VE(4),T1VE(9),EPS(3),KHI(3)
-      REAL*8   BF(3,3*NNOMX),BM(3,2*NNOMX),UM(2,NNOMX),UF(3,NNOMX)
-      REAL*8   UL(6,NNOMX),QSI,ETA,XYZL(3,4),JACOB(5),POIDS,CARA(25)
-      REAL*8   NMM(NBSM),NMF(NBSM),MFF(NBSM),DISSE(NPGMX),DISSP(NPGMX)
+
+      REAL*8   PGL(3,3),COEF,DEUX
+      REAL*8   QSI,ETA,XYZL(3,4),JACOB(5),POIDS,CARA(25)
+      REAL*8   DISSE(NPGMX),DISSP(NPGMX)
       REAL*8   DISST(NPGMX),DSE,DSP,DST,AUXM(NNOMX),AUXF(NNOMX)
-      REAL*8   AUXT(NNOMX),ENELMF(NPGMX),DUM(2,NNOMX),DUF(3,NNOMX)
-      REAL*8   DUL(6,NNOMX),EFFINT(32),EFFGT(32),R8B(8),EP,SEUIL
-      REAL*8   HIC,COEHSD,NBSP,EBID(6),TM,TREF,SREF
-      REAL*8   SECHM,HYDRM
-      
+      REAL*8   AUXT(NNOMX)
+      REAL*8   R8B(8),EP,SEUIL
+      REAL*8   HIC,COEHSD,NBSP
+
       INTEGER  NDIM,NNO,NNOEL,NPG,IPOIDS,ICOOPG,IVF,IDFDX,IDFD2,JGANO
-      INTEGER  JGEOM,MULTIC,IPG,K,INO,JDEPM,ISIG,JSIG,IDENER,NMCPI,IMATE
-      INTEGER  ICOMPO,ICACOQ,I,NCMP,ICONTP,JVARI,NBVAR,JTAB(7),IVPG
+      INTEGER  JGEOM,IPG,IDENER,IMATE
+      INTEGER  ICOMPO,ICACOQ,I,NCMP,JVARI,NBVAR,JTAB(7),IVPG
       INTEGER  JNBSPI,NBCOU,NPGH,IRET,ICOU,IGAUH,ISP,TMA(3,3)
-      
-      CHARACTER*16 COMPOR,VALK(2)  
-      LOGICAL  GRILLE,ELASCO,DKQ,DKG,LKIT,COUP     
-      
+
+      CHARACTER*16 VALK(2)
+      LOGICAL  GRILLE,DKQ,DKG,LKIT
+
       DEUX   = 2.D0
       DKQ = .FALSE.
       DKG = .FALSE.
@@ -101,7 +96,7 @@ C      CALL ELREF5(' ','RIGI',NDIM,NNO,NNOS,NPG,IPOIDS,ICOOPG,
 C     +                                         IVF,IDFDX,IDFD2,JGANO)
       CALL ELREF5(' ','RIGI',NDIM,NNO,NNOEL,NPG,IPOIDS,ICOOPG,
      +                                         IVF,IDFDX,IDFD2,JGANO)
-      
+
       GRILLE = .FALSE.
       IF (NOMTE(1:8).EQ.'MEGRDKT ')  GRILLE = .TRUE.
 
@@ -112,16 +107,16 @@ C     +                                         IVF,IDFDX,IDFD2,JGANO)
       ELSE IF (NNO.EQ.4) THEN
          CALL DXQPGL ( ZR(JGEOM), PGL )
       END IF
-      
+
       LKIT = ZK16(ICOMPO)(1:7).EQ.'KIT_DDI'
 
-      IF ( ZK16(ICOMPO)(1:7).EQ.'GLRC_DM'.OR. 
-     &     ZK16(ICOMPO)(1:11).EQ.'GLRC_DAMAGE'.OR. 
-     &   (LKIT  .AND. ZK16(ICOMPO+7)(1:7).EQ.'GLRC_DM' ) 
+      IF ( ZK16(ICOMPO)(1:7).EQ.'GLRC_DM'.OR.
+     &     ZK16(ICOMPO)(1:11).EQ.'GLRC_DAMAGE'.OR.
+     &   (LKIT  .AND. ZK16(ICOMPO+7)(1:7).EQ.'GLRC_DM' )
      &   ) THEN
 
       CALL JEVECH('PCACOQU','L',ICACOQ)
-      
+
       CALL UTPVGL(NNO,3,PGL,ZR(JGEOM),XYZL)
 
       IF ( DKQ ) THEN
@@ -129,7 +124,7 @@ C     +                                         IVF,IDFDX,IDFD2,JGANO)
       ELSE
          CALL GTRIA3(XYZL,CARA)
       END IF
-      
+
       IF(OPTION(1:4) .EQ. 'DISS') THEN
         CALL TECACH ( 'OON', 'PVARIGR', 7, JTAB, IRET )
         JVARI = JTAB(1)
@@ -144,7 +139,7 @@ C     +                                         IVF,IDFDX,IDFD2,JGANO)
       DSE = 0.0D0
       DSP = 0.0D0
       DST = 0.0D0
-      
+
       IF ( GRILLE ) THEN
 C        TYPMOD(2) = 'MEGRDKT '
         NPGH = 1
@@ -155,7 +150,7 @@ C        TYPMOD(2) = 'MEGRDKT '
 
       READ (ZK16(ICOMPO-1+2),'(I16)') NBVAR
       EP = ZR(ICACOQ)
-      
+
       IF (DKG) THEN
         NBCOU = 1
       ELSE
@@ -163,7 +158,7 @@ C        TYPMOD(2) = 'MEGRDKT '
         NBCOU=ZI(JNBSPI-1+1)
 
         HIC = EP/NBCOU
-      ENDIF    
+      ENDIF
 
       IF (NBCOU.LE.0) CALL U2MESK('F','ELEMENTS_36',1,ZK16(ICOMPO-1+6))
 
@@ -191,7 +186,7 @@ C           CALL DKTBF ( QSI, ETA, CARA, BF )
      &               R8B(3),R8B(4),R8B(5),R8B(6),R8B(7),SEUIL,R8B(8),EP,
      &               .FALSE.)
 
-        ENDIF  
+        ENDIF
 
 C  --    CALCUL DE LA DENSITE D'ENERGIE POTENTIELLE ELASTIQUE :
 C        ==========================================================
@@ -199,14 +194,14 @@ C        ==========================================================
 
            NCMP = JTAB(6)*JTAB(7)
            NBSP=JTAB(7)
-           
+
            IF(DKG) THEN
              DISSE(IPG) = (ZR(JVARI-1 + (IPG-1)*NBVAR + 1) +
      &                     ZR(JVARI-1 + (IPG-1)*NBVAR + 2))*SEUIL
              DISSP(IPG) = 0.0D0
-           
+
              DISST(IPG) = DISSE(IPG) + DISSP(IPG)
-           
+
              DSE = DSE + DISSE(IPG)*POIDS
 C             DSP = DSP + DISSP(IPG)*POIDS
 C             DST = DST + DISST(IPG)*POIDS
@@ -230,7 +225,7 @@ C       --------------------------------
                   COEF = 1.D0/3.D0
                 END IF
                 COEHSD = COEF*HIC/DEUX
-                 
+
                 R8B(1) = ZR(JVARI + IVPG)*SEUIL*COEHSD
                 DISSE(IPG) = DISSE(IPG) + R8B(1)
                 DSE = DSE + R8B(1)*POIDS
@@ -240,7 +235,7 @@ C       --------------------------------
              DISST(IPG) = DISSE(IPG)
              DST = DSE
 
-           ENDIF  
+           ENDIF
 
          ENDIF
 C
@@ -253,7 +248,7 @@ C      -------------------
         CALL JEVECH('PDISSDR','E',IDENER)
       ELSE IF(OPTION(1:4) .EQ. 'ENER') THEN
         CALL JEVECH('PDISSD1','E',IDENER)
-      ENDIF  
+      ENDIF
 C
 C --- OPTIONS DISS_ELGA
 C     ==============================
@@ -294,7 +289,7 @@ C     ================
       ENDIF
 
       ELSE
-C      RELATION NON PROGRAMMEE      
+C      RELATION NON PROGRAMMEE
         VALK(1)=OPTION
         VALK(2) = ZK16(ICOMPO)(1:7)
         CALL U2MESK('A','ELEMENTS4_63',2,VALK)
