@@ -1,4 +1,4 @@
-# MODIF  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 03/05/2011   AUTEUR GENIAUT S.GENIAUT 
 # TITRE : FISSURE CLASSIQUE EN THERMO-ELASTICITE 2D 
 # hsnv132a.para = tps_job 60 mem_job 500Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -23,9 +23,9 @@ DEBUT(CODE=_F(NOM='HSNV132A', NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
               
 PRE_GIBI();
 
-MAILLE=LIRE_MAILLAGE(INFO=1,);
+MAILLE=LIRE_MAILLAGE()
 
-MAILLAGE=CREA_MAILLAGE(MAILLAGE=MAILLE,);
+MAILLAGE=CREA_MAILLAGE(MAILLAGE=MAILLE,LINE_QUAD=_F(TOUT='OUI'))
 
 MAILLAGE=DEFI_GROUP(reuse =MAILLAGE,
                     MAILLAGE=MAILLAGE,
@@ -35,7 +35,6 @@ MAILLAGE=DEFI_GROUP(reuse =MAILLAGE,
                                    _F(NOM='LIGINF',OPTION='PLAN',POINT=(0.,0.,),VECT_NORMALE=(0.,1.),PRECISION=1.e-6),
                                    _F(NOM='PTEXTR',OPTION='ENV_SPHERE',POINT=(1.,1.,),RAYON=1.e-6,PRECISION=1.e-6),
                                    ),
-                                   INFO=2,
                      );
 
 #--------------------------------------------------------------------
@@ -106,8 +105,8 @@ CHARBLO=AFFE_CHAR_MECA(MODELE=MODELE,
                        INFO=1,);
 
 L_INST=DEFI_LIST_REEL(DEBUT=0.0,
-                      INTERVALLE=_F(JUSQU_A=3.0,
-                                    NOMBRE=3,),);
+                      INTERVALLE=_F(JUSQU_A=1.0,
+                                    NOMBRE=1,),);
 
 UTOT=STAT_NON_LINE(MODELE=MODELE,
                    CHAM_MATER=CHAMPMAT,
@@ -139,21 +138,21 @@ IMPR_TABLE(TABLE=TABDEP)
 
 TEST_TABLE(TABLE=TABDEP,
            NOM_PARA='DX',
-           VALE= -8.7414981539527E-04,
+           VALE= -8.740426289951E-04,
            CRITERE='RELATIF',
            PRECISION=1.0E-11,
            REFERENCE='NON_REGRESSION',
            FILTRE=(_F(NOM_PARA='NUME_ORDRE',VALE_I=1),),
-           VERSION = '9.1.7');                        
+           VERSION = '11.0.4');                        
 
 TEST_TABLE(TABLE=TABDEP,
            NOM_PARA='DY',
-           VALE=  3.8258234896932E-03,
+           VALE=  3.8260958514619E-03,
            CRITERE='RELATIF',
            PRECISION=1.0E-11,
            REFERENCE='NON_REGRESSION',
            FILTRE=(_F(NOM_PARA='NUME_ORDRE',VALE_I=1),),
-           VERSION = '9.1.7');
+           VERSION = '11.0.4');
 
 FOND1=DEFI_FOND_FISS(MAILLAGE=MAILLAGE,
                      FOND_FISS=_F( GROUP_NO = 'PFON',),
@@ -188,38 +187,40 @@ TABG=CALC_G(RESULTAT=UTOT,
 IMPR_TABLE(TABLE=TABG,);
 
 PK=POST_K1_K2_K3(MODELISATION='D_PLAN',
-                     MATER=ACIER,
-                     FOND_FISS = FOND1,
-                     INFO =2,
-                     ABSC_CURV_MAXI = 0.03,
-                     RESULTAT  = UTOT,
-                     NUME_ORDRE=1,
-                     VECT_K1        = ( 0., 1., 0.,),
-                    )
+                 MATER=ACIER,
+                 FOND_FISS = FOND1,
+                 ABSC_CURV_MAXI = 0.05,
+                 RESULTAT  = UTOT,
+                 NUME_ORDRE=1,
+                 VECT_K1        = ( 0., 1., 0.,),
+                )
 
 IMPR_TABLE(TABLE = PK)
 
 # Cas test de non regression sur K1
 TEST_TABLE(TABLE=TABSIF,
            NOM_PARA='K1',
-           VALE= 9.0033077632721E+06,
+           VALE= 9.0328413451143E+06,
            CRITERE='RELATIF',
            PRECISION=1.e-4,
-           REFERENCE='AUTRE_ASTER');                      
+           REFERENCE='NON_REGRESSION',
+           VERSION = '11.0.4')                      
 
 TEST_TABLE(TABLE=PK,
            NOM_PARA='K1',
-           VALE= 9.69223E+06,
+           VALE= 8.4543655482163E+06,
            CRITERE='RELATIF',
            PRECISION=1.e-4,
-           REFERENCE='AUTRE_ASTER');      
+           REFERENCE='NON_REGRESSION',
+           VERSION = '11.0.4') 
 
 # Cas test de non regression sur G
 TEST_TABLE(TABLE=TABG,
            NOM_PARA='G',
-           VALE= 4.9878E+02,
+           VALE= 492.81784641923,
            CRITERE='RELATIF',
            PRECISION=1.e-4,
-           REFERENCE='AUTRE_ASTER');                      
+           REFERENCE='NON_REGRESSION',
+           VERSION = '11.0.4') 
 
 FIN();

@@ -4,7 +4,7 @@
         IMPLICIT  NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/04/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF ALGORITH  DATE 02/05/2011   AUTEUR PROIX J-M.PROIX 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -45,7 +45,7 @@ C ======================================================================
         REAL*8          SIGF(6) , VIND(*),HSR(5,24,24)
         CHARACTER*16    LOI
         INTEGER         NBCOMM(NMAT,3)
-        REAL*8          PGL(3,3),VP(3),VECP(3),TOUTMS(5,24,6)
+        REAL*8          PGL(3,3),VP(3),VECP(3,3),TOUTMS(5,24,6)
         CHARACTER*16    CPMONO(5*NMAT+1)
 C ======================================================================
       IF ( LOI(1:8) .EQ. 'ROUSS_PR'  )THEN

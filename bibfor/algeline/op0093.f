@@ -1,7 +1,7 @@
       SUBROUTINE OP0093 ()
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGELINE  DATE 02/05/2011   AUTEUR DELMAS J.DELMAS 
 C TOLE CRP_20
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -95,7 +95,7 @@ C---------------------------------------------C
 
 C     -- CREATION DU SOLVEUR :
       SOLVEU='&&OP0093.SOLVEUR'
-      CALL CRESOL(SOLVEU,' ')
+      CALL CRESOL(SOLVEU)
 
 
 C     --- COMPATIBILITE DES MODES (DONNEES ALTEREES) ---

@@ -1,4 +1,4 @@
-# MODIF  DATE 31/01/2011   AUTEUR MACOCCO K.MACOCCO 
+# MODIF  DATE 03/05/2011   AUTEUR GENIAUT S.GENIAUT 
 # TITRE MURAKAMI 4.2 FISSURE INCLINEE DANS UNE PLAQUE ILLIMITEE
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -56,10 +56,8 @@ CHAMDEPL=MECA_STATIQUE(  MODELE=MO,
 
 FOND1=DEFI_FOND_FISS(  MAILLAGE=MA,
                        FOND_FISS=_F( GROUP_NO = ('P0',)),
-#                       NORMALE=(-0.6018, 0.7986, 0.,)
                        LEVRE_SUP=_F(GROUP_MA='LPOP8',),
                        LEVRE_INF=_F(GROUP_MA='LPOP8B',),
-                       INFO = 2,
                      )
 
 THETA01=CALC_THETA(  MODELE=MO,
@@ -85,76 +83,77 @@ GK01=CALC_G(              RESULTAT=CHAMDEPL,
                           OPTION='CALC_K_G'
                       )
 
-TEST_TABLE(       TABLE=GK01,
-                       NOM_PARA='K1',
-                           VALE=3.574968087E6,
-                      PRECISION=0.01           )
+# references analytiques
+Gref  = 1.001883E2
+K1ref = 3.574968087E6
+K2ref = 2.693931681E6
 
-TEST_TABLE(       TABLE=GK01,
-                       NOM_PARA='K2',
-                           VALE=2.693931681E6,
-                      PRECISION=0.01           )
+TEST_TABLE(TABLE=GK01,
+           NOM_PARA='G',
+           VALE=Gref,
+           REFERENCE='ANALYTIQUE',
+           PRECISION=0.02)
 
-TEST_TABLE(       TABLE=GK01,
-                       NOM_PARA='G',
-                           VALE=1.001883E2,
-                      PRECISION=0.02           )
+TEST_TABLE(TABLE=GK01,
+           NOM_PARA='K1',
+           VALE=K1ref,
+           REFERENCE='ANALYTIQUE',
+           PRECISION=0.01)
+
+TEST_TABLE(TABLE=GK01,
+           NOM_PARA='K2',
+           VALE=2.693931681E6,
+           REFERENCE='ANALYTIQUE',
+           PRECISION=0.01)
 
 # ------------------------------------------------------------------
 
 TABL_K=POST_K1_K2_K3(  MODELISATION='C_PLAN',
-                        INST = 0.,
-                        INFO=2,
-                        MATER=MAT,
-                        RESULTAT = CHAMDEPL,
-                        FOND_FISS = FOND1,
-                        ABSC_CURV_MAXI = 7.51000E-05,
-                        VECT_K1        = ( 0., 1., 0., )
+                       MATER=MAT,
+                       RESULTAT = CHAMDEPL,
+                       FOND_FISS = FOND1,
+                       ABSC_CURV_MAXI = 7.51000E-05,
+                       VECT_K1        = ( 0., 1., 0., )
                        )
 
+TEST_TABLE(TABLE=TABL_K,
+           REFERENCE='ANALYTIQUE',
+           NOM_PARA='G',
+           VALE=Gref,
+           PRECISION=0.04)
 
+TEST_TABLE(TABLE=TABL_K,
+           REFERENCE='ANALYTIQUE',
+           NOM_PARA='K1',
+           VALE=K1ref,
+           PRECISION=0.012)
 
-# ---------------
-
-TEST_TABLE(       TABLE=TABL_K,
-                      REFERENCE='AUTRE_ASTER',
-                       NOM_PARA='K1',
-                           VALE=3.574968087E6,
-                      PRECISION=0.025           )
-
-TEST_TABLE(       TABLE=TABL_K,
-                      REFERENCE='AUTRE_ASTER',
-                       NOM_PARA='K2',
-                           VALE=2.693931681E6,
-                      PRECISION=0.04            )
-
-TEST_TABLE(       TABLE=TABL_K,
-                      REFERENCE='AUTRE_ASTER',
-                       NOM_PARA='G',
-                           VALE=1.001883E2,
-                      PRECISION=0.056           )
+TEST_TABLE(TABLE=TABL_K,
+           REFERENCE='ANALYTIQUE',
+           NOM_PARA='K2',
+           VALE=K2ref,
+           PRECISION=0.03)
 
 # ---------------
+# on double ces tests de tests de non-regression
 
+TEST_TABLE(TABLE=TABL_K,
+           REFERENCE='NON_REGRESSION',
+           VERSION='11.0.0',
+           NOM_PARA='G',
+           VALE=96.852005483479)
 
-TEST_TABLE(       TABLE=TABL_K,
-                      REFERENCE='NON_REGRESSION',
-                       NOM_PARA='K1',
-                           VALE= 3.49969E+06   )
+TEST_TABLE(TABLE=TABL_K,
+           REFERENCE='NON_REGRESSION',
+           VERSION='11.0.0',
+           NOM_PARA='K1',
+           VALE=3.5379307159775E+06)
 
-
-TEST_TABLE(       TABLE=TABL_K,
-                      REFERENCE='NON_REGRESSION',
-                       NOM_PARA='K2',
-                           VALE=2.58730E+06  )
-
-
-TEST_TABLE(       TABLE=TABL_K,
-                      REFERENCE='NON_REGRESSION',
-                       NOM_PARA='G',
-                           VALE= 9.47097E+01  )
-
-
+TEST_TABLE(TABLE=TABL_K,
+           REFERENCE='NON_REGRESSION',
+           VERSION='11.0.0',
+           NOM_PARA='K2',
+           VALE=2.6179089643527E+06)
 
 # ---------------
 # ON EXTRAIT PREALABLEMENT LES DEPLACEMENTS DES LEVRES
@@ -187,9 +186,8 @@ DEPB=POST_RELEVE_T(  ACTION=_F(  INTITULE = 'DEPL_DB',
                        )
 
 # ---------------
-TABL_K1=POST_K1_K2_K3(  MODELISATION='C_PLAN',
+TABL_K1=POST_K1_K2_K3( MODELISATION='C_PLAN',
                        INST = 0.,
-                       INFO=2,
                        MATER=MAT,
                        TABL_DEPL_SUP  = DEPH,
                        TABL_DEPL_INF  = DEPB,
@@ -197,22 +195,22 @@ TABL_K1=POST_K1_K2_K3(  MODELISATION='C_PLAN',
                        VECT_K1        = ( 0., 1., 0., )
                        )
 # ---------------
+# les valeurs doivent etre identiques a celles obtenues 
+# en exploitant directement le concept resultat
 
-TEST_TABLE(       TABLE=TABL_K1,
-                      REFERENCE='NON_REGRESSION',
-                       NOM_PARA='K1',
-                           VALE= 3.49969E+06   )
+TEST_TABLE(TABLE=TABL_K,
+           REFERENCE='AUTRE_ASTER',
+           NOM_PARA='G',
+           VALE=96.852005483479)
 
+TEST_TABLE(TABLE=TABL_K,
+           REFERENCE='AUTRE_ASTER',
+           NOM_PARA='K1',
+           VALE=3.5379307159775E+06)
 
-TEST_TABLE(       TABLE=TABL_K1,
-                      REFERENCE='NON_REGRESSION',
-                       NOM_PARA='K2',
-                           VALE=2.58730E+06  )
-
-
-TEST_TABLE(       TABLE=TABL_K1,
-                      REFERENCE='NON_REGRESSION',
-                       NOM_PARA='G',
-                           VALE= 9.47097E+01  )
+TEST_TABLE(TABLE=TABL_K,
+           REFERENCE='AUTRE_ASTER',
+           NOM_PARA='K2',
+           VALE=2.6179089643527E+06)
 FIN()
 #

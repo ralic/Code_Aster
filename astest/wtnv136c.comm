@@ -1,6 +1,6 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 02/05/2011   AUTEUR DESOZA T.DESOZA 
 # TITRE MODELISATION DU GONFLEMENT DE L ARGILE GONFLANTE (3D THH2MS)
-# wtnv136c.para = tps_job 150 mem_job 128Mo mpi_nbcpu 1 liste_test I
+# wtnv136c.para = tps_job 150 mem_job 128Mo mpi_nbcpu 2 liste_test I
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,6 +18,9 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
+
+# 2 processeurs
+
 DEBUT(CODE=_F(NOM='WTNV136C', NIV_PUB_WEB='INTERNET'))
 
 import sys
@@ -340,7 +343,7 @@ U2=STAT_NON_LINE(
                 INCREMENT=_F(LIST_INST = TEMPS2, ),
 
                 NEWTON=_F( MATRICE = 'TANGENTE',REAC_ITER = 1,),
-                SOLVEUR=_F(METHODE='PETSC',ALGORITHME='GMRES',),
+                SOLVEUR=_F(METHODE='PETSC',ALGORITHME='GMRES',PRE_COND='LDLT_INC'),
                 CONVERGENCE=_F(
                         ITER_GLOB_MAXI=40,
                         ITER_GLOB_ELAS=50,

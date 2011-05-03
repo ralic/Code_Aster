@@ -5,7 +5,7 @@
         IMPLICIT NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/04/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF ALGORITH  DATE 02/05/2011   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -230,8 +230,8 @@ C
 C --- RESOLUTION LOI DE FLUAGE
 C
       IF ( OPTFLU .EQ. 'RAPH_MECA' ) THEN
-         CALL NMGRAN (FAMI, KPG, KSP, NDIM, TYPMOD, IMAT, CMP1,
-     &                CRIT, TIMED, TIMEF,
+         CALL NMGRAN (FAMI, KPG, KSP, TYPMOD, IMAT, CMP1,
+     &                TIMED, TIMEF,
      &                TMPDMX,TMPFMX, DEPST2,SIGD,VIND(1),OPT,
      &                SIGF2,  VINF(1),  DSDE )
 C

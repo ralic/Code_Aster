@@ -1,11 +1,10 @@
-      SUBROUTINE CRESOL(SOLVEU,KBID)
+      SUBROUTINE CRESOL(SOLVEU)
       IMPLICIT   NONE
 
       CHARACTER*19 SOLVEU
-      CHARACTER*(*) KBID
 C ----------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 02/05/2011   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -25,10 +24,8 @@ C ======================================================================
 C     CREATION D'UNE SD_SOLVEUR PAR LECTURE DU MOT CLE SOLVEUR
 
 C IN/JXOUT K19 SOLVEU  : SD_SOLVEUR
-C IN       K*  KBID    : INUTILISE
 C ----------------------------------------------------------------------
-C RESPONSABLE VABHHTS J.PELLET
-C TOLE CRP_20
+C RESPONSABLE PELLET J.PELLET
 
 C --- DEBUT DECLARATIONS NORMALISEES JEVEUX ----------------
 

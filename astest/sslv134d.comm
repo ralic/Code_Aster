@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 03/05/2011   AUTEUR GENIAUT S.GENIAUT 
 # TITRE CALCUL 3D DE G FISSURE CIRCULAIRE EN MILIEU INFINI
 # sslv134d.para = tps_job 120 mem_job 250Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -209,8 +209,8 @@ DEP1=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
                 NUME_ORDRE=1,);
 
 # VALEUR DE REFERENCE MILIEU INFINI :
-
-GLOC1REF = 11.58648;
+Gref1  = 11.58648
+K1ref =  1.595769E6
 
 
 GLOC1=CALC_G(THETA=_F(FOND_FISS=FISS,
@@ -224,7 +224,7 @@ TEST_TABLE(TABLE=GLOC1,
            FILTRE=_F(NOM_PARA='NOEUD',
                      VALE_K='N49',),
            NOM_PARA='G',
-           VALE=GLOC1REF,
+           VALE=Gref1,
            PRECISION=0.03,
            REFERENCE='ANALYTIQUE',);
 
@@ -232,7 +232,7 @@ TEST_TABLE(TABLE=GLOC1,
            FILTRE=_F(NOM_PARA='NOEUD',
                      VALE_K='N1710',),
            NOM_PARA='G',
-           VALE=GLOC1REF,
+           VALE=Gref1,
            PRECISION=0.02,
            REFERENCE='ANALYTIQUE',);
 
@@ -240,7 +240,7 @@ TEST_TABLE(TABLE=GLOC1,
            FILTRE=_F(NOM_PARA='NOEUD',
                      VALE_K='N77',),
            NOM_PARA='G',
-           VALE=GLOC1REF,
+           VALE=Gref1,
            PRECISION=0.03,
            REFERENCE='ANALYTIQUE',);
 
@@ -277,8 +277,7 @@ TABK1A1=POST_K1_K2_K3(MODELISATION='3D',
                       MATER=MAT,
                       TABL_DEPL_SUP=DEP1H1,
                       TABL_DEPL_INF=DEP1B1,
-                      ABSC_CURV_MAXI=0.539,
-                      INFO=2,
+                      ABSC_CURV_MAXI=0.35,
                       VECT_K1=(0.,0.,1.,),);
 
 DEP1B2=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
@@ -299,8 +298,7 @@ TABK1A2=POST_K1_K2_K3(MODELISATION='3D',
                       MATER=MAT,
                       TABL_DEPL_SUP=DEP1H2,
                       TABL_DEPL_INF=DEP1B2,
-                      ABSC_CURV_MAXI=0.539,
-                      INFO=2,
+                      ABSC_CURV_MAXI=0.35,
                       VECT_K1=(0.,0.,1.,),);
 
 DEP1B3=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
@@ -321,52 +319,49 @@ TABK1A3=POST_K1_K2_K3(MODELISATION='3D',
                       MATER=MAT,
                       TABL_DEPL_SUP=DEP1H3,
                       TABL_DEPL_INF=DEP1B3,
-                      ABSC_CURV_MAXI=0.539,
-                      INFO=2,
+                      ABSC_CURV_MAXI=0.35,
                       VECT_K1=(0.,0.,1.,),);
 
-K1 = 1595769.0;
-
 # ---------------
 TEST_TABLE(TABLE=TABK1A1,
            NOM_PARA='K1',
-           VALE=K1,
-           PRECISION=0.05,
-           REFERENCE='AUTRE_ASTER',);
+           VALE=K1ref,
+           PRECISION=0.01,
+           REFERENCE='ANALYTIQUE')
 
 TEST_TABLE(TABLE=TABK1A1,
            NOM_PARA='G',
-           VALE=GLOC1REF,
-           PRECISION=0.1,
-           REFERENCE='AUTRE_ASTER',);
+           VALE=Gref1,
+           PRECISION=0.02,
+           REFERENCE='ANALYTIQUE')
 
 # ---------------
 
 TEST_TABLE(TABLE=TABK1A2,
            NOM_PARA='K1',
-           VALE=K1,
-           PRECISION=0.05,
-           REFERENCE='AUTRE_ASTER',);
+           VALE=K1ref,
+           PRECISION=0.01,
+           REFERENCE='ANALYTIQUE')
 
 TEST_TABLE(TABLE=TABK1A2,
            NOM_PARA='G',
-           VALE=GLOC1REF,
-           PRECISION=0.1,
-           REFERENCE='AUTRE_ASTER',);
+           VALE=Gref1,
+           PRECISION=0.02,
+           REFERENCE='ANALYTIQUE')
 
 # ---------------
 
 TEST_TABLE(TABLE=TABK1A3,
            NOM_PARA='K1',
-           VALE=K1,
-           PRECISION=0.05,
-           REFERENCE='AUTRE_ASTER',);
+           VALE=K1ref,
+           PRECISION=0.02,
+           REFERENCE='ANALYTIQUE')
 
 TEST_TABLE(TABLE=TABK1A3,
            NOM_PARA='G',
-           VALE=GLOC1REF,
-           PRECISION=0.1,
-           REFERENCE='AUTRE_ASTER',);
+           VALE=Gref1,
+           PRECISION=0.05,
+           REFERENCE='ANALYTIQUE')
 
 # EMPLOI DE FORMULE POUR DEFINIR LA TORSION
 
@@ -418,8 +413,8 @@ DEP3=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
                 NUME_ORDRE=1,);
 
 # VALEUR DE REFERENCE MILIEU INFINI :
-
-GLOC3REF = 7.356495;
+Gref3 = 7.356495;
+K3ref = -1063846.0;
 
 
 GLOC3=CALC_G(THETA=_F(FOND_FISS=FISS,
@@ -433,7 +428,7 @@ TEST_TABLE(TABLE=GLOC3,
            FILTRE=_F(NOM_PARA='NOEUD',
                      VALE_K='N49',),
            NOM_PARA='G',
-           VALE=GLOC3REF,
+           VALE=Gref3,
            PRECISION=0.03,
            REFERENCE='ANALYTIQUE',);
 
@@ -441,7 +436,7 @@ TEST_TABLE(TABLE=GLOC3,
            FILTRE=_F(NOM_PARA='NOEUD',
                      VALE_K='N1710',),
            NOM_PARA='G',
-           VALE=GLOC3REF,
+           VALE=Gref3,
            PRECISION=0.02,
            REFERENCE='ANALYTIQUE',);
 
@@ -449,7 +444,7 @@ TEST_TABLE(TABLE=GLOC3,
            FILTRE=_F(NOM_PARA='NOEUD',
                      VALE_K='N77',),
            NOM_PARA='G',
-           VALE=GLOC3REF,
+           VALE=Gref3,
            PRECISION=0.03,
            REFERENCE='ANALYTIQUE',);
 
@@ -486,8 +481,7 @@ TABK3A1=POST_K1_K2_K3(MODELISATION='3D',
                       MATER=MAT,
                       TABL_DEPL_SUP=DEP3H1,
                       TABL_DEPL_INF=DEP3B1,
-                      ABSC_CURV_MAXI=0.2,
-                      INFO=2,
+                      ABSC_CURV_MAXI=0.35,
                       VECT_K1=(0.,0.,1.,),);
 
 DEP3B2=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
@@ -508,8 +502,7 @@ TABK3A2=POST_K1_K2_K3(MODELISATION='3D',
                       MATER=MAT,
                       TABL_DEPL_SUP=DEP3H2,
                       TABL_DEPL_INF=DEP3B2,
-                      ABSC_CURV_MAXI=0.2,
-                      INFO=2,
+                      ABSC_CURV_MAXI=0.35,
                       VECT_K1=(0.,0.,1.,),);
 
 DEP3B3=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
@@ -530,53 +523,53 @@ TABK3A3=POST_K1_K2_K3(MODELISATION='3D',
                       MATER=MAT,
                       TABL_DEPL_SUP=DEP3H3,
                       TABL_DEPL_INF=DEP3B3,
-                      ABSC_CURV_MAXI=0.2,
-                      INFO=2,
+                      ABSC_CURV_MAXI=0.35,
                       VECT_K1=(0.,0.,1.,),);
-K3 = -1063846.0;
 
 # ---------------
 
 TEST_TABLE(TABLE=TABK3A1,
            NOM_PARA='K3',
-           VALE=K3,
-           PRECISION=0.09,
-           REFERENCE='AUTRE_ASTER',);
+           VALE=K3ref,
+           PRECISION=0.01,
+           REFERENCE='ANALYTIQUE')
 
 TEST_TABLE(TABLE=TABK3A1,
            NOM_PARA='G',
-           VALE=GLOC3REF,
-           PRECISION=0.165,
-           REFERENCE='AUTRE_ASTER',);
+           VALE=Gref3,
+           PRECISION=0.02,
+           REFERENCE='ANALYTIQUE')
 
 # ---------------
 
 
 TEST_TABLE(TABLE=TABK3A2,
            NOM_PARA='K3',
-           VALE=K3,
-           PRECISION=0.09,
-           REFERENCE='AUTRE_ASTER',);
+           VALE=K3ref,
+           PRECISION=0.01,
+           REFERENCE='ANALYTIQUE')
 
 TEST_TABLE(TABLE=TABK3A2,
            NOM_PARA='G',
-           VALE=GLOC3REF,
-           PRECISION=0.165,
-           REFERENCE='AUTRE_ASTER',);
+           VALE=Gref3,
+           PRECISION=0.02,
+           REFERENCE='ANALYTIQUE')
+
 
 # ---------------
 
 TEST_TABLE(TABLE=TABK3A3,
            NOM_PARA='K3',
-           VALE=K3,
-           PRECISION=0.09,
-           REFERENCE='AUTRE_ASTER',);
+           VALE=K3ref,
+           PRECISION=0.01,
+           REFERENCE='ANALYTIQUE')
 
 TEST_TABLE(TABLE=TABK3A3,
            NOM_PARA='G',
-           VALE=GLOC3REF,
-           PRECISION=0.165,
-           REFERENCE='AUTRE_ASTER',);
+           VALE=Gref3,
+           PRECISION=0.02,
+           REFERENCE='ANALYTIQUE')
+
 
 
 DEP13=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
@@ -603,7 +596,7 @@ RESU13=CREA_RESU(OPERATION='AFFE',
 
 # VALEUR DE REFERENCE MILIEU INFINI MODES 1 ET 3 :
 
-GL13REF=(1.-NU*NU)*K1*K1/E + (1.+NU)*K3*K3/E
+Gref13=(1.-NU*NU)*K1ref*K1ref/E + (1.+NU)*K3ref*K3ref/E
 
 GLOC13=CALC_G(THETA=_F(FOND_FISS=FISS,
                        R_INF=RINF,
@@ -617,7 +610,7 @@ TEST_TABLE(TABLE=GLOC13,
            FILTRE=_F(NOM_PARA='NOEUD',
                      VALE_K='N49',),
            NOM_PARA='G',
-           VALE=GL13REF,
+           VALE=Gref13,
            PRECISION=0.03,
            REFERENCE='ANALYTIQUE',);
 
@@ -625,7 +618,7 @@ TEST_TABLE(TABLE=GLOC13,
            FILTRE=_F(NOM_PARA='NOEUD',
                      VALE_K='N1710',),
            NOM_PARA='G',
-           VALE=GL13REF,
+           VALE=Gref13,
            PRECISION=0.02,
            REFERENCE='ANALYTIQUE',);
 
@@ -633,7 +626,7 @@ TEST_TABLE(TABLE=GLOC13,
            FILTRE=_F(NOM_PARA='NOEUD',
                      VALE_K='N77',),
            NOM_PARA='G',
-           VALE=GL13REF,
+           VALE=Gref13,
            PRECISION=0.03,
            REFERENCE='ANALYTIQUE',);
 
@@ -643,11 +636,11 @@ GGLOB13=CALC_G(THETA=_F(THETA=THETA1,),
                EXCIT=_F(CHARGE=TORSION,),
                OPTION='CALC_G_GLOB',);
 
-GG13REF=GL13REF*pi*A/2.
+GGref13=Gref13*pi*A/2.
 
 TEST_TABLE(TABLE=GGLOB13,
            NOM_PARA='G',
-           VALE=GG13REF,
+           VALE=GGref13,
            PRECISION=0.012,);
 
 # POST_K1_K2_K3
@@ -668,8 +661,7 @@ TABK13A1=POST_K1_K2_K3(MODELISATION='3D',
                        MATER=MAT,
                        TABL_DEPL_SUP=DEP13H1,
                        TABL_DEPL_INF=DEP13B1,
-                       ABSC_CURV_MAXI=0.2,
-                       INFO=2,
+                       ABSC_CURV_MAXI=0.35,
                        VECT_K1=(0.,0.,1.,),);
 
 DEP13B2=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
@@ -688,8 +680,7 @@ TABK13A2=POST_K1_K2_K3(MODELISATION='3D',
                        MATER=MAT,
                        TABL_DEPL_SUP=DEP13H2,
                        TABL_DEPL_INF=DEP13B2,
-                       ABSC_CURV_MAXI=0.2,
-                       INFO=2,
+                       ABSC_CURV_MAXI=0.35,
                        VECT_K1=(0.,0.,1.,),);
 
 DEP13B3=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
@@ -708,17 +699,16 @@ TABK13A3=POST_K1_K2_K3(MODELISATION='3D',
                        MATER=MAT,
                        TABL_DEPL_SUP=DEP13H3,
                        TABL_DEPL_INF=DEP13B3,
-                       ABSC_CURV_MAXI=0.2,
-                       INFO=2,
+                       ABSC_CURV_MAXI=0.35,
                        VECT_K1=(0.,0.,1.,),);
 
 # ---------------
 
 TEST_TABLE(TABLE=TABK13A1,
            NOM_PARA='K1',
-           VALE=K1,
-           PRECISION=0.02,
-           REFERENCE='AUTRE_ASTER',);
+           VALE=K1ref,
+           PRECISION=0.01,
+           REFERENCE='ANALYTIQUE',);
 
 # TEST DE K1
 
@@ -726,17 +716,17 @@ TEST_TABLE(TABLE=TABK13A1,
 
 TEST_TABLE(TABLE=TABK13A2,
            NOM_PARA='K1',
-           VALE=K1,
-           PRECISION=0.02,
-           REFERENCE='AUTRE_ASTER',);
+           VALE=K1ref,
+           PRECISION=0.01,
+           REFERENCE='ANALYTIQUE',);
 
 # ---------------
 
 TEST_TABLE(TABLE=TABK13A3,
            NOM_PARA='K1',
-           VALE=K1,
+           VALE=K1ref,
            PRECISION=0.02,
-           REFERENCE='AUTRE_ASTER',);
+           REFERENCE='ANALYTIQUE',);
 
 # TEST DE K3 ET G
 
@@ -744,44 +734,44 @@ TEST_TABLE(TABLE=TABK13A3,
 
 TEST_TABLE(TABLE=TABK13A1,
            NOM_PARA='K3',
-           VALE=K3,
-           PRECISION=0.09,
-           REFERENCE='AUTRE_ASTER',);
+           VALE=K3ref,
+           PRECISION=0.02,
+           REFERENCE='ANALYTIQUE',);
 
 TEST_TABLE(TABLE=TABK13A1,
            NOM_PARA='G',
-           VALE=GL13REF,
-           PRECISION=0.08,
-           REFERENCE='AUTRE_ASTER',);
+           VALE=Gref13,
+           PRECISION=0.02,
+           REFERENCE='ANALYTIQUE',);
 
 
 # ---------------
 
 TEST_TABLE(TABLE=TABK13A2,
            NOM_PARA='K3',
-           VALE=K3,
-           PRECISION=0.09,
-           REFERENCE='AUTRE_ASTER',);
+           VALE=K3ref,
+           PRECISION=0.02,
+           REFERENCE='ANALYTIQUE',);
 
 TEST_TABLE(TABLE=TABK13A2,
            NOM_PARA='G',
-           VALE=GL13REF,
-           PRECISION=0.08,
-           REFERENCE='AUTRE_ASTER',);
+           VALE=Gref13,
+           PRECISION=0.02,
+           REFERENCE='ANALYTIQUE',);
 
 # ---------------
 
 TEST_TABLE(TABLE=TABK13A3,
            NOM_PARA='K3',
-           VALE=K3,
-           PRECISION=0.09,
-           REFERENCE='AUTRE_ASTER',);
+           VALE=K3ref,
+           PRECISION=0.01,
+           REFERENCE='ANALYTIQUE',);
 
 TEST_TABLE(TABLE=TABK13A3,
            NOM_PARA='G',
-           VALE=GL13REF,
-           PRECISION=0.9,
-           REFERENCE='AUTRE_ASTER',);
+           VALE=Gref13,
+           PRECISION=0.02,
+           REFERENCE='ANALYTIQUE',);
 
 ### TEST VALEUR ESTIMATEUR D'ERREUR EN RESIDU
 ## VALIDATION ELEMENTS DE BARSOUM
@@ -793,7 +783,7 @@ TEST_RESU(RESU=_F(RESULTAT=RESU1,
                   VALE=3.1675404418243E+06,
                   PRECISION=1E-10,
                   REFERENCE='NON_REGRESSION',
-                  VERSION='9.03.25',),);
+                  VERSION='11.0.4',),);
 
 #
 FIN();

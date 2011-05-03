@@ -2,7 +2,7 @@
      &                  MOD45,DDLEXC,NDDLE,MODES)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 04/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGELINE  DATE 02/05/2011   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,7 +19,6 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C TOLE CRP_20
 C
       IMPLICIT NONE
       CHARACTER*4  MOD45
@@ -29,7 +28,7 @@ C
       REAL*8       BANDE(2)
       CHARACTER*8  MODES
       INTEGER      NDDLE
-      CHARACTER*24 DDLEXC          
+      CHARACTER*24 DDLEXC
 C
 C ======================================================================
 C        MODE_ITER_SIMULT
@@ -186,7 +185,7 @@ C --- VERIF SOLVEUR LINEAIRE
       METRES = ZK24(ISLVK)
       IF ((METRES(1:4).NE.'LDLT').AND.(METRES(1:8).NE.'MULT_FRO').AND.
      &    (METRES(1:5).NE.'MUMPS')) CALL U2MESS('F','ALGELINE5_71')
-      
+
 C     --- CREATION / AFFECTATION DES MATRICES DYNAMIQUES  ---
 
 
@@ -352,9 +351,9 @@ C     CALCUL DES MODES PROPRES
             CALL JEVEUO(DDLEXC,'L',JEXX)
             CALL ELMDDL(MATRIG,NEQ,ZK8(JEXX),NDDLE,NBDDL,ZI(EDDL))
           ELSE
-            NBDDL = 0  
-          ENDIF   
-C                       
+            NBDDL = 0
+          ENDIF
+C
           CALL VPSOR1(LMATRA,NEQ,NBVECT,NFREQ,TOLSOR,ZR(LVEC),
      &              ZR(LRESID),ZR(LWORKD),ZR(LWORKL),LONWL,ZL(LSELEC),
      &              ZR(LDSOR),OMESHI,ZR(LAUX),ZR(LWORKV),ZI(LPROD),

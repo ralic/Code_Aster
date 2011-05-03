@@ -1,4 +1,4 @@
-# MODIF  DATE 25/01/2011   AUTEUR MACOCCO K.MACOCCO 
+# MODIF  DATE 03/05/2011   AUTEUR GENIAUT S.GENIAUT 
 # TITRE TUBE SOUS PRESSION FISSURE - VALIDATION DE LA METHODE X-FEM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -163,6 +163,7 @@ TEST_TABLE( TABLE=KGLOC2,
             REFERENCE='NON_REGRESSION',
             VALE= 1.07407E+06,
             PRECISION=0.001      )
+
 # Calcul avec POST_K1_K2_K3 : la fissure est non-plane, 
 # on ne peut pas calculer automatiquement pour tous les noeuds du fond de fissure
 
@@ -192,20 +193,22 @@ TINF1=POST_RELEVE_T(ACTION=_F(     GROUP_NO='LINF11',
                                     NOM_CHAM='DEPL',TOUT_CMP='OUI',
                                     RESULTAT=CHAMDEPL,
                                     OPERATION='EXTRACTION',) ,) ;
-TABL_KA=POST_K1_K2_K3(  MODELISATION='3D',
-              MATER=MAT,
-              TABL_DEPL_SUP = TSUP1,
-              TABL_DEPL_INF = TINF1,
-              ABSC_CURV_MAXI = RSUP,
-              VECT_K1        = ( 1., 0., 0., ),
-           )
+TABL_KA=POST_K1_K2_K3(MODELISATION='3D',
+                      MATER=MAT,
+                      TABL_DEPL_SUP = TSUP1,
+                      TABL_DEPL_INF = TINF1,
+                      ABSC_CURV_MAXI = RSUP,
+                      VECT_K1        = ( 1., 0., 0., ),
+                      )
+
 IMPR_TABLE(TABLE=TABL_KA)
-TEST_TABLE( TABLE=TABL_KA,
-            NOM_PARA='K1',
-            REFERENCE='NON_REGRESSION',
-            VALE= 1.15799E+06,
-            PRECISION=0.001      )
-                 
+
+TEST_TABLE(TABLE=TABL_KA,
+           NOM_PARA='K1',
+           REFERENCE='NON_REGRESSION',
+           VALE=1.1539117200315E+06,
+           PRECISION=0.001      )
+                
 TSUP2=POST_RELEVE_T(ACTION=_F(     GROUP_NO='LSUP22',
                                     INTITULE='depl sup',
                                     NOM_CHAM='DEPL',TOUT_CMP='OUI',
@@ -229,7 +232,7 @@ IMPR_TABLE(TABLE=TABL_KB)
 TEST_TABLE( TABLE=TABL_KB,
             NOM_PARA='K1',
             REFERENCE='NON_REGRESSION',
-            VALE= 1.08826E+06 ,
+            VALE= 1.0844343992327E+06,
             PRECISION=0.001      )
 
 TABL_KA2=POST_K1_K2_K3(  MODELISATION='3D',
@@ -243,7 +246,7 @@ IMPR_TABLE(TABLE=TABL_KA2)
 TEST_TABLE( TABLE=TABL_KA2,
             NOM_PARA='K1',
             REFERENCE='NON_REGRESSION',
-            VALE= 1.179607E+06,
+            VALE=  1.1686361094376E+06,
             PRECISION=0.001      )
 TABL_KB2=POST_K1_K2_K3(  MODELISATION='3D',
               MATER=MAT,
@@ -256,7 +259,7 @@ IMPR_TABLE(TABLE=TABL_KB2)
 TEST_TABLE( TABLE=TABL_KB2,
             NOM_PARA='K1',
             REFERENCE='NON_REGRESSION',
-            VALE= 1.1086E+06 ,
+            VALE=1.0982590529559E+06,
             PRECISION=0.001      )            
 
 FIN()

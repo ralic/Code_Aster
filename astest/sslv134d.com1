@@ -5,8 +5,9 @@
 
 POURSUITE(   CODE=_F(  NOM = 'SSLV134D') )
 
-K1=1.521160E+06
-GLOC1REF=10.528381
+K1ref =  1.595769E6
+Gref1 = 11.58648
+
 
 # --------------------------------------------------------------------
 
@@ -28,7 +29,7 @@ DEP_INF=POST_RELEVE_T( ACTION=_F(  INTITULE = 'TAB_INF',
 
 # --------------------------------------------------------------------
 
-TABK1K3=POST_K1_K2_K3(  MODELISATION='3D', INFO=2,
+TABK1K3=POST_K1_K2_K3(  MODELISATION='3D',
                         FOND_FISS=FISS,
                         MAILLAGE=MA,
                         SANS_NOEUD =  ( 'N84', 'N91' , 'N98',),
@@ -39,26 +40,26 @@ TABK1K3=POST_K1_K2_K3(  MODELISATION='3D', INFO=2,
                         VECT_K1=(0., 0., 1.,)
                       )
 
-TEST_TABLE(    TABLE=TABK1K3,
-               FILTRE=( _F(  NOM_PARA = 'NOEUD_FOND',
-                                 VALE_K = 'N49'),),
-                      REFERENCE='AUTRE_ASTER',
-                       NOM_PARA='K1',
-                           VALE=K1,
-                      PRECISION=0.010           )
+TEST_TABLE(TABLE=TABK1K3,
+           FILTRE=_F(NOM_PARA = 'NOEUD_FOND',
+                     VALE_K = 'N49'),
+           REFERENCE='ANALYTIQUE',
+           NOM_PARA='K1',
+           VALE=K1ref,
+           PRECISION=0.010)
 
-TEST_TABLE(    TABLE=TABK1K3,
-               FILTRE=( _F(  NOM_PARA = 'NOEUD_FOND',
-                                 VALE_K = 'N49'),),
-                      REFERENCE='AUTRE_ASTER',
-                       NOM_PARA='G',
-                           VALE=GLOC1REF,
-                      PRECISION=0.015           )
+TEST_TABLE(TABLE=TABK1K3,
+           FILTRE=_F(NOM_PARA = 'NOEUD_FOND',
+                     VALE_K = 'N49'),
+           REFERENCE='ANALYTIQUE',
+           NOM_PARA='G',
+           VALE=Gref1,
+           PRECISION=0.015)
 
 
 # --------------------------------------------------------------------
 
-K_N49=POST_K1_K2_K3(  MODELISATION='3D', INFO=2,
+K_N49=POST_K1_K2_K3(  MODELISATION='3D',
                         FOND_FISS=FISS,
                         MAILLAGE=MA,
                         NOEUD =  ( 'N49',),
@@ -69,34 +70,26 @@ K_N49=POST_K1_K2_K3(  MODELISATION='3D', INFO=2,
                         VECT_K1=(0., 0., 1.,)
                       )
 
-TEST_TABLE(    TABLE=K_N49,
-               FILTRE=( _F(  NOM_PARA = 'NOEUD_FOND',
-                                 VALE_K = 'N49'),),
-                      REFERENCE='AUTRE_ASTER',
-                       NOM_PARA='K1',
-                           VALE=K1,
-                      PRECISION=0.010           )
+TEST_TABLE(TABLE=K_N49,
+           FILTRE=_F(NOM_PARA = 'NOEUD_FOND',
+                     VALE_K = 'N49'),
+           REFERENCE='ANALYTIQUE',
+           NOM_PARA='K1',
+           VALE=K1ref,
+           PRECISION=0.010)
 
-TEST_TABLE(    TABLE=K_N49,
-               FILTRE=( _F(  NOM_PARA = 'NOEUD_FOND',
-                                 VALE_K = 'N49'),),
-                      REFERENCE='AUTRE_ASTER',
-                       NOM_PARA='G',
-                           VALE=GLOC1REF,
-                      PRECISION=0.015           )
-
-TEST_TABLE(    TABLE=K_N49,
-               FILTRE=( _F(  NOM_PARA = 'NOEUD_FOND',
-                                 VALE_K = 'N49'),),
-                      REFERENCE='AUTRE_ASTER',
-                       NOM_PARA='G',
-                           VALE=GLOC1REF,
-                      PRECISION=0.01           )
+TEST_TABLE(TABLE=K_N49,
+           FILTRE=_F(NOM_PARA = 'NOEUD_FOND',
+                     VALE_K = 'N49'),
+           REFERENCE='ANALYTIQUE',
+           NOM_PARA='G',
+           VALE=Gref1,
+           PRECISION=0.015)
 
 #
 # --------------------------------------------------------------------
 
-T_K1K3=POST_K1_K2_K3(  MODELISATION='3D', INFO=2,
+T_K1K3=POST_K1_K2_K3(  MODELISATION='3D',
                         MATER=MAT,
                         RESULTAT = RESU1,
                         FOND_FISS=FISS,
@@ -105,22 +98,22 @@ T_K1K3=POST_K1_K2_K3(  MODELISATION='3D', INFO=2,
                         VECT_K1=(0., 0., 1.,)
                       )
 
-TEST_TABLE(    TABLE=T_K1K3,
-               FILTRE=( _F(  NOM_PARA = 'NOEUD_FOND',
-                                 VALE_K = 'N49'),),
-                      REFERENCE='AUTRE_ASTER',
-                       NOM_PARA='K1',
-                           VALE=K1,
-                      PRECISION=0.010           )
+TEST_TABLE(TABLE=T_K1K3,
+           FILTRE=_F(NOM_PARA = 'NOEUD_FOND',
+                     VALE_K = 'N49'),
+           REFERENCE='ANALYTIQUE',
+           NOM_PARA='K1',
+           VALE=K1ref,
+           PRECISION=0.010)
 
+TEST_TABLE(TABLE=T_K1K3,
+           FILTRE=_F(NOM_PARA = 'NOEUD_FOND',
+                     VALE_K = 'N49'),
+           REFERENCE='ANALYTIQUE',
+           NOM_PARA='G',
+           VALE=Gref1,
+           PRECISION=0.015)
 
-TEST_TABLE(    TABLE=T_K1K3,
-               FILTRE=( _F(  NOM_PARA = 'NOEUD_FOND',
-                                 VALE_K = 'N49'),),
-                      REFERENCE='AUTRE_ASTER',
-                       NOM_PARA='G',
-                           VALE=GLOC1REF,
-                      PRECISION=0.015           )
 
 #
 # --------------------------------------------------------------------
@@ -128,7 +121,7 @@ TEST_TABLE(    TABLE=T_K1K3,
 #            (noeuds extremités + noeuds milieux)
 # --------------------------------------------------------------------
 
-K_TOUT=POST_K1_K2_K3(  MODELISATION='3D', INFO=2,
+K_TOUT=POST_K1_K2_K3(  MODELISATION='3D',
                        MATER=MAT,
                        RESULTAT = RESU1,
                        FOND_FISS=FISS,
@@ -137,24 +130,25 @@ K_TOUT=POST_K1_K2_K3(  MODELISATION='3D', INFO=2,
                        VECT_K1=(0., 0., 1.,)
                      )
 # noeud extremite N49
-TEST_TABLE(    TABLE=K_TOUT,
-               FILTRE=( _F(  NOM_PARA = 'NOEUD_FOND',
-                                 VALE_K = 'N49'),),
-                      REFERENCE='AUTRE_ASTER',
-                       NOM_PARA='K1',
-                           VALE=K1,
-                      PRECISION=0.010           )
+TEST_TABLE(TABLE=K_TOUT,
+           FILTRE=_F(NOM_PARA = 'NOEUD_FOND',
+                     VALE_K = 'N49'),
+           REFERENCE='ANALYTIQUE',
+           NOM_PARA='K1',
+           VALE=K1ref,
+           PRECISION=0.010)
+
 
 # noeud milieu N1346
-TEST_TABLE(    TABLE=K_TOUT,
-               FILTRE=( _F(  NOM_PARA = 'NOEUD_FOND',
-                                 VALE_K = 'N1346'),),
-                      REFERENCE='AUTRE_ASTER',
-                       NOM_PARA='K1',
-                           VALE=K1,
-                      PRECISION=0.010           )
+TEST_TABLE(TABLE=K_TOUT,
+           FILTRE=_F(NOM_PARA = 'NOEUD_FOND',
+                     VALE_K = 'N1346'),
+           REFERENCE='ANALYTIQUE',
+           NOM_PARA='K1',
+           VALE=K1ref,
+           PRECISION=0.010)
 
-K_TOU2=POST_K1_K2_K3(  MODELISATION='3D', INFO=2,
+K_TOU2=POST_K1_K2_K3(  MODELISATION='3D',
                        MATER=MAT,
                        RESULTAT = RESU1,
                        FOND_FISS=FISS,
@@ -164,21 +158,21 @@ K_TOU2=POST_K1_K2_K3(  MODELISATION='3D', INFO=2,
                        VECT_K1=(0., 0., 1.,)
                      )
 
-TEST_TABLE(    TABLE=K_TOU2,
-               FILTRE=( _F(  NOM_PARA = 'NOEUD_FOND',
-                                 VALE_K = 'N49'),),
-                      REFERENCE='AUTRE_ASTER',
-                       NOM_PARA='K1',
-                           VALE=K1,
-                      PRECISION=0.010           )
+TEST_TABLE(TABLE=K_TOU2,
+           FILTRE=_F(NOM_PARA = 'NOEUD_FOND',
+                     VALE_K = 'N49'),
+           REFERENCE='ANALYTIQUE',
+           NOM_PARA='K1',
+           VALE=K1ref,
+           PRECISION=0.010)
 
-TEST_TABLE(    TABLE=K_TOU2,
-               FILTRE=( _F(  NOM_PARA = 'NOEUD_FOND',
-                                 VALE_K = 'N1353'),),
-                      REFERENCE='AUTRE_ASTER',
-                       NOM_PARA='K1',
-                           VALE=K1,
-                      PRECISION=0.010           )
+TEST_TABLE(TABLE=K_TOU2,
+           FILTRE=_F(NOM_PARA = 'NOEUD_FOND',
+                     VALE_K = 'N1353'),
+           REFERENCE='ANALYTIQUE',
+           NOM_PARA='K1',
+           VALE=K1ref,
+           PRECISION=0.010)
 
 FIN()
 #

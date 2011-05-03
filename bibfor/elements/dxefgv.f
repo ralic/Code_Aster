@@ -1,7 +1,7 @@
       SUBROUTINE DXEFGV (NOMTE,OPTION,XYZL,PGL ,DEPL,
      +                   EFFGT)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 02/05/2011   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,7 +20,7 @@ C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
       IMPLICIT REAL*8 (A-H,O-Z)
       CHARACTER*16 NOMTE, OPTION
-      REAL*8       XYZL(3,1) , PGL(3,1)
+      REAL*8       XYZL(3,1) , PGL(3,3)
       REAL*8       DEPL(1)
       REAL*8       EFFGT(1)
 C     ------------------------------------------------------------------
@@ -73,10 +73,10 @@ C --- AUX POINTS DE CALCUL
 C     --------------------
 C ---     POINTS D'INTEGRATION
       IF (OPTION(8:9).EQ.'GA') THEN
-         CALL DXEFGT(NOMTE, XYZL, PGL, SIGTH)
+         CALL DXEFGT(PGL,SIGTH)
 C ---     POINTS DE CALCUL
       ELSEIF (OPTION(8:9).EQ.'NO') THEN
-         CALL DXEFNT(NOMTE, XYZL, PGL, SIGTH)
+         CALL DXEFNT(NOMTE, PGL, SIGTH)
       ENDIF
 C
 C --- CALCUL DES EFFORTS GENERALISES 'VRAIS'

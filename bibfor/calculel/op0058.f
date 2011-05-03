@@ -1,7 +1,7 @@
       SUBROUTINE OP0058()
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF CALCULEL  DATE 02/05/2011   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -118,7 +118,7 @@ C     --------------------------------------------------------
 
 C     -- CREATION DU SOLVEUR :
       SOLVEU = '&&OP0058.SOLVEUR'
-      CALL CRESOL(SOLVEU,' ')
+      CALL CRESOL(SOLVEU)
 
       CALL MEDOM1(MODELE,MATE,CARA,KCHA,NCHAR,CTYP,RESUCO,NUORD)
       CALL DISMOI('F','PHENOMENE' ,MODELE,'MODELE',IBID,PHENO,IERD)

@@ -1,7 +1,7 @@
       SUBROUTINE OP0045()
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGELINE  DATE 02/05/2011   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -296,7 +296,7 @@ C     --- MATRICE K COMPLEXE ---
 C     --- METHODE QZ ---
       IF (LQZ) THEN
         IF ((TYPEQZ(1:5).EQ.'QZ_QR').AND.((TYPRES(1:10).EQ.'FLAMBEMENT')
-     &       .OR.(LC).OR.(.NOT.LKR)))
+     &       .OR.LC.OR.(.NOT.LKR)))
      &    CALL U2MESS('F','ALGELINE5_60')
       ENDIF
       IF ((OPTIOF.EQ.'TOUT').AND.(.NOT.LQZ))
@@ -388,7 +388,7 @@ C        TREE LE SOLVEUR LINEAIRE, ET NON PAS LA SD SOLVEUR CREE PAR LA
 C        CMDE ECLATEE NUME_DDL LORS DE LA CONSTITUTION DES MATRICES.
       CALL JEVEUO(RAIDE//'.REFA','L',JREFA)
       SOLVEU='&&OP0045.SOLVEUR'
-      CALL CRESOL(SOLVEU,' ')
+      CALL CRESOL(SOLVEU)
       CALL JEVEUO(SOLVEU//'.SLVK','L',ISLVK)
       CALL JEVEUO(SOLVEU//'.SLVI','L',ISLVI)
       NPREC=ZI(ISLVI)
@@ -413,7 +413,7 @@ C     --- VERIFICATION DES FREQUENCES MIN ET MAX, PASSAGE EN OMEGA2
         FMAX = 0.D0
         IF (NNFREQ.GT.0) FMIN = ZR(LBORFR)
         IF (NNFREQ.GT.1) FMAX = ZR(LBORFR+1)
-        IF ((LC).AND.(FMIN.LT.0.D0)) THEN
+        IF (LC.AND.(FMIN.LT.0.D0)) THEN
           FMIN = -FMIN
           IF (NIV .GE. 1) THEN
              WRITE(IFM,*)'PROBLEME QUADRATIQUE'
@@ -471,7 +471,7 @@ C     DANS LES AUTRES CAS (VPFOPC,WPFOPR,WPFOPC) ON SORT DES LE CALCUL
 C     DU SHIFT SIGMA
       IF (.NOT.LC) THEN
 C     --- PROBLEME GENERALISE REEL SYMETRIQUE ---
-        IF ((LKR).AND.(.NOT.LNS)) THEN
+        IF (LKR.AND.(.NOT.LNS)) THEN
           CALL MTDEFS(MATOPA,RAIDE,'V','R')
           CALL MTDSCR(MATOPA)
           CALL JEVEUO(MATOPA(1:19)//'.&INT','E',LMATRA)
@@ -642,7 +642,7 @@ C     --- INITIALISATION A UNDEF DE LA STRUCTURE DE DONNEES RESUF ---
   22  CONTINUE
 
 C     --- CAS GENERALISE REEL ---
-      IF ((LKR).AND.(.NOT.LC).AND.(.NOT.LNS)) THEN
+      IF (LKR.AND.(.NOT.LC).AND.(.NOT.LNS)) THEN
         CALL WKVECT('&&OP0045.VECTEUR_PROPRE','V V R',NEQ*NBVECT,LVEC)
       ELSE
 C     --- CAS GENERALISE COMPLEXE OU QUADRATIQUE REEL ET COMPLEXE ---
@@ -678,7 +678,7 @@ C     --- CAS GENERALISE COMPLEXE OU QUADRATIQUE REEL ET COMPLEXE ---
           CALL WKVECT('&&OP0045.QRI.WORK','V V I',QRN+6,IISCAL)
           CALL WKVECT('&&OP0045.QRB.WORK','V V L',QRN,IBSCAL)
         ENDIF
-        IF ((LKR).AND.(.NOT.LC).AND.(.NOT.LNS)) THEN
+        IF (LKR.AND.(.NOT.LC).AND.(.NOT.LNS)) THEN
           CALL WKVECT('&&OP0045.QZ.VALPRO','V V R',QRN,LVALPR)
           CALL WKVECT('&&OP0045.QZ.MATRICEK','V V R',QRN2,IQRN)
           CALL WKVECT('&&OP0045.QZ.MATRICEM','V V R',QRN2,LQRN)
@@ -750,7 +750,7 @@ C     --- CAS REEL QUADRATIQUE APPROCHE COMPLEXE ---
           CALL WKVECT('&&OP0045.VECT.WORKV','V V C',3*NBVECT,LWORKV)
           CALL WKVECT('&&OP0045.VAL.PRO','V V C',2*(NFREQ+1),LDSOR)
 C     --- CAS COMPLEXE QUADRATIQUE  ---
-        ELSEIF ((.NOT.LKR).AND.(LC)) THEN
+        ELSEIF ((.NOT.LKR).AND.LC) THEN
           CALL WKVECT('&&OP0045.RESID','V V C',2*NEQ,LRESID)
           CALL WKVECT('&&OP0045.VECT.WORKD','V V C',6*NEQ,LWORKD)
           CALL WKVECT('&&OP0045.VECT.WORKL','V V C',LONWL,LWORKL)
@@ -807,7 +807,7 @@ C     ---------------------  PROBLEME GENERALISE   ---------------------
 C     ------------------------------------------------------------------
 C     ------------------------------------------------------------------
 
-        IF ((METHOD(1:8).EQ.'SORENSEN').AND.(LKR).AND.(.NOT.LNS)) THEN
+        IF ((METHOD(1:8).EQ.'SORENSEN').AND.LKR.AND.(.NOT.LNS)) THEN
 C     ------------------------------------------------------------------
 C     -------  SORENSEN PB GENERALISE REEL SYMETRIQUE  --------
 C     ------------------------------------------------------------------
@@ -858,7 +858,7 @@ C     ------------------------------------------------------------------
             ZK24(LRESUK-1+  MXRESF+IMET) = 'SORENSEN'
  377      CONTINUE
 
-        ELSE IF ((LQZ).AND.(LKR).AND.(.NOT.LNS)) THEN
+        ELSE IF (LQZ.AND.LKR.AND.(.NOT.LNS)) THEN
 C     ------------------------------------------------------------------
 C     -------  QZ PB GENERALISE REEL SYMETRIQUE  --------
 C     ------------------------------------------------------------------
@@ -889,7 +889,7 @@ C     ------------------------------------------------------------------
   126         CONTINUE
           ENDIF
 
-        ELSE IF ((LQZ).AND.((.NOT.LKR).OR.(LNS))) THEN
+        ELSE IF (LQZ.AND.((.NOT.LKR).OR.LNS)) THEN
 C     ------------------------------------------------------------------
 C     -------  QZ PB GENERALISE COMPLEXE OU REEL NON SYM  --------
 C     ------------------------------------------------------------------
@@ -1122,7 +1122,7 @@ C     --- POSITION MODALE NEGATIVE DES MODES INTERDITE
       KNEGA = 'NON'
       NPARR = NBPARR
       IF (TYPCON.EQ.'MODE_ACOU') NPARR = 7
-      IF ((.NOT.LC).AND.(LKR).AND.(.NOT.LNS)) THEN
+      IF ((.NOT.LC).AND.LKR.AND.(.NOT.LNS)) THEN
         CALL VPPARA(MODES,TYPCON,KNEGA,LRAIDE,LMASSE,LAMOR,
      &              MXRESF,NEQ,NCONV,OMECOR,ZI(LDDL),ZI(LPROD),
      &              ZR(LVEC),CBID, NBPARI, NPARR, NBPARK, NOPARA,'    ',
@@ -1157,7 +1157,7 @@ C     ------------------------------------------------------------------
         OPTIOV = ' '
       ELSE
         OPTIOV = OPTIOF
-        IF ((LC).OR.(.NOT.LKR).OR.(LNS)) THEN
+        IF (LC.OR.(.NOT.LKR).OR.LNS) THEN
 C --- POUR DEBRANCHER LE TEST DE STURM DANS VPCNTL
           OPTIOV = ' '
           CALL U2MESS('I','ALGELINE2_73')
@@ -1194,7 +1194,7 @@ C     ------------------------------------------------------------------
 C --- MATRICES NON SYMETRIQUES SANS DOUTE HORS DU PERIMETRE
 C     DE LA SENSIBILITE
         IF (LNS) CALL ASSERT(.FALSE.)
-        IF ((LKR).AND.(.NOT.LC)) THEN
+        IF (LKR.AND.(.NOT.LC)) THEN
           CALL SEMORE(LRAIDE,LAMOR,LMASSE,NEQ,MXRESF,NCONV,
      &            ZR(LRESUR),ZR(LVEC),
      &            NBPARI,NBPARR,NBPARK,NBPARA,NOPARA,

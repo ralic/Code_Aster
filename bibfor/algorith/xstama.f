@@ -4,7 +4,7 @@
      &                  NMAFON,NMAEN1,NMAEN2,NMAEN3 )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/04/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF ALGORITH  DATE 03/05/2011   AUTEUR GENIAUT S.GENIAUT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -108,6 +108,11 @@ C     --------------------------------------------------
      &            ZI(JMAFON),ZI(JMAEN1),ZI(JMAEN2),ZI(JMAEN3),
      &            NMAFON,NMAEN1,NMAEN2,NMAEN3 )
 
+C     S'IL N'Y A PAS DE MAILLES DE FOND, ON SORT
+      IF (NMAFON.EQ.0) GOTO 9999
+
+C     SI NB_COUCH N'EST PAS DEFINI, ON SORT
+      IF (NCOUCH.EQ.0) GOTO 9999
 
 C     2) POUR TENIR COMPTE DE L'ENRICHISSEMENT GEOMETRIQUE A NB_COUCH
 C     ------------------------------------------------------------
@@ -172,6 +177,8 @@ C       ON RECOMMENCE L'ENRICHISSEMENT DES MAILLES AVEC LE NOUVEAU STANO
      &              NMAFON,NMAEN1,NMAEN2,NMAEN3 )
 
       ENDIF
+
+ 9999 CONTINUE
 
       CALL JEDEMA()
       END

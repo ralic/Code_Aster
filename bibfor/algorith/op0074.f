@@ -2,7 +2,7 @@
       IMPLICIT REAL*8 (A-H,O-Z)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/04/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF ALGORITH  DATE 02/05/2011   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -77,7 +77,7 @@ C
 C     --- CREATION DU SOLVEUR ---
 C
       SOLVEU='&&OP0074.SOLVEUR'
-      CALL CRESOL(SOLVEU,' ')
+      CALL CRESOL(SOLVEU)
 
 C
 C       --- CALCUL PAR SUPERPOSITION SUR BASE MODALE ---

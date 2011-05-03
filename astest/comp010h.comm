@@ -1,8 +1,8 @@
-# MODIF  DATE 26/04/2011   AUTEUR PROIX J-M.PROIX 
+# MODIF  DATE 02/05/2011   AUTEUR PROIX J-M.PROIX 
 #====================================================================== 
 #
 # TITRE : VARIATION DE TEMPERATURE DANS 'ROUSS_VISC' 
-# comp010h.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test S
+# comp010h.para = tps_job 120 mem_job 32Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG

@@ -12,7 +12,7 @@
      &                   CODRET)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 02/05/2011   AUTEUR DELMAS J.DELMAS 
 C RESPONSABLE GRANET S.GRANET
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -303,7 +303,7 @@ C =====================================================================
 C --- CALCUL DE LA MATRICE B AU POINT D'INTEGRATION -------------------
 C =====================================================================
          CALL CABTHM(NDDLS,NDDLM,NNO,NNOS,NNOM,DIMUEL,
-     &               DIMDEF,NDIM,NPI,KPI,IPOIDS,IPOID2,IVF,IVF2,
+     &               DIMDEF,NDIM,KPI,IPOIDS,IPOID2,IVF,IVF2,
      &               IDFDE,IDFDE2,DFDI,DFDI2,
      &               GEOM,POIDS,POIDS2,B,NMEC,YAMEC,ADDEME,YAP1,
      &               ADDEP1,YAP2,ADDEP2,YATE,ADDETE,NP1,NP2,AXI)

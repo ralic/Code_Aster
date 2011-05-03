@@ -1,7 +1,7 @@
       SUBROUTINE ALGOGL(DEFICO,RESOCO,LMAT  ,LDSCON,NOMA  ,
      &                  RESU  ,CTCCVG)
 C
-C MODIF ALGORITH  DATE 19/10/2010   AUTEUR DESOZA T.DESOZA 
+C MODIF ALGORITH  DATE 02/05/2011   AUTEUR DELMAS J.DELMAS 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
 C COPYRIGHT (C) 2005 IFP - MARTIN GUITTON         WWW.CODE-ASTER.ORG
@@ -20,7 +20,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C RESPONSABLE ABBAS M.ABBAS
-C TOLE CRP_20
+C
 C
       IMPLICIT     NONE
       CHARACTER*8  NOMA
@@ -28,7 +28,7 @@ C
       CHARACTER*19 RESU
       INTEGER      LMAT,LDSCON
       INTEGER      CTCCVG(2)
-C      
+C
 C ----------------------------------------------------------------------
 C
 C ROUTINE CONTACT (METHODES DISCRETES - RESOLUTION)
@@ -128,7 +128,7 @@ C          C'EST D/K+1.
 C DELT0  : INCREMENT DE DEPLACEMENT DEPUIS LA DERNIERE ITERATION DE
 C          NEWTON SANS TRAITER LE CONTACT. C'EST C-1.F.
 C ======================================================================
-      CALL INFDBG('CONTACT',IFM,NIV) 
+      CALL INFDBG('CONTACT',IFM,NIV)
       IF(NIV.GE.2) THEN
         WRITE (IFM,*) '<CONTACT> <> ALGO_CONTACT   : CONT. ACTIVES'
         WRITE (IFM,*) '<CONTACT> <> ALGO_FROTTEMENT: SANS'
@@ -199,7 +199,7 @@ C ======================================================================
       ITEMAX = ITEMUL*NBLIAI
       ISTO   = CFDISI(DEFICO,'STOP_SINGULIER')
       NESMAX = CFDISD(RESOCO,'NESMAX')
-      NBLIAC = CFDISD(RESOCO,'NBLIAC')      
+      NBLIAC = CFDISD(RESOCO,'NBLIAC')
       LLF    = CFDISD(RESOCO,'LLF'   )
       LLF1   = CFDISD(RESOCO,'LLF1'  )
       LLF2   = CFDISD(RESOCO,'LLF2'  )
@@ -207,8 +207,8 @@ C ======================================================================
       SPLIAI = CFDISD(RESOCO,'SPLIAI')
       IF (NBLIAC.GT.0) THEN
         INDIC  = 1
-      ELSE 
-        INDIC  = 0  
+      ELSE
+        INDIC  = 0
       ENDIF
       K24BLA = ' '
       ITER   = 0
@@ -259,10 +259,10 @@ C
         CALL CFACAT(NDIM  ,INDIC ,NBLIAC,AJLIAI,SPLIAI,
      &              LLF   ,LLF1  ,LLF2  ,INDFAC,NESMAX,
      &              DEFICO,RESOCO,LMAT  ,NBLIAI,XJVMAX)
-C 
+C
 C --- ELIMINATION DES PIVOTS NULS
-C 
-        CALL ELPIV1(XJVMAX,INDIC ,NBLIAC,AJLIAI,SPLIAI, 
+C
+        CALL ELPIV1(XJVMAX,INDIC ,NBLIAC,AJLIAI,SPLIAI,
      &              SPAVAN,NOMA  ,DEFICO,RESOCO)
 C
 C --- ON A SUPPRIME UNE LIAISON
@@ -458,9 +458,9 @@ C                            ON A CONVERGE
 C ======================================================================
 
   160 CONTINUE
-C 
+C
 C --- CALCUL DES FORCES DE CONTACT (AT.MU)
-C 
+C
       CALL CFATMU(NEQ   ,NESMAX,NDIM  ,NBLIAC,0     ,
      &            LLF   ,LLF1  ,LLF2  ,RESOCO)
 C
@@ -468,7 +468,7 @@ C --- VALEUR DES VARIABLES DE CONVERGENCE
 C
       CTCCVG(1) = 0
       CTCCVG(2) = 0
-C      
+C
 C --- ETAT DES VARIABLES DE CONTROLE DU CONTACT
 C
       CALL CFECRD(RESOCO,'NBLIAC',NBLIAC)
@@ -476,10 +476,10 @@ C
       IF ( NIV .GE. 2 ) THEN
         WRITE(IFM,1002) ITER
       END IF
-  999 CONTINUE      
-C 
-C --- SAUVEGARDE DES INFOS DE DIAGNOSTIC 
-C 
+  999 CONTINUE
+C
+C --- SAUVEGARDE DES INFOS DE DIAGNOSTIC
+C
       CALL CFITER(RESOCO,'E','CONT',ITER  ,R8BID)
       CALL CFITER(RESOCO,'E','LIAC',NBLIAC,R8BID)
 C

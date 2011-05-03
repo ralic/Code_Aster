@@ -8,7 +8,7 @@
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ALGORITH  DATE 26/04/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF ALGORITH  DATE 02/05/2011   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -455,7 +455,7 @@ C ======================================================================
 
         CALL LCHBR2( TYPMOD,OPTION,IMATE,CRIT,CONGEM(ADCOME),
      &   DEFGEM(ADDEME+NDIM),TINI,T,TREF,DEPS,VINTM,VINTP,DSPDP1,DSPDP2,
-     &    SIPM,SIPP,CONGEP(ADCOME),DSDEME,DSIDP1,DSIDP2,RETCOM)
+     &    SIPP,CONGEP(ADCOME),DSDEME,DSIDP1,DSIDP2,RETCOM)
         IF ((OPTION(1:16).EQ.'RIGI_MECA_TANG').OR.
      &            (OPTION(1:9).EQ.'FULL_MECA')) THEN
           DO 413 I = 1 , 2*NDIM

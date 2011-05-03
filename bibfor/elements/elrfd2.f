@@ -5,26 +5,26 @@
       CHARACTER*(*) ELREFZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 26/05/2010   AUTEUR DESOZA T.DESOZA 
+C MODIF ELEMENTS  DATE 02/05/2011   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2004  EDF R&D                  WWW.CODE-ASTER.ORG
-C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-C (AT YOUR OPTION) ANY LATER VERSION.                                   
-C                                                                       
-C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-C GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-C                                                                       
-C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.         
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C (AT YOUR OPTION) ANY LATER VERSION.
+C
+C THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+C WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+C GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C
+C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C RESPONSABLE VABHHTS J.PELLET
 C ======================================================================
-C TOLE CRP_20
+C
 
 C BUT:   CALCUL DES DERIVEES 2EMES DES FONCTIONS DE FORME
 C        AU POINT DE COORDONNEES X
@@ -164,7 +164,7 @@ C     ------------------------------------------------------------------
         DFF2(1,1,2) = QUATRE - SIX * Y0
         DFF2(2,1,2) = TROIS - SIX * ( X0 + Y0 )
         DFF2(1,2,2) = TROIS - SIX * ( X0 + Y0 )
-        DFF2(2,2,2) = - SIX * X0 
+        DFF2(2,2,2) = - SIX * X0
 
         DFF2(1,1,3) =  - SIX * Y0
         DFF2(2,1,3) = TROIS - SIX * ( X0 + Y0 )
@@ -250,7 +250,7 @@ C     ------------------------------------------------------------------
         DFF2(1,2,5) = ZERO
         DFF2(2,2,5) = X0
 
-        DFF2(1,1,6) = -Y0 - UN 
+        DFF2(1,1,6) = -Y0 - UN
         DFF2(2,1,6) = ZERO
         DFF2(1,2,6) = ZERO
         DFF2(2,2,6) = -X0
@@ -323,7 +323,7 @@ C     ------------------------------------------------------------------
         DFF2(1,2,3) = (X0 + UNDEMI) * (Y0 + UNDEMI)
         DFF2(2,2,3) = X0 * (X0 + UN) * UNDEMI
 
-        DFF2(1,1,4) = Y0 * (Y0 + UN) * UNDEMI 
+        DFF2(1,1,4) = Y0 * (Y0 + UN) * UNDEMI
         DFF2(2,1,4) = (X0 - UNDEMI) * (Y0 + UNDEMI)
         DFF2(1,2,4) = (X0 - UNDEMI) * (Y0 + UNDEMI)
         DFF2(2,2,4) = X0 * (X0 - UN) * UNDEMI

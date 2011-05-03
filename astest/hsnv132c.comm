@@ -1,4 +1,4 @@
-# MODIF  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 03/05/2011   AUTEUR GENIAUT S.GENIAUT 
 # TITRE : FISSURE X-FEM EN THERMO-ELASTICITE 3D 
 # hsnv132c.para = tps_job 60 mem_job 100Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -93,9 +93,9 @@ FISS=DEFI_FISS_XFEM(MODELE=MODELE,
                     INFO=1,
                     );
 
-MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELE,FISSURE=FISS,INFO=2,);
+MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELE,FISSURE=FISS)
 
-CHXFEM=AFFE_CHAR_MECA(MODELE=MODELEK,LIAISON_XFEM='OUI',INFO=1,);
+CHXFEM=AFFE_CHAR_MECA(MODELE=MODELEK,LIAISON_XFEM='OUI')
 
 ACIER=DEFI_MATERIAU(ELAS=_F(E=205000000000.0,
                             NU=0.3,
@@ -124,11 +124,11 @@ CHARBLO=AFFE_CHAR_MECA(MODELE=MODELEK,
                                  _F(GROUP_NO='NHEAVI',H1Z=0.0),
                                  _F(GROUP_NO='NSINGU',E1Z=0.0,E2Z=0.0,E3Z=0.0,E4Z=0.0),
                                   ),
-                       INFO=1,);
+                       )
 
 L_INST=DEFI_LIST_REEL(DEBUT=0.0,
-                      INTERVALLE=_F(JUSQU_A=3.0,
-                                    NOMBRE=3,),);
+                      INTERVALLE=_F(JUSQU_A=1.,
+                                    NOMBRE=1))
 
 UTOT=STAT_NON_LINE(MODELE=MODELEK,
                    CHAM_MATER=CHAMPMAT,
@@ -136,14 +136,8 @@ UTOT=STAT_NON_LINE(MODELE=MODELEK,
                           _F(CHARGE=CHXFEM,),),
                    COMP_ELAS=_F(RELATION='ELAS',
                                 GROUP_MA='VOL',),
-                   INCREMENT=_F(LIST_INST=L_INST,
-                                INST_FIN=1.0,),
-                   CONVERGENCE=_F(RESI_GLOB_RELA=1e-06,
-                                  ITER_GLOB_MAXI=100,),
-                   SOLVEUR=_F(METHODE='MULT_FRONT',
-                              RENUM='METIS',),
-                   ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA',),
-                   INFO=1,);
+                   INCREMENT=_F(LIST_INST=L_INST),
+                   )
 
 #---------------post--------------------------------------------
 
@@ -174,15 +168,15 @@ IMPR_TABLE(TABLE=TABDEP)
 # REFERENCE : MODELISATION A (ELEMENTS CLASSIQUES)
 TEST_TABLE(TABLE=TABDEP,
            NOM_PARA='DX',
-           VALE= -8.9406264347447E-04,
+           VALE= -8.740426289951E-04,
            FILTRE=_F(NOM_PARA='INST',VALE=1.0,),
            CRITERE='RELATIF',
-           PRECISION=0.01,
+           PRECISION=0.02,
            REFERENCE='AUTRE_ASTER');                        
 
 TEST_TABLE(TABLE=TABDEP,
            NOM_PARA='DY',
-           VALE=  3.8423571840325E-03,
+           VALE=  3.8260958514619E-03,
            FILTRE=_F(NOM_PARA='INST',VALE=1.0,),
            CRITERE='RELATIF',
            PRECISION=0.01,

@@ -1,8 +1,8 @@
       SUBROUTINE NMECMI (FAMI,KPG,KSP,NDIM,TYPMOD,IMATE,COMPOR,CRIT,
-     &                   INSTAM,INSTAP,DEPS,SIGM,VIM,
+     &                   DEPS,SIGM,VIM,
      &                   OPTION,SIGP,VIP,DSIDEP,IRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 02/05/2011   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,14 +20,13 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C TOLE CRP_7
-C TOLE CRP_20
 C
       IMPLICIT REAL*8 (A-H,O-Z)
       INTEGER            KPG,KSP,NDIM,IMATE,IRET,IRET0,IRET1,IRET2
-      CHARACTER*(*)      FAMI(*)
+      CHARACTER*(*)      FAMI
       CHARACTER*8        TYPMOD(*)
       CHARACTER*16       COMPOR(3),OPTION
-      REAL*8             CRIT(6),INSTAM,INSTAP,TP2,LINE
+      REAL*8             CRIT(6),TP2,LINE
       REAL*8             DEPS(6),PREC,DX,DEUXMU
       REAL*8             SIGM(6),VIM(8),SIGP(6),VIP(8),DSIDEP(6,6)
 C ----------------------------------------------------------------------

@@ -1,4 +1,4 @@
-# MODIF  DATE 04/04/2011   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 03/05/2011   AUTEUR GENIAUT S.GENIAUT 
 # TITRE FISSURE DEBOUCHANTE DANS UNE PLAQUE 3D DE LARGEUR FINIE AVEC X-FEM
 # ssnv185d.para = tps_job 130 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -199,7 +199,7 @@ TEST_TABLE( TABLE=PK,
                     _F( NOM_PARA = 'INST',  
                         VALE = 1.,  ),),
             VALE=K1REF,
-            PRECISION=0.02,
+            PRECISION=0.10,
             REFERENCE='ANALYTIQUE' )
 
 #------------------------------------------------------------------------

@@ -1,10 +1,10 @@
        SUBROUTINE ALGOCL(DEFICO,RESOCO,LMAT  ,LDSCON,NOMA  ,
      &                   RESU  ,CTCCVG,CTCFIX)
-C     
+C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 19/10/2010   AUTEUR DESOZA T.DESOZA 
+C MODIF ALGORITH  DATE 02/05/2011   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -20,7 +20,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C RESPONSABLE ABBAS M.ABBAS
-C TOLE CRP_20
+C
 C
       IMPLICIT NONE
       LOGICAL      CTCFIX
@@ -30,7 +30,7 @@ C
       CHARACTER*24 DEFICO,RESOCO
       CHARACTER*19 RESU
       INTEGER      CTCCVG(2)
-C      
+C
 C ----------------------------------------------------------------------
 C
 C ROUTINE CONTACT (METHODES DISCRETES - RESOLUTION)
@@ -131,7 +131,7 @@ C          C'EST D/K+1.
 C DELT0  : INCREMENT DE DEPLACEMENT DEPUIS LA DERNIERE ITERATION DE
 C          NEWTON SANS TRAITER LE CONTACT. C'EST C-1.F.
 C ======================================================================
-      CALL INFDBG('CONTACT',IFM,NIV) 
+      CALL INFDBG('CONTACT',IFM,NIV)
       IF(NIV.GE.2) THEN
         WRITE (IFM,*) '<CONTACT> <> ALGO_CONTACT   : DUALISATION'
         WRITE (IFM,*) '<CONTACT> <> ALGO_FROTTEMENT: SANS'
@@ -201,16 +201,16 @@ C ======================================================================
       ITEMAX = ITEMUL*NBLIAI
       ISTO   = CFDISI(DEFICO,'STOP_SINGULIER')
       NESMAX = CFDISD(RESOCO,'NESMAX')
-      NBLIAC = CFDISD(RESOCO,'NBLIAC')      
+      NBLIAC = CFDISD(RESOCO,'NBLIAC')
       LLF    = CFDISD(RESOCO,'LLF'   )
       LLF1   = CFDISD(RESOCO,'LLF1'  )
       LLF2   = CFDISD(RESOCO,'LLF2'  )
       AJLIAI = CFDISD(RESOCO,'AJLIAI')
-      SPLIAI = CFDISD(RESOCO,'SPLIAI') 
+      SPLIAI = CFDISD(RESOCO,'SPLIAI')
       IF (NBLIAC.GT.0) THEN
         INDIC  = 1
-      ELSE 
-        INDIC  = 0  
+      ELSE
+        INDIC  = 0
       ENDIF
       INDFAC = 1
       TYPEAJ = 'A'
@@ -226,7 +226,7 @@ C
 C ======================================================================
 C                    REPRISE DE LA BOUCLE PRINCIPALE
 C ======================================================================
-      
+
 
  40   CONTINUE
 
@@ -402,7 +402,7 @@ C ======================================================================
                DELPOS = .TRUE.
                CALL CALADU(NEQ,NBDDL,ZR(JAPCOE+JDECAL),
      &                     ZI(JAPDDL+JDECAL),ZR(JRESU),VAL)
-               
+
                AJEU = ZR(JAPJEU+ILIAI-1) - VAL
                AJEU = AJEU/AADELT
                IF (AJEU.LT.RHO) THEN
@@ -426,10 +426,10 @@ C ---
 C ======================================================================
       X1 = 1.D0
       RHORHO = MIN(RHO,X1)
-      
+
       DO 190 KK = 1,NEQ
         ZR(JRESU-1+KK) = ZR(JRESU-1+KK) + RHORHO*ZR(JDELTA-1+KK)
-  190 CONTINUE      
+  190 CONTINUE
 C ======================================================================
 C -- SI RHO < 1 (AU MOINS UNE LIAISON SUPPOSEE NON ACTIVE EST VIOLEE) :
 C -- ON AJOUTE A L'ENSEMBLE DES LIAISONS ACTIVES LA PLUS VIOLEE (LLMIN)
@@ -441,7 +441,7 @@ C ======================================================================
      &              LLMIN ,TYPEC0)
         IF (NIV.GE.2) THEN
           CALL CFIMP2(DEFICO,RESOCO,NOMA  ,IFM   ,LLMIN  ,
-     &                TYPEC0,TYPEAJ,'ALG' ,ZR(JAPJEU+LLMIN-1)) 
+     &                TYPEC0,TYPEAJ,'ALG' ,ZR(JAPJEU+LLMIN-1))
         END IF
 
         GO TO 40
@@ -459,12 +459,12 @@ C ======================================================================
       CALL CFNEG(RESOCO,DEFICO,NOMA   ,NDIM  ,
      &           INDIC ,NBLIAI,NBLIAC ,AJLIAI,
      &           SPLIAI,LLF   ,LLF1   ,LLF2  )
-C 
+C
 C --- CALCUL DES FORCES DE CONTACT (AT.MU)
-C 
+C
       CALL CFATMU(NEQ   ,NESMAX,NDIM  ,NBLIAC,0     ,
      &            LLF   ,LLF1  ,LLF2  ,RESOCO)
-C      
+C
 C --- VALEUR DES VARIABLES DE CONVERGENCE
 C
       CTCCVG(1) = 0
@@ -475,7 +475,7 @@ C
       IF ((NBLIAC.NE.NBLCIN).AND.(INDIC.NE.0)) THEN
         CTCFIX = .TRUE.
       ENDIF
-C      
+C
 C --- ETAT DES VARIABLES DE CONTROLE DU CONTACT
 C
       CALL CFECRD(RESOCO,'NBLIAC',NBLIAC)
@@ -485,9 +485,9 @@ C
       END IF
 C
   999 CONTINUE
-C 
-C --- SAUVEGARDE DES INFOS DE DIAGNOSTIC 
-C 
+C
+C --- SAUVEGARDE DES INFOS DE DIAGNOSTIC
+C
       CALL CFITER(RESOCO,'E','CONT',ITER  ,R8BID)
       CALL CFITER(RESOCO,'E','LIAC',NBLIAC,R8BID)
 C

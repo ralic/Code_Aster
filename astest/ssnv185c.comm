@@ -1,4 +1,4 @@
-# MODIF  DATE 04/04/2011   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 03/05/2011   AUTEUR GENIAUT S.GENIAUT 
 # TITRE FISSURE DEBOUCHANTE DANS UNE PLAQUE 3D DE LARGEUR FINIE AVEC X-FEM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -409,7 +409,7 @@ TEST_TABLE( TABLE=PK,
                         VALE = 1.,  ),
                         ),
             VALE=K1REF,
-            PRECISION=0.03,
+            PRECISION=0.06,
             REFERENCE='ANALYTIQUE' )
 
 #------------------------------------------------------------------------

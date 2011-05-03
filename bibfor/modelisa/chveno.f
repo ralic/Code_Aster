@@ -4,9 +4,9 @@
       CHARACTER*(*)               NOMA, NOMO
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 19/10/2010   AUTEUR DELMAS J.DELMAS 
+C MODIF MODELISA  DATE 02/05/2011   AUTEUR DESOZA T.DESOZA 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -245,7 +245,8 @@ C
                   IF ( NBMAPR.EQ.NBMAIL .AND. NBMABO.EQ.0 ) THEN
                     CALL ORNORM ( NOMMA, ZI(JGRO), NBMAIL, REORIE,
      &                                                      NORIE1 )
-                  ELSEIF ( NBMAPR.EQ.0 .AND. NBMABO.EQ.NBMAIL ) THEN
+                  ELSEIF ( (NBMAPR.EQ.0 .AND. NBMABO.EQ.NBMAIL) .OR.
+     &                     (MOTFAC .EQ. 'ZONE')          ) THEN
                     CALL ORILMA ( NOMMA, NDIM, ZI(JGRO), NBMAIL,
      &                    NORIE1, NTRAIT, REORIE, PREC, ZERO, IBID )
                   ELSEIF ( NBMAPR.EQ.0 .AND. NBMABO.EQ.0 ) THEN
@@ -326,7 +327,8 @@ C
                 IF ( NBMAPR.EQ.NBOBJ .AND. NBMABO.EQ.0 ) THEN
                   CALL ORNORM ( NOMMA, ZI(JNMA), NBOBJ, REORIE,
      &                                                       NORIE1 )
-                ELSEIF ( NBMAPR.EQ.0 .AND. NBMABO.EQ.NBOBJ ) THEN
+                ELSEIF ( (NBMAPR.EQ.0 .AND. NBMABO.EQ.NBOBJ) .OR.
+     &                   (MOTFAC .EQ. 'ZONE') ) THEN
                   CALL ORILMA ( NOMMA, NDIM, ZI(JNMA), NBOBJ,
      &                  NORIE1, NTRAIT, REORIE, PREC, ZERO, IBID  )
                 ELSEIF ( NBMAPR.EQ.0 .AND. NBMABO.EQ.0 ) THEN

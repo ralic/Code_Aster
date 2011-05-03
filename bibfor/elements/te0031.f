@@ -1,10 +1,10 @@
-      SUBROUTINE TE0031 ( OPTION , NOMTE )
+      SUBROUTINE TE0031(OPTION,NOMTE)
       IMPLICIT NONE
-      CHARACTER*16        OPTION , NOMTE
-C     ----------------------------------------------------------------
-C MODIF ELEMENTS  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
-C ======================================================================
+      CHARACTER*16 OPTION , NOMTE
+C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
+C MODIF ELEMENTS  DATE 02/05/2011   AUTEUR DELMAS J.DELMAS 
+C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -21,7 +21,7 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C
-C     CALCUL DES OPTIONS DES ELEMENTS DE PLAQUE 
+C     CALCUL DES OPTIONS DES ELEMENTS DE PLAQUE
 C          -----------------------------------------------------------
 C                                              TRIANGLE  QUADRANGLE
 C        LINEAIRE          KIRCHOFF  (MINCE)        DKT       DST
@@ -107,7 +107,7 @@ C
         ENDIF
 
 C
-C ---   VERIFICATION DE LA COHERENCE DES INFORMATIONS 
+C ---   VERIFICATION DE LA COHERENCE DES INFORMATIONS
 C ---   PROVENANT DE DEFI_COQU_MULT ET DE AFFE_CARA_ELEM
 C       ----------------------------------
         JNBSPI = 0
@@ -291,11 +291,11 @@ C
              CALL U2MESS('F','ELEMENTS2_71')
            ENDIF
         ENDIF
-        IF ((ZK16(ICOMPO+2) (6:10).EQ.'_REAC') .OR. 
+        IF ((ZK16(ICOMPO+2) (6:10).EQ.'_REAC') .OR.
      &      (ZK16(ICOMPO+2).EQ.'GROT_GDEP') ) THEN
-C            GROT_GDEP CORRESPOND ICI A EULER_ALMANSI   
+C            GROT_GDEP CORRESPOND ICI A EULER_ALMANSI
 
-          IF(ZK16(ICOMPO+2) (6:10).EQ.'_REAC') 
+          IF(ZK16(ICOMPO+2) (6:10).EQ.'_REAC')
      &     CALL U2MESS('A','ELEMENTS2_72')
           DO 40 I = 1,NNO
             I1 = 3* (I-1)
@@ -322,14 +322,14 @@ C
         IF (NOMTE.EQ.'MEDKTR3') THEN
           IF (ZK16(ICOMPO+3) (1:9).EQ.'COMP_INCR') THEN
             CALL DKTNLI ( NOMTE, OPTION, XYZL, UML, DUL, VECLOC,
-     &                    MATLOC, PGL, CODRET )
+     &                    MATLOC, CODRET )
           ELSE
             CALL U2MESK('F','ELEMENTS2_73',1,ZK16(ICOMPO+3))
           ENDIF
         ELSE IF (NOMTE.EQ.'MEDKQU4 ') THEN
           IF (ZK16(ICOMPO+3) (1:9).EQ.'COMP_INCR') THEN
             CALL DKTNLI ( NOMTE, OPTION, XYZL, UML, DUL, VECLOC,
-     &                    MATLOC, PGL, CODRET )
+     &                    MATLOC, CODRET )
           ELSE
             CALL U2MESK('F','ELEMENTS2_73',1,ZK16(ICOMPO+3))
           ENDIF

@@ -4,7 +4,7 @@
      &                     IRET)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 17/01/2011   AUTEUR IDOUX L.IDOUX 
+C MODIF ALGORITH  DATE 02/05/2011   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -59,7 +59,6 @@ C OUT ELAS     : ELASTIQUE OU DISSIPATION?
 C OUT DBLOQ  : BLOQUAGE DE L'ENDOMMAGEMENT DE COMPRESSION
 C OUT IRET     : CODE RETOUR
 C ----------------------------------------------------------------------
-C TOLE CRP_20
 
       LOGICAL     REINIT,TOT1,TOT2,TOT3
       INTEGER     I,J,K,L
@@ -105,7 +104,7 @@ C-------------------------------------------------
         IF ((((EPSI(1).NE.EPSF(1)).OR.(EPSI(2).NE.EPSF(2)).OR.
      &      (EPSI(3).NE.EPSF(3)).OR.(EPSI(4).NE.EPSF(4)).OR.
      &      (EPSI(5).NE.EPSF(5)).OR.(EPSI(6).NE.EPSF(6))).OR.
-     &      (REINIT)).AND.(COMPTE.LE.100)) THEN
+     &      REINIT).AND.(COMPTE.LE.100)) THEN
 
             REINIT=.FALSE.
             COMPTE=COMPTE+1
@@ -436,7 +435,7 @@ C---- CAS OU 2 VALEURS PROPRES SONT NULLES-----------------------------
                   ENDIF
 
                   ELSE
-                  
+
                   REINIT=.FALSE.
                   IF (BR(1)-TOLB.LE.0.D0) THEN
                     BR(1)=TOLB-R8PREM()
@@ -445,7 +444,7 @@ C---- CAS OU 2 VALEURS PROPRES SONT NULLES-----------------------------
                       D=UN-TOLB+R8PREM()
                       DBLOQ=.TRUE.
                   ENDIF
-                  
+
                   ENDIF
 
               IF (REINIT) THEN

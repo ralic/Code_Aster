@@ -1,4 +1,4 @@
-# MODIF  DATE 01/03/2011   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 03/05/2011   AUTEUR GENIAUT S.GENIAUT 
 # TITRE FISSURE INCLINEE EN 2D AVEC X-FEM, CHARGEMENTS VOLUMIQUES
 # ssnp138b.para = tps_job 120 mem_job 256Mo mem_aster 50 ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -129,7 +129,7 @@ K1_2=[ 5013.586 , 2592.142]
 GR  =[1.19751E-04 , 5.64356E-05]
 
 # K1 SUR LE FOND 2 (POST_K1_K2_K3) POUR LES DEUX ANGLES
-PK  =[4462.55 , 2279.5566]
+PK  =[5069.1186266214 , 2589.8601041307]
 
 SI1CH1 = [None]*(nbcalc)
 SI2CH1 = [None]*(nbcalc)
@@ -317,7 +317,6 @@ for i in range(nbcalc) :
                        INST=1.,
                        FISSURE = FISS[i],
                        NUME_FOND = 2,
-                       INFO =2,
                        ABSC_CURV_MAXI = RS,
                        RESULTAT  = UTOT1[i],
                       )
@@ -328,7 +327,6 @@ for i in range(nbcalc) :
                        INST=1.,
                        FISSURE = FISS[i],
                        NUME_FOND = 2,
-                       INFO =2,
                        ABSC_CURV_MAXI = RS,
                        RESULTAT  = UTOT2[i],
                       )

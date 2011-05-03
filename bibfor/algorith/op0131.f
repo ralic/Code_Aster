@@ -2,7 +2,7 @@
       IMPLICIT   NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 02/05/2011   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,7 +19,6 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C TOLE CRP_20
 C     CALCUL DE REPONSE DYNAMIQUE SOUS FORME D INTERSPECTRE
 C     EXCITATION ET REPONSES SONT DES INTERSPECTRES.
 C ----------------------------------------------------------------------
@@ -287,7 +286,7 @@ C  MATRICES DES MODES STATIQUES EST L IDENTITE
                PIM = ZR(IADPIM+(J-1)*NI2+I-1)
                XCJ = R8BID1*PIM*ZC(IADHII-1+NPDSC3*(I-1)+IFREQ1)
                ZC(IADJ -1+NI*(J-1)+NI1+I)   = XCJ
-               ZC(IADJS-1+(NJ)*(I+NI1-1)+J) = DCONJG(XCJ)
+               ZC(IADJS-1+NJ*(I+NI1-1)+J) = DCONJG(XCJ)
  612        CONTINUE
  611     CONTINUE
 C

@@ -1,4 +1,4 @@
-# MODIF  DATE 31/01/2011   AUTEUR MACOCCO K.MACOCCO 
+# MODIF  DATE 03/05/2011   AUTEUR GENIAUT S.GENIAUT 
 # TITRE TUBE SOUS PRESSION FISSURE - VALIDATION DE LA METHODE X-FEM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -212,14 +212,14 @@ TEST_TABLE( TABLE=TABL_K,
                             VALE_I = 1,      ),),
             REFERENCE='AUTRE_ASTER',
             VALE= 1.15799E+06 ,
-            PRECISION=0.03     )
+            PRECISION=0.01     )
 
 TEST_TABLE( TABLE=TABL_K,
             NOM_PARA='K1',
             FILTRE=(_F(  NOM_PARA = 'PT_FOND',  
                             VALE_I = 1,      ),),
             REFERENCE='NON_REGRESSION',
-            VALE= 1.17593E+06 ,
+            VALE=1.1622078075313E+06 ,
             PRECISION=0.001     )            
 
 FIN();

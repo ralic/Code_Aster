@@ -1,4 +1,4 @@
-# MODIF  DATE 18/01/2011   AUTEUR DESOZA T.DESOZA 
+# MODIF  DATE 02/05/2011   AUTEUR DESOZA T.DESOZA 
 # TITRE  Validation du solveur PETSc en elasticite lineaire 3D
 # petsc01c.para = tps_job 60 mem_job 1000Mo nproc_mpi 2 liste_test I
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -75,7 +75,8 @@ VCINE=CALC_CHAR_CINE(NUME_DDL=NU,
                      CHAR_CINE=CHA2,);
 
 MATAS=FACTORISER(reuse =MATAS,
-                 MATR_ASSE=MATAS,);
+                 MATR_ASSE=MATAS,
+                 PRE_COND='LDLT_INC',);
 
 VECAS=RESOUDRE(reuse =VECAS,
                MATR=MATAS,

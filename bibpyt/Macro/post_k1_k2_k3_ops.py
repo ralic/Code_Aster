@@ -1,4 +1,4 @@
-#@ MODIF post_k1_k2_k3_ops Macro  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF post_k1_k2_k3_ops Macro  DATE 03/05/2011   AUTEUR GENIAUT S.GENIAUT 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -1460,7 +1460,8 @@ def get_meth3(self,abscs,coefg,coefg3,kgsig,isig,saut2,INFO,ndim) :
 
 def get_erreur(self,ndim,__tabi) :
 
-      """retourne l'erreur selon les méthodes"""
+      """retourne l'erreur selon les méthodes. 
+      En FEM/X-FEM, on ne retient que le K_MAX de la méthode 1."""
       from Accas import _F
       import aster
       import string
@@ -1490,19 +1491,39 @@ def get_erreur(self,ndim,__tabi) :
             for j in range(index):
                err[j,i] = (kmax[j] - kmin[j]) / kmaxmax
 
-      # filter method 3 line
-      __tabi = CALC_TABLE(TABLE=__tabi,reuse=__tabi, ACTION=(_F(OPERATION='FILTRE',CRIT_COMP='EQ',VALE = 3, NOM_PARA='METHODE')),INFO=1)
+      # filter method 1 line
+      imeth = 1
+      __tabi = CALC_TABLE(TABLE=__tabi,
+                          reuse=__tabi,
+                          ACTION=_F(OPERATION='FILTRE',
+                                    CRIT_COMP='EQ',
+                                    VALE = imeth,
+                                    NOM_PARA='METHODE')
+                          )
 
       # rename k parameters
-      __tabi = CALC_TABLE(TABLE=__tabi,reuse=__tabi, ACTION=(_F(OPERATION='RENOMME',NOM_PARA=('K1_MAX','K1')),_F(OPERATION='RENOMME',NOM_PARA=('K2_MAX','K2')),_F(OPERATION='RENOMME',NOM_PARA=('G_MAX','G'))),INFO=1)
+      __tabi = CALC_TABLE(TABLE=__tabi,
+                          reuse=__tabi,
+                          ACTION=(_F(OPERATION='RENOMME',NOM_PARA=('K1_MAX','K1')),
+                                  _F(OPERATION='RENOMME',NOM_PARA=('K2_MAX','K2')),
+                                  _F(OPERATION='RENOMME',NOM_PARA=('G_MAX','G')))
+                        )
       if ndim == 3:
-        __tabi = CALC_TABLE(TABLE=__tabi,reuse=__tabi, ACTION=(_F(OPERATION='RENOMME',NOM_PARA=('K3_MAX','K3'))),INFO=1)
+        __tabi = CALC_TABLE(TABLE=__tabi,
+                            reuse=__tabi,
+                            ACTION=_F(OPERATION='RENOMME',NOM_PARA=('K3_MAX','K3'))
+                            )
 
       # create error
       if ndim != 3:
-         tab_int = CREA_TABLE(LISTE=(_F(LISTE_R=(tuple(__tabi.EXTR_TABLE().values()['G_MIN'])), PARA='G_MIN'),_F(LISTE_R=(tuple(err[0].tolist())), PARA='ERR_K1'),_F(LISTE_R=(tuple(err[1].tolist())), PARA='ERR_K2')))
+         tab_int = CREA_TABLE(LISTE=(_F(LISTE_R=(tuple(__tabi.EXTR_TABLE().values()['G_MIN'])), PARA='G_MIN'),
+                                     _F(LISTE_R=(tuple(err[0].tolist())), PARA='ERR_K1'),
+                                     _F(LISTE_R=(tuple(err[1].tolist())), PARA='ERR_K2')))
       else:
-         tab_int = CREA_TABLE(LISTE=(_F(LISTE_R=(tuple(__tabi.EXTR_TABLE().values()['G_MIN'])), PARA='G_MIN'),_F(LISTE_R=(tuple(err[0].tolist())), PARA='ERR_K1'),_F(LISTE_R=(tuple(err[1].tolist())), PARA='ERR_K2'),_F(LISTE_R=(tuple(err[2].tolist())), PARA='ERR_K3')))
+         tab_int = CREA_TABLE(LISTE=(_F(LISTE_R=(tuple(__tabi.EXTR_TABLE().values()['G_MIN'])), PARA='G_MIN'),
+                                     _F(LISTE_R=(tuple(err[0].tolist())), PARA='ERR_K1'),
+                                     _F(LISTE_R=(tuple(err[1].tolist())), PARA='ERR_K2'),
+                                     _F(LISTE_R=(tuple(err[2].tolist())), PARA='ERR_K3')))
 
       # add error
       __tabi = CALC_TABLE(TABLE=__tabi,reuse=__tabi,ACTION=(_F(OPERATION='COMB',NOM_PARA='G_MIN',TABLE=tab_int)),INFO=1)
@@ -1523,7 +1544,9 @@ def get_erreur(self,ndim,__tabi) :
       if ndim == 3: params = params + ('K3', 'ERR_K3', 'G',)
       else: params = params + ('G',)
 
-      __tabi = CALC_TABLE(TABLE=__tabi,reuse=__tabi,ACTION=(_F(OPERATION='EXTR',NOM_PARA=tuple(params))),INFO=1,TITRE="CALCUL DES FACTEURS D'INTENSITE DES CONTRAINTES PAR LA METHODE POST_K1_K2_K3")
+      __tabi = CALC_TABLE(TABLE=__tabi,
+                          reuse=__tabi,ACTION=(_F(OPERATION='EXTR',NOM_PARA=tuple(params))),
+                          TITRE="CALCUL DES FACTEURS D'INTENSITE DES CONTRAINTES PAR LA METHODE POST_K1_K2_K3")
 
       return __tabi
 

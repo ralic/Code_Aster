@@ -1,4 +1,4 @@
-# MODIF  DATE 14/02/2011   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 03/05/2011   AUTEUR GENIAUT S.GENIAUT 
 # TITRE CALCUL DES FACTEURS D INTENSITE DES CONTRAINTES 
 # sdls114a.para = tps_job 240 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -201,8 +201,8 @@ for i in range(0,n_mode) :
 
    
 # TEST DE NON REGRESSION SUR LES 5 PREMIERS MODES
-Kg_ref =[-1.92107E+10,-1.16602E+11, 8.03919E+10,-1.18804E+11, 1.72295E+11]
-Ku_ref =[-1.8976E+10,-1.1515E+11,7.9484E+10,-1.174E+11,1.7046E+11]
+Kg_ref =[-1.92107E+10, -1.16602E+11, 8.03919E+10, -1.18804E+11, 1.72295E+11]
+Ku_ref =[-1.90387E+10, -1.15558E+11, 7.96724E+10, -1.17741E+11, 1.70753E+11]
 
 for i in range(0,5) :
    imode = i + 1
@@ -213,14 +213,17 @@ for i in range(0,5) :
               VALE=Kg_ref[i],
               PRECISION=0.001,
               REFERENCE = 'NON_REGRESSION',
-             );
+              VERSION='11.00.04'
+             )
              
    TEST_TABLE(TABLE=T1_K[i],
               NOM_PARA='K1',
               VALE=Ku_ref[i],
               PRECISION=0.001,
               REFERENCE = 'NON_REGRESSION',
-             );
+              VERSION='11.00.04'
+             )
+
 
 ##############################################
 # CALCUL TRANSITOIRE EN COORDONNEES MODALES

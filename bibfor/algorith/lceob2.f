@@ -3,7 +3,7 @@
      &                     SEUIL,BDIM,B,D,MULT,ELAS,DBLOQ,IRET)
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 17/01/2011   AUTEUR IDOUX L.IDOUX 
+C MODIF ALGORITH  DATE 02/05/2011   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -58,7 +58,6 @@ C OUT ELAS    : ELASTIQUE OU DISSIPATION?
 C OUT DBLOQ   : BLOQUAGE DE L'ENDOMMAGEMENT DE COMPRESSION
 C OUT IRET    : CODE RETOUR
 C ----------------------------------------------------------------------
-C TOLE CRP_20
 
       INTEGER     I,J,K,COMPTE,IRET1
 
@@ -85,13 +84,13 @@ C TOLE CRP_20
         B(I)=BM(I)
  100  CONTINUE
       D=DM
-      
+
 C-------------------------------------------------------
 C-------------------------------------------------------
 C----CALCUL DE FB: FORCE THERMO ASSOCIEE A
 C-------------------ENDOMMAGEMENT ANISOTROPE DE TRACTION
 
-       CALL CEOBFB(B,EPS,LAMBDA,MU,ECROB,BDIM,FB,RTEMP,FBSM) 
+       CALL CEOBFB(B,EPS,LAMBDA,MU,ECROB,BDIM,FB,RTEMP,FBSM)
 
        FBS(1)=FB(1)
        FBS(2)=FB(2)
@@ -154,7 +153,7 @@ C--------------------------------------------------------
 C Rajout du test sur COUPL (fiche 15020) : lorsque c'est le cas,
 C la derivee du residu est une matrice singuliere et le systeme ne
 C peut etre resolu. On sort pour enclencher la decoupe du pas de temps
-            
+
             CALL DFMDF(3,FBS,MTE1)
 
             CALL DFBDB(3,B,EPS,DEUX*MU,LAMBDA,ECROB,MTE2)
@@ -318,7 +317,7 @@ C----CALCUL DU CRITERE-------------------------------------
 137         CONTINUE
 
             NORMRB=SQRT(TATA)
-            
+
             GOTO 38
            ELSE
             IRET=1

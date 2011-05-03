@@ -7,7 +7,7 @@
      &                    VECGRM, NBCGRM )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 08/03/2011   AUTEUR SELLENET N.SELLENET 
+C MODIF MODELISA  DATE 02/05/2011   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -25,7 +25,6 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C RESPONSABLE SELLENET N.SELLENET
-C TOLE CRP_20
 C-----------------------------------------------------------------------
 C     LECTURE DU MAILLAGE - FORMAT MED - LES FAMILLES
 C     -    -     -                 -         --

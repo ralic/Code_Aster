@@ -4,7 +4,7 @@
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
-C MODIF ELEMENTS  DATE 08/02/2011   AUTEUR GRANET S.GRANET 
+C MODIF ELEMENTS  DATE 02/05/2011   AUTEUR DELMAS J.DELMAS 
 C RESPONSABLE GRANET S.GRANET
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,7 +22,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C TOLE CRP_20
+C
 C     BUT: CALCUL DES VECTEURS ELEMENTAIRES EN MECANIQUE
 C          CORRESPONDANT A UN FLUX THM (THH, THHM, THH, THH2,HHM,HM,HH)
 C          SUR DES FACES D'ELEMENTS ISOPARAMETRIQUES 2D
@@ -66,7 +66,7 @@ C ======================================================================
       REAL*8      POIDS,R,Z,TX,TY,NX,NY,VALPAR(3),DELTAT,TPLUS
       REAL*8      PRES,PRESF,POIDS2,NX2,NY2,FLU1,FLU2,FLUTH
       CHARACTER*8 NOMPAR(3),TYPMOD(2)
-      INTEGER     TYPVF 
+      INTEGER     TYPVF
 C ======================================================================
 C --- CARACTERISTIQUES DE LA MODELISATION ------------------------------
 C ======================================================================
@@ -225,7 +225,7 @@ C ======================================================================
 C ======================================================================
 C --- SI MODELISATION = HH, OU HH2 -------------------------------------
 C ======================================================================
-           IF ((NOMTE(1:3).EQ.'HH_' ).OR. 
+           IF ((NOMTE(1:3).EQ.'HH_' ).OR.
      >         (NOMTE(1:4).EQ.'HH2_').OR.
      >         (NOMTE(1:9).EQ.'DHH2S3_SU').OR.
      >         (NOMTE(1:9).EQ.'DHH2S3_VF')) THEN
@@ -274,7 +274,7 @@ C ======================================================================
      +                                 POIDS*DELTAT*FLU2*ZR(IVF2+KK+I-1)
  402            CONTINUE
               END IF
-           END IF  
+           END IF
 C ======================================================================
 C --- SI MODELISATION = THV --------------------------------------------
 C ======================================================================
@@ -427,11 +427,11 @@ C ======================================================================
   170       CONTINUE
           END IF
           TX = -NX*PRES
-          TY = -NY*PRES                         
+          TY = -NY*PRES
           DO 180 I = 1,NNOS
             L = NDLNO* (I-1) - 1
             ZR(IRES+L+1) = ZR(IRES+L+1) + TX*ZR(IVF+K+I-1)*POIDS
-            ZR(IRES+L+2) = ZR(IRES+L+2) + TY*ZR(IVF+K+I-1)*POIDS   
+            ZR(IRES+L+2) = ZR(IRES+L+2) + TY*ZR(IVF+K+I-1)*POIDS
   180     CONTINUE
           DO 181 I = 1,(NNO - NNOS)
             L = NDLNO*NNOS+NDLNM* (I-1) -1

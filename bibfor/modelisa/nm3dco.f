@@ -1,10 +1,8 @@
       SUBROUTINE NM3DCO(FAMI,KPG,KSP,NDIM,OPTION,IMATE,SIGM,
-     &             EPSM,DEPS,VIM,SIGP,VIP,DSIDEP,CRILDC,CODRET)
-C MODIF MODELISA  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
-C TOLE CRP_20
+     &                  DEPS,VIM,SIGP,VIP,DSIDEP,CRILDC,CODRET)
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-
+C MODIF MODELISA  DATE 02/05/2011   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -43,7 +41,7 @@ C     ------------------------------------------------------------------
 C     ARGUMENTS
 C     ------------------------------------------------------------------
 C     ------------------------------------------------------------------
-      REAL*8 SIGM(6),DEPS(6),VIM(*),EPSM(6)
+      REAL*8 SIGM(6),DEPS(6),VIM(*)
       REAL*8 SIGP(6),VIP(*),DSIDEP(6,6),CRILDC(3)
       CHARACTER*16 OPTION
       CHARACTER*(*) FAMI

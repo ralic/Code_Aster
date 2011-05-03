@@ -4,7 +4,7 @@
       CHARACTER*8   NOMA,NOMO
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 02/05/2011   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -31,7 +31,7 @@ C IN  : LMAX   : NOMBRE MAX DE MAILLE OU GROUPE DE MAILLE
 C IN  : NBOCC  : NOMBRE D'OCCURRENCES DU MOT CLE DISCRET
 C IN  : IVR    : TABLEAU DES INDICES DE VERIFICATION
 C ----------------------------------------------------------------------
-C TOLE  CRP_20
+C
 C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       INTEGER          ZI
       COMMON  /IVARJE/ ZI(1)

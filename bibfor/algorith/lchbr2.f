@@ -1,8 +1,9 @@
       SUBROUTINE LCHBR2(TYPMOD,OPTION,IMATE,CRIT,SIGM,EPSM,TD,TF,
-     &     TR,DEPSM,VIM,VIP,DSPDP1,DSPDP2,SIPM,SIPP,
-     &     SIGP,DSIDEP,DSIDP1,DSIDP2,IRET)
+     &                  TR,DEPSM,VIM,VIP,DSPDP1,DSPDP2,SIPP,
+     &                  SIGP,DSIDEP,DSIDP1,DSIDP2,IRET)
+C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 02/05/2011   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,14 +21,13 @@ C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
 C ======================================================================
-C TOLE CRP_20
 C TOLE CRP_21
 C ======================================================================
       IMPLICIT      NONE
       INTEGER       IMATE,IRET
       REAL*8        DEPSM(6),VIM(*),VIP(*),SIGP(6),DSIDEP(6,6)
       REAL*8        SIGM(6),TD,TF,TR,DSIDP1(6),DSIDP2(6),EPSM(6)
-      REAL*8        CRIT(*),SIPM,SIPP,DSPDP1,DSPDP2
+      REAL*8        CRIT(*),SIPP,DSPDP1,DSPDP2
       CHARACTER*8   TYPMOD(*)
       CHARACTER*16  OPTION
 C ======================================================================

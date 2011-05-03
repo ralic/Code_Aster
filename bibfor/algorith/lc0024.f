@@ -1,8 +1,8 @@
       SUBROUTINE LC0024(FAMI,KPG,KSP,NDIM,IMATE,COMPOR,CRIT,INSTAM,
-     &             INSTAP,EPSM,DEPS,SIGM,VIM,OPTION,ANGMAS,SIGP,VIP,
-     &                  TAMPON,TYPMOD,ICOMP,NVI,DSIDEP,CODRET)
+     &                 INSTAP,EPSM,DEPS,SIGM,VIM,OPTION,ANGMAS,SIGP,VIP,
+     &                 TAMPON,TYPMOD,ICOMP,NVI,DSIDEP,CODRET)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 02/05/2011   AUTEUR DELMAS J.DELMAS 
 C TOLE CRP_21
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -33,6 +33,6 @@ C ======================================================================
       CHARACTER*(*)   FAMI
 
             CALL NM3DCO(FAMI,KPG,KSP,NDIM,OPTION,IMATE,SIGM,
-     &             EPSM,DEPS,VIM,SIGP,VIP,DSIDEP,CRIT,CODRET)
+     &                  DEPS,VIM,SIGP,VIP,DSIDEP,CRIT,CODRET)
 
       END
