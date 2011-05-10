@@ -1,4 +1,4 @@
-#@ MODIF imprime Lecture_Cata_Ele  DATE 25/01/2011   AUTEUR PELLET J.PELLET 
+#@ MODIF imprime Lecture_Cata_Ele  DATE 10/05/2011   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 # RESPONSABLE VABHHTS J.PELLET
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -26,6 +26,11 @@ import string,copy,os ,traceback
 from  Lecture_Cata_Ele import utilit
 ut=utilit
 ERR=ut.ERR
+# --------------------------------------------------------------------------------
+# Remarque : Ce fichier contient des "bouts" de code que l'on peut facilement executer
+#            pour obtenir des fichiers de documentation ou de problemes.
+#            Ces bouts de code se situent ci-dessous vers la chaine "XXUTIL"
+# --------------------------------------------------------------------------------
 
 
 #######################################################################################################
@@ -398,11 +403,17 @@ def imprime_ojb(file,capy):
 
    d={} # dictionnaire des ojb
 
+   #=========================================================================================
+   # XXUTIL:
    # Bouts de code servant parfois aux développeurs pour générer des fichiers de "doc" :
    # Ces bouts de code sont placés ici, après le "degenerise" et avant les "del cata"
    if 0 :
       nomfic="/local00/home/lvabhhts/liCMP.txt"
       impr_CMP(nomfic,capy) # pour imprimer tous les 6-uplets ( OPTION  TYPELEM  IN/OUT  PARAM   GRANDEUR  CMP )
+   if 0 :
+      nomfic="/local00/home/lvabhhts/PbOptions.txt"
+      PbOptions(nomfic,capy) # pour imprimer le nom des parametres inutilises des options
+   #=========================================================================================
 
 
    #  TOUCOMLIBR = objet contenant tous les commentaires libres :
@@ -1176,4 +1187,52 @@ def impr_CMP(nomfic,capy):
                            nogd,licmp=dicmod[mode]
                            for cmp in licmp :
                               file.write(noop+" "+note+" OUT "+param+" "+nogd+" "+cmp+"\n")
+
+
+
+#----------------------------------------------------------------------------------
+def PbOptions(nomfic,capy):
+# pour imprimer les noms des options qui ne sont plus realisees
+# pour imprimer les noms des parametres inutilises des options
+#-----------------------------------------------------------------------------------
+   file = open(nomfic,"w")
+
+   utilise={}
+   for cata in capy.te:
+       entete,modlocs,opts=cata.cata_te
+       note=entete[0]
+
+       if opts:
+            for opt in opts:
+                noop=opt[0];numte=int(opt[1]);nbin=len(opt[2])/2;nbou=len(opt[3])/2
+                if not utilise.has_key(noop) : utilise[noop]=[]
+                if numte > 0 :
+                    for kk in range(nbin):
+                        param=opt[2][2*kk+1]
+                        utilise[noop].append(param)
+                    for kk in range(nbou):
+                        param=opt[3][2*kk+1]
+                        utilise[noop].append(param)
+
+   declare={}
+   for cata in capy.op:
+       noop,lchin,lchou,comlibr=cata.cata_op
+       declare[noop]=[]
+       for (param,nogd,localis,comlibr) in lchin :
+          declare[noop].append(param)
+       for (param,nogd,localis,comlibr) in lchou :
+          declare[noop].append(param)
+
+   # les parametres declares et non utilises sont a supprimer :
+   lopt=declare.keys() ; lopt.sort()
+   for noop in lopt:
+     if not noop in utilise.keys() :
+        file.write("A_DETR "+noop+'\n')
+        continue
+     for param in declare[noop] :
+        if not param in utilise[noop] :
+           file.write("INUTILISE "+noop+" "+param+'\n')
+        else :
+           file.write("UTILISE "+noop+" "+param+'\n')
+
 

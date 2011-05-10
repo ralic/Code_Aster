@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 31/01/2011   AUTEUR NICOLAS G.NICOLAS 
+#& MODIF COMMANDE  DATE 10/05/2011   AUTEUR SELLENET N.SELLENET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -22,7 +22,7 @@
 
 from Macro.macr_adap_mail_ops import macr_adap_mail_ops
 
-def macr_adap_mail_prod(self,MAJ_CHAM,ADAPTATION,**args):
+def macr_adap_mail_prod(self, MAJ_CHAM, ADAPTATION, **args):
 #
 # 0. Typage des structures produites
 #
@@ -53,8 +53,8 @@ MACR_ADAP_MAIL=MACRO(nom="MACR_ADAP_MAIL",op=macr_adap_mail_ops,sd_prod=macr_ada
 #
 # 2. Version de HOMARD
 #
-  VERSION_HOMARD = SIMP(statut='f',typ='TXM',defaut="V9_9",
-                        into=("V9_9", "V9_N", "V9_N_PERSO"),
+  VERSION_HOMARD = SIMP(statut='f',typ='TXM',defaut="V10_1",
+                        into=("V10_1", "V10_N", "V10_N_PERSO"),
                         fr="Version de HOMARD",
                         ang="HOMARD release"),
 #
@@ -75,14 +75,14 @@ MACR_ADAP_MAIL=MACRO(nom="MACR_ADAP_MAIL",op=macr_adap_mail_ops,sd_prod=macr_ada
                       ang="Mesh before adaptation" ),
 #
   MAILLAGE_NP1 = SIMP(statut='o',typ=CO,
-                      fr="Maillage apres adaptation",
+                      fr="Maillage après adaptation",
                       ang="Mesh after adaptation" ),
 #
 # 4.2. Eventuellement, on peut produire un maillage annexe
 #      Actuellement, c'est le maillage n+1, mais de degré différent.
 #
   MAILLAGE_NP1_ANNEXE = SIMP(statut='f',typ=CO,
-                             fr="Maillage annexe apres adaptation",
+                             fr="Maillage annexe après adaptation",
                              ang="Additional mesh after adaptation" ),
 #
 # 5. Le pilotage de l'adaptation, avec les variantes suivantes :
@@ -123,7 +123,7 @@ MACR_ADAP_MAIL=MACRO(nom="MACR_ADAP_MAIL",op=macr_adap_mail_ops,sd_prod=macr_ada
 # 6.1.2. Sous forme de concept resultat_sdaster
 #
     RESULTAT_N = SIMP(statut='f',typ=(evol_elas,evol_noli,evol_ther) ,
-                      fr="Concept resultat Code_Aster contenant le champ",
+                      fr="Concept résultat Code_Aster contenant le champ",
                       ang="The Code_Aster result with the field" ),
 #
     b_champ_adaptation = BLOC(condition="(RESULTAT_N != None)",
@@ -167,7 +167,7 @@ MACR_ADAP_MAIL=MACRO(nom="MACR_ADAP_MAIL",op=macr_adap_mail_ops,sd_prod=macr_ada
 # 6.1.5.1. Soit le numero d'ordre
 #
       NUME_ORDRE = SIMP(statut='f',typ='I',
-                        fr="Numero d ordre",
+                        fr="Numéro d ordre",
                         ang="Rank" ),
 #
 # 6.1.5.2. Soit l'instant
@@ -213,7 +213,7 @@ MACR_ADAP_MAIL=MACRO(nom="MACR_ADAP_MAIL",op=macr_adap_mail_ops,sd_prod=macr_ada
 # 6.1.7. Usage du champ : la valeur par maille ou le max du saut entre mailles
 #
     b_usage_champ = BLOC(condition=" (RESULTAT_N != None) or (CHAM_GD != None) ",
-                         fr="Usage du champ : direct ou saut",
+                         fr="Usage du champ : par maille ou saut entre mailles voisines",
                          ang="Use type for the field : direct or jump",
 #
       USAGE_CHAMP = SIMP(statut='f',typ='TXM',defaut="MAILLE",into=("MAILLE","SAUT"),
@@ -272,7 +272,7 @@ MACR_ADAP_MAIL=MACRO(nom="MACR_ADAP_MAIL",op=macr_adap_mail_ops,sd_prod=macr_ada
                  fr="Pour une adaptation selon une zone à raffiner",
                  ang="For adaptation among a zone",
 #
-    ZONE = FACT(statut='f',max='**',
+    ZONE = FACT(statut='o',min=1,max='**',
                 fr="Définition de zones à raffiner.",
                 ang="Refined zone definition.",
 #
@@ -347,10 +347,10 @@ MACR_ADAP_MAIL=MACRO(nom="MACR_ADAP_MAIL",op=macr_adap_mail_ops,sd_prod=macr_ada
 ##gn                           fr="X et Y du centre d'un disque plein ou perce, d'une sphere.",
 ##gn                           ang="X and Y of the centre of a disk or of a sphere.",
       X_CENTRE = SIMP(statut='f',typ='R',
-                      fr="Abscisse du centre du disque ou de la sphere",
+                      fr="Abscisse du centre du disque ou de la sphère",
                       ang="X for the center of the disk or of the sphere"),
       Y_CENTRE = SIMP(statut='f',typ='R',
-                      fr="Ordonnee du centre du disque ou de la sphere",
+                      fr="Ordonnée du centre du disque ou de la sphère",
                       ang="Y for the center of the disk or of the sphere"),
 ##gn      ) ,
 #
@@ -360,7 +360,7 @@ MACR_ADAP_MAIL=MACRO(nom="MACR_ADAP_MAIL",op=macr_adap_mail_ops,sd_prod=macr_ada
 ##gn                       fr="Cote du centre de la sphere.",
 ##gn                       ang="Z for the center of the sphere.",
        Z_CENTRE = SIMP(statut='f',typ='R',
-                       fr="Cote du centre de la sphere",
+                       fr="Cote du centre de la sphère",
                        ang="Z for the center of the sphere"),
 ##gn      ) ,
 #
@@ -370,10 +370,10 @@ MACR_ADAP_MAIL=MACRO(nom="MACR_ADAP_MAIL",op=macr_adap_mail_ops,sd_prod=macr_ada
 ##gn                                fr="Le rayon d'un disque perce ou d'un tuyau.",
 ##gn                                ang="The radius of a holed disk or of a pipe.",
       RAYON_INT = SIMP(statut='f',typ='R',
-                       fr="Rayon interieur",
+                       fr="Rayon intérieur",
                        ang="Internal radius"),
       RAYON_EXT = SIMP(statut='f',typ='R',
-                       fr="Rayon exterieur",
+                       fr="Rayon extérieur",
                        ang="External radius"),
 ##gn      ) ,
 #
@@ -386,7 +386,7 @@ MACR_ADAP_MAIL=MACRO(nom="MACR_ADAP_MAIL",op=macr_adap_mail_ops,sd_prod=macr_ada
                    fr="Abscisse du vecteur directeur de l'axe",
                    ang="X for the axial vector"),
       Y_AXE = SIMP(statut='f',typ='R',
-                   fr="Ordonnee du vecteur directeur de l'axe",
+                   fr="Ordonnée du vecteur directeur de l'axe",
                    ang="Y for the axial vector"),
       Z_AXE = SIMP(statut='f',typ='R',
                    fr="Cote du vecteur directeur de l'axe",
@@ -395,7 +395,7 @@ MACR_ADAP_MAIL=MACRO(nom="MACR_ADAP_MAIL",op=macr_adap_mail_ops,sd_prod=macr_ada
                     fr="Abscisse d'un point de la base, sur l'axe",
                     ang="X for the basis, on the axis"),
       Y_BASE = SIMP(statut='f',typ='R',
-                    fr="Ordonnee d'un point de la base, sur l'axe",
+                    fr="Ordonnée d'un point de la base, sur l'axe",
                     ang="Y for the basis, on the axis"),
       Z_BASE = SIMP(statut='f',typ='R',
                     fr="Cote d'un point de la base, sur l'axe",
@@ -461,46 +461,46 @@ MACR_ADAP_MAIL=MACRO(nom="MACR_ADAP_MAIL",op=macr_adap_mail_ops,sd_prod=macr_ada
                     ang="List of the groups of nodes for filtering of the adaptation." ),
   ) ,
 #
-# 11. Suivi d'une frontiere
+# 11. Suivi d'une frontière
 #
-# 11.1. Definition d'une frontiere par un maillage (valable seulement pour des frontieres 1D)
+# 11.1. Definition d'une frontière par un maillage (valable seulement pour des frontières 1D)
 #
   MAILLAGE_FRONTIERE = SIMP(statut='f',typ=maillage_sdaster,
-                           fr="Maillage de la frontiere à suivre",
-                           ang="Boundary mesh" ),
+                           fr="Maillage de la frontière discrète à suivre",
+                           ang="Discrete boundary mesh" ),
 #
-  b_frontiere = BLOC( condition = " MAILLAGE_FRONTIERE != None " ,
-                      fr="Information complémentaire sur la frontière",
-                      ang="Further information about boundary",
+  b_FRONTIERE = BLOC( condition = " MAILLAGE_FRONTIERE != None " ,
+                      fr="Information complémentaire sur la frontière discrète",
+                      ang="Further information about discrete boundary",
 #
     GROUP_MA_FRONT = SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**',
-                          fr="Liste des groupes de mailles définissant la frontière",
-                          ang="Mesh groups which define the boundary" ),
+                          fr="Liste des groupes de mailles définissant la frontière discrète",
+                          ang="Mesh groups which define the discrete boundary" ),
 #
   ) ,
 #
-# 11.2. Definition analytique d'une frontiere
+# 11.2. Definition analytique d'une frontière
 #
   FRONTIERE_ANALYTIQUE = FACT(statut='f',max='**',
-                              fr="Definition analytique de frontieres a suivre.",
+                              fr="Definition analytique de frontières a suivre.",
                               ang="Analytical definition of a boundary.",
 #
-# 11.2.1. Type de la frontiere
+# 11.2.1. Nom de la frontière
+#
+    NOM = SIMP(statut='o',typ='TXM',validators=NoRepeat(),max=1,
+               fr="Nom de la frontière analytique",
+               ang="Name of the analytic boundary" ),
+#
+# 11.2.2. Type de la frontière
 #
     TYPE = SIMP(statut='o',typ='TXM',into=("SPHERE", "CYLINDRE"),
-                fr="Type de la frontiere",
-                ang="Type of the boundary" ),
-#
-# 11.2.2. Groupe lie a la frontiere
-#
-    GROUP_MA = SIMP(statut='o',typ=grma,validators=NoRepeat(),max='**',
-                    fr="Liste des groupes de mailles definissant la frontiere",
-                    ang="Groups of meshes which define the boundary" ),
+                fr="Type de la frontière analytique",
+                ang="Type of the analytic boundary" ),
 #
 # 11.2.3. Pour une sphere ou un cylindre : rayon et centre
 #
     b_fr_rayon = BLOC( condition = " (TYPE == 'SPHERE') or (TYPE == 'CYLINDRE') " ,
-                       fr="Le rayon et le centre d'une sphere ou d'un cylindre.",
+                       fr="Le rayon et le centre d'une sphère ou d'un cylindre.",
                        ang="The radius and the centre of a sphere or of a cylinder.",
       RAYON = SIMP(statut='o',typ='R',
                    fr="Rayon",
@@ -509,7 +509,7 @@ MACR_ADAP_MAIL=MACRO(nom="MACR_ADAP_MAIL",op=macr_adap_mail_ops,sd_prod=macr_ada
                       fr="Abscisse du centre",
                       ang="X for the center"),
       Y_CENTRE = SIMP(statut='o',typ='R',
-                      fr="Ordonnee du centre",
+                      fr="Ordonneée du centre",
                       ang="Y for the center"),
       Z_CENTRE = SIMP(statut='o',typ='R',
                       fr="Cote du centre",
@@ -525,12 +525,18 @@ MACR_ADAP_MAIL=MACRO(nom="MACR_ADAP_MAIL",op=macr_adap_mail_ops,sd_prod=macr_ada
                    fr="Abscisse du vecteur directeur de l'axe",
                    ang="X for the axial vector"),
       Y_AXE = SIMP(statut='o',typ='R',
-                   fr="Ordonnee du vecteur directeur de l'axe",
+                   fr="Ordonnée du vecteur directeur de l'axe",
                    ang="Y for the axial vector"),
       Z_AXE = SIMP(statut='o',typ='R',
                    fr="Cote du vecteur directeur de l'axe",
                    ang="Z for the axial vector"),
     ) ,
+#
+# 11.2.5. Groupe(s) lie(s) a la frontière
+#
+    GROUP_MA = SIMP(statut='o',typ=grma,validators=NoRepeat(),max='**',
+                    fr="Liste des groupes de mailles placées sur la frontière",
+                    ang="Groups of meshes which are located on the boundary" ),
 #
   ) ,
 #
@@ -565,7 +571,7 @@ MACR_ADAP_MAIL=MACRO(nom="MACR_ADAP_MAIL",op=macr_adap_mail_ops,sd_prod=macr_ada
 # 12.3.2. Sous forme de champ dans un resultat
 #
     RESULTAT = SIMP(statut='f',typ=(evol_elas,evol_noli,evol_ther),
-                    fr="Resultat contenant le champ à mettre à jour",
+                    fr="Résultat contenant le champ à mettre à jour",
                     ang="Result with the field to be updated" ),
 #
     b_nom_du_champ = BLOC(condition="(RESULTAT != None)",
@@ -595,7 +601,7 @@ MACR_ADAP_MAIL=MACRO(nom="MACR_ADAP_MAIL",op=macr_adap_mail_ops,sd_prod=macr_ada
 # 12.5.1. Soit le numero d'ordre
 #
       NUME_ORDRE = SIMP(statut='f',typ='I',
-                        fr="Numero d ordre du champ à mettre à jour",
+                        fr="Numéro d ordre du champ à mettre à jour",
                         ang="Rank of the field to be updated" ),
 #
 # 12.5.2. Soit l'instant
@@ -652,7 +658,7 @@ MACR_ADAP_MAIL=MACRO(nom="MACR_ADAP_MAIL",op=macr_adap_mail_ops,sd_prod=macr_ada
 # 13.1. Changement de degre
 #
       DEGRE         = SIMP(statut='o',typ='TXM',defaut="NON",into=("OUI","NON"),
-                          fr="Changement de degre du maillage",
+                          fr="Changement de degré du maillage",
                           ang="Modification of the degree of the mesh" ),
 #
 # 13.2. Création des joints
@@ -702,13 +708,13 @@ MACR_ADAP_MAIL=MACRO(nom="MACR_ADAP_MAIL",op=macr_adap_mail_ops,sd_prod=macr_ada
 #
 # 15. Unite logique d'un fichier a ajouter a HOMARD.Configuration
 #
-  b_unite = BLOC( condition = " (VERSION_HOMARD == 'V9_N') or \
-                                (VERSION_HOMARD == 'V9_N_PERSO') " ,
+  b_unite = BLOC( condition = " (VERSION_HOMARD == 'V10_N') or \
+                                (VERSION_HOMARD == 'V10_N_PERSO') " ,
                                 fr="Fichier supplémentaire.",
                                 ang="Additional file.",
 #
   UNITE = SIMP(statut='f',typ='I',
-               fr="Unite logique à ajouter à HOMARD.Configuration",
+               fr="Unite logique du fichier à ajouter à HOMARD.Configuration",
                ang="Additional file to HOMARD.Configuration" ),
 #
   ) ,

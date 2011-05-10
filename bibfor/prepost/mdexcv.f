@@ -1,8 +1,8 @@
-      SUBROUTINE MDEXCV ( NOFIMD,
-     &                    NOCHMD, NOMAMD, NUMPT, NUMORD, TYPENT, TYPGEO,
-     &                    NBVAL, CODRET )
+      SUBROUTINE MDEXCV ( NOFIMD, IDFIMD,
+     &                    NOCHMD, NUMPT, NUMORD, TYPENT, TYPGEO,
+     &                    NBVAL,  CODRET )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 08/03/2011   AUTEUR SELLENET N.SELLENET 
+C MODIF PREPOST  DATE 10/05/2011   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -28,8 +28,8 @@ C .        .     .        .                                            .
 C .  NOM   . E/S . TAILLE .           DESCRIPTION                      .
 C .____________________________________________________________________.
 C . NOFIMD .  E  .   1    . NOM DU FICHIER MED                         .
+C . NOFIMD .  E  .   1    . OU NUMERO DU FICHIER DEJA OUVERT           .
 C . NOCHMD .  E  .   1    . NOM DU CHAMP MED VOULU                     .
-C . NOMAMD .  E  .   1    . NOM DU MAILLAGE MED ASSOCIE                .
 C . NUMPT  .  E  .   1    . NUMERO DU PAS DE TEMPS DU CHAMP            .
 C . NUMORD .  E  .   1    . NUMERO D'ORDRE DU CHAMP                    .
 C . TYPENT .  E  .   1    . TYPE D'ENTITE AU SENS MED                  .
@@ -46,7 +46,7 @@ C
 C
 C 0.1. ==> ARGUMENTS
 C
-      CHARACTER*(*) NOFIMD, NOCHMD, NOMAMD
+      CHARACTER*(*) NOFIMD, NOCHMD
 C
       INTEGER NUMPT, NUMORD, TYPENT, TYPGEO, NBVAL
 C
@@ -70,11 +70,12 @@ C
       INTEGER EDCOMP
       PARAMETER (EDCOMP=2)
 C
-      INTEGER IDFIMD
-      INTEGER IAUX
+      INTEGER IDFIMD,NBPROF,IPROF
+      INTEGER IAUX,NPR,NIP,NTMP
 C
       CHARACTER*8 SAUX08
-      LOGICAL FICEXI
+      CHARACTER*64 NOMPRO,NOMLOC
+      LOGICAL FICEXI,DEJOUV
 C ______________________________________________________________________
 C
 C====
@@ -93,29 +94,41 @@ C
       CODRET = 0
 C
       ELSE
-      CALL MFOUVR ( IDFIMD, NOFIMD, EDLECT, IAUX )
+      IF ( IDFIMD.EQ.0 ) THEN
+        CALL MFOUVR ( IDFIMD, NOFIMD, EDLECT, IAUX )
+        DEJOUV = .FALSE.
+      ELSE
+        DEJOUV = .TRUE.
+        IAUX = 0
+      ENDIF
       IF ( IAUX.EQ.0 ) THEN
 C
 C====
 C 2. COMBIEN DE VALEURS ?
 C====
 C
-      CALL MFNVAL ( IDFIMD, NOCHMD, TYPENT, TYPGEO,
-     &              NUMPT,  NUMORD, NOMAMD, EDCOMP,
-     &              NBVAL,  CODRET )
-      IF ( CODRET.NE.0 ) THEN
-        SAUX08='MFNVAL  '
-        CALL U2MESG('F','DVP_97',1,SAUX08,1,CODRET,0,0.D0)
-      ENDIF
+      CALL MFPRLO( IDFIMD, NOCHMD, NUMPT, NUMORD, TYPENT, TYPGEO,
+     &             NOMPRO, NOMLOC, NBPROF, CODRET )
+      DO 10, IPROF = 1, NBPROF
+        CALL MFNNOP( IDFIMD, NOCHMD, TYPENT, TYPGEO, NUMPT,
+     &               NUMORD, IPROF, NOMPRO, EDCOMP, NPR,
+     &               NOMLOC, NIP, NTMP, CODRET )
+        IF ( CODRET.EQ.0 ) THEN
+          NBVAL = NBVAL + NIP*NTMP
+        ENDIF
+  10  CONTINUE
 C
 C====
 C 3. FERMETURE DU FICHIER
 C====
 C
-      CALL MFFERM ( IDFIMD, CODRET )
-      IF ( CODRET.NE.0 ) THEN
-        SAUX08='MFFERM  '
-        CALL U2MESG('F','DVP_97',1,SAUX08,1,CODRET,0,0.D0)
+      IF ( .NOT.DEJOUV ) THEN
+        CALL MFFERM ( IDFIMD, CODRET )
+        IF ( CODRET.NE.0 ) THEN
+          SAUX08='MFFERM  '
+          CALL U2MESG('F','DVP_97',1,SAUX08,1,CODRET,0,0.D0)
+        ENDIF
+        IDFIMD = 0
       ENDIF
 C
       ENDIF

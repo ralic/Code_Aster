@@ -1,4 +1,4 @@
-# MODIF  DATE 19/04/2011   AUTEUR ASSIRE A.ASSIRE 
+# MODIF  DATE 09/05/2011   AUTEUR VERRIER A.VERRIER 
 # TITRE RECALAGE DES PARAMETRES D'UN MODELE DYNAMIQUE PAR ANALYSE MODALE
 # 3 calculs esclaves distribues : ncpus = 3 + 1 (maitre)
 # sdls121b.para = tps_job 600 mem_job 300Mo mem_aster 64 ncpus 4 liste_test S

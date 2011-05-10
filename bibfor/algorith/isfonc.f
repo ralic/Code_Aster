@@ -1,7 +1,7 @@
       LOGICAL FUNCTION ISFONC(FONACT,NOMFOZ)
 C      
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
+C MODIF ALGORITH  DATE 09/05/2011   AUTEUR TARDIEU N.TARDIEU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -74,6 +74,12 @@ C                             DE TYPE ELIMINATION (AFFE_CHAR_CINE)
 C       THM                :  MODELISATION THM
 C       ENDO_NO            :  MODELISATION ENDO AUX NOEUDS *_GVNO
 C       REUSE              :  CONCEPT RE-ENTRANT
+C       LDLT               :  SOLVEUR LDLT        
+C       MULT_FRONT         :  SOLVEUR MULT_FRONT  
+C       GCPC               :  SOLVEUR GCPC        
+C       MUMPS              :  SOLVEUR MUMPS       
+C       PETSC              :  SOLVEUR PETSC       
+C       LDLT_SP            :  PRECONDITIONNEUR LDLT_SP     
 C
 C ---------------------------------------------------------------------
 C
@@ -177,7 +183,20 @@ C
 
       ELSEIF (NOMFON.EQ.'REUSE') THEN
         ISFONC = FONACT(39).EQ.1
-                             
+C
+      ELSEIF (NOMFON.EQ.'LDLT') THEN
+        ISFONC = FONACT(41).EQ.1
+      ELSEIF (NOMFON.EQ.'MULT_FRONT') THEN
+        ISFONC = FONACT(42).EQ.1
+      ELSEIF (NOMFON.EQ.'GCPC') THEN
+        ISFONC = FONACT(43).EQ.1
+      ELSEIF (NOMFON.EQ.'MUMPS') THEN
+        ISFONC = FONACT(44).EQ.1
+      ELSEIF (NOMFON.EQ.'PETSC') THEN
+        ISFONC = FONACT(45).EQ.1
+      ELSEIF (NOMFON.EQ.'LDLT_SP') THEN
+        ISFONC = FONACT(46).EQ.1
+C
       ELSE
         CALL ASSERT(.FALSE.)
       ENDIF

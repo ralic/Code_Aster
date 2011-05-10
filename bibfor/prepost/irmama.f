@@ -1,6 +1,6 @@
       SUBROUTINE IRMAMA(NOMA,NBMA,NOMAI,NBGR,NOGRM,NUMMAI,NBMAT)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF PREPOST  DATE 10/05/2011   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -17,6 +17,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
+C RESPONSABLE SELLENET N.SELLENET
       IMPLICIT NONE
 C
       CHARACTER*(*) NOMA,NOMAI(*),NOGRM(*),NUMMAI
@@ -54,6 +55,7 @@ C     ----------- COMMUNS NORMALISES  JEVEUX  --------------------------
 C     ------------------------------------------------------------------
       CHARACTER*8  NOMMA,K8BID
       INTEGER JNUMA,IMA,IAD,IN,JTOPO,IMAI,IGR,IRET,NBN,LNUMA
+      INTEGER JDIME,NBMAMA,JEXMA,NUMA
 C
 C
       CALL JEMARQ()
@@ -87,6 +89,9 @@ C     --- RECUPERATION DU NUMERO DE MAILLE----
 C  --- TRAITEMENT DES LISTES DE GROUPES DE MAILLES---
       IF(NBGR.NE.0) THEN
 C     --- RECUPERATION DU NUMERO DE MAILLE----
+        CALL JEVEUO(NOMMA//'.DIME','L',JDIME)
+        NBMAMA = ZI(JDIME+3-1)
+        CALL WKVECT('&&IRMAMA.MAILLES','V V I',NBMAMA,JEXMA)
         DO 13 IGR=1,NBGR
           CALL JEEXIN(JEXNOM(NOMMA//'.GROUPEMA',NOGRM(IGR)),IRET)
           IF (IRET.EQ.0) THEN
@@ -105,17 +110,22 @@ C     --- RECUPERATION DU NUMERO DE MAILLE----
               ZI(JTOPO-1+8) = ZI(JTOPO-1+8) + 1
               CALL JEVEUO(JEXNOM(NOMMA//'.GROUPEMA',NOGRM(IGR)),'L',IAD)
               DO 14 IN=1,NBN
+                NUMA = ZI(IAD+IN-1)
+                IF ( ZI(JNUMA+NUMA-1).EQ.0 ) THEN
                 NBMAT=NBMAT+1
-                IF (NBMAT.GT.LNUMA) THEN
-                  LNUMA=2*LNUMA
-                  CALL JUVECA(NUMMAI,LNUMA)
-                  CALL JEVEUO(NUMMAI,'E',JNUMA)
-                END IF
-                ZI(JNUMA-1+NBMAT)=ZI(IAD+IN-1)
+                  IF (NBMAT.GT.LNUMA) THEN
+                    LNUMA=2*LNUMA
+                    CALL JUVECA(NUMMAI,LNUMA)
+                    CALL JEVEUO(NUMMAI,'E',JNUMA)
+                  END IF
+                  ZI(JNUMA-1+NBMAT)=NUMA
+                  ZI(JEXMA+NUMA-1)=1
+                ENDIF
   14          CONTINUE
             ENDIF
           ENDIF
   13    CONTINUE
+        CALL JEDETR('&&IRMAMA.MAILLES')
       ENDIF
 C
       CALL JEDEMA()

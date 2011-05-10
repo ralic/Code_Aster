@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 09/05/2011   AUTEUR VERRIER A.VERRIER 
 # TITRE ROCKING OF A 2D BLOCK RESTING ON A GROUND TABLE
 # sdnv105b.para = tps_job 900 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -237,6 +237,9 @@ cara_dis=AFFE_CARA_ELEM(MODELE=MO,
                         DISCRET=(_F(GROUP_MA=('O','A','O1',),
                                     CARA='K_T_D_N',
                                     VALE=(30000000000.0,10000000.0,0.0,),),
+                                 _F(GROUP_MA=('O','A','O1',),
+                                    CARA='M_T_D_N',
+                                    VALE=(0.0,),),
                                  _F(GROUP_MA=('O','A','O1',),
                                     CARA='A_T_D_N',
                                     VALE=(0.1,0.1,0.0,),),),

@@ -1,13 +1,13 @@
       SUBROUTINE IRCAM1 ( NOFIMD, NOCHMD,
      &                    EXISTC, NCMPRF,
-     &                    NUMPT, INSTAN, UNIINS, NUMORD,
+     &                    NUMPT, INSTAN, NUMORD,
      &                    ADSD, ADSV, ADSL, ADSK, PARTIE,
      &                    NCMPVE, NTLCMP, NTNCMP, NTUCMP, NTPROA,
      &                    NBIMPR, CAIMPI, CAIMPK, TYPECH,
      &                    NOMAMD, NOMTYP, MODNUM, NUANOM,
      &                    CODRET )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 08/03/2011   AUTEUR SELLENET N.SELLENET 
+C MODIF PREPOST  DATE 10/05/2011   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -35,7 +35,6 @@ C       NOCHMD : NOM MED DU CHAMP A ECRIRE
 C       NCMPRF : NOMBRE DE COMPOSANTES DU CHAMP DE REFERENCE
 C       NUMPT  : NUMERO DE PAS DE TEMPS
 C       INSTAN : VALEUR DE L'INSTANT A ARCHIVER
-C       UNIINS : UNITE DE L'INSTANT A ARCHIVER
 C       NUMORD : NUMERO D'ORDRE DU CHAMP
 C       ADSK, D, ... : ADRESSES DES TABLEAUX DES CHAMPS SIMPLIFIES
 C       PARTIE: IMPRESSION DE LA PARTIE IMAGINAIRE OU REELLE POUR
@@ -80,17 +79,18 @@ C
       INTEGER NUMPT, NUMORD
       INTEGER ADSD, ADSV, ADSL, ADSK
       INTEGER EXISTC, NCMPRF
-      INTEGER NCMPVE
+      INTEGER NCMPVE, JCOMP, JUNIT
       INTEGER TYPENT, TYGEOM
       INTEGER MODNUM(NTYMAX), NUANOM(NTYMAX,*)
 C
-      CHARACTER*8 UNIINS, TYPECH
+      CHARACTER*8 TYPECH
       CHARACTER*8 NOMTYP(*)
       CHARACTER*24 NTLCMP, NTNCMP, NTUCMP, NTPROA
-      CHARACTER*32 NOCHMD, NOMPB(2)
       CHARACTER*(*) NOFIMD,PARTIE
-      CHARACTER*32 NOMAMD
-      CHARACTER*32 CAIMPK(2,NBIMPR)
+      CHARACTER*(*) NOMAMD
+      CHARACTER*(*) CAIMPK(2,NBIMPR)
+      CHARACTER*64 NOCHMD
+      CHARACTER*64 NOMPB(2)
 C
       REAL*8 INSTAN
 C
@@ -129,12 +129,10 @@ C
       PARAMETER (EDNOMA=4)
 C
       CHARACTER*8  SAUX08,NTYMAS
-      CHARACTER*16 K16B
       CHARACTER*24 NTVALE
-      CHARACTER*32 NOMPRF
-      CHARACTER*32 NOLOPG,K32B
+      CHARACTER*64 NOMPRF,NOLOPG
 C
-      INTEGER NBREPG,NBPT,IRET,NUMPT2,I
+      INTEGER NBREPG,NBPT,IRET,NUMPT2,I,NBVAL
       INTEGER IFM, NIVINF
       INTEGER NBENTY, NVALEC, NBPG, NBSP
       INTEGER TYMAST
@@ -146,7 +144,7 @@ C
       INTEGER IDFIMD
       INTEGER IAUX,IBID
       REAL*8 RBID
-      LOGICAL LOCAL,FICEXI
+      LOGICAL FICEXI
 C
 C====
 C 1. PREALABLES
@@ -181,7 +179,7 @@ C====
 C
       INQUIRE(FILE=NOFIMD,EXIST=FICEXI)
       IF ( FICEXI ) THEN
-         EDLEAJ = 2
+         EDLEAJ = 1
          CALL MFOUVR (IDFIMD, NOFIMD, EDLEAJ, CODRET)
          IF ( CODRET.NE.0 ) THEN
             EDLEAJ = 3
@@ -200,7 +198,7 @@ C====
 C 3. CREATION DU CHAMP
 C====
 C
-      CALL IRCMCC ( IDFIMD,
+      CALL IRCMCC ( IDFIMD, NOMAMD,
      &              NOCHMD, EXISTC,
      &              NCMPVE, NTNCMP, NTUCMP,
      &              CODRET )
@@ -239,6 +237,16 @@ C
           IFIN = IDEB + NVALEC - 1
 C
           IF ( TYGEOM.EQ.TYPNOE ) THEN
+            TYPENT = EDNOEU
+          ELSE
+            IF ( TYPECH.EQ.'ELNO' )THEN
+              TYPENT = EDNOMA
+            ELSE
+              TYPENT = EDMAIL
+            ENDIF
+          ENDIF
+C
+          IF ( TYGEOM.EQ.TYPNOE ) THEN
             NBPG = 1
             NBSP = 1
             IF ( NIVINF.GT.1 ) THEN
@@ -247,36 +255,34 @@ C
           ELSE
             NBPG = CAIMPI(2,NRIMPR)
             NBSP = CAIMPI(3,NRIMPR)
-            IF ( ((NBPG.EQ.27).OR.(NBPG.EQ.18).OR.(NBPG.EQ.9).OR.
-     &            (NBPG.EQ.7)).AND. (TYPECH.EQ.'ELNO    ') ) THEN
+            IF ( (NBPG.EQ.18).AND. (TYPECH.EQ.'ELNO    ') ) THEN
               NOMPB(1) = NOCHMD(9:22)
-              IF (NBPG.EQ.27) THEN
-                NOMPB(2) = 'HEXA27'
-              ELSEIF (NBPG.EQ.18) THEN
-                NOMPB(2) = 'PENTA18'
-              ELSEIF (NBPG.EQ.9) THEN
-                NOMPB(2) = 'QUAD9'
-              ELSEIF (NBPG.EQ.7) THEN
-                NOMPB(2) = 'TRIA7'
-              ENDIF
+              NOMPB(2) = 'PENTA18'
               CALL U2MESK('A','PREPOST2_84',2,NOMPB(1))
               GOTO 41
             ENDIF
             IF ( NIVINF.GT.1 ) THEN
               WRITE (IFM,4002) NOMTYP(TYMAST), TYGEOM
             ENDIF
-            TYPENT=EDMAIL
-            CALL MFNPDT ( IDFIMD, NOCHMD,TYPENT, TYGEOM,NBPT,IRET)
+            CALL WKVECT('&&IRCAM1.CNAME','V V K16',NCMPRF,JCOMP)
+            CALL WKVECT('&&IRCAM1.CUNIT','V V K16',NCMPRF,JUNIT)
+            CALL MFNPDT ( IDFIMD, NOCHMD, NBPT, ZK16(JUNIT),
+     &                    ZK16(JCOMP), IRET )
             IF(IRET.NE.-1)THEN
               DO 411 I=1,NBPT
-                CALL MFPDTI( IDFIMD, NOCHMD,TYPENT, TYGEOM, I, IBID,
-     &                       IBID,NUMPT2,K16B,RBID,K32B,LOCAL,IBID,IRET)
-                IF(NUMPT.EQ.NUMPT2) THEN
+                CALL MFPDTI( IDFIMD, NOCHMD, I, IBID, NUMPT2,
+     &                       RBID, IRET)
+                NBVAL = 0
+                CALL MDEXCV(NOFIMD,IDFIMD,NOCHMD,IBID,NUMPT2,
+     &                      TYPENT,TYGEOM,NBVAL, IRET )
+                IF( (NBVAL.GT.0).AND.(NUMPT.EQ.NUMPT2) ) THEN
                    NTYMAS=NOMTYP(TYMAST)
                    CALL U2MESK('F','MED_99',1,NTYMAS)
                 ENDIF
  411          CONTINUE
             ENDIF
+            CALL JEDETR('&&IRCAM1.CNAME')
+            CALL JEDETR('&&IRCAM1.CUNIT')
           ENDIF
 C
           NBENTY = CAIMPI(7,NRIMPR)
@@ -303,22 +309,13 @@ C
           IF ( CODRET.EQ.0 ) THEN
 C
           NBREPG = EDNOPG
-          IF ( TYGEOM.EQ.TYPNOE ) THEN
-            TYPENT = EDNOEU
-          ELSE
-            IF ( NBPG*NBSP .NE.1 ) THEN
-              NBREPG = NBPG*NBSP
-            ENDIF
-            IF ( TYPECH.EQ.'ELNO' )THEN
-              TYPENT = EDNOMA
-            ELSE
-              TYPENT = EDMAIL
-            ENDIF
+          IF ( (TYGEOM.NE.TYPNOE).AND.(NBPG*NBSP.NE.1) ) THEN
+            NBREPG = NBPG*NBSP
           ENDIF
 C
-          CALL IRCMEC ( IDFIMD, NOMAMD,
+          CALL IRCMEC ( IDFIMD,
      &                  NOCHMD, NOMPRF, NOLOPG,
-     &                  NUMPT, INSTAN, UNIINS, NUMORD,
+     &                  NUMPT, INSTAN, NUMORD,
      &                  ZR(ADVALE),
      &                  NCMPVE, NBENTY, NBREPG, NVALEC,
      &                  TYPENT, TYGEOM,

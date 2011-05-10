@@ -1,4 +1,4 @@
-# MODIF  DATE 22/02/2011   AUTEUR TORKHANI M.TORKHANI 
+# MODIF  DATE 09/05/2011   AUTEUR VERRIER A.VERRIER 
 # TITRE CALCUL MODAL POUTRE AVEC GAUCHISSEMENT ET GYROSCOPIE
 # sdll123e.para = tps_job 900 mem_job 512Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -59,8 +59,13 @@ CARELEM=AFFE_CARA_ELEM(MODELE=MODELE,
                         DISCRET=(
                                    _F(GROUP_MA='DISQUES',
                                      CARA='M_TR_D_N',
-                                     VALE=(0.03829,3.000E-6,1.8000E-6,1.8000E-6,0.,0.,0.,0.,0.,0.),
-                        )
+                                     VALE=(0.03829,3.000E-6,1.8000E-6,1.8000E-6,0.,0.,0.,0.,0.,0.),),
+                                   _F(GROUP_MA='DISQUES',
+                                     CARA='K_TR_D_N',
+                                     VALE=(0.,0.,0.,0.,0.,0.,), ),
+                                   _F(GROUP_MA='DISQUES',
+                                     CARA='A_TR_D_N',
+                                     VALE=(0.,0.,0.,0.,0.,0.,), )
                         )
                         )
                                  

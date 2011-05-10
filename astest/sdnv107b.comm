@@ -1,4 +1,4 @@
-# MODIF  DATE 07/03/2011   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 09/05/2011   AUTEUR VERRIER A.VERRIER 
 # TITRE POUTRE PLASTIQUE EN TRACTION DYNAMIQUE CONDENSEE PAR 
 # sdnv107b.para = tps_job 300 mem_job 900Mo mem_aster 90 ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -106,20 +106,31 @@ MODELE1=AFFE_MODELE(  MAILLAGE=MAILLAGE,
 PARAM=AFFE_CARA_ELEM(  MODELE=MODELE,
                             DISCRET=(_F( CARA='K_T_D_N',
                                         #VALE=(1.E8,0.,0.,),
-                                        VALE=(0.E9,0.,0.,),
-                                   GROUP_MA = ('PC3',), ),
+                                         VALE=(0.E9,0.,0.,),
+                                         GROUP_MA = ('PC3',), ),
+                                     _F( CARA='M_T_D_N',
+                                         VALE=(0.,),
+                                         GROUP_MA = ('PC3',), ),
                                      _F( CARA='K_T_D_N',
-                                        VALE=(0.,1.E14,1.E14,),
-                                   GROUP_MA = ('PVOLU'), ),
-                                    ),
-                                   );
+                                         VALE=(0.,1.E14,1.E14,),
+                                         GROUP_MA = ('PVOLU'), ),
+                                     _F( CARA='M_T_D_N',
+                                         VALE=(0.,),
+                                         GROUP_MA = ('PVOLU'), ),
+                                    ),  );
                                   
 PARAM1=AFFE_CARA_ELEM(  MODELE=MODELE1,
                             DISCRET=(_F( CARA='K_T_D_N',
                                         VALE=(0.,0.,0.,),
                                    GROUP_MA = ('PSURF2',), ),
+                                     _F( CARA='M_T_D_N',
+                                        VALE=(0.,),
+                                   GROUP_MA = ('PSURF2',), ),
                                      _F( CARA='K_T_D_N',
                                         VALE=(0.,1.E14,1.E14,),
+                                   GROUP_MA = ('PVOLU1','PVOLU2'), ),
+                                     _F( CARA='M_T_D_N',
+                                        VALE=(0.,),
                                    GROUP_MA = ('PVOLU1','PVOLU2'), ),
                                      ),
                                    );
@@ -276,12 +287,18 @@ COND_LIB=AFFE_CHAR_MECA(MODELE=MODELB,
                         
 PARAMB=AFFE_CARA_ELEM(  MODELE=MODELB,
                             DISCRET=(_F( CARA='K_T_D_N',
-                                        VALE=(0.E9,0.,0.,),
+                                         VALE=(0.E9,0.,0.,),
                                         #VALE=(1.E8,0.,0.,),
-                                   GROUP_MA = ('PC3',), ),
+                                         GROUP_MA = ('PC3',), ),
+                                     _F( CARA='M_T_D_N',
+                                         VALE=(0.),
+                                         GROUP_MA = ('PC3',), ),
                                      _F( CARA='K_T_D_N',
-                                        VALE=(0.,1.E14,1.E14,),
-                                   GROUP_MA = ('PVOLU3'), ),
+                                         VALE=(0.,1.E14,1.E14,),
+                                         GROUP_MA = ('PVOLU3'), ),
+                                     _F( CARA='M_T_D_N',
+                                         VALE=(0.,),
+                                         GROUP_MA = ('PVOLU3'), ),
                                     ),
                                    );
                         

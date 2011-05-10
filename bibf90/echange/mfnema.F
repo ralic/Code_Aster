@@ -1,7 +1,7 @@
       SUBROUTINE MFNEMA(FID, MAA, QUOI,
-     &                  TYPENT, TYPGEO,TYPCON,N,CRET)
+     &                  TYPENT, TYPGEO, TYPCON, N, CRET)
 !           CONFIGURATION MANAGEMENT OF EDF VERSION                  
-!& MODIF MFNEMA ECHANGE  DATE 14/03/2011   AUTEUR SELLENET N.SELLENET 
+!& MODIF MFNEMA ECHANGE  DATE 10/05/2011   AUTEUR SELLENET N.SELLENET 
 ! RESPONSABLE SELLENET N.SELLENET
 ! ================================================================== 
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D              WWW.CODE-ASTER.ORG 
@@ -21,28 +21,36 @@
 ! ================================================================== 
       IMPLICIT NONE
       CHARACTER*(*) MAA
-      INTEGER FID,TYPENT, TYPGEO,CRET,TYPCON,N,QUOI
+      INTEGER FID,TYPENT,TYPGEO,CRET,TYPCON,N,QUOI,MDNONT,MDNOIT
+      INTEGER CHTSEQ,CHTTRA
 #ifdef _DISABLE_MED
       CALL U2MESS('F','FERMETUR_2')
 #else
 ! BEGIN MED
 #ifdef _USE_MED_SHORT_INT
       INTEGER*4 FID4, TYPEN4, TYPGE4, CRET4, TYPCO4, N4, QUOI4
+      INTEGER*4 MDNON4, MDNOI4, CHTSE4, CHTTR4
 #ifdef _DEBUG_MED
       PRINT *,'=== MFNEMA ==='
 #endif
+      MDNONT = -1
+      MDNOIT = -1
       FID4 = FID
       TYPEN4 = TYPENT
       TYPGE4 = TYPGEO
       TYPCO4 = TYPCON
       QUOI4 = QUOI
-      CALL EFNEMA(FID4, MAA, QUOI4,
-     &            TYPEN4, TYPGE4,TYPCO4,N4,CRET4)
+      MDNON4 = MDNONT
+      MDNOI4 = MDNOIT
+      CALL MMHNME(FID4, MAA, MDNON4, MDNOI4, TYPEN4, TYPGE4, QUOI4,
+     &            TYPCO4, CHTSE4, CHTTR4, N4, CRET4)
       N = N4
       CRET = CRET4
 #else
-      CALL EFNEMA(FID, MAA, QUOI,
-     &                  TYPENT, TYPGEO,TYPCON,N,CRET)
+      MDNONT = -1
+      MDNOIT = -1
+      CALL MMHNME(FID, MAA, MDNONT, MDNOIT, TYPENT, TYPGEO, QUOI,
+     &            TYPCON, CHTSEQ, CHTTRA, N, CRET)
 #endif
 ! END MED
 #endif

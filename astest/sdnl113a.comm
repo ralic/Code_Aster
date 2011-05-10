@@ -1,5 +1,5 @@
 
-# MODIF  DATE 28/02/2011   AUTEUR GREFFET N.GREFFET 
+# MODIF  DATE 09/05/2011   AUTEUR VERRIER A.VERRIER 
 # CREE DATE 07/04/2000   AUTEUR E. CHAMPAIN
 # TITRE TUYAUTERIE EN FORME DE LYRE (ELSA) SOUS CHARGEMENT SISMIQUE
 # sdnl113a.para = tps_job 240 mem_job 512Mo ncpus 1 liste_test R
@@ -99,6 +99,9 @@ CAREL=AFFE_CARA_ELEM(MODELE=MO,
                      DISCRET=(_F(GROUP_MA='CDGVAN',
                                  CARA='M_TR_D_N',
                                  VALE=(275.,2.696123,3.81480,0.9166667,0.,0.,0.,0.,0.,0.,),),
+                              _F(GROUP_MA='CDGVAN',
+                                 CARA='K_TR_D_N',
+                                 VALE=(0.,0.,0.,0.,0.,0.,),),
                               _F(GROUP_MA='PATBIELB',
                                  CARA='M_T_D_N',
                                  VALE=2.46,),),

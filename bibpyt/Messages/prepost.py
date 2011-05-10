@@ -1,8 +1,8 @@
-#@ MODIF prepost Messages  DATE 14/09/2010   AUTEUR REZETTE C.REZETTE 
+#@ MODIF prepost Messages  DATE 10/05/2011   AUTEUR SELLENET N.SELLENET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -199,7 +199,7 @@ cata_msg = {
 """),
 
 86 : _("""
- on traite les TRIA7 QUAD9 PENTA18 HEXA27 en oubliant le(s) noeud(s)
+ on traite les PENTA18 en oubliant le(s) noeud(s)
  au centre et les SEG4 en oubliant les 2 noeuds centraux.
 """),
 

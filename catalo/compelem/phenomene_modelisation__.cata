@@ -1,4 +1,4 @@
-%& MODIF COMPELEM  DATE 08/03/2011   AUTEUR MASSIN P.MASSIN 
+%& MODIF COMPELEM  DATE 09/05/2011   AUTEUR SFAYOLLE S.FAYOLLE 
 % ======================================================================
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
@@ -471,6 +471,7 @@ PHENOMENE_MODELISATION__
        MODELISATION__ '3D_INCO_GD'        DIM__ 3 3   CODE__ '3GI'
               ATTRIBUT__  NBSIGM=X6  TYPMOD=COMP3D
               MAILLE__ TETRA10   ELEMENT__ GDIN_TETRA10
+              MAILLE__ PENTA15   ELEMENT__ GDIN_PENTA15
               MAILLE__ HEXA20    ELEMENT__ GDIN_HEXA20
               MAILLE__ TRIA6     ELEMENT__ MECA_FACE6
               MAILLE__ QUAD8     ELEMENT__ MECA_FACE8
@@ -906,7 +907,7 @@ PHENOMENE_MODELISATION__
               MAILLE__ SEG2      ELEMENT__ MEPLSE2
 
        MODELISATION__ 'D_PLAN_INCO'      DIM__ 2 2   CODE__ 'PLI'
-              ATTRIBUT__  NBSIGM=X4 TYPMOD=D_PLAN  INCO=OUI
+              ATTRIBUT__  NBSIGM=X4 D_PLAN=OUI TYPMOD=D_PLAN  INCO=OUI
               MAILLE__ TRIA6     ELEMENT__ MIPLTR6
               MAILLE__ QUAD8     ELEMENT__ MIPLQU8
               MAILLE__ SEG3      ELEMENT__ MEPLSE3

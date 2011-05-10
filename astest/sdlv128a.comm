@@ -1,4 +1,4 @@
-# MODIF  DATE 01/03/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 09/05/2011   AUTEUR VERRIER A.VERRIER 
 # TITRE  EXPANSION MODALE SUR UN TUBE 3D A PARTIR DE MESURES EXTENSIOMETRIQUES
 # sdlv128a.para = tps_job 300 mem_job 600Mo mem_aster 40 ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -86,10 +86,14 @@ K1 = 2.1E7/4
 K2 = 1.8E6/4
 
 CARANUM = AFFE_CARA_ELEM( MODELE  = MODELNUM,
-                          DISCRET = _F( GROUP_MA = 'SOU_MA3D',
+                          DISCRET = (_F( GROUP_MA = 'SOU_MA3D',
                                         CARA = 'K_T_D_N',
                                         VALE = (K2, K1, K2),
                                        ),
+                                       _F( GROUP_MA = 'SOU_MA3D',
+                                        CARA = 'M_T_D_N',
+                                        VALE = (0.,),
+                                       ),)
                           );
 
 
@@ -330,9 +334,13 @@ MODELEXP = AFFE_MODELE( MAILLAGE = MAYAEXP,
                        );
 
 CARAEXP = AFFE_CARA_ELEM( MODELE  = MODELEXP,
-                          DISCRET = _F( GROUP_MA = 'MC',
+                          DISCRET = (_F( GROUP_MA = 'MC',
                                         CARA     = 'K_T_D_L',
-                                        VALE     = (100.,100.,100.) )
+                                        VALE     = (100.,100.,100.) ),
+                                     _F( GROUP_MA = 'MC',
+                                        CARA     = 'M_T_L',
+                                        VALE     = (0.,0.,0.,0.,0.,0.,0.,0.,0.,
+                                        0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,) ),)
                         );
 
 MATEXP = AFFE_MATERIAU( MAILLAGE = MAYAEXP,

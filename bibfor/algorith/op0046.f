@@ -1,7 +1,7 @@
       SUBROUTINE OP0046()
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+C MODIF ALGORITH  DATE 09/05/2011   AUTEUR TARDIEU N.TARDIEU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -54,7 +54,7 @@ C
       INTEGER IBID, NH , NBCHRE , N1, N4, N5, N7
       INTEGER IERD, IORDR, NBMAX , NCHAR, JCHAR
       INTEGER IOCC, NFON, IAINST, IRET, I, JORDR, NBPASE, NBUTI
-      INTEGER IFM, NIV, IER
+      INTEGER IFM, NIV, IER, JSLVK
 C
       REAL*8 TEMPS, TIME , ALPHA
       REAL*8 RUNDF
@@ -66,7 +66,8 @@ C
       CHARACTER*8  NOMFON, CHAREP, BASENO
       CHARACTER*13 INPSCO
       CHARACTER*16 NOSY
-      CHARACTER*19 SOLVEU, LISCHA, LIGREL, LISCH2
+      CHARACTER*19 SOLVEU, LISCHA, LIGREL, LISCH2, METRES, PRECON,SOLVBD
+      CHARACTER*19 MATASS
       CHARACTER*24 MODELE, CARELE, CHARGE, FOMULT
       CHARACTER*24 CHTIME, CHAMGD, CHFREQ, CHMASS
       CHARACTER*24 CHAMEL, CHSIG,  CHEPS
@@ -78,7 +79,7 @@ C
 C
       LOGICAL EXIPOU
 C
-      COMPLEX*16    CALPHA
+      COMPLEX*16    CALPHA,CBID
 C DEB ------------------------------------------------------------------
 C
       CALL JEMARQ()
@@ -96,6 +97,7 @@ C
       INPSCO = '&&'//NOMPRO//'_PSCO'
       SOLVEU = '&&'//NOMPRO//'.SOLVEUR   '
       LISCHA = '&&'//NOMPRO//'.LISCHA    '
+      MATASS = '&&'//NOMPRO//'_MATR_ASSEM'
       CHMASS = ' '
       CHFREQ = ' '
       CHTIME = ' '
@@ -140,7 +142,7 @@ C
       CALL MESTAT ( MODELE, FOMULT, LISCHA,
      &              MATE,   CARELE,
      &              LISTPS, SOLVEU,
-     &              NBPASE, INPSCO, COMPOR )
+     &              NBPASE, INPSCO, COMPOR, MATASS )
 C
 C ---- CALCUL DE L'OPTION SIEF_ELGA OU RIEN
 C
@@ -240,9 +242,16 @@ C --- COPIE DE LA SD INFO_CHARGE DANS LA BASE GLOBALE
 C     -----------------------------------------------
       CALL COPISD(' ','G',LISCHA,LISCH2(1:19))
 C
-
-C     -- MENAGE FINAL :
+C     -----------------------------------------------
+C --- MENAGE FINAL
+C     -----------------------------------------------
+C
+C --- SI PRECONDITIONNEUR LDLT_SP
+C --- NETTOYAGE DES OCCURENCES MUMPS
+      CALL DETLSP(MATASS,SOLVEU)
+C
+C --- DESTRUCTION DE TOUTES LES MATRICES CREES
       CALL DETMAT()
-
+C
       CALL JEDEMA()
       END

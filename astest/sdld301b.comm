@@ -1,5 +1,6 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 09/05/2011   AUTEUR VERRIER A.VERRIER 
 # TITRE SYSTEME 2 MASSES 3 RESSORTS
+# sdld301b.para = tps_job 60 mem_job 250Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -45,9 +46,17 @@ CARA=AFFE_CARA_ELEM(     MODELE=MODELE,DISCRET=(
                             _F(  GROUP_MA = 'RESK',
                                       CARA = 'K_T_D_L',
                                       VALE = ( 1.E5,  1., 1., )),
+                            _F(  GROUP_MA = 'RESK',
+                                      CARA = 'M_T_L',
+                                      VALE = ( 0.,  0., 0., 0.,  0., 0., 0.,  0., 0.,
+                                      0.,  0., 0., 0.,  0., 0., 0.,  0., 0., 0.,  0., 0., )),
                             _F(  GROUP_MA = 'RES2K',
                                       CARA = 'K_T_D_L',
                                       VALE = ( 2.E5,  1., 1., )),
+                            _F(  GROUP_MA = 'RES2K',
+                                      CARA = 'M_T_L',
+                                      VALE = ( 0.,  0., 0., 0.,  0., 0., 0.,  0., 0.,
+                                      0.,  0., 0., 0.,  0., 0., 0.,  0., 0., 0.,  0., 0., )),
                             _F(  GROUP_NO = 'MASSE',
                                       CARA = 'M_T_D_N',
                                       VALE = ( 2533., )))

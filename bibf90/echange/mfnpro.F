@@ -1,6 +1,6 @@
       SUBROUTINE MFNPRO( FID , N , CRET)
 !           CONFIGURATION MANAGEMENT OF EDF VERSION                  
-!& MODIF MFNPRO ECHANGE  DATE 14/03/2011   AUTEUR SELLENET N.SELLENET 
+!& MODIF MFNPRO ECHANGE  DATE 10/05/2011   AUTEUR SELLENET N.SELLENET 
 ! RESPONSABLE SELLENET N.SELLENET
 ! ================================================================== 
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D              WWW.CODE-ASTER.ORG 
@@ -30,11 +30,11 @@
       PRINT *,'=== MFNPRO ==='
 #endif
       FID4 = FID
-      CALL EFNPRO( FID4, N4, CRET4)
+      CALL MPFNPF( FID4, N4, CRET4)
       N = N4
       CRET = CRET4
 #else
-      CALL EFNPRO( FID , N , CRET)
+      CALL MPFNPF( FID , N , CRET)
 #endif
 ! END MED
 #endif

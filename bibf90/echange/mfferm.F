@@ -1,6 +1,6 @@
       SUBROUTINE MFFERM(FID, CRET)
 !           CONFIGURATION MANAGEMENT OF EDF VERSION                  
-!& MODIF MFFERM ECHANGE  DATE 14/03/2011   AUTEUR SELLENET N.SELLENET 
+!& MODIF MFFERM ECHANGE  DATE 10/05/2011   AUTEUR SELLENET N.SELLENET 
 ! RESPONSABLE SELLENET N.SELLENET
 ! ================================================================== 
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D              WWW.CODE-ASTER.ORG 
@@ -30,10 +30,10 @@
       PRINT *,'=== MFFERM ==='
 #endif
       FID4 = FID
-      CALL EFFERM(FID4, CRET4)
+      CALL MFICLO(FID4, CRET4)
       CRET = CRET4
 #else
-      CALL EFFERM(FID, CRET)
+      CALL MFICLO(FID, CRET)
 #endif
 ! END MED
 #endif

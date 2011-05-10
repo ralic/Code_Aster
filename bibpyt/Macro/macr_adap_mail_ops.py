@@ -1,4 +1,4 @@
-#@ MODIF macr_adap_mail_ops Macro  DATE 31/01/2011   AUTEUR NICOLAS G.NICOLAS 
+#@ MODIF macr_adap_mail_ops Macro  DATE 10/05/2011   AUTEUR SELLENET N.SELLENET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -22,7 +22,7 @@
 """
 Traitement des macros MACR_ADAP_MAIL/MACR_INFO_MAIL
 """
-__revision__ = "V1.5"
+__revision__ = "V1.6"
 #
 def macr_adap_mail_ops ( self,
                          INFO, VERSION_HOMARD, MAILLAGE_FRONTIERE,
@@ -255,7 +255,7 @@ def macr_adap_mail_ops ( self,
         dico["CHAM_GD"] = args["CHAM_GD"]
 #gn      print "dico = ", dico
 #
-      nom_cham_med_fichier = "champ___________________________"
+      nom_cham_med_fichier = "champ_de_pilotage"
 #                             12345678901234567890123456789012
       dico["NOM_CHAM_MED"] = nom_cham_med_fichier
 #gn      print "==> dico[\"NOM_CHAM_MED\"] = ", dico["NOM_CHAM_MED"]
@@ -329,7 +329,7 @@ def macr_adap_mail_ops ( self,
 #gn        print "dico = ", dico
         iaux += 1
         la_chaine = '%08d' % iaux
-        nom_cham_med_fichier = "champ___________________" + la_chaine
+        nom_cham_med_fichier = "champ_" + la_chaine
 #                               123456789012345678901234    56789012
         dico["NOM_CHAM_MED"] = nom_cham_med_fichier
 #gn        print "==> dico[\"NOM_CHAM_MED\"] = ", dico["NOM_CHAM_MED"]
@@ -398,7 +398,7 @@ def macr_adap_mail_ops ( self,
       les_front_analytiques = args["FRONTIERE_ANALYTIQUE"]
 #
     for frontiere in les_front_analytiques :
-      l_aux = [ "TYPE", "GROUP_MA", "RAYON", "X_CENTRE", "Y_CENTRE", "Z_CENTRE"]
+      l_aux = [ "NOM", "TYPE", "GROUP_MA", "RAYON", "X_CENTRE", "Y_CENTRE", "Z_CENTRE"]
       if ( frontiere["TYPE"] == "CYLINDRE" ) :
         l_aux.append("X_AXE")
         l_aux.append("Y_AXE")

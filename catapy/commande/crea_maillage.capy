@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 29/03/2011   AUTEUR DELMAS J.DELMAS 
+#& MODIF COMMANDE  DATE 10/05/2011   AUTEUR MEUNIER S.MEUNIER 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,14 +20,16 @@
 CREA_MAILLAGE=OPER(nom="CREA_MAILLAGE",op= 167,sd_prod=maillage_sdaster,
             reentrant='n',fr="Crée un maillage à partir d'un maillage existant",
             UIinfo={"groupes":("Maillage",)},
-         regles=(EXCLUS('COQU_VOLU', 'CREA_FISS', 'CREA_GROUP_MA', 'CREA_MAILLE', 'CREA_POI1',
+         regles=(UN_PARMI('COQU_VOLU', 'CREA_FISS', 'CREA_GROUP_MA', 'CREA_MAILLE', 'CREA_POI1',
                         'DETR_GROUP_MA', 'ECLA_PG', 'HEXA20_27', 'LINE_QUAD', 'MODI_MAILLE',
-                        'QUAD_LINE', 'REPERE','RESTREINT','PENTA15_18',),),
+                        'QUAD_LINE', 'REPERE','RESTREINT','PENTA15_18','COPIE',),),
 
 
 
          # le MAILLAGE est inutile si ECLA_PG
          MAILLAGE        =SIMP(statut='f',typ=maillage_sdaster ),
+
+         COPIE           =FACT(statut='f'),
 
          CREA_POI1       =FACT(statut='f',max='**',fr="Création de mailles de type POI1 à partir de noeuds",
            regles=(AU_MOINS_UN('TOUT','GROUP_MA','MAILLE','GROUP_NO','NOEUD' ),),

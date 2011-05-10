@@ -1,9 +1,9 @@
-# MODIF  DATE 09/11/2009   AUTEUR GREFFET N.GREFFET 
+# MODIF  DATE 09/05/2011   AUTEUR VERRIER A.VERRIER 
 # TITRE LIRE_FONCTION ET SPECTRE D'OSCILLATEUR
 # zzzz102a.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -664,6 +664,9 @@ CARELE02=AFFE_CARA_ELEM(     MODELE=MO,DISCRET=(
                               _F( NOEUD = ('P2',),
                                        CARA = 'M_T_D_N',
                                        VALE = (6.332573E14,)),
+                              _F( NOEUD = ('P2',),
+                                       CARA = 'K_T_D_N',
+                                       VALE = (0.,0.,0.,)),
                               _F( MAILLE = ('M1',),
                                        CARA = 'K_T_D_L',
                                        VALE = (1.E15, 0., 0.,)))
@@ -676,6 +679,9 @@ CARELE1=AFFE_CARA_ELEM(     MODELE=MO,DISCRET=(
                              _F( NOEUD = ('P2',),
                                       CARA = 'M_T_D_N',
                                       VALE = (2.533029E13,)),
+                             _F( NOEUD = ('P2',),
+                                      CARA = 'K_T_D_N',
+                                      VALE = (0.,0.,0.,)),
                              _F( MAILLE = ('M1',),
                                       CARA = 'K_T_D_L',
                                       VALE = (1.E15, 0., 0.,)))
@@ -688,6 +694,9 @@ CARELE5=AFFE_CARA_ELEM(     MODELE=MO,DISCRET=(
                              _F( NOEUD = ('P2',),
                                       CARA = 'M_T_D_N',
                                       VALE = (1.013211E12,)),
+                             _F( NOEUD = ('P2',),
+                                      CARA = 'K_T_D_N',
+                                      VALE = (0.,0.,0.,)),
                              _F( MAILLE = ('M1',),
                                       CARA = 'K_T_D_L',
                                       VALE = (1.E15, 0., 0.,)))
@@ -700,6 +709,9 @@ CARELE10=AFFE_CARA_ELEM(     MODELE=MO,DISCRET=(
                               _F( NOEUD = ('P2',),
                                        CARA = 'M_T_D_N',
                                        VALE = (2.533029E11,)),
+                             _F( NOEUD = ('P2',),
+                                      CARA = 'K_T_D_N',
+                                      VALE = (0.,0.,0.,)),
                               _F( MAILLE = ('M1',),
                                        CARA = 'K_T_D_L',
                                        VALE = (1.E15, 0., 0.,)))
@@ -712,6 +724,9 @@ CARELE15=AFFE_CARA_ELEM(     MODELE=MO,DISCRET=(
                               _F( NOEUD = ('P2',),
                                        CARA = 'M_T_D_N',
                                        VALE = (1.125790E11,)),
+                             _F( NOEUD = ('P2',),
+                                      CARA = 'K_T_D_N',
+                                      VALE = (0.,0.,0.,)),
                               _F( MAILLE = ('M1',),
                                        CARA = 'K_T_D_L',
                                        VALE = (1.E15, 0., 0.,)))
@@ -724,6 +739,9 @@ CARELE20=AFFE_CARA_ELEM(     MODELE=MO,DISCRET=(
                               _F( NOEUD = ('P2',),
                                        CARA = 'M_T_D_N',
                                        VALE = (6.332573E10,)),
+                             _F( NOEUD = ('P2',),
+                                      CARA = 'K_T_D_N',
+                                      VALE = (0.,0.,0.,)),
                               _F( MAILLE = ('M1',),
                                        CARA = 'K_T_D_L',
                                        VALE = (1.E15, 0., 0.,)))
@@ -736,6 +754,9 @@ CARELE25=AFFE_CARA_ELEM(     MODELE=MO,DISCRET=(
                               _F( NOEUD = ('P2',),
                                        CARA = 'M_T_D_N',
                                        VALE = (4.052847E10,)),
+                             _F( NOEUD = ('P2',),
+                                      CARA = 'K_T_D_N',
+                                      VALE = (0.,0.,0.,)),
                               _F( MAILLE = ('M1',),
                                        CARA = 'K_T_D_L',
                                        VALE = (1.E15, 0., 0.,)))
@@ -748,6 +769,9 @@ CARELE29=AFFE_CARA_ELEM(     MODELE=MO,DISCRET=(
                               _F( NOEUD = ('P2',),
                                        CARA = 'M_T_D_N',
                                        VALE = (2.910691E10,)),
+                             _F( NOEUD = ('P2',),
+                                      CARA = 'K_T_D_N',
+                                      VALE = (0.,0.,0.,)),
                               _F( MAILLE = ('M1',),
                                        CARA = 'K_T_D_L',
                                        VALE = (1.E15, 0., 0.,)))
@@ -760,6 +784,9 @@ CARELE35=AFFE_CARA_ELEM(     MODELE=MO,DISCRET=(
                               _F( NOEUD = ('P2',),
                                        CARA = 'M_T_D_N',
                                        VALE = (2.009942E10,)),
+                             _F( NOEUD = ('P2',),
+                                      CARA = 'K_T_D_N',
+                                      VALE = (0.,0.,0.,)),
                               _F( MAILLE = ('M1',),
                                        CARA = 'K_T_D_L',
                                        VALE = (1.E15, 0., 0.,)))

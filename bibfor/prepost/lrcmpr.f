@@ -3,7 +3,7 @@
      &                    CODRET )
 C_____________________________________________________________________
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 08/03/2011   AUTEUR SELLENET N.SELLENET 
+C MODIF PREPOST  DATE 10/05/2011   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -42,7 +42,7 @@ C
       INTEGER LGPROA
       INTEGER CODRET
 C
-      CHARACTER*32 NOMPRF
+      CHARACTER*(*) NOMPRF
       CHARACTER*(*) NTPROA
 C
 C 0.2. ==> COMMUNS

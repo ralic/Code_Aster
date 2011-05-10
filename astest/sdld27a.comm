@@ -1,8 +1,9 @@
-# MODIF  DATE 26/05/2008   AUTEUR BOITEAU O.BOITEAU 
+# MODIF  DATE 09/05/2011   AUTEUR VERRIER A.VERRIER 
 # TITRE SYSTEME MASSE-RESSORT AVEC AMORTISSEUR VISQUEUX NONPROPORTIONNEL
+# sdld27a.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -37,6 +38,10 @@ MO=AFFE_MODELE(  MAILLAGE=MA,AFFE=(
 
 CARELEM=AFFE_CARA_ELEM(   MODELE=MO,DISCRET=(
        _F( GROUP_NO = 'MASSE',  CARA = 'M_T_D_N',VALE = 10.,
+                                                     REPERE = 'GLOBAL'),
+       _F( GROUP_NO = 'MASSE',  CARA = 'K_T_D_N',VALE = (0.,0.,0.,),
+                                                     REPERE = 'GLOBAL'),
+       _F( GROUP_NO = 'MASSE',  CARA = 'A_T_D_N',VALE = (0.,0.,0.,),
                                                      REPERE = 'GLOBAL'),
                _F( GROUP_MA = 'RESSORT',CARA = 'K_T_D_L',VALE = (1.E+5,0., 0.,)),
                _F( GROUP_MA = 'AMORT_D',CARA = 'A_T_D_L',VALE = (250.,0.,0.,)),

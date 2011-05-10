@@ -1,6 +1,7 @@
 
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 09/05/2011   AUTEUR VERRIER A.VERRIER 
 # TITRE POUTRE SOUMISE A UNE EXCITATION FLUIDELASTIQUE AXIALE
+# sdll118b.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -56,9 +57,12 @@ CARA=AFFE_CARA_ELEM(MODELE=MODELE,
                               SECTION='CERCLE',
                               CARA=('R','EP',),
                               VALE=(0.0065,0.0021,),),
-                    DISCRET=_F(NOEUD=('N001','N101',),
+                    DISCRET=(_F(NOEUD=('N001','N101',),
                                CARA='K_TR_D_N',
-                               VALE=(0.0,0.0,0.0,6.29,0.0,6.29,),),);
+                               VALE=(0.0,0.0,0.0,6.29,0.0,6.29,),),
+                             _F(NOEUD=('N001','N101',),
+                               CARA='M_TR_D_N',
+                               VALE=(0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,),),),);
 #
 #--------------------------
 # CARACTERISTIQUES MATERIAU

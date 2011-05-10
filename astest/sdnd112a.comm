@@ -1,4 +1,4 @@
-# MODIF  DATE 31/01/2011   AUTEUR GREFFET N.GREFFET 
+# MODIF  DATE 09/05/2011   AUTEUR VERRIER A.VERRIER 
 # TITRE TEST EFFET LAME FLUIDE ENTRE DEUX STRUCTURES MOBILES
 # sdnd112a.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -41,6 +41,9 @@ BICHOC=AFFE_MODELE(  MAILLAGE=MAILLA2,AFFE=(
 CARA_BIC=AFFE_CARA_ELEM(  MODELE=BICHOC,DISCRET=(
            _F(  CARA = 'K_T_D_L',  REPERE = 'GLOBAL', GROUP_MA = 'RESSORTS',
                      VALE = (98696., 0., 0., )),
+           _F(  CARA = 'M_T_L',  REPERE = 'GLOBAL', GROUP_MA = 'RESSORTS',
+                     VALE = (0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,
+                        0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0)),
                    _F(  CARA = 'M_T_D_N',  GROUP_NO = 'MASSES1', VALE = 25.),
                    _F(  CARA = 'M_T_D_N',  GROUP_NO = 'MASSES2', VALE = 25.))
                          )

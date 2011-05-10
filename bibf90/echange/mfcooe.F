@@ -1,8 +1,6 @@
-      SUBROUTINE MFCOOE(FID, MAA, MDIM, COO, MODCOO,
-     &                  N,TYPREP,
-     &                  NOM,UNIT,CRET)
+      SUBROUTINE MFCOOE(FID, MAA, COO, MODCOO, N, CRET)
 !           CONFIGURATION MANAGEMENT OF EDF VERSION                  
-!& MODIF MFCOOE ECHANGE  DATE 14/03/2011   AUTEUR SELLENET N.SELLENET 
+!& MODIF MFCOOE ECHANGE  DATE 10/05/2011   AUTEUR SELLENET N.SELLENET 
 ! RESPONSABLE SELLENET N.SELLENET
 ! ================================================================== 
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D              WWW.CODE-ASTER.ORG 
@@ -23,35 +21,39 @@
       IMPLICIT NONE
       CHARACTER*(*) MAA
       REAL*8 COO(*)
-      INTEGER FID,TYPREP,MDIM
-      INTEGER N,CRET,MODCOO
-      CHARACTER*16 NOM(*), UNIT(*)
+      INTEGER FID
+      INTEGER N,CRET,MODCOO,MDNONT,MDNOIT
+      REAL*8  MDNODT
 #ifdef _DISABLE_MED
       CALL U2MESS('F','FERMETUR_2')
 #else
 ! BEGIN MED
 #ifdef _USE_MED_SHORT_INT
-      INTEGER*4 FID4, TYPRE4, MDIM4
-      INTEGER*4 N4, CRET4, MODCO4
+      INTEGER*4 FID4
+      INTEGER*4 N4, CRET4, MODCO4, MDNOI4, MDNON4
+      MDNONT = -1
+      MDNOIT = -1
+      MDNODT = -1.D0
       FID4 = FID
-      TYPRE4 = TYPREP
-      MDIM4 = MDIM
       N4 = N
       MODCO4 = MODCOO
+      MDNON4 = MDNONT
+      MDNOI4 = MDNOIT
 #ifdef _DEBUG_MED
       PRINT *,'=== MFCOOE ==='
-      PRINT *,'FID=',FID4,' MAA=',MAA,' MDIM=',MDIM4
-      PRINT *,'COO(1)=',COO(1),' N=',N4,' TYPREP=',TYPRE4
-      PRINT *,'MODCOO=',MODCO4,' NOM=',NOM(1),' UNIT=',UNIT(1)
+      PRINT *,'FID=',FID4,' MAA=',MAA
+      PRINT *,'COO(1)=',COO(1),' N=',N4
+      PRINT *,'MODCOO=',MODCO4
 #endif
-      CALL EFCOOE(FID4, MAA, MDIM4, COO, MODCO4,
-     &                  N4,TYPRE4,
-     &                  NOM,UNIT,CRET4)
+      CALL MMHCOW(FID4, MAA, MDNON4, MDNOI4, MDNODT,
+     &            MODCO4, N4, COO, CRET4)
       CRET = CRET4
 #else
-      CALL EFCOOE(FID, MAA, MDIM, COO, MODCOO,
-     &                  N,TYPREP,
-     &                  NOM,UNIT,CRET)
+      MDNONT = -1
+      MDNOIT = -1
+      MDNODT = -1.D0
+      CALL MMHCOW(FID, MAA, MDNONT, MDNOIT, MDNODT,
+     &            MODCOO, N, COO, CRET)
 #endif
 ! END MED
 #endif

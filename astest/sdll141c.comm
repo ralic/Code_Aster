@@ -1,9 +1,9 @@
-# MODIF  DATE 21/09/2009   AUTEUR BOYERE E.BOYERE 
+# MODIF  DATE 09/05/2011   AUTEUR VERRIER A.VERRIER 
 # TITRE CALCUL D'UNE LIGNE D'ARBRE SANS DISQUE 
 # sdll141c.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2008  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -56,6 +56,12 @@ CARELEM=AFFE_CARA_ELEM(MODELE=MODELE,
                                   _F(GROUP_MA='DISQUI',
                                      CARA='M_TR_D_N',
                              VALE=(0.7657,2.592E-4,2.592E-4,2.791E-4,-1.994E-5,0.,0.,0.,0.,0.),),
+                                  _F(GROUP_MA='DISQUI',
+                                     CARA='K_TR_D_N',
+                             VALE=(0.,0.,0.,0.,0.,0.),),
+                                  _F(GROUP_MA='DISQUI',
+                                     CARA='A_TR_D_N',
+                             VALE=(0.,0.,0.,0.,0.,0.),),
                                   _F(GROUP_MA='DISQUB',
                                      CARA='M_TR_D_N',
                              VALE=(0.3829,1.296E-4,1.296E-4,1.395E-4,-9.971E-6,0.,0.,0.,0.,0.),),

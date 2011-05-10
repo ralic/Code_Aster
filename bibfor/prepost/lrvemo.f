@@ -3,7 +3,7 @@
       CHARACTER*8 MODELE
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF PREPOST  DATE 10/05/2011   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -68,7 +68,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX --------------------------
       CHARACTER*8 CHANOM,TYPECH
       CHARACTER*16 TYPRES,PHENO,VALK(2),NOMCMD,TYCH
       CHARACTER*24 LIGRMO
-      CHARACTER*32 NOMAMD
+      CHARACTER*64 NOMAMD
       CHARACTER*200 NOFIMD,DAUX
       CHARACTER*255 KFIC
       LOGICAL LFIRST
@@ -90,11 +90,11 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX --------------------------
       DATA NUMMED  /1,         102,       0,         103,
      &              0,         0,
      &                         203,       0,         206,
-     &              0,         0,         204,       0,
-     &              208,       0,         0,         0,
+     &              0,         207,       204,       0,
+     &              208,       0,         209,       0,
      &              304,       310,       306,       315,
      &              0,         305,       313,       308,
-     &              320,       0,         0,         0,
+     &              320,       327,       0,         0,
      &              0,         0,         0,         0,
      &              0,         0,         0,         0,
      &              0,         0,         0,         0,

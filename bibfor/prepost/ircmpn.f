@@ -2,10 +2,10 @@
      >                    NCMPRF, NCMPVE, NUMCMP, EXICMP,
      >                    NBVATO, NBNOEC, LINOEC, ADSL,
      >                    CAIMPI, CAIMPK,
-     >                    PROFAS,INNOCE)
+     >                    PROFAS, INNOCE)
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 08/03/2011   AUTEUR SELLENET N.SELLENET 
+C MODIF PREPOST  DATE 10/05/2011   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -74,7 +74,7 @@ C
       INTEGER PROFAS(NBVATO)
 C
       CHARACTER*(*) NOFIMD
-      CHARACTER*32 CAIMPK(2,1)
+      CHARACTER*80 CAIMPK(2,1)
 C
       LOGICAL EXICMP(NBVATO)
 C
@@ -90,10 +90,12 @@ C
       CHARACTER*6 NOMPRO
       PARAMETER ( NOMPRO = 'IRCMPN' )
 C
-      CHARACTER*32 EDNOPF
-      PARAMETER ( EDNOPF='                                ' )
-      CHARACTER*32 EDNOGA
-      PARAMETER ( EDNOGA='                                ' )
+      CHARACTER*80 EDNOPF
+      PARAMETER ( EDNOPF='                                      '//
+     &'                                          ' )
+      CHARACTER*80 EDNOGA
+      PARAMETER ( EDNOGA='                                      '//
+     &'                                          ' )
 C                         12345678901234567890123456789012
 C
       INTEGER TYPNOE
@@ -101,7 +103,7 @@ C
       INTEGER EDNOPG
       PARAMETER (EDNOPG=1)
 C
-      CHARACTER*32 NOPROF
+      CHARACTER*64 NOPROF
 C
       INTEGER IFM, NIVINF
 C

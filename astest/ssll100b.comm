@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 09/05/2011   AUTEUR VERRIER A.VERRIER 
 # RESPONSABLE JMBHH01 J.M.PROIX
 # TITRE STRUCTURE SYMETRIQUE DE POUTRES AVEC UN COUDE (POUTRE COURBE)
 # ssll100b.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test S
@@ -65,10 +65,15 @@ CARLEM=AFFE_CARA_ELEM(   MODELE=MOD,
                             VALE = ( -1.,   0.,  0., ),   MAILLE = ('AB','FG',)),
 
             #------ RESSORTS         RAIDEUR KX KZ REPERE LOCAL
-            DISCRET=_F(  MAILLE = ('AB','FG',), REPERE = 'LOCAL',
+            DISCRET=(_F(  MAILLE = ('AB','FG',), REPERE = 'LOCAL',
                       CARA = 'K_T_D_L',
                       #         KX     KY     KZ
-                      VALE = ( 1.E5,   0.,    1.E5,    ),  ), )
+                      VALE = ( 1.E5,   0.,    1.E5,    ),  ), 
+                      _F(  MAILLE = ('AB','FG',), REPERE = 'LOCAL',
+                      CARA = 'M_T_L',
+                      #         KX     KY     KZ
+                      VALE = ( 0.,0.,0.,0.,0.,0.,0.,0.,0.,
+                      0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,),  ), ) )
 
 # CONDITIONS LIMITES COMMUNES AUX 3 CAS DE CHARGEMENT 1,3,4
 COND_LIM=AFFE_CHAR_MECA(  MODELE=MOD,DDL_IMPO=(

@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 09/05/2011   AUTEUR VERRIER A.VERRIER 
 # TITRE PROBLEME DE HOVGAARD : CALCUL DES EFFORTS POU_C_T + POU_D_T
 # ssll101g.para = tps_job 60 mem_job 250Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -81,7 +81,11 @@ CARA_ELE=AFFE_CARA_ELEM( MODELE=MODELE,
                       2.000000000E+00, 2.000000000E+00, 2.754000000E-05,
                       0.000000000E+00, 0.000000000E+00, 1.000000000E+00,
                       1.000000000E+00, 1.000000000E+00, ))),
-      DISCRET=_F(GROUP_MA=('APA','APB'),CARA='K_TR_D_L',VALE=(grd,grd,grd,grd,grd,grd),),
+      DISCRET=(_F(GROUP_MA=('APA','APB'),CARA='K_TR_D_L',VALE=(grd,grd,grd,grd,grd,grd),),
+               _F(GROUP_MA=('APA','APB'),CARA='M_TR_L',VALE=(0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,
+                                                                       0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,
+                                                                0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,
+                                                                0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,),),),
       ORIENTATION=(
          _F(GROUP_MA='APA', CARA='ANGL_NAUT',VALE=( 0.0, -90.0, 0.0),),
          _F(GROUP_MA='APB', CARA='ANGL_NAUT',VALE=( 0.0,   0.0, 0.0),),

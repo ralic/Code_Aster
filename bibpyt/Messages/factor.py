@@ -1,4 +1,4 @@
-#@ MODIF factor Messages  DATE 04/04/2011   AUTEUR DESOZA T.DESOZA 
+#@ MODIF factor Messages  DATE 09/05/2011   AUTEUR TARDIEU N.TARDIEU 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -261,7 +261,6 @@ Solution :
 Solveur MUMPS :
   Limite atteinte : le solveur Mumps est utilisé par plus de 5 matrices simultanément.
 Solution :
-  Il faut corriger le programme (PARAMETER (NMXINS=5) dans amumps.f)
   Contactez l'assistance.
 """),
 

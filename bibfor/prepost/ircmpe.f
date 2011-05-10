@@ -6,7 +6,7 @@
      >                    PROFAS, PROMED, PROREC, NROIMP, CHANOM )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 02/05/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF PREPOST  DATE 10/05/2011   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -114,12 +114,14 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX --------------------------
 C
 C 0.3. ==> VARIABLES LOCALES
 C
-      CHARACTER*16  NOMFPG
+      CHARACTER*16 NOMFPG
 C
-      CHARACTER*32 EDNOPF
-      PARAMETER ( EDNOPF='                                ' )
-      CHARACTER*32 EDNOGA
-      PARAMETER ( EDNOGA='                                ' )
+      CHARACTER*80 EDNOPF
+      PARAMETER ( EDNOPF='                                      '//
+     &'                                         ' )
+      CHARACTER*80 EDNOGA
+      PARAMETER ( EDNOGA='                                      '//
+     &'                                         ' )
 C                         12345678901234567890123456789012
 C
       INTEGER NTYMAX
@@ -134,12 +136,14 @@ C
       INTEGER NBIMP0, NRIMPR
       INTEGER ADCAII, ADCAIK
 C
-      CHARACTER*32 NOPROF
+      CHARACTER*64 NOPROF
+
 C====
 C 1. PREALABLES
 C====
 C
       CALL INFNIV ( IFM, NIVINF )
+      
       IF ( NIVINF.GT.1 ) THEN
         WRITE (IFM,1001) 'DEBUT DE IRCMPE'
       ENDIF
@@ -346,8 +350,6 @@ C
       DO 52 , IAUX = 2 , NBIMPR
         ADRAUX(IAUX) = ADRAUX(IAUX-1) + ZI(ADCAII+7*IAUX-11)
    52 CONTINUE
-CGN      PRINT *,'. ADRAUX '
-CGN      PRINT 1789,(ADRAUX(IAUX),IAUX=1, NBIMPR)
 C
 C 5.3. ==> DECOMPTE DU NOMBRE DE MAILLES PAR TYPE DE MAILLES ASTER
 C          NMATY0(IAUX) = NUMERO MED DE LA MAILLE COURANTE, DANS LA
@@ -399,14 +401,14 @@ C
 C 6.2. ==> CARACTERISTIQUES CARACTERES
 C
       IAUX = 2*NBIMPR
-      CALL WKVECT ( NCAIMK, 'V V K32', IAUX, ADCAIK )
+      CALL WKVECT ( NCAIMK, 'V V K80', IAUX, ADCAIK )
 C
       DO 62 , IAUX = 1 , NBIMPR
         JAUX = ADCAIK+2*(IAUX-1)
 C                  CAIMPK(1,I) = NOM DE LA LOCALISATION ASSOCIEE
-        ZK32(JAUX) = EDNOGA
+        ZK80(JAUX) = EDNOGA
 C                  CAIMPK(2,I) = NOM DU PROFIL AU SENS MED
-        ZK32(JAUX+1) = EDNOPF
+        ZK80(JAUX+1) = EDNOPF
    62 CONTINUE
 C
 C====
@@ -429,7 +431,7 @@ C         DU NOMBRE TOTAL DE MAILLES DE MEME TYPE:
      >                    ZI(JAUX+3), PROMED(KAUX), NOPROF )
 C
 C                  CAIMPK(2,I) = NOM DU PROFIL AU SENS MED
-            ZK32(ADCAIK+2*IAUX-1) = NOPROF
+            ZK80(ADCAIK+2*IAUX-1) = NOPROF
           ENDIF
 C
 C         KAUX := POINTEUR PERMETTANT DE SE PLACER DANS PROMED

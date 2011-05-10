@@ -7,7 +7,7 @@
      +                  RHO11,PHI0,SAT,RETCOM,THMC,BIOT,RINSTP)
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 10/05/2011   AUTEUR MEUNIER S.MEUNIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -129,7 +129,7 @@ C =====================================================================
       ENDIF
 
       CALL INITHM(IMATE,YAMEC,PHI0,EM,ALPHA0,K0,CS,BIOT,T,
-     +                                  EPSV,DEPSV,EPSVM,MECA)
+     +                                  EPSV,DEPSV,EPSVM)
 C *********************************************************************
 C *** LES VARIABLES INTERNES ******************************************
 C *********************************************************************

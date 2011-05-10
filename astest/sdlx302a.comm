@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 09/05/2011   AUTEUR VERRIER A.VERRIER 
 # TITRE POUTRE ENCASTREE ET MASSE CONCENTREE SOUMISE A UNE FORCE
 # sdlx302a.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -77,7 +77,7 @@ CARAELEM=AFFE_CARA_ELEM(       MODELE=MO,
 #
 # LA MASSE
 #
-                                 DISCRET=_F( GROUP_MA = 'MASS',
+                                 DISCRET=(_F( GROUP_MA = 'MASS',
                                           CARA = 'M_TR_N',
                                           REPERE = 'GLOBAL',
                                           VALE = ( M1,   0.,  M1,
@@ -87,9 +87,15 @@ CARAELEM=AFFE_CARA_ELEM(       MODELE=MO,
                                                        0.,   0.,  JT,
                                                        0.,   0.,  0.,
                                                        0.,  0.,   JT,
+                                                     )),
+                                          _F( GROUP_MA = 'MASS',
+                                          CARA = 'K_TR_N',
+                                          REPERE = 'GLOBAL',
+                                          VALE = (0.,0.,0.,0.,0.,0.,0.,0.,0.,0., 
+                                                  0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,
+                                                  0.
                                                      ))
-
-                           )
+                           ))
 
 #
 # DEFINITION DU MATERIAU

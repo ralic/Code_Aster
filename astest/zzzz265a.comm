@@ -1,6 +1,6 @@
-# MODIF  DATE 11/01/2011   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 09/05/2011   AUTEUR VERRIER A.VERRIER 
 # TITRE VALIDATION DE DNL EN PARALLELE
-# zzzz265a.para = tps_job 150 mem_job 1500Mo ncpus 1 liste_test SI
+# zzzz265a.para = tps_job 150 mem_job 1500Mo ncpus 1 liste_test RI
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -102,9 +102,15 @@ CARA=AFFE_CARA_ELEM(MODELE=MODELE,
                     CABLE=_F(GROUP_MA='TOTAL1',
                              N_INIT=5000.0,
                              SECTION=_AIRE,),
-                    DISCRET=_F(CARA='A_T_D_N',
+                    DISCRET=(_F(CARA='A_T_D_N',
                                GROUP_MA='DIS',
-                               VALE=(0.0,0.0,0.0,),),);
+                               VALE=(0.0,0.0,0.0,),),
+                             _F(CARA='K_T_D_N',
+                               GROUP_MA='DIS',
+                               VALE=(0.0,0.0,0.0,),),
+                             _F(CARA='M_T_D_N',
+                               GROUP_MA='DIS',
+                               VALE=(0.0,),),));
 
 MPOU=DEFI_MATERIAU(ELAS=_F(E=_ELAS,
                            NU=0.3,

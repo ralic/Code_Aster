@@ -1,7 +1,8 @@
-      SUBROUTINE MDEXPM ( NOFIMD, NOMAMD, EXISTM, NDIM, CODRET )
+      SUBROUTINE MDEXPM ( NOFIMD, IDFIMD, NOMAMD, EXISTM,
+     &                    NDIM, CODRET )
 C_____________________________________________________________________
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 08/03/2011   AUTEUR SELLENET N.SELLENET 
+C MODIF PREPOST  DATE 10/05/2011   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -25,12 +26,13 @@ C ______________________________________________________________________
 C .        .     .        .                                            .
 C .  NOM   . E/S . TAILLE .           DESCRIPTION                      .
 C .____________________________________________________________________.
-C . NOFIMD .  E  .   1    . NOM DU FICHIER MED              .
+C . NOFIMD .  E  .   1    . NOM DU FICHIER MED                         .
+C . NOFIMD .  E  .   1    . OU NUMERO DU FICHIER DEJA OUVERT           .
 C . NOMAMD .  S  .   1    . NOM DU MAILLAGE MED VOULU                  .
 C . EXISTM .  S  .   1    . .TRUE. OU .FALSE., SELON QUE LE MAILLAGE   .
 C .        .     .        . EST PRESENT OU NON                         .
 C . NDIM   .  S  .   1    . LA DIMENSION DU MAILLAGE QUAND IL EXISTE   .
-C . CODRET .  S  .    1   . CODE DE RETOUR DES MODULES                 .
+C . CODRET .  S  .   1    . CODE DE RETOUR DES MODULES                 .
 C ______________________________________________________________________
 C
 C====
@@ -43,7 +45,7 @@ C 0.1. ==> ARGUMENTS
 C
       CHARACTER*(*) NOFIMD, NOMAMD
 C
-      LOGICAL EXISTM,FICEXI
+      LOGICAL EXISTM,FICEXI,DEJOUV
 C
       INTEGER NDIM, CODRET
 C
@@ -62,7 +64,7 @@ C
       INTEGER IAUX, JAUX, KAUX, TYAUX
 C
       CHARACTER*8  SAUX08
-      CHARACTER*32 SAUX32
+      CHARACTER*64 SAUX64
       CHARACTER*200 DAUX
 C ______________________________________________________________________
 C
@@ -83,7 +85,13 @@ C
 C
       ELSE
 C
-      CALL MFOUVR ( IDFIMD, NOFIMD, EDLECT, IAUX )
+      IF ( IDFIMD.EQ.0 ) THEN
+        CALL MFOUVR ( IDFIMD, NOFIMD, EDLECT, IAUX )
+        DEJOUV = .FALSE.
+      ELSE
+        DEJOUV = .TRUE.
+        IAUX = 0
+      ENDIF
       IF ( IAUX.EQ.0 ) THEN
 C====
 C 2. LE MAILLAGE EST-IL PRESENT ?
@@ -106,10 +114,11 @@ C
       ELSE
 C
 C                 12345678901234567890123456789012
-        SAUX32 = '                                '
+        SAUX64 = '                                '//
+     &           '                                '
         DAUX = ' '
         IAUX = 1
-        CALL MFMAAI ( IDFIMD, IAUX, SAUX32, KAUX, TYAUX, DAUX, CODRET )
+        CALL MFMAAI ( IDFIMD, IAUX, SAUX64, KAUX, TYAUX, DAUX, CODRET )
         IF ( CODRET.NE.0 ) THEN
           SAUX08='MFMAAI  '
           CALL U2MESG('F','DVP_97',1,SAUX08,1,CODRET,0,0.D0)
@@ -119,11 +128,11 @@ C                 12345678901234567890123456789012
         ENDIF
 C
         IAUX = LEN(NOMAMD)
-        JAUX = LXLGUT(SAUX32)
+        JAUX = LXLGUT(SAUX64)
         CALL ASSERT(JAUX.LE.IAUX)
 C
         NOMAMD = ' '
-        NOMAMD(1:JAUX) = SAUX32(1:JAUX)
+        NOMAMD(1:JAUX) = SAUX64(1:JAUX)
         NDIM = KAUX
         EXISTM = .TRUE.
 C
@@ -131,10 +140,13 @@ C
 C
 C 2.3. ==> FERMETURE DU FICHIER
 C
-      CALL MFFERM ( IDFIMD, CODRET )
-      IF ( CODRET.NE.0 ) THEN
-        SAUX08='MFFERM  '
-        CALL U2MESG('F','DVP_97',1,SAUX08,1,CODRET,0,0.D0)
+      IF ( .NOT.DEJOUV ) THEN
+        CALL MFFERM ( IDFIMD, CODRET )
+        IF ( CODRET.NE.0 ) THEN
+          SAUX08='MFFERM  '
+          CALL U2MESG('F','DVP_97',1,SAUX08,1,CODRET,0,0.D0)
+        ENDIF
+        IDFIMD = 0
       ENDIF
 C
       ENDIF

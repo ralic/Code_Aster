@@ -1,11 +1,11 @@
       SUBROUTINE INITHM(IMATE,YAMEC,PHI0,EM,ALPHA0,K0,CS,BIOT,T,
-     &                                    EPSV,DEPSV,EPSVM,MECA)
+     &                                    EPSV,DEPSV,EPSVM)
       IMPLICIT      NONE
       INTEGER       IMATE,YAMEC
       REAL*8        PHI0,EM,ALPHA0,K0,CS,BIOT,EPSVM,EPSV,DEPSV
 C ======================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 10/05/2011   AUTEUR MEUNIER S.MEUNIER 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -32,7 +32,6 @@ C ======================================================================
       REAL*8       ELAS(NELAS),YOUNG,NU,T
       CHARACTER*8  NCRA1(NELAS)
       INTEGER ICODRE(NELAS)
-      CHARACTER*16  MECA
       REAL*8       EPS
       PARAMETER  ( EPS = 1.D-21 )
 C ======================================================================
@@ -56,10 +55,10 @@ C --- EN ABSENCE DE MECA ALPHA0 = 0 et 1/KS = 0 OU EM -----------------
 C =====================================================================
          ALPHA0 = 0.0D0
          CS     = EM
+         K0     = 0.0D0
          IF(EM.LT.EPS)THEN
            BIOT   = PHI0
          ENDIF
-         K0     = 0.0D0
       ENDIF
 C =====================================================================
 C --- CALCUL EPSV AU TEMPS MOINS --------------------------------------

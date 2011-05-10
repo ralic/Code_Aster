@@ -1,8 +1,9 @@
-# MODIF  DATE 24/08/2010   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 09/05/2011   AUTEUR VERRIER A.VERRIER 
 # TITRE REPONSE TRANSITOIRE D'UN POTEAU ENCASTRE LIBRE (FORCE IMPOSEE)
+# sdll06b.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -64,6 +65,8 @@ CARA_ELE=AFFE_CARA_ELEM(  MODELE=MODELE,DISCRET=(
                        _F(  NOEUD = 'N02',  CARA = 'M_TR_D_N',
                                 VALE = ( 43.8E+3, 0.0, 0.0, 0.0, 0.0,
                                          0.0, 0.0, 0.0, 0.0, 0.0, )),
+                       _F(  NOEUD = 'N02',  CARA = 'K_TR_D_N',
+                          VALE = ( 0., 0., 0., 0., 0., 0., )),
                        _F(  GROUP_MA = 'RLN_1',  CARA = 'K_TR_D_L',
                                 VALE = ( 0.0, 3.942E7, 0.0, 0.0, 0.0,
                                          0.0,                        ),

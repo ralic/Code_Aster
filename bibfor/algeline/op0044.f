@@ -1,7 +1,7 @@
       SUBROUTINE OP0044()
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 02/05/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF ALGELINE  DATE 04/05/2011   AUTEUR BOITEAU O.BOITEAU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -312,6 +312,16 @@ C     --- CREATION DES DESCRIPTEURS NORMALISES DE MATRICE ---
 
       NEQ = ZI( LDYNAM + 2 )
 
+C     TEST DE LA VALIDITE DES MATRICES PAR RAPPORT AU PERIMETRE DU
+C     TEST DE STURM
+      IF ((ZI(LMASSE+3).NE.1).OR.(ZI(LMASSE+4).NE.1)) THEN
+         VALK(1)=MASSE
+         CALL U2MESK('F','ALGELINE3_48', 1 ,VALK)
+      ENDIF
+      IF ((ZI(LRAIDE+3).NE.1).OR.(ZI(LRAIDE+4).NE.1)) THEN      
+         VALK(1)=RAIDE
+         CALL U2MESK('F','ALGELINE3_48', 1 ,VALK)
+      ENDIF
 C     ------------------------------------------------------------------
 
 C     --- OPTION DES FREQUENCES ET DES MODES  ---

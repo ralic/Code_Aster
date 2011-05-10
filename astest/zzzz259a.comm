@@ -1,22 +1,22 @@
-# MODIF  DATE 15/03/2010   AUTEUR GNICOLAS G.NICOLAS 
+# MODIF  DATE 10/05/2011   AUTEUR SELLENET N.SELLENET 
 # RESPONSABLE GNICOLAS G.NICOLAS
 # TITRE ADAPTATION DE MAILLAGE ET SUIVI DE FRONTIERE 2D
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # zzzz259a.para = tps_job 300 mem_job 512Mo ncpus 1 liste_test S
 # On fait une suite d'adaptations pilotees par les groupes.
@@ -39,7 +39,7 @@ M_0=LIRE_MAILLAGE(FORMAT='MED');
 #
 M_0=MODI_MAILLAGE( reuse=M_0,   MAILLAGE=M_0,
                    ORIE_PEAU_3D=_F(
-           GROUP_MA = ('T1_INT', 'T1_EXT','T2_INT', 'T2_EXT','IN1','IN2','OUT',),  )
+           GROUP_MA = ('T1_INT_I', 'T1_INT_O', 'T1_EXT_I', 'T1_EXT_O','T2_INT', 'T2_EXT','IN1','IN2','OUT',),  )
                  )
 #
 # 2. Adaptation du maillage de 0 vers 1
@@ -49,9 +49,9 @@ M_0=MODI_MAILLAGE( reuse=M_0,   MAILLAGE=M_0,
 MACR_ADAP_MAIL(MAILLAGE_N=M_0,
                MAILLAGE_NP1=CO('M_1'),
                ADAPTATION='RAFFINEMENT_UNIFORME',
-               GROUP_MA=('T1_INT','T2_INT',),
+               GROUP_MA=('T1_INT_I','T1_INT_O','T2_INT',),
                FRONTIERE_ANALYTIQUE=(
-                    _F(GROUP_MA='T1_INT',
+                    _F(NOM='TUYAU_PRINCIPAL_INTERIEUR',
                        TYPE='CYLINDRE',
                        X_CENTRE=   0.,
                        Y_CENTRE=  25.,
@@ -59,8 +59,9 @@ MACR_ADAP_MAIL(MAILLAGE_N=M_0,
                        X_AXE=  25.,
                        Y_AXE=  50.,
                        Z_AXE=  75.,
-                       RAYON= 75.,),
-                    _F(GROUP_MA='T1_EXT',
+                       RAYON= 75.,
+                       GROUP_MA=('T1_INT_I','T1_INT_O',),),
+                    _F(NOM='TUYAU_PRINCIPAL_EXTERIEUR',
                        TYPE='CYLINDRE',
                        X_CENTRE=   0.,
                        Y_CENTRE=  25.,
@@ -68,8 +69,9 @@ MACR_ADAP_MAIL(MAILLAGE_N=M_0,
                        X_AXE=  25.,
                        Y_AXE=  50.,
                        Z_AXE=  75.,
-                       RAYON= 100.,),
-                    _F(GROUP_MA='T2_INT',
+                       RAYON= 100.,
+                       GROUP_MA=('T1_EXT_I','T1_EXT_O',),),
+                    _F(NOM='tuyau_secondaire_interieur',
                        TYPE='CYLINDRE',
                        X_CENTRE=  17.5,
                        Y_CENTRE=  -2.5,
@@ -77,8 +79,9 @@ MACR_ADAP_MAIL(MAILLAGE_N=M_0,
                        X_AXE= -100.,
                        Y_AXE=  -75.,
                        Z_AXE=  -25.,
-                       RAYON= 25.,),
-                    _F(GROUP_MA='T2_EXT',
+                       RAYON= 25.,
+                       GROUP_MA='T2_INT',),
+                    _F(NOM='tuyau_secondaire_exterieur',
                        TYPE='CYLINDRE',
                        X_CENTRE=  17.5,
                        Y_CENTRE=  -2.5,
@@ -86,7 +89,8 @@ MACR_ADAP_MAIL(MAILLAGE_N=M_0,
                        X_AXE= -100.,
                        Y_AXE=  -75.,
                        Z_AXE=  -25.,
-                       RAYON= 50.,),),
+                       RAYON= 50.,
+                       GROUP_MA='T2_EXT',),),
                MAILLAGE_FRONTIERE=MA_ARCS,
                GROUP_MA_FRONT=('INT_EA','INT_EB','INT_IA','INT_IB','IN2_EA','IN2_EB','IN2_IA','IN2_IB',),
                NOMBRE='OUI',
@@ -102,9 +106,9 @@ MACR_ADAP_MAIL(MAILLAGE_N=M_0,
 MACR_ADAP_MAIL(MAILLAGE_N=M_1,
                MAILLAGE_NP1=CO('M_2'),
                ADAPTATION='RAFFINEMENT_UNIFORME',
-               GROUP_MA=('T1_EXT','T2_EXT',),
+               GROUP_MA=('T1_EXT_I','T1_EXT_O','T2_EXT',),
                FRONTIERE_ANALYTIQUE=(
-                    _F(GROUP_MA='T1_INT',
+                    _F(NOM='TUYAU_PRINCIPAL_INTERIEUR',
                        TYPE='CYLINDRE',
                        X_CENTRE=   0.,
                        Y_CENTRE=  25.,
@@ -112,8 +116,9 @@ MACR_ADAP_MAIL(MAILLAGE_N=M_1,
                        X_AXE=  25.,
                        Y_AXE=  50.,
                        Z_AXE=  75.,
-                       RAYON= 75.,),
-                    _F(GROUP_MA='T1_EXT',
+                       RAYON= 75.,
+                       GROUP_MA=('T1_INT_I','T1_INT_O',),),
+                    _F(NOM='TUYAU_PRINCIPAL_EXTERIEUR',
                        TYPE='CYLINDRE',
                        X_CENTRE=   0.,
                        Y_CENTRE=  25.,
@@ -121,8 +126,9 @@ MACR_ADAP_MAIL(MAILLAGE_N=M_1,
                        X_AXE=  25.,
                        Y_AXE=  50.,
                        Z_AXE=  75.,
-                       RAYON= 100.,),
-                    _F(GROUP_MA='T2_INT',
+                       RAYON= 100.,
+                       GROUP_MA=('T1_EXT_I','T1_EXT_O',),),
+                    _F(NOM='tuyau_secondaire_interieur',
                        TYPE='CYLINDRE',
                        X_CENTRE=  17.5,
                        Y_CENTRE=  -2.5,
@@ -130,8 +136,9 @@ MACR_ADAP_MAIL(MAILLAGE_N=M_1,
                        X_AXE= -100.,
                        Y_AXE=  -75.,
                        Z_AXE=  -25.,
-                       RAYON= 25.,),
-                    _F(GROUP_MA='T2_EXT',
+                       RAYON= 25.,
+                       GROUP_MA='T2_INT',),
+                    _F(NOM='tuyau_secondaire_exterieur',
                        TYPE='CYLINDRE',
                        X_CENTRE=  17.5,
                        Y_CENTRE=  -2.5,
@@ -139,7 +146,8 @@ MACR_ADAP_MAIL(MAILLAGE_N=M_1,
                        X_AXE= -100.,
                        Y_AXE=  -75.,
                        Z_AXE=  -25.,
-                       RAYON= 50.,),),
+                       RAYON= 50.,
+                       GROUP_MA='T2_EXT',),),
                MAILLAGE_FRONTIERE=MA_ARCS,
                GROUP_MA_FRONT=('INT_EA','INT_EB','INT_IA','INT_IB','IN2_EA','IN2_EB','IN2_IA','IN2_IB',),);
 
@@ -155,7 +163,7 @@ MACR_ADAP_MAIL(MAILLAGE_N=M_2,
                ADAPTATION='RAFFINEMENT_UNIFORME',
                GROUP_MA=('INT_EA','INT_EB','INT_IA','INT_IB','IN2','IN1',),
                FRONTIERE_ANALYTIQUE=(
-                    _F(GROUP_MA='T1_INT',
+                    _F(NOM='TUYAU_PRINCIPAL_INTERIEUR',
                        TYPE='CYLINDRE',
                        X_CENTRE=   0.,
                        Y_CENTRE=  25.,
@@ -163,8 +171,9 @@ MACR_ADAP_MAIL(MAILLAGE_N=M_2,
                        X_AXE=  25.,
                        Y_AXE=  50.,
                        Z_AXE=  75.,
-                       RAYON= 75.,),
-                    _F(GROUP_MA='T1_EXT',
+                       RAYON= 75.,
+                       GROUP_MA=('T1_INT_I','T1_INT_O',),),
+                    _F(NOM='TUYAU_PRINCIPAL_EXTERIEUR',
                        TYPE='CYLINDRE',
                        X_CENTRE=   0.,
                        Y_CENTRE=  25.,
@@ -172,8 +181,9 @@ MACR_ADAP_MAIL(MAILLAGE_N=M_2,
                        X_AXE=  25.,
                        Y_AXE=  50.,
                        Z_AXE=  75.,
-                       RAYON= 100.,),
-                    _F(GROUP_MA='T2_INT',
+                       RAYON= 100.,
+                       GROUP_MA=('T1_EXT_I','T1_EXT_O',),),
+                    _F(NOM='tuyau_secondaire_interieur',
                        TYPE='CYLINDRE',
                        X_CENTRE=  17.5,
                        Y_CENTRE=  -2.5,
@@ -181,8 +191,9 @@ MACR_ADAP_MAIL(MAILLAGE_N=M_2,
                        X_AXE= -100.,
                        Y_AXE=  -75.,
                        Z_AXE=  -25.,
-                       RAYON= 25.,),
-                    _F(GROUP_MA='T2_EXT',
+                       RAYON= 25.,
+                       GROUP_MA='T2_INT',),
+                    _F(NOM='tuyau_secondaire_exterieur',
                        TYPE='CYLINDRE',
                        X_CENTRE=  17.5,
                        Y_CENTRE=  -2.5,
@@ -190,7 +201,8 @@ MACR_ADAP_MAIL(MAILLAGE_N=M_2,
                        X_AXE= -100.,
                        Y_AXE=  -75.,
                        Z_AXE=  -25.,
-                       RAYON= 50.,),),
+                       RAYON= 50.,
+                       GROUP_MA='T2_EXT',),),
                MAILLAGE_FRONTIERE=MA_ARCS,
                GROUP_MA_FRONT=('INT_EA','INT_EB','INT_IA','INT_IB','IN2_EA','IN2_EB','IN2_IA','IN2_IB',),);
 
@@ -206,7 +218,7 @@ MACR_ADAP_MAIL(MAILLAGE_N=M_3,
                ADAPTATION='RAFFINEMENT_UNIFORME',
                GROUP_MA=('INT_EA','INT_EB','INT_IA','INT_IB','IN2',),
                FRONTIERE_ANALYTIQUE=(
-                    _F(GROUP_MA='T1_INT',
+                    _F(NOM='TUYAU_PRINCIPAL_INTERIEUR',
                        TYPE='CYLINDRE',
                        X_CENTRE=   0.,
                        Y_CENTRE=  25.,
@@ -214,8 +226,9 @@ MACR_ADAP_MAIL(MAILLAGE_N=M_3,
                        X_AXE=  25.,
                        Y_AXE=  50.,
                        Z_AXE=  75.,
-                       RAYON= 75.,),
-                    _F(GROUP_MA='T1_EXT',
+                       RAYON= 75.,
+                       GROUP_MA=('T1_INT_I','T1_INT_O',),),
+                    _F(NOM='TUYAU_PRINCIPAL_EXTERIEUR',
                        TYPE='CYLINDRE',
                        X_CENTRE=   0.,
                        Y_CENTRE=  25.,
@@ -223,8 +236,9 @@ MACR_ADAP_MAIL(MAILLAGE_N=M_3,
                        X_AXE=  25.,
                        Y_AXE=  50.,
                        Z_AXE=  75.,
-                       RAYON= 100.,),
-                    _F(GROUP_MA='T2_INT',
+                       RAYON= 100.,
+                       GROUP_MA=('T1_EXT_I','T1_EXT_O',),),
+                    _F(NOM='tuyau_secondaire_interieur',
                        TYPE='CYLINDRE',
                        X_CENTRE=  17.5,
                        Y_CENTRE=  -2.5,
@@ -232,8 +246,9 @@ MACR_ADAP_MAIL(MAILLAGE_N=M_3,
                        X_AXE= -100.,
                        Y_AXE=  -75.,
                        Z_AXE=  -25.,
-                       RAYON= 25.,),
-                    _F(GROUP_MA='T2_EXT',
+                       RAYON= 25.,
+                       GROUP_MA='T2_INT',),
+                    _F(NOM='tuyau_secondaire_exterieur',
                        TYPE='CYLINDRE',
                        X_CENTRE=  17.5,
                        Y_CENTRE=  -2.5,
@@ -241,7 +256,8 @@ MACR_ADAP_MAIL(MAILLAGE_N=M_3,
                        X_AXE= -100.,
                        Y_AXE=  -75.,
                        Z_AXE=  -25.,
-                       RAYON= 50.,),),
+                       RAYON= 50.,
+                       GROUP_MA='T2_EXT',),),
                MAILLAGE_FRONTIERE=MA_ARCS,
                GROUP_MA_FRONT=('INT_EA','INT_EB','INT_IA','INT_IB','IN2_EA','IN2_EB','IN2_IA','IN2_IB',),);
 
@@ -258,24 +274,25 @@ MATPIQ=AFFE_MATERIAU( MAILLAGE=MAI,AFFE=_F( TOUT='OUI', MATER = MATERIO, ),)
 MOTHPIQ=AFFE_MODELE( MAILLAGE=MAI,
   AFFE=_F( TOUT = 'OUI',   PHENOMENE = 'THERMIQUE',   MODELISATION = '3D',  ))
 #
+
 CHTHPIQ=AFFE_CHAR_THER(    MODELE=MOTHPIQ,
-    TEMP_IMPO=(_F(  GROUP_MA = 'T1_INT', TEMP = 600.0,),
+    TEMP_IMPO=(_F(  GROUP_MA=('T1_INT_I','T1_INT_O',), TEMP = 600.0,),
                _F(  GROUP_MA = 'T2_INT', TEMP = 400.0,),),
-    ECHANGE=_F( GROUP_MA = ('T1_EXT','T2_EXT',),  COEF_H = 5.,  TEMP_EXT = 300.,),
+    ECHANGE=_F( GROUP_MA = ('T1_EXT_I','T1_EXT_O','T2_EXT',),  COEF_H = 5.,  TEMP_EXT = 300.,),
     FLUX_REP=_F( GROUP_MA = ('IN1','IN2','OUT',),  FLUN = 0.,),);
 #
 THPIQ=THER_LINEAIRE( MODELE=MOTHPIQ,
                         CHAM_MATER=MATPIQ,
                         EXCIT=_F(  CHARGE = CHTHPIQ,   ),
                    )
-####IMPR_RESU(FORMAT='MED',RESU=_F(RESULTAT=THPIQ,),);
+#IMPR_RESU(FORMAT='MED',RESU=_F(RESULTAT=THPIQ,),);
 #
 TEST_RESU(RESU=(
        _F(  RESULTAT = THPIQ,   NUME_ORDRE = 0,
             NOM_CHAM = 'TEMP',      GROUP_NO = 'POINT',
             CRITERE = 'RELATIF',    PRECISION = 1.E-8,
-            NOM_CMP = 'TEMP',       VALE = 370.861930,
-            REFERENCE = 'NON_REGRESSION', VERSION = '10.00.24'  ))
+            NOM_CMP = 'TEMP',       VALE = 357.193054,
+            REFERENCE = 'NON_REGRESSION', VERSION = '10.03.12'  ))
           )
 #
 FIN();

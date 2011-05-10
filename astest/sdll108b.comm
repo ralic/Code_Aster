@@ -1,5 +1,6 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 09/05/2011   AUTEUR VERRIER A.VERRIER 
 # TITRE : Table de Neubert
+# sdll108b.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -52,6 +53,8 @@ CARLEM=AFFE_CARA_ELEM(   MODELE=MOD,
                                   0.030,  0.030,  0.030,        )),DISCRET=(
                  _F(  GROUP_MA = 'MAS_COIN',  CARA = 'M_T_D_N',
                            VALE = 4.444),
+                 _F(  GROUP_MA = 'MAS_COIN',  CARA = 'K_T_D_N',
+                           VALE = (0.,0.,0.)),
                          _F(  GROUP_MA = 'MAS_INTE',  CARA = 'M_T_D_N',
                            VALE = 0.783))
                          )

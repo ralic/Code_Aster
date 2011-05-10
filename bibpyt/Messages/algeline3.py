@@ -1,4 +1,4 @@
-#@ MODIF algeline3 Messages  DATE 29/03/2011   AUTEUR BOITEAU O.BOITEAU 
+#@ MODIF algeline3 Messages  DATE 04/05/2011   AUTEUR BOITEAU O.BOITEAU 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -214,7 +214,12 @@ Recherche de corps rigide : pour l'instant proscrite avec matrice complexe
 """),
 
 
-
+48: _("""
+Cet operateur a besoin du "procédé de Sturm" pour tester la validité de modes propres ou
+pour nourrir un algorithme de recherche de modes propres (dichotomie...). Or celui-ci
+ne fonctionne, pour l'instant, que sur des matrices réelles et symétriques.
+  --> La matrice utilisée ici, %(k1)s ne répond pas a ces critères !
+"""),
 
 
 49: _("""

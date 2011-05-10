@@ -1,6 +1,6 @@
       SUBROUTINE MFNMAA( FID , N , CRET)
 !           CONFIGURATION MANAGEMENT OF EDF VERSION                  
-!& MODIF MFNMAA ECHANGE  DATE 14/03/2011   AUTEUR SELLENET N.SELLENET 
+!& MODIF MFNMAA ECHANGE  DATE 10/05/2011   AUTEUR SELLENET N.SELLENET 
 ! RESPONSABLE SELLENET N.SELLENET
 ! ================================================================== 
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D              WWW.CODE-ASTER.ORG 
@@ -30,11 +30,11 @@
       PRINT *,'=== MFNMAA ==='
 #endif
       FID4 = FID
-      CALL EFNMAA( FID4, N4, CRET4)
+      CALL MMHNMH( FID4, N4, CRET4)
       N = N4
       CRET = CRET4
 #else
-      CALL EFNMAA( FID , N , CRET)
+      CALL MMHNMH( FID , N , CRET)
 #endif
 ! END MED
 #endif

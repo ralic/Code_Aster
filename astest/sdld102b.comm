@@ -1,4 +1,4 @@
-# MODIF  DATE 31/01/2011   AUTEUR GREFFET N.GREFFET 
+# MODIF  DATE 09/05/2011   AUTEUR VERRIER A.VERRIER 
 # TITRE SOUS-STRUCT. TRANS. (MNEAL) : SYSTEME 3 MASSES - 4 RESSORTS
 # sdld102b.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -50,6 +50,12 @@ PARAM=AFFE_CARA_ELEM(    MODELE=MODELE,DISCRET=(
                             _F( GROUP_MA = 'RESSORT',
                                      CARA = 'K_TR_D_L',
                                      VALE = (1., 0., 0., 0., 0., 0., )),
+                               _F(CARA='M_TR_L',
+                                  GROUP_MA='RESSORT',
+                                  VALE=(0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,
+                                        0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,
+                                        0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,
+                                        0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,),),
                             _F( GROUP_NO = 'MASSE',
                                      CARA = 'M_T_D_N',
                                      VALE = (1., ))))

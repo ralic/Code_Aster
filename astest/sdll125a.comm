@@ -1,10 +1,10 @@
-# MODIF  DATE 09/11/2010   AUTEUR TORKHANI M.TORKHANI 
+# MODIF  DATE 09/05/2011   AUTEUR VERRIER A.VERRIER 
 # RESPONSABLE TORKHANI M.TORKHANI
 # TITRE DIAGRAMME DE CAMPBELL D'UNE LIGNE D'ARBRE SIMPLIFIEE
 # sdll125a.para = tps_job 300 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -73,6 +73,12 @@ cara=AFFE_CARA_ELEM(MODELE=modele,
                                 GROUP_MA='DISQ1',
                                 VALE=(3.50E+00,7.00E-03, 
                                 3.50E-03,3.50E-03,0,0,0,0,0,0,),),
+                             _F(CARA='K_TR_D_N',
+                                GROUP_MA='DISQ1',
+                                VALE=(0,0,0,0,0,0,),),
+                             _F(CARA='A_TR_D_N',
+                                GROUP_MA='DISQ1',
+                                VALE=(0,0,0,0,0,0,),),
                              _F(CARA='M_TR_D_N',
                                 GROUP_MA='DISQ2',
                                 VALE=(3.00E+00,6.00E-03, 

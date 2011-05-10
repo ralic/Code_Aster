@@ -4,9 +4,9 @@
       CHARACTER*(*) MACR,FORM
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 19/10/2010   AUTEUR DELMAS J.DELMAS 
+C MODIF UTILITAI  DATE 10/05/2011   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -80,10 +80,10 @@ C
       CHARACTER*16 NOMSYM
       CHARACTER*19 BASEMO, NOCH19
       CHARACTER*24 MANONO
-      CHARACTER*32 K32BID
+      CHARACTER*64 K64BID
       CHARACTER*80 TITRE
 
-      LOGICAL      F,LMOD,LBID
+      LOGICAL      F,LBID
 C
 C-----------------------------------------------------------------------
 C
@@ -94,7 +94,6 @@ C
       CECR = 'L'
       B    = ' '
       F    = .FALSE.
-      LMOD = .FALSE.
       MACREL = MACR
       FORMAR = '1PE12.5'
       NIVE   = 3
@@ -204,10 +203,10 @@ C     ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
           WRITE (IFC,'(A)') '    -1'
           TITRE = 'MODE DYNAMIQUE'
           CALL IRECRI ( BASEMO,NOSIMP,NOPASE,FORM,IFC,TITRE,
-     >                 LBID,1,'DEPL',IBID,K32BID,' ',IERO,K8B, 1,IORD,
+     >                 LBID,1,'DEPL',IBID,K64BID,' ',IERO,K8B, 1,IORD,
      >                  .TRUE.,B,IERO,B,CECR,K8B,F,IERO,
      >                  IBID,IERO,IBID,IERO,K8B,
-     >                  F,ZERO,F,ZERO,F,F,FORMAR,LMOD,
+     >                  F,ZERO,F,ZERO,F,F,FORMAR,
      >                  NIVE,VERSIO)
         ENDIF
  100  CONTINUE

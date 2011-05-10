@@ -1,4 +1,4 @@
-# MODIF  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 09/05/2011   AUTEUR VERRIER A.VERRIER 
 # TITRE VALIDATION ELEMENTAIRE DES SCHEMAS EN TEMPS DANS DYNA_NON_LINE
 # sdld31a.para = tps_job 120 mem_job 32Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -39,6 +39,9 @@ KK=omega0*omega0
 CARA_ELE=AFFE_CARA_ELEM(  MODELE=MO,
                           DISCRET=(_F(  CARA = 'K_T_D_L',  REPERE = 'GLOBAL', GROUP_MA = 'RESSORT',
                                         VALE = (KK,  KK,  KK, )),
+                                   _F(  CARA = 'M_T_L',  REPERE = 'GLOBAL', GROUP_MA = 'RESSORT',
+                                        VALE = (0,  0,  0, 0,  0,  0, 0,  0,  0, 
+                                        0,  0,  0, 0,  0,  0, 0,  0,  0, 0,  0,  0, )),
                                    _F(  CARA = 'M_T_D_N',  GROUP_MA = 'MASS',
                                         VALE = 1.))
                          )

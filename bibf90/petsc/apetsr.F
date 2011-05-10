@@ -1,7 +1,7 @@
       SUBROUTINE APETSR(ACTION,KPTSC,RSOLU,VCINE)
       IMPLICIT NONE
 !           CONFIGURATION MANAGEMENT OF EDF VERSION
-!& MODIF APETSR PETSC  DATE 12/04/2011   AUTEUR TARDIEU N.TARDIEU 
+!& MODIF APETSR PETSC  DATE 09/05/2011   AUTEUR TARDIEU N.TARDIEU 
 ! ==================================================================
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D              WWW.CODE-ASTER.ORG
 !
@@ -77,7 +77,7 @@
       CHARACTER*4  KBID
       CHARACTER*1  ROUC
 
-      REAL*8       DIVTOL
+      REAL*8       DIVTOL,RBID
       COMPLEX*16   CBID
 !
 !     -- ON STOCKE AU PLUS NMXINS INSTANCES DE PETSC
@@ -339,21 +339,23 @@
 
          IF (NOMAT.NE.' ') THEN
 
+!           -- DESTRUCTION DES OBJETS PETSC GENERAUX
             call MatDestroy(A,ierr)
             CALL ASSERT(ierr.EQ.0)
             call KSPDestroy(ksp,ierr)
             CALL ASSERT(ierr.EQ.0)
 
-            NOMATS(KPTSC)=' '
-            NOSOLS(KPTSC)=' '
-            NONUS(KPTSC)=' '
-
-!           -- TRAITEMENT PARTICULIER DU PRECONDITIONNEUR LDLT_SP
+!           -- DESTRUCTION DES OBJETS PETSC PARTICULIERS A LDLT_SP
             IF (PRECON .EQ. 'LDLT_SP') THEN
                call VecDestroy(xlocal,ierr)
                call VecDestroy(xglobal,ierr)
                call VecScatterDestroy(xscatt,ierr)
             ENDIF
+
+!           -- SUPRESSION DE L'INSTANCE PETSC COTE ASTER
+            NOMATS(KPTSC)=' '
+            NOSOLS(KPTSC)=' '
+            NONUS(KPTSC)=' '
 
          END IF
 

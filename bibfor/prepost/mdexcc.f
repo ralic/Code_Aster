@@ -1,7 +1,7 @@
-      SUBROUTINE MDEXCC ( NOFIMD, NOCHMD, NBCMPC, NOMCMC,
+      SUBROUTINE MDEXCC ( NOFIMD, IDFIMD, NOCHMD, NBCMPC, NOMCMC,
      &                    EXISTC, NBCMFI, NMCMFI, CODRET )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 08/03/2011   AUTEUR SELLENET N.SELLENET 
+C MODIF PREPOST  DATE 10/05/2011   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -27,6 +27,7 @@ C .        .     .        .                                            .
 C .  NOM   . E/S . TAILLE .           DESCRIPTION                      .
 C .____________________________________________________________________.
 C . NOFIMD .  E  .   1    . NOM DU FICHIER MED                         .
+C . NOFIMD .  E  .   1    . OU NUMERO DU FICHIER DEJA OUVERT           .
 C . NOCHMD .  E  .   1    . NOM DU CHAMP MED VOULU                     .
 C . NBCMPC .  E  .   1    . NOMBRE DE COMPOSANTES A CONTROLER          .
 C          .     .        . S'IL EST NUL, ON NE CONTROLE RIEN          .
@@ -84,12 +85,12 @@ C
       INTEGER LNOCHM
       INTEGER IDFIMD, NBCHAM
       INTEGER IAUX, JAUX, KAUX
-      INTEGER ADNCMP, ADUCMP, ADNCMC, ADNCFI
-      LOGICAL FICEXI
+      INTEGER ADNCMP, ADUCMP, ADNCMC, ADNCFI, NSEQCA
+      LOGICAL FICEXI,DEJOUV
 C
       CHARACTER*8 SAUX08
       CHARACTER*16 SAUX16
-      CHARACTER*32 SAUX32
+      CHARACTER*64 SAUX64
 C ______________________________________________________________________
 C
 C===
@@ -105,7 +106,13 @@ C
       INQUIRE(FILE=NOFIMD,EXIST=FICEXI)
 C
       IF ( FICEXI ) THEN
-      CALL MFOUVR ( IDFIMD, NOFIMD, EDLECT, IAUX )
+      IF ( IDFIMD.EQ.0 ) THEN
+        CALL MFOUVR ( IDFIMD, NOFIMD, EDLECT, IAUX )
+        DEJOUV = .FALSE.
+      ELSE
+        DEJOUV = .TRUE.
+        IAUX = 0
+      ENDIF
       IF ( IAUX.EQ.0 ) THEN
 C
 C====
@@ -114,7 +121,7 @@ C====
 C
 C 2.1. ==> NBCHAM : NOMBRE DE CHAMPS DANS LE FICHIER
 C
-      CALL MFNCHA ( IDFIMD, 0, NBCHAM, CODRET )
+      CALL MFNCHA ( IDFIMD, NBCHAM, CODRET )
       IF ( CODRET.NE.0 ) THEN
         SAUX08='MFNCHA  '
         CALL U2MESG('F','DVP_97',1,SAUX08,1,CODRET,0,0.D0)
@@ -129,14 +136,14 @@ C
 C 2.2.1. ==> NBCMFI : NOMBRE DE COMPOSANTES DANS LE FICHIER POUR
 C                     LE CHAMP NUMERO IAUX
 C
-      CALL MFNCHA ( IDFIMD, IAUX, NBCMFI, CODRET )
+      CALL MFNCOM ( IDFIMD, IAUX, NBCMFI, CODRET )
       IF ( CODRET.NE.0 ) THEN
-        SAUX08='MFNCHA  '
+        SAUX08='MFNCOM  '
         CALL U2MESG('F','DVP_97',1,SAUX08,1,CODRET,0,0.D0)
       ENDIF
 C
 C 2.2.2. ==> POUR LE CHAMP NUMERO IAUX, ON RECUPERE :
-C            SAUX32 : NOM DU CHAMP
+C            SAUX64 : NOM DU CHAMP
 C            ZK16(ADNCMP) : NOM DE SES NBCMFI COMPOSANTES
 C            ZK16(ADUCMP) : UNITES DE SES NBCMFI COMPOSANTES
 C
@@ -146,9 +153,10 @@ C
       CALL WKVECT ('&&'//NOMPRO//'U'//SAUX08,
      &             'V V K16', NBCMFI, ADUCMP )
 C               12345678901234567890123456789012
-      SAUX32 = '                                '
-      CALL MFCHAI ( IDFIMD, IAUX, SAUX32, JAUX,
-     &              ZK16(ADNCMP), ZK16(ADUCMP), NBCMFI, CODRET )
+      SAUX64 = '                                '//
+     &'                                '
+      CALL MFCHAI ( IDFIMD, IAUX, SAUX64, JAUX, ZK16(ADNCMP),
+     &              ZK16(ADUCMP), NSEQCA, CODRET )
       IF ( CODRET.NE.0 .OR. JAUX .NE. MFLOAT ) THEN
         VALI (1) = IAUX
         IF ( CODRET.NE.0 ) THEN
@@ -164,10 +172,10 @@ C               12345678901234567890123456789012
 C
 C 2.2.3. ==> COMPARAISON DU NOM DU CHAMP
 C
-      JAUX = LXLGUT(SAUX32)
+      JAUX = LXLGUT(SAUX64)
 C
       IF ( JAUX.EQ.LNOCHM ) THEN
-        IF ( SAUX32(1:JAUX).EQ.NOCHMD(1:LNOCHM) ) THEN
+        IF ( SAUX64(1:JAUX).EQ.NOCHMD(1:LNOCHM) ) THEN
           EXISTC = 1
         ENDIF
       ENDIF
@@ -235,10 +243,13 @@ C
 C
 C 3.2. ==> FERMETURE DU FICHIER
 C
-      CALL MFFERM ( IDFIMD, CODRET )
-      IF ( CODRET.NE.0 ) THEN
-        SAUX08='MFFERM  '
-        CALL U2MESG('F','DVP_97',1,SAUX08,1,CODRET,0,0.D0)
+      IF ( .NOT.DEJOUV ) THEN
+        CALL MFFERM ( IDFIMD, CODRET )
+        IF ( CODRET.NE.0 ) THEN
+          SAUX08='MFFERM  '
+          CALL U2MESG('F','DVP_97',1,SAUX08,1,CODRET,0,0.D0)
+        ENDIF
+        IDFIMD = 0
       ENDIF
 C
       ENDIF

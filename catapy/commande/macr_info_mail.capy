@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 31/01/2011   AUTEUR NICOLAS G.NICOLAS 
+#& MODIF COMMANDE  DATE 10/05/2011   AUTEUR SELLENET N.SELLENET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -32,8 +32,8 @@ MACR_INFO_MAIL=MACRO(nom="MACR_INFO_MAIL",op=macr_adap_mail_ops,
 #
 # 2. Version de HOMARD
 #
-  VERSION_HOMARD = SIMP(statut='f',typ='TXM',defaut="V9_9",
-                        into=("V9_9", "V9_N", "V9_N_PERSO"),
+  VERSION_HOMARD = SIMP(statut='f',typ='TXM',defaut="V10_1",
+                        into=("V10_1", "V10_N", "V10_N_PERSO"),
                         fr="Version de HOMARD",
                         ang="HOMARD release"),
 #
@@ -105,8 +105,8 @@ MACR_INFO_MAIL=MACRO(nom="MACR_INFO_MAIL",op=macr_adap_mail_ops,
 #
 # 7. Unite logique d'un fichier à ajouter a HOMARD.Configuration
 #
-  b_unite = BLOC( condition = " (VERSION_HOMARD == 'V9_N') or \
-                                (VERSION_HOMARD == 'V9_N_PERSO') " ,
+  b_unite = BLOC( condition = " (VERSION_HOMARD == 'V10_N') or \
+                                (VERSION_HOMARD == 'V10_N_PERSO') " ,
                                 fr="Fichier supplementaire.",
                                 ang="Additional file.",
 #

@@ -1,6 +1,6 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 09/05/2011   AUTEUR VERRIER A.VERRIER 
 # TITRE VALIDATION DE PROJ_MESU_MODAL : CAS 3D, BASE : BASE_MODALE
-# sdlv122b.para = tps_job 100 mem_job 250Mo ncpus 1 liste_test S
+# sdlv122b.para = tps_job 100 mem_job 250Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -66,9 +66,12 @@ MATER=AFFE_MATERIAU(   MAILLAGE=MAIL,
 
 #
 CARAELEM=AFFE_CARA_ELEM(    MODELE=MODELE,
-                             DISCRET=_F( GROUP_NO = ('NPOINT1', 'NPOINT2',),
+                             DISCRET=(_F( GROUP_NO = ('NPOINT1', 'NPOINT2',),
                                       CARA = 'K_TR_D_N',
-                                      VALE = (0., 0., 0., 0., 0., 0.,)))
+                                      VALE = (0., 0., 0., 0., 0., 0.,)),
+                                      _F( GROUP_NO = ('NPOINT1', 'NPOINT2',),
+                                      CARA = 'M_TR_D_N',
+                                      VALE = (0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,)),))
 
 #
 # BLOQUAGE DE L'EXTREMITE 1

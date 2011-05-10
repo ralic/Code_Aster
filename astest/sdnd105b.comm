@@ -1,6 +1,6 @@
-# MODIF  DATE 31/01/2011   AUTEUR GREFFET N.GREFFET 
+# MODIF  DATE 09/05/2011   AUTEUR VERRIER A.VERRIER 
 # TITRE CHOC DE DEUX MASSES AU COMPORTEMENT FLAMBAGE PLASTIQUE
-# sdnd105b.para = tps_job 120 mem_job 32Mo ncpus 1 liste_test R
+# sdnd105b.para = tps_job 120 mem_job 32Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -43,6 +43,11 @@ CON_LIM=AFFE_CHAR_MECA( MODELE=MODELE,DDL_IMPO=(
 
 CARA_ELE=AFFE_CARA_ELEM(  MODELE=MODELE,DISCRET=(
                        _F(  GROUP_NO = 'AUTRE',
+                                 CARA = 'K_TR_N',
+                                  VALE = ( 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,
+                                          0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,
+                                          0.,)), 
+                      _F(  GROUP_NO = 'AUTRE',
                                  CARA = 'M_TR_N',
                                  VALE = ( 1., 0., 1., 0., 0., 1., 0.,
                                          0., 0., 0., 0., 0., 0., 0.,

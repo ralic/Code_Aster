@@ -5,7 +5,7 @@
       IMPLICIT  NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 08/03/2011   AUTEUR SELLENET N.SELLENET 
+C MODIF PREPOST  DATE 10/05/2011   AUTEUR SELLENET N.SELLENET 
 C RESPONSABLE SELLENET N.SELLENET
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -73,8 +73,8 @@ C
       INTEGER RENUMD(NTYMAX),NUANOM(NTYMAX,NNOMAX)
       INTEGER MODNUM(NTYMAX),NUMNOA(NTYMAX,NNOMAX)
       INTEGER NTO,NNU,JLIST,NBORDR
-      INTEGER JNUME,NIS,NPAS
-      INTEGER IRET
+      INTEGER JNUME,NIS,NPAS,FID,MAJOR,MINOR,REL
+      INTEGER IRET,IFIMED
       INTEGER I,IER
       INTEGER IPAS
       INTEGER INDIIS
@@ -96,10 +96,13 @@ C
       CHARACTER*24 VALK(2)
       CHARACTER*24 NOMPRN
       CHARACTER*24 OPTION
-      CHARACTER*32 NOCHMD,NOMAMD
+      CHARACTER*64  NOCHMD
+      CHARACTER*64  NOMAMD
       CHARACTER*200 NOFIMD
       CHARACTER*255 KFIC
       INTEGER TYPENT,TYPGOM
+      INTEGER EDLECT
+      PARAMETER (EDLECT=0)
       INTEGER EDNOEU
       PARAMETER (EDNOEU=3)
       INTEGER EDMAIL
@@ -122,7 +125,7 @@ C
 
       CHARACTER*24 NCMPVA,NCMPVM
 
-      CHARACTER*32 K32B
+      CHARACTER*64 K64B
 
       LOGICAL EXISTM,IDENSD
 C
@@ -144,6 +147,13 @@ C     NOM DU FICHIER MED
         NOFIMD = KFIC(1:200)
       ENDIF
 C
+      CALL MFOUVR(FID,NOFIMD,EDLECT,IRET)
+      CALL MFVELI(FID,MAJOR,MINOR,REL,IRET)
+      IF ( MAJOR.LT.3 ) THEN
+        NOCHMD(33:64) = '                                '
+      ENDIF
+      CALL MFFERM(FID,IRET)
+C
       IF (NIVINF.GT.1) THEN
         WRITE(IFM,*) '<',NOMPRO,'> NOM DU FICHIER MED : ',NOFIMD
       ENDIF
@@ -151,16 +161,16 @@ C               12   345678   90123456789
       PREFIX = '&&'//NOMPRO//'.MED'
       CALL JEDETR(PREFIX//'.NUME')
       CALL JEDETR(PREFIX//'.INST')
-      CALL JEDETR(PREFIX//'.MAIL')
-      CALL JEDETR(PREFIX//'.UNII')
 C      CALL JEDETC('V',PREFIX,1)
 
 C         RECUPERATION DU NOMBRE DE PAS DE TEMPS DANS LE CHAMP
 C         ----------------------------------------------------
+      IFIMED = 0
       IF (TYPCHA(1:2).EQ.'NO') THEN
         TYPENT = EDNOEU
         TYPGOM = TYPNOE
-        CALL MDCHIN(NOFIMD,NOCHMD,TYPENT,TYPGOM,PREFIX,NPAS,IRET)
+        CALL MDCHIN(NOFIMD,IFIMED,NOCHMD,TYPENT,TYPGOM,
+     &              PREFIX,NPAS,IRET)
         IF (NPAS.EQ.0) THEN
           CALL U2MESK('A','MED_95',1,NOCHMD)
           GO TO 240
@@ -169,7 +179,8 @@ C         ----------------------------------------------------
         CALL JEVEUO(PREFIX//'.NUME','L',INUM)
 
       ELSE IF (TYPCHA(1:2).EQ.'EL') THEN
-        CALL MDEXPM(NOFIMD,NOMAMD,EXISTM,NDIM,IRET)
+        IFIMED = 0
+        CALL MDEXPM(NOFIMD,IFIMED,NOMAMD,EXISTM,NDIM,IRET)
         CALL LRMTYP(NBTYP,NOMTYP,NNOTYP,TYPGEO,RENUMD,
      &                     MODNUM, NUANOM, NUMNOA )
         IF(TYPCHA(1:4).EQ.'ELNO')THEN
@@ -181,7 +192,9 @@ C         ----------------------------------------------------
         DO 230,LETYPE = 1,NBTYP
           IAUX = RENUMD(LETYPE)
           TYPGOM = TYPGEO(IAUX)
-          CALL MDCHIN(NOFIMD,NOCHMD,TYPENT,TYPGOM,PREFIX,NPAS,IRET)
+          IFIMED = 0
+          CALL MDCHIN(NOFIMD,IFIMED,NOCHMD,TYPENT,TYPGOM,
+     &                PREFIX,NPAS,IRET)
           IF (NPAS.NE.0) THEN
             CALL JEVEUO(PREFIX//'.INST','L',IPAS)
             CALL JEVEUO(PREFIX//'.NUME','L',INUM)
@@ -197,8 +210,9 @@ C           DES CHAMPS ELNO EST ENCORE 'MED_MAILLE'
           DO 231,LETYPE = 1,NBTYP
             IAUX = RENUMD(LETYPE)
             TYPGOM = TYPGEO(IAUX)
-            CALL MDCHIN(NOFIMD,NOCHMD,TYPENT,TYPGOM,PREFIX,
-     &                           NPAS,IRET)
+            IFIMED = 0
+            CALL MDCHIN(NOFIMD,IFIMED,NOCHMD,TYPENT,TYPGOM,
+     &                  PREFIX,NPAS,IRET)
             IF (NPAS.NE.0) THEN
               CALL JEVEUO(PREFIX//'.INST','L',IPAS)
               CALL JEVEUO(PREFIX//'.NUME','L',INUM)
@@ -235,7 +249,8 @@ C       EN SORTIE DE LIRE_RESU SERA STRICTEMENT CROISSANT
         ORDINS = 1
         DO 250 ITPS = 1,NPAS0
            CHANOM = '&&LRFMED.TEMPOR'
-           K32B = '                                '
+           K64B = '                                '//
+     &'                                '
 C
            IF(NNU.NE.0)THEN
               NUMORD = ZI(JNUME+ITPS-1)
@@ -252,7 +267,7 @@ C
               INST = ZR(JLIST+ITPS-1)
            ENDIF
 
-           CALL LRCHME(CHANOM,NOCHMD,K32B,NOMA,TYPCHA,NOMGD,TYPENT,
+           CALL LRCHME(CHANOM,NOCHMD,K64B,NOMA,TYPCHA,NOMGD,TYPENT,
      &                 NBCMPV,NCMPVA,NCMPVM,PROLZ,
      &                 IINST,NUMPT,NUMORD,INST,CRIT,EPSI,
      &                 MFICH,LIGREL,OPTION,PARAM,ZI(JNBPGM),ZI(JNBPMM),

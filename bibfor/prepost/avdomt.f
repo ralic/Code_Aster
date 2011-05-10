@@ -1,8 +1,8 @@
       SUBROUTINE AVDOMT ( NBVEC, NBORDR, NCYCL, DOMEL, DOMTOT )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 24/11/2003   AUTEUR F1BHHAJ J.ANGLES 
+C MODIF PREPOST  DATE 09/05/2011   AUTEUR TRAN V-X.TRAN 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -51,19 +51,25 @@ C     ----- DEBUT COMMUNS NORMALISES  JEVEUX  --------------------------
       CHARACTER*80                                        ZK80
       COMMON  /KVARJE/ ZK8(1), ZK16(1), ZK24(1), ZK32(1), ZK80(1)
 C     ------------------------------------------------------------------
-      INTEGER       IVECT, ICYCL, ADRS
+      INTEGER       IVECT, ICYCL, ADRS, I
 C     ------------------------------------------------------------------
 C234567                                                              012
 C
       CALL JEMARQ()
 C
+C INITIALISATION
+
+       DO 100 I = 1,NBVEC    
+         DOMTOT(I) = 0
+100   CONTINUE 
+
       DO 10 IVECT=1, NBVEC
          DO 20 ICYCL=1, NCYCL(IVECT)
             ADRS = (IVECT-1)*NBORDR + ICYCL
             DOMTOT(IVECT) = DOMTOT(IVECT) + DOMEL(ADRS)
  20      CONTINUE
  10   CONTINUE
-C
+
       CALL JEDEMA()
 C
       END

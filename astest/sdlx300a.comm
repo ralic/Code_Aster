@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 09/05/2011   AUTEUR VERRIER A.VERRIER 
 # TITRE TUYAUTERIE SOUMISE A UNE EXCITATION EN DEPLACEMENT,
 # sdlx300a.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -135,6 +135,12 @@ CARAELEM=AFFE_CARA_ELEM(      MODELE=MO,
                                                        KRXYZ,
                                                        KRXYZ,
                                                        KRXYZ,
+                                                     )),
+                                _F(  GROUP_MA = 'LRESSORT',
+                                          REPERE = 'GLOBAL',
+                                          CARA = 'M_TR_D_N',
+                                          VALE = (
+                                          0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,
                                                      )),
 #
 # LA MASSE

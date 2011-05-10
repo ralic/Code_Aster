@@ -1,0 +1,2124 @@
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR boiteau      BOITEAU Olivier        DATE 05/04/2011 - 10:42:24
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 016759 DU 2011-04-08 15:18:01
+TYPE anomalie concernant Code_Aster (VERSION 11.1)
+TITRE
+    IMPR_STURM et MODE_ITER_INV + matrice non symxc3xa9trique
+FONCTIONNALITE
+   PROBLEME
+   ========
+      L'utilisateur Aster peut solliciter les op IMR_STURM et MODE_ITER_INV avec des matrices
+      non symétriques alors que celles-ci sont hors périmètre (seulement sym réel).
+   ANALYSE
+   =======
+      Depuis leur création ces op. ne testent pas le caractère symétrique ou non des matrices
+      qu'ils manipulent. Pendant longtemps cela ne posait aucun pb car le dynamicien ne construi
+      sait généralement que des matrices symétriques. Depuis 4 ou 5 ans et le chantier "résorbtion
+      de CADYRO ds Aster" il me semble, ce n'est plus le cas.
+      
+      Or les matrices non symétriques sont hors périmètre du test de Sturm utilisés ds ces op. et 
+      de plus, certaines opérations d'algébres linéaires ont été codées exclusivement en 
+      symétriques, donc utiliser des matrices non symétriques conduit à:
+            * avec IMPR_STURM: résultat potentiellement faux,
+            * avec MODE_ITER_INV: planton-écrasement tableau.
+   
+      Je blinde donc cela ds les 2 ops. En cas de matrices non symétriques (et/ou complexe) le
+      calcul s'arrête en 
+   
+      !-----------------------------------------------------------------------------------------!
+      ! <F> <ALGELINE3_48>                                                                      !
+      !                                                                                         !
+      ! Cet operateur a besoin du "procede de Sturm" pour tester la valider de modes propres ou !
+      ! pour nourrir un algorithme de recherche de modes propres (dichotomie...). Or celui-ci   !
+      ! ne fonctionne, pour l'instant, que sur des matrices reelles et symetriques.             !
+      !   --> La matrice utilisee MATM ne repond pas a ces criteres !                           !
+      !                                                                                         !
+      !                                                                                         !
+      ! Cette erreur est fatale. Le code s'arrete.                                              !
+      !-----------------------------------------------------------------------------------------!
+   
+      RQ1: En complexe cela ne pourra pas marcher aussi, mais ce cas est blindé dés le capy.
+   
+      RQ2: L'opérateur "dual" de ces 2 larrons, MODE_ITER_SIMULT, qui est de loin le plus utilisé
+        (directement ou via des macros) est lui blinder car il sait traiter du non symétrique voire
+        du complexe.
+   
+      RQ3: A l'avenir, on peut rendre fonctionnelle, même en non symétrique, l'option 'PROCHE' de
+           MODE_ITER_INV si besoin est.
+   
+      RQ4: Avec l'extension du test de Sturm en cours, on pourra probablement faire sauter ces
+           limitations du périmètre d'utilisation.
+   
+      RQ5: La documentation elle avait été mis à jour lorsque je l'ai remaniée il y'a 2 ans.
+   
+     CAS-TEST UTILISE POUR TEST: SDLL123b
+     ====================================
+   
+     SOURCES RESTITUEES:
+     ===================
+      op0032.f op0044.f 
+      algeline3.py
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    informatique, non-regression, fonctionnel
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 016158 DU 2011-01-06 10:31:00
+TYPE evolution concernant Code_Aster (VERSION 9.1)
+TITRE
+    MUMPS produit peu de gains en // sur les cas-tests perf003/006
+FONCTIONNALITE
+   PROBLEME
+   =========
+      MUMPS produit peu de gain en // sur les cas-tests perf003 et perf006 
+   car sa partie séquentielle (sa phase initiale d'analyse) y est 
+   anormalement hypertrophiée.
+   
+   ANALYSE
+   =======
+   * En voulant rajouter des cas-tests mettant en exergue les gains (en 
+   temps et en mémoire) qu'apporte le parallélisme actuel (calcul el, 
+   assemblage et solveur lineaire MUMPS) aux fonctionnalités modales du 
+   code, je me suis aperçut que ces gains en temps ne sont pas systéma
+   tiques avec le paramétrage par défaut.
+   
+   Sur une gros étude de G.Devesa, on gagnait par rapport à MULT_FRONT, sur 
+   16 proc, un facteur 3 en temps elapsed et 3 en mémoire RAM, sachant que 
+   la part // du calcul est de l'ordre de la moitié.
+   
+   * Par contre, sur les cas-tests perf003 et perf006, la part // est bien 
+   plus faible (entre 15 et 30%) et donc on ne gagne plus grand chose en 
+   temps. Mais on continue bien sûr à gagner en mémoire. 
+   La faute en est à une des trois étapes de MUMPS (la phase d'analyse) qui 
+   est séquentielle et qui est hypertrophiée ici (par rapport à la
+    facto numérique qui elle est efficacement //).
+   Normalement, en seq la première est au moins 10 fois plus petite que la 
+   seconde et cette proportion a tendance à augmenter avec la taille du pb.
+   
+   * Par exemple sur perf003c on a les perfs suivantes (en temps elapsed en
+   s pour les phases d'analyse et de facto num):
+   
+                  AMD AMF QAMD   METIS __PORD    SCOTCH
+   Temps analyse____7__7__7______179 (!!)_156(!!)____30
+   Temps facto_____45_39_45_______25_______23________33
+   
+   --> Donc si on veut pleinement profiter des gains en temps du // il faut
+   privilégier les renuméroteurs qui conduisent à une phase d'analyse 
+   faible. Ici les renuméroteurs frustres (AMD, AMF ou QAMD) plutôt que
+   les sophistiqués (METIS, PORD et SCOTCH), même si leur temps totals et
+   leurs consommations mémoires sont moins intéressantes (en seq).
+   
+   --> Le pb a été soumis à l'équipe MUMPS (cette fiche a permis de tracer
+   les échanges). Ils n'ont pour l'instant pas de solution.
+   
+   --> Par acquis de conscience, pour répondre à la question: 
+   'Est-ce que MEME EN SEQUENTIEL,
+   le choix du renuméroteur 'QAMD' n'est finalement pas intéressant par
+   défaut ds MODE_ITER_SIMULT plutôt que METIS lorsqu'on utilise MUMPS ?'
+   J'ai lancé les 357 cas-tests de la base 
+                   QAMD=6687s          METIS=6722s
+   et qqes cas de tailles significatives
+              miss05a    1019   1007
+              sdll140a   140    135
+              sdnv106    168    157
+              wdnp101    218    208
+   + qqes bench sur les cas-tests que je vais restituer. Bref, en seq, il
+   n'y a pas de gain net de QAMD sur METIS, c'est plutôt l'inverse (sur les
+   facteurs temps-mémoire).
+              ===> Je laisse METIS par défaut
+   
+   
+   VALIDATION
+   ==========
+     J'enrichis ici la base de cas-tests de perf sur le calcul modal //:
+     * PERF013A: idem cas-test PERF003C (plaque modélisée en coque dont on 
+   cherche 10 modes via MODE_ITER_SIMULT+SORENSEN, N=1 M ddls, MUMPS+QAMD).
+      On privilégie le temps: QAMD+IC(defaut)+ LIBERE_MEMOIRE='NON'(defaut)
+         ---> 1 proc
+   
+     * PERF013B: idem 4 proc
+   
+     * PERF013C: idem raffiné uniformément via HOMARD (N=4M ddls) sur 1 proc
+   
+     * PERF013D: idem perf012c sur 4 procs.
+   
+     * PERF013E: idem perf012c sur 16 procs.
+   
+     * PERF013F: idem perf012c en privilégiant la mémoire: METIS+OOC+
+         LIBERE_MEMOIRE='OUI', sur 1 proc.
+   
+     RESULTATS
+     =========
+   
+   ____________13A_________13B________13C________13D________13E________13F
+   TEMPS ELAPSED (s)
+   Analyse______10__________14________43_________51_________59________230
+   Fact n______182__________63______1469________520________367________894
+   Solve________31__________17_______147_________76________140________502
+   Décharg_______0___________0_________0________000________000__________8
+   Total solv__223__________94______1658________648________456_______1625
+   Total op____254_________124______1786________784________576_______1779
+   
+   MEMOIRE RAM (Mo)
+   Mumps______1811__________676_____8780_______3700_______1270_______1524
+   JEVEUXmin___810__________810_____2998_______2998_______2998_______2998
+   JEVEUXmax__1920_________1411_____7590_______7590_______7590_______2998
+   Vmpeak_____3910_________2219____16227______10209_______8887_______6676
+   
+   RAM allouée_2500________1500____11000______8000________8000_______3000
+   
+     QQES COMMENTAIRES
+     =================
+       * Avec MUMPS IC + seq --> la conso RAM du calcul est dictée par MUMPS
+       *        OOC ou IC // --> elle est dictée par JEVEUX
+       * Donc pour voir les speed-ups MUMPS sur l'ens du calcul, on a gardé
+        ici un fonctionnement IC pour JEVEUX.
+   
+        * Speed-up en temps de tout l'op:
+                          speed-up théorique    effectif
+           perf013a/b:          2.7               2.0
+           perf013c/d/e:        3.0/6.4           2.3/3.1
+   
+        * Speed-up en mémoire RAM (ici que pour MUMPS):
+                          speed-up théorique    effectif
+           perf013a/b:          4              2.7
+           perf013c/d/e:        4/16           2.4/6.9
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : U2.08.03/U2.08.06/U4.50.01/V1.01.290
+VALIDATION
+    informatique
+NB_JOURS_TRAV  : 6.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 016783 DU 2011-04-14 11:23:28
+TYPE anomalie concernant Code_Aster (VERSION 10.2)
+TITRE
+    Couverture de routines MODE_ITER_SIMULT
+FONCTIONNALITE
+   PROBLEME
+   ========
+        Absence de "couverture de code" des sources GTREXC et GTRSEN par des cas-tests Aster.
+   ANALYSE
+   =======
+     Il s'agit de routines d'algèbre linéaire LAPACK rajoutées il y'a 11 ans lors de l'intégration
+     du package ARPACK (tout comme 29 autres LAPACK et 1 LINPACK voire liste ci-dessous). Comme il
+     s'agit de routines de calcul sophistiquées et très amonts par rapport aux structures de
+     données, aux modélisations et aux fonctionnalités Aster, 
+             --> Il est difficile de forcer le passage de cas-tests par ces sources. 
+             --> Ce forçage ne pourra qu'être indirect (via des potards numériques du solveur modal
+                 ARPACK par ex) et sans doute contre-productif en terme de perf et contradictoire
+                 avec l'objectif pédagogique de la base.
+             --> Ce n'est pas à ASTER de tester ces routines de librairie externes (qui ont juste
+                 été modifiées formellement à l'origine puis retouchées formellement 2 fois en 10  
+                 ans).
+   
+      ==> Bref, je ne restitue pas de cas-test pour valider ces routines et je propose de déclarer
+          "temporèrement" comme "excusées" ces routines provenant de librairies externes sur
+          lesquelles une autre fiche va essayer de statuer.
+   
+      ==> En effet, depuis la restitution d'ARPACK ds Aster pas mal d'eau a circulé sous les
+          ponts ! Aster ne ressent plus le besoin d'embarquer toutes les routines externes dont
+          il peut avoir besoin (BLAS, LAPACK, MPI...), il fait désormais confiance aux librairies
+          constructeurs ou autres auquel on choisit de le linker (plate-forme par plate-forme).
+          Donc au fil des ans, pas mal de routines type BLAS, LAPACK ont été enlevées du corpus
+          Aster (fiches en 2003 et en 2005 de AA et JP) afin d'éviter les doublons. Mais le travail
+          reste à achever: il reste 30 LAPACK/LINPACK. Lorsqu'on les enlève certains cas-tests
+          plantent ou produisent des NOOK....
+           ===> cela permettrait de clarifier la situation actuelle (maintenance préventive),
+           ===> de gagner un peu en perf et en robustesse (les LAPACK constructeurs sont plus 
+               efficaces et à jour ?)
+           ===> D'éviter ces pbs de code coverage qui ne nous concernent pas vraiment.
+   
+          J'EMET LA FICHE AD HOC
+   
+   
+     RQ1. Ces routines en complexe double précision ont des petites soeurs en réels par
+          lesquels passent des cas-tests. Ce cas de figures se posent souvent. On restitue toutes
+          versions possibles d'une fonctionnalités (reélle, complexe...) au cas où et afin d'être
+          lisible mais on sait pertinament dès le début qu'on ne les utilisera pas toutes. Du moins
+          au début (le pb se pose par exemple pour certains blocs de communications MPI...).
+   
+     RQ2. Toutes ces routines LAPACK/LINPACK n'ont été modifiées que formellement. Seules qqes
+          routines du package ARAPACK ont été touchées sur le fond. Celles-là IL FAUT LES GARDER
+          TELLE QUE (de toute façon le package n'a pas évolué depuis).
+   
+     RQ3. Listes de routines excusables pour le "code-coverage":
+   
+   dgetv0.f:C COPYRIGHT (C) LAPACK
+   dlaqrb.f:C COPYRIGHT (C) LAPACK
+   dnaitr.f:C COPYRIGHT (C) LAPACK
+   dnapps.f:C COPYRIGHT (C) LAPACK
+   dnaup2.f:C COPYRIGHT (C) LAPACK
+   dnaupd.f:C COPYRIGHT (C) LAPACK
+   dnconv.f:C COPYRIGHT (C) LAPACK
+   dneigh.f:C COPYRIGHT (C) LAPACK
+   dneupd.f:C COPYRIGHT (C) LAPACK
+   fgeqr2.f:C COPYRIGHT (C) LAPACK
+   flacon.f:C COPYRIGHT (C) LAPACK
+   flaexc.f:C COPYRIGHT (C) LAPACK
+   flahqr.f:C COPYRIGHT (C) LAPACK
+   flaln2.f:C COPYRIGHT (C) LAPACK
+   flanv2.f:C COPYRIGHT (C) LAPACK
+   flarfg.f:C COPYRIGHT (C) LAPACK
+   flartg.f:C COPYRIGHT (C) LAPACK
+   flasy2.f:C COPYRIGHT (C) LAPACK
+   flrsyl.f:C COPYRIGHT (C) LAPACK
+   ftrevc.f:C COPYRIGHT (C) LAPACK
+   ftrexc.f:C COPYRIGHT (C) LAPACK
+   ftrsen.f:C COPYRIGHT (C) LAPACK
+   glartg.f:C COPYRIGHT (C) LAPACK
+   gtrevc.f:C COPYRIGHT (C) LAPACK
+   gtrexc.f:C COPYRIGHT (C) LAPACK
+   gtrsen.f:C COPYRIGHT (C) LAPACK
+   gtrsyl.f:C COPYRIGHT (C) LAPACK
+   xerbla.f:C COPYRIGHT (C) LAPACK / BLAS
+   
+   ldasum.f:C COPYRIGHT (C) LINPACK
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    informatique
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 016502 DU 2011-02-28 09:29:15
+TYPE anomalie concernant Code_Aster (VERSION 11.1)
+TITRE
+    loi endo scalaire + version parallele Aster
+FONCTIONNALITE
+   PROBLEME
+   ========
+       Planton ds MUMPS sur un calcul d'endommagement.
+   ANALYSE
+   =======
+   Il s'agit d'un petit système linéaire (N=70 000, NNZ=1 100 000) symétrique 
+   réel double précision traité en séquentiel + IC + tous les potards par défaut. 
+   Au bout de 15h de calculs et des milliers de séquences MUMPS complètes (analyse+ 
+   facto + solve) le calcul plante "salement" au fin fond de MUMPS avec un arbre d'appel
+   incohérent: routines simple précision et OOC.
+   
+    ==> L'équipe MUMPS a été sollicitée mais elle n'a pas d'idée.
+   
+    ==> Ce n'est pas le fait de lancer MUMPS des milliers de fois consécutivement (possible
+        fuite mémoire). J'ai fait l'essai de 10000 runs MECA_STATIQUE. Tout semble OK.
+   
+    ==> On n'a pas pu rejouer la scène car il s'agit d'une poursuite très longue à partir
+        d'une base maintenant obsolète.
+   
+    ==> Ce pb n'est pas bloquant pour l'étude.
+    
+    ON A DONC CONVENEU AVEC MARINA DE JUSTE TRACER CE PB DS LA REX POUR MEMOIRE ET DE REPRENDRE
+    LA MAIN S'IL SE REPOSE A NOUVEAU.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    informatique
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR brie         BRIE Nicolas           DATE 05/10/2011 - 09:31:26
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 016140 DU 2011-01-04 09:18:02
+TYPE express concernant Code_Aster (VERSION 10.4)
+TITRE
+    mauvais classement de sdll136a (non lineaire)
+FONCTIONNALITE
+   1. Probleme
+   
+   Le cas-test SDLL136a etait classe en lineaire d'apres la 3eme lettre de la nomenclature.
+   Or ce cas-test contient des chocs qui ont effectivement lieu. Il faut donc le renommer en
+   SDNL136a.
+   (Rq : tous les cas-tests avec le schema ITMI de DYNA_TRAN_MODAL ont actuellement le
+   mot-cle CHOC dans le .comm, mais ce sont parfois des obstacles fictifs, situes tres loin
+   de la structure, necessaires a cause de la programmtion actuelle d'ITMI. Seul SDLL136a
+   contient des chocs effectifs, donc c'est le seul a devoir etre reclasse).
+   
+   -------------------------------------------------------------------------
+   2. Solution
+   
+   On supprime le cas-test sdll136a. On cree un nouveau cas-test sdnl136a.
+   
+   --------------------------------------------------------------------------
+   3. Impact documentaire
+   
+   La doc de validation de ce cas-test (anciennmement V2.02.136) a ete renommee en V5.02.136
+   et quelques modifications (notamment entetes et pieds de page) ont ete repercutees pour
+   etre en coherence avec cette nouvelle
+   classification.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : V2.02.136, V5.02.136
+VALIDATION
+    sdnl136a
+DEJA RESTITUE DANS : 9.8.6
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR desroche     DESROCHES Xavier       DATE 05/10/2011 - 08:19:37
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 016817 DU 2011-04-22 13:27:48
+TYPE anomalie concernant Code_Aster (VERSION 9.1)
+TMA : DeltaCad
+TITRE
+    En NEW11.0.2, les cas-test ssls100f, ssls101f et ssls111c sont NOOK sur Aster4 et Cal5.
+FONCTIONNALITE
+   1 - Regroupement des fiches d'anomalies
+   ---------------------------------------
+    - AL_16817 : les cas-test ssls100f, ssls101f et ssls111c sont NOOK sur Aster4 
+   et Cal5.
+    - AL_16821 : les cas-test ssls117c est NOOK sur Aster4, Cal5 e
+    - AL_16822 : les cas-test ssls118d, k et l est NOOK sur Aster4, Cal5 et 
+   Aster4_gfortran.
+    - al_16823 : le cas-test ssls503c est NOOK sur Aster4, Rocks,Cal5 et 
+   Aster4_gfortran.
+    - AL_16824 : le cas-test ssls504b est NOOK sur Aster4, Cal5 et Aster4_gfortran.
+   
+   2 - Analyse
+   -----------
+   Les TEST_RESU concernés porte sur des résultats venant d'un chargement en 
+   pression sur des
+   coques 
+     - ssls100 :  Poutre encastrée soumise a une pression uniforme
+          Mod F :1 NOOK : 1.5% au lieu de 1%
+     - ssls101 : plaque circulaire posée soumise a une pression uniforme
+          Mod F : 2 NOOK : écart max : 0.51% au lieu de 0.4%
+     - ssls111c :  Excentrement de plaque simple
+         Mod C : 21 NOOK : écart max 2.3% au lieu de 1.3%
+     - ssls117c :  Excentrement de plaques non-symétriques
+         Mod C : 18 NOOK : écart max 1% au lieu de 0.1%
+     - ssls118 :  Plaque carrée posée soumis a une pression sinusoïdale
+          Mod D : 9 NOOK : écart max 5.7% au lieu de 4.1%
+          Mod K : 7 NOOK : écart max 5.7% au lieu de 4.1% 
+          Mod L : 7 NOOK : écart max 5.7% au lieu de 4.1%
+     - ssls503c :  Plaque stratifiée en flexion empilement antisymétrique 
+   simplement appuyée
+          Mod C : 3 NOOK : 27% au lieu de 24%
+     - ssls504b :  Plaque carrée composite constituée de 3 couches, soumise a un 
+   chargement
+   doublement sinusoïdale
+          Mod B : 3 NOOK : 6% au lieu de 1%
+   
+   3 - Modifications
+   -----------------
+    On ajuste la tolérance des cas-tests
+   
+    
+   4 - Validation
+   --------------
+      Passage de la liste complète
+   
+   5 - Documentation
+   -----------------
+   Mise a jour de la tolérance dans les docs ssls111, ssls504 et ssls117.
+   Compte tenu de la finalisation des docs V pour la STA 10.4 on ajoute ce travail
+   a la fiche 16785.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : V3.03.100  V3.03.111 V3.03.117 V3.03.118 V3.03.503 V3.03.504
+VALIDATION
+    ssls100f ssls101f ssls111c ssls117c ssls118d ssls503c ssls504b
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 016819 DU 2011-04-22 13:34:27
+TYPE anomalie concernant Code_Aster (VERSION 9.1)
+TMA : DeltaCad
+TITRE
+    En NEW11.0.2, le cas-test ssls114c s'arrete en erreur F sur Aster_gfortran et Cal5.
+FONCTIONNALITE
+   fiche traitée avec la fiche 16817
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    sans
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 016821 DU 2011-04-22 13:48:19
+TYPE anomalie concernant Code_Aster (VERSION 9.1)
+TMA : DeltaCad
+TITRE
+    En NEW11.0.2, les cas-test ssls117c est NOOK sur Aster4, Cal5 et Aster4_gfortran.
+FONCTIONNALITE
+   fiche traitée avec la fiche 16817
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    sans
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 016822 DU 2011-04-22 13:50:16
+TYPE anomalie concernant Code_Aster (VERSION 9.1)
+TMA : DeltaCad
+TITRE
+    En NEW11.0.2, les cas-test ssls118d, k et l est NOOK sur Aster4, Cal5 et Aster4_gfortran.
+FONCTIONNALITE
+   fiche traitée avec la fiche 16817
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    sans
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 016823 DU 2011-04-22 13:54:39
+TYPE anomalie concernant Code_Aster (VERSION 9.1)
+TMA : DeltaCad
+TITRE
+    En NEW11.0.2, le cas-test ssls503c est NOOK sur Aster4, Rocks,Cal5 et Aster4_gfortran.
+FONCTIONNALITE
+   fiche traitée avec la fiche 16817
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    sans
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 016824 DU 2011-04-22 13:57:07
+TYPE anomalie concernant Code_Aster (VERSION 9.1)
+TMA : DeltaCad
+TITRE
+    En NEW11.0.2, le cas-test ssls504b est NOOK sur Aster4, Cal5 et Aster4_gfortran.
+FONCTIONNALITE
+   fiche traitée avec la fiche 16817
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    sans
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR meunier      MEUNIER Sébastien     DATE 05/10/2011 - 04:41:14
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 016878 DU 2011-05-04 08:48:46
+TYPE express concernant Code_Aster (VERSION 11.1)
+TITRE
+    Mxc3xa9nage Arlequin + THM
+FONCTIONNALITE
+   arlq_matr est supprimé dans la fiche 16902.
+   
+   L'argument MECA de la routine inithm.f ne sert à rien. Je l'enlève donc.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    aucune
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 016395 DU 2011-02-10 10:00:34
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+    PROJ_CHAMP - Amxc3xa9lioration du mot-clef NOM_CHAM
+FONCTIONNALITE
+   Dans la commande PROJ_CHAMP, l'utilisateur est laissé seul pour renseigner le mot-clef
+   NOM_CHAM. En effet, il doit simplement renseigner une chaîne de caractères mais il peut se
+   tromper. On n'a pas de liste des valeurs possibles dans Eficas.
+   
+   Cette demande a été traitée dans la fiche 16437. L'utilisateur a désormais une liste des
+   possibilités sous NOM_CHAM, pour toutes les commandes y faisant appel.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    aucune
+NB_JOURS_TRAV  : 0.01
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 016033 DU 2010-12-08 12:25:59
+TYPE evolution concernant Code_Aster (VERSION 9.1)
+TITRE
+    Copier un maillage par CREA_MAILLAGE
+FONCTIONNALITE
+   Dans l'étude jointe réalisée dans le cadre du stage de T. 
+   Hebrail sur l'adaptation de
+   maillages en THM, 2 anomalies sont mises en évidence, dans 
+   CREA_MAILLAGE et dans
+   MACR_ADAP_MAIL.
+   
+   La première anomalie (émission d'une alarme intempestive par 
+   CREA_MAILLAGE) a été traitée
+   dans la fiche 16355. J'ai relancé l'étude en NEW11 et 
+   l'alarme n'apparaît plus.
+   
+   Par ailleurs, on rajoute dans la commande CREA_MAILLAGE le 
+   mot-clef COPIE pour recopier le
+   maillage donné en entrée.
+   
+   L'instruction :
+   MAILLAG2=CREA_MAILLAGE(MAILLAGE=MAILLAG1,);
+   devient :
+   MAILLAG2=CREA_MAILLAGE(MAILLAGE=MAILLAG1,COPIE=_F(),);
+   Cette possibilité est utilisée par certaines macros comme 
+   macr_cara_poutre et macr_lign_coupe.
+   
+   Lorsqu'on utilise CREA_MAILLAGE, il est désormais obligatoire 
+   de renseigner
+   une et une seule option (QUAD_LINE par exemple). Le 
+   changement est dans CREA_MAILLAGE.capy :
+   < regles=(EXCLUS('COQU_VOLU', 'CREA_FISS',...
+   > regles=(UN_PARMI('COQU_VOLU', 'CREA_FISS',...
+   
+   
+   La seconde anomalie (plantage sale de MACR_ADAP_MAIL) a été 
+   traitée dans la fiche 16056.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : u4.23.02
+VALIDATION
+    étude jointe
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR pellet       PELLET Jacques         DATE 05/10/2011 - 09:29:15
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 016902 DU 2011-05-09 06:12:14
+TYPE express concernant Code_Aster (VERSION 9.1)
+TITRE
+    Ménage dans les catalogues d'options
+FONCTIONNALITE
+   Ménage dans les catalogues d'options :
+   --------------------------------------
+                                                                                            
+                           
+   1) les options ci-dessous ne sont calculées par aucun élément fini. On les détruit.
+       arlq_matr
+       char_meca_eplg_f
+       char_meca_eplg_r
+       dlsi_elno_dlde
+       endo_elno_elga
+                                                                                            
+                           
+                                                                                            
+                           
+   2)  Dans les catalogues de 95 options, on trouve des paramètres (346) qui ne sont utilisés
+   par aucun élément fini.
+       On nettoie ces catalogues d'options.
+                                                                                            
+                           
+                                                                                            
+                           
+   Liste des fichiers impactés par la correction de la fiche:  16902
+     imprime.py
+     calc_dg.cata           calc_dg_f.cata         calc_dgg_e.cata        calc_dgg_e_f.cata 
+       calc_dgg_forc.cata
+     calc_dgg_forc_f.cata   calc_g.cata            calc_g_f.cata          calc_g_glob.cata  
+       calc_g_glob_f.cata
+     char_dlag_evolst.cata  char_dlag_evoltr.cata  char_dlag_flun_f.cata 
+   char_dlag_flun_r.cata  char_dlag_pres_f.cata
+     char_dlag_pres_r.cata  char_dlag_text_f.cata  char_dlag_text_r.cata  char_limite.cata  
+       char_meca_cont.cata
+     char_meca_fc1d1d.cata  char_meca_ff1d1d.cata  char_meca_fr1d1d.cata  char_meca_frot.cata
+      char_meca_hydr_r.cata
+     char_meca_pesa_r.cata  char_meca_sech_r.cata  char_meca_sf1d1d.cata 
+   char_meca_sfco3d.cata  char_meca_sr1d1d.cata
+     char_meca_srco3d.cata  char_meca_temp_r.cata  char_meca_vnor_f.cata  char_sens_evol.cata
+      efca_elno.cata
+     efge_elno.cata         efge_elno_sens.cata    ener_diss.cata         epme_elga.cata    
+       epme_elno.cata
+     epmg_elga.cata         epmg_elno.cata         epot_elem.cata         epsg_elga.cata    
+       epsg_elno.cata
+     epsi_elga.cata         eptu_elno.cata         epvc_elga.cata         epvc_elno.cata    
+       flux_elga.cata
+     flux_elga_sens.cata    flux_elno.cata         flux_elno_sens.cata    forc_noda.cata    
+       full_meca_elas.cata
+     k_g_moda.cata          mass_iner.cata         mass_meca.cata         mass_meca_diag.cata
+      mass_meca_expli.cata
+     mass_meca_sens_c.cata  mass_meca_sensi.cata   meca_gyro.cata         m_gamma.cata      
+       qire_elem.cata
+     raph_meca.cata         resi_ther_paro_f.cata  rigi_acou.cata         rigi_meca_elas.cata
+      rigi_meca_ge.cata
+     rigi_meca_hyst.cata    rigi_meca_implex.cata  rigi_meca_sens_c.cata 
+   rigi_meca_sensi.cata   rigi_meca_sfco3d.cata
+     rigi_meca_srco3d.cata  rigi_ther_conv_t.cata  secm_zz1.cata          sica_elno.cata    
+       sief_elga.cata
+     sief_elga_sens.cata    sief_elno.cata         sieq_elga.cata         sieq_elno.cata    
+       sigm_elno.cata
+     sigm_elno_sens.cata    sipm_elno.cata         sipo_elno.cata         sipo_elno_sens.cata
+      situ_elno.cata
+     sour_elga.cata         tou_ini_elga.cata      tou_ini_elno.cata      vaco_elno.cata    
+       xcvbca.cata
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    rien de particulier
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR sellenet     SELLENET Nicolas       DATE 05/10/2011 - 12:25:42
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 016753 DU 2011-04-07 16:48:47
+TYPE anomalie concernant Code_Aster (VERSION 9.1)
+TITRE
+    [FORUM] Dxc3xa9passement de tableau dans IMPR_RESU
+FONCTIONNALITE
+   Problème :
+   ----------
+   """
+   Dans le calcul joint, on plante très salement dans un IMPR_RESU.
+   """
+   
+   
+   Analyse :
+   ---------
+   Dans l'étude jointe à la fiche, on fournit à IMPR_RESU une liste de groupes de mailles. Or
+   certaines mailles sont incluses dans plusieurs groupes.
+   
+   De plus dans la routine IRMAMA, on construit un tableau contenant la liste des mailles à
+   imprimer à partir de la liste des groupes de mailles d'IMPR_RESU. Ce tableau peut contenir
+   des doublons (notamment dès qu'une maille se retrouve dans 2 groupes distincts). Ainsi,
+   certaines fois, on obtient un tableau dont la taille est plus grande que le nombre de mailles.
+   
+   Jusqu'ici tout va bien. Le problème vient du fait que dans IRCMPE, on tente de remplir un
+   tableau dimensionné au nombre de mailles en bouclant sur le tableau construit par IRMAMA
+   (qui peut être plus grand que ça). Dans le cas du forum, on dépassait donc les dimensions
+   du tableau à remplir.
+   
+   
+   Solution :
+   ----------
+   On élimine les doublons dans le tableau produit par IRMAMA. C'est exactement le même
+   correctif qui a été introduit en 8.1.15 mais dans le cas des noeuds.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    test unitaire
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 016842 DU 2011-04-27 05:57:29
+TYPE anomalie concernant Code_Aster (VERSION 9.1)
+TITRE
+    Plantage CALC_ELEM - erreur dxc3xa9veloppeur
+FONCTIONNALITE
+   Problème :
+   ----------
+   Dans CALC_ELEM :
+   """
+   <E> <CALCULEL2_71>
+    on ne trouve pas dans les arguments de la routine CALCUL de champ à associer au parametre:
+   PCOMPOR
+    - option: VAEX_ELGA
+    - type_element: H_DPQ8S
+   """
+   
+   
+   Analyse :
+   ---------
+   C'est le comportement qui n'est pas trouvé (et qui est nécessaire) pour le calcul de
+   l'option VAEX_ELGA. De plus la sd_resultat vient d'un STAT_NON_LINE pour les numéros
+   d'ordre 2 et 3 et d'un CREA_RESU pour l'ordre 1.
+   
+   STAT_NON_LINE ajoute correctement le comportement à la sd_resultat mais il est manquant
+   pour l'ordre 1.
+   
+   
+   Solution :
+   ----------
+   On propose à l'utilisateur de ne faire le CALC_ELEM que pour les numéros d'ordre 2 et 3 :
+   """
+   # On evite l'ordre 1
+   L_ORDRE=DEFI_LIST_ENTI(DEBUT=2,
+                          INTERVALLE=_F(JUSQU_A=3,
+                                        PAS=1,),);
+   
+   cal1=CALC_ELEM(reuse=cal1,RESULTAT=cal1,
+                  LIST_ORDRE=L_ORDRE,
+                  OPTION='VAEX_ELGA',
+                  NOM_CHAM='VARI_ELGA',
+                  NOM_VARI='DPORO',);
+   """
+   
+   De plus dans le cadre du chantier CALC_CHAMP, il avait déjà été convenu de rajouter un
+   champ dans le catalogue des options pour préciser si un paramètre est obligatoire ou
+   facultatif. Ici, cela aurait été utile à l'utilisateur car il aurait obtenu un message
+   plus clair.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    unitaire
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 016489 DU 2011-02-25 09:47:50
+TYPE anomalie concernant Code_Aster (VERSION 9.1)
+TITRE
+    En NEW10.3.15, le cas-test perf010e est NOOK sur Aster4 en MPI.
+FONCTIONNALITE
+   Problème :
+   ----------
+   """
+   En NEW10.3.15, le cas-test perf010e est NOOK sur Aster4 en MPI.
+   """
+   
+   
+   Solution :
+   ----------
+   Dans le cadre de cette fiche, on ne fera pas de restitution. La fiche issue16627 a proposé
+   une modification de la construction d'aster qui pourrait corriger le problème.
+   
+   On verra à l'usage.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    unitaire
+NB_JOURS_TRAV  : 3.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 016314 DU 2011-01-28 10:37:56
+TYPE evolution concernant Site web (VERSION )
+TITRE
+    mise xc3xa0 jour page performances
+FONCTIONNALITE
+   Problème :
+   ----------
+   """
+   Cette fiche consiste à mettre à jour la page des performances :
+   """
+   
+   
+   Réalisation :
+   -------------
+   Mise à jour des pages web des cas tests de perf (page française et anglaise) en prenant
+   comme référence la machine aster4 et la nouvelle STA10.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    aucune
+NB_JOURS_TRAV  : 0.2
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 016009 DU 2010-12-03 11:13:25
+TYPE anomalie concernant Code_Aster (VERSION 9.1)
+TITRE
+    perf011b NOOK sur aster4 MPI
+FONCTIONNALITE
+   Problème :
+   ----------
+   perf011b est NOOK sur aster4 en MPI
+   
+   
+   Solution :
+   ----------
+   Pareil que pour la fiche issue16489.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    unitaire
+NB_JOURS_TRAV  : 10.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 014589 DU 2010-02-09 14:44:08
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+    Passage en med 3.0
+FONCTIONNALITE
+   Demande :
+   ---------
+   """
+   Prévoir la montée de version début 2011 pour la 10.4.
+   """
+   
+   
+   Réalisation :
+   -------------
+   Dans cette fiche, on réalise la montée de version de MED2.3 vers MED3.0. A cette occasion,
+   les éléments HEXA27, QUAD9 et TRIA7 qui sont désormais utilisables dans MED pourront être
+   imprimés au format MED à partir d'Aster.
+   
+   
+   Modification des sources d'IMPR_RESU, de LIRE_RESU, de LIRE_MAILLAGE et de LIRE_CHAMP au
+   format MED.
+   
+   Modification des longueurs des noms des champs, des profils, des localisations, ...
+   
+   Modification des appels aux routines MED (noms des routines modifiées, signatures modifiées).
+   
+   Modification des cas tests (changement du nom des champs).
+   
+   
+   Validation :
+   ------------
+   Cas tests utilisant MED (252 tests) sur calibre 5, clpaster et aster4. Voici la liste des
+   tests :
+   ahlv100a comp005a comp005d demo001a distr01a erreu05a erreu08a forma01a forma01b forma01c
+   forma01d forma03a forma03b forma03c forma03d forma04a forma04b forma04c forma05a forma05b
+   forma11a forma12a forma12b forma12c forma12d forma12e hslv304a hsnv100k hsnv100l hsnv100m
+   hsnv132b hsnv134a hsnv134b hsnv135a plexu01a plexu02a sdll113b sdll123d sdll123f sdll14a
+   sdll14b sdll14c sdls106c sdlv123b sdlv131a sdlv131b sdlv131c sdlv131d sdlx02a sdlx100a
+   sdnd106a sdnl105d sdns107a sdns107b sdnv103e sdnv107a ssep001a ssep001b ssep002a ssep002b
+   ssll107d ssll11b sslp315c sslp315d sslp315e sslp317a sslp318a sslp318b sslp319a sslp319b
+   sslp319c sslp319d sslp320a sslp320b sslp320c sslp321a sslp321b sslp321c ssls101n ssls111a
+   ssls132a ssls132b ssls132c ssls132d ssls132e ssls132f ssls133c ssls133d ssls200a sslv04a
+   sslv04b sslv04c sslv07a sslv111a sslv130a sslv130b sslv130c sslv130d sslv134c sslv134i
+   sslv153a sslv314d sslv315a sslv315b sslv315c sslv315d sslv316a sslv316b sslv316c sslv316d
+   sslv316e sslv316f sslv316g sslv316h sslv317a ssna119a ssna120a ssna303a ssna303b ssnd106b
+   ssnd107a ssnd107b ssnl121b ssnp115b ssnp131a ssnp131b ssnp133a ssnp133b ssnp133c ssnp133d
+   ssnp133e ssnp133f ssnp133g ssnp133h ssnp140a ssnp140b ssnp140c ssnp140d ssnp140e ssnp142a
+   ssnp142b ssnp142c ssnp142d ssnp142e ssnp142f ssnp143a ssnp143b ssnp145a ssnp145b ssnp145c
+   ssnp147a ssnp147b ssnp151a ssnp151b ssnp307a ssns106h ssns106i ssns106j ssns108a ssnv108a
+   ssnv142d ssnv147a ssnv171c ssnv173k ssnv182k ssnv182l ssnv185r ssnv185s ssnv193a ssnv217a
+   ssnv217b ssnv218a ssnv220a ssnv505h ssnv505i ssnv506c ssnv506f ssnv508a ssnv508b ssnv509a
+   ssnv509b tpll01h tpll01j tpll101a tpll101b tplv100a tpna01a tpna01b tpna01d tpna01e
+   tpnl301a tpnl301b tpnl301c tpnl301d ttlv100c ttnl03a ttnl03b ttnl03c ttnl03d ttnp201a
+   ttnp201b ttnp201c wtnl100e wtnl100f wtnp116a wtnp116b wtnp128a wtnp128b wtnp128c wtnp128d
+   zmat010a zzzz108a zzzz115a zzzz121a zzzz121b zzzz121c zzzz121d zzzz121e zzzz132a zzzz136d
+   zzzz141a zzzz161a zzzz162a zzzz162b zzzz175a zzzz176a zzzz185a zzzz215a zzzz215b zzzz215c
+   zzzz231a zzzz231b zzzz231c zzzz237a zzzz237b zzzz238a zzzz238b zzzz240a zzzz254a zzzz257a
+   zzzz257b zzzz257c zzzz257d zzzz259a zzzz262a zzzz262b zzzz264a zzzz265a zzzz272a zzzz272b
+   zzzz282a zzzz283a
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U7.01.21
+VALIDATION
+    Cas tests utilisant MED (252 tests) sur claut682, clpaster et aster4
+NB_JOURS_TRAV  : 20.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013342 DU 2009-04-24 14:03:02
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+    IMPR_RESU au format MED : Champs ELNO sur HEXA27, QUAD9 et TRIA7
+FONCTIONNALITE
+   Demande :
+   ---------
+   """
+   Cette fiche d'évolution est émise pour tracer la progression de la prise en compte des
+   HEXA27, QUAD9 et TRIA7 pour des champs ELNO imprimés par IMPR_RESU au format MED.
+   """
+   
+   
+   Solution :
+   ----------
+   Ajout des HEXA27, QUAd9 et TRIA7 pour le format MED dans Aster.
+   
+   Modification de irmmma, lrmtyp, lrmvemo, ircmpn, ircmpr et prepost.py.
+   
+   
+   Validation :
+   ------------
+   Ajout d'un IMPR_RESU au format MED dans sslv200a (cas test utilisant de HEXA27).
+   Vérification à l'aide de mdump et de Salome6.3 mis à disposition par Isabelle.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : u7.05.21
+VALIDATION
+    unitaire (sslv200a modifie)
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 016780 DU 2011-04-14 11:06:32
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+    Glute a supprimer dans cclpci
+FONCTIONNALITE
+   Demande :
+   ---------
+   """
+   Dans cclpci on trouve :
+   
+   C TEMPORAIRE EN ATTENDANT LA MODIF SIEF_ELGA => SIEF_ELGA
+             IF ( (OPTIO2.EQ.'SIEF_ELGA').AND.
+        &         ((TYPESD.EQ.'EVOL_ELAS').OR.
+        &          (TYPESD.EQ.'DYNA_TRANS').OR.
+        &          (TYPESD.EQ.'MODE_MECA').OR.
+        &          (TYPESD.EQ.'DYNA_HARMO').OR.
+        &          (TYPESD.EQ.'COMB_FOURIER')) ) THEN
+               OPTIO2 = 'SIEF_ELGA'
+             ENDIF
+   
+   Maintenant que SIEF_ELGA_DEPL n'existe plus il faut le supprimer.
+   """
+   
+   
+   Solution :
+   ----------
+   Suppression des lignes coupables.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    aucune
+NB_JOURS_TRAV  : 0.01
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 016557 DU 2011-03-07 14:16:17
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+    affichage precision TEST_FONCTION
+FONCTIONNALITE
+   Problème :
+   ----------
+   """
+   Jean-Michel a remarqué que parfois un "test_resu" affiche une erreur nulle (0.0%) alorsque
+   l'erreur n'est pas vraiement nulle. Par exemple dans sdls105b.
+   """
+   
+   
+   Solution :
+   ----------
+   On modifie test_fonction_ops.py pour qu'il affiche les exposants lorsque l'erreur et la
+   tolérance sont plus petites que 0.1. Pour sdls105b, ça donne :
+   """
+   ERREUR . . . . . TOLE	  
+   2.5E-02% . . . . 3.0E-02% 
+   """
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    sdls105b
+NB_JOURS_TRAV  : 0.01
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 016897 DU 2011-05-06 08:14:38
+TYPE express concernant Code_Aster (VERSION 9.1)
+TITRE
+    Fonction d'interrogation d'un champ MED
+FONCTIONNALITE
+   Demande :
+   ---------
+   Dans le cadre de CALC_EUROPLEXUS, il serait utile de disposer d'une fonction du module
+   aster qui permettrait d'interroger un fichier MED pour obtenir la liste des champs
+   disponibles.
+   
+   
+   Réponse :
+   ---------
+   On ajoute la fonction get_nom_champ_med au module aster. Elle s'utilise en PAR_LOT='NON'
+   de cette manière :
+   """
+   import aster
+   retour = aster.get_nom_champ_med("MED_70");
+   for i in retour: print i
+   """
+   
+   Si le fichier demandé n'existe pas, la fonction renvoit une liste vide.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    zzzz162a
+NB_JOURS_TRAV  : 0.25
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR nicolas      NICOLAS Gérald        DATE 05/10/2011 - 12:25:44
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 016509 DU 2011-03-01 16:21:08
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+    MACR_ADAP_MAIL raffinement zone
+FONCTIONNALITE
+   Dans le cas du raffinement selon des zones, on impose d'avoir défini au moins une zone.
+   
+      ZONE = FACT(statut='o',min=1,max='**',
+                   fr="Définition de zones à raffiner.",
+                   ang="Refined zone definition.",
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U7.03.01
+VALIDATION
+    zzzz121c
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 016385 DU 2011-02-09 09:49:07
+TYPE evolution concernant homard (VERSION 9.1)
+TITRE
+    Mettre en service HOMARD utilisant MED 3.0
+FONCTIONNALITE
+   A partir de la version 10.1, HOMARD fonctionne avec MED 3.0.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U7.03.01
+VALIDATION
+    zzzz121a,zzzz259a
+NB_JOURS_TRAV  : 30.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR sfayolle     FAYOLLE Sebastien      DATE 05/09/2011 - 01:29:17
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 016752 DU 2011-04-07 15:10:47
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+    MN06 Extension des xc3xa9lxc3xa9ments incompressibles
+FONCTIONNALITE
+   Demande
+   ~~~~~~~
+   
+   Pour le calcul de structure élasto-plastique fissurée, les déformations sont localement
+   très importantes (en fond de défaut bien sûr), et les phénomènes d'incompressibilité sont
+   courants.
+   D'un autre côté, les maillages 3D rayonnants utilisent souvent des éléments hexaèdriques
+   en fond de défaut. Si le reste de la structure est maillée en tétrahèdre, le mailleur met
+   régulièrement des pentahèdres au milieu pour faire la transition.
+   Mais les éléments pentahèdriques ne supportent pas la modélisaion INCO_GD.
+   
+   Évolution
+   ~~~~~~~~~
+   
+   L'évolution consiste à introduire les éléments PENTA15 pour la modélisation INCO_GD.
+   Ce nouvel élément PENTA pour 3D_INCO_GD a des interpolations quadratique en déplacement,
+   linéaire en pression et quadratique en gonflement (mimétisme des autres éléments P2P1P2 et
+   Q2Q1Q2).
+   
+   RM : cet élément existe déjà pour les modélisation INCO et INCO_UP
+   
+   Impacts
+   ~~~~~~~
+   
+   catalogue : gener_me3gi3.cata
+   fortran : niinit.f et eqcara.f
+   doc : V6.04.112, R3.06.08
+   
+   Validation
+   ~~~~~~~~~~
+   
+   cas test de cylindre sous pression ssnv112e
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : V6.04.112, R3.06.08
+VALIDATION
+    cas test
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 016559 DU 2011-03-07 16:34:46
+TYPE evolution concernant Code_Aster (VERSION 9.1)
+TITRE
+    3D_INCO_UP et chargement thermique
+FONCTIONNALITE
+   Evolution
+   ~~~~~~~~~
+   
+   L'évolution introduit l'option CHAR_MECA_TEMP_R des éléments INCO_UP. Cette option permet
+   alors d'utiliser ces éléments dans un calculs thermo-mécanique.
+   
+   Théorie
+   ~~~~~~~
+   
+   Dans la formulation INCO_UP, la deuxième équation (imposition de la condition
+   d'incompressibilité)
+   s'écrit en élasticité isotherme :
+   
+   tr(eps) = tr(eps^elas) = div(u) = p/k
+   
+   Dans le cas non isotherme, cette condition devient :
+   
+   tr(eps) = tr(eps^elas) + tr(eps^th) = div(u) = p/k + 3 alpha (T_n+1 - Tn)
+   
+   Impacts
+   ~~~~~~~
+   
+   fortran : tanbul, nipl2c, nipl2b, nipl3c, nipl3d, nifn2c, nifn2b, nifn3c et nifn3b.
+   
+   cata : gener_me3di3, gener_me3du3, gener_mepli2, gener_meplu2
+   
+   doc : v7.22.100 : Thermoplasticité en traction simple
+   
+   Validations
+   ~~~~~~~~~~~
+   
+   Nouveaux cas tests : hsnv100n, hsnv100o et hsnv100p
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : V7.22.100
+VALIDATION
+    cas test
+NB_JOURS_TRAV  : 4.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 016779 DU 2011-04-14 11:03:38
+TYPE anomalie concernant Code_Aster (VERSION 11.1)
+TITRE
+    Couverture routines mini-element
+FONCTIONNALITE
+   Traité conjointement avec la fiche 16801
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    cas test
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 016801 DU 2011-04-20 16:14:15
+TYPE anomalie concernant Code_Aster (VERSION 11.1)
+TITRE
+    Erreur dxc3xa9veloppeur avec 3D_INCO
+FONCTIONNALITE
+   Anomalies
+   ~~~~~~~~~
+   
+   Les calculs avec INCO plantent dans MECA_STATIQUE. La couverture de code des options
+   RIGI_MECA et MASS_MECA des éléments INCO et INCO_UP n'est pas faite.
+   
+   Corrections
+   ~~~~~~~~~~~
+   
+   Le problème est identique à la fiche 16561. Il suffit de remplacer le test sur les alias
+   par un appel à ELREF2
+   
+   Il faut remplacer 
+   
+         IF (NOMTE(8:12).EQ.'TETRA') THEN
+           ELREF2 = 'TE4'
+         ELSE IF (NOMTE(8:11).EQ.'HEXA') THEN
+           ELREF2 = 'HE8'
+         ELSE IF (NOMTE(8:12).EQ.'PENTA') THEN
+           ELREF2 = 'PE6'
+         ELSE
+           CALL U2MESK('F','DVP_4',1,NOMTE)
+         END IF
+   
+   par
+         CALL ELREF2(NOMTE,10,LIELRF,NTROU)
+   
+   LIELRF contient la liste des éléments de références
+   
+   On en profite pour corriger et améliorer des parties du code pour INCO et INCO_UP.
+   Le calcul de la matrice de masse est fausse dans massup.f pour le cas axisymétrique.
+   On corrige.
+   
+   Impacts
+   ~~~~~~~
+   
+   cata :
+   
+   phenomene_modelisation__
+   gener_me3di3
+   gener_me3du3
+   gener_mepli2
+   gener_meplu2
+   
+   fortran :
+   
+   nirm2b,nirm2c,nirm2d,nirm3b,nirm3c,nirm3d,nifn2b,nifn2c,nifn3b,nifn3c,nipl2d,te0048,te0121,
+   te0454,te0455,te0124,te0125,te0081,te0481,te0215,te0216,te0480,te0120,massup
+   
+   
+   doc : V1.01.289 (cas test zzzz289)
+   
+   Validations
+   ~~~~~~~~~~~
+   
+   Nouveaux cas-test : zzzz289a (3D) , b(D_PLAN), c(AXI)
+   
+   
+   Risque de résultats faux
+   ~~~~~~~~~~~~~~~~~~~~~~~~
+   
+   Le calcul de l'option RIGI_MECA ne pouvait pas donner de résultats faux puisque l'on
+   tombait sur une erreur développeur.
+   L'option MASS_MECA pouvait potentiellement donner des résultats faux. Cela est du à deux
+   bugs :
+   _l'utilisation de dfdm3j et dfdm2j à la place de dfdm3d et dfdm2d : les routines dfdmXj
+   retourne la valeur du Jacobien (JAC) alors que les routines dfdmXd retournes la valeur
+   absolue du Jacobien * le poids de gauss (ABS(JAC)*POIDS). Dans massup, j'ai oublié de
+   tenir compte de la valeur absolue. Il était donc possible d'avoir des problèmes de signes.
+   _en AXIS, le poids d'intégration est divisé par le rayon (distance entre la position du
+   point de Gauss et l'axe de révolution). Il y avait un problème dans son calcul.
+   
+   Le calcul de l'option de MASS_MECA a été validé en comparant les S_R des matrices des
+   formulations standards et incompressibles.
+RESU_FAUX_VERSION_EXPLOITATION    :  OUI   DEPUIS : 10.3.5
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : V1.01.289
+VALIDATION
+    cas test
+NB_JOURS_TRAV  : 5.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR tardieu      TARDIEU Nicolas        DATE 05/09/2011 - 02:27:39
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 016874 DU 2011-05-03 15:54:14
+TYPE anomalie concernant Code_Aster (VERSION 9.1)
+TITRE
+    PETSC + LDLT_SP: problxc3xa8me de destruction des occurences MUMPS
+FONCTIONNALITE
+   Problème :
+   ---------
+   Il semble que le ménage des occurences MUMPS ne soit pas fait correctement lorsqu'on
+   l'utilise avec PETSC (PRECOND='LDLT_SP'). On dépasse alors le nbre NMXINS=5 d'occurence
+   admissibles. On le vérifie aisément en réalisant 5 STAT_NON_LINE de suite avec PETSC
+   (PRECOND='LDLT_SP') ; on obtient le message :
+      !----------------------------------------------------------------------------------------!
+      ! <F> <FACTOR_60>                                                                        !
+      !                                                                                        !
+      ! Solveur MUMPS :                                                                        !
+      !   Limite atteinte : le solveur Mumps est utilisé par plus de 5 matrices simultanément. !
+      ! Solution :                                                                             !
+      !   Il faut corriger le programme (PARAMETER (NMXINS=5) dans amumps.f)                   !
+      !   Contactez l'assistance.                                                              !
+      !                                                                                        !
+      !                                                                                        !
+      ! Cette erreur est fatale. Le code s'arrete.                                             !
+      !----------------------------------------------------------------------------------------!
+   
+   Solution :
+   ---------
+   Quand on utilise le préconditionneur simple précision LDLT_SP, il existe une instance
+   souterraine du solveur MUMPS. Or cette instance ne doit pas être détruite à chaque
+   réassemblage de la matrice du système comme c'est le cas pour les instances des solveurs.
+   L'intérêt de ce préconditionneur réside en effet dans sa conservation sur plusieurs
+   résolutions.
+   Il faut donc nettoyer les instances MUMPS souterraines à la fin de la résolution.
+   C'est ce que je fais dans les sources de MECA_STATIQUE et {STAT,DYNA}_NON_LINE lors du
+   ménage final.
+   
+   Sources :
+   --------
+   isfonc.f : nouvelles questions LDLT, MULT_FRONT, GCPC, MUMPS, PETSC, LDLT_SP
+   detlsp.f : nouvel utilitaire qui détruit l'instance MUMPS souterraine
+   
+   Aménagements marginaux dans :
+   mestat.f  nmmeng.f  op0046.f  op0070.f
+   apetsr.F
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : D6.00.01
+VALIDATION
+    Passage des tests avec LDLT_SP
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR tran         TRAN Van-xuan          DATE 05/09/2011 - 01:13:52
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 016894 DU 2011-05-05 15:01:53
+TYPE evolution concernant Code_Aster (VERSION 11.1)
+TITRE
+    FATIGUE: Rxc3xa9organisation de pagmai et paqnoe de CALC_FATIGUE
+FONCTIONNALITE
+   Dans le cadre du projet COFAT.
+   
+   Cette fiche concerne la première étape de la fiche 16807 qui a pour objectif 
+   d'optimiser le code existant de CALC_FATIGUE et d'introduire des nouveux 
+   critères. Cette fiche m'a également servi à comprendre le code actuel.
+   
+   Pour cela, j'ai réécris l'organigramme de cet opératuer, identifié des blocs en 
+   commun et les a remplacés par des nouvelle soubroutines. J'enlève des blocs 
+   répétés des subroutines paqmai (pour champ de maille) et paqnoe (champ de 
+   noeud) de l'opérateur CALC_FATIGUE. Finalement, plus de 1000 lignes sont 
+   gagnés. 
+   
+   L'organigramme du code se trouve dans le fichier attaché.
+   
+   Modif: avdomt.f  avenca.f  avgrma.f   dtauno.f
+          avdowh.f  avgrno.f  deltau.f  taurlo.f
+   
+   Ajout: acmata.f  avplcr.f avcipr.f avgrdo.f  
+   
+   Impact document: Non
+   Validataion: sslv135a,b,c,d,e
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    sslv135a,b,c,d,e
+NB_JOURS_TRAV  : 7.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR flejou       FLEJOU Jean Luc        DATE 05/09/2011 - 03:33:18
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 016790 DU 2011-04-19 07:42:57
+TYPE evolution concernant Code_Aster (VERSION )
+TMA : DeltaCad
+TITRE
+    Message d'alarme suite restitution fiche 16723
+FONCTIONNALITE
+   1 - Objectifs
+   =============
+    Supprimer les alarmes DISCRETS_26, DISCRETS_27 et DISCRETS_28 dans les cas-tests
+   
+   2 - Modifications
+   =================
+   Pour supprimer ces alarmes on affecte dans les fichiers de commande, des  :
+   
+       - MASSES nulles sur les discrets concernés pour l'alarme DISCRETS_26, 
+       - RAIDEURS nulles sur les discrets concernés pour l'alarme DISCRETS_27,
+       - AMORTISSEMENTS nulles sur les discrets concernés pour l'alarme DISCRETS_28. 
+   
+   207 cas-tests sont concernés par ces alarmes. Parmi ceux-ci 196 cas-tests sont restitues.
+   
+   3 - problèmes rencontres
+   ========================
+   La suppressions des alarmes dans les 11 cas-tests non restitues nécessite une intervention
+   dans certaines macro et dans les sources: 
+   
+   =>Commande AFFE_CARA_ELEM
+   - RIGI_PARASOL 
+   Le message DISCRETS_26 (MASSES) ne peut pas être supprime, il n'existe pas de mot_clé
+   permettant de donner les caractéristiques de la matrice masse.
+        Cas-tests concernés :  
+            sdls108a, ssls135a, zzzz115a
+            zzzz200a, zzzz200b, zzzz200c, 
+            zzzz200d, miss05a,
+   
+   - RIGI_MISS_3D (AFFE_CARA_ELEM)
+   Le message DISCRETS_26 (MASSES) ne peut pas être supprime, il n'existe pas mot_clé
+   permettant de donner les caractéristiques de la matrice masse.
+        Cas-test concerné : miss06a 
+   
+   => Macro-commande : CALC_ESSAI
+   Dans ce cas-test, on n'arrive pas a supprimer les alarmes générée par la macro CALC_ESSAI.
+   Pour les supprimer il faudrait intervenir dans la macro au moment ou l'on la commande
+   AFFE_CARA_ELEM est générée.
+      Cas-tests concernés : => sdll137b, sdll137c
+   
+   Pour les cas-tests non-restitués on propose d'ouvrir une autre fiche pour faire le traitement
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    Passage des cas tests
+--------------------------------------------------------------------------------
+
+
+
+========================================================================
+=== Recapitulation des operations demandees pour toutes les restitutions
+========================================================================
+
+
+    TYPE Action    unite                      user      Auteur         nblg  ajout suppr.
+
+       C AJOUT supervis/med_aster_module    sellenet N.SELLENET          84     84      0
+ CASTEST AJOUT hsnv100n                     sfayolle S.FAYOLLE          226    226      0
+ CASTEST AJOUT hsnv100o                     sfayolle S.FAYOLLE          231    231      0
+ CASTEST AJOUT hsnv100p                     sfayolle S.FAYOLLE          231    231      0
+ CASTEST AJOUT perf013a                      boiteau O.BOITEAU           78     78      0
+ CASTEST AJOUT perf013b                      boiteau O.BOITEAU           78     78      0
+ CASTEST AJOUT perf013c                      boiteau O.BOITEAU           79     79      0
+ CASTEST AJOUT perf013d                      boiteau O.BOITEAU           79     79      0
+ CASTEST AJOUT perf013e                      boiteau O.BOITEAU           79     79      0
+ CASTEST AJOUT perf013f                      boiteau O.BOITEAU           79     79      0
+ CASTEST AJOUT sdnl136a                         brie N.BRIE             654    654      0
+ CASTEST AJOUT ssnv112e                     sfayolle S.FAYOLLE          288    288      0
+ CASTEST AJOUT zzzz289a                     sfayolle S.FAYOLLE          146    146      0
+ CASTEST AJOUT zzzz289b                     sfayolle S.FAYOLLE          146    146      0
+ CASTEST AJOUT zzzz289c                     sfayolle S.FAYOLLE          146    146      0
+ CASTEST MODIF adls102a                      verrier A.VERRIER          204      5      2
+ CASTEST MODIF demo001a                      meunier S.MEUNIER          295      2      2
+ CASTEST MODIF efica01a                      verrier A.VERRIER          289     15      2
+ CASTEST MODIF elsa01a                       verrier A.VERRIER          224      5      2
+ CASTEST MODIF elsa01b                       verrier A.VERRIER          233      4      2
+ CASTEST MODIF elsa01c                       verrier A.VERRIER          256      4      2
+ CASTEST MODIF elsa01d                       verrier A.VERRIER          268      4      2
+ CASTEST MODIF fdlv100a                      verrier A.VERRIER          144      6      4
+ CASTEST MODIF fdlv101a                      verrier A.VERRIER          175      7      3
+ CASTEST MODIF fdlv102a                      verrier A.VERRIER          474     12      3
+ CASTEST MODIF fdlv102b                      verrier A.VERRIER          310     11      3
+ CASTEST MODIF fdlv102c                      verrier A.VERRIER          335     12      4
+ CASTEST MODIF fdlv103a                      verrier A.VERRIER          221     16      3
+ CASTEST MODIF fdlv104a                      verrier A.VERRIER          310      2      2
+ CASTEST MODIF fdlv105a                      verrier A.VERRIER          179      6      4
+ CASTEST MODIF fdlv106a                      verrier A.VERRIER          626     21      2
+ CASTEST MODIF fdlv107a                      verrier A.VERRIER          664     29      2
+ CASTEST MODIF fdlv110a                      verrier A.VERRIER          548     48      3
+ CASTEST MODIF fdlv112b                      verrier A.VERRIER          466      5      1
+ CASTEST MODIF fdnv100a                      verrier A.VERRIER          334      7      2
+ CASTEST MODIF hsnv100k                     sfayolle S.FAYOLLE          226      1      1
+ CASTEST MODIF hsnv100l                     sfayolle S.FAYOLLE          231      1      1
+ CASTEST MODIF hsnv100m                     sfayolle S.FAYOLLE          231      1      1
+ CASTEST MODIF mac3c01a                      verrier A.VERRIER          434      2      2
+ CASTEST MODIF miss01a                       verrier A.VERRIER          201      1      1
+ CASTEST MODIF miss02a                       verrier A.VERRIER          542     14      2
+ CASTEST MODIF miss03a                       verrier A.VERRIER          260     23      2
+ CASTEST MODIF miss04a                       verrier A.VERRIER          339     14      2
+ CASTEST MODIF miss04b                       verrier A.VERRIER          475      5      2
+ CASTEST MODIF miss06b                       verrier A.VERRIER          837     18      1
+ CASTEST MODIF miss06c                       verrier A.VERRIER          832     16      2
+ CASTEST MODIF miss08a                       verrier A.VERRIER          383      5      1
+ CASTEST MODIF miss09a                       verrier A.VERRIER          876      7      2
+ CASTEST MODIF mumps02a                     sfayolle S.FAYOLLE          182      2      2
+ CASTEST MODIF rccm03a                       verrier A.VERRIER         4172      1      1
+ CASTEST MODIF sdld02a                       verrier A.VERRIER          355     12      2
+ CASTEST MODIF sdld02b                       verrier A.VERRIER          644     13      2
+ CASTEST MODIF sdld02c                       verrier A.VERRIER          341     16      2
+ CASTEST MODIF sdld02d                       verrier A.VERRIER          354     21      3
+ CASTEST MODIF sdld02e                       verrier A.VERRIER          679     11      2
+ CASTEST MODIF sdld02f                       verrier A.VERRIER          360      9      3
+ CASTEST MODIF sdld04a                       verrier A.VERRIER          624      4      2
+ CASTEST MODIF sdld101a                      verrier A.VERRIER          496      6      2
+ CASTEST MODIF sdld102a                      verrier A.VERRIER          908     13      1
+ CASTEST MODIF sdld102b                      verrier A.VERRIER          480      7      1
+ CASTEST MODIF sdld102c                      verrier A.VERRIER          429      7      1
+ CASTEST MODIF sdld102d                      verrier A.VERRIER          367      7      1
+ CASTEST MODIF sdld103a                      verrier A.VERRIER          622      5      1
+ CASTEST MODIF sdld103b                      verrier A.VERRIER          423     12      2
+ CASTEST MODIF sdld104a                      verrier A.VERRIER          303      5      2
+ CASTEST MODIF sdld104b                      verrier A.VERRIER          313      6      2
+ CASTEST MODIF sdld105a                      verrier A.VERRIER          279      5      2
+ CASTEST MODIF sdld21a                       verrier A.VERRIER          827      2      1
+ CASTEST MODIF sdld21b                       verrier A.VERRIER          693      3      2
+ CASTEST MODIF sdld21c                       verrier A.VERRIER          376      5      2
+ CASTEST MODIF sdld21d                       verrier A.VERRIER         1017      2      1
+ CASTEST MODIF sdld22a                       verrier A.VERRIER          317     13      2
+ CASTEST MODIF sdld22b                       verrier A.VERRIER          335     25      2
+ CASTEST MODIF sdld23a                       verrier A.VERRIER          663      9      2
+ CASTEST MODIF sdld25a                       verrier A.VERRIER          233      7      2
+ CASTEST MODIF sdld27a                       verrier A.VERRIER          575      7      2
+ CASTEST MODIF sdld27b                       verrier A.VERRIER          346     15      2
+ CASTEST MODIF sdld27c                       verrier A.VERRIER          349     11      2
+ CASTEST MODIF sdld27d                       verrier A.VERRIER          356     13      2
+ CASTEST MODIF sdld27e                       verrier A.VERRIER          661     21      2
+ CASTEST MODIF sdld29a                       verrier A.VERRIER          227      6      2
+ CASTEST MODIF sdld301a                      verrier A.VERRIER          539      9      1
+ CASTEST MODIF sdld301b                      verrier A.VERRIER          834     10      1
+ CASTEST MODIF sdld30a                       verrier A.VERRIER         1675     16      1
+ CASTEST MODIF sdld313a                      verrier A.VERRIER          138     12      2
+ CASTEST MODIF sdld313b                      verrier A.VERRIER          158     11      4
+ CASTEST MODIF sdld313c                      verrier A.VERRIER          192     12      2
+ CASTEST MODIF sdld313d                      verrier A.VERRIER          345     11      3
+ CASTEST MODIF sdld31a                       verrier A.VERRIER          950      4      1
+ CASTEST MODIF sdld31b                       verrier A.VERRIER          371      9      3
+ CASTEST MODIF sdld320a                      verrier A.VERRIER          451     14      2
+ CASTEST MODIF sdld321a                      verrier A.VERRIER          455      7      2
+ CASTEST MODIF sdld321b                      verrier A.VERRIER          355      5      1
+ CASTEST MODIF sdld321c                      verrier A.VERRIER          352      7      2
+ CASTEST MODIF sdld325a                      verrier A.VERRIER          501      9      1
+ CASTEST MODIF sdld325b                      verrier A.VERRIER          532      9      1
+ CASTEST MODIF sdld33a                       verrier A.VERRIER          450     30      2
+ CASTEST MODIF sdld400a                      verrier A.VERRIER          488     17      2
+ CASTEST MODIF sdll04a                       verrier A.VERRIER          242      9      2
+ CASTEST MODIF sdll06a                       verrier A.VERRIER          230      5      2
+ CASTEST MODIF sdll06b                       verrier A.VERRIER          193      5      2
+ CASTEST MODIF sdll105a                      verrier A.VERRIER          447      9      4
+ CASTEST MODIF sdll108b                      verrier A.VERRIER          450      4      1
+ CASTEST MODIF sdll109a                      verrier A.VERRIER         2090     38      1
+ CASTEST MODIF sdll109b                      verrier A.VERRIER         1936     44      7
+ CASTEST MODIF sdll109c                      verrier A.VERRIER         1712     38      1
+ CASTEST MODIF sdll109d                      verrier A.VERRIER         2092     37      1
+ CASTEST MODIF sdll113b                     sellenet N.SELLENET         486      3      3
+ CASTEST MODIF sdll115a                      verrier A.VERRIER         1441      8      4
+ CASTEST MODIF sdll115b                      verrier A.VERRIER          795     14      4
+ CASTEST MODIF sdll118a                      verrier A.VERRIER          423     10      5
+ CASTEST MODIF sdll118b                      verrier A.VERRIER          351      7      3
+ CASTEST MODIF sdll119a                      verrier A.VERRIER          500      9      4
+ CASTEST MODIF sdll119b                      verrier A.VERRIER          512      9      4
+ CASTEST MODIF sdll120a                      verrier A.VERRIER          575     17      8
+ CASTEST MODIF sdll121a                      verrier A.VERRIER          544     32      3
+ CASTEST MODIF sdll123a                      verrier A.VERRIER          329      9      4
+ CASTEST MODIF sdll123b                      verrier A.VERRIER          492     10      5
+ CASTEST MODIF sdll123c                      verrier A.VERRIER          719     35      3
+ CASTEST MODIF sdll123d                      verrier A.VERRIER          243      8      3
+ CASTEST MODIF sdll123e                      verrier A.VERRIER          225      8      3
+ CASTEST MODIF sdll123f                      verrier A.VERRIER          241      8      3
+ CASTEST MODIF sdll124a                      verrier A.VERRIER          254      9      3
+ CASTEST MODIF sdll125a                      verrier A.VERRIER          274      8      2
+ CASTEST MODIF sdll125b                      verrier A.VERRIER          274      8      2
+ CASTEST MODIF sdll126a                      verrier A.VERRIER          195      8      2
+ CASTEST MODIF sdll126b                      verrier A.VERRIER          201      8      2
+ CASTEST MODIF sdll126c                      verrier A.VERRIER          193      8      2
+ CASTEST MODIF sdll126d                      verrier A.VERRIER          220     11      3
+ CASTEST MODIF sdll128a                      verrier A.VERRIER          857     38      2
+ CASTEST MODIF sdll129a                      verrier A.VERRIER          764     37      1
+ CASTEST MODIF sdll137a                      verrier A.VERRIER          471     22      7
+ CASTEST MODIF sdll137d                      verrier A.VERRIER          735     27      6
+ CASTEST MODIF sdll138a                      verrier A.VERRIER          667      9      2
+ CASTEST MODIF sdll140a                      verrier A.VERRIER          408     10      2
+ CASTEST MODIF sdll141c                      verrier A.VERRIER          288      8      2
+ CASTEST MODIF sdll141e                      verrier A.VERRIER          204      9      1
+ CASTEST MODIF sdll14a                      sellenet N.SELLENET         154      4      3
+ CASTEST MODIF sdll14b                      sellenet N.SELLENET         160      3      3
+ CASTEST MODIF sdll14c                      sellenet N.SELLENET         163      3      3
+ CASTEST MODIF sdll15a                       verrier A.VERRIER          231     17      6
+ CASTEST MODIF sdll23a                       verrier A.VERRIER          649      5      2
+ CASTEST MODIF sdll23b                       verrier A.VERRIER          459      3      2
+ CASTEST MODIF sdll23c                       verrier A.VERRIER          470      3      2
+ CASTEST MODIF sdll507a                      verrier A.VERRIER          349      8      4
+ CASTEST MODIF sdll508a                      verrier A.VERRIER          351      8      4
+ CASTEST MODIF sdll508b                      verrier A.VERRIER          351      8      4
+ CASTEST MODIF sdll508c                      verrier A.VERRIER          358      6      2
+ CASTEST MODIF sdls03a                       verrier A.VERRIER          238     12      6
+ CASTEST MODIF sdls03b                       verrier A.VERRIER          382     21      4
+ CASTEST MODIF sdls112a                      verrier A.VERRIER          439     14      3
+ CASTEST MODIF sdls112b                      verrier A.VERRIER          314     15      3
+ CASTEST MODIF sdls119a                      verrier A.VERRIER          515     25      2
+ CASTEST MODIF sdls121a                      verrier A.VERRIER          122      1      1
+ CASTEST MODIF sdls121b                      verrier A.VERRIER          111      1      1
+ CASTEST MODIF sdls121c                      verrier A.VERRIER          115      1      1
+ CASTEST MODIF sdls139a                      verrier A.VERRIER          647     27     12
+ CASTEST MODIF sdlv122a                      verrier A.VERRIER          514      7      3
+ CASTEST MODIF sdlv122b                      verrier A.VERRIER          257      7      4
+ CASTEST MODIF sdlv128a                      verrier A.VERRIER          444     12      4
+ CASTEST MODIF sdlv128b                      verrier A.VERRIER          290     12      4
+ CASTEST MODIF sdlv132a                      verrier A.VERRIER          602     25      1
+ CASTEST MODIF sdlx100a                      verrier A.VERRIER          249      7      2
+ CASTEST MODIF sdlx300a                      verrier A.VERRIER          974      7      1
+ CASTEST MODIF sdlx302a                      verrier A.VERRIER          397     10      4
+ CASTEST MODIF sdlx400a                      verrier A.VERRIER          379     10      4
+ CASTEST MODIF sdlx400b                      verrier A.VERRIER          410     10      4
+ CASTEST MODIF sdlx400c                      verrier A.VERRIER          380     10      4
+ CASTEST MODIF sdnd102a                      verrier A.VERRIER          380      9      2
+ CASTEST MODIF sdnd102b                      verrier A.VERRIER          637     20      1
+ CASTEST MODIF sdnd102c                      verrier A.VERRIER          252      5      2
+ CASTEST MODIF sdnd102d                      verrier A.VERRIER          247      5      2
+ CASTEST MODIF sdnd105a                      verrier A.VERRIER          223      7      2
+ CASTEST MODIF sdnd105b                      verrier A.VERRIER          220      7      2
+ CASTEST MODIF sdnd106a                      verrier A.VERRIER          259      5      2
+ CASTEST MODIF sdnd112a                      verrier A.VERRIER          292      4      1
+ CASTEST MODIF sdnd120a                      verrier A.VERRIER          280      5      2
+ CASTEST MODIF sdnl102a                      verrier A.VERRIER          202      9      3
+ CASTEST MODIF sdnl105d                      verrier A.VERRIER          574      8      2
+ CASTEST MODIF sdnl113a                      verrier A.VERRIER          331      4      1
+ CASTEST MODIF sdnl132a                      verrier A.VERRIER          439      6      3
+ CASTEST MODIF sdns01a                       verrier A.VERRIER          697      6      2
+ CASTEST MODIF sdns01b                       verrier A.VERRIER          374      7      4
+ CASTEST MODIF sdnv100f                      verrier A.VERRIER          402      8      3
+ CASTEST MODIF sdnv100j                      verrier A.VERRIER          291      8      3
+ CASTEST MODIF sdnv104a                      verrier A.VERRIER          232      6      2
+ CASTEST MODIF sdnv104b                      verrier A.VERRIER          215      6      3
+ CASTEST MODIF sdnv104c                      verrier A.VERRIER          244      5      3
+ CASTEST MODIF sdnv104d                      verrier A.VERRIER          225      5      3
+ CASTEST MODIF sdnv104e                      verrier A.VERRIER          233      5      3
+ CASTEST MODIF sdnv105b                      verrier A.VERRIER         1270      4      1
+ CASTEST MODIF sdnv107a                     sellenet N.SELLENET         669     15      6
+ CASTEST MODIF sdnv107b                      verrier A.VERRIER          487     20      3
+ CASTEST MODIF sdnv107c                      verrier A.VERRIER          935     16      8
+ CASTEST MODIF sensd01a                      verrier A.VERRIER          252      3      2
+ CASTEST MODIF sensd04a                      verrier A.VERRIER          267      5      3
+ CASTEST MODIF sensd11b                      verrier A.VERRIER          218      5      2
+ CASTEST MODIF sensd11d                      verrier A.VERRIER          219      5      2
+ CASTEST MODIF shll102a                      verrier A.VERRIER          420      8      2
+ CASTEST MODIF shll103a                      verrier A.VERRIER         1462      8      2
+ CASTEST MODIF shls200a                      verrier A.VERRIER          578     14      2
+ CASTEST MODIF ssep001b                     sfayolle S.FAYOLLE          177      1      1
+ CASTEST MODIF ssep002b                     sfayolle S.FAYOLLE          177      1      1
+ CASTEST MODIF ssll100a                      verrier A.VERRIER          388      8      3
+ CASTEST MODIF ssll100b                      verrier A.VERRIER          240      8      3
+ CASTEST MODIF ssll101f                      verrier A.VERRIER          539      6      2
+ CASTEST MODIF ssll101g                      verrier A.VERRIER          545      6      2
+ CASTEST MODIF sslp106b                     sfayolle S.FAYOLLE          109      2      2
+ CASTEST MODIF ssls09c                      sfayolle S.FAYOLLE          190      1      1
+ CASTEST MODIF ssls100f                    lebouvier F.LEBOUVIER        425      2      2
+ CASTEST MODIF ssls101f                    lebouvier F.LEBOUVIER        481      3      3
+ CASTEST MODIF ssls111c                    lebouvier F.LEBOUVIER        668     22      4
+ CASTEST MODIF ssls114c                    lebouvier F.LEBOUVIER        493      1      1
+ CASTEST MODIF ssls117c                    lebouvier F.LEBOUVIER        663     19      4
+ CASTEST MODIF ssls118d                    lebouvier F.LEBOUVIER       1142     10     10
+ CASTEST MODIF ssls118k                    lebouvier F.LEBOUVIER        495      8      8
+ CASTEST MODIF ssls118l                    lebouvier F.LEBOUVIER        525      9      9
+ CASTEST MODIF ssls503c                    lebouvier F.LEBOUVIER        202      4      4
+ CASTEST MODIF ssls504b                    lebouvier F.LEBOUVIER        239      4      4
+ CASTEST MODIF sslv07d                      sfayolle S.FAYOLLE          316      1      1
+ CASTEST MODIF sslv130a                     sfayolle S.FAYOLLE         1080      1      1
+ CASTEST MODIF sslv130b                     sfayolle S.FAYOLLE         1366      1      1
+ CASTEST MODIF sslv130c                     sfayolle S.FAYOLLE         1377      1      1
+ CASTEST MODIF sslv130d                     sfayolle S.FAYOLLE         1419      1      1
+ CASTEST MODIF sslv130e                     sfayolle S.FAYOLLE         1071      1      1
+ CASTEST MODIF sslv134g                      meunier S.MEUNIER          648      4      4
+ CASTEST MODIF sslv303e                     sfayolle S.FAYOLLE          175      2      2
+ CASTEST MODIF sslx100b                      verrier A.VERRIER          227      8      3
+ CASTEST MODIF sslx100d                      verrier A.VERRIER          255      7      3
+ CASTEST MODIF sslx101a                      verrier A.VERRIER          206     10      4
+ CASTEST MODIF sslx101b                      verrier A.VERRIER          215      7      4
+ CASTEST MODIF sslx200a                      verrier A.VERRIER          230      8      3
+ CASTEST MODIF ssnl107b                      verrier A.VERRIER          183      9      3
+ CASTEST MODIF ssnl107c                      verrier A.VERRIER          188      8      3
+ CASTEST MODIF ssnl107d                      verrier A.VERRIER          242      8      3
+ CASTEST MODIF ssnl132a                      verrier A.VERRIER          925     23      3
+ CASTEST MODIF ssnl132b                      verrier A.VERRIER          975     23      3
+ CASTEST MODIF ssnp115b                     sellenet N.SELLENET         168      2      2
+ CASTEST MODIF ssnp122a                     sfayolle S.FAYOLLE          264      2      2
+ CASTEST MODIF ssnp123b                     sfayolle S.FAYOLLE          207      2      1
+ CASTEST MODIF ssnp133e                      meunier S.MEUNIER          296      2      2
+ CASTEST MODIF ssnp133f                      meunier S.MEUNIER          305      2      2
+ CASTEST MODIF ssnp133g                      meunier S.MEUNIER          309      2      2
+ CASTEST MODIF ssnp133h                      meunier S.MEUNIER          294      2      2
+ CASTEST MODIF ssnp144a                      meunier S.MEUNIER          517      3      2
+ CASTEST MODIF ssnp144b                      meunier S.MEUNIER          520      3      2
+ CASTEST MODIF ssnp144c                      meunier S.MEUNIER          537      3      2
+ CASTEST MODIF ssnp144d                      meunier S.MEUNIER          535      2      2
+ CASTEST MODIF ssnp144e                      meunier S.MEUNIER          528      3      2
+ CASTEST MODIF ssnp144f                      meunier S.MEUNIER          530      3      2
+ CASTEST MODIF ssnp144g                      meunier S.MEUNIER          525      3      2
+ CASTEST MODIF ssnp144h                      meunier S.MEUNIER          527      3      2
+ CASTEST MODIF ssnp144i                      meunier S.MEUNIER          520      3      2
+ CASTEST MODIF ssnp144j                      meunier S.MEUNIER          521      3      2
+ CASTEST MODIF ssnp144k                      meunier S.MEUNIER          513      3      2
+ CASTEST MODIF ssnp144l                      meunier S.MEUNIER          318      2      2
+ CASTEST MODIF ssnv112a                     sfayolle S.FAYOLLE          318      1      1
+ CASTEST MODIF ssnv112b                     sfayolle S.FAYOLLE          358      1      1
+ CASTEST MODIF ssnv112c                     sfayolle S.FAYOLLE          303      1      1
+ CASTEST MODIF ssnv112d                     sfayolle S.FAYOLLE          310      1      1
+ CASTEST MODIF ssnv124a                     sfayolle S.FAYOLLE          176      2      1
+ CASTEST MODIF ssnv124b                     sfayolle S.FAYOLLE          188      2      1
+ CASTEST MODIF ssnv124c                     sfayolle S.FAYOLLE          104      1      1
+ CASTEST MODIF ssnv146a                     sfayolle S.FAYOLLE          147      2      1
+ CASTEST MODIF ssnv171c                     sellenet N.SELLENET         396      5      5
+ CASTEST MODIF ssnv185g                      meunier S.MEUNIER          327      2      2
+ CASTEST MODIF ssnv185n                      meunier S.MEUNIER          380      2      2
+ CASTEST MODIF ssnv186e                      meunier S.MEUNIER          188      4      4
+ CASTEST MODIF ssnv186j                      meunier S.MEUNIER          192      4      4
+ CASTEST MODIF ssnv195b                      meunier S.MEUNIER          310      3      3
+ CASTEST MODIF ssnv195c                      meunier S.MEUNIER          414      3      3
+ CASTEST MODIF ssnv201a                      meunier S.MEUNIER          326      3      3
+ CASTEST MODIF ssnv201b                      meunier S.MEUNIER          328      3      3
+ CASTEST MODIF ssnv209c                      meunier S.MEUNIER          486      4      3
+ CASTEST MODIF ssnv209h                      meunier S.MEUNIER          454      4      3
+ CASTEST MODIF ssnv209k                      meunier S.MEUNIER          498      2      2
+ CASTEST MODIF ssnv209l                      meunier S.MEUNIER          475      3      3
+ CASTEST MODIF ssnv507g                      meunier S.MEUNIER          223      2      2
+ CASTEST MODIF ssnv507h                      meunier S.MEUNIER          223      2      2
+ CASTEST MODIF ssnv507i                      meunier S.MEUNIER          223      2      2
+ CASTEST MODIF wtnp117e                      meunier S.MEUNIER          440      2      2
+ CASTEST MODIF wtnp120d                      meunier S.MEUNIER          576      2      2
+ CASTEST MODIF wtnp120h                      meunier S.MEUNIER          554      2      2
+ CASTEST MODIF wtnp124d                      meunier S.MEUNIER          527      2      2
+ CASTEST MODIF zmat007a                      meunier S.MEUNIER          391      2      2
+ CASTEST MODIF zzzz102a                      verrier A.VERRIER         1545     29      2
+ CASTEST MODIF zzzz108a                      verrier A.VERRIER         1167     16      1
+ CASTEST MODIF zzzz108b                      verrier A.VERRIER          329      4      2
+ CASTEST MODIF zzzz121a                     sellenet N.SELLENET         267      3      5
+ CASTEST MODIF zzzz132a                     sellenet N.SELLENET         203      2      2
+ CASTEST MODIF zzzz161a                     sellenet N.SELLENET         267      7      7
+ CASTEST MODIF zzzz162a                     sellenet N.SELLENET         863     13     13
+ CASTEST MODIF zzzz162b                     sellenet N.SELLENET         332      6      6
+ CASTEST MODIF zzzz185a                     sellenet N.SELLENET         389      4      4
+ CASTEST MODIF zzzz186a                      verrier A.VERRIER           40      1      1
+ CASTEST MODIF zzzz240a                     sellenet N.SELLENET         162      6      6
+ CASTEST MODIF zzzz259a                     sellenet N.SELLENET         298     59     42
+ CASTEST MODIF zzzz264a                     sellenet N.SELLENET         126      4      3
+ CASTEST MODIF zzzz265a                      verrier A.VERRIER          277     10      4
+ CASTEST SUPPR sdll136a.comm                    brie N.BRIE             653      0    653
+CATALOGU MODIF compelem/phenomene_modelisation__   sfayolle S.FAYOLLE         1728      3      2
+CATALOGU MODIF options/calc_dg_f              pellet J.PELLET            48      2      3
+CATALOGU MODIF options/calc_dgg_e_f           pellet J.PELLET            47      2      3
+CATALOGU MODIF options/calc_dgg_e             pellet J.PELLET            46      2      3
+CATALOGU MODIF options/calc_dgg_forc_f        pellet J.PELLET            51      2      4
+CATALOGU MODIF options/calc_dgg_forc          pellet J.PELLET            50      2      4
+CATALOGU MODIF options/calc_dg                pellet J.PELLET            47      2      3
+CATALOGU MODIF options/calc_g_f               pellet J.PELLET            62      2      3
+CATALOGU MODIF options/calc_g_glob_f          pellet J.PELLET            47      2      3
+CATALOGU MODIF options/calc_g_glob            pellet J.PELLET            46      2      3
+CATALOGU MODIF options/calc_g                 pellet J.PELLET            61      2      3
+CATALOGU MODIF options/char_dlag_evolst       pellet J.PELLET            31      2      5
+CATALOGU MODIF options/char_dlag_evoltr       pellet J.PELLET            33      2      5
+CATALOGU MODIF options/char_dlag_flun_f       pellet J.PELLET            29      2      3
+CATALOGU MODIF options/char_dlag_flun_r       pellet J.PELLET            28      2      3
+CATALOGU MODIF options/char_dlag_pres_f       pellet J.PELLET            29      2      3
+CATALOGU MODIF options/char_dlag_pres_r       pellet J.PELLET            28      2      5
+CATALOGU MODIF options/char_dlag_text_f       pellet J.PELLET            33      2      3
+CATALOGU MODIF options/char_dlag_text_r       pellet J.PELLET            33      2      3
+CATALOGU MODIF options/char_limite            pellet J.PELLET            30      2      7
+CATALOGU MODIF options/char_meca_cont         pellet J.PELLET            51      2      3
+CATALOGU MODIF options/char_meca_fc1d1d       pellet J.PELLET            45      2      8
+CATALOGU MODIF options/char_meca_ff1d1d       pellet J.PELLET            38      2      3
+CATALOGU MODIF options/char_meca_fr1d1d       pellet J.PELLET            36      2      3
+CATALOGU MODIF options/char_meca_frot         pellet J.PELLET            51      2      3
+CATALOGU MODIF options/char_meca_hydr_r       pellet J.PELLET            39      2      5
+CATALOGU MODIF options/char_meca_pesa_r       pellet J.PELLET            54      2      3
+CATALOGU MODIF options/char_meca_sech_r       pellet J.PELLET            39      2      5
+CATALOGU MODIF options/char_meca_sf1d1d       pellet J.PELLET            36      2      4
+CATALOGU MODIF options/char_meca_sfco3d       pellet J.PELLET            34      2      3
+CATALOGU MODIF options/char_meca_sr1d1d       pellet J.PELLET            36      2      4
+CATALOGU MODIF options/char_meca_srco3d       pellet J.PELLET            32      2      3
+CATALOGU MODIF options/char_meca_temp_r       pellet J.PELLET            43      2      3
+CATALOGU MODIF options/char_meca_vnor_f       pellet J.PELLET            31      2      3
+CATALOGU MODIF options/char_sens_evol         pellet J.PELLET            37      2      5
+CATALOGU MODIF options/efca_elno              pellet J.PELLET            44      1     13
+CATALOGU MODIF options/efge_elno              pellet J.PELLET            90      1      4
+CATALOGU MODIF options/efge_elno_sens         pellet J.PELLET            73      2     29
+CATALOGU MODIF options/ener_diss              pellet J.PELLET            30      2      3
+CATALOGU MODIF options/epme_elga              pellet J.PELLET            45      1      8
+CATALOGU MODIF options/epme_elno              pellet J.PELLET            45      1      8
+CATALOGU MODIF options/epmg_elga              pellet J.PELLET            43      1     10
+CATALOGU MODIF options/epmg_elno              pellet J.PELLET            43      1     10
+CATALOGU MODIF options/epot_elem              pellet J.PELLET            63      1      3
+CATALOGU MODIF options/epsg_elga              pellet J.PELLET            38      1      8
+CATALOGU MODIF options/epsg_elno              pellet J.PELLET            38      1      8
+CATALOGU MODIF options/epsi_elga              pellet J.PELLET            58      1      5
+CATALOGU MODIF options/eptu_elno              pellet J.PELLET            40      1      4
+CATALOGU MODIF options/epvc_elga              pellet J.PELLET            35      2      4
+CATALOGU MODIF options/epvc_elno              pellet J.PELLET            35      2      4
+CATALOGU MODIF options/flux_elga              pellet J.PELLET            44      1     10
+CATALOGU MODIF options/flux_elga_sens         pellet J.PELLET            34      2      8
+CATALOGU MODIF options/flux_elno              pellet J.PELLET            44      1     10
+CATALOGU MODIF options/flux_elno_sens         pellet J.PELLET            34      2      8
+CATALOGU MODIF options/forc_noda              pellet J.PELLET            93      2      5
+CATALOGU MODIF options/full_meca_elas         pellet J.PELLET            57      2     18
+CATALOGU MODIF options/k_g_moda               pellet J.PELLET            53      1      3
+CATALOGU MODIF options/mass_iner              pellet J.PELLET            40      2      3
+CATALOGU MODIF options/mass_meca_diag         pellet J.PELLET            48      2      3
+CATALOGU MODIF options/mass_meca_expli        pellet J.PELLET            55      2      3
+CATALOGU MODIF options/mass_meca              pellet J.PELLET            52      2      3
+CATALOGU MODIF options/mass_meca_sens_c       pellet J.PELLET            32      2     17
+CATALOGU MODIF options/mass_meca_sensi        pellet J.PELLET            32      2     17
+CATALOGU MODIF options/meca_gyro              pellet J.PELLET            43      1      2
+CATALOGU MODIF options/m_gamma                pellet J.PELLET            40      2      5
+CATALOGU MODIF options/qire_elem              pellet J.PELLET            68      1      3
+CATALOGU MODIF options/raph_meca              pellet J.PELLET            81      2      3
+CATALOGU MODIF options/resi_ther_paro_f       pellet J.PELLET            29      2      3
+CATALOGU MODIF options/rigi_acou              pellet J.PELLET            26      2      3
+CATALOGU MODIF options/rigi_meca_elas         pellet J.PELLET            55      2     20
+CATALOGU MODIF options/rigi_meca_ge           pellet J.PELLET            43      2      5
+CATALOGU MODIF options/rigi_meca_hyst         pellet J.PELLET            32      2      4
+CATALOGU MODIF options/rigi_meca_implex       pellet J.PELLET            47      2     37
+CATALOGU MODIF options/rigi_meca_sens_c       pellet J.PELLET            41      2     11
+CATALOGU MODIF options/rigi_meca_sensi        pellet J.PELLET            41      2     11
+CATALOGU MODIF options/rigi_meca_sfco3d       pellet J.PELLET            30      2      3
+CATALOGU MODIF options/rigi_meca_srco3d       pellet J.PELLET            29      2      3
+CATALOGU MODIF options/rigi_ther_conv_t       pellet J.PELLET            31      2      3
+CATALOGU MODIF options/secm_zz1               pellet J.PELLET            39      2      6
+CATALOGU MODIF options/sica_elno              pellet J.PELLET            37      1     13
+CATALOGU MODIF options/sief_elga              pellet J.PELLET            86      1      5
+CATALOGU MODIF options/sief_elga_sens         pellet J.PELLET            44      2     46
+CATALOGU MODIF options/sief_elno              pellet J.PELLET            59      1      3
+CATALOGU MODIF options/sieq_elga              pellet J.PELLET            29      1      7
+CATALOGU MODIF options/sieq_elno              pellet J.PELLET            30      1      7
+CATALOGU MODIF options/sigm_elno              pellet J.PELLET            58      1     30
+CATALOGU MODIF options/sigm_elno_sens         pellet J.PELLET            44      1     45
+CATALOGU MODIF options/sipm_elno              pellet J.PELLET            70      1     18
+CATALOGU MODIF options/sipo_elno              pellet J.PELLET            71      1     13
+CATALOGU MODIF options/sipo_elno_sens         pellet J.PELLET            76      2     17
+CATALOGU MODIF options/situ_elno              pellet J.PELLET            47      1      6
+CATALOGU MODIF options/sour_elga              pellet J.PELLET            38      1     14
+CATALOGU MODIF options/tou_ini_elga           pellet J.PELLET            37      1      2
+CATALOGU MODIF options/tou_ini_elno           pellet J.PELLET            36      1      2
+CATALOGU MODIF options/vaco_elno              pellet J.PELLET            35      1      7
+CATALOGU MODIF options/xcvbca                 pellet J.PELLET            50      1      3
+CATALOGU MODIF typelem/gener_me3di3         sfayolle S.FAYOLLE          252      3      3
+CATALOGU MODIF typelem/gener_me3du3         sfayolle S.FAYOLLE          257      4      3
+CATALOGU MODIF typelem/gener_me3gi3         sfayolle S.FAYOLLE          214      9      1
+CATALOGU MODIF typelem/gener_mepli2         sfayolle S.FAYOLLE          238      2      2
+CATALOGU MODIF typelem/gener_meplu2         sfayolle S.FAYOLLE          248      4      3
+CATALOPY MODIF commande/crea_maillage        meunier S.MEUNIER          163      5      3
+CATALOPY MODIF commande/impr_resu           sellenet N.SELLENET         185      3      3
+CATALOPY MODIF commande/macr_adap_mail      sellenet N.SELLENET         730     51     45
+CATALOPY MODIF commande/macr_info_mail      sellenet N.SELLENET         127      5      5
+       C MODIF hdf/hdfcld                   sellenet N.SELLENET          45      1      1
+       C MODIF hdf/hdfclf                   sellenet N.SELLENET          45      1      1
+       C MODIF hdf/hdfclg                   sellenet N.SELLENET          44      1      1
+       C MODIF hdf/hdfcrf                   sellenet N.SELLENET          59      1      1
+       C MODIF hdf/hdfcrg                   sellenet N.SELLENET          72      1      1
+       C MODIF hdf/hdfnbo                   sellenet N.SELLENET          73      1      1
+       C MODIF hdf/hdfnom                   sellenet N.SELLENET          86      1      1
+       C MODIF hdf/hdfopd                   sellenet N.SELLENET          73      1      1
+       C MODIF hdf/hdfopf                   sellenet N.SELLENET          55      1      1
+       C MODIF hdf/hdfopg                   sellenet N.SELLENET          65      1      1
+       C MODIF hdf/hdfrat                   sellenet N.SELLENET          73      1      1
+       C MODIF hdf/hdfrsv                   sellenet N.SELLENET          71      1      1
+       C MODIF hdf/hdftsd                   sellenet N.SELLENET          70      1      1
+       C MODIF hdf/hdftyp                   sellenet N.SELLENET         105      1      1
+       C MODIF hdf/hdfwat                   sellenet N.SELLENET          74      1      1
+       C MODIF hdf/hdfwsv                   sellenet N.SELLENET         137      1      1
+       C MODIF supervis/astermodule         sellenet N.SELLENET        3906      3      3
+       C MODIF supervis/python              sellenet N.SELLENET          88      4      2
+FORTRAN90 AJOUT echange/mffam3               sellenet N.SELLENET          51     51      0
+FORTRAN90 AJOUT echange/mfnco2               sellenet N.SELLENET          42     42      0
+FORTRAN90 AJOUT echange/mfncom               sellenet N.SELLENET          42     42      0
+FORTRAN90 AJOUT echange/mfnnop               sellenet N.SELLENET          54     54      0
+FORTRAN90 AJOUT echange/mfprlo               sellenet N.SELLENET          49     49      0
+FORTRAN90 MODIF echange/mfchac               sellenet N.SELLENET          49     11      5
+FORTRAN90 MODIF echange/mfchai               sellenet N.SELLENET          52     15      7
+FORTRAN90 MODIF echange/mfchre               sellenet N.SELLENET          57      8     11
+FORTRAN90 MODIF echange/mfchrl               sellenet N.SELLENET          56      9     13
+FORTRAN90 MODIF echange/mfcone               sellenet N.SELLENET          70     19     11
+FORTRAN90 MODIF echange/mfconl               sellenet N.SELLENET          70     16     17
+FORTRAN90 MODIF echange/mfcooe               sellenet N.SELLENET          60     22     20
+FORTRAN90 MODIF echange/mfcool               sellenet N.SELLENET          51     14     17
+FORTRAN90 MODIF echange/mffamc               sellenet N.SELLENET          44      7     13
+FORTRAN90 MODIF echange/mffame               sellenet N.SELLENET          54     13      4
+FORTRAN90 MODIF echange/mffami               sellenet N.SELLENET          60     11     12
+FORTRAN90 MODIF echange/mffaml               sellenet N.SELLENET          60     11      4
+FORTRAN90 MODIF echange/mfferm               sellenet N.SELLENET          40      3      3
+FORTRAN90 MODIF echange/mffide               sellenet N.SELLENET          41      3      3
+FORTRAN90 MODIF echange/mffien               sellenet N.SELLENET          41      6      7
+FORTRAN90 MODIF echange/mffoco               sellenet N.SELLENET          41      8      6
+FORTRAN90 MODIF echange/mfgaue               sellenet N.SELLENET          49      9      8
+FORTRAN90 MODIF echange/mfgaui               sellenet N.SELLENET          48     11      7
+FORTRAN90 MODIF echange/mfgaul               sellenet N.SELLENET          43      5      5
+FORTRAN90 MODIF echange/mfmaac               sellenet N.SELLENET          52     15      7
+FORTRAN90 MODIF echange/mfmaai               sellenet N.SELLENET          52     13      6
+FORTRAN90 MODIF echange/mfnatt               sellenet N.SELLENET          43      3      3
+FORTRAN90 MODIF echange/mfncha               sellenet N.SELLENET          41      6      7
+FORTRAN90 MODIF echange/mfnema               sellenet N.SELLENET          57     15      7
+FORTRAN90 MODIF echange/mfnfam               sellenet N.SELLENET          43      3      3
+FORTRAN90 MODIF echange/mfngau               sellenet N.SELLENET          41      4      4
+FORTRAN90 MODIF echange/mfngro               sellenet N.SELLENET          43      3      3
+FORTRAN90 MODIF echange/mfnmaa               sellenet N.SELLENET          41      3      3
+FORTRAN90 MODIF echange/mfnome               sellenet N.SELLENET          56     14      8
+FORTRAN90 MODIF echange/mfnoml               sellenet N.SELLENET          55     15     10
+FORTRAN90 MODIF echange/mfnpdt               sellenet N.SELLENET          47     11      8
+FORTRAN90 MODIF echange/mfnpfl               sellenet N.SELLENET          42      3      3
+FORTRAN90 MODIF echange/mfnpro               sellenet N.SELLENET          41      3      3
+FORTRAN90 MODIF echange/mfnume               sellenet N.SELLENET          58     14      8
+FORTRAN90 MODIF echange/mfnval               sellenet N.SELLENET          51      7      8
+FORTRAN90 MODIF echange/mfouvr               sellenet N.SELLENET          42      3      3
+FORTRAN90 MODIF echange/mfpdti               sellenet N.SELLENET          45      7     18
+FORTRAN90 MODIF echange/mfpfle               sellenet N.SELLENET          45      4      4
+FORTRAN90 MODIF echange/mfpfll               sellenet N.SELLENET          45      4      4
+FORTRAN90 MODIF echange/mfproi               sellenet N.SELLENET          43      4      4
+FORTRAN90 MODIF echange/mfvedo               sellenet N.SELLENET          44      4      4
+FORTRAN90 MODIF echange/mfveli               sellenet N.SELLENET          45      4      4
+FORTRAN90 MODIF petsc/apetsr                  tardieu N.TARDIEU          381      9      7
+ FORTRAN AJOUT algorith/nirm2d              sfayolle S.FAYOLLE          227    227      0
+ FORTRAN AJOUT algorith/nirm3d              sfayolle S.FAYOLLE          216    216      0
+ FORTRAN AJOUT elements/te0124              sfayolle S.FAYOLLE          118    118      0
+ FORTRAN AJOUT elements/te0125              sfayolle S.FAYOLLE          117    117      0
+ FORTRAN AJOUT prepost/acmata                   tran V-X.TRAN           531    531      0
+ FORTRAN AJOUT prepost/avcipr                   tran V-X.TRAN           223    223      0
+ FORTRAN AJOUT prepost/avgrdo                   tran V-X.TRAN           162    162      0
+ FORTRAN AJOUT prepost/avplcr                   tran V-X.TRAN           295    295      0
+ FORTRAN AJOUT utilitai/detlsp               tardieu N.TARDIEU           79     79      0
+ FORTRAN MODIF algeline/op0032               boiteau O.BOITEAU          266     14      1
+ FORTRAN MODIF algeline/op0044               boiteau O.BOITEAU          784     11      1
+ FORTRAN MODIF algorith/arch93              sellenet N.SELLENET         485      6      6
+ FORTRAN MODIF algorith/eccook              sfayolle S.FAYOLLE           56      2      2
+ FORTRAN MODIF algorith/hmgazp               meunier S.MEUNIER          280      2      2
+ FORTRAN MODIF algorith/hmladg               meunier S.MEUNIER          369      2      2
+ FORTRAN MODIF algorith/hmlgat               meunier S.MEUNIER          289      2      2
+ FORTRAN MODIF algorith/hmliga               meunier S.MEUNIER          351      2      2
+ FORTRAN MODIF algorith/hmlisa               meunier S.MEUNIER          295      2      2
+ FORTRAN MODIF algorith/hmliva               meunier S.MEUNIER          387      2      2
+ FORTRAN MODIF algorith/hmlvag               meunier S.MEUNIER          375      2      2
+ FORTRAN MODIF algorith/hmlvga               meunier S.MEUNIER          399      2      2
+ FORTRAN MODIF algorith/inithm               meunier S.MEUNIER           68      3      4
+ FORTRAN MODIF algorith/isfonc               tardieu N.TARDIEU          204     21      2
+ FORTRAN MODIF algorith/lc0054              sfayolle S.FAYOLLE          108      2      1
+ FORTRAN MODIF algorith/mestat               tardieu N.TARDIEU          274      8      7
+ FORTRAN MODIF algorith/nifn2b              sfayolle S.FAYOLLE          162      8      7
+ FORTRAN MODIF algorith/nifn2c              sfayolle S.FAYOLLE          153      9      7
+ FORTRAN MODIF algorith/nifn3b              sfayolle S.FAYOLLE          156      8      7
+ FORTRAN MODIF algorith/nifn3c              sfayolle S.FAYOLLE          144      9      8
+ FORTRAN MODIF algorith/niinit              sfayolle S.FAYOLLE          164      2      1
+ FORTRAN MODIF algorith/nipl2b              sfayolle S.FAYOLLE          289      5      4
+ FORTRAN MODIF algorith/nipl2c              sfayolle S.FAYOLLE          277      5      4
+ FORTRAN MODIF algorith/nipl3b              sfayolle S.FAYOLLE          281      5      4
+ FORTRAN MODIF algorith/nipl3c              sfayolle S.FAYOLLE          271      8      5
+ FORTRAN MODIF algorith/nirm2b              sfayolle S.FAYOLLE          202      7      5
+ FORTRAN MODIF algorith/nirm2c              sfayolle S.FAYOLLE          180      7      5
+ FORTRAN MODIF algorith/nirm3b              sfayolle S.FAYOLLE          169      7      5
+ FORTRAN MODIF algorith/nirm3c              sfayolle S.FAYOLLE          156      7      5
+ FORTRAN MODIF algorith/nmcri9              sfayolle S.FAYOLLE           53      2      2
+ FORTRAN MODIF algorith/nmfonc               tardieu N.TARDIEU          598     54      3
+ FORTRAN MODIF algorith/nmmeng               tardieu N.TARDIEU           97     40     10
+ FORTRAN MODIF algorith/nmtevp              sfayolle S.FAYOLLE          365      2      1
+ FORTRAN MODIF algorith/op0046               tardieu N.TARDIEU          257     17      8
+ FORTRAN MODIF algorith/op0070               tardieu N.TARDIEU          574      2      2
+ FORTRAN MODIF algorith/tanbul              sfayolle S.FAYOLLE          141     74      9
+ FORTRAN MODIF calculel/cclpci              sellenet N.SELLENET         154      1     10
+ FORTRAN MODIF elements/eqcara              sfayolle S.FAYOLLE          280      3      3
+ FORTRAN MODIF elements/massup              sfayolle S.FAYOLLE          206      5      4
+ FORTRAN MODIF elements/te0048              sfayolle S.FAYOLLE          135      9     16
+ FORTRAN MODIF elements/te0097              sfayolle S.FAYOLLE          176      7     34
+ FORTRAN MODIF elements/te0120              sfayolle S.FAYOLLE          108      3      3
+ FORTRAN MODIF elements/te0121              sfayolle S.FAYOLLE          123     17     22
+ FORTRAN MODIF elements/te0215              sfayolle S.FAYOLLE          144     12      8
+ FORTRAN MODIF elements/te0216              sfayolle S.FAYOLLE          136     12      8
+ FORTRAN MODIF elements/te0480              sfayolle S.FAYOLLE          123      6      5
+ FORTRAN MODIF elements/te0481              sfayolle S.FAYOLLE          114     13     19
+ FORTRAN MODIF modelisa/lrmdes              sellenet N.SELLENET         108     13     53
+ FORTRAN MODIF modelisa/lrmhdf              sellenet N.SELLENET         310     17     16
+ FORTRAN MODIF modelisa/lrmmdi              sellenet N.SELLENET         184      1      1
+ FORTRAN MODIF modelisa/lrmmeq              sellenet N.SELLENET          77      1      1
+ FORTRAN MODIF modelisa/lrmmf1              sellenet N.SELLENET         209      1      1
+ FORTRAN MODIF modelisa/lrmmf2              sellenet N.SELLENET         144      1      1
+ FORTRAN MODIF modelisa/lrmmf3              sellenet N.SELLENET         471     15      6
+ FORTRAN MODIF modelisa/lrmmfa              sellenet N.SELLENET         287     13      9
+ FORTRAN MODIF modelisa/lrmmma              sellenet N.SELLENET         307      4      8
+ FORTRAN MODIF modelisa/lrmmno              sellenet N.SELLENET         218      6     18
+ FORTRAN MODIF modelisa/lrmtyp              sellenet N.SELLENET         445     65      6
+ FORTRAN MODIF modelisa/op0001              sellenet N.SELLENET         211      6      7
+ FORTRAN MODIF prepost/avdomt                   tran V-X.TRAN            75     10      4
+ FORTRAN MODIF prepost/avdowh                   tran V-X.TRAN           139      6      2
+ FORTRAN MODIF prepost/avenca                   tran V-X.TRAN           169      7      2
+ FORTRAN MODIF prepost/avgrma                   tran V-X.TRAN           259     15    567
+ FORTRAN MODIF prepost/avgrno                   tran V-X.TRAN           267     15    567
+ FORTRAN MODIF prepost/deltau                   tran V-X.TRAN           250     22    445
+ FORTRAN MODIF prepost/desgfa               sellenet N.SELLENET         162     16      4
+ FORTRAN MODIF prepost/dtauno                   tran V-X.TRAN           262     17    432
+ FORTRAN MODIF prepost/ircam1               sellenet N.SELLENET         364     39     42
+ FORTRAN MODIF prepost/ircame               sellenet N.SELLENET         328     16     14
+ FORTRAN MODIF prepost/irceme               sellenet N.SELLENET         128      5      6
+ FORTRAN MODIF prepost/irch19               sellenet N.SELLENET         183      4      3
+ FORTRAN MODIF prepost/irchme               sellenet N.SELLENET         291     12     14
+ FORTRAN MODIF prepost/ircmcc               sellenet N.SELLENET         132      5      4
+ FORTRAN MODIF prepost/ircmec               sellenet N.SELLENET         208      6     15
+ FORTRAN MODIF prepost/ircmpe               sellenet N.SELLENET         487     14     12
+ FORTRAN MODIF prepost/ircmpf               sellenet N.SELLENET         293     18     12
+ FORTRAN MODIF prepost/ircmpn               sellenet N.SELLENET         248     10      8
+ FORTRAN MODIF prepost/ircmpr               sellenet N.SELLENET         281      3     17
+ FORTRAN MODIF prepost/ircnme               sellenet N.SELLENET         127      5      6
+ FORTRAN MODIF prepost/irecri               sellenet N.SELLENET         478      6      7
+ FORTRAN MODIF prepost/irmama               sellenet N.SELLENET         132     12      2
+ FORTRAN MODIF prepost/irmhdf               sellenet N.SELLENET         307     26     12
+ FORTRAN MODIF prepost/irmmeq               sellenet N.SELLENET          83      1      1
+ FORTRAN MODIF prepost/irmmf1               sellenet N.SELLENET         216      3      3
+ FORTRAN MODIF prepost/irmmf2               sellenet N.SELLENET         387      4      6
+ FORTRAN MODIF prepost/irmmfa               sellenet N.SELLENET         220      6      6
+ FORTRAN MODIF prepost/irmmma               sellenet N.SELLENET         309      7     35
+ FORTRAN MODIF prepost/irmmno               sellenet N.SELLENET         181      9     37
+ FORTRAN MODIF prepost/irmpg1               sellenet N.SELLENET         480     60     37
+ FORTRAN MODIF prepost/irmpga               sellenet N.SELLENET         303      3      3
+ FORTRAN MODIF prepost/lrcame               sellenet N.SELLENET         626     24     20
+ FORTRAN MODIF prepost/lrceme               sellenet N.SELLENET         301     10     11
+ FORTRAN MODIF prepost/lrchme               sellenet N.SELLENET         126      2      2
+ FORTRAN MODIF prepost/lrcmle               sellenet N.SELLENET         120     21     19
+ FORTRAN MODIF prepost/lrcmpr               sellenet N.SELLENET         137      2      2
+ FORTRAN MODIF prepost/lrcmva               sellenet N.SELLENET         282      2      2
+ FORTRAN MODIF prepost/lrcmve               sellenet N.SELLENET         339      2      2
+ FORTRAN MODIF prepost/lrcnme               sellenet N.SELLENET         222     64      4
+ FORTRAN MODIF prepost/lrfmed               sellenet N.SELLENET         331     29     14
+ FORTRAN MODIF prepost/lrmpga               sellenet N.SELLENET         336     28     15
+ FORTRAN MODIF prepost/lrvcpg               sellenet N.SELLENET         270      4      4
+ FORTRAN MODIF prepost/lrvemo               sellenet N.SELLENET         228      5      5
+ FORTRAN MODIF prepost/mdchii               sellenet N.SELLENET         295     53     52
+ FORTRAN MODIF prepost/mdchin               sellenet N.SELLENET         105     14      6
+ FORTRAN MODIF prepost/mdexcc               sellenet N.SELLENET         258     25     14
+ FORTRAN MODIF prepost/mdexch               sellenet N.SELLENET         140      9     10
+ FORTRAN MODIF prepost/mdexcv               sellenet N.SELLENET         137     27     14
+ FORTRAN MODIF prepost/mdexma               sellenet N.SELLENET         192     30     16
+ FORTRAN MODIF prepost/mdexpm               sellenet N.SELLENET         155     20      8
+ FORTRAN MODIF prepost/mdnoch               sellenet N.SELLENET         158     32     28
+ FORTRAN MODIF prepost/mdnofa               sellenet N.SELLENET         128     44     66
+ FORTRAN MODIF prepost/mdnoma               sellenet N.SELLENET         116      5      4
+ FORTRAN MODIF prepost/op0039               sellenet N.SELLENET        1019     21     11
+ FORTRAN MODIF prepost/op0176               sellenet N.SELLENET         226      9      8
+ FORTRAN MODIF prepost/taurlo                   tran V-X.TRAN           133      3      2
+ FORTRAN MODIF utilitai/copisd              sellenet N.SELLENET         425      1      3
+ FORTRAN MODIF utilitai/detrsd               tardieu N.TARDIEU          662      5      3
+ FORTRAN MODIF utilitai/iredsu              sellenet N.SELLENET         352      6      7
+ FORTRAN MODIF utilitai/op0150              sellenet N.SELLENET         474      5      3
+ FORTRAN MODIF utilitai/op0192              sellenet N.SELLENET         335      3      3
+  PYTHON MODIF Comportement/vmis_john_cook   sfayolle S.FAYOLLE           39      2      2
+  PYTHON MODIF Lecture_Cata_Ele/imprime       pellet J.PELLET          1238     60      1
+  PYTHON MODIF Macro/creation_donnees_homard   sellenet N.SELLENET         717     17     11
+  PYTHON MODIF Macro/macr_adap_mail_ops     sellenet N.SELLENET        1048      5      5
+  PYTHON MODIF Macro/macr_cara_poutre_ops    meunier S.MEUNIER          844      2      2
+  PYTHON MODIF Macro/macr_lign_coupe_ops     meunier S.MEUNIER          982      2      2
+  PYTHON MODIF Macro/test_fonction_ops      sellenet N.SELLENET         947      5      3
+  PYTHON MODIF Messages/algeline3            boiteau O.BOITEAU          452      7      2
+  PYTHON MODIF Messages/factor               tardieu N.TARDIEU          509      1      2
+  PYTHON MODIF Messages/prepost             sellenet N.SELLENET         235      3      3
+  PYTHON MODIF SD/sd_maillage               sellenet N.SELLENET         122      2      3
+
+
+        nb unites  nb lignes  ajouts  suppr.  difference
+ AJOUT :   29        4830      4830             +4830
+ MODIF :  581      185939      4720    5013      -293
+ SUPPR :    1         653               653      -653
+ DEPLA :    0           0 
+         ----      ------     ------  ------   ------
+ TOTAL :  611      191422      9550    5666     +3884 

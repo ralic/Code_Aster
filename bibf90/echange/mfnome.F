@@ -1,7 +1,7 @@
       SUBROUTINE MFNOME(FID, MAA, NOM, N,
-     &                  TYPENT, TYPGEO,CRET)
+     &                  TYPENT, TYPGEO, CRET)
 !           CONFIGURATION MANAGEMENT OF EDF VERSION                  
-!& MODIF MFNOME ECHANGE  DATE 14/03/2011   AUTEUR SELLENET N.SELLENET 
+!& MODIF MFNOME ECHANGE  DATE 10/05/2011   AUTEUR SELLENET N.SELLENET 
 ! RESPONSABLE SELLENET N.SELLENET
 ! ================================================================== 
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D              WWW.CODE-ASTER.ORG 
@@ -22,7 +22,7 @@
       IMPLICIT NONE
       CHARACTER*(*) MAA
       CHARACTER*(*) NOM(*)
-      INTEGER FID,TYPENT, TYPGEO,CRET
+      INTEGER FID,TYPENT, TYPGEO, CRET, MDNONT, MDNOIT
       INTEGER N
 #ifdef _DISABLE_MED
       CALL U2MESS('F','FERMETUR_2')
@@ -30,20 +30,26 @@
 ! BEGIN MED
 #ifdef _USE_MED_SHORT_INT
       INTEGER*4 FID4, TYPEN4, TYPGE4, CRET4
-      INTEGER*4 N4
+      INTEGER*4 N4, MDNON4, MDNOI4
 #ifdef _DEBUG_MED
       PRINT *,'=== MFNOME ==='
 #endif
+      MDNONT = -1
+      MDNOIT = -1
       FID4 = FID
       TYPEN4 = TYPENT
       TYPGE4 = TYPGEO
       N4 = N
-      CALL EFNOME(FID4, MAA, NOM, N4,
-     &            TYPEN4, TYPGE4,CRET4)
+      MDNON4 = MDNONT
+      MDNOI4 = MDNOIT
+      CALL MMHEAW(FID4, MAA, MDNON4, MDNOI4, TYPEN4, TYPGE4,
+     &            N4, NOM, CRET4)
       CRET = CRET4
 #else
-      CALL EFNOME(FID, MAA, NOM, N,
-     &                  TYPENT, TYPGEO,CRET)
+      MDNONT = -1
+      MDNOIT = -1
+      CALL MMHEAW(FID, MAA, MDNONT, MDNOIT, TYPENT, TYPGEO,
+     &            N, NOM, CRET)
 #endif
 ! END MED
 #endif

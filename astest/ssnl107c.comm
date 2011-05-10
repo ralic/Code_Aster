@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 09/05/2011   AUTEUR VERRIER A.VERRIER 
 # TITRE PLAQUE ENCASTREE SOUSMISE A UNE FLEXION PAR DES POUTRES
 # ssnl107c.para = tps_job 60 mem_job 250Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -54,9 +54,14 @@ CARA=AFFE_CARA_ELEM(MODELE=MO,
                     COQUE=_F(GROUP_MA='S1',
                              EPAIS=0.1,
                              COQUE_NCOU=19,),
-                    DISCRET=_F(GROUP_MA=('COQU1','COQU2','POUT1','POUT2'),
+                    DISCRET=(
+                              _F(GROUP_MA=('COQU1','COQU2','POUT1','POUT2'),
                                CARA='M_TR_D_N',
-                               VALE=(0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,),),);
+                               VALE=(0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,),),
+                              _F(GROUP_MA=('COQU1','COQU2','POUT1','POUT2'),
+                               CARA='K_TR_D_N',
+                               VALE=(0.0,0.0,0.0,0.0,0.0,0.0,),),
+                             ));
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
                     AFFE=_F(TOUT='OUI',

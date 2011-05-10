@@ -1,4 +1,4 @@
-#@ MODIF creation_donnees_homard Macro  DATE 31/01/2011   AUTEUR NICOLAS G.NICOLAS 
+#@ MODIF creation_donnees_homard Macro  DATE 10/05/2011   AUTEUR SELLENET N.SELLENET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -22,7 +22,7 @@
 Cette classe crée le fichier de configuration permettant de lancer HOMARD
 depuis Code_Aster.
 """
-__revision__ = "V1.9"
+__revision__ = "V1.10"
 __all__ = [ ]
 
 import os
@@ -608,6 +608,7 @@ class creation_donnees_homard:
       if self.dico_configuration.has_key("Frontiere_analytique") :
         SuivFron = SuivFron * 3
         dico_frontiere = {}
+        dico_frontiere["NOM"] = "FANom"
         dico_frontiere["RAYON"] = "FARayon"
         dico_frontiere["X_CENTRE"] = "FAXCen"
         dico_frontiere["Y_CENTRE"] = "FAYCen"
@@ -616,25 +617,30 @@ class creation_donnees_homard:
         dico_frontiere["Y_AXE"] = "FAYAxe"
         dico_frontiere["Z_AXE"] = "FAZAxe"
         l_aux = dico_frontiere.keys()
-        dico_frontiere["GROUP_MA"] = "FAGroupe"
+        dico_frontiere["FGNomGro"] = "FGNomGro"
+        dico_frontiere["FGNomFro"] = "FGNomFro"
         dico_frontiere["TYPE"] = "FAType"
         dico_frontiere["CYLINDRE"] = 1
         dico_frontiere["SPHERE"] = 2
         iaux = 0
+        kaux = 0
         for frontiere in self.dico_configuration["Frontiere_analytique"] :
+          iaux += 1
+          self.ecrire_ligne_configuration_0("Description de la frontiere analytique numero "+str(iaux))
+          jaux = dico_frontiere[frontiere["TYPE"]]
+          self.ecrire_ligne_configuration_3(dico_frontiere["TYPE"], iaux, jaux)
+          for aux in l_aux :
+            if frontiere.has_key(aux) :
+              self.ecrire_ligne_configuration_3(dico_frontiere[aux], iaux, frontiere[aux])
+          self.ecrire_ligne_configuration_0("Lien de la frontiere analytique numero "+str(iaux)+" avec les groupes")
           if not type(frontiere["GROUP_MA"]) in EnumTypes :
             lt_aux = [ frontiere["GROUP_MA"] ]
           else :
             lt_aux = frontiere["GROUP_MA"]
           for group_ma in lt_aux :
-            iaux = iaux + 1
-            self.ecrire_ligne_configuration_0("Description de la frontiere analytique numero "+str(iaux))
-            jaux = dico_frontiere[frontiere["TYPE"]]
-            self.ecrire_ligne_configuration_3(dico_frontiere["TYPE"], iaux, jaux)
-            self.ecrire_ligne_configuration_3(dico_frontiere["GROUP_MA"], iaux, group_ma)
-            for aux in l_aux :
-              if frontiere.has_key(aux) :
-                self.ecrire_ligne_configuration_3(dico_frontiere[aux], iaux, frontiere[aux])
+            kaux += 1
+            self.ecrire_ligne_configuration_3(dico_frontiere["FGNomGro"], kaux, group_ma)
+            self.ecrire_ligne_configuration_3(dico_frontiere["FGNomFro"], kaux, frontiere["NOM"])
 #
 #     7.3. Activation de la fonction
 #
@@ -650,7 +656,7 @@ class creation_donnees_homard:
         self.ecrire_ligne_configuration_2("MessInfo", self.MessInfo)
       if self.dico_configuration["version_perso"] :
         VERSION_HOMARD = self.dico_configuration["VERSION_HOMARD"]
-        self.ecrire_ligne_configuration_2("DicoOSGM", "$HOMARD_USER/"+VERSION_HOMARD+"/CONFIG/typobj.stu")
+        self.ecrire_ligne_configuration_2("DicoOSGM", "$HOMARD_USER/"+VERSION_HOMARD+"/src/CONFIG/typobj.stu")
 #
 #     9. L'usage des mailles incompatibles avec HOMARD
 #

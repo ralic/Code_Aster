@@ -1,6 +1,6 @@
       SUBROUTINE MFNPFL( FID , PRO , NBVAL , CRET)
 !           CONFIGURATION MANAGEMENT OF EDF VERSION                  
-!& MODIF MFNPFL ECHANGE  DATE 14/03/2011   AUTEUR SELLENET N.SELLENET 
+!& MODIF MFNPFL ECHANGE  DATE 10/05/2011   AUTEUR SELLENET N.SELLENET 
 ! RESPONSABLE SELLENET N.SELLENET
 ! ================================================================== 
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D              WWW.CODE-ASTER.ORG 
@@ -31,11 +31,11 @@
       PRINT *,'=== MFNPFL ==='
 #endif
       FID4 = FID
-      CALL EFNPFL( FID4, PRO , NBVAL4, CRET4)
+      CALL MPFPSN( FID4, PRO , NBVAL4, CRET4)
       NBVAL = NBVAL4
       CRET = CRET4
 #else
-      CALL EFNPFL( FID , PRO , NBVAL , CRET)
+      CALL MPFPSN( FID , PRO , NBVAL , CRET)
 #endif
 ! END MED
 #endif

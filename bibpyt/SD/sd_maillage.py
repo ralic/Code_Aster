@@ -1,8 +1,8 @@
-#@ MODIF sd_maillage SD  DATE 06/05/2008   AUTEUR PELLET J.PELLET 
+#@ MODIF sd_maillage SD  DATE 10/05/2011   AUTEUR SELLENET N.SELLENET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -68,7 +68,6 @@ class sd_maillage(sd_titre):
     VGE  = Facultatif(sd_voisinage())
 
     ADAPTATION = Facultatif(AsVI(lonmax=1, ))
-    FORM = Facultatif(AsVK32(SDNom(debut=19), lonmax=2, ))
 
 
     def u_dime(self):

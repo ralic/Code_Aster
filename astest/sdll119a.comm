@@ -1,5 +1,6 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 09/05/2011   AUTEUR VERRIER A.VERRIER 
 # TITRE FAISCEAU DE POUTRES SOUS EXCITATION FLUIDELASTIQUE AXIALE
+# sdll119a.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -81,11 +82,15 @@ CARA=AFFE_CARA_ELEM(
                 SECTION = 'CERCLE',
                 CARA = 'R',
                 VALE = 1.0E-03)),
-                DISCRET=_F(
+                DISCRET=(_F(
                 GROUP_NO = ('NO_BASE',  'NO_EXTR',),
                 CARA = 'K_TR_D_N',
-                VALE = (0.,  0.,  0.,  0.,  6.29,  6.29,))
-                           )
+                VALE = (0.,  0.,  0.,  0.,  6.29,  6.29,)),
+                _F(
+                GROUP_NO = ('NO_BASE',  'NO_EXTR',),
+                CARA = 'M_TR_D_N',
+                VALE = (0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,)),
+                           ))
 
 #
 #-----------------------------------------------------

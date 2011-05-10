@@ -6,7 +6,7 @@
      &                    CODRET )
 C_______________________________________________________________________
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 08/03/2011   AUTEUR SELLENET N.SELLENET 
+C MODIF PREPOST  DATE 10/05/2011   AUTEUR SELLENET N.SELLENET 
 C RESPONSABLE SELLENET N.SELLENET
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -72,8 +72,8 @@ C
       CHARACTER*16 NOMSYM
       CHARACTER*19 CHANOM
       CHARACTER*24 NOCELK
-      CHARACTER*32 NOMMED
-      CHARACTER*(*)  NOMCMP(*),NOMO,PARTIE
+      CHARACTER*(*) NOMMED
+      CHARACTER*(*) NOMCMP(*),NOMO,PARTIE
 C
       LOGICAL LRESU
 C
@@ -99,6 +99,7 @@ C     -----  FIN  COMMUNS NORMALISES  JEVEUX --------------------------
 C
 C 0.3. ==> VARIABLES LOCALES
 C
+      INTEGER LXLGUT
 C
       INTEGER EDNONO
       PARAMETER (EDNONO=-1)
@@ -112,8 +113,8 @@ C
 C
       CHARACTER*8 SAUX08
       CHARACTER*24 VALK(1)
-      CHARACTER*8 UNIINS, MODELE
-      CHARACTER*32 NOCHMD
+      CHARACTER*8 MODELE
+      CHARACTER*64 NOCHMD
 C
       REAL*8 INSTAN
 C
@@ -143,13 +144,11 @@ C
         CALL MDNOCH ( NOCHMD, LNOCHM,
      &              LRESU, SAUX08, NOMSYM, NOPASE, CODRET )
       ELSE
-        DO 10 I=1,32
-          IF (NOMMED(I:I).EQ.' ') THEN
-            NOCHMD(I:I) = '_'
-          ELSE
-            NOCHMD(I:I) = NOMMED(I:I)
-          ENDIF
+        DO 10 I=1,64
+          NOCHMD(I:I) = ' '
  10     CONTINUE
+        I = LXLGUT(NOMMED)
+        NOCHMD(1:I) = NOMMED(1:I)
       ENDIF
 C
       IF ( CODRET.EQ.0 ) THEN
@@ -174,7 +173,7 @@ C
 11001 FORMAT(1X,'CHAMP              : ',A16)
 11002 FORMAT(1X,'PARAMETRE SENSIBLE : ',A8)
 11003 FORMAT(1X,'TYPE DE CHAMP      : ',A)
-11004 FORMAT(3X,'==> NOM MED DU CHAMP : ',A32,/)
+11004 FORMAT(3X,'==> NOM MED DU CHAMP : ',A64,/)
 C
 C 1.2. ==> INSTANT CORRESPONDANT AU NUMERO D'ORDRE
 C
@@ -206,7 +205,6 @@ C           ON PREFERE INST :
            ENDIF
         ENDIF
         NUMPT = NUMORD
-        UNIINS = '_'
 C
       ELSE
 C
@@ -259,13 +257,13 @@ C
       IF ( TYPECH(1:4).EQ.'NOEU' ) THEN
         CALL IRCNME ( IFI, NOCHMD, CHANOM, TYPECH, MODELE,
      &                NBCMP, NOMCMP, PARTIE,
-     &                NUMPT, INSTAN, UNIINS, NUMORD,
+     &                NUMPT, INSTAN, NUMORD,
      &                NBNOEC, LINOEC,
      &                CODRET )
       ELSE IF ( TYPECH(1:2).EQ.'EL' ) THEN
         CALL IRCEME ( IFI, NOCHMD, CHANOM, TYPECH, MODELE,
      &                NBCMP, NOMCMP, PARTIE,
-     &                NUMPT, INSTAN, UNIINS, NUMORD,
+     &                NUMPT, INSTAN, NUMORD,
      &                NBMAEC, LIMAEC,
      &                CODRET )
       ELSE

@@ -1,4 +1,4 @@
-#@ MODIF macr_lign_coupe_ops Macro  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+#@ MODIF macr_lign_coupe_ops Macro  DATE 10/05/2011   AUTEUR MEUNIER S.MEUNIER 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -741,7 +741,7 @@ def macr_lign_coupe_ops(self,RESULTAT,CHAM_GD,UNITE_MAILLAGE,LIGN_COUPE,
           if ltyma[typma[ma-1]-1][:3] != 'SEG' :
              nomma=aster.getvectjev(n_mailla.ljust(8)+'.NOMMAI')
              UTMESS('F','POST0_15',valk=[ngrma,nomma[ma-1]])
-        __mailla=CREA_MAILLAGE(MAILLAGE= m['MAILLAGE'],)
+        __mailla=CREA_MAILLAGE(MAILLAGE= m['MAILLAGE'],COPIE=_F(),)
         __mailla=DEFI_GROUP( reuse=__mailla,MAILLAGE= __mailla,
                             CREA_GROUP_NO=_F(OPTION='NOEUD_ORDO',NOM=str(m['GROUP_MA']),GROUP_MA=m['GROUP_MA']),)
         collgrno=aster.getcolljev(__mailla.nom.ljust(8)+'.GROUPENO')

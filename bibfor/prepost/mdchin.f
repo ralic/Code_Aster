@@ -1,9 +1,9 @@
-      SUBROUTINE MDCHIN ( NOFIMD, NOCHMD, TYPENT, TYPGEO,
+      SUBROUTINE MDCHIN ( NOFIMD, IDFIMD, NOCHMD, TYPENT, TYPGEO,
      &                    PREFIX, NBTV,
      &                    CODRET )
 C_____________________________________________________________________
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 08/03/2011   AUTEUR SELLENET N.SELLENET 
+C MODIF PREPOST  DATE 10/05/2011   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,7 +20,6 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C ======================================================================
 C RESPONSABLE SELLENET N.SELLENET
 C ======================================================================
 C     FORMAT MED - CHAMP - INFORMATIONS - FICHIER CONNU PAR NOM
@@ -30,6 +29,7 @@ C     TEMPORELLES POUR UN CHAMP ET UN SUPPORT GEOMETRIQUE
 C-----------------------------------------------------------------------
 C      ENTREES:
 C        NOFIMD : NOM DU FICHIER MED
+C        IDFIMD : OU NUMERO DU FCHIER MED DEJA OUVERT
 C        NOCHMD : NOM MED DU CHAMP A LIRE
 C        TYPENT : TYPE D'ENTITE AU SENS MED
 C        TYPGEO : TYPE DE SUPPORT AU SENS MED
@@ -39,8 +39,6 @@ C                 POUR LE TABLEAU NUMERO I
 C                 PREFIX//'.NUME' : T(2I-1) = NUMERO DE PAS DE TEMPS
 C                                   T(2I)   = NUMERO D'ORDRE
 C                 PREFIX//'.INST' : T(I) = INSTANT S'IL EXISTE
-C                 PREFIX//'.MAIL' : T(I) = NOM DU MAILLAGE (K32)
-C                 PREFIX//'.UNII' : T(I) = UNITE DE L'INSTANT (K16)
 C      SORTIES:
 C        NBTV   : NOMBRE DE TABLEAUX DE VALEURS DU CHAMP
 C        CODRET : CODE DE RETOUR (0 : PAS DE PB, NON NUL SI PB)
@@ -55,7 +53,7 @@ C
       INTEGER CODRET
 C
       CHARACTER*19 PREFIX
-      CHARACTER*32 NOCHMD
+      CHARACTER*(*) NOCHMD
       CHARACTER*(*) NOFIMD
 C
 C 0.2. ==> VARIABLES LOCALES
@@ -66,11 +64,18 @@ C
       PARAMETER (EDLECT=0)
 C
       INTEGER IDFIMD
+      LOGICAL DEJOUV
 C====
 C 1. ON OUVRE LE FICHIER EN LECTURE
 C====
 C
-      CALL MFOUVR ( IDFIMD, NOFIMD, EDLECT, CODRET )
+      IF ( IDFIMD.EQ.0 ) THEN
+        CALL MFOUVR ( IDFIMD, NOFIMD, EDLECT, CODRET )
+        DEJOUV = .FALSE.
+      ELSE
+        DEJOUV = .TRUE.
+        CODRET = 0
+      ENDIF
       IF ( CODRET.NE.0 ) THEN
         SAUX08='MFOUVR  '
         CALL U2MESG('F','DVP_97',1,SAUX08,1,CODRET,0,0.D0)
@@ -88,10 +93,13 @@ C====
 C 3. FERMETURE DU FICHIER MED
 C====
 C
-      CALL MFFERM ( IDFIMD, CODRET )
-      IF ( CODRET.NE.0 ) THEN
-        SAUX08='MFFERM  '
-        CALL U2MESG('F','DVP_97',1,SAUX08,1,CODRET,0,0.D0)
+      IF ( .NOT.DEJOUV ) THEN
+        CALL MFFERM ( IDFIMD, CODRET )
+        IF ( CODRET.NE.0 ) THEN
+          SAUX08='MFFERM  '
+          CALL U2MESG('F','DVP_97',1,SAUX08,1,CODRET,0,0.D0)
+        ENDIF
+        IDFIMD = 0
       ENDIF
 C
       END

@@ -2,7 +2,7 @@
      &                    NOMAST, CODRET )
 C_____________________________________________________________________
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 08/03/2011   AUTEUR SELLENET N.SELLENET 
+C MODIF PREPOST  DATE 10/05/2011   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -26,7 +26,7 @@ C_____________________________________________________________________
 C
 C   LA REGLE EST LA SUIVANTE :
 C
-C     LE NOM EST LIMITE A 32 CARACTERES DANS MED. ON UTILISE ICI
+C     LE NOM EST LIMITE A 64 CARACTERES DANS MED. ON UTILISE ICI
 C     AU MAXIMUM 8 CARACTERES.
 C                 12345678901234567890123456789012
 C                 AAAAAAAA
@@ -48,7 +48,7 @@ C
 C
 C 0.1. ==> ARGUMENTS
 C
-      CHARACTER*32 NOMAMD
+      CHARACTER*64 NOMAMD
       CHARACTER*8  NOMAST
 C
       INTEGER LNOMAM
@@ -93,7 +93,8 @@ C
 C
 C 2.1. ==> BLANCHIMENT INITIAL
 C               12345678901234567890123456789012
-      NOMAMD = '                                '
+      NOMAMD = '                                '//
+     &'                                '
 C
 C 2.2. ==> NOM DU MAILLAGE
 C

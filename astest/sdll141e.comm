@@ -1,4 +1,4 @@
-# MODIF  DATE 25/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 09/05/2011   AUTEUR VERRIER A.VERRIER 
 # TITRE CALCUL D'UNE LIGNE D'ARBRE SANS DISQUE
 # sdll141e.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -51,6 +51,14 @@ CARELEM=AFFE_CARA_ELEM(MODELE=MODELE,
                                    GROUP_MA='DISQUI',
                                    REPERE='LOCAL',
                                    VALE=(0.7657,2.393E-4,2.791E-4,2.791E-4,0.,0.,0.,0.,0.,0.,),),
+                                _F(CARA='K_TR_D_N',
+                                   GROUP_MA='DISQUI',
+                                   REPERE='LOCAL',
+                                   VALE=(0.,0.,0.,0.,0.,0.,),),
+                                _F(CARA='A_TR_D_N',
+                                   GROUP_MA='DISQUI',
+                                   REPERE='LOCAL',
+                                   VALE=(0.,0.,0.,0.,0.,0.,),),
                                 _F(CARA='M_TR_D_N',
                                    GROUP_MA='DISQUB',
                                    REPERE='LOCAL',

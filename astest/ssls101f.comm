@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 10/05/2011   AUTEUR LEBOUVIER F.LEBOUVIER 
 # TITRE PLAQUE CIRCULAIRE POSEE     SOUS PRESSION DST  170 N - 296 TRIA3
 # ssls101f.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -235,14 +235,14 @@ TEST_TABLE(       TABLE=RELEVE_1,
                     FILTRE=_F(  NOM_PARA = 'NOEUD',
                              VALE_K = 'O'),
                   NOM_PARA='MXX',
-                 PRECISION=0.4E-2, REFERENCE = 'ANALYTIQUE',
+                 PRECISION=0.5E-2, REFERENCE = 'ANALYTIQUE',
                       VALE=-0.20625       )
 
 TEST_TABLE(       TABLE=RELEVE_1,
                     FILTRE=_F(  NOM_PARA = 'NOEUD',
                              VALE_K = 'O'),
                   NOM_PARA='MYY',
-                 PRECISION=0.4E-2, REFERENCE = 'ANALYTIQUE',
+                 PRECISION=0.55E-2, REFERENCE = 'ANALYTIQUE',
                       VALE=-0.20625       )
 
 TEST_TABLE(       TABLE=RELEVE_1,

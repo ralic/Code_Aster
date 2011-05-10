@@ -3,7 +3,7 @@
       CHARACTER*(*) TYPESD,NOMSD
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 08/03/2011   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 09/05/2011   AUTEUR TARDIEU N.TARDIEU 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -360,7 +360,6 @@ C FETI OR NOT ?
         CALL JEEXIN(K24B,IRET)
         IF (IRET.GT.0) THEN
           LFETI = .TRUE.
-
         ELSE
           LFETI = .FALSE.
         END IF
@@ -372,14 +371,17 @@ C FETI OR NOT ?
 
           CALL JELIRA(K24B,'LONMAX',NBSD,K8BID)
           CALL JEVEUO(K24B,'L',IFETM)
-          CALL JEVEUO('&FETI.LISTE.SD.MPI','L',ILIMPI)
-          DO 30 IDD = 1,NBSD
-            IF (ZI(ILIMPI+IDD).EQ.1) THEN
-              K19 = ZK24(IFETM+IDD-1) (1:19)
-              CALL DETRS2('MATR_ASSE',K19)
-            END IF
-
-   30     CONTINUE
+          CALL JEEXIN('&FETI.LISTE.SD.MPI',IRET)
+          IF (IRET.GT.0) THEN
+            CALL JEVEUO('&FETI.LISTE.SD.MPI','L',ILIMPI)
+            DO 30 IDD = 1,NBSD
+              IF (ZI(ILIMPI+IDD).EQ.1) THEN
+                K19 = ZK24(IFETM+IDD-1) (1:19)
+                CALL DETRS2('MATR_ASSE',K19)
+              END IF
+   30       CONTINUE
+          END IF
+          
           CALL JEDETR(K24B)
         END IF
 

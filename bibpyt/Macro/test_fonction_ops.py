@@ -1,8 +1,8 @@
-#@ MODIF test_fonction_ops Macro  DATE 11/05/2010   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF test_fonction_ops Macro  DATE 10/05/2011   AUTEUR SELLENET N.SELLENET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -233,7 +233,9 @@ def RoundValues(type,res,vtc,err,curEps):
      expo=err2[ii+2:ii+4]
      sg=err2[ii+1:ii+2]
      nexpo=int(expo)
-     if(abs(erin)>0.01 and abs(erin)<100000):
+     if abs(erin)<0.1:
+        listEpsiOut.append(err2)
+     elif abs(erin)>0.1 and abs(erin)<100000:
         #listEpsiOut.append((str(abs(erin)).strip())[:nexpo+2])
         listEpsiOut.append((chdiff%abs(erin)).strip())
      else:

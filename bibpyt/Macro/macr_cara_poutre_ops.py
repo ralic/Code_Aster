@@ -1,4 +1,4 @@
-#@ MODIF macr_cara_poutre_ops Macro  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+#@ MODIF macr_cara_poutre_ops Macro  DATE 10/05/2011   AUTEUR MEUNIER S.MEUNIER 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -59,7 +59,7 @@ def macr_cara_poutre_ops(self,MAILLAGE,SYME_X,SYME_Y,GROUP_MA_BORD,
   self.DeclareOut('nomres',self.sd)
   #
   if ( MAILLAGE != None ):
-      __nomlma=CREA_MAILLAGE(MAILLAGE=MAILLAGE)
+      __nomlma=CREA_MAILLAGE(MAILLAGE=MAILLAGE,COPIE=_F())
   elif ( args.has_key('UNITE') and args.has_key('FORMAT') ):
       __nomlma=LIRE_MAILLAGE(UNITE=args['UNITE'],FORMAT=args['FORMAT'])
   else:

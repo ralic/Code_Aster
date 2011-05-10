@@ -1,7 +1,7 @@
       SUBROUTINE OP0039 ()
       IMPLICIT   NONE
 C ----------------------------------------------------------------------
-C MODIF PREPOST  DATE 08/03/2011   AUTEUR SELLENET N.SELLENET 
+C MODIF PREPOST  DATE 10/05/2011   AUTEUR SELLENET N.SELLENET 
 C RESPONSABLE SELLENET N.SELLENET
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
 C ======================================================================
@@ -95,11 +95,12 @@ C
       CHARACTER*24 NOMJV
       CHARACTER*24 VALK(6)
       CHARACTER*24 NORECG,CORRN,CORRM
-      CHARACTER*32 K32BID
+      CHARACTER*64 K64BID
+      CHARACTER*64 NOCHMD
       CHARACTER*80 TITRE
 C
       LOGICAL LRESU,LCOR,LMAX,LMIN,LINF,LSUP,LCASTS,LMOD,LGMSH,ULEXIS
-      LOGICAL LMAIL,AFAIRE,LREST
+      LOGICAL LMAIL,AFAIRE,LREST,LNCMED
 C
 C ----------------------------------------------------------------------
 C
@@ -348,6 +349,7 @@ C            (RMQUE: UNIQUEMENT INTERESSANT POUR FORMAT 'RESULTAT')
 C
 C        --- IMPRESSION DES COORDONNEES------
 C            (ECRITURE VARIABLES DE TYPE RESULTAT AU FORMAT 'RESULTAT')
+         COOR = ' '
          CALL GETVTX('RESU','IMPR_COOR',IOCC,1,1,COOR,N)
          IF (N.NE.0 .AND. COOR.EQ.'OUI') LCOR = .TRUE.
 C
@@ -473,10 +475,11 @@ C        ---  IMPRESSION DU MAILLAGE AU PREMIER PASSAGE -----
          ENDIF
 C
 C        --- ECRITURE D'UN CHAM_GD ---
+         LNCMED = .FALSE.
          IF(NC .NE.0) THEN
            NBNOSY = 1
            CALL WKVECT('&&OP0039.NOM_SYMB','V V K16',NBNOSY,JNOSY)
-           CALL WKVECT('&&OP0039.NOM_CH_MED','V V K32',NBNOSY,JNCMED)
+           CALL WKVECT('&&OP0039.NOM_CH_MED','V V K80',NBNOSY,JNCMED)
 C          --- NOM DU CHAM_GD ---
            ZK16(JNOSY)  = LERESU
            NPA       = 0
@@ -484,10 +487,11 @@ C          --- NOM DU CHAM_GD ---
            NBORDR    = 1
            CALL WKVECT('&&OP0039.NUM_ORDR','V V I',NBORDR,JORDR)
            ZI(JORDR) = 1
-           CALL GETVTX('RESU','NOM_CHAM_MED' ,IOCC,1,0,K32BID,N23)
+           CALL GETVTX('RESU','NOM_CHAM_MED' ,IOCC,1,0,K64BID,N23)
            NBCMDU = - N23
            CALL GETVTX('RESU','NOM_CHAM_MED',IOCC,1,NBCMDU,
-     &                                              ZK32(JNCMED),IRET)
+     &                                              ZK80(JNCMED),IRET)
+           LNCMED = .TRUE.
 C
 C        --- ECRITURE D'UN RESULTAT_COMPOSE ---
          ELSEIF (NR.NE.0) THEN
@@ -495,7 +499,7 @@ C          --- ON REGARDE QUELS SONT LES NOM_CHAM A IMPRIMER:
            TOUCHA = 'OUI'
            CALL GETVTX('RESU','TOUT_CHAM',IOCC,1,1,TOUCHA,N21)
            CALL GETVTX('RESU','NOM_CHAM' ,IOCC,1,0,K16BID,N22)
-           CALL GETVTX('RESU','NOM_CHAM_MED' ,IOCC,1,0,K32BID,N23)
+           CALL GETVTX('RESU','NOM_CHAM_MED' ,IOCC,1,0,K64BID,N23)
 C          *** N22 EST NEGATIF SI L'UTILISATEUR DONNE UNE LISTE DE NOMS
 C              (PAR DEFAUT TOUS LES CHAMPS CAR MOT-CLE FACULTATIF)
            IF(ABS(N21)+ABS(N22).EQ.0) N21=1
@@ -517,13 +521,14 @@ C            - ON RECUPERE LES NOMS (ON IMPRIME TOUS LES CHAMPS)
              NBCMDU = - N23
              CALL WKVECT('&&OP0039.NOM_SYMB','V V K16',
      &                   NBNOSY,JNOSY)
-             CALL WKVECT('&&OP0039.NOM_CH_MED','V V K32',NBNOSY,JNCMED)
+             CALL WKVECT('&&OP0039.NOM_CH_MED','V V K80',NBNOSY,JNCMED)
 
 C            - ON RECUPERE LA LISTE DES NOMS DONNEE PAR L'UTILISATEUR
              CALL GETVTX('RESU','NOM_CHAM',IOCC,1,NBNOSY,
      &                                                ZK16(JNOSY),N0)
              CALL GETVTX('RESU','NOM_CHAM_MED',IOCC,1,
-     &                                         NBCMDU,ZK32(JNCMED),IRET)
+     &                                         NBCMDU,ZK80(JNCMED),IRET)
+             LNCMED = .TRUE.
              IF ((NBCMDU.NE.0).AND.(NBCMDU.NE.NBNOSY)) THEN
                CALL U2MESS('F','PREPOST2_1')
              ENDIF
@@ -949,11 +954,16 @@ C          - VERIFICATION DES PARAMETRES (FORMAT 'RESULTAT')
            ENDIF
 C
 C          - ECRITURE DU CONCEPT LERESU SUR FICHIER FICH AU FORMAT FORM
+           IF ( LNCMED ) THEN
+             NOCHMD = ZK80(JNCMED)
+           ELSE
+             NOCHMD = ' '
+           ENDIF
            CALL IRECRI(LERESU,RESU,NOPASE,FORM,IFI,TITRE,LGMSH,
-     &       NBNOSY,ZK16(JNOSY),NBCMDU,ZK32(JNCMED),PARTIE,NBPARA,
+     &       NBNOSY,ZK16(JNOSY),NBCMDU,NOCHMD,PARTIE,NBPARA,
      &       ZK16(JPARA),NBORDR,ZI(JORDR),LRESU,'RESU',IOCC,MODELE,CECR,
      &       TYCHA,LCOR,NBNOT,ZI(JNUNOT),NBMAT,ZI(JNUMA),NBCMP,
-     &       ZK8(JCMP),LSUP,BORSUP,LINF,BORINF,LMAX,LMIN,FORMR,LMOD,
+     &       ZK8(JCMP),LSUP,BORSUP,LINF,BORINF,LMAX,LMIN,FORMR,
      &       NIVE,VERSIO)
          ENDIF
 C        **********************

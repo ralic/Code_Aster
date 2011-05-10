@@ -1,4 +1,4 @@
-#@ MODIF vmis_john_cook Comportement  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF vmis_john_cook Comportement  DATE 09/05/2011   AUTEUR SFAYOLLE S.FAYOLLE 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -17,7 +17,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
-# RESPONSABLE COURTOIS M.COURTOIS
+# RESPONSABLE SFAYOLLE S.FAYOLLE
 
 from cata_comportement import LoiComportement
 

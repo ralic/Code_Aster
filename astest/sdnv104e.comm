@@ -1,4 +1,4 @@
-# MODIF  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 09/05/2011   AUTEUR VERRIER A.VERRIER 
 # TITRE REPONSE DYNAMIQUE D'UN PATIN FROTTANT RIGIDE SOUMIS A UNE PRESSION ET UNE fORCE DE RAPPEL
 # sdnv104e.para = tps_job 1200 mem_job 64Mo liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -53,10 +53,12 @@ MAILL=MODI_MAILLAGE(reuse =MAILL,
 #---------------------------------------------------------------------
 
 CARA=AFFE_CARA_ELEM(MODELE=MODE,
-                    DISCRET_2D=_F(GROUP_MA='RESLAT',
+                    DISCRET_2D=(_F(GROUP_MA='RESLAT',
                                   CARA='K_T_D_L',
                                   VALE=(12.E3,0.0),),
-                   )
+                               _F(GROUP_MA='RESLAT',
+                                  CARA='M_T_L',
+                                  VALE=(0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,),),));
 
 #---------------------------------------------------------------------
 #                         CARACTERISTIQUES MATERIAUX

@@ -17,7 +17,7 @@
       CHARACTER*(*)   FAMI
 
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGORITH  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ALGORITH  DATE 09/05/2011   AUTEUR SFAYOLLE S.FAYOLLE 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -89,6 +89,7 @@ C.......................................................................
 C               CODRET
 C
 C TOLE CRP_21
+C RESPONSABLE SFAYOLLE S.FAYOLLE
       CHARACTER*16 MCMATE
       INTEGER      IRET
       REAL*8       R8BID

@@ -5,7 +5,7 @@
      &                    TYPGEO, NOMTYP, NMATYP,
      &                    INFMED )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 02/05/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF PREPOST  DATE 10/05/2011   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -104,9 +104,8 @@ C
 C
       CHARACTER*8 SAUX08
       CHARACTER*24 NUFANO, NUFAMA
-      CHARACTER*32 NOMFAM
+      CHARACTER*64 NOMFAM
       CHARACTER*80 SAUX80
-      CHARACTER*200 K200
 C
 CGN      REAL*8 TPS1(4), TPS2(4)
 C
@@ -170,7 +169,9 @@ C
       NUMFAM = 0
       NATT = 0
 C               12345678901234567890123456789012
-      NOMFAM = 'FAMILLE_NULLE___________________'
+      NOMFAM = 'FAMILLE_NULLE___________________'//
+     &'________________________________'
+
 C
 C 4.2. ==> INFORMATION EVENTUELLE
 C
@@ -199,8 +200,7 @@ C
 C 4.3. ==> ECRITURE
 C
       CALL MFFAMC ( FID, NOMAMD, NOMFAM, NUMFAM,
-     &              IAUX, IAUX, K200, NATT,
-     &              SAUX80, 0, CODRET )
+     &              0, SAUX80, CODRET )
       IF ( CODRET.NE.0 ) THEN
         SAUX08='MFFAMC  '
         CALL U2MESG('F','DVP_97',1,SAUX08,1,CODRET,0,0.D0)

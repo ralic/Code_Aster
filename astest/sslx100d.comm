@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 09/05/2011   AUTEUR VERRIER A.VERRIER 
 # TITRE MELANGE 3D-PLAQUE-POUTRE SANS NOEUD COMMUN ENTRE ELEMENTS.
 # sslx100d.para = tps_job 60 mem_job 320Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -58,9 +58,13 @@ CARA=AFFE_CARA_ELEM(MODELE=MO,
                              EPAIS=1.0,
                              ANGL_REP=(0.0,0.0,),
                              COEF_RIGI_DRZ=0.001,),
-                    DISCRET=_F(MAILLE='MORIG',
+                    DISCRET=(_F(MAILLE='MORIG',
                                CARA='M_TR_D_N',
-                               VALE=(0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,),),);
+                               VALE=(0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,),),
+                             _F(MAILLE='MORIG',
+                               CARA='K_TR_D_N',
+                               VALE=(0.0,0.0,0.0,0.0,0.0,0.0,),),
+                          ));
 F0 = 0.0;
 
 FM1 = -1.0;

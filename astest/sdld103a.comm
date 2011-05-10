@@ -1,4 +1,4 @@
-# MODIF  DATE 31/01/2011   AUTEUR GREFFET N.GREFFET 
+# MODIF  DATE 09/05/2011   AUTEUR VERRIER A.VERRIER 
 # TITRE SYSTEME MASSES-RESSORTS LINEAIRE MULTI-SUPPORTE (TRANSLATION)
 # sdld103a.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -45,6 +45,10 @@ CARA_ELE=AFFE_CARA_ELEM(  MODELE=MODELE,DISCRET=(
                 _F(  CARA = 'K_T_D_L',  REPERE = 'GLOBAL',
                           GROUP_MA = 'RESSORT',
                           VALE = (10000., 0., 10000., )),
+                _F(  CARA = 'M_T_L',  REPERE = 'GLOBAL',
+                          GROUP_MA = 'RESSORT',
+                          VALE = (0., 0., 0., 0., 0., 0., 0., 0., 0., 
+                          0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., )),
                         _F(  CARA = 'M_T_D_N',  GROUP_NO = 'MASSES',  VALE = 10.))
                          )
 

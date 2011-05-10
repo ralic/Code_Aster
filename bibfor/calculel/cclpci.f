@@ -9,7 +9,7 @@ C     --- ARGUMENTS ---
       CHARACTER*16 OPTION,TYPESD
       CHARACTER*24 LICHIN(*),LIGREL
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 10/05/2011   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -105,15 +105,6 @@ C       SD RESULTAT
             DECAL = -1
           ELSE
             DECAL = 0
-          ENDIF
-C TEMPORAIRE EN ATTENDANT LA MODIF SIEF_ELGA => SIEF_ELGA
-          IF ( (OPTIO2.EQ.'SIEF_ELGA').AND.
-     &         ((TYPESD.EQ.'EVOL_ELAS').OR.
-     &          (TYPESD.EQ.'DYNA_TRANS').OR.
-     &          (TYPESD.EQ.'MODE_MECA').OR.
-     &          (TYPESD.EQ.'DYNA_HARMO').OR.
-     &          (TYPESD.EQ.'COMB_FOURIER')) ) THEN
-            OPTIO2 = 'SIEF_ELGA'
           ENDIF
           IF ( (TYPESD.EQ.'MODE_MECA').AND.
      &         (LIPAIN(NBPAIN).EQ.'PDEPLAR') ) THEN

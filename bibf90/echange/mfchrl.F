@@ -1,9 +1,9 @@
-      SUBROUTINE MFCHRL(FID,MAA,CHA,VAL,
-     &                  INTLAC,NUMCO,LOCNAME,PROFIL,PFLMOD,
+      SUBROUTINE MFCHRL(FID,CHA,VAL,
+     &                  INTLAC,NUMCO,PROFIL,PFLMOD,
      &                  TYPENT,TYPGEO,
-     &                  NUMDT, NUMO,CRET)
+     &                  NUMDT,NUMO,CRET)
 !           CONFIGURATION MANAGEMENT OF EDF VERSION                  
-!& MODIF MFCHRL ECHANGE  DATE 14/03/2011   AUTEUR SELLENET N.SELLENET 
+!& MODIF MFCHRL ECHANGE  DATE 10/05/2011   AUTEUR SELLENET N.SELLENET 
 ! RESPONSABLE SELLENET N.SELLENET
 ! ================================================================== 
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D              WWW.CODE-ASTER.ORG 
@@ -22,7 +22,7 @@
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.     
 ! ================================================================== 
       IMPLICIT NONE
-      CHARACTER*(*) CHA,MAA,LOCNAME,PROFIL
+      CHARACTER*(*) CHA,PROFIL
       INTEGER FID,TYPENT,TYPGEO,CRET
       INTEGER INTLAC,NUMCO,NUMDT,NUMO,PFLMOD
       REAL*8 VAL(*)
@@ -44,16 +44,12 @@
       NUMDT4 = NUMDT
       NUMO4 = NUMO
       PFLMO4 = PFLMOD
-      CALL EFCHRL(FID4,MAA,CHA,VAL,
-     &                  INTLA4,NUMCO4,LOCNAME,PROFIL,PFLMO4,
-     &                  TYPEN4,TYPGE4,
-     &                  NUMDT4, NUMO4,CRET4)
+      CALL MFDRPR(FID4,CHA,NUMDT4,NUMO4,TYPEN4,TYPGE4,PFLMO4,
+     &                  PROFIL,INTLA4,NUMCO4,VAL,CRET4)
       CRET = CRET4
 #else
-      CALL EFCHRL(FID,MAA,CHA,VAL,
-     &                  INTLAC,NUMCO,LOCNAME,PROFIL,PFLMOD,
-     &                  TYPENT,TYPGEO,
-     &                  NUMDT, NUMO,CRET)
+      CALL MFDRPR(FID,CHA,NUMDT,NUMO,TYPENT,TYPGEO,PFLMOD,
+     &                  PROFIL,INTLAC,NUMCO,VAL,CRET)
 #endif
 ! END MED
 #endif

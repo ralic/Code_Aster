@@ -6,7 +6,7 @@
      &                    CODRET )
 C_____________________________________________________________________
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 08/03/2011   AUTEUR SELLENET N.SELLENET 
+C MODIF PREPOST  DATE 10/05/2011   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -65,7 +65,7 @@ C
       INTEGER ADSL, ADSV
       INTEGER CODRET
 C
-      CHARACTER*32 NOCHMD
+      CHARACTER*(*) NOCHMD
       CHARACTER*(*) NOMCMR(*)
       CHARACTER*(*) NTVALE, NTPROA, NCMPVM, NMCMFI, NUMCMP
 C

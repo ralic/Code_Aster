@@ -1,6 +1,6 @@
-# MODIF  DATE 31/01/2011   AUTEUR GREFFET N.GREFFET 
+# MODIF  DATE 09/05/2011   AUTEUR VERRIER A.VERRIER 
 # TITRE FRICTION SLIDER WITH STATIC AND DYNAMIC FRICTION COEFFICIENTS 
-# sdnd106a.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
+# sdnd106a.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -52,6 +52,9 @@ ELEM=AFFE_CARA_ELEM(MODELE=MODEL,
                     DISCRET=(_F(CARA='K_T_D_L',
                                 GROUP_MA='E_SPRING',
                                 VALE=(k,0,0,),),
+                                _F(  CARA = 'M_T_L',  GROUP_MA = 'E_SPRING',
+                                        VALE = (0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,
+                                        0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.)),
                              _F(CARA='M_T_D_N',
                                 GROUP_MA=('NE_FRICT','NE_IMPOF'),
                                 VALE=m,), ),);

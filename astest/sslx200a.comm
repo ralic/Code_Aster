@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 09/05/2011   AUTEUR VERRIER A.VERRIER 
 # TITRE RACCORD POUTRE-3D : PROBLEME DE SAINT-VENANT -
 # sslx200a.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -54,10 +54,15 @@ CELEM=AFFE_CARA_ELEM(   MODELE=MOD,
                POUTRE=_F(  GROUP_MA = ('AB',), SECTION = 'RECTANGLE',
                         CARA = ( 'HY',  'HZ', ),
                         VALE = (  3.,    2.,   )),
-                DISCRET=_F(  GROUP_NO = 'C',
+                DISCRET=(_F(  GROUP_NO = 'C',
                           CARA = 'K_TR_D_N',
                           VALE = (0., 0., 0.,
-                                  0., 0., 0., ))
+                                  0., 0., 0., )),
+                         _F(  GROUP_NO = 'C',
+                          CARA = 'M_TR_D_N',
+                          VALE = (0., 0., 0.,
+                                  0., 0., 0.,
+                                  0., 0., 0., 0., )),)
                                                         )
 
 CH=AFFE_CHAR_MECA(

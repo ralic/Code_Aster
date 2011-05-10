@@ -1,4 +1,4 @@
-# MODIF  DATE 31/01/2011   AUTEUR GREFFET N.GREFFET 
+# MODIF  DATE 09/05/2011   AUTEUR VERRIER A.VERRIER 
 # TITRE SYSTEME 2 MASSES 2 RESSORTS  A 6 DDL (+ 2 AMORTISSEURS DISCRETS)
 # sdld325b.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test V
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -53,10 +53,18 @@ ELEMNT=AFFE_CARA_ELEM(  MODELE=MODELE,DISCRET=(
                  _F(  MAILLE = 'AC',
                            CARA = 'K_T_D_L',
                            VALE = (28.E4,  1., 2., )),
+                 _F(  MAILLE = 'AC',
+                           CARA = 'M_T_L',
+                           VALE = (0.,  0., 0., 0.,  0., 0., 0.,  0., 0., 
+                           0.,  0., 0., 0.,  0., 0., 0.,  0., 0., 0.,  0., 0., )),
 
                  _F(  MAILLE = 'CB',
                            CARA = 'K_T_D_L',
                            VALE = (28.E2,  1., 2., )),
+                 _F(  MAILLE = 'CB',
+                           CARA = 'M_T_L',
+                           VALE = (0.,  0., 0., 0.,  0., 0., 0.,  0., 0., 
+                           0.,  0., 0., 0.,  0., 0., 0.,  0., 0., 0.,  0., 0., )),
 
                  _F(  MAILLE = ( 'AC', 'CB', ),
                            CARA = 'A_T_D_L',

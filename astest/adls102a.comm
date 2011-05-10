@@ -1,9 +1,9 @@
-# MODIF  DATE 17/02/2009   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 09/05/2011   AUTEUR VERRIER A.VERRIER 
 # TITRE TEST OSCILLATEUR FLUIDE-ELASTIQUE MERIDIEN
 # adls102a.para = tps_job 160 mem_job 200Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2003  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -87,6 +87,9 @@ CARA_ELE=AFFE_CARA_ELEM( MODELE=MODELE,
                      _F( GROUP_NO='MASSPONC',
                         CARA='M_T_D_N',
                         VALE=200.E+03),
+                     _F( GROUP_NO='MASSPONC',
+                        CARA='A_T_D_N',
+                        VALE=(0.,0.),),
                     _F( GROUP_MA='AMORPONC',
                          CARA='A_T_D_N',
                         REPERE='GLOBAL',VALE=(37.5E+04,0.,),),

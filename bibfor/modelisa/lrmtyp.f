@@ -2,9 +2,9 @@
      &                    MODNUM, NUANOM, NUMNOA )
 C_____________________________________________________________________
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 21/12/2010   AUTEUR MASSIN P.MASSIN 
+C MODIF MODELISA  DATE 10/05/2011   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -19,7 +19,7 @@ C YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 C ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 C    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 C ======================================================================
-C RESPONSABLE GNICOLAS G.NICOLAS
+C RESPONSABLE SELLENET N.SELLENET
 C     RECUP DES NOMS/NBNO DES TYPES DE MAILLES DANS LE CATALOGUE
 C     ET RECUP DES TYPE GEO CORRESPONDANT POUR MED
 C
@@ -102,11 +102,11 @@ C     (LIE A LORDRE DEFINI DANS LE CATALOGUE TYPE_MAILLE.CATA)
       DATA NUMMED  /1,         102,       0,         103,
      &              0,         0,
      &                         203,       0,         206,
-     &              0,         0,         204,       0,
-     &              208,       0,         0,         0,
+     &              0,         207,       204,       0,
+     &              208,       0,         209,       0,
      &              304,       310,       306,       315,
      &              0,         305,       313,       308,
-     &              320,       0,         0,         0,
+     &              320,       327,       0,         0,
      &              0,         0,         0,         0,
      &              0,         0,         0,         0,
      &              0,         0,         0,         0,
@@ -380,6 +380,65 @@ C
       NUMNOA(26,19)=14
       NUANOM(26,20)=14
       NUMNOA(26,20)=13
+C
+C       ------ HEXA27 -------
+C
+      MODNUM(27)=1
+C
+      NUANOM(27,1)=1
+      NUMNOA(27,1)=1
+      NUANOM(27,2)=4
+      NUMNOA(27,2)=4
+      NUANOM(27,3)=3
+      NUMNOA(27,3)=3
+      NUANOM(27,4)=2
+      NUMNOA(27,4)=2
+      NUANOM(27,5)=5
+      NUMNOA(27,5)=5
+      NUANOM(27,6)=8
+      NUMNOA(27,6)=8
+      NUANOM(27,7)=7
+      NUMNOA(27,7)=7
+      NUANOM(27,8)=6
+      NUMNOA(27,8)=6
+      NUANOM(27,9)=12
+      NUMNOA(27,9)=12
+      NUANOM(27,10)=11
+      NUMNOA(27,10)=11
+      NUANOM(27,11)=10
+      NUMNOA(27,11)=10
+      NUANOM(27,12)=9
+      NUMNOA(27,12)=9
+      NUANOM(27,13)=20
+      NUMNOA(27,13)=17
+      NUANOM(27,14)=19
+      NUMNOA(27,14)=20
+      NUANOM(27,15)=18
+      NUMNOA(27,15)=19
+      NUANOM(27,16)=17
+      NUMNOA(27,16)=18
+      NUANOM(27,17)=13
+      NUMNOA(27,17)=16
+      NUANOM(27,18)=16
+      NUMNOA(27,18)=15
+      NUANOM(27,19)=15
+      NUMNOA(27,19)=14
+      NUANOM(27,20)=14
+      NUMNOA(27,20)=13
+      NUANOM(27,21)=21
+      NUMNOA(27,21)=21
+      NUANOM(27,22)=25
+      NUMNOA(27,22)=25
+      NUANOM(27,23)=24
+      NUMNOA(27,23)=24
+      NUANOM(27,24)=23
+      NUMNOA(27,24)=23
+      NUANOM(27,25)=22
+      NUMNOA(27,25)=22
+      NUANOM(27,26)=26
+      NUMNOA(27,26)=26
+      NUANOM(27,27)=27
+      NUMNOA(27,27)=27
 C
       CALL JEDEMA ( )
 C

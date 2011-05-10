@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 10/05/2011   AUTEUR SELLENET N.SELLENET 
 # TITRE VALIDATION LIRE_RESU AU FORMAT MED
 # zzzz162b.para = tps_job 60 mem_job 100Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -130,7 +130,7 @@ TEMPE=LIRE_RESU(TYPE_RESU='EVOL_THER',
                 MAILLAGE=MAIL,
                 UNITE=70,
                 FORMAT_MED=_F(NOM_CHAM='TEMP',
-                              NOM_CHAM_MED='TEMPE1__TEMP____________________',),
+                              NOM_CHAM_MED='TEMPE1__TEMP',),
                 TOUT_ORDRE='OUI',);
 
 CHMECA=AFFE_CHAR_MECA(MODELE=MOMECA,
@@ -181,9 +181,9 @@ UUU=LIRE_RESU(TYPE_RESU='EVOL_NOLI',
               UNITE=71,
               FORMAT_MED=(
               _F(NOM_CHAM='DEPL',
-                 NOM_CHAM_MED='U_______DEPL____________________',),
+                 NOM_CHAM_MED='U_______DEPL',),
               _F(NOM_CHAM='SIEF_ELNO',
-                 NOM_CHAM_MED='U_______SIEF_ELNO_______________',),),
+                 NOM_CHAM_MED='U_______SIEF_ELNO',),),
               TOUT_ORDRE='OUI',);
 
 #
@@ -218,7 +218,7 @@ MOMECA2=AFFE_MODELE(MAILLAGE=MAIL2,
 SIGMRELU=LIRE_CHAMP(MAILLAGE=MAIL2,
                     FORMAT='MED',
                     UNITE=71,
-                    NOM_MED='U_______SIEF_ELNO_______________',
+                    NOM_MED='U_______SIEF_ELNO',
                     NOM_CMP_IDEM='OUI',
                     NUME_PT=1,
                     NUME_ORDRE=1,
@@ -232,7 +232,7 @@ IMPR_RESU(FORMAT='RESULTAT',
 DEPLRELU=LIRE_CHAMP(MAILLAGE=MAIL2,
                     FORMAT='MED',
                     UNITE=71,
-                    NOM_MED='U_______DEPL____________________',
+                    NOM_MED='U_______DEPL',
                     NOM_CMP_IDEM='OUI',
                     NUME_PT=1,
                     NUME_ORDRE=1,

@@ -1,8 +1,9 @@
-# MODIF  DATE 18/12/2001   AUTEUR DURAND C.DURAND 
+# MODIF  DATE 09/05/2011   AUTEUR VERRIER A.VERRIER 
 # TITRE CALCUL DES FREQUENCES PROPRES D'UN SYSTEME ETOILE MASSE RESSORT
+# sdld400a.para = tps_job 60 mem_job 130Mo ncpus 1 liste_test V
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
@@ -52,11 +53,25 @@ CARA=AFFE_CARA_ELEM(    MODELE=STRUCTUR,DISCRET=(
                        GROUP_MA = 'R1R3',
                        REPERE = 'LOCAL',
                        VALE = ( 60.,40.,500.,500.,60.,650., )),
+             _F(  CARA = 'M_TR_L',
+                       GROUP_MA = 'R1R3',
+                       REPERE = 'LOCAL',
+                       VALE = ( 0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,
+                       0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,
+                       0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,
+                       0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0., )),
 
                      _F(  CARA = 'K_TR_D_L',
                        GROUP_MA = 'R2R4',
                        REPERE = 'LOCAL', 
                        VALE = ( 40.,30.,140.,30.,140.,330., )),
+             _F(  CARA = 'M_TR_L',
+                       GROUP_MA = 'R2R4',
+                       REPERE = 'LOCAL',
+                       VALE = ( 0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,
+                       0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,
+                       0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,
+                       0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0., )),
 
                      _F(  CARA = 'M_TR_D_N',
                        GROUP_NO = 'TOUT_NO',

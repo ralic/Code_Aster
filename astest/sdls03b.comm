@@ -1,9 +1,9 @@
-# MODIF  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 09/05/2011   AUTEUR VERRIER A.VERRIER 
 # TITRE PLAQUE RECTANGULAIRE MINCE SIMPLEMENT APPUYEE DKQ - DSQ - Q4G
 # sdls03b.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -51,10 +51,14 @@ CA2=AFFE_CARA_ELEM(   MODELE=MO2,
                           COQUE=_F(
        GROUP_MA = 'TOUT',
  EPAIS = 0.01),
-                        DISCRET=_F(  NOEUD = ('N1', 'N11', 'N111', 'N121',),
+                        DISCRET=(_F(  NOEUD = ('N1', 'N11', 'N111', 'N121',),
                                   CARA = 'K_T_D_N',
                                   REPERE = 'LOCAL',
                                   VALE = ( RIG,   0.,     0., )),
+                                  _F(  NOEUD = ('N1', 'N11', 'N111', 'N121',),
+                                  CARA = 'M_T_D_N',
+                                  REPERE = 'LOCAL',
+                                  VALE = ( 0., )),),
                          ORIENTATION=_F(  CARA = 'ANGL_NAUT',
                                        VALE = (60., 0., 0.,),
                                        NOEUD = ('N1', 'N11', 'N111', 'N121',))
@@ -113,10 +117,17 @@ CA4=AFFE_CARA_ELEM(   MODELE=MO4,
                                        NOEUD = ('N1', 'N11', 'N111', 'N121',)),DISCRET=(
                         _F(  NOEUD = ('N1', 'N11',),    CARA = 'K_T_D_N',
                                   VALE = ( 0.25E2, 0.,     0., ),
+                                  REPERE = 'LOCAL'),                         
+                        _F(  NOEUD = ('N1', 'N11',),    CARA = 'M_T_D_N',
+                                  VALE = ( 0., ),
                                   REPERE = 'LOCAL'),
                         _F(  NOEUD = ('N111', 'N121',), CARA = 'K_T_D_N',
                                   VALE = ( 0.25E2, 0.,     0., ),
-                                  REPERE = 'LOCAL'))
+                                  REPERE = 'LOCAL'),
+                        _F(  NOEUD = ('N111', 'N121',), CARA = 'M_T_D_N',
+                                  VALE = ( 0., ),
+                                  REPERE = 'LOCAL'),
+                        )
                      )
 
 CH4=AFFE_CHAR_MECA(  MODELE=MO4,DDL_IMPO=(
@@ -168,8 +179,14 @@ CA6=AFFE_CARA_ELEM(   MODELE=MO6,
                         _F(  NOEUD = ('N1', 'N11',),    CARA = 'K_T_D_N',
                                   VALE = ( 0.25E2, 0.,     0., ),
                                   REPERE = 'LOCAL'),
+                        _F(  NOEUD = ('N1', 'N11',),    CARA = 'M_T_D_N',
+                                  VALE = ( 0., ),
+                                  REPERE = 'LOCAL'),
                         _F(  NOEUD = ('N111', 'N121',), CARA = 'K_T_D_N',
                                   VALE = ( 0.25E2, 0.,     0., ),
+                                  REPERE = 'LOCAL'),
+                        _F(  NOEUD = ('N111', 'N121',), CARA = 'M_T_D_N',
+                                  VALE = ( 0., ),
                                   REPERE = 'LOCAL'))
                      )
 

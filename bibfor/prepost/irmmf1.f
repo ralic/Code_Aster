@@ -4,7 +4,7 @@
      >                    TYPGEO, NOMTYP, NMATYP,
      >                    INFMED, NIVINF, IFM )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 08/03/2011   AUTEUR SELLENET N.SELLENET 
+C MODIF PREPOST  DATE 10/05/2011   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -173,7 +173,7 @@ C
         ELSE
           IAUX = NBRENT
         ENDIF
-        CALL WKVECT ( NOFAEX, 'V V K32', IAUX, ADNOFE )
+        CALL WKVECT ( NOFAEX, 'V V K80', IAUX, ADNOFE )
 C
 C       ON UTILISE DES TABLEAUX DE BITS POUR ENREGISTRER LA PRESENCE
 C       D'UNE ENTITE DANS UN GROUPE : 30 PAR ENTIER INT*4 NBEC ENTIERS  
@@ -191,7 +191,7 @@ C
      >                TYPENT, NBRENT, NBGROU, NOMGEN,
      >                NBEC, NOMAST, PREFIX,
      >                TYPGEO, NOMTYP, NMATYP,
-     >                NUFAEN, ZI(ADNUFA), ZK80(ADNOGR), ZK32(ADNOFE),
+     >                NUFAEN, ZI(ADNUFA), ZK80(ADNOGR), ZK80(ADNOFE),
      >                ZI(ADTABX),
      >                INFMED, NIVINF, IFM )
 C

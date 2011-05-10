@@ -1,4 +1,4 @@
-# MODIF  DATE 07/03/2011   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 10/05/2011   AUTEUR SELLENET N.SELLENET 
 # TITRE POUTRE PLASTIQUE EN TRACTION CONDENSEE DYNAMIQUEMENT
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -93,22 +93,31 @@ CHAMAT=AFFE_MATERIAU(  MAILLAGE=MAILLAGE,
 
 #
 PARAM1=AFFE_CARA_ELEM(  MODELE=MODELE1,
-                            DISCRET=_F( CARA='K_T_D_N',
+                            DISCRET=(_F( CARA='K_T_D_N',
                                         VALE=(0.,0.,0.,),
                                    GROUP_MA = ('PC1',), ),
+                                     _F( CARA='M_T_D_N',
+                                        VALE=(0.,),
+                                   GROUP_MA = ('PC1',), ),)
                                    )
                                    
 PARAM2=AFFE_CARA_ELEM(  MODELE=MODELE2,
-                            DISCRET=_F( CARA='K_T_D_N',
+                            DISCRET=(_F( CARA='K_T_D_N',
                                         VALE=(0.,0.,0.,),
                                    GROUP_MA = ('PC1','PC2',), ),
+                                     _F( CARA='M_T_D_N',
+                                        VALE=(0.,),
+                                   GROUP_MA = ('PC1','PC2'), ),)
                                    )
                                    
 PARAM3=AFFE_CARA_ELEM(  MODELE=MODELE3,
-                            DISCRET=_F( CARA='K_T_D_N',
+                            DISCRET=(_F( CARA='K_T_D_N',
                                         VALE=(0.,0.,0.,),
                                    GROUP_MA = 'PC2',),
-                                   )                                   
+                                     _F( CARA='M_T_D_N',
+                                        VALE=(0.,),
+                                   GROUP_MA = ('PC2',), ),)
+                                   )
 #
 
 
@@ -184,7 +193,7 @@ IMPR_RESU(MODELE=MODELE1,
 MODES_1=LIRE_RESU(FORMAT='MED',
                   UNITE=81,
                   FORMAT_MED=_F(NOM_CHAM='DEPL',
-                                NOM_CHAM_MED='MOD_CAL1DEPL____________________',),
+                                NOM_CHAM_MED='MOD_CAL1DEPL',),
                   TYPE_RESU='MODE_MECA',
                   MATR_A=RAID_1,
                   MATR_B=MASS_1,
@@ -253,7 +262,7 @@ IMPR_RESU(MODELE=MODELE2,
 MODES_2=LIRE_RESU(FORMAT='MED',
                   UNITE=82,
                   FORMAT_MED=_F(NOM_CHAM='DEPL',
-                                NOM_CHAM_MED='MOD_CAL2DEPL____________________',),
+                                NOM_CHAM_MED='MOD_CAL2DEPL',),
                   TYPE_RESU='MODE_MECA',
                   MATR_A=RAID_2,
                   MATR_B=MASS_2,

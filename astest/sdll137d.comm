@@ -1,9 +1,9 @@
-# MODIF  DATE 14/12/2010   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 09/05/2011   AUTEUR VERRIER A.VERRIER 
 # TITRE MODIFICATION STRUCTURALE D UNE POUTRE AVEC AMORTISSEMENT (LMME)
 # sdll137d.para = tps_job 60 mem_job 256Mo mem_aster 40 ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2010  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -38,11 +38,24 @@ MODLEXP=AFFE_MODELE(MAILLAGE=MAILEXP,
                            MODELISATION='DIS_TR',),);
 
 CHCAREXP=AFFE_CARA_ELEM(MODELE=MODLEXP,
-                     DISCRET=_F(GROUP_MA='POUTRE',
+                     DISCRET=(_F(GROUP_MA='POUTRE',
                                  REPERE='GLOBAL',
                                  CARA='K_TR_D_L',
                                  VALE=(1.e+12,1.e+12,1.e+12,1.e+12,1.e+12,1.e+12,),
-                                ),);
+                                ),        
+                              _F(GROUP_MA='POUTRE',
+                                 REPERE='GLOBAL',
+                                 CARA='A_TR_D_L',
+                                 VALE=(0.,0.,0.,0.,0.,0.,),
+                                ),                      
+                              _F(GROUP_MA='POUTRE',
+                                 REPERE='GLOBAL',
+                                 CARA='M_TR_L',
+                                 VALE=(0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,
+                                 0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,
+                                 0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,
+                                 0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,),)
+                                ));
 
 KELEXP=CALC_MATR_ELEM(OPTION='RIGI_MECA',
                      MODELE=MODLEXP,
@@ -411,11 +424,19 @@ MODLINT=AFFE_MODELE(MAILLAGE=MAILCPL,
               )
 
 CHCARINT=AFFE_CARA_ELEM(MODELE=MODLINT,
-                     DISCRET=_F(GROUP_MA='VISUAL',
+                     DISCRET=(_F(GROUP_MA='VISUAL',
                                  REPERE='GLOBAL',
                                  CARA='K_TR_D_L',
                                  VALE=(0.e+0,0.e+0,0.e+0,0.e+0,0.e+0,0.e+0,),
-                                ),);
+                                ),                              
+                              _F(GROUP_MA='POUTRE',
+                                 REPERE='GLOBAL',
+                                 CARA='M_TR_L',
+                                 VALE=(0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,
+                                 0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,
+                                 0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,
+                                 0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,),)
+                                ));
 
 KELINT=CALC_MATR_ELEM(OPTION='RIGI_MECA',
                     MODELE=MODLINT,

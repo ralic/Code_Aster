@@ -1,7 +1,7 @@
       SUBROUTINE OP0001()
 C-----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 02/05/2011   AUTEUR DELMAS J.DELMAS 
+C MODIF MODELISA  DATE 10/05/2011   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -38,7 +38,6 @@ C       CONNEX          NOM DE L OBJET CONNECTIVITES
 C       NOMMAI          NOM DE L OBJET REPERTOIRE DES MAILLES
 C       NOMNOE          NOM DE L OBJET REPERTOIRE DES NOEUDS
 C       TITRE           NOM DE L OBJET TITRE
-C       FORMM           NOM DE L OBJET FORMAT
 C
 C-----------------------------------------------------------------------
 C
@@ -73,9 +72,9 @@ C
       CHARACTER*8     NOMU, TOTM, FMT, VERI
       CHARACTER*16    CONCEP
       CHARACTER*24    COOVAL, COODSC, COOREF, GRPNOE, GRPMAI, CONNEX
-      CHARACTER*24    FORMM, TITRE, NOMMAI, NOMNOE, TYPMAI
+      CHARACTER*24    TITRE, NOMMAI, NOMNOE, TYPMAI
       CHARACTER*24    ADAPMA, VECGRM
-      CHARACTER*32    NOMAMD
+      CHARACTER*64    NOMAMD
       REAL*8          DTOL
       INTEGER         LXLGUT, ILNG
 
@@ -98,7 +97,8 @@ C
         CALL GETVTX ( ' ','NOM_MED' ,0,1,1,NOMAMD, IAUX )
         IF ( IAUX.EQ.0 ) THEN
 C                   12345678901234567890123456789012
-          NOMAMD = '                                '
+          NOMAMD = '                                '//
+     &'                                '
         ENDIF
         CALL GETVIS (' ','INFO_MED',0,1,1,INFMED,IAUX)
 C
@@ -133,7 +133,6 @@ C               123456789012345678901234
       GRPMAI  = NOMU// '.GROUPEMA       '
       CONNEX  = NOMU// '.CONNEX         '
       TITRE   = NOMU// '           .TITR'
-      FORMM   = NOMU// '           .FORM'
       TYPMAI  = NOMU// '.TYPMAIL        '
       ADAPMA  = NOMU// '.ADAPTATION     '
 C
@@ -149,7 +148,7 @@ C     ---------------------------------
       ELSEIF (FMT(1:3) .EQ. 'MED' ) THEN
           CALL LRMHDF ( NOMAMD,
      &                  NOMU,NOMMAI,NOMNOE,COOVAL,COODSC,COOREF,
-     &                  GRPNOE,GRPMAI,CONNEX,TITRE,FORMM,TYPMAI,
+     &                  GRPNOE,GRPMAI,CONNEX,TITRE,TYPMAI,
      &                  ADAPMA,IFM,IFL,NIV,INFMED,NBNOEU,NBMAIL,
      &                  NBCOOR,VECGRM,NBCGRM)
       ENDIF

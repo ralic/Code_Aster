@@ -1,8 +1,8 @@
-# MODIF  DATE 22/12/2009   AUTEUR TORKHANI M.TORKHANI 
+# MODIF  DATE 09/05/2011   AUTEUR VERRIER A.VERRIER 
 # TITRE HARMONIQUE D'UN ARBRE MUNI DE TROIS DISQUES : DYNA_LINE_HARM
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2009  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -17,7 +17,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
 # ======================================================================
-# sdll126d.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test S
+# sdll126d.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test R
 # CAS_TEST__:SDLL126D
 #
 
@@ -53,10 +53,18 @@ CARELEM=AFFE_CARA_ELEM(MODELE=MODELE,
                                    GROUP_MA='PALIER_A',
                                    REPERE='LOCAL',
                                    VALE=(0.,5.E7,7.E7,0.,0.,0.,),),
+                                _F(CARA='M_TR_D_N',
+                                   GROUP_MA='PALIER_A',
+                                   REPERE='LOCAL',
+                                   VALE=(0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,),),
                                 _F(CARA='K_TR_D_N',
                                    GROUP_MA='PALIER_E',
                                    REPERE='LOCAL',
                                    VALE=(0.,5.E7,7.E7,0.,0.,0.,),),
+                                _F(CARA='M_TR_D_N',
+                                   GROUP_MA='PALIER_E',
+                                   REPERE='LOCAL',
+                                   VALE=(0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,),),
                                 _F(CARA='A_TR_D_N',
                                    GROUP_MA='PALIER_A',
                                    REPERE='LOCAL',

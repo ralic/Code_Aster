@@ -1,6 +1,7 @@
-      SUBROUTINE MFMAAC ( FID , NOM , DIM , TYPE, DESC, CRET )
+      SUBROUTINE MFMAAC ( FID , NOM , DIM , TYPE, DESC, DESCDT,
+     &                    TYPREP, NOCOMP, UNIT, CRET )
 !           CONFIGURATION MANAGEMENT OF EDF VERSION                  
-!& MODIF MFMAAC ECHANGE  DATE 14/03/2011   AUTEUR SELLENET N.SELLENET 
+!& MODIF MFMAAC ECHANGE  DATE 10/05/2011   AUTEUR SELLENET N.SELLENET 
 ! RESPONSABLE SELLENET N.SELLENET
 ! ================================================================== 
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D              WWW.CODE-ASTER.ORG 
@@ -20,24 +21,31 @@
 ! ================================================================== 
       IMPLICIT NONE
       CHARACTER*(*) NOM
-      CHARACTER*(*) DESC
-      INTEGER FID, DIM, TYPE, CRET
+      CHARACTER*(*) DESC,DESCDT
+      CHARACTER*16 NOCOMP(3), UNIT(3)
+      INTEGER FID, DIM, TYPE, CRET, STUNDE, TYPREP
 #ifdef _DISABLE_MED
       CALL U2MESS('F','FERMETUR_2')
 #else
 ! BEGIN MED
 #ifdef _USE_MED_SHORT_INT
-      INTEGER*4 FID4, DIM4, TYPE4, CRET4
+      INTEGER*4 FID4, DIM4, TYPE4, CRET4, STUND4, TYPRE4
 #ifdef _DEBUG_MED
       PRINT *,'=== MFMAAC ==='
 #endif
+      STUNDE = 1
       FID4 = FID
       DIM4 = DIM
       TYPE4 = TYPE
-      CALL EFMAAC ( FID4, NOM , DIM4, TYPE4, DESC, CRET4)
+      STUND4 = STUNDE
+      TYPRE4 = TYPREP
+      CALL MMHCRE( FID4, NOM, DIM4, DIM4, TYPE4, DESC, DESCDT,
+     &             STUND4, TYPRE4, NOCOMP, UNIT, CRET4 )
       CRET = CRET4
 #else
-      CALL EFMAAC( FID , NOM , DIM , TYPE, DESC, CRET )
+      STUNDE = 1
+      CALL MMHCRE( FID, NOM, DIM, DIM, TYPE, DESC, DESCDT,
+     &             STUNDE, TYPREP, NOCOMP, UNIT, CRET )
 #endif
 ! END MED
 #endif

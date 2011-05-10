@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 08/03/2011   AUTEUR PELLET J.PELLET 
+C MODIF UTILITAI  DATE 10/05/2011   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -76,7 +76,7 @@ C
       CHARACTER*24 OPTION
       COMPLEX*16 CBID
       REAL*8 RBID
-      CHARACTER*32 NOCHMD
+      CHARACTER*64 NOCHMD
 
       CHARACTER*8 NOMGD
       INTEGER N2
@@ -240,7 +240,7 @@ C     --- NOMBRE DE VARIABLES INTERNES A LIRE ---
 C
 C     --- CREATION DE LA STRUCTURE DE DONNEES RESULTAT ---
       CALL RSCRSD('G',RESU,TYPRES,NBORDR)
-
+      
       ACCE = 'INST'
       CALL RSEXPA(RESU,0,'FREQ',IRET)
       IF (IRET.GT.0) ACCE = 'FREQ'
@@ -363,13 +363,15 @@ C       CREATION DE L'OBJET .REFD DANS LES MODE_MECA
 C         NOM DU CHAMP MED
           CALL GETVTX('FORMAT_MED','NOM_CHAM_MED',I,1,1,NOCHMD,N1)
             IF(N1.EQ.0)THEN
-C                      12345678901234567890123456789012
-              NOCHMD='________________________________'
+C                     12345678901234567890123456789012
+              NOCHMD='________________________________'//
+     &               '________________________________'
               CALL GETVTX('FORMAT_MED','NOM_RESU',I,1,1,NORACI,N2)
               NCHAR=LXLGUT(NORACI)
               NOCHMD(1:NCHAR)=NORACI(1:NCHAR)
               NCHAR=LXLGUT(NOCH)
               NOCHMD(9:8+NCHAR)=NOCH(1:NCHAR)
+              NOCHMD(9+NCHAR:64)=' '
             ENDIF
 
 C         NOM DES COMPOSANTES VOULUES

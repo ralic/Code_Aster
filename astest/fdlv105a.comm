@@ -1,9 +1,9 @@
-# MODIF  DATE 03/11/2010   AUTEUR BOITEAU O.BOITEAU 
+# MODIF  DATE 09/05/2011   AUTEUR VERRIER A.VERRIER 
 # TITRE PISTON AXISYMETRIQUE VIBRANT DANS UN FLUIDE INCOMPRESSIBLE
 # fdlv105a.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -92,8 +92,10 @@ CHARGE=AFFE_CHAR_THER( MODELE=FLUIDE,
 #
 
 CHAMPCAR=AFFE_CARA_ELEM( MODELE=STRUCT,
-                 DISCRET_2D=_F( GROUP_MA = 'RESSORTS', CARA = 'K_T_N',
-                                VALE = (1., 0., 15915.5,), )
+                 DISCRET_2D=(_F( GROUP_MA = 'RESSORTS', CARA = 'K_T_N',
+                                VALE = (1., 0., 15915.5,), ),
+                             _F( GROUP_MA = 'RESSORTS', CARA = 'M_T_N',
+                                VALE = (0., 0., 0.,), ))
                  )
 
 #

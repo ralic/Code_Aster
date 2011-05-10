@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 22/02/2011   AUTEUR TARDIEU N.TARDIEU 
+%& MODIF TYPELEM  DATE 09/05/2011   AUTEUR SFAYOLLE S.FAYOLLE 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -33,6 +33,14 @@ ENTETE__ ELEMENT__ GDIN_HEXA20      MAILLE__ HEXA20
    ELREFE__  QU8       GAUSS__  NOEU=NOEU
    ENS_NOEUD__  EN2     =     9  10  11  12  13  14  15  16  17  18  19  20
    ENS_NOEUD__  EN1     =     1  2  3  4  5  6  7  8
+ENTETE__ ELEMENT__ GDIN_PENTA15     MAILLE__ PENTA15
+   ELREFE__  P15       GAUSS__  RIGI=FPG21   FPG_LISTE__  MATER = (RIGI)
+   ELREFE__  PE6       GAUSS__  RIGI=FPG6
+   ELREFE__  P15       GAUSS__  RIGI=FPG21
+   ELREFE__  QU8       GAUSS__  NOEU=NOEU
+   ELREFE__  TR6       GAUSS__  NOEU=NOEU
+   ENS_NOEUD__  EN2     =     7  8  9  10  11  12  13  14  15
+   ENS_NOEUD__  EN1     =     1  2  3  4  5  6
 
 MODE_LOCAL__
     CMATERC  = ADRSJEVE ELEM__         (I1       )

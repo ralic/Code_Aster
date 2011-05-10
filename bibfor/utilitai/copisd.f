@@ -3,7 +3,7 @@
       CHARACTER*(*) TYPESD,BASE,SD1,SD2
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 04/04/2011   AUTEUR SELLENET N.SELLENET 
+C MODIF UTILITAI  DATE 10/05/2011   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -374,8 +374,6 @@ C
      &              MAIL2//'           .TITR')
 
 C       -- OBJETS QUE JE NE CONNAIS PAS !! (JP) :
-        CALL JEDUP1(MAIL1//'           .FORM',BAS2,
-     &              MAIL2//'           .FORM')
         CALL JEDUP1(MAIL1//'.ADAPTATION',BAS2,MAIL2//'.ADAPTATION')
 
 

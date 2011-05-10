@@ -1,7 +1,8 @@
-      SUBROUTINE MDEXMA ( NOFIMD, NOMAMD, OPTION, EXISTM, NDIM, CODRET )
+      SUBROUTINE MDEXMA ( NOFIMD, IDFIMD, NOMAMD, OPTION, EXISTM,
+     &                    NDIM, CODRET )
 C_____________________________________________________________________
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 08/03/2011   AUTEUR SELLENET N.SELLENET 
+C MODIF PREPOST  DATE 10/05/2011   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -25,7 +26,8 @@ C ______________________________________________________________________
 C .        .     .        .                                            .
 C .  NOM   . E/S . TAILLE .           DESCRIPTION                      .
 C .____________________________________________________________________.
-C . NOFIMD .  E  .   1    . NOM DU FICHIER MED              .
+C . NOFIMD .  E  .   1    . NOM DU FICHIER MED                         .
+C . NOFIMD .  E  .   1    . OU NUMERO DU FICHIER DEJA OUVERT           .
 C . NOMAMD .  E  .   1    . NOM DU MAILLAGE MED VOULU                  .
 C . OPTION .  E  .   1    . QUE FAIT-ON SI LE MAILLAGE EST ABSENT :    .
 C .        .     .        . 0 : RIEN DE SPECIAL                        .
@@ -34,7 +36,7 @@ C .        .     .        .     PRESENTS                               .
 C . EXISTM .  S  .   1    . .TRUE. OU .FALSE., SELON QUE LE MAILLAGE   .
 C .        .     .        . EST PRESENT OU NON                         .
 C . NDIM   .  S  .   1    . LA DIMENSION DU MAILLAGE QUAND IL EXISTE   .
-C . CODRET .  S  .    1   . CODE DE RETOUR DES MODULES                 .
+C . CODRET .  S  .   1    . CODE DE RETOUR DES MODULES                 .
 C ______________________________________________________________________
 C
 C====
@@ -47,7 +49,7 @@ C 0.1. ==> ARGUMENTS
 C
       CHARACTER*(*) NOFIMD, NOMAMD
 C
-      LOGICAL EXISTM,FICEXI
+      LOGICAL EXISTM,FICEXI,DEJOUV
 C
       INTEGER OPTION, NDIM, CODRET
 C
@@ -68,8 +70,8 @@ C
       INTEGER VALI(2)
 C
       CHARACTER*8  SAUX08
-      CHARACTER*32 NOMA32
-      CHARACTER*32 SAUX32
+      CHARACTER*64 NOMA64
+      CHARACTER*64 SAUX64
       CHARACTER*200 DAUX
       CHARACTER*24 VALK
 C ______________________________________________________________________
@@ -90,7 +92,13 @@ C
       CODRET = 0
 C
       ELSE
-      CALL MFOUVR ( IDFIMD, NOFIMD, EDLECT, IAUX )
+      IF ( IDFIMD.EQ.0 ) THEN
+        CALL MFOUVR ( IDFIMD, NOFIMD, EDLECT, IAUX )
+        DEJOUV = .FALSE.
+      ELSE
+        DEJOUV = .TRUE.
+        IAUX = 0
+      ENDIF
       IF ( IAUX.EQ.0 ) THEN
 C
 C====
@@ -109,15 +117,17 @@ C 2.2. ==> RECHERCHE DU NUMERO ET DE LA DIMENSION DU MAILLAGE VOULU
 C
 C
 C               12345678901234567890123456789012
-      NOMA32 = '                                '
+      NOMA64 = '                                  '//
+     &'                              '
       LNOMAM = LXLGUT(NOMAMD)
-      NOMA32(1:LNOMAM) = NOMAMD(1:LNOMAM)
+      NOMA64(1:LNOMAM) = NOMAMD(1:LNOMAM)
 C
       DO 22 , IAUX = 1 , NBMAIE
 C
 C               12345678901234567890123456789012
-      SAUX32 = '                                '
-      CALL MFMAAI ( IDFIMD, IAUX, SAUX32, KAUX, TYAUX, DAUX, CODRET )
+      SAUX64 = '                                '//
+     &'                                '
+      CALL MFMAAI ( IDFIMD, IAUX, SAUX64, KAUX, TYAUX, DAUX, CODRET )
       IF ( CODRET.NE.0 ) THEN
         SAUX08='MFMAAI  '
         CALL U2MESG('F','DVP_97',1,SAUX08,1,CODRET,0,0.D0)
@@ -126,10 +136,10 @@ C               12345678901234567890123456789012
          CALL U2MESS('A','MED_79')
       ENDIF
 C
-      JAUX = LXLGUT(SAUX32)
+      JAUX = LXLGUT(SAUX64)
 C
       IF ( JAUX.EQ.LNOMAM ) THEN
-        IF ( SAUX32.EQ.NOMA32 ) THEN
+        IF ( SAUX64.EQ.NOMA64 ) THEN
           NDIM = KAUX
           EXISTM = .TRUE.
           GOTO 221
@@ -149,16 +159,17 @@ C
         CALL U2MESG('A+','MED_88',1,VALK,1,VALI,0,0.D0)
         DO 23 , IAUX = 1 , NBMAIE
 C                   12345678901234567890123456789012
-          SAUX32 = '                                '
-          CALL MFMAAI ( IDFIMD, IAUX, SAUX32, KAUX, TYAUX, DAUX, CODRET)
-          JAUX = LXLGUT(SAUX32)
-          VALK = SAUX32(1:JAUX)
+          SAUX64 = '                                '//
+     &'                                '
+          CALL MFMAAI ( IDFIMD, IAUX, SAUX64, KAUX, TYAUX, DAUX, CODRET)
+          JAUX = LXLGUT(SAUX64)
+          VALK = SAUX64(1:JAUX)
           CALL U2MESG('A+','MED_85',1,VALK,0,0,0,0.D0)
           IF ( TYAUX .NE. EDNSTR ) THEN
             CALL U2MESS('A','MED_79')
           ENDIF
    23   CONTINUE
-        CALL U2MESK('A','MED_80',1,NOMA32(1:LNOMAM))
+        CALL U2MESK('A','MED_80',1,NOMA64(1:LNOMAM))
 C
       ENDIF
 C
@@ -166,10 +177,13 @@ C
 C
 C 2.3. ==> FERMETURE DU FICHIER
 C
-      CALL MFFERM ( IDFIMD, CODRET )
-      IF ( CODRET.NE.0 ) THEN
-        SAUX08='MFFERM  '
-        CALL U2MESG('F','DVP_97',1,SAUX08,1,CODRET,0,0.D0)
+      IF ( .NOT.DEJOUV ) THEN
+        CALL MFFERM ( IDFIMD, CODRET )
+        IF ( CODRET.NE.0 ) THEN
+          SAUX08='MFFERM  '
+          CALL U2MESG('F','DVP_97',1,SAUX08,1,CODRET,0,0.D0)
+        ENDIF
+        IDFIMD = 0
       ENDIF
 C
       ENDIF

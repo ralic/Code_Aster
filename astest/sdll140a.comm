@@ -1,11 +1,11 @@
-# MODIF  DATE 01/09/2009   AUTEUR DELMAS J.DELMAS 
+# MODIF  DATE 09/05/2011   AUTEUR VERRIER A.VERRIER 
 # TITRE CALCUL D'UNE LIGNE D'ARBRE AVEC 3 DISQUES (CADYRO : DLRR08)
 # REFERENCE : M. LALANNE, G. FERRARIS -        RORORDYNAMIC, PREDICTION IN
 # ENGINEERING - pp 68-71
 # sdll140a.para = tps_job 600 mem_job 256Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2007  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -55,9 +55,17 @@ CARELEM=AFFE_CARA_ELEM(MODELE=MODELE,
                                     CARA='K_TR_D_N',
                                     VALE=(0.,.5E8,.7E8,0.,0.,0.)
                                   ),
+                                 _F(GROUP_MA='PALIER_A',
+                                    CARA='M_TR_D_N',
+                                    VALE=(0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,)
+                                  ),
                                  _F(GROUP_MA='PALIER_E',
                                     CARA='K_TR_D_N',
                                     VALE=(0.,.5E8,.7E8,0.,0.,0.)
+                                  ),
+                                 _F(GROUP_MA='PALIER_E',
+                                    CARA='M_TR_D_N',
+                                    VALE=(0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,)
                                   ),
                                  _F(GROUP_MA='PALIER_A',
                                     CARA='A_TR_D_N',

@@ -1,8 +1,9 @@
-# MODIF  DATE 11/09/2007   AUTEUR REZETTE C.REZETTE 
+# MODIF  DATE 09/05/2011   AUTEUR VERRIER A.VERRIER 
 # TITRE REPONSE TRANSITOIRE D UNE PLAQUE A UNE PRESSION ISSUE DE ENSIGHT
+# sdlx100a.para = tps_job 120 mem_job 64Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -81,6 +82,10 @@ ELEMNT=AFFE_CARA_ELEM(  MODELE=MODELE,
                                       CARA = 'K_TR_D_N',
                                       VALE = ( 9.8696E4, 0., 0.,
                                               0., 0., 0.,
+                                             )),
+                            _F(  GROUP_MA = 'NPRESS',
+                                      CARA = 'M_TR_D_N',
+                                      VALE = ( 0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,
                                              )),
                                     _F(  GROUP_MA = 'NPRESS',
                                       CARA = 'A_TR_D_N',

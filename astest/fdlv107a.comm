@@ -1,8 +1,9 @@
-# MODIF  DATE 23/03/2010   AUTEUR COURTOIS M.COURTOIS 
+# MODIF  DATE 09/05/2011   AUTEUR VERRIER A.VERRIER 
 # TITRE CALCUL DE RIGIDITE AJOUTEE EN ECOULEMENT ANNULAIRE
+# fdlv107a.para = tps_job 60 mem_job 50Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -461,6 +462,8 @@ SYSTEQ=AFFE_MODELE( MAILLAGE=MAYA2,
 CARA1=AFFE_CARA_ELEM( MODELE=SYSTEQ,DISCRET=(
                    _F( GROUP_MA = 'MASS', CARA = 'M_T_N',
                             VALE = (3.491E6, 0.,3.491E6,0.,0., 3.491E6,)),
+                   _F( GROUP_MA = 'MASS', CARA = 'K_T_N',
+                            VALE = (0.,0.,0.,0.,0.,0.,)),
                    _F( GROUP_MA = 'RESSORT', CARA = 'K_T_D_L',
                             VALE = (24471., 24471., 24471.,))))
 
@@ -498,6 +501,12 @@ CARA2=AFFE_CARA_ELEM( MODELE=SYSTEQ,DISCRET=(
                      _F( GROUP_MA = 'MASS', CARA = 'M_T_N',
                               VALE = (3.491E6, 0.,3.491E6,0.,0.,
                                      3.491E6,)),
+                     _F(CARA='K_T_N',
+                         GROUP_MA='MASS',
+                              VALE=(0.,0.,0.,0.,0.,0.,),),
+                     _F(CARA='A_T_N',
+                          GROUP_MA='MASS',
+                               VALE=(0.,0.,0.,0.,0.,0.,),),
                      _F( GROUP_MA = 'RESSORT', CARA = 'K_T_D_L',
                               VALE = (17600.2,17600.2,
                                      17600.2,))))
@@ -529,6 +538,12 @@ MOD2=MODE_ITER_SIMULT(      MATR_A=RAID2,
 CARA3=AFFE_CARA_ELEM( MODELE=SYSTEQ,DISCRET=(
                     _F( GROUP_MA = 'MASS', CARA = 'M_T_N',
                              VALE = (3.491E6, 0.,3.491E6,0.,0.,3.491E6,)),
+                     _F(CARA='K_T_N',
+                         GROUP_MA='MASS',
+                              VALE=(0.,0.,0.,0.,0.,0.,),),
+                     _F(CARA='A_T_N',
+                          GROUP_MA='MASS',
+                               VALE=(0.,0.,0.,0.,0.,0.,),),
                     _F( GROUP_MA = 'RESSORT', CARA = 'K_T_D_L',
                               VALE = (11588., 11588., 11588.,)))  )
 
@@ -561,6 +576,12 @@ CARA4=AFFE_CARA_ELEM( MODELE=SYSTEQ,DISCRET=(
                      _F( GROUP_MA = 'MASS', CARA = 'M_T_N',
                               VALE = (3.491E6, 0.,3.491E6,0.,0.,
                                      3.491E6,)),
+                     _F(CARA='K_T_N',
+                         GROUP_MA='MASS',
+                              VALE=(0.,0.,0.,0.,0.,0.,),),
+                     _F(CARA='A_T_N',
+                          GROUP_MA='MASS',
+                               VALE=(0.,0.,0.,0.,0.,0.,),),
                      _F( GROUP_MA = 'RESSORT', CARA = 'K_T_D_L',
                               VALE = (8702.,8702.,
                                      8702.,))))
@@ -594,6 +615,12 @@ CARA5=AFFE_CARA_ELEM( MODELE=SYSTEQ,DISCRET=(
                      _F( GROUP_MA = 'MASS', CARA = 'M_T_N',
                               VALE = (3.491E6, 0.,3.491E6,0.,0.,
                                      3.491E6,)),
+                     _F(CARA='K_T_N',
+                         GROUP_MA='MASS',
+                              VALE=(0.,0.,0.,0.,0.,0.,),),
+                     _F(CARA='A_T_N',
+                          GROUP_MA='MASS',
+                               VALE=(0.,0.,0.,0.,0.,0.,),),
                      _F( GROUP_MA = 'RESSORT', CARA = 'K_T_D_L',
                               VALE = (508.,508.,
                                      508.,))))

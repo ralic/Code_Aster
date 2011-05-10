@@ -1,9 +1,9 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF python supervis  DATE 11/08/2009   AUTEUR LEFEBVRE J-P.LEFEBVRE */
+/* MODIF python supervis  DATE 10/05/2011   AUTEUR SELLENET N.SELLENET */
 /* RESPONSABLE LEFEBVRE J-P.LEFEBVRE */
 /* ================================================================== */
-/* COPYRIGHT (C) 1991 - 2001  EDF R&D              WWW.CODE-ASTER.ORG */
+/* COPYRIGHT (C) 1991 - 2011  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
 /* THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR      */
 /* MODIFY IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS     */
@@ -41,6 +41,7 @@
 extern DL_EXPORT(int) Py_Main();
 extern void initaster();
 extern void initaster_fonctions();
+extern void initmed_fonctions();
 
 #ifdef _USE_MPI
 void terminate(){
@@ -80,6 +81,7 @@ main(argc, argv)
 
    /* Module définissant des opérations sur les objets fonction_sdaster */
 	PyImport_AppendInittab("aster_fonctions",initaster_fonctions);
+        PyImport_AppendInittab("med_aster",initmed_fonctions);
 
 	ierr= Py_Main(argc, argv);
 	return ierr;

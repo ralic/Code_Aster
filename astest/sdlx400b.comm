@@ -1,8 +1,9 @@
-# MODIF  DATE 07/03/2005   AUTEUR CIBHHLV L.VIVAN 
+# MODIF  DATE 09/05/2011   AUTEUR VERRIER A.VERRIER 
 # TITRE CALCUL DES FREQUENCES PROPRES D'UNE POUTRE ARTICULEE
+# sdlx400b.para = tps_job 60 mem_job 130Mo ncpus 1 liste_test V
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
@@ -230,12 +231,17 @@ CARA_2=AFFE_CARA_ELEM(      MODELE=STRUC_2,
                             CARA = ( 'HY',  'HZ', ),
                             VALE = ( 0.014,  0.014,  )),
 
-                               DISCRET=_F( 
+                               DISCRET=(_F( 
                             CARA = 'K_TR_D_N',
                             GROUP_MA = 'RESSORT',
                             REPERE = 'GLOBAL',
                             VALE = ( 0.,18000.,0.,
-                                        0.,0.,0.,       ))
+                                        0.,0.,0.,       )),
+                                          _F( 
+                            CARA = 'M_TR_D_N',
+                            GROUP_MA = 'RESSORT',
+                            REPERE = 'GLOBAL',
+                  VALE = ( 0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,)),)
 
 
                           )

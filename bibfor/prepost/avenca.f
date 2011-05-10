@@ -1,6 +1,6 @@
       SUBROUTINE AVENCA( RVECPG, NBVEC, NBORDR, LSIG0, IFLAG, RMIMA )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF PREPOST  DATE 09/05/2011   AUTEUR TRAN V-X.TRAN 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -74,7 +74,7 @@ C---- COMMUNS NORMALISES  JEVEUX
       CHARACTER*80 ZK80
       COMMON /KVARJE/ZK8(1),ZK16(1),ZK24(1),ZK32(1),ZK80(1)
 C     ------------------------------------------------------------------
-      INTEGER      N1, IVECT, IORDR, NSIG0
+      INTEGER      N1, IVECT, IORDR, NSIG0, J
 C
       REAL*8       EPSILO, R8MAEM, CUMIN, CUMAX, CVMIN, CVMAX
       REAL*8       CUI, CVI
@@ -90,7 +90,7 @@ C    |  TRAITEMENT DU CAS GENERAL  |
 C    ------------------------------
 C-----------------------------------------------------------------------
 
-      EPSILO = 1.0D-5
+      EPSILO = 1.0D-5 
 
 C ININTIALISATION
 
@@ -98,6 +98,11 @@ C ININTIALISATION
       NSIG0 = 0
 
       DO 30 IVECT=1, NBVEC
+      
+C INITIALISATION
+     
+         IFLAG(IVECT) = 0
+         
          CUMIN = R8MAEM()
          CUMAX = -R8MAEM()
          CVMIN = R8MAEM()
@@ -157,8 +162,8 @@ C    SONT INFERIEURS A EPSILO, ON NE FERA PAS DE PROJECTION.
          IF (NSIG0 .EQ. NBVEC) THEN
             LSIG0 = .TRUE.
          ENDIF
-
+            
  30   CONTINUE
-
+           
       CALL JEDEMA()
       END

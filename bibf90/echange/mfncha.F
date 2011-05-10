@@ -1,6 +1,6 @@
-      SUBROUTINE MFNCHA(FID,IND,N,CRET)
+      SUBROUTINE MFNCHA(FID,N,CRET)
 !           CONFIGURATION MANAGEMENT OF EDF VERSION                  
-!& MODIF MFNCHA ECHANGE  DATE 14/03/2011   AUTEUR SELLENET N.SELLENET 
+!& MODIF MFNCHA ECHANGE  DATE 10/05/2011   AUTEUR SELLENET N.SELLENET 
 ! RESPONSABLE SELLENET N.SELLENET
 ! ================================================================== 
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D              WWW.CODE-ASTER.ORG 
@@ -19,23 +19,22 @@
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.     
 ! ================================================================== 
       IMPLICIT NONE
-      INTEGER FID,IND,CRET,N
+      INTEGER FID,CRET,N
 #ifdef _DISABLE_MED
       CALL U2MESS('F','FERMETUR_2')
 #else
 ! BEGIN MED
 #ifdef _USE_MED_SHORT_INT
-      INTEGER*4 FID4, IND4, CRET4, N4
+      INTEGER*4 FID4, CRET4, N4
 #ifdef _DEBUG_MED
       PRINT *,'=== MFNCHA ==='
 #endif
       FID4 = FID
-      IND4 = IND
-      CALL EFNCHA(FID4,IND4,N4,CRET4)
+      CALL MFDNFD(FID4,N4,CRET4)
       N = N4
       CRET = CRET4
 #else
-      CALL EFNCHA(FID,IND,N,CRET)
+      CALL MFDNFD(FID,N,CRET)
 #endif
 ! END MED
 #endif

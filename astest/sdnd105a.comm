@@ -1,6 +1,6 @@
-# MODIF  DATE 31/01/2011   AUTEUR GREFFET N.GREFFET 
+# MODIF  DATE 09/05/2011   AUTEUR VERRIER A.VERRIER 
 # TITRE CHOC D'UNE MASSE SUR UNE PAROI AU COMPORTEMENT FLAMBAGE
-# sdnd105a.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
+# sdnd105a.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -47,6 +47,11 @@ CARA_ELE=AFFE_CARA_ELEM(  MODELE=MODELE,DISCRET=(
                                  VALE = ( 1., 0., 1., 0., 0., 1., 0.,
                                          0., 0., 0., 0., 0., 0., 0.,
                                          0., 0., 0., 0., 0., 0., 0.,)),
+                       _F(  NOEUD = 'N02',
+                                 CARA = 'K_TR_N',
+                                 VALE = ( 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,
+                                          0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,
+                                          0.,)),
                                _F(  GROUP_MA = 'STRUC',  CARA = 'K_TR_D_L',
                                  VALE = ( 0.0000001, 0., 0., 0., 0., 0., ),
                                  REPERE = 'GLOBAL'))                )

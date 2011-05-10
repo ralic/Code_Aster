@@ -1,6 +1,7 @@
-# MODIF  DATE 08/03/2011   AUTEUR MASSIN P.MASSIN 
+# MODIF  DATE 10/05/2011   AUTEUR MEUNIER S.MEUNIER 
 # TITRE ZONE COHESIVE CZM_EXP_REG AVEC X-FEM
 # ssnp144d.para = tps_job 360 mem_job 128Mo ncpus 1 liste_test S
+# ssnp144k.para = tps_job 300 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -28,7 +29,7 @@ PRE_GIBI();
 
 MAILLAG1=LIRE_MAILLAGE();
 
-MAILLAG2=CREA_MAILLAGE(MAILLAGE=MAILLAG1,
+MAILLAG2=CREA_MAILLAGE(MAILLAGE=MAILLAG1,COPIE=_F(),
                        );
 
 #----------------------------------------------

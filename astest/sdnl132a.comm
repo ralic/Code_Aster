@@ -1,4 +1,4 @@
-# MODIF  DATE 28/03/2011   AUTEUR BOYERE E.BOYERE 
+# MODIF  DATE 09/05/2011   AUTEUR VERRIER A.VERRIER 
 DEBUT(CODE=_F(NOM='SDNL132A',NIV_PUB_WEB='INTERNET'),
       DEBUG=_F(SDVERI='OUI'),IGNORE_ALARM='ALGELINE3_66')
 # TITRE PENDULE RIGIDE AVEC CONTACT ET FROTTEMENT
@@ -49,9 +49,12 @@ elem=AFFE_CARA_ELEM(MODELE=poutre,
                               SECTION='CERCLE',
                               CARA='R',
                               VALE=0.1291,),
-                    DISCRET=_F(CARA='K_TR_D_N',
+                    DISCRET=(_F(CARA='K_TR_D_N',
                                MAILLE='M4',
-                               VALE=(0.0,0.0,0.0,0.0,588.6,0.0,),),);
+                               VALE=(0.0,0.0,0.0,0.0,588.6,0.0,),),
+                               _F(CARA='M_TR_D_N',
+                               MAILLE='M4',
+                               VALE=(0.0,0.0,0.0,0.0,0.0,0.0,0.,0.,0.,0.,),),),);
 
 f=AFFE_CHAR_MECA(MODELE=poutre,
                  FORCE_NODALE=_F(GROUP_NO='GRA',

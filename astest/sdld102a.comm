@@ -1,4 +1,4 @@
-# MODIF  DATE 31/01/2011   AUTEUR GREFFET N.GREFFET 
+# MODIF  DATE 09/05/2011   AUTEUR VERRIER A.VERRIER 
 # TITRE SOUS-STRUCTURATION TRANSITOIRE : SYSTEME MASSES-RESSORTS
 # sdld102a.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -73,6 +73,12 @@ PARAM=AFFE_CARA_ELEM(MODELE=MODELE,
                      DISCRET=(_F(CARA='K_TR_D_L',
                                  GROUP_MA='RESSORT',
                                  VALE=(1.,0.,0.,0.,0.,0.,),),
+                               _F(CARA='M_TR_L',
+                                  GROUP_MA='RESSORT',
+                                  VALE=(0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,
+                                        0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,
+                                        0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,
+                                        0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,),),
                               _F(CARA='M_T_D_N',
                                  GROUP_NO='MASSE',
                                  VALE=1.,),),);
@@ -676,6 +682,12 @@ PARAME=AFFE_CARA_ELEM(MODELE=MODEL,
                       DISCRET=(_F(CARA='K_TR_D_L',
                                   GROUP_MA='RESSORT',
                                   VALE=(1.,0.,0.,0.,0.,0.,),),
+                               _F(CARA='M_TR_L',
+                                  GROUP_MA='RESSORT',
+                                  VALE=(0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,
+                                        0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,
+                                        0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,
+                                        0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,),),
                                _F(CARA='M_T_D_N',
                                   GROUP_NO='MASSE',
                                   VALE=1.,),),);

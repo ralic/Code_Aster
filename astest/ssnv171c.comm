@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 10/05/2011   AUTEUR SELLENET N.SELLENET 
 # TITRE VALIDATION MONOCRISTAL ET POLYCRISTAL
 # RESPONSABLE JMBHH01 J.M.PROIX
 # VALIDATION DEFORMATION PLASTIQUE EQUIVALENTE CUMULEE
@@ -261,13 +261,13 @@ MONO2IMP=LIRE_RESU(TYPE_RESU='EVOL_NOLI',
                    UNITE=81,
                    FORMAT_MED=(
                    _F(NOM_CHAM='DEPL',
-                      NOM_CHAM_MED='MONO1IMPDEPL____________________',),
+                      NOM_CHAM_MED='MONO1IMPDEPL',),
                    _F(NOM_CHAM='SIEF_ELGA',
-                      NOM_CHAM_MED='MONO1IMPSIEF_ELGA_______________',),
+                      NOM_CHAM_MED='MONO1IMPSIEF_ELGA',),
                    _F(NOM_CHAM='EPSG_ELGA',
-                      NOM_CHAM_MED='MONO1IMPEPSG_ELGA_______________',),
+                      NOM_CHAM_MED='MONO1IMPEPSG_ELGA',),
                    _F(NOM_CHAM='VARI_ELGA',
-                      NOM_CHAM_MED='MONO1IMPVARI_ELGA_______________',
+                      NOM_CHAM_MED='MONO1IMPVARI_ELGA',
                       NOM_CMP=
                       ('V1','V2','V3','V4','V5','V6','V7','V8','V9','V10','V11','V12','V13','V14',
                                 'V15','V16','V17','V18','V19','V20','V21','V22','V23','V24','V25','V26','V27','V28','V29',

@@ -1,10 +1,10 @@
 
-# MODIF  DATE 12/05/2009   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 09/05/2011   AUTEUR VERRIER A.VERRIER 
 # TITRE POUTRE ENCASTREE A UNE EXTREMITE ET CHARGEE PAR DES FORCES
-# sslx101b.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
+# sslx101b.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -62,9 +62,12 @@ CAREL1=AFFE_CARA_ELEM(MODELE=MO1,
                                 VALE=(2.0,0.1,),),
                       COQUE=_F(GROUP_MA=('CYL','CERCL1','CERCL2',),
                                EPAIS=0.1,),
-                      DISCRET=_F(MAILLE='P_ORIG',
+                      DISCRET=(_F(MAILLE='P_ORIG',
                                  CARA='M_TR_D_N',
                                  VALE=(0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,),),
+                               _F(MAILLE='P_ORIG',
+                                 CARA='K_TR_D_N',
+                                 VALE=(0.0,0.0,0.0,0.0,0.0,0.0,),)),
                       ORIENTATION=_F(GROUP_NO='NOPOU2',
                                      CARA='GENE_TUYAU',
                                      VALE=(0.0,0.0,-1.0,),

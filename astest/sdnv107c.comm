@@ -1,4 +1,4 @@
-# MODIF  DATE 07/03/2011   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 09/05/2011   AUTEUR VERRIER A.VERRIER 
 # TITRE POUTRE PLASTIQUE EN TRACTION CONDENSEE DYNAMIQUEMENT
 # sdnv107c.para = tps_job 600 mem_job 250Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -94,23 +94,31 @@ CHAMAT=AFFE_MATERIAU(  MAILLAGE=MAILLAGE,
 
 #
 PARAM1=AFFE_CARA_ELEM(  MODELE=MODELE1,
-                            DISCRET=_F( CARA='K_T_D_N',
+                            DISCRET=(_F( CARA='K_T_D_N',
                                         VALE=(0.,0.,0.,),
                                    GROUP_MA = ('PC1',), ),
-                                   );
+                                     _F( CARA='M_T_D_N',
+                                        VALE=(0.,),
+                                   GROUP_MA = ('PC1',), ),)
+                                   )
                                    
 PARAM2=AFFE_CARA_ELEM(  MODELE=MODELE2,
-                            DISCRET=_F( CARA='K_T_D_N',
+                            DISCRET=(_F( CARA='K_T_D_N',
                                         VALE=(0.,0.,0.,),
                                    GROUP_MA = ('PC1','PC2',), ),
-                                   );
+                                     _F( CARA='M_T_D_N',
+                                        VALE=(0.,),
+                                   GROUP_MA = ('PC1','PC2'), ),)
+                                   )
                                    
 PARAM3=AFFE_CARA_ELEM(  MODELE=MODELE3,
-                            DISCRET=_F( CARA='K_T_D_N',
+                            DISCRET=(_F( CARA='K_T_D_N',
                                         VALE=(0.,0.,0.,),
                                    GROUP_MA = 'PC2',),
-                                   );                                   
-#
+                                     _F( CARA='M_T_D_N',
+                                        VALE=(0.,),
+                                   GROUP_MA = ('PC2',), ),)
+                                   )   
 
 
 ########################################################################

@@ -1,8 +1,9 @@
-# MODIF  DATE 26/05/2008   AUTEUR DESROCHES X.DESROCHES 
+# MODIF  DATE 09/05/2011   AUTEUR VERRIER A.VERRIER 
 # TITRE SYSTEME MASSE RESSORT A 8 DEGRES DE LIBERTE T_D_N
+# sdld02e.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -108,9 +109,17 @@ CARELEM=AFFE_CARA_ELEM(MODELE=MO,
                                       GROUP_MA='GM4',
                                       VALE=(1.E5,0.,),),
                                    _F(REPERE='LOCAL',
+                                      CARA='M_T_L',
+                                      GROUP_MA='GM4',
+                                      VALE=(0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,),),
+                                   _F(REPERE='LOCAL',
                                       CARA='K_T_D_N',
                                       NOEUD=('P1','P8',),
                                       VALE=(1.E5,0.,),),
+                                   _F(REPERE='LOCAL',
+                                      CARA='M_T_D_N',
+                                      NOEUD=('P1','P8',),
+                                      VALE=(0.,),),
                                    _F(REPERE='GLOBAL',
                                       CARA='M_T_D_N',
                                       GROUP_NO='GN4',

@@ -1,7 +1,7 @@
       SUBROUTINE MFGAUE( FID, TYPGEO, REFCOO, MODECO, NGAUSS,
-     &                  GSCOO, WG, LOCNAME,CRET)
+     &                   GSCOO, WG, LOCNAME, NDIM, CRET)
 !           CONFIGURATION MANAGEMENT OF EDF VERSION                  
-!& MODIF MFGAUE ECHANGE  DATE 14/03/2011   AUTEUR SELLENET N.SELLENET 
+!& MODIF MFGAUE ECHANGE  DATE 10/05/2011   AUTEUR SELLENET N.SELLENET 
 ! RESPONSABLE SELLENET N.SELLENET
 ! ================================================================== 
 ! COPYRIGHT (C) 1991 - 2011  EDF R&D              WWW.CODE-ASTER.ORG 
@@ -20,7 +20,7 @@
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.     
 ! ================================================================== 
       IMPLICIT NONE
-      INTEGER FID,TYPGEO,MODECO,NGAUSS,CRET
+      INTEGER FID,TYPGEO,MODECO,NGAUSS,CRET,NDIM
       REAL*8 REFCOO(*),GSCOO(*),WG(*)
       CHARACTER*(*) LOCNAME
 #ifdef _DISABLE_MED
@@ -28,7 +28,7 @@
 #else
 ! BEGIN MED
 #ifdef _USE_MED_SHORT_INT
-      INTEGER*4 FID4, TYPGE4, MODE_4, NGAUS4, CRET4
+      INTEGER*4 FID4, TYPGE4, MODE_4, NGAUS4, CRET4, NDIM4
 #ifdef _DEBUG_MED
       PRINT *,'=== MFGAUE ==='
 #endif
@@ -36,12 +36,13 @@
       TYPGE4 = TYPGEO
       MODE_4 = MODECO
       NGAUS4 = NGAUSS
-      CALL EFGAUE( FID4, TYPGE4, REFCOO, MODE_4, NGAUS4,
-     &                  GSCOO, WG, LOCNAME,CRET4)
+      NDIM4  = NDIM
+      CALL MLCLOW( FID4, LOCNAME, TYPGE4, NDIM4, REFCOO, MODE_4,
+     &             NGAUS4, GSCOO, WG, '', '', CRET4)
       CRET = CRET4
 #else
-      CALL EFGAUE( FID, TYPGEO, REFCOO, MODECO, NGAUSS,
-     &                  GSCOO, WG, LOCNAME,CRET)
+      CALL MLCLOW( FID, LOCNAME, TYPGEO, NDIM, REFCOO, MODECO,
+     &             NGAUSS, GSCOO, WG, '', '', CRET)
 #endif
 ! END MED
 #endif

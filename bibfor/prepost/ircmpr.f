@@ -6,7 +6,7 @@
      &                    NOMAAS, MODELE, TYPGEO, NOMTYP,
      &                    NTPROA, CHANOM )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF PREPOST  DATE 10/05/2011   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -168,7 +168,7 @@ C
         IAUX = 7*NBIMPR
         CALL WKVECT ( NCAIMI, 'V V I'  , IAUX, ADCAII )
         IAUX = 2*NBIMPR
-        CALL WKVECT ( NCAIMK, 'V V K32', IAUX, ADCAIK )
+        CALL WKVECT ( NCAIMK, 'V V K80', IAUX, ADCAIK )
 C
 C       ON CREE UN TABLEAU QUI PERMET DE DETECTER L'EXISTENCE DE NOEUDS
 C       CENTRE (APPARTENANT AUX MAILLES DE TYPE TRIA7,QUAD9,PENTA18 OU
@@ -189,20 +189,6 @@ C
              JCO=IADCNX+ZI(ILCNX+I-1)-1
              ZI(JNOCE+ZI(JCO+3-1)-1)=1
              ZI(JNOCE+ZI(JCO+4-1)-1)=1
-           ENDIF
-           IF(ZI(IADTYP+I-1).EQ.ITR7)THEN
-             JCO=IADCNX+ZI(ILCNX+I-1)-1
-             ZI(JNOCE+ZI(JCO+7-1)-1)=1
-           ENDIF
-           IF(ZI(IADTYP+I-1).EQ.IQU9)THEN
-             JCO=IADCNX+ZI(ILCNX+I-1)-1
-             ZI(JNOCE+ZI(JCO+9-1)-1)=1
-           ENDIF
-           IF(ZI(IADTYP+I-1).EQ.IHE27)THEN
-             JCO=IADCNX+ZI(ILCNX+I-1)-1
-             DO 15 J=1,7
-               ZI(JNOCE+ZI(JCO+20+J-1)-1)=1
- 15          CONTINUE
            ENDIF
            IF(ZI(IADTYP+I-1).EQ.IPE18)THEN
              JCO=IADCNX+ZI(ILCNX+I-1)-1
@@ -259,7 +245,7 @@ C
         CALL IRCMPN ( NOFIMD,
      &                NCMPRF, NCMPVE, ZI(ADNUCM), ZL(ADEXIC),
      &                NBVATO, NBENEC, LIENEC, ADSL,
-     &                ZI(ADCAII), ZK32(ADCAIK),
+     &                ZI(ADCAII), ZK80(ADCAIK),
      &                ZI(ADPROA),ZI(JNOCE) )
 C
       ELSE

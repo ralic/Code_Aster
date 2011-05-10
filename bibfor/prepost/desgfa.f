@@ -4,7 +4,7 @@
      &                    IFM, CODRET )
 C
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF PREPOST  DATE 08/03/2011   AUTEUR SELLENET N.SELLENET 
+C MODIF PREPOST  DATE 10/05/2011   AUTEUR SELLENET N.SELLENET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -50,8 +50,8 @@ C
       INTEGER NBNOFA, NBELFA
       INTEGER IFM, CODRET
 C
-      CHARACTER*32 NOMFAM
-      CHARACTER*80 NOGRF(NBGF)
+      CHARACTER*(*) NOMFAM
+      CHARACTER*(*) NOGRF(NBGF)
 C
 C 0.2. ==> COMMUNS
 C
@@ -59,8 +59,10 @@ C 0.3. ==> VARIABLES LOCALES
 C
       CHARACTER*7 NOMENT(0:3)
 C
+      INTEGER LXLGUT
 C
       INTEGER IAUX
+      INTEGER LGNOFA
 C
 C 0.4. ==> INITIALISATIONS
 C
@@ -78,7 +80,12 @@ C
         NOMENT(1) = 'NOEUDS '
         NOMENT(2) = 'MAILLES'
 C
-        WRITE (IFM,10001) NOMFAM, NUMFAM
+        LGNOFA = LXLGUT(NOMFAM)
+        IF ( LGNOFA.LE.32 ) THEN
+          WRITE (IFM,10001) NOMFAM(1:LGNOFA), NUMFAM
+        ELSE
+          WRITE (IFM,10011) NOMFAM(1:32), NOMFAM(33:LGNOFA), NUMFAM
+        ENDIF
 C
         IF ( ( TYPENT.EQ.0 .OR. TYPENT.EQ.1 ) .AND. NBNOFA.GE.0 ) THEN
           WRITE (IFM,10002) NOMENT(1), NBNOFA
@@ -110,6 +117,11 @@ C
 10001 FORMAT(
      &//,50('*'),
      &/,'*   FAMILLE : ',A32,3X,'*',
+     &/,'*   NUMERO  : ',I8,27X,'*')
+10011 FORMAT(
+     &//,50('*'),
+     &/,'*   FAMILLE : ',A32,3X,'*',
+     &/,'*',13X         ,A32,3X,'*',
      &/,'*   NUMERO  : ',I8,27X,'*')
 10002 FORMAT(
      &  '*',3X,'NOMBRE DE ',A7,' : ',I7,18X,'*')

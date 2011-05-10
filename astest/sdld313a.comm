@@ -1,8 +1,9 @@
-# MODIF  DATE 17/07/2007   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 09/05/2011   AUTEUR VERRIER A.VERRIER 
 # TITRE SYSTEME MAS RES A 2 DDL (AMORTISSEMENT HYSTERETIQUE)
+# sdld313a.para = tps_job 60 mem_job 250Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -42,9 +43,18 @@ RIGMAS=AFFE_CARA_ELEM(  MODELE=MODELE,
                                        CARA = 'K_T_D_L',
                                        VALE = (28000., .001, .001,),
                                        AMOR_HYST = 0.1),
+                                  _F(  GROUP_MA = 'AMORT',
+                                       CARA = 'M_T_L',
+                                       VALE = (0.,0.,0.,0.,0.,0.,0.,0.,0.,
+                                    0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,),
+                                       AMOR_HYST = 0.1),
                                   _F(  MAILLE = 'K2',
                                        CARA = 'K_T_D_L',
                                        VALE = (28000., .001, .001,)),
+                                  _F(  MAILLE = 'K2',
+                                       CARA = 'M_T_L',
+                                       VALE = (0.,0.,0.,0.,0.,0.,0.,0.,0.,
+                                    0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,0.,),),
                                   _F(  NOEUD = 'B',
                                        CARA = 'M_T_D_N',
                                        VALE = ( 10.,)),
