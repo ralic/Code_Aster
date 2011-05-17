@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 17/05/2011   AUTEUR FOUCAULT A.FOUCAULT 
 # TITRE CONSTRUCTION PAR COUCHES D'UNE COLONNE DE SOL AVEC MODELE DE HUJEUX
 # wtnv132c.para = tps_job 450 mem_job 212Mo mem_aster 25 ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -455,6 +455,7 @@ for n in range(1,nbcouche-1):
                              PCENT_PIVOT=100,
                              RESI_RELA=1.,
                              TYPE_RESOL='NONSYM',),
+                 ARCHIVAGE=_F(LIST_INST=TEMPS,),
                  NEWTON=_F(MATRICE='TANGENTE',
                            PAS_MINI_ELAS=1E8,
                            REAC_ITER=1),
@@ -505,5 +506,92 @@ for n in range(1,nbcouche-1):
 # <--10: fin boucle for
 
 # INCLUDE(UNITE=38,);
+
+U[n]=CALC_ELEM(reuse=U[n],
+               GROUP_MA=list_group_ma[1:n+2],
+               OPTION=('PDIL_ELGA','INDL_ELGA'),
+               RESULTAT=U[n]);
+
+##################################
+# TESTS DE NON REGRESSION SUR LES
+# VALEURS FOURNIES PAR INDL_ELGA
+# ET PDIL_ELGA
+##################################
+
+TEST_RESU(RESU=(
+                _F(RESULTAT=U[n],
+                   NUME_ORDRE=1,
+                   NOM_CHAM='INDL_ELGA',
+                   NOM_CMP='INDICE',
+                   MAILLE='M2',
+                   POINT=1,
+                   VALE=0.0,
+                   CRITERE = 'ABSOLU',
+                   PRECISION=1.E-3,
+                   REFERENCE='NON_REGRESSION',
+                   VERSION = '11.0.6', ),
+                _F(RESULTAT=U[n],
+                   NUME_ORDRE=1,
+                   NOM_CHAM='INDL_ELGA',
+                   NOM_CMP='DIR1',
+                   MAILLE='M2',
+                   POINT=1,
+                   VALE=0.0,
+                   PRECISION=1.E-3,
+                   CRITERE = 'ABSOLU',
+                   VALE_ABS='OUI',
+                   REFERENCE='NON_REGRESSION',
+                   VERSION = '11.0.6', ),
+                _F(RESULTAT=U[n],
+                   NUME_ORDRE=1,
+                   NOM_CHAM='INDL_ELGA',
+                   NOM_CMP='DIR2',
+                   MAILLE='M2',
+                   POINT=1,
+                   CRITERE = 'ABSOLU',
+                   VALE=0.0,
+                   PRECISION=1.E-3,
+                   VALE_ABS='OUI',
+                   REFERENCE='NON_REGRESSION',
+                   VERSION = '11.0.6', ),
+                _F(RESULTAT=U[n],
+                   NUME_ORDRE=1,
+                   NOM_CHAM='INDL_ELGA',
+                   NOM_CMP='DIR3',
+                   MAILLE='M2',
+                   POINT=1,
+                   VALE=0.0,
+                   CRITERE = 'ABSOLU',
+                   PRECISION=1.E-3,
+                   VALE_ABS='OUI',
+                   REFERENCE='NON_REGRESSION',
+                   VERSION = '11.0.6', ),
+                _F(RESULTAT=U[n],
+                   NUME_ORDRE=1,
+                   NOM_CHAM='INDL_ELGA',
+                   NOM_CMP='DIR4',
+                   MAILLE='M2',
+                   POINT=1,
+                   VALE=0.0,
+                   CRITERE = 'ABSOLU',
+                   PRECISION=1.E-3,
+                   VALE_ABS='OUI',
+                   REFERENCE='NON_REGRESSION',
+                   VERSION = '11.0.6', ),
+                   ),);
+
+TEST_RESU(RESU=(
+                _F(RESULTAT=U[n],
+                   NUME_ORDRE=1,
+                   NOM_CHAM='PDIL_ELGA',
+                   NOM_CMP='A1_LC2',
+                   MAILLE='M2',
+                   POINT=1,
+                   VALE=0.0,
+                   CRITERE = 'ABSOLU',
+                   PRECISION=1.E-3,
+                   REFERENCE='NON_REGRESSION',
+                   VERSION = '11.0.6', ),
+                   ),);
 
 FIN( );

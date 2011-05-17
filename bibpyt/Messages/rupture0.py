@@ -1,4 +1,4 @@
-#@ MODIF rupture0 Messages  DATE 14/03/2011   AUTEUR GENIAUT S.GENIAUT 
+#@ MODIF rupture0 Messages  DATE 16/05/2011   AUTEUR GENIAUT S.GENIAUT 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -506,14 +506,17 @@ Veuillez redéfinir le mot-clé LISSAGE_THETA.
 91: _("""
 Aucune direction de propagation n'est fournie par l'utilisateur, la direction est
 calculée à partir de la normale au fond de fissure (donnée dans DEFI_FOND_FISS).
--> Risque et Conseil :
-  - Si le fond de fissure est droit, la direction calculée est correcte, au signe près.
-Comme il n'y a aucun moyen de vérifier que la direction de propagation est dans le bon sens,
-cela peut inverser le signe du G calculé. On peut alors préciser la direction de
-propagation sous le mot clé DIRECTION. Mais il est préféranbble de définir la fissure à
-partir des mailles de ses lèvres (DEFI_FOND_FISS).
-- Si le fond de fissure est courbe, le direction calculée n'est pas correcte et il faut
-impérativement définir la fissure à partir des mailles de ses lèvres (DEFI_FOND_FISS).
+
+-> Risque :
+  - La direction calculée est correcte, au signe près. En effet, comme il n'y a
+    aucun moyen de vérifier que la direction de propagation est dans le bon sens,
+    cela peut inverser le signe du G calculé.
+
+-> Conseils pour ne plus avoir cette alarme :  
+  - On peut préciser la direction de propagation sous le mot clé DIRECTION. 
+    Cette solution n'est applicable que si le fond de fissure est rectiligne.
+  - La solution la plus générale (donc préférable) est de définir le fond de 
+    fissure à partir des mailles de lèvres (DEFI_FOND_FISS/LEVRE_SUP et LEVRE_INF).
 """), 
 
 92: _("""

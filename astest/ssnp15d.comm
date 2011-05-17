@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 16/05/2011   AUTEUR GENIAUT S.GENIAUT 
 # TITRE ESSAI DE TRACTION-CISAILLEMENT (MISES ECR. ISOT. COQUE3D)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -116,36 +116,24 @@ L_INST=DEFI_LIST_REEL(  DEBUT=0.0,
                          )
 
 # STAT_NON_LINE 'VMIS_ISOT_LINE'
-
 #-------------------------------
 
-
-
-U=STAT_NON_LINE(
-                            MODELE=MO,
-                        CHAM_MATER=CM,
-                         CARA_ELEM=CARAC,EXCIT=(
-                             _F(
-                CHARGE = LIAISON), _F(
-                CHARGE = TRACTION,
-                FONC_MULT = SIGMA_F), _F(
-                CHARGE = CISAIL,
-                FONC_MULT = TAU_F)),
-                         COMP_INCR=_F(
-                RELATION = 'VMIS_ISOT_LINE',
-                ITER_INTE_MAXI = 30,
-                RESI_INTE_RELA = 1.E-6
-               ),
-                         INCREMENT=_F(
-                LIST_INST = L_INST),
-                            NEWTON=_F(
-                MATRICE = 'TANGENTE',
-                REAC_ITER = 2),
-                       CONVERGENCE=_F(
-                RESI_GLOB_RELA = 1.E-8),
-                     RECH_LINEAIRE=_F(
-                ITER_LINE_MAXI = 3,
-                RESI_LINE_RELA = 1.E-3)
+U=STAT_NON_LINE(MODELE=MO,
+                CHAM_MATER=CM,
+                CARA_ELEM=CARAC,
+                EXCIT=(_F(CHARGE = LIAISON),
+                       _F(CHARGE = TRACTION,
+                          FONC_MULT = SIGMA_F),
+                       _F(CHARGE = CISAIL,
+                          FONC_MULT = TAU_F)),
+                COMP_INCR=_F(RELATION = 'VMIS_ISOT_LINE',
+                             ITER_INTE_MAXI = 30,
+                             RESI_INTE_RELA = 1.E-6
+                              ),
+                INCREMENT=_F(LIST_INST = L_INST),
+                NEWTON=_F(MATRICE = 'TANGENTE',
+                          REAC_ITER = 3),
+                RECH_LINEAIRE=_F(RHO_MAX=150),
               )
 
 U=CALC_ELEM( reuse=U,   RESULTAT=U,

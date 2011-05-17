@@ -1,6 +1,6 @@
       SUBROUTINE EVALA1( MOD, RELCOM, SIG, VIN, IMAT, MODULE, ICODE )
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 17/05/2011   AUTEUR FOUCAULT A.FOUCAULT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -35,10 +35,10 @@ C =====================================================================
       IMPLICIT NONE
       REAL*8 MODULE, SIG(6), VIN(50), DSDE(6,6), SIGT(2,2)
       REAL*8 ANGLE, ROT(2,2), DEGR, SIGR1(2,2), SIGR2(2,2), TEMP
-      REAL*8 SIGF(6), RATIO1, PI, VALUE1, VALUE2, RATIO2, VALEUR
-      REAL*8 R8PREM
-      INTEGER INCANG, I, J, K, IANG
-      INTEGER IMAT, ICODE
+      REAL*8 SIGF(6), RATIO1, PI, VALUE1, RATIO2, VALUE2, VALEUR
+      REAL*8 R8PREM, INCANG(3), ANGREF, VALMAX
+      INTEGER I, J, K, IANG, NBIND(3), DISC
+      INTEGER IMAT, ICODE, IANGMX(3)
       CHARACTER*8  MOD
       CHARACTER*16 RELCOM
       PARAMETER   ( DEGR = 0.0174532925199D0 )
@@ -49,7 +49,16 @@ C DEFINITION DES ELEMENTS NECESSAIRES A L'EVALUATION DU MODULE
 C =====================================================================
 C --- DISCRETISATION ANGULAIRE DE LA RECHERCHE ENTRE [0° ET 90°[
 C =====================================================================
-      INCANG = 5
+C =====================================================================
+C --- DEFINITION DE 3 NIVEAUX DE RECHERCHE 
+C --- QUI FONT VARIER LA DISCRETISATION ANGULAIRE
+C =====================================================================
+      INCANG(1) = 5.D0
+      NBIND(1)  = 36
+      INCANG(2) = 1.0D0
+      NBIND(2)  = 9
+      INCANG(3) = 2.0D-1
+      NBIND(3)  = 9
 C =====================================================================
 C --- INITIALISATION MATRICE DE ROTATION ANGULAIRE
 C =====================================================================
@@ -66,97 +75,137 @@ C =====================================================================
       SIGT(2,1) = SIGT(1,2)
       SIGT(2,2) = SIG(2)
 C =====================================================================
-C --- INITIALISATION A ZERO DE LA VALEUR DU MODULE
+C --- INITIALISATION A ZERO DE LA VALEUR DU MODULE 
+C --- UNIQUE VARIABLE DE SORTIE
 C =====================================================================
       MODULE = 0.D0
 C =====================================================================
+C --- INITIALISATION A ZERO DE L'ANGLE DE DEPART DE RECHERCHE
+C =====================================================================
+      ANGREF = 0.D0
+C =====================================================================
+C BOUCLE SUR LA VALEUR DE L'INCREMENT DE DISCRETISATION 
+C =====================================================================
+      DO 10 DISC = 1, 3
+C =====================================================================
 C BOUCLE SUR LES ANGLES POUR RECHERCHER LA VALEUR DU MODULE
 C =====================================================================
-      DO 10 IANG = 1, 36
+        DO 20 IANG = 1, NBIND(DISC)
 C =====================================================================
 C CONSTRUCTION MATRICE DE ROTATION
 C =====================================================================
-        ANGLE = (IANG-1)*INCANG*DEGR
-        ROT(1,1) = COS(ANGLE)
-        ROT(1,2) = -SIN(ANGLE)
-        ROT(2,1) = SIN(ANGLE)
-        ROT(2,2) = COS(ANGLE)
+          ANGLE    = IANG*INCANG(DISC)*DEGR+ANGREF
+          ROT(1,1) = COS(ANGLE)
+          ROT(1,2) = -SIN(ANGLE)
+          ROT(2,1) = SIN(ANGLE)
+          ROT(2,2) = COS(ANGLE)
 C =====================================================================
 C CALCUL DE L'ETAT DE CONTRAINTES SUITE A LA ROTATION
 C --- SIGF = TRANSPOSE(ROT)*SIG*ROT
 C =====================================================================
-        DO 30 I = 1, 2
-          DO 31 J = 1, 2
-            TEMP = 0.D0
-            DO 32 K = 1,2
-              TEMP = TEMP + SIGT(I,K)*ROT(K,J)
- 32         CONTINUE
-            SIGR1(I,J) = TEMP
- 31       CONTINUE
- 30     CONTINUE
+          DO 30 I = 1, 2
+            DO 31 J = 1, 2
+              TEMP = 0.D0
+              DO 32 K = 1,2
+                TEMP = TEMP + SIGT(I,K)*ROT(K,J)
+ 32           CONTINUE
+              SIGR1(I,J) = TEMP
+ 31         CONTINUE
+ 30       CONTINUE
 
 C =====================================================================
 C --- TRANSPOSE(ROT) = ROT
 C =====================================================================
-        TEMP = ROT(2,1)
-        ROT(2,1) = ROT(1,2)
-        ROT(1,2) = TEMP
+          TEMP = ROT(2,1)
+          ROT(2,1) = ROT(1,2)
+          ROT(1,2) = TEMP
 
-        DO 40 I = 1, 2
-          DO 41 J = 1, 2
-            TEMP = 0.D0
-            DO 42 K = 1,2
-              TEMP = TEMP + ROT(I,K)*SIGR1(K,J)
- 42         CONTINUE
-              SIGR2(I,J) = TEMP
- 41       CONTINUE
- 40     CONTINUE
+          DO 40 I = 1, 2
+            DO 41 J = 1, 2
+              TEMP = 0.D0
+              DO 42 K = 1,2
+                TEMP = TEMP + ROT(I,K)*SIGR1(K,J)
+ 42           CONTINUE
+                SIGR2(I,J) = TEMP
+ 41         CONTINUE
+ 40       CONTINUE
 
 C =====================================================================
 C --- EXPRESSION DES CONTRAINTES SOUS FORME VECTORIELLE
 C =====================================================================
-        SIGF(1) = SIGR2(1,1)
-        SIGF(2) = SIGR2(2,2)
-        SIGF(3) = SIG(3)
-        SIGF(4) = SIGR2(1,2)*SQRT(2.0D0)
-        SIGF(5) = SIG(5)
-        SIGF(6) = SIG(6)
-
+          SIGF(1) = SIGR2(1,1)
+          SIGF(2) = SIGR2(2,2)
+          SIGF(3) = SIG(3)
+          SIGF(4) = SIGR2(1,2)*SQRT(2.0D0)
+          SIGF(5) = SIG(5)
+          SIGF(6) = SIG(6)
+ 
 C =====================================================================
 C --- CALCUL DE LA MATRICE TANGENTE -----------------------------------
 C --- (FONCTION DE LA RELATION DE COMPORTEMENT) -----------------------
 C =====================================================================
-        IF (RELCOM.EQ.'DRUCK_PRAGER') THEN
+          IF (RELCOM.EQ.'DRUCK_PRAGER') THEN
 C =====================================================================
 C --- LOI DE TYPE DRUCKER_PRAGER --------------------------------------
 C =====================================================================
-          CALL REDRPR(MOD,IMAT,SIGF,VIN,DSDE,ICODE)
+            CALL REDRPR(MOD,IMAT,SIGF,VIN,DSDE,ICODE)
 C =====================================================================
 C ----------- LOI DE TYPE HUJEUX --------------------------------------
 C =====================================================================
-        ELSEIF (RELCOM.EQ.'HUJEUX') THEN
-          CALL HUJTID(MOD,IMAT,SIGF,VIN,DSDE,ICODE)
+          ELSEIF (RELCOM.EQ.'HUJEUX') THEN
+            
+            CALL HUJTID(MOD,IMAT,SIGF,VIN,DSDE,ICODE)
 
-        ELSE
+          ELSE
 C =====================================================================
 CC RELATION DE COMPORTEMENT INVALIDE
 C =====================================================================
-          CALL ASSERT(.FALSE.)
-        ENDIF
+            CALL ASSERT(.FALSE.)
+          ENDIF
 C =====================================================================
 C ----------- EVALUATION DU MODULE ------------------------------------
 C =====================================================================
-        IF(ABS(DSDE(4,4)).GT.R8PREM())THEN
-          RATIO1  = (DSDE(4,1)*DSDE(1,4)-DSDE(4,4)*DSDE(1,1))
+          IF(ABS(DSDE(4,4)).GT.R8PREM())THEN
+            RATIO1  = (DSDE(4,1)*DSDE(1,4)-DSDE(4,4)*DSDE(1,1))
      &              /(3*DSDE(4,4))
-          VALUE1 = (1.0D0/PI)**2*RATIO1
-          RATIO2  = (DSDE(4,2)*DSDE(2,4)-DSDE(4,4)*DSDE(2,2))
-     &            /(3*DSDE(4,4))
-          VALUE2 = (1.0D0/PI)**2*RATIO2
-          VALEUR = MAX(VALUE1,VALUE2)
-          MODULE = MAX(MODULE,VALEUR)
-        ENDIF
+            VALUE1 = (1.0D0/(2.0D0*PI))**2*RATIO1
+            RATIO2  = (DSDE(4,2)*DSDE(2,4)-DSDE(4,4)*DSDE(2,2))
+     &              /(3*DSDE(4,4))
+            VALUE2 = (1.0D0/(2.0D0*PI))**2*RATIO2
 
+            IF(IANG.EQ.1)THEN
+              IANGMX(DISC) = IANG
+              IF(DISC.EQ.1)THEN
+                VALEUR  = VALUE1
+              ELSE
+                VALMAX = MAX(VALUE1,VALUE2)
+                IF(VALMAX.GE.VALEUR)THEN
+                  VALEUR  = VALMAX
+                ENDIF
+              ENDIF
+            ELSE
+              VALMAX = MAX(VALUE1,VALUE2)
+              IF(VALMAX.GE.VALEUR)THEN
+                VALEUR  = VALMAX
+                IANGMX(DISC) = IANG
+              ENDIF
+            ENDIF
+          ENDIF
+
+ 20     CONTINUE
+C =====================================================================
+C ------ FIN DE LA BOUCLE POUR CETTE VALEUR DE DISCRETISATION ---------
+C =====================================================================
+C =====================================================================
+C ------ CHANGEMENT DE L'ANGLE DE REFERENCE POUR DEBUTER 
+C ------ LA RECHERCHE DU MAXIMUM 
+C =====================================================================
+        ANGREF = (IANGMX(DISC)-1)*INCANG(DISC)*DEGR+ANGREF
  10   CONTINUE
+C =====================================================================
+C ------ FIN DE LA BOUCLE POUR OBTENIR LE MAX DE VALUE1 ---------
+C =====================================================================
+
+      MODULE = MAX(MODULE,VALEUR)
 
       END

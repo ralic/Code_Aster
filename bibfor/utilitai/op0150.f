@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF UTILITAI  DATE 10/05/2011   AUTEUR SELLENET N.SELLENET 
+C MODIF UTILITAI  DATE 16/05/2011   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -240,7 +240,7 @@ C     --- NOMBRE DE VARIABLES INTERNES A LIRE ---
 C
 C     --- CREATION DE LA STRUCTURE DE DONNEES RESULTAT ---
       CALL RSCRSD('G',RESU,TYPRES,NBORDR)
-      
+
       ACCE = 'INST'
       CALL RSEXPA(RESU,0,'FREQ',IRET)
       IF (IRET.GT.0) ACCE = 'FREQ'
@@ -316,6 +316,8 @@ C
           CALL U2MESS('F','UTILITAI2_88')
         ELSE
           CALL DISMOI('F','DIM_GEOM',NOMO,'MODELE',NDIM,K8BID,IER)
+          IF (.NOT.(NDIM.EQ.2.OR.NDIM.EQ.3))
+     &         CALL U2MESS('F','MODELISA2_6')
         END IF
 
         IF (NBNOCH.NE.1 .OR. LINOCH(1).NE.'PRES') THEN

@@ -1,0 +1,709 @@
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR courtois     COURTOIS Mathieu       DATE 05/16/2011 - 11:17:58
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 016558 DU 2011-03-07 16:18:38
+TYPE evolution concernant Documentation (VERSION 9.1)
+TITRE
+    parametre chaine de caractere pour les calculs parametriques distribues
+FONCTIONNALITE
+   Problème
+   ========
+   
+   L'utilisation d'une chaîne de caractère dans le jeu de 
+   paramètres servant pour les calculs paramètriques distribués ne 
+   fonctionne pas.
+   
+   Réponse
+   =======
+   
+   Cela fonctionne très bien. La substitution dans le fichier de 
+   commandes étant purement textuelle, il faut bien doser les 
+   cotes/guillemets.
+   On ajoute le paragraphe 2.2.3 avec un exemple où on fait varier 
+   une chaine de caractères (dans ce cas, il faut écrire dans le 
+   fichier de paramètre "'INST'") ou un concept (on écrit alors 
+   "FON1").
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : u2.08.07
+VALIDATION
+    doc
+NB_JOURS_TRAV  : 0.2
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 016812 DU 2011-04-22 12:56:01
+TYPE aide utilisation concernant Code_Aster (VERSION 9.1)
+TITRE
+    Erreur_Boucle-for_Operateur-Formule
+FONCTIONNALITE
+   Problème de définition des formules dans une boucle.
+   
+   On ajoute un paragraphe dans la doc de FORMULE :
+   
+   
+   
+   Exemple de définition de formules dans une boucle Python
+   
+   Quand on définit, dans une boucle, des formules dont l'expression dépend de l'indice de la 
+   boucle, il faut être vigilant et bien avoir compris le sens de PAR_LOT dans DEBUT/POURSUITE (cf. 
+   [U1.03.01]).
+   
+   Exemple :
+   for i in range(3):
+       FO[i] = FORMULE(VALE='cos(i*INST)', NOM_PARA='INST')
+       CH[i] = CREA_CHAMP(OPERATION='AFFE', ..., VALE_F=FO[i])
+   
+   Avec ces instructions, on a défini 3 formules qui ont toutes la même expression.
+   En PAR_LOT='OUI' (le jeu de données est entièrement construit puis exécuté), lors de l'appel à 
+   CREA_CHAMP (que ce soit le premier ou le dernier), i vaut 2 (dernière valeur en sortant de la 
+   boucle), donc la formule évaluée en fonction de INST est 'cos(2*INST)'.
+   
+   Alors qu'en PAR_LOT='NON', le premier CREA_CHAMP est exécuté dès qu'il est construit, donc la 
+   formule est évaluée avec i=0. Pour le second, i=1, pour le troisième, i=2.
+   
+   En fait, le jeu de données utilisé est celui-ci :
+       i = 0
+       FO[0] = FORMULE(VALE='cos(i*INST)', NOM_PARA='INST')
+       CH[0] = CREA_CHAMP(OPERATION='AFFE', ..., VALE_F=FO[0])
+       i = 1
+       FO[1] = FORMULE(VALE='cos(i*INST)', NOM_PARA='INST')
+       CH[1] = CREA_CHAMP(OPERATION='AFFE', ..., VALE_F=FO[1])
+       i = 2
+       FO[2] = FORMULE(VALE='cos(i*INST)', NOM_PARA='INST')
+       CH[2] = CREA_CHAMP(OPERATION='AFFE', ..., VALE_F=FO[2])
+   
+   On voit bien que l'indice de la boucle n'intervient pas dans l'expression de la formule.
+   
+   Dans ce cas, ce que souhaite l'utilisateur serait obtenu en faisant :
+   for i in range(3):
+       FO[i] = FORMULE(VALE='cos(%d*INST)' % i, NOM_PARA='INST')
+       CH[i] = CREA_CHAMP(OPERATION='AFFE', ..., VALE_F=FO[i])
+   
+   On définit ainsi 3 formules dont les expressions sont 'cos(0*INST)', 'cos(1*INST)' et 
+   'cos(2*INST)'. De cette manière, qu'il soit exécuté en PAR_LOT='OUI' ou 'NON', le résultat sera 
+   le même.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : u4.31.05
+VALIDATION
+    doc
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR greffet      GREFFET Nicolas        DATE 05/16/2011 - 11:17:59
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 016896 DU 2011-05-06 07:48:17
+TYPE anomalie concernant Code_Aster (VERSION 9.1)
+TITRE
+    En NEW10.4.1, le cas-test fdlv112b est NOOK sur Rocks et Calibre5.
+FONCTIONNALITE
+   La version de cette machine n'avait pas été mise à jour.
+   Le test avait donc tourné avec la dernière 10.3.x au lieu de 
+   10.4.1.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    ras
+NB_JOURS_TRAV  : 0.01
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR courtois     COURTOIS Mathieu       DATE 05/16/2011 - 11:17:59
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 016915 DU 2011-05-12 08:16:55
+TYPE anomalie concernant Code_Aster (VERSION 9.1)
+TITRE
+    En NEW11.0.5, les cas-tests perf013a, perf013c et perf013f s'arrxc3xaatent par manque de temps sur Calibre 5.
+FONCTIONNALITE
+   L'EDA décide de mettre un facteur multiplicatif à 2 pour le 
+   passage des tests sur les versions locales de Rocks et Calibre5.
+   Le suivi des performances étant fait par ailleurs.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    ras
+NB_JOURS_TRAV  : 0.01
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR foucault     FOUCAULT Alexandre     DATE 05/17/2011 - 08:48:19
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 016909 DU 2011-05-11 06:25:11
+TYPE anomalie concernant Code_Aster (VERSION 11.1)
+TITRE
+    Anomalie avec calcul option INDL_ELGA pour calcul D_PLAN_HM
+FONCTIONNALITE
+   FICHE SIMILAIRE A L'AL 16908:
+   -----------------------------
+   
+   Le calcul elementaire INDL_ELGA ne fonctionne pas en modelisation couple HM, alors que le
+   catalogue
+   d'elements l'autorise.
+   Le message d'erreur obtenu est le suivant:
+   !------------!
+      ! <F> <ELEMENTS_90>          !
+      ! Erreur de programmation :   !
+      !    L'attribut NBSIGM n'est pas défini pour cette modélisation. !
+      ! Solution :                  !
+      !    Il faut modifier la catalogue phenomene_modelisation__.cata pour ajouter NBSIGM
+   pour cette modélisation.  !
+      ! Cette erreur est fatale. Le code s'arrete.          !
+      !---------------------------------------------------------!
+   
+   Justifications de l'erreur rencontree:
+   --------------------------------------
+   La routine te0030.f tente d'etablir une distinction entre les modelisations mecaniques
+   pures (D_PLAN(_SI), C_PLAN, AXIS) et HM (D_PLAN_HM(S), AXIS_HM). Le test est actuellement
+   mal établi en considerant les attributs de modelisation D_PLAN ou AXIS. Ces attributs sont
+   en effet communs aux modelisations mecaniques pures et HM. La distinction souhaitee dans
+   le traitement du te0030 est alors inefficace, car on se dirige toujours vers le traitement
+   mecanique pure qui entraine l'erreur precisee ci-dessus : l'attribut NBSIGM n'est en effet
+   pas defini
+   pour les modelisations D_PLAN_HM(S) ou AXIS_HM.
+   
+   Solutions proposees:
+   --------------------
+   Le test de distinction entre les modelisations seules (D_PLAN(_SI), C_PLAN, AXIS) et
+   couplees (D_PLAN_HM(S), AXIS_HM) porte a present sur la variable ALIAS8 (chaine de
+   caracteres de longueur 8). ALIAS(3:5) contient un identifiant unique de chaque
+   modelisation; Il n'y a alors plus d'erreurs possibles.
+   
+   Impact sources:
+   ---------------
+   te0030.f
+   
+   La solution proposee sera testee dans le cas-test wtnv132c pour verifier le bon traitement
+   en D_PLAN_HM des developpements
+   
+   IMPACT DOCUMENTAIRE:  V7.31.132c
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : V7.31.132
+VALIDATION
+    CAS-TEST
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 016908 DU 2011-05-10 17:12:25
+TYPE anomalie concernant Code_Aster (VERSION 11.1)
+TITRE
+    Anomalie avec calcul option PDIL_ELGA pour calcul D_PLAN_HM
+FONCTIONNALITE
+   Le calcul elementaire PDIL_ELGA ne fonctionne pas en modelisation couple D_PLAN_HM, alors
+   que le catalogue
+   d'elements finis a ete modifie dans ce sens.
+   Le message d'erreur obtenu est le suivant:
+   !-------------------------------------------------!
+      ! <F> <ELEMENTS_90          !
+      ! Erreur de programmation :   !
+      !    L'attribut NBSIGM n'est pas défini pour cette modélisation. !
+      ! Solution :                  !
+      !    Il faut modifier la catalogue phenomene_modelisation__.cata pour ajouter NBSIGM
+   pour cette modélisation.     !
+      ! Cette erreur est fatale. Le code  s'arrete. !
+      !---------------------------------------------------------!
+   
+   Justifications de l'erreur rencontree:
+   --------------------------------------
+   La routine te0511.f tente d'etablir une distinction entre les modelisations mecaniques
+   pures (D_PLAN(_SI), C_PLAN, AXIS) et HM (D_PLAN_HM(S), AXIS_HM). Le test est actuellement
+   mal établi en considerant les attributs de modelisation D_PLAN ou AXIS. Ces attributs sont
+   en effet communs aux modelisations mecaniques pures et HM. La distinction souhaitee dans
+   le traitement du te0511 est alors inefficace, car on se dirige toujours vers le traitement
+   mecanique pure qui entraine l'erreur precisee ci-dessus : l'attribut NBSIGM n'est en effet
+   pas defini
+   pour les modelisations D_PLAN_HM(S) ou AXIS_HM.
+   
+   Solutions proposees:
+   --------------------
+   Le test de distinction entre les modelisations seules (D_PLAN(_SI), C_PLAN, AXIS) et
+   couplees (D_PLAN_HM(S), AXIS_HM) porte a present sur la variable ALIAS8 (chaine de
+   caracteres de longueur 8). ALIAS(3:5) contient un identifiant unique de chaque
+   modelisation; Il n'y a alors plus d'erreurs possibles.
+   
+   Impact sources:
+   ---------------
+   te0511.f
+   
+   La solution proposee sera testee dans le cas-test wtnv132c pour verifier le bon traitement
+   en D_PLAN_HM des developpements.
+   
+   IMPACT DOCUMENTAIRE:  V7.31.132 (modelisation C)
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : V7.31.132
+VALIDATION
+    CAS-TEST
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 016876 DU 2011-05-04 05:26:10
+TYPE anomalie concernant Code_Aster (VERSION 11.1)
+TITRE
+    PDIL_ELGA: raffinement de la discretisation angulaire pour determination de A1_LC2
+FONCTIONNALITE
+   Anomalie des réponses fournies par l'option de calcul  élémentaire PDIL_ELGA.
+   
+   RAPPEL DU PRINCIPE DE CALCUL:
+   -----------------------------
+   Cette option de calcul se base sur un probleme analytique 1D. On y considère un domaine
+   matériel longitudinal d'épaisseur "l" et de longueur infini. Ce milieu peut de se déplacer
+   suivant l'axe caractérisant l'épaisseur du milieu. On cherche à caractériser une
+   bifurcation de la solution homogène. L'option PDIL_ELGA fournit dans le cadre des milieux
+   de second gradient de dilatation la valeur du module A1/LC^2, permettant de maîtriser la
+   périodicité de la solution non triviale du problème initialement homogène
+   
+   Le calcul de A1/LC^2 est obtenu via l'évaluation d'une fonction dépendant de l'orientation
+   géométrique de la bande matérielle considérée. La discrétisation angulaire
+   imposée actuellement est égale à 5° (valeur forfaitaire initiale que l'on pensait suffisante).
+   
+   DESCRIPTION DE L'ANOMALIE:
+   --------------------------
+   Une étude actuelle menée dans le cadre du projet CODHYBAR sur un essai biaxial drainé
+   (mécanique pure) montre clairement l'insuffisance de cette discrétisation. En effet, le
+   chargement imposé conduit à un comportement adoucissant du matériau, condition suffisante
+   pour obtenir une bifurcation dans  la bande de matériau. Or, en l'état, l'option ne
+   détecte pas tout de suite ces orientations géométriques. Les variations de la fonction que
+   l'on cherche à évaluer sont très raides et la discrétisation de 5° est insuffisante.
+   
+   CORRECTION PROPOSEE:
+   --------------------
+   On conserve une discrétisation initiale de 5° pour déterminer le maximum de la fonction.
+   On raffine ensuite autour de ce maximum la discretisation à 1° puis 0.2°. Ces
+   modifications entrainent un surcout de temps de calcul de 30%, pour une precision
+   nettement amelioree sur la valeur de A1_LC2.
+   
+   IMPACT SOURCE:
+   --------------
+   -)evala1.f
+   -)medpqs8.cata (ouverture du calcul d'option à la modelisation D_PLAN_SI)
+   -)medpqs4.cata (idem)
+   
+   IMPACT CAS-TEST:
+   ----------------
+   Modifications des valeurs de non-regression dans les cas-tests 
+   -)SSNV208A
+   -)SSNP125A
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : V6.04.208, V6.03.125
+VALIDATION
+    CAS-TEST
+NB_JOURS_TRAV  : 2.0
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR geniaut      GENIAUT Samuel         DATE 05/16/2011 - 06:15:57
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 013986 DU 2009-10-06 16:02:05
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+    DEF2 - ssnp15c et recherche lineaire
+FONCTIONNALITE
+   Problème :
+   ----------
+   
+   La convergence du cas test ssnp15c est étrange :
+   
+   1) on demande une réactualisation toutes les 10 itérations de Newton, alors que
+   manifestement, toutes les 4 ou 5 serait plus adapté.
+   
+   2) on demande une précision pour la recherche linéaire assez forte : RESI_LINE_RELA=1e-06,
+   alors que la valeur par défaut est 0.1. C'est le seul cas test de la base qui demande une
+   telle précision (notons aussi que le ssll106 demande 1e-5 alors que l'on converge à chaque
+   fois dès la prédiction...). Il n'y a pas de raison particulière évidente.
+   
+   3) de manière plus générale sur les différentes modélisations du ssnp15, on constate une
+   forte disparité des paramètres utilisés sous STAT_NON_LINE (matrice élastique/tangente,
+   REAC_ITER, RESI_GLOB_RELA/MAXI, RHO_MAX, ITER_LINE_MAXI....)
+   
+   
+   Solution :
+   ----------
+   
+   Afin de mettre en conformité toutes les modélisations, on met désormais pour toutes les
+   modélisation (a->f) :
+   MATRICE='TANGENTE',
+   REAC_ITER=3
+   et pour la recherche linéaire : RHO_MAX=150.
+   Tout le reste est par défaut (notamment, la convergence se fait sur RESI_GLOB_RELA, avec
+   passage automatique en RESI_GLOB_MAXI si nécessaire).
+   
+   Cela n'a pas d'impact ni sur les valeurs testées, ni sur la doc.
+   Les temps CPU sont pareils voire un peu meilleur (mais ce n'est pas significatif).
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    ssnp15
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR pellet       PELLET Jacques         DATE 05/16/2011 - 12:30:47
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 016738 DU 2011-04-05 15:36:34
+TYPE anomalie concernant Code_Aster (VERSION 9.1)
+TITRE
+    problxc3xa8me dans la construction de la SD voisinage (AFFE_MODELE) en prxc3xa9sence de mailles pentaxc3xa9driques
+FONCTIONNALITE
+   Problème :
+   ----------
+   Sam Cuvilliez a remarqué un bug dans la routine nbsomm.f lorsqu'on veux utiliser le
+   voisinage des éléments en présence de pentaèdres.
+                                                                                            
+                           
+   Correction :
+   ------------
+   Il s'agit juste d'une faute de frappe : le nombre de sommets d'un pentaèdre est 6 et non 5.
+   On corrige cette erreur.
+                                                                                            
+                           
+   Résultats faux ?
+   ----------------
+   Non, car le voisinage n'est utilisé que dans une modélisation 3D et cette modélisation de
+   comporte pas de pentaèdres.
+    
+    
+   Liste des fichiers impactés par la correction de la fiche:  16738
+     nbsomm.f
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    rien de particulier
+NB_JOURS_TRAV  : 0.05
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 016751 DU 2011-04-07 14:40:52
+TYPE anomalie concernant Code_Aster (VERSION 9.1)
+TITRE
+    Erreur dans les commentaires de dfdm1d.f
+FONCTIONNALITE
+   Problème :
+   ----------
+   Martin David a remarqué une erreur dans le commentaire des arguments COSA, SINA de la
+   routine DFDM1D.
+                                                                                            
+                           
+   Correction :
+   ------------
+   On modifie le commentaire :
+   CosA et SinA  sont les sinus et cosinus de l'angle A compris entre la normale à l'élément
+   et l'axe Ox.
+    
+    
+   Liste des fichiers impactés par la correction de la fiche:  16751
+     dfdm1d.f
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    rien de particulier
+NB_JOURS_TRAV  : 0.05
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 016778 DU 2011-04-14 09:17:08
+TYPE anomalie concernant Code_Aster (VERSION 9.1)
+TITRE
+    problxc3xa8me "Exception utilisateur"
+FONCTIONNALITE
+   Problème :
+   ----------
+   Un calcul lancé en parallèle se termine mal.
+                                                                                            
+                           
+   On retrouve dans les "output" du job plusieurs remontées d'erreur :
+                                                                                            
+                           
+   1) dans la commande STAT_NON_LINE (routine assvec.f)
+   2) dans la commande FIN (routine rsinfo.f)
+                                                                                            
+                           
+                                                                                            
+                           
+   Analyse :
+   ---------
+   Sur le processeur 3, un problème se produit :
+                                                                                            
+                           
+   3:    !-------------------------------------------------------------------------------!
+   3:    ! <EXCEPTION> <ASSEMBLA_48>                                                     !
+   3:    !                                                                               !
+   3:    ! --- le noeud  : 2  du RESUEL    : &&VEDIME.0000001  du VECT_ELEM   : &&ASASVE !
+   3:    !  --- n'a pas d''adresse  dans la numérotation : RESU2F  .00002                !
+   3:    !-------------------------------------------------------------------------------!
+                                                                                            
+                           
+   Ce message est un message qui ne devrait jamais arriver, car, normalement,  tous les ddls
+   d'un problème ont une "adresse" dans la numérotation.
+                                                                                            
+                           
+   Cette erreur est encore plus curieuse car elle se produit au bout de quelques pas de temps.
+                                                                                            
+                           
+   Le noeud 3 s'étant planté, le job s'arrete comme il peut (il existe déjà une fiche sur ce
+   problème affectée à Mathieu Courtois).
+   Le code essaye alors de sauver les bases et sort par FIN qui se plante dans rsinfo.f car
+   l'un des champs présents sur la base est erroné (son objet .DESC est incorrect).
+                                                                                            
+                           
+                                                                                            
+                           
+   Que faire ?
+   ------------
+   Jean-Pierre a refait passer ce calcul et il est allé au bout.
+   Le problème rencontré est donc peut-etre lié à un problème d'exploitation de la machine.
+   Je propose de classer la fiche "sans suite".
+    
+   NB_JOURS_TRAV : 0.5 (JPL)
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    rien de particulier
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 016855 DU 2011-04-28 14:15:48
+TYPE anomalie concernant Code_Aster (VERSION 9.1)
+TITRE
+    usage imprudent de DISMOI / DIM_GEOM / MODELE
+FONCTIONNALITE
+   Problème :
+   ----------
+   Luc Davenne (merci à lui) a remarqué que certaines routines font:
+          CALL DISMOI('F','DIM_GEOM',MODELE,'MODELE',DIME,K8B,IER)
+                                                                                            
+                           
+   et supposent ensuite que DIME ne peut valoir que 2 ou 3, alors que parfois DIME=23.
+                                                                                            
+                           
+   Correction :
+   ------------
+   J'ai regardé tous les appelants de DISMOI/'DIM_GEOM'/'MODELE' et j'ai ajouté un message
+   d'erreur dans les routines imprudentes :
+                                                                                            
+                           
+   MODELISA2_6: _("""
+   Erreur d'utilisation :
+    Le modèle contient un mélange d'éléments 2D (vivant dans le plan XOY) et 3D.
+    Le code n'a pas prévu ce cas de figure ici.
+                                                                                            
+                           
+   Risques et conseils :
+    Il faut peut etre émettre une demande d'évolution pour pouvoir traiter ce problème.
+   """),
+    
+    
+   Liste des fichiers impactés par la correction de la fiche:  16855
+     calirc.f  cators.f  lrmpga.f  op0100.f  op0150.f  xpocrf.f
+     xpofon.f
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    rien de particulier
+NB_JOURS_TRAV  : 0.2
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 016871 DU 2011-05-03 14:31:40
+TYPE anomalie concernant Code_Aster (VERSION 9.1)
+TITRE
+    Print dans post_gp
+FONCTIONNALITE
+   Problème :
+   ----------
+   Lors de précedentes évolution, j'ai oublié de retirer des "print de debug" dans les 2
+   fichiers :
+   co_matr_asse.py  post_gp_ops.py
+                                                                                            
+                         
+   Correction :
+   ------------
+   Je retire les "print" abusifs.
+    
+    
+   Liste des fichiers impactés par la correction de la fiche:  16871
+     co_matr_asse.py  post_gp_ops.py
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    rien de particulier
+NB_JOURS_TRAV  : 0.05
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 016923 DU 2011-05-13 14:30:27
+TYPE express concernant Code_Aster (VERSION 9.1)
+TITRE
+    5 options xc3xa0 dxc3xa9truire
+FONCTIONNALITE
+   On détruit 5 options inutilisées :
+   
+   arlq_matr
+   char_meca_eplg_f
+   char_meca_eplg_r
+   dlsi_elno_dlde
+   endo_elno_elga
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    rien de particulier
+NB_JOURS_TRAV  : 0.05
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR sfayolle     FAYOLLE Sebastien      DATE 05/16/2011 - 03:49:47
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 016099 DU 2010-12-20 13:29:17
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+    Amxc3xa9liorer l'intxc3xa9gration de la loi Laborderie
+FONCTIONNALITE
+   Demande
+   ~~~~~~~
+   
+   Amélioration de l'intégration de la loi de Laborderie
+   
+   Action
+   ~~~~~~
+   
+   A classer sans suite car doublon avec la fiche 16566
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    aucune
+NB_JOURS_TRAV  : 0.01
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 016919 DU 2011-05-13 08:41:33
+TYPE anomalie concernant Code_Aster (VERSION 10.4)
+TITRE
+    En NEW10.4.2, le cas-test ssnv112b s'arrete par manque de temps sur Calibre5.
+FONCTIONNALITE
+   J'ai relancé le calcul sur claut682 et sur ma machine Calibre 5 claut685 et je n'arrive
+   pas à reproduire l'erreur. Le tableau de convergence est le suivant :
+   
+    Instant de calcul:  1.000000000000e+00 
+    
+   --------------------------------------------------------------------------------------
+   |   ITERATIONS   |     RESIDU     |     RESIDU     |     RESIDU     |     OPTION     |
+   |     NEWTON     |     RELATIF    |     ABSOLU     |  PAR REFERENCE |   ASSEMBLAGE   |
+   |                | RESI_GLOB_RELA | RESI_GLOB_MAXI |  CONTRAINTES   |                |
+   --------------------------------------------------------------------------------------
+   |     0        X | 4.74717E-04    | 1.63212E-06    | 7.40706E+00  X |TANGENTE        |
+   |     1          | 1.35394E-10    | 4.65260E-13    | 1.09836E-04    |TANGENTE        |
+   --------------------------------------------------------------------------------------
+   
+   A classer sans suite
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    cas test
+NB_JOURS_TRAV  : 0.01
+--------------------------------------------------------------------------------
+
+
+
+========================================================================
+=== Recapitulation des operations demandees pour toutes les restitutions
+========================================================================
+
+
+    TYPE Action    unite                      user      Auteur         nblg  ajout suppr.
+
+ CASTEST MODIF ssnp125a                     foucault A.FOUCAULT         513      3      3
+ CASTEST MODIF ssnp15a                       geniaut S.GENIAUT          793      7     11
+ CASTEST MODIF ssnp15b                       geniaut S.GENIAUT          541      7     13
+ CASTEST MODIF ssnp15c                       geniaut S.GENIAUT          635      6      7
+ CASTEST MODIF ssnp15d                       geniaut S.GENIAUT          459     12     24
+ CASTEST MODIF ssnp15e                       geniaut S.GENIAUT          211     10     21
+ CASTEST MODIF ssnp15f                       geniaut S.GENIAUT          358      7     11
+ CASTEST MODIF ssnv208a                     foucault A.FOUCAULT         613      3      3
+ CASTEST MODIF wtnv132c                     foucault A.FOUCAULT         597     89      1
+CATALOGU SUPPR options/arlq_matr              pellet J.PELLET            43      0     43
+CATALOGU SUPPR options/char_meca_eplg_f       pellet J.PELLET            37      0     37
+CATALOGU SUPPR options/char_meca_eplg_r       pellet J.PELLET            36      0     36
+CATALOGU SUPPR options/dlsi_elno_dlde         pellet J.PELLET            35      0     35
+CATALOGU SUPPR options/endo_elno_elga         pellet J.PELLET            29      0     29
+ FORTRAN MODIF calculel/op0100                pellet J.PELLET          1106      3      3
+ FORTRAN MODIF elements/dfdm1d                pellet J.PELLET            81      5      5
+ FORTRAN MODIF elements/evala1              foucault A.FOUCAULT         211     61     12
+ FORTRAN MODIF elements/nbsomm                pellet J.PELLET            43      3      3
+ FORTRAN MODIF elements/te0030              foucault A.FOUCAULT         189     10     13
+ FORTRAN MODIF elements/te0511              foucault A.FOUCAULT         167     11     10
+ FORTRAN MODIF modelisa/calirc                pellet J.PELLET           633      3      1
+ FORTRAN MODIF modelisa/cators                pellet J.PELLET           265      3      1
+ FORTRAN MODIF prepost/lrmpga                 pellet J.PELLET           338      3      1
+ FORTRAN MODIF prepost/xpocrf                 pellet J.PELLET           218      3      1
+ FORTRAN MODIF prepost/xpofon                 pellet J.PELLET           129      3      1
+ FORTRAN MODIF utilitai/op0150                pellet J.PELLET           476      3      1
+  PYTHON MODIF Macro/post_gp_ops              pellet J.PELLET          1462      1      2
+  PYTHON MODIF Messages/rupture0             geniaut S.GENIAUT          562     12      9
+  PYTHON MODIF SD/co_matr_asse                pellet J.PELLET            74      2      3
+
+
+        nb unites  nb lignes  ajouts  suppr.  difference
+ AJOUT :    0           0         0                +0
+ MODIF :   24       10674       270     160      +110
+ SUPPR :    5         180               180      -180
+ DEPLA :    0           0 
+         ----      ------     ------  ------   ------
+ TOTAL :   29       10854       270     340       -70 

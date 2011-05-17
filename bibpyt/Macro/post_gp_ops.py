@@ -1,4 +1,4 @@
-#@ MODIF post_gp_ops Macro  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
+#@ MODIF post_gp_ops Macro  DATE 16/05/2011   AUTEUR PELLET J.PELLET 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -953,7 +953,6 @@ def CallRCVALE(TEMP, para, MATER):
    """Fonction appelant RCVALE et retourne la valeur d'un paramètre.
    """
    valres, flag_ok = MATER.RCVALE('ELAS', 'TEMP', TEMP, para)
-   print "AJACOT flag_ok=",flag_ok,type(flag_ok)
    assert len(flag_ok) == 1 and  flag_ok[0] == 0, \
          'Erreur lors de la récupération des valeurs du matériau.'
    return valres[0]

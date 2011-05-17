@@ -1,8 +1,8 @@
       SUBROUTINE DFDM1D ( NNO,POIDS,DFRDK,COOR,DFDX,COUR,JACP,COSA,SINA)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 19/01/2010   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 16/05/2011   AUTEUR PELLET J.PELLET 
 C ======================================================================
-C COPYRIGHT (C) 1991 - 2001  EDF R&D                  WWW.CODE-ASTER.ORG
+C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 C IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 C THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -23,8 +23,8 @@ C ======================================================================
       REAL*8                  DXDK,DYDK,COUR,JAC,JACP,POIDS,SINA,COSA
 C ......................................................................
 C    - BUTS:  CALCULER LA VALEUR DU POIDS D'INTEGRATION EN 1 POINT DE
-C             GAUSS POUR UN SEGMENT PLAN  A 3 NOEUDS.
-C      + CALCULE LE SINUS ET LE COSIMUS DE L'ANGLE ENTRE LA TANGENTE
+C             GAUSS POUR UN SEGMENT PLAN
+C      + CALCULE LE SINUS ET LE COSIMUS DE L'ANGLE ENTRE LA NORMALE
 C        ET L'AXE OX
 C      + CALCULE LES DERIVEES DES FONCTIONS DE FORME DANS L'ELEMENT REEL
 C
@@ -38,7 +38,7 @@ C        RESULTATS:   DFDX          <--  DERIVEES DES FONCTIONS DE FORME
 C                                        / ABSCISSE CURVILIGNE
 C                     COUR          <--  COURBURE AU NOEUD
 C                     COSA          <--  COS DE L'ANGLE ALPHA:
-C                                        TANGENTE / HORIZONTALE
+C                                        NORMALE / HORIZONTALE
 C                     SINA          <--  SIN DE L'ANGLE ALPHA
 C                     JACP          <--  PRODUIT DU JACOBIEN ET DU POIDS
 C

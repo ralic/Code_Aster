@@ -1,7 +1,7 @@
       SUBROUTINE TE0030(OPTION,NOMTE)
 C =====================================================================
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 25/01/2011   AUTEUR PELLET J.PELLET 
+C MODIF ELEMENTS  DATE 17/05/2011   AUTEUR FOUCAULT A.FOUCAULT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -34,10 +34,6 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX --------------------
       COMMON /IVARJE/ZI(1)
       REAL*8 ZR
       COMMON /RVARJE/ZR(1)
-      COMPLEX*16 ZC
-      COMMON /CVARJE/ZC(1)
-      LOGICAL ZL
-      COMMON /LVARJE/ZL(1)
       CHARACTER*8 ZK8
       CHARACTER*16 ZK16
       CHARACTER*24 ZK24
@@ -47,20 +43,20 @@ C --------- DEBUT DECLARATIONS NORMALISEES  JEVEUX --------------------
 C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX --------------------
 C =====================================================================
       LOGICAL      LOGTHM
-      INTEGER      IMATE, ICOMPO, IVARIP, ICONTP, ILOCAL
+      INTEGER      IMATE, ICOMPO, IVARIP, ICONTP, ILOCAL,IBID
       INTEGER      NBVARI, NBRAC4, RINDIC, KPG, II, NBSIG
       INTEGER      NBSIGM, ICODE, IRET, TABTHM(3), DIMMAX, NPGU
       INTEGER      NDIM, NNO, NNOS, NPG, IPOIDS, IVF, IDFDE, JGANO
       REAL*8       VBIFUR, RACINE(4), DSDE(6,6)
-      CHARACTER*8  MOD
+      CHARACTER*8  MOD, ALIAS8
       CHARACTER*16 RELCOM
-      LOGICAL      LTEATT
 C =====================================================================
 C --- RINDIC EST LE NOMBRE DE PARAMETRE DE LOCALISATION DEFINIT -------
 C --- SOUS LE MOT-CLE INDL_R DANS GRANDEUR_SIMPLE.CATA --------------
 C =====================================================================
       PARAMETER ( RINDIC  = 5 )
 C =====================================================================
+      CALL TEATTR(' ','S','ALIAS8',ALIAS8,IBID)
       IF ( OPTION.EQ.'INDL_ELGA' ) THEN
 C =====================================================================
 C --- VERIFICATION DE COHERENCE ---------------------------------------
@@ -69,13 +65,13 @@ C =====================================================================
 C --- CAS D'UN POST-TRAITEMENT EN MECANIQUE DRAINE --------------------
 C =====================================================================
          LOGTHM  = .FALSE.
-         IF (LTEATT(' ','D_PLAN','OUI')) THEN
+         IF ((ALIAS8(3:5).EQ.'DPL').OR.(ALIAS8(3:5).EQ.'DPS')) THEN
             MOD(1:6) = 'D_PLAN'
             NBSIG = NBSIGM()
-         ELSE IF (LTEATT(' ','C_PLAN','OUI')) THEN
+         ELSE IF (ALIAS8(3:5).EQ.'CPL') THEN
             MOD(1:6) = 'C_PLAN'
             NBSIG = NBSIGM()
-         ELSE IF (LTEATT(' ','AXIS','OUI')) THEN
+         ELSE IF (ALIAS8(3:5).EQ.'AX_') THEN
             MOD(1:4) = 'AXIS'
             NBSIG = NBSIGM()
          ELSE
@@ -83,9 +79,10 @@ C =====================================================================
 C --- CAS D'UN POST-TRAITEMENT EN MECANIQUE THM -----------------------
 C =====================================================================
             LOGTHM  = .TRUE.
-            IF ( LTEATT(' ','AXIS','OUI') )THEN
+            IF (ALIAS8(3:5).EQ.'AH2')THEN
                MOD(1:4) = 'AXIS'
-            ELSE IF ( LTEATT(' ','D_PLAN','OUI'))THEN
+            ELSE IF ((ALIAS8(3:5).EQ.'DH2').OR.
+     &               (ALIAS8(3:5).EQ.'DR1'))THEN
                MOD(1:6) = 'D_PLAN'
             ELSE
 C =====================================================================

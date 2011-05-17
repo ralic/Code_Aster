@@ -1,6 +1,6 @@
       SUBROUTINE TE0511(OPTION,NOMTE)
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ELEMENTS  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF ELEMENTS  DATE 17/05/2011   AUTEUR FOUCAULT A.FOUCAULT 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -44,20 +44,20 @@ C --------- FIN  DECLARATIONS  NORMALISEES  JEVEUX --------------------
 C =====================================================================
       LOGICAL      LOGTHM
       INTEGER      IMATE, ICOMPO, IVARIP, ICONTP, ILOCAL, IC, IV
-      INTEGER      NBVARI, RINDIC, KPG, NBSIG, IMAT
+      INTEGER      NBVARI, RINDIC, KPG, NBSIG, IMAT,IBID
       INTEGER      NBSIGM, ICODE, IRET, TABTHM(3), DIMMAX, NPGU
       INTEGER      NDIM, NNO, NNOS, NPG, IPOIDS, IVF, IDFDE, JGANO
       REAL*8       MODULE, SIG(6)
-      REAL*8       VIN(50)
-      CHARACTER*8  MOD
+      REAL*8       VIN(100)
+      CHARACTER*8  MOD, ALIAS8
       CHARACTER*16 RELCOM
-      LOGICAL      LTEATT
 C =====================================================================
 C --- RINDIC EST LE NOMBRE DE PARAMETRE DE LOCALISATION DEFINIT -------
 C --- SOUS LE MOT-CLE INDL_R DANS GRANDEUR_SIMPLE.CATA --------------
 C =====================================================================
       PARAMETER ( RINDIC  = 1 )
 C =====================================================================
+      CALL TEATTR(' ','S','ALIAS8',ALIAS8,IBID)
       IF ( OPTION.EQ.'PDIL_ELGA' ) THEN
 C =====================================================================
 C --- VERIFICATION DE COHERENCE ---------------------------------------
@@ -66,13 +66,13 @@ C =====================================================================
 C --- CAS D'UN POST-TRAITEMENT EN MECANIQUE DRAINE --------------------
 C =====================================================================
          LOGTHM  = .FALSE.
-         IF (LTEATT(' ','D_PLAN','OUI')) THEN
+         IF ((ALIAS8(3:5).EQ.'DPL').OR.(ALIAS8(3:5).EQ.'DPS')) THEN
             MOD(1:6) = 'D_PLAN'
             NBSIG = NBSIGM()
-         ELSE IF (LTEATT(' ','C_PLAN','OUI')) THEN
+         ELSE IF (ALIAS8(3:5).EQ.'CPL') THEN
             MOD(1:6) = 'C_PLAN'
             NBSIG = NBSIGM()
-         ELSE IF (LTEATT(' ','AXIS','OUI')) THEN
+         ELSE IF (ALIAS8(3:5).EQ.'AX_') THEN
             MOD(1:4) = 'AXIS'
             NBSIG = NBSIGM()
          ELSE
@@ -80,9 +80,10 @@ C =====================================================================
 C --- CAS D'UN POST-TRAITEMENT EN MECANIQUE THM -----------------------
 C =====================================================================
             LOGTHM  = .TRUE.
-            IF ( LTEATT(' ','AXIS','OUI') )THEN
+            IF (ALIAS8(3:5).EQ.'AH2')THEN
                MOD(1:4) = 'AXIS'
-            ELSE IF ( LTEATT(' ','D_PLAN','OUI'))THEN
+            ELSE IF ((ALIAS8(3:5).EQ.'DH2').OR.
+     &               (ALIAS8(3:5).EQ.'DR1'))THEN
                MOD(1:6) = 'D_PLAN'
             ELSE
 C =====================================================================

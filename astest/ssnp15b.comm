@@ -1,4 +1,4 @@
-# MODIF  DATE 08/02/2011   AUTEUR TARDIEU N.TARDIEU 
+# MODIF  DATE 16/05/2011   AUTEUR GENIAUT S.GENIAUT 
 # TITRE ESSAI DE TRACTION-CISAILLEMENT (MISES ECR. ISOT. C_PLAN)
 # ssnp15b.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -99,13 +99,10 @@ U=STAT_NON_LINE(MODELE=MO,
                           FONC_MULT=TAU_F,),),
                 COMP_INCR=_F(RELATION='VMIS_ISOT_LINE',),
                 INCREMENT=_F(LIST_INST=L_INST,),
-                NEWTON=_F(MATRICE='ELASTIQUE',
+                NEWTON=_F(MATRICE='TANGENTE',
                           REAC_ITER=3,),
-                RECH_LINEAIRE=_F(RESI_LINE_RELA=1.E-3,
-                                 ITER_LINE_MAXI=5,
-                                 RHO_MAX=150,),
-                CONVERGENCE=_F(RESI_GLOB_MAXI=1.E-3,
-                               ITER_GLOB_MAXI=10,),);
+                RECH_LINEAIRE=_F(RHO_MAX=150),
+                )
 
 U=CALC_ELEM(reuse =U,
             RESULTAT=U,
@@ -124,13 +121,10 @@ U2=STAT_NON_LINE(MODELE=MO,
                            FONC_MULT=TAU_F,),),
                  COMP_INCR=_F(RELATION='VMIS_ECMI_LINE',),
                  INCREMENT=_F(LIST_INST=L_INST,),
-                 NEWTON=_F(MATRICE='ELASTIQUE',
+                 NEWTON=_F(MATRICE='TANGENTE',
                            REAC_ITER=3,),
-                 RECH_LINEAIRE=_F(RESI_LINE_RELA=1.E-3,
-                                  ITER_LINE_MAXI=5,
-                                  RHO_MAX=150.,),
-                 CONVERGENCE=_F(RESI_GLOB_MAXI=1.E-3,
-                                ITER_GLOB_MAXI=10,),);
+                 RECH_LINEAIRE=_F(RHO_MAX=150),
+                 )
 
 U2=CALC_ELEM(reuse =U2,
              RESULTAT=U2,

@@ -3,7 +3,7 @@
       CHARACTER*(*)     CHARGZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 16/05/2011   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -81,6 +81,8 @@ C
 C --- RECUPERATION DE LA DIMENSION (2 OU 3) DU PROBLEME :
 C     -------------------------------------------------
       CALL DISMOI('F','DIM_GEOM',MODELE,'MODELE',NDIM,K8BID,IER)
+      IF (.NOT.(NDIM.EQ.2.OR.NDIM.EQ.3))
+     &       CALL U2MESS('F','MODELISA2_6')
 C
 C --- LIGREL DU MODELE :
 C     ----------------

@@ -3,7 +3,7 @@
       CHARACTER*(*) CHARGZ
 C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF MODELISA  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF MODELISA  DATE 16/05/2011   AUTEUR PELLET J.PELLET 
 C RESPONSABLE PELLET
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -108,6 +108,8 @@ C ----------------------------------------------------------------------
       NOMA=ZK8(JNOMA)
 
       CALL DISMOI('F','DIM_GEOM',MO,'MODELE',IGEOM,KBID,IER)
+      IF (.NOT.(IGEOM.EQ.2.OR.IGEOM.EQ.3))
+     &       CALL U2MESS('F','MODELISA2_6')
       IF (IGEOM.EQ.2) THEN
         NDIM=2
       ELSE

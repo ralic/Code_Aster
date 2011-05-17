@@ -1,6 +1,6 @@
       SUBROUTINE OP0100()
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 29/03/2011   AUTEUR GENIAUT S.GENIAUT 
+C MODIF CALCULEL  DATE 16/05/2011   AUTEUR PELLET J.PELLET 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -136,7 +136,6 @@ C
       CALL GETVR8(' ','PRECISION',0,1,1,PREC,NP)
       CALL GETVTX(' ','CRITERE'  ,0,1,1,CRIT,NC)
       CALL RSUTNU ( RESUCO, ' ', 0, VECORD, LONVEC, PREC, CRIT, IER )
-     
       CALL ASSERT(IER.EQ.0)
       CALL GETTCO(RESUCO,TYSD)
       IF (TYSD.EQ.'DYNA_TRANS') THEN
@@ -166,8 +165,10 @@ C        PASSER DE LA PRESENCE DE CES MOTS-CLES.
       CALL JEVEUO ( VECORD, 'L', IVEC )
       IORD = ZI(IVEC)
       CALL MEDOM1(MODELE,MATE,K8B,VCHAR,NCHA,K4B,RESUCO,IORD)
-            
+
       CALL DISMOI('F','DIM_GEOM',MODELE,'MODELE',DIME,K8B,IER)
+      IF (.NOT.(DIME.EQ.2.OR.DIME.EQ.3))
+     &       CALL U2MESS('F','MODELISA2_6')
       CALL NMDORC(MODELE,COMPOR,K24B)
       CALL GVERLC(RESUCO,COMPOR,IORD)
 
@@ -246,10 +247,10 @@ C------------------------------------------
       IF(DIME.EQ.2)THEN
         CALL GETVID ( 'THETA','FISSURE'  , 1,1,1,FISS,N2)
         CALL GETVID ( 'THETA','FOND_FISS', 1,1,1,FOND,N1)
-       
+
         IF (N2.NE.0.AND.OPTION.EQ.'CALC_G') OPTION = 'CALC_G_X'
         IF(OPTION.EQ.'CALC_K_G' .OR. OPTION.EQ.'K_G_MODA') THEN
-          IF (N1+N2.EQ.0.OR.N1*N2.NE.0) 
+          IF (N1+N2.EQ.0.OR.N1*N2.NE.0)
      &       CALL U2MESK('F','RUPTURE1_11',1,OPTION)
           IF (N2.NE.0.AND.OPTION.EQ.'CALC_K_G') OPTION = 'CALC_K_X'
         ENDIF
@@ -340,11 +341,11 @@ C 2.7.1 ==> SI 3D LOCAL :
 
 C     - FOND_FISS ET FISSURE :
       IF (OPTION(1:6) .EQ. 'CALC_K' .OR.
-     &    OPTION .EQ. 'K_G_MODA'    .OR. 
+     &    OPTION .EQ. 'K_G_MODA'    .OR.
      &    OPTION .EQ. 'CALC_G_X')THEN
-   
+
         CALL GETVID ( 'THETA','FISSURE', 1,1,1, FISS, IFOND )
-        
+
         CHFOND='&&'//NOMPRO//'.CHFOND'
 C       CREATION DE LA LISTE DES POINTS DU FOND A CALCULER
         CALL XRECFF(FISS,CHFOND,LNOFF)
@@ -614,7 +615,7 @@ C
 C --- DETERMINATION AUTOMATIQUE DE THETA (CAS 3D LOCAL)
 C
       IF((TROIDL.AND. OPTIO1(1:6) .EQ.'CALC_K')  .OR.
-     &   (TROIDL.AND. OPTIO1      .EQ.'K_G_MODA').OR. 
+     &   (TROIDL.AND. OPTIO1      .EQ.'K_G_MODA').OR.
      &   (TROIDL.AND. OPTIO1      .EQ.'CALC_G_X')) THEN
 
 
@@ -634,7 +635,7 @@ C       ON A TOUJOURS À FAIRE À UN FOND OUVERT AVEC XFEM
         CALL XCOURB(GRLT,GRLN,NOMA,MODELE,COURB)
 
       ELSE IF (TROIDL.AND.
-     &         OPTIO1(1:6) .NE.'CALC_K' .AND. 
+     &         OPTIO1(1:6) .NE.'CALC_K' .AND.
      &         OPTIO1      .NE.'K_G_MODA') THEN
 
        CALL JEVEUO(CHFOND,'L',IADNUM)
@@ -822,7 +823,7 @@ C
               CALL U2MESG('F', 'RUPTURE0_93',1,VALK,1,VALI,0,0.D0)
             ENDIF
 
-            
+
             CALL CAKG3D(OPTIO1,LATABL,MODELE,DEPLA,THETAI,MATE,COMPOR,
      &              NCHA,ZK8(ICHA),SYMECH,CHFOND,LNOFF,BASLOC,COURB,
      &              IORD,NDEG,THLAGR,GLAGR,THLAG2,PAIR,NDIMTE,
@@ -851,7 +852,7 @@ C  3.4.1 ==>  K_G_MODA 2D
 C  -----------------------
        IF(.NOT.TROIDL)THEN
         CALL GETVID ( 'THETA','FOND_FISS', 1,1,1,FOND,N1)
-C FEM        
+C FEM
         IF (N1.NE.0) THEN
           DO 341 I = 1 , LONVEC
             IORD = ZI(IVEC-1+I)
@@ -864,16 +865,15 @@ C FEM
             CALL RSADPA(RESUCO,'L',1,'OMEGA2',IORD,0,IPULS,K8BID)
             PULS = ZR(IPULS)
             PULS = SQRT(PULS)
-            
+
             CALL MEMOKG(OPTIO1,LATABL,MODELE,DEPLA,THETA,MATE,NCHA,
      &                  ZK8(ICHA),SYMECH,FOND,IORD,PULS,NBPRUP,NOPRUP)
  341     CONTINUE
- 
+
 C X-FEM
        ELSE
          CALL GETVID ( 'THETA','FISSURE'  , 1,1,1,FISS,N2)
          CALL ASSERT(N2.NE.0)
-     
          DO 3422 I = 1 , LONVEC
             IORD = ZI(IVEC-1+I)
             CALL RSEXCH(RESUCO,'DEPL',IORD,DEPLA,IRET)
@@ -895,8 +895,8 @@ C X-FEM
      &                   CHEPSE,CHSISE,CHVITE,CHACCE,LMELAS,K16BID,
      &                   COMPOR)
  3422     CONTINUE
-       ENDIF 
- 
+       ENDIF
+
 C
 C  3.4.2 ==> K_G_MODA 3D LOC
 C  -------------------------
@@ -921,7 +921,7 @@ C  -------------------------
      &              IORD,NDEG,THLAGR,GLAGR,THLAG2,PAIR,NDIMTE,
      &              PULS,NBPRUP,NOPRUP,FISS)
  342     CONTINUE
-       ENDIF       
+       ENDIF
 
 C
 C--------------------------------------------
