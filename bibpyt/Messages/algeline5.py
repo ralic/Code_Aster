@@ -1,4 +1,4 @@
-#@ MODIF algeline5 Messages  DATE 29/03/2011   AUTEUR BOITEAU O.BOITEAU 
+#@ MODIF algeline5 Messages  DATE 19/05/2011   AUTEUR DELMAS J.DELMAS 
 # -*- coding: iso-8859-1 -*-
 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -440,9 +440,8 @@ cata_msg={
 
 76 : _("""
 Solveur GCPC :
-  La création du préconditionneur 'LDLT_SP' a échoué.
-  Plus précisément : le paramètre PCENT_PIVOT choisi automatiquement par le code pour l'appel à MUMPS n'a pas été suffisant.
+  La création du préconditionneur 'LDLT_SP' a échoué car on manque de mémoire.
 
-  Conseil : changez de préconditionneur.
+  Conseil : augmentez la valeur du mot clé SOLVEUR/PCENT_PIVOT.
 """),
 }

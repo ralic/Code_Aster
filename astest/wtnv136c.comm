@@ -1,4 +1,4 @@
-# MODIF  DATE 02/05/2011   AUTEUR DESOZA T.DESOZA 
+# MODIF  DATE 19/05/2011   AUTEUR DELMAS J.DELMAS 
 # TITRE MODELISATION DU GONFLEMENT DE L ARGILE GONFLANTE (3D THH2MS)
 # wtnv136c.para = tps_job 150 mem_job 128Mo mpi_nbcpu 2 liste_test I
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -21,7 +21,7 @@
 
 # 2 processeurs
 
-DEBUT(CODE=_F(NOM='WTNV136C', NIV_PUB_WEB='INTERNET'))
+DEBUT(CODE=_F(NOM='WTNV136C', NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON',))
 
 import sys
 import string
@@ -320,36 +320,42 @@ MSTEP=DEFI_FONCTION( NOM_PARA='INST',
 #***********************************************************************
 
 
-U2=STAT_NON_LINE(
-                                MODELE=MODELE,
+U2=STAT_NON_LINE(MODELE=MODELE,
+                 CHAM_MATER=CHMAT,
+                 EXCIT=(_F( CHARGE = DEP_FIX, ),
+                        _F( CHARGE = DEP_VAR,FONC_MULT = MSTEP ),
+                 ),
+                 COMP_INCR=_F(RELATION='KIT_THHM',
+                              RELATION_KIT=('ELAS_GONF','LIQU_AD_GAZ_VAPE','HYDR_VGM'),
+                              ),
+                 ETAT_INIT=_F(SIGM=SIGINIT,DEPL=DEPINAR),
+                 INCREMENT=_F(LIST_INST = TEMPS2, NUME_INST_FIN=250,),
+                 NEWTON=_F( MATRICE = 'TANGENTE',REAC_ITER = 1,),
+                 SOLVEUR=_F(METHODE='PETSC',ALGORITHME='GMRES',PRE_COND='LDLT_INC'),
+                 CONVERGENCE=_F(ITER_GLOB_MAXI=40,
+                                ITER_GLOB_ELAS=50,RESI_GLOB_RELA = RESI_GLOB_RELA,
+                                ),
+                 )
 
-                                CHAM_MATER=CHMAT,
+U2=STAT_NON_LINE(reuse=U2,
+                 MODELE=MODELE,
+                 CHAM_MATER=CHMAT,
+                 EXCIT=(_F( CHARGE = DEP_FIX, ),
+                        _F( CHARGE = DEP_VAR,FONC_MULT = MSTEP ),
+                 ),
+                 COMP_INCR=_F(RELATION='KIT_THHM',
+                              RELATION_KIT=('ELAS_GONF','LIQU_AD_GAZ_VAPE','HYDR_VGM'),
+                              ),
+                 ETAT_INIT=_F(EVOL_NOLI=U2,),
+                 INCREMENT=_F(LIST_INST = TEMPS2,),
+                 NEWTON=_F( MATRICE = 'TANGENTE',REAC_ITER = 1,),
+                 SOLVEUR=_F(METHODE='PETSC',ALGORITHME='GMRES',PRE_COND='LDLT_SP',),
+                 CONVERGENCE=_F(ITER_GLOB_MAXI=40,
+                                ITER_GLOB_ELAS=50,RESI_GLOB_RELA = RESI_GLOB_RELA,
+                                ),
+                 )
 
 
-                                EXCIT=(
-                                        _F( CHARGE = DEP_FIX, ),
-                                        _F( CHARGE = DEP_VAR,FONC_MULT = MSTEP ),
-                ),
-                        COMP_INCR=_F(
-                         RELATION='KIT_THHM',
-                           RELATION_KIT=(
-                                'ELAS_GONF','LIQU_AD_GAZ_VAPE','HYDR_VGM'),
-                         ),
-
-
-
-                ETAT_INIT=_F(SIGM=SIGINIT,DEPL=DEPINAR),
-
-                INCREMENT=_F(LIST_INST = TEMPS2, ),
-
-                NEWTON=_F( MATRICE = 'TANGENTE',REAC_ITER = 1,),
-                SOLVEUR=_F(METHODE='PETSC',ALGORITHME='GMRES',PRE_COND='LDLT_INC'),
-                CONVERGENCE=_F(
-                        ITER_GLOB_MAXI=40,
-                        ITER_GLOB_ELAS=50,
-                        RESI_GLOB_RELA = RESI_GLOB_RELA,
-                ),
-              )
 
 #############################
 # CALCULS ET POST TRAITEMENT

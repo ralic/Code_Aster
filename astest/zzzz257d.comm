@@ -1,4 +1,4 @@
-# MODIF  DATE 03/05/2011   AUTEUR GENIAUT S.GENIAUT 
+# MODIF  DATE 19/05/2011   AUTEUR DELMAS J.DELMAS 
 # TITRE ESTIMATEURS D'ERREUR EN QUANTITES D'INTERET POUR LE CALCUL DES FIC
 # zzzz257d.para = tps_job 120 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -160,8 +160,11 @@ IMPR_TABLE(TABLE=POST_K,
 
 RESU=CALC_ELEM(reuse =RESU,
                RESULTAT=RESU,
-               OPTION=('SIEF_ELNO',
-                       'ERME_ELEM',),);
+               OPTION=('SIEF_ELNO',),);
+
+RESU=CALC_ERREUR(reuse =RESU,
+               RESULTAT=RESU,
+               OPTION=('ERME_ELEM',),);
 
 # ---------------------------
 # definition du probleme dual
@@ -184,16 +187,18 @@ RESUDUAL=MECA_STATIQUE(MODELE=MODL,
 
 RESUDUAL=CALC_ELEM(reuse =RESUDUAL,
                    RESULTAT=RESUDUAL,
-                   OPTION=('SIEF_ELNO',
-                           'ERME_ELEM',),);
+                   OPTION=('SIEF_ELNO',),);
+
+RESUDUAL=CALC_ERREUR(reuse =RESUDUAL,
+                   RESULTAT=RESUDUAL,
+                   OPTION=('ERME_ELEM',),);
 
 # ---------------------------
 # estimation de l'erreur en quantite d'interet
 # ---------------------------
 
-RESU=CALC_ELEM(reuse =RESU,
+RESU=CALC_ERREUR(reuse =RESU,
                RESULTAT=RESU,
-               TYPE_OPTION='TOUTES',
                OPTION='QIRE_ELEM',
                RESU_DUAL=RESUDUAL,);
 

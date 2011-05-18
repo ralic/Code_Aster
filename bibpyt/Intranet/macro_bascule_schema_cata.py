@@ -1,4 +1,4 @@
-#@ MODIF macro_bascule_schema_cata Intranet  DATE 07/02/2011   AUTEUR DEVESA G.DEVESA 
+#@ MODIF macro_bascule_schema_cata Intranet  DATE 19/05/2011   AUTEUR DELMAS J.DELMAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -136,7 +136,7 @@ MACRO_BASCULE_SCHEMA = MACRO(nom="MACRO_BASCULE_SCHEMA", op=macro_bascule_schema
 #-------------------------------------------------------------------
          CONVERGENCE     =C_CONVERGENCE(),
 #-------------------------------------------------------------------
-         SOLVEUR         =C_SOLVEUR(),
+         SOLVEUR         =C_SOLVEUR('MACRO_BASCULE_SCHEMA'),
 #-------------------------------------------------------------------
          OBSERVATION     =FACT(statut='f',max='**',
            NOM_CMP         =SIMP(statut='o',typ='TXM',max='**'),

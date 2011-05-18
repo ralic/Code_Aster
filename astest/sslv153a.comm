@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 19/05/2011   AUTEUR DELMAS J.DELMAS 
 # RESPONSABLE GNICOLAS G.NICOLAS
 # TITRE INDICATEUR D'ERREUR MAILLES VOLUMIQUES ET FONCTIONS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -379,10 +379,9 @@ SOLUPR=CALC_ELEM(reuse =SOLUPR,
                  TYPE_OPTION='SIGM_MASSIF',
                  OPTION='SIEF_ELNO',);
 
-SOLUPR=CALC_ELEM(reuse =SOLUPR,
-                 RESULTAT=SOLUPR,
-                 TYPE_OPTION='INDI_ERREUR',
-                 OPTION=('ERME_ELEM','ERME_ELNO',),
+SOLUPR=CALC_ERREUR(reuse =SOLUPR,
+                   RESULTAT=SOLUPR,
+                   OPTION=('ERME_ELEM','ERME_ELNO',),
 
 );
 
@@ -427,10 +426,9 @@ SOLUDU=CALC_ELEM(reuse =SOLUDU,
                  TYPE_OPTION='SIGM_MASSIF',
                  OPTION='SIEF_ELNO',);
 
-SOLUDU=CALC_ELEM(reuse =SOLUDU,
-                 RESULTAT=SOLUDU,
-                 TYPE_OPTION='INDI_ERREUR',
-                 OPTION=('ERME_ELEM','ERME_ELNO',),
+SOLUDU=CALC_ERREUR(reuse =SOLUDU,
+                   RESULTAT=SOLUDU,
+                   OPTION=('ERME_ELEM','ERME_ELNO',),
 
 );
 
@@ -440,10 +438,10 @@ SOLUDU=CALC_NO(reuse =SOLUDU,
 
 # C.3. Calcul de l'estimateur d'erreur en quantite d'interet
 
-SOLUPR=CALC_ELEM(reuse =SOLUPR,
-                 RESULTAT=SOLUPR,
-                 OPTION=('QIRE_ELEM','QIRE_ELNO',),
-                 RESU_DUAL=SOLUDU,);
+SOLUPR=CALC_ERREUR(reuse =SOLUPR,
+                   RESULTAT=SOLUPR,
+                   OPTION=('QIRE_ELEM','QIRE_ELNO',),
+                   RESU_DUAL=SOLUDU,);
 
 SOLUPR=CALC_NO(reuse =SOLUPR,
                RESULTAT=SOLUPR,

@@ -10,7 +10,7 @@ C     --- ARGUMENTS ---
       CHARACTER*19 KCHARG
       CHARACTER*24 SUROPT
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+C MODIF CALCULEL  DATE 19/05/2011   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -91,39 +91,34 @@ C     ----- FIN  DECLARATIONS  NORMALISEES  JEVEUX ---------------------
       NPASS = 0
       NOBASE = '&&CALCOP'
 
-      IF ( (OPTION.EQ.'DEDE_ELNO').OR.
-     &     (OPTION.EQ.'DESI_ELNO').OR.
-     &     (OPTION.EQ.'DETE_ELNO').OR.
-     &     (OPTION.EQ.'DEUL_ELGA_DEPL').OR.
-     &     (OPTION.EQ.'DEUL_ELGA_TEMP').OR.
-     &     (OPTION.EQ.'DISS_ELGA').OR.
-     &     (OPTION.EQ.'DISS_ELNO').OR.
-     &     (OPTION.EQ.'ERME_ELEM').OR.
-     &     (OPTION.EQ.'ERTH_ELEM').OR.
-     &     (OPTION.EQ.'ERME_ELNO').OR.
-     &     (OPTION.EQ.'ERTH_ELNO').OR.
-     &     (OPTION.EQ.'ERZ1_ELEM').OR.
-     &     (OPTION.EQ.'ERZ2_ELEM') ) GOTO 9999
-      IF ( (OPTION.EQ.'HYDR_ELNO').OR.
-     &     (OPTION.EQ.'SIRO_ELEM').OR.
-     &     (OPTION.EQ.'QIRE_ELEM').OR.
-     &     (OPTION.EQ.'QIRE_ELNO').OR.
-     &     (OPTION.EQ.'QIZ1_ELEM').OR.
-     &     (OPTION.EQ.'QIZ2_ELEM').OR.
-     &     (OPTION.EQ.'SIZ1_ELGA').OR.
-     &     (OPTION.EQ.'SIZ2_ELGA').OR.
-     &     (OPTION.EQ.'SING_ELEM').OR.
-     &     (OPTION.EQ.'SING_ELNO').OR.
-     &     (OPTION.EQ.'SIEQ_ELNO') ) GOTO 9999
       IF ( (OPTION.EQ.'ETOT_ELEM').OR.
      &     (OPTION.EQ.'ETOT_ELGA').OR.
-     &     (OPTION.EQ.'ETOT_ELGA_DEPL').OR.
-     &     (OPTION.EQ.'ETOT_ELNO').OR.
-     &     (OPTION.EQ.'SIGM_ELNO').OR.
+     &     (OPTION.EQ.'ETOT_ELNO') ) GOTO 9999
+
+      IF ( (OPTION.EQ.'SIGM_ELNO').OR.
      &     (OPTION.EQ.'EFCA_ELNO').OR.
-     &     (OPTION.EQ.'EFGE_ELNO').OR.
-     &     (OPTION.EQ.'DERA_ELNO').OR.
-     &     (OPTION.EQ.'DERA_ELGA')) GOTO 9999
+     &     (OPTION.EQ.'SIRO_ELEM').OR.
+     &     (OPTION.EQ.'SIEQ_ELNO').OR.
+     &     (OPTION.EQ.'EFGE_ELNO') ) GOTO 9999
+
+C     ON CONSERVE CES OPTIONS POUR PERMETTRE LE CALCUL DANS STANLEY
+      IF ( (OPTION.EQ.'ERTH_ELEM').OR.
+     &     (OPTION.EQ.'ERTH_ELNO') ) GOTO 9999
+
+      IF ( (OPTION.EQ.'ERME_ELEM').OR.
+     &     (OPTION.EQ.'ERME_ELNO').OR.
+     &     (OPTION.EQ.'QIRE_ELEM').OR.
+     &     (OPTION.EQ.'QIRE_ELNO') ) GOTO 9999
+
+      IF ( (OPTION.EQ.'SIZ1_NOEU').OR.
+     &     (OPTION.EQ.'SIZ2_NOEU').OR.
+     &     (OPTION.EQ.'ERZ1_ELEM').OR.
+     &     (OPTION.EQ.'ERZ2_ELEM').OR.
+     &     (OPTION.EQ.'QIZ1_ELEM').OR.
+     &     (OPTION.EQ.'QIZ2_ELEM') ) GOTO 9999
+
+      IF ( (OPTION.EQ.'SING_ELEM').OR.
+     &     (OPTION.EQ.'SING_ELNO') ) GOTO 9999
 
       CALL CCLIOP(OPTION,NOBASE,NOLIOP,NOPOUT)
       IF ( NOPOUT.EQ.0 ) GOTO 9999

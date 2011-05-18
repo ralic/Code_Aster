@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF astermodule supervis  DATE 10/05/2011   AUTEUR SELLENET N.SELLENET */
+/* MODIF astermodule supervis  DATE 19/05/2011   AUTEUR SELLENET N.SELLENET */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2011  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */

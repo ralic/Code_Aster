@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 19/05/2011   AUTEUR DELMAS J.DELMAS 
 # TITRE DETECTION DES SINGULARITES DANS UNE PLAQUE FISSUREE (TRIA3)
 # ssnp130a.para = tps_job 60 mem_job 200Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -79,7 +79,12 @@ DEPLA=STAT_NON_LINE(MODELE=MO,
 DEPLA=CALC_ELEM(reuse =DEPLA,
                 RESULTAT=DEPLA,
                 INST=1.,
-                OPTION=('SIEF_ELNO','ERME_ELEM','ETOT_ELEM',),);
+                OPTION=('SIEF_ELNO','ETOT_ELEM',),);
+
+DEPLA=CALC_ERREUR(reuse =DEPLA,
+                  RESULTAT=DEPLA,
+                  INST=1.,
+                  OPTION=('ERME_ELEM',),);
 
 # DEFINITION DU PROBLEME DUAL
 
@@ -97,17 +102,22 @@ RESUD=STAT_NON_LINE(MODELE=MO,
 RESUD=CALC_ELEM(reuse =RESUD,
                 RESULTAT=RESUD,
                 INST=1.,
-                OPTION=('SIEF_ELNO','ERME_ELEM',),);
+                OPTION=('SIEF_ELNO',),);
+
+RESUD=CALC_ERREUR(reuse =RESUD,
+                  RESULTAT=RESUD,
+                  INST=1.,
+                  OPTION=('ERME_ELEM',),);
 
 # POST-TRAITEMENT AVEC L'ERREUR EN QUANTITE D'INTERET
 
-DEPLA=CALC_ELEM(reuse =DEPLA,
-                RESULTAT=DEPLA,
-                INST=1.,
-                RESU_DUAL=RESUD,
-                PREC_ERR=0.8,
-                TYPE_ESTI='QIRE_ELEM',
-                OPTION=('QIRE_ELEM','SING_ELEM','SING_ELNO',),);
+DEPLA=CALC_ERREUR(reuse =DEPLA,
+                  RESULTAT=DEPLA,
+                  INST=1.,
+                  RESU_DUAL=RESUD,
+                  PREC_ERR=0.8,
+                  TYPE_ESTI='QIRE_ELEM',
+                  OPTION=('QIRE_ELEM','SING_ELEM','SING_ELNO',),);
 
 # TEST DE SING_ELEM VALEUR MAX ET MIN DES 2 COMPOSANTES
 

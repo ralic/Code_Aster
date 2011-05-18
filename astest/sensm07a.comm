@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 19/05/2011   AUTEUR DELMAS J.DELMAS 
 # RESPONSABLE GNICOLAS G.NICOLAS
 # TITRE SENSIBILITE AUX DONNEES - EXEMPLE D'UTILISATION
 # sensm07a.para = tps_job 60 mem_job 64Mo liste_test R
@@ -136,7 +136,11 @@ resultat=MECA_STATIQUE(MODELE=modele,
 #
 resultat=CALC_ELEM(reuse =resultat,
                    RESULTAT=resultat,
-                   OPTION=('SIGM_ELNO','ERME_ELEM'));
+                   OPTION=('SIGM_ELNO',),);
+
+resultat=CALC_ERREUR(reuse =resultat,
+                     RESULTAT=resultat,
+                     OPTION=('ERME_ELEM'),);
 #
 resultat=CALC_NO(reuse =resultat,
                  RESULTAT=resultat,

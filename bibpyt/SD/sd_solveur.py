@@ -1,4 +1,4 @@
-#@ MODIF sd_solveur SD  DATE 18/01/2011   AUTEUR BOITEAU O.BOITEAU 
+#@ MODIF sd_solveur SD  DATE 19/05/2011   AUTEUR DELMAS J.DELMAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================

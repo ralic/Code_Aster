@@ -1,4 +1,4 @@
-# MODIF  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 19/05/2011   AUTEUR DELMAS J.DELMAS 
 # TITRE CONSOLIDATION TERZAGHI 2D Q8
 # wtnl100e.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -180,17 +180,14 @@ for k in range(1,nbadap+1):
 ####print "Derniere valeur de ERRE_TPS_GLOB = ", dico['ERRE_TPS_GLOB'][-1]
 
   RESU[k]=CALC_ELEM(reuse =RESU[k],
-
-
                     RESULTAT=RESU[k],
                     LIST_INST=LI1,
                     OPTION='SIEF_ELNO',);
 
-  RESU[k]=CALC_ELEM(reuse =RESU[k],
-                    RESULTAT=RESU[k],
-                    LIST_INST=LI1_BIS,
-                    TYPE_OPTION='INDI_ERREUR',
-                    OPTION=('ERME_ELEM','ERME_ELNO',),);
+  RESU[k]=CALC_ERREUR(reuse =RESU[k],
+                      RESULTAT=RESU[k],
+                      LIST_INST=LI1_BIS,
+                      OPTION=('ERME_ELEM','ERME_ELNO',),);
 
   RESU[k]=CALC_NO(reuse =RESU[k],
                     RESULTAT=RESU[k],

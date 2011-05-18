@@ -1,0 +1,714 @@
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR delmas       DELMAS Josselin        DATE 05/19/2011 - 05:27:04
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 014482 DU 2010-01-22 15:57:20
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+    AR01 - Creer la commande CALC_ERREUR
+FONCTIONNALITE
+   Demande :
+   =======
+   On souhaite créer la commande CALC_ERREUR pour séparer les options de calcul d'erreur qui
+   ne rentrent pas dans le cadre logiciel calcop.
+   
+   Évolution :
+   =========
+   On crée la commande CALC_ERREUR pour pouvoir appeler toutes les options liées à
+   l'estimation d'erreur :
+   "SIZ1_NOEU","ERZ1_ELEM",
+   "SIZ2_NOEU","ERZ2_ELEM",
+   "ERME_ELEM","ERME_ELNO",
+   "QIRE_ELEM","QIRE_ELNO",
+   "QIZ1_ELEM","QIZ2_ELEM",
+   "SING_ELEM","SING_ELNO",
+   "ERTH_ELEM","ERTH_ELNO"
+   
+   La syntaxe est la suivante :
+   
+   RESU=CALC_ERREUR(reuse =RESU,
+                   o RESULTAT= ,
+                   f CHAM_MATER=,
+                   f MODELE=,
+                    [SELECTION],
+                    [LOCALISATION],
+                   o OPTION=,
+                   # pour SING_ELEM
+                   f TYPE_ESTI=
+                   f PREC_ERR=
+                   # pour quantité d'intérêt
+                   f RESU_DUAL=,
+                   # pour ERZ1_ELEM
+                   f SOLVEUR=,
+                              );
+   
+   Impacts :
+   =======
+   calcop.f  medom1.f  sinoz1.f
+   ccaccl.f  modopt.f  te0175.f
+   meca01.f  mscalm.f  te0187.f
+   mecalm.f  op0042.f  thaclm.f
+   mecalr.f  rscrsd.f  thcalr.f
+   
+   calc_erreur.capy
+   
+   demo001a.comm  sslv111e.comm  tpll01j.comm
+   forma04a.comm  sslv113a.comm  wtnl100e.com1
+   forma04b.comm  sslv113b.comm  wtnl100e.comm
+   forma04c.comm  sslv113c.comm  wtnl100f.comm
+   forma05a.comm  sslv113d.comm  wtnp110a.comm
+   forma05b.comm  sslv134d.comm  wtnp116a.comm
+   forma08b.comm  sslv153a.comm  wtnp116b.comm
+   sensm07a.comm  ssnp123a.comm  zzzz121a.comm
+   sslp107a.comm  ssnp123b.comm  zzzz121b.comm
+   sslp316a.comm  ssnp130a.comm  zzzz121c.comm
+   sslp316b.comm  ssnp130b.comm  zzzz121d.comm
+   ssls09b.comm   ssnp130c.comm  zzzz121e.comm
+   ssls09c.comm   ssnp130d.comm  zzzz161a.comm
+   sslv07a.comm   ssnp130e.comm  zzzz175a.comm
+   sslv07b.comm   ssnp130f.comm  zzzz257a.comm
+   sslv07d.comm   ssnv112a.comm  zzzz257b.comm
+   sslv111a.comm  ssnv112b.comm  zzzz257c.comm
+   sslv111b.comm  ssnv112c.comm  zzzz257d.comm
+   sslv111c.comm  ssnv112d.comm
+   sslv111d.comm  ssnv124b.comm
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : r4.10.01, u4.72.04, u4.81.01
+VALIDATION
+    astout estimateur d'erreur
+NB_JOURS_TRAV  : 5.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 016891 DU 2011-05-05 14:07:31
+TYPE express concernant Code_Aster (VERSION 11.1)
+TITRE
+    AR01 - Chantier CALC_CHAMP : calcul des options de thermique et acoustique
+FONCTIONNALITE
+   Demande :
+   =======
+   Les options de thermique et acoustique ne sont pas calculées 
+   par calcop. Il faut faire le
+   basculement.
+   
+   Évolution :
+   =========
+   Les options de thermique et acoustique sont maintenant 
+   calculées par calcop.
+   Il ne reste que 8 options qui ne sont pas calculées par 
+   calcop.
+   
+   On en profite pour faire du ménage dans mecalm et thaclm en 
+   supprimant les lignes
+   correspondant aux options calculées dans calcop.
+   
+   Bien que l'on crée l'opérateur CALC_ERREUR, on conserve les 
+   options de calcul d'erreur
+   dans CALC_ELEM dans un soucis de compatibilité avec STANLEY.
+   
+   Les options suivantes sont calculées par calcop :
+   * Mécanique :
+   C    -- OPTIONS 
+   "CRIT_ELNO","DEGE_ELNO","DERA_ELGA","DERA_ELNO"
+   C               
+   "DISS_ELGA","DISS_ELNO","ECIN_ELEM","ENDO_ELGA"
+   C               
+   "ENDO_ELNO","ENEL_ELGA","ENEL_ELNO","EPEQ_ELGA"
+   C               
+   "EPEQ_ELNO","EPFD_ELGA","EPFD_ELNO","EPFP_ELGA"
+   C               
+   "EPFP_ELNO","EPME_ELGA","EPME_ELNO","EPMG_ELGA"
+   C               
+   "EPMG_ELNO","EPMQ_ELGA","EPMQ_ELNO","EPOT_ELEM"
+   C               
+   "EPSG_ELGA","EPSG_ELNO","EPSI_ELGA","EPSI_ELNO"
+   C               
+   "EPSP_ELGA","EPSP_ELNO","EPTQ_ELNO","EPTU_ELNO"
+   C               
+   "EPVC_ELGA","EPVC_ELNO","FLHN_ELGA","INDL_ELGA"
+   C               
+   "PDIL_ELGA","PMPB_ELGA","PMPB_ELNO","PRME_ELNO"
+   C               
+   "SICA_ELNO","SICO_ELNO","SIEF_ELGA","SIEQ_ELGA"
+   C               
+   "SIPM_ELNO","SIPO_ELNO","SITQ_ELNO","SITU_ELNO"
+   C               
+   "SPMX_ELGA","VACO_ELNO","VAEX_ELGA","VAEX_ELNO"
+   C               "VARC_ELGA","VARI_ELNO","VATU_ELNO"
+   C             + "SIEF_ELNO" SAUF CAS XFEM
+   
+   * Thermique :
+   C    -- OPTIONS 
+   "FLUX_ELNO","FLUX_ELGA","SOUR_ELGA","DURT_ELNO"
+   
+   * Acoustique :
+   C    -- OPTIONS "PRAC_ELNO","INTE_ELNO"
+   
+   Les options suivantes ne sont pas calculées par calcop, un 
+   traitement particulier est
+   nécessaire (ou une évolution des attributs pour calcop ) :
+   C               
+   'ETOT_ELEM','ETOT_ELGA','ETOT_ELNO','SIGM_ELNO'
+   C               
+   'EFCA_ELNO','SIRO_ELEM','SIEQ_ELNO','EFGE_ELNO'
+   
+   Les options suivantes seront calculées dans CALC_ERREUR :
+   C               'ERTH_ELEM','ERTH_ELNO'
+   C               
+   'ERME_ELEM','ERME_ELNO','QIRE_ELEM','QIRE_ELNO'
+   C               
+   'SIZ1_ELGA','SIZ2_ELGA','ERZ1_ELEM','ERZ2_ELEM'
+   C               'QIZ1_ELEM','QIZ2_ELEM'
+   C               'SING_ELEM','SING_ELNO'
+   
+   Impacts :
+   =======
+   dera_elga.cata  diss_elno.cata  gener_ac3d_3.cata
+   dera_elno.cata  flux_elga.cata  gener_acpla2.cata
+   diss_elga.cata  flux_elno.cata  inte_elno.cata
+   
+   calcop.f  meca01.f  sinoz1.f  te0187.f  te0175.f
+   ccaccl.f  mecalm.f  medom1.f  op0058.f  thaclm.f
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    astout CALC_ELEM
+NB_JOURS_TRAV  : 2.0
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 016840 DU 2011-04-26 15:51:11
+TYPE anomalie concernant Code_Aster (VERSION 11.1)
+TITRE
+    Mauvais renommage de l'option SIGM_NOZ1_ELGA
+FONCTIONNALITE
+   Problème :
+   ========
+   Dans le cadre du renommage des options pour CALC_CHAMP, l'option SIGM_NOZ[1,2]_ELGA a été
+   renommée SIZ[1,2]_ELGA. Or c'est un champ localisé aux noeuds.
+   
+   Correction :
+   ==========
+   On renomme l'option SIZ[1,2]_NOEU.
+   
+   Impact :
+   ======
+   mecalm.f
+   calcop.f
+   mscalm.f
+   modopt.f
+   rscrsd.f
+   cata_champs.py
+   calc_elem.capy
+   lire_resu.capy
+   macro_elas_mult.capy
+   c_nom_cham_into.capy
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : r4.10.01, u4.72.04, u4.81.01
+VALIDATION
+    astout estimateur d'erreur
+NB_JOURS_TRAV  : 1.0
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR desoza       DE SOZA Thomas         DATE 05/19/2011 - 05:27:05
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 015885 DU 2010-11-10 15:50:56
+TYPE anomalie concernant Documentation (VERSION *)
+TITRE
+    AR01 CALC_ELEM U4.81.01  2.6.2 deformations
+FONCTIONNALITE
+   Documentation
+   =============
+   
+   '''
+   Dans la doc CALC_ELEM U4.81.01, § 2.6.2, il dit que le calcul des déformations 
+   
+   'DEGE_ELNO_DEPL' a besoin de l'hypothèse d'élasticité linéaire, ce qui est surprenant.
+   Préciser dans quel repère elles sont obtenues.
+   
+   'EPSI_ELNO_DEPL' : distinguer le cas des milieux continus et des éléments de structure : 
+   Préciser dans quel repère elles sont obtenues, voire la couche pour une coque.
+   '''
+   
+   On précise que DEGE_ELNO sont les déformations généralisées calculées à partir des
+   déplacements. Rien n'interdit de les calculer en NL. Elles sont calculées en repère local.
+   
+   Pareil pour EPSI_ELNO.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  NON
+IMPACT_DOCUMENTAIRE : U4.81.01
+VALIDATION
+    docu
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 016853 DU 2011-04-28 11:32:16
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+    Remonter PCENT_PIVOT dans LDLT_SP
+FONCTIONNALITE
+   Évolution
+   =========
+   
+   Afin de rendre aussi robuste que possible les solveurs itératifs ('PETSC','GCPC') utilisés
+   avec le préconditionneur 'LDLT_SP'(il s'agit de MUMPS derrière), on remonte dans le
+   mot-clé SOLVEUR le paramètre PCENT_PIVOT qui est utilisé par MUMPS.
+   
+   La valeur par défaut pour PCENT_PIVOT est la même que pour MUMPS appelé en tant que
+   solveur principal : 10.
+   Elle est stockée dans la sd_solveur dans une case inutilisée jusqu'à maintenant (sauf pour
+   FETI).
+   
+   On modifie donc le message d'erreur émis précédemment lorsque la valeur choisie en dur
+   (20) n'était pas suffisante :
+   
+   15 : _("""
+   Solveur PETSc :
+     La création du préconditionneur 'LDLT_SP' a échoué car on manque de mémoire.
+   
+     Conseil : augmentez la valeur du mot clé SOLVEUR/PCENT_PIVOT.
+   """),
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : U4.50.01,D4.06.11
+VALIDATION
+    tests utilisant LDLT_SP
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 012369 DU 2008-08-06 14:30:01
+TYPE evolution concernant Code_Aster (VERSION )
+TITRE
+    SV00 - Utiliser un catalogue commun pour le mot-cle SOLVEUR
+FONCTIONNALITE
+   Évolution
+   =========
+   
+   Dans Aster, on appelle plusieurs solveurs linéaires (6) dans de nombreux opérateurs (25).
+   
+   Tous les opérateurs ne proposent pas tous les solveurs (FETI n'est pas disponible en
+   thermique par exemple), de plus pour un même solveur il arrive que tous ses mot-clés ne
+   soient pas utilisables par tous les opérateurs (la distribution de la matrice n'est
+   possible que dans MECA_STATIQUE et *_NON_LINE).
+   
+   Ces différences empêchent de créer un catalogue commun unique (ce dernier existe seulement
+   pour *_NON_LINE et ses macros) mais après inventaire on se rend compte que les cas
+   particuliers ne sont pas si nombreux, on peut donc créer un catalogue commun
+   "conditionnel" en python.
+   
+   C'est le but de cette fiche.
+   
+   Détails
+   =======
+   
+   Sur les 25 commandes ou macros utilisant le mot-clé SOLVEUR, toutes pointent désormais
+   vers le catalogue commun sauf :
+   - MACRO_ELAS_MULT : cette macro ne permet l'utilisation que de LDLT et MULT_FRONT et il
+   faut la faire évoluer pour profiter de plus de solveurs (elle fait appel aux commandes
+   éclatées)
+   - MACRO_MATR_ASSE : cette macro ne se sert que des mot-clés METHODE et RENUM, c'est un cas
+   trop particulier pour que l'intégration du catalogue commun ait un intérêt
+   
+   Pour toutes les autres, la seule référence à SOLVEUR dans le catalogue est :
+   
+   #-------------------------------------------------------------------
+   #    Catalogue commun SOLVEUR
+        SOLVEUR         =C_SOLVEUR('CALC_ELEM'),
+   #-------------------------------------------------------------------
+   
+   Le catalogue commun (il fait 450 lignes) est désormais le seul point d'entrée pour
+   modifier un paramètre solveur. Il y a seulement 10 cas particuliers.
+   
+   La logique est la suivante :
+   - les 23 commandes traitées sont séparées en 3 paquets 'SD' (solveurs directs uniquement),
+   'LIN' (tous solveurs en linéaire), 'NL' (tous solveurs en non-linéaire)
+   - les 10 cas particuliers donnent lieu à la création de 10 logiques
+   - on construit ensuite le catalogue mot-clé par mot-clé avec des dictionnaires
+   - le mot-clé facteur est assemblé à partir des dictionnaires (les blocs ne sont pas dans
+   les dicos)
+   
+   Du point de vue utilisateur rien ne change. On corrige au passage quelques erreurs sans
+   conséquence dans les catalogues :
+   - MACRO_MATR_ASSE faisait apparaître des mot-clés liés à MUMPS non récupérés en Fortran
+   - CREA_ELEM_SSD appelait le catalogue commun SOLVEUR (l'ancien) alors qu'il ne peut
+   utiliser que des solveurs directs
+   
+   Validation
+   ==========
+   
+   On a passé la liste complète et on a également testé le bon fonctionnement dans Eficas en
+   rajoutant un catalogue en surcharge.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    liste complxc3xa8te + eficas
+NB_JOURS_TRAV  : 2.5
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR lefebvre     LEFEBVRE Jean-Pierre   DATE 05/19/2011 - 05:27:05
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 016956 DU 2011-05-19 09:26:30
+TYPE express concernant Code_Aster (VERSION 9.1)
+TITRE
+    Passage python2.6
+FONCTIONNALITE
+   Passage à la version 2.6 de Python.
+   Les fichiers de configuration des versions NEW11 et NEW10 ont été modifiés, il est
+   nécessaire de recompiler les fichiers C s'appuyant sur l'include python.
+   Le basculement des versions locales a déjà été réalisé.
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    liste restreinte
+NB_JOURS_TRAV  : 0.5
+--------------------------------------------------------------------------------
+
+
+
+-----------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+--- AUTEUR sellenet     SELLENET Nicolas       DATE 05/19/2011 - 11:25:28
+
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 016914 DU 2011-05-12 07:42:59
+TYPE express concernant Code_Aster (VERSION 9.1)
+TITRE
+    include MED non protege
+FONCTIONNALITE
+   Problème :
+   ----------
+   Lors de ma dernière restit, j'ai rajouté un include med.h que je n'ai pas protégé. Ca rend
+   donc med obligatoire alors qu'en réalité, il ne devrait pas l'être. Il faut donc modifier
+   cela.
+   
+   
+   Solution :
+   ----------
+   J'encadre le fichier med_aster_module.c par un #ifndef _DISABLE_MED #endif. Je fais de
+   même pour le PyImport_AppendInittab de python.c
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  NON
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    Liste restreinte
+NB_JOURS_TRAV  : 0.1
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 016913 DU 2011-05-12 07:14:06
+TYPE express concernant Code_Aster (VERSION 9.1)
+TITRE
+    perfe02a plantent sur toutes les plateformes
+FONCTIONNALITE
+   Problème :
+   ----------
+   Ma restitution MED3.0 a cassé le test perfe02a. Je corrige lundi en NEW11, il faudra
+   reporter en NEW10.
+   
+   
+   Solution :
+   ----------
+   Je modifie le com1 de perfe02a pour que les noms des champs à relire soient corrects (pas
+   de "_" terminaux).
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    perfe02a
+NB_JOURS_TRAV  : 0.01
+--------------------------------------------------------------------------------
+RESTITUTION FICHE 016846 DU 2011-04-27 11:21:38
+TYPE anomalie concernant Code_Aster (VERSION 9.1)
+TITRE
+    [FORUM] PRE_IDEAS ne detecte pas le bon type de maille
+FONCTIONNALITE
+   Problème :
+   ----------
+   """
+   Dans le calcul joint la lecture du maillage au format UNV par PRE_IDEAS se passe bien.
+   Cependant lorsque l'on fait un LIRE_MAILLAGE, on a ensuite une erreur. En effet dans le
+   .mail on constate que des SEG2 ont été déclarés et que l'on donne pour chaque 3 noeuds (ce
+   sont en fait des SEG3).
+   Il doit y avoir une erreur dans la détection du type de maille dans PRE_IDEAS. Remarque :
+   selon l'utilisateur, le maillage au format UNV a été produit par Salomé. Si on le lit dans
+   Salomé et que l'on le réexporte en MED, tout se passe bien.
+   """
+   
+   
+   Analyse :
+   ---------
+   Effectivement, le fichier .mail produit n'est pas correct. Les SEG3 du fichier UNV sont
+   vus comme des SEG2 et copiés comme tel dans le fichier .mail produit par PRE_IDEAS.
+   
+   Le problème vient de la routine COV4V5 qui à partir d'un numéro relu dans le fichier UNV
+   en déduit le type de maille aster correspondant.
+   
+   Ici le numéro est le 22, il devrait pointer vers le type SEG3 (puisque dans le fichier
+   UNV, on donne ensuite 3 numéros de noeuds). Or on pointe vers le type SEG2.
+   
+   
+   Correction :
+   ------------
+   Etant donné que la correspondance SEG3 UNV vers SEG3 Aster est déjà définie, on peut
+   corriger facilement en modifiant COV4V5 pour qu'elle lie le code UNV 22 au type de maille
+   SEG3 Aster.
+   
+   
+   Validation :
+   ------------
+   Comme je n'ai pas de doc sur le lien entre numéro de code et type de maille dans IDEAS, je
+   n'ai pas la confirmation de mes déductions. Mais je pense que la correction que j'apporte
+   n'est pas très dangeureuse. Pour valider, je fais passer tous les tests qui passent par la
+   routine COV4V5 et je valide sur le test fourni dans la fiche :
+   adlv100b adlv100c adlv100d adlv100e adlv100f adlv100g adlv100h adlv100i adlv100j adlv100k
+   adlv100l adlv100m adlv100n ahlv100d ahlv100e ahlv100f ahlv100g ahlv100h ahlv100i ahlv100j
+   ahlv100k ahlv100q ahlv100r ahlv100s ahlv101b ahlv101c ahlv302d ahlv302e ahlv302f fdlv103a
+   fdlv104a fdlv106a fdlv107a fdlv108a fdlv109a fdlv110a sdld102a sdld102d sdld104a sdld104b
+   sdll113a sdll113b sdll137a sdll137b sdll137c sdll137d sdls105a sdls105b sdls106a sdls106b
+   sdls106c sdls106d sdls106e sdls106f sdls106g sdls121a sdls121b sdls121c sdlv122a sdlv122b
+   sdlv125a sdnl102a sdnv102a ssla100a ssla100b ssla100c ssll101c ssll101d ssls130a ssls130b
+   ssls501a sslv134g ssnl118a ssnl502a ssnl502b ssns501a szlz110a tplv103a tplv103b tpna01c
+   ttnl02b wtnp106a wtnp106b wtnp115a wtnp115b zzzz112a zzzz112b zzzz112c zzzz136c zzzz137a
+   zzzz161a zzzz165a zzzz176a zzzz262a zzzz262b
+RESU_FAUX_VERSION_EXPLOITATION    :  NON
+RESU_FAUX_VERSION_DEVELOPPEMENT   :  NON
+RESTITUTION_VERSION_EXPLOITATION  :  OUI
+RESTITUTION_VERSION_DEVELOPPEMENT :  OUI
+IMPACT_DOCUMENTAIRE : 
+VALIDATION
+    unitaire + tests passant par COV4V5
+NB_JOURS_TRAV  : 0.2
+--------------------------------------------------------------------------------
+
+
+
+========================================================================
+=== Recapitulation des operations demandees pour toutes les restitutions
+========================================================================
+
+
+    TYPE Action    unite                      user      Auteur         nblg  ajout suppr.
+
+ CASTEST MODIF demo001a                       delmas J.DELMAS           299      6      2
+ CASTEST MODIF forma04a                       delmas J.DELMAS           367      9      3
+ CASTEST MODIF forma04b                       delmas J.DELMAS           368      9      3
+ CASTEST MODIF forma04c                       delmas J.DELMAS           329      9      3
+ CASTEST MODIF forma05a                       delmas J.DELMAS           336      8      2
+ CASTEST MODIF forma05b                       delmas J.DELMAS           373     15      5
+ CASTEST MODIF forma08b                       delmas J.DELMAS           520      6      3
+ CASTEST MODIF perfe02a                     sellenet N.SELLENET         248      1      1
+ CASTEST MODIF sensm07a                       delmas J.DELMAS           216      6      2
+ CASTEST MODIF sslp107a                       delmas J.DELMAS           392      7      3
+ CASTEST MODIF sslp316a                       delmas J.DELMAS           243     57     28
+ CASTEST MODIF sslp316b                       delmas J.DELMAS           203     32     17
+ CASTEST MODIF ssls09b                        delmas J.DELMAS           327    177    181
+ CASTEST MODIF ssls09c                        delmas J.DELMAS           209     37     18
+ CASTEST MODIF sslv07a                        delmas J.DELMAS           917      7      2
+ CASTEST MODIF sslv07b                        delmas J.DELMAS           157      7      2
+ CASTEST MODIF sslv07d                        delmas J.DELMAS           322      7      1
+ CASTEST MODIF sslv111a                       delmas J.DELMAS           469    411    227
+ CASTEST MODIF sslv111b                       delmas J.DELMAS           390    337    181
+ CASTEST MODIF sslv111c                       delmas J.DELMAS           391    338    184
+ CASTEST MODIF sslv111d                       delmas J.DELMAS           390    338    184
+ CASTEST MODIF sslv111e                       delmas J.DELMAS           392    339    184
+ CASTEST MODIF sslv113a                       delmas J.DELMAS           273    226    127
+ CASTEST MODIF sslv113b                       delmas J.DELMAS           285    229    134
+ CASTEST MODIF sslv113c                       delmas J.DELMAS           191      4      4
+ CASTEST MODIF sslv113d                       delmas J.DELMAS           191      4      4
+ CASTEST MODIF sslv134d                       delmas J.DELMAS           794      6      2
+ CASTEST MODIF sslv153a                       delmas J.DELMAS           493      4      6
+ CASTEST MODIF ssnp123a                       delmas J.DELMAS           233      8      2
+ CASTEST MODIF ssnp123b                       delmas J.DELMAS           211      6      2
+ CASTEST MODIF ssnp130a                       delmas J.DELMAS           336     14      4
+ CASTEST MODIF ssnp130b                       delmas J.DELMAS           316     31     18
+ CASTEST MODIF ssnp130c                       delmas J.DELMAS           275     34     21
+ CASTEST MODIF ssnp130d                       delmas J.DELMAS           291     32     19
+ CASTEST MODIF ssnp130e                       delmas J.DELMAS           242      7      2
+ CASTEST MODIF ssnp130f                       delmas J.DELMAS           241      7      2
+ CASTEST MODIF ssnv112a                       delmas J.DELMAS           322      6      2
+ CASTEST MODIF ssnv112b                       delmas J.DELMAS           362      6      2
+ CASTEST MODIF ssnv112c                       delmas J.DELMAS           307      6      2
+ CASTEST MODIF ssnv112d                       delmas J.DELMAS           314      6      2
+ CASTEST MODIF ssnv124b                       delmas J.DELMAS           161    105    132
+ CASTEST MODIF tpll01j                        delmas J.DELMAS           132      8      2
+ CASTEST MODIF wtnl100e                       delmas J.DELMAS           227      2      5
+ CASTEST MODIF wtnl100f                       delmas J.DELMAS           216      2      5
+ CASTEST MODIF wtnp110a                       delmas J.DELMAS           246      2      5
+ CASTEST MODIF wtnp116a                       delmas J.DELMAS           487      3      3
+ CASTEST MODIF wtnp116b                       delmas J.DELMAS           528      3      3
+ CASTEST MODIF wtnv136c                       delmas J.DELMAS           463     29     23
+ CASTEST MODIF zzzz121a                       delmas J.DELMAS           273      9      3
+ CASTEST MODIF zzzz121b                       delmas J.DELMAS           756     11      3
+ CASTEST MODIF zzzz121c                       delmas J.DELMAS           481      7      3
+ CASTEST MODIF zzzz121d                       delmas J.DELMAS           529     16     13
+ CASTEST MODIF zzzz121e                       delmas J.DELMAS           396     11      3
+ CASTEST MODIF zzzz161a                       delmas J.DELMAS           270      6      3
+ CASTEST MODIF zzzz175a                       delmas J.DELMAS           629      7      2
+ CASTEST MODIF zzzz257a                       delmas J.DELMAS           319     14     11
+ CASTEST MODIF zzzz257b                       delmas J.DELMAS           326     14     11
+ CASTEST MODIF zzzz257c                       delmas J.DELMAS           297     15     23
+ CASTEST MODIF zzzz257d                       delmas J.DELMAS           246     12      7
+CATALOGU MODIF options/dera_elga              delmas J.DELMAS            46      8      3
+CATALOGU MODIF options/dera_elno              delmas J.DELMAS            35      1      1
+CATALOGU MODIF options/diss_elga              delmas J.DELMAS            40     11     11
+CATALOGU MODIF options/diss_elno              delmas J.DELMAS            40     10     10
+CATALOGU MODIF options/flux_elga              delmas J.DELMAS            44      5      5
+CATALOGU MODIF options/flux_elno              delmas J.DELMAS            44      4      4
+CATALOGU MODIF options/inte_elno              delmas J.DELMAS            34      5      3
+CATALOGU MODIF typelem/gener_ac3d_3           delmas J.DELMAS            95     11      6
+CATALOGU MODIF typelem/gener_acpla2           delmas J.DELMAS            87     15      8
+CATALOGU MODIF typelem/medpqs4              sellenet N.SELLENET         486      4      1
+CATALOGU MODIF typelem/medpqs8              sellenet N.SELLENET         489      4      1
+CATALOPY AJOUT commande/calc_erreur           delmas J.DELMAS           104    104      0
+CATALOPY MODIF commande/calc_elem             delmas J.DELMAS           507      7     36
+CATALOPY MODIF commande/calc_forc_ajou        delmas J.DELMAS            54      5     58
+CATALOPY MODIF commande/calc_ifs_dnl          delmas J.DELMAS           251      2      2
+CATALOPY MODIF commande/calc_matr_ajou        delmas J.DELMAS            46      5     58
+CATALOPY MODIF commande/calc_precont          delmas J.DELMAS            83      5      2
+CATALOPY MODIF commande/crea_elem_ssd         delmas J.DELMAS            95      5      2
+CATALOPY MODIF commande/defi_base_modale      delmas J.DELMAS            65      5     28
+CATALOPY MODIF commande/dyna_line_harm        delmas J.DELMAS            98      7     51
+CATALOPY MODIF commande/dyna_line_tran        delmas J.DELMAS           137      5     63
+CATALOPY MODIF commande/dyna_non_line         delmas J.DELMAS           242      2      2
+CATALOPY MODIF commande/dyna_tran_modal       delmas J.DELMAS           242      5     31
+CATALOPY MODIF commande/factoriser            delmas J.DELMAS            74      2      3
+CATALOPY MODIF commande/impr_sturm            delmas J.DELMAS            47      5     23
+CATALOPY MODIF commande/lire_resu             delmas J.DELMAS           296      3      3
+CATALOPY MODIF commande/macr_ascouf_calc      delmas J.DELMAS           143      5      2
+CATALOPY MODIF commande/macr_aspic_calc       delmas J.DELMAS           155      5      2
+CATALOPY MODIF commande/macro_elas_mult       delmas J.DELMAS            83      2      2
+CATALOPY MODIF commande/macro_matr_ajou       delmas J.DELMAS            90      5     57
+CATALOPY MODIF commande/macro_matr_asse       delmas J.DELMAS           111      1      3
+CATALOPY MODIF commande/meca_statique         delmas J.DELMAS            54      5     83
+CATALOPY MODIF commande/mode_iter_inv         delmas J.DELMAS           101      6     50
+CATALOPY MODIF commande/mode_iter_simult      delmas J.DELMAS           153      5     49
+CATALOPY MODIF commande/mode_statique         delmas J.DELMAS            94      5     64
+CATALOPY MODIF commande/stat_non_line         delmas J.DELMAS           161      2      2
+CATALOPY MODIF commande/ther_lineaire         delmas J.DELMAS            76      5     58
+CATALOPY MODIF commande/ther_non_line         delmas J.DELMAS           101      5     61
+CATALOPY MODIF commande/ther_non_line_mo      delmas J.DELMAS            51      5     58
+CATALOPY MODIF commun/c_nom_cham_into         delmas J.DELMAS           204      3      3
+CATALOPY MODIF commun/c_solveur               delmas J.DELMAS           455    437     87
+       C MODIF supervis/astermodule         sellenet N.SELLENET        3906      1      1
+       C MODIF supervis/aster_utils         sellenet N.SELLENET         146      1      1
+       C MODIF supervis/dll_interface       sellenet N.SELLENET          70      1      1
+       C MODIF supervis/dll_register        sellenet N.SELLENET         224      1      1
+       C MODIF supervis/dll_umat            sellenet N.SELLENET         161      1      1
+       C MODIF supervis/dll_yacs            sellenet N.SELLENET         445      1      1
+       C MODIF supervis/dll_zmat            sellenet N.SELLENET         162      1      1
+       C MODIF supervis/fonctions_module    sellenet N.SELLENET         158      2      2
+       C MODIF supervis/med_aster_module    sellenet N.SELLENET          87      4      1
+       C MODIF supervis/python              sellenet N.SELLENET          90      3      1
+       C MODIF supervis/spec_osci           sellenet N.SELLENET         171      1      1
+       C MODIF utilitai/aplext              sellenet N.SELLENET         194      1      1
+       C MODIF utilitai/asterm              sellenet N.SELLENET         394      1      1
+       C MODIF utilitai/cpfile              sellenet N.SELLENET          87      1      1
+       C MODIF utilitai/date                sellenet N.SELLENET          38      1      1
+       C MODIF utilitai/envima              sellenet N.SELLENET         196      1      1
+       C MODIF utilitai/erfcam              sellenet N.SELLENET          33      1      1
+       C MODIF utilitai/faster              sellenet N.SELLENET          35      1      1
+       C MODIF utilitai/gtenv               sellenet N.SELLENET          50      1      1
+       C MODIF utilitai/gtnpro              sellenet N.SELLENET          39      1      1
+       C MODIF utilitai/hancpu              sellenet N.SELLENET          34      1      1
+       C MODIF utilitai/hanfpe              sellenet N.SELLENET          47      1      1
+       C MODIF utilitai/hpalloc             sellenet N.SELLENET          44      1      1
+       C MODIF utilitai/hpdeallc            sellenet N.SELLENET          26      1      1
+       C MODIF utilitai/indik8              sellenet N.SELLENET          53      1      1
+       C MODIF utilitai/iniast              sellenet N.SELLENET          55      1      1
+       C MODIF utilitai/inifpe              sellenet N.SELLENET          70      2      2
+       C MODIF utilitai/inisig              sellenet N.SELLENET         167      1      1
+       C MODIF utilitai/iodr                sellenet N.SELLENET         207      1      1
+       C MODIF utilitai/isdbgj              sellenet N.SELLENET          38      1      1
+       C MODIF utilitai/isinte              sellenet N.SELLENET          38      1      1
+       C MODIF utilitai/ismpi               sellenet N.SELLENET          35      1      1
+       C MODIF utilitai/isomp               sellenet N.SELLENET          35      1      1
+       C MODIF utilitai/issuiv              sellenet N.SELLENET          39      1      1
+       C MODIF utilitai/iverif              sellenet N.SELLENET          38      1      1
+       C MODIF utilitai/kloklo              sellenet N.SELLENET         104      1      1
+       C MODIF utilitai/lsegjv              sellenet N.SELLENET          36      1      1
+       C MODIF utilitai/matfpe              sellenet N.SELLENET          64      1      1
+       C MODIF utilitai/maxbas              sellenet N.SELLENET          36      1      1
+       C MODIF utilitai/mejvdy              sellenet N.SELLENET          35      1      1
+       C MODIF utilitai/mejvst              sellenet N.SELLENET          36      1      1
+       C MODIF utilitai/memdis              sellenet N.SELLENET          53      1      1
+       C MODIF utilitai/memjob              sellenet N.SELLENET          34      1      1
+       C MODIF utilitai/memjvx              sellenet N.SELLENET          37      1      1
+       C MODIF utilitai/mempid              sellenet N.SELLENET          79      1      1
+       C MODIF utilitai/mjvsmo              sellenet N.SELLENET          36      1      1
+       C MODIF utilitai/mjvxmo              sellenet N.SELLENET          35      1      1
+       C MODIF utilitai/mlnbpr              sellenet N.SELLENET          35      1      1
+       C MODIF utilitai/mlnump              sellenet N.SELLENET          34      1      1
+       C MODIF utilitai/modfpe              sellenet N.SELLENET          92      2      2
+       C MODIF utilitai/modsig              sellenet N.SELLENET         137      1      1
+       C MODIF utilitai/rmfile              sellenet N.SELLENET          73      1      1
+       C MODIF utilitai/sdveri              sellenet N.SELLENET          35      1      1
+       C MODIF utilitai/segjvx              sellenet N.SELLENET          36      1      1
+       C MODIF utilitai/strmov              sellenet N.SELLENET          25      1      1
+       C MODIF utilitai/utclim              sellenet N.SELLENET          37      1      1
+       C MODIF utilitai/utflsh              sellenet N.SELLENET          35      1      1
+       C MODIF utilitai/uttcsm              sellenet N.SELLENET          89      1      1
+       C MODIF utilitai/uttlim              sellenet N.SELLENET          53      1      1
+       C MODIF utilitai/uttrst              sellenet N.SELLENET          37      1      1
+       C MODIF utilitai/vparjv              sellenet N.SELLENET          36      1      1
+ FORTRAN AJOUT calculel/mecalr                delmas J.DELMAS           511    511      0
+ FORTRAN AJOUT calculel/op0042                delmas J.DELMAS           155    155      0
+ FORTRAN AJOUT calculel/thcalr                delmas J.DELMAS           386    386      0
+ FORTRAN MODIF algeline/crsvgc                delmas J.DELMAS           138      8      9
+ FORTRAN MODIF algeline/crsvld                delmas J.DELMAS           102      2      6
+ FORTRAN MODIF algeline/crsvmf                delmas J.DELMAS           102      1      5
+ FORTRAN MODIF algeline/crsvpe                delmas J.DELMAS           141      9      3
+ FORTRAN MODIF algeline/op0014                delmas J.DELMAS           327      5      1
+ FORTRAN MODIF algorith/crsvfe                delmas J.DELMAS           275      4      7
+ FORTRAN MODIF algorith/crsvmu                delmas J.DELMAS           244      5      8
+ FORTRAN MODIF calculel/calcop                delmas J.DELMAS           235     26     31
+ FORTRAN MODIF calculel/ccaccl                delmas J.DELMAS           257      9      1
+ FORTRAN MODIF calculel/meca01                delmas J.DELMAS           722      4      4
+ FORTRAN MODIF calculel/mecalm                delmas J.DELMAS          1150     57   1007
+ FORTRAN MODIF calculel/medom1                delmas J.DELMAS           210      2      1
+ FORTRAN MODIF calculel/mscalm                delmas J.DELMAS          2227      6      6
+ FORTRAN MODIF calculel/sinoz1                delmas J.DELMAS           166      2      2
+ FORTRAN MODIF calculel/thaclm                delmas J.DELMAS           488     32    203
+ FORTRAN MODIF elements/te0175                delmas J.DELMAS            94      3      4
+ FORTRAN MODIF elements/te0187                delmas J.DELMAS           109      2      2
+ FORTRAN MODIF stbtrias/cov4v5              sellenet N.SELLENET         138      4      4
+ FORTRAN MODIF utilitai/modopt                delmas J.DELMAS           197     41     12
+ FORTRAN MODIF utilitai/rscrsd                delmas J.DELMAS           431      3      3
+  PYTHON MODIF Intranet/macro_bascule_schema_cata     delmas J.DELMAS           340      2      2
+  PYTHON MODIF Macro/crea_elem_ssd_ops        delmas J.DELMAS           260      1      6
+  PYTHON MODIF Messages/algeline5             delmas J.DELMAS           447      3      4
+  PYTHON MODIF Messages/algorith2             delmas J.DELMAS           273      1     21
+  PYTHON MODIF Messages/petsc                 delmas J.DELMAS           125      3      4
+  PYTHON MODIF SD/sd_solveur                  delmas J.DELMAS            43      1      1
+
+
+        nb unites  nb lignes  ajouts  suppr.  difference
+ AJOUT :    4        1156      1156             +1156
+ MODIF :  186       44418      4017    4268      -251
+ SUPPR :    0           0                 0        +0
+ DEPLA :    0           0 
+         ----      ------     ------  ------   ------
+ TOTAL :  190       45574      5173    4268      +905 

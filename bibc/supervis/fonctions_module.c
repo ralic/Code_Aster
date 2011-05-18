@@ -1,7 +1,7 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF fonctions_module supervis  DATE 18/05/2010   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF fonctions_module supervis  DATE 19/05/2011   AUTEUR SELLENET N.SELLENET */
 /* ================================================================== */
-/* COPYRIGHT (C) 1991 - 2005  EDF R&D              WWW.CODE-ASTER.ORG */
+/* COPYRIGHT (C) 1991 - 2011  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
 /* THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR      */
 /* MODIFY IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS     */

@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 19/05/2011   AUTEUR DELMAS J.DELMAS 
 # TITRE ESTIMATEUR D'ERREUR SUR UNE PLAQUE TROUEE EN TRACTION
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -21,216 +21,370 @@
 # MODELISATION 1 : ELEMENTS MECANIQUE C_PLAN QUAD8
 # MAILLAGE       : ALIBABA > ASTER
 # ----------------------------------------------------------------------
-#
 
-DEBUT(CODE=_F(NOM='SSLV111D',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NOM='SSLV111D',
+              NIV_PUB_WEB='INTERNET',),
+      DEBUG=_F(SDVERI='OUI',),);
 
-M=LIRE_MAILLAGE(   )
+M=LIRE_MAILLAGE();
 
-MO=AFFE_MODELE(            MAILLAGE=M,
-                                   VERIF='MAILLE',
-                                  AFFE=_F(  TOUT = 'OUI',
-                                         PHENOMENE = 'MECANIQUE',
-                                         MODELISATION = 'C_PLAN'))
+MO=AFFE_MODELE(MAILLAGE=M,
+               VERIF='MAILLE',
+               AFFE=_F(TOUT='OUI',
+                       PHENOMENE='MECANIQUE',
+                       MODELISATION='C_PLAN',),);
 
-MA=DEFI_MATERIAU(            ELAS=_F(  E = 1000.,
-                                         NU = 0.3,
-                                         ALPHA = 0.),
-                                  THER=_F(  RHO_CP = 1.,  LAMBDA = 0.)
-                        )
+MA=DEFI_MATERIAU(ELAS=_F(E=1000.,
+                         NU=0.3,
+                         ALPHA=0.,),
+                 THER=_F(LAMBDA=0.,
+                         RHO_CP=1.,),);
 
-CM=AFFE_MATERIAU(        MAILLAGE=M,
-                                  AFFE=_F(  TOUT = 'OUI',
-                                         MATER = MA))
+CM=AFFE_MATERIAU(MAILLAGE=M,
+                 AFFE=_F(TOUT='OUI',
+                         MATER=MA,),);
 
-F1 = FORMULE(NOM_PARA='Y',VALE='''
+F1 = FORMULE(VALE=
+"""
 1.-(1.5*cos(2.*atan2(Y,4.))+cos(4.*atan2(Y,4.))) /(16.+Y*Y)
                             +(3.*cos(4.*atan2(Y,4.)))/(2.*(16.+Y*Y)**2)
-              ''')
+              """,
+             NOM_PARA='Y',);
 
-F2 = FORMULE(NOM_PARA='Y',VALE='''
+F2 = FORMULE(VALE=
+"""
 -(0.5*sin(2.*atan2(Y,4.))+sin(4.*atan2(Y,4.))) /(16.+Y*Y)
                              +(3.*sin(4.*atan2(Y,4.)))/(2.*(16.+Y*Y)**2)
-              ''')
+              """,
+             NOM_PARA='Y',);
 
-F3 = FORMULE(NOM_PARA='X',VALE='''
+F3 = FORMULE(VALE=
+"""
 -(0.5*sin(2.*atan2(4.,X))+sin(4.*atan2(4.,X))) /(16.+X*X)
                              +(3.*sin(4.*atan2(4.,X)))/(2.*(16.+X*X)**2)
-              ''')
+              """,
+             NOM_PARA='X',);
 
-F4 = FORMULE(NOM_PARA='X',VALE='''
+F4 = FORMULE(VALE=
+"""
 -(0.5*cos(2.*atan2(4.,X))-cos(4.*atan2(4.,X))) /(16.+X*X)
                              -(3.*cos(4.*atan2(4.,X)))/(2.*(16.+X*X)**2)
-              ''')
+              """,
+             NOM_PARA='X',);
 
-SIXX = FORMULE(NOM_PARA=('R','TH'),VALE='''
+SIXX = FORMULE(VALE="""
 1.-(1.5*cos(2.*TH)+cos(4.*TH)) /(R*R)
           +(1.5*cos(4.*TH))/(R**4)
-       ''')
+       """,
+               NOM_PARA=('R','TH',),);
 
-SIYY = FORMULE(NOM_PARA=('R','TH'),VALE='''
+SIYY = FORMULE(VALE="""
 -(0.5*cos(2.*TH)-cos(4.*TH)) /(R*R)
           -(1.5*cos(4.*TH))/(R**4)
-              ''')
+              """,
+               NOM_PARA=('R','TH',),);
 
-SIXY = FORMULE(NOM_PARA=('R','TH'),VALE='''
+SIXY = FORMULE(VALE="""
 -(0.5*sin(2.*TH)+sin(4.*TH)) /(R*R)
           +(1.5*sin(4.*TH))/(R**4)
-              ''')
+              """,
+               NOM_PARA=('R','TH',),);
 
-CH1=AFFE_CHAR_MECA(         MODELE=MO,FACE_IMPO=(
-                     _F(  GROUP_MA = 'GRMA1',            DY = 0.),
-                               _F(  GROUP_MA = 'GRMA2',    DX = 0.)))
+CH1=AFFE_CHAR_MECA(MODELE=MO,
+                   FACE_IMPO=(_F(GROUP_MA='GRMA1',
+                                 DY=0.,),
+                              _F(GROUP_MA='GRMA2',
+                                 DX=0.,),),);
 
-CH2=AFFE_CHAR_MECA_F(         MODELE=MO,FORCE_CONTOUR=(
-                _F(  GROUP_MA = 'GRMA3',   FX = F1,   FY = F2),
-                              _F(  GROUP_MA = 'GRMA4',   FX = F3,   FY = F4)))
+CH2=AFFE_CHAR_MECA_F(MODELE=MO,
+                     FORCE_CONTOUR=(_F(GROUP_MA='GRMA3',
+                                       FX=F1,
+                                       FY=F2,),
+                                    _F(GROUP_MA='GRMA4',
+                                       FX=F3,
+                                       FY=F4,),),);
 
-RESU=MECA_STATIQUE(     MODELE=MO,
-                            CHAM_MATER=CM,EXCIT=(
-                         _F( CHARGE = CH1),
-                               _F( CHARGE = CH2))
-                        )
+RESU=MECA_STATIQUE(MODELE=MO,
+                   CHAM_MATER=CM,
+                   EXCIT=(_F(CHARGE=CH1,),
+                          _F(CHARGE=CH2,),),);
 
-RESU=CALC_ELEM(  reuse=RESU,
-                      TOUT_ORDRE='OUI',
-                          OPTION=(
-                                  'ERZ1_ELEM',
-                                  'ERZ2_ELEM',
-                                  'SIGM_ELNO',
-                                  'ERME_ELEM',
-                                 ),
-                      RESULTAT=RESU
-                        )
+RESU=CALC_ELEM(reuse =RESU,
+               RESULTAT=RESU,
+               TOUT_ORDRE='OUI',
+               OPTION='SIGM_ELNO',);
 
-SIGZZ1=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_SIEF_R',
-NOM_CHAM='SIZ1_ELGA', RESULTAT=RESU, NUME_ORDRE=1
-                        )
+RESU=CALC_ERREUR(reuse =RESU,
+                 RESULTAT=RESU,
+                 TOUT_ORDRE='OUI',
+                 OPTION=('ERZ1_ELEM','ERZ2_ELEM','ERME_ELEM',),);
 
-SIGZZ2=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_SIEF_R',
-NOM_CHAM='SIZ2_ELGA', RESULTAT=RESU, NUME_ORDRE=1
-                        )
+SIGZZ1=CREA_CHAMP(TYPE_CHAM='NOEU_SIEF_R',
+                  OPERATION='EXTR',
+                  RESULTAT=RESU,
+                  NOM_CHAM='SIZ1_NOEU',
+                  NUME_ORDRE=1,);
 
-TEST_RESU(CHAM_NO=(
-#    CONTRAINTES AUX NOEUDS ZZ1
+SIGZZ2=CREA_CHAMP(TYPE_CHAM='NOEU_SIEF_R',
+                  OPERATION='EXTR',
+                  RESULTAT=RESU,
+                  NOM_CHAM='SIZ2_NOEU',
+                  NUME_ORDRE=1,);
 
-#    SIGMAXX
-           _F(  CHAM_GD = SIGZZ1,  CRITERE = 'RELATIF',    PRECISION = 0.03,
-     GROUP_NO = 'GRNO13',        NOM_CMP = 'SIXX', VALE = SIXX(1.,pi/2.)),
-           _F(  CHAM_GD = SIGZZ1,  CRITERE = 'RELATIF',    PRECISION = 0.02,
-     GROUP_NO = 'GRNO11',        NOM_CMP = 'SIXX', VALE = SIXX(2.,pi/4.)),
-           _F(  CHAM_GD = SIGZZ1,  CRITERE = 'RELATIF',    PRECISION = 0.01,
-     GROUP_NO = 'GRNO12',  NOM_CMP = 'SIXX', VALE = SIXX(5.656854,pi/4.)),
-           _F(  CHAM_GD = SIGZZ1,  CRITERE = 'ABSOLU',    PRECISION = 0.1,
-     GROUP_NO = 'GRNO10',       NOM_CMP = 'SIXX', VALE = SIXX(1.,0.)),
-#    SIGMAYY
-           _F(  CHAM_GD = SIGZZ1,  CRITERE = 'ABSOLU',   PRECISION = 0.2,
-     GROUP_NO = 'GRNO13',        NOM_CMP = 'SIYY', VALE = SIYY(1.,pi/2.)),
-           _F(  CHAM_GD = SIGZZ1,  CRITERE = 'RELATIF',    PRECISION = 0.04,
-     GROUP_NO = 'GRNO11',        NOM_CMP = 'SIYY', VALE = SIYY(2.,pi/4.)),
-           _F(  CHAM_GD = SIGZZ1,  CRITERE = 'RELATIF',    PRECISION = 0.03,
-     GROUP_NO = 'GRNO12',  NOM_CMP = 'SIYY', VALE = SIYY(5.656854,pi/4.)),
-           _F(  CHAM_GD = SIGZZ1,  CRITERE = 'RELATIF',   PRECISION = 0.04,
-     GROUP_NO = 'GRNO10',       NOM_CMP = 'SIYY', VALE = SIYY(1.,0.)),
-#    SIGMAXY
-           _F(  CHAM_GD = SIGZZ1,  CRITERE = 'ABSOLU',     PRECISION = 0.01,
-     GROUP_NO = 'GRNO13',        NOM_CMP = 'SIXY', VALE = SIXY(1.,pi/2.)),
-           _F(  CHAM_GD = SIGZZ1,  CRITERE = 'RELATIF',    PRECISION = 0.02,
-     GROUP_NO = 'GRNO11',        NOM_CMP = 'SIXY', VALE = SIXY(2.,pi/4.)),
-           _F(  CHAM_GD = SIGZZ1,  CRITERE = 'RELATIF',    PRECISION = 0.01,
-     GROUP_NO = 'GRNO12',  NOM_CMP = 'SIXY', VALE = SIXY(5.656854,pi/4.)),
-           _F(  CHAM_GD = SIGZZ1,  CRITERE = 'ABSOLU',     PRECISION = 0.01,
-     GROUP_NO = 'GRNO10',       NOM_CMP = 'SIXY', VALE = SIXY(1.,0.)))
-           )
+TEST_RESU(CHAM_NO=(_F(CHAM_GD=SIGZZ1,
+                      GROUP_NO='GRNO13',
+                      NOM_CMP='SIXX',
+                      VALE=SIXX(1.0,1.57079632679,),
+                      CRITERE='RELATIF',
+                      PRECISION=0.03,),
+                   _F(CHAM_GD=SIGZZ1,
+                      GROUP_NO='GRNO11',
+                      NOM_CMP='SIXX',
+                      VALE=SIXX(2.0,0.785398163397,),
+                      CRITERE='RELATIF',
+                      PRECISION=0.02,),
+                   _F(CHAM_GD=SIGZZ1,
+                      GROUP_NO='GRNO12',
+                      NOM_CMP='SIXX',
+                      VALE=SIXX(5.656854,0.785398163397,),
+                      CRITERE='RELATIF',
+                      PRECISION=0.01,),
+                   _F(CHAM_GD=SIGZZ1,
+                      GROUP_NO='GRNO10',
+                      NOM_CMP='SIXX',
+                      VALE=SIXX(1.0,0.0,),
+                      CRITERE='ABSOLU',
+                      PRECISION=0.1,),
+                   _F(CHAM_GD=SIGZZ1,
+                      GROUP_NO='GRNO13',
+                      NOM_CMP='SIYY',
+                      VALE=SIYY(1.0,1.57079632679,),
+                      CRITERE='ABSOLU',
+                      PRECISION=0.2,),
+                   _F(CHAM_GD=SIGZZ1,
+                      GROUP_NO='GRNO11',
+                      NOM_CMP='SIYY',
+                      VALE=SIYY(2.0,0.785398163397,),
+                      CRITERE='RELATIF',
+                      PRECISION=0.04,),
+                   _F(CHAM_GD=SIGZZ1,
+                      GROUP_NO='GRNO12',
+                      NOM_CMP='SIYY',
+                      VALE=SIYY(5.656854,0.785398163397,),
+                      CRITERE='RELATIF',
+                      PRECISION=0.03,),
+                   _F(CHAM_GD=SIGZZ1,
+                      GROUP_NO='GRNO10',
+                      NOM_CMP='SIYY',
+                      VALE=SIYY(1.0,0.0,),
+                      CRITERE='RELATIF',
+                      PRECISION=0.04,),
+                   _F(CHAM_GD=SIGZZ1,
+                      GROUP_NO='GRNO13',
+                      NOM_CMP='SIXY',
+                      VALE=SIXY(1.0,1.57079632679,),
+                      CRITERE='ABSOLU',
+                      PRECISION=0.01,),
+                   _F(CHAM_GD=SIGZZ1,
+                      GROUP_NO='GRNO11',
+                      NOM_CMP='SIXY',
+                      VALE=SIXY(2.0,0.785398163397,),
+                      CRITERE='RELATIF',
+                      PRECISION=0.02,),
+                   _F(CHAM_GD=SIGZZ1,
+                      GROUP_NO='GRNO12',
+                      NOM_CMP='SIXY',
+                      VALE=SIXY(5.656854,0.785398163397,),
+                      CRITERE='RELATIF',
+                      PRECISION=0.01,),
+                   _F(CHAM_GD=SIGZZ1,
+                      GROUP_NO='GRNO10',
+                      NOM_CMP='SIXY',
+                      VALE=SIXY(1.0,0.0,),
+                      CRITERE='ABSOLU',
+                      PRECISION=0.01,),),);
 
-TEST_RESU(CHAM_NO=(
-#    CONTRAINTES AUX NOEUDS ZZ2
+TEST_RESU(CHAM_NO=(_F(CHAM_GD=SIGZZ2,
+                      GROUP_NO='GRNO13',
+                      NOM_CMP='SIXX',
+                      VALE=SIXX(1.0,1.57079632679,),
+                      CRITERE='RELATIF',
+                      PRECISION=0.02,),
+                   _F(CHAM_GD=SIGZZ2,
+                      GROUP_NO='GRNO11',
+                      NOM_CMP='SIXX',
+                      VALE=SIXX(2.0,0.785398163397,),
+                      CRITERE='RELATIF',
+                      PRECISION=0.01,),
+                   _F(CHAM_GD=SIGZZ2,
+                      GROUP_NO='GRNO12',
+                      NOM_CMP='SIXX',
+                      VALE=SIXX(5.656854,0.785398163397,),
+                      CRITERE='RELATIF',
+                      PRECISION=0.01,),
+                   _F(CHAM_GD=SIGZZ2,
+                      GROUP_NO='GRNO10',
+                      NOM_CMP='SIXX',
+                      VALE=SIXX(1.0,0.0,),
+                      CRITERE='ABSOLU',
+                      PRECISION=0.1,),
+                   _F(CHAM_GD=SIGZZ2,
+                      GROUP_NO='GRNO13',
+                      NOM_CMP='SIYY',
+                      VALE=SIYY(1.0,1.57079632679,),
+                      CRITERE='ABSOLU',
+                      PRECISION=0.1,),
+                   _F(CHAM_GD=SIGZZ2,
+                      GROUP_NO='GRNO11',
+                      NOM_CMP='SIYY',
+                      VALE=SIYY(2.0,0.785398163397,),
+                      CRITERE='RELATIF',
+                      PRECISION=0.02,),
+                   _F(CHAM_GD=SIGZZ2,
+                      GROUP_NO='GRNO12',
+                      NOM_CMP='SIYY',
+                      VALE=SIYY(5.656854,0.785398163397,),
+                      CRITERE='RELATIF',
+                      PRECISION=0.01,),
+                   _F(CHAM_GD=SIGZZ2,
+                      GROUP_NO='GRNO10',
+                      NOM_CMP='SIYY',
+                      VALE=SIYY(1.0,0.0,),
+                      CRITERE='RELATIF',
+                      PRECISION=0.03,),
+                   _F(CHAM_GD=SIGZZ2,
+                      GROUP_NO='GRNO13',
+                      NOM_CMP='SIXY',
+                      VALE=SIXY(1.0,1.57079632679,),
+                      CRITERE='ABSOLU',
+                      PRECISION=0.1,),
+                   _F(CHAM_GD=SIGZZ2,
+                      GROUP_NO='GRNO11',
+                      NOM_CMP='SIXY',
+                      VALE=SIXY(2.0,0.785398163397,),
+                      CRITERE='RELATIF',
+                      PRECISION=0.01,),
+                   _F(CHAM_GD=SIGZZ2,
+                      GROUP_NO='GRNO12',
+                      NOM_CMP='SIXY',
+                      VALE=SIXY(5.656854,0.785398163397,),
+                      CRITERE='RELATIF',
+                      PRECISION=0.02,),
+                   _F(CHAM_GD=SIGZZ2,
+                      GROUP_NO='GRNO10',
+                      NOM_CMP='SIXY',
+                      VALE=SIXY(1.0,0.0,),
+                      CRITERE='ABSOLU',
+                      PRECISION=0.1,),),);
 
-#    SIGMAXX
-           _F(  CHAM_GD = SIGZZ2,  CRITERE = 'RELATIF',    PRECISION = 0.02,
-     GROUP_NO = 'GRNO13',        NOM_CMP = 'SIXX', VALE = SIXX(1.,pi/2.)),
-           _F(  CHAM_GD = SIGZZ2,  CRITERE = 'RELATIF',    PRECISION = 0.01,
-     GROUP_NO = 'GRNO11',        NOM_CMP = 'SIXX', VALE = SIXX(2.,pi/4.)),
-           _F(  CHAM_GD = SIGZZ2,  CRITERE = 'RELATIF',    PRECISION = 0.01,
-     GROUP_NO = 'GRNO12',  NOM_CMP = 'SIXX', VALE = SIXX(5.656854,pi/4.)),
-           _F(  CHAM_GD = SIGZZ2,  CRITERE = 'ABSOLU',    PRECISION = 0.1,
-     GROUP_NO = 'GRNO10',       NOM_CMP = 'SIXX', VALE = SIXX(1.,0.)),
-#    SIGMAYY
-           _F(  CHAM_GD = SIGZZ2,  CRITERE = 'ABSOLU',    PRECISION = 0.1,
-     GROUP_NO = 'GRNO13',        NOM_CMP = 'SIYY', VALE = SIYY(1.,pi/2.)),
-           _F(  CHAM_GD = SIGZZ2,  CRITERE = 'RELATIF',    PRECISION = 0.02,
-     GROUP_NO = 'GRNO11',        NOM_CMP = 'SIYY', VALE = SIYY(2.,pi/4.)),
-           _F(  CHAM_GD = SIGZZ2,  CRITERE = 'RELATIF',    PRECISION = 0.01,
-     GROUP_NO = 'GRNO12',  NOM_CMP = 'SIYY', VALE = SIYY(5.656854,pi/4.)),
-           _F(  CHAM_GD = SIGZZ2,  CRITERE = 'RELATIF',    PRECISION = 0.03,
-     GROUP_NO = 'GRNO10',       NOM_CMP = 'SIYY', VALE = SIYY(1.,0.)),
-#    SIGMAXY
-           _F(  CHAM_GD = SIGZZ2,  CRITERE = 'ABSOLU',     PRECISION = 0.1,
-     GROUP_NO = 'GRNO13',        NOM_CMP = 'SIXY', VALE = SIXY(1.,pi/2.)),
-           _F(  CHAM_GD = SIGZZ2,  CRITERE = 'RELATIF',    PRECISION = 0.01,
-     GROUP_NO = 'GRNO11',        NOM_CMP = 'SIXY', VALE = SIXY(2.,pi/4.)),
-           _F(  CHAM_GD = SIGZZ2,  CRITERE = 'RELATIF',    PRECISION = 0.02,
-     GROUP_NO = 'GRNO12',  NOM_CMP = 'SIXY', VALE = SIXY(5.656854,pi/4.)),
-           _F(  CHAM_GD = SIGZZ2,  CRITERE = 'ABSOLU',     PRECISION = 0.1,
-     GROUP_NO = 'GRNO10',       NOM_CMP = 'SIXY', VALE = SIXY(1.,0.)))
-           )
+IMPR_RESU(MODELE=MO,
+          RESU=(_F(RESULTAT=RESU,
+                   NOM_CHAM='SIZ1_NOEU',
+                   NUME_ORDRE=1,
+                   VALE_MAX='OUI',
+                   VALE_MIN='OUI',
+                   SOUS_TITRE='CONTRAINTES AUX NOEUDS ZZ1',),
+                _F(RESULTAT=RESU,
+                   NOM_CHAM='SIZ2_NOEU',
+                   NUME_ORDRE=1,
+                   VALE_MAX='OUI',
+                   VALE_MIN='OUI',
+                   SOUS_TITRE='CONTRAINTES AUX NOEUDS ZZ2',),
+                _F(RESULTAT=RESU,
+                   NOM_CHAM='ERZ1_ELEM',
+                   NUME_ORDRE=1,
+                   VALE_MAX='OUI',
+                   VALE_MIN='OUI',
+                   SOUS_TITRE='ESTIMATEUR DERREUR ZZ1',),
+                _F(RESULTAT=RESU,
+                   NOM_CHAM='ERZ1_ELEM',
+                   NUME_ORDRE=1,
+                   NOM_CMP='NUEST',
+                   BORNE_INF=10.0,
+                   SOUS_TITRE=('ESTIMATEUR DERREUR ZZ1:LISTE DES MAILLES OU LERREUR RELATIVE ','EST SUPERIEURE A 10 POUR CENT',),),
+                _F(RESULTAT=RESU,
+                   NOM_CHAM='ERZ2_ELEM',
+                   NUME_ORDRE=1,
+                   VALE_MAX='OUI',
+                   VALE_MIN='OUI',
+                   SOUS_TITRE='ESTIMATEUR DERREUR ZZ2',),
+                _F(RESULTAT=RESU,
+                   NOM_CHAM='ERZ2_ELEM',
+                   NUME_ORDRE=1,
+                   NOM_CMP='NUEST',
+                   BORNE_INF=10.0,
+                   SOUS_TITRE=('ESTIMATEUR DERREUR ZZ2:LISTE DES MAILLES OU LERREUR RELATIVE ','EST SUPERIEURE A 10 POUR CENT',),),
+                _F(RESULTAT=RESU,
+                   NOM_CHAM='ERME_ELEM',
+                   NUME_ORDRE=1,
+                   VALE_MAX='OUI',
+                   VALE_MIN='OUI',
+                   SOUS_TITRE='ESTIMATEUR DERREUR EN RESIDU',),
+                _F(RESULTAT=RESU,
+                   NOM_CHAM='ERME_ELEM',
+                   NUME_ORDRE=1,
+                   NOM_CMP='NUEST',
+                   BORNE_INF=10.0,
+                   SOUS_TITRE=
+                   ('ESTIMATEUR DERREUR EN RESIDU :LISTE DES MAILLES OU LERREUR  ',
+                                'RELATIVE EST SUPERIEURE A 10 POUR CENT',),),),);
 
-IMPR_RESU(   MODELE=MO,RESU=(
-     _F( RESULTAT = RESU, NOM_CHAM = 'SIZ1_ELGA',
-         NUME_ORDRE = 1, SOUS_TITRE = 'CONTRAINTES AUX NOEUDS ZZ1',
-          VALE_MAX = 'OUI', VALE_MIN = 'OUI'),
-     _F( RESULTAT = RESU, NOM_CHAM = 'SIZ2_ELGA',
-         NUME_ORDRE = 1, SOUS_TITRE = 'CONTRAINTES AUX NOEUDS ZZ2',
-         VALE_MAX = 'OUI', VALE_MIN = 'OUI'),
+TEST_RESU(RESU=(_F(RESULTAT=RESU,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='ERZ1_ELEM',
+                   NOM_CMP='ERREST',
+                   MAILLE='M1',
+                   POINT=1,
+                   VALE=0.0,
+                   CRITERE='ABSOLU',
+                   PRECISION=0.001,),
+                _F(RESULTAT=RESU,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='ERZ1_ELEM',
+                   NOM_CMP='NUEST',
+                   MAILLE='M1',
+                   POINT=1,
+                   VALE=0.0,
+                   CRITERE='ABSOLU',
+                   PRECISION=5.0,),
+                _F(RESULTAT=RESU,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='ERZ2_ELEM',
+                   NOM_CMP='ERREST',
+                   MAILLE='M1',
+                   POINT=1,
+                   VALE=0.0,
+                   CRITERE='ABSOLU',
+                   PRECISION=0.001,),
+                _F(RESULTAT=RESU,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='ERZ2_ELEM',
+                   NOM_CMP='NUEST',
+                   MAILLE='M1',
+                   POINT=1,
+                   VALE=0.0,
+                   CRITERE='ABSOLU',
+                   PRECISION=5.0,),
+                _F(RESULTAT=RESU,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='ERME_ELEM',
+                   NOM_CMP='ERREST',
+                   MAILLE='M1',
+                   POINT=1,
+                   VALE=0.0,
+                   CRITERE='ABSOLU',
+                   PRECISION=0.008,),
+                _F(RESULTAT=RESU,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='ERME_ELEM',
+                   NOM_CMP='NUEST',
+                   MAILLE='M1',
+                   POINT=1,
+                   VALE=0.0,
+                   CRITERE='ABSOLU',
+                   PRECISION=6.0,),),);
 
-     _F( RESULTAT = RESU, NOM_CHAM = 'ERZ1_ELEM',
-         NUME_ORDRE = 1, SOUS_TITRE = 'ESTIMATEUR D''ERREUR ZZ1',
-         VALE_MAX = 'OUI', VALE_MIN = 'OUI'),
-      _F( RESULTAT = RESU, NOM_CHAM = 'ERZ1_ELEM',
-         NUME_ORDRE = 1, SOUS_TITRE = (
-'ESTIMATEUR D''ERREUR ZZ1:LISTE DES MAILLES OU L''ERREUR RELATIVE ',
-'EST SUPERIEURE A 10 POUR CENT',         ),
-        BORNE_INF = 10., NOM_CMP = 'NUEST'),
+FIN();
 
-       _F( RESULTAT = RESU, NOM_CHAM = 'ERZ2_ELEM',
-         NUME_ORDRE = 1, SOUS_TITRE = 'ESTIMATEUR D''ERREUR ZZ2',
-      VALE_MAX = 'OUI', VALE_MIN = 'OUI'),
-       _F( RESULTAT = RESU, NOM_CHAM = 'ERZ2_ELEM',
-         NUME_ORDRE = 1, SOUS_TITRE = (
-'ESTIMATEUR D''ERREUR ZZ2:LISTE DES MAILLES OU L''ERREUR RELATIVE ',
-'EST SUPERIEURE A 10 POUR CENT',     ),
-         BORNE_INF = 10., NOM_CMP = 'NUEST'),
-
-       _F( RESULTAT = RESU, NOM_CHAM = 'ERME_ELEM',
-         NUME_ORDRE = 1, SOUS_TITRE = 'ESTIMATEUR D''ERREUR EN RESIDU',
-      VALE_MAX = 'OUI', VALE_MIN = 'OUI'),
-       _F( RESULTAT = RESU, NOM_CHAM = 'ERME_ELEM',
-         NUME_ORDRE = 1, SOUS_TITRE = (
-'ESTIMATEUR D''ERREUR EN RESIDU :LISTE DES MAILLES OU L''ERREUR  ',
-'RELATIVE EST SUPERIEURE A 10 POUR CENT',     ),
-         BORNE_INF = 10., NOM_CMP = 'NUEST'))
-            )
-
-TEST_RESU(RESU=(
-            _F( RESULTAT = RESU, NOM_CHAM = 'ERZ1_ELEM', NUME_ORDRE = 1,
-             CRITERE = 'ABSOLU',     PRECISION = 0.001,
-             MAILLE = 'M1',  POINT = 1, NOM_CMP = 'ERREST', VALE = 0.),
-            _F( RESULTAT = RESU, NOM_CHAM = 'ERZ1_ELEM', NUME_ORDRE = 1,
-             CRITERE = 'ABSOLU',     PRECISION = 5.,
-             MAILLE = 'M1',  POINT = 1, NOM_CMP = 'NUEST',  VALE = 0.),
-            _F( RESULTAT = RESU, NOM_CHAM = 'ERZ2_ELEM', NUME_ORDRE = 1,
-             CRITERE = 'ABSOLU',     PRECISION = 0.001,
-             MAILLE = 'M1',  POINT = 1, NOM_CMP = 'ERREST', VALE = 0.),
-            _F( RESULTAT = RESU, NOM_CHAM = 'ERZ2_ELEM', NUME_ORDRE = 1,
-             CRITERE = 'ABSOLU',     PRECISION = 5.,
-             MAILLE = 'M1',   POINT = 1, NOM_CMP = 'NUEST', VALE = 0.),
-            _F( RESULTAT = RESU, NOM_CHAM = 'ERME_ELEM', NUME_ORDRE = 1,
-             CRITERE = 'ABSOLU',     PRECISION = 0.008,
-             MAILLE = 'M1',  POINT = 1, NOM_CMP = 'ERREST', VALE = 0.),
-            _F( RESULTAT = RESU, NOM_CHAM = 'ERME_ELEM', NUME_ORDRE = 1,
-             CRITERE = 'ABSOLU',     PRECISION = 6.,
-             MAILLE = 'M1',   POINT = 1, NOM_CMP = 'NUEST', VALE = 0.))
-           )
-
-FIN( )
 #
+

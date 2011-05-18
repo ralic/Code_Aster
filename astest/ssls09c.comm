@@ -1,4 +1,4 @@
-# MODIF  DATE 09/05/2011   AUTEUR SFAYOLLE S.FAYOLLE 
+# MODIF  DATE 19/05/2011   AUTEUR DELMAS J.DELMAS 
 # TITRE CYLINDRE MINCE SOUS SON POIDS PROPRE (AXIS)
 # ssls09c.para = tps_job 60 mem_job 128Mo mem_aster 95 ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -19,7 +19,10 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
-DEBUT(CODE=_F(NOM='SSLS09C', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'), MEMOIRE=_F(DYNAMIQUE=400,))
+DEBUT(CODE=_F(NOM='SSLS09C',
+              NIV_PUB_WEB='INTERNET',),
+      DEBUG=_F(SDVERI='OUI',),
+      MEMOIRE=_F(DYNAMIQUE=400,),);
 
 MAIL=LIRE_MAILLAGE();
 
@@ -30,29 +33,35 @@ MODELE=AFFE_MODELE(MAILLAGE=MAIL,
                    AFFE=_F(TOUT='OUI',
                            PHENOMENE='MECANIQUE',
                            MODELISATION='AXIS_INCO',),);
+
 #
 # DEFINITION DU MATERIAU
 
-ACIER=DEFI_MATERIAU(ELAS=_F(E=210000000000.0,
+ACIER=DEFI_MATERIAU(ELAS=_F(E=2.1E11,
                             NU=0.3,
-                            RHO=8000.0,
-                            ALPHA=1e-05,),);
+                            RHO=8000.,
+                            ALPHA=1.E-5,),);
+
 #
 # ATTRIBUTION DU MATERIAU
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MAIL,
                     AFFE=_F(TOUT='OUI',
                             MATER=ACIER,),);
+
 #
 # DEFINITION DES CONDITIONS AUX LIMITES ET CHARGEMENTS
 
 CLIM=AFFE_CHAR_MECA(MODELE=MODELE,
                     DDL_IMPO=_F(GROUP_MA='APPUI',
-                                DY=0.0,),);
+                                DY=0.,),);
+
 #
 
-F_Y=DEFI_FONCTION(NOM_PARA='Y',
-                  VALE=(0.0,-78500.0,3.0,-78500.0,6.0,-78500.0,),);
+F_Y=DEFI_FONCTION(NOM_PARA='Y',VALE=(0.,-78500.,
+                        3.,-78500.,
+                        6.,-78500.,
+                        ),);
 
 CHARGT=AFFE_CHAR_MECA_F(MODELE=MODELE,
                         FORCE_INTERNE=_F(TOUT='OUI',
@@ -60,7 +69,8 @@ CHARGT=AFFE_CHAR_MECA_F(MODELE=MODELE,
 
 CH_PESA=AFFE_CHAR_MECA(MODELE=MODELE,
                        PESANTEUR=_F(GRAVITE=9.8125,
-                                    DIRECTION=(0.0,-1.0,0.0,),),);
+                                    DIRECTION=(0.,-1.,0.,),),);
+
 #
 # RESOLUTION
 #DEF=MECA_STATIQUE(    MODELE=MODELE,
@@ -73,28 +83,32 @@ INSTANTS=DEFI_LIST_REEL(DEBUT=0.0,
                         INTERVALLE=_F(JUSQU_A=1.0,
                                       NOMBRE=1,),);
 
-RAMPE=DEFI_FONCTION(NOM_PARA='INST',
-                    VALE=(0.0,0.0,1.0,1.0,),);
+RAMPE=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.0,0.0,
+                          1.0,1.0,
+                          ),);
+
 # CALCUL
 #========
 
 DEF=STAT_NON_LINE(MODELE=MODELE,
-         SOLVEUR=_F(METHODE='MUMPS',PCENT_PIVOT=10.),
                   CHAM_MATER=CHMAT,
                   EXCIT=(_F(CHARGE=CH_PESA,
                             FONC_MULT=RAMPE,),
                          _F(CHARGE=CLIM,),),
                   COMP_ELAS=_F(RELATION='ELAS',),
                   INCREMENT=_F(LIST_INST=INSTANTS,),
-                  NEWTON=_F(REAC_ITER=1,),);
+                  NEWTON=_F(REAC_ITER=1,),
+                  SOLVEUR=_F(METHODE='MUMPS',
+                             PCENT_PIVOT=10,),);
 
 DEF=CALC_ELEM(reuse =DEF,
-
-
               RESULTAT=DEF,
-              OPTION=('SIEF_ELNO','ERME_ELEM','ERME_ELNO',),
+              OPTION='SIEF_ELNO',);
 
-);
+DEF=CALC_ERREUR(reuse =DEF,
+                RESULTAT=DEF,
+                OPTION=('ERME_ELEM','ERME_ELNO',),);
+
 #
 # TEST_RESU DEPLACEMENTS
 
@@ -122,6 +136,7 @@ TEST_RESU(RESU=(_F(RESULTAT=DEF,
                    VALE=-2.99e-06,
                    PRECISION=0.001,
                    REFERENCE='ANALYTIQUE',),),);
+
 #
 
 TEST_RESU(RESU=_F(RESULTAT=DEF,
@@ -132,6 +147,7 @@ TEST_RESU(RESU=_F(RESULTAT=DEF,
                   VALE=4.49e-07,
                   PRECISION=0.015,
                   REFERENCE='ANALYTIQUE',),);
+
 #---------------------------------------------------------------------
 #    TEST EN CONTRAINTES
 
@@ -164,6 +180,7 @@ TEST_RESU(RESU=(_F(RESULTAT=DEF,
                    CRITERE='ABSOLU',
                    PRECISION=30.0,
                    REFERENCE='ANALYTIQUE',),),);
+
 #---------------------------------------------------------------------
 #    ESTIMATEUR D'ERREUR EN RESIDU
 
@@ -173,7 +190,7 @@ TEST_RESU(RESU=(_F(RESULTAT=DEF,
                    NOM_CMP='NUEST',
                    MAILLE='M4',
                    POINT=1,
-                   VALE=1.3962314817742e-8,
+                   VALE=1.39623148177e-08,
                    REFERENCE='NON_REGRESSION',
                    VERSION='9.3.15',),
                 _F(RESULTAT=DEF,
@@ -182,9 +199,11 @@ TEST_RESU(RESU=(_F(RESULTAT=DEF,
                    NOM_CMP='ERREST',
                    MAILLE='M4',
                    NOEUD='N51',
-                   VALE=1.2338367648692e-6,
+                   VALE=1.23383676487e-06,
                    REFERENCE='NON_REGRESSION',
                    VERSION='8.2.15',),),);
 
 FIN();
+
 #
+

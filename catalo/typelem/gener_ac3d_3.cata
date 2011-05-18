@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+%& MODIF TYPELEM  DATE 19/05/2011   AUTEUR DELMAS J.DELMAS 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,27 +20,27 @@ GENER_AC3D_3
 TYPE_GENE__
 
 ENTETE__ ELEMENT__ ACOU_HEXA20      MAILLE__ HEXA20
-   ELREFE__  H20       GAUSS__  RIGI=FPG27  MASS=FPG27       NOEU=NOEU
+   ELREFE__  H20       GAUSS__  RIGI=FPG27  MASS=FPG27    NOEU=NOEU
    ELREFE__  QU8       GAUSS__  RIGI=FPG9   MASS=FPG9     NOEU=NOEU
 ENTETE__ ELEMENT__ ACOU_HEXA27      MAILLE__ HEXA27
-   ELREFE__  H27       GAUSS__  RIGI=FPG27  MASS=FPG27       NOEU=NOEU
+   ELREFE__  H27       GAUSS__  RIGI=FPG27  MASS=FPG27    NOEU=NOEU
    ELREFE__  QU9       GAUSS__  RIGI=FPG9   MASS=FPG9     NOEU=NOEU
 ENTETE__ ELEMENT__ ACOU_HEXA8       MAILLE__ HEXA8
-   ELREFE__  HE8       GAUSS__  RIGI=FPG8   MASS=FPG8        NOEU=NOEU
+   ELREFE__  HE8       GAUSS__  RIGI=FPG8   MASS=FPG8     NOEU=NOEU
    ELREFE__  QU4       GAUSS__  RIGI=FPG4   MASS=FPG4     NOEU=NOEU
 ENTETE__ ELEMENT__ ACOU_PENTA15     MAILLE__ PENTA15
-   ELREFE__  P15       GAUSS__  RIGI=FPG21  MASS=FPG21      NOEU=NOEU
+   ELREFE__  P15       GAUSS__  RIGI=FPG21  MASS=FPG21    NOEU=NOEU
    ELREFE__  QU8       GAUSS__  RIGI=FPG9   MASS=FPG9     NOEU=NOEU
    ELREFE__  TR6       GAUSS__  RIGI=FPG6   MASS=FPG6     NOEU=NOEU
 ENTETE__ ELEMENT__ ACOU_PENTA6      MAILLE__ PENTA6
-   ELREFE__  PE6       GAUSS__  RIGI=FPG6   MASS=FPG6        NOEU=NOEU
+   ELREFE__  PE6       GAUSS__  RIGI=FPG6   MASS=FPG6     NOEU=NOEU
    ELREFE__  QU4       GAUSS__  RIGI=FPG4   MASS=FPG4     NOEU=NOEU
    ELREFE__  TR3       GAUSS__  RIGI=COT3   MASS=COT3     NOEU=NOEU
 ENTETE__ ELEMENT__ ACOU_TETRA10     MAILLE__ TETRA10
-   ELREFE__  T10       GAUSS__  RIGI=FPG15  MASS=FPG15       NOEU=NOEU
+   ELREFE__  T10       GAUSS__  RIGI=FPG15  MASS=FPG15    NOEU=NOEU
    ELREFE__  TR6       GAUSS__  RIGI=FPG6   MASS=FPG6     NOEU=NOEU
 ENTETE__ ELEMENT__ ACOU_TETRA4      MAILLE__ TETRA4
-   ELREFE__  TE4       GAUSS__  RIGI=FPG4   MASS=FPG4        NOEU=NOEU
+   ELREFE__  TE4       GAUSS__  RIGI=FPG4   MASS=FPG4     NOEU=NOEU
    ELREFE__  TR3       GAUSS__  RIGI=COT3   MASS=COT3     NOEU=NOEU
 
 MODE_LOCAL__
@@ -51,6 +51,7 @@ MODE_LOCAL__
     EINTENO  = INTE_R   ELNO__ IDEN__  (INTX_R  INTY_R  INTZ_R  INTX_I  INTY_I  INTZ_I )
     DDL_ACOU = PRES_C   ELNO__ IDEN__  (PRES     )
     EPRACNO  = PRAC_R   ELNO__ IDEN__  (PRES_R  PRES_I  DB     )
+    CFREQR   = FREQ_R   ELEM__         (FREQ     )
 
 VECTEUR__
 
@@ -58,33 +59,37 @@ MATRICE__
     MMATTTC = MPRE_C DDL_ACOU DDL_ACOU
 
 OPTION__
-    VERI_JACOBIEN      328    IN__   NGEOMER  PGEOMER     OUT__  ECODRET  PCODRET
     CARA_GEOM           -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
     CHAR_LIMITE         -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
     COOR_ELGA           488   IN__   NGEOMER  PGEOMER
                               OUT__  EGGEOP_R PCOORPG
-    ECIN_ELEM      -1    IN__   XXXXXX   XXXXXX
+    ECIN_ELEM           -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
     ENER_ELAS           -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
     ENER_TOTALE         -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
-    EPOT_ELEM      -1    IN__   XXXXXX   XXXXXX
+    EPOT_ELEM           -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
     INDIC_ENER          -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
     INDIC_SEUIL         -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX
-    INTE_ELNO           187   IN__   NGEOMER  PGEOMER  CMATERC  PMATERC  DDL_ACOU PPRESSC
+    INTE_ELNO           187   IN__   NGEOMER  PGEOMER  CMATERC  PMATERC  DDL_ACOU PPRESSC CFREQR   PFREQR
                               OUT__  EINTENO  PINTER
     MASS_ACOU           181   IN__   NGEOMER  PGEOMER  CMATERC  PMATERC
                               OUT__  MMATTTC  PMATTTC
-    MASS_INER           -1    IN__   XXXXXX   XXXXXX    OUT__  XXXXXX   XXXXXX
-    PRAC_ELNO           189   IN__   DDL_ACOU PPRESSC   OUT__  EPRACNO  PPRAC_R
-    RICE_TRACEY         -1    IN__   XXXXXX   XXXXXX    OUT__  XXXXXX   XXXXXX
+    MASS_INER           -1    IN__   XXXXXX   XXXXXX
+                              OUT__  XXXXXX   XXXXXX
+    PRAC_ELNO           189   IN__   DDL_ACOU PPRESSC
+                              OUT__  EPRACNO  PPRAC_R
+    RICE_TRACEY         -1    IN__   XXXXXX   XXXXXX
+                              OUT__  XXXXXX   XXXXXX
     RIGI_ACOU           180   IN__   NGEOMER  PGEOMER
                               OUT__  MMATTTC  PMATTTC
+    VERI_JACOBIEN       328   IN__   NGEOMER  PGEOMER
+                              OUT__  ECODRET  PCODRET
     WEIBULL             -1    IN__   XXXXXX   XXXXXX
                               OUT__  XXXXXX   XXXXXX

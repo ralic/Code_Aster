@@ -1,4 +1,4 @@
-#@ MODIF algorith2 Messages  DATE 03/01/2011   AUTEUR DESROCHES X.DESROCHES 
+#@ MODIF algorith2 Messages  DATE 19/05/2011   AUTEUR DELMAS J.DELMAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -146,26 +146,6 @@ Erreur utilisateur dans la commande CREA_RESU / AFFE :
 
 33 : _("""
  pas de maille de référence trouvée
-"""),
-
-35 : _("""
- la méthode  %(k1)s  est inadéquate pour une résolution de type "LDLT"
-"""),
-
-36 : _("""
- la méthode  %(k1)s  est inadéquate pour une résolution de type "GCPC"
-"""),
-
-37 : _("""
- la methode  %(k1)s  est inadéquate pour une résolution de type "MULT_FRONT"
-"""),
-
-38 : _("""
- la méthode  %(k1)s  est inadéquate pour une résolution de type "FETI"
-"""),
-
-39 : _("""
- le solveur FETI requiert un concept produit de type SD_FETI en entrée du mot-clé PARTITION
 """),
 
 40 : _("""

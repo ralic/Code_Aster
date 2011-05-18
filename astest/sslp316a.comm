@@ -1,4 +1,4 @@
-# MODIF  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 19/05/2011   AUTEUR DELMAS J.DELMAS 
 # TITRE VALIDATION DE L'ESTIMATEUR D'ERREUR XFEM SUR UNE PLAQUE FISSUREE
 # sslp316a.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -27,39 +27,53 @@
 DEBUT(CODE=_F(NOM='SSLP316A',
               NIV_PUB_WEB='INTERNET',),
       DEBUG=_F(SDVERI='OUI',),);
-
 e = 100000.0;
+
 nu = 0.0;
 
-ACIER=DEFI_MATERIAU(ELAS=_F(E=e,NU=nu,RHO=7800.0,),);
 
+ACIER=DEFI_MATERIAU(ELAS=_F(E=e,
+                            NU=nu,
+                            RHO=7800.0,),);
 lx = 1.0;
+
 ly = 1.0;
+
 
 # a : profondeur de la fissure  
 # h : hauteur du plan de fissure
 a = 0.5;
+
 h = 0.5;
 
-LN = FORMULE(VALE='Y-h',NOM_PARA=('X','Y',),);
 
-LT = FORMULE(VALE='-X+a',NOM_PARA=('X','Y',),);
+LN = FORMULE(VALE='Y-h',
+             NOM_PARA=('X','Y',),);
 
-R = FORMULE(VALE='sqrt((X-0.5)**2+(Y-0.5)**2)',NOM_PARA=('X','Y',),);
+LT = FORMULE(VALE='-X+a',
+             NOM_PARA=('X','Y',),);
 
-T = FORMULE(VALE='atan2(Y-0.5,-X+0.5)',NOM_PARA=('X','Y',),);
+R = FORMULE(VALE='sqrt((X-0.5)**2+(Y-0.5)**2)',
+            NOM_PARA=('X','Y',),);
 
-coef = ((1 + nu) / (e * sqrt((2.0 * pi))));
+T = FORMULE(VALE='atan2(Y-0.5,-X+0.5)',
+            NOM_PARA=('X','Y',),);
+coef = ((1 + nu) / (e * sqrt(6.28318530718)));
+
 
 # CHAMPS DE DEPLACEMENT
 
-OUAUX1 = FORMULE(VALE='-1.*coef*sqrt(R(X,Y))*cos(T(X,Y)/2.)*(3.-4.*nu-cos(T(X,Y)))',NOM_PARA=('X','Y',),);
+OUAUX1 = FORMULE(VALE='-1.*coef*sqrt(R(X,Y))*cos(T(X,Y)/2.)*(3.-4.*nu-cos(T(X,Y)))',
+                 NOM_PARA=('X','Y',),);
 
-UAUX2 = FORMULE(VALE=' coef*sqrt(R(X,Y))*sin(T(X,Y)/2.)*(3.-4.*nu-cos(T(X,Y)))',NOM_PARA=('X','Y',),);
+UAUX2 = FORMULE(VALE=' coef*sqrt(R(X,Y))*sin(T(X,Y)/2.)*(3.-4.*nu-cos(T(X,Y)))',
+                NOM_PARA=('X','Y',),);
 
-UAUX1 = FORMULE(VALE='-1.* OUAUX1(X,Y)',NOM_PARA=('X','Y',),);
+UAUX1 = FORMULE(VALE='-1.* OUAUX1(X,Y)',
+                NOM_PARA=('X','Y',),);
 
-H1YSUP = FORMULE(VALE='coef*sqrt(R(X,0.5))*(4.-4.*nu)',NOM_PARA=('X','Y',),);
+H1YSUP = FORMULE(VALE='coef*sqrt(R(X,0.5))*(4.-4.*nu)',
+                 NOM_PARA=('X','Y',),);
 
 # INSTANTS
 
@@ -71,13 +85,23 @@ PRE_GIBI();
 
 MA=LIRE_MAILLAGE();
 
-MA=DEFI_GROUP(reuse =MA,                                                                                    
-              MAILLAGE=MA,                                                                                  
-              CREA_GROUP_NO=(_F(GROUP_MA=('LIGSUP','LIGINF','LIGGAU','LIGDRO'),),
-                             _F(NOM='NHSUP',OPTION='ENV_SPHERE',POINT=(lx,(11+1.)/(2.*11)),RAYON=1/(4.*11),PRECISION=1/(4.*11)),
-                             _F(NOM='NHINF',OPTION='ENV_SPHERE',POINT=(lx,(11-1.)/(2.*11)),RAYON=1/(4.*11),PRECISION=1/(4.*11)),
-                             _F(NOM='ENVELTOU',UNION=('LIGSUP','LIGINF','LIGGAU','LIGDRO',),),
-                             _F(NOM='ENVELCLA',DIFFE=('ENVELTOU','NHSUP','NHINF',),),),);
+MA=DEFI_GROUP(reuse =MA,
+              MAILLAGE=MA,
+              CREA_GROUP_NO=(_F(GROUP_MA=('LIGSUP','LIGINF','LIGGAU','LIGDRO',),),
+                             _F(OPTION='ENV_SPHERE',
+                                NOM='NHSUP',
+                                POINT=(lx,0.545454545455,),
+                                RAYON=0.0227272727273,
+                                PRECISION=0.0227272727273,),
+                             _F(OPTION='ENV_SPHERE',
+                                NOM='NHINF',
+                                POINT=(lx,0.454545454545,),
+                                RAYON=0.0227272727273,
+                                PRECISION=0.0227272727273,),
+                             _F(UNION=('LIGSUP','LIGINF','LIGGAU','LIGDRO',),
+                                NOM='ENVELTOU',),
+                             _F(DIFFE=('ENVELTOU','NHSUP','NHINF',),
+                                NOM='ENVELCLA',),),);
 
 MOD=AFFE_MODELE(MAILLAGE=MA,
                 AFFE=_F(GROUP_MA='SURF',
@@ -104,13 +128,13 @@ CH2=AFFE_CHAR_MECA_F(MODELE=MODK,
                                   DX=OUAUX1,
                                   DY=UAUX2,),
                                _F(GROUP_NO='NHSUP',
-                                  DX =OUAUX1,
-                                  DY = UAUX2,
+                                  DX=OUAUX1,
+                                  DY=UAUX2,
                                   H1X=OUAUX1,
                                   H1Y=H1YSUP,),
                                _F(GROUP_NO='NHINF',
-                                  DX =OUAUX1,
-                                  DY = UAUX2,
+                                  DX=OUAUX1,
+                                  DY=UAUX2,
                                   H1X=UAUX1,
                                   H1Y=H1YSUP,),),);
 
@@ -127,8 +151,13 @@ UTOT=STAT_NON_LINE(MODELE=MODK,
 
 UTOT=CALC_ELEM(reuse =UTOT,
                RESULTAT=UTOT,
-               NUME_ORDRE = 1,
-               OPTION=('SIEF_ELNO','ERME_ELEM',),);
+               NUME_ORDRE=1,
+               OPTION='SIEF_ELNO',);
+
+UTOT=CALC_ERREUR(reuse =UTOT,
+                 RESULTAT=UTOT,
+                 NUME_ORDRE=1,
+                 OPTION='ERME_ELEM',);
 
 TEST_RESU(RESU=(_F(RESULTAT=UTOT,
                    INST=1.0,
@@ -145,12 +174,12 @@ TEST_RESU(RESU=(_F(RESULTAT=UTOT,
                    NOM_CHAM='SIEF_ELNO',
                    NOM_CMP='SIXX',
                    TYPE_TEST='MIN',
-                   VALE=4.90e-2,
+                   VALE=0.049,
                    CRITERE='RELATIF',
                    PRECISION=0.005,
                    REFERENCE='NON_REGRESSION',
                    VERSION='9.03.16',),
-                 _F(RESULTAT=UTOT,
+                _F(RESULTAT=UTOT,
                    INST=1.0,
                    NOM_CHAM='SIEF_ELNO',
                    NOM_CMP='SIXY',
@@ -170,12 +199,12 @@ TEST_RESU(RESU=(_F(RESULTAT=UTOT,
                    PRECISION=0.005,
                    REFERENCE='NON_REGRESSION',
                    VERSION='9.03.16',),
-                 _F(RESULTAT=UTOT,
+                _F(RESULTAT=UTOT,
                    INST=1.0,
                    NOM_CHAM='SIEF_SENO_SEGA',
                    NOM_CMP='X4',
                    TYPE_TEST='MAX',
-                   VALE=2.44e-1,
+                   VALE=0.244,
                    CRITERE='RELATIF',
                    PRECISION=0.005,
                    REFERENCE='NON_REGRESSION',
@@ -185,30 +214,30 @@ TEST_RESU(RESU=(_F(RESULTAT=UTOT,
                    NOM_CHAM='SIEF_SENO_SEGA',
                    NOM_CMP='X4',
                    TYPE_TEST='MIN',
-                   VALE=-6.98e-1,
+                   VALE=-0.698,
                    CRITERE='RELATIF',
                    PRECISION=0.005,
                    REFERENCE='NON_REGRESSION',
                    VERSION='9.03.16',),
-                 _F(RESULTAT=UTOT,
-                    INST=1.0,
-                    NOM_CHAM='ERME_ELEM',
-                    NOM_CMP='ERREST',
-                    TYPE_TEST='MAX',
-                    VALE=5.73e-4,
-                    CRITERE='RELATIF',
-                    PRECISION=0.005,
-                    REFERENCE='NON_REGRESSION',
-                    VERSION='9.03.16',),
-                 _F(RESULTAT=UTOT,
-                    INST=1.0,
-                    NOM_CHAM='ERME_ELEM',
-                    NOM_CMP='ERREST',
-                    TYPE_TEST='MIN',
-                    VALE=3.69e-6,
-                    CRITERE='RELATIF',
-                    PRECISION=0.005,
-                    REFERENCE='NON_REGRESSION',
-                    VERSION='9.03.16',),),);
+                _F(RESULTAT=UTOT,
+                   INST=1.0,
+                   NOM_CHAM='ERME_ELEM',
+                   NOM_CMP='ERREST',
+                   TYPE_TEST='MAX',
+                   VALE=0.000573,
+                   CRITERE='RELATIF',
+                   PRECISION=0.005,
+                   REFERENCE='NON_REGRESSION',
+                   VERSION='9.03.16',),
+                _F(RESULTAT=UTOT,
+                   INST=1.0,
+                   NOM_CHAM='ERME_ELEM',
+                   NOM_CMP='ERREST',
+                   TYPE_TEST='MIN',
+                   VALE=3.69e-06,
+                   CRITERE='RELATIF',
+                   PRECISION=0.005,
+                   REFERENCE='NON_REGRESSION',
+                   VERSION='9.03.16',),),);
 
 FIN();

@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
+#& MODIF COMMANDE  DATE 19/05/2011   AUTEUR DELMAS J.DELMAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -42,11 +42,11 @@ STAT_NON_LINE=OPER(nom="STAT_NON_LINE",op=70,sd_prod=evol_noli,
                 SUPER_MAILLE=SIMP(statut='f',typ=ma,validators=NoRepeat(),max='**',),
                 FONC_MULT   =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
               ),
-#-------------------------------------------------------------------               
+#-------------------------------------------------------------------
          COMP_INCR       =C_COMP_INCR(),
-#-------------------------------------------------------------------          
+#-------------------------------------------------------------------
          COMP_ELAS       =C_COMP_ELAS('STAT_NON_LINE'),
-#-------------------------------------------------------------------          
+#-------------------------------------------------------------------
          b_reuse =BLOC(condition = "reuse",fr="en mode concept reentrant : ETAT_INIT obligatoire",
            ETAT_INIT       =FACT(statut='o',
              regles=(AU_MOINS_UN('EVOL_NOLI','DEPL','SIGM','VARI',),
@@ -89,9 +89,9 @@ STAT_NON_LINE=OPER(nom="STAT_NON_LINE",op=70,sd_prod=evol_noli,
              NUME_DIDI       =SIMP(statut='f',typ='I'),
              INST_ETAT_INIT  =SIMP(statut='f',typ='R'),
          ),),
-#-------------------------------------------------------------------            
+#-------------------------------------------------------------------
          INCREMENT       =C_INCREMENT(),
-#-------------------------------------------------------------------   
+#-------------------------------------------------------------------
          METHODE         =SIMP(statut='d',typ='TXM',defaut="NEWTON",into=("NEWTON","IMPL_EX")),
              b_meth_newton = BLOC(condition = "METHODE == 'NEWTON'",
                                   NEWTON = C_NEWTON(),
@@ -99,23 +99,23 @@ STAT_NON_LINE=OPER(nom="STAT_NON_LINE",op=70,sd_prod=evol_noli,
             b_meth_impl_ex = BLOC(condition = "METHODE == 'IMPL_EX'",
                                   IMPL_EX = C_IMPL_EX(),
                           ),
-#-------------------------------------------------------------------    
+#-------------------------------------------------------------------
          RECH_LINEAIRE   =C_RECH_LINEAIRE(),
-#-------------------------------------------------------------------            
+#-------------------------------------------------------------------
          PILOTAGE        =C_PILOTAGE(),
-#-------------------------------------------------------------------                         
+#-------------------------------------------------------------------
          CONVERGENCE     =C_CONVERGENCE(),
-#------------------------------------------------------------------- 
-         SOLVEUR         =C_SOLVEUR(),
+#-------------------------------------------------------------------
+         SOLVEUR         =C_SOLVEUR('STAT_NON_LINE'),
 #-------------------------------------------------------------------
          OBSERVATION     =C_OBSERVATION(),
 #-------------------------------------------------------------------
          SUIVI_DDL       =C_SUIVI_DDL(),
 #-------------------------------------------------------------------
          ARCHIVAGE       =C_ARCHIVAGE(),
-#-------------------------------------------------------------------   
+#-------------------------------------------------------------------
          AFFICHAGE      = C_AFFICHAGE(),
-#-------------------------------------------------------------------   
+#-------------------------------------------------------------------
          CRIT_FLAMB     =FACT(statut='f',min=1,max=1,
            NB_FREQ         =SIMP(statut='f',typ='I',max=1,defaut=3),
            CHAR_CRIT       =SIMP(statut='f',typ='R',min=2,max=2,defaut=(-10.0,10),

@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 19/05/2011   AUTEUR DELMAS J.DELMAS 
 # TITRE PARALLEPEPIPEDE SOUS SON PROPRE POIDS (HEXA20 GROSSIER)
 # sslv07a.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -241,7 +241,12 @@ DEPLD3=STAT_NON_LINE(MODELE=MO,
 DEPLD2 = CALC_ELEM (reuse=DEPLD2,
               RESULTAT= DEPLD2,
               OPTION= ( 'SIEF_ELNO',
-                        'ERME_ELEM', 'ERME_ELNO',),
+                        ),
+            ) ;
+
+DEPLD2 = CALC_ERREUR (reuse=DEPLD2,
+              RESULTAT= DEPLD2,
+              OPTION= (                         'ERME_ELEM', 'ERME_ELNO',),
             ) ;
 
 ENER_ELA=POST_ELEM(ENER_ELAS=_F(TOUT='OUI',),

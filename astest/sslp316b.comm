@@ -1,4 +1,4 @@
-# MODIF  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 19/05/2011   AUTEUR DELMAS J.DELMAS 
 # TITRE VALIDATION DE L'ESTIMATEUR D'ERREUR XFEM SUR UNE PLAQUE FISSUREE
 # sslp316b.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -27,27 +27,37 @@
 DEBUT(CODE=_F(NOM='SSLP316B',
               NIV_PUB_WEB='INTERNET',),
       DEBUG=_F(SDVERI='OUI',),);
-
 e = 100000.0;
+
 nu = 0.0;
 
-ACIER=DEFI_MATERIAU(ELAS=_F(E=e,NU=nu,RHO=7800.0,),);
 
+ACIER=DEFI_MATERIAU(ELAS=_F(E=e,
+                            NU=nu,
+                            RHO=7800.0,),);
 lx = 1.0;
+
 ly = 1.0;
+
 
 # a : profondeur de la fissure  
 # h : hauteur du plan de fissure
 a = 0.5;
+
 h = 0.5;
 
-LN = FORMULE(VALE='Y-h',NOM_PARA=('X','Y',),);
 
-LT = FORMULE(VALE='-X+a',NOM_PARA=('X','Y',),);
+LN = FORMULE(VALE='Y-h',
+             NOM_PARA=('X','Y',),);
 
-ZERO = FORMULE(VALE='0.',NOM_PARA=('X','Y',),);
+LT = FORMULE(VALE='-X+a',
+             NOM_PARA=('X','Y',),);
 
-EFFORT = FORMULE(VALE='-20.',NOM_PARA=('X','Y',),);
+ZERO = FORMULE(VALE='0.',
+               NOM_PARA=('X','Y',),);
+
+EFFORT = FORMULE(VALE='-20.',
+                 NOM_PARA=('X','Y',),);
 
 L_INS1=DEFI_LIST_REEL(DEBUT=0.0,
                       INTERVALLE=_F(JUSQU_A=3.0,
@@ -100,16 +110,21 @@ UTOT=STAT_NON_LINE(MODELE=MODK,
                    ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA',),);
 
 UTOT=CALC_ELEM(reuse =UTOT,
-               NUME_ORDRE = 1,
                RESULTAT=UTOT,
-               OPTION=('SIEF_ELNO','ERME_ELEM',),);
+               NUME_ORDRE=1,
+               OPTION='SIEF_ELNO',);
+
+UTOT=CALC_ERREUR(reuse =UTOT,
+                 RESULTAT=UTOT,
+                 NUME_ORDRE=1,
+                 OPTION='ERME_ELEM',);
 
 TEST_RESU(RESU=(_F(RESULTAT=UTOT,
                    INST=1.0,
                    NOM_CHAM='SIEF_ELNO',
                    NOM_CMP='SIXX',
                    TYPE_TEST='MAX',
-                   VALE=2.01e+1,
+                   VALE=20.1,
                    CRITERE='RELATIF',
                    PRECISION=0.005,
                    REFERENCE='NON_REGRESSION',
@@ -119,17 +134,7 @@ TEST_RESU(RESU=(_F(RESULTAT=UTOT,
                    NOM_CHAM='SIEF_ELNO',
                    NOM_CMP='SIXX',
                    TYPE_TEST='MIN',
-                   VALE=1.97e+1,
-                   CRITERE='RELATIF',
-                   PRECISION=0.005,
-                   REFERENCE='NON_REGRESSION',
-                   VERSION='9.03.16',),
-                 _F(RESULTAT=UTOT,
-                   INST=1.0,
-                   NOM_CHAM='SIEF_ELNO',
-                   NOM_CMP='SIXY',
-                   TYPE_TEST='MAX',
-                   VALE=2.58e-1,
+                   VALE=19.7,
                    CRITERE='RELATIF',
                    PRECISION=0.005,
                    REFERENCE='NON_REGRESSION',
@@ -138,18 +143,28 @@ TEST_RESU(RESU=(_F(RESULTAT=UTOT,
                    INST=1.0,
                    NOM_CHAM='SIEF_ELNO',
                    NOM_CMP='SIXY',
-                   TYPE_TEST='MIN',
-                   VALE=-1.76e-1,
+                   TYPE_TEST='MAX',
+                   VALE=0.258,
                    CRITERE='RELATIF',
                    PRECISION=0.005,
                    REFERENCE='NON_REGRESSION',
                    VERSION='9.03.16',),
-                 _F(RESULTAT=UTOT,
+                _F(RESULTAT=UTOT,
+                   INST=1.0,
+                   NOM_CHAM='SIEF_ELNO',
+                   NOM_CMP='SIXY',
+                   TYPE_TEST='MIN',
+                   VALE=-0.176,
+                   CRITERE='RELATIF',
+                   PRECISION=0.005,
+                   REFERENCE='NON_REGRESSION',
+                   VERSION='9.03.16',),
+                _F(RESULTAT=UTOT,
                    INST=1.0,
                    NOM_CHAM='SIEF_SENO_SEGA',
                    NOM_CMP='X4',
                    TYPE_TEST='MAX',
-                   VALE=2.69e-1,
+                   VALE=0.269,
                    CRITERE='RELATIF',
                    PRECISION=0.005,
                    REFERENCE='NON_REGRESSION',
@@ -159,17 +174,17 @@ TEST_RESU(RESU=(_F(RESULTAT=UTOT,
                    NOM_CHAM='SIEF_SENO_SEGA',
                    NOM_CMP='X4',
                    TYPE_TEST='MIN',
-                   VALE=-1.21e-1,
+                   VALE=-0.121,
                    CRITERE='RELATIF',
                    PRECISION=0.005,
                    REFERENCE='NON_REGRESSION',
                    VERSION='9.03.16',),
-                 _F(RESULTAT=UTOT,
+                _F(RESULTAT=UTOT,
                    INST=1.0,
                    NOM_CHAM='ERME_ELEM',
                    NOM_CMP='ERREST',
                    TYPE_TEST='MAX',
-                   VALE=1.3e-4,
+                   VALE=0.00013,
                    CRITERE='RELATIF',
                    PRECISION=0.005,
                    REFERENCE='NON_REGRESSION',
@@ -179,7 +194,7 @@ TEST_RESU(RESU=(_F(RESULTAT=UTOT,
                    NOM_CHAM='ERME_ELEM',
                    NOM_CMP='ERREST',
                    TYPE_TEST='MIN',
-                   VALE=2.42e-9,
+                   VALE=2.42e-09,
                    CRITERE='RELATIF',
                    PRECISION=0.005,
                    REFERENCE='NON_REGRESSION',

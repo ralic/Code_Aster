@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+#& MODIF COMMANDE  DATE 19/05/2011   AUTEUR DELMAS J.DELMAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -84,7 +84,10 @@ MACR_ASCOUF_CALC=MACRO(nom="MACR_ASCOUF_CALC",op=macr_ascouf_calc_ops,sd_prod=ma
 
          COMP_ELAS       =C_COMP_ELAS('MACR_ASCOUF_CALC'),
 
-         SOLVEUR         =C_SOLVEUR(),
+#-------------------------------------------------------------------
+#        Catalogue commun SOLVEUR
+         SOLVEUR         =C_SOLVEUR('MACR_ASCOUF_CALC'),
+#-------------------------------------------------------------------
 
          CONVERGENCE     =C_CONVERGENCE(),
 

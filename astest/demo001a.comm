@@ -1,4 +1,4 @@
-# MODIF  DATE 10/05/2011   AUTEUR MEUNIER S.MEUNIER 
+# MODIF  DATE 19/05/2011   AUTEUR DELMAS J.DELMAS 
 # TITRE DEMONSTRATION DE LA JOURNE ASTER LIBRE DU 14 OCTOBRE 2003
 # demo001a.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -88,7 +88,11 @@ for k in range(3):
                               _F(CHARGE=FPILO),),);
 
    RESUELAS=CALC_ELEM(reuse =RESUELAS,
-                 OPTION=('SIEF_ELNO','ERME_ELEM','ERME_ELNO'),
+                 OPTION=('SIEF_ELNO',),
+                 RESULTAT=RESUELAS);
+
+   RESUELAS=CALC_ERREUR(reuse =RESUELAS,
+                 OPTION=('ERME_ELEM','ERME_ELNO'),
                  RESULTAT=RESUELAS);
 
    MAIL[k+1]=CO('MAIL_%d' % (k+1))

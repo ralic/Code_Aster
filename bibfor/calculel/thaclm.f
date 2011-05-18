@@ -1,11 +1,9 @@
       SUBROUTINE THACLM(NEWCAL,TYSD,KNUM,KCHA,PHENO,RESUCO,RESUC1,
      &                  CONCEP,NBORDR,MODELE,MATE,CARA,NCHAR,CTYP)
-
       IMPLICIT NONE
-C TOLE CRP_20
-C
+C ----------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF CALCULEL  DATE 26/04/2011   AUTEUR COURTOIS M.COURTOIS 
+C MODIF CALCULEL  DATE 19/05/2011   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -69,34 +67,30 @@ C
 C
 C     --- VARIABLES LOCALES ---
       INTEGER IAUX,JORDR,IORDR,JCHA,IRET1,IRET,BUFIN1,IAD
-      INTEGER IFM,NIV,LINST,NIVEAU,JNMO,IAINST,IRET2
+      INTEGER IFM,NIV,LINST,NIVEAU
       INTEGER NUORD,NH,NBAC,NBPA,JPA,NBPARA
       INTEGER IADIN,IADOU,IBID,IOPT,NBOPT
-      INTEGER JOPT,J,IFREQ,III,L1,L2,L3,L4,L5,IERD,LREFE
+      INTEGER JOPT,J,III,L1,L2,L3,L4,L5,IERD,LREFE
       INTEGER LMAT,IE,LVALE,IOCC,NBCHRE,N1,L6,IPUIS
-      REAL*8 VALTHE,INSOLD,INST,TIME,COEF,PHASE
-      REAL*8 RUNDF,R8VIDE
-      CHARACTER*1 BASE
+      REAL*8 VALTHE,INSOLD,INST,COEF,PHASE
       CHARACTER*4 BUFCH,TYPE
       CHARACTER*6 NOMPRO
       PARAMETER(NOMPRO='THACLM')
-      CHARACTER*8 MA,K8B,BLAN8
+      CHARACTER*8 MA,K8B
       CHARACTER*8 NOMA,SAVCAR(2),PSOURC
       CHARACTER*16 OPTION,NOMCMD,K16B
       CHARACTER*19 CARTEF,NOMGDF,CARTEH,NOMGDH,CARTET,NOMGDT,CARTES
       CHARACTER*19 NOMGDS,LERES1,MASSE
-      CHARACTER*19 COMPOR,CHDYNR,REFE
-      CHARACTER*24 CHCARA(18),CHSIG,CHELEM,K24B,CHTEMM,CHTEMP
-      CHARACTER*24 CHFLUM,CHSOUR,CHFLUP,CHERRE,CHERRN,CHTREF,CHEPS
-      CHARACTER*24 CHTIME,CHMETA
+      CHARACTER*19 CHDYNR,REFE
+      CHARACTER*24 CHCARA(18),CHELEM,CHTEMM,CHTEMP
+      CHARACTER*24 CHFLUM,CHSOUR,CHFLUP,CHERRE,CHERRN
       CHARACTER*24 CHGEOM,CHHARM,CHNUMC,NOMPAR
-      CHARACTER*24 LESOPT,CHPRES,CHFREQ,BLAN24
-      CHARACTER*24 CHAMGD,CHTESE,CHDESE,SOP,LIGREL,LIGRMO
-      LOGICAL EXICAR,EVOL,EXITIM,EXIPOU,EXIPLA
+      CHARACTER*24 LESOPT,CHFREQ,BLAN24
+      CHARACTER*24 SOP,LIGREL,LIGRMO
+      LOGICAL EXICAR,EVOL,EXIPOU,EXIPLA
       REAL*8 ZERO,UN
       PARAMETER(ZERO=0.D0,UN=1.D0)
-      COMPLEX*16 CZERO,CCOEF
-      PARAMETER(CZERO=(0.D0,0.D0))
+      COMPLEX*16 CCOEF
 
       CALL JEMARQ()
       CALL GETRES(K8B,K16B,NOMCMD)
@@ -106,27 +100,18 @@ C          '123456789012345678901234'
       BLAN24='                        '
       K8B='        '
       NH=0
-      CHAMGD=BLAN24
       CHGEOM=BLAN24
       CHTEMP=BLAN24
-      CHTREF=BLAN24
-      CHTIME=BLAN24
       CHNUMC=BLAN24
       CHHARM=BLAN24
-      CHSIG=BLAN24
       CHFREQ=BLAN24
-      CHMETA=BLAN24
       CHDYNR=' '
       CHELEM=BLAN24
       SOP=BLAN24
-      K24B=BLAN24
-      BASE='G'
       COEF=UN
       SAVCAR(1)='????????'
       SAVCAR(2)='????????'
       LESOPT='&&'//NOMPRO//'.LES_OPTION     '
-      RUNDF=R8VIDE()
-
 
       CALL INFMAJ()
       CALL INFNIV(IFM,NIV)
@@ -143,10 +128,6 @@ C          '123456789012345678901234'
       ENDIF
 
       CALL DISMOI('F','NOM_LIGREL',MODELE,'MODELE',IBID,LIGRMO,IERD)
-
-      EXITIM=.FALSE.
-      CALL JENONU(JEXNOM(RESUCO//'           .NOVA','INST'),IRET)
-      IF (IRET.NE.0)EXITIM=.TRUE.
 
       CALL EXLIMA(' ',0,'V',MODELE,LIGREL)
 
@@ -194,7 +175,6 @@ C --- VERIFIE L'UNICITE DE LA CHARGE REPARTIE
    10   CONTINUE
       ENDIF
 
-
 C=======================================================================
 C     ON VERIFIE QUE CARA_ELEM, NIVE_COUCHE ET NUME_COUCHE ONT ETE
 C     RENSEIGNES POUR LES COQUES
@@ -215,14 +195,17 @@ C=======================================================================
         ENDIF
       ENDIF
 
-
 C=====================================================
 C        PHENOMENE THERMIQUE
 C====================================================
 
       IF (PHENO(1:4).EQ.'THER') THEN
 
-        BLAN8=' '
+        CALL DISMOI('F','NOM_MAILLA',MODELE,'MODELE',IBID,NOMA,IERD)
+        CHNUMC='&&'//NOMPRO//'.NUMC'
+        CHFREQ='&&'//NOMPRO//'.FREQ'
+        CALL MECHN2(NOMA,CHNUMC,CHFREQ)
+
         LERES1=RESUC1
 
 
@@ -231,12 +214,19 @@ C====================================================
           CALL TITRE
         ENDIF
 
-
 C============ DEBUT DE LA BOUCLE SUR LES OPTIONS A CALCULER ============
         DO 120 IOPT=1,NBOPT
           OPTION=ZK16(JOPT+IOPT-1)
 C
           CALL JEVEUO(KNUM,'L',JORDR)
+
+C    -------------------------------------------------------------------
+C    -- OPTIONS "FLUX_ELNO","FLUX_ELGA","SOUR_ELGA","DURT_ELNO"
+C    -------------------------------------------------------------------
+          CALL CALCOP(OPTION,RESUCO,RESUC1,NBORDR,ZI(JORDR),KCHA,NCHAR,
+     &                CTYP,TYSD,NBCHRE,IOCC,SOP,IRET)
+          IF (IRET.EQ.0)GOTO 120
+
           NUORD=ZI(JORDR)
           CALL MEDOM1(MODELE,MATE,CARA,KCHA,NCHAR,CTYP,RESUCO,NUORD)
           CALL JEVEUO(KCHA,'L',JCHA)
@@ -244,17 +234,12 @@ C
           CALL MECHAM(OPTION,MODELE,NCHAR,ZK8(JCHA),CARA,NH,CHGEOM,
      &                CHCARA,CHHARM,IRET)
           IF (IRET.NE.0)GOTO 190
-          NOMA=CHGEOM(1:8)
-          CHNUMC='&&'//NOMPRO//'.NUMC'
-          CHFREQ='&&'//NOMPRO//'.FREQ'
-          CALL MECHN2(NOMA,CHNUMC,CHFREQ)
 
 C    ------------------------------------------------------------------
 C    -- OPTION "ERTH_ELEM"
 C    ------------------------------------------------------------------
 
           IF (OPTION.EQ.'ERTH_ELEM') THEN
-
 
 C PAR DECRET EDA DU 22/08/01 ON SUPPRIME LE PARAMETRE NIVEAU ET ON LE
 C FIXE A 2 (15 VALEURS DE PARAMETRES).
@@ -432,131 +417,10 @@ C NOTATION DE LA SD RESULTAT LERES1
    50       CONTINUE
 
 C    ------------------------------------------------------------------
-C    -- OPTIONS "FLUX_ELNO","FLUX_ELGA","SOUR_ELGA"
-C    ------------------------------------------------------------------
-
-          ELSEIF (OPTION.EQ.'FLUX_ELNO' .OR.
-     &            OPTION.EQ.'FLUX_ELGA' .OR.
-     &            OPTION.EQ.'SOUR_ELGA') THEN
-
-
-            IF (.NOT.EXITIM) THEN
-              CALL U2MESS('A','CALCULEL5_2')
-              GOTO 120
-
-            ENDIF
-C RECUPERATION NIVEAU AFFICHAGE
-
-            CALL INFNIV(IFM,NIV)
-            IF (NIV.EQ.2) THEN
-              WRITE (IFM,*)
-              WRITE (IFM,*)'*******************************************'
-              WRITE (IFM,*)'         CALCUL DE FLUX THERMIQUES'
-              WRITE (IFM,*)
-              WRITE (IFM,*)'  OPTION DE CALCUL      ',OPTION
-              WRITE (IFM,*)'  MODELE                ',MODELE
-              WRITE (IFM,*)'  SD EVOL_THER DONNEE   ',RESUCO
-              WRITE (IFM,*)'             RESULTAT   ',RESUC1
-              WRITE (IFM,*)'  MATERIAU PRIS EN COMPTE ',MATE(1:8)
-              WRITE (IFM,*)'  NOMBRE DE NUMERO D''ORDRE ',NBORDR
-              WRITE (IFM,*)'*******************************************'
-              WRITE (IFM,*)
-            ENDIF
-
-C CALCUL
-            CHAMGD=' '
-            CHTREF=' '
-            DO 80,IAUX=1,NBORDR
-              CALL JEMARQ()
-              CALL JERECU('V')
-              IORDR=ZI(JORDR+IAUX-1)
-              CALL MEDOM1(MODELE,MATE,CARA,KCHA,NCHAR,CTYP,RESUCO,IORDR)
-              CALL MECARA(CARA,EXICAR,CHCARA)
-              CALL MECHC1(SAVCAR,MODELE,MATE,EXICAR,CHCARA)
-C RECUPERATION DU NOM DU CHAMP_GD = LERES1(OPTION,IORDR)
-C LERES1 = NOM USER DE LA SD CORRESPONDANT AU RESULTAT DE CALC_ELEM
-              CALL RSEXC1(LERES1,OPTION,IORDR,CHELEM)
-
-              CHTEMP=' '
-              CHTESE=' '
-
-C CALCUL STD : RECUP CHAMP_GD
-C T= RESUCO('TEMP',IAUX) --> CHTEMP
-              CALL RSEXC2(1,1,RESUCO,'TEMP',IORDR,CHTEMP,OPTION,IRET)
-              IF (IRET.GT.0)GOTO 70
-
-C TRAITEMENT PARTICULIER EN MODELISATION 'FOURIER_ELAS','FOURIER_THER'
-              IF (TYSD(1:8).EQ.'FOURIER_') THEN
-                CALL RSADPA(RESUCO,'L',1,'NUME_MODE',IORDR,0,JNMO,K8B)
-                CALL MEHARM(MODELE,ZI(JNMO),CHHARM)
-              ENDIF
-C RECUPERATION DE L'INSTANT CORRESPONDANT A IORDR
-              CALL RSADPA(RESUCO,'L',1,'INST',IORDR,0,IAINST,K8B)
-              TIME=ZR(IAINST)
-
-C IMPRESSIONS NIVEAU 2 POUR DIAGNOSTIC...
-              IF (NIV.EQ.2) THEN
-                WRITE (IFM,*)NOMPRO,' **********'
-                WRITE (IFM,*)'INST/IAUX/IORDR',TIME,IAUX,IORDR
-                WRITE (IFM,*)'CHTEMP/CHTESE',CHTEMP,' / ',CHTESE
-              ENDIF
-
-C CALCUL DE L'OPTION PROPREMENT DIT
-              CALL MECHTI(NOMA,TIME,RUNDF,RUNDF,CHTIME)
-              CALL MECALC(OPTION,MODELE,CHAMGD,CHGEOM,MATE,CHCARA,
-     &                    CHTEMP,CHTREF,CHTIME,CHNUMC,CHHARM,K24B,K24B,
-     &                    CHFREQ,K24B,K24B,'   ',' ',ZERO,CZERO,CHDYNR,
-     &                    SOP,CHELEM,K24B,LIGREL,BASE,K24B,K24B,K24B,
-     &                    COMPOR,CHTESE,CHDESE,BLAN8,0,K24B,IRET)
-              IF (IRET.GT.0)GOTO 70
-
-C NOTATION DE LA SD RESULTAT LERES1
-   60         CONTINUE
-              CALL RSNOCH(LERES1,OPTION,IORDR,' ')
-   70         CONTINUE
-              CALL JEDEMA()
-   80       CONTINUE
-
-C    ----------------------------------------------------
-C    -- OPTION "DURT_ELNO"
-C    ----------------------------------------------------
-
-          ELSEIF (OPTION.EQ.'DURT_ELNO') THEN
-
-            CHAMGD=' '
-            CHTREF=' '
-            DO 100,IAUX=1,NBORDR
-              CALL JEMARQ()
-              CALL JERECU('V')
-              IORDR=ZI(JORDR+IAUX-1)
-              CALL MEDOM1(MODELE,MATE,CARA,KCHA,NCHAR,CTYP,RESUCO,IORDR)
-              CALL MECARA(CARA,EXICAR,CHCARA)
-              CALL MECHC1(SAVCAR,MODELE,MATE,EXICAR,CHCARA)
-              CALL RSEXC2(1,1,RESUCO,'TEMP',IORDR,CHTEMP,OPTION,IRET)
-              IF (IRET.GT.0)GOTO 90
-              CALL RSEXC2(1,1,RESUCO,'META_ELNO',IORDR,CHMETA,
-     &                    OPTION,IRET2)
-              IF (IRET2.GT.0)GOTO 90
-              CALL RSEXC1(LERES1,OPTION,IORDR,CHELEM)
-              CALL RSADPA(RESUCO,'L',1,'INST',IORDR,0,IAINST,K8B)
-              TIME=ZR(IAINST)
-              CALL MECHTI(NOMA,TIME,RUNDF,RUNDF,CHTIME)
-              CALL MECALC(OPTION,MODELE,CHAMGD,CHGEOM,MATE,CHCARA,
-     &                    CHTEMP,CHTREF,CHTIME,CHNUMC,CHHARM,CHSIG,
-     &                    CHEPS,CHFREQ,K24B,CHMETA,'   ',' ',ZERO,CZERO,
-     &                    CHDYNR,SOP,CHELEM,K24B,LIGREL,BASE,K24B,K24B,
-     &                    K24B,COMPOR,CHTESE,CHDESE,BLAN8,0,K24B,IRET)
-              IF (IRET.GT.0)GOTO 90
-              CALL RSNOCH(LERES1,OPTION,IORDR,' ')
-   90         CONTINUE
-              CALL JEDEMA()
-  100       CONTINUE
-C    ------------------------------------------------------------------
           ELSE
             CALL U2MESK('A','CALCULEL3_22',1,OPTION)
           ENDIF
 
-  110     CONTINUE
   120   CONTINUE
 C       ====== FIN DE LA BOUCLE SUR LES OPTIONS A CALCULER =======
 
@@ -591,7 +455,6 @@ C       ====== FIN DE LA BOUCLE SUR LES OPTIONS A CALCULER =======
   140     CONTINUE
         ENDIF
 
-
 C=====================================================
 C        PHENOMENE ACOUSTIQUE
 C====================================================
@@ -606,48 +469,13 @@ C      ======== DEBUT DE LA BOUCLE SUR LES OPTIONS A CALCULER ======
           OPTION=ZK16(JOPT+IOPT-1)
 C
           CALL JEVEUO(KNUM,'L',JORDR)
-          NUORD=ZI(JORDR)
-          CALL MEDOM1(MODELE,MATE,CARA,KCHA,NCHAR,CTYP,RESUCO,NUORD)
-          CALL JEVEUO(KCHA,'L',JCHA)
-C
-          CALL MECHAM(OPTION,MODELE,NCHAR,ZK8(JCHA),CARA,NH,CHGEOM,
-     &                CHCARA,CHHARM,IRET)
-          IF (IRET.NE.0)GOTO 190
 
-C    ------------------------------------------------------------------
+C    -------------------------------------------------------------------
 C    -- OPTIONS "PRAC_ELNO","INTE_ELNO"
-C    ------------------------------------------------------------------
-          IF (OPTION.EQ.'PRAC_ELNO' .OR. OPTION.EQ.'INTE_ELNO') THEN
-            DO 170,IAUX=1,NBORDR
-              CALL JEMARQ()
-              CALL JERECU('V')
-              IORDR=ZI(JORDR+IAUX-1)
-              CALL MEDOM1(MODELE,MATE,CARA,KCHA,NCHAR,CTYP,RESUCO,IORDR)
-              CALL JEVEUO(KCHA,'L',JCHA)
-              CALL MECARA(CARA,EXICAR,CHCARA)
-              CALL MECHC1(SAVCAR,MODELE,MATE,EXICAR,CHCARA)
-              CALL RSEXC2(1,1,RESUCO,'PRES',IORDR,CHPRES,OPTION,IRET)
-              TYPE='PRES'
-              IF (IRET.GT.0)GOTO 160
-              CALL RSEXC1(LERES1,OPTION,IORDR,CHELEM)
-              IF (OPTION.EQ.'INTE_ELNO') THEN
-                CALL RSADPA(RESUCO,'L',1,'FREQ',IAUX,0,LINST,K8B)
-                CALL WKVECT('FREQ.VALE','V V R',1,IFREQ)
-                ZR(IFREQ)=ZR(LINST)
-                CALL MECOAC(OPTION,MODELE,LIGREL,MATE,CHPRES,CHELEM)
-                CALL JEDETR('FREQ.VALE')
-              ELSE
-                CALL MECOAC(OPTION,MODELE,LIGREL,MATE,CHPRES,CHELEM)
-              ENDIF
-              CALL RSNOCH(LERES1,OPTION,IORDR,' ')
-  160         CONTINUE
-              CALL JEDEMA()
-  170       CONTINUE
-
-          ELSE
-            CALL U2MESK('A','CALCULEL3_22',1,OPTION)
-          ENDIF
-C
+C    -------------------------------------------------------------------
+          CALL CALCOP(OPTION,RESUCO,RESUC1,NBORDR,ZI(JORDR),KCHA,NCHAR,
+     &                CTYP,TYSD,NBCHRE,IOCC,SOP,IRET)
+          IF (IRET.EQ.0)GOTO 180
 
   180   CONTINUE
 
@@ -656,4 +484,5 @@ C
   190 CONTINUE
 
       CALL JEDEMA()
+
       END

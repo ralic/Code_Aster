@@ -1,4 +1,4 @@
-#& MODIF COMMUN  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
+#& MODIF COMMUN  DATE 19/05/2011   AUTEUR DELMAS J.DELMAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,7 +20,7 @@
 # ce fichier contient la liste des "into" possibles pour le mot cle NOM_CHAM
 # c'est a dire les noms de champs des SD RESULTAT (DATA de la routine RSCRSD)
 
-def C_NOM_CHAM_INTO( typ_cham=None ) : #COMMUN# 
+def C_NOM_CHAM_INTO( typ_cham=None ) : #COMMUN#
   import types
 # Liste de tout les champs
   l_tout_cham = [
@@ -162,8 +162,8 @@ def C_NOM_CHAM_INTO( typ_cham=None ) : #COMMUN#
                         "SIRO_ELEM",
                         "SITQ_ELNO",
                         "SITU_ELNO",
-                        "SIZ1_ELGA",
-                        "SIZ2_ELGA",
+                        "SIZ1_NOEU",
+                        "SIZ2_NOEU",
                         "SOUR_ELGA",
                         "SPMX_ELGA",
                         "TEMP",

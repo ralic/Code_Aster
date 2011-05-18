@@ -1,4 +1,4 @@
-# MODIF  DATE 10/05/2011   AUTEUR SELLENET N.SELLENET 
+# MODIF  DATE 19/05/2011   AUTEUR DELMAS J.DELMAS 
 # RESPONSABLE GNICOLAS G.NICOLAS
 # TITRE ESSAI MED POUR DIFFERENTS TYPES D ELEMENTS
 # zzzz161a.para = tps_job 60 mem_job 32Mo ncpus 1 liste_test R
@@ -103,8 +103,11 @@ RESUTRQ2=LIRE_RESU(
 #
 RESUTRQ2=CALC_ELEM( reuse=RESUTRQ2,   RESULTAT=RESUTRQ2,
                     OPTION=( 'SIGM_ELNO',
-                             'EPSI_ELNO',
-                             'ERME_ELEM', )
+                             'EPSI_ELNO', )
+                     )
+
+RESUTRQ2=CALC_ERREUR( reuse=RESUTRQ2,   RESULTAT=RESUTRQ2,
+                    OPTION=( 'ERME_ELEM', )
                      )
 
 #

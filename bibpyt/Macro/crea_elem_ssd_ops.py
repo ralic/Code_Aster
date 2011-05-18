@@ -1,4 +1,4 @@
-#@ MODIF crea_elem_ssd_ops Macro  DATE 03/01/2011   AUTEUR ANDRIAM H.ANDRIAMBOLOLONA 
+#@ MODIF crea_elem_ssd_ops Macro  DATE 19/05/2011   AUTEUR DELMAS J.DELMAS 
 # -*- coding: iso-8859-1 -*-
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -50,11 +50,6 @@ def crea_elem_ssd_ops(self,  NUME_DDL, INTERFACE, BASE_MODALE,
     self.set_icmd(1)
 
     mSolveur = SOLVEUR[0].cree_dict_valeurs(SOLVEUR[0].mc_liste)
-    # SYME ne fait pas partie des mots cles lies a SOLVEUR
-    # dans MODE_STATIQUE et DEFI_BASE_MODALE
-    for i in mSolveur.keys():
-        if mSolveur[i] == None or i == 'SYME' :
-            del mSolveur[i]
 
     _kelem = CALC_MATR_ELEM(CHARGE = args['CHARGE'],
                             OPTION = 'RIGI_MECA',

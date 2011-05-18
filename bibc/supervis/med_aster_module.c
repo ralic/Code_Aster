@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF med_aster_module supervis  DATE 10/05/2011   AUTEUR SELLENET N.SELLENET */
+/* MODIF med_aster_module supervis  DATE 19/05/2011   AUTEUR SELLENET N.SELLENET */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2011  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */
@@ -22,6 +22,8 @@
 #include "aster.h"
 #include "aster_fort.h"
 #include "aster_utils.h"
+
+#ifndef _DISABLE_MED
 #include "med.h"
 
 /* ---------------------------------------------------------------------- */
@@ -82,3 +84,4 @@ PyMODINIT_FUNC initmed_fonctions(void)
 {
    Py_InitModule("med_aster", methods);
 }
+#endif

@@ -1,4 +1,4 @@
-# MODIF  DATE 09/05/2011   AUTEUR SFAYOLLE S.FAYOLLE 
+# MODIF  DATE 19/05/2011   AUTEUR DELMAS J.DELMAS 
 # TITRE CALCUL DE CHARGE LIMITE EN 3D - METHODE DE NORTON-HOFF
 # ssnv124b.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -18,171 +18,144 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-#
 
-DEBUT(CODE=_F(NOM='SSNV124B', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NOM='SSNV124B',
+              NIV_PUB_WEB='INTERNET',),
+      DEBUG=_F(SDVERI='OUI',),);
 
-MA=LIRE_MAILLAGE( )
+MA=LIRE_MAILLAGE();
 
-MA = DEFI_GROUP( reuse = MA,
-  MAILLAGE = MA,
-  CREA_GROUP_NO = _F(
-    NOM        = 'SOMMETS',
-    GROUP_MA   = 'S',
-    CRIT_NOEUD = 'SOMMET'
-    )
-  )
+MA=DEFI_GROUP(reuse =MA,
+              MAILLAGE=MA,
+              CREA_GROUP_NO=_F(GROUP_MA='S',
+                               NOM='SOMMETS',
+                               CRIT_NOEUD='SOMMET',),);
 
-MO=AFFE_MODELE(   MAILLAGE=MA,
-                         AFFE=_F(  TOUT = 'OUI',
-                                PHENOMENE = 'MECANIQUE',
-                                MODELISATION = '3D_INCO')
-                  )
+MO=AFFE_MODELE(MAILLAGE=MA,
+               AFFE=_F(TOUT='OUI',
+                       PHENOMENE='MECANIQUE',
+                       MODELISATION='3D_INCO',),);
 
-CM=DEFI_MATERIAU(
-  ECRO_LINE=_F(SY=10, D_SIGM_EPSI = 0)
-  )
+CM=DEFI_MATERIAU(ECRO_LINE=_F(D_SIGM_EPSI=0,
+                              SY=10,),);
 
-CHMAT=AFFE_MATERIAU(     MAILLAGE=MA,
-                                AFFE=_F(  TOUT = 'OUI',
-                                       MATER = CM)
-                         )
+CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
+                    AFFE=_F(TOUT='OUI',
+                            MATER=CM,),);
 
-L_INST=DEFI_LIST_REEL(         DEBUT=0.0,
-                            INTERVALLE=_F( JUSQU_A = 1.69897,   NOMBRE = 1)
-                         )
+L_INST=DEFI_LIST_REEL(DEBUT=0.0,
+                      INTERVALLE=_F(JUSQU_A=1.69897,
+                                    NOMBRE=1,),);
 
 #------------ CONDITIONS LIMITES -------------------------------------
 
-CH_CL=AFFE_CHAR_MECA(      MODELE=MO,DDL_IMPO=(
+CH_CL=AFFE_CHAR_MECA(MODELE=MO,
+                     DDL_IMPO=(_F(GROUP_MA='FXINF',
+                                  DX=0.,),
+                               _F(GROUP_MA='FYINF',
+                                  DY=0.,),
+                               _F(GROUP_MA='FZINF',
+                                  DZ=0.,),),);
 
-                               _F(  GROUP_MA = 'FXINF', DX = 0.),
-                               _F(  GROUP_MA = 'FYINF',     DY = 0.),
-                               _F(  GROUP_MA = 'FZINF',         DZ = 0.))
-                        )
-
-INCOMP = AFFE_CHAR_MECA(
-  MODELE   = MO,
-  DDL_IMPO = _F(GROUP_NO='SOMMETS', GONF=0)
-  )
-
-
+INCOMP=AFFE_CHAR_MECA(MODELE=MO,
+                      DDL_IMPO=_F(GROUP_NO='SOMMETS',
+                                  GONF=0,),);
 
 # ----------- CHARGEMENT A PILOTER ------------------------------------
 # REMARQUE : ON IMPOSE EXPLICITEMENT LA FORCE NULLE POUR UN CALCUL
 #            CORRECT DE ERME_ELEM
 
-CH1=AFFE_CHAR_MECA(    MODELE=MO,FORCE_FACE=(
-#
-                           _F(  GROUP_MA = 'FXSUP',
-                                        FX = -0.2),
-#
-                           _F(  GROUP_MA = 'FYSUP',
-                                        FY = -0.8E0),
-#
-                           _F(  GROUP_MA = 'FZSUP',
-                                        FZ = 0.0)
-                        ),);
+CH1=AFFE_CHAR_MECA(MODELE=MO,
+                   FORCE_FACE=(_F(GROUP_MA='FXSUP',
+                                  FX=-0.2,),
+                               _F(GROUP_MA='FYSUP',
+                                  FY=-0.8E0,),
+                               _F(GROUP_MA='FZSUP',
+                                  FZ=0.0,),),);
 
+RESU=STAT_NON_LINE(MODELE=MO,
+                   CHAM_MATER=CHMAT,
+                   EXCIT=(_F(CHARGE=CH_CL,),
+                          _F(CHARGE=INCOMP,),
+                          _F(CHARGE=CH1,
+                             TYPE_CHARGE='FIXE_PILO',),),
+                   COMP_INCR=_F(RELATION='NORTON_HOFF',),
+                   INCREMENT=_F(LIST_INST=L_INST,),
+                   NEWTON=_F(MATRICE='TANGENTE',
+                             REAC_ITER=1,),
+                   PILOTAGE=_F(TYPE='ANA_LIM',),
+                   CONVERGENCE=_F(RESI_GLOB_MAXI=1.E-5,
+                                  ITER_GLOB_MAXI=15,),
+                   SOLVEUR=_F(METHODE='MULT_FRONT',
+                              RENUM='MDA',),);
 
+ECHL=POST_ELEM(CHAR_LIMITE=_F(),
+               RESULTAT=RESU,
+               NUME_ORDRE=1,);
 
-RESU=STAT_NON_LINE(
-  MODELE=MO,
-  CHAM_MATER=CHMAT,
-  EXCIT=(
-    _F(CHARGE = CH_CL),
-    _F(CHARGE = INCOMP),
-    _F(CHARGE = CH1,TYPE_CHARGE='FIXE_PILO')
-    ),
-  COMP_INCR=_F(RELATION = 'NORTON_HOFF'),
-  INCREMENT=_F(LIST_INST = L_INST),
-  NEWTON=_F(
-    MATRICE = 'TANGENTE',
-    REAC_ITER = 1
-    ),
-  PILOTAGE=_F(TYPE='ANA_LIM'),
-  CONVERGENCE=_F(
-    RESI_GLOB_MAXI = 1.E-5,
-    ITER_GLOB_MAXI = 15
-    ),
-  SOLVEUR=_F(
-    METHODE = 'MULT_FRONT',
-    RENUM = 'MDA'
-    )
-  )
+RESU=CALC_ELEM(reuse =RESU,
+               RESULTAT=RESU,
+               OPTION=('EPSI_ELNO','SIEF_ELNO',),);
 
-ECHL = POST_ELEM(
-  RESULTAT = RESU,
-  NUME_ORDRE = 1,
-  CHAR_LIMITE=_F()
-  )
-
-
-RESU=CALC_ELEM(reuse=RESU,
-                      RESULTAT=RESU,
-
-                        OPTION=('EPSI_ELNO',
-                                'SIEF_ELNO',
-                                'ERME_ELEM',
-                                'ERME_ELNO',),
-                   )
-
+RESU=CALC_ERREUR(reuse =RESU,
+                 RESULTAT=RESU,
+                 OPTION=('ERME_ELEM','ERME_ELNO',),);
 
 #--------------------------------------------------------------
 #      TEST DE LA CHARGE LIMITE
 #--------------------------------------------------------------
 
-TEST_TABLE(      TABLE=ECHL,
-               NOM_PARA='CHAR_LIMI_SUP',
-              PRECISION=1.E-06,
-                   VALE=13.867505   )
+TEST_TABLE(TABLE=ECHL,
+           NOM_PARA='CHAR_LIMI_SUP',
+           VALE=13.867505,
+           PRECISION=1e-06,);
 
-TEST_TABLE(      TABLE=ECHL,
-               NOM_PARA='CHAR_LIMI_ESTIM',
-              PRECISION=1.E-06,
-                   VALE=11.556254  )
+TEST_TABLE(TABLE=ECHL,
+           NOM_PARA='CHAR_LIMI_ESTIM',
+           VALE=11.556254,
+           PRECISION=1e-06,);
 
 #--------------------------------------------------------------
 #      TEST DES DEFORMATIONS
 #--------------------------------------------------------------
 
-TEST_RESU(RESU=(
+TEST_RESU(RESU=_F(RESULTAT=RESU,
+                  NUME_ORDRE=1,
+                  NOM_CHAM='EPSI_ELNO',
+                  NOM_CMP='EPXX',
+                  MAILLE='MA1',
+                  NOEUD='N1',
+                  VALE=0.04807692,
+                  CRITERE='RELATIF',
+                  PRECISION=0.0001,),);
 
- _F(   CRITERE = 'RELATIF',    PRECISION = 1.E-4,
-         RESULTAT = RESU, NOM_CHAM = 'EPSI_ELNO',  NUME_ORDRE = 1,
-         NOEUD = 'N1', MAILLE = 'MA1', NOM_CMP = 'EPXX', VALE = 0.04807692)
-  ))
 #---------------------------------------------------------------
 #
 #  TEST SUR L'ESTIMATEUR D'ERREUR EN RESIDU
 #---------------------------------------------------------------
 
-TEST_RESU(RESU=(
-           _F( RESULTAT = RESU,
-               NUME_ORDRE = 1,
-               NOM_CHAM = 'ERME_ELEM',
-               CRITERE = 'RELATIF',
-               PRECISION = 0.001,
-               POINT = 1,
-               MAILLE='MA1',
-               NOM_CMP = 'NUEST',
-               VALE = 1.6016085020794E+01,
-               REFERENCE = 'NON_REGRESSION',VERSION = '9.05.04'),
-             ),
-            );
+TEST_RESU(RESU=_F(RESULTAT=RESU,
+                  NUME_ORDRE=1,
+                  NOM_CHAM='ERME_ELEM',
+                  NOM_CMP='NUEST',
+                  MAILLE='MA1',
+                  POINT=1,
+                  VALE=16.0160850208,
+                  CRITERE='RELATIF',
+                  PRECISION=0.001,
+                  REFERENCE='NON_REGRESSION',
+                  VERSION='9.05.04',),);
 
-TEST_RESU(RESU=(
-           _F( RESULTAT = RESU,
-               NUME_ORDRE = 1,
-               NOM_CHAM = 'ERME_ELNO',
-               CRITERE = 'RELATIF',
-               PRECISION = 0.001,
-               NOEUD= 'N1',
-               MAILLE='MA1',
-               NOM_CMP = 'ERREST',
-               VALE = 3.6963973431755,
-               REFERENCE = 'NON_REGRESSION',VERSION = '9.05.04'),
-             ),
-            );
+TEST_RESU(RESU=_F(RESULTAT=RESU,
+                  NUME_ORDRE=1,
+                  NOM_CHAM='ERME_ELNO',
+                  NOM_CMP='ERREST',
+                  MAILLE='MA1',
+                  NOEUD='N1',
+                  VALE=3.69639734318,
+                  CRITERE='RELATIF',
+                  PRECISION=0.001,
+                  REFERENCE='NON_REGRESSION',
+                  VERSION='9.05.04',),);
 
-FIN()
+FIN();

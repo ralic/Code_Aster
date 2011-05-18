@@ -34,17 +34,14 @@ RESU[nbadap]=STAT_NON_LINE(reuse =RESU[nbadap],
                            SOLVEUR=_F(METHODE='LDLT',),);
 
 RESU[nbadap]=CALC_ELEM(reuse =RESU[nbadap],
-
-
                        RESULTAT=RESU[nbadap],
                        LIST_INST=LI2_BIS,
                        OPTION='SIEF_ELNO',);
 
-RESU[nbadap]=CALC_ELEM(reuse =RESU[nbadap],
-                       RESULTAT=RESU[nbadap],
-                       LIST_INST=LI2_BIS,
-                       TYPE_OPTION='INDI_ERREUR',
-                       OPTION=('ERME_ELEM','ERME_ELNO',),);
+RESU[nbadap]=CALC_ERREUR(reuse =RESU[nbadap],
+                         RESULTAT=RESU[nbadap],
+                         LIST_INST=LI2_BIS,
+                         OPTION=('ERME_ELEM','ERME_ELNO',),);
 
 RESU[nbadap]=CALC_NO(reuse =RESU[nbadap],
                      RESULTAT=RESU[nbadap],
@@ -90,17 +87,14 @@ RESU_TOT=STAT_NON_LINE(MODELE=MODE[nbadap],
 ####print "Derniere valeur de ERRE_TPS_GLOB = ", dico['ERRE_TPS_GLOB'][-1]
 
 RESU_TOT=CALC_ELEM(reuse =RESU_TOT,
-
-
                   RESULTAT=RESU_TOT,
                   LIST_INST=LI,
                   OPTION='SIEF_ELNO',);
 
-RESU_TOT=CALC_ELEM(reuse =RESU_TOT,
-                  RESULTAT=RESU_TOT,
-                  LIST_INST=LI_BIS,
-                  TYPE_OPTION='INDI_ERREUR',
-                  OPTION=('ERME_ELEM','ERME_ELNO',),);
+RESU_TOT=CALC_ERREUR(reuse =RESU_TOT,
+                     RESULTAT=RESU_TOT,
+                     LIST_INST=LI_BIS,
+                     OPTION=('ERME_ELEM','ERME_ELNO',),);
 
 RESU_TOT=CALC_NO(reuse =RESU_TOT,
                   RESULTAT=RESU_TOT,

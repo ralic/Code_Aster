@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 19/05/2011   AUTEUR DELMAS J.DELMAS 
 # RESPONSABLE GNICOLAS G.NICOLAS
 # TITRE COUPLAGE ASTER-HOMARD SUR UN CALCUL STAT_NON_LINE
 # zzzz175a.para = tps_job 100 mem_job 300Mo ncpus 1 liste_test S
@@ -177,7 +177,12 @@ for num_calc in range(nbre_calcul):
 # 5.7.1. Calcul de l'indicateur d'erreur
 #
     resu[num_calc]=CALC_ELEM(reuse =resu[num_calc],
-                      OPTION=('SIEF_ELNO','ERME_ELEM',),
+                      OPTION=('SIEF_ELNO',),
+                      RESULTAT=resu[num_calc],
+                      INST=inst_fin,);
+
+    resu[num_calc]=CALC_ERREUR(reuse =resu[num_calc],
+                      OPTION=('ERME_ELEM',),
                       RESULTAT=resu[num_calc],
                       INST=inst_fin,);
 #

@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF dll_interface supervis  DATE 04/04/2011   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF dll_interface supervis  DATE 19/05/2011   AUTEUR SELLENET N.SELLENET */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2011  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */

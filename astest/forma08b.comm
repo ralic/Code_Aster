@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 19/05/2011   AUTEUR DELMAS J.DELMAS 
 # RESPONSABLE sellali N.SELLALI
 # TITRE CORRIGE DU TP3D DE LA FORMATION POST TRAITEMENT
 # forma08b.para = tps_job 60 mem_job 100Mo ncpus 1 liste_test S
@@ -254,8 +254,11 @@ TEST_TABLE(      TABLE=TMM2,       NOM_PARA='DY',
 RESU=CALC_ELEM(reuse =RESU,
                RESULTAT=RESU,
                OPTION=('SIGM_ELNO',
-                       'SIEQ_ELNO',
-                       'ERME_ELEM',
+                       'SIEQ_ELNO',),);
+
+RESU=CALC_ERREUR(reuse =RESU,
+               RESULTAT=RESU,
+               OPTION=('ERME_ELEM',
                        'ERME_ELNO',),);
 
 #

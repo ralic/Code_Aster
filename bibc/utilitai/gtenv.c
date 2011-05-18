@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------ */
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF GTENV UTILITAI  DATE 04/04/2011   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF GTENV UTILITAI  DATE 19/05/2011   AUTEUR SELLENET N.SELLENET */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2011  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */

@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 19/05/2011   AUTEUR DELMAS J.DELMAS 
 # TITRE Calcul d'indicateur d'erreur en thermique lineaire
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -74,7 +74,13 @@ for k in range(1,nbcalc):
               TOUT='OUI',
                RESULTAT=RESU[k],
 #              INFO=2,
-              OPTION=('FLUX_ELNO','ERTH_ELEM','ERTH_ELNO'))
+              OPTION=('FLUX_ELNO',),)
+
+   RESU[k]=CALC_ERREUR( reuse=RESU[k],
+              TOUT='OUI',
+               RESULTAT=RESU[k],
+#              INFO=2,
+              OPTION=('ERTH_ELEM','ERTH_ELNO'),)
 
    IMPR_RESU( FORMAT='MED', RESU=_F( RESULTAT = RESU[k]))
 ###   IMPR_RESU( FORMAT='RESULTAT', RESU=_F( RESULTAT = RESU[k]))

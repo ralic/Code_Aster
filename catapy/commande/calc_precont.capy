@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 28/02/2011   AUTEUR BARGELLI R.BARGELLINI 
+#& MODIF COMMANDE  DATE 19/05/2011   AUTEUR DELMAS J.DELMAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -41,7 +41,7 @@ CALC_PRECONT=MACRO(nom="CALC_PRECONT",op=calc_precont_ops,sd_prod=evol_noli,
          INCREMENT        =C_INCREMENT(),
          RECH_LINEAIRE    =C_RECH_LINEAIRE(),
          CONVERGENCE      =C_CONVERGENCE(),
-          ETAT_INIT       =FACT(statut='f',
+         ETAT_INIT       =FACT(statut='f',
             regles=(AU_MOINS_UN('EVOL_NOLI','DEPL','SIGM','VARI',),
                     EXCLUS('EVOL_NOLI','DEPL',),
                     EXCLUS('EVOL_NOLI','SIGM',),
@@ -68,13 +68,16 @@ CALC_PRECONT=MACRO(nom="CALC_PRECONT",op=calc_precont_ops,sd_prod=evol_noli,
          b_meth_impl_ex = BLOC(condition = "METHODE == 'IMPL_EX'",
                            IMPL_EX = C_IMPL_EX(),
                         ),
-          SOLVEUR         =C_SOLVEUR(),
-          INFO            =SIMP(statut='f',typ='I',into=(1,2) ),
-          TITRE           =SIMP(statut='f',typ='TXM',max='**' ),
+#-------------------------------------------------------------------
+#        Catalogue commun SOLVEUR
+         SOLVEUR         =C_SOLVEUR('CALC_PRECONT'),
+#-------------------------------------------------------------------
+         INFO            =SIMP(statut='f',typ='I',into=(1,2) ),
+         TITRE           =SIMP(statut='f',typ='TXM',max='**' ),
 
-          EXCIT           =FACT(statut='o',max='**',
-            CHARGE          =SIMP(statut='o',typ=char_meca),
-          ),
+         EXCIT           =FACT(statut='o',max='**',
+           CHARGE          =SIMP(statut='o',typ=char_meca),
+         ),
 
          COMP_INCR       =C_COMP_INCR(),
   )  ;

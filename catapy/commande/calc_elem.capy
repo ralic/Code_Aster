@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 20/04/2011   AUTEUR COURTOIS M.COURTOIS 
+#& MODIF COMMANDE  DATE 19/05/2011   AUTEUR DELMAS J.DELMAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -104,7 +104,7 @@ CALC_ELEM=OPER(nom="CALC_ELEM",op=58,sd_prod=calc_elem_prod,reentrant='f',
                                  "EPOT_ELEM","ECIN_ELEM","ENEL_ELGA","ENEL_ELNO",
                                  "ETOT_ELGA","ETOT_ELNO","ETOT_ELEM","DISS_ELGA","DISS_ELNO",
                               #  estimateurs erreur
-                                 "SIZ1_ELGA","ERZ1_ELEM","SIZ2_ELGA","ERZ2_ELEM",
+                                 "SIZ1_NOEU","ERZ1_ELEM","SIZ2_NOEU","ERZ2_ELEM",
                                  "ERME_ELEM","ERME_ELNO",
                                  "QIRE_ELEM","QIRE_ELNO","QIZ1_ELEM","QIZ2_ELEM",
                                  "SING_ELEM","SING_ELNO",
@@ -255,7 +255,7 @@ b_charge =BLOC( condition = "OPTION in ('EPME_ELNO','EPSI_ELGA','EPME_ELGA','EPS
 
           b_indi_erreur        =BLOC( condition = "TYPE_OPTION=='INDI_ERREUR'",
                OPTION    =SIMP(statut='o',typ='TXM',validators=NoRepeat(),max='**',defaut="ERME_ELEM",
-                           into=("SIZ1_ELGA","ERZ1_ELEM","SIZ2_ELGA","ERZ2_ELEM",
+                           into=("SIZ1_NOEU","ERZ1_ELEM","SIZ2_NOEU","ERZ2_ELEM",
                                  "ERME_ELEM","ERME_ELNO",
                                  "QIRE_ELEM","QIRE_ELNO","QIZ1_ELEM","QIZ2_ELEM",
                                  "SING_ELEM","SING_ELNO",
@@ -497,39 +497,10 @@ b_charge =BLOC( condition = "OPTION in ('EPME_ELNO','EPSI_ELGA','EPME_ELGA','EPS
                 TYPE_CHARGE     =SIMP(statut='f',typ='TXM',defaut="FIXE",into=("FIXE",),),),
                                  ),
 
-
-#    Choix du solveur (utilisé actuellement pour estimateur d'erreur ZZ1) :
-     SOLVEUR         =FACT(statut='d', fr="Méthode de résolution des systèmes linéaires",
-     METHODE         =SIMP(statut='f',typ='TXM',defaut="MULT_FRONT",into=("LDLT","MUMPS","MULT_FRONT",) ),
-
-
-       b_ldlt          =BLOC(condition = "METHODE == 'LDLT' ",fr="Paramètres de la méthode LDLT",
-         RENUM           =SIMP(statut='f',typ='TXM',defaut="RCMK",into=("RCMK","SANS") ),
-       ),
-
-       b_mult_front    =BLOC(condition = "METHODE == 'MULT_FRONT' ",fr="Paramètres de la méthode multi frontale",
-         RENUM           =SIMP(statut='f',typ='TXM',defaut="METIS",into=("MD","MDA","METIS") ),
-       ),
-       b_ldlt_mult_mumps =BLOC( condition = "METHODE=='LDLT' or METHODE=='MULT_FRONT' or METHODE=='MUMPS' ",
-                              fr="Paramètres relatifs à la non inversibilité de la matrice à factoriser",
-         NPREC           =SIMP(statut='f',typ='I',defaut= 8 ),
-         STOP_SINGULIER  =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON") ),
-       ),
-
-       b_mumps        =BLOC(condition = "METHODE == 'MUMPS' ",fr="Paramètres de la méthode MUMPS",
-         TYPE_RESOL      =SIMP(statut='f',typ='TXM',defaut="AUTO",into=("NONSYM","SYMGEN","SYMDEF","AUTO")),
-         PRETRAITEMENTS  =SIMP(statut='f',typ='TXM',defaut="AUTO",into=("SANS","AUTO")),
-         POSTTRAITEMENTS =SIMP(statut='f',typ='TXM',defaut="AUTO",into=("SANS","AUTO","FORCE")),
-         RENUM           =SIMP(statut='f',typ='TXM',defaut="AUTO",into=("AMD","AMF","PORD","METIS","QAMD","SCOTCH","AUTO")),
-         ELIM_LAGR2      =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON")),
-         PCENT_PIVOT     =SIMP(statut='f',typ='I',defaut=10,),
-         RESI_RELA       =SIMP(statut='f',typ='R',defaut=-1.0,),
-         OUT_OF_CORE     =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON")),
-         LIBERE_MEMOIRE =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON")),
-         ),
-     ),
-
-
+#-------------------------------------------------------------------
+#    Catalogue commun SOLVEUR (utilisé actuellement pour estimateur d'erreur ZZ1)
+     SOLVEUR         =C_SOLVEUR('CALC_ELEM'),
+#-------------------------------------------------------------------
 
      INFO            =SIMP(statut='f',typ='I',defaut= 1,into=( 1 , 2) ),
      TITRE           =SIMP(statut='f',typ='TXM',max='**'),

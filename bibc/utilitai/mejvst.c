@@ -1,5 +1,5 @@
 /*           CONFIGURATION MANAGEMENT OF EDF VERSION                  */
-/* MODIF mejvst utilitai  DATE 04/04/2011   AUTEUR COURTOIS M.COURTOIS */
+/* MODIF mejvst utilitai  DATE 19/05/2011   AUTEUR SELLENET N.SELLENET */
 /* ================================================================== */
 /* COPYRIGHT (C) 1991 - 2011  EDF R&D              WWW.CODE-ASTER.ORG */
 /*                                                                    */

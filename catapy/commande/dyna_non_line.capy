@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
+#& MODIF COMMANDE  DATE 19/05/2011   AUTEUR DELMAS J.DELMAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -75,11 +75,11 @@ DYNA_NON_LINE=OPER(nom="DYNA_NON_LINE",op= 70,sd_prod=evol_noli,reentrant='f',
            AMOR_GENE       =SIMP(statut='f',typ=matr_asse_gene_r),
            DEPL_INIT_GENE  =SIMP(statut='f',typ=vect_asse_gene),
            VITE_INIT_GENE  =SIMP(statut='f',typ=vect_asse_gene),
-           ACCE_INIT_GENE  =SIMP(statut='f',typ=vect_asse_gene),           
+           ACCE_INIT_GENE  =SIMP(statut='f',typ=vect_asse_gene),
          ),
-#-------------------------------------------------------------------         
+#-------------------------------------------------------------------
          COMP_INCR       =C_COMP_INCR(),
-#-------------------------------------------------------------------         
+#-------------------------------------------------------------------
          COMP_ELAS       =C_COMP_ELAS('DYNA_NON_LINE'),
 #-------------------------------------------------------------------
          b_reuse =BLOC(condition = "reuse",fr="en mode concept reentrant : ETAT_INIT obligatoire",
@@ -141,41 +141,41 @@ DYNA_NON_LINE=OPER(nom="DYNA_NON_LINE",op= 70,sd_prod=evol_noli,reentrant='f',
             COEF_MASS_SHIFT =SIMP(statut='f',typ='R',defaut= 0.0E+0 ),
             b_tchamwa = BLOC(condition="SCHEMA=='TCHAMWA'",
                PHI          =SIMP(statut='f',typ='R',defaut= 1.05),),
-               
+
             b_newmark = BLOC(condition="SCHEMA=='NEWMARK'",
                BETA         =SIMP(statut='f',typ='R',defaut= 0.25),
                GAMMA        =SIMP(statut='f',typ='R',defaut= 0.5),),
-               
+
             b_hht     = BLOC(condition="SCHEMA=='HHT'",
                ALPHA        =SIMP(statut='f',typ='R',defaut= -0.3 ),
                MODI_EQUI    =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON"),),),
-               
+
             b_theta   = BLOC(condition="SCHEMA=='THETA_METHODE'",
                THETA         =SIMP(statut='f',typ='R',defaut= 1.,val_min=0.5,val_max=100. ),),
 
             b_krenk   = BLOC(condition="SCHEMA=='KRENK'",
-               KAPPA         =SIMP(statut='f',typ='R',defaut= 1.0,val_min=1.0,val_max=100. ),), 
-               
+               KAPPA         =SIMP(statut='f',typ='R',defaut= 1.0,val_min=1.0,val_max=100. ),),
+
             b_explicit= BLOC(condition="SCHEMA=='TCHAMWA'or SCHEMA=='DIFF_CENT'",
                STOP_CFL     =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON"),),
                FORMULATION  =SIMP(statut='o',typ='TXM',into=("ACCELERATION",),),),
-               
+
             b_implicit= BLOC(condition="SCHEMA!='TCHAMWA'and SCHEMA!='DIFF_CENT'",
                FORMULATION  =SIMP(statut='o',max=1,typ='TXM',into=("DEPLACEMENT","VITESSE","ACCELERATION"),),),
          ),
-#-------------------------------------------------------------------         
+#-------------------------------------------------------------------
          NEWTON          =C_NEWTON(),
 #-------------------------------------------------------------------
          RECH_LINEAIRE   =C_RECH_LINEAIRE(),
 #-------------------------------------------------------------------
          CONVERGENCE     =C_CONVERGENCE(),
 #-------------------------------------------------------------------
-         SOLVEUR         =C_SOLVEUR(),
+         SOLVEUR         =C_SOLVEUR('DYNA_NON_LINE'),
 #-------------------------------------------------------------------
          OBSERVATION     =C_OBSERVATION(),
 #-------------------------------------------------------------------
          SUIVI_DDL       =C_SUIVI_DDL(),
-#------------------------------------------------------------------- 
+#-------------------------------------------------------------------
          AFFICHAGE       =C_AFFICHAGE(),
 #-------------------------------------------------------------------
          ARCHIVAGE       =C_ARCHIVAGE(),

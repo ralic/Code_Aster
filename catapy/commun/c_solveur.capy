@@ -1,105 +1,455 @@
-#& MODIF COMMUN  DATE 02/05/2011   AUTEUR DESOZA T.DESOZA 
+#& MODIF COMMUN  DATE 19/05/2011   AUTEUR DELMAS J.DELMAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # RESPONSABLE BOITEAU
-def C_SOLVEUR() : return FACT(statut='d',
-           METHODE=SIMP(statut='f',typ='TXM',defaut="MULT_FRONT",into=("MULT_FRONT","LDLT","GCPC","MUMPS","FETI","PETSC") ),
-# --------------------------------------------------------------------------------------------------------------------------------
-           b_mult_front    =BLOC(condition = "METHODE == 'MULT_FRONT' ",fr="Paramètres de la méthode multi frontale",
-             RENUM           =SIMP(statut='f',typ='TXM',defaut="METIS",into=("MD","MDA","METIS") ),
-           ),
-# --------------------------------------------------------------------------------------------------------------------------------
-           b_ldlt         =BLOC(condition = "METHODE == 'LDLT' ",fr="Paramètres de la méthode LDLT",
-             RENUM           =SIMP(statut='f',typ='TXM',defaut="RCMK",into=("RCMK","SANS") ),
-           ),
-# --------------------------------------------------------------------------------------------------------------------------------
-           b_direct_hybride =BLOC( condition = "METHODE=='LDLT' or METHODE=='MULT_FRONT' or METHODE=='MUMPS' or METHODE=='FETI' ",
-                                   fr="Paramètres relatifs à la non inversibilité de la matrice à factoriser",
-             NPREC           =SIMP(statut='f',typ='I',defaut= 8 ),
-             STOP_SINGULIER  =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON","DECOUPE") ),
-           ),
-# --------------------------------------------------------------------------------------------------------------------------------
-           b_gcpc         =BLOC(condition = "METHODE == 'GCPC' ", fr="Paramètres de la méthode du gradient conjugué",
-             PRE_COND        =SIMP(statut='f',typ='TXM',into=("LDLT_INC","LDLT_SP"),defaut="LDLT_INC" ),
-             b_ldltinc       =BLOC(condition = "PRE_COND == 'LDLT_INC' ", fr="Paramètres de la factorisation incomplète",
-               NIVE_REMPLISSAGE    =SIMP(statut='f',typ='I',defaut= 0 ),
-               RENUM               =SIMP(statut='f',typ='TXM',defaut="RCMK",into=("SANS","RCMK") ),
-               ),
-             b_simple        =BLOC(condition = "PRE_COND == 'LDLT_SP' ", fr="Paramètres de la factorisation simple précision",
-               REAC_PRECOND        =SIMP(statut='f',typ='I',defaut=30, ),
-               ),
-             RESI_RELA       =SIMP(statut='f',typ='R',defaut= 1.E-6 ),
-             NMAX_ITER       =SIMP(statut='f',typ='I',defaut= 0 ),
-           ),
-# --------------------------------------------------------------------------------------------------------------------------------
-           b_mumps        =BLOC(condition = "METHODE == 'MUMPS' ",fr="Paramètres de la méthode MUMPS",
-             TYPE_RESOL      =SIMP(statut='f',typ='TXM',defaut="AUTO",into=("NONSYM","SYMGEN","SYMDEF","AUTO")),
-             PRETRAITEMENTS  =SIMP(statut='f',typ='TXM',defaut="AUTO",into=("SANS","AUTO")),
-             POSTTRAITEMENTS =SIMP(statut='f',typ='TXM',defaut="AUTO",into=("SANS","AUTO","FORCE")),             
-             RENUM           =SIMP(statut='f',typ='TXM',defaut="AUTO",into=("AMD","AMF","PORD","METIS","QAMD","SCOTCH","AUTO")),
-             ELIM_LAGR2      =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON")),
-             PCENT_PIVOT     =SIMP(statut='f',typ='I',defaut=10,),
-             RESI_RELA       =SIMP(statut='f',typ='R',defaut=-1.0,),
-             OUT_OF_CORE     =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON")),
-             LIBERE_MEMOIRE =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON")),            
-             FILTRAGE_MATRICE =SIMP(statut='f',typ='R',defaut=-1.0,),
-             MIXER_PRECISION =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON")),
-             MATR_DISTRIBUEE =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON")),
-             ),
-# --------------------------------------------------------------------------------------------------------------------------------
-           b_feti          =BLOC(condition = "METHODE == 'FETI' ",fr="Paramètres de la méthode FETI 1",
-             PARTITION       =SIMP(statut='o',typ=sd_feti_sdaster),
-             RENUM           =SIMP(statut='f',typ='TXM',defaut="METIS",into=("MD","MDA","METIS") ),
-             RESI_RELA       =SIMP(statut='f',typ='R',defaut=1.E-6,val_min=0.),
-             NMAX_ITER       =SIMP(statut='f',typ='I',defaut=0,val_min=0),
-             REAC_RESI       =SIMP(statut='f',typ='I',defaut=0,val_min=0),
-             TYPE_REORTHO_DD =SIMP(statut='f',typ='TXM',defaut="GSM",into=("SANS","GS","GSM","IGSM") ),
-             NB_REORTHO_DD   =SIMP(statut='f',typ='I',defaut=0,val_min=0),
-             NB_REORTHO_INST =SIMP(statut='f',typ='I',defaut=0,val_min=0),
-             PRE_COND        =SIMP(statut='f',typ='TXM',defaut="LUMPE",into=("LUMPE","SANS") ),
-             SCALING         =SIMP(statut='f',typ='TXM',defaut="MULT",into=("SANS","MULT") ),
-             VERIF_SDFETI    =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON") ),
-             TEST_CONTINU    =SIMP(statut='f',typ='R',defaut=1.E-8,val_min=0.),
-             INFO_FETI       =SIMP(statut='f',typ='TXM',defaut='FFFFFFFFFFFFFFFFFFFFFFFF'),
-             STOCKAGE_GI     =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON","CAL") ),
-             NB_SD_PROC0     =SIMP(statut='f',typ='I',defaut=0,val_min=0),
-             ACCELERATION_SM =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON") ),
-           ),
-# --------------------------------------------------------------------------------------------------------------------------------
-           b_petsc          =BLOC(condition = "METHODE == 'PETSC' ",fr="Paramètres de la méthode PETSC",
-             ALGORITHME      =SIMP(statut='f',typ='TXM',into=("BCGS","BICG","CG","CR","GMRES","TFQMR",),defaut="GMRES" ),
-             PRE_COND        =SIMP(statut='f',typ='TXM',into=("LDLT_INC","JACOBI","SOR","LDLT_SP"),defaut="LDLT_SP" ),
-             b_ldlt_inc     =BLOC(condition = "PRE_COND == 'LDLT_INC' ",
-               NIVE_REMPLISSAGE = SIMP(statut='f',typ='I',defaut= 0 ),
-               REMPLISSAGE      = SIMP(statut='f',typ='R',defaut= 1.0),
-               RENUM            =SIMP(statut='f',typ='TXM',defaut="RCMK",into=("SANS","RCMK") ),
-             ),
-             b_ldlt_sp      =BLOC(condition = "PRE_COND == 'LDLT_SP' ", fr="Paramètres de la factorisation simple précision",
-               REAC_PRECOND        =SIMP(statut='f',typ='I',defaut=30, ),
-               RENUM               =SIMP(statut='f',typ='TXM',defaut="SANS",into=("SANS","RCMK") ),
-             ),
-             b_jacobi_sor   =BLOC(condition = "PRE_COND == 'JACOBI' or PRE_COND == 'SOR'", 
-                                                                         fr="Paramètres des préconditionneurs JACOBI et SOR",
-               RENUM               =SIMP(statut='f',typ='TXM',defaut="SANS",into=("SANS","RCMK") ),
-             ),
-             RESI_RELA       =SIMP(statut='f',typ='R',defaut= 1.E-6 ),
-             NMAX_ITER       =SIMP(statut='f',typ='I',defaut= -1 ),
-           ),
-# --------------------------------------------------------------------------------------------------------------------------------
-           SYME            =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON") ),
-         );
+
+def C_SOLVEUR( COMMAND, BASE=None ) :  #COMMUN#
+
+# ----------------------------------------------------------------------------------------------------------------------------------
+#
+# VERIFICATIONS
+#
+# ----------------------------------------------------------------------------------------------------------------------------------
+
+   assert COMMAND in ('CALC_ELEM',
+                      'CALC_ERREUR',
+                      'CALC_FORC_AJOU',
+                      'CALC_IFS_DNL',
+                      'CALC_MATR_AJOU',
+                      'CALC_PRECONT',
+                      'CREA_ELEM_SSD',
+                      'DEFI_BASE_MODALE',
+                      'DYNA_LINE_HARM',
+                      'DYNA_LINE_TRAN',
+                      'DYNA_NON_LINE',
+                      'DYNA_TRAN_MODAL',
+                      'IMPR_STURM',
+                      'MACR_ASCOUF_CALC',
+                      'MACR_ASPIC_CALC',
+                      'MACRO_BASCULE_SCHEMA',
+                      'MACRO_MATR_AJOU',
+                      'MECA_STATIQUE',
+                      'MODE_ITER_SIMULT',
+                      'MODE_ITER_INV',
+                      'MODE_STATIQUE',
+                      'STAT_NON_LINE',
+                      'THER_LINEAIRE',
+                      'THER_NON_LINE',
+                      'THER_NON_LINE_MO',
+                      )
+
+   if BASE != None:
+      assert COMMAND == 'DYNA_LINE_HARM'
+      assert BASE in ('GENE','PHYS')
+
+# ----------------------------------------------------------------------------------------------------------------------------------
+#
+# CLASSIFICATION EN 3 CATEGORIES :
+#  - solveurs directs uniquement
+#  - solveurs pour le linéaire
+#  - solveurs pour le non-linéaire
+#
+# GESTION DES EXCEPTIONS
+#
+# ----------------------------------------------------------------------------------------------------------------------------------
+
+   _type   = None
+
+#  Classification ('SD'/'LIN'/'NL')
+   if COMMAND in ('CALC_ELEM',
+                  'CALC_ERREUR',
+                  'CREA_ELEM_SSD',
+                  'DEFI_BASE_MODALE',
+                  'DYNA_LINE_HARM',
+                  'DYNA_TRAN_MODAL',
+                  'IMPR_STURM',
+                  'MODE_ITER_SIMULT',
+                  'MODE_ITER_INV',
+                  ):
+      _type = 'SD'
+   elif COMMAND in ('CALC_FORC_AJOU',
+                    'CALC_MATR_AJOU',
+                    'DYNA_LINE_TRAN',
+                    'MACRO_MATR_AJOU',
+                    'MECA_STATIQUE',
+                    'MODE_STATIQUE',
+                    'THER_LINEAIRE',
+                    'THER_NON_LINE_MO',
+                    ):
+      _type = 'LIN'
+   elif COMMAND in ('CALC_IFS_DNL',
+                    'CALC_PRECONT',
+                    'DYNA_NON_LINE',
+                    'MACR_ASCOUF_CALC',
+                    'MACR_ASPIC_CALC',
+                    'MACRO_BASCULE_SCHEMA',
+                    'STAT_NON_LINE',
+                    'THER_NON_LINE',
+                    ):
+      _type = 'NL'
+   else:
+      assert False
+
+# ----------------------------------------------------------------------------------------------------------------------------------
+
+   _feti   = False
+   _dist   = False
+
+#  FETI et MATR_DISTRIBUEE ne fonctionnent que dans MECA_STATIQUE et MECA_NON_LINE
+   if COMMAND in ('CALC_IFS_DNL',
+                  'CALC_PRECONT',
+                  'DYNA_NON_LINE',
+                  'MACR_ASCOUF_CALC',
+                  'MACR_ASPIC_CALC',
+                  'MACRO_BASCULE_SCHEMA',
+                  'MECA_STATIQUE',
+                  'STAT_NON_LINE',
+                  ):
+      _feti = True
+      _dist = True
+
+# ----------------------------------------------------------------------------------------------------------------------------------
+
+   _gene   = False
+   _ldlt   = False
+
+#  Avec des matrices généralisées, MULT_FRONT n'est pas permis, LDLT est donc par défaut
+   if BASE == 'GENE':
+      _gene = True
+      _ldlt = True
+
+#  LDLT est le solveur par défaut dans DYNA_TRAN_MODAL (systèmes linéaires petits)
+   if COMMAND == 'DYNA_TRAN_MODAL':
+      _ldlt = True
+
+# ----------------------------------------------------------------------------------------------------------------------------------
+
+   _syme   = False
+
+#  Seuls les opérateurs non-linéaires produisent des matrices non-symétriques
+   if _type == 'NL':
+      _syme = True
+   if COMMAND == 'THER_NON_LINE_MO':
+      _syme = True
+
+# ----------------------------------------------------------------------------------------------------------------------------------
+
+   _singu  = True
+   _rcmk   = True
+   _resol  = True
+
+#  Avec les solveurs modaux STOP_SINGULIER n'existe pas, de plus RCMK n'est pas disponible
+   if COMMAND in ('IMPR_STURM','MODE_ITER_INV','MODE_ITER_SIMULT'):
+      _singu = False
+      _rcmk  = False
+#     Dans IMPR_STURM on ne fait que factoriser
+      if COMMAND == 'IMPR_STURM':
+         _resol = False
+
+# ----------------------------------------------------------------------------------------------------------------------------------
+
+   _decoup = False
+
+#  Le déclenchement du re-découpage quand la matrice est non inversible n'est possible que dans MECA_NON_LINE
+   if _type == 'NL':
+      _decoup = True
+   if COMMAND == 'THER_NON_LINE':
+      _decoup = False
+
+# ----------------------------------------------------------------------------------------------------------------------------------
+
+   _singu_non = False
+
+#  Dans DEFI_BASE_MODALE, NON est le défaut de STOP_SINGULIER 
+   if COMMAND == 'DEFI_BASE_MODALE':
+      _singu_non = True
+
+# ----------------------------------------------------------------------------------------------------------------------------------
+#
+# INITIALISATIONS
+#
+# ----------------------------------------------------------------------------------------------------------------------------------
+
+#  Mot-clés simples
+   _MotCleSimples={}
+
+#  Solveurs
+   _BlocMF={}
+   _BlocLD={}
+   _BlocMU={}
+   _BlocGC={}
+   _BlocPE={}
+   _BlocFE={}
+
+#  Préconditionneurs
+   _BlocGC_INC={}
+   _BlocPE_INC={}
+   _BlocXX_SP={}
+   _BlocXX_Jac_Sor={}
+
+# ----------------------------------------------------------------------------------------------------------------------------------
+#
+# MOT-CLES SIMPLES : METHODE
+#                    SYME
+#
+# ----------------------------------------------------------------------------------------------------------------------------------
+
+#  METHODE
+   if (_ldlt):
+      _defaut = "LDLT"
+   else:
+      _defaut = "MULT_FRONT"
+
+   if _type == 'SD':
+      _into = ("MULT_FRONT", "LDLT", "MUMPS", )
+      if _gene:
+         _into = ("LDLT", "MUMPS", )
+   else:
+      _into = ("MULT_FRONT", "LDLT", "MUMPS", "GCPC", "PETSC", )
+      if _feti:
+         _into = ("MULT_FRONT", "LDLT", "MUMPS", "GCPC", "PETSC", "FETI", )
+
+   _MotCleSimples['METHODE'] = SIMP(statut='f', typ='TXM', defaut=_defaut, into=_into, )
+
+# ----------------------------------------------------------------------------------------------------------------------------------
+
+#  SYME
+   if _syme:
+      _MotCleSimples['SYME'] = SIMP(statut='f', typ='TXM', defaut="NON", into=("OUI", "NON", ), )
+
+# ----------------------------------------------------------------------------------------------------------------------------------
+#
+# MULT_FRONT/LDLT/MUMPS/FETI (RENUM/NPREC/STOP_SINGULIER)
+#
+# ----------------------------------------------------------------------------------------------------------------------------------
+
+#  RENUM
+   _BlocMF['RENUM'] = SIMP(statut='f', typ='TXM', defaut="METIS", into=("MD", "MDA", "METIS", ), )
+   _BlocFE['RENUM'] = SIMP(statut='f', typ='TXM', defaut="METIS", into=("MD", "MDA", "METIS", ), )
+
+   if _rcmk:
+      _into = ("RCMK", "SANS", )
+      _defaut = "RCMK"
+   else:
+      _into = ("SANS",)
+      _defaut = "SANS"
+
+   _BlocLD['RENUM'] = SIMP(statut='f', typ='TXM', defaut=_defaut, into=_into, )
+
+   _BlocMU['RENUM'] = SIMP(statut='f', typ='TXM', defaut="AUTO", into=("AMD", "AMF", "PORD", "METIS", "QAMD", "SCOTCH", "AUTO", ), )
+
+# ----------------------------------------------------------------------------------------------------------------------------------
+
+#  NPREC
+   _BlocMF['NPREC'] = SIMP(statut='f', typ='I', defaut=8, )
+   _BlocLD['NPREC'] = SIMP(statut='f', typ='I', defaut=8, )
+   _BlocMU['NPREC'] = SIMP(statut='f', typ='I', defaut=8, )
+   _BlocFE['NPREC'] = SIMP(statut='f', typ='I', defaut=8, )
+
+# ----------------------------------------------------------------------------------------------------------------------------------
+
+#  STOP_SINGULIER
+   _into = ("OUI", "NON", )
+   if _decoup:
+      _into = ("OUI", "NON", "DECOUPE", )
+
+   _defaut = "OUI"
+   if _singu_non:
+      _defaut = "NON"
+
+   if _singu:
+      _BlocMF['STOP_SINGULIER'] = SIMP(statut='f', typ='TXM', defaut=_defaut, into=_into, )
+      _BlocLD['STOP_SINGULIER'] = SIMP(statut='f', typ='TXM', defaut=_defaut, into=_into, )
+      _BlocMU['STOP_SINGULIER'] = SIMP(statut='f', typ='TXM', defaut=_defaut, into=_into, )
+      _BlocFE['STOP_SINGULIER'] = SIMP(statut='f', typ='TXM', defaut=_defaut, into=_into, )
+
+# ----------------------------------------------------------------------------------------------------------------------------------
+#
+# MUMPS (MOT-CLES RESTANT)
+#
+# ----------------------------------------------------------------------------------------------------------------------------------
+
+   _BlocMU['TYPE_RESOL'     ] = SIMP(statut='f', typ='TXM', defaut="AUTO", into=("NONSYM", "SYMGEN", "SYMDEF", "AUTO", ), )
+
+# ----------------------------------------------------------------------------------------------------------------------------------
+
+   _BlocMU['PRETRAITEMENTS' ] = SIMP(statut='f', typ='TXM', defaut="AUTO", into=("SANS", "AUTO", ), )
+
+# ----------------------------------------------------------------------------------------------------------------------------------
+
+   if _resol:
+      _BlocMU['POSTTRAITEMENTS'] = SIMP(statut='f', typ='TXM', defaut="AUTO", into=("SANS", "AUTO", "FORCE", ), )
+
+# ----------------------------------------------------------------------------------------------------------------------------------
+
+   _BlocMU['ELIM_LAGR2'     ] = SIMP(statut='f', typ='TXM', defaut="OUI" , into=("OUI", "NON", ), )
+
+# ----------------------------------------------------------------------------------------------------------------------------------
+
+   _BlocMU['PCENT_PIVOT'    ] = SIMP(statut='f', typ='I'  , defaut=10, val_min=1, )
+
+# ----------------------------------------------------------------------------------------------------------------------------------
+
+   if _resol:
+      if _type == 'LIN':
+         _BlocMU['RESI_RELA'] = SIMP(statut='f', typ='R', defaut=1.0E-6, )
+      else:
+         _BlocMU['RESI_RELA'] = SIMP(statut='f', typ='R', defaut=-1.0, )
+
+# ----------------------------------------------------------------------------------------------------------------------------------
+
+   _BlocMU['OUT_OF_CORE'    ] = SIMP(statut='f', typ='TXM', defaut="NON", into=("OUI", "NON", ), )
+
+# ----------------------------------------------------------------------------------------------------------------------------------
+
+   _BlocMU['LIBERE_MEMOIRE' ] = SIMP(statut='f', typ='TXM', defaut="NON", into=("OUI", "NON", ), )
+
+# ----------------------------------------------------------------------------------------------------------------------------------
+
+   if _type == 'NL':
+      _BlocMU['FILTRAGE_MATRICE'] = SIMP(statut='f', typ='R'  , defaut=-1.0, )
+      _BlocMU['MIXER_PRECISION' ] = SIMP(statut='f', typ='TXM', defaut="NON", into=("OUI", "NON", ), )
+
+# ----------------------------------------------------------------------------------------------------------------------------------
+
+   if _dist:
+      _BlocMU['MATR_DISTRIBUEE' ] = SIMP(statut='f', typ='TXM', defaut="NON", into=("OUI", "NON", ), )
+
+# ----------------------------------------------------------------------------------------------------------------------------------
+#
+# GCPC/PETSC
+#
+# ----------------------------------------------------------------------------------------------------------------------------------
+
+   _BlocPE['ALGORITHME'] = SIMP(statut='f', typ='TXM', defaut="GMRES", into=("BCGS", "BICG", "CG", "CR", "GMRES", "TFQMR", ), )
+
+# ----------------------------------------------------------------------------------------------------------------------------------
+
+   _BlocGC['PRE_COND'] = SIMP(statut='f', typ='TXM', defaut="LDLT_INC", into=("LDLT_INC", "LDLT_SP", ), )
+   _BlocPE['PRE_COND'] = SIMP(statut='f', typ='TXM', defaut="LDLT_SP" , into=("LDLT_INC", "JACOBI", "SOR", "LDLT_SP", ), )
+
+# ----------------------------------------------------------------------------------------------------------------------------------
+
+   _BlocGC['RESI_RELA'] = SIMP(statut='f', typ='R', defaut= 1.E-6, )
+   _BlocPE['RESI_RELA'] = SIMP(statut='f', typ='R', defaut= 1.E-6, )
+
+# ----------------------------------------------------------------------------------------------------------------------------------
+
+   _BlocGC['NMAX_ITER'] = SIMP(statut='f', typ='I', defaut= 0, )
+   _BlocPE['NMAX_ITER'] = SIMP(statut='f', typ='I', defaut= 0, )
+
+# ----------------------------------------------------------------------------------------------------------------------------------
+
+   _BlocGC_INC['RENUM'] = SIMP(statut='f', typ='TXM', defaut="RCMK", into=("SANS","RCMK"), )
+   _BlocPE_INC['RENUM'] = SIMP(statut='f', typ='TXM', defaut="RCMK", into=("SANS","RCMK"), )
+
+# ----------------------------------------------------------------------------------------------------------------------------------
+
+   _BlocGC_INC['NIVE_REMPLISSAGE'] = SIMP(statut='f', typ='I', defaut= 0, )
+   _BlocPE_INC['NIVE_REMPLISSAGE'] = SIMP(statut='f', typ='I', defaut= 0, )
+
+# ----------------------------------------------------------------------------------------------------------------------------------
+
+   _BlocPE_INC['REMPLISSAGE'] = SIMP(statut='f', typ='R', defaut= 1.0, )
+
+# ----------------------------------------------------------------------------------------------------------------------------------
+
+   _BlocXX_SP['RENUM'] = SIMP(statut='f', typ='TXM', defaut="SANS", into=("SANS","RCMK"), )
+   _BlocXX_SP['REAC_PRECOND'] = SIMP(statut='f', typ='I', defaut=30, )
+   _BlocXX_SP['PCENT_PIVOT' ] = SIMP(statut='f', typ='I', defaut=10, val_min=1, )
+
+# ----------------------------------------------------------------------------------------------------------------------------------
+
+   _BlocXX_Jac_Sor['RENUM'] = SIMP(statut='f', typ='TXM', defaut="SANS", into=("SANS","RCMK", ), )
+
+# ----------------------------------------------------------------------------------------------------------------------------------
+#
+# FETI (MOT-CLES RESTANT)
+#
+# ----------------------------------------------------------------------------------------------------------------------------------
+
+   _BlocFE['PARTITION'      ] = SIMP(statut='o',typ=sd_feti_sdaster)
+   _BlocFE['RESI_RELA'      ] = SIMP(statut='f',typ='R',defaut=1.E-6,val_min=0.)
+   _BlocFE['NMAX_ITER'      ] = SIMP(statut='f',typ='I',defaut=0,val_min=0)
+   _BlocFE['REAC_RESI'      ] = SIMP(statut='f',typ='I',defaut=0,val_min=0)
+   _BlocFE['TYPE_REORTHO_DD'] = SIMP(statut='f',typ='TXM',defaut="GSM",into=("SANS","GS","GSM","IGSM") )
+   _BlocFE['NB_REORTHO_DD'  ] = SIMP(statut='f',typ='I',defaut=0,val_min=0)
+   _BlocFE['NB_REORTHO_INST'] = SIMP(statut='f',typ='I',defaut=0,val_min=0)
+   _BlocFE['PRE_COND'       ] = SIMP(statut='f',typ='TXM',defaut="LUMPE",into=("LUMPE","SANS") )
+   _BlocFE['SCALING'        ] = SIMP(statut='f',typ='TXM',defaut="MULT",into=("SANS","MULT") )
+   _BlocFE['VERIF_SDFETI'   ] = SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON") )
+   _BlocFE['TEST_CONTINU'   ] = SIMP(statut='f',typ='R',defaut=1.E-8,val_min=0.)
+   _BlocFE['INFO_FETI'      ] = SIMP(statut='f',typ='TXM',defaut='FFFFFFFFFFFFFFFFFFFFFFFF')
+   _BlocFE['STOCKAGE_GI'    ] = SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON","CAL") )
+   _BlocFE['NB_SD_PROC0'    ] = SIMP(statut='f',typ='I',defaut=0,val_min=0)
+   _BlocFE['ACCELERATION_SM'] = SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON") )
+
+# ----------------------------------------------------------------------------------------------------------------------------------
+#
+# PREPARATION DU MOT-CLE FACTEUR
+#
+# ----------------------------------------------------------------------------------------------------------------------------------
+
+   mcfact = FACT(statut='d',
+                 b_mult_front = BLOC(condition = "METHODE == 'MULT_FRONT' ",
+                                     fr="Paramètres de la méthode multi frontale",
+                                     **_BlocMF
+                                     ),
+                 b_ldlt       = BLOC(condition = "METHODE == 'LDLT' ",
+                                     fr="Paramètres de la méthode LDLT",
+                                     **_BlocLD
+                                     ),
+                 b_mumps      = BLOC(condition = "METHODE == 'MUMPS' ",
+                                     fr="Paramètres de la méthode MUMPS",
+                                     **_BlocMU
+                                     ),
+                 b_gcpc       = BLOC(condition = "METHODE == 'GCPC' ",
+                                      fr="Paramètres de la méthode du gradient conjugué",
+                                     b_ldltinc    = BLOC(condition = "PRE_COND == 'LDLT_INC' ",
+                                                         fr="Paramètres de la factorisation incomplète",
+                                                         **_BlocGC_INC
+                                                         ),
+                                     b_simple     = BLOC(condition = "PRE_COND == 'LDLT_SP' ",
+                                                         fr="Paramètres de la factorisation simple précision",
+                                                         **_BlocXX_SP
+                                                         ),
+                                     **_BlocGC
+                                     ),
+                 b_petsc      = BLOC(condition = "METHODE == 'PETSC' ",
+                                     fr="Paramètres de la méthode PETSC",
+                                     b_ldltinc    = BLOC(condition = "PRE_COND == 'LDLT_INC' ",
+                                                         fr="Paramètres de la factorisation incomplète",
+                                                         **_BlocPE_INC
+                                                         ),
+                                     b_simple     = BLOC(condition = "PRE_COND == 'LDLT_SP' ",
+                                                         fr="Paramètres de la factorisation simple précision",
+                                                         **_BlocXX_SP
+                                                         ),
+                                     b_jacobi_sor = BLOC(condition = "PRE_COND == 'JACOBI' or PRE_COND == 'SOR'",
+                                                         **_BlocXX_Jac_Sor
+                                                         ),
+                                     **_BlocPE
+                                     ),
+                 b_feti       = BLOC(condition = "METHODE == 'FETI' ",
+                                     fr="Paramètres de la méthode FETI 1",
+                                     **_BlocFE
+                                     ),
+                 **_MotCleSimples
+                 )
+
+   return mcfact

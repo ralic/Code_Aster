@@ -1,4 +1,4 @@
-%& MODIF TYPELEM  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+%& MODIF TYPELEM  DATE 19/05/2011   AUTEUR SELLENET N.SELLENET 
 %            CONFIGURATION MANAGEMENT OF EDF VERSION
 % ======================================================================
 % COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -118,6 +118,7 @@ MODE_LOCAL__
                                         V6       T0       T1       T2       T3       T4
                                         T5       T6       )
     EWEIBUL  = WEIBULL  ELEM__         (DSIGWB   )
+    EPDILPG  = PDIL_R   ELGA__ RIGI    (A1_LC2   )
 
 VECTEUR__
     MVECTUC = VDEP_C NDEPLAC
@@ -388,6 +389,8 @@ OPTION__
                               OUT__  EDCEL_I  PDCEL_I
     PAS_COURANT         404   IN__   CMATERC  PMATERC  NGEOMER  PGEOMER
                               OUT__  ECOURAN  PCOURAN
+    PDIL_ELGA           511   IN__   CCOMPOR  PCOMPOR  ECONTPG  PCONTPR  CMATERC  PMATERC  ZVARIPG  PVARIPR
+                              OUT__  EPDILPG  PPDIL
     PILO_PRED_DEFO      543   IN__   CBORNPI  PBORNPI  CCDTAU   PCDTAU   CCOMPOR  PCOMPOR  ECONTPG  PCONTMR
                                      DDL_MECA PDDEPLR  DDL_MECA PDEPL0R  DDL_MECA PDEPL1R  DDL_MECA PDEPLMR
                                      NGEOMER  PGEOMER  CMATERC  PMATERC  CTYPEPI  PTYPEPI  ZVARIPG  PVARIMR

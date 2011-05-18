@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 19/05/2011   AUTEUR DELMAS J.DELMAS 
 # TITRE TEST DE L'ESTIMATEUR EN RESIDU SUR UN CYLINDRE CREUX
 # sslv113b.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -22,169 +22,264 @@
 #
 # MODELISATION 1 : ELEMENT MECANIQUE AXISYMETRIQUE QUAD8
 # MAILLAGE       : GIBI > ASTER
-#
 
+DEBUT(CODE=_F(NOM='SSLV113B',
+              NIV_PUB_WEB='INTERNET',),
+      DEBUG=_F(SDVERI='OUI',),);
 
-DEBUT(CODE=_F(NOM='SSLV113B',NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+M=LIRE_MAILLAGE();
 
-M=LIRE_MAILLAGE( )
+MO=AFFE_MODELE(MAILLAGE=M,
+               VERIF='MAILLE',
+               AFFE=_F(TOUT='OUI',
+                       PHENOMENE='MECANIQUE',
+                       MODELISATION='AXIS',),);
 
-MO=AFFE_MODELE(          MAILLAGE=M,
-                                 VERIF='MAILLE',
-                                  AFFE=_F(  TOUT = 'OUI',
-                                         PHENOMENE = 'MECANIQUE',
-                                         MODELISATION = 'AXIS')
-                        )
+MA1=DEFI_MATERIAU(ELAS=_F(E=2.,
+                          NU=0.3,
+                          ALPHA=0.,),);
 
-MA1=DEFI_MATERIAU(            ELAS=_F(  E = 2.,
-                                         NU = 0.3,
-                                         ALPHA = 0.)
-                        )
+MA2=DEFI_MATERIAU(ELAS=_F(E=1.,
+                          NU=0.3,
+                          ALPHA=0.,),);
 
-MA2=DEFI_MATERIAU(            ELAS=_F(  E = 1.,
-                                         NU = 0.3,
-                                         ALPHA = 0.)
-                        )
-
-CM=AFFE_MATERIAU(      MAILLAGE=M,AFFE=(
-                                _F( GROUP_MA = 'DOM1',  MATER = MA1),
-                                     _F( GROUP_MA = 'DOM2',  MATER = MA2))
-                       )
+CM=AFFE_MATERIAU(MAILLAGE=M,
+                 AFFE=(_F(GROUP_MA='DOM1',
+                          MATER=MA1,),
+                       _F(GROUP_MA='DOM2',
+                          MATER=MA2,),),);
 
 #
 #  F1 = SIGRR SUR LE MATERIAU MA1
-#
 
-F1 = FORMULE(NOM_PARA='R',VALE='''
+F1 = FORMULE(VALE="""
 1.15385*(2*-0.98097+0.91333)+2*0.76923*(-0.98097
                 -(-1.11741/R**2))
-                ''')
+                """,
+             NOM_PARA='R',);
+
 #
 #  F2 = SIGTT SUR LE MATERIAU MA1
-#
 
-
-F2 = FORMULE(NOM_PARA='R',VALE='''
+F2 = FORMULE(VALE="""
 1.15385*(2*-0.98097+0.91333)+2*0.76923*(-0.98097
                 +(-1.11741/R**2))
-                ''')
+                """,
+             NOM_PARA='R',);
+
 #
 #  F3 = SIGRR SUR LE MATERIAU MA2
-#
 
-
-F3 = FORMULE(NOM_PARA='R',VALE='''
+F3 = FORMULE(VALE="""
 0.57692*(2*-1.34405+0.91333)+2*0.38461*(-1.34405
                 -(-0.30048/R**2))
-                ''')
+                """,
+             NOM_PARA='R',);
+
 #
 #  F4 = SIGTT SUR LE MATERIAU MA2
-#
 
-
-F4 = FORMULE(NOM_PARA='R',VALE='''
+F4 = FORMULE(VALE="""
 0.57692*(2*-1.34405+0.91333)+2*0.38461*(-1.34405
                 +(-0.30048/R**2))
-                ''')
+                """,
+             NOM_PARA='R',);
 
-CH=AFFE_CHAR_MECA(          MODELE=MO,FACE_IMPO=(
-                              _F( GROUP_MA = 'GRMA1',  DY = 0.),
-                                        _F( GROUP_MA = 'GRMA2',  DY = 0.91333)),FORCE_CONTOUR=(
-                          _F( GROUP_MA = 'GRMA3',  FX = 1.),
-                                        _F( GROUP_MA = 'GRMA4',  FX = -2.))
-                        )
+CH=AFFE_CHAR_MECA(MODELE=MO,
+                  FACE_IMPO=(_F(GROUP_MA='GRMA1',
+                                DY=0.,),
+                             _F(GROUP_MA='GRMA2',
+                                DY=0.91333,),),
+                  FORCE_CONTOUR=(_F(GROUP_MA='GRMA3',
+                                    FX=1.,),
+                                 _F(GROUP_MA='GRMA4',
+                                    FX=-2.,),),);
 
-RESU=MECA_STATIQUE(         MODELE=MO,
-                            CHAM_MATER=CM,
-                                 EXCIT=_F( CHARGE = CH)
-                        )
+RESU=MECA_STATIQUE(MODELE=MO,
+                   CHAM_MATER=CM,
+                   EXCIT=_F(CHARGE=CH,),);
 
-RESU=CALC_ELEM(     reuse=RESU,
+RESU=CALC_ELEM(reuse =RESU,
+               RESULTAT=RESU,
+               TOUT_ORDRE='OUI',
+               OPTION='SIGM_ELNO',);
 
-                            TOUT_ORDRE='OUI',
-                                OPTION=( 'SIGM_ELNO',
-                                         'ERME_ELEM',
-                                        ),
-                              RESULTAT=RESU
-                        )
+RESU=CALC_ERREUR(reuse =RESU,
+                 RESULTAT=RESU,
+                 TOUT_ORDRE='OUI',
+                 OPTION='ERME_ELEM',);
 
-TEST_RESU(RESU=(
-        _F(  RESULTAT = RESU,  NUME_ORDRE = 1, NOM_CHAM = 'SIGM_ELNO',
-          MAILLE = 'M1',     POINT = 1, NOM_CMP = 'SIXX',
-          VALE = F1(1.) ,      PRECISION = 0.005),
-        _F(  RESULTAT = RESU,  NUME_ORDRE = 1, NOM_CHAM = 'SIGM_ELNO',
-          MAILLE = 'M1',     POINT = 1, NOM_CMP = 'SIYY',
-          VALE = 0.19518,              PRECISION = 0.008),
-        _F(  RESULTAT = RESU,  NUME_ORDRE = 1, NOM_CHAM = 'SIGM_ELNO',
-          MAILLE = 'M1',     POINT = 1, NOM_CMP = 'SIZZ',
-          VALE = F2(1.) ,       PRECISION = 0.0005),
+TEST_RESU(RESU=(_F(RESULTAT=RESU,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='SIGM_ELNO',
+                   NOM_CMP='SIXX',
+                   MAILLE='M1',
+                   POINT=1,
+                   VALE=F1(1.0,),
+                   PRECISION=0.005,),
+                _F(RESULTAT=RESU,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='SIGM_ELNO',
+                   NOM_CMP='SIYY',
+                   MAILLE='M1',
+                   POINT=1,
+                   VALE=0.19518,
+                   PRECISION=0.008,),
+                _F(RESULTAT=RESU,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='SIGM_ELNO',
+                   NOM_CMP='SIZZ',
+                   MAILLE='M1',
+                   POINT=1,
+                   VALE=F2(1.0,),
+                   PRECISION=0.0005,),
+                _F(RESULTAT=RESU,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='SIGM_ELNO',
+                   NOM_CMP='SIXX',
+                   MAILLE='M10',
+                   POINT=2,
+                   VALE=F1(1.5,),
+                   PRECISION=0.0005,),
+                _F(RESULTAT=RESU,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='SIGM_ELNO',
+                   NOM_CMP='SIYY',
+                   MAILLE='M10',
+                   POINT=2,
+                   VALE=0.19518,
+                   PRECISION=0.002,),
+                _F(RESULTAT=RESU,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='SIGM_ELNO',
+                   NOM_CMP='SIZZ',
+                   MAILLE='M10',
+                   POINT=2,
+                   VALE=F2(1.5,),
+                   PRECISION=0.0002,),
+                _F(RESULTAT=RESU,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='SIGM_ELNO',
+                   NOM_CMP='SIXX',
+                   MAILLE='M11',
+                   POINT=2,
+                   VALE=F3(1.5,),
+                   PRECISION=0.005,),
+                _F(RESULTAT=RESU,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='SIGM_ELNO',
+                   NOM_CMP='SIYY',
+                   MAILLE='M11',
+                   POINT=2,
+                   VALE=-0.32135,
+                   PRECISION=0.0001,),
+                _F(RESULTAT=RESU,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='SIGM_ELNO',
+                   NOM_CMP='SIZZ',
+                   MAILLE='M11',
+                   POINT=2,
+                   VALE=F4(1.5,),
+                   PRECISION=0.005,),
+                _F(RESULTAT=RESU,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='SIGM_ELNO',
+                   NOM_CMP='SIXX',
+                   MAILLE='M20',
+                   POINT=3,
+                   VALE=F3(2.0,),
+                   PRECISION=0.0001,),
+                _F(RESULTAT=RESU,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='SIGM_ELNO',
+                   NOM_CMP='SIYY',
+                   MAILLE='M20',
+                   POINT=3,
+                   VALE=-0.32135,
+                   PRECISION=0.0001,),
+                _F(RESULTAT=RESU,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='SIGM_ELNO',
+                   NOM_CMP='SIZZ',
+                   MAILLE='M20',
+                   POINT=3,
+                   VALE=F4(2.0,),
+                   PRECISION=0.0001,),),);
 
-        _F(  RESULTAT = RESU,  NUME_ORDRE = 1, NOM_CHAM = 'SIGM_ELNO',
-          MAILLE = 'M10',     POINT = 2, NOM_CMP = 'SIXX',
-          VALE = F1(1.5) ,      PRECISION = 0.0005),
-        _F(  RESULTAT = RESU,  NUME_ORDRE = 1, NOM_CHAM = 'SIGM_ELNO',
-          MAILLE = 'M10',     POINT = 2, NOM_CMP = 'SIYY',
-          VALE = 0.19518,              PRECISION = 0.002),
-        _F(  RESULTAT = RESU,  NUME_ORDRE = 1, NOM_CHAM = 'SIGM_ELNO',
-          MAILLE = 'M10',     POINT = 2, NOM_CMP = 'SIZZ',
-          VALE = F2(1.5) ,      PRECISION = 0.0002),
+TEST_RESU(RESU=(_F(RESULTAT=RESU,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='ERME_ELEM',
+                   NOM_CMP='NUEST',
+                   MAILLE='M1',
+                   POINT=1,
+                   VALE=0.0,
+                   CRITERE='ABSOLU',
+                   PRECISION=0.6,),
+                _F(RESULTAT=RESU,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='ERME_ELEM',
+                   NOM_CMP='NUEST',
+                   MAILLE='M10',
+                   POINT=1,
+                   VALE=0.0,
+                   CRITERE='ABSOLU',
+                   PRECISION=0.2,),
+                _F(RESULTAT=RESU,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='ERME_ELEM',
+                   NOM_CMP='NUEST',
+                   MAILLE='M11',
+                   POINT=1,
+                   VALE=0.0,
+                   CRITERE='ABSOLU',
+                   PRECISION=0.03,),
+                _F(RESULTAT=RESU,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='ERME_ELEM',
+                   NOM_CMP='NUEST',
+                   MAILLE='M20',
+                   POINT=1,
+                   VALE=0.0,
+                   CRITERE='ABSOLU',
+                   PRECISION=0.01,),
+                _F(RESULTAT=RESU,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='ERME_ELEM',
+                   NOM_CMP='ERREST',
+                   MAILLE='M1',
+                   POINT=1,
+                   VALE=0.0,
+                   CRITERE='ABSOLU',
+                   PRECISION=0.01,),
+                _F(RESULTAT=RESU,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='ERME_ELEM',
+                   NOM_CMP='ERREST',
+                   MAILLE='M10',
+                   POINT=1,
+                   VALE=0.0,
+                   CRITERE='ABSOLU',
+                   PRECISION=0.01,),
+                _F(RESULTAT=RESU,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='ERME_ELEM',
+                   NOM_CMP='ERREST',
+                   MAILLE='M11',
+                   POINT=1,
+                   VALE=0.0,
+                   CRITERE='ABSOLU',
+                   PRECISION=0.001,),
+                _F(RESULTAT=RESU,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='ERME_ELEM',
+                   NOM_CMP='ERREST',
+                   MAILLE='M20',
+                   POINT=1,
+                   VALE=0.0,
+                   CRITERE='ABSOLU',
+                   PRECISION=0.0001,),),);
 
-        _F(  RESULTAT = RESU,  NUME_ORDRE = 1, NOM_CHAM = 'SIGM_ELNO',
-          MAILLE = 'M11',     POINT = 2, NOM_CMP = 'SIXX',
-          VALE = F3(1.5) ,      PRECISION = 0.005),
-        _F(  RESULTAT = RESU,  NUME_ORDRE = 1, NOM_CHAM = 'SIGM_ELNO',
-          MAILLE = 'M11',     POINT = 2, NOM_CMP = 'SIYY',
-          VALE = -0.32135,             PRECISION = 0.0001),
-        _F(  RESULTAT = RESU,  NUME_ORDRE = 1, NOM_CHAM = 'SIGM_ELNO',
-          MAILLE = 'M11',     POINT = 2, NOM_CMP = 'SIZZ',
-          VALE = F4(1.5),      PRECISION = 0.005),
+FIN();
 
-        _F(  RESULTAT = RESU,  NUME_ORDRE = 1, NOM_CHAM = 'SIGM_ELNO',
-          MAILLE = 'M20',     POINT = 3, NOM_CMP = 'SIXX',
-          VALE = F3(2.) ,       PRECISION = 0.0001),
-        _F(  RESULTAT = RESU,  NUME_ORDRE = 1, NOM_CHAM = 'SIGM_ELNO',
-          MAILLE = 'M20',     POINT = 3, NOM_CMP = 'SIYY',
-          VALE = -0.32135,             PRECISION = 0.0001),
-        _F(  RESULTAT = RESU,  NUME_ORDRE = 1, NOM_CHAM = 'SIGM_ELNO',
-          MAILLE = 'M20',     POINT = 3, NOM_CMP = 'SIZZ',
-          VALE = F4(2.) ,       PRECISION = 0.0001))
-           )
-
-TEST_RESU(RESU=(
-        _F(  RESULTAT = RESU,   NUME_ORDRE = 1, NOM_CHAM = 'ERME_ELEM',
-          MAILLE = 'M1',     POINT = 1, NOM_CMP = 'NUEST',
-          VALE = 0.,     CRITERE = 'ABSOLU',
-          PRECISION = 0.6),
-        _F(  RESULTAT = RESU,   NUME_ORDRE = 1, NOM_CHAM = 'ERME_ELEM',
-          MAILLE = 'M10',     POINT = 1, NOM_CMP = 'NUEST',
-          VALE = 0.,     CRITERE = 'ABSOLU',
-          PRECISION = 0.2),
-        _F(  RESULTAT = RESU,   NUME_ORDRE = 1, NOM_CHAM = 'ERME_ELEM',
-          MAILLE = 'M11',     POINT = 1, NOM_CMP = 'NUEST',
-          VALE = 0.,     CRITERE = 'ABSOLU',
-          PRECISION = 0.03),
-        _F(  RESULTAT = RESU,   NUME_ORDRE = 1, NOM_CHAM = 'ERME_ELEM',
-          MAILLE = 'M20',     POINT = 1, NOM_CMP = 'NUEST',
-          VALE = 0.,     CRITERE = 'ABSOLU',
-          PRECISION = 0.01),
-        _F(  RESULTAT = RESU,   NUME_ORDRE = 1, NOM_CHAM = 'ERME_ELEM',
-          MAILLE = 'M1',     POINT = 1, NOM_CMP = 'ERREST',
-          VALE = 0.,     CRITERE = 'ABSOLU',
-          PRECISION = 0.01),
-        _F(  RESULTAT = RESU,   NUME_ORDRE = 1, NOM_CHAM = 'ERME_ELEM',
-          MAILLE = 'M10',     POINT = 1, NOM_CMP = 'ERREST',
-          VALE = 0.,     CRITERE = 'ABSOLU',
-          PRECISION = 0.01),
-        _F(  RESULTAT = RESU,   NUME_ORDRE = 1, NOM_CHAM = 'ERME_ELEM',
-          MAILLE = 'M11',     POINT = 1, NOM_CMP = 'ERREST',
-          VALE = 0.,     CRITERE = 'ABSOLU',
-          PRECISION = 0.001),
-        _F(  RESULTAT = RESU,   NUME_ORDRE = 1, NOM_CHAM = 'ERME_ELEM',
-          MAILLE = 'M20',     POINT = 1, NOM_CMP = 'ERREST',
-          VALE = 0.,     CRITERE = 'ABSOLU',
-          PRECISION = 0.0001))
-            )
-
-FIN()
 #
-#
+

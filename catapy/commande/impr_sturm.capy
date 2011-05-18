@@ -1,20 +1,20 @@
-#& MODIF COMMANDE  DATE 18/01/2011   AUTEUR BOITEAU O.BOITEAU 
+#& MODIF COMMANDE  DATE 19/05/2011   AUTEUR DELMAS J.DELMAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-# (AT YOUR OPTION) ANY LATER VERSION.                                 
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
 #
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 #
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # RESPONSABLE NISTOR I.NISTOR
 
@@ -35,31 +35,13 @@ IMPR_STURM=PROC(nom="IMPR_STURM",op=32,fr="Calculer et imprimer le nombre de val
              CHAR_CRIT_MAX   =SIMP(statut='o',typ='R',fr="Borne supérieure de l intervalle" ),
          ),
          NMAX_ITER_SHIFT =SIMP(statut='f',typ='I',defaut= 5 ),
-         UNITE           =SIMP(statut='f',typ='I',defaut=8),  
+         UNITE           =SIMP(statut='f',typ='I',defaut=8),
          PREC_SHIFT      =SIMP(statut='f',typ='R',defaut= 1.E-2 ),
          SEUIL_FREQ      =SIMP(statut='f',typ='R',defaut= 1.E-2 ),
 
-         SOLVEUR         =FACT(statut='d',
-           METHODE         =SIMP(statut='f',typ='TXM',defaut="MULT_FRONT",into=("MULT_FRONT","LDLT","MUMPS")),
-             b_mult_front    =BLOC(condition = "METHODE == 'MULT_FRONT' ",fr="Paramètres de la méthode multi frontale",
-               RENUM           =SIMP(statut='f',typ='TXM',defaut="METIS",into=("MD","MDA","METIS") ),
-             ),
-             b_ldlt          =BLOC(condition = "METHODE == 'LDLT' ",fr="Paramètres de la méthode LDLT",
-               RENUM           =SIMP(statut='f',typ='TXM',defaut="SANS",into=("SANS","SANS") ),
-             ),
-             b_direct_hybride =BLOC( condition = "METHODE=='LDLT' or METHODE=='MULT_FRONT' or METHODE=='MUMPS' ",
-                                   fr="Paramètres relatifs à la non inversibilité de la matrice à factoriser",
-               NPREC           =SIMP(statut='f',typ='I',defaut= 8, val_min=0),
-             ),
-             b_mumps        =BLOC(condition = "METHODE == 'MUMPS' ",fr="Paramètres de la méthode MUMPS",
-               TYPE_RESOL      =SIMP(statut='f',typ='TXM',defaut="AUTO",into=("NONSYM","SYMGEN","SYMDEF","AUTO")),
-               PRETRAITEMENTS  =SIMP(statut='f',typ='TXM',defaut="AUTO",into=("SANS","AUTO")),
-               RENUM           =SIMP(statut='f',typ='TXM',defaut="AUTO",into=("AMD","AMF","PORD","METIS","QAMD","SCOTCH","AUTO")),
-               ELIM_LAGR2      =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON")),
-               PCENT_PIVOT     =SIMP(statut='f',typ='I',defaut=10,),
-               OUT_OF_CORE     =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON")),
-               LIBERE_MEMOIRE =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON")),
-             ),
-           ),    
+#-------------------------------------------------------------------
+#        Catalogue commun SOLVEUR
+         SOLVEUR         =C_SOLVEUR('IMPR_STURM'),
+#-------------------------------------------------------------------
 
 )  ;

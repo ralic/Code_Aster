@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 08/03/2011   AUTEUR PELLET J.PELLET 
+#& MODIF COMMANDE  DATE 19/05/2011   AUTEUR DELMAS J.DELMAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -122,8 +122,8 @@ def l_nom_cham_pas_elga(): return (
      "SICA_NOEU",
      "SICO_NOEU",
      "SIGM_NOEU",
-     "SIZ1_ELGA",
-     "SIZ2_ELGA",
+     "SIZ1_NOEU",
+     "SIZ2_NOEU",
      "SIPO_ELNO",
      "SIPO_NOEU",
      "TEMP",

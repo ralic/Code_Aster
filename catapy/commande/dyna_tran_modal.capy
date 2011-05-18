@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 31/01/2011   AUTEUR GREFFET N.GREFFET 
+#& MODIF COMMANDE  DATE 19/05/2011   AUTEUR DELMAS J.DELMAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -34,7 +34,7 @@ DYNA_TRAN_MODAL=OPER(nom="DYNA_TRAN_MODAL",op=  74,sd_prod=tran_gene,
          MODE_STAT       =SIMP(statut='f',typ=mode_meca ),
          MODE_CORR       =SIMP(statut='f',typ=(mult_elas,mode_meca),),
 
-         COUPLAGE_EDYOS     =FACT(statut='f',max=1,         
+         COUPLAGE_EDYOS     =FACT(statut='f',max=1,
                              VITE_ROTA          = SIMP(statut='o',typ='R' ),
                              PAS_TPS_EDYOS      = SIMP(statut='o',typ='R' ),
          ),
@@ -232,36 +232,10 @@ DYNA_TRAN_MODAL=OPER(nom="DYNA_TRAN_MODAL",op=  74,sd_prod=tran_gene,
            INST_FIN        =SIMP(statut='f',typ='R' ),
          ),
 
-
-         SOLVEUR         =FACT(statut='d', fr="Méthode de résolution des systèmes linéaires",
-         METHODE         =SIMP(statut='f',typ='TXM',defaut="LDLT",into=("LDLT","MUMPS","MULT_FRONT",) ),
-
-
-           b_ldlt          =BLOC(condition = "METHODE == 'LDLT' ",fr="Paramètres de la méthode LDLT",
-             RENUM           =SIMP(statut='f',typ='TXM',defaut="RCMK",into=("RCMK","SANS") ),
-           ),
-
-           b_mult_front    =BLOC(condition = "METHODE == 'MULT_FRONT' ",fr="Paramètres de la méthode multi frontale",
-             RENUM           =SIMP(statut='f',typ='TXM',defaut="METIS",into=("MD","MDA","METIS") ),
-           ),
-
-           b_ldlt_mult_mumps =BLOC( condition = "METHODE=='LDLT' or METHODE=='MULT_FRONT' or METHODE=='MUMPS' ",
-                                   fr="Paramètres relatifs à la non inversibilité de la matrice à factoriser",
-             NPREC           =SIMP(statut='f',typ='I',defaut= 8 ),
-             STOP_SINGULIER  =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON") ),
-           ),
-           b_mumps        =BLOC(condition = "METHODE == 'MUMPS' ",fr="Paramètres de la méthode MUMPS",
-             TYPE_RESOL      =SIMP(statut='f',typ='TXM',defaut="AUTO",into=("NONSYM","SYMGEN","SYMDEF","AUTO")),
-             PRETRAITEMENTS  =SIMP(statut='f',typ='TXM',defaut="AUTO",into=("SANS","AUTO")),
-             POSTTRAITEMENTS =SIMP(statut='f',typ='TXM',defaut="AUTO",into=("SANS","AUTO","FORCE")),
-             RENUM           =SIMP(statut='f',typ='TXM',defaut="AUTO",into=("AMD","AMF","PORD","METIS","QAMD","SCOTCH","AUTO")),
-             ELIM_LAGR2      =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON")),
-             PCENT_PIVOT     =SIMP(statut='f',typ='I',defaut=10,),
-             RESI_RELA       =SIMP(statut='f',typ='R',defaut=-1.0,),
-             OUT_OF_CORE     =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON")),
-             LIBERE_MEMOIRE =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON")),
-             ),
-         ),
+#-------------------------------------------------------------------
+#        Catalogue commun SOLVEUR
+         SOLVEUR         =C_SOLVEUR('DYNA_TRAN_MODAL'),
+#-------------------------------------------------------------------
 
 
          TITRE           =SIMP(statut='f',typ='TXM',max='**'),

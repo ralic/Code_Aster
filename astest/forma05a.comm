@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 19/05/2011   AUTEUR DELMAS J.DELMAS 
 # RESPONSABLE GNICOLAS G.NICOLAS
 # TITRE Maillage adaptatif thermo-mecanique sur une culasse fissuree
 # forma05a.para = tps_job 160 mem_job 128Mo ncpus 1 liste_test R
@@ -152,7 +152,13 @@ for num_calc in range(0,nb_calc1) :
                   TOUT_ORDRE='OUI',
                   OPTION=(
 # LISSAGE DES FLUX
-                       'FLUX_ELNO',
+                       'FLUX_ELNO',),);
+
+   TEMP[num_calc]=CALC_ERREUR(reuse=TEMP[num_calc],
+                  RESULTAT=TEMP[num_calc],
+                  TOUT='OUI',
+                  TOUT_ORDRE='OUI',
+                  OPTION=(
 # CALCUL DE L'INDICATEUR PAR ELEMENTS ET AUX NOEUDS PAR ELEM
                        'ERTH_ELEM',
                        'ERTH_ELNO',),);

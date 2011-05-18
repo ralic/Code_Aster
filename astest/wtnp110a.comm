@@ -1,4 +1,4 @@
-# MODIF  DATE 21/02/2011   AUTEUR ABBAS M.ABBAS 
+# MODIF  DATE 19/05/2011   AUTEUR DELMAS J.DELMAS 
 # TITRE  - ECOULEMENT ORTHOTROPE SATURE EN 2D
 # wtnp110a.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test S
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -186,17 +186,14 @@ U0=STAT_NON_LINE(MODELE=MODELE,
                            REAC_ITER=1,),);
 
 U0=CALC_ELEM(reuse =U0,
-
-
              RESULTAT=U0,
              TOUT_ORDRE='OUI',
              OPTION=('SIEF_ELNO','VARI_ELNO',),);
 
-U0=CALC_ELEM(reuse =U0,
-             RESULTAT=U0,
-             LIST_INST=INSTERR,
-             TYPE_OPTION='INDI_ERREUR',
-             OPTION=('ERME_ELEM','ERME_ELNO',),);
+U0=CALC_ERREUR(reuse =U0,
+               RESULTAT=U0,
+               LIST_INST=INSTERR,
+               OPTION=('ERME_ELEM','ERME_ELNO',),);
 
 U0=CALC_NO(reuse =U0,
            RESULTAT=U0,

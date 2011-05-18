@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 19/05/2011   AUTEUR DELMAS J.DELMAS 
 # TITRE VALIDATION DES ESTIMATEURS D'ERREUR BASES SUR LES RESIDUS
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -344,10 +344,14 @@ CHAR=AFFE_CHAR_MECA(MODELE=MODELE,
 RESU=MECA_STATIQUE(MODELE=MODELE,
                    CHAM_MATER=CHAMPMAT,
                    EXCIT=_F(CHARGE=CHAR,),);
-
 RESU=CALC_ELEM(reuse =RESU,
                RESULTAT=RESU,
-               OPTION=('SIGM_ELNO','ERME_ELEM',),);
+               OPTION=('SIGM_ELNO',),);
+
+
+RESU=CALC_ERREUR(reuse =RESU,
+                 RESULTAT=RESU,
+                 OPTION=('ERME_ELEM',),);
 
 ##############################################
 #                                            #

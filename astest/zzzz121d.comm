@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 19/05/2011   AUTEUR DELMAS J.DELMAS 
 # RESPONSABLE GNICOLAS G.NICOLAS
 # TITRE TEST DE HOMARD AVEC DES QUADRANGLES
 # zzzz121d.para = tps_job 60 mem_job 64Mo ncpus 1 liste_test S
@@ -195,11 +195,13 @@ RESU_0=MECA_STATIQUE(MODELE=MODE_0,
 # 3.5. Calcul de l'indicateur d'erreur
 
 RESU_0=CALC_ELEM(reuse =RESU_0,
-
-
                  RESULTAT=RESU_0,
-                 OPTION=('SIGM_ELNO','ERME_ELEM',),
+                 OPTION=('SIGM_ELNO',),
+);
 
+RESU_0=CALC_ERREUR(reuse =RESU_0,
+                   RESULTAT=RESU_0,
+                   OPTION=('ERME_ELEM',),
 );
 #
 # 3.6. Calcul de la contrainte a comparer
@@ -274,11 +276,13 @@ RESU_1=MECA_STATIQUE(MODELE=MODE_1,
 # 5.5. Calcul de l'indicateur d'erreur
 
 RESU_1=CALC_ELEM(reuse =RESU_1,
-
-
                  RESULTAT=RESU_1,
-                 OPTION=('SIGM_ELNO','ERME_ELEM',),
+                 OPTION=('SIGM_ELNO',),
+);
 
+RESU_1=CALC_ERREUR(reuse =RESU_1,
+                   RESULTAT=RESU_1,
+                   OPTION=('ERME_ELEM',),
 );
 #
 # 5.6. Calcul de la contrainte a comparer
@@ -359,11 +363,13 @@ RESU_2=MECA_STATIQUE(MODELE=MODE_2,
 # 7.5. Calcul des contraintes
 
 RESU_2=CALC_ELEM(reuse =RESU_2,
-
-
                  RESULTAT=RESU_2,
-                 OPTION=('SIGM_ELNO','ERME_ELEM',),
+                 OPTION=('SIGM_ELNO',),
+);
 
+RESU_2=CALC_ERREUR(reuse =RESU_2,
+                   RESULTAT=RESU_2,
+                   OPTION=('ERME_ELEM',),
 );
 #
 # 7.6. Calcul de la contrainte a comparer
@@ -437,11 +443,8 @@ RESU_3=MECA_STATIQUE(MODELE=MODE_3,
 # 9.5. Calcul des contraintes
 
 RESU_3=CALC_ELEM(reuse =RESU_3,
-
-
                  RESULTAT=RESU_3,
                  OPTION='SIGM_ELNO',
-
 );
 #
 # 9.6. Calcul de la contrainte a comparer

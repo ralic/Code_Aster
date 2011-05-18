@@ -2,7 +2,7 @@
       IMPLICIT NONE
 C     ------------------------------------------------------------------
 C            CONFIGURATION MANAGEMENT OF EDF VERSION
-C MODIF ALGELINE  DATE 12/04/2011   AUTEUR TARDIEU N.TARDIEU 
+C MODIF ALGELINE  DATE 19/05/2011   AUTEUR DELMAS J.DELMAS 
 C ======================================================================
 C COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
 C THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -105,6 +105,7 @@ C          SIMPLE PRECISION
            CALL GCNCON('.', SOLVBD)
 C          LECTURE PARAMETRE
            CALL GETVIS(' ','REAC_PRECOND',0,1,1,REACPR,IBID)
+           CALL GETVIS(' ','PCENT_PIVOT',0,1,1,PCPIV,IBID)
 
 C      --- ON REMPLIT LA SD_SOLVEUR GCPC
            CALL DISMOI('F','SOLVEUR',MASS,'MATR_ASSE',IBID,SOLVEU,IER1)
@@ -116,6 +117,7 @@ C      --- ON REMPLIT LA SD_SOLVEUR GCPC
            ZK24(JSLVK-1+3) = SOLVBD
            ZI(JSLVI-1+5)   = 0
            ZI(JSLVI-1+6)   = REACPR
+           ZI(JSLVI-1+7)   = PCPIV
 
 C      --- APPEL A LA CONSTRUCTION DU PRECONDITIONNEUR
            CALL PCMUMP(MFAC,SOLVEU,IRETGC)
@@ -198,9 +200,11 @@ C          SIMPLE PRECISION
            CALL GCNCON('.', SOLVBD)
 C          LECTURE PARAMETRE
            CALL GETVIS(' ','REAC_PRECOND',0,1,1,REACPR,IBID)
+           CALL GETVIS(' ','PCENT_PIVOT',0,1,1,PCPIV,IBID)
            ZK24(JSLVK-1+3) = SOLVBD
            ZI(JSLVI-1+5)   = 0
            ZI(JSLVI-1+6)   = REACPR
+           ZI(JSLVI-1+7)   = PCPIV
          ELSE 
            CALL ASSERT(.FALSE.)
          ENDIF

@@ -1,4 +1,4 @@
-# MODIF  DATE 13/01/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 19/05/2011   AUTEUR DELMAS J.DELMAS 
 # TITRE DETECTION DES SINGULARITES DANS UNE PLAQUE FISSUREE (TETRA10)
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
@@ -108,8 +108,13 @@ DEPLA=STAT_NON_LINE(MODELE=MO,
 DEPLA=CALC_ELEM(reuse =DEPLA,
                 RESULTAT=DEPLA,
                 INST=1.,
-                OPTION=('SIEF_ELNO','ERME_ELEM','ERME_ELNO','ETOT_ELEM','SING_ELEM','SING_ELNO',),
-                PREC_ERR=0.8,);
+                OPTION=('SIEF_ELNO','ETOT_ELEM',),);
+
+DEPLA=CALC_ERREUR(reuse =DEPLA,
+                  RESULTAT=DEPLA,
+                  INST=1.,
+                  OPTION=('ERME_ELEM','ERME_ELNO','SING_ELEM','SING_ELNO',),
+                  PREC_ERR=0.8,);
 
 # TEST DE SING_ELEM VALEUR MAX ET MIN DES 2 COMPOSANTES
 

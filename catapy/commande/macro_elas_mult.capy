@@ -1,4 +1,4 @@
-#& MODIF COMMANDE  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+#& MODIF COMMANDE  DATE 19/05/2011   AUTEUR DELMAS J.DELMAS 
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2011  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -52,7 +52,7 @@ MACRO_ELAS_MULT=MACRO(nom="MACRO_ELAS_MULT",op=macro_elas_mult_ops,sd_prod=macro
                                        "EPSI_ELGA","EPSG_ELNO","EPSG_ELGA","EPSP_ELNO","EPSP_ELGA",
                                        "ECIN_ELEM","FLUX_ELGA","FLUX_ELNO","SOUR_ELGA",
                                        "PRAC_ELNO","INTE_ELNO",
-                                       "SIZ1_ELGA","ERZ1_ELEM","SIZ2_ELGA",
+                                       "SIZ1_NOEU","ERZ1_ELEM","SIZ2_NOEU",
                                        "ERZ2_ELEM","VNOR_ELEM_DEPL","ERME_ELNO",
                                        "ERME_ELEM","SIEQ_ELNO","SIEQ_ELGA","EPEQ_ELNO",
                                        "QIRE_ELEM","QIRE_ELNO","QIZ1_ELEM","QIZ2_ELEM",

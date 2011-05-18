@@ -1,4 +1,4 @@
-# MODIF  DATE 02/02/2011   AUTEUR PELLET J.PELLET 
+# MODIF  DATE 19/05/2011   AUTEUR DELMAS J.DELMAS 
 # TITRE CYLINDRE MINCE SOUS SON POIDS PROPRE (AXIS) - ANCIEN SSLP09b
 # ssls09b.para = tps_job 60 mem_job 128Mo ncpus 1 liste_test R
 #            CONFIGURATION MANAGEMENT OF EDF VERSION
@@ -18,263 +18,259 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-#
-# RESPONSABLE  g8bhhxd X.DESROCHES
 
-DEBUT(CODE=_F(NOM='SSLS09B', NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NOM='SSLS09B',
+              NIV_PUB_WEB='INTERNET',),
+      DEBUG=_F(SDVERI='OUI',),);
 
-MAIL=LIRE_MAILLAGE()
-
+MAIL=LIRE_MAILLAGE();
 
 #
 # DEFINITION DU MODELE
-MODELE=AFFE_MODELE(    MAILLAGE=MAIL,
-                         AFFE=_F(  TOUT = 'OUI',
-                       PHENOMENE = 'MECANIQUE',
-                       MODELISATION = 'AXIS')  )
+
+MODELE=AFFE_MODELE(MAILLAGE=MAIL,
+                   AFFE=_F(TOUT='OUI',
+                           PHENOMENE='MECANIQUE',
+                           MODELISATION='AXIS',),);
 
 #
 # DEFINITION DU MATERIAU
-ACIER=DEFI_MATERIAU(    ELAS=_F(  E = 2.1E11,  NU = 0.3,
-                                 ALPHA = 1.E-5,  RHO = 8000.)
-                      )
+
+ACIER=DEFI_MATERIAU(ELAS=_F(E=2.1E11,
+                            NU=0.3,
+                            RHO=8000.,
+                            ALPHA=1.E-5,),);
 
 #
 # ATTRIBUTION DU MATERIAU
-CHMAT=AFFE_MATERIAU(    MAILLAGE=MAIL,
-                          AFFE=_F(  TOUT = 'OUI',
-                                 MATER = ACIER)  )
+
+CHMAT=AFFE_MATERIAU(MAILLAGE=MAIL,
+                    AFFE=_F(TOUT='OUI',
+                            MATER=ACIER,),);
 
 #
 # DEFINITION DES CONDITIONS AUX LIMITES ET CHARGEMENTS
-CLIM=AFFE_CHAR_MECA(    MODELE=MODELE,
-                           DDL_IMPO=_F(  GROUP_MA = 'APPUI',  DY = 0.)
-                        )
+
+CLIM=AFFE_CHAR_MECA(MODELE=MODELE,
+                    DDL_IMPO=_F(GROUP_MA='APPUI',
+                                DY=0.,),);
 
 #
-F_Y=DEFI_FONCTION(    NOM_PARA='Y',
-                       VALE=( 0.,   -78500.,
-                              3.,   -78500.,
-                              6.,   -78500., )
-                    )
 
-CHARGT=AFFE_CHAR_MECA_F(    MODELE=MODELE,
-                           FORCE_INTERNE=_F(  TOUT = 'OUI',
-                                           FY = F_Y)
-                          )
+F_Y=DEFI_FONCTION(NOM_PARA='Y',VALE=(0.,-78500.,
+                        3.,-78500.,
+                        6.,-78500.,
+                        ),);
+
+CHARGT=AFFE_CHAR_MECA_F(MODELE=MODELE,
+                        FORCE_INTERNE=_F(TOUT='OUI',
+                                         FY=F_Y,),);
 
 #
 # RESOLUTION
-DEF=MECA_STATIQUE(    MODELE=MODELE,
-                        CHAM_MATER=CHMAT,EXCIT=(
-                        _F(  CHARGE = CLIM),
-                              _F(  CHARGE = CHARGT))
-                    )
+
+DEF=MECA_STATIQUE(MODELE=MODELE,
+                  CHAM_MATER=CHMAT,
+                  EXCIT=(_F(CHARGE=CLIM,),
+                         _F(CHARGE=CHARGT,),),);
 
 #
 # RECUPERATION DU CHAMP DE DEPLACEMENTS
-U=CREA_CHAMP(  OPERATION='EXTR', TYPE_CHAM='NOEU_DEPL_R',
-NOM_CHAM='DEPL', RESULTAT=DEF,
-                 NUME_ORDRE=1
-                  )
+
+U=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
+             OPERATION='EXTR',
+             RESULTAT=DEF,
+             NOM_CHAM='DEPL',
+             NUME_ORDRE=1,);
 
 #
 # CALCUL DES CONTRAINTES AUX NOEUDS
 
 DEF=CALC_ELEM(reuse =DEF,
-
-
               RESULTAT=DEF,
-              OPTION='SIGM_ELNO',
+              OPTION='SIGM_ELNO',);
 
-);
 #
 # TEST_RESU DEPLACEMENTS
-#
-TEST_RESU(CHAM_NO=(   _F(  CHAM_GD = U,
-                        NOEUD = 'N452',
-                        NOM_CMP = 'DY',
-                        REFERENCE='ANALYTIQUE',
-                        VALE = -2.99E-6,
-                        PRECISION = 0.001),
-              _F(  CHAM_GD = U,
-                        NOEUD = 'N504',
-                        NOM_CMP = 'DY',
-                        REFERENCE='ANALYTIQUE',
-                        VALE = -2.99E-6,
-                        PRECISION = 0.001),
-              _F(  CHAM_GD = U,
-                        NOEUD = 'N503',
-                        NOM_CMP = 'DY',
-                        REFERENCE='ANALYTIQUE',
-                        VALE = -2.99E-6,
-                        PRECISION = 0.001))
-          )
+
+TEST_RESU(CHAM_NO=(_F(CHAM_GD=U,
+                      NOEUD='N452',
+                      NOM_CMP='DY',
+                      VALE=-2.99e-06,
+                      PRECISION=0.001,
+                      REFERENCE='ANALYTIQUE',),
+                   _F(CHAM_GD=U,
+                      NOEUD='N504',
+                      NOM_CMP='DY',
+                      VALE=-2.99e-06,
+                      PRECISION=0.001,
+                      REFERENCE='ANALYTIQUE',),
+                   _F(CHAM_GD=U,
+                      NOEUD='N503',
+                      NOM_CMP='DY',
+                      VALE=-2.99e-06,
+                      PRECISION=0.001,
+                      REFERENCE='ANALYTIQUE',),),);
 
 #
-TEST_RESU(   CHAM_NO=_F(  CHAM_GD = U,
-                        NOEUD = 'N51',
-                        NOM_CMP = 'DX',
-                        REFERENCE='ANALYTIQUE',
-                        VALE = 4.49E-7,
-                        PRECISION = 0.015)
-          )
+
+TEST_RESU(CHAM_NO=_F(CHAM_GD=U,
+                     NOEUD='N51',
+                     NOM_CMP='DX',
+                     VALE=4.49e-07,
+                     PRECISION=0.015,
+                     REFERENCE='ANALYTIQUE',),);
 
 #
 # TEST_RESU CONTRAINTES
-#
-TEST_RESU(RESU=(   _F(  RESULTAT = DEF,
-                          MAILLE = 'M4',
-                          NOEUD = 'N51',
-                          NUME_ORDRE=1,
-                          NOM_CHAM='SIGM_ELNO',
-                          NOM_CMP = 'SIYY',
-                          REFERENCE='ANALYTIQUE',
-                          VALE = -3.14E5,
-                          PRECISION = 0.0001),
-              _F(  RESULTAT = DEF,
-                          MAILLE = 'M4',
-                          NOEUD = 'N1',
-                          NUME_ORDRE=1,
-                          NOM_CHAM='SIGM_ELNO',
-                          NOM_CMP = 'SIXX',
-                          REFERENCE='ANALYTIQUE',
-                          VALE = 0.,
-                          PRECISION = 18.0,
-                          CRITERE = 'ABSOLU'),
-              _F(  RESULTAT = DEF,
-                          MAILLE = 'M4',
-                          NOEUD = 'N101',
-                          NUME_ORDRE=1,
-                          NOM_CHAM='SIGM_ELNO',
-                          NOM_CMP = 'SIXX',
-                          REFERENCE='ANALYTIQUE',
-                          VALE = 0.,
-                          PRECISION = 36.0,
-                          CRITERE = 'ABSOLU'),
-              _F(  RESULTAT = DEF,
-                          MAILLE = 'M4',
-                          NOEUD = 'N51',
-                          NUME_ORDRE=1,
-                          NOM_CHAM='SIGM_ELNO',
-                          NOM_CMP = 'SIXX',
-                          REFERENCE='ANALYTIQUE',
-                          VALE = 0.,
-                          PRECISION = 27.0,
-                          CRITERE = 'ABSOLU'))
-          )
+
+TEST_RESU(RESU=(_F(RESULTAT=DEF,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='SIGM_ELNO',
+                   NOM_CMP='SIYY',
+                   MAILLE='M4',
+                   NOEUD='N51',
+                   VALE=-314000.0,
+                   PRECISION=0.0001,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=DEF,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='SIGM_ELNO',
+                   NOM_CMP='SIXX',
+                   MAILLE='M4',
+                   NOEUD='N1',
+                   VALE=0.0,
+                   CRITERE='ABSOLU',
+                   PRECISION=18.0,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=DEF,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='SIGM_ELNO',
+                   NOM_CMP='SIXX',
+                   MAILLE='M4',
+                   NOEUD='N101',
+                   VALE=0.0,
+                   CRITERE='ABSOLU',
+                   PRECISION=36.0,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=DEF,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='SIGM_ELNO',
+                   NOM_CMP='SIXX',
+                   MAILLE='M4',
+                   NOEUD='N51',
+                   VALE=0.0,
+                   CRITERE='ABSOLU',
+                   PRECISION=27.0,
+                   REFERENCE='ANALYTIQUE',),),);
+
 #--------------------------------------------------------------
-#
-CH_PESA=AFFE_CHAR_MECA  (  MODELE=MODELE,
-                           PESANTEUR=_F(GRAVITE=9.8125,
-                                        DIRECTION=(0., -1., 0.,),),
-                          )
+
+CH_PESA=AFFE_CHAR_MECA(MODELE=MODELE,
+                       PESANTEUR=_F(GRAVITE=9.8125,
+                                    DIRECTION=(0.,-1.,0.,),),);
+
 INSTANTS=DEFI_LIST_REEL(DEBUT=0.0,
                         INTERVALLE=_F(JUSQU_A=1.0,
                                       NOMBRE=1,),);
-RAMPE=DEFI_FONCTION(NOM_PARA='INST',
-                    VALE=(0.0, 0.0,
-                          1.0, 1.0,),);
+
+RAMPE=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.0,0.0,
+                          1.0,1.0,
+                          ),);
 
 DEF_PESA=STAT_NON_LINE(MODELE=MODELE,
-                   CHAM_MATER=CHMAT,
-                   EXCIT=(_F(
-                             CHARGE=CH_PESA,
-                             FONC_MULT=RAMPE,),
-                          _F(CHARGE=CLIM,),),
-                   COMP_ELAS=_F(RELATION='ELAS',),
-                   INCREMENT=_F(LIST_INST=INSTANTS),
-                   NEWTON=_F(REAC_ITER=1,),
-                    );
+                       CHAM_MATER=CHMAT,
+                       EXCIT=(_F(CHARGE=CH_PESA,
+                                 FONC_MULT=RAMPE,),
+                              _F(CHARGE=CLIM,),),
+                       COMP_ELAS=_F(RELATION='ELAS',),
+                       INCREMENT=_F(LIST_INST=INSTANTS,),
+                       NEWTON=_F(REAC_ITER=1,),);
 
 DEF_PESA=CALC_ELEM(reuse =DEF_PESA,
-               RESULTAT=DEF_PESA,
-               OPTION=('SIEF_ELNO',
-                       'ERME_ELEM',
-                       'ERME_ELNO',
-                      ),
-               );
+                   RESULTAT=DEF_PESA,
+                   OPTION='SIEF_ELNO',);
+
+DEF_PESA=CALC_ERREUR(reuse =DEF_PESA,
+                     RESULTAT=DEF_PESA,
+                     OPTION=('ERME_ELEM','ERME_ELNO',),);
 
 IMPR_RESU(RESU=_F(RESULTAT=DEF_PESA,
-                   NUME_ORDRE=1,
-                   NOM_CHAM='ERME_ELEM',),
-          ) ;
-#
-# TEST_RESU DEPLACEMENTS
-#
-TEST_RESU(RESU=(_F(RESULTAT=DEF_PESA,
-                        NUME_ORDRE=1,
-                        NOM_CHAM='DEPL',
-                        NOEUD = 'N452',
-                        NOM_CMP = 'DY',
-                        REFERENCE='ANALYTIQUE',
-                        VALE = -2.99E-6,
-                        PRECISION = 0.001),
-               _F(RESULTAT=DEF_PESA,
-                        NUME_ORDRE=1,
-                        NOM_CHAM='DEPL',
-                        NOEUD = 'N504',
-                        NOM_CMP = 'DY',
-                        REFERENCE='ANALYTIQUE',
-                        VALE = -2.99E-6,
-                        PRECISION = 0.001),
-               _F(RESULTAT=DEF_PESA,
-                        NUME_ORDRE=1,
-                        NOM_CHAM='DEPL',
-                        NOEUD = 'N503',
-                        NOM_CMP = 'DY',
-                        REFERENCE='ANALYTIQUE',
-                        VALE = -2.99E-6,
-                        PRECISION = 0.001)
-              )
-          )
+                  NOM_CHAM='ERME_ELEM',
+                  NUME_ORDRE=1,),);
 
 #
+# TEST_RESU DEPLACEMENTS
+
 TEST_RESU(RESU=(_F(RESULTAT=DEF_PESA,
-                        NUME_ORDRE=1,
-                        NOM_CHAM='DEPL',
-                        NOEUD = 'N51',
-                        NOM_CMP = 'DX',
-                        REFERENCE='ANALYTIQUE',
-                        VALE = 4.49E-7,
-                        PRECISION = 0.015
-                   )
-                )
-         )
+                   NUME_ORDRE=1,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
+                   NOEUD='N452',
+                   VALE=-2.99e-06,
+                   PRECISION=0.001,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=DEF_PESA,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
+                   NOEUD='N504',
+                   VALE=-2.99e-06,
+                   PRECISION=0.001,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=DEF_PESA,
+                   NUME_ORDRE=1,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
+                   NOEUD='N503',
+                   VALE=-2.99e-06,
+                   PRECISION=0.001,
+                   REFERENCE='ANALYTIQUE',),),);
+
+#
+
+TEST_RESU(RESU=_F(RESULTAT=DEF_PESA,
+                  NUME_ORDRE=1,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DX',
+                  NOEUD='N51',
+                  VALE=4.49e-07,
+                  PRECISION=0.015,
+                  REFERENCE='ANALYTIQUE',),);
+
 #---------------------------------------------------------------------
 #    TEST EN CONTRAINTES
 
 TEST_RESU(RESU=(_F(RESULTAT=DEF_PESA,
                    NUME_ORDRE=1,
                    NOM_CHAM='SIEF_ELNO',
-                          MAILLE = 'M4',
-                          NOEUD = 'N51',
-                          NOM_CMP = 'SIYY',
-                          REFERENCE='ANALYTIQUE',
-                          VALE = -3.14E5,
-                          PRECISION = 0.0001),
+                   NOM_CMP='SIYY',
+                   MAILLE='M4',
+                   NOEUD='N51',
+                   VALE=-314000.0,
+                   PRECISION=0.0001,
+                   REFERENCE='ANALYTIQUE',),
                 _F(RESULTAT=DEF_PESA,
                    NUME_ORDRE=1,
                    NOM_CHAM='SIEF_ELNO',
-                          MAILLE = 'M4',
-                          NOEUD = 'N1',
-                          NOM_CMP = 'SIXX',
-                          REFERENCE='ANALYTIQUE',
-                          VALE = 0.,
-                          PRECISION = 21.0,
-                          CRITERE = 'ABSOLU'),
-               _F(RESULTAT=DEF_PESA,
+                   NOM_CMP='SIXX',
+                   MAILLE='M4',
+                   NOEUD='N1',
+                   VALE=0.0,
+                   CRITERE='ABSOLU',
+                   PRECISION=21.0,
+                   REFERENCE='ANALYTIQUE',),
+                _F(RESULTAT=DEF_PESA,
                    NUME_ORDRE=1,
                    NOM_CHAM='SIEF_ELNO',
-                          MAILLE = 'M4',
-                          NOEUD = 'N51',
-                          NOM_CMP = 'SIXX',
-                          REFERENCE='ANALYTIQUE',
-                          VALE = 0.,
-                          PRECISION = 30.0,
-                          CRITERE = 'ABSOLU'),
-          )
-        )
+                   NOM_CMP='SIXX',
+                   MAILLE='M4',
+                   NOEUD='N51',
+                   VALE=0.0,
+                   CRITERE='ABSOLU',
+                   PRECISION=30.0,
+                   REFERENCE='ANALYTIQUE',),),);
+
 #---------------------------------------------------------------------
 #    ESTIMATEUR D'ERREUR EN RESIDU
 
@@ -284,7 +280,7 @@ TEST_RESU(RESU=(_F(RESULTAT=DEF_PESA,
                    NOM_CMP='NUEST',
                    MAILLE='M4',
                    POINT=1,
-                   VALE=1.6420523639807E-08,
+                   VALE=1.64205236398e-08,
                    REFERENCE='NON_REGRESSION',
                    VERSION='9.03.15',),
                 _F(RESULTAT=DEF_PESA,
@@ -293,7 +289,7 @@ TEST_RESU(RESU=(_F(RESULTAT=DEF_PESA,
                    NOM_CMP='ERREST',
                    MAILLE='M4',
                    NOEUD='N51',
-                   VALE=1.4510785718753E-06,
+                   VALE=1.45107857188e-06,
                    REFERENCE='NON_REGRESSION',
                    VERSION='9.03.15',),
                 _F(RESULTAT=DEF_PESA,
@@ -302,7 +298,7 @@ TEST_RESU(RESU=(_F(RESULTAT=DEF_PESA,
                    NOM_CMP='TERMRE',
                    MAILLE='M7',
                    POINT=1,
-                   VALE=1.234851E-06,
+                   VALE=1.234851e-06,
                    REFERENCE='NON_REGRESSION',
                    VERSION='9.03.15',),
                 _F(RESULTAT=DEF_PESA,
@@ -311,7 +307,7 @@ TEST_RESU(RESU=(_F(RESULTAT=DEF_PESA,
                    NOM_CMP='TERMSA',
                    MAILLE='M7',
                    POINT=1,
-                   VALE=2.28118E-07,
+                   VALE=2.28118e-07,
                    REFERENCE='NON_REGRESSION',
                    VERSION='9.03.15',),
                 _F(RESULTAT=DEF_PESA,
@@ -320,12 +316,12 @@ TEST_RESU(RESU=(_F(RESULTAT=DEF_PESA,
                    NOM_CMP='TERMNO',
                    MAILLE='M7',
                    POINT=1,
-                   VALE=0.00000E+00,
+                   VALE=0.0,
                    CRITERE='ABSOLU',
                    REFERENCE='NON_REGRESSION',
-                   VERSION='8.01.22',),
-                ),
-          )
+                   VERSION='8.01.22',),),);
 
-FIN()
+FIN();
+
 #
+
